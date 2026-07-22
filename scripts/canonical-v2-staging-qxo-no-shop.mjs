@@ -14,6 +14,7 @@ const { buildAdmittedSemanticSourceContext, buildAdmittedSourceReference } = req
 const { InMemoryCanonicalRepository, createCanonicalWriter } = require('../lib/canonical-v2/canonical-writer');
 const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
 const { buildQxoAdmittedNoShopNoticeSlice } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-slice');
+const { buildQxoAdmittedNoShopActionsSlice } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
 const { convertSecHtmlToCanonicalText } = require('../lib/canonical-v2/sec-html-canonical-text');
 const { verifySecHtmlCanonicalText } = require('../lib/canonical-v2/sec-html-canonical-text-verifier');
 const { buildVerifiedSecSourceAdmission } = require('../lib/canonical-v2/sec-source-admission');
@@ -26,12 +27,31 @@ const SOURCE = Object.freeze({
   response_bytes_sha256: 'abba043018410d718c207e7d7a43c9567166f6a10c4c9a6b4b0c8c7761cd6b9d',
 });
 const DEAL_KEY = 'deal:qxo-topbuild';
-const IDEMPOTENCY_KEY = 'QXO_NO_SHOP_NOTICE_DEAL_SCOPE_V1';
-const EXPECTED_DEAL_ADMISSION_ID = '62b8b828c534273c68dcd48cec3fbbcb4f912ac3f477dbdc377de5ac47954c8f';
-const EXPECTED_SOURCE_ADMISSION_ID = 'f31cad8c3813ededa01c644891b0b2e14c6a475d868ba89f6b60b597f0e1d819';
-const EXPECTED_REVIEWED_MAPPING_ID = 'f2eee0397926cac5e6042e93d002ddc6790d5b2bafdd9adbccb460d16081d7c5';
-const EXPECTED_SEMANTIC_CLOSURE_ID = '944c18cb24c5684c04eb3d2c9cae57f932c144790492bc1619ccd566d57a8a3e';
+const FAMILY_CONFIGS = Object.freeze({
+  NOTICE: Object.freeze({
+    idempotencyKey: 'QXO_NO_SHOP_NOTICE_DEAL_SCOPE_V1',
+    closureDomain: 'QXO_NO_SHOP_NOTICE_SEMANTIC_CLOSURE/V1',
+    expectedDealAdmissionId: '62b8b828c534273c68dcd48cec3fbbcb4f912ac3f477dbdc377de5ac47954c8f',
+    expectedSourceAdmissionId: 'f31cad8c3813ededa01c644891b0b2e14c6a475d868ba89f6b60b597f0e1d819',
+    expectedReviewedMappingId: 'f2eee0397926cac5e6042e93d002ddc6790d5b2bafdd9adbccb460d16081d7c5',
+    expectedClosureId: '944c18cb24c5684c04eb3d2c9cae57f932c144790492bc1619ccd566d57a8a3e',
+    attestationSchema: 'QXO_NO_SHOP_DEAL_SCOPE_STAGING_ATTESTATION/V1',
+  }),
+  ACTIONS: Object.freeze({
+    idempotencyKey: 'QXO_NO_SHOP_ACTIONS_DEAL_SCOPE_V1',
+    closureDomain: 'QXO_NO_SHOP_ACTIONS_SEMANTIC_CLOSURE/V1',
+    expectedDealAdmissionId: '62b8b828c534273c68dcd48cec3fbbcb4f912ac3f477dbdc377de5ac47954c8f',
+    expectedSourceAdmissionId: 'f31cad8c3813ededa01c644891b0b2e14c6a475d868ba89f6b60b597f0e1d819',
+    expectedReviewedMappingId: '633cf0ff19c762125f51df2d2b36da182a61d23ea7193ef8e2898134dc980f1b',
+    expectedClosureId: '89683e5ff72a570948bfadda123254719d848310b5c50ad3720645e2cbd6291b',
+    attestationSchema: 'QXO_NO_SHOP_ACTIONS_DEAL_SCOPE_STAGING_ATTESTATION/V1',
+  }),
+});
 const MAX_WRITER_REQUEST_BYTES = 512 * 1024;
+
+function familyConfig() {
+  return mode.startsWith('--actions-') ? FAMILY_CONFIGS.ACTIONS : FAMILY_CONFIGS.NOTICE;
+}
 
 function fail(message) {
   process.stderr.write(`${message}\n`);
@@ -103,6 +123,7 @@ function sqlJson(value) {
 }
 
 async function buildWrite() {
+  const config = familyConfig();
   const contractBundle = compileFixtureContract();
   const capture = readCapture();
   const conversion = convertSecHtmlToCanonicalText(capture);
@@ -123,16 +144,19 @@ async function buildWrite() {
     deal_admission_id: dealAdmissionId,
     source_ordinal: 0,
   });
-  const slice = buildQxoAdmittedNoShopNoticeSlice({ sourceContext, contractBundle });
-  const closureId = contentId('QXO_NO_SHOP_NOTICE_SEMANTIC_CLOSURE/V1', {
+  const slice = config === FAMILY_CONFIGS.ACTIONS
+    ? buildQxoAdmittedNoShopActionsSlice({ sourceContext, contractBundle })
+    : buildQxoAdmittedNoShopNoticeSlice({ sourceContext, contractBundle });
+  const closureId = contentId(config.closureDomain, {
     deal_admission_id: dealAdmissionId,
     source_admission_manifest_id: sourceContext.source_admission_manifest_id,
     reviewed_mapping_id: slice.reviewed_mapping.reviewed_mapping_id,
   });
-  if (dealAdmissionId !== EXPECTED_DEAL_ADMISSION_ID
-    || sourceContext.source_admission_manifest_id !== EXPECTED_SOURCE_ADMISSION_ID
-    || slice.reviewed_mapping.reviewed_mapping_id !== EXPECTED_REVIEWED_MAPPING_ID
-    || closureId !== EXPECTED_SEMANTIC_CLOSURE_ID) {
+  if (dealAdmissionId !== config.expectedDealAdmissionId
+    || sourceContext.source_admission_manifest_id !== config.expectedSourceAdmissionId
+    || (config.expectedReviewedMappingId !== null
+      && slice.reviewed_mapping.reviewed_mapping_id !== config.expectedReviewedMappingId)
+    || (config.expectedClosureId !== null && closureId !== config.expectedClosureId)) {
     throw new Error('The admitted QXO no-shop semantic identity has drifted.');
   }
   const close = (rows) => rows.map((row) => ({ ...row, closure_id: closureId }));
@@ -189,7 +213,7 @@ async function buildWrite() {
       source_admission_bundle: sourceAdmissionBundle,
     },
   });
-  const input = { operation: 'DEAL_SCOPE_RUN', idempotencyKey: IDEMPOTENCY_KEY, writeSet };
+  const input = { operation: 'DEAL_SCOPE_RUN', idempotencyKey: config.idempotencyKey, writeSet };
   const dryRun = await writer.write({ ...input, dryRun: true });
   const committed = await writer.write(input);
   return {
@@ -203,14 +227,16 @@ async function buildWrite() {
 }
 
 function writerSql(write) {
+  const config = familyConfig();
   return `SELECT public.canonical_v2_write(
-    'staging', 'DEAL_SCOPE_RUN', '${IDEMPOTENCY_KEY}', '${write.inputDigest}',
+    'staging', 'DEAL_SCOPE_RUN', '${config.idempotencyKey}', '${write.inputDigest}',
     ${sqlJson(write.writeSet)}, '[]'::jsonb, '[]'::jsonb,
     ${sqlJson(write.receipt)}
   ) AS result;`;
 }
 
 function state(write) {
+  const config = familyConfig();
   const rows = runSql(`SELECT jsonb_build_object(
     'deal', EXISTS (SELECT 1 FROM canonical_v2_staging.deals WHERE deal_key='${DEAL_KEY}' AND canonical_payload->>'deal_admission_id'='${write.sourceContext.deal_admission_id}'),
     'excerpts', (SELECT count(*) = ${write.writeSet.excerpts.length} FROM canonical_v2_staging.excerpts WHERE closure_id='${write.closureId}'),
@@ -218,7 +244,7 @@ function state(write) {
     'components', (SELECT count(*) = ${write.writeSet.components.length} FROM canonical_v2_staging.provision_components WHERE closure_id='${write.closureId}'),
     'claims', (SELECT count(*) = ${write.writeSet.claims.length} FROM canonical_v2_staging.claim_revisions WHERE closure_id='${write.closureId}'),
     'relationships', (SELECT count(*) = ${write.writeSet.relationships.length} FROM canonical_v2_staging.relationship_revisions WHERE closure_id='${write.closureId}'),
-    'write_receipt', EXISTS (SELECT 1 FROM canonical_v2_staging.write_receipts WHERE operation='DEAL_SCOPE_RUN' AND idempotency_key='${IDEMPOTENCY_KEY}' AND input_digest='${write.inputDigest}' AND receipt_id='${write.receipt.receiptId}')
+    'write_receipt', EXISTS (SELECT 1 FROM canonical_v2_staging.write_receipts WHERE operation='DEAL_SCOPE_RUN' AND idempotency_key='${config.idempotencyKey}' AND input_digest='${write.inputDigest}' AND receipt_id='${write.receipt.receiptId}')
   ) AS state;`, { readOnly: true });
   if (rows.length !== 1 || !rows[0]?.state) throw new Error('QXO no-shop semantic state could not be read.');
   return rows[0].state;
@@ -230,8 +256,9 @@ function assertCommitted(stateValue) {
 }
 
 function attestation(write, mode) {
+  const config = familyConfig();
   return {
-    schema_version: 'QXO_NO_SHOP_DEAL_SCOPE_STAGING_ATTESTATION/V1',
+    schema_version: config.attestationSchema,
     environment: 'staging',
     mode,
     deal_admission_id: write.sourceContext.deal_admission_id,
@@ -250,8 +277,16 @@ function attestation(write, mode) {
 }
 
 const mode = process.argv[2];
-if (!['--dry-run', '--apply', '--verify'].includes(mode) || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop.mjs --dry-run|--apply|--verify');
+const invocation = Object.freeze({
+  '--dry-run': 'DRY_RUN',
+  '--apply': 'APPLY',
+  '--verify': 'VERIFY',
+  '--actions-dry-run': 'DRY_RUN',
+  '--actions-apply': 'APPLY',
+  '--actions-verify': 'VERIFY',
+});
+if (!invocation[mode] || process.argv.length !== 3) {
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop.mjs --dry-run|--apply|--verify|--actions-dry-run|--actions-apply|--actions-verify');
 }
 
 try {
@@ -260,7 +295,7 @@ try {
   if (Buffer.byteLength(writerSql(write), 'utf8') > MAX_WRITER_REQUEST_BYTES) {
     throw new Error('The QXO no-shop semantic writer request exceeds its bounded transport limit.');
   }
-  if (mode === '--verify') {
+  if (invocation[mode] === 'VERIFY') {
     assertCommitted(state(write));
   } else {
     const before = state(write);
@@ -268,14 +303,14 @@ try {
     if (canonicalJson(before) !== canonicalJson(state(write))) {
       throw new Error('Rollback-first QXO no-shop semantic run changed staging state.');
     }
-    if (mode === '--apply') {
+    if (invocation[mode] === 'APPLY') {
       runSql(writerSql(write), { commit: true });
       assertCommitted(state(write));
     }
   }
   process.stdout.write(`${canonicalJson(attestation(
     write,
-    mode === '--apply' ? 'COMMITTED' : mode === '--verify' ? 'VERIFIED' : 'ROLLED_BACK',
+    invocation[mode] === 'APPLY' ? 'COMMITTED' : invocation[mode] === 'VERIFY' ? 'VERIFIED' : 'ROLLED_BACK',
   ))}\n`);
 } catch (error) {
   fail(error instanceof Error ? error.message : 'Canonical QXO no-shop run failed.');

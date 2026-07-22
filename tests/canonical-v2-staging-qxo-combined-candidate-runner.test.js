@@ -4,10 +4,11 @@ const fs = require('node:fs');
 
 const RUNNER = 'scripts/canonical-v2-staging-qxo-combined-candidate.mjs';
 
-test('combined QXO candidate runner reads two exact semantic closures and never activates them', () => {
+test('combined QXO candidate runner reads each exact semantic closure and never activates them', () => {
   const source = fs.readFileSync(RUNNER, 'utf8');
   assert.match(source, /CAPITALISATION_CLOSURE_ID/);
   assert.match(source, /NO_SHOP_CLOSURE_ID/);
+  assert.match(source, /ACTIONS_CLOSURE_ID/);
   assert.match(source, /assertFamilyParity/);
   assert.match(source, /active_pointer_unchanged: true/);
   assert.doesNotMatch(source, /activateCandidateRelease|canonical_v2_activate/);
@@ -19,11 +20,25 @@ test('combined QXO candidate identities and release counts are pinned', () => {
   assert.match(source, /fa2aa0154c5f0024b088fc5fcf7281adb56cbac12d0d48438fefa1765b83dd36/);
   assert.match(source, /620bcbba3b072f1a475989adad9e4ce708b4fce288fa59036e549dc82544b48d/);
   assert.match(source, /cb2d9e9db4e059b28d29f60012d25efec77b3eda2d33cf9911c434bcbb667b44/);
+  assert.match(source, /91cdee1d2cca11fdaa7141069c3daf9d048deabdbe36573bb214cafc7cf34430/);
+  assert.match(source, /db29af6e548def369bee9c2fbe2be16959078f9461746caa1854f4eeceaea43c/);
+  assert.match(source, /3ab6ca118c32bad5d5e9ce662a7c3f7cc06cddda03b7c717cccd6ed9dfa10a65/);
   assert.match(source, /capitalisationServing\.candidate_release_members/);
   assert.match(source, /noShopServing\.candidate_release_members/);
+  assert.match(source, /actionsServing\?\.candidate_release_members/);
   assert.match(source, /release\.market_observations\.length/);
   assert.match(source, /release\.market_exclusions\.length/);
   assert.match(source, /release\.exact_detail_packages\.length/);
+});
+
+test('combined QXO action candidate is an explicit inactive mode with pinned graph parity', () => {
+  const source = fs.readFileSync(RUNNER, 'utf8');
+  assert.match(source, /--actions-dry-run/);
+  assert.match(source, /--actions-import/);
+  assert.match(source, /--actions-verify/);
+  assert.match(source, /--actions-rehearse-rollback/);
+  assert.match(source, /assertFamilyParity\(\{ graph: graph\.actions/);
+  assert.match(source, /buildQxoNoShopActionsServingSlice/);
 });
 
 test('combined QXO candidate import is rollback-first and has exact inactive rollback', () => {

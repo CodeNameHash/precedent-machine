@@ -203,11 +203,12 @@ test('a real-shape admitted V2 source produces one valid bounded composition pac
     fixture.args.source.document_hash);
 });
 
-test('an admitted single-claim result carries exact evidence without inventing a relationship target', () => {
+test('an admitted ordered single-claim result carries exact evidence without inventing a relationship target', () => {
   const contract = compileFixtureContract();
   const { source, admission } = buildSource();
   const corpusReleaseId = digest('claim-only-corpus');
   const servingNamespaceId = digest('claim-only-namespace');
+  const governedOrdinal = 3;
   const span = buildSemanticSpan(
     source,
     CAPITAL_STRUCTURE_INTERVAL.start,
@@ -260,7 +261,7 @@ test('an admitted single-claim result carries exact evidence without inventing a
     concept_key: 'NOSOL-NOTICE',
     party,
     value_slot_key: 'NOTICE_PERIOD',
-    ordinal: 0,
+    ordinal: governedOrdinal,
     claim,
     relationships: [],
     composition_scope_closure_id: digest('claim-only-composition-scope'),
@@ -293,7 +294,7 @@ test('an admitted single-claim result carries exact evidence without inventing a
     claim,
     relationships: [],
     value_slot_key: 'NOTICE_PERIOD',
-    ordinal: 0,
+    ordinal: governedOrdinal,
   });
   const cohortRequest = {
     serving_namespace_id: servingNamespaceId,
@@ -336,7 +337,7 @@ test('an admitted single-claim result carries exact evidence without inventing a
       distribution: [{ canonical_value: '1', subject_count: 1, deal_count: 1 }],
       exclusions: [],
     },
-    result_ordinal: 0,
+    result_ordinal: governedOrdinal,
   });
   const args = {
     contract_bundle: contract,
@@ -351,6 +352,7 @@ test('an admitted single-claim result carries exact evidence without inventing a
   assert.equal(validateAdmittedResultCompositionDetailPackage({ package: packageValue, ...args }), true);
   assert.deepEqual(packageValue.detail_payloads[0].response_body.relationships, []);
   assert.equal(packageValue.detail_payloads[0].response_body.excerpts.length, 1);
+  assert.equal(packageValue.row.canonical_result.components[0].governed_ordinal, governedOrdinal);
 });
 
 test('admitted composition detail rejects altered V2 lineage and incomplete scope evidence', () => {

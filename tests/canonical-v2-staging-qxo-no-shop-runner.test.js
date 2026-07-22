@@ -4,6 +4,7 @@ const fs = require('node:fs');
 
 const RUNNER = 'scripts/canonical-v2-staging-qxo-no-shop.mjs';
 const REVIEWED = 'lib/canonical-v2/reviewed-qxo-admitted-no-shop-slice.js';
+const ACTIONS = 'lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice.js';
 
 test('QXO no-shop runner is staging-only, rollback-first and writer-only', () => {
   const source = fs.readFileSync(RUNNER, 'utf8');
@@ -18,12 +19,27 @@ test('QXO no-shop runner is staging-only, rollback-first and writer-only', () =>
 
 test('QXO no-shop runner pins source, review and closure identities without printing source text', () => {
   const source = fs.readFileSync(RUNNER, 'utf8');
-  assert.match(source, /EXPECTED_DEAL_ADMISSION_ID/);
-  assert.match(source, /EXPECTED_SOURCE_ADMISSION_ID/);
-  assert.match(source, /EXPECTED_REVIEWED_MAPPING_ID/);
-  assert.match(source, /EXPECTED_SEMANTIC_CLOSURE_ID/);
+  assert.match(source, /expectedDealAdmissionId/);
+  assert.match(source, /expectedSourceAdmissionId/);
+  assert.match(source, /expectedReviewedMappingId/);
+  assert.match(source, /expectedClosureId/);
+  assert.match(source, /633cf0ff19c762125f51df2d2b36da182a61d23ea7193ef8e2898134dc980f1b/);
+  assert.match(source, /89683e5ff72a570948bfadda123254719d848310b5c50ad3720645e2cbd6291b/);
   assert.match(source, /writer_request_byte_length/);
   assert.doesNotMatch(source, /exact_text|raw_value|canonical_text\.text/);
+});
+
+test('reviewed QXO prohibited actions retain terms and governed exceptions without inventing change recommendation', () => {
+  const source = fs.readFileSync(ACTIONS, 'utf8');
+  assert.match(source, /SOLICIT_ASSIST_INITIATE_ENCOURAGE_OR_FACILITATE/);
+  assert.match(source, /ENTER_CONTINUE_OR_PARTICIPATE_IN_DISCUSSIONS_OR_NEGOTIATIONS/);
+  assert.match(source, /ENTER_ALTERNATIVE_TRANSACTION_AGREEMENT/);
+  assert.match(source, /APPROVE_AUTHORISE_OR_ANNOUNCE_INTENTION/);
+  assert.doesNotMatch(source, /CHANGE_RECOMMENDATION/);
+  assert.match(source, /PERMITS_LIMITED_INFORMATION_SHARING/);
+  assert.match(source, /PERMITS_DISCUSSIONS_OR_NEGOTIATIONS/);
+  assert.match(source, /BEFORE_STOCKHOLDER_APPROVAL/);
+  assert.match(source, /FIDUCIARY_DUTIES_REQUIRE_ACTION/);
 });
 
 test('reviewed QXO no-shop slice uses admitted intervals and distinct day bases', () => {

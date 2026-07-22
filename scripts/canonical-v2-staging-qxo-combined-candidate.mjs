@@ -16,8 +16,10 @@ const { buildAdmittedSemanticSourceContext } = require('../lib/canonical-v2/admi
 const { canonicalJson, contentId } = require('../lib/canonical-v2/canonical-bytes');
 const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
 const { buildQxoCapitalisationServingSlice } = require('../lib/canonical-v2/qxo-capitalisation-serving-slice');
+const { buildQxoNoShopActionsServingSlice } = require('../lib/canonical-v2/qxo-no-shop-actions-serving-slice');
 const { buildQxoNoShopServingSlice } = require('../lib/canonical-v2/qxo-no-shop-serving-slice');
 const { buildQxoReviewedCapitalisationSlice } = require('../lib/canonical-v2/reviewed-qxo-capitalisation-slice');
+const { buildQxoAdmittedNoShopActionsSlice } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
 const { buildQxoAdmittedNoShopNoticeSlice } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-slice');
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -28,11 +30,29 @@ const SOURCE_ADMISSION_ID = 'f31cad8c3813ededa01c644891b0b2e14c6a475d868ba89f6b6
 const DEAL_ADMISSION_ID = '62b8b828c534273c68dcd48cec3fbbcb4f912ac3f477dbdc377de5ac47954c8f';
 const CAPITALISATION_CLOSURE_ID = 'cbb678180ec9951f12741a77a58f7ec03a6bebffbdc6e5d9fbea6add9beea596';
 const NO_SHOP_CLOSURE_ID = '944c18cb24c5684c04eb3d2c9cae57f932c144790492bc1619ccd566d57a8a3e';
-const EXPECTED_CORPUS_RELEASE_ID = 'fa2aa0154c5f0024b088fc5fcf7281adb56cbac12d0d48438fefa1765b83dd36';
-const EXPECTED_CANDIDATE_MANIFEST_ID = '620bcbba3b072f1a475989adad9e4ce708b4fce288fa59036e549dc82544b48d';
-const EXPECTED_SERVING_NAMESPACE_ID = 'cb2d9e9db4e059b28d29f60012d25efec77b3eda2d33cf9911c434bcbb667b44';
+const ACTIONS_CLOSURE_ID = '89683e5ff72a570948bfadda123254719d848310b5c50ad3720645e2cbd6291b';
+const RELEASE_CONFIGS = Object.freeze({
+  BASE: Object.freeze({
+    corpusReleaseId: 'fa2aa0154c5f0024b088fc5fcf7281adb56cbac12d0d48438fefa1765b83dd36',
+    candidateManifestId: '620bcbba3b072f1a475989adad9e4ce708b4fce288fa59036e549dc82544b48d',
+    servingNamespaceId: 'cb2d9e9db4e059b28d29f60012d25efec77b3eda2d33cf9911c434bcbb667b44',
+  }),
+  ACTIONS: Object.freeze({
+    corpusReleaseId: '91cdee1d2cca11fdaa7141069c3daf9d048deabdbe36573bb214cafc7cf34430',
+    candidateManifestId: 'db29af6e548def369bee9c2fbe2be16959078f9461746caa1854f4eeceaea43c',
+    servingNamespaceId: '3ab6ca118c32bad5d5e9ce662a7c3f7cc06cddda03b7c717cccd6ed9dfa10a65',
+  }),
+});
 const MAX_GRAPH_READ_BYTES = 4 * 1024 * 1024;
 let currentStage = 'STARTUP';
+
+function includesActions() {
+  return mode.startsWith('--actions-');
+}
+
+function releaseConfig() {
+  return includesActions() ? RELEASE_CONFIGS.ACTIONS : RELEASE_CONFIGS.BASE;
+}
 
 function fail(message) {
   process.stderr.write(`${message}\n`);
@@ -156,6 +176,15 @@ function readGraph() {
     'receipt', (SELECT canonical_payload FROM canonical_v2_staging.write_receipts
       WHERE operation='DEAL_SCOPE_RUN' AND idempotency_key='QXO_NO_SHOP_NOTICE_DEAL_SCOPE_V1')
   ),
+  'actions', jsonb_build_object(
+    'excerpts', ${graphCollection(ACTIONS_CLOSURE_ID, 'excerpts', 'excerpt_id')},
+    'provisions', ${graphCollection(ACTIONS_CLOSURE_ID, 'provision_instances', 'provision_instance_id')},
+    'components', ${graphCollection(ACTIONS_CLOSURE_ID, 'provision_components', 'provision_component_id')},
+    'claims', ${graphCollection(ACTIONS_CLOSURE_ID, 'claim_revisions', 'claim_revision_id')},
+    'relationships', ${graphCollection(ACTIONS_CLOSURE_ID, 'relationship_revisions', 'relationship_revision_id')},
+    'receipt', (SELECT canonical_payload FROM canonical_v2_staging.write_receipts
+      WHERE operation='DEAL_SCOPE_RUN' AND idempotency_key='QXO_NO_SHOP_ACTIONS_DEAL_SCOPE_V1')
+  ),
   'active_pointer', (SELECT canonical_payload FROM canonical_v2_staging.active_corpus_release_pointers
     WHERE environment='staging')
 ) AS graph
@@ -199,22 +228,29 @@ function assertFamilyParity({ graph, slice, closureId, label }) {
   }
 }
 
-function releaseIds({ contractBundle, capitalisationSlice, noShopSlice }) {
+function releaseIds({ contractBundle, capitalisationSlice, noShopSlice, actionsSlice }) {
+  const actionMappings = includesActions() ? [actionsSlice.reviewed_mapping.reviewed_mapping_id] : [];
+  const actionClosures = includesActions() ? [ACTIONS_CLOSURE_ID] : [];
   const seed = {
-    schema_version: 'QXO_COMBINED_CANDIDATE_SEED/V1',
+    schema_version: includesActions()
+      ? 'QXO_COMBINED_ACTIONS_CANDIDATE_SEED/V1'
+      : 'QXO_COMBINED_CANDIDATE_SEED/V1',
     contract_fingerprint: contractBundle.fingerprint,
     source_admission_manifest_id: SOURCE_ADMISSION_ID,
-    semantic_closure_ids: [CAPITALISATION_CLOSURE_ID, NO_SHOP_CLOSURE_ID].sort(),
+    semantic_closure_ids: [CAPITALISATION_CLOSURE_ID, NO_SHOP_CLOSURE_ID, ...actionClosures].sort(),
     reviewed_mapping_ids: [
       capitalisationSlice.reviewed_mapping.reviewed_mapping_id,
       noShopSlice.reviewed_mapping.reviewed_mapping_id,
+      ...actionMappings,
     ].sort(),
     tier_c_policy: 'EXPLICIT_RESULT_NOT_COMPARABLE_PENDING_FREEZE_GATE',
   };
   return {
     corpusReleaseId: contentId('CORPUS_RELEASE/V1', seed),
     servingNamespaceId: contentId('SERVING_NAMESPACE/V1', {
-      schema_version: 'QXO_COMBINED_SERVING_NAMESPACE/V1',
+      schema_version: includesActions()
+        ? 'QXO_COMBINED_ACTIONS_SERVING_NAMESPACE/V1'
+        : 'QXO_COMBINED_SERVING_NAMESPACE/V1',
       contract_fingerprint: contractBundle.fingerprint,
       governed_deal_key: DEAL_KEY,
       reviewed_mapping_ids: seed.reviewed_mapping_ids,
@@ -246,11 +282,20 @@ async function buildCandidate() {
   currentStage = 'BUILD_REVIEWED_SLICES';
   const capitalisationSlice = buildQxoReviewedCapitalisationSlice({ sourceContext, contractBundle });
   const noShopSlice = buildQxoAdmittedNoShopNoticeSlice({ sourceContext, contractBundle });
+  const actionsSlice = buildQxoAdmittedNoShopActionsSlice({ sourceContext, contractBundle });
   currentStage = 'VERIFY_GRAPH_PARITY';
   assertFamilyParity({ graph: graph.capitalisation, slice: capitalisationSlice, closureId: CAPITALISATION_CLOSURE_ID, label: 'capitalisation' });
   assertFamilyParity({ graph: graph.no_shop, slice: noShopSlice, closureId: NO_SHOP_CLOSURE_ID, label: 'no-shop' });
+  if (includesActions()) {
+    assertFamilyParity({ graph: graph.actions, slice: actionsSlice, closureId: ACTIONS_CLOSURE_ID, label: 'no-shop actions' });
+  }
   currentStage = 'BUILD_RELEASE_IDENTITIES';
-  const { corpusReleaseId, servingNamespaceId } = releaseIds({ contractBundle, capitalisationSlice, noShopSlice });
+  const { corpusReleaseId, servingNamespaceId } = releaseIds({
+    contractBundle,
+    capitalisationSlice,
+    noShopSlice,
+    actionsSlice,
+  });
   currentStage = 'BUILD_SERVING_SLICES';
   const dealDimensions = {
     buyer: 'QXO',
@@ -279,8 +324,18 @@ async function buildCandidate() {
     servingNamespaceId,
     dealDimensions,
   });
+  const actionsServing = includesActions() ? buildQxoNoShopActionsServingSlice({
+    sourceContext,
+    sourceAdmission: graph.source_admission_manifest,
+    slice: actionsSlice,
+    contractBundle,
+    corpusReleaseId,
+    servingNamespaceId,
+    dealDimensions,
+  }) : null;
   if (capitalisationServing.release_readiness.status !== 'READY_FOR_CANDIDATE_RELEASE'
-    || noShopServing.release_readiness.status !== 'READY_FOR_CANDIDATE_RELEASE') {
+    || noShopServing.release_readiness.status !== 'READY_FOR_CANDIDATE_RELEASE'
+    || (actionsServing && actionsServing.release_readiness.status !== 'READY_FOR_CANDIDATE_RELEASE')) {
     throw new Error('The QXO combined serving slices are not release-ready.');
   }
   currentStage = 'SELECT_CORRECTION_AUTHORITY';
@@ -296,25 +351,29 @@ async function buildCandidate() {
     members: [
       ...capitalisationServing.candidate_release_members,
       ...noShopServing.candidate_release_members,
+      ...(actionsServing?.candidate_release_members || []),
     ],
     correction_authority_selection: authoritySelection,
     deal_directory_entries: [{ application_deal_id: APPLICATION_DEAL_ID, governed_deal_key: DEAL_KEY }],
   });
   currentStage = 'VALIDATE_CANDIDATE_RELEASE';
   validateCandidateReleaseBundle(release);
-  if (
-    release.manifest.corpus_release_id !== EXPECTED_CORPUS_RELEASE_ID
-    || release.manifest.candidate_release_manifest_id !== EXPECTED_CANDIDATE_MANIFEST_ID
-    || release.manifest.serving_namespace_id !== EXPECTED_SERVING_NAMESPACE_ID
-  ) throw new Error('QXO combined candidate release identity has drifted.');
+  const expected = releaseConfig();
+  if (expected.corpusReleaseId !== null && (
+    release.manifest.corpus_release_id !== expected.corpusReleaseId
+    || release.manifest.candidate_release_manifest_id !== expected.candidateManifestId
+    || release.manifest.serving_namespace_id !== expected.servingNamespaceId
+  )) throw new Error('QXO combined candidate release identity has drifted.');
   return {
     contractBundle,
     graph,
     sourceContext,
     capitalisationSlice,
     noShopSlice,
+    actionsSlice,
     capitalisationServing,
     noShopServing,
+    actionsServing,
     authoritySelection,
     release,
   };
@@ -379,18 +438,25 @@ async function recheck(authoritySelection) {
 }
 
 function attestation(candidate, mode, rollbackRehearsed = false) {
+  const actionClosures = includesActions() ? [ACTIONS_CLOSURE_ID] : [];
+  const actionMappings = includesActions()
+    ? [candidate.actionsSlice.reviewed_mapping.reviewed_mapping_id]
+    : [];
   return {
-    schema_version: 'QXO_COMBINED_CANDIDATE_STAGING_ATTESTATION/V1',
+    schema_version: includesActions()
+      ? 'QXO_COMBINED_ACTIONS_CANDIDATE_STAGING_ATTESTATION/V1'
+      : 'QXO_COMBINED_CANDIDATE_STAGING_ATTESTATION/V1',
     environment: 'staging',
     mode,
     corpus_release_id: candidate.release.manifest.corpus_release_id,
     candidate_release_manifest_id: candidate.release.manifest.candidate_release_manifest_id,
     serving_namespace_id: candidate.release.manifest.serving_namespace_id,
     source_admission_manifest_id: candidate.sourceContext.source_admission_manifest_id,
-    semantic_closure_ids: [CAPITALISATION_CLOSURE_ID, NO_SHOP_CLOSURE_ID].sort(),
+    semantic_closure_ids: [CAPITALISATION_CLOSURE_ID, NO_SHOP_CLOSURE_ID, ...actionClosures].sort(),
     reviewed_mapping_ids: [
       candidate.capitalisationSlice.reviewed_mapping.reviewed_mapping_id,
       candidate.noShopSlice.reviewed_mapping.reviewed_mapping_id,
+      ...actionMappings,
     ].sort(),
     observations: candidate.release.market_observations.length,
     exclusions: candidate.release.market_exclusions.length,
@@ -402,19 +468,32 @@ function attestation(candidate, mode, rollbackRehearsed = false) {
 }
 
 const mode = process.argv[2];
-if (!['--dry-run', '--import', '--verify', '--rehearse-rollback'].includes(mode) || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-combined-candidate.mjs --dry-run|--import|--verify|--rehearse-rollback');
+const invocation = Object.freeze({
+  '--dry-run': 'DRY_RUN',
+  '--import': 'IMPORT',
+  '--verify': 'VERIFY',
+  '--rehearse-rollback': 'REHEARSE_ROLLBACK',
+  '--actions-dry-run': 'DRY_RUN',
+  '--actions-import': 'IMPORT',
+  '--actions-verify': 'VERIFY',
+  '--actions-rehearse-rollback': 'REHEARSE_ROLLBACK',
+});
+if (!invocation[mode] || process.argv.length !== 3) {
+  fail('Usage: node scripts/canonical-v2-staging-qxo-combined-candidate.mjs --dry-run|--import|--verify|--rehearse-rollback|--actions-dry-run|--actions-import|--actions-verify|--actions-rehearse-rollback');
 }
 
 try {
   currentStage = 'GUARD_PROJECT';
   guardProject();
+  if (releaseConfig().corpusReleaseId === null && invocation[mode] !== 'DRY_RUN') {
+    throw new Error('The combined action candidate identities must be pinned before staging mutation.');
+  }
   const candidate = await buildCandidate();
   currentStage = 'READ_CANDIDATE_STATE';
   const before = readCandidateState(candidate.release);
-  if (mode === '--verify') {
+  if (invocation[mode] === 'VERIFY') {
     assertImported(before, candidate.release);
-  } else if (mode === '--rehearse-rollback') {
+  } else if (invocation[mode] === 'REHEARSE_ROLLBACK') {
     assertImported(before, candidate.release);
     currentStage = 'ROLLBACK_IMPORTED_CANDIDATE';
     await rollbackInactiveCandidateRelease({ client: sqlRpcClient({ commit: true }), release: candidate.release });
@@ -444,7 +523,7 @@ try {
     if (canonicalJson(before) !== canonicalJson(afterRollback)) {
       throw new Error('Rollback-first QXO combined candidate import changed staging state.');
     }
-    if (mode === '--import') {
+    if (invocation[mode] === 'IMPORT') {
       currentStage = 'RECHECK_AUTHORITY_FOR_IMPORT';
       await recheck(candidate.authoritySelection);
       currentStage = 'IMPORT_CANDIDATE';
@@ -459,14 +538,14 @@ try {
   }
   process.stdout.write(`${canonicalJson(attestation(
     candidate,
-    mode === '--import'
+    invocation[mode] === 'IMPORT'
       ? 'IMPORTED_INACTIVE'
-      : mode === '--verify'
+      : invocation[mode] === 'VERIFY'
         ? 'VERIFIED_INACTIVE'
-        : mode === '--rehearse-rollback'
+        : invocation[mode] === 'REHEARSE_ROLLBACK'
           ? 'ROLLED_BACK_AND_REIMPORTED'
           : 'ROLLED_BACK',
-    mode === '--rehearse-rollback',
+    invocation[mode] === 'REHEARSE_ROLLBACK',
   ))}\n`);
 } catch (error) {
   fail(error instanceof Error
