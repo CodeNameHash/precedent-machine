@@ -4,7 +4,11 @@ const fs = require('node:fs');
 
 const { canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
 const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
-const { buildFixtureClaimEvidenceDetailPackage, validateFixtureExactDetailPackage } = require('../lib/canonical-v2/exact-detail');
+const {
+  buildFixtureClaimEvidenceDetailPackage,
+  buildFixtureResultCompositionDetailPackage,
+  validateFixtureExactDetailPackage,
+} = require('../lib/canonical-v2/exact-detail');
 const {
   InMemoryCanonicalRepository,
   createCanonicalWriter,
@@ -150,6 +154,87 @@ test('the real claim produces a comparable market observation, shared row and ex
     excerpt: slice.excerpts.accuracy_standard,
     claim: slice.accuracyClaim,
   }), true);
+});
+
+test('one bounded detail action closes over every representation component and the non-contiguous bring-down evidence', () => {
+  const slice = build();
+  const serving = buildReviewedCapitalisationServingRow({ slice, contractBundle });
+  const components = [
+    { component: slice.result, claim: slice.accuracyClaim, relationships: [slice.relationship] },
+    ...slice.contextComponents,
+  ];
+  const excerpts = Object.values(slice.excerpts).sort((left, right) => (
+    left.absolute_start - right.absolute_start
+      || left.absolute_end - right.absolute_end
+      || left.excerpt_id.localeCompare(right.excerpt_id)
+  ));
+  const detail = buildFixtureResultCompositionDetailPackage({
+    contract_bundle: contractBundle,
+    row: serving.row,
+    source: slice.source,
+    source_admission: slice.sourceAdmission,
+    components,
+    relationship_targets: slice.representationComponents,
+    excerpts,
+  });
+  const payload = detail.detail_payloads[0];
+  const body = payload.response_body;
+  assert.equal(detail.row.source_actions[0].action_slot_key, 'RESULT_COMPOSITION_EVIDENCE');
+  assert.equal(payload.encoded_byte_length <= detail.action_definitions[0].maximum_encoded_bytes, true);
+  assert.deepEqual(body.components.map((component) => ({
+    slot: component.component_slot_key,
+    state: component.claim.state,
+    evidence: component.claim.evidence_references.length,
+    scope: component.claim.scope_excerpt_ids.length,
+  })), [
+    { slot: 'ACCURACY_TIER_A', state: 'PRESENT', evidence: 1, scope: 0 },
+    { slot: 'ACCURACY_EXCEPTION', state: 'PRESENT', evidence: 1, scope: 0 },
+    { slot: 'KNOWLEDGE_QUALIFIER_1', state: 'ABSENT', evidence: 0, scope: 1 },
+    { slot: 'KNOWLEDGE_QUALIFIER_2', state: 'ABSENT', evidence: 0, scope: 1 },
+  ]);
+  assert.equal(body.relationships.length, 1);
+  assert.equal(body.relationships[0].relationship_definition_key, 'BRINGS_DOWN');
+  assert.deepEqual(
+    body.relationships[0].target_occurrence_ids,
+    slice.representationComponents.map((component) => component.provision_component_id),
+  );
+  assert.deepEqual(body.relationships[0].effect, slice.relationship.effect);
+  assert.deepEqual(
+    body.relationships[0].evidence_references.map((edge) => edge.excerpt_id),
+    slice.relationship.evidence.map((edge) => edge.excerpt_id),
+  );
+  assert.equal(body.excerpts.length, 5);
+  assert.ok(body.excerpts.some((excerpt) => excerpt.excerpt_id === slice.excerpts.rep_a.excerpt_id));
+  assert.ok(body.excerpts.some((excerpt) => excerpt.excerpt_id === slice.excerpts.rep_c_first_sentence.excerpt_id));
+  assert.ok(body.excerpts.some((excerpt) => excerpt.excerpt_id === slice.excerpts.condition_tier.excerpt_id));
+  assert.equal(validateFixtureExactDetailPackage({
+    package: detail,
+    contract_bundle: contractBundle,
+    source: slice.source,
+    source_admission: slice.sourceAdmission,
+    components,
+    relationship_targets: slice.representationComponents,
+    excerpts,
+  }), true);
+
+  assert.throws(() => buildFixtureResultCompositionDetailPackage({
+    contract_bundle: contractBundle,
+    row: serving.row,
+    source: slice.source,
+    source_admission: slice.sourceAdmission,
+    components,
+    relationship_targets: [...slice.representationComponents].reverse(),
+    excerpts,
+  }), /governed order/);
+  assert.throws(() => buildFixtureResultCompositionDetailPackage({
+    contract_bundle: contractBundle,
+    row: serving.row,
+    source: slice.source,
+    source_admission: slice.sourceAdmission,
+    components,
+    relationship_targets: slice.representationComponents,
+    excerpts: excerpts.filter((excerpt) => excerpt.excerpt_id !== slice.excerpts.rep_c_first_sentence.excerpt_id),
+  }), /excerpt closure/);
 });
 
 test('component order, identities and scoped absence fail closed independently of the market subject', () => {

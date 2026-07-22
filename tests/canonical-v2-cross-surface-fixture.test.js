@@ -35,10 +35,9 @@ test('the real reviewed preview fixture binds the same complete market row to al
   assert.equal(metric.distribution.denominatorCount, 1);
   assert.equal(metric.exclusions.length, 0);
   assert.equal(fixture.row.source_actions.length, 1);
-  assert.equal(
-    fixture.exactDetail.detail_payloads[0].response_body.excerpt.exact_text,
-    'true and correct except for de minimis inaccuracies',
-  );
+  assert.ok(fixture.exactDetail.detail_payloads[0].response_body.excerpts.some((excerpt) => (
+    excerpt.exact_text === 'true and correct except for de minimis inaccuracies'
+  )));
   assert.doesNotMatch(JSON.stringify(adapted), /No market data/);
 });
 

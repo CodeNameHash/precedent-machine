@@ -147,7 +147,7 @@ test('cross-deal exact-detail substitution and incomplete directory coverage fai
     members: crossedMembers,
     source_specific_members: fixture.sourceSpecificMembers,
     deal_directory_entries: fixture.dealDirectoryEntries,
-  }), /closed atomic graph|not the same release member/);
+  }), /fields do not match|closed atomic graph|not the same release member/);
 
   assert.throws(() => buildFixtureCandidateRelease({
     contract_bundle: fixture.contract,

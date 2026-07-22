@@ -2,7 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { compileFixtureContract } = require('../../lib/canonical-v2/contract-bundle');
-const { buildFixtureClaimEvidenceDetailPackage } = require('../../lib/canonical-v2/exact-detail');
+const { buildFixtureResultCompositionDetailPackage } = require('../../lib/canonical-v2/exact-detail');
 const {
   buildReviewedCapitalisationServingRow,
   buildReviewedCapitalisationSlice,
@@ -23,19 +23,35 @@ function buildLandosReviewedServingFixture({
     corpusReleaseId,
   });
   const serving = buildReviewedCapitalisationServingRow({ slice, contractBundle: contract });
-  const exactDetail = buildFixtureClaimEvidenceDetailPackage({
+  const compositionComponents = [
+    {
+      component: slice.result,
+      claim: slice.accuracyClaim,
+      relationships: [slice.relationship],
+    },
+    ...slice.contextComponents,
+  ];
+  const exactDetailExcerpts = Object.values(slice.excerpts).sort((left, right) => (
+    left.absolute_start - right.absolute_start
+      || left.absolute_end - right.absolute_end
+      || left.excerpt_id.localeCompare(right.excerpt_id)
+  ));
+  const exactDetail = buildFixtureResultCompositionDetailPackage({
     contract_bundle: contract,
     row: serving.row,
     source: slice.source,
     source_admission: slice.sourceAdmission,
-    excerpt: slice.excerpts.accuracy_standard,
-    claim: slice.accuracyClaim,
+    components: compositionComponents,
+    relationship_targets: slice.representationComponents,
+    excerpts: exactDetailExcerpts,
   });
   return Object.freeze({
     ...slice,
     ...serving,
     contract,
+    compositionComponents: Object.freeze(compositionComponents),
     exactDetail,
+    exactDetailExcerpts: Object.freeze(exactDetailExcerpts),
     row: exactDetail.row,
   });
 }

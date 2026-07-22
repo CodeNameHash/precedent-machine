@@ -43,7 +43,11 @@ function requestAndResult() {
 test('exact-detail response closes over one immutable release, row and source action', () => {
   const { request, result } = requestAndResult();
   assert.equal(validateServingExactDetailResult(result, request), result);
-  assert.ok(result.package.detail_payloads[0].response_body.excerpt.exact_text);
+  const body = result.package.detail_payloads[0].response_body;
+  assert.equal(body.detail_kind, 'RESULT_COMPOSITION_EVIDENCE');
+  assert.equal(body.components.length, 4);
+  assert.equal(body.relationships[0].relationship_definition_key, 'BRINGS_DOWN');
+  assert.ok(body.excerpts.every((excerpt) => excerpt.exact_text));
 });
 
 test('exact-detail read is one bounded RPC with no retry', async () => {

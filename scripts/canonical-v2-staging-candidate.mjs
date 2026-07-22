@@ -27,11 +27,11 @@ const EXPECTED_PROJECT = Object.freeze({
   name: 'deal-corpus-canonical-v2-staging',
 });
 const EXPECTED_CANDIDATE = Object.freeze({
-  contract_fingerprint: '7a869d03bbfd0adc9992f61b2c579fb6d82506755bcf4e8d5116442c4462aa50',
-  corpus_release_id: '87ca3f3cd4122d61bcc1c4d4fc2de856de07f99b09f093c6b5f7106dcd0bcc2d',
-  candidate_manifest_id: '651dd66a9372a0720a4e464b93cbc3286520f9a5c84dac696a639149a946822d',
+  contract_fingerprint: '56da82bee06331793ba2ed8b78ef4186361407e60733595091e5951853e7d41d',
+  corpus_release_id: '1f27637eb0399f35c4e9208a6d4ff5417b8ac18f266d659e0e8bcfafd2e581dd',
+  candidate_manifest_id: '942983b4d81894efaaad6d01cb88f994224c5ddf6c0e539985151eef59cf6a00',
   serving_namespace_id: '9270602408312e80a65c0ce46b895fa2c8f07d1c676aef5bd171029edd209b68',
-  import_plan_id: '1af2c5fd06e62d901ef25b33e33c90e27b9e8a137e1bd7480b79712e318eeee6',
+  import_plan_id: '8d65813b127cd4abc7004e9f9c6cd154c9b5f7b94abcd6adbea85d35b5340eca',
 });
 const EXPECTED_COUNTS = Object.freeze({
   deal_directory_records: 2,
@@ -45,24 +45,24 @@ const EXPECTED_COUNTS = Object.freeze({
 const EXPECTED_PRIOR_POINTER = Object.freeze({
   schema_version: 'FIXTURE_ACTIVE_RELEASE_POINTER/V1',
   environment: 'staging',
-  generation: 3,
-  corpus_release_id: 'c742c053756c5f4591a414e52e176eb1018d7dafb0d82b134f5d00047ea37463',
+  generation: 4,
+  corpus_release_id: '87ca3f3cd4122d61bcc1c4d4fc2de856de07f99b09f093c6b5f7106dcd0bcc2d',
   serving_namespace_id: '9270602408312e80a65c0ce46b895fa2c8f07d1c676aef5bd171029edd209b68',
-  candidate_release_manifest_id: 'bc113b3d44438c650236fa9c30ff5bd4af49c428c6486bfb28f6cadf32d92463',
-  previous_pointer_id: 'ac09fb72eb306394c8bbcaec978fb827229e279aa5490a80de01c9491146628a',
-  pointer_id: '1e58cc335c0dbc4bd09ef47af623a7f867d18a47ecc9fb8898d921dc15c2aa6e',
-  canonical_payload_digest: '36f4cc0c88787fcfc07dc6d51e4f2e11230f9990f0d3c980111d4c0c29d5a8e2',
+  candidate_release_manifest_id: '651dd66a9372a0720a4e464b93cbc3286520f9a5c84dac696a639149a946822d',
+  previous_pointer_id: '1e58cc335c0dbc4bd09ef47af623a7f867d18a47ecc9fb8898d921dc15c2aa6e',
+  pointer_id: '736be39f3bff400ce3d694eaa89ee12b925c5251eac9ca1d275482191179d6fd',
+  canonical_payload_digest: '3d2224d555a49b36d160dec652a8e65230001b84b44fb6e18c35a61acd84eb2b',
 });
 const EXPECTED_ACTIVE_POINTER = Object.freeze({
   schema_version: 'FIXTURE_ACTIVE_RELEASE_POINTER/V1',
   environment: 'staging',
-  generation: 4,
+  generation: 5,
   corpus_release_id: EXPECTED_CANDIDATE.corpus_release_id,
   serving_namespace_id: EXPECTED_CANDIDATE.serving_namespace_id,
   candidate_release_manifest_id: EXPECTED_CANDIDATE.candidate_manifest_id,
   previous_pointer_id: EXPECTED_PRIOR_POINTER.pointer_id,
-  pointer_id: '736be39f3bff400ce3d694eaa89ee12b925c5251eac9ca1d275482191179d6fd',
-  canonical_payload_digest: '3d2224d555a49b36d160dec652a8e65230001b84b44fb6e18c35a61acd84eb2b',
+  pointer_id: '4c5919a74ec9c4c3d6e0e50e985f8f36ccfe6e8f39d47bd5d56f8f093705c6d5',
+  canonical_payload_digest: '8b7ec7f40ec0a9ad296888f3211dd0b952a280da9613d5b01e29dc07c5c6828f',
 });
 
 function fail(message) {
