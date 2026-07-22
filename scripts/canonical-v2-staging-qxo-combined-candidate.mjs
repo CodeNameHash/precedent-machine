@@ -17,9 +17,11 @@ const { canonicalJson, contentId } = require('../lib/canonical-v2/canonical-byte
 const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
 const { buildQxoCapitalisationServingSlice } = require('../lib/canonical-v2/qxo-capitalisation-serving-slice');
 const { buildQxoNoShopActionsServingSlice } = require('../lib/canonical-v2/qxo-no-shop-actions-serving-slice');
+const { buildQxoNoShopRematchServingSlice } = require('../lib/canonical-v2/qxo-no-shop-rematch-serving-slice');
 const { buildQxoNoShopServingSlice } = require('../lib/canonical-v2/qxo-no-shop-serving-slice');
 const { buildQxoReviewedCapitalisationSlice } = require('../lib/canonical-v2/reviewed-qxo-capitalisation-slice');
 const { buildQxoAdmittedNoShopActionsSlice } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
+const { buildQxoAdmittedNoShopRematchSlice } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-rematch-slice');
 const { buildQxoAdmittedNoShopNoticeSlice } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-slice');
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -31,6 +33,7 @@ const DEAL_ADMISSION_ID = '62b8b828c534273c68dcd48cec3fbbcb4f912ac3f477dbdc377de
 const CAPITALISATION_CLOSURE_ID = 'cbb678180ec9951f12741a77a58f7ec03a6bebffbdc6e5d9fbea6add9beea596';
 const NO_SHOP_CLOSURE_ID = '944c18cb24c5684c04eb3d2c9cae57f932c144790492bc1619ccd566d57a8a3e';
 const ACTIONS_CLOSURE_ID = '89683e5ff72a570948bfadda123254719d848310b5c50ad3720645e2cbd6291b';
+const REMATCH_CLOSURE_ID = 'dd232aa8077fd0d4158cd19c7fa5e8b439fceb8d97b578682c41936889808af8';
 const RELEASE_CONFIGS = Object.freeze({
   BASE: Object.freeze({
     corpusReleaseId: 'fa2aa0154c5f0024b088fc5fcf7281adb56cbac12d0d48438fefa1765b83dd36',
@@ -42,15 +45,25 @@ const RELEASE_CONFIGS = Object.freeze({
     candidateManifestId: 'db29af6e548def369bee9c2fbe2be16959078f9461746caa1854f4eeceaea43c',
     servingNamespaceId: '3ab6ca118c32bad5d5e9ce662a7c3f7cc06cddda03b7c717cccd6ed9dfa10a65',
   }),
+  REMATCH: Object.freeze({
+    corpusReleaseId: 'd9157984ee4948046c3cf7d3195cb0136502cdf739fc24dfd05d0ae7c60f1f5a',
+    candidateManifestId: 'a9cbb8810053d13ad76efcffc769ddf83ed22d1cb446493967f281489182d0b2',
+    servingNamespaceId: 'efa8f7c2643448ad9380a4a16556d76f09879809c1d21e49f479e8cf070f204d',
+  }),
 });
 const MAX_GRAPH_READ_BYTES = 4 * 1024 * 1024;
 let currentStage = 'STARTUP';
 
 function includesActions() {
-  return mode.startsWith('--actions-');
+  return mode.startsWith('--actions-') || mode.startsWith('--rematch-');
+}
+
+function includesRematch() {
+  return mode.startsWith('--rematch-');
 }
 
 function releaseConfig() {
+  if (includesRematch()) return RELEASE_CONFIGS.REMATCH;
   return includesActions() ? RELEASE_CONFIGS.ACTIONS : RELEASE_CONFIGS.BASE;
 }
 
@@ -185,6 +198,15 @@ function readGraph() {
     'receipt', (SELECT canonical_payload FROM canonical_v2_staging.write_receipts
       WHERE operation='DEAL_SCOPE_RUN' AND idempotency_key='QXO_NO_SHOP_ACTIONS_DEAL_SCOPE_V1')
   ),
+  'rematch', jsonb_build_object(
+    'excerpts', ${graphCollection(REMATCH_CLOSURE_ID, 'excerpts', 'excerpt_id')},
+    'provisions', ${graphCollection(REMATCH_CLOSURE_ID, 'provision_instances', 'provision_instance_id')},
+    'components', ${graphCollection(REMATCH_CLOSURE_ID, 'provision_components', 'provision_component_id')},
+    'claims', ${graphCollection(REMATCH_CLOSURE_ID, 'claim_revisions', 'claim_revision_id')},
+    'relationships', ${graphCollection(REMATCH_CLOSURE_ID, 'relationship_revisions', 'relationship_revision_id')},
+    'receipt', (SELECT canonical_payload FROM canonical_v2_staging.write_receipts
+      WHERE operation='DEAL_SCOPE_RUN' AND idempotency_key='QXO_NO_SHOP_REMATCH_DEAL_SCOPE_V1')
+  ),
   'active_pointer', (SELECT canonical_payload FROM canonical_v2_staging.active_corpus_release_pointers
     WHERE environment='staging')
 ) AS graph
@@ -228,29 +250,41 @@ function assertFamilyParity({ graph, slice, closureId, label }) {
   }
 }
 
-function releaseIds({ contractBundle, capitalisationSlice, noShopSlice, actionsSlice }) {
+function releaseIds({ contractBundle, capitalisationSlice, noShopSlice, actionsSlice, rematchSlice }) {
   const actionMappings = includesActions() ? [actionsSlice.reviewed_mapping.reviewed_mapping_id] : [];
   const actionClosures = includesActions() ? [ACTIONS_CLOSURE_ID] : [];
+  const rematchMappings = includesRematch() ? [rematchSlice.reviewed_mapping.reviewed_mapping_id] : [];
+  const rematchClosures = includesRematch() ? [REMATCH_CLOSURE_ID] : [];
   const seed = {
-    schema_version: includesActions()
-      ? 'QXO_COMBINED_ACTIONS_CANDIDATE_SEED/V1'
-      : 'QXO_COMBINED_CANDIDATE_SEED/V1',
+    schema_version: includesRematch()
+      ? 'QXO_COMBINED_REMATCH_CANDIDATE_SEED/V1'
+      : includesActions()
+        ? 'QXO_COMBINED_ACTIONS_CANDIDATE_SEED/V1'
+        : 'QXO_COMBINED_CANDIDATE_SEED/V1',
     contract_fingerprint: contractBundle.fingerprint,
     source_admission_manifest_id: SOURCE_ADMISSION_ID,
-    semantic_closure_ids: [CAPITALISATION_CLOSURE_ID, NO_SHOP_CLOSURE_ID, ...actionClosures].sort(),
+    semantic_closure_ids: [
+      CAPITALISATION_CLOSURE_ID,
+      NO_SHOP_CLOSURE_ID,
+      ...actionClosures,
+      ...rematchClosures,
+    ].sort(),
     reviewed_mapping_ids: [
       capitalisationSlice.reviewed_mapping.reviewed_mapping_id,
       noShopSlice.reviewed_mapping.reviewed_mapping_id,
       ...actionMappings,
+      ...rematchMappings,
     ].sort(),
     tier_c_policy: 'EXPLICIT_RESULT_NOT_COMPARABLE_PENDING_FREEZE_GATE',
   };
   return {
     corpusReleaseId: contentId('CORPUS_RELEASE/V1', seed),
     servingNamespaceId: contentId('SERVING_NAMESPACE/V1', {
-      schema_version: includesActions()
-        ? 'QXO_COMBINED_ACTIONS_SERVING_NAMESPACE/V1'
-        : 'QXO_COMBINED_SERVING_NAMESPACE/V1',
+      schema_version: includesRematch()
+        ? 'QXO_COMBINED_REMATCH_SERVING_NAMESPACE/V1'
+        : includesActions()
+          ? 'QXO_COMBINED_ACTIONS_SERVING_NAMESPACE/V1'
+          : 'QXO_COMBINED_SERVING_NAMESPACE/V1',
       contract_fingerprint: contractBundle.fingerprint,
       governed_deal_key: DEAL_KEY,
       reviewed_mapping_ids: seed.reviewed_mapping_ids,
@@ -283,11 +317,15 @@ async function buildCandidate() {
   const capitalisationSlice = buildQxoReviewedCapitalisationSlice({ sourceContext, contractBundle });
   const noShopSlice = buildQxoAdmittedNoShopNoticeSlice({ sourceContext, contractBundle });
   const actionsSlice = buildQxoAdmittedNoShopActionsSlice({ sourceContext, contractBundle });
+  const rematchSlice = buildQxoAdmittedNoShopRematchSlice({ sourceContext, contractBundle });
   currentStage = 'VERIFY_GRAPH_PARITY';
   assertFamilyParity({ graph: graph.capitalisation, slice: capitalisationSlice, closureId: CAPITALISATION_CLOSURE_ID, label: 'capitalisation' });
   assertFamilyParity({ graph: graph.no_shop, slice: noShopSlice, closureId: NO_SHOP_CLOSURE_ID, label: 'no-shop' });
   if (includesActions()) {
     assertFamilyParity({ graph: graph.actions, slice: actionsSlice, closureId: ACTIONS_CLOSURE_ID, label: 'no-shop actions' });
+  }
+  if (includesRematch()) {
+    assertFamilyParity({ graph: graph.rematch, slice: rematchSlice, closureId: REMATCH_CLOSURE_ID, label: 'no-shop subsequent match' });
   }
   currentStage = 'BUILD_RELEASE_IDENTITIES';
   const { corpusReleaseId, servingNamespaceId } = releaseIds({
@@ -295,6 +333,7 @@ async function buildCandidate() {
     capitalisationSlice,
     noShopSlice,
     actionsSlice,
+    rematchSlice,
   });
   currentStage = 'BUILD_SERVING_SLICES';
   const dealDimensions = {
@@ -333,9 +372,19 @@ async function buildCandidate() {
     servingNamespaceId,
     dealDimensions,
   }) : null;
+  const rematchServing = includesRematch() ? buildQxoNoShopRematchServingSlice({
+    sourceContext,
+    sourceAdmission: graph.source_admission_manifest,
+    slice: rematchSlice,
+    contractBundle,
+    corpusReleaseId,
+    servingNamespaceId,
+    dealDimensions,
+  }) : null;
   if (capitalisationServing.release_readiness.status !== 'READY_FOR_CANDIDATE_RELEASE'
     || noShopServing.release_readiness.status !== 'READY_FOR_CANDIDATE_RELEASE'
-    || (actionsServing && actionsServing.release_readiness.status !== 'READY_FOR_CANDIDATE_RELEASE')) {
+    || (actionsServing && actionsServing.release_readiness.status !== 'READY_FOR_CANDIDATE_RELEASE')
+    || (rematchServing && rematchServing.release_readiness.status !== 'READY_FOR_CANDIDATE_RELEASE')) {
     throw new Error('The QXO combined serving slices are not release-ready.');
   }
   currentStage = 'SELECT_CORRECTION_AUTHORITY';
@@ -352,6 +401,7 @@ async function buildCandidate() {
       ...capitalisationServing.candidate_release_members,
       ...noShopServing.candidate_release_members,
       ...(actionsServing?.candidate_release_members || []),
+      ...(rematchServing?.candidate_release_members || []),
     ],
     correction_authority_selection: authoritySelection,
     deal_directory_entries: [{ application_deal_id: APPLICATION_DEAL_ID, governed_deal_key: DEAL_KEY }],
@@ -371,9 +421,11 @@ async function buildCandidate() {
     capitalisationSlice,
     noShopSlice,
     actionsSlice,
+    rematchSlice,
     capitalisationServing,
     noShopServing,
     actionsServing,
+    rematchServing,
     authoritySelection,
     release,
   };
@@ -442,21 +494,33 @@ function attestation(candidate, mode, rollbackRehearsed = false) {
   const actionMappings = includesActions()
     ? [candidate.actionsSlice.reviewed_mapping.reviewed_mapping_id]
     : [];
+  const rematchClosures = includesRematch() ? [REMATCH_CLOSURE_ID] : [];
+  const rematchMappings = includesRematch()
+    ? [candidate.rematchSlice.reviewed_mapping.reviewed_mapping_id]
+    : [];
   return {
-    schema_version: includesActions()
-      ? 'QXO_COMBINED_ACTIONS_CANDIDATE_STAGING_ATTESTATION/V1'
-      : 'QXO_COMBINED_CANDIDATE_STAGING_ATTESTATION/V1',
+    schema_version: includesRematch()
+      ? 'QXO_COMBINED_REMATCH_CANDIDATE_STAGING_ATTESTATION/V1'
+      : includesActions()
+        ? 'QXO_COMBINED_ACTIONS_CANDIDATE_STAGING_ATTESTATION/V1'
+        : 'QXO_COMBINED_CANDIDATE_STAGING_ATTESTATION/V1',
     environment: 'staging',
     mode,
     corpus_release_id: candidate.release.manifest.corpus_release_id,
     candidate_release_manifest_id: candidate.release.manifest.candidate_release_manifest_id,
     serving_namespace_id: candidate.release.manifest.serving_namespace_id,
     source_admission_manifest_id: candidate.sourceContext.source_admission_manifest_id,
-    semantic_closure_ids: [CAPITALISATION_CLOSURE_ID, NO_SHOP_CLOSURE_ID, ...actionClosures].sort(),
+    semantic_closure_ids: [
+      CAPITALISATION_CLOSURE_ID,
+      NO_SHOP_CLOSURE_ID,
+      ...actionClosures,
+      ...rematchClosures,
+    ].sort(),
     reviewed_mapping_ids: [
       candidate.capitalisationSlice.reviewed_mapping.reviewed_mapping_id,
       candidate.noShopSlice.reviewed_mapping.reviewed_mapping_id,
       ...actionMappings,
+      ...rematchMappings,
     ].sort(),
     observations: candidate.release.market_observations.length,
     exclusions: candidate.release.market_exclusions.length,
@@ -477,16 +541,20 @@ const invocation = Object.freeze({
   '--actions-import': 'IMPORT',
   '--actions-verify': 'VERIFY',
   '--actions-rehearse-rollback': 'REHEARSE_ROLLBACK',
+  '--rematch-dry-run': 'DRY_RUN',
+  '--rematch-import': 'IMPORT',
+  '--rematch-verify': 'VERIFY',
+  '--rematch-rehearse-rollback': 'REHEARSE_ROLLBACK',
 });
 if (!invocation[mode] || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-combined-candidate.mjs --dry-run|--import|--verify|--rehearse-rollback|--actions-dry-run|--actions-import|--actions-verify|--actions-rehearse-rollback');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-combined-candidate.mjs --dry-run|--import|--verify|--rehearse-rollback|--actions-dry-run|--actions-import|--actions-verify|--actions-rehearse-rollback|--rematch-dry-run|--rematch-import|--rematch-verify|--rematch-rehearse-rollback');
 }
 
 try {
   currentStage = 'GUARD_PROJECT';
   guardProject();
   if (releaseConfig().corpusReleaseId === null && invocation[mode] !== 'DRY_RUN') {
-    throw new Error('The combined action candidate identities must be pinned before staging mutation.');
+    throw new Error('The combined candidate identities must be pinned before staging mutation.');
   }
   const candidate = await buildCandidate();
   currentStage = 'READ_CANDIDATE_STATE';

@@ -52,8 +52,19 @@ test('QXO no-shop action serving verifier pins all four terms and their exact ev
 
 test('QXO no-shop action serving verifier proves one bounded set-based market read', () => {
   const source = fs.readFileSync(RUNNER, 'utf8');
-  assert.match(source, /p_page_size => \$\{ACTION_MODE \? 4 : 2\}/);
+  assert.match(source, /p_page_size => \$\{ACTION_MODE \? 4 : REMATCH_MODE \? 1 : 2\}/);
   assert.match(source, /inventory\.counts\.observation_slots !== ACTION_SPECS\.length/);
   assert.match(source, /rpc_calls: 8/);
   assert.match(source, /candidate_remains_inactive: true/);
+});
+
+test('QXO no-shop rematch serving verifier preserves the four-business-day amendment trigger', () => {
+  const source = fs.readFileSync(RUNNER, 'utf8');
+  assert.match(source, /--rematch-verify/);
+  assert.match(source, /d9157984ee4948046c3cf7d3195cb0136502cdf739fc24dfd05d0ae7c60f1f5a/);
+  assert.match(source, /NO_SHOP_SUBSEQUENT_MATCH_PERIOD_DAYS/);
+  assert.match(source, /DAYS:BUSINESS:MATERIAL_AMENDMENT_TO_SUPERIOR_PROPOSAL/);
+  assert.match(source, /a new four \(4\) business day notice period/);
+  assert.match(source, /subsequent_match_business_days/);
+  assert.match(source, /rpc_calls: 5/);
 });

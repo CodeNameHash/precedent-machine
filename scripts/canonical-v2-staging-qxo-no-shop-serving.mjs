@@ -19,6 +19,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PROJECT = Object.freeze({ ref: 'sjumbznveyyiizhwvixj', name: 'deal-corpus-canonical-v2-staging' });
 const MODE = process.argv[2];
 const ACTION_MODE = MODE === '--actions-verify';
+const REMATCH_MODE = MODE === '--rematch-verify';
 const BASE_CANDIDATE = Object.freeze({
   corpus_release_id: 'fa2aa0154c5f0024b088fc5fcf7281adb56cbac12d0d48438fefa1765b83dd36',
   candidate_release_manifest_id: '620bcbba3b072f1a475989adad9e4ce708b4fce288fa59036e549dc82544b48d',
@@ -33,7 +34,17 @@ const ACTION_CANDIDATE = Object.freeze({
   candidate_release_manifest_id: 'db29af6e548def369bee9c2fbe2be16959078f9461746caa1854f4eeceaea43c',
   serving_namespace_id: '3ab6ca118c32bad5d5e9ce662a7c3f7cc06cddda03b7c717cccd6ed9dfa10a65',
 });
-const CANDIDATE = ACTION_MODE ? ACTION_CANDIDATE : BASE_CANDIDATE;
+const REMATCH_CANDIDATE = Object.freeze({
+  ...BASE_CANDIDATE,
+  corpus_release_id: 'd9157984ee4948046c3cf7d3195cb0136502cdf739fc24dfd05d0ae7c60f1f5a',
+  candidate_release_manifest_id: 'a9cbb8810053d13ad76efcffc769ddf83ed22d1cb446493967f281489182d0b2',
+  serving_namespace_id: 'efa8f7c2643448ad9380a4a16556d76f09879809c1d21e49f479e8cf070f204d',
+});
+const CANDIDATE = ACTION_MODE
+  ? ACTION_CANDIDATE
+  : REMATCH_MODE
+    ? REMATCH_CANDIDATE
+    : BASE_CANDIDATE;
 const NOTICE_SPECS = Object.freeze({
   notice: Object.freeze({
     metric_key: 'NO_SHOP_NOTICE_PERIOD_DAYS',
@@ -126,6 +137,20 @@ const ACTION_SPECS = Object.freeze([
     exception_operation: null,
   }),
 ]);
+const REMATCH_SPEC = Object.freeze({
+  metric_key: 'NO_SHOP_SUBSEQUENT_MATCH_PERIOD_DAYS',
+  concept_key: 'NOSOL-REMATCH',
+  basis_key: 'DAYS:BUSINESS:MATERIAL_AMENDMENT_TO_SUPERIOR_PROPOSAL',
+  party: Object.freeze({ role: 'RIGHT_HOLDER', value: 'PARENT', capacity: 'ACQUIRER' }),
+  row_serving_key: 'c57a62f804b1b4b46daced08ede88a5e0ce3022a03fee3ecf2e419840b791f24',
+  row_payload_digest: '9b078692fa1e2c30e4dde607eabef2ce6872813042ecad8990a66f557c425817',
+  source_detail_reference_id: 'ba93b9d154e8b84f398d58e9b4f2ac9df99df518ead09678b276ca84e2f1e3e6',
+  exact_detail_package_digest: '178ee1a488f4b7daa77503d7e7a2ca596fd2caf40b3b82cc2f0c279ac8412e38',
+  canonical_value: '4',
+  day_basis: 'BUSINESS',
+  clock_text: 'a new four (4) business day notice period',
+  expected_label: '4 business days',
+});
 const SPECS = NOTICE_SPECS;
 const MAX_RESULT_BYTES = 256 * 1024;
 
@@ -192,7 +217,7 @@ function querySql(spec, semanticsDigest) {
     p_party_value => '${spec.party.value}',
     p_party_capacity => '${spec.party.capacity}',
     p_basis_key => '${spec.basis_key}',
-    p_page_size => ${ACTION_MODE ? 4 : 2}
+    p_page_size => ${ACTION_MODE ? 4 : REMATCH_MODE ? 1 : 2}
   )`;
 }
 
@@ -219,6 +244,15 @@ function evidenceSql(requests, digests) {
     'action_subject', ${marketSql(requests.actionSubject)},
     'action_inventory', ${marketSql(requests.actionInventory)},
     ${detailFields.join(',\n    ')}
+  ) AS evidence;`;
+  }
+  if (REMATCH_MODE) {
+    return `SELECT jsonb_build_object(
+    'active_pointer', public.canonical_v2_active_release('staging'),
+    'rematch_query', ${querySql(REMATCH_SPEC, digests.rematch)},
+    'rematch_subject', ${marketSql(requests.rematchSubject)},
+    'rematch_inventory', ${marketSql(requests.rematchInventory)},
+    'rematch_detail', ${exactDetailSql(REMATCH_SPEC)}
   ) AS evidence;`;
   }
   return `SELECT jsonb_build_object(
@@ -511,6 +545,38 @@ function buildActionAttestation(evidence, requests, digests) {
   return { ...body, attestation_id: contentId('QXO_NO_SHOP_ACTIONS_INACTIVE_SERVING_ATTESTATION/V1', body) };
 }
 
+function buildRematchAttestation(evidence, requests, digests) {
+  assertActivePointer(evidence.active_pointer);
+  const row = assertQueryPage(REMATCH_SPEC, evidence.rematch_query, digests.rematch);
+  assertMarkets(
+    REMATCH_SPEC,
+    evidence.rematch_subject,
+    evidence.rematch_inventory,
+    row,
+    requests.rematchSubject,
+    requests.rematchInventory,
+  );
+  assertExactDetail(REMATCH_SPEC, evidence.rematch_detail, row);
+  const body = {
+    schema_version: 'QXO_NO_SHOP_REMATCH_INACTIVE_SERVING_ATTESTATION/V1',
+    environment: 'staging',
+    project_ref: PROJECT.ref,
+    corpus_release_id: CANDIDATE.corpus_release_id,
+    candidate_release_manifest_id: CANDIDATE.candidate_release_manifest_id,
+    serving_namespace_id: CANDIDATE.serving_namespace_id,
+    active_release_generation: evidence.active_pointer.generation,
+    active_pointer_unchanged: true,
+    candidate_remains_inactive: true,
+    rpc_calls: 5,
+    query_rows: evidence.rematch_query.page_count,
+    inventory_observations: evidence.rematch_inventory.counts.observation_slots,
+    exact_detail_packages: 1,
+    exact_detail_excerpts: evidence.rematch_detail.package.detail_payloads[0].response_body.excerpts.length,
+    subsequent_match_business_days: REMATCH_SPEC.canonical_value,
+  };
+  return { ...body, attestation_id: contentId('QXO_NO_SHOP_REMATCH_INACTIVE_SERVING_ATTESTATION/V1', body) };
+}
+
 function buildAttestation(evidence, requests, digests) {
   assertActivePointer(evidence.active_pointer);
   const noticeRow = assertQueryPage(SPECS.notice, evidence.notice_query, digests.notice);
@@ -544,8 +610,8 @@ function buildAttestation(evidence, requests, digests) {
   return { ...body, attestation_id: contentId('QXO_NO_SHOP_INACTIVE_SERVING_ATTESTATION/V1', body) };
 }
 
-if (process.argv.length !== 3 || !['--verify', '--actions-verify'].includes(MODE)) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-serving.mjs --verify|--actions-verify');
+if (process.argv.length !== 3 || !['--verify', '--actions-verify', '--rematch-verify'].includes(MODE)) {
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-serving.mjs --verify|--actions-verify|--rematch-verify');
 }
 
 try {
@@ -553,6 +619,9 @@ try {
   const requests = ACTION_MODE ? {
     actionSubject: marketRequest(ACTION_SPECS[0], CANDIDATE.governed_deal_key),
     actionInventory: marketRequest(ACTION_SPECS[0], null),
+  } : REMATCH_MODE ? {
+    rematchSubject: marketRequest(REMATCH_SPEC, CANDIDATE.governed_deal_key),
+    rematchInventory: marketRequest(REMATCH_SPEC, null),
   } : {
     noticeSubject: marketRequest(SPECS.notice, CANDIDATE.governed_deal_key),
     noticeInventory: marketRequest(SPECS.notice, null),
@@ -565,6 +634,12 @@ try {
       corpus_release_id: CANDIDATE.corpus_release_id,
       metric: ACTION_SPECS[0].metric_key,
     }),
+  } : REMATCH_MODE ? {
+    rematch: contentId('QXO_NO_SHOP_REMATCH_INACTIVE_QUERY/V1', {
+      serving_namespace_id: CANDIDATE.serving_namespace_id,
+      corpus_release_id: CANDIDATE.corpus_release_id,
+      metric: REMATCH_SPEC.metric_key,
+    }),
   } : Object.fromEntries(Object.entries(SPECS).map(([key, spec]) => [key, contentId(
     'QXO_NO_SHOP_INACTIVE_QUERY/V1',
     { serving_namespace_id: CANDIDATE.serving_namespace_id, corpus_release_id: CANDIDATE.corpus_release_id, metric: spec },
@@ -572,7 +647,9 @@ try {
   const evidence = readEvidence(evidenceSql(requests, digests));
   process.stdout.write(`${canonicalJson(ACTION_MODE
     ? buildActionAttestation(evidence, requests, digests)
-    : buildAttestation(evidence, requests, digests))}\n`);
+    : REMATCH_MODE
+      ? buildRematchAttestation(evidence, requests, digests)
+      : buildAttestation(evidence, requests, digests))}\n`);
 } catch (error) {
   fail(error instanceof Error ? error.message : 'Canonical QXO no-shop serving verification failed.');
 }

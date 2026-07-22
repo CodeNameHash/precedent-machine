@@ -23,12 +23,26 @@ test('combined QXO candidate identities and release counts are pinned', () => {
   assert.match(source, /91cdee1d2cca11fdaa7141069c3daf9d048deabdbe36573bb214cafc7cf34430/);
   assert.match(source, /db29af6e548def369bee9c2fbe2be16959078f9461746caa1854f4eeceaea43c/);
   assert.match(source, /3ab6ca118c32bad5d5e9ce662a7c3f7cc06cddda03b7c717cccd6ed9dfa10a65/);
+  assert.match(source, /d9157984ee4948046c3cf7d3195cb0136502cdf739fc24dfd05d0ae7c60f1f5a/);
+  assert.match(source, /a9cbb8810053d13ad76efcffc769ddf83ed22d1cb446493967f281489182d0b2/);
+  assert.match(source, /efa8f7c2643448ad9380a4a16556d76f09879809c1d21e49f479e8cf070f204d/);
   assert.match(source, /capitalisationServing\.candidate_release_members/);
   assert.match(source, /noShopServing\.candidate_release_members/);
   assert.match(source, /actionsServing\?\.candidate_release_members/);
   assert.match(source, /release\.market_observations\.length/);
   assert.match(source, /release\.market_exclusions\.length/);
   assert.match(source, /release\.exact_detail_packages\.length/);
+});
+
+test('combined QXO rematch candidate extends the action release without mutating it', () => {
+  const source = fs.readFileSync(RUNNER, 'utf8');
+  assert.match(source, /--rematch-dry-run/);
+  assert.match(source, /--rematch-import/);
+  assert.match(source, /--rematch-verify/);
+  assert.match(source, /--rematch-rehearse-rollback/);
+  assert.match(source, /assertFamilyParity\(\{ graph: graph\.rematch/);
+  assert.match(source, /buildQxoNoShopRematchServingSlice/);
+  assert.match(source, /rematchServing\?\.candidate_release_members/);
 });
 
 test('combined QXO action candidate is an explicit inactive mode with pinned graph parity', () => {

@@ -15,6 +15,7 @@ const { InMemoryCanonicalRepository, createCanonicalWriter } = require('../lib/c
 const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
 const { buildQxoAdmittedNoShopNoticeSlice } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-slice');
 const { buildQxoAdmittedNoShopActionsSlice } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
+const { buildQxoAdmittedNoShopRematchSlice } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-rematch-slice');
 const { convertSecHtmlToCanonicalText } = require('../lib/canonical-v2/sec-html-canonical-text');
 const { verifySecHtmlCanonicalText } = require('../lib/canonical-v2/sec-html-canonical-text-verifier');
 const { buildVerifiedSecSourceAdmission } = require('../lib/canonical-v2/sec-source-admission');
@@ -46,11 +47,22 @@ const FAMILY_CONFIGS = Object.freeze({
     expectedClosureId: '89683e5ff72a570948bfadda123254719d848310b5c50ad3720645e2cbd6291b',
     attestationSchema: 'QXO_NO_SHOP_ACTIONS_DEAL_SCOPE_STAGING_ATTESTATION/V1',
   }),
+  REMATCH: Object.freeze({
+    idempotencyKey: 'QXO_NO_SHOP_REMATCH_DEAL_SCOPE_V1',
+    closureDomain: 'QXO_NO_SHOP_REMATCH_SEMANTIC_CLOSURE/V1',
+    expectedDealAdmissionId: '62b8b828c534273c68dcd48cec3fbbcb4f912ac3f477dbdc377de5ac47954c8f',
+    expectedSourceAdmissionId: 'f31cad8c3813ededa01c644891b0b2e14c6a475d868ba89f6b60b597f0e1d819',
+    expectedReviewedMappingId: 'c5e168edd134b80f9310fd831e86d950a43e1329dc2903c869e51ec0f4d42322',
+    expectedClosureId: 'dd232aa8077fd0d4158cd19c7fa5e8b439fceb8d97b578682c41936889808af8',
+    attestationSchema: 'QXO_NO_SHOP_REMATCH_DEAL_SCOPE_STAGING_ATTESTATION/V1',
+  }),
 });
 const MAX_WRITER_REQUEST_BYTES = 512 * 1024;
 
 function familyConfig() {
-  return mode.startsWith('--actions-') ? FAMILY_CONFIGS.ACTIONS : FAMILY_CONFIGS.NOTICE;
+  if (mode.startsWith('--actions-')) return FAMILY_CONFIGS.ACTIONS;
+  if (mode.startsWith('--rematch-')) return FAMILY_CONFIGS.REMATCH;
+  return FAMILY_CONFIGS.NOTICE;
 }
 
 function fail(message) {
@@ -146,7 +158,9 @@ async function buildWrite() {
   });
   const slice = config === FAMILY_CONFIGS.ACTIONS
     ? buildQxoAdmittedNoShopActionsSlice({ sourceContext, contractBundle })
-    : buildQxoAdmittedNoShopNoticeSlice({ sourceContext, contractBundle });
+    : config === FAMILY_CONFIGS.REMATCH
+      ? buildQxoAdmittedNoShopRematchSlice({ sourceContext, contractBundle })
+      : buildQxoAdmittedNoShopNoticeSlice({ sourceContext, contractBundle });
   const closureId = contentId(config.closureDomain, {
     deal_admission_id: dealAdmissionId,
     source_admission_manifest_id: sourceContext.source_admission_manifest_id,
@@ -284,9 +298,12 @@ const invocation = Object.freeze({
   '--actions-dry-run': 'DRY_RUN',
   '--actions-apply': 'APPLY',
   '--actions-verify': 'VERIFY',
+  '--rematch-dry-run': 'DRY_RUN',
+  '--rematch-apply': 'APPLY',
+  '--rematch-verify': 'VERIFY',
 });
 if (!invocation[mode] || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop.mjs --dry-run|--apply|--verify|--actions-dry-run|--actions-apply|--actions-verify');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop.mjs --dry-run|--apply|--verify|--actions-dry-run|--actions-apply|--actions-verify|--rematch-dry-run|--rematch-apply|--rematch-verify');
 }
 
 try {

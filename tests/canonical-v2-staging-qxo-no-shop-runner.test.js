@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const RUNNER = 'scripts/canonical-v2-staging-qxo-no-shop.mjs';
 const REVIEWED = 'lib/canonical-v2/reviewed-qxo-admitted-no-shop-slice.js';
 const ACTIONS = 'lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice.js';
+const REMATCH = 'lib/canonical-v2/reviewed-qxo-admitted-no-shop-rematch-slice.js';
 
 test('QXO no-shop runner is staging-only, rollback-first and writer-only', () => {
   const source = fs.readFileSync(RUNNER, 'utf8');
@@ -25,8 +26,21 @@ test('QXO no-shop runner pins source, review and closure identities without prin
   assert.match(source, /expectedClosureId/);
   assert.match(source, /633cf0ff19c762125f51df2d2b36da182a61d23ea7193ef8e2898134dc980f1b/);
   assert.match(source, /89683e5ff72a570948bfadda123254719d848310b5c50ad3720645e2cbd6291b/);
+  assert.match(source, /c5e168edd134b80f9310fd831e86d950a43e1329dc2903c869e51ec0f4d42322/);
+  assert.match(source, /dd232aa8077fd0d4158cd19c7fa5e8b439fceb8d97b578682c41936889808af8/);
   assert.match(source, /writer_request_byte_length/);
   assert.doesNotMatch(source, /exact_text|raw_value|canonical_text\.text/);
+});
+
+test('reviewed QXO subsequent match restarts four business days for changed proposal terms', () => {
+  const source = fs.readFileSync(REMATCH, 'utf8');
+  assert.match(source, /each and every change to any of the financial terms/);
+  assert.match(source, /any other material terms of such Company Superior Proposal/);
+  assert.match(source, /a new four \(4\) business day notice period/);
+  assert.match(source, /rawMagnitude: '4'/);
+  assert.match(source, /dayBasis: 'BUSINESS'/);
+  assert.match(source, /MATERIAL_AMENDMENT_TO_SUPERIOR_PROPOSAL/);
+  assert.match(source, /NO_SHOP_SUBSEQUENT_MATCH_PERIOD_DAYS/);
 });
 
 test('reviewed QXO prohibited actions retain terms and governed exceptions without inventing change recommendation', () => {
