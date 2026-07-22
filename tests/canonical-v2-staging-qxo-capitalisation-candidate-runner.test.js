@@ -28,6 +28,18 @@ test('candidate import cannot activate either staging or production', () => {
   assert.doesNotMatch(body, /activateCandidateRelease|canonical_v2_activate_candidate_release|environment:\s*'production'/);
 });
 
+test('rollback rehearsal removes only the inactive partition and reimports the same candidate', () => {
+  assert.match(body, /--rehearse-rollback/);
+  assert.match(body, /rollbackInactiveCandidateRelease/);
+  assert.match(body, /assertAbsent\(absent\)/);
+  assert.match(body, /ROLLBACK_IMPORTED_CANDIDATE/);
+  assert.match(body, /REIMPORT_ROLLED_BACK_CANDIDATE/);
+  assert.match(body, /ROLLED_BACK_AND_REIMPORTED/);
+  assert.match(body, /rollback_rehearsed: rollbackRehearsed/);
+  assert.match(body, /rollback moved the active staging release pointer/);
+  assert.match(body, /reimport moved the active staging release pointer/);
+});
+
 test('attestation exposes governed identities and counts without source payloads', () => {
   assert.match(body, /candidate_release_manifest_id/);
   assert.match(body, /semantic_closure_id/);

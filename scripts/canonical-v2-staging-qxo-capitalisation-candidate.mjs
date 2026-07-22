@@ -13,7 +13,10 @@ const {
   buildFixtureCandidateRelease,
   validateCandidateReleaseBundle,
 } = require('../lib/canonical-v2/candidate-release');
-const { importCandidateRelease } = require('../lib/canonical-v2/candidate-release-import');
+const {
+  importCandidateRelease,
+  rollbackInactiveCandidateRelease,
+} = require('../lib/canonical-v2/candidate-release-import');
 const {
   recheckCandidateInputHead,
   selectTrustedCandidateInputs,
@@ -114,6 +117,14 @@ function sqlRpcClient({ commit = false } = {}) {
         call = `public.canonical_v2_recheck_candidate_input_head(${sqlText(params.p_environment)}, ${sqlText(params.p_contract_fingerprint)}, ${sqlText(params.p_expected_candidate_input_head_id)}, ${sqlText(params.p_expected_candidate_input_head_payload_digest)})`;
       } else if (name === 'canonical_v2_import_candidate_release') {
         call = `public.canonical_v2_import_candidate_release('staging', ${sqlJson(params.p_import_plan)})`;
+      } else if (name === 'canonical_v2_rollback_inactive_candidate_release') {
+        call = `public.canonical_v2_rollback_inactive_candidate_release(
+          'staging',
+          ${sqlText(params.p_candidate_manifest_id)},
+          ${sqlText(params.p_corpus_release_id)},
+          ${sqlText(params.p_serving_namespace_id)},
+          ${sqlText(params.p_candidate_release_import_plan_id)}
+        )`;
       } else {
         return Promise.resolve({ data: null, error: { message: 'Unsupported canonical RPC.' } });
       }
@@ -328,6 +339,22 @@ function assertImported(state, release) {
   }
 }
 
+function assertAbsent(state) {
+  for (const key of [
+    'release_records',
+    'correction_input_seals',
+    'correction_discharges',
+    'deal_directory_records',
+    'market_observations',
+    'market_exclusions',
+    'query_records',
+    'exact_detail_packages',
+    'complete_receipts',
+  ]) {
+    if (Number(state[key]) !== 0) throw new Error(`QXO candidate ${key} remains after rollback.`);
+  }
+}
+
 async function recheck(authoritySelection) {
   await recheckCandidateInputHead({
     client: sqlRpcClient(),
@@ -335,7 +362,7 @@ async function recheck(authoritySelection) {
   });
 }
 
-function attestation(candidate, mode) {
+function attestation(candidate, mode, rollbackRehearsed = false) {
   return {
     schema_version: 'QXO_CAPITALISATION_CANDIDATE_STAGING_ATTESTATION/V1',
     environment: 'staging',
@@ -351,12 +378,14 @@ function attestation(candidate, mode) {
     shared_rows: candidate.release.shared_rows.length,
     exact_detail_packages: candidate.release.exact_detail_packages.length,
     active_pointer_unchanged: true,
+    rollback_rehearsed: rollbackRehearsed,
   };
 }
 
 const mode = process.argv[2];
-if (!['--dry-run', '--import', '--verify'].includes(mode) || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-capitalisation-candidate.mjs --dry-run|--import|--verify');
+if (!['--dry-run', '--import', '--verify', '--rehearse-rollback'].includes(mode)
+  || process.argv.length !== 3) {
+  fail('Usage: node scripts/canonical-v2-staging-qxo-capitalisation-candidate.mjs --dry-run|--import|--verify|--rehearse-rollback');
 }
 
 try {
@@ -367,6 +396,29 @@ try {
   const before = readCandidateState(candidate.release);
   if (mode === '--verify') {
     assertImported(before, candidate.release);
+  } else if (mode === '--rehearse-rollback') {
+    assertImported(before, candidate.release);
+    currentStage = 'ROLLBACK_IMPORTED_CANDIDATE';
+    await rollbackInactiveCandidateRelease({
+      client: sqlRpcClient({ commit: true }),
+      release: candidate.release,
+    });
+    currentStage = 'VERIFY_CANDIDATE_ABSENT';
+    const absent = readCandidateState(candidate.release);
+    assertAbsent(absent);
+    if (canonicalJson(absent.active_pointer) !== canonicalJson(before.active_pointer)) {
+      throw new Error('QXO candidate rollback moved the active staging release pointer.');
+    }
+    currentStage = 'RECHECK_AUTHORITY_FOR_REIMPORT';
+    await recheck(candidate.authoritySelection);
+    currentStage = 'REIMPORT_ROLLED_BACK_CANDIDATE';
+    await importCandidateRelease({ client: sqlRpcClient({ commit: true }), release: candidate.release });
+    currentStage = 'VERIFY_REIMPORTED_CANDIDATE';
+    const reimported = readCandidateState(candidate.release);
+    assertImported(reimported, candidate.release);
+    if (canonicalJson(reimported.active_pointer) !== canonicalJson(before.active_pointer)) {
+      throw new Error('QXO candidate reimport moved the active staging release pointer.');
+    }
   } else {
     currentStage = 'RECHECK_AUTHORITY_FOR_ROLLBACK';
     await recheck(candidate.authoritySelection);
@@ -392,7 +444,14 @@ try {
   }
   process.stdout.write(`${canonicalJson(attestation(
     candidate,
-    mode === '--import' ? 'IMPORTED_INACTIVE' : mode === '--verify' ? 'VERIFIED_INACTIVE' : 'ROLLED_BACK',
+    mode === '--import'
+      ? 'IMPORTED_INACTIVE'
+      : mode === '--verify'
+        ? 'VERIFIED_INACTIVE'
+        : mode === '--rehearse-rollback'
+          ? 'ROLLED_BACK_AND_REIMPORTED'
+          : 'ROLLED_BACK',
+    mode === '--rehearse-rollback',
   ))}\n`);
 } catch (error) {
   fail(error instanceof Error

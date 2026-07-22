@@ -1082,6 +1082,202 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION public.canonical_v2_rollback_inactive_candidate_release(
+  p_environment text,
+  p_candidate_manifest_id text,
+  p_corpus_release_id text,
+  p_serving_namespace_id text,
+  p_candidate_release_import_plan_id text
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pg_catalog, canonical_v2_staging
+SET statement_timeout = '10000ms'
+AS $$
+DECLARE
+  expected jsonb;
+  active_pointer_id_before text;
+  active_pointer_id_after text;
+  deleted_count integer;
+  deleted_counts jsonb := '{}'::jsonb;
+  rolled_back_at_value timestamptz := transaction_timestamp();
+BEGIN
+  IF p_environment IS DISTINCT FROM 'staging' THEN
+    RAISE EXCEPTION 'canonical_v2_rollback_inactive_candidate_release is staging-only'
+      USING ERRCODE = '42501';
+  END IF;
+  IF p_candidate_manifest_id !~ '^[a-f0-9]{64}$'
+    OR p_corpus_release_id !~ '^[a-f0-9]{64}$'
+    OR p_serving_namespace_id !~ '^[a-f0-9]{64}$'
+    OR p_candidate_release_import_plan_id !~ '^[a-f0-9]{64}$' THEN
+    RAISE EXCEPTION 'invalid inactive candidate rollback identity' USING ERRCODE = '22023';
+  END IF;
+
+  PERFORM pg_advisory_xact_lock(hashtextextended(p_candidate_manifest_id, 0));
+
+  SELECT receipt.expected_counts INTO expected
+  FROM canonical_v2_staging.candidate_release_import_receipts receipt
+  WHERE receipt.candidate_manifest_id = p_candidate_manifest_id
+    AND receipt.corpus_release_id = p_corpus_release_id
+    AND receipt.serving_namespace_id = p_serving_namespace_id
+    AND receipt.candidate_release_import_plan_id = p_candidate_release_import_plan_id
+    AND receipt.import_state = 'IMPORTED_COMPLETE'
+  FOR UPDATE OF receipt;
+  IF NOT FOUND OR jsonb_typeof(expected) IS DISTINCT FROM 'object' THEN
+    RAISE EXCEPTION 'inactive candidate rollback receipt identity does not exist'
+      USING ERRCODE = '02000';
+  END IF;
+  IF NOT EXISTS (
+    SELECT 1
+    FROM canonical_v2_staging.fixture_corpus_releases release
+    WHERE release.corpus_release_id = p_corpus_release_id
+      AND release.candidate_manifest_id = p_candidate_manifest_id
+      AND release.canonical_payload->>'serving_namespace_id' = p_serving_namespace_id
+  ) THEN
+    RAISE EXCEPTION 'inactive candidate release record does not match its receipt'
+      USING ERRCODE = '23514';
+  END IF;
+  IF EXISTS (
+    SELECT 1
+    FROM canonical_v2_staging.active_corpus_release_pointers pointer
+    WHERE pointer.corpus_release_id = p_corpus_release_id
+      OR pointer.serving_namespace_id = p_serving_namespace_id
+      OR pointer.candidate_manifest_id = p_candidate_manifest_id
+      OR pointer.candidate_release_import_plan_id = p_candidate_release_import_plan_id
+  ) OR EXISTS (
+    SELECT 1
+    FROM canonical_v2_staging.active_corpus_release_pointer_history history
+    WHERE history.corpus_release_id = p_corpus_release_id
+      OR history.serving_namespace_id = p_serving_namespace_id
+      OR history.candidate_manifest_id = p_candidate_manifest_id
+      OR history.candidate_release_import_plan_id = p_candidate_release_import_plan_id
+  ) THEN
+    RAISE EXCEPTION 'an active or historically active release cannot be removed as an inactive candidate'
+      USING ERRCODE = '55000';
+  END IF;
+
+  SELECT pointer.pointer_id INTO active_pointer_id_before
+  FROM canonical_v2_staging.active_corpus_release_pointers pointer
+  WHERE pointer.environment = 'staging';
+  IF active_pointer_id_before !~ '^[a-f0-9]{64}$' THEN
+    RAISE EXCEPTION 'active staging release pointer is unavailable' USING ERRCODE = '02000';
+  END IF;
+
+  DELETE FROM canonical_v2_staging.candidate_release_correction_discharges row
+  WHERE row.serving_namespace_id = p_serving_namespace_id
+    AND row.corpus_release_id = p_corpus_release_id;
+  GET DIAGNOSTICS deleted_count = ROW_COUNT;
+  deleted_counts := deleted_counts || jsonb_build_object('correction_discharge_records', deleted_count);
+
+  DELETE FROM canonical_v2_staging.candidate_release_correction_input_seals row
+  WHERE row.serving_namespace_id = p_serving_namespace_id
+    AND row.corpus_release_id = p_corpus_release_id;
+  GET DIAGNOSTICS deleted_count = ROW_COUNT;
+  deleted_counts := deleted_counts || jsonb_build_object('correction_input_seal_records', deleted_count);
+
+  DELETE FROM canonical_v2_staging.deal_serving_directory row
+  WHERE row.serving_namespace_id = p_serving_namespace_id
+    AND row.corpus_release_id = p_corpus_release_id;
+  GET DIAGNOSTICS deleted_count = ROW_COUNT;
+  deleted_counts := deleted_counts || jsonb_build_object('deal_directory_records', deleted_count);
+
+  DELETE FROM canonical_v2_staging.market_observations row
+  WHERE row.serving_namespace_id = p_serving_namespace_id
+    AND row.corpus_release_id = p_corpus_release_id;
+  GET DIAGNOSTICS deleted_count = ROW_COUNT;
+  deleted_counts := deleted_counts || jsonb_build_object('market_observations', deleted_count);
+
+  DELETE FROM canonical_v2_staging.market_metric_slot_exclusions row
+  WHERE row.serving_namespace_id = p_serving_namespace_id
+    AND row.corpus_release_id = p_corpus_release_id;
+  GET DIAGNOSTICS deleted_count = ROW_COUNT;
+  deleted_counts := deleted_counts || jsonb_build_object('market_exclusions', deleted_count);
+
+  DELETE FROM canonical_v2_staging.shared_serving_rows row
+  WHERE row.serving_namespace_id = p_serving_namespace_id
+    AND row.corpus_release_id = p_corpus_release_id;
+  GET DIAGNOSTICS deleted_count = ROW_COUNT;
+  deleted_counts := deleted_counts || jsonb_build_object('query_records', deleted_count);
+
+  DELETE FROM canonical_v2_staging.reviewed_source_specific_serving_rows row
+  WHERE row.serving_namespace_id = p_serving_namespace_id
+    AND row.corpus_release_id = p_corpus_release_id;
+  GET DIAGNOSTICS deleted_count = ROW_COUNT;
+  deleted_counts := deleted_counts || jsonb_build_object('source_specific_records', deleted_count);
+
+  DELETE FROM canonical_v2_staging.exact_detail_serving_packages row
+  WHERE row.serving_namespace_id = p_serving_namespace_id
+    AND row.corpus_release_id = p_corpus_release_id;
+  GET DIAGNOSTICS deleted_count = ROW_COUNT;
+  deleted_counts := deleted_counts || jsonb_build_object('exact_detail_packages', deleted_count);
+
+  DELETE FROM canonical_v2_staging.candidate_release_semantic_graphs row
+  WHERE row.serving_namespace_id = p_serving_namespace_id
+    AND row.corpus_release_id = p_corpus_release_id;
+  GET DIAGNOSTICS deleted_count = ROW_COUNT;
+  deleted_counts := deleted_counts || jsonb_build_object('validated_semantic_graph_records', deleted_count);
+
+  DELETE FROM canonical_v2_staging.candidate_release_import_receipts receipt
+  WHERE receipt.candidate_manifest_id = p_candidate_manifest_id
+    AND receipt.corpus_release_id = p_corpus_release_id
+    AND receipt.serving_namespace_id = p_serving_namespace_id
+    AND receipt.candidate_release_import_plan_id = p_candidate_release_import_plan_id;
+  GET DIAGNOSTICS deleted_count = ROW_COUNT;
+  deleted_counts := deleted_counts || jsonb_build_object('import_receipts', deleted_count);
+
+  DELETE FROM canonical_v2_staging.fixture_corpus_releases release
+  WHERE release.corpus_release_id = p_corpus_release_id
+    AND release.candidate_manifest_id = p_candidate_manifest_id;
+  GET DIAGNOSTICS deleted_count = ROW_COUNT;
+  deleted_counts := deleted_counts || jsonb_build_object('release_records', deleted_count);
+
+  IF (deleted_counts->>'correction_input_seal_records')::integer
+      IS DISTINCT FROM (expected->>'correction_input_seal_records')::integer
+    OR (deleted_counts->>'correction_discharge_records')::integer
+      IS DISTINCT FROM (expected->>'correction_discharge_records')::integer
+    OR (deleted_counts->>'deal_directory_records')::integer
+      IS DISTINCT FROM (expected->>'deal_directory_records')::integer
+    OR (deleted_counts->>'market_observations')::integer
+      IS DISTINCT FROM (expected->>'market_observations')::integer
+    OR (deleted_counts->>'market_exclusions')::integer
+      IS DISTINCT FROM (expected->>'market_exclusions')::integer
+    OR (deleted_counts->>'query_records')::integer
+      IS DISTINCT FROM (expected->>'query_records')::integer
+    OR (deleted_counts->>'source_specific_records')::integer
+      IS DISTINCT FROM (expected->>'source_specific_records')::integer
+    OR (deleted_counts->>'exact_detail_packages')::integer
+      IS DISTINCT FROM (expected->>'exact_detail_packages')::integer
+    OR (deleted_counts->>'validated_semantic_graph_records')::integer
+      IS DISTINCT FROM (expected->>'validated_semantic_graph_records')::integer
+    OR (deleted_counts->>'import_receipts')::integer IS DISTINCT FROM 1
+    OR (deleted_counts->>'release_records')::integer IS DISTINCT FROM 1 THEN
+    RAISE EXCEPTION 'inactive candidate rollback did not remove the exact certified partition'
+      USING ERRCODE = '23514';
+  END IF;
+
+  SELECT pointer.pointer_id INTO active_pointer_id_after
+  FROM canonical_v2_staging.active_corpus_release_pointers pointer
+  WHERE pointer.environment = 'staging';
+  IF active_pointer_id_after IS DISTINCT FROM active_pointer_id_before THEN
+    RAISE EXCEPTION 'inactive candidate rollback changed the active release pointer'
+      USING ERRCODE = '40001';
+  END IF;
+
+  RETURN jsonb_build_object(
+    'schema_version', 'CANDIDATE_RELEASE_ROLLBACK_RECEIPT/V1',
+    'rollback_state', 'REMOVED_INACTIVE',
+    'candidate_manifest_id', p_candidate_manifest_id,
+    'corpus_release_id', p_corpus_release_id,
+    'serving_namespace_id', p_serving_namespace_id,
+    'candidate_release_import_plan_id', p_candidate_release_import_plan_id,
+    'active_pointer_id', active_pointer_id_after,
+    'deleted_counts', deleted_counts,
+    'rolled_back_at', rolled_back_at_value
+  );
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION public.canonical_v2_activate_candidate_release(
   p_environment text,
   p_expected_current_pointer jsonb,
@@ -2010,6 +2206,12 @@ REVOKE ALL ON FUNCTION public.canonical_v2_import_candidate_release(text, jsonb)
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
 GRANT EXECUTE ON FUNCTION public.canonical_v2_import_candidate_release(text, jsonb)
   TO canonical_v2_writer;
+REVOKE ALL ON FUNCTION public.canonical_v2_rollback_inactive_candidate_release(
+  text, text, text, text, text
+) FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
+GRANT EXECUTE ON FUNCTION public.canonical_v2_rollback_inactive_candidate_release(
+  text, text, text, text, text
+) TO canonical_v2_writer;
 REVOKE ALL ON FUNCTION public.canonical_v2_activate_candidate_release(text, jsonb, jsonb)
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
 GRANT EXECUTE ON FUNCTION public.canonical_v2_activate_candidate_release(text, jsonb, jsonb)

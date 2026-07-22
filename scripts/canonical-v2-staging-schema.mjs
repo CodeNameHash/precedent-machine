@@ -18,7 +18,7 @@ const EXPECTED_PROJECT = Object.freeze({
 });
 const EXPECTED_DIGESTS = Object.freeze({
   'canonical-v2-foundation.sql': 'a6d1337792d1929b175692133a222b5db6ee1010f8a50ba4584d79573328cfab',
-  'canonical-v2-serving.sql': '0f606b9975b8ebd78abf961b72ee58e9c04b6dd23476cbd9c1cc3151c0633e77',
+  'canonical-v2-serving.sql': '0cc018538748d7e28f9a07f963385216ffd1eada4f1686b11900e63631b157dc',
 });
 const SCRIPT_ROOT = dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = resolve(SCRIPT_ROOT, '..');
@@ -119,6 +119,7 @@ function verifyAppliedSchema() {
       to_regprocedure('public.canonical_v2_write(text,text,text,text,jsonb,jsonb,jsonb,jsonb)') is not null as writer_exists,
       to_regprocedure('public.canonical_v2_select_candidate_inputs(text,text)') is not null as candidate_input_selector_exists,
       to_regprocedure('public.canonical_v2_recheck_candidate_input_head(text,text,text,text)') is not null as candidate_input_recheck_exists,
+      to_regprocedure('public.canonical_v2_rollback_inactive_candidate_release(text,text,text,text,text)') is not null as inactive_candidate_rollback_exists,
       to_regprocedure('public.canonical_v2_market_cohort(text,text,text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric)') is not null as market_rpc_exists,
       to_regprocedure('public.canonical_v2_active_review_context(text,text,text,uuid,integer,text)') is not null as review_rpc_exists,
       to_regprocedure('public.canonical_v2_exact_detail(text,text,text,text,uuid,text,text)') is not null as exact_detail_rpc_exists,
@@ -134,6 +135,9 @@ function verifyAppliedSchema() {
       has_function_privilege('service_role', 'public.canonical_v2_recheck_candidate_input_head(text,text,text,text)', 'EXECUTE') = false as service_role_candidate_input_recheck_denied,
       has_function_privilege('canonical_v2_serving', 'public.canonical_v2_recheck_candidate_input_head(text,text,text,text)', 'EXECUTE') = false as serving_candidate_input_recheck_denied,
       has_function_privilege('canonical_v2_writer', 'public.canonical_v2_recheck_candidate_input_head(text,text,text,text)', 'EXECUTE') as writer_candidate_input_recheck_allowed,
+      has_function_privilege('service_role', 'public.canonical_v2_rollback_inactive_candidate_release(text,text,text,text,text)', 'EXECUTE') = false as service_role_inactive_candidate_rollback_denied,
+      has_function_privilege('canonical_v2_serving', 'public.canonical_v2_rollback_inactive_candidate_release(text,text,text,text,text)', 'EXECUTE') = false as serving_inactive_candidate_rollback_denied,
+      has_function_privilege('canonical_v2_writer', 'public.canonical_v2_rollback_inactive_candidate_release(text,text,text,text,text)', 'EXECUTE') as writer_inactive_candidate_rollback_allowed,
       has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.candidate_release_semantic_graphs', 'SELECT') = false as serving_semantic_graph_table_denied,
       has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.candidate_release_correction_input_seals', 'SELECT') = false as serving_correction_seal_table_denied,
       has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.candidate_release_correction_discharges', 'SELECT') = false as serving_correction_discharge_table_denied,

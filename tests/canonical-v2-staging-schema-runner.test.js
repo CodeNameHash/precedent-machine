@@ -47,6 +47,7 @@ test('staging schema verification checks writer, serving RPCs and denied broad r
   assert.match(source, /canonical_v2_exact_detail/);
   assert.match(source, /canonical_v2_select_candidate_inputs/);
   assert.match(source, /canonical_v2_recheck_candidate_input_head/);
+  assert.match(source, /canonical_v2_rollback_inactive_candidate_release/);
   assert.match(source, /has_function_privilege\('anon'/);
   assert.match(source, /has_function_privilege\('service_role'/);
   assert.match(source, /has_function_privilege\('canonical_v2_serving'/);
@@ -55,6 +56,9 @@ test('staging schema verification checks writer, serving RPCs and denied broad r
   assert.match(source, /has_table_privilege\('canonical_v2_serving'.*candidate_release_correction_discharges/);
   assert.match(source, /writer_candidate_input_selector_allowed/);
   assert.match(source, /writer_candidate_input_recheck_allowed/);
+  assert.match(source, /service_role_inactive_candidate_rollback_denied/);
+  assert.match(source, /serving_inactive_candidate_rollback_denied/);
+  assert.match(source, /writer_inactive_candidate_rollback_allowed/);
   assert.match(source, /writer_candidate_input_head_table_denied/);
 });
 

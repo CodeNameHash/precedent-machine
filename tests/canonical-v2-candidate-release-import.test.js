@@ -9,6 +9,7 @@ const {
   activateCandidateRelease,
   buildCandidateReleaseImportPlan,
   importCandidateRelease,
+  rollbackInactiveCandidateRelease,
   validateCandidateReleaseImportPlan,
 } = require('../lib/canonical-v2/candidate-release-import');
 
@@ -37,6 +38,24 @@ function rekeyPlan(plan) {
   const { candidate_release_import_plan_id: ignored, ...body } = plan;
   plan.candidate_release_import_plan_id = contentId('CANDIDATE_RELEASE_IMPORT_PLAN/V4', body);
   return plan;
+}
+
+function rollbackReceiptFor(plan) {
+  return {
+    schema_version: 'CANDIDATE_RELEASE_ROLLBACK_RECEIPT/V1',
+    rollback_state: 'REMOVED_INACTIVE',
+    candidate_manifest_id: plan.release_record.candidate_manifest_id,
+    corpus_release_id: plan.release_record.corpus_release_id,
+    serving_namespace_id: plan.release_record.canonical_payload.serving_namespace_id,
+    candidate_release_import_plan_id: plan.candidate_release_import_plan_id,
+    active_pointer_id: 'a'.repeat(64),
+    deleted_counts: {
+      ...plan.expected_counts,
+      import_receipts: 1,
+      release_records: 1,
+    },
+    rolled_back_at: '2026-07-22T12:00:00.000Z',
+  };
 }
 
 test('one certified release becomes one deterministic atomic import plan across every serving partition', () => {
@@ -177,6 +196,61 @@ test('release import performs one writer RPC, validates the complete receipt and
   assert.equal(failedCalls, 1);
 });
 
+test('inactive candidate rollback is one exact writer RPC and validates every deleted partition count', async () => {
+  const { release } = buildLandosCandidateReleaseFixture();
+  const calls = [];
+  const rolledBack = await rollbackInactiveCandidateRelease({
+    client: {
+      rpc(name, params) {
+        calls.push({ name, params });
+        const plan = buildCandidateReleaseImportPlan({ release });
+        return Promise.resolve({ data: rollbackReceiptFor(plan), error: null });
+      },
+    },
+    release,
+  });
+
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].name, 'canonical_v2_rollback_inactive_candidate_release');
+  assert.deepEqual(calls[0].params, {
+    p_environment: 'staging',
+    p_candidate_manifest_id: rolledBack.plan.release_record.candidate_manifest_id,
+    p_corpus_release_id: rolledBack.plan.release_record.corpus_release_id,
+    p_serving_namespace_id: rolledBack.plan.release_record.canonical_payload.serving_namespace_id,
+    p_candidate_release_import_plan_id: rolledBack.plan.candidate_release_import_plan_id,
+  });
+  assert.equal(rolledBack.receipt.rollback_state, 'REMOVED_INACTIVE');
+  assert.deepEqual(rolledBack.receipt.deleted_counts, {
+    ...rolledBack.plan.expected_counts,
+    import_receipts: 1,
+    release_records: 1,
+  });
+
+  let failedCalls = 0;
+  await assert.rejects(rollbackInactiveCandidateRelease({
+    client: {
+      rpc() {
+        failedCalls += 1;
+        return Promise.resolve({ data: null, error: { message: 'blocked' } });
+      },
+    },
+    release,
+  }), (error) => error.code === 'DATA_SOURCE_ERROR');
+  assert.equal(failedCalls, 1);
+
+  await assert.rejects(rollbackInactiveCandidateRelease({
+    client: {
+      rpc(name, params) {
+        const plan = buildCandidateReleaseImportPlan({ release });
+        const receipt = rollbackReceiptFor(plan);
+        receipt.deleted_counts.query_records -= 1;
+        return Promise.resolve({ data: receipt, error: null });
+      },
+    },
+    release,
+  }), (error) => error.code === 'INVALID_RESPONSE');
+});
+
 test('active release movement is one exact compare-and-swap RPC over a completely imported candidate', async () => {
   const { release } = buildLandosCandidateReleaseFixture();
   const currentPointer = buildInitialActiveReleasePointer();
@@ -250,6 +324,30 @@ test('staging import is set-based, transactional and withholds completion until 
   assert.doesNotMatch(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_import_candidate_release\(text, jsonb\)\s+TO canonical_v2_serving/);
   assert.doesNotMatch(sql, /GRANT SELECT[\s\S]*TO (anon|authenticated|service_role|canonical_v2_serving|canonical_v2_writer)/);
   assert.doesNotMatch(sql, /GRANT SELECT ON (?:TABLE )?canonical_v2_staging\.candidate_release_semantic_graphs/);
+
+  const rollbackStart = sql.indexOf(
+    'CREATE OR REPLACE FUNCTION public.canonical_v2_rollback_inactive_candidate_release',
+  );
+  const rollbackEnd = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_activate_candidate_release');
+  const rollback = sql.slice(rollbackStart, rollbackEnd);
+  assert.ok(rollbackStart >= 0 && rollbackEnd > rollbackStart);
+  assert.match(rollback, /SET statement_timeout = '10000ms'/);
+  assert.match(rollback, /pg_advisory_xact_lock\(hashtextextended\(p_candidate_manifest_id, 0\)\)/);
+  assert.match(rollback, /FOR UPDATE OF receipt/);
+  assert.match(rollback, /active or historically active release cannot be removed/);
+  assert.match(rollback, /candidate_release_correction_discharges[\s\S]*fixture_corpus_releases/);
+  assert.match(rollback, /inactive candidate rollback did not remove the exact certified partition/);
+  assert.match(rollback, /inactive candidate rollback changed the active release pointer/);
+  assert.doesNotMatch(rollback, /\bLOOP\b/i);
+  const rollbackGrantStart = sql.indexOf(
+    'REVOKE ALL ON FUNCTION public.canonical_v2_rollback_inactive_candidate_release',
+  );
+  const rollbackGrantEnd = sql.indexOf(
+    'REVOKE ALL ON FUNCTION public.canonical_v2_activate_candidate_release',
+  );
+  const rollbackGrant = sql.slice(rollbackGrantStart, rollbackGrantEnd);
+  assert.match(rollbackGrant, /GRANT EXECUTE[\s\S]*TO canonical_v2_writer/);
+  assert.doesNotMatch(rollbackGrant, /TO canonical_v2_serving/);
 
   const activationStart = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_activate_candidate_release');
   const activationEnd = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_release');
