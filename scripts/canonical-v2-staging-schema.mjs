@@ -18,7 +18,7 @@ const EXPECTED_PROJECT = Object.freeze({
 });
 const EXPECTED_DIGESTS = Object.freeze({
   'canonical-v2-foundation.sql': '33a3b5a8e2a70ec97e48422d22222fda7eb3628eb466fcdec2fd615d4034e8d6',
-  'canonical-v2-serving.sql': '3f838015c3836e86e9b8aedeada522e847055b6050cb8141938bf548e3b7956e',
+  'canonical-v2-serving.sql': '0182ae8c6b551b403b4b7019448b18a5c8b2df2fa81fb73a9133c371f1475b9b',
 });
 const SCRIPT_ROOT = dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = resolve(SCRIPT_ROOT, '..');

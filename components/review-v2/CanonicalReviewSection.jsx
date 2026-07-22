@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Component, useCallback, useEffect, useMemo, useState } from 'react';
 
 const ENABLED = ['1', 'true', 'on', 'yes'].includes(
   String(process.env.NEXT_PUBLIC_CANONICAL_V2_REVIEW_ENABLED || '').toLowerCase(),
@@ -28,6 +28,22 @@ function RowFailure({ item }) {
       </p>
     </div>
   );
+}
+
+class CanonicalRowErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { failed: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  render() {
+    if (this.state.failed) return <RowFailure item={this.props.item} />;
+    return this.props.children;
+  }
 }
 
 function SourceDetail({ envelope, rowKey, sourceAction }) {
@@ -188,7 +204,9 @@ export default function CanonicalReviewSection({ dealId }) {
         </summary>
         <div className="mt-4 space-y-2">
           {state.items.map((item) => (
-            <CanonicalRow key={item.key} item={item} envelope={state.envelope} />
+            <CanonicalRowErrorBoundary key={item.key} item={item}>
+              <CanonicalRow item={item} envelope={state.envelope} />
+            </CanonicalRowErrorBoundary>
           ))}
         </div>
       </details>

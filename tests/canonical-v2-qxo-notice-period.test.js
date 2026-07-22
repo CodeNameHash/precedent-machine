@@ -111,6 +111,8 @@ test('production Review mounts the default-off canonical section and catches sou
   assert.match(page, /<CanonicalReviewSection dealId=\{dealId\}/);
   assert.match(component, /NEXT_PUBLIC_CANONICAL_V2_REVIEW_ENABLED/);
   assert.match(component, /Other certified provisions remain available/);
+  assert.match(component, /class CanonicalRowErrorBoundary extends Component/);
+  assert.match(component, /<CanonicalRowErrorBoundary key=\{item\.key\} item=\{item\}>/);
   assert.match(component, /catch \(error\)/);
   assert.doesNotMatch(component, /throw error/);
 });

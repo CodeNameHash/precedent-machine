@@ -122,6 +122,12 @@ test('typed duration context is registered under its exact market row key', () =
           'notice.value': {
             state: 'ready',
             coverage,
+            subject: {
+              legalTerms: [
+                { key: 'notice', label: 'Notice', value: '4 business days' },
+                { key: 'trigger', label: 'Trigger', value: 'Competing proposal' },
+              ],
+            },
             distribution: {
               cohorts: [{ semantics: { unit: 'business_days' }, stats: { n: 13, min: 3, p25: 4, median: 4, p75: 5, max: 5 } }],
             },
@@ -135,6 +141,10 @@ test('typed duration context is registered under its exact market row key', () =
   assert.equal(context.marketRowKey, resolution.rowKey);
   assert.equal(context.metrics[0].unit, 'business_days');
   assert.equal(context.metrics[0].median, 4);
+  assert.deepEqual(context.currentDealTerms, [
+    { key: 'notice', label: 'Notice', value: '4 business days' },
+    { key: 'trigger', label: 'Trigger', value: 'Competing proposal' },
+  ]);
   assert.equal(
     mod.exactMarketContextForRowKey([{ marketRowKey: 'wrong' }, context], resolution.rowKey),
     context,

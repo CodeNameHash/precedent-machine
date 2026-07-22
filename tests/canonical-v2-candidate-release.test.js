@@ -115,6 +115,16 @@ test('candidate release carries raw and normalised money with exact legal query 
   assert.equal(fee.payer_capacity, 'TARGET');
   assert.equal(fee.payee_capacity, 'BUYER');
   assert.equal(fee.trigger_codes.length, 3);
+  assert.deepEqual(fee.payment_timings, [
+    'CONCURRENT_WITH_TERMINATION',
+    'TWO_BUSINESS_DAYS_AFTER_EARLIER_SIGNING_OR_CONSUMMATION',
+    'TWO_BUSINESS_DAYS_AFTER_TERMINATION',
+  ]);
+  assert.deepEqual(fee.trigger_conditions, [
+    'DEFINITIVE_AGREEMENT_OR_CONSUMMATION_WITHIN_TWELVE_MONTHS',
+    'FIFTY_PERCENT_ACQUISITION_THRESHOLD',
+    'PUBLIC_COMPANY_ALTERNATIVE_TRANSACTION_NOT_WITHDRAWN',
+  ]);
   assert.equal(material.canonical_numeric_value, '0.07272727');
   assert.equal(material.criterion_code, 'PAYMENTS_BY_OR_TO_COMPANY_PER_FISCAL_YEAR');
   assert.equal(material.measurement_period_code, 'FISCAL_2023_OR_ANY_SINGLE_FISCAL_YEAR_THEREAFTER');

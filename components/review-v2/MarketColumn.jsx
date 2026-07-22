@@ -236,6 +236,23 @@ function subjectText(result, kind, role = null) {
   return null;
 }
 
+function SubjectLegalTerms({ result }) {
+  const terms = Array.isArray(result?.subject?.legalTerms)
+    ? result.subject.legalTerms.filter((term) => term && term.value != null).slice(0, 30)
+    : [];
+  if (!terms.length) return null;
+  return (
+    <dl className="mt-2 space-y-1 border-t border-[#EDEDEC] pt-2">
+      {terms.map((term, index) => (
+        <div key={`${term.key || term.label || 'term'}-${index}`} className="grid grid-cols-[84px_minmax(0,1fr)] gap-2 text-[9px] leading-4">
+          <dt className="font-bold text-[#77736C]">{String(term.label || '')}</dt>
+          <dd className="text-[#1F1F1F]">{String(term.value)}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
 function PresenceResult({ result }) {
   const present = result?.prevalence?.presentCount ?? result?.coverage?.presentCount ?? 0;
   const eligible = result?.prevalence?.eligibleCount ?? result?.coverage?.eligibleCount ?? 0;
@@ -329,6 +346,7 @@ function MetricResult({ spec, result, displayLabel = null }) {
       {displayLabel ? <p className="text-[9px] font-bold text-[#6B6B6B] mb-0.5">{displayLabel}</p> : null}
       {subject ? <p className="text-[9.5px] text-[#2F6DB5] mb-0.5">{subject}</p> : null}
       {kind === 'presence' ? <PresenceResult result={result} /> : <ValuesResult result={result} kind={kind} />}
+      {kind !== 'presence' ? <SubjectLegalTerms result={result} /> : null}
       {kind !== 'presence' && coverageNote(result) ? <p className="mt-1 text-[9px] text-[#8A8782]">{coverageNote(result)}</p> : null}
     </div>
   );

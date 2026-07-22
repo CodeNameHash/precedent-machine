@@ -260,6 +260,8 @@ test('import persists the incomplete result as a shared review row without a mar
   assert.equal(record.canonical_payload.row_kind, 'INCOMPLETE_CANONICAL_RESULT');
   assert.equal(record.canonical_numeric_value, null);
   assert.equal(record.measurement_period_code, null);
+  assert.deepEqual(record.payment_timings, []);
+  assert.deepEqual(record.trigger_conditions, []);
   assert.equal(plan.query_records.length, 0);
   assert.equal(plan.source_specific_records.length, 0);
 

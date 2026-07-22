@@ -85,6 +85,8 @@ test('termination-fee query returns percentage, legal side, triggers and source 
       payer_capacity: 'TARGET',
       payee_capacity: 'BUYER',
       trigger_code: 'ACQUISITION_PROPOSAL_TAIL',
+      payment_timing: 'TWO_BUSINESS_DAYS_AFTER_EARLIER_SIGNING_OR_CONSUMMATION',
+      trigger_condition: 'FIFTY_PERCENT_ACQUISITION_THRESHOLD',
     },
   });
   const cache = new MemoryCache();
@@ -98,6 +100,8 @@ test('termination-fee query returns percentage, legal side, triggers and source 
   assert.equal(calls[0].params.p_environment, 'staging');
   assert.equal(calls[0].params.p_min_canonical_value, '5');
   assert.equal(calls[0].params.p_trigger_code, 'ACQUISITION_PROPOSAL_TAIL');
+  assert.equal(calls[0].params.p_payment_timing, 'TWO_BUSINESS_DAYS_AFTER_EARLIER_SIGNING_OR_CONSUMMATION');
+  assert.equal(calls[0].params.p_trigger_condition, 'FIFTY_PERCENT_ACQUISITION_THRESHOLD');
   assert.equal(cache.writes.length, 1);
   assert.equal(cache.writes[0].ttl, 3600);
   const cells = first.result.rows[0].cells;
@@ -113,6 +117,8 @@ test('termination-fee query returns percentage, legal side, triggers and source 
   ]);
   assert.equal(cells.source.detail_kind, 'CLAIM_EVIDENCE');
   assert.ok(first.result.refinements.some((item) => item.column_key === 'triggers' && item.operator === 'CONTAINS'));
+  assert.ok(first.result.refinements.some((item) => item.request_field === 'column_filters.payment_timing'));
+  assert.ok(first.result.refinements.some((item) => item.request_field === 'column_filters.trigger_condition'));
 });
 
 test('Material Contracts query exposes the governed criterion primitives and relative threshold as refinable columns', async () => {
@@ -248,6 +254,16 @@ test('the offline release projection produces the exact typed physical query rec
     'CHANGE_IN_RECOMMENDATION_TERMINATION',
     'SUPERIOR_PROPOSAL_TERMINATION',
   ]);
+  assert.deepEqual(fee.payment_timings, [
+    'CONCURRENT_WITH_TERMINATION',
+    'TWO_BUSINESS_DAYS_AFTER_EARLIER_SIGNING_OR_CONSUMMATION',
+    'TWO_BUSINESS_DAYS_AFTER_TERMINATION',
+  ]);
+  assert.deepEqual(fee.trigger_conditions, [
+    'DEFINITIVE_AGREEMENT_OR_CONSUMMATION_WITHIN_TWELVE_MONTHS',
+    'FIFTY_PERCENT_ACQUISITION_THRESHOLD',
+    'PUBLIC_COMPANY_ALTERNATIVE_TRANSACTION_NOT_WITHDRAWN',
+  ]);
   assert.equal(ioc.canonical_numeric_value, '0.07272727');
   assert.equal(compileCanonicalQueryRequest(requestFor(iocRow)).selected_columns.includes('percent_of_deal_value'), true);
   assert.equal(material.canonical_numeric_value, '0.07272727');
@@ -295,6 +311,12 @@ test('query request and response fail closed on unsupported fields, cross-metric
     () => compileCanonicalQueryRequest(requestFor(materialRow, { column_filters: { fee_side: 'SELLER' } })),
     /fee refinements require/,
   );
+  assert.throws(
+    () => compileCanonicalQueryRequest(requestFor(materialRow, {
+      column_filters: { payment_timing: 'CONCURRENT_WITH_TERMINATION' },
+    })),
+    /fee refinements require/,
+  );
 
   const broadClient = {
     rpc(name, params) {
@@ -340,12 +362,18 @@ test('the staging query projection is indexed, keyset-paged and served by one bo
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.shared_serving_rows/);
   assert.match(sql, /canonical_numeric_value numeric/);
   assert.match(sql, /trigger_codes text\[\]/);
+  assert.match(sql, /payment_timings text\[\]/);
+  assert.match(sql, /trigger_conditions text\[\]/);
   assert.match(sql, /CREATE OR REPLACE FUNCTION public\.canonical_v2_query_page/);
   assert.match(sql, /SECURITY DEFINER/);
   assert.match(sql, /SET statement_timeout = '2500ms'/);
   assert.match(sql, /LIMIT p_page_size \+ 1/);
   assert.match(sql, /\(row\.governed_deal_key, row\.row_serving_key\) > \(p_after_governed_deal_key, p_after_row_serving_key\)/);
-  assert.match(sql, /p_trigger_code = ANY\(row\.trigger_codes\)/);
+  assert.match(sql, /row\.trigger_codes @> ARRAY\[p_trigger_code\]::text\[\]/);
+  assert.match(sql, /row\.payment_timings @> ARRAY\[p_payment_timing\]::text\[\]/);
+  assert.match(sql, /row\.trigger_conditions @> ARRAY\[p_trigger_condition\]::text\[\]/);
+  assert.match(sql, /canonical_v2_shared_rows_payment_timings_idx[\s\S]*USING gin \(payment_timings\)/);
+  assert.match(sql, /canonical_v2_shared_rows_trigger_conditions_idx[\s\S]*USING gin \(trigger_conditions\)/);
   assert.match(sql, /REVOKE ALL ON TABLE canonical_v2_staging\.shared_serving_rows/);
   assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_query_page[\s\S]*TO canonical_v2_serving/);
   assert.doesNotMatch(sql, /\bOFFSET\b/i);

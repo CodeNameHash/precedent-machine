@@ -29,7 +29,8 @@ const PARAM_KEYS = Object.freeze([
   'p_party_role', 'p_party_value', 'p_party_capacity', 'p_basis_key', 'p_sector', 'p_buyer',
   'p_merger_form', 'p_adviser_either', 'p_lawyer_either', 'p_year_from', 'p_year_to',
   'p_min_value_usd', 'p_max_value_usd', 'p_min_canonical_value', 'p_max_canonical_value',
-  'p_fee_side', 'p_payer_capacity', 'p_payee_capacity', 'p_trigger_code', 'p_criterion_code',
+  'p_fee_side', 'p_payer_capacity', 'p_payee_capacity', 'p_trigger_code',
+  'p_payment_timing', 'p_trigger_condition', 'p_criterion_code',
   'p_contract_scope_code', 'p_cash_flow_direction_code', 'p_measurement_period_code',
   'p_comparison_operator', 'p_page_size', 'p_after_governed_deal_key', 'p_after_row_serving_key',
 ]);
@@ -68,7 +69,7 @@ function readOnlySql(sql) {
     const result = spawnSync('supabase', ['db', 'query', '--linked', '--file', file, '--output', 'json'], {
       cwd: ROOT,
       encoding: 'utf8',
-      timeout: 10000,
+      timeout: 30000,
       maxBuffer: 4 * 1024 * 1024,
     });
     if (result.status !== 0) throw new Error(safeDiagnostic(`${result.stderr}\n${result.stdout}`));

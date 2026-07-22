@@ -147,6 +147,8 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.shared_serving_rows (
   payer_capacity text,
   payee_capacity text,
   trigger_codes text[] NOT NULL DEFAULT '{}',
+  payment_timings text[] NOT NULL DEFAULT '{}',
+  trigger_conditions text[] NOT NULL DEFAULT '{}',
   criterion_code text,
   contract_scope_code text,
   cash_flow_direction_code text,
@@ -156,6 +158,11 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.shared_serving_rows (
   canonical_payload_digest text NOT NULL CHECK (canonical_payload_digest ~ '^[a-f0-9]{64}$'),
   PRIMARY KEY (serving_namespace_id, corpus_release_id, row_serving_key)
 );
+
+ALTER TABLE canonical_v2_staging.shared_serving_rows
+  ADD COLUMN IF NOT EXISTS payment_timings text[] NOT NULL DEFAULT '{}';
+ALTER TABLE canonical_v2_staging.shared_serving_rows
+  ADD COLUMN IF NOT EXISTS trigger_conditions text[] NOT NULL DEFAULT '{}';
 
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.reviewed_source_specific_serving_rows (
   serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
@@ -402,6 +409,10 @@ CREATE INDEX IF NOT EXISTS canonical_v2_shared_rows_lawyers_idx
   ON canonical_v2_staging.shared_serving_rows USING gin (lawyers);
 CREATE INDEX IF NOT EXISTS canonical_v2_shared_rows_triggers_idx
   ON canonical_v2_staging.shared_serving_rows USING gin (trigger_codes);
+CREATE INDEX IF NOT EXISTS canonical_v2_shared_rows_payment_timings_idx
+  ON canonical_v2_staging.shared_serving_rows USING gin (payment_timings);
+CREATE INDEX IF NOT EXISTS canonical_v2_shared_rows_trigger_conditions_idx
+  ON canonical_v2_staging.shared_serving_rows USING gin (trigger_conditions);
 CREATE INDEX IF NOT EXISTS canonical_v2_reviewed_source_specific_deal_idx
   ON canonical_v2_staging.reviewed_source_specific_serving_rows (
     serving_namespace_id,
@@ -1872,6 +1883,12 @@ BEGIN
 END;
 $$;
 
+DROP FUNCTION IF EXISTS public.canonical_v2_query_page(
+  text, text, text, text, text, text, integer, text, text, text, text, text,
+  text, text, text, text, text, integer, integer, numeric, numeric, numeric, numeric,
+  text, text, text, text, text, text, text, text, text, integer, text, text
+);
+
 CREATE OR REPLACE FUNCTION public.canonical_v2_query_page(
   p_environment text,
   p_serving_namespace_id text,
@@ -1900,6 +1917,8 @@ CREATE OR REPLACE FUNCTION public.canonical_v2_query_page(
   p_payer_capacity text DEFAULT NULL,
   p_payee_capacity text DEFAULT NULL,
   p_trigger_code text DEFAULT NULL,
+  p_payment_timing text DEFAULT NULL,
+  p_trigger_condition text DEFAULT NULL,
   p_criterion_code text DEFAULT NULL,
   p_contract_scope_code text DEFAULT NULL,
   p_cash_flow_direction_code text DEFAULT NULL,
@@ -1987,7 +2006,9 @@ BEGIN
       AND (p_fee_side IS NULL OR row.fee_side = p_fee_side)
       AND (p_payer_capacity IS NULL OR row.payer_capacity = p_payer_capacity)
       AND (p_payee_capacity IS NULL OR row.payee_capacity = p_payee_capacity)
-      AND (p_trigger_code IS NULL OR p_trigger_code = ANY(row.trigger_codes))
+      AND (p_trigger_code IS NULL OR row.trigger_codes @> ARRAY[p_trigger_code]::text[])
+      AND (p_payment_timing IS NULL OR row.payment_timings @> ARRAY[p_payment_timing]::text[])
+      AND (p_trigger_condition IS NULL OR row.trigger_conditions @> ARRAY[p_trigger_condition]::text[])
       AND (p_criterion_code IS NULL OR row.criterion_code = p_criterion_code)
       AND (p_contract_scope_code IS NULL OR row.contract_scope_code = p_contract_scope_code)
       AND (p_cash_flow_direction_code IS NULL OR row.cash_flow_direction_code = p_cash_flow_direction_code)
@@ -2365,12 +2386,12 @@ GRANT EXECUTE ON FUNCTION public.canonical_v2_market_cohort(
 REVOKE ALL ON FUNCTION public.canonical_v2_query_page(
   text, text, text, text, text, text, integer, text, text, text, text, text,
   text, text, text, text, text, integer, integer, numeric, numeric, numeric, numeric,
-  text, text, text, text, text, text, text, text, text, integer, text, text
+  text, text, text, text, text, text, text, text, text, text, text, integer, text, text
 ) FROM PUBLIC, anon, authenticated, service_role;
 GRANT EXECUTE ON FUNCTION public.canonical_v2_query_page(
   text, text, text, text, text, text, integer, text, text, text, text, text,
   text, text, text, text, text, integer, integer, numeric, numeric, numeric, numeric,
-  text, text, text, text, text, text, text, text, text, integer, text, text
+  text, text, text, text, text, text, text, text, text, text, text, integer, text, text
 ) TO canonical_v2_serving;
 REVOKE ALL ON FUNCTION public.canonical_v2_active_review_context(
   text, text, text, uuid, integer, text

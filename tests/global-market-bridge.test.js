@@ -49,6 +49,9 @@ test('market cells render substantive term detail before fallback and prevalence
   assert.match(MARKET_COLUMN, /data\?\.loading && !responseRow && !fallbackSummary/);
   assert.match(MARKET_COLUMN, /data\?\.error && !responseRow && !fallbackSummary/);
   assert.match(MARKET_COLUMN, /!availableSubstantive\.length && !availablePrevalence\.length && !fallbackSummary/);
+  assert.match(MARKET_COLUMN, /<SubjectLegalTerms result=\{result\}/);
+  assert.match(SIDEBAR, /<CurrentDealTerms terms=\{context\.currentDealTerms\}/);
+  assert.match(SIDEBAR, /data-testid="market-current-deal-terms"/);
 });
 
 test('money market cells present deal-relative percentages without raw dollar summaries', () => {

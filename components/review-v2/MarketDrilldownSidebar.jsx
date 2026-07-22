@@ -159,6 +159,23 @@ function DistributionSection({ title, summaries, denominator }) {
   );
 }
 
+function CurrentDealTerms({ terms }) {
+  if (!Array.isArray(terms) || !terms.length) return null;
+  return (
+    <section className="border-t border-border pt-4" data-testid="market-current-deal-terms">
+      <h3 className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink mb-2">This deal</h3>
+      <dl className="space-y-2">
+        {terms.map((term, index) => (
+          <div key={`${term.key || term.label || 'term'}-${index}`} className="grid grid-cols-[84px_minmax(0,1fr)] gap-2 text-[10px] leading-4">
+            <dt className="font-bold text-inkFaint">{term.label}</dt>
+            <dd className="text-ink">{term.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  );
+}
+
 export default function MarketDrilldownSidebar({ context, onClose }) {
   if (!context) {
     return (
@@ -186,6 +203,7 @@ export default function MarketDrilldownSidebar({ context, onClose }) {
           {onClose ? <button type="button" onClick={onClose} aria-label="Close market detail" className="text-lg leading-none text-inkLight hover:text-ink">×</button> : null}
         </div>
 
+        <CurrentDealTerms terms={context.currentDealTerms} />
         <DistributionSection title="Market ranges" summaries={context.metrics} denominator={termDenominator} />
         <DistributionSection title="Treatments" summaries={context.treatments} denominator={termDenominator} />
         <DistributionSection title="Exceptions" summaries={context.exceptions} denominator={termDenominator} />

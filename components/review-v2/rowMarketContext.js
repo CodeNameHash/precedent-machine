@@ -377,6 +377,21 @@ export function buildTypedRowMarketContext(resolution, data, fallbackSummary = n
     .filter(({ spec }) => presentationRole(spec) === 'metric')
     .map(({ summary }) => summary);
   const results = entries.map(({ spec }) => responseRow?.metrics?.[spec.metricKey]).filter(Boolean);
+  const currentDealTerms = [];
+  const seenCurrentDealTerms = new Set();
+  results.forEach((result) => {
+    (Array.isArray(result?.subject?.legalTerms) ? result.subject.legalTerms : []).forEach((term) => {
+      if (!term || term.value == null) return;
+      const identity = `${String(term.key || term.label || '')}\u0000${String(term.value)}`;
+      if (seenCurrentDealTerms.has(identity)) return;
+      seenCurrentDealTerms.add(identity);
+      currentDealTerms.push({
+        key: String(term.key || `term_${currentDealTerms.length + 1}`),
+        label: String(term.label || ''),
+        value: String(term.value),
+      });
+    });
+  });
   const presenceResult = entries
     .find(({ spec }) => presentationRole(spec) === 'prevalence')
     ?.spec;
@@ -416,6 +431,7 @@ export function buildTypedRowMarketContext(resolution, data, fallbackSummary = n
     treatments,
     exceptions,
     metrics,
+    currentDealTerms,
     primarySummary: metrics[0] || treatments[0] || exceptions[0] || entries[0].summary,
     deals: uniqueDeals(entries.map(({ summary }) => summary)),
     truncated: false,

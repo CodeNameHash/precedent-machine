@@ -51,6 +51,14 @@ function sanitizeContext(context, labelOverride = null) {
   const treatments = (Array.isArray(context.treatments) ? context.treatments : []).map(sanitizeSummary).filter(Boolean);
   const exceptions = (Array.isArray(context.exceptions) ? context.exceptions : []).map(sanitizeSummary).filter(Boolean);
   const metrics = (Array.isArray(context.metrics) ? context.metrics : []).map(sanitizeSummary).filter(Boolean);
+  const currentDealTerms = (Array.isArray(context.currentDealTerms) ? context.currentDealTerms : [])
+    .slice(0, 30)
+    .map((term, index) => ({
+      key: plainText(term && term.key, `term_${index + 1}`),
+      label: plainText(term && term.label),
+      value: plainText(term && term.value),
+    }))
+    .filter((term) => term.value);
   const primarySummary = sanitizeSummary(context.primarySummary) || treatments[0] || metrics[0] || exceptions[0] || null;
   if (!primarySummary) return null;
   return {
@@ -64,6 +72,7 @@ function sanitizeContext(context, labelOverride = null) {
     treatments,
     exceptions,
     metrics,
+    currentDealTerms,
     primarySummary,
     deals: (Array.isArray(context.deals) ? context.deals : []).map(sanitizeDeal).filter(Boolean),
     truncated: Boolean(context.truncated),

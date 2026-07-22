@@ -2,7 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
-const { canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
+const { canonicalJson, contentId } = require('../lib/canonical-v2/canonical-bytes');
 const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
 const { InMemoryCanonicalRepository, createCanonicalWriter } = require('../lib/canonical-v2/canonical-writer');
 const {
@@ -130,6 +130,40 @@ test('all three triggers survive the release projection and one shared row', () 
   for (const surface of SURFACES) {
     assert.equal(adapted.surface_bindings[surface].typed_market, adapted.typed_market);
   }
+});
+
+test('market statistics are weighted cohort statistics, not selected-deal placeholders', () => {
+  const slice = build();
+  const row = structuredClone(buildReviewedTerminationFeeServingRow({ slice, contractBundle }));
+  const market = row.canonical_result.market_context;
+  market.cohort.counts = {
+    eligible_deals: 5,
+    applicable_deals: 5,
+    examined_deals: 5,
+    present_deals: 5,
+    comparable_deals: 5,
+    distribution_deals: 5,
+    excluded_deals: 0,
+    observation_slots: 5,
+    excluded_slots: 0,
+  };
+  market.cohort.distribution = ['1', '2', '4', slice.feeClaim.canonical_value, '8']
+    .map((canonical_value) => ({ canonical_value, subject_count: 1, deal_count: 1 }));
+  market.denominators.prevalence.deal_count = 5;
+  market.denominators.distribution.deal_count = 5;
+  delete row.canonical_payload_digest;
+  row.canonical_payload_digest = contentId('SHARED_SERVING_ROW_PAYLOAD/V1', row);
+
+  const adapted = adaptSharedServingRow(row);
+  const stats = adapted.data.byRow[adapted.row_key]
+    .metrics.SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE
+    .distribution.normalised.cohorts[0].percent.stats;
+  assert.equal(stats.min, 1);
+  assert.equal(stats.p25, 2);
+  assert.equal(stats.median, 4);
+  assert.equal(stats.p75, 5.09090909);
+  assert.equal(stats.max, 8);
+  assert.ok(Math.abs(stats.mean - 4.018181818) < 1e-12);
 });
 
 test('the source action can resolve either the fee or its denominator without broad source access', () => {
