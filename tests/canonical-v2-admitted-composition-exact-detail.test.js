@@ -15,7 +15,9 @@ const {
   buildCandidateReleaseImportPlan,
 } = require('../lib/canonical-v2/candidate-release-import');
 const { contentId, sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
+const { buildClaimRevision } = require('../lib/canonical-v2/claims-relationships');
 const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
+const { compileMarketCohortRequest } = require('../lib/canonical-v2/market-cohort-query');
 const {
   buildQxoCapitalisationServingSlice,
 } = require('../lib/canonical-v2/qxo-capitalisation-serving-slice');
@@ -24,6 +26,14 @@ const {
   SECTION_5_2_INTERVAL,
   buildQxoReviewedCapitalisationSlice,
 } = require('../lib/canonical-v2/reviewed-qxo-capitalisation-slice');
+const { buildFixtureResultComponent, projectMarketMetricSlot } = require('../lib/canonical-v2/serving-projection');
+const { buildCanonicalResultServingRow } = require('../lib/canonical-v2/shared-serving-row');
+const {
+  buildExcerpt,
+  buildProvisionComponent,
+  buildProvisionInstance,
+  buildSemanticSpan,
+} = require('../lib/canonical-v2/source-structure');
 const { QXO_5_2_TEXT } = require('./fixtures/qxo-section-5-2');
 
 function digest(label) {
@@ -191,6 +201,156 @@ test('a real-shape admitted V2 source produces one valid bounded composition pac
   );
   assert.equal(fixture.package.detail_payloads[0].response_body.source_lineage.document_hash,
     fixture.args.source.document_hash);
+});
+
+test('an admitted single-claim result carries exact evidence without inventing a relationship target', () => {
+  const contract = compileFixtureContract();
+  const { source, admission } = buildSource();
+  const corpusReleaseId = digest('claim-only-corpus');
+  const servingNamespaceId = digest('claim-only-namespace');
+  const span = buildSemanticSpan(
+    source,
+    CAPITAL_STRUCTURE_INTERVAL.start,
+    CAPITAL_STRUCTURE_INTERVAL.start + 32,
+  );
+  const excerpt = buildExcerpt({ source, span });
+  const party = { role: 'COVENANT_OBLIGOR', value: 'COMPANY', capacity: 'TARGET' };
+  const provision = buildProvisionInstance({
+    source,
+    span,
+    conceptKey: 'NOSOL-NOTICE',
+    party,
+    ordinal: 1,
+  });
+  const provisionComponent = buildProvisionComponent({
+    source,
+    parentProvision: provision,
+    span,
+    componentKey: 'NOTICE_LIMB',
+    ordinal: 1,
+  });
+  const claim = buildClaimRevision({
+    subject_occurrence_id: provisionComponent.provision_component_id,
+    claim_definition_key: 'NO_SHOP_NOTICE_PERIOD_DAYS',
+    state: 'PRESENT',
+    raw_value: 'twenty-four (24) hours',
+    canonical_value: '1',
+    unit: 'DAYS',
+    day_basis: 'ELAPSED',
+    attributes: {
+      basis_key: 'DAYS:ELAPSED:RECEIPT_OF_COMPETING_PROPOSAL',
+      trigger: 'RECEIPT_OF_COMPETING_PROPOSAL',
+      raw_magnitude: '24',
+      raw_unit: 'HOURS',
+      normalisation_payload_digest: digest('claim-only-normalisation'),
+    },
+    allowed_attributes: ['basis_key', 'trigger', 'raw_magnitude', 'raw_unit', 'normalisation_payload_digest'],
+    evidence: [{
+      evidence_role: 'OPERATIVE_TEXT',
+      excerpt_id: excerpt.excerpt_id,
+      document_ordinal: 0,
+      absolute_start: excerpt.absolute_start,
+      absolute_end: excerpt.absolute_end,
+    }],
+  });
+  const result = buildFixtureResultComponent({
+    deal_admission_id: source.deal_admission_id,
+    result_key: 'TARGET_NO_SHOP_NOTICE',
+    result_version: 1,
+    concept_key: 'NOSOL-NOTICE',
+    party,
+    value_slot_key: 'NOTICE_PERIOD',
+    ordinal: 0,
+    claim,
+    relationships: [],
+    composition_scope_closure_id: digest('claim-only-composition-scope'),
+    completeness: 'COMPLETE',
+    comparability: 'COMPARABLE',
+  });
+  const deal = {
+    deal_key: source.governed_deal_key,
+    deal_admission_id: source.deal_admission_id,
+    document_hash: source.document_hash,
+    dimensions: {
+      sector: null,
+      buyer: 'QXO',
+      merger_form: null,
+      adviser_firms: [],
+      lawyers: [],
+      announce_year: null,
+      deal_value_usd: null,
+    },
+  };
+  const projection = projectMarketMetricSlot({
+    contract_bundle: contract,
+    release_state: 'CANDIDATE_CERTIFIED',
+    corpus_release_id: corpusReleaseId,
+    deal,
+    concept_key: 'NOSOL-NOTICE',
+    metric_key: 'NO_SHOP_NOTICE_PERIOD_DAYS',
+    party,
+    result,
+    claim,
+    relationships: [],
+    value_slot_key: 'NOTICE_PERIOD',
+    ordinal: 0,
+  });
+  const cohortRequest = {
+    serving_namespace_id: servingNamespaceId,
+    corpus_release_id: corpusReleaseId,
+    contract_fingerprint: contract.fingerprint,
+    metric_key: 'NO_SHOP_NOTICE_PERIOD_DAYS',
+    metric_version: 1,
+    concept_key: 'NOSOL-NOTICE',
+    party,
+    subject_deal_key: source.governed_deal_key,
+    filters: {},
+  };
+  const compiled = compileMarketCohortRequest(cohortRequest);
+  const row = buildCanonicalResultServingRow({
+    contract_bundle: contract,
+    frozen_pair_id: digest('claim-only-frozen-pair'),
+    projection_output: projection,
+    cohort_request: cohortRequest,
+    cohort_result: {
+      schema_version: 'MARKET_COHORT_RESULT/V1',
+      serving_namespace_id: servingNamespaceId,
+      corpus_release_id: corpusReleaseId,
+      contract_fingerprint: contract.fingerprint,
+      cohort_digest: compiled.cohort_digest,
+      metric_key: 'NO_SHOP_NOTICE_PERIOD_DAYS',
+      metric_version: 1,
+      concept_key: 'NOSOL-NOTICE',
+      subject_deal_key: source.governed_deal_key,
+      counts: {
+        eligible_deals: 1,
+        applicable_deals: 1,
+        examined_deals: 1,
+        present_deals: 1,
+        comparable_deals: 1,
+        distribution_deals: 1,
+        excluded_deals: 0,
+        observation_slots: 1,
+        excluded_slots: 0,
+      },
+      distribution: [{ canonical_value: '1', subject_count: 1, deal_count: 1 }],
+      exclusions: [],
+    },
+    result_ordinal: 0,
+  });
+  const args = {
+    contract_bundle: contract,
+    row,
+    source,
+    source_admission: admission,
+    components: [{ component: result, claim, relationships: [] }],
+    relationship_targets: [],
+    excerpts: [excerpt],
+  };
+  const packageValue = buildAdmittedResultCompositionDetailPackage(args);
+  assert.equal(validateAdmittedResultCompositionDetailPackage({ package: packageValue, ...args }), true);
+  assert.deepEqual(packageValue.detail_payloads[0].response_body.relationships, []);
+  assert.equal(packageValue.detail_payloads[0].response_body.excerpts.length, 1);
 });
 
 test('admitted composition detail rejects altered V2 lineage and incomplete scope evidence', () => {
