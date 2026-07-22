@@ -3,7 +3,9 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
 const { buildLandosCandidateReleaseFixture } = require('../__fixtures__/canonical-v2/landos-candidate-release');
+const { buildInitialActiveReleasePointer } = require('../lib/canonical-v2/candidate-release');
 const {
+  activateCandidateRelease,
   buildCandidateReleaseImportPlan,
   importCandidateRelease,
   validateCandidateReleaseImportPlan,
@@ -100,6 +102,35 @@ test('release import performs one writer RPC, validates the complete receipt and
   assert.equal(failedCalls, 1);
 });
 
+test('active release movement is one exact compare-and-swap RPC over a completely imported candidate', async () => {
+  const { release } = buildLandosCandidateReleaseFixture();
+  const currentPointer = buildInitialActiveReleasePointer();
+  const calls = [];
+  const activated = await activateCandidateRelease({
+    client: {
+      rpc(name, params) {
+        calls.push({ name, params });
+        return Promise.resolve({ data: params.p_next_pointer, error: null });
+      },
+    },
+    currentPointer,
+    release,
+  });
+
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].name, 'canonical_v2_activate_candidate_release');
+  assert.deepEqual(calls[0].params.p_expected_current_pointer, currentPointer);
+  assert.equal(activated.pointer.generation, 1);
+  assert.equal(activated.pointer.corpus_release_id, release.manifest.corpus_release_id);
+  assert.equal(activated.pointer.previous_pointer_id, currentPointer.pointer_id);
+
+  await assert.rejects(activateCandidateRelease({
+    client: { rpc: () => Promise.resolve({ data: currentPointer, error: null }) },
+    currentPointer,
+    release,
+  }), (error) => error.code === 'INVALID_RESPONSE');
+});
+
 test('staging import is set-based, transactional and withholds completion until every certified count closes', () => {
   const sql = fs.readFileSync('supabase/canonical-v2-serving.sql', 'utf8');
   const functionStart = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_import_candidate_release');
@@ -109,6 +140,8 @@ test('staging import is set-based, transactional and withholds completion until 
   assert.ok(functionStart >= 0 && functionEnd > functionStart);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.exact_detail_serving_packages/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.candidate_release_import_receipts/);
+  assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.active_corpus_release_pointer_history/);
+  assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.active_corpus_release_pointers/);
   assert.match(importer, /SET statement_timeout = '15000ms'/);
   assert.match(importer, /pg_advisory_xact_lock\(hashtextextended\(manifest_id, 0\)\)/);
   assert.match(importer, /jsonb_populate_recordset/);
@@ -119,4 +152,16 @@ test('staging import is set-based, transactional and withholds completion until 
   assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_import_candidate_release\(text, jsonb\)[\s\S]*TO canonical_v2_writer/);
   assert.doesNotMatch(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_import_candidate_release\(text, jsonb\)\s+TO canonical_v2_serving/);
   assert.doesNotMatch(sql, /GRANT SELECT[\s\S]*TO (anon|authenticated|service_role|canonical_v2_serving|canonical_v2_writer)/);
+
+  const activationStart = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_activate_candidate_release');
+  const activationEnd = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_release');
+  const activation = sql.slice(activationStart, activationEnd);
+  assert.ok(activationStart >= 0 && activationEnd > activationStart);
+  assert.match(activation, /pg_advisory_xact_lock/);
+  assert.match(activation, /active release pointer changed before compare-and-swap/);
+  assert.match(activation, /receipt\.import_state = 'IMPORTED_COMPLETE'/);
+  assert.match(activation, /candidate release has no complete import receipt/);
+  assert.match(activation, /INSERT INTO canonical_v2_staging\.active_corpus_release_pointer_history[\s\S]*INSERT INTO canonical_v2_staging\.active_corpus_release_pointers/);
+  assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_activate_candidate_release\(text, jsonb, jsonb\)[\s\S]*TO canonical_v2_writer/);
+  assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_active_release\(text\)[\s\S]*TO canonical_v2_serving/);
 });

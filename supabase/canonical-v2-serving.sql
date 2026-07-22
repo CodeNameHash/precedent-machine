@@ -184,6 +184,34 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.candidate_release_import_receipt
   imported_at timestamptz NOT NULL DEFAULT transaction_timestamp()
 );
 
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.active_corpus_release_pointer_history (
+  pointer_id text PRIMARY KEY CHECK (pointer_id ~ '^[a-f0-9]{64}$'),
+  environment text NOT NULL CHECK (environment = 'staging'),
+  generation integer NOT NULL CHECK (generation > 0),
+  corpus_release_id text NOT NULL REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id),
+  serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
+  candidate_manifest_id text NOT NULL REFERENCES canonical_v2_staging.candidate_release_import_receipts(candidate_manifest_id),
+  candidate_release_import_plan_id text NOT NULL REFERENCES canonical_v2_staging.candidate_release_import_receipts(candidate_release_import_plan_id),
+  previous_pointer_id text NOT NULL CHECK (previous_pointer_id ~ '^[a-f0-9]{64}$'),
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text NOT NULL CHECK (canonical_payload_digest ~ '^[a-f0-9]{64}$'),
+  activated_at timestamptz NOT NULL DEFAULT transaction_timestamp()
+);
+
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.active_corpus_release_pointers (
+  environment text PRIMARY KEY CHECK (environment = 'staging'),
+  generation integer NOT NULL CHECK (generation > 0),
+  pointer_id text NOT NULL UNIQUE REFERENCES canonical_v2_staging.active_corpus_release_pointer_history(pointer_id),
+  corpus_release_id text NOT NULL REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id),
+  serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
+  candidate_manifest_id text NOT NULL REFERENCES canonical_v2_staging.candidate_release_import_receipts(candidate_manifest_id),
+  candidate_release_import_plan_id text NOT NULL REFERENCES canonical_v2_staging.candidate_release_import_receipts(candidate_release_import_plan_id),
+  previous_pointer_id text NOT NULL CHECK (previous_pointer_id ~ '^[a-f0-9]{64}$'),
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text NOT NULL CHECK (canonical_payload_digest ~ '^[a-f0-9]{64}$'),
+  activated_at timestamptz NOT NULL DEFAULT transaction_timestamp()
+);
+
 CREATE INDEX IF NOT EXISTS canonical_v2_market_observation_cohort_idx
   ON canonical_v2_staging.market_observations (
     serving_namespace_id,
@@ -333,6 +361,8 @@ ALTER TABLE canonical_v2_staging.shared_serving_rows ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.reviewed_source_specific_serving_rows ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.exact_detail_serving_packages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.candidate_release_import_receipts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.active_corpus_release_pointer_history ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.active_corpus_release_pointers ENABLE ROW LEVEL SECURITY;
 
 CREATE OR REPLACE FUNCTION public.canonical_v2_import_candidate_release(
   p_environment text,
@@ -585,6 +615,161 @@ BEGIN
     'imported_at', imported_at_value
   );
 END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.canonical_v2_activate_candidate_release(
+  p_environment text,
+  p_expected_current_pointer jsonb,
+  p_next_pointer jsonb
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pg_catalog, canonical_v2_staging
+SET statement_timeout = '2500ms'
+AS $$
+DECLARE
+  stored_pointer jsonb;
+  imported_plan_id text;
+BEGIN
+  IF current_setting('app.canonical_v2_environment', true) IS DISTINCT FROM 'staging'
+    OR p_environment IS DISTINCT FROM 'staging'
+    OR p_expected_current_pointer->>'environment' IS DISTINCT FROM 'staging'
+    OR p_next_pointer->>'environment' IS DISTINCT FROM 'staging' THEN
+    RAISE EXCEPTION 'canonical_v2_activate_candidate_release is staging-only' USING ERRCODE = '42501';
+  END IF;
+  IF p_expected_current_pointer->>'schema_version' IS DISTINCT FROM 'FIXTURE_ACTIVE_RELEASE_POINTER/V1'
+    OR p_next_pointer->>'schema_version' IS DISTINCT FROM 'FIXTURE_ACTIVE_RELEASE_POINTER/V1'
+    OR p_expected_current_pointer->>'pointer_id' !~ '^[a-f0-9]{64}$'
+    OR p_next_pointer->>'pointer_id' !~ '^[a-f0-9]{64}$'
+    OR p_next_pointer->>'canonical_payload_digest' !~ '^[a-f0-9]{64}$'
+    OR p_next_pointer->>'corpus_release_id' !~ '^[a-f0-9]{64}$'
+    OR p_next_pointer->>'serving_namespace_id' !~ '^[a-f0-9]{64}$'
+    OR p_next_pointer->>'candidate_release_manifest_id' !~ '^[a-f0-9]{64}$'
+    OR p_next_pointer->>'previous_pointer_id' !~ '^[a-f0-9]{64}$'
+    OR (p_next_pointer->>'generation')::integer
+      IS DISTINCT FROM (p_expected_current_pointer->>'generation')::integer + 1
+    OR p_next_pointer->>'previous_pointer_id' IS DISTINCT FROM p_expected_current_pointer->>'pointer_id' THEN
+    RAISE EXCEPTION 'invalid active release pointer transition' USING ERRCODE = '22023';
+  END IF;
+
+  PERFORM pg_advisory_xact_lock(hashtextextended('canonical-v2-active-release:' || p_environment, 0));
+  SELECT pointer.canonical_payload
+  INTO stored_pointer
+  FROM canonical_v2_staging.active_corpus_release_pointers pointer
+  WHERE pointer.environment = p_environment;
+  IF stored_pointer IS NULL THEN
+    IF (p_expected_current_pointer->>'generation')::integer IS DISTINCT FROM 0
+      OR p_expected_current_pointer->'corpus_release_id' IS DISTINCT FROM 'null'::jsonb
+      OR p_expected_current_pointer->'serving_namespace_id' IS DISTINCT FROM 'null'::jsonb
+      OR p_expected_current_pointer->'candidate_release_manifest_id' IS DISTINCT FROM 'null'::jsonb
+      OR p_expected_current_pointer->'previous_pointer_id' IS DISTINCT FROM 'null'::jsonb THEN
+      RAISE EXCEPTION 'active release pointer does not match the empty store' USING ERRCODE = '40001';
+    END IF;
+  ELSIF stored_pointer IS DISTINCT FROM p_expected_current_pointer THEN
+    RAISE EXCEPTION 'active release pointer changed before compare-and-swap' USING ERRCODE = '40001';
+  END IF;
+
+  SELECT receipt.candidate_release_import_plan_id
+  INTO imported_plan_id
+  FROM canonical_v2_staging.candidate_release_import_receipts receipt
+  WHERE receipt.import_state = 'IMPORTED_COMPLETE'
+    AND receipt.candidate_manifest_id = p_next_pointer->>'candidate_release_manifest_id'
+    AND receipt.corpus_release_id = p_next_pointer->>'corpus_release_id'
+    AND receipt.serving_namespace_id = p_next_pointer->>'serving_namespace_id';
+  IF imported_plan_id IS NULL THEN
+    RAISE EXCEPTION 'candidate release has no complete import receipt' USING ERRCODE = '23514';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1
+    FROM canonical_v2_staging.active_corpus_release_pointer_history history
+    WHERE history.pointer_id = p_next_pointer->>'pointer_id'
+      AND history.canonical_payload IS DISTINCT FROM p_next_pointer
+  ) THEN
+    RAISE EXCEPTION 'active release pointer identity conflicts with different content' USING ERRCODE = '23505';
+  END IF;
+  INSERT INTO canonical_v2_staging.active_corpus_release_pointer_history(
+    pointer_id,
+    environment,
+    generation,
+    corpus_release_id,
+    serving_namespace_id,
+    candidate_manifest_id,
+    candidate_release_import_plan_id,
+    previous_pointer_id,
+    canonical_payload,
+    canonical_payload_digest
+  ) VALUES (
+    p_next_pointer->>'pointer_id',
+    p_environment,
+    (p_next_pointer->>'generation')::integer,
+    p_next_pointer->>'corpus_release_id',
+    p_next_pointer->>'serving_namespace_id',
+    p_next_pointer->>'candidate_release_manifest_id',
+    imported_plan_id,
+    p_next_pointer->>'previous_pointer_id',
+    p_next_pointer,
+    p_next_pointer->>'canonical_payload_digest'
+  ) ON CONFLICT (pointer_id) DO NOTHING;
+
+  INSERT INTO canonical_v2_staging.active_corpus_release_pointers(
+    environment,
+    generation,
+    pointer_id,
+    corpus_release_id,
+    serving_namespace_id,
+    candidate_manifest_id,
+    candidate_release_import_plan_id,
+    previous_pointer_id,
+    canonical_payload,
+    canonical_payload_digest
+  ) VALUES (
+    p_environment,
+    (p_next_pointer->>'generation')::integer,
+    p_next_pointer->>'pointer_id',
+    p_next_pointer->>'corpus_release_id',
+    p_next_pointer->>'serving_namespace_id',
+    p_next_pointer->>'candidate_release_manifest_id',
+    imported_plan_id,
+    p_next_pointer->>'previous_pointer_id',
+    p_next_pointer,
+    p_next_pointer->>'canonical_payload_digest'
+  )
+  ON CONFLICT (environment) DO UPDATE SET
+    generation = EXCLUDED.generation,
+    pointer_id = EXCLUDED.pointer_id,
+    corpus_release_id = EXCLUDED.corpus_release_id,
+    serving_namespace_id = EXCLUDED.serving_namespace_id,
+    candidate_manifest_id = EXCLUDED.candidate_manifest_id,
+    candidate_release_import_plan_id = EXCLUDED.candidate_release_import_plan_id,
+    previous_pointer_id = EXCLUDED.previous_pointer_id,
+    canonical_payload = EXCLUDED.canonical_payload,
+    canonical_payload_digest = EXCLUDED.canonical_payload_digest,
+    activated_at = transaction_timestamp();
+
+  RETURN p_next_pointer;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.canonical_v2_active_release(p_environment text)
+RETURNS jsonb
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, canonical_v2_staging
+SET statement_timeout = '1000ms'
+AS $$
+  SELECT CASE
+    WHEN current_setting('app.canonical_v2_environment', true) IS DISTINCT FROM 'staging'
+      OR p_environment IS DISTINCT FROM 'staging'
+    THEN NULL
+    ELSE (
+      SELECT pointer.canonical_payload
+      FROM canonical_v2_staging.active_corpus_release_pointers pointer
+      WHERE pointer.environment = p_environment
+    )
+  END
 $$;
 
 CREATE OR REPLACE FUNCTION public.canonical_v2_market_cohort(
@@ -1091,12 +1276,24 @@ REVOKE ALL ON TABLE canonical_v2_staging.exact_detail_serving_packages
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON TABLE canonical_v2_staging.candidate_release_import_receipts
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
+REVOKE ALL ON TABLE canonical_v2_staging.active_corpus_release_pointer_history
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
+REVOKE ALL ON TABLE canonical_v2_staging.active_corpus_release_pointers
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON FUNCTION canonical_v2_staging.enforce_market_metric_slot_partition()
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
 REVOKE ALL ON FUNCTION public.canonical_v2_import_candidate_release(text, jsonb)
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
 GRANT EXECUTE ON FUNCTION public.canonical_v2_import_candidate_release(text, jsonb)
   TO canonical_v2_writer;
+REVOKE ALL ON FUNCTION public.canonical_v2_activate_candidate_release(text, jsonb, jsonb)
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
+GRANT EXECUTE ON FUNCTION public.canonical_v2_activate_candidate_release(text, jsonb, jsonb)
+  TO canonical_v2_writer;
+REVOKE ALL ON FUNCTION public.canonical_v2_active_release(text)
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;
+GRANT EXECUTE ON FUNCTION public.canonical_v2_active_release(text)
+  TO canonical_v2_serving;
 REVOKE ALL ON FUNCTION public.canonical_v2_market_cohort(
   text, text, text, text, text, text, integer, text, text, text, text, text,
   text, text, text, text, text, text, integer, integer, numeric, numeric
