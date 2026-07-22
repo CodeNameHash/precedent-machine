@@ -12,6 +12,7 @@ test('Preview access is pinned to the isolated projection database and deal-corp
   assert.match(source, /prj_pseZ68ISXsxADzNcffHTO2NuGM8b/);
   assert.match(source, /projectName: 'deal-corpus'/);
   assert.match(source, /previewBranch: 'codex\/canonical-corpus-v2'/);
+  assert.match(source, /56da82bee06331793ba2ed8b78ef4186361407e60733595091e5951853e7d41d/);
   assert.doesNotMatch(source, /tzulhdasmioeechxapdy|beddepjkshmgenhsrnno/);
 });
 

@@ -26,6 +26,7 @@ const EXPECTED_VERCEL = Object.freeze({
   projectName: 'deal-corpus',
   previewBranch: 'codex/canonical-corpus-v2',
 });
+const EXPECTED_CONTRACT_FINGERPRINT = '56da82bee06331793ba2ed8b78ef4186361407e60733595091e5951853e7d41d';
 const ROLE_NAME = 'canonical_v2_preview';
 
 function fail(message) {
@@ -181,7 +182,7 @@ function buildConnectionString(pooler, password) {
 
 async function verifyRuntimeConnectionOnce(connectionString) {
   const request = compileActiveReviewContextRequest({
-    contract_fingerprint: '7a869d03bbfd0adc9992f61b2c579fb6d82506755bcf4e8d5116442c4462aa50',
+    contract_fingerprint: EXPECTED_CONTRACT_FINGERPRINT,
     application_deal_id: '7dc3a05f-b170-4d59-a255-b7103cca16e1',
     page_size: 100,
     after_row_serving_key: null,
