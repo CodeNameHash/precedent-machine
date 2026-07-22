@@ -7,6 +7,10 @@ const { contentId } = require('../lib/canonical-v2/canonical-bytes');
 const { validateFixtureExactDetailPackage } = require('../lib/canonical-v2/exact-detail');
 const { adaptSharedServingRow, adaptSharedServingRows, SURFACES } = require('../lib/canonical-v2/shared-row-adapter');
 const { validateSharedServingRow } = require('../lib/canonical-v2/shared-serving-row');
+const {
+  InMemoryCanonicalRepository,
+  createCanonicalWriter,
+} = require('../lib/canonical-v2/canonical-writer');
 
 function resign(row) {
   const copy = structuredClone(row);
@@ -99,4 +103,65 @@ test('an unresolved unfamiliar candidate fails locally while recognised and revi
   const unresolved = structuredClone(sourceSpecific);
   unresolved.reviewed_source_specific.final_disposition.review_state = 'UNRESOLVED';
   assert.throws(() => validateSharedServingRow(resign(unresolved)), /final disposition/);
+});
+
+test('the authoritative writer commits the complete reviewed open-world graph in one transaction', async () => {
+  const fixture = buildLandosSourceSpecificServingFixture();
+  const repository = new InMemoryCanonicalRepository();
+  const writer = createCanonicalWriter({ repository, contractBundle: fixture.contract });
+  const result = await writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN',
+    idempotencyKey: 'landos-source-specific',
+    writeSet: fixture.canonicalWriteSet,
+  });
+  const state = repository.snapshot();
+
+  assert.equal(result.validation.counts.publishable, 16);
+  assert.equal(result.validation.counts.residuals, 0);
+  assert.equal(repository.transactionCount, 1);
+  assert.equal(state.open_world_candidates.length, 1);
+  assert.equal(state.open_world_candidate_occurrences.length, 1);
+  assert.equal(state.open_world_evidence_references.length, 3);
+  assert.equal(state.open_world_candidate_dispositions.length, 1);
+  assert.equal(state.open_world_primitives.length, 5);
+  assert.equal(state.semantic_impact_closures.length, 1);
+  assert.equal(state.reviewed_source_specific_rows.length, 1);
+  assert.equal(
+    state.reviewed_source_specific_rows[0].shared_serving_row.row_serving_key,
+    fixture.row.row_serving_key,
+  );
+});
+
+test('an invalid open-world disposition quarantines only its closure and leaves familiar siblings publishable', async () => {
+  const sourceSpecific = buildLandosSourceSpecificServingFixture();
+  const familiar = buildLandosReviewedServingFixture();
+  const writeSet = structuredClone(familiar.canonicalWriteSet);
+  for (const key of [
+    'open_world_candidates',
+    'open_world_candidate_occurrences',
+    'open_world_evidence_references',
+    'open_world_candidate_dispositions',
+    'open_world_primitives',
+    'semantic_impact_closures',
+    'reviewed_source_specific_rows',
+  ]) writeSet[key] = structuredClone(sourceSpecific.canonicalWriteSet[key]);
+  writeSet.excerpts.push(...structuredClone(sourceSpecific.canonicalWriteSet.excerpts));
+  writeSet.open_world_candidate_dispositions[0].review_state = 'UNRESOLVED';
+
+  const repository = new InMemoryCanonicalRepository();
+  const writer = createCanonicalWriter({ repository, contractBundle: sourceSpecific.contract });
+  const result = await writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN',
+    idempotencyKey: 'landos-source-specific-quarantine',
+    writeSet,
+  });
+  const state = repository.snapshot();
+
+  assert.deepEqual(result.validation.quarantinedClosureIds, [sourceSpecific.closureId]);
+  assert.equal(result.validation.residuals[0].reason_code, 'CANONICAL_IDENTITY_MISMATCH');
+  assert.equal(state.open_world_candidates.length, 0);
+  assert.equal(state.reviewed_source_specific_rows.length, 0);
+  assert.ok(state.claims.length > 0);
+  assert.ok(state.relationships.length > 0);
+  assert.ok(state.excerpts.some((row) => row.closure_id !== sourceSpecific.closureId));
 });

@@ -3,7 +3,10 @@ const path = require('node:path');
 
 const { compileFixtureContract } = require('../../lib/canonical-v2/contract-bundle');
 const { buildFixtureOpenWorldEvidenceDetailPackage } = require('../../lib/canonical-v2/exact-detail');
-const { buildReviewedSourceSpecificSlice } = require('../../lib/canonical-v2/reviewed-source-specific');
+const {
+  buildReviewedSourceSpecificSlice,
+  buildReviewedSourceSpecificWriteSet,
+} = require('../../lib/canonical-v2/reviewed-source-specific');
 
 function buildLandosSourceSpecificServingFixture() {
   const contract = compileFixtureContract();
@@ -19,10 +22,12 @@ function buildLandosSourceSpecificServingFixture() {
     source_admission: slice.sourceAdmission,
     excerpts: Object.values(slice.excerpts),
   });
+  const canonicalWriteSet = buildReviewedSourceSpecificWriteSet({ slice, row: exactDetail.row });
   return Object.freeze({
     ...slice,
     contract,
     exactDetail,
+    canonicalWriteSet,
     row: exactDetail.row,
   });
 }

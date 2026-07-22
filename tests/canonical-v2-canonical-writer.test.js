@@ -347,7 +347,10 @@ test('an injected failure rolls back every staged object and receipt', async () 
     operation: 'FIXTURE_DEAL_EXTRACTION_RUN', idempotencyKey: 'run-4', writeSet: fixtureWriteSet(),
   }), (error) => error.code === 'INJECTED_REPOSITORY_FAILURE');
   assert.deepEqual(repository.snapshot(), {
-    sources: [], sourceAdmissions: [], deals: [], excerpts: [], provisions: [], components: [], claims: [], relationships: [], residuals: [], quarantines: [], receipts: [],
+    sources: [], sourceAdmissions: [], deals: [], excerpts: [], provisions: [], components: [], claims: [], relationships: [],
+    open_world_candidates: [], open_world_candidate_occurrences: [], open_world_evidence_references: [],
+    open_world_candidate_dispositions: [], open_world_primitives: [], semantic_impact_closures: [],
+    reviewed_source_specific_rows: [], residuals: [], quarantines: [], receipts: [],
   });
   assert.equal(repository.transactionCount, 1);
 });
@@ -451,11 +454,15 @@ test('the SQL authority is staging-only, transactional and denies direct app-rol
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.immutable_source_documents/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.source_admission_manifests/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.provision_components/);
+  assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.open_world_candidates/);
+  assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.reviewed_source_specific_rows/);
   assert.match(sql, /INSERT INTO canonical_v2_staging\.immutable_source_documents/);
   assert.match(sql, /INSERT INTO canonical_v2_staging\.source_admission_manifests/);
   assert.match(sql, /p_write_set \? 'sources'/);
   assert.match(sql, /p_write_set \? 'source_admissions'/);
   assert.match(sql, /INSERT INTO canonical_v2_staging\.provision_components/);
+  assert.match(sql, /INSERT INTO canonical_v2_staging\.open_world_candidate_dispositions/);
+  assert.match(sql, /INSERT INTO canonical_v2_staging\.reviewed_source_specific_rows/);
   assert.match(sql, /REVOKE ALL ON ALL TABLES IN SCHEMA canonical_v2_staging[\s\S]*service_role, canonical_v2_writer/);
   assert.match(sql, /REVOKE ALL ON FUNCTION public\.canonical_v2_write[\s\S]*service_role/);
   assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_write[\s\S]*TO canonical_v2_writer/);

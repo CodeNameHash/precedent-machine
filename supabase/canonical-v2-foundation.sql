@@ -73,6 +73,55 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.relationship_revisions (
   canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
 );
 
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.open_world_candidates (
+  candidate_id text PRIMARY KEY,
+  closure_id text NOT NULL,
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
+);
+
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.open_world_candidate_occurrences (
+  open_world_candidate_occurrence_id text PRIMARY KEY,
+  closure_id text NOT NULL,
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
+);
+
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.open_world_evidence_references (
+  evidence_reference_id text PRIMARY KEY,
+  closure_id text NOT NULL,
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
+);
+
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.open_world_candidate_dispositions (
+  final_disposition_id text PRIMARY KEY,
+  closure_id text NOT NULL,
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
+);
+
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.open_world_primitives (
+  primitive_id text PRIMARY KEY,
+  closure_id text NOT NULL,
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
+);
+
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.semantic_impact_closures (
+  semantic_impact_closure_id text PRIMARY KEY,
+  closure_id text NOT NULL,
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
+);
+
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.reviewed_source_specific_rows (
+  reviewed_source_specific_row_serving_key text PRIMARY KEY,
+  closure_id text NOT NULL,
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
+);
+
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.residuals (
   residual_id text PRIMARY KEY,
   closure_id text NOT NULL,
@@ -122,6 +171,20 @@ CREATE INDEX IF NOT EXISTS canonical_v2_claims_closure_idx
   ON canonical_v2_staging.claim_revisions(closure_id);
 CREATE INDEX IF NOT EXISTS canonical_v2_relationships_closure_idx
   ON canonical_v2_staging.relationship_revisions(closure_id);
+CREATE INDEX IF NOT EXISTS canonical_v2_open_world_candidates_closure_idx
+  ON canonical_v2_staging.open_world_candidates(closure_id);
+CREATE INDEX IF NOT EXISTS canonical_v2_open_world_occurrences_closure_idx
+  ON canonical_v2_staging.open_world_candidate_occurrences(closure_id);
+CREATE INDEX IF NOT EXISTS canonical_v2_open_world_evidence_closure_idx
+  ON canonical_v2_staging.open_world_evidence_references(closure_id);
+CREATE INDEX IF NOT EXISTS canonical_v2_open_world_dispositions_closure_idx
+  ON canonical_v2_staging.open_world_candidate_dispositions(closure_id);
+CREATE INDEX IF NOT EXISTS canonical_v2_open_world_primitives_closure_idx
+  ON canonical_v2_staging.open_world_primitives(closure_id);
+CREATE INDEX IF NOT EXISTS canonical_v2_semantic_impact_closures_closure_idx
+  ON canonical_v2_staging.semantic_impact_closures(closure_id);
+CREATE INDEX IF NOT EXISTS canonical_v2_reviewed_source_specific_rows_closure_idx
+  ON canonical_v2_staging.reviewed_source_specific_rows(closure_id);
 CREATE INDEX IF NOT EXISTS canonical_v2_residuals_closure_idx
   ON canonical_v2_staging.residuals(closure_id);
 CREATE UNIQUE INDEX IF NOT EXISTS canonical_v2_quarantines_closure_unique
@@ -135,6 +198,13 @@ ALTER TABLE canonical_v2_staging.provision_instances ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.provision_components ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.claim_revisions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.relationship_revisions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.open_world_candidates ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.open_world_candidate_occurrences ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.open_world_evidence_references ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.open_world_candidate_dispositions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.open_world_primitives ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.semantic_impact_closures ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.reviewed_source_specific_rows ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.residuals ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.quarantines ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.write_receipts ENABLE ROW LEVEL SECURITY;
@@ -190,6 +260,13 @@ BEGIN
       || coalesce(p_write_set->'components', '[]'::jsonb)
       || coalesce(p_write_set->'claims', '[]'::jsonb)
       || coalesce(p_write_set->'relationships', '[]'::jsonb)
+      || coalesce(p_write_set->'open_world_candidates', '[]'::jsonb)
+      || coalesce(p_write_set->'open_world_candidate_occurrences', '[]'::jsonb)
+      || coalesce(p_write_set->'open_world_evidence_references', '[]'::jsonb)
+      || coalesce(p_write_set->'open_world_candidate_dispositions', '[]'::jsonb)
+      || coalesce(p_write_set->'open_world_primitives', '[]'::jsonb)
+      || coalesce(p_write_set->'semantic_impact_closures', '[]'::jsonb)
+      || coalesce(p_write_set->'reviewed_source_specific_rows', '[]'::jsonb)
     ) AS publishable(item)
     JOIN canonical_v2_staging.quarantines quarantine
       ON quarantine.closure_id = publishable.item->>'closure_id'
@@ -279,6 +356,62 @@ BEGIN
     IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'canonical relationship identity conflict' USING ERRCODE = '23505'; END IF;
     INSERT INTO canonical_v2_staging.relationship_revisions(relationship_revision_id, closure_id, canonical_payload)
     VALUES (item_id, item->>'closure_id', item) ON CONFLICT (relationship_revision_id) DO NOTHING;
+  END LOOP;
+
+  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'open_world_candidates', '[]'::jsonb)) LOOP
+    item_id := item->>'candidate_id';
+    SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.open_world_candidates WHERE candidate_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'open-world candidate identity conflict' USING ERRCODE = '23505'; END IF;
+    INSERT INTO canonical_v2_staging.open_world_candidates(candidate_id, closure_id, canonical_payload)
+    VALUES (item_id, item->>'closure_id', item) ON CONFLICT (candidate_id) DO NOTHING;
+  END LOOP;
+
+  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'open_world_candidate_occurrences', '[]'::jsonb)) LOOP
+    item_id := item->>'open_world_candidate_occurrence_id';
+    SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.open_world_candidate_occurrences WHERE open_world_candidate_occurrence_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'open-world candidate occurrence identity conflict' USING ERRCODE = '23505'; END IF;
+    INSERT INTO canonical_v2_staging.open_world_candidate_occurrences(open_world_candidate_occurrence_id, closure_id, canonical_payload)
+    VALUES (item_id, item->>'closure_id', item) ON CONFLICT (open_world_candidate_occurrence_id) DO NOTHING;
+  END LOOP;
+
+  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'open_world_evidence_references', '[]'::jsonb)) LOOP
+    item_id := item->>'evidence_reference_id';
+    SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.open_world_evidence_references WHERE evidence_reference_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'open-world evidence identity conflict' USING ERRCODE = '23505'; END IF;
+    INSERT INTO canonical_v2_staging.open_world_evidence_references(evidence_reference_id, closure_id, canonical_payload)
+    VALUES (item_id, item->>'closure_id', item) ON CONFLICT (evidence_reference_id) DO NOTHING;
+  END LOOP;
+
+  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'open_world_candidate_dispositions', '[]'::jsonb)) LOOP
+    item_id := item->>'final_disposition_id';
+    SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.open_world_candidate_dispositions WHERE final_disposition_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'open-world disposition identity conflict' USING ERRCODE = '23505'; END IF;
+    INSERT INTO canonical_v2_staging.open_world_candidate_dispositions(final_disposition_id, closure_id, canonical_payload)
+    VALUES (item_id, item->>'closure_id', item) ON CONFLICT (final_disposition_id) DO NOTHING;
+  END LOOP;
+
+  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'open_world_primitives', '[]'::jsonb)) LOOP
+    item_id := item->>'primitive_id';
+    SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.open_world_primitives WHERE primitive_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'open-world primitive identity conflict' USING ERRCODE = '23505'; END IF;
+    INSERT INTO canonical_v2_staging.open_world_primitives(primitive_id, closure_id, canonical_payload)
+    VALUES (item_id, item->>'closure_id', item) ON CONFLICT (primitive_id) DO NOTHING;
+  END LOOP;
+
+  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'semantic_impact_closures', '[]'::jsonb)) LOOP
+    item_id := item->>'semantic_impact_closure_id';
+    SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.semantic_impact_closures WHERE semantic_impact_closure_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'semantic impact closure identity conflict' USING ERRCODE = '23505'; END IF;
+    INSERT INTO canonical_v2_staging.semantic_impact_closures(semantic_impact_closure_id, closure_id, canonical_payload)
+    VALUES (item_id, item->>'closure_id', item) ON CONFLICT (semantic_impact_closure_id) DO NOTHING;
+  END LOOP;
+
+  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'reviewed_source_specific_rows', '[]'::jsonb)) LOOP
+    item_id := item->>'reviewed_source_specific_row_serving_key';
+    SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.reviewed_source_specific_rows WHERE reviewed_source_specific_row_serving_key = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'reviewed source-specific row identity conflict' USING ERRCODE = '23505'; END IF;
+    INSERT INTO canonical_v2_staging.reviewed_source_specific_rows(reviewed_source_specific_row_serving_key, closure_id, canonical_payload)
+    VALUES (item_id, item->>'closure_id', item) ON CONFLICT (reviewed_source_specific_row_serving_key) DO NOTHING;
   END LOOP;
 
   FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_residuals, '[]'::jsonb)) LOOP
