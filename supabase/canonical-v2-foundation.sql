@@ -240,7 +240,11 @@ BEGIN
     RAISE EXCEPTION 'idempotency key and input digest are required' USING ERRCODE = '22023';
   END IF;
 
-  PERFORM pg_advisory_xact_lock(hashtextextended(p_operation || E'\u0000' || p_idempotency_key, 0));
+  PERFORM pg_advisory_xact_lock(hashtextextended(
+    length(p_operation)::text || ':' || p_operation
+      || length(p_idempotency_key)::text || ':' || p_idempotency_key,
+    0
+  ));
   SELECT * INTO existing_receipt
   FROM canonical_v2_staging.write_receipts
   WHERE operation = p_operation AND idempotency_key = p_idempotency_key;

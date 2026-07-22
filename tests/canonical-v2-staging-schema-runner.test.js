@@ -33,3 +33,12 @@ test('staging schema verification checks writer, serving RPCs and denied broad r
   assert.match(source, /has_function_privilege\('service_role'/);
   assert.match(source, /has_function_privilege\('canonical_v2_serving'/);
 });
+
+test('governed schema uses valid collision-safe advisory lock identities', () => {
+  const foundation = fs.readFileSync('supabase/canonical-v2-foundation.sql', 'utf8');
+  const serving = fs.readFileSync('supabase/canonical-v2-serving.sql', 'utf8');
+  assert.doesNotMatch(foundation, /E'\\u0000'/);
+  assert.doesNotMatch(serving, /E'\\u0000'/);
+  assert.match(foundation, /length\(p_operation\)::text \|\| ':' \|\| p_operation/);
+  assert.match(serving, /length\(NEW\.metric_slot_key\)::text \|\| ':' \|\| NEW\.metric_slot_key/);
+});

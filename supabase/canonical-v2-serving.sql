@@ -13,9 +13,6 @@ BEGIN
 END
 $$;
 
-ALTER ROLE canonical_v2_serving SET app.canonical_v2_environment = 'staging';
-ALTER ROLE canonical_v2_writer SET app.canonical_v2_environment = 'staging';
-
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.fixture_corpus_releases (
   corpus_release_id text PRIMARY KEY CHECK (corpus_release_id ~ '^[a-f0-9]{64}$'),
   candidate_manifest_id text NOT NULL UNIQUE CHECK (candidate_manifest_id ~ '^[a-f0-9]{64}$'),
@@ -342,7 +339,9 @@ SET search_path = pg_catalog, canonical_v2_staging
 AS $$
 BEGIN
   PERFORM pg_advisory_xact_lock(hashtextextended(
-    NEW.serving_namespace_id || E'\u0000' || NEW.corpus_release_id || E'\u0000' || NEW.metric_slot_key,
+    length(NEW.serving_namespace_id)::text || ':' || NEW.serving_namespace_id
+      || length(NEW.corpus_release_id)::text || ':' || NEW.corpus_release_id
+      || length(NEW.metric_slot_key)::text || ':' || NEW.metric_slot_key,
     0
   ));
   IF TG_TABLE_NAME = 'market_observations' AND EXISTS (
@@ -411,8 +410,7 @@ DECLARE
   existing_plan_id text;
   imported_at_value timestamptz;
 BEGIN
-  IF current_setting('app.canonical_v2_environment', true) IS DISTINCT FROM 'staging'
-    OR p_environment IS DISTINCT FROM 'staging'
+  IF p_environment IS DISTINCT FROM 'staging'
     OR p_import_plan->>'environment' IS DISTINCT FROM 'staging' THEN
     RAISE EXCEPTION 'canonical_v2_import_candidate_release is staging-only' USING ERRCODE = '42501';
   END IF;
@@ -684,8 +682,7 @@ DECLARE
   stored_pointer jsonb;
   imported_plan_id text;
 BEGIN
-  IF current_setting('app.canonical_v2_environment', true) IS DISTINCT FROM 'staging'
-    OR p_environment IS DISTINCT FROM 'staging'
+  IF p_environment IS DISTINCT FROM 'staging'
     OR p_expected_current_pointer->>'environment' IS DISTINCT FROM 'staging'
     OR p_next_pointer->>'environment' IS DISTINCT FROM 'staging' THEN
     RAISE EXCEPTION 'canonical_v2_activate_candidate_release is staging-only' USING ERRCODE = '42501';
@@ -813,8 +810,7 @@ SET search_path = pg_catalog, canonical_v2_staging
 SET statement_timeout = '1000ms'
 AS $$
   SELECT CASE
-    WHEN current_setting('app.canonical_v2_environment', true) IS DISTINCT FROM 'staging'
-      OR p_environment IS DISTINCT FROM 'staging'
+    WHEN p_environment IS DISTINCT FROM 'staging'
     THEN NULL
     ELSE (
       SELECT pointer.canonical_payload
@@ -858,8 +854,7 @@ AS $$
 DECLARE
   result jsonb;
 BEGIN
-  IF current_setting('app.canonical_v2_environment', true) IS DISTINCT FROM 'staging'
-    OR p_environment IS DISTINCT FROM 'staging' THEN
+  IF p_environment IS DISTINCT FROM 'staging' THEN
     RAISE EXCEPTION 'canonical_v2_market_cohort is staging-only' USING ERRCODE = '42501';
   END IF;
   IF p_serving_namespace_id !~ '^[a-f0-9]{64}$'
@@ -1095,8 +1090,7 @@ AS $$
 DECLARE
   result jsonb;
 BEGIN
-  IF current_setting('app.canonical_v2_environment', true) IS DISTINCT FROM 'staging'
-    OR p_environment IS DISTINCT FROM 'staging' THEN
+  IF p_environment IS DISTINCT FROM 'staging' THEN
     RAISE EXCEPTION 'canonical_v2_query_page is staging-only' USING ERRCODE = '42501';
   END IF;
   IF p_serving_namespace_id !~ '^[a-f0-9]{64}$'
@@ -1237,8 +1231,7 @@ DECLARE
   selected_deal canonical_v2_staging.deal_serving_directory%ROWTYPE;
   result jsonb;
 BEGIN
-  IF current_setting('app.canonical_v2_environment', true) IS DISTINCT FROM 'staging'
-    OR p_environment IS DISTINCT FROM 'staging' THEN
+  IF p_environment IS DISTINCT FROM 'staging' THEN
     RAISE EXCEPTION 'canonical_v2_active_review_context is staging-only' USING ERRCODE = '42501';
   END IF;
   IF p_contract_fingerprint !~ '^[a-f0-9]{64}$'
@@ -1345,8 +1338,7 @@ AS $$
 DECLARE
   result jsonb;
 BEGIN
-  IF current_setting('app.canonical_v2_environment', true) IS DISTINCT FROM 'staging'
-    OR p_environment IS DISTINCT FROM 'staging' THEN
+  IF p_environment IS DISTINCT FROM 'staging' THEN
     RAISE EXCEPTION 'canonical_v2_exact_detail is staging-only' USING ERRCODE = '42501';
   END IF;
   IF p_serving_namespace_id !~ '^[a-f0-9]{64}$'
@@ -1410,8 +1402,7 @@ AS $$
 DECLARE
   result jsonb;
 BEGIN
-  IF current_setting('app.canonical_v2_environment', true) IS DISTINCT FROM 'staging'
-    OR p_environment IS DISTINCT FROM 'staging' THEN
+  IF p_environment IS DISTINCT FROM 'staging' THEN
     RAISE EXCEPTION 'canonical_v2_reviewed_deal_context is staging-only' USING ERRCODE = '42501';
   END IF;
   IF p_serving_namespace_id !~ '^[a-f0-9]{64}$'

@@ -190,7 +190,7 @@ test('the staging SQL uses one set-based RPC, fixed dimensions and no direct app
   assert.match(sql, /SET search_path = pg_catalog, canonical_v2_staging/);
   assert.match(sql, /SET statement_timeout = '2500ms'/);
   assert.match(sql, /p_environment IS DISTINCT FROM 'staging'/);
-  assert.match(sql, /current_setting\('app\.canonical_v2_environment', true\) IS DISTINCT FROM 'staging'/);
+  assert.match(sql, /IF p_environment IS DISTINCT FROM 'staging' THEN/);
   assert.match(sql, /enforce_market_metric_slot_partition/);
   assert.match(sql, /pg_advisory_xact_lock/);
   assert.match(sql, /count\(DISTINCT governed_deal_key\)/);
