@@ -7,6 +7,7 @@ const {
   buildInitialActiveReleasePointer,
   planActiveReleasePointerSwap,
   validateActiveReleasePointer,
+  validateCandidateReleaseBundle,
   validateCandidateReleaseManifest,
 } = require('../lib/canonical-v2/candidate-release');
 
@@ -20,6 +21,7 @@ test('twelve comparable results and one reviewed source-specific proposition fre
 
   assert.deepEqual(first.release, second.release);
   assert.equal(validateCandidateReleaseManifest(first.release.manifest), true);
+  assert.equal(validateCandidateReleaseBundle(first.release), true);
   assert.deepEqual(first.release.manifest.counts, {
     deals: 1,
     metric_slots: 12,
@@ -118,6 +120,21 @@ test('duplicate, mismatched, unresolved or source-less members block the whole c
     () => buildFixtureCandidateRelease({ ...args, members: mismatched }),
     /does not close over its market observation/,
   );
+});
+
+test('full release validation rejects payload drift behind an otherwise valid manifest', () => {
+  const { release } = buildLandosCandidateReleaseFixture();
+  const queryDrift = clone(release);
+  queryDrift.query_records[0].buyer = 'Different buyer';
+  assert.throws(() => validateCandidateReleaseBundle(queryDrift), /query projection/);
+
+  const sourceSpecificDrift = clone(release);
+  sourceSpecificDrift.source_specific_serving_records[0].aggregate_authority = 'MARKET_AUTHORITY';
+  assert.throws(() => validateCandidateReleaseBundle(sourceSpecificDrift), /aggregate_authority|projection/);
+
+  const missingDetail = clone(release);
+  missingDetail.exact_detail_packages.pop();
+  assert.throws(() => validateCandidateReleaseBundle(missingDetail), /count does not match/);
 });
 
 test('active release movement is an immutable compare-and-swap plan over one certified manifest', () => {

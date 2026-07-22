@@ -7,13 +7,16 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'canonical_v2_serving') THEN
     CREATE ROLE canonical_v2_serving NOLOGIN;
   END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'canonical_v2_writer') THEN
+    CREATE ROLE canonical_v2_writer NOLOGIN;
+  END IF;
 END
 $$;
 
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.fixture_corpus_releases (
   corpus_release_id text PRIMARY KEY CHECK (corpus_release_id ~ '^[a-f0-9]{64}$'),
-  candidate_manifest_id text NOT NULL CHECK (candidate_manifest_id ~ '^[a-f0-9]{64}$'),
-  frozen_pair_id text NOT NULL CHECK (frozen_pair_id ~ '^[a-f0-9]{64}$'),
+  candidate_manifest_id text NOT NULL UNIQUE CHECK (candidate_manifest_id ~ '^[a-f0-9]{64}$'),
+  frozen_pair_root_id text NOT NULL CHECK (frozen_pair_root_id ~ '^[a-f0-9]{64}$'),
   contract_fingerprint text NOT NULL CHECK (contract_fingerprint ~ '^[a-f0-9]{64}$'),
   projection_version text NOT NULL CHECK (projection_version = 'canonical-v2-serving/v1'),
   response_schema_version text NOT NULL CHECK (response_schema_version = 'MARKET_COHORT_RESULT/V1'),
@@ -24,6 +27,7 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.fixture_corpus_releases (
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.market_observations (
   serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
   corpus_release_id text NOT NULL REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id),
+  contract_fingerprint text NOT NULL CHECK (contract_fingerprint ~ '^[a-f0-9]{64}$'),
   metric_observation_occurrence_id text NOT NULL CHECK (metric_observation_occurrence_id ~ '^[a-f0-9]{64}$'),
   market_observation_serving_key text NOT NULL CHECK (market_observation_serving_key ~ '^[a-f0-9]{64}$'),
   metric_slot_key text NOT NULL CHECK (metric_slot_key ~ '^[a-f0-9]{64}$'),
@@ -71,6 +75,7 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.market_observations (
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.market_metric_slot_exclusions (
   serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
   corpus_release_id text NOT NULL REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id),
+  contract_fingerprint text NOT NULL CHECK (contract_fingerprint ~ '^[a-f0-9]{64}$'),
   exclusion_serving_key text NOT NULL CHECK (exclusion_serving_key ~ '^[a-f0-9]{64}$'),
   metric_slot_key text NOT NULL CHECK (metric_slot_key ~ '^[a-f0-9]{64}$'),
   governed_deal_key text NOT NULL,
@@ -153,6 +158,30 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.reviewed_source_specific_serving
   PRIMARY KEY (serving_namespace_id, corpus_release_id, row_serving_key),
   UNIQUE (serving_namespace_id, corpus_release_id, reviewed_source_specific_serving_key),
   UNIQUE (serving_namespace_id, corpus_release_id, open_world_candidate_occurrence_id)
+);
+
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.exact_detail_serving_packages (
+  serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
+  corpus_release_id text NOT NULL REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id),
+  row_serving_key text NOT NULL CHECK (row_serving_key ~ '^[a-f0-9]{64}$'),
+  contract_fingerprint text NOT NULL CHECK (contract_fingerprint ~ '^[a-f0-9]{64}$'),
+  governed_deal_key text NOT NULL,
+  source_detail_reference_ids text[] NOT NULL,
+  exact_detail_package_digest text NOT NULL CHECK (exact_detail_package_digest ~ '^[a-f0-9]{64}$'),
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text NOT NULL CHECK (canonical_payload_digest ~ '^[a-f0-9]{64}$'),
+  PRIMARY KEY (serving_namespace_id, corpus_release_id, row_serving_key),
+  UNIQUE (serving_namespace_id, corpus_release_id, exact_detail_package_digest)
+);
+
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.candidate_release_import_receipts (
+  candidate_manifest_id text PRIMARY KEY CHECK (candidate_manifest_id ~ '^[a-f0-9]{64}$'),
+  corpus_release_id text NOT NULL UNIQUE REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id),
+  serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
+  candidate_release_import_plan_id text NOT NULL UNIQUE CHECK (candidate_release_import_plan_id ~ '^[a-f0-9]{64}$'),
+  import_state text NOT NULL CHECK (import_state = 'IMPORTED_COMPLETE'),
+  expected_counts jsonb NOT NULL,
+  imported_at timestamptz NOT NULL DEFAULT transaction_timestamp()
 );
 
 CREATE INDEX IF NOT EXISTS canonical_v2_market_observation_cohort_idx
@@ -241,6 +270,16 @@ CREATE INDEX IF NOT EXISTS canonical_v2_reviewed_source_specific_deal_idx
     governed_deal_key,
     row_serving_key
   );
+CREATE INDEX IF NOT EXISTS canonical_v2_exact_detail_deal_idx
+  ON canonical_v2_staging.exact_detail_serving_packages (
+    serving_namespace_id,
+    corpus_release_id,
+    contract_fingerprint,
+    governed_deal_key,
+    row_serving_key
+  );
+CREATE INDEX IF NOT EXISTS canonical_v2_exact_detail_reference_idx
+  ON canonical_v2_staging.exact_detail_serving_packages USING gin (source_detail_reference_ids);
 
 CREATE OR REPLACE FUNCTION canonical_v2_staging.enforce_market_metric_slot_partition()
 RETURNS trigger
@@ -292,6 +331,261 @@ ALTER TABLE canonical_v2_staging.market_observations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.market_metric_slot_exclusions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.shared_serving_rows ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.reviewed_source_specific_serving_rows ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.exact_detail_serving_packages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.candidate_release_import_receipts ENABLE ROW LEVEL SECURITY;
+
+CREATE OR REPLACE FUNCTION public.canonical_v2_import_candidate_release(
+  p_environment text,
+  p_import_plan jsonb
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pg_catalog, canonical_v2_staging
+SET statement_timeout = '15000ms'
+AS $$
+DECLARE
+  release_record jsonb := p_import_plan->'release_record';
+  expected jsonb := p_import_plan->'expected_counts';
+  release_id text := release_record->>'corpus_release_id';
+  namespace_id text := release_record->'canonical_payload'->>'serving_namespace_id';
+  contract_id text := release_record->>'contract_fingerprint';
+  manifest_id text := release_record->>'candidate_manifest_id';
+  import_plan_id text := p_import_plan->>'candidate_release_import_plan_id';
+  existing_plan_id text;
+  imported_at_value timestamptz;
+BEGIN
+  IF current_setting('app.canonical_v2_environment', true) IS DISTINCT FROM 'staging'
+    OR p_environment IS DISTINCT FROM 'staging'
+    OR p_import_plan->>'environment' IS DISTINCT FROM 'staging' THEN
+    RAISE EXCEPTION 'canonical_v2_import_candidate_release is staging-only' USING ERRCODE = '42501';
+  END IF;
+  IF p_import_plan->>'schema_version' IS DISTINCT FROM 'CANDIDATE_RELEASE_IMPORT_PLAN/V1'
+    OR jsonb_typeof(release_record) IS DISTINCT FROM 'object'
+    OR jsonb_typeof(expected) IS DISTINCT FROM 'object'
+    OR release_id !~ '^[a-f0-9]{64}$'
+    OR namespace_id !~ '^[a-f0-9]{64}$'
+    OR contract_id !~ '^[a-f0-9]{64}$'
+    OR manifest_id !~ '^[a-f0-9]{64}$'
+    OR import_plan_id !~ '^[a-f0-9]{64}$' THEN
+    RAISE EXCEPTION 'invalid candidate release import plan' USING ERRCODE = '22023';
+  END IF;
+
+  PERFORM pg_advisory_xact_lock(hashtextextended(manifest_id, 0));
+
+  SELECT receipt.candidate_release_import_plan_id, receipt.imported_at
+  INTO existing_plan_id, imported_at_value
+  FROM canonical_v2_staging.candidate_release_import_receipts receipt
+  WHERE receipt.candidate_manifest_id = manifest_id;
+  IF existing_plan_id IS NOT NULL THEN
+    IF existing_plan_id IS DISTINCT FROM import_plan_id THEN
+      RAISE EXCEPTION 'candidate manifest already imported under different content' USING ERRCODE = '23505';
+    END IF;
+    RETURN jsonb_build_object(
+      'schema_version', 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V1',
+      'import_state', 'IMPORTED_COMPLETE',
+      'replayed', true,
+      'candidate_manifest_id', manifest_id,
+      'corpus_release_id', release_id,
+      'serving_namespace_id', namespace_id,
+      'candidate_release_import_plan_id', import_plan_id,
+      'expected_counts', expected,
+      'imported_at', imported_at_value
+    );
+  END IF;
+
+  IF jsonb_typeof(p_import_plan->'market_observations') IS DISTINCT FROM 'array'
+    OR jsonb_typeof(p_import_plan->'market_exclusions') IS DISTINCT FROM 'array'
+    OR jsonb_typeof(p_import_plan->'query_records') IS DISTINCT FROM 'array'
+    OR jsonb_typeof(p_import_plan->'source_specific_records') IS DISTINCT FROM 'array'
+    OR jsonb_typeof(p_import_plan->'exact_detail_packages') IS DISTINCT FROM 'array'
+    OR jsonb_array_length(p_import_plan->'market_observations')
+      IS DISTINCT FROM (expected->>'market_observations')::integer
+    OR jsonb_array_length(p_import_plan->'market_exclusions')
+      IS DISTINCT FROM (expected->>'market_exclusions')::integer
+    OR jsonb_array_length(p_import_plan->'query_records')
+      IS DISTINCT FROM (expected->>'query_records')::integer
+    OR jsonb_array_length(p_import_plan->'source_specific_records')
+      IS DISTINCT FROM (expected->>'source_specific_records')::integer
+    OR jsonb_array_length(p_import_plan->'exact_detail_packages')
+      IS DISTINCT FROM (expected->>'exact_detail_packages')::integer THEN
+    RAISE EXCEPTION 'candidate release import counts do not match the plan' USING ERRCODE = '22023';
+  END IF;
+  IF (expected->>'market_observations')::integer
+      IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'observations')::integer
+    OR (expected->>'market_exclusions')::integer
+      IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'exclusions')::integer
+    OR (expected->>'query_records')::integer
+      IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'query_records')::integer
+    OR (expected->>'source_specific_records')::integer
+      IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'source_specific_serving_records')::integer
+    OR (expected->>'exact_detail_packages')::integer
+      IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'exact_detail_packages')::integer THEN
+    RAISE EXCEPTION 'candidate release import counts do not match the certified manifest' USING ERRCODE = '22023';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1
+    FROM (
+      SELECT value FROM jsonb_array_elements(p_import_plan->'market_observations')
+      UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'market_exclusions')
+      UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'query_records')
+      UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'source_specific_records')
+      UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'exact_detail_packages')
+    ) item
+    WHERE item.value->>'serving_namespace_id' IS DISTINCT FROM namespace_id
+      OR item.value->>'corpus_release_id' IS DISTINCT FROM release_id
+      OR item.value->>'contract_fingerprint' IS DISTINCT FROM contract_id
+  ) THEN
+    RAISE EXCEPTION 'candidate release import crosses a serving partition' USING ERRCODE = '22023';
+  END IF;
+  IF EXISTS (
+    SELECT item->>'metric_slot_key'
+    FROM jsonb_array_elements(p_import_plan->'market_observations') item
+    INTERSECT
+    SELECT item->>'metric_slot_key'
+    FROM jsonb_array_elements(p_import_plan->'market_exclusions') item
+  ) THEN
+    RAISE EXCEPTION 'candidate release metric slot has both observation and exclusion' USING ERRCODE = '23505';
+  END IF;
+  IF (SELECT count(DISTINCT item->>'metric_slot_key') FROM jsonb_array_elements(p_import_plan->'market_observations') item)
+      IS DISTINCT FROM (expected->>'market_observations')::integer
+    OR (SELECT count(DISTINCT item->>'metric_slot_key') FROM jsonb_array_elements(p_import_plan->'market_exclusions') item)
+      IS DISTINCT FROM (expected->>'market_exclusions')::integer
+    OR (SELECT count(DISTINCT item->>'row_serving_key') FROM jsonb_array_elements(p_import_plan->'query_records') item)
+      IS DISTINCT FROM (expected->>'query_records')::integer
+    OR (SELECT count(DISTINCT item->>'row_serving_key') FROM jsonb_array_elements(p_import_plan->'source_specific_records') item)
+      IS DISTINCT FROM (expected->>'source_specific_records')::integer
+    OR (SELECT count(DISTINCT item->>'row_serving_key') FROM jsonb_array_elements(p_import_plan->'exact_detail_packages') item)
+      IS DISTINCT FROM (expected->>'exact_detail_packages')::integer THEN
+    RAISE EXCEPTION 'candidate release import contains duplicate identities' USING ERRCODE = '23505';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1 FROM canonical_v2_staging.fixture_corpus_releases release
+    WHERE release.corpus_release_id = release_id
+      AND release.canonical_payload_digest IS DISTINCT FROM release_record->>'canonical_payload_digest'
+  ) OR EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(p_import_plan->'market_observations') item
+    JOIN canonical_v2_staging.market_observations existing
+      ON existing.serving_namespace_id = namespace_id
+      AND existing.corpus_release_id = release_id
+      AND existing.metric_observation_occurrence_id = item->>'metric_observation_occurrence_id'
+    WHERE existing.canonical_payload_digest IS DISTINCT FROM item->>'canonical_payload_digest'
+  ) OR EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(p_import_plan->'market_exclusions') item
+    JOIN canonical_v2_staging.market_metric_slot_exclusions existing
+      ON existing.serving_namespace_id = namespace_id
+      AND existing.corpus_release_id = release_id
+      AND existing.metric_slot_key = item->>'metric_slot_key'
+    WHERE existing.canonical_payload_digest IS DISTINCT FROM item->>'canonical_payload_digest'
+  ) OR EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(p_import_plan->'query_records') item
+    JOIN canonical_v2_staging.shared_serving_rows existing
+      ON existing.serving_namespace_id = namespace_id
+      AND existing.corpus_release_id = release_id
+      AND existing.row_serving_key = item->>'row_serving_key'
+    WHERE existing.canonical_payload_digest IS DISTINCT FROM item->>'canonical_payload_digest'
+  ) OR EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(p_import_plan->'source_specific_records') item
+    JOIN canonical_v2_staging.reviewed_source_specific_serving_rows existing
+      ON existing.serving_namespace_id = namespace_id
+      AND existing.corpus_release_id = release_id
+      AND existing.row_serving_key = item->>'row_serving_key'
+    WHERE existing.canonical_payload_digest IS DISTINCT FROM item->>'canonical_payload_digest'
+  ) OR EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(p_import_plan->'exact_detail_packages') item
+    JOIN canonical_v2_staging.exact_detail_serving_packages existing
+      ON existing.serving_namespace_id = namespace_id
+      AND existing.corpus_release_id = release_id
+      AND existing.row_serving_key = item->>'row_serving_key'
+    WHERE existing.canonical_payload_digest IS DISTINCT FROM item->>'canonical_payload_digest'
+  ) THEN
+    RAISE EXCEPTION 'candidate release import identity conflicts with different content' USING ERRCODE = '23505';
+  END IF;
+
+  INSERT INTO canonical_v2_staging.fixture_corpus_releases
+  SELECT * FROM jsonb_populate_record(NULL::canonical_v2_staging.fixture_corpus_releases, release_record)
+  ON CONFLICT (corpus_release_id) DO NOTHING;
+  INSERT INTO canonical_v2_staging.market_observations
+  SELECT * FROM jsonb_populate_recordset(
+    NULL::canonical_v2_staging.market_observations,
+    p_import_plan->'market_observations'
+  ) ON CONFLICT (serving_namespace_id, corpus_release_id, metric_observation_occurrence_id) DO NOTHING;
+  INSERT INTO canonical_v2_staging.market_metric_slot_exclusions
+  SELECT * FROM jsonb_populate_recordset(
+    NULL::canonical_v2_staging.market_metric_slot_exclusions,
+    p_import_plan->'market_exclusions'
+  ) ON CONFLICT (serving_namespace_id, corpus_release_id, metric_slot_key) DO NOTHING;
+  INSERT INTO canonical_v2_staging.shared_serving_rows
+  SELECT * FROM jsonb_populate_recordset(
+    NULL::canonical_v2_staging.shared_serving_rows,
+    p_import_plan->'query_records'
+  ) ON CONFLICT (serving_namespace_id, corpus_release_id, row_serving_key) DO NOTHING;
+  INSERT INTO canonical_v2_staging.reviewed_source_specific_serving_rows
+  SELECT * FROM jsonb_populate_recordset(
+    NULL::canonical_v2_staging.reviewed_source_specific_serving_rows,
+    p_import_plan->'source_specific_records'
+  ) ON CONFLICT (serving_namespace_id, corpus_release_id, row_serving_key) DO NOTHING;
+  INSERT INTO canonical_v2_staging.exact_detail_serving_packages
+  SELECT * FROM jsonb_populate_recordset(
+    NULL::canonical_v2_staging.exact_detail_serving_packages,
+    p_import_plan->'exact_detail_packages'
+  ) ON CONFLICT (serving_namespace_id, corpus_release_id, row_serving_key) DO NOTHING;
+
+  IF (SELECT count(*) FROM canonical_v2_staging.market_observations row
+      WHERE row.serving_namespace_id = namespace_id AND row.corpus_release_id = release_id)
+      IS DISTINCT FROM (expected->>'market_observations')::integer
+    OR (SELECT count(*) FROM canonical_v2_staging.market_metric_slot_exclusions row
+      WHERE row.serving_namespace_id = namespace_id AND row.corpus_release_id = release_id)
+      IS DISTINCT FROM (expected->>'market_exclusions')::integer
+    OR (SELECT count(*) FROM canonical_v2_staging.shared_serving_rows row
+      WHERE row.serving_namespace_id = namespace_id AND row.corpus_release_id = release_id)
+      IS DISTINCT FROM (expected->>'query_records')::integer
+    OR (SELECT count(*) FROM canonical_v2_staging.reviewed_source_specific_serving_rows row
+      WHERE row.serving_namespace_id = namespace_id AND row.corpus_release_id = release_id)
+      IS DISTINCT FROM (expected->>'source_specific_records')::integer
+    OR (SELECT count(*) FROM canonical_v2_staging.exact_detail_serving_packages row
+      WHERE row.serving_namespace_id = namespace_id AND row.corpus_release_id = release_id)
+      IS DISTINCT FROM (expected->>'exact_detail_packages')::integer THEN
+    RAISE EXCEPTION 'candidate release import did not close over every certified serving object' USING ERRCODE = '23514';
+  END IF;
+
+  INSERT INTO canonical_v2_staging.candidate_release_import_receipts(
+    candidate_manifest_id,
+    corpus_release_id,
+    serving_namespace_id,
+    candidate_release_import_plan_id,
+    import_state,
+    expected_counts
+  ) VALUES (
+    manifest_id,
+    release_id,
+    namespace_id,
+    import_plan_id,
+    'IMPORTED_COMPLETE',
+    expected
+  )
+  RETURNING imported_at INTO imported_at_value;
+
+  RETURN jsonb_build_object(
+    'schema_version', 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V1',
+    'import_state', 'IMPORTED_COMPLETE',
+    'replayed', false,
+    'candidate_manifest_id', manifest_id,
+    'corpus_release_id', release_id,
+    'serving_namespace_id', namespace_id,
+    'candidate_release_import_plan_id', import_plan_id,
+    'expected_counts', expected,
+    'imported_at', imported_at_value
+  );
+END;
+$$;
 
 CREATE OR REPLACE FUNCTION public.canonical_v2_market_cohort(
   p_environment text,
@@ -784,17 +1078,25 @@ END;
 $$;
 
 REVOKE ALL ON TABLE canonical_v2_staging.fixture_corpus_releases
-  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON TABLE canonical_v2_staging.market_observations
-  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON TABLE canonical_v2_staging.market_metric_slot_exclusions
-  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON TABLE canonical_v2_staging.shared_serving_rows
-  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON TABLE canonical_v2_staging.reviewed_source_specific_serving_rows
-  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
+REVOKE ALL ON TABLE canonical_v2_staging.exact_detail_serving_packages
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
+REVOKE ALL ON TABLE canonical_v2_staging.candidate_release_import_receipts
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON FUNCTION canonical_v2_staging.enforce_market_metric_slot_partition()
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
+REVOKE ALL ON FUNCTION public.canonical_v2_import_candidate_release(text, jsonb)
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
+GRANT EXECUTE ON FUNCTION public.canonical_v2_import_candidate_release(text, jsonb)
+  TO canonical_v2_writer;
 REVOKE ALL ON FUNCTION public.canonical_v2_market_cohort(
   text, text, text, text, text, text, integer, text, text, text, text, text,
   text, text, text, text, text, text, integer, integer, numeric, numeric
