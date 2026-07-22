@@ -12,6 +12,10 @@ const {
   validateCandidateReleaseBundle,
   validateCandidateReleaseManifest,
 } = require('../lib/canonical-v2/candidate-release');
+const {
+  QUERY_PROJECTION_CONTRACT_DIGEST_V2,
+  SERVING_PROJECTION_VERSION_V2,
+} = require('../lib/canonical-v2/serving-projection-contract');
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
@@ -41,6 +45,24 @@ function exactDetailRootEntries(packages) {
     parent_edge_id: detailPackage.parent_edges[0].parent_edge_id,
     exact_detail_package_digest: contentId('EXACT_DETAIL_ATOMIC_PACKAGE/V1', detailPackage),
   }));
+}
+
+function buildProjectionBoundLandosRelease() {
+  const fixture = buildLandosCandidateReleaseFixture();
+  return buildFixtureCandidateRelease({
+    contract_bundle: fixture.contract,
+    serving_namespace_id: fixture.servingNamespaceId,
+    corpus_release_id: fixture.corpusReleaseId,
+    serving_projection_binding: {
+      serving_projection_version: SERVING_PROJECTION_VERSION_V2,
+      query_projection_contract_digest: QUERY_PROJECTION_CONTRACT_DIGEST_V2,
+    },
+    members: fixture.members,
+    source_specific_members: fixture.sourceSpecificMembers,
+    validated_semantic_graphs: fixture.validatedSemanticGraphs,
+    correction_authority_selection: fixture.correctionAuthoritySelection,
+    deal_directory_entries: fixture.dealDirectoryEntries,
+  });
 }
 
 test('twelve comparable results and one reviewed source-specific proposition freeze into one deterministic release', () => {
@@ -103,7 +125,7 @@ test('twelve comparable results and one reviewed source-specific proposition fre
 });
 
 test('candidate release carries raw and normalised money with exact legal query dimensions', () => {
-  const { release } = buildLandosCandidateReleaseFixture();
+  const release = buildProjectionBoundLandosRelease();
   const byMetric = new Map(release.query_records.map((record) => [record.metric_key, record]));
   const fee = byMetric.get('SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE');
   const material = byMetric.get('MATERIAL_CONTRACT_CASH_FLOW_THRESHOLD_PERCENT_OF_DEAL_VALUE');

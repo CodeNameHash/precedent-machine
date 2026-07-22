@@ -62,12 +62,18 @@ test('combined QXO material candidate closes over both admitted sources and the 
 
 test('combined QXO material mode imports the governed seed and keeps its incomplete result out of market query authority', () => {
   const source = fs.readFileSync(RUNNER, 'utf8');
-  assert.match(source, /buildQxoMaterialCombinedCandidateSeed/);
+  assert.match(source, /buildQxoMaterialCombinedCandidateSeedV2/);
   assert.match(source, /qxoMaterialCombinedCandidateReleaseId/);
   assert.match(source, /PROVISIONAL_CORPUS_RELEASE_ID/);
-  assert.match(source, /PROVISIONAL_CORPUS_RELEASE_SEED_DIGEST/);
-  assert.match(source, /6e12a944361efe8c487e735c47cf6e9a9b25e98a49b85e31d7c80ba3fd05a78d/);
-  assert.match(source, /c4ffea588143bc28d079fb1aa7d0226259ab38f2011f2c3a9ea8436174173499/);
+  assert.match(source, /QXO_MATERIAL_CORPUS_RELEASE_SEED_DIGEST_V2/);
+  assert.match(source, /QXO_MATERIAL_CORPUS_RELEASE_ID_V2/);
+  assert.match(source, /65d5afe597f48fa095176e941803fabeafc71922195b120a3d05bfc50f9276f1/);
+  assert.match(source, /bd6715c4a8f0a75194b568fef10ee118fb63612e82b2ad90da0d0e0ef985bb9b/);
+  assert.match(source, /437f3b439417ded9691c061880f7325dff3a7e85d2b71870f12cd7d7aadbcb34/);
+  assert.match(source, /serving_projection_binding/);
+  assert.match(source, /SERVING_PROJECTION_VERSION_V2/);
+  assert.match(source, /QUERY_PROJECTION_CONTRACT_DIGEST_V2/);
+  assert.match(source, /legacy_material_release_records/);
   assert.match(source, /materialSlice\.candidate_release_member/);
   assert.match(source, /release\.market_observations\.length !== 8/);
   assert.match(source, /release\.market_exclusions\.length !== 2/);
@@ -79,6 +85,7 @@ test('combined QXO material mode imports the governed seed and keeps its incompl
   assert.match(source, /material_market_exclusions/);
   assert.match(source, /material_query_records/);
   assert.match(source, /selected_deal_shared_rows/);
+  assert.doesNotMatch(source, /MATERIAL_INCOMPLETE_ROW_SERVING_KEY = null/);
 });
 
 test('combined QXO material mode supports rollback-first inactive release lifecycle without activation', () => {

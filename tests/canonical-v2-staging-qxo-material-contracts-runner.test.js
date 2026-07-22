@@ -64,6 +64,16 @@ test('QXO material combined candidate seed is reusable, deterministic and exclud
   );
   assert.equal(identity.PROVISIONAL_CORPUS_RELEASE_ID, 'defab4022bf9b461c98151fc7afd8c6e090b2e429690934aee102a3eba8e6d30');
   assert.equal(identity.PROVISIONAL_CORPUS_RELEASE_SEED_DIGEST, 'c87b382a7d72126c96483bc5f9729e5a9d6b35effa000bb7bef1b6c8171616db');
+  assert.equal(identity.QXO_MATERIAL_CORPUS_RELEASE_ID_V2, 'df83cf6f0328dd387280ae17fd5ebda4c0a606d9af0cff1c189399a1461b077d');
+  assert.equal(identity.QXO_MATERIAL_CORPUS_RELEASE_SEED_DIGEST_V2, '0735cad212c782e92c149212365edf5d757cddb09f6c0cd3857a8d6af93c7fa3');
+  assert.equal(
+    identity.QXO_MATERIAL_COMBINED_CANDIDATE_SEED_V2.serving_projection_version,
+    'canonical-v2-serving/v2',
+  );
+  assert.equal(
+    identity.QXO_MATERIAL_COMBINED_CANDIDATE_SEED_V2.query_projection_contract_digest,
+    '048394ed05f7b810b0688e8cc0324f6270196b0c531e50d37fa9ac537efed827',
+  );
   assert.equal(identity.QXO_MATERIAL_COMBINED_CANDIDATE_SEED.prior_semantic_closure_ids.length, 4);
   assert.deepEqual(
     identity.QXO_MATERIAL_COMBINED_CANDIDATE_SEED.source_admission_manifest_ids,

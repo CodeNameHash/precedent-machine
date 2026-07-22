@@ -22,12 +22,17 @@ const { buildQxoNoShopServingSlice } = require('../lib/canonical-v2/qxo-no-shop-
 const { buildQxoMaterialContractsSlice } = require('../lib/canonical-v2/qxo-material-contracts-slice');
 const {
   PROVISIONAL_CORPUS_RELEASE_ID,
-  PROVISIONAL_CORPUS_RELEASE_SEED_DIGEST,
-  QXO_MATERIAL_COMBINED_CANDIDATE_SEED,
+  QXO_MATERIAL_COMBINED_CANDIDATE_SEED_V2,
+  QXO_MATERIAL_CORPUS_RELEASE_ID_V2,
+  QXO_MATERIAL_CORPUS_RELEASE_SEED_DIGEST_V2,
   QXO_MATERIAL_SOURCE_ADMISSION_MANIFEST_IDS,
-  buildQxoMaterialCombinedCandidateSeed,
+  buildQxoMaterialCombinedCandidateSeedV2,
   qxoMaterialCombinedCandidateReleaseId,
 } = require('../lib/canonical-v2/qxo-material-candidate-identity');
+const {
+  QUERY_PROJECTION_CONTRACT_DIGEST_V2,
+  SERVING_PROJECTION_VERSION_V2,
+} = require('../lib/canonical-v2/serving-projection-contract');
 const { buildQxoReviewedCapitalisationSlice } = require('../lib/canonical-v2/reviewed-qxo-capitalisation-slice');
 const { buildQxoAdmittedNoShopActionsSlice } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
 const { buildQxoAdmittedNoShopRematchSlice } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-rematch-slice');
@@ -46,7 +51,8 @@ const ACTIONS_CLOSURE_ID = '89683e5ff72a570948bfadda123254719d848310b5c50ad37206
 const REMATCH_CLOSURE_ID = 'dd232aa8077fd0d4158cd19c7fa5e8b439fceb8d97b578682c41936889808af8';
 const MATERIAL_CLOSURE_ID = 'a08b15c095464e265205ffd87ec380a85e37e9867c9701551b7b59759ed0cab5';
 const MATERIAL_METRIC_KEY = 'MATERIAL_CONTRACT_CASH_FLOW_THRESHOLD_PERCENT_OF_DEAL_VALUE';
-const MATERIAL_INCOMPLETE_ROW_SERVING_KEY = '45a7c43499e9a8429f1b0a19871c0e952c85cb3e684e222cbd506259c15f2500';
+const LEGACY_MATERIAL_CANDIDATE_MANIFEST_ID = '6e12a944361efe8c487e735c47cf6e9a9b25e98a49b85e31d7c80ba3fd05a78d';
+const MATERIAL_INCOMPLETE_ROW_SERVING_KEY = '437f3b439417ded9691c061880f7325dff3a7e85d2b71870f12cd7d7aadbcb34';
 const RELEASE_CONFIGS = Object.freeze({
   BASE: Object.freeze({
     corpusReleaseId: 'fa2aa0154c5f0024b088fc5fcf7281adb56cbac12d0d48438fefa1765b83dd36',
@@ -64,9 +70,9 @@ const RELEASE_CONFIGS = Object.freeze({
     servingNamespaceId: 'efa8f7c2643448ad9380a4a16556d76f09879809c1d21e49f479e8cf070f204d',
   }),
   MATERIAL: Object.freeze({
-    corpusReleaseId: PROVISIONAL_CORPUS_RELEASE_ID,
-    candidateManifestId: '6e12a944361efe8c487e735c47cf6e9a9b25e98a49b85e31d7c80ba3fd05a78d',
-    servingNamespaceId: 'c4ffea588143bc28d079fb1aa7d0226259ab38f2011f2c3a9ea8436174173499',
+    corpusReleaseId: QXO_MATERIAL_CORPUS_RELEASE_ID_V2,
+    candidateManifestId: '65d5afe597f48fa095176e941803fabeafc71922195b120a3d05bfc50f9276f1',
+    servingNamespaceId: 'bd6715c4a8f0a75194b568fef10ee118fb63612e82b2ad90da0d0e0ef985bb9b',
   }),
 });
 const MAX_GRAPH_READ_BYTES = 4 * 1024 * 1024;
@@ -345,24 +351,28 @@ function releaseIds({
   materialSlice,
 }) {
   if (includesMaterial()) {
-    const candidateSeed = buildQxoMaterialCombinedCandidateSeed({
+    const candidateSeed = buildQxoMaterialCombinedCandidateSeedV2({
       contractFingerprint: contractBundle.fingerprint,
       materialReviewedMappingId: materialSlice.reviewed_mapping.reviewed_mapping_id,
+      servingProjectionVersion: SERVING_PROJECTION_VERSION_V2,
+      queryProjectionContractDigest: QUERY_PROJECTION_CONTRACT_DIGEST_V2,
     });
     const corpusReleaseId = qxoMaterialCombinedCandidateReleaseId(candidateSeed);
-    if (canonicalJson(candidateSeed) !== canonicalJson(QXO_MATERIAL_COMBINED_CANDIDATE_SEED)
-      || contentId('QXO_MATERIAL_COMBINED_CANDIDATE_SEED/V1', candidateSeed)
-        !== PROVISIONAL_CORPUS_RELEASE_SEED_DIGEST
-      || corpusReleaseId !== PROVISIONAL_CORPUS_RELEASE_ID) {
+    if (canonicalJson(candidateSeed) !== canonicalJson(QXO_MATERIAL_COMBINED_CANDIDATE_SEED_V2)
+      || contentId('QXO_MATERIAL_COMBINED_CANDIDATE_SEED/V2', candidateSeed)
+        !== QXO_MATERIAL_CORPUS_RELEASE_SEED_DIGEST_V2
+      || corpusReleaseId !== QXO_MATERIAL_CORPUS_RELEASE_ID_V2) {
       throw new Error('QXO material combined candidate seed identity has drifted.');
     }
     return {
       corpusReleaseId,
-      servingNamespaceId: contentId('SERVING_NAMESPACE/V1', {
-        schema_version: 'QXO_MATERIAL_COMBINED_SERVING_NAMESPACE/V1',
+      servingNamespaceId: contentId('SERVING_NAMESPACE/V2', {
+        schema_version: 'QXO_MATERIAL_COMBINED_SERVING_NAMESPACE/V2',
         governed_deal_key: DEAL_KEY,
         corpus_release_id: corpusReleaseId,
-        candidate_seed_digest: PROVISIONAL_CORPUS_RELEASE_SEED_DIGEST,
+        candidate_seed_digest: QXO_MATERIAL_CORPUS_RELEASE_SEED_DIGEST_V2,
+        serving_projection_version: SERVING_PROJECTION_VERSION_V2,
+        query_projection_contract_digest: QUERY_PROJECTION_CONTRACT_DIGEST_V2,
       }),
     };
   }
@@ -550,6 +560,12 @@ async function buildCandidate() {
     contract_bundle: contractBundle,
     serving_namespace_id: servingNamespaceId,
     corpus_release_id: corpusReleaseId,
+    ...(includesMaterial() ? {
+      serving_projection_binding: {
+        serving_projection_version: SERVING_PROJECTION_VERSION_V2,
+        query_projection_contract_digest: QUERY_PROJECTION_CONTRACT_DIGEST_V2,
+      },
+    } : {}),
     members: [
       ...capitalisationServing.candidate_release_members,
       ...noShopServing.candidate_release_members,
@@ -570,7 +586,8 @@ async function buildCandidate() {
       || release.incomplete_canonical_rows?.length !== 1
       || release.query_records.length !== 8
       || release.exact_detail_packages.length !== 9
-      || materialRowKey !== MATERIAL_INCOMPLETE_ROW_SERVING_KEY
+      || (MATERIAL_INCOMPLETE_ROW_SERVING_KEY !== null
+        && materialRowKey !== MATERIAL_INCOMPLETE_ROW_SERVING_KEY)
       || release.query_records.some((record) => record.row_serving_key === materialRowKey)
       || release.market_observations.some((observation) => observation.metric_key === MATERIAL_METRIC_KEY)
       || release.market_exclusions.filter((exclusion) => exclusion.metric_key === MATERIAL_METRIC_KEY).length !== 1) {
@@ -584,7 +601,19 @@ async function buildCandidate() {
       && release.manifest.candidate_release_manifest_id !== expected.candidateManifestId)
     || (expected.servingNamespaceId !== null
       && release.manifest.serving_namespace_id !== expected.servingNamespaceId)) {
-    throw new Error('QXO combined candidate release identity has drifted.');
+    throw new Error(`QXO combined candidate release identity has drifted: ${JSON.stringify({
+      expected,
+      actual: {
+        corpusReleaseId: release.manifest.corpus_release_id,
+        candidateManifestId: release.manifest.candidate_release_manifest_id,
+        servingNamespaceId: release.manifest.serving_namespace_id,
+        materialIncompleteRowServingKey: includesMaterial()
+          ? materialSlice.incomplete_shared_row.row_serving_key
+          : null,
+        roots: release.manifest.roots,
+        correctionInputSealId: release.manifest.correction_input_seal_id,
+      },
+    })}`);
   }
   return {
     contractBundle,
@@ -609,6 +638,11 @@ function readCandidateState(release) {
   const id = release.manifest.corpus_release_id;
   const rows = runSql(`SELECT jsonb_build_object(
   'release_records', (SELECT count(*) FROM canonical_v2_staging.fixture_corpus_releases WHERE corpus_release_id='${id}'),
+  'projection_version', (SELECT projection_version FROM canonical_v2_staging.fixture_corpus_releases WHERE corpus_release_id='${id}'),
+  'query_projection_contract_digest', (SELECT query_projection_contract_digest FROM canonical_v2_staging.fixture_corpus_releases WHERE corpus_release_id='${id}'),
+  'legacy_material_release_records', (SELECT count(*) FROM canonical_v2_staging.fixture_corpus_releases
+    WHERE corpus_release_id='${PROVISIONAL_CORPUS_RELEASE_ID}'
+      AND candidate_manifest_id='${LEGACY_MATERIAL_CANDIDATE_MANIFEST_ID}'),
   'correction_input_seals', (SELECT count(*) FROM canonical_v2_staging.candidate_release_correction_input_seals WHERE corpus_release_id='${id}'),
   'correction_discharges', (SELECT count(*) FROM canonical_v2_staging.candidate_release_correction_discharges WHERE corpus_release_id='${id}'),
   'deal_directory_records', (SELECT count(*) FROM canonical_v2_staging.deal_serving_directory WHERE corpus_release_id='${id}'),
@@ -667,6 +701,11 @@ function assertImported(state, release) {
     if (Number(state[key]) !== value) throw new Error(`QXO combined candidate ${key} is ${state[key]}, expected ${value}.`);
   }
   if (includesMaterial() && (
+    state.projection_version !== SERVING_PROJECTION_VERSION_V2
+    || state.query_projection_contract_digest !== QUERY_PROJECTION_CONTRACT_DIGEST_V2
+    || Number(state.legacy_material_release_records) !== 1
+  )) throw new Error('QXO material v2 projection binding or immutable v1 predecessor has drifted.');
+  if (includesMaterial() && (
     Number(state.selected_deal_shared_rows) !== 9
     || Number(state.material_query_records) !== 0
     || Number(state.material_incomplete_records) !== 1
@@ -690,6 +729,9 @@ function assertAbsent(state) {
     'exact_detail_packages',
     'complete_receipts',
   ]) if (Number(state[key]) !== 0) throw new Error(`QXO combined candidate ${key} remains after rollback.`);
+  if (includesMaterial() && Number(state.legacy_material_release_records) !== 1) {
+    throw new Error('QXO material v2 rollback changed its immutable v1 predecessor.');
+  }
 }
 
 async function recheck(authoritySelection) {
@@ -725,6 +767,8 @@ function attestation(candidate, mode, rollbackRehearsed = false) {
     corpus_release_id: candidate.release.manifest.corpus_release_id,
     candidate_release_manifest_id: candidate.release.manifest.candidate_release_manifest_id,
     serving_namespace_id: candidate.release.manifest.serving_namespace_id,
+    serving_projection_version: includesMaterial() ? SERVING_PROJECTION_VERSION_V2 : 'canonical-v2-serving/v1',
+    query_projection_contract_digest: includesMaterial() ? QUERY_PROJECTION_CONTRACT_DIGEST_V2 : null,
     source_admission_manifest_id: candidate.sourceContext.source_admission_manifest_id,
     source_admission_manifest_ids: includesMaterial()
       ? QXO_MATERIAL_SOURCE_ADMISSION_MANIFEST_IDS
@@ -747,6 +791,9 @@ function attestation(candidate, mode, rollbackRehearsed = false) {
     exclusions: candidate.release.market_exclusions.length,
     shared_rows: candidate.release.shared_rows.length,
     incomplete_canonical_rows: candidate.release.incomplete_canonical_rows?.length || 0,
+    material_incomplete_row_serving_key: includesMaterial()
+      ? candidate.materialSlice.incomplete_shared_row.row_serving_key
+      : null,
     query_records: candidate.release.query_records.length,
     exact_detail_packages: candidate.release.exact_detail_packages.length,
     active_pointer_unchanged: true,
@@ -784,6 +831,7 @@ try {
     releaseConfig().corpusReleaseId,
     releaseConfig().candidateManifestId,
     releaseConfig().servingNamespaceId,
+    ...(includesMaterial() ? [MATERIAL_INCOMPLETE_ROW_SERVING_KEY] : []),
   ].some((identity) => identity === null) && invocation[mode] !== 'DRY_RUN') {
     throw new Error('The combined candidate identities must be pinned before staging mutation.');
   }
@@ -795,7 +843,10 @@ try {
   } else if (invocation[mode] === 'REHEARSE_ROLLBACK') {
     assertImported(before, candidate.release);
     currentStage = 'ROLLBACK_IMPORTED_CANDIDATE';
-    await rollbackInactiveCandidateRelease({ client: sqlRpcClient({ commit: true }), release: candidate.release });
+    await rollbackInactiveCandidateRelease({
+      client: sqlRpcClient({ commit: true }),
+      release: candidate.release,
+    });
     currentStage = 'VERIFY_CANDIDATE_ABSENT';
     const absent = readCandidateState(candidate.release);
     assertAbsent(absent);
@@ -805,7 +856,10 @@ try {
     currentStage = 'RECHECK_AUTHORITY_FOR_REIMPORT';
     await recheck(candidate.authoritySelection);
     currentStage = 'REIMPORT_ROLLED_BACK_CANDIDATE';
-    await importCandidateRelease({ client: sqlRpcClient({ commit: true }), release: candidate.release });
+    await importCandidateRelease({
+      client: sqlRpcClient({ commit: true }),
+      release: candidate.release,
+    });
     currentStage = 'VERIFY_REIMPORTED_CANDIDATE';
     const reimported = readCandidateState(candidate.release);
     assertImported(reimported, candidate.release);
@@ -816,7 +870,10 @@ try {
     currentStage = 'RECHECK_AUTHORITY_FOR_ROLLBACK';
     await recheck(candidate.authoritySelection);
     currentStage = 'ROLLBACK_IMPORT';
-    await importCandidateRelease({ client: sqlRpcClient(), release: candidate.release });
+    await importCandidateRelease({
+      client: sqlRpcClient(),
+      release: candidate.release,
+    });
     currentStage = 'VERIFY_ROLLBACK';
     const afterRollback = readCandidateState(candidate.release);
     if (canonicalJson(before) !== canonicalJson(afterRollback)) {
@@ -826,7 +883,10 @@ try {
       currentStage = 'RECHECK_AUTHORITY_FOR_IMPORT';
       await recheck(candidate.authoritySelection);
       currentStage = 'IMPORT_CANDIDATE';
-      await importCandidateRelease({ client: sqlRpcClient({ commit: true }), release: candidate.release });
+      await importCandidateRelease({
+        client: sqlRpcClient({ commit: true }),
+        release: candidate.release,
+      });
       currentStage = 'VERIFY_IMPORTED_CANDIDATE';
       const imported = readCandidateState(candidate.release);
       assertImported(imported, candidate.release);

@@ -3,7 +3,10 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
 const { buildLandosCandidateReleaseFixture } = require('../__fixtures__/canonical-v2/landos-candidate-release');
-const { buildInitialActiveReleasePointer } = require('../lib/canonical-v2/candidate-release');
+const {
+  buildFixtureCandidateRelease,
+  buildInitialActiveReleasePointer,
+} = require('../lib/canonical-v2/candidate-release');
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
 const {
   activateCandidateRelease,
@@ -12,6 +15,10 @@ const {
   rollbackInactiveCandidateRelease,
   validateCandidateReleaseImportPlan,
 } = require('../lib/canonical-v2/candidate-release-import');
+const {
+  QUERY_PROJECTION_CONTRACT_DIGEST_V2,
+  SERVING_PROJECTION_VERSION_V2,
+} = require('../lib/canonical-v2/serving-projection-contract');
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
@@ -58,6 +65,24 @@ function rollbackReceiptFor(plan) {
   };
 }
 
+function buildProjectionBoundRelease() {
+  const fixture = buildLandosCandidateReleaseFixture();
+  return buildFixtureCandidateRelease({
+    contract_bundle: fixture.contract,
+    serving_namespace_id: fixture.servingNamespaceId,
+    corpus_release_id: fixture.corpusReleaseId,
+    serving_projection_binding: {
+      serving_projection_version: SERVING_PROJECTION_VERSION_V2,
+      query_projection_contract_digest: QUERY_PROJECTION_CONTRACT_DIGEST_V2,
+    },
+    members: fixture.members,
+    source_specific_members: fixture.sourceSpecificMembers,
+    validated_semantic_graphs: fixture.validatedSemanticGraphs,
+    correction_authority_selection: fixture.correctionAuthoritySelection,
+    deal_directory_entries: fixture.dealDirectoryEntries,
+  });
+}
+
 test('one certified release becomes one deterministic atomic import plan across every serving partition', () => {
   const { release } = buildLandosCandidateReleaseFixture();
   const first = buildCandidateReleaseImportPlan({ release });
@@ -100,6 +125,38 @@ test('one certified release becomes one deterministic atomic import plan across 
   assert.equal(first.validated_semantic_graph_records[0].governed_deal_key, 'deal:landos-abbvie');
   assert.equal(first.validated_semantic_graph_records[0].definition_cue_count, 1);
   assert.equal(first.validated_semantic_graph_records[0].definition_use_cue_count, 2);
+});
+
+test('projection-bound manifests exclusively determine the v2 import and exact query schema', () => {
+  const legacy = buildLandosCandidateReleaseFixture().release;
+  const legacyPlan = buildCandidateReleaseImportPlan({ release: legacy });
+  assert.equal(legacyPlan.release_record.projection_version, 'canonical-v2-serving/v1');
+  assert.equal(Object.hasOwn(legacyPlan.release_record, 'query_projection_contract_digest'), false);
+  assert.equal(legacy.query_records.some((record) => Object.hasOwn(record, 'payment_timings')), false);
+
+  const release = buildProjectionBoundRelease();
+  const plan = buildCandidateReleaseImportPlan({
+    release,
+    projectionVersion: 'canonical-v2-serving/v1',
+  });
+  assert.equal(release.schema_version, 'FIXTURE_CANDIDATE_RELEASE_BUNDLE/V3');
+  assert.equal(release.manifest.schema_version, 'FIXTURE_CANDIDATE_RELEASE_MANIFEST/V3');
+  assert.equal(plan.schema_version, 'CANDIDATE_RELEASE_IMPORT_PLAN/V6');
+  assert.equal(plan.release_record.projection_version, SERVING_PROJECTION_VERSION_V2);
+  assert.equal(
+    plan.release_record.query_projection_contract_digest,
+    QUERY_PROJECTION_CONTRACT_DIGEST_V2,
+  );
+  assert.equal(release.query_records.every((record) => (
+    Array.isArray(record.payment_timings) && Array.isArray(record.trigger_conditions)
+  )), true);
+
+  const tampered = clone(release);
+  tampered.manifest.serving_projection_version = 'canonical-v2-serving/v1';
+  assert.throws(
+    () => buildCandidateReleaseImportPlan({ release: tampered }),
+    /frozen v2|complete certified release/,
+  );
 });
 
 test('bundle or physical projection drift blocks the import plan before any database call', async () => {
@@ -293,6 +350,9 @@ test('staging import is set-based, transactional and withholds completion until 
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.exact_detail_serving_packages/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.deal_serving_directory/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.candidate_release_import_receipts/);
+  assert.match(sql, /query_projection_contract_digest text/);
+  assert.match(sql, /canonical-v2-serving\/v2/);
+  assert.match(sql, /048394ed05f7b810b0688e8cc0324f6270196b0c531e50d37fa9ac537efed827/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.candidate_release_semantic_graphs/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.candidate_release_correction_input_seals/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.candidate_release_correction_discharges/);
@@ -305,6 +365,8 @@ test('staging import is set-based, transactional and withholds completion until 
   assert.match(importer, /candidate correction discharge import set does not equal its seal/);
   assert.match(importer, /candidate_release_correction_input_seals[\s\S]*candidate_release_correction_discharges[\s\S]*did not close over every certified serving object/);
   assert.match(importer, /CANDIDATE_RELEASE_IMPORT_RECEIPT\/V4/);
+  assert.match(importer, /CANDIDATE_RELEASE_IMPORT_RECEIPT\/V6/);
+  assert.match(importer, /FIXTURE_CANDIDATE_RELEASE_MANIFEST\/V3/);
   const inputHeadLock = importer.indexOf('FROM canonical_v2_staging.candidate_input_heads current_head');
   const replayLookup = importer.indexOf('FROM canonical_v2_staging.candidate_release_import_receipts receipt');
   const firstReleaseInsert = importer.indexOf('INSERT INTO canonical_v2_staging.fixture_corpus_releases');

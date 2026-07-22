@@ -20,11 +20,36 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.fixture_corpus_releases (
   correction_input_root text CHECK (correction_input_root IS NULL OR correction_input_root ~ '^[a-f0-9]{64}$'),
   frozen_pair_root_id text NOT NULL CHECK (frozen_pair_root_id ~ '^[a-f0-9]{64}$'),
   contract_fingerprint text NOT NULL CHECK (contract_fingerprint ~ '^[a-f0-9]{64}$'),
-  projection_version text NOT NULL CHECK (projection_version = 'canonical-v2-serving/v1'),
+  projection_version text NOT NULL CHECK (projection_version IN (
+    'canonical-v2-serving/v1',
+    'canonical-v2-serving/v2'
+  )),
+  query_projection_contract_digest text CHECK (
+    query_projection_contract_digest IS NULL
+    OR query_projection_contract_digest ~ '^[a-f0-9]{64}$'
+  ),
   response_schema_version text NOT NULL CHECK (response_schema_version = 'MARKET_COHORT_RESULT/V1'),
   canonical_payload jsonb NOT NULL,
   canonical_payload_digest text NOT NULL CHECK (canonical_payload_digest ~ '^[a-f0-9]{64}$')
 );
+
+ALTER TABLE canonical_v2_staging.fixture_corpus_releases
+  ADD COLUMN IF NOT EXISTS query_projection_contract_digest text;
+ALTER TABLE canonical_v2_staging.fixture_corpus_releases
+  DROP CONSTRAINT IF EXISTS fixture_corpus_releases_projection_version_check;
+ALTER TABLE canonical_v2_staging.fixture_corpus_releases
+  ADD CONSTRAINT fixture_corpus_releases_projection_version_check
+  CHECK (projection_version IN ('canonical-v2-serving/v1', 'canonical-v2-serving/v2'));
+ALTER TABLE canonical_v2_staging.fixture_corpus_releases
+  DROP CONSTRAINT IF EXISTS fixture_corpus_releases_projection_contract_check;
+ALTER TABLE canonical_v2_staging.fixture_corpus_releases
+  ADD CONSTRAINT fixture_corpus_releases_projection_contract_check CHECK (
+    (projection_version = 'canonical-v2-serving/v1' AND query_projection_contract_digest IS NULL)
+    OR (
+      projection_version = 'canonical-v2-serving/v2'
+      AND query_projection_contract_digest = '048394ed05f7b810b0688e8cc0324f6270196b0c531e50d37fa9ac537efed827'
+    )
+  );
 
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.deal_serving_directory (
   serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
@@ -519,6 +544,9 @@ DECLARE
   release_id text := release_record->>'corpus_release_id';
   namespace_id text := release_record->'canonical_payload'->>'serving_namespace_id';
   contract_id text := release_record->>'contract_fingerprint';
+  projection_version_id text := release_record->>'projection_version';
+  query_projection_contract_id text := release_record->>'query_projection_contract_digest';
+  manifest_schema text := release_record->'canonical_payload'->>'schema_version';
   manifest_id text := release_record->>'candidate_manifest_id';
   correction_seal_id text := release_record->>'correction_input_seal_id';
   correction_input_root_id text := release_record->>'correction_input_root';
@@ -528,7 +556,14 @@ DECLARE
   discharge_map_payload_digest text := input_authority->>'correction_discharge_map_payload_digest';
   import_plan_id text := p_import_plan->>'candidate_release_import_plan_id';
   is_v5 boolean := p_import_plan->>'schema_version' = 'CANDIDATE_RELEASE_IMPORT_PLAN/V5';
+  is_v6 boolean := p_import_plan->>'schema_version' = 'CANDIDATE_RELEASE_IMPORT_PLAN/V6';
+  carries_incomplete_partition boolean := p_import_plan->>'schema_version' IN (
+    'CANDIDATE_RELEASE_IMPORT_PLAN/V5',
+    'CANDIDATE_RELEASE_IMPORT_PLAN/V6'
+  );
   receipt_schema text := CASE
+    WHEN p_import_plan->>'schema_version' = 'CANDIDATE_RELEASE_IMPORT_PLAN/V6'
+      THEN 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V6'
     WHEN p_import_plan->>'schema_version' = 'CANDIDATE_RELEASE_IMPORT_PLAN/V5'
       THEN 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V5'
     ELSE 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V4'
@@ -557,7 +592,8 @@ BEGIN
   END IF;
   IF p_import_plan->>'schema_version' NOT IN (
       'CANDIDATE_RELEASE_IMPORT_PLAN/V4',
-      'CANDIDATE_RELEASE_IMPORT_PLAN/V5'
+      'CANDIDATE_RELEASE_IMPORT_PLAN/V5',
+      'CANDIDATE_RELEASE_IMPORT_PLAN/V6'
     )
     OR jsonb_typeof(release_record) IS DISTINCT FROM 'object'
     OR jsonb_typeof(expected) IS DISTINCT FROM 'object'
@@ -587,7 +623,28 @@ BEGIN
     OR input_head_payload_digest !~ '^[a-f0-9]{64}$'
     OR discharge_map_id !~ '^[a-f0-9]{64}$'
     OR discharge_map_payload_digest !~ '^[a-f0-9]{64}$'
-    OR import_plan_id !~ '^[a-f0-9]{64}$' THEN
+    OR import_plan_id !~ '^[a-f0-9]{64}$'
+    OR (
+      manifest_schema IN ('FIXTURE_CANDIDATE_RELEASE_MANIFEST/V1', 'FIXTURE_CANDIDATE_RELEASE_MANIFEST/V2')
+      AND (
+        projection_version_id IS DISTINCT FROM 'canonical-v2-serving/v1'
+        OR query_projection_contract_id IS NOT NULL
+      )
+    )
+    OR (
+      manifest_schema = 'FIXTURE_CANDIDATE_RELEASE_MANIFEST/V3'
+      AND (
+        projection_version_id IS DISTINCT FROM release_record->'canonical_payload'->>'serving_projection_version'
+        OR query_projection_contract_id IS DISTINCT FROM release_record->'canonical_payload'->>'query_projection_contract_digest'
+        OR projection_version_id IS DISTINCT FROM 'canonical-v2-serving/v2'
+        OR query_projection_contract_id IS DISTINCT FROM '048394ed05f7b810b0688e8cc0324f6270196b0c531e50d37fa9ac537efed827'
+      )
+    )
+    OR manifest_schema NOT IN (
+      'FIXTURE_CANDIDATE_RELEASE_MANIFEST/V1',
+      'FIXTURE_CANDIDATE_RELEASE_MANIFEST/V2',
+      'FIXTURE_CANDIDATE_RELEASE_MANIFEST/V3'
+    ) THEN
     RAISE EXCEPTION 'invalid candidate release import plan' USING ERRCODE = '22023';
   END IF;
 
@@ -705,8 +762,8 @@ BEGIN
     OR jsonb_typeof(p_import_plan->'market_observations') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'market_exclusions') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'query_records') IS DISTINCT FROM 'array'
-    OR (is_v5 AND jsonb_typeof(p_import_plan->'incomplete_canonical_records') IS DISTINCT FROM 'array')
-    OR (NOT is_v5 AND p_import_plan ? 'incomplete_canonical_records')
+    OR (carries_incomplete_partition AND jsonb_typeof(p_import_plan->'incomplete_canonical_records') IS DISTINCT FROM 'array')
+    OR (NOT carries_incomplete_partition AND p_import_plan ? 'incomplete_canonical_records')
     OR jsonb_typeof(p_import_plan->'source_specific_records') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'exact_detail_packages') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'validated_semantic_graph_records') IS DISTINCT FROM 'array'
@@ -721,9 +778,9 @@ BEGIN
       IS DISTINCT FROM (expected->>'market_exclusions')::integer
     OR jsonb_array_length(p_import_plan->'query_records')
       IS DISTINCT FROM (expected->>'query_records')::integer
-    OR (is_v5 AND jsonb_array_length(p_import_plan->'incomplete_canonical_records')
+    OR (carries_incomplete_partition AND jsonb_array_length(p_import_plan->'incomplete_canonical_records')
       IS DISTINCT FROM (expected->>'incomplete_canonical_records')::integer)
-    OR (NOT is_v5 AND expected ? 'incomplete_canonical_records')
+    OR (NOT carries_incomplete_partition AND expected ? 'incomplete_canonical_records')
     OR jsonb_array_length(p_import_plan->'source_specific_records')
       IS DISTINCT FROM (expected->>'source_specific_records')::integer
     OR jsonb_array_length(p_import_plan->'exact_detail_packages')
@@ -744,11 +801,13 @@ BEGIN
       IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'exclusions')::integer
     OR (expected->>'query_records')::integer
       IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'query_records')::integer
-    OR (is_v5 AND (expected->>'incomplete_canonical_records')::integer
+    OR (carries_incomplete_partition AND (expected->>'incomplete_canonical_records')::integer
       IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'incomplete_canonical_rows')::integer)
     OR (is_v5 AND release_record->'canonical_payload'->>'schema_version'
       IS DISTINCT FROM 'FIXTURE_CANDIDATE_RELEASE_MANIFEST/V2')
-    OR (NOT is_v5 AND release_record->'canonical_payload'->>'schema_version'
+    OR (is_v6 AND release_record->'canonical_payload'->>'schema_version'
+      IS DISTINCT FROM 'FIXTURE_CANDIDATE_RELEASE_MANIFEST/V3')
+    OR (NOT carries_incomplete_partition AND release_record->'canonical_payload'->>'schema_version'
       IS DISTINCT FROM 'FIXTURE_CANDIDATE_RELEASE_MANIFEST/V1')
     OR (expected->>'source_specific_records')::integer
       IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'source_specific_serving_records')::integer
@@ -828,7 +887,7 @@ BEGIN
   ) THEN
     RAISE EXCEPTION 'candidate release metric slot has both observation and exclusion' USING ERRCODE = '23505';
   END IF;
-  IF is_v5 AND (
+  IF carries_incomplete_partition AND (
     EXISTS (
       SELECT 1
       FROM jsonb_array_elements(p_import_plan->'incomplete_canonical_records') item
@@ -960,7 +1019,7 @@ BEGIN
       IS DISTINCT FROM (expected->>'market_exclusions')::integer
     OR (SELECT count(DISTINCT item->>'row_serving_key') FROM jsonb_array_elements(p_import_plan->'query_records') item)
       IS DISTINCT FROM (expected->>'query_records')::integer
-    OR (is_v5 AND (SELECT count(DISTINCT item->>'row_serving_key')
+    OR (carries_incomplete_partition AND (SELECT count(DISTINCT item->>'row_serving_key')
       FROM jsonb_array_elements(p_import_plan->'incomplete_canonical_records') item)
       IS DISTINCT FROM (expected->>'incomplete_canonical_records')::integer)
     OR (SELECT count(DISTINCT item->>'row_serving_key') FROM jsonb_array_elements(p_import_plan->'source_specific_records') item)

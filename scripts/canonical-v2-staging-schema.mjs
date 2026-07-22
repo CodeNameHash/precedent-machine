@@ -18,7 +18,7 @@ const EXPECTED_PROJECT = Object.freeze({
 });
 const EXPECTED_DIGESTS = Object.freeze({
   'canonical-v2-foundation.sql': '33a3b5a8e2a70ec97e48422d22222fda7eb3628eb466fcdec2fd615d4034e8d6',
-  'canonical-v2-serving.sql': 'b4b8813235fede292052cf3cbbe34f88ae85538ade17c0d5a649d06db41c8b81',
+  'canonical-v2-serving.sql': '29ba5cb3a6cbd7d8adb69cb692956ccadf81ff1bcde3ed166ff393b31e13d0a8',
 });
 const SCRIPT_ROOT = dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = resolve(SCRIPT_ROOT, '..');
@@ -85,6 +85,17 @@ function verifyAppliedSchema() {
       to_regclass('canonical_v2_staging.source_admission_preparation_receipts') is not null as source_admission_preparation_table_exists,
       to_regclass('canonical_v2_staging.semantic_extraction_input_envelopes') is not null as semantic_extraction_input_table_exists,
       to_regclass('canonical_v2_staging.incomplete_canonical_result_rows') is not null as incomplete_canonical_result_table_exists,
+      exists (
+        select 1 from information_schema.columns
+        where table_schema = 'canonical_v2_staging'
+          and table_name = 'fixture_corpus_releases'
+          and column_name = 'query_projection_contract_digest'
+      ) as release_projection_contract_digest_exists,
+      exists (
+        select 1 from pg_constraint
+        where conrelid = 'canonical_v2_staging.fixture_corpus_releases'::regclass
+          and conname = 'fixture_corpus_releases_projection_contract_check'
+      ) as release_projection_contract_check_exists,
       to_regclass('canonical_v2_staging.candidate_release_semantic_graphs') is not null as release_semantic_graph_table_exists,
       to_regclass('canonical_v2_staging.candidate_release_correction_input_seals') is not null as correction_seal_table_exists,
       to_regclass('canonical_v2_staging.candidate_release_correction_discharges') is not null as correction_discharge_table_exists,
