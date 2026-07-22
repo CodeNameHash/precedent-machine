@@ -17,7 +17,7 @@ const EXPECTED_PROJECT = Object.freeze({
   name: 'deal-corpus-canonical-v2-staging',
 });
 const EXPECTED_DIGESTS = Object.freeze({
-  'canonical-v2-foundation.sql': 'ebe5421a973ed7a68233f200680ba5fa362eb1c583377e86b52c5cf9e05f906e',
+  'canonical-v2-foundation.sql': 'a6d1337792d1929b175692133a222b5db6ee1010f8a50ba4584d79573328cfab',
   'canonical-v2-serving.sql': '0f606b9975b8ebd78abf961b72ee58e9c04b6dd23476cbd9c1cc3151c0633e77',
 });
 const SCRIPT_ROOT = dirname(fileURLToPath(import.meta.url));

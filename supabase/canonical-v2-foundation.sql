@@ -404,7 +404,8 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.write_receipts (
     'FIXTURE_CORRECTION_AUTHORITY',
     'INTAKE_CAPTURE',
     'STAGE_SOURCE_ARTIFACT_CHUNK',
-    'PREPARE_SOURCE_ADMISSION'
+    'PREPARE_SOURCE_ADMISSION',
+    'DEAL_SCOPE_RUN'
   )),
   idempotency_key text NOT NULL,
   input_digest text NOT NULL,
@@ -422,7 +423,8 @@ ALTER TABLE canonical_v2_staging.write_receipts
     'FIXTURE_CORRECTION_AUTHORITY',
     'INTAKE_CAPTURE',
     'STAGE_SOURCE_ARTIFACT_CHUNK',
-    'PREPARE_SOURCE_ADMISSION'
+    'PREPARE_SOURCE_ADMISSION',
+    'DEAL_SCOPE_RUN'
   ));
 
 CREATE INDEX IF NOT EXISTS canonical_v2_excerpts_closure_idx
@@ -522,6 +524,16 @@ DECLARE
   correction_materialisation_count integer;
   correction_map_entry_count integer;
   affected_rows integer;
+  source_reference_count integer;
+  resolved_source_reference_count integer;
+  distinct_source_ordinal_count integer;
+  distinct_source_document_count integer;
+  distinct_canonical_text_count integer;
+  publishable_object_count integer;
+  residual_count integer;
+  quarantine_count integer;
+  source_reference_chain_valid boolean;
+  deal_document_hash_admitted boolean;
   capture jsonb;
   capture_reference jsonb;
   artifact_manifest jsonb;
@@ -546,7 +558,8 @@ BEGIN
     'FIXTURE_CORRECTION_AUTHORITY',
     'INTAKE_CAPTURE',
     'STAGE_SOURCE_ARTIFACT_CHUNK',
-    'PREPARE_SOURCE_ADMISSION'
+    'PREPARE_SOURCE_ADMISSION',
+    'DEAL_SCOPE_RUN'
   ) THEN
     RAISE EXCEPTION 'unsupported canonical operation' USING ERRCODE = '22023';
   END IF;
@@ -567,7 +580,9 @@ BEGIN
     IF existing_receipt.input_digest IS DISTINCT FROM p_input_digest THEN
       RAISE EXCEPTION 'idempotency key already names different canonical input' USING ERRCODE = '23505';
     END IF;
-    RETURN existing_receipt.canonical_payload || jsonb_build_object('replayed', true);
+    IF p_operation <> 'DEAL_SCOPE_RUN' THEN
+      RETURN existing_receipt.canonical_payload || jsonb_build_object('replayed', true);
+    END IF;
   END IF;
 
   IF p_operation = 'INTAKE_CAPTURE' THEN
@@ -1551,6 +1566,378 @@ BEGIN
     RETURN p_receipt || jsonb_build_object('replayed', false);
   END IF;
 
+  IF p_operation = 'DEAL_SCOPE_RUN' THEN
+    IF jsonb_typeof(p_write_set) IS DISTINCT FROM 'object'
+      OR NOT (p_write_set ?& ARRAY[
+        'source_references', 'deal', 'excerpts', 'validated_semantic_graphs',
+        'provisions', 'components', 'claims', 'relationships',
+        'open_world_candidates', 'open_world_candidate_occurrences',
+        'open_world_evidence_references', 'open_world_candidate_dispositions',
+        'open_world_primitives', 'semantic_impact_closures',
+        'reviewed_source_specific_rows'
+      ])
+      OR p_write_set - ARRAY[
+        'source_references', 'deal', 'excerpts', 'validated_semantic_graphs',
+        'provisions', 'components', 'claims', 'relationships',
+        'open_world_candidates', 'open_world_candidate_occurrences',
+        'open_world_evidence_references', 'open_world_candidate_dispositions',
+        'open_world_primitives', 'semantic_impact_closures',
+        'reviewed_source_specific_rows'
+      ]::text[] <> '{}'::jsonb
+      OR jsonb_typeof(p_write_set->'source_references') IS DISTINCT FROM 'array'
+      OR jsonb_typeof(p_write_set->'deal') IS DISTINCT FROM 'object'
+      OR EXISTS (
+        SELECT 1 FROM jsonb_each(p_write_set) AS write_field(key, value)
+        WHERE write_field.key NOT IN ('source_references', 'deal')
+          AND jsonb_typeof(write_field.value) IS DISTINCT FROM 'array'
+      ) THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN write set must match the closed reference-only contract'
+        USING ERRCODE = '22023';
+    END IF;
+    IF jsonb_typeof(p_residuals) IS DISTINCT FROM 'array'
+      OR jsonb_typeof(p_quarantines) IS DISTINCT FROM 'array' THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN residuals and quarantines must be arrays'
+        USING ERRCODE = '22023';
+    END IF;
+
+    source_reference_count := jsonb_array_length(p_write_set->'source_references');
+    residual_count := jsonb_array_length(p_residuals);
+    quarantine_count := jsonb_array_length(p_quarantines);
+    SELECT coalesce(sum(jsonb_array_length(value)), 0)::integer
+    INTO publishable_object_count
+    FROM jsonb_each(p_write_set)
+    WHERE key NOT IN ('source_references', 'deal');
+    IF source_reference_count NOT BETWEEN 1 AND 32
+      OR residual_count > 16384
+      OR quarantine_count > 4096
+      OR publishable_object_count > 16384
+      OR EXISTS (
+        SELECT 1 FROM jsonb_each(p_write_set) AS collection(key, value)
+        WHERE collection.key NOT IN ('source_references', 'deal')
+          AND jsonb_array_length(collection.value) > 4096
+      ) THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN exceeds a bounded source or object collection limit'
+        USING ERRCODE = '54000';
+    END IF;
+
+    item := p_write_set->'deal';
+    IF coalesce(length(trim(item->>'deal_key')), 0) = 0
+      OR item->>'deal_admission_id' !~ '^[0-9a-f]{64}$'
+      OR item->>'document_hash' !~ '^[0-9a-f]{64}$'
+      OR jsonb_typeof(item->'deal_key') IS DISTINCT FROM 'string'
+      OR jsonb_typeof(item->'deal_admission_id') IS DISTINCT FROM 'string'
+      OR jsonb_typeof(item->'document_hash') IS DISTINCT FROM 'string' THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN deal identity is invalid' USING ERRCODE = '23514';
+    END IF;
+
+    WITH supplied_references AS (
+      SELECT reference.value AS reference
+      FROM jsonb_array_elements(p_write_set->'source_references')
+        WITH ORDINALITY AS reference(value, input_ordinal)
+    )
+    SELECT
+      count(*)::integer,
+      count(*) FILTER (WHERE
+        immutable_source.immutable_source_document_id IS NOT NULL
+        AND admission.source_admission_manifest_id IS NOT NULL
+        AND semantic_input.semantic_extraction_input_envelope_id IS NOT NULL
+        AND conversion.canonical_text_id IS NOT NULL
+      )::integer,
+      count(DISTINCT supplied.reference->>'source_ordinal')::integer,
+      count(DISTINCT supplied.reference->>'immutable_source_document_id')::integer,
+      count(DISTINCT supplied.reference->>'canonical_text_id')::integer,
+      bool_and(
+        jsonb_typeof(supplied.reference) = 'object'
+        AND supplied.reference ?& ARRAY[
+          'schema_version', 'immutable_source_document_id',
+          'source_admission_manifest_id', 'semantic_extraction_input_envelope_id',
+          'canonical_text_id', 'governed_deal_key', 'deal_admission_id', 'source_ordinal'
+        ]
+        AND supplied.reference - ARRAY[
+          'schema_version', 'immutable_source_document_id',
+          'source_admission_manifest_id', 'semantic_extraction_input_envelope_id',
+          'canonical_text_id', 'governed_deal_key', 'deal_admission_id', 'source_ordinal'
+        ]::text[] = '{}'::jsonb
+        AND supplied.reference->>'schema_version' = 'ADMITTED_SOURCE_REFERENCE/V1'
+        AND NOT EXISTS (
+          SELECT 1 FROM jsonb_each(supplied.reference) AS reference_field(key, value)
+          WHERE reference_field.key <> 'source_ordinal'
+            AND jsonb_typeof(reference_field.value) <> 'string'
+        )
+        AND supplied.reference->>'governed_deal_key' = item->>'deal_key'
+        AND supplied.reference->>'deal_admission_id' = item->>'deal_admission_id'
+        AND supplied.reference->>'source_ordinal' ~ '^(0|[1-9][0-9]{0,8})$'
+        AND jsonb_typeof(supplied.reference->'source_ordinal') = 'number'
+        AND supplied.reference->>'immutable_source_document_id' ~ '^[0-9a-f]{64}$'
+        AND supplied.reference->>'source_admission_manifest_id' ~ '^[0-9a-f]{64}$'
+        AND supplied.reference->>'semantic_extraction_input_envelope_id' ~ '^[0-9a-f]{64}$'
+        AND supplied.reference->>'canonical_text_id' ~ '^[0-9a-f]{64}$'
+        AND immutable_source.canonical_payload->>'schema_version' = 'IMMUTABLE_SOURCE_DOCUMENT/V2'
+        AND immutable_source.canonical_payload->>'source_kind' = 'ORIGINAL_BYTES'
+        AND immutable_source.canonical_payload->>'authority_representation'
+          = 'ORIGINAL_HTTP_RESPONSE_BYTES'
+        AND immutable_source.canonical_payload->>'immutable_source_document_id'
+          = supplied.reference->>'immutable_source_document_id'
+        AND immutable_source.canonical_payload->>'canonical_text_id'
+          = supplied.reference->>'canonical_text_id'
+        AND immutable_source.canonical_payload->>'response_bytes_sha256' ~ '^[0-9a-f]{64}$'
+        AND admission.canonical_payload->>'schema_version' = 'SOURCE_ADMISSION_MANIFEST/V2'
+        AND admission.canonical_payload->>'admission_state' = 'VERIFIED'
+        AND admission.canonical_payload->>'source_kind' = 'ORIGINAL_BYTES'
+        AND admission.canonical_payload->>'immutable_source_document_id'
+          = supplied.reference->>'immutable_source_document_id'
+        AND admission.canonical_payload->>'source_admission_manifest_id'
+          = supplied.reference->>'source_admission_manifest_id'
+        AND admission.canonical_payload->>'canonical_text_id'
+          = supplied.reference->>'canonical_text_id'
+        AND admission.canonical_payload->>'discrepancy_count' = '0'
+        AND admission.canonical_payload->>'blocking_discrepancy_count' = '0'
+        AND admission.canonical_payload->'excluded_intervals' = '[]'::jsonb
+        AND admission.canonical_payload->'conversion_loss_residual_ids' = '[]'::jsonb
+        AND semantic_input.canonical_payload->>'schema_version'
+          = 'SEMANTIC_EXTRACTION_INPUT_ENVELOPE/V1'
+        AND semantic_input.canonical_payload->>'input_status' = 'READY_FOR_OFFLINE_PROPOSAL'
+        AND semantic_input.canonical_payload->>'coordinate_system'
+          = 'UTF8_CANONICAL_TEXT_HALF_OPEN'
+        AND semantic_input.canonical_payload->>'semantic_extraction_status' = 'NOT_ATTEMPTED'
+        AND semantic_input.canonical_payload->>'immutable_source_document_id'
+          = supplied.reference->>'immutable_source_document_id'
+        AND semantic_input.canonical_payload->>'source_admission_manifest_id'
+          = supplied.reference->>'source_admission_manifest_id'
+        AND semantic_input.canonical_payload->>'semantic_extraction_input_envelope_id'
+          = supplied.reference->>'semantic_extraction_input_envelope_id'
+        AND semantic_input.canonical_payload->>'canonical_text_id'
+          = supplied.reference->>'canonical_text_id'
+        AND semantic_input.canonical_payload->'excluded_intervals' = '[]'::jsonb
+        AND conversion.canonical_payload->>'schema_version'
+          = 'SEC_HTML_CANONICAL_TEXT_CONVERSION/V2'
+        AND conversion.canonical_payload->>'canonical_text_id'
+          = supplied.reference->>'canonical_text_id'
+        AND conversion.canonical_payload->>'canonical_text_sha256'
+          = immutable_source.canonical_payload->>'canonical_text_sha256'
+        AND conversion.canonical_payload->>'canonical_text_sha256'
+          = semantic_input.canonical_payload->>'canonical_text_sha256'
+        AND conversion.canonical_payload->>'canonical_text_byte_length'
+          = immutable_source.canonical_payload->>'canonical_text_byte_length'
+        AND conversion.canonical_payload->>'canonical_text_byte_length'
+          = semantic_input.canonical_payload->>'canonical_text_byte_length'
+        AND conversion.canonical_payload->>'source_response_content_id'
+          = immutable_source.canonical_payload->>'source_response_content_id'
+        AND conversion.canonical_payload->>'source_response_content_id'
+          = admission.canonical_payload->>'source_response_content_id'
+        AND conversion.canonical_payload->>'source_map_digest'
+          = immutable_source.canonical_payload->>'source_map_digest'
+        AND conversion.canonical_payload->>'source_map_digest'
+          = semantic_input.canonical_payload->>'source_map_digest'
+        AND conversion.canonical_payload->>'verification_status' = 'NOT_ATTEMPTED'
+        AND octet_length(convert_to(
+          conversion.canonical_payload->>'canonical_text', 'UTF8'
+        ))::text = conversion.canonical_payload->>'canonical_text_byte_length'
+        AND encode(extensions.digest(convert_to(
+          conversion.canonical_payload->>'canonical_text', 'UTF8'
+        ), 'sha256'::text), 'hex') = conversion.canonical_payload->>'canonical_text_sha256'
+        AND admission.canonical_payload->'admitted_intervals' = jsonb_build_array(
+          jsonb_build_object('start', 0, 'end', conversion.canonical_payload->'canonical_text_byte_length')
+        )
+        AND semantic_input.canonical_payload->'admitted_intervals'
+          = admission.canonical_payload->'admitted_intervals'
+      ),
+      bool_or(immutable_source.canonical_payload->>'response_bytes_sha256'
+        = item->>'document_hash')
+    INTO
+      source_reference_count,
+      resolved_source_reference_count,
+      distinct_source_ordinal_count,
+      distinct_source_document_count,
+      distinct_canonical_text_count,
+      source_reference_chain_valid,
+      deal_document_hash_admitted
+    FROM supplied_references supplied
+    LEFT JOIN canonical_v2_staging.immutable_source_documents immutable_source
+      ON immutable_source.immutable_source_document_id
+        = supplied.reference->>'immutable_source_document_id'
+    LEFT JOIN canonical_v2_staging.source_admission_manifests admission
+      ON admission.source_admission_manifest_id
+        = supplied.reference->>'source_admission_manifest_id'
+    LEFT JOIN canonical_v2_staging.semantic_extraction_input_envelopes semantic_input
+      ON semantic_input.semantic_extraction_input_envelope_id
+        = supplied.reference->>'semantic_extraction_input_envelope_id'
+    LEFT JOIN canonical_v2_staging.canonical_text_conversions conversion
+      ON conversion.canonical_text_id = supplied.reference->>'canonical_text_id';
+
+    IF resolved_source_reference_count <> source_reference_count
+      OR distinct_source_ordinal_count <> source_reference_count
+      OR distinct_source_document_count <> source_reference_count
+      OR distinct_canonical_text_count <> source_reference_count
+      OR source_reference_chain_valid IS DISTINCT FROM true
+      OR deal_document_hash_admitted IS DISTINCT FROM true THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN source references are unresolved, mixed or incomplete'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF EXISTS (
+      SELECT 1
+      FROM jsonb_each(p_write_set) AS collection(key, value)
+      CROSS JOIN LATERAL jsonb_array_elements(CASE
+        WHEN collection.key NOT IN ('source_references', 'deal') THEN collection.value
+        ELSE '[]'::jsonb
+      END) AS object(value)
+      WHERE collection.key NOT IN ('source_references', 'deal')
+        AND (
+          jsonb_typeof(object.value) <> 'object'
+          OR object.value->>'closure_id' !~ '^[0-9a-f]{64}$'
+          OR (CASE collection.key
+            WHEN 'excerpts' THEN object.value->>'excerpt_id'
+            WHEN 'validated_semantic_graphs' THEN object.value->>'validated_semantic_graph_id'
+            WHEN 'provisions' THEN object.value->>'provision_instance_id'
+            WHEN 'components' THEN object.value->>'provision_component_id'
+            WHEN 'claims' THEN object.value->>'claim_revision_id'
+            WHEN 'relationships' THEN object.value->>'relationship_revision_id'
+            WHEN 'open_world_candidates' THEN object.value->>'candidate_id'
+            WHEN 'open_world_candidate_occurrences'
+              THEN object.value->>'open_world_candidate_occurrence_id'
+            WHEN 'open_world_evidence_references' THEN object.value->>'evidence_reference_id'
+            WHEN 'open_world_candidate_dispositions' THEN object.value->>'final_disposition_id'
+            WHEN 'open_world_primitives' THEN object.value->>'primitive_id'
+            WHEN 'semantic_impact_closures' THEN object.value->>'semantic_impact_closure_id'
+            WHEN 'reviewed_source_specific_rows'
+              THEN object.value->>'reviewed_source_specific_row_serving_key'
+          END) !~ '^[0-9a-f]{64}$'
+        )
+    ) OR EXISTS (
+      SELECT 1
+      FROM jsonb_each(p_write_set) AS collection(key, value)
+      CROSS JOIN LATERAL jsonb_array_elements(CASE
+        WHEN collection.key NOT IN ('source_references', 'deal') THEN collection.value
+        ELSE '[]'::jsonb
+      END) AS object(value)
+      WHERE collection.key NOT IN ('source_references', 'deal')
+      GROUP BY collection.key, CASE collection.key
+        WHEN 'excerpts' THEN object.value->>'excerpt_id'
+        WHEN 'validated_semantic_graphs' THEN object.value->>'validated_semantic_graph_id'
+        WHEN 'provisions' THEN object.value->>'provision_instance_id'
+        WHEN 'components' THEN object.value->>'provision_component_id'
+        WHEN 'claims' THEN object.value->>'claim_revision_id'
+        WHEN 'relationships' THEN object.value->>'relationship_revision_id'
+        WHEN 'open_world_candidates' THEN object.value->>'candidate_id'
+        WHEN 'open_world_candidate_occurrences'
+          THEN object.value->>'open_world_candidate_occurrence_id'
+        WHEN 'open_world_evidence_references' THEN object.value->>'evidence_reference_id'
+        WHEN 'open_world_candidate_dispositions' THEN object.value->>'final_disposition_id'
+        WHEN 'open_world_primitives' THEN object.value->>'primitive_id'
+        WHEN 'semantic_impact_closures' THEN object.value->>'semantic_impact_closure_id'
+        WHEN 'reviewed_source_specific_rows'
+          THEN object.value->>'reviewed_source_specific_row_serving_key'
+      END
+      HAVING count(*) > 1
+    ) THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN contains invalid or duplicate semantic objects'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF EXISTS (
+      SELECT 1 FROM jsonb_array_elements(p_residuals) AS residual(value)
+      WHERE jsonb_typeof(residual.value) <> 'object'
+        OR NOT (residual.value ?& ARRAY[
+          'residual_id', 'source_kind', 'source_object_id', 'closure_id', 'reason_code',
+          'contract_key', 'upstream_residual', 'source_object'
+        ])
+        OR residual.value - ARRAY[
+          'residual_id', 'source_kind', 'source_object_id', 'closure_id', 'reason_code',
+          'contract_key', 'upstream_residual', 'source_object'
+        ]::text[] <> '{}'::jsonb
+        OR residual.value->>'residual_id' !~ '^[0-9a-f]{64}$'
+        OR residual.value->>'source_object_id' !~ '^[0-9a-f]{64}$'
+        OR residual.value->>'closure_id' !~ '^[0-9a-f]{64}$'
+        OR coalesce(length(residual.value->>'reason_code'), 0) = 0
+    ) OR EXISTS (
+      SELECT 1 FROM jsonb_array_elements(p_quarantines) AS quarantine(value)
+      WHERE jsonb_typeof(quarantine.value) <> 'object'
+        OR NOT (quarantine.value ?& ARRAY[
+          'quarantine_id', 'reason_code', 'closure_id', 'affected_objects', 'residual_ids'
+        ])
+        OR quarantine.value - ARRAY[
+          'quarantine_id', 'reason_code', 'closure_id', 'affected_objects', 'residual_ids'
+        ]::text[] <> '{}'::jsonb
+        OR quarantine.value->>'quarantine_id' !~ '^[0-9a-f]{64}$'
+        OR quarantine.value->>'closure_id' !~ '^[0-9a-f]{64}$'
+        OR quarantine.value->>'reason_code' <> 'UNRESOLVED_RESIDUAL'
+        OR jsonb_typeof(quarantine.value->'affected_objects') <> 'array'
+        OR jsonb_typeof(quarantine.value->'residual_ids') <> 'array'
+    ) OR (
+      SELECT count(DISTINCT residual.value->>'residual_id')
+      FROM jsonb_array_elements(p_residuals) AS residual(value)
+    ) <> residual_count OR (
+      SELECT count(DISTINCT quarantine.value->>'closure_id')
+      FROM jsonb_array_elements(p_quarantines) AS quarantine(value)
+    ) <> quarantine_count OR (
+      SELECT count(DISTINCT quarantine.value->>'quarantine_id')
+      FROM jsonb_array_elements(p_quarantines) AS quarantine(value)
+    ) <> quarantine_count OR EXISTS (
+      SELECT 1 FROM jsonb_array_elements(p_quarantines) AS quarantine(value)
+      WHERE jsonb_array_length(quarantine.value->'residual_ids') <> (
+        SELECT count(DISTINCT residual_id)
+        FROM jsonb_array_elements_text(quarantine.value->'residual_ids') residual_id
+      )
+    ) OR EXISTS (
+      SELECT 1 FROM jsonb_array_elements(p_residuals) AS residual(value)
+      WHERE NOT EXISTS (
+        SELECT 1 FROM jsonb_array_elements(p_quarantines) AS quarantine(value)
+        WHERE quarantine.value->>'closure_id' = residual.value->>'closure_id'
+          AND quarantine.value->'residual_ids' ? (residual.value->>'residual_id')
+      )
+    ) OR EXISTS (
+      SELECT 1 FROM jsonb_array_elements(p_quarantines) AS quarantine(value)
+      CROSS JOIN LATERAL jsonb_array_elements_text(quarantine.value->'residual_ids') residual_id
+      WHERE NOT EXISTS (
+        SELECT 1 FROM jsonb_array_elements(p_residuals) AS residual(value)
+        WHERE residual.value->>'closure_id' = quarantine.value->>'closure_id'
+          AND residual.value->>'residual_id' = residual_id
+      )
+    ) OR EXISTS (
+      SELECT 1
+      FROM jsonb_each(p_write_set) AS collection(key, value)
+      CROSS JOIN LATERAL jsonb_array_elements(CASE
+        WHEN collection.key NOT IN ('source_references', 'deal') THEN collection.value
+        ELSE '[]'::jsonb
+      END) AS object(value)
+      JOIN jsonb_array_elements(p_quarantines) AS quarantine(value)
+        ON quarantine.value->>'closure_id' = object.value->>'closure_id'
+      WHERE collection.key NOT IN ('source_references', 'deal')
+    ) THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN residual and quarantine outputs do not close exactly'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF p_input_digest !~ '^[0-9a-f]{64}$'
+      OR jsonb_typeof(p_receipt) IS DISTINCT FROM 'object'
+      OR NOT (p_receipt ?& ARRAY[
+        'receiptId', 'operation', 'idempotencyKey', 'inputDigest', 'status',
+        'publishableObjectCount', 'residualCount', 'quarantinedClosureCount'
+      ])
+      OR p_receipt - ARRAY[
+        'receiptId', 'operation', 'idempotencyKey', 'inputDigest', 'status',
+        'publishableObjectCount', 'residualCount', 'quarantinedClosureCount'
+      ]::text[] <> '{}'::jsonb
+      OR p_receipt->>'receiptId' !~ '^[0-9a-f]{64}$'
+      OR p_receipt->>'operation' <> p_operation
+      OR p_receipt->>'idempotencyKey' <> p_idempotency_key
+      OR p_receipt->>'inputDigest' <> p_input_digest
+      OR p_receipt->>'status' <> 'COMMITTED'
+      OR jsonb_typeof(p_receipt->'publishableObjectCount') <> 'number'
+      OR jsonb_typeof(p_receipt->'residualCount') <> 'number'
+      OR jsonb_typeof(p_receipt->'quarantinedClosureCount') <> 'number'
+      OR p_receipt->>'publishableObjectCount' <> publishable_object_count::text
+      OR p_receipt->>'residualCount' <> residual_count::text
+      OR p_receipt->>'quarantinedClosureCount' <> quarantine_count::text THEN
+      RAISE EXCEPTION 'invalid DEAL_SCOPE_RUN write receipt' USING ERRCODE = '23514';
+    END IF;
+
+    IF existing_receipt.operation IS NOT NULL THEN
+      RETURN existing_receipt.canonical_payload || jsonb_build_object('replayed', true);
+    END IF;
+  END IF;
+
   IF p_operation = 'FIXTURE_CORRECTION_AUTHORITY' THEN
     IF jsonb_typeof(p_write_set) IS DISTINCT FROM 'object'
       OR NOT (p_write_set ?& ARRAY[
@@ -2125,39 +2512,41 @@ BEGIN
       USING ERRCODE = '23514';
   END IF;
 
-  FOR item IN SELECT value FROM jsonb_array_elements(
-    CASE WHEN p_write_set ? 'sources'
-      THEN p_write_set->'sources'
-      ELSE jsonb_build_array(p_write_set->'source')
-    END
-  ) LOOP
-    item_id := item->>'immutable_source_document_id';
-    SELECT canonical_payload_digest INTO existing_digest
-    FROM canonical_v2_staging.immutable_source_documents
-    WHERE immutable_source_document_id = item_id;
-    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN
-      RAISE EXCEPTION 'canonical immutable source identity conflict' USING ERRCODE = '23505';
-    END IF;
-    INSERT INTO canonical_v2_staging.immutable_source_documents(immutable_source_document_id, canonical_payload)
-    VALUES (item_id, item) ON CONFLICT (immutable_source_document_id) DO NOTHING;
-  END LOOP;
+  IF p_operation <> 'DEAL_SCOPE_RUN' THEN
+    FOR item IN SELECT value FROM jsonb_array_elements(
+      CASE WHEN p_write_set ? 'sources'
+        THEN p_write_set->'sources'
+        ELSE jsonb_build_array(p_write_set->'source')
+      END
+    ) LOOP
+      item_id := item->>'immutable_source_document_id';
+      SELECT canonical_payload_digest INTO existing_digest
+      FROM canonical_v2_staging.immutable_source_documents
+      WHERE immutable_source_document_id = item_id;
+      IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN
+        RAISE EXCEPTION 'canonical immutable source identity conflict' USING ERRCODE = '23505';
+      END IF;
+      INSERT INTO canonical_v2_staging.immutable_source_documents(immutable_source_document_id, canonical_payload)
+      VALUES (item_id, item) ON CONFLICT (immutable_source_document_id) DO NOTHING;
+    END LOOP;
 
-  FOR item IN SELECT value FROM jsonb_array_elements(
-    CASE WHEN p_write_set ? 'source_admissions'
-      THEN p_write_set->'source_admissions'
-      ELSE jsonb_build_array(p_write_set->'source_admission')
-    END
-  ) LOOP
-    item_id := item->>'source_admission_manifest_id';
-    SELECT canonical_payload_digest INTO existing_digest
-    FROM canonical_v2_staging.source_admission_manifests
-    WHERE source_admission_manifest_id = item_id;
-    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN
-      RAISE EXCEPTION 'canonical source admission identity conflict' USING ERRCODE = '23505';
-    END IF;
-    INSERT INTO canonical_v2_staging.source_admission_manifests(source_admission_manifest_id, canonical_payload)
-    VALUES (item_id, item) ON CONFLICT (source_admission_manifest_id) DO NOTHING;
-  END LOOP;
+    FOR item IN SELECT value FROM jsonb_array_elements(
+      CASE WHEN p_write_set ? 'source_admissions'
+        THEN p_write_set->'source_admissions'
+        ELSE jsonb_build_array(p_write_set->'source_admission')
+      END
+    ) LOOP
+      item_id := item->>'source_admission_manifest_id';
+      SELECT canonical_payload_digest INTO existing_digest
+      FROM canonical_v2_staging.source_admission_manifests
+      WHERE source_admission_manifest_id = item_id;
+      IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN
+        RAISE EXCEPTION 'canonical source admission identity conflict' USING ERRCODE = '23505';
+      END IF;
+      INSERT INTO canonical_v2_staging.source_admission_manifests(source_admission_manifest_id, canonical_payload)
+      VALUES (item_id, item) ON CONFLICT (source_admission_manifest_id) DO NOTHING;
+    END LOOP;
+  END IF;
 
   item := p_write_set->'deal';
   item_id := item->>'deal_key';
