@@ -43,6 +43,9 @@ test('staging schema verification checks writer, serving RPCs and denied broad r
   assert.match(source, /anon_market_denied/);
   assert.match(source, /service_role_market_denied/);
   assert.match(source, /serving_market_allowed/);
+  assert.match(source, /active_query_rpc_exists/);
+  assert.match(source, /serving_active_query_allowed/);
+  assert.match(source, /serving_pinned_query_denied/);
   assert.match(source, /canonical_v2_active_review_context/);
   assert.match(source, /canonical_v2_exact_detail/);
   assert.match(source, /canonical_v2_select_candidate_inputs/);

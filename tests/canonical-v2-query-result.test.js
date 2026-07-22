@@ -365,6 +365,7 @@ test('the staging query projection is indexed, keyset-paged and served by one bo
   assert.match(sql, /payment_timings text\[\]/);
   assert.match(sql, /trigger_conditions text\[\]/);
   assert.match(sql, /CREATE OR REPLACE FUNCTION public\.canonical_v2_query_page/);
+  assert.match(sql, /CREATE OR REPLACE FUNCTION public\.canonical_v2_active_query_page/);
   assert.match(sql, /SECURITY DEFINER/);
   assert.match(sql, /SET statement_timeout = '2500ms'/);
   assert.match(sql, /LIMIT p_page_size \+ 1/);
@@ -375,10 +376,11 @@ test('the staging query projection is indexed, keyset-paged and served by one bo
   assert.match(sql, /canonical_v2_shared_rows_payment_timings_idx[\s\S]*USING gin \(payment_timings\)/);
   assert.match(sql, /canonical_v2_shared_rows_trigger_conditions_idx[\s\S]*USING gin \(trigger_conditions\)/);
   assert.match(sql, /REVOKE ALL ON TABLE canonical_v2_staging\.shared_serving_rows/);
-  assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_query_page[\s\S]*TO canonical_v2_serving/);
+  assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_active_query_page[\s\S]*TO canonical_v2_serving/);
+  assert.doesNotMatch(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_query_page\([\s\S]*?\) TO canonical_v2_serving/);
   assert.doesNotMatch(sql, /\bOFFSET\b/i);
   assert.doesNotMatch(sql, /\bLOOP\b/i);
   assert.doesNotMatch(sql, /\bEXECUTE\s+format\s*\(/i);
-  assert.equal((source.match(/client\.rpc\('canonical_v2_query_page'/g) || []).length, 1);
+  assert.match(source, /active \? 'canonical_v2_active_query_page' : 'canonical_v2_query_page'/);
   assert.doesNotMatch(source, /provision_cards|loadContext|\.from\(['"]claims['"]\)/);
 });

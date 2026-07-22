@@ -12,6 +12,8 @@ const {
 const { createPostgresServingClient } = require('../lib/canonical-v2/serving-client');
 
 const CONNECTION = 'postgresql://canonical_v2_preview.sjumbznveyyiizhwvixj:secret@aws-1-us-west-2.pooler.supabase.com:6543/postgres?sslmode=require&uselibpqcompat=true';
+const ACTIVE_POINTER_ID = contentId('ACTIVE_POINTER/V1', 'query-api-test');
+const ACTIVE_NAMESPACE_ID = contentId('SERVING_NAMESPACE/V1', 'query-api-test');
 
 function responseRecorder() {
   return {
@@ -28,9 +30,6 @@ function requestFor(row, overrides = {}) {
   const body = row.canonical_result;
   const market = body.market_context;
   return {
-    serving_namespace_id: contentId('SERVING_NAMESPACE/V1', 'query-api-test'),
-    corpus_release_id: row.corpus_release_id,
-    contract_fingerprint: row.provenance.contract_fingerprint,
     intent: 'MARKET_RANGE',
     metric_key: market.metric_key,
     metric_version: market.metric_version,
@@ -45,11 +44,12 @@ function requestFor(row, overrides = {}) {
   };
 }
 
-function resultFor(params, rows) {
+function resultFor(params, rows, identity = {}) {
   return {
     schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V1',
-    serving_namespace_id: params.p_serving_namespace_id,
-    corpus_release_id: params.p_corpus_release_id,
+    pointer_id: identity.pointer_id || ACTIVE_POINTER_ID,
+    serving_namespace_id: identity.serving_namespace_id || ACTIVE_NAMESPACE_ID,
+    corpus_release_id: identity.corpus_release_id || rows[0]?.corpus_release_id,
     contract_fingerprint: params.p_contract_fingerprint,
     query_semantics_digest: params.p_query_semantics_digest,
     total_count: rows.length,
@@ -94,11 +94,16 @@ test('canonical Query route performs one bounded RPC and returns a release-aware
 
   assert.equal(res.statusCode, 200);
   assert.equal(calls.length, 1);
-  assert.equal(calls[0].name, 'canonical_v2_query_page');
+  assert.equal(calls[0].name, 'canonical_v2_active_query_page');
   assert.equal(calls[0].params.p_environment, 'staging');
+  assert.equal(Object.hasOwn(calls[0].params, 'p_serving_namespace_id'), false);
+  assert.equal(Object.hasOwn(calls[0].params, 'p_corpus_release_id'), false);
   assert.equal(calls[0].params.p_page_size, 25);
   assert.equal(res.body.schema_version, 'CANONICAL_QUERY_RESULT_VIEW/V1');
   assert.equal(res.body.rows.length, 1);
+  assert.equal(res.body.pointer_id, ACTIVE_POINTER_ID);
+  assert.equal(res.body.serving_namespace_id, ACTIVE_NAMESPACE_ID);
+  assert.equal(res.body.corpus_release_id, row.corpus_release_id);
   assert.match(res.headers['Cache-Control'], /s-maxage=60/);
   assert.match(res.headers.ETag, /^"[a-f0-9]{64}"$/);
   assert.equal(res.headers['X-Canonical-Cache'], 'MISS');
@@ -120,6 +125,27 @@ test('canonical Query rejects oversized and invalid requests without database wo
   assert.equal(invalid.statusCode, 400);
   assert.equal(invalid.body.error.code, 'INVALID_REQUEST');
   assert.equal(clientCalls, 0);
+});
+
+test('public Query rejects injected pinned-release identity before database work', async () => {
+  const row = buildLandosTerminationFeeServingFixture().row;
+  let rpcCalls = 0;
+  const handler = createCanonicalQueryHandler({
+    enabled: true,
+    getClient: () => ({ rpc() { rpcCalls += 1; } }),
+  });
+  for (const injected of [
+    { serving_namespace_id: 'a'.repeat(64) },
+    { corpus_release_id: 'b'.repeat(64) },
+    { contract_fingerprint: 'c'.repeat(64) },
+    { release_selector: 'PINNED' },
+  ]) {
+    const res = responseRecorder();
+    await handler({ method: 'POST', body: { ...requestFor(row), ...injected } }, res);
+    assert.equal(res.statusCode, 400);
+    assert.equal(res.body.error.code, 'INVALID_REQUEST');
+  }
+  assert.equal(rpcCalls, 0);
 });
 
 test('canonical Query isolates failures, applies local capacity, and never retries', async () => {
@@ -182,8 +208,6 @@ test('serving client exposes Query through one typed staging-role RPC with no re
   const client = createPostgresServingClient({ connectionString: CONNECTION, PoolClass: QueryPool });
   const params = {
     p_environment: 'staging',
-    p_serving_namespace_id: 'a'.repeat(64),
-    p_corpus_release_id: 'b'.repeat(64),
     p_contract_fingerprint: 'c'.repeat(64),
     p_query_semantics_digest: 'd'.repeat(64),
     p_metric_key: 'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
@@ -220,12 +244,12 @@ test('serving client exposes Query through one typed staging-role RPC with no re
     p_after_row_serving_key: null,
   };
 
-  const response = await client.rpc('canonical_v2_query_page', params);
+  const response = await client.rpc('canonical_v2_active_query_page', params);
   const pool = QueryPool.instances[0];
 
   assert.equal(response.error, null);
   assert.equal(pool.calls.length, 1);
-  assert.match(pool.calls[0].text, /^SELECT public\.canonical_v2_query_page\(/);
+  assert.match(pool.calls[0].text, /^SELECT public\.canonical_v2_active_query_page\(/);
   assert.deepEqual(pool.calls[0].values, Object.values(params));
   assert.equal(pool.options.max, 1);
 });
@@ -247,8 +271,6 @@ test('serving client rejects an oversized Query page after one RPC', async () =>
   const client = createPostgresServingClient({ connectionString: CONNECTION, PoolClass: OversizedQueryPool });
   const params = {
     p_environment: 'staging',
-    p_serving_namespace_id: 'a'.repeat(64),
-    p_corpus_release_id: 'b'.repeat(64),
     p_contract_fingerprint: 'c'.repeat(64),
     p_query_semantics_digest: 'd'.repeat(64),
     p_metric_key: 'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
@@ -285,7 +307,7 @@ test('serving client rejects an oversized Query page after one RPC', async () =>
     p_after_row_serving_key: null,
   };
 
-  const response = await client.rpc('canonical_v2_query_page', params);
+  const response = await client.rpc('canonical_v2_active_query_page', params);
 
   assert.equal(response.data, null);
   assert.match(response.error.message, /exceeded its bounds/);

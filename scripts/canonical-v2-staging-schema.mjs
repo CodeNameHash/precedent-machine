@@ -18,7 +18,7 @@ const EXPECTED_PROJECT = Object.freeze({
 });
 const EXPECTED_DIGESTS = Object.freeze({
   'canonical-v2-foundation.sql': '33a3b5a8e2a70ec97e48422d22222fda7eb3628eb466fcdec2fd615d4034e8d6',
-  'canonical-v2-serving.sql': '0182ae8c6b551b403b4b7019448b18a5c8b2df2fa81fb73a9133c371f1475b9b',
+  'canonical-v2-serving.sql': 'b4b8813235fede292052cf3cbbe34f88ae85538ade17c0d5a649d06db41c8b81',
 });
 const SCRIPT_ROOT = dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = resolve(SCRIPT_ROOT, '..');
@@ -122,11 +122,16 @@ function verifyAppliedSchema() {
       to_regprocedure('public.canonical_v2_recheck_candidate_input_head(text,text,text,text)') is not null as candidate_input_recheck_exists,
       to_regprocedure('public.canonical_v2_rollback_inactive_candidate_release(text,text,text,text,text)') is not null as inactive_candidate_rollback_exists,
       to_regprocedure('public.canonical_v2_market_cohort(text,text,text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric)') is not null as market_rpc_exists,
+      to_regprocedure('public.canonical_v2_active_query_page(text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)') is not null as active_query_rpc_exists,
       to_regprocedure('public.canonical_v2_active_review_context(text,text,text,uuid,integer,text)') is not null as review_rpc_exists,
       to_regprocedure('public.canonical_v2_exact_detail(text,text,text,text,uuid,text,text)') is not null as exact_detail_rpc_exists,
       has_function_privilege('anon', 'public.canonical_v2_market_cohort(text,text,text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric)', 'EXECUTE') = false as anon_market_denied,
       has_function_privilege('service_role', 'public.canonical_v2_market_cohort(text,text,text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric)', 'EXECUTE') = false as service_role_market_denied,
       has_function_privilege('canonical_v2_serving', 'public.canonical_v2_market_cohort(text,text,text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric)', 'EXECUTE') as serving_market_allowed,
+      has_function_privilege('anon', 'public.canonical_v2_active_query_page(text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)', 'EXECUTE') = false as anon_active_query_denied,
+      has_function_privilege('service_role', 'public.canonical_v2_active_query_page(text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)', 'EXECUTE') = false as service_role_active_query_denied,
+      has_function_privilege('canonical_v2_serving', 'public.canonical_v2_active_query_page(text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)', 'EXECUTE') as serving_active_query_allowed,
+      has_function_privilege('canonical_v2_serving', 'public.canonical_v2_query_page(text,text,text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)', 'EXECUTE') = false as serving_pinned_query_denied,
       has_function_privilege('anon', 'public.canonical_v2_active_review_context(text,text,text,uuid,integer,text)', 'EXECUTE') = false as anon_review_denied,
       has_function_privilege('service_role', 'public.canonical_v2_active_review_context(text,text,text,uuid,integer,text)', 'EXECUTE') = false as service_role_review_denied,
       has_function_privilege('canonical_v2_serving', 'public.canonical_v2_active_review_context(text,text,text,uuid,integer,text)', 'EXECUTE') as serving_review_allowed,

@@ -12,6 +12,8 @@ import pg from 'pg';
 const require = createRequire(import.meta.url);
 const { compileActiveReviewContextRequest } = require('../lib/canonical-v2/review-context');
 const { compileMarketCohortRequest } = require('../lib/canonical-v2/market-cohort-query');
+const { queryCanonicalResultPage } = require('../lib/canonical-v2/query-result');
+const { createPostgresServingClient } = require('../lib/canonical-v2/serving-client');
 const { Client } = pg;
 
 const SCRIPT_ROOT = dirname(fileURLToPath(import.meta.url));
@@ -83,6 +85,11 @@ function roleSql(password) {
     GRANT EXECUTE ON FUNCTION public.canonical_v2_market_cohort(
       text, text, text, text, text, text, integer, text, text, text, text, text,
       text, text, text, text, text, text, integer, integer, numeric, numeric
+    ) TO ${ROLE_NAME};
+    GRANT EXECUTE ON FUNCTION public.canonical_v2_active_query_page(
+      text, text, text, text, integer, text, text, text, text, text,
+      text, text, text, text, text, integer, integer, numeric, numeric, numeric, numeric,
+      text, text, text, text, text, text, text, text, text, text, text, integer, text, text
     ) TO ${ROLE_NAME};
   `;
 }
@@ -156,6 +163,7 @@ function runSql(sql, { commit }) {
 
 function assertVerification(value) {
   const expectedFunctions = [
+    'canonical_v2_active_query_page',
     'canonical_v2_active_review_context',
     'canonical_v2_exact_detail',
     'canonical_v2_market_cohort',
@@ -164,7 +172,7 @@ function assertVerification(value) {
     || value.table_privilege_count !== 0
     || value.writer_allowed !== false
     || JSON.stringify(value.executable_public_functions) !== JSON.stringify(expectedFunctions)) {
-    throw new Error('Preview role permissions exceed the three-function read contract.');
+    throw new Error('Preview role permissions exceed the four-function read contract.');
   }
 }
 
@@ -264,6 +272,28 @@ async function verifyRuntimeConnectionOnce(connectionString) {
       || marketResult.rows[0]?.data?.cohort_digest !== marketRequest.cohort_digest) {
       throw new Error('Preview role did not return the bounded QXO market cohort.');
     }
+    const queryPage = await queryCanonicalResultPage({
+      client: createPostgresServingClient({ connectionString }),
+      releaseSelector: 'ACTIVE',
+      request: {
+        intent: 'MARKET_RANGE',
+        metric_key: 'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+        metric_version: 1,
+        concept_key: 'TERMF-TARGET',
+        party: { role: 'FEE_PAYER', value: 'COMPANY', capacity: 'TARGET' },
+        filters: {},
+        selected_columns: null,
+        column_filters: {},
+        page_size: 25,
+        cursor: null,
+      },
+    });
+    if (queryPage.result.release_selector !== 'ACTIVE'
+      || queryPage.result.pointer_id !== reviewData.pointer_id
+      || queryPage.result.serving_namespace_id !== reviewData.serving_namespace_id
+      || queryPage.result.corpus_release_id !== reviewData.corpus_release_id) {
+      throw new Error('Preview role did not return the active canonical Query page.');
+    }
   } finally {
     await client.end().catch(() => {});
   }
@@ -306,7 +336,7 @@ function verifyStoredRole() {
   const rows = runSql('', { commit: false });
   if (rows.length !== 1) throw new Error('Preview role verification returned an unexpected row count.');
   assertVerification(rows[0].verification);
-  process.stdout.write('Preview role remains limited to three read RPCs and zero tables.\n');
+  process.stdout.write('Preview role remains limited to four read RPCs and zero tables.\n');
 }
 
 const mode = process.argv[2] || '--dry-run';
