@@ -23,6 +23,7 @@ import MaeSection from '../../components/review-v2/MaeSection';
 import ElectionCard from '../../components/review-v2/ElectionCard';
 import ProvisionIndex, { DefinitionsSection } from '../../components/review-v2/ProvisionIndex';
 import ClauseSidebar from '../../components/review-v2/ClauseSidebar';
+import CanonicalReviewSection from '../../components/review-v2/CanonicalReviewSection';
 import SourceOverlay from '../../components/review-v2/SourceOverlay';
 import { resolveCardSourceSpan } from '../../lib/parser-v2/resolve-source-span';
 import {
@@ -671,6 +672,7 @@ export default function ReviewPage() {
             ) : null}
 
             <div className={wideLayout ? 'space-y-10 max-w-5xl w-full mx-auto' : 'space-y-10 max-w-3xl mx-auto'}>
+              <CanonicalReviewSection dealId={dealId} />
               {marketMode ? <OffMarketSection data={offMarketData} /> : null}
               {sections.map((section) => (
                 <SectionBlock

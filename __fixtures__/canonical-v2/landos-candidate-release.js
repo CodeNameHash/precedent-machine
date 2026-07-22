@@ -96,6 +96,10 @@ function buildLandosCandidateReleaseFixture() {
         excerpts: Object.values(sourceSpecific.excerpts),
       },
     }],
+    deal_directory_entries: [{
+      application_deal_id: 'c34415ed-44f7-432f-8d7c-6464b0310239',
+      governed_deal_key: 'deal:landos-abbvie',
+    }],
   });
   return Object.freeze({
     contract,

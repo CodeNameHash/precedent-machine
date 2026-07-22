@@ -37,6 +37,7 @@ test('one certified release becomes one deterministic atomic import plan across 
   assert.deepEqual(first, second);
   assert.equal(validateCandidateReleaseImportPlan(first), true);
   assert.deepEqual(first.expected_counts, {
+    deal_directory_records: 1,
     market_observations: 12,
     market_exclusions: 0,
     query_records: 12,
@@ -139,13 +140,14 @@ test('staging import is set-based, transactional and withholds completion until 
 
   assert.ok(functionStart >= 0 && functionEnd > functionStart);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.exact_detail_serving_packages/);
+  assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.deal_serving_directory/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.candidate_release_import_receipts/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.active_corpus_release_pointer_history/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.active_corpus_release_pointers/);
   assert.match(importer, /SET statement_timeout = '15000ms'/);
   assert.match(importer, /pg_advisory_xact_lock\(hashtextextended\(manifest_id, 0\)\)/);
   assert.match(importer, /jsonb_populate_recordset/);
-  assert.match(importer, /market_observations[\s\S]*market_metric_slot_exclusions[\s\S]*shared_serving_rows[\s\S]*reviewed_source_specific_serving_rows[\s\S]*exact_detail_serving_packages/);
+  assert.match(importer, /deal_serving_directory[\s\S]*market_observations[\s\S]*market_metric_slot_exclusions[\s\S]*shared_serving_rows[\s\S]*reviewed_source_specific_serving_rows[\s\S]*exact_detail_serving_packages/);
   assert.match(importer, /did not close over every certified serving object[\s\S]*INSERT INTO canonical_v2_staging\.candidate_release_import_receipts/);
   assert.doesNotMatch(importer, /\bLOOP\b/i);
   assert.doesNotMatch(importer, /\bOFFSET\b/i);

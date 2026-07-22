@@ -24,6 +24,7 @@ test('twelve comparable results and one reviewed source-specific proposition fre
   assert.equal(validateCandidateReleaseBundle(first.release), true);
   assert.deepEqual(first.release.manifest.counts, {
     deals: 1,
+    deal_directory_records: 1,
     metric_slots: 12,
     observations: 12,
     exclusions: 0,
@@ -37,6 +38,7 @@ test('twelve comparable results and one reviewed source-specific proposition fre
     duplicates: 0,
   });
   assert.deepEqual(first.release.manifest.deal_keys, ['deal:landos-abbvie']);
+  assert.equal(first.release.deal_directory_records[0].application_deal_id, 'c34415ed-44f7-432f-8d7c-6464b0310239');
   assert.equal(first.release.market_observations.length, 12);
   assert.equal(first.release.shared_rows.length, 13);
   assert.equal(first.release.reviewed_source_specific_rows.length, 1);
@@ -46,7 +48,7 @@ test('twelve comparable results and one reviewed source-specific proposition fre
   assert.equal(first.release.query_records.some((row) => (
     row.row_serving_key === first.release.reviewed_source_specific_rows[0].row_serving_key
   )), false);
-  assert.equal(new Set(Object.values(first.release.manifest.roots)).size, 7);
+  assert.equal(new Set(Object.values(first.release.manifest.roots)).size, 8);
 });
 
 test('candidate release carries raw and normalised money with exact legal query dimensions', () => {

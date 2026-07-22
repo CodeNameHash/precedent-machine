@@ -13,6 +13,9 @@ BEGIN
 END
 $$;
 
+ALTER ROLE canonical_v2_serving SET app.canonical_v2_environment = 'staging';
+ALTER ROLE canonical_v2_writer SET app.canonical_v2_environment = 'staging';
+
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.fixture_corpus_releases (
   corpus_release_id text PRIMARY KEY CHECK (corpus_release_id ~ '^[a-f0-9]{64}$'),
   candidate_manifest_id text NOT NULL UNIQUE CHECK (candidate_manifest_id ~ '^[a-f0-9]{64}$'),
@@ -22,6 +25,20 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.fixture_corpus_releases (
   response_schema_version text NOT NULL CHECK (response_schema_version = 'MARKET_COHORT_RESULT/V1'),
   canonical_payload jsonb NOT NULL,
   canonical_payload_digest text NOT NULL CHECK (canonical_payload_digest ~ '^[a-f0-9]{64}$')
+);
+
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.deal_serving_directory (
+  serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
+  corpus_release_id text NOT NULL REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id),
+  contract_fingerprint text NOT NULL CHECK (contract_fingerprint ~ '^[a-f0-9]{64}$'),
+  application_deal_id uuid NOT NULL,
+  governed_deal_key text NOT NULL,
+  deal_admission_id text NOT NULL CHECK (deal_admission_id ~ '^[a-f0-9]{64}$'),
+  deal_serving_directory_record_id text NOT NULL CHECK (deal_serving_directory_record_id ~ '^[a-f0-9]{64}$'),
+  canonical_payload_digest text NOT NULL CHECK (canonical_payload_digest ~ '^[a-f0-9]{64}$'),
+  PRIMARY KEY (serving_namespace_id, corpus_release_id, application_deal_id),
+  UNIQUE (serving_namespace_id, corpus_release_id, governed_deal_key),
+  UNIQUE (serving_namespace_id, corpus_release_id, deal_serving_directory_record_id)
 );
 
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.market_observations (
@@ -225,6 +242,14 @@ CREATE INDEX IF NOT EXISTS canonical_v2_market_observation_cohort_idx
     basis_key,
     governed_deal_key
   );
+CREATE INDEX IF NOT EXISTS canonical_v2_deal_serving_directory_lookup_idx
+  ON canonical_v2_staging.deal_serving_directory (
+    serving_namespace_id,
+    corpus_release_id,
+    contract_fingerprint,
+    application_deal_id,
+    governed_deal_key
+  );
 CREATE INDEX IF NOT EXISTS canonical_v2_market_exclusion_cohort_idx
   ON canonical_v2_staging.market_metric_slot_exclusions (
     serving_namespace_id,
@@ -355,6 +380,7 @@ ON canonical_v2_staging.market_metric_slot_exclusions
 FOR EACH ROW EXECUTE FUNCTION canonical_v2_staging.enforce_market_metric_slot_partition();
 
 ALTER TABLE canonical_v2_staging.fixture_corpus_releases ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.deal_serving_directory ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.market_observations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.market_metric_slot_exclusions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.shared_serving_rows ENABLE ROW LEVEL SECURITY;
@@ -424,11 +450,14 @@ BEGIN
     );
   END IF;
 
-  IF jsonb_typeof(p_import_plan->'market_observations') IS DISTINCT FROM 'array'
+  IF jsonb_typeof(p_import_plan->'deal_directory_records') IS DISTINCT FROM 'array'
+    OR jsonb_typeof(p_import_plan->'market_observations') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'market_exclusions') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'query_records') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'source_specific_records') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'exact_detail_packages') IS DISTINCT FROM 'array'
+    OR jsonb_array_length(p_import_plan->'deal_directory_records')
+      IS DISTINCT FROM (expected->>'deal_directory_records')::integer
     OR jsonb_array_length(p_import_plan->'market_observations')
       IS DISTINCT FROM (expected->>'market_observations')::integer
     OR jsonb_array_length(p_import_plan->'market_exclusions')
@@ -441,7 +470,9 @@ BEGIN
       IS DISTINCT FROM (expected->>'exact_detail_packages')::integer THEN
     RAISE EXCEPTION 'candidate release import counts do not match the plan' USING ERRCODE = '22023';
   END IF;
-  IF (expected->>'market_observations')::integer
+  IF (expected->>'deal_directory_records')::integer
+      IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'deal_directory_records')::integer
+    OR (expected->>'market_observations')::integer
       IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'observations')::integer
     OR (expected->>'market_exclusions')::integer
       IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'exclusions')::integer
@@ -457,7 +488,8 @@ BEGIN
   IF EXISTS (
     SELECT 1
     FROM (
-      SELECT value FROM jsonb_array_elements(p_import_plan->'market_observations')
+      SELECT value FROM jsonb_array_elements(p_import_plan->'deal_directory_records')
+      UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'market_observations')
       UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'market_exclusions')
       UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'query_records')
       UNION ALL SELECT value FROM jsonb_array_elements(p_import_plan->'source_specific_records')
@@ -478,7 +510,11 @@ BEGIN
   ) THEN
     RAISE EXCEPTION 'candidate release metric slot has both observation and exclusion' USING ERRCODE = '23505';
   END IF;
-  IF (SELECT count(DISTINCT item->>'metric_slot_key') FROM jsonb_array_elements(p_import_plan->'market_observations') item)
+  IF (SELECT count(DISTINCT item->>'application_deal_id') FROM jsonb_array_elements(p_import_plan->'deal_directory_records') item)
+      IS DISTINCT FROM (expected->>'deal_directory_records')::integer
+    OR (SELECT count(DISTINCT item->>'governed_deal_key') FROM jsonb_array_elements(p_import_plan->'deal_directory_records') item)
+      IS DISTINCT FROM (expected->>'deal_directory_records')::integer
+    OR (SELECT count(DISTINCT item->>'metric_slot_key') FROM jsonb_array_elements(p_import_plan->'market_observations') item)
       IS DISTINCT FROM (expected->>'market_observations')::integer
     OR (SELECT count(DISTINCT item->>'metric_slot_key') FROM jsonb_array_elements(p_import_plan->'market_exclusions') item)
       IS DISTINCT FROM (expected->>'market_exclusions')::integer
@@ -495,6 +531,14 @@ BEGIN
     SELECT 1 FROM canonical_v2_staging.fixture_corpus_releases release
     WHERE release.corpus_release_id = release_id
       AND release.canonical_payload_digest IS DISTINCT FROM release_record->>'canonical_payload_digest'
+  ) OR EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(p_import_plan->'deal_directory_records') item
+    JOIN canonical_v2_staging.deal_serving_directory existing
+      ON existing.serving_namespace_id = namespace_id
+      AND existing.corpus_release_id = release_id
+      AND existing.application_deal_id = (item->>'application_deal_id')::uuid
+    WHERE existing.canonical_payload_digest IS DISTINCT FROM item->>'canonical_payload_digest'
   ) OR EXISTS (
     SELECT 1
     FROM jsonb_array_elements(p_import_plan->'market_observations') item
@@ -542,6 +586,11 @@ BEGIN
   INSERT INTO canonical_v2_staging.fixture_corpus_releases
   SELECT * FROM jsonb_populate_record(NULL::canonical_v2_staging.fixture_corpus_releases, release_record)
   ON CONFLICT (corpus_release_id) DO NOTHING;
+  INSERT INTO canonical_v2_staging.deal_serving_directory
+  SELECT * FROM jsonb_populate_recordset(
+    NULL::canonical_v2_staging.deal_serving_directory,
+    p_import_plan->'deal_directory_records'
+  ) ON CONFLICT (serving_namespace_id, corpus_release_id, application_deal_id) DO NOTHING;
   INSERT INTO canonical_v2_staging.market_observations
   SELECT * FROM jsonb_populate_recordset(
     NULL::canonical_v2_staging.market_observations,
@@ -568,7 +617,10 @@ BEGIN
     p_import_plan->'exact_detail_packages'
   ) ON CONFLICT (serving_namespace_id, corpus_release_id, row_serving_key) DO NOTHING;
 
-  IF (SELECT count(*) FROM canonical_v2_staging.market_observations row
+  IF (SELECT count(*) FROM canonical_v2_staging.deal_serving_directory row
+      WHERE row.serving_namespace_id = namespace_id AND row.corpus_release_id = release_id)
+      IS DISTINCT FROM (expected->>'deal_directory_records')::integer
+    OR (SELECT count(*) FROM canonical_v2_staging.market_observations row
       WHERE row.serving_namespace_id = namespace_id AND row.corpus_release_id = release_id)
       IS DISTINCT FROM (expected->>'market_observations')::integer
     OR (SELECT count(*) FROM canonical_v2_staging.market_metric_slot_exclusions row
@@ -1165,6 +1217,179 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION public.canonical_v2_active_review_context(
+  p_environment text,
+  p_contract_fingerprint text,
+  p_request_digest text,
+  p_application_deal_id uuid,
+  p_page_size integer DEFAULT 100,
+  p_after_row_serving_key text DEFAULT NULL
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, canonical_v2_staging
+SET statement_timeout = '2500ms'
+AS $$
+DECLARE
+  active_pointer canonical_v2_staging.active_corpus_release_pointers%ROWTYPE;
+  selected_deal canonical_v2_staging.deal_serving_directory%ROWTYPE;
+  result jsonb;
+BEGIN
+  IF current_setting('app.canonical_v2_environment', true) IS DISTINCT FROM 'staging'
+    OR p_environment IS DISTINCT FROM 'staging' THEN
+    RAISE EXCEPTION 'canonical_v2_active_review_context is staging-only' USING ERRCODE = '42501';
+  END IF;
+  IF p_contract_fingerprint !~ '^[a-f0-9]{64}$'
+    OR p_request_digest !~ '^[a-f0-9]{64}$'
+    OR p_application_deal_id IS NULL
+    OR p_page_size < 1
+    OR p_page_size > 200
+    OR (p_after_row_serving_key IS NOT NULL AND p_after_row_serving_key !~ '^[a-f0-9]{64}$') THEN
+    RAISE EXCEPTION 'invalid active Review context request' USING ERRCODE = '22023';
+  END IF;
+
+  SELECT pointer.* INTO active_pointer
+  FROM canonical_v2_staging.active_corpus_release_pointers pointer
+  WHERE pointer.environment = p_environment;
+  IF active_pointer.pointer_id IS NULL THEN
+    RAISE EXCEPTION 'no active canonical corpus release' USING ERRCODE = '02000';
+  END IF;
+
+  SELECT directory.* INTO selected_deal
+  FROM canonical_v2_staging.deal_serving_directory directory
+  WHERE directory.serving_namespace_id = active_pointer.serving_namespace_id
+    AND directory.corpus_release_id = active_pointer.corpus_release_id
+    AND directory.contract_fingerprint = p_contract_fingerprint
+    AND directory.application_deal_id = p_application_deal_id;
+  IF selected_deal.governed_deal_key IS NULL THEN
+    RAISE EXCEPTION 'deal is not admitted to the active canonical release' USING ERRCODE = '02000';
+  END IF;
+
+  WITH matching_rows AS MATERIALIZED (
+    SELECT row.row_serving_key, row.canonical_payload
+    FROM canonical_v2_staging.shared_serving_rows row
+    WHERE row.serving_namespace_id = active_pointer.serving_namespace_id
+      AND row.corpus_release_id = active_pointer.corpus_release_id
+      AND row.contract_fingerprint = p_contract_fingerprint
+      AND row.governed_deal_key = selected_deal.governed_deal_key
+    UNION ALL
+    SELECT row.row_serving_key, row.canonical_payload
+    FROM canonical_v2_staging.reviewed_source_specific_serving_rows row
+    WHERE row.serving_namespace_id = active_pointer.serving_namespace_id
+      AND row.corpus_release_id = active_pointer.corpus_release_id
+      AND row.contract_fingerprint = p_contract_fingerprint
+      AND row.governed_deal_key = selected_deal.governed_deal_key
+      AND row.disposition_code = 'REVIEWED_SOURCE_SPECIFIC'
+      AND row.market_cohort_eligible = false
+      AND row.aggregate_authority = 'NO_AGGREGATE_AUTHORITY'
+  ), page_candidates AS MATERIALIZED (
+    SELECT row.row_serving_key, row.canonical_payload
+    FROM matching_rows row
+    WHERE p_after_row_serving_key IS NULL OR row.row_serving_key > p_after_row_serving_key
+    ORDER BY row.row_serving_key
+    LIMIT p_page_size + 1
+  ), page_rows AS MATERIALIZED (
+    SELECT row.row_serving_key, row.canonical_payload
+    FROM page_candidates row
+    ORDER BY row.row_serving_key
+    LIMIT p_page_size
+  ), page_payload AS (
+    SELECT
+      count(*)::integer AS page_count,
+      coalesce(jsonb_agg(row.canonical_payload ORDER BY row.row_serving_key), '[]'::jsonb) AS rows
+    FROM page_rows row
+  )
+  SELECT jsonb_build_object(
+    'schema_version', 'ACTIVE_REVIEW_CONTEXT_RESULT/V1',
+    'request_digest', p_request_digest,
+    'pointer_id', active_pointer.pointer_id,
+    'serving_namespace_id', active_pointer.serving_namespace_id,
+    'corpus_release_id', active_pointer.corpus_release_id,
+    'contract_fingerprint', p_contract_fingerprint,
+    'application_deal_id', selected_deal.application_deal_id::text,
+    'governed_deal_key', selected_deal.governed_deal_key,
+    'deal_admission_id', selected_deal.deal_admission_id,
+    'total_count', (SELECT count(*)::integer FROM matching_rows),
+    'page_count', page_payload.page_count,
+    'rows', page_payload.rows,
+    'next_cursor', CASE
+      WHEN (SELECT count(*) FROM page_candidates) > p_page_size
+      THEN (SELECT row.row_serving_key FROM page_rows row ORDER BY row.row_serving_key DESC LIMIT 1)
+      ELSE NULL
+    END
+  ) INTO result
+  FROM page_payload;
+
+  RETURN result;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.canonical_v2_exact_detail(
+  p_environment text,
+  p_serving_namespace_id text,
+  p_corpus_release_id text,
+  p_contract_fingerprint text,
+  p_application_deal_id uuid,
+  p_row_serving_key text,
+  p_source_detail_reference_id text
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, canonical_v2_staging
+SET statement_timeout = '2500ms'
+AS $$
+DECLARE
+  result jsonb;
+BEGIN
+  IF current_setting('app.canonical_v2_environment', true) IS DISTINCT FROM 'staging'
+    OR p_environment IS DISTINCT FROM 'staging' THEN
+    RAISE EXCEPTION 'canonical_v2_exact_detail is staging-only' USING ERRCODE = '42501';
+  END IF;
+  IF p_serving_namespace_id !~ '^[a-f0-9]{64}$'
+    OR p_corpus_release_id !~ '^[a-f0-9]{64}$'
+    OR p_contract_fingerprint !~ '^[a-f0-9]{64}$'
+    OR p_application_deal_id IS NULL
+    OR p_row_serving_key !~ '^[a-f0-9]{64}$'
+    OR p_source_detail_reference_id !~ '^[a-f0-9]{64}$' THEN
+    RAISE EXCEPTION 'invalid exact-detail request' USING ERRCODE = '22023';
+  END IF;
+
+  SELECT jsonb_build_object(
+    'schema_version', 'SERVING_EXACT_DETAIL_RESULT/V1',
+    'serving_namespace_id', package.serving_namespace_id,
+    'corpus_release_id', package.corpus_release_id,
+    'contract_fingerprint', package.contract_fingerprint,
+    'application_deal_id', directory.application_deal_id::text,
+    'governed_deal_key', directory.governed_deal_key,
+    'row_serving_key', package.row_serving_key,
+    'source_detail_reference_id', p_source_detail_reference_id,
+    'exact_detail_package_digest', package.exact_detail_package_digest,
+    'package', package.canonical_payload
+  ) INTO result
+  FROM canonical_v2_staging.deal_serving_directory directory
+  JOIN canonical_v2_staging.exact_detail_serving_packages package
+    ON package.serving_namespace_id = directory.serving_namespace_id
+    AND package.corpus_release_id = directory.corpus_release_id
+    AND package.contract_fingerprint = directory.contract_fingerprint
+    AND package.governed_deal_key = directory.governed_deal_key
+  WHERE directory.serving_namespace_id = p_serving_namespace_id
+    AND directory.corpus_release_id = p_corpus_release_id
+    AND directory.contract_fingerprint = p_contract_fingerprint
+    AND directory.application_deal_id = p_application_deal_id
+    AND package.row_serving_key = p_row_serving_key
+    AND p_source_detail_reference_id = ANY(package.source_detail_reference_ids);
+
+  IF result IS NULL THEN
+    RAISE EXCEPTION 'exact source is not available for the selected row' USING ERRCODE = '02000';
+  END IF;
+  RETURN result;
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION public.canonical_v2_reviewed_deal_context(
   p_environment text,
   p_serving_namespace_id text,
@@ -1264,6 +1489,8 @@ $$;
 
 REVOKE ALL ON TABLE canonical_v2_staging.fixture_corpus_releases
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
+REVOKE ALL ON TABLE canonical_v2_staging.deal_serving_directory
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON TABLE canonical_v2_staging.market_observations
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON TABLE canonical_v2_staging.market_metric_slot_exclusions
@@ -1311,6 +1538,18 @@ GRANT EXECUTE ON FUNCTION public.canonical_v2_query_page(
   text, text, text, text, text, text, integer, text, text, text, text, text,
   text, text, text, text, text, integer, integer, numeric, numeric, numeric, numeric,
   text, text, text, text, text, text, text, text, text, integer, text, text
+) TO canonical_v2_serving;
+REVOKE ALL ON FUNCTION public.canonical_v2_active_review_context(
+  text, text, text, uuid, integer, text
+) FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;
+GRANT EXECUTE ON FUNCTION public.canonical_v2_active_review_context(
+  text, text, text, uuid, integer, text
+) TO canonical_v2_serving;
+REVOKE ALL ON FUNCTION public.canonical_v2_exact_detail(
+  text, text, text, text, uuid, text, text
+) FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;
+GRANT EXECUTE ON FUNCTION public.canonical_v2_exact_detail(
+  text, text, text, text, uuid, text, text
 ) TO canonical_v2_serving;
 REVOKE ALL ON FUNCTION public.canonical_v2_reviewed_deal_context(
   text, text, text, text, text, text, integer, text
