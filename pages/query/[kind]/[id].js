@@ -41,6 +41,31 @@ const { formatPercentValue } = require('../../../lib/percent-of-deal');
 // r13 item 2: NOSOL field-grouping spec for PROVISION_CROSS_CUT — see
 // GROUP_SPECS below.
 const { groupColumnsForCrossCut } = require('../../../lib/query/cross-cut-groups');
+// Canonical Query UI slice (2026-07-22): the single interception point for
+// the one supported ad hoc request (see docs/handoffs/
+// SPEC-CANONICAL-QUERY-UI-SLICE-2026-07-22.md).
+const { isCanonicalV2QueryUiEnabled } = require('../../../lib/canonical-v2/feature-flags');
+const { runQueryRoute } = require('../../../lib/canonical-v2/legacy-query-mapper');
+import CanonicalMarketRange from '../../../components/query/CanonicalMarketRange';
+
+// Duplicated (not imported) from lib/query/types.js's KIND_SLUGS/slugToKind:
+// that module transitively requires lib/query/resolve.js, which needs
+// Node's `fs` and cannot be bundled into this page's CLIENT build (this
+// page is not getServerSideProps-only — see components/query/
+// QueryFilterControls.jsx's PROVISION_TYPES for the same constraint and the
+// same fix already used elsewhere on this surface). Only used to compare
+// this page's URL slug against the canonical predicate's expected enum kind.
+const QUERY_KIND_SLUG_TO_KIND = {
+  'deal-compare': 'DEAL_COMPARE',
+  'provision-cross-cut': 'PROVISION_CROSS_CUT',
+  'market-range': 'MARKET_RANGE',
+  'filter-then-list': 'FILTER_THEN_LIST',
+  'deal-to-market': 'DEAL_TO_MARKET',
+};
+function slugToQueryKind(slug) {
+  const raw = String(slug || '').trim();
+  return QUERY_KIND_SLUG_TO_KIND[raw] || raw.toUpperCase();
+}
 
 QueryPage.noLayout = true;
 
@@ -130,6 +155,14 @@ export default function QueryPage() {
   const [active, setActive] = useState(null);
   const [saving, setSaving] = useState(false);
   const [refinementDeals, setRefinementDeals] = useState([]);
+  // Canonical Query UI slice: populated ONLY when the exact supported ad hoc
+  // request is intercepted (flag on) — see the fetch effect below. Kept
+  // separate from `result`/`error` (the legacy result contract) rather than
+  // overloading them, since a CANONICAL_QUERY_RESULT_VIEW/V1 is a different
+  // shape and must never be reshaped into the legacy one (spec: "Render from
+  // CANONICAL_QUERY_RESULT_VIEW/V1 only").
+  const [canonicalView, setCanonicalView] = useState(null);
+  const [canonicalError, setCanonicalError] = useState(null);
 
   useEffect(() => {
     fetch('/api/deals').then((response) => response.json()).then((json) => setRefinementDeals(json.deals || [])).catch(() => setRefinementDeals([]));
@@ -145,11 +178,20 @@ export default function QueryPage() {
     setSavedQuery(null);
     setCurrentPayload(null);
     setError(null);
-    const params = new URLSearchParams({ kind: String(kind) });
-    if (id && id !== 'adhoc') params.set('id', String(id));
-    if (payload) params.set('payload', String(payload));
-    fetch(`/api/query/run?${params.toString()}`)
-      .then(async (res) => {
+    setCanonicalView(null);
+    setCanonicalError(null);
+
+    // Canonical Query UI slice (2026-07-22): the legacy fetch, UNCHANGED from
+    // before this slice, just extracted into a function so it can be handed
+    // to runQueryRoute as the "legacy" branch. Its own error handling
+    // (sanitizeQueryError -> setError) is identical to the prior inline
+    // chain — this never throws out of runQueryRoute.
+    const fetchLegacy = async () => {
+      const params = new URLSearchParams({ kind: String(kind) });
+      if (id && id !== 'adhoc') params.set('id', String(id));
+      if (payload) params.set('payload', String(payload));
+      try {
+        const res = await fetch(`/api/query/run?${params.toString()}`);
         // D (query error surfaces): a degraded Supabase can make the API
         // route itself unreachable at the platform edge (e.g. a Cloudflare
         // 522), in which case the response body is an HTML error page, not
@@ -158,21 +200,63 @@ export default function QueryPage() {
         // message. Read as text first and parse ourselves so a non-JSON
         // body gets the friendly sanitizer treatment below instead.
         const text = await res.text();
+        let json;
         try {
-          return JSON.parse(text);
+          json = JSON.parse(text);
         } catch {
           const err = new Error(text);
           err.isNonJsonBody = true;
           throw err;
         }
-      })
-      .then((json) => {
         if (json.error) throw new Error(json.error);
         setResult(json.result);
         setSavedQuery(json.saved_query || null);
         setCurrentPayload(json.saved_query?.query_payload || (payload ? decodePayloadSafe(payload) : null));
-      })
-      .catch((err) => setError(sanitizeQueryError(err.message)));
+      } catch (err) {
+        setError(sanitizeQueryError(err.message));
+      }
+    };
+
+    // Only an ad hoc request carries a client-decodable payload at all — a
+    // saved query's payload only becomes known after fetchLegacy resolves it
+    // server-side, so it can never be the exact supported canonical shape at
+    // this point and isSupportedCanonicalQuery's savedQueryId check rejects
+    // it regardless (see lib/canonical-v2/legacy-query-mapper.js). A
+    // corrupt/undecodable payload is treated as "not decodable yet" here —
+    // it falls through to fetchLegacy, which independently fails with the
+    // same friendly "invalid link" message as before this slice.
+    let decodedPayload = null;
+    if (id === 'adhoc' && payload) {
+      try {
+        decodedPayload = decodePayloadSafe(payload);
+      } catch {
+        decodedPayload = null;
+      }
+    }
+    const flagEnabled = isCanonicalV2QueryUiEnabled({
+      NEXT_PUBLIC_CANONICAL_V2_QUERY_UI_ENABLED: process.env.NEXT_PUBLIC_CANONICAL_V2_QUERY_UI_ENABLED,
+    });
+
+    runQueryRoute({
+      kind: slugToQueryKind(kind),
+      payload: decodedPayload,
+      savedQueryId: id,
+      flagEnabled,
+      fetchCanonical: async (body) => {
+        const res = await fetch('/api/canonical-v2/query', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        const json = await res.json().catch(() => null);
+        return { status: res.status, json };
+      },
+      fetchLegacy,
+    }).then((outcome) => {
+      if (outcome.mode !== 'canonical') return; // fetchLegacy already applied its own state.
+      if (outcome.ok) setCanonicalView(outcome.view);
+      else setCanonicalError(outcome.error);
+    });
   }, [kind, id, payload]);
 
   const title = useMemo(() => savedQuery?.title || (result ? resultTitle(result) : kindLabel(kind)), [savedQuery, result, kind]);
@@ -236,7 +320,10 @@ export default function QueryPage() {
         </div>
         <div className="body">
           <div className="wrap">
-            {error ? <div className="empty">{error}</div> : !result ? <div className="empty">Loading query…</div> : <>
+            {error ? <div className="empty">{error}</div>
+              : canonicalError ? <CanonicalErrorPanel error={canonicalError} />
+              : canonicalView ? <CanonicalMarketRange view={canonicalView} />
+              : !result ? <div className="empty">Loading query…</div> : <>
               {currentPayload && <ResultRefinements key={JSON.stringify(currentPayload)} result={result} payload={currentPayload} deals={refinementDeals} />}
               <ResultView result={result} onOpen={setActive} />
             </>}
@@ -368,6 +455,23 @@ function ProvBadge({ prov }) {
         </span>
       )}
     </span>
+  );
+}
+
+// Canonical Query UI slice (2026-07-22): a non-200 from /api/canonical-v2/
+// query renders this instead of a result — the governed error code plus a
+// fixed, neutral message. Never the response body/message itself (no
+// request internals, nothing to render as HTML): `error.message` here is
+// always the fixed string runQueryRoute sets, never anything echoed off the
+// network response. No retry action in this slice, and no automatic "run on
+// legacy instead" — the user can always change the fee side or run a
+// different query to reach the legacy path themselves.
+function CanonicalErrorPanel({ error }) {
+  return (
+    <div className="empty">
+      <p className="mtx-meta-label">{error?.code || 'DATA_SOURCE_ERROR'}</p>
+      <p>{error?.message || 'This query could not be run on Canonical Query right now.'}</p>
+    </div>
   );
 }
 
