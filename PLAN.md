@@ -69,9 +69,16 @@ only WARNS (`formatRematerializeWarning`) instead of running the claims remateri
 after `--apply`. An opt-in `--rematerialize` flag is being shipped (default unchanged:
 warn); flipping the default to auto-run is Ben's DATA-1 sign-off.
 
-**1.2 [BEN-GATED] Prune round 2.** 22 deals with residual duplicate/ambiguous cards from
-the corpus run (`reports/PRUNE-ROUND2-DRAFT-2026-07-14.md`). Per-card keep/re-home/delete
-decisions are Ben's; dry-run table + backup gates already enforced by the tooling.
+**1.2 Prune round 2 — DECIDED AND (per Status above) EXECUTED.** Ben's approved
+per-card decisions are checked in at
+`scripts/curation/decisions/2026-07-round2-approved.json` (2026-07-14: A with
+A6/A7 flipped to keep+scope, B acked, C "(Parent)" convention, D go), and this
+file's own Status block records "two Ben-gated prune rounds executed."
+Residual verification for Ben locally: a dry-run of `prune-cards.js
+--decisions .../2026-07-round2-approved.json` should report a no-op if the
+apply completed. The round-2 report never enumerated cards for 17 of the 22
+deals it mentions — those were either out of round-2 scope or absorbed into
+the M3 card-less backlog; nothing further is pending on them here.
 **Standing rule: orphaned human corrections are preserved and surfaced, never deleted.**
 
 **1.3 [M3 BACKLOG] Card-less coded provisions.** 66 across 22 deals (flagged, not
