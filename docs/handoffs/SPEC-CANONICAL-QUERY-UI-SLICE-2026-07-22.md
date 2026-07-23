@@ -96,6 +96,23 @@ ACTIVE route rejects them). Verify the exact null/omission convention for
 `filters` against `compileMarketCohortRequest` in
 `lib/canonical-v2/market-cohort-query.js` and match it.
 
+## Review-accepted amendments (Fable review, same day)
+
+1. `column_filters` is `{}`, not `null`: the frozen
+   `compileCanonicalActiveQueryRequest` defaults only an OMITTED
+   `column_filters` (unlike `selected_columns`, which treats `null` as
+   default); an explicit `null` throws `INVALID_REQUEST`. `{}` is the shape
+   the frozen contract's own test fixtures use.
+2. `signing_year` must be integer-like or the request stays legacy — a
+   hand-crafted payload URL must not spend the one canonical request on a
+   guaranteed 400.
+3. The routing helper (`runQueryRoute`) must never reject in canonical
+   mode: a network-level fetch rejection (not a non-200) is the same safe
+   error outcome, still with no legacy fallback.
+4. The page may not import `lib/query/types.js` (transitively requires
+   Node `fs`, unbundleable client-side); the slug→kind map is duplicated
+   locally, following the existing `QueryFilterControls.jsx` precedent.
+
 ## One-request behaviour
 
 - Exactly one POST to `/api/canonical-v2/query` per rendered query view. No
