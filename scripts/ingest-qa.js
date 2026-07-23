@@ -42,6 +42,12 @@ const path = require('path');
 const { verifyDealQuotes, computeCoverage } = require('../lib/verification');
 const { resolveBuyerDisplay, SHELL_NAME_REGEX } = require('../lib/query/types');
 const { persistReport, resolveReportDbFlag } = require('../lib/reports/persist-report');
+// Additive claims gate (SPEC-MECHANICAL-HARDENING-2026-07-23 part B): reuse
+// the SAME card<->provision match ladder rematerialize-claims.js uses, so
+// "coded card coverage" here means exactly what the 98.97%-match corpus
+// report (reports/TASK3-CORPUS-REPORT-2026-07-13.md) measured, rather than a
+// freshly invented heuristic.
+const { buildDealPlan, provisionHasCodedFeatures } = require('./reprocess/rematerialize-claims');
 
 const PAGE_SIZE = 1000;
 
@@ -314,6 +320,8 @@ function parseArgs(argv) {
     else if (a === '--min-def') args.gates.def = Number(argv[++i]);
     else if (a === '--min-cond') args.gates.cond = Number(argv[++i]);
     else if (a === '--min-coverage') args.gates.coverage = Number(argv[++i]);
+    else if (a === '--min-claims-when-coded') args.gates.minClaimsWhenCoded = Number(argv[++i]);
+    else if (a === '--min-coded-card-coverage') args.gates.codedCardCoverage = Number(argv[++i]);
     else if (a === '--json') args.json = argv[++i];
     else if (a === '--report-db') args.reportDb = true;
     else if (a === '--no-report-db') args.reportDb = false;
@@ -344,6 +352,130 @@ async function fetchAllProvisions(sb, dealId) {
   return out;
 }
 
+/* ── additive claims gate (SPEC-MECHANICAL-HARDENING-2026-07-23 part B) ──── */
+
+// Same "table not present yet" degrade test as lib/queries/review-deal.js's
+// isMissingTable/isMissingClaims (not exported there — replicated here, same
+// regex, so ingest-qa keeps working unmodified against databases that
+// predate the claims/provision_cards schemas).
+function isMissingTableError(error, tableName) {
+  const message = error && (error.message || String(error));
+  return new RegExp(`${tableName}|schema cache|does not exist|Could not find`, 'i').test(message || '');
+}
+
+// Paginate claims for one deal, same pattern as fetchAllProvisions. Returns
+// null (distinct from an empty array) when the `claims` table itself is
+// unreachable, so callers can tell "skip this gate" from "genuinely zero
+// claims".
+async function fetchAllClaims(sb, dealId) {
+  const out = [];
+  let offset = 0;
+  for (;;) {
+    const { data, error } = await sb
+      .from('claims')
+      .select('id, excerpt_id')
+      .eq('deal_id', dealId)
+      .range(offset, offset + PAGE_SIZE - 1);
+    if (error) {
+      if (isMissingTableError(error, 'claims')) return null;
+      throw new Error(`Claims fetch failed: ${error.message}`);
+    }
+    out.push(...(data || []));
+    if (!data || data.length < PAGE_SIZE) break;
+    offset += PAGE_SIZE;
+  }
+  return out;
+}
+
+// Paginate provision_cards for one deal, same pattern as fetchAllProvisions.
+// Selects exactly the fields buildDealPlan (scripts/reprocess/
+// rematerialize-claims.js) needs to pair cards to provisions deterministically.
+// Returns null (same convention as fetchAllClaims) if provision_cards itself
+// is unreachable.
+async function fetchAllCards(sb, dealId) {
+  const out = [];
+  let offset = 0;
+  for (;;) {
+    const { data, error } = await sb
+      .from('provision_cards')
+      .select('id, excerpt_id, provision_instance_id, region_id, provision_type, short_title, region_full_text')
+      .eq('deal_id', dealId)
+      .range(offset, offset + PAGE_SIZE - 1);
+    if (error) {
+      if (isMissingTableError(error, 'provision_cards')) return null;
+      throw new Error(`Provision cards fetch failed: ${error.message}`);
+    }
+    out.push(...(data || []));
+    if (!data || data.length < PAGE_SIZE) break;
+    offset += PAGE_SIZE;
+  }
+  return out;
+}
+
+// Pure: pairs cards to provisions via the existing match ladder (buildDealPlan)
+// and computes the coverage numbers the gate below grades. `codedCardCoverage`
+// is vacuously 1 (nothing to grade, same convention as computeCanonicalRate)
+// when no matched card belongs to a coded-feature provision.
+function computeClaimsMetrics(dealId, provisions, cards, claims) {
+  const { matches } = buildDealPlan(dealId, cards || [], provisions || []);
+  const codedMatches = matches.filter((m) => provisionHasCodedFeatures(m.provision));
+  const claimedExcerptIds = new Set((claims || []).map((c) => c.excerpt_id));
+  const codedCardsWithClaim = codedMatches.filter((m) => claimedExcerptIds.has(m.card.excerpt_id)).length;
+  return {
+    claimsCount: (claims || []).length,
+    codedCardsTotal: codedMatches.length,
+    codedCardsWithClaim,
+    codedCardCoverage: codedMatches.length > 0 ? codedCardsWithClaim / codedMatches.length : 1,
+    anyCodedFeatures: (provisions || []).some(provisionHasCodedFeatures),
+  };
+}
+
+const DEFAULT_CLAIMS_GATES = {
+  minClaimsWhenCoded: 1,
+  codedCardCoverage: 0.95,
+};
+
+// Two checks, kept in their own group (same pattern as
+// evaluateDealMetadataGates, separate from evaluateGates()'s >=/== shape):
+//   - "claims present (coded features exist)": a deal with ANY coded-taxonomy
+//     feature but fewer than minClaimsWhenCoded claims rows means
+//     materialization never ran (or failed silently) for that deal.
+//   - "coded card coverage": calibrated to the corpus evidence in
+//     reports/TASK3-CORPUS-REPORT-2026-07-13.md (98.97% cards matched); 0.95
+//     leaves headroom below that observed rate without inventing a stricter
+//     number.
+// Both overridable via the same gate-override mechanism as the existing
+// gates (--min-claims-when-coded / --min-coded-card-coverage).
+function evaluateClaimsGates(claimsMetrics, gateOverrides) {
+  const g = { ...DEFAULT_CLAIMS_GATES, ...(gateOverrides || {}) };
+  const claimsPresentPass = !claimsMetrics.anyCodedFeatures || claimsMetrics.claimsCount >= g.minClaimsWhenCoded;
+  const coveragePass = claimsMetrics.codedCardCoverage >= g.codedCardCoverage;
+  const checks = [
+    {
+      label: 'claims present (coded features exist)',
+      value: claimsMetrics.claimsCount,
+      threshold: g.minClaimsWhenCoded,
+      pass: claimsPresentPass,
+    },
+    {
+      label: 'coded card coverage',
+      value: claimsMetrics.codedCardCoverage,
+      threshold: g.codedCardCoverage,
+      pass: coveragePass,
+    },
+  ];
+  return { checks, ok: checks.every((c) => c.pass) };
+}
+
+function printClaimsScorecard(claimsMetrics, evalResult) {
+  console.log('  ── claims gate (coded-feature coverage) ──');
+  console.log(`  claims rows: ${claimsMetrics.claimsCount}   coded cards: ${claimsMetrics.codedCardsTotal} (with claim: ${claimsMetrics.codedCardsWithClaim})`);
+  for (const c of evalResult.checks) {
+    console.log(`  ${c.label.padEnd(34)} ${String(fmtNum(c.value)).padStart(8)}   ${c.pass ? 'PASS' : 'FAIL'}`);
+  }
+  console.log(`  CLAIMS GATE RESULT: ${evalResult.ok ? 'PASS' : 'FAIL'}`);
+}
+
 // Structured (JSON-emittable) per-deal result, built from the same metrics/
 // evalResult/metaEval qaOneDeal already computes — pure, DB-free, and
 // separate from the console printers so the console output they drive stays
@@ -351,8 +483,12 @@ async function fetchAllProvisions(sb, dealId) {
 // §7 item 2: {dealId, counts, rawCoveragePct, excludedRegions, checks[], pass}.
 // `checks[]` merges the gate checks and the deal-metadata checks, tagged by
 // `group`, so the admin UI can render both in one per-deal gate table.
-function buildDealResult(deal, metrics, evalResult, metaEval, { staging } = {}) {
-  const pass = evalResult.ok && (staging || metaEval.ok);
+// `claimsEval` (added, SPEC-MECHANICAL-HARDENING-2026-07-23 part B) is
+// optional and defaults to absent so every pre-existing caller/test that
+// passes only { staging } is completely unaffected: no claims checks are
+// merged in and `pass` is unchanged from before this option existed.
+function buildDealResult(deal, metrics, evalResult, metaEval, { staging, claimsEval } = {}) {
+  const pass = evalResult.ok && (staging || metaEval.ok) && (!claimsEval || claimsEval.ok);
   return {
     dealId: deal.id,
     label: `${deal.acquirer || '?'} / ${deal.target || '?'}`,
@@ -364,6 +500,7 @@ function buildDealResult(deal, metrics, evalResult, metaEval, { staging } = {}) 
     checks: [
       ...evalResult.checks.map((c) => ({ ...c, group: 'gate' })),
       ...metaEval.checks.map((c) => ({ ...c, group: 'metadata' })),
+      ...(claimsEval ? claimsEval.checks.map((c) => ({ ...c, group: 'claims' })) : []),
     ],
     pass,
   };
@@ -398,7 +535,23 @@ async function qaOneDeal(sb, deal, gateOverrides) {
   const metaEval = evaluateDealMetadataGates(deal);
   printDealMetadataScorecard(metaEval, { staging });
 
-  const result = buildDealResult(deal, metrics, evalResult, metaEval, { staging });
+  // Additive claims gate (SPEC-MECHANICAL-HARDENING-2026-07-23 part B).
+  // Degrades to "skipped" (never fails the run) when claims/provision_cards
+  // is unreachable — same convention as lib/queries/review-deal.js's
+  // fetchDealClaims — so ingest-qa keeps working against databases
+  // predating the claims schema.
+  const [claims, cards] = await Promise.all([fetchAllClaims(sb, deal.id), fetchAllCards(sb, deal.id)]);
+  let claimsEval = null;
+  if (claims === null || cards === null) {
+    console.log('  ── claims gate ──');
+    console.log('  claims gate skipped (claims/provision_cards table unreachable — pre-claims-schema database).');
+  } else {
+    const claimsMetrics = computeClaimsMetrics(deal.id, provisions, cards, claims);
+    claimsEval = evaluateClaimsGates(claimsMetrics, gateOverrides);
+    printClaimsScorecard(claimsMetrics, claimsEval);
+  }
+
+  const result = buildDealResult(deal, metrics, evalResult, metaEval, { staging, claimsEval });
   return { ok: result.pass, result };
 }
 
@@ -486,6 +639,14 @@ module.exports = {
   qaOneDeal,
   parseArgs,
   DEFAULT_GATES,
+  // Additive claims gate (SPEC-MECHANICAL-HARDENING-2026-07-23 part B).
+  isMissingTableError,
+  fetchAllClaims,
+  fetchAllCards,
+  computeClaimsMetrics,
+  evaluateClaimsGates,
+  printClaimsScorecard,
+  DEFAULT_CLAIMS_GATES,
 };
 
 if (require.main === module) {
