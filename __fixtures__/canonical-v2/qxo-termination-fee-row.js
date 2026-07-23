@@ -18,34 +18,40 @@
 // §8.02 sections and an unsourced 18-month tail — both absent here), vote-failure
 // tail-only (never immediate-pay in this deal).
 //
-// KNOWN LIMITATION (flag for Fable review, do not silently resolve): every
-// provision below must carry a `conceptKey` from the FROZEN
-// FIXTURE_CONTRACT_INPUT.concepts list (lib/canonical-v2/contract-bundle.js) —
-// extending that list would move compileFixtureContract().fingerprint, which is
-// exactly the Step 0 STOP scenario this packet was told to avoid. That frozen
-// list has only three non-fee trigger concepts, all named for Landos's own three
-// grounds (TERMR-SUPERIOR = Superior Proposal right, TERMR-RECOMMEND =
-// recommendation-change right, TERMF-TAIL = the Landos 12-month tail clause).
-// None of them are a semantic match for QXO's no-solicitation-breach,
-// stockholder-vote-failure, or general-covenant-breach grounds. Rather than
-// invent a new concept key (which moves the fingerprint) or leave a required
-// relationship out (which would violate the binding "six trigger relationships
-// exactly as listed" instruction), this fixture reuses the two existing non-fee
-// concepts along the MECHANISM axis Landos already draws between them —
-// TERMR-RECOMMEND for both of QXO's immediate-pay triggers, TERMF-TAIL for both
-// of QXO's tail triggers plus the two grounds that don't otherwise fit anywhere
-// (COUNTERPARTY_COVENANT_BREACH_TERMINATION, and the tail pathway of
-// NO_SOLICIT_BREACH_TERMINATION) — NOT a considered taxonomy decision. This is a
-// deliberate, reported reuse of frozen labels, not fresh legal judgement about
-// what those two concepts "really" mean; a follow-up contract-versioning packet
-// (new concept keys, Ben-gated activation of the new fingerprint) is the correct
-// place to fix this properly.
+// CONCEPT KEYS (SPEC-VERSIONED-CONTRACT-2026-07-23): every provision below
+// carries a `conceptKey` from FIXTURE_CONTRACT_INPUT_V2.concepts
+// (lib/canonical-v2/contract-bundle.js) — V1 plus the four concept keys Ben
+// approved in docs/handoffs/SPEC-CONTRACT-AMENDMENT-PATH-2026-07-23.md. This
+// fixture now compiles under F2 (compileFixtureContractV2()), not the frozen
+// F1 default; F1 and every reviewed-*-slice.js oracle's pinned digest are
+// untouched (they still compile under F1, proven by
+// tests/canonical-v2-contract-bundle-versions.test.js). An earlier version of
+// this fixture (see git history) reused TERMR-RECOMMEND / TERMF-TAIL as
+// placeholders for grounds those concepts don't describe, pending this
+// concept-minting packet; that reuse is gone — each ground below now carries
+// its own honest concept:
+//   - rec_change / intervening_tail: TERMR-RECOMMEND (both are Change-in-
+//     Recommendation grounds — one immediate, §6.4(a)(i)(A), one via the
+//     intervening-event tail gateway, §6.5(b)(iii)(D); distinguished at the
+//     trigger_code level, not the concept level, per
+//     SPEC-CONTRACT-AMENDMENT-PATH-2026-07-23.md).
+//   - nosolicit_immediate / nosolicit_tail: TERMR-NOSOL-BREACH (the same
+//     §4.3 no-solicitation-breach ground, reached via two pathways —
+//     §6.4(a)(ii) directly, and §6.5(b)(iii)(C)(1) via the general-breach
+//     gateway).
+//   - vote_failure: TERMR-NOVOTE (§6.2(c) stockholder-vote-failure ground,
+//     tail-only in this deal).
+//   - covenant_breach: TERMR-BREACH (§6.5(b)(iii)(C)(2) general covenant/
+//     agreement breach gateway).
+// TERMR-OUTSIDE (the fourth approved concept) has no ground in this
+// termination-FEE-only fixture — QXO's outside-date right doesn't trigger
+// the Company Termination Fee — and is not used here.
 
 const fs = require('node:fs');
 const path = require('node:path');
 
 const { contentId } = require('../../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContract } = require('../../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV2 } = require('../../lib/canonical-v2/contract-bundle');
 const { buildFixtureClaimEvidenceDetailPackage } = require('../../lib/canonical-v2/exact-detail');
 const { buildReviewedSlice } = require('../../lib/canonical-v2/reviewed-slice-harness');
 
@@ -115,7 +121,7 @@ function locateWithinUniqueAnchor(text, anchor, needle, label) {
 }
 
 function buildQxoTerminationFeeFixture({
-  contractBundle = compileFixtureContract(),
+  contractBundle = compileFixtureContractV2(),
   corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'qxo-termination-fee-reviewed-fixture'),
   servingNamespaceId = contentId('SERVING_NAMESPACE/V1', 'qxo-termination-fee-reviewed-fixture'),
 } = {}) {
@@ -214,11 +220,11 @@ function buildQxoTerminationFeeFixture({
     provisions: [
       { key: 'fee', spanKey: 'fee_payment', conceptKey: 'TERMF-TARGET', party: FEE_PARTY, ordinal: 1 },
       { key: 'rec_change', spanKey: 'rec_change', conceptKey: 'TERMR-RECOMMEND', party: IMMEDIATE_PARTY, ordinal: 1 },
-      { key: 'nosolicit_immediate', spanKey: 'nosolicit_immediate', conceptKey: 'TERMR-RECOMMEND', party: IMMEDIATE_PARTY, ordinal: 2 },
-      { key: 'vote_failure', spanKey: 'vote_failure', conceptKey: 'TERMF-TAIL', party: TAIL_PARTY, ordinal: 1 },
-      { key: 'nosolicit_tail', spanKey: 'nosolicit_tail', conceptKey: 'TERMF-TAIL', party: TAIL_PARTY, ordinal: 2 },
-      { key: 'covenant_breach', spanKey: 'covenant_breach', conceptKey: 'TERMF-TAIL', party: TAIL_PARTY, ordinal: 3 },
-      { key: 'intervening_tail', spanKey: 'intervening_tail', conceptKey: 'TERMF-TAIL', party: TAIL_PARTY, ordinal: 4 },
+      { key: 'nosolicit_immediate', spanKey: 'nosolicit_immediate', conceptKey: 'TERMR-NOSOL-BREACH', party: IMMEDIATE_PARTY, ordinal: 2 },
+      { key: 'vote_failure', spanKey: 'vote_failure', conceptKey: 'TERMR-NOVOTE', party: TAIL_PARTY, ordinal: 1 },
+      { key: 'nosolicit_tail', spanKey: 'nosolicit_tail', conceptKey: 'TERMR-NOSOL-BREACH', party: TAIL_PARTY, ordinal: 2 },
+      { key: 'covenant_breach', spanKey: 'covenant_breach', conceptKey: 'TERMR-BREACH', party: TAIL_PARTY, ordinal: 3 },
+      { key: 'intervening_tail', spanKey: 'intervening_tail', conceptKey: 'TERMR-RECOMMEND', party: TAIL_PARTY, ordinal: 4 },
     ],
     components: [
       { key: 'fee_component', parentProvisionKey: 'fee', spanKey: 'fee_payment', componentKey: 'FEE_AMOUNT_LIMB', ordinal: 1 },

@@ -1,7 +1,8 @@
 {
   "schema": "canonical-programme-gates/v1-status",
   "generated": "2026-07-23",
-  "generation": 2,
+  "generation": 3,
+  "contract_amendment_record": "Freeze-gate amendment (Ben-authorized and name-approved 2026-07-23): versioned contract inputs — V1 frozen at fingerprint 56da82bee06331793ba2ed8b78ef4186361407e60733595091e5951853e7d41d (immobile, test-proven), V2 adds concepts TERMR-NOSOL-BREACH, TERMR-BREACH, TERMR-NOVOTE, TERMR-OUTSIDE at fingerprint 46553f1a743dbf9f4ebfd07bff20939f66a57c4973826b5619c8bdfd196b1b83, plus the seven trigger codes/conditions/timing of PROPOSAL-TERMF-TRIGGER-VOCABULARY-2026-07-23.md. Serving is release-declared-fingerprint (step 1) so the active F1 release is unaffected; no V2 release exists until Ben imports and activates one.",
   "authority_note": "G0 gate states below are OWNER-DEEMED closures: Ben (programme owner, sole taxonomy/spec authority per docs/CODEX-PROGRAM.md) directed 'Deem G0 complete' on 2026-07-23 in the recorded Claude session. The programme-gate-evidence-envelope/v2 cryptographic evidence contract is NOT satisfied for these entries and no validator record exists; the owner's directive waives the envelope for the G0 set only. Any consumer requiring validator-verified closure must treat OWNER_DEEMED entries as distinct from validator-verified PASS. All P1_*/P9_* gates remain OPEN. See docs/certification/evidence/G0-OWNER-DEEMED-2026-07-23.md and docs/handoffs/AUDIT-GATE-REGISTRY-STATUS-2026-07-23.md.",
   "gates": {
     "G0_MARKET_STATS_CONTAINED": { "state": "PASS", "mode": "OWNER_DEEMED", "note": "Containment code live (pages/api/market-stats.js enabled:false); repeated live 503 MARKET_STATS_DISABLED probes recorded 2026-07-20 through 2026-07-23." },

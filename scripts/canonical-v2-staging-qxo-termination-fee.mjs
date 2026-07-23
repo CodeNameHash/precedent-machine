@@ -31,7 +31,7 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const { canonicalJson, contentId } = require('../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV2 } = require('../lib/canonical-v2/contract-bundle');
 const { validateSharedServingRow } = require('../lib/canonical-v2/shared-serving-row');
 const { adaptSharedServingRow } = require('../lib/canonical-v2/shared-row-adapter');
 const { buildQxoTerminationFeeFixture } = require('../__fixtures__/canonical-v2/qxo-termination-fee-row');
@@ -51,7 +51,11 @@ const EXPECTED_TRIGGER_CODES = Object.freeze([
 ].sort());
 
 function buildAttestation() {
-  const contractBundle = compileFixtureContract();
+  // SPEC-VERSIONED-CONTRACT-2026-07-23: this fixture's grounds carry the four
+  // Ben-approved concept keys, so it must be governed by the versioned
+  // contract (F2), not the frozen F1 default -- otherwise this attestation
+  // would falsely claim F1 governance for a row built with F2-only concepts.
+  const contractBundle = compileFixtureContractV2();
   const fixture = buildQxoTerminationFeeFixture({ contractBundle });
 
   validateSharedServingRow(fixture.row);
