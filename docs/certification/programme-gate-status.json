@@ -1,0 +1,18 @@
+{
+  "schema": "canonical-programme-gates/v1-status",
+  "generated": "2026-07-23",
+  "generation": 1,
+  "authority_note": "G0 gate states below are OWNER-DEEMED closures: Ben (programme owner, sole taxonomy/spec authority per docs/CODEX-PROGRAM.md) directed 'Deem G0 complete' on 2026-07-23 in the recorded Claude session. The programme-gate-evidence-envelope/v2 cryptographic evidence contract is NOT satisfied for these entries and no validator record exists; the owner's directive waives the envelope for the G0 set only. Any consumer requiring validator-verified closure must treat OWNER_DEEMED entries as distinct from validator-verified PASS. All P1_*/P9_* gates remain OPEN. See docs/certification/evidence/G0-OWNER-DEEMED-2026-07-23.md and docs/handoffs/AUDIT-GATE-REGISTRY-STATUS-2026-07-23.md.",
+  "gates": {
+    "G0_MARKET_STATS_CONTAINED": { "state": "PASS", "mode": "OWNER_DEEMED", "note": "Containment code live (pages/api/market-stats.js enabled:false); repeated live 503 MARKET_STATS_DISABLED probes recorded 2026-07-20 through 2026-07-23." },
+    "G0_BROAD_CORPUS_ROUTES_CONTAINED": { "state": "PASS", "mode": "OWNER_DEEMED", "note": "Owner-deemed with recorded caveat: /api/query/run remains the live legacy query path (60s full-context cache + inflight dedupe, no admission ceilings); discrepancy and remediation options recorded in AUDIT-GATE-REGISTRY-STATUS-2026-07-23.md item 2." },
+    "G0_ZAYO_DISPOSITION": { "state": "PASS", "mode": "OWNER_DEEMED", "note": "Owner-deemed complete 2026-07-23; no non-secret detail recorded." },
+    "G0_CLAUDE_CREDENTIAL_ROTATION": { "state": "PASS", "mode": "OWNER_DEEMED", "note": "Owner-deemed complete 2026-07-23." },
+    "G0_SUPABASE_SECRET_DISPOSITION": { "state": "PASS", "mode": "OWNER_DEEMED", "note": "Owner-deemed complete 2026-07-23. Corroborating non-secret observation: staging legacy API keys were disabled 2026-07-22T06:34Z and replaced with new-format keys (observed live this session)." },
+    "G0_STAGING_SUPABASE_ISOLATED": { "state": "PASS", "mode": "OWNER_DEEMED", "note": "Staging project sjumbznveyyiizhwvixj live; REST keys verified to hold zero canonical function execute grants (fail-closed probes recorded 2026-07-23); serving access restricted to the canonical_v2_preview Postgres role." },
+    "G0_STAGING_VERCEL_ISOLATED": { "state": "PASS", "mode": "OWNER_DEEMED", "note": "Branch previews verified behind Vercel SSO (302) 2026-07-23; production aliases unchanged across all merges." },
+    "G0_STAGING_ACCESS_PROTECTED": { "state": "PASS", "mode": "OWNER_DEEMED", "note": "Deployment Protection verified live on preview URLs 2026-07-23." },
+    "G0_EXACT_DIGEST_REVIEW_SET": { "state": "PASS", "mode": "OWNER_DEEMED", "note": "Owner-deemed. The five-lane provider-attested cold-review record required by the evidence contract does not exist; per-slice Fable adversarial reviews (recorded in docs/handoffs/) are the operative review regime the owner accepted in its place." },
+    "G0_BEN_SPEC_APPROVAL": { "state": "PASS", "mode": "OWNER_DEEMED", "note": "Owner-deemed via the same 2026-07-23 directive; specification root digest at deeming: 48442a6b1b9634464eeede0955c0d0688b03dfb1e1aff8b148ee8db1dea09470 (npm run verify:codex-program, verified same day)." }
+  }
+}

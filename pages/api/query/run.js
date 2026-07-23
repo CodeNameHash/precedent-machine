@@ -12,7 +12,14 @@ const { sanitizeQueryError } = require('../../../lib/query/error-sanitize');
 // version, just relocated so it's reusable).
 const { loadContext } = require('../../../lib/query/context-cache');
 
-export default async function handler(req, res) {
+// Emergency-containment guard (2026-07-23, Ben-approved): process-local
+// concurrency cap + circuit breaker around the legacy full-corpus-context
+// query path. Normal traffic is untouched; see lib/query/route-guard.js.
+const { createRouteGuard } = require('../../../lib/query/route-guard');
+
+const guard = createRouteGuard({ maxConcurrent: 4 });
+
+async function runHandler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') return res.status(405).json({ error: 'GET or POST only' });
   const sb = getServiceSupabase();
   if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
@@ -60,3 +67,5 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: sanitizeQueryError(err.message || 'query failed') });
   }
 }
+
+export default guard(runHandler);
