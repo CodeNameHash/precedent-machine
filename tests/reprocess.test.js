@@ -350,36 +350,40 @@ test('classifyFromStoredText with persistRegions:false performs zero supabase ca
 });
 
 // ---------------------------------------------------------------------------
-// SPEC-MECHANICAL-HARDENING-2026-07-23 part A: opt-in --rematerialize.
+// SPEC-MECHANICAL-HARDENING-2026-07-23 part A, amended by Ben's DATA-1
+// sign-off (DECISIONS 2026-07-23, D1 flip-on): rematerialize is ON by
+// default; --no-rematerialize restores the warn-only path.
 // Group 1 — arg parsing.
 // ---------------------------------------------------------------------------
 
-test('parseArgs: --rematerialize and --rematerialize-partial are recognized; absent by default', () => {
-  const withFlag = parseArgs(['node', 'reprocess.js', '--deal', 'Metsera', '--types', 'TERMF', '--rematerialize']);
-  assert.strictEqual(withFlag.rematerialize, true);
-  assert.strictEqual(withFlag.rematerializePartial, false);
+test('parseArgs: rematerialize defaults ON; --no-rematerialize turns it off; --rematerialize-partial recognized', () => {
+  const defaults = parseArgs(['node', 'reprocess.js', '--deal', 'Metsera', '--types', 'TERMF']);
+  assert.strictEqual(defaults.rematerialize, true);
+  assert.strictEqual(defaults.rematerializePartial, false);
+
+  const optOut = parseArgs(['node', 'reprocess.js', '--deal', 'Metsera', '--types', 'TERMF', '--no-rematerialize']);
+  assert.strictEqual(optOut.rematerialize, false);
+
+  const explicit = parseArgs(['node', 'reprocess.js', '--deal', 'Metsera', '--types', 'TERMF', '--rematerialize']);
+  assert.strictEqual(explicit.rematerialize, true);
 
   const withBoth = parseArgs([
     'node', 'reprocess.js', '--deal', 'Metsera', '--types', 'TERMF',
-    '--apply', '--rematerialize', '--rematerialize-partial',
+    '--apply', '--rematerialize-partial',
   ]);
   assert.strictEqual(withBoth.rematerialize, true);
   assert.strictEqual(withBoth.rematerializePartial, true);
   assert.strictEqual(withBoth.apply, true);
-
-  const absent = parseArgs(['node', 'reprocess.js', '--deal', 'Metsera', '--types', 'TERMF']);
-  assert.strictEqual(absent.rematerialize, false);
-  assert.strictEqual(absent.rematerializePartial, false);
 });
 
-test('parseArgs: --rematerialize is accepted alongside dry-run, --apply, and --classify-only with no new validation errors', () => {
+test('parseArgs: rematerialize flags accepted alongside dry-run, --apply, and --classify-only with no new validation errors', () => {
   assert.doesNotThrow(() => parseArgs(['node', 'reprocess.js', '--deal', 'x', '--types', 'TERMF', '--rematerialize']));
-  assert.doesNotThrow(() => parseArgs(['node', 'reprocess.js', '--deal', 'x', '--types', 'TERMF', '--apply', '--rematerialize']));
+  assert.doesNotThrow(() => parseArgs(['node', 'reprocess.js', '--deal', 'x', '--types', 'TERMF', '--apply', '--no-rematerialize']));
   assert.doesNotThrow(() => parseArgs(['node', 'reprocess.js', '--deal', 'x', '--classify-only', '--rematerialize']));
 });
 
-test('DATA-1 default untouched: --rematerialize absent (today\'s invocation) still defaults to false, and formatRematerializeWarning\'s text/command are exactly what ships today', () => {
-  const args = parseArgs(['node', 'reprocess.js', '--deal', 'x', '--types', 'TERMF', '--apply']);
+test('DATA-1 opt-out: --no-rematerialize restores the warn-only path, and formatRematerializeWarning text/command are unchanged', () => {
+  const args = parseArgs(['node', 'reprocess.js', '--deal', 'x', '--types', 'TERMF', '--apply', '--no-rematerialize']);
   assert.strictEqual(args.rematerialize, false);
   const msg = formatRematerializeWarning(['deal-a']);
   assert.match(msg, /claims are NOT materialized/);
