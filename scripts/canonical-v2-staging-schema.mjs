@@ -18,7 +18,12 @@ const EXPECTED_PROJECT = Object.freeze({
 });
 const EXPECTED_DIGESTS = Object.freeze({
   'canonical-v2-foundation.sql': '33a3b5a8e2a70ec97e48422d22222fda7eb3628eb466fcdec2fd615d4034e8d6',
-  'canonical-v2-serving.sql': '29ba5cb3a6cbd7d8adb69cb692956ccadf81ff1bcde3ed166ff393b31e13d0a8',
+  // 2026-07-23: canonical_v2_active_query_page now resolves and filters
+  // against the ACTIVE release's own declared contract_fingerprint (read
+  // from fixture_corpus_releases) instead of trusting the caller-supplied
+  // value for equality -- see docs/handoffs/SPEC-CONTRACT-AMENDMENT-PATH-2026-07-23.md
+  // option 1 and scripts/canonical-v2-staging-active-release-fingerprint.mjs.
+  'canonical-v2-serving.sql': '9d01223468b3d4ddcb5c7ab1f3e4987731cf377afda2d6a08b3c11cb27e0f8fd',
 });
 const SCRIPT_ROOT = dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = resolve(SCRIPT_ROOT, '..');
