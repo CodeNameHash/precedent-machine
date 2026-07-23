@@ -21,7 +21,7 @@ pipeline, § 4 gaps). Process audit: canonical-coding audit, 2026-07-10.
 
 ---
 
-## Status — what's proven (updated 2026-07-15)
+## Status — what's proven (updated 2026-07-23)
 
 **M2 parity gate: PASSED** (`reports/PARITY-GATE-2026-07-15.md` — zero unexplained drops
 across all 40 deals, data-level). Corpus rollout complete: codes live corpus-wide, two
@@ -29,6 +29,21 @@ Ben-gated prune rounds executed, extraction gaps D/E verified resolved, numeric-
 normalization substrate built (column migration pending, item 2 of the queue), GAP-E
 plumbing shipped flag-off. **All pending decisions are consolidated in
 `reports/BEN-QUEUE-2026-07-15.md`** — every item is a pure sign-off.
+
+**Claims rematerialize: BUILT AND RUN CORPUS-WIDE** (2026-07-13,
+`reports/TASK3-CORPUS-REPORT-2026-07-13.md`): `scripts/reprocess/rematerialize-claims.js`
+implements the excerpt-id match ladder (5 rungs), hard-stops on ambiguity, and ran across
+all 40 deals — 12,259/12,387 cards matched (98.97%), 70,161 claims materialized, third run
+a strict no-op. The former §1.1–§1.4 "critical path" text described this as unbuilt; that
+text is deleted per this file's own convention. Open residue is listed in §1 below.
+
+**Canonical corpus v2 track** (separate governing programme: `docs/CODEX-PROGRAM.md`):
+serving projection bound to immutable releases; bounded canonical Query endpoint live
+flag-off; first canonical Query UI slice (seller termination fee % of deal value) merged
+to `main` 2026-07-23 behind `NEXT_PUBLIC_CANONICAL_V2_QUERY_UI_ENABLED` (off), production
+live-verified with containment intact. See `docs/handoffs/` for slice specs, the
+next-slice proposal, and the field↔metric correspondence analysis (no further
+legacy→canonical mappings are currently safe).
 
 ### Previously proven
 
@@ -43,42 +58,33 @@ materialization gap that blocks corpus scale-up.
 
 ---
 
-## 1. CRITICAL PATH — un-block the corpus (audit GAP-A/B/C)
+## 1. Corpus residue (was "critical path" — the path itself is done)
 
-Do NOT run `reprocess.js --all` until step 1.1 exists and is proven on ≥3 deals.
+The rematerialize command, the corpus run, and the prune/rehome tooling
+(`scripts/curation/prune-cards.js`, `rehome-correction.js`, decisions-file + mandatory
+backup pattern) are all built and exercised. What remains:
 
-**1.1 Build the claims-only rematerialize (GAP-A + GAP-B).** `scripts/reprocess.js`
-writes PROVISIONS only (`ai_metadata.features` gets codes); it never calls the claim
-writer, so `claims` (what the render reads) go stale after every reprocess. The writer
-already exists: `storeClaimsForDeal` / `buildClaimRowsForCard` / `upsertClaims` in
-`lib/parser-v2/store-claims.js`, and the `claims` table + `review-deal.js` reader are
-live. Ship a post-reprocess step that re-runs the claim writer **claims-only** (no card
-rewrite), matching cards to provisions by `short_title == category`, anchored on the
-deterministic `excerpt_id` (NOT `region_id`/`region_hash`: that path fails on NOSOL with
-`provision_cards_deal_region_hash_unique`, 15 vs 22 rows, NULL region_ids; GAP-B). Wire
-it into `reprocess.js` or ship as a standalone command. Detail: `PLAN-CLAIMS-LAYER.md`
-(the claims table is Phase 1, already built; this is the reprocess-time rematerialize the
-audit found missing).
+**1.1 [BEN SIGN-OFF — DATA-1 in the queue] Rematerialize wiring.** `reprocess.js` still
+only WARNS (`formatRematerializeWarning`) instead of running the claims rematerialize
+after `--apply`. An opt-in `--rematerialize` flag is being shipped (default unchanged:
+warn); flipping the default to auto-run is Ben's DATA-1 sign-off.
 
-**1.2 Validate NOSOL card stability (GAP-C).** Repeated NOSOL reprocess churned the
-Metsera QA nosol count (22 → 16 → 15); duplicate cards pre-exist (Change-of-Rec ×4,
-Disclosure ×3). Prove card/claim counts are stable across repeated reprocess on ≥3 deals
-before scaling; add NOSOL provision de-duplication if not.
+**1.2 [BEN-GATED] Prune round 2.** 22 deals with residual duplicate/ambiguous cards from
+the corpus run (`reports/PRUNE-ROUND2-DRAFT-2026-07-14.md`). Per-card keep/re-home/delete
+decisions are Ben's; dry-run table + backup gates already enforced by the tooling.
+**Standing rule: orphaned human corrections are preserved and surfaced, never deleted.**
 
-**1.3 Corpus reprocess + rematerialize.** Once 1.1 is proven on ≥3 deals:
-`reprocess.js --all --types NOSOL,MISC,TERMF --apply` → claims-only rematerialize across
-all 40 → verify code population + spot-check quality per deal → flip renders off the regex
-fallbacks and **delete the regexes** (only after codes confirmed corpus-wide).
-The per-deal verification report must include a **card-less provision count** per deal
-(provisions with no matching card — deferred to M3, but counted and visible now).
+**1.3 [M3 BACKLOG] Card-less coded provisions.** 66 across 22 deals (flagged, not
+guessed, in the TASK3 report) — handled in M3 ingest work, counted and visible now.
 
-**1.4 Ben-gated duplicate-card prune (keep / re-home / delete ladder).** Deterministic
-prune of pre-existing duplicate NOSOL cards, decided per card by Ben (Metsera + Kraft
-decisions logged 2026-07 checkpoint; re-homes become generalized new titles for the corpus
-run). Hard gates: dry-run table on the 3 pilots FIRST, DB backup before any destructive
-pass, any card carrying a human correction is skipped and flagged, and Ben signs off on the
-dry-run before anything is deleted. **Standing rule: orphaned human corrections are
-preserved and surfaced, never deleted.**
+**1.4 Claims-aware QA gate.** `scripts/ingest-qa.js` has zero claims awareness, so no
+automated acceptance gate exists for rematerialize runs beyond the command's own report.
+Add an additive claims gate (per-deal claims coverage vs coded features; zero-orphan
+check) without changing existing gates.
+
+**1.5 Regex-fallback kill.** Only after Ben confirms per-deal render quality corpus-wide:
+flip renders off the transition-safe regex fallbacks and delete the regexes
+(`PLAN-CANONICAL-LAYER.md` carries the inventory).
 
 ## 2. Residual capture + feedback loop (GAP-E — PROPOSED, makes forced categorization safe)
 
