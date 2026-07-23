@@ -173,6 +173,26 @@ const FILE_PATTERN_EXEMPTIONS = {
     'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
     'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
   ],
+  // Same class as the tests/query/* fixture exemptions above: the canonical-v2
+  // Query UI slice tests must carry the EXACT legacy ad hoc payload
+  // ({provision_type: 'TERMINATION_FEE', field_path: 'feePctOfDealValue'})
+  // verbatim, because they prove that precise request — and only it — routes
+  // to the canonical endpoint (party specificity, legacy fallback, mapper
+  // pinning against the frozen compiler). The raw-payload fingerprint is
+  // aimed at production query code, which stays covered. (The pattern is
+  // applied case-insensitively, so camelCase field_path fixtures trip it.)
+  'tests/canonical-v2-legacy-query-mapper.test.js': [
+    'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
+    'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
+  ],
+  'tests/canonical-v2-query-ui-routing.test.js': [
+    'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
+    'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
+  ],
+  'tests/canonical-v2-query-refinements.test.js': [
+    'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
+    'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
+  ],
   'lib/taxonomy.js': ['Must defend \\(incl\\. appeals/final judgment\\)'],
   // Same false-positive class: Sidebar.js renders "(applies to Parent and
   // Company)" GATED on group.maeAppliesToBoth (data-driven, correct since
