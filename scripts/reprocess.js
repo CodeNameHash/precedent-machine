@@ -32,13 +32,13 @@
      node scripts/reprocess.js --deal Metsera --classify-only --apply
      [--backend claude|codex] [--model sonnet|opus|…]
 
-   --rematerialize (opt-in, DATA-1/GAP-A — off by default, absent ⇒ behavior
-   is byte-identical to before this flag existed): dry-run also prints the
-   claims rematerialize PLAN (scripts/reprocess/rematerialize-claims.js,
-   read-only); --apply --rematerialize runs the rematerialize WRITE path for
-   exactly the reprocessed deal ids, STRICT by default (any ambiguity/
-   coverage failure ⇒ exit 1, writes nothing — extraction writes above are
-   already committed, so claims stay stale until a manual rerun).
+   Claims rematerialize (DATA-1/GAP-A — ON by default since Ben's 2026-07-23
+   sign-off): dry-run also prints the claims rematerialize PLAN
+   (scripts/reprocess/rematerialize-claims.js, read-only); --apply runs the
+   rematerialize WRITE path for exactly the reprocessed deal ids, STRICT by
+   default (any ambiguity/coverage failure ⇒ exit 1, writes nothing —
+   extraction writes above are already committed, so claims stay stale until
+   a manual rerun). --no-rematerialize restores the old warn-only behavior;
    --rematerialize-partial maps onto rematerialize-claims.js's own --partial.
 
    LLM calls go through the injectable CLI client (lib/llm-cli-client.js) —
@@ -383,7 +383,7 @@ function usage() {
   console.error(
     'Usage: node scripts/reprocess.js (--deal <substring> | --all) ' +
     '(--types TERMF[,ANTI…] | --classify-only) [--apply | --dry-run] ' +
-    '[--backend claude|codex] [--model …] [--rematerialize [--rematerialize-partial]]',
+    '[--backend claude|codex] [--model …] [--no-rematerialize | --rematerialize-partial]',
   );
   process.exit(1);
 }
@@ -392,11 +392,11 @@ function parseArgs(argv) {
   const args = {
     deal: null, all: false, typesRaw: [], classifyOnly: false,
     apply: false, dryRun: false, backend: 'claude', model: null, allowStrip: false,
-    // DATA-1 (GAP-A), opt-in per SPEC-MECHANICAL-HARDENING-2026-07-23 part A —
-    // both default false/false so omitting them reproduces today's behavior
-    // (formatRematerializeWarning) exactly; see the --rematerialize wiring
-    // near the end of main().
-    rematerialize: false, rematerializePartial: false,
+    // DATA-1 (GAP-A): default ON per Ben's sign-off (DECISIONS 2026-07-23,
+    // D1 flip-on) — --apply now rematerializes claims by default so they can
+    // never silently go stale. --no-rematerialize restores the warn-only
+    // behavior; --rematerialize is still accepted as an explicit no-op.
+    rematerialize: true, rematerializePartial: false,
   };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
@@ -410,6 +410,7 @@ function parseArgs(argv) {
     else if (a === '--model') args.model = argv[++i];
     else if (a === '--allow-strip') args.allowStrip = true;
     else if (a === '--rematerialize') args.rematerialize = true;
+    else if (a === '--no-rematerialize') args.rematerialize = false;
     else if (a === '--rematerialize-partial') args.rematerializePartial = true;
     else { console.error(`Unknown arg: ${a}`); usage(); }
   }
