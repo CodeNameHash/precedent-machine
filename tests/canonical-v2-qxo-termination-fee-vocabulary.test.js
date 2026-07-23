@@ -1,20 +1,28 @@
-// SPEC-QXO-TERMF-AMENDMENT-2026-07-23 / PROPOSAL-TERMF-TRIGGER-VOCABULARY-2026-07-23.
+// SPEC-QXO-TERMF-AMENDMENT-2026-07-23 / PROPOSAL-TERMF-TRIGGER-VOCABULARY-2026-07-23
+// / SPEC-VERSIONED-CONTRACT-2026-07-23.
 //
 // Covers the Step 0 fingerprint-stability guarantee, the QXO termination-fee
 // fixture's replay through the WP-EXP-01 harness, and composition proof that
 // every new trigger_code/trigger_condition/payment_timing value appears with its
-// exact, spec-pinned conditions and timing.
+// exact, spec-pinned conditions and timing. Since SPEC-VERSIONED-CONTRACT-2026-07-23
+// the fixture itself compiles under F2 (compileFixtureContractV2()) with its four
+// grounds re-keyed to their honest concepts; F1 (the default compile, below) is
+// unaffected and stays pinned to the original value.
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const { canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContract, compileFixtureContractV2 } = require('../lib/canonical-v2/contract-bundle');
 const { validateSharedServingRow } = require('../lib/canonical-v2/shared-serving-row');
 const { adaptSharedServingRow } = require('../lib/canonical-v2/shared-row-adapter');
 const { buildQxoTerminationFeeFixture } = require('../__fixtures__/canonical-v2/qxo-termination-fee-row');
 
 const FROZEN_FINGERPRINT = '56da82bee06331793ba2ed8b78ef4186361407e60733595091e5951853e7d41d';
+// F2 = FIXTURE_CONTRACT_INPUT_V1 + the four Ben-approved concepts; pinned once
+// computed (see tests/canonical-v2-contract-bundle-versions.test.js for the
+// authoritative F1/F2 versioning tests).
+const FROZEN_FINGERPRINT_V2 = '46553f1a743dbf9f4ebfd07bff20939f66a57c4973826b5619c8bdfd196b1b83';
 
 // ---------------------------------------------------------------------------
 // Step 0: the vocabulary additions must not move compileFixtureContract()'s
@@ -67,6 +75,33 @@ test('the QXO termination-fee fixture builds a valid shared serving row', () => 
   assert.doesNotThrow(() => validateSharedServingRow(fixture.row));
   assert.equal(fixture.row.governed_deal_key, 'deal:qxo-topbuild');
   assert.equal(fixture.row.canonical_result.market_context.metric_key, 'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE');
+});
+
+test('the QXO fixture compiles under F2 (the versioned contract), by default', () => {
+  const fixture = buildQxoTerminationFeeFixture();
+  assert.equal(fixture.contractBundle.fingerprint, FROZEN_FINGERPRINT_V2);
+  assert.equal(fixture.contractBundle.fingerprint, compileFixtureContractV2().fingerprint);
+  assert.notEqual(fixture.contractBundle.fingerprint, FROZEN_FINGERPRINT);
+  assert.equal(fixture.row.provenance.contract_fingerprint, FROZEN_FINGERPRINT_V2);
+});
+
+test('the QXO fixture\'s grounds carry their honest re-keyed concepts, not the old placeholder reuse', () => {
+  const fixture = buildQxoTerminationFeeFixture();
+  const conceptOf = (key) => fixture.harness.provisions[key].concept_key;
+  // COR grounds keep/get TERMR-RECOMMEND (distinguished by trigger_code, not concept).
+  assert.equal(conceptOf('rec_change'), 'TERMR-RECOMMEND');
+  assert.equal(conceptOf('intervening_tail'), 'TERMR-RECOMMEND');
+  // The two no-solicitation-breach pathways share TERMR-NOSOL-BREACH.
+  assert.equal(conceptOf('nosolicit_immediate'), 'TERMR-NOSOL-BREACH');
+  assert.equal(conceptOf('nosolicit_tail'), 'TERMR-NOSOL-BREACH');
+  // Vote failure and the general covenant-breach gateway each get their own concept.
+  assert.equal(conceptOf('vote_failure'), 'TERMR-NOVOTE');
+  assert.equal(conceptOf('covenant_breach'), 'TERMR-BREACH');
+  // None of the re-keyed grounds use the old placeholder concept (TERMF-TAIL) or
+  // an unapproved key.
+  for (const key of ['nosolicit_immediate', 'nosolicit_tail', 'vote_failure', 'covenant_breach']) {
+    assert.notEqual(conceptOf(key), 'TERMF-TAIL');
+  }
 });
 
 test('the QXO fixture is deterministic: two builds produce byte-identical harness output', () => {
