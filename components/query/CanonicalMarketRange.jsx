@@ -32,6 +32,7 @@ const {
 // single-entry table.
 const METRIC_LABELS = {
   SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE: 'Seller termination fee — % of deal value',
+  NO_SHOP_INITIAL_MATCH_PERIOD_DAYS: 'No-shop — initial match period (business days)',
 };
 
 function truncateDigest(value) {
