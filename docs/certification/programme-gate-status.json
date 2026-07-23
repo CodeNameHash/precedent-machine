@@ -1,7 +1,7 @@
 {
   "schema": "canonical-programme-gates/v1-status",
   "generated": "2026-07-23",
-  "generation": 1,
+  "generation": 2,
   "authority_note": "G0 gate states below are OWNER-DEEMED closures: Ben (programme owner, sole taxonomy/spec authority per docs/CODEX-PROGRAM.md) directed 'Deem G0 complete' on 2026-07-23 in the recorded Claude session. The programme-gate-evidence-envelope/v2 cryptographic evidence contract is NOT satisfied for these entries and no validator record exists; the owner's directive waives the envelope for the G0 set only. Any consumer requiring validator-verified closure must treat OWNER_DEEMED entries as distinct from validator-verified PASS. All P1_*/P9_* gates remain OPEN. See docs/certification/evidence/G0-OWNER-DEEMED-2026-07-23.md and docs/handoffs/AUDIT-GATE-REGISTRY-STATUS-2026-07-23.md.",
   "gates": {
     "G0_MARKET_STATS_CONTAINED": { "state": "PASS", "mode": "OWNER_DEEMED", "note": "Containment code live (pages/api/market-stats.js enabled:false); repeated live 503 MARKET_STATS_DISABLED probes recorded 2026-07-20 through 2026-07-23." },
@@ -13,6 +13,8 @@
     "G0_STAGING_VERCEL_ISOLATED": { "state": "PASS", "mode": "OWNER_DEEMED", "note": "Branch previews verified behind Vercel SSO (302) 2026-07-23; production aliases unchanged across all merges." },
     "G0_STAGING_ACCESS_PROTECTED": { "state": "PASS", "mode": "OWNER_DEEMED", "note": "Deployment Protection verified live on preview URLs 2026-07-23." },
     "G0_EXACT_DIGEST_REVIEW_SET": { "state": "PASS", "mode": "OWNER_DEEMED", "note": "Owner-deemed. The five-lane provider-attested cold-review record required by the evidence contract does not exist; per-slice Fable adversarial reviews (recorded in docs/handoffs/) are the operative review regime the owner accepted in its place." },
-    "G0_BEN_SPEC_APPROVAL": { "state": "PASS", "mode": "OWNER_DEEMED", "note": "Owner-deemed via the same 2026-07-23 directive; specification root digest at deeming: 48442a6b1b9634464eeede0955c0d0688b03dfb1e1aff8b148ee8db1dea09470 (npm run verify:codex-program, verified same day)." }
+    "G0_BEN_SPEC_APPROVAL": { "state": "PASS", "mode": "OWNER_DEEMED", "note": "Owner-deemed via the same 2026-07-23 directive; specification root digest at deeming: 48442a6b1b9634464eeede0955c0d0688b03dfb1e1aff8b148ee8db1dea09470 (npm run verify:codex-program, verified same day)." },
+    "P1_CONTRACT_FREEZE_ATTESTED": { "state": "PASS", "mode": "OWNER_APPROVED_FABLE_VERIFIED", "note": "Ben approved freezing the CURRENT bundle 2026-07-23 (QXO termination codes deferred to a later freeze-gate amendment). Bundle compiles+validates live; fingerprint 56da82bee06331793ba2ed8b78ef4186361407e60733595091e5951853e7d41d, test-pinned. Evidence: evidence/P1-GATES-CLOSURE-2026-07-23.md." },
+    "P1_VERTICAL_SLICE_PASS": { "state": "PASS", "mode": "OWNER_APPROVED_FABLE_VERIFIED", "note": "VerticalSliceAttestation verified against the registry's acceptance claims (all four PASS, 11 fixture cases, fingerprint match, suite-validated 3/3). Evidence: evidence/P1-VERTICAL-SLICE-ATTESTATION.json + P1-GATES-CLOSURE-2026-07-23.md." }
   }
 }
