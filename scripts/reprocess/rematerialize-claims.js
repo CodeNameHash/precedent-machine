@@ -617,6 +617,15 @@ module.exports = {
   buildDealPlan,
   formatDealTable,
   parseArgs,
+  // Additive (SPEC-MECHANICAL-HARDENING-2026-07-23 part A): DB fetch + write
+  // entry points, previously CLI-local, now exported so scripts/reprocess.js
+  // can drive the SAME planner/writer under --rematerialize instead of
+  // reimplementing the fetch/write logic. No behavior change to these
+  // functions or to this file's own CLI path (main() below still calls them
+  // exactly as before).
+  fetchProvisions,
+  fetchCards,
+  writeDealClaims,
 };
 
 if (require.main === module) {

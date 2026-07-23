@@ -27,6 +27,10 @@ const {
   stripRiskConflicts,
   formatStripRiskError,
   formatRematerializeWarning,
+  parseArgs,
+  buildRematerializePlans,
+  printRematerializePlans,
+  runRematerializeApply,
 } = require('../scripts/reprocess');
 
 const { classifySections } = require('../lib/parser-v2/classify');
@@ -343,4 +347,156 @@ test('classifyFromStoredText with persistRegions:false performs zero supabase ca
     { persistRegions: false },
   );
   assert.ok(Array.isArray(out.compact) && out.compact.length === sections.length);
+});
+
+// ---------------------------------------------------------------------------
+// SPEC-MECHANICAL-HARDENING-2026-07-23 part A: opt-in --rematerialize.
+// Group 1 — arg parsing.
+// ---------------------------------------------------------------------------
+
+test('parseArgs: --rematerialize and --rematerialize-partial are recognized; absent by default', () => {
+  const withFlag = parseArgs(['node', 'reprocess.js', '--deal', 'Metsera', '--types', 'TERMF', '--rematerialize']);
+  assert.strictEqual(withFlag.rematerialize, true);
+  assert.strictEqual(withFlag.rematerializePartial, false);
+
+  const withBoth = parseArgs([
+    'node', 'reprocess.js', '--deal', 'Metsera', '--types', 'TERMF',
+    '--apply', '--rematerialize', '--rematerialize-partial',
+  ]);
+  assert.strictEqual(withBoth.rematerialize, true);
+  assert.strictEqual(withBoth.rematerializePartial, true);
+  assert.strictEqual(withBoth.apply, true);
+
+  const absent = parseArgs(['node', 'reprocess.js', '--deal', 'Metsera', '--types', 'TERMF']);
+  assert.strictEqual(absent.rematerialize, false);
+  assert.strictEqual(absent.rematerializePartial, false);
+});
+
+test('parseArgs: --rematerialize is accepted alongside dry-run, --apply, and --classify-only with no new validation errors', () => {
+  assert.doesNotThrow(() => parseArgs(['node', 'reprocess.js', '--deal', 'x', '--types', 'TERMF', '--rematerialize']));
+  assert.doesNotThrow(() => parseArgs(['node', 'reprocess.js', '--deal', 'x', '--types', 'TERMF', '--apply', '--rematerialize']));
+  assert.doesNotThrow(() => parseArgs(['node', 'reprocess.js', '--deal', 'x', '--classify-only', '--rematerialize']));
+});
+
+test('DATA-1 default untouched: --rematerialize absent (today\'s invocation) still defaults to false, and formatRematerializeWarning\'s text/command are exactly what ships today', () => {
+  const args = parseArgs(['node', 'reprocess.js', '--deal', 'x', '--types', 'TERMF', '--apply']);
+  assert.strictEqual(args.rematerialize, false);
+  const msg = formatRematerializeWarning(['deal-a']);
+  assert.match(msg, /claims are NOT materialized/);
+  assert.match(msg, /node scripts\/reprocess\/rematerialize-claims\.js --deal deal-a --apply\n/);
+});
+
+// ---------------------------------------------------------------------------
+// Group 2 — wiring: fake sb + fake rematerialize entry points.
+// ---------------------------------------------------------------------------
+
+function fakeRematPlan(dealId, overrides = {}) {
+  return {
+    dealId,
+    cardsTotal: 0,
+    provisionsTotal: 0,
+    matches: [],
+    ambiguities: [],
+    unmatchedCards: [],
+    unmatchedProvisions: [],
+    coverageFailures: [],
+    rungCounts: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+    claimRows: [],
+    unknownAttributes: [],
+    matchedExcerptIds: [],
+    keepClaimIds: new Set(),
+    ok: true,
+    ...overrides,
+  };
+}
+
+function fakeRematDeps({ planByDealId = {}, writeDealClaims } = {}) {
+  const calls = { fetchProvisions: [], fetchCards: [], buildDealPlan: [], writeDealClaims: [] };
+  const deps = {
+    fetchProvisions: async (sb, dealId) => { calls.fetchProvisions.push(dealId); return []; },
+    fetchCards: async (sb, dealId) => { calls.fetchCards.push(dealId); return []; },
+    buildDealPlan: (dealId) => { calls.buildDealPlan.push(dealId); return planByDealId[dealId] || fakeRematPlan(dealId); },
+    formatDealTable: () => '  fake table',
+    writeDealClaims: writeDealClaims || (async (sb, plan) => { calls.writeDealClaims.push(plan.dealId); return 0; }),
+  };
+  return { calls, deps };
+}
+
+async function withCapturedConsole(fn) {
+  const logs = [];
+  const errs = [];
+  const origLog = console.log;
+  const origErr = console.error;
+  console.log = (...a) => logs.push(a.join(' '));
+  console.error = (...a) => errs.push(a.join(' '));
+  try {
+    const result = await fn();
+    return { result, logs, errs };
+  } finally {
+    console.log = origLog;
+    console.error = origErr;
+  }
+}
+
+test('dry-run: buildRematerializePlans invokes only the planner (fetch + buildDealPlan), never the writer', async () => {
+  const deals = [{ id: 'deal-1', acquirer: 'A', target: 'B' }, { id: 'deal-2', acquirer: 'C', target: 'D' }];
+  const { calls, deps } = fakeRematDeps();
+  const plans = await buildRematerializePlans('fake-sb', deals, deps);
+  assert.strictEqual(plans.length, 2);
+  assert.deepStrictEqual(calls.fetchProvisions, ['deal-1', 'deal-2']);
+  assert.deepStrictEqual(calls.fetchCards, ['deal-1', 'deal-2']);
+  assert.deepStrictEqual(calls.buildDealPlan, ['deal-1', 'deal-2']);
+  assert.strictEqual(calls.writeDealClaims.length, 0);
+});
+
+test('printRematerializePlans prints the plan table (formatDealTable) once per deal', async () => {
+  const deals = [{ id: 'deal-1', acquirer: 'A', target: 'B' }];
+  const { deps } = fakeRematDeps();
+  const plans = await buildRematerializePlans('fake-sb', deals, deps);
+  const { logs } = await withCapturedConsole(() => { printRematerializePlans(plans, deps); });
+  assert.ok(logs.some((l) => l.includes('fake table')));
+  assert.ok(logs.some((l) => l.includes('deal-1')));
+});
+
+test('--apply --rematerialize invokes the write path exactly once per exactly the selected deal ids', async () => {
+  const deals = [{ id: 'deal-x', acquirer: 'A', target: 'B' }, { id: 'deal-y', acquirer: 'C', target: 'D' }];
+  const { calls, deps } = fakeRematDeps();
+  const { result } = await withCapturedConsole(() => runRematerializeApply('fake-sb', deals, { partial: false }, deps));
+  assert.strictEqual(result.ok, true);
+  assert.deepStrictEqual(calls.writeDealClaims, ['deal-x', 'deal-y']);
+});
+
+test('strict failure: ambiguity/coverage failure on any deal in the batch exits { ok: false }, writes nothing (not even for the clean deal), and prints the stale-claims warning', async () => {
+  const deals = [
+    { id: 'deal-good', acquirer: 'A', target: 'B' },
+    { id: 'deal-bad', acquirer: 'C', target: 'D' },
+  ];
+  const { calls, deps } = fakeRematDeps({
+    planByDealId: {
+      'deal-bad': fakeRematPlan('deal-bad', { ok: false, coverageFailures: [{ provisionId: 'p1', type: 'TERMF', category: 'Fee' }] }),
+    },
+  });
+  const { result, errs } = await withCapturedConsole(() => runRematerializeApply('fake-sb', deals, { partial: false }, deps));
+  assert.strictEqual(result.ok, false);
+  assert.strictEqual(calls.writeDealClaims.length, 0, 'strict failure must write NOTHING, including for the clean deal in the same batch');
+  const combined = errs.join('\n');
+  assert.match(combined, /stale/i);
+  assert.match(combined, /already committed/i);
+  assert.match(combined, /rematerialize-claims\.js --deal deal-good,deal-bad --apply --partial/);
+});
+
+test('--rematerialize-partial maps to the existing --partial semantics: writes unambiguous matches even when another deal has a coverage failure, and reports ok:true', async () => {
+  const deals = [
+    { id: 'deal-good', acquirer: 'A', target: 'B' },
+    { id: 'deal-bad', acquirer: 'C', target: 'D' },
+  ];
+  const { calls, deps } = fakeRematDeps({
+    planByDealId: {
+      'deal-bad': fakeRematPlan('deal-bad', { ok: false, coverageFailures: [{ provisionId: 'p1', type: 'TERMF', category: 'Fee' }] }),
+    },
+  });
+  const { result, logs } = await withCapturedConsole(() => runRematerializeApply('fake-sb', deals, { partial: true }, deps));
+  assert.strictEqual(result.ok, true);
+  assert.deepStrictEqual(calls.writeDealClaims, ['deal-good', 'deal-bad']);
+  assert.ok(logs.some((l) => /--rematerialize-partial/.test(l)));
 });
