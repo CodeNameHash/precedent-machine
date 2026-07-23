@@ -1,4 +1,6 @@
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import {
+  Fragment, useEffect, useMemo, useRef, useState,
+} from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -45,7 +47,9 @@ const { groupColumnsForCrossCut } = require('../../../lib/query/cross-cut-groups
 // the one supported ad hoc request (see docs/handoffs/
 // SPEC-CANONICAL-QUERY-UI-SLICE-2026-07-22.md).
 const { isCanonicalV2QueryUiEnabled } = require('../../../lib/canonical-v2/feature-flags');
-const { runQueryRoute } = require('../../../lib/canonical-v2/legacy-query-mapper');
+const {
+  runQueryRoute, mapLegacyRequestToCanonical, runCanonicalRefinementRequest,
+} = require('../../../lib/canonical-v2/legacy-query-mapper');
 import CanonicalMarketRange from '../../../components/query/CanonicalMarketRange';
 
 // Duplicated (not imported) from lib/query/types.js's KIND_SLUGS/slugToKind:
@@ -163,6 +167,34 @@ export default function QueryPage() {
   // CANONICAL_QUERY_RESULT_VIEW/V1 only").
   const [canonicalView, setCanonicalView] = useState(null);
   const [canonicalError, setCanonicalError] = useState(null);
+  // Slice 2 (2026-07-23): the current canonical request body — the Slice 1
+  // mapper's output at first render, a refined/cleared body after an Apply/
+  // Clear/chip removal, or the same body with cursor: next_cursor after a
+  // Show more. `canonicalPendingRef` is the single-in-flight guard: a ref
+  // (not just the `canonicalPending` state) so a second click arriving
+  // before the next render can still see "already pending" synchronously.
+  const [canonicalBody, setCanonicalBody] = useState(null);
+  const [canonicalPending, setCanonicalPending] = useState(false);
+  const canonicalPendingRef = useRef(false);
+  // Route-change guard (Fable review, Slice 2): each run of the fetch effect
+  // bumps this generation; a refinement/show-more outcome that resolves
+  // AFTER the user navigated to a different query must be discarded, or the
+  // stale canonical view would render on top of (and, by render priority,
+  // hide) the new query's result.
+  const canonicalGenerationRef = useRef(0);
+
+  // Shared by the first canonical request (below) and every Slice 2
+  // refinement/show-more request (`onRequest`, further down) — one POST
+  // wrapper, one place its shape can ever drift.
+  const fetchCanonicalBody = async (body) => {
+    const res = await fetch('/api/canonical-v2/query', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const json = await res.json().catch(() => null);
+    return { status: res.status, json };
+  };
 
   useEffect(() => {
     fetch('/api/deals').then((response) => response.json()).then((json) => setRefinementDeals(json.deals || [])).catch(() => setRefinementDeals([]));
@@ -180,6 +212,10 @@ export default function QueryPage() {
     setError(null);
     setCanonicalView(null);
     setCanonicalError(null);
+    setCanonicalBody(null);
+    setCanonicalPending(false);
+    canonicalPendingRef.current = false;
+    canonicalGenerationRef.current += 1;
 
     // Canonical Query UI slice (2026-07-22): the legacy fetch, UNCHANGED from
     // before this slice, just extracted into a function so it can be handed
@@ -242,22 +278,55 @@ export default function QueryPage() {
       payload: decodedPayload,
       savedQueryId: id,
       flagEnabled,
-      fetchCanonical: async (body) => {
-        const res = await fetch('/api/canonical-v2/query', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
-        });
-        const json = await res.json().catch(() => null);
-        return { status: res.status, json };
-      },
+      fetchCanonical: fetchCanonicalBody,
       fetchLegacy,
     }).then((outcome) => {
       if (outcome.mode !== 'canonical') return; // fetchLegacy already applied its own state.
-      if (outcome.ok) setCanonicalView(outcome.view);
-      else setCanonicalError(outcome.error);
+      if (outcome.ok) {
+        setCanonicalView(outcome.view);
+        // Slice 2: seed the refinement baseline with the exact body this
+        // request was built from (mapLegacyRequestToCanonical is pure and
+        // deterministic on the same payload, so recomputing it here — rather
+        // than threading it back out of runQueryRoute — never drifts from
+        // what was actually sent).
+        setCanonicalBody(mapLegacyRequestToCanonical(decodedPayload));
+      } else {
+        setCanonicalError(outcome.error);
+      }
     });
   }, [kind, id, payload]);
+
+  // Slice 2 (2026-07-23): one bounded POST per explicit Apply/Clear/chip-
+  // removal/Show more action from CanonicalMarketRange. `body.cursor` is
+  // non-null only for a Show more request (see the component) — that one
+  // signal is enough to tell runCanonicalRefinementRequest/
+  // resolveCanonicalQueryPageUpdate whether to append or replace, with no
+  // extra flag to thread through.
+  const onCanonicalRequest = async (body) => {
+    if (canonicalPendingRef.current) return; // single-in-flight: a second explicit action is a no-op, never queued
+    canonicalPendingRef.current = true;
+    setCanonicalPending(true);
+    const generation = canonicalGenerationRef.current;
+    const outcome = await runCanonicalRefinementRequest({
+      fetchCanonical: fetchCanonicalBody,
+      body,
+      isShowMore: !!body.cursor,
+      existingView: canonicalView,
+    });
+    if (generation !== canonicalGenerationRef.current) return; // user navigated away mid-flight: discard, state was already reset
+    canonicalPendingRef.current = false;
+    setCanonicalPending(false);
+    if (outcome.ok) {
+      setCanonicalBody(body);
+      setCanonicalView(outcome.view);
+      setCanonicalError(null);
+    } else {
+      // Spec: a refinement error preserves the prior view/controls —
+      // canonicalView/canonicalBody are deliberately left untouched here so
+      // the user can correct and retry.
+      setCanonicalError(outcome.error);
+    }
+  };
 
   const title = useMemo(() => savedQuery?.title || (result ? resultTitle(result) : kindLabel(kind)), [savedQuery, result, kind]);
   const canPersist = !!(result && currentPayload);
@@ -321,8 +390,21 @@ export default function QueryPage() {
         <div className="body">
           <div className="wrap">
             {error ? <div className="empty">{error}</div>
-              : canonicalError ? <CanonicalErrorPanel error={canonicalError} />
-              : canonicalView ? <CanonicalMarketRange view={canonicalView} />
+              : (canonicalView || canonicalError) ? <>
+                {/* Slice 2: a refinement/show-more error renders the safe
+                    panel ABOVE the previous (stale) view — the prior rows
+                    and refinement controls stay on screen so the user can
+                    correct and retry, rather than the error replacing them. */}
+                {canonicalError && <CanonicalErrorPanel error={canonicalError} />}
+                {canonicalView && (
+                  <CanonicalMarketRange
+                    view={canonicalView}
+                    body={canonicalBody}
+                    onRequest={onCanonicalRequest}
+                    pending={canonicalPending}
+                  />
+                )}
+              </>
               : !result ? <div className="empty">Loading query…</div> : <>
               {currentPayload && <ResultRefinements key={JSON.stringify(currentPayload)} result={result} payload={currentPayload} deals={refinementDeals} />}
               <ResultView result={result} onOpen={setActive} />
