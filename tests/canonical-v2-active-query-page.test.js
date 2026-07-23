@@ -7,6 +7,7 @@ const { contentId } = require('../lib/canonical-v2/canonical-bytes');
 const {
   compileCanonicalActiveQueryRequest,
   queryCanonicalResultPage,
+  resolveActiveQueryPage,
 } = require('../lib/canonical-v2/query-result');
 
 function activeRequestFor(row, overrides = {}) {
@@ -180,4 +181,87 @@ test('active Query SQL resolves one active pointer and invokes the bounded index
   assert.match(activeFunction, /jsonb_build_object\('pointer_id', active_pointer\.pointer_id\)/);
   assert.doesNotMatch(activeFunction, /p_serving_namespace_id text|p_corpus_release_id text/);
   assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_active_query_page[\s\S]*TO canonical_v2_serving/);
+});
+
+test('active Query SQL resolves and filters against the release-declared fingerprint, not the caller-supplied one', () => {
+  const sql = fs.readFileSync('supabase/canonical-v2-serving.sql', 'utf8');
+  const start = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page');
+  const end = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_review_context');
+  const activeFunction = sql.slice(start, end);
+
+  assert.match(activeFunction, /release_contract_fingerprint text/);
+  assert.match(activeFunction, /FROM canonical_v2_staging\.fixture_corpus_releases release\s*\n\s*WHERE release\.corpus_release_id = active_pointer\.corpus_release_id/);
+  assert.match(activeFunction, /p_contract_fingerprint => release_contract_fingerprint/);
+  assert.doesNotMatch(activeFunction, /p_contract_fingerprint => p_contract_fingerprint/);
+});
+
+// Release-declared fingerprint (contract-amendment serving fix): see
+// docs/handoffs/SPEC-CONTRACT-AMENDMENT-PATH-2026-07-23.md option 1. These
+// two tests exercise resolveActiveQueryPage directly because
+// validateSharedServingRow hard-requires every row's own
+// provenance.contract_fingerprint to equal whatever this process currently
+// has compiled -- so within a single test process there is no way to build
+// a *valid* row under a genuinely different contract fingerprint. Calling
+// resolveActiveQueryPage directly lets us simulate the real-world
+// transition case: the app has compiled a newer fixture contract (a stale
+// "request" fingerprint) while the still-active release (and every row it
+// serves) is validly built and self-consistent under its own, different,
+// declared fingerprint.
+test('active Query accepts a release-declared fingerprint that differs from what the app currently has compiled', () => {
+  const row = buildLandosTerminationFeeServingFixture().row;
+  const compiledRequest = compileCanonicalActiveQueryRequest(activeRequestFor(row));
+  const staleRequest = { ...compiledRequest, contract_fingerprint: 'f'.repeat(64) };
+  const activeIdentity = identity('amendment-transition', row.corpus_release_id);
+  const params = {
+    p_contract_fingerprint: staleRequest.contract_fingerprint,
+    p_query_semantics_digest: staleRequest.query_semantics_digest,
+  };
+  const result = activeResult(params, [row], activeIdentity);
+  // The active release always declares ITS OWN true fingerprint (the one
+  // its rows are actually built and provenanced under) regardless of what
+  // the caller asked for -- this is what the release-declared-fingerprint
+  // SQL fix guarantees server-side.
+  result.contract_fingerprint = row.provenance.contract_fingerprint;
+
+  const resolved = resolveActiveQueryPage(result, staleRequest);
+
+  assert.equal(resolved.request.contract_fingerprint, row.provenance.contract_fingerprint);
+  assert.notEqual(resolved.request.contract_fingerprint, staleRequest.contract_fingerprint);
+  assert.equal(resolved.result.rows.length, 1);
+  assert.match(resolved.request.cache_key, /^[a-f0-9]{64}$/);
+  // The cache key is scoped by the release's declared fingerprint, not the
+  // stale one the app asked with, so amendment transitions can never
+  // collide with or shadow a differently-fingerprinted cache entry.
+  assert.notEqual(
+    resolved.request.cache_key,
+    contentId('CANONICAL_ACTIVE_QUERY_PAGE_CACHE/V1', {
+      pointer_id: resolved.request.pointer_id,
+      serving_namespace_id: resolved.request.serving_namespace_id,
+      corpus_release_id: resolved.request.corpus_release_id,
+      contract_fingerprint: staleRequest.contract_fingerprint,
+      query_semantics_digest: staleRequest.query_semantics_digest,
+      page_size: staleRequest.page_size,
+      page_position_digest: staleRequest.page_position_digest,
+    }),
+  );
+});
+
+test('active Query still rejects rows whose provenance does not match the release-declared fingerprint', () => {
+  const row = buildLandosTerminationFeeServingFixture().row;
+  const compiledRequest = compileCanonicalActiveQueryRequest(activeRequestFor(row));
+  const activeIdentity = identity('mismatched-declaration', row.corpus_release_id);
+  const params = {
+    p_contract_fingerprint: compiledRequest.contract_fingerprint,
+    p_query_semantics_digest: compiledRequest.query_semantics_digest,
+  };
+  const result = activeResult(params, [row], activeIdentity);
+  // Declares a fingerprint the row itself does not carry -- an incoherent
+  // release that must still be rejected; row-shape and every other
+  // validation stay exactly as strict as before this change.
+  result.contract_fingerprint = 'a'.repeat(64);
+
+  assert.throws(
+    () => resolveActiveQueryPage(result, compiledRequest),
+    (error) => error.code === 'INVALID_RESPONSE',
+  );
 });

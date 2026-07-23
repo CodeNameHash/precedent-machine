@@ -2173,10 +2173,14 @@ SET statement_timeout = '2500ms'
 AS $$
 DECLARE
   active_pointer canonical_v2_staging.active_corpus_release_pointers%ROWTYPE;
+  release_contract_fingerprint text;
   result jsonb;
 BEGIN
   IF p_environment IS DISTINCT FROM 'staging' THEN
     RAISE EXCEPTION 'canonical_v2_active_query_page is staging-only' USING ERRCODE = '42501';
+  END IF;
+  IF p_contract_fingerprint !~ '^[a-f0-9]{64}$' THEN
+    RAISE EXCEPTION 'invalid active query page request' USING ERRCODE = '22023';
   END IF;
 
   SELECT pointer.* INTO active_pointer
@@ -2186,11 +2190,27 @@ BEGIN
     RAISE EXCEPTION 'no active canonical corpus release' USING ERRCODE = '02000';
   END IF;
 
+  -- Release-declared fingerprint (2026-07-23 contract-amendment serving fix;
+  -- see docs/handoffs/SPEC-CONTRACT-AMENDMENT-PATH-2026-07-23.md option 1).
+  -- The ACTIVE release governs what is served; the caller-supplied
+  -- p_contract_fingerprint reflects whatever contract the CALLING app
+  -- currently has compiled, which may have moved ahead of (or behind) the
+  -- fingerprint the active release was actually built and activated under.
+  -- We resolve and filter against the fingerprint the release itself
+  -- declares, not against equality with what the caller asked for, so
+  -- serving stays correct across freeze-gate amendments by construction.
+  SELECT release.contract_fingerprint INTO release_contract_fingerprint
+  FROM canonical_v2_staging.fixture_corpus_releases release
+  WHERE release.corpus_release_id = active_pointer.corpus_release_id;
+  IF release_contract_fingerprint IS NULL THEN
+    RAISE EXCEPTION 'active canonical corpus release has no declared contract fingerprint' USING ERRCODE = '02000';
+  END IF;
+
   SELECT public.canonical_v2_query_page(
     p_environment => p_environment,
     p_serving_namespace_id => active_pointer.serving_namespace_id,
     p_corpus_release_id => active_pointer.corpus_release_id,
-    p_contract_fingerprint => p_contract_fingerprint,
+    p_contract_fingerprint => release_contract_fingerprint,
     p_query_semantics_digest => p_query_semantics_digest,
     p_metric_key => p_metric_key,
     p_metric_version => p_metric_version,

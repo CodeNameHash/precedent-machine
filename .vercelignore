@@ -7,6 +7,11 @@
 /.github/
 /scripts/*
 !/scripts/ingest-qa.js
+# ingest-qa.js (whitelisted above) statically requires this module since the
+# 2026-07-23 claims-gate change; without it every Vercel build fails with
+# module-not-found while local builds pass (the file exists locally).
+!/scripts/reprocess
+!/scripts/reprocess/rematerialize-claims.js
 /reports/
 /supabase/
 /docs/acks/
