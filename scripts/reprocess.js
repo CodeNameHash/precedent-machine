@@ -32,6 +32,15 @@
      node scripts/reprocess.js --deal Metsera --classify-only --apply
      [--backend claude|codex] [--model sonnet|opus|…]
 
+   --rematerialize (opt-in, DATA-1/GAP-A — off by default, absent ⇒ behavior
+   is byte-identical to before this flag existed): dry-run also prints the
+   claims rematerialize PLAN (scripts/reprocess/rematerialize-claims.js,
+   read-only); --apply --rematerialize runs the rematerialize WRITE path for
+   exactly the reprocessed deal ids, STRICT by default (any ambiguity/
+   coverage failure ⇒ exit 1, writes nothing — extraction writes above are
+   already committed, so claims stay stale until a manual rerun).
+   --rematerialize-partial maps onto rematerialize-claims.js's own --partial.
+
    LLM calls go through the injectable CLI client (lib/llm-cli-client.js) —
    Claude Max / ChatGPT subscription, zero API tokens. Credentials from
    env / .env.local, same as ingest-local.
@@ -254,6 +263,92 @@ function classifiedByTally(classified) {
   return tally;
 }
 
+/* ── DATA-1 (GAP-A) opt-in wiring: --rematerialize ────────────────────────
+   Reuses the EXISTING planner/writer exported from
+   scripts/reprocess/rematerialize-claims.js (buildDealPlan / formatDealTable
+   / fetchProvisions / fetchCards / writeDealClaims) rather than
+   reimplementing any matching/write logic here. The rematerialize module is
+   only ever required lazily (via defaultRematerializeDeps, called at the
+   point of use) so a plain `reprocess.js --apply` run with --rematerialize
+   absent never even touches this file, exactly like today.
+
+   Every function below takes an optional `deps` bag (defaulting to the real
+   module) precisely so tests can inject fakes without touching the real
+   Supabase client or the real rematerialize-claims module. */
+
+function defaultRematerializeDeps() {
+  return require('./reprocess/rematerialize-claims');
+}
+
+/** Build a { deal, plan } entry per deal via the existing buildDealPlan — no writes. */
+async function buildRematerializePlans(sb, deals, deps = defaultRematerializeDeps()) {
+  const { fetchProvisions, fetchCards, buildDealPlan } = deps;
+  const plans = [];
+  for (const deal of deals) {
+    const [provisions, cards] = await Promise.all([
+      fetchProvisions(sb, deal.id),
+      fetchCards(sb, deal.id),
+    ]);
+    plans.push({ deal, plan: buildDealPlan(deal.id, cards, provisions) });
+  }
+  return plans;
+}
+
+/** Print the per-deal rematerialize plan table (dry-run and pre-write in --apply). */
+function printRematerializePlans(plans, deps = defaultRematerializeDeps()) {
+  const { formatDealTable } = deps;
+  console.log('\n── claims rematerialize plan (--rematerialize) ──');
+  for (const { deal, plan } of plans) {
+    console.log(`\n═══ ${deal.acquirer || '?'} / ${deal.target || '?'} (${deal.id}) ═══`);
+    console.log(formatDealTable(plan));
+  }
+}
+
+/**
+ * --apply --rematerialize write path. STRICT by default: any ambiguity or
+ * coverage failure across the selected deals exits with { ok: false } and
+ * writes NOTHING (extraction writes for this run are already committed —
+ * the caller is responsible for surfacing that plainly). With
+ * `partial: true` (--rematerialize-partial), maps onto
+ * rematerialize-claims.js's own --partial semantics: unambiguous matches are
+ * written regardless, ambiguities/coverage gaps are reported not written,
+ * and the run is NOT treated as a failure (same "corpus mode" convention as
+ * the standalone script).
+ */
+async function runRematerializeApply(sb, deals, { partial = false } = {}, deps = defaultRematerializeDeps()) {
+  const { writeDealClaims } = deps;
+  const plans = await buildRematerializePlans(sb, deals, deps);
+  printRematerializePlans(plans, deps);
+  const anyFailed = plans.some(({ plan }) => !plan.ok);
+
+  if (anyFailed && !partial) {
+    console.error(
+      '\n⚠ ⚠ ⚠  RUN --rematerialize FAILED (strict): ambiguity or coverage gap on the ' +
+      'deal(s) above  ⚠ ⚠ ⚠\n' +
+      'Writing NO claims. Extraction writes above are ALREADY COMMITTED — claims are\n' +
+      'now STALE for the listed deal(s) and will keep serving old codes until this is\n' +
+      'resolved by hand. Re-run:\n' +
+      `\n  node scripts/reprocess/rematerialize-claims.js --deal ${deals.map((d) => d.id).join(',')} --apply --partial\n` +
+      '\n(dry-run first without --apply to review the plan.)\n',
+    );
+    return { ok: false, plans };
+  }
+
+  if (anyFailed && partial) {
+    console.log(
+      '\n--rematerialize-partial: materializing unambiguous matches only; ambiguities ' +
+      'and coverage gaps reported above are NOT written.',
+    );
+  }
+
+  for (const { deal, plan } of plans) {
+    const staleDeleted = await writeDealClaims(sb, plan);
+    console.log(`  claims: deal ${deal.id} — upserted ${plan.claimRows.length}, deleted ${staleDeleted} stale.`);
+  }
+  console.log('\nRematerialize complete: claims are up to date for the deal(s) above.');
+  return { ok: true, plans };
+}
+
 module.exports = {
   parseTypesArg,
   snapshotSectionCounts,
@@ -266,6 +361,11 @@ module.exports = {
   formatStripRiskError,
   CROSS_TYPE_POST_PASS_FEATURES,
   formatRematerializeWarning,
+  parseArgs,
+  defaultRematerializeDeps,
+  buildRematerializePlans,
+  printRematerializePlans,
+  runRematerializeApply,
 };
 
 /* ── CLI / DB / LLM plumbing ─────────────────────────────────────────────── */
@@ -283,7 +383,7 @@ function usage() {
   console.error(
     'Usage: node scripts/reprocess.js (--deal <substring> | --all) ' +
     '(--types TERMF[,ANTI…] | --classify-only) [--apply | --dry-run] ' +
-    '[--backend claude|codex] [--model …]',
+    '[--backend claude|codex] [--model …] [--rematerialize [--rematerialize-partial]]',
   );
   process.exit(1);
 }
@@ -292,6 +392,11 @@ function parseArgs(argv) {
   const args = {
     deal: null, all: false, typesRaw: [], classifyOnly: false,
     apply: false, dryRun: false, backend: 'claude', model: null, allowStrip: false,
+    // DATA-1 (GAP-A), opt-in per SPEC-MECHANICAL-HARDENING-2026-07-23 part A —
+    // both default false/false so omitting them reproduces today's behavior
+    // (formatRematerializeWarning) exactly; see the --rematerialize wiring
+    // near the end of main().
+    rematerialize: false, rematerializePartial: false,
   };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
@@ -304,6 +409,8 @@ function parseArgs(argv) {
     else if (a === '--backend') args.backend = argv[++i];
     else if (a === '--model') args.model = argv[++i];
     else if (a === '--allow-strip') args.allowStrip = true;
+    else if (a === '--rematerialize') args.rematerialize = true;
+    else if (a === '--rematerialize-partial') args.rematerializePartial = true;
     else { console.error(`Unknown arg: ${a}`); usage(); }
   }
   if (!args.deal && !args.all) usage();
@@ -595,15 +702,29 @@ async function main() {
 
   if (!apply && !args.classifyOnly) {
     console.log('\nDry-run complete: no writes, no LLM calls. Re-run with --apply to execute.');
+    // --rematerialize (opt-in, absent by default — see parseArgs): print the
+    // claims rematerialize PLAN for these same deals too. No writes, no LLM;
+    // uses the existing planner (scripts/reprocess/rematerialize-claims.js).
+    if (args.rematerialize) {
+      const plans = await buildRematerializePlans(sb, deals);
+      printRematerializePlans(plans);
+    }
   }
 
   // DATA-1 (GAP-A): a per-type/--apply extraction writes `provisions` only —
   // `claims` (what the review UI actually reads, lib/queries/claims-adapter.js)
   // go stale immediately and are NOT materialized by this script. Make that
   // gap loud rather than silent; do not auto-run the rematerialize (a bigger
-  // wiring decision — see reports/CODEBASE-REVIEW-2026-07-15.md DATA-1).
+  // wiring decision — see reports/CODEBASE-REVIEW-2026-07-15.md DATA-1) unless
+  // --rematerialize was explicitly passed, in which case run the write path
+  // for exactly these deal ids instead of just printing the warning.
   if (apply && !args.classifyOnly) {
-    console.warn(formatRematerializeWarning(deals.map((d) => d.id)));
+    if (args.rematerialize) {
+      const result = await runRematerializeApply(sb, deals, { partial: args.rematerializePartial });
+      if (!result.ok) allOk = false;
+    } else {
+      console.warn(formatRematerializeWarning(deals.map((d) => d.id)));
+    }
   }
 
   if (!allOk) process.exitCode = 1;
