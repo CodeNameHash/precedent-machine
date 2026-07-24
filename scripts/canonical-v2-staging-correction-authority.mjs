@@ -179,9 +179,11 @@ function readCurrentHead() {
       ON head_version.candidate_input_head_id = current_head.candidate_input_head_id
       AND head_version.candidate_input_head_payload_digest
         = current_head.candidate_input_head_payload_digest
-    WHERE current_head.singleton_key = 'CURRENT';
+    WHERE current_head.singleton_key = 'CURRENT'
+      AND current_head.environment = 'staging'
+      AND current_head.contract_fingerprint = '${EXPECTED_CONTRACT_FINGERPRINT}';
   `);
-  if (rows.length > 1) throw new Error('Canonical staging has more than one current candidate input head.');
+  if (rows.length > 1) throw new Error('Canonical staging has more than one current head for the frozen contract.');
   return rows[0]?.current_candidate_input_head || null;
 }
 

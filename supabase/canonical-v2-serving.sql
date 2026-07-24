@@ -686,6 +686,7 @@ BEGIN
   FROM canonical_v2_staging.candidate_input_heads current_head
   WHERE current_head.singleton_key = 'CURRENT'
     AND current_head.environment = 'staging'
+    AND current_head.contract_fingerprint = contract_id
   FOR SHARE OF current_head;
   IF NOT FOUND
     OR current_input_contract_fingerprint IS DISTINCT FROM contract_id
@@ -1603,6 +1604,7 @@ BEGIN
   FROM canonical_v2_staging.candidate_input_heads current_head
   WHERE current_head.singleton_key = 'CURRENT'
     AND current_head.environment = 'staging'
+    AND current_head.contract_fingerprint = imported_input_contract_fingerprint
   FOR SHARE OF current_head;
   IF NOT FOUND
     OR imported_input_contract_fingerprint IS NULL

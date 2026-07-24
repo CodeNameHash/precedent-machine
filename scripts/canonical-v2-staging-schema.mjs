@@ -17,13 +17,13 @@ const EXPECTED_PROJECT = Object.freeze({
   name: 'deal-corpus-canonical-v2-staging',
 });
 const EXPECTED_DIGESTS = Object.freeze({
-  'canonical-v2-foundation.sql': '33a3b5a8e2a70ec97e48422d22222fda7eb3628eb466fcdec2fd615d4034e8d6',
+  'canonical-v2-foundation.sql': 'd43a797ce2591076eedf30d1c0d191f36302972b7c17923085f52b61b0bf5f52',
   // 2026-07-23: canonical_v2_active_query_page now resolves and filters
   // against the ACTIVE release's own declared contract_fingerprint (read
   // from fixture_corpus_releases) instead of trusting the caller-supplied
   // value for equality -- see docs/handoffs/SPEC-CONTRACT-AMENDMENT-PATH-2026-07-23.md
   // option 1 and scripts/canonical-v2-staging-active-release-fingerprint.mjs.
-  'canonical-v2-serving.sql': '9d01223468b3d4ddcb5c7ab1f3e4987731cf377afda2d6a08b3c11cb27e0f8fd',
+  'canonical-v2-serving.sql': 'c981d72792abde2d4e159cc6e89f5d31f25bbdb4351d805278cc0d413c4bf5eb',
 });
 const SCRIPT_ROOT = dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = resolve(SCRIPT_ROOT, '..');
@@ -109,6 +109,17 @@ function verifyAppliedSchema() {
       to_regclass('canonical_v2_staging.candidate_input_events') is not null as candidate_input_event_table_exists,
       to_regclass('canonical_v2_staging.candidate_input_head_versions') is not null as candidate_input_head_version_table_exists,
       to_regclass('canonical_v2_staging.candidate_input_heads') is not null as candidate_input_head_pointer_table_exists,
+      (
+        select array_agg(attribute.attname order by key_column.ordinality)
+        from pg_constraint constraint_record
+        cross join lateral unnest(constraint_record.conkey) with ordinality as key_column(attnum, ordinality)
+        join pg_attribute attribute
+          on attribute.attrelid = constraint_record.conrelid
+         and attribute.attnum = key_column.attnum
+        where constraint_record.conrelid = 'canonical_v2_staging.candidate_input_heads'::regclass
+          and constraint_record.contype = 'p'
+      ) = array['environment', 'contract_fingerprint']::name[]
+        as candidate_input_head_partition_key_is_exact,
       exists (
         select 1 from information_schema.columns
         where table_schema = 'canonical_v2_staging'

@@ -35,6 +35,7 @@ test('staging schema verification checks writer, serving RPCs and denied broad r
   assert.match(source, /canonical_v2_staging\.correction_discharge_maps/);
   assert.match(source, /canonical_v2_staging\.candidate_input_head_versions/);
   assert.match(source, /canonical_v2_staging\.candidate_input_heads/);
+  assert.match(source, /candidate_input_head_partition_key_is_exact/);
   assert.match(source, /receipt_correction_seal_exists/);
   assert.match(source, /receipt_candidate_input_head_exists/);
   assert.match(source, /receipt_correction_discharge_map_exists/);
@@ -89,6 +90,9 @@ test('staging correction authority is immutable, bounded, CAS-protected and writ
   assert.match(source, /FOR UPDATE/);
   assert.match(source, /stale candidate input head compare-and-swap/);
   assert.match(source, /candidate input head changed before compare-and-swap/);
+  assert.match(source, /PRIMARY KEY \(environment, contract_fingerprint\)/);
+  assert.match(source, /environment = next_candidate_input_head->>'environment'/);
+  assert.match(source, /contract_fingerprint = next_candidate_input_head->>'contract_fingerprint'/);
   assert.match(source, /exceeds the 512-materialisation bound/);
   assert.match(source, /CREATE OR REPLACE FUNCTION public\.canonical_v2_select_candidate_inputs/);
   assert.match(source, /CREATE OR REPLACE FUNCTION public\.canonical_v2_recheck_candidate_input_head/);
