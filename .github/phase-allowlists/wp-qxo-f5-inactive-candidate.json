@@ -1,0 +1,28 @@
+{
+  "phase": "WP-QXO-F5-INACTIVE-CANDIDATE",
+  "allowed": [
+    ".github/phase-allowlists/wp-qxo-f5-inactive-candidate.json",
+    "lib/canonical-v2/canonical-writer.js",
+    "lib/canonical-v2/qxo-material-candidate-identity.js",
+    "lib/canonical-v2/qxo-reverse-candidate-identity.js",
+    "lib/canonical-v2/qxo-reverse-f4-candidate.js",
+    "lib/canonical-v2/validate-write-set.js",
+    "scripts/canonical-v2-optiona-authority-partition.mjs",
+    "scripts/canonical-v2-staging-qxo-f5-candidate.mjs",
+    "scripts/canonical-v2-staging-schema.mjs",
+    "scripts/lib/canonical-v2-staging-runtime.mjs",
+    "sql/optionA/step0b-canonical-writer-by-contract.sql",
+    "supabase/canonical-v2-foundation.sql",
+    "tests/canonical-v2-deal-scope-sql-writer.test.js",
+    "tests/canonical-v2-deal-scope-writer.test.js",
+    "tests/canonical-v2-qxo-reverse-f3-candidate.test.js",
+    "tests/canonical-v2-staging-qxo-f5-candidate-runner.test.js",
+    "tests/canonical-v2-staging-runtime.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "supabase/migrations/**",
+    "scripts/reprocess.js"
+  ],
+  "note": "Adds bounded persisted-object references to the authoritative deal-scope writer and builds, imports, verifies, rolls back and identically reimports the QXO F5 denominator-precision release in isolated staging only. Activation, production access, production corpus mutation and destructive source-data changes are prohibited."
+}

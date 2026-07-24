@@ -16,7 +16,7 @@ const FUNCTIONS = Object.freeze([
     output: 'step0b-canonical-writer-by-contract.sql',
     source: 'supabase/canonical-v2-foundation.sql',
     marker: 'CREATE OR REPLACE FUNCTION public.canonical_v2_write(',
-    digest: '3bf3d4dbfdbb0843f311cc0b398c6fe862ad09ecdac44a5b9214c07cb3e220d7',
+    digest: '42c59a953fdc3007d746b731f91232b9b9d4b6f770a6b060f688562c334753c8',
   },
   {
     output: 'step0c-candidate-import-by-contract.sql',
