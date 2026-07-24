@@ -17,7 +17,10 @@ const {
   selectTrustedCandidateInputs,
 } = require('../lib/canonical-v2/candidate-input-authority');
 const { canonicalJson, contentId } = require('../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
+const {
+  compileFixtureContract,
+  compileFixtureContractV5,
+} = require('../lib/canonical-v2/contract-bundle');
 
 const SCRIPT_ROOT = dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = resolve(SCRIPT_ROOT, '..');
@@ -25,9 +28,19 @@ const EXPECTED_PROJECT = Object.freeze({
   ref: 'sjumbznveyyiizhwvixj',
   name: 'deal-corpus-canonical-v2-staging',
 });
-const EXPECTED_CONTRACT_FINGERPRINT = '56da82bee06331793ba2ed8b78ef4186361407e60733595091e5951853e7d41d';
 const OPERATION = 'FIXTURE_CORRECTION_AUTHORITY';
-const IDEMPOTENCY_KEY = 'canonical-v2-empty-correction-authority-genesis-v1';
+const CONTRACTS = Object.freeze({
+  F1: Object.freeze({
+    compile: compileFixtureContract,
+    expectedFingerprint: '56da82bee06331793ba2ed8b78ef4186361407e60733595091e5951853e7d41d',
+    idempotencyKey: 'canonical-v2-empty-correction-authority-genesis-v1',
+  }),
+  F5: Object.freeze({
+    compile: compileFixtureContractV5,
+    expectedFingerprint: 'f80a77651d1b6a6a9eec8ac67526a8704f498761cbb22a67e6ceb4716abb5478',
+    idempotencyKey: 'canonical-v2-empty-correction-authority-f5-genesis-v1',
+  }),
+});
 
 function fail(message) {
   process.stderr.write(`${message}\n`);
@@ -51,9 +64,9 @@ function readLinkedProject() {
   }
 }
 
-function buildGenesis() {
-  const contractBundle = compileFixtureContract();
-  if (contractBundle.fingerprint !== EXPECTED_CONTRACT_FINGERPRINT) {
+function buildGenesis(contractConfig) {
+  const contractBundle = contractConfig.compile();
+  if (contractBundle.fingerprint !== contractConfig.expectedFingerprint) {
     fail('Refusing to bootstrap because the frozen contract fingerprint has drifted.');
   }
   const correctionDischargeMap = buildCorrectionDischargeMap({
@@ -81,12 +94,12 @@ function buildGenesis() {
   };
   const inputDigest = contentId('CANONICAL_WRITE_INPUT/V1', {
     operation: OPERATION,
-    idempotencyKey: IDEMPOTENCY_KEY,
+    idempotencyKey: contractConfig.idempotencyKey,
     writeSet,
   });
   const receiptBody = {
     operation: OPERATION,
-    idempotencyKey: IDEMPOTENCY_KEY,
+    idempotencyKey: contractConfig.idempotencyKey,
     inputDigest,
     status: 'COMMITTED',
     publishableObjectCount: 3,
@@ -98,6 +111,8 @@ function buildGenesis() {
     ...receiptBody,
   };
   return Object.freeze({
+    operation: OPERATION,
+    idempotencyKey: contractConfig.idempotencyKey,
     contractBundle,
     correctionDischargeMap,
     candidateInputHead,
@@ -171,7 +186,7 @@ function runSql(sql, { commit = false } = {}) {
   }
 }
 
-function readCurrentHead() {
+function readCurrentHead(contractFingerprint) {
   const rows = runSql(`
     SELECT head_version.canonical_payload AS current_candidate_input_head
     FROM canonical_v2_staging.candidate_input_heads current_head
@@ -181,7 +196,7 @@ function readCurrentHead() {
         = current_head.candidate_input_head_payload_digest
     WHERE current_head.singleton_key = 'CURRENT'
       AND current_head.environment = 'staging'
-      AND current_head.contract_fingerprint = '${EXPECTED_CONTRACT_FINGERPRINT}';
+      AND current_head.contract_fingerprint = '${contractFingerprint}';
   `);
   if (rows.length > 1) throw new Error('Canonical staging has more than one current head for the frozen contract.');
   return rows[0]?.current_candidate_input_head || null;
@@ -212,7 +227,7 @@ function genesisWriteSql(genesis) {
   const writeCall = `public.canonical_v2_write(
     'staging',
     '${OPERATION}',
-    ${asSqlText(IDEMPOTENCY_KEY)},
+    ${asSqlText(genesis.idempotencyKey)},
     ${asSqlText(genesis.inputDigest)},
     ${asSqlJson(genesis.writeSet)},
     '[]'::jsonb,
@@ -294,21 +309,21 @@ async function verifyCurrentAuthority(genesis) {
 }
 
 async function dryRun(genesis) {
-  const before = readCurrentHead();
+  const before = readCurrentHead(genesis.contractBundle.fingerprint);
   if (before) {
     const selected = await verifyCurrentAuthority(genesis);
     process.stdout.write(`Current candidate input authority generation ${selected.candidate_input_head.generation} verified; no genesis write attempted.\n`);
     return;
   }
   await writeGenesis(genesis, { commit: false });
-  if (readCurrentHead() !== null) {
+  if (readCurrentHead(genesis.contractBundle.fingerprint) !== null) {
     throw new Error('Dry-run changed canonical staging authority state.');
   }
   process.stdout.write(`Dry-run validated and rolled back correction authority genesis ${genesis.candidateInputHead.candidate_input_head_id}.\n`);
 }
 
 async function applyGenesis(genesis) {
-  const before = readCurrentHead();
+  const before = readCurrentHead(genesis.contractBundle.fingerprint);
   if (before) {
     const selected = await verifyCurrentAuthority(genesis);
     process.stdout.write(`Current candidate input authority generation ${selected.candidate_input_head.generation} verified; existing head was not replaced.\n`);
@@ -323,17 +338,39 @@ async function applyGenesis(genesis) {
 }
 
 async function verify(genesis) {
-  if (!readCurrentHead()) throw new Error('No current candidate input authority exists in staging.');
+  if (!readCurrentHead(genesis.contractBundle.fingerprint)) {
+    throw new Error('No current candidate input authority exists in staging.');
+  }
   const selected = await verifyCurrentAuthority(genesis);
   process.stdout.write(`Verified candidate input authority generation ${selected.candidate_input_head.generation}, map ${selected.correction_discharge_map.correction_discharge_map_id}.\n`);
 }
 
-const mode = process.argv[2] || '--dry-run';
-if (!['--dry-run', '--apply', '--verify'].includes(mode) || process.argv.length > 3) {
-  fail('Usage: node scripts/canonical-v2-staging-correction-authority.mjs [--dry-run|--apply|--verify]');
+function parseArgs(argv) {
+  let mode = '--dry-run';
+  let contractName = 'F1';
+  let modeSeen = false;
+  let contractSeen = false;
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    if (['--dry-run', '--apply', '--verify'].includes(arg) && !modeSeen) {
+      mode = arg;
+      modeSeen = true;
+      continue;
+    }
+    if (arg === '--contract' && !contractSeen && CONTRACTS[argv[index + 1]]) {
+      contractName = argv[index + 1];
+      contractSeen = true;
+      index += 1;
+      continue;
+    }
+    fail('Usage: node scripts/canonical-v2-staging-correction-authority.mjs [--dry-run|--apply|--verify] [--contract F1|F5]');
+  }
+  return Object.freeze({ mode, contractName });
 }
+
+const { mode, contractName } = parseArgs(process.argv.slice(2));
 readLinkedProject();
-const genesis = buildGenesis();
+const genesis = buildGenesis(CONTRACTS[contractName]);
 
 try {
   if (mode === '--dry-run') await dryRun(genesis);

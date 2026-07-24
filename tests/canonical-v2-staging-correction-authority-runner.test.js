@@ -5,11 +5,14 @@ const { spawnSync } = require('node:child_process');
 
 const RUNNER = 'scripts/canonical-v2-staging-correction-authority.mjs';
 
-test('correction authority runner is hard-pinned to isolated staging and the frozen contract', () => {
+test('correction authority runner is hard-pinned to isolated staging and frozen F1/F5 contracts', () => {
   const source = fs.readFileSync(RUNNER, 'utf8');
   assert.match(source, /sjumbznveyyiizhwvixj/);
   assert.match(source, /deal-corpus-canonical-v2-staging/);
   assert.match(source, /56da82bee06331793ba2ed8b78ef4186361407e60733595091e5951853e7d41d/);
+  assert.match(source, /f80a77651d1b6a6a9eec8ac67526a8704f498761cbb22a67e6ceb4716abb5478/);
+  assert.match(source, /compileFixtureContractV5/);
+  assert.match(source, /canonical-v2-empty-correction-authority-f5-genesis-v1/);
   assert.match(source, /Refusing to run outside/);
   assert.match(source, /Refusing to bootstrap because the frozen contract fingerprint has drifted/);
   assert.doesNotMatch(source, /tzulhdasmioeechxapdy|precedent-machine['"]/);
@@ -34,7 +37,7 @@ test('dry-run rolls back and apply never replaces an existing head', () => {
   assert.match(source, /await writeGenesis\(genesis, \{ commit: false \}\)/);
   assert.match(source, /await writeGenesis\(genesis, \{ commit: true \}\)/);
   assert.match(source, /if \(before\) \{[\s\S]*verifyCurrentAuthority\(genesis\)[\s\S]*existing head was not replaced/);
-  assert.match(source, /if \(readCurrentHead\(\) !== null\)/);
+  assert.match(source, /if \(readCurrentHead\(genesis\.contractBundle\.fingerprint\) !== null\)/);
   assert.doesNotMatch(source, /UPDATE canonical_v2_staging\.candidate_input_heads|DELETE FROM canonical_v2_staging/);
 });
 
@@ -58,6 +61,16 @@ test('runner rejects ambiguous invocation before project or database access', ()
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /Usage:/);
   assert.doesNotMatch(result.stdout, /Committed and verified/);
+});
+
+test('runner rejects an unknown contract before project or database access', () => {
+  const result = spawnSync(process.execPath, [RUNNER, '--contract', 'F6'], {
+    cwd: process.cwd(),
+    encoding: 'utf8',
+  });
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /Usage:/);
+  assert.doesNotMatch(result.stdout, /candidate input authority/);
 });
 
 test('runner never reads or emits credential-bearing configuration', () => {
