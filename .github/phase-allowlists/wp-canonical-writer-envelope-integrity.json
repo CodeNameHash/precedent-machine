@@ -1,0 +1,32 @@
+{
+  "phase": "WP-CANONICAL-WRITER-ENVELOPE-INTEGRITY",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-writer-envelope-integrity.json",
+    "lib/canonical-v2/canonical-write-envelope.js",
+    "lib/canonical-v2/canonical-writer.js",
+    "scripts/canonical-v2-optiona-authority-partition.mjs",
+    "scripts/canonical-v2-staging-qxo-f5-candidate.mjs",
+    "scripts/canonical-v2-staging-schema.mjs",
+    "scripts/canonical-v2-staging-writer-race.mjs",
+    "sql/optionA/step0b-canonical-writer-by-contract.sql",
+    "supabase/canonical-v2-foundation.sql",
+    "tests/canonical-v2-optiona-authority-partition.test.js",
+    "tests/canonical-v2-staging-qxo-f5-candidate-runner.test.js",
+    "tests/canonical-v2-staging-schema-runner.test.js",
+    "tests/canonical-v2-staging-writer-race-runner.test.js",
+    "tests/canonical-v2-write-envelope.test.js",
+    "tests/canonical-v2-writer-envelope-integrity-sql.test.js",
+    "tests/canonical-v2-writer-object-integrity-sql.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "docs/**",
+    "pages/**",
+    "components/**",
+    "lib/query/**",
+    "lib/parser-v2/**",
+    "supabase/canonical-v2-serving.sql",
+    "next.config.js"
+  ],
+  "note": "Hardens the existing isolated-staging canonical writer without adding an operation or action. V2 binds the exact publishable, residual and quarantine outputs; SQL independently authenticates the request and receipt; immutable conflicts are revalidated after constraint arbitration; all collections are bounded and deterministically ordered. Historical receipts, releases, serving, activation, production data and feature flags remain unchanged."
+}

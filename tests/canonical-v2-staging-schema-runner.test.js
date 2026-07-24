@@ -50,6 +50,20 @@ test('staging schema runner requires an explicit isolated workdir before databas
 test('staging schema verification checks writer, serving RPCs and denied broad roles', () => {
   const source = fs.readFileSync(RUNNER, 'utf8');
   assert.match(source, /canonical_v2_write/);
+  assert.match(source, /canonical_json_parity_passes/);
+  assert.match(source, /content_id_parity_passes/);
+  assert.match(source, /writer_envelope_identity_enforced/);
+  assert.match(source, /legacy canonical write input can only replay an existing receipt/);
+  assert.match(source, /existing_receipt\.canonical_payload IS DISTINCT FROM p_receipt/);
+  assert.match(source, /canonical_identity_helpers_are_private/);
+  assert.match(source, /d6cb15c9f114f22d010f468b08defd504339e33f4ca12dc70f066a3158d3ca98/);
+  assert.match(source, /canonical writer accepted a forged input digest/);
+  assert.match(source, /canonical writer accepted a forged receipt ID/);
+  assert.match(source, /canonical writer input digest does not match the exact write envelope/);
+  assert.match(source, /canonical writer receipt ID does not match its canonical body/);
+  assert.match(source, /aclexplode/);
+  assert.match(source, /checked_privilege\.grantee = 0/);
+  assert.match(source, /if \(result\.stdout\) process\.stderr\.write\(result\.stdout\)/);
   assert.match(source, /canonical_v2_staging\.validated_semantic_graphs/);
   assert.match(source, /canonical_v2_staging\.candidate_release_semantic_graphs/);
   assert.match(source, /canonical_v2_staging\.candidate_release_correction_input_seals/);

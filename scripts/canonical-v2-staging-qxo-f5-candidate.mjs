@@ -74,13 +74,13 @@ const EXPECTED_CANDIDATE = Object.freeze({
   importPlanId: '0f2a73c1d8d71e4e7e1978ae160f5aa0e23e66d7211ceb9a46941e80ba396da6',
 });
 const EXPECTED_SEMANTIC_WRITE = Object.freeze({
-  inputDigest: '4c75cfbff60131e7572b4c51d20b3974fcf54e4588b32b17f2501ba62c550706',
-  receiptId: '299e6dbd8091edf81b9e2428e42d3d0d08de10b973dde07b422812365b9f76cb',
+  inputDigest: '9366e12f06acca88f48750274528944808bd00a2ebdf720cc751924c554b2598',
+  receiptId: 'fa14bbeac2074e86429bbe30ebfcd69e6f069b148bcf20fe78e8537b309a526f',
   persistedObjectReferences: 84,
   newSemanticObjects: 4,
 });
 const OPERATION = 'DEAL_SCOPE_RUN';
-const IDEMPOTENCY_KEY = 'QXO_MONEY_DENOMINATOR_PRECISION_F5_DEAL_SCOPE_V1';
+const IDEMPOTENCY_KEY = 'QXO_MONEY_DENOMINATOR_PRECISION_F5_DEAL_SCOPE_V2';
 const EXPECTED_COUNTS = Object.freeze({
   observations: 10,
   exclusions: 2,
@@ -324,9 +324,9 @@ async function buildSemanticWrite({ build, sources, storedDeal }) {
     operation: OPERATION,
     idempotencyKey: IDEMPOTENCY_KEY,
     inputDigest: dryRun.inputDigest,
-    writeSet,
-    residuals: Object.freeze([]),
-    quarantines: Object.freeze([]),
+    writeSet: dryRun.validation.publishableWriteSet,
+    residuals: Object.freeze(dryRun.validation.residuals),
+    quarantines: Object.freeze(dryRun.validation.quarantines),
     receipt: Object.freeze({
       receiptId: contentId('CANONICAL_WRITE_RECEIPT/V1', receiptBody),
       ...receiptBody,
