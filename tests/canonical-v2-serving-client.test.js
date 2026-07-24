@@ -198,6 +198,7 @@ test('database errors are returned once without retries or diagnostics leakage',
     severity: 'ERROR',
     routine: 'aclcheck_error',
     constraint: 'safe_constraint_name',
+    diagnostic: null,
   }]);
   assert.doesNotMatch(JSON.stringify(diagnostics), /sensitive/);
   assert.deepEqual(response, { data: null, error: { message: 'Canonical serving query failed.' } });
