@@ -128,6 +128,19 @@ BEGIN
   RETURN result || jsonb_build_object('pointer_id', active_pointer.pointer_id);
 END;
 $$;
+DO $release_declared_fingerprint_assert$
+DECLARE
+  function_definition text := pg_get_functiondef(
+    'public.canonical_v2_active_query_page(text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)'::regprocedure
+  );
+BEGIN
+  IF function_definition NOT LIKE '%release_contract_fingerprint%'
+    OR function_definition NOT LIKE '%FROM canonical_v2_staging.fixture_corpus_releases release%'
+    OR function_definition NOT LIKE '%p_contract_fingerprint => release_contract_fingerprint%' THEN
+    RAISE EXCEPTION 'active query page does not use the release-declared contract fingerprint';
+  END IF;
+END;
+$release_declared_fingerprint_assert$;
 COMMIT;
 
 select

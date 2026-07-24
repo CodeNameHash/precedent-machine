@@ -22,20 +22,23 @@ read first): `SPEC-QXO-TERMF-F2-CANDIDATE-OPTION-A-2026-07-24.md`.
 - F2 seed builder (`QXO_TERMINATION_COMBINED_CANDIDATE_SEED/V1`,
   parameterized; pins land after the Block 00 paste-back per spec R9).
 - Option A artifacts: `sql/optionA/README.md` (runbook),
+  contract-partition authority migration/replacement/verification blocks,
   `00-read-lineage.sql`, deterministic F2 authority genesis (head
   `614bb1f8…`) dry-run/apply, step-1 release-declared-fingerprint widening
   block, and `scripts/canonical-v2-staging-qxo-termination-optionA.mjs`
   (generates the import SQL from the paste-back; every pinned identity
-  re-proven; import INACTIVE only).
+  re-proven; semantic-write receipt mechanically required; blocking pointer
+  and count assertions; import INACTIVE only).
 - Status artifact generation 4 records the Option A runbook adaptation.
 - Tests: `tests/canonical-v2-qxo-termination-fee-admitted-slice.test.js`
-  (6 tests). Full battery 2,805/2,805 + build green. Downstream release
+  plus authority-partition and fail-closed packet tests. Full battery
+  2,807/2,807 + programme check + build green. Downstream release
   path rehearsed offline: partitions 9 observations / 2 exclusions /
   10 shared rows / 1 incomplete / 10 packages; import plan ~398 KB;
   DEAL_SCOPE_RUN write validated through the canonical writer
   (30 publishable objects).
 
-## Next session (after Ben runs step-1 + genesis + Block 00)
+## Next session (after Ben runs Step 0, Step 1, genesis and Block 00)
 
 1. Receive Ben's Block 00 JSON; save to a file; run the generator; commit
    the printed attestation (pins the termination mapping id, closure id,

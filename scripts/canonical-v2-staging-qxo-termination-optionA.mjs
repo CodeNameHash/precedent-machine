@@ -120,9 +120,17 @@ const EXPECTED_HEAD = Object.freeze({
   candidate_input_head_payload_digest: 'bedabdc3f0a46eb500d3165e0b1be5b26036ac494949d9118b3999696a762868',
 });
 const EXPECTED_ACTIVE = Object.freeze({
-  pointer: 'eda01d9851522edada42a76f1bb1afebd8061528166523124bed3a20c9babf8b',
+  schema_version: 'FIXTURE_ACTIVE_RELEASE_POINTER/V2',
+  environment: 'staging',
+  pointer_id: 'eda01d9851522edada42a76f1bb1afebd8061528166523124bed3a20c9babf8b',
   corpus_release_id: 'c9c19dc1ad92496953ee04f52b4a8dc575ea21ab9502acfd449a9299055817d3',
+  serving_namespace_id: '9270602408312e80a65c0ce46b895fa2c8f07d1c676aef5bd171029edd209b68',
+  candidate_release_manifest_id: '4e955c415bcb4c4e32e818bad11f82e48e247c3e12efee9a5e120d927a6ecf98',
+  correction_input_seal_id: '7fe908d2a5e359f8f87bb8f72e204a90fa4e25a73da4f8588be1350f6ba2a8bd',
+  correction_input_root: 'aa260ffdf873a51a93b23f6f85173de1a1183e21ade0668aa5a45977cb0f8012',
+  previous_pointer_id: '15a0e13f45ad596d468b9cfa2878a456ac56c3b84d15a185c0a96dca5ef022a1',
   generation: 8,
+  canonical_payload_digest: '08e39195cf12156204fa9d129e438ae5dd89a27b35024f91645c9937b4105c69',
 });
 const RETRIEVAL_POLICY_HEADERS = Object.freeze({
   'User-Agent': 'Deal Corpus canonical intake bengoodchild@gmail.com',
@@ -249,7 +257,12 @@ async function terminationWriterRequest({ contractBundle, chains, termination })
   if (Buffer.byteLength(sql, 'utf8') > MAX_WRITER_REQUEST_BYTES) {
     throw new Error('The termination DEAL_SCOPE_RUN writer request exceeds its bounded transport limit.');
   }
-  return { sql, inputDigest: dryRun.inputDigest, receipt: committed.receipt };
+  return {
+    sql,
+    inputDigest: dryRun.inputDigest,
+    receipt: committed.receipt,
+    writeSet: input.writeSet,
+  };
 }
 
 function transaction(body, { commit }) {
@@ -268,11 +281,88 @@ function recheckSql(contractFingerprint) {
 ) AS recheck;`;
 }
 
+function activePointerPredicate() {
+  return `environment='staging'
+      AND generation=${EXPECTED_ACTIVE.generation}
+      AND pointer_id='${EXPECTED_ACTIVE.pointer_id}'
+      AND corpus_release_id='${EXPECTED_ACTIVE.corpus_release_id}'
+      AND serving_namespace_id='${EXPECTED_ACTIVE.serving_namespace_id}'
+      AND candidate_manifest_id='${EXPECTED_ACTIVE.candidate_release_manifest_id}'
+      AND correction_input_seal_id='${EXPECTED_ACTIVE.correction_input_seal_id}'
+      AND correction_input_root='${EXPECTED_ACTIVE.correction_input_root}'
+      AND previous_pointer_id='${EXPECTED_ACTIVE.previous_pointer_id}'
+      AND canonical_payload_digest='${EXPECTED_ACTIVE.canonical_payload_digest}'
+      AND canonical_payload=${sqlJson(EXPECTED_ACTIVE)}`;
+}
+
+function semanticWriteGateSql({ inputDigest, receipt, writeSet }, closureId) {
+  const counts = {
+    validated_semantic_graphs: writeSet.validated_semantic_graphs.length,
+    excerpts: writeSet.excerpts.length,
+    provision_instances: writeSet.provisions.length,
+    provision_components: writeSet.components.length,
+    claim_revisions: writeSet.claims.length,
+    relationship_revisions: writeSet.relationships.length,
+  };
+  const countChecks = Object.entries(counts).map(([table, count]) => `
+  IF (SELECT count(*) FROM canonical_v2_staging.${table} WHERE closure_id='${closureId}') <> ${count} THEN
+    RAISE EXCEPTION 'termination semantic closure count mismatch: ${table}';
+  END IF;`).join('');
+  return `DO $termination_semantic_write_gate$
+BEGIN
+  IF (SELECT count(*) FROM canonical_v2_staging.write_receipts
+      WHERE operation='DEAL_SCOPE_RUN'
+        AND idempotency_key='${TERMINATION_DEAL_SCOPE_KEY}'
+        AND input_digest='${inputDigest}'
+        AND receipt_id='${receipt.receiptId}'
+        AND canonical_payload=${sqlJson(receipt)}) <> 1 THEN
+    RAISE EXCEPTION 'exact termination DEAL_SCOPE_RUN receipt is not committed';
+  END IF;${countChecks}
+END;
+$termination_semantic_write_gate$;`;
+}
+
 function verifyBeforeSql(releaseId) {
-  return `-- 01-verify-before: read-only preconditions. Every row of the result must
--- read exactly as the committed expectations in the runbook.
+  return `-- 01-verify-before: blocking, read-only preconditions.
 BEGIN TRANSACTION READ ONLY;
 SET LOCAL statement_timeout='60000ms';
+DO $verify_before$
+BEGIN
+  IF (SELECT count(*) FROM canonical_v2_staging.active_corpus_release_pointers
+      WHERE ${activePointerPredicate()}) <> 1 THEN
+    RAISE EXCEPTION 'active staging pointer is not the exact pinned F1 pointer';
+  END IF;
+  IF (SELECT count(*) FROM canonical_v2_staging.candidate_input_heads
+      WHERE environment='staging' AND contract_fingerprint='56da82bee06331793ba2ed8b78ef4186361407e60733595091e5951853e7d41d'
+        AND candidate_input_head_id='${EXPECTED_F1_HEAD.candidate_input_head_id}'
+        AND candidate_input_head_payload_digest='${EXPECTED_F1_HEAD.candidate_input_head_payload_digest}') <> 1 THEN
+    RAISE EXCEPTION 'pinned F1 input head moved';
+  END IF;
+  IF (SELECT count(*) FROM canonical_v2_staging.candidate_input_heads
+      WHERE environment='staging' AND contract_fingerprint='${QXO_TERMINATION_CONTRACT_FINGERPRINT_V2}'
+        AND candidate_input_head_id='${EXPECTED_HEAD.candidate_input_head_id}'
+        AND candidate_input_head_payload_digest='${EXPECTED_HEAD.candidate_input_head_payload_digest}') <> 1 THEN
+    RAISE EXCEPTION 'pinned F2 input head was not seeded';
+  END IF;
+  IF EXISTS (SELECT 1 FROM canonical_v2_staging.fixture_corpus_releases WHERE corpus_release_id='${releaseId}') THEN
+    RAISE EXCEPTION 'the F2 candidate release already exists';
+  END IF;
+  IF EXISTS (SELECT 1 FROM canonical_v2_staging.write_receipts
+      WHERE operation='DEAL_SCOPE_RUN' AND idempotency_key='${TERMINATION_DEAL_SCOPE_KEY}') THEN
+    RAISE EXCEPTION 'the termination semantic write already exists';
+  END IF;
+  IF EXISTS (
+    SELECT 1
+    FROM unnest(ARRAY['${Object.values(CLOSURES).join("','")}']::text[]) required(closure_id)
+    WHERE NOT EXISTS (
+      SELECT 1 FROM canonical_v2_staging.provision_instances provision
+      WHERE provision.closure_id = required.closure_id
+    )
+  ) THEN
+    RAISE EXCEPTION 'one or more prior QXO semantic closures are missing';
+  END IF;
+END;
+$verify_before$;
 SELECT jsonb_build_object(
   'active_pointer_generation', (SELECT generation FROM canonical_v2_staging.active_corpus_release_pointers WHERE environment='staging'),
   'active_pointer_release', (SELECT canonical_payload->>'corpus_release_id' FROM canonical_v2_staging.active_corpus_release_pointers WHERE environment='staging'),
@@ -296,12 +386,57 @@ ROLLBACK;
 `;
 }
 
-function verifyAfterSql({ releaseId, release, closureId }) {
-  return `-- 06-verify-after: read-only post-import verification. Compare against the
--- expected values in the runbook (all counts must match; the active pointer
--- must be unchanged).
+function verifyAfterSql({ releaseId, release, importPlan, closureId }) {
+  return `-- 06-verify-after: blocking, read-only post-import verification.
 BEGIN TRANSACTION READ ONLY;
 SET LOCAL statement_timeout='60000ms';
+DO $verify_after$
+BEGIN
+  IF (SELECT count(*) FROM canonical_v2_staging.active_corpus_release_pointers
+      WHERE ${activePointerPredicate()}) <> 1 THEN
+    RAISE EXCEPTION 'inactive import changed the active staging pointer';
+  END IF;
+  IF (SELECT count(*) FROM canonical_v2_staging.fixture_corpus_releases
+      WHERE corpus_release_id='${releaseId}'
+        AND candidate_manifest_id='${importPlan.release_record.candidate_manifest_id}'
+        AND correction_input_seal_id='${importPlan.release_record.correction_input_seal_id}'
+        AND correction_input_root='${importPlan.release_record.correction_input_root}'
+        AND frozen_pair_root_id='${importPlan.release_record.frozen_pair_root_id}'
+        AND contract_fingerprint='${importPlan.release_record.contract_fingerprint}'
+        AND projection_version='${SERVING_PROJECTION_VERSION_V2}'
+        AND query_projection_contract_digest='${QUERY_PROJECTION_CONTRACT_DIGEST_V2}'
+        AND canonical_payload=${sqlJson(importPlan.release_record.canonical_payload)}
+        AND canonical_payload_digest='${importPlan.release_record.canonical_payload_digest}') <> 1 THEN
+    RAISE EXCEPTION 'the exact F2 candidate release record is missing';
+  END IF;
+  IF (SELECT count(*) FROM canonical_v2_staging.shared_serving_rows WHERE corpus_release_id='${releaseId}') <> ${release.shared_rows.length}
+    OR (SELECT count(*) FROM canonical_v2_staging.shared_serving_rows WHERE corpus_release_id='${releaseId}' AND canonical_payload->>'row_kind'='CANONICAL_RESULT') <> ${release.query_records.length}
+    OR (SELECT count(*) FROM canonical_v2_staging.shared_serving_rows WHERE corpus_release_id='${releaseId}' AND canonical_payload->>'row_kind'='INCOMPLETE_CANONICAL_RESULT') <> ${release.incomplete_canonical_rows?.length || 0}
+    OR (SELECT count(*) FROM canonical_v2_staging.market_observations WHERE corpus_release_id='${releaseId}') <> ${release.market_observations.length}
+    OR (SELECT count(*) FROM canonical_v2_staging.market_metric_slot_exclusions WHERE corpus_release_id='${releaseId}') <> ${release.market_exclusions.length}
+    OR (SELECT count(*) FROM canonical_v2_staging.exact_detail_serving_packages WHERE corpus_release_id='${releaseId}') <> ${release.exact_detail_packages.length}
+    OR (SELECT count(*) FROM canonical_v2_staging.deal_serving_directory WHERE corpus_release_id='${releaseId}') <> ${release.deal_directory_records.length}
+    OR (SELECT count(*) FROM canonical_v2_staging.candidate_release_import_receipts
+        WHERE corpus_release_id='${releaseId}'
+          AND candidate_manifest_id='${importPlan.release_record.candidate_manifest_id}'
+          AND serving_namespace_id='${importPlan.release_record.canonical_payload.serving_namespace_id}'
+          AND correction_input_seal_id='${importPlan.release_record.correction_input_seal_id}'
+          AND correction_input_root='${importPlan.release_record.correction_input_root}'
+          AND candidate_input_contract_fingerprint='${importPlan.candidate_input_authority.contract_fingerprint}'
+          AND candidate_input_head_id='${importPlan.candidate_input_authority.candidate_input_head_id}'
+          AND candidate_input_head_payload_digest='${importPlan.candidate_input_authority.candidate_input_head_payload_digest}'
+          AND correction_discharge_map_id='${importPlan.candidate_input_authority.correction_discharge_map_id}'
+          AND correction_discharge_map_payload_digest='${importPlan.candidate_input_authority.correction_discharge_map_payload_digest}'
+          AND candidate_release_import_plan_id='${importPlan.candidate_release_import_plan_id}'
+          AND import_state='IMPORTED_COMPLETE'
+          AND expected_counts=${sqlJson(importPlan.expected_counts)}) <> 1
+    OR (SELECT count(*) FROM canonical_v2_staging.shared_serving_rows WHERE corpus_release_id='${releaseId}' AND metric_key='SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE') <> 1
+    OR (SELECT count(*) FROM canonical_v2_staging.provision_instances WHERE closure_id='${closureId}') <> 7
+    OR (SELECT count(*) FROM canonical_v2_staging.relationship_revisions WHERE closure_id='${closureId}') <> 6 THEN
+    RAISE EXCEPTION 'F2 candidate release or semantic closure counts are not exact';
+  END IF;
+END;
+$verify_after$;
 SELECT jsonb_build_object(
   'active_pointer_generation', (SELECT generation FROM canonical_v2_staging.active_corpus_release_pointers WHERE environment='staging'),
   'active_pointer_release', (SELECT canonical_payload->>'corpus_release_id' FROM canonical_v2_staging.active_corpus_release_pointers WHERE environment='staging'),
@@ -320,12 +455,6 @@ SELECT jsonb_build_object(
   'termination_graph_relationships', (SELECT count(*) FROM canonical_v2_staging.relationship_revisions WHERE closure_id='${closureId}')
 ) AS after_state;
 ROLLBACK;
--- Expected: shared_rows=${release.shared_rows.length}, query_records=${release.query_records.length},
--- incomplete_records=${release.incomplete_canonical_rows?.length || 0}, market_observations=${release.market_observations.length},
--- market_exclusions=${release.market_exclusions.length}, exact_detail_packages=${release.exact_detail_packages.length},
--- deal_directory_records=${release.deal_directory_records.length}, complete_receipts=1,
--- termination_fee_row=1, termination_graph_provisions=7, termination_graph_relationships=6,
--- active pointer generation ${EXPECTED_ACTIVE.generation} / release ${EXPECTED_ACTIVE.corpus_release_id} (UNCHANGED).
 `;
 }
 
@@ -356,8 +485,8 @@ async function main() {
     || authoritySelection.candidate_input_head.canonical_payload_digest !== EXPECTED_HEAD.candidate_input_head_payload_digest) {
     throw new Error('The recomputed F2 genesis head does not match its pinned identity. STOP: re-pin deliberately.');
   }
-  if (pasted.active_pointer?.corpus_release_id !== EXPECTED_ACTIVE.corpus_release_id) {
-    throw new Error('The active staging release is not the pinned F1 release. STOP and investigate.');
+  if (canonicalJson(pasted.active_pointer) !== canonicalJson(EXPECTED_ACTIVE)) {
+    throw new Error('The active staging pointer is not the exact pinned F1 pointer. STOP and investigate.');
   }
 
   process.stderr.write('Rebuilding family slices under F2...\n');
@@ -483,26 +612,36 @@ async function main() {
 
   const importPlan = buildCandidateReleaseImportPlan({ release });
   const writerRequest = await terminationWriterRequest({ contractBundle, chains, termination });
+  const semanticWriteGate = semanticWriteGateSql(writerRequest, termination.semantic_closure_id);
 
   process.stderr.write('Writing paste files...\n');
   mkdirSync(OUTPUT_DIR, { recursive: true });
   const files = {
     '01-verify-before.sql': verifyBeforeSql(corpusReleaseId),
-    '02-termination-deal-scope-dry-run.sql': transaction(writerRequest.sql, { commit: false }),
-    '03-termination-deal-scope-apply.sql': transaction(writerRequest.sql, { commit: true }),
+    '02-termination-deal-scope-dry-run.sql': transaction(
+      `${writerRequest.sql}\n${semanticWriteGate}`,
+      { commit: false },
+    ),
+    '03-termination-deal-scope-apply.sql': transaction(
+      `${writerRequest.sql}\n${semanticWriteGate}`,
+      { commit: true },
+    ),
     '04-import-dry-run.sql': transaction(
-      `${recheckSql(contractBundle.fingerprint)}
+      `${semanticWriteGate}
+${recheckSql(contractBundle.fingerprint)}
 SELECT public.canonical_v2_import_candidate_release('staging', ${sqlJson(importPlan)}) AS import_result;`,
       { commit: false },
     ),
     '05-import-apply.sql': transaction(
-      `${recheckSql(contractBundle.fingerprint)}
+      `${semanticWriteGate}
+${recheckSql(contractBundle.fingerprint)}
 SELECT public.canonical_v2_import_candidate_release('staging', ${sqlJson(importPlan)}) AS import_result;`,
       { commit: true },
     ),
     '06-verify-after.sql': verifyAfterSql({
       releaseId: corpusReleaseId,
       release,
+      importPlan,
       closureId: termination.semantic_closure_id,
     }),
     '07-rollback-rehearsal.sql': `-- OPTIONAL rollback rehearsal (run ONLY if Ben decides to rehearse; the

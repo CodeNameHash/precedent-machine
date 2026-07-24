@@ -189,7 +189,40 @@ test('the admitted termination-fee slice reproduces the reviewed fixture legal e
   assert.equal(candidate.projection.observation.canonical_value, '3.52941176');
   assert.equal(candidate.relationships.length, 6);
   assert.equal(candidate.provisions.length, 7);
+  assert.deepEqual(candidate.deal.dimensions, {
+    sector: 'Building products',
+    buyer: 'QXO',
+    merger_form: 'Reverse triangular merger',
+    adviser_firms: ['Paul Weiss', 'Jones Day'],
+    lawyers: ['Scott Barshay', 'Robert Profusek'],
+    announce_year: 2026,
+    deal_value_usd: '17000000000',
+  });
+  assert.deepEqual(candidate.provisions[0].party, {
+    role: 'FEE_PAYER', value: 'COMPANY', capacity: 'TARGET',
+  });
+  assert.equal(candidate.claim.raw_value, '$600,000,000');
+  assert.equal(candidate.claim.canonical_value, '3.52941176');
+  assert.equal(candidate.claim.unit, 'PERCENT_OF_DEAL_VALUE');
   assert.equal(candidate.claim.denominator.value, '17000000000');
+  assert.equal(candidate.claim.denominator.currency, 'USD');
+  assert.equal(candidate.claim.denominator.basis, 'HEADLINE_TRANSACTION_VALUE');
+  assert.equal(candidate.claim.attributes.raw_amount, '600000000');
+  assert.equal(candidate.claim.attributes.raw_currency, 'USD');
+  assert.equal(candidate.claim.attributes.fee_side, 'SELLER');
+  assert.equal(candidate.claim.attributes.payee_value, 'PARENT');
+  assert.equal(candidate.claim.attributes.payee_capacity, 'BUYER');
+  GROUNDS.forEach((ground, index) => {
+    const provision = candidate.provisions[index + 1];
+    const relationship = candidate.relationships[index];
+    assert.equal(provision.concept_key, ground.conceptKey);
+    assert.deepEqual(provision.party, ground.party);
+    assert.deepEqual(relationship.effect, ground.effect);
+    assert.deepEqual(
+      relationship.target_occurrence_ids,
+      [candidate.components[index + 1].provision_component_id],
+    );
+  });
   assert.equal(
     canonicalJson(candidate.provisions.map((item) => item.concept_key).sort()),
     canonicalJson(Object.values(fixture.harness.provisions).map((item) => item.concept_key).sort()),
@@ -243,6 +276,17 @@ test('the admitted claim-evidence exact-detail package validates through the sha
   const action = member.exact_detail.package.action_definitions[0];
   assert.equal(action.action_slot_key, 'RESULT_COMPONENT_CLAIM_EVIDENCE');
   assert.ok(member.exact_detail.package.detail_payloads[0].encoded_byte_length <= action.maximum_encoded_bytes);
+
+  const wrongAction = JSON.parse(JSON.stringify(member.exact_detail.package));
+  wrongAction.row.source_actions[0].action_slot_key = 'REVIEWED_SOURCE_SPECIFIC_OPEN_WORLD_EVIDENCE';
+  assert.throws(() => validateFixtureExactDetailPackage({
+    package: wrongAction,
+    contract_bundle: contractBundle,
+    source: member.exact_detail.source,
+    source_admission: member.exact_detail.source_admission,
+    excerpt: member.exact_detail.excerpt,
+    claim: member.exact_detail.claim,
+  }), /governed claim-evidence action/);
 });
 
 test('the termination member seals into a candidate release and import plan under F2', () => {

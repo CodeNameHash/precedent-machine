@@ -372,6 +372,8 @@ test('staging import is set-based, transactional and withholds completion until 
   const firstReleaseInsert = importer.indexOf('INSERT INTO canonical_v2_staging.fixture_corpus_releases');
   assert.ok(inputHeadLock >= 0 && inputHeadLock < replayLookup && replayLookup < firstReleaseInsert);
   assert.match(importer, /current_head\.singleton_key = 'CURRENT'/);
+  assert.match(importer, /current_head\.environment = 'staging'/);
+  assert.match(importer, /current_head\.contract_fingerprint = contract_id/);
   assert.match(importer, /FOR SHARE OF current_head/);
   assert.match(importer, /current_input_contract_fingerprint IS DISTINCT FROM contract_id/);
   assert.match(importer, /current_input_head_id IS DISTINCT FROM input_head_id/);
@@ -434,6 +436,8 @@ test('staging import is set-based, transactional and withholds completion until 
       && activationHeadLock < activationHistoryInsert,
   );
   assert.match(activation, /current_head\.singleton_key = 'CURRENT'/);
+  assert.match(activation, /current_head\.environment = 'staging'/);
+  assert.match(activation, /current_head\.contract_fingerprint = imported_input_contract_fingerprint/);
   assert.match(activation, /FOR SHARE OF current_head/);
   assert.match(activation, /current_input_contract_fingerprint IS DISTINCT FROM imported_input_contract_fingerprint/);
   assert.match(activation, /current_input_head_id IS DISTINCT FROM imported_input_head_id/);

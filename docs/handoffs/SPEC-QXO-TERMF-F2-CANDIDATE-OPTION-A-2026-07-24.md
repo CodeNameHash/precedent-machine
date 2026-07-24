@@ -85,8 +85,9 @@ note (see Finding 1). Governing programme: docs/CODEX-PROGRAM.md.
   release-state decision. The apply SQL performs the candidate-input-head
   recheck (`canonical_v2_recheck_candidate_input_head`) IN the import
   transaction against the pinned generation-1 head
-  (`47e58bdc…`/`6235cfd8…`, docs/certification/evidence/
-  P1-VERTICAL-SLICE-ATTESTATION.json), so any drift aborts the paste.
+  (`614bb1f8…`/`bedabdc3…`), so any drift aborts the paste. Import is also
+  mechanically gated on the exact committed termination `DEAL_SCOPE_RUN`
+  receipt and semantic closure counts.
 - **R8 — Exact detail is claim-evidence, not composition.** The full
   six-relationship composition response measures 25,687 bytes (21,882
   after evidence reduction) against the frozen 16,384-byte
@@ -146,31 +147,34 @@ row; the termination observation joins the market partition).
 
 ## Option A protocol (Ben, staging SQL Editor, project sjumbznveyyiizhwvixj)
 
-1. **Block 00 (read-only, committed now):** returns (a) the two intake
-   captures' canonical_payloads MINUS `response_bytes_base64`, (b) the
-   conversion rows MINUS `canonical_text`/`source_map_payload_base64`,
-   (c) admission manifests, envelopes, immutable-source rows, (d) current
-   candidate-input head + active pointer + absence check for the new
-   corpus_release_id. Ben pastes the JSON output back to the next
-   session.
-2. **Generator (committed this session):**
+1. **Authority partition (required before F2 genesis):** the deterministic
+   Step-0 blocks migrate `candidate_input_heads` from a global singleton to
+   one current head per `(environment, contract_fingerprint)`, replace the
+   writer/import/activation functions from governed SQL and fail unless the
+   F1 head and all contract predicates remain exact.
+2. **Block 00 (read-only):** returns only (a) the two intake captures'
+   canonical payloads minus `response_bytes_base64` and (b) the exact active
+   pointer. The generator re-fetches the pinned SEC bytes and deterministically
+   re-derives conversions, manifests, envelopes, immutable-source rows and
+   source contexts. Ben pastes the single JSON output back to the session.
+3. **Generator (committed this session):**
    `scripts/canonical-v2-staging-qxo-termination-optionA.mjs` consumes
-   the pasted JSON, re-fetch-verifies SEC bytes (hash pins), splices the
-   locally recomputed text/source-map into the conversion payloads,
-   verifies every contentId chain against the pinned identities
+   the pasted JSON, re-fetch-verifies SEC bytes (hash pins), re-derives the
+   conversion/source map and verifies every contentId chain against the
+   pinned identities
    (fabrication-proof: any mismatch aborts), rebuilds all six family
    slices under V2, builds the release + import plan, and emits the
-   ordered paste files: 01-verify-before, 02-import-dry-run (rolled
-   back), 03-import-apply (recheck + guarded RPC, COMMIT), 04-verify-
-   after, 05-rollback-rehearsal, each ≤ SQL-Editor-friendly size, plus a
+   ordered paste files: 01 blocking verification, 02/03 semantic write
+   dry-run/apply, 04/05 inactive import dry-run/apply, 06 blocking
+   post-import verification and 07 optional rollback rehearsal, plus a
    printed digest attestation for comparison against the committed pins.
-3. **Step-1 widening:** `sql/optionA/step1-active-query-page-release-
+4. **Step-1 widening:** `sql/optionA/step1-active-query-page-release-
    declared-fingerprint.sql` — the `canonical_v2_active_query_page`
    function body extracted verbatim from `supabase/canonical-v2-serving.sql`
    (digest `a50721d5…` enforced by the extractor), BEGIN/COMMIT-wrapped
-   with post-apply verification SELECTs. Idempotent; F1 serving
+   with a pre-commit blocking definition assertion. Idempotent; F1 serving
    unaffected.
-4. Activation: NOT in this packet.
+5. Activation: NOT in this packet.
 
 ## Mechanical gates
 
