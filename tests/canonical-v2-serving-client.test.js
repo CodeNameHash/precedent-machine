@@ -166,10 +166,20 @@ test('database errors are returned once without retries or diagnostics leakage',
   class FailingPool extends FakePool {
     query(command) {
       this.calls.push(command);
-      return Promise.reject(new Error('sensitive database detail'));
+      return Promise.reject(Object.assign(new Error('sensitive database detail'), {
+        code: '42501',
+        severity: 'ERROR',
+        routine: 'aclcheck_error',
+        constraint: 'safe_constraint_name',
+      }));
     }
   }
-  const client = createPostgresServingClient({ connectionString: CONNECTION, PoolClass: FailingPool });
+  const diagnostics = [];
+  const client = createPostgresServingClient({
+    connectionString: CONNECTION,
+    PoolClass: FailingPool,
+    onError(details) { diagnostics.push(details); },
+  });
   const pool = FakePool.instances.at(-1);
   const response = await client.rpc('canonical_v2_exact_detail', {
     p_environment: 'staging',
@@ -182,6 +192,14 @@ test('database errors are returned once without retries or diagnostics leakage',
   });
 
   assert.equal(pool.calls.length, 1);
+  assert.deepEqual(diagnostics, [{
+    rpc: 'canonical_v2_exact_detail',
+    code: '42501',
+    severity: 'ERROR',
+    routine: 'aclcheck_error',
+    constraint: 'safe_constraint_name',
+  }]);
+  assert.doesNotMatch(JSON.stringify(diagnostics), /sensitive/);
   assert.deepEqual(response, { data: null, error: { message: 'Canonical serving query failed.' } });
   assert.doesNotMatch(response.error.message, /sensitive/);
 });
