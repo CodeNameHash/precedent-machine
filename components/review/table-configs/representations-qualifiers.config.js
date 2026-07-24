@@ -1138,6 +1138,14 @@ function repsTableNode(repRows, ctx) {
         const rowCard = ctx.onSelectCard && row.card ? row.card : null;
         const rowCardKey = rowCard ? (rowCard.id || rowCard.provision_instance_id) : null;
         const isSelectedRow = Boolean(rowCardKey) && ctx.selectedCardId === rowCardKey;
+        const canonicalBinding = typeof ctx.canonicalBindingForRow === 'function'
+          ? ctx.canonicalBindingForRow(row)
+          : null;
+        const canonicalSelectable = Boolean(canonicalBinding)
+          && typeof ctx.onSelectCanonicalBinding === 'function';
+        const isSelectedCanonical = canonicalSelectable
+          && ctx.selectedCanonicalBindingKey === canonicalBinding.binding_key;
+        const rowSelectable = canonicalSelectable || Boolean(rowCard);
         // Item 2 (r6): full-width expansion row, ported from
         // ProvisionTable.jsx's generic path -- ctx.ExpansionRow is threaded
         // onto bodyCtx by ProvisionTable.jsx itself, same as
@@ -1150,14 +1158,22 @@ function repsTableNode(repRows, ctx) {
         React.createElement(
         'tr',
         {
-          className: `align-top hover:bg-bg/40${rowCard ? ' mtx-row-clickable' : ''}`,
+          className: `align-top hover:bg-bg/40${rowSelectable ? ' mtx-row-clickable' : ''}`,
           // Sidebar redesign item 3: thread the rep's own qualifier
           // attributes through so ClauseSidebar can break the row into
           // labelled bits (materiality standard, knowledge qualifier,
           // lookback date) each with its own corpus distribution, instead
           // of a single undifferentiated "this row" block.
-          onClick: rowCard ? () => ctx.onSelectCard(rowCard, resolveRowFocus(row)) : undefined,
-          style: rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : undefined,
+          onClick: canonicalSelectable
+            ? () => ctx.onSelectCanonicalBinding(canonicalBinding, row.label)
+            : rowCard ? () => ctx.onSelectCard(rowCard, resolveRowFocus(row)) : undefined,
+          style: rowSelectable ? {
+            cursor: 'pointer',
+            ...((isSelectedCanonical || isSelectedRow)
+              ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' }
+              : {}),
+          } : undefined,
+          'data-canonical-review-binding': canonicalBinding?.binding_key,
         },
         React.createElement('td', { className: 'px-3 py-2 whitespace-normal break-words text-ink' }, renderTerm(row, ctx)),
         React.createElement('td', { className: 'px-3 py-2 whitespace-pre-wrap break-words text-ink' }, renderQualifiers(row, ctx)),

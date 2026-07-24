@@ -210,3 +210,8 @@ export function unionRows(rowLists, keyFn = rowIdentityKey) {
   });
   return order;
 }
+
+export function primaryGroupReviewId(groupEntry) {
+  const groupId = groupEntry?.rows?.[0]?.id;
+  return typeof groupId === 'string' && groupId.trim() ? groupId.trim() : null;
+}

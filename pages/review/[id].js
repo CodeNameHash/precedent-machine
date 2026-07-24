@@ -23,7 +23,11 @@ import MaeSection from '../../components/review-v2/MaeSection';
 import ElectionCard from '../../components/review-v2/ElectionCard';
 import ProvisionIndex, { DefinitionsSection } from '../../components/review-v2/ProvisionIndex';
 import ClauseSidebar from '../../components/review-v2/ClauseSidebar';
-import CanonicalReviewSection from '../../components/review-v2/CanonicalReviewSection';
+import CanonicalReviewSection, {
+  CANONICAL_REVIEW_ENABLED,
+  CanonicalReviewRemainder,
+  combineCanonicalSidebarContexts,
+} from '../../components/review-v2/CanonicalReviewSection';
 import MarketDrilldownSidebar from '../../components/review-v2/MarketDrilldownSidebar';
 import SourceOverlay from '../../components/review-v2/SourceOverlay';
 import { resolveCardSourceSpan } from '../../lib/parser-v2/resolve-source-span';
@@ -53,8 +57,15 @@ import { UnifiedCompareSection, UnifiedDefinitionsSection, CompareMasthead, coll
 import { OffMarketSection } from '../../components/review-v2/MarketColumn';
 import {
   buildMarketMetricBatchRequest,
+  enumerateMarketSectionRows,
   resolveMarketSectionRows,
 } from '../../lib/market-metrics';
+import reviewRowBinding from '../../lib/canonical-v2/review-row-binding';
+
+const {
+  bindPreparedRowsToReviewRows,
+  findPreparedReviewBinding,
+} = reviewRowBinding;
 
 const CONSIDERATION_SECTION_ID = 'consideration-hero';
 
@@ -71,9 +82,30 @@ function LoadingLine({ children }) {
   );
 }
 
+function provisionCodeForReviewRow(row) {
+  const source = row?.card || row?.sourceCard
+    || (row?.source && typeof row.source === 'object' ? row.source : null)
+    || (Array.isArray(row?.sourceCards) ? row.sourceCards[0] : null);
+  const code = source?.provision_subtype || source?.canonical_code
+    || source?.provision_code || source?.code || row?.provision_code || row?.code;
+  return typeof code === 'string' && code.trim() ? code.trim().toUpperCase() : null;
+}
+
+function canonicalReviewIdentity(sectionId, row, groupId = null) {
+  return {
+    section_id: sectionId,
+    group_id: groupId,
+    row_id: row?.id || null,
+    provision_code: provisionCodeForReviewRow(row),
+    row,
+  };
+}
+
 function SectionBlock({
   section, reviewDeal, sectionCards, onSelectCard, selectedCardId, election, onViewInAgreement,
   compare = null, marketColumn = null, typedMarket = null, onMarketRetry = null,
+  canonicalMarket = null, canonicalBindingResult = null,
+  onSelectCanonicalBinding = null, selectedCanonicalBindingKey = null,
 }) {
   // Ben (Mergertrace round 1): every section collapsible. Native <details>
   // (open by default) so the scrollspy/anchor <section> wrapper and the
@@ -93,7 +125,11 @@ function SectionBlock({
   // SAME table, headed "MARKET — N deals", rather than a side column next
   // to a second copy of the table. `compare` and `marketColumn` are
   // independent — either, both, or neither can be active for a section.
-  const unified = Boolean(compare) || Boolean(marketColumn) || Boolean(typedMarket);
+  const canonicalBindingForRow = (row, groupId = null) => findPreparedReviewBinding(
+    canonicalBindingResult,
+    canonicalReviewIdentity(section.id, row, groupId),
+  );
+  const unified = Boolean(compare) || Boolean(marketColumn) || Boolean(typedMarket) || Boolean(canonicalMarket);
   const primaryTables = unified ? (
     section.id === '__definitions' ? (
       <UnifiedDefinitionsSection
@@ -103,6 +139,10 @@ function SectionBlock({
         onRetry={compare ? compare.retry : null}
         typedMarket={typedMarket}
         onMarketRetry={onMarketRetry}
+        canonicalMarket={canonicalMarket}
+        canonicalBindingForRow={canonicalBindingForRow}
+        onSelectCanonicalBinding={onSelectCanonicalBinding}
+        selectedCanonicalBindingKey={selectedCanonicalBindingKey}
       />
     ) : (
       <UnifiedCompareSection
@@ -118,6 +158,10 @@ function SectionBlock({
         marketColumn={marketColumn}
         typedMarket={typedMarket}
         onMarketRetry={onMarketRetry}
+        canonicalMarket={canonicalMarket}
+        canonicalBindingForRow={canonicalBindingForRow}
+        onSelectCanonicalBinding={onSelectCanonicalBinding}
+        selectedCanonicalBindingKey={selectedCanonicalBindingKey}
       />
     )
   ) : (
@@ -139,6 +183,9 @@ function SectionBlock({
             sectionCards={sectionCards}
             onSelectCard={onSelectCard}
             selectedCardId={selectedCardId}
+            canonicalBindingForRow={canonicalBindingForRow}
+            onSelectCanonicalBinding={onSelectCanonicalBinding}
+            selectedCanonicalBindingKey={selectedCanonicalBindingKey}
           />
         </>
       )}
@@ -213,6 +260,9 @@ export default function ReviewPage() {
   const [reviewDeal, setReviewDeal] = useState(null);
   const [cardsLoading, setCardsLoading] = useState(false);
   const [cardsError, setCardsError] = useState(null);
+  const [canonicalReviewState, setCanonicalReviewState] = useState(null);
+  const [canonicalReloadKey, setCanonicalReloadKey] = useState(0);
+  useEffect(() => setCanonicalReviewState(null), [dealId]);
 
   useEffect(() => {
     if (!router.isReady || !dealId) {
@@ -312,7 +362,10 @@ export default function ReviewPage() {
     () => buildMarketMetricBatchRequest(marketSections, { subjectDealId: dealId }),
     [marketSections, dealId],
   );
-  const typedMarketEnabled = marketMode && Boolean(reviewDeal) && marketRequest.specs.length > 0;
+  const typedMarketEnabled = marketMode
+    && !CANONICAL_REVIEW_ENABLED
+    && Boolean(reviewDeal)
+    && marketRequest.specs.length > 0;
   const rowMarketStats = useRowMarketStats(
     typedMarketEnabled,
     marketRequest,
@@ -324,7 +377,10 @@ export default function ReviewPage() {
   // source and turn one failure into a page-wide partial result.
   const typedMarketSettled = !typedMarketEnabled
     || (rowMarketStats.attempted && !rowMarketStats.loading);
-  const legacyMarketEnabled = marketMode && Boolean(reviewDeal) && typedMarketSettled;
+  const legacyMarketEnabled = marketMode
+    && !CANONICAL_REVIEW_ENABLED
+    && Boolean(reviewDeal)
+    && typedMarketSettled;
   const sectionMarketStats = useSectionMarketStats(legacyMarketEnabled, dealId, sectionCodes);
   const marketStats = sectionMarketStats.bySection;
   const legacyMarketSettled = !sectionCodes.some((section) => section.code)
@@ -366,6 +422,60 @@ export default function ReviewPage() {
     ...dealToMarket,
     rows: [...(dealToMarket.rows || []), ...marketOffMarketRows],
   }), [dealToMarket, marketOffMarketRows]);
+  const canonicalReviewRows = useMemo(() => sections.flatMap((section) => (
+    enumerateMarketSectionRows(section, reviewDealForTables).map(({ row, groupPath }) => (
+      canonicalReviewIdentity(
+        section.id,
+        row,
+        section.id === 'nosol' ? (groupPath?.at(-1) || null) : null,
+      )
+    )).filter((identity) => identity.row_id || identity.provision_code)
+  )), [sections, reviewDealForTables]);
+  const canonicalBindingState = useMemo(() => {
+    const preparedRows = (canonicalReviewState?.items || [])
+      .filter((item) => item?.render_kind === 'ROW' && item.prepared)
+      .map((item) => item.prepared);
+    if (!preparedRows.length) return { result: null, error: null };
+    try {
+      return {
+        result: bindPreparedRowsToReviewRows({
+          prepared_rows: preparedRows,
+          review_rows: canonicalReviewRows,
+        }),
+        error: null,
+      };
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('[CanonicalReviewBinding] governed binding failed closed', error);
+      return {
+        result: null,
+        error: error?.message || 'Certified terms could not be attached to Review rows.',
+      };
+    }
+  }, [canonicalReviewRows, canonicalReviewState?.items]);
+  const canonicalBindingResult = canonicalBindingState.result;
+  const canonicalPeerSetSize = useMemo(() => {
+    const counts = (canonicalBindingResult?.bindings || []).flatMap((binding) => (
+      binding.prepared_rows.flatMap((prepared) => {
+        const responseRow = prepared.data?.byRow?.[prepared.row_key];
+        return Object.values(responseRow?.metrics || {})
+          .map((metric) => metric?.coverage?.eligibleCount)
+          .filter(Number.isFinite);
+      })
+    ));
+    return counts.length ? Math.max(...counts) : null;
+  }, [canonicalBindingResult]);
+  const retryCanonicalReview = useCallback(() => {
+    setCanonicalReloadKey((current) => current + 1);
+  }, []);
+  const canonicalMarket = CANONICAL_REVIEW_ENABLED && marketMode ? {
+    loading: Boolean(canonicalReviewState?.loading),
+    error: canonicalReviewState?.error || canonicalBindingState.error || null,
+    retry: retryCanonicalReview,
+    label: Number.isFinite(canonicalPeerSetSize)
+      ? `MARKET — ${canonicalPeerSetSize} deal${canonicalPeerSetSize === 1 ? '' : 's'}`
+      : 'MARKET',
+  } : null;
   // r18 item 5 (Ben, "not this two sets of tables crap"): both compared
   // deals AND the market column now render as extra answer columns INSIDE
   // the same unified per-section table (UnifiedCompareSection /
@@ -503,6 +613,14 @@ export default function ReviewPage() {
       }));
     }
   }, [marketMode]);
+  const selectCanonicalBinding = useCallback((binding, rowLabel = null) => {
+    if (!binding?.prepared_rows?.length) return;
+    const context = combineCanonicalSidebarContexts(binding.prepared_rows, {
+      label: rowLabel || binding.prepared_rows[0]?.resolution?.label || 'Selected term',
+      marketKey: `canonical-review:${binding.binding_key}`,
+    });
+    if (context) selectCanonicalContext(context, binding.binding_key);
+  }, [selectCanonicalContext]);
   const clearSelection = useCallback(() => {
     setSelection({ card: null, rowFocus: null });
     setCanonicalSelection(null);
@@ -698,6 +816,18 @@ export default function ReviewPage() {
               <CanonicalReviewSection dealId={dealId}
                 onSelectCanonicalContext={selectCanonicalContext}
                 selectedCanonicalRowKey={canonicalSelection?.rowKey || null}
+                onContextStateChange={setCanonicalReviewState}
+                standalone={false}
+                autoLoadAll
+                reloadKey={canonicalReloadKey}
+              />
+              <CanonicalReviewRemainder
+                state={canonicalReviewState}
+                bindingResult={canonicalBindingResult}
+                bindingError={canonicalBindingState.error}
+                selectedCanonicalRowKey={canonicalSelection?.rowKey || null}
+                onSelectCanonicalContext={selectCanonicalContext}
+                onRetry={retryCanonicalReview}
               />
               {marketMode ? <OffMarketSection data={offMarketData} /> : null}
               {sections.map((section) => (
@@ -711,9 +841,17 @@ export default function ReviewPage() {
                   election={section.id === CONSIDERATION_SECTION_ID ? election : null}
                   onViewInAgreement={hasAgreementText ? openSourceOverlay : null}
                   compare={compareIds.length ? compareBundle : null}
-                  marketColumn={marketMode && section.id !== '__definitions' ? (marketStats[section.id] || null) : null}
-                  typedMarket={marketMode ? { section: marketSectionsById[section.id], data: rowMarketStats } : null}
-                  onMarketRetry={marketMode ? rowMarketStats.retry : null}
+                  marketColumn={marketMode && !CANONICAL_REVIEW_ENABLED && section.id !== '__definitions'
+                    ? (marketStats[section.id] || null)
+                    : null}
+                  typedMarket={marketMode && !CANONICAL_REVIEW_ENABLED
+                    ? { section: marketSectionsById[section.id], data: rowMarketStats }
+                    : null}
+                  onMarketRetry={marketMode && !CANONICAL_REVIEW_ENABLED ? rowMarketStats.retry : null}
+                  canonicalMarket={canonicalMarket}
+                  canonicalBindingResult={canonicalBindingResult}
+                  onSelectCanonicalBinding={selectCanonicalBinding}
+                  selectedCanonicalBindingKey={canonicalSelection?.rowKey || null}
                 />
               ))}
             </div>
