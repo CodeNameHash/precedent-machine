@@ -17,6 +17,7 @@ const { buildQueryCohortSummary } = require('../__fixtures__/canonical-v2/query-
 const {
   compileFixtureContractV3,
   compileFixtureContractV4,
+  compileFixtureContractV5,
 } = require('../lib/canonical-v2/contract-bundle');
 const { validateFixtureExactDetailPackage } = require('../lib/canonical-v2/exact-detail');
 const {
@@ -65,7 +66,7 @@ const contractBundle = compileFixtureContractV4();
 const corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'qxo-f4-termination-admitted-test');
 const servingNamespaceId = contentId('SERVING_NAMESPACE/V1', 'qxo-f4-termination-admitted-test');
 
-function buildSide(side) {
+function buildSide(side, selectedContractBundle = contractBundle) {
   const contexts = buildQxoF4SourceContexts();
   const build = side === 'BUYER'
     ? buildQxoBuyerTerminationFeeAdmittedSlice
@@ -74,12 +75,23 @@ function buildSide(side) {
     ...contexts,
     candidate: build({
       ...contexts,
-      contractBundle,
+      contractBundle: selectedContractBundle,
       corpusReleaseId,
       servingNamespaceId,
     }),
   };
 }
+
+test('F5 puts QXO fee denominator precision in the authoritative and compatibility paths', () => {
+  const f5 = compileFixtureContractV5();
+  for (const side of ['BUYER', 'SELLER']) {
+    const { candidate } = buildSide(side, f5);
+    assert.equal(candidate.claim.denominator.precision, 'APPROXIMATE');
+    assert.equal(candidate.claim.attributes.denominator_precision, 'APPROXIMATE');
+    assert.equal(candidate.projection.observation.canonical_value, EXACT_PERCENT);
+    assert.equal(validateSharedServingRow(candidate.shared_row), true);
+  }
+});
 
 function relationshipByPath(candidate, pathwayCode) {
   return candidate.relationships.find(
@@ -354,6 +366,7 @@ test('QXO F4 Query and Review expose the approximate denominator and all governe
   const review = adaptSharedServingRow(row);
   const reviewSubject = review.data.byRow[row.row_serving_key]
     .metrics[BUYER_CONFIG.metricKey].subject;
+  assert.equal(reviewSubject.denominatorPrecision, 'APPROXIMATE');
   assert.equal(
     reviewSubject.legalTerms.find((term) => term.key === 'primary_value').value,
     'Approximately 3.53% of headline deal value',

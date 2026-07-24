@@ -51,7 +51,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { contentId } = require('../../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContractV2 } = require('../../lib/canonical-v2/contract-bundle');
+const {
+  compileFixtureContractV2,
+  moneyDenominatorPrecisionPolicyForClaim,
+} = require('../../lib/canonical-v2/contract-bundle');
 const { buildFixtureClaimEvidenceDetailPackage } = require('../../lib/canonical-v2/exact-detail');
 const { buildReviewedSlice } = require('../../lib/canonical-v2/reviewed-slice-harness');
 
@@ -125,6 +128,10 @@ function buildQxoTerminationFeeFixture({
   corpusReleaseId = contentId('CORPUS_RELEASE/V1', 'qxo-termination-fee-reviewed-fixture'),
   servingNamespaceId = contentId('SERVING_NAMESPACE/V1', 'qxo-termination-fee-reviewed-fixture'),
 } = {}) {
+  const denominatorPrecisionPolicy = moneyDenominatorPrecisionPolicyForClaim(
+    contractBundle,
+    'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+  );
   const terminationText = fs.readFileSync(
     path.join(process.cwd(), '__fixtures__', 'canonical-v2', 'qxo-termination-fee-reviewed-excerpts.txt'),
     'utf8',
@@ -252,6 +259,7 @@ function buildQxoTerminationFeeFixture({
             currency: 'USD',
             basis: 'HEADLINE_TRANSACTION_VALUE',
             sourceLineageExcerptKeys: ['deal_value'],
+            ...(denominatorPrecisionPolicy ? { precision: 'APPROXIMATE' } : {}),
           },
         },
         extraAttributes: { fee_side: 'SELLER', payee_value: 'PARENT', payee_capacity: 'BUYER' },

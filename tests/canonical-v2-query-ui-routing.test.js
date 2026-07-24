@@ -164,6 +164,21 @@ test('5. percentage cells format to 2dp with a percent suffix, never dividing by
   assert.equal(formatPercentOfDealValue('100'), '100%');
 });
 
+test('5b. query presentation distinguishes exact and approximate denominator precision', () => {
+  const columns = [{ column_key: 'percent_of_deal_value' }];
+  const row = {
+    row_serving_key: 'p'.repeat(64),
+    governed_deal_key: 'deal:precision',
+    cells: { percent_of_deal_value: '5.09090909' },
+  };
+  const render = (precision) => mapCanonicalRowForRender({
+    ...row,
+    display_metadata: { denominator_precision: precision },
+  }, columns).cells[0].display;
+  assert.equal(render('EXACT'), '5.09%');
+  assert.equal(render('APPROXIMATE'), 'Approximately 5.09%');
+});
+
 test('6. row isolation: a malformed row does not prevent sibling rows from rendering', () => {
   const columns = [
     { column_key: 'deal' },
@@ -200,7 +215,10 @@ test('6. row isolation: a malformed row does not prevent sibling rows from rende
   assert.equal(rendered[0].error, null);
   assert.equal(rendered[0].row_serving_key, goodRow.row_serving_key);
   const goodPercentCell = rendered[0].cells.find((cell) => cell.column_key === 'percent_of_deal_value');
-  assert.equal(goodPercentCell.display, '5.09%');
+  assert.equal(
+    goodPercentCell.display,
+    '5.09% (denominator precision not captured)',
+  );
 
   assert.ok(rendered[1].error);
   assert.deepEqual(rendered[1].cells, []);

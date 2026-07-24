@@ -78,7 +78,8 @@ test('market cells render substantive term detail before fallback and prevalence
 });
 
 test('money market cells present deal-relative percentages without raw dollar summaries', () => {
-  assert.match(MARKET_COLUMN, /formatPercent\(subject\.percentOfDealValue\).*of \$\{formatBasis/);
+  assert.match(MARKET_COLUMN, /qualifyDerivedValue/);
+  assert.match(MARKET_COLUMN, /normaliseDenominatorPrecision\(subject\.denominatorPrecision\)/);
   assert.match(MARKET_COLUMN, /No same-basis percentage cohort yet/);
   assert.doesNotMatch(MARKET_COLUMN, /Raw median|formatMoney\(subject\.rawUsd\)|formatMoney\(raw/);
   assert.doesNotMatch(SIDEBAR, /Raw median|formatMoney\(summary\.raw|formatMoney\(raw/);

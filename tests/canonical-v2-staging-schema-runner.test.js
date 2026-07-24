@@ -2,8 +2,10 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const { spawnSync } = require('node:child_process');
+const { compileFixtureContractV5 } = require('../lib/canonical-v2/contract-bundle');
 
 const RUNNER = 'scripts/canonical-v2-staging-schema.mjs';
+const F5_CONTRACT_FINGERPRINT = 'f80a77651d1b6a6a9eec8ac67526a8704f498761cbb22a67e6ceb4716abb5478';
 
 test('staging schema runner is fixed to the isolated project and rolls back by default', () => {
   const source = fs.readFileSync(RUNNER, 'utf8');
@@ -15,6 +17,14 @@ test('staging schema runner is fixed to the isolated project and rolls back by d
   assert.match(source, /realpathSync\(resolve\(workdirInput\)\)/);
   assert.match(source, /\['--workdir', workdir, 'db', 'query'/);
   assert.doesNotMatch(source, /precedent-machine['"]|tzulhdasmioeechxapdy/);
+});
+
+test('staging schema F5 binding matches the compiled frozen contract', () => {
+  const runner = fs.readFileSync(RUNNER, 'utf8');
+  const serving = fs.readFileSync('supabase/canonical-v2-serving.sql', 'utf8');
+  assert.equal(compileFixtureContractV5().fingerprint, F5_CONTRACT_FINGERPRINT);
+  assert.match(runner, new RegExp(F5_CONTRACT_FINGERPRINT));
+  assert.match(serving, new RegExp(F5_CONTRACT_FINGERPRINT));
 });
 
 test('staging schema runner rejects ambiguous invocation before database work', () => {
@@ -49,6 +59,11 @@ test('staging schema verification checks writer, serving RPCs and denied broad r
   assert.match(source, /canonical_v2_staging\.candidate_input_head_versions/);
   assert.match(source, /canonical_v2_staging\.candidate_input_heads/);
   assert.match(source, /candidate_input_head_partition_key_is_exact/);
+  assert.match(source, /denominator_precision_projection_is_canonical/);
+  assert.match(source, /denominator_precision_domain_is_governed/);
+  assert.match(source, /f5_money_precision_is_required/);
+  assert.match(source, /incomplete_canonical_result,components,0,denominator,precision/);
+  assert.match(source, /incomplete_canonical_result,components,0,claim_attributes,denominator_precision/);
   assert.match(source, /receipt_correction_seal_exists/);
   assert.match(source, /receipt_candidate_input_head_exists/);
   assert.match(source, /receipt_correction_discharge_map_exists/);

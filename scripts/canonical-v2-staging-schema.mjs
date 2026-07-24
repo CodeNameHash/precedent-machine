@@ -17,12 +17,13 @@ const EXPECTED_PROJECT = Object.freeze({
   ref: 'sjumbznveyyiizhwvixj',
   name: 'deal-corpus-canonical-v2-staging',
 });
+const F5_CONTRACT_FINGERPRINT = 'f80a77651d1b6a6a9eec8ac67526a8704f498761cbb22a67e6ceb4716abb5478';
 const EXPECTED_DIGESTS = Object.freeze({
   'canonical-v2-foundation.sql': '6f5684333b062734212c78604b5aa097f13142b651247f6edbec0d58e5142088',
   // Active serving resolves the release-declared contract, exact detail is
   // active-release bound, and the rejected F3 fingerprint is denied at
   // every granted serving boundary.
-  'canonical-v2-serving.sql': '32aed04eaae2809991918d5439de8ff7d6cd5f78408d28d1f9aebfbfd2050bf4',
+  'canonical-v2-serving.sql': '3ba1fced938cba7f2f9835a650358b8a03edb7fe3133a4754b1602e08e3abcf8',
 });
 const SCRIPT_ROOT = dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = resolve(SCRIPT_ROOT, '..');
@@ -55,6 +56,10 @@ function readGovernedSql() {
     const actualDigest = sha256(sql);
     if (actualDigest !== expectedDigest) {
       fail(`${filename} digest changed: expected ${expectedDigest}, received ${actualDigest}.`);
+    }
+    if (filename === 'canonical-v2-serving.sql'
+      && !sql.includes(`contract_fingerprint <> '${F5_CONTRACT_FINGERPRINT}'`)) {
+      fail('canonical-v2-serving.sql is not bound to the governed F5 contract fingerprint.');
     }
     return { filename, sql, digest: actualDigest };
   });
@@ -104,7 +109,30 @@ function verifyAppliedSchema(workdir) {
           and table_name = 'shared_serving_rows'
           and column_name = 'denominator_precision'
           and is_generated = 'ALWAYS'
-      ) as denominator_precision_projection_exists,
+          and generation_expression like '%canonical_result,components,0,denominator,precision%'
+          and generation_expression like '%incomplete_canonical_result,components,0,denominator,precision%'
+          and generation_expression like '%canonical_result,components,0,claim_attributes,denominator_precision%'
+          and generation_expression like '%incomplete_canonical_result,components,0,claim_attributes,denominator_precision%'
+      ) as denominator_precision_projection_is_canonical,
+      exists (
+        select 1 from pg_constraint
+        where conrelid = 'canonical_v2_staging.shared_serving_rows'::regclass
+          and conname = 'canonical_v2_shared_serving_rows_denominator_precision_check'
+          and pg_get_constraintdef(oid) like '%EXACT%'
+          and pg_get_constraintdef(oid) like '%APPROXIMATE%'
+      ) as denominator_precision_domain_is_governed,
+      exists (
+        select 1 from pg_constraint
+        where conrelid = 'canonical_v2_staging.shared_serving_rows'::regclass
+          and conname = 'canonical_v2_shared_serving_rows_f5_money_precision_check'
+          and pg_get_constraintdef(oid) like '%${F5_CONTRACT_FINGERPRINT}%'
+          and pg_get_constraintdef(oid) like '%PERCENT_OF_DEAL_VALUE%'
+          and pg_get_constraintdef(oid) like '%canonical_result,components,0,denominator,precision%'
+          and pg_get_constraintdef(oid) like '%incomplete_canonical_result,components,0,denominator,precision%'
+          and pg_get_constraintdef(oid) like '%canonical_result,components,0,claim_attributes,denominator_precision%'
+          and pg_get_constraintdef(oid) like '%incomplete_canonical_result,components,0,claim_attributes,denominator_precision%'
+          and pg_get_constraintdef(oid) like '%incomplete_canonical_result,components,0,unit%'
+      ) as f5_money_precision_is_required,
       exists (
         select 1 from information_schema.columns
         where table_schema = 'canonical_v2_staging'

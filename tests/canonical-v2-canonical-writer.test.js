@@ -4,7 +4,10 @@ const fs = require('node:fs');
 
 const { contentId, utf8ByteLength } = require('../lib/canonical-v2/canonical-bytes');
 const { buildClaimRevision, buildRelationshipRevision } = require('../lib/canonical-v2/claims-relationships');
-const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
+const {
+  compileFixtureContract,
+  compileFixtureContractV5,
+} = require('../lib/canonical-v2/contract-bundle');
 const {
   InMemoryCanonicalRepository,
   createCanonicalWriter,
@@ -18,9 +21,10 @@ const {
 } = require('../lib/canonical-v2/source-structure');
 
 const contractBundle = compileFixtureContract();
+const contractBundleV5 = compileFixtureContractV5();
 const id = (value) => contentId('WRITER_TEST_ID/V1', value);
 
-function fixtureWriteSet() {
+function fixtureWriteSet(contract = contractBundle) {
   const repClosure = id('closure:rep');
   const conditionClosure = id('closure:condition');
   const sourceText = 'Capitalisation representation. Closing condition.';
@@ -94,7 +98,7 @@ function fixtureWriteSet() {
     source,
     dealKey: 'deal:qxo',
     dealAdmissionId,
-    contractFingerprint: contractBundle.fingerprint,
+    contractFingerprint: contract.fingerprint,
   });
   return {
     source,
@@ -119,9 +123,51 @@ function fixtureWriteSet() {
   };
 }
 
-function setup() {
+function f5MoneyWriteSet({
+  denominatorPrecision,
+  compatibilityPrecision = denominatorPrecision,
+} = {}) {
+  const writeSet = fixtureWriteSet(contractBundleV5);
+  const subject = writeSet.provisions[1];
+  const excerpt = writeSet.excerpts[1];
+  const denominator = {
+    value: '5000000000',
+    currency: 'USD',
+    basis: 'HEADLINE_TRANSACTION_VALUE',
+    source_lineage_ids: [excerpt.excerpt_id],
+  };
+  if (denominatorPrecision !== undefined) denominator.precision = denominatorPrecision;
+  const attributes = {
+    basis_key: 'PERCENT_OF_DEAL_VALUE:HEADLINE_TRANSACTION_VALUE:USD',
+  };
+  if (compatibilityPrecision !== undefined) {
+    attributes.denominator_precision = compatibilityPrecision;
+  }
+  const claim = buildClaimRevision({
+    subject_occurrence_id: subject.provision_instance_id,
+    claim_definition_key: 'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+    state: 'PRESENT',
+    raw_value: '$100 million',
+    canonical_value: '2',
+    unit: 'PERCENT_OF_DEAL_VALUE',
+    denominator,
+    attributes,
+    allowed_attributes: ['basis_key', 'denominator_precision'],
+    evidence: [{
+      evidence_role: 'DERIVATION_INPUT',
+      excerpt_id: excerpt.excerpt_id,
+      document_ordinal: 0,
+      absolute_start: excerpt.absolute_start,
+      absolute_end: excerpt.absolute_end,
+    }],
+  });
+  writeSet.claims[1] = { ...claim, closure_id: writeSet.claims[1].closure_id };
+  return writeSet;
+}
+
+function setup(contract = contractBundle) {
   const repository = new InMemoryCanonicalRepository();
-  const writer = createCanonicalWriter({ repository, contractBundle });
+  const writer = createCanonicalWriter({ repository, contractBundle: contract });
   return { repository, writer };
 }
 
@@ -306,6 +352,53 @@ test('the writer independently quarantines unsupported PRESENT and ABSENT assert
   assert.ok(result.validation.residuals.some((row) => row.reason_code === 'CANONICAL_IDENTITY_MISMATCH'));
   assert.equal(result.validation.counts.quarantinedClosures, 2);
   assert.deepEqual(repository.snapshot().claims, []);
+});
+
+test('F5 publishes exact or approximate money precision and quarantines missing, invalid or mismatched precision', async () => {
+  for (const precision of ['EXACT', 'APPROXIMATE']) {
+    const { writer } = setup(contractBundleV5);
+    const result = await writer.write({
+      operation: 'FIXTURE_DEAL_EXTRACTION_RUN',
+      idempotencyKey: `f5-valid-${precision}`,
+      dryRun: true,
+      writeSet: f5MoneyWriteSet({ denominatorPrecision: precision }),
+    });
+    assert.equal(
+      result.validation.residuals.some(
+        (row) => row.reason_code === 'INVALID_DENOMINATOR_PRECISION',
+      ),
+      false,
+    );
+    assert.equal(result.validation.counts.quarantinedClosures, 0);
+  }
+
+  const invalidCases = [
+    {},
+    { denominatorPrecision: 'ESTIMATED' },
+    { denominatorPrecision: 'EXACT', compatibilityPrecision: 'APPROXIMATE' },
+  ];
+  for (const [index, invalidCase] of invalidCases.entries()) {
+    const { writer } = setup(contractBundleV5);
+    const result = await writer.write({
+      operation: 'FIXTURE_DEAL_EXTRACTION_RUN',
+      idempotencyKey: `f5-invalid-${index}`,
+      dryRun: true,
+      writeSet: f5MoneyWriteSet(invalidCase),
+    });
+    assert.ok(result.validation.residuals.some(
+      (row) => row.reason_code === 'INVALID_DENOMINATOR_PRECISION',
+    ));
+    assert.deepEqual(
+      result.validation.quarantinedClosureIds,
+      [id('closure:condition')],
+    );
+    assert.equal(
+      result.validation.publishableWriteSet.claims.some(
+        (row) => row.claim_definition_key === 'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+      ),
+      false,
+    );
+  }
 });
 
 test('a canonical claim cannot publish an invented comparable value or unresolved evidence', async () => {

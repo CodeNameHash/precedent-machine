@@ -2,6 +2,14 @@
 // natural-language market answers. This module is deliberately dependency-light
 // so every surface can share the same row-resolution and denominator rules.
 
+import denominatorPrecisionPresentation from '../../lib/canonical-v2/denominator-precision-presentation.js';
+
+const {
+  DENOMINATOR_PRECISION,
+  normaliseDenominatorPrecision,
+  qualifyDerivedValue,
+} = denominatorPrecisionPresentation;
+
 const EXCEPTION_FEATURES = new Set([
   'permittedExceptions',
   'ordinaryCourseCarveout',
@@ -279,6 +287,9 @@ function typedMetricSummary(spec, result, dealDirectory) {
     })[subjectBasis] || subjectBasis;
     const cadence = subjectSemantics?.cadence;
     const cadenceLabel = cadence ? typedValueLabel(String(cadence).toUpperCase()) : null;
+    const denominatorPrecision = normaliseDenominatorPrecision(
+      result?.subject?.denominatorPrecision,
+    );
     const comparisonCohorts = cohorts.map((candidate) => ({
       basis: candidate?.basis || null,
       semantics: candidate?.semantics || null,
@@ -299,7 +310,10 @@ function typedMetricSummary(spec, result, dealDirectory) {
       coverage,
       deals: dealsForRefs(dealDirectory, cohort?.dealRefs, cohort?.dealIds),
       subjectValue: subjectPercent,
-      subjectLabel: subjectPercent === null ? 'Relative value unavailable' : `${subjectPercent}%`,
+      subjectLabel: subjectPercent === null
+        ? 'Relative value unavailable'
+        : qualifyDerivedValue(`${subjectPercent}%`, denominatorPrecision),
+      denominatorPrecision,
       comparisonUnavailable: !stats,
       comparisonUnavailableReason: !stats
         ? (result?.comparability?.message || (cadence
@@ -419,6 +433,12 @@ export function buildTypedRowMarketContext(resolution, data, fallbackSummary = n
   if (substantiveSpecs.some((spec) => spec.comparison?.kind === 'money'
     && spec.semantics?.stratifyDimensions?.includes('cadence'))) {
     scopeNotes.push('Dollar thresholds are percentages of deal value; peer cohorts are separated by deal-value basis and cadence.');
+  }
+  if (metrics.some((summary) => summary.denominatorPrecision === DENOMINATOR_PRECISION.APPROXIMATE)) {
+    scopeNotes.push('This deal’s percentage uses an approximate deal-value denominator.');
+  }
+  if (metrics.some((summary) => summary.denominatorPrecision === DENOMINATOR_PRECISION.NOT_CAPTURED)) {
+    scopeNotes.push('Deal-value denominator precision was not captured; this deal’s percentage is not presented as exact.');
   }
   return {
     marketKey: resolution.rowKey,

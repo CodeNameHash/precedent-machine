@@ -60,6 +60,52 @@ test('money never guesses a missing, incompatible or untraceable denominator', (
   assert.equal(noLineage.exclusion_reason, 'MISSING_DENOMINATOR_LINEAGE');
 });
 
+test('money preserves governed exact and approximate denominator precision in its digest', () => {
+  const sourceLineageId = contentId('SOURCE_FACT/V1', 'deal-value-precision');
+  const exact = normaliseMoneyRelativeToDealValue({
+    rawAmount: '100000',
+    currency: 'USD',
+    denominator: {
+      value: '137500000',
+      currency: 'USD',
+      basis: 'HEADLINE_TRANSACTION_VALUE',
+      precision: 'exact',
+      source_lineage_ids: [sourceLineageId],
+    },
+    derivationVersion: VERSION,
+  });
+  const approximate = normaliseMoneyRelativeToDealValue({
+    rawAmount: '100000',
+    currency: 'USD',
+    denominator: {
+      value: '137500000',
+      currency: 'USD',
+      basis: 'HEADLINE_TRANSACTION_VALUE',
+      precision: 'APPROXIMATE',
+      source_lineage_ids: [sourceLineageId],
+    },
+    derivationVersion: VERSION,
+  });
+
+  assert.equal(exact.denominator.precision, 'EXACT');
+  assert.equal(approximate.denominator.precision, 'APPROXIMATE');
+  assert.notEqual(exact.normalisation_payload_digest, approximate.normalisation_payload_digest);
+  assert.doesNotThrow(() => validateObservationNormalisation(exact));
+  assert.doesNotThrow(() => validateObservationNormalisation(approximate));
+  assert.throws(() => normaliseMoneyRelativeToDealValue({
+    rawAmount: '100000',
+    currency: 'USD',
+    denominator: {
+      value: '137500000',
+      currency: 'USD',
+      basis: 'HEADLINE_TRANSACTION_VALUE',
+      precision: 'ESTIMATED',
+      source_lineage_ids: [sourceLineageId],
+    },
+    derivationVersion: VERSION,
+  }), /unsupported denominator.precision/);
+});
+
 test('twenty-four elapsed hours becomes one elapsed day without changing its legal trigger', () => {
   const value = normaliseDurationToDays({
     rawMagnitude: '24',

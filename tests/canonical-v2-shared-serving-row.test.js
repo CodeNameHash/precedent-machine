@@ -2,10 +2,15 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContractV3 } = require('../lib/canonical-v2/contract-bundle');
+const {
+  compileFixtureContractV3,
+  compileFixtureContractV4,
+  compileFixtureContractV5,
+} = require('../lib/canonical-v2/contract-bundle');
 const {
   SHARED_ROW_VARIANTS,
   prepareSharedRowsForRendering,
+  validateMoneyDenominatorForContract,
   validateMetricOperationBinding,
   validateSharedServingRow,
 } = require('../lib/canonical-v2/shared-serving-row');
@@ -75,6 +80,52 @@ test('the shared row matrix is closed while certified canonical and source-speci
   assert.equal(SHARED_ROW_VARIANTS.CANONICAL_RESULT.producer_status, 'IMPLEMENTED_FIXTURE');
   assert.equal(SHARED_ROW_VARIANTS.INCOMPLETE_CANONICAL_RESULT.producer_status, 'IMPLEMENTED_FIXTURE');
   assert.equal(SHARED_ROW_VARIANTS.REVIEWED_SOURCE_SPECIFIC.producer_status, 'IMPLEMENTED_FIXTURE');
+});
+
+test('shared money rows apply mandatory denominator precision only under F5', () => {
+  const base = {
+    value: '5000000000',
+    currency: 'USD',
+    basis: 'HEADLINE_TRANSACTION_VALUE',
+    source_lineage_ids: [contentId('SOURCE_FACT/V1', 'shared-money-denominator')],
+  };
+  assert.doesNotThrow(() => validateMoneyDenominatorForContract({
+    governingContract: compileFixtureContractV4(),
+    claimDefinitionKey: 'IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE',
+    claimState: 'PRESENT',
+    denominator: base,
+    claimAttributes: {},
+  }));
+  for (const precision of ['EXACT', 'APPROXIMATE']) {
+    assert.doesNotThrow(() => validateMoneyDenominatorForContract({
+      governingContract: compileFixtureContractV5(),
+      claimDefinitionKey: 'IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE',
+      claimState: 'PRESENT',
+      denominator: { ...base, precision },
+      claimAttributes: { denominator_precision: precision },
+    }));
+  }
+  assert.throws(() => validateMoneyDenominatorForContract({
+    governingContract: compileFixtureContractV5(),
+    claimDefinitionKey: 'IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE',
+    claimState: 'PRESENT',
+    denominator: base,
+    claimAttributes: {},
+  }), /fields do not match the frozen contract/);
+  assert.throws(() => validateMoneyDenominatorForContract({
+    governingContract: compileFixtureContractV5(),
+    claimDefinitionKey: 'IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE',
+    claimState: 'PRESENT',
+    denominator: { ...base, precision: 'ESTIMATED' },
+    claimAttributes: { denominator_precision: 'ESTIMATED' },
+  }), /invalid or mismatched denominator precision/);
+  assert.throws(() => validateMoneyDenominatorForContract({
+    governingContract: compileFixtureContractV5(),
+    claimDefinitionKey: 'IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE',
+    claimState: 'PRESENT',
+    denominator: { ...base, precision: 'EXACT' },
+    claimAttributes: { denominator_precision: 'APPROXIMATE' },
+  }), /invalid or mismatched denominator precision/);
 });
 
 test('metric-operation bindings reject buyer/seller legal-operation hybrids', () => {

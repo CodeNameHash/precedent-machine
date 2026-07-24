@@ -25,11 +25,13 @@ const {
   FIXTURE_CONTRACT_INPUT_V2,
   FIXTURE_CONTRACT_INPUT_V3,
   FIXTURE_CONTRACT_INPUT_V4,
+  FIXTURE_CONTRACT_INPUT_V5,
   FIXTURE_CONTRACT_FINGERPRINTS,
   compileFixtureContract,
   compileFixtureContractV2,
   compileFixtureContractV3,
   compileFixtureContractV4,
+  compileFixtureContractV5,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -38,6 +40,7 @@ const FROZEN_F1 = '56da82bee06331793ba2ed8b78ef4186361407e60733595091e5951853e7d
 const FROZEN_F2 = '46553f1a743dbf9f4ebfd07bff20939f66a57c4973826b5619c8bdfd196b1b83';
 const FROZEN_F3 = '5cc5607bee8fc816e8682f71b9482ff839ff744cebaaf0f26bfcfa54ea64512c';
 const FROZEN_F4 = 'd4ce5235be1818a42d9aba0dfb34198456eb062381e7d7db7b8289dd88671c74';
+const FROZEN_F5 = 'f80a77651d1b6a6a9eec8ac67526a8704f498761cbb22a67e6ceb4716abb5478';
 
 const APPROVED_V2_ADDITIONS = [
   'TERMR-BREACH',
@@ -98,13 +101,14 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F4 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F5 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
+  assert.notEqual(FROZEN_F4, FROZEN_F5);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
-    [FROZEN_F1, FROZEN_F2, FROZEN_F3, FROZEN_F4].sort(),
+    [FROZEN_F1, FROZEN_F2, FROZEN_F3, FROZEN_F4, FROZEN_F5].sort(),
   );
 });
 
@@ -286,6 +290,67 @@ test('F4 cannot be assembled from F3 with only one side or without its typed sch
   }), /termination-fee exact-detail action/);
 });
 
+test('F5 adds only the mandatory money denominator precision policy and residual', () => {
+  const f4 = compileFixtureContractV4();
+  const f5 = compileFixtureContractV5();
+  assert.equal(f5.fingerprint, FROZEN_F5);
+  assert.equal(validateContractBundle(f5), true);
+  assert.equal(
+    canonicalJson(f5),
+    canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V5)),
+  );
+  const {
+    fingerprint: _f4Fingerprint,
+    residual_reason_codes: _f4Residuals,
+    ...f4Stable
+  } = f4;
+  const {
+    fingerprint: _f5Fingerprint,
+    residual_reason_codes: _f5Residuals,
+    money_denominator_precision_policy_definition: _f5Policy,
+    ...f5Stable
+  } = f5;
+  assert.equal(canonicalJson(f5Stable), canonicalJson(f4Stable));
+  assert.deepEqual(
+    f5.residual_reason_codes,
+    [...f4.residual_reason_codes, 'INVALID_DENOMINATOR_PRECISION'],
+  );
+  assert.deepEqual(f5.money_denominator_precision_policy_definition, {
+    schema_version: 'MONEY_DENOMINATOR_PRECISION_POLICY/V1',
+    value_kind: 'MONEY_RELATIVE_TO_DEAL_VALUE',
+    required_claim_state: 'PRESENT',
+    applicable_claim_definition_keys: [
+      'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+      'IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE',
+      'MATERIAL_CONTRACT_CASH_FLOW_THRESHOLD_PERCENT_OF_DEAL_VALUE',
+      'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+    ],
+    authoritative_path: 'denominator.precision',
+    allowed_precision_values: ['APPROXIMATE', 'EXACT'],
+    compatibility_projection_path: 'attributes.denominator_precision',
+    compatibility_projection_must_equal_authoritative: true,
+  });
+  assert.equal(canonicalJson(fixtureContractForFingerprint(FROZEN_F5)), canonicalJson(f5));
+});
+
+test('F5 precision policy and residual cannot be adopted independently or altered', () => {
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V5,
+    money_denominator_precision_policy: undefined,
+  }), /residual reason codes/);
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V5,
+    residual_reason_codes: FIXTURE_CONTRACT_INPUT_V4.residual_reason_codes,
+  }), /residual reason codes/);
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V5,
+    money_denominator_precision_policy: {
+      ...FIXTURE_CONTRACT_INPUT_V5.money_denominator_precision_policy,
+      allowed_precision_values: ['EXACT'],
+    },
+  }), /contract version/);
+});
+
 // ---------------------------------------------------------------------------
 // Per-version validation: validateInput (exercised via compileFixtureContract)
 // accepts either frozen concept-key vocabulary and rejects anything else.
@@ -312,9 +377,10 @@ test('a bundle missing one of the four V2 additions is rejected (not silently ac
   assert.throws(() => compileFixtureContract(partial), /concept keys do not match any frozen fixture contract version/);
 });
 
-test('validateContractBundle accepts compiled V1 through V4 bundles', () => {
+test('validateContractBundle accepts compiled V1 through V5 bundles', () => {
   assert.equal(validateContractBundle(compileFixtureContract()), true);
   assert.equal(validateContractBundle(compileFixtureContractV2()), true);
   assert.equal(validateContractBundle(compileFixtureContractV3()), true);
   assert.equal(validateContractBundle(compileFixtureContractV4()), true);
+  assert.equal(validateContractBundle(compileFixtureContractV5()), true);
 });

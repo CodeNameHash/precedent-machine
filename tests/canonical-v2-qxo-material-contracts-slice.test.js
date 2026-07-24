@@ -7,7 +7,10 @@ const {
   buildFixtureCandidateRelease,
   validateCandidateReleaseBundle,
 } = require('../lib/canonical-v2/candidate-release');
-const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
+const {
+  compileFixtureContract,
+  compileFixtureContractV5,
+} = require('../lib/canonical-v2/contract-bundle');
 const {
   validateAdmittedMultiSourceResultCompositionDetailPackage,
 } = require('../lib/canonical-v2/admitted-composition-exact-detail');
@@ -143,13 +146,13 @@ function sourceContexts() {
   };
 }
 
-function build() {
+function build(selectedContractBundle = contractBundle) {
   const contexts = sourceContexts();
   return {
     ...contexts,
     candidate: buildQxoMaterialContractsSlice({
       ...contexts,
-      contractBundle,
+      contractBundle: selectedContractBundle,
       corpusReleaseId,
     }),
   };
@@ -186,6 +189,20 @@ test('QXO keeps the exact $10m threshold and $17bn denominator while excluding t
   assert.equal(candidate.projection.exclusion.aggregate_authority, 'NO_AGGREGATE_AUTHORITY');
 });
 
+test('F5 classifies the source-described QXO deal-value denominator as approximate', () => {
+  const { candidate } = build(compileFixtureContractV5());
+  assert.equal(candidate.claim.denominator.precision, 'APPROXIMATE');
+  assert.equal(candidate.claim.attributes.denominator_precision, 'APPROXIMATE');
+  assert.equal(candidate.projection.observation, null);
+  assert.equal(candidate.projection.exclusion.exclusion_reason, 'RESULT_INCOMPLETE');
+  assert.equal(validateSharedServingRow(candidate.incomplete_shared_row), true);
+  const metric = adaptSharedServingRow(candidate.incomplete_shared_row).data
+    .byRow[candidate.incomplete_shared_row.row_serving_key]
+    .metrics.MATERIAL_CONTRACT_CASH_FLOW_THRESHOLD_PERCENT_OF_DEAL_VALUE;
+  assert.equal(metric.subject.denominatorPrecision, 'APPROXIMATE');
+  assert.equal(metric.subject.label, 'Approximately 0.06% of headline deal value');
+});
+
 test('QXO incomplete row binds the attribute candidate and remains useful in Review without claiming market data', async () => {
   const { candidate } = build();
   const row = candidate.incomplete_shared_row;
@@ -213,6 +230,11 @@ test('QXO incomplete row binds the attribute candidate and remains useful in Rev
   assert.equal(adapted.resolution.marketCohortEligible, false);
   assert.equal(metric.state, 'not_certified');
   assert.equal(metric.subject.percentOfDealValue, 0.05882353);
+  assert.equal(metric.subject.denominatorPrecision, 'NOT_CAPTURED');
+  assert.equal(
+    metric.subject.label,
+    '0.06% of headline deal value (denominator precision not captured)',
+  );
   assert.equal(
     metric.subject.legalTerms.find((term) => term.key === 'raw_amount').value,
     '$10,000,000',

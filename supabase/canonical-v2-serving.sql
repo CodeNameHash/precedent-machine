@@ -199,15 +199,69 @@ ALTER TABLE canonical_v2_staging.shared_serving_rows
   ADD CONSTRAINT canonical_v2_shared_serving_rows_row_kind_check
   CHECK (row_kind IN ('CANONICAL_RESULT', 'INCOMPLETE_CANONICAL_RESULT'));
 ALTER TABLE canonical_v2_staging.shared_serving_rows
-  ADD COLUMN IF NOT EXISTS denominator_precision text
-    GENERATED ALWAYS AS (
-      canonical_payload #>> '{canonical_result,components,0,claim_attributes,denominator_precision}'
-    ) STORED;
-ALTER TABLE canonical_v2_staging.shared_serving_rows
   DROP CONSTRAINT IF EXISTS canonical_v2_shared_serving_rows_denominator_precision_check;
 ALTER TABLE canonical_v2_staging.shared_serving_rows
+  DROP CONSTRAINT IF EXISTS canonical_v2_shared_serving_rows_f5_money_precision_check;
+ALTER TABLE canonical_v2_staging.shared_serving_rows
+  DROP COLUMN IF EXISTS denominator_precision;
+ALTER TABLE canonical_v2_staging.shared_serving_rows
+  ADD COLUMN denominator_precision text
+    GENERATED ALWAYS AS (
+      coalesce(
+        canonical_payload #>> '{canonical_result,components,0,denominator,precision}',
+        canonical_payload #>> '{incomplete_canonical_result,components,0,denominator,precision}',
+        canonical_payload #>> '{canonical_result,components,0,claim_attributes,denominator_precision}',
+        canonical_payload #>> '{incomplete_canonical_result,components,0,claim_attributes,denominator_precision}'
+      )
+    ) STORED;
+ALTER TABLE canonical_v2_staging.shared_serving_rows
   ADD CONSTRAINT canonical_v2_shared_serving_rows_denominator_precision_check
-  CHECK (denominator_precision IS NULL OR denominator_precision = 'APPROXIMATE');
+  CHECK (
+    denominator_precision IS NULL
+    OR denominator_precision IN ('EXACT', 'APPROXIMATE')
+  );
+ALTER TABLE canonical_v2_staging.shared_serving_rows
+  ADD CONSTRAINT canonical_v2_shared_serving_rows_f5_money_precision_check
+  CHECK (
+    contract_fingerprint <> 'f80a77651d1b6a6a9eec8ac67526a8704f498761cbb22a67e6ceb4716abb5478'
+    OR (
+      coalesce(
+        canonical_payload #>> '{canonical_result,components,0,unit}',
+        canonical_payload #>> '{incomplete_canonical_result,components,0,unit}'
+      )
+    ) IS DISTINCT FROM 'PERCENT_OF_DEAL_VALUE'
+    OR (
+      coalesce(
+        canonical_payload #>> '{canonical_result,components,0,denominator,precision}',
+        canonical_payload #>> '{incomplete_canonical_result,components,0,denominator,precision}'
+      ) IS NOT NULL
+      AND (
+        coalesce(
+          canonical_payload #>> '{canonical_result,components,0,denominator,precision}',
+          canonical_payload #>> '{incomplete_canonical_result,components,0,denominator,precision}'
+        )
+      ) IN ('EXACT', 'APPROXIMATE')
+      AND denominator_precision IS NOT DISTINCT FROM (
+        coalesce(
+          canonical_payload #>> '{canonical_result,components,0,denominator,precision}',
+          canonical_payload #>> '{incomplete_canonical_result,components,0,denominator,precision}'
+        )
+      )
+      AND (
+        coalesce(
+          canonical_payload
+            #>> '{canonical_result,components,0,claim_attributes,denominator_precision}',
+          canonical_payload
+            #>> '{incomplete_canonical_result,components,0,claim_attributes,denominator_precision}'
+        )
+      ) IS NOT DISTINCT FROM (
+        coalesce(
+          canonical_payload #>> '{canonical_result,components,0,denominator,precision}',
+          canonical_payload #>> '{incomplete_canonical_result,components,0,denominator,precision}'
+        )
+      )
+    )
+  );
 
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.query_response_cache (
   serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
