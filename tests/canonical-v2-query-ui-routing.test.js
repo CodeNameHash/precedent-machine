@@ -1,5 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 
 const {
   runQueryRoute,
@@ -54,7 +55,7 @@ test('2. flag off routes to legacy; canonical endpoint is never called', async (
 test('3. unsupported request shape + flag on still routes to legacy, canonical never called', async () => {
   const canonicalCalls = [];
   const legacyCalls = [];
-  const unsupported = { ...SUPPORTED_PAYLOAD, field_path: 'reverseFeePctOfDealValue' };
+  const unsupported = { ...SUPPORTED_PAYLOAD, field_path: 'companyTerminationFee' };
   const outcome = await runQueryRoute({
     kind: 'MARKET_RANGE',
     payload: unsupported,
@@ -66,6 +67,36 @@ test('3. unsupported request shape + flag on still routes to legacy, canonical n
   assert.equal(outcome.mode, 'legacy');
   assert.equal(canonicalCalls.length, 0);
   assert.equal(legacyCalls.length, 1);
+});
+
+test('3b. reverse-fee request + flag on chooses canonical exactly once', async () => {
+  const reversePayload = { ...SUPPORTED_PAYLOAD, field_path: 'reverseFeePctOfDealValue' };
+  const canonicalCalls = [];
+  const legacyCalls = [];
+  const outcome = await runQueryRoute({
+    kind: 'MARKET_RANGE',
+    payload: reversePayload,
+    savedQueryId: 'adhoc',
+    flagEnabled: true,
+    fetchCanonical: async (body) => {
+      canonicalCalls.push(body);
+      return { status: 200, json: { schema_version: 'CANONICAL_QUERY_RESULT_VIEW/V1', rows: [] } };
+    },
+    fetchLegacy: async () => { legacyCalls.push(true); },
+  });
+  assert.equal(outcome.mode, 'canonical');
+  assert.equal(outcome.ok, true);
+  assert.equal(canonicalCalls.length, 1);
+  assert.deepEqual(canonicalCalls[0], mapLegacyRequestToCanonical(reversePayload));
+  assert.equal(legacyCalls.length, 0);
+});
+
+test('3c. the canonical renderer labels the buyer fee as a reverse termination fee percentage', () => {
+  const source = fs.readFileSync('components/query/CanonicalMarketRange.jsx', 'utf8');
+  assert.match(
+    source,
+    /BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE: 'Buyer \/ reverse termination fee — % of deal value'/,
+  );
 });
 
 test('4. canonical 503 FEATURE_DISABLED surfaces a governed error, no retry, no legacy fallback', async () => {
@@ -145,7 +176,14 @@ test('6. row isolation: a malformed row does not prevent sibling rows from rende
     cells: {
       deal: 'deal:good',
       percent_of_deal_value: '5.09090909',
-      triggers: [{ trigger_code: 'ACQUISITION_PROPOSAL_TAIL', payment_timing: 'CONCURRENT_WITH_TERMINATION' }],
+      triggers: [{
+        pathway_code: 'TAIL_NO_VOTE',
+        pathway_label: 'No-vote tail pathway',
+        trigger_label: 'Stockholder approval failure',
+        terminating_party_label: 'Either party',
+        payment_timing_label: 'Upon the earlier of signing a definitive agreement or consummation',
+        condition_expression_text: 'Stockholder approval failure and a qualifying transaction within 12 months',
+      }],
     },
   };
   // Malformed: triggers is not an array — formatCellValue must throw for this
@@ -167,4 +205,15 @@ test('6. row isolation: a malformed row does not prevent sibling rows from rende
   assert.ok(rendered[1].error);
   assert.deepEqual(rendered[1].cells, []);
   assert.equal(rendered[1].row_serving_key, malformedRow.row_serving_key);
+});
+
+test('7. Query source cells open the shared governed exact-detail renderer by deal key', () => {
+  const query = fs.readFileSync('components/query/CanonicalMarketRange.jsx', 'utf8');
+  const review = fs.readFileSync('components/review-v2/CanonicalReviewSection.jsx', 'utf8');
+  assert.match(query, /CanonicalSourceDetail/);
+  assert.match(query, /governedDealKey=\{rawRow\.governed_deal_key\}/);
+  assert.match(query, /sourceAction=\{sourceAction\}/);
+  assert.match(review, /query\.set\('dealKey', governedDealKey\)/);
+  assert.match(review, /SERVING_EXACT_DETAIL_TERMINATION_FEE_TRIGGERS_RESPONSE\/V2/);
+  assert.match(review, /Exact trigger evidence/);
 });

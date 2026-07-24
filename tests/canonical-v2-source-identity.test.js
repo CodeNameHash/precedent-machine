@@ -10,6 +10,8 @@ const {
 const {
   FIXTURE_CONTRACT_INPUT,
   compileFixtureContract,
+  compileFixtureContractV2,
+  compileFixtureContractV3,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
 const {
@@ -184,4 +186,49 @@ test('identity builders fail closed on incomplete parties, unknown concepts and 
     /outside the frozen fixture contract/,
   );
   assert.throws(() => buildSemanticSpan(source, 1, 2), /code-point boundaries/);
+});
+
+test('provision and component construction use one explicit frozen contract version', () => {
+  const source = sourceFor('Parent shall pay the Parent Termination Fee.');
+  const span = buildSemanticSpan(source, 0, utf8ByteLength(source.canonical_text.text));
+  const feeParty = {
+    role: 'FEE_PAYER',
+    value: 'PARENT',
+    capacity: 'BUYER',
+  };
+  const f1 = compileFixtureContract();
+  const f2 = compileFixtureContractV2();
+  const f3 = compileFixtureContractV3();
+  const buildReverse = (contractBundle) => buildProvisionInstance({
+    source,
+    span,
+    conceptKey: 'TERMF-REVERSE',
+    party: feeParty,
+    ordinal: 1,
+    contractBundle,
+  });
+
+  assert.throws(() => buildReverse(), /outside the frozen fixture contract/);
+  assert.throws(() => buildReverse(f1), /outside the frozen fixture contract/);
+  assert.throws(() => buildReverse(f2), /outside the frozen fixture contract/);
+  const provision = buildReverse(f3);
+  assert.equal(provision.concept_key, 'TERMF-REVERSE');
+
+  const component = buildProvisionComponent({
+    source,
+    parentProvision: provision,
+    span,
+    componentKey: 'FEE_AMOUNT_LIMB',
+    ordinal: 1,
+    contractBundle: f3,
+  });
+  assert.equal(component.component_key, 'FEE_AMOUNT_LIMB');
+  assert.throws(() => buildProvisionComponent({
+    source,
+    parentProvision: provision,
+    span,
+    componentKey: 'FEE_AMOUNT_LIMB',
+    ordinal: 1,
+    contractBundle: { ...f3, component_definitions: [] },
+  }), /contract bundle|component keys|payload mismatch/);
 });

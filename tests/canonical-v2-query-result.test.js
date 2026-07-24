@@ -8,9 +8,17 @@ const { buildLandosTerminationFeeServingFixture } = require('../__fixtures__/can
 const { buildMultiDealCandidateReleaseFixture } = require('../__fixtures__/canonical-v2/multi-deal-candidate-release');
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
 const {
+  compileFixtureContract,
+  compileFixtureContractV2,
+  compileFixtureContractV3,
+  compileFixtureContractV4,
+} = require('../lib/canonical-v2/contract-bundle');
+const {
+  compileCanonicalActiveQueryRequest,
   compileCanonicalQueryRequest,
   projectSharedServingRowRecord,
   queryCanonicalResultPage,
+  resolveActiveQueryPage,
 } = require('../lib/canonical-v2/query-result');
 
 const namespaceId = contentId('SERVING_NAMESPACE/V1', 'landos-reviewed-fixture');
@@ -66,6 +74,89 @@ class MemoryCache {
     this.writes.push({ key, ttl });
   }
 }
+
+function reverseFeeBody(overrides = {}) {
+  return {
+    intent: 'MARKET_RANGE',
+    metric_key: 'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+    metric_version: 1,
+    concept_key: 'TERMF-REVERSE',
+    party: { role: 'FEE_PAYER', value: 'PARENT', capacity: 'BUYER' },
+    filters: {},
+    selected_columns: null,
+    column_filters: {},
+    page_size: 25,
+    cursor: null,
+    ...overrides,
+  };
+}
+
+test('active query selects a publishable frozen contract that supports the requested metric', () => {
+  const sellerRow = buildLandosTerminationFeeServingFixture().row;
+  const sellerBody = requestFor(sellerRow);
+  for (const key of ['serving_namespace_id', 'corpus_release_id', 'contract_fingerprint']) delete sellerBody[key];
+  assert.equal(
+    compileCanonicalActiveQueryRequest(sellerBody).contract_fingerprint,
+    compileFixtureContract().fingerprint,
+  );
+
+  const buyer = compileCanonicalActiveQueryRequest(reverseFeeBody());
+  assert.equal(buyer.contract_fingerprint, compileFixtureContractV4().fingerprint);
+  assert.deepEqual(
+    buyer.selected_columns,
+    ['deal', 'buyer', 'percent_of_deal_value', 'raw_value', 'fee_side', 'payer', 'payee', 'triggers', 'source'],
+  );
+  assert.equal(buyer.basis_key, 'PERCENT_OF_DEAL_VALUE:HEADLINE_TRANSACTION_VALUE:USD');
+});
+
+test('pinned buyer-fee requests require the corrected F4 trigger contract', () => {
+  const physical = {
+    serving_namespace_id: namespaceId,
+    corpus_release_id: contentId('CORPUS_RELEASE/V1', 'reverse-fee-release'),
+    ...reverseFeeBody(),
+  };
+  assert.equal(
+    compileCanonicalQueryRequest({
+      ...physical,
+      contract_fingerprint: compileFixtureContractV4().fingerprint,
+    }).contract_fingerprint,
+    compileFixtureContractV4().fingerprint,
+  );
+  for (const contract of [
+    compileFixtureContract(),
+    compileFixtureContractV2(),
+    compileFixtureContractV3(),
+  ]) {
+    assert.throws(
+      () => compileCanonicalQueryRequest({ ...physical, contract_fingerprint: contract.fingerprint }),
+      /does not support this governed metric and concept/,
+    );
+  }
+});
+
+test('active buyer-fee query rejects an active release whose contract predates the metric', () => {
+  const request = compileCanonicalActiveQueryRequest(reverseFeeBody());
+  const activeResult = {
+    schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V1',
+    pointer_id: contentId('ACTIVE_POINTER/V1', 'buyer-fee'),
+    serving_namespace_id: namespaceId,
+    corpus_release_id: contentId('CORPUS_RELEASE/V1', 'active-before-f4'),
+    contract_fingerprint: compileFixtureContractV2().fingerprint,
+    query_semantics_digest: request.query_semantics_digest,
+    total_count: 0,
+    page_count: 0,
+    rows: [],
+    next_cursor: null,
+  };
+  assert.throws(
+    () => resolveActiveQueryPage(activeResult, request),
+    (error) => error.code === 'INVALID_RESPONSE' && /does not support/.test(error.message),
+  );
+  assert.doesNotThrow(() => resolveActiveQueryPage({
+    ...activeResult,
+    contract_fingerprint: compileFixtureContractV4().fingerprint,
+  }, request));
+});
 
 test('termination-fee query returns percentage, legal side, triggers and source in one bounded cached request', async () => {
   const row = buildLandosTerminationFeeServingFixture().row;

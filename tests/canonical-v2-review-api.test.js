@@ -36,7 +36,6 @@ function activeFixtureResult(fixture, rows = fixture.release.shared_rows) {
     directoryRecord: fixture.release.deal_directory_records[0],
     rows,
     request: {
-      contract_fingerprint: fixture.contract.fingerprint,
       application_deal_id: fixture.release.deal_directory_records[0].application_deal_id,
       page_size: 100,
       after_row_serving_key: null,
@@ -119,14 +118,21 @@ test('exact-detail API returns the selected response body, not the unbounded sou
     exact_detail_package_digest: contentId('EXACT_DETAIL_ATOMIC_PACKAGE/V1', detailPackage),
     package: detailPackage,
   };
+  const calls = [];
   const handler = createCanonicalExactDetailHandler({
     enabled: true,
-    getClient: () => ({ rpc: () => Promise.resolve({ data: result, error: null }) }),
+    getClient: () => ({
+      rpc(name, params) {
+        calls.push({ name, params });
+        return Promise.resolve({ data: result, error: null });
+      },
+    }),
   });
   const res = responseRecorder();
   await handler({ method: 'GET', query: {
     namespace: fixture.servingNamespaceId,
     release: fixture.corpusReleaseId,
+    contract: fixture.contract.fingerprint,
     dealId: directory.application_deal_id,
     row: result.row_serving_key,
     source: result.source_detail_reference_id,
@@ -134,7 +140,79 @@ test('exact-detail API returns the selected response body, not the unbounded sou
   assert.equal(res.statusCode, 200);
   assert.ok(res.body.detail.excerpt?.exact_text || res.body.detail.exact_excerpts?.length);
   assert.equal(Object.hasOwn(res.body, 'package'), false);
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].params.p_contract_fingerprint, fixture.contract.fingerprint);
   assert.match(res.headers['Cache-Control'], /immutable/);
+
+  const governedCalls = [];
+  const governedHandler = createCanonicalExactDetailHandler({
+    enabled: true,
+    getClient: () => ({
+      rpc(name, params) {
+        governedCalls.push({ name, params });
+        return Promise.resolve({ data: result, error: null });
+      },
+    }),
+  });
+  const governedRes = responseRecorder();
+  await governedHandler({ method: 'GET', query: {
+    namespace: fixture.servingNamespaceId,
+    release: fixture.corpusReleaseId,
+    contract: fixture.contract.fingerprint,
+    dealKey: directory.governed_deal_key,
+    row: result.row_serving_key,
+    source: result.source_detail_reference_id,
+  } }, governedRes);
+  assert.equal(governedRes.statusCode, 200);
+  assert.equal(governedCalls.length, 1);
+  assert.equal(governedCalls[0].name, 'canonical_v2_exact_detail_by_governed_deal');
+});
+
+test('Review and exact-detail routes are governed by the active release fingerprint', () => {
+  const sql = fs.readFileSync('supabase/canonical-v2-serving.sql', 'utf8');
+  const reviewStart = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_review_context');
+  const exactStart = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_exact_detail');
+  const exactEnd = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_reviewed_deal_context');
+  const review = sql.slice(reviewStart, exactStart);
+  const exact = sql.slice(exactStart, exactEnd);
+
+  assert.match(review, /release_contract_fingerprint/);
+  assert.match(review, /FROM canonical_v2_staging\.fixture_corpus_releases release/);
+  assert.match(review, /directory\.contract_fingerprint = release_contract_fingerprint/);
+  assert.doesNotMatch(review, /contract_fingerprint = p_contract_fingerprint/);
+
+  assert.match(exact, /FROM canonical_v2_staging\.active_corpus_release_pointers pointer/);
+  assert.match(exact, /FROM canonical_v2_staging\.fixture_corpus_releases release/);
+  assert.match(exact, /p_contract_fingerprint IS DISTINCT FROM release_contract_fingerprint/);
+  assert.match(exact, /directory\.contract_fingerprint = release_contract_fingerprint/);
+  assert.match(exact, /exact-detail route is stale for the active canonical release/);
+});
+
+test('Review renders the governed termination-fee trigger response as structured legal terms', () => {
+  const source = fs.readFileSync('components/review-v2/CanonicalReviewSection.jsx', 'utf8');
+  assert.match(source, /SERVING_EXACT_DETAIL_TERMINATION_FEE_TRIGGERS_RESPONSE\/V1/);
+  assert.match(source, /SERVING_EXACT_DETAIL_TERMINATION_FEE_TRIGGERS_RESPONSE\/V2/);
+  assert.match(source, /CREATES_BUYER_TERMINATION_FEE_PAYMENT_TRIGGER/);
+  assert.match(source, /CREATES_SELLER_TERMINATION_FEE_PAYMENT_TRIGGER/);
+  assert.match(source, /TERMINATION_FEE_TRIGGER_EVIDENCE/);
+  assert.match(source, /detail\.trigger_count < 1/);
+  assert.match(source, /detail\.trigger_count > 16/);
+  assert.match(source, /pathwayLabel/);
+  assert.match(source, /paymentTimingLabel/);
+  assert.match(source, /terminatingPartyLabel/);
+  assert.doesNotMatch(source, /TRIGGER_PATHWAY_LABELS|PAYMENT_TIMING_LABELS|TERMINATING_PARTY_LABELS/);
+  assert.match(source, /conditionExpressionView/);
+  assert.match(source, /indexed_facts/);
+  assert.match(source, /All of:/);
+  assert.match(source, /Any one of:/);
+  assert.match(source, /If:/);
+  assert.match(source, /Then:/);
+  assert.match(source, /data-canonical-trigger-detail/);
+  assert.match(source, /loadMorePendingRef/);
+  assert.match(source, /Exact trigger evidence/);
+  assert.match(source, /contract: envelope\.contract_fingerprint/);
+  assert.match(source, /Certified trigger detail contains an unsupported legal term/);
+  assert.doesNotMatch(source, /trigger_count\s*!==?\s*(?:6|9)|triggers\.length\s*!==?\s*(?:6|9)/);
 });
 
 test('guard rejects excess work and opens its local circuit without retrying', async () => {

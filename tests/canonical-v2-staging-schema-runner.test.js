@@ -11,6 +11,9 @@ test('staging schema runner is fixed to the isolated project and rolls back by d
   assert.match(source, /deal-corpus-canonical-v2-staging/);
   assert.match(source, /const terminal = mode === 'apply' \? 'COMMIT;' : 'ROLLBACK;'/);
   assert.match(source, /EXPECTED_DIGESTS/);
+  assert.match(source, /--workdir <isolated-staging-workdir>/);
+  assert.match(source, /realpathSync\(resolve\(workdirInput\)\)/);
+  assert.match(source, /\['--workdir', workdir, 'db', 'query'/);
   assert.doesNotMatch(source, /precedent-machine['"]|tzulhdasmioeechxapdy/);
 });
 
@@ -22,6 +25,16 @@ test('staging schema runner rejects ambiguous invocation before database work', 
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /Usage:/);
   assert.doesNotMatch(result.stdout, /Applying canonical/);
+});
+
+test('staging schema runner requires an explicit isolated workdir before database work', () => {
+  const result = spawnSync(process.execPath, [RUNNER, '--dry-run'], {
+    cwd: process.cwd(),
+    encoding: 'utf8',
+  });
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /--workdir <isolated-staging-workdir>/);
+  assert.doesNotMatch(result.stdout, /Dry-running canonical/);
 });
 
 test('staging schema verification checks writer, serving RPCs and denied broad roles', () => {
@@ -64,6 +77,9 @@ test('staging schema verification checks writer, serving RPCs and denied broad r
   assert.match(source, /serving_inactive_candidate_rollback_denied/);
   assert.match(source, /writer_inactive_candidate_rollback_allowed/);
   assert.match(source, /writer_candidate_input_head_table_denied/);
+  assert.match(source, /const rows = Array\.isArray\(output\) \? output : output\?\.rows/);
+  assert.match(source, /rows\.length === 1/);
+  assert.match(source, /passed !== true/);
 });
 
 test('governed schema uses valid collision-safe advisory lock identities', () => {
@@ -98,6 +114,11 @@ test('staging correction authority is immutable, bounded, CAS-protected and writ
   assert.match(source, /CREATE OR REPLACE FUNCTION public\.canonical_v2_recheck_candidate_input_head/);
   assert.match(source, /current_head\.environment = p_environment/);
   assert.match(source, /current_head\.contract_fingerprint = p_contract_fingerprint/);
+  const recheckStart = source.indexOf(
+    'CREATE OR REPLACE FUNCTION public.canonical_v2_recheck_candidate_input_head',
+  );
+  const recheckEnd = source.indexOf('REVOKE ALL ON SCHEMA canonical_v2_staging', recheckStart);
+  assert.match(source.slice(recheckStart, recheckEnd), /FOR SHARE OF current_head/);
   assert.match(source, /ORDER BY map_entry\.entry_ordinal/);
   assert.match(source, /REVOKE ALL ON FUNCTION public\.canonical_v2_select_candidate_inputs[\s\S]*service_role/);
   assert.match(source, /REVOKE ALL ON FUNCTION public\.canonical_v2_recheck_candidate_input_head[\s\S]*service_role/);

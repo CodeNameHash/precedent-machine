@@ -119,14 +119,14 @@ test('all three triggers survive the release projection and one shared row', () 
     'Payer',
     'Payee',
     'Deal-value basis',
-    'Triggers',
+    'Trigger pathways',
     '',
     '',
   ]);
   const triggers = metric.subject.legalTerms.filter((term) => term.key.startsWith('trigger_'));
-  assert.match(triggers[0].value, /Superior Proposal/);
-  assert.match(triggers[1].value, /Change in Recommendation/);
-  assert.match(triggers[2].value, /within 12 months/);
+  assert.match(triggers[0].value, /superior proposal/i);
+  assert.match(triggers[1].value, /change in recommendation/i);
+  assert.match(triggers[2].value, /within 12 months/i);
   for (const surface of SURFACES) {
     assert.equal(adapted.surface_bindings[surface].typed_market, adapted.typed_market);
   }

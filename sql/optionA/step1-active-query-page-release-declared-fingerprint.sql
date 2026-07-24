@@ -1,7 +1,7 @@
 -- Step-1 widening: canonical_v2_active_query_page (release-declared
 -- fingerprint fix, SPEC-CONTRACT-AMENDMENT-PATH-2026-07-23.md option 1).
 -- Extracted VERBATIM from supabase/canonical-v2-serving.sql; extractor-
--- enforced sha256 a50721d5ed81c3d4c57af9d32b7558fd296fa8060d35c31959e1c8a4f1fdece4.
+-- enforced sha256 6232339144b7d2a70d854a7e4ff6d49c082126dad25f0374fd76559f4fa08adf.
 -- Idempotent CREATE OR REPLACE, additive; F1 serving unaffected. Run in the
 -- STAGING SQL Editor, then the verification SELECT below must return
 -- three true values.
@@ -83,6 +83,10 @@ BEGIN
   WHERE release.corpus_release_id = active_pointer.corpus_release_id;
   IF release_contract_fingerprint IS NULL THEN
     RAISE EXCEPTION 'active canonical corpus release has no declared contract fingerprint' USING ERRCODE = '02000';
+  END IF;
+  IF release_contract_fingerprint =
+      '5cc5607bee8fc816e8682f71b9482ff839ff744cebaaf0f26bfcfa54ea64512c' THEN
+    RAISE EXCEPTION 'the rejected F3 contract cannot be served' USING ERRCODE = '23514';
   END IF;
 
   SELECT public.canonical_v2_query_page(

@@ -87,7 +87,6 @@ test('one bounded active-release read returns the comparable QXO shared row', as
     corpus_release_id: fixture.corpusReleaseId,
   };
   const request = {
-    contract_fingerprint: fixture.contractBundle.fingerprint,
     application_deal_id: APPLICATION_DEALS.QXO,
     page_size: 2,
     after_row_serving_key: null,
@@ -96,6 +95,7 @@ test('one bounded active-release read returns the comparable QXO shared row', as
     application_deal_id: APPLICATION_DEALS.QXO,
     governed_deal_key: row.governed_deal_key,
     deal_admission_id: row.deal_admission_id,
+    contract_fingerprint: fixture.contractBundle.fingerprint,
   };
   const calls = [];
   const client = {
@@ -118,6 +118,7 @@ test('one bounded active-release read returns the comparable QXO shared row', as
   assert.equal(calls.length, 1);
   assert.equal(calls[0].name, 'canonical_v2_active_review_context');
   assert.equal(calls[0].params.p_page_size, 2);
+  assert.equal(calls[0].params.p_contract_fingerprint, null);
   assert.equal(response.result.corpus_release_id, fixture.corpusReleaseId);
   assert.deepEqual(response.result.rows, [row]);
 });

@@ -1,6 +1,6 @@
 BEGIN;
 SET LOCAL statement_timeout='120000ms';
--- Governed function SHA-256: 82bd3452a61a8478cead5c45ae99d1f442bcd888f67ce96607e504791ccb6dfe
+-- Governed function SHA-256: 53578257036aa9e5d0c8b6eb2f200a44d04e014a070ccb2334a56fd8775c1734
 CREATE OR REPLACE FUNCTION public.canonical_v2_activate_candidate_release(
   p_environment text,
   p_expected_current_pointer jsonb,
@@ -102,6 +102,10 @@ BEGIN
     AND receipt.serving_namespace_id = p_next_pointer->>'serving_namespace_id';
   IF imported_plan_id IS NULL THEN
     RAISE EXCEPTION 'candidate release has no complete import receipt' USING ERRCODE = '23514';
+  END IF;
+  IF imported_input_contract_fingerprint =
+      '5cc5607bee8fc816e8682f71b9482ff839ff744cebaaf0f26bfcfa54ea64512c' THEN
+    RAISE EXCEPTION 'the rejected F3 contract cannot be activated' USING ERRCODE = '23514';
   END IF;
   IF imported_correction_seal_id IS DISTINCT FROM p_next_pointer->>'correction_input_seal_id'
     OR imported_correction_input_root_id IS DISTINCT FROM p_next_pointer->>'correction_input_root' THEN
