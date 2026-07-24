@@ -82,6 +82,7 @@ const DEAL_KEY = 'deal:qxo-topbuild';
 const APPLICATION_DEAL_ID = '7dc3a05f-b170-4d59-a255-b7103cca16e1';
 const DEAL_ADMISSION_ID = '62b8b828c534273c68dcd48cec3fbbcb4f912ac3f477dbdc377de5ac47954c8f';
 const TERMINATION_DEAL_SCOPE_KEY = 'QXO_TERMINATION_FEE_DEAL_SCOPE_V1';
+const SHARED_DEAL_VALUE_EXCERPT_ID = '56224984beed0f058c61f7af92667fdf3c983a65dc742052946af979e40b7dee';
 const MAX_WRITER_REQUEST_BYTES = 512 * 1024;
 const SOURCES = Object.freeze({
   agreement: Object.freeze({
@@ -144,7 +145,7 @@ const EXPECTED_ATTESTATION = Object.freeze({
   termination_reviewed_mapping_id: '9c3501f89e0574d94821241915748292c0c345b980d0c90ba2986cff21606a4a',
   termination_semantic_closure_id: '6e59b62130b2c0bac205251bf936c7aaca55b84ed9251971a1528870b17672a2',
   termination_row_serving_key: '0d4739a3e9c3b28bcae7c2db0e062a3c2c308f7175233791d276ed01a4c54a83',
-  termination_deal_scope_input_digest: '6e874fea87644f513b330c2a9853f31f4a4b806baafd18bfe028a23b97c83a5f',
+  termination_deal_scope_input_digest: '4bc0b3b0dca0832212cad00e83b7bbc595e5119708953e51c62ee192dd3f8db7',
   prior_semantic_closure_ids: Object.freeze([
     '89683e5ff72a570948bfadda123254719d848310b5c50ad3720645e2cbd6291b',
     '944c18cb24c5684c04eb3d2c9cae57f932c144790492bc1619ccd566d57a8a3e',
@@ -322,14 +323,26 @@ function activePointerPredicate() {
 }
 
 function semanticWriteGateSql({ inputDigest, receipt, writeSet }, closureId) {
-  const counts = {
-    validated_semantic_graphs: writeSet.validated_semantic_graphs.length,
-    excerpts: writeSet.excerpts.length,
-    provision_instances: writeSet.provisions.length,
-    provision_components: writeSet.components.length,
-    claim_revisions: writeSet.claims.length,
-    relationship_revisions: writeSet.relationships.length,
+  const rowsByTable = {
+    validated_semantic_graphs: writeSet.validated_semantic_graphs,
+    excerpts: writeSet.excerpts,
+    provision_instances: writeSet.provisions,
+    provision_components: writeSet.components,
+    claim_revisions: writeSet.claims,
+    relationship_revisions: writeSet.relationships,
   };
+  const counts = Object.fromEntries(Object.entries(rowsByTable).map(([table, rows]) => [
+    table,
+    rows.filter((row) => row.closure_id === closureId).length,
+  ]));
+  const sharedExcerpts = writeSet.excerpts.filter((row) => row.closure_id !== closureId);
+  if (sharedExcerpts.length !== 1
+    || sharedExcerpts[0].excerpt_id !== SHARED_DEAL_VALUE_EXCERPT_ID
+    || sharedExcerpts[0].closure_id !== QXO_MATERIAL_SEMANTIC_CLOSURE_ID) {
+    throw new Error('The termination write must reuse exactly the pinned material deal-value excerpt.');
+  }
+  const sharedExcerpt = sharedExcerpts[0];
+  const sharedExcerptDigest = sha256(Buffer.from(canonicalJson(sharedExcerpt), 'utf8'));
   const countChecks = Object.entries(counts).map(([table, count]) => `
   IF (SELECT count(*) FROM canonical_v2_staging.${table} WHERE closure_id='${closureId}') <> ${count} THEN
     RAISE EXCEPTION 'termination semantic closure count mismatch: ${table}';
@@ -344,6 +357,13 @@ BEGIN
         AND canonical_payload=${sqlJson(receipt)}) <> 1 THEN
     RAISE EXCEPTION 'exact termination DEAL_SCOPE_RUN receipt is not committed';
   END IF;${countChecks}
+  IF (SELECT count(*) FROM canonical_v2_staging.excerpts
+      WHERE excerpt_id='${sharedExcerpt.excerpt_id}'
+        AND closure_id='${sharedExcerpt.closure_id}'
+        AND canonical_payload_digest='${sharedExcerptDigest}'
+        AND canonical_payload=${sqlJson(sharedExcerpt)}) <> 1 THEN
+    RAISE EXCEPTION 'shared deal-value excerpt mismatch';
+  END IF;
 END;
 $termination_semantic_write_gate$;`;
 }

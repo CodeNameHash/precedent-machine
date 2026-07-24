@@ -39,10 +39,16 @@ read first): `SPEC-QXO-TERMF-F2-CANDIDATE-OPTION-A-2026-07-24.md`.
   had incorrectly added query dimensions to that semantic identity.
 - The approved correction keeps that exact tuple in the authoritative
   semantic write and keeps buyer, sector, merger form, advisers, lawyers,
-  announce year and deal value on the serving projection. The packet was
-  regenerated with semantic input digest `6e874fea…`. All serving and release
-  identities remained unchanged. No candidate import or activation has
-  occurred.
+  announce year and deal value on the serving projection.
+- The next dry-run passed the deal boundary and failed closed on one
+  `canonical excerpt identity conflict`. The $17 billion deal-value excerpt
+  already exists under the material-contracts closure; its complete payload
+  was identical except for the proposed termination `closure_id`.
+- The approved shared-evidence correction reuses that exact immutable
+  material-contracts excerpt. The termination closure owns eight new
+  excerpts and references the shared ninth. The packet was regenerated with
+  semantic input digest `4bc0b3b0…`. All serving and release identities
+  remained unchanged. No candidate import or activation has occurred.
 - Status artifact generation 4 records the Option A runbook adaptation.
 - Tests: `tests/canonical-v2-qxo-termination-fee-admitted-slice.test.js`
   plus authority-partition and fail-closed packet tests. Full battery
@@ -56,6 +62,10 @@ read first): `SPEC-QXO-TERMF-F2-CANDIDATE-OPTION-A-2026-07-24.md`.
   503, `/api/canonical-v2/query` feature-disabled 503. PR #339 restored
   byte-for-byte content parity on `codex/canonical-corpus-v2`. The untracked
   `docs/codex-program/engine-build-map.md` in that worktree was preserved.
+- The deal-boundary correction merged in PR #342 at `6e40e63`, deployed
+  READY to `deal-corpus`, and passed contained production smoke. PR #343
+  restored integration parity at `63a9a8d` before the shared-excerpt
+  correction was generated.
 
 ## Next authorised action: staging-only corrected packet
 

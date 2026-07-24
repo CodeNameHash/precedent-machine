@@ -49,10 +49,40 @@ The writer's immutable-identity conflict remains unchanged. The generated
 verify-before block must still prove that the termination write and candidate
 release are absent. No active release pointer may change.
 
+## Shared immutable excerpt
+
+The corrected deal dry-run then exposed one `canonical excerpt identity
+conflict`. Of the nine termination write-set excerpts, only the admitted
+$17 billion deal-value excerpt already exists. Its global `excerpt_id`, source
+coordinates, exact bytes and complete payload are identical to the material-
+contracts excerpt. Only the proposed `closure_id` differed.
+
+The termination write must reuse that exact immutable excerpt with its
+first-admitted material-contracts closure. It remains present in the
+termination write set so validation can resolve the claim's derivation
+evidence and the writer can verify the existing object transactionally. The
+writer then performs an exact idempotent no-op for that row. The eight new
+termination excerpts retain the termination closure.
+
+The generated guard must assert both sides explicitly: eight excerpts owned
+by the termination closure, and one exact shared deal-value excerpt owned by
+the pinned material-contracts closure. Claims and derived results may combine
+evidence from those separate semantic closures. The shared excerpt does not
+move ownership and is not duplicated under a fabricated identity.
+
+No schema expansion is part of this packet. If closure membership later needs
+to be queryable independently from first-admission ownership, that requires a
+separate governed excerpt-membership relation. It must not be simulated by
+duplicating source evidence.
+
 ## Acceptance
 
 - The semantic deal exactly equals the existing staging canonical payload.
 - The serving deal retains all seven reviewed dimensions.
+- The deal-value excerpt exactly reuses its material-contracts closure and
+  all other termination excerpts use the termination closure.
+- The semantic guard proves eight new termination excerpts plus one exact
+  shared excerpt.
 - The market observation remains 3.52941176 percent of deal value.
 - Candidate serving and release identities remain stable.
 - The regenerated semantic dry-run succeeds and rolls back.
