@@ -117,7 +117,10 @@ function readState() {
     JOIN canonical_v2_staging.candidate_release_import_receipts receipt
       ON receipt.candidate_manifest_id = active.candidate_manifest_id
       AND receipt.candidate_release_import_plan_id = active.candidate_release_import_plan_id
-    JOIN canonical_v2_staging.candidate_input_heads head ON head.singleton_key = 'CURRENT'
+    JOIN canonical_v2_staging.candidate_input_heads head
+      ON head.singleton_key = 'CURRENT'
+      AND head.environment = active.environment
+      AND head.contract_fingerprint = release.contract_fingerprint
     JOIN canonical_v2_staging.correction_discharge_maps map
       ON map.correction_discharge_map_id = head.correction_discharge_map_id
     WHERE active.environment = 'staging';

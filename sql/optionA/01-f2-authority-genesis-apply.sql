@@ -1,0 +1,33 @@
+-- F2 correction-authority genesis (empty, generation 1) for contract
+-- fingerprint 46553f1a743dbf9f4ebfd07bff20939f66a57c4973826b5619c8bdfd196b1b83.
+-- Mirrors the F1 genesis (canonical-v2-staging-correction-authority.mjs,
+-- canonical-v2-empty-correction-authority-genesis-v1). Required before the F2
+-- candidate import: the candidate-input head chain is per-contract-
+-- fingerprint, and staging has no F2 head yet.
+-- Expected resulting head: id 614bb1f8162c5bf2f4c7c857c7701025390fd9cd33a4c4d711dc359a664d427a
+-- payload digest bedabdc3f0a46eb500d3165e0b1be5b26036ac494949d9118b3999696a762868
+BEGIN;
+SET LOCAL statement_timeout='60000ms';
+SELECT public.canonical_v2_write(
+  'staging', 'FIXTURE_CORRECTION_AUTHORITY', 'canonical-v2-empty-correction-authority-f2-genesis-v1', 'e11a5022f3d7a7fd3e8a7130007b874a820254006dde7446cf2b62e7f46d3c83',
+  $genesis_dc6cec6042e19cd9${"correction_authority_materialisations":[],"correction_discharge_map":{"schema_version":"CORRECTION_DISCHARGE_MAP/V1","stage":"POST_SCOPE","contract_fingerprint":"46553f1a743dbf9f4ebfd07bff20939f66a57c4973826b5619c8bdfd196b1b83","ordered_entries":[],"counts":{"ordered_entries":0},"roots":{"active_correction_application_root":"8c36140f8969e47ed58cbc60bb3d53bf74cce4596b094354f31336716354cd77","correction_authority_materialisation_root":"656201c0ad2a05e7b645e8f60a6192fdbb5a67ccaaa173a27af10c0e89badf8e"},"status":"PASS","canonical_payload_digest":"f56e465a8e6212c0406552bf9b476771f6c278d3bb4785892e31dc9186d87879","correction_discharge_map_id":"a42a3ba60a911412bf8ab588af4a54bd8c3e1689fb6d59cdd380354cd37ba3cd"},"candidate_input_event":{"schema_version":"CANDIDATE_INPUT_EVENT/V1","environment":"staging","contract_fingerprint":"46553f1a743dbf9f4ebfd07bff20939f66a57c4973826b5619c8bdfd196b1b83","generation":1,"transition":"INITIALISE","predecessor_candidate_input_head_id":null,"predecessor_candidate_input_head_payload_digest":null,"successor_candidate_input_head_id":"614bb1f8162c5bf2f4c7c857c7701025390fd9cd33a4c4d711dc359a664d427a","successor_candidate_input_head_payload_digest":"bedabdc3f0a46eb500d3165e0b1be5b26036ac494949d9118b3999696a762868","correction_discharge_map_id":"a42a3ba60a911412bf8ab588af4a54bd8c3e1689fb6d59cdd380354cd37ba3cd","correction_discharge_map_payload_digest":"f56e465a8e6212c0406552bf9b476771f6c278d3bb4785892e31dc9186d87879","status":"PASS","canonical_payload_digest":"ddbc70fc26f5dc3cc6f3c1be80df2786457c3e4e7dca6a7f1311ce3026c6df8a","candidate_input_event_id":"5bcbd361ba82e8dbbc2787a9198e08fa2a8c554c24f3e2599d5386f267ea3cb1"},"expected_candidate_input_head":null,"next_candidate_input_head":{"schema_version":"CANDIDATE_INPUT_HEAD/V1","environment":"staging","contract_fingerprint":"46553f1a743dbf9f4ebfd07bff20939f66a57c4973826b5619c8bdfd196b1b83","generation":1,"correction_discharge_map_id":"a42a3ba60a911412bf8ab588af4a54bd8c3e1689fb6d59cdd380354cd37ba3cd","correction_discharge_map_payload_digest":"f56e465a8e6212c0406552bf9b476771f6c278d3bb4785892e31dc9186d87879","previous_candidate_input_head_id":null,"status":"SEALED","canonical_payload_digest":"bedabdc3f0a46eb500d3165e0b1be5b26036ac494949d9118b3999696a762868","candidate_input_head_id":"614bb1f8162c5bf2f4c7c857c7701025390fd9cd33a4c4d711dc359a664d427a"}}$genesis_dc6cec6042e19cd9$::jsonb, '[]'::jsonb, '[]'::jsonb,
+  $genesis_f871b2dfec17f8b7${"receiptId":"02a65ca36f6c70954431df200149066d7a9370b0808707170929156900b6ddf1","operation":"FIXTURE_CORRECTION_AUTHORITY","idempotencyKey":"canonical-v2-empty-correction-authority-f2-genesis-v1","inputDigest":"e11a5022f3d7a7fd3e8a7130007b874a820254006dde7446cf2b62e7f46d3c83","status":"COMMITTED","publishableObjectCount":3,"residualCount":0,"quarantinedClosureCount":0}$genesis_f871b2dfec17f8b7$::jsonb
+) AS result;
+DO $f2_genesis_assert$
+BEGIN
+  IF (SELECT count(*) FROM canonical_v2_staging.candidate_input_heads
+      WHERE environment='staging'
+        AND contract_fingerprint='46553f1a743dbf9f4ebfd07bff20939f66a57c4973826b5619c8bdfd196b1b83'
+        AND candidate_input_head_id='614bb1f8162c5bf2f4c7c857c7701025390fd9cd33a4c4d711dc359a664d427a'
+        AND candidate_input_head_payload_digest='bedabdc3f0a46eb500d3165e0b1be5b26036ac494949d9118b3999696a762868') <> 1 THEN
+    RAISE EXCEPTION 'exact F2 authority genesis head was not created';
+  END IF;
+  IF (SELECT count(*) FROM canonical_v2_staging.candidate_input_heads
+      WHERE environment='staging'
+        AND contract_fingerprint='56da82bee06331793ba2ed8b78ef4186361407e60733595091e5951853e7d41d'
+        AND candidate_input_head_id='47e58bdccc8712e52538e001d69237cbe0d5c1d3ab4a8bdd5fcfac57439220bf') <> 1 THEN
+    RAISE EXCEPTION 'F2 genesis moved the pinned F1 authority head';
+  END IF;
+END;
+$f2_genesis_assert$;
+COMMIT;
