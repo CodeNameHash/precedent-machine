@@ -1584,6 +1584,10 @@ BEGIN
   IF imported_plan_id IS NULL THEN
     RAISE EXCEPTION 'candidate release has no complete import receipt' USING ERRCODE = '23514';
   END IF;
+  IF imported_input_contract_fingerprint =
+      '5cc5607bee8fc816e8682f71b9482ff839ff744cebaaf0f26bfcfa54ea64512c' THEN
+    RAISE EXCEPTION 'the rejected F3 contract cannot be activated' USING ERRCODE = '23514';
+  END IF;
   IF imported_correction_seal_id IS DISTINCT FROM p_next_pointer->>'correction_input_seal_id'
     OR imported_correction_input_root_id IS DISTINCT FROM p_next_pointer->>'correction_input_root' THEN
     RAISE EXCEPTION 'active release pointer does not match the imported correction seal' USING ERRCODE = '23514';
@@ -1776,6 +1780,10 @@ BEGIN
   END IF;
   IF p_min_value_usd IS NOT NULL AND p_max_value_usd IS NOT NULL AND p_min_value_usd > p_max_value_usd THEN
     RAISE EXCEPTION 'invalid value range' USING ERRCODE = '22023';
+  END IF;
+  IF p_contract_fingerprint =
+      '5cc5607bee8fc816e8682f71b9482ff839ff744cebaaf0f26bfcfa54ea64512c' THEN
+    RAISE EXCEPTION 'the rejected F3 contract cannot be served' USING ERRCODE = '23514';
   END IF;
   IF NOT EXISTS (
     SELECT 1
@@ -2030,6 +2038,10 @@ BEGIN
     AND p_min_canonical_value > p_max_canonical_value THEN
     RAISE EXCEPTION 'invalid canonical value range' USING ERRCODE = '22023';
   END IF;
+  IF p_contract_fingerprint =
+      '5cc5607bee8fc816e8682f71b9482ff839ff744cebaaf0f26bfcfa54ea64512c' THEN
+    RAISE EXCEPTION 'the rejected F3 contract cannot be served' USING ERRCODE = '23514';
+  END IF;
   IF NOT EXISTS (
     SELECT 1
     FROM canonical_v2_staging.fixture_corpus_releases release
@@ -2207,6 +2219,10 @@ BEGIN
   IF release_contract_fingerprint IS NULL THEN
     RAISE EXCEPTION 'active canonical corpus release has no declared contract fingerprint' USING ERRCODE = '02000';
   END IF;
+  IF release_contract_fingerprint =
+      '5cc5607bee8fc816e8682f71b9482ff839ff744cebaaf0f26bfcfa54ea64512c' THEN
+    RAISE EXCEPTION 'the rejected F3 contract cannot be served' USING ERRCODE = '23514';
+  END IF;
 
   SELECT public.canonical_v2_query_page(
     p_environment => p_environment,
@@ -2269,14 +2285,14 @@ SET statement_timeout = '2500ms'
 AS $$
 DECLARE
   active_pointer canonical_v2_staging.active_corpus_release_pointers%ROWTYPE;
+  release_contract_fingerprint text;
   selected_deal canonical_v2_staging.deal_serving_directory%ROWTYPE;
   result jsonb;
 BEGIN
   IF p_environment IS DISTINCT FROM 'staging' THEN
     RAISE EXCEPTION 'canonical_v2_active_review_context is staging-only' USING ERRCODE = '42501';
   END IF;
-  IF p_contract_fingerprint !~ '^[a-f0-9]{64}$'
-    OR p_request_digest !~ '^[a-f0-9]{64}$'
+  IF p_request_digest !~ '^[a-f0-9]{64}$'
     OR p_application_deal_id IS NULL
     OR p_page_size < 1
     OR p_page_size > 200
@@ -2291,11 +2307,22 @@ BEGIN
     RAISE EXCEPTION 'no active canonical corpus release' USING ERRCODE = '02000';
   END IF;
 
+  SELECT release.contract_fingerprint INTO release_contract_fingerprint
+  FROM canonical_v2_staging.fixture_corpus_releases release
+  WHERE release.corpus_release_id = active_pointer.corpus_release_id;
+  IF release_contract_fingerprint IS NULL THEN
+    RAISE EXCEPTION 'active canonical corpus release has no declared contract fingerprint' USING ERRCODE = '02000';
+  END IF;
+  IF release_contract_fingerprint =
+      '5cc5607bee8fc816e8682f71b9482ff839ff744cebaaf0f26bfcfa54ea64512c' THEN
+    RAISE EXCEPTION 'the rejected F3 contract cannot be served' USING ERRCODE = '23514';
+  END IF;
+
   SELECT directory.* INTO selected_deal
   FROM canonical_v2_staging.deal_serving_directory directory
   WHERE directory.serving_namespace_id = active_pointer.serving_namespace_id
     AND directory.corpus_release_id = active_pointer.corpus_release_id
-    AND directory.contract_fingerprint = p_contract_fingerprint
+    AND directory.contract_fingerprint = release_contract_fingerprint
     AND directory.application_deal_id = p_application_deal_id;
   IF selected_deal.governed_deal_key IS NULL THEN
     RAISE EXCEPTION 'deal is not admitted to the active canonical release' USING ERRCODE = '02000';
@@ -2306,14 +2333,14 @@ BEGIN
     FROM canonical_v2_staging.shared_serving_rows row
     WHERE row.serving_namespace_id = active_pointer.serving_namespace_id
       AND row.corpus_release_id = active_pointer.corpus_release_id
-      AND row.contract_fingerprint = p_contract_fingerprint
+      AND row.contract_fingerprint = release_contract_fingerprint
       AND row.governed_deal_key = selected_deal.governed_deal_key
     UNION ALL
     SELECT row.row_serving_key, row.canonical_payload
     FROM canonical_v2_staging.reviewed_source_specific_serving_rows row
     WHERE row.serving_namespace_id = active_pointer.serving_namespace_id
       AND row.corpus_release_id = active_pointer.corpus_release_id
-      AND row.contract_fingerprint = p_contract_fingerprint
+      AND row.contract_fingerprint = release_contract_fingerprint
       AND row.governed_deal_key = selected_deal.governed_deal_key
       AND row.disposition_code = 'REVIEWED_SOURCE_SPECIFIC'
       AND row.market_cohort_eligible = false
@@ -2341,7 +2368,7 @@ BEGIN
     'pointer_id', active_pointer.pointer_id,
     'serving_namespace_id', active_pointer.serving_namespace_id,
     'corpus_release_id', active_pointer.corpus_release_id,
-    'contract_fingerprint', p_contract_fingerprint,
+    'contract_fingerprint', release_contract_fingerprint,
     'application_deal_id', selected_deal.application_deal_id::text,
     'governed_deal_key', selected_deal.governed_deal_key,
     'deal_admission_id', selected_deal.deal_admission_id,
@@ -2377,6 +2404,8 @@ SET search_path = pg_catalog, canonical_v2_staging
 SET statement_timeout = '2500ms'
 AS $$
 DECLARE
+  active_pointer canonical_v2_staging.active_corpus_release_pointers%ROWTYPE;
+  release_contract_fingerprint text;
   result jsonb;
 BEGIN
   IF p_environment IS DISTINCT FROM 'staging' THEN
@@ -2389,6 +2418,29 @@ BEGIN
     OR p_row_serving_key !~ '^[a-f0-9]{64}$'
     OR p_source_detail_reference_id !~ '^[a-f0-9]{64}$' THEN
     RAISE EXCEPTION 'invalid exact-detail request' USING ERRCODE = '22023';
+  END IF;
+
+  SELECT pointer.* INTO active_pointer
+  FROM canonical_v2_staging.active_corpus_release_pointers pointer
+  WHERE pointer.environment = p_environment;
+  IF active_pointer.pointer_id IS NULL THEN
+    RAISE EXCEPTION 'no active canonical corpus release' USING ERRCODE = '02000';
+  END IF;
+
+  SELECT release.contract_fingerprint INTO release_contract_fingerprint
+  FROM canonical_v2_staging.fixture_corpus_releases release
+  WHERE release.corpus_release_id = active_pointer.corpus_release_id;
+  IF release_contract_fingerprint IS NULL THEN
+    RAISE EXCEPTION 'active canonical corpus release has no declared contract fingerprint' USING ERRCODE = '02000';
+  END IF;
+  IF release_contract_fingerprint =
+      '5cc5607bee8fc816e8682f71b9482ff839ff744cebaaf0f26bfcfa54ea64512c' THEN
+    RAISE EXCEPTION 'the rejected F3 contract cannot be served' USING ERRCODE = '23514';
+  END IF;
+  IF p_serving_namespace_id IS DISTINCT FROM active_pointer.serving_namespace_id
+    OR p_corpus_release_id IS DISTINCT FROM active_pointer.corpus_release_id
+    OR p_contract_fingerprint IS DISTINCT FROM release_contract_fingerprint THEN
+    RAISE EXCEPTION 'exact-detail route is stale for the active canonical release' USING ERRCODE = '22023';
   END IF;
 
   SELECT jsonb_build_object(
@@ -2409,10 +2461,103 @@ BEGIN
     AND package.corpus_release_id = directory.corpus_release_id
     AND package.contract_fingerprint = directory.contract_fingerprint
     AND package.governed_deal_key = directory.governed_deal_key
-  WHERE directory.serving_namespace_id = p_serving_namespace_id
-    AND directory.corpus_release_id = p_corpus_release_id
-    AND directory.contract_fingerprint = p_contract_fingerprint
+  WHERE directory.serving_namespace_id = active_pointer.serving_namespace_id
+    AND directory.corpus_release_id = active_pointer.corpus_release_id
+    AND directory.contract_fingerprint = release_contract_fingerprint
     AND directory.application_deal_id = p_application_deal_id
+    AND package.row_serving_key = p_row_serving_key
+    AND p_source_detail_reference_id = ANY(package.source_detail_reference_ids);
+
+  IF result IS NULL THEN
+    RAISE EXCEPTION 'exact source is not available for the selected row' USING ERRCODE = '02000';
+  END IF;
+  RETURN result;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.canonical_v2_exact_detail_by_governed_deal(
+  p_environment text,
+  p_serving_namespace_id text,
+  p_corpus_release_id text,
+  p_contract_fingerprint text,
+  p_governed_deal_key text,
+  p_row_serving_key text,
+  p_source_detail_reference_id text
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, canonical_v2_staging
+SET statement_timeout = '2500ms'
+AS $$
+DECLARE
+  active_pointer canonical_v2_staging.active_corpus_release_pointers%ROWTYPE;
+  release_contract_fingerprint text;
+  result jsonb;
+BEGIN
+  IF p_environment IS DISTINCT FROM 'staging' THEN
+    RAISE EXCEPTION 'canonical_v2_exact_detail_by_governed_deal is staging-only'
+      USING ERRCODE = '42501';
+  END IF;
+  IF p_serving_namespace_id !~ '^[a-f0-9]{64}$'
+    OR p_corpus_release_id !~ '^[a-f0-9]{64}$'
+    OR p_contract_fingerprint !~ '^[a-f0-9]{64}$'
+    OR p_governed_deal_key IS NULL
+    OR length(p_governed_deal_key) < 1
+    OR length(p_governed_deal_key) > 256
+    OR p_row_serving_key !~ '^[a-f0-9]{64}$'
+    OR p_source_detail_reference_id !~ '^[a-f0-9]{64}$' THEN
+    RAISE EXCEPTION 'invalid governed-deal exact-detail request' USING ERRCODE = '22023';
+  END IF;
+
+  SELECT pointer.* INTO active_pointer
+  FROM canonical_v2_staging.active_corpus_release_pointers pointer
+  WHERE pointer.environment = p_environment;
+  IF active_pointer.pointer_id IS NULL THEN
+    RAISE EXCEPTION 'no active canonical corpus release' USING ERRCODE = '02000';
+  END IF;
+
+  SELECT release.contract_fingerprint INTO release_contract_fingerprint
+  FROM canonical_v2_staging.fixture_corpus_releases release
+  WHERE release.corpus_release_id = active_pointer.corpus_release_id;
+  IF release_contract_fingerprint IS NULL THEN
+    RAISE EXCEPTION 'active canonical corpus release has no declared contract fingerprint'
+      USING ERRCODE = '02000';
+  END IF;
+  IF release_contract_fingerprint =
+      '5cc5607bee8fc816e8682f71b9482ff839ff744cebaaf0f26bfcfa54ea64512c' THEN
+    RAISE EXCEPTION 'the rejected F3 contract cannot be served' USING ERRCODE = '23514';
+  END IF;
+  IF p_serving_namespace_id IS DISTINCT FROM active_pointer.serving_namespace_id
+    OR p_corpus_release_id IS DISTINCT FROM active_pointer.corpus_release_id
+    OR p_contract_fingerprint IS DISTINCT FROM release_contract_fingerprint THEN
+    RAISE EXCEPTION 'exact-detail route is stale for the active canonical release'
+      USING ERRCODE = '22023';
+  END IF;
+
+  SELECT jsonb_build_object(
+    'schema_version', 'SERVING_EXACT_DETAIL_RESULT/V1',
+    'serving_namespace_id', package.serving_namespace_id,
+    'corpus_release_id', package.corpus_release_id,
+    'contract_fingerprint', package.contract_fingerprint,
+    'application_deal_id', directory.application_deal_id::text,
+    'governed_deal_key', directory.governed_deal_key,
+    'row_serving_key', package.row_serving_key,
+    'source_detail_reference_id', p_source_detail_reference_id,
+    'exact_detail_package_digest', package.exact_detail_package_digest,
+    'package', package.canonical_payload
+  ) INTO result
+  FROM canonical_v2_staging.deal_serving_directory directory
+  JOIN canonical_v2_staging.exact_detail_serving_packages package
+    ON package.serving_namespace_id = directory.serving_namespace_id
+    AND package.corpus_release_id = directory.corpus_release_id
+    AND package.contract_fingerprint = directory.contract_fingerprint
+    AND package.governed_deal_key = directory.governed_deal_key
+  WHERE directory.serving_namespace_id = active_pointer.serving_namespace_id
+    AND directory.corpus_release_id = active_pointer.corpus_release_id
+    AND directory.contract_fingerprint = release_contract_fingerprint
+    AND directory.governed_deal_key = p_governed_deal_key
     AND package.row_serving_key = p_row_serving_key
     AND p_source_detail_reference_id = ANY(package.source_detail_reference_ids);
 
@@ -2455,6 +2600,10 @@ BEGIN
     OR p_page_size > 50
     OR (p_after_row_serving_key IS NOT NULL AND p_after_row_serving_key !~ '^[a-f0-9]{64}$') THEN
     RAISE EXCEPTION 'invalid reviewed-deal context request' USING ERRCODE = '22023';
+  END IF;
+  IF p_contract_fingerprint =
+      '5cc5607bee8fc816e8682f71b9482ff839ff744cebaaf0f26bfcfa54ea64512c' THEN
+    RAISE EXCEPTION 'the rejected F3 contract cannot be served' USING ERRCODE = '23514';
   END IF;
   IF NOT EXISTS (
     SELECT 1
@@ -2604,6 +2753,12 @@ REVOKE ALL ON FUNCTION public.canonical_v2_exact_detail(
 ) FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;
 GRANT EXECUTE ON FUNCTION public.canonical_v2_exact_detail(
   text, text, text, text, uuid, text, text
+) TO canonical_v2_serving;
+REVOKE ALL ON FUNCTION public.canonical_v2_exact_detail_by_governed_deal(
+  text, text, text, text, text, text, text
+) FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;
+GRANT EXECUTE ON FUNCTION public.canonical_v2_exact_detail_by_governed_deal(
+  text, text, text, text, text, text, text
 ) TO canonical_v2_serving;
 REVOKE ALL ON FUNCTION public.canonical_v2_reviewed_deal_context(
   text, text, text, text, text, text, integer, text

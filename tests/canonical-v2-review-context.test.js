@@ -12,7 +12,6 @@ const {
 
 function fixtureRequest(fixture, overrides = {}) {
   return {
-    contract_fingerprint: fixture.contract.fingerprint,
     application_deal_id: 'c34415ed-44f7-432f-8d7c-6464b0310239',
     page_size: 100,
     after_row_serving_key: null,
@@ -67,6 +66,7 @@ test('one Review request executes one bounded RPC and never retries a failure', 
   assert.equal(calls.length, 1);
   assert.equal(calls[0].name, 'canonical_v2_active_review_context');
   assert.equal(calls[0].params.p_page_size, 100);
+  assert.equal(calls[0].params.p_contract_fingerprint, null);
 
   let failedCalls = 0;
   await assert.rejects(queryActiveReviewContext({
@@ -81,16 +81,18 @@ test('one Review request executes one bounded RPC and never retries a failure', 
   assert.equal(failedCalls, 1);
 });
 
-test('Review request identity includes deal, cursor and frozen contract', () => {
+test('Review request identity includes deal and cursor but no caller contract fingerprint', () => {
   const fixture = buildLandosCandidateReleaseFixture();
   const base = compileActiveReviewContextRequest(fixtureRequest(fixture));
   const otherDeal = compileActiveReviewContextRequest(fixtureRequest(fixture, {
     application_deal_id: '7dc3a05f-b170-4d59-a255-b7103cca16e1',
   }));
   assert.notEqual(base.request_digest, otherDeal.request_digest);
-  assert.throws(() => compileActiveReviewContextRequest(fixtureRequest(fixture, {
-    contract_fingerprint: '0'.repeat(64),
-  })), /frozen contract/);
+  assert.equal(Object.hasOwn(base, 'contract_fingerprint'), false);
+  assert.throws(() => compileActiveReviewContextRequest({
+    ...fixtureRequest(fixture),
+    contract_fingerprint: fixture.contract.fingerprint,
+  }), /fields do not match/);
 });
 
 test('staging SQL resolves active release and selected deal in one indexed set-based read', () => {
@@ -104,9 +106,12 @@ test('staging SQL resolves active release and selected deal in one indexed set-b
   assert.match(fn, /SET statement_timeout = '2500ms'/);
   assert.match(fn, /p_page_size > 200/);
   assert.match(fn, /canonical_v2_staging\.active_corpus_release_pointers/);
+  assert.match(fn, /FROM canonical_v2_staging\.fixture_corpus_releases release/);
+  assert.match(fn, /release_contract_fingerprint/);
   assert.match(fn, /canonical_v2_staging\.deal_serving_directory/);
   assert.match(fn, /canonical_v2_staging\.shared_serving_rows[\s\S]*UNION ALL[\s\S]*canonical_v2_staging\.reviewed_source_specific_serving_rows/);
   assert.match(fn, /ORDER BY row\.row_serving_key[\s\S]*LIMIT p_page_size \+ 1/);
   assert.doesNotMatch(fn, /\bOFFSET\b/i);
+  assert.doesNotMatch(fn, /contract_fingerprint = p_contract_fingerprint/);
   assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_active_review_context[\s\S]*TO canonical_v2_serving/);
 });

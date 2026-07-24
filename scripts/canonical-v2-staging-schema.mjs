@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import {
   mkdtempSync,
   readFileSync,
+  realpathSync,
   rmSync,
   writeFileSync,
 } from 'node:fs';
@@ -17,13 +18,11 @@ const EXPECTED_PROJECT = Object.freeze({
   name: 'deal-corpus-canonical-v2-staging',
 });
 const EXPECTED_DIGESTS = Object.freeze({
-  'canonical-v2-foundation.sql': 'd43a797ce2591076eedf30d1c0d191f36302972b7c17923085f52b61b0bf5f52',
-  // 2026-07-23: canonical_v2_active_query_page now resolves and filters
-  // against the ACTIVE release's own declared contract_fingerprint (read
-  // from fixture_corpus_releases) instead of trusting the caller-supplied
-  // value for equality -- see docs/handoffs/SPEC-CONTRACT-AMENDMENT-PATH-2026-07-23.md
-  // option 1 and scripts/canonical-v2-staging-active-release-fingerprint.mjs.
-  'canonical-v2-serving.sql': 'c981d72792abde2d4e159cc6e89f5d31f25bbdb4351d805278cc0d413c4bf5eb',
+  'canonical-v2-foundation.sql': '6f5684333b062734212c78604b5aa097f13142b651247f6edbec0d58e5142088',
+  // Active serving resolves the release-declared contract, exact detail is
+  // active-release bound, and the rejected F3 fingerprint is denied at
+  // every granted serving boundary.
+  'canonical-v2-serving.sql': 'e85ab5391074e7405b734bf18a0d24fb78ac2520d51329709ac6b0ae32ba5b71',
 });
 const SCRIPT_ROOT = dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = resolve(SCRIPT_ROOT, '..');
@@ -37,10 +36,10 @@ function fail(message) {
   process.exit(1);
 }
 
-function readLinkedProject() {
-  const ref = readFileSync(join(REPOSITORY_ROOT, 'supabase', '.temp', 'project-ref'), 'utf8').trim();
+function readLinkedProject(workdir) {
+  const ref = readFileSync(join(workdir, 'supabase', '.temp', 'project-ref'), 'utf8').trim();
   const metadata = JSON.parse(readFileSync(
-    join(REPOSITORY_ROOT, 'supabase', '.temp', 'linked-project.json'),
+    join(workdir, 'supabase', '.temp', 'linked-project.json'),
     'utf8',
   ));
   if (ref !== EXPECTED_PROJECT.ref
@@ -61,7 +60,7 @@ function readGovernedSql() {
   });
 }
 
-function runSqlFile(sql, mode) {
+function runSqlFile(sql, mode, workdir) {
   const directory = mkdtempSync(join(tmpdir(), 'canonical-v2-staging-schema-'));
   const file = join(directory, `${mode}.sql`);
   const terminal = mode === 'apply' ? 'COMMIT;' : 'ROLLBACK;';
@@ -69,15 +68,15 @@ function runSqlFile(sql, mode) {
   try {
     return spawnSync(
       'supabase',
-      ['db', 'query', '--linked', '--file', file],
-      { cwd: REPOSITORY_ROOT, stdio: 'inherit' },
+      ['--workdir', workdir, 'db', 'query', '--linked', '--file', file],
+      { cwd: workdir, stdio: 'inherit', shell: false },
     ).status;
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
 }
 
-function verifyAppliedSchema() {
+function verifyAppliedSchema(workdir) {
   const sql = `
     select
       to_regnamespace('canonical_v2_staging') is not null as canonical_schema_exists,
@@ -104,6 +103,8 @@ function verifyAppliedSchema() {
       to_regclass('canonical_v2_staging.candidate_release_semantic_graphs') is not null as release_semantic_graph_table_exists,
       to_regclass('canonical_v2_staging.candidate_release_correction_input_seals') is not null as correction_seal_table_exists,
       to_regclass('canonical_v2_staging.candidate_release_correction_discharges') is not null as correction_discharge_table_exists,
+      to_regprocedure('public.canonical_v2_exact_detail_by_governed_deal(text,text,text,text,text,text,text)') is not null
+        as governed_deal_exact_detail_exists,
       to_regclass('canonical_v2_staging.correction_authority_materialisations') is not null as correction_authority_materialisation_table_exists,
       to_regclass('canonical_v2_staging.correction_discharge_maps') is not null as correction_discharge_map_table_exists,
       to_regclass('canonical_v2_staging.candidate_input_events') is not null as candidate_input_event_table_exists,
@@ -200,24 +201,74 @@ function verifyAppliedSchema() {
         and has_table_privilege('canonical_v2_writer', 'canonical_v2_staging.source_admission_preparation_receipts', 'SELECT') = false
         and has_table_privilege('canonical_v2_writer', 'canonical_v2_staging.semantic_extraction_input_envelopes', 'INSERT') = false) as source_admission_tables_denied;
   `;
-  return spawnSync(
+  const result = spawnSync(
     'supabase',
-    ['db', 'query', '--linked', sql, '--output', 'json'],
-    { cwd: REPOSITORY_ROOT, stdio: 'inherit' },
-  ).status;
+    ['--workdir', workdir, 'db', 'query', '--linked', sql, '--output-format', 'json'],
+    {
+      cwd: workdir,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'inherit'],
+      shell: false,
+    },
+  );
+  if (result.status !== 0) return result.status ?? 1;
+  let output;
+  try {
+    output = JSON.parse(result.stdout);
+  } catch {
+    process.stderr.write('Staging schema verification did not return valid JSON.\n');
+    return 1;
+  }
+  const rows = Array.isArray(output) ? output : output?.rows;
+  const predicates = Array.isArray(rows) && rows.length === 1 ? rows[0] : null;
+  if (!predicates || typeof predicates !== 'object' || Array.isArray(predicates)) {
+    process.stderr.write('Staging schema verification did not return exactly one predicate row.\n');
+    return 1;
+  }
+  const failed = Object.entries(predicates)
+    .filter(([, passed]) => passed !== true)
+    .map(([name]) => name);
+  if (failed.length > 0) {
+    process.stderr.write(`Staging schema verification failed: ${failed.join(', ')}.\n`);
+    return 1;
+  }
+  process.stdout.write('Staging schema verification passed.\n');
+  return 0;
 }
 
-const mode = process.argv[2] || '--dry-run';
-if (!['--dry-run', '--apply', '--verify'].includes(mode) || process.argv.length > 3) {
-  fail('Usage: node scripts/canonical-v2-staging-schema.mjs [--dry-run|--apply|--verify]');
+function parseArgs(argv) {
+  let mode = '--dry-run';
+  let workdirInput = null;
+  let modeSeen = false;
+  for (let index = 0; index < argv.length; index += 1) {
+    const value = argv[index];
+    if (['--dry-run', '--apply', '--verify'].includes(value) && !modeSeen) {
+      mode = value;
+      modeSeen = true;
+    } else if (value === '--workdir' && workdirInput === null && argv[index + 1]) {
+      workdirInput = argv[index + 1];
+      index += 1;
+    } else {
+      fail('Usage: node scripts/canonical-v2-staging-schema.mjs [--dry-run|--apply|--verify] --workdir <isolated-staging-workdir>');
+    }
+  }
+  if (!workdirInput) {
+    fail('Usage: node scripts/canonical-v2-staging-schema.mjs [--dry-run|--apply|--verify] --workdir <isolated-staging-workdir>');
+  }
+  return {
+    mode,
+    workdir: realpathSync(resolve(workdirInput)),
+  };
 }
-readLinkedProject();
-if (mode === '--verify') process.exit(verifyAppliedSchema() ?? 1);
+
+const { mode, workdir } = parseArgs(process.argv.slice(2));
+readLinkedProject(workdir);
+if (mode === '--verify') process.exit(verifyAppliedSchema(workdir) ?? 1);
 
 const governedSql = readGovernedSql();
 process.stdout.write(`${mode === '--apply' ? 'Applying' : 'Dry-running'} canonical v2 staging schema:\n`);
 for (const item of governedSql) process.stdout.write(`  ${item.filename} ${item.digest}\n`);
-const status = runSqlFile(governedSql.map((item) => item.sql).join('\n'), mode.slice(2));
+const status = runSqlFile(governedSql.map((item) => item.sql).join('\n'), mode.slice(2), workdir);
 if (status !== 0) process.exit(status ?? 1);
-if (mode === '--apply') process.exit(verifyAppliedSchema() ?? 1);
+if (mode === '--apply') process.exit(verifyAppliedSchema(workdir) ?? 1);
 process.stdout.write('Dry run rolled back successfully. No schema changes persisted.\n');

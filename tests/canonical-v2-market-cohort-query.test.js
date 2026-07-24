@@ -3,7 +3,12 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
+const {
+  compileFixtureContract,
+  compileFixtureContractV2,
+  compileFixtureContractV3,
+  compileFixtureContractV4,
+} = require('../lib/canonical-v2/contract-bundle');
 const {
   compileMarketCohortRequest,
   queryMarketCohort,
@@ -198,12 +203,52 @@ test('release, party capacity and either-side adviser filters are identity-beari
   assert.notEqual(base.cache_key, namespace.cache_key);
 });
 
+test('buyer termination fee cohorts require corrected F4 semantics and retain one RPC', async () => {
+  const buyerRequest = request({
+    contract_fingerprint: compileFixtureContractV4().fingerprint,
+    metric_key: 'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+    metric_version: 1,
+    concept_key: 'TERMF-REVERSE',
+    party: { role: 'FEE_PAYER', value: 'PARENT', capacity: 'BUYER' },
+  });
+  assert.throws(() => compileMarketCohortRequest({
+    ...buyerRequest,
+    contract_fingerprint: compileFixtureContractV2().fingerprint,
+  }), /outside the supplied frozen contract version/);
+  assert.throws(() => compileMarketCohortRequest({
+    ...buyerRequest,
+    contract_fingerprint: compileFixtureContractV3().fingerprint,
+  }), /rejected contract/);
+
+  const calls = [];
+  const client = {
+    rpc(name, params) {
+      calls.push({ name, params });
+      return Promise.resolve({
+        data: {
+          ...resultFor(params),
+          distribution: [{ canonical_value: '3.52941176', subject_count: 1, deal_count: 1 }],
+        },
+        error: null,
+      });
+    },
+  };
+  const queried = await queryMarketCohort({ client, request: buyerRequest });
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].name, 'canonical_v2_market_cohort');
+  assert.equal(queried.result.metric_key, 'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE');
+});
+
 test('request and response contracts reject corpus payloads, unknown filters and broad rows', async () => {
   assert.throws(() => compileMarketCohortRequest({ ...request(), observations: [] }), /Unsupported request fields/);
   assert.throws(() => compileMarketCohortRequest({
     ...request(),
     contract_fingerprint: id('CANONICAL_CONTRACT_BUNDLE', 'wrong'),
   }), /does not match/);
+  assert.throws(() => compileMarketCohortRequest({
+    ...request(),
+    contract_fingerprint: compileFixtureContractV3().fingerprint,
+  }), /rejected contract/);
   assert.throws(() => compileMarketCohortRequest(request({
     filters: { ...request().filters, guessed_law_firm: 'Unknown' },
   })), /Unsupported filters/);
@@ -256,6 +301,16 @@ test('the staging SQL uses one set-based RPC, fixed dimensions and no direct app
   assert.match(sql, /PRIMARY KEY \(serving_namespace_id, corpus_release_id, metric_observation_occurrence_id\)/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.market_metric_slot_exclusions/);
   assert.match(sql, /CREATE OR REPLACE FUNCTION public\.canonical_v2_market_cohort/);
+  const rejectedF3 = compileFixtureContractV3().fingerprint;
+  const marketStart = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_market_cohort');
+  const marketEnd = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_query_page');
+  const reviewedStart = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_reviewed_deal_context');
+  const reviewedEnd = sql.indexOf(
+    'REVOKE ALL ON FUNCTION public.canonical_v2_reviewed_deal_context',
+    reviewedStart,
+  );
+  assert.match(sql.slice(marketStart, marketEnd), new RegExp(rejectedF3));
+  assert.match(sql.slice(reviewedStart, reviewedEnd), new RegExp(rejectedF3));
   assert.match(sql, /SECURITY DEFINER/);
   assert.match(sql, /SET search_path = pg_catalog, canonical_v2_staging/);
   assert.match(sql, /SET statement_timeout = '2500ms'/);

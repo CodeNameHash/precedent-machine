@@ -2781,7 +2781,8 @@ BEGIN
   ) materialisations
   WHERE current_head.singleton_key = 'CURRENT'
     AND current_head.environment = p_environment
-    AND current_head.contract_fingerprint = p_contract_fingerprint;
+    AND current_head.contract_fingerprint = p_contract_fingerprint
+  FOR SHARE OF current_head;
 
   IF NOT FOUND THEN
     RAISE EXCEPTION 'no current candidate input head exists for the frozen contract'
@@ -2831,7 +2832,8 @@ BEGIN
       = current_head.candidate_input_head_payload_digest
   WHERE current_head.singleton_key = 'CURRENT'
     AND current_head.environment = p_environment
-    AND current_head.contract_fingerprint = p_contract_fingerprint;
+    AND current_head.contract_fingerprint = p_contract_fingerprint
+  FOR SHARE OF current_head;
 
   IF NOT FOUND THEN
     RAISE EXCEPTION 'no current candidate input head exists for the frozen contract'

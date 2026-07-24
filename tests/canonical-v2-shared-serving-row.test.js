@@ -2,9 +2,11 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
+const { compileFixtureContractV3 } = require('../lib/canonical-v2/contract-bundle');
 const {
   SHARED_ROW_VARIANTS,
   prepareSharedRowsForRendering,
+  validateMetricOperationBinding,
   validateSharedServingRow,
 } = require('../lib/canonical-v2/shared-serving-row');
 const {
@@ -26,6 +28,44 @@ function resign(row) {
   return copy;
 }
 
+function feeBindingFixture({
+  metricKey,
+  conceptKey,
+  claimDefinitionKey,
+  party,
+  feeSide,
+  payee,
+  legalOperations,
+}) {
+  const effects = legalOperations.map((legalOperation) => ({
+    relationship_definition_key: 'TRIGGERED_BY',
+    effect: { legal_operation: legalOperation },
+  }));
+  const component = {
+    claim_definition_key: claimDefinitionKey,
+    claim_attributes: {
+      fee_side: feeSide,
+      payee_value: payee.value,
+      payee_capacity: payee.capacity,
+    },
+    bounded_relationship_effects: effects,
+  };
+  return {
+    metric: {
+      metric_key: metricKey,
+      metric_version: 1,
+      concept_key: conceptKey,
+      required_claim_definition_key: claimDefinitionKey,
+    },
+    body: {
+      concept_key: conceptKey,
+      party,
+      components: [component],
+    },
+    component,
+  };
+}
+
 test('the shared row matrix is closed while certified canonical and source-specific fixtures have producers', () => {
   assert.deepEqual(Object.keys(SHARED_ROW_VARIANTS), [
     'CANONICAL_RESULT',
@@ -35,6 +75,102 @@ test('the shared row matrix is closed while certified canonical and source-speci
   assert.equal(SHARED_ROW_VARIANTS.CANONICAL_RESULT.producer_status, 'IMPLEMENTED_FIXTURE');
   assert.equal(SHARED_ROW_VARIANTS.INCOMPLETE_CANONICAL_RESULT.producer_status, 'IMPLEMENTED_FIXTURE');
   assert.equal(SHARED_ROW_VARIANTS.REVIEWED_SOURCE_SPECIFIC.producer_status, 'IMPLEMENTED_FIXTURE');
+});
+
+test('metric-operation bindings reject buyer/seller legal-operation hybrids', () => {
+  const contract = compileFixtureContractV3();
+  const buyerOperation = 'CREATES_BUYER_TERMINATION_FEE_PAYMENT_TRIGGER';
+  const sellerOperation = 'CREATES_SELLER_TERMINATION_FEE_PAYMENT_TRIGGER';
+  const buyer = feeBindingFixture({
+    metricKey: 'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+    conceptKey: 'TERMF-REVERSE',
+    claimDefinitionKey: 'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+    party: { role: 'FEE_PAYER', value: 'PARENT', capacity: 'BUYER' },
+    feeSide: 'BUYER',
+    payee: { value: 'COMPANY', capacity: 'TARGET' },
+    legalOperations: [buyerOperation],
+  });
+  assert.equal(validateMetricOperationBinding({
+    governingContract: contract,
+    ...buyer,
+  }).binding_key, 'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V1');
+
+  const sellerMetricWithBuyerOperation = feeBindingFixture({
+    metricKey: 'TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+    conceptKey: 'TERMF-TARGET',
+    claimDefinitionKey: 'TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+    party: { role: 'FEE_PAYER', value: 'COMPANY', capacity: 'TARGET' },
+    feeSide: 'SELLER',
+    payee: { value: 'PARENT', capacity: 'BUYER' },
+    legalOperations: [buyerOperation],
+  });
+  assert.throws(() => validateMetricOperationBinding({
+    governingContract: contract,
+    ...sellerMetricWithBuyerOperation,
+  }), /crosses its frozen metric-operation binding/);
+
+  const buyerMetricWithSellerOperation = feeBindingFixture({
+    metricKey: 'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+    conceptKey: 'TERMF-REVERSE',
+    claimDefinitionKey: 'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+    party: { role: 'FEE_PAYER', value: 'PARENT', capacity: 'BUYER' },
+    feeSide: 'BUYER',
+    payee: { value: 'COMPANY', capacity: 'TARGET' },
+    legalOperations: [sellerOperation],
+  });
+  assert.throws(() => validateMetricOperationBinding({
+    governingContract: contract,
+    ...buyerMetricWithSellerOperation,
+  }), /does not match its frozen metric-operation binding/);
+
+  const mixedOperations = feeBindingFixture({
+    metricKey: 'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+    conceptKey: 'TERMF-REVERSE',
+    claimDefinitionKey: 'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+    party: { role: 'FEE_PAYER', value: 'PARENT', capacity: 'BUYER' },
+    feeSide: 'BUYER',
+    payee: { value: 'COMPANY', capacity: 'TARGET' },
+    legalOperations: [buyerOperation, sellerOperation],
+  });
+  assert.throws(() => validateMetricOperationBinding({
+    governingContract: contract,
+    ...mixedOperations,
+  }), /does not match its frozen metric-operation binding/);
+});
+
+test('the generic metric-operation guard consumes a later seller binding without code changes', () => {
+  const sellerOperation = 'CREATES_SELLER_TERMINATION_FEE_PAYMENT_TRIGGER';
+  const contract = {
+    ...compileFixtureContractV3(),
+    serving_metric_operation_bindings: [
+      ...compileFixtureContractV3().serving_metric_operation_bindings,
+      {
+        binding_key: 'TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V1',
+        metric_key: 'TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+        metric_version: 1,
+        concept_key: 'TERMF-TARGET',
+        required_claim_definition_key: 'TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+        relationship_key: 'TRIGGERED_BY',
+        legal_operation: sellerOperation,
+        fee_side: 'SELLER',
+        payer: { role: 'FEE_PAYER', value: 'COMPANY', capacity: 'TARGET' },
+        payee: { role: 'FEE_PAYEE', value: 'PARENT', capacity: 'BUYER' },
+      },
+    ],
+  };
+  const seller = feeBindingFixture({
+    metricKey: 'TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+    conceptKey: 'TERMF-TARGET',
+    claimDefinitionKey: 'TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+    party: { role: 'FEE_PAYER', value: 'COMPANY', capacity: 'TARGET' },
+    feeSide: 'SELLER',
+    payee: { value: 'PARENT', capacity: 'BUYER' },
+    legalOperations: [sellerOperation],
+  });
+  assert.equal(validateMetricOperationBinding({
+    governingContract: contract,
+    ...seller,
+  }).binding_key, 'TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V1');
 });
 
 test('one complete result produces a release-keyed row with bounded effects and explicit denominators', () => {

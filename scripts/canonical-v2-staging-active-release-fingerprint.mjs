@@ -32,7 +32,7 @@ const EXPECTED_PROJECT = Object.freeze({
 // supabase/canonical-v2-serving.sql (the governed schema file). If that
 // file's function text drifts from this digest, the script refuses to run
 // rather than silently apply something unreviewed.
-const EXPECTED_FUNCTION_DIGEST = 'a50721d5ed81c3d4c57af9d32b7558fd296fa8060d35c31959e1c8a4f1fdece4';
+const EXPECTED_FUNCTION_DIGEST = '6232339144b7d2a70d854a7e4ff6d49c082126dad25f0374fd76559f4fa08adf';
 const START_MARKER = 'CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page';
 const END_MARKER = 'CREATE OR REPLACE FUNCTION public.canonical_v2_active_review_context';
 

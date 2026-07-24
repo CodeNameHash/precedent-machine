@@ -18,6 +18,7 @@ const EXACT_PAYLOAD = Object.freeze({
   deal_filter: {},
   chart_kind: 'HISTOGRAM',
 });
+const REVERSE_PAYLOAD = Object.freeze({ ...EXACT_PAYLOAD, field_path: 'reverseFeePctOfDealValue' });
 
 function baseBody() {
   return mapLegacyRequestToCanonical(EXACT_PAYLOAD);
@@ -190,6 +191,23 @@ test('4. a refined body passes the real, frozen compileCanonicalActiveQueryReque
   assert.deepEqual(base, mapLegacyRequestToCanonical(EXACT_PAYLOAD));
 });
 
+test('4b. buyer-fee refinements compile with the governed reverse-fee party tuple', () => {
+  const refined = buildRefinedCanonicalRequest(mapLegacyRequestToCanonical(REVERSE_PAYLOAD), {
+    fee_side: 'BUYER',
+    payer_capacity: 'BUYER',
+    payee_capacity: 'TARGET',
+    min_percent_of_deal_value: '3',
+    max_percent_of_deal_value: '4',
+  });
+  const compiled = compileCanonicalActiveQueryRequest(refined);
+  assert.equal(compiled.metric_key, 'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE');
+  assert.equal(compiled.concept_key, 'TERMF-REVERSE');
+  assert.deepEqual(compiled.party, { role: 'FEE_PAYER', value: 'PARENT', capacity: 'BUYER' });
+  assert.equal(compiled.column_filters.fee_side, 'BUYER');
+  assert.equal(compiled.column_filters.payer_capacity, 'BUYER');
+  assert.equal(compiled.column_filters.payee_capacity, 'TARGET');
+});
+
 // ── 5. refinementOptionsFromView ─────────────────────────────────────────────
 
 test('5. options come only from the real view\'s rows/metadata; absent codes stay absent; values dedup + sort', async () => {
@@ -247,8 +265,19 @@ test('5. options come only from the real view\'s rows/metadata; absent codes sta
 function fakeView(overrides) {
   return Object.freeze({
     schema_version: 'CANONICAL_QUERY_RESULT_VIEW/V1',
+    release_selector: 'ACTIVE',
+    pointer_id: 'pointer-1',
+    serving_namespace_id: 'namespace-1',
     corpus_release_id: 'release-1',
     contract_fingerprint: 'fingerprint-1',
+    intent: 'MARKET_RANGE',
+    metric_key: 'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+    metric_version: 1,
+    concept_key: 'TERMF-TARGET',
+    party: { role: 'FEE_PAYER', value: 'COMPANY', capacity: 'TARGET' },
+    query_semantics_digest: 'semantics-1',
+    columns: [{ column_key: 'deal' }],
+    refinements: [],
     total_count: 10,
     page_count: 2,
     next_cursor: null,
@@ -270,7 +299,11 @@ test('6. rows append, duplicate row_serving_key dropped, next_cursor/total_count
     // row-2 is a duplicate carried over by a naive re-fetch; must be dropped.
     rows: [{ row_serving_key: 'row-2' }, { row_serving_key: 'row-3' }, { row_serving_key: 'row-4' }],
   });
-  const appended = appendCanonicalPage(existing, next);
+  const appended = appendCanonicalPage(
+    existing,
+    next,
+    { governed_deal_key: 'deal:a', row_serving_key: 'row-2' },
+  );
   assert.deepEqual(appended.rows.map((row) => row.row_serving_key), ['row-1', 'row-2', 'row-3', 'row-4']);
   assert.deepEqual(appended.next_cursor, { governed_deal_key: 'deal:a', row_serving_key: 'row-4' });
   assert.equal(appended.total_count, 10);
@@ -279,20 +312,70 @@ test('6. rows append, duplicate row_serving_key dropped, next_cursor/total_count
   assert.equal(Object.isFrozen(appended.rows), true);
 });
 
-test('6b. identity mismatch (corpus_release_id / contract_fingerprint) throws', () => {
-  const existing = fakeView({ rows: [{ row_serving_key: 'row-1' }] });
-  assert.throws(() => appendCanonicalPage(existing, fakeView({ corpus_release_id: 'release-2', rows: [{ row_serving_key: 'row-2' }] })));
-  assert.throws(() => appendCanonicalPage(existing, fakeView({ contract_fingerprint: 'fingerprint-2', rows: [{ row_serving_key: 'row-2' }] })));
+test('6b. every governed identity field and cursor continuity are required', () => {
+  const cursor = { governed_deal_key: 'deal:a', row_serving_key: 'row-1' };
+  const existing = fakeView({
+    next_cursor: cursor,
+    rows: [{ row_serving_key: 'row-1' }],
+  });
+  const next = fakeView({ rows: [{ row_serving_key: 'row-2' }] });
+  for (const [key, value] of [
+    ['pointer_id', 'pointer-2'],
+    ['serving_namespace_id', 'namespace-2'],
+    ['corpus_release_id', 'release-2'],
+    ['contract_fingerprint', 'fingerprint-2'],
+    ['query_semantics_digest', 'semantics-2'],
+    ['metric_version', 2],
+    ['concept_key', 'TERMF-REVERSE'],
+  ]) {
+    assert.throws(() => appendCanonicalPage(existing, fakeView({
+      [key]: value,
+      rows: [{ row_serving_key: 'row-2' }],
+    }), cursor));
+  }
+  assert.throws(() => appendCanonicalPage(existing, fakeView({
+    party: { role: 'FEE_PAYER', value: 'PARENT', capacity: 'BUYER' },
+    rows: [{ row_serving_key: 'row-2' }],
+  }), cursor));
+  assert.throws(() => appendCanonicalPage(existing, next, {
+    governed_deal_key: 'deal:z',
+    row_serving_key: 'row-z',
+  }), /discontinuous cursor/);
 });
 
 test('6c. resolveCanonicalQueryPageUpdate: show-more appends, a fresh refinement/Clear replaces', () => {
-  const existing = fakeView({ rows: [{ row_serving_key: 'row-1' }] });
-  const next = fakeView({ rows: [{ row_serving_key: 'row-2' }] });
+  const existing = fakeView({
+    total_count: 2,
+    next_cursor: { governed_deal_key: 'deal:a', row_serving_key: 'row-1' },
+    rows: [{ row_serving_key: 'row-1' }],
+  });
+  const next = fakeView({ total_count: 2, rows: [{ row_serving_key: 'row-2' }] });
   assert.deepEqual(
-    resolveCanonicalQueryPageUpdate(true, existing, next).rows.map((row) => row.row_serving_key),
+    resolveCanonicalQueryPageUpdate(
+      true,
+      existing,
+      next,
+      { governed_deal_key: 'deal:a', row_serving_key: 'row-1' },
+    ).rows.map((row) => row.row_serving_key),
     ['row-1', 'row-2'],
   );
   assert.equal(resolveCanonicalQueryPageUpdate(false, existing, next), next);
+});
+
+test('6d. a terminal short page cannot silently truncate the governed result', () => {
+  const cursor = { governed_deal_key: 'deal:a', row_serving_key: 'row-25' };
+  const existing = fakeView({
+    total_count: 26,
+    next_cursor: cursor,
+    rows: Array.from({ length: 25 }, (_, index) => ({
+      row_serving_key: `row-${String(index + 1).padStart(2, '0')}`,
+    })),
+  });
+  const truncated = fakeView({ total_count: 26, next_cursor: null, rows: [] });
+  assert.throws(
+    () => appendCanonicalPage(existing, truncated, cursor),
+    /truncates the governed result/,
+  );
 });
 
 // ── 7. Single-request discipline at the helper level ────────────────────────

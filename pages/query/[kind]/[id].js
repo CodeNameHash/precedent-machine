@@ -216,6 +216,7 @@ export default function QueryPage() {
     setCanonicalPending(false);
     canonicalPendingRef.current = false;
     canonicalGenerationRef.current += 1;
+    const generation = canonicalGenerationRef.current;
 
     // Canonical Query UI slice (2026-07-22): the legacy fetch, UNCHANGED from
     // before this slice, just extracted into a function so it can be handed
@@ -245,10 +246,12 @@ export default function QueryPage() {
           throw err;
         }
         if (json.error) throw new Error(json.error);
+        if (generation !== canonicalGenerationRef.current) return;
         setResult(json.result);
         setSavedQuery(json.saved_query || null);
         setCurrentPayload(json.saved_query?.query_payload || (payload ? decodePayloadSafe(payload) : null));
       } catch (err) {
+        if (generation !== canonicalGenerationRef.current) return;
         setError(sanitizeQueryError(err.message));
       }
     };
@@ -281,6 +284,7 @@ export default function QueryPage() {
       fetchCanonical: fetchCanonicalBody,
       fetchLegacy,
     }).then((outcome) => {
+      if (generation !== canonicalGenerationRef.current) return;
       if (outcome.mode !== 'canonical') return; // fetchLegacy already applied its own state.
       if (outcome.ok) {
         setCanonicalView(outcome.view);
