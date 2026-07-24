@@ -113,6 +113,15 @@ test('all three triggers survive the release projection and one shared row', () 
     .metrics.SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE;
   assert.equal(metric.subject.rawAmount, '$7,000,000');
   assert.equal(metric.subject.percentOfDealValue, 5.09090909);
+  assert.equal(metric.subject.denominatorPrecision, 'NOT_CAPTURED');
+  assert.equal(
+    metric.subject.label,
+    '5.09% of headline deal value (denominator precision not captured)',
+  );
+  assert.equal(
+    metric.subject.legalTerms.find((term) => term.key === 'deal_value_basis').value,
+    'SEC-reported headline transaction value (denominator precision not captured)',
+  );
   assert.deepEqual(metric.subject.legalTerms.map((term) => term.label), [
     'Fee amount',
     'Fee side',

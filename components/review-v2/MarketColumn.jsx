@@ -10,6 +10,10 @@ import {
 } from './marketSummaryHelpers';
 
 const { prettifyEnumValue } = require('../review/shared');
+const {
+  normaliseDenominatorPrecision,
+  qualifyDerivedValue,
+} = require('../../lib/canonical-v2/denominator-precision-presentation');
 // r19 (WP-A, numeric market cells): unit-aware formatting moved to its own
 // dependency-light module (no React, no fetches — mirrors compareRowUnion.
 // js/marketOffMarket.js's rule) so it has real behavioral test coverage
@@ -216,7 +220,11 @@ function subjectText(result, kind, role = null) {
   if (kind === 'presence') return 'This deal: present';
   if (kind === 'money') {
     if (Number.isFinite(subject.percentOfDealValue)) {
-      return `This deal: ${formatPercent(subject.percentOfDealValue)} of ${formatBasis(subject.dealValueBasis)}`;
+      const value = `${formatPercent(subject.percentOfDealValue)} of ${formatBasis(subject.dealValueBasis)}`;
+      return `This deal: ${qualifyDerivedValue(
+        value,
+        normaliseDenominatorPrecision(subject.denominatorPrecision),
+      )}`;
     }
     if (!Number.isFinite(subject.rawUsd)) return 'This deal: value not extracted';
     return 'This deal: relative value unavailable';

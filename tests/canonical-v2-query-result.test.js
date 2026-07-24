@@ -294,7 +294,7 @@ test('deal-value basis renders from the governed denominator without exposing th
   assert.equal(rendered.error, null);
   assert.equal(
     rendered.cells.find((cell) => cell.column_key === 'deal_value_basis').display,
-    'USD 137,500,000 · headline transaction value',
+    'USD 137,500,000 · headline transaction value (denominator precision not captured)',
   );
   assert.equal(Object.hasOwn(response.result.rows[0], 'shared_row'), false);
 });
@@ -648,6 +648,17 @@ test('the staging query projection is indexed, keyset-paged and served by one bo
   assert.match(sql, /canonical_v2_shared_rows_payment_timings_idx[\s\S]*USING gin \(payment_timings\)/);
   assert.match(sql, /canonical_v2_shared_rows_trigger_conditions_idx[\s\S]*USING gin \(trigger_conditions\)/);
   assert.match(sql, /ADD COLUMN IF NOT EXISTS row_kind text\s+GENERATED ALWAYS AS \(canonical_payload->>'row_kind'\) STORED/);
+  assert.match(sql, /canonical_result,components,0,denominator,precision/);
+  assert.match(sql, /incomplete_canonical_result,components,0,denominator,precision/);
+  assert.match(sql, /canonical_result,components,0,claim_attributes,denominator_precision/);
+  assert.match(sql, /incomplete_canonical_result,components,0,claim_attributes,denominator_precision/);
+  assert.match(sql, /denominator_precision IN \('EXACT', 'APPROXIMATE'\)/);
+  assert.match(sql, /canonical_v2_shared_serving_rows_f5_money_precision_check/);
+  assert.equal(
+    (sql.match(/CREATE INDEX[\s\S]*?;/gi) || [])
+      .some((statement) => /\bdenominator_precision\b/i.test(statement)),
+    false,
+  );
   assert.match(sql, /canonical_v2_shared_rows_query_v2_idx[\s\S]*WHERE row_kind = 'CANONICAL_RESULT'/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.query_response_cache/);
   assert.match(queryFunction, /cache\.physical_request = physical_request_body/);

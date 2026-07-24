@@ -250,6 +250,12 @@ test('typed money context exposes only the subject deal\'s same-basis and same-c
   assert.notEqual(context.metrics[0].median, 10000000);
   assert.equal(context.metrics[0].comparisonCohorts.length, 3);
   assert.deepEqual(context.deals, [data.dealDirectory['equity-peer']]);
+  assert.equal(context.metrics[0].denominatorPrecision, 'NOT_CAPTURED');
+  assert.equal(
+    context.metrics[0].subjectLabel,
+    '0.08% (denominator precision not captured)',
+  );
+  assert.match(context.scopeNote, /precision was not captured/i);
 });
 
 test('typed money context states when no peer shares both basis and cadence', () => {
@@ -295,6 +301,7 @@ test('typed money context states when no peer shares both basis and cadence', ()
   assert.equal(context.metrics[0].subjectValue, 0.08);
   assert.match(context.metrics[0].comparisonUnavailableReason, /same deal-value basis and cadence/);
   assert.equal(context.metrics[0].comparisonCohorts[0].selected, false);
+  assert.match(context.metrics[0].subjectLabel, /denominator precision not captured/i);
 });
 
 test('typed rep bring-down context uses reviewer-facing labels for every applicable tier', () => {

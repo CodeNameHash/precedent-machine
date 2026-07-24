@@ -5,7 +5,11 @@ const path = require('node:path');
 
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
 const { buildClaimRevision, buildRelationshipRevision } = require('../lib/canonical-v2/claims-relationships');
-const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
+const {
+  compileFixtureContract,
+  compileFixtureContractV4,
+  compileFixtureContractV5,
+} = require('../lib/canonical-v2/contract-bundle');
 const {
   assertMetricSlotPartition,
   buildFixtureResultComponent,
@@ -101,6 +105,72 @@ function completeInput(overrides = {}) {
     value_slot_key: 'ACCURACY_TIER_A',
     ordinal: 0,
     ...overrides,
+  };
+}
+
+function moneyInput({
+  contract = compileFixtureContractV5(),
+  denominatorPrecision,
+  compatibilityPrecision = denominatorPrecision,
+} = {}) {
+  const base = completeInput();
+  const sourceEvidence = base.claim.evidence[0];
+  const denominator = {
+    value: '5000000000',
+    currency: 'USD',
+    basis: 'HEADLINE_TRANSACTION_VALUE',
+    source_lineage_ids: [sourceEvidence.excerpt_id],
+  };
+  if (denominatorPrecision !== undefined) denominator.precision = denominatorPrecision;
+  const attributes = {
+    basis_key: 'PERCENT_OF_DEAL_VALUE:HEADLINE_TRANSACTION_VALUE:USD',
+  };
+  if (compatibilityPrecision !== undefined) {
+    attributes.denominator_precision = compatibilityPrecision;
+  }
+  const claim = buildClaimRevision({
+    subject_occurrence_id: base.claim.subject_occurrence_id,
+    claim_definition_key: 'IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE',
+    state: 'PRESENT',
+    raw_value: '$100 million',
+    canonical_value: '2',
+    unit: 'PERCENT_OF_DEAL_VALUE',
+    denominator,
+    attributes,
+    allowed_attributes: ['basis_key', 'denominator_precision'],
+    evidence: [{
+      evidence_role: sourceEvidence.evidence_role,
+      excerpt_id: sourceEvidence.excerpt_id,
+      document_ordinal: sourceEvidence.document_ordinal,
+      absolute_start: sourceEvidence.absolute_start,
+      absolute_end: sourceEvidence.absolute_end,
+    }],
+  });
+  const party = { role: 'COVENANT_OBLIGOR', value: 'COMPANY', capacity: 'TARGET' };
+  const result = buildFixtureResultComponent({
+    deal_admission_id: base.deal.deal_admission_id,
+    result_key: 'TARGET_CAPEX_THRESHOLD',
+    result_version: 1,
+    concept_key: 'IOC-CAPEX',
+    party,
+    value_slot_key: 'CAPEX_THRESHOLD',
+    ordinal: 0,
+    claim,
+    relationships: [],
+    composition_scope_closure_id: id('COMPOSITION_SCOPE_CLOSURE', 'qxo-capex-threshold'),
+    completeness: 'COMPLETE',
+    comparability: 'COMPARABLE',
+  });
+  return {
+    ...base,
+    contract_bundle: contract,
+    concept_key: 'IOC-CAPEX',
+    metric_key: 'IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE',
+    party,
+    result,
+    claim,
+    relationships: [],
+    value_slot_key: 'CAPEX_THRESHOLD',
   };
 }
 
@@ -287,6 +357,36 @@ test('unrecognised values and malformed dimensions cannot become plausible marke
   const forgedResult = completeInput();
   forgedResult.result = { ...forgedResult.result, component_revision_id: id('RESULT_COMPONENT_REVISION', 'forged') };
   assert.throws(() => projectMarketMetricSlot(forgedResult), /result component identity or input lineage/);
+});
+
+test('F5 money projection accepts exact and approximate precision but excludes missing, invalid or mismatched precision', () => {
+  for (const precision of ['EXACT', 'APPROXIMATE']) {
+    const output = projectMarketMetricSlot(moneyInput({
+      denominatorPrecision: precision,
+    }));
+    assert.equal(output.exclusion, null);
+    assert.equal(output.observation.denominator.precision, precision);
+    assert.equal(output.observation.claim_attributes.denominator_precision, precision);
+  }
+
+  for (const invalidCase of [
+    {},
+    { denominatorPrecision: 'ESTIMATED' },
+    { denominatorPrecision: 'EXACT', compatibilityPrecision: 'APPROXIMATE' },
+  ]) {
+    const output = projectMarketMetricSlot(moneyInput(invalidCase));
+    assert.equal(output.observation, null);
+    assert.equal(output.exclusion.exclusion_reason, 'VALUE_OUTSIDE_METRIC_CONTRACT');
+  }
+});
+
+test('F4 money projection preserves its historical denominator shape without inventing precision', () => {
+  const output = projectMarketMetricSlot(moneyInput({
+    contract: compileFixtureContractV4(),
+  }));
+  assert.equal(output.exclusion, null);
+  assert.equal(output.observation.denominator.precision, undefined);
+  assert.equal(output.observation.claim_attributes.denominator_precision, undefined);
 });
 
 test('the metric-slot partition rejects duplicates and missing terminal outputs', () => {

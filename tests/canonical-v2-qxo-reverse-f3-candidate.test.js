@@ -5,16 +5,22 @@ const path = require('node:path');
 
 const { canonicalJson, contentId } = require('../lib/canonical-v2/canonical-bytes');
 const {
+  QXO_DENOMINATOR_PRECISION_F5_CONTRACT_FINGERPRINT,
   QXO_REVERSE_F3_CONTRACT_FINGERPRINT,
   QXO_REVERSE_F4_CONTRACT_FINGERPRINT,
+  QXO_REVERSE_F4_CANDIDATE_MANIFEST_ID,
+  QXO_REVERSE_F4_CORPUS_RELEASE_ID,
   QXO_REJECTED_F3_BUYER_TERMINATION_SEMANTIC_CLOSURE_ID,
   QXO_REVERSE_PRIOR_SEMANTIC_CLOSURE_IDS,
   QXO_REVERSE_F4_PRIOR_SEMANTIC_CLOSURE_IDS,
   QXO_RICH_DEAL_DIMENSIONS,
   QXO_RICH_DEAL_DIMENSIONS_DIGEST,
   QXO_SELLER_TERMINATION_REVIEWED_MAPPING_ID,
+  buildQxoDenominatorPrecisionF5CandidateSeed,
   buildQxoReverseCombinedCandidateSeed,
   buildQxoReverseF4CombinedCandidateSeed,
+  qxoDenominatorPrecisionF5CandidateReleaseId,
+  qxoDenominatorPrecisionF5ServingNamespaceId,
   qxoReverseCombinedCandidateReleaseId,
   qxoReverseF4CombinedCandidateReleaseId,
   qxoReverseF4CombinedServingNamespaceId,
@@ -55,6 +61,19 @@ function f3Seed(overrides = {}) {
 function f4Seed(overrides = {}) {
   return buildQxoReverseF4CombinedCandidateSeed({
     contractFingerprint: QXO_REVERSE_F4_CONTRACT_FINGERPRINT,
+    materialReviewedMappingId: QXO_MATERIAL_REVIEWED_MAPPING_ID,
+    sellerTerminationReviewedMappingId: SELLER_MAPPING_ID,
+    reverseTerminationReviewedMappingId: BUYER_MAPPING_ID,
+    dealDimensions: QXO_RICH_DEAL_DIMENSIONS,
+    servingProjectionVersion: SERVING_PROJECTION_VERSION_V2,
+    queryProjectionContractDigest: QUERY_PROJECTION_CONTRACT_DIGEST_V2,
+    ...overrides,
+  });
+}
+
+function f5Seed(overrides = {}) {
+  return buildQxoDenominatorPrecisionF5CandidateSeed({
+    contractFingerprint: QXO_DENOMINATOR_PRECISION_F5_CONTRACT_FINGERPRINT,
     materialReviewedMappingId: QXO_MATERIAL_REVIEWED_MAPPING_ID,
     sellerTerminationReviewedMappingId: SELLER_MAPPING_ID,
     reverseTerminationReviewedMappingId: BUYER_MAPPING_ID,
@@ -132,6 +151,24 @@ test('F4 identity refuses contract, predecessor family and deal-dimension drift'
   assert.throws(
     () => f4Seed({ servingProjectionVersion: 'canonical-v2-serving/v1' }),
     /frozen v2 serving contract/,
+  );
+});
+
+test('F5 identity binds the immutable F4 predecessor and a new contract release', () => {
+  const seed = f5Seed();
+  assert.equal(seed.contract_fingerprint, QXO_DENOMINATOR_PRECISION_F5_CONTRACT_FINGERPRINT);
+  assert.equal(seed.predecessor_contract_fingerprint, QXO_REVERSE_F4_CONTRACT_FINGERPRINT);
+  assert.equal(seed.predecessor_corpus_release_id, QXO_REVERSE_F4_CORPUS_RELEASE_ID);
+  assert.equal(seed.predecessor_candidate_manifest_id, QXO_REVERSE_F4_CANDIDATE_MANIFEST_ID);
+  assert.match(qxoDenominatorPrecisionF5CandidateReleaseId(seed), /^[a-f0-9]{64}$/);
+  assert.match(qxoDenominatorPrecisionF5ServingNamespaceId(seed), /^[a-f0-9]{64}$/);
+  assert.notEqual(
+    qxoDenominatorPrecisionF5CandidateReleaseId(seed),
+    qxoReverseF4CombinedCandidateReleaseId(f4Seed()),
+  );
+  assert.throws(
+    () => f5Seed({ contractFingerprint: QXO_REVERSE_F4_CONTRACT_FINGERPRINT }),
+    /F5 versioned contract/,
   );
 });
 

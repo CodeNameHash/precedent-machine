@@ -138,6 +138,11 @@ test('the percentage, raw dollars, denominator and legal terms reach every share
   const metric = adapted.data.byRow[adapted.row_key].metrics.IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE;
   assert.equal(metric.subject.percentOfDealValue, 0.07272727);
   assert.equal(metric.subject.rawAmount, '$100,000');
+  assert.equal(metric.subject.denominatorPrecision, 'NOT_CAPTURED');
+  assert.equal(
+    metric.subject.label,
+    '0.07% of headline deal value (denominator precision not captured)',
+  );
   assert.deepEqual(metric.subject.legalTerms.map((term) => term.label), [
     'Capex threshold',
     'Applies',
