@@ -86,7 +86,7 @@ function roleSql(password) {
       text, text, text, text, text, text, integer, text, text, text, text, text,
       text, text, text, text, text, text, integer, integer, numeric, numeric
     ) TO ${ROLE_NAME};
-    GRANT EXECUTE ON FUNCTION public.canonical_v2_active_query_page(
+    GRANT EXECUTE ON FUNCTION public.canonical_v2_active_query_page_v2(
       text, text, text, text, integer, text, text, text, text, text,
       text, text, text, text, text, integer, integer, numeric, numeric, numeric, numeric,
       text, text, text, text, text, text, text, text, text, text, text, integer, text, text
@@ -163,7 +163,7 @@ function runSql(sql, { commit }) {
 
 function assertVerification(value) {
   const expectedFunctions = [
-    'canonical_v2_active_query_page',
+    'canonical_v2_active_query_page_v2',
     'canonical_v2_active_review_context',
     'canonical_v2_exact_detail',
     'canonical_v2_market_cohort',
