@@ -1,0 +1,18 @@
+{
+  "phase": "WP-QXO-F5-QUERY-ACCEPTANCE",
+  "allowed": [
+    ".github/phase-allowlists/wp-qxo-f5-query-acceptance.json",
+    "lib/canonical-v2/query-result.js",
+    "scripts/canonical-v2-staging-qxo-f5-query-acceptance.mjs",
+    "scripts/lib/canonical-v2-staging-runtime.mjs",
+    "tests/canonical-v2-query-result.test.js",
+    "tests/canonical-v2-staging-qxo-f5-query-acceptance.test.js",
+    "tests/canonical-v2-staging-runtime.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "supabase/migrations/**",
+    "scripts/reprocess.js"
+  ],
+  "note": "Recognises the frozen F5 serving contract and verifies the exact inactive QXO F5 release through one bounded pinned query RPC per request. Every acceptance query rolls back, the active pointer remains unchanged, incomplete Material Contracts remains excluded, and activation, production access, taxonomy changes and corpus mutation are prohibited."
+}

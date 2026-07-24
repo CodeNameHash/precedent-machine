@@ -13,6 +13,7 @@ const {
   compileFixtureContractV2,
   compileFixtureContractV3,
   compileFixtureContractV4,
+  compileFixtureContractV5,
 } = require('../lib/canonical-v2/contract-bundle');
 const {
   compileCanonicalActiveQueryRequest,
@@ -136,6 +137,62 @@ test('pinned buyer-fee requests require the corrected F4 trigger contract', () =
       /does not support this governed metric and concept/,
     );
   }
+});
+
+test('F5 pinned queries preserve governed approximate denominator precision', async () => {
+  const contract = compileFixtureContractV5();
+  const row = buildLandosIocCapexServingFixture({ contractBundle: contract }).row;
+  const request = requestFor(row);
+  const calls = [];
+  const client = {
+    rpc(name, params) {
+      calls.push({ name, params });
+      return Promise.resolve({ data: resultFor(params, [row]), error: null });
+    },
+  };
+
+  const response = await queryCanonicalResultPage({ client, request });
+
+  assert.equal(response.request.contract_fingerprint, contract.fingerprint);
+  assert.equal(response.result.contract_fingerprint, contract.fingerprint);
+  assert.equal(response.result.rows[0].display_metadata.denominator_precision, 'APPROXIMATE');
+  assert.equal(response.result.cohort_summary.counts.approximate_result_rows, 1);
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].name, 'canonical_v2_query_page_v2');
+});
+
+test('active query validation accepts an F5 release-declared serving contract', () => {
+  const contract = compileFixtureContractV5();
+  const row = buildLandosIocCapexServingFixture({ contractBundle: contract }).row;
+  const logical = requestFor(row);
+  for (const key of ['serving_namespace_id', 'corpus_release_id', 'contract_fingerprint']) {
+    delete logical[key];
+  }
+  const request = compileCanonicalActiveQueryRequest(logical);
+  const summaryParams = {
+    p_query_semantics_digest: request.query_semantics_digest,
+    p_metric_key: request.metric_key,
+    p_metric_version: request.metric_version,
+    p_basis_key: request.basis_key,
+  };
+  const activeResult = {
+    schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V2',
+    cache_state: 'MISS',
+    pointer_id: contentId('ACTIVE_POINTER/V1', 'f5-release-declared'),
+    serving_namespace_id: namespaceId,
+    corpus_release_id: row.corpus_release_id,
+    contract_fingerprint: contract.fingerprint,
+    query_semantics_digest: request.query_semantics_digest,
+    total_count: 1,
+    page_count: 1,
+    cohort_summary: buildQueryCohortSummary({ params: summaryParams, rows: [row] }),
+    rows: [row],
+    next_cursor: null,
+  };
+
+  const resolved = resolveActiveQueryPage(activeResult, request);
+  assert.equal(resolved.request.contract_fingerprint, contract.fingerprint);
+  assert.equal(resolved.result.rows[0].row_serving_key, row.row_serving_key);
 });
 
 test('active buyer-fee query rejects an active release whose contract predates the metric', () => {
