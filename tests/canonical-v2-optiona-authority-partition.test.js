@@ -89,7 +89,7 @@ test('generated Option A packet is pinned, bounded and inactive', () => {
   );
   assert.match(
     semanticDryRun,
-    /excerpt_id='56224984beed0f058c61f7af92667fdf3c983a65dc742052946af979e40b7dee'[\s\S]*closure_id='a08b15c095464e265205ffd87ec380a85e37e9867c9701551b7b59759ed0cab5'[\s\S]*RAISE EXCEPTION 'shared deal-value excerpt mismatch'/,
+    /excerpt_id='56224984beed0f058c61f7af92667fdf3c983a65dc742052946af979e40b7dee'[\s\S]*closure_id='a08b15c095464e265205ffd87ec380a85e37e9867c9701551b7b59759ed0cab5'[\s\S]*canonical_payload_digest=canonical_v2_staging\.payload_digest\([\s\S]*RAISE EXCEPTION 'shared deal-value excerpt mismatch'/,
   );
   assert.match(semanticDryRun, /ROLLBACK;\s*$/);
   assert.match(semanticApply, /exact termination DEAL_SCOPE_RUN receipt is not committed/);
