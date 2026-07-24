@@ -342,7 +342,6 @@ function semanticWriteGateSql({ inputDigest, receipt, writeSet }, closureId) {
     throw new Error('The termination write must reuse exactly the pinned material deal-value excerpt.');
   }
   const sharedExcerpt = sharedExcerpts[0];
-  const sharedExcerptDigest = sha256(Buffer.from(canonicalJson(sharedExcerpt), 'utf8'));
   const countChecks = Object.entries(counts).map(([table, count]) => `
   IF (SELECT count(*) FROM canonical_v2_staging.${table} WHERE closure_id='${closureId}') <> ${count} THEN
     RAISE EXCEPTION 'termination semantic closure count mismatch: ${table}';
@@ -360,7 +359,7 @@ BEGIN
   IF (SELECT count(*) FROM canonical_v2_staging.excerpts
       WHERE excerpt_id='${sharedExcerpt.excerpt_id}'
         AND closure_id='${sharedExcerpt.closure_id}'
-        AND canonical_payload_digest='${sharedExcerptDigest}'
+        AND canonical_payload_digest=canonical_v2_staging.payload_digest(${sqlJson(sharedExcerpt)})
         AND canonical_payload=${sqlJson(sharedExcerpt)}) <> 1 THEN
     RAISE EXCEPTION 'shared deal-value excerpt mismatch';
   END IF;
