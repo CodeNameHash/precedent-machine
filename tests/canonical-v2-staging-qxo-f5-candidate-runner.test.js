@@ -25,8 +25,8 @@ test('QXO F5 runner pins the exact release and semantic-write identities before 
   assert.match(source, /servingNamespaceId: 'e7d2c4c0941d6b825ea47599826bdd8c3b8767f160241c112e5f5b34bd30de6d'/);
   assert.match(source, /candidateManifestId: 'aa407583e05b0ed01a1675e78321963a70b54624a2647541dc50b2ab558bdb02'/);
   assert.match(source, /importPlanId: '0f2a73c1d8d71e4e7e1978ae160f5aa0e23e66d7211ceb9a46941e80ba396da6'/);
-  assert.match(source, /inputDigest: '4c75cfbff60131e7572b4c51d20b3974fcf54e4588b32b17f2501ba62c550706'/);
-  assert.match(source, /receiptId: '299e6dbd8091edf81b9e2428e42d3d0d08de10b973dde07b422812365b9f76cb'/);
+  assert.match(source, /inputDigest: '9366e12f06acca88f48750274528944808bd00a2ebdf720cc751924c554b2598'/);
+  assert.match(source, /receiptId: 'fa14bbeac2074e86429bbe30ebfcd69e6f069b148bcf20fe78e8537b309a526f'/);
   assert.match(source, /persistedObjectReferences: 84/);
   assert.match(source, /newSemanticObjects: 4/);
   assert.match(
@@ -53,7 +53,7 @@ test('QXO F5 runner uses only the bounded staging runtime and exact staging proj
 
 test('QXO F5 runner uses a new semantic-write key and certifies three approximate money rows', () => {
   assert.match(source, /const OPERATION = 'DEAL_SCOPE_RUN'/);
-  assert.match(source, /const IDEMPOTENCY_KEY = 'QXO_MONEY_DENOMINATOR_PRECISION_F5_DEAL_SCOPE_V1'/);
+  assert.match(source, /const IDEMPOTENCY_KEY = 'QXO_MONEY_DENOMINATOR_PRECISION_F5_DEAL_SCOPE_V2'/);
   assert.match(source, /approximateMoneyRows: 3/);
   assert.match(source, /approximate_money_rows: EXPECTED_COUNTS\.approximateMoneyRows/);
   assert.match(source, /money_precision_mismatches: 0/);

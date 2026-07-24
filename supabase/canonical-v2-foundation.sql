@@ -23,6 +23,119 @@ AS $$
   )
 $$;
 
+CREATE OR REPLACE FUNCTION canonical_v2_staging.canonical_json(value jsonb)
+RETURNS text
+LANGUAGE plpgsql
+IMMUTABLE
+STRICT
+PARALLEL SAFE
+SET search_path = pg_catalog
+AS $$
+DECLARE
+  value_kind text := pg_catalog.jsonb_typeof(value);
+  encoded text;
+  numeric_value numeric;
+BEGIN
+  IF value_kind = 'null' THEN
+    RETURN 'null';
+  ELSIF value_kind = 'boolean' THEN
+    RETURN value::text;
+  ELSIF value_kind = 'number' THEN
+    numeric_value := (value #>> '{}')::numeric;
+    IF pg_catalog.abs(numeric_value) > 9007199254740991
+      OR numeric_value <> pg_catalog.trunc(numeric_value) THEN
+      RAISE EXCEPTION 'canonical JSON numbers must be JavaScript-safe integers'
+        USING ERRCODE = '22003';
+    END IF;
+    RETURN pg_catalog.trim_scale(numeric_value)::text;
+  ELSIF value_kind = 'string' THEN
+    RETURN pg_catalog.to_jsonb(value #>> '{}')::text;
+  ELSIF value_kind = 'array' THEN
+    SELECT '[' || coalesce(
+      pg_catalog.string_agg(
+        canonical_v2_staging.canonical_json(element.value),
+        ','
+        ORDER BY element.ordinal
+      ),
+      ''
+    ) || ']'
+    INTO encoded
+    FROM pg_catalog.jsonb_array_elements(value)
+      WITH ORDINALITY AS element(value, ordinal);
+    RETURN encoded;
+  ELSIF value_kind = 'object' THEN
+    IF EXISTS (
+      SELECT 1
+      FROM pg_catalog.jsonb_object_keys(value) AS object_key(key)
+      WHERE pg_catalog.octet_length(object_key.key)
+        <> pg_catalog.char_length(object_key.key)
+    ) THEN
+      RAISE EXCEPTION 'canonical JSON object keys must be ASCII'
+        USING ERRCODE = '22023';
+    END IF;
+    SELECT '{' || coalesce(
+      pg_catalog.string_agg(
+        pg_catalog.to_jsonb(entry.key)::text
+          || ':'
+          || canonical_v2_staging.canonical_json(entry.value),
+        ','
+        ORDER BY entry.key COLLATE "C"
+      ),
+      ''
+    ) || '}'
+    INTO encoded
+    FROM pg_catalog.jsonb_each(value) AS entry(key, value);
+    RETURN encoded;
+  END IF;
+  RAISE EXCEPTION 'canonical JSON received an unsupported JSON kind'
+    USING ERRCODE = '22023';
+END
+$$;
+
+CREATE OR REPLACE FUNCTION canonical_v2_staging.content_id(domain text, payload jsonb)
+RETURNS text
+LANGUAGE plpgsql
+IMMUTABLE
+PARALLEL SAFE
+SET search_path = pg_catalog, extensions
+AS $$
+DECLARE
+  domain_bytes bytea;
+  canonical_payload text;
+BEGIN
+  IF domain IS NULL
+    OR domain = ''
+    OR domain IS DISTINCT FROM pg_catalog.btrim(domain)
+    OR pg_catalog.octet_length(domain) > 160
+    OR domain ~ '[[:cntrl:]]' THEN
+    RAISE EXCEPTION 'content ID domain must be bounded, trimmed, non-empty text'
+      USING ERRCODE = '22023';
+  END IF;
+  IF payload IS NULL THEN
+    RAISE EXCEPTION 'content ID payload must be JSON'
+      USING ERRCODE = '22023';
+  END IF;
+  domain_bytes := pg_catalog.convert_to(domain, 'UTF8');
+  canonical_payload := canonical_v2_staging.canonical_json(payload);
+  RETURN pg_catalog.encode(
+    extensions.digest(
+      pg_catalog.convert_to('CANONICAL_CONTENT_ID/V1', 'UTF8')
+        || pg_catalog.decode('00', 'hex')
+        || pg_catalog.convert_to(
+          pg_catalog.octet_length(domain_bytes)::text,
+          'UTF8'
+        )
+        || pg_catalog.convert_to(':', 'UTF8')
+        || domain_bytes
+        || pg_catalog.decode('00', 'hex')
+        || pg_catalog.convert_to(canonical_payload, 'UTF8'),
+      'sha256'::text
+    ),
+    'hex'
+  );
+END
+$$;
+
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.deals (
   deal_key text PRIMARY KEY,
   canonical_payload jsonb NOT NULL,
@@ -573,6 +686,9 @@ DECLARE
   source_admission jsonb;
   preparation_receipt jsonb;
   semantic_input jsonb;
+  canonical_v1_input_digest text;
+  canonical_v2_input_digest text;
+  input_envelope_version text;
 BEGIN
   IF p_environment IS DISTINCT FROM 'staging' THEN
     RAISE EXCEPTION 'canonical_v2_write is staging-only' USING ERRCODE = '42501';
@@ -587,8 +703,96 @@ BEGIN
   ) THEN
     RAISE EXCEPTION 'unsupported canonical operation' USING ERRCODE = '22023';
   END IF;
-  IF coalesce(length(trim(p_idempotency_key)), 0) = 0 OR coalesce(length(trim(p_input_digest)), 0) = 0 THEN
+  IF coalesce(length(trim(p_idempotency_key)), 0) = 0
+    OR p_idempotency_key IS DISTINCT FROM trim(p_idempotency_key)
+    OR coalesce(length(trim(p_input_digest)), 0) = 0 THEN
     RAISE EXCEPTION 'idempotency key and input digest are required' USING ERRCODE = '22023';
+  END IF;
+  IF jsonb_typeof(p_write_set) IS DISTINCT FROM 'object'
+    OR jsonb_typeof(p_residuals) IS DISTINCT FROM 'array'
+    OR jsonb_typeof(p_quarantines) IS DISTINCT FROM 'array'
+    OR jsonb_typeof(p_receipt) IS DISTINCT FROM 'object' THEN
+    RAISE EXCEPTION 'canonical writer requires a closed persistence envelope'
+      USING ERRCODE = '22023';
+  END IF;
+  IF pg_catalog.pg_column_size(p_write_set)
+      + pg_catalog.pg_column_size(p_residuals)
+      + pg_catalog.pg_column_size(p_quarantines)
+      + pg_catalog.pg_column_size(p_receipt) > 4194304 THEN
+    RAISE EXCEPTION 'canonical writer persistence envelope exceeds 4 MiB'
+      USING ERRCODE = '54000';
+  END IF;
+  canonical_v2_input_digest := canonical_v2_staging.content_id(
+    'CANONICAL_WRITE_INPUT/V2',
+    jsonb_build_object(
+      'operation', p_operation,
+      'idempotencyKey', p_idempotency_key,
+      'writeSet', p_write_set,
+      'residuals', p_residuals,
+      'quarantines', p_quarantines
+    )
+  );
+  canonical_v1_input_digest := canonical_v2_staging.content_id(
+    'CANONICAL_WRITE_INPUT/V1',
+    jsonb_build_object(
+      'operation', p_operation,
+      'idempotencyKey', p_idempotency_key,
+      'writeSet', p_write_set
+    )
+  );
+  IF p_input_digest !~ '^[0-9a-f]{64}$' THEN
+    RAISE EXCEPTION 'canonical writer input digest does not match the exact write envelope'
+      USING ERRCODE = '23514';
+  ELSIF p_input_digest = canonical_v2_input_digest THEN
+    input_envelope_version := 'V2';
+  ELSIF p_input_digest = canonical_v1_input_digest THEN
+    input_envelope_version := 'V1';
+  ELSE
+    RAISE EXCEPTION 'canonical writer input digest does not match the exact write envelope'
+      USING ERRCODE = '23514';
+  END IF;
+  IF jsonb_typeof(p_receipt) IS DISTINCT FROM 'object'
+    OR NOT (p_receipt ?& ARRAY[
+      'receiptId',
+      'operation',
+      'idempotencyKey',
+      'inputDigest',
+      'status',
+      'publishableObjectCount',
+      'residualCount',
+      'quarantinedClosureCount'
+    ])
+    OR p_receipt - ARRAY[
+      'receiptId',
+      'operation',
+      'idempotencyKey',
+      'inputDigest',
+      'status',
+      'publishableObjectCount',
+      'residualCount',
+      'quarantinedClosureCount'
+    ]::text[] <> '{}'::jsonb
+    OR p_receipt->>'receiptId' !~ '^[0-9a-f]{64}$'
+    OR jsonb_typeof(p_receipt->'operation') IS DISTINCT FROM 'string'
+    OR jsonb_typeof(p_receipt->'idempotencyKey') IS DISTINCT FROM 'string'
+    OR jsonb_typeof(p_receipt->'inputDigest') IS DISTINCT FROM 'string'
+    OR jsonb_typeof(p_receipt->'status') IS DISTINCT FROM 'string'
+    OR jsonb_typeof(p_receipt->'publishableObjectCount') IS DISTINCT FROM 'number'
+    OR jsonb_typeof(p_receipt->'residualCount') IS DISTINCT FROM 'number'
+    OR jsonb_typeof(p_receipt->'quarantinedClosureCount') IS DISTINCT FROM 'number'
+    OR p_receipt->>'operation' IS DISTINCT FROM p_operation
+    OR p_receipt->>'idempotencyKey' IS DISTINCT FROM p_idempotency_key
+    OR p_receipt->>'inputDigest' IS DISTINCT FROM p_input_digest
+    OR p_receipt->>'status' IS DISTINCT FROM 'COMMITTED' THEN
+    RAISE EXCEPTION 'canonical writer receipt does not match its closed envelope'
+      USING ERRCODE = '23514';
+  END IF;
+  IF p_receipt->>'receiptId' IS DISTINCT FROM canonical_v2_staging.content_id(
+    'CANONICAL_WRITE_RECEIPT/V1',
+    p_receipt - 'receiptId'
+  ) THEN
+    RAISE EXCEPTION 'canonical writer receipt ID does not match its canonical body'
+      USING ERRCODE = '23514';
   END IF;
 
   PERFORM pg_advisory_xact_lock(hashtextextended(
@@ -604,9 +808,17 @@ BEGIN
     IF existing_receipt.input_digest IS DISTINCT FROM p_input_digest THEN
       RAISE EXCEPTION 'idempotency key already names different canonical input' USING ERRCODE = '23505';
     END IF;
-    IF p_operation <> 'DEAL_SCOPE_RUN' THEN
+    IF existing_receipt.canonical_payload IS DISTINCT FROM p_receipt THEN
+      RAISE EXCEPTION 'idempotency key already names a different canonical receipt'
+        USING ERRCODE = '23505';
+    END IF;
+    IF input_envelope_version = 'V1' OR p_operation <> 'DEAL_SCOPE_RUN' THEN
       RETURN existing_receipt.canonical_payload || jsonb_build_object('replayed', true);
     END IF;
+  END IF;
+  IF input_envelope_version = 'V1' THEN
+    RAISE EXCEPTION 'legacy canonical write input can only replay an existing receipt'
+      USING ERRCODE = '23514';
   END IF;
 
   IF p_operation = 'INTAKE_CAPTURE' THEN
@@ -788,6 +1000,12 @@ BEGIN
       item->>'source_response_content_id',
       item
     ) ON CONFLICT (intake_capture_receipt_id) DO NOTHING;
+    SELECT canonical_payload_storage_digest INTO existing_digest
+    FROM canonical_v2_staging.intake_capture_receipts
+    WHERE intake_capture_receipt_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'intake capture receipt identity conflict' USING ERRCODE = '23505';
+    END IF;
     INSERT INTO canonical_v2_staging.write_receipts(
       operation,
       idempotency_key,
@@ -967,6 +1185,12 @@ BEGIN
       (artifact_manifest->>'chunk_max_byte_length')::integer,
       artifact_manifest->'ordered_chunk_sha256', artifact_manifest
     ) ON CONFLICT (artifact_manifest_id) DO NOTHING;
+    SELECT canonical_payload_storage_digest INTO existing_digest
+    FROM canonical_v2_staging.source_artifact_manifests
+    WHERE artifact_manifest_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(artifact_manifest) THEN
+      RAISE EXCEPTION 'source artifact manifest identity conflict' USING ERRCODE = '23505';
+    END IF;
 
     SELECT canonical_payload_storage_digest INTO existing_digest
     FROM canonical_v2_staging.source_artifact_chunks
@@ -984,6 +1208,13 @@ BEGIN
       artifact_chunk->>'chunk_sha256', artifact_chunk->>'chunk_id',
       decode(artifact_chunk->>'chunk_payload_base64', 'base64'), artifact_chunk
     ) ON CONFLICT (artifact_manifest_id, chunk_ordinal) DO NOTHING;
+    SELECT canonical_payload_storage_digest INTO existing_digest
+    FROM canonical_v2_staging.source_artifact_chunks
+    WHERE artifact_manifest_id = item_id
+      AND chunk_ordinal = (artifact_chunk->>'chunk_ordinal')::integer;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(artifact_chunk) THEN
+      RAISE EXCEPTION 'source artifact chunk ordinal identity conflict' USING ERRCODE = '23505';
+    END IF;
 
     INSERT INTO canonical_v2_staging.write_receipts(
       operation, idempotency_key, input_digest, receipt_id, canonical_payload
@@ -1508,6 +1739,12 @@ BEGIN
       conversion->>'source_response_content_id', conversion->>'canonical_text_sha256',
       (conversion->>'canonical_text_byte_length')::bigint, conversion
     ) ON CONFLICT (canonical_text_id) DO NOTHING;
+    SELECT canonical_payload_storage_digest INTO existing_digest
+    FROM canonical_v2_staging.canonical_text_conversions
+    WHERE canonical_text_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(conversion) THEN
+      RAISE EXCEPTION 'canonical text conversion identity conflict' USING ERRCODE = '23505';
+    END IF;
 
     item_id := verification->>'verification_manifest_id';
     SELECT canonical_payload_storage_digest INTO existing_digest
@@ -1522,6 +1759,12 @@ BEGIN
       item_id, verification->>'canonical_text_id', verification->>'intake_capture_receipt_id',
       verification
     ) ON CONFLICT (verification_manifest_id) DO NOTHING;
+    SELECT canonical_payload_storage_digest INTO existing_digest
+    FROM canonical_v2_staging.canonical_text_verification_manifests
+    WHERE verification_manifest_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(verification) THEN
+      RAISE EXCEPTION 'canonical text verification identity conflict' USING ERRCODE = '23505';
+    END IF;
 
     item_id := immutable_source->>'immutable_source_document_id';
     SELECT canonical_payload_digest INTO existing_digest
@@ -1534,6 +1777,12 @@ BEGIN
       immutable_source_document_id, canonical_payload
     ) VALUES (item_id, immutable_source)
     ON CONFLICT (immutable_source_document_id) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.immutable_source_documents
+    WHERE immutable_source_document_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(immutable_source) THEN
+      RAISE EXCEPTION 'canonical immutable source identity conflict' USING ERRCODE = '23505';
+    END IF;
 
     item_id := source_admission->>'source_admission_manifest_id';
     SELECT canonical_payload_digest INTO existing_digest
@@ -1546,6 +1795,12 @@ BEGIN
       source_admission_manifest_id, canonical_payload
     ) VALUES (item_id, source_admission)
     ON CONFLICT (source_admission_manifest_id) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.source_admission_manifests
+    WHERE source_admission_manifest_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(source_admission) THEN
+      RAISE EXCEPTION 'canonical source admission identity conflict' USING ERRCODE = '23505';
+    END IF;
 
     item_id := preparation_receipt->>'source_admission_preparation_receipt_id';
     SELECT canonical_payload_storage_digest INTO existing_digest
@@ -1563,6 +1818,13 @@ BEGIN
       preparation_receipt->>'source_admission_manifest_id',
       preparation_receipt->>'verification_manifest_id', preparation_receipt
     ) ON CONFLICT (source_admission_preparation_receipt_id) DO NOTHING;
+    SELECT canonical_payload_storage_digest INTO existing_digest
+    FROM canonical_v2_staging.source_admission_preparation_receipts
+    WHERE source_admission_preparation_receipt_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(preparation_receipt) THEN
+      RAISE EXCEPTION 'source admission preparation receipt identity conflict'
+        USING ERRCODE = '23505';
+    END IF;
 
     item_id := semantic_input->>'semantic_extraction_input_envelope_id';
     SELECT canonical_payload_storage_digest INTO existing_digest
@@ -1581,6 +1843,13 @@ BEGIN
       semantic_input->>'source_admission_manifest_id', semantic_input->>'verification_manifest_id',
       semantic_input->>'canonical_text_id', semantic_input
     ) ON CONFLICT (semantic_extraction_input_envelope_id) DO NOTHING;
+    SELECT canonical_payload_storage_digest INTO existing_digest
+    FROM canonical_v2_staging.semantic_extraction_input_envelopes
+    WHERE semantic_extraction_input_envelope_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(semantic_input) THEN
+      RAISE EXCEPTION 'semantic extraction input envelope identity conflict'
+        USING ERRCODE = '23505';
+    END IF;
 
     INSERT INTO canonical_v2_staging.write_receipts(
       operation, idempotency_key, input_digest, receipt_id, canonical_payload
@@ -2534,9 +2803,13 @@ BEGIN
         USING ERRCODE = '23514';
     END IF;
 
-    FOR item IN SELECT value FROM jsonb_array_elements(
-      p_write_set->'correction_authority_materialisations'
-    ) LOOP
+    FOR item IN
+      SELECT ordered_item.value
+      FROM jsonb_array_elements(
+        p_write_set->'correction_authority_materialisations'
+      ) AS ordered_item(value)
+      ORDER BY ordered_item.value->>'correction_authority_materialisation_id'
+    LOOP
       item_id := item->>'correction_authority_materialisation_id';
       IF NOT (item ?& ARRAY[
           'schema_version',
@@ -2591,6 +2864,13 @@ BEGIN
         item->'correction_discharge'->>'canonical_payload_digest',
         item
       ) ON CONFLICT (correction_authority_materialisation_id) DO NOTHING;
+      SELECT canonical_payload_storage_digest INTO existing_digest
+      FROM canonical_v2_staging.correction_authority_materialisations
+      WHERE correction_authority_materialisation_id = item_id;
+      IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+        RAISE EXCEPTION 'correction authority materialisation identity conflict'
+          USING ERRCODE = '23505';
+      END IF;
     END LOOP;
 
     IF EXISTS (
@@ -2645,6 +2925,14 @@ BEGIN
       correction_map_entry_count,
       correction_discharge_map
     ) ON CONFLICT (correction_discharge_map_id) DO NOTHING;
+    SELECT canonical_payload_storage_digest INTO existing_digest
+    FROM canonical_v2_staging.correction_discharge_maps
+    WHERE correction_discharge_map_id = correction_discharge_map->>'correction_discharge_map_id';
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(
+      correction_discharge_map
+    ) THEN
+      RAISE EXCEPTION 'correction discharge map identity conflict' USING ERRCODE = '23505';
+    END IF;
 
     previous_application_id := NULL;
     FOR item, item_ordinal IN
@@ -2697,6 +2985,24 @@ BEGIN
         item->>'correction_authority_materialisation_id',
         item->>'correction_authority_materialisation_payload_digest'
       ) ON CONFLICT (correction_discharge_map_id, entry_ordinal) DO NOTHING;
+      IF NOT EXISTS (
+        SELECT 1
+        FROM canonical_v2_staging.correction_discharge_map_entries AS stored_entry
+        WHERE stored_entry.correction_discharge_map_id
+            = correction_discharge_map->>'correction_discharge_map_id'
+          AND stored_entry.entry_ordinal = item_ordinal
+          AND stored_entry.correction_application_id
+            IS NOT DISTINCT FROM item->>'correction_application_id'
+          AND stored_entry.correction_discharge_id
+            IS NOT DISTINCT FROM item->>'correction_discharge_id'
+          AND stored_entry.correction_authority_materialisation_id
+            IS NOT DISTINCT FROM item->>'correction_authority_materialisation_id'
+          AND stored_entry.correction_authority_materialisation_payload_digest
+            IS NOT DISTINCT FROM item->>'correction_authority_materialisation_payload_digest'
+      ) THEN
+        RAISE EXCEPTION 'correction discharge map entry identity conflict'
+          USING ERRCODE = '23505';
+      END IF;
       previous_application_id := item->>'correction_application_id';
     END LOOP;
 
@@ -2727,6 +3033,14 @@ BEGIN
       next_candidate_input_head->>'previous_candidate_input_head_id',
       next_candidate_input_head
     ) ON CONFLICT (candidate_input_head_id) DO NOTHING;
+    SELECT canonical_payload_storage_digest INTO existing_digest
+    FROM canonical_v2_staging.candidate_input_head_versions
+    WHERE candidate_input_head_id = next_candidate_input_head->>'candidate_input_head_id';
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(
+      next_candidate_input_head
+    ) THEN
+      RAISE EXCEPTION 'candidate input head identity conflict' USING ERRCODE = '23505';
+    END IF;
 
     SELECT canonical_payload_storage_digest INTO existing_digest
     FROM canonical_v2_staging.candidate_input_events
@@ -2761,6 +3075,14 @@ BEGIN
       candidate_input_event->>'correction_discharge_map_payload_digest',
       candidate_input_event
     ) ON CONFLICT (candidate_input_event_id) DO NOTHING;
+    SELECT canonical_payload_storage_digest INTO existing_digest
+    FROM canonical_v2_staging.candidate_input_events
+    WHERE candidate_input_event_id = candidate_input_event->>'candidate_input_event_id';
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(
+      candidate_input_event
+    ) THEN
+      RAISE EXCEPTION 'candidate input event identity conflict' USING ERRCODE = '23505';
+    END IF;
 
     IF current_candidate_input_head_exists THEN
       UPDATE canonical_v2_staging.candidate_input_heads SET
@@ -2850,12 +3172,16 @@ BEGIN
   END IF;
 
   IF p_operation <> 'DEAL_SCOPE_RUN' THEN
-    FOR item IN SELECT value FROM jsonb_array_elements(
-      CASE WHEN p_write_set ? 'sources'
-        THEN p_write_set->'sources'
-        ELSE jsonb_build_array(p_write_set->'source')
-      END
-    ) LOOP
+    FOR item IN
+      SELECT ordered_item.value
+      FROM jsonb_array_elements(
+        CASE WHEN p_write_set ? 'sources'
+          THEN p_write_set->'sources'
+          ELSE jsonb_build_array(p_write_set->'source')
+        END
+      ) AS ordered_item(value)
+      ORDER BY ordered_item.value->>'immutable_source_document_id'
+    LOOP
       item_id := item->>'immutable_source_document_id';
       SELECT canonical_payload_digest INTO existing_digest
       FROM canonical_v2_staging.immutable_source_documents
@@ -2865,14 +3191,24 @@ BEGIN
       END IF;
       INSERT INTO canonical_v2_staging.immutable_source_documents(immutable_source_document_id, canonical_payload)
       VALUES (item_id, item) ON CONFLICT (immutable_source_document_id) DO NOTHING;
+      SELECT canonical_payload_digest INTO existing_digest
+      FROM canonical_v2_staging.immutable_source_documents
+      WHERE immutable_source_document_id = item_id;
+      IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+        RAISE EXCEPTION 'canonical immutable source identity conflict' USING ERRCODE = '23505';
+      END IF;
     END LOOP;
 
-    FOR item IN SELECT value FROM jsonb_array_elements(
-      CASE WHEN p_write_set ? 'source_admissions'
-        THEN p_write_set->'source_admissions'
-        ELSE jsonb_build_array(p_write_set->'source_admission')
-      END
-    ) LOOP
+    FOR item IN
+      SELECT ordered_item.value
+      FROM jsonb_array_elements(
+        CASE WHEN p_write_set ? 'source_admissions'
+          THEN p_write_set->'source_admissions'
+          ELSE jsonb_build_array(p_write_set->'source_admission')
+        END
+      ) AS ordered_item(value)
+      ORDER BY ordered_item.value->>'source_admission_manifest_id'
+    LOOP
       item_id := item->>'source_admission_manifest_id';
       SELECT canonical_payload_digest INTO existing_digest
       FROM canonical_v2_staging.source_admission_manifests
@@ -2882,6 +3218,12 @@ BEGIN
       END IF;
       INSERT INTO canonical_v2_staging.source_admission_manifests(source_admission_manifest_id, canonical_payload)
       VALUES (item_id, item) ON CONFLICT (source_admission_manifest_id) DO NOTHING;
+      SELECT canonical_payload_digest INTO existing_digest
+      FROM canonical_v2_staging.source_admission_manifests
+      WHERE source_admission_manifest_id = item_id;
+      IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+        RAISE EXCEPTION 'canonical source admission identity conflict' USING ERRCODE = '23505';
+      END IF;
     END LOOP;
   END IF;
 
@@ -2893,8 +3235,20 @@ BEGIN
   END IF;
   INSERT INTO canonical_v2_staging.deals(deal_key, canonical_payload)
   VALUES (item_id, item) ON CONFLICT (deal_key) DO NOTHING;
+  SELECT canonical_payload_digest INTO existing_digest
+  FROM canonical_v2_staging.deals
+  WHERE deal_key = item_id;
+  IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+    RAISE EXCEPTION 'canonical deal identity conflict' USING ERRCODE = '23505';
+  END IF;
 
-  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'validated_semantic_graphs', '[]'::jsonb)) LOOP
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(
+      coalesce(p_write_set->'validated_semantic_graphs', '[]'::jsonb)
+    ) AS ordered_item(value)
+    ORDER BY ordered_item.value->>'validated_semantic_graph_id'
+  LOOP
     item_id := item->>'validated_semantic_graph_id';
     SELECT canonical_payload_digest INTO existing_digest
     FROM canonical_v2_staging.validated_semantic_graphs
@@ -2904,122 +3258,290 @@ BEGIN
     END IF;
     INSERT INTO canonical_v2_staging.validated_semantic_graphs(validated_semantic_graph_id, closure_id, canonical_payload)
     VALUES (item_id, item->>'closure_id', item) ON CONFLICT (validated_semantic_graph_id) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.validated_semantic_graphs
+    WHERE validated_semantic_graph_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'validated semantic graph identity conflict' USING ERRCODE = '23505';
+    END IF;
   END LOOP;
 
-  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'excerpts', '[]'::jsonb)) LOOP
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(coalesce(p_write_set->'excerpts', '[]'::jsonb))
+      AS ordered_item(value)
+    ORDER BY ordered_item.value->>'excerpt_id'
+  LOOP
     item_id := item->>'excerpt_id';
     SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.excerpts WHERE excerpt_id = item_id;
     IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'canonical excerpt identity conflict' USING ERRCODE = '23505'; END IF;
     INSERT INTO canonical_v2_staging.excerpts(excerpt_id, closure_id, canonical_payload)
     VALUES (item_id, item->>'closure_id', item) ON CONFLICT (excerpt_id) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.excerpts WHERE excerpt_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'canonical excerpt identity conflict' USING ERRCODE = '23505';
+    END IF;
   END LOOP;
 
-  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'provisions', '[]'::jsonb)) LOOP
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(coalesce(p_write_set->'provisions', '[]'::jsonb))
+      AS ordered_item(value)
+    ORDER BY ordered_item.value->>'provision_instance_id'
+  LOOP
     item_id := item->>'provision_instance_id';
     SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.provision_instances WHERE provision_instance_id = item_id;
     IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'canonical provision identity conflict' USING ERRCODE = '23505'; END IF;
     INSERT INTO canonical_v2_staging.provision_instances(provision_instance_id, closure_id, canonical_payload)
     VALUES (item_id, item->>'closure_id', item) ON CONFLICT (provision_instance_id) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.provision_instances WHERE provision_instance_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'canonical provision identity conflict' USING ERRCODE = '23505';
+    END IF;
   END LOOP;
 
-  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'components', '[]'::jsonb)) LOOP
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(coalesce(p_write_set->'components', '[]'::jsonb))
+      AS ordered_item(value)
+    ORDER BY ordered_item.value->>'provision_component_id'
+  LOOP
     item_id := item->>'provision_component_id';
     SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.provision_components WHERE provision_component_id = item_id;
     IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'canonical component identity conflict' USING ERRCODE = '23505'; END IF;
     INSERT INTO canonical_v2_staging.provision_components(provision_component_id, closure_id, canonical_payload)
     VALUES (item_id, item->>'closure_id', item) ON CONFLICT (provision_component_id) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.provision_components WHERE provision_component_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'canonical component identity conflict' USING ERRCODE = '23505';
+    END IF;
   END LOOP;
 
-  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'claims', '[]'::jsonb)) LOOP
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(coalesce(p_write_set->'claims', '[]'::jsonb))
+      AS ordered_item(value)
+    ORDER BY ordered_item.value->>'claim_revision_id'
+  LOOP
     item_id := item->>'claim_revision_id';
     SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.claim_revisions WHERE claim_revision_id = item_id;
     IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'canonical claim identity conflict' USING ERRCODE = '23505'; END IF;
     INSERT INTO canonical_v2_staging.claim_revisions(claim_revision_id, closure_id, canonical_payload)
     VALUES (item_id, item->>'closure_id', item) ON CONFLICT (claim_revision_id) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.claim_revisions WHERE claim_revision_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'canonical claim identity conflict' USING ERRCODE = '23505';
+    END IF;
   END LOOP;
 
-  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'relationships', '[]'::jsonb)) LOOP
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(coalesce(p_write_set->'relationships', '[]'::jsonb))
+      AS ordered_item(value)
+    ORDER BY ordered_item.value->>'relationship_revision_id'
+  LOOP
     item_id := item->>'relationship_revision_id';
     SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.relationship_revisions WHERE relationship_revision_id = item_id;
     IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'canonical relationship identity conflict' USING ERRCODE = '23505'; END IF;
     INSERT INTO canonical_v2_staging.relationship_revisions(relationship_revision_id, closure_id, canonical_payload)
     VALUES (item_id, item->>'closure_id', item) ON CONFLICT (relationship_revision_id) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.relationship_revisions WHERE relationship_revision_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'canonical relationship identity conflict' USING ERRCODE = '23505';
+    END IF;
   END LOOP;
 
-  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'open_world_candidates', '[]'::jsonb)) LOOP
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(coalesce(p_write_set->'open_world_candidates', '[]'::jsonb))
+      AS ordered_item(value)
+    ORDER BY ordered_item.value->>'candidate_id'
+  LOOP
     item_id := item->>'candidate_id';
     SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.open_world_candidates WHERE candidate_id = item_id;
     IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'open-world candidate identity conflict' USING ERRCODE = '23505'; END IF;
     INSERT INTO canonical_v2_staging.open_world_candidates(candidate_id, closure_id, canonical_payload)
     VALUES (item_id, item->>'closure_id', item) ON CONFLICT (candidate_id) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.open_world_candidates WHERE candidate_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'open-world candidate identity conflict' USING ERRCODE = '23505';
+    END IF;
   END LOOP;
 
-  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'open_world_candidate_occurrences', '[]'::jsonb)) LOOP
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(
+      coalesce(p_write_set->'open_world_candidate_occurrences', '[]'::jsonb)
+    ) AS ordered_item(value)
+    ORDER BY ordered_item.value->>'open_world_candidate_occurrence_id'
+  LOOP
     item_id := item->>'open_world_candidate_occurrence_id';
     SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.open_world_candidate_occurrences WHERE open_world_candidate_occurrence_id = item_id;
     IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'open-world candidate occurrence identity conflict' USING ERRCODE = '23505'; END IF;
     INSERT INTO canonical_v2_staging.open_world_candidate_occurrences(open_world_candidate_occurrence_id, closure_id, canonical_payload)
     VALUES (item_id, item->>'closure_id', item) ON CONFLICT (open_world_candidate_occurrence_id) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.open_world_candidate_occurrences
+    WHERE open_world_candidate_occurrence_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'open-world candidate occurrence identity conflict' USING ERRCODE = '23505';
+    END IF;
   END LOOP;
 
-  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'open_world_evidence_references', '[]'::jsonb)) LOOP
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(
+      coalesce(p_write_set->'open_world_evidence_references', '[]'::jsonb)
+    ) AS ordered_item(value)
+    ORDER BY ordered_item.value->>'evidence_reference_id'
+  LOOP
     item_id := item->>'evidence_reference_id';
     SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.open_world_evidence_references WHERE evidence_reference_id = item_id;
     IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'open-world evidence identity conflict' USING ERRCODE = '23505'; END IF;
     INSERT INTO canonical_v2_staging.open_world_evidence_references(evidence_reference_id, closure_id, canonical_payload)
     VALUES (item_id, item->>'closure_id', item) ON CONFLICT (evidence_reference_id) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.open_world_evidence_references
+    WHERE evidence_reference_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'open-world evidence identity conflict' USING ERRCODE = '23505';
+    END IF;
   END LOOP;
 
-  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'open_world_candidate_dispositions', '[]'::jsonb)) LOOP
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(
+      coalesce(p_write_set->'open_world_candidate_dispositions', '[]'::jsonb)
+    ) AS ordered_item(value)
+    ORDER BY ordered_item.value->>'final_disposition_id'
+  LOOP
     item_id := item->>'final_disposition_id';
     SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.open_world_candidate_dispositions WHERE final_disposition_id = item_id;
     IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'open-world disposition identity conflict' USING ERRCODE = '23505'; END IF;
     INSERT INTO canonical_v2_staging.open_world_candidate_dispositions(final_disposition_id, closure_id, canonical_payload)
     VALUES (item_id, item->>'closure_id', item) ON CONFLICT (final_disposition_id) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.open_world_candidate_dispositions
+    WHERE final_disposition_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'open-world disposition identity conflict' USING ERRCODE = '23505';
+    END IF;
   END LOOP;
 
-  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'open_world_primitives', '[]'::jsonb)) LOOP
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(coalesce(p_write_set->'open_world_primitives', '[]'::jsonb))
+      AS ordered_item(value)
+    ORDER BY ordered_item.value->>'primitive_id'
+  LOOP
     item_id := item->>'primitive_id';
     SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.open_world_primitives WHERE primitive_id = item_id;
     IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'open-world primitive identity conflict' USING ERRCODE = '23505'; END IF;
     INSERT INTO canonical_v2_staging.open_world_primitives(primitive_id, closure_id, canonical_payload)
     VALUES (item_id, item->>'closure_id', item) ON CONFLICT (primitive_id) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.open_world_primitives WHERE primitive_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'open-world primitive identity conflict' USING ERRCODE = '23505';
+    END IF;
   END LOOP;
 
-  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'semantic_impact_closures', '[]'::jsonb)) LOOP
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(
+      coalesce(p_write_set->'semantic_impact_closures', '[]'::jsonb)
+    ) AS ordered_item(value)
+    ORDER BY ordered_item.value->>'semantic_impact_closure_id'
+  LOOP
     item_id := item->>'semantic_impact_closure_id';
     SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.semantic_impact_closures WHERE semantic_impact_closure_id = item_id;
     IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'semantic impact closure identity conflict' USING ERRCODE = '23505'; END IF;
     INSERT INTO canonical_v2_staging.semantic_impact_closures(semantic_impact_closure_id, closure_id, canonical_payload)
     VALUES (item_id, item->>'closure_id', item) ON CONFLICT (semantic_impact_closure_id) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.semantic_impact_closures
+    WHERE semantic_impact_closure_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'semantic impact closure identity conflict' USING ERRCODE = '23505';
+    END IF;
   END LOOP;
 
-  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'reviewed_source_specific_rows', '[]'::jsonb)) LOOP
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(
+      coalesce(p_write_set->'reviewed_source_specific_rows', '[]'::jsonb)
+    ) AS ordered_item(value)
+    ORDER BY ordered_item.value->>'reviewed_source_specific_row_serving_key'
+  LOOP
     item_id := item->>'reviewed_source_specific_row_serving_key';
     SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.reviewed_source_specific_rows WHERE reviewed_source_specific_row_serving_key = item_id;
     IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'reviewed source-specific row identity conflict' USING ERRCODE = '23505'; END IF;
     INSERT INTO canonical_v2_staging.reviewed_source_specific_rows(reviewed_source_specific_row_serving_key, closure_id, canonical_payload)
     VALUES (item_id, item->>'closure_id', item) ON CONFLICT (reviewed_source_specific_row_serving_key) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.reviewed_source_specific_rows
+    WHERE reviewed_source_specific_row_serving_key = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'reviewed source-specific row identity conflict' USING ERRCODE = '23505';
+    END IF;
   END LOOP;
 
-  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_write_set->'incomplete_canonical_result_rows', '[]'::jsonb)) LOOP
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(
+      coalesce(p_write_set->'incomplete_canonical_result_rows', '[]'::jsonb)
+    ) AS ordered_item(value)
+    ORDER BY ordered_item.value->>'incomplete_result_review_row_serving_key'
+  LOOP
     item_id := item->>'incomplete_result_review_row_serving_key';
     SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.incomplete_canonical_result_rows WHERE incomplete_result_review_row_serving_key = item_id;
     IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN RAISE EXCEPTION 'incomplete canonical result row identity conflict' USING ERRCODE = '23505'; END IF;
     INSERT INTO canonical_v2_staging.incomplete_canonical_result_rows(incomplete_result_review_row_serving_key, closure_id, canonical_payload)
     VALUES (item_id, item->>'closure_id', item) ON CONFLICT (incomplete_result_review_row_serving_key) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.incomplete_canonical_result_rows
+    WHERE incomplete_result_review_row_serving_key = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'incomplete canonical result row identity conflict' USING ERRCODE = '23505';
+    END IF;
   END LOOP;
 
-  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_residuals, '[]'::jsonb)) LOOP
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(coalesce(p_residuals, '[]'::jsonb)) AS ordered_item(value)
+    ORDER BY ordered_item.value->>'residual_id'
+  LOOP
     INSERT INTO canonical_v2_staging.residuals(residual_id, closure_id, reason_code, canonical_payload)
     VALUES (item->>'residual_id', item->>'closure_id', item->>'reason_code', item)
     ON CONFLICT (residual_id) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.residuals
+    WHERE residual_id = item->>'residual_id';
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'canonical residual identity conflict' USING ERRCODE = '23505';
+    END IF;
   END LOOP;
 
-  FOR item IN SELECT value FROM jsonb_array_elements(coalesce(p_quarantines, '[]'::jsonb)) LOOP
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(coalesce(p_quarantines, '[]'::jsonb)) AS ordered_item(value)
+    ORDER BY ordered_item.value->>'quarantine_id'
+  LOOP
     INSERT INTO canonical_v2_staging.quarantines(quarantine_id, closure_id, reason_code, canonical_payload)
     VALUES (item->>'quarantine_id', item->>'closure_id', item->>'reason_code', item)
     ON CONFLICT (quarantine_id) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.quarantines
+    WHERE quarantine_id = item->>'quarantine_id';
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'canonical quarantine identity conflict' USING ERRCODE = '23505';
+    END IF;
   END LOOP;
 
   INSERT INTO canonical_v2_staging.write_receipts(operation, idempotency_key, input_digest, receipt_id, canonical_payload)
@@ -3161,6 +3683,10 @@ REVOKE ALL ON SCHEMA canonical_v2_staging FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON ALL TABLES IN SCHEMA canonical_v2_staging
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;
 REVOKE ALL ON ALL FUNCTIONS IN SCHEMA canonical_v2_staging
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;
+REVOKE ALL ON FUNCTION canonical_v2_staging.canonical_json(jsonb)
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;
+REVOKE ALL ON FUNCTION canonical_v2_staging.content_id(text, jsonb)
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;
 REVOKE ALL ON FUNCTION public.canonical_v2_write(text, text, text, text, jsonb, jsonb, jsonb, jsonb)
   FROM PUBLIC, anon, authenticated, service_role;

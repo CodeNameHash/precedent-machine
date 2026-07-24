@@ -16,7 +16,23 @@ const FUNCTIONS = Object.freeze([
     output: 'step0b-canonical-writer-by-contract.sql',
     source: 'supabase/canonical-v2-foundation.sql',
     marker: 'CREATE OR REPLACE FUNCTION public.canonical_v2_write(',
-    digest: '42c59a953fdc3007d746b731f91232b9b9d4b6f770a6b060f688562c334753c8',
+    digest: '648ccdc3af6dfa0a3dfee4be0037ea3a472a1995729e0d831d3990e28341bbc4',
+    dependencies: Object.freeze([
+      Object.freeze({
+        source: 'supabase/canonical-v2-foundation.sql',
+        marker: 'CREATE OR REPLACE FUNCTION canonical_v2_staging.canonical_json(',
+        digest: '69088248539e99c13b8344cd9a5e78ce7729f1a7b47f5595bec0c83cb2e7b95c',
+      }),
+      Object.freeze({
+        source: 'supabase/canonical-v2-foundation.sql',
+        marker: 'CREATE OR REPLACE FUNCTION canonical_v2_staging.content_id(',
+        digest: '04da1eab5614a2ff3bd9057cfd1f20a19c5a816def10676b4736a1e13e826a91',
+      }),
+    ]),
+    suffix: `REVOKE ALL ON FUNCTION canonical_v2_staging.canonical_json(jsonb)
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;
+REVOKE ALL ON FUNCTION canonical_v2_staging.content_id(text, jsonb)
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;`,
   },
   {
     output: 'step0c-candidate-import-by-contract.sql',
@@ -142,8 +158,14 @@ $authority_definition_assert$;`);
 const generated = new Map([
   ['step0a-candidate-input-heads-by-contract.sql', primaryKeyMigration],
   ...FUNCTIONS.map((definition) => {
-    const statement = extractFunction(definition);
-    return [definition.output, transaction(`-- Governed function SHA-256: ${definition.digest}\n${statement}`)];
+    const statements = [
+      ...(definition.dependencies || []),
+      definition,
+    ].map((item) => (
+      `-- Governed function SHA-256: ${item.digest}\n${extractFunction(item)}`
+    ));
+    if (definition.suffix) statements.push(definition.suffix);
+    return [definition.output, transaction(statements.join('\n\n'))];
   }),
   ['step0e-verify-authority-partition.sql', finalVerification],
 ]);

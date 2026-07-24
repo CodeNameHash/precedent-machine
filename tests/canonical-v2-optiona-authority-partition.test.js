@@ -24,6 +24,28 @@ test('Option A authority partition files are deterministic governed extracts', (
   assert.match(verification, /candidate importer is not contract-partitioned/);
   assert.match(verification, /candidate activation is not contract-partitioned/);
   assert.match(verification, /authority partition migration moved the pinned F1 head/);
+
+  const writer = fs.readFileSync(
+    'sql/optionA/step0b-canonical-writer-by-contract.sql', 'utf8',
+  );
+  const canonicalJson = writer.indexOf(
+    'CREATE OR REPLACE FUNCTION canonical_v2_staging.canonical_json(',
+  );
+  const contentId = writer.indexOf(
+    'CREATE OR REPLACE FUNCTION canonical_v2_staging.content_id(',
+  );
+  const canonicalWriter = writer.indexOf(
+    'CREATE OR REPLACE FUNCTION public.canonical_v2_write(',
+  );
+  assert.ok(canonicalJson >= 0 && canonicalJson < contentId && contentId < canonicalWriter);
+  assert.match(
+    writer,
+    /REVOKE ALL ON FUNCTION canonical_v2_staging\.canonical_json\(jsonb\)/,
+  );
+  assert.match(
+    writer,
+    /REVOKE ALL ON FUNCTION canonical_v2_staging\.content_id\(text, jsonb\)/,
+  );
 });
 
 test('Option A blocks fail closed and keep activation outside the packet', () => {

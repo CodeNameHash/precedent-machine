@@ -19,7 +19,7 @@ const EXPECTED_PROJECT = Object.freeze({
 });
 const F5_CONTRACT_FINGERPRINT = 'f80a77651d1b6a6a9eec8ac67526a8704f498761cbb22a67e6ceb4716abb5478';
 const EXPECTED_DIGESTS = Object.freeze({
-  'canonical-v2-foundation.sql': '5e085cbb63d67d89b6304de72a333f65fde1eaf12176aa695d60bbd7cab31adb',
+  'canonical-v2-foundation.sql': '0f9da39679388bf8155ad97ec3852be205735c33f68289a97612427008558bcd',
   // Active serving resolves the release-declared contract, exact detail is
   // active-release bound, and the rejected F3 fingerprint is denied at
   // every granted serving boundary.
@@ -83,6 +83,76 @@ function runSqlFile(sql, mode, workdir) {
 
 function verifyAppliedSchema(workdir) {
   const sql = `
+    DO $canonical_v2_writer_envelope_verification$
+    DECLARE
+      probe_input_digest text;
+      probe_message text;
+      probe_receipt jsonb;
+    BEGIN
+      BEGIN
+        PERFORM public.canonical_v2_write(
+          'staging',
+          'INTAKE_CAPTURE',
+          'schema-verification-forged-input',
+          repeat('0', 64),
+          '{}'::jsonb,
+          '[]'::jsonb,
+          '[]'::jsonb,
+          '{}'::jsonb
+        );
+        RAISE EXCEPTION 'canonical writer accepted a forged input digest';
+      EXCEPTION
+        WHEN check_violation THEN
+          GET STACKED DIAGNOSTICS probe_message = MESSAGE_TEXT;
+          IF probe_message IS DISTINCT FROM
+            'canonical writer input digest does not match the exact write envelope' THEN
+            RAISE;
+          END IF;
+      END;
+
+      probe_input_digest := canonical_v2_staging.content_id(
+        'CANONICAL_WRITE_INPUT/V2',
+        jsonb_build_object(
+          'operation', 'INTAKE_CAPTURE',
+          'idempotencyKey', 'schema-verification-forged-receipt',
+          'writeSet', '{}'::jsonb,
+          'residuals', '[]'::jsonb,
+          'quarantines', '[]'::jsonb
+        )
+      );
+      probe_receipt := jsonb_build_object(
+        'receiptId', repeat('0', 64),
+        'operation', 'INTAKE_CAPTURE',
+        'idempotencyKey', 'schema-verification-forged-receipt',
+        'inputDigest', probe_input_digest,
+        'status', 'COMMITTED',
+        'publishableObjectCount', 0,
+        'residualCount', 0,
+        'quarantinedClosureCount', 0
+      );
+      BEGIN
+        PERFORM public.canonical_v2_write(
+          'staging',
+          'INTAKE_CAPTURE',
+          'schema-verification-forged-receipt',
+          probe_input_digest,
+          '{}'::jsonb,
+          '[]'::jsonb,
+          '[]'::jsonb,
+          probe_receipt
+        );
+        RAISE EXCEPTION 'canonical writer accepted a forged receipt ID';
+      EXCEPTION
+        WHEN check_violation THEN
+          GET STACKED DIAGNOSTICS probe_message = MESSAGE_TEXT;
+          IF probe_message IS DISTINCT FROM
+            'canonical writer receipt ID does not match its canonical body' THEN
+            RAISE;
+          END IF;
+      END;
+    END
+    $canonical_v2_writer_envelope_verification$;
+
     select
       to_regnamespace('canonical_v2_staging') is not null as canonical_schema_exists,
       to_regclass('canonical_v2_staging.validated_semantic_graphs') is not null as semantic_graph_table_exists,
@@ -190,6 +260,67 @@ function verifyAppliedSchema(workdir) {
           and column_name = 'correction_input_root'
       ) as active_pointer_correction_root_exists,
       to_regprocedure('public.canonical_v2_write(text,text,text,text,jsonb,jsonb,jsonb,jsonb)') is not null as writer_exists,
+      canonical_v2_staging.canonical_json(
+        '{"b":[true,null,"unicodeé"],"a":1.0,"nested":{"z":"2.75","y":false}}'::jsonb
+      ) = '{"a":1,"b":[true,null,"unicodeé"],"nested":{"y":false,"z":"2.75"}}'
+        as canonical_json_parity_passes,
+      canonical_v2_staging.content_id(
+        'CANONICAL_PARITY_FIXTURE/V1',
+        '{"b":[true,null,"unicodeé"],"a":1.0,"nested":{"z":"2.75","y":false}}'::jsonb
+      ) = 'd6cb15c9f114f22d010f468b08defd504339e33f4ca12dc70f066a3158d3ca98'
+        as content_id_parity_passes,
+      (
+        pg_get_functiondef(
+          'public.canonical_v2_write(text,text,text,text,jsonb,jsonb,jsonb,jsonb)'::regprocedure
+        ) like '%CANONICAL_WRITE_INPUT/V2%'
+        and pg_get_functiondef(
+          'public.canonical_v2_write(text,text,text,text,jsonb,jsonb,jsonb,jsonb)'::regprocedure
+        ) like '%CANONICAL_WRITE_RECEIPT/V1%'
+        and pg_get_functiondef(
+          'public.canonical_v2_write(text,text,text,text,jsonb,jsonb,jsonb,jsonb)'::regprocedure
+        ) like '%canonical_v2_staging.content_id%'
+        and pg_get_functiondef(
+          'public.canonical_v2_write(text,text,text,text,jsonb,jsonb,jsonb,jsonb)'::regprocedure
+        ) like '%legacy canonical write input can only replay an existing receipt%'
+        and pg_get_functiondef(
+          'public.canonical_v2_write(text,text,text,text,jsonb,jsonb,jsonb,jsonb)'::regprocedure
+        ) like '%existing_receipt.canonical_payload IS DISTINCT FROM p_receipt%'
+      ) as writer_envelope_identity_enforced,
+      not exists (
+        select 1
+        from pg_proc as checked_function
+        cross join lateral aclexplode(
+          coalesce(
+            checked_function.proacl,
+            acldefault('f', checked_function.proowner)
+          )
+        ) as checked_privilege
+        where checked_function.oid = any(array[
+          'canonical_v2_staging.canonical_json(jsonb)'::regprocedure,
+          'canonical_v2_staging.content_id(text,jsonb)'::regprocedure
+        ]::oid[])
+          and checked_privilege.grantee = 0
+          and checked_privilege.privilege_type = 'EXECUTE'
+      )
+      and not exists (
+        select 1
+        from unnest(array[
+          'anon',
+          'authenticated',
+          'service_role',
+          'canonical_v2_writer',
+          'canonical_v2_serving'
+        ]) as checked_role(role_name)
+        cross join unnest(array[
+          'canonical_v2_staging.canonical_json(jsonb)',
+          'canonical_v2_staging.content_id(text,jsonb)'
+        ]) as checked_function(function_name)
+        where has_function_privilege(
+          checked_role.role_name,
+          checked_function.function_name,
+          'EXECUTE'
+        )
+      ) as canonical_identity_helpers_are_private,
       to_regprocedure('public.canonical_v2_select_candidate_inputs(text,text)') is not null as candidate_input_selector_exists,
       to_regprocedure('public.canonical_v2_recheck_candidate_input_head(text,text,text,text)') is not null as candidate_input_recheck_exists,
       to_regprocedure('public.canonical_v2_rollback_inactive_candidate_release(text,text,text,text,text)') is not null as inactive_candidate_rollback_exists,
@@ -267,7 +398,10 @@ function verifyAppliedSchema(workdir) {
       shell: false,
     },
   );
-  if (result.status !== 0) return result.status ?? 1;
+  if (result.status !== 0) {
+    if (result.stdout) process.stderr.write(result.stdout);
+    return result.status ?? 1;
+  }
   let output;
   try {
     output = JSON.parse(result.stdout);
