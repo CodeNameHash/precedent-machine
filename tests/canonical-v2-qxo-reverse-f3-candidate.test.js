@@ -35,6 +35,7 @@ const {
   buildQxoReverseF4AuthorityGenesis,
 } = require('../lib/canonical-v2/qxo-reverse-f4-authority');
 const {
+  QXO_MATERIAL_F5_REVIEWED_MAPPING_ID,
   QXO_MATERIAL_REVIEWED_MAPPING_ID,
 } = require('../lib/canonical-v2/qxo-material-candidate-identity');
 const {
@@ -74,7 +75,7 @@ function f4Seed(overrides = {}) {
 function f5Seed(overrides = {}) {
   return buildQxoDenominatorPrecisionF5CandidateSeed({
     contractFingerprint: QXO_DENOMINATOR_PRECISION_F5_CONTRACT_FINGERPRINT,
-    materialReviewedMappingId: QXO_MATERIAL_REVIEWED_MAPPING_ID,
+    materialReviewedMappingId: QXO_MATERIAL_F5_REVIEWED_MAPPING_ID,
     sellerTerminationReviewedMappingId: SELLER_MAPPING_ID,
     reverseTerminationReviewedMappingId: BUYER_MAPPING_ID,
     dealDimensions: QXO_RICH_DEAL_DIMENSIONS,
@@ -157,6 +158,7 @@ test('F4 identity refuses contract, predecessor family and deal-dimension drift'
 test('F5 identity binds the immutable F4 predecessor and a new contract release', () => {
   const seed = f5Seed();
   assert.equal(seed.contract_fingerprint, QXO_DENOMINATOR_PRECISION_F5_CONTRACT_FINGERPRINT);
+  assert.equal(seed.material_reviewed_mapping_id, QXO_MATERIAL_F5_REVIEWED_MAPPING_ID);
   assert.equal(seed.predecessor_contract_fingerprint, QXO_REVERSE_F4_CONTRACT_FINGERPRINT);
   assert.equal(seed.predecessor_corpus_release_id, QXO_REVERSE_F4_CORPUS_RELEASE_ID);
   assert.equal(seed.predecessor_candidate_manifest_id, QXO_REVERSE_F4_CANDIDATE_MANIFEST_ID);
@@ -169,6 +171,10 @@ test('F5 identity binds the immutable F4 predecessor and a new contract release'
   assert.throws(
     () => f5Seed({ contractFingerprint: QXO_REVERSE_F4_CONTRACT_FINGERPRINT }),
     /F5 versioned contract/,
+  );
+  assert.throws(
+    () => f5Seed({ materialReviewedMappingId: QXO_MATERIAL_REVIEWED_MAPPING_ID }),
+    /reviewed material-contract mapping/,
   );
 });
 

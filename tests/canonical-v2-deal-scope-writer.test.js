@@ -144,6 +144,21 @@ async function setup(html = '<body><p>Capitalisation representation.</p></body>'
   return { repository, writer, chain, context, writeSet: semanticWriteSet(context) };
 }
 
+async function persistedReference(repository, objectKind, objectId, validationClosureId) {
+  const [resolved] = await repository.resolvePersistedCanonicalObjectReferences([{
+    object_kind: objectKind,
+    object_id: objectId,
+  }]);
+  return {
+    schema_version: 'PERSISTED_CANONICAL_OBJECT_REFERENCE/V1',
+    object_kind: objectKind,
+    object_id: objectId,
+    stored_closure_id: resolved.closure_id,
+    canonical_payload_digest: resolved.canonical_payload_digest,
+    validation_closure_id: validationClosureId,
+  };
+}
+
 test('DEAL_SCOPE_RUN dry-run resolves stored admission and accepts reference-only semantics', async () => {
   const { repository, writer, writeSet } = await setup();
   const before = repository.snapshot();
@@ -196,6 +211,78 @@ test('DEAL_SCOPE_RUN commits one semantic transaction and exact replay is idempo
     error.code === 'IDEMPOTENCY_CONFLICT'
   ));
   assert.deepEqual(repository.snapshot(), state);
+});
+
+test('a later deal-scope run validates against exact persisted objects and writes only its new claim', async () => {
+  const { repository, writer, writeSet } = await setup();
+  await writer.write({
+    operation: 'DEAL_SCOPE_RUN',
+    idempotencyKey: 'persisted-reference-predecessor',
+    writeSet,
+  });
+  const predecessor = repository.snapshot();
+  const validationClosureId = digest('closure:qxo-capitalisation-v2');
+  const predecessorClaim = writeSet.claims[0];
+  const claim = buildClaimRevision({
+    subject_occurrence_id: predecessorClaim.subject_occurrence_id,
+    claim_definition_key: predecessorClaim.claim_definition_key,
+    ordinal: 1,
+    state: 'ABSENT',
+    scope: {
+      scope_closure_id: digest('scope:qxo-capitalisation-v2'),
+      coverage_status: 'COMPLETE',
+      required_interval_ids: [writeSet.excerpts[0].excerpt_id],
+      examined_interval_ids: [writeSet.excerpts[0].excerpt_id],
+    },
+  });
+  const nextWriteSet = {
+    ...structuredClone(writeSet),
+    persisted_object_references: [
+      await persistedReference(
+        repository,
+        'excerpts',
+        writeSet.excerpts[0].excerpt_id,
+        validationClosureId,
+      ),
+      await persistedReference(
+        repository,
+        'provisions',
+        writeSet.provisions[0].provision_instance_id,
+        validationClosureId,
+      ),
+    ],
+    excerpts: [],
+    provisions: [],
+    claims: [{ ...claim, closure_id: validationClosureId }],
+  };
+  const first = await writer.write({
+    operation: 'DEAL_SCOPE_RUN',
+    idempotencyKey: 'persisted-reference-successor',
+    writeSet: nextWriteSet,
+  });
+  const replay = await writer.write({
+    operation: 'DEAL_SCOPE_RUN',
+    idempotencyKey: 'persisted-reference-successor',
+    writeSet: nextWriteSet,
+  });
+  const current = repository.snapshot();
+
+  assert.equal(first.validation.counts.publishable, 1);
+  assert.equal(replay.replayed, true);
+  assert.deepEqual(current.excerpts, predecessor.excerpts);
+  assert.deepEqual(current.provisions, predecessor.provisions);
+  assert.equal(current.claims.length, predecessor.claims.length + 1);
+  assert.deepEqual(current.claims.at(-1), nextWriteSet.claims[0]);
+
+  const tampered = structuredClone(nextWriteSet);
+  tampered.persisted_object_references[0].canonical_payload_digest = 'f'.repeat(64);
+  const beforeTamper = repository.snapshot();
+  await assert.rejects(writer.write({
+    operation: 'DEAL_SCOPE_RUN',
+    idempotencyKey: 'persisted-reference-tampered',
+    writeSet: tampered,
+  }), /did not resolve to exact stored content/);
+  assert.deepEqual(repository.snapshot(), beforeTamper);
 });
 
 test('missing, unverified and mixed source references leave semantic state unchanged', async () => {

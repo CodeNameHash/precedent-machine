@@ -546,6 +546,9 @@ DECLARE
   correction_map_entry_count integer;
   affected_rows integer;
   source_reference_count integer;
+  persisted_reference_count integer;
+  resolved_persisted_reference_count integer;
+  distinct_persisted_reference_count integer;
   resolved_source_reference_count integer;
   distinct_source_ordinal_count integer;
   distinct_source_document_count integer;
@@ -1603,10 +1606,15 @@ BEGIN
         'open_world_candidates', 'open_world_candidate_occurrences',
         'open_world_evidence_references', 'open_world_candidate_dispositions',
         'open_world_primitives', 'semantic_impact_closures',
-        'reviewed_source_specific_rows', 'incomplete_canonical_result_rows'
+        'reviewed_source_specific_rows', 'incomplete_canonical_result_rows',
+        'persisted_object_references'
       ]::text[] <> '{}'::jsonb
       OR jsonb_typeof(p_write_set->'source_references') IS DISTINCT FROM 'array'
       OR jsonb_typeof(p_write_set->'deal') IS DISTINCT FROM 'object'
+      OR (
+        p_write_set ? 'persisted_object_references'
+        AND jsonb_typeof(p_write_set->'persisted_object_references') IS DISTINCT FROM 'array'
+      )
       OR EXISTS (
         SELECT 1 FROM jsonb_each(p_write_set) AS write_field(key, value)
         WHERE write_field.key NOT IN ('source_references', 'deal')
@@ -1622,16 +1630,21 @@ BEGIN
     END IF;
 
     source_reference_count := jsonb_array_length(p_write_set->'source_references');
+    persisted_reference_count := jsonb_array_length(
+      coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+    );
     residual_count := jsonb_array_length(p_residuals);
     quarantine_count := jsonb_array_length(p_quarantines);
     SELECT coalesce(sum(jsonb_array_length(value)), 0)::integer
     INTO publishable_object_count
     FROM jsonb_each(p_write_set)
-    WHERE key NOT IN ('source_references', 'deal');
+    WHERE key NOT IN ('source_references', 'deal', 'persisted_object_references');
     IF source_reference_count NOT BETWEEN 1 AND 32
+      OR persisted_reference_count > 4096
       OR residual_count > 16384
       OR quarantine_count > 4096
       OR publishable_object_count > 16384
+      OR publishable_object_count + persisted_reference_count > 16384
       OR EXISTS (
         SELECT 1 FROM jsonb_each(p_write_set) AS collection(key, value)
         WHERE collection.key NOT IN ('source_references', 'deal')
@@ -1796,14 +1809,300 @@ BEGIN
         USING ERRCODE = '23514';
     END IF;
 
+    WITH supplied_persisted_references AS (
+      SELECT reference.value AS reference, reference.input_ordinal
+      FROM jsonb_array_elements(
+        coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+      ) WITH ORDINALITY AS reference(value, input_ordinal)
+    ),
+    stored_persisted_objects AS (
+      SELECT supplied.input_ordinal, 'excerpts'::text AS object_kind,
+        stored.excerpt_id AS object_id, stored.closure_id,
+        stored.canonical_payload_digest, stored.canonical_payload
+      FROM supplied_persisted_references supplied
+      JOIN canonical_v2_staging.excerpts stored
+        ON supplied.reference->>'object_kind' = 'excerpts'
+        AND stored.excerpt_id = supplied.reference->>'object_id'
+      UNION ALL
+      SELECT supplied.input_ordinal, 'validated_semantic_graphs',
+        stored.validated_semantic_graph_id, stored.closure_id,
+        stored.canonical_payload_digest, stored.canonical_payload
+      FROM supplied_persisted_references supplied
+      JOIN canonical_v2_staging.validated_semantic_graphs stored
+        ON supplied.reference->>'object_kind' = 'validated_semantic_graphs'
+        AND stored.validated_semantic_graph_id = supplied.reference->>'object_id'
+      UNION ALL
+      SELECT supplied.input_ordinal, 'provisions', stored.provision_instance_id,
+        stored.closure_id, stored.canonical_payload_digest, stored.canonical_payload
+      FROM supplied_persisted_references supplied
+      JOIN canonical_v2_staging.provision_instances stored
+        ON supplied.reference->>'object_kind' = 'provisions'
+        AND stored.provision_instance_id = supplied.reference->>'object_id'
+      UNION ALL
+      SELECT supplied.input_ordinal, 'components', stored.provision_component_id,
+        stored.closure_id, stored.canonical_payload_digest, stored.canonical_payload
+      FROM supplied_persisted_references supplied
+      JOIN canonical_v2_staging.provision_components stored
+        ON supplied.reference->>'object_kind' = 'components'
+        AND stored.provision_component_id = supplied.reference->>'object_id'
+      UNION ALL
+      SELECT supplied.input_ordinal, 'claims', stored.claim_revision_id,
+        stored.closure_id, stored.canonical_payload_digest, stored.canonical_payload
+      FROM supplied_persisted_references supplied
+      JOIN canonical_v2_staging.claim_revisions stored
+        ON supplied.reference->>'object_kind' = 'claims'
+        AND stored.claim_revision_id = supplied.reference->>'object_id'
+      UNION ALL
+      SELECT supplied.input_ordinal, 'relationships', stored.relationship_revision_id,
+        stored.closure_id, stored.canonical_payload_digest, stored.canonical_payload
+      FROM supplied_persisted_references supplied
+      JOIN canonical_v2_staging.relationship_revisions stored
+        ON supplied.reference->>'object_kind' = 'relationships'
+        AND stored.relationship_revision_id = supplied.reference->>'object_id'
+      UNION ALL
+      SELECT supplied.input_ordinal, 'open_world_candidates', stored.candidate_id,
+        stored.closure_id, stored.canonical_payload_digest, stored.canonical_payload
+      FROM supplied_persisted_references supplied
+      JOIN canonical_v2_staging.open_world_candidates stored
+        ON supplied.reference->>'object_kind' = 'open_world_candidates'
+        AND stored.candidate_id = supplied.reference->>'object_id'
+      UNION ALL
+      SELECT supplied.input_ordinal, 'open_world_candidate_occurrences',
+        stored.open_world_candidate_occurrence_id, stored.closure_id,
+        stored.canonical_payload_digest, stored.canonical_payload
+      FROM supplied_persisted_references supplied
+      JOIN canonical_v2_staging.open_world_candidate_occurrences stored
+        ON supplied.reference->>'object_kind' = 'open_world_candidate_occurrences'
+        AND stored.open_world_candidate_occurrence_id = supplied.reference->>'object_id'
+      UNION ALL
+      SELECT supplied.input_ordinal, 'open_world_evidence_references',
+        stored.evidence_reference_id, stored.closure_id,
+        stored.canonical_payload_digest, stored.canonical_payload
+      FROM supplied_persisted_references supplied
+      JOIN canonical_v2_staging.open_world_evidence_references stored
+        ON supplied.reference->>'object_kind' = 'open_world_evidence_references'
+        AND stored.evidence_reference_id = supplied.reference->>'object_id'
+      UNION ALL
+      SELECT supplied.input_ordinal, 'open_world_candidate_dispositions',
+        stored.final_disposition_id, stored.closure_id,
+        stored.canonical_payload_digest, stored.canonical_payload
+      FROM supplied_persisted_references supplied
+      JOIN canonical_v2_staging.open_world_candidate_dispositions stored
+        ON supplied.reference->>'object_kind' = 'open_world_candidate_dispositions'
+        AND stored.final_disposition_id = supplied.reference->>'object_id'
+      UNION ALL
+      SELECT supplied.input_ordinal, 'open_world_primitives', stored.primitive_id,
+        stored.closure_id, stored.canonical_payload_digest, stored.canonical_payload
+      FROM supplied_persisted_references supplied
+      JOIN canonical_v2_staging.open_world_primitives stored
+        ON supplied.reference->>'object_kind' = 'open_world_primitives'
+        AND stored.primitive_id = supplied.reference->>'object_id'
+      UNION ALL
+      SELECT supplied.input_ordinal, 'semantic_impact_closures',
+        stored.semantic_impact_closure_id, stored.closure_id,
+        stored.canonical_payload_digest, stored.canonical_payload
+      FROM supplied_persisted_references supplied
+      JOIN canonical_v2_staging.semantic_impact_closures stored
+        ON supplied.reference->>'object_kind' = 'semantic_impact_closures'
+        AND stored.semantic_impact_closure_id = supplied.reference->>'object_id'
+      UNION ALL
+      SELECT supplied.input_ordinal, 'reviewed_source_specific_rows',
+        stored.reviewed_source_specific_row_serving_key, stored.closure_id,
+        stored.canonical_payload_digest, stored.canonical_payload
+      FROM supplied_persisted_references supplied
+      JOIN canonical_v2_staging.reviewed_source_specific_rows stored
+        ON supplied.reference->>'object_kind' = 'reviewed_source_specific_rows'
+        AND stored.reviewed_source_specific_row_serving_key
+          = supplied.reference->>'object_id'
+      UNION ALL
+      SELECT supplied.input_ordinal, 'incomplete_canonical_result_rows',
+        stored.incomplete_result_review_row_serving_key, stored.closure_id,
+        stored.canonical_payload_digest, stored.canonical_payload
+      FROM supplied_persisted_references supplied
+      JOIN canonical_v2_staging.incomplete_canonical_result_rows stored
+        ON supplied.reference->>'object_kind' = 'incomplete_canonical_result_rows'
+        AND stored.incomplete_result_review_row_serving_key
+          = supplied.reference->>'object_id'
+    )
+    SELECT
+      count(stored.object_id)::integer,
+      count(DISTINCT (
+        supplied.reference->>'object_kind',
+        supplied.reference->>'object_id'
+      ))::integer
+    INTO
+      resolved_persisted_reference_count,
+      distinct_persisted_reference_count
+    FROM supplied_persisted_references supplied
+    LEFT JOIN stored_persisted_objects stored
+      ON stored.input_ordinal = supplied.input_ordinal
+    WHERE jsonb_typeof(supplied.reference) = 'object'
+      AND supplied.reference ?& ARRAY[
+        'schema_version', 'object_kind', 'object_id', 'stored_closure_id',
+        'canonical_payload_digest', 'validation_closure_id'
+      ]
+      AND supplied.reference - ARRAY[
+        'schema_version', 'object_kind', 'object_id', 'stored_closure_id',
+        'canonical_payload_digest', 'validation_closure_id'
+      ]::text[] = '{}'::jsonb
+      AND supplied.reference->>'schema_version'
+        = 'PERSISTED_CANONICAL_OBJECT_REFERENCE/V1'
+      AND supplied.reference->>'object_kind' IN (
+        'excerpts', 'validated_semantic_graphs', 'provisions', 'components',
+        'claims', 'relationships', 'open_world_candidates',
+        'open_world_candidate_occurrences', 'open_world_evidence_references',
+        'open_world_candidate_dispositions', 'open_world_primitives',
+        'semantic_impact_closures', 'reviewed_source_specific_rows',
+        'incomplete_canonical_result_rows'
+      )
+      AND supplied.reference->>'object_id' ~ '^[0-9a-f]{64}$'
+      AND supplied.reference->>'stored_closure_id' ~ '^[0-9a-f]{64}$'
+      AND supplied.reference->>'canonical_payload_digest' ~ '^[0-9a-f]{64}$'
+      AND supplied.reference->>'validation_closure_id' ~ '^[0-9a-f]{64}$'
+      AND stored.object_kind = supplied.reference->>'object_kind'
+      AND stored.object_id = supplied.reference->>'object_id'
+      AND stored.closure_id = supplied.reference->>'stored_closure_id'
+      AND stored.canonical_payload_digest
+        = supplied.reference->>'canonical_payload_digest'
+      AND stored.canonical_payload->>'closure_id' = stored.closure_id
+      AND (CASE stored.object_kind
+        WHEN 'excerpts' THEN stored.canonical_payload->>'excerpt_id'
+        WHEN 'validated_semantic_graphs'
+          THEN stored.canonical_payload->>'validated_semantic_graph_id'
+        WHEN 'provisions' THEN stored.canonical_payload->>'provision_instance_id'
+        WHEN 'components' THEN stored.canonical_payload->>'provision_component_id'
+        WHEN 'claims' THEN stored.canonical_payload->>'claim_revision_id'
+        WHEN 'relationships' THEN stored.canonical_payload->>'relationship_revision_id'
+        WHEN 'open_world_candidates' THEN stored.canonical_payload->>'candidate_id'
+        WHEN 'open_world_candidate_occurrences'
+          THEN stored.canonical_payload->>'open_world_candidate_occurrence_id'
+        WHEN 'open_world_evidence_references'
+          THEN stored.canonical_payload->>'evidence_reference_id'
+        WHEN 'open_world_candidate_dispositions'
+          THEN stored.canonical_payload->>'final_disposition_id'
+        WHEN 'open_world_primitives' THEN stored.canonical_payload->>'primitive_id'
+        WHEN 'semantic_impact_closures'
+          THEN stored.canonical_payload->>'semantic_impact_closure_id'
+        WHEN 'reviewed_source_specific_rows'
+          THEN stored.canonical_payload->>'reviewed_source_specific_row_serving_key'
+        WHEN 'incomplete_canonical_result_rows'
+          THEN stored.canonical_payload->>'incomplete_result_review_row_serving_key'
+      END) = stored.object_id;
+
+    IF resolved_persisted_reference_count <> persisted_reference_count
+      OR distinct_persisted_reference_count <> persisted_reference_count THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN persisted object references are unresolved or invalid'
+        USING ERRCODE = '23514';
+    END IF;
+
     IF EXISTS (
       SELECT 1
       FROM jsonb_each(p_write_set) AS collection(key, value)
       CROSS JOIN LATERAL jsonb_array_elements(CASE
-        WHEN collection.key NOT IN ('source_references', 'deal') THEN collection.value
+        WHEN collection.key NOT IN (
+          'source_references', 'deal', 'persisted_object_references'
+        ) THEN collection.value
         ELSE '[]'::jsonb
       END) AS object(value)
-      WHERE collection.key NOT IN ('source_references', 'deal')
+      JOIN jsonb_array_elements(
+        coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+      ) AS persisted(reference)
+        ON persisted.reference->>'object_kind' = collection.key
+        AND persisted.reference->>'object_id' = CASE collection.key
+          WHEN 'excerpts' THEN object.value->>'excerpt_id'
+          WHEN 'validated_semantic_graphs'
+            THEN object.value->>'validated_semantic_graph_id'
+          WHEN 'provisions' THEN object.value->>'provision_instance_id'
+          WHEN 'components' THEN object.value->>'provision_component_id'
+          WHEN 'claims' THEN object.value->>'claim_revision_id'
+          WHEN 'relationships' THEN object.value->>'relationship_revision_id'
+          WHEN 'open_world_candidates' THEN object.value->>'candidate_id'
+          WHEN 'open_world_candidate_occurrences'
+            THEN object.value->>'open_world_candidate_occurrence_id'
+          WHEN 'open_world_evidence_references'
+            THEN object.value->>'evidence_reference_id'
+          WHEN 'open_world_candidate_dispositions'
+            THEN object.value->>'final_disposition_id'
+          WHEN 'open_world_primitives' THEN object.value->>'primitive_id'
+          WHEN 'semantic_impact_closures'
+            THEN object.value->>'semantic_impact_closure_id'
+          WHEN 'reviewed_source_specific_rows'
+            THEN object.value->>'reviewed_source_specific_row_serving_key'
+          WHEN 'incomplete_canonical_result_rows'
+            THEN object.value->>'incomplete_result_review_row_serving_key'
+        END
+    ) OR EXISTS (
+      SELECT 1
+      FROM jsonb_each(p_write_set) AS collection(key, value)
+      CROSS JOIN LATERAL jsonb_array_elements(CASE
+        WHEN collection.key NOT IN (
+          'source_references', 'deal', 'persisted_object_references'
+        ) THEN collection.value
+        ELSE '[]'::jsonb
+      END) AS object(value)
+      JOIN jsonb_array_elements(
+        coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+      ) AS persisted(reference)
+        ON object.value->>'closure_id' = persisted.reference->>'stored_closure_id'
+    ) THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN persisted references overlap or extend stored closure identity'
+        USING ERRCODE = '23514';
+    END IF;
+
+    PERFORM pg_advisory_xact_lock(hashtextextended(locked.closure_id, 0))
+    FROM (
+      SELECT DISTINCT closure_id
+      FROM (
+        SELECT reference->>'stored_closure_id' AS closure_id
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        UNION ALL
+        SELECT reference->>'validation_closure_id'
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        UNION ALL
+        SELECT object.value->>'closure_id'
+        FROM jsonb_each(p_write_set) AS collection(key, value)
+        CROSS JOIN LATERAL jsonb_array_elements(CASE
+          WHEN collection.key NOT IN (
+            'source_references', 'deal', 'persisted_object_references'
+          ) THEN collection.value
+          ELSE '[]'::jsonb
+        END) object(value)
+        UNION ALL
+        SELECT quarantine.value->>'closure_id'
+        FROM jsonb_array_elements(p_quarantines) quarantine(value)
+      ) closure_ids
+      WHERE closure_id ~ '^[0-9a-f]{64}$'
+    ) locked
+    ORDER BY locked.closure_id;
+
+    IF EXISTS (
+      SELECT 1
+      FROM jsonb_array_elements(
+        coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+      ) persisted(reference)
+      JOIN canonical_v2_staging.quarantines quarantine
+        ON quarantine.closure_id = persisted.reference->>'stored_closure_id'
+    ) THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN cannot reuse a quarantined persisted object'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF EXISTS (
+      SELECT 1
+      FROM jsonb_each(p_write_set) AS collection(key, value)
+      CROSS JOIN LATERAL jsonb_array_elements(CASE
+        WHEN collection.key NOT IN (
+          'source_references', 'deal', 'persisted_object_references'
+        ) THEN collection.value
+        ELSE '[]'::jsonb
+      END) AS object(value)
+      WHERE collection.key NOT IN (
+        'source_references', 'deal', 'persisted_object_references'
+      )
         AND (
           jsonb_typeof(object.value) <> 'object'
           OR object.value->>'closure_id' !~ '^[0-9a-f]{64}$'
@@ -1831,10 +2130,14 @@ BEGIN
       SELECT 1
       FROM jsonb_each(p_write_set) AS collection(key, value)
       CROSS JOIN LATERAL jsonb_array_elements(CASE
-        WHEN collection.key NOT IN ('source_references', 'deal') THEN collection.value
+        WHEN collection.key NOT IN (
+          'source_references', 'deal', 'persisted_object_references'
+        ) THEN collection.value
         ELSE '[]'::jsonb
       END) AS object(value)
-      WHERE collection.key NOT IN ('source_references', 'deal')
+      WHERE collection.key NOT IN (
+        'source_references', 'deal', 'persisted_object_references'
+      )
       GROUP BY collection.key, CASE collection.key
         WHEN 'excerpts' THEN object.value->>'excerpt_id'
         WHEN 'validated_semantic_graphs' THEN object.value->>'validated_semantic_graph_id'
@@ -1923,12 +2226,16 @@ BEGIN
       SELECT 1
       FROM jsonb_each(p_write_set) AS collection(key, value)
       CROSS JOIN LATERAL jsonb_array_elements(CASE
-        WHEN collection.key NOT IN ('source_references', 'deal') THEN collection.value
+        WHEN collection.key NOT IN (
+          'source_references', 'deal', 'persisted_object_references'
+        ) THEN collection.value
         ELSE '[]'::jsonb
       END) AS object(value)
       JOIN jsonb_array_elements(p_quarantines) AS quarantine(value)
         ON quarantine.value->>'closure_id' = object.value->>'closure_id'
-      WHERE collection.key NOT IN ('source_references', 'deal')
+      WHERE collection.key NOT IN (
+        'source_references', 'deal', 'persisted_object_references'
+      )
     ) THEN
       RAISE EXCEPTION 'DEAL_SCOPE_RUN residual and quarantine outputs do not close exactly'
         USING ERRCODE = '23514';

@@ -19,7 +19,7 @@ test('DEAL_SCOPE_RUN is a closed reference-only writer operation', () => {
     'open_world_candidate_occurrences', 'open_world_evidence_references',
     'open_world_candidate_dispositions', 'open_world_primitives',
     'semantic_impact_closures', 'reviewed_source_specific_rows',
-    'incomplete_canonical_result_rows',
+    'incomplete_canonical_result_rows', 'persisted_object_references',
   ]) assert.match(validationBlock, new RegExp(`'${key}'`));
   assert.doesNotMatch(validationBlock, /p_write_set->'(?:source|sources|source_admission|source_admissions|conversion)'/);
   assert.match(sql, /IF p_operation <> 'DEAL_SCOPE_RUN' THEN[\s\S]*p_write_set \? 'sources'/);
@@ -40,11 +40,43 @@ test('source references resolve once through exact indexed lineage joins', () =>
 
 test('all inputs are bounded and residual/quarantine closure is exact', () => {
   assert.match(validationBlock, /source_reference_count NOT BETWEEN 1 AND 32/);
+  assert.match(validationBlock, /persisted_reference_count > 4096/);
+  assert.match(validationBlock, /publishable_object_count \+ persisted_reference_count > 16384/);
   assert.match(validationBlock, /jsonb_array_length\(collection\.value\) > 4096/);
   assert.match(validationBlock, /publishable_object_count > 16384/);
   assert.match(validationBlock, /quarantine\.value->'residual_ids' \? \(residual\.value->>'residual_id'\)/);
   assert.match(validationBlock, /residual\.value->>'residual_id' = residual_id/);
   assert.match(validationBlock, /DEAL_SCOPE_RUN residual and quarantine outputs do not close exactly/);
+});
+
+test('persisted semantic objects resolve once by indexed identity and remain validation-only', () => {
+  assert.equal((validationBlock.match(/WITH supplied_persisted_references AS/g) || []).length, 1);
+  for (const table of [
+    'excerpts',
+    'validated_semantic_graphs',
+    'provision_instances',
+    'provision_components',
+    'claim_revisions',
+    'relationship_revisions',
+    'open_world_candidates',
+    'open_world_candidate_occurrences',
+    'open_world_evidence_references',
+    'open_world_candidate_dispositions',
+    'open_world_primitives',
+    'semantic_impact_closures',
+    'reviewed_source_specific_rows',
+    'incomplete_canonical_result_rows',
+  ]) assert.match(validationBlock, new RegExp(`JOIN canonical_v2_staging\\.${table}`));
+  assert.match(validationBlock, /PERSISTED_CANONICAL_OBJECT_REFERENCE\/V1/);
+  assert.match(validationBlock, /stored\.canonical_payload_digest[\s\S]*canonical_payload_digest/);
+  assert.match(validationBlock, /stored\.canonical_payload->>'closure_id' = stored\.closure_id/);
+  assert.match(validationBlock, /persisted references overlap or extend stored closure identity/);
+  assert.match(validationBlock, /pg_advisory_xact_lock[\s\S]*ORDER BY locked\.closure_id/);
+  assert.match(validationBlock, /cannot reuse a quarantined persisted object/);
+  assert.doesNotMatch(
+    sql.slice(firstSemanticWrite),
+    /p_write_set->'persisted_object_references'/,
+  );
 });
 
 test('lineage, quarantine and receipt failures all precede semantic writes', () => {
