@@ -198,6 +198,21 @@ test('the admitted termination-fee slice reproduces the reviewed fixture legal e
     announce_year: 2026,
     deal_value_usd: '17000000000',
   });
+  assert.deepEqual(candidate.semantic_write_set.deal, {
+    deal_key: 'deal:qxo-topbuild',
+    deal_admission_id: DEAL_ADMISSION_ID,
+    document_hash: AGREEMENT_DOCUMENT_HASH,
+  });
+  assert.equal(candidate.semantic_write_set.deal.dimensions, undefined);
+  assert.deepEqual(candidate.projection.observation.dimensions, {
+    sector: 'Building products',
+    buyer: 'QXO',
+    merger_form: 'Reverse triangular merger',
+    adviser_firms: ['Jones Day', 'Paul Weiss'],
+    lawyers: ['Robert Profusek', 'Scott Barshay'],
+    announce_year: 2026,
+    deal_value_usd: '17000000000',
+  });
   assert.deepEqual(candidate.provisions[0].party, {
     role: 'FEE_PAYER', value: 'COMPANY', capacity: 'TARGET',
   });
