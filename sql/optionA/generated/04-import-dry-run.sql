@@ -5,9 +5,9 @@ BEGIN
   IF (SELECT count(*) FROM canonical_v2_staging.write_receipts
       WHERE operation='DEAL_SCOPE_RUN'
         AND idempotency_key='QXO_TERMINATION_FEE_DEAL_SCOPE_V1'
-        AND input_digest='2536fff67288fa5316ccd3ef84793d1f06c187e6c5fc0fe3584fe1ec44dbed71'
-        AND receipt_id='dc2af1d177d319fed58be207b3ae2712e46d6ed005316db00bface01e727bafc'
-        AND canonical_payload=$optionA_54e148c591658a52${"receiptId":"dc2af1d177d319fed58be207b3ae2712e46d6ed005316db00bface01e727bafc","operation":"DEAL_SCOPE_RUN","idempotencyKey":"QXO_TERMINATION_FEE_DEAL_SCOPE_V1","inputDigest":"2536fff67288fa5316ccd3ef84793d1f06c187e6c5fc0fe3584fe1ec44dbed71","status":"COMMITTED","publishableObjectCount":30,"residualCount":0,"quarantinedClosureCount":0}$optionA_54e148c591658a52$::jsonb) <> 1 THEN
+        AND input_digest='6e874fea87644f513b330c2a9853f31f4a4b806baafd18bfe028a23b97c83a5f'
+        AND receipt_id='99708e54d02c4dc5ed0e8096f67ad51cf9a63a76de05ee1a1ab668841ff89653'
+        AND canonical_payload=$optionA_226fbf6a29cd93ad${"receiptId":"99708e54d02c4dc5ed0e8096f67ad51cf9a63a76de05ee1a1ab668841ff89653","operation":"DEAL_SCOPE_RUN","idempotencyKey":"QXO_TERMINATION_FEE_DEAL_SCOPE_V1","inputDigest":"6e874fea87644f513b330c2a9853f31f4a4b806baafd18bfe028a23b97c83a5f","status":"COMMITTED","publishableObjectCount":30,"residualCount":0,"quarantinedClosureCount":0}$optionA_226fbf6a29cd93ad$::jsonb) <> 1 THEN
     RAISE EXCEPTION 'exact termination DEAL_SCOPE_RUN receipt is not committed';
   END IF;
   IF (SELECT count(*) FROM canonical_v2_staging.validated_semantic_graphs WHERE closure_id='6e59b62130b2c0bac205251bf936c7aaca55b84ed9251971a1528870b17672a2') <> 0 THEN
