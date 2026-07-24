@@ -132,6 +132,32 @@ const EXPECTED_ACTIVE = Object.freeze({
   generation: 8,
   canonical_payload_digest: '08e39195cf12156204fa9d129e438ae5dd89a27b35024f91645c9937b4105c69',
 });
+const EXPECTED_ATTESTATION = Object.freeze({
+  schema_version: 'QXO_TERMINATION_F2_OPTION_A_ATTESTATION/V1',
+  contract_fingerprint: QXO_TERMINATION_CONTRACT_FINGERPRINT_V2,
+  candidate_seed_digest: '3f3d179799ec3ad52d5933041bc17c541eb11f6e9fe80d4b40e688641114d744',
+  corpus_release_id: '1b70bbc8b615e1195a71ba5f9ce9aad88542e2dce4c402813e372fea9277d2b6',
+  serving_namespace_id: 'd7f2f04068d9dcac2793def3a7854d953e6419601b274269ac4f4f8b8d8160f2',
+  candidate_release_manifest_id: '9c93546cb60d03977c2d15bda851154a6104cad04a7df2581c4bb3c90ca5a906',
+  candidate_release_import_plan_id: 'dd26b85607cc53ea78e74455724db2eab970c4c22c2196f25f4f17343f63ab86',
+  correction_input_seal_id: '5ac54e926bce0e15d4fc0b818eca175a53fc9031231915bd99362df54977b3a5',
+  termination_reviewed_mapping_id: '9c3501f89e0574d94821241915748292c0c345b980d0c90ba2986cff21606a4a',
+  termination_semantic_closure_id: '6e59b62130b2c0bac205251bf936c7aaca55b84ed9251971a1528870b17672a2',
+  termination_row_serving_key: '0d4739a3e9c3b28bcae7c2db0e062a3c2c308f7175233791d276ed01a4c54a83',
+  termination_deal_scope_input_digest: '2536fff67288fa5316ccd3ef84793d1f06c187e6c5fc0fe3584fe1ec44dbed71',
+  prior_semantic_closure_ids: Object.freeze([
+    '89683e5ff72a570948bfadda123254719d848310b5c50ad3720645e2cbd6291b',
+    '944c18cb24c5684c04eb3d2c9cae57f932c144790492bc1619ccd566d57a8a3e',
+    'a08b15c095464e265205ffd87ec380a85e37e9867c9701551b7b59759ed0cab5',
+    'cbb678180ec9951f12741a77a58f7ec03a6bebffbdc6e5d9fbea6add9beea596',
+    'dd232aa8077fd0d4158cd19c7fa5e8b439fceb8d97b578682c41936889808af8',
+  ]),
+  observations: 9,
+  shared_rows: 10,
+  exact_detail_packages: 10,
+  import_plan_bytes: 397565,
+  output_directory: 'sql/optionA/generated',
+});
 const RETRIEVAL_POLICY_HEADERS = Object.freeze({
   'User-Agent': 'Deal Corpus canonical intake bengoodchild@gmail.com',
   Accept: 'text/html',
@@ -614,8 +640,6 @@ async function main() {
   const writerRequest = await terminationWriterRequest({ contractBundle, chains, termination });
   const semanticWriteGate = semanticWriteGateSql(writerRequest, termination.semantic_closure_id);
 
-  process.stderr.write('Writing paste files...\n');
-  mkdirSync(OUTPUT_DIR, { recursive: true });
   const files = {
     '01-verify-before.sql': verifyBeforeSql(corpusReleaseId),
     '02-termination-deal-scope-dry-run.sql': transaction(
@@ -655,10 +679,6 @@ ${transaction(`SELECT public.canonical_v2_rollback_inactive_candidate_release(
   '${importPlan.candidate_release_import_plan_id}'
 ) AS rollback_result;`, { commit: true })}`,
   };
-  for (const [name, body] of Object.entries(files)) {
-    writeFileSync(join(OUTPUT_DIR, name), body);
-  }
-
   const attestation = {
     schema_version: 'QXO_TERMINATION_F2_OPTION_A_ATTESTATION/V1',
     contract_fingerprint: contractBundle.fingerprint,
@@ -679,6 +699,16 @@ ${transaction(`SELECT public.canonical_v2_rollback_inactive_candidate_release(
     import_plan_bytes: Buffer.byteLength(canonicalJson(importPlan), 'utf8'),
     output_directory: 'sql/optionA/generated',
   };
+  if (canonicalJson(attestation) !== canonicalJson(EXPECTED_ATTESTATION)) {
+    throw new Error(`The final Option A identity attestation drifted: ${canonicalJson(attestation)}`);
+  }
+
+  process.stderr.write('Writing paste files...\n');
+  mkdirSync(OUTPUT_DIR, { recursive: true });
+  for (const [name, body] of Object.entries(files)) {
+    writeFileSync(join(OUTPUT_DIR, name), body);
+  }
+  writeFileSync(join(OUTPUT_DIR, 'ATTESTATION.json'), `${canonicalJson(attestation)}\n`);
   process.stdout.write(`${canonicalJson(attestation)}\n`);
 }
 

@@ -29,10 +29,14 @@ read first): `SPEC-QXO-TERMF-F2-CANDIDATE-OPTION-A-2026-07-24.md`.
   (generates the import SQL from the paste-back; every pinned identity
   re-proven; semantic-write receipt mechanically required; blocking pointer
   and count assertions; import INACTIVE only).
+- Read-only Block 00 was executed against staging on 2026-07-24. Both SEC
+  sources re-fetched and hash-verified, the generator completed, and the final
+  attestation plus generated 01–07 paste blocks are committed. No staging
+  write or activation occurred.
 - Status artifact generation 4 records the Option A runbook adaptation.
 - Tests: `tests/canonical-v2-qxo-termination-fee-admitted-slice.test.js`
   plus authority-partition and fail-closed packet tests. Full battery
-  2,807/2,807 + programme check + build green. Downstream release
+  2,808/2,808 + programme check + build green. Downstream release
   path rehearsed offline: partitions 9 observations / 2 exclusions /
   10 shared rows / 1 incomplete / 10 packages; import plan ~398 KB;
   DEAL_SCOPE_RUN write validated through the canonical writer

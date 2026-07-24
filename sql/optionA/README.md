@@ -31,11 +31,13 @@ the import is inactive; activation stays a separate Ben decision.
    fingerprint and F2 has none yet. It touches nothing else.
 4. **Block 00:** paste `00-read-lineage.sql` (read-only). Copy the single
    JSON value it returns and paste it back to the Claude session.
+   `00b-read-admission-payloads.sql` is a read-only diagnostic fallback only
+   if the generator reports an admission-chain identity mismatch.
 5. **Claude session** runs
    `node scripts/canonical-v2-staging-qxo-termination-optionA.mjs <paste.json>`,
    which verifies every pinned identity, prints the digest attestation, and
-   writes `sql/optionA/generated/01…07`. The attestation's digests get
-   committed; compare what you see on screen against the committed values.
+   writes `sql/optionA/generated/01…07` plus `ATTESTATION.json`. Generation
+   aborts unless every final identity equals the committed attestation.
 6. **generated/01-verify-before.sql** (read-only): it aborts unless the
    complete active pointer, both authority heads, prior semantic closures and
    absence preconditions match exactly.

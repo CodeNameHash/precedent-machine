@@ -57,3 +57,35 @@ test('Option A blocks fail closed and keep activation outside the packet', () =>
   assert.match(widening, /release_declared_fingerprint_assert/);
   assert.ok(widening.indexOf('$release_declared_fingerprint_assert$;') < widening.indexOf('COMMIT;'));
 });
+
+test('generated Option A packet is pinned, bounded and inactive', () => {
+  const root = 'sql/optionA/generated';
+  const attestation = JSON.parse(fs.readFileSync(`${root}/ATTESTATION.json`, 'utf8'));
+  assert.equal(attestation.contract_fingerprint, '46553f1a743dbf9f4ebfd07bff20939f66a57c4973826b5619c8bdfd196b1b83');
+  assert.equal(attestation.corpus_release_id, '1b70bbc8b615e1195a71ba5f9ce9aad88542e2dce4c402813e372fea9277d2b6');
+  assert.equal(attestation.candidate_release_import_plan_id, 'dd26b85607cc53ea78e74455724db2eab970c4c22c2196f25f4f17343f63ab86');
+  assert.equal(attestation.termination_semantic_closure_id, '6e59b62130b2c0bac205251bf936c7aaca55b84ed9251971a1528870b17672a2');
+
+  const before = fs.readFileSync(`${root}/01-verify-before.sql`, 'utf8');
+  const semanticDryRun = fs.readFileSync(`${root}/02-termination-deal-scope-dry-run.sql`, 'utf8');
+  const semanticApply = fs.readFileSync(`${root}/03-termination-deal-scope-apply.sql`, 'utf8');
+  const importDryRun = fs.readFileSync(`${root}/04-import-dry-run.sql`, 'utf8');
+  const importApply = fs.readFileSync(`${root}/05-import-apply.sql`, 'utf8');
+  const after = fs.readFileSync(`${root}/06-verify-after.sql`, 'utf8');
+  assert.match(before, /active staging pointer is not the exact pinned F1 pointer/);
+  assert.match(before, /one or more prior QXO semantic closures are missing/);
+  assert.match(semanticDryRun, /exact termination DEAL_SCOPE_RUN receipt is not committed/);
+  assert.match(semanticDryRun, /ROLLBACK;\s*$/);
+  assert.match(semanticApply, /exact termination DEAL_SCOPE_RUN receipt is not committed/);
+  assert.match(semanticApply, /COMMIT;\s*$/);
+  for (const sql of [importDryRun, importApply]) {
+    assert.ok(sql.indexOf('exact termination DEAL_SCOPE_RUN receipt is not committed')
+      < sql.indexOf('canonical_v2_recheck_candidate_input_head'));
+    assert.ok(sql.indexOf('canonical_v2_recheck_candidate_input_head')
+      < sql.indexOf('canonical_v2_import_candidate_release'));
+    assert.doesNotMatch(sql, /canonical_v2_activate_candidate_release\s*\(/);
+    assert.ok(Buffer.byteLength(sql, 'utf8') < 512 * 1024);
+  }
+  assert.match(after, /inactive import changed the active staging pointer/);
+  assert.match(after, /the exact F2 candidate release record is missing/);
+});
