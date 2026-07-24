@@ -163,6 +163,31 @@ export function createCanonicalV2StagingRuntime({
     return `'${value.replaceAll("'", "''")}'`;
   }
 
+  function sqlNullableText(value, label) {
+    if (value == null) return 'NULL::text';
+    if (typeof value !== 'string') {
+      throw new TypeError(`${label} must be a string or null.`);
+    }
+    return `${sqlText(value)}::text`;
+  }
+
+  function sqlNullableInteger(value, label) {
+    if (value == null) return 'NULL::integer';
+    if (!Number.isInteger(value)) {
+      throw new TypeError(`${label} must be an integer or null.`);
+    }
+    return `${value}::integer`;
+  }
+
+  function sqlNullableNumeric(value, label) {
+    if (value == null) return 'NULL::numeric';
+    const textValue = String(value);
+    if (!/^-?(?:0|[1-9]\d*)(?:\.\d+)?$/.test(textValue)) {
+      throw new TypeError(`${label} must be a canonical decimal or null.`);
+    }
+    return `${sqlText(textValue)}::numeric`;
+  }
+
   function runSql(sql, { commit = false, readOnly = false } = {}) {
     if (typeof sql !== 'string' || !sql.trim()) {
       throw new TypeError('Canonical staging SQL must be a non-empty string.');
@@ -295,6 +320,77 @@ ${commit ? 'COMMIT;' : 'ROLLBACK;'}
     });
   }
 
+  function sqlReadOnlyQueryClient() {
+    return Object.freeze({
+      rpc(name, params = {}) {
+        try {
+          requireStaging(params);
+          if (name !== 'canonical_v2_query_page_v2') {
+            return Promise.resolve({
+              data: null,
+              error: { message: 'Unsupported canonical staging query RPC.' },
+            });
+          }
+          const call = `public.canonical_v2_query_page_v2(
+            p_environment => 'staging',
+            p_serving_namespace_id => ${sqlNullableText(params.p_serving_namespace_id, 'p_serving_namespace_id')},
+            p_corpus_release_id => ${sqlNullableText(params.p_corpus_release_id, 'p_corpus_release_id')},
+            p_contract_fingerprint => ${sqlNullableText(params.p_contract_fingerprint, 'p_contract_fingerprint')},
+            p_query_semantics_digest => ${sqlNullableText(params.p_query_semantics_digest, 'p_query_semantics_digest')},
+            p_metric_key => ${sqlNullableText(params.p_metric_key, 'p_metric_key')},
+            p_metric_version => ${sqlNullableInteger(params.p_metric_version, 'p_metric_version')},
+            p_concept_key => ${sqlNullableText(params.p_concept_key, 'p_concept_key')},
+            p_party_role => ${sqlNullableText(params.p_party_role, 'p_party_role')},
+            p_party_value => ${sqlNullableText(params.p_party_value, 'p_party_value')},
+            p_party_capacity => ${sqlNullableText(params.p_party_capacity, 'p_party_capacity')},
+            p_basis_key => ${sqlNullableText(params.p_basis_key, 'p_basis_key')},
+            p_sector => ${sqlNullableText(params.p_sector, 'p_sector')},
+            p_buyer => ${sqlNullableText(params.p_buyer, 'p_buyer')},
+            p_merger_form => ${sqlNullableText(params.p_merger_form, 'p_merger_form')},
+            p_adviser_either => ${sqlNullableText(params.p_adviser_either, 'p_adviser_either')},
+            p_lawyer_either => ${sqlNullableText(params.p_lawyer_either, 'p_lawyer_either')},
+            p_year_from => ${sqlNullableInteger(params.p_year_from, 'p_year_from')},
+            p_year_to => ${sqlNullableInteger(params.p_year_to, 'p_year_to')},
+            p_min_value_usd => ${sqlNullableNumeric(params.p_min_value_usd, 'p_min_value_usd')},
+            p_max_value_usd => ${sqlNullableNumeric(params.p_max_value_usd, 'p_max_value_usd')},
+            p_min_canonical_value => ${sqlNullableNumeric(params.p_min_canonical_value, 'p_min_canonical_value')},
+            p_max_canonical_value => ${sqlNullableNumeric(params.p_max_canonical_value, 'p_max_canonical_value')},
+            p_fee_side => ${sqlNullableText(params.p_fee_side, 'p_fee_side')},
+            p_payer_capacity => ${sqlNullableText(params.p_payer_capacity, 'p_payer_capacity')},
+            p_payee_capacity => ${sqlNullableText(params.p_payee_capacity, 'p_payee_capacity')},
+            p_trigger_code => ${sqlNullableText(params.p_trigger_code, 'p_trigger_code')},
+            p_payment_timing => ${sqlNullableText(params.p_payment_timing, 'p_payment_timing')},
+            p_trigger_condition => ${sqlNullableText(params.p_trigger_condition, 'p_trigger_condition')},
+            p_criterion_code => ${sqlNullableText(params.p_criterion_code, 'p_criterion_code')},
+            p_contract_scope_code => ${sqlNullableText(params.p_contract_scope_code, 'p_contract_scope_code')},
+            p_cash_flow_direction_code => ${sqlNullableText(params.p_cash_flow_direction_code, 'p_cash_flow_direction_code')},
+            p_measurement_period_code => ${sqlNullableText(params.p_measurement_period_code, 'p_measurement_period_code')},
+            p_comparison_operator => ${sqlNullableText(params.p_comparison_operator, 'p_comparison_operator')},
+            p_page_size => ${sqlNullableInteger(params.p_page_size, 'p_page_size')},
+            p_after_governed_deal_key => ${sqlNullableText(params.p_after_governed_deal_key, 'p_after_governed_deal_key')},
+            p_after_row_serving_key => ${sqlNullableText(params.p_after_row_serving_key, 'p_after_row_serving_key')}
+          )`;
+          // The serving RPC writes only its bounded response cache. Rollback
+          // exercises that exact path without leaving any durable staging DML.
+          const rows = runSql(`SELECT ${call} AS result;`, { commit: false });
+          if (rows.length !== 1 || !Object.hasOwn(rows[0], 'result')) {
+            throw new Error(`${governedOperationLabel} query returned an invalid row set.`);
+          }
+          return Promise.resolve({ data: rows[0].result, error: null });
+        } catch (error) {
+          return Promise.resolve({
+            data: null,
+            error: {
+              message: error instanceof Error
+                ? error.message
+                : `${governedOperationLabel} query failed.`,
+            },
+          });
+        }
+      },
+    });
+  }
+
   return Object.freeze({
     bounds,
     project: CANONICAL_V2_STAGING_PROJECT,
@@ -303,6 +399,7 @@ ${commit ? 'COMMIT;' : 'ROLLBACK;'}
     runSql,
     safeDiagnostic,
     sqlJson,
+    sqlReadOnlyQueryClient,
     sqlRpcClient,
     sqlText,
   });

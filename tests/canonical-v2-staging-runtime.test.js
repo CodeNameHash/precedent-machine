@@ -125,3 +125,40 @@ test('RPC client exposes only governed staging writer operations and never activ
   ]) assert.match(source, new RegExp(`name === '${operation}'`));
   assert.doesNotMatch(source, /name === 'canonical_v2_activate|public\.canonical_v2_activate/);
 });
+
+test('query client exposes only the pinned query RPC and always rolls its transaction back', async (t) => {
+  const { createCanonicalV2StagingRuntime } = await import(MODULE_PATH);
+  const root = linkedRoot();
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const runtime = createCanonicalV2StagingRuntime({ root });
+  const client = runtime.sqlReadOnlyQueryClient();
+  const unsupported = await client.rpc('canonical_v2_active_query_page_v2', {
+    p_environment: 'staging',
+  });
+  const wrongEnvironment = await client.rpc('canonical_v2_query_page_v2', {
+    p_environment: 'production',
+  });
+  const invalidNumber = await client.rpc('canonical_v2_query_page_v2', {
+    p_environment: 'staging',
+    p_metric_version: '1; SELECT 1',
+  });
+  const source = fs.readFileSync(MODULE_PATH, 'utf8');
+  const queryClientSource = source.slice(
+    source.indexOf('function sqlReadOnlyQueryClient()'),
+    source.indexOf('return Object.freeze({\n    bounds,'),
+  );
+
+  assert.deepEqual(unsupported, {
+    data: null,
+    error: { message: 'Unsupported canonical staging query RPC.' },
+  });
+  assert.match(wrongEnvironment.error.message, /must be staging/);
+  assert.match(invalidNumber.error.message, /p_metric_version must be an integer or null/);
+  assert.match(queryClientSource, /name !== 'canonical_v2_query_page_v2'/);
+  assert.match(queryClientSource, /public\.canonical_v2_query_page_v2/);
+  assert.match(queryClientSource, /runSql\(`SELECT \$\{call\} AS result;`, \{ commit: false \}\)/);
+  assert.doesNotMatch(
+    queryClientSource,
+    /canonical_v2_(?:active|import|write|rollback|activate)|commit:\s*true/,
+  );
+});
