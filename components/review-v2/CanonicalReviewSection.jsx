@@ -23,6 +23,7 @@ const {
 const ENABLED = ['1', 'true', 'on', 'yes'].includes(
   String(process.env.NEXT_PUBLIC_CANONICAL_V2_REVIEW_ENABLED || '').toLowerCase(),
 );
+export const CANONICAL_REVIEW_ENABLED = ENABLED;
 
 async function fetchJson(url) {
   const response = await fetch(url);
@@ -307,6 +308,61 @@ function canonicalSidebarContext(prepared) {
   return buildTypedRowMarketContext(prepared?.resolution, prepared?.data);
 }
 
+function uniqueBy(values, identity) {
+  const seen = new Set();
+  return values.filter((value) => {
+    const key = identity(value);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function sharedFiniteValue(contexts, key) {
+  const values = [...new Set(contexts.map((context) => context?.[key]).filter(Number.isFinite))];
+  return values.length === 1 ? values[0] : null;
+}
+
+function combineCanonicalSidebarContexts(preparedRows, {
+  label = 'Selected term',
+  marketKey = 'canonical-review-row',
+} = {}) {
+  const contexts = (preparedRows || []).map(canonicalSidebarContext).filter(Boolean);
+  if (!contexts.length) return null;
+  const arrays = (key) => uniqueBy(
+    contexts.flatMap((context) => (Array.isArray(context[key]) ? context[key] : [])),
+    (value) => JSON.stringify(value),
+  );
+  const currentDealTerms = uniqueBy(
+    contexts.flatMap((context) => (Array.isArray(context.currentDealTerms) ? context.currentDealTerms : [])),
+    (term) => `${term?.key || term?.label || ''}\u0000${term?.value || ''}`,
+  );
+  const deals = uniqueBy(
+    contexts.flatMap((context) => (Array.isArray(context.deals) ? context.deals : [])),
+    (deal) => String(deal?.dealId || deal?.deal_id || deal?.id || JSON.stringify(deal)),
+  );
+  const scopeNote = [...new Set(contexts.map((context) => context.scopeNote).filter(Boolean))].join(' ');
+  const treatments = arrays('treatments');
+  const exceptions = arrays('exceptions');
+  const metrics = arrays('metrics');
+  return {
+    marketKey,
+    marketRowKey: marketKey,
+    label,
+    peerSetSize: sharedFiniteValue(contexts, 'peerSetSize'),
+    termDealCount: sharedFiniteValue(contexts, 'termDealCount'),
+    scope: 'canonical-review-binding',
+    scopeNote,
+    treatments,
+    exceptions,
+    metrics,
+    currentDealTerms,
+    primarySummary: metrics[0] || treatments[0] || exceptions[0] || contexts[0].primarySummary,
+    deals,
+    truncated: contexts.some((context) => context.truncated),
+  };
+}
+
 function canonicalRowInteraction(item, context, onSelectCanonicalContext) {
   if (!context || !onSelectCanonicalContext) return { onClick: null, select: null };
   const select = () => onSelectCanonicalContext(context, item.prepared.row_key);
@@ -434,10 +490,91 @@ function CanonicalRow({ item, envelope, selected, onSelectCanonicalContext }) {
   );
 }
 
+function CanonicalReviewRemainder({
+  state,
+  bindingResult,
+  bindingError = null,
+  selectedCanonicalRowKey = null,
+  onSelectCanonicalContext = null,
+  onRetry = null,
+}) {
+  if (!ENABLED || !state) return null;
+  if (state.error && !state.envelope) {
+    return (
+      <div className="border border-[#E6E4DF] bg-[#F7F5F0] px-3 py-2 text-[10px] text-[#6B6B6B]">
+        Certified terms are unavailable. The existing review remains fully available.
+        {typeof onRetry === 'function' ? (
+          <button
+            type="button"
+            className="ml-2 font-bold uppercase tracking-[0.1em] text-[#2F6DB5] hover:underline"
+            onClick={onRetry}
+          >
+            Retry
+          </button>
+        ) : null}
+      </div>
+    );
+  }
+  if (!state.envelope || !Array.isArray(state.items)) return null;
+  const boundRowKeys = new Set(
+    (bindingResult?.bindings || []).flatMap((binding) => (
+      binding.prepared_rows.map((prepared) => prepared.row_key)
+    )),
+  );
+  const items = state.items.filter((item) => (
+    item.render_kind !== 'ROW' || !boundRowKeys.has(item.prepared.row_key)
+  ));
+  const bindingWarnings = bindingResult?.errors || [];
+  if (!items.length && !bindingWarnings.length && !bindingError && !state.paginationError) return null;
+  return (
+    <section
+      id="sec-canonical-v2-additional"
+      className="scroll-mt-28"
+      data-canonical-v2-review-remainder
+    >
+      <details open className="mtx-section">
+        <summary className="flex cursor-pointer list-none items-center gap-2.5 border-b-2 border-black pb-2">
+          <span className="h-2.5 w-2.5 rounded-full bg-[#D8B56A]" />
+          <h2 className="text-base font-bold tracking-tight text-[#1F1F1F]">Additional certified terms</h2>
+          <span className="text-[9px] text-[#77736C]">{items.length} rows</span>
+          <span aria-hidden="true" className="mtx-section-caret ml-auto text-[10px] text-[#6B6B6B]">▾</span>
+        </summary>
+        {bindingError || bindingWarnings.length ? (
+          <p className="mt-3 border border-[#E8D9B8] bg-[#FFFCF4] px-3 py-2 text-[10px] text-[#6B5630]">
+            Some certified terms could not be attached to their normal Review row. Other Review terms remain available.
+          </p>
+        ) : null}
+        <div className="mt-3 space-y-2">
+          {items.map((item) => (
+            <CanonicalRowErrorBoundary key={item.key} item={item}>
+              <CanonicalRow
+                item={item}
+                envelope={state.envelope}
+                selected={item.render_kind === 'ROW'
+                  && item.prepared.row_key === selectedCanonicalRowKey}
+                onSelectCanonicalContext={onSelectCanonicalContext}
+              />
+            </CanonicalRowErrorBoundary>
+          ))}
+          {state.paginationError ? (
+            <p className="text-[10px] text-[#8A6417]">
+              More certified terms could not be loaded. The terms above remain available.
+            </p>
+          ) : null}
+        </div>
+      </details>
+    </section>
+  );
+}
+
 export default function CanonicalReviewSection({
   dealId,
   onSelectCanonicalContext = null,
   selectedCanonicalRowKey = null,
+  onContextStateChange = null,
+  standalone = true,
+  autoLoadAll = false,
+  reloadKey = 0,
 }) {
   const [state, setState] = useState({
     loading: false,
@@ -492,7 +629,7 @@ export default function CanonicalReviewSection({
       cancelled = true;
       if (requestGenerationRef.current === generation) requestGenerationRef.current += 1;
     };
-  }, [dealId]);
+  }, [dealId, reloadKey]);
 
   const loadMore = useCallback(async () => {
     const cursor = state.envelope?.next_cursor;
@@ -530,12 +667,34 @@ export default function CanonicalReviewSection({
       if (requestGenerationRef.current === generation) loadMorePendingRef.current = false;
     }
   }, [dealId, state.envelope, state.loadingMore]);
+  useEffect(() => {
+    if (autoLoadAll
+      && state.envelope?.next_cursor
+      && !state.loading
+      && !state.loadingMore
+      && !state.paginationError) {
+      loadMore();
+    }
+  }, [
+    autoLoadAll,
+    loadMore,
+    state.envelope?.next_cursor,
+    state.loading,
+    state.loadingMore,
+    state.paginationError,
+  ]);
 
   const validCount = useMemo(
     () => state.items.filter((item) => item.render_kind === 'ROW').length,
     [state.items],
   );
+  useEffect(() => {
+    if (typeof onContextStateChange === 'function') {
+      onContextStateChange(ENABLED ? state : null);
+    }
+  }, [onContextStateChange, state]);
   if (!ENABLED) return null;
+  if (!standalone) return null;
   if (state.loading) {
     return <p className="mtx-meta-label text-[10px] tracking-[0.14em]">Loading certified terms…</p>;
   }
@@ -590,6 +749,8 @@ export default function CanonicalReviewSection({
 }
 
 export {
+  CanonicalReviewRemainder,
+  combineCanonicalSidebarContexts,
   canonicalSidebarContext,
   exactText,
   governedSourceDetail,

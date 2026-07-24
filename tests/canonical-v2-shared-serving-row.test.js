@@ -308,6 +308,17 @@ test('Review, Corpus Context, Compare and Query consume one typed row contract',
   const adapted = adaptSharedServingRow(row);
   const context = rowMarketContext.buildTypedRowMarketContext(adapted.resolution, adapted.data);
 
+  assert.deepEqual(adapted.governed_binding, {
+    concept_key: row.canonical_result.concept_key,
+    concept_version: row.canonical_result.concept_version,
+    party: row.canonical_result.party,
+    result_ordinal: row.canonical_result.result_ordinal,
+    metric_key: row.canonical_result.market_context.metric_key,
+    metric_version: row.canonical_result.market_context.metric_version,
+    component_slot_key: row.canonical_result.components[0].component_slot_key,
+    governed_ordinal: row.canonical_result.components[0].governed_ordinal,
+  });
+  assert.equal(adapted.resolution.governedBinding, adapted.governed_binding);
   assert.deepEqual(Object.keys(adapted.surface_bindings), SURFACES);
   assert.equal(adapted.resolution.rowKind, 'CANONICAL_RESULT');
   assert.equal(adapted.resolution.selectedDealContextOnly, false);

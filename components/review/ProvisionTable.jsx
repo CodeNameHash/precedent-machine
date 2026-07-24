@@ -138,7 +138,17 @@ function fallbackEvidenceText(row, resolvedCard = null) {
   return textOfSourceCard(source) || null;
 }
 
-export default function ProvisionTable({ config, reviewDeal, isEdit = false, sectionCards = null, onSelectCard = null, selectedCardId = null }) {
+export default function ProvisionTable({
+  config,
+  reviewDeal,
+  isEdit = false,
+  sectionCards = null,
+  onSelectCard = null,
+  selectedCardId = null,
+  canonicalBindingForRow = null,
+  onSelectCanonicalBinding = null,
+  selectedCanonicalBindingKey = null,
+}) {
   // Item 4 (r5): tracks which row's "See provision" expansion is open, keyed
   // by row.id||row.label -- must be called unconditionally (rules of hooks),
   // ahead of the early-return guards below.
@@ -165,6 +175,9 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false, sec
     bodyCtx.resolveCard = resolveCard;
     bodyCtx.onSelectCard = onSelectCard;
     bodyCtx.selectedCardId = selectedCardId;
+    bodyCtx.canonicalBindingForRow = canonicalBindingForRow;
+    bodyCtx.onSelectCanonicalBinding = onSelectCanonicalBinding;
+    bodyCtx.selectedCanonicalBindingKey = selectedCanonicalBindingKey;
     // R6 item 2: same expandedRowId/setExpandedRowId the generic path below
     // uses for its full-width colSpan expansion -- threaded onto bodyCtx so
     // a config's own renderBody can reuse SeeProvisionToggle/ExpansionRow
@@ -213,6 +226,9 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false, sec
   ctx.resolveCard = resolveCard;
   ctx.onSelectCard = onSelectCard;
   ctx.selectedCardId = selectedCardId;
+  ctx.canonicalBindingForRow = canonicalBindingForRow;
+  ctx.onSelectCanonicalBinding = onSelectCanonicalBinding;
+  ctx.selectedCanonicalBindingKey = selectedCanonicalBindingKey;
   // Grouped/consolidated tables (termination rights, conditions, equity
   // awards) render a single header-less column whose cell owns its own
   // internal layout (e.g. GroupedSubRows). Suppress the generic <thead> bar
@@ -302,8 +318,16 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false, sec
               // computed-only values) never get a dead cursor-pointer.
               const rowCardKey = rowCard ? (rowCard.id || rowCard.provision_instance_id) : null;
               const isSelectedRow = Boolean(rowCardKey) && selectedCardId === rowCardKey;
+              const canonicalBinding = typeof canonicalBindingForRow === 'function'
+                ? canonicalBindingForRow(row)
+                : null;
+              const canonicalSelectable = Boolean(canonicalBinding)
+                && typeof onSelectCanonicalBinding === 'function';
+              const isSelectedCanonical = canonicalSelectable
+                && selectedCanonicalBindingKey === canonicalBinding.binding_key;
               const baseRowClass = row.present ? 'align-top hover:bg-bg/40' : 'align-top bg-bg/30 text-inkFaint';
-              const rowClass = rowCard ? `${baseRowClass} mtx-row-clickable` : baseRowClass;
+              const rowSelectable = canonicalSelectable || Boolean(rowCard);
+              const rowClass = rowSelectable ? `${baseRowClass} mtx-row-clickable` : baseRowClass;
               const rowKey = row.id || row.label;
               const hasExpansion = fullTextNodes.length > 0 || Boolean(fallbackText);
               const isExpanded = hasExpansion && expandedRowId === rowKey;
@@ -311,8 +335,16 @@ export default function ProvisionTable({ config, reviewDeal, isEdit = false, sec
                 <Fragment key={rowKey}>
                   <tr
                     className={rowClass}
-                    onClick={rowCard ? () => onSelectCard(rowCard, resolveRowFocus(row)) : undefined}
-                    style={rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : undefined}
+                    onClick={canonicalSelectable
+                      ? () => onSelectCanonicalBinding(canonicalBinding, row.label)
+                      : rowCard ? () => onSelectCard(rowCard, resolveRowFocus(row)) : undefined}
+                    style={rowSelectable ? {
+                      cursor: 'pointer',
+                      ...((isSelectedCanonical || isSelectedRow)
+                        ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' }
+                        : {}),
+                    } : undefined}
+                    data-canonical-review-binding={canonicalBinding?.binding_key || undefined}
                   >
                     {columns.map((column, colIdx) => (
                       <td key={`${rowKey}-${column.id}`} className="px-3 py-2 whitespace-pre-wrap break-words text-ink">

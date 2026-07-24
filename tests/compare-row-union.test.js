@@ -71,6 +71,14 @@ test('unionRows: primary order first, compared-only rows appended in their own o
   assert.equal(union[3].rows[1], compared[1]);
 });
 
+test('primaryGroupReviewId preserves the raw governed group id instead of the prefixed union key', () => {
+  const [entry] = mod.unionRows([[
+    { id: 'nosol-notice', label: 'Notice', rows: [{ id: 'nosol-noshop-notice-hours' }] },
+  ]]);
+  assert.equal(entry.key, 'id:nosol-notice');
+  assert.equal(mod.primaryGroupReviewId(entry), 'nosol-notice');
+});
+
 test('unionRows: label fallback matches reps rows whose ids embed card uuids', () => {
   const primary = [
     { id: 'representations-qualifiers-11111111-2222-3333-4444-555555555555', label: 'Capitalization' },

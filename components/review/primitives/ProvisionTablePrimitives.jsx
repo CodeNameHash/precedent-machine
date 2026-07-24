@@ -226,7 +226,16 @@ export function CoverageChecklist({ items = [], emptyCopy = 'No checklist items 
 // Callers that don't pass onSelectCard (ioc-exceptions, termination-rights,
 // conditions configs, as of this change) render exactly as before: no click
 // handler, no cursor-pointer, no dead affordance.
-export function GroupedSubRows({ groups = [], emptyCopy = 'No grouped rows captured.', onSelectCard, resolveCard, selectedCardId }) {
+export function GroupedSubRows({
+  groups = [],
+  emptyCopy = 'No grouped rows captured.',
+  onSelectCard,
+  resolveCard,
+  selectedCardId,
+  canonicalBindingForRow,
+  onSelectCanonicalBinding,
+  selectedCanonicalBindingKey,
+}) {
   // Item 2 (r6): conditions.config.js's row.seeText used to be a whole
   // pre-rendered <details> node squeezed inline into the label cell's own
   // grid column -- the same "expansion distorts the column it's inside"
@@ -254,6 +263,14 @@ export function GroupedSubRows({ groups = [], emptyCopy = 'No grouped rows captu
               const rowCardKey = rowCard ? (rowCard.id || rowCard.provision_instance_id) : null;
               const isSelectedRow = Boolean(rowCardKey) && selectedCardId === rowCardKey;
               const rowKey = row.id || row.label || rowIndex;
+              const canonicalBinding = typeof canonicalBindingForRow === 'function'
+                ? canonicalBindingForRow(row, group.id || null)
+                : null;
+              const canonicalSelectable = Boolean(canonicalBinding)
+                && typeof onSelectCanonicalBinding === 'function';
+              const isSelectedCanonical = canonicalSelectable
+                && selectedCanonicalBindingKey === canonicalBinding.binding_key;
+              const rowSelectable = canonicalSelectable || Boolean(rowCard);
               const objectSource = row.source && typeof row.source === 'object' ? row.source : null;
               const source = objectSource || row.card || row.sourceCard || rowCard
                 || (Array.isArray(row.sourceCards) ? row.sourceCards[0] : null);
@@ -270,12 +287,20 @@ export function GroupedSubRows({ groups = [], emptyCopy = 'No grouped rows captu
               return (
                 <div key={rowKey}>
                   <div
-                    className={`grid gap-2 px-2 py-1.5${rowCard ? ' mtx-row-clickable' : ''}`}
+                    className={`grid gap-2 px-2 py-1.5${rowSelectable ? ' mtx-row-clickable' : ''}`}
                     style={{
                       gridTemplateColumns: `${TERM_GRID_COLUMN} 1fr`,
-                      ...(rowCard ? { cursor: 'pointer', ...(isSelectedRow ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}) } : {}),
+                      ...(rowSelectable ? {
+                        cursor: 'pointer',
+                        ...((isSelectedCanonical || isSelectedRow)
+                          ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' }
+                          : {}),
+                      } : {}),
                     }}
-                    onClick={rowCard ? () => onSelectCard(rowCard, resolveRowFocus(row)) : undefined}
+                    onClick={canonicalSelectable
+                      ? () => onSelectCanonicalBinding(canonicalBinding, row.label)
+                      : rowCard ? () => onSelectCard(rowCard, resolveRowFocus(row)) : undefined}
+                    data-canonical-review-binding={canonicalBinding?.binding_key || undefined}
                   >
                     <span>
                       <span className="text-[11px] font-medium text-ink">{row.label || `Row ${rowIndex + 1}`}</span>

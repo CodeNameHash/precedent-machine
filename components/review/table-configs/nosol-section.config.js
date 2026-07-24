@@ -676,6 +676,9 @@ const nosolSectionConfig = {
           onSelectCard: ctx?.onSelectCard,
           resolveCard: ctx?.resolveCard,
           selectedCardId: ctx?.selectedCardId,
+          canonicalBindingForRow: ctx?.canonicalBindingForRow,
+          onSelectCanonicalBinding: ctx?.onSelectCanonicalBinding,
+          selectedCanonicalBindingKey: ctx?.selectedCanonicalBindingKey,
         });
       },
     },

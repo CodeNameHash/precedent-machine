@@ -23,7 +23,12 @@ import MaeSection from './MaeSection';
 import ElectionCard from './ElectionCard';
 import { DefinitionsSection } from './ProvisionIndex';
 import { deriveElectionSummary, EMPTY_REVIEW_DEAL, MAE_SECTION_ID } from './sectionList';
-import { unionRows, rowFamilyLabel, unionDefinitions } from './compareRowUnion';
+import {
+  primaryGroupReviewId,
+  unionRows,
+  rowFamilyLabel,
+  unionDefinitions,
+} from './compareRowUnion';
 // r19 (WP-A, numeric market cells + off-market feed): marketSummaryForRow/
 // isRowOffMarket moved to their own dependency-light module (no React, no
 // fetches) so the off-market classification rule has real behavioral test
@@ -317,7 +322,7 @@ function DealNameHeader({ deal, onRetry }) {
     return (
       <th
         className="px-3 py-2 text-left align-bottom border-b-2 border-black"
-        style={{ minWidth: 230 }}
+        style={{ minWidth: 200 }}
         data-testid="unified-compare-market-header"
       >
         <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[#1F1F1F]">{deal.name}</span>
@@ -410,7 +415,84 @@ function numericValueLocal(value) {
 // never a guess) when this row carries no featureKeys, none resolve
 // against the section's featureSummary, or the resolved numeric summary
 // has no median (an empty numeric pool).
-function MarketCell({ row, marketColumn, typedMarket, resolution, onRetry }) {
+function CanonicalRetry({ retry }) {
+  if (typeof retry !== 'function') return null;
+  return (
+    <button
+      type="button"
+      className="mt-1 text-[9px] font-bold uppercase tracking-[0.1em] text-[#2F6DB5] hover:underline"
+      onClick={(event) => {
+        event.stopPropagation();
+        retry();
+      }}
+    >
+      Retry
+    </button>
+  );
+}
+
+function CanonicalBindingMarketCell({ binding, rowLabel, onSelectCanonicalBinding }) {
+  if (!binding?.prepared_rows?.length) {
+    return (
+      <p className="text-[10px] leading-4 text-[#8A8782]" data-canonical-market-unmapped>
+        Not yet canonical market comparable.
+      </p>
+    );
+  }
+  return (
+    <div
+      className="space-y-2"
+      data-canonical-market-binding={binding.binding_key}
+    >
+      {binding.prepared_rows.map((prepared) => (
+        <div key={prepared.row_key} className="border-b border-[#EDEDEC] pb-2 last:border-b-0 last:pb-0">
+          <MarketMetricCell resolution={prepared.resolution} data={prepared.data} />
+        </div>
+      ))}
+      {onSelectCanonicalBinding ? (
+        <button
+          type="button"
+          className="text-[9px] font-bold uppercase tracking-[0.1em] text-[#2F6DB5] hover:underline"
+          onClick={(event) => {
+            event.stopPropagation();
+            onSelectCanonicalBinding(binding, rowLabel);
+          }}
+        >
+          View corpus context
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function MarketCell({
+  row,
+  marketColumn,
+  typedMarket,
+  resolution,
+  onRetry,
+  canonicalMarket = null,
+  canonicalBinding = null,
+  onSelectCanonicalBinding = null,
+}) {
+  if (canonicalMarket) {
+    if (canonicalMarket.loading) return <Muted>Loading canonical market terms…</Muted>;
+    if (canonicalMarket.error) {
+      return (
+        <>
+          <Muted>Canonical market terms unavailable</Muted>
+          <CanonicalRetry retry={canonicalMarket.retry} />
+        </>
+      );
+    }
+    return (
+      <CanonicalBindingMarketCell
+        binding={canonicalBinding}
+        rowLabel={row?.label || null}
+        onSelectCanonicalBinding={onSelectCanonicalBinding}
+      />
+    );
+  }
   if (typedMarket) {
     return (
       <MarketMetricCell
@@ -556,6 +638,7 @@ export function UnifiedDefinitionsSection({
   onRetry = null,
   typedMarket = null,
   onMarketRetry = null,
+  canonicalMarket = null,
 }) {
   const [expandedDefinition, setExpandedDefinition] = useState(null);
   const deals = useMemo(() => [
@@ -577,17 +660,18 @@ export function UnifiedDefinitionsSection({
       reviewDeal: col.reviewDeal || EMPTY_REVIEW_DEAL,
       isPrimary: false,
     })),
-    ...(typedMarket ? [{
+    ...(canonicalMarket || typedMarket ? [{
       key: 'market',
-      name: 'MARKET',
+      name: canonicalMarket?.label || 'MARKET',
       href: null,
-      loading: Boolean(typedMarket.data?.loading),
-      error: typedMarket.data?.error || null,
+      loading: Boolean(canonicalMarket ? canonicalMarket.loading : typedMarket.data?.loading),
+      error: (canonicalMarket ? canonicalMarket.error : typedMarket.data?.error) || null,
       reviewDeal: EMPTY_REVIEW_DEAL,
       isPrimary: false,
       isMarket: true,
+      isCanonicalMarket: Boolean(canonicalMarket),
     }] : []),
-  ], [primaryName, primaryReviewDeal, comparedColumns, typedMarket]);
+  ], [primaryName, primaryReviewDeal, comparedColumns, typedMarket, canonicalMarket]);
 
   const entries = useMemo(() => {
     const lists = deals.map((d) => (d.loading || d.error || d.isMarket ? [] : filteredDefinitions(d.reviewDeal.definitions)));
@@ -675,6 +759,24 @@ export function UnifiedDefinitionsSection({
                 </td>
                 {deals.map((d, i) => {
                   if (d.isMarket) {
+                    if (d.isCanonicalMarket) {
+                      return (
+                        <td key={d.key} className="px-3 py-2 align-top">
+                          {d.loading ? <Muted>Loading canonical market terms…</Muted> : null}
+                          {d.error ? (
+                            <>
+                              <Muted>Canonical market terms unavailable</Muted>
+                              <CanonicalRetry retry={canonicalMarket?.retry} />
+                            </>
+                          ) : null}
+                          {!d.loading && !d.error ? (
+                            <p className="text-[10px] leading-4 text-[#8A8782]" data-canonical-market-unmapped>
+                              Not yet canonical market comparable.
+                            </p>
+                          ) : null}
+                        </td>
+                      );
+                    }
                     const rowKey = stableMarketRowKey(
                       { defined_term: entry.term, label: entry.term },
                       { sectionId: '__definitions', configId: '__definitions' },
@@ -733,6 +835,10 @@ export function UnifiedCompareSection({
   marketColumn = null,
   typedMarket = null,
   onMarketRetry = null,
+  canonicalMarket = null,
+  canonicalBindingForRow = null,
+  onSelectCanonicalBinding = null,
+  selectedCanonicalBindingKey = null,
 }) {
   // One expansion open at a time, keyed `${rowKey}|${dealKey}` so each
   // deal's cell expands ITS OWN provision text (not just the primary's).
@@ -762,12 +868,16 @@ export function UnifiedCompareSection({
       // The market column is appended LAST, always -- it never contributes
       // rows to the union (isMarket rows below always resolve to []), it
       // only supplies an extra answer cell per existing union row.
-      ...(marketColumn || typedMarket ? [{
+      ...(marketColumn || typedMarket || canonicalMarket ? [{
         key: 'market',
-        name: marketColumnLabel(marketColumn),
+        name: canonicalMarket?.label || marketColumnLabel(marketColumn),
         href: null,
-        loading: Boolean(typedMarket ? typedMarket.data?.loading : marketColumn.loading),
-        error: (typedMarket ? typedMarket.data?.error : marketColumn.error) || null,
+        loading: Boolean(canonicalMarket
+          ? canonicalMarket.loading
+          : typedMarket ? typedMarket.data?.loading : marketColumn.loading),
+        error: (canonicalMarket
+          ? canonicalMarket.error
+          : typedMarket ? typedMarket.data?.error : marketColumn.error) || null,
         reviewDeal: EMPTY_REVIEW_DEAL,
         isPrimary: false,
         isMarket: true,
@@ -784,11 +894,28 @@ export function UnifiedCompareSection({
         resolveCard: d.isPrimary && onSelectCard ? (row) => resolveRowCard(row, cardsById) : () => null,
         onSelectCard: d.isPrimary ? onSelectCard : null,
         selectedCardId: d.isPrimary ? selectedCardId : null,
+        canonicalBindingForRow: d.isPrimary ? canonicalBindingForRow : null,
+        onSelectCanonicalBinding: d.isPrimary ? onSelectCanonicalBinding : null,
+        selectedCanonicalBindingKey: d.isPrimary ? selectedCanonicalBindingKey : null,
       };
       const rows = !config || d.loading || d.error || d.isMarket ? [] : safeRows(config, d.reviewDeal);
       return { ...d, ctx, rows };
     });
-  }, [primaryName, primaryReviewDeal, comparedColumns, config, cardsById, onSelectCard, selectedCardId, marketColumn, typedMarket]);
+  }, [
+    primaryName,
+    primaryReviewDeal,
+    comparedColumns,
+    config,
+    cardsById,
+    onSelectCard,
+    selectedCardId,
+    marketColumn,
+    typedMarket,
+    canonicalMarket,
+    canonicalBindingForRow,
+    onSelectCanonicalBinding,
+    selectedCanonicalBindingKey,
+  ]);
 
   const typedRowsByKey = useMemo(
     () => new Map((typedMarket?.section?.rows || []).map((resolution) => [resolution.rowKey, resolution])),
@@ -845,8 +972,24 @@ export function UnifiedCompareSection({
     );
   }
 
-  function primaryClickProps(deal, row) {
-    if (!deal.isPrimary || !onSelectCard || !row) return {};
+  function primaryClickProps(deal, row, groupId = null) {
+    if (!deal.isPrimary || !row) return {};
+    const canonicalBinding = typeof canonicalBindingForRow === 'function'
+      ? canonicalBindingForRow(row, groupId)
+      : null;
+    if (canonicalBinding && onSelectCanonicalBinding) {
+      const selected = selectedCanonicalBindingKey === canonicalBinding.binding_key;
+      return {
+        onClick: () => onSelectCanonicalBinding(canonicalBinding, row.label),
+        style: {
+          cursor: 'pointer',
+          ...(selected ? { background: 'rgba(47,109,181,.07)', boxShadow: 'inset 2px 0 0 #2F6DB5' } : {}),
+        },
+        className: 'mtx-row-clickable',
+        canonicalBindingKey: canonicalBinding.binding_key,
+      };
+    }
+    if (!onSelectCard) return {};
     const rowCard = resolveRowCard(row, cardsById);
     if (!rowCard) return {};
     const rowCardKey = rowCard.id || rowCard.provision_instance_id;
@@ -941,6 +1084,9 @@ export function UnifiedCompareSection({
             if (d.isMarket) {
               const primaryRow = entry.rows[0] || null;
               const refRow = primaryRow || entry.rows.find(Boolean) || null;
+              const canonicalBinding = primaryRow && typeof canonicalBindingForRow === 'function'
+                ? canonicalBindingForRow(primaryRow)
+                : null;
               return (
                 <td key={d.key} className="px-3 py-2 align-top">
                   <MarketCell
@@ -949,6 +1095,9 @@ export function UnifiedCompareSection({
                     typedMarket={typedMarket}
                     resolution={primaryRow ? typedResolutionForRow(primaryRow, assignMarketRowKey) : null}
                     onRetry={onMarketRetry}
+                    canonicalMarket={canonicalMarket}
+                    canonicalBinding={canonicalBinding}
+                    onSelectCanonicalBinding={onSelectCanonicalBinding}
                   />
                 </td>
               );
@@ -968,6 +1117,7 @@ export function UnifiedCompareSection({
                 className={`px-3 py-2 whitespace-pre-wrap break-words text-ink ${click.className || ''}`.trim()}
                 onClick={click.onClick}
                 style={click.style}
+                data-canonical-review-binding={click.canonicalBindingKey || undefined}
               >
                 {flatAnswerContent(row, d.ctx)}
                 {offMarket ? <OffMarketBadge /> : null}
@@ -995,6 +1145,7 @@ export function UnifiedCompareSection({
     return groupEntries.map((ge) => {
       const firstIdx = ge.rows.findIndex(Boolean);
       const groupLabel = firstIdx >= 0 ? ge.rows[firstIdx].label : ge.key;
+      const primaryGroupId = primaryGroupReviewId(ge);
       const subEntries = unionRows(ge.rows.map((g) => (g && Array.isArray(g.rows) ? g.rows : [])));
       return (
         <Fragment key={ge.key}>
@@ -1016,6 +1167,9 @@ export function UnifiedCompareSection({
                     if (d.isMarket) {
                       const primaryRow = entry.rows[0] || null;
                       const refRow = primaryRow || entry.rows.find(Boolean) || null;
+                      const canonicalBinding = primaryRow && typeof canonicalBindingForRow === 'function'
+                        ? canonicalBindingForRow(primaryRow, primaryGroupId)
+                        : null;
                       return (
                         <td key={d.key} className="px-3 py-2 align-top">
                           <MarketCell
@@ -1024,6 +1178,9 @@ export function UnifiedCompareSection({
                             typedMarket={typedMarket}
                             resolution={primaryRow ? typedResolutionForRow(primaryRow, assignMarketRowKey) : null}
                             onRetry={onMarketRetry}
+                            canonicalMarket={canonicalMarket}
+                            canonicalBinding={canonicalBinding}
+                            onSelectCanonicalBinding={onSelectCanonicalBinding}
                           />
                         </td>
                       );
@@ -1034,7 +1191,7 @@ export function UnifiedCompareSection({
                     if (!row) return <td key={d.key} className="px-3 py-2"><NotExtractedCell /></td>;
                     const expandKey = `${ge.key}|${entry.key}|${d.key}`;
                     const expansionContent = groupedExpansionContent(row);
-                    const click = primaryClickProps(d, row);
+                    const click = primaryClickProps(d, row, primaryGroupId);
                     // r19 item 2 ("grouped rows get the marker too"): r18
                     // only flagged flat rows, reasoning the grouped WRAPPER
                     // row's single `children` element had no reliable own
@@ -1049,6 +1206,7 @@ export function UnifiedCompareSection({
                         className={`px-3 py-2 whitespace-pre-wrap break-words text-xs text-ink ${click.className || ''}`.trim()}
                         onClick={click.onClick}
                         style={click.style}
+                        data-canonical-review-binding={click.canonicalBindingKey || undefined}
                       >
                         {row.children || textValueLocal(row.value) || row.detail || <Muted>Not captured</Muted>}
                         {offMarket ? <OffMarketBadge /> : null}
