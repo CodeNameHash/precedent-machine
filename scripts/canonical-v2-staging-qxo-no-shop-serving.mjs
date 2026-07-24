@@ -309,7 +309,7 @@ function assertActivePointer(pointer) {
 }
 
 function assertQueryPage(spec, page, semanticsDigest) {
-  if (page?.schema_version !== 'CANONICAL_QUERY_PAGE_RESULT/V1'
+  if (page?.schema_version !== 'CANONICAL_QUERY_PAGE_RESULT/V2'
     || page.serving_namespace_id !== CANDIDATE.serving_namespace_id
     || page.corpus_release_id !== CANDIDATE.corpus_release_id
     || page.query_semantics_digest !== semanticsDigest
@@ -392,7 +392,7 @@ function assertExactDetail(spec, result, row) {
 }
 
 function assertActionQueryPage(page, semanticsDigest) {
-  if (page?.schema_version !== 'CANONICAL_QUERY_PAGE_RESULT/V1'
+  if (page?.schema_version !== 'CANONICAL_QUERY_PAGE_RESULT/V2'
     || page.serving_namespace_id !== CANDIDATE.serving_namespace_id
     || page.corpus_release_id !== CANDIDATE.corpus_release_id
     || page.query_semantics_digest !== semanticsDigest

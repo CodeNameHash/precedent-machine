@@ -19,7 +19,7 @@ const SUPPORTED_PAYLOAD = Object.freeze({
 test('1. supported request + flag on chooses the canonical endpoint exactly once; legacy fetch never called', async () => {
   const canonicalCalls = [];
   const legacyCalls = [];
-  const view = Object.freeze({ schema_version: 'CANONICAL_QUERY_RESULT_VIEW/V1', rows: [] });
+  const view = Object.freeze({ schema_version: 'CANONICAL_QUERY_RESULT_VIEW/V2', rows: [] });
   const outcome = await runQueryRoute({
     kind: 'MARKET_RANGE',
     payload: SUPPORTED_PAYLOAD,
@@ -80,7 +80,7 @@ test('3b. reverse-fee request + flag on chooses canonical exactly once', async (
     flagEnabled: true,
     fetchCanonical: async (body) => {
       canonicalCalls.push(body);
-      return { status: 200, json: { schema_version: 'CANONICAL_QUERY_RESULT_VIEW/V1', rows: [] } };
+      return { status: 200, json: { schema_version: 'CANONICAL_QUERY_RESULT_VIEW/V2', rows: [] } };
     },
     fetchLegacy: async () => { legacyCalls.push(true); },
   });
@@ -207,6 +207,23 @@ test('6. row isolation: a malformed row does not prevent sibling rows from rende
   assert.equal(rendered[1].row_serving_key, malformedRow.row_serving_key);
 });
 
+test('6b. normalised durations render without dropping their original time unit', () => {
+  const rendered = mapCanonicalRowForRender({
+    row_serving_key: 'c'.repeat(64),
+    governed_deal_key: 'deal:duration',
+    cells: {
+      duration: {
+        canonical_value: '1',
+        canonical_unit: 'DAYS',
+        raw_magnitude: '24',
+        raw_unit: 'HOURS',
+      },
+    },
+  }, [{ column_key: 'duration' }]);
+  assert.equal(rendered.error, null);
+  assert.equal(rendered.cells[0].display, '1 day (source: 24 hours)');
+});
+
 test('7. Query source cells open the shared governed exact-detail renderer by deal key', () => {
   const query = fs.readFileSync('components/query/CanonicalMarketRange.jsx', 'utf8');
   const review = fs.readFileSync('components/review-v2/CanonicalReviewSection.jsx', 'utf8');
@@ -216,4 +233,22 @@ test('7. Query source cells open the shared governed exact-detail renderer by de
   assert.match(review, /query\.set\('dealKey', governedDealKey\)/);
   assert.match(review, /SERVING_EXACT_DETAIL_TERMINATION_FEE_TRIGGERS_RESPONSE\/V2/);
   assert.match(review, /Exact trigger evidence/);
+});
+
+test('8. canonical Query renders only the server cohort summary and mounts one trigger detail row', () => {
+  const source = fs.readFileSync('components/query/CanonicalMarketRange.jsx', 'utf8');
+  assert.match(source, /function CohortSummary/);
+  assert.match(source, /view\.cohort_summary/);
+  assert.match(source, /cmrScaleIqr/);
+  assert.match(source, /cmrScaleMedian/);
+  assert.match(source, /cmrScaleMean/);
+  assert.match(source, /hasPercentRangeRefinement\(view\)/);
+  assert.match(source, /useEffect\(\(\) => \{\s*setDraft\(draftFromFilters\(JSON\.parse\(activeFilterSignature\)\)\)/);
+  assert.match(source, /refinementValueLabel\(value, option\.column_key, view\.metric_key\)/);
+  assert.match(source, /refinementValueLabel\(value, key, view\.metric_key\)/);
+  assert.match(source, /IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE: 'Interim operating covenant capex threshold/);
+  assert.match(source, /MATERIAL_CONTRACT_CASH_FLOW_THRESHOLD_PERCENT_OF_DEAL_VALUE: 'Material contract cash-flow threshold/);
+  assert.match(source, /expandedTriggerRow === rawRow\.row_serving_key/);
+  assert.doesNotMatch(source, /<details/);
+  assert.doesNotMatch(source, /Math\.(min|max|round)\(\.\.\.\(view\.rows|reduce\(\(sum.*view\.rows/);
 });

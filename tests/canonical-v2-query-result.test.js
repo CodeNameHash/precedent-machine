@@ -6,6 +6,7 @@ const { buildLandosMaterialContractsServingFixture } = require('../__fixtures__/
 const { buildLandosIocCapexServingFixture } = require('../__fixtures__/canonical-v2/landos-ioc-capex-row');
 const { buildLandosTerminationFeeServingFixture } = require('../__fixtures__/canonical-v2/landos-termination-fee-row');
 const { buildMultiDealCandidateReleaseFixture } = require('../__fixtures__/canonical-v2/multi-deal-candidate-release');
+const { buildQueryCohortSummary } = require('../__fixtures__/canonical-v2/query-cohort-summary');
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
 const {
   compileFixtureContract,
@@ -19,6 +20,7 @@ const {
   projectSharedServingRowRecord,
   queryCanonicalResultPage,
   resolveActiveQueryPage,
+  validateCanonicalQueryCohortSummary,
 } = require('../lib/canonical-v2/query-result');
 
 const namespaceId = contentId('SERVING_NAMESPACE/V1', 'landos-reviewed-fixture');
@@ -46,13 +48,15 @@ function requestFor(row, overrides = {}) {
 
 function resultFor(params, rows, overrides = {}) {
   return {
-    schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V1',
+    schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V2',
+    cache_state: 'MISS',
     serving_namespace_id: params.p_serving_namespace_id,
     corpus_release_id: params.p_corpus_release_id,
     contract_fingerprint: params.p_contract_fingerprint,
     query_semantics_digest: params.p_query_semantics_digest,
     total_count: rows.length,
     page_count: rows.length,
+    cohort_summary: buildQueryCohortSummary({ params, rows }),
     rows,
     next_cursor: null,
     ...overrides,
@@ -136,8 +140,15 @@ test('pinned buyer-fee requests require the corrected F4 trigger contract', () =
 
 test('active buyer-fee query rejects an active release whose contract predates the metric', () => {
   const request = compileCanonicalActiveQueryRequest(reverseFeeBody());
+  const summaryParams = {
+    p_query_semantics_digest: request.query_semantics_digest,
+    p_metric_key: request.metric_key,
+    p_metric_version: request.metric_version,
+    p_basis_key: request.basis_key,
+  };
   const activeResult = {
-    schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V1',
+    schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V2',
+    cache_state: 'MISS',
     pointer_id: contentId('ACTIVE_POINTER/V1', 'buyer-fee'),
     serving_namespace_id: namespaceId,
     corpus_release_id: contentId('CORPUS_RELEASE/V1', 'active-before-f4'),
@@ -145,6 +156,7 @@ test('active buyer-fee query rejects an active release whose contract predates t
     query_semantics_digest: request.query_semantics_digest,
     total_count: 0,
     page_count: 0,
+    cohort_summary: buildQueryCohortSummary({ params: summaryParams, rows: [] }),
     rows: [],
     next_cursor: null,
   };
@@ -176,8 +188,6 @@ test('termination-fee query returns percentage, legal side, triggers and source 
       payer_capacity: 'TARGET',
       payee_capacity: 'BUYER',
       trigger_code: 'ACQUISITION_PROPOSAL_TAIL',
-      payment_timing: 'TWO_BUSINESS_DAYS_AFTER_EARLIER_SIGNING_OR_CONSUMMATION',
-      trigger_condition: 'FIFTY_PERCENT_ACQUISITION_THRESHOLD',
     },
   });
   const cache = new MemoryCache();
@@ -187,12 +197,12 @@ test('termination-fee query returns percentage, legal side, triggers and source 
   assert.equal(first.cache, 'MISS');
   assert.equal(second.cache, 'HIT');
   assert.equal(calls.length, 1);
-  assert.equal(calls[0].name, 'canonical_v2_query_page');
+  assert.equal(calls[0].name, 'canonical_v2_query_page_v2');
   assert.equal(calls[0].params.p_environment, 'staging');
   assert.equal(calls[0].params.p_min_canonical_value, '5');
   assert.equal(calls[0].params.p_trigger_code, 'ACQUISITION_PROPOSAL_TAIL');
-  assert.equal(calls[0].params.p_payment_timing, 'TWO_BUSINESS_DAYS_AFTER_EARLIER_SIGNING_OR_CONSUMMATION');
-  assert.equal(calls[0].params.p_trigger_condition, 'FIFTY_PERCENT_ACQUISITION_THRESHOLD');
+  assert.equal(calls[0].params.p_payment_timing, null);
+  assert.equal(calls[0].params.p_trigger_condition, null);
   assert.equal(cache.writes.length, 1);
   assert.equal(cache.writes[0].ttl, 3600);
   const cells = first.result.rows[0].cells;
@@ -207,6 +217,19 @@ test('termination-fee query returns percentage, legal side, triggers and source 
     'SUPERIOR_PROPOSAL_TERMINATION',
   ]);
   assert.equal(cells.source.detail_kind, 'CLAIM_EVIDENCE');
+  assert.equal(Object.hasOwn(first.result.rows[0], 'shared_row'), false);
+  assert.deepEqual(first.result.rows[0].display_metadata, { denominator_precision: null });
+  assert.equal(first.result.cohort_summary.statistics.state, 'AVAILABLE');
+  assert.equal(first.result.cohort_summary.statistics.median, '5.09090909');
+  assert.equal(first.result.cohort_summary.counts.distinct_deals, 1);
+  assert.deepEqual(
+    first.result.cohort_summary.facets.trigger_codes.map((entry) => entry.value),
+    [
+      'ACQUISITION_PROPOSAL_TAIL',
+      'CHANGE_IN_RECOMMENDATION_TERMINATION',
+      'SUPERIOR_PROPOSAL_TERMINATION',
+    ],
+  );
   assert.ok(first.result.refinements.some((item) => item.column_key === 'triggers' && item.operator === 'CONTAINS'));
   assert.ok(first.result.refinements.some((item) => item.request_field === 'column_filters.payment_timing'));
   assert.ok(first.result.refinements.some((item) => item.request_field === 'column_filters.trigger_condition'));
@@ -257,6 +280,25 @@ test('Material Contracts query exposes the governed criterion primitives and rel
   assert.ok(response.result.refinements.some((item) => item.column_key === 'measurement_period'));
 });
 
+test('deal-value basis renders from the governed denominator without exposing the full serving row', async () => {
+  const row = buildLandosTerminationFeeServingFixture().row;
+  const request = requestFor(row, { selected_columns: ['deal', 'deal_value_basis'] });
+  const client = {
+    rpc(name, params) {
+      return Promise.resolve({ data: resultFor(params, [row]), error: null });
+    },
+  };
+  const response = await queryCanonicalResultPage({ client, request });
+  const rendered = require('../lib/canonical-v2/legacy-query-mapper')
+    .mapCanonicalRowForRender(response.result.rows[0], response.result.columns);
+  assert.equal(rendered.error, null);
+  assert.equal(
+    rendered.cells.find((cell) => cell.column_key === 'deal_value_basis').display,
+    'USD 137,500,000 · headline transaction value',
+  );
+  assert.equal(Object.hasOwn(response.result.rows[0], 'shared_row'), false);
+});
+
 test('no-shop notice query returns comparable days without discarding the source hours in one bounded cached request', async () => {
   const fixture = buildMultiDealCandidateReleaseFixture();
   const rows = fixture.release.shared_rows
@@ -278,7 +320,7 @@ test('no-shop notice query returns comparable days without discarding the source
   assert.equal(first.cache, 'MISS');
   assert.equal(second.cache, 'HIT');
   assert.equal(calls.length, 1);
-  assert.equal(calls[0].name, 'canonical_v2_query_page');
+  assert.equal(calls[0].name, 'canonical_v2_query_page_v2');
   assert.equal(calls[0].params.p_corpus_release_id, fixture.corpusReleaseId);
   assert.equal(calls[0].params.p_metric_key, 'NO_SHOP_NOTICE_PERIOD_DAYS');
   assert.equal(calls[0].params.p_basis_key, 'DAYS:ELAPSED:RECEIPT_OF_COMPETING_PROPOSAL');
@@ -309,6 +351,15 @@ test('no-shop notice query returns comparable days without discarding the source
     assert.equal(row.cells.source.detail_kind, 'CLAIM_EVIDENCE');
   }
   assert.equal(first.result.refinements.some((item) => item.column_key === 'duration'), false);
+  for (const row of first.result.rows) {
+    const rendered = require('../lib/canonical-v2/legacy-query-mapper')
+      .mapCanonicalRowForRender(row, first.result.columns);
+    assert.equal(rendered.error, null);
+    assert.equal(
+      rendered.cells.find((cell) => cell.column_key === 'duration').display,
+      '1 day (source: 24 hours)',
+    );
+  }
 });
 
 test('no-shop notice query refuses percentage-only columns and refinements', () => {
@@ -377,7 +428,8 @@ test('release, selected columns, refinements, page size and keyset cursor have t
     corpus_release_id: contentId('CORPUS_RELEASE/V1', 'later-release'),
   }));
 
-  assert.notEqual(base.query_semantics_digest, columns.query_semantics_digest);
+  assert.equal(base.query_semantics_digest, columns.query_semantics_digest);
+  assert.equal(base.cache_key, columns.cache_key);
   assert.notEqual(base.query_semantics_digest, refined.query_semantics_digest);
   assert.equal(base.query_semantics_digest, pageSize.query_semantics_digest);
   assert.equal(base.query_semantics_digest, cursor.query_semantics_digest);
@@ -407,6 +459,15 @@ test('query request and response fail closed on unsupported fields, cross-metric
       column_filters: { payment_timing: 'CONCURRENT_WITH_TERMINATION' },
     })),
     /fee refinements require/,
+  );
+  assert.throws(
+    () => compileCanonicalQueryRequest(requestFor(feeRow, {
+      column_filters: {
+        trigger_code: 'ACQUISITION_PROPOSAL_TAIL',
+        payment_timing: 'TWO_BUSINESS_DAYS_AFTER_EARLIER_SIGNING_OR_CONSUMMATION',
+      },
+    })),
+    /Only one trigger-pathway refinement/,
   );
 
   const broadClient = {
@@ -446,9 +507,125 @@ test('query database failures are not retried', async () => {
   assert.equal(calls, 1);
 });
 
+test('query cohort summary fails closed on malformed counts, statistics, groups and semantics', () => {
+  const row = buildLandosTerminationFeeServingFixture().row;
+  const request = compileCanonicalQueryRequest(requestFor(row));
+  const params = {
+    p_query_semantics_digest: request.query_semantics_digest,
+    p_metric_key: request.metric_key,
+    p_metric_version: request.metric_version,
+    p_basis_key: request.basis_key,
+  };
+  const summary = buildQueryCohortSummary({ params, rows: [row] });
+  const result = { total_count: 1 };
+
+  assert.equal(validateCanonicalQueryCohortSummary(summary, result, request), summary);
+  for (const invalid of [
+    { ...summary, query_semantics_digest: 'f'.repeat(64) },
+    { ...summary, counts: { ...summary.counts, result_rows: 2 } },
+    {
+      ...summary,
+      statistics: {
+        ...summary.statistics,
+        state: 'NOT_DEFINED_MULTI_VALUE_PER_DEAL',
+        derivation_version: null,
+        n_deals: 0,
+      },
+    },
+    {
+      ...summary,
+      facets: {
+        ...summary.facets,
+        trigger_codes: [...summary.facets.trigger_codes, summary.facets.trigger_codes[0]],
+      },
+    },
+  ]) {
+    assert.throws(
+      () => validateCanonicalQueryCohortSummary(invalid, result, request),
+      (error) => error.code === 'INVALID_RESPONSE',
+    );
+  }
+});
+
+test('query cohort summary exposes typed non-statistical states without plausible percentiles', () => {
+  const row = buildLandosTerminationFeeServingFixture().row;
+  const request = compileCanonicalQueryRequest(requestFor(row));
+  const base = {
+    schema_version: 'CANONICAL_QUERY_COHORT_SUMMARY/V1',
+    scope: 'FULL_FILTERED_COMPARABLE_QUERY_RESULTS',
+    query_semantics_digest: request.query_semantics_digest,
+    metric_key: request.metric_key,
+    metric_version: request.metric_version,
+    basis_key: request.basis_key,
+    facets: { trigger_codes: [], payment_timings: [], trigger_conditions: [] },
+  };
+  const unavailableStatistics = (state) => ({
+    state,
+    derivation_version: null,
+    n_deals: 0,
+    min: null,
+    p25: null,
+    median: null,
+    mean: null,
+    p75: null,
+    max: null,
+  });
+  const cases = [
+    {
+      state: 'NO_VALUES',
+      result: { total_count: 0 },
+      counts: {
+        result_rows: 0,
+        distinct_deals: 0,
+        numeric_result_rows: 0,
+        numeric_distinct_deals: 0,
+        multi_value_deals: 0,
+        approximate_result_rows: 0,
+        approximate_distinct_deals: 0,
+      },
+    },
+    {
+      state: 'INCOMPLETE_NUMERIC_DOMAIN',
+      result: { total_count: 1 },
+      counts: {
+        result_rows: 1,
+        distinct_deals: 1,
+        numeric_result_rows: 0,
+        numeric_distinct_deals: 0,
+        multi_value_deals: 0,
+        approximate_result_rows: 0,
+        approximate_distinct_deals: 0,
+      },
+    },
+    {
+      state: 'NOT_DEFINED_MULTI_VALUE_PER_DEAL',
+      result: { total_count: 2 },
+      counts: {
+        result_rows: 2,
+        distinct_deals: 1,
+        numeric_result_rows: 2,
+        numeric_distinct_deals: 1,
+        multi_value_deals: 1,
+        approximate_result_rows: 0,
+        approximate_distinct_deals: 0,
+      },
+    },
+  ];
+  for (const item of cases) {
+    assert.doesNotThrow(() => validateCanonicalQueryCohortSummary({
+      ...base,
+      counts: item.counts,
+      statistics: unavailableStatistics(item.state),
+    }, item.result, request));
+  }
+});
+
 test('the staging query projection is indexed, keyset-paged and served by one bounded SQL RPC', () => {
   const sql = fs.readFileSync('supabase/canonical-v2-serving.sql', 'utf8');
   const source = fs.readFileSync('lib/canonical-v2/query-result.js', 'utf8');
+  const queryStart = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_query_page_v2');
+  const activeStart = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_query_page(');
+  const queryFunction = sql.slice(queryStart, activeStart);
 
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.shared_serving_rows/);
   assert.match(sql, /canonical_numeric_value numeric/);
@@ -459,19 +636,44 @@ test('the staging query projection is indexed, keyset-paged and served by one bo
   assert.match(sql, /CREATE OR REPLACE FUNCTION public\.canonical_v2_active_query_page/);
   assert.match(sql, /SECURITY DEFINER/);
   assert.match(sql, /SET statement_timeout = '2500ms'/);
+  assert.match(queryFunction, /p_page_size IS NULL/);
+  assert.match(queryFunction, /p_metric_version IS NULL/);
   assert.match(sql, /LIMIT p_page_size \+ 1/);
   assert.match(sql, /\(row\.governed_deal_key, row\.row_serving_key\) > \(p_after_governed_deal_key, p_after_row_serving_key\)/);
   assert.match(sql, /row\.trigger_codes @> ARRAY\[p_trigger_code\]::text\[\]/);
   assert.match(sql, /row\.payment_timings @> ARRAY\[p_payment_timing\]::text\[\]/);
   assert.match(sql, /row\.trigger_conditions @> ARRAY\[p_trigger_condition\]::text\[\]/);
+  assert.match(sql, /row\.adviser_firms @> ARRAY\[p_adviser_either\]::text\[\]/);
+  assert.match(sql, /row\.lawyers @> ARRAY\[p_lawyer_either\]::text\[\]/);
   assert.match(sql, /canonical_v2_shared_rows_payment_timings_idx[\s\S]*USING gin \(payment_timings\)/);
   assert.match(sql, /canonical_v2_shared_rows_trigger_conditions_idx[\s\S]*USING gin \(trigger_conditions\)/);
+  assert.match(sql, /ADD COLUMN IF NOT EXISTS row_kind text\s+GENERATED ALWAYS AS \(canonical_payload->>'row_kind'\) STORED/);
+  assert.match(sql, /canonical_v2_shared_rows_query_v2_idx[\s\S]*WHERE row_kind = 'CANONICAL_RESULT'/);
+  assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.query_response_cache/);
+  assert.match(queryFunction, /cache\.physical_request = physical_request_body/);
+  assert.match(queryFunction, /cache\.expires_at > clock_timestamp\(\)/);
+  assert.match(queryFunction, /pg_try_advisory_xact_lock\(query_lock_id\)/);
+  assert.match(queryFunction, /pg_try_advisory_xact_lock\(20260724, 1\)/);
+  assert.match(queryFunction, /pg_try_advisory_xact_lock\(20260724, 2\)/);
+  assert.match(queryFunction, /canonical query cache-miss capacity is exhausted/);
+  assert.match(queryFunction, /clock_timestamp\(\) \+ interval '1 hour'/);
+  assert.match(queryFunction, /jsonb_set\(cached_result, '\{cache_state\}', '"HIT"'::jsonb\)/);
+  assert.match(queryFunction, /WITH matching_keys AS MATERIALIZED/);
+  assert.match(queryFunction, /CANONICAL_QUERY_PAGE_RESULT\/V2/);
+  assert.match(queryFunction, /CANONICAL_QUERY_COHORT_SUMMARY\/V1/);
+  assert.doesNotMatch(queryFunction, /matching_rows/);
+  assert.equal((queryFunction.match(/row\.canonical_payload/g) || []).length, 1);
+  assert.match(queryFunction, /FROM page_row_keys page[\s\S]*JOIN canonical_v2_staging\.shared_serving_rows row/);
+  assert.match(sql, /INSERT INTO canonical_v2_staging\.shared_serving_rows \([\s\S]*canonical_payload_digest[\s\S]*FROM jsonb_populate_recordset/);
+  assert.doesNotMatch(sql, /INSERT INTO canonical_v2_staging\.shared_serving_rows\s+SELECT \*/);
   assert.match(sql, /REVOKE ALL ON TABLE canonical_v2_staging\.shared_serving_rows/);
   assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_active_query_page[\s\S]*TO canonical_v2_serving/);
   assert.doesNotMatch(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_query_page\([\s\S]*?\) TO canonical_v2_serving/);
   assert.doesNotMatch(sql, /\bOFFSET\b/i);
   assert.doesNotMatch(sql, /\bLOOP\b/i);
   assert.doesNotMatch(sql, /\bEXECUTE\s+format\s*\(/i);
-  assert.match(source, /active \? 'canonical_v2_active_query_page' : 'canonical_v2_query_page'/);
+  assert.doesNotMatch(queryFunction, /percentile_cont\s*\(/i);
+  assert.doesNotMatch(sql, /DROP FUNCTION IF EXISTS public\.canonical_v2_(active_)?query_page_v2/);
+  assert.match(source, /active \? 'canonical_v2_active_query_page_v2' : 'canonical_v2_query_page_v2'/);
   assert.doesNotMatch(source, /provision_cards|loadContext|\.from\(['"]claims['"]\)/);
 });

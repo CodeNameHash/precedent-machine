@@ -15,11 +15,11 @@ test('active-release-fingerprint runner is hard-pinned to isolated staging and r
   assert.doesNotMatch(source, /precedent-machine['"]|tzulhdasmioeechxapdy/);
 });
 
-test('runner extracts canonical_v2_active_query_page verbatim from the governed schema file and pins its digest', () => {
+test('runner extracts canonical_v2_active_query_page_v2 verbatim from the governed schema file and pins its digest', () => {
   const source = fs.readFileSync(RUNNER, 'utf8');
   const servingSql = fs.readFileSync('supabase/canonical-v2-serving.sql', 'utf8');
-  const start = servingSql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page');
-  const end = servingSql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_review_context');
+  const start = servingSql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page_v2(\n');
+  const end = servingSql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page(\n');
   assert.ok(start >= 0 && end > start);
   const functionSql = servingSql.slice(start, end).trim();
   const digest = crypto.createHash('sha256').update(functionSql).digest('hex');
@@ -50,11 +50,11 @@ test('runner rejects ambiguous invocation before project or database access', ()
 
 test('the migrated function body preserves the frozen structural shape of the active query RPC', () => {
   const servingSql = fs.readFileSync('supabase/canonical-v2-serving.sql', 'utf8');
-  const start = servingSql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page');
-  const end = servingSql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_review_context');
+  const start = servingSql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page_v2(\n');
+  const end = servingSql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page(\n');
   const activeFunction = servingSql.slice(start, end);
   assert.match(activeFunction, /FROM canonical_v2_staging\.active_corpus_release_pointers/);
-  assert.match(activeFunction, /public\.canonical_v2_query_page\(/);
+  assert.match(activeFunction, /public\.canonical_v2_query_page_v2\(/);
   assert.match(activeFunction, /p_serving_namespace_id => active_pointer\.serving_namespace_id/);
   assert.match(activeFunction, /p_corpus_release_id => active_pointer\.corpus_release_id/);
   assert.match(activeFunction, /jsonb_build_object\('pointer_id', active_pointer\.pointer_id\)/);

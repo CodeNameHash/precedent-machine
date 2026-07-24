@@ -22,7 +22,7 @@ const FUNCTIONS = Object.freeze([
     output: 'step0c-candidate-import-by-contract.sql',
     source: 'supabase/canonical-v2-serving.sql',
     marker: 'CREATE OR REPLACE FUNCTION public.canonical_v2_import_candidate_release(',
-    digest: 'bc429a898a3f8d9fc2133b4b6c4a9b598dc24b8d4492ed327f132e65eca4da31',
+    digest: '7f5bba14f9f14c146cbf232000d36a09087da6e72b8651e05747fab8d7217f97',
   },
   {
     output: 'step0d-candidate-activation-by-contract.sql',

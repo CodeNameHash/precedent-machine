@@ -3,13 +3,19 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
 const { buildLandosTerminationFeeServingFixture } = require('../__fixtures__/canonical-v2/landos-termination-fee-row');
+const { buildQueryCohortSummary } = require('../__fixtures__/canonical-v2/query-cohort-summary');
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
 const { isCanonicalV2QueryEnabled } = require('../lib/canonical-v2/feature-flags');
 const {
   MAX_REQUEST_BYTES,
   createCanonicalQueryHandler,
 } = require('../lib/canonical-v2/query-api-handler');
-const { createPostgresServingClient } = require('../lib/canonical-v2/serving-client');
+const {
+  MAX_QUERY_RESULT_BYTES,
+  RPC_SPECS,
+  boundedRpcData,
+  createPostgresServingClient,
+} = require('../lib/canonical-v2/serving-client');
 
 const CONNECTION = 'postgresql://canonical_v2_preview.sjumbznveyyiizhwvixj:secret@aws-1-us-west-2.pooler.supabase.com:6543/postgres?sslmode=require&uselibpqcompat=true';
 const ACTIVE_POINTER_ID = contentId('ACTIVE_POINTER/V1', 'query-api-test');
@@ -46,7 +52,8 @@ function requestFor(row, overrides = {}) {
 
 function resultFor(params, rows, identity = {}) {
   return {
-    schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V1',
+    schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V2',
+    cache_state: 'MISS',
     pointer_id: identity.pointer_id || ACTIVE_POINTER_ID,
     serving_namespace_id: identity.serving_namespace_id || ACTIVE_NAMESPACE_ID,
     corpus_release_id: identity.corpus_release_id || rows[0]?.corpus_release_id,
@@ -54,6 +61,7 @@ function resultFor(params, rows, identity = {}) {
     query_semantics_digest: params.p_query_semantics_digest,
     total_count: rows.length,
     page_count: rows.length,
+    cohort_summary: buildQueryCohortSummary({ params, rows }),
     rows,
     next_cursor: null,
   };
@@ -79,12 +87,16 @@ test('canonical Query is feature-gated closed and never acquires a client by def
 test('canonical Query route performs one bounded RPC and returns a release-aware cache contract', async () => {
   const row = buildLandosTerminationFeeServingFixture().row;
   const calls = [];
+  let responseCacheState = 'MISS';
   const handler = createCanonicalQueryHandler({
     enabled: true,
     getClient: () => ({
       rpc(name, params) {
         calls.push({ name, params });
-        return Promise.resolve({ data: resultFor(params, [row]), error: null });
+        return Promise.resolve({
+          data: { ...resultFor(params, [row]), cache_state: responseCacheState },
+          error: null,
+        });
       },
     }),
   });
@@ -94,12 +106,12 @@ test('canonical Query route performs one bounded RPC and returns a release-aware
 
   assert.equal(res.statusCode, 200);
   assert.equal(calls.length, 1);
-  assert.equal(calls[0].name, 'canonical_v2_active_query_page');
+  assert.equal(calls[0].name, 'canonical_v2_active_query_page_v2');
   assert.equal(calls[0].params.p_environment, 'staging');
   assert.equal(Object.hasOwn(calls[0].params, 'p_serving_namespace_id'), false);
   assert.equal(Object.hasOwn(calls[0].params, 'p_corpus_release_id'), false);
   assert.equal(calls[0].params.p_page_size, 25);
-  assert.equal(res.body.schema_version, 'CANONICAL_QUERY_RESULT_VIEW/V1');
+  assert.equal(res.body.schema_version, 'CANONICAL_QUERY_RESULT_VIEW/V2');
   assert.equal(res.body.rows.length, 1);
   assert.equal(res.body.pointer_id, ACTIVE_POINTER_ID);
   assert.equal(res.body.serving_namespace_id, ACTIVE_NAMESPACE_ID);
@@ -107,6 +119,12 @@ test('canonical Query route performs one bounded RPC and returns a release-aware
   assert.match(res.headers['Cache-Control'], /s-maxage=60/);
   assert.match(res.headers.ETag, /^"[a-f0-9]{64}"$/);
   assert.equal(res.headers['X-Canonical-Cache'], 'MISS');
+  responseCacheState = 'HIT';
+  const hit = responseRecorder();
+  await handler({ method: 'POST', body: requestFor(row) }, hit);
+  assert.equal(hit.statusCode, 200);
+  assert.equal(hit.headers['X-Canonical-Cache'], 'HIT');
+  assert.equal(calls.length, 2);
 });
 
 test('canonical Query rejects oversized and invalid requests without database work', async () => {
@@ -190,9 +208,10 @@ test('canonical Query isolates failures, applies local capacity, and never retri
   currentTime += 10_001;
 });
 
-test('serving client exposes Query through one typed staging-role RPC with no retry', async () => {
+test('serving client exposes Query V2 through one typed staging-role RPC and maps database capacity without retry', async () => {
   class QueryPool {
     static instances = [];
+    static failureCode = null;
 
     constructor(options) {
       this.options = options;
@@ -202,6 +221,7 @@ test('serving client exposes Query through one typed staging-role RPC with no re
 
     query(command) {
       this.calls.push(command);
+      if (QueryPool.failureCode) return Promise.reject({ code: QueryPool.failureCode });
       return Promise.resolve({ rowCount: 1, rows: [{ data: { rows: [] } }] });
     }
   }
@@ -244,17 +264,22 @@ test('serving client exposes Query through one typed staging-role RPC with no re
     p_after_row_serving_key: null,
   };
 
-  const response = await client.rpc('canonical_v2_active_query_page', params);
+  const response = await client.rpc('canonical_v2_active_query_page_v2', params);
   const pool = QueryPool.instances[0];
 
   assert.equal(response.error, null);
   assert.equal(pool.calls.length, 1);
-  assert.match(pool.calls[0].text, /^SELECT public\.canonical_v2_active_query_page\(/);
+  assert.match(pool.calls[0].text, /^SELECT public\.canonical_v2_active_query_page_v2\(/);
   assert.deepEqual(pool.calls[0].values, Object.values(params));
   assert.equal(pool.options.max, 1);
+  QueryPool.failureCode = '55P03';
+  const capacity = await client.rpc('canonical_v2_active_query_page_v2', params);
+  assert.equal(capacity.error.code, 'AT_CAPACITY');
+  assert.equal(pool.calls.length, 2);
 });
 
 test('serving client rejects an oversized Query page after one RPC', async () => {
+  assert.equal(MAX_QUERY_RESULT_BYTES, 1024 * 1024);
   class OversizedQueryPool {
     constructor() {
       this.calls = [];
@@ -307,8 +332,17 @@ test('serving client rejects an oversized Query page after one RPC', async () =>
     p_after_row_serving_key: null,
   };
 
-  const response = await client.rpc('canonical_v2_active_query_page', params);
+  const response = await client.rpc('canonical_v2_active_query_page_v2', params);
 
+  assert.equal(response.data, null);
+  assert.match(response.error.message, /exceeded its bounds/);
+});
+
+test('Query serving rejects a one-row response above the 1 MiB byte ceiling', () => {
+  const response = boundedRpcData({
+    rowCount: 1,
+    rows: [{ data: { rows: [{ payload: 'x'.repeat(MAX_QUERY_RESULT_BYTES) }] } }],
+  }, RPC_SPECS.canonical_v2_active_query_page);
   assert.equal(response.data, null);
   assert.match(response.error.message, /exceeded its bounds/);
 });

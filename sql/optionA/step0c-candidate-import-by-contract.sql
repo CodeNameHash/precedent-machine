@@ -1,6 +1,6 @@
 BEGIN;
 SET LOCAL statement_timeout='120000ms';
--- Governed function SHA-256: bc429a898a3f8d9fc2133b4b6c4a9b598dc24b8d4492ed327f132e65eca4da31
+-- Governed function SHA-256: 7f5bba14f9f14c146cbf232000d36a09087da6e72b8651e05747fab8d7217f97
 CREATE OR REPLACE FUNCTION public.canonical_v2_import_candidate_release(
   p_environment text,
   p_import_plan jsonb
@@ -505,6 +505,20 @@ BEGIN
       IS DISTINCT FROM (expected->>'validated_semantic_graph_records')::integer THEN
     RAISE EXCEPTION 'candidate release import contains duplicate identities' USING ERRCODE = '23505';
   END IF;
+  IF EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(p_import_plan->'query_records') item
+    WHERE item->'canonical_payload'->>'row_kind' IS DISTINCT FROM 'CANONICAL_RESULT'
+  ) OR EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(
+      coalesce(p_import_plan->'incomplete_canonical_records', '[]'::jsonb)
+    ) item
+    WHERE item->'canonical_payload'->>'row_kind'
+      IS DISTINCT FROM 'INCOMPLETE_CANONICAL_RESULT'
+  ) THEN
+    RAISE EXCEPTION 'candidate release import row partitions are invalid' USING ERRCODE = '22023';
+  END IF;
 
   IF EXISTS (
     SELECT 1 FROM canonical_v2_staging.fixture_corpus_releases release
@@ -630,16 +644,81 @@ BEGIN
     NULL::canonical_v2_staging.market_metric_slot_exclusions,
     p_import_plan->'market_exclusions'
   ) ON CONFLICT (serving_namespace_id, corpus_release_id, metric_slot_key) DO NOTHING;
-  INSERT INTO canonical_v2_staging.shared_serving_rows
-  SELECT * FROM jsonb_populate_recordset(
+  INSERT INTO canonical_v2_staging.shared_serving_rows (
+    serving_namespace_id,
+    corpus_release_id,
+    row_serving_key,
+    contract_fingerprint,
+    governed_deal_key,
+    concept_key,
+    metric_key,
+    metric_version,
+    party_role,
+    party_value,
+    party_capacity,
+    basis_key,
+    sector,
+    buyer,
+    merger_form,
+    adviser_firms,
+    lawyers,
+    announce_year,
+    deal_value_usd,
+    canonical_numeric_value,
+    fee_side,
+    payer_capacity,
+    payee_capacity,
+    trigger_codes,
+    payment_timings,
+    trigger_conditions,
+    criterion_code,
+    contract_scope_code,
+    cash_flow_direction_code,
+    measurement_period_code,
+    comparison_operator,
+    canonical_payload,
+    canonical_payload_digest
+  )
+  SELECT
+    record.serving_namespace_id,
+    record.corpus_release_id,
+    record.row_serving_key,
+    record.contract_fingerprint,
+    record.governed_deal_key,
+    record.concept_key,
+    record.metric_key,
+    record.metric_version,
+    record.party_role,
+    record.party_value,
+    record.party_capacity,
+    record.basis_key,
+    record.sector,
+    record.buyer,
+    record.merger_form,
+    record.adviser_firms,
+    record.lawyers,
+    record.announce_year,
+    record.deal_value_usd,
+    record.canonical_numeric_value,
+    record.fee_side,
+    record.payer_capacity,
+    record.payee_capacity,
+    record.trigger_codes,
+    coalesce(record.payment_timings, '{}'),
+    coalesce(record.trigger_conditions, '{}'),
+    record.criterion_code,
+    record.contract_scope_code,
+    record.cash_flow_direction_code,
+    record.measurement_period_code,
+    record.comparison_operator,
+    record.canonical_payload,
+    record.canonical_payload_digest
+  FROM jsonb_populate_recordset(
     NULL::canonical_v2_staging.shared_serving_rows,
-    p_import_plan->'query_records'
-  ) ON CONFLICT (serving_namespace_id, corpus_release_id, row_serving_key) DO NOTHING;
-  INSERT INTO canonical_v2_staging.shared_serving_rows
-  SELECT * FROM jsonb_populate_recordset(
-    NULL::canonical_v2_staging.shared_serving_rows,
-    coalesce(p_import_plan->'incomplete_canonical_records', '[]'::jsonb)
-  ) ON CONFLICT (serving_namespace_id, corpus_release_id, row_serving_key) DO NOTHING;
+    (p_import_plan->'query_records')
+      || coalesce(p_import_plan->'incomplete_canonical_records', '[]'::jsonb)
+  ) AS record
+  ON CONFLICT (serving_namespace_id, corpus_release_id, row_serving_key) DO NOTHING;
   INSERT INTO canonical_v2_staging.reviewed_source_specific_serving_rows
   SELECT * FROM jsonb_populate_recordset(
     NULL::canonical_v2_staging.reviewed_source_specific_serving_rows,

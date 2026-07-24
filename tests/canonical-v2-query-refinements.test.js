@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const { buildLandosTerminationFeeServingFixture } = require('../__fixtures__/canonical-v2/landos-termination-fee-row');
+const { buildQueryCohortSummary } = require('../__fixtures__/canonical-v2/query-cohort-summary');
 const { compileCanonicalActiveQueryRequest, queryCanonicalResultPage } = require('../lib/canonical-v2/query-result');
 const {
   mapLegacyRequestToCanonical,
@@ -10,6 +11,7 @@ const {
   appendCanonicalPage,
   resolveCanonicalQueryPageUpdate,
   runCanonicalRefinementRequest,
+  hasPercentRangeRefinement,
 } = require('../lib/canonical-v2/legacy-query-mapper');
 
 const EXACT_PAYLOAD = Object.freeze({
@@ -25,7 +27,7 @@ function baseBody() {
 }
 
 // Same fixture-driven pattern as tests/canonical-v2-query-result.test.js
-// (see its lines 1-100): a real CANONICAL_QUERY_RESULT_VIEW/V1 built through
+// (see its lines 1-100): a real CANONICAL_QUERY_RESULT_VIEW/V2 built through
 // the actual buildCanonicalQueryResultView pipeline, not a hand-shaped stub.
 function requestFor(row, overrides = {}) {
   const body = row.canonical_result;
@@ -50,13 +52,15 @@ function requestFor(row, overrides = {}) {
 
 function resultFor(params, rows, overrides = {}) {
   return {
-    schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V1',
+    schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V2',
+    cache_state: 'MISS',
     serving_namespace_id: params.p_serving_namespace_id,
     corpus_release_id: params.p_corpus_release_id,
     contract_fingerprint: params.p_contract_fingerprint,
     query_semantics_digest: params.p_query_semantics_digest,
     total_count: rows.length,
     page_count: rows.length,
+    cohort_summary: buildQueryCohortSummary({ params, rows }),
     rows,
     next_cursor: null,
     ...overrides,
@@ -141,6 +145,13 @@ test('2. valid decimal strings pass; min > max throws; non-canonical strings thr
   }
 });
 
+test('2b. incompatible pathway refinements fail locally before a request can be sent', () => {
+  assert.throws(() => buildRefinedCanonicalRequest(baseBody(), {
+    trigger_code: 'ACQUISITION_PROPOSAL_TAIL',
+    payment_timing: 'TWO_BUSINESS_DAYS_AFTER_EARLIER_SIGNING_OR_CONSUMMATION',
+  }), /Only one trigger-pathway refinement/);
+});
+
 // ── 3. Unknown / non-fee keys ────────────────────────────────────────────────
 
 test('3. unknown keys and non-fee-metric keys throw', () => {
@@ -163,8 +174,6 @@ test('4. a refined body passes the real, frozen compileCanonicalActiveQueryReque
     payer_capacity: 'TARGET',
     payee_capacity: 'BUYER',
     trigger_code: 'ACQUISITION_PROPOSAL_TAIL',
-    payment_timing: 'TWO_BUSINESS_DAYS_AFTER_EARLIER_SIGNING_OR_CONSUMMATION',
-    trigger_condition: 'FIFTY_PERCENT_ACQUISITION_THRESHOLD',
     min_percent_of_deal_value: '1',
     max_percent_of_deal_value: '10',
   });
@@ -177,8 +186,8 @@ test('4. a refined body passes the real, frozen compileCanonicalActiveQueryReque
     payer_capacity: 'TARGET',
     payee_capacity: 'BUYER',
     trigger_code: 'ACQUISITION_PROPOSAL_TAIL',
-    payment_timing: 'TWO_BUSINESS_DAYS_AFTER_EARLIER_SIGNING_OR_CONSUMMATION',
-    trigger_condition: 'FIFTY_PERCENT_ACQUISITION_THRESHOLD',
+    payment_timing: null,
+    trigger_condition: null,
     criterion_code: null,
     contract_scope_code: null,
     cash_flow_direction_code: null,
@@ -239,6 +248,7 @@ test('5. options come only from the real view\'s rows/metadata; absent codes sta
   // A code that is not on this row (the reverse/buyer fee side) must never
   // appear just because it's part of the wider governed vocabulary.
   assert.ok(!byKey.fee_side.values.includes('BUYER'));
+  assert.equal(hasPercentRangeRefinement(view), true);
 
   // No hardcoded control list: dropping the 'payee' column from the
   // request drops payee_capacity as a control entirely, and dropping
@@ -260,11 +270,48 @@ test('5. options come only from the real view\'s rows/metadata; absent codes sta
   );
 });
 
+test('5b. percentage controls are governed by refinement metadata, never the metric label', async () => {
+  const feeView = await buildLandosView();
+  assert.equal(hasPercentRangeRefinement(feeView), true);
+  assert.equal(hasPercentRangeRefinement({
+    ...feeView,
+    refinements: feeView.refinements.filter(
+      (item) => item.request_field !== 'column_filters.percent_of_deal_value',
+    ),
+  }), false);
+  assert.equal(hasPercentRangeRefinement({
+    ...feeView,
+    metric_key: 'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+    refinements: [],
+  }), false);
+});
+
+test('5c. coded refinements use full-cohort facets even when a value is off the current page', async () => {
+  const view = await buildLandosView();
+  const offPageCode = 'OFF_PAGE_GOVERNED_TRIGGER';
+  const widened = {
+    ...view,
+    cohort_summary: {
+      ...view.cohort_summary,
+      facets: {
+        ...view.cohort_summary.facets,
+        trigger_codes: [
+          ...view.cohort_summary.facets.trigger_codes,
+          { value: offPageCode, result_count: 1, deal_count: 1 },
+        ].sort((left, right) => left.value.localeCompare(right.value)),
+      },
+    },
+  };
+  const trigger = refinementOptionsFromView(widened)
+    .find((option) => option.column_key === 'trigger_code');
+  assert.ok(trigger.values.includes(offPageCode));
+});
+
 // ── 6. appendCanonicalPage ───────────────────────────────────────────────────
 
 function fakeView(overrides) {
   return Object.freeze({
-    schema_version: 'CANONICAL_QUERY_RESULT_VIEW/V1',
+    schema_version: 'CANONICAL_QUERY_RESULT_VIEW/V2',
     release_selector: 'ACTIVE',
     pointer_id: 'pointer-1',
     serving_namespace_id: 'namespace-1',
@@ -375,6 +422,25 @@ test('6d. a terminal short page cannot silently truncate the governed result', (
   assert.throws(
     () => appendCanonicalPage(existing, truncated, cursor),
     /truncates the governed result/,
+  );
+});
+
+test('6e. pagination rejects a changed full-cohort summary', () => {
+  const cursor = { governed_deal_key: 'deal:a', row_serving_key: 'row-1' };
+  const existing = fakeView({
+    total_count: 2,
+    cohort_summary: { query_semantics_digest: 'same', counts: { result_rows: 2 } },
+    next_cursor: cursor,
+    rows: [{ row_serving_key: 'row-1' }],
+  });
+  const next = fakeView({
+    total_count: 2,
+    cohort_summary: { query_semantics_digest: 'same', counts: { result_rows: 3 } },
+    rows: [{ row_serving_key: 'row-2' }],
+  });
+  assert.throws(
+    () => appendCanonicalPage(existing, next, cursor),
+    /different governed query/,
   );
 });
 

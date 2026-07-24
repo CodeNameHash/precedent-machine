@@ -16,13 +16,13 @@ test('Preview access is pinned to the isolated projection database and deal-corp
   assert.doesNotMatch(source, /tzulhdasmioeechxapdy|beddepjkshmgenhsrnno/);
 });
 
-test('Preview role can execute exactly four read RPCs and no tables or writer', () => {
+test('Preview role can execute exactly four current read RPCs and no tables or writer', () => {
   const source = fs.readFileSync(RUNNER, 'utf8');
   assert.match(source, /REVOKE ALL ON ALL TABLES IN SCHEMA public, canonical_v2_staging/);
   assert.match(source, /canonical_v2_active_review_context/);
   assert.match(source, /canonical_v2_exact_detail/);
   assert.match(source, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_market_cohort/);
-  assert.match(source, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_active_query_page/);
+  assert.match(source, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_active_query_page_v2/);
   assert.match(source, /queryCanonicalResultPage/);
   assert.match(source, /releaseSelector: 'ACTIVE'/);
   assert.match(source, /SELECT public\.canonical_v2_market_cohort/);

@@ -58,19 +58,20 @@ test('Option A blocks fail closed and keep activation outside the packet', () =>
   );
   const serving = fs.readFileSync('supabase/canonical-v2-serving.sql', 'utf8');
   const servingStart = serving.indexOf(
-    'CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page',
+    'CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page_v2(\n',
   );
   const servingEnd = serving.indexOf(
-    'CREATE OR REPLACE FUNCTION public.canonical_v2_active_review_context',
+    'CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page(\n',
   );
   const packetStart = widening.indexOf(
     'CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page',
   );
   const packetEnd = widening.indexOf('\n$$;', packetStart);
-  assert.equal(
-    widening.slice(packetStart, packetEnd + 4).trim(),
-    serving.slice(servingStart, servingEnd).trim(),
-  );
+  const historicalWidening = widening.slice(packetStart, packetEnd + 4).trim();
+  const currentActiveFunction = serving.slice(servingStart, servingEnd).trim();
+  assert.match(historicalWidening, /release_contract_fingerprint/);
+  assert.match(currentActiveFunction, /release_contract_fingerprint/);
+  assert.match(currentActiveFunction, /public\.canonical_v2_query_page_v2\(/);
   assert.match(widening, /release_declared_fingerprint_assert/);
   assert.ok(widening.indexOf('$release_declared_fingerprint_assert$;') < widening.indexOf('COMMIT;'));
 });

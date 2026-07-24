@@ -13,6 +13,7 @@ const {
 const {
   buildFixtureCandidateInputAuthority,
 } = require('../__fixtures__/canonical-v2/candidate-input-authority');
+const { buildQueryCohortSummary } = require('../__fixtures__/canonical-v2/query-cohort-summary');
 const {
   compileFixtureContractV3,
   compileFixtureContractV4,
@@ -309,14 +310,22 @@ test('QXO F4 Query and Review expose the approximate denominator and all governe
     page_size: 25,
     cursor: null,
   });
+  const queryParams = {
+    p_query_semantics_digest: request.query_semantics_digest,
+    p_metric_key: request.metric_key,
+    p_metric_version: request.metric_version,
+    p_basis_key: request.basis_key,
+  };
   const view = buildCanonicalQueryResultView({
-    schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V1',
+    schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V2',
+    cache_state: 'MISS',
     serving_namespace_id: servingNamespaceId,
     corpus_release_id: corpusReleaseId,
     contract_fingerprint: contractBundle.fingerprint,
     query_semantics_digest: request.query_semantics_digest,
     total_count: 1,
     page_count: 1,
+    cohort_summary: buildQueryCohortSummary({ params: queryParams, rows: [row] }),
     rows: [row],
     next_cursor: null,
   }, request);

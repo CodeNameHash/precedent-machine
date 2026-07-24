@@ -15,6 +15,7 @@ export async function getServerSideProps(context) {
   const { buildLandosNoShopServingFixture } = require('../../__fixtures__/canonical-v2/landos-no-shop-rows');
   const { buildLandosTerminationFeeServingFixture } = require('../../__fixtures__/canonical-v2/landos-termination-fee-row');
   const { buildLandosSourceSpecificServingFixture } = require('../../__fixtures__/canonical-v2/landos-source-specific-row');
+  const { buildQueryCohortSummary } = require('../../__fixtures__/canonical-v2/query-cohort-summary');
   const { contentId } = require('../../lib/canonical-v2/canonical-bytes');
   const {
     buildCanonicalQueryResultView,
@@ -43,14 +44,25 @@ export async function getServerSideProps(context) {
     page_size: 25,
     cursor: null,
   });
+  const queryParams = {
+    p_query_semantics_digest: queryRequest.query_semantics_digest,
+    p_metric_key: queryRequest.metric_key,
+    p_metric_version: queryRequest.metric_version,
+    p_basis_key: queryRequest.basis_key,
+  };
   const queryView = buildCanonicalQueryResultView({
-    schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V1',
+    schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V2',
+    cache_state: 'MISS',
     serving_namespace_id: queryRequest.serving_namespace_id,
     corpus_release_id: queryRequest.corpus_release_id,
     contract_fingerprint: queryRequest.contract_fingerprint,
     query_semantics_digest: queryRequest.query_semantics_digest,
     total_count: 1,
     page_count: 1,
+    cohort_summary: buildQueryCohortSummary({
+      params: queryParams,
+      rows: [terminationFeeFixture.row],
+    }),
     rows: [terminationFeeFixture.row],
     next_cursor: null,
   }, queryRequest);
