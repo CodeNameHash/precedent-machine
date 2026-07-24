@@ -9,6 +9,7 @@ const {
 const { compileCanonicalActiveQueryRequest, queryCanonicalResultPage } = require('../lib/canonical-v2/query-result');
 const { compileFixtureContract, compileFixtureContractV4 } = require('../lib/canonical-v2/contract-bundle');
 const { buildLandosNoShopServingFixture } = require('../__fixtures__/canonical-v2/landos-no-shop-rows');
+const { buildQueryCohortSummary } = require('../__fixtures__/canonical-v2/query-cohort-summary');
 
 const EXACT_PAYLOAD = Object.freeze({
   provision_type: 'TERMINATION_FEE',
@@ -347,13 +348,15 @@ test('15. refinementOptionsFromView offers no fee-specific (or any) dropdowns fo
     rpc(name, params) {
       return Promise.resolve({
         data: {
-          schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V1',
+          schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V2',
+          cache_state: 'MISS',
           serving_namespace_id: params.p_serving_namespace_id,
           corpus_release_id: params.p_corpus_release_id,
           contract_fingerprint: params.p_contract_fingerprint,
           query_semantics_digest: params.p_query_semantics_digest,
           total_count: 1,
           page_count: 1,
+          cohort_summary: buildQueryCohortSummary({ params, rows: [row] }),
           rows: [row],
           next_cursor: null,
         },

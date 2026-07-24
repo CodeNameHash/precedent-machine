@@ -278,7 +278,7 @@ test('the staging projection stores incomplete rows for review but excludes them
   const sql = fs.readFileSync('supabase/canonical-v2-serving.sql', 'utf8');
 
   assert.match(sql, /INSERT INTO canonical_v2_staging\.shared_serving_rows[\s\S]*incomplete_canonical_records/);
-  assert.match(sql, /canonical_v2_query_page[\s\S]*canonical_payload->>'row_kind' = 'CANONICAL_RESULT'/);
+  assert.match(sql, /canonical_v2_query_page[\s\S]*row\.row_kind = 'CANONICAL_RESULT'/);
   assert.match(sql, /canonical_v2_active_review_context[\s\S]*FROM canonical_v2_staging\.shared_serving_rows/);
   assert.doesNotMatch(sql, /CREATE TABLE[^;]*incomplete_canonical/i);
   assert.match(sql, /NO_COHORT_MEMBERSHIP/);

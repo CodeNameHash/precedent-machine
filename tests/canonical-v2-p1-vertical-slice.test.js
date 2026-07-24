@@ -6,6 +6,7 @@ const {
   APPLICATION_DEALS,
   buildMultiDealCandidateReleaseFixture,
 } = require('../__fixtures__/canonical-v2/multi-deal-candidate-release');
+const { buildQueryCohortSummary } = require('../__fixtures__/canonical-v2/query-cohort-summary');
 const { validateCandidateReleaseBundle } = require('../lib/canonical-v2/candidate-release');
 const { contentId, utf8Slice } = require('../lib/canonical-v2/canonical-bytes');
 const {
@@ -312,13 +313,15 @@ test('P1 fixed fixtures close from admitted source through one write, release an
       return Promise.resolve({
         error: null,
         data: {
-          schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V1',
+          schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V2',
+          cache_state: 'MISS',
           serving_namespace_id: params.p_serving_namespace_id,
           corpus_release_id: params.p_corpus_release_id,
           contract_fingerprint: params.p_contract_fingerprint,
           query_semantics_digest: params.p_query_semantics_digest,
           total_count: queryRows.length,
           page_count: queryRows.length,
+          cohort_summary: buildQueryCohortSummary({ params, rows: queryRows }),
           rows: queryRows,
           next_cursor: null,
         },
@@ -343,7 +346,7 @@ test('P1 fixed fixtures close from admitted source through one write, release an
   assert.equal(queryMiss.cache, 'MISS');
   assert.equal(queryHit.cache, 'HIT');
   assert.equal(queryCalls.length, 1);
-  assert.equal(queryCalls[0].name, 'canonical_v2_query_page');
+  assert.equal(queryCalls[0].name, 'canonical_v2_query_page_v2');
   assert.equal(queryCalls[0].params.p_page_size, 25);
   assert.equal(queryCalls[0].params.p_metric_key, NOTICE_METRIC);
   assert.equal(queryCalls[0].params.p_basis_key, 'DAYS:ELAPSED:RECEIPT_OF_COMPETING_PROPOSAL');

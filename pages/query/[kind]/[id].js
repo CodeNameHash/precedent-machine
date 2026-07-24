@@ -162,9 +162,9 @@ export default function QueryPage() {
   // Canonical Query UI slice: populated ONLY when the exact supported ad hoc
   // request is intercepted (flag on) — see the fetch effect below. Kept
   // separate from `result`/`error` (the legacy result contract) rather than
-  // overloading them, since a CANONICAL_QUERY_RESULT_VIEW/V1 is a different
+  // overloading them, since a CANONICAL_QUERY_RESULT_VIEW/V2 is a different
   // shape and must never be reshaped into the legacy one (spec: "Render from
-  // CANONICAL_QUERY_RESULT_VIEW/V1 only").
+  // CANONICAL_QUERY_RESULT_VIEW/V2 only").
   const [canonicalView, setCanonicalView] = useState(null);
   const [canonicalError, setCanonicalError] = useState(null);
   // Slice 2 (2026-07-23): the current canonical request body — the Slice 1

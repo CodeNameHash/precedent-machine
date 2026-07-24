@@ -4,6 +4,7 @@ const fs = require('node:fs');
 
 const { buildQxoNoShopReleaseFixture } = require('../__fixtures__/canonical-v2/qxo-no-shop-release');
 const { buildFixtureCandidateInputAuthority } = require('../__fixtures__/canonical-v2/candidate-input-authority');
+const { buildQueryCohortSummary } = require('../__fixtures__/canonical-v2/query-cohort-summary');
 const {
   buildFixtureCandidateRelease,
   buildReleaseCorrectionMaterialisations,
@@ -479,13 +480,15 @@ test('one corrected no-shop claim closes from admitted source through writer, re
       return Promise.resolve({
         error: null,
         data: {
-          schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V1',
+          schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V2',
+          cache_state: 'MISS',
           serving_namespace_id: params.p_serving_namespace_id,
           corpus_release_id: params.p_corpus_release_id,
           contract_fingerprint: params.p_contract_fingerprint,
           query_semantics_digest: params.p_query_semantics_digest,
           total_count: queryRows.length,
           page_count: queryRows.length,
+          cohort_summary: buildQueryCohortSummary({ params, rows: queryRows }),
           rows: queryRows,
           next_cursor: null,
         },
@@ -524,14 +527,15 @@ test('one corrected no-shop claim closes from admitted source through writer, re
   assert.equal(queryMiss.cache, 'MISS');
   assert.equal(queryHit.cache, 'HIT');
   assert.equal(queryCalls.length, 1);
-  assert.equal(queryCalls[0].name, 'canonical_v2_query_page');
+  assert.equal(queryCalls[0].name, 'canonical_v2_query_page_v2');
   assert.equal(queryCalls[0].params.p_metric_key, NOTICE_METRIC);
   assert.equal(queryCalls[0].params.p_basis_key, 'DAYS:ELAPSED:RECEIPT_OF_COMPETING_PROPOSAL');
   const queriedLandosRow = queryMiss.result.rows.find(
     (row) => row.governed_deal_key === LANDOS_DEAL_KEY,
   );
   assert.equal(queriedLandosRow.row_serving_key, releasedLandosRow.row_serving_key);
-  assert.deepEqual(queriedLandosRow.shared_row, releasedLandosRow);
+  assert.equal(Object.hasOwn(queriedLandosRow, 'shared_row'), false);
+  assert.deepEqual(queriedLandosRow.display_metadata, { denominator_precision: null });
   assert.equal(queriedLandosRow.cells.duration.canonical_value, '1');
   assert.equal(queriedLandosRow.cells.duration.raw_unit, 'HOURS');
 

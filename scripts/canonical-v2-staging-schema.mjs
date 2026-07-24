@@ -22,7 +22,7 @@ const EXPECTED_DIGESTS = Object.freeze({
   // Active serving resolves the release-declared contract, exact detail is
   // active-release bound, and the rejected F3 fingerprint is denied at
   // every granted serving boundary.
-  'canonical-v2-serving.sql': 'e85ab5391074e7405b734bf18a0d24fb78ac2520d51329709ac6b0ae32ba5b71',
+  'canonical-v2-serving.sql': '32aed04eaae2809991918d5439de8ff7d6cd5f78408d28d1f9aebfbfd2050bf4',
 });
 const SCRIPT_ROOT = dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = resolve(SCRIPT_ROOT, '..');
@@ -89,6 +89,22 @@ function verifyAppliedSchema(workdir) {
       to_regclass('canonical_v2_staging.source_admission_preparation_receipts') is not null as source_admission_preparation_table_exists,
       to_regclass('canonical_v2_staging.semantic_extraction_input_envelopes') is not null as semantic_extraction_input_table_exists,
       to_regclass('canonical_v2_staging.incomplete_canonical_result_rows') is not null as incomplete_canonical_result_table_exists,
+      to_regclass('canonical_v2_staging.query_response_cache') is not null as query_response_cache_table_exists,
+      exists (
+        select 1 from information_schema.columns
+        where table_schema = 'canonical_v2_staging'
+          and table_name = 'shared_serving_rows'
+          and column_name = 'row_kind'
+          and is_generated = 'ALWAYS'
+          and is_nullable = 'NO'
+      ) as shared_row_kind_generated_and_required,
+      exists (
+        select 1 from information_schema.columns
+        where table_schema = 'canonical_v2_staging'
+          and table_name = 'shared_serving_rows'
+          and column_name = 'denominator_precision'
+          and is_generated = 'ALWAYS'
+      ) as denominator_precision_projection_exists,
       exists (
         select 1 from information_schema.columns
         where table_schema = 'canonical_v2_staging'
@@ -151,6 +167,8 @@ function verifyAppliedSchema(workdir) {
       to_regprocedure('public.canonical_v2_rollback_inactive_candidate_release(text,text,text,text,text)') is not null as inactive_candidate_rollback_exists,
       to_regprocedure('public.canonical_v2_market_cohort(text,text,text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric)') is not null as market_rpc_exists,
       to_regprocedure('public.canonical_v2_active_query_page(text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)') is not null as active_query_rpc_exists,
+      to_regprocedure('public.canonical_v2_active_query_page_v2(text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)') is not null as active_query_v2_rpc_exists,
+      to_regprocedure('public.canonical_v2_query_page_v2(text,text,text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)') is not null as pinned_query_v2_rpc_exists,
       to_regprocedure('public.canonical_v2_active_review_context(text,text,text,uuid,integer,text)') is not null as review_rpc_exists,
       to_regprocedure('public.canonical_v2_exact_detail(text,text,text,text,uuid,text,text)') is not null as exact_detail_rpc_exists,
       has_function_privilege('anon', 'public.canonical_v2_market_cohort(text,text,text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric)', 'EXECUTE') = false as anon_market_denied,
@@ -160,6 +178,10 @@ function verifyAppliedSchema(workdir) {
       has_function_privilege('service_role', 'public.canonical_v2_active_query_page(text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)', 'EXECUTE') = false as service_role_active_query_denied,
       has_function_privilege('canonical_v2_serving', 'public.canonical_v2_active_query_page(text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)', 'EXECUTE') as serving_active_query_allowed,
       has_function_privilege('canonical_v2_serving', 'public.canonical_v2_query_page(text,text,text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)', 'EXECUTE') = false as serving_pinned_query_denied,
+      has_function_privilege('anon', 'public.canonical_v2_active_query_page_v2(text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)', 'EXECUTE') = false as anon_active_query_v2_denied,
+      has_function_privilege('service_role', 'public.canonical_v2_active_query_page_v2(text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)', 'EXECUTE') = false as service_role_active_query_v2_denied,
+      has_function_privilege('canonical_v2_serving', 'public.canonical_v2_active_query_page_v2(text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)', 'EXECUTE') as serving_active_query_v2_allowed,
+      has_function_privilege('canonical_v2_serving', 'public.canonical_v2_query_page_v2(text,text,text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)', 'EXECUTE') = false as serving_pinned_query_v2_denied,
       has_function_privilege('anon', 'public.canonical_v2_active_review_context(text,text,text,uuid,integer,text)', 'EXECUTE') = false as anon_review_denied,
       has_function_privilege('service_role', 'public.canonical_v2_active_review_context(text,text,text,uuid,integer,text)', 'EXECUTE') = false as service_role_review_denied,
       has_function_privilege('canonical_v2_serving', 'public.canonical_v2_active_review_context(text,text,text,uuid,integer,text)', 'EXECUTE') as serving_review_allowed,
@@ -177,6 +199,12 @@ function verifyAppliedSchema(workdir) {
       has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.candidate_release_correction_discharges', 'SELECT') = false as serving_correction_discharge_table_denied,
       has_table_privilege('canonical_v2_writer', 'canonical_v2_staging.candidate_input_heads', 'SELECT') = false as writer_candidate_input_head_table_denied,
       has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.candidate_input_heads', 'SELECT') = false as serving_candidate_input_head_table_denied,
+      (has_table_privilege('service_role', 'canonical_v2_staging.query_response_cache', 'SELECT') = false
+        and has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.query_response_cache', 'SELECT') = false
+        and has_table_privilege('canonical_v2_writer', 'canonical_v2_staging.query_response_cache', 'SELECT') = false
+        and has_table_privilege('service_role', 'canonical_v2_staging.query_response_cache', 'INSERT') = false
+        and has_table_privilege('canonical_v2_serving', 'canonical_v2_staging.query_response_cache', 'INSERT') = false
+        and has_table_privilege('canonical_v2_writer', 'canonical_v2_staging.query_response_cache', 'INSERT') = false) as query_response_cache_table_denied,
       (has_table_privilege('service_role', 'canonical_v2_staging.intake_capture_receipts', 'SELECT') = false
         and has_table_privilege('service_role', 'canonical_v2_staging.intake_capture_receipts', 'INSERT') = false
         and has_table_privilege('service_role', 'canonical_v2_staging.intake_capture_receipts', 'UPDATE') = false
@@ -268,7 +296,9 @@ if (mode === '--verify') process.exit(verifyAppliedSchema(workdir) ?? 1);
 const governedSql = readGovernedSql();
 process.stdout.write(`${mode === '--apply' ? 'Applying' : 'Dry-running'} canonical v2 staging schema:\n`);
 for (const item of governedSql) process.stdout.write(`  ${item.filename} ${item.digest}\n`);
-const status = runSqlFile(governedSql.map((item) => item.sql).join('\n'), mode.slice(2), workdir);
+const schemaSql = governedSql.map((item) => item.sql).join('\n');
+const executedSql = mode === '--dry-run' ? `${schemaSql}\n${schemaSql}` : schemaSql;
+const status = runSqlFile(executedSql, mode.slice(2), workdir);
 if (status !== 0) process.exit(status ?? 1);
 if (mode === '--apply') process.exit(verifyAppliedSchema(workdir) ?? 1);
 process.stdout.write('Dry run rolled back successfully. No schema changes persisted.\n');

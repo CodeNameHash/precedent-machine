@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
 const { buildLandosTerminationFeeServingFixture } = require('../__fixtures__/canonical-v2/landos-termination-fee-row');
+const { buildQueryCohortSummary } = require('../__fixtures__/canonical-v2/query-cohort-summary');
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
 const {
   compileCanonicalActiveQueryRequest,
@@ -30,7 +31,8 @@ function activeRequestFor(row, overrides = {}) {
 
 function activeResult(params, rows, identity) {
   return {
-    schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V1',
+    schema_version: 'CANONICAL_QUERY_PAGE_RESULT/V2',
+    cache_state: 'MISS',
     pointer_id: identity.pointer_id,
     serving_namespace_id: identity.serving_namespace_id,
     corpus_release_id: identity.corpus_release_id,
@@ -38,6 +40,7 @@ function activeResult(params, rows, identity) {
     query_semantics_digest: params.p_query_semantics_digest,
     total_count: rows.length,
     page_count: rows.length,
+    cohort_summary: buildQueryCohortSummary({ params, rows }),
     rows,
     next_cursor: null,
   };
@@ -107,7 +110,7 @@ test('active Query resolves the pointer and page in one RPC without client-selec
   });
 
   assert.equal(calls.length, 1);
-  assert.equal(calls[0].name, 'canonical_v2_active_query_page');
+  assert.equal(calls[0].name, 'canonical_v2_active_query_page_v2');
   assert.equal(Object.hasOwn(calls[0].params, 'p_serving_namespace_id'), false);
   assert.equal(Object.hasOwn(calls[0].params, 'p_corpus_release_id'), false);
   assert.equal(calls[0].params.p_contract_fingerprint, row.provenance.contract_fingerprint);
@@ -139,12 +142,11 @@ test('pointer swaps produce distinct response and cache identities without trust
 
   assert.equal(calls, 2);
   assert.equal(cache.reads.length, 0);
-  assert.equal(cache.writes.length, 2);
+  assert.equal(cache.writes.length, 0);
   assert.notEqual(before.request.cache_key, after.request.cache_key);
   assert.notEqual(before.result.pointer_id, after.result.pointer_id);
   assert.notEqual(before.result.serving_namespace_id, after.result.serving_namespace_id);
   assert.notEqual(before.result.corpus_release_id, after.result.corpus_release_id);
-  assert.notEqual(cache.writes[0].key, cache.writes[1].key);
 });
 
 test('active Query rejects mismatched pointer and release response identity', async () => {
@@ -169,23 +171,23 @@ test('active Query rejects mismatched pointer and release response identity', as
 
 test('active Query SQL resolves one active pointer and invokes the bounded indexed page within the same function call', () => {
   const sql = fs.readFileSync('supabase/canonical-v2-serving.sql', 'utf8');
-  const start = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page');
+  const start = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page_v2');
   const end = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_review_context');
   const activeFunction = sql.slice(start, end);
 
   assert.ok(start >= 0 && end > start);
   assert.match(activeFunction, /FROM canonical_v2_staging\.active_corpus_release_pointers/);
-  assert.match(activeFunction, /public\.canonical_v2_query_page\(/);
+  assert.match(activeFunction, /public\.canonical_v2_query_page_v2\(/);
   assert.match(activeFunction, /p_serving_namespace_id => active_pointer\.serving_namespace_id/);
   assert.match(activeFunction, /p_corpus_release_id => active_pointer\.corpus_release_id/);
   assert.match(activeFunction, /jsonb_build_object\('pointer_id', active_pointer\.pointer_id\)/);
   assert.doesNotMatch(activeFunction, /p_serving_namespace_id text|p_corpus_release_id text/);
-  assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_active_query_page[\s\S]*TO canonical_v2_serving/);
+  assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_active_query_page_v2[\s\S]*TO canonical_v2_serving/);
 });
 
 test('active Query SQL resolves and filters against the release-declared fingerprint, not the caller-supplied one', () => {
   const sql = fs.readFileSync('supabase/canonical-v2-serving.sql', 'utf8');
-  const start = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page');
+  const start = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page_v2');
   const end = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_review_context');
   const activeFunction = sql.slice(start, end);
 

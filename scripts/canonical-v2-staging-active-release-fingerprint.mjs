@@ -4,7 +4,7 @@
 // serving fix (2026-07-23). See
 // docs/handoffs/SPEC-CONTRACT-AMENDMENT-PATH-2026-07-23.md, option 1.
 //
-// Applies ONLY the updated public.canonical_v2_active_query_page function
+// Applies ONLY the updated public.canonical_v2_active_query_page_v2 function
 // body (extracted verbatim from supabase/canonical-v2-serving.sql, the
 // single source of truth) so the ACTIVE query RPC resolves and filters
 // against the fingerprint the active release itself declares (read from
@@ -32,9 +32,9 @@ const EXPECTED_PROJECT = Object.freeze({
 // supabase/canonical-v2-serving.sql (the governed schema file). If that
 // file's function text drifts from this digest, the script refuses to run
 // rather than silently apply something unreviewed.
-const EXPECTED_FUNCTION_DIGEST = '6232339144b7d2a70d854a7e4ff6d49c082126dad25f0374fd76559f4fa08adf';
-const START_MARKER = 'CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page';
-const END_MARKER = 'CREATE OR REPLACE FUNCTION public.canonical_v2_active_review_context';
+const EXPECTED_FUNCTION_DIGEST = '2b9c22f01e9975257d8327284b9d7a3af916a62fee0c808a7c7a83f0a4f9eb14';
+const START_MARKER = 'CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page_v2(\n';
+const END_MARKER = 'CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page(\n';
 
 const SCRIPT_ROOT = dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = resolve(SCRIPT_ROOT, '..');
@@ -66,12 +66,12 @@ function readGovernedFunctionSql() {
   const start = servingSql.indexOf(START_MARKER);
   const end = servingSql.indexOf(END_MARKER);
   if (start < 0 || end <= start) {
-    fail('Could not locate canonical_v2_active_query_page in supabase/canonical-v2-serving.sql.');
+    fail('Could not locate canonical_v2_active_query_page_v2 in supabase/canonical-v2-serving.sql.');
   }
   const functionSql = servingSql.slice(start, end).trim();
   const digest = sha256(functionSql);
   if (digest !== EXPECTED_FUNCTION_DIGEST) {
-    fail(`canonical_v2_active_query_page body changed: expected ${EXPECTED_FUNCTION_DIGEST}, received ${digest}.`);
+    fail(`canonical_v2_active_query_page_v2 body changed: expected ${EXPECTED_FUNCTION_DIGEST}, received ${digest}.`);
   }
   if (!functionSql.includes('release_contract_fingerprint')
     || !functionSql.includes('FROM canonical_v2_staging.fixture_corpus_releases release')) {
@@ -99,9 +99,9 @@ function runSqlFile(sql, mode) {
 function verifyApplied() {
   const sql = `
     select
-      to_regprocedure('public.canonical_v2_active_query_page(text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)') is not null as active_query_rpc_exists,
-      pg_get_functiondef('public.canonical_v2_active_query_page(text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)'::regprocedure) like '%release_contract_fingerprint%' as resolves_release_declared_fingerprint,
-      pg_get_functiondef('public.canonical_v2_active_query_page(text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)'::regprocedure) like '%FROM canonical_v2_staging.fixture_corpus_releases release%' as reads_fixture_corpus_releases;
+      to_regprocedure('public.canonical_v2_active_query_page_v2(text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)') is not null as active_query_rpc_exists,
+      pg_get_functiondef('public.canonical_v2_active_query_page_v2(text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)'::regprocedure) like '%release_contract_fingerprint%' as resolves_release_declared_fingerprint,
+      pg_get_functiondef('public.canonical_v2_active_query_page_v2(text,text,text,text,integer,text,text,text,text,text,text,text,text,text,text,integer,integer,numeric,numeric,numeric,numeric,text,text,text,text,text,text,text,text,text,text,text,integer,text,text)'::regprocedure) like '%FROM canonical_v2_staging.fixture_corpus_releases release%' as reads_fixture_corpus_releases;
   `;
   return spawnSync(
     'supabase',
@@ -118,8 +118,8 @@ readLinkedProject();
 if (mode === '--verify') process.exit(verifyApplied() ?? 1);
 
 const governedFunction = readGovernedFunctionSql();
-process.stdout.write(`${mode === '--apply' ? 'Applying' : 'Dry-running'} canonical_v2_active_query_page (release-declared fingerprint fix):\n`);
-process.stdout.write(`  canonical-v2-serving.sql#canonical_v2_active_query_page ${governedFunction.digest}\n`);
+process.stdout.write(`${mode === '--apply' ? 'Applying' : 'Dry-running'} canonical_v2_active_query_page_v2 (release-declared fingerprint fix):\n`);
+process.stdout.write(`  canonical-v2-serving.sql#canonical_v2_active_query_page_v2 ${governedFunction.digest}\n`);
 const status = runSqlFile(governedFunction.sql, mode.slice(2));
 if (status !== 0) process.exit(status ?? 1);
 if (mode === '--apply') process.exit(verifyApplied() ?? 1);

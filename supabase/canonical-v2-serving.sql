@@ -188,6 +188,57 @@ ALTER TABLE canonical_v2_staging.shared_serving_rows
   ADD COLUMN IF NOT EXISTS payment_timings text[] NOT NULL DEFAULT '{}';
 ALTER TABLE canonical_v2_staging.shared_serving_rows
   ADD COLUMN IF NOT EXISTS trigger_conditions text[] NOT NULL DEFAULT '{}';
+ALTER TABLE canonical_v2_staging.shared_serving_rows
+  ADD COLUMN IF NOT EXISTS row_kind text
+    GENERATED ALWAYS AS (canonical_payload->>'row_kind') STORED;
+ALTER TABLE canonical_v2_staging.shared_serving_rows
+  ALTER COLUMN row_kind SET NOT NULL;
+ALTER TABLE canonical_v2_staging.shared_serving_rows
+  DROP CONSTRAINT IF EXISTS canonical_v2_shared_serving_rows_row_kind_check;
+ALTER TABLE canonical_v2_staging.shared_serving_rows
+  ADD CONSTRAINT canonical_v2_shared_serving_rows_row_kind_check
+  CHECK (row_kind IN ('CANONICAL_RESULT', 'INCOMPLETE_CANONICAL_RESULT'));
+ALTER TABLE canonical_v2_staging.shared_serving_rows
+  ADD COLUMN IF NOT EXISTS denominator_precision text
+    GENERATED ALWAYS AS (
+      canonical_payload #>> '{canonical_result,components,0,claim_attributes,denominator_precision}'
+    ) STORED;
+ALTER TABLE canonical_v2_staging.shared_serving_rows
+  DROP CONSTRAINT IF EXISTS canonical_v2_shared_serving_rows_denominator_precision_check;
+ALTER TABLE canonical_v2_staging.shared_serving_rows
+  ADD CONSTRAINT canonical_v2_shared_serving_rows_denominator_precision_check
+  CHECK (denominator_precision IS NULL OR denominator_precision = 'APPROXIMATE');
+
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.query_response_cache (
+  serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
+  corpus_release_id text NOT NULL
+    REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id) ON DELETE CASCADE,
+  contract_fingerprint text NOT NULL CHECK (contract_fingerprint ~ '^[a-f0-9]{64}$'),
+  query_semantics_digest text NOT NULL CHECK (query_semantics_digest ~ '^[a-f0-9]{64}$'),
+  page_size integer NOT NULL CHECK (page_size BETWEEN 1 AND 50),
+  after_governed_deal_key text NOT NULL,
+  after_row_serving_key text NOT NULL
+    CHECK (after_row_serving_key = '' OR after_row_serving_key ~ '^[a-f0-9]{64}$'),
+  physical_request jsonb NOT NULL,
+  response_payload jsonb NOT NULL
+    CHECK (response_payload->>'schema_version' = 'CANONICAL_QUERY_PAGE_RESULT/V2'),
+  response_payload_bytes integer NOT NULL CHECK (
+    response_payload_bytes BETWEEN 1 AND 1048576
+  ),
+  created_at timestamptz NOT NULL DEFAULT clock_timestamp(),
+  expires_at timestamptz NOT NULL,
+  PRIMARY KEY (
+    serving_namespace_id,
+    corpus_release_id,
+    contract_fingerprint,
+    query_semantics_digest,
+    page_size,
+    after_governed_deal_key,
+    after_row_serving_key
+  )
+);
+CREATE INDEX IF NOT EXISTS canonical_v2_query_response_cache_expiry_idx
+  ON canonical_v2_staging.query_response_cache (expires_at, created_at);
 
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.reviewed_source_specific_serving_rows (
   serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
@@ -405,6 +456,22 @@ CREATE INDEX IF NOT EXISTS canonical_v2_shared_rows_query_idx
     governed_deal_key,
     row_serving_key
   );
+CREATE INDEX IF NOT EXISTS canonical_v2_shared_rows_query_v2_idx
+  ON canonical_v2_staging.shared_serving_rows (
+    serving_namespace_id,
+    corpus_release_id,
+    contract_fingerprint,
+    concept_key,
+    metric_key,
+    metric_version,
+    party_role,
+    party_value,
+    party_capacity,
+    basis_key,
+    governed_deal_key,
+    row_serving_key
+  )
+  WHERE row_kind = 'CANONICAL_RESULT';
 CREATE INDEX IF NOT EXISTS canonical_v2_shared_rows_numeric_idx
   ON canonical_v2_staging.shared_serving_rows (
     serving_namespace_id,
@@ -1031,6 +1098,20 @@ BEGIN
       IS DISTINCT FROM (expected->>'validated_semantic_graph_records')::integer THEN
     RAISE EXCEPTION 'candidate release import contains duplicate identities' USING ERRCODE = '23505';
   END IF;
+  IF EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(p_import_plan->'query_records') item
+    WHERE item->'canonical_payload'->>'row_kind' IS DISTINCT FROM 'CANONICAL_RESULT'
+  ) OR EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(
+      coalesce(p_import_plan->'incomplete_canonical_records', '[]'::jsonb)
+    ) item
+    WHERE item->'canonical_payload'->>'row_kind'
+      IS DISTINCT FROM 'INCOMPLETE_CANONICAL_RESULT'
+  ) THEN
+    RAISE EXCEPTION 'candidate release import row partitions are invalid' USING ERRCODE = '22023';
+  END IF;
 
   IF EXISTS (
     SELECT 1 FROM canonical_v2_staging.fixture_corpus_releases release
@@ -1156,16 +1237,81 @@ BEGIN
     NULL::canonical_v2_staging.market_metric_slot_exclusions,
     p_import_plan->'market_exclusions'
   ) ON CONFLICT (serving_namespace_id, corpus_release_id, metric_slot_key) DO NOTHING;
-  INSERT INTO canonical_v2_staging.shared_serving_rows
-  SELECT * FROM jsonb_populate_recordset(
+  INSERT INTO canonical_v2_staging.shared_serving_rows (
+    serving_namespace_id,
+    corpus_release_id,
+    row_serving_key,
+    contract_fingerprint,
+    governed_deal_key,
+    concept_key,
+    metric_key,
+    metric_version,
+    party_role,
+    party_value,
+    party_capacity,
+    basis_key,
+    sector,
+    buyer,
+    merger_form,
+    adviser_firms,
+    lawyers,
+    announce_year,
+    deal_value_usd,
+    canonical_numeric_value,
+    fee_side,
+    payer_capacity,
+    payee_capacity,
+    trigger_codes,
+    payment_timings,
+    trigger_conditions,
+    criterion_code,
+    contract_scope_code,
+    cash_flow_direction_code,
+    measurement_period_code,
+    comparison_operator,
+    canonical_payload,
+    canonical_payload_digest
+  )
+  SELECT
+    record.serving_namespace_id,
+    record.corpus_release_id,
+    record.row_serving_key,
+    record.contract_fingerprint,
+    record.governed_deal_key,
+    record.concept_key,
+    record.metric_key,
+    record.metric_version,
+    record.party_role,
+    record.party_value,
+    record.party_capacity,
+    record.basis_key,
+    record.sector,
+    record.buyer,
+    record.merger_form,
+    record.adviser_firms,
+    record.lawyers,
+    record.announce_year,
+    record.deal_value_usd,
+    record.canonical_numeric_value,
+    record.fee_side,
+    record.payer_capacity,
+    record.payee_capacity,
+    record.trigger_codes,
+    coalesce(record.payment_timings, '{}'),
+    coalesce(record.trigger_conditions, '{}'),
+    record.criterion_code,
+    record.contract_scope_code,
+    record.cash_flow_direction_code,
+    record.measurement_period_code,
+    record.comparison_operator,
+    record.canonical_payload,
+    record.canonical_payload_digest
+  FROM jsonb_populate_recordset(
     NULL::canonical_v2_staging.shared_serving_rows,
-    p_import_plan->'query_records'
-  ) ON CONFLICT (serving_namespace_id, corpus_release_id, row_serving_key) DO NOTHING;
-  INSERT INTO canonical_v2_staging.shared_serving_rows
-  SELECT * FROM jsonb_populate_recordset(
-    NULL::canonical_v2_staging.shared_serving_rows,
-    coalesce(p_import_plan->'incomplete_canonical_records', '[]'::jsonb)
-  ) ON CONFLICT (serving_namespace_id, corpus_release_id, row_serving_key) DO NOTHING;
+    (p_import_plan->'query_records')
+      || coalesce(p_import_plan->'incomplete_canonical_records', '[]'::jsonb)
+  ) AS record
+  ON CONFLICT (serving_namespace_id, corpus_release_id, row_serving_key) DO NOTHING;
   INSERT INTO canonical_v2_staging.reviewed_source_specific_serving_rows
   SELECT * FROM jsonb_populate_recordset(
     NULL::canonical_v2_staging.reviewed_source_specific_serving_rows,
@@ -1952,11 +2098,613 @@ BEGIN
 END;
 $$;
 
-DROP FUNCTION IF EXISTS public.canonical_v2_query_page(
-  text, text, text, text, text, text, integer, text, text, text, text, text,
-  text, text, text, text, text, integer, integer, numeric, numeric, numeric, numeric,
-  text, text, text, text, text, text, text, text, text, integer, text, text
-);
+CREATE OR REPLACE FUNCTION public.canonical_v2_query_page_v2(
+  p_environment text,
+  p_serving_namespace_id text,
+  p_corpus_release_id text,
+  p_contract_fingerprint text,
+  p_query_semantics_digest text,
+  p_metric_key text,
+  p_metric_version integer,
+  p_concept_key text,
+  p_party_role text,
+  p_party_value text,
+  p_party_capacity text,
+  p_basis_key text,
+  p_sector text DEFAULT NULL,
+  p_buyer text DEFAULT NULL,
+  p_merger_form text DEFAULT NULL,
+  p_adviser_either text DEFAULT NULL,
+  p_lawyer_either text DEFAULT NULL,
+  p_year_from integer DEFAULT NULL,
+  p_year_to integer DEFAULT NULL,
+  p_min_value_usd numeric DEFAULT NULL,
+  p_max_value_usd numeric DEFAULT NULL,
+  p_min_canonical_value numeric DEFAULT NULL,
+  p_max_canonical_value numeric DEFAULT NULL,
+  p_fee_side text DEFAULT NULL,
+  p_payer_capacity text DEFAULT NULL,
+  p_payee_capacity text DEFAULT NULL,
+  p_trigger_code text DEFAULT NULL,
+  p_payment_timing text DEFAULT NULL,
+  p_trigger_condition text DEFAULT NULL,
+  p_criterion_code text DEFAULT NULL,
+  p_contract_scope_code text DEFAULT NULL,
+  p_cash_flow_direction_code text DEFAULT NULL,
+  p_measurement_period_code text DEFAULT NULL,
+  p_comparison_operator text DEFAULT NULL,
+  p_page_size integer DEFAULT 25,
+  p_after_governed_deal_key text DEFAULT NULL,
+  p_after_row_serving_key text DEFAULT NULL
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+VOLATILE
+SECURITY DEFINER
+SET search_path = pg_catalog, canonical_v2_staging
+SET statement_timeout = '2500ms'
+AS $$
+DECLARE
+  result jsonb;
+  cached_result jsonb;
+  physical_request_body jsonb;
+  query_lock_id bigint;
+  global_slot_acquired boolean;
+  result_bytes integer;
+BEGIN
+  IF p_environment IS DISTINCT FROM 'staging' THEN
+    RAISE EXCEPTION 'canonical_v2_query_page_v2 is staging-only' USING ERRCODE = '42501';
+  END IF;
+  IF p_serving_namespace_id IS NULL
+    OR p_serving_namespace_id !~ '^[a-f0-9]{64}$'
+    OR p_corpus_release_id IS NULL
+    OR p_corpus_release_id !~ '^[a-f0-9]{64}$'
+    OR p_contract_fingerprint IS NULL
+    OR p_contract_fingerprint !~ '^[a-f0-9]{64}$'
+    OR p_query_semantics_digest IS NULL
+    OR p_query_semantics_digest !~ '^[a-f0-9]{64}$'
+    OR coalesce(length(trim(p_metric_key)), 0) = 0
+    OR p_metric_version IS NULL
+    OR p_metric_version < 1
+    OR coalesce(length(trim(p_concept_key)), 0) = 0
+    OR coalesce(length(trim(p_party_role)), 0) = 0
+    OR coalesce(length(trim(p_party_value)), 0) = 0
+    OR coalesce(length(trim(p_party_capacity)), 0) = 0
+    OR coalesce(length(trim(p_basis_key)), 0) = 0
+    OR p_page_size IS NULL
+    OR p_page_size < 1
+    OR p_page_size > 50
+    OR ((p_after_governed_deal_key IS NULL) <> (p_after_row_serving_key IS NULL))
+    OR (p_after_row_serving_key IS NOT NULL AND p_after_row_serving_key !~ '^[a-f0-9]{64}$') THEN
+    RAISE EXCEPTION 'invalid canonical query page request' USING ERRCODE = '22023';
+  END IF;
+  IF p_year_from IS NOT NULL AND p_year_to IS NOT NULL AND p_year_from > p_year_to THEN
+    RAISE EXCEPTION 'invalid year range' USING ERRCODE = '22023';
+  END IF;
+  IF p_min_value_usd IS NOT NULL AND p_max_value_usd IS NOT NULL AND p_min_value_usd > p_max_value_usd THEN
+    RAISE EXCEPTION 'invalid value range' USING ERRCODE = '22023';
+  END IF;
+  IF p_min_canonical_value IS NOT NULL
+    AND p_max_canonical_value IS NOT NULL
+    AND p_min_canonical_value > p_max_canonical_value THEN
+    RAISE EXCEPTION 'invalid canonical value range' USING ERRCODE = '22023';
+  END IF;
+  IF num_nonnulls(p_trigger_code, p_payment_timing, p_trigger_condition) > 1 THEN
+    RAISE EXCEPTION 'only one trigger-pathway refinement may be applied'
+      USING ERRCODE = '22023';
+  END IF;
+  IF p_contract_fingerprint =
+      '5cc5607bee8fc816e8682f71b9482ff839ff744cebaaf0f26bfcfa54ea64512c' THEN
+    RAISE EXCEPTION 'the rejected F3 contract cannot be served' USING ERRCODE = '23514';
+  END IF;
+  IF NOT EXISTS (
+    SELECT 1
+    FROM canonical_v2_staging.fixture_corpus_releases release
+    WHERE release.corpus_release_id = p_corpus_release_id
+      AND release.contract_fingerprint = p_contract_fingerprint
+  ) THEN
+    RAISE EXCEPTION 'unknown fixture corpus release' USING ERRCODE = '22023';
+  END IF;
+
+  physical_request_body := jsonb_build_object(
+    'environment', p_environment,
+    'serving_namespace_id', p_serving_namespace_id,
+    'corpus_release_id', p_corpus_release_id,
+    'contract_fingerprint', p_contract_fingerprint,
+    'query_semantics_digest', p_query_semantics_digest,
+    'metric_key', p_metric_key,
+    'metric_version', p_metric_version,
+    'concept_key', p_concept_key,
+    'party_role', p_party_role,
+    'party_value', p_party_value,
+    'party_capacity', p_party_capacity,
+    'basis_key', p_basis_key,
+    'sector', p_sector,
+    'buyer', p_buyer,
+    'merger_form', p_merger_form,
+    'adviser_either', p_adviser_either,
+    'lawyer_either', p_lawyer_either,
+    'year_from', p_year_from,
+    'year_to', p_year_to,
+    'min_value_usd', p_min_value_usd,
+    'max_value_usd', p_max_value_usd,
+    'min_canonical_value', p_min_canonical_value,
+    'max_canonical_value', p_max_canonical_value,
+    'fee_side', p_fee_side,
+    'payer_capacity', p_payer_capacity,
+    'payee_capacity', p_payee_capacity,
+    'trigger_code', p_trigger_code,
+    'payment_timing', p_payment_timing,
+    'trigger_condition', p_trigger_condition,
+    'criterion_code', p_criterion_code,
+    'contract_scope_code', p_contract_scope_code,
+    'cash_flow_direction_code', p_cash_flow_direction_code,
+    'measurement_period_code', p_measurement_period_code,
+    'comparison_operator', p_comparison_operator,
+    'page_size', p_page_size,
+    'after_governed_deal_key', p_after_governed_deal_key,
+    'after_row_serving_key', p_after_row_serving_key
+  );
+
+  SELECT cache.response_payload INTO cached_result
+  FROM canonical_v2_staging.query_response_cache cache
+  WHERE cache.serving_namespace_id = p_serving_namespace_id
+    AND cache.corpus_release_id = p_corpus_release_id
+    AND cache.contract_fingerprint = p_contract_fingerprint
+    AND cache.query_semantics_digest = p_query_semantics_digest
+    AND cache.page_size = p_page_size
+    AND cache.after_governed_deal_key = coalesce(p_after_governed_deal_key, '')
+    AND cache.after_row_serving_key = coalesce(p_after_row_serving_key, '')
+    AND cache.physical_request = physical_request_body
+    AND cache.expires_at > clock_timestamp();
+  IF cached_result IS NOT NULL THEN
+    RETURN jsonb_set(cached_result, '{cache_state}', '"HIT"'::jsonb);
+  END IF;
+
+  query_lock_id := hashtextextended(physical_request_body::text, 20260724);
+  IF NOT pg_try_advisory_xact_lock(query_lock_id) THEN
+    RAISE EXCEPTION 'canonical query cache miss is already in flight' USING ERRCODE = '55P03';
+  END IF;
+  global_slot_acquired := pg_try_advisory_xact_lock(20260724, 1);
+  IF NOT global_slot_acquired THEN
+    global_slot_acquired := pg_try_advisory_xact_lock(20260724, 2);
+  END IF;
+  IF NOT global_slot_acquired THEN
+    RAISE EXCEPTION 'canonical query cache-miss capacity is exhausted' USING ERRCODE = '55P03';
+  END IF;
+
+  SELECT cache.response_payload INTO cached_result
+  FROM canonical_v2_staging.query_response_cache cache
+  WHERE cache.serving_namespace_id = p_serving_namespace_id
+    AND cache.corpus_release_id = p_corpus_release_id
+    AND cache.contract_fingerprint = p_contract_fingerprint
+    AND cache.query_semantics_digest = p_query_semantics_digest
+    AND cache.page_size = p_page_size
+    AND cache.after_governed_deal_key = coalesce(p_after_governed_deal_key, '')
+    AND cache.after_row_serving_key = coalesce(p_after_row_serving_key, '')
+    AND cache.physical_request = physical_request_body
+    AND cache.expires_at > clock_timestamp();
+  IF cached_result IS NOT NULL THEN
+    RETURN jsonb_set(cached_result, '{cache_state}', '"HIT"'::jsonb);
+  END IF;
+
+  WITH matching_keys AS MATERIALIZED (
+    SELECT
+      row.governed_deal_key,
+      row.row_serving_key,
+      row.canonical_numeric_value,
+      row.denominator_precision,
+      row.fee_side,
+      row.payer_capacity,
+      row.payee_capacity,
+      row.trigger_codes,
+      row.payment_timings,
+      row.trigger_conditions
+    FROM canonical_v2_staging.shared_serving_rows row
+    WHERE row.serving_namespace_id = p_serving_namespace_id
+      AND row.corpus_release_id = p_corpus_release_id
+      AND row.contract_fingerprint = p_contract_fingerprint
+      AND row.row_kind = 'CANONICAL_RESULT'
+      AND row.metric_key = p_metric_key
+      AND row.metric_version = p_metric_version
+      AND row.concept_key = p_concept_key
+      AND row.party_role = p_party_role
+      AND row.party_value = p_party_value
+      AND row.party_capacity = p_party_capacity
+      AND row.basis_key = p_basis_key
+      AND (p_sector IS NULL OR row.sector = p_sector)
+      AND (p_buyer IS NULL OR row.buyer = p_buyer)
+      AND (p_merger_form IS NULL OR row.merger_form = p_merger_form)
+      AND (p_adviser_either IS NULL OR row.adviser_firms @> ARRAY[p_adviser_either]::text[])
+      AND (p_lawyer_either IS NULL OR row.lawyers @> ARRAY[p_lawyer_either]::text[])
+      AND (p_year_from IS NULL OR row.announce_year >= p_year_from)
+      AND (p_year_to IS NULL OR row.announce_year <= p_year_to)
+      AND (p_min_value_usd IS NULL OR row.deal_value_usd >= p_min_value_usd)
+      AND (p_max_value_usd IS NULL OR row.deal_value_usd <= p_max_value_usd)
+      AND (p_min_canonical_value IS NULL OR row.canonical_numeric_value >= p_min_canonical_value)
+      AND (p_max_canonical_value IS NULL OR row.canonical_numeric_value <= p_max_canonical_value)
+      AND (p_fee_side IS NULL OR row.fee_side = p_fee_side)
+      AND (p_payer_capacity IS NULL OR row.payer_capacity = p_payer_capacity)
+      AND (p_payee_capacity IS NULL OR row.payee_capacity = p_payee_capacity)
+      AND (p_trigger_code IS NULL OR row.trigger_codes @> ARRAY[p_trigger_code]::text[])
+      AND (p_payment_timing IS NULL OR row.payment_timings @> ARRAY[p_payment_timing]::text[])
+      AND (p_trigger_condition IS NULL OR row.trigger_conditions @> ARRAY[p_trigger_condition]::text[])
+      AND (p_criterion_code IS NULL OR row.criterion_code = p_criterion_code)
+      AND (p_contract_scope_code IS NULL OR row.contract_scope_code = p_contract_scope_code)
+      AND (p_cash_flow_direction_code IS NULL OR row.cash_flow_direction_code = p_cash_flow_direction_code)
+      AND (p_measurement_period_code IS NULL OR row.measurement_period_code = p_measurement_period_code)
+      AND (p_comparison_operator IS NULL OR row.comparison_operator = p_comparison_operator)
+  ), page_candidates AS MATERIALIZED (
+    SELECT row.governed_deal_key, row.row_serving_key
+    FROM matching_keys row
+    WHERE p_after_governed_deal_key IS NULL
+      OR (row.governed_deal_key, row.row_serving_key) > (p_after_governed_deal_key, p_after_row_serving_key)
+    ORDER BY row.governed_deal_key, row.row_serving_key
+    LIMIT p_page_size + 1
+  ), page_row_keys AS MATERIALIZED (
+    SELECT row.*
+    FROM page_candidates row
+    ORDER BY row.governed_deal_key, row.row_serving_key
+    LIMIT p_page_size
+  ), page_payload AS (
+    SELECT
+      count(*)::integer AS page_count,
+      coalesce(jsonb_agg(row.canonical_payload ORDER BY row.governed_deal_key, row.row_serving_key), '[]'::jsonb) AS rows
+    FROM page_row_keys page
+    JOIN canonical_v2_staging.shared_serving_rows row
+      ON row.serving_namespace_id = p_serving_namespace_id
+      AND row.corpus_release_id = p_corpus_release_id
+      AND row.row_serving_key = page.row_serving_key
+  ), last_row AS (
+    SELECT row.governed_deal_key, row.row_serving_key
+    FROM page_row_keys row
+    ORDER BY row.governed_deal_key DESC, row.row_serving_key DESC
+    LIMIT 1
+  ), per_deal_numeric AS (
+    SELECT
+      governed_deal_key,
+      count(*)::integer AS result_rows,
+      count(canonical_numeric_value)::integer AS numeric_result_rows,
+      count(DISTINCT canonical_numeric_value)::integer AS distinct_numeric_values,
+      min(canonical_numeric_value) AS canonical_numeric_value
+    FROM matching_keys
+    GROUP BY governed_deal_key
+  ), summary_counts AS (
+    SELECT
+      (SELECT count(*)::integer FROM matching_keys) AS result_rows,
+      (SELECT count(DISTINCT governed_deal_key)::integer FROM matching_keys) AS distinct_deals,
+      (SELECT count(canonical_numeric_value)::integer FROM matching_keys) AS numeric_result_rows,
+      (
+        SELECT count(DISTINCT governed_deal_key)::integer
+        FROM matching_keys
+        WHERE canonical_numeric_value IS NOT NULL
+      ) AS numeric_distinct_deals,
+      (
+        SELECT count(*)::integer
+        FROM per_deal_numeric
+        WHERE distinct_numeric_values > 1
+      ) AS multi_value_deals,
+      (
+        SELECT count(*)::integer
+        FROM matching_keys
+        WHERE denominator_precision = 'APPROXIMATE'
+      ) AS approximate_result_rows,
+      (
+        SELECT count(DISTINCT governed_deal_key)::integer
+        FROM matching_keys
+        WHERE denominator_precision = 'APPROXIMATE'
+      ) AS approximate_distinct_deals
+  ), summary_state AS (
+    SELECT CASE
+      WHEN result_rows = 0 THEN 'NO_VALUES'
+      WHEN multi_value_deals > 0 THEN 'NOT_DEFINED_MULTI_VALUE_PER_DEAL'
+      WHEN numeric_result_rows <> result_rows
+        OR numeric_distinct_deals <> distinct_deals
+        THEN 'INCOMPLETE_NUMERIC_DOMAIN'
+      ELSE 'AVAILABLE'
+    END AS state
+    FROM summary_counts
+  ), numeric_vector AS (
+    SELECT
+      array_agg(canonical_numeric_value ORDER BY canonical_numeric_value) AS values,
+      count(*)::integer AS n_deals,
+      avg(canonical_numeric_value) AS mean
+    FROM per_deal_numeric
+    WHERE numeric_result_rows = result_rows
+      AND distinct_numeric_values = 1
+  ), numeric_positions AS (
+    SELECT
+      numeric_vector.*,
+      ((numeric_vector.n_deals - 1) * 0.25::numeric) AS p25_position,
+      ((numeric_vector.n_deals - 1) * 0.50::numeric) AS median_position,
+      ((numeric_vector.n_deals - 1) * 0.75::numeric) AS p75_position
+    FROM numeric_vector
+  ), statistics AS (
+    SELECT
+      summary_state.state,
+      CASE
+        WHEN summary_state.state = 'AVAILABLE'
+        THEN 'DECIMAL_PERCENTILE_CONT_LINEAR_SCALE_8/V1'
+        ELSE NULL
+      END AS derivation_version,
+      CASE
+        WHEN summary_state.state = 'AVAILABLE'
+        THEN numeric_positions.n_deals
+        ELSE 0
+      END AS n_deals,
+      CASE WHEN summary_state.state = 'AVAILABLE'
+        THEN round(numeric_positions.values[1], 8)::text END AS min,
+      CASE WHEN summary_state.state = 'AVAILABLE'
+        THEN round(
+          numeric_positions.values[floor(numeric_positions.p25_position)::integer + 1]
+          + (
+            numeric_positions.values[ceil(numeric_positions.p25_position)::integer + 1]
+            - numeric_positions.values[floor(numeric_positions.p25_position)::integer + 1]
+          ) * (
+            numeric_positions.p25_position - floor(numeric_positions.p25_position)
+          ),
+          8
+        )::text END AS p25,
+      CASE WHEN summary_state.state = 'AVAILABLE'
+        THEN round(
+          numeric_positions.values[floor(numeric_positions.median_position)::integer + 1]
+          + (
+            numeric_positions.values[ceil(numeric_positions.median_position)::integer + 1]
+            - numeric_positions.values[floor(numeric_positions.median_position)::integer + 1]
+          ) * (
+            numeric_positions.median_position - floor(numeric_positions.median_position)
+          ),
+          8
+        )::text END AS median,
+      CASE WHEN summary_state.state = 'AVAILABLE'
+        THEN round(numeric_positions.mean, 8)::text END AS mean,
+      CASE WHEN summary_state.state = 'AVAILABLE'
+        THEN round(
+          numeric_positions.values[floor(numeric_positions.p75_position)::integer + 1]
+          + (
+            numeric_positions.values[ceil(numeric_positions.p75_position)::integer + 1]
+            - numeric_positions.values[floor(numeric_positions.p75_position)::integer + 1]
+          ) * (
+            numeric_positions.p75_position - floor(numeric_positions.p75_position)
+          ),
+          8
+        )::text END AS p75,
+      CASE WHEN summary_state.state = 'AVAILABLE'
+        THEN round(numeric_positions.values[numeric_positions.n_deals], 8)::text END AS max
+    FROM summary_state
+    CROSS JOIN numeric_positions
+  ), trigger_facets AS (
+    SELECT
+      coalesce(jsonb_agg(
+      jsonb_build_object(
+        'value', values.value,
+        'result_count', values.result_count,
+        'deal_count', values.deal_count
+      )
+      ORDER BY values.value
+      ), '[]'::jsonb) AS body,
+      coalesce(max(values.total_group_count), 0)::integer AS total_group_count
+    FROM (
+      SELECT
+        grouped.*,
+        count(*) OVER () AS total_group_count
+      FROM (
+        SELECT
+          value,
+          count(*)::integer AS result_count,
+          count(DISTINCT row.governed_deal_key)::integer AS deal_count
+        FROM matching_keys row
+        CROSS JOIN LATERAL unnest(row.trigger_codes) value
+        GROUP BY value
+      ) grouped
+      ORDER BY grouped.value
+      LIMIT 50
+    ) values
+  ), timing_facets AS (
+    SELECT
+      coalesce(jsonb_agg(
+      jsonb_build_object(
+        'value', values.value,
+        'result_count', values.result_count,
+        'deal_count', values.deal_count
+      )
+      ORDER BY values.value
+      ), '[]'::jsonb) AS body,
+      coalesce(max(values.total_group_count), 0)::integer AS total_group_count
+    FROM (
+      SELECT
+        grouped.*,
+        count(*) OVER () AS total_group_count
+      FROM (
+        SELECT
+          value,
+          count(*)::integer AS result_count,
+          count(DISTINCT row.governed_deal_key)::integer AS deal_count
+        FROM matching_keys row
+        CROSS JOIN LATERAL unnest(row.payment_timings) value
+        GROUP BY value
+      ) grouped
+      ORDER BY grouped.value
+      LIMIT 50
+    ) values
+  ), condition_facets AS (
+    SELECT
+      coalesce(jsonb_agg(
+      jsonb_build_object(
+        'value', values.value,
+        'result_count', values.result_count,
+        'deal_count', values.deal_count
+      )
+      ORDER BY values.value
+      ), '[]'::jsonb) AS body,
+      coalesce(max(values.total_group_count), 0)::integer AS total_group_count
+    FROM (
+      SELECT
+        grouped.*,
+        count(*) OVER () AS total_group_count
+      FROM (
+        SELECT
+          value,
+          count(*)::integer AS result_count,
+          count(DISTINCT row.governed_deal_key)::integer AS deal_count
+        FROM matching_keys row
+        CROSS JOIN LATERAL unnest(row.trigger_conditions) value
+        GROUP BY value
+      ) grouped
+      ORDER BY grouped.value
+      LIMIT 50
+    ) values
+  ), summary_body AS (
+    SELECT jsonb_build_object(
+      'schema_version', 'CANONICAL_QUERY_COHORT_SUMMARY/V1',
+      'scope', 'FULL_FILTERED_COMPARABLE_QUERY_RESULTS',
+      'query_semantics_digest', p_query_semantics_digest,
+      'metric_key', p_metric_key,
+      'metric_version', p_metric_version,
+      'basis_key', p_basis_key,
+      'counts', jsonb_build_object(
+        'result_rows', summary_counts.result_rows,
+        'distinct_deals', summary_counts.distinct_deals,
+        'numeric_result_rows', summary_counts.numeric_result_rows,
+        'numeric_distinct_deals', summary_counts.numeric_distinct_deals,
+        'multi_value_deals', summary_counts.multi_value_deals,
+        'approximate_result_rows', summary_counts.approximate_result_rows,
+        'approximate_distinct_deals', summary_counts.approximate_distinct_deals
+      ),
+      'statistics', jsonb_build_object(
+        'state', statistics.state,
+        'derivation_version', statistics.derivation_version,
+        'n_deals', statistics.n_deals,
+        'min', statistics.min,
+        'p25', statistics.p25,
+        'median', statistics.median,
+        'mean', statistics.mean,
+        'p75', statistics.p75,
+        'max', statistics.max
+      ),
+      'facets', jsonb_build_object(
+        'trigger_codes', trigger_facets.body,
+        'payment_timings', timing_facets.body,
+        'trigger_conditions', condition_facets.body
+      ),
+      '_facet_overflow',
+        trigger_facets.total_group_count > 50
+        OR timing_facets.total_group_count > 50
+        OR condition_facets.total_group_count > 50
+    ) AS body
+    FROM summary_counts
+    CROSS JOIN statistics
+    CROSS JOIN trigger_facets
+    CROSS JOIN timing_facets
+    CROSS JOIN condition_facets
+  )
+  SELECT jsonb_build_object(
+    'schema_version', 'CANONICAL_QUERY_PAGE_RESULT/V2',
+    'cache_state', 'MISS',
+    'serving_namespace_id', p_serving_namespace_id,
+    'corpus_release_id', p_corpus_release_id,
+    'contract_fingerprint', p_contract_fingerprint,
+    'query_semantics_digest', p_query_semantics_digest,
+    'total_count', (SELECT count(*)::integer FROM matching_keys),
+    'page_count', page_payload.page_count,
+    'rows', page_payload.rows,
+    'cohort_summary', summary_body.body,
+    'next_cursor', CASE
+      WHEN (SELECT count(*) FROM page_candidates) > p_page_size THEN (
+        SELECT jsonb_build_object(
+          'governed_deal_key', last_row.governed_deal_key,
+          'row_serving_key', last_row.row_serving_key
+        ) FROM last_row
+      )
+      ELSE NULL
+    END
+  ) INTO result
+  FROM page_payload
+  CROSS JOIN summary_body;
+
+  IF (result #>> '{cohort_summary,_facet_overflow}')::boolean THEN
+    RAISE EXCEPTION 'canonical query facet cardinality exceeds its governed bound'
+      USING ERRCODE = '54000';
+  END IF;
+  result := jsonb_set(
+    result,
+    '{cohort_summary}',
+    (result->'cohort_summary') - '_facet_overflow'
+  );
+
+  result_bytes := octet_length(result::text);
+  IF result_bytes > 1048576 THEN
+    RAISE EXCEPTION 'canonical query response exceeds its byte ceiling' USING ERRCODE = '54000';
+  END IF;
+
+  INSERT INTO canonical_v2_staging.query_response_cache (
+    serving_namespace_id,
+    corpus_release_id,
+    contract_fingerprint,
+    query_semantics_digest,
+    page_size,
+    after_governed_deal_key,
+    after_row_serving_key,
+    physical_request,
+    response_payload,
+    response_payload_bytes,
+    expires_at
+  ) VALUES (
+    p_serving_namespace_id,
+    p_corpus_release_id,
+    p_contract_fingerprint,
+    p_query_semantics_digest,
+    p_page_size,
+    coalesce(p_after_governed_deal_key, ''),
+    coalesce(p_after_row_serving_key, ''),
+    physical_request_body,
+    result,
+    result_bytes,
+    clock_timestamp() + interval '1 hour'
+  )
+  ON CONFLICT (
+    serving_namespace_id,
+    corpus_release_id,
+    contract_fingerprint,
+    query_semantics_digest,
+    page_size,
+    after_governed_deal_key,
+    after_row_serving_key
+  ) DO UPDATE SET
+    response_payload = EXCLUDED.response_payload,
+    response_payload_bytes = EXCLUDED.response_payload_bytes,
+    created_at = clock_timestamp(),
+    expires_at = EXCLUDED.expires_at
+  WHERE canonical_v2_staging.query_response_cache.physical_request
+    = EXCLUDED.physical_request;
+
+  DELETE FROM canonical_v2_staging.query_response_cache cache
+  WHERE cache.ctid IN (
+    SELECT expired.ctid
+    FROM canonical_v2_staging.query_response_cache expired
+    WHERE expired.expires_at <= clock_timestamp()
+    ORDER BY expired.expires_at
+    LIMIT 100
+  );
+  DELETE FROM canonical_v2_staging.query_response_cache cache
+  WHERE cache.ctid IN (
+    SELECT ranked.ctid
+    FROM (
+      SELECT
+        retained.ctid,
+        row_number() OVER (
+          ORDER BY retained.expires_at DESC, retained.created_at DESC
+        ) AS retention_rank
+      FROM canonical_v2_staging.query_response_cache retained
+    ) ranked
+    WHERE ranked.retention_rank > 10000
+    ORDER BY ranked.retention_rank
+    LIMIT 100
+  );
+
+  RETURN result;
+END;
+$$;
 
 CREATE OR REPLACE FUNCTION public.canonical_v2_query_page(
   p_environment text,
@@ -1998,150 +2746,58 @@ CREATE OR REPLACE FUNCTION public.canonical_v2_query_page(
   p_after_row_serving_key text DEFAULT NULL
 )
 RETURNS jsonb
-LANGUAGE plpgsql
-STABLE
+LANGUAGE sql
+VOLATILE
 SECURITY DEFINER
 SET search_path = pg_catalog, canonical_v2_staging
 SET statement_timeout = '2500ms'
 AS $$
-DECLARE
-  result jsonb;
-BEGIN
-  IF p_environment IS DISTINCT FROM 'staging' THEN
-    RAISE EXCEPTION 'canonical_v2_query_page is staging-only' USING ERRCODE = '42501';
-  END IF;
-  IF p_serving_namespace_id !~ '^[a-f0-9]{64}$'
-    OR p_corpus_release_id !~ '^[a-f0-9]{64}$'
-    OR p_contract_fingerprint !~ '^[a-f0-9]{64}$'
-    OR p_query_semantics_digest !~ '^[a-f0-9]{64}$'
-    OR coalesce(length(trim(p_metric_key)), 0) = 0
-    OR p_metric_version < 1
-    OR coalesce(length(trim(p_concept_key)), 0) = 0
-    OR coalesce(length(trim(p_party_role)), 0) = 0
-    OR coalesce(length(trim(p_party_value)), 0) = 0
-    OR coalesce(length(trim(p_party_capacity)), 0) = 0
-    OR coalesce(length(trim(p_basis_key)), 0) = 0
-    OR p_page_size < 1
-    OR p_page_size > 50
-    OR ((p_after_governed_deal_key IS NULL) <> (p_after_row_serving_key IS NULL))
-    OR (p_after_row_serving_key IS NOT NULL AND p_after_row_serving_key !~ '^[a-f0-9]{64}$') THEN
-    RAISE EXCEPTION 'invalid canonical query page request' USING ERRCODE = '22023';
-  END IF;
-  IF p_year_from IS NOT NULL AND p_year_to IS NOT NULL AND p_year_from > p_year_to THEN
-    RAISE EXCEPTION 'invalid year range' USING ERRCODE = '22023';
-  END IF;
-  IF p_min_value_usd IS NOT NULL AND p_max_value_usd IS NOT NULL AND p_min_value_usd > p_max_value_usd THEN
-    RAISE EXCEPTION 'invalid value range' USING ERRCODE = '22023';
-  END IF;
-  IF p_min_canonical_value IS NOT NULL
-    AND p_max_canonical_value IS NOT NULL
-    AND p_min_canonical_value > p_max_canonical_value THEN
-    RAISE EXCEPTION 'invalid canonical value range' USING ERRCODE = '22023';
-  END IF;
-  IF p_contract_fingerprint =
-      '5cc5607bee8fc816e8682f71b9482ff839ff744cebaaf0f26bfcfa54ea64512c' THEN
-    RAISE EXCEPTION 'the rejected F3 contract cannot be served' USING ERRCODE = '23514';
-  END IF;
-  IF NOT EXISTS (
-    SELECT 1
-    FROM canonical_v2_staging.fixture_corpus_releases release
-    WHERE release.corpus_release_id = p_corpus_release_id
-      AND release.contract_fingerprint = p_contract_fingerprint
-  ) THEN
-    RAISE EXCEPTION 'unknown fixture corpus release' USING ERRCODE = '22023';
-  END IF;
-
-  WITH matching_rows AS MATERIALIZED (
-    SELECT row.*
-    FROM canonical_v2_staging.shared_serving_rows row
-    WHERE row.serving_namespace_id = p_serving_namespace_id
-      AND row.corpus_release_id = p_corpus_release_id
-      AND row.contract_fingerprint = p_contract_fingerprint
-      AND row.canonical_payload->>'row_kind' = 'CANONICAL_RESULT'
-      AND row.metric_key = p_metric_key
-      AND row.metric_version = p_metric_version
-      AND row.concept_key = p_concept_key
-      AND row.party_role = p_party_role
-      AND row.party_value = p_party_value
-      AND row.party_capacity = p_party_capacity
-      AND row.basis_key = p_basis_key
-      AND (p_sector IS NULL OR row.sector = p_sector)
-      AND (p_buyer IS NULL OR row.buyer = p_buyer)
-      AND (p_merger_form IS NULL OR row.merger_form = p_merger_form)
-      AND (p_adviser_either IS NULL OR p_adviser_either = ANY(row.adviser_firms))
-      AND (p_lawyer_either IS NULL OR p_lawyer_either = ANY(row.lawyers))
-      AND (p_year_from IS NULL OR row.announce_year >= p_year_from)
-      AND (p_year_to IS NULL OR row.announce_year <= p_year_to)
-      AND (p_min_value_usd IS NULL OR row.deal_value_usd >= p_min_value_usd)
-      AND (p_max_value_usd IS NULL OR row.deal_value_usd <= p_max_value_usd)
-      AND (p_min_canonical_value IS NULL OR row.canonical_numeric_value >= p_min_canonical_value)
-      AND (p_max_canonical_value IS NULL OR row.canonical_numeric_value <= p_max_canonical_value)
-      AND (p_fee_side IS NULL OR row.fee_side = p_fee_side)
-      AND (p_payer_capacity IS NULL OR row.payer_capacity = p_payer_capacity)
-      AND (p_payee_capacity IS NULL OR row.payee_capacity = p_payee_capacity)
-      AND (p_trigger_code IS NULL OR row.trigger_codes @> ARRAY[p_trigger_code]::text[])
-      AND (p_payment_timing IS NULL OR row.payment_timings @> ARRAY[p_payment_timing]::text[])
-      AND (p_trigger_condition IS NULL OR row.trigger_conditions @> ARRAY[p_trigger_condition]::text[])
-      AND (p_criterion_code IS NULL OR row.criterion_code = p_criterion_code)
-      AND (p_contract_scope_code IS NULL OR row.contract_scope_code = p_contract_scope_code)
-      AND (p_cash_flow_direction_code IS NULL OR row.cash_flow_direction_code = p_cash_flow_direction_code)
-      AND (p_measurement_period_code IS NULL OR row.measurement_period_code = p_measurement_period_code)
-      AND (p_comparison_operator IS NULL OR row.comparison_operator = p_comparison_operator)
-  ), page_candidates AS MATERIALIZED (
-    SELECT row.*
-    FROM matching_rows row
-    WHERE p_after_governed_deal_key IS NULL
-      OR (row.governed_deal_key, row.row_serving_key) > (p_after_governed_deal_key, p_after_row_serving_key)
-    ORDER BY row.governed_deal_key, row.row_serving_key
-    LIMIT p_page_size + 1
-  ), page_rows AS MATERIALIZED (
-    SELECT row.*
-    FROM page_candidates row
-    ORDER BY row.governed_deal_key, row.row_serving_key
-    LIMIT p_page_size
-  ), page_payload AS (
-    SELECT
-      count(*)::integer AS page_count,
-      coalesce(jsonb_agg(row.canonical_payload ORDER BY row.governed_deal_key, row.row_serving_key), '[]'::jsonb) AS rows
-    FROM page_rows row
-  ), last_row AS (
-    SELECT row.governed_deal_key, row.row_serving_key
-    FROM page_rows row
-    ORDER BY row.governed_deal_key DESC, row.row_serving_key DESC
-    LIMIT 1
-  )
-  SELECT jsonb_build_object(
-    'schema_version', 'CANONICAL_QUERY_PAGE_RESULT/V1',
-    'serving_namespace_id', p_serving_namespace_id,
-    'corpus_release_id', p_corpus_release_id,
-    'contract_fingerprint', p_contract_fingerprint,
-    'query_semantics_digest', p_query_semantics_digest,
-    'total_count', (SELECT count(*)::integer FROM matching_rows),
-    'page_count', page_payload.page_count,
-    'rows', page_payload.rows,
-    'next_cursor', CASE
-      WHEN (SELECT count(*) FROM page_candidates) > p_page_size THEN (
-        SELECT jsonb_build_object(
-          'governed_deal_key', last_row.governed_deal_key,
-          'row_serving_key', last_row.row_serving_key
-        ) FROM last_row
-      )
-      ELSE NULL
-    END
-  ) INTO result
-  FROM page_payload;
-
-  RETURN result;
-END;
+  SELECT jsonb_set(
+    public.canonical_v2_query_page_v2(
+      p_environment,
+      p_serving_namespace_id,
+      p_corpus_release_id,
+      p_contract_fingerprint,
+      p_query_semantics_digest,
+      p_metric_key,
+      p_metric_version,
+      p_concept_key,
+      p_party_role,
+      p_party_value,
+      p_party_capacity,
+      p_basis_key,
+      p_sector,
+      p_buyer,
+      p_merger_form,
+      p_adviser_either,
+      p_lawyer_either,
+      p_year_from,
+      p_year_to,
+      p_min_value_usd,
+      p_max_value_usd,
+      p_min_canonical_value,
+      p_max_canonical_value,
+      p_fee_side,
+      p_payer_capacity,
+      p_payee_capacity,
+      p_trigger_code,
+      p_payment_timing,
+      p_trigger_condition,
+      p_criterion_code,
+      p_contract_scope_code,
+      p_cash_flow_direction_code,
+      p_measurement_period_code,
+      p_comparison_operator,
+      p_page_size,
+      p_after_governed_deal_key,
+      p_after_row_serving_key
+    ) - 'cohort_summary' - 'cache_state',
+    '{schema_version}',
+    '"CANONICAL_QUERY_PAGE_RESULT/V1"'::jsonb
+  );
 $$;
 
-DROP FUNCTION IF EXISTS public.canonical_v2_active_query_page(
-  text, text, text, text, integer, text, text, text, text, text,
-  text, text, text, text, text, integer, integer, numeric, numeric, numeric, numeric,
-  text, text, text, text, text, text, text, text, text, text, text, integer, text, text
-);
-
-CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page(
+CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page_v2(
   p_environment text,
   p_contract_fingerprint text,
   p_query_semantics_digest text,
@@ -2180,7 +2836,7 @@ CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page(
 )
 RETURNS jsonb
 LANGUAGE plpgsql
-STABLE
+VOLATILE
 SECURITY DEFINER
 SET search_path = pg_catalog, canonical_v2_staging
 SET statement_timeout = '2500ms'
@@ -2191,9 +2847,10 @@ DECLARE
   result jsonb;
 BEGIN
   IF p_environment IS DISTINCT FROM 'staging' THEN
-    RAISE EXCEPTION 'canonical_v2_active_query_page is staging-only' USING ERRCODE = '42501';
+    RAISE EXCEPTION 'canonical_v2_active_query_page_v2 is staging-only' USING ERRCODE = '42501';
   END IF;
-  IF p_contract_fingerprint !~ '^[a-f0-9]{64}$' THEN
+  IF p_contract_fingerprint IS NULL
+    OR p_contract_fingerprint !~ '^[a-f0-9]{64}$' THEN
     RAISE EXCEPTION 'invalid active query page request' USING ERRCODE = '22023';
   END IF;
 
@@ -2224,7 +2881,7 @@ BEGIN
     RAISE EXCEPTION 'the rejected F3 contract cannot be served' USING ERRCODE = '23514';
   END IF;
 
-  SELECT public.canonical_v2_query_page(
+  SELECT public.canonical_v2_query_page_v2(
     p_environment => p_environment,
     p_serving_namespace_id => active_pointer.serving_namespace_id,
     p_corpus_release_id => active_pointer.corpus_release_id,
@@ -2266,6 +2923,93 @@ BEGIN
 
   RETURN result || jsonb_build_object('pointer_id', active_pointer.pointer_id);
 END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page(
+  p_environment text,
+  p_contract_fingerprint text,
+  p_query_semantics_digest text,
+  p_metric_key text,
+  p_metric_version integer,
+  p_concept_key text,
+  p_party_role text,
+  p_party_value text,
+  p_party_capacity text,
+  p_basis_key text,
+  p_sector text DEFAULT NULL,
+  p_buyer text DEFAULT NULL,
+  p_merger_form text DEFAULT NULL,
+  p_adviser_either text DEFAULT NULL,
+  p_lawyer_either text DEFAULT NULL,
+  p_year_from integer DEFAULT NULL,
+  p_year_to integer DEFAULT NULL,
+  p_min_value_usd numeric DEFAULT NULL,
+  p_max_value_usd numeric DEFAULT NULL,
+  p_min_canonical_value numeric DEFAULT NULL,
+  p_max_canonical_value numeric DEFAULT NULL,
+  p_fee_side text DEFAULT NULL,
+  p_payer_capacity text DEFAULT NULL,
+  p_payee_capacity text DEFAULT NULL,
+  p_trigger_code text DEFAULT NULL,
+  p_payment_timing text DEFAULT NULL,
+  p_trigger_condition text DEFAULT NULL,
+  p_criterion_code text DEFAULT NULL,
+  p_contract_scope_code text DEFAULT NULL,
+  p_cash_flow_direction_code text DEFAULT NULL,
+  p_measurement_period_code text DEFAULT NULL,
+  p_comparison_operator text DEFAULT NULL,
+  p_page_size integer DEFAULT 25,
+  p_after_governed_deal_key text DEFAULT NULL,
+  p_after_row_serving_key text DEFAULT NULL
+)
+RETURNS jsonb
+LANGUAGE sql
+VOLATILE
+SECURITY DEFINER
+SET search_path = pg_catalog, canonical_v2_staging
+SET statement_timeout = '2500ms'
+AS $$
+  SELECT jsonb_set(
+    public.canonical_v2_active_query_page_v2(
+      p_environment,
+      p_contract_fingerprint,
+      p_query_semantics_digest,
+      p_metric_key,
+      p_metric_version,
+      p_concept_key,
+      p_party_role,
+      p_party_value,
+      p_party_capacity,
+      p_basis_key,
+      p_sector,
+      p_buyer,
+      p_merger_form,
+      p_adviser_either,
+      p_lawyer_either,
+      p_year_from,
+      p_year_to,
+      p_min_value_usd,
+      p_max_value_usd,
+      p_min_canonical_value,
+      p_max_canonical_value,
+      p_fee_side,
+      p_payer_capacity,
+      p_payee_capacity,
+      p_trigger_code,
+      p_payment_timing,
+      p_trigger_condition,
+      p_criterion_code,
+      p_contract_scope_code,
+      p_cash_flow_direction_code,
+      p_measurement_period_code,
+      p_comparison_operator,
+      p_page_size,
+      p_after_governed_deal_key,
+      p_after_row_serving_key
+    ) - 'cohort_summary' - 'cache_state',
+    '{schema_version}',
+    '"CANONICAL_QUERY_PAGE_RESULT/V1"'::jsonb
+  );
 $$;
 
 CREATE OR REPLACE FUNCTION public.canonical_v2_active_review_context(
@@ -2678,6 +3422,8 @@ REVOKE ALL ON TABLE canonical_v2_staging.market_metric_slot_exclusions
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON TABLE canonical_v2_staging.shared_serving_rows
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
+REVOKE ALL ON TABLE canonical_v2_staging.query_response_cache
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON TABLE canonical_v2_staging.reviewed_source_specific_serving_rows
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON TABLE canonical_v2_staging.exact_detail_serving_packages
@@ -2732,12 +3478,27 @@ REVOKE ALL ON FUNCTION public.canonical_v2_query_page(
   text, text, text, text, text, integer, integer, numeric, numeric, numeric, numeric,
   text, text, text, text, text, text, text, text, text, text, text, integer, text, text
 ) FROM canonical_v2_serving;
+REVOKE ALL ON FUNCTION public.canonical_v2_query_page_v2(
+  text, text, text, text, text, text, integer, text, text, text, text, text,
+  text, text, text, text, text, integer, integer, numeric, numeric, numeric, numeric,
+  text, text, text, text, text, text, text, text, text, text, text, integer, text, text
+) FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving;
 REVOKE ALL ON FUNCTION public.canonical_v2_active_query_page(
   text, text, text, text, integer, text, text, text, text, text,
   text, text, text, text, text, integer, integer, numeric, numeric, numeric, numeric,
   text, text, text, text, text, text, text, text, text, text, text, integer, text, text
 ) FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;
 GRANT EXECUTE ON FUNCTION public.canonical_v2_active_query_page(
+  text, text, text, text, integer, text, text, text, text, text,
+  text, text, text, text, text, integer, integer, numeric, numeric, numeric, numeric,
+  text, text, text, text, text, text, text, text, text, text, text, integer, text, text
+) TO canonical_v2_serving;
+REVOKE ALL ON FUNCTION public.canonical_v2_active_query_page_v2(
+  text, text, text, text, integer, text, text, text, text, text,
+  text, text, text, text, text, integer, integer, numeric, numeric, numeric, numeric,
+  text, text, text, text, text, text, text, text, text, text, text, integer, text, text
+) FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;
+GRANT EXECUTE ON FUNCTION public.canonical_v2_active_query_page_v2(
   text, text, text, text, integer, text, text, text, text, text,
   text, text, text, text, text, integer, integer, numeric, numeric, numeric, numeric,
   text, text, text, text, text, text, text, text, text, text, text, integer, text, text

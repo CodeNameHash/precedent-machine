@@ -1,5 +1,5 @@
-// Canonical Query UI slice (2026-07-22): renders a CANONICAL_QUERY_RESULT_
-// VIEW/V1 (lib/canonical-v2/query-result.js buildCanonicalQueryResultView)
+// Canonical Query UI slice: renders a CANONICAL_QUERY_RESULT_VIEW/V2
+// (lib/canonical-v2/query-result.js buildCanonicalQueryResultView)
 // for supported governed ad hoc requests. Deliberately does NOT reshape
 // into the legacy MARKET_RANGE result
 // contract and does NOT reuse the legacy MarketRange component (see
@@ -7,30 +7,31 @@
 // contract and mixing the two render paths would blur which one produced a
 // given number on screen.
 //
-// No client-side stats (min/median/max/etc across rows): `total_count` is
-// the only cohort-level number this page ever shows. Computing a stat over
-// one bounded page (up to page_size rows) and presenting it as if it
-// described the cohort would be a legal-accuracy failure — page counts are
-// not cohort counts.
-//
-// Slice 2 (2026-07-23): governed refinement controls + "Show more" — see
-// RefinementControls below. `body`/`onRequest`/`pending` are optional so a
-// caller with no refinement wiring yet still gets Slice 1's read-only
-// rendering unchanged.
+// Cohort statistics are rendered only from the server-produced full-cohort
+// summary. They are never reconstructed from the bounded page rows.
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CanonicalSourceDetail } from '../review-v2/CanonicalReviewSection';
 const {
   mapCanonicalRowForRender,
   buildRefinedCanonicalRequest,
   refinementOptionsFromView,
   humanizeRefinementLabel,
+  hasPercentRangeRefinement,
 } = require('../../lib/canonical-v2/legacy-query-mapper');
+const {
+  factLabel,
+  paymentTimingLabel,
+  triggerLabel,
+} = require('../../lib/canonical-v2/termination-fee-trigger-presentation');
 
 // Labels are plain UI copy, not taxonomy or vocabulary codes.
 const METRIC_LABELS = {
   SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE: 'Seller termination fee — % of deal value',
   BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE: 'Buyer / reverse termination fee — % of deal value',
+  IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE: 'Interim operating covenant capex threshold — % of deal value',
+  MATERIAL_CONTRACT_CASH_FLOW_THRESHOLD_PERCENT_OF_DEAL_VALUE: 'Material contract cash-flow threshold — % of deal value',
+  NO_SHOP_NOTICE_PERIOD_DAYS: 'No-shop notice period — elapsed days',
   NO_SHOP_INITIAL_MATCH_PERIOD_DAYS: 'No-shop — initial match period (business days)',
 };
 
@@ -39,33 +40,224 @@ function truncateDigest(value) {
   return value.length > 12 ? `${value.slice(0, 12)}…` : value;
 }
 
-function TriggerPathways({ pathways }) {
+function formatSummaryValue(value, metricKey) {
+  if (value === null || value === undefined) return '—';
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return '—';
+  const compact = numeric.toLocaleString('en-US', { maximumFractionDigits: 2 });
+  if (metricKey.includes('PERCENT_OF_DEAL_VALUE')) return `${compact}%`;
+  if (metricKey.includes('_DAYS')) return `${compact} day${numeric === 1 ? '' : 's'}`;
+  return compact;
+}
+
+function scalePosition(value, min, max) {
+  const numeric = Number(value);
+  const lower = Number(min);
+  const upper = Number(max);
+  if (![numeric, lower, upper].every(Number.isFinite)) return 0;
+  if (upper === lower) return 50;
+  return Math.max(0, Math.min(100, ((numeric - lower) / (upper - lower)) * 100));
+}
+
+function summaryHeading(view) {
+  if (view.metric_key === 'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE') {
+    return 'Seller / target termination fee';
+  }
+  if (view.metric_key === 'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE') {
+    return 'Buyer / reverse termination fee';
+  }
+  return METRIC_LABELS[view.metric_key] || view.metric_key;
+}
+
+const SUMMARY_STATE_COPY = {
+  NO_VALUES: 'No comparable values match these refinements.',
+  INCOMPLETE_NUMERIC_DOMAIN: 'Some matching deals do not have a complete comparable numeric value.',
+  NOT_DEFINED_MULTI_VALUE_PER_DEAL: 'At least one deal has multiple values, so a single-deal distribution is not defined.',
+};
+
+function facetValueLabel(value, facetKey, metricKey) {
+  const legalOperation = metricKey === 'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE'
+    ? 'CREATES_BUYER_TERMINATION_FEE_PAYMENT_TRIGGER'
+    : 'CREATES_SELLER_TERMINATION_FEE_PAYMENT_TRIGGER';
+  try {
+    if (facetKey === 'trigger_codes') {
+      return triggerLabel({ trigger_code: value, legal_operation: legalOperation }) || value;
+    }
+    if (facetKey === 'payment_timings') {
+      return paymentTimingLabel({ payment_timing: value }) || value;
+    }
+    if (facetKey === 'trigger_conditions') {
+      return factLabel(value, { legal_operation: legalOperation }) || value;
+    }
+  } catch {
+    return value;
+  }
+  return value;
+}
+
+function refinementValueLabel(value, columnKey, metricKey) {
+  const facetKey = {
+    trigger_code: 'trigger_codes',
+    payment_timing: 'payment_timings',
+    trigger_condition: 'trigger_conditions',
+  }[columnKey];
+  return facetKey ? facetValueLabel(value, facetKey, metricKey) : value;
+}
+
+function draftFromFilters(filters) {
+  return {
+    min_percent_of_deal_value: filters.min_percent_of_deal_value || '',
+    max_percent_of_deal_value: filters.max_percent_of_deal_value || '',
+    fee_side: filters.fee_side || '',
+    payer_capacity: filters.payer_capacity || '',
+    payee_capacity: filters.payee_capacity || '',
+    trigger_code: filters.trigger_code || '',
+    payment_timing: filters.payment_timing || '',
+    trigger_condition: filters.trigger_condition || '',
+  };
+}
+
+function SummaryFacet({
+  label, facetKey, values, denominator, metricKey,
+}) {
+  if (!Array.isArray(values) || values.length === 0) return null;
+  return (
+    <section className="cmrFacet">
+      <h4>{label}</h4>
+      <div className="cmrFacetRows">
+        {values.map((entry) => {
+          const width = denominator > 0 ? (entry.deal_count / denominator) * 100 : 0;
+          return (
+            <div className="cmrFacetRow" key={entry.value}>
+              <span className="cmrFacetLabel">
+                {facetValueLabel(entry.value, facetKey, metricKey)}
+              </span>
+              <span className="cmrFacetTrack" aria-hidden="true">
+                <span style={{ width: `${width}%` }} />
+              </span>
+              <span className="cmrFacetCount">
+                {entry.deal_count}/{denominator}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function CohortSummary({ view }) {
+  const summary = view.cohort_summary;
+  if (!summary) return null;
+  const { statistics, counts, facets } = summary;
+  const available = statistics.state === 'AVAILABLE';
+  const minPosition = scalePosition(statistics.min, statistics.min, statistics.max);
+  const maxPosition = scalePosition(statistics.max, statistics.min, statistics.max);
+  const p25Position = scalePosition(statistics.p25, statistics.min, statistics.max);
+  const p75Position = scalePosition(statistics.p75, statistics.min, statistics.max);
+  const medianPosition = scalePosition(statistics.median, statistics.min, statistics.max);
+  const meanPosition = scalePosition(statistics.mean, statistics.min, statistics.max);
+  const stats = [
+    ['Min', statistics.min],
+    ['25th', statistics.p25],
+    ['Median', statistics.median],
+    ['Mean', statistics.mean],
+    ['75th', statistics.p75],
+    ['Max', statistics.max],
+  ];
+
+  return (
+    <section className="cmrSummary" aria-labelledby="cmr-summary-heading">
+      <div className="cmrSummaryHead">
+        <div>
+          <p className="cmrEyebrow">Full comparable cohort</p>
+          <h3 id="cmr-summary-heading">{summaryHeading(view)}</h3>
+        </div>
+        <p>{counts.distinct_deals} deal{counts.distinct_deals === 1 ? '' : 's'}</p>
+      </div>
+      {available ? (
+        <>
+          {counts.approximate_distinct_deals > 0 && (
+            <p className="cmrApproximate">
+              {counts.approximate_distinct_deals === counts.distinct_deals
+                ? 'All values use an approximate deal-value denominator.'
+                : `${counts.approximate_distinct_deals} of ${counts.distinct_deals} deals use an approximate deal-value denominator.`}
+            </p>
+          )}
+          <div className="cmrScale" aria-label={`Market range from ${formatSummaryValue(statistics.min, view.metric_key)} to ${formatSummaryValue(statistics.max, view.metric_key)}`}>
+            <div className="cmrScaleLine" style={{ left: `${minPosition}%`, right: `${100 - maxPosition}%` }} />
+            <div
+              className="cmrScaleIqr"
+              style={{ left: `${p25Position}%`, width: `${Math.max(p75Position - p25Position, 1)}%` }}
+            />
+            <span className="cmrScaleMarker cmrScaleMedian" style={{ left: `${medianPosition}%` }} title="Median" />
+            <span className="cmrScaleMarker cmrScaleMean" style={{ left: `${meanPosition}%` }} title="Mean" />
+          </div>
+          <div className="cmrStats">
+            {stats.map(([label, value]) => (
+              <div key={label}>
+                <span>{label}</span>
+                <b>{formatSummaryValue(value, view.metric_key)}</b>
+              </div>
+            ))}
+          </div>
+        </>
+      ) : (
+        <p className="cmrSummaryState">{SUMMARY_STATE_COPY[statistics.state] || 'Comparable statistics are unavailable.'}</p>
+      )}
+      <div className="cmrFacets">
+        <SummaryFacet label="Trigger" facetKey="trigger_codes" values={facets.trigger_codes} denominator={counts.distinct_deals} metricKey={view.metric_key} />
+        <SummaryFacet label="Payment timing" facetKey="payment_timings" values={facets.payment_timings} denominator={counts.distinct_deals} metricKey={view.metric_key} />
+        <SummaryFacet label="Condition" facetKey="trigger_conditions" values={facets.trigger_conditions} denominator={counts.distinct_deals} metricKey={view.metric_key} />
+      </div>
+    </section>
+  );
+}
+
+function TriggerPathways({
+  pathways, expanded, onToggle,
+}) {
   if (pathways.length === 0) return '—';
   return (
     <div className="cmrTriggerPaths">
-      {pathways.map((pathway, index) => (
-        <details
-          key={`${pathway.pathway_code || pathway.pathway_label}:${index}`}
-          className="cmrTriggerPath"
-        >
-          <summary>{pathway.pathway_label}: {pathway.trigger_label}</summary>
-          <dl>
-            <div><dt>Terminating party</dt><dd>{pathway.terminating_party_label}</dd></div>
-            <div><dt>Payment timing</dt><dd>{pathway.payment_timing_label}</dd></div>
-            <div><dt>Conditions</dt><dd>{pathway.condition_expression_text}</dd></div>
-          </dl>
-        </details>
-      ))}
+      <button
+        type="button"
+        className="cmrTriggerToggle"
+        aria-expanded={expanded}
+        onClick={onToggle}
+      >
+        {pathways.length} pathway{pathways.length === 1 ? '' : 's'}
+        <span>{expanded ? 'Hide' : 'View'}</span>
+      </button>
+      {expanded && (
+        <div className="cmrTriggerDetail">
+          {pathways.map((pathway, index) => (
+            <section
+              key={`${pathway.pathway_code || pathway.pathway_label}:${index}`}
+              className="cmrTriggerPath"
+            >
+              <h4>{pathway.pathway_label}: {pathway.trigger_label}</h4>
+              <dl>
+                <div><dt>Terminating party</dt><dd>{pathway.terminating_party_label}</dd></div>
+                <div><dt>Payment timing</dt><dd>{pathway.payment_timing_label}</dd></div>
+                <div><dt>Conditions</dt><dd>{pathway.condition_expression_text}</dd></div>
+              </dl>
+            </section>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
-// Renders one row's cells, isolated: mapCanonicalRowForRender already turns
-// any per-row formatting failure into a `.error` marker rather than
-// throwing, but this component wraps its own render pass too (belt-and-
-// suspenders — the spec is explicit that a malformed row must never take
-// sibling rows down with it).
-function RowCells({ row, rawRow, columnCount, envelope }) {
+function RowCells({
+  row,
+  rawRow,
+  columnCount,
+  envelope,
+  triggerExpanded,
+  onTriggerToggle,
+}) {
   try {
     if (row.error) throw new Error(row.error);
     return (
@@ -84,10 +276,16 @@ function RowCells({ row, rawRow, columnCount, envelope }) {
                   sourceAction={sourceAction}
                 />
               ) : cell.column_key === 'triggers' && Array.isArray(cell.display)
-                ? <TriggerPathways pathways={cell.display} />
+                ? (
+                  <TriggerPathways
+                    pathways={cell.display}
+                    expanded={triggerExpanded}
+                    onToggle={onTriggerToggle}
+                  />
+                )
                 : Array.isArray(cell.display)
-                ? (cell.display.length ? cell.display.join('; ') : '—')
-                : cell.display}
+                  ? (cell.display.length ? cell.display.join('; ') : '—')
+                  : cell.display}
             </td>
           );
         })}
@@ -110,18 +308,15 @@ function RowCells({ row, rawRow, columnCount, envelope }) {
 // the deal-level `filters` a refinement must carry forward untouched.
 function RefinementControls({ view, body, onRequest, pending }) {
   const options = useMemo(() => refinementOptionsFromView(view), [view]);
+  const showPercentRange = hasPercentRangeRefinement(view);
   const activeFilters = (body && body.column_filters) || {};
-  const [draft, setDraft] = useState(() => ({
-    min_percent_of_deal_value: activeFilters.min_percent_of_deal_value || '',
-    max_percent_of_deal_value: activeFilters.max_percent_of_deal_value || '',
-    fee_side: activeFilters.fee_side || '',
-    payer_capacity: activeFilters.payer_capacity || '',
-    payee_capacity: activeFilters.payee_capacity || '',
-    trigger_code: activeFilters.trigger_code || '',
-    payment_timing: activeFilters.payment_timing || '',
-    trigger_condition: activeFilters.trigger_condition || '',
-  }));
+  const activeFilterSignature = JSON.stringify(activeFilters);
+  const [draft, setDraft] = useState(() => draftFromFilters(activeFilters));
   const [formError, setFormError] = useState(null);
+
+  useEffect(() => {
+    setDraft(draftFromFilters(JSON.parse(activeFilterSignature)));
+  }, [activeFilterSignature]);
 
   const setField = (key, value) => setDraft((prev) => ({ ...prev, [key]: value }));
 
@@ -152,32 +347,40 @@ function RefinementControls({ view, body, onRequest, pending }) {
               onChange={(event) => setField(option.column_key, event.target.value)}
             >
               <option value="">Any</option>
-              {option.values.map((value) => <option key={value} value={value}>{value}</option>)}
+              {option.values.map((value) => (
+                <option key={value} value={value}>
+                  {refinementValueLabel(value, option.column_key, view.metric_key)}
+                </option>
+              ))}
             </select>
           </label>
         ))}
-        <label className="cmrRefineField">
-          <span>Min % of deal value</span>
-          <input
-            type="text"
-            inputMode="decimal"
-            className="mtx-input"
-            disabled={pending}
-            value={draft.min_percent_of_deal_value}
-            onChange={(event) => setField('min_percent_of_deal_value', event.target.value)}
-          />
-        </label>
-        <label className="cmrRefineField">
-          <span>Max % of deal value</span>
-          <input
-            type="text"
-            inputMode="decimal"
-            className="mtx-input"
-            disabled={pending}
-            value={draft.max_percent_of_deal_value}
-            onChange={(event) => setField('max_percent_of_deal_value', event.target.value)}
-          />
-        </label>
+        {showPercentRange && (
+          <>
+            <label className="cmrRefineField">
+              <span>Min % of deal value</span>
+              <input
+                type="text"
+                inputMode="decimal"
+                className="mtx-input"
+                disabled={pending}
+                value={draft.min_percent_of_deal_value}
+                onChange={(event) => setField('min_percent_of_deal_value', event.target.value)}
+              />
+            </label>
+            <label className="cmrRefineField">
+              <span>Max % of deal value</span>
+              <input
+                type="text"
+                inputMode="decimal"
+                className="mtx-input"
+                disabled={pending}
+                value={draft.max_percent_of_deal_value}
+                onChange={(event) => setField('max_percent_of_deal_value', event.target.value)}
+              />
+            </label>
+          </>
+        )}
       </div>
       <div className="cmrRefineActions">
         <button type="button" className="mtx-btn mtx-btn-primary" disabled={pending} onClick={() => submit(draft)}>Apply refinements</button>
@@ -198,7 +401,7 @@ function RefinementControls({ view, body, onRequest, pending }) {
                 submit(rest);
               }}
             >
-              {`${humanizeRefinementLabel(key)}: ${value}`} ×
+              {`${humanizeRefinementLabel(key)}: ${refinementValueLabel(value, key, view.metric_key)}`} ×
             </button>
           ))}
         </div>
@@ -221,12 +424,13 @@ function RefinementControls({ view, body, onRequest, pending }) {
 export default function CanonicalMarketRange({
   view, body = null, onRequest = null, pending = false,
 }) {
-  if (!view) return null;
-  const columns = view.columns || [];
-  const rows = (view.rows || []).map((rawRow) => ({
+  const [expandedTriggerRow, setExpandedTriggerRow] = useState(null);
+  const columns = view?.columns || [];
+  const rows = useMemo(() => (view?.rows || []).map((rawRow) => ({
     rawRow,
     rendered: mapCanonicalRowForRender(rawRow, columns),
-  }));
+  })), [view, columns]);
+  if (!view) return null;
   const metricLabel = METRIC_LABELS[view.metric_key] || view.metric_key;
 
   return (
@@ -242,6 +446,7 @@ export default function CanonicalMarketRange({
           Release {truncateDigest(view.corpus_release_id)} · Contract {truncateDigest(view.contract_fingerprint)}
         </p>
       </div>
+      <CohortSummary view={view} />
       {/* Refinement controls only appear once we have a body to refine from
           (always true once a canonical view is on screen — the page sets
           both together). Keyed on the currently-ACTIVE filters so the draft
@@ -276,6 +481,10 @@ export default function CanonicalMarketRange({
                   rawRow={rawRow}
                   columnCount={columns.length}
                   envelope={view}
+                  triggerExpanded={expandedTriggerRow === rawRow.row_serving_key}
+                  onTriggerToggle={() => setExpandedTriggerRow((current) => (
+                    current === rawRow.row_serving_key ? null : rawRow.row_serving_key
+                  ))}
                 />
               </tr>
             ))}
@@ -313,12 +522,41 @@ export default function CanonicalMarketRange({
         .cmrHeader h2 { margin: 0 0 6px; font-size: 14px; font-weight: 700; color: var(--ink); }
         .cmrMeta { margin: 0; font-size: 12px; color: var(--ink-light); }
         .cmrProvenance { margin: 4px 0 0; font-size: 10px; color: var(--ink-faint, #9A9A9A); }
+        :global(.cmrSummary) { padding: 14px 16px; border-bottom: 1px solid var(--line); background: var(--paper-2); }
+        :global(.cmrSummaryHead) { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+        :global(.cmrSummaryHead h3) { margin: 1px 0 0; font-size: 13px; color: var(--ink); }
+        :global(.cmrSummaryHead > p) { margin: 0; font-size: 11px; color: var(--ink-light); }
+        :global(.cmrEyebrow) { margin: 0; font-size: 8px; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-faint, #9A9A9A); }
+        :global(.cmrScale) { position: relative; height: 28px; margin: 14px 6px 4px; }
+        :global(.cmrScaleLine) { position: absolute; top: 13px; height: 2px; background: var(--ink-faint, #9A9A9A); }
+        :global(.cmrScaleIqr) { position: absolute; top: 9px; height: 10px; min-width: 4px; border-radius: 2px; background: #C7A86B; }
+        :global(.cmrScaleMarker) { position: absolute; top: 5px; width: 2px; height: 18px; transform: translateX(-1px); background: var(--ink); }
+        :global(.cmrScaleMean) { width: 8px; height: 8px; top: 10px; transform: translateX(-4px) rotate(45deg); background: #B14E63; }
+        :global(.cmrStats) { display: grid; grid-template-columns: repeat(6, minmax(70px, 1fr)); gap: 8px; }
+        :global(.cmrStats div) { display: grid; gap: 2px; }
+        :global(.cmrStats span) { font-size: 8px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-faint, #9A9A9A); }
+        :global(.cmrStats b) { font-size: 11px; color: var(--ink); }
+        :global(.cmrSummaryState) { margin: 12px 0 0; font-size: 11px; color: var(--ink-light); }
+        :global(.cmrApproximate) { margin: 10px 0 0; font-size: 10px; color: #8A6030; }
+        :global(.cmrFacets) { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-top: 14px; }
+        :global(.cmrFacet h4) { margin: 0 0 6px; font-size: 9px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-faint, #9A9A9A); }
+        :global(.cmrFacetRows) { display: grid; gap: 5px; }
+        :global(.cmrFacetRow) { display: grid; grid-template-columns: minmax(110px, 1fr) 70px auto; align-items: center; gap: 7px; }
+        :global(.cmrFacetLabel) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; color: var(--ink-light); }
+        :global(.cmrFacetTrack) { height: 4px; background: var(--line); }
+        :global(.cmrFacetTrack span) { display: block; height: 100%; background: #C7A86B; }
+        :global(.cmrFacetCount) { font: 9px var(--mtx-mono); color: var(--ink-faint, #9A9A9A); }
         .scroll { overflow-x: auto; }
+        .scroll :global(.mtx-table) { width: 100%; table-layout: auto; font-size: 11px; }
+        .scroll :global(.mtx-table th), .scroll :global(.mtx-table td) { max-width: 280px; padding: 7px 9px; vertical-align: top; }
         .cmrRowError { color: #B14E63; font-size: 12px; padding: 8px 12px; }
-        :global(.cmrTriggerPaths) { min-width: 280px; display: grid; gap: 6px; }
-        :global(.cmrTriggerPath) { border-bottom: 1px solid var(--line); padding: 0 0 6px; }
+        :global(.cmrTriggerPaths) { min-width: 170px; display: grid; gap: 7px; }
+        :global(.cmrTriggerToggle) { display: flex; justify-content: space-between; gap: 10px; width: 100%; border: 0; border-bottom: 1px solid var(--line); padding: 0 0 4px; background: transparent; cursor: pointer; font: 600 10px var(--mtx-sans); color: var(--ink); }
+        :global(.cmrTriggerToggle span) { color: var(--ink-faint, #9A9A9A); }
+        :global(.cmrTriggerDetail) { display: grid; gap: 7px; min-width: 280px; }
+        :global(.cmrTriggerPath) { border-bottom: 1px solid var(--line); padding: 0 0 7px; }
         :global(.cmrTriggerPath:last-child) { border-bottom: 0; padding-bottom: 0; }
-        :global(.cmrTriggerPath summary) { cursor: pointer; font-size: 11px; font-weight: 650; color: var(--ink); }
+        :global(.cmrTriggerPath h4) { margin: 0; font-size: 10px; color: var(--ink); }
         :global(.cmrTriggerPath dl) { margin: 6px 0 0; display: grid; gap: 4px; }
         :global(.cmrTriggerPath dl div) { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 8px; }
         :global(.cmrTriggerPath dt) { font-size: 9px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-faint, #9A9A9A); }
@@ -326,6 +564,10 @@ export default function CanonicalMarketRange({
         .cmrEmpty { color: var(--ink-light); font-size: 12px; padding: 8px 12px; }
         .cmrShowMore { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-top: 1px solid var(--line); }
         .cmrNotice { margin: 0; font-size: 11px; color: var(--ink-light); }
+        @media (max-width: 760px) {
+          :global(.cmrStats) { grid-template-columns: repeat(3, 1fr); }
+          :global(.cmrFacetRow) { grid-template-columns: minmax(90px, 1fr) 55px auto; }
+        }
       `}</style>
     </div>
   );
