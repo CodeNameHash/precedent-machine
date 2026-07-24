@@ -41,14 +41,30 @@ read first): `SPEC-QXO-TERMF-F2-CANDIDATE-OPTION-A-2026-07-24.md`.
   10 shared rows / 1 incomplete / 10 packages; import plan ~398 KB;
   DEAL_SCOPE_RUN write validated through the canonical writer
   (30 publishable objects).
+- Merged to `main` in PR #338 at `bc73368`; deployed by the `deal-corpus`
+  Vercel project. Production smoke: `/` 200, `/api/market-stats` contained
+  503, `/api/canonical-v2/query` feature-disabled 503. PR #339 restored
+  byte-for-byte content parity on `codex/canonical-corpus-v2`. The untracked
+  `docs/codex-program/engine-build-map.md` in that worktree was preserved.
 
-## Next session (after Ben runs Step 0, Step 1, genesis and Block 00)
+## Next authorised action: Ben-run staging paste sequence
 
-1. Receive Ben's Block 00 JSON; save to a file; run the generator; commit
-   the printed attestation (pins the termination mapping id, closure id,
-   F2 corpus release id, namespace, manifest and import-plan ids).
-2. Walk Ben through generated/01…06 per the runbook.
-3. Later packets: Parent/reverse fee (§6.5(c) — text admitted, untouched);
+The generator and attestation are complete. Do not regenerate them unless a
+fail-closed assertion reports source or staging drift. Do not run these writes
+for Ben: programme governance still requires local, dry-run-first Ben execution
+in the staging SQL Editor. No production database step is authorised.
+
+1. Ben pastes `step0a` through `step0e` in order from `sql/optionA/`.
+2. Ben pastes `step1-active-query-page-release-declared-fingerprint.sql`.
+3. Ben pastes `01-f2-authority-genesis-dry-run.sql`, checks the rollback
+   result, then pastes `01-f2-authority-genesis-apply.sql`.
+4. Ben reruns `00-read-lineage.sql`. Stop on any mismatch with the pinned
+   preconditions in `generated/01-verify-before.sql`.
+5. Ben pastes `generated/01` through `generated/06` in order. Dry-run blocks
+   must precede their apply blocks. This imports an INACTIVE release only.
+6. Do not activate the candidate release. `generated/07-rollback-rehearsal.sql`
+   is a separate rehearsal, not part of the import sequence.
+7. Later packets: Parent/reverse fee (§6.5(c), text admitted and untouched);
    dimension backfill for sibling QXO rows (spec R5 flag); composition
    exact-detail under a future contract version if Ben wants the trigger
    composition in the detail drawer.
