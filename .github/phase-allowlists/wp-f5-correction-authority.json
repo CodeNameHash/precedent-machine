@@ -1,0 +1,14 @@
+{
+  "phase": "WP-F5-CORRECTION-AUTHORITY",
+  "allowed": [
+    ".github/phase-allowlists/wp-f5-correction-authority.json",
+    "scripts/canonical-v2-staging-correction-authority.mjs",
+    "tests/canonical-v2-staging-correction-authority-runner.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "supabase/migrations/**",
+    "scripts/reprocess.js"
+  ],
+  "note": "Extends the existing rollback-first isolated-staging correction-authority runner to create and verify the empty F5 authority partition. Corpus activation, corpus writes, production access and replacement of an existing authority head are prohibited."
+}
