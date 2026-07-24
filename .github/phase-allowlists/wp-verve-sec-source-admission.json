@@ -1,0 +1,17 @@
+{
+  "phase": "WP-VERVE-SEC-SOURCE-ADMISSION",
+  "allowed": [
+    ".github/phase-allowlists/wp-verve-sec-source-admission.json",
+    "scripts/canonical-v2-staging-verve-sec-source.mjs",
+    "scripts/lib/canonical-v2-staging-sec-source.mjs",
+    "tests/canonical-v2-staging-sec-source.test.js",
+    "tests/canonical-v2-staging-verve-sec-source-runner.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "supabase/**",
+    "lib/canonical-v2/**",
+    "scripts/reprocess.js"
+  ],
+  "note": "Admits the exact Verve SEC Exhibit 2.1 into isolated staging through bounded intake, canonical conversion, independent verification and source admission only. It cannot create semantic objects, deal membership, releases, serving rows or active-pointer movement."
+}
