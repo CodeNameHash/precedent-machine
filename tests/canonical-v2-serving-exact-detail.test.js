@@ -5,8 +5,11 @@ const fs = require('node:fs');
 const { buildLandosCandidateReleaseFixture } = require('../__fixtures__/canonical-v2/landos-candidate-release');
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
 const {
+  compileServingExactDetailByGovernedDealRequest,
   compileServingExactDetailRequest,
   queryServingExactDetail,
+  queryServingExactDetailByGovernedDeal,
+  validateServingExactDetailByGovernedDealResult,
   validateServingExactDetailResult,
 } = require('../lib/canonical-v2/serving-exact-detail');
 
@@ -79,6 +82,37 @@ test('exact-detail read is one bounded RPC with no retry', async () => {
   assert.equal(failedCalls, 1);
 });
 
+test('Query exact-detail resolves the same package by governed deal in one RPC', async () => {
+  const { request, result } = requestAndResult();
+  const governedRequest = compileServingExactDetailByGovernedDealRequest({
+    serving_namespace_id: request.serving_namespace_id,
+    corpus_release_id: request.corpus_release_id,
+    contract_fingerprint: request.contract_fingerprint,
+    governed_deal_key: result.governed_deal_key,
+    row_serving_key: request.row_serving_key,
+    source_detail_reference_id: request.source_detail_reference_id,
+  });
+  assert.equal(
+    validateServingExactDetailByGovernedDealResult(result, governedRequest),
+    result,
+  );
+  const calls = [];
+  const response = await queryServingExactDetailByGovernedDeal({
+    client: {
+      rpc(name, params) {
+        calls.push({ name, params });
+        return Promise.resolve({ data: result, error: null });
+      },
+    },
+    request: governedRequest,
+  });
+  assert.equal(response.row_serving_key, request.row_serving_key);
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].name, 'canonical_v2_exact_detail_by_governed_deal');
+  assert.equal(calls[0].params.p_governed_deal_key, result.governed_deal_key);
+  assert.equal(Object.hasOwn(calls[0].params, 'p_application_deal_id'), false);
+});
+
 test('wrong source reference or row identity cannot return plausible source', () => {
   const { request, result } = requestAndResult();
   const wrongReference = { ...request, source_detail_reference_id: '0'.repeat(64) };
@@ -86,6 +120,34 @@ test('wrong source reference or row identity cannot return plausible source', ()
     ...result,
     source_detail_reference_id: wrongReference.source_detail_reference_id,
   }, wrongReference), /selected row and action/);
+});
+
+test('a recomputed package digest cannot smuggle an unselected detail payload', () => {
+  const { request, result } = requestAndResult();
+  const forged = structuredClone(result);
+  forged.package.detail_payloads.push(structuredClone(forged.package.detail_payloads[0]));
+  forged.exact_detail_package_digest = contentId(
+    'EXACT_DETAIL_ATOMIC_PACKAGE/V1',
+    forged.package,
+  );
+  assert.throws(
+    () => validateServingExactDetailResult(forged, request),
+    /package is incomplete/,
+  );
+});
+
+test('a recomputed package digest cannot add an ungoverned top-level package field', () => {
+  const { request, result } = requestAndResult();
+  const forged = structuredClone(result);
+  forged.package.unrecognised_payload = { plausible: true };
+  forged.exact_detail_package_digest = contentId(
+    'EXACT_DETAIL_ATOMIC_PACKAGE/V1',
+    forged.package,
+  );
+  assert.throws(
+    () => validateServingExactDetailResult(forged, request),
+    /fields do not match/,
+  );
 });
 
 test('staging exact-detail SQL is one indexed row lookup through the release deal directory', () => {
@@ -100,4 +162,21 @@ test('staging exact-detail SQL is one indexed row lookup through the release dea
   assert.match(fn, /p_source_detail_reference_id = ANY\(package\.source_detail_reference_ids\)/);
   assert.doesNotMatch(fn, /\bLOOP\b|\bOFFSET\b/i);
   assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_exact_detail[\s\S]*TO canonical_v2_serving/);
+  const governedStart = sql.indexOf(
+    'CREATE OR REPLACE FUNCTION public.canonical_v2_exact_detail_by_governed_deal',
+  );
+  const governedEnd = sql.indexOf(
+    'CREATE OR REPLACE FUNCTION public.canonical_v2_reviewed_deal_context',
+  );
+  const governed = sql.slice(governedStart, governedEnd);
+  assert.ok(governedStart > start && governedEnd > governedStart);
+  assert.match(governed, /SET statement_timeout = '2500ms'/);
+  assert.match(governed, /directory\.governed_deal_key = p_governed_deal_key/);
+  assert.match(governed, /package\.row_serving_key = p_row_serving_key/);
+  assert.match(governed, /p_source_detail_reference_id = ANY\(package\.source_detail_reference_ids\)/);
+  assert.doesNotMatch(governed, /\bLOOP\b|\bOFFSET\b/i);
+  assert.match(
+    sql,
+    /GRANT EXECUTE ON FUNCTION public\.canonical_v2_exact_detail_by_governed_deal[\s\S]*TO canonical_v2_serving/,
+  );
 });

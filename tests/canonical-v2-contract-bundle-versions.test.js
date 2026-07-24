@@ -23,14 +23,21 @@ const {
   FIXTURE_CONTRACT_INPUT,
   FIXTURE_CONTRACT_INPUT_V1,
   FIXTURE_CONTRACT_INPUT_V2,
+  FIXTURE_CONTRACT_INPUT_V3,
+  FIXTURE_CONTRACT_INPUT_V4,
   FIXTURE_CONTRACT_FINGERPRINTS,
   compileFixtureContract,
   compileFixtureContractV2,
+  compileFixtureContractV3,
+  compileFixtureContractV4,
+  fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
 
 const FROZEN_F1 = '56da82bee06331793ba2ed8b78ef4186361407e60733595091e5951853e7d41d';
 const FROZEN_F2 = '46553f1a743dbf9f4ebfd07bff20939f66a57c4973826b5619c8bdfd196b1b83';
+const FROZEN_F3 = '5cc5607bee8fc816e8682f71b9482ff839ff744cebaaf0f26bfcfa54ea64512c';
+const FROZEN_F4 = 'd4ce5235be1818a42d9aba0dfb34198456eb062381e7d7db7b8289dd88671c74';
 
 const APPROVED_V2_ADDITIONS = [
   'TERMR-BREACH',
@@ -91,9 +98,14 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 and F2 are distinct, and both are recognised fixture contract fingerprints', () => {
+test('F1 through F4 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
-  assert.deepEqual([...FIXTURE_CONTRACT_FINGERPRINTS].sort(), [FROZEN_F1, FROZEN_F2].sort());
+  assert.notEqual(FROZEN_F2, FROZEN_F3);
+  assert.notEqual(FROZEN_F3, FROZEN_F4);
+  assert.deepEqual(
+    [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
+    [FROZEN_F1, FROZEN_F2, FROZEN_F3, FROZEN_F4].sort(),
+  );
 });
 
 // ---------------------------------------------------------------------------
@@ -140,6 +152,140 @@ test('the compiled F2 bundle concepts are exactly F1\'s concepts plus the four a
   assert.deepEqual(f2Additions, [...APPROVED_V2_ADDITIONS].sort());
 });
 
+test('F3 pins the approved buyer fee concept, claim, exact-detail action and legal-operation binding', () => {
+  const f3 = compileFixtureContractV3();
+  assert.equal(f3.fingerprint, FROZEN_F3);
+  assert.equal(validateContractBundle(f3), true);
+  assert.equal(
+    canonicalJson(f3),
+    canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V3)),
+  );
+  assert.deepEqual(
+    f3.concepts.filter((entry) => !compileFixtureContractV2().concepts.some(
+      (prior) => prior.concept_key === entry.concept_key,
+    )),
+    [{ concept_key: 'TERMF-REVERSE', version: 1 }],
+  );
+  assert.deepEqual(
+    f3.claim_definitions.filter((entry) => !compileFixtureContractV2().claim_definitions.some(
+      (prior) => prior.claim_definition_key === entry.claim_definition_key,
+    )),
+    [{
+      claim_definition_key: 'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+      version: 1,
+      canonical_value_type: 'NON_NEGATIVE_DECIMAL_STRING',
+      canonical_value_required_when_present: true,
+    }],
+  );
+  assert.deepEqual(
+    f3.serving_exact_detail_action_definitions
+      .filter((entry) => entry.action_slot_key === 'TERMINATION_FEE_TRIGGER_EVIDENCE')
+      .map((entry) => entry.action_slot_key),
+    ['TERMINATION_FEE_TRIGGER_EVIDENCE'],
+  );
+  assert.deepEqual(f3.serving_metric_operation_bindings, [{
+    binding_key: 'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V1',
+    metric_key: 'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+    metric_version: 1,
+    concept_key: 'TERMF-REVERSE',
+    required_claim_definition_key: 'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+    relationship_key: 'TRIGGERED_BY',
+    legal_operation: 'CREATES_BUYER_TERMINATION_FEE_PAYMENT_TRIGGER',
+    fee_side: 'BUYER',
+    payer: { role: 'FEE_PAYER', value: 'PARENT', capacity: 'BUYER' },
+    payee: { role: 'FEE_PAYEE', value: 'COMPANY', capacity: 'TARGET' },
+  }]);
+  assert.equal(canonicalJson(fixtureContractForFingerprint(FROZEN_F3)), canonicalJson(f3));
+});
+
+test('F3 concept-only, claim-only and unbound hybrid contracts are rejected', () => {
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V2,
+    concepts: FIXTURE_CONTRACT_INPUT_V3.concepts,
+  }), /concept keys do not match any frozen fixture contract version/);
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V2,
+    claim_definitions: FIXTURE_CONTRACT_INPUT_V3.claim_definitions,
+  }), /concept keys do not match any frozen fixture contract version/);
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V3,
+    serving_metric_operation_bindings: undefined,
+  }), /concept keys do not match any frozen fixture contract version/);
+});
+
+test('F4 replaces the flawed six-path action with a bounded typed two-sided graph', () => {
+  const f4 = compileFixtureContractV4();
+  assert.equal(f4.fingerprint, FROZEN_F4);
+  assert.equal(validateContractBundle(f4), true);
+  assert.equal(
+    canonicalJson(f4),
+    canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V4)),
+  );
+  assert.equal(canonicalJson(f4.concepts), canonicalJson(compileFixtureContractV3().concepts));
+  assert.equal(
+    canonicalJson(f4.claim_definitions),
+    canonicalJson(compileFixtureContractV3().claim_definitions),
+  );
+  const action = f4.serving_exact_detail_action_definitions.find(
+    (entry) => entry.action_slot_key === 'TERMINATION_FEE_TRIGGER_EVIDENCE',
+  );
+  assert.equal(action.action_version, 2);
+  assert.equal(action.selection_path_schema, 'RESULT_TERMINATION_FEE_TRIGGER_SET/V2');
+  assert.equal(action.response_schema, 'SERVING_EXACT_DETAIL_TERMINATION_FEE_TRIGGERS_RESPONSE/V2');
+  assert.equal(action.maximum_encoded_bytes, 32768);
+  assert.deepEqual(
+    f4.serving_metric_operation_bindings.map((binding) => ({
+      binding_key: binding.binding_key,
+      fee_side: binding.fee_side,
+      concept_key: binding.concept_key,
+      trigger_path_schema_key: binding.trigger_path_schema_key,
+      trigger_path_schema_version: binding.trigger_path_schema_version,
+    })),
+    [
+      {
+        binding_key: 'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V2',
+        fee_side: 'BUYER',
+        concept_key: 'TERMF-REVERSE',
+        trigger_path_schema_key: 'TERMINATION_FEE_TRIGGER_PATH',
+        trigger_path_schema_version: 2,
+      },
+      {
+        binding_key: 'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V2',
+        fee_side: 'SELLER',
+        concept_key: 'TERMF-TARGET',
+        trigger_path_schema_key: 'TERMINATION_FEE_TRIGGER_PATH',
+        trigger_path_schema_version: 2,
+      },
+    ],
+  );
+  const [schema] = f4.serving_trigger_path_schema_definitions;
+  assert.equal(schema.trigger_path_schema_key, 'TERMINATION_FEE_TRIGGER_PATH');
+  assert.equal(schema.trigger_path_schema_version, 2);
+  assert.equal(schema.maximum_paths, 16);
+  assert.equal(schema.maximum_expression_depth, 6);
+  assert.equal(schema.maximum_expression_nodes, 32);
+  assert.deepEqual(schema.expression_operators, ['ALL_OF', 'ANY_OF', 'FACT', 'IF_THEN']);
+  assert.equal(schema.indexed_fact_semantics, 'SET_MEMBERSHIP_SEARCH_AID_ONLY');
+  assert.equal(canonicalJson(fixtureContractForFingerprint(FROZEN_F4)), canonicalJson(f4));
+});
+
+test('F4 cannot be assembled from F3 with only one side or without its typed schema', () => {
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V4,
+    serving_metric_operation_bindings: [
+      FIXTURE_CONTRACT_INPUT_V4.serving_metric_operation_bindings[0],
+    ],
+  }), /contract version/);
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V4,
+    serving_trigger_path_schemas: undefined,
+  }), /contract version/);
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V4,
+    serving_exact_detail_actions: FIXTURE_CONTRACT_INPUT_V3.serving_exact_detail_actions,
+  }), /termination-fee exact-detail action/);
+});
+
 // ---------------------------------------------------------------------------
 // Per-version validation: validateInput (exercised via compileFixtureContract)
 // accepts either frozen concept-key vocabulary and rejects anything else.
@@ -166,7 +312,9 @@ test('a bundle missing one of the four V2 additions is rejected (not silently ac
   assert.throws(() => compileFixtureContract(partial), /concept keys do not match any frozen fixture contract version/);
 });
 
-test('validateContractBundle accepts both a compiled V1 bundle and a compiled V2 bundle', () => {
+test('validateContractBundle accepts compiled V1 through V4 bundles', () => {
   assert.equal(validateContractBundle(compileFixtureContract()), true);
   assert.equal(validateContractBundle(compileFixtureContractV2()), true);
+  assert.equal(validateContractBundle(compileFixtureContractV3()), true);
+  assert.equal(validateContractBundle(compileFixtureContractV4()), true);
 });

@@ -1,6 +1,24 @@
-import { Component, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  Component, useCallback, useEffect, useMemo, useRef, useState,
+} from 'react';
 import { MarketMetricCell } from './MarketColumn';
 import { buildTypedRowMarketContext } from './rowMarketContext';
+import triggerPresentation from '../../lib/canonical-v2/termination-fee-trigger-presentation';
+import reviewPagination from '../../lib/canonical-v2/review-pagination';
+
+const {
+  conditionExpressionView,
+  factLabel,
+  pathwayLabel,
+  paymentTimingLabel,
+  terminatingPartyLabel,
+  triggerLabel,
+} = triggerPresentation;
+const {
+  appendReviewPage,
+  assertReviewPageContinuation,
+  sameReviewPageIdentity,
+} = reviewPagination;
 
 const ENABLED = ['1', 'true', 'on', 'yes'].includes(
   String(process.env.NEXT_PUBLIC_CANONICAL_V2_REVIEW_ENABLED || '').toLowerCase(),
@@ -19,6 +37,80 @@ function exactText(detail) {
     return detail.exact_excerpts.map((excerpt) => excerpt.exact_text).filter(Boolean).join('\n\n');
   }
   return '';
+}
+
+function terminationFeeTriggerView(detail) {
+  const schemaVersion = detail?.schema_version;
+  const supportedSchema = schemaVersion === 'SERVING_EXACT_DETAIL_TERMINATION_FEE_TRIGGERS_RESPONSE/V1'
+    || schemaVersion === 'SERVING_EXACT_DETAIL_TERMINATION_FEE_TRIGGERS_RESPONSE/V2';
+  if (!supportedSchema || detail?.detail_kind !== 'TERMINATION_FEE_TRIGGER_EVIDENCE') return null;
+  if (!Number.isInteger(detail.trigger_count)
+    || detail.trigger_count < 1
+    || detail.trigger_count > 16
+    || !Array.isArray(detail.triggers)
+    || detail.trigger_count !== detail.triggers.length
+    || !Array.isArray(detail.excerpts)) {
+    throw new Error('Certified trigger detail is incomplete.');
+  }
+  const excerpts = new Map(detail.excerpts.map((excerpt) => [
+    excerpt.excerpt_id,
+    excerpt.exact_text,
+  ]));
+  const triggers = [...detail.triggers]
+    .sort((left, right) => left.relationship_ordinal - right.relationship_ordinal)
+    .map((trigger, index) => {
+      const effect = trigger?.effect;
+      const governedV2 = schemaVersion.endsWith('/V2');
+      const indexedFacts = governedV2 ? effect?.indexed_facts : effect?.conditions;
+      const timing = paymentTimingLabel(effect);
+      const terminatingParty = terminatingPartyLabel(effect);
+      if (trigger.relationship_ordinal !== index
+        || ![
+          'CREATES_BUYER_TERMINATION_FEE_PAYMENT_TRIGGER',
+          'CREATES_SELLER_TERMINATION_FEE_PAYMENT_TRIGGER',
+        ].includes(effect?.legal_operation)
+        || !triggerLabel(effect)
+        || !Array.isArray(indexedFacts)
+        || !indexedFacts.every((fact) => factLabel(fact, effect))
+        || !Array.isArray(trigger.evidence_references)
+        || trigger.evidence_references.length === 0) {
+        throw new Error('Certified trigger detail contains an unsupported legal term.');
+      }
+      const pathway = effect.pathway_code == null ? null : pathwayLabel(effect);
+      if (governedV2 && (!pathway || !effect.condition_expression)) {
+        throw new Error('Certified trigger detail contains an unsupported legal term.');
+      }
+      const logic = governedV2 ? conditionExpressionView(effect.condition_expression, effect) : null;
+      const evidence = trigger.evidence_references.map((reference) => excerpts.get(reference.excerpt_id));
+      if (evidence.some((text) => typeof text !== 'string' || !text)) {
+        throw new Error('Certified trigger evidence is incomplete.');
+      }
+      return Object.freeze({
+        key: trigger.relationship_revision_id,
+        label: triggerLabel(effect),
+        pathway,
+        timing,
+        terminatingParty,
+        conditions: Object.freeze(
+          governedV2 ? [] : indexedFacts.map((fact) => factLabel(fact, effect)),
+        ),
+        logic,
+        evidence: Object.freeze([...new Set(evidence)]),
+      });
+    });
+  return Object.freeze({
+    kind: 'termination_fee_triggers',
+    triggerCount: detail.trigger_count,
+    triggers: Object.freeze(triggers),
+  });
+}
+
+function governedSourceDetail(detail) {
+  const triggerView = terminationFeeTriggerView(detail);
+  if (triggerView) return triggerView;
+  const text = exactText(detail);
+  if (!text) throw new Error('Exact source is unavailable.');
+  return Object.freeze({ kind: 'exact_text', text });
 }
 
 function RowFailure({ item }) {
@@ -48,34 +140,118 @@ class CanonicalRowErrorBoundary extends Component {
   }
 }
 
-function SourceDetail({ envelope, rowKey, sourceAction }) {
-  const [state, setState] = useState({ open: false, loading: false, error: null, text: '' });
+function ConditionExpression({ expression }) {
+  if (expression.operator === 'FACT') return <span>{expression.label}</span>;
+  if (expression.operator === 'IF_THEN') {
+    return (
+      <div className="border-l border-[#C7CED8] pl-2">
+        <div><span className="font-bold">If:</span> <ConditionExpression expression={expression.if} /></div>
+        <div className="mt-1"><span className="font-bold">Then:</span> <ConditionExpression expression={expression.then} /></div>
+      </div>
+    );
+  }
+  return (
+    <div className="border-l border-[#C7CED8] pl-2">
+      <div className="font-bold">{expression.operator === 'ALL_OF' ? 'All of:' : 'Any one of:'}</div>
+      <ul className="mt-0.5 list-disc space-y-0.5 pl-4">
+        {expression.operands.map((operand, index) => (
+          <li key={`${expression.operator}:${index}`}>
+            <ConditionExpression expression={operand} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export function TerminationFeeTriggerDetail({ detail }) {
+  return (
+    <div data-canonical-trigger-detail>
+      <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-[#55514B]">
+        {detail.triggerCount} certified fee triggers
+      </div>
+      <ol className="mt-2 space-y-2">
+        {detail.triggers.map((trigger) => (
+          <li key={trigger.key} className="border border-[#DDE3EC] bg-white px-3 py-2">
+            <div className="text-[10px] font-bold text-[#1F1F1F]">{trigger.label}</div>
+            {trigger.pathway ? <div className="mt-1 text-[10px] text-[#55514B]">{trigger.pathway}</div> : null}
+            <div className="mt-1 text-[10px] text-[#55514B]">{trigger.terminatingParty}. {trigger.timing}.</div>
+            {trigger.logic ? (
+              <div className="mt-2 text-[10px] leading-4 text-[#55514B]">
+                <ConditionExpression expression={trigger.logic} />
+              </div>
+            ) : null}
+            {trigger.conditions.length ? (
+              <ul className="mt-1 list-disc space-y-0.5 pl-4 text-[10px] text-[#55514B]">
+                {trigger.conditions.map((condition) => <li key={condition}>{condition}</li>)}
+              </ul>
+            ) : null}
+            <details className="mt-2">
+              <summary className="cursor-pointer text-[9px] font-bold uppercase tracking-[0.08em] text-[#2F6DB5]">
+                Exact trigger evidence
+              </summary>
+              {trigger.evidence.map((text, index) => (
+                <p key={`${trigger.key}:${index}`} className="mt-2 whitespace-pre-wrap text-[10px] leading-4 text-[#1F1F1F]">
+                  {text}
+                </p>
+              ))}
+            </details>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+export function CanonicalSourceDetail({
+  envelope,
+  rowKey,
+  sourceAction,
+  governedDealKey = null,
+}) {
+  const [state, setState] = useState({
+    open: false,
+    loading: false,
+    error: null,
+    detail: null,
+  });
   const toggle = useCallback(async () => {
     if (state.open) {
       setState((current) => ({ ...current, open: false }));
       return;
     }
-    if (state.text) {
+    if (state.detail) {
       setState((current) => ({ ...current, open: true }));
       return;
     }
-    setState({ open: true, loading: true, error: null, text: '' });
+    setState({ open: true, loading: true, error: null, detail: null });
     try {
       const query = new URLSearchParams({
         namespace: envelope.serving_namespace_id,
         release: envelope.corpus_release_id,
-        dealId: envelope.application_deal_id,
+        contract: envelope.contract_fingerprint,
         row: rowKey,
         source: sourceAction.source_detail_reference_id,
       });
+      if (envelope.application_deal_id) query.set('dealId', envelope.application_deal_id);
+      else if (governedDealKey) query.set('dealKey', governedDealKey);
+      else throw new Error('The selected deal identity is unavailable.');
       const body = await fetchJson(`/api/canonical-v2/exact-detail?${query.toString()}`);
-      const text = exactText(body.detail);
-      if (!text) throw new Error('Exact source is unavailable.');
-      setState({ open: true, loading: false, error: null, text });
+      setState({
+        open: true,
+        loading: false,
+        error: null,
+        detail: governedSourceDetail(body.detail),
+      });
     } catch (error) {
-      setState({ open: true, loading: false, error: error.message || String(error), text: '' });
+      setState({
+        open: true,
+        loading: false,
+        error: error.message || String(error),
+        detail: null,
+      });
     }
-  }, [envelope, rowKey, sourceAction, state.open, state.text]);
+  }, [envelope, governedDealKey, rowKey, sourceAction, state.detail, state.open]);
 
   return (
     <div className="mt-2 border-t border-[#E6E4DF] pt-2">
@@ -91,7 +267,12 @@ function SourceDetail({ envelope, rowKey, sourceAction }) {
         <div className="mt-2 border-l-2 border-[#2F6DB5] bg-[#F7F9FC] px-3 py-2 text-[10px] leading-4 text-[#1F1F1F]">
           {state.loading ? 'Loading exact source…' : null}
           {state.error ? <span className="text-[#9A2E2E]">{state.error}</span> : null}
-          {state.text ? <p className="whitespace-pre-wrap">{state.text}</p> : null}
+          {state.detail?.kind === 'exact_text' ? (
+            <p className="whitespace-pre-wrap">{state.detail.text}</p>
+          ) : null}
+          {state.detail?.kind === 'termination_fee_triggers' ? (
+            <TerminationFeeTriggerDetail detail={state.detail} />
+          ) : null}
         </div>
       ) : null}
     </div>
@@ -184,7 +365,11 @@ function CanonicalResult({ item, envelope, selected, onSelectCanonicalContext })
       </table>
       <div className="px-3 pb-3">
         {metric.source?.state === 'available' ? (
-          <SourceDetail envelope={envelope} rowKey={adapted.row_key} sourceAction={metric.source.action} />
+          <CanonicalSourceDetail
+            envelope={envelope}
+            rowKey={adapted.row_key}
+            sourceAction={metric.source.action}
+          />
         ) : null}
       </div>
     </div>
@@ -217,7 +402,11 @@ function SourceSpecificResult({ item, envelope, selected, onSelectCanonicalConte
         </dl>
       ) : null}
       {context.source?.state === 'available' ? (
-        <SourceDetail envelope={envelope} rowKey={adapted.row_key} sourceAction={context.source.action} />
+        <CanonicalSourceDetail
+          envelope={envelope}
+          rowKey={adapted.row_key}
+          sourceAction={context.source.action}
+        />
       ) : null}
     </div>
   );
@@ -250,22 +439,97 @@ export default function CanonicalReviewSection({
   onSelectCanonicalContext = null,
   selectedCanonicalRowKey = null,
 }) {
-  const [state, setState] = useState({ loading: false, error: null, envelope: null, items: [] });
+  const [state, setState] = useState({
+    loading: false,
+    loadingMore: false,
+    error: null,
+    paginationError: null,
+    envelope: null,
+    items: [],
+  });
+  const requestGenerationRef = useRef(0);
+  const loadMorePendingRef = useRef(false);
   useEffect(() => {
+    const generation = requestGenerationRef.current + 1;
+    requestGenerationRef.current = generation;
+    loadMorePendingRef.current = false;
     if (!ENABLED || !dealId) return undefined;
     let cancelled = false;
-    setState({ loading: true, error: null, envelope: null, items: [] });
+    setState({
+      loading: true,
+      loadingMore: false,
+      error: null,
+      paginationError: null,
+      envelope: null,
+      items: [],
+    });
     fetchJson(`/api/canonical-v2/review-context?dealId=${encodeURIComponent(dealId)}`)
       .then((body) => {
-        if (cancelled) return;
+        if (cancelled || requestGenerationRef.current !== generation) return;
         const { items, ...envelope } = body;
-        setState({ loading: false, error: null, envelope, items: items || [] });
+        setState({
+          loading: false,
+          loadingMore: false,
+          error: null,
+          paginationError: null,
+          envelope,
+          items: items || [],
+        });
       })
       .catch((error) => {
-        if (!cancelled) setState({ loading: false, error: error.message || String(error), envelope: null, items: [] });
+        if (!cancelled && requestGenerationRef.current === generation) {
+          setState({
+            loading: false,
+            loadingMore: false,
+            error: error.message || String(error),
+            paginationError: null,
+            envelope: null,
+            items: [],
+          });
+        }
       });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+      if (requestGenerationRef.current === generation) requestGenerationRef.current += 1;
+    };
   }, [dealId]);
+
+  const loadMore = useCallback(async () => {
+    const cursor = state.envelope?.next_cursor;
+    if (!cursor || state.loadingMore || loadMorePendingRef.current) return;
+    loadMorePendingRef.current = true;
+    const expectedEnvelope = state.envelope;
+    const generation = requestGenerationRef.current;
+    setState((current) => ({ ...current, loadingMore: true, paginationError: null }));
+    try {
+      const body = await fetchJson(
+        `/api/canonical-v2/review-context?dealId=${encodeURIComponent(dealId)}&after=${encodeURIComponent(cursor)}`,
+      );
+      const { items, ...envelope } = body;
+      assertReviewPageContinuation(expectedEnvelope, envelope, cursor);
+      if (requestGenerationRef.current !== generation) return;
+      setState((current) => {
+        if (requestGenerationRef.current !== generation
+          || !sameReviewPageIdentity(current.envelope, expectedEnvelope)
+          || current.envelope?.next_cursor !== cursor) return current;
+        return appendReviewPage(current, envelope, items || [], cursor);
+      });
+    } catch (error) {
+      setState((current) => ({
+        ...(requestGenerationRef.current === generation
+          && sameReviewPageIdentity(current.envelope, expectedEnvelope)
+          && current.envelope?.next_cursor === cursor
+          ? {
+            ...current,
+            loadingMore: false,
+            paginationError: error.message || String(error),
+          }
+          : current),
+      }));
+    } finally {
+      if (requestGenerationRef.current === generation) loadMorePendingRef.current = false;
+    }
+  }, [dealId, state.envelope, state.loadingMore]);
 
   const validCount = useMemo(
     () => state.items.filter((item) => item.render_kind === 'ROW').length,
@@ -304,10 +568,30 @@ export default function CanonicalReviewSection({
               />
             </CanonicalRowErrorBoundary>
           ))}
+          {state.envelope.next_cursor ? (
+            <button
+              type="button"
+              onClick={loadMore}
+              disabled={state.loadingMore}
+              className="w-full border border-[#C7CED8] bg-white px-3 py-2 text-[10px] font-bold text-[#2F6DB5] disabled:opacity-50"
+            >
+              {state.loadingMore ? 'Loading more certified terms…' : 'Show more certified terms'}
+            </button>
+          ) : null}
+          {state.paginationError ? (
+            <p className="text-[10px] text-[#8A6417]">
+              More certified terms could not be loaded. The terms above remain available.
+            </p>
+          ) : null}
         </div>
       </details>
     </section>
   );
 }
 
-export { canonicalSidebarContext, exactText };
+export {
+  canonicalSidebarContext,
+  exactText,
+  governedSourceDetail,
+  terminationFeeTriggerView,
+};

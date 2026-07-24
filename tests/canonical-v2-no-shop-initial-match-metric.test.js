@@ -66,8 +66,9 @@ test('1. FIXTURE_CONTRACT_FINGERPRINT matches the Landos no-shop-match row\'s ow
 
 // ── 2. QUERY_METRICS / DEFAULT_COLUMNS pin ──────────────────────────────────
 
-test('2a. QUERY_METRICS contains exactly the 5 expected governed metric keys', () => {
+test('2a. QUERY_METRICS contains exactly the 6 expected governed metric keys', () => {
   assert.deepEqual([...QUERY_METRICS].sort(), [
+    'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
     'IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE',
     'MATERIAL_CONTRACT_CASH_FLOW_THRESHOLD_PERCENT_OF_DEAL_VALUE',
     'NO_SHOP_INITIAL_MATCH_PERIOD_DAYS',
@@ -137,7 +138,7 @@ test('4b. fee-only column_filters (fee_side etc.) are rejected with INVALID_REQU
     () => compileCanonicalActiveQueryRequest(bodyFor(matchRow, { column_filters: { fee_side: 'SELLER' } })),
     (error) => error instanceof CanonicalQueryError
       && error.code === 'INVALID_REQUEST'
-      && /fee refinements require the seller termination fee metric/.test(error.message),
+      && /fee refinements require a governed termination fee metric/.test(error.message),
   );
   assert.throws(
     () => compileCanonicalActiveQueryRequest(bodyFor(matchRow, {

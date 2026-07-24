@@ -7,6 +7,7 @@ const {
   refinementOptionsFromView,
 } = require('../lib/canonical-v2/legacy-query-mapper');
 const { compileCanonicalActiveQueryRequest, queryCanonicalResultPage } = require('../lib/canonical-v2/query-result');
+const { compileFixtureContract, compileFixtureContractV4 } = require('../lib/canonical-v2/contract-bundle');
 const { buildLandosNoShopServingFixture } = require('../__fixtures__/canonical-v2/landos-no-shop-rows');
 
 const EXACT_PAYLOAD = Object.freeze({
@@ -56,11 +57,33 @@ test('1b. chart_kind is accepted and ignored for routing regardless of its value
   assert.equal(isSupportedCanonicalQuery('MARKET_RANGE', noChartKind, SUPPORTED_OPTS), true);
 });
 
-test('2. party specificity: reverseFeePctOfDealValue (or any lookalike) stays legacy', () => {
-  assert.equal(
-    isSupportedCanonicalQuery('MARKET_RANGE', { ...EXACT_PAYLOAD, field_path: 'reverseFeePctOfDealValue' }, SUPPORTED_OPTS),
-    false,
-  );
+test('2. reverseFeePctOfDealValue maps to the governed buyer-fee F4 request', () => {
+  const payload = { ...EXACT_PAYLOAD, field_path: 'reverseFeePctOfDealValue' };
+  assert.equal(isSupportedCanonicalQuery('MARKET_RANGE', payload, SUPPORTED_OPTS), true);
+  const body = mapLegacyRequestToCanonical(payload);
+  assert.deepEqual(body, {
+    intent: 'MARKET_RANGE',
+    metric_key: 'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+    metric_version: 1,
+    concept_key: 'TERMF-REVERSE',
+    party: { role: 'FEE_PAYER', value: 'PARENT', capacity: 'BUYER' },
+    filters: {},
+    selected_columns: null,
+    column_filters: {},
+    page_size: 25,
+    cursor: null,
+  });
+  const compiled = compileCanonicalActiveQueryRequest(body);
+  assert.equal(compiled.contract_fingerprint, compileFixtureContractV4().fingerprint);
+});
+
+test('2b. ungoverned reverse-fee lookalikes stay legacy', () => {
+  for (const field_path of ['reverseTerminationFee', 'reverseFeePercentage', 'buyerTerminationFee']) {
+    assert.equal(
+      isSupportedCanonicalQuery('MARKET_RANGE', { ...EXACT_PAYLOAD, field_path }, SUPPORTED_OPTS),
+      false,
+    );
+  }
 });
 
 test('3. other fields, other provision types, and other kinds stay legacy', () => {
@@ -161,6 +184,7 @@ test('8. mapper output passes the real, frozen canonical ACTIVE query compiler',
   const body = mapLegacyRequestToCanonical(EXACT_PAYLOAD);
   const compiled = compileCanonicalActiveQueryRequest(body);
   assert.equal(compiled.schema_version, 'CANONICAL_ACTIVE_QUERY_SEMANTICS/V1');
+  assert.equal(compiled.contract_fingerprint, compileFixtureContract().fingerprint);
   assert.equal(compiled.metric_key, 'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE');
   assert.equal(compiled.metric_version, 1);
   assert.equal(compiled.concept_key, 'TERMF-TARGET');

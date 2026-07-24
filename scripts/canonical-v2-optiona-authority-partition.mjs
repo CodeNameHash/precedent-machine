@@ -28,7 +28,7 @@ const FUNCTIONS = Object.freeze([
     output: 'step0d-candidate-activation-by-contract.sql',
     source: 'supabase/canonical-v2-serving.sql',
     marker: 'CREATE OR REPLACE FUNCTION public.canonical_v2_activate_candidate_release(',
-    digest: '82bd3452a61a8478cead5c45ae99d1f442bcd888f67ce96607e504791ccb6dfe',
+    digest: '53578257036aa9e5d0c8b6eb2f200a44d04e014a070ccb2334a56fd8775c1734',
   },
 ]);
 

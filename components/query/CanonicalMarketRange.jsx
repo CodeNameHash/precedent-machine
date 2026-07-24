@@ -1,7 +1,7 @@
 // Canonical Query UI slice (2026-07-22): renders a CANONICAL_QUERY_RESULT_
 // VIEW/V1 (lib/canonical-v2/query-result.js buildCanonicalQueryResultView)
-// for the one supported ad hoc request (seller termination fee, % of deal
-// value). Deliberately does NOT reshape into the legacy MARKET_RANGE result
+// for supported governed ad hoc requests. Deliberately does NOT reshape
+// into the legacy MARKET_RANGE result
 // contract and does NOT reuse the legacy MarketRange component (see
 // pages/query/[kind]/[id].js) — this is a governed, differently-shaped
 // contract and mixing the two render paths would blur which one produced a
@@ -19,6 +19,7 @@
 // rendering unchanged.
 
 import { useMemo, useState } from 'react';
+import { CanonicalSourceDetail } from '../review-v2/CanonicalReviewSection';
 const {
   mapCanonicalRowForRender,
   buildRefinedCanonicalRequest,
@@ -26,12 +27,10 @@ const {
   humanizeRefinementLabel,
 } = require('../../lib/canonical-v2/legacy-query-mapper');
 
-// This slice supports exactly one governed metric (see the spec) — the
-// label is plain UI copy, not a taxonomy/vocabulary code, so it is safe to
-// hardcode here rather than invent a governed label dictionary for a
-// single-entry table.
+// Labels are plain UI copy, not taxonomy or vocabulary codes.
 const METRIC_LABELS = {
   SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE: 'Seller termination fee — % of deal value',
+  BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE: 'Buyer / reverse termination fee — % of deal value',
   NO_SHOP_INITIAL_MATCH_PERIOD_DAYS: 'No-shop — initial match period (business days)',
 };
 
@@ -40,23 +39,58 @@ function truncateDigest(value) {
   return value.length > 12 ? `${value.slice(0, 12)}…` : value;
 }
 
+function TriggerPathways({ pathways }) {
+  if (pathways.length === 0) return '—';
+  return (
+    <div className="cmrTriggerPaths">
+      {pathways.map((pathway, index) => (
+        <details
+          key={`${pathway.pathway_code || pathway.pathway_label}:${index}`}
+          className="cmrTriggerPath"
+        >
+          <summary>{pathway.pathway_label}: {pathway.trigger_label}</summary>
+          <dl>
+            <div><dt>Terminating party</dt><dd>{pathway.terminating_party_label}</dd></div>
+            <div><dt>Payment timing</dt><dd>{pathway.payment_timing_label}</dd></div>
+            <div><dt>Conditions</dt><dd>{pathway.condition_expression_text}</dd></div>
+          </dl>
+        </details>
+      ))}
+    </div>
+  );
+}
+
 // Renders one row's cells, isolated: mapCanonicalRowForRender already turns
 // any per-row formatting failure into a `.error` marker rather than
 // throwing, but this component wraps its own render pass too (belt-and-
 // suspenders — the spec is explicit that a malformed row must never take
 // sibling rows down with it).
-function RowCells({ row, columnCount }) {
+function RowCells({ row, rawRow, columnCount, envelope }) {
   try {
     if (row.error) throw new Error(row.error);
     return (
       <>
-        {row.cells.map((cell) => (
-          <td key={cell.column_key}>
-            {Array.isArray(cell.display)
-              ? (cell.display.length ? cell.display.join('; ') : '—')
-              : cell.display}
-          </td>
-        ))}
+        {row.cells.map((cell) => {
+          const sourceAction = cell.column_key === 'source'
+            ? rawRow?.source_actions?.[0]
+            : null;
+          return (
+            <td key={cell.column_key}>
+              {sourceAction ? (
+                <CanonicalSourceDetail
+                  envelope={envelope}
+                  governedDealKey={rawRow.governed_deal_key}
+                  rowKey={rawRow.row_serving_key}
+                  sourceAction={sourceAction}
+                />
+              ) : cell.column_key === 'triggers' && Array.isArray(cell.display)
+                ? <TriggerPathways pathways={cell.display} />
+                : Array.isArray(cell.display)
+                ? (cell.display.length ? cell.display.join('; ') : '—')
+                : cell.display}
+            </td>
+          );
+        })}
       </>
     );
   } catch {
@@ -189,7 +223,10 @@ export default function CanonicalMarketRange({
 }) {
   if (!view) return null;
   const columns = view.columns || [];
-  const rows = (view.rows || []).map((row) => mapCanonicalRowForRender(row, columns));
+  const rows = (view.rows || []).map((rawRow) => ({
+    rawRow,
+    rendered: mapCanonicalRowForRender(rawRow, columns),
+  }));
   const metricLabel = METRIC_LABELS[view.metric_key] || view.metric_key;
 
   return (
@@ -199,7 +236,7 @@ export default function CanonicalMarketRange({
         <p className="cmrMeta">
           Payer capacity: <b>{(view.party && view.party.capacity) || '—'}</b>
           {' · '}
-          {view.total_count} total{typeof view.page_count === 'number' ? `, showing ${view.page_count}` : ''}
+          {view.total_count} total{Array.isArray(view.rows) ? `, showing ${view.rows.length}` : ''}
         </p>
         <p className="cmrProvenance mtx-mono">
           Release {truncateDigest(view.corpus_release_id)} · Contract {truncateDigest(view.contract_fingerprint)}
@@ -232,9 +269,14 @@ export default function CanonicalMarketRange({
           <tbody>
             {rows.length === 0 ? (
               <tr><td colSpan={Math.max(columns.length, 1)} className="cmrEmpty">No matching deals.</td></tr>
-            ) : rows.map((row, index) => (
-              <tr key={row.row_serving_key || index}>
-                <RowCells row={row} columnCount={columns.length} />
+            ) : rows.map(({ rawRow, rendered }, index) => (
+              <tr key={rendered.row_serving_key || index}>
+                <RowCells
+                  row={rendered}
+                  rawRow={rawRow}
+                  columnCount={columns.length}
+                  envelope={view}
+                />
               </tr>
             ))}
           </tbody>
@@ -273,6 +315,14 @@ export default function CanonicalMarketRange({
         .cmrProvenance { margin: 4px 0 0; font-size: 10px; color: var(--ink-faint, #9A9A9A); }
         .scroll { overflow-x: auto; }
         .cmrRowError { color: #B14E63; font-size: 12px; padding: 8px 12px; }
+        :global(.cmrTriggerPaths) { min-width: 280px; display: grid; gap: 6px; }
+        :global(.cmrTriggerPath) { border-bottom: 1px solid var(--line); padding: 0 0 6px; }
+        :global(.cmrTriggerPath:last-child) { border-bottom: 0; padding-bottom: 0; }
+        :global(.cmrTriggerPath summary) { cursor: pointer; font-size: 11px; font-weight: 650; color: var(--ink); }
+        :global(.cmrTriggerPath dl) { margin: 6px 0 0; display: grid; gap: 4px; }
+        :global(.cmrTriggerPath dl div) { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 8px; }
+        :global(.cmrTriggerPath dt) { font-size: 9px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-faint, #9A9A9A); }
+        :global(.cmrTriggerPath dd) { margin: 0; font-size: 10px; line-height: 1.4; color: var(--ink-light); }
         .cmrEmpty { color: var(--ink-light); font-size: 12px; padding: 8px 12px; }
         .cmrShowMore { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-top: 1px solid var(--line); }
         .cmrNotice { margin: 0; font-size: 11px; color: var(--ink-light); }
