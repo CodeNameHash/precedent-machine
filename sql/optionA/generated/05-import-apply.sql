@@ -5,15 +5,15 @@ BEGIN
   IF (SELECT count(*) FROM canonical_v2_staging.write_receipts
       WHERE operation='DEAL_SCOPE_RUN'
         AND idempotency_key='QXO_TERMINATION_FEE_DEAL_SCOPE_V1'
-        AND input_digest='6e874fea87644f513b330c2a9853f31f4a4b806baafd18bfe028a23b97c83a5f'
-        AND receipt_id='99708e54d02c4dc5ed0e8096f67ad51cf9a63a76de05ee1a1ab668841ff89653'
-        AND canonical_payload=$optionA_226fbf6a29cd93ad${"receiptId":"99708e54d02c4dc5ed0e8096f67ad51cf9a63a76de05ee1a1ab668841ff89653","operation":"DEAL_SCOPE_RUN","idempotencyKey":"QXO_TERMINATION_FEE_DEAL_SCOPE_V1","inputDigest":"6e874fea87644f513b330c2a9853f31f4a4b806baafd18bfe028a23b97c83a5f","status":"COMMITTED","publishableObjectCount":30,"residualCount":0,"quarantinedClosureCount":0}$optionA_226fbf6a29cd93ad$::jsonb) <> 1 THEN
+        AND input_digest='4bc0b3b0dca0832212cad00e83b7bbc595e5119708953e51c62ee192dd3f8db7'
+        AND receipt_id='49ee9df84fc7a7c1e8e7a9b551a185c4fd6db9e2d848c1c432d17f050806e5ef'
+        AND canonical_payload=$optionA_6de04f210bd6d4b5${"receiptId":"49ee9df84fc7a7c1e8e7a9b551a185c4fd6db9e2d848c1c432d17f050806e5ef","operation":"DEAL_SCOPE_RUN","idempotencyKey":"QXO_TERMINATION_FEE_DEAL_SCOPE_V1","inputDigest":"4bc0b3b0dca0832212cad00e83b7bbc595e5119708953e51c62ee192dd3f8db7","status":"COMMITTED","publishableObjectCount":30,"residualCount":0,"quarantinedClosureCount":0}$optionA_6de04f210bd6d4b5$::jsonb) <> 1 THEN
     RAISE EXCEPTION 'exact termination DEAL_SCOPE_RUN receipt is not committed';
   END IF;
   IF (SELECT count(*) FROM canonical_v2_staging.validated_semantic_graphs WHERE closure_id='6e59b62130b2c0bac205251bf936c7aaca55b84ed9251971a1528870b17672a2') <> 0 THEN
     RAISE EXCEPTION 'termination semantic closure count mismatch: validated_semantic_graphs';
   END IF;
-  IF (SELECT count(*) FROM canonical_v2_staging.excerpts WHERE closure_id='6e59b62130b2c0bac205251bf936c7aaca55b84ed9251971a1528870b17672a2') <> 9 THEN
+  IF (SELECT count(*) FROM canonical_v2_staging.excerpts WHERE closure_id='6e59b62130b2c0bac205251bf936c7aaca55b84ed9251971a1528870b17672a2') <> 8 THEN
     RAISE EXCEPTION 'termination semantic closure count mismatch: excerpts';
   END IF;
   IF (SELECT count(*) FROM canonical_v2_staging.provision_instances WHERE closure_id='6e59b62130b2c0bac205251bf936c7aaca55b84ed9251971a1528870b17672a2') <> 7 THEN
@@ -27,6 +27,13 @@ BEGIN
   END IF;
   IF (SELECT count(*) FROM canonical_v2_staging.relationship_revisions WHERE closure_id='6e59b62130b2c0bac205251bf936c7aaca55b84ed9251971a1528870b17672a2') <> 6 THEN
     RAISE EXCEPTION 'termination semantic closure count mismatch: relationship_revisions';
+  END IF;
+  IF (SELECT count(*) FROM canonical_v2_staging.excerpts
+      WHERE excerpt_id='56224984beed0f058c61f7af92667fdf3c983a65dc742052946af979e40b7dee'
+        AND closure_id='a08b15c095464e265205ffd87ec380a85e37e9867c9701551b7b59759ed0cab5'
+        AND canonical_payload_digest='1f29d673e1736beb9d89357560ea72e33053ffc4f45b590f5b899f27934ab689'
+        AND canonical_payload=$optionA_85ea153a990f770f${"schema_version":"EXCERPT/V1","excerpt_id":"56224984beed0f058c61f7af92667fdf3c983a65dc742052946af979e40b7dee","excerpt_definition_id":"0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02","excerpt_definition_key":"SINGLE_OPERATIVE_SPAN","excerpt_definition_version":1,"excerpt_definition_payload_digest":"bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c","ordered_component_assignments":[{"component_slot_key":"PRIMARY","governed_slot_ordinal":0,"semantic_span_id":"559fcc0f6988a7e3d0a589abdbcee024a97d4eab8fa9b89023b8af05c8842536"}],"excerpt_purpose":"LEGAL_EVIDENCE","transformation_or_redaction_version":"IDENTITY_UTF8/V1","output_text_hash":"baa64b186700a9360b1d2820eb87f72fc37a12c0165f9a18d0d2ea4b09185eff","source_content_id":"cfed140e2e5c7cbacb2b96af586661a58ab0f16cfbb5c5aa23d136bcc878b058","source_occurrence_id":"6055020a8fd195d5ff207724b58352b0f20221411c7562e687c4e5ec146588f0","canonical_text_id":"d7c3caff402ccb2912ce35e1a0fbfaff722316590686cead385a93e3466141cd","document_hash":"343ba5da8ab34f478f274307046836af4ded762b010e08ed8d9015be2e09c827","absolute_start":533,"absolute_end":653,"exact_bytes_digest":"baa64b186700a9360b1d2820eb87f72fc37a12c0165f9a18d0d2ea4b09185eff","exact_text":"entered into a definitive agreement to acquire TopBuild Corp. (NYSE: BLD) (“TopBuild”) for approximately $17 billion","closure_id":"a08b15c095464e265205ffd87ec380a85e37e9867c9701551b7b59759ed0cab5"}$optionA_85ea153a990f770f$::jsonb) <> 1 THEN
+    RAISE EXCEPTION 'shared deal-value excerpt mismatch';
   END IF;
 END;
 $termination_semantic_write_gate$;
