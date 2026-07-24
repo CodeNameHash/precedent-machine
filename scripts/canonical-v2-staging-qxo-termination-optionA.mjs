@@ -144,7 +144,7 @@ const EXPECTED_ATTESTATION = Object.freeze({
   termination_reviewed_mapping_id: '9c3501f89e0574d94821241915748292c0c345b980d0c90ba2986cff21606a4a',
   termination_semantic_closure_id: '6e59b62130b2c0bac205251bf936c7aaca55b84ed9251971a1528870b17672a2',
   termination_row_serving_key: '0d4739a3e9c3b28bcae7c2db0e062a3c2c308f7175233791d276ed01a4c54a83',
-  termination_deal_scope_input_digest: '2536fff67288fa5316ccd3ef84793d1f06c187e6c5fc0fe3584fe1ec44dbed71',
+  termination_deal_scope_input_digest: '6e874fea87644f513b330c2a9853f31f4a4b806baafd18bfe028a23b97c83a5f',
   prior_semantic_closure_ids: Object.freeze([
     '89683e5ff72a570948bfadda123254719d848310b5c50ad3720645e2cbd6291b',
     '944c18cb24c5684c04eb3d2c9cae57f932c144790492bc1619ccd566d57a8a3e',

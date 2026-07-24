@@ -29,10 +29,20 @@ read first): `SPEC-QXO-TERMF-F2-CANDIDATE-OPTION-A-2026-07-24.md`.
   (generates the import SQL from the paste-back; every pinned identity
   re-proven; semantic-write receipt mechanically required; blocking pointer
   and count assertions; import INACTIVE only).
-- Read-only Block 00 was executed against staging on 2026-07-24. Both SEC
-  sources re-fetched and hash-verified, the generator completed, and the final
-  attestation plus generated 01–07 paste blocks are committed. No staging
-  write or activation occurred.
+- Block 00 and the authority bootstrap were executed against the isolated
+  staging project on 2026-07-24. Steps 0a–0e, step 1, the F2 authority
+  genesis dry-run and its apply all passed. The active pointer remained on
+  generation 8 / release `c9c19d…`.
+- The first generated termination dry-run failed closed and rolled back with
+  `canonical deal identity conflict`. The existing semantic deal is the
+  immutable tuple `(deal_key, deal_admission_id, document_hash)`; the packet
+  had incorrectly added query dimensions to that semantic identity.
+- The approved correction keeps that exact tuple in the authoritative
+  semantic write and keeps buyer, sector, merger form, advisers, lawyers,
+  announce year and deal value on the serving projection. The packet was
+  regenerated with semantic input digest `6e874fea…`. All serving and release
+  identities remained unchanged. No candidate import or activation has
+  occurred.
 - Status artifact generation 4 records the Option A runbook adaptation.
 - Tests: `tests/canonical-v2-qxo-termination-fee-admitted-slice.test.js`
   plus authority-partition and fail-closed packet tests. Full battery
@@ -47,24 +57,22 @@ read first): `SPEC-QXO-TERMF-F2-CANDIDATE-OPTION-A-2026-07-24.md`.
   byte-for-byte content parity on `codex/canonical-corpus-v2`. The untracked
   `docs/codex-program/engine-build-map.md` in that worktree was preserved.
 
-## Next authorised action: Ben-run staging paste sequence
+## Next authorised action: staging-only corrected packet
 
-The generator and attestation are complete. Do not regenerate them unless a
-fail-closed assertion reports source or staging drift. Do not run these writes
-for Ben: programme governance still requires local, dry-run-first Ben execution
-in the staging SQL Editor. No production database step is authorised.
+Ben expressly authorised Codex to execute the SQL. The correction must first
+merge to `main`, deploy in a contained state, and be synchronised to
+`codex/canonical-corpus-v2`. Then, from that staging-linked worktree only:
 
-1. Ben pastes `step0a` through `step0e` in order from `sql/optionA/`.
-2. Ben pastes `step1-active-query-page-release-declared-fingerprint.sql`.
-3. Ben pastes `01-f2-authority-genesis-dry-run.sql`, checks the rollback
-   result, then pastes `01-f2-authority-genesis-apply.sql`.
-4. Ben reruns `00-read-lineage.sql`. Stop on any mismatch with the pinned
-   preconditions in `generated/01-verify-before.sql`.
-5. Ben pastes `generated/01` through `generated/06` in order. Dry-run blocks
-   must precede their apply blocks. This imports an INACTIVE release only.
-6. Do not activate the candidate release. `generated/07-rollback-rehearsal.sql`
+1. Rerun `generated/01-verify-before.sql`.
+2. Run `generated/02-termination-deal-scope-dry-run.sql`; it must pass and
+   roll back.
+3. Run `generated/03-termination-deal-scope-apply.sql`.
+4. Run `generated/04-import-dry-run.sql`; it must pass and roll back.
+5. Run `generated/05-import-apply.sql`. This imports an INACTIVE release only.
+6. Run `generated/06-verify-after.sql` plus a read-only pointer/state check.
+7. Do not activate the candidate release. `generated/07-rollback-rehearsal.sql`
    is a separate rehearsal, not part of the import sequence.
-7. Later packets: Parent/reverse fee (§6.5(c), text admitted and untouched);
+8. Later packets: Parent/reverse fee (§6.5(c), text admitted and untouched);
    dimension backfill for sibling QXO rows (spec R5 flag); composition
    exact-detail under a future contract version if Ben wants the trigger
    composition in the detail drawer.

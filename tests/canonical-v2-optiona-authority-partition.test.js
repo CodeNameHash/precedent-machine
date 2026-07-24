@@ -65,6 +65,7 @@ test('generated Option A packet is pinned, bounded and inactive', () => {
   assert.equal(attestation.corpus_release_id, '1b70bbc8b615e1195a71ba5f9ce9aad88542e2dce4c402813e372fea9277d2b6');
   assert.equal(attestation.candidate_release_import_plan_id, 'dd26b85607cc53ea78e74455724db2eab970c4c22c2196f25f4f17343f63ab86');
   assert.equal(attestation.termination_semantic_closure_id, '6e59b62130b2c0bac205251bf936c7aaca55b84ed9251971a1528870b17672a2');
+  assert.equal(attestation.termination_deal_scope_input_digest, '6e874fea87644f513b330c2a9853f31f4a4b806baafd18bfe028a23b97c83a5f');
 
   const before = fs.readFileSync(`${root}/01-verify-before.sql`, 'utf8');
   const semanticDryRun = fs.readFileSync(`${root}/02-termination-deal-scope-dry-run.sql`, 'utf8');
@@ -75,6 +76,11 @@ test('generated Option A packet is pinned, bounded and inactive', () => {
   assert.match(before, /active staging pointer is not the exact pinned F1 pointer/);
   assert.match(before, /one or more prior QXO semantic closures are missing/);
   assert.match(semanticDryRun, /exact termination DEAL_SCOPE_RUN receipt is not committed/);
+  assert.match(
+    semanticDryRun,
+    /"deal":\{"deal_key":"deal:qxo-topbuild","deal_admission_id":"62b8b828c534273c68dcd48cec3fbbcb4f912ac3f477dbdc377de5ac47954c8f","document_hash":"abba043018410d718c207e7d7a43c9567166f6a10c4c9a6b4b0c8c7761cd6b9d"\}/,
+  );
+  assert.doesNotMatch(semanticDryRun, /"deal":\{[^}]*"dimensions"/);
   assert.match(semanticDryRun, /ROLLBACK;\s*$/);
   assert.match(semanticApply, /exact termination DEAL_SCOPE_RUN receipt is not committed/);
   assert.match(semanticApply, /COMMIT;\s*$/);
