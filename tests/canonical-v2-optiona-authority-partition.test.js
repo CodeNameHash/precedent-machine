@@ -35,6 +35,8 @@ test('Option A blocks fail closed and keep activation outside the packet', () =>
   assert.ok(semanticGate >= 0 && semanticGate < importFiles);
   assert.match(generator, /exact termination DEAL_SCOPE_RUN receipt is not committed/);
   assert.match(generator, /termination semantic closure count mismatch/);
+  assert.match(generator, /shared deal-value excerpt mismatch/);
+  assert.match(generator, /reuse exactly the pinned material deal-value excerpt/);
   assert.match(generator, /active staging pointer is not the exact pinned F1 pointer/);
   assert.match(generator, /inactive import changed the active staging pointer/);
   assert.doesNotMatch(generator, /canonical_v2_activate_candidate_release\s*\(/);
@@ -65,7 +67,7 @@ test('generated Option A packet is pinned, bounded and inactive', () => {
   assert.equal(attestation.corpus_release_id, '1b70bbc8b615e1195a71ba5f9ce9aad88542e2dce4c402813e372fea9277d2b6');
   assert.equal(attestation.candidate_release_import_plan_id, 'dd26b85607cc53ea78e74455724db2eab970c4c22c2196f25f4f17343f63ab86');
   assert.equal(attestation.termination_semantic_closure_id, '6e59b62130b2c0bac205251bf936c7aaca55b84ed9251971a1528870b17672a2');
-  assert.equal(attestation.termination_deal_scope_input_digest, '6e874fea87644f513b330c2a9853f31f4a4b806baafd18bfe028a23b97c83a5f');
+  assert.equal(attestation.termination_deal_scope_input_digest, '4bc0b3b0dca0832212cad00e83b7bbc595e5119708953e51c62ee192dd3f8db7');
 
   const before = fs.readFileSync(`${root}/01-verify-before.sql`, 'utf8');
   const semanticDryRun = fs.readFileSync(`${root}/02-termination-deal-scope-dry-run.sql`, 'utf8');
@@ -81,6 +83,14 @@ test('generated Option A packet is pinned, bounded and inactive', () => {
     /"deal":\{"deal_key":"deal:qxo-topbuild","deal_admission_id":"62b8b828c534273c68dcd48cec3fbbcb4f912ac3f477dbdc377de5ac47954c8f","document_hash":"abba043018410d718c207e7d7a43c9567166f6a10c4c9a6b4b0c8c7761cd6b9d"\}/,
   );
   assert.doesNotMatch(semanticDryRun, /"deal":\{[^}]*"dimensions"/);
+  assert.match(
+    semanticDryRun,
+    /closure_id='6e59b62130b2c0bac205251bf936c7aaca55b84ed9251971a1528870b17672a2'\) <> 8 THEN\s+RAISE EXCEPTION 'termination semantic closure count mismatch: excerpts'/,
+  );
+  assert.match(
+    semanticDryRun,
+    /excerpt_id='56224984beed0f058c61f7af92667fdf3c983a65dc742052946af979e40b7dee'[\s\S]*closure_id='a08b15c095464e265205ffd87ec380a85e37e9867c9701551b7b59759ed0cab5'[\s\S]*RAISE EXCEPTION 'shared deal-value excerpt mismatch'/,
+  );
   assert.match(semanticDryRun, /ROLLBACK;\s*$/);
   assert.match(semanticApply, /exact termination DEAL_SCOPE_RUN receipt is not committed/);
   assert.match(semanticApply, /COMMIT;\s*$/);

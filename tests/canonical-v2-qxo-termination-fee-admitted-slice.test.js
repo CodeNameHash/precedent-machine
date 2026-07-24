@@ -12,6 +12,7 @@ const { buildCandidateReleaseImportPlan } = require('../lib/canonical-v2/candida
 const { compileFixtureContract, compileFixtureContractV2 } = require('../lib/canonical-v2/contract-bundle');
 const { validateFixtureExactDetailPackage } = require('../lib/canonical-v2/exact-detail');
 const {
+  QXO_MATERIAL_SEMANTIC_CLOSURE_ID,
   QXO_TERMINATION_CONTRACT_FINGERPRINT_V2,
   buildQxoTerminationCombinedCandidateSeed,
   qxoTerminationCombinedCandidateReleaseId,
@@ -213,6 +214,20 @@ test('the admitted termination-fee slice reproduces the reviewed fixture legal e
     announce_year: 2026,
     deal_value_usd: '17000000000',
   });
+  const semanticExcerpts = new Map(candidate.semantic_write_set.excerpts.map(
+    (excerpt) => [excerpt.excerpt_id, excerpt],
+  ));
+  assert.equal(
+    semanticExcerpts.get(candidate.excerpts.deal_value.excerpt_id).closure_id,
+    QXO_MATERIAL_SEMANTIC_CLOSURE_ID,
+  );
+  assert.equal(
+    candidate.semantic_write_set.excerpts.filter(
+      (excerpt) => excerpt.closure_id === candidate.semantic_closure_id,
+    ).length,
+    8,
+  );
+  assert.equal(candidate.semantic_write_set.excerpts.length, 9);
   assert.deepEqual(candidate.provisions[0].party, {
     role: 'FEE_PAYER', value: 'COMPANY', capacity: 'TARGET',
   });
