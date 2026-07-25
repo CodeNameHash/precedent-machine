@@ -35,6 +35,12 @@ const {
   validateQxoTierBParserBoundReviewSeed,
 } = require('../lib/canonical-v2/qxo-tier-b-parser-bridge');
 const {
+  MAX_CLOSURE_BYTES,
+  buildQxoTierBReviewDependencyClosure,
+  validateQxoTierBReviewDependencyClosure,
+  validateQxoTierBReviewDependencyClosureIsolated,
+} = require('../lib/canonical-v2/qxo-tier-b-review-dependency-closure');
+const {
   buildSecEdgarIntakeCapture,
 } = require('../lib/canonical-v2/sec-edgar-intake-capture');
 const {
@@ -705,5 +711,318 @@ test('party-token selection rejects longer-token and duplicate collisions', () =
       ' and ',
     ),
     /one exact bounded Titanium Merger Sub token/i,
+  );
+});
+
+test('builds one deterministic compact review-only Tier B dependency closure', () => {
+  const fixture = admittedFixture();
+  const first = buildQxoTierBReviewDependencyClosure(fixture.bridgeInputs);
+  const second = buildQxoTierBReviewDependencyClosure(fixture.bridgeInputs);
+
+  assert.equal(canonicalJson(first), canonicalJson(second));
+  assert.equal(
+    validateQxoTierBReviewDependencyClosure({
+      qxo_tier_b_review_dependency_closure: first,
+      ...fixture.bridgeInputs,
+    }),
+    true,
+  );
+  assert.ok(Buffer.byteLength(canonicalJson(first), 'utf8') < MAX_CLOSURE_BYTES);
+  assertDeepFrozen(first);
+  assert.equal(
+    first.authority_scope,
+    'OFFLINE_REVIEW_IDENTITY_ONLY_NO_RESULT_AUTHORITY',
+  );
+  assert.equal(first.status.certification_state, 'NOT_CERTIFIED');
+  assert.equal(first.status.comparability_state, 'NOT_CERTIFIED');
+  for (const authority of [
+    'canonical_result_authority',
+    'query_authority',
+    'cohort_authority',
+    'serving_projection_authority',
+    'canonical_write_authority',
+    'release_authority',
+  ]) {
+    assert.equal(first.status[authority], 'NONE');
+  }
+});
+
+test('binds exact claims, evidence groups, non-contiguous targets and nested-definition geometry', () => {
+  const fixture = admittedFixture();
+  const closure = buildQxoTierBReviewDependencyClosure(fixture.bridgeInputs);
+  const seed = buildQxoTierBParserBoundReviewSeed(fixture.bridgeInputs);
+  const slice = fixture.capitalisationSlice;
+  const references = closure.reviewed_source_references;
+
+  assert.equal(
+    closure.parser_seed_binding.qxo_tier_b_parser_bound_review_seed_id,
+    seed.qxo_tier_b_parser_bound_review_seed_id,
+  );
+  assert.equal(
+    references.accuracy_claim_reference.claim_revision_id,
+    slice.accuracyClaims[0].claim_revision_id,
+  );
+  assert.equal(
+    references.exception_claim_reference.claim_revision_id,
+    slice.exceptionClaim.claim_revision_id,
+  );
+  assert.equal(
+    references.brings_down_relationship_reference.relationship_revision_id,
+    slice.relationships[0].relationship_revision_id,
+  );
+  assert.deepEqual(
+    references.accuracy_claim_reference.evidence_excerpt_ids,
+    [slice.excerpts.tier_b.excerpt_id],
+  );
+  assert.deepEqual(
+    references.exception_claim_reference.evidence_excerpt_ids,
+    [
+      slice.excerpts.tier_b.excerpt_id,
+      slice.excerpts.de_minimis_definition.excerpt_id,
+    ],
+  );
+  assert.deepEqual(
+    references.brings_down_relationship_reference.evidence_excerpt_ids,
+    closure.source_geometry.ordered_review_excerpt_ids,
+  );
+  assert.deepEqual(
+    closure.source_geometry.ordered_target_component_references
+      .map((item) => item.provision_component_id),
+    [
+      slice.components[0].provision_component_id,
+      slice.components[2].provision_component_id,
+    ],
+  );
+  assert.ok(closure.source_geometry.target_gap_byte_length > 0);
+  assert.equal(closure.source_geometry.target_geometry_state, 'NON_CONTIGUOUS');
+  assert.equal(
+    references.definition_source_reference.definition_cue_id,
+    seed.reviewed_definition_binding.definition_cue_id,
+  );
+  assert.equal(
+    references.definition_source_reference.definition_dependency_state,
+    'PENDING_GOVERNED_USES_DEFINITION_RELATIONSHIP',
+  );
+  assert.equal(
+    references.definition_source_reference.definition_use_relationship_authority,
+    'NONE_PENDING_FREEZE_GATE',
+  );
+});
+
+test('preserves party uncertainty, withheld absences and every inherited blocker', () => {
+  const fixture = admittedFixture({ parserResidual: true });
+  const seed = buildQxoTierBParserBoundReviewSeed(fixture.bridgeInputs);
+  const closure = buildQxoTierBReviewDependencyClosure(fixture.bridgeInputs);
+
+  assert.deepEqual(
+    closure.party_uncertainty.observed_party_references.map((item) => ({
+      token_key: item.token_key,
+      allocation_status: item.allocation_status,
+      assigned_party_value: item.assigned_party_value,
+    })),
+    [
+      {
+        token_key: 'PARENT',
+        allocation_status: 'MAPPED_EXISTING_PARTY_REFERENCE_ONLY',
+        assigned_party_value: 'PARENT',
+      },
+      {
+        token_key: 'TITANIUM_MERGER_SUB',
+        allocation_status: 'OBSERVED_UNASSIGNED',
+        assigned_party_value: null,
+      },
+      {
+        token_key: 'FORWARD_MERGER_SUB',
+        allocation_status: 'OBSERVED_UNASSIGNED',
+        assigned_party_value: null,
+      },
+    ],
+  );
+  assert.equal(
+    closure.party_uncertainty.parent_reference_completeness,
+    'NOT_CERTIFIED',
+  );
+  assert.deepEqual(
+    closure.withheld_candidate_references.map((item) => ({
+      state: item.state,
+      reason_code: item.reason_code,
+      dependency_state: item.dependency_state,
+    })),
+    [
+      {
+        state: 'ABSENT',
+        reason_code: 'ABSENCE_SCOPE_NOT_CERTIFIED',
+        dependency_state: 'WITHHELD_NOT_A_LINEAGE_OR_COMPLETENESS_INPUT',
+      },
+      {
+        state: 'ABSENT',
+        reason_code: 'ABSENCE_SCOPE_NOT_CERTIFIED',
+        dependency_state: 'WITHHELD_NOT_A_LINEAGE_OR_COMPLETENESS_INPUT',
+      },
+    ],
+  );
+  for (const blocker of seed.status.blocker_codes) {
+    assert.equal(closure.status.blocker_codes.includes(blocker), true);
+  }
+  for (const blocker of [
+    'COMPOSITION_SCOPE_CLOSURE_NOT_FROZEN',
+    'EXPECTED_LINEAGE_SLOTS_NOT_FROZEN',
+    'RESULT_DEFINITION_NOT_FROZEN',
+  ]) {
+    assert.equal(closure.status.blocker_codes.includes(blocker), true);
+  }
+  assert.equal(
+    closure.status.blocker_codes.includes('PARSER_RESIDUAL_RETAINED'),
+    true,
+  );
+});
+
+test('does not mint canonical lineage, result, metric, serving or release authority', () => {
+  const fixture = admittedFixture();
+  const closure = buildQxoTierBReviewDependencyClosure(fixture.bridgeInputs);
+  const keys = collectKeys(closure);
+
+  for (const forbidden of [
+    'component_occurrence_id',
+    'component_revision_id',
+    'composition_scope_closure_id',
+    'corpus_release_id',
+    'derived_result_id',
+    'derived_result_revision_id',
+    'expected_result_input_lineage_slot_id',
+    'input_lineage_digest',
+    'market_observation_id',
+    'metric_slot_id',
+    'result_component_occurrence_id',
+    'result_component_revision_id',
+    'result_definition_id',
+    'result_input_lineage',
+    'result_input_lineage_digest',
+    'result_input_lineage_entry',
+    'result_input_lineage_id',
+    'uses_definition_relationship_revision_id',
+    'result_key',
+    'result_version',
+    'value_slot_key',
+    'canonical_value',
+    'raw_value',
+    'exact_text',
+  ]) {
+    assert.equal(keys.has(forbidden), false, `forbidden field ${forbidden}`);
+  }
+  assert.throws(
+    () => validateCanonicalWriteSet(closure, contractBundle),
+    /fixed contract|fields do not match|write set/i,
+  );
+});
+
+test('fails closed on source-reference drift without hiding the underlying review provision', () => {
+  const fixture = admittedFixture();
+  const closure = buildQxoTierBReviewDependencyClosure(fixture.bridgeInputs);
+  const siblingProvision = Object.freeze({
+    provision_key: 'UNRELATED_REVIEW_PROVISION',
+    review_renderable: true,
+  });
+  const mutations = [
+    (value) => {
+      value.reviewed_source_references.accuracy_claim_reference.claim_revision_id =
+        '1'.repeat(64);
+    },
+    (value) => {
+      value.reviewed_source_references.exception_claim_reference.evidence_edge_ids.reverse();
+    },
+    (value) => {
+      value.reviewed_source_references.brings_down_relationship_reference
+        .ordered_target_occurrence_ids.reverse();
+    },
+    (value) => {
+      value.reviewed_source_references.definition_source_reference
+        .operative_definition_use_cue_id = '2'.repeat(64);
+    },
+    (value) => {
+      value.party_uncertainty.observed_party_references[1].assigned_party_value =
+        'TITANIUM_MERGER_SUB';
+    },
+    (value) => {
+      value.withheld_candidate_references[0].reason_code = 'CERTIFIED_ABSENT';
+    },
+  ];
+
+  for (const mutate of mutations) {
+    const changed = clone(closure);
+    mutate(changed);
+    const outcome = validateQxoTierBReviewDependencyClosureIsolated({
+      qxo_tier_b_review_dependency_closure: changed,
+      ...fixture.bridgeInputs,
+    });
+    assert.equal(outcome.suppressed, true);
+    assert.equal(outcome.failure_code, 'CLOSURE_IDENTITY_MISMATCH');
+    assert.equal(outcome.underlying_review_provision_visibility, 'UNAFFECTED');
+    assert.equal(outcome.closure, null);
+    assert.equal(siblingProvision.review_renderable, true);
+    assert.equal(
+      validateQxoTierBParserBoundReviewSeed({
+        qxo_tier_b_parser_bound_review_seed:
+          buildQxoTierBParserBoundReviewSeed(fixture.bridgeInputs),
+        ...fixture.bridgeInputs,
+      }),
+      true,
+    );
+  }
+});
+
+test('propagates unknown fields, bounds, authority leaks and upstream integrity failures', () => {
+  const fixture = admittedFixture();
+  const closure = buildQxoTierBReviewDependencyClosure(fixture.bridgeInputs);
+
+  const unknown = clone(closure);
+  unknown.reviewed_source_references.hidden_future_input = {};
+  assert.throws(
+    () => validateQxoTierBReviewDependencyClosureIsolated({
+      qxo_tier_b_review_dependency_closure: unknown,
+      ...fixture.bridgeInputs,
+    }),
+    /outside the closed review dependency contract/i,
+  );
+
+  const authorityLeak = clone(closure);
+  authorityLeak.status.query_authority = 'READ';
+  assert.throws(
+    () => validateQxoTierBReviewDependencyClosureIsolated({
+      qxo_tier_b_review_dependency_closure: authorityLeak,
+      ...fixture.bridgeInputs,
+    }),
+    /unfrozen authority/i,
+  );
+
+  const forbiddenField = clone(closure);
+  forbiddenField.review_subject_binding.result_definition_id = '3'.repeat(64);
+  assert.throws(
+    () => validateQxoTierBReviewDependencyClosureIsolated({
+      qxo_tier_b_review_dependency_closure: forbiddenField,
+      ...fixture.bridgeInputs,
+    }),
+    /forbidden authority field/i,
+  );
+
+  const oversized = clone(closure);
+  oversized.parser_seed_binding.qxo_tier_b_parser_bound_review_seed_id =
+    'x'.repeat(MAX_CLOSURE_BYTES + 1);
+  assert.throws(
+    () => validateQxoTierBReviewDependencyClosureIsolated({
+      qxo_tier_b_review_dependency_closure: oversized,
+      ...fixture.bridgeInputs,
+    }),
+    /exceeds 16 KiB/i,
+  );
+
+  const changedContext = clone(fixture.context);
+  changedContext.canonical_text.text += 'upstream source drift';
+  assert.throws(
+    () => buildQxoTierBReviewDependencyClosure({
+      ...fixture.bridgeInputs,
+      admitted_source_context: changedContext,
+    }),
+    /canonical text|context|identity/i,
   );
 });
