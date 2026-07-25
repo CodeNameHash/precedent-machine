@@ -162,7 +162,7 @@ test('actions seed grants no relationship, result, market, query, serving, write
     assert.equal(status[authority], 'NONE');
   }
   assert.equal(status.release_eligible, false);
-  assert.equal(status.action_reference_complete, true);
+  assert.equal(status.action_reference_complete, false);
   assert.equal(status.review_reference_complete, false);
   assert.equal(
     status.exception_context_state,
@@ -173,6 +173,7 @@ test('actions seed grants no relationship, result, market, query, serving, write
     'SUPPRESS_AFFECTED_ACTION_OR_SHARED_EXCEPTION_CONTEXT_ONLY',
   );
   for (const blocker of [
+    'ACTION_SOURCE_MAPPING_REQUIRES_ATOMIC_SPLIT',
     'COMPOSITION_SCOPE_CLOSURE_NOT_FROZEN',
     'EXCEPTED_BY_EFFECT_CONTRACT_NOT_FROZEN',
     'EXCEPTION_PREREQUISITE_CODEBOOK_AMENDMENT_REQUIRED',
