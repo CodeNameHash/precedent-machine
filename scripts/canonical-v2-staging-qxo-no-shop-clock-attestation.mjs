@@ -43,6 +43,11 @@ const {
   validateQxoNoShopReviewedDefinitionGraphF6,
 } = require('../lib/canonical-v2/qxo-no-shop-reviewed-definition-graph-f6');
 const {
+  buildQxoNoShopExceptionSourceBindingF6,
+  buildQxoNoShopExceptionSourceBindingF6FailureIsolationAttestation,
+  validateQxoNoShopExceptionSourceBindingF6,
+} = require('../lib/canonical-v2/qxo-no-shop-exception-source-binding-f6');
+const {
   buildQxoAdmittedNoShopActionsSlice,
 } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
 const {
@@ -92,6 +97,10 @@ const DEFINITIONS_F6_FIXTURE_PATH = join(
 const DEFINITION_GRAPH_F6_FIXTURE_PATH = join(
   ROOT,
   'tests/fixtures/canonical-v2/qxo-no-shop-definition-graph-f6-staging-attestation.json',
+);
+const EXCEPTION_SOURCE_F6_FIXTURE_PATH = join(
+  ROOT,
+  'tests/fixtures/canonical-v2/qxo-no-shop-exception-source-f6-staging-attestation.json',
 );
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
@@ -769,6 +778,324 @@ function buildDefinitionGraphF6Attestation() {
   };
 }
 
+function buildExceptionSourceF6Attestation() {
+  const contractBundle = compileFixtureContractV6();
+  const {
+    admittedSourceContext,
+    admittedParserProposalEnvelope,
+    parserInputs,
+  } = buildSourceInputs(contractBundle);
+  const reviewedSlice = buildQxoAdmittedNoShopActionsF6Slice({
+    sourceContext: admittedSourceContext,
+    contractBundle,
+  });
+  const actionBridgeInputs = {
+    ...parserInputs,
+    admitted_parser_proposal_envelope: admittedParserProposalEnvelope,
+    reviewed_no_shop_actions_f6_slice: reviewedSlice,
+  };
+  const actionSeed = buildQxoNoShopActionsF6ParserBoundReviewSeed(
+    actionBridgeInputs,
+  );
+  const supplementInputs = {
+    ...parserInputs,
+    admitted_parser_proposal_envelope: admittedParserProposalEnvelope,
+  };
+  const supplement = buildQxoNoShopNestedDefinitionCandidateSupplement(
+    supplementInputs,
+  );
+  const graphInputs = {
+    ...supplementInputs,
+    qxo_no_shop_nested_definition_candidate_supplement: supplement,
+  };
+  const definitionGraph = buildQxoNoShopReviewedDefinitionGraphF6(graphInputs);
+  const bindingInputs = {
+    ...parserInputs,
+    qxo_no_shop_actions_f6_parser_bound_review_seed: actionSeed,
+    qxo_no_shop_reviewed_definition_graph_f6: definitionGraph,
+  };
+  const carrier = buildQxoNoShopExceptionSourceBindingF6(bindingInputs);
+  validateQxoNoShopExceptionSourceBindingF6({
+    qxo_no_shop_exception_source_binding_f6: carrier,
+    ...bindingInputs,
+  });
+
+  const changed = JSON.parse(JSON.stringify(carrier));
+  changed.status.release_eligible = true;
+  let carrierDriftRejected = false;
+  try {
+    validateQxoNoShopExceptionSourceBindingF6({
+      qxo_no_shop_exception_source_binding_f6: changed,
+      ...bindingInputs,
+    });
+  } catch (_) {
+    carrierDriftRejected = true;
+  }
+  if (!carrierDriftRejected) {
+    throw new Error('The F6 exception source carrier accepted identity drift.');
+  }
+
+  const furnishingFailure =
+    buildQxoNoShopExceptionSourceBindingF6FailureIsolationAttestation(
+      bindingInputs,
+      {
+        prerequisite_code: 'ACCEPTABLE_CONFIDENTIALITY_AGREEMENT_REQUIRED',
+      },
+    );
+  const sharedFailure =
+    buildQxoNoShopExceptionSourceBindingF6FailureIsolationAttestation(
+      bindingInputs,
+      {
+        prerequisite_code:
+          'PROPOSAL_NOT_RESULTING_FROM_COVENANT_OBLIGOR_NO_SHOP_BREACH',
+      },
+    );
+  const operationFailure =
+    buildQxoNoShopExceptionSourceBindingF6FailureIsolationAttestation(
+      bindingInputs,
+      { effect_key: 'B_ENGAGE_DISCUSSIONS_EXCEPTION' },
+    );
+  const baselineEffectByKey = new Map(carrier.exception_effect_outcomes.map(
+    (outcome) => [outcome.effect_key, outcome],
+  ));
+  const furnishingFailureByKey = new Map(
+    furnishingFailure.exception_effect_outcomes.map(
+      (outcome) => [outcome.effect_key, outcome],
+    ),
+  );
+  const operationFailureByKey = new Map(
+    operationFailure.exception_effect_outcomes.map(
+      (outcome) => [outcome.effect_key, outcome],
+    ),
+  );
+  const furnishingOnlySuppressed = [...furnishingFailureByKey].every(
+    ([key, outcome]) => (
+      key === 'FURNISH_NONPUBLIC_INFORMATION_EXCEPTION'
+        ? outcome.failure_code === 'ACTION_SPECIFIC_PREREQUISITE_UNRESOLVED'
+        : outcome.suppressed === false
+          && outcome.qxo_no_shop_exception_effect_outcome_f6_id
+            === baselineEffectByKey.get(key)
+              .qxo_no_shop_exception_effect_outcome_f6_id
+    ),
+  );
+  const sharedFailureSuppressesAll =
+    sharedFailure.exception_effect_outcomes.every(
+      (outcome) => outcome.failure_code === 'SHARED_PREREQUISITE_UNRESOLVED',
+    );
+  const oneOperationSuppressed = [...operationFailureByKey].every(
+    ([key, outcome]) => (
+      key === 'B_ENGAGE_DISCUSSIONS_EXCEPTION'
+        ? outcome.failure_code === 'ATTESTED_EFFECT_FAILURE'
+        : outcome.suppressed === false
+          && outcome.qxo_no_shop_exception_effect_outcome_f6_id
+            === baselineEffectByKey.get(key)
+              .qxo_no_shop_exception_effect_outcome_f6_id
+    ),
+  );
+  const residualsSurvive = [furnishingFailure, sharedFailure, operationFailure]
+    .every((failed) => (
+      canonicalJson(failed.unresolved_effects)
+        === canonicalJson(carrier.unresolved_effects)
+      && failed.status.review_renderable === true
+      && failed.status.publication_blocked === true
+    ));
+  const failureIsolationVerified = furnishingOnlySuppressed
+    && sharedFailureSuppressesAll
+    && oneOperationSuppressed
+    && residualsSurvive;
+  if (!failureIsolationVerified) {
+    throw new Error('The F6 exception source failures were not isolated.');
+  }
+
+  return {
+    schema_version: 'QXO_NO_SHOP_EXCEPTION_SOURCE_F6_STAGING_ATTESTATION/V1',
+    environment: 'STAGING',
+    authority_scope: carrier.authority_scope,
+    contract_binding: carrier.contract_binding,
+    source_binding: carrier.source_binding,
+    upstream_bindings: carrier.upstream_bindings,
+    party_binding: carrier.party_binding,
+    governed_scopes: carrier.governed_scopes,
+    source_evidence: carrier.source_evidence.map((entry) => ({
+      source_key: entry.source_key,
+      governed_ordinal: entry.governed_ordinal,
+      absolute_start: entry.semantic_span.absolute_start,
+      absolute_end: entry.semantic_span.absolute_end,
+      exact_bytes_digest: entry.semantic_span.exact_bytes_digest,
+    })),
+    prerequisite_outcomes: carrier.prerequisite_outcomes.map((outcome) => ({
+      prerequisite_code: outcome.prerequisite_code,
+      prerequisite_class: outcome.prerequisite_class,
+      suppressed: outcome.suppressed,
+      failure_code: outcome.failure_code,
+      source_binding_id: outcome.source_binding
+        ?.qxo_no_shop_exception_prerequisite_source_binding_f6_id || null,
+      evidence_excerpt_count:
+        outcome.source_binding?.evidence_excerpt_ids.length || 0,
+      definition_use_binding_count:
+        outcome.source_binding?.definition_use_binding_ids.length || 0,
+      definition_dependency_edge_count:
+        outcome.source_binding?.definition_dependency_edge_ids.length || 0,
+    })),
+    exception_effect_outcomes: carrier.exception_effect_outcomes.map((outcome) => ({
+      effect_key: outcome.effect_key,
+      action_occurrence_keys: outcome.action_occurrence_keys,
+      suppressed: outcome.suppressed,
+      failure_code: outcome.failure_code,
+      source_binding_id: outcome.source_binding
+        ?.qxo_no_shop_exception_effect_source_binding_f6_id || null,
+      legal_operation: outcome.source_binding?.legal_operation || null,
+      affected_action_code:
+        outcome.source_binding?.affected_action_code || null,
+      affected_action_occurrence_keys:
+        outcome.source_binding?.affected_action_endpoints.map(
+          (endpoint) => endpoint.occurrence_key,
+        ) || [],
+      evidence_excerpt_count:
+        outcome.source_binding?.evidence_excerpt_ids.length || 0,
+      definition_use_binding_count:
+        outcome.source_binding?.definition_use_binding_ids.length || 0,
+      definition_dependency_edge_count:
+        outcome.source_binding?.definition_dependency_edge_ids.length || 0,
+      governing_notice_obligation_revision_id:
+        outcome.source_binding?.governing_notice_obligation_revision_id || null,
+      relationship_effect_authority:
+        outcome.source_binding?.relationship_effect_authority || null,
+    })),
+    inline_permission_source_binding: {
+      source_binding_id: carrier.inline_permission_source_binding
+        .qxo_no_shop_inline_permission_source_binding_f6_id,
+      legal_operation:
+        carrier.inline_permission_source_binding.legal_operation,
+      qualified_action_outcomes:
+        carrier.inline_permission_source_binding.qualified_action_outcomes.map(
+          (outcome) => ({
+            occurrence_key: outcome.occurrence_key,
+            suppressed: outcome.suppressed,
+            failure_code: outcome.failure_code,
+          }),
+        ),
+      source_binding_complete:
+        carrier.inline_permission_source_binding.source_binding_complete,
+      relationship_effect_authority:
+        carrier.inline_permission_source_binding.relationship_effect_authority,
+    },
+    unresolved_effects: carrier.unresolved_effects.map((residual) => ({
+      action_occurrence_key: residual.action_occurrence_key,
+      affected_action_code: residual.affected_action_code,
+      action_occurrence_revision_id:
+        residual.action_occurrence_revision_id,
+      examined_permission_cluster_excerpt_id:
+        residual.examined_permission_cluster_excerpt_id,
+      reason_code: residual.reason_code,
+      legal_operation: residual.legal_operation,
+      absence_authority: residual.absence_authority,
+      comparability_authority: residual.comparability_authority,
+      unresolved_effect_id:
+        residual.qxo_no_shop_unresolved_exception_effect_f6_id,
+    })),
+    retained_source_residuals: carrier.retained_source_residuals.map(
+      (residual) => ({
+        residual_code: residual.residual_code,
+        governed_ordinal: residual.governed_ordinal,
+        state: residual.state,
+        absence_authority: residual.absence_authority,
+        source_residual_id:
+          residual.qxo_no_shop_exception_source_residual_f6_id,
+      }),
+    ),
+    notice_dependency: {
+      governed_notice_dependency:
+        carrier.notice_dependency.governed_notice_dependency,
+      first_sentence_notice_excerpt_id:
+        carrier.notice_dependency.first_sentence_notice_excerpt_id,
+      retained_definition_use_residual_id:
+        carrier.notice_dependency.retained_definition_use_residual_id,
+      notice_obligation_revision_id:
+        carrier.notice_dependency.notice_obligation_revision_id,
+      dependency_state: carrier.notice_dependency.dependency_state,
+      absence_authority: carrier.notice_dependency.absence_authority,
+    },
+    definition_relationship_dependency: {
+      reviewed_definition_use_binding_ids:
+        carrier.definition_relationship_dependency
+          .reviewed_definition_use_binding_ids,
+      reviewed_definition_dependency_edge_ids:
+        carrier.definition_relationship_dependency
+          .reviewed_definition_dependency_edge_ids,
+      canonical_definition_use_relationship_ids:
+        carrier.definition_relationship_dependency
+          .canonical_definition_use_relationship_ids,
+      dependency_state:
+        carrier.definition_relationship_dependency.dependency_state,
+      relationship_authority:
+        carrier.definition_relationship_dependency.relationship_authority,
+    },
+    binding_status: carrier.status,
+    carrier_drift_rejected: carrierDriftRejected,
+    failure_isolation_verified: failureIsolationVerified,
+    qxo_no_shop_exception_source_binding_f6_id:
+      carrier.qxo_no_shop_exception_source_binding_f6_id,
+    canonical_payload_digest: carrier.canonical_payload_digest,
+  };
+}
+
+function exceptionSourceF6AttestationProjection(attestation) {
+  return {
+    schema_version: 'QXO_NO_SHOP_EXCEPTION_SOURCE_F6_STAGING_ATTESTATION/V1',
+    environment: attestation.environment,
+    authority_scope: attestation.authority_scope,
+    contract_binding: attestation.contract_binding,
+    source_binding: attestation.source_binding,
+    upstream_bindings: attestation.upstream_bindings,
+    source_evidence_count: attestation.source_evidence.length,
+    source_evidence_digest: contentId(
+      'QXO_NO_SHOP_EXCEPTION_SOURCE_EVIDENCE_ATTESTATION/V1',
+      attestation.source_evidence,
+    ),
+    prerequisite_outcome_count: attestation.prerequisite_outcomes.length,
+    prerequisite_outcomes_digest: contentId(
+      'QXO_NO_SHOP_EXCEPTION_PREREQUISITE_OUTCOMES_ATTESTATION/V1',
+      attestation.prerequisite_outcomes,
+    ),
+    supported_effect_outcome_count: attestation.exception_effect_outcomes.length,
+    supported_effect_outcomes_digest: contentId(
+      'QXO_NO_SHOP_EXCEPTION_EFFECT_OUTCOMES_ATTESTATION/V1',
+      attestation.exception_effect_outcomes,
+    ),
+    inline_permission_source_binding_id:
+      attestation.inline_permission_source_binding.source_binding_id,
+    unresolved_effect_count: attestation.unresolved_effects.length,
+    unresolved_effects_digest: contentId(
+      'QXO_NO_SHOP_UNRESOLVED_EXCEPTION_EFFECTS_ATTESTATION/V1',
+      attestation.unresolved_effects,
+    ),
+    retained_source_residual_count:
+      attestation.retained_source_residuals.length,
+    retained_source_residuals_digest: contentId(
+      'QXO_NO_SHOP_EXCEPTION_SOURCE_RESIDUALS_ATTESTATION/V1',
+      attestation.retained_source_residuals,
+    ),
+    notice_dependency_digest: contentId(
+      'QXO_NO_SHOP_NOTICE_DEPENDENCY_ATTESTATION/V1',
+      attestation.notice_dependency,
+    ),
+    definition_relationship_dependency_digest: contentId(
+      'QXO_NO_SHOP_DEFINITION_RELATIONSHIP_DEPENDENCY_ATTESTATION/V1',
+      attestation.definition_relationship_dependency,
+    ),
+    reviewed_definition_dependency_edge_count:
+      attestation.definition_relationship_dependency
+        .reviewed_definition_dependency_edge_ids.length,
+    binding_status: attestation.binding_status,
+    carrier_drift_rejected: attestation.carrier_drift_rejected,
+    failure_isolation_verified: attestation.failure_isolation_verified,
+    qxo_no_shop_exception_source_binding_f6_id:
+      attestation.qxo_no_shop_exception_source_binding_f6_id,
+    canonical_payload_digest: attestation.canonical_payload_digest,
+  };
+}
+
 function verifyActionsFailureIsolation(bridgeInputs) {
   const missingFirstAction = JSON.parse(JSON.stringify(
     bridgeInputs.reviewed_no_shop_actions_slice,
@@ -981,27 +1308,38 @@ if (![
   '--definitions-f6-verify',
   '--definition-graph-f6-print',
   '--definition-graph-f6-verify',
+  '--exception-source-f6-print',
+  '--exception-source-f6-verify',
 ].includes(mode)
   || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify');
 }
 
 try {
-  const definitionGraphF6Mode = mode.startsWith('--definition-graph-f6-');
-  const definitionsF6Mode = !definitionGraphF6Mode
+  const exceptionSourceF6Mode = mode.startsWith('--exception-source-f6-');
+  const definitionGraphF6Mode = !exceptionSourceF6Mode
+    && mode.startsWith('--definition-graph-f6-');
+  const definitionsF6Mode = !exceptionSourceF6Mode && !definitionGraphF6Mode
     && mode.startsWith('--definitions-f6-');
   const actionsF6Mode = !definitionsF6Mode && mode.startsWith('--actions-f6-');
   const actionsMode = !actionsF6Mode && mode.startsWith('--actions-');
-  const attestation = definitionGraphF6Mode
+  const attestation = exceptionSourceF6Mode
+    ? buildExceptionSourceF6Attestation()
+    : definitionGraphF6Mode
     ? buildDefinitionGraphF6Attestation()
     : definitionsF6Mode
     ? buildDefinitionsF6Attestation()
     : actionsF6Mode
     ? buildActionsF6Attestation()
     : actionsMode ? buildActionsAttestation() : buildAttestation();
+  const emittedAttestation = exceptionSourceF6Mode
+    ? exceptionSourceF6AttestationProjection(attestation)
+    : attestation;
   if (mode.endsWith('verify')) {
     const expected = JSON.parse(readFileSync(
-      definitionGraphF6Mode
+      exceptionSourceF6Mode
+        ? EXCEPTION_SOURCE_F6_FIXTURE_PATH
+        : definitionGraphF6Mode
         ? DEFINITION_GRAPH_F6_FIXTURE_PATH
         : definitionsF6Mode
         ? DEFINITIONS_F6_FIXTURE_PATH
@@ -1010,11 +1348,11 @@ try {
         : actionsMode ? ACTIONS_FIXTURE_PATH : FIXTURE_PATH,
       'utf8',
     ));
-    if (canonicalJson(attestation) !== canonicalJson(expected)) {
+    if (canonicalJson(emittedAttestation) !== canonicalJson(expected)) {
       throw new Error('The checked QXO no-shop staging attestation has drifted.');
     }
   }
-  process.stdout.write(`${canonicalJson(attestation)}\n`);
+  process.stdout.write(`${canonicalJson(emittedAttestation)}\n`);
 } catch (error) {
   fail(error instanceof Error ? error.message : 'QXO no-shop clock attestation failed.');
 }
