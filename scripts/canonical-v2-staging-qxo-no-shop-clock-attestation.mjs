@@ -34,6 +34,10 @@ const {
   validateQxoNoShopActionsF6ParserBoundReviewSeed,
 } = require('../lib/canonical-v2/qxo-no-shop-actions-f6-parser-bridge');
 const {
+  buildQxoNoShopNestedDefinitionCandidateSupplement,
+  validateQxoNoShopNestedDefinitionCandidateSupplement,
+} = require('../lib/canonical-v2/qxo-no-shop-nested-definition-candidate-supplement');
+const {
   buildQxoAdmittedNoShopActionsSlice,
 } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
 const {
@@ -75,6 +79,10 @@ const ACTIONS_FIXTURE_PATH = join(
 const ACTIONS_F6_FIXTURE_PATH = join(
   ROOT,
   'tests/fixtures/canonical-v2/qxo-no-shop-actions-f6-staging-attestation.json',
+);
+const DEFINITIONS_F6_FIXTURE_PATH = join(
+  ROOT,
+  'tests/fixtures/canonical-v2/qxo-no-shop-definitions-f6-staging-attestation.json',
 );
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
@@ -505,6 +513,101 @@ function buildAttestation() {
   };
 }
 
+function buildDefinitionsF6Attestation() {
+  const contractBundle = compileFixtureContractV6();
+  const {
+    admittedSourceContext,
+    admittedParserProposalEnvelope,
+    parserInputs,
+  } = buildSourceInputs(contractBundle);
+  const supplementInputs = {
+    ...parserInputs,
+    admitted_parser_proposal_envelope: admittedParserProposalEnvelope,
+  };
+  const supplement = buildQxoNoShopNestedDefinitionCandidateSupplement(
+    supplementInputs,
+  );
+  validateQxoNoShopNestedDefinitionCandidateSupplement({
+    qxo_no_shop_nested_definition_candidate_supplement: supplement,
+    ...supplementInputs,
+  });
+  const sectionParent = admittedParserProposalEnvelope
+    .structural_section_proposals
+    .find((proposal) => (
+      proposal.admitted_structural_section_proposal_id
+        === supplement.parser_binding.section_4_3_proposal_id
+    ));
+  if (!sectionParent) {
+    throw new Error('The F6 nested-definition Section 4.3 parser parent is absent.');
+  }
+  const existingCandidates = admittedParserProposalEnvelope.definition_candidates
+    .filter((candidate) => (
+      candidate.parent_structural_section_proposal_id
+        === sectionParent.admitted_structural_section_proposal_id
+    ))
+    .map((candidate) => ({
+      admitted_definition_candidate_id:
+        candidate.admitted_definition_candidate_id,
+      neutral_defined_term: candidate.neutral_defined_term,
+      absolute_start: candidate.evidence_anchor.absolute_start,
+      absolute_end: candidate.evidence_anchor.absolute_end,
+      exact_bytes_digest: candidate.evidence_anchor.exact_bytes_digest,
+    }));
+  if (existingCandidates.some(
+    (candidate) => ['Confidentiality Agreement', 'Company Request']
+      .includes(candidate.neutral_defined_term),
+  )) {
+    throw new Error('A supplemental F6 nested definition already exists in parser output.');
+  }
+  const changed = JSON.parse(JSON.stringify(supplement));
+  changed.status.release_eligible = true;
+  let carrierDriftRejected = false;
+  try {
+    validateQxoNoShopNestedDefinitionCandidateSupplement({
+      qxo_no_shop_nested_definition_candidate_supplement: changed,
+      ...supplementInputs,
+    });
+  } catch (_) {
+    carrierDriftRejected = true;
+  }
+  if (!carrierDriftRejected) {
+    throw new Error('The F6 nested-definition supplement accepted carrier drift.');
+  }
+  return {
+    schema_version: 'QXO_NO_SHOP_DEFINITIONS_F6_STAGING_ATTESTATION/V1',
+    environment: 'STAGING',
+    authority_scope: supplement.authority_scope,
+    contract_binding: supplement.contract_binding,
+    source_binding: supplement.source_binding,
+    parser_binding: {
+      ...supplement.parser_binding,
+      section_4_3_absolute_start: sectionParent.evidence_anchor.absolute_start,
+      section_4_3_absolute_end: sectionParent.evidence_anchor.absolute_end,
+      section_4_3_exact_bytes_digest:
+        sectionParent.evidence_anchor.exact_bytes_digest,
+      publication_blocked: admittedParserProposalEnvelope.publication_blocked,
+    },
+    existing_section_4_3_definition_candidates: existingCandidates,
+    supplemental_definition_candidates:
+      supplement.supplemental_definition_candidates.map((candidate) => ({
+        candidate_key: candidate.candidate_key,
+        neutral_defined_term: candidate.neutral_defined_term,
+        discovery_reason_code: candidate.discovery_reason_code,
+        absolute_start: candidate.evidence_anchor.absolute_start,
+        absolute_end: candidate.evidence_anchor.absolute_end,
+        exact_bytes_digest: candidate.evidence_anchor.exact_bytes_digest,
+        reviewed_supplemental_definition_candidate_id:
+          candidate.reviewed_supplemental_definition_candidate_id,
+        reviewed_disposition_required: candidate.reviewed_disposition_required,
+      })),
+    supplement_status: supplement.status,
+    carrier_drift_rejected: carrierDriftRejected,
+    qxo_no_shop_nested_definition_candidate_supplement_id:
+      supplement.qxo_no_shop_nested_definition_candidate_supplement_id,
+    canonical_payload_digest: supplement.canonical_payload_digest,
+  };
+}
+
 function verifyActionsFailureIsolation(bridgeInputs) {
   const missingFirstAction = JSON.parse(JSON.stringify(
     bridgeInputs.reviewed_no_shop_actions_slice,
@@ -713,20 +816,27 @@ if (![
   '--actions-verify',
   '--actions-f6-print',
   '--actions-f6-verify',
+  '--definitions-f6-print',
+  '--definitions-f6-verify',
 ].includes(mode)
   || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify');
 }
 
 try {
-  const actionsF6Mode = mode.startsWith('--actions-f6-');
+  const definitionsF6Mode = mode.startsWith('--definitions-f6-');
+  const actionsF6Mode = !definitionsF6Mode && mode.startsWith('--actions-f6-');
   const actionsMode = !actionsF6Mode && mode.startsWith('--actions-');
-  const attestation = actionsF6Mode
+  const attestation = definitionsF6Mode
+    ? buildDefinitionsF6Attestation()
+    : actionsF6Mode
     ? buildActionsF6Attestation()
     : actionsMode ? buildActionsAttestation() : buildAttestation();
   if (mode.endsWith('verify')) {
     const expected = JSON.parse(readFileSync(
-      actionsF6Mode
+      definitionsF6Mode
+        ? DEFINITIONS_F6_FIXTURE_PATH
+        : actionsF6Mode
         ? ACTIONS_F6_FIXTURE_PATH
         : actionsMode ? ACTIONS_FIXTURE_PATH : FIXTURE_PATH,
       'utf8',
