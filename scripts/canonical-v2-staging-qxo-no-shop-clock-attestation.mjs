@@ -53,6 +53,11 @@ const {
   validateQxoNoShopNoticeSourceBindingF6,
 } = require('../lib/canonical-v2/qxo-no-shop-notice-source-binding-f6');
 const {
+  buildQxoNoShopNoticeSemanticClosureF6,
+  buildQxoNoShopNoticeSemanticClosureF6FailureIsolationAttestation,
+  validateQxoNoShopNoticeSemanticClosureF6,
+} = require('../lib/canonical-v2/qxo-no-shop-notice-semantic-closure-f6');
+const {
   buildQxoAdmittedNoShopActionsSlice,
 } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
 const {
@@ -110,6 +115,10 @@ const EXCEPTION_SOURCE_F6_FIXTURE_PATH = join(
 const NOTICE_SOURCE_F6_FIXTURE_PATH = join(
   ROOT,
   'tests/fixtures/canonical-v2/qxo-no-shop-notice-source-f6-staging-attestation.json',
+);
+const NOTICE_SEMANTIC_CLOSURE_F6_FIXTURE_PATH = join(
+  ROOT,
+  'tests/fixtures/canonical-v2/qxo-no-shop-notice-semantic-closure-f6-staging-attestation.json',
 );
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
@@ -1105,7 +1114,7 @@ function exceptionSourceF6AttestationProjection(attestation) {
   };
 }
 
-function buildNoticeSourceF6Attestation() {
+function buildNoticeSourceF6Runtime() {
   const contractBundle = compileFixtureContractV6();
   const {
     admittedSourceContext,
@@ -1144,7 +1153,14 @@ function buildNoticeSourceF6Attestation() {
     qxo_no_shop_notice_source_binding_f6: carrier,
     ...bindingInputs,
   });
+  return { bindingInputs, carrier, contractBundle };
+}
 
+function buildNoticeSourceF6Attestation() {
+  const {
+    bindingInputs,
+    carrier,
+  } = buildNoticeSourceF6Runtime();
   const changed = JSON.parse(JSON.stringify(carrier));
   changed.status.release_eligible = true;
   let carrierDriftRejected = false;
@@ -1225,6 +1241,190 @@ function buildNoticeSourceF6Attestation() {
     failure_isolation_verified: failureIsolationVerified,
     qxo_no_shop_notice_source_binding_f6_id:
       carrier.qxo_no_shop_notice_source_binding_f6_id,
+    canonical_payload_digest: carrier.canonical_payload_digest,
+  };
+}
+
+function buildNoticeSemanticClosureF6Attestation() {
+  const {
+    carrier: noticeSourceCarrier,
+    contractBundle,
+  } = buildNoticeSourceF6Runtime();
+  const closureInputs = {
+    contract_bundle: contractBundle,
+    qxo_no_shop_notice_source_binding_f6: noticeSourceCarrier,
+  };
+  const carrier = buildQxoNoShopNoticeSemanticClosureF6(closureInputs);
+  validateQxoNoShopNoticeSemanticClosureF6({
+    qxo_no_shop_notice_semantic_closure_f6: carrier,
+    ...closureInputs,
+  });
+
+  const changed = JSON.parse(JSON.stringify(carrier));
+  changed.status.release_eligible = true;
+  let carrierDriftRejected = false;
+  try {
+    validateQxoNoShopNoticeSemanticClosureF6({
+      qxo_no_shop_notice_semantic_closure_f6: changed,
+      ...closureInputs,
+    });
+  } catch (_) {
+    carrierDriftRejected = true;
+  }
+
+  const initialFailure =
+    buildQxoNoShopNoticeSemanticClosureF6FailureIsolationAttestation(
+      closureInputs,
+      'INITIAL_CLOCK',
+    );
+  const copyFailure =
+    buildQxoNoShopNoticeSemanticClosureF6FailureIsolationAttestation(
+      closureInputs,
+      'COPY_CLOCK',
+    );
+  const definitionFailure =
+    buildQxoNoShopNoticeSemanticClosureF6FailureIsolationAttestation(
+      closureInputs,
+      { kind: 'DEFINITION_USE', absolute_start: 208321 },
+    );
+  const baselineDefinitionByStart = new Map(
+    carrier.definition_use_outcomes.map(
+      (outcome) => [outcome.absolute_start, outcome],
+    ),
+  );
+  const definitionFailureByStart = new Map(
+    definitionFailure.definition_use_outcomes.map(
+      (outcome) => [outcome.absolute_start, outcome],
+    ),
+  );
+  const definitionFailureIsolated = [...definitionFailureByStart].every(
+    ([start, outcome]) => (
+      start === 208321
+        ? outcome.suppressed === true
+        : outcome.qxo_no_shop_notice_definition_use_outcome_f6_id
+          === baselineDefinitionByStart.get(start)
+            .qxo_no_shop_notice_definition_use_outcome_f6_id
+    ),
+  ) && definitionFailure.definition_dependency_outcome.suppressed === true;
+  const failureIsolationVerified =
+    initialFailure.initial_notice_clock_outcome.suppressed === true
+    && initialFailure.copy_clock_outcome.resolution
+      .qxo_no_shop_reviewed_copy_clock_referent_f6_id
+        === carrier.copy_clock_outcome.resolution
+          .qxo_no_shop_reviewed_copy_clock_referent_f6_id
+    && initialFailure.definition_use_outcomes.every((outcome, index) => (
+      outcome.qxo_no_shop_notice_definition_use_outcome_f6_id
+        === carrier.definition_use_outcomes[index]
+          .qxo_no_shop_notice_definition_use_outcome_f6_id
+    ))
+    && copyFailure.copy_clock_outcome.suppressed === true
+    && copyFailure.initial_notice_clock_outcome.resolution
+      .clock_scope_resolution
+      .qxo_no_shop_reviewed_initial_notice_clock_scope_f6_id
+        === carrier.initial_notice_clock_outcome.resolution
+          .clock_scope_resolution
+          .qxo_no_shop_reviewed_initial_notice_clock_scope_f6_id
+    && copyFailure.definition_use_outcomes.every((outcome, index) => (
+      outcome.qxo_no_shop_notice_definition_use_outcome_f6_id
+        === carrier.definition_use_outcomes[index]
+          .qxo_no_shop_notice_definition_use_outcome_f6_id
+    ))
+    && definitionFailureIsolated
+    && definitionFailure.initial_notice_clock_outcome.resolution
+      .clock_scope_resolution
+      .qxo_no_shop_reviewed_initial_notice_clock_scope_f6_id
+        === carrier.initial_notice_clock_outcome.resolution
+          .clock_scope_resolution
+          .qxo_no_shop_reviewed_initial_notice_clock_scope_f6_id
+    && definitionFailure.copy_clock_outcome.resolution
+      .qxo_no_shop_reviewed_copy_clock_referent_f6_id
+        === carrier.copy_clock_outcome.resolution
+          .qxo_no_shop_reviewed_copy_clock_referent_f6_id;
+  if (!carrierDriftRejected || !failureIsolationVerified) {
+    throw new Error('The F6 notice semantic closure safety attestation failed.');
+  }
+
+  return {
+    schema_version:
+      'QXO_NO_SHOP_NOTICE_SEMANTIC_CLOSURE_F6_STAGING_ATTESTATION/V1',
+    environment: 'STAGING',
+    authority_scope: carrier.authority_scope,
+    contract_binding: carrier.contract_binding,
+    source_binding: carrier.source_binding,
+    upstream_binding: carrier.upstream_binding,
+    initial_notice_clock: {
+      suppressed: carrier.initial_notice_clock_outcome.suppressed,
+      existing_claim_revision_id:
+        carrier.initial_notice_clock_outcome.resolution
+          .clock_scope_resolution.existing_claim_revision_id,
+      trigger_operator:
+        carrier.initial_notice_clock_outcome.resolution
+          .trigger_expression.operator,
+      trigger_codes:
+        carrier.initial_notice_clock_outcome.resolution
+          .trigger_expression.operands.map((operand) => operand.trigger_code),
+      trigger_expression_id:
+        carrier.initial_notice_clock_outcome.resolution
+          .trigger_expression
+          .qxo_no_shop_reviewed_notice_trigger_expression_f6_id,
+      clock_scope_resolution_id:
+        carrier.initial_notice_clock_outcome.resolution
+          .clock_scope_resolution
+          .qxo_no_shop_reviewed_initial_notice_clock_scope_f6_id,
+      canonical_trigger_expression_id:
+        carrier.initial_notice_clock_outcome.resolution
+          .trigger_expression.canonical_trigger_expression_id,
+    },
+    copy_clock: {
+      suppressed: carrier.copy_clock_outcome.suppressed,
+      existing_claim_revision_id:
+        carrier.copy_clock_outcome.resolution.existing_claim_revision_id,
+      raw_referent: carrier.copy_clock_outcome.resolution.raw_referent,
+      canonical_trigger_code:
+        carrier.copy_clock_outcome.resolution.canonical_trigger_code,
+      receipt_object_resolution:
+        carrier.copy_clock_outcome.resolution.receipt_object_resolution,
+      copy_subject_association_resolution:
+        carrier.copy_clock_outcome.resolution
+          .copy_subject_association_resolution,
+      item_or_batch_cardinality_resolution:
+        carrier.copy_clock_outcome.resolution
+          .item_or_batch_cardinality_resolution,
+      copy_clock_referent_resolution_id:
+        carrier.copy_clock_outcome.resolution
+          .qxo_no_shop_reviewed_copy_clock_referent_f6_id,
+    },
+    definition_use_outcomes: carrier.definition_use_outcomes.map(
+      (outcome) => ({
+        definition_key: outcome.definition_key,
+        absolute_start: outcome.absolute_start,
+        absolute_end: outcome.absolute_end,
+        suppressed: outcome.suppressed,
+        resolution_kind: outcome.resolution?.resolution_kind || null,
+        upstream_review_resolution_id:
+          outcome.resolution?.upstream_review_resolution_id || null,
+        canonical_definition_use_relationship_id:
+          outcome.resolution?.canonical_definition_use_relationship_id || null,
+      }),
+    ),
+    definition_dependency_outcome: {
+      suppressed: carrier.definition_dependency_outcome.suppressed,
+      failure_code: carrier.definition_dependency_outcome.failure_code,
+      upstream_review_resolution_id:
+        carrier.definition_dependency_outcome.resolution
+          ?.upstream_review_resolution_id || null,
+      canonical_definition_use_relationship_id:
+        carrier.definition_dependency_outcome.resolution
+          ?.canonical_definition_use_relationship_id || null,
+    },
+    source_residual_dispositions: carrier.source_residual_dispositions,
+    contract_representation_gap: carrier.contract_representation_gap,
+    notice_materialisation: carrier.notice_materialisation,
+    closure_status: carrier.status,
+    carrier_drift_rejected: carrierDriftRejected,
+    failure_isolation_verified: failureIsolationVerified,
+    qxo_no_shop_notice_semantic_closure_f6_id:
+      carrier.qxo_no_shop_notice_semantic_closure_f6_id,
     canonical_payload_digest: carrier.canonical_payload_digest,
   };
 }
@@ -1445,23 +1645,32 @@ if (![
   '--exception-source-f6-verify',
   '--notice-source-f6-print',
   '--notice-source-f6-verify',
+  '--notice-semantic-closure-f6-print',
+  '--notice-semantic-closure-f6-verify',
 ].includes(mode)
   || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--notice-source-f6-print|--notice-source-f6-verify');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--notice-source-f6-print|--notice-source-f6-verify|--notice-semantic-closure-f6-print|--notice-semantic-closure-f6-verify');
 }
 
 try {
-  const noticeSourceF6Mode = mode.startsWith('--notice-source-f6-');
-  const exceptionSourceF6Mode = !noticeSourceF6Mode
+  const noticeSemanticClosureF6Mode =
+    mode.startsWith('--notice-semantic-closure-f6-');
+  const noticeSourceF6Mode = !noticeSemanticClosureF6Mode
+    && mode.startsWith('--notice-source-f6-');
+  const exceptionSourceF6Mode = !noticeSemanticClosureF6Mode
+    && !noticeSourceF6Mode
     && mode.startsWith('--exception-source-f6-');
-  const definitionGraphF6Mode = !noticeSourceF6Mode && !exceptionSourceF6Mode
+  const definitionGraphF6Mode = !noticeSemanticClosureF6Mode
+    && !noticeSourceF6Mode && !exceptionSourceF6Mode
     && mode.startsWith('--definition-graph-f6-');
-  const definitionsF6Mode = !noticeSourceF6Mode && !exceptionSourceF6Mode
-    && !definitionGraphF6Mode
+  const definitionsF6Mode = !noticeSemanticClosureF6Mode
+    && !noticeSourceF6Mode && !exceptionSourceF6Mode && !definitionGraphF6Mode
     && mode.startsWith('--definitions-f6-');
   const actionsF6Mode = !definitionsF6Mode && mode.startsWith('--actions-f6-');
   const actionsMode = !actionsF6Mode && mode.startsWith('--actions-');
-  const attestation = noticeSourceF6Mode
+  const attestation = noticeSemanticClosureF6Mode
+    ? buildNoticeSemanticClosureF6Attestation()
+    : noticeSourceF6Mode
     ? buildNoticeSourceF6Attestation()
     : exceptionSourceF6Mode
     ? buildExceptionSourceF6Attestation()
@@ -1477,7 +1686,9 @@ try {
     : attestation;
   if (mode.endsWith('verify')) {
     const expected = JSON.parse(readFileSync(
-      noticeSourceF6Mode
+      noticeSemanticClosureF6Mode
+        ? NOTICE_SEMANTIC_CLOSURE_F6_FIXTURE_PATH
+        : noticeSourceF6Mode
         ? NOTICE_SOURCE_F6_FIXTURE_PATH
         : exceptionSourceF6Mode
         ? EXCEPTION_SOURCE_F6_FIXTURE_PATH
