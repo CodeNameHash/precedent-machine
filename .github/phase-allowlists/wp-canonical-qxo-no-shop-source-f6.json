@@ -1,0 +1,35 @@
+{
+  "phase": "WP-CANONICAL-QXO-NO-SHOP-SOURCE-F6",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-qxo-no-shop-source-f6.json",
+    "lib/canonical-v2/qxo-no-shop-actions-f6-parser-bridge.js",
+    "lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-f6-slice.js",
+    "scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs",
+    "tests/canonical-v2-qxo-no-shop-actions-f6-parser-bridge.test.js",
+    "tests/canonical-v2-reviewed-qxo-admitted-no-shop-actions-f6.test.js",
+    "tests/fixtures/canonical-v2/qxo-no-shop-actions-f6-staging-attestation.json",
+    "tests/fixtures/canonical-v2/qxo-no-shop-f6-source-spans.json"
+  ],
+  "denied": [
+    ".env*",
+    "docs/**",
+    "pages/**",
+    "components/**",
+    "lib/query/**",
+    "lib/parser-v2/**",
+    "lib/canonical-v2/candidate-release.js",
+    "lib/canonical-v2/candidate-release-import.js",
+    "lib/canonical-v2/canonical-writer.js",
+    "lib/canonical-v2/contract-bundle.js",
+    "lib/canonical-v2/market-cohort-query.js",
+    "lib/canonical-v2/qxo-no-shop-actions-parser-bridge.js",
+    "lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice.js",
+    "lib/canonical-v2/serving-projection.js",
+    "lib/canonical-v2/shared-serving-row.js",
+    "lib/canonical-v2/validate-write-set.js",
+    "sql/**",
+    "supabase/**",
+    "next.config.js"
+  ],
+  "note": "Binds the Ben-approved F6 atomic no-shop vocabulary to exact QXO source occurrences and one exact read-only staging reconstruction. Untyped dimensions and omitted Section 4.3 duties remain source-backed blockers. This slice grants no taxonomy, result, metric, comparability, query, serving, canonical write, release or activation authority."
+}
