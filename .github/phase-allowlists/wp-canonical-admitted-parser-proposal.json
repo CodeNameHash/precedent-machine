@@ -1,0 +1,29 @@
+{
+  "phase": "WP-CANONICAL-ADMITTED-PARSER-PROPOSAL",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-admitted-parser-proposal.json",
+    "lib/canonical-v2/admitted-parser-proposal-adapter.js",
+    "lib/canonical-v2/parser-runtime-sandbox.js",
+    "lib/parser-v2/canonical-structural-definitions.js",
+    "lib/parser-v2/canonical-structural-definitions.manifest.json",
+    "scripts/canonical-v2-parser-runtime-manifest.mjs",
+    "tests/canonical-v2-admitted-parser-proposal-adapter.test.js",
+    "tests/canonical-v2-parser-runtime-manifest.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "docs/**",
+    "pages/**",
+    "components/**",
+    "lib/query/**",
+    "lib/parser-v2/model.js",
+    "lib/parser-v2/region-store.js",
+    "lib/parser-v2/store-*.js",
+    "lib/canonical-v2/canonical-writer.js",
+    "lib/canonical-v2/validate-write-set.js",
+    "sql/**",
+    "supabase/**",
+    "next.config.js"
+  ],
+  "note": "Builds a bounded offline parser proposal carrier from the exact admitted V2 source chain. It emits only source-backed structural sections, definition candidates and blocking residuals, with no taxonomy, absence, comparability, canonical-write, database or serving authority."
+}
