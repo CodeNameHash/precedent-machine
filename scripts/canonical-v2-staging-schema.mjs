@@ -19,7 +19,7 @@ const EXPECTED_PROJECT = Object.freeze({
 });
 const F5_CONTRACT_FINGERPRINT = 'f80a77651d1b6a6a9eec8ac67526a8704f498761cbb22a67e6ceb4716abb5478';
 const EXPECTED_DIGESTS = Object.freeze({
-  'canonical-v2-foundation.sql': '62cef98705bbbb340a5ebcd7d4c12f1767c903e81529ae10e0c86d22a0ec73d1',
+  'canonical-v2-foundation.sql': '7405c367ab5cca2ca2ca496a99e44e2ef2a7754bbf0e7d98e3f90ff1df536eb7',
   // Active serving resolves the release-declared contract, exact detail is
   // active-release bound, and the rejected F3 fingerprint is denied at
   // every granted serving boundary.

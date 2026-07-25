@@ -115,7 +115,7 @@ BEGIN
 END
 $$;
 
--- Governed function SHA-256: 90da09326e233b6b0e4bdd34fd237a6eb4350fe8e6661b50f6503b897e3af739
+-- Governed function SHA-256: 412651484f3485f61cbc8f6283daedcf3137cf1d6c081bd1bfe70b356470e152
 CREATE OR REPLACE FUNCTION public.canonical_v2_write(
   p_environment text,
   p_operation text,
@@ -1875,6 +1875,368 @@ BEGIN
     IF resolved_persisted_reference_count <> persisted_reference_count
       OR distinct_persisted_reference_count <> persisted_reference_count THEN
       RAISE EXCEPTION 'DEAL_SCOPE_RUN persisted object references are unresolved or invalid'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF EXISTS (
+      WITH source_lineage AS (
+        SELECT
+          reference.value AS reference,
+          immutable_source.canonical_payload AS immutable_payload,
+          conversion.canonical_text_byte_length,
+          canonical_v2_staging.content_id(
+            'ADMITTED_SOURCE_OCCURRENCE_KEY/V1',
+            jsonb_build_object(
+              'deal_admission_id', reference.value->'deal_admission_id',
+              'source_ordinal', reference.value->'source_ordinal',
+              'immutable_source_document_id',
+                reference.value->'immutable_source_document_id'
+            )
+          ) AS source_occurrence_key
+        FROM jsonb_array_elements(p_write_set->'source_references') reference(value)
+        JOIN canonical_v2_staging.immutable_source_documents immutable_source
+          ON immutable_source.immutable_source_document_id
+            = reference.value->>'immutable_source_document_id'
+        JOIN canonical_v2_staging.canonical_text_conversions conversion
+          ON conversion.canonical_text_id = reference.value->>'canonical_text_id'
+      ),
+      admitted_occurrences AS (
+        SELECT
+          source_lineage.reference->>'canonical_text_id' AS canonical_text_id,
+          source_lineage.immutable_payload->>'response_bytes_sha256' AS document_hash,
+          source_lineage.canonical_text_byte_length,
+          pg_catalog.convert_to(
+            conversion.canonical_payload->>'canonical_text',
+            'UTF8'
+          ) AS canonical_text_bytes,
+          canonical_v2_staging.content_id(
+            'SOURCE_OCCURRENCE/V1',
+            jsonb_build_object(
+              'source_content_id',
+                source_lineage.immutable_payload->'source_response_content_id',
+              'source_occurrence_key', source_lineage.source_occurrence_key
+            )
+          ) AS source_occurrence_id
+        FROM source_lineage
+        JOIN canonical_v2_staging.canonical_text_conversions conversion
+          ON conversion.canonical_text_id=
+            source_lineage.reference->>'canonical_text_id'
+      ),
+      supplied_provisions AS (
+        SELECT provision.value AS provision
+        FROM jsonb_array_elements(p_write_set->'provisions') provision(value)
+        UNION ALL
+        SELECT stored.canonical_payload
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        JOIN canonical_v2_staging.provision_instances stored
+          ON persisted.reference->>'object_kind' = 'provisions'
+          AND stored.provision_instance_id = persisted.reference->>'object_id'
+      ),
+      typed_provisions AS (
+        SELECT
+          supplied.provision,
+          CASE
+            WHEN jsonb_typeof(supplied.provision->'absolute_start') = 'number'
+              AND supplied.provision->>'absolute_start' ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (supplied.provision->>'absolute_start')::bigint
+          END AS absolute_start,
+          CASE
+            WHEN jsonb_typeof(supplied.provision->'absolute_end') = 'number'
+              AND supplied.provision->>'absolute_end' ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (supplied.provision->>'absolute_end')::bigint
+          END AS absolute_end,
+          CASE
+            WHEN jsonb_typeof(supplied.provision->'ordinal') = 'number'
+              AND supplied.provision->>'ordinal' ~ '^[1-9][0-9]{0,15}$'
+            THEN (supplied.provision->>'ordinal')::bigint
+          END AS governed_ordinal,
+          (
+            jsonb_typeof(supplied.provision) = 'object'
+            AND supplied.provision ?& ARRAY[
+              'schema_version', 'source_occurrence_id', 'canonical_text_id',
+              'document_hash', 'absolute_start', 'absolute_end', 'concept_key',
+              'party', 'ordinal', 'source_anchor_id', 'provision_instance_id',
+              'closure_id'
+            ]
+            AND supplied.provision - ARRAY[
+              'schema_version', 'source_occurrence_id', 'canonical_text_id',
+              'document_hash', 'absolute_start', 'absolute_end', 'concept_key',
+              'party', 'ordinal', 'source_anchor_id', 'provision_instance_id',
+              'closure_id'
+            ]::text[] = '{}'::jsonb
+            AND supplied.provision->>'schema_version' = 'PROVISION_INSTANCE/V1'
+            AND jsonb_typeof(supplied.provision->'schema_version') = 'string'
+            AND jsonb_typeof(supplied.provision->'source_occurrence_id') = 'string'
+            AND jsonb_typeof(supplied.provision->'canonical_text_id') = 'string'
+            AND jsonb_typeof(supplied.provision->'document_hash') = 'string'
+            AND jsonb_typeof(supplied.provision->'concept_key') = 'string'
+            AND jsonb_typeof(supplied.provision->'source_anchor_id') = 'string'
+            AND jsonb_typeof(supplied.provision->'provision_instance_id') = 'string'
+            AND jsonb_typeof(supplied.provision->'closure_id') = 'string'
+            AND supplied.provision->>'source_occurrence_id' ~ '^[0-9a-f]{64}$'
+            AND supplied.provision->>'canonical_text_id' ~ '^[0-9a-f]{64}$'
+            AND supplied.provision->>'document_hash' ~ '^[0-9a-f]{64}$'
+            AND supplied.provision->>'source_anchor_id' ~ '^[0-9a-f]{64}$'
+            AND supplied.provision->>'provision_instance_id' ~ '^[0-9a-f]{64}$'
+            AND supplied.provision->>'closure_id' ~ '^[0-9a-f]{64}$'
+            AND supplied.provision->>'concept_key'
+              ~ '^[A-Z0-9][A-Z0-9_-]*$'
+            AND jsonb_typeof(supplied.provision->'party') = 'object'
+            AND supplied.provision->'party' ?& ARRAY['role', 'value', 'capacity']
+            AND (supplied.provision->'party')
+              - ARRAY['role', 'value', 'capacity']::text[] = '{}'::jsonb
+            AND jsonb_typeof(supplied.provision->'party'->'role') = 'string'
+            AND jsonb_typeof(supplied.provision->'party'->'value') = 'string'
+            AND jsonb_typeof(supplied.provision->'party'->'capacity') = 'string'
+            AND coalesce(length(supplied.provision->'party'->>'role'), 0) > 0
+            AND coalesce(length(supplied.provision->'party'->>'value'), 0) > 0
+            AND coalesce(length(supplied.provision->'party'->>'capacity'), 0) > 0
+          ) AS shape_valid
+        FROM supplied_provisions supplied
+      )
+      SELECT 1
+      FROM typed_provisions supplied
+      LEFT JOIN admitted_occurrences admitted
+        ON admitted.canonical_text_id = supplied.provision->>'canonical_text_id'
+        AND admitted.source_occurrence_id
+          = supplied.provision->>'source_occurrence_id'
+        AND admitted.document_hash = supplied.provision->>'document_hash'
+      WHERE CASE
+        WHEN supplied.shape_valid
+          AND supplied.absolute_start IS NOT NULL
+          AND supplied.absolute_end IS NOT NULL
+          AND supplied.governed_ordinal IS NOT NULL
+          AND supplied.governed_ordinal <= 9007199254740991
+        THEN
+          CASE
+            WHEN admitted.canonical_text_id IS NULL THEN true
+            WHEN supplied.absolute_start > supplied.absolute_end
+              OR supplied.absolute_end > admitted.canonical_text_byte_length
+            THEN true
+            WHEN supplied.absolute_start < supplied.absolute_end
+              AND (
+                (
+                  supplied.absolute_start < admitted.canonical_text_byte_length
+                  AND get_byte(
+                    admitted.canonical_text_bytes,
+                    supplied.absolute_start::integer
+                  ) BETWEEN 128 AND 191
+                ) OR (
+                  supplied.absolute_end < admitted.canonical_text_byte_length
+                  AND get_byte(
+                    admitted.canonical_text_bytes,
+                    supplied.absolute_end::integer
+                  ) BETWEEN 128 AND 191
+                )
+              )
+            THEN true
+            ELSE
+              supplied.provision->>'source_anchor_id' IS DISTINCT FROM
+                canonical_v2_staging.content_id(
+                  'SEMANTIC_SPAN/V1',
+                  jsonb_build_object(
+                    'schema_version', 'SEMANTIC_SPAN/V1',
+                    'canonical_text_id', supplied.provision->'canonical_text_id',
+                    'absolute_start', supplied.provision->'absolute_start',
+                    'absolute_end', supplied.provision->'absolute_end'
+                  )
+                )
+              OR supplied.provision->>'provision_instance_id' IS DISTINCT FROM
+                canonical_v2_staging.content_id(
+                  'PROVISION_INSTANCE/V1',
+                  jsonb_build_object(
+                    'schema_version', supplied.provision->'schema_version',
+                    'source_occurrence_id',
+                      supplied.provision->'source_occurrence_id',
+                    'canonical_text_id', supplied.provision->'canonical_text_id',
+                    'document_hash', supplied.provision->'document_hash',
+                    'absolute_start', supplied.provision->'absolute_start',
+                    'absolute_end', supplied.provision->'absolute_end',
+                    'concept_key', supplied.provision->'concept_key',
+                    'party', supplied.provision->'party',
+                    'ordinal', supplied.provision->'ordinal'
+                  )
+                )
+          END
+        ELSE true
+      END
+    ) THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN provision identity or source lineage is invalid'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF EXISTS (
+      WITH admitted_sources AS (
+        SELECT
+          reference.value->>'canonical_text_id' AS canonical_text_id,
+          conversion.canonical_text_byte_length,
+          pg_catalog.convert_to(
+            conversion.canonical_payload->>'canonical_text',
+            'UTF8'
+          ) AS canonical_text_bytes
+        FROM jsonb_array_elements(p_write_set->'source_references') reference(value)
+        JOIN canonical_v2_staging.canonical_text_conversions conversion
+          ON conversion.canonical_text_id = reference.value->>'canonical_text_id'
+      ),
+      supplied_provisions AS (
+        SELECT provision.value AS provision
+        FROM jsonb_array_elements(p_write_set->'provisions') provision(value)
+        UNION ALL
+        SELECT stored.canonical_payload
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        JOIN canonical_v2_staging.provision_instances stored
+          ON persisted.reference->>'object_kind' = 'provisions'
+          AND stored.provision_instance_id = persisted.reference->>'object_id'
+      ),
+      supplied_components AS (
+        SELECT component.value AS component
+        FROM jsonb_array_elements(p_write_set->'components') component(value)
+        UNION ALL
+        SELECT stored.canonical_payload
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        JOIN canonical_v2_staging.provision_components stored
+          ON persisted.reference->>'object_kind' = 'components'
+          AND stored.provision_component_id = persisted.reference->>'object_id'
+      ),
+      typed_components AS (
+        SELECT
+          supplied.component,
+          CASE
+            WHEN jsonb_typeof(supplied.component->'absolute_start') = 'number'
+              AND supplied.component->>'absolute_start' ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (supplied.component->>'absolute_start')::bigint
+          END AS absolute_start,
+          CASE
+            WHEN jsonb_typeof(supplied.component->'absolute_end') = 'number'
+              AND supplied.component->>'absolute_end' ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (supplied.component->>'absolute_end')::bigint
+          END AS absolute_end,
+          CASE
+            WHEN jsonb_typeof(supplied.component->'ordinal') = 'number'
+              AND supplied.component->>'ordinal' ~ '^[1-9][0-9]{0,15}$'
+            THEN (supplied.component->>'ordinal')::bigint
+          END AS governed_ordinal,
+          (
+            jsonb_typeof(supplied.component) = 'object'
+            AND supplied.component ?& ARRAY[
+              'schema_version', 'parent_provision_instance_id', 'canonical_text_id',
+              'absolute_start', 'absolute_end', 'component_key', 'ordinal',
+              'source_anchor_id', 'provision_component_id', 'closure_id'
+            ]
+            AND supplied.component - ARRAY[
+              'schema_version', 'parent_provision_instance_id', 'canonical_text_id',
+              'absolute_start', 'absolute_end', 'component_key', 'ordinal',
+              'source_anchor_id', 'provision_component_id', 'closure_id'
+            ]::text[] = '{}'::jsonb
+            AND supplied.component->>'schema_version' = 'PROVISION_COMPONENT/V1'
+            AND jsonb_typeof(supplied.component->'schema_version') = 'string'
+            AND jsonb_typeof(
+              supplied.component->'parent_provision_instance_id'
+            ) = 'string'
+            AND jsonb_typeof(supplied.component->'canonical_text_id') = 'string'
+            AND jsonb_typeof(supplied.component->'component_key') = 'string'
+            AND jsonb_typeof(supplied.component->'source_anchor_id') = 'string'
+            AND jsonb_typeof(supplied.component->'provision_component_id') = 'string'
+            AND jsonb_typeof(supplied.component->'closure_id') = 'string'
+            AND supplied.component->>'parent_provision_instance_id'
+              ~ '^[0-9a-f]{64}$'
+            AND supplied.component->>'canonical_text_id' ~ '^[0-9a-f]{64}$'
+            AND supplied.component->>'source_anchor_id' ~ '^[0-9a-f]{64}$'
+            AND supplied.component->>'provision_component_id' ~ '^[0-9a-f]{64}$'
+            AND supplied.component->>'closure_id' ~ '^[0-9a-f]{64}$'
+            AND supplied.component->>'component_key'
+              ~ '^[A-Z0-9][A-Z0-9_-]*$'
+          ) AS shape_valid
+        FROM supplied_components supplied
+      )
+      SELECT 1
+      FROM typed_components supplied
+      LEFT JOIN admitted_sources admitted
+        ON admitted.canonical_text_id = supplied.component->>'canonical_text_id'
+      LEFT JOIN supplied_provisions parent
+        ON parent.provision->>'provision_instance_id'
+          = supplied.component->>'parent_provision_instance_id'
+      WHERE CASE
+        WHEN supplied.shape_valid
+          AND supplied.absolute_start IS NOT NULL
+          AND supplied.absolute_end IS NOT NULL
+          AND supplied.governed_ordinal IS NOT NULL
+          AND supplied.governed_ordinal <= 9007199254740991
+        THEN
+          CASE
+            WHEN admitted.canonical_text_id IS NULL
+              OR parent.provision IS NULL
+            THEN true
+            WHEN supplied.absolute_start > supplied.absolute_end
+              OR supplied.absolute_end > admitted.canonical_text_byte_length
+            THEN true
+            WHEN supplied.absolute_start < supplied.absolute_end
+              AND (
+                (
+                  supplied.absolute_start < admitted.canonical_text_byte_length
+                  AND get_byte(
+                    admitted.canonical_text_bytes,
+                    supplied.absolute_start::integer
+                  ) BETWEEN 128 AND 191
+                ) OR (
+                  supplied.absolute_end < admitted.canonical_text_byte_length
+                  AND get_byte(
+                    admitted.canonical_text_bytes,
+                    supplied.absolute_end::integer
+                  ) BETWEEN 128 AND 191
+                )
+              )
+            THEN true
+            ELSE
+              supplied.component->>'canonical_text_id' IS DISTINCT FROM
+                parent.provision->>'canonical_text_id'
+              OR supplied.absolute_start <
+                CASE
+                  WHEN parent.provision->>'absolute_start'
+                    ~ '^(0|[1-9][0-9]{0,15})$'
+                  THEN (parent.provision->>'absolute_start')::bigint
+                END
+              OR supplied.absolute_end >
+                CASE
+                  WHEN parent.provision->>'absolute_end'
+                    ~ '^(0|[1-9][0-9]{0,15})$'
+                  THEN (parent.provision->>'absolute_end')::bigint
+                END
+              OR supplied.component->>'source_anchor_id' IS DISTINCT FROM
+                canonical_v2_staging.content_id(
+                  'SEMANTIC_SPAN/V1',
+                  jsonb_build_object(
+                    'schema_version', 'SEMANTIC_SPAN/V1',
+                    'canonical_text_id', supplied.component->'canonical_text_id',
+                    'absolute_start', supplied.component->'absolute_start',
+                    'absolute_end', supplied.component->'absolute_end'
+                  )
+                )
+              OR supplied.component->>'provision_component_id' IS DISTINCT FROM
+                canonical_v2_staging.content_id(
+                  'PROVISION_COMPONENT/V1',
+                  jsonb_build_object(
+                    'schema_version', supplied.component->'schema_version',
+                    'parent_provision_instance_id',
+                      supplied.component->'parent_provision_instance_id',
+                    'canonical_text_id', supplied.component->'canonical_text_id',
+                    'absolute_start', supplied.component->'absolute_start',
+                    'absolute_end', supplied.component->'absolute_end',
+                    'component_key', supplied.component->'component_key',
+                    'ordinal', supplied.component->'ordinal'
+                  )
+                )
+          END
+        ELSE true
+      END
+    ) THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN component identity or parent lineage is invalid'
         USING ERRCODE = '23514';
     END IF;
 
