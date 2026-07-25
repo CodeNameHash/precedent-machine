@@ -1,0 +1,27 @@
+{
+  "phase": "WP-CANONICAL-QXO-TIER-B-PARSER-BRIDGE",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-qxo-tier-b-parser-bridge.json",
+    "lib/canonical-v2/qxo-tier-b-parser-bridge.js",
+    "tests/canonical-v2-qxo-tier-b-parser-bridge.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "docs/**",
+    "pages/**",
+    "components/**",
+    "lib/query/**",
+    "lib/parser-v2/**",
+    "lib/canonical-v2/canonical-writer.js",
+    "lib/canonical-v2/validate-write-set.js",
+    "lib/canonical-v2/candidate-release.js",
+    "lib/canonical-v2/candidate-release-import.js",
+    "lib/canonical-v2/serving-projection.js",
+    "lib/canonical-v2/shared-serving-row.js",
+    "sql/**",
+    "supabase/**",
+    "scripts/**",
+    "next.config.js"
+  ],
+  "note": "Binds the reviewed QXO capitalisation Tier B reference to exact admitted SEC source, parser parents, nested definition cues and uses, non-contiguous limbs and party-token observations. It remains fail-isolated, review-only, non-comparable, non-queryable, non-serving and release-ineligible pending Freeze Gate contracts."
+}
