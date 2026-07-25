@@ -23,6 +23,11 @@ const {
   compileFixtureContract,
 } = require('../lib/canonical-v2/contract-bundle');
 const {
+  buildDefinitionCue,
+  buildDefinitionUseCue,
+  buildValidatedDefinitionGraph,
+} = require('../lib/canonical-v2/definition-graph');
+const {
   buildQxoReviewedCapitalisationSlice,
 } = require('../lib/canonical-v2/reviewed-qxo-capitalisation-slice');
 const {
@@ -156,6 +161,21 @@ function readCapture() {
   return rows[0].canonical_payload;
 }
 
+function spanWithinExcerpt({ context, excerpt, needle, label }) {
+  const firstIndex = excerpt.exact_text.indexOf(needle);
+  if (firstIndex < 0
+    || excerpt.exact_text.indexOf(needle, firstIndex + needle.length) >= 0) {
+    throw new Error(`${label} must occur exactly once in its reviewed QXO excerpt.`);
+  }
+  const absoluteStart = excerpt.absolute_start
+    + Buffer.byteLength(excerpt.exact_text.slice(0, firstIndex), 'utf8');
+  return buildSemanticSpan(
+    context,
+    absoluteStart,
+    absoluteStart + Buffer.byteLength(needle, 'utf8'),
+  );
+}
+
 function buildFixture() {
   const contractBundle = compileFixtureContract();
   const capture = readCapture();
@@ -186,6 +206,58 @@ function buildFixture() {
     source_admission_manifest_id: context.source_admission_manifest_id,
     reviewed_mapping_id: slice.reviewed_mapping.reviewed_mapping_id,
   });
+  const rawTerm = 'De Minimis Inaccuracies';
+  const definitionBody = 'any inaccuracies that individually or in the aggregate are de minimis relative to the total fully diluted equity capitalization of the Company or Parent, as the case may be';
+  const termSpan = spanWithinExcerpt({
+    context,
+    excerpt: slice.excerpts.de_minimis_definition,
+    needle: rawTerm,
+    label: 'QXO De Minimis declaration term',
+  });
+  const bodySpan = spanWithinExcerpt({
+    context,
+    excerpt: slice.excerpts.de_minimis_definition,
+    needle: definitionBody,
+    label: 'QXO De Minimis definition body',
+  });
+  const operativeUseSpan = spanWithinExcerpt({
+    context,
+    excerpt: slice.excerpts.tier_b,
+    needle: rawTerm,
+    label: 'QXO De Minimis operative use',
+  });
+  const definitionCue = buildDefinitionCue({
+    source: context,
+    termSpan,
+    bodySpans: [bodySpan],
+    rawTerm,
+    syntacticRole: 'NESTED_INLINE',
+    ordinal: 0,
+  });
+  const definitionUses = [
+    buildDefinitionUseCue({
+      source: context,
+      definitionCue,
+      useSpan: operativeUseSpan,
+      useRole: 'OPERATIVE_REFERENCE',
+      ordinal: 0,
+    }),
+    buildDefinitionUseCue({
+      source: context,
+      definitionCue,
+      useSpan: termSpan,
+      useRole: 'DECLARATION_REFERENCE',
+      ordinal: 1,
+    }),
+  ];
+  const semanticGraph = {
+    ...buildValidatedDefinitionGraph({
+      source: context,
+      definitionCues: [definitionCue],
+      definitionUseCues: definitionUses,
+    }),
+    closure_id: closureId,
+  };
   const close = (rows) => rows.map((row) => ({ ...row, closure_id: closureId }));
   const writeSet = {
     source_references: [buildAdmittedSourceReference(context)],
@@ -195,7 +267,7 @@ function buildFixture() {
       document_hash: context.document_hash,
     },
     excerpts: close(Object.values(slice.excerpts)),
-    validated_semantic_graphs: [],
+    validated_semantic_graphs: [semanticGraph],
     provisions: close(slice.provisions),
     components: close(slice.components),
     claims: close(slice.claims),
@@ -220,6 +292,7 @@ function buildFixture() {
     writeSet,
     parent,
     siblings,
+    semanticGraph,
   };
 }
 
@@ -486,8 +559,16 @@ function exactStructuralRowsSql(writeSet) {
 }
       AND canonical_payload=${runtime.sqlJson(row)}
   )`);
+  const semanticGraphs = writeSet.validated_semantic_graphs.map((row) => `EXISTS (
+    SELECT 1 FROM canonical_v2_staging.validated_semantic_graphs
+    WHERE validated_semantic_graph_id=${
+  runtime.sqlText(row.validated_semantic_graph_id)
+}
+      AND canonical_payload=${runtime.sqlJson(row)}
+  )`);
   return [
     ...excerpts,
+    ...semanticGraphs,
     ...provisions,
     ...components,
     ...claims,
@@ -755,6 +836,103 @@ function identifyRelationship(row) {
   });
 }
 
+function cueIdentityPayload(row) {
+  return {
+    document_hash: row.document_hash,
+    canonical_text_id: row.canonical_text_id,
+    source_anchor_id: row.source_anchor_id,
+    term_span_id: row.term_span_id,
+    body_span_ids: row.body_span_ids,
+    raw_term_digest: row.raw_term_digest,
+    syntactic_role: row.syntactic_role,
+    source_order_ordinal: row.source_order_ordinal,
+  };
+}
+
+function resignDefinitionCue(row) {
+  return {
+    ...row,
+    definition_cue_id: contentId(
+      'DEFINITION_CUE/V1',
+      cueIdentityPayload(row),
+    ),
+  };
+}
+
+function useIdentityPayload(row) {
+  return {
+    document_hash: row.document_hash,
+    canonical_text_id: row.canonical_text_id,
+    definition_cue_id: row.definition_cue_id,
+    use_span_id: row.use_span_id,
+    use_role: row.use_role,
+    source_order_ordinal: row.source_order_ordinal,
+  };
+}
+
+function resignDefinitionUse(row) {
+  return {
+    ...row,
+    definition_use_cue_id: contentId(
+      'DEFINITION_USE_CUE/V1',
+      useIdentityPayload(row),
+    ),
+  };
+}
+
+function resignSemanticGraph(row) {
+  return {
+    ...row,
+    validated_semantic_graph_id: contentId(
+      'VALIDATED_SEMANTIC_GRAPH/V1',
+      {
+        document_hash: row.document_hash,
+        canonical_text_id: row.canonical_text_id,
+        definition_cue_ids: row.definition_cue_ids,
+        definition_use_cue_ids: row.definition_use_cue_ids,
+      },
+    ),
+  };
+}
+
+function replaceDefinitionCue(graph, cue) {
+  const candidate = structuredClone(graph);
+  const priorCueId = candidate.definition_cues[0].definition_cue_id;
+  candidate.definition_cues[0] = cue;
+  candidate.definition_cue_ids = [cue.definition_cue_id];
+  candidate.definition_use_cues = candidate.definition_use_cues.map((use) => (
+    resignDefinitionUse({
+      ...use,
+      definition_cue_id: use.definition_cue_id === priorCueId
+        ? cue.definition_cue_id
+        : use.definition_cue_id,
+    })
+  ));
+  candidate.definition_use_cue_ids = candidate.definition_use_cues.map(
+    (use) => use.definition_use_cue_id,
+  );
+  return resignSemanticGraph(candidate);
+}
+
+function replaceDefinitionUse(graph, index, use) {
+  const candidate = structuredClone(graph);
+  candidate.definition_use_cues[index] = use;
+  candidate.definition_use_cue_ids = candidate.definition_use_cues.map(
+    (entry) => entry.definition_use_cue_id,
+  );
+  return resignSemanticGraph(candidate);
+}
+
+function graphOnlyWriteSet(writeSet, graph) {
+  const candidate = Object.fromEntries(
+    Object.entries(writeSet).map(([key, value]) => (
+      COLLECTIONS.includes(key) ? [key, []] : [key, structuredClone(value)]
+    )),
+  );
+  candidate.validated_semantic_graphs = [graph];
+  return candidate;
+}
+
 function withExcerpt(writeSet, originalId, excerpt) {
   const candidate = structuredClone(writeSet);
   const index = candidate.excerpts.findIndex(
@@ -799,6 +977,16 @@ function withRelationship(writeSet, originalId, relationship) {
   );
   candidate.relationships[index] = relationship;
   return candidate;
+}
+
+function mutatedSemanticGraphExists(row) {
+  return `EXISTS (
+    SELECT 1 FROM canonical_v2_staging.validated_semantic_graphs
+    WHERE validated_semantic_graph_id=${
+  runtime.sqlText(row.validated_semantic_graph_id)
+}
+      AND canonical_payload=${runtime.sqlJson(row)}
+  )`;
 }
 
 function mutatedExcerptExists(row) {
@@ -880,6 +1068,14 @@ function assertMalformedPersistedReferenceRejected({
   idempotencyKey,
 }) {
   const target = {
+    validated_semantic_graphs: {
+      table: 'validated_semantic_graphs',
+      idColumn: 'validated_semantic_graph_id',
+      idField: 'validated_semantic_graph_id',
+      expectedMessage:
+        'DEAL_SCOPE_RUN validated semantic graph identity, child identity or source bytes are invalid',
+      label: 'validated semantic graph',
+    },
     excerpts: {
       table: 'excerpts',
       idColumn: 'excerpt_id',
@@ -1063,6 +1259,70 @@ function main() {
   if (canonicalJson(before) !== canonicalJson(structuralSnapshot(fixture))) {
     throw new Error('Valid structural replay changed existing QXO payload digests.');
   }
+  const emptyGraph = {
+    ...buildValidatedDefinitionGraph({
+      source: fixture.context,
+      definitionCues: [],
+      definitionUseCues: [],
+    }),
+    closure_id: contentId(
+      'CANONICAL_V2_EMPTY_GRAPH_ACCEPTANCE_CLOSURE/V1',
+      { nonce },
+    ),
+  };
+  const emptyGraphRequest = requestFor({
+    idempotencyKey: `semantic-graph-empty-valid-${nonce}`,
+    writeSet: graphOnlyWriteSet(fixture.writeSet, emptyGraph),
+  });
+  assertValidReplay({
+    request: emptyGraphRequest,
+    exactRowsSql: exactStructuralRowsSql(
+      graphOnlyWriteSet(fixture.writeSet, emptyGraph),
+    ),
+    label: 'valid empty semantic graph',
+    rowAbsentSql: `NOT EXISTS (
+      SELECT 1 FROM canonical_v2_staging.validated_semantic_graphs
+      WHERE validated_semantic_graph_id=${
+  runtime.sqlText(emptyGraph.validated_semantic_graph_id)
+}
+    )`,
+  });
+  const finalCodePoint = Array.from(
+    fixture.context.canonical_text.text,
+  ).at(-1);
+  const eofSpan = buildSemanticSpan(
+    fixture.context,
+    fixture.context.canonical_text_byte_length
+      - Buffer.byteLength(finalCodePoint, 'utf8'),
+    fixture.context.canonical_text_byte_length,
+  );
+  const eofUse = resignDefinitionUse({
+    ...fixture.semanticGraph.definition_use_cues[0],
+    use_span_id: eofSpan.semantic_span_id,
+    use_span: eofSpan,
+  });
+  const eofGraph = replaceDefinitionUse(
+    fixture.semanticGraph,
+    0,
+    eofUse,
+  );
+  const eofGraphRequest = requestFor({
+    idempotencyKey: `semantic-graph-eof-valid-${nonce}`,
+    writeSet: graphOnlyWriteSet(fixture.writeSet, eofGraph),
+  });
+  assertValidReplay({
+    request: eofGraphRequest,
+    exactRowsSql: exactStructuralRowsSql(
+      graphOnlyWriteSet(fixture.writeSet, eofGraph),
+    ),
+    label: 'valid semantic graph use ending at source EOF',
+    rowAbsentSql: `NOT EXISTS (
+      SELECT 1 FROM canonical_v2_staging.validated_semantic_graphs
+      WHERE validated_semantic_graph_id=${
+  runtime.sqlText(eofGraph.validated_semantic_graph_id)
+}
+    )`,
+  });
 
   const baseExcerpt = fixture.writeSet.excerpts[0];
   const baseProvision = fixture.writeSet.provisions[0];
@@ -1077,9 +1337,288 @@ function main() {
     (row) => row.evidence.length >= 2
       && row.target_occurrence_ids.length >= 1,
   );
-  if (!baseClaim || !absentClaim || !baseRelationship) {
+  const baseGraph = fixture.semanticGraph;
+  if (!baseClaim || !absentClaim || !baseRelationship
+    || !baseGraph || baseGraph.definition_cues.length !== 1
+    || baseGraph.definition_use_cues.length !== 2) {
     throw new Error('QXO fixture lacks the required semantic acceptance probes.');
   }
+  const baseCue = baseGraph.definition_cues[0];
+  const forgedGraphId = {
+    ...baseGraph,
+    validated_semantic_graph_id: contentId(
+      'CANONICAL_V2_FORGED_SEMANTIC_GRAPH_ID/V1',
+      { nonce },
+    ),
+  };
+  const forgedCueFormula = replaceDefinitionCue(baseGraph, {
+    ...baseCue,
+    definition_cue_id: contentId(
+      'CANONICAL_V2_FORGED_DEFINITION_CUE_ID/V1',
+      { nonce },
+    ),
+  });
+  const forgedUseFormula = structuredClone(baseGraph);
+  forgedUseFormula.definition_use_cues[0].definition_use_cue_id = contentId(
+    'CANONICAL_V2_FORGED_DEFINITION_USE_ID/V1',
+    { nonce },
+  );
+  forgedUseFormula.definition_use_cue_ids =
+    forgedUseFormula.definition_use_cues.map(
+      (use) => use.definition_use_cue_id,
+    );
+  const resignedForgedUseFormula = resignSemanticGraph(forgedUseFormula);
+  const forgedTermSpanId = contentId(
+    'CANONICAL_V2_FORGED_DEFINITION_TERM_SPAN/V1',
+    { nonce },
+  );
+  const forgedTermSpanGraph = replaceDefinitionCue(
+    baseGraph,
+    resignDefinitionCue({
+      ...baseCue,
+      source_anchor_id: forgedTermSpanId,
+      term_span_id: forgedTermSpanId,
+      term_span: {
+        ...baseCue.term_span,
+        semantic_span_id: forgedTermSpanId,
+      },
+    }),
+  );
+  const inventedRawTerm = 'Invented De Minimis Standard';
+  const inventedRawTermGraph = replaceDefinitionCue(
+    baseGraph,
+    resignDefinitionCue({
+      ...baseCue,
+      raw_term: inventedRawTerm,
+      raw_term_digest: contentId(
+        'RAW_DEFINITION_TERM/V1',
+        inventedRawTerm,
+      ),
+    }),
+  );
+  const reversedUseOrderGraph = resignSemanticGraph({
+    ...structuredClone(baseGraph),
+    definition_use_cues: [...baseGraph.definition_use_cues].reverse(),
+    definition_use_cue_ids: [...baseGraph.definition_use_cue_ids].reverse(),
+  });
+  const unknownCueUseGraph = structuredClone(baseGraph);
+  unknownCueUseGraph.definition_use_cues[0] = resignDefinitionUse({
+    ...unknownCueUseGraph.definition_use_cues[0],
+    definition_cue_id: contentId(
+      'CANONICAL_V2_UNKNOWN_DEFINITION_CUE/V1',
+      { nonce },
+    ),
+  });
+  unknownCueUseGraph.definition_use_cue_ids =
+    unknownCueUseGraph.definition_use_cues.map(
+      (use) => use.definition_use_cue_id,
+    );
+  const resignedUnknownCueUseGraph = resignSemanticGraph(
+    unknownCueUseGraph,
+  );
+  const wrongGraphDocumentHash = contentId(
+    'CANONICAL_V2_UNADMITTED_GRAPH_DOCUMENT/V1',
+    { nonce },
+  );
+  const wrongDocumentCue = resignDefinitionCue({
+    ...baseCue,
+    document_hash: wrongGraphDocumentHash,
+  });
+  const wrongDocumentUses = baseGraph.definition_use_cues.map((use) => (
+    resignDefinitionUse({
+      ...use,
+      document_hash: wrongGraphDocumentHash,
+      definition_cue_id: wrongDocumentCue.definition_cue_id,
+    })
+  ));
+  const wrongDocumentGraph = resignSemanticGraph({
+    ...structuredClone(baseGraph),
+    document_hash: wrongGraphDocumentHash,
+    definition_cues: [wrongDocumentCue],
+    definition_cue_ids: [wrongDocumentCue.definition_cue_id],
+    definition_use_cues: wrongDocumentUses,
+    definition_use_cue_ids: wrongDocumentUses.map(
+      (use) => use.definition_use_cue_id,
+    ),
+  });
+  const extraCueFieldGraph = replaceDefinitionCue(baseGraph, {
+    ...baseCue,
+    unbound_definition_value: true,
+  });
+  const invalidGeometryGraph = replaceDefinitionCue(
+    baseGraph,
+    resignDefinitionCue({
+      ...baseCue,
+      body_span_ids: [baseCue.term_span.semantic_span_id],
+      body_spans: [baseCue.term_span],
+    }),
+  );
+  const oversizedCueIdGraph = resignSemanticGraph({
+    ...structuredClone(baseGraph),
+    definition_cue_ids: Array(4097).fill(baseCue.definition_cue_id),
+  });
+  const scalarBodySpansGraph = replaceDefinitionCue(baseGraph, {
+    ...baseCue,
+    body_span_ids: [],
+    body_spans: 'not-a-body-span-array',
+  });
+  const scalarCueIdsGraph = {
+    ...structuredClone(baseGraph),
+    definition_cue_ids: 'not-a-cue-id-array',
+  };
+  const scalarGraphWriteSet = graphOnlyWriteSet(
+    fixture.writeSet,
+    baseGraph,
+  );
+  scalarGraphWriteSet.validated_semantic_graphs = [7];
+  const scalarCueGraph = {
+    ...structuredClone(baseGraph),
+    definition_cues: [7],
+  };
+  const scalarUseGraph = {
+    ...structuredClone(baseGraph),
+    definition_use_cues: [7],
+  };
+  const scalarSpanGraph = structuredClone(baseGraph);
+  scalarSpanGraph.definition_use_cues[0].use_span = 7;
+  const graphContinuation = continuationOffset(
+    fixture.context.canonical_text.text,
+    0,
+    fixture.context.canonical_text_byte_length,
+    'QXO semantic graph source',
+  );
+  const canonicalBytes = Buffer.from(
+    fixture.context.canonical_text.text,
+    'utf8',
+  );
+  const continuationSpan = {
+    schema_version: 'SEMANTIC_SPAN/V1',
+    canonical_text_id: fixture.context.canonical_text_id,
+    absolute_start: graphContinuation,
+    absolute_end: graphContinuation + 1,
+    semantic_span_id: contentId('SEMANTIC_SPAN/V1', {
+      schema_version: 'SEMANTIC_SPAN/V1',
+      canonical_text_id: fixture.context.canonical_text_id,
+      absolute_start: graphContinuation,
+      absolute_end: graphContinuation + 1,
+    }),
+    exact_bytes_digest: sha256Hex(
+      canonicalBytes.subarray(graphContinuation, graphContinuation + 1),
+    ),
+  };
+  const continuationUse = resignDefinitionUse({
+    ...baseGraph.definition_use_cues[0],
+    use_span_id: continuationSpan.semantic_span_id,
+    use_span: continuationSpan,
+  });
+  const splitUtf8Graph = replaceDefinitionUse(
+    baseGraph,
+    0,
+    continuationUse,
+  );
+  const aggregateOverflowGraphs = Array.from(
+    { length: 5 },
+    (_, index) => ({
+      ...structuredClone(baseGraph),
+      validated_semantic_graph_id: contentId(
+        'CANONICAL_V2_AGGREGATE_GRAPH_OVERFLOW/V1',
+        { nonce, index },
+      ),
+      definition_cue_ids: [],
+      definition_use_cue_ids: [],
+      definition_cues: Array(4096).fill({ body_spans: [] }),
+      definition_use_cues: [],
+      closure_id: contentId(
+        'CANONICAL_V2_AGGREGATE_GRAPH_OVERFLOW_CLOSURE/V1',
+        { nonce, index },
+      ),
+    }),
+  );
+  const aggregateOverflowWriteSet = graphOnlyWriteSet(
+    fixture.writeSet,
+    aggregateOverflowGraphs[0],
+  );
+  aggregateOverflowWriteSet.validated_semantic_graphs =
+    aggregateOverflowGraphs;
+  const aggregateBodyOverflowGraphs = Array.from(
+    { length: 5 },
+    (_, index) => ({
+      ...structuredClone(baseGraph),
+      validated_semantic_graph_id: contentId(
+        'CANONICAL_V2_AGGREGATE_BODY_OVERFLOW/V1',
+        { nonce, index },
+      ),
+      definition_cue_ids: [],
+      definition_use_cue_ids: [],
+      definition_cues: [{
+        body_spans: Array(4096).fill({}),
+      }],
+      definition_use_cues: [],
+      closure_id: contentId(
+        'CANONICAL_V2_AGGREGATE_BODY_OVERFLOW_CLOSURE/V1',
+        { nonce, index },
+      ),
+    }),
+  );
+  const aggregateBodyOverflowWriteSet = graphOnlyWriteSet(
+    fixture.writeSet,
+    aggregateBodyOverflowGraphs[0],
+  );
+  aggregateBodyOverflowWriteSet.validated_semantic_graphs =
+    aggregateBodyOverflowGraphs;
+  const aggregateTopLevelIdOverflowGraphs = Array.from(
+    { length: 5 },
+    (_, index) => ({
+      ...structuredClone(baseGraph),
+      validated_semantic_graph_id: contentId(
+        'CANONICAL_V2_AGGREGATE_GRAPH_ID_OVERFLOW/V1',
+        { nonce, index },
+      ),
+      definition_cue_ids: Array(4096).fill(baseCue.definition_cue_id),
+      definition_use_cue_ids: [],
+      definition_cues: [],
+      definition_use_cues: [],
+      closure_id: contentId(
+        'CANONICAL_V2_AGGREGATE_GRAPH_ID_OVERFLOW_CLOSURE/V1',
+        { nonce, index },
+      ),
+    }),
+  );
+  const aggregateTopLevelIdOverflowWriteSet = graphOnlyWriteSet(
+    fixture.writeSet,
+    aggregateTopLevelIdOverflowGraphs[0],
+  );
+  aggregateTopLevelIdOverflowWriteSet.validated_semantic_graphs =
+    aggregateTopLevelIdOverflowGraphs;
+  const aggregateBodyIdOverflowGraphs = Array.from(
+    { length: 5 },
+    (_, index) => ({
+      ...structuredClone(baseGraph),
+      validated_semantic_graph_id: contentId(
+        'CANONICAL_V2_AGGREGATE_BODY_ID_OVERFLOW/V1',
+        { nonce, index },
+      ),
+      definition_cue_ids: [baseCue.definition_cue_id],
+      definition_use_cue_ids: [],
+      definition_cues: [{
+        ...structuredClone(baseCue),
+        body_span_ids: Array(4096).fill(
+          baseCue.body_spans[0].semantic_span_id,
+        ),
+      }],
+      definition_use_cues: [],
+      closure_id: contentId(
+        'CANONICAL_V2_AGGREGATE_BODY_ID_OVERFLOW_CLOSURE/V1',
+        { nonce, index },
+      ),
+    }),
+  );
+  const aggregateBodyIdOverflowWriteSet = graphOnlyWriteSet(
+    fixture.writeSet,
+    aggregateBodyIdOverflowGraphs[0],
+  );
+  aggregateBodyIdOverflowWriteSet.validated_semantic_graphs =
+    aggregateBodyIdOverflowGraphs;
   const excerptMessage =
     'DEAL_SCOPE_RUN excerpt identity or source bytes are invalid';
   const forgedExcerptId = {
@@ -1398,7 +1937,169 @@ function main() {
     'DEAL_SCOPE_RUN claim identity, state or evidence lineage is invalid';
   const relationshipMessage =
     'DEAL_SCOPE_RUN relationship identity, endpoints, state or evidence lineage is invalid';
+  const graphMessage =
+    'DEAL_SCOPE_RUN validated semantic graph identity, child identity or source bytes are invalid';
   const probes = [
+    {
+      label: 'forged validated semantic graph identity',
+      row: forgedGraphId,
+      writeSet: graphOnlyWriteSet(fixture.writeSet, forgedGraphId),
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 're-signed forged definition cue identity',
+      row: forgedCueFormula,
+      writeSet: graphOnlyWriteSet(fixture.writeSet, forgedCueFormula),
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 're-signed forged definition use identity',
+      row: resignedForgedUseFormula,
+      writeSet: graphOnlyWriteSet(
+        fixture.writeSet,
+        resignedForgedUseFormula,
+      ),
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 're-signed forged embedded semantic span identity',
+      row: forgedTermSpanGraph,
+      writeSet: graphOnlyWriteSet(fixture.writeSet, forgedTermSpanGraph),
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 're-signed definition term not present in source',
+      row: inventedRawTermGraph,
+      writeSet: graphOnlyWriteSet(fixture.writeSet, inventedRawTermGraph),
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 're-signed definition uses outside canonical order',
+      row: reversedUseOrderGraph,
+      writeSet: graphOnlyWriteSet(fixture.writeSet, reversedUseOrderGraph),
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 're-signed definition use linked to an unknown cue',
+      row: resignedUnknownCueUseGraph,
+      writeSet: graphOnlyWriteSet(
+        fixture.writeSet,
+        resignedUnknownCueUseGraph,
+      ),
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 'fully re-signed graph on an unadmitted document',
+      row: wrongDocumentGraph,
+      writeSet: graphOnlyWriteSet(fixture.writeSet, wrongDocumentGraph),
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 'unbound definition cue field',
+      row: extraCueFieldGraph,
+      writeSet: graphOnlyWriteSet(fixture.writeSet, extraCueFieldGraph),
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 're-signed nested definition with invalid geometry',
+      row: invalidGeometryGraph,
+      writeSet: graphOnlyWriteSet(fixture.writeSet, invalidGeometryGraph),
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 'semantic graph exceeding the governed child bound',
+      row: oversizedCueIdGraph,
+      writeSet: graphOnlyWriteSet(fixture.writeSet, oversizedCueIdGraph),
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 'semantic graph with a scalar body-span collection',
+      row: scalarBodySpansGraph,
+      writeSet: graphOnlyWriteSet(fixture.writeSet, scalarBodySpansGraph),
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 'semantic graph with a scalar cue-id collection',
+      row: scalarCueIdsGraph,
+      writeSet: graphOnlyWriteSet(fixture.writeSet, scalarCueIdsGraph),
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 'scalar validated semantic graph node',
+      row: baseGraph,
+      writeSet: scalarGraphWriteSet,
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 'semantic graph with a scalar definition cue node',
+      row: scalarCueGraph,
+      writeSet: graphOnlyWriteSet(fixture.writeSet, scalarCueGraph),
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 'semantic graph with a scalar definition use node',
+      row: scalarUseGraph,
+      writeSet: graphOnlyWriteSet(fixture.writeSet, scalarUseGraph),
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 'semantic graph with a scalar embedded span node',
+      row: scalarSpanGraph,
+      writeSet: graphOnlyWriteSet(fixture.writeSet, scalarSpanGraph),
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 'semantic graph span splitting a UTF-8 code point',
+      row: splitUtf8Graph,
+      writeSet: graphOnlyWriteSet(fixture.writeSet, splitUtf8Graph),
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 'semantic graph request exceeding the aggregate child bound',
+      row: aggregateOverflowGraphs[0],
+      writeSet: aggregateOverflowWriteSet,
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 'semantic graph request exceeding the aggregate body-span bound',
+      row: aggregateBodyOverflowGraphs[0],
+      writeSet: aggregateBodyOverflowWriteSet,
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 'semantic graph request exceeding the aggregate top-level identifier bound',
+      row: aggregateTopLevelIdOverflowGraphs[0],
+      writeSet: aggregateTopLevelIdOverflowWriteSet,
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
+    {
+      label: 'semantic graph request exceeding the aggregate body identifier bound',
+      row: aggregateBodyIdOverflowGraphs[0],
+      writeSet: aggregateBodyIdOverflowWriteSet,
+      expectedMessage: graphMessage,
+      exists: mutatedSemanticGraphExists,
+    },
     {
       label: 'forged excerpt identity',
       row: forgedExcerptId,
@@ -1939,6 +2640,76 @@ function main() {
     idempotencyKey: `excerpt-identity-malformed-persisted-${nonce}`,
   });
 
+  const malformedGraphClosureId = contentId(
+    'CANONICAL_V2_MALFORMED_PERSISTED_GRAPH_CLOSURE/V1',
+    { nonce },
+  );
+  const malformedPersistedGraph = {
+    ...inventedRawTermGraph,
+    closure_id: malformedGraphClosureId,
+  };
+  assertMalformedPersistedReferenceRejected({
+    fixture,
+    malformedObject: malformedPersistedGraph,
+    objectKind: 'validated_semantic_graphs',
+    idempotencyKey: `graph-identity-malformed-persisted-${nonce}`,
+  });
+  const unsafeOrdinalGraphClosureId = contentId(
+    'CANONICAL_V2_UNSAFE_PERSISTED_GRAPH_ORDINAL_CLOSURE/V1',
+    { nonce },
+  );
+  const unsafeOrdinalPersistedGraph = structuredClone(baseGraph);
+  unsafeOrdinalPersistedGraph.definition_cues[0].source_order_ordinal = 1.5;
+  unsafeOrdinalPersistedGraph.closure_id = unsafeOrdinalGraphClosureId;
+  assertMalformedPersistedReferenceRejected({
+    fixture,
+    malformedObject: unsafeOrdinalPersistedGraph,
+    objectKind: 'validated_semantic_graphs',
+    idempotencyKey: `graph-identity-unsafe-ordinal-persisted-${nonce}`,
+  });
+  const fractionalBodyIdGraphClosureId = contentId(
+    'CANONICAL_V2_FRACTIONAL_PERSISTED_BODY_ID_CLOSURE/V1',
+    { nonce },
+  );
+  const fractionalBodyIdPersistedGraph = structuredClone(baseGraph);
+  fractionalBodyIdPersistedGraph.definition_cues[0].body_span_ids = [1.5];
+  fractionalBodyIdPersistedGraph.closure_id =
+    fractionalBodyIdGraphClosureId;
+  assertMalformedPersistedReferenceRejected({
+    fixture,
+    malformedObject: fractionalBodyIdPersistedGraph,
+    objectKind: 'validated_semantic_graphs',
+    idempotencyKey: `graph-identity-fractional-body-id-persisted-${nonce}`,
+  });
+  const fractionalGraphIdClosureId = contentId(
+    'CANONICAL_V2_FRACTIONAL_PERSISTED_GRAPH_ID_CLOSURE/V1',
+    { nonce },
+  );
+  const fractionalGraphIdPersistedGraph = structuredClone(baseGraph);
+  fractionalGraphIdPersistedGraph.definition_use_cue_ids = [1.5];
+  fractionalGraphIdPersistedGraph.closure_id = fractionalGraphIdClosureId;
+  assertMalformedPersistedReferenceRejected({
+    fixture,
+    malformedObject: fractionalGraphIdPersistedGraph,
+    objectKind: 'validated_semantic_graphs',
+    idempotencyKey: `graph-identity-fractional-graph-id-persisted-${nonce}`,
+  });
+  const nonAsciiGraphIdClosureId = contentId(
+    'CANONICAL_V2_NON_ASCII_PERSISTED_GRAPH_ID_CLOSURE/V1',
+    { nonce },
+  );
+  const nonAsciiGraphIdPersistedGraph = structuredClone(baseGraph);
+  nonAsciiGraphIdPersistedGraph.definition_cue_ids = [{
+    'proposition-é': 'source-backed',
+  }];
+  nonAsciiGraphIdPersistedGraph.closure_id = nonAsciiGraphIdClosureId;
+  assertMalformedPersistedReferenceRejected({
+    fixture,
+    malformedObject: nonAsciiGraphIdPersistedGraph,
+    objectKind: 'validated_semantic_graphs',
+    idempotencyKey: `graph-identity-non-ascii-graph-id-persisted-${nonce}`,
+  });
+
   const malformedClosureId = contentId(
     'CANONICAL_V2_MALFORMED_PERSISTED_PROVISION_CLOSURE/V1',
     { nonce },
@@ -2015,7 +2786,9 @@ function main() {
   });
 
   process.stdout.write(
-    `Canonical excerpt and structural identity acceptance passed across ${
+    `Canonical graph, excerpt and structural identity acceptance passed across ${
+      fixture.writeSet.validated_semantic_graphs.length
+    } semantic graph, ${
       fixture.writeSet.excerpts.length
     } excerpts, ${
       audit.provision_count
