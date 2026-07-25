@@ -19,7 +19,7 @@ const RUNNER =
 const FIXTURE =
   'tests/fixtures/canonical-v2/qxo-no-shop-notice-semantic-closure-f6-staging-attestation.json';
 const ALLOWLIST =
-  '.github/phase-allowlists/wp-canonical-qxo-no-shop-notice-semantic-closure-f6.json';
+  '.github/phase-allowlists/wp-canonical-qxo-no-shop-notice-closure-f6.json';
 
 function fixture() {
   return JSON.parse(fs.readFileSync(FIXTURE, 'utf8'));
