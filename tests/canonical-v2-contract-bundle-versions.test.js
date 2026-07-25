@@ -26,12 +26,20 @@ const {
   FIXTURE_CONTRACT_INPUT_V3,
   FIXTURE_CONTRACT_INPUT_V4,
   FIXTURE_CONTRACT_INPUT_V5,
+  FIXTURE_CONTRACT_INPUT_V6,
   FIXTURE_CONTRACT_FINGERPRINTS,
+  FIXTURE_SERVING_CONTRACT_FINGERPRINTS,
+  NO_SHOP_ACTION_CODES_V2,
+  NO_SHOP_ACTION_ROLLUP_SCHEMA_V1,
+  NO_SHOP_INLINE_PERMISSION_EFFECT_SCHEMA_V1,
+  NO_SHOP_NOTICE_OBLIGATION_SCHEMA_V1,
+  NO_SHOP_EXCEPTION_PREREQUISITE_CODES_V2,
   compileFixtureContract,
   compileFixtureContractV2,
   compileFixtureContractV3,
   compileFixtureContractV4,
   compileFixtureContractV5,
+  compileFixtureContractV6,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -41,6 +49,7 @@ const FROZEN_F2 = '46553f1a743dbf9f4ebfd07bff20939f66a57c4973826b5619c8bdfd196b1
 const FROZEN_F3 = '5cc5607bee8fc816e8682f71b9482ff839ff744cebaaf0f26bfcfa54ea64512c';
 const FROZEN_F4 = 'd4ce5235be1818a42d9aba0dfb34198456eb062381e7d7db7b8289dd88671c74';
 const FROZEN_F5 = 'f80a77651d1b6a6a9eec8ac67526a8704f498761cbb22a67e6ceb4716abb5478';
+const FROZEN_F6 = '161083b014a35d800dec0b0c41a97dc6d97f38a5dd206b388ba51b3ab9f68c08';
 
 const APPROVED_V2_ADDITIONS = [
   'TERMR-BREACH',
@@ -101,13 +110,18 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F5 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F6 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
   assert.notEqual(FROZEN_F4, FROZEN_F5);
+  assert.notEqual(FROZEN_F5, FROZEN_F6);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
+    [FROZEN_F1, FROZEN_F2, FROZEN_F3, FROZEN_F4, FROZEN_F5, FROZEN_F6].sort(),
+  );
+  assert.deepEqual(
+    [...FIXTURE_SERVING_CONTRACT_FINGERPRINTS].sort(),
     [FROZEN_F1, FROZEN_F2, FROZEN_F3, FROZEN_F4, FROZEN_F5].sort(),
   );
 });
@@ -351,6 +365,262 @@ test('F5 precision policy and residual cannot be adopted independently or altere
   }), /contract version/);
 });
 
+test('F6 freezes the approved atomic no-shop actions and exact exception contract', () => {
+  const f5 = compileFixtureContractV5();
+  const f6 = compileFixtureContractV6();
+  assert.equal(f6.fingerprint, FROZEN_F6);
+  assert.equal(validateContractBundle(f6), true);
+  assert.equal(
+    canonicalJson(f6),
+    canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V6)),
+  );
+  const actionClaim = f6.claim_definitions.find(
+    (entry) => entry.claim_definition_key === 'NO_SHOP_PROHIBITED_ACTION',
+  );
+  const prerequisiteClaim = f6.claim_definitions.find(
+    (entry) => entry.claim_definition_key === 'NO_SHOP_EXCEPTION_PREREQUISITE',
+  );
+  assert.equal(actionClaim.version, 2);
+  assert.deepEqual(actionClaim.allowed_canonical_values, NO_SHOP_ACTION_CODES_V2);
+  assert.equal(prerequisiteClaim.version, 2);
+  assert.deepEqual(
+    prerequisiteClaim.allowed_canonical_values,
+    NO_SHOP_EXCEPTION_PREREQUISITE_CODES_V2,
+  );
+  assert.equal(
+    f6.relationship_definitions.find(
+      (entry) => entry.relationship_key === 'EXCEPTED_BY',
+    ).version,
+    2,
+  );
+  assert.deepEqual(
+    f6.relationship_definitions.filter(
+      (entry) => entry.relationship_key !== 'EXCEPTED_BY',
+    ),
+    f5.relationship_definitions.filter(
+      (entry) => entry.relationship_key !== 'EXCEPTED_BY',
+    ),
+  );
+  const schemaFor = (key) => f6.no_shop_semantic_schema_definitions.find(
+    (entry) => entry.semantic_schema_key === key,
+  );
+  assert.equal(actionClaim.allowed_canonical_values.length, 23);
+  assert.deepEqual(
+    schemaFor('NO_SHOP_ACTION_COMPARISON_ROLLUP').rollups,
+    NO_SHOP_ACTION_ROLLUP_SCHEMA_V1.rollups,
+  );
+  assert.deepEqual(
+    schemaFor('NO_SHOP_ACTION_COMPARISON_ROLLUP').unrolled_action_codes,
+    ['GRANT_DGCL_SECTION_203_WAIVER'],
+  );
+  const schema = schemaFor('NO_SHOP_EXCEPTION_EFFECT');
+  assert.equal(schema.relationship_key, 'EXCEPTED_BY');
+  assert.equal(schema.relationship_definition_version, 2);
+  assert.equal(schema.maximum_shared_prerequisites, 8);
+  assert.equal(schema.maximum_action_specific_prerequisites, 2);
+  assert.deepEqual(
+    schema.allowed_legal_operations.map((entry) => [
+      entry.legal_operation,
+      entry.affected_action_code,
+      entry.required_action_specific_prerequisite_codes,
+      entry.required_definition_relationship_key,
+    ]),
+    [
+      [
+        'PERMITS_FURNISH_NONPUBLIC_INFORMATION',
+        'FURNISH_NONPUBLIC_INFORMATION',
+        [
+          'ACCEPTABLE_CONFIDENTIALITY_AGREEMENT_REQUIRED',
+          'NONPUBLIC_INFORMATION_PREVIOUSLY_OR_SUBSTANTIALLY_SIMULTANEOUSLY_PROVIDED_TO_PROTECTED_PARTY',
+        ],
+        'USES_DEFINITION',
+      ],
+      [
+        'PERMITS_ENGAGE_IN_DISCUSSIONS',
+        'ENGAGE_IN_DISCUSSIONS',
+        [],
+        null,
+      ],
+      [
+        'PERMITS_ENGAGE_IN_NEGOTIATIONS',
+        'ENGAGE_IN_NEGOTIATIONS',
+        [],
+        null,
+      ],
+      [
+        'PERMITS_PARTICIPATE_IN_DISCUSSIONS',
+        'PARTICIPATE_IN_DISCUSSIONS',
+        [],
+        null,
+      ],
+      [
+        'PERMITS_PARTICIPATE_IN_NEGOTIATIONS',
+        'PARTICIPATE_IN_NEGOTIATIONS',
+        [],
+        null,
+      ],
+    ],
+  );
+  assert.equal(
+    schema.governed_notice_dependency,
+    'COMPLETE_FIRST_SENTENCE_NOTICE_OBLIGATION',
+  );
+  assert.equal(schema.partial_notice_claim_cannot_close_dependency, true);
+  const inlinePermission = schemaFor('NO_SHOP_INLINE_PERMISSION_EFFECT');
+  assert.equal(
+    inlinePermission.legal_operation,
+    NO_SHOP_INLINE_PERMISSION_EFFECT_SCHEMA_V1.legal_operation,
+  );
+  assert.equal(
+    inlinePermission.permitted_action_code,
+    'INFORM_PERSONS_OF_NO_SHOP_PROVISIONS',
+  );
+  assert.deepEqual(
+    inlinePermission.forbidden_prerequisite_classes,
+    ['PROPOSAL', 'CONFIDENTIALITY', 'INFORMATION_DELIVERY', 'NOTICE'],
+  );
+  const notice = schemaFor('NO_SHOP_NOTICE_OBLIGATION');
+  assert.deepEqual(
+    notice.allowed_trigger_codes,
+    NO_SHOP_NOTICE_OBLIGATION_SCHEMA_V1.allowed_trigger_codes,
+  );
+  assert.equal(notice.required_completeness, 'COMPLETE');
+  assert.equal(notice.maximum_evidence_excerpts, 32);
+  assert.deepEqual(notice.required_trigger_codes, notice.allowed_trigger_codes);
+  assert.deepEqual(
+    notice.required_delivery_method_codes,
+    notice.allowed_delivery_method_codes,
+  );
+  assert.deepEqual(
+    notice.required_content_requirement_codes,
+    notice.allowed_content_requirement_codes,
+  );
+  assert.deepEqual(
+    notice.required_copy_subject_codes,
+    notice.allowed_copy_subject_codes,
+  );
+  assert.deepEqual(
+    notice.required_notice_timing_qualifier_codes,
+    ['PROMPTLY', 'NO_LATER_THAN_24_ELAPSED_HOURS'],
+  );
+  assert.deepEqual(
+    notice.required_copy_timing_qualifier_codes,
+    ['PROMPTLY', 'NO_LATER_THAN_24_ELAPSED_HOURS'],
+  );
+  assert.equal(notice.minimum_copy_timing_claims, 1);
+  assert.equal(
+    canonicalJson(fixtureContractForFingerprint(FROZEN_F6)),
+    canonicalJson(f6),
+  );
+});
+
+test('F6 changes only the approved no-shop claims, relationship version and effect schema', () => {
+  const f5 = compileFixtureContractV5();
+  const f6 = compileFixtureContractV6();
+  const stable = (bundle) => {
+    const {
+      fingerprint: _fingerprint,
+      claim_definitions: _claims,
+      relationship_definitions: _relationships,
+      no_shop_semantic_schema_definitions: _noShopSchemas,
+      ...rest
+    } = bundle;
+    return rest;
+  };
+  assert.equal(canonicalJson(stable(f5)), canonicalJson(stable(f6)));
+  assert.deepEqual(
+    f6.claim_definitions.filter(
+      (entry) => ![
+        'NO_SHOP_PROHIBITED_ACTION',
+        'NO_SHOP_EXCEPTION_PREREQUISITE',
+      ].includes(entry.claim_definition_key),
+    ),
+    f5.claim_definitions.filter(
+      (entry) => ![
+        'NO_SHOP_PROHIBITED_ACTION',
+        'NO_SHOP_EXCEPTION_PREREQUISITE',
+      ].includes(entry.claim_definition_key),
+    ),
+  );
+});
+
+test('F6 refuses partial, legacy-version and co-mutated no-shop hybrids', () => {
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V5,
+    claim_definitions: FIXTURE_CONTRACT_INPUT_V6.claim_definitions,
+  }), /contract version/);
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V6,
+    relationship_definitions: FIXTURE_CONTRACT_INPUT_V5.relationship_definitions,
+  }), /contract version/);
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V6,
+    no_shop_semantic_schemas: undefined,
+  }), /contract version/);
+  const changedSchemas = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V6.no_shop_semantic_schemas,
+  ));
+  changedSchemas.find(
+    (entry) => entry.schema_key === 'NO_SHOP_EXCEPTION_EFFECT',
+  ).allowed_legal_operations[1]
+    .required_action_specific_prerequisite_codes = [
+      'ACCEPTABLE_CONFIDENTIALITY_AGREEMENT_REQUIRED',
+    ];
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V6,
+    no_shop_semantic_schemas: changedSchemas,
+  }), /contract version/);
+  const changedRollups = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V6.no_shop_semantic_schemas,
+  ));
+  changedRollups.find(
+    (entry) => entry.schema_key === 'NO_SHOP_ACTION_COMPARISON_ROLLUP',
+  ).rollups[1].required_qualifier_predicate = null;
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V6,
+    no_shop_semantic_schemas: changedRollups,
+  }), /contract version/);
+  const missingParticipateEffect = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V6.no_shop_semantic_schemas,
+  ));
+  const exceptionSchema = missingParticipateEffect.find(
+    (entry) => entry.schema_key === 'NO_SHOP_EXCEPTION_EFFECT',
+  );
+  exceptionSchema.allowed_legal_operations = exceptionSchema.allowed_legal_operations.filter(
+    (entry) => entry.legal_operation !== 'PERMITS_PARTICIPATE_IN_DISCUSSIONS',
+  );
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V6,
+    no_shop_semantic_schemas: missingParticipateEffect,
+  }), /contract version/);
+  const incompleteNotice = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V6.no_shop_semantic_schemas,
+  ));
+  const noticeSchema = incompleteNotice.find(
+    (entry) => entry.schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  );
+  noticeSchema.required_trigger_codes.pop();
+  noticeSchema.required_delivery_method_codes.pop();
+  noticeSchema.required_content_requirement_codes.pop();
+  noticeSchema.required_notice_timing_qualifier_codes.pop();
+  noticeSchema.required_copy_timing_qualifier_codes.pop();
+  noticeSchema.required_copy_subject_codes.pop();
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V6,
+    no_shop_semantic_schemas: incompleteNotice,
+  }), /contract version/);
+  const changedRelationships = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V6.relationship_definitions,
+  ));
+  changedRelationships.find(
+    (entry) => entry.relationship_key === 'EXCEPTED_BY',
+  ).effect_mode = 'NON_SEMANTIC';
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V6,
+    relationship_definitions: changedRelationships,
+  }), /contract version/);
+});
+
 // ---------------------------------------------------------------------------
 // Per-version validation: validateInput (exercised via compileFixtureContract)
 // accepts either frozen concept-key vocabulary and rejects anything else.
@@ -377,10 +647,11 @@ test('a bundle missing one of the four V2 additions is rejected (not silently ac
   assert.throws(() => compileFixtureContract(partial), /concept keys do not match any frozen fixture contract version/);
 });
 
-test('validateContractBundle accepts compiled V1 through V5 bundles', () => {
+test('validateContractBundle accepts compiled V1 through V6 bundles', () => {
   assert.equal(validateContractBundle(compileFixtureContract()), true);
   assert.equal(validateContractBundle(compileFixtureContractV2()), true);
   assert.equal(validateContractBundle(compileFixtureContractV3()), true);
   assert.equal(validateContractBundle(compileFixtureContractV4()), true);
   assert.equal(validateContractBundle(compileFixtureContractV5()), true);
+  assert.equal(validateContractBundle(compileFixtureContractV6()), true);
 });
