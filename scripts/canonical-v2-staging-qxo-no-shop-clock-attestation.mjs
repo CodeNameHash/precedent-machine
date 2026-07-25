@@ -38,6 +38,11 @@ const {
   validateQxoNoShopNestedDefinitionCandidateSupplement,
 } = require('../lib/canonical-v2/qxo-no-shop-nested-definition-candidate-supplement');
 const {
+  buildQxoNoShopReviewedDefinitionGraphF6,
+  buildQxoNoShopReviewedDefinitionGraphF6FailureIsolationAttestation,
+  validateQxoNoShopReviewedDefinitionGraphF6,
+} = require('../lib/canonical-v2/qxo-no-shop-reviewed-definition-graph-f6');
+const {
   buildQxoAdmittedNoShopActionsSlice,
 } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
 const {
@@ -83,6 +88,10 @@ const ACTIONS_F6_FIXTURE_PATH = join(
 const DEFINITIONS_F6_FIXTURE_PATH = join(
   ROOT,
   'tests/fixtures/canonical-v2/qxo-no-shop-definitions-f6-staging-attestation.json',
+);
+const DEFINITION_GRAPH_F6_FIXTURE_PATH = join(
+  ROOT,
+  'tests/fixtures/canonical-v2/qxo-no-shop-definition-graph-f6-staging-attestation.json',
 );
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
@@ -608,6 +617,158 @@ function buildDefinitionsF6Attestation() {
   };
 }
 
+function buildDefinitionGraphF6Attestation() {
+  const contractBundle = compileFixtureContractV6();
+  const {
+    admittedSourceContext,
+    admittedParserProposalEnvelope,
+    parserInputs,
+  } = buildSourceInputs(contractBundle);
+  const supplementInputs = {
+    ...parserInputs,
+    admitted_parser_proposal_envelope: admittedParserProposalEnvelope,
+  };
+  const supplement = buildQxoNoShopNestedDefinitionCandidateSupplement(
+    supplementInputs,
+  );
+  const graphInputs = {
+    ...supplementInputs,
+    qxo_no_shop_nested_definition_candidate_supplement: supplement,
+  };
+  const graph = buildQxoNoShopReviewedDefinitionGraphF6(graphInputs);
+  validateQxoNoShopReviewedDefinitionGraphF6({
+    qxo_no_shop_reviewed_definition_graph_f6: graph,
+    ...graphInputs,
+  });
+  const changed = JSON.parse(JSON.stringify(graph));
+  changed.status.release_eligible = true;
+  let carrierDriftRejected = false;
+  try {
+    validateQxoNoShopReviewedDefinitionGraphF6({
+      qxo_no_shop_reviewed_definition_graph_f6: changed,
+      ...graphInputs,
+    });
+  } catch (_) {
+    carrierDriftRejected = true;
+  }
+  if (!carrierDriftRejected) {
+    throw new Error('The F6 reviewed definition graph accepted carrier drift.');
+  }
+  const failedCompanyRequestGraph =
+    buildQxoNoShopReviewedDefinitionGraphF6FailureIsolationAttestation(
+      graphInputs,
+      'COMPANY_REQUEST',
+    );
+  const failedCandidateOutcomes =
+    failedCompanyRequestGraph.candidate_outcomes.filter(
+      (outcome) => outcome.suppressed,
+    );
+  const baselineUnaffectedCueIds = graph.candidate_outcomes
+    .filter((outcome) => outcome.definition_key !== 'COMPANY_REQUEST')
+    .map((outcome) => outcome.definition_cue_id);
+  const failedUnaffectedCueIds = failedCompanyRequestGraph.candidate_outcomes
+    .filter((outcome) => outcome.definition_key !== 'COMPANY_REQUEST')
+    .map((outcome) => outcome.definition_cue_id);
+  const candidateFailureIsolationVerified =
+    failedCandidateOutcomes.length === 1
+    && failedCandidateOutcomes[0].definition_key === 'COMPANY_REQUEST'
+    && failedCandidateOutcomes[0].failure_code === 'ATTESTED_CANDIDATE_FAILURE'
+    && failedCompanyRequestGraph.candidate_dispositions.length === 5
+    && failedCompanyRequestGraph.validated_semantic_graph.definition_cues.length === 5
+    && canonicalJson(baselineUnaffectedCueIds)
+      === canonicalJson(failedUnaffectedCueIds)
+    && failedCompanyRequestGraph.reviewed_use_bindings.every(
+      (binding) => binding.definition_key !== 'COMPANY_REQUEST',
+    )
+    && failedCompanyRequestGraph.definition_dependency_outcomes.filter(
+      (outcome) => outcome.suppressed,
+    ).length === 1
+    && failedCompanyRequestGraph.definition_dependency_outcomes.find(
+      (outcome) => outcome.suppressed,
+    )?.container_definition_key === 'COMPANY_REQUEST'
+    && failedCompanyRequestGraph.status
+      .definition_candidate_dispositions_complete === false
+    && failedCompanyRequestGraph.status.review_renderable === true
+    && failedCompanyRequestGraph.status.publication_blocked === true;
+  if (!candidateFailureIsolationVerified) {
+    throw new Error('The F6 definition graph did not isolate one failed candidate.');
+  }
+  return {
+    schema_version: 'QXO_NO_SHOP_DEFINITION_GRAPH_F6_STAGING_ATTESTATION/V1',
+    environment: 'STAGING',
+    authority_scope: graph.authority_scope,
+    contract_binding: graph.contract_binding,
+    source_binding: graph.source_binding,
+    parser_binding: {
+      admitted_parser_proposal_envelope_id:
+        graph.parser_binding.admitted_parser_proposal_envelope_id,
+      admitted_parser_proposal_envelope_payload_digest:
+        graph.parser_binding.admitted_parser_proposal_envelope_payload_digest,
+      parser_runtime_manifest_id: graph.parser_binding.parser_runtime_manifest_id,
+      parser_candidates_mutated: graph.parser_binding.parser_candidates_mutated,
+      retained_parser_residual_count:
+        graph.parser_binding.retained_parser_residual_ids.length,
+    },
+    supplement_binding: graph.supplement_binding,
+    governed_dependency_scopes: graph.governed_dependency_scopes,
+    candidate_outcomes: graph.candidate_outcomes.map((outcome) => ({
+      definition_key: outcome.definition_key,
+      candidate_origin: outcome.candidate_origin,
+      candidate_id: outcome.candidate_id,
+      governed_ordinal: outcome.governed_ordinal,
+      suppressed: outcome.suppressed,
+      failure_code: outcome.failure_code,
+      reviewed_definition_disposition_id:
+        outcome.reviewed_definition_disposition_id,
+      definition_cue_id: outcome.definition_cue_id,
+    })),
+    candidate_dispositions: graph.candidate_dispositions.map((disposition) => ({
+      definition_key: disposition.definition_key,
+      candidate_origin: disposition.candidate_origin,
+      candidate_id: disposition.candidate_id,
+      governed_ordinal: disposition.governed_ordinal,
+      disposition_code: disposition.disposition_code,
+      definition_cue_id: disposition.definition_cue_id,
+    })),
+    reviewed_use_bindings: graph.reviewed_use_bindings.map((binding) => ({
+      definition_key: binding.definition_key,
+      absolute_start: binding.absolute_start,
+      absolute_end: binding.absolute_end,
+      inventory_scope: binding.inventory_scope,
+      purpose_codes: binding.purpose_codes,
+    })),
+    definition_dependency_edges: graph.definition_dependency_edges.map((edge) => ({
+      container_definition_key: edge.container_definition_key,
+      referenced_definition_key: edge.referenced_definition_key,
+      governed_ordinal: edge.governed_ordinal,
+    })),
+    definition_dependency_outcomes: graph.definition_dependency_outcomes.map(
+      (outcome) => ({
+        container_definition_key: outcome.container_definition_key,
+        referenced_definition_key: outcome.referenced_definition_key,
+        governed_ordinal: outcome.governed_ordinal,
+        suppressed: outcome.suppressed,
+        failure_code: outcome.failure_code,
+      }),
+    ),
+    retained_use_residuals: graph.retained_use_residuals,
+    graph_summary: {
+      validated_semantic_graph_id:
+        graph.validated_semantic_graph.validated_semantic_graph_id,
+      definition_cue_count:
+        graph.validated_semantic_graph.definition_cues.length,
+      definition_use_cue_count:
+        graph.validated_semantic_graph.definition_use_cues.length,
+    },
+    graph_status: graph.status,
+    carrier_drift_rejected: carrierDriftRejected,
+    candidate_failure_isolation_verified: candidateFailureIsolationVerified,
+    qxo_no_shop_reviewed_definition_graph_f6_id:
+      graph.qxo_no_shop_reviewed_definition_graph_f6_id,
+    canonical_payload_digest: graph.canonical_payload_digest,
+  };
+}
+
 function verifyActionsFailureIsolation(bridgeInputs) {
   const missingFirstAction = JSON.parse(JSON.stringify(
     bridgeInputs.reviewed_no_shop_actions_slice,
@@ -818,23 +979,31 @@ if (![
   '--actions-f6-verify',
   '--definitions-f6-print',
   '--definitions-f6-verify',
+  '--definition-graph-f6-print',
+  '--definition-graph-f6-verify',
 ].includes(mode)
   || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify');
 }
 
 try {
-  const definitionsF6Mode = mode.startsWith('--definitions-f6-');
+  const definitionGraphF6Mode = mode.startsWith('--definition-graph-f6-');
+  const definitionsF6Mode = !definitionGraphF6Mode
+    && mode.startsWith('--definitions-f6-');
   const actionsF6Mode = !definitionsF6Mode && mode.startsWith('--actions-f6-');
   const actionsMode = !actionsF6Mode && mode.startsWith('--actions-');
-  const attestation = definitionsF6Mode
+  const attestation = definitionGraphF6Mode
+    ? buildDefinitionGraphF6Attestation()
+    : definitionsF6Mode
     ? buildDefinitionsF6Attestation()
     : actionsF6Mode
     ? buildActionsF6Attestation()
     : actionsMode ? buildActionsAttestation() : buildAttestation();
   if (mode.endsWith('verify')) {
     const expected = JSON.parse(readFileSync(
-      definitionsF6Mode
+      definitionGraphF6Mode
+        ? DEFINITION_GRAPH_F6_FIXTURE_PATH
+        : definitionsF6Mode
         ? DEFINITIONS_F6_FIXTURE_PATH
         : actionsF6Mode
         ? ACTIONS_F6_FIXTURE_PATH
