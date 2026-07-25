@@ -236,6 +236,61 @@ test('dry run validates and partitions without opening a transaction', async () 
   assert.deepEqual(repository.snapshot().receipts, []);
 });
 
+test('semantic graph nesting is bounded across the whole writer request', async () => {
+  const { repository, writer } = setup();
+  const writeSet = fixtureWriteSet();
+  writeSet.validated_semantic_graphs = Array.from({ length: 5 }, (_, index) => ({
+    schema_version: 'VALIDATED_SEMANTIC_GRAPH/V1',
+    validated_semantic_graph_id: id(`oversized-graph:${index}`),
+    document_hash: writeSet.source.document_hash,
+    canonical_text_id: writeSet.source.canonical_text_id,
+    definition_cue_ids: [],
+    definition_use_cue_ids: [],
+    definition_cues: Array(4096).fill({
+      body_span_ids: [],
+      body_spans: [],
+    }),
+    definition_use_cues: [],
+    closure_id: id(`oversized-graph-closure:${index}`),
+  }));
+  await assert.rejects(
+    writer.write({
+      operation: 'FIXTURE_DEAL_EXTRACTION_RUN',
+      idempotencyKey: 'oversized-semantic-graph-request',
+      dryRun: true,
+      writeSet,
+    }),
+    /nested-member maximum/,
+  );
+  assert.equal(repository.transactionCount, 0);
+});
+
+test('semantic graph identifier arrays are bounded across the whole writer request', async () => {
+  const { repository, writer } = setup();
+  const writeSet = fixtureWriteSet();
+  writeSet.validated_semantic_graphs = Array.from({ length: 5 }, (_, index) => ({
+    schema_version: 'VALIDATED_SEMANTIC_GRAPH/V1',
+    validated_semantic_graph_id: id(`oversized-id-graph:${index}`),
+    document_hash: writeSet.source.document_hash,
+    canonical_text_id: writeSet.source.canonical_text_id,
+    definition_cue_ids: Array(4096).fill(id(`cue-id:${index}`)),
+    definition_use_cue_ids: [],
+    definition_cues: [],
+    definition_use_cues: [],
+    closure_id: id(`oversized-id-graph-closure:${index}`),
+  }));
+  await assert.rejects(
+    writer.write({
+      operation: 'FIXTURE_DEAL_EXTRACTION_RUN',
+      idempotencyKey: 'oversized-semantic-graph-identifier-request',
+      dryRun: true,
+      writeSet,
+    }),
+    /identifier-member maximum/,
+  );
+  assert.equal(repository.transactionCount, 0);
+});
+
 test('one write uses one transaction and exact replay returns the same receipt without another transaction', async () => {
   const { repository, writer } = setup();
   const input = { operation: 'FIXTURE_DEAL_EXTRACTION_RUN', idempotencyKey: 'run-1', writeSet: fixtureWriteSet() };

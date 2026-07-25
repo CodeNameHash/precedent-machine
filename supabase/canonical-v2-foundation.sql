@@ -4578,6 +4578,943 @@ BEGIN
     END IF;
 
     IF EXISTS (
+      WITH admitted_sources AS (
+        SELECT
+          reference.value->>'canonical_text_id' AS canonical_text_id,
+          immutable_source.canonical_payload->>'response_bytes_sha256'
+            AS document_hash,
+          conversion.canonical_text_byte_length,
+          pg_catalog.convert_to(
+            conversion.canonical_payload->>'canonical_text',
+            'UTF8'
+          ) AS canonical_text_bytes
+        FROM jsonb_array_elements(p_write_set->'source_references')
+          AS reference(value)
+        JOIN canonical_v2_staging.immutable_source_documents immutable_source
+          ON immutable_source.immutable_source_document_id
+            = reference.value->>'immutable_source_document_id'
+        JOIN canonical_v2_staging.canonical_text_conversions conversion
+          ON conversion.canonical_text_id
+            = reference.value->>'canonical_text_id'
+      ),
+      supplied_graphs AS (
+        SELECT
+          graph.value AS graph,
+          graph.input_ordinal::bigint AS graph_input_ordinal
+        FROM jsonb_array_elements(
+          p_write_set->'validated_semantic_graphs'
+        ) WITH ORDINALITY AS graph(value, input_ordinal)
+        UNION ALL
+        SELECT
+          stored.canonical_payload,
+          4096 + persisted.input_ordinal::bigint
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) WITH ORDINALITY AS persisted(reference, input_ordinal)
+        JOIN canonical_v2_staging.validated_semantic_graphs stored
+          ON persisted.reference->>'object_kind'
+            = 'validated_semantic_graphs'
+          AND stored.validated_semantic_graph_id
+            = persisted.reference->>'object_id'
+      ),
+      typed_graphs AS (
+        SELECT
+          supplied.graph,
+          supplied.graph_input_ordinal,
+          CASE
+            WHEN jsonb_typeof(supplied.graph->'definition_cues') = 'array'
+            THEN jsonb_array_length(supplied.graph->'definition_cues')
+          END AS cue_count,
+          CASE
+            WHEN jsonb_typeof(
+              supplied.graph->'definition_use_cues'
+            ) = 'array'
+            THEN jsonb_array_length(
+              supplied.graph->'definition_use_cues'
+            )
+          END AS use_count,
+          CASE
+            WHEN jsonb_typeof(
+              supplied.graph->'definition_cue_ids'
+            ) = 'array'
+            THEN jsonb_array_length(
+              supplied.graph->'definition_cue_ids'
+            )
+          END AS cue_id_count,
+          CASE
+            WHEN jsonb_typeof(
+              supplied.graph->'definition_use_cue_ids'
+            ) = 'array'
+            THEN jsonb_array_length(
+              supplied.graph->'definition_use_cue_ids'
+            )
+          END AS use_id_count,
+          CASE
+            WHEN jsonb_typeof(supplied.graph) = 'object'
+            THEN (
+            supplied.graph ?& ARRAY[
+              'schema_version', 'validated_semantic_graph_id',
+              'document_hash', 'canonical_text_id',
+              'definition_cue_ids', 'definition_use_cue_ids',
+              'definition_cues', 'definition_use_cues', 'closure_id'
+            ]
+            AND supplied.graph - ARRAY[
+              'schema_version', 'validated_semantic_graph_id',
+              'document_hash', 'canonical_text_id',
+              'definition_cue_ids', 'definition_use_cue_ids',
+              'definition_cues', 'definition_use_cues', 'closure_id'
+            ]::text[] = '{}'::jsonb
+            AND supplied.graph->>'schema_version'
+              = 'VALIDATED_SEMANTIC_GRAPH/V1'
+            AND jsonb_typeof(supplied.graph->'schema_version') = 'string'
+            AND jsonb_typeof(
+              supplied.graph->'validated_semantic_graph_id'
+            ) = 'string'
+            AND jsonb_typeof(supplied.graph->'document_hash') = 'string'
+            AND jsonb_typeof(supplied.graph->'canonical_text_id') = 'string'
+            AND jsonb_typeof(
+              supplied.graph->'definition_cue_ids'
+            ) = 'array'
+            AND jsonb_typeof(
+              supplied.graph->'definition_use_cue_ids'
+            ) = 'array'
+            AND jsonb_typeof(
+              supplied.graph->'definition_cues'
+            ) = 'array'
+            AND jsonb_typeof(
+              supplied.graph->'definition_use_cues'
+            ) = 'array'
+            AND jsonb_typeof(supplied.graph->'closure_id') = 'string'
+            AND supplied.graph->>'validated_semantic_graph_id'
+              ~ '^[0-9a-f]{64}$'
+            AND supplied.graph->>'document_hash' ~ '^[0-9a-f]{64}$'
+            AND supplied.graph->>'canonical_text_id' ~ '^[0-9a-f]{64}$'
+            AND supplied.graph->>'closure_id' ~ '^[0-9a-f]{64}$'
+          )
+            ELSE false
+          END AS shape_valid
+        FROM supplied_graphs supplied
+      ),
+      request_child_counts AS (
+        SELECT coalesce(sum(
+          CASE
+            WHEN graph.shape_valid
+              AND graph.cue_count BETWEEN 0 AND 4096
+              AND graph.use_count BETWEEN 0 AND 4096
+              AND graph.cue_id_count BETWEEN 0 AND 4096
+              AND graph.use_id_count BETWEEN 0 AND 4096
+            THEN graph.cue_count + graph.use_count
+            ELSE 16385
+          END
+        ), 0)::bigint AS child_count
+        FROM typed_graphs graph
+      ),
+      request_top_level_id_counts AS (
+        SELECT coalesce(sum(
+          CASE
+            WHEN graph.shape_valid
+              AND graph.cue_id_count BETWEEN 0 AND 4096
+              AND graph.use_id_count BETWEEN 0 AND 4096
+            THEN graph.cue_id_count + graph.use_id_count
+            ELSE 16385
+          END
+        ), 0)::bigint AS id_member_count
+        FROM typed_graphs graph
+      ),
+      graph_cue_members AS (
+        SELECT
+          graph.graph_input_ordinal,
+          cue.value AS cue,
+          cue.array_ordinal::bigint AS cue_array_ordinal
+        FROM typed_graphs graph
+        CROSS JOIN request_child_counts request_counts
+        CROSS JOIN LATERAL jsonb_array_elements(
+          CASE
+            WHEN graph.cue_count BETWEEN 0 AND 4096
+              AND request_counts.child_count <= 16384
+            THEN graph.graph->'definition_cues'
+            ELSE '[]'::jsonb
+          END
+        ) WITH ORDINALITY AS cue(value, array_ordinal)
+      ),
+      graph_nested_counts AS (
+        SELECT
+          graph.graph_input_ordinal,
+          coalesce(graph.cue_count, 0)
+            + coalesce(graph.use_count, 0)
+            + coalesce(sum(
+              CASE
+                WHEN cue.cue IS NULL THEN 0
+                WHEN jsonb_typeof(cue.cue->'body_spans') = 'array'
+                THEN CASE
+                  WHEN jsonb_array_length(cue.cue->'body_spans') <= 4096
+                  THEN jsonb_array_length(cue.cue->'body_spans')
+                  ELSE 16385
+                END
+                ELSE 16385
+              END
+            ), 0)::bigint AS nested_member_count
+        FROM typed_graphs graph
+        LEFT JOIN graph_cue_members cue
+          ON cue.graph_input_ordinal = graph.graph_input_ordinal
+        GROUP BY
+          graph.graph_input_ordinal,
+          graph.cue_count,
+          graph.use_count
+      ),
+      request_nested_counts AS (
+        SELECT coalesce(sum(graph.nested_member_count), 0)::bigint
+          AS nested_member_count
+        FROM graph_nested_counts graph
+      ),
+      typed_cues AS (
+        SELECT
+          member.graph_input_ordinal,
+          member.cue,
+          member.cue_array_ordinal,
+          CASE
+            WHEN jsonb_typeof(member.cue->'source_order_ordinal') = 'number'
+              AND member.cue->>'source_order_ordinal'
+                ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (member.cue->>'source_order_ordinal')::bigint
+          END AS source_order_ordinal,
+          CASE
+            WHEN jsonb_typeof(member.cue->'body_spans') = 'array'
+            THEN jsonb_array_length(member.cue->'body_spans')
+          END AS body_span_count,
+          CASE
+            WHEN jsonb_typeof(member.cue->'body_span_ids') = 'array'
+            THEN jsonb_array_length(member.cue->'body_span_ids')
+          END AS body_span_id_count,
+          CASE
+            WHEN jsonb_typeof(member.cue) = 'object'
+            THEN (
+            member.cue ?& ARRAY[
+              'schema_version', 'definition_cue_id', 'document_hash',
+              'canonical_text_id', 'source_anchor_id', 'term_span_id',
+              'body_span_ids', 'raw_term_digest', 'syntactic_role',
+              'source_order_ordinal', 'raw_term', 'term_span', 'body_spans'
+            ]
+            AND member.cue - ARRAY[
+              'schema_version', 'definition_cue_id', 'document_hash',
+              'canonical_text_id', 'source_anchor_id', 'term_span_id',
+              'body_span_ids', 'raw_term_digest', 'syntactic_role',
+              'source_order_ordinal', 'raw_term', 'term_span', 'body_spans'
+            ]::text[] = '{}'::jsonb
+            AND member.cue->>'schema_version' = 'DEFINITION_CUE/V1'
+            AND jsonb_typeof(member.cue->'schema_version') = 'string'
+            AND jsonb_typeof(member.cue->'definition_cue_id') = 'string'
+            AND jsonb_typeof(member.cue->'document_hash') = 'string'
+            AND jsonb_typeof(member.cue->'canonical_text_id') = 'string'
+            AND jsonb_typeof(member.cue->'source_anchor_id') = 'string'
+            AND jsonb_typeof(member.cue->'term_span_id') = 'string'
+            AND jsonb_typeof(member.cue->'body_span_ids') = 'array'
+            AND jsonb_typeof(member.cue->'raw_term_digest') = 'string'
+            AND jsonb_typeof(member.cue->'syntactic_role') = 'string'
+            AND jsonb_typeof(member.cue->'source_order_ordinal') = 'number'
+            AND jsonb_typeof(member.cue->'raw_term') = 'string'
+            AND jsonb_typeof(member.cue->'term_span') = 'object'
+            AND jsonb_typeof(member.cue->'body_spans') = 'array'
+            AND member.cue->>'definition_cue_id' ~ '^[0-9a-f]{64}$'
+            AND member.cue->>'document_hash' ~ '^[0-9a-f]{64}$'
+            AND member.cue->>'canonical_text_id' ~ '^[0-9a-f]{64}$'
+            AND member.cue->>'source_anchor_id' ~ '^[0-9a-f]{64}$'
+            AND member.cue->>'term_span_id' ~ '^[0-9a-f]{64}$'
+            AND member.cue->>'raw_term_digest' ~ '^[0-9a-f]{64}$'
+            AND member.cue->>'syntactic_role'
+              IN ('NESTED_INLINE', 'POSTFIX_INLINE')
+            AND length(member.cue->>'raw_term') > 0
+          )
+            ELSE false
+          END AS shape_valid
+        FROM graph_cue_members member
+      ),
+      request_body_id_counts AS (
+        SELECT coalesce(sum(
+          CASE
+            WHEN cue.shape_valid
+              AND cue.body_span_id_count BETWEEN 0 AND 4096
+            THEN cue.body_span_id_count
+            ELSE 16385
+          END
+        ), 0)::bigint AS id_member_count
+        FROM typed_cues cue
+      ),
+      request_id_counts AS (
+        SELECT
+          top_level.id_member_count + body.id_member_count
+            AS id_member_count
+        FROM request_top_level_id_counts top_level
+        CROSS JOIN request_body_id_counts body
+      ),
+      cue_body_members AS (
+        SELECT
+          cue.graph_input_ordinal,
+          cue.cue_array_ordinal,
+          body.value AS body_span,
+          body.array_ordinal::bigint AS body_array_ordinal
+        FROM typed_cues cue
+        JOIN graph_nested_counts nested
+          ON nested.graph_input_ordinal = cue.graph_input_ordinal
+        CROSS JOIN request_nested_counts request_nested
+        CROSS JOIN request_id_counts request_ids
+        CROSS JOIN LATERAL jsonb_array_elements(
+          CASE
+            WHEN cue.body_span_count BETWEEN 1 AND 4096
+              AND cue.body_span_id_count BETWEEN 1 AND 4096
+              AND nested.nested_member_count <= 16384
+              AND request_nested.nested_member_count <= 16384
+              AND request_ids.id_member_count <= 16384
+            THEN cue.cue->'body_spans'
+            ELSE '[]'::jsonb
+          END
+        ) WITH ORDINALITY AS body(value, array_ordinal)
+      ),
+      graph_use_members AS (
+        SELECT
+          graph.graph_input_ordinal,
+          use_cue.value AS use_cue,
+          use_cue.array_ordinal::bigint AS use_array_ordinal
+        FROM typed_graphs graph
+        JOIN graph_nested_counts nested
+          ON nested.graph_input_ordinal = graph.graph_input_ordinal
+        CROSS JOIN request_nested_counts request_nested
+        CROSS JOIN request_id_counts request_ids
+        CROSS JOIN LATERAL jsonb_array_elements(
+          CASE
+            WHEN graph.use_count BETWEEN 0 AND 4096
+              AND nested.nested_member_count <= 16384
+              AND request_nested.nested_member_count <= 16384
+              AND request_ids.id_member_count <= 16384
+            THEN graph.graph->'definition_use_cues'
+            ELSE '[]'::jsonb
+          END
+        ) WITH ORDINALITY AS use_cue(value, array_ordinal)
+      ),
+      typed_uses AS (
+        SELECT
+          member.graph_input_ordinal,
+          member.use_cue,
+          member.use_array_ordinal,
+          CASE
+            WHEN jsonb_typeof(
+              member.use_cue->'source_order_ordinal'
+            ) = 'number'
+              AND member.use_cue->>'source_order_ordinal'
+                ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (member.use_cue->>'source_order_ordinal')::bigint
+          END AS source_order_ordinal,
+          CASE
+            WHEN jsonb_typeof(member.use_cue) = 'object'
+            THEN (
+            member.use_cue ?& ARRAY[
+              'schema_version', 'definition_use_cue_id', 'document_hash',
+              'canonical_text_id', 'definition_cue_id', 'use_span_id',
+              'use_role', 'source_order_ordinal', 'use_span'
+            ]
+            AND member.use_cue - ARRAY[
+              'schema_version', 'definition_use_cue_id', 'document_hash',
+              'canonical_text_id', 'definition_cue_id', 'use_span_id',
+              'use_role', 'source_order_ordinal', 'use_span'
+            ]::text[] = '{}'::jsonb
+            AND member.use_cue->>'schema_version'
+              = 'DEFINITION_USE_CUE/V1'
+            AND jsonb_typeof(
+              member.use_cue->'schema_version'
+            ) = 'string'
+            AND jsonb_typeof(
+              member.use_cue->'definition_use_cue_id'
+            ) = 'string'
+            AND jsonb_typeof(member.use_cue->'document_hash') = 'string'
+            AND jsonb_typeof(
+              member.use_cue->'canonical_text_id'
+            ) = 'string'
+            AND jsonb_typeof(
+              member.use_cue->'definition_cue_id'
+            ) = 'string'
+            AND jsonb_typeof(member.use_cue->'use_span_id') = 'string'
+            AND jsonb_typeof(member.use_cue->'use_role') = 'string'
+            AND jsonb_typeof(
+              member.use_cue->'source_order_ordinal'
+            ) = 'number'
+            AND jsonb_typeof(member.use_cue->'use_span') = 'object'
+            AND member.use_cue->>'definition_use_cue_id'
+              ~ '^[0-9a-f]{64}$'
+            AND member.use_cue->>'document_hash' ~ '^[0-9a-f]{64}$'
+            AND member.use_cue->>'canonical_text_id'
+              ~ '^[0-9a-f]{64}$'
+            AND member.use_cue->>'definition_cue_id'
+              ~ '^[0-9a-f]{64}$'
+            AND member.use_cue->>'use_span_id' ~ '^[0-9a-f]{64}$'
+            AND member.use_cue->>'use_role'
+              IN ('OPERATIVE_REFERENCE', 'DECLARATION_REFERENCE')
+          )
+            ELSE false
+          END AS shape_valid
+        FROM graph_use_members member
+      ),
+      span_members AS (
+        SELECT
+          cue.graph_input_ordinal,
+          'TERM'::text AS member_kind,
+          cue.cue_array_ordinal AS owner_array_ordinal,
+          0::bigint AS span_array_ordinal,
+          cue.cue->'term_span' AS span
+        FROM typed_cues cue
+        UNION ALL
+        SELECT
+          body.graph_input_ordinal,
+          'BODY',
+          body.cue_array_ordinal,
+          body.body_array_ordinal,
+          body.body_span
+        FROM cue_body_members body
+        UNION ALL
+        SELECT
+          use_cue.graph_input_ordinal,
+          'USE',
+          use_cue.use_array_ordinal,
+          0,
+          use_cue.use_cue->'use_span'
+        FROM typed_uses use_cue
+      ),
+      typed_spans AS (
+        SELECT
+          member.*,
+          CASE
+            WHEN jsonb_typeof(member.span->'absolute_start') = 'number'
+              AND member.span->>'absolute_start'
+                ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (member.span->>'absolute_start')::bigint
+          END AS absolute_start,
+          CASE
+            WHEN jsonb_typeof(member.span->'absolute_end') = 'number'
+              AND member.span->>'absolute_end'
+                ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (member.span->>'absolute_end')::bigint
+          END AS absolute_end,
+          CASE
+            WHEN jsonb_typeof(member.span) = 'object'
+            THEN (
+            member.span ?& ARRAY[
+              'schema_version', 'canonical_text_id', 'absolute_start',
+              'absolute_end', 'semantic_span_id', 'exact_bytes_digest'
+            ]
+            AND member.span - ARRAY[
+              'schema_version', 'canonical_text_id', 'absolute_start',
+              'absolute_end', 'semantic_span_id', 'exact_bytes_digest'
+            ]::text[] = '{}'::jsonb
+            AND member.span->>'schema_version' = 'SEMANTIC_SPAN/V1'
+            AND jsonb_typeof(member.span->'schema_version') = 'string'
+            AND jsonb_typeof(member.span->'canonical_text_id') = 'string'
+            AND jsonb_typeof(member.span->'absolute_start') = 'number'
+            AND jsonb_typeof(member.span->'absolute_end') = 'number'
+            AND jsonb_typeof(member.span->'semantic_span_id') = 'string'
+            AND jsonb_typeof(
+              member.span->'exact_bytes_digest'
+            ) = 'string'
+            AND member.span->>'canonical_text_id' ~ '^[0-9a-f]{64}$'
+            AND member.span->>'semantic_span_id' ~ '^[0-9a-f]{64}$'
+            AND member.span->>'exact_bytes_digest' ~ '^[0-9a-f]{64}$'
+          )
+            ELSE false
+          END AS shape_valid
+        FROM span_members member
+      ),
+      source_bound_spans AS (
+        SELECT
+          span.*,
+          admitted.canonical_text_byte_length,
+          CASE
+            WHEN span.shape_valid
+              AND span.absolute_start IS NOT NULL
+              AND span.absolute_end IS NOT NULL
+              AND span.absolute_start <= 9007199254740991
+              AND span.absolute_end <= 9007199254740991
+              AND span.absolute_end > span.absolute_start
+              AND span.absolute_end <= admitted.canonical_text_byte_length
+              AND span.absolute_start <= 2147483647
+              AND span.absolute_end <= 2147483647
+            THEN true
+            ELSE false
+          END AS source_bounds_valid,
+          admitted.canonical_text_bytes,
+          CASE
+            WHEN span.shape_valid
+              AND span.absolute_start IS NOT NULL
+              AND span.absolute_end IS NOT NULL
+              AND span.absolute_start <= 9007199254740991
+              AND span.absolute_end <= 9007199254740991
+              AND span.absolute_end > span.absolute_start
+            THEN canonical_v2_staging.content_id(
+              'SEMANTIC_SPAN/V1',
+              jsonb_build_object(
+                'schema_version', span.span->'schema_version',
+                'canonical_text_id', span.span->'canonical_text_id',
+                'absolute_start', span.span->'absolute_start',
+                'absolute_end', span.span->'absolute_end'
+              )
+            )
+          END AS expected_span_id
+        FROM typed_spans span
+        LEFT JOIN typed_graphs graph
+          ON graph.graph_input_ordinal = span.graph_input_ordinal
+        LEFT JOIN admitted_sources admitted
+          ON admitted.canonical_text_id = graph.graph->>'canonical_text_id'
+          AND admitted.document_hash = graph.graph->>'document_hash'
+          AND admitted.canonical_text_id
+            = span.span->>'canonical_text_id'
+      ),
+      utf8_checked_spans AS (
+        SELECT
+          span.*,
+          CASE
+            WHEN span.source_bounds_valid
+            THEN CASE
+              WHEN get_byte(
+                span.canonical_text_bytes,
+                span.absolute_start::integer
+              ) BETWEEN 128 AND 191
+              THEN false
+              WHEN span.absolute_end < span.canonical_text_byte_length
+              THEN get_byte(
+                span.canonical_text_bytes,
+                span.absolute_end::integer
+              ) NOT BETWEEN 128 AND 191
+              ELSE true
+            END
+            ELSE false
+          END AS utf8_boundary_valid
+        FROM source_bound_spans span
+      ),
+      resolved_spans AS (
+        SELECT
+          span.*,
+          CASE
+            WHEN span.utf8_boundary_valid
+            THEN pg_catalog.substring(
+              span.canonical_text_bytes,
+              span.absolute_start::integer + 1,
+              (span.absolute_end - span.absolute_start)::integer
+            )
+          END AS exact_bytes
+        FROM utf8_checked_spans span
+      ),
+      checked_spans AS (
+        SELECT
+          span.*,
+          (
+            span.exact_bytes IS NULL
+            OR span.expected_span_id IS NULL
+            OR span.span->>'semantic_span_id'
+              IS DISTINCT FROM span.expected_span_id
+            OR span.span->>'exact_bytes_digest' IS DISTINCT FROM
+              pg_catalog.encode(
+                extensions.digest(span.exact_bytes, 'sha256'::text),
+                'hex'
+              )
+          ) AS invalid
+        FROM resolved_spans span
+      ),
+      positioned_bodies AS (
+        SELECT
+          body.*,
+          lag(body.absolute_end) OVER (
+            PARTITION BY body.graph_input_ordinal, body.owner_array_ordinal
+            ORDER BY body.span_array_ordinal
+          ) AS prior_absolute_end
+        FROM checked_spans body
+        WHERE body.member_kind = 'BODY'
+      ),
+      body_rollups AS (
+        SELECT
+          body.graph_input_ordinal,
+          body.owner_array_ordinal AS cue_array_ordinal,
+          count(*)::bigint AS body_count,
+          count(DISTINCT body.span->>'semantic_span_id')::bigint
+            AS distinct_body_id_count,
+          jsonb_agg(
+            body.span ORDER BY body.span_array_ordinal
+          ) AS bodies_in_input_order,
+          jsonb_agg(
+            body.span
+            ORDER BY
+              body.absolute_start,
+              body.span->>'semantic_span_id' COLLATE "C"
+          ) AS bodies_in_canonical_order,
+          jsonb_agg(
+            to_jsonb(body.span->>'semantic_span_id')
+            ORDER BY body.span_array_ordinal
+          ) AS body_ids_in_input_order,
+          bool_or(body.invalid) AS contains_invalid_span,
+          bool_or(
+            body.prior_absolute_end IS NOT NULL
+            AND body.absolute_start < body.prior_absolute_end
+          ) AS contains_overlap
+        FROM positioned_bodies body
+        GROUP BY body.graph_input_ordinal, body.owner_array_ordinal
+      ),
+      prepared_cues AS (
+        SELECT
+          cue.*,
+          graph.graph AS graph_payload,
+          term.span AS term_span,
+          term.absolute_start AS term_start,
+          term.absolute_end AS term_end,
+          term.exact_bytes AS term_exact_bytes,
+          term.invalid AS term_invalid,
+          body.body_count,
+          body.distinct_body_id_count,
+          body.contains_invalid_span,
+          body.contains_overlap,
+          body.bodies_in_input_order,
+          body.bodies_in_canonical_order,
+          body.body_ids_in_input_order,
+          coalesce(body.body_count, 0) AS expanded_body_count,
+          CASE
+            WHEN cue.shape_valid
+              AND cue.source_order_ordinal BETWEEN 0 AND 9007199254740991
+              AND cue.body_span_count BETWEEN 1 AND 4096
+              AND cue.body_span_id_count = cue.body_span_count
+              AND body.body_count = cue.body_span_count::bigint
+              AND body.distinct_body_id_count = body.body_count
+              AND body.contains_invalid_span IS NOT DISTINCT FROM false
+              AND body.contains_overlap IS NOT DISTINCT FROM false
+              AND body.body_ids_in_input_order IS NOT NULL
+            THEN canonical_v2_staging.content_id(
+              'DEFINITION_CUE/V1',
+              jsonb_build_object(
+                'document_hash', cue.cue->'document_hash',
+                'canonical_text_id', cue.cue->'canonical_text_id',
+                'source_anchor_id', cue.cue->'source_anchor_id',
+                'term_span_id', cue.cue->'term_span_id',
+                'body_span_ids', body.body_ids_in_input_order,
+                'raw_term_digest', cue.cue->'raw_term_digest',
+                'syntactic_role', cue.cue->'syntactic_role',
+                'source_order_ordinal',
+                  cue.cue->'source_order_ordinal'
+              )
+            )
+          END AS expected_cue_id,
+          CASE
+            WHEN cue.shape_valid
+            THEN canonical_v2_staging.content_id(
+              'RAW_DEFINITION_TERM/V1',
+              to_jsonb(cue.cue->>'raw_term')
+            )
+          END AS expected_raw_term_digest,
+          CASE
+            WHEN cue.shape_valid
+            THEN pg_catalog.convert_to(cue.cue->>'raw_term', 'UTF8')
+          END AS raw_term_bytes
+        FROM typed_cues cue
+        JOIN typed_graphs graph
+          ON graph.graph_input_ordinal = cue.graph_input_ordinal
+        LEFT JOIN checked_spans term
+          ON term.graph_input_ordinal = cue.graph_input_ordinal
+          AND term.member_kind = 'TERM'
+          AND term.owner_array_ordinal = cue.cue_array_ordinal
+        LEFT JOIN body_rollups body
+          ON body.graph_input_ordinal = cue.graph_input_ordinal
+          AND body.cue_array_ordinal = cue.cue_array_ordinal
+      ),
+      cue_checks AS (
+        SELECT
+          cue.*,
+          (
+            NOT cue.shape_valid
+            OR cue.source_order_ordinal IS NULL
+            OR cue.source_order_ordinal > 9007199254740991
+            OR cue.body_span_count NOT BETWEEN 1 AND 4096
+            OR cue.body_span_id_count NOT BETWEEN 1 AND 4096
+            OR cue.body_span_id_count IS DISTINCT FROM cue.body_span_count
+            OR cue.term_invalid IS DISTINCT FROM false
+            OR cue.body_count IS DISTINCT FROM cue.body_span_count::bigint
+            OR cue.distinct_body_id_count
+              IS DISTINCT FROM cue.body_count
+            OR cue.contains_invalid_span IS DISTINCT FROM false
+            OR cue.contains_overlap IS DISTINCT FROM false
+            OR cue.bodies_in_input_order
+              IS DISTINCT FROM cue.cue->'body_spans'
+            OR cue.bodies_in_canonical_order
+              IS DISTINCT FROM cue.cue->'body_spans'
+            OR cue.body_ids_in_input_order
+              IS DISTINCT FROM cue.cue->'body_span_ids'
+            OR cue.cue->>'document_hash'
+              IS DISTINCT FROM cue.graph_payload->>'document_hash'
+            OR cue.cue->>'canonical_text_id'
+              IS DISTINCT FROM cue.graph_payload->>'canonical_text_id'
+            OR cue.cue->>'source_anchor_id'
+              IS DISTINCT FROM cue.term_span->>'semantic_span_id'
+            OR cue.cue->>'term_span_id'
+              IS DISTINCT FROM cue.term_span->>'semantic_span_id'
+            OR cue.expected_raw_term_digest IS NULL
+            OR cue.cue->>'raw_term_digest'
+              IS DISTINCT FROM cue.expected_raw_term_digest
+            OR cue.expected_cue_id IS NULL
+            OR cue.cue->>'definition_cue_id'
+              IS DISTINCT FROM cue.expected_cue_id
+            OR cue.raw_term_bytes IS DISTINCT FROM cue.term_exact_bytes
+            OR EXISTS (
+              SELECT 1
+              FROM positioned_bodies positioned
+              WHERE positioned.graph_input_ordinal
+                = cue.graph_input_ordinal
+                AND positioned.owner_array_ordinal
+                  = cue.cue_array_ordinal
+                AND CASE cue.cue->>'syntactic_role'
+                  WHEN 'POSTFIX_INLINE'
+                    THEN positioned.absolute_end > cue.term_start
+                  WHEN 'NESTED_INLINE'
+                    THEN positioned.absolute_start < cue.term_end
+                  ELSE true
+                END
+            )
+          ) AS invalid
+        FROM prepared_cues cue
+      ),
+      prepared_uses AS (
+        SELECT
+          use_cue.*,
+          graph.graph AS graph_payload,
+          use_span.span AS use_span,
+          use_span.invalid AS use_span_invalid,
+          cue.cue->>'definition_cue_id' AS linked_cue_id,
+          cue.invalid AS linked_cue_invalid,
+          CASE
+            WHEN use_cue.shape_valid
+              AND use_cue.source_order_ordinal
+                BETWEEN 0 AND 9007199254740991
+            THEN canonical_v2_staging.content_id(
+              'DEFINITION_USE_CUE/V1',
+              jsonb_build_object(
+                'document_hash', use_cue.use_cue->'document_hash',
+                'canonical_text_id',
+                  use_cue.use_cue->'canonical_text_id',
+                'definition_cue_id',
+                  use_cue.use_cue->'definition_cue_id',
+                'use_span_id', use_cue.use_cue->'use_span_id',
+                'use_role', use_cue.use_cue->'use_role',
+                'source_order_ordinal',
+                  use_cue.use_cue->'source_order_ordinal'
+              )
+            )
+          END AS expected_use_id
+        FROM typed_uses use_cue
+        JOIN typed_graphs graph
+          ON graph.graph_input_ordinal = use_cue.graph_input_ordinal
+        LEFT JOIN checked_spans use_span
+          ON use_span.graph_input_ordinal = use_cue.graph_input_ordinal
+          AND use_span.member_kind = 'USE'
+          AND use_span.owner_array_ordinal = use_cue.use_array_ordinal
+        LEFT JOIN cue_checks cue
+          ON cue.graph_input_ordinal = use_cue.graph_input_ordinal
+          AND cue.cue->>'definition_cue_id'
+            = use_cue.use_cue->>'definition_cue_id'
+      ),
+      use_checks AS (
+        SELECT
+          use_cue.*,
+          (
+            NOT use_cue.shape_valid
+            OR use_cue.source_order_ordinal IS NULL
+            OR use_cue.source_order_ordinal > 9007199254740991
+            OR use_cue.use_span_invalid IS DISTINCT FROM false
+            OR use_cue.use_cue->>'document_hash'
+              IS DISTINCT FROM use_cue.graph_payload->>'document_hash'
+            OR use_cue.use_cue->>'canonical_text_id'
+              IS DISTINCT FROM use_cue.graph_payload->>'canonical_text_id'
+            OR use_cue.use_cue->>'use_span_id'
+              IS DISTINCT FROM use_cue.use_span->>'semantic_span_id'
+            OR use_cue.linked_cue_id IS NULL
+            OR use_cue.linked_cue_invalid IS DISTINCT FROM false
+            OR use_cue.expected_use_id IS NULL
+            OR use_cue.use_cue->>'definition_use_cue_id'
+              IS DISTINCT FROM use_cue.expected_use_id
+          ) AS invalid
+        FROM prepared_uses use_cue
+      ),
+      cue_rollups AS (
+        SELECT
+          graph.graph_input_ordinal,
+          count(cue.cue)::bigint AS cue_count,
+          count(DISTINCT cue.cue->>'definition_cue_id')::bigint
+            AS distinct_cue_id_count,
+          coalesce(
+            jsonb_agg(
+              cue.cue ORDER BY cue.cue_array_ordinal
+            ) FILTER (WHERE cue.cue IS NOT NULL),
+            '[]'::jsonb
+          ) AS cues_in_input_order,
+          coalesce(
+            jsonb_agg(
+              cue.cue
+              ORDER BY
+                cue.source_order_ordinal,
+                cue.cue->>'definition_cue_id' COLLATE "C"
+            ) FILTER (WHERE cue.cue IS NOT NULL),
+            '[]'::jsonb
+          ) AS cues_in_canonical_order,
+          coalesce(
+            jsonb_agg(
+              to_jsonb(cue.cue->>'definition_cue_id')
+              ORDER BY cue.cue_array_ordinal
+            ) FILTER (WHERE cue.cue IS NOT NULL),
+            '[]'::jsonb
+          ) AS cue_ids_in_input_order,
+          coalesce(bool_or(cue.invalid), false) AS contains_invalid_cue
+        FROM typed_graphs graph
+        LEFT JOIN cue_checks cue
+          ON cue.graph_input_ordinal = graph.graph_input_ordinal
+        GROUP BY graph.graph_input_ordinal
+      ),
+      use_rollups AS (
+        SELECT
+          graph.graph_input_ordinal,
+          count(use_cue.use_cue)::bigint AS use_count,
+          count(DISTINCT use_cue.use_cue->>'definition_use_cue_id')::bigint
+            AS distinct_use_id_count,
+          coalesce(
+            jsonb_agg(
+              use_cue.use_cue ORDER BY use_cue.use_array_ordinal
+            ) FILTER (WHERE use_cue.use_cue IS NOT NULL),
+            '[]'::jsonb
+          ) AS uses_in_input_order,
+          coalesce(
+            jsonb_agg(
+              use_cue.use_cue
+              ORDER BY
+                use_cue.source_order_ordinal,
+                use_cue.use_cue->>'definition_use_cue_id' COLLATE "C"
+            ) FILTER (WHERE use_cue.use_cue IS NOT NULL),
+            '[]'::jsonb
+          ) AS uses_in_canonical_order,
+          coalesce(
+            jsonb_agg(
+              to_jsonb(use_cue.use_cue->>'definition_use_cue_id')
+              ORDER BY use_cue.use_array_ordinal
+            ) FILTER (WHERE use_cue.use_cue IS NOT NULL),
+            '[]'::jsonb
+          ) AS use_ids_in_input_order,
+          coalesce(bool_or(use_cue.invalid), false) AS contains_invalid_use
+        FROM typed_graphs graph
+        LEFT JOIN use_checks use_cue
+          ON use_cue.graph_input_ordinal = graph.graph_input_ordinal
+        GROUP BY graph.graph_input_ordinal
+      ),
+      prepared_graph_ids AS (
+        SELECT
+          graph.graph_input_ordinal,
+          CASE
+            WHEN graph.shape_valid
+              AND graph.cue_count BETWEEN 0 AND 4096
+              AND graph.use_count BETWEEN 0 AND 4096
+              AND graph.cue_id_count BETWEEN 0 AND 4096
+              AND graph.use_id_count BETWEEN 0 AND 4096
+              AND nested.nested_member_count <= 16384
+              AND request_children.child_count <= 16384
+              AND request_nested.nested_member_count <= 16384
+              AND request_ids.id_member_count <= 16384
+              AND admitted.canonical_text_id IS NOT NULL
+              AND cues.cue_count = graph.cue_count
+              AND uses.use_count = graph.use_count
+              AND cues.distinct_cue_id_count = cues.cue_count
+              AND uses.distinct_use_id_count = uses.use_count
+              AND cues.contains_invalid_cue IS NOT DISTINCT FROM false
+              AND uses.contains_invalid_use IS NOT DISTINCT FROM false
+              AND cues.cues_in_input_order
+                IS NOT DISTINCT FROM graph.graph->'definition_cues'
+              AND cues.cues_in_canonical_order
+                IS NOT DISTINCT FROM graph.graph->'definition_cues'
+              AND cues.cue_ids_in_input_order
+                IS NOT DISTINCT FROM graph.graph->'definition_cue_ids'
+              AND uses.uses_in_input_order
+                IS NOT DISTINCT FROM graph.graph->'definition_use_cues'
+              AND uses.uses_in_canonical_order
+                IS NOT DISTINCT FROM graph.graph->'definition_use_cues'
+              AND uses.use_ids_in_input_order
+                IS NOT DISTINCT FROM graph.graph->'definition_use_cue_ids'
+            THEN canonical_v2_staging.content_id(
+              'VALIDATED_SEMANTIC_GRAPH/V1',
+              jsonb_build_object(
+                'document_hash', graph.graph->'document_hash',
+                'canonical_text_id', graph.graph->'canonical_text_id',
+                'definition_cue_ids', cues.cue_ids_in_input_order,
+                'definition_use_cue_ids', uses.use_ids_in_input_order
+              )
+            )
+          END AS expected_graph_id
+        FROM typed_graphs graph
+        JOIN graph_nested_counts nested
+          ON nested.graph_input_ordinal = graph.graph_input_ordinal
+        CROSS JOIN request_child_counts request_children
+        CROSS JOIN request_nested_counts request_nested
+        CROSS JOIN request_id_counts request_ids
+        JOIN cue_rollups cues
+          ON cues.graph_input_ordinal = graph.graph_input_ordinal
+        JOIN use_rollups uses
+          ON uses.graph_input_ordinal = graph.graph_input_ordinal
+        LEFT JOIN admitted_sources admitted
+          ON admitted.canonical_text_id = graph.graph->>'canonical_text_id'
+          AND admitted.document_hash = graph.graph->>'document_hash'
+      )
+      SELECT 1
+      FROM typed_graphs graph
+      JOIN graph_nested_counts nested
+        ON nested.graph_input_ordinal = graph.graph_input_ordinal
+      CROSS JOIN request_child_counts request_children
+      CROSS JOIN request_nested_counts request_nested
+      CROSS JOIN request_id_counts request_ids
+      JOIN cue_rollups cues
+        ON cues.graph_input_ordinal = graph.graph_input_ordinal
+      JOIN use_rollups uses
+        ON uses.graph_input_ordinal = graph.graph_input_ordinal
+      JOIN prepared_graph_ids prepared
+        ON prepared.graph_input_ordinal = graph.graph_input_ordinal
+      LEFT JOIN admitted_sources admitted
+        ON admitted.canonical_text_id = graph.graph->>'canonical_text_id'
+        AND admitted.document_hash = graph.graph->>'document_hash'
+      WHERE CASE
+        WHEN graph.shape_valid
+          AND graph.cue_count BETWEEN 0 AND 4096
+          AND graph.use_count BETWEEN 0 AND 4096
+          AND graph.cue_id_count BETWEEN 0 AND 4096
+          AND graph.use_id_count BETWEEN 0 AND 4096
+          AND nested.nested_member_count <= 16384
+          AND request_children.child_count <= 16384
+          AND request_nested.nested_member_count <= 16384
+          AND request_ids.id_member_count <= 16384
+        THEN
+          admitted.canonical_text_id IS NULL
+          OR cues.cue_count <> graph.cue_count
+          OR uses.use_count <> graph.use_count
+          OR cues.distinct_cue_id_count <> cues.cue_count
+          OR uses.distinct_use_id_count <> uses.use_count
+          OR cues.contains_invalid_cue
+          OR uses.contains_invalid_use
+          OR cues.cues_in_input_order
+            IS DISTINCT FROM graph.graph->'definition_cues'
+          OR cues.cues_in_canonical_order
+            IS DISTINCT FROM graph.graph->'definition_cues'
+          OR cues.cue_ids_in_input_order
+            IS DISTINCT FROM graph.graph->'definition_cue_ids'
+          OR uses.uses_in_input_order
+            IS DISTINCT FROM graph.graph->'definition_use_cues'
+          OR uses.uses_in_canonical_order
+            IS DISTINCT FROM graph.graph->'definition_use_cues'
+          OR uses.use_ids_in_input_order
+            IS DISTINCT FROM graph.graph->'definition_use_cue_ids'
+          OR prepared.expected_graph_id IS NULL
+          OR graph.graph->>'validated_semantic_graph_id'
+            IS DISTINCT FROM prepared.expected_graph_id
+        ELSE true
+      END
+    ) THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN validated semantic graph identity, child identity or source bytes are invalid'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF EXISTS (
       SELECT 1
       FROM jsonb_each(p_write_set) AS collection(key, value)
       CROSS JOIN LATERAL jsonb_array_elements(CASE

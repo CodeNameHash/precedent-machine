@@ -97,6 +97,15 @@ test('definition-first graph retains one concept-free nested cue and both review
     'OPERATIVE_REFERENCE',
     'DECLARATION_REFERENCE',
   ]);
+  const emptyGraph = buildValidatedDefinitionGraph({
+    source,
+    definitionCues: [],
+    definitionUseCues: [],
+  });
+  assert.equal(
+    validateValidatedDefinitionGraph({ source, graph: emptyGraph }),
+    true,
+  );
 });
 
 test('definition cues reject mismatched term bytes and spans from another immutable source', () => {
@@ -201,6 +210,56 @@ test('validated graphs rebuild from admitted bytes and reject drift, unknown use
     rawTerm: reviewed.definition.raw_term,
     syntacticRole: 'INVENTED_CUE_ROLE',
   }), /syntacticRole/);
+  assert.throws(() => buildDefinitionCue({
+    source,
+    termSpan: span(reviewed.definition.term_span),
+    bodySpans: reviewed.definition.body_spans.map(span),
+    rawTerm: reviewed.definition.raw_term,
+    syntacticRole: reviewed.definition.syntactic_role,
+    ordinal: Number.MAX_SAFE_INTEGER + 1,
+  }), /safe|ordinal/);
+  assert.throws(() => buildDefinitionUseCue({
+    source,
+    definitionCue: cue,
+    useSpan: span(reviewed.definition.use_spans[0].span),
+    ordinal: Number.MAX_SAFE_INTEGER + 1,
+  }), /safe|ordinal/);
+  assert.throws(() => buildValidatedDefinitionGraph({
+    source,
+    definitionCues: Array(4097).fill(cue),
+    definitionUseCues: [],
+  }), /bounded/);
+  const oversizedGraph = structuredClone(graph);
+  oversizedGraph.definition_cue_ids = Array(4097).fill(cue.definition_cue_id);
+  assert.throws(
+    () => validateValidatedDefinitionGraphIdentity({ graph: oversizedGraph }),
+    /bounded/,
+  );
+  const nestedOversizedGraph = structuredClone(graph);
+  nestedOversizedGraph.definition_cue_ids = Array(4096).fill(cue.definition_cue_id);
+  nestedOversizedGraph.definition_cues = Array(4096).fill({
+    ...cue,
+    body_span_ids: Array(4).fill(cue.body_spans[0].semantic_span_id),
+    body_spans: Array(4).fill(cue.body_spans[0]),
+  });
+  assert.throws(
+    () => validateValidatedDefinitionGraphIdentity({ graph: nestedOversizedGraph }),
+    /nested members|bounded/,
+  );
+  const identifierOversizedGraph = structuredClone(graph);
+  identifierOversizedGraph.definition_cue_ids =
+    Array(4096).fill(cue.definition_cue_id);
+  identifierOversizedGraph.definition_cues = Array(4096).fill({
+    ...cue,
+    body_span_ids: Array(4).fill(cue.body_spans[0].semantic_span_id),
+    body_spans: [cue.body_spans[0]],
+  });
+  assert.throws(
+    () => validateValidatedDefinitionGraphIdentity({
+      graph: identifierOversizedGraph,
+    }),
+    /identifier members|bounded/,
+  );
 
   const otherSource = buildImmutableSource({
     sourceBytes: `${sourceText} changed`,
