@@ -10,6 +10,7 @@ const require = createRequire(import.meta.url);
 const {
   canonicalJson,
   contentId,
+  sha256Hex,
 } = require('../lib/canonical-v2/canonical-bytes');
 const {
   buildCanonicalWriteInputDigest,
@@ -34,6 +35,7 @@ const {
   buildVerifiedSecSourceAdmission,
 } = require('../lib/canonical-v2/sec-source-admission');
 const {
+  buildExcerpt,
   buildProvisionComponent,
   buildSemanticSpan,
 } = require('../lib/canonical-v2/source-structure');
@@ -222,6 +224,9 @@ function buildFixture() {
 }
 
 function structuralSnapshot(fixture) {
+  const excerptIds = fixture.writeSet.excerpts.map(
+    (row) => runtime.sqlText(row.excerpt_id),
+  ).join(',');
   const provisionIds = fixture.writeSet.provisions.map(
     (row) => runtime.sqlText(row.provision_instance_id),
   ).join(',');
@@ -229,7 +234,12 @@ function structuralSnapshot(fixture) {
     (row) => runtime.sqlText(row.provision_component_id),
   ).join(',');
   return runtime.runSql(
-    `SELECT 'provision' AS kind, provision_instance_id AS object_id,
+    `SELECT 'excerpt' AS kind, excerpt_id AS object_id,
+       canonical_payload_digest
+     FROM canonical_v2_staging.excerpts
+     WHERE excerpt_id IN (${excerptIds})
+     UNION ALL
+     SELECT 'provision', provision_instance_id,
        canonical_payload_digest
      FROM canonical_v2_staging.provision_instances
      WHERE provision_instance_id IN (${provisionIds})
@@ -418,6 +428,11 @@ function auditExistingRows(fixture) {
 }
 
 function exactStructuralRowsSql(writeSet) {
+  const excerpts = writeSet.excerpts.map((row) => `EXISTS (
+    SELECT 1 FROM canonical_v2_staging.excerpts
+    WHERE excerpt_id=${runtime.sqlText(row.excerpt_id)}
+      AND canonical_payload=${runtime.sqlJson(row)}
+  )`);
   const provisions = writeSet.provisions.map((row) => `EXISTS (
     SELECT 1 FROM canonical_v2_staging.provision_instances
     WHERE provision_instance_id=${runtime.sqlText(row.provision_instance_id)}
@@ -428,7 +443,7 @@ function exactStructuralRowsSql(writeSet) {
     WHERE provision_component_id=${runtime.sqlText(row.provision_component_id)}
       AND canonical_payload=${runtime.sqlJson(row)}
   )`);
-  return [...provisions, ...components].join(' AND ') || 'true';
+  return [...excerpts, ...provisions, ...components].join(' AND ') || 'true';
 }
 
 function assertValidReplay({ request, exactRowsSql, label, rowAbsentSql = 'true' }) {
@@ -533,6 +548,22 @@ function identifyProvision(row) {
   };
 }
 
+function identifyExcerpt(row) {
+  return {
+    ...row,
+    excerpt_id: contentId('EXCERPT/V1', {
+      excerpt_definition_key: row.excerpt_definition_key,
+      excerpt_definition_version: row.excerpt_definition_version,
+      excerpt_definition_payload_digest: row.excerpt_definition_payload_digest,
+      ordered_component_assignments: row.ordered_component_assignments,
+      excerpt_purpose: row.excerpt_purpose,
+      transformation_or_redaction_version:
+        row.transformation_or_redaction_version,
+      output_text_hash: row.output_text_hash,
+    }),
+  };
+}
+
 function identifyComponent(row) {
   const body = {
     schema_version: row.schema_version,
@@ -555,6 +586,15 @@ function identifyComponent(row) {
   };
 }
 
+function withExcerpt(writeSet, originalId, excerpt) {
+  const candidate = structuredClone(writeSet);
+  const index = candidate.excerpts.findIndex(
+    (row) => row.excerpt_id === originalId,
+  );
+  candidate.excerpts[index] = excerpt;
+  return candidate;
+}
+
 function withProvision(writeSet, provision) {
   const candidate = structuredClone(writeSet);
   const index = candidate.provisions.findIndex(
@@ -572,6 +612,14 @@ function withComponent(writeSet, originalId, component) {
   );
   candidate.components[index] = component;
   return candidate;
+}
+
+function mutatedExcerptExists(row) {
+  return `EXISTS (
+    SELECT 1 FROM canonical_v2_staging.excerpts
+    WHERE excerpt_id=${runtime.sqlText(row.excerpt_id)}
+      AND canonical_payload=${runtime.sqlJson(row)}
+  )`;
 }
 
 function mutatedProvisionExists(row) {
@@ -622,16 +670,35 @@ function continuationOffset(text, start, end, label) {
 
 function assertMalformedPersistedReferenceRejected({
   fixture,
-  malformedProvision,
+  malformedObject,
+  objectKind,
   idempotencyKey,
 }) {
+  const target = {
+    excerpts: {
+      table: 'excerpts',
+      idColumn: 'excerpt_id',
+      idField: 'excerpt_id',
+      expectedMessage:
+        'DEAL_SCOPE_RUN excerpt identity or source bytes are invalid',
+      label: 'excerpt',
+    },
+    provisions: {
+      table: 'provision_instances',
+      idColumn: 'provision_instance_id',
+      idField: 'provision_instance_id',
+      expectedMessage:
+        'DEAL_SCOPE_RUN provision identity or source lineage is invalid',
+      label: 'provision',
+    },
+  }[objectKind];
+  if (!target) throw new Error(`Unsupported malformed persisted kind: ${objectKind}`);
+  const objectId = malformedObject[target.idField];
   const emptyWriteSet = Object.fromEntries(
     Object.entries(fixture.writeSet).map(([key, value]) => (
       COLLECTIONS.includes(key) ? [key, []] : [key, structuredClone(value)]
     )),
   );
-  const expectedMessage =
-    'DEAL_SCOPE_RUN provision identity or source lineage is invalid';
   runtime.runSql(
     `DO $persisted_structure$
      DECLARE
@@ -644,28 +711,28 @@ function assertMalformedPersistedReferenceRejected({
        observed_message text;
        observed_sqlstate text;
      BEGIN
-       INSERT INTO canonical_v2_staging.provision_instances(
-         provision_instance_id,
+       INSERT INTO canonical_v2_staging.${target.table}(
+         ${target.idColumn},
          closure_id,
          canonical_payload
        ) VALUES (
-         ${runtime.sqlText(malformedProvision.provision_instance_id)},
-         ${runtime.sqlText(malformedProvision.closure_id)},
-         ${runtime.sqlJson(malformedProvision)}
+         ${runtime.sqlText(objectId)},
+         ${runtime.sqlText(malformedObject.closure_id)},
+         ${runtime.sqlJson(malformedObject)}
        );
        SELECT canonical_payload_digest
        INTO seeded_digest
-       FROM canonical_v2_staging.provision_instances
-       WHERE provision_instance_id=${
-  runtime.sqlText(malformedProvision.provision_instance_id)
+       FROM canonical_v2_staging.${target.table}
+       WHERE ${target.idColumn}=${
+  runtime.sqlText(objectId)
 };
        reference := jsonb_build_object(
          'schema_version', 'PERSISTED_CANONICAL_OBJECT_REFERENCE/V1',
-         'object_kind', 'provisions',
-         'object_id', ${runtime.sqlText(malformedProvision.provision_instance_id)},
-         'stored_closure_id', ${runtime.sqlText(malformedProvision.closure_id)},
+         'object_kind', ${runtime.sqlText(objectKind)},
+         'object_id', ${runtime.sqlText(objectId)},
+         'stored_closure_id', ${runtime.sqlText(malformedObject.closure_id)},
          'canonical_payload_digest', seeded_digest,
-         'validation_closure_id', ${runtime.sqlText(malformedProvision.closure_id)}
+         'validation_closure_id', ${runtime.sqlText(malformedObject.closure_id)}
        );
        write_set := write_set || jsonb_build_object(
          'persisted_object_references',
@@ -708,14 +775,18 @@ function assertMalformedPersistedReferenceRejected({
            '[]'::jsonb,
            receipt
          );
-         RAISE EXCEPTION 'malformed persisted provision was accepted';
+         RAISE EXCEPTION ${
+  runtime.sqlText(`malformed persisted ${target.label} was accepted`)
+};
        EXCEPTION
          WHEN SQLSTATE '23514' THEN
            GET STACKED DIAGNOSTICS
              observed_message = MESSAGE_TEXT,
              observed_sqlstate = RETURNED_SQLSTATE;
            IF observed_sqlstate IS DISTINCT FROM '23514'
-             OR observed_message IS DISTINCT FROM ${runtime.sqlText(expectedMessage)}
+             OR observed_message IS DISTINCT FROM ${
+  runtime.sqlText(target.expectedMessage)
+}
            THEN
              RAISE;
            END IF;
@@ -725,7 +796,9 @@ function assertMalformedPersistedReferenceRejected({
          WHERE operation='DEAL_SCOPE_RUN'
            AND idempotency_key=${runtime.sqlText(idempotencyKey)}
        ) THEN
-         RAISE EXCEPTION 'malformed persisted provision wrote a receipt';
+         RAISE EXCEPTION ${
+  runtime.sqlText(`malformed persisted ${target.label} wrote a receipt`)
+};
        END IF;
      END
      $persisted_structure$;`,
@@ -733,9 +806,9 @@ function assertMalformedPersistedReferenceRejected({
   const [rolledBack] = runtime.runSql(
     `SELECT
        NOT EXISTS (
-         SELECT 1 FROM canonical_v2_staging.provision_instances
-         WHERE provision_instance_id=${
-  runtime.sqlText(malformedProvision.provision_instance_id)
+         SELECT 1 FROM canonical_v2_staging.${target.table}
+         WHERE ${target.idColumn}=${
+  runtime.sqlText(objectId)
 }
        ) AS seeded_row_rolled_back,
        NOT EXISTS (
@@ -747,7 +820,7 @@ function assertMalformedPersistedReferenceRejected({
   );
   if (rolledBack?.seeded_row_rolled_back !== true
     || rolledBack?.receipt_rolled_back !== true) {
-    throw new Error('Malformed persisted provision probe left staging residue.');
+    throw new Error(`Malformed persisted ${target.label} probe left staging residue.`);
   }
 }
 
@@ -770,8 +843,63 @@ function main() {
     throw new Error('Valid structural replay changed existing QXO payload digests.');
   }
 
+  const baseExcerpt = fixture.writeSet.excerpts[0];
   const baseProvision = fixture.writeSet.provisions[0];
   const baseComponent = fixture.writeSet.components[0];
+  const excerptMessage =
+    'DEAL_SCOPE_RUN excerpt identity or source bytes are invalid';
+  const forgedExcerptId = {
+    ...baseExcerpt,
+    excerpt_id: contentId(
+      'CANONICAL_V2_FORGED_EXCERPT_ID/V1',
+      { nonce },
+    ),
+  };
+  const wrongSourceExcerpt = {
+    ...baseExcerpt,
+    source_occurrence_id: contentId(
+      'CANONICAL_V2_FORGED_EXCERPT_SOURCE_OCCURRENCE/V1',
+      { nonce },
+    ),
+  };
+  const extraFieldExcerpt = {
+    ...baseExcerpt,
+    unbound_excerpt_value: true,
+  };
+  const alteredText = `${baseExcerpt.exact_text} [forged]`;
+  const alteredTextHash = sha256Hex(Buffer.from(alteredText, 'utf8'));
+  const alteredBytesExcerpt = identifyExcerpt({
+    ...baseExcerpt,
+    exact_text: alteredText,
+    exact_bytes_digest: alteredTextHash,
+    output_text_hash: alteredTextHash,
+  });
+  const excerptContinuation = continuationOffset(
+    fixture.context.canonical_text.text,
+    0,
+    fixture.context.canonical_text_byte_length,
+    'QXO canonical text',
+  );
+  const splitExcerptSpanId = contentId('SEMANTIC_SPAN/V1', {
+    schema_version: 'SEMANTIC_SPAN/V1',
+    canonical_text_id: baseExcerpt.canonical_text_id,
+    absolute_start: excerptContinuation,
+    absolute_end: excerptContinuation + 1,
+  });
+  const emptyHash = sha256Hex(Buffer.alloc(0));
+  const invalidUtf8Excerpt = identifyExcerpt({
+    ...baseExcerpt,
+    absolute_start: excerptContinuation,
+    absolute_end: excerptContinuation + 1,
+    ordered_component_assignments: [{
+      component_slot_key: 'PRIMARY',
+      governed_slot_ordinal: 0,
+      semantic_span_id: splitExcerptSpanId,
+    }],
+    exact_text: '',
+    exact_bytes_digest: emptyHash,
+    output_text_hash: emptyHash,
+  });
   const forgedProvisionId = {
     ...baseProvision,
     provision_instance_id: contentId(
@@ -862,6 +990,61 @@ function main() {
   const componentMessage =
     'DEAL_SCOPE_RUN component identity or parent lineage is invalid';
   const probes = [
+    {
+      label: 'forged excerpt identity',
+      row: forgedExcerptId,
+      writeSet: withExcerpt(
+        fixture.writeSet,
+        baseExcerpt.excerpt_id,
+        forgedExcerptId,
+      ),
+      expectedMessage: excerptMessage,
+      exists: mutatedExcerptExists,
+    },
+    {
+      label: 'excerpt on the wrong source occurrence',
+      row: wrongSourceExcerpt,
+      writeSet: withExcerpt(
+        fixture.writeSet,
+        baseExcerpt.excerpt_id,
+        wrongSourceExcerpt,
+      ),
+      expectedMessage: excerptMessage,
+      exists: mutatedExcerptExists,
+    },
+    {
+      label: 'unbound excerpt field',
+      row: extraFieldExcerpt,
+      writeSet: withExcerpt(
+        fixture.writeSet,
+        baseExcerpt.excerpt_id,
+        extraFieldExcerpt,
+      ),
+      expectedMessage: excerptMessage,
+      exists: mutatedExcerptExists,
+    },
+    {
+      label: 're-signed excerpt bytes not present in source',
+      row: alteredBytesExcerpt,
+      writeSet: withExcerpt(
+        fixture.writeSet,
+        baseExcerpt.excerpt_id,
+        alteredBytesExcerpt,
+      ),
+      expectedMessage: excerptMessage,
+      exists: mutatedExcerptExists,
+    },
+    {
+      label: 'excerpt splitting a UTF-8 code point',
+      row: invalidUtf8Excerpt,
+      writeSet: withExcerpt(
+        fixture.writeSet,
+        baseExcerpt.excerpt_id,
+        invalidUtf8Excerpt,
+      ),
+      expectedMessage: excerptMessage,
+      exists: mutatedExcerptExists,
+    },
     {
       label: 'forged provision identity',
       row: forgedProvisionId,
@@ -984,6 +1167,41 @@ function main() {
     });
   }
 
+  const zeroLengthExcerptClosureId = contentId(
+    'CANONICAL_V2_ZERO_LENGTH_EXCERPT_CLOSURE/V1',
+    { nonce },
+  );
+  const zeroLengthExcerpt = {
+    ...buildExcerpt({
+      source: fixture.context,
+      span: buildSemanticSpan(
+        fixture.context,
+        excerptContinuation,
+        excerptContinuation,
+      ),
+    }),
+    closure_id: zeroLengthExcerptClosureId,
+  };
+  const zeroLengthExcerptWriteSet = Object.fromEntries(
+    Object.entries(fixture.writeSet).map(([key, value]) => (
+      COLLECTIONS.includes(key) ? [key, []] : [key, structuredClone(value)]
+    )),
+  );
+  zeroLengthExcerptWriteSet.excerpts = [zeroLengthExcerpt];
+  const zeroLengthExcerptRequest = requestFor({
+    idempotencyKey: `excerpt-identity-zero-length-${nonce}`,
+    writeSet: zeroLengthExcerptWriteSet,
+  });
+  assertValidReplay({
+    request: zeroLengthExcerptRequest,
+    exactRowsSql: exactStructuralRowsSql(zeroLengthExcerptWriteSet),
+    label: 'zero-length continuation-offset excerpt',
+    rowAbsentSql: `NOT EXISTS (
+      SELECT 1 FROM canonical_v2_staging.excerpts
+      WHERE excerpt_id=${runtime.sqlText(zeroLengthExcerpt.excerpt_id)}
+    )`,
+  });
+
   const successorClosureId = contentId(
     'CANONICAL_V2_PERSISTED_PARENT_SUCCESSOR_CLOSURE/V1',
     { nonce },
@@ -1029,6 +1247,25 @@ function main() {
     )`,
   });
 
+  const malformedExcerptClosureId = contentId(
+    'CANONICAL_V2_MALFORMED_PERSISTED_EXCERPT_CLOSURE/V1',
+    { nonce },
+  );
+  const malformedPersistedExcerpt = {
+    ...zeroLengthExcerpt,
+    closure_id: malformedExcerptClosureId,
+    exact_bytes_digest: contentId(
+      'CANONICAL_V2_MALFORMED_PERSISTED_EXCERPT_BYTES/V1',
+      { nonce },
+    ),
+  };
+  assertMalformedPersistedReferenceRejected({
+    fixture,
+    malformedObject: malformedPersistedExcerpt,
+    objectKind: 'excerpts',
+    idempotencyKey: `excerpt-identity-malformed-persisted-${nonce}`,
+  });
+
   const malformedClosureId = contentId(
     'CANONICAL_V2_MALFORMED_PERSISTED_PROVISION_CLOSURE/V1',
     { nonce },
@@ -1048,12 +1285,15 @@ function main() {
   };
   assertMalformedPersistedReferenceRejected({
     fixture,
-    malformedProvision: malformedPersistedProvision,
+    malformedObject: malformedPersistedProvision,
+    objectKind: 'provisions',
     idempotencyKey: `structure-identity-malformed-persisted-${nonce}`,
   });
 
   process.stdout.write(
-    `Canonical structural identity acceptance passed across ${
+    `Canonical excerpt and structural identity acceptance passed across ${
+      fixture.writeSet.excerpts.length
+    } excerpts, ${
       audit.provision_count
     } provisions and ${audit.component_count} components.\n`,
   );

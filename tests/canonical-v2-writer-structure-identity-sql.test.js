@@ -9,6 +9,9 @@ const firstSemanticInsert = sql.indexOf(
   branchStart,
 );
 const branch = sql.slice(branchStart, firstSemanticInsert);
+const excerptFailure = branch.indexOf(
+  'DEAL_SCOPE_RUN excerpt identity or source bytes are invalid',
+);
 const provisionFailure = branch.indexOf(
   'DEAL_SCOPE_RUN provision identity or source lineage is invalid',
 );
@@ -82,6 +85,7 @@ test('DEAL_SCOPE_RUN recomputes the source-anchored structural identity chain', 
 });
 
 test('structural validation is closed, set-based and precedes closure locks', () => {
+  const structuralIdentityBranch = branch.slice(excerptFailure, componentFailure);
   assert.ok(provisionFailure < componentFailure);
   assert.ok(componentFailure < firstClosureLock);
   assert.match(branch.slice(provisionFailure, firstClosureLock), /USING ERRCODE = '23514'/);
@@ -98,12 +102,16 @@ test('structural validation is closed, set-based and precedes closure locks', ()
     /supplied\.component->>'component_key'\s*~ '\^\[A-Z0-9\]\[A-Z0-9_-\]\*\$'/,
   );
   assert.equal(
-    (branch.match(/supplied\.absolute_start < supplied\.absolute_end\s+AND \(/g) || []).length,
+    (
+      structuralIdentityBranch.match(
+        /supplied\.absolute_start < supplied\.absolute_end\s+AND \(/g,
+      ) || []
+    ).length,
     2,
   );
-  assert.equal((branch.match(/get_byte\(/g) || []).length, 4);
-  assert.equal((branch.match(/9007199254740991/g) || []).length, 2);
-  assert.doesNotMatch(branch, /\[0-9\]\{0,9\}/);
+  assert.equal((structuralIdentityBranch.match(/get_byte\(/g) || []).length, 4);
+  assert.equal((structuralIdentityBranch.match(/9007199254740991/g) || []).length, 2);
+  assert.doesNotMatch(structuralIdentityBranch, /\[0-9\]\{0,9\}/);
   assert.doesNotMatch(branch.slice(
     branch.indexOf('WITH source_lineage AS'),
     componentFailure,
