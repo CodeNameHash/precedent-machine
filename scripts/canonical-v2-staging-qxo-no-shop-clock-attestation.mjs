@@ -25,6 +25,13 @@ const {
   validateQxoNoShopClockParserBoundReviewSeed,
 } = require('../lib/canonical-v2/qxo-no-shop-clock-parser-bridge');
 const {
+  buildQxoNoShopActionsParserBoundReviewSeed,
+  validateQxoNoShopActionsParserBoundReviewSeed,
+} = require('../lib/canonical-v2/qxo-no-shop-actions-parser-bridge');
+const {
+  buildQxoAdmittedNoShopActionsSlice,
+} = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
+const {
   buildQxoAdmittedNoShopNoticeSlice,
 } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-slice');
 const {
@@ -52,6 +59,10 @@ const DEAL_KEY = 'deal:qxo-topbuild';
 const FIXTURE_PATH = join(
   ROOT,
   'tests/fixtures/canonical-v2/qxo-no-shop-clock-staging-attestation.json',
+);
+const ACTIONS_FIXTURE_PATH = join(
+  ROOT,
+  'tests/fixtures/canonical-v2/qxo-no-shop-actions-staging-attestation.json',
 );
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
@@ -218,7 +229,7 @@ function verifyFailureIsolation(bridgeInputs) {
   return true;
 }
 
-function buildAttestation() {
+function buildSourceInputs() {
   const capture = readCapture();
   const conversion = convertSecHtmlToCanonicalText(capture);
   const verification = verifySecHtmlCanonicalText({ capture, conversion });
@@ -255,6 +266,21 @@ function buildAttestation() {
   };
   const admittedParserProposalEnvelope =
     buildAdmittedParserProposalEnvelope(parserInputs);
+  return {
+    contractBundle,
+    admittedSourceContext,
+    admittedParserProposalEnvelope,
+    parserInputs,
+  };
+}
+
+function buildAttestation() {
+  const {
+    contractBundle,
+    admittedSourceContext,
+    admittedParserProposalEnvelope,
+    parserInputs,
+  } = buildSourceInputs();
   const reviewedNoShopSlice = buildQxoAdmittedNoShopNoticeSlice({
     sourceContext: admittedSourceContext,
     contractBundle,
@@ -320,17 +346,224 @@ function buildAttestation() {
   };
 }
 
+function verifyActionsFailureIsolation(bridgeInputs) {
+  const missingFirstAction = JSON.parse(JSON.stringify(
+    bridgeInputs.reviewed_no_shop_actions_slice,
+  ));
+  missingFirstAction.claims = missingFirstAction.claims.filter(
+    (claim) => claim.canonical_value
+      !== 'SOLICIT_ASSIST_INITIATE_ENCOURAGE_OR_FACILITATE',
+  );
+  missingFirstAction.actionClaims = missingFirstAction.actionClaims.filter(
+    (claim) => claim.canonical_value
+      !== 'SOLICIT_ASSIST_INITIATE_ENCOURAGE_OR_FACILITATE',
+  );
+  const firstActionOutcomes = buildQxoNoShopActionsParserBoundReviewSeed({
+    ...bridgeInputs,
+    reviewed_no_shop_actions_slice: missingFirstAction,
+  }).action_outcomes;
+  if (firstActionOutcomes[0].suppressed !== true
+    || firstActionOutcomes.slice(1).some((outcome) => outcome.suppressed)) {
+    throw new Error('Missing first action did not remain isolated to that action.');
+  }
+
+  const missingPrerequisite = JSON.parse(JSON.stringify(
+    bridgeInputs.reviewed_no_shop_actions_slice,
+  ));
+  missingPrerequisite.claims = missingPrerequisite.claims.filter(
+    (claim) => claim.canonical_value !== 'NO_PRIOR_BREACH',
+  );
+  missingPrerequisite.prerequisiteClaims =
+    missingPrerequisite.prerequisiteClaims.filter(
+      (claim) => claim.canonical_value !== 'NO_PRIOR_BREACH',
+    );
+  const prerequisiteOutcomes = buildQxoNoShopActionsParserBoundReviewSeed({
+    ...bridgeInputs,
+    reviewed_no_shop_actions_slice: missingPrerequisite,
+  });
+  if (prerequisiteOutcomes.exception_context_outcome.suppressed !== true
+    || prerequisiteOutcomes.exception_context_outcome.failure_code
+      !== 'EXCEPTION_SOURCE_MAPPING_REQUIRES_CORRECTION'
+    || prerequisiteOutcomes.action_outcomes.some((outcome) => outcome.suppressed)) {
+    throw new Error('Missing prerequisite did not remain isolated to exception context.');
+  }
+
+  const withoutResultInputs = JSON.parse(JSON.stringify(
+    bridgeInputs.reviewed_no_shop_actions_slice,
+  ));
+  delete withoutResultInputs.resultInputs;
+  const baseline = buildQxoNoShopActionsParserBoundReviewSeed(bridgeInputs);
+  const withoutLegacyInputs = buildQxoNoShopActionsParserBoundReviewSeed({
+    ...bridgeInputs,
+    reviewed_no_shop_actions_slice: withoutResultInputs,
+  });
+  if (canonicalJson(withoutLegacyInputs) !== canonicalJson(baseline)) {
+    throw new Error('Legacy resultInputs affected the review-only actions seed.');
+  }
+
+  let unknownFieldRejected = false;
+  try {
+    buildQxoNoShopActionsParserBoundReviewSeed({
+      ...bridgeInputs,
+      unknown_authority: true,
+    });
+  } catch (_) {
+    unknownFieldRejected = true;
+  }
+  if (!unknownFieldRejected) {
+    throw new Error('The actions bridge accepted an unknown authority field.');
+  }
+
+  for (const alteredSlice of [
+    (() => {
+      const value = JSON.parse(JSON.stringify(
+        bridgeInputs.reviewed_no_shop_actions_slice,
+      ));
+      value.reviewed_mapping = { untrusted: true };
+      return value;
+    })(),
+    (() => {
+      const value = JSON.parse(JSON.stringify(
+        bridgeInputs.reviewed_no_shop_actions_slice,
+      ));
+      value.claims.push({
+        claim_revision_id: 'f'.repeat(64),
+        claim_definition_key: 'NO_SHOP_PROHIBITED_ACTION',
+        subject_occurrence_id: 'unvalidated-extra-subject',
+        ordinal: 999,
+        canonical_value: 'UNREVIEWED_LEGAL_PROPOSITION',
+      });
+      return value;
+    })(),
+    (() => {
+      const value = JSON.parse(JSON.stringify(
+        bridgeInputs.reviewed_no_shop_actions_slice,
+      ));
+      value.claims = Array.from(
+        { length: 129 },
+        () => value.claims[0],
+      );
+      return value;
+    })(),
+  ]) {
+    let rejected = false;
+    try {
+      buildQxoNoShopActionsParserBoundReviewSeed({
+        ...bridgeInputs,
+        reviewed_no_shop_actions_slice: alteredSlice,
+      });
+    } catch (_) {
+      rejected = true;
+    }
+    if (!rejected) {
+      throw new Error('The actions bridge accepted unvalidated review material.');
+    }
+  }
+  return true;
+}
+
+function buildActionsAttestation() {
+  const {
+    contractBundle,
+    admittedSourceContext,
+    admittedParserProposalEnvelope,
+    parserInputs,
+  } = buildSourceInputs();
+  const reviewedNoShopActionsSlice = buildQxoAdmittedNoShopActionsSlice({
+    sourceContext: admittedSourceContext,
+    contractBundle,
+  });
+  const bridgeInputs = {
+    ...parserInputs,
+    admitted_parser_proposal_envelope: admittedParserProposalEnvelope,
+    reviewed_no_shop_actions_slice: reviewedNoShopActionsSlice,
+  };
+  const seed = buildQxoNoShopActionsParserBoundReviewSeed(bridgeInputs);
+  validateQxoNoShopActionsParserBoundReviewSeed({
+    qxo_no_shop_actions_parser_bound_review_seed: seed,
+    ...bridgeInputs,
+  });
+  const sectionParent = admittedParserProposalEnvelope
+    .structural_section_proposals
+    .find((proposal) => (
+      proposal.admitted_structural_section_proposal_id
+        === seed.parser_binding.section_4_3_proposal_id
+    ));
+  if (!sectionParent) throw new Error('The attested Section 4.3 parser parent is absent.');
+  return {
+    schema_version: 'QXO_NO_SHOP_ACTIONS_STAGING_ATTESTATION/V1',
+    environment: 'STAGING',
+    authority_scope: seed.authority_scope,
+    source_binding: seed.source_binding,
+    parser_binding: {
+      admitted_parser_proposal_envelope_id:
+        seed.parser_binding.admitted_parser_proposal_envelope_id,
+      admitted_parser_proposal_envelope_payload_digest:
+        seed.parser_binding.admitted_parser_proposal_envelope_payload_digest,
+      section_4_3_proposal_id: seed.parser_binding.section_4_3_proposal_id,
+      section_4_3_absolute_start:
+        sectionParent.evidence_anchor.absolute_start,
+      section_4_3_absolute_end:
+        sectionParent.evidence_anchor.absolute_end,
+      section_4_3_exact_bytes_digest:
+        sectionParent.evidence_anchor.exact_bytes_digest,
+      retained_parser_residual_count:
+        seed.parser_binding.retained_parser_residual_summary.count,
+      publication_blocked:
+        admittedParserProposalEnvelope.publication_blocked,
+    },
+    reviewed_action_reference_set_id:
+      seed.reviewed_mapping_reference.action_reference_set_id,
+    rejected_source_reviewed_mapping_id:
+      seed.reviewed_mapping_reference.source_reviewed_mapping_id,
+    action_dependencies: seed.action_outcomes.map((outcome) => ({
+      action_key: outcome.action_key,
+      suppressed: outcome.suppressed,
+      failure_code: outcome.failure_code,
+      claim_revision_id: outcome.reference?.claim.claim_revision_id || null,
+      provision_component_id:
+        outcome.reference?.provision_component_id || null,
+      evidence_excerpt_id: outcome.reference?.evidence_excerpt_id || null,
+    })),
+    exception_context_dependency: {
+      suppressed: seed.exception_context_outcome.suppressed,
+      failure_code: seed.exception_context_outcome.failure_code,
+      prerequisite_count:
+        seed.exception_context_outcome.reference
+          ?.ordered_prerequisite_claims.length || 0,
+      relationship_count:
+        seed.exception_context_outcome.reference
+          ?.ordered_relationships.length || 0,
+      relationship_effect_authority:
+        seed.exception_context_outcome.reference
+          ?.relationship_effect_authority || null,
+    },
+    seed_status: seed.status,
+    failure_isolation_verified: verifyActionsFailureIsolation(bridgeInputs),
+    qxo_no_shop_actions_parser_bound_review_seed_id:
+      seed.qxo_no_shop_actions_parser_bound_review_seed_id,
+    canonical_payload_digest: seed.canonical_payload_digest,
+  };
+}
+
 const mode = process.argv[2];
-if (!['--print', '--verify'].includes(mode) || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify');
+if (!['--print', '--verify', '--actions-print', '--actions-verify'].includes(mode)
+  || process.argv.length !== 3) {
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify');
 }
 
 try {
-  const attestation = buildAttestation();
-  if (mode === '--verify') {
-    const expected = JSON.parse(readFileSync(FIXTURE_PATH, 'utf8'));
+  const actionsMode = mode.startsWith('--actions-');
+  const attestation = actionsMode
+    ? buildActionsAttestation()
+    : buildAttestation();
+  if (mode.endsWith('verify')) {
+    const expected = JSON.parse(readFileSync(
+      actionsMode ? ACTIONS_FIXTURE_PATH : FIXTURE_PATH,
+      'utf8',
+    ));
     if (canonicalJson(attestation) !== canonicalJson(expected)) {
-      throw new Error('The checked QXO no-shop clock staging attestation has drifted.');
+      throw new Error('The checked QXO no-shop staging attestation has drifted.');
     }
   }
   process.stdout.write(`${canonicalJson(attestation)}\n`);

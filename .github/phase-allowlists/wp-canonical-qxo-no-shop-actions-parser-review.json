@@ -1,0 +1,33 @@
+{
+  "phase": "WP-CANONICAL-QXO-NO-SHOP-ACTIONS-PARSER-REVIEW",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-qxo-no-shop-actions-parser-review.json",
+    "lib/canonical-v2/qxo-no-shop-actions-parser-bridge.js",
+    "scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs",
+    "tests/canonical-v2-qxo-no-shop-actions-parser-bridge.test.js",
+    "tests/fixtures/canonical-v2/qxo-no-shop-actions-staging-attestation.json"
+  ],
+  "denied": [
+    ".env*",
+    "docs/**",
+    "pages/**",
+    "components/**",
+    "lib/query/**",
+    "lib/parser-v2/**",
+    "lib/canonical-v2/admitted-parser-proposal-adapter.js",
+    "lib/canonical-v2/candidate-release.js",
+    "lib/canonical-v2/candidate-release-import.js",
+    "lib/canonical-v2/canonical-writer.js",
+    "lib/canonical-v2/claims-relationships.js",
+    "lib/canonical-v2/contract-bundle.js",
+    "lib/canonical-v2/observation-normalisers.js",
+    "lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice.js",
+    "lib/canonical-v2/serving-projection.js",
+    "lib/canonical-v2/shared-serving-row.js",
+    "lib/canonical-v2/validate-write-set.js",
+    "sql/**",
+    "supabase/**",
+    "next.config.js"
+  ],
+  "note": "Binds four existing reviewed QXO prohibited-action claims and their shared fiduciary-exception context to the exact admitted Section 4.3 parser parent. It isolates an affected action from independent siblings and grants no taxonomy, relationship-effect, result, metric, market comparability, query, cohort, serving, canonical-write or release authority."
+}
