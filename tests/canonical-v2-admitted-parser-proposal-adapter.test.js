@@ -40,6 +40,7 @@ const {
   detectStructuralDefinitionProposals,
   normaliseStructuralDefinitionProposals,
 } = require('../lib/parser-v2/canonical-structural-definitions');
+const { QXO_5_2_TEXT } = require('./fixtures/qxo-section-5-2');
 const runtimeManifest = require(
   '../lib/parser-v2/canonical-structural-definitions.manifest.json'
 );
@@ -58,6 +59,20 @@ const TRANSFORMED_HTML = `<html><body>
 <p>The Compa-<br>ny shall not solicit any Acquisition Proposal.</p>
 <p>IN WITNESS WHEREOF, the parties have executed this Agreement.</p>
 </body></html>`;
+
+const QXO_DE_MINIMIS_EVIDENCE = '"De Minimis Inaccuracies" means any inaccuracies '
+  + 'that individually or in the aggregate are de minimis relative to the total fully '
+  + 'diluted equity capitalization of the Company or Parent, as the case may be;';
+const QXO_INLINE_DEFINITION_HTML = `<html><body>
+<p>AGREEMENT AND PLAN OF MERGER</p>
+<p>ARTICLE V</p><p>CONDITIONS</p>
+${QXO_5_2_TEXT.split('\n\n').map((paragraph) => `<p>${paragraph}</p>`).join('\n')}
+<p>IN WITNESS WHEREOF</p>
+</body></html>`;
+const QXO_UNQUOTED_DEFINITION_HTML = QXO_INLINE_DEFINITION_HTML.replace(
+  '"De Minimis Inaccuracies" means',
+  'De Minimis Inaccuracies means',
+);
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
@@ -235,6 +250,58 @@ test('repeated identical definition phrases remain distinct source occurrences',
   );
 });
 
+test('the exact QXO 5.2 source yields one inline definition under its real no-space parent', () => {
+  assert.equal(QXO_5_2_TEXT.includes(QXO_DE_MINIMIS_EVIDENCE), true);
+  const input = fixture(QXO_INLINE_DEFINITION_HTML, 'qxo-inline-definition');
+  const envelope = buildAdmittedParserProposalEnvelope(input.adapterInputs);
+  const candidates = envelope.definition_candidates;
+
+  assert.equal(candidates.length, 1);
+  assert.equal(candidates[0].neutral_defined_term, 'De Minimis Inaccuracies');
+  assert.equal(
+    candidates[0].evidence_anchor.exact_text,
+    QXO_DE_MINIMIS_EVIDENCE,
+  );
+  assert.equal(
+    candidates[0].parent_structural_section_proposal_id,
+    envelope.structural_section_proposals.find(
+      (row) => row.section_number === '5.2',
+    ).admitted_structural_section_proposal_id,
+  );
+  assert.equal(
+    utf8Slice(
+      input.context.canonical_text.text,
+      candidates[0].evidence_anchor.absolute_start,
+      candidates[0].evidence_anchor.absolute_end,
+    ),
+    candidates[0].evidence_anchor.exact_text,
+  );
+});
+
+test('the exact unquoted QXO purpose clause yields one reconciled candidate under 5.2', () => {
+  const input = fixture(QXO_UNQUOTED_DEFINITION_HTML, 'qxo-unquoted-inline-definition');
+  const envelope = buildAdmittedParserProposalEnvelope(input.adapterInputs);
+
+  assert.equal(envelope.definition_candidates.length, 1);
+  assert.equal(
+    envelope.definition_candidates[0].neutral_defined_term,
+    'De Minimis Inaccuracies',
+  );
+  assert.equal(
+    envelope.definition_candidates[0].evidence_anchor.exact_text,
+    QXO_DE_MINIMIS_EVIDENCE.replace(
+      '"De Minimis Inaccuracies"',
+      'De Minimis Inaccuracies',
+    ),
+  );
+  assert.equal(
+    envelope.definition_candidates[0].parent_structural_section_proposal_id,
+    envelope.structural_section_proposals.find(
+      (row) => row.section_number === '5.2',
+    ).admitted_structural_section_proposal_id,
+  );
+});
+
 test('the envelope is deterministic, deeply frozen and exactly revalidated', () => {
   const input = fixture();
   const first = buildAdmittedParserProposalEnvelope(input.adapterInputs);
@@ -386,8 +453,43 @@ test('the pure detector enforces collection bounds and the runtime invokes no ne
   }
 });
 
+test('one inline definition consumes one governed definition signal', () => {
+  const input = fixture(QXO_INLINE_DEFINITION_HTML, 'inline-definition-limit');
+  const cleanText = buildLayers(input.context.canonical_text.text).cleanText;
+  const detected = detectStructuralDefinitionProposals(cleanText, {
+    max_sections: 4096,
+    max_definitions: 1,
+    max_residuals: 4096,
+    max_total_candidates: 16384,
+  });
+
+  assert.equal(detected.definitions.length, 1);
+  assert.equal(detected.definitions[0].neutral_defined_term, 'De Minimis Inaccuracies');
+});
+
+test('one unquoted purpose-clause definition consumes one governed definition signal', () => {
+  const input = fixture(QXO_UNQUOTED_DEFINITION_HTML, 'unquoted-inline-definition-limit');
+  const cleanText = buildLayers(input.context.canonical_text.text).cleanText;
+  const detected = detectStructuralDefinitionProposals(cleanText, {
+    max_sections: 4096,
+    max_definitions: 1,
+    max_residuals: 4096,
+    max_total_candidates: 16384,
+  });
+
+  assert.equal(detected.definitions.length, 1);
+  assert.equal(detected.definitions[0].neutral_defined_term, 'De Minimis Inaccuracies');
+  assert.equal(
+    detected.sections[detected.definitions[0].parent_section_index].section_number,
+    '5.2',
+  );
+});
+
 test('one malformed structural child becomes a residual while its valid sibling survives', () => {
-  const cleanText = 'Section 1.01. Valid provision.'.padEnd(120, ' ');
+  const cleanText = (
+    'Section 1.01. Valid provision. "Nested Term" means an exact inline definition;'
+  ).padEnd(160, ' ');
+  const validEnd = cleanText.indexOf(';') + 1;
   const detected = normaliseStructuralDefinitionProposals({
     cleanText,
     governedLimits: runtimeManifest.governed_limits,
@@ -397,7 +499,7 @@ test('one malformed structural child becomes a residual while its valid sibling 
           number: '1.01',
           title: 'Valid provision',
           startChar: 0,
-          endChar: 31,
+          endChar: validEnd,
           regionType: 'body.section.provision',
           atomic: false,
           definitionCompletenessWarnings: [],
@@ -415,7 +517,7 @@ test('one malformed structural child becomes a residual while its valid sibling 
       regions: [],
       diagnostics: {
         bodyStart: 0,
-        bodyEnd: 31,
+        bodyEnd: validEnd,
         totalArticles: 1,
         delimiter: 'fallback',
         gaps: [],
@@ -427,6 +529,8 @@ test('one malformed structural child becomes a residual while its valid sibling 
 
   assert.equal(detected.sections.length, 1);
   assert.equal(detected.sections[0].section_number, '1.01');
+  assert.equal(detected.definitions.length, 1);
+  assert.equal(detected.definitions[0].neutral_defined_term, 'Nested Term');
   assert.deepEqual(detected.candidate_failures, [{
     candidate_kind: 'STRUCTURAL_SECTION',
     reason_code: 'INVALID_STRUCTURAL_SECTION',
