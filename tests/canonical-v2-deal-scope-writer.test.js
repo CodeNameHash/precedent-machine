@@ -19,6 +19,7 @@ const { buildVerifiedSecSourceAdmission } = require('../lib/canonical-v2/sec-sou
 const { buildSourceArtifactChunks } = require('../lib/canonical-v2/source-artifact-chunks');
 const {
   buildExcerpt,
+  buildProvisionComponent,
   buildProvisionInstance,
   buildSemanticSpan,
 } = require('../lib/canonical-v2/source-structure');
@@ -211,6 +212,82 @@ test('DEAL_SCOPE_RUN commits one semantic transaction and exact replay is idempo
     error.code === 'IDEMPOTENCY_CONFLICT'
   ));
   assert.deepEqual(repository.snapshot(), state);
+});
+
+test('structural rows reject fields and types outside the closed contract', async () => {
+  const { repository, writer, context, writeSet } = await setup();
+  const before = repository.snapshot();
+  const parent = writeSet.provisions[0];
+  const component = {
+    ...buildProvisionComponent({
+      source: context,
+      parentProvision: parent,
+      span: buildSemanticSpan(context, parent.absolute_start, parent.absolute_end),
+      componentKey: 'REPRESENTATION_LIMB',
+      ordinal: 1,
+    }),
+    closure_id: parent.closure_id,
+  };
+  const probes = [
+    {
+      label: 'extra provision field',
+      mutate: (candidate) => {
+        candidate.provisions[0].unbound = true;
+      },
+    },
+    {
+      label: 'string provision ordinal',
+      mutate: (candidate) => {
+        candidate.provisions[0].ordinal = '1';
+      },
+    },
+    {
+      label: 'incomplete party tuple',
+      mutate: (candidate) => {
+        delete candidate.provisions[0].party.capacity;
+      },
+    },
+    {
+      label: 'non-token provision concept',
+      mutate: (candidate) => {
+        candidate.provisions[0].concept_key = '\t';
+      },
+    },
+    {
+      label: 'extra component field',
+      mutate: (candidate) => {
+        candidate.components[0].unbound = true;
+      },
+    },
+    {
+      label: 'string component offset',
+      mutate: (candidate) => {
+        candidate.components[0].absolute_start = '0';
+      },
+    },
+    {
+      label: 'non-token component key',
+      mutate: (candidate) => {
+        candidate.components[0].component_key = '\u00a0';
+      },
+    },
+  ];
+
+  for (const [index, probe] of probes.entries()) {
+    const candidate = structuredClone(writeSet);
+    candidate.components = [structuredClone(component)];
+    probe.mutate(candidate);
+    await assert.rejects(
+      writer.write({
+        operation: 'DEAL_SCOPE_RUN',
+        idempotencyKey: `closed-structural-row-${index}`,
+        writeSet: candidate,
+      }),
+      (error) => error.code === 'CANONICAL_VALIDATION_ERROR',
+      probe.label,
+    );
+    assert.deepEqual(repository.snapshot(), before);
+  }
 });
 
 test('a later deal-scope run validates against exact persisted objects and writes only its new claim', async () => {

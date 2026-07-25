@@ -185,6 +185,16 @@ test('identity builders fail closed on incomplete parties, unknown concepts and 
     () => buildProvisionInstance({ source, span, conceptKey: 'INVENTED-CONCEPT', party: PARTY, ordinal: 1 }),
     /outside the frozen fixture contract/,
   );
+  assert.throws(
+    () => buildProvisionInstance({
+      source,
+      span,
+      conceptKey: 'REP-T-CAP',
+      party: PARTY,
+      ordinal: Number.MAX_SAFE_INTEGER + 1,
+    }),
+    /positive safe integer/,
+  );
   assert.throws(() => buildSemanticSpan(source, 1, 2), /code-point boundaries/);
 });
 

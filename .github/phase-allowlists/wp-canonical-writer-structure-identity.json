@@ -1,0 +1,28 @@
+{
+  "phase": "WP-CANONICAL-WRITER-STRUCTURE-IDENTITY",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-writer-structure-identity.json",
+    "lib/canonical-v2/source-structure.js",
+    "lib/canonical-v2/validate-write-set.js",
+    "scripts/canonical-v2-optiona-authority-partition.mjs",
+    "scripts/canonical-v2-staging-schema.mjs",
+    "scripts/canonical-v2-staging-writer-structure-identity.mjs",
+    "sql/optionA/step0b-canonical-writer-by-contract.sql",
+    "supabase/canonical-v2-foundation.sql",
+    "tests/canonical-v2-deal-scope-writer.test.js",
+    "tests/canonical-v2-source-identity.test.js",
+    "tests/canonical-v2-staging-writer-structure-identity-runner.test.js",
+    "tests/canonical-v2-writer-structure-identity-sql.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "docs/**",
+    "pages/**",
+    "components/**",
+    "lib/query/**",
+    "lib/parser-v2/**",
+    "supabase/canonical-v2-serving.sql",
+    "next.config.js"
+  ],
+  "note": "Recomputes source occurrence, semantic span, provision instance and provision component identities for new and explicitly retained DEAL_SCOPE_RUN rows before closure locks or DML. The slice also binds provisions to admitted sources and components to exact contained parents."
+}
