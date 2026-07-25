@@ -16,6 +16,7 @@ const {
   CLAIM_STATES,
   buildClaimRevision,
   buildRelationshipRevision,
+  validateClaimRevisionIdentity,
 } = require('../lib/canonical-v2/claims-relationships');
 const {
   buildImmutableSource,
@@ -382,4 +383,78 @@ test('claim states fail closed and residual quarantine is isolated to the affect
   assert.equal(unsupportedNotExamined.publication_state, 'QUARANTINED');
   assert.ok(unsupportedNotExamined.quarantine.reason_codes.includes('STATE_DETAIL_REQUIRED'));
   assert.equal(sibling.publication_state, 'VALIDATED');
+});
+
+test('claim identity rejects unsafe ordinals, unbound evidence and non-canonical evidence order', () => {
+  const subjectOccurrenceId = occurrenceId('SUBJECT', 'claim-identity');
+  const firstEvidence = syntheticEvidence('claim-identity-first', 'OPERATIVE_TEXT', 10);
+  const secondEvidence = syntheticEvidence('claim-identity-second', 'DEFINITION', 20);
+  const claim = buildClaimRevision({
+    subject_occurrence_id: subjectOccurrenceId,
+    claim_definition_key: 'REPRESENTATION_ACCURACY_EXCEPTION',
+    state: 'PRESENT',
+    canonical_value: 'DE_MINIMIS_INACCURACIES',
+    evidence: [secondEvidence, firstEvidence],
+  });
+
+  assert.equal(validateClaimRevisionIdentity(claim), true);
+  assert.deepEqual(
+    claim.evidence.map((edge) => edge.absolute_start),
+    [10, 20],
+  );
+
+  const reversed = structuredClone(claim);
+  reversed.evidence.reverse();
+  assert.throws(
+    () => validateClaimRevisionIdentity(reversed),
+    /canonical source order/,
+  );
+
+  const unbound = structuredClone(claim);
+  unbound.evidence[0].unbound_value = true;
+  assert.throws(
+    () => validateClaimRevisionIdentity(unbound),
+    /canonical source order/,
+  );
+
+  assert.throws(() => buildClaimRevision({
+    subject_occurrence_id: subjectOccurrenceId,
+    claim_definition_key: 'KNOWLEDGE_QUALIFIER',
+    claim_definition_version: Number.MAX_SAFE_INTEGER + 1,
+    state: 'ABSENT',
+    scope: {
+      scope_closure_id: occurrenceId('CLAIM_SCOPE_CLOSURE', 'unsafe-version'),
+      coverage_status: 'COMPLETE',
+      required_interval_ids: [occurrenceId('INTERVAL', 'unsafe-version')],
+      examined_interval_ids: [occurrenceId('INTERVAL', 'unsafe-version')],
+    },
+  }), /safe integer/);
+
+  assert.throws(() => buildClaimRevision({
+    subject_occurrence_id: subjectOccurrenceId,
+    claim_definition_key: 'KNOWLEDGE_QUALIFIER',
+    ordinal: Number.MAX_SAFE_INTEGER + 1,
+    state: 'ABSENT',
+    scope: {
+      scope_closure_id: occurrenceId('CLAIM_SCOPE_CLOSURE', 'unsafe-ordinal'),
+      coverage_status: 'COMPLETE',
+      required_interval_ids: [occurrenceId('INTERVAL', 'unsafe-ordinal')],
+      examined_interval_ids: [occurrenceId('INTERVAL', 'unsafe-ordinal')],
+    },
+  }), /safe integer/);
+
+  assert.throws(() => buildClaimRevision({
+    subject_occurrence_id: subjectOccurrenceId,
+    claim_definition_key: 'uncontrolled claim key',
+    state: 'PRESENT',
+    evidence: [firstEvidence],
+  }), /governed uppercase key/);
+
+  assert.throws(() => buildClaimRevision({
+    subject_occurrence_id: subjectOccurrenceId,
+    claim_definition_key: 'KNOWLEDGE_QUALIFIER',
+    state: 'PRESENT',
+    evidence: [firstEvidence],
+    extraction_version: 7,
+  }), /non-empty string/);
 });

@@ -233,6 +233,9 @@ function structuralSnapshot(fixture) {
   const componentIds = fixture.writeSet.components.map(
     (row) => runtime.sqlText(row.provision_component_id),
   ).join(',');
+  const claimIds = fixture.writeSet.claims.map(
+    (row) => runtime.sqlText(row.claim_revision_id),
+  ).join(',');
   return runtime.runSql(
     `SELECT 'excerpt' AS kind, excerpt_id AS object_id,
        canonical_payload_digest
@@ -247,6 +250,10 @@ function structuralSnapshot(fixture) {
      SELECT 'component', provision_component_id, canonical_payload_digest
      FROM canonical_v2_staging.provision_components
      WHERE provision_component_id IN (${componentIds})
+     UNION ALL
+     SELECT 'claim', claim_revision_id, canonical_payload_digest
+     FROM canonical_v2_staging.claim_revisions
+     WHERE claim_revision_id IN (${claimIds})
      ORDER BY kind, object_id;`,
     { readOnly: true },
   );
@@ -297,6 +304,13 @@ function auditExistingRows(fixture) {
      SELECT
        (SELECT count(*)::integer FROM provision_rows) AS provision_count,
        (SELECT count(*)::integer FROM component_rows) AS component_count,
+       (SELECT count(*)::integer
+        FROM canonical_v2_staging.claim_revisions
+        WHERE claim_revision_id IN (${
+  fixture.writeSet.claims.map(
+    (row) => runtime.sqlText(row.claim_revision_id),
+  ).join(',')
+})) AS claim_count,
        (SELECT count(*)::integer
         FROM provision_rows stored
         LEFT JOIN canonical_v2_staging.canonical_text_conversions conversion
@@ -420,6 +434,7 @@ function auditExistingRows(fixture) {
   if (!audit
     || audit.provision_count !== fixture.writeSet.provisions.length
     || audit.component_count !== fixture.writeSet.components.length
+    || audit.claim_count !== fixture.writeSet.claims.length
     || audit.provision_mismatch_count !== 0
     || audit.component_mismatch_count !== 0) {
     throw new Error('Existing structural rows failed the content-addressed identity audit.');
@@ -443,7 +458,13 @@ function exactStructuralRowsSql(writeSet) {
     WHERE provision_component_id=${runtime.sqlText(row.provision_component_id)}
       AND canonical_payload=${runtime.sqlJson(row)}
   )`);
-  return [...excerpts, ...provisions, ...components].join(' AND ') || 'true';
+  const claims = writeSet.claims.map((row) => `EXISTS (
+    SELECT 1 FROM canonical_v2_staging.claim_revisions
+    WHERE claim_revision_id=${runtime.sqlText(row.claim_revision_id)}
+      AND canonical_payload=${runtime.sqlJson(row)}
+  )`);
+  return [...excerpts, ...provisions, ...components, ...claims].join(' AND ')
+    || 'true';
 }
 
 function assertValidReplay({ request, exactRowsSql, label, rowAbsentSql = 'true' }) {
@@ -586,6 +607,68 @@ function identifyComponent(row) {
   };
 }
 
+function claimRevisionPayload(row) {
+  return {
+    claim_occurrence_id: row.claim_occurrence_id,
+    subject_occurrence_id: row.subject_occurrence_id,
+    claim_definition_key: row.claim_definition_key,
+    claim_definition_version: row.claim_definition_version,
+    ordinal: row.ordinal,
+    state: row.state,
+    raw_value: row.raw_value,
+    canonical_value: row.canonical_value,
+    unit: row.unit,
+    day_basis: row.day_basis,
+    denominator: row.denominator,
+    scope: row.scope,
+    applicability: row.applicability,
+    not_examined: row.not_examined,
+    failure: row.failure,
+    evidence_ids: row.evidence_ids,
+    attributes: row.attributes,
+    taxonomy_codes: row.taxonomy_codes,
+    extraction_version: row.extraction_version,
+    normalisation_version: row.normalisation_version,
+    derivation_version: row.derivation_version,
+  };
+}
+
+function resignClaimRevision(row) {
+  return {
+    ...row,
+    claim_revision_id: contentId(
+      'CLAIM_REVISION/V1',
+      claimRevisionPayload(row),
+    ),
+  };
+}
+
+function identifyClaim(row) {
+  const claimOccurrenceId = contentId('CLAIM_OCCURRENCE/V1', {
+    subject_occurrence_id: row.subject_occurrence_id,
+    claim_definition_key: row.claim_definition_key,
+    claim_definition_version: row.claim_definition_version,
+    ordinal: row.ordinal,
+  });
+  const evidence = row.evidence.map((edge, ordinal) => ({
+    ...edge,
+    schema_version: 'CLAIM_EVIDENCE/V1',
+    claim_evidence_id: contentId('CLAIM_EVIDENCE/V1', {
+      occurrence_id: claimOccurrenceId,
+      evidence_role: edge.evidence_role,
+      excerpt_id: edge.excerpt_id,
+      ordinal,
+    }),
+    ordinal,
+  }));
+  return resignClaimRevision({
+    ...row,
+    claim_occurrence_id: claimOccurrenceId,
+    evidence,
+    evidence_ids: evidence.map((edge) => edge.claim_evidence_id),
+  });
+}
+
 function withExcerpt(writeSet, originalId, excerpt) {
   const candidate = structuredClone(writeSet);
   const index = candidate.excerpts.findIndex(
@@ -614,6 +697,15 @@ function withComponent(writeSet, originalId, component) {
   return candidate;
 }
 
+function withClaim(writeSet, originalId, claim) {
+  const candidate = structuredClone(writeSet);
+  const index = candidate.claims.findIndex(
+    (row) => row.claim_revision_id === originalId,
+  );
+  candidate.claims[index] = claim;
+  return candidate;
+}
+
 function mutatedExcerptExists(row) {
   return `EXISTS (
     SELECT 1 FROM canonical_v2_staging.excerpts
@@ -634,6 +726,14 @@ function mutatedComponentExists(row) {
   return `EXISTS (
     SELECT 1 FROM canonical_v2_staging.provision_components
     WHERE provision_component_id=${runtime.sqlText(row.provision_component_id)}
+      AND canonical_payload=${runtime.sqlJson(row)}
+  )`;
+}
+
+function mutatedClaimExists(row) {
+  return `EXISTS (
+    SELECT 1 FROM canonical_v2_staging.claim_revisions
+    WHERE claim_revision_id=${runtime.sqlText(row.claim_revision_id)}
       AND canonical_payload=${runtime.sqlJson(row)}
   )`;
 }
@@ -690,6 +790,14 @@ function assertMalformedPersistedReferenceRejected({
       expectedMessage:
         'DEAL_SCOPE_RUN provision identity or source lineage is invalid',
       label: 'provision',
+    },
+    claims: {
+      table: 'claim_revisions',
+      idColumn: 'claim_revision_id',
+      idField: 'claim_revision_id',
+      expectedMessage:
+        'DEAL_SCOPE_RUN claim identity, state or evidence lineage is invalid',
+      label: 'claim',
     },
   }[objectKind];
   if (!target) throw new Error(`Unsupported malformed persisted kind: ${objectKind}`);
@@ -846,6 +954,15 @@ function main() {
   const baseExcerpt = fixture.writeSet.excerpts[0];
   const baseProvision = fixture.writeSet.provisions[0];
   const baseComponent = fixture.writeSet.components[0];
+  const baseClaim = fixture.writeSet.claims.find(
+    (row) => row.evidence.length >= 2,
+  );
+  const absentClaim = fixture.writeSet.claims.find(
+    (row) => row.state === 'ABSENT',
+  );
+  if (!baseClaim || !absentClaim) {
+    throw new Error('QXO claim fixture lacks the required claim acceptance probes.');
+  }
   const excerptMessage =
     'DEAL_SCOPE_RUN excerpt identity or source bytes are invalid';
   const forgedExcerptId = {
@@ -984,11 +1101,101 @@ function main() {
     absolute_start: componentContinuation,
     absolute_end: componentContinuation + 1,
   });
+  const forgedClaimRevision = {
+    ...baseClaim,
+    claim_revision_id: contentId(
+      'CANONICAL_V2_FORGED_CLAIM_REVISION/V1',
+      { nonce },
+    ),
+  };
+  const wrongSubjectClaim = identifyClaim({
+    ...baseClaim,
+    subject_occurrence_id: contentId(
+      'CANONICAL_V2_UNRESOLVED_CLAIM_SUBJECT/V1',
+      { nonce },
+    ),
+  });
+  const forgedClaimEvidence = structuredClone(baseClaim);
+  forgedClaimEvidence.evidence[0].claim_evidence_id = contentId(
+    'CANONICAL_V2_FORGED_CLAIM_EVIDENCE/V1',
+    { nonce },
+  );
+  forgedClaimEvidence.evidence_ids[0] =
+    forgedClaimEvidence.evidence[0].claim_evidence_id;
+  const resignedForgedClaimEvidence = resignClaimRevision(
+    forgedClaimEvidence,
+  );
+  const alternativeExcerpt = fixture.writeSet.excerpts.find(
+    (row) => row.excerpt_id !== baseClaim.evidence[0].excerpt_id,
+  );
+  const wrongExcerptClaim = identifyClaim({
+    ...baseClaim,
+    evidence: baseClaim.evidence.map((edge, index) => (
+      index === 0
+        ? { ...edge, excerpt_id: alternativeExcerpt.excerpt_id }
+        : edge
+    )),
+  });
+  const reversedEvidenceClaim = identifyClaim({
+    ...baseClaim,
+    evidence: [...baseClaim.evidence].reverse(),
+  });
+  const extraFieldClaim = {
+    ...baseClaim,
+    unbound_claim_value: true,
+  };
+  const unboundEvidenceClaim = identifyClaim({
+    ...baseClaim,
+    evidence: baseClaim.evidence.map((edge, index) => (
+      index === 0 ? { ...edge, unbound_evidence_value: true } : edge
+    )),
+  });
+  const assertedAbsentClaim = resignClaimRevision({
+    ...absentClaim,
+    raw_value: 'invented absence value',
+  });
+  const incompleteAbsentScopeClaim = resignClaimRevision({
+    ...absentClaim,
+    scope: {
+      required_interval_ids: absentClaim.scope.required_interval_ids,
+      examined_interval_ids: absentClaim.scope.examined_interval_ids,
+    },
+  });
+  const nonArrayEvidenceClaim = {
+    ...baseClaim,
+    evidence: 'not-an-evidence-array',
+  };
+  const numericApplicabilityRuleClaim = resignClaimRevision({
+    ...absentClaim,
+    state: 'NOT_APPLICABLE',
+    scope: null,
+    applicability: {
+      rule: 7,
+      source_fact_ids: [contentId(
+        'CANONICAL_V2_APPLICABILITY_SOURCE_FACT/V1',
+        { nonce },
+      )],
+    },
+  });
+  const unresolvedDenominatorClaim = identifyClaim({
+    ...baseClaim,
+    denominator: {
+      value: '1',
+      currency: 'USD',
+      basis: 'HEADLINE_TRANSACTION_VALUE',
+      source_lineage_ids: [contentId(
+        'CANONICAL_V2_UNRESOLVED_DENOMINATOR_SOURCE/V1',
+        { nonce },
+      )],
+    },
+  });
 
   const provisionMessage =
     'DEAL_SCOPE_RUN provision identity or source lineage is invalid';
   const componentMessage =
     'DEAL_SCOPE_RUN component identity or parent lineage is invalid';
+  const claimMessage =
+    'DEAL_SCOPE_RUN claim identity, state or evidence lineage is invalid';
   const probes = [
     {
       label: 'forged excerpt identity',
@@ -1153,6 +1360,138 @@ function main() {
       expectedMessage: componentMessage,
       exists: mutatedComponentExists,
     },
+    {
+      label: 'forged claim revision identity',
+      row: forgedClaimRevision,
+      writeSet: withClaim(
+        fixture.writeSet,
+        baseClaim.claim_revision_id,
+        forgedClaimRevision,
+      ),
+      expectedMessage: claimMessage,
+      exists: mutatedClaimExists,
+    },
+    {
+      label: 're-signed claim on an unresolved subject',
+      row: wrongSubjectClaim,
+      writeSet: withClaim(
+        fixture.writeSet,
+        baseClaim.claim_revision_id,
+        wrongSubjectClaim,
+      ),
+      expectedMessage: claimMessage,
+      exists: mutatedClaimExists,
+    },
+    {
+      label: 're-signed forged claim evidence identity',
+      row: resignedForgedClaimEvidence,
+      writeSet: withClaim(
+        fixture.writeSet,
+        baseClaim.claim_revision_id,
+        resignedForgedClaimEvidence,
+      ),
+      expectedMessage: claimMessage,
+      exists: mutatedClaimExists,
+    },
+    {
+      label: 're-signed claim evidence against the wrong excerpt',
+      row: wrongExcerptClaim,
+      writeSet: withClaim(
+        fixture.writeSet,
+        baseClaim.claim_revision_id,
+        wrongExcerptClaim,
+      ),
+      expectedMessage: claimMessage,
+      exists: mutatedClaimExists,
+    },
+    {
+      label: 're-signed claim evidence outside canonical source order',
+      row: reversedEvidenceClaim,
+      writeSet: withClaim(
+        fixture.writeSet,
+        baseClaim.claim_revision_id,
+        reversedEvidenceClaim,
+      ),
+      expectedMessage: claimMessage,
+      exists: mutatedClaimExists,
+    },
+    {
+      label: 'unbound claim field',
+      row: extraFieldClaim,
+      writeSet: withClaim(
+        fixture.writeSet,
+        baseClaim.claim_revision_id,
+        extraFieldClaim,
+      ),
+      expectedMessage: claimMessage,
+      exists: mutatedClaimExists,
+    },
+    {
+      label: 'unbound claim evidence field',
+      row: unboundEvidenceClaim,
+      writeSet: withClaim(
+        fixture.writeSet,
+        baseClaim.claim_revision_id,
+        unboundEvidenceClaim,
+      ),
+      expectedMessage: claimMessage,
+      exists: mutatedClaimExists,
+    },
+    {
+      label: 'absent claim asserting a value',
+      row: assertedAbsentClaim,
+      writeSet: withClaim(
+        fixture.writeSet,
+        absentClaim.claim_revision_id,
+        assertedAbsentClaim,
+      ),
+      expectedMessage: claimMessage,
+      exists: mutatedClaimExists,
+    },
+    {
+      label: 'absent claim with incomplete scope authority',
+      row: incompleteAbsentScopeClaim,
+      writeSet: withClaim(
+        fixture.writeSet,
+        absentClaim.claim_revision_id,
+        incompleteAbsentScopeClaim,
+      ),
+      expectedMessage: claimMessage,
+      exists: mutatedClaimExists,
+    },
+    {
+      label: 'claim with non-array evidence',
+      row: nonArrayEvidenceClaim,
+      writeSet: withClaim(
+        fixture.writeSet,
+        baseClaim.claim_revision_id,
+        nonArrayEvidenceClaim,
+      ),
+      expectedMessage: claimMessage,
+      exists: mutatedClaimExists,
+    },
+    {
+      label: 're-signed applicability with a non-string rule',
+      row: numericApplicabilityRuleClaim,
+      writeSet: withClaim(
+        fixture.writeSet,
+        absentClaim.claim_revision_id,
+        numericApplicabilityRuleClaim,
+      ),
+      expectedMessage: claimMessage,
+      exists: mutatedClaimExists,
+    },
+    {
+      label: 'claim with unresolved denominator lineage',
+      row: unresolvedDenominatorClaim,
+      writeSet: withClaim(
+        fixture.writeSet,
+        baseClaim.claim_revision_id,
+        unresolvedDenominatorClaim,
+      ),
+      expectedMessage: claimMessage,
+      exists: mutatedClaimExists,
+    },
   ];
   for (const [index, probe] of probes.entries()) {
     const request = requestFor({
@@ -1290,12 +1629,39 @@ function main() {
     idempotencyKey: `structure-identity-malformed-persisted-${nonce}`,
   });
 
+  const malformedClaimClosureId = contentId(
+    'CANONICAL_V2_MALFORMED_PERSISTED_CLAIM_CLOSURE/V1',
+    { nonce },
+  );
+  const malformedPersistedClaim = identifyClaim({
+    ...baseClaim,
+    ordinal: baseClaim.ordinal + 1000,
+    closure_id: malformedClaimClosureId,
+  });
+  malformedPersistedClaim.evidence[0].claim_evidence_id = contentId(
+    'CANONICAL_V2_MALFORMED_PERSISTED_CLAIM_EVIDENCE/V1',
+    { nonce },
+  );
+  malformedPersistedClaim.evidence_ids[0] =
+    malformedPersistedClaim.evidence[0].claim_evidence_id;
+  const resignedMalformedPersistedClaim = resignClaimRevision(
+    malformedPersistedClaim,
+  );
+  assertMalformedPersistedReferenceRejected({
+    fixture,
+    malformedObject: resignedMalformedPersistedClaim,
+    objectKind: 'claims',
+    idempotencyKey: `claim-identity-malformed-persisted-${nonce}`,
+  });
+
   process.stdout.write(
     `Canonical excerpt and structural identity acceptance passed across ${
       fixture.writeSet.excerpts.length
     } excerpts, ${
       audit.provision_count
-    } provisions and ${audit.component_count} components.\n`,
+    } provisions, ${audit.component_count} components and ${
+      audit.claim_count
+    } claims.\n`,
   );
 }
 

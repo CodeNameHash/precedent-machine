@@ -3052,6 +3052,721 @@ BEGIN
     END IF;
 
     IF EXISTS (
+      WITH source_lineage AS (
+        SELECT
+          reference.value AS reference,
+          immutable_source.canonical_payload AS immutable_payload,
+          canonical_v2_staging.content_id(
+            'ADMITTED_SOURCE_OCCURRENCE_KEY/V1',
+            jsonb_build_object(
+              'deal_admission_id', reference.value->'deal_admission_id',
+              'source_ordinal', reference.value->'source_ordinal',
+              'immutable_source_document_id',
+                reference.value->'immutable_source_document_id'
+            )
+          ) AS source_occurrence_key
+        FROM jsonb_array_elements(p_write_set->'source_references')
+          reference(value)
+        JOIN canonical_v2_staging.immutable_source_documents immutable_source
+          ON immutable_source.immutable_source_document_id
+            = reference.value->>'immutable_source_document_id'
+      ),
+      admitted_occurrences AS (
+        SELECT
+          source_lineage.reference->>'canonical_text_id' AS canonical_text_id,
+          canonical_v2_staging.content_id(
+            'SOURCE_OCCURRENCE/V1',
+            jsonb_build_object(
+              'source_content_id',
+                source_lineage.immutable_payload->'source_response_content_id',
+              'source_occurrence_key', source_lineage.source_occurrence_key
+            )
+          ) AS source_occurrence_id,
+          CASE
+            WHEN jsonb_typeof(source_lineage.reference->'source_ordinal')
+              = 'number'
+              AND source_lineage.reference->>'source_ordinal'
+                ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (source_lineage.reference->>'source_ordinal')::bigint
+          END AS source_ordinal
+        FROM source_lineage
+      ),
+      supplied_provisions AS (
+        SELECT provision.value AS provision
+        FROM jsonb_array_elements(p_write_set->'provisions') provision(value)
+        UNION ALL
+        SELECT stored.canonical_payload
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        JOIN canonical_v2_staging.provision_instances stored
+          ON persisted.reference->>'object_kind' = 'provisions'
+          AND stored.provision_instance_id = persisted.reference->>'object_id'
+      ),
+      supplied_components AS (
+        SELECT component.value AS component
+        FROM jsonb_array_elements(p_write_set->'components') component(value)
+        UNION ALL
+        SELECT stored.canonical_payload
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        JOIN canonical_v2_staging.provision_components stored
+          ON persisted.reference->>'object_kind' = 'components'
+          AND stored.provision_component_id = persisted.reference->>'object_id'
+      ),
+      available_subjects AS (
+        SELECT provision->>'provision_instance_id' AS occurrence_id
+        FROM supplied_provisions
+        UNION
+        SELECT component->>'provision_component_id'
+        FROM supplied_components
+      ),
+      supplied_excerpts AS (
+        SELECT excerpt.value AS excerpt
+        FROM jsonb_array_elements(p_write_set->'excerpts') excerpt(value)
+        UNION ALL
+        SELECT stored.canonical_payload
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        JOIN canonical_v2_staging.excerpts stored
+          ON persisted.reference->>'object_kind' = 'excerpts'
+          AND stored.excerpt_id = persisted.reference->>'object_id'
+      ),
+      available_excerpts AS (
+        SELECT DISTINCT ON (excerpt->>'excerpt_id')
+          excerpt->>'excerpt_id' AS excerpt_id,
+          excerpt->>'canonical_text_id' AS canonical_text_id,
+          excerpt->>'source_occurrence_id' AS source_occurrence_id,
+          excerpt->'absolute_start' AS absolute_start,
+          excerpt->'absolute_end' AS absolute_end
+        FROM supplied_excerpts
+        ORDER BY excerpt->>'excerpt_id'
+      ),
+      raw_claims AS (
+        SELECT claim.value AS claim
+        FROM jsonb_array_elements(p_write_set->'claims') claim(value)
+        UNION ALL
+        SELECT stored.canonical_payload
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        JOIN canonical_v2_staging.claim_revisions stored
+          ON persisted.reference->>'object_kind' = 'claims'
+          AND stored.claim_revision_id = persisted.reference->>'object_id'
+      ),
+      supplied_claims AS (
+        SELECT
+          row_number() OVER () AS claim_input_ordinal,
+          raw_claims.claim
+        FROM raw_claims
+      ),
+      typed_claims AS (
+        SELECT
+          supplied.claim_input_ordinal,
+          supplied.claim,
+          CASE
+            WHEN jsonb_typeof(supplied.claim->'claim_definition_version')
+              = 'number'
+              AND supplied.claim->>'claim_definition_version'
+                ~ '^[1-9][0-9]{0,15}$'
+            THEN (supplied.claim->>'claim_definition_version')::bigint
+          END AS claim_definition_version,
+          CASE
+            WHEN jsonb_typeof(supplied.claim->'ordinal') = 'number'
+              AND supplied.claim->>'ordinal'
+                ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (supplied.claim->>'ordinal')::bigint
+          END AS governed_ordinal,
+          (
+            jsonb_typeof(supplied.claim) = 'object'
+            AND supplied.claim ?& ARRAY[
+              'schema_version', 'claim_revision_id', 'claim_occurrence_id',
+              'subject_occurrence_id', 'claim_definition_key',
+              'claim_definition_version', 'ordinal', 'state', 'raw_value',
+              'canonical_value', 'unit', 'day_basis', 'denominator', 'scope',
+              'applicability', 'not_examined', 'failure', 'evidence_ids',
+              'attributes', 'taxonomy_codes', 'extraction_version',
+              'normalisation_version', 'derivation_version', 'evidence',
+              'publication_state', 'retained_residuals', 'quarantine',
+              'closure_id'
+            ]
+            AND supplied.claim - ARRAY[
+              'schema_version', 'claim_revision_id', 'claim_occurrence_id',
+              'subject_occurrence_id', 'claim_definition_key',
+              'claim_definition_version', 'ordinal', 'state', 'raw_value',
+              'canonical_value', 'unit', 'day_basis', 'denominator', 'scope',
+              'applicability', 'not_examined', 'failure', 'evidence_ids',
+              'attributes', 'taxonomy_codes', 'extraction_version',
+              'normalisation_version', 'derivation_version', 'evidence',
+              'publication_state', 'retained_residuals', 'quarantine',
+              'closure_id'
+            ]::text[] = '{}'::jsonb
+            AND supplied.claim->>'schema_version' = 'CLAIM_REVISION/V1'
+            AND jsonb_typeof(supplied.claim->'claim_revision_id') = 'string'
+            AND jsonb_typeof(supplied.claim->'claim_occurrence_id') = 'string'
+            AND jsonb_typeof(supplied.claim->'subject_occurrence_id') = 'string'
+            AND jsonb_typeof(supplied.claim->'claim_definition_key') = 'string'
+            AND jsonb_typeof(supplied.claim->'state') = 'string'
+            AND jsonb_typeof(supplied.claim->'evidence_ids') = 'array'
+            AND jsonb_typeof(supplied.claim->'attributes') = 'object'
+            AND jsonb_typeof(supplied.claim->'taxonomy_codes') = 'object'
+            AND jsonb_typeof(supplied.claim->'extraction_version') = 'string'
+            AND jsonb_typeof(
+              supplied.claim->'normalisation_version'
+            ) = 'string'
+            AND jsonb_typeof(supplied.claim->'derivation_version') = 'string'
+            AND jsonb_typeof(supplied.claim->'evidence') = 'array'
+            AND jsonb_typeof(supplied.claim->'publication_state') = 'string'
+            AND jsonb_typeof(supplied.claim->'retained_residuals') = 'array'
+            AND jsonb_typeof(supplied.claim->'closure_id') = 'string'
+            AND supplied.claim->>'claim_revision_id' ~ '^[0-9a-f]{64}$'
+            AND supplied.claim->>'claim_occurrence_id' ~ '^[0-9a-f]{64}$'
+            AND supplied.claim->>'subject_occurrence_id' ~ '^[0-9a-f]{64}$'
+            AND supplied.claim->>'claim_definition_key'
+              ~ '^[A-Z0-9][A-Z0-9_-]*$'
+            AND supplied.claim->>'closure_id' ~ '^[0-9a-f]{64}$'
+            AND supplied.claim->>'state' IN (
+              'PRESENT', 'ABSENT', 'NOT_APPLICABLE', 'NOT_EXAMINED', 'FAILED'
+            )
+            AND supplied.claim->>'publication_state' = 'VALIDATED'
+            AND supplied.claim->'retained_residuals' = '[]'::jsonb
+            AND supplied.claim->'quarantine' = 'null'::jsonb
+            AND length(supplied.claim->>'extraction_version') > 0
+            AND length(supplied.claim->>'normalisation_version') > 0
+            AND length(supplied.claim->>'derivation_version') > 0
+            AND jsonb_array_length(
+              CASE
+                WHEN jsonb_typeof(supplied.claim->'evidence') = 'array'
+                THEN supplied.claim->'evidence'
+                ELSE '[]'::jsonb
+              END
+            ) <= 4096
+            AND jsonb_array_length(
+              CASE
+                WHEN jsonb_typeof(supplied.claim->'evidence_ids') = 'array'
+                THEN supplied.claim->'evidence_ids'
+                ELSE '[]'::jsonb
+              END
+            ) <= 4096
+          ) AS shape_valid
+        FROM supplied_claims supplied
+      ),
+      raw_claim_evidence AS (
+        SELECT
+          claim.claim_input_ordinal,
+          evidence.value AS edge,
+          evidence.ordinality - 1 AS edge_array_ordinal
+        FROM typed_claims claim
+        CROSS JOIN LATERAL jsonb_array_elements(
+          CASE
+            WHEN jsonb_typeof(claim.claim->'evidence') = 'array'
+            THEN CASE
+              WHEN jsonb_array_length(claim.claim->'evidence') <= 4096
+              THEN claim.claim->'evidence'
+              ELSE '[]'::jsonb
+            END
+            ELSE '[]'::jsonb
+          END
+        ) WITH ORDINALITY evidence(value, ordinality)
+      ),
+      typed_claim_evidence AS (
+        SELECT
+          evidence.claim_input_ordinal,
+          evidence.edge,
+          evidence.edge_array_ordinal,
+          CASE
+            WHEN jsonb_typeof(evidence.edge->'document_ordinal') = 'number'
+              AND evidence.edge->>'document_ordinal'
+                ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (evidence.edge->>'document_ordinal')::bigint
+          END AS document_ordinal,
+          CASE
+            WHEN jsonb_typeof(evidence.edge->'absolute_start') = 'number'
+              AND evidence.edge->>'absolute_start'
+                ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (evidence.edge->>'absolute_start')::bigint
+          END AS absolute_start,
+          CASE
+            WHEN jsonb_typeof(evidence.edge->'absolute_end') = 'number'
+              AND evidence.edge->>'absolute_end'
+                ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (evidence.edge->>'absolute_end')::bigint
+          END AS absolute_end,
+          CASE
+            WHEN jsonb_typeof(evidence.edge->'ordinal') = 'number'
+              AND evidence.edge->>'ordinal'
+                ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (evidence.edge->>'ordinal')::bigint
+          END AS governed_ordinal,
+          CASE evidence.edge->>'evidence_role'
+            WHEN 'CROSS_REFERENCE' THEN 0
+            WHEN 'DEFINITION' THEN 1
+            WHEN 'DERIVATION_INPUT' THEN 2
+            WHEN 'EXCEPTION' THEN 3
+            WHEN 'OPERATIVE_TEXT' THEN 4
+          END AS evidence_role_rank,
+          (
+            jsonb_typeof(evidence.edge) = 'object'
+            AND evidence.edge ?& ARRAY[
+              'schema_version', 'claim_evidence_id', 'evidence_role',
+              'excerpt_id', 'document_ordinal', 'absolute_start',
+              'absolute_end', 'ordinal'
+            ]
+            AND evidence.edge - ARRAY[
+              'schema_version', 'claim_evidence_id', 'evidence_role',
+              'excerpt_id', 'document_ordinal', 'absolute_start',
+              'absolute_end', 'ordinal'
+            ]::text[] = '{}'::jsonb
+            AND evidence.edge->>'schema_version' = 'CLAIM_EVIDENCE/V1'
+            AND jsonb_typeof(evidence.edge->'claim_evidence_id') = 'string'
+            AND jsonb_typeof(evidence.edge->'evidence_role') = 'string'
+            AND jsonb_typeof(evidence.edge->'excerpt_id') = 'string'
+            AND evidence.edge->>'claim_evidence_id' ~ '^[0-9a-f]{64}$'
+            AND evidence.edge->>'excerpt_id' ~ '^[0-9a-f]{64}$'
+            AND evidence.edge->>'evidence_role' IN (
+              'OPERATIVE_TEXT', 'DEFINITION', 'EXCEPTION',
+              'CROSS_REFERENCE', 'DERIVATION_INPUT'
+            )
+          ) AS shape_valid
+        FROM raw_claim_evidence evidence
+      ),
+      resolved_claim_evidence AS (
+        SELECT
+          evidence.*,
+          excerpt.excerpt_id AS resolved_excerpt_id,
+          excerpt.absolute_start AS excerpt_absolute_start,
+          excerpt.absolute_end AS excerpt_absolute_end,
+          admitted.source_ordinal AS admitted_source_ordinal,
+          canonical_v2_staging.content_id(
+            'CLAIM_EVIDENCE/V1',
+            jsonb_build_object(
+              'occurrence_id', claim.claim->'claim_occurrence_id',
+              'evidence_role', evidence.edge->'evidence_role',
+              'excerpt_id', evidence.edge->'excerpt_id',
+              'ordinal', to_jsonb(evidence.edge_array_ordinal)
+            )
+          ) AS expected_evidence_id
+        FROM typed_claim_evidence evidence
+        JOIN typed_claims claim
+          ON claim.claim_input_ordinal = evidence.claim_input_ordinal
+        LEFT JOIN available_excerpts excerpt
+          ON excerpt.excerpt_id = evidence.edge->>'excerpt_id'
+        LEFT JOIN admitted_occurrences admitted
+          ON admitted.canonical_text_id = excerpt.canonical_text_id
+          AND admitted.source_occurrence_id = excerpt.source_occurrence_id
+      )
+      SELECT 1
+      FROM typed_claims claim
+      LEFT JOIN available_subjects subject
+        ON subject.occurrence_id = claim.claim->>'subject_occurrence_id'
+      WHERE CASE
+        WHEN claim.shape_valid
+          AND claim.claim_definition_version IS NOT NULL
+          AND claim.claim_definition_version <= 9007199254740991
+          AND claim.governed_ordinal IS NOT NULL
+          AND claim.governed_ordinal <= 9007199254740991
+        THEN
+          subject.occurrence_id IS NULL
+          OR claim.claim->>'claim_occurrence_id' IS DISTINCT FROM
+            canonical_v2_staging.content_id(
+              'CLAIM_OCCURRENCE/V1',
+              jsonb_build_object(
+                'subject_occurrence_id',
+                  claim.claim->'subject_occurrence_id',
+                'claim_definition_key',
+                  claim.claim->'claim_definition_key',
+                'claim_definition_version',
+                  claim.claim->'claim_definition_version',
+                'ordinal', claim.claim->'ordinal'
+              )
+            )
+          OR claim.claim->>'claim_revision_id' IS DISTINCT FROM
+            canonical_v2_staging.content_id(
+              'CLAIM_REVISION/V1',
+              jsonb_build_object(
+                'claim_occurrence_id', claim.claim->'claim_occurrence_id',
+                'subject_occurrence_id',
+                  claim.claim->'subject_occurrence_id',
+                'claim_definition_key',
+                  claim.claim->'claim_definition_key',
+                'claim_definition_version',
+                  claim.claim->'claim_definition_version',
+                'ordinal', claim.claim->'ordinal',
+                'state', claim.claim->'state',
+                'raw_value', claim.claim->'raw_value',
+                'canonical_value', claim.claim->'canonical_value',
+                'unit', claim.claim->'unit',
+                'day_basis', claim.claim->'day_basis',
+                'denominator', claim.claim->'denominator',
+                'scope', claim.claim->'scope',
+                'applicability', claim.claim->'applicability',
+                'not_examined', claim.claim->'not_examined',
+                'failure', claim.claim->'failure',
+                'evidence_ids', claim.claim->'evidence_ids',
+                'attributes', claim.claim->'attributes',
+                'taxonomy_codes', claim.claim->'taxonomy_codes',
+                'extraction_version', claim.claim->'extraction_version',
+                'normalisation_version',
+                  claim.claim->'normalisation_version',
+                'derivation_version', claim.claim->'derivation_version'
+              )
+            )
+          OR EXISTS (
+            SELECT 1
+            FROM resolved_claim_evidence evidence
+            WHERE evidence.claim_input_ordinal = claim.claim_input_ordinal
+              AND (
+                NOT evidence.shape_valid
+                OR evidence.document_ordinal IS NULL
+                OR evidence.document_ordinal > 9007199254740991
+                OR evidence.absolute_start IS NULL
+                OR evidence.absolute_start > 9007199254740991
+                OR evidence.absolute_end IS NULL
+                OR evidence.absolute_end > 9007199254740991
+                OR evidence.absolute_end <= evidence.absolute_start
+                OR evidence.governed_ordinal IS NULL
+                OR evidence.governed_ordinal > 9007199254740991
+                OR evidence.governed_ordinal
+                  <> evidence.edge_array_ordinal
+                OR evidence.resolved_excerpt_id IS NULL
+                OR evidence.admitted_source_ordinal IS NULL
+                OR evidence.document_ordinal
+                  <> evidence.admitted_source_ordinal
+                OR evidence.edge->'absolute_start'
+                  IS DISTINCT FROM evidence.excerpt_absolute_start
+                OR evidence.edge->'absolute_end'
+                  IS DISTINCT FROM evidence.excerpt_absolute_end
+                OR evidence.edge->>'claim_evidence_id'
+                  IS DISTINCT FROM evidence.expected_evidence_id
+              )
+          )
+          OR claim.claim->'evidence_ids' IS DISTINCT FROM (
+            SELECT coalesce(
+              jsonb_agg(
+                to_jsonb(evidence.expected_evidence_id)
+                ORDER BY evidence.edge_array_ordinal
+              ),
+              '[]'::jsonb
+            )
+            FROM resolved_claim_evidence evidence
+            WHERE evidence.claim_input_ordinal = claim.claim_input_ordinal
+          )
+          OR claim.claim->'evidence' IS DISTINCT FROM (
+            SELECT coalesce(
+              jsonb_agg(
+                evidence.edge
+                ORDER BY
+                  evidence.document_ordinal,
+                  evidence.absolute_start,
+                  evidence.absolute_end,
+                  evidence.evidence_role_rank,
+                  evidence.edge->>'excerpt_id' COLLATE "C",
+                  evidence.edge_array_ordinal
+              ),
+              '[]'::jsonb
+            )
+            FROM resolved_claim_evidence evidence
+            WHERE evidence.claim_input_ordinal = claim.claim_input_ordinal
+          )
+          OR (
+            claim.claim->>'state' = 'PRESENT'
+            AND jsonb_array_length(claim.claim->'evidence') = 0
+          )
+          OR (
+            claim.claim->>'state' <> 'PRESENT'
+            AND (
+              claim.claim->'raw_value' <> 'null'::jsonb
+              OR claim.claim->'canonical_value' <> 'null'::jsonb
+              OR claim.claim->'unit' <> 'null'::jsonb
+              OR claim.claim->'day_basis' <> 'null'::jsonb
+              OR claim.claim->'denominator' <> 'null'::jsonb
+            )
+          )
+          OR (
+            claim.claim->>'state' = 'ABSENT'
+            AND (
+              jsonb_typeof(claim.claim->'scope') <> 'object'
+              OR coalesce(
+                claim.claim->'scope'->>'coverage_status' <> 'COMPLETE',
+                true
+              )
+              OR coalesce(
+                claim.claim->'scope'->>'scope_closure_id'
+                  !~ '^[0-9a-f]{64}$',
+                true
+              )
+              OR jsonb_typeof(
+                claim.claim->'scope'->'required_interval_ids'
+              ) <> 'array'
+              OR jsonb_typeof(
+                claim.claim->'scope'->'examined_interval_ids'
+              ) <> 'array'
+              OR jsonb_array_length(
+                CASE
+                  WHEN jsonb_typeof(
+                    claim.claim->'scope'->'required_interval_ids'
+                  ) = 'array'
+                  THEN claim.claim->'scope'->'required_interval_ids'
+                  ELSE '[]'::jsonb
+                END
+              ) > 4096
+              OR jsonb_array_length(
+                CASE
+                  WHEN jsonb_typeof(
+                    claim.claim->'scope'->'examined_interval_ids'
+                  ) = 'array'
+                  THEN claim.claim->'scope'->'examined_interval_ids'
+                  ELSE '[]'::jsonb
+                END
+              ) > 4096
+              OR jsonb_array_length(
+                CASE
+                  WHEN jsonb_typeof(
+                    claim.claim->'scope'->'required_interval_ids'
+                  ) = 'array'
+                  THEN claim.claim->'scope'->'required_interval_ids'
+                  ELSE '[]'::jsonb
+                END
+              ) = 0
+              OR EXISTS (
+                SELECT 1
+                FROM jsonb_array_elements(
+                  CASE
+                    WHEN jsonb_typeof(
+                      claim.claim->'scope'->'required_interval_ids'
+                    ) = 'array'
+                    THEN CASE
+                      WHEN jsonb_array_length(
+                        claim.claim->'scope'->'required_interval_ids'
+                      ) <= 4096
+                      THEN claim.claim->'scope'->'required_interval_ids'
+                      ELSE '[]'::jsonb
+                    END
+                    ELSE '[]'::jsonb
+                  END
+                ) required(value)
+                WHERE jsonb_typeof(required.value) <> 'string'
+                  OR required.value #>> '{}' !~ '^[0-9a-f]{64}$'
+              )
+              OR EXISTS (
+                SELECT 1
+                FROM jsonb_array_elements(
+                  CASE
+                    WHEN jsonb_typeof(
+                      claim.claim->'scope'->'examined_interval_ids'
+                    ) = 'array'
+                    THEN CASE
+                      WHEN jsonb_array_length(
+                        claim.claim->'scope'->'examined_interval_ids'
+                      ) <= 4096
+                      THEN claim.claim->'scope'->'examined_interval_ids'
+                      ELSE '[]'::jsonb
+                    END
+                    ELSE '[]'::jsonb
+                  END
+                ) examined(value)
+                WHERE jsonb_typeof(examined.value) <> 'string'
+                  OR examined.value #>> '{}' !~ '^[0-9a-f]{64}$'
+              )
+              OR (
+                SELECT coalesce(
+                  jsonb_agg(required.value ORDER BY required.value #>> '{}'),
+                  '[]'::jsonb
+                )
+                FROM jsonb_array_elements(
+                  CASE
+                    WHEN jsonb_typeof(
+                      claim.claim->'scope'->'required_interval_ids'
+                    ) = 'array'
+                    THEN CASE
+                      WHEN jsonb_array_length(
+                        claim.claim->'scope'->'required_interval_ids'
+                      ) <= 4096
+                      THEN claim.claim->'scope'->'required_interval_ids'
+                      ELSE '[]'::jsonb
+                    END
+                    ELSE '[]'::jsonb
+                  END
+                ) required(value)
+              ) IS DISTINCT FROM (
+                SELECT coalesce(
+                  jsonb_agg(examined.value ORDER BY examined.value #>> '{}'),
+                  '[]'::jsonb
+                )
+                FROM jsonb_array_elements(
+                  CASE
+                    WHEN jsonb_typeof(
+                      claim.claim->'scope'->'examined_interval_ids'
+                    ) = 'array'
+                    THEN CASE
+                      WHEN jsonb_array_length(
+                        claim.claim->'scope'->'examined_interval_ids'
+                      ) <= 4096
+                      THEN claim.claim->'scope'->'examined_interval_ids'
+                      ELSE '[]'::jsonb
+                    END
+                    ELSE '[]'::jsonb
+                  END
+                ) examined(value)
+              )
+            )
+          )
+          OR (
+            claim.claim->>'state' = 'NOT_APPLICABLE'
+            AND (
+              jsonb_typeof(claim.claim->'applicability') <> 'object'
+              OR jsonb_typeof(
+                claim.claim->'applicability'->'rule'
+              ) <> 'string'
+              OR coalesce(
+                length(claim.claim->'applicability'->>'rule'),
+                0
+              ) = 0
+              OR jsonb_typeof(
+                claim.claim->'applicability'->'source_fact_ids'
+              ) <> 'array'
+              OR jsonb_array_length(
+                CASE
+                  WHEN jsonb_typeof(
+                    claim.claim->'applicability'->'source_fact_ids'
+                  ) = 'array'
+                  THEN claim.claim->'applicability'->'source_fact_ids'
+                  ELSE '[]'::jsonb
+                END
+              ) > 4096
+              OR jsonb_array_length(
+                CASE
+                  WHEN jsonb_typeof(
+                    claim.claim->'applicability'->'source_fact_ids'
+                  ) = 'array'
+                  THEN claim.claim->'applicability'->'source_fact_ids'
+                  ELSE '[]'::jsonb
+                END
+              ) = 0
+              OR EXISTS (
+                SELECT 1
+                FROM jsonb_array_elements(
+                  CASE
+                    WHEN jsonb_typeof(
+                      claim.claim->'applicability'->'source_fact_ids'
+                    ) = 'array'
+                    THEN CASE
+                      WHEN jsonb_array_length(
+                        claim.claim->'applicability'->'source_fact_ids'
+                      ) <= 4096
+                      THEN claim.claim->'applicability'->'source_fact_ids'
+                      ELSE '[]'::jsonb
+                    END
+                    ELSE '[]'::jsonb
+                  END
+                ) fact(value)
+                WHERE jsonb_typeof(fact.value) <> 'string'
+                  OR fact.value #>> '{}' !~ '^[0-9a-f]{64}$'
+              )
+            )
+          )
+          OR (
+            claim.claim->>'state' = 'NOT_EXAMINED'
+            AND (
+              jsonb_typeof(claim.claim->'not_examined') <> 'object'
+              OR jsonb_typeof(
+                claim.claim->'not_examined'->'reason'
+              ) <> 'string'
+              OR coalesce(
+                length(claim.claim->'not_examined'->>'reason'),
+                0
+              ) = 0
+              OR NOT (claim.claim->'not_examined' ? 'intended_scope')
+              OR claim.claim->'not_examined'->'intended_scope' = 'null'::jsonb
+            )
+          )
+          OR (
+            claim.claim->>'state' = 'FAILED'
+            AND (
+              jsonb_typeof(claim.claim->'failure') <> 'object'
+              OR jsonb_typeof(
+                claim.claim->'failure'->'failure_code'
+              ) <> 'string'
+              OR coalesce(
+                length(claim.claim->'failure'->>'failure_code'),
+                0
+              ) = 0
+              OR jsonb_typeof(
+                claim.claim->'failure'->'attempted_extractor'
+              ) <> 'string'
+              OR coalesce(
+                length(claim.claim->'failure'->>'attempted_extractor'),
+                0
+              ) = 0
+            )
+          )
+          OR (
+            claim.claim->'denominator' <> 'null'::jsonb
+            AND (
+              jsonb_typeof(claim.claim->'denominator') <> 'object'
+              OR jsonb_typeof(
+                claim.claim->'denominator'->'source_lineage_ids'
+              ) <> 'array'
+              OR jsonb_array_length(
+                CASE
+                  WHEN jsonb_typeof(
+                    claim.claim->'denominator'->'source_lineage_ids'
+                  ) = 'array'
+                  THEN claim.claim->'denominator'->'source_lineage_ids'
+                  ELSE '[]'::jsonb
+                END
+              ) > 4096
+              OR jsonb_array_length(
+                CASE
+                  WHEN jsonb_typeof(
+                    claim.claim->'denominator'->'source_lineage_ids'
+                  ) = 'array'
+                  THEN claim.claim->'denominator'->'source_lineage_ids'
+                  ELSE '[]'::jsonb
+                END
+              ) = 0
+              OR EXISTS (
+                SELECT 1
+                FROM jsonb_array_elements(
+                  CASE
+                    WHEN jsonb_typeof(
+                      claim.claim->'denominator'->'source_lineage_ids'
+                    ) = 'array'
+                    THEN CASE
+                      WHEN jsonb_array_length(
+                        claim.claim->'denominator'->'source_lineage_ids'
+                      ) <= 4096
+                      THEN claim.claim->'denominator'->'source_lineage_ids'
+                      ELSE '[]'::jsonb
+                    END
+                    ELSE '[]'::jsonb
+                  END
+                ) lineage(value)
+                WHERE jsonb_typeof(lineage.value) <> 'string'
+                  OR lineage.value #>> '{}' !~ '^[0-9a-f]{64}$'
+                  OR NOT EXISTS (
+                    SELECT 1
+                    FROM resolved_claim_evidence evidence
+                    WHERE evidence.claim_input_ordinal
+                      = claim.claim_input_ordinal
+                      AND evidence.edge->>'evidence_role'
+                        = 'DERIVATION_INPUT'
+                      AND evidence.edge->>'excerpt_id'
+                        = lineage.value #>> '{}'
+                  )
+              )
+            )
+          )
+        ELSE true
+      END
+    ) THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN claim identity, state or evidence lineage is invalid'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF EXISTS (
       SELECT 1
       FROM jsonb_each(p_write_set) AS collection(key, value)
       CROSS JOIN LATERAL jsonb_array_elements(CASE
