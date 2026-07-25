@@ -930,6 +930,24 @@ BEGIN
       RAISE EXCEPTION 'intake capture bytes, length and digest do not agree'
         USING ERRCODE = '23514';
     END IF;
+    IF item->>'source_response_content_id' IS DISTINCT FROM
+        canonical_v2_staging.content_id(
+          'SEC_HTTP_RESPONSE_CONTENT/V1',
+          jsonb_build_object(
+            'authority_representation', item->'authority_representation',
+            'response_content_type', item->'response_content_type',
+            'response_bytes_sha256', item->'response_bytes_sha256',
+            'response_byte_length', item->'response_byte_length'
+          )
+        )
+      OR item->>'intake_capture_receipt_id' IS DISTINCT FROM
+        canonical_v2_staging.content_id(
+          'INTAKE_CAPTURE_RECEIPT/V1',
+          item - 'intake_capture_receipt_id'
+        ) THEN
+      RAISE EXCEPTION 'intake capture content-addressed identity does not match its payload'
+        USING ERRCODE = '23514';
+    END IF;
     IF p_input_digest !~ '^[0-9a-f]{64}$'
       OR jsonb_typeof(p_receipt) IS DISTINCT FROM 'object'
       OR NOT (p_receipt ?& ARRAY[
@@ -1142,6 +1160,22 @@ BEGIN
           decode(artifact_chunk->>'chunk_payload_base64', 'base64'), 'sha256'::text
         ), 'hex') IS DISTINCT FROM artifact_chunk->>'chunk_sha256' THEN
       RAISE EXCEPTION 'source artifact chunk does not match its closed contract'
+        USING ERRCODE = '23514';
+    END IF;
+    IF artifact_manifest->>'artifact_manifest_id' IS DISTINCT FROM
+        canonical_v2_staging.content_id(
+          'SOURCE_ARTIFACT_MANIFEST/V1',
+          artifact_manifest - 'artifact_manifest_id'
+        ) THEN
+      RAISE EXCEPTION 'source artifact manifest identity does not match its payload'
+        USING ERRCODE = '23514';
+    END IF;
+    IF artifact_chunk->>'chunk_id' IS DISTINCT FROM
+        canonical_v2_staging.content_id(
+          'SOURCE_ARTIFACT_CHUNK/V1',
+          artifact_chunk - 'chunk_id'
+        ) THEN
+      RAISE EXCEPTION 'source artifact chunk identity does not match its payload'
         USING ERRCODE = '23514';
     END IF;
 
