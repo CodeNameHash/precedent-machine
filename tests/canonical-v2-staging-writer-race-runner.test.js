@@ -20,7 +20,8 @@ test('writer race acceptance is isolated, handshake-driven and removes temporary
   assert.match(source, /ROLLBACK;/);
   assert.match(source, /\bCOMMIT;/);
   assert.match(source, /result\.elapsedMs < 7000/);
-  assert.match(source, /intake capture receipt identity conflict/);
+  assert.match(source, /idempotency key already names different canonical input/);
+  assert.match(source, /freshCapture\([\s\S]*new Date\(baseTimestamp \+ 3000\)/);
   assert.match(source, /cleanupCommittedHolder/);
   assert.match(source, /DELETE FROM canonical_v2_staging\.write_receipts/);
   assert.match(source, /DELETE FROM canonical_v2_staging\.intake_capture_receipts/);

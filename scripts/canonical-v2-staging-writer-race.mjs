@@ -305,23 +305,27 @@ async function main() {
     stored.canonical_payload,
     new Date(baseTimestamp + 2000).toISOString(),
   );
+  const conflictIdempotencyKey = `writer-race-idempotency-conflict-${nonce}`;
   const cases = [
     {
       label: 'same',
       holderRequest: requestFor(sameCapture, `writer-race-holder-same-${nonce}`),
       contenderRequest: requestFor(sameCapture, `writer-race-contender-same-${nonce}`),
       handshakeKey: Math.floor(baseTimestamp % 2_000_000_000),
-      expectConflict: false,
+      expectIdempotencyConflict: false,
     },
     {
-      label: 'conflict',
-      holderRequest: requestFor(conflictCapture, `writer-race-holder-conflict-${nonce}`),
-      contenderRequest: requestFor({
-        ...conflictCapture,
-        retrieved_at: new Date(baseTimestamp + 3000).toISOString(),
-      }, `writer-race-contender-conflict-${nonce}`),
+      label: 'idempotency-conflict',
+      holderRequest: requestFor(conflictCapture, conflictIdempotencyKey),
+      contenderRequest: requestFor(
+        freshCapture(
+          stored.canonical_payload,
+          new Date(baseTimestamp + 3000).toISOString(),
+        ),
+        conflictIdempotencyKey,
+      ),
       handshakeKey: Math.floor((baseTimestamp + 1) % 2_000_000_000),
-      expectConflict: true,
+      expectIdempotencyConflict: true,
     },
   ];
 
@@ -336,16 +340,20 @@ async function main() {
       if (!holderCommitted || result.elapsedMs < 7000) {
         throw new Error(`${item.label} race did not wait for the uncommitted winner.`);
       }
-      if (item.expectConflict) {
+      if (item.expectIdempotencyConflict) {
         if (result.contenderResult.status === 0
-          || !contenderOutput.includes('intake capture receipt identity conflict')) {
-          throw new Error('Different-payload race did not fail closed after the winner committed.');
+          || !contenderOutput.includes(
+            'idempotency key already names different canonical input',
+          )) {
+          throw new Error('Idempotency race did not fail closed after the winner committed.');
         }
       } else if (result.contenderResult.status !== 0) {
         throw new Error('Same-payload race did not replay safely after the winner committed.');
       }
       assertReceiptCount(item.holderRequest.idempotencyKey, 1);
-      assertReceiptCount(item.contenderRequest.idempotencyKey, 0);
+      if (!item.expectIdempotencyConflict) {
+        assertReceiptCount(item.contenderRequest.idempotencyKey, 0);
+      }
     } finally {
       if (holderCommitted) cleanupCommittedHolder(item.holderRequest);
     }
@@ -353,7 +361,7 @@ async function main() {
   }
 
   process.stdout.write(
-    'Canonical writer V1 replay and two-session race acceptance passed; temporary staging rows were removed.\n',
+    'Canonical writer V1 replay, object convergence and idempotency race acceptance passed; temporary staging rows were removed.\n',
   );
 }
 
