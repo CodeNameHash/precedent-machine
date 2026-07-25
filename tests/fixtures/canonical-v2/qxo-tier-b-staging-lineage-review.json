@@ -1,0 +1,91 @@
+{
+  "schema_version": "QXO_TIER_B_STAGING_LINEAGE_REVIEW/V1",
+  "authority_scope": "STAGING_SOURCE_BACKED_REPRODUCTION_ONLY",
+  "review_eligibility_state": "UNVERIFIED_IDENTITY",
+  "reviewer_identity": {
+    "actor_kind": "AI_REVIEW_AGENT",
+    "provider": "OPENAI_CODEX",
+    "review_lane": "INDEPENDENT_LEGAL_SEMANTIC",
+    "identity_attestation_state": "UNAVAILABLE"
+  },
+  "reviewer_identity_digest": "ac80caf89d558c5cb95b4dfa4fa619a61c7a892c7ac77dd71f51670e35a61675",
+  "source_selection": {
+    "retrieval_url_sha256": "c089e4896d7d1486f7d86ebe5b854b0cf2d4afcd2afcbcf9b8483133435d4f2e",
+    "response_bytes_sha256": "abba043018410d718c207e7d7a43c9567166f6a10c4c9a6b4b0c8c7761cd6b9d"
+  },
+  "reviewed_definition_geometry": {
+    "neutral_defined_term": "De Minimis Inaccuracies",
+    "syntactic_role": "NESTED_INLINE",
+    "term_interval": {
+      "absolute_start": 360659,
+      "absolute_end": 360682,
+      "exact_bytes_digest": "9459700a2938e9b55bb79e97bf47bf6645af94159f2bbae53a11e55c131c8112"
+    },
+    "body_intervals": [
+      {
+        "absolute_start": 360692,
+        "absolute_end": 360864,
+        "exact_bytes_digest": "d9cce74369b96c52b0f885b584a24a12bc9ede6c03bf24fc75a9946fe21070ce"
+      }
+    ],
+    "use_intervals": [
+      {
+        "absolute_start": 359094,
+        "absolute_end": 359117,
+        "exact_bytes_digest": "9459700a2938e9b55bb79e97bf47bf6645af94159f2bbae53a11e55c131c8112",
+        "use_role": "OPERATIVE_REFERENCE",
+        "source_order_ordinal": 0
+      },
+      {
+        "absolute_start": 360659,
+        "absolute_end": 360682,
+        "exact_bytes_digest": "9459700a2938e9b55bb79e97bf47bf6645af94159f2bbae53a11e55c131c8112",
+        "use_role": "DECLARATION_REFERENCE",
+        "source_order_ordinal": 1
+      }
+    ]
+  },
+  "expected_lineage": {
+    "contract_fingerprint": "56da82bee06331793ba2ed8b78ef4186361407e60733595091e5951853e7d41d",
+    "intake_capture_receipt_id": "a2b7d53a00424488fb6653c2519338bdf8ea79d58993bd52abc926f5c15ac2e7",
+    "verification_manifest_id": "2860cdad62db545466464b2961545dd0ff28fadbe0dd97dd60dc1ce206b0f354",
+    "immutable_source_document_id": "5c6f01b194e7f195a5c5fe48ac88b3cf900656d8dcc70028a3e8f103bba9fc6b",
+    "source_admission_manifest_id": "f31cad8c3813ededa01c644891b0b2e14c6a475d868ba89f6b60b597f0e1d819",
+    "semantic_extraction_input_envelope_id": "9dcc596af6312d3d9ac65cc5266bc564ee00f99d0a6b23a9b5b822813bc3fd07",
+    "admitted_semantic_source_context_id": "2748715728b0f8e0fc8ffd3ab94fa14fdf032fc173bd76baeb3e97d0f19f8ea3",
+    "deal_admission_id": "62b8b828c534273c68dcd48cec3fbbcb4f912ac3f477dbdc377de5ac47954c8f",
+    "document_hash": "abba043018410d718c207e7d7a43c9567166f6a10c4c9a6b4b0c8c7761cd6b9d",
+    "canonical_text_id": "bcc60682b1914dcd2dc81417399a74d3f2b82451b8b3119af0d6c8c7e7213ce1",
+    "parser_runtime_manifest_id": "9d49a8307af014c697b63f8a1877ac2a403c58f43688dddecc0d14e13748f20d",
+    "parser_runtime_manifest_payload_digest": "003c4258e6f24d09a5a054c966ddc76810def8e11db5fb9e1b9cb33c23b07b0a",
+    "admitted_parser_proposal_envelope_id": "e216fa8cef3b5a7ad1e8b05194422f83a6d1f53b95fac4eeafafab09844b6b65",
+    "admitted_parser_proposal_envelope_payload_digest": "8416ab0a390e401e01057a256e538046b1aebd37463fc6e8302e13fedd2dae0a",
+    "section_5_2_proposal_id": "12290f2a63644dd7eeacc711135d9e77a9d181cd70ccb85ef4dc69f02c9b09ee",
+    "definition_candidate_id": "453f535d301f5db12eabe47298d24da5f3dd0f812090c6f5374f342ff544eb8a",
+    "reviewed_definition_candidate_disposition_id": "a9892a2c70fd0638bdc14bd5493d4ca7db82fa333e0f6f4d7d29502a7a40f1b7",
+    "inference_transcript_set_marker_id": "7c1a23b7525771615218625e46eabe7b519e4fd15e70ea373f0ce0d61b1e3553",
+    "reviewed_definition_graph_package_id": "bcaa5fb9a342d49547fa9a560ddfb620683f2c846d7c83f7e3b6bab39f33cb28",
+    "reviewed_definition_graph_package_payload_digest": "a3ac0b1bf0ea4a7e6c0141e253eee0a24a13b85bd4a7ca8bb36b7007e8aeeed5",
+    "definition_graph_normaliser_id": "438de15759e49d6ecd5d6215e33efe6db3d9ced2472a1e7e44d4094fb1e25f65",
+    "definition_graph_normaliser_semantic_closure_digest": "120a9fb443d97385e4dae2873ae94d6961d4e56ec9f8b84aeb454709c3d35555",
+    "validated_semantic_graph_id": "147fb5db2daee5571e84d86fa73b47e1cbfd0ef71f2f59b1c0e6279fa707cdef",
+    "reviewed_mapping_id": "1cf717403ea7d45da08246d4861d676b9265427e63b46fbecf51dcd4f1ddef2a",
+    "qxo_tier_b_parser_bound_review_seed_id": "389f70f42d408f72a0e90cdcc3fc8d92d97fa0887afc4cb9ab8934ade9deb926",
+    "qxo_tier_b_parser_bound_review_seed_payload_digest": "f5dc84ca31131589b261b52d8014959aaacfdca19f2f835c58cfb7ce5eb0cfdd",
+    "section_3_1_proposal_id": "ea85ea6beac529dcc08d4dd1acf4bb6ba65ea6b06b4bc410f77d73eadbdd0586"
+  },
+  "review_findings": [
+    "SOURCE_GEOMETRY_ACCEPTED",
+    "NESTED_DECLARATION_ACCEPTED",
+    "TIER_B_OPERATIVE_USE_ACCEPTED",
+    "CAPITALISATION_LIMBS_I_AND_III_ACCEPTED",
+    "PARENT_MAPPING_LIMITED_TO_EXISTING_REVIEWED_REFERENCE",
+    "MERGER_SUBSIDIARIES_OBSERVED_UNASSIGNED",
+    "KNOWLEDGE_ABSENCES_WITHHELD",
+    "USES_DEFINITION_AUTHORITY_ABSENT",
+    "COMPARABILITY_QUERY_SERVING_RELEASE_WRITE_AUTHORITY_ABSENT",
+    "FAILURE_ISOLATION_ACCEPTED"
+  ],
+  "qxo_tier_b_staging_lineage_review_id": "282918e785f567b4062f7ef6f3b48f7aa7b98612c5961c839d609d710ecb2ce1",
+  "canonical_payload_digest": "8fe49fcc2b4761d93444563cbb1743ae7422b9fe557535a55d65344ad01d4d2d"
+}
