@@ -8,6 +8,7 @@ const {
   compileFixtureContractV2,
   compileFixtureContractV3,
   compileFixtureContractV4,
+  compileFixtureContractV6,
 } = require('../lib/canonical-v2/contract-bundle');
 const {
   compileMarketCohortRequest,
@@ -237,6 +238,12 @@ test('buyer termination fee cohorts require corrected F4 semantics and retain on
   assert.equal(calls.length, 1);
   assert.equal(calls[0].name, 'canonical_v2_market_cohort');
   assert.equal(queried.result.metric_key, 'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE');
+});
+
+test('an unactivated F6 contract cannot serve market cohorts', () => {
+  assert.throws(() => compileMarketCohortRequest(request({
+    contract_fingerprint: compileFixtureContractV6().fingerprint,
+  })), /does not match a frozen serving contract/);
 });
 
 test('request and response contracts reject corpus payloads, unknown filters and broad rows', async () => {

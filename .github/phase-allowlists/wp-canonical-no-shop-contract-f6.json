@@ -1,0 +1,33 @@
+{
+  "phase": "WP-CANONICAL-NO-SHOP-CONTRACT-F6",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-no-shop-contract-f6.json",
+    "lib/canonical-v2/contract-bundle.js",
+    "lib/canonical-v2/market-cohort-query.js",
+    "lib/canonical-v2/shared-serving-row.js",
+    "tests/canonical-v2-contract-bundle-versions.test.js",
+    "tests/canonical-v2-market-cohort-query.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "docs/**",
+    "pages/**",
+    "components/**",
+    "lib/query/**",
+    "lib/parser-v2/**",
+    "lib/canonical-v2/admitted-parser-proposal-adapter.js",
+    "lib/canonical-v2/candidate-release.js",
+    "lib/canonical-v2/candidate-release-import.js",
+    "lib/canonical-v2/canonical-writer.js",
+    "lib/canonical-v2/claims-relationships.js",
+    "lib/canonical-v2/observation-normalisers.js",
+    "lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice.js",
+    "lib/canonical-v2/serving-projection.js",
+    "lib/canonical-v2/validate-write-set.js",
+    "scripts/**",
+    "sql/**",
+    "supabase/**",
+    "next.config.js"
+  ],
+  "note": "Adds the Ben-approved F6 atomic no-shop action vocabulary and typed EXCEPTED_BY effect schema as a new immutable contract version. Historical F1-F5 fingerprints and default F1 compilation remain unchanged. This slice grants no source mapping, result, metric, query, serving, write, release or activation authority."
+}
