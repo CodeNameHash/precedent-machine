@@ -1,0 +1,69 @@
+{
+  "schema_version": "PARSER_V2_RUNTIME_MANIFEST/V1",
+  "entry_module": "lib/parser-v2/canonical-structural-definitions.js",
+  "local_modules": [
+    {
+      "path": "lib/edgar-cleanup.js",
+      "sha256": "74726d52bdafb5a91d493cdcb5d7e928a8038c241560a8ead89f9ea49a382652"
+    },
+    {
+      "path": "lib/parser-v2/canonical-structural-definitions.js",
+      "sha256": "255dbfe0b95e1eceaa11871302cb4fbe75d08d1a6bbfe390d4b7193677a77b79"
+    },
+    {
+      "path": "lib/parser-v2/coverage.js",
+      "sha256": "1c026a9d35b34ed6cdbd2618c43c668ad252a6f97caf3e603d417d9d8ac7aa67"
+    },
+    {
+      "path": "lib/parser-v2/detectors/defined-terms-toc.js",
+      "sha256": "07717764f41d94884b9706ebb1bb9d21d7950ae022527011dc4c8565bb0f5004"
+    },
+    {
+      "path": "lib/parser-v2/invariants/enacting-hard-wall.js",
+      "sha256": "a368cdccef350f1d1836a69b909ca711891ee86fd048421ee6f89dba4f52386b"
+    },
+    {
+      "path": "lib/parser-v2/regions.js",
+      "sha256": "f6a0594e73bf52151012ac0346bca17b7a20da10c094a9c651b962addc21cbb1"
+    },
+    {
+      "path": "lib/parser-v2/regions/atomic.js",
+      "sha256": "a44c616a67292ac93c9aff8a068f8adff69cfe6eec3ef8b37911056041ca2ff2"
+    },
+    {
+      "path": "lib/parser-v2/regions/backmatter.js",
+      "sha256": "4766e933a07d0e91f3e57f1cc4183549927fe8c4dba7446644efed76a49d93e3"
+    },
+    {
+      "path": "lib/parser-v2/regions/definitions.js",
+      "sha256": "d0db7a3a7aa8d62539a341b5bb113330d5d71fa28b8653e45028b344f6d0097e"
+    },
+    {
+      "path": "lib/parser-v2/regions/double-dummy.js",
+      "sha256": "652ec0013b5a16c6b7834416c67527084f93f34b207729100626060491a12eb4"
+    },
+    {
+      "path": "lib/parser-v2/regions/preamble.js",
+      "sha256": "4328aac78b73763421ed8389e2c39e42d3161751a74df55576068fdc14200491"
+    },
+    {
+      "path": "lib/parser-v2/structural.js",
+      "sha256": "871e2381f34c4d3e90bf047b309c8bfb16a32551a38580069542f7c7c3832c3d"
+    },
+    {
+      "path": "lib/parser-v2/text-layers.js",
+      "sha256": "8685ae1a7f46e8cc5bb9b6f5e2885244827e20db250efe1c5a2b73270f4ef680"
+    }
+  ],
+  "governed_limits": {
+    "max_source_bytes": 4194304,
+    "max_sections": 4096,
+    "max_definitions": 16384,
+    "max_residuals": 4096,
+    "max_total_candidates": 16384,
+    "max_span_bytes": 2097152,
+    "max_envelope_bytes": 16777216,
+    "max_runtime_milliseconds": 5000
+  },
+  "parser_runtime_manifest_id": "31e7a884fb5f4270ccd3a55114b53629049c0b2cf8ee2db439d25774b04f6264"
+}
