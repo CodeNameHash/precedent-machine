@@ -1,0 +1,87 @@
+{
+  "schema_version": "QXO_NO_SHOP_CLOCK_STAGING_ATTESTATION/V1",
+  "environment": "STAGING",
+  "authority_scope": "OFFLINE_REVIEW_ONLY_NO_CANONICAL_MARKET_OR_SERVING_AUTHORITY",
+  "source_binding": {
+    "governed_deal_key": "deal:qxo-topbuild",
+    "deal_admission_id": "62b8b828c534273c68dcd48cec3fbbcb4f912ac3f477dbdc377de5ac47954c8f",
+    "immutable_source_document_id": "5c6f01b194e7f195a5c5fe48ac88b3cf900656d8dcc70028a3e8f103bba9fc6b",
+    "source_admission_manifest_id": "f31cad8c3813ededa01c644891b0b2e14c6a475d868ba89f6b60b597f0e1d819",
+    "semantic_extraction_input_envelope_id": "9dcc596af6312d3d9ac65cc5266bc564ee00f99d0a6b23a9b5b822813bc3fd07",
+    "admitted_semantic_source_context_id": "2748715728b0f8e0fc8ffd3ab94fa14fdf032fc173bd76baeb3e97d0f19f8ea3",
+    "document_hash": "abba043018410d718c207e7d7a43c9567166f6a10c4c9a6b4b0c8c7761cd6b9d",
+    "canonical_text_id": "bcc60682b1914dcd2dc81417399a74d3f2b82451b8b3119af0d6c8c7e7213ce1"
+  },
+  "parser_binding": {
+    "admitted_parser_proposal_envelope_id": "e216fa8cef3b5a7ad1e8b05194422f83a6d1f53b95fac4eeafafab09844b6b65",
+    "admitted_parser_proposal_envelope_payload_digest": "8416ab0a390e401e01057a256e538046b1aebd37463fc6e8302e13fedd2dae0a",
+    "section_4_3_proposal_id": "e3f7efc0778ff529f41765a21dcc3cf46f337156011e08d34ab9e4a30c4658e1",
+    "section_4_3_absolute_start": 201370,
+    "section_4_3_absolute_end": 226862,
+    "section_4_3_exact_bytes_digest": "ffbffb81e798af99509dd998c5a5793c2127eaf3ada937ae662306e99a86c524",
+    "retained_parser_residual_count": 1,
+    "publication_blocked": true
+  },
+  "reviewed_mapping_id": "f2eee0397926cac5e6042e93d002ddc6790d5b2bafdd9adbccb460d16081d7c5",
+  "clock_dependencies": [
+    {
+      "clock_key": "NOTICE",
+      "suppressed": false,
+      "failure_code": null,
+      "claim_revision_id": "e60b1148663b4d549573cce3a77c4675e6bf10ec5176350385ffe24656b41957",
+      "clock_excerpt_id": "cb87d5bbd5e89f71098ee5577e56af2a0ca8aa5cd79e51983d654d4f6dac6abe",
+      "raw_duration": {
+        "magnitude": "24",
+        "unit": "HOURS"
+      },
+      "canonical_duration": {
+        "magnitude": "1",
+        "unit": "DAYS",
+        "day_basis": "ELAPSED",
+        "trigger": "RECEIPT_OF_COMPETING_PROPOSAL"
+      },
+      "normalisation_payload_digest": "85a42c81bb44fba84eb2057effbc37f79bfacf4b1bb7401b448ad821dfd6d10a"
+    },
+    {
+      "clock_key": "INITIAL_MATCH",
+      "suppressed": false,
+      "failure_code": null,
+      "claim_revision_id": "f06fb3da2b220242f57b857863377dc171e0a11b393801c15d52fdb7371ef622",
+      "clock_excerpt_id": "ab020b3af52c98eef1bb0f821afe06a43fa41c212c013e0e62f9c856885578d6",
+      "raw_duration": {
+        "magnitude": "4",
+        "unit": "DAYS"
+      },
+      "canonical_duration": {
+        "magnitude": "4",
+        "unit": "DAYS",
+        "day_basis": "BUSINESS",
+        "trigger": "SUPERIOR_PROPOSAL_NOTICE"
+      },
+      "normalisation_payload_digest": "6cb71b36249f89c98edad23a782e8f145eb779636109c1ea527cedb722a2b001"
+    }
+  ],
+  "seed_status": {
+    "review_reference_complete": true,
+    "canonical_write_authority": "NONE",
+    "taxonomy_authority": "NONE",
+    "result_authority": "NONE",
+    "metric_authority": "NONE",
+    "comparability_authority": "NONE",
+    "query_authority": "NONE",
+    "serving_authority": "NONE",
+    "release_authority": "NONE",
+    "release_eligible": false,
+    "failure_isolation": "SUPPRESS_AFFECTED_CLOCK_ONLY",
+    "blocker_codes": [
+      "EXISTING_TAXONOMY_REFERENCE_ONLY",
+      "NO_PARSER_SEMANTIC_CLASSIFICATION_AUTHORITY",
+      "PARSER_RESIDUAL_RETAINED",
+      "QUERY_METRIC_CONTRACT_REQUIRED",
+      "RESULT_INPUT_LINEAGE_CONTRACT_REQUIRED"
+    ]
+  },
+  "failure_isolation_verified": true,
+  "qxo_no_shop_clock_parser_bound_review_seed_id": "3f814891cc1490cce63c6820674d7fe560aab4fd497fbc273d607f08fb50ace7",
+  "canonical_payload_digest": "256ef2f44ace7d97bef7abdb10a692a6635a9854208e82b3dc6f633c75d0dfb6"
+}
