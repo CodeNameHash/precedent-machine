@@ -3767,6 +3767,817 @@ BEGIN
     END IF;
 
     IF EXISTS (
+      WITH source_lineage AS (
+        SELECT
+          reference.value AS reference,
+          immutable_source.canonical_payload AS immutable_payload,
+          canonical_v2_staging.content_id(
+            'ADMITTED_SOURCE_OCCURRENCE_KEY/V1',
+            jsonb_build_object(
+              'deal_admission_id', reference.value->'deal_admission_id',
+              'source_ordinal', reference.value->'source_ordinal',
+              'immutable_source_document_id',
+                reference.value->'immutable_source_document_id'
+            )
+          ) AS source_occurrence_key
+        FROM jsonb_array_elements(p_write_set->'source_references')
+          reference(value)
+        JOIN canonical_v2_staging.immutable_source_documents immutable_source
+          ON immutable_source.immutable_source_document_id
+            = reference.value->>'immutable_source_document_id'
+      ),
+      admitted_occurrences AS (
+        SELECT
+          source_lineage.reference->>'canonical_text_id' AS canonical_text_id,
+          canonical_v2_staging.content_id(
+            'SOURCE_OCCURRENCE/V1',
+            jsonb_build_object(
+              'source_content_id',
+                source_lineage.immutable_payload->'source_response_content_id',
+              'source_occurrence_key', source_lineage.source_occurrence_key
+            )
+          ) AS source_occurrence_id,
+          CASE
+            WHEN jsonb_typeof(source_lineage.reference->'source_ordinal')
+              = 'number'
+              AND source_lineage.reference->>'source_ordinal'
+                ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (source_lineage.reference->>'source_ordinal')::bigint
+          END AS source_ordinal
+        FROM source_lineage
+      ),
+      supplied_provisions AS (
+        SELECT provision.value AS provision
+        FROM jsonb_array_elements(p_write_set->'provisions') provision(value)
+        UNION ALL
+        SELECT stored.canonical_payload
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        JOIN canonical_v2_staging.provision_instances stored
+          ON persisted.reference->>'object_kind' = 'provisions'
+          AND stored.provision_instance_id = persisted.reference->>'object_id'
+      ),
+      supplied_components AS (
+        SELECT component.value AS component
+        FROM jsonb_array_elements(p_write_set->'components') component(value)
+        UNION ALL
+        SELECT stored.canonical_payload
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        JOIN canonical_v2_staging.provision_components stored
+          ON persisted.reference->>'object_kind' = 'components'
+          AND stored.provision_component_id = persisted.reference->>'object_id'
+      ),
+      available_occurrences AS (
+        SELECT provision->>'provision_instance_id' AS occurrence_id
+        FROM supplied_provisions
+        UNION
+        SELECT component->>'provision_component_id'
+        FROM supplied_components
+      ),
+      supplied_excerpts AS (
+        SELECT excerpt.value AS excerpt
+        FROM jsonb_array_elements(p_write_set->'excerpts') excerpt(value)
+        UNION ALL
+        SELECT stored.canonical_payload
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        JOIN canonical_v2_staging.excerpts stored
+          ON persisted.reference->>'object_kind' = 'excerpts'
+          AND stored.excerpt_id = persisted.reference->>'object_id'
+      ),
+      available_excerpts AS (
+        SELECT DISTINCT ON (excerpt->>'excerpt_id')
+          excerpt->>'excerpt_id' AS excerpt_id,
+          excerpt->>'canonical_text_id' AS canonical_text_id,
+          excerpt->>'source_occurrence_id' AS source_occurrence_id,
+          excerpt->'absolute_start' AS absolute_start,
+          excerpt->'absolute_end' AS absolute_end
+        FROM supplied_excerpts
+        ORDER BY excerpt->>'excerpt_id'
+      ),
+      raw_relationships AS (
+        SELECT relationship.value AS relationship
+        FROM jsonb_array_elements(p_write_set->'relationships')
+          relationship(value)
+        UNION ALL
+        SELECT stored.canonical_payload
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        JOIN canonical_v2_staging.relationship_revisions stored
+          ON persisted.reference->>'object_kind' = 'relationships'
+          AND stored.relationship_revision_id
+            = persisted.reference->>'object_id'
+      ),
+      supplied_relationships AS (
+        SELECT
+          row_number() OVER () AS relationship_input_ordinal,
+          raw_relationships.relationship
+        FROM raw_relationships
+      ),
+      typed_relationships AS (
+        SELECT
+          supplied.relationship_input_ordinal,
+          supplied.relationship,
+          CASE
+            WHEN jsonb_typeof(
+              supplied.relationship->'relationship_definition_version'
+            ) = 'number'
+              AND supplied.relationship->>'relationship_definition_version'
+                ~ '^[1-9][0-9]{0,15}$'
+            THEN (
+              supplied.relationship->>'relationship_definition_version'
+            )::bigint
+          END AS relationship_definition_version,
+          CASE
+            WHEN jsonb_typeof(supplied.relationship->'ordinal') = 'number'
+              AND supplied.relationship->>'ordinal'
+                ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (supplied.relationship->>'ordinal')::bigint
+          END AS governed_ordinal,
+          (
+            jsonb_typeof(supplied.relationship) = 'object'
+            AND supplied.relationship ?& ARRAY[
+              'schema_version', 'relationship_revision_id',
+              'relationship_occurrence_id', 'source_occurrence_id',
+              'relationship_definition_key',
+              'relationship_definition_version', 'ordinal', 'state',
+              'raw_scope', 'scope', 'applicability', 'not_examined',
+              'failure', 'target_occurrence_ids', 'effect', 'evidence_ids',
+              'attributes', 'taxonomy_codes', 'resolver_version', 'evidence',
+              'publication_state', 'retained_residuals', 'quarantine',
+              'closure_id'
+            ]
+            AND supplied.relationship - ARRAY[
+              'schema_version', 'relationship_revision_id',
+              'relationship_occurrence_id', 'source_occurrence_id',
+              'relationship_definition_key',
+              'relationship_definition_version', 'ordinal', 'state',
+              'raw_scope', 'scope', 'applicability', 'not_examined',
+              'failure', 'target_occurrence_ids', 'effect', 'evidence_ids',
+              'attributes', 'taxonomy_codes', 'resolver_version', 'evidence',
+              'publication_state', 'retained_residuals', 'quarantine',
+              'closure_id'
+            ]::text[] = '{}'::jsonb
+            AND supplied.relationship->>'schema_version'
+              = 'RELATIONSHIP_REVISION/V1'
+            AND jsonb_typeof(
+              supplied.relationship->'relationship_revision_id'
+            ) = 'string'
+            AND jsonb_typeof(
+              supplied.relationship->'relationship_occurrence_id'
+            ) = 'string'
+            AND jsonb_typeof(
+              supplied.relationship->'source_occurrence_id'
+            ) = 'string'
+            AND jsonb_typeof(
+              supplied.relationship->'relationship_definition_key'
+            ) = 'string'
+            AND jsonb_typeof(supplied.relationship->'state') = 'string'
+            AND jsonb_typeof(
+              supplied.relationship->'target_occurrence_ids'
+            ) = 'array'
+            AND jsonb_typeof(
+              supplied.relationship->'evidence_ids'
+            ) = 'array'
+            AND jsonb_typeof(supplied.relationship->'attributes') = 'object'
+            AND jsonb_typeof(
+              supplied.relationship->'taxonomy_codes'
+            ) = 'object'
+            AND jsonb_typeof(
+              supplied.relationship->'resolver_version'
+            ) = 'string'
+            AND jsonb_typeof(supplied.relationship->'evidence') = 'array'
+            AND jsonb_typeof(
+              supplied.relationship->'publication_state'
+            ) = 'string'
+            AND jsonb_typeof(
+              supplied.relationship->'retained_residuals'
+            ) = 'array'
+            AND jsonb_typeof(supplied.relationship->'closure_id') = 'string'
+            AND supplied.relationship->>'relationship_revision_id'
+              ~ '^[0-9a-f]{64}$'
+            AND supplied.relationship->>'relationship_occurrence_id'
+              ~ '^[0-9a-f]{64}$'
+            AND supplied.relationship->>'source_occurrence_id'
+              ~ '^[0-9a-f]{64}$'
+            AND supplied.relationship->>'relationship_definition_key'
+              ~ '^[A-Z0-9][A-Z0-9_-]*$'
+            AND supplied.relationship->>'closure_id' ~ '^[0-9a-f]{64}$'
+            AND supplied.relationship->>'state' IN (
+              'PRESENT', 'ABSENT', 'NOT_APPLICABLE', 'NOT_EXAMINED', 'FAILED'
+            )
+            AND supplied.relationship->>'publication_state' = 'VALIDATED'
+            AND supplied.relationship->'retained_residuals' = '[]'::jsonb
+            AND supplied.relationship->'quarantine' = 'null'::jsonb
+            AND length(supplied.relationship->>'resolver_version') > 0
+            AND jsonb_array_length(
+              CASE
+                WHEN jsonb_typeof(supplied.relationship->'evidence') = 'array'
+                THEN supplied.relationship->'evidence'
+                ELSE '[]'::jsonb
+              END
+            ) <= 4096
+            AND jsonb_array_length(
+              CASE
+                WHEN jsonb_typeof(
+                  supplied.relationship->'evidence_ids'
+                ) = 'array'
+                THEN supplied.relationship->'evidence_ids'
+                ELSE '[]'::jsonb
+              END
+            ) <= 4096
+            AND jsonb_array_length(
+              CASE
+                WHEN jsonb_typeof(
+                  supplied.relationship->'target_occurrence_ids'
+                ) = 'array'
+                THEN supplied.relationship->'target_occurrence_ids'
+                ELSE '[]'::jsonb
+              END
+            ) <= 4096
+          ) AS shape_valid
+        FROM supplied_relationships supplied
+      ),
+      raw_relationship_targets AS (
+        SELECT
+          relationship.relationship_input_ordinal,
+          target.value AS target,
+          target.ordinality - 1 AS target_array_ordinal
+        FROM typed_relationships relationship
+        CROSS JOIN LATERAL jsonb_array_elements(
+          CASE
+            WHEN jsonb_typeof(
+              relationship.relationship->'target_occurrence_ids'
+            ) = 'array'
+            THEN CASE
+              WHEN jsonb_array_length(
+                relationship.relationship->'target_occurrence_ids'
+              ) <= 4096
+              THEN relationship.relationship->'target_occurrence_ids'
+              ELSE '[]'::jsonb
+            END
+            ELSE '[]'::jsonb
+          END
+        ) WITH ORDINALITY target(value, ordinality)
+      ),
+      resolved_relationship_targets AS (
+        SELECT
+          target.*,
+          occurrence.occurrence_id AS resolved_occurrence_id
+        FROM raw_relationship_targets target
+        LEFT JOIN available_occurrences occurrence
+          ON occurrence.occurrence_id = target.target #>> '{}'
+      ),
+      raw_relationship_evidence AS (
+        SELECT
+          relationship.relationship_input_ordinal,
+          evidence.value AS edge,
+          evidence.ordinality - 1 AS edge_array_ordinal
+        FROM typed_relationships relationship
+        CROSS JOIN LATERAL jsonb_array_elements(
+          CASE
+            WHEN jsonb_typeof(relationship.relationship->'evidence') = 'array'
+            THEN CASE
+              WHEN jsonb_array_length(
+                relationship.relationship->'evidence'
+              ) <= 4096
+              THEN relationship.relationship->'evidence'
+              ELSE '[]'::jsonb
+            END
+            ELSE '[]'::jsonb
+          END
+        ) WITH ORDINALITY evidence(value, ordinality)
+      ),
+      typed_relationship_evidence AS (
+        SELECT
+          evidence.relationship_input_ordinal,
+          evidence.edge,
+          evidence.edge_array_ordinal,
+          CASE
+            WHEN jsonb_typeof(evidence.edge->'document_ordinal') = 'number'
+              AND evidence.edge->>'document_ordinal'
+                ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (evidence.edge->>'document_ordinal')::bigint
+          END AS document_ordinal,
+          CASE
+            WHEN jsonb_typeof(evidence.edge->'absolute_start') = 'number'
+              AND evidence.edge->>'absolute_start'
+                ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (evidence.edge->>'absolute_start')::bigint
+          END AS absolute_start,
+          CASE
+            WHEN jsonb_typeof(evidence.edge->'absolute_end') = 'number'
+              AND evidence.edge->>'absolute_end'
+                ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (evidence.edge->>'absolute_end')::bigint
+          END AS absolute_end,
+          CASE
+            WHEN jsonb_typeof(evidence.edge->'ordinal') = 'number'
+              AND evidence.edge->>'ordinal'
+                ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (evidence.edge->>'ordinal')::bigint
+          END AS governed_ordinal,
+          CASE evidence.edge->>'evidence_role'
+            WHEN 'CROSS_REFERENCE' THEN 0
+            WHEN 'DEFINITION' THEN 1
+            WHEN 'DERIVATION_INPUT' THEN 2
+            WHEN 'EXCEPTION' THEN 3
+            WHEN 'OPERATIVE_TEXT' THEN 4
+          END AS evidence_role_rank,
+          (
+            jsonb_typeof(evidence.edge) = 'object'
+            AND evidence.edge ?& ARRAY[
+              'schema_version', 'relationship_evidence_id', 'evidence_role',
+              'excerpt_id', 'document_ordinal', 'absolute_start',
+              'absolute_end', 'ordinal'
+            ]
+            AND evidence.edge - ARRAY[
+              'schema_version', 'relationship_evidence_id', 'evidence_role',
+              'excerpt_id', 'document_ordinal', 'absolute_start',
+              'absolute_end', 'ordinal'
+            ]::text[] = '{}'::jsonb
+            AND evidence.edge->>'schema_version'
+              = 'RELATIONSHIP_EVIDENCE/V1'
+            AND jsonb_typeof(
+              evidence.edge->'relationship_evidence_id'
+            ) = 'string'
+            AND jsonb_typeof(evidence.edge->'evidence_role') = 'string'
+            AND jsonb_typeof(evidence.edge->'excerpt_id') = 'string'
+            AND evidence.edge->>'relationship_evidence_id'
+              ~ '^[0-9a-f]{64}$'
+            AND evidence.edge->>'excerpt_id' ~ '^[0-9a-f]{64}$'
+            AND evidence.edge->>'evidence_role' IN (
+              'OPERATIVE_TEXT', 'DEFINITION', 'EXCEPTION',
+              'CROSS_REFERENCE', 'DERIVATION_INPUT'
+            )
+          ) AS shape_valid
+        FROM raw_relationship_evidence evidence
+      ),
+      resolved_relationship_evidence AS (
+        SELECT
+          evidence.*,
+          excerpt.excerpt_id AS resolved_excerpt_id,
+          excerpt.absolute_start AS excerpt_absolute_start,
+          excerpt.absolute_end AS excerpt_absolute_end,
+          admitted.source_ordinal AS admitted_source_ordinal,
+          canonical_v2_staging.content_id(
+            'RELATIONSHIP_EVIDENCE/V1',
+            jsonb_build_object(
+              'occurrence_id',
+                relationship.relationship->'relationship_occurrence_id',
+              'evidence_role', evidence.edge->'evidence_role',
+              'excerpt_id', evidence.edge->'excerpt_id',
+              'ordinal', to_jsonb(evidence.edge_array_ordinal)
+            )
+          ) AS expected_evidence_id
+        FROM typed_relationship_evidence evidence
+        JOIN typed_relationships relationship
+          ON relationship.relationship_input_ordinal
+            = evidence.relationship_input_ordinal
+        LEFT JOIN available_excerpts excerpt
+          ON excerpt.excerpt_id = evidence.edge->>'excerpt_id'
+        LEFT JOIN admitted_occurrences admitted
+          ON admitted.canonical_text_id = excerpt.canonical_text_id
+          AND admitted.source_occurrence_id = excerpt.source_occurrence_id
+      )
+      SELECT 1
+      FROM typed_relationships relationship
+      LEFT JOIN available_occurrences source
+        ON source.occurrence_id
+          = relationship.relationship->>'source_occurrence_id'
+      WHERE CASE
+        WHEN relationship.shape_valid
+          AND relationship.relationship_definition_version IS NOT NULL
+          AND relationship.relationship_definition_version
+            <= 9007199254740991
+          AND relationship.governed_ordinal IS NOT NULL
+          AND relationship.governed_ordinal <= 9007199254740991
+        THEN
+          source.occurrence_id IS NULL
+          OR relationship.relationship->>'relationship_occurrence_id'
+            IS DISTINCT FROM canonical_v2_staging.content_id(
+              'RELATIONSHIP_OCCURRENCE/V1',
+              jsonb_build_object(
+                'source_occurrence_id',
+                  relationship.relationship->'source_occurrence_id',
+                'relationship_definition_key',
+                  relationship.relationship->'relationship_definition_key',
+                'relationship_definition_version',
+                  relationship.relationship
+                    ->'relationship_definition_version',
+                'ordinal', relationship.relationship->'ordinal'
+              )
+            )
+          OR relationship.relationship->>'relationship_revision_id'
+            IS DISTINCT FROM canonical_v2_staging.content_id(
+              'RELATIONSHIP_REVISION/V1',
+              jsonb_build_object(
+                'relationship_occurrence_id',
+                  relationship.relationship->'relationship_occurrence_id',
+                'source_occurrence_id',
+                  relationship.relationship->'source_occurrence_id',
+                'relationship_definition_key',
+                  relationship.relationship->'relationship_definition_key',
+                'relationship_definition_version',
+                  relationship.relationship
+                    ->'relationship_definition_version',
+                'ordinal', relationship.relationship->'ordinal',
+                'state', relationship.relationship->'state',
+                'raw_scope', relationship.relationship->'raw_scope',
+                'scope', relationship.relationship->'scope',
+                'applicability', relationship.relationship->'applicability',
+                'not_examined', relationship.relationship->'not_examined',
+                'failure', relationship.relationship->'failure',
+                'target_occurrence_ids',
+                  relationship.relationship->'target_occurrence_ids',
+                'effect', relationship.relationship->'effect',
+                'evidence_ids', relationship.relationship->'evidence_ids',
+                'attributes', relationship.relationship->'attributes',
+                'taxonomy_codes', relationship.relationship->'taxonomy_codes',
+                'resolver_version',
+                  relationship.relationship->'resolver_version'
+              )
+            )
+          OR EXISTS (
+            SELECT 1
+            FROM resolved_relationship_targets target
+            WHERE target.relationship_input_ordinal
+              = relationship.relationship_input_ordinal
+              AND (
+                jsonb_typeof(target.target) <> 'string'
+                OR target.target #>> '{}' !~ '^[0-9a-f]{64}$'
+                OR target.resolved_occurrence_id IS NULL
+              )
+          )
+          OR EXISTS (
+            SELECT 1
+            FROM resolved_relationship_evidence evidence
+            WHERE evidence.relationship_input_ordinal
+              = relationship.relationship_input_ordinal
+              AND (
+                NOT evidence.shape_valid
+                OR evidence.document_ordinal IS NULL
+                OR evidence.document_ordinal > 9007199254740991
+                OR evidence.absolute_start IS NULL
+                OR evidence.absolute_start > 9007199254740991
+                OR evidence.absolute_end IS NULL
+                OR evidence.absolute_end > 9007199254740991
+                OR evidence.absolute_end <= evidence.absolute_start
+                OR evidence.governed_ordinal IS NULL
+                OR evidence.governed_ordinal > 9007199254740991
+                OR evidence.governed_ordinal
+                  <> evidence.edge_array_ordinal
+                OR evidence.resolved_excerpt_id IS NULL
+                OR evidence.admitted_source_ordinal IS NULL
+                OR evidence.document_ordinal
+                  <> evidence.admitted_source_ordinal
+                OR evidence.edge->'absolute_start'
+                  IS DISTINCT FROM evidence.excerpt_absolute_start
+                OR evidence.edge->'absolute_end'
+                  IS DISTINCT FROM evidence.excerpt_absolute_end
+                OR evidence.edge->>'relationship_evidence_id'
+                  IS DISTINCT FROM evidence.expected_evidence_id
+              )
+          )
+          OR relationship.relationship->'evidence_ids' IS DISTINCT FROM (
+            SELECT coalesce(
+              jsonb_agg(
+                to_jsonb(evidence.expected_evidence_id)
+                ORDER BY evidence.edge_array_ordinal
+              ),
+              '[]'::jsonb
+            )
+            FROM resolved_relationship_evidence evidence
+            WHERE evidence.relationship_input_ordinal
+              = relationship.relationship_input_ordinal
+          )
+          OR relationship.relationship->'evidence' IS DISTINCT FROM (
+            SELECT coalesce(
+              jsonb_agg(
+                evidence.edge
+                ORDER BY
+                  evidence.document_ordinal,
+                  evidence.absolute_start,
+                  evidence.absolute_end,
+                  evidence.evidence_role_rank,
+                  evidence.edge->>'excerpt_id' COLLATE "C",
+                  evidence.edge_array_ordinal
+              ),
+              '[]'::jsonb
+            )
+            FROM resolved_relationship_evidence evidence
+            WHERE evidence.relationship_input_ordinal
+              = relationship.relationship_input_ordinal
+          )
+          OR (
+            relationship.relationship->>'state' = 'PRESENT'
+            AND (
+              jsonb_array_length(
+                relationship.relationship->'evidence'
+              ) = 0
+              OR jsonb_array_length(
+                relationship.relationship->'target_occurrence_ids'
+              ) = 0
+              OR jsonb_typeof(
+                relationship.relationship->'effect'
+              ) IS DISTINCT FROM 'object'
+              OR coalesce(
+                relationship.relationship->'effect'->>'effect_mode'
+                  NOT IN ('NON_SEMANTIC', 'TYPED_LEGAL_EFFECT'),
+                true
+              )
+              OR jsonb_typeof(
+                relationship.relationship->'effect'->'legal_operation'
+              ) IS DISTINCT FROM 'string'
+              OR length(
+                relationship.relationship->'effect'->>'legal_operation'
+              ) = 0
+            )
+          )
+          OR (
+            relationship.relationship->>'state' <> 'PRESENT'
+            AND (
+              relationship.relationship->'target_occurrence_ids'
+                <> '[]'::jsonb
+              OR relationship.relationship->'effect' <> 'null'::jsonb
+            )
+          )
+          OR (
+            relationship.relationship->>'state' = 'ABSENT'
+            AND (
+              jsonb_typeof(relationship.relationship->'scope') <> 'object'
+              OR coalesce(
+                relationship.relationship->'scope'->>'coverage_status'
+                  <> 'COMPLETE',
+                true
+              )
+              OR coalesce(
+                relationship.relationship->'scope'->>'scope_closure_id'
+                  !~ '^[0-9a-f]{64}$',
+                true
+              )
+              OR jsonb_typeof(
+                relationship.relationship
+                  ->'scope'->'required_interval_ids'
+              ) <> 'array'
+              OR jsonb_typeof(
+                relationship.relationship
+                  ->'scope'->'examined_interval_ids'
+              ) <> 'array'
+              OR jsonb_array_length(
+                CASE
+                  WHEN jsonb_typeof(
+                    relationship.relationship
+                      ->'scope'->'required_interval_ids'
+                  ) = 'array'
+                  THEN relationship.relationship
+                    ->'scope'->'required_interval_ids'
+                  ELSE '[]'::jsonb
+                END
+              ) > 4096
+              OR jsonb_array_length(
+                CASE
+                  WHEN jsonb_typeof(
+                    relationship.relationship
+                      ->'scope'->'examined_interval_ids'
+                  ) = 'array'
+                  THEN relationship.relationship
+                    ->'scope'->'examined_interval_ids'
+                  ELSE '[]'::jsonb
+                END
+              ) > 4096
+              OR jsonb_array_length(
+                CASE
+                  WHEN jsonb_typeof(
+                    relationship.relationship
+                      ->'scope'->'required_interval_ids'
+                  ) = 'array'
+                  THEN relationship.relationship
+                    ->'scope'->'required_interval_ids'
+                  ELSE '[]'::jsonb
+                END
+              ) = 0
+              OR EXISTS (
+                SELECT 1
+                FROM jsonb_array_elements(
+                  CASE
+                    WHEN jsonb_typeof(
+                      relationship.relationship
+                        ->'scope'->'required_interval_ids'
+                    ) = 'array'
+                    THEN CASE
+                      WHEN jsonb_array_length(
+                        relationship.relationship
+                          ->'scope'->'required_interval_ids'
+                      ) <= 4096
+                      THEN relationship.relationship
+                        ->'scope'->'required_interval_ids'
+                      ELSE '[]'::jsonb
+                    END
+                    ELSE '[]'::jsonb
+                  END
+                ) required(value)
+                WHERE jsonb_typeof(required.value) <> 'string'
+                  OR required.value #>> '{}' !~ '^[0-9a-f]{64}$'
+              )
+              OR EXISTS (
+                SELECT 1
+                FROM jsonb_array_elements(
+                  CASE
+                    WHEN jsonb_typeof(
+                      relationship.relationship
+                        ->'scope'->'examined_interval_ids'
+                    ) = 'array'
+                    THEN CASE
+                      WHEN jsonb_array_length(
+                        relationship.relationship
+                          ->'scope'->'examined_interval_ids'
+                      ) <= 4096
+                      THEN relationship.relationship
+                        ->'scope'->'examined_interval_ids'
+                      ELSE '[]'::jsonb
+                    END
+                    ELSE '[]'::jsonb
+                  END
+                ) examined(value)
+                WHERE jsonb_typeof(examined.value) <> 'string'
+                  OR examined.value #>> '{}' !~ '^[0-9a-f]{64}$'
+              )
+              OR (
+                SELECT coalesce(
+                  jsonb_agg(required.value ORDER BY required.value #>> '{}'),
+                  '[]'::jsonb
+                )
+                FROM jsonb_array_elements(
+                  CASE
+                    WHEN jsonb_typeof(
+                      relationship.relationship
+                        ->'scope'->'required_interval_ids'
+                    ) = 'array'
+                    THEN CASE
+                      WHEN jsonb_array_length(
+                        relationship.relationship
+                          ->'scope'->'required_interval_ids'
+                      ) <= 4096
+                      THEN relationship.relationship
+                        ->'scope'->'required_interval_ids'
+                      ELSE '[]'::jsonb
+                    END
+                    ELSE '[]'::jsonb
+                  END
+                ) required(value)
+              ) IS DISTINCT FROM (
+                SELECT coalesce(
+                  jsonb_agg(examined.value ORDER BY examined.value #>> '{}'),
+                  '[]'::jsonb
+                )
+                FROM jsonb_array_elements(
+                  CASE
+                    WHEN jsonb_typeof(
+                      relationship.relationship
+                        ->'scope'->'examined_interval_ids'
+                    ) = 'array'
+                    THEN CASE
+                      WHEN jsonb_array_length(
+                        relationship.relationship
+                          ->'scope'->'examined_interval_ids'
+                      ) <= 4096
+                      THEN relationship.relationship
+                        ->'scope'->'examined_interval_ids'
+                      ELSE '[]'::jsonb
+                    END
+                    ELSE '[]'::jsonb
+                  END
+                ) examined(value)
+              )
+            )
+          )
+          OR (
+            relationship.relationship->>'state' = 'NOT_APPLICABLE'
+            AND (
+              jsonb_typeof(
+                relationship.relationship->'applicability'
+              ) <> 'object'
+              OR jsonb_typeof(
+                relationship.relationship->'applicability'->'rule'
+              ) <> 'string'
+              OR coalesce(
+                length(
+                  relationship.relationship->'applicability'->>'rule'
+                ),
+                0
+              ) = 0
+              OR jsonb_typeof(
+                relationship.relationship
+                  ->'applicability'->'source_fact_ids'
+              ) <> 'array'
+              OR jsonb_array_length(
+                CASE
+                  WHEN jsonb_typeof(
+                    relationship.relationship
+                      ->'applicability'->'source_fact_ids'
+                  ) = 'array'
+                  THEN relationship.relationship
+                    ->'applicability'->'source_fact_ids'
+                  ELSE '[]'::jsonb
+                END
+              ) > 4096
+              OR jsonb_array_length(
+                CASE
+                  WHEN jsonb_typeof(
+                    relationship.relationship
+                      ->'applicability'->'source_fact_ids'
+                  ) = 'array'
+                  THEN relationship.relationship
+                    ->'applicability'->'source_fact_ids'
+                  ELSE '[]'::jsonb
+                END
+              ) = 0
+              OR EXISTS (
+                SELECT 1
+                FROM jsonb_array_elements(
+                  CASE
+                    WHEN jsonb_typeof(
+                      relationship.relationship
+                        ->'applicability'->'source_fact_ids'
+                    ) = 'array'
+                    THEN CASE
+                      WHEN jsonb_array_length(
+                        relationship.relationship
+                          ->'applicability'->'source_fact_ids'
+                      ) <= 4096
+                      THEN relationship.relationship
+                        ->'applicability'->'source_fact_ids'
+                      ELSE '[]'::jsonb
+                    END
+                    ELSE '[]'::jsonb
+                  END
+                ) fact(value)
+                WHERE jsonb_typeof(fact.value) <> 'string'
+                  OR fact.value #>> '{}' !~ '^[0-9a-f]{64}$'
+              )
+            )
+          )
+          OR (
+            relationship.relationship->>'state' = 'NOT_EXAMINED'
+            AND (
+              jsonb_typeof(
+                relationship.relationship->'not_examined'
+              ) <> 'object'
+              OR jsonb_typeof(
+                relationship.relationship->'not_examined'->'reason'
+              ) <> 'string'
+              OR coalesce(
+                length(
+                  relationship.relationship->'not_examined'->>'reason'
+                ),
+                0
+              ) = 0
+              OR NOT (
+                relationship.relationship->'not_examined' ? 'intended_scope'
+              )
+              OR relationship.relationship
+                ->'not_examined'->'intended_scope' = 'null'::jsonb
+            )
+          )
+          OR (
+            relationship.relationship->>'state' = 'FAILED'
+            AND (
+              jsonb_typeof(relationship.relationship->'failure') <> 'object'
+              OR jsonb_typeof(
+                relationship.relationship->'failure'->'failure_code'
+              ) <> 'string'
+              OR coalesce(
+                length(
+                  relationship.relationship->'failure'->>'failure_code'
+                ),
+                0
+              ) = 0
+              OR jsonb_typeof(
+                relationship.relationship->'failure'->'attempted_extractor'
+              ) <> 'string'
+              OR coalesce(
+                length(
+                  relationship.relationship
+                    ->'failure'->>'attempted_extractor'
+                ),
+                0
+              ) = 0
+            )
+          )
+        ELSE true
+      END
+    ) THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN relationship identity, endpoints, state or evidence lineage is invalid'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF EXISTS (
       SELECT 1
       FROM jsonb_each(p_write_set) AS collection(key, value)
       CROSS JOIN LATERAL jsonb_array_elements(CASE

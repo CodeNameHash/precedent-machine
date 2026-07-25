@@ -236,6 +236,9 @@ function structuralSnapshot(fixture) {
   const claimIds = fixture.writeSet.claims.map(
     (row) => runtime.sqlText(row.claim_revision_id),
   ).join(',');
+  const relationshipIds = fixture.writeSet.relationships.map(
+    (row) => runtime.sqlText(row.relationship_revision_id),
+  ).join(',');
   return runtime.runSql(
     `SELECT 'excerpt' AS kind, excerpt_id AS object_id,
        canonical_payload_digest
@@ -254,6 +257,11 @@ function structuralSnapshot(fixture) {
      SELECT 'claim', claim_revision_id, canonical_payload_digest
      FROM canonical_v2_staging.claim_revisions
      WHERE claim_revision_id IN (${claimIds})
+     UNION ALL
+     SELECT 'relationship', relationship_revision_id,
+       canonical_payload_digest
+     FROM canonical_v2_staging.relationship_revisions
+     WHERE relationship_revision_id IN (${relationshipIds})
      ORDER BY kind, object_id;`,
     { readOnly: true },
   );
@@ -305,12 +313,19 @@ function auditExistingRows(fixture) {
        (SELECT count(*)::integer FROM provision_rows) AS provision_count,
        (SELECT count(*)::integer FROM component_rows) AS component_count,
        (SELECT count(*)::integer
-        FROM canonical_v2_staging.claim_revisions
+       FROM canonical_v2_staging.claim_revisions
         WHERE claim_revision_id IN (${
   fixture.writeSet.claims.map(
     (row) => runtime.sqlText(row.claim_revision_id),
   ).join(',')
 })) AS claim_count,
+       (SELECT count(*)::integer
+        FROM canonical_v2_staging.relationship_revisions
+        WHERE relationship_revision_id IN (${
+  fixture.writeSet.relationships.map(
+    (row) => runtime.sqlText(row.relationship_revision_id),
+  ).join(',')
+})) AS relationship_count,
        (SELECT count(*)::integer
         FROM provision_rows stored
         LEFT JOIN canonical_v2_staging.canonical_text_conversions conversion
@@ -435,6 +450,7 @@ function auditExistingRows(fixture) {
     || audit.provision_count !== fixture.writeSet.provisions.length
     || audit.component_count !== fixture.writeSet.components.length
     || audit.claim_count !== fixture.writeSet.claims.length
+    || audit.relationship_count !== fixture.writeSet.relationships.length
     || audit.provision_mismatch_count !== 0
     || audit.component_mismatch_count !== 0) {
     throw new Error('Existing structural rows failed the content-addressed identity audit.');
@@ -463,8 +479,20 @@ function exactStructuralRowsSql(writeSet) {
     WHERE claim_revision_id=${runtime.sqlText(row.claim_revision_id)}
       AND canonical_payload=${runtime.sqlJson(row)}
   )`);
-  return [...excerpts, ...provisions, ...components, ...claims].join(' AND ')
-    || 'true';
+  const relationships = writeSet.relationships.map((row) => `EXISTS (
+    SELECT 1 FROM canonical_v2_staging.relationship_revisions
+    WHERE relationship_revision_id=${
+  runtime.sqlText(row.relationship_revision_id)
+}
+      AND canonical_payload=${runtime.sqlJson(row)}
+  )`);
+  return [
+    ...excerpts,
+    ...provisions,
+    ...components,
+    ...claims,
+    ...relationships,
+  ].join(' AND ') || 'true';
 }
 
 function assertValidReplay({ request, exactRowsSql, label, rowAbsentSql = 'true' }) {
@@ -669,6 +697,64 @@ function identifyClaim(row) {
   });
 }
 
+function relationshipRevisionPayload(row) {
+  return {
+    relationship_occurrence_id: row.relationship_occurrence_id,
+    source_occurrence_id: row.source_occurrence_id,
+    relationship_definition_key: row.relationship_definition_key,
+    relationship_definition_version: row.relationship_definition_version,
+    ordinal: row.ordinal,
+    state: row.state,
+    raw_scope: row.raw_scope,
+    scope: row.scope,
+    applicability: row.applicability,
+    not_examined: row.not_examined,
+    failure: row.failure,
+    target_occurrence_ids: row.target_occurrence_ids,
+    effect: row.effect,
+    evidence_ids: row.evidence_ids,
+    attributes: row.attributes,
+    taxonomy_codes: row.taxonomy_codes,
+    resolver_version: row.resolver_version,
+  };
+}
+
+function resignRelationshipRevision(row) {
+  return {
+    ...row,
+    relationship_revision_id: contentId(
+      'RELATIONSHIP_REVISION/V1',
+      relationshipRevisionPayload(row),
+    ),
+  };
+}
+
+function identifyRelationship(row) {
+  const relationshipOccurrenceId = contentId('RELATIONSHIP_OCCURRENCE/V1', {
+    source_occurrence_id: row.source_occurrence_id,
+    relationship_definition_key: row.relationship_definition_key,
+    relationship_definition_version: row.relationship_definition_version,
+    ordinal: row.ordinal,
+  });
+  const evidence = row.evidence.map((edge, ordinal) => ({
+    ...edge,
+    schema_version: 'RELATIONSHIP_EVIDENCE/V1',
+    relationship_evidence_id: contentId('RELATIONSHIP_EVIDENCE/V1', {
+      occurrence_id: relationshipOccurrenceId,
+      evidence_role: edge.evidence_role,
+      excerpt_id: edge.excerpt_id,
+      ordinal,
+    }),
+    ordinal,
+  }));
+  return resignRelationshipRevision({
+    ...row,
+    relationship_occurrence_id: relationshipOccurrenceId,
+    evidence,
+    evidence_ids: evidence.map((edge) => edge.relationship_evidence_id),
+  });
+}
+
 function withExcerpt(writeSet, originalId, excerpt) {
   const candidate = structuredClone(writeSet);
   const index = candidate.excerpts.findIndex(
@@ -706,6 +792,15 @@ function withClaim(writeSet, originalId, claim) {
   return candidate;
 }
 
+function withRelationship(writeSet, originalId, relationship) {
+  const candidate = structuredClone(writeSet);
+  const index = candidate.relationships.findIndex(
+    (row) => row.relationship_revision_id === originalId,
+  );
+  candidate.relationships[index] = relationship;
+  return candidate;
+}
+
 function mutatedExcerptExists(row) {
   return `EXISTS (
     SELECT 1 FROM canonical_v2_staging.excerpts
@@ -734,6 +829,16 @@ function mutatedClaimExists(row) {
   return `EXISTS (
     SELECT 1 FROM canonical_v2_staging.claim_revisions
     WHERE claim_revision_id=${runtime.sqlText(row.claim_revision_id)}
+      AND canonical_payload=${runtime.sqlJson(row)}
+  )`;
+}
+
+function mutatedRelationshipExists(row) {
+  return `EXISTS (
+    SELECT 1 FROM canonical_v2_staging.relationship_revisions
+    WHERE relationship_revision_id=${
+  runtime.sqlText(row.relationship_revision_id)
+}
       AND canonical_payload=${runtime.sqlJson(row)}
   )`;
 }
@@ -798,6 +903,14 @@ function assertMalformedPersistedReferenceRejected({
       expectedMessage:
         'DEAL_SCOPE_RUN claim identity, state or evidence lineage is invalid',
       label: 'claim',
+    },
+    relationships: {
+      table: 'relationship_revisions',
+      idColumn: 'relationship_revision_id',
+      idField: 'relationship_revision_id',
+      expectedMessage:
+        'DEAL_SCOPE_RUN relationship identity, endpoints, state or evidence lineage is invalid',
+      label: 'relationship',
     },
   }[objectKind];
   if (!target) throw new Error(`Unsupported malformed persisted kind: ${objectKind}`);
@@ -960,8 +1073,12 @@ function main() {
   const absentClaim = fixture.writeSet.claims.find(
     (row) => row.state === 'ABSENT',
   );
-  if (!baseClaim || !absentClaim) {
-    throw new Error('QXO claim fixture lacks the required claim acceptance probes.');
+  const baseRelationship = fixture.writeSet.relationships.find(
+    (row) => row.evidence.length >= 2
+      && row.target_occurrence_ids.length >= 1,
+  );
+  if (!baseClaim || !absentClaim || !baseRelationship) {
+    throw new Error('QXO fixture lacks the required semantic acceptance probes.');
   }
   const excerptMessage =
     'DEAL_SCOPE_RUN excerpt identity or source bytes are invalid';
@@ -1189,6 +1306,89 @@ function main() {
       )],
     },
   });
+  const forgedRelationshipRevision = {
+    ...baseRelationship,
+    relationship_revision_id: contentId(
+      'CANONICAL_V2_FORGED_RELATIONSHIP_REVISION/V1',
+      { nonce },
+    ),
+  };
+  const wrongSourceRelationship = identifyRelationship({
+    ...baseRelationship,
+    source_occurrence_id: contentId(
+      'CANONICAL_V2_UNRESOLVED_RELATIONSHIP_SOURCE/V1',
+      { nonce },
+    ),
+  });
+  const wrongTargetRelationship = identifyRelationship({
+    ...baseRelationship,
+    target_occurrence_ids: baseRelationship.target_occurrence_ids.map(
+      (targetId, index) => (
+        index === 0
+          ? contentId(
+            'CANONICAL_V2_UNRESOLVED_RELATIONSHIP_TARGET/V1',
+            { nonce },
+          )
+          : targetId
+      ),
+    ),
+  });
+  const forgedRelationshipEvidence = structuredClone(baseRelationship);
+  forgedRelationshipEvidence.evidence[0].relationship_evidence_id = contentId(
+    'CANONICAL_V2_FORGED_RELATIONSHIP_EVIDENCE/V1',
+    { nonce },
+  );
+  forgedRelationshipEvidence.evidence_ids[0] =
+    forgedRelationshipEvidence.evidence[0].relationship_evidence_id;
+  const resignedForgedRelationshipEvidence = resignRelationshipRevision(
+    forgedRelationshipEvidence,
+  );
+  const alternativeRelationshipExcerpt = fixture.writeSet.excerpts.find(
+    (row) => row.excerpt_id !== baseRelationship.evidence[0].excerpt_id,
+  );
+  const wrongExcerptRelationship = identifyRelationship({
+    ...baseRelationship,
+    evidence: baseRelationship.evidence.map((edge, index) => (
+      index === 0
+        ? { ...edge, excerpt_id: alternativeRelationshipExcerpt.excerpt_id }
+        : edge
+    )),
+  });
+  const reversedEvidenceRelationship = identifyRelationship({
+    ...baseRelationship,
+    evidence: [...baseRelationship.evidence].reverse(),
+  });
+  const extraFieldRelationship = {
+    ...baseRelationship,
+    unbound_relationship_value: true,
+  };
+  const unboundRelationshipEvidence = identifyRelationship({
+    ...baseRelationship,
+    evidence: baseRelationship.evidence.map((edge, index) => (
+      index === 0 ? { ...edge, unbound_evidence_value: true } : edge
+    )),
+  });
+  const nonArrayRelationshipEvidence = resignRelationshipRevision({
+    ...baseRelationship,
+    evidence: 'forged',
+    evidence_ids: [],
+  });
+  const missingEffectRelationship = resignRelationshipRevision({
+    ...baseRelationship,
+    effect: null,
+  });
+  const scalarEffectRelationship = resignRelationshipRevision({
+    ...baseRelationship,
+    effect: 'forged',
+  });
+  const nonPresentAssertedRelationship = resignRelationshipRevision({
+    ...baseRelationship,
+    state: 'NOT_EXAMINED',
+    not_examined: {
+      reason: 'ADVERSARIAL_STATE_PROBE',
+      intended_scope: 'QXO capitalisation relationship',
+    },
+  });
 
   const provisionMessage =
     'DEAL_SCOPE_RUN provision identity or source lineage is invalid';
@@ -1196,6 +1396,8 @@ function main() {
     'DEAL_SCOPE_RUN component identity or parent lineage is invalid';
   const claimMessage =
     'DEAL_SCOPE_RUN claim identity, state or evidence lineage is invalid';
+  const relationshipMessage =
+    'DEAL_SCOPE_RUN relationship identity, endpoints, state or evidence lineage is invalid';
   const probes = [
     {
       label: 'forged excerpt identity',
@@ -1492,6 +1694,138 @@ function main() {
       expectedMessage: claimMessage,
       exists: mutatedClaimExists,
     },
+    {
+      label: 'forged relationship revision identity',
+      row: forgedRelationshipRevision,
+      writeSet: withRelationship(
+        fixture.writeSet,
+        baseRelationship.relationship_revision_id,
+        forgedRelationshipRevision,
+      ),
+      expectedMessage: relationshipMessage,
+      exists: mutatedRelationshipExists,
+    },
+    {
+      label: 're-signed relationship on an unresolved source',
+      row: wrongSourceRelationship,
+      writeSet: withRelationship(
+        fixture.writeSet,
+        baseRelationship.relationship_revision_id,
+        wrongSourceRelationship,
+      ),
+      expectedMessage: relationshipMessage,
+      exists: mutatedRelationshipExists,
+    },
+    {
+      label: 're-signed relationship on an unresolved target',
+      row: wrongTargetRelationship,
+      writeSet: withRelationship(
+        fixture.writeSet,
+        baseRelationship.relationship_revision_id,
+        wrongTargetRelationship,
+      ),
+      expectedMessage: relationshipMessage,
+      exists: mutatedRelationshipExists,
+    },
+    {
+      label: 're-signed forged relationship evidence identity',
+      row: resignedForgedRelationshipEvidence,
+      writeSet: withRelationship(
+        fixture.writeSet,
+        baseRelationship.relationship_revision_id,
+        resignedForgedRelationshipEvidence,
+      ),
+      expectedMessage: relationshipMessage,
+      exists: mutatedRelationshipExists,
+    },
+    {
+      label: 'relationship evidence against the wrong excerpt',
+      row: wrongExcerptRelationship,
+      writeSet: withRelationship(
+        fixture.writeSet,
+        baseRelationship.relationship_revision_id,
+        wrongExcerptRelationship,
+      ),
+      expectedMessage: relationshipMessage,
+      exists: mutatedRelationshipExists,
+    },
+    {
+      label: 'relationship evidence outside canonical source order',
+      row: reversedEvidenceRelationship,
+      writeSet: withRelationship(
+        fixture.writeSet,
+        baseRelationship.relationship_revision_id,
+        reversedEvidenceRelationship,
+      ),
+      expectedMessage: relationshipMessage,
+      exists: mutatedRelationshipExists,
+    },
+    {
+      label: 'unbound relationship field',
+      row: extraFieldRelationship,
+      writeSet: withRelationship(
+        fixture.writeSet,
+        baseRelationship.relationship_revision_id,
+        extraFieldRelationship,
+      ),
+      expectedMessage: relationshipMessage,
+      exists: mutatedRelationshipExists,
+    },
+    {
+      label: 'unbound relationship evidence field',
+      row: unboundRelationshipEvidence,
+      writeSet: withRelationship(
+        fixture.writeSet,
+        baseRelationship.relationship_revision_id,
+        unboundRelationshipEvidence,
+      ),
+      expectedMessage: relationshipMessage,
+      exists: mutatedRelationshipExists,
+    },
+    {
+      label: 'non-array relationship evidence',
+      row: nonArrayRelationshipEvidence,
+      writeSet: withRelationship(
+        fixture.writeSet,
+        baseRelationship.relationship_revision_id,
+        nonArrayRelationshipEvidence,
+      ),
+      expectedMessage: relationshipMessage,
+      exists: mutatedRelationshipExists,
+    },
+    {
+      label: 'present relationship without an effect',
+      row: missingEffectRelationship,
+      writeSet: withRelationship(
+        fixture.writeSet,
+        baseRelationship.relationship_revision_id,
+        missingEffectRelationship,
+      ),
+      expectedMessage: relationshipMessage,
+      exists: mutatedRelationshipExists,
+    },
+    {
+      label: 'present relationship with an untyped scalar effect',
+      row: scalarEffectRelationship,
+      writeSet: withRelationship(
+        fixture.writeSet,
+        baseRelationship.relationship_revision_id,
+        scalarEffectRelationship,
+      ),
+      expectedMessage: relationshipMessage,
+      exists: mutatedRelationshipExists,
+    },
+    {
+      label: 'non-present relationship asserting targets and an effect',
+      row: nonPresentAssertedRelationship,
+      writeSet: withRelationship(
+        fixture.writeSet,
+        baseRelationship.relationship_revision_id,
+        nonPresentAssertedRelationship,
+      ),
+      expectedMessage: relationshipMessage,
+      exists: mutatedRelationshipExists,
+    },
   ];
   for (const [index, probe] of probes.entries()) {
     const request = requestFor({
@@ -1654,6 +1988,32 @@ function main() {
     idempotencyKey: `claim-identity-malformed-persisted-${nonce}`,
   });
 
+  const malformedRelationshipClosureId = contentId(
+    'CANONICAL_V2_MALFORMED_PERSISTED_RELATIONSHIP_CLOSURE/V1',
+    { nonce },
+  );
+  const malformedPersistedRelationship = identifyRelationship({
+    ...baseRelationship,
+    ordinal: baseRelationship.ordinal + 1000,
+    closure_id: malformedRelationshipClosureId,
+  });
+  malformedPersistedRelationship.evidence[0].relationship_evidence_id =
+    contentId(
+      'CANONICAL_V2_MALFORMED_PERSISTED_RELATIONSHIP_EVIDENCE/V1',
+      { nonce },
+    );
+  malformedPersistedRelationship.evidence_ids[0] =
+    malformedPersistedRelationship.evidence[0].relationship_evidence_id;
+  const resignedMalformedPersistedRelationship = resignRelationshipRevision(
+    malformedPersistedRelationship,
+  );
+  assertMalformedPersistedReferenceRejected({
+    fixture,
+    malformedObject: resignedMalformedPersistedRelationship,
+    objectKind: 'relationships',
+    idempotencyKey: `relationship-identity-malformed-persisted-${nonce}`,
+  });
+
   process.stdout.write(
     `Canonical excerpt and structural identity acceptance passed across ${
       fixture.writeSet.excerpts.length
@@ -1661,7 +2021,7 @@ function main() {
       audit.provision_count
     } provisions, ${audit.component_count} components and ${
       audit.claim_count
-    } claims.\n`,
+    } claims and ${audit.relationship_count} relationships.\n`,
   );
 }
 

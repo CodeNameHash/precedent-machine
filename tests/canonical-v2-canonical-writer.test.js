@@ -123,6 +123,60 @@ function fixtureWriteSet(contract = contractBundle) {
   };
 }
 
+function relationshipRevisionPayload(row) {
+  return {
+    relationship_occurrence_id: row.relationship_occurrence_id,
+    source_occurrence_id: row.source_occurrence_id,
+    relationship_definition_key: row.relationship_definition_key,
+    relationship_definition_version: row.relationship_definition_version,
+    ordinal: row.ordinal,
+    state: row.state,
+    raw_scope: row.raw_scope,
+    scope: row.scope,
+    applicability: row.applicability,
+    not_examined: row.not_examined,
+    failure: row.failure,
+    target_occurrence_ids: row.target_occurrence_ids,
+    effect: row.effect,
+    evidence_ids: row.evidence_ids,
+    attributes: row.attributes,
+    taxonomy_codes: row.taxonomy_codes,
+    resolver_version: row.resolver_version,
+  };
+}
+
+function identifyRelationship(row) {
+  const relationshipOccurrenceId = contentId('RELATIONSHIP_OCCURRENCE/V1', {
+    source_occurrence_id: row.source_occurrence_id,
+    relationship_definition_key: row.relationship_definition_key,
+    relationship_definition_version: row.relationship_definition_version,
+    ordinal: row.ordinal,
+  });
+  const evidence = row.evidence.map((edge, ordinal) => ({
+    ...edge,
+    relationship_evidence_id: contentId('RELATIONSHIP_EVIDENCE/V1', {
+      occurrence_id: relationshipOccurrenceId,
+      evidence_role: edge.evidence_role,
+      excerpt_id: edge.excerpt_id,
+      ordinal,
+    }),
+    ordinal,
+  }));
+  const identified = {
+    ...row,
+    relationship_occurrence_id: relationshipOccurrenceId,
+    evidence,
+    evidence_ids: evidence.map((edge) => edge.relationship_evidence_id),
+  };
+  return {
+    ...identified,
+    relationship_revision_id: contentId(
+      'RELATIONSHIP_REVISION/V1',
+      relationshipRevisionPayload(identified),
+    ),
+  };
+}
+
 function f5MoneyWriteSet({
   denominatorPrecision,
   compatibilityPrecision = denominatorPrecision,
@@ -516,6 +570,187 @@ test('the actual semantic builders pass through the same frozen contract and wri
   assert.equal(result.validation.counts.publishable, 4);
   assert.equal(result.validation.counts.residuals, 0);
   assert.equal(repository.snapshot().claims[0].claim_revision_id, claim.claim_revision_id);
+});
+
+test('relationship effects must match the frozen definition effect mode', async () => {
+  const writeSet = fixtureWriteSet();
+  const original = writeSet.relationships[0];
+  const mismatched = buildRelationshipRevision({
+    source_occurrence_id: original.source_occurrence_id,
+    relationship_definition_key: original.relationship_definition_key,
+    relationship_definition_version: original.relationship_definition_version,
+    ordinal: original.ordinal,
+    state: original.state,
+    target_occurrence_ids: original.target_occurrence_ids,
+    effect: {
+      effect_mode: 'TYPED_LEGAL_EFFECT',
+      legal_operation: 'GEOMETRIC_ONLY',
+    },
+    evidence: original.evidence.map((edge) => ({
+      evidence_role: edge.evidence_role,
+      excerpt_id: edge.excerpt_id,
+      document_ordinal: edge.document_ordinal,
+      absolute_start: edge.absolute_start,
+      absolute_end: edge.absolute_end,
+    })),
+  });
+  assert.equal(mismatched.publication_state, 'VALIDATED');
+  writeSet.relationships[0] = {
+    ...mismatched,
+    closure_id: original.closure_id,
+  };
+
+  const { writer } = setup();
+  const result = await writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN',
+    idempotencyKey: 'relationship-effect-mode-mismatch',
+    dryRun: true,
+    writeSet,
+  });
+  assert.ok(result.validation.residuals.some(
+    (residual) => residual.reason_code === 'PRESENT_WITHOUT_EFFECT',
+  ));
+  assert.ok(result.validation.quarantines.some(
+    (quarantine) => quarantine.closure_id === original.closure_id,
+  ));
+});
+
+test('authoritative dry-run rejects re-signed malformed relationship identities', async () => {
+  const mutations = [
+    ['unknown evidence role', (row) => identifyRelationship({
+      ...row,
+      evidence: row.evidence.map((edge, index) => (
+        index === 0 ? { ...edge, evidence_role: 'FORGED_ROLE' } : edge
+      )),
+    })],
+    ['extra evidence field', (row) => identifyRelationship({
+      ...row,
+      evidence: row.evidence.map((edge, index) => (
+        index === 0 ? { ...edge, forged_value: true } : edge
+      )),
+    })],
+    ['extra relationship field', (row) => identifyRelationship({
+      ...row,
+      forged_value: true,
+    })],
+    ['invalid definition version', (row) => identifyRelationship({
+      ...row,
+      relationship_definition_version: 0,
+    })],
+    ['invalid ordinal', (row) => identifyRelationship({
+      ...row,
+      ordinal: -1,
+    })],
+    ['non-string resolver', (row) => identifyRelationship({
+      ...row,
+      resolver_version: 7,
+    })],
+    ['non-array retained residuals', (row) => ({
+      ...row,
+      retained_residuals: null,
+    })],
+    ['array attributes', (row) => identifyRelationship({
+      ...row,
+      attributes: [],
+    })],
+    ['array taxonomy codes', (row) => identifyRelationship({
+      ...row,
+      taxonomy_codes: [],
+    })],
+  ];
+
+  for (const [label, mutate] of mutations) {
+    const writeSet = fixtureWriteSet();
+    const original = writeSet.relationships[0];
+    writeSet.relationships[0] = mutate(original);
+    const { writer } = setup();
+    const result = await writer.write({
+      operation: 'FIXTURE_DEAL_EXTRACTION_RUN',
+      idempotencyKey: `relationship-identity-${label.replaceAll(' ', '-')}`,
+      dryRun: true,
+      writeSet,
+    });
+    assert.ok(
+      result.validation.residuals.some(
+        (residual) => residual.closure_id === original.closure_id
+          && residual.reason_code === 'CANONICAL_IDENTITY_MISMATCH',
+      ),
+      label,
+    );
+    assert.ok(
+      result.validation.quarantines.some(
+        (quarantine) => quarantine.closure_id === original.closure_id,
+      ),
+      label,
+    );
+  }
+});
+
+test('builder-produced quarantines retain their governed residual reasons', async () => {
+  const writeSet = fixtureWriteSet();
+  const originalClaim = writeSet.claims[0];
+  const originalRelationship = writeSet.relationships[0];
+  const quarantinedClaim = buildClaimRevision({
+    subject_occurrence_id: originalClaim.subject_occurrence_id,
+    claim_definition_key: originalClaim.claim_definition_key,
+    claim_definition_version: originalClaim.claim_definition_version,
+    ordinal: originalClaim.ordinal,
+    state: originalClaim.state,
+    scope: originalClaim.scope,
+    attributes: { novel_claim_attribute: true },
+    allowed_attributes: [],
+  });
+  const quarantinedRelationship = buildRelationshipRevision({
+    source_occurrence_id: originalRelationship.source_occurrence_id,
+    relationship_definition_key:
+      originalRelationship.relationship_definition_key,
+    relationship_definition_version:
+      originalRelationship.relationship_definition_version,
+    ordinal: originalRelationship.ordinal,
+    state: originalRelationship.state,
+    target_occurrence_ids: originalRelationship.target_occurrence_ids,
+    effect: originalRelationship.effect,
+    evidence: originalRelationship.evidence.map((edge) => ({
+      evidence_role: edge.evidence_role,
+      excerpt_id: edge.excerpt_id,
+      document_ordinal: edge.document_ordinal,
+      absolute_start: edge.absolute_start,
+      absolute_end: edge.absolute_end,
+    })),
+    attributes: { novel_relationship_attribute: true },
+    allowed_attributes: [],
+  });
+  assert.equal(quarantinedClaim.publication_state, 'QUARANTINED');
+  assert.equal(quarantinedRelationship.publication_state, 'QUARANTINED');
+  writeSet.claims[0] = {
+    ...quarantinedClaim,
+    closure_id: originalClaim.closure_id,
+  };
+  writeSet.relationships[0] = {
+    ...quarantinedRelationship,
+    closure_id: originalRelationship.closure_id,
+  };
+
+  const { writer } = setup();
+  const result = await writer.write({
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN',
+    idempotencyKey: 'builder-quarantine-residual-retention',
+    dryRun: true,
+    writeSet,
+  });
+  for (const objectId of [
+    quarantinedClaim.claim_revision_id,
+    quarantinedRelationship.relationship_revision_id,
+  ]) {
+    assert.ok(result.validation.residuals.some(
+      (residual) => residual.source_object_id === objectId
+        && residual.reason_code === 'UNKNOWN_ATTRIBUTE',
+    ));
+    assert.equal(result.validation.residuals.some(
+      (residual) => residual.source_object_id === objectId
+        && residual.reason_code === 'CANONICAL_IDENTITY_MISMATCH',
+    ), false);
+  }
 });
 
 test('claims and relationships cannot publish against unresolved semantic occurrences', async () => {
