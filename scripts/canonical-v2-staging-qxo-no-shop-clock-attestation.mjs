@@ -48,6 +48,11 @@ const {
   validateQxoNoShopExceptionSourceBindingF6,
 } = require('../lib/canonical-v2/qxo-no-shop-exception-source-binding-f6');
 const {
+  buildQxoNoShopNoticeSourceBindingF6,
+  buildQxoNoShopNoticeSourceBindingF6FailureIsolationAttestation,
+  validateQxoNoShopNoticeSourceBindingF6,
+} = require('../lib/canonical-v2/qxo-no-shop-notice-source-binding-f6');
+const {
   buildQxoAdmittedNoShopActionsSlice,
 } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
 const {
@@ -101,6 +106,10 @@ const DEFINITION_GRAPH_F6_FIXTURE_PATH = join(
 const EXCEPTION_SOURCE_F6_FIXTURE_PATH = join(
   ROOT,
   'tests/fixtures/canonical-v2/qxo-no-shop-exception-source-f6-staging-attestation.json',
+);
+const NOTICE_SOURCE_F6_FIXTURE_PATH = join(
+  ROOT,
+  'tests/fixtures/canonical-v2/qxo-no-shop-notice-source-f6-staging-attestation.json',
 );
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
@@ -1096,6 +1105,130 @@ function exceptionSourceF6AttestationProjection(attestation) {
   };
 }
 
+function buildNoticeSourceF6Attestation() {
+  const contractBundle = compileFixtureContractV6();
+  const {
+    admittedSourceContext,
+    admittedParserProposalEnvelope,
+    parserInputs,
+  } = buildSourceInputs(contractBundle);
+  const reviewedNoShopSlice = buildQxoAdmittedNoShopNoticeSlice({
+    sourceContext: admittedSourceContext,
+    contractBundle,
+  });
+  const clockInputs = {
+    ...parserInputs,
+    admitted_parser_proposal_envelope: admittedParserProposalEnvelope,
+    reviewed_no_shop_slice: reviewedNoShopSlice,
+  };
+  const clockSeed = buildQxoNoShopClockParserBoundReviewSeed(clockInputs);
+  const supplementInputs = {
+    ...parserInputs,
+    admitted_parser_proposal_envelope: admittedParserProposalEnvelope,
+  };
+  const supplement = buildQxoNoShopNestedDefinitionCandidateSupplement(
+    supplementInputs,
+  );
+  const graphInputs = {
+    ...supplementInputs,
+    qxo_no_shop_nested_definition_candidate_supplement: supplement,
+  };
+  const definitionGraph = buildQxoNoShopReviewedDefinitionGraphF6(graphInputs);
+  const bindingInputs = {
+    ...parserInputs,
+    qxo_no_shop_clock_f6_parser_bound_review_seed: clockSeed,
+    qxo_no_shop_reviewed_definition_graph_f6: definitionGraph,
+  };
+  const carrier = buildQxoNoShopNoticeSourceBindingF6(bindingInputs);
+  validateQxoNoShopNoticeSourceBindingF6({
+    qxo_no_shop_notice_source_binding_f6: carrier,
+    ...bindingInputs,
+  });
+
+  const changed = JSON.parse(JSON.stringify(carrier));
+  changed.status.release_eligible = true;
+  let carrierDriftRejected = false;
+  try {
+    validateQxoNoShopNoticeSourceBindingF6({
+      qxo_no_shop_notice_source_binding_f6: changed,
+      ...bindingInputs,
+    });
+  } catch (_) {
+    carrierDriftRejected = true;
+  }
+  const failedPlural =
+    buildQxoNoShopNoticeSourceBindingF6FailureIsolationAttestation(
+      bindingInputs,
+    );
+  const failureIsolationVerified =
+    failedPlural.plural_definition_use_resolution === null
+    && failedPlural.definition_relationship_dependency === null
+    && failedPlural.status.review_renderable === true
+    && failedPlural.status.publication_blocked === true
+    && failedPlural.field_source_bindings.every((binding, index) => (
+      binding.qxo_no_shop_notice_field_source_binding_f6_id
+        === carrier.field_source_bindings[index]
+          .qxo_no_shop_notice_field_source_binding_f6_id
+    ));
+  if (!carrierDriftRejected || !failureIsolationVerified) {
+    throw new Error('The F6 notice carrier safety attestation failed.');
+  }
+
+  return {
+    schema_version: 'QXO_NO_SHOP_NOTICE_SOURCE_F6_STAGING_ATTESTATION/V1',
+    environment: 'STAGING',
+    authority_scope: carrier.authority_scope,
+    contract_binding: carrier.contract_binding,
+    source_binding: carrier.source_binding,
+    upstream_bindings: carrier.upstream_bindings,
+    source_evidence_count: carrier.source_evidence.length,
+    source_evidence_digest: contentId(
+      'QXO_NO_SHOP_NOTICE_SOURCE_EVIDENCE_ATTESTATION/V1',
+      carrier.source_evidence.map((entry) => ({
+        source_key: entry.source_key,
+        governed_ordinal: entry.governed_ordinal,
+        absolute_start: entry.semantic_span.absolute_start,
+        absolute_end: entry.semantic_span.absolute_end,
+        exact_bytes_digest: entry.semantic_span.exact_bytes_digest,
+      })),
+    ),
+    field_source_binding_count: carrier.field_source_bindings.length,
+    field_source_bindings_digest: contentId(
+      'QXO_NO_SHOP_NOTICE_FIELD_SOURCE_BINDINGS_ATTESTATION/V1',
+      carrier.field_source_bindings,
+    ),
+    first_clock_claim_revision_id:
+      carrier.notice_timing_source_binding.existing_review_claim_revision_id,
+    copy_clock_claim_revision_id:
+      carrier.copy_timing_source_binding.claim_revision_id,
+    copy_clock_normalisation_payload_digest:
+      carrier.copy_timing_source_binding.normalisation_payload_digest,
+    plural_definition_use_resolution_id:
+      carrier.plural_definition_use_resolution
+        .qxo_no_shop_reviewed_plural_definition_use_f6_id,
+    reviewed_definition_use_count:
+      carrier.definition_relationship_dependency
+        .reviewed_definition_use_binding_ids.length + 1,
+    reviewed_definition_dependency_edge_count:
+      carrier.definition_relationship_dependency
+        .reviewed_definition_dependency_edge_ids.length,
+    retained_source_residual_count:
+      carrier.retained_source_residuals.length,
+    retained_source_residuals_digest: contentId(
+      'QXO_NO_SHOP_NOTICE_SOURCE_RESIDUALS_ATTESTATION/V1',
+      carrier.retained_source_residuals,
+    ),
+    notice_obligation_materialisation:
+      carrier.notice_obligation_materialisation,
+    binding_status: carrier.status,
+    carrier_drift_rejected: carrierDriftRejected,
+    failure_isolation_verified: failureIsolationVerified,
+    qxo_no_shop_notice_source_binding_f6_id:
+      carrier.qxo_no_shop_notice_source_binding_f6_id,
+    canonical_payload_digest: carrier.canonical_payload_digest,
+  };
+}
+
 function verifyActionsFailureIsolation(bridgeInputs) {
   const missingFirstAction = JSON.parse(JSON.stringify(
     bridgeInputs.reviewed_no_shop_actions_slice,
@@ -1310,20 +1443,27 @@ if (![
   '--definition-graph-f6-verify',
   '--exception-source-f6-print',
   '--exception-source-f6-verify',
+  '--notice-source-f6-print',
+  '--notice-source-f6-verify',
 ].includes(mode)
   || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--notice-source-f6-print|--notice-source-f6-verify');
 }
 
 try {
-  const exceptionSourceF6Mode = mode.startsWith('--exception-source-f6-');
-  const definitionGraphF6Mode = !exceptionSourceF6Mode
+  const noticeSourceF6Mode = mode.startsWith('--notice-source-f6-');
+  const exceptionSourceF6Mode = !noticeSourceF6Mode
+    && mode.startsWith('--exception-source-f6-');
+  const definitionGraphF6Mode = !noticeSourceF6Mode && !exceptionSourceF6Mode
     && mode.startsWith('--definition-graph-f6-');
-  const definitionsF6Mode = !exceptionSourceF6Mode && !definitionGraphF6Mode
+  const definitionsF6Mode = !noticeSourceF6Mode && !exceptionSourceF6Mode
+    && !definitionGraphF6Mode
     && mode.startsWith('--definitions-f6-');
   const actionsF6Mode = !definitionsF6Mode && mode.startsWith('--actions-f6-');
   const actionsMode = !actionsF6Mode && mode.startsWith('--actions-');
-  const attestation = exceptionSourceF6Mode
+  const attestation = noticeSourceF6Mode
+    ? buildNoticeSourceF6Attestation()
+    : exceptionSourceF6Mode
     ? buildExceptionSourceF6Attestation()
     : definitionGraphF6Mode
     ? buildDefinitionGraphF6Attestation()
@@ -1337,7 +1477,9 @@ try {
     : attestation;
   if (mode.endsWith('verify')) {
     const expected = JSON.parse(readFileSync(
-      exceptionSourceF6Mode
+      noticeSourceF6Mode
+        ? NOTICE_SOURCE_F6_FIXTURE_PATH
+        : exceptionSourceF6Mode
         ? EXCEPTION_SOURCE_F6_FIXTURE_PATH
         : definitionGraphF6Mode
         ? DEFINITION_GRAPH_F6_FIXTURE_PATH
