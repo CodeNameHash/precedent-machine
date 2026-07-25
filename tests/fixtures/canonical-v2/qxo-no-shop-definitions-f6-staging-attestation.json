@@ -1,0 +1,108 @@
+{
+  "authority_scope": "OFFLINE_REVIEWED_QXO_NESTED_DEFINITION_CANDIDATES_ONLY",
+  "canonical_payload_digest": "5386d3ec6245cff2491b9cb7439f652cad7826c1ed60f6c558320e2b70a543c2",
+  "carrier_drift_rejected": true,
+  "contract_binding": {
+    "contract_fingerprint": "161083b014a35d800dec0b0c41a97dc6d97f38a5dd206b388ba51b3ab9f68c08",
+    "contract_key": "CANONICAL_V2_VERTICAL_SLICE"
+  },
+  "environment": "STAGING",
+  "existing_section_4_3_definition_candidates": [
+    {
+      "absolute_end": 211570,
+      "absolute_start": 207255,
+      "admitted_definition_candidate_id": "e48713ac2bd8cc73a4d5e4bcf54e67f185d897d8312a74d7859fa12ce78ed1d8",
+      "exact_bytes_digest": "f282dae973632d1de6eeb2a8cc770fa5fc31e90afb35870d5fa4a274e4c27134",
+      "neutral_defined_term": "Acceptable Confidentiality Agreement"
+    },
+    {
+      "absolute_end": 212829,
+      "absolute_start": 211570,
+      "admitted_definition_candidate_id": "bab984074ef851403970c979625eef65f138b406215d9634bdd9b5a22e04a364",
+      "exact_bytes_digest": "576f544270a48c982dc2b52de954310341831d0c35b5a7283a6999440fdbf235",
+      "neutral_defined_term": "Company Acquisition Proposal"
+    },
+    {
+      "absolute_end": 224303,
+      "absolute_start": 212829,
+      "admitted_definition_candidate_id": "81693f7e655a2bee80945f8a1eac37cb394d23848a05f53fe9330bf65c2a32e9",
+      "exact_bytes_digest": "82956f66900e31e8ffc8b2d9bef8a277fe0634f81c3717753d9fd87bcbe847ea",
+      "neutral_defined_term": "Company Superior Proposal"
+    },
+    {
+      "absolute_end": 226861,
+      "absolute_start": 224303,
+      "admitted_definition_candidate_id": "4998aaa3de686fc414a7ffbd23610da2fdfeb7df9b1871a7aaa1def37ef4ce98",
+      "exact_bytes_digest": "7639e64c35553c3d3c87eed01a7e4356c533de697bf55a6eecd7765bef2e96d0",
+      "neutral_defined_term": "Company Intervening Event"
+    }
+  ],
+  "parser_binding": {
+    "admitted_parser_proposal_envelope_id": "e3e70f0400b5e3cd3702946708aa267fad4c5ac2cc3c0a72209e49a24dfb4c2e",
+    "admitted_parser_proposal_envelope_payload_digest": "d47574da2a43e3bc82033c40c5fe9fe0275288da2ad6f39576dce1261d87895a",
+    "parser_runtime_candidate_count": 39,
+    "parser_runtime_candidates_mutated": false,
+    "parser_runtime_manifest_id": "9d49a8307af014c697b63f8a1877ac2a403c58f43688dddecc0d14e13748f20d",
+    "publication_blocked": true,
+    "section_4_3_absolute_end": 226862,
+    "section_4_3_absolute_start": 201370,
+    "section_4_3_exact_bytes_digest": "ffbffb81e798af99509dd998c5a5793c2127eaf3ada937ae662306e99a86c524",
+    "section_4_3_proposal_id": "a2428f11d1f9cf63d975905961551887de671d6ec22e486a60bcc8eda95edaf3"
+  },
+  "qxo_no_shop_nested_definition_candidate_supplement_id": "d702bbf35f7e2b56777a26f01a456c4a940337bedeb50e5353f150afb920d458",
+  "schema_version": "QXO_NO_SHOP_DEFINITIONS_F6_STAGING_ATTESTATION/V1",
+  "source_binding": {
+    "admitted_semantic_source_context_id": "1b20b897f7e3c33570e4b07fc68f2b2e3b641b187eb617de4847c3a1400ecad8",
+    "canonical_text_id": "bcc60682b1914dcd2dc81417399a74d3f2b82451b8b3119af0d6c8c7e7213ce1",
+    "deal_admission_id": "f8d4c707ad160d069c3975fd62a79544a28cdca1ddb122e45a5018b38d81d5b5",
+    "document_hash": "abba043018410d718c207e7d7a43c9567166f6a10c4c9a6b4b0c8c7761cd6b9d",
+    "governed_deal_key": "deal:qxo-topbuild",
+    "immutable_source_document_id": "5c6f01b194e7f195a5c5fe48ac88b3cf900656d8dcc70028a3e8f103bba9fc6b",
+    "semantic_extraction_input_envelope_id": "9dcc596af6312d3d9ac65cc5266bc564ee00f99d0a6b23a9b5b822813bc3fd07",
+    "source_admission_manifest_id": "f31cad8c3813ededa01c644891b0b2e14c6a475d868ba89f6b60b597f0e1d819"
+  },
+  "supplement_status": {
+    "blocker_codes": [
+      "SUPPLEMENTAL_DEFINITION_CANDIDATES_REQUIRE_REVIEWED_DISPOSITION",
+      "F6_NO_SHOP_DEFINITION_GRAPH_DEFERRED",
+      "F6_EXCEPTION_SOURCE_BINDING_DEFERRED",
+      "F6_COMPLETE_NOTICE_SOURCE_BINDING_DEFERRED",
+      "F6_RESULT_DEFINITION_DEFERRED"
+    ],
+    "canonical_write_authority": "NONE",
+    "comparability_authority": "NONE",
+    "definition_graph_authority": "NONE",
+    "metric_authority": "NONE",
+    "parser_runtime_authority": "NONE",
+    "publication_blocked": true,
+    "query_authority": "NONE",
+    "release_authority": "NONE",
+    "release_eligible": false,
+    "result_authority": "NONE",
+    "reviewed_disposition_complete": false,
+    "serving_authority": "NONE",
+    "source_reference_complete": true
+  },
+  "supplemental_definition_candidates": [
+    {
+      "absolute_end": 207582,
+      "absolute_start": 207459,
+      "candidate_key": "BASELINE_CONFIDENTIALITY_AGREEMENT",
+      "discovery_reason_code": "MISSED_NESTED_POSTFIX_DEFINITION",
+      "exact_bytes_digest": "70fa1ba774be5aa4ae7327286928dcdf36e405460589b08c43b685a265eb6987",
+      "neutral_defined_term": "Confidentiality Agreement",
+      "reviewed_disposition_required": true,
+      "reviewed_supplemental_definition_candidate_id": "161201fd2e27f92d934e2a35fbaafaa550ae966374d9798f937b53d4d3527050"
+    },
+    {
+      "absolute_end": 208373,
+      "absolute_start": 208020,
+      "candidate_key": "COMPANY_REQUEST",
+      "discovery_reason_code": "MISSED_POSTFIX_DEFINITION",
+      "exact_bytes_digest": "298225cd2d075847104fce92dcb2863b6af7d878086ef1117d4b72c7352e6f2b",
+      "neutral_defined_term": "Company Request",
+      "reviewed_disposition_required": true,
+      "reviewed_supplemental_definition_candidate_id": "78f91c744ec8362c25138bbece8972fc8ebef00c7c2ad04ed2187e1842bde662"
+    }
+  ]
+}
