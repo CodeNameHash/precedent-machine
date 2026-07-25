@@ -115,7 +115,7 @@ BEGIN
 END
 $$;
 
--- Governed function SHA-256: 412651484f3485f61cbc8f6283daedcf3137cf1d6c081bd1bfe70b356470e152
+-- Governed function SHA-256: deec53d6a35b4819115c1d3c7e5b87799cfffca9d4c4cb3899208e2fc58f9e4e
 CREATE OR REPLACE FUNCTION public.canonical_v2_write(
   p_environment text,
   p_operation text,
@@ -1875,6 +1875,306 @@ BEGIN
     IF resolved_persisted_reference_count <> persisted_reference_count
       OR distinct_persisted_reference_count <> persisted_reference_count THEN
       RAISE EXCEPTION 'DEAL_SCOPE_RUN persisted object references are unresolved or invalid'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF EXISTS (
+      WITH excerpt_definition AS (
+        SELECT
+          definition.body,
+          canonical_v2_staging.content_id(
+            'EXCERPT_DEFINITION/V1',
+            definition.body
+          ) AS excerpt_definition_id,
+          canonical_v2_staging.content_id(
+            'EXCERPT_DEFINITION_PAYLOAD/V1',
+            definition.body
+          ) AS excerpt_definition_payload_digest
+        FROM (
+          SELECT jsonb_build_object(
+            'schema_version', 'EXCERPT_DEFINITION/V1',
+            'excerpt_definition_key', 'SINGLE_OPERATIVE_SPAN',
+            'excerpt_definition_version', 1,
+            'component_slots', jsonb_build_array(jsonb_build_object(
+              'component_slot_key', 'PRIMARY',
+              'governed_slot_ordinal', 0,
+              'cardinality', 'EXACTLY_ONE'
+            )),
+            'excerpt_purpose', 'LEGAL_EVIDENCE',
+            'transformation_or_redaction_version', 'IDENTITY_UTF8/V1'
+          ) AS body
+        ) definition
+      ),
+      source_lineage AS (
+        SELECT
+          reference.value AS reference,
+          immutable_source.canonical_payload AS immutable_payload,
+          conversion.canonical_text_byte_length,
+          pg_catalog.convert_to(
+            conversion.canonical_payload->>'canonical_text',
+            'UTF8'
+          ) AS canonical_text_bytes,
+          canonical_v2_staging.content_id(
+            'ADMITTED_SOURCE_OCCURRENCE_KEY/V1',
+            jsonb_build_object(
+              'deal_admission_id', reference.value->'deal_admission_id',
+              'source_ordinal', reference.value->'source_ordinal',
+              'immutable_source_document_id',
+                reference.value->'immutable_source_document_id'
+            )
+          ) AS source_occurrence_key
+        FROM jsonb_array_elements(p_write_set->'source_references') reference(value)
+        JOIN canonical_v2_staging.immutable_source_documents immutable_source
+          ON immutable_source.immutable_source_document_id
+            = reference.value->>'immutable_source_document_id'
+        JOIN canonical_v2_staging.canonical_text_conversions conversion
+          ON conversion.canonical_text_id = reference.value->>'canonical_text_id'
+      ),
+      admitted_occurrences AS (
+        SELECT
+          source_lineage.reference->>'canonical_text_id' AS canonical_text_id,
+          source_lineage.immutable_payload->>'source_response_content_id'
+            AS source_content_id,
+          source_lineage.immutable_payload->>'response_bytes_sha256'
+            AS document_hash,
+          source_lineage.canonical_text_byte_length,
+          source_lineage.canonical_text_bytes,
+          canonical_v2_staging.content_id(
+            'SOURCE_OCCURRENCE/V1',
+            jsonb_build_object(
+              'source_content_id',
+                source_lineage.immutable_payload->'source_response_content_id',
+              'source_occurrence_key', source_lineage.source_occurrence_key
+            )
+          ) AS source_occurrence_id
+        FROM source_lineage
+      ),
+      supplied_excerpts AS (
+        SELECT excerpt.value AS excerpt
+        FROM jsonb_array_elements(p_write_set->'excerpts') excerpt(value)
+        UNION ALL
+        SELECT stored.canonical_payload
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        JOIN canonical_v2_staging.excerpts stored
+          ON persisted.reference->>'object_kind' = 'excerpts'
+          AND stored.excerpt_id = persisted.reference->>'object_id'
+      ),
+      typed_excerpts AS (
+        SELECT
+          supplied.excerpt,
+          CASE
+            WHEN jsonb_typeof(supplied.excerpt->'absolute_start') = 'number'
+              AND supplied.excerpt->>'absolute_start'
+                ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (supplied.excerpt->>'absolute_start')::bigint
+          END AS absolute_start,
+          CASE
+            WHEN jsonb_typeof(supplied.excerpt->'absolute_end') = 'number'
+              AND supplied.excerpt->>'absolute_end'
+                ~ '^(0|[1-9][0-9]{0,15})$'
+            THEN (supplied.excerpt->>'absolute_end')::bigint
+          END AS absolute_end,
+          (
+            jsonb_typeof(supplied.excerpt) = 'object'
+            AND supplied.excerpt ?& ARRAY[
+              'schema_version', 'excerpt_id', 'excerpt_definition_id',
+              'excerpt_definition_key', 'excerpt_definition_version',
+              'excerpt_definition_payload_digest',
+              'ordered_component_assignments', 'excerpt_purpose',
+              'transformation_or_redaction_version', 'output_text_hash',
+              'source_content_id', 'source_occurrence_id', 'canonical_text_id',
+              'document_hash', 'absolute_start', 'absolute_end',
+              'exact_bytes_digest', 'exact_text', 'closure_id'
+            ]
+            AND supplied.excerpt - ARRAY[
+              'schema_version', 'excerpt_id', 'excerpt_definition_id',
+              'excerpt_definition_key', 'excerpt_definition_version',
+              'excerpt_definition_payload_digest',
+              'ordered_component_assignments', 'excerpt_purpose',
+              'transformation_or_redaction_version', 'output_text_hash',
+              'source_content_id', 'source_occurrence_id', 'canonical_text_id',
+              'document_hash', 'absolute_start', 'absolute_end',
+              'exact_bytes_digest', 'exact_text', 'closure_id'
+            ]::text[] = '{}'::jsonb
+            AND supplied.excerpt->>'schema_version' = 'EXCERPT/V1'
+            AND jsonb_typeof(supplied.excerpt->'schema_version') = 'string'
+            AND jsonb_typeof(supplied.excerpt->'excerpt_id') = 'string'
+            AND jsonb_typeof(
+              supplied.excerpt->'excerpt_definition_id'
+            ) = 'string'
+            AND jsonb_typeof(
+              supplied.excerpt->'excerpt_definition_key'
+            ) = 'string'
+            AND jsonb_typeof(
+              supplied.excerpt->'excerpt_definition_version'
+            ) = 'number'
+            AND jsonb_typeof(
+              supplied.excerpt->'excerpt_definition_payload_digest'
+            ) = 'string'
+            AND jsonb_typeof(
+              supplied.excerpt->'ordered_component_assignments'
+            ) = 'array'
+            AND jsonb_typeof(supplied.excerpt->'excerpt_purpose') = 'string'
+            AND jsonb_typeof(
+              supplied.excerpt->'transformation_or_redaction_version'
+            ) = 'string'
+            AND jsonb_typeof(supplied.excerpt->'output_text_hash') = 'string'
+            AND jsonb_typeof(supplied.excerpt->'source_content_id') = 'string'
+            AND jsonb_typeof(
+              supplied.excerpt->'source_occurrence_id'
+            ) = 'string'
+            AND jsonb_typeof(supplied.excerpt->'canonical_text_id') = 'string'
+            AND jsonb_typeof(supplied.excerpt->'document_hash') = 'string'
+            AND jsonb_typeof(supplied.excerpt->'exact_bytes_digest') = 'string'
+            AND jsonb_typeof(supplied.excerpt->'exact_text') = 'string'
+            AND jsonb_typeof(supplied.excerpt->'closure_id') = 'string'
+            AND supplied.excerpt->>'excerpt_id' ~ '^[0-9a-f]{64}$'
+            AND supplied.excerpt->>'excerpt_definition_id'
+              ~ '^[0-9a-f]{64}$'
+            AND supplied.excerpt->>'excerpt_definition_payload_digest'
+              ~ '^[0-9a-f]{64}$'
+            AND supplied.excerpt->>'output_text_hash' ~ '^[0-9a-f]{64}$'
+            AND supplied.excerpt->>'source_content_id' ~ '^[0-9a-f]{64}$'
+            AND supplied.excerpt->>'source_occurrence_id' ~ '^[0-9a-f]{64}$'
+            AND supplied.excerpt->>'canonical_text_id' ~ '^[0-9a-f]{64}$'
+            AND supplied.excerpt->>'document_hash' ~ '^[0-9a-f]{64}$'
+            AND supplied.excerpt->>'exact_bytes_digest' ~ '^[0-9a-f]{64}$'
+            AND supplied.excerpt->>'closure_id' ~ '^[0-9a-f]{64}$'
+          ) AS shape_valid
+        FROM supplied_excerpts supplied
+      )
+      SELECT 1
+      FROM typed_excerpts supplied
+      CROSS JOIN excerpt_definition definition
+      LEFT JOIN admitted_occurrences admitted
+        ON admitted.canonical_text_id = supplied.excerpt->>'canonical_text_id'
+        AND admitted.source_occurrence_id
+          = supplied.excerpt->>'source_occurrence_id'
+      WHERE CASE
+        WHEN supplied.shape_valid
+          AND supplied.absolute_start IS NOT NULL
+          AND supplied.absolute_end IS NOT NULL
+        THEN
+          CASE
+            WHEN admitted.canonical_text_id IS NULL THEN true
+            WHEN supplied.absolute_start > supplied.absolute_end
+              OR supplied.absolute_end > admitted.canonical_text_byte_length
+            THEN true
+            WHEN supplied.absolute_start < supplied.absolute_end
+              AND (
+                (
+                  supplied.absolute_start < admitted.canonical_text_byte_length
+                  AND get_byte(
+                    admitted.canonical_text_bytes,
+                    supplied.absolute_start::integer
+                  ) BETWEEN 128 AND 191
+                ) OR (
+                  supplied.absolute_end < admitted.canonical_text_byte_length
+                  AND get_byte(
+                    admitted.canonical_text_bytes,
+                    supplied.absolute_end::integer
+                  ) BETWEEN 128 AND 191
+                )
+              )
+            THEN true
+            ELSE
+              supplied.excerpt->>'excerpt_definition_id' IS DISTINCT FROM
+                definition.excerpt_definition_id
+              OR supplied.excerpt->>'excerpt_definition_key'
+                IS DISTINCT FROM definition.body->>'excerpt_definition_key'
+              OR supplied.excerpt->'excerpt_definition_version'
+                IS DISTINCT FROM definition.body->'excerpt_definition_version'
+              OR supplied.excerpt->>'excerpt_definition_payload_digest'
+                IS DISTINCT FROM definition.excerpt_definition_payload_digest
+              OR supplied.excerpt->'ordered_component_assignments'
+                IS DISTINCT FROM jsonb_build_array(jsonb_build_object(
+                  'component_slot_key', 'PRIMARY',
+                  'governed_slot_ordinal', 0,
+                  'semantic_span_id',
+                    canonical_v2_staging.content_id(
+                      'SEMANTIC_SPAN/V1',
+                      jsonb_build_object(
+                        'schema_version', 'SEMANTIC_SPAN/V1',
+                        'canonical_text_id',
+                          supplied.excerpt->'canonical_text_id',
+                        'absolute_start', supplied.excerpt->'absolute_start',
+                        'absolute_end', supplied.excerpt->'absolute_end'
+                      )
+                    )
+                ))
+              OR supplied.excerpt->>'excerpt_purpose'
+                IS DISTINCT FROM definition.body->>'excerpt_purpose'
+              OR supplied.excerpt->>'transformation_or_redaction_version'
+                IS DISTINCT FROM
+                  definition.body->>'transformation_or_redaction_version'
+              OR supplied.excerpt->>'source_content_id'
+                IS DISTINCT FROM admitted.source_content_id
+              OR supplied.excerpt->>'document_hash'
+                IS DISTINCT FROM admitted.document_hash
+              OR supplied.excerpt->>'output_text_hash' IS DISTINCT FROM
+                pg_catalog.encode(
+                  extensions.digest(
+                    pg_catalog.substring(
+                      admitted.canonical_text_bytes,
+                      supplied.absolute_start::integer + 1,
+                      (
+                        supplied.absolute_end - supplied.absolute_start
+                      )::integer
+                    ),
+                    'sha256'::text
+                  ),
+                  'hex'
+                )
+              OR supplied.excerpt->>'exact_bytes_digest' IS DISTINCT FROM
+                pg_catalog.encode(
+                  extensions.digest(
+                    pg_catalog.substring(
+                      admitted.canonical_text_bytes,
+                      supplied.absolute_start::integer + 1,
+                      (
+                        supplied.absolute_end - supplied.absolute_start
+                      )::integer
+                    ),
+                    'sha256'::text
+                  ),
+                  'hex'
+                )
+              OR supplied.excerpt->>'exact_text' IS DISTINCT FROM
+                pg_catalog.convert_from(
+                  pg_catalog.substring(
+                    admitted.canonical_text_bytes,
+                    supplied.absolute_start::integer + 1,
+                    (
+                      supplied.absolute_end - supplied.absolute_start
+                    )::integer
+                  ),
+                  'UTF8'
+                )
+              OR supplied.excerpt->>'excerpt_id' IS DISTINCT FROM
+                canonical_v2_staging.content_id(
+                  'EXCERPT/V1',
+                  jsonb_build_object(
+                    'excerpt_definition_key',
+                      supplied.excerpt->'excerpt_definition_key',
+                    'excerpt_definition_version',
+                      supplied.excerpt->'excerpt_definition_version',
+                    'excerpt_definition_payload_digest',
+                      supplied.excerpt->'excerpt_definition_payload_digest',
+                    'ordered_component_assignments',
+                      supplied.excerpt->'ordered_component_assignments',
+                    'excerpt_purpose', supplied.excerpt->'excerpt_purpose',
+                    'transformation_or_redaction_version',
+                      supplied.excerpt->'transformation_or_redaction_version',
+                    'output_text_hash', supplied.excerpt->'output_text_hash'
+                  )
+                )
+          END
+        ELSE true
+      END
+    ) THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN excerpt identity or source bytes are invalid'
         USING ERRCODE = '23514';
     END IF;
 

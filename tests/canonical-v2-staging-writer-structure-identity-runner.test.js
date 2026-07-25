@@ -19,6 +19,12 @@ test('structural identity acceptance is staging-only, bounded and rollback-bound
   assert.match(source, /replay_result->>'replayed' IS DISTINCT FROM 'true'/);
   assert.match(source, /provision_mismatch_count/);
   assert.match(source, /component_mismatch_count/);
+  assert.match(source, /forged excerpt identity/);
+  assert.match(source, /excerpt on the wrong source occurrence/);
+  assert.match(source, /unbound excerpt field/);
+  assert.match(source, /re-signed excerpt bytes not present in source/);
+  assert.match(source, /excerpt splitting a UTF-8 code point/);
+  assert.match(source, /zero-length continuation-offset excerpt/);
   assert.match(source, /forged provision identity/);
   assert.match(source, /forged provision anchor/);
   assert.match(source, /re-signed wrong source occurrence/);
@@ -31,8 +37,11 @@ test('structural identity acceptance is staging-only, bounded and rollback-bound
   assert.match(source, /whitespace-only component key/);
   assert.match(source, /component splitting a UTF-8 code point/);
   assert.match(source, /persisted parent with zero-length continuation-offset component/);
-  assert.match(source, /malformed persisted provision was accepted/);
-  assert.match(source, /INSERT INTO canonical_v2_staging\.provision_instances/);
+  assert.match(source, /CANONICAL_V2_MALFORMED_PERSISTED_EXCERPT_BYTES/);
+  assert.match(source, /malformed persisted \$\{target\.label\} was accepted/);
+  assert.match(source, /table: 'provision_instances'/);
+  assert.match(source, /table: 'excerpts'/);
+  assert.match(source, /INSERT INTO canonical_v2_staging\.\$\{target\.table\}/);
   assert.doesNotMatch(source, /commit:\s*true/);
   assert.doesNotMatch(source, /\bCOMMIT;/);
   assert.doesNotMatch(source, /tzulhdasmioeechxapdy/);
