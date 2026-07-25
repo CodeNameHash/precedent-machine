@@ -17,6 +17,7 @@ const {
   buildClaimRevision,
   buildRelationshipRevision,
   validateClaimRevisionIdentity,
+  validateRelationshipRevisionIdentity,
 } = require('../lib/canonical-v2/claims-relationships');
 const {
   buildImmutableSource,
@@ -417,6 +418,14 @@ test('claim identity rejects unsafe ordinals, unbound evidence and non-canonical
     /canonical source order/,
   );
 
+  const nonArrayEvidence = structuredClone(claim);
+  nonArrayEvidence.evidence = 'forged';
+  nonArrayEvidence.evidence_ids = [];
+  assert.throws(
+    () => validateClaimRevisionIdentity(nonArrayEvidence),
+    /bounded arrays/,
+  );
+
   assert.throws(() => buildClaimRevision({
     subject_occurrence_id: subjectOccurrenceId,
     claim_definition_key: 'KNOWLEDGE_QUALIFIER',
@@ -457,4 +466,85 @@ test('claim identity rejects unsafe ordinals, unbound evidence and non-canonical
     evidence: [firstEvidence],
     extraction_version: 7,
   }), /non-empty string/);
+});
+
+test('relationship identity governs definitions, versions, targets and evidence order', () => {
+  const sourceOccurrenceId = occurrenceId('SOURCE_OCCURRENCE', 'relationship-identity');
+  const targetOccurrenceId = occurrenceId('TARGET_OCCURRENCE', 'relationship-identity');
+  const firstEvidence = syntheticEvidence('relationship-first', 'OPERATIVE_TEXT', 10);
+  const secondEvidence = syntheticEvidence('relationship-second', 'DEFINITION', 20);
+  const relationship = buildRelationshipRevision({
+    source_occurrence_id: sourceOccurrenceId,
+    relationship_definition_key: 'BRINGS_DOWN',
+    state: 'PRESENT',
+    target_occurrence_ids: [targetOccurrenceId],
+    effect: {
+      effect_mode: 'TYPED_LEGAL_EFFECT',
+      legal_operation: 'APPLIES_ACCURACY_STANDARD',
+    },
+    evidence: [secondEvidence, firstEvidence],
+  });
+
+  assert.equal(validateRelationshipRevisionIdentity(relationship), true);
+  assert.deepEqual(
+    relationship.evidence.map((edge) => edge.absolute_start),
+    [10, 20],
+  );
+
+  const reversed = structuredClone(relationship);
+  reversed.evidence.reverse();
+  assert.throws(
+    () => validateRelationshipRevisionIdentity(reversed),
+    /canonical source order/,
+  );
+
+  const nonArrayEvidence = structuredClone(relationship);
+  nonArrayEvidence.evidence = 'forged';
+  nonArrayEvidence.evidence_ids = [];
+  assert.throws(
+    () => validateRelationshipRevisionIdentity(nonArrayEvidence),
+    /bounded arrays/,
+  );
+
+  const scalarEffect = buildRelationshipRevision({
+    source_occurrence_id: sourceOccurrenceId,
+    relationship_definition_key: 'BRINGS_DOWN',
+    state: 'PRESENT',
+    target_occurrence_ids: [targetOccurrenceId],
+    effect: 'forged',
+    evidence: [firstEvidence],
+  });
+  assert.equal(scalarEffect.publication_state, 'QUARANTINED');
+  assert.ok(scalarEffect.quarantine.reason_codes.includes('PRESENT_WITHOUT_EFFECT'));
+  assert.throws(
+    () => validateRelationshipRevisionIdentity(scalarEffect),
+    /not validated for publication/,
+  );
+
+  for (const input of [
+    {
+      relationship_definition_key: 'uncontrolled relationship',
+    },
+    {
+      relationship_definition_key: 'BRINGS_DOWN',
+      relationship_definition_version: Number.MAX_SAFE_INTEGER + 1,
+    },
+    {
+      relationship_definition_key: 'BRINGS_DOWN',
+      ordinal: Number.MAX_SAFE_INTEGER + 1,
+    },
+    {
+      relationship_definition_key: 'BRINGS_DOWN',
+      resolver_version: 7,
+    },
+  ]) {
+    assert.throws(() => buildRelationshipRevision({
+      source_occurrence_id: sourceOccurrenceId,
+      state: 'PRESENT',
+      target_occurrence_ids: [targetOccurrenceId],
+      effect: { legal_operation: 'APPLIES_ACCURACY_STANDARD' },
+      evidence: [firstEvidence],
+      ...input,
+    }), /governed uppercase key|safe integer|non-empty string/);
+  }
 });
