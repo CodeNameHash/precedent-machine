@@ -1,0 +1,24 @@
+{
+  "phase": "WP-CANONICAL-WRITER-ADMISSION-IDENTITY",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-writer-admission-identity.json",
+    "scripts/canonical-v2-optiona-authority-partition.mjs",
+    "scripts/canonical-v2-staging-schema.mjs",
+    "scripts/canonical-v2-staging-writer-source-admission-identity.mjs",
+    "sql/optionA/step0b-canonical-writer-by-contract.sql",
+    "supabase/canonical-v2-foundation.sql",
+    "tests/canonical-v2-staging-writer-source-admission-identity-runner.test.js",
+    "tests/canonical-v2-writer-source-admission-identity-sql.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "docs/**",
+    "pages/**",
+    "components/**",
+    "lib/query/**",
+    "lib/parser-v2/**",
+    "supabase/canonical-v2-serving.sql",
+    "next.config.js"
+  ],
+  "note": "Closes all nine declared identities in PREPARE_SOURCE_ADMISSION before DML: six persisted admission objects, coverage proof, preparation slot and verified bundle. The increment remains isolated-staging, rollback-tested and does not claim SQL authentication of the raw-deflate logical source-map digest."
+}

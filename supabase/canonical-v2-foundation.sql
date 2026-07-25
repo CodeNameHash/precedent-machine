@@ -1737,6 +1737,97 @@ BEGIN
         USING ERRCODE = '23514';
     END IF;
 
+    IF conversion->>'canonical_text_id' IS DISTINCT FROM
+        canonical_v2_staging.content_id(
+          'SEC_CANONICAL_TEXT/V2',
+          jsonb_build_object(
+            'source_response_content_id', conversion->'source_response_content_id',
+            'converter_digest', conversion->'converter_digest',
+            'converter_config_digest', conversion->'converter_config_digest',
+            'canonical_text_sha256', conversion->'canonical_text_sha256',
+            'canonical_text_byte_length', conversion->'canonical_text_byte_length',
+            'source_map_digest', conversion->'source_map_digest'
+          )
+        ) THEN
+      RAISE EXCEPTION 'canonical text conversion identity does not match its payload'
+        USING ERRCODE = '23514';
+    END IF;
+    IF verification->>'verification_manifest_id' IS DISTINCT FROM
+        canonical_v2_staging.content_id(
+          'CANONICAL_TEXT_VERIFICATION_MANIFEST/V1',
+          verification - 'verification_manifest_id'
+        ) THEN
+      RAISE EXCEPTION 'canonical text verification identity does not match its payload'
+        USING ERRCODE = '23514';
+    END IF;
+    IF immutable_source->>'immutable_source_document_id' IS DISTINCT FROM
+        canonical_v2_staging.content_id(
+          'IMMUTABLE_SOURCE_DOCUMENT/V2',
+          immutable_source - 'immutable_source_document_id'
+        ) THEN
+      RAISE EXCEPTION 'immutable source document identity does not match its payload'
+        USING ERRCODE = '23514';
+    END IF;
+    IF source_admission->>'coverage_proof_digest' IS DISTINCT FROM
+        canonical_v2_staging.content_id(
+          'SOURCE_ADMISSION_COVERAGE_PROOF/V2',
+          jsonb_build_object(
+            'canonical_text_id', conversion->'canonical_text_id',
+            'canonical_text_byte_length', conversion->'canonical_text_byte_length',
+            'source_map_digest', conversion->'source_map_digest',
+            'admitted_intervals', source_admission->'admitted_intervals',
+            'excluded_intervals', source_admission->'excluded_intervals',
+            'discrepancy_count', source_admission->'discrepancy_count'
+          )
+        ) THEN
+      RAISE EXCEPTION 'source admission coverage proof identity does not match its payload'
+        USING ERRCODE = '23514';
+    END IF;
+    IF source_admission->>'source_admission_manifest_id' IS DISTINCT FROM
+        canonical_v2_staging.content_id(
+          'SOURCE_ADMISSION_MANIFEST/V2',
+          source_admission - 'source_admission_manifest_id'
+        ) THEN
+      RAISE EXCEPTION 'source admission manifest identity does not match its payload'
+        USING ERRCODE = '23514';
+    END IF;
+    IF preparation_receipt->>'preparation_slot_id' IS DISTINCT FROM
+        canonical_v2_staging.content_id(
+          'SOURCE_ADMISSION_PREPARATION_SLOT/V1',
+          jsonb_build_object(
+            'intake_capture_receipt_id', capture->'intake_capture_receipt_id',
+            'source_admission_manifest_id',
+              source_admission->'source_admission_manifest_id'
+          )
+        ) THEN
+      RAISE EXCEPTION 'source admission preparation slot identity does not match its payload'
+        USING ERRCODE = '23514';
+    END IF;
+    IF preparation_receipt->>'source_admission_preparation_receipt_id' IS DISTINCT FROM
+        canonical_v2_staging.content_id(
+          'SOURCE_ADMISSION_PREPARATION_RECEIPT/V1',
+          preparation_receipt - 'source_admission_preparation_receipt_id'
+        ) THEN
+      RAISE EXCEPTION 'source admission preparation receipt identity does not match its payload'
+        USING ERRCODE = '23514';
+    END IF;
+    IF semantic_input->>'semantic_extraction_input_envelope_id' IS DISTINCT FROM
+        canonical_v2_staging.content_id(
+          'SEMANTIC_EXTRACTION_INPUT_ENVELOPE/V1',
+          semantic_input - 'semantic_extraction_input_envelope_id'
+        ) THEN
+      RAISE EXCEPTION 'semantic extraction input envelope identity does not match its payload'
+        USING ERRCODE = '23514';
+    END IF;
+    IF source_admission_bundle->>'verified_sec_source_admission_bundle_id' IS DISTINCT FROM
+        canonical_v2_staging.content_id(
+          'VERIFIED_SEC_SOURCE_ADMISSION_BUNDLE/V1',
+          source_admission_bundle - 'verified_sec_source_admission_bundle_id'
+        ) THEN
+      RAISE EXCEPTION 'verified source admission bundle identity does not match its payload'
+        USING ERRCODE = '23514';
+    END IF;
+
     IF p_input_digest !~ '^[0-9a-f]{64}$'
       OR jsonb_typeof(p_receipt) IS DISTINCT FROM 'object'
       OR NOT (p_receipt ?& ARRAY[
