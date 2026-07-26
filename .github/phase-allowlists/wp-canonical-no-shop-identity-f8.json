@@ -1,0 +1,30 @@
+{
+  "phase": "WP-CANONICAL-NO-SHOP-IDENTITY-F8",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-no-shop-identity-f8.json",
+    "lib/canonical-v2/contract-bundle.js",
+    "tests/canonical-v2-contract-bundle-versions.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "docs/**",
+    "pages/**",
+    "components/**",
+    "lib/query/**",
+    "lib/parser-v2/**",
+    "lib/canonical-v2/admitted-parser-proposal-adapter.js",
+    "lib/canonical-v2/candidate-release.js",
+    "lib/canonical-v2/candidate-release-import.js",
+    "lib/canonical-v2/canonical-writer.js",
+    "lib/canonical-v2/claims-relationships.js",
+    "lib/canonical-v2/market-cohort-query.js",
+    "lib/canonical-v2/serving-projection.js",
+    "lib/canonical-v2/shared-serving-row.js",
+    "lib/canonical-v2/validate-write-set.js",
+    "scripts/**",
+    "sql/**",
+    "supabase/**",
+    "next.config.js"
+  ],
+  "note": "Adds the inactive F8 occurrence identity contracts required to represent no-shop definition-use relationships without a notice revision identity cycle. F1-F7 remain immutable. F8 grants no source mapping, result, metric, query, serving, write, release or production activation authority."
+}

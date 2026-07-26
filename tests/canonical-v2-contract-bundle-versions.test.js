@@ -28,6 +28,7 @@ const {
   FIXTURE_CONTRACT_INPUT_V5,
   FIXTURE_CONTRACT_INPUT_V6,
   FIXTURE_CONTRACT_INPUT_V7,
+  FIXTURE_CONTRACT_INPUT_V8,
   FIXTURE_CONTRACT_FINGERPRINTS,
   FIXTURE_SERVING_CONTRACT_FINGERPRINTS,
   CLAIM_INTERPRETATION_POLICY_V1,
@@ -36,8 +37,10 @@ const {
   NO_SHOP_INLINE_PERMISSION_EFFECT_SCHEMA_V1,
   NO_SHOP_NOTICE_OBLIGATION_SCHEMA_V1,
   NO_SHOP_NOTICE_OBLIGATION_SCHEMA_V2,
+  NO_SHOP_NOTICE_OBLIGATION_SCHEMA_V3,
   NO_SHOP_EXCEPTION_PREREQUISITE_CODES_V2,
   USES_DEFINITION_EFFECT_SCHEMA_V1,
+  USES_DEFINITION_EFFECT_SCHEMA_V2,
   compileFixtureContract,
   compileFixtureContractV2,
   compileFixtureContractV3,
@@ -45,6 +48,7 @@ const {
   compileFixtureContractV5,
   compileFixtureContractV6,
   compileFixtureContractV7,
+  compileFixtureContractV8,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -56,6 +60,7 @@ const FROZEN_F4 = 'd4ce5235be1818a42d9aba0dfb34198456eb062381e7d7db7b8289dd88671
 const FROZEN_F5 = 'f80a77651d1b6a6a9eec8ac67526a8704f498761cbb22a67e6ceb4716abb5478';
 const FROZEN_F6 = '161083b014a35d800dec0b0c41a97dc6d97f38a5dd206b388ba51b3ab9f68c08';
 const FROZEN_F7 = '5037e25762892f44f660516913d58a23c17ebab0c10c160fcf8cbd0f65a90969';
+const FROZEN_F8 = 'dd0f1d4afc02492edf1bbbebe1a6699498fd6c3d26d890254a151b1d8c7d0a80';
 
 const APPROVED_V2_ADDITIONS = [
   'TERMR-BREACH',
@@ -116,13 +121,14 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F7 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F8 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
   assert.notEqual(FROZEN_F4, FROZEN_F5);
   assert.notEqual(FROZEN_F5, FROZEN_F6);
   assert.notEqual(FROZEN_F6, FROZEN_F7);
+  assert.notEqual(FROZEN_F7, FROZEN_F8);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -133,6 +139,7 @@ test('F1 through F7 are distinct recognised fixture contract fingerprints', () =
       FROZEN_F5,
       FROZEN_F6,
       FROZEN_F7,
+      FROZEN_F8,
     ].sort(),
   );
   assert.deepEqual(
@@ -1055,6 +1062,236 @@ test('F7 refuses interpretation, notice and definition-effect hybrids', () => {
   }), /contract version/);
 });
 
+test('F8 freezes stable occurrence identities and removes the notice revision endpoint cycle', () => {
+  const f7 = compileFixtureContractV7();
+  const f8 = compileFixtureContractV8();
+  assert.equal(f8.fingerprint, FROZEN_F8);
+  assert.equal(validateContractBundle(f8), true);
+  assert.equal(
+    canonicalJson(f8),
+    canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V8)),
+  );
+  assert.equal(
+    canonicalJson(NO_SHOP_NOTICE_OBLIGATION_SCHEMA_V3),
+    canonicalJson(FIXTURE_CONTRACT_INPUT_V8.no_shop_semantic_schemas.find(
+      (entry) => entry.schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+    )),
+  );
+  assert.equal(
+    f8.definition_use_effect_schema_definition,
+    USES_DEFINITION_EFFECT_SCHEMA_V2,
+  );
+  assert.deepEqual(
+    f8.relationship_definitions.find(
+      (entry) => entry.relationship_key === 'USES_DEFINITION',
+    ),
+    {
+      relationship_key: 'USES_DEFINITION',
+      effect_mode: 'TYPED_LEGAL_EFFECT',
+      version: 3,
+      effect_schema: 'USES_DEFINITION_EFFECT/V2',
+    },
+  );
+  assert.deepEqual(
+    f8.definition_use_effect_schema_definition.affected_endpoint_contract
+      .allowed_endpoint_fields,
+    [
+      {
+        endpoint_kind: 'NOTICE_OBLIGATION_OCCURRENCE',
+        affected_field_keys: [
+          'trigger_expression',
+          'copy_subject_codes',
+          'content_requirement_codes',
+        ],
+      },
+      {
+        endpoint_kind: 'DEFINITION_OCCURRENCE',
+        affected_field_keys: ['nested_definition_dependency'],
+      },
+    ],
+  );
+  assert.equal(
+    f8.definition_use_effect_schema_definition.notice_revision_endpoint_forbidden,
+    true,
+  );
+  assert.equal(
+    f8.definition_use_effect_schema_definition
+      .notice_relationship_endpoint_must_be_stable_occurrence,
+    true,
+  );
+  assert.equal(
+    f8.definition_use_effect_schema_definition.required_exact_values
+      .effect_schema_version,
+    2,
+  );
+  assert.equal(
+    FIXTURE_SERVING_CONTRACT_FINGERPRINTS.includes(FROZEN_F8),
+    false,
+  );
+  assert.equal(canonicalJson(fixtureContractForFingerprint(FROZEN_F8)), canonicalJson(f8));
+  assert.equal(canonicalJson(compileFixtureContractV7()), canonicalJson(f7));
+});
+
+test('F8 identities anchor source occurrences without semantic or selected-target leakage', () => {
+  const f8 = compileFixtureContractV8();
+  const notice = f8.no_shop_semantic_schema_definitions.find(
+    (entry) => entry.semantic_schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  );
+  assert.equal(notice.semantic_schema_version, 3);
+  assert.equal(notice.record_schema, 'NO_SHOP_NOTICE_OBLIGATION/V3');
+  assert.deepEqual(
+    notice.notice_occurrence_identity_contract.identity_inputs,
+    [
+      'document_hash',
+      'exact_source_span',
+      'concept_key',
+      'party',
+      'governed_ordinal',
+      'source_provision_instance_id',
+    ],
+  );
+  assert.equal(
+    notice.notice_occurrence_identity_contract.revision_content_forbidden_from_identity,
+    true,
+  );
+  assert.equal(
+    notice.notice_occurrence_identity_contract
+      .relationship_occurrence_ids_forbidden_from_identity,
+    true,
+  );
+  assert.deepEqual(
+    notice.notice_revision_identity_contract.identity_inputs,
+    notice.required_fields.filter(
+      (field) => field !== 'notice_obligation_revision_id',
+    ),
+  );
+  assert.equal(
+    notice.notice_revision_identity_contract
+      .relationship_endpoints_must_target_notice_occurrence,
+    true,
+  );
+
+  const identities = f8.definition_use_effect_schema_definition.identity_contracts;
+  assert.deepEqual(
+    identities.definition_occurrence.identity_inputs,
+    [
+      'document_hash',
+      'exact_declaration_span',
+      'ordered_body_spans',
+      'neutral_definition_key',
+      'governed_ordinal',
+    ],
+  );
+  assert.equal(
+    identities.definition_occurrence
+      .neutral_definition_key_must_not_be_canonical_concept_key,
+    true,
+  );
+  assert.deepEqual(
+    identities.exact_use_occurrence.identity_inputs,
+    [
+      'document_hash',
+      'exact_use_span',
+      'raw_use_form',
+      'governed_ordinal',
+    ],
+  );
+  assert.equal(
+    identities.exact_use_occurrence
+      .selected_definition_occurrence_id_forbidden_from_identity,
+    true,
+  );
+  assert.equal(
+    identities.exact_use_occurrence.legal_role_code_forbidden_from_identity,
+    true,
+  );
+  assert.deepEqual(
+    identities.source_party_context.identity_inputs,
+    ['document_hash', 'source_scope_id', 'party', 'evidence_excerpt_ids'],
+  );
+  assert.equal(identities.source_party_context.party_inference_forbidden, true);
+  assert.equal(identities.source_party_context.party_transfer_forbidden, true);
+});
+
+test('F8 changes only occurrence identity contracts and the corrected definition endpoint', () => {
+  const f7 = compileFixtureContractV7();
+  const f8 = compileFixtureContractV8();
+  const stable = (bundle) => {
+    const {
+      fingerprint: _fingerprint,
+      relationship_definitions: _relationships,
+      no_shop_semantic_schema_definitions: _noShopSchemas,
+      definition_use_effect_schema_definition: _definitionEffect,
+      ...rest
+    } = bundle;
+    return rest;
+  };
+  assert.equal(canonicalJson(stable(f8)), canonicalJson(stable(f7)));
+  assert.deepEqual(
+    f8.relationship_definitions.filter(
+      (entry) => entry.relationship_key !== 'USES_DEFINITION',
+    ),
+    f7.relationship_definitions.filter(
+      (entry) => entry.relationship_key !== 'USES_DEFINITION',
+    ),
+  );
+  assert.deepEqual(
+    f8.no_shop_semantic_schema_definitions.filter(
+      (entry) => entry.semantic_schema_key !== 'NO_SHOP_NOTICE_OBLIGATION',
+    ),
+    f7.no_shop_semantic_schema_definitions.filter(
+      (entry) => entry.semantic_schema_key !== 'NO_SHOP_NOTICE_OBLIGATION',
+    ),
+  );
+});
+
+test('F8 refuses partial endpoint, identity and version hybrids', () => {
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V8,
+    relationship_definitions: FIXTURE_CONTRACT_INPUT_V7.relationship_definitions,
+  }), /contract version/);
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V8,
+    no_shop_semantic_schemas: FIXTURE_CONTRACT_INPUT_V7.no_shop_semantic_schemas,
+  }), /contract version/);
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V8,
+    definition_use_effect_schema: FIXTURE_CONTRACT_INPUT_V7.definition_use_effect_schema,
+  }), /contract version/);
+
+  const revisionEndpoint = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V8.definition_use_effect_schema,
+  ));
+  revisionEndpoint.affected_endpoint_contract.allowed_endpoint_fields[0]
+    .endpoint_kind = 'NOTICE_OBLIGATION_REVISION';
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V8,
+    definition_use_effect_schema: revisionEndpoint,
+  }), /contract version/);
+
+  const selectedTargetIdentity = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V8.definition_use_effect_schema,
+  ));
+  selectedTargetIdentity.identity_contracts.exact_use_occurrence.identity_inputs
+    .push('selected_definition_occurrence_id');
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V8,
+    definition_use_effect_schema: selectedTargetIdentity,
+  }), /contract version/);
+
+  const cyclicNoticeIdentity = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V8.no_shop_semantic_schemas,
+  ));
+  cyclicNoticeIdentity.find(
+    (entry) => entry.schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  ).notice_occurrence_identity_contract.identity_inputs
+    .push('definition_use_relationship_ids');
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V8,
+    no_shop_semantic_schemas: cyclicNoticeIdentity,
+  }), /contract version/);
+});
+
 // ---------------------------------------------------------------------------
 // Per-version validation: validateInput (exercised via compileFixtureContract)
 // accepts either frozen concept-key vocabulary and rejects anything else.
@@ -1081,7 +1318,7 @@ test('a bundle missing one of the four V2 additions is rejected (not silently ac
   assert.throws(() => compileFixtureContract(partial), /concept keys do not match any frozen fixture contract version/);
 });
 
-test('validateContractBundle accepts compiled V1 through V7 bundles', () => {
+test('validateContractBundle accepts compiled V1 through V8 bundles', () => {
   assert.equal(validateContractBundle(compileFixtureContract()), true);
   assert.equal(validateContractBundle(compileFixtureContractV2()), true);
   assert.equal(validateContractBundle(compileFixtureContractV3()), true);
@@ -1089,4 +1326,5 @@ test('validateContractBundle accepts compiled V1 through V7 bundles', () => {
   assert.equal(validateContractBundle(compileFixtureContractV5()), true);
   assert.equal(validateContractBundle(compileFixtureContractV6()), true);
   assert.equal(validateContractBundle(compileFixtureContractV7()), true);
+  assert.equal(validateContractBundle(compileFixtureContractV8()), true);
 });
