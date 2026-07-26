@@ -22,6 +22,7 @@ const {
   compileFixtureContractV6,
   compileFixtureContractV7,
   compileFixtureContractV8,
+  compileFixtureContractV9,
 } = require('../lib/canonical-v2/contract-bundle');
 const {
   buildQxoNoShopClockParserBoundReviewSeed,
@@ -73,6 +74,10 @@ const {
   buildQxoNoShopDefinitionRelationshipsF8FailureIsolationAttestation,
   validateQxoNoShopDefinitionRelationshipsF8,
 } = require('../lib/canonical-v2/qxo-no-shop-definition-relationships-f8');
+const {
+  buildQxoNoShopNoticeReceiptF10,
+  validateQxoNoShopNoticeReceiptF10,
+} = require('../lib/canonical-v2/qxo-no-shop-notice-receipt-f10');
 const {
   buildQxoAdmittedNoShopActionsSlice,
 } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
@@ -150,6 +155,10 @@ const NOTICE_REVIEW_MATERIALISATION_F7_FIXTURE_PATH = join(
 const NOTICE_DEFINITION_RELATIONSHIPS_F8_FIXTURE_PATH = join(
   ROOT,
   'tests/fixtures/canonical-v2/qxo-no-shop-definition-relationships-f8-staging-attestation.json',
+);
+const NOTICE_RECEIPT_F10_FIXTURE_PATH = join(
+  ROOT,
+  'tests/fixtures/canonical-v2/qxo-no-shop-notice-receipt-f10-staging-attestation.json',
 );
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
@@ -1888,6 +1897,146 @@ function buildNoticeDefinitionRelationshipsF8Attestation() {
   };
 }
 
+function buildNoticeReceiptF10Attestation() {
+  const {
+    bindingInputs,
+    carrier: noticeSourceCarrier,
+    contractBundle: f6ContractBundle,
+  } = buildNoticeSourceF6Runtime();
+  const definitionGraph =
+    bindingInputs.qxo_no_shop_reviewed_definition_graph_f6;
+  const closure = buildQxoNoShopNoticeSemanticClosureF6({
+    contract_bundle: f6ContractBundle,
+    qxo_no_shop_notice_source_binding_f6: noticeSourceCarrier,
+  });
+  const f7Carrier = buildQxoNoShopNoticeReviewMaterialisationF7({
+    contract_bundle: compileFixtureContractV7(),
+    qxo_no_shop_notice_source_binding_f6: noticeSourceCarrier,
+    qxo_no_shop_notice_semantic_closure_f6: closure,
+  });
+  const f8Carrier = buildQxoNoShopDefinitionRelationshipsF8({
+    contract_bundle: compileFixtureContractV8(),
+    qxo_no_shop_notice_review_materialisation_f7: f7Carrier,
+    qxo_no_shop_notice_source_binding_f6: noticeSourceCarrier,
+    qxo_no_shop_reviewed_definition_graph_f6: definitionGraph,
+  });
+  const inputs = {
+    contract_bundle: compileFixtureContractV9(),
+    qxo_no_shop_definition_relationships_f8: f8Carrier,
+    qxo_no_shop_notice_review_materialisation_f7: f7Carrier,
+    qxo_no_shop_notice_source_binding_f6: noticeSourceCarrier,
+  };
+  const carrier = buildQxoNoShopNoticeReceiptF10(inputs);
+  validateQxoNoShopNoticeReceiptF10({
+    qxo_no_shop_notice_receipt_f10: carrier,
+    ...inputs,
+  });
+
+  const changed = JSON.parse(JSON.stringify(carrier));
+  changed.status.release_eligible = true;
+  let carrierDriftRejected = false;
+  try {
+    validateQxoNoShopNoticeReceiptF10({
+      qxo_no_shop_notice_receipt_f10: changed,
+      ...inputs,
+    });
+  } catch (_) {
+    carrierDriftRejected = true;
+  }
+  if (!carrierDriftRejected) {
+    throw new Error('The F10 notice receipt carrier accepted identity drift.');
+  }
+
+  return {
+    schema_version:
+      'QXO_NO_SHOP_NOTICE_RECEIPT_F10_STAGING_ATTESTATION/V1',
+    environment: 'STAGING',
+    authority_scope: carrier.authority_scope,
+    contract_binding: carrier.contract_binding,
+    source_binding: carrier.source_binding,
+    upstream_bindings: carrier.upstream_bindings,
+    notice_occurrence: {
+      notice_obligation_occurrence_id:
+        carrier.notice_occurrence.notice_obligation_occurrence_id,
+      source_provision_instance_id:
+        carrier.notice_occurrence.source_provision_instance_id,
+      exact_source_span: carrier.notice_occurrence.exact_source_span,
+      party: carrier.notice_occurrence.party,
+    },
+    corrected_copy_clock_interpretation: {
+      interpretation_payload_id:
+        carrier.corrected_copy_clock_interpretation
+          .interpretation_payload_id,
+      primary_interpretation:
+        carrier.corrected_copy_clock_interpretation
+          .primary_interpretation,
+      alternative_interpretations:
+        carrier.corrected_copy_clock_interpretation
+          .alternative_interpretations,
+      clarity_state:
+        carrier.corrected_copy_clock_interpretation.clarity_state,
+      ambiguity_dimension_codes:
+        carrier.corrected_copy_clock_interpretation
+          .ambiguity_dimension_codes,
+      lawyer_review_note:
+        carrier.corrected_copy_clock_interpretation
+          .lawyer_review_note,
+      review_provenance:
+        carrier.corrected_copy_clock_interpretation
+          .review_provenance,
+    },
+    notice_revision: {
+      schema_version: carrier.notice_revision.schema_version,
+      notice_obligation_revision_id:
+        carrier.notice_revision.notice_obligation_revision_id,
+      notice_obligation_occurrence_id:
+        carrier.notice_revision.notice_obligation_occurrence_id,
+      trigger_codes: carrier.notice_revision.trigger_codes,
+      delivery_method_codes:
+        carrier.notice_revision.delivery_method_codes,
+      content_requirement_codes:
+        carrier.notice_revision.content_requirement_codes,
+      copy_subject_codes: carrier.notice_revision.copy_subject_codes,
+      definition_use_relationship_ids:
+        carrier.notice_revision.definition_use_relationship_ids,
+      copy_clock_scope: {
+        clock_scope_id:
+          carrier.notice_revision.copy_clock_scope.clock_scope_id,
+        timing_claim_revision_id:
+          carrier.notice_revision.copy_clock_scope
+            .timing_claim_revision_id,
+        primary_receipt_interpretation_code:
+          carrier.notice_revision.copy_clock_scope
+            .primary_receipt_interpretation_code,
+        alternative_receipt_interpretation_codes:
+          carrier.notice_revision.copy_clock_scope
+            .alternative_receipt_interpretation_codes,
+        copy_subject_association_state:
+          carrier.notice_revision.copy_clock_scope
+            .copy_subject_association_state,
+        item_or_batch_cardinality_state:
+          carrier.notice_revision.copy_clock_scope
+            .item_or_batch_cardinality_state,
+        comparability_effect_code:
+          carrier.notice_revision.copy_clock_scope
+            .comparability_effect_code,
+        resolution_state:
+          carrier.notice_revision.copy_clock_scope.resolution_state,
+      },
+      child_resolution_states:
+        carrier.notice_revision.child_resolution_states,
+      scope_closure_id: carrier.notice_revision.scope_closure_id,
+      evidence_excerpt_count:
+        carrier.notice_revision.evidence_excerpt_ids.length,
+    },
+    materialisation_status: carrier.status,
+    carrier_drift_rejected: carrierDriftRejected,
+    qxo_no_shop_notice_receipt_f10_id:
+      carrier.qxo_no_shop_notice_receipt_f10_id,
+    canonical_payload_digest: carrier.canonical_payload_digest,
+  };
+}
+
 function verifyActionsFailureIsolation(bridgeInputs) {
   const missingFirstAction = JSON.parse(JSON.stringify(
     bridgeInputs.reviewed_no_shop_actions_slice,
@@ -2112,14 +2261,18 @@ if (![
   '--notice-review-materialisation-f7-verify',
   '--notice-definition-relationships-f8-print',
   '--notice-definition-relationships-f8-verify',
+  '--notice-receipt-f10-print',
+  '--notice-receipt-f10-verify',
 ].includes(mode)
   || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--inline-permission-f9-print|--inline-permission-f9-verify|--notice-source-f6-print|--notice-source-f6-verify|--notice-semantic-closure-f6-print|--notice-semantic-closure-f6-verify|--notice-review-materialisation-f7-print|--notice-review-materialisation-f7-verify|--notice-definition-relationships-f8-print|--notice-definition-relationships-f8-verify');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--inline-permission-f9-print|--inline-permission-f9-verify|--notice-source-f6-print|--notice-source-f6-verify|--notice-semantic-closure-f6-print|--notice-semantic-closure-f6-verify|--notice-review-materialisation-f7-print|--notice-review-materialisation-f7-verify|--notice-definition-relationships-f8-print|--notice-definition-relationships-f8-verify|--notice-receipt-f10-print|--notice-receipt-f10-verify');
 }
 
 try {
+  const noticeReceiptF10Mode =
+    mode.startsWith('--notice-receipt-f10-');
   const inlinePermissionF9Mode =
-    mode.startsWith('--inline-permission-f9-');
+    !noticeReceiptF10Mode && mode.startsWith('--inline-permission-f9-');
   const noticeDefinitionRelationshipsF8Mode =
     !inlinePermissionF9Mode
     && mode.startsWith('--notice-definition-relationships-f8-');
@@ -2142,7 +2295,9 @@ try {
     && mode.startsWith('--definitions-f6-');
   const actionsF6Mode = !definitionsF6Mode && mode.startsWith('--actions-f6-');
   const actionsMode = !actionsF6Mode && mode.startsWith('--actions-');
-  const attestation = inlinePermissionF9Mode
+  const attestation = noticeReceiptF10Mode
+    ? buildNoticeReceiptF10Attestation()
+    : inlinePermissionF9Mode
     ? buildInlinePermissionF9Attestation()
     : noticeDefinitionRelationshipsF8Mode
     ? buildNoticeDefinitionRelationshipsF8Attestation()
@@ -2166,7 +2321,9 @@ try {
     : attestation;
   if (mode.endsWith('verify')) {
     const expected = JSON.parse(readFileSync(
-      inlinePermissionF9Mode
+      noticeReceiptF10Mode
+        ? NOTICE_RECEIPT_F10_FIXTURE_PATH
+        : inlinePermissionF9Mode
         ? INLINE_PERMISSION_F9_FIXTURE_PATH
         : noticeDefinitionRelationshipsF8Mode
         ? NOTICE_DEFINITION_RELATIONSHIPS_F8_FIXTURE_PATH
