@@ -1,0 +1,32 @@
+{
+  "phase": "WP-CANONICAL-QXO-NO-SHOP-DEFINITION-RELATIONS-F8",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-qxo-no-shop-definition-relations-f8.json",
+    "lib/canonical-v2/qxo-no-shop-definition-relationships-f8.js",
+    "scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs",
+    "tests/canonical-v2-qxo-no-shop-definition-relationships-f8.test.js",
+    "tests/fixtures/canonical-v2/qxo-no-shop-definition-relationships-f8-staging-attestation.json"
+  ],
+  "denied": [
+    ".env*",
+    "docs/**",
+    "pages/**",
+    "components/**",
+    "lib/query/**",
+    "lib/parser-v2/**",
+    "lib/canonical-v2/contract-bundle.js",
+    "lib/canonical-v2/admitted-parser-proposal-adapter.js",
+    "lib/canonical-v2/candidate-release.js",
+    "lib/canonical-v2/candidate-release-import.js",
+    "lib/canonical-v2/canonical-writer.js",
+    "lib/canonical-v2/claims-relationships.js",
+    "lib/canonical-v2/market-cohort-query.js",
+    "lib/canonical-v2/serving-projection.js",
+    "lib/canonical-v2/shared-serving-row.js",
+    "lib/canonical-v2/validate-write-set.js",
+    "sql/**",
+    "supabase/**",
+    "next.config.js"
+  ],
+  "note": "Materialises the seven exact QXO first-sentence USES_DEFINITION relationships under the inactive F8 identity contract. Relationships remain review-only, definition precedence and notice revision publication remain blocked, failures are isolated, and the slice grants no result, market, query, serving, write, release or production activation authority."
+}
