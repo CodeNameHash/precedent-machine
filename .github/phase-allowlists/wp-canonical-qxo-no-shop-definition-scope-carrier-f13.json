@@ -1,0 +1,25 @@
+{
+  "phase": "WP-CANONICAL-QXO-NO-SHOP-DEFINITION-SCOPE-CARRIER-F13",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-qxo-no-shop-definition-scope-carrier-f13.json",
+    "lib/canonical-v2/qxo-no-shop-definition-scope-closure-f13.js",
+    "scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs",
+    "tests/canonical-v2-qxo-no-shop-definition-scope-closure-f13.test.js",
+    "tests/fixtures/canonical-v2/qxo-no-shop-definition-scope-closure-f13-staging-attestation.json"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "docs/**",
+    "lib/canonical-v2/canonical-writer.js",
+    "lib/canonical-v2/contract-bundle.js",
+    "lib/canonical-v2/query/**",
+    "lib/canonical-v2/serving/**",
+    "pages/**",
+    "scripts/canonical-v2-staging-qxo-no-shop.mjs",
+    "sql/**",
+    "supabase/**",
+    "next.config.js"
+  ],
+  "note": "Materialises the complete QXO notice definition-scope closure under frozen V10 using one bounded staging read. It remains review-only, retains reviewed non-comparable terminals, removes only the definition-scope blocker, and grants no writer, serving, market, query, release or production authority."
+}
