@@ -19,7 +19,7 @@ const EXPECTED_PROJECT = Object.freeze({
 });
 const F5_CONTRACT_FINGERPRINT = 'f80a77651d1b6a6a9eec8ac67526a8704f498761cbb22a67e6ceb4716abb5478';
 const EXPECTED_DIGESTS = Object.freeze({
-  'canonical-v2-foundation.sql': 'b2072879902298e09ae81cfc4c712a3e341fbaec256b3bf930f91f2917413966',
+  'canonical-v2-foundation.sql': '772eaba826d3f86531b54241303439642280f31d9a04be78278b1d8f5cc05701',
   // Active serving resolves the release-declared contract, exact detail is
   // active-release bound, and the rejected F3 fingerprint is denied at
   // every granted serving boundary.
@@ -156,6 +156,7 @@ function verifyAppliedSchema(workdir) {
     select
       to_regnamespace('canonical_v2_staging') is not null as canonical_schema_exists,
       to_regclass('canonical_v2_staging.validated_semantic_graphs') is not null as semantic_graph_table_exists,
+      to_regclass('canonical_v2_staging.deal_admission_records') is not null as deal_admission_record_table_exists,
       to_regclass('canonical_v2_staging.intake_capture_receipts') is not null as intake_capture_receipt_table_exists,
       to_regclass('canonical_v2_staging.source_artifact_manifests') is not null as source_artifact_manifest_table_exists,
       to_regclass('canonical_v2_staging.source_artifact_chunks') is not null as source_artifact_chunk_table_exists,

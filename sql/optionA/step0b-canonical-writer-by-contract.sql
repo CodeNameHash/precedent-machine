@@ -115,7 +115,7 @@ BEGIN
 END
 $$;
 
--- Governed function SHA-256: 7625f5d3a816de64d836b9f3c400604beaf3b6f6c9a27bff3d635c2111c2dbc0
+-- Governed function SHA-256: 52426c0f9e1d769c1b0b04440ff1dedd3f1e98e3c07dff3c6bd2899967eb506a
 CREATE OR REPLACE FUNCTION public.canonical_v2_write(
   p_environment text,
   p_operation text,
@@ -4067,6 +4067,321 @@ BEGIN
     END IF;
 
     IF EXISTS (
+      WITH supplied_provisions AS (
+        SELECT provision.value AS provision
+        FROM jsonb_array_elements(p_write_set->'provisions') provision(value)
+        UNION ALL
+        SELECT stored.canonical_payload
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        JOIN canonical_v2_staging.provision_instances stored
+          ON persisted.reference->>'object_kind' = 'provisions'
+          AND stored.provision_instance_id = persisted.reference->>'object_id'
+      ),
+      supplied_components AS (
+        SELECT component.value AS component
+        FROM jsonb_array_elements(p_write_set->'components') component(value)
+        UNION ALL
+        SELECT stored.canonical_payload
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        JOIN canonical_v2_staging.provision_components stored
+          ON persisted.reference->>'object_kind' = 'components'
+          AND stored.provision_component_id = persisted.reference->>'object_id'
+      ),
+      supplied_claims AS (
+        SELECT claim.value AS claim
+        FROM jsonb_array_elements(p_write_set->'claims') claim(value)
+        UNION ALL
+        SELECT stored.canonical_payload
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        JOIN canonical_v2_staging.claim_revisions stored
+          ON persisted.reference->>'object_kind' = 'claims'
+          AND stored.claim_revision_id = persisted.reference->>'object_id'
+      ),
+      supplied_excerpts AS (
+        SELECT excerpt.value AS excerpt
+        FROM jsonb_array_elements(p_write_set->'excerpts') excerpt(value)
+        UNION ALL
+        SELECT stored.canonical_payload
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        JOIN canonical_v2_staging.excerpts stored
+          ON persisted.reference->>'object_kind' = 'excerpts'
+          AND stored.excerpt_id = persisted.reference->>'object_id'
+      ),
+      inline_relationships AS (
+        SELECT relationship.value AS relationship
+        FROM jsonb_array_elements(p_write_set->'relationships')
+          relationship(value)
+        WHERE relationship.value->>'state' = 'PRESENT'
+          AND relationship.value->>'relationship_definition_key'
+            = 'EXCEPTED_BY'
+          AND relationship.value->>'relationship_definition_version' = '2'
+      ),
+      qualified_actions AS (
+        SELECT
+          relationship.relationship,
+          qualified.value #>> '{}' AS component_id,
+          qualified.ordinality,
+          component.component
+        FROM inline_relationships relationship
+        CROSS JOIN LATERAL jsonb_array_elements(
+          CASE
+            WHEN jsonb_typeof(
+              relationship.relationship
+                ->'effect'->'qualified_action_occurrence_ids'
+            ) = 'array'
+              AND jsonb_array_length(
+                relationship.relationship
+                  ->'effect'->'qualified_action_occurrence_ids'
+              ) <= 16
+            THEN relationship.relationship
+              ->'effect'->'qualified_action_occurrence_ids'
+            ELSE '[]'::jsonb
+          END
+        ) WITH ORDINALITY qualified(value, ordinality)
+        LEFT JOIN supplied_components component
+          ON component.component->>'provision_component_id'
+            = qualified.value #>> '{}'
+      )
+      SELECT 1
+      FROM inline_relationships relationship
+      LEFT JOIN supplied_provisions source
+        ON source.provision->>'provision_instance_id'
+          = relationship.relationship->>'source_occurrence_id'
+      WHERE source.provision->>'concept_key' = 'NOSOL-PROHIBIT'
+        AND CASE
+        WHEN relationship.relationship->'effect'->>'legal_operation'
+          IS DISTINCT FROM
+            'PERMITS_INFORMING_PERSONS_OF_NO_SHOP_PROVISIONS'
+        THEN true
+        WHEN jsonb_typeof(relationship.relationship->'effect') = 'object'
+          AND jsonb_typeof(
+            relationship.relationship
+              ->'effect'->'qualified_action_occurrence_ids'
+          ) = 'array'
+          AND jsonb_typeof(
+            relationship.relationship->'effect'->'evidence_excerpt_ids'
+          ) = 'array'
+          AND jsonb_typeof(
+            relationship.relationship->'target_occurrence_ids'
+          ) = 'array'
+        THEN
+          NOT coalesce((
+            relationship.relationship->>'relationship_definition_key'
+              = 'EXCEPTED_BY'
+            AND relationship.relationship->>'relationship_definition_version'
+              = '2'
+            AND (relationship.relationship->'effect') ?& ARRAY[
+              'effect_mode',
+              'legal_operation',
+              'permitted_action_code',
+              'qualified_action_occurrence_ids',
+              'permitted_actor_party',
+              'information_subject_code',
+              'temporal_scope_inheritance',
+              'cross_reference_excerpt_id',
+              'evidence_excerpt_ids',
+              'scope_closure_id'
+            ]
+            AND (relationship.relationship->'effect') - ARRAY[
+              'effect_mode',
+              'legal_operation',
+              'permitted_action_code',
+              'qualified_action_occurrence_ids',
+              'permitted_actor_party',
+              'information_subject_code',
+              'temporal_scope_inheritance',
+              'cross_reference_excerpt_id',
+              'evidence_excerpt_ids',
+              'scope_closure_id'
+            ]::text[] = '{}'::jsonb
+            AND relationship.relationship->'effect'->>'effect_mode'
+              = 'TYPED_LEGAL_EFFECT'
+            AND relationship.relationship->'effect'->>'permitted_action_code'
+              = 'INFORM_PERSONS_OF_NO_SHOP_PROVISIONS'
+            AND relationship.relationship
+              ->'effect'->>'information_subject_code'
+              = 'GOVERNING_NO_SHOP_PROVISIONS'
+            AND relationship.relationship
+              ->'effect'->>'temporal_scope_inheritance'
+              = 'INHERITS_PARENT_NO_SHOP_RESTRICTION'
+            AND relationship.relationship->'effect'->'permitted_actor_party'
+              = source.provision->'party'
+            AND jsonb_typeof(
+              relationship.relationship
+                ->'effect'->'permitted_actor_party'
+            ) = 'object'
+            AND (
+              relationship.relationship->'effect'->'permitted_actor_party'
+            ) ?& ARRAY[
+                'role', 'value', 'capacity'
+              ]
+            AND (
+              relationship.relationship->'effect'->'permitted_actor_party'
+            ) - ARRAY[
+                'role', 'value', 'capacity'
+              ]::text[] = '{}'::jsonb
+            AND jsonb_array_length(
+              relationship.relationship
+                ->'effect'->'qualified_action_occurrence_ids'
+            ) BETWEEN 1 AND 16
+            AND (
+              SELECT count(*)
+              FROM qualified_actions qualified
+              WHERE qualified.relationship = relationship.relationship
+                AND qualified.component_id ~ '^[0-9a-f]{64}$'
+            ) = jsonb_array_length(
+              relationship.relationship
+                ->'effect'->'qualified_action_occurrence_ids'
+            )
+            AND (
+              SELECT count(DISTINCT qualified.component_id)
+              FROM qualified_actions qualified
+              WHERE qualified.relationship = relationship.relationship
+            ) = jsonb_array_length(
+              relationship.relationship
+                ->'effect'->'qualified_action_occurrence_ids'
+            )
+            AND NOT EXISTS (
+              SELECT 1
+              FROM qualified_actions qualified
+              WHERE qualified.relationship = relationship.relationship
+                AND (
+                  qualified.component IS NULL
+                  OR qualified.component->>'component_key'
+                    <> 'RESTRICTED_ACTION'
+                  OR qualified.component->>'parent_provision_instance_id'
+                    <> relationship.relationship->>'source_occurrence_id'
+                  OR (
+                    SELECT count(*)
+                    FROM supplied_claims claim
+                    WHERE claim.claim->>'subject_occurrence_id'
+                      = qualified.component_id
+                      AND claim.claim->>'claim_definition_key'
+                        = 'NO_SHOP_PROHIBITED_ACTION'
+                      AND claim.claim->>'claim_definition_version' = '2'
+                      AND claim.claim->>'state' = 'PRESENT'
+                  ) <> 1
+                  OR EXISTS (
+                    SELECT 1
+                    FROM qualified_actions prior
+                    WHERE prior.relationship = relationship.relationship
+                      AND prior.ordinality < qualified.ordinality
+                      AND (
+                        prior.component IS NULL
+                        OR (
+                          prior.component->>'ordinal'
+                        )::bigint >= (
+                          qualified.component->>'ordinal'
+                        )::bigint
+                      )
+                  )
+                )
+            )
+            AND relationship.relationship
+              ->'attributes'->'qualified_action_claim_revision_ids'
+              = (
+                SELECT jsonb_agg(
+                  to_jsonb(claim.claim->>'claim_revision_id')
+                  ORDER BY qualified.ordinality
+                )
+                FROM qualified_actions qualified
+                JOIN supplied_claims claim
+                  ON claim.claim->>'subject_occurrence_id'
+                    = qualified.component_id
+                  AND claim.claim->>'claim_definition_key'
+                    = 'NO_SHOP_PROHIBITED_ACTION'
+                  AND claim.claim->>'claim_definition_version' = '2'
+                  AND claim.claim->>'state' = 'PRESENT'
+                WHERE qualified.relationship = relationship.relationship
+              )
+            AND jsonb_array_length(
+              relationship.relationship->'target_occurrence_ids'
+            ) = 1
+            AND EXISTS (
+              SELECT 1
+              FROM supplied_components target
+              JOIN supplied_excerpts excerpt
+                ON excerpt.excerpt->>'excerpt_id'
+                  = relationship.relationship
+                    ->'effect'->>'cross_reference_excerpt_id'
+              WHERE target.component->>'provision_component_id'
+                = relationship.relationship
+                  ->'target_occurrence_ids'->>0
+                AND target.component->>'component_key' = 'EXCEPTION_LIMB'
+                AND target.component->>'parent_provision_instance_id'
+                  = relationship.relationship->>'source_occurrence_id'
+                AND excerpt.excerpt->>'canonical_text_id'
+                  = target.component->>'canonical_text_id'
+                AND excerpt.excerpt->>'absolute_start'
+                  = target.component->>'absolute_start'
+                AND excerpt.excerpt->>'absolute_end'
+                  = target.component->>'absolute_end'
+                AND excerpt.excerpt
+                  ->'ordered_component_assignments'->0->>'semantic_span_id'
+                  = target.component->>'source_anchor_id'
+            )
+            AND jsonb_array_length(
+              relationship.relationship->'effect'->'evidence_excerpt_ids'
+            ) BETWEEN 1 AND 8
+            AND (
+              SELECT count(DISTINCT evidence_excerpt_id.value #>> '{}')
+              FROM jsonb_array_elements(
+                relationship.relationship
+                  ->'effect'->'evidence_excerpt_ids'
+              ) evidence_excerpt_id(value)
+              WHERE jsonb_typeof(evidence_excerpt_id.value) = 'string'
+            ) = jsonb_array_length(
+              relationship.relationship->'effect'->'evidence_excerpt_ids'
+            )
+            AND relationship.relationship->'effect'->'evidence_excerpt_ids'
+              = (
+                SELECT coalesce(
+                  jsonb_agg(evidence.value->'excerpt_id'
+                    ORDER BY evidence.ordinality),
+                  '[]'::jsonb
+                )
+                FROM jsonb_array_elements(
+                  relationship.relationship->'evidence'
+                ) WITH ORDINALITY evidence(value, ordinality)
+              )
+            AND (
+              relationship.relationship->'effect'->'evidence_excerpt_ids'
+            ) ? (
+                relationship.relationship
+                  ->'effect'->>'cross_reference_excerpt_id'
+              )
+            AND relationship.relationship->'effect'->>'scope_closure_id'
+              = relationship.relationship->'scope'->>'scope_closure_id'
+            AND relationship.relationship->'scope'->>'coverage_status'
+              = 'PARTIAL_POSITIVE_GRAPH'
+            AND relationship.relationship->'scope'->'required_interval_ids'
+              = relationship.relationship
+                ->'effect'->'evidence_excerpt_ids'
+            AND relationship.relationship->'scope'->'examined_interval_ids'
+              = relationship.relationship
+                ->'effect'->'evidence_excerpt_ids'
+            AND relationship.relationship->'scope'->'target_interval_ids'
+              = jsonb_build_array(
+                relationship.relationship
+                  ->'effect'->'cross_reference_excerpt_id'
+              )
+          ), false)
+        ELSE true
+      END
+    ) THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN no-shop exception effect is invalid or unsupported'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF EXISTS (
       WITH admitted_sources AS (
         SELECT
           reference.value->>'canonical_text_id' AS canonical_text_id,
@@ -5967,18 +6282,54 @@ BEGIN
   END IF;
 
   item := p_write_set->'deal';
-  item_id := item->>'deal_key';
-  SELECT canonical_payload_digest INTO existing_digest FROM canonical_v2_staging.deals WHERE deal_key = item_id;
-  IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN
-    RAISE EXCEPTION 'canonical deal identity conflict' USING ERRCODE = '23505';
-  END IF;
-  INSERT INTO canonical_v2_staging.deals(deal_key, canonical_payload)
-  VALUES (item_id, item) ON CONFLICT (deal_key) DO NOTHING;
-  SELECT canonical_payload_digest INTO existing_digest
-  FROM canonical_v2_staging.deals
-  WHERE deal_key = item_id;
-  IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
-    RAISE EXCEPTION 'canonical deal identity conflict' USING ERRCODE = '23505';
+  IF p_operation = 'DEAL_SCOPE_RUN' THEN
+    item_id := item->>'deal_admission_id';
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.deal_admission_records
+    WHERE deal_admission_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'canonical deal admission identity conflict'
+        USING ERRCODE = '23505';
+    END IF;
+    INSERT INTO canonical_v2_staging.deal_admission_records(
+      deal_admission_id,
+      deal_key,
+      document_hash,
+      canonical_payload
+    ) VALUES (
+      item_id,
+      item->>'deal_key',
+      item->>'document_hash',
+      item
+    ) ON CONFLICT (deal_admission_id) DO NOTHING;
+    IF NOT EXISTS (
+      SELECT 1
+      FROM canonical_v2_staging.deal_admission_records admission
+      WHERE admission.deal_admission_id = item_id
+        AND admission.deal_key = item->>'deal_key'
+        AND admission.document_hash = item->>'document_hash'
+        AND admission.canonical_payload_digest =
+          canonical_v2_staging.payload_digest(item)
+    ) THEN
+      RAISE EXCEPTION 'canonical deal admission identity conflict'
+        USING ERRCODE = '23505';
+    END IF;
+  ELSE
+    item_id := item->>'deal_key';
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.deals
+    WHERE deal_key = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'canonical deal identity conflict' USING ERRCODE = '23505';
+    END IF;
+    INSERT INTO canonical_v2_staging.deals(deal_key, canonical_payload)
+    VALUES (item_id, item) ON CONFLICT (deal_key) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.deals
+    WHERE deal_key = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'canonical deal identity conflict' USING ERRCODE = '23505';
+    END IF;
   END IF;
 
   FOR item IN

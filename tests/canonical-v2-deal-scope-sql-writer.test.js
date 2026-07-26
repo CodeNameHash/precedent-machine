@@ -25,6 +25,42 @@ test('DEAL_SCOPE_RUN is a closed reference-only writer operation', () => {
   assert.match(sql, /IF p_operation <> 'DEAL_SCOPE_RUN' THEN[\s\S]*p_write_set \? 'sources'/);
 });
 
+test('deal scope writes immutable contract-bound admissions without rewriting the legacy deal row', () => {
+  assert.match(
+    sql,
+    /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.deal_admission_records/,
+  );
+  assert.match(
+    sql,
+    /IF p_operation = 'DEAL_SCOPE_RUN' THEN[\s\S]*INSERT INTO canonical_v2_staging\.deal_admission_records[\s\S]*ON CONFLICT \(deal_admission_id\) DO NOTHING/,
+  );
+  assert.match(
+    sql,
+    /DO \$\$[\s\S]*FROM canonical_v2_staging\.deals[\s\S]*INSERT INTO canonical_v2_staging\.deal_admission_records[\s\S]*canonical legacy deal admission backfill conflict/,
+  );
+  assert.match(
+    sql,
+    /DROP CONSTRAINT IF EXISTS deal_admission_records_check/,
+  );
+  assert.match(
+    sql,
+    /canonical_v2_deal_admission_records_payload_check[\s\S]*jsonb_typeof\(canonical_payload->'deal_key'\) = 'string'/,
+  );
+  assert.match(
+    sql,
+    /legacy deal admission backfill preflight failed/,
+  );
+  const admissionWrite = sql.slice(
+    sql.indexOf("item := p_write_set->'deal';"),
+    sql.indexOf('FOR item IN', sql.indexOf("item := p_write_set->'deal';")),
+  );
+  const dealScopeBranch = admissionWrite.slice(
+    admissionWrite.indexOf("IF p_operation = 'DEAL_SCOPE_RUN' THEN"),
+    admissionWrite.indexOf('ELSE'),
+  );
+  assert.doesNotMatch(dealScopeBranch, /INSERT INTO canonical_v2_staging\.deals/);
+});
+
 test('source references resolve once through exact indexed lineage joins', () => {
   assert.equal((validationBlock.match(/WITH supplied_references AS/g) || []).length, 1);
   assert.match(validationBlock, /FROM supplied_references supplied[\s\S]*LEFT JOIN canonical_v2_staging\.immutable_source_documents[\s\S]*immutable_source_document_id[\s\S]*supplied\.reference->>'immutable_source_document_id'/);
@@ -47,6 +83,33 @@ test('all inputs are bounded and residual/quarantine closure is exact', () => {
   assert.match(validationBlock, /quarantine\.value->'residual_ids' \? \(residual\.value->>'residual_id'\)/);
   assert.match(validationBlock, /residual\.value->>'residual_id' = residual_id/);
   assert.match(validationBlock, /DEAL_SCOPE_RUN residual and quarantine outputs do not close exactly/);
+});
+
+test('inline no-shop permission topology is independently enforced in SQL', () => {
+  assert.match(
+    validationBlock,
+    /PERMITS_INFORMING_PERSONS_OF_NO_SHOP_PROVISIONS/,
+  );
+  assert.match(
+    validationBlock,
+    /qualified_action_occurrence_ids[\s\S]*BETWEEN 1 AND 16/,
+  );
+  assert.match(
+    validationBlock,
+    /NO_SHOP_PROHIBITED_ACTION[\s\S]*claim\.claim->>'state' = 'PRESENT'/,
+  );
+  assert.match(
+    validationBlock,
+    /component_key' = 'EXCEPTION_LIMB'[\s\S]*cross_reference_excerpt_id/,
+  );
+  assert.match(
+    validationBlock,
+    /DEAL_SCOPE_RUN no-shop exception effect is invalid or unsupported/,
+  );
+  assert.doesNotMatch(
+    validationBlock,
+    /inline_relationships AS \([\s\S]*?\?\| ARRAY\[/,
+  );
 });
 
 test('persisted semantic objects resolve once by indexed identity and remain validation-only', () => {

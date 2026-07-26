@@ -550,13 +550,34 @@ test('an injected failure rolls back every staged object and receipt', async () 
   }), (error) => error.code === 'INJECTED_REPOSITORY_FAILURE');
   assert.deepEqual(repository.snapshot(), {
     intakeCaptures: [],
-    sources: [], sourceAdmissions: [], deals: [], excerpts: [], validated_semantic_graphs: [],
+    sources: [], sourceAdmissions: [], deals: [], dealAdmissionRecords: [],
+    excerpts: [], validated_semantic_graphs: [],
     provisions: [], components: [], claims: [], relationships: [],
     open_world_candidates: [], open_world_candidate_occurrences: [], open_world_evidence_references: [],
     open_world_candidate_dispositions: [], open_world_primitives: [], semantic_impact_closures: [],
     reviewed_source_specific_rows: [], incomplete_canonical_result_rows: [], residuals: [], quarantines: [], receipts: [],
   });
   assert.equal(repository.transactionCount, 1);
+});
+
+test('contract-bound deal admissions are immutable without mutating the legacy deal view', async () => {
+  const repository = new InMemoryCanonicalRepository();
+  const first = {
+    deal_key: 'deal:qxo-topbuild',
+    deal_admission_id: id('qxo-deal-admission-v1'),
+    document_hash: id('qxo-document'),
+  };
+  const second = {
+    ...first,
+    deal_admission_id: id('qxo-deal-admission-v6'),
+  };
+  await repository.transaction(async (transaction) => {
+    await transaction.writeDealAdmission(first);
+    await transaction.writeDealAdmission(second);
+  });
+  const state = repository.snapshot();
+  assert.deepEqual(state.deals, []);
+  assert.deepEqual(state.dealAdmissionRecords, [first, second]);
 });
 
 test('the actual semantic builders pass through the same frozen contract and writer', async () => {

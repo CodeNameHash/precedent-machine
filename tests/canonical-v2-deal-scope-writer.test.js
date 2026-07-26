@@ -200,7 +200,8 @@ test('DEAL_SCOPE_RUN commits one semantic transaction and exact replay is idempo
   assert.equal(replay.replayed, true);
   assert.equal(replay.receipt.receiptId, first.receipt.receiptId);
   assert.deepEqual(state.sources, sourcesBefore);
-  assert.deepEqual(state.deals, [writeSet.deal]);
+  assert.deepEqual(state.deals, []);
+  assert.deepEqual(state.dealAdmissionRecords, [writeSet.deal]);
   assert.deepEqual(state.excerpts, writeSet.excerpts);
   assert.deepEqual(state.provisions, writeSet.provisions);
   assert.deepEqual(state.claims, writeSet.claims);
@@ -360,6 +361,31 @@ test('a later deal-scope run validates against exact persisted objects and write
     writeSet: tampered,
   }), /did not resolve to exact stored content/);
   assert.deepEqual(repository.snapshot(), beforeTamper);
+});
+
+test('persisted references preserve an external repository payload digest', async () => {
+  const initial = await setup();
+  await initial.writer.write({
+    operation: 'DEAL_SCOPE_RUN',
+    idempotencyKey: 'external-digest-predecessor',
+    writeSet: initial.writeSet,
+  });
+  const predecessor = initial.repository.snapshot().excerpts[0];
+  const externalDigest = digest('postgres-payload-digest');
+  const repository = new InMemoryCanonicalRepository({
+    persistedCanonicalObjects: [{
+      object_kind: 'excerpts',
+      canonical_payload_digest: externalDigest,
+      canonical_payload: predecessor,
+    }],
+  });
+  const [resolved] = await repository.resolvePersistedCanonicalObjectReferences([{
+    object_kind: 'excerpts',
+    object_id: predecessor.excerpt_id,
+  }]);
+
+  assert.equal(resolved.canonical_payload_digest, externalDigest);
+  assert.deepEqual(resolved.canonical_payload, predecessor);
 });
 
 test('missing, unverified and mixed source references leave semantic state unchanged', async () => {

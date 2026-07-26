@@ -50,6 +50,10 @@ const {
   validateQxoNoShopExceptionSourceBindingF6,
 } = require('../lib/canonical-v2/qxo-no-shop-exception-source-binding-f6');
 const {
+  buildQxoNoShopInlinePermissionF9,
+  validateQxoNoShopInlinePermissionF9,
+} = require('../lib/canonical-v2/qxo-no-shop-inline-permission-f9');
+const {
   buildQxoNoShopNoticeSourceBindingF6,
   buildQxoNoShopNoticeSourceBindingF6FailureIsolationAttestation,
   validateQxoNoShopNoticeSourceBindingF6,
@@ -87,6 +91,9 @@ const {
 const {
   buildVerifiedSecSourceAdmission,
 } = require('../lib/canonical-v2/sec-source-admission');
+const {
+  validateResolvedCanonicalWriteSet,
+} = require('../lib/canonical-v2/validate-write-set');
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PROJECT = Object.freeze({
@@ -123,6 +130,10 @@ const DEFINITION_GRAPH_F6_FIXTURE_PATH = join(
 const EXCEPTION_SOURCE_F6_FIXTURE_PATH = join(
   ROOT,
   'tests/fixtures/canonical-v2/qxo-no-shop-exception-source-f6-staging-attestation.json',
+);
+const INLINE_PERMISSION_F9_FIXTURE_PATH = join(
+  ROOT,
+  'tests/fixtures/canonical-v2/qxo-no-shop-inline-permission-f9-staging-attestation.json',
 );
 const NOTICE_SOURCE_F6_FIXTURE_PATH = join(
   ROOT,
@@ -1078,6 +1089,104 @@ function buildExceptionSourceF6Attestation() {
   };
 }
 
+function buildInlinePermissionF9Attestation() {
+  const contractBundle = compileFixtureContractV6();
+  const {
+    admittedSourceContext,
+    admittedParserProposalEnvelope,
+    parserInputs,
+  } = buildSourceInputs(contractBundle);
+  const actionsSlice = buildQxoAdmittedNoShopActionsF6Slice({
+    sourceContext: admittedSourceContext,
+    contractBundle,
+  });
+  const actionSeed = buildQxoNoShopActionsF6ParserBoundReviewSeed({
+    ...parserInputs,
+    admitted_parser_proposal_envelope: admittedParserProposalEnvelope,
+    reviewed_no_shop_actions_f6_slice: actionsSlice,
+  });
+  const supplementInputs = {
+    ...parserInputs,
+    admitted_parser_proposal_envelope: admittedParserProposalEnvelope,
+  };
+  const supplement = buildQxoNoShopNestedDefinitionCandidateSupplement(
+    supplementInputs,
+  );
+  const definitionGraph = buildQxoNoShopReviewedDefinitionGraphF6({
+    ...supplementInputs,
+    qxo_no_shop_nested_definition_candidate_supplement: supplement,
+  });
+  const exceptionSourceBinding = buildQxoNoShopExceptionSourceBindingF6({
+    ...parserInputs,
+    qxo_no_shop_actions_f6_parser_bound_review_seed: actionSeed,
+    qxo_no_shop_reviewed_definition_graph_f6: definitionGraph,
+  });
+  const materialisation = buildQxoNoShopInlinePermissionF9({
+    sourceContext: admittedSourceContext,
+    contractBundle,
+    actionsSlice,
+    exceptionSourceBinding,
+  });
+  validateQxoNoShopInlinePermissionF9({
+    qxoNoShopInlinePermissionF9: materialisation,
+    sourceContext: admittedSourceContext,
+    contractBundle,
+    actionsSlice,
+    exceptionSourceBinding,
+  });
+  const validation = validateResolvedCanonicalWriteSet({
+    writeSet: materialisation.canonical_write_set,
+    contractBundle,
+    admittedSourceContexts: [admittedSourceContext],
+    retainedCanonicalObjects: [],
+  });
+  if (validation.counts.residuals !== 0
+    || validation.counts.quarantinedClosures !== 0
+    || validation.publishableWriteSet.relationships.length !== 1
+    || validation.publishableWriteSet.claims.length !== 10) {
+    throw new Error('The exact F9 inline-permission graph did not validate cleanly.');
+  }
+  return {
+    schema_version:
+      'QXO_NO_SHOP_INLINE_PERMISSION_F9_STAGING_ATTESTATION/V1',
+    environment: 'STAGING',
+    authority_scope: 'POSITIVE_INLINE_PERMISSION_GRAPH_ONLY',
+    contract_fingerprint: contractBundle.fingerprint,
+    source_binding: {
+      governed_deal_key: admittedSourceContext.governed_deal_key,
+      deal_admission_id: admittedSourceContext.deal_admission_id,
+      source_admission_manifest_id:
+        admittedSourceContext.source_admission_manifest_id,
+      document_hash: admittedSourceContext.document_hash,
+      canonical_text_id: admittedSourceContext.canonical_text_id,
+    },
+    predecessor_bindings: {
+      reviewed_actions_mapping_id:
+        materialisation.reviewed_actions_mapping_id,
+      reviewed_exception_source_binding_id:
+        materialisation.reviewed_exception_source_binding_id,
+    },
+    materialisation_id:
+      materialisation.qxo_no_shop_inline_permission_f9_id,
+    semantic_closure_id: materialisation.semantic_closure_id,
+    source_provision_instance_id:
+      materialisation.relationship.source_occurrence_id,
+    permission_component_id:
+      materialisation.permission_component.provision_component_id,
+    relationship_revision_id:
+      materialisation.relationship.relationship_revision_id,
+    qualified_action_occurrence_ids:
+      materialisation.relationship.effect.qualified_action_occurrence_ids,
+    permitted_action_code:
+      materialisation.relationship.effect.permitted_action_code,
+    action_claim_count: materialisation.action_claims.length,
+    retained_source_residual_count:
+      materialisation.retained_source_residual_count,
+    validation_counts: validation.counts,
+    status: materialisation.status,
+  };
+}
+
 function exceptionSourceF6AttestationProjection(attestation) {
   return {
     schema_version: 'QXO_NO_SHOP_EXCEPTION_SOURCE_F6_STAGING_ATTESTATION/V1',
@@ -1993,6 +2102,8 @@ if (![
   '--definition-graph-f6-verify',
   '--exception-source-f6-print',
   '--exception-source-f6-verify',
+  '--inline-permission-f9-print',
+  '--inline-permission-f9-verify',
   '--notice-source-f6-print',
   '--notice-source-f6-verify',
   '--notice-semantic-closure-f6-print',
@@ -2003,12 +2114,15 @@ if (![
   '--notice-definition-relationships-f8-verify',
 ].includes(mode)
   || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--notice-source-f6-print|--notice-source-f6-verify|--notice-semantic-closure-f6-print|--notice-semantic-closure-f6-verify|--notice-review-materialisation-f7-print|--notice-review-materialisation-f7-verify|--notice-definition-relationships-f8-print|--notice-definition-relationships-f8-verify');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--inline-permission-f9-print|--inline-permission-f9-verify|--notice-source-f6-print|--notice-source-f6-verify|--notice-semantic-closure-f6-print|--notice-semantic-closure-f6-verify|--notice-review-materialisation-f7-print|--notice-review-materialisation-f7-verify|--notice-definition-relationships-f8-print|--notice-definition-relationships-f8-verify');
 }
 
 try {
+  const inlinePermissionF9Mode =
+    mode.startsWith('--inline-permission-f9-');
   const noticeDefinitionRelationshipsF8Mode =
-    mode.startsWith('--notice-definition-relationships-f8-');
+    !inlinePermissionF9Mode
+    && mode.startsWith('--notice-definition-relationships-f8-');
   const noticeReviewMaterialisationF7Mode =
     !noticeDefinitionRelationshipsF8Mode
     &&
@@ -2028,7 +2142,9 @@ try {
     && mode.startsWith('--definitions-f6-');
   const actionsF6Mode = !definitionsF6Mode && mode.startsWith('--actions-f6-');
   const actionsMode = !actionsF6Mode && mode.startsWith('--actions-');
-  const attestation = noticeDefinitionRelationshipsF8Mode
+  const attestation = inlinePermissionF9Mode
+    ? buildInlinePermissionF9Attestation()
+    : noticeDefinitionRelationshipsF8Mode
     ? buildNoticeDefinitionRelationshipsF8Attestation()
     : noticeReviewMaterialisationF7Mode
     ? buildNoticeReviewMaterialisationF7Attestation()
@@ -2050,7 +2166,9 @@ try {
     : attestation;
   if (mode.endsWith('verify')) {
     const expected = JSON.parse(readFileSync(
-      noticeDefinitionRelationshipsF8Mode
+      inlinePermissionF9Mode
+        ? INLINE_PERMISSION_F9_FIXTURE_PATH
+        : noticeDefinitionRelationshipsF8Mode
         ? NOTICE_DEFINITION_RELATIONSHIPS_F8_FIXTURE_PATH
         : noticeReviewMaterialisationF7Mode
         ? NOTICE_REVIEW_MATERIALISATION_F7_FIXTURE_PATH
