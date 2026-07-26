@@ -21,6 +21,7 @@ const {
   compileFixtureContract,
   compileFixtureContractV6,
   compileFixtureContractV7,
+  compileFixtureContractV8,
 } = require('../lib/canonical-v2/contract-bundle');
 const {
   buildQxoNoShopClockParserBoundReviewSeed,
@@ -63,6 +64,11 @@ const {
   buildQxoNoShopNoticeReviewMaterialisationF7FailureIsolationAttestation,
   validateQxoNoShopNoticeReviewMaterialisationF7,
 } = require('../lib/canonical-v2/qxo-no-shop-notice-review-materialisation-f7');
+const {
+  buildQxoNoShopDefinitionRelationshipsF8,
+  buildQxoNoShopDefinitionRelationshipsF8FailureIsolationAttestation,
+  validateQxoNoShopDefinitionRelationshipsF8,
+} = require('../lib/canonical-v2/qxo-no-shop-definition-relationships-f8');
 const {
   buildQxoAdmittedNoShopActionsSlice,
 } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
@@ -129,6 +135,10 @@ const NOTICE_SEMANTIC_CLOSURE_F6_FIXTURE_PATH = join(
 const NOTICE_REVIEW_MATERIALISATION_F7_FIXTURE_PATH = join(
   ROOT,
   'tests/fixtures/canonical-v2/qxo-no-shop-notice-review-materialisation-f7-staging-attestation.json',
+);
+const NOTICE_DEFINITION_RELATIONSHIPS_F8_FIXTURE_PATH = join(
+  ROOT,
+  'tests/fixtures/canonical-v2/qxo-no-shop-definition-relationships-f8-staging-attestation.json',
 );
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
@@ -1597,6 +1607,178 @@ function buildNoticeReviewMaterialisationF7Attestation() {
   };
 }
 
+function buildNoticeDefinitionRelationshipsF8Attestation() {
+  const {
+    bindingInputs,
+    carrier: noticeSourceCarrier,
+    contractBundle: f6ContractBundle,
+  } = buildNoticeSourceF6Runtime();
+  const definitionGraph =
+    bindingInputs.qxo_no_shop_reviewed_definition_graph_f6;
+  const closureInputs = {
+    contract_bundle: f6ContractBundle,
+    qxo_no_shop_notice_source_binding_f6: noticeSourceCarrier,
+  };
+  const closure = buildQxoNoShopNoticeSemanticClosureF6(closureInputs);
+  const f7Inputs = {
+    contract_bundle: compileFixtureContractV7(),
+    qxo_no_shop_notice_source_binding_f6: noticeSourceCarrier,
+    qxo_no_shop_notice_semantic_closure_f6: closure,
+  };
+  const f7Carrier = buildQxoNoShopNoticeReviewMaterialisationF7(f7Inputs);
+  const f8Inputs = {
+    contract_bundle: compileFixtureContractV8(),
+    qxo_no_shop_notice_review_materialisation_f7: f7Carrier,
+    qxo_no_shop_notice_source_binding_f6: noticeSourceCarrier,
+    qxo_no_shop_reviewed_definition_graph_f6: definitionGraph,
+  };
+  const carrier = buildQxoNoShopDefinitionRelationshipsF8(f8Inputs);
+  validateQxoNoShopDefinitionRelationshipsF8({
+    qxo_no_shop_definition_relationships_f8: carrier,
+    ...f8Inputs,
+  });
+
+  const changed = JSON.parse(JSON.stringify(carrier));
+  changed.status.release_eligible = true;
+  let carrierDriftRejected = false;
+  try {
+    validateQxoNoShopDefinitionRelationshipsF8({
+      qxo_no_shop_definition_relationships_f8: changed,
+      ...f8Inputs,
+    });
+  } catch (_) {
+    carrierDriftRejected = true;
+  }
+
+  const nestedFailure =
+    buildQxoNoShopDefinitionRelationshipsF8FailureIsolationAttestation(
+      f8Inputs,
+      208321,
+    );
+  const directFailure =
+    buildQxoNoShopDefinitionRelationshipsF8FailureIsolationAttestation(
+      f8Inputs,
+      208505,
+    );
+  const baselineByOrdinal = new Map(carrier.relationship_outcomes.map(
+    (outcome) => [outcome.governed_ordinal, outcome],
+  ));
+  const nestedByOrdinal = new Map(nestedFailure.relationship_outcomes.map(
+    (outcome) => [outcome.governed_ordinal, outcome],
+  ));
+  const directByOrdinal = new Map(directFailure.relationship_outcomes.map(
+    (outcome) => [outcome.governed_ordinal, outcome],
+  ));
+  const nestedSuppressed = [208321, 208541, 208683];
+  const nestedFailureIsolated = [...nestedByOrdinal].every(
+    ([ordinal, outcome]) => (
+      nestedSuppressed.includes(ordinal)
+        ? outcome.suppressed === true
+        : outcome.relationship.relationship_effect
+          .relationship_effect_revision_id
+          === baselineByOrdinal.get(ordinal).relationship
+            .relationship_effect.relationship_effect_revision_id
+    ),
+  );
+  const directFailureIsolated = [...directByOrdinal].every(
+    ([ordinal, outcome]) => (
+      ordinal === 208505
+        ? outcome.suppressed === true
+        : outcome.relationship.relationship_effect
+          .relationship_effect_revision_id
+          === baselineByOrdinal.get(ordinal).relationship
+            .relationship_effect.relationship_effect_revision_id
+    ),
+  );
+  const failureIsolationVerified =
+    nestedFailureIsolated
+    && directFailureIsolated
+    && nestedFailure.status.review_renderable === true
+    && directFailure.status.review_renderable === true
+    && nestedFailure.status.publication_blocked === true
+    && directFailure.status.publication_blocked === true;
+  if (!carrierDriftRejected || !failureIsolationVerified) {
+    throw new Error('The F8 definition relationship safety attestation failed.');
+  }
+
+  return {
+    schema_version:
+      'QXO_NO_SHOP_DEFINITION_RELATIONSHIPS_F8_STAGING_ATTESTATION/V1',
+    environment: 'STAGING',
+    authority_scope: carrier.authority_scope,
+    contract_binding: carrier.contract_binding,
+    source_binding: carrier.source_binding,
+    upstream_bindings: carrier.upstream_bindings,
+    notice_occurrence: {
+      notice_obligation_occurrence_id:
+        carrier.notice_occurrence.notice_obligation_occurrence_id,
+      governed_ordinal: carrier.notice_occurrence.governed_ordinal,
+      exact_source_span: carrier.notice_occurrence.exact_source_span,
+      party: carrier.notice_occurrence.party,
+    },
+    definition_occurrences: carrier.definition_occurrences.map((entry) => ({
+      definition_key: entry.definition_key,
+      definition_occurrence_id:
+        entry.occurrence.definition_occurrence_id,
+      governed_ordinal: entry.occurrence.governed_ordinal,
+      exact_declaration_span: entry.occurrence.exact_declaration_span,
+      ordered_body_spans: entry.occurrence.ordered_body_spans,
+      neutral_definition_key: entry.occurrence.neutral_definition_key,
+    })),
+    source_party_context: carrier.source_party_context,
+    relationships: carrier.relationship_outcomes.map((outcome) => ({
+      governed_ordinal: outcome.governed_ordinal,
+      suppressed: outcome.suppressed,
+      failure_code: outcome.failure_code,
+      relationship_occurrence_id:
+        outcome.relationship?.relationship_occurrence
+          .relationship_occurrence_id || null,
+      relationship_effect_revision_id:
+        outcome.relationship?.relationship_effect
+          .relationship_effect_revision_id || null,
+      raw_use_form:
+        outcome.relationship?.relationship_effect.raw_use_form || null,
+      use_form_code:
+        outcome.relationship?.relationship_effect.use_form_code || null,
+      legal_role_code:
+        outcome.relationship?.relationship_effect.legal_role_code || null,
+      affected_endpoint:
+        outcome.relationship?.relationship_effect.affected_endpoint || null,
+      selected_definition_occurrence_id:
+        outcome.relationship?.relationship_effect
+          .selected_definition_occurrence_id || null,
+      recursive_dependency_relationship_ids:
+        outcome.relationship?.relationship_effect
+          .recursive_dependency_relationship_ids || [],
+      source_predecessor_review_resolution_ids:
+        outcome.relationship?.source_predecessor_review_resolution_ids || [],
+      evidence_by_role:
+        outcome.relationship?.relationship_effect.evidence_by_role || null,
+      definition_precedence_review:
+        outcome.relationship?.relationship_effect
+          .definition_precedence_review || null,
+      interpretation_clarity_state:
+        outcome.relationship?.relationship_interpretation.clarity_state
+          || null,
+      ambiguity_dimension_codes:
+        outcome.relationship?.relationship_interpretation
+          .ambiguity_dimension_codes || [],
+      comparison_state:
+        outcome.relationship?.comparison_state || null,
+      publication_state:
+        outcome.relationship?.publication_state || null,
+    })),
+    notice_revision_materialisation:
+      carrier.notice_revision_materialisation,
+    materialisation_status: carrier.status,
+    carrier_drift_rejected: carrierDriftRejected,
+    failure_isolation_verified: failureIsolationVerified,
+    qxo_no_shop_definition_relationships_f8_id:
+      carrier.qxo_no_shop_definition_relationships_f8_id,
+    canonical_payload_digest: carrier.canonical_payload_digest,
+  };
+}
+
 function verifyActionsFailureIsolation(bridgeInputs) {
   const missingFirstAction = JSON.parse(JSON.stringify(
     bridgeInputs.reviewed_no_shop_actions_slice,
@@ -1817,13 +1999,19 @@ if (![
   '--notice-semantic-closure-f6-verify',
   '--notice-review-materialisation-f7-print',
   '--notice-review-materialisation-f7-verify',
+  '--notice-definition-relationships-f8-print',
+  '--notice-definition-relationships-f8-verify',
 ].includes(mode)
   || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--notice-source-f6-print|--notice-source-f6-verify|--notice-semantic-closure-f6-print|--notice-semantic-closure-f6-verify|--notice-review-materialisation-f7-print|--notice-review-materialisation-f7-verify');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--notice-source-f6-print|--notice-source-f6-verify|--notice-semantic-closure-f6-print|--notice-semantic-closure-f6-verify|--notice-review-materialisation-f7-print|--notice-review-materialisation-f7-verify|--notice-definition-relationships-f8-print|--notice-definition-relationships-f8-verify');
 }
 
 try {
+  const noticeDefinitionRelationshipsF8Mode =
+    mode.startsWith('--notice-definition-relationships-f8-');
   const noticeReviewMaterialisationF7Mode =
+    !noticeDefinitionRelationshipsF8Mode
+    &&
     mode.startsWith('--notice-review-materialisation-f7-');
   const noticeSemanticClosureF6Mode = !noticeReviewMaterialisationF7Mode
     && mode.startsWith('--notice-semantic-closure-f6-');
@@ -1840,7 +2028,9 @@ try {
     && mode.startsWith('--definitions-f6-');
   const actionsF6Mode = !definitionsF6Mode && mode.startsWith('--actions-f6-');
   const actionsMode = !actionsF6Mode && mode.startsWith('--actions-');
-  const attestation = noticeReviewMaterialisationF7Mode
+  const attestation = noticeDefinitionRelationshipsF8Mode
+    ? buildNoticeDefinitionRelationshipsF8Attestation()
+    : noticeReviewMaterialisationF7Mode
     ? buildNoticeReviewMaterialisationF7Attestation()
     : noticeSemanticClosureF6Mode
     ? buildNoticeSemanticClosureF6Attestation()
@@ -1860,7 +2050,9 @@ try {
     : attestation;
   if (mode.endsWith('verify')) {
     const expected = JSON.parse(readFileSync(
-      noticeReviewMaterialisationF7Mode
+      noticeDefinitionRelationshipsF8Mode
+        ? NOTICE_DEFINITION_RELATIONSHIPS_F8_FIXTURE_PATH
+        : noticeReviewMaterialisationF7Mode
         ? NOTICE_REVIEW_MATERIALISATION_F7_FIXTURE_PATH
         : noticeSemanticClosureF6Mode
         ? NOTICE_SEMANTIC_CLOSURE_F6_FIXTURE_PATH
