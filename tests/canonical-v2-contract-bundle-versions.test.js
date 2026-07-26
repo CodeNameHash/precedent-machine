@@ -27,19 +27,24 @@ const {
   FIXTURE_CONTRACT_INPUT_V4,
   FIXTURE_CONTRACT_INPUT_V5,
   FIXTURE_CONTRACT_INPUT_V6,
+  FIXTURE_CONTRACT_INPUT_V7,
   FIXTURE_CONTRACT_FINGERPRINTS,
   FIXTURE_SERVING_CONTRACT_FINGERPRINTS,
+  CLAIM_INTERPRETATION_POLICY_V1,
   NO_SHOP_ACTION_CODES_V2,
   NO_SHOP_ACTION_ROLLUP_SCHEMA_V1,
   NO_SHOP_INLINE_PERMISSION_EFFECT_SCHEMA_V1,
   NO_SHOP_NOTICE_OBLIGATION_SCHEMA_V1,
+  NO_SHOP_NOTICE_OBLIGATION_SCHEMA_V2,
   NO_SHOP_EXCEPTION_PREREQUISITE_CODES_V2,
+  USES_DEFINITION_EFFECT_SCHEMA_V1,
   compileFixtureContract,
   compileFixtureContractV2,
   compileFixtureContractV3,
   compileFixtureContractV4,
   compileFixtureContractV5,
   compileFixtureContractV6,
+  compileFixtureContractV7,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -50,6 +55,7 @@ const FROZEN_F3 = '5cc5607bee8fc816e8682f71b9482ff839ff744cebaaf0f26bfcfa54ea645
 const FROZEN_F4 = 'd4ce5235be1818a42d9aba0dfb34198456eb062381e7d7db7b8289dd88671c74';
 const FROZEN_F5 = 'f80a77651d1b6a6a9eec8ac67526a8704f498761cbb22a67e6ceb4716abb5478';
 const FROZEN_F6 = '161083b014a35d800dec0b0c41a97dc6d97f38a5dd206b388ba51b3ab9f68c08';
+const FROZEN_F7 = '5037e25762892f44f660516913d58a23c17ebab0c10c160fcf8cbd0f65a90969';
 
 const APPROVED_V2_ADDITIONS = [
   'TERMR-BREACH',
@@ -110,15 +116,24 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F6 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F7 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
   assert.notEqual(FROZEN_F4, FROZEN_F5);
   assert.notEqual(FROZEN_F5, FROZEN_F6);
+  assert.notEqual(FROZEN_F6, FROZEN_F7);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
-    [FROZEN_F1, FROZEN_F2, FROZEN_F3, FROZEN_F4, FROZEN_F5, FROZEN_F6].sort(),
+    [
+      FROZEN_F1,
+      FROZEN_F2,
+      FROZEN_F3,
+      FROZEN_F4,
+      FROZEN_F5,
+      FROZEN_F6,
+      FROZEN_F7,
+    ].sort(),
   );
   assert.deepEqual(
     [...FIXTURE_SERVING_CONTRACT_FINGERPRINTS].sort(),
@@ -621,6 +636,425 @@ test('F6 refuses partial, legacy-version and co-mutated no-shop hybrids', () => 
   }), /contract version/);
 });
 
+test('F7 freezes typed interpretation clarity without serving activation', () => {
+  const f6 = compileFixtureContractV6();
+  const f7 = compileFixtureContractV7();
+  assert.equal(f7.fingerprint, FROZEN_F7);
+  assert.equal(validateContractBundle(f7), true);
+  assert.equal(
+    canonicalJson(f7),
+    canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V7)),
+  );
+  assert.equal(
+    f7.claim_interpretation_policy_definition,
+    CLAIM_INTERPRETATION_POLICY_V1,
+  );
+  assert.deepEqual(
+    f7.claim_interpretation_policy_definition.clarity_states.map(
+      (entry) => [
+        entry.clarity_state,
+        entry.review_renderable,
+        entry.canonical_claim_publishable,
+        entry.default_metric_comparability,
+      ],
+    ),
+    [
+      ['CLEAR', true, true, 'ALLOWED_IF_OTHERWISE_COMPLETE'],
+      [
+        'REASONABLE_BUT_AMBIGUOUS',
+        true,
+        true,
+        'BLOCKED_UNLESS_METRIC_EXPLICITLY_ACCEPTS',
+      ],
+      ['MULTIPLE_PLAUSIBLE_NO_PRIMARY', true, false, 'BLOCKED'],
+    ],
+  );
+  assert.deepEqual(
+    f7.claim_interpretation_policy_definition.comparability_effect_codes,
+    [
+      'AMBIGUITY_IMMATERIAL_TO_SELECTED_METRIC',
+      'AMBIGUITY_AFFECTS_METRIC_OR_COHORT',
+      'AMBIGUITY_EFFECT_UNRESOLVED',
+    ],
+  );
+  assert.deepEqual(
+    f7.claim_interpretation_policy_definition
+      .default_metric_accepted_clarity_states,
+    ['CLEAR'],
+  );
+  assert.deepEqual(
+    f7.claim_interpretation_policy_definition
+      .ambiguous_metric_admission_requires,
+    [
+      'metric_definition_id',
+      'accepted_clarity_states',
+      'accepted_ambiguity_dimension_codes',
+      'comparability_effect_code',
+    ],
+  );
+  assert.deepEqual(
+    f7.claim_interpretation_policy_definition.projection_retention_fields,
+    f7.claim_interpretation_policy_definition
+      .cohort_denominator_and_cache_identity_fields,
+  );
+  assert.equal(
+    FIXTURE_SERVING_CONTRACT_FINGERPRINTS.includes(FROZEN_F7),
+    false,
+  );
+  assert.equal(canonicalJson(fixtureContractForFingerprint(FROZEN_F7)), canonicalJson(f7));
+  assert.equal(canonicalJson(compileFixtureContractV6()), canonicalJson(f6));
+});
+
+test('F7 notice V2 binds trigger expression and clock identities without inventing copy trigger', () => {
+  const f7 = compileFixtureContractV7();
+  const notice = f7.no_shop_semantic_schema_definitions.find(
+    (entry) => entry.semantic_schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  );
+  assert.equal(
+    canonicalJson(NO_SHOP_NOTICE_OBLIGATION_SCHEMA_V2),
+    canonicalJson(FIXTURE_CONTRACT_INPUT_V7.no_shop_semantic_schemas.find(
+      (entry) => entry.schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+    )),
+  );
+  assert.equal(notice.semantic_schema_version, 2);
+  assert.equal(notice.record_schema, 'NO_SHOP_NOTICE_OBLIGATION/V2');
+  assert.deepEqual(notice.trigger_expression_contract.allowed_operators, ['ANY_OF']);
+  assert.equal(
+    notice.trigger_expression_contract.required_operand_sufficiency_code,
+    'EACH_OPERAND_INDEPENDENTLY_SUFFICIENT',
+  );
+  assert.equal(
+    notice.initial_notice_clock_scope_contract.required_application_scope_code,
+    'EACH_SATISFYING_TRIGGER_OCCURRENCE',
+  );
+  assert.equal(
+    notice.initial_notice_clock_scope_contract
+      .required_qualifier_combination_operator,
+    'ALL_OF',
+  );
+  assert.equal(
+    notice.initial_notice_clock_scope_contract.required_temporal_operator,
+    'CEILING',
+  );
+  assert.equal(
+    notice.trigger_expression_contract.canonical_operand_set_derivation,
+    'SORTED_UNIQUE_TRIGGER_CODE_ASCENDING',
+  );
+  assert.equal(
+    notice.initial_notice_clock_scope_contract.required_fields
+      .includes('clock_scope_id'),
+    true,
+  );
+  assert.equal(
+    notice.copy_clock_scope_contract.required_fields.includes('clock_scope_id'),
+    true,
+  );
+  assert.equal(
+    notice.copy_clock_scope_contract
+      .allowed_primary_receipt_interpretation_codes[0],
+    'RECEIPT_BY_OBLIGATED_PARTY_OF_ITEM_REQUIRED_TO_BE_COPIED',
+  );
+  assert.equal(
+    notice.copy_clock_scope_contract
+      .required_referent_interpretation_clarity_state,
+    'REASONABLE_BUT_AMBIGUOUS',
+  );
+  assert.deepEqual(
+    notice.copy_clock_scope_contract.required_ambiguity_dimension_codes,
+    ['REFERENT', 'SCOPE', 'CARDINALITY'],
+  );
+  assert.equal(
+    notice.copy_clock_scope_contract.required_comparability_effect_code,
+    'AMBIGUITY_AFFECTS_METRIC_OR_COHORT',
+  );
+  assert.equal(
+    notice.copy_clock_scope_contract
+      .required_primary_interpretation_subject_code,
+    'ITEM_REQUIRED_TO_BE_COPIED',
+  );
+  assert.deepEqual(
+    notice.copy_clock_scope_contract.allowed_item_or_batch_cardinality_states,
+    ['UNRESOLVED'],
+  );
+  assert.equal(
+    notice.copy_clock_scope_contract.required_resolution_state,
+    'BLOCKING_UNRESOLVED',
+  );
+  assert.equal(
+    notice.copy_clock_scope_contract.interpretation_payload_binding
+      .payload_schema,
+    'NOTICE_CLOCK_INTERPRETATION/V1',
+  );
+  assert.equal(
+    notice.copy_clock_scope_contract.interpretation_payload_binding
+      .payload_is_sole_clarity_authority,
+    true,
+  );
+  assert.equal(
+    notice.copy_clock_scope_contract.canonical_trigger_code_forbidden,
+    true,
+  );
+  assert.deepEqual(
+    notice.copy_clock_scope_contract
+      .ambiguity_dimensions_requiring_explicit_clarity_or_flag,
+    ['REFERENT', 'SCOPE', 'CARDINALITY'],
+  );
+  assert.equal(
+    notice.independently_mutable_overall_resolution_forbidden,
+    true,
+  );
+  assert.equal(notice.minimum_notice_timing_claims, 1);
+  assert.equal(notice.maximum_notice_timing_claims, 1);
+  assert.equal(notice.minimum_copy_timing_claims, 1);
+  assert.equal(notice.maximum_copy_timing_claims, 1);
+  assert.equal(notice.required_completeness, null);
+  assert.equal(notice.legacy_completeness_field_forbidden, true);
+  assert.deepEqual(
+    notice.child_resolution_state_contract.worst_state_order,
+    [
+      'RESOLVED_CLEAR',
+      'RESOLVED_WITH_REVIEW_NOTE',
+      'BLOCKING_UNRESOLVED',
+    ],
+  );
+});
+
+test('F7 USES_DEFINITION V2 is exact-use scoped and plural-safe', () => {
+  const f6 = compileFixtureContractV6();
+  const f7 = compileFixtureContractV7();
+  const relationship = f7.relationship_definitions.find(
+    (entry) => entry.relationship_key === 'USES_DEFINITION',
+  );
+  assert.deepEqual(relationship, {
+    relationship_key: 'USES_DEFINITION',
+    effect_mode: 'TYPED_LEGAL_EFFECT',
+    version: 2,
+    effect_schema: 'USES_DEFINITION_EFFECT/V1',
+  });
+  assert.equal(
+    f7.definition_use_effect_schema_definition,
+    USES_DEFINITION_EFFECT_SCHEMA_V1,
+  );
+  assert.equal(
+    f7.definition_use_effect_schema_definition.propagation,
+    'EXACT_NAMED_TARGET_ONLY',
+  );
+  assert.equal(f7.definition_use_effect_schema_definition.party_transfer, 'NONE');
+  assert.equal(f7.definition_use_effect_schema_definition.alias_authority, 'NONE');
+  assert.deepEqual(
+    f7.definition_use_effect_schema_definition.allowed_legal_role_codes,
+    [
+      'OPERATIVE_TRIGGER',
+      'OPERATIVE_OBLIGATION_OBJECT',
+      'OPERATIVE_SCOPE_OR_CONTENT_QUALIFIER',
+      'NESTED_DEFINITION_DEPENDENCY',
+    ],
+  );
+  assert.deepEqual(
+    f7.definition_use_effect_schema_definition.allowed_use_form_codes,
+    [
+      'EXACT_DECLARED_TERM',
+      'DECLARED_TERM_PLUS_ASCII_LOWERCASE_S',
+    ],
+  );
+  assert.equal(
+    f7.definition_use_effect_schema_definition.plural_normalisation_rule
+      .scope,
+    'THIS_SOURCE_USE_ONLY',
+  );
+  assert.equal(
+    f7.definition_use_effect_schema_definition.plural_normalisation_rule
+      .alias_authority,
+    'NONE',
+  );
+  assert.deepEqual(
+    f7.definition_use_effect_schema_definition.evidence_role_contract
+      .required_roles,
+    ['EXACT_USE', 'DEFINITION_DECLARATION', 'DEFINITION_BODY'],
+  );
+  assert.equal(
+    f7.definition_use_effect_schema_definition
+      .relationship_interpretation_payload_contract.schema_version,
+    'RELATIONSHIP_INTERPRETATION/V1',
+  );
+  assert.deepEqual(
+    f7.definition_use_effect_schema_definition.required_exact_values,
+    {
+      legal_operation: 'APPLY_SELECTED_DEFINITION_TO_EXACT_USE',
+      effect_schema_version: 1,
+      propagation: 'EXACT_NAMED_TARGET_ONLY',
+      party_transfer: 'NONE',
+      alias_authority: 'NONE',
+    },
+  );
+  assert.deepEqual(
+    f7.definition_use_effect_schema_definition.affected_endpoint_contract
+      .allowed_endpoint_fields,
+    [
+      {
+        endpoint_kind: 'NOTICE_OBLIGATION_REVISION',
+        affected_field_keys: [
+          'trigger_expression',
+          'copy_subject_codes',
+          'content_requirement_codes',
+        ],
+      },
+      {
+        endpoint_kind: 'DEFINITION_OCCURRENCE',
+        affected_field_keys: ['nested_definition_dependency'],
+      },
+    ],
+  );
+  assert.equal(
+    f7.definition_use_effect_schema_definition
+      .unresolved_definition_precedence_blocks_relationship_effect_publication,
+    true,
+  );
+  assert.deepEqual(
+    f7.definition_use_effect_schema_definition.party_scope_contract,
+    {
+      required_fields: [
+        'source_party_context_id',
+        'affected_endpoint_party_context',
+        'definition_party_context',
+      ],
+      affected_endpoint_party_context_required: true,
+      affected_endpoint_party_context_contract: {
+        schema_version: 'PARTY_TUPLE/V1',
+        required_fields: ['role', 'value', 'capacity'],
+        exact_fields_only: true,
+      },
+      definition_party_context_contract: {
+        discriminator_field: 'applicability_state',
+        variants: [
+          {
+            applicability_state: 'APPLICABLE',
+            required_fields: ['applicability_state', 'party'],
+            party_contract: 'PARTY_TUPLE/V1',
+          },
+          {
+            applicability_state: 'NOT_APPLICABLE',
+            required_fields: ['applicability_state'],
+            forbidden_fields: ['party'],
+          },
+        ],
+        null_string_and_untyped_object_encodings_forbidden: true,
+      },
+      party_inference_from_use_forbidden: true,
+      party_inference_from_definition_forbidden: true,
+      party_transfer_requires_separate_relationship: true,
+    },
+  );
+  assert.deepEqual(
+    f7.relationship_definitions.filter(
+      (entry) => entry.relationship_key !== 'USES_DEFINITION',
+    ),
+    f6.relationship_definitions.filter(
+      (entry) => entry.relationship_key !== 'USES_DEFINITION',
+    ),
+  );
+});
+
+test('F7 refuses interpretation, notice and definition-effect hybrids', () => {
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V7,
+    claim_interpretation_policy: undefined,
+  }), /contract version/);
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V7,
+    definition_use_effect_schema: undefined,
+  }), /contract version/);
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V7,
+    no_shop_semantic_schemas: FIXTURE_CONTRACT_INPUT_V6.no_shop_semantic_schemas,
+  }), /contract version/);
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V7,
+    relationship_definitions: FIXTURE_CONTRACT_INPUT_V6.relationship_definitions,
+  }), /contract version/);
+  const widenedPluralRule = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V7.definition_use_effect_schema,
+  ));
+  widenedPluralRule.allowed_use_form_codes.push('IRREGULAR_PLURAL');
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V7,
+    definition_use_effect_schema: widenedPluralRule,
+  }), /contract version/);
+  const unsafeAmbiguity = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V7.claim_interpretation_policy,
+  ));
+  unsafeAmbiguity.default_metric_accepted_clarity_states.push(
+    'REASONABLE_BUT_AMBIGUOUS',
+  );
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V7,
+    claim_interpretation_policy: unsafeAmbiguity,
+  }), /contract version/);
+  const incompleteProjection = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V7.claim_interpretation_policy,
+  ));
+  incompleteProjection.projection_retention_fields =
+    incompleteProjection.projection_retention_fields.filter(
+      (field) => field !== 'interpretation_payload_id',
+    );
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V7,
+    claim_interpretation_policy: incompleteProjection,
+  }), /contract version/);
+  const broadEndpoint = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V7.definition_use_effect_schema,
+  ));
+  broadEndpoint.affected_endpoint_contract.allowed_endpoint_fields.push({
+    endpoint_kind: 'PROVISION_RESULT_REVISION',
+    affected_field_keys: ['result'],
+  });
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V7,
+    definition_use_effect_schema: broadEndpoint,
+  }), /contract version/);
+  const staleClockCardinality = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V7.no_shop_semantic_schemas,
+  ));
+  staleClockCardinality.find(
+    (entry) => entry.schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  ).maximum_copy_timing_claims = 4;
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V7,
+    no_shop_semantic_schemas: staleClockCardinality,
+  }), /contract version/);
+  const inventedCopyTrigger = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V7.no_shop_semantic_schemas,
+  ));
+  inventedCopyTrigger.find(
+    (entry) => entry.schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  ).copy_clock_scope_contract.canonical_trigger_code_forbidden = false;
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V7,
+    no_shop_semantic_schemas: inventedCopyTrigger,
+  }), /contract version/);
+  const ambiguousPartyEncoding = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V7.definition_use_effect_schema,
+  ));
+  ambiguousPartyEncoding.party_scope_contract
+    .definition_party_context_contract
+    .null_string_and_untyped_object_encodings_forbidden = false;
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V7,
+    definition_use_effect_schema: ambiguousPartyEncoding,
+  }), /contract version/);
+  const detachedInterpretation = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V7.no_shop_semantic_schemas,
+  ));
+  detachedInterpretation.find(
+    (entry) => entry.schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  ).copy_clock_scope_contract.interpretation_payload_binding
+    .payload_is_sole_clarity_authority = false;
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V7,
+    no_shop_semantic_schemas: detachedInterpretation,
+  }), /contract version/);
+});
+
 // ---------------------------------------------------------------------------
 // Per-version validation: validateInput (exercised via compileFixtureContract)
 // accepts either frozen concept-key vocabulary and rejects anything else.
@@ -647,11 +1081,12 @@ test('a bundle missing one of the four V2 additions is rejected (not silently ac
   assert.throws(() => compileFixtureContract(partial), /concept keys do not match any frozen fixture contract version/);
 });
 
-test('validateContractBundle accepts compiled V1 through V6 bundles', () => {
+test('validateContractBundle accepts compiled V1 through V7 bundles', () => {
   assert.equal(validateContractBundle(compileFixtureContract()), true);
   assert.equal(validateContractBundle(compileFixtureContractV2()), true);
   assert.equal(validateContractBundle(compileFixtureContractV3()), true);
   assert.equal(validateContractBundle(compileFixtureContractV4()), true);
   assert.equal(validateContractBundle(compileFixtureContractV5()), true);
   assert.equal(validateContractBundle(compileFixtureContractV6()), true);
+  assert.equal(validateContractBundle(compileFixtureContractV7()), true);
 });
