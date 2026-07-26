@@ -1,0 +1,39 @@
+{
+  "phase": "WP-CANONICAL-QXO-NO-SHOP-INLINE-PERMISSION-F9",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-qxo-no-shop-inline-permission-f9.json",
+    "lib/canonical-v2/canonical-writer.js",
+    "lib/canonical-v2/qxo-no-shop-inline-permission-f9.js",
+    "lib/canonical-v2/validate-write-set.js",
+    "scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs",
+    "scripts/canonical-v2-staging-qxo-no-shop-inline-permission-f9.mjs",
+    "scripts/canonical-v2-staging-schema.mjs",
+    "scripts/canonical-v2-optiona-authority-partition.mjs",
+    "sql/optionA/step0b-canonical-writer-by-contract.sql",
+    "supabase/canonical-v2-foundation.sql",
+    "tests/canonical-v2-canonical-writer.test.js",
+    "tests/canonical-v2-deal-scope-sql-writer.test.js",
+    "tests/canonical-v2-deal-scope-writer.test.js",
+    "tests/canonical-v2-qxo-no-shop-inline-permission-f9.test.js",
+    "tests/fixtures/canonical-v2/qxo-no-shop-inline-permission-f9-staging-attestation.json"
+  ],
+  "denied": [
+    ".env*",
+    "docs/**",
+    "pages/**",
+    "components/**",
+    "lib/query/**",
+    "lib/parser-v2/**",
+    "lib/canonical-v2/contract-bundle.js",
+    "lib/canonical-v2/admitted-parser-proposal-adapter.js",
+    "lib/canonical-v2/candidate-release.js",
+    "lib/canonical-v2/candidate-release-import.js",
+    "lib/canonical-v2/claims-relationships.js",
+    "lib/canonical-v2/market-cohort-query.js",
+    "lib/canonical-v2/serving-projection.js",
+    "lib/canonical-v2/shared-serving-row.js",
+    "supabase/canonical-v2-serving.sql",
+    "next.config.js"
+  ],
+  "note": "Materialises one exact QXO inline no-shop permission over ten canonical restricted-action occurrences. The write is isolated to staging, preserves the legacy deal row, does not change the active release pointer, and grants no absence, result, metric, comparison, query, serving, release or production activation authority."
+}
