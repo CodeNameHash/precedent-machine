@@ -23,6 +23,7 @@ const {
   compileFixtureContractV7,
   compileFixtureContractV8,
   compileFixtureContractV9,
+  compileFixtureContractV10,
 } = require('../lib/canonical-v2/contract-bundle');
 const {
   buildQxoNoShopClockParserBoundReviewSeed,
@@ -82,6 +83,11 @@ const {
   buildQxoNoShopDefinitionControlF11,
   validateQxoNoShopDefinitionControlF11,
 } = require('../lib/canonical-v2/qxo-no-shop-definition-control-f11');
+const {
+  buildQxoNoShopDefinitionScopeClosureF13,
+  buildQxoNoShopDefinitionScopeClosureF13FailureAttestation,
+  validateQxoNoShopDefinitionScopeClosureF13,
+} = require('../lib/canonical-v2/qxo-no-shop-definition-scope-closure-f13');
 const {
   buildQxoAdmittedNoShopActionsSlice,
 } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
@@ -167,6 +173,10 @@ const NOTICE_RECEIPT_F10_FIXTURE_PATH = join(
 const DEFINITION_CONTROL_F11_FIXTURE_PATH = join(
   ROOT,
   'tests/fixtures/canonical-v2/qxo-no-shop-definition-control-f11-staging-attestation.json',
+);
+const DEFINITION_SCOPE_F13_FIXTURE_PATH = join(
+  ROOT,
+  'tests/fixtures/canonical-v2/qxo-no-shop-definition-scope-closure-f13-staging-attestation.json',
 );
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
@@ -1301,6 +1311,7 @@ function buildNoticeSourceF6Runtime() {
   });
   return {
     admittedSourceContext,
+    admittedParserProposalEnvelope,
     bindingInputs,
     carrier,
     contractBundle,
@@ -2210,6 +2221,284 @@ function buildDefinitionControlF11Attestation() {
   };
 }
 
+function buildDefinitionScopeF13Attestation() {
+  const {
+    admittedParserProposalEnvelope,
+    admittedSourceContext,
+    bindingInputs,
+    carrier: noticeSourceCarrier,
+    contractBundle: f6ContractBundle,
+  } = buildNoticeSourceF6Runtime();
+  const definitionGraph =
+    bindingInputs.qxo_no_shop_reviewed_definition_graph_f6;
+  const closure = buildQxoNoShopNoticeSemanticClosureF6({
+    contract_bundle: f6ContractBundle,
+    qxo_no_shop_notice_source_binding_f6: noticeSourceCarrier,
+  });
+  const f7Carrier = buildQxoNoShopNoticeReviewMaterialisationF7({
+    contract_bundle: compileFixtureContractV7(),
+    qxo_no_shop_notice_source_binding_f6: noticeSourceCarrier,
+    qxo_no_shop_notice_semantic_closure_f6: closure,
+  });
+  const f8Carrier = buildQxoNoShopDefinitionRelationshipsF8({
+    contract_bundle: compileFixtureContractV8(),
+    qxo_no_shop_notice_review_materialisation_f7: f7Carrier,
+    qxo_no_shop_notice_source_binding_f6: noticeSourceCarrier,
+    qxo_no_shop_reviewed_definition_graph_f6: definitionGraph,
+  });
+  const f10Carrier = buildQxoNoShopNoticeReceiptF10({
+    contract_bundle: compileFixtureContractV9(),
+    qxo_no_shop_definition_relationships_f8: f8Carrier,
+    qxo_no_shop_notice_review_materialisation_f7: f7Carrier,
+    qxo_no_shop_notice_source_binding_f6: noticeSourceCarrier,
+  });
+  const f11Carrier = buildQxoNoShopDefinitionControlF11({
+    admitted_source_context: admittedSourceContext,
+    contract_bundle: compileFixtureContractV9(),
+    qxo_no_shop_definition_relationships_f8: f8Carrier,
+    qxo_no_shop_notice_receipt_f10: f10Carrier,
+  });
+  const inputs = {
+    admitted_parser_proposal_envelope: admittedParserProposalEnvelope,
+    admitted_source_context: admittedSourceContext,
+    contract_bundle: compileFixtureContractV10(),
+    qxo_no_shop_definition_control_f11: f11Carrier,
+    qxo_no_shop_definition_relationships_f8: f8Carrier,
+    qxo_no_shop_notice_receipt_f10: f10Carrier,
+    qxo_no_shop_notice_source_binding_f6: noticeSourceCarrier,
+  };
+  const carrier = buildQxoNoShopDefinitionScopeClosureF13(inputs);
+  validateQxoNoShopDefinitionScopeClosureF13({
+    qxo_no_shop_definition_scope_closure_f13: carrier,
+    ...inputs,
+  });
+  const failed = buildQxoNoShopDefinitionScopeClosureF13FailureAttestation(
+    inputs,
+    207970,
+  );
+  const failedOverlap =
+    buildQxoNoShopDefinitionScopeClosureF13FailureAttestation(
+      inputs,
+      208085,
+    );
+  const stableRootIds = carrier.root_token_outcomes.filter(
+    (entry) => entry.governed_ordinal !== 207970,
+  ).map((entry) => entry.token_outcome_id);
+  const failedStableRootIds = failed.root_token_outcomes.filter(
+    (entry) => entry.governed_ordinal !== 207970,
+  ).map((entry) => entry.token_outcome_id);
+  const stableRelationshipIds = carrier.definition_use_relationships.filter(
+    (entry) => entry.governed_ordinal !== 207970,
+  ).map((entry) => entry.definition_use_relationship_id).sort();
+  const failedStableRelationshipIds =
+    failed.definition_use_relationships.filter(
+      (entry) => entry.governed_ordinal !== 207970,
+    ).map((entry) => entry.definition_use_relationship_id).sort();
+  const failedRootOutcome = failed.root_token_outcomes.find(
+    (entry) => entry.governed_ordinal === 207970,
+  );
+  const failedOverlapTokenOutcomes = [
+    ...failedOverlap.root_token_outcomes,
+    ...failedOverlap.definition_body_token_outcomes.flatMap(
+      (group) => group.token_outcomes,
+    ),
+  ].filter((entry) => entry.governed_ordinal === 208085);
+  const failedOverlapBlindDisposition = Object.values(
+    failedOverlap.blind_candidate_dispositions,
+  ).find((entry) => (
+    entry.absolute_start === 208085
+    && entry.absolute_end === 208095
+    && entry.raw_source_form === 'Subsidiary'
+  ));
+  const failureIsolationVerified =
+    canonicalJson(stableRootIds) === canonicalJson(failedStableRootIds)
+    && canonicalJson(stableRelationshipIds)
+      === canonicalJson(failedStableRelationshipIds)
+    && failedRootOutcome?.disposition_code
+      === 'BLOCKING_UNRESOLVED_CANDIDATE'
+    && failedRootOutcome.disposition_target.target_kind
+      === 'BLOCKING_UNRESOLVED'
+    && failed.definition_use_relationships.every(
+      (entry) => entry.governed_ordinal !== 207970,
+    )
+    && failed.status.review_renderable === true
+    && failed.status.definition_scope_state === 'BLOCKING_UNRESOLVED'
+    && failed.blocking_unresolved_outcomes.length === 1
+    && failedOverlapTokenOutcomes.length === 2
+    && failedOverlapTokenOutcomes.every(
+      (entry) => entry.disposition_code
+        === 'BLOCKING_UNRESOLVED_CANDIDATE',
+    )
+    && failedOverlapBlindDisposition?.disposition_code
+      === 'BLOCKING_UNRESOLVED_CANDIDATE'
+    && failedOverlap.definition_use_relationships.every(
+      (entry) => entry.governed_ordinal !== 208085,
+    )
+    && failedOverlap.blocking_unresolved_outcomes.length === 1
+    && failedOverlap.status.review_renderable === true;
+  return {
+    schema_version:
+      'QXO_NO_SHOP_DEFINITION_SCOPE_CLOSURE_F13_STAGING_ATTESTATION/V1',
+    environment: 'STAGING',
+    authority_scope: carrier.authority_scope,
+    contract_binding: carrier.contract_binding,
+    source_binding: carrier.source_binding,
+    upstream_bindings: carrier.upstream_bindings,
+    scan_policy: carrier.scan_policy,
+    inventory_summary: {
+      root_token_outcome_count: carrier.root_token_outcomes.length,
+      definition_body_token_outcome_count:
+        carrier.definition_body_token_outcomes.reduce(
+          (sum, group) => sum + group.token_outcomes.length,
+          0,
+        ),
+      definition_occurrence_count: carrier.definition_occurrences.length,
+      definition_use_relationship_count:
+        carrier.definition_use_relationships.length,
+      party_token_outcome_count: carrier.party_token_outcomes.length,
+      governance_designation_outcome_count:
+        carrier.governance_designation_outcomes.length,
+      reviewed_terminal_outcome_count:
+        carrier.reviewed_terminal_outcomes.length,
+      blocking_unresolved_outcome_count:
+        carrier.blocking_unresolved_outcomes.length,
+      blind_candidate_disposition_count:
+        Object.keys(carrier.blind_candidate_dispositions).length,
+      definition_control_scan_count:
+        carrier.definition_control_scans.length,
+      evidence_excerpt_count:
+        Object.keys(carrier.evidence_excerpts).length,
+      source_party_context_count:
+        Object.keys(carrier.source_party_contexts).length,
+      document_definition_inventory_digest:
+        carrier.definition_scope_closure
+          .document_definition_inventory_digest,
+    },
+    root_outcomes: carrier.root_token_outcomes.map((entry) => ({
+      governed_ordinal: entry.governed_ordinal,
+      raw_source_form: entry.raw_source_form,
+      disposition_code: entry.disposition_code,
+      target_kind: entry.disposition_target.target_kind,
+    })),
+    definition_summary: carrier.definition_occurrences.map((entry) => ({
+      definition_key: entry.definition_key,
+      legal_class: entry.legal_class,
+      governed_ordinal: entry.governed_ordinal,
+    })),
+    source_party_context_summary: Object.values(
+      carrier.source_party_contexts,
+    ).map((entry) => ({
+      raw_form: entry.raw_form,
+      source_declaration_carrier_span:
+        entry.source_declaration_carrier_span,
+      exact_declared_term_span: entry.exact_declared_term_span,
+    })).sort((left, right) => (
+      left.exact_declared_term_span.absolute_start
+        - right.exact_declared_term_span.absolute_start
+    )),
+    reviewed_contextual_candidate_summary: Object.values(
+      carrier.blind_candidate_dispositions,
+    ).filter(
+      (entry) => entry.disposition_code
+        === 'REVIEWED_SOURCE_CONTEXT_CONSTITUENT',
+    ).map((entry) => ({
+      raw_source_form: entry.raw_source_form,
+      absolute_start: entry.absolute_start,
+      absolute_end: entry.absolute_end,
+      reviewed_reason_code: entry.reviewed_reason_code,
+      semantic_transfer_authority: entry.semantic_transfer_authority,
+      comparability_authority: entry.comparability_authority,
+    })),
+    definition_control_summary: carrier.definition_control_scans.map(
+      (entry) => ({
+        definition_key: entry.definition_key,
+        control_source: entry.control_source,
+        competing_declaration_count:
+          entry.competing_declaration_count,
+        local_override_count: entry.local_override_count,
+        local_override_scope: entry.local_override_scope || 'NONE',
+        local_override_classification:
+          entry.local_override_classification || null,
+        local_override_evidence_span:
+          entry.local_override_evidence_span || null,
+        conclusion_code: entry.conclusion_code,
+      }),
+    ),
+    topological_definition_keys:
+      carrier.definition_scope_closure
+        .topological_definition_occurrence_ids.map((id) => (
+          carrier.definition_occurrences.find(
+            (entry) => entry.definition_occurrence_id === id,
+          ).definition_key
+        )),
+    reviewed_terminals: carrier.reviewed_terminal_outcomes.filter(
+      (entry) => [
+        'REVIEWED_UNDEFINED_SOURCE_PRIMITIVE',
+        'REVIEWED_NON_ENUMERABLE_SOURCE_PHRASE',
+      ].includes(entry.disposition_code),
+    ).map((entry) => ({
+      raw_source_form: entry.raw_source_form,
+      disposition_code: entry.disposition_code,
+      exact_source_span: entry.exact_source_span,
+      non_comparable_reason: entry.non_comparable_reason,
+      review_projection: entry.review_projection,
+      compare_projection: entry.compare_projection,
+      corpus_context_projection: entry.corpus_context_projection,
+    })),
+    definition_scope_closure: {
+      definition_scope_closure_id:
+        carrier.definition_scope_closure.definition_scope_closure_id,
+      root_scope_span:
+        carrier.definition_scope_closure.root_scope_span,
+      scan_policy_digest:
+        carrier.definition_scope_closure.scan_policy_digest,
+      document_definition_inventory_digest:
+        carrier.definition_scope_closure
+          .document_definition_inventory_digest,
+      root_token_outcome_ids_digest: contentId(
+        'QXO_NO_SHOP_F13_ROOT_TOKEN_OUTCOME_IDS_ATTESTATION/V1',
+        carrier.definition_scope_closure.root_token_outcome_ids,
+      ),
+      definition_occurrence_ids_digest: contentId(
+        'QXO_NO_SHOP_F13_DEFINITION_OCCURRENCE_IDS_ATTESTATION/V1',
+        carrier.definition_scope_closure.definition_occurrence_ids,
+      ),
+      definition_use_relationship_ids_digest: contentId(
+        'QXO_NO_SHOP_F13_DEFINITION_USE_RELATIONSHIP_IDS_ATTESTATION/V1',
+        carrier.definition_scope_closure.definition_use_relationship_ids,
+      ),
+      party_token_outcome_ids_digest: contentId(
+        'QXO_NO_SHOP_F13_PARTY_TOKEN_OUTCOME_IDS_ATTESTATION/V1',
+        carrier.definition_scope_closure.party_token_outcome_ids,
+      ),
+      terminal_reviewed_outcome_ids_digest: contentId(
+        'QXO_NO_SHOP_F13_TERMINAL_REVIEWED_OUTCOME_IDS_ATTESTATION/V1',
+        carrier.definition_scope_closure.terminal_reviewed_outcome_ids,
+      ),
+      topological_definition_occurrence_ids_digest: contentId(
+        'QXO_NO_SHOP_F13_TOPOLOGICAL_DEFINITION_IDS_ATTESTATION/V1',
+        carrier.definition_scope_closure
+          .topological_definition_occurrence_ids,
+      ),
+      unresolved_outcome_count:
+        carrier.definition_scope_closure.unresolved_outcome_count,
+      review_note_outcome_count:
+        carrier.definition_scope_closure.review_note_outcome_count,
+      fixed_point_state:
+        carrier.definition_scope_closure.fixed_point_state,
+      resolution_state:
+        carrier.definition_scope_closure.resolution_state,
+    },
+    notice_child_state_projection:
+      carrier.notice_child_state_projection,
+    materialisation_status: carrier.status,
+    failure_isolation_verified: failureIsolationVerified,
+    qxo_no_shop_definition_scope_closure_f13_id:
+      carrier.qxo_no_shop_definition_scope_closure_f13_id,
+    canonical_payload_digest: carrier.canonical_payload_digest,
+  };
+}
+
 function verifyActionsFailureIsolation(bridgeInputs) {
   const missingFirstAction = JSON.parse(JSON.stringify(
     bridgeInputs.reviewed_no_shop_actions_slice,
@@ -2438,13 +2727,18 @@ if (![
   '--notice-receipt-f10-verify',
   '--definition-control-f11-print',
   '--definition-control-f11-verify',
+  '--definition-scope-f13-print',
+  '--definition-scope-f13-verify',
 ].includes(mode)
   || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--inline-permission-f9-print|--inline-permission-f9-verify|--notice-source-f6-print|--notice-source-f6-verify|--notice-semantic-closure-f6-print|--notice-semantic-closure-f6-verify|--notice-review-materialisation-f7-print|--notice-review-materialisation-f7-verify|--notice-definition-relationships-f8-print|--notice-definition-relationships-f8-verify|--notice-receipt-f10-print|--notice-receipt-f10-verify|--definition-control-f11-print|--definition-control-f11-verify');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--inline-permission-f9-print|--inline-permission-f9-verify|--notice-source-f6-print|--notice-source-f6-verify|--notice-semantic-closure-f6-print|--notice-semantic-closure-f6-verify|--notice-review-materialisation-f7-print|--notice-review-materialisation-f7-verify|--notice-definition-relationships-f8-print|--notice-definition-relationships-f8-verify|--notice-receipt-f10-print|--notice-receipt-f10-verify|--definition-control-f11-print|--definition-control-f11-verify|--definition-scope-f13-print|--definition-scope-f13-verify');
 }
 
 try {
-  const definitionControlF11Mode =
+  const definitionScopeF13Mode =
+    mode.startsWith('--definition-scope-f13-');
+  const definitionControlF11Mode = !definitionScopeF13Mode
+    &&
     mode.startsWith('--definition-control-f11-');
   const noticeReceiptF10Mode =
     !definitionControlF11Mode
@@ -2473,7 +2767,9 @@ try {
     && mode.startsWith('--definitions-f6-');
   const actionsF6Mode = !definitionsF6Mode && mode.startsWith('--actions-f6-');
   const actionsMode = !actionsF6Mode && mode.startsWith('--actions-');
-  const attestation = definitionControlF11Mode
+  const attestation = definitionScopeF13Mode
+    ? buildDefinitionScopeF13Attestation()
+    : definitionControlF11Mode
     ? buildDefinitionControlF11Attestation()
     : noticeReceiptF10Mode
     ? buildNoticeReceiptF10Attestation()
@@ -2501,7 +2797,9 @@ try {
     : attestation;
   if (mode.endsWith('verify')) {
     const expected = JSON.parse(readFileSync(
-      definitionControlF11Mode
+      definitionScopeF13Mode
+        ? DEFINITION_SCOPE_F13_FIXTURE_PATH
+        : definitionControlF11Mode
         ? DEFINITION_CONTROL_F11_FIXTURE_PATH
         : noticeReceiptF10Mode
         ? NOTICE_RECEIPT_F10_FIXTURE_PATH
