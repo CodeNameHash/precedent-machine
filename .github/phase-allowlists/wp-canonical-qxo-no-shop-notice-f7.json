@@ -1,0 +1,35 @@
+{
+  "phase": "WP-CANONICAL-QXO-NO-SHOP-NOTICE-F7",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-qxo-no-shop-notice-f7.json",
+    "lib/canonical-v2/qxo-no-shop-notice-review-materialisation-f7.js",
+    "scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs",
+    "tests/canonical-v2-qxo-no-shop-notice-review-materialisation-f7.test.js",
+    "tests/fixtures/canonical-v2/qxo-no-shop-notice-review-materialisation-f7-staging-attestation.json"
+  ],
+  "denied": [
+    ".env*",
+    "docs/**",
+    "pages/**",
+    "components/**",
+    "lib/query/**",
+    "lib/parser-v2/**",
+    "lib/canonical-v2/admitted-parser-proposal-adapter.js",
+    "lib/canonical-v2/candidate-release.js",
+    "lib/canonical-v2/candidate-release-import.js",
+    "lib/canonical-v2/canonical-writer.js",
+    "lib/canonical-v2/claims-relationships.js",
+    "lib/canonical-v2/contract-bundle.js",
+    "lib/canonical-v2/definition-graph.js",
+    "lib/canonical-v2/market-cohort-query.js",
+    "lib/canonical-v2/qxo-no-shop-notice-semantic-closure-f6.js",
+    "lib/canonical-v2/qxo-no-shop-notice-source-binding-f6.js",
+    "lib/canonical-v2/serving-projection.js",
+    "lib/canonical-v2/shared-serving-row.js",
+    "lib/canonical-v2/validate-write-set.js",
+    "sql/**",
+    "supabase/**",
+    "next.config.js"
+  ],
+  "note": "Materialises the exact QXO F7 trigger expression, initial clock scope, copy-clock interpretation and blocked copy-clock scope for Review from one bounded staging read. It grants no notice revision, definition relationship, comparison, query, serving, write or release authority."
+}
