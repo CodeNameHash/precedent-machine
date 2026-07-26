@@ -30,6 +30,7 @@ const {
   FIXTURE_CONTRACT_INPUT_V7,
   FIXTURE_CONTRACT_INPUT_V8,
   FIXTURE_CONTRACT_INPUT_V9,
+  FIXTURE_CONTRACT_INPUT_V10,
   FIXTURE_CONTRACT_FINGERPRINTS,
   FIXTURE_SERVING_CONTRACT_FINGERPRINTS,
   CLAIM_INTERPRETATION_POLICY_V1,
@@ -40,6 +41,8 @@ const {
   NO_SHOP_NOTICE_OBLIGATION_SCHEMA_V2,
   NO_SHOP_NOTICE_OBLIGATION_SCHEMA_V3,
   NO_SHOP_NOTICE_OBLIGATION_SCHEMA_V4,
+  NO_SHOP_NOTICE_OBLIGATION_SCHEMA_V5,
+  NOTICE_DEFINITION_SCOPE_CLOSURE_V1,
   NO_SHOP_EXCEPTION_PREREQUISITE_CODES_V2,
   USES_DEFINITION_EFFECT_SCHEMA_V1,
   USES_DEFINITION_EFFECT_SCHEMA_V2,
@@ -52,6 +55,7 @@ const {
   compileFixtureContractV7,
   compileFixtureContractV8,
   compileFixtureContractV9,
+  compileFixtureContractV10,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -65,6 +69,7 @@ const FROZEN_F6 = '161083b014a35d800dec0b0c41a97dc6d97f38a5dd206b388ba51b3ab9f68
 const FROZEN_F7 = '5037e25762892f44f660516913d58a23c17ebab0c10c160fcf8cbd0f65a90969';
 const FROZEN_F8 = 'dd0f1d4afc02492edf1bbbebe1a6699498fd6c3d26d890254a151b1d8c7d0a80';
 const FROZEN_F9 = '8576011555a67b18f6539bb259dea4285d2e3d982c4b906a3edc73162dc9e8c7';
+const FROZEN_F10 = 'aee4b40ead2e76ed744b0f20967a48493c618125959a023f8262612da23aa0e5';
 
 const APPROVED_V2_ADDITIONS = [
   'TERMR-BREACH',
@@ -125,7 +130,7 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F9 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F10 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
@@ -134,6 +139,7 @@ test('F1 through F9 are distinct recognised fixture contract fingerprints', () =
   assert.notEqual(FROZEN_F6, FROZEN_F7);
   assert.notEqual(FROZEN_F7, FROZEN_F8);
   assert.notEqual(FROZEN_F8, FROZEN_F9);
+  assert.notEqual(FROZEN_F9, FROZEN_F10);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -146,6 +152,7 @@ test('F1 through F9 are distinct recognised fixture contract fingerprints', () =
       FROZEN_F7,
       FROZEN_F8,
       FROZEN_F9,
+      FROZEN_F10,
     ].sort(),
   );
   assert.deepEqual(
@@ -1417,6 +1424,336 @@ test('F9 refuses reversed, unflagged and co-mutated hybrids', () => {
   }), /contract version/);
 });
 
+test('F10 freezes a bounded fixed-point definition-scope closure contract', () => {
+  const f9 = compileFixtureContractV9();
+  const f10 = compileFixtureContractV10();
+  assert.equal(f10.fingerprint, FROZEN_F10);
+  assert.equal(validateContractBundle(f10), true);
+  assert.equal(
+    canonicalJson(f10),
+    canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V10)),
+  );
+  assert.equal(
+    canonicalJson(NO_SHOP_NOTICE_OBLIGATION_SCHEMA_V5),
+    canonicalJson(FIXTURE_CONTRACT_INPUT_V10.no_shop_semantic_schemas.find(
+      (entry) => entry.schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+    )),
+  );
+  const notice = f10.no_shop_semantic_schema_definitions.find(
+    (entry) => entry.semantic_schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  );
+  assert.equal(notice.semantic_schema_version, 5);
+  assert.equal(notice.record_schema, 'NO_SHOP_NOTICE_OBLIGATION/V5');
+  assert.equal(notice.maximum_definition_use_relationships, 64);
+  assert.deepEqual(
+    notice.definition_scope_closure_contract,
+    NOTICE_DEFINITION_SCOPE_CLOSURE_V1,
+  );
+  assert.equal(
+    notice.definition_scope_closure_contract
+      .inventory_contract.longest_match_required,
+    true,
+  );
+  assert.equal(
+    notice.definition_scope_closure_contract
+      .inventory_contract.catalogue_blind_capitalised_and_quoted_candidate_scan_required,
+    true,
+  );
+  assert.equal(
+    notice.definition_scope_closure_contract
+      .transitive_closure_contract.fixed_point_required,
+    true,
+  );
+  assert.equal(
+    notice.definition_scope_closure_contract
+      .reviewed_terminal_outcome_contract.market_cohort_admission_forbidden,
+    true,
+  );
+  assert.equal(
+    notice.definition_scope_closure_contract
+      .reviewed_terminal_outcome_contract.review_projection_required,
+    true,
+  );
+  assert.equal(
+    notice.definition_scope_closure_contract
+      .reviewed_terminal_outcome_contract
+      .compare_and_corpus_context_must_render_non_comparable_reason,
+    true,
+  );
+  assert.equal(
+    notice.definition_scope_closure_contract
+      .blocking_unresolved_outcome_contract
+      .silent_count_only_encoding_forbidden,
+    true,
+  );
+  assert.equal(
+    notice.definition_scope_closure_contract
+      .blocking_unresolved_outcome_contract.required_fields.includes(
+        'blocking_unresolved_outcome_id',
+      ),
+    true,
+  );
+  assert.equal(
+    notice.definition_scope_closure_contract
+      .blocking_unresolved_outcome_contract.identity_inputs.includes(
+        'evidence_excerpt_ids',
+      ),
+    true,
+  );
+  assert.equal(
+    notice.definition_scope_closure_contract
+      .root_token_outcome_contract.disposition_target_contract
+      .disposition_code_and_target_kind_must_correspond_exactly,
+    true,
+  );
+  assert.equal(
+    notice.definition_scope_closure_contract.required_fields.includes(
+      'blocking_unresolved_outcome_ids',
+    ),
+    true,
+  );
+  assert.equal(
+    notice.definition_scope_closure_contract
+      .governance_body_designation_contract
+      .uses_definition_relationship_forbidden,
+    true,
+  );
+  assert.equal(
+    notice.definition_scope_closure_contract
+      .governance_body_designation_contract.party_substitution_forbidden,
+    true,
+  );
+  assert.equal(
+    notice.definition_scope_closure_contract
+      .terminalisation_precedence_contract
+      .known_substantive_definition_bypass_forbidden,
+    true,
+  );
+  assert.equal(
+    notice.definition_scope_closure_contract
+      .transitive_closure_contract
+      .source_local_plural_self_reference_resolves_lexically_without_edge,
+    true,
+  );
+  assert.equal(
+    notice.definition_scope_closure_contract
+      .transitive_closure_contract.relationship_cycles_forbidden,
+    true,
+  );
+  assert.equal(
+    notice.definition_scope_closure_contract
+      .outcome_set_contract.unresolved_outcome_count_derivation,
+    'CARDINALITY_OF_BLOCKING_UNRESOLVED_OUTCOME_IDS',
+  );
+  assert.equal(
+    notice.definition_scope_closure_contract
+      .outcome_set_contract.party_and_reviewed_terminal_sets_disjoint,
+    true,
+  );
+  assert.equal(
+    notice.definition_scope_closure_contract
+      .outcome_set_contract
+      .definition_occurrence_ids_equal_complete_reached_definition_node_set,
+    true,
+  );
+  assert.equal(
+    notice.definition_scope_closure_contract
+      .outcome_set_contract
+      .topological_definition_occurrence_ids_exact_permutation_of_definition_occurrence_ids,
+    true,
+  );
+  assert.deepEqual(
+    notice.definition_scope_closure_contract.authority_contract,
+    {
+      absence_authority: 'NONE',
+      canonical_write_authority: 'NONE',
+      publication_authority: 'NONE',
+      relationship_authority: 'NONE',
+      result_authority: 'NONE',
+      metric_authority: 'NONE',
+      comparability_authority: 'NONE',
+      query_authority: 'NONE',
+      serving_authority: 'NONE',
+      release_authority: 'NONE',
+    },
+  );
+  assert.equal(
+    notice.definition_child_resolution_contract
+      .definition_uses_state_derivation.RESOLVED_WITH_REVIEW_NOTE,
+    'FORBIDDEN',
+  );
+  assert.equal(
+    notice.definition_child_resolution_contract
+      .definition_dependency_state_derivation.states_must_be_mutually_exclusive_and_exhaustive,
+    true,
+  );
+  assert.deepEqual(
+    notice.definition_scope_closure_contract
+      .reviewed_terminal_disposition_codes.slice(-2),
+    [
+      'REVIEWED_UNDEFINED_SOURCE_PRIMITIVE',
+      'REVIEWED_NON_ENUMERABLE_SOURCE_PHRASE',
+    ],
+  );
+  assert.equal(
+    notice.notice_revision_identity_contract.content_address_domain,
+    'NO_SHOP_NOTICE_OBLIGATION/V5',
+  );
+  assert.equal(
+    notice.notice_revision_identity_contract.identity_inputs.includes(
+      'definition_scope_closure_id',
+    ),
+    true,
+  );
+  assert.equal(
+    FIXTURE_SERVING_CONTRACT_FINGERPRINTS.includes(FROZEN_F10),
+    false,
+  );
+  assert.equal(
+    canonicalJson(fixtureContractForFingerprint(FROZEN_F10)),
+    canonicalJson(f10),
+  );
+  assert.equal(canonicalJson(compileFixtureContractV9()), canonicalJson(f9));
+});
+
+test('F10 changes only the notice definition-scope contract', () => {
+  const f9 = compileFixtureContractV9();
+  const f10 = compileFixtureContractV10();
+  const stable = (bundle) => {
+    const {
+      fingerprint: _fingerprint,
+      no_shop_semantic_schema_definitions: _noShopSchemas,
+      ...rest
+    } = bundle;
+    return rest;
+  };
+  assert.equal(canonicalJson(stable(f10)), canonicalJson(stable(f9)));
+  assert.deepEqual(
+    f10.no_shop_semantic_schema_definitions.filter(
+      (entry) => entry.semantic_schema_key !== 'NO_SHOP_NOTICE_OBLIGATION',
+    ),
+    f9.no_shop_semantic_schema_definitions.filter(
+      (entry) => entry.semantic_schema_key !== 'NO_SHOP_NOTICE_OBLIGATION',
+    ),
+  );
+});
+
+test('F10 refuses opaque, unbounded and silently lossy closure hybrids', () => {
+  const opaque = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V10.no_shop_semantic_schemas,
+  ));
+  delete opaque.find(
+    (entry) => entry.schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  ).definition_scope_closure_contract.inventory_contract
+    .catalogue_blind_capitalised_and_quoted_candidate_scan_required;
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V10,
+    no_shop_semantic_schemas: opaque,
+  }), /contract version/);
+
+  const unbounded = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V10.no_shop_semantic_schemas,
+  ));
+  unbounded.find(
+    (entry) => entry.schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  ).definition_scope_closure_contract.bounds
+    .maximum_definition_use_relationships = Number.MAX_SAFE_INTEGER;
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V10,
+    no_shop_semantic_schemas: unbounded,
+  }), /contract version/);
+
+  const lossy = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V10.no_shop_semantic_schemas,
+  ));
+  lossy.find(
+    (entry) => entry.schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  ).definition_scope_closure_contract.inventory_contract
+    .silent_skip_forbidden = false;
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V10,
+    no_shop_semantic_schemas: lossy,
+  }), /contract version/);
+
+  const countOnly = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V10.no_shop_semantic_schemas,
+  ));
+  countOnly.find(
+    (entry) => entry.schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  ).definition_scope_closure_contract.required_fields =
+    countOnly.find(
+      (entry) => entry.schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+    ).definition_scope_closure_contract.required_fields.filter(
+      (field) => field !== 'blocking_unresolved_outcome_ids',
+    );
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V10,
+    no_shop_semantic_schemas: countOnly,
+  }), /contract version/);
+
+  const cycle = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V10.no_shop_semantic_schemas,
+  ));
+  cycle.find(
+    (entry) => entry.schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  ).definition_scope_closure_contract.transitive_closure_contract
+    .relationship_cycles_forbidden = false;
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V10,
+    no_shop_semantic_schemas: cycle,
+  }), /contract version/);
+
+  const authorityLeak = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V10.no_shop_semantic_schemas,
+  ));
+  authorityLeak.find(
+    (entry) => entry.schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  ).definition_scope_closure_contract.authority_contract
+    .serving_authority = 'ALLOWED';
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V10,
+    no_shop_semantic_schemas: authorityLeak,
+  }), /contract version/);
+
+  const contradictoryTarget = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V10.no_shop_semantic_schemas,
+  ));
+  contradictoryTarget.find(
+    (entry) => entry.schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  ).definition_scope_closure_contract.root_token_outcome_contract
+    .disposition_target_contract.target_kind_by_disposition_code
+    .USES_DEFINITION = 'PARTY_CONTEXT';
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V10,
+    no_shop_semantic_schemas: contradictoryTarget,
+  }), /contract version/);
+
+  const incompleteGraph = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V10.no_shop_semantic_schemas,
+  ));
+  incompleteGraph.find(
+    (entry) => entry.schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  ).definition_scope_closure_contract.outcome_set_contract
+    .definition_occurrence_ids_equal_complete_reached_definition_node_set = false;
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V10,
+    no_shop_semantic_schemas: incompleteGraph,
+  }), /contract version/);
+
+  const overlappingDependencyStates = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V10.no_shop_semantic_schemas,
+  ));
+  overlappingDependencyStates.find(
+    (entry) => entry.schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  ).definition_child_resolution_contract.definition_dependency_state_derivation
+    .RESOLVED_CLEAR =
+      'ALL_REQUIRED_DEPENDENCY_RELATIONSHIPS_VALID_ACYCLIC_AND_UNSUPPRESSED';
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V10,
+    no_shop_semantic_schemas: overlappingDependencyStates,
+  }), /contract version/);
+});
+
 // ---------------------------------------------------------------------------
 // Per-version validation: validateInput (exercised via compileFixtureContract)
 // accepts either frozen concept-key vocabulary and rejects anything else.
@@ -1443,7 +1780,7 @@ test('a bundle missing one of the four V2 additions is rejected (not silently ac
   assert.throws(() => compileFixtureContract(partial), /concept keys do not match any frozen fixture contract version/);
 });
 
-test('validateContractBundle accepts compiled V1 through V9 bundles', () => {
+test('validateContractBundle accepts compiled V1 through V10 bundles', () => {
   assert.equal(validateContractBundle(compileFixtureContract()), true);
   assert.equal(validateContractBundle(compileFixtureContractV2()), true);
   assert.equal(validateContractBundle(compileFixtureContractV3()), true);
@@ -1453,4 +1790,5 @@ test('validateContractBundle accepts compiled V1 through V9 bundles', () => {
   assert.equal(validateContractBundle(compileFixtureContractV7()), true);
   assert.equal(validateContractBundle(compileFixtureContractV8()), true);
   assert.equal(validateContractBundle(compileFixtureContractV9()), true);
+  assert.equal(validateContractBundle(compileFixtureContractV10()), true);
 });
