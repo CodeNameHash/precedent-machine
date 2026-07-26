@@ -1,0 +1,32 @@
+{
+  "phase": "WP-CANONICAL-QXO-NO-SHOP-NOTICE-RECEIPT-F10",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-qxo-no-shop-notice-receipt-f10.json",
+    "lib/canonical-v2/contract-bundle.js",
+    "lib/canonical-v2/qxo-no-shop-notice-receipt-f10.js",
+    "scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs",
+    "tests/canonical-v2-contract-bundle-versions.test.js",
+    "tests/canonical-v2-qxo-no-shop-notice-receipt-f10.test.js",
+    "tests/fixtures/canonical-v2/qxo-no-shop-notice-receipt-f10-staging-attestation.json"
+  ],
+  "denied": [
+    ".env*",
+    "docs/**",
+    "pages/**",
+    "components/**",
+    "lib/query/**",
+    "lib/parser-v2/**",
+    "lib/canonical-v2/admitted-parser-proposal-adapter.js",
+    "lib/canonical-v2/candidate-release.js",
+    "lib/canonical-v2/candidate-release-import.js",
+    "lib/canonical-v2/canonical-writer.js",
+    "lib/canonical-v2/claims-relationships.js",
+    "lib/canonical-v2/market-cohort-query.js",
+    "lib/canonical-v2/serving-projection.js",
+    "lib/canonical-v2/shared-serving-row.js",
+    "sql/**",
+    "supabase/**",
+    "next.config.js"
+  ],
+  "note": "Corrects the frozen QXO copy-clock primary reading to receipt of the preceding Company Acquisition Proposal or Company Request, retains the source-backed alternative and visible ambiguity flag, and mints a review-only notice revision identity. It grants no canonical write, result, metric, comparison, query, serving, release or production activation authority."
+}
