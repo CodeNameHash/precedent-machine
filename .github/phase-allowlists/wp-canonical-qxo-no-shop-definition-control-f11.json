@@ -1,0 +1,32 @@
+{
+  "phase": "WP-CANONICAL-QXO-NO-SHOP-DEFINITION-CONTROL-F11",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-qxo-no-shop-definition-control-f11.json",
+    "lib/canonical-v2/qxo-no-shop-definition-control-f11.js",
+    "scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs",
+    "tests/canonical-v2-qxo-no-shop-definition-control-f11.test.js",
+    "tests/fixtures/canonical-v2/qxo-no-shop-definition-control-f11-staging-attestation.json"
+  ],
+  "denied": [
+    ".env*",
+    "docs/**",
+    "pages/**",
+    "components/**",
+    "lib/query/**",
+    "lib/parser-v2/**",
+    "lib/canonical-v2/contract-bundle.js",
+    "lib/canonical-v2/admitted-parser-proposal-adapter.js",
+    "lib/canonical-v2/candidate-release.js",
+    "lib/canonical-v2/candidate-release-import.js",
+    "lib/canonical-v2/canonical-writer.js",
+    "lib/canonical-v2/claims-relationships.js",
+    "lib/canonical-v2/market-cohort-query.js",
+    "lib/canonical-v2/serving-projection.js",
+    "lib/canonical-v2/shared-serving-row.js",
+    "lib/canonical-v2/validate-write-set.js",
+    "sql/**",
+    "supabase/**",
+    "next.config.js"
+  ],
+  "note": "Scans the complete admitted QXO canonical text, confirms the selected Company Request and Company Acquisition Proposal definitions control all seven notice uses, preserves the source-local plural without alias authority, and confines the 50% definition adjustment to its termination-fee clause. Successor relationship effects remain review-only and grant no result, market, query, serving, write, release or production activation authority."
+}

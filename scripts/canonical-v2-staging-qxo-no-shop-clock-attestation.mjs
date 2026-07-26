@@ -79,6 +79,10 @@ const {
   validateQxoNoShopNoticeReceiptF10,
 } = require('../lib/canonical-v2/qxo-no-shop-notice-receipt-f10');
 const {
+  buildQxoNoShopDefinitionControlF11,
+  validateQxoNoShopDefinitionControlF11,
+} = require('../lib/canonical-v2/qxo-no-shop-definition-control-f11');
+const {
   buildQxoAdmittedNoShopActionsSlice,
 } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
 const {
@@ -159,6 +163,10 @@ const NOTICE_DEFINITION_RELATIONSHIPS_F8_FIXTURE_PATH = join(
 const NOTICE_RECEIPT_F10_FIXTURE_PATH = join(
   ROOT,
   'tests/fixtures/canonical-v2/qxo-no-shop-notice-receipt-f10-staging-attestation.json',
+);
+const DEFINITION_CONTROL_F11_FIXTURE_PATH = join(
+  ROOT,
+  'tests/fixtures/canonical-v2/qxo-no-shop-definition-control-f11-staging-attestation.json',
 );
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
@@ -1291,7 +1299,12 @@ function buildNoticeSourceF6Runtime() {
     qxo_no_shop_notice_source_binding_f6: carrier,
     ...bindingInputs,
   });
-  return { bindingInputs, carrier, contractBundle };
+  return {
+    admittedSourceContext,
+    bindingInputs,
+    carrier,
+    contractBundle,
+  };
 }
 
 function buildNoticeSourceF6Attestation() {
@@ -2037,6 +2050,166 @@ function buildNoticeReceiptF10Attestation() {
   };
 }
 
+function buildDefinitionControlF11Attestation() {
+  const {
+    admittedSourceContext,
+    bindingInputs,
+    carrier: noticeSourceCarrier,
+    contractBundle: f6ContractBundle,
+  } = buildNoticeSourceF6Runtime();
+  const definitionGraph =
+    bindingInputs.qxo_no_shop_reviewed_definition_graph_f6;
+  const closure = buildQxoNoShopNoticeSemanticClosureF6({
+    contract_bundle: f6ContractBundle,
+    qxo_no_shop_notice_source_binding_f6: noticeSourceCarrier,
+  });
+  const f7Carrier = buildQxoNoShopNoticeReviewMaterialisationF7({
+    contract_bundle: compileFixtureContractV7(),
+    qxo_no_shop_notice_source_binding_f6: noticeSourceCarrier,
+    qxo_no_shop_notice_semantic_closure_f6: closure,
+  });
+  const f8Carrier = buildQxoNoShopDefinitionRelationshipsF8({
+    contract_bundle: compileFixtureContractV8(),
+    qxo_no_shop_notice_review_materialisation_f7: f7Carrier,
+    qxo_no_shop_notice_source_binding_f6: noticeSourceCarrier,
+    qxo_no_shop_reviewed_definition_graph_f6: definitionGraph,
+  });
+  const f10Inputs = {
+    contract_bundle: compileFixtureContractV9(),
+    qxo_no_shop_definition_relationships_f8: f8Carrier,
+    qxo_no_shop_notice_review_materialisation_f7: f7Carrier,
+    qxo_no_shop_notice_source_binding_f6: noticeSourceCarrier,
+  };
+  const f10Carrier = buildQxoNoShopNoticeReceiptF10(f10Inputs);
+  const inputs = {
+    admitted_source_context: admittedSourceContext,
+    contract_bundle: compileFixtureContractV9(),
+    qxo_no_shop_definition_relationships_f8: f8Carrier,
+    qxo_no_shop_notice_receipt_f10: f10Carrier,
+  };
+  const carrier = buildQxoNoShopDefinitionControlF11(inputs);
+  validateQxoNoShopDefinitionControlF11({
+    qxo_no_shop_definition_control_f11: carrier,
+    ...inputs,
+  });
+
+  const changed = JSON.parse(JSON.stringify(carrier));
+  changed.status.release_eligible = true;
+  let carrierDriftRejected = false;
+  try {
+    validateQxoNoShopDefinitionControlF11({
+      qxo_no_shop_definition_control_f11: changed,
+      ...inputs,
+    });
+  } catch (_) {
+    carrierDriftRejected = true;
+  }
+  if (!carrierDriftRejected) {
+    throw new Error('The F11 definition control carrier accepted identity drift.');
+  }
+  const changedSource = JSON.parse(JSON.stringify(admittedSourceContext));
+  changedSource.canonical_text['text'] =
+    `X${changedSource.canonical_text['text'].slice(1)}`;
+  let sourceDriftRejected = false;
+  try {
+    buildQxoNoShopDefinitionControlF11({
+      ...inputs,
+      admitted_source_context: changedSource,
+    });
+  } catch (error) {
+    sourceDriftRejected = error?.code === 'SOURCE_CONTEXT_DRIFT';
+  }
+  if (!sourceDriftRejected) {
+    throw new Error('The F11 definition control scan accepted source drift.');
+  }
+
+  return {
+    schema_version:
+      'QXO_NO_SHOP_DEFINITION_CONTROL_F11_STAGING_ATTESTATION/V1',
+    environment: 'STAGING',
+    authority_scope: carrier.authority_scope,
+    contract_binding: carrier.contract_binding,
+    source_binding: carrier.source_binding,
+    upstream_bindings: carrier.upstream_bindings,
+    scan_policy: carrier.scan_policy,
+    definition_control_scans: carrier.definition_control_scans.map(
+      (scan) => ({
+        definition_key: scan.definition_key,
+        selected_definition_occurrence_id:
+          scan.selected_definition_occurrence_id,
+        term_occurrence_count: scan.term_occurrence_count,
+        declaration_candidate_count:
+          scan.declaration_candidate_count,
+        competing_declaration_count:
+          scan.competing_declaration_count,
+        local_override_count: scan.local_override_count,
+        local_override_scope: scan.local_override_scope,
+        separately_defined_plural_count:
+          scan.separately_defined_plural_count,
+        selected_scope_code: scan.selected_scope_code,
+        scope_closure_id: scan.scope_closure_id,
+        full_document_span: scan.full_document_span,
+        declaration_evidence_spans:
+          scan.declaration_evidence_spans,
+        local_override_evidence_spans:
+          scan.local_override_evidence_spans,
+        definition_index_evidence_spans:
+          scan.definition_index_evidence_spans,
+        term_occurrence_inventory_digest:
+          scan.term_occurrence_inventory_digest,
+        occurrence_classification_counts:
+          scan.occurrence_classification_counts,
+        plural_term_occurrence_count:
+          scan.plural_term_occurrence_count,
+        conclusion_code: scan.conclusion_code,
+        interpretation_note: scan.interpretation_note,
+      }),
+    ),
+    controlled_relationships: carrier.relationship_outcomes.map(
+      (relationship) => ({
+        relationship_occurrence_id:
+          relationship.relationship_occurrence
+            .relationship_occurrence_id,
+        predecessor_relationship_effect_revision_id:
+          relationship.predecessor_relationship_effect_revision_id,
+        relationship_effect_revision_id:
+          relationship.relationship_effect
+            .relationship_effect_revision_id,
+        raw_use_form: relationship.relationship_effect.raw_use_form,
+        use_form_code: relationship.relationship_effect.use_form_code,
+        selected_definition_occurrence_id:
+          relationship.relationship_effect
+            .selected_definition_occurrence_id,
+        scope_closure_id:
+          relationship.relationship_effect.scope_closure_id,
+        definition_precedence_review:
+          relationship.relationship_effect
+            .definition_precedence_review,
+        interpretation_clarity_state:
+          relationship.relationship_interpretation.clarity_state,
+        ambiguity_dimension_codes:
+          relationship.relationship_interpretation
+            .ambiguity_dimension_codes,
+        alias_authority:
+          relationship.relationship_effect.alias_authority,
+        recursive_dependency_relationship_ids:
+          relationship.relationship_effect
+            .recursive_dependency_relationship_ids,
+        comparison_state: relationship.comparison_state,
+        publication_state: relationship.publication_state,
+      }),
+    ),
+    notice_revision_materialisation:
+      carrier.notice_revision_materialisation,
+    materialisation_status: carrier.status,
+    carrier_drift_rejected: carrierDriftRejected,
+    source_drift_rejected: sourceDriftRejected,
+    qxo_no_shop_definition_control_f11_id:
+      carrier.qxo_no_shop_definition_control_f11_id,
+    canonical_payload_digest: carrier.canonical_payload_digest,
+  };
+}
+
 function verifyActionsFailureIsolation(bridgeInputs) {
   const missingFirstAction = JSON.parse(JSON.stringify(
     bridgeInputs.reviewed_no_shop_actions_slice,
@@ -2263,14 +2436,19 @@ if (![
   '--notice-definition-relationships-f8-verify',
   '--notice-receipt-f10-print',
   '--notice-receipt-f10-verify',
+  '--definition-control-f11-print',
+  '--definition-control-f11-verify',
 ].includes(mode)
   || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--inline-permission-f9-print|--inline-permission-f9-verify|--notice-source-f6-print|--notice-source-f6-verify|--notice-semantic-closure-f6-print|--notice-semantic-closure-f6-verify|--notice-review-materialisation-f7-print|--notice-review-materialisation-f7-verify|--notice-definition-relationships-f8-print|--notice-definition-relationships-f8-verify|--notice-receipt-f10-print|--notice-receipt-f10-verify');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--inline-permission-f9-print|--inline-permission-f9-verify|--notice-source-f6-print|--notice-source-f6-verify|--notice-semantic-closure-f6-print|--notice-semantic-closure-f6-verify|--notice-review-materialisation-f7-print|--notice-review-materialisation-f7-verify|--notice-definition-relationships-f8-print|--notice-definition-relationships-f8-verify|--notice-receipt-f10-print|--notice-receipt-f10-verify|--definition-control-f11-print|--definition-control-f11-verify');
 }
 
 try {
+  const definitionControlF11Mode =
+    mode.startsWith('--definition-control-f11-');
   const noticeReceiptF10Mode =
-    mode.startsWith('--notice-receipt-f10-');
+    !definitionControlF11Mode
+    && mode.startsWith('--notice-receipt-f10-');
   const inlinePermissionF9Mode =
     !noticeReceiptF10Mode && mode.startsWith('--inline-permission-f9-');
   const noticeDefinitionRelationshipsF8Mode =
@@ -2295,7 +2473,9 @@ try {
     && mode.startsWith('--definitions-f6-');
   const actionsF6Mode = !definitionsF6Mode && mode.startsWith('--actions-f6-');
   const actionsMode = !actionsF6Mode && mode.startsWith('--actions-');
-  const attestation = noticeReceiptF10Mode
+  const attestation = definitionControlF11Mode
+    ? buildDefinitionControlF11Attestation()
+    : noticeReceiptF10Mode
     ? buildNoticeReceiptF10Attestation()
     : inlinePermissionF9Mode
     ? buildInlinePermissionF9Attestation()
@@ -2321,7 +2501,9 @@ try {
     : attestation;
   if (mode.endsWith('verify')) {
     const expected = JSON.parse(readFileSync(
-      noticeReceiptF10Mode
+      definitionControlF11Mode
+        ? DEFINITION_CONTROL_F11_FIXTURE_PATH
+        : noticeReceiptF10Mode
         ? NOTICE_RECEIPT_F10_FIXTURE_PATH
         : inlinePermissionF9Mode
         ? INLINE_PERMISSION_F9_FIXTURE_PATH
