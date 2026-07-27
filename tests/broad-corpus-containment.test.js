@@ -37,19 +37,20 @@ function responseRecorder() {
 }
 
 test('fully contained broad routes return one deterministic 503 only on their supported method', async () => {
-  for (const allowedMethod of new Set(Object.values(BROAD_CORPUS_CONTAINED_ROUTES))) {
+  for (const allowedMethod of Object.values(BROAD_CORPUS_CONTAINED_ROUTES)) {
+    const allowedMethods = Array.isArray(allowedMethod) ? allowedMethod : [allowedMethod];
     const handler = createBroadCorpusContainedHandler(allowedMethod);
     for (const method of HTTP_METHODS) {
       const res = responseRecorder();
       await handler({ method }, res);
-      if (method === allowedMethod) {
+      if (allowedMethods.includes(method)) {
         assert.equal(res.statusCode, 503);
-        assert.equal(res.body.error.code, 'BROAD_CORPUS_ROUTE_CONTAINED');
+        assert.equal(res.body.error.code, 'ROUTE_CONTAINED');
         assert.equal(res.headers['Cache-Control'], 'private, no-store');
         assert.equal(res.headers['Retry-After'], undefined);
       } else {
         assert.equal(res.statusCode, 405);
-        assert.equal(res.headers.Allow, allowedMethod);
+        assert.equal(res.headers.Allow, allowedMethods.join(', '));
       }
     }
   }
@@ -59,7 +60,7 @@ test('the partial-containment response uses the same no-retry contract', () => {
   const res = responseRecorder();
   sendBroadCorpusRouteContained(res);
   assert.equal(res.statusCode, 503);
-  assert.equal(res.body.error.code, 'BROAD_CORPUS_ROUTE_CONTAINED');
+  assert.equal(res.body.error.code, 'ROUTE_CONTAINED');
   assert.equal(res.headers['Cache-Control'], 'private, no-store');
   assert.equal(res.headers['Retry-After'], undefined);
 });
@@ -72,10 +73,7 @@ test('fully contained route modules import no database, corpus, model or environ
   for (const [route, file] of Object.entries(BROAD_CORPUS_CONTAINED_ROUTE_FILES)) {
     const routeSource = source(file);
     assert.match(routeSource, /require\(['"](?:\.\.\/){2,3}lib\/broad-corpus-containment['"]\)/);
-    assert.match(
-      routeSource,
-      new RegExp(`createBroadCorpusContainedHandler\\('${BROAD_CORPUS_CONTAINED_ROUTES[route]}'\\)`),
-    );
+    assert.match(routeSource, /createBroadCorpusContainedHandler\(/);
     assert.doesNotMatch(
       routeSource,
       /supabase|anthropic|createClient|process\.env|fetch|readFile|from\(/i,

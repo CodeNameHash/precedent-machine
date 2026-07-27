@@ -1,17 +1,3 @@
-import { getServiceSupabase } from '../../lib/supabase';
-import {
-  validateMarketMetricResult,
-  validateMarketMetricSpec,
-} from '../../lib/market-metrics/index.js';
+const { marketStatsContainedHandler } = require('../../lib/market-stats-containment');
 
-const { createMarketStatsHandler } = require('../../lib/row-market-stats/handler');
-
-export const config = { maxDuration: 60 };
-
-export default createMarketStatsHandler({
-  enabled: false,
-  maxConcurrent: 1,
-  getSupabase: getServiceSupabase,
-  validateMetricSpec: validateMarketMetricSpec,
-  validateMetricResult: validateMarketMetricResult,
-});
+export default marketStatsContainedHandler;

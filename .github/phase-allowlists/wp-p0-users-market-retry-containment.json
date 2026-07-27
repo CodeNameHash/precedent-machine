@@ -1,0 +1,24 @@
+{
+  "phase": "WP-P0-USERS-MARKET-RETRY-CONTAINMENT",
+  "allowed": [
+    ".github/phase-allowlists/wp-p0-users-market-retry-containment.json",
+    "lib/broad-corpus-containment.js",
+    "lib/market-stats-containment.js",
+    "lib/row-market-stats/handler.js",
+    "pages/admin.js",
+    "pages/api/market-stats.js",
+    "pages/api/users.js",
+    "tests/broad-corpus-containment.test.js",
+    "tests/canonical-v2-market-cohort-query.test.js",
+    "tests/canonical-v2-query-api.test.js",
+    "tests/market-stats-api.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "data/**",
+    "docs/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Emergency P0 containment only: zero-import market-stats and users routes, no retry instruction, one typed containment contract, and no database or corpus changes."
+}
