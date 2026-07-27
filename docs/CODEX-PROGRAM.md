@@ -199,19 +199,35 @@ CORRECTED (the plan below rests on these, not the review's wording):
   review, an empty intervening-edit set and terminal `PASS`. Reviewer eligibility
   is determined only by the machine-readable registry contract. A trusted
   review controller directly starts and observes each read-only review. It
-  records its controller ID and version, the exact specification root, model
-  identifier, reasoning level, immutable task, session and review IDs,
-  registered prompt ID and digest, exact input-context and output digests, start
-  and end times, reviewer principal and complete source-control identity set,
-  disposition, edit-set root, parent-session state, the fact that no earlier
-  review conclusions were inputs, a unique nonce, signature algorithm and key
-  ID. The controller emits the signed immutable record into the closed evidence
-  set. The validator deterministically enumerates that set, loads the exact
-  record, verifies its signature against the frozen controller-key registry and
-  compares every field with the review set. The controller process is the only
-  process permitted to use the signing key. The key is inaccessible to the
-  reviewer, review process, operator input and repository. The private key never
-  enters the review environment, logs or checkout.
+  supplies exactly three task-payload members: the exact frozen specification
+  bytes, one registered lane-specific cold prompt and the required output
+  schema. It also starts the review under fixed controller runtime context. That
+  context contains only the pinned platform instructions and tool schemas. It
+  is not case-specific and contains no prior review finding or conclusion.
+  These fixed runtime inputs are permitted and are not part of the
+  controller-supplied task payload.
+  The controller record contains its controller ID and version, review runtime
+  version and binary digest, fixed controller-context digest, the exact
+  specification root, model identifier, reasoning level, immutable task,
+  session and review IDs, registered prompt ID and digest, controller-supplied
+  input-manifest digest, exact input-context digest and its before-and-after
+  values, output digest, start and end times, reviewer principal and complete
+  source-control identity set, disposition, edit-set root, parent-session
+  state, the fact that no earlier review conclusions were inputs, a unique
+  nonce, signature algorithm and key ID. The controller emits the signed
+  immutable record into the closed evidence set. The validator deterministically
+  enumerates that set, loads the exact record, verifies its signature against
+  the frozen controller-key registry and compares every field with the review
+  set.
+  The reviewer principal is the exact controller run plus one fresh ephemeral
+  CLI session. It is not the model family. The controller creates a new
+  `CODEX_HOME`, does not resume a session and does not load project rules, user
+  configuration, plugins, memory or prior-session content. The execution is
+  read-only. The input-context digest must be equal before and after review.
+  The controller process is the only process permitted to use the signing key.
+  The key is inaccessible to the reviewer, review process, operator input and
+  repository. The private key never enters the review environment, logs or
+  checkout.
   The registry separately maps `FABLE_ELIGIBLE` and
   `SOL_5_6_EXTRA_HIGH_ELIGIBLE` to their reviewer identity, exact model rule and
   reasoning rule where applicable. Repository evidence, a CLI transcript or
@@ -226,12 +242,17 @@ CORRECTED (the plan below rests on these, not the review's wording):
   commit that contributed a byte to the exact root and confirms that none maps
   to the reviewer principal. A missing or ambiguous identity mapping is
   ineligible. It separately enumerates every
-  input that the controller delivered to the review. The only permitted
-  inputs are the exact reviewed-root bytes and one root-bound, lane-specific cold
-  prompt whose registered digest is reviewed to contain no prior finding or
-  conclusion. The controller record is the authority for review execution,
-  inputs and output. Git history is supplementary authorship evidence only and
-  cannot prove that a review occurred. Root freeze precedes the genesis review
+  task input that the controller delivered to the review and the fixed runtime
+  context. The only controller-supplied task inputs are the exact reviewed-root
+  bytes, one root-bound lane-specific cold prompt with no prior conclusion and
+  the required output schema. Any extra task input, changed or unknown runtime
+  context or context with case-specific material is ineligible. The controller
+  record is the authority for review execution, observable inputs and output.
+  It does not prove a provider-internal build, a provider signature or the
+  absence of hidden provider context, and it does not claim to do so. Formal
+  evidence is controller execution evidence under this amended standard. Git
+  history is supplementary authorship evidence only and cannot prove that a
+  review occurred. Root freeze precedes the genesis review
   execution, and review start is the closed input cutoff. Any unsigned,
   unattributed or unenumerable review event makes the reviewer ineligible. The
   parent-session state must be genesis, and the authorship-event,

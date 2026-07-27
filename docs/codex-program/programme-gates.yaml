@@ -108,6 +108,9 @@ programme_gate_registry:
     review_record_required_fields:
       - controller_id
       - controller_version
+      - review_runtime_version
+      - review_runtime_binary_digest
+      - fixed_controller_runtime_context_digest
       - exact_specification_root
       - exact_model_identifier
       - reasoning_level
@@ -116,7 +119,10 @@ programme_gate_registry:
       - immutable_review_id
       - registered_prompt_id
       - cold_review_prompt_digest
+      - controller_supplied_input_manifest_digest
       - exact_input_context_digest
+      - input_context_digest_before_review
+      - input_context_digest_after_review
       - review_output_digest
       - review_start_time
       - review_end_time
@@ -130,6 +136,41 @@ programme_gate_registry:
       - signature_algorithm
       - controller_key_id
       - controller_signature
+    controller_supplied_task_payload:
+      exact_members_in_order:
+        - EXACT_FROZEN_SPECIFICATION_BYTES
+        - ONE_REGISTERED_LANE_SPECIFIC_COLD_PROMPT
+        - REQUIRED_OUTPUT_SCHEMA
+      extra_member_effect: INELIGIBLE
+      manifest_must_bind_every_member_digest_and_byte_length: true
+    fixed_controller_runtime_context:
+      permitted_members:
+        - PINNED_PLATFORM_INSTRUCTIONS
+        - PINNED_TOOL_SCHEMAS
+      must_be_fixed_for_CONTROLLER_ID_VERSION_AND_REVIEW_RUNTIME_VERSION: true
+      case_specific_content_permitted: false
+      prior_review_finding_or_conclusion_content_permitted: false
+      unknown_changed_or_unrecorded_context_effect: INELIGIBLE
+    reviewer_principal_definition:
+      identity: EXACT_CONTROLLER_RUN_PLUS_FRESH_EPHEMERAL_CLI_SESSION
+      model_family_is_reviewer_principal: false
+    review_session_isolation:
+      fresh_ephemeral_cli_session: true
+      new_CODEX_HOME: true
+      resume_prior_session: false
+      project_rules_loaded: false
+      user_configuration_loaded: false
+      plugins_loaded: false
+      memory_loaded: false
+      prior_session_content_loaded: false
+      review_execution_read_only: true
+      input_context_digest_before_and_after_must_match: true
+    controller_evidence_limit:
+      proves_provider_internal_build: false
+      proves_provider_signature: false
+      proves_absence_of_hidden_provider_context: false
+      claims_any_of_these: false
+      formal_evidence_scope: CONTROLLER_EXECUTION_EVIDENCE_UNDER_THIS_AMENDED_STANDARD
     reviewer_profiles:
       FABLE_ELIGIBLE:
         reviewer_identity_class: FABLE
@@ -148,6 +189,11 @@ programme_gate_registry:
       reject_user_reviewer_or_repository_supplied_substitute: true
     review_record_acceptance:
       controller_id_and_version_must_be_allowlisted: true
+      review_runtime_version_and_binary_digest_must_be_allowlisted: true
+      fixed_controller_runtime_context_digest_must_be_allowlisted: true
+      controller_supplied_input_manifest_must_equal_exact_task_payload: true
+      unknown_changed_or_extra_runtime_or_task_input_effect: INELIGIBLE
+      input_context_digests_before_and_after_must_match: true
       exact_specification_root_must_equal_review_set_root: true
       parent_session_state_must_be: GENESIS
       no_earlier_review_conclusions_were_inputs_must_be: true
@@ -166,10 +212,10 @@ programme_gate_registry:
       reviewed_bytes_must_be_committed: true
       reviewer_principal_identity_mapping: REVIEWER_PRINCIPAL_TO_COMPLETE_SOURCE_CONTROL_IDENTITY_SET_FROM_CONTROLLER_RECORD
       authorship_membership: EVERY_GIT_COMMIT_CONTRIBUTING_A_BYTE_TO_THE_EXACT_REVIEWED_ROOT_WITH_COMPLETE_HISTORY_BLAME_AND_COPY_TRACING
-      review_input_membership: EVERY_CONTROLLER_OBSERVED_INPUT_DELIVERED_TO_THE_READ_ONLY_REVIEW_EXECUTION
-      allowed_review_input: EXACT_REVIEWED_ROOT_BYTES_PLUS_ONE_REGISTERED_LANE_SPECIFIC_COLD_PROMPT
+      review_input_membership: EVERY_CONTROLLER_OBSERVED_TASK_INPUT_PLUS_THE_PINNED_FIXED_CONTROLLER_RUNTIME_CONTEXT
+      allowed_review_input: EXACT_CONTROLLER_SUPPLIED_TASK_PAYLOAD_PLUS_FIXED_CONTROLLER_RUNTIME_CONTEXT
       cold_prompt_constraint: ROOT_BOUND_PROMPT_DIGEST_WITH_ZERO_PRIOR_REVIEW_FINDING_OR_CONCLUSION_CONTENT
-      prior_conclusion_membership: EVERY_CONTROLLER_OBSERVED_INPUT_OUTSIDE_THE_ALLOWED_REVIEW_INPUT
+      prior_conclusion_membership: EVERY_CONTROLLER_OBSERVED_INPUT_OUTSIDE_THE_ALLOWED_TASK_AND_FIXED_RUNTIME_CONTEXT_PLUS_ANY_PRIOR_REVIEW_OUTPUT
       cutoff: ROOT_FREEZE_PRECEDES_REVIEW_EXECUTION_AND_CONTROLLER_INPUT_CUTOFF_EQUALS_REVIEW_START
       authorship_source: COMPLETE_GIT_COMMIT_DAG_SUPPLEMENTARY_TO_CONTROLLER_REVIEW_EVIDENCE
       review_input_source: TRUSTED_REVIEW_CONTROLLER_RECORD_ONLY
@@ -407,7 +453,7 @@ programme_gate_registry:
       evidence_contract: five-lane-provider-attested-exact-specification-root-review-set/v3
       required_evidence_object_type: ExactDigestReviewSetAttestation
       acceptance_claims: [five_named_lanes_pass_same_root, eligible_legal_reviewer, reviewer_independence_recomputed, root_unchanged_before_and_after]
-      required_adversarial_tests: [GATE-01]
+      required_adversarial_tests: [GATE-01, REVIEW-CONTEXT-01]
     - id: G0_BEN_SPEC_APPROVAL
       phase: governance
       permits_not_applicable: false
