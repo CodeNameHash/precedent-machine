@@ -1,0 +1,19 @@
+{
+  "phase": "WP-CANONICAL-QXO-CAPITALISATION-F27",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-qxo-capitalisation-f27.json",
+    "docs/superpowers/specs/2026-07-27-qxo-capitalisation-bring-down-f27-design.md"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "lib/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**",
+    "tests/**",
+    "next.config.js"
+  ],
+  "note": "Design-only F27 authority for the inactive QXO Capital Structure representation and bring-down slice. No contract, application, fixture, database, corpus, serving, route, flag, pointer, production or activation change."
+}
