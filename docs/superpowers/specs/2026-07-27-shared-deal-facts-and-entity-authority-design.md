@@ -341,6 +341,8 @@ Initial transaction roles include:
 - `DIVESTING_PARENT`;
 - `CONTRIBUTING_PARTY`;
 - `ACQUIRED_BUSINESS`;
+- `ACQUIRED_ENTITY`;
+- `SELLING_SHAREHOLDER`;
 - `MERGER_COUNTERPARTY`; and
 - `OTHER_COUNTERPARTY`.
 
@@ -418,6 +420,7 @@ Initial leg types include:
 - `DISTRIBUTION_OR_SPIN_OFF`;
 - `CONTRIBUTION`;
 - `SHARE_EXCHANGE`;
+- `SHARE_PURCHASE`;
 - `ASSET_TRANSFER`;
 - `NEW_HOLDCO_FORMATION`; and
 - `OTHER_GOVERNED_STEP`.
@@ -488,6 +491,7 @@ Initial legal structure codes include:
 - `REVERSE_MORRIS_TRUST`;
 - `TENDER_OFFER_WITH_SECOND_STEP_MERGER`;
 - `NEW_HOLDCO_COMBINATION`;
+- `SHARE_PURCHASE`;
 - `ASSET_ACQUISITION`;
 - `SHARE_EXCHANGE`;
 - `SPIN_MERGE`;
@@ -512,6 +516,22 @@ only from relative ownership, board allocation or an unadmitted market label.
 `REVERSE_MERGER` means that legal form and economic acquisition direction do
 not align. It is different from `REVERSE_TRIANGULAR_MERGER`, which describes
 the legal merger path.
+
+`SHARE_PURCHASE` keeps the buyer, acquired entity and each selling shareholder
+separate. The acquired entity is not the seller only because its shares are
+being sold.
+
+The share-purchase resolution preserves:
+
+- purchased security or share class;
+- number or percentage purchased, when stated;
+- each selling shareholder;
+- direct or indirect ownership path;
+- partial or full acquisition state;
+- consideration for the purchased shares; and
+- exact source evidence.
+
+It does not convert a share purchase into an asset acquisition.
 
 A reviewed PM classification can differ from source characterisation. The
 projection must show which value is source-stated and which value is a governed
@@ -1013,6 +1033,7 @@ The target first full projection contains:
 - target entity;
 - buyer entity;
 - combination-party entities;
+- selling-shareholder entities;
 - other named bidder entities;
 - source-local bidder labels;
 - announcement date;
@@ -1029,9 +1050,10 @@ The target first full projection contains:
 - headline price per share;
 - each stated transaction value and basis;
 - normalised equity value and derivation state;
-- target and buyer law firms;
+- target, buyer, combination-party and selling-shareholder law firms;
 - named lawyers;
-- target and buyer financial advisers; and
+- target, buyer, combination-party and selling-shareholder financial
+  advisers; and
 - exact evidence state for every field.
 
 Target, buyer and buyer-type fields can have a typed `NOT_APPLICABLE` state.
@@ -1205,6 +1227,8 @@ Examples:
 - unknown value basis: do not normalise;
 - incomplete derivation: do not publish normalised equity value;
 - unsupported target or buyer classification: show combination parties;
+- acquired entity without seller evidence: do not label it as the selling
+  shareholder;
 - surviving entity or share issuer without economic-role proof: keep only the
   legal role;
 - source-backed conclusion of no clear control: use `NO_CLEAR_CONTROL`;
@@ -1258,38 +1282,43 @@ The shared authority is not ready until all applicable conditions pass.
 23. A new-holdco combination does not treat the new holding company as the
     historical buyer without evidence.
 24. An asset acquisition does not invent merger roles.
-25. A de-SPAC does not infer economic control only from the surviving listed
+25. A share purchase keeps the buyer, acquired entity and selling shareholders
+    separate.
+26. A share purchase preserves the purchased share class and amount or
+    percentage when stated.
+27. A share purchase does not become an asset acquisition.
+28. A de-SPAC does not infer economic control only from the surviving listed
     entity.
-26. Every role, leg, structure and control outcome can open its exact evidence.
+29. Every role, leg, structure and control outcome can open its exact evidence.
 
 ### Advisers and lawyers
 
-27. Buyer and target counsel cannot swap.
-28. A law-firm organisation and a natural-person lawyer remain distinct
+30. Buyer and target counsel cannot swap.
+31. A law-firm organisation and a natural-person lawyer remain distinct
     subjects.
-29. A side-level adviser cannot fill an undisclosed bidder-track adviser.
-30. A named multi-bidder example proves correct per-track attribution.
-31. A missing losing-bidder adviser remains `UNDISCLOSED` or
+32. A side-level adviser cannot fill an undisclosed bidder-track adviser.
+33. A named multi-bidder example proves correct per-track attribution.
+34. A missing losing-bidder adviser remains `UNDISCLOSED` or
     `NOT_EXAMINED`.
-32. Every adviser assignment can open its exact source evidence.
+35. Every adviser assignment can open its exact source evidence.
 
 ### Query and release
 
-33. Identity filters use canonical IDs, not display text.
-34. Live and pinned participant filters return the same logical rows.
-35. An unavailable field cannot be selected through Ask, Browse, a manual
+36. Identity filters use canonical IDs, not display text.
+37. Live and pinned participant filters return the same logical rows.
+38. An unavailable field cannot be selected through Ask, Browse, a manual
     filter or a saved query.
-36. Current display arrays derive from certified relationships.
-37. Every result is bound to one contract, namespace and release.
-38. A changed fact, bridge or assignment produces a new candidate release.
+39. Current display arrays derive from certified relationships.
+40. Every result is bound to one contract, namespace and release.
+41. A changed fact, bridge or assignment produces a new candidate release.
 
 ### Cross-domain
 
-39. Agreement and Process read the same selected fact resolution revision.
-40. A future CVR domain can use the same entity and fact projection.
-41. No domain contains a second canonical entity or deal-fact store.
-42. A domain proposal cannot bypass the canonical writer.
-43. Every shared field has one field-registry definition.
+42. Agreement and Process read the same selected fact resolution revision.
+43. A future CVR domain can use the same entity and fact projection.
+44. No domain contains a second canonical entity or deal-fact store.
+45. A domain proposal cannot bypass the canonical writer.
+46. Every shared field has one field-registry definition.
 
 ### Transaction-structure test set
 
@@ -1305,6 +1334,7 @@ After the formal gate opens, the mandatory structure set includes:
 - new-holdco stock combination;
 - stock-for-stock combination;
 - spin-merge;
+- share purchase;
 - asset acquisition;
 - de-SPAC;
 - sponsor consortium; and
