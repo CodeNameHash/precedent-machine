@@ -32,9 +32,11 @@ const {
   FIXTURE_CONTRACT_INPUT_V9,
   FIXTURE_CONTRACT_INPUT_V10,
   FIXTURE_CONTRACT_INPUT_V11,
+  FIXTURE_CONTRACT_INPUT_V12,
   FIXTURE_CONTRACT_FINGERPRINTS,
   FIXTURE_SERVING_CONTRACT_FINGERPRINTS,
   CLAIM_INTERPRETATION_POLICY_V1,
+  CLAIM_INTERPRETATION_POLICY_V2,
   NO_SHOP_ACTION_CODES_V2,
   NO_SHOP_ACTION_ROLLUP_SCHEMA_V1,
   NO_SHOP_INLINE_PERMISSION_EFFECT_SCHEMA_V1,
@@ -59,6 +61,7 @@ const {
   compileFixtureContractV9,
   compileFixtureContractV10,
   compileFixtureContractV11,
+  compileFixtureContractV12,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -74,6 +77,7 @@ const FROZEN_F8 = 'dd0f1d4afc02492edf1bbbebe1a6699498fd6c3d26d890254a151b1d8c7d0
 const FROZEN_F9 = '8576011555a67b18f6539bb259dea4285d2e3d982c4b906a3edc73162dc9e8c7';
 const FROZEN_F10 = 'aee4b40ead2e76ed744b0f20967a48493c618125959a023f8262612da23aa0e5';
 const FROZEN_F11 = '7cf669cb86e8cda58b33a623b7f5405e56b7c1aa4c9dfdbe1136edb6beffa6ca';
+const FROZEN_F12 = '261525a8268a1392428a610bbf0c2166c87318192971d08bc7e6ac5f2c7235e5';
 
 const APPROVED_V2_ADDITIONS = [
   'TERMR-BREACH',
@@ -134,7 +138,7 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F11 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F12 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
@@ -145,6 +149,7 @@ test('F1 through F11 are distinct recognised fixture contract fingerprints', () 
   assert.notEqual(FROZEN_F8, FROZEN_F9);
   assert.notEqual(FROZEN_F9, FROZEN_F10);
   assert.notEqual(FROZEN_F10, FROZEN_F11);
+  assert.notEqual(FROZEN_F11, FROZEN_F12);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -159,6 +164,7 @@ test('F1 through F11 are distinct recognised fixture contract fingerprints', () 
       FROZEN_F9,
       FROZEN_F10,
       FROZEN_F11,
+      FROZEN_F12,
     ].sort(),
   );
   assert.deepEqual(
@@ -1971,6 +1977,72 @@ test('F11 defines semantic comparison but grants no serving authority', () => {
   assert.equal(FIXTURE_SERVING_CONTRACT_FINGERPRINTS.includes(FROZEN_F11), false);
 });
 
+test('F12 adds the distinct copy-delivery claim and interpretation admission', () => {
+  const f11 = compileFixtureContractV11();
+  const f12 = compileFixtureContractV12();
+  assert.equal(f12.fingerprint, FROZEN_F12);
+  assert.equal(
+    canonicalJson(f12),
+    canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V12)),
+  );
+  const stable = (bundle) => {
+    const {
+      fingerprint: _fingerprint,
+      claim_definitions: _claimDefinitions,
+      claim_interpretation_policy_definition: _interpretationPolicy,
+      ...rest
+    } = bundle;
+    return rest;
+  };
+  assert.equal(canonicalJson(stable(f12)), canonicalJson(stable(f11)));
+  const added = f12.claim_definitions.filter(
+    (definition) => !f11.claim_definitions.some(
+      (prior) => prior.claim_definition_key
+        === definition.claim_definition_key,
+    ),
+  );
+  assert.deepEqual(added, [{
+    claim_definition_key: 'NO_SHOP_COPY_DELIVERY_PERIOD_DAYS',
+    version: 1,
+    canonical_value_type: 'NON_NEGATIVE_DECIMAL_STRING',
+    canonical_value_required_when_present: true,
+  }]);
+  assert.deepEqual(
+    f12.claim_interpretation_policy_definition,
+    CLAIM_INTERPRETATION_POLICY_V2,
+  );
+  assert.deepEqual(
+    f11.claim_interpretation_policy_definition,
+    CLAIM_INTERPRETATION_POLICY_V1,
+  );
+  assert.deepEqual(
+    f12.claim_interpretation_policy_definition
+      .metric_specific_ambiguous_admissions,
+    [{
+      metric_key: 'NO_SHOP_COPY_DELIVERY_PERIOD_DAYS',
+      metric_version: 1,
+      accepted_clarity_states: ['CLEAR', 'REASONABLE_BUT_AMBIGUOUS'],
+      accepted_ambiguity_dimension_codes: [
+        'REFERENT',
+        'SCOPE',
+        'CARDINALITY',
+      ],
+      accepted_comparability_effect_codes: [
+        'AMBIGUITY_AFFECTS_METRIC_OR_COHORT',
+      ],
+      admission_semantics:
+        'SELECTED_PRIMARY_INTERPRETATION_FOR_SEPARATE_RELEASE_KEYED_COHORT_WITH_MANDATORY_LAWYER_WARNING',
+      cohort_identity_must_include_interpretation_projection: true,
+      lawyer_warning_required: true,
+    }],
+  );
+  assert.equal(FIXTURE_SERVING_CONTRACT_FINGERPRINTS.includes(FROZEN_F12), false);
+  assert.equal(
+    canonicalJson(fixtureContractForFingerprint(FROZEN_F12)),
+    canonicalJson(f12),
+  );
+});
+
 // ---------------------------------------------------------------------------
 // Per-version validation: validateInput (exercised via compileFixtureContract)
 // accepts either frozen concept-key vocabulary and rejects anything else.
@@ -1997,7 +2069,7 @@ test('a bundle missing one of the four V2 additions is rejected (not silently ac
   assert.throws(() => compileFixtureContract(partial), /concept keys do not match any frozen fixture contract version/);
 });
 
-test('validateContractBundle accepts compiled V1 through V11 bundles', () => {
+test('validateContractBundle accepts compiled V1 through V12 bundles', () => {
   assert.equal(validateContractBundle(compileFixtureContract()), true);
   assert.equal(validateContractBundle(compileFixtureContractV2()), true);
   assert.equal(validateContractBundle(compileFixtureContractV3()), true);
@@ -2009,4 +2081,5 @@ test('validateContractBundle accepts compiled V1 through V11 bundles', () => {
   assert.equal(validateContractBundle(compileFixtureContractV9()), true);
   assert.equal(validateContractBundle(compileFixtureContractV10()), true);
   assert.equal(validateContractBundle(compileFixtureContractV11()), true);
+  assert.equal(validateContractBundle(compileFixtureContractV12()), true);
 });

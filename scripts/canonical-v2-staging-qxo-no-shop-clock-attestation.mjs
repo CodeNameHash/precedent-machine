@@ -25,6 +25,7 @@ const {
   compileFixtureContractV9,
   compileFixtureContractV10,
   compileFixtureContractV11,
+  compileFixtureContractV12,
 } = require('../lib/canonical-v2/contract-bundle');
 const {
   buildQxoNoShopClockParserBoundReviewSeed,
@@ -99,6 +100,10 @@ const {
   buildQxoNoShopCopyClockF15FailureAttestation,
   validateQxoNoShopCopyClockF15,
 } = require('../lib/canonical-v2/qxo-no-shop-copy-clock-f15');
+const {
+  buildQxoNoShopCopyDeliveryMetricF16,
+  validateQxoNoShopCopyDeliveryMetricF16,
+} = require('../lib/canonical-v2/qxo-no-shop-copy-delivery-metric-f16');
 const {
   buildQxoAdmittedNoShopActionsSlice,
 } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
@@ -196,6 +201,10 @@ const NOTICE_REVISION_F14_FIXTURE_PATH = join(
 const COPY_CLOCK_F15_FIXTURE_PATH = join(
   ROOT,
   'tests/fixtures/canonical-v2/qxo-no-shop-copy-clock-f15-staging-attestation.json',
+);
+const COPY_DELIVERY_METRIC_F16_FIXTURE_PATH = join(
+  ROOT,
+  'tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-metric-f16-staging-attestation.json',
 );
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
@@ -2641,7 +2650,7 @@ function buildNoticeRevisionF14Attestation() {
   };
 }
 
-function buildCopyClockF15Attestation() {
+function buildCopyClockF15Runtime() {
   const {
     carrier: f14Carrier,
   } = buildNoticeRevisionF14Runtime();
@@ -2654,6 +2663,19 @@ function buildCopyClockF15Attestation() {
     qxo_no_shop_copy_clock_f15: carrier,
     ...inputs,
   });
+  return {
+    carrier,
+    f14Carrier,
+    inputs,
+  };
+}
+
+function buildCopyClockF15Attestation() {
+  const {
+    carrier,
+    f14Carrier,
+    inputs,
+  } = buildCopyClockF15Runtime();
   const failed = buildQxoNoShopCopyClockF15FailureAttestation(inputs);
   const revision = carrier.notice_revision;
   const clock = revision.copy_clock_scope;
@@ -2762,6 +2784,39 @@ function buildCopyClockF15Attestation() {
     failure_isolation_verified: failureIsolationVerified,
     qxo_no_shop_copy_clock_f15_id:
       carrier.qxo_no_shop_copy_clock_f15_id,
+    canonical_payload_digest: carrier.canonical_payload_digest,
+  };
+}
+
+function buildCopyDeliveryMetricF16Attestation() {
+  const {
+    carrier: f15Carrier,
+  } = buildCopyClockF15Runtime();
+  const inputs = {
+    contract_bundle: compileFixtureContractV12(),
+    qxo_no_shop_copy_clock_f15: f15Carrier,
+  };
+  const carrier = buildQxoNoShopCopyDeliveryMetricF16(inputs);
+  validateQxoNoShopCopyDeliveryMetricF16({
+    qxo_no_shop_copy_delivery_metric_f16: carrier,
+    ...inputs,
+  });
+  return {
+    schema_version:
+      'QXO_NO_SHOP_COPY_DELIVERY_METRIC_F16_STAGING_ATTESTATION/V1',
+    environment: 'STAGING',
+    authority_scope: carrier.authority_scope,
+    contract_binding: carrier.contract_binding,
+    upstream_binding: carrier.upstream_binding,
+    metric_contract: carrier.metric_contract,
+    presentation_contract: carrier.presentation_contract,
+    required_claim_attributes: carrier.required_claim_attributes,
+    claim_reclassification_contract:
+      carrier.claim_reclassification_contract,
+    normalisation_contract: carrier.normalisation_contract,
+    status: carrier.status,
+    qxo_no_shop_copy_delivery_metric_f16_id:
+      carrier.qxo_no_shop_copy_delivery_metric_f16_id,
     canonical_payload_digest: carrier.canonical_payload_digest,
   };
 }
@@ -3000,13 +3055,18 @@ if (![
   '--notice-revision-f14-verify',
   '--copy-clock-f15-print',
   '--copy-clock-f15-verify',
+  '--copy-delivery-metric-f16-print',
+  '--copy-delivery-metric-f16-verify',
 ].includes(mode)
   || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--inline-permission-f9-print|--inline-permission-f9-verify|--notice-source-f6-print|--notice-source-f6-verify|--notice-semantic-closure-f6-print|--notice-semantic-closure-f6-verify|--notice-review-materialisation-f7-print|--notice-review-materialisation-f7-verify|--notice-definition-relationships-f8-print|--notice-definition-relationships-f8-verify|--notice-receipt-f10-print|--notice-receipt-f10-verify|--definition-control-f11-print|--definition-control-f11-verify|--definition-scope-f13-print|--definition-scope-f13-verify|--notice-revision-f14-print|--notice-revision-f14-verify|--copy-clock-f15-print|--copy-clock-f15-verify');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--inline-permission-f9-print|--inline-permission-f9-verify|--notice-source-f6-print|--notice-source-f6-verify|--notice-semantic-closure-f6-print|--notice-semantic-closure-f6-verify|--notice-review-materialisation-f7-print|--notice-review-materialisation-f7-verify|--notice-definition-relationships-f8-print|--notice-definition-relationships-f8-verify|--notice-receipt-f10-print|--notice-receipt-f10-verify|--definition-control-f11-print|--definition-control-f11-verify|--definition-scope-f13-print|--definition-scope-f13-verify|--notice-revision-f14-print|--notice-revision-f14-verify|--copy-clock-f15-print|--copy-clock-f15-verify|--copy-delivery-metric-f16-print|--copy-delivery-metric-f16-verify');
 }
 
 try {
-  const copyClockF15Mode =
+  const copyDeliveryMetricF16Mode =
+    mode.startsWith('--copy-delivery-metric-f16-');
+  const copyClockF15Mode = !copyDeliveryMetricF16Mode
+    &&
     mode.startsWith('--copy-clock-f15-');
   const noticeRevisionF14Mode = !copyClockF15Mode
     &&
@@ -3044,7 +3104,9 @@ try {
     && mode.startsWith('--definitions-f6-');
   const actionsF6Mode = !definitionsF6Mode && mode.startsWith('--actions-f6-');
   const actionsMode = !actionsF6Mode && mode.startsWith('--actions-');
-  const attestation = copyClockF15Mode
+  const attestation = copyDeliveryMetricF16Mode
+    ? buildCopyDeliveryMetricF16Attestation()
+    : copyClockF15Mode
     ? buildCopyClockF15Attestation()
     : noticeRevisionF14Mode
     ? buildNoticeRevisionF14Attestation()
@@ -3078,7 +3140,9 @@ try {
     : attestation;
   if (mode.endsWith('verify')) {
     const expected = JSON.parse(readFileSync(
-      copyClockF15Mode
+      copyDeliveryMetricF16Mode
+        ? COPY_DELIVERY_METRIC_F16_FIXTURE_PATH
+        : copyClockF15Mode
         ? COPY_CLOCK_F15_FIXTURE_PATH
         : noticeRevisionF14Mode
         ? NOTICE_REVISION_F14_FIXTURE_PATH
