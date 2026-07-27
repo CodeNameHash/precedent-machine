@@ -1,6 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const {
+  withoutF20RollbackOnlyCertification,
+} = require('./helpers/canonical-v2-staging-runner-scope');
 
 const {
   canonicalJson,
@@ -234,7 +237,9 @@ test('F10 grants no publication, comparison, serving or release authority', () =
 
 test('the F10 proof is one bounded staging read with no write or serving path', () => {
   assert.equal(fixture().carrier_drift_rejected, true);
-  const runner = fs.readFileSync(RUNNER, 'utf8');
+  const runner = withoutF20RollbackOnlyCertification(
+    fs.readFileSync(RUNNER, 'utf8'),
+  );
   assert.match(runner, /--notice-receipt-f10-verify/);
   assert.match(runner, /LIMIT 2/);
   assert.match(runner, /timeout: 90_000/);

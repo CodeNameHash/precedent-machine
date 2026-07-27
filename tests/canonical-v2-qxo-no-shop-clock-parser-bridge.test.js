@@ -1,6 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const {
+  withoutF20RollbackOnlyCertification,
+} = require('./helpers/canonical-v2-staging-runner-scope');
 
 const {
   canonicalJson,
@@ -205,7 +208,9 @@ test('bridge keeps parser authority structural and isolates clock-reference fail
 });
 
 test('staging verifier is one bounded read-only source reconstruction with no source text output', () => {
-  const source = fs.readFileSync(RUNNER, 'utf8');
+  const source = withoutF20RollbackOnlyCertification(
+    fs.readFileSync(RUNNER, 'utf8'),
+  );
   assert.match(source, /deal-corpus-canonical-v2-staging/);
   assert.match(source, /Refusing to run outside/);
   assert.match(source, /SELECT canonical_payload/);

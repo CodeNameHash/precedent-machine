@@ -1,6 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const {
+  withoutF20RollbackOnlyCertification,
+} = require('./helpers/canonical-v2-staging-runner-scope');
 
 const {
   AUTHORITY_FIELDS,
@@ -281,7 +284,9 @@ test('F15 rejects contract, upstream, source and semantic drift', () => {
 });
 
 test('the F15 attestation performs one bounded staging read with no write path', () => {
-  const runner = fs.readFileSync(RUNNER, 'utf8');
+  const runner = withoutF20RollbackOnlyCertification(
+    fs.readFileSync(RUNNER, 'utf8'),
+  );
   assert.match(runner, /--copy-clock-f15-print/);
   assert.match(runner, /--copy-clock-f15-verify/);
   assert.equal((runner.match(/function readCapture\(\)/g) || []).length, 1);

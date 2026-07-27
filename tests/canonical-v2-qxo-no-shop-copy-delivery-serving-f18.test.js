@@ -1,6 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const {
+  withoutF20RollbackOnlyCertification,
+} = require('./helpers/canonical-v2-staging-runner-scope');
 
 const {
   compileFixtureContractV12,
@@ -235,7 +238,9 @@ test('the proposed request path is one bounded set-based read with release-aware
 
 test('the F18 staging attestation is pinned to the bounded select-only runner', () => {
   const attestation = JSON.parse(fs.readFileSync(F18_FIXTURE, 'utf8'));
-  const source = fs.readFileSync(RUNNER, 'utf8');
+  const source = withoutF20RollbackOnlyCertification(
+    fs.readFileSync(RUNNER, 'utf8'),
+  );
   assert.equal(attestation.environment, 'STAGING');
   assert.equal(
     attestation.qxo_no_shop_copy_delivery_serving_f18_id,

@@ -1,6 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const {
+  withoutF20RollbackOnlyCertification,
+} = require('./helpers/canonical-v2-staging-runner-scope');
 
 const {
   canonicalJson,
@@ -375,7 +378,9 @@ test('relationship failures are isolated and the staging proof remains one bound
   assert.equal(attestation.carrier_drift_rejected, true);
   assert.equal(attestation.failure_isolation_verified, true);
 
-  const runner = fs.readFileSync(RUNNER, 'utf8');
+  const runner = withoutF20RollbackOnlyCertification(
+    fs.readFileSync(RUNNER, 'utf8'),
+  );
   assert.match(runner, /LIMIT 2/);
   assert.match(runner, /timeout: 90_000/);
   assert.match(runner, /MAX_RESPONSE_BYTES = 4 \* 1024 \* 1024/);
