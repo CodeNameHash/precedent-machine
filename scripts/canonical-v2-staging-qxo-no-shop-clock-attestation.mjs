@@ -141,6 +141,10 @@ const {
   validateNoShopTimingCertificationF24,
 } = require('../lib/canonical-v2/no-shop-timing-certification-f24');
 const {
+  buildNoShopActionsCertificationF25,
+  validateNoShopActionsCertificationF25,
+} = require('../lib/canonical-v2/no-shop-actions-certification-f25');
+const {
   buildDealServingDirectoryRecord,
   validateOfflineCandidateRelease,
 } = require('../lib/canonical-v2/candidate-release');
@@ -290,6 +294,10 @@ const COPY_DELIVERY_RELEASE_F23_FIXTURE_PATH = join(
 const NO_SHOP_TIMING_F24_FIXTURE_PATH = join(
   ROOT,
   'tests/fixtures/canonical-v2/qxo-no-shop-timing-f24-staging-attestation.json',
+);
+const NO_SHOP_ACTIONS_F25_FIXTURE_PATH = join(
+  ROOT,
+  'tests/fixtures/canonical-v2/qxo-no-shop-actions-f25-staging-attestation.json',
 );
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
@@ -5047,6 +5055,258 @@ function buildNoShopTimingF24Attestation() {
 }
 // F24_ROLLBACK_ONLY_STAGING_CERTIFICATION_END
 
+// F25_ROLLBACK_ONLY_STAGING_CERTIFICATION_BEGIN
+function buildNoShopActionsF25Runtime() {
+  const f24Attestation = JSON.parse(readFileSync(
+    NO_SHOP_TIMING_F24_FIXTURE_PATH,
+    'utf8',
+  ));
+  const contractBundle = compileFixtureContractV6();
+  const {
+    admittedSourceContext,
+    admittedParserProposalEnvelope,
+    parserInputs,
+  } = buildSourceInputs(contractBundle);
+  const reviewedSlice = buildQxoAdmittedNoShopActionsF6Slice({
+    sourceContext: admittedSourceContext,
+    contractBundle,
+  });
+  const actionSeed = buildQxoNoShopActionsF6ParserBoundReviewSeed({
+    ...parserInputs,
+    admitted_parser_proposal_envelope:
+      admittedParserProposalEnvelope,
+    reviewed_no_shop_actions_f6_slice: reviewedSlice,
+  });
+  const supplementInputs = {
+    ...parserInputs,
+    admitted_parser_proposal_envelope:
+      admittedParserProposalEnvelope,
+  };
+  const supplement =
+    buildQxoNoShopNestedDefinitionCandidateSupplement(
+      supplementInputs,
+    );
+  const definitionGraph =
+    buildQxoNoShopReviewedDefinitionGraphF6({
+      ...supplementInputs,
+      qxo_no_shop_nested_definition_candidate_supplement:
+        supplement,
+    });
+  const exceptionCarrier =
+    buildQxoNoShopExceptionSourceBindingF6({
+      ...parserInputs,
+      qxo_no_shop_actions_f6_parser_bound_review_seed:
+        actionSeed,
+      qxo_no_shop_reviewed_definition_graph_f6:
+        definitionGraph,
+    });
+  const inputs = {
+    f24_timing_certification_bundle:
+      f24Attestation.timing_certification_bundle,
+    contract_bundle_v6: contractBundle,
+    admitted_source_context_v6: admittedSourceContext,
+    reviewed_no_shop_actions_f6_slice: reviewedSlice,
+    qxo_no_shop_exception_source_binding_f6:
+      exceptionCarrier,
+  };
+  const bundle = buildNoShopActionsCertificationF25(inputs);
+  validateNoShopActionsCertificationF25({
+    no_shop_actions_certification_f25: bundle,
+    ...inputs,
+  });
+  return { bundle, inputs };
+}
+
+function f25RollbackSql(bundle) {
+  const records = bundle.categorical_certifications.map(
+    (carrier) => ({
+      metric_key: carrier.observation.metric_key,
+      metric_serving_admission_id:
+        carrier.metric_serving_admission
+          .metric_serving_admission_id,
+      carrier,
+    }),
+  );
+  return `BEGIN;
+SET LOCAL lock_timeout = '2000ms';
+SET LOCAL statement_timeout = '15000ms';
+SELECT pg_advisory_xact_lock(20260727, 25);
+
+DO $f25_guard$
+BEGIN
+  IF to_regclass(
+    'canonical_v2_staging.no_shop_actions_f25_probe'
+  ) IS NOT NULL THEN
+    RAISE EXCEPTION 'F25 staging probe already exists';
+  END IF;
+END
+$f25_guard$;
+
+CREATE TABLE canonical_v2_staging.no_shop_actions_f25_probe (
+  metric_key text PRIMARY KEY,
+  metric_serving_admission_id text UNIQUE NOT NULL
+    CHECK (
+      metric_serving_admission_id ~ '^[a-f0-9]{64}$'
+    ),
+  carrier jsonb NOT NULL
+);
+ALTER TABLE
+  canonical_v2_staging.no_shop_actions_f25_probe
+  ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON
+  canonical_v2_staging.no_shop_actions_f25_probe
+  FROM PUBLIC;
+
+INSERT INTO canonical_v2_staging.no_shop_actions_f25_probe (
+  metric_key,
+  metric_serving_admission_id,
+  carrier
+)
+SELECT
+  record.metric_key,
+  record.metric_serving_admission_id,
+  record.carrier
+FROM jsonb_to_recordset(
+  ${f20SqlJson(records, 'f25_categorical_records')}
+) AS record(
+  metric_key text,
+  metric_serving_admission_id text,
+  carrier jsonb
+);
+
+SELECT jsonb_build_object(
+  'categorical_rows', count(*)::integer,
+  'distinct_admissions',
+    count(DISTINCT metric_serving_admission_id)::integer,
+  'bound_carriers', sum(
+    (
+      (carrier #>>
+        '{metric_serving_admission,metric_serving_admission_id}') =
+        metric_serving_admission_id
+    )::integer
+    + (
+      (carrier #>>
+        '{observation,metric_serving_admission_id}') =
+        metric_serving_admission_id
+    )::integer
+    + (
+      (carrier #>>
+        '{cohort_result,metric_serving_admission_id}') =
+        metric_serving_admission_id
+    )::integer
+    + (
+      (carrier #>>
+        '{query_projection,metric_serving_admission_id}') =
+        metric_serving_admission_id
+    )::integer
+  )::integer,
+  'metric_keys',
+    jsonb_agg(metric_key ORDER BY metric_key),
+  'active_pointer_during',
+    public.canonical_v2_active_release('staging')
+) AS evidence
+FROM canonical_v2_staging.no_shop_actions_f25_probe;
+ROLLBACK;`;
+}
+
+function f25PostRollbackSql() {
+  return `SELECT jsonb_build_object(
+  'probe_table_exists', to_regclass(
+    'canonical_v2_staging.no_shop_actions_f25_probe'
+  ) IS NOT NULL,
+  'active_pointer_after',
+    public.canonical_v2_active_release('staging')
+) AS evidence;`;
+}
+
+function buildNoShopActionsF25Attestation() {
+  guardProject();
+  const { bundle } = buildNoShopActionsF25Runtime();
+  const activePointerBefore = oneEvidenceRow(
+    runF20SqlFile(f23PointerSql()),
+    'F25 active pointer precheck',
+    'active_pointer',
+  );
+  const transaction = oneEvidenceRow(
+    runF20SqlFile(f25RollbackSql(bundle)),
+    'F25 rollback transaction',
+  );
+  const postRollback = oneEvidenceRow(
+    runF20SqlFile(f25PostRollbackSql()),
+    'F25 post-rollback check',
+  );
+  const expectedMetrics = [
+    'NO_SHOP_ACTION_KNOWLEDGE_QUALIFIER',
+    'NO_SHOP_EXCEPTION_EFFECT',
+    'NO_SHOP_EXCEPTION_PREREQUISITE',
+    'NO_SHOP_INLINE_PERMISSION_EFFECT',
+    'NO_SHOP_PROHIBITED_ACTION',
+  ];
+  const requestAdmissions =
+    bundle.combined_market_request.metric_bindings.map(
+      (entry) => entry.metric_serving_admission_id,
+    ).sort();
+  if (transaction.categorical_rows !== 5
+    || transaction.distinct_admissions !== 5
+    || transaction.bound_carriers !== 20
+    || canonicalJson(transaction.metric_keys)
+      !== canonicalJson(expectedMetrics)
+    || canonicalJson(requestAdmissions)
+      !== canonicalJson(
+        bundle.manifest.new_metric_serving_admission_ids,
+      )
+    || bundle.combined_market_request.database_call_budget !== 1
+    || bundle.combined_market_request.immediate_retries !== 0
+    || canonicalJson(transaction.active_pointer_during)
+      !== canonicalJson(activePointerBefore)
+    || postRollback.probe_table_exists !== false
+    || canonicalJson(postRollback.active_pointer_after)
+      !== canonicalJson(activePointerBefore)) {
+    throw new Error(
+      'F25 rollback proof changed staging state or lost categorical identity.',
+    );
+  }
+  const body = {
+    schema_version:
+      'QXO_NO_SHOP_ACTIONS_F25_STAGING_ATTESTATION/V1',
+    environment: 'STAGING',
+    authority_scope:
+      'ROLLBACK_ONLY_NO_SHOP_ACTIONS_F25',
+    project_ref: PROJECT.ref,
+    actions_certification_bundle: bundle,
+    staging_execution: {
+      database_calls: 3,
+      immediate_retries: 0,
+      statement_timeout_ms: 15000,
+      lock_timeout_ms: 2000,
+      insert_shape: 'ONE_SET_BASED_JSONB_TO_RECORDSET',
+      serving_request_database_call_budget:
+        bundle.combined_market_request.database_call_budget,
+      transaction,
+      post_rollback: postRollback,
+      active_pointer_before: activePointerBefore,
+      active_pointer_unchanged: true,
+      rollback_verified: true,
+      durable_rows_written: 0,
+    },
+    authority: bundle.manifest.authority,
+    status: bundle.manifest.status,
+  };
+  return {
+    ...body,
+    qxo_no_shop_actions_f25_staging_attestation_id:
+      contentId(
+        'QXO_NO_SHOP_ACTIONS_F25_STAGING_ATTESTATION/V1',
+        body,
+      ),
+    canonical_payload_digest: contentId(
+      'QXO_NO_SHOP_ACTIONS_F25_STAGING_ATTESTATION_PAYLOAD/V1',
+      body,
+    ),
+  };
+}
+// F25_ROLLBACK_ONLY_STAGING_CERTIFICATION_END
+
 function verifyActionsFailureIsolation(bridgeInputs) {
   const missingFirstAction = JSON.parse(JSON.stringify(
     bridgeInputs.reviewed_no_shop_actions_slice,
@@ -5295,14 +5555,19 @@ if (![
   '--copy-delivery-release-f23-verify',
   '--no-shop-timing-f24-print',
   '--no-shop-timing-f24-verify',
+  '--no-shop-actions-f25-print',
+  '--no-shop-actions-f25-verify',
 ].includes(mode)
   || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs [supported attestation print/verify mode, including --no-shop-timing-f24-print|--no-shop-timing-f24-verify]');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs [supported attestation print/verify mode, including --no-shop-actions-f25-print|--no-shop-actions-f25-verify]');
 }
 
 try {
+  const noShopActionsF25Mode =
+    mode.startsWith('--no-shop-actions-f25-');
   const noShopTimingF24Mode =
-    mode.startsWith('--no-shop-timing-f24-');
+    !noShopActionsF25Mode
+    && mode.startsWith('--no-shop-timing-f24-');
   const copyDeliveryReleaseF23Mode =
     !noShopTimingF24Mode
     && mode.startsWith('--copy-delivery-release-f23-');
@@ -5360,7 +5625,9 @@ try {
     && mode.startsWith('--definitions-f6-');
   const actionsF6Mode = !definitionsF6Mode && mode.startsWith('--actions-f6-');
   const actionsMode = !actionsF6Mode && mode.startsWith('--actions-');
-  const attestation = noShopTimingF24Mode
+  const attestation = noShopActionsF25Mode
+    ? buildNoShopActionsF25Attestation()
+    : noShopTimingF24Mode
     ? buildNoShopTimingF24Attestation()
     : copyDeliveryReleaseF23Mode
     ? buildCopyDeliveryReleaseF23Attestation()
@@ -5408,7 +5675,9 @@ try {
     : attestation;
   if (mode.endsWith('verify')) {
     const expected = JSON.parse(readFileSync(
-      noShopTimingF24Mode
+      noShopActionsF25Mode
+        ? NO_SHOP_ACTIONS_F25_FIXTURE_PATH
+        : noShopTimingF24Mode
         ? NO_SHOP_TIMING_F24_FIXTURE_PATH
         : copyDeliveryReleaseF23Mode
         ? COPY_DELIVERY_RELEASE_F23_FIXTURE_PATH
