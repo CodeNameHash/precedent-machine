@@ -36,8 +36,6 @@ test('repository-backed admin work is hidden on every Vercel environment', () =>
 
 test('all routes that require excluded deployment inputs use the Vercel gate', () => {
   const routes = [
-    'pages/api/admin/audit/freeze.js',
-    'pages/api/admin/audit/matrix.js',
     'pages/api/admin/audit/decision.js',
     'pages/api/admin/reconcile/decide.js',
     'pages/api/admin/reconcile/queue.js',
@@ -49,6 +47,9 @@ test('all routes that require excluded deployment inputs use the Vercel gate', (
   ];
   for (const route of routes) {
     assert.match(fs.readFileSync(route, 'utf8'), /blockVercelRepositoryArtifactRoute\(res\)/, route);
+  }
+  for (const route of ['pages/api/admin/audit/freeze.js', 'pages/api/admin/audit/matrix.js']) {
+    assert.match(fs.readFileSync(route, 'utf8'), /return sendBroadCorpusRouteContained\(res\)/, route);
   }
   for (const page of ['pages/admin/registry/audit.js', 'pages/admin/registry/reconcile.js']) {
     assert.match(fs.readFileSync(page, 'utf8'), /process\.env\.VERCEL.*notFound: true/, page);

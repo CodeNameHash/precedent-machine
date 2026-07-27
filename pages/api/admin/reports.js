@@ -14,9 +14,8 @@
      GET /api/admin/reports?id=<uuid>    -> { report: row } (full row incl. payload)
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getServiceSupabase } from '../../../lib/supabase';
-
-const { VALID_KINDS } = require('../../../lib/reports/persist-report');
+import { getServiceSupabase } from '../../../lib/supabase.js';
+import { VALID_KINDS } from '../../../lib/reports/persist-report.js';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const LIST_SELECT = 'id, kind, generated_at, git_ref, summary, created_at';
@@ -87,15 +86,27 @@ async function listAll(req, res, sb) {
   return res.status(200).json({ latest, history });
 }
 
-export default async function handler(req, res) {
-  const sb = getServiceSupabase();
-  if (!sb) return fail(res, 500, 'Supabase not configured');
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', 'GET');
-    return fail(res, 405, 'GET only');
-  }
+export function createReportsHandler({ getSupabase = getServiceSupabase } = {}) {
+  return async function handler(req, res) {
+    if (req.method !== 'GET') {
+      res.setHeader('Allow', 'GET');
+      return fail(res, 405, 'GET only');
+    }
 
-  if (req.query.id) return getById(req, res, sb);
-  if (req.query.kind) return getByKind(req, res, sb);
-  return listAll(req, res, sb);
-};
+    if (req.query.id && !UUID_RE.test(String(req.query.id))) {
+      return fail(res, 400, 'Invalid id');
+    }
+    if (req.query.kind && !VALID_KINDS.has(String(req.query.kind))) {
+      return fail(res, 400, `Unknown kind "${String(req.query.kind)}"`);
+    }
+
+    const sb = getSupabase();
+    if (!sb) return fail(res, 500, 'Supabase not configured');
+
+    if (req.query.id) return getById(req, res, sb);
+    if (req.query.kind) return getByKind(req, res, sb);
+    return listAll(req, res, sb);
+  };
+}
+
+export default createReportsHandler();

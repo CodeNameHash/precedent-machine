@@ -9992,8 +9992,6 @@ function collapseTypeForExtraction(t) {
 
 function ExtractionStatusPill({ deal, provisions, onRefetch }) {
   const [expanded, setExpanded] = useState(false);
-  const [busyType, setBusyType] = useState(null);
-  const [reclassifying, setReclassifying] = useState(false);
 
   const md = deal?.metadata || {};
   const breakdown = md.classify_breakdown || null;
@@ -10055,41 +10053,6 @@ function ExtractionStatusPill({ deal, provisions, onRefetch }) {
     : 0;
   const allDone = total > 0 && done === total;
 
-  const extractOne = async (type) => {
-    setBusyType(type);
-    try {
-      const resp = await fetch('/api/ingest/extract-type', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ deal_id: deal.id, type }),
-      });
-      const data = await resp.json();
-      if (!resp.ok || !data.success) throw new Error(data.error || 'Extract failed');
-      await onRefetch?.();
-    } catch (err) {
-      console.warn('[extract] failed', type, err);
-    }
-    setBusyType(null);
-  };
-
-  const reclassify = async () => {
-    if (!confirm('Re-classify this deal? Existing classify output will be replaced and per-type extract status reset.')) return;
-    setReclassifying(true);
-    try {
-      const resp = await fetch('/api/ingest/classify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ deal_id: deal.id }),
-      });
-      const data = await resp.json();
-      if (!resp.ok || !data.success) throw new Error(data.error || 'Re-classify failed');
-      await onRefetch?.();
-    } catch (err) {
-      alert('Re-classify failed: ' + err.message);
-    }
-    setReclassifying(false);
-  };
-
   const summaryLabel = allDone
     ? `Extraction: complete (${done}/${total} types)`
     : failed > 0
@@ -10117,25 +10080,9 @@ function ExtractionStatusPill({ deal, provisions, onRefetch }) {
         >
           {summaryLabel} {expanded ? '▾' : '▸'}
         </button>
-        <button
-          type="button"
-          onClick={reclassify}
-          disabled={reclassifying}
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 10,
-            letterSpacing: '.1em',
-            textTransform: 'uppercase',
-            padding: '3px 8px',
-            borderRadius: 4,
-            background: 'transparent',
-            color: reclassifying ? 'var(--ink-faint)' : 'var(--ink-light)',
-            border: '1px solid var(--line)',
-            cursor: reclassifying ? 'not-allowed' : 'pointer',
-          }}
-        >
-          {reclassifying ? 'Re-classifying…' : 'Re-classify'}
-        </button>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--ink-faint)' }}>
+          Re-extraction is local-only during containment
+        </span>
       </div>
       {expanded && (
         <div
@@ -10157,7 +10104,7 @@ function ExtractionStatusPill({ deal, provisions, onRefetch }) {
             // deal-wide, fall back to the same provisions-derived signal
             // rather than showing "pending" on a type that's actually done.
             const derivedDone = !hasExtractStatusData && derivedDoneTypes.has(type);
-            const status = busyType === type ? 'extracting' : (st.status || (derivedDone ? 'done' : 'pending'));
+            const status = st.status || (derivedDone ? 'done' : 'pending');
             return (
               <div
                 key={type}
@@ -10221,25 +10168,6 @@ function ExtractionStatusPill({ deal, provisions, onRefetch }) {
                 >
                   {status}
                 </span>
-                <button
-                  type="button"
-                  onClick={() => extractOne(type)}
-                  disabled={busyType !== null}
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 10,
-                    letterSpacing: '.08em',
-                    textTransform: 'uppercase',
-                    padding: '4px 8px',
-                    borderRadius: 4,
-                    background: 'var(--surface)',
-                    color: busyType !== null ? 'var(--ink-faint)' : 'var(--ink)',
-                    border: '1px solid var(--line)',
-                    cursor: busyType !== null ? 'not-allowed' : 'pointer',
-                  }}
-                >
-                  {status === 'done' ? 'Re-extract' : 'Extract'}
-                </button>
               </div>
             );
           })}

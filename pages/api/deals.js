@@ -1,5 +1,6 @@
 import { getServiceSupabase } from '../../lib/supabase';
 const { getHomePayload } = require('../../lib/home-snapshot');
+const { sendBroadCorpusRouteContained } = require('../../lib/broad-corpus-containment');
 
 // Cap runaway executions: when Supabase stalls, uncapped functions run the
 // full 300s each holding a DB connection (2026-07-19 pile-up). 60s is far
@@ -111,6 +112,7 @@ export default async function handler(req, res) {
   if (!['GET', 'POST', 'PATCH', 'DELETE'].includes(req.method)) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+  if (req.method !== 'GET') return sendBroadCorpusRouteContained(res);
 
   if (req.method === 'GET' && !(req.query && req.query.id)) {
     const deals = getHomePayload().deals.map((deal) => ({

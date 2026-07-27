@@ -1,6 +1,12 @@
 import { getServiceSupabase } from '../../lib/supabase';
+const { sendBroadCorpusRouteContained } = require('../../lib/broad-corpus-containment');
 
 export default async function handler(req, res) {
+  if (!['GET', 'POST', 'PATCH', 'DELETE'].includes(req.method)) {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+  if (req.method !== 'GET') return sendBroadCorpusRouteContained(res);
+
   const sb = getServiceSupabase();
   if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
 
@@ -44,33 +50,6 @@ export default async function handler(req, res) {
     const { data, error } = await sb.from('annotations').select('*, user:users(name)').order('created_at', { ascending: false }).limit(100);
     if (error) return res.status(500).json({ error: error.message });
     return res.json({ annotations: data });
-  }
-
-  if (req.method === 'POST') {
-    const { provision_id, phrase, start_offset, end_offset, favorability, note, user_id, is_ai_generated, overrides_id } = req.body;
-    const { data, error } = await sb.from('annotations')
-      .insert({ provision_id, phrase, start_offset, end_offset, favorability, note, user_id, is_ai_generated: is_ai_generated || false, overrides_id })
-      .select().single();
-    if (error) return res.status(500).json({ error: error.message });
-    return res.json({ annotation: data });
-  }
-
-  if (req.method === 'PATCH') {
-    const { id, ...updates } = req.body;
-    // If verifying, add verified_at
-    if (updates.verified_by) {
-      updates.verified_at = new Date().toISOString();
-    }
-    const { data, error } = await sb.from('annotations').update(updates).eq('id', id).select().single();
-    if (error) return res.status(500).json({ error: error.message });
-    return res.json({ annotation: data });
-  }
-
-  if (req.method === 'DELETE') {
-    const { id } = req.body;
-    const { error } = await sb.from('annotations').delete().eq('id', id);
-    if (error) return res.status(500).json({ error: error.message });
-    return res.json({ success: true });
   }
 
   return res.status(405).json({ error: 'Method not allowed' });
