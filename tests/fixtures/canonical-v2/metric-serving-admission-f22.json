@@ -1,0 +1,60 @@
+{
+  "schema_version": "METRIC_SERVING_ADMISSION_REGISTRY/V1",
+  "authority_scope": "OFFLINE_METRIC_SCOPED_SERVING_ADMISSION_F22_ONLY",
+  "legacy_fingerprint_wide_contracts": [
+    "46553f1a743dbf9f4ebfd07bff20939f66a57c4973826b5619c8bdfd196b1b83",
+    "56da82bee06331793ba2ed8b78ef4186361407e60733595091e5951853e7d41d",
+    "5cc5607bee8fc816e8682f71b9482ff839ff744cebaaf0f26bfcfa54ea64512c",
+    "d4ce5235be1818a42d9aba0dfb34198456eb062381e7d7db7b8289dd88671c74",
+    "f80a77651d1b6a6a9eec8ac67526a8704f498761cbb22a67e6ceb4716abb5478"
+  ],
+  "legacy_rejected_contracts": [
+    "5cc5607bee8fc816e8682f71b9482ff839ff744cebaaf0f26bfcfa54ea64512c"
+  ],
+  "later_contract_default": "DENY",
+  "admission_records": [
+    {
+      "schema_version": "METRIC_SERVING_ADMISSION/V1",
+      "authority_scope": "OFFLINE_METRIC_SCOPED_SERVING_ADMISSION_F22_ONLY",
+      "certification_state": "CERTIFIED_POLICY_ELIGIBLE_NOT_RELEASED",
+      "contract_fingerprint": "261525a8268a1392428a610bbf0c2166c87318192971d08bc7e6ac5f2c7235e5",
+      "metric_key": "NO_SHOP_COPY_DELIVERY_PERIOD_DAYS",
+      "metric_version": 1,
+      "metric_definition_id": "9182ca9ccdba84e9d6f45458b29b9146aab525c55b8fedaa8b482b95ecd114a3",
+      "concept_key": "NOSOL-NOTICE",
+      "required_claim_definition_key": "NO_SHOP_COPY_DELIVERY_PERIOD_DAYS",
+      "interpretation_admission_digest": "a398d8a4bcafbc6765dcf8106c6d42f89827cba80ebbf32da41596ce0e81d069",
+      "candidate_metric_definition_admission_id": "5c0300e32520520db7258b59ccdd133c4ab16d2ad4e636208d47af0148b382a0",
+      "integration_admission_id": "03bdc0671b85755d517a994fb903960beae5969c2bbb5443e1be3fe288524714",
+      "certification_evidence": {
+        "qxo_no_shop_copy_delivery_canonical_f19_id": "362d2a28419eb77a321267a733ba84ab6d61e44afc42a45a8d13a4ce3586afa1",
+        "qxo_no_shop_copy_delivery_query_f20_id": "c9045081e5950fbb2d9785ae8c8f40e30f4251b34135ce9e14d8e04c3ed1bc00",
+        "v12_serving_admission_readiness_f21_id": "5c01b73dccef292d23591d0e351ed51b68bad1cb24fe710a503cf120b5ae2825",
+        "f21_canonical_payload_digest": "33a7611cbe6277cae2fed77a9269f8e03cc90366590417b9cd02a49530064f8e"
+      },
+      "authority": {
+        "metric_serving_policy_authority": "EXACT_METRIC_IDENTITY_ONLY",
+        "candidate_release_authority": "NONE",
+        "active_release_authority": "NONE",
+        "active_query_authority": "NONE",
+        "active_pointer_authority": "NONE",
+        "corpus_write_authority": "NONE",
+        "production_activation_authority": "NONE"
+      },
+      "status": {
+        "publication_blocked": true,
+        "release_eligible": false,
+        "blocker_codes": [
+          "METRIC_ADMISSION_NOT_BOUND_TO_RELEASE_MANIFEST",
+          "ACTIVE_RELEASE_ACTIVATION_REQUIRED"
+        ]
+      },
+      "metric_serving_admission_id": "42ad01dd797587df2fd85a66e9a6bf453f083e7a51c7e641ce0fa9f43c0253d5"
+    }
+  ],
+  "wildcard_admission_authority": "NONE",
+  "release_manifest_binding_required": true,
+  "active_release_authority": "NONE",
+  "production_activation_authority": "NONE",
+  "metric_serving_admission_registry_id": "914e3fb39cb51012fc52844bfcea1495e9b6f02716828f92cbfac0580f04eb7f"
+}

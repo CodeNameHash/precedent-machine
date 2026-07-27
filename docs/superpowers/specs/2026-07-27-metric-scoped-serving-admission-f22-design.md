@@ -71,6 +71,14 @@ later-contract row or request is eligible only when:
 3. every row, query and cache identity carries the same admission ID.
 
 The two lanes meet in one central validator. Callers cannot select a lane.
+The central validator must also preserve the existing explicit V3 rejection;
+membership in the historical fingerprint list is not sufficient.
+
+F22 exercises the scoped lane against a bounded declared admission-ID set. It
+must label that result as preliminary policy matching, not release-manifest
+validation. F23 will supply and validate the first content-addressed release
+manifest. Until then the admission remains blocked by
+`METRIC_ADMISSION_NOT_BOUND_TO_RELEASE_MANIFEST`.
 
 ### Release and production authority
 
@@ -123,8 +131,9 @@ An admission is accepted only through the central module.
 2. The requested metric resolves to its governed metric definition.
 3. The central validator chooses the legacy or scoped lane from the contract,
    never from caller input.
-4. For the scoped lane, it resolves the admission ID from the active release
-   manifest and validates all eight identity fields.
+4. In F23 and later, the scoped lane resolves the admission ID from the active
+   release manifest and validates all eight identity fields. F22 proves only
+   preliminary membership in a bounded declared ID set.
 5. The compiled request performs one indexed, set-based RPC.
 6. Returned rows are validated against the same release and admission ID.
 7. The cache key includes release, metric, cohort, refinements and admission

@@ -48,17 +48,19 @@ Work:
 
 1. Resolve V1 through V5 contracts through the unchanged legacy
    fingerprint-wide lane.
-2. Resolve V6 and later contracts only through an exact metric-scoped
+2. Preserve the explicit V3 rejection inside that historical lane.
+3. Resolve V6 and later contracts only through an exact metric-scoped
    admission.
-3. Require the scoped admission ID to be listed in the caller-supplied release
-   manifest identity set.
-4. Verify the metric definition and required claim exist in the supplied
+4. Require the scoped admission ID to be listed in a bounded declared-ID set,
+   while stating explicitly that no release manifest has yet been validated.
+5. Leave content-addressed release-manifest binding to F23.
+6. Verify the metric definition and required claim exist in the supplied
    contract.
-5. Reject unknown fields, wildcards, missing admissions and every identity
+7. Reject unknown fields, wildcards, missing admissions and every identity
    mismatch.
-6. Export one pure resolver for later use by Query, projection, release import,
+8. Export one pure resolver for later use by Query, projection, release import,
    shared-row and exact-detail validation.
-7. Perform no I/O, database work, networking, retries or activation.
+9. Perform no I/O, database work, networking, retries or activation.
 
 ## Task 4: adversarial tests
 
@@ -75,8 +77,9 @@ Tests:
 5. Contract, metric, version, concept, claim, interpretation, candidate and
    integration substitution each fail.
 6. A missing, forged or unlisted admission ID fails.
-7. Duplicate or malformed release admission lists fail.
-8. The legacy V1 through V5 lane remains unchanged.
+7. Duplicate or malformed declared admission lists fail.
+8. The legacy V1, V2, V4 and V5 lane remains unchanged, while V3 remains
+   rejected.
 9. A legacy contract cannot borrow a scoped admission.
 10. The module contains no database, network, retry, release mutation or
     feature-activation path.
