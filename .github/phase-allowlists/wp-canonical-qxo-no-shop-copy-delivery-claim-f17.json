@@ -1,0 +1,24 @@
+{
+  "phase": "WP-CANONICAL-QXO-NO-SHOP-COPY-DELIVERY-CLAIM-F17",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-qxo-no-shop-copy-delivery-claim-f17.json",
+    "lib/canonical-v2/claim-interpretation.js",
+    "lib/canonical-v2/qxo-no-shop-copy-delivery-claim-f17.js",
+    "scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs",
+    "tests/canonical-v2-qxo-no-shop-copy-delivery-claim-f17.test.js",
+    "tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-claim-f17-staging-attestation.json"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "docs/**",
+    "lib/canonical-v2/canonical-writer.js",
+    "lib/canonical-v2/query/**",
+    "lib/canonical-v2/serving/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**",
+    "next.config.js"
+  ],
+  "note": "Remints the QXO copy-delivery ClaimRevision/V2 under the distinct F16 metric, binds its governed ambiguity through ClaimInterpretation/V1, and builds the complete offline result. No projection, release, pointer, query or production authority is granted."
+}
