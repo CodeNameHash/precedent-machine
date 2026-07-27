@@ -89,6 +89,11 @@ const {
   validateQxoNoShopDefinitionScopeClosureF13,
 } = require('../lib/canonical-v2/qxo-no-shop-definition-scope-closure-f13');
 const {
+  buildQxoNoShopNoticeRevisionF14,
+  buildQxoNoShopNoticeRevisionF14FailureAttestation,
+  validateQxoNoShopNoticeRevisionF14,
+} = require('../lib/canonical-v2/qxo-no-shop-notice-revision-f14');
+const {
   buildQxoAdmittedNoShopActionsSlice,
 } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
 const {
@@ -177,6 +182,10 @@ const DEFINITION_CONTROL_F11_FIXTURE_PATH = join(
 const DEFINITION_SCOPE_F13_FIXTURE_PATH = join(
   ROOT,
   'tests/fixtures/canonical-v2/qxo-no-shop-definition-scope-closure-f13-staging-attestation.json',
+);
+const NOTICE_REVISION_F14_FIXTURE_PATH = join(
+  ROOT,
+  'tests/fixtures/canonical-v2/qxo-no-shop-notice-revision-f14-staging-attestation.json',
 );
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
@@ -2221,7 +2230,7 @@ function buildDefinitionControlF11Attestation() {
   };
 }
 
-function buildDefinitionScopeF13Attestation() {
+function buildDefinitionScopeF13Runtime() {
   const {
     admittedParserProposalEnvelope,
     admittedSourceContext,
@@ -2272,6 +2281,18 @@ function buildDefinitionScopeF13Attestation() {
     qxo_no_shop_definition_scope_closure_f13: carrier,
     ...inputs,
   });
+  return {
+    carrier,
+    f10Carrier,
+    inputs,
+  };
+}
+
+function buildDefinitionScopeF13Attestation() {
+  const {
+    carrier,
+    inputs,
+  } = buildDefinitionScopeF13Runtime();
   const failed = buildQxoNoShopDefinitionScopeClosureF13FailureAttestation(
     inputs,
     207970,
@@ -2495,6 +2516,103 @@ function buildDefinitionScopeF13Attestation() {
     failure_isolation_verified: failureIsolationVerified,
     qxo_no_shop_definition_scope_closure_f13_id:
       carrier.qxo_no_shop_definition_scope_closure_f13_id,
+    canonical_payload_digest: carrier.canonical_payload_digest,
+  };
+}
+
+function buildNoticeRevisionF14Attestation() {
+  const {
+    carrier: f13Carrier,
+    f10Carrier,
+  } = buildDefinitionScopeF13Runtime();
+  const inputs = {
+    contract_bundle: compileFixtureContractV10(),
+    qxo_no_shop_definition_scope_closure_f13: f13Carrier,
+    qxo_no_shop_notice_receipt_f10: f10Carrier,
+  };
+  const carrier = buildQxoNoShopNoticeRevisionF14(inputs);
+  validateQxoNoShopNoticeRevisionF14({
+    qxo_no_shop_notice_revision_f14: carrier,
+    ...inputs,
+  });
+  const failed =
+    buildQxoNoShopNoticeRevisionF14FailureAttestation(inputs);
+  const revision = carrier.notice_revision;
+  const failureIsolationVerified =
+    failed.notice_revision === null
+    && failed.status.revision_materialised === false
+    && failed.status.review_renderable === true
+    && failed.status.publication_blocked === true
+    && failed.status.comparison_blocked === true
+    && failed.status.failed_component_code
+      === 'DEFINITION_RELATIONSHIP_BINDING'
+    && canonicalJson(failed.status.unaffected_child_keys)
+      === canonicalJson([
+        'TRIGGER_EXPRESSION',
+        'INITIAL_NOTICE_CLOCK_SCOPE',
+        'COPY_CLOCK_SCOPE',
+      ])
+    && failed.status.blocker_codes.includes(
+      'NOTICE_REVISION_MATERIALISATION_FAILED',
+    )
+    && canonicalJson(failed.notice_occurrence)
+      === canonicalJson(carrier.notice_occurrence)
+    && canonicalJson(failed.source_binding)
+      === canonicalJson(carrier.source_binding);
+  return {
+    schema_version:
+      'QXO_NO_SHOP_NOTICE_REVISION_F14_STAGING_ATTESTATION/V1',
+    environment: 'STAGING',
+    authority_scope: carrier.authority_scope,
+    contract_binding: carrier.contract_binding,
+    source_binding: carrier.source_binding,
+    upstream_bindings: carrier.upstream_bindings,
+    notice_occurrence: {
+      notice_obligation_occurrence_id:
+        carrier.notice_occurrence.notice_obligation_occurrence_id,
+      exact_source_span:
+        carrier.notice_occurrence.exact_source_span,
+      governed_ordinal:
+        carrier.notice_occurrence.governed_ordinal,
+      party: carrier.notice_occurrence.party,
+    },
+    revision_summary: {
+      schema_version: revision.schema_version,
+      notice_obligation_revision_id:
+        revision.notice_obligation_revision_id,
+      scope_closure_id: revision.scope_closure_id,
+      predecessor_scope_closure_id:
+        f10Carrier.notice_revision.scope_closure_id,
+      definition_scope_closure_id:
+        revision.definition_scope_closure_id,
+      definition_use_relationship_count:
+        revision.definition_use_relationship_ids.length,
+      definition_use_relationship_ids_digest: contentId(
+        'QXO_NO_SHOP_F14_DEFINITION_RELATIONSHIP_SET_ATTESTATION/V1',
+        revision.definition_use_relationship_ids,
+      ),
+      evidence_excerpt_count: revision.evidence_excerpt_ids.length,
+      evidence_excerpt_ids_digest: contentId(
+        'QXO_NO_SHOP_F14_EVIDENCE_SET_ATTESTATION/V1',
+        revision.evidence_excerpt_ids,
+      ),
+      child_resolution_states: revision.child_resolution_states,
+      trigger_codes: revision.trigger_codes,
+      delivery_method_codes: revision.delivery_method_codes,
+      content_requirement_codes: revision.content_requirement_codes,
+      copy_subject_codes: revision.copy_subject_codes,
+      primary_receipt_interpretation_code:
+        revision.copy_clock_scope.primary_receipt_interpretation_code,
+      copy_clock_resolution_state:
+        revision.copy_clock_scope.resolution_state,
+      item_or_batch_cardinality_state:
+        revision.copy_clock_scope.item_or_batch_cardinality_state,
+    },
+    review_projection: carrier.review_projection,
+    materialisation_status: carrier.status,
+    failure_isolation_verified: failureIsolationVerified,
+    qxo_no_shop_notice_revision_f14_id:
+      carrier.qxo_no_shop_notice_revision_f14_id,
     canonical_payload_digest: carrier.canonical_payload_digest,
   };
 }
@@ -2729,13 +2847,18 @@ if (![
   '--definition-control-f11-verify',
   '--definition-scope-f13-print',
   '--definition-scope-f13-verify',
+  '--notice-revision-f14-print',
+  '--notice-revision-f14-verify',
 ].includes(mode)
   || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--inline-permission-f9-print|--inline-permission-f9-verify|--notice-source-f6-print|--notice-source-f6-verify|--notice-semantic-closure-f6-print|--notice-semantic-closure-f6-verify|--notice-review-materialisation-f7-print|--notice-review-materialisation-f7-verify|--notice-definition-relationships-f8-print|--notice-definition-relationships-f8-verify|--notice-receipt-f10-print|--notice-receipt-f10-verify|--definition-control-f11-print|--definition-control-f11-verify|--definition-scope-f13-print|--definition-scope-f13-verify');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--inline-permission-f9-print|--inline-permission-f9-verify|--notice-source-f6-print|--notice-source-f6-verify|--notice-semantic-closure-f6-print|--notice-semantic-closure-f6-verify|--notice-review-materialisation-f7-print|--notice-review-materialisation-f7-verify|--notice-definition-relationships-f8-print|--notice-definition-relationships-f8-verify|--notice-receipt-f10-print|--notice-receipt-f10-verify|--definition-control-f11-print|--definition-control-f11-verify|--definition-scope-f13-print|--definition-scope-f13-verify|--notice-revision-f14-print|--notice-revision-f14-verify');
 }
 
 try {
-  const definitionScopeF13Mode =
+  const noticeRevisionF14Mode =
+    mode.startsWith('--notice-revision-f14-');
+  const definitionScopeF13Mode = !noticeRevisionF14Mode
+    &&
     mode.startsWith('--definition-scope-f13-');
   const definitionControlF11Mode = !definitionScopeF13Mode
     &&
@@ -2767,7 +2890,9 @@ try {
     && mode.startsWith('--definitions-f6-');
   const actionsF6Mode = !definitionsF6Mode && mode.startsWith('--actions-f6-');
   const actionsMode = !actionsF6Mode && mode.startsWith('--actions-');
-  const attestation = definitionScopeF13Mode
+  const attestation = noticeRevisionF14Mode
+    ? buildNoticeRevisionF14Attestation()
+    : definitionScopeF13Mode
     ? buildDefinitionScopeF13Attestation()
     : definitionControlF11Mode
     ? buildDefinitionControlF11Attestation()
@@ -2797,7 +2922,9 @@ try {
     : attestation;
   if (mode.endsWith('verify')) {
     const expected = JSON.parse(readFileSync(
-      definitionScopeF13Mode
+      noticeRevisionF14Mode
+        ? NOTICE_REVISION_F14_FIXTURE_PATH
+        : definitionScopeF13Mode
         ? DEFINITION_SCOPE_F13_FIXTURE_PATH
         : definitionControlF11Mode
         ? DEFINITION_CONTROL_F11_FIXTURE_PATH
