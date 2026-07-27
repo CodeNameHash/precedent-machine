@@ -51,7 +51,7 @@ function request(classDigest = 'a'.repeat(64)) {
   };
 }
 
-test('F19 staging verification executes the deterministic admitted-source runner', () => {
+test('F19 staging verification executes the deterministic admitted-source runner', (t) => {
   const source = fs.readFileSync(RUNNER, 'utf8');
   const expected = JSON.parse(fs.readFileSync(FIXTURE, 'utf8'));
   assert.match(source, /buildCopyDeliveryCanonicalF19Runtime/);
@@ -62,6 +62,11 @@ test('F19 staging verification executes the deterministic admitted-source runner
     expected.qxo_no_shop_copy_delivery_canonical_f19_id,
     '362d2a28419eb77a321267a733ba84ab6d61e44afc42a45a8d13a4ce3586afa1',
   );
+  if (!fs.existsSync('supabase/.temp/project-ref')
+    || !fs.existsSync('supabase/.temp/linked-project.json')) {
+    t.skip('isolated staging project is not linked in this environment');
+    return;
+  }
   const run = spawnSync(process.execPath, [
     RUNNER,
     '--copy-delivery-canonical-f19-verify',
