@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 LibraryPage.noLayout = true;
+const QUERY_UI_CONTAINED = true;
 
 function slug(kind) {
   return String(kind || '').toLowerCase().replace(/_/g, '-');
@@ -13,6 +14,10 @@ export default function LibraryPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (QUERY_UI_CONTAINED) {
+      setRows([]);
+      return;
+    }
     fetch('/api/saved-queries')
       .then((res) => res.json())
       .then((json) => {
@@ -31,7 +36,7 @@ export default function LibraryPage() {
           <h1>User library</h1>
         </header>
         <section>
-          {error ? <p className="err">{error}</p> : rows === null ? <p>Loading saved queries...</p> : rows.length === 0 ? (
+          {QUERY_UI_CONTAINED ? <p>Saved queries are unavailable while Query is contained.</p> : error ? <p className="err">{error}</p> : rows === null ? <p>Loading saved queries...</p> : rows.length === 0 ? (
             <p>No saved queries yet.</p>
           ) : (
             <table>

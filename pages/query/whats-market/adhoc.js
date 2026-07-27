@@ -5,6 +5,15 @@ import { useRouter } from 'next/router';
 import MergertraceStyles from '../../../components/review-v2/MergertraceStyles';
 import { resolveWhatsMarketIntent } from '../../../lib/query/whats-market';
 
+export function getServerSideProps() {
+  return {
+    redirect: {
+      destination: '/',
+      permanent: false,
+    },
+  };
+}
+
 const TOPICS = [
   ['COVENANT_INTERIM_OPERATING', 'Interim operating covenants', 'Ordinary-course duties, affirmative limbs, restrictions and exceptions'],
   ['COVENANT_NO_SOLICITATION', 'No-shop and fiduciary out', 'Matching rights, superior-proposal standards, force-the-vote and go-shops'],

@@ -197,14 +197,9 @@ test('no sentence ever says "equals" and describeFilter carries the sentence as 
 // pages/ files are ESM — same source-text-assertion pattern as
 // tests/query-staging-exclusion.test.js.
 
-test('field-options endpoint answers field lists without touching Supabase and degrades value options when the DB is down', () => {
+test('field-options endpoint is contained before static metadata or Supabase can load', () => {
   const src = fs.readFileSync(path.join(__dirname, '..', 'pages', 'api', 'query', 'field-options.js'), 'utf8');
-  // The fields-list branch returns BEFORE any Supabase/loadContext call.
-  const fieldsReturn = src.indexOf('fieldsForProvisionType(provisionType)');
-  const contextCall = src.indexOf('loadContext(');
-  assert.ok(fieldsReturn > -1 && contextCall > -1);
-  assert.ok(fieldsReturn < contextCall, 'fields list resolves before the corpus load');
-  // The value-options branch catches a failed corpus load and proceeds with
-  // an empty provisions list instead of erroring.
-  assert.match(src, /catch\s*\{\s*provisions\s*=\s*\[\]/);
+  assert.match(src, /lib\/query-containment/);
+  assert.match(src, /export default queryContainedHandler/);
+  assert.doesNotMatch(src, /fieldsForProvisionType|loadContext|supabase|process\.env/i);
 });

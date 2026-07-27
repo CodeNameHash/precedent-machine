@@ -73,6 +73,15 @@ function slugToQueryKind(slug) {
 
 QueryPage.noLayout = true;
 
+export function getServerSideProps() {
+  return {
+    redirect: {
+      destination: '/',
+      permanent: false,
+    },
+  };
+}
+
 // D (query error surfaces): a garbage ?payload= (hand-edited URL, a stale/
 // truncated share link) used to throw a raw JSON.parse SyntaxError straight
 // out of this function and into the effect below's .catch, which rendered

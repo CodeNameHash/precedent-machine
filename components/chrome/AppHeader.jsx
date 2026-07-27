@@ -12,7 +12,6 @@ import Link from 'next/link';
 
 const NAV_ITEMS = [
   { key: 'corpus', href: '/', label: 'Corpus' },
-  { key: 'query', href: '/query', label: 'Query' },
   { key: 'library', href: '/library', label: 'Library' },
 ];
 

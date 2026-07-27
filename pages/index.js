@@ -26,6 +26,7 @@ HomePage.noLayout = true;
 const COLUMNS_STORAGE_KEY = 'deals_index_columns_v2';
 const LEGACY_COLUMNS_STORAGE_KEY = 'deals_index_columns_v1';
 const VALUE_BANDS = ['<$1B', '$1B-$10B', '>$10B'];
+const QUERY_UI_CONTAINED = true;
 
 function encodePayload(payload) {
   return btoa(JSON.stringify(payload)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -332,7 +333,10 @@ export default function HomePage({ initialData }) {
   // Preserve r15's specific-feature shortcut while leaving broad provision
   // families to the natural-language query box, where they can be narrowed
   // to a comparable metric.
-  const showAllMatch = useMemo(() => matchFeatureVocab(search), [search]);
+  const showAllMatch = useMemo(
+    () => (QUERY_UI_CONTAINED ? null : matchFeatureVocab(search)),
+    [search],
+  );
 
   function runShowAll(entry) {
     if (!entry) return;
@@ -425,7 +429,7 @@ export default function HomePage({ initialData }) {
               <div className="wrap">
                 {/* Query surface — its own bordered panel, clearly separate
                     from the deal list below (Ben r15, item 6). */}
-                <div className="querySurface">
+                {!QUERY_UI_CONTAINED && <div className="querySurface">
                   <QueryLaunchBox
                     bordered={false}
                     deals={deals}
@@ -443,7 +447,7 @@ export default function HomePage({ initialData }) {
                       <button type="button" className="pickCancel" onClick={cancelPick}>Clear (Esc)</button>
                     </div>
                   )}
-                </div>
+                </div>}
 
                 {/* Deal list — its own surface with its own header band, in
                     the same voice as the review page's grey title bars. */}
