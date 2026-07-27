@@ -1,0 +1,23 @@
+{
+  "phase": "WP-CANONICAL-QXO-NO-SHOP-COPY-DELIVERY-SERVING-F18",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-qxo-no-shop-copy-delivery-serving-f18.json",
+    "lib/canonical-v2/qxo-no-shop-copy-delivery-serving-f18.js",
+    "scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs",
+    "tests/canonical-v2-qxo-no-shop-copy-delivery-serving-f18.test.js",
+    "tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-serving-f18-staging-attestation.json"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "docs/**",
+    "lib/canonical-v2/canonical-writer.js",
+    "lib/canonical-v2/query/**",
+    "lib/canonical-v2/serving/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**",
+    "next.config.js"
+  ],
+  "note": "Builds one QXO copy-delivery serving-readiness carrier with a cross-deal semantic comparability class, typed lawyer warning and explicit unresolved canonical integration, source resolver and indexed-query blockers. Frozen V12 remains outside the active serving allowlist and no candidate, query, pointer, import or production authority is granted."
+}
