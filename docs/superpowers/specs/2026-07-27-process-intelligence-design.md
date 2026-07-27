@@ -13,7 +13,8 @@ The evidence bases reviewed were:
 - the active canonical programme in `docs/CODEX-PROGRAM.md` and
   `docs/codex-program/canonical-contracts.md`;
 - Deal Storylines review branch
-  `origin/claude/reengineer-ground-up-fvp47j` at `77688ad`; and
+  `origin/claude/reengineer-ground-up-fvp47j` at `77688ad`;
+- Fable's external adversarial review at `383ffee`; and
 - the Metsera corpus material and existing Storylines extraction fixtures.
 
 ## Executive decision
@@ -100,8 +101,11 @@ The default response is 8 to 12 diversified exact passages. Each result shows:
 - coverage and certification scope; and
 - an action to open the source reader.
 
-Results diversify by deal, bidder track and drafting pattern. Repeated language
-from one deal cannot crowd out the market sample.
+Results diversify deterministically by deal and bidder track. Repeated language
+from one deal cannot crowd out the market sample. When fewer than eight
+qualifying passages exist, the product shows every available qualifying passage
+with its coverage statement. It never pads the sample with repeated passages to
+reach a target.
 
 The initial release does not:
 
@@ -175,6 +179,14 @@ identities used by the active Agreement domain. Existing PM results and queries
 must remain byte-identical unless an independently approved migration expressly
 changes them.
 
+Process maintains a consumed-contract freeze manifest naming the exact PM
+contracts it relies on, including the writer, `SharedServingRow`, release,
+Serving Exact Detail, Query IR and field registry. Any merge changing one of
+those contracts triggers fixture regeneration and a divergence gate. Heavy
+extractor implementation does not begin until this consumed subset is frozen.
+Evidence work and fixture-only product work may continue while unrelated
+Canonical V2 contracts evolve.
+
 ## Shared deal facts and entity authority
 
 ### Canonical fact projection
@@ -228,6 +240,12 @@ releases as evidence. It retains the source and role basis. In a multi-bidder
 process, counsel for Pfizer cannot be inherited by Novo or by an anonymous
 Party A.
 
+Per-track adviser disclosure is expected to be sparse, particularly for losing
+or anonymous bidders. `UNDISCLOSED` is an honest state, distinct from
+`NOT_EXAMINED` and `NO_ADVISER`. Certification requires both a positive
+named-bidder attribution fixture and negative fixtures proving that missing
+disclosure is not filled from another bidder or from a generic side.
+
 ## Process semantic model
 
 ### Core objects
@@ -260,6 +278,27 @@ Continuation and retelling are first-class relationships. They are not repaired
 by deleting or silently merging rows. A later proxy summary may link to an
 earlier event without becoming a duplicate market observation.
 
+### Source-local and named party identity
+
+A source-local label such as `Party 1` remains a valid participant identity. It
+may unify with a named canonical entity only through a governed identity-bridge
+contract.
+
+The contract defines:
+
+- permitted bridge witnesses, including explicit later identification and
+  separately certified retelling equivalence;
+- required source, date, economics and relationship evidence;
+- conflict and uniqueness checks;
+- the states `NAMED`, `GOVERNED_BRIDGE_CONFIRMED`, `SOURCE_LOCAL_ONLY` and
+  `CONFLICTING`; and
+- which states may filter, group or display under a release.
+
+Matching date and economics alone may propose a bridge but cannot silently
+establish one. When a bridge is not proved, the track serves honestly as
+`Party 1 (not publicly identified)` where the underlying process predicate is
+otherwise certified.
+
 ### Required process dimensions
 
 Where applicable and supported, a process event carries:
@@ -288,26 +327,31 @@ not-applicable, not-examined, conflicting and failed states remain distinct.
 
 1. PM admits immutable source bytes and creates the canonical text occurrence
    and source map.
-2. A structural discovery path identifies the relevant filing sections and
-   candidate narrative spans.
-3. An independently authored semantic-family path searches the full governed
-   scope for the complete question set.
-4. Model inference, if used, produces non-authoritative proposal transcripts.
-5. A reviewed inference payload retains selected, rejected and unresolved
+2. A structural scope pass identifies likely narrative sections and proves
+   which source regions were included. It is not counted as an independent
+   event enumerator.
+3. A semantic enumerator searches the full governed source scope for the
+   complete question set.
+4. A mechanistically separate deterministic lexical and pattern enumerator
+   searches the same full scope without using the semantic enumerator's model
+   response or candidate list.
+5. Model inference, if used, produces non-authoritative proposal transcripts.
+6. A reviewed inference payload retains selected, rejected and unresolved
    observations with evidence.
-6. A deterministic normaliser produces the candidate semantic graph.
-7. Validators test span integrity, source mapping, entity resolution,
+7. A deterministic normaliser produces the candidate semantic graph.
+8. Validators test span integrity, source mapping, entity resolution,
    chronology, participant roles, event granularity, economics and
    relationships.
-8. Independent inventories reconcile all discovered, rejected and residual
-   observations.
-9. The canonical writer creates candidate objects and revisions.
-10. Predicate-specific certification and release admission determine what may
+9. Independent inventories reconcile the two event enumerations and all
+   discovered, rejected and residual observations.
+10. The canonical writer creates candidate objects and revisions.
+11. Predicate-specific certification and release admission determine what may
     serve.
 
-Discovery paths may share immutable source bytes and primitive schemas. They
-must not share the same candidate enumeration logic or silently agree through a
-common model response.
+The two event enumerators may share immutable source bytes and primitive
+schemas. They must not share candidate enumeration logic, a model transcript or
+a candidate list. Their disagreement rate is retained as certification and
+drift evidence.
 
 ### Exact evidence invariant
 
@@ -355,7 +399,8 @@ Metsera is the anchor gold deal because it stresses:
 - repeated narration and related passages; and
 - adviser and party identity.
 
-Metsera is not the certification universe. A sealed, stratified pilot must add
+Metsera is the development and anchor set, not generalisation evidence. A
+sealed, stratified pilot must add
 different structures, source types, process shapes, periods and drafting styles.
 The first release target is at least 25 deals.
 
@@ -484,6 +529,11 @@ The cache identity includes release, contract, query definition, predicate
 admission, filters, columns, sort, diversity and cursor. A cache result from one
 release or predicate cannot satisfy another.
 
+Counts, coverage and deterministic deal-and-track diversification are produced
+by a governed serving projection. Its generator version, inputs, diversity
+keys, output digest and projection rows are bound by the release identity. The
+query does not recreate ranking authority in application memory.
+
 ## Interface
 
 ### Governing structure
@@ -516,12 +566,13 @@ The default desktop layout is answer-first:
 
 Mobile uses a full-screen source reader rather than compressing a split pane.
 
-### Per-deal Process view
+### Per-deal Exclusivity history
 
-The PM deal workspace gains a Process view backed by the same released rows.
+The first release may add an `Exclusivity history` view backed by the same
+released exclusivity rows.
 It provides:
 
-- a chronological event list;
+- a chronological list of exclusivity events;
 - bidder-track selection where the source supports named tracks;
 - compact typed event labels and economics;
 - filters generated from the same field registry;
@@ -529,15 +580,21 @@ It provides:
 - links from each event to related requests, responses, agreements and
   retellings.
 
-The per-deal view cannot create its own timeline facts, bidder attribution or
-summaries. A chart or process visual is a projection of released typed rows and
-must retain the governing derivation.
+The view is never labelled as a complete deal chronology. A general `Process`
+timeline is deferred until a separately approved set of process families makes
+that representation honest. The exclusivity view cannot create its own facts,
+bidder attribution or summaries. A chart or process visual is a projection of
+released typed rows and must retain the governing derivation.
 
 ### Context and related passages
 
 Opening a result shows the actual filing text. `Show more above` and `Show more
 below` are repeat-clickable and expand by one governed paragraph unit on each
 click. The evidence span remains highlighted and visible.
+
+Paragraph boundaries are a versioned canonical-text projection with source-map
+lineage. A normaliser or segmentation change creates a new projection identity.
+Expansion cannot depend on browser whitespace or an unversioned string split.
 
 The reader also exposes related process discussions from the same proxy.
 Each related item has a deterministic typed relationship label and a verbatim
@@ -615,21 +672,23 @@ following:
 2. Pfizer and Novo events remain on the correct bidder tracks.
 3. Requester, recipient, grantor and beneficiary are not inferred from generic
    side labels.
-4. Exact dates, intervals and uncertainty reproduce from the source.
-5. Repeated narration links to the same occurrence or is explicitly treated as
+4. Every named-to-source-local bidder unification has a permitted bridge witness
+   and state. Unproved tracks remain source-local.
+5. Exact dates, intervals and uncertainty reproduce from the source.
+6. Repeated narration links to the same occurrence or is explicitly treated as
    a distinct occurrence.
-6. Related exclusivity discussions elsewhere in the proxy are discoverable as
+7. Related exclusivity discussions elsewhere in the proxy are discoverable as
    verbatim passages.
-7. Repeated context expansion never loses or rewrites the selected evidence.
-8. Ask and Browse return the same rows for the same exclusivity predicate.
-9. Party, adviser, economics and document filters work under the pinned
+8. Repeated context expansion never loses or rewrites the selected evidence.
+9. Ask and Browse return the same rows for the same exclusivity predicate.
+10. Party, adviser, economics and document filters work under the pinned
    release.
-10. PM supplies deal identity, equity value, counsel and adviser facts with
+11. PM supplies deal identity, equity value, counsel and adviser facts with
     source lineage.
-11. Cash, dividend and CVR components cannot contaminate one another.
-12. The query and context performance contracts pass.
-13. Every enabled field and predicate has a certification identity.
-14. A deliberately malformed sibling row or detail leaves the remaining
+12. Cash, dividend and CVR components cannot contaminate one another.
+13. The query and context performance contracts pass.
+14. Every enabled field and predicate has a certification identity.
+15. A deliberately malformed sibling row or detail leaves the remaining
     results usable.
 
 Passing Metsera permits the stratified pilot. It does not permit production
@@ -637,8 +696,10 @@ activation by itself.
 
 ## Deal Storylines migration
 
-1. Freeze the reviewed Storylines branch and database state as prototype
-   evidence.
+1. Pin the reviewed Storylines code commit and create a content-addressed
+   database snapshot as prototype evidence. The snapshot includes the release
+   watermark, relevant tables, `pipeline_runs`, `l2_revisions`, repair receipts,
+   schema identity and checksums.
 2. Export source references, candidate passages, typed proposals, corrections
    and known failure cases into bounded fixtures.
 3. Map each Storylines vocabulary item to a governed PM concept, reviewed
@@ -649,11 +710,17 @@ activation by itself.
 6. Compare Storylines and canonical outputs to find omissions and false
    positives.
 7. Preserve useful product fixtures for UI and query tests.
-8. Retire Storylines serving and credentials only after the PM release passes
-   equivalence, certification and rollback gates.
+8. Retire the Storylines Phrasebook only after the PM precedent-search release
+   passes equivalence, certification and rollback gates.
+9. Keep the Storylines full Merger Brief clearly labelled as read-only
+   prototype output until enough process families support an honest PM
+   replacement, or Ben explicitly approves removing it without replacement.
+10. Retire the remaining Storylines serving and credentials only after that
+    surface-specific decision.
 
-There is no ongoing dual-write or service-role connection from Storylines to
-PM.
+There is no dual-write or service-role connection from Storylines to PM. Any
+temporary legacy surface is read-only, separately labelled and excluded from
+canonical query, coverage and market claims.
 
 ## Future extractor families
 
@@ -683,6 +750,26 @@ query engine, field registry or UI shell.
 - Candidate releases are staging-only until explicit activation.
 - Rollback restores the prior release and invalidates incompatible caches.
 
+## Post-activation assurance
+
+Certification distinguishes the sealed pilot from later admitted corpus
+growth. Coverage copy states both.
+
+For every release containing newly admitted process deals:
+
+- audit every discovery-path disagreement and governed exception;
+- fully source-review at least three randomly selected new deals, or all new
+  deals when fewer than three exist;
+- source-walk at least 20 newly served passages, or all when fewer exist;
+- stratify the sample by predicate and bidder-track complexity; and
+- retain the audit and population identities with the release.
+
+Any unsupported served fact, critical omission, source-map failure or
+cross-track attribution error immediately blocks the affected predicate from a
+successor release and opens recertification. A material increase over the
+pilot's discovery-disagreement or exception rate also opens review under a
+frozen threshold defined before activation.
+
 ## Definition of done
 
 Process Intelligence is ready for an activation decision only when:
@@ -699,6 +786,23 @@ Process Intelligence is ready for an activation decision only when:
 - active PM agreement surfaces remain unchanged;
 - feature flags remain closed until the explicit activation decision; and
 - independent architecture and legal-semantic reviews pass.
+
+## External adversarial review disposition
+
+Fable's ten findings at `383ffee` are accepted:
+
+1. release-compatible participant traversal becomes a named shared-graph
+   deliverable;
+2. release one exposes `Exclusivity history`, not a misleading full timeline,
+   and does not silently retire the broader prototype timeline;
+3. consumed PM contracts receive a freeze manifest and divergence gate;
+4. source-local party unification receives an evidence contract;
+5. discovery uses two actual, mechanistically separate enumerators;
+6. ungoverned drafting-pattern ranking is removed from release one;
+7. owner review hours are budgeted and enumeration labour is delegated;
+8. Storylines evidence includes a checksummed ledger snapshot;
+9. post-activation audit and drift-triggered recertification are required; and
+10. adviser sparsity and non-vacuous positive tests are explicit.
 
 ## Decisions deliberately deferred
 

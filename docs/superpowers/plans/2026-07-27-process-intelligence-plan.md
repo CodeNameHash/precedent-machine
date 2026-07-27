@@ -48,19 +48,28 @@ The lanes converge at Metsera certification. Corpus certification, candidate
 release and activation remain sequential. Work package numbers express gates,
 not a requirement to leave independent evidence or fixture work idle.
 
+Heavy work package 4 implementation begins only after a consumed-contract freeze
+manifest fixes the exact writer, shared-row, release, exact-detail, Query IR and
+field-registry contracts Process uses.
+
 ## Work package 0: freeze evidence and attack the design
 
 ### Deliverables
 
-1. Pin the Deal Storylines review branch at `77688ad`.
+1. Pin the Deal Storylines design evidence at `77688ad` and Fable review at
+   `383ffee`.
 2. Pin the PM base contract and programme versions used by the design.
-3. Inventory the Storylines source fixtures, vocabulary, known corrections,
+3. Export a content-addressed Storylines ledger snapshot containing the release
+   watermark, required tables, `pipeline_runs`, `l2_revisions`, repair receipts,
+   schema identity and checksums.
+4. Inventory the Storylines source fixtures, vocabulary, known corrections,
    review notes and failure cases.
-4. Create a threat model covering false facts, omissions, cross-bidder
+5. Create a threat model covering false facts, omissions, cross-bidder
    contamination, source drift, release drift, false zeroes and performance
    collapse.
-5. Run the design through the adversarial test programme in this plan.
-6. Record final accepted, rejected and deferred findings in the design.
+6. Fix an owner-effort budget for each review gate.
+7. Run the design through the adversarial test programme in this plan.
+8. Record final accepted, rejected and deferred findings in the design.
 
 ### Gate
 
@@ -81,6 +90,10 @@ release, serving-row, exact-detail or query contracts.
 6. Create contract fixtures for development before the host contracts land.
 7. Prove that fixture and generated adapters expose byte-equivalent logical
    shapes.
+8. Create the consumed-contract freeze manifest.
+9. Regenerate fixtures and run a divergence gate after any merge touching a
+   consumed contract and at every downstream work-package gate.
+10. Stop dependent implementation on an unadjudicated divergence.
 
 ### Negative tests
 
@@ -111,6 +124,11 @@ remain byte-identical.
    missing facts.
 6. Prohibit cached `pm_*` copies and direct PM service-role access from a
    process module.
+7. Build the release-compatible participant-to-deal traversal as a governed
+   Process relationship projection. Bind its schema, executor semantics and
+   live-versus-pinned equivalence proof.
+8. Define adviser states including `UNDISCLOSED`, `NOT_EXAMINED` and
+   `NO_ADVISER`.
 
 ### Required proofs
 
@@ -120,6 +138,11 @@ remain byte-identical.
 - Buyer and target counsel do not swap.
 - Pfizer advisers do not attach to Novo in Metsera.
 - Conflicting source facts remain visible and versioned.
+- A positive named multi-bidder fixture proves per-track adviser attribution
+  actually works.
+- Negative fixtures prove undisclosed losing-bidder advisers remain undisclosed
+  rather than inheriting a side-level firm.
+- Participant filters return identical rows live and under the pinned release.
 
 ### Gate
 
@@ -139,7 +162,10 @@ missing or conflicting state without creating parallel truth.
    waiver and ending.
 6. Define date, duration, rationale, condition and bidder-track dimensions.
 7. Define event granularity and continuation rules.
-8. Obtain legal-semantic approval for the frozen contract.
+8. Define the source-local identity and entity-unification evidence contract,
+   including permitted bridge witnesses, conflict checks, identity states and
+   serving rules.
+9. Obtain legal-semantic approval for the frozen contract.
 
 ### Negative tests
 
@@ -150,6 +176,10 @@ missing or conflicting state without creating parallel truth.
 - A same-day paragraph cannot inherit a date by proximity alone.
 - A later retelling cannot create a second market event automatically.
 - An unknown exclusivity variation cannot be forced into the nearest type.
+- Matching date and economics alone cannot silently unify `Party 1` with a
+  named bidder.
+- A `SOURCE_LOCAL_ONLY` track remains useful without entering a named-party
+  cohort.
 
 ### Gate
 
@@ -161,16 +191,23 @@ semantic contract.
 ### Deliverables
 
 1. Reuse canonical immutable source and source-map intake.
-2. Build one structural Background-section discovery path.
-3. Build one independently authored exclusivity-question discovery path over
-   the governed source scope.
-4. Retain complete candidate, rejected and residual inventories.
-5. Add bounded model proposal attempts only where useful.
-6. Build deterministic normalisation into candidate process graphs.
-7. Validate exact spans, event boundaries, entities, chronology, roles,
+2. Build a structural scope and coverage pass without counting it as an event
+   enumerator.
+3. Build one semantic exclusivity-question enumerator over the complete
+   governed source scope.
+4. Build one independent deterministic lexical and pattern enumerator over the
+   same scope. It cannot consume the semantic enumerator's model response or
+   candidates.
+5. Reconcile the two event inventories and retain their disagreement rate.
+6. Retain complete candidate, rejected and residual inventories.
+7. Add bounded model proposal attempts only where useful.
+8. Build deterministic normalisation into candidate process graphs.
+9. Create a versioned canonical paragraph-segmentation projection with exact
+   source-map lineage for context expansion.
+10. Validate exact spans, event boundaries, entities, chronology, roles,
    tracks, positions, economics and relationships.
-8. Route disagreement and unknown semantics to the governed review queue.
-9. Record run, contract, source and extractor identities.
+11. Route disagreement and unknown semantics to the governed review queue.
+12. Record run, contract, source and extractor identities.
 
 ### Storylines rule treatment
 
@@ -193,6 +230,9 @@ candidate graph output. No graph can write or serve.
 
 ## Work package 5: certify the Metsera exclusivity slice
 
+Metsera is the development and anchor set. It is not held-out generalisation
+evidence and a pass cannot substitute for work package 6.
+
 ### Gold construction
 
 1. Independently read the complete governed source scope.
@@ -202,6 +242,8 @@ candidate graph output. No graph can write or serve.
    relationships.
 5. Record known negatives and tempting false matches.
 6. Reconcile two gold enumerations and resolve disagreements.
+7. Label every named, governed-bridge, source-local-only and conflicting bidder
+   identity.
 
 ### Acceptance
 
@@ -219,6 +261,7 @@ candidate graph output. No graph can write or serve.
 12. Exact-detail and repeated context expansion reproduce source text.
 13. Query and context latency meet the targets.
 14. Malformed sibling rows and details fail locally.
+15. Source-local labels are unified only through admitted bridge evidence.
 
 ### Gate
 
@@ -251,6 +294,24 @@ Select at least 25 deals spanning:
    exceptions.
 6. Create predicate-specific certification attestations.
 7. Generate honest coverage and exclusion metadata.
+8. Delegate first-pass enumeration to independent readers or bounded model and
+   deterministic paths. Reserve Ben's work for semantic-contract approval,
+   disagreement adjudication and a stratified source audit.
+
+### Owner-effort budget
+
+Initial planning budget:
+
+- WP0 design and threat-model adjudication: 2 to 4 hours;
+- WP3 exclusivity semantic approval: 6 to 10 hours;
+- WP5 Metsera disagreements and audit: 4 to 6 hours;
+- WP6 pilot disagreements and stratified audit: 15 to 25 hours; and
+- activation review: 2 to 4 hours.
+
+The programme therefore reserves 29 to 49 Ben-hours. If disagreement volume
+would exceed that budget, reduce the first-release predicate set or improve the
+extractors. Do not lower the evidence standard or ask Ben to perform first-pass
+enumeration across the entire pilot.
 
 ### Gate
 
@@ -269,13 +330,17 @@ Metsera-specific rule or unreviewed vocabulary exception remains.
 5. Include all current deals-index fields and every admitted Process field.
 6. Bind operators and capabilities by field type and release admission.
 7. Implement release-pinned, set-based execution and stable cursors.
-8. Implement 8 to 12 result diversification by deal, track and drafting
-   pattern.
+8. Implement 8 to 12 result diversification by deal and bidder track using
+   deterministic round-robin rules. Do not use an embedding or ungoverned
+   drafting cluster in release one.
 9. Include columns, cohort, exclusions, counts, pagination and source actions in
    the response.
 10. Build release-aware cache identities.
 11. Preserve existing Agreement Query IR serialisation and results
     byte-identically under the prior query version.
+12. Build a release-bound serving projection for counts, coverage and
+    diversification. Bind the generator, inputs, diversity keys and output
+    digest to the release.
 
 ### Required regressions
 
@@ -289,6 +354,8 @@ Metsera-specific rule or unreviewed vocabulary exception remains.
 - One query performs one bounded database operation.
 - Adding a Process field cannot alter an existing field key, operator or saved
   Agreement query.
+- A result set with fewer than eight qualifying passages shows all available
+  passages and never pads with repeats.
 
 ### Gate
 
@@ -308,8 +375,9 @@ to an admitted executable plan.
 7. Show deterministic related-process labels and verbatim previews.
 8. Add copy citation, share link and export actions.
 9. Use PM typography, spacing, responsive rules and source-action patterns.
-10. Add a per-deal Process view using the same released rows, bidder tracks,
-    filters and source reader.
+10. Add a per-deal `Exclusivity history` view using the same released rows,
+    bidder tracks, filters and source reader. Defer a general Process timeline
+    until enough families are certified to make it honest.
 11. Add an authorised correction proposal action that enters PM's canonical
     revision workflow.
 
@@ -325,6 +393,8 @@ to an admitted executable plan.
 - No per-deal chart, title or timeline event may infer a fact absent from the
   released row.
 - A correction cannot mutate the active row or bypass recertification.
+- The first per-deal view cannot imply that exclusivity events form the complete
+  transaction chronology.
 
 ### Gate
 
@@ -377,8 +447,12 @@ invariants.
 6. Run disabled production smoke tests.
 7. Compare canonical results against the frozen Storylines fixtures.
 8. Preserve useful discrepancy fixtures.
-9. Revoke Storylines service-role integration and dual-serving paths.
-10. Prepare rollback and activation evidence.
+9. Retire the Storylines Phrasebook after PM precedent-search equivalence.
+10. Keep the full Storylines Merger Brief read-only and clearly labelled until
+    enough process families support an honest PM replacement, or Ben expressly
+    approves removal without replacement.
+11. Prohibit any dual-write or Storylines-to-PM service-role connection.
+12. Prepare rollback and activation evidence.
 
 ### Gate
 
@@ -395,6 +469,12 @@ Activation remains a separate explicit decision.
 4. Smoke-test Ask, Browse, filters, source detail and rollback.
 5. Monitor latency, failures, refusals, empty-result reasons and source actions.
 6. Roll back on any release, evidence or semantic identity mismatch.
+7. For each release with new process deals, audit every discovery disagreement,
+   fully source-review at least three random new deals and source-walk at least
+   20 newly served passages, or all available when below those counts.
+8. Reopen affected-predicate certification on any unsupported served fact,
+   critical omission, source-map failure, cross-track error or material drift
+   beyond the pre-activation disagreement and exception thresholds.
 
 ### Expansion
 
@@ -432,8 +512,10 @@ The plan is not ready for implementation until attacks cover:
 - an intruding event inside a continuation gap;
 - an embedded dateline;
 - strong and weak anaphora with misleading antecedents;
-- repeated narration versus a distinct renewed request; and
-- a drafting synonym absent from the lexicon.
+- repeated narration versus a distinct renewed request;
+- a drafting synonym absent from the lexicon; and
+- correlated agreement caused by two enumerators consuming the same model
+  transcript or candidate list.
 
 ### Parties and tracks
 
@@ -442,8 +524,9 @@ The plan is not ready for implementation until attacks cover:
 - adviser changes over time;
 - target board acting through an adviser;
 - bidder consortiums;
-- an umbrella proposal involving multiple parties; and
-- live versus release-pinned participant joins.
+- an umbrella proposal involving multiple parties;
+- live versus release-pinned participant joins; and
+- source-local bidder unification based only on coincident date and economics.
 
 ### Economics
 
@@ -463,8 +546,9 @@ The plan is not ready for implementation until attacks cover:
 - filter with an unavailable release join;
 - cross-release cache poisoning;
 - cursor drift after release change;
-- diversity collapse to one deal; and
-- zero results represented as market absence.
+- diversity collapse to one deal;
+- zero results represented as market absence; and
+- an under-populated predicate padded with repeated passages.
 
 ### Serving and UI
 
@@ -485,8 +569,10 @@ The plan is not ready for implementation until attacks cover:
 - candidate graph exposed to serving;
 - release manifest missing a field admission;
 - active pointer change by a work package;
-- legacy fallback after canonical failure; and
-- future CVR code creating a second query or field system.
+- legacy fallback after canonical failure;
+- future CVR code creating a second query or field system; and
+- a consumed Canonical V2 contract changing without fixture regeneration and
+  divergence adjudication.
 
 ## Final readiness checklist
 
@@ -500,6 +586,9 @@ The plan is not ready for implementation until attacks cover:
 - [ ] All enabled PM fields are release-compatible.
 - [ ] Exact passages and source reader pass.
 - [ ] Performance contracts pass.
+- [ ] Storylines code and ledger evidence are content-addressed.
+- [ ] Owner review stays within the approved budget.
+- [ ] Post-activation sampling and recertification triggers are fixed.
 - [ ] Candidate release and rollback pass.
 - [ ] Storylines remains evidence, not authority.
 - [ ] Independent reviews pass.
