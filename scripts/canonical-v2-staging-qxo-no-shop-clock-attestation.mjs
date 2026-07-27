@@ -105,6 +105,10 @@ const {
   validateQxoNoShopCopyDeliveryMetricF16,
 } = require('../lib/canonical-v2/qxo-no-shop-copy-delivery-metric-f16');
 const {
+  buildQxoNoShopCopyDeliveryClaimF17,
+  validateQxoNoShopCopyDeliveryClaimF17,
+} = require('../lib/canonical-v2/qxo-no-shop-copy-delivery-claim-f17');
+const {
   buildQxoAdmittedNoShopActionsSlice,
 } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
 const {
@@ -205,6 +209,10 @@ const COPY_CLOCK_F15_FIXTURE_PATH = join(
 const COPY_DELIVERY_METRIC_F16_FIXTURE_PATH = join(
   ROOT,
   'tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-metric-f16-staging-attestation.json',
+);
+const COPY_DELIVERY_CLAIM_F17_FIXTURE_PATH = join(
+  ROOT,
+  'tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-claim-f17-staging-attestation.json',
 );
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
@@ -2304,6 +2312,7 @@ function buildDefinitionScopeF13Runtime() {
     carrier,
     f10Carrier,
     inputs,
+    noticeSourceCarrier,
   };
 }
 
@@ -2543,6 +2552,7 @@ function buildNoticeRevisionF14Runtime() {
   const {
     carrier: f13Carrier,
     f10Carrier,
+    noticeSourceCarrier,
   } = buildDefinitionScopeF13Runtime();
   const inputs = {
     contract_bundle: compileFixtureContractV10(),
@@ -2559,6 +2569,7 @@ function buildNoticeRevisionF14Runtime() {
     f10Carrier,
     f13Carrier,
     inputs,
+    noticeSourceCarrier,
   };
 }
 
@@ -2653,6 +2664,7 @@ function buildNoticeRevisionF14Attestation() {
 function buildCopyClockF15Runtime() {
   const {
     carrier: f14Carrier,
+    noticeSourceCarrier,
   } = buildNoticeRevisionF14Runtime();
   const inputs = {
     contract_bundle: compileFixtureContractV11(),
@@ -2667,6 +2679,7 @@ function buildCopyClockF15Runtime() {
     carrier,
     f14Carrier,
     inputs,
+    noticeSourceCarrier,
   };
 }
 
@@ -2788,9 +2801,10 @@ function buildCopyClockF15Attestation() {
   };
 }
 
-function buildCopyDeliveryMetricF16Attestation() {
+function buildCopyDeliveryMetricF16Runtime() {
   const {
     carrier: f15Carrier,
+    noticeSourceCarrier,
   } = buildCopyClockF15Runtime();
   const inputs = {
     contract_bundle: compileFixtureContractV12(),
@@ -2801,6 +2815,18 @@ function buildCopyDeliveryMetricF16Attestation() {
     qxo_no_shop_copy_delivery_metric_f16: carrier,
     ...inputs,
   });
+  return {
+    carrier,
+    f15Carrier,
+    inputs,
+    noticeSourceCarrier,
+  };
+}
+
+function buildCopyDeliveryMetricF16Attestation() {
+  const {
+    carrier,
+  } = buildCopyDeliveryMetricF16Runtime();
   return {
     schema_version:
       'QXO_NO_SHOP_COPY_DELIVERY_METRIC_F16_STAGING_ATTESTATION/V1',
@@ -2817,6 +2843,43 @@ function buildCopyDeliveryMetricF16Attestation() {
     status: carrier.status,
     qxo_no_shop_copy_delivery_metric_f16_id:
       carrier.qxo_no_shop_copy_delivery_metric_f16_id,
+    canonical_payload_digest: carrier.canonical_payload_digest,
+  };
+}
+
+function buildCopyDeliveryClaimF17Attestation() {
+  const {
+    carrier: f16Carrier,
+    f15Carrier,
+    noticeSourceCarrier,
+  } = buildCopyDeliveryMetricF16Runtime();
+  const inputs = {
+    contract_bundle: compileFixtureContractV12(),
+    qxo_no_shop_copy_clock_f15: f15Carrier,
+    qxo_no_shop_copy_delivery_metric_f16: f16Carrier,
+    qxo_no_shop_notice_source_binding_f6: noticeSourceCarrier,
+  };
+  const carrier = buildQxoNoShopCopyDeliveryClaimF17(inputs);
+  validateQxoNoShopCopyDeliveryClaimF17({
+    qxo_no_shop_copy_delivery_claim_f17: carrier,
+    ...inputs,
+  });
+  return {
+    schema_version:
+      'QXO_NO_SHOP_COPY_DELIVERY_CLAIM_F17_STAGING_ATTESTATION/V1',
+    environment: 'STAGING',
+    authority_scope: carrier.authority_scope,
+    contract_binding: carrier.contract_binding,
+    source_binding: carrier.source_binding,
+    upstream_bindings: carrier.upstream_bindings,
+    interpretation: carrier.interpretation,
+    claim: carrier.claim,
+    result: carrier.result,
+    reclassification_lineage: carrier.reclassification_lineage,
+    presentation: carrier.presentation,
+    status: carrier.status,
+    qxo_no_shop_copy_delivery_claim_f17_id:
+      carrier.qxo_no_shop_copy_delivery_claim_f17_id,
     canonical_payload_digest: carrier.canonical_payload_digest,
   };
 }
@@ -3057,13 +3120,18 @@ if (![
   '--copy-clock-f15-verify',
   '--copy-delivery-metric-f16-print',
   '--copy-delivery-metric-f16-verify',
+  '--copy-delivery-claim-f17-print',
+  '--copy-delivery-claim-f17-verify',
 ].includes(mode)
   || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--inline-permission-f9-print|--inline-permission-f9-verify|--notice-source-f6-print|--notice-source-f6-verify|--notice-semantic-closure-f6-print|--notice-semantic-closure-f6-verify|--notice-review-materialisation-f7-print|--notice-review-materialisation-f7-verify|--notice-definition-relationships-f8-print|--notice-definition-relationships-f8-verify|--notice-receipt-f10-print|--notice-receipt-f10-verify|--definition-control-f11-print|--definition-control-f11-verify|--definition-scope-f13-print|--definition-scope-f13-verify|--notice-revision-f14-print|--notice-revision-f14-verify|--copy-clock-f15-print|--copy-clock-f15-verify|--copy-delivery-metric-f16-print|--copy-delivery-metric-f16-verify');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--inline-permission-f9-print|--inline-permission-f9-verify|--notice-source-f6-print|--notice-source-f6-verify|--notice-semantic-closure-f6-print|--notice-semantic-closure-f6-verify|--notice-review-materialisation-f7-print|--notice-review-materialisation-f7-verify|--notice-definition-relationships-f8-print|--notice-definition-relationships-f8-verify|--notice-receipt-f10-print|--notice-receipt-f10-verify|--definition-control-f11-print|--definition-control-f11-verify|--definition-scope-f13-print|--definition-scope-f13-verify|--notice-revision-f14-print|--notice-revision-f14-verify|--copy-clock-f15-print|--copy-clock-f15-verify|--copy-delivery-metric-f16-print|--copy-delivery-metric-f16-verify|--copy-delivery-claim-f17-print|--copy-delivery-claim-f17-verify');
 }
 
 try {
-  const copyDeliveryMetricF16Mode =
+  const copyDeliveryClaimF17Mode =
+    mode.startsWith('--copy-delivery-claim-f17-');
+  const copyDeliveryMetricF16Mode = !copyDeliveryClaimF17Mode
+    &&
     mode.startsWith('--copy-delivery-metric-f16-');
   const copyClockF15Mode = !copyDeliveryMetricF16Mode
     &&
@@ -3104,7 +3172,9 @@ try {
     && mode.startsWith('--definitions-f6-');
   const actionsF6Mode = !definitionsF6Mode && mode.startsWith('--actions-f6-');
   const actionsMode = !actionsF6Mode && mode.startsWith('--actions-');
-  const attestation = copyDeliveryMetricF16Mode
+  const attestation = copyDeliveryClaimF17Mode
+    ? buildCopyDeliveryClaimF17Attestation()
+    : copyDeliveryMetricF16Mode
     ? buildCopyDeliveryMetricF16Attestation()
     : copyClockF15Mode
     ? buildCopyClockF15Attestation()
@@ -3140,7 +3210,9 @@ try {
     : attestation;
   if (mode.endsWith('verify')) {
     const expected = JSON.parse(readFileSync(
-      copyDeliveryMetricF16Mode
+      copyDeliveryClaimF17Mode
+        ? COPY_DELIVERY_CLAIM_F17_FIXTURE_PATH
+        : copyDeliveryMetricF16Mode
         ? COPY_DELIVERY_METRIC_F16_FIXTURE_PATH
         : copyClockF15Mode
         ? COPY_CLOCK_F15_FIXTURE_PATH
