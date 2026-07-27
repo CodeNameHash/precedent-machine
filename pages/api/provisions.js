@@ -1,5 +1,6 @@
 import { getServiceSupabase } from '../../lib/supabase';
 import { applyProvisionPatch } from '../../lib/provisions/apply-patch';
+const { sendBroadCorpusRouteContained } = require('../../lib/broad-corpus-containment');
 
 const IMMUTABLE_FIELDS = ['deal_id'];
 
@@ -147,6 +148,18 @@ async function attachConsiderationEquity(sb, provisions) {
 }
 
 export default async function handler(req, res) {
+  const supportedMethod = ['GET', 'POST', 'PATCH', 'DELETE'].includes(req.method);
+  if (!supportedMethod) return res.status(405).json({ error: 'Method not allowed' });
+
+  const query = req.query || {};
+  const body = req.body || {};
+  const hasScope = req.method === 'GET'
+    ? Boolean(query.id || query.deal_id)
+    : req.method === 'POST'
+      ? Boolean(body.deal_id)
+      : Boolean(body.id);
+  if (!hasScope) return sendBroadCorpusRouteContained(res);
+
   const sb = getServiceSupabase();
   if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
 
