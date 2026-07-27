@@ -242,6 +242,14 @@ CORRECTED (the plan below rests on these, not the review's wording):
 - Legal-semantic, identity and extraction diffs require review by Fable or an
   independent 5.6 Sol reviewer using extra-high reasoning.
 - Ben retains taxonomy and codebook decisions through the Freeze Gate.
+- Every request for Ben's approval, consent or Freeze Gate decision must be
+  decision-complete and source-contextualised. It must identify the actual deal
+  and provision, quote or show the controlling source language, define every
+  internal label or shorthand, explain the current system treatment, state the
+  proposed treatment and its concrete legal and product effects, and give the
+  recommended alternative with the consequence of rejecting or deferring it.
+  A bare taxonomy name, tier label, codebook value, digest or implementation
+  summary is never sufficient approval context.
 
 ## Binding target architecture
 

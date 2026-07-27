@@ -1,0 +1,20 @@
+{
+  "phase": "WP-CONSENT-CONTEXT-GOVERNANCE",
+  "allowed": [
+    ".github/phase-allowlists/wp-consent-context-governance.json",
+    "docs/CODEX-PROGRAM.md",
+    "docs/codex-program/specification-manifest.json"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "lib/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**",
+    "tests/**",
+    "next.config.js"
+  ],
+  "note": "Requires every Ben approval, consent or Freeze Gate request to include the controlling source context, defined terminology, current and proposed treatment, alternatives and concrete consequences. No application, taxonomy, database, corpus, serving or production authority changes."
+}
