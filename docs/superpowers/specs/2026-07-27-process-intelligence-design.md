@@ -198,11 +198,16 @@ dependencies:
 
 - implementation planning requires `implementation_planning`;
 - canonical implementation or data work requires `canonical_work_start`;
+- source reading, source inventories, gold sealing and Storylines evidence
+  export are data work for the current programme and therefore also wait for
+  `canonical_work_start`; any earlier inert-evidence work class requires a
+  separately approved Canonical V2 change rather than a Process exception;
 - before review or freeze, the specification root must already contain the
   complete Agreement-plus-Process bundle, `PROCESS_VERTICAL_SLICE_PASS` gate
   entry, acceptance definition, evidence schema, adversarial test, verifier
   changes, successor `candidate_scope_and_extraction` dependencies,
-  acquisition contracts and semantic-integrity revocation action;
+  acquisition contracts, semantic-integrity revocation action, Process
+  containment policy and stale-link rerun action;
 - that complete root must then compile and receive exact-root review, Ben
   approval and its own full-bundle `ContractFreezeAttestation`;
 - the exact frozen pair must receive fresh Agreement and Process
@@ -217,6 +222,27 @@ dependencies:
 No local Process approval, branch state, fixture adapter or subset freeze may
 infer a passing gate.
 
+### Review convergence
+
+Planning-draft review does not itself freeze a canonical bundle or require a
+vertical-slice rerun. Before the first freeze, each amendment receives a delta
+review plus regression of all prior dispositions. A full exact-root cold review
+is required at the WP3A pre-freeze milestone and again before activation.
+
+Every finding is classified as either:
+
+- `UNSOUNDNESS`, which identifies a contradiction, unverifiable guarantee,
+  authority gap or unsafe implementation path and must be resolved; or
+- `SCOPE_EXPANSION`, which adds capability or assurance beyond the approved
+  objective and requires a costed Ben decision rather than automatic
+  acceptance.
+
+Each milestone targets convergence within two review rounds. A third unresolved
+round is escalated to Ben with the exact remaining findings, classifications,
+cost and recommendation. Once a bundle is frozen, any changed contract byte
+still requires a new exact-root review, freeze and fresh same-pair Agreement and
+Process slices. The convergence rule cannot waive that requirement.
+
 ## Shared deal facts and entity authority
 
 ### Required upstream canonical authority
@@ -227,8 +253,14 @@ source-backed deal-fact and adviser contracts required by this design. Legacy
 maps and backfill output are candidate evidence only. They cannot be relabelled
 as a canonical projection.
 
-Before Process can consume these facts, the PM bundle must define, generate and
-admit through its existing canonical primitives:
+This is a reusable PM platform requirement, not a Process-owned entity-mastering
+programme. It receives its own bounded plan, owner, estimate, acceptance set and
+release path. Agreement, Process and future CVR domains consume the same
+authority. Process owns only its projection, participant traversal and typed
+missing behaviour.
+
+Before Process can consume these facts, that upstream PM workstream must define,
+generate and admit through the existing canonical primitives:
 
 - an `EntitySubject` logical type whose stable identity derives from a governed
   external identifier or Ben-approved immutable import seed, never display
@@ -254,6 +286,12 @@ missing occurrences or relationships, but it cannot create another entity,
 fact or adviser store. If the upstream authorities are not ready, the initial
 Process release must omit the affected named-entity, adviser and cross-deal
 filters rather than project legacy strings.
+
+Source-exact Process passage work may proceed with source-local participant
+labels and typed missing states while the upstream workstream runs in parallel.
+The intended release with PM-wide entity, counsel, adviser and equity-value
+filters cannot claim those features or expose their controls until the
+corresponding upstream fields are certified and release-compatible.
 
 ### Canonical fact projection
 
@@ -437,19 +475,25 @@ not-applicable, not-examined, conflicting and failed states remain distinct.
 
 ### Exclusivity clock expressions
 
-Exclusivity timing is not one date and one duration. A governed clock-expression
-AST retains:
+Release one uses a lossless governed `TemporalExpression`, not a speculative
+Process-specific clock language. Every occurrence retains the exact stated
+formulation, source span and one coarse state:
 
-- request, execution, effectiveness and other legal anchors;
-- exact time and timezone;
-- calendar or business-day basis and versioned calendar;
-- counting convention and inclusive or exclusive boundaries;
-- earlier-of, later-of and conditional branches;
-- extension, waiver, expiry and termination events; and
-- separately stated and computed duration values with derivation.
+- `EXPLICIT_DATE`;
+- `STATED_DURATION`;
+- `RELATIVE_OR_CONDITIONAL`; or
+- `UNRESOLVED`.
 
-Unresolved clock semantics remain unresolved. A displayed computed duration
-cannot replace the source's stated formulation.
+Structured nodes are admitted only for expression forms observed in the frozen
+pilot corpus. They may cover a source-supported anchor, exact time and timezone,
+calendar or business-day basis, counting boundary, conditional branch and
+separately stated or computed value. A computed value requires its complete
+derivation and never replaces the source formulation. Unsupported structure
+remains lossless and unresolved.
+
+The node registry is an extensible PM-wide temporal contract so later Process
+families and CVR milestone mechanics reuse it. A new node or interpretation
+requires a successor contract and fixtures; it is not added at runtime.
 
 ### Release-one predicate floor
 
@@ -475,7 +519,9 @@ does not publish “declined by omission”. A future absence predicate would ne
 complete governed source universe and would be labelled
 `NO_RECORDED_GRANT_WITHIN_GOVERNED_INTERVAL`, not refusal. Removing or weakening
 a mandatory predicate requires a successor bundle and fresh certification. A
-failure blocks the release rather than shrinking it until it passes.
+mandatory predicate failure within the claimed release scope blocks that
+release rather than silently removing the predicate. Holdout failure separately
+limits the permitted breadth of the corpus claim as described below.
 
 ## Source-universe completeness
 
@@ -486,28 +532,30 @@ been received.
 Before semantic discovery, a successor canonical
 `ExternalSourceAcquisitionManifest` is built:
 
-1. two implementation-disjoint acquisition paths enumerate relevant SEC
-   filings, amendments, supplements, exhibits, incorporated references and
-   approved non-SEC sources from frozen external snapshots under a frozen
-   cutoff;
-   for SEC material, one path uses complete issuer submissions history,
-   including paginated older-file indexes, while the other uses daily or
-   full-index accession inventories plus recursive filing-package and
-   cross-reference traversal;
-2. each path records forms, accession and version identity, package members,
-   expected fetch receipts, cross-document references and terminal
+1. one production acquisition path enumerates and fetches relevant filings,
+   amendments, supplements, exhibits, incorporated references and approved
+   non-SEC sources from frozen external snapshots under a frozen cutoff;
+2. for SEC material, a separately implemented completeness oracle derives the
+   expected accession inventory from daily or full indexes without consuming
+   the production path's submissions-history output; the production path uses
+   complete issuer submissions history, including paginated older-file
+   indexes, plus recursive package and cross-reference traversal;
+3. a reconciler requires exact SEC accession membership between the production
+   inventory and independent oracle, then validates package members,
+   cross-document references, expected fetch receipts and terminal
    dispositions;
-3. a third reconciler requires exact membership or a blocking unresolved
-   expectation, with an independent authority source where available;
-4. every expected source resolves to a verified intake receipt or an expressly
+4. approved non-SEC sources use an authority-specific expected-source manifest
+   and disclose any limit for which no independent completeness oracle exists;
+   those sources cannot support an absence claim beyond the proved universe;
+5. every expected source resolves to a verified intake receipt or an expressly
    reviewed non-receipt disposition, while an unresolved fetch blocks;
-5. the manifest, external snapshot identities and reconciliation bind
+6. the manifest, external snapshot identities and reconciliation bind
    `IntakeCutoffAttestation`, receipt expectations, `IntakeUniverseManifest`,
    deal admission, `CorpusScopeManifest`, candidate release, coverage metadata
    and end-to-end traceability;
-6. the reconciled acquisition manifest feeds PM intake and the existing
+7. the reconciled acquisition manifest feeds PM intake and the existing
    independent deal-document admission machinery; and
-7. gold readers receive a separately frozen source manifest, not a list derived
+8. gold readers receive a separately frozen source manifest, not a list derived
    from extractor output.
 
 An 8-K-only catalogue, manually curated accession list or admitted-document list
@@ -622,8 +670,14 @@ generation.
 A later candidate needs a separately pre-registered evaluation generation,
 sampling frame, cutoff, quotas, minimum size and repeated-testing policy fixed
 by the independent holdout custodian before prior holdout details are released.
-Otherwise the product may claim only the exact enumerated certified corpus and
-no broader generality.
+Before the first holdout opens, the custodian pre-registers the finite ordered
+generation schedule or expressly records that no later generalisation attempt
+is authorised. Otherwise the product may claim only the exact enumerated
+certified corpus and no broader generality.
+
+After the failed candidate's release decision, a failed holdout deal may enter a
+later exact-corpus certification exercise, but it cannot repair, rerun or
+retroactively pass that candidate's one-shot generalisation evaluation.
 
 For every certified predicate:
 
@@ -874,6 +928,8 @@ Initial actions are:
 - open source reading;
 - copy passage with citation;
 - copy share link;
+- rerun a stale saved query against the active release, only after an explicit
+  user action and changed-results warning;
 - show related passages in this proxy; and
 - export selected results.
 
@@ -881,7 +937,10 @@ Actions use the same release and exact-detail identity as the parent row.
 Share links are explicitly bound to the exact active
 `CandidateReleaseManifest`. If it is no longer active, the link returns
 `RELEASE_NOT_ACTIVE`. Durable historical links are deferred until historical
-serving is separately certified.
+serving is separately certified. That state may offer a separate
+`RERUN_ON_ACTIVE_RELEASE` action which recompiles the saved governed query
+against the current release and visibly warns that results may differ. It never
+redirects or substitutes results for the original citation.
 
 ### Corrections
 
@@ -898,15 +957,22 @@ immediate containment. Before review and freeze, the successor root adds
 served row, source, defect class, severity, discovery authority and exact
 active-before and exposure-off tuples.
 
-A credible material report disables the Process serving route within 15 minutes
-as an operational kill switch. It does not alter canonical release state or
-count as revocation. The registered action then revokes or rolls back the whole
-release tuple within 60 minutes. There is no partial Process release transition.
-Preparing a successor is not containment.
+A validated material trigger automatically raises the Process-wide serving
+fence within the maximum acknowledgement time frozen in the
+`OperationalPolicySet`. It does not alter canonical release state or count as
+revocation. Process exposure cannot resume while the defect remains unresolved.
+If the defect invalidates the certified active tuple, the registered action
+deliberately revokes or rolls back the whole release tuple within the
+policy-bound canonical-disposition deadline and rehearsed incident procedure.
+The domain design does not invent a shorter deadline that pressures an
+Agreement-affecting transaction. There is no partial Process canonical release
+transition. Preparing a successor is not containment.
 
 ## Failure and trust behaviour
 
-The system fails closed and locally:
+Request, row and detail failures fail closed and locally. A defect that
+invalidates the certified active release invokes the release-wide containment
+path above:
 
 - unsupported question: typed refusal;
 - uncertified predicate: unavailable with scope reason;
@@ -1104,6 +1170,30 @@ Fable's ten findings at `383ffee` are accepted:
 9. post-activation audit and drift-triggered recertification are required; and
 10. adviser sparsity and non-vacuous positive tests are explicit.
 
+Fable's round-two review at `76aa3ea` and reconciliation at `367aaf9` are
+accepted with the recorded narrowing:
+
+- production acquisition uses one fetch path plus an independent SEC
+  completeness oracle, while semantic discovery retains two enumerators;
+- temporal structure is lossless, pilot-shaped and PM-wide rather than a
+  speculative release-one Process AST;
+- request and row failure remain local, but an active-tuple integrity defect
+  retains whole-release containment under a rehearsed policy rather than an
+  arbitrary 60-minute domain deadline;
+- review rounds receive a convergence contract before the first freeze;
+- current programme gates continue to govern gold work, with the ambiguity
+  surfaced for a future Canonical V2 decision rather than overridden here;
+- holdout failure removes the generalisation claim, not an independently
+  certified exact-corpus release;
+- entity mastering moves to a separately planned reusable PM workstream;
+- stale exact-release links may offer an explicit current-release rerun but
+  never silently substitute results; and
+- independence is defined operationally rather than inferred from two prompts
+  to the same model family.
+
+The three earlier planning-review amendments did not create canonical freezes or
+vertical-slice reruns. After WP3A, any changed frozen contract byte does.
+
 ## Sol extra-high adversarial review disposition
 
 The first cold Sol review examined the byte-identical design and plan at:
@@ -1146,6 +1236,12 @@ authorship and fresh same-pair slice attestations, pre-freeze acquisition
 contracts, pre-freeze semantic-integrity revocation authority and consistent
 phrasebook `RESULT` output with `RESULT_ROW` parentage. That review does not
 approve the next successor root.
+
+The fourth cold Sol review examined successor root
+`53bbb31d4338014f2bf61fda07e2c8512118991ffc1b4e31335a693cab7f53a4`
+and returned `PASS` with no unresolved blocking or high finding. The subsequent
+Fable round-two amendments in this document create a new planning root, so that
+PASS does not approve the amended bytes.
 
 ## Decisions deliberately deferred
 

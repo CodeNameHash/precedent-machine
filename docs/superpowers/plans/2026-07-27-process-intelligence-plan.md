@@ -39,7 +39,9 @@ exclusivity semantics. This is the critical path for canonical admission.
 
 Work packages 0 and 5 prepare independent Metsera source inventories, gold
 spans, negatives and Storylines discrepancy fixtures. Gold sealing does not
-wait for extractor implementation.
+wait for extractor implementation, but under the current Canonical V2
+constitution it does wait for `canonical_work_start`. An earlier inert-evidence
+work class requires a separately approved Canonical V2 change.
 
 ### Product lane
 
@@ -65,18 +67,33 @@ and emergency containment proceed. The bounded vertical slice requires
 Process changes the complete bundle fingerprint. After WP1-WP3, WP3A compiles
 the Agreement-plus-Process successor specification root only after that root
 already contains every gate, acquisition, revocation, acceptance, evidence,
-adversarial-test and verifier change. It then obtains a new freeze and runs
-fresh Agreement and Process bounded slices for that exact frozen pair. Broad
+containment-policy, action, adversarial-test and verifier change. It then
+obtains a new freeze and runs fresh Agreement and Process bounded slices for
+that exact frozen pair. Broad
 Process source discovery, extraction, reprocessing and candidate work requires
 the successor `candidate_scope_and_extraction` dependency set after both fresh
 same-pair slice attestations. Phase 9 gates govern import and activation.
+
+### Review convergence
+
+Planning-draft amendments receive delta review plus regression of every prior
+disposition. Full exact-root cold review occurs at WP3A before freeze and again
+before activation. Planning review before WP3A does not itself create a
+`ContractFreezeAttestation` or require vertical-slice execution.
+
+Each finding is recorded as `UNSOUNDNESS`, which must be fixed, or
+`SCOPE_EXPANSION`, which requires a costed Ben decision. Each milestone targets
+convergence within two rounds. A third unresolved round is escalated to Ben with
+the remaining findings, classification, cost and recommendation. After freeze,
+any changed contract byte still requires a new exact-root review, freeze and
+fresh same-pair Agreement and Process slices.
 
 ## Work package 0: freeze evidence and attack the design
 
 ### Deliverables
 
-1. Pin the Deal Storylines design evidence at `77688ad` and Fable review at
-   `383ffee`.
+1. Pin the Deal Storylines design evidence at `77688ad`, Fable round-one review
+   at `383ffee`, round-two review at `76aa3ea` and reconciliation at `367aaf9`.
 2. Pin the PM base contract and programme versions used by the design.
 3. Export a content-addressed Storylines ledger snapshot containing the release
    watermark, required tables, `pipeline_runs`, `l2_revisions`, repair receipts,
@@ -120,13 +137,17 @@ release, serving-row, exact-detail or query contracts.
    successor parent-bound paragraph-context exact-detail action.
 7. Define process residual and open-world candidate handling.
 8. Define process admission identities at predicate granularity.
-9. Define the complete `ExternalSourceAcquisitionManifest`, independent-path
-    and reconciliation contracts, external snapshot and cutoff identities,
-    expected-source and receipt schemas, carrier and writer registrations,
-    trace edges and `P9_SCOPE_EXACT` acceptance changes.
+9. Define the complete `ExternalSourceAcquisitionManifest`, production
+    acquisition path, independent SEC completeness oracle, non-SEC authority
+    manifests, reconciliation contracts, external snapshot and cutoff
+    identities, expected-source and receipt schemas, carrier and writer
+    registrations, trace edges and `P9_SCOPE_EXACT` acceptance changes.
 10. Define `SEMANTIC_OR_SOURCE_INTEGRITY` in the generated
     `ActiveReleaseRevocationActionRegistry`, including evidence schema,
     producer, tuple transition, carrier, lock plan and controller coupling.
+    Define the Process-wide serving-fence trigger, acknowledgement bound,
+    no-reenable rule and canonical-disposition deadline in the successor
+    `OperationalPolicySet`.
 11. Author `PROCESS_VERTICAL_SLICE_PASS`, its acceptance definition, evidence
     object, adversarial test, verifier changes and successor
     `candidate_scope_and_extraction` dependency before exact-root review.
@@ -137,6 +158,9 @@ release, serving-row, exact-detail or query contracts.
 15. Regenerate fixtures and run a divergence gate after any merge touching a
     consumed contract and at every downstream work-package gate.
 16. Stop dependent implementation on an unadjudicated divergence.
+17. Define `RERUN_ON_ACTIVE_RELEASE`, including stale-link input identity,
+    active-release compilation, authorisation, warning state and response
+    identity. It cannot serve or masquerade as the original citation.
 
 ### Negative tests
 
@@ -164,37 +188,46 @@ The extension seam compiles from the canonical bundle and grants no source,
 writer, release or serving authority of its own. Existing Agreement fixtures
 remain byte-identical.
 
-## Work package 2: build the shared fact authority and projection
+## External prerequisite: PM shared fact and entity authority
+
+Entity mastering and shared deal-fact authority are a reusable PM platform
+workstream, not hidden Process scope. That workstream receives its own bounded
+plan, owner, estimate, acceptance set and release path. It defines
+`EntitySubject`, name occurrences, aliases, bridges, conflicts, supersession,
+source-backed deal facts, equity-value derivation, counsel and adviser
+relationships, carriers, writer actions, traceability and release-compatible
+projections for Agreement, Process and future CVR consumers.
+
+It may run in parallel with source-exact Process passage work. The complete
+first release cannot expose PM-wide entity, counsel, adviser or equity-value
+filters until the relevant upstream fields are certified. Process uses
+source-local labels and typed missing states in the interim, never legacy
+strings presented as canonical truth.
+
+## Work package 2: integrate shared facts and entities
 
 ### Deliverables
 
 1. Inventory every legacy deal, entity, value and adviser input and classify it
    as candidate evidence, not canonical truth.
-2. Add upstream PM definitions for entity-name occurrences, aliases and
-   identity bridges, source-backed deal facts, and adviser and lawyer
-   assignment relationships.
-3. Add a stable `EntitySubject` identity based on a governed external ID or
-   Ben-approved immutable import seed, plus entity revisions, conflict and
-   supersession rules.
-4. Register entity expected slots, logical and physical carriers, writer
-   actions, relationship endpoints, release/import/trace treatment and serving
-   projections.
-5. Admit them through claims, relationships, results, evidence, revisions and
-   the canonical writer.
-6. Generate the read-only process deal-fact projection.
-7. Include canonical entities, dates, sector, jurisdiction, structure,
+2. Pin the separately approved upstream PM contract and generated projection.
+3. Generate the read-only Process deal-fact projection and typed missing
+   behaviour without owning entity-master or deal-fact writes.
+4. Include certified canonical entities, dates, sector, jurisdiction, structure,
    consideration, price, stated value, normalised equity value and advisers.
-8. Bind every projected field to state, source and derivation.
-9. Resolve adviser roles to named entities and dated tracks where required.
-10. Add a candidate-fact proposal route to the canonical writer for genuinely
+5. Bind every projected field to state, source and derivation.
+6. Resolve adviser roles to named entities and dated tracks where required.
+7. Add a candidate-fact proposal route to the canonical writer for genuinely
    missing facts.
-11. Prohibit cached `pm_*` copies and direct PM service-role access from a
+8. Prohibit cached `pm_*` copies and direct PM service-role access from a
    process module.
-12. Build the release-compatible participant-to-deal traversal as a governed
+9. Build the release-compatible participant-to-deal traversal as a governed
    Process relationship projection. Bind its schema, executor semantics and
    live-versus-pinned equivalence proof.
-13. Define adviser states including `UNDISCLOSED`, `NOT_EXAMINED` and
+10. Define adviser states including `UNDISCLOSED`, `NOT_EXAMINED` and
    `NO_ADVISER`.
+11. Omit unavailable named-entity, adviser and cross-deal filters until their
+    upstream fields are certified and release-compatible.
 
 ### Required proofs
 
@@ -216,8 +249,10 @@ remain byte-identical.
 
 ### Gate
 
-Process extraction can resolve every required shared fact or produce a typed
-missing or conflicting state without creating parallel truth.
+Process integrates every available certified upstream field and produces a
+typed missing or conflicting state otherwise, without creating parallel truth.
+Product acceptance separately verifies that every PM field promised for the
+release is present.
 
 ## Work package 3: freeze the exclusivity semantic contract
 
@@ -232,9 +267,10 @@ missing or conflicting state without creating parallel truth.
 6. Define distinct predicates and states for express request,
    `EXPRESS_REFUSAL`, `COUNTERPROPOSAL`, `CONDITIONAL_ACCEPTANCE`, grant,
    extension, amendment, waiver and ending.
-7. Define a clock-expression AST covering anchors, effectiveness, timezones,
-   counting conventions, calendars, boundaries, conditional branches and
-   stated versus computed duration.
+7. Define a lossless PM-wide `TemporalExpression` containing exact source text,
+   span and coarse state. Admit structured nodes only for pilot-observed forms;
+   preserve unsupported structure as unresolved and require complete derivation
+   for any computed value.
 8. Define rationale, condition and bidder-track dimensions.
 9. Define narration and event granularity, composition and continuation rules.
 10. Define the source-local identity and entity-unification evidence contract,
@@ -257,8 +293,8 @@ missing or conflicting state without creating parallel truth.
 - A shortened term or conditional response cannot become an outright refusal.
 - Exclusive access to clinical data cannot become negotiation exclusivity.
 - A mandatory predicate cannot be removed merely because it fails.
-- A business-day term cannot become an elapsed-day duration without the
-  required calendar and anchors.
+- A business-day term cannot become an elapsed-day duration without an admitted
+  structured node carrying the required calendar and anchors.
 - A grant beneficiary cannot be inferred from generic acquirer side.
 - A same-day paragraph cannot inherit a date by proximity alone.
 - A later retelling cannot create a second market event automatically.
@@ -279,7 +315,11 @@ semantic contract.
 
 1. Compile one complete Agreement-plus-Process successor specification root,
    including the bundle, gate registry, acceptance and evidence definitions,
-   acquisition and revocation contracts, adversarial tests and verifier.
+   acquisition, revocation, containment-policy and action contracts,
+   adversarial tests and verifier. Every upstream PM field promised for the
+   intended release must either be present through its separately certified
+   projection or expressly removed from that release's product scope before
+   exact-root review.
 2. Prove that every pre-freeze member and successor dependency is present
    before review.
 3. Run all required exact-digest cold review lanes and obtain Ben approval for
@@ -309,17 +349,16 @@ authorise Process extraction.
 
 ### Deliverables
 
-1. Implement the two acquisition paths against the complete WP1 frozen
-   `ExternalSourceAcquisitionManifest` and independence contracts.
-2. Build two implementation-disjoint acquisition enumerators over SEC filing
-   history, amendments, supplements, exhibits, incorporated references and
-   approved non-SEC sources. The SEC paths use complete issuer submissions
-   history including older-file pagination, and daily or full-index accession
-   inventory plus recursive filing-package and cross-reference traversal,
-   respectively.
-3. Reconcile exact expected source sets, fetch receipts, package membership and
-   terminal dispositions. Common under-inclusive endpoints do not prove
-   independence.
+1. Implement one production acquisition path against the complete WP1 frozen
+   `ExternalSourceAcquisitionManifest`.
+2. Build a separately implemented SEC completeness oracle over daily or
+   full-index accession inventory. It cannot consume the production path's
+   submissions-history output. The production path uses complete issuer
+   submissions history including older-file pagination, plus recursive
+   filing-package and cross-reference traversal.
+3. Reconcile exact expected SEC accession sets, fetch receipts, package
+   membership and terminal dispositions. A matching count without exact
+   membership does not pass.
 4. Block every unresolved expected fetch or reference.
 5. Materialise the frozen acquisition contract through
    `IntakeCutoffAttestation`,
@@ -327,25 +366,28 @@ authorise Process extraction.
    release, coverage and traceability.
 6. Feed the reconciled universe into canonical immutable source, independent
    deal-document membership and source-map intake.
-7. Build a structural scope and coverage pass without counting it as an event
+7. For each approved non-SEC authority, reconcile an explicit expected-source
+   manifest and disclose any completeness limit. Do not publish an absence
+   claim outside the proved universe.
+8. Build a structural scope and coverage pass without counting it as an event
    enumerator.
-8. Build one semantic exclusivity-question enumerator over the complete
+9. Build one semantic exclusivity-question enumerator over the complete
    governed source scope.
-9. Build one independent deterministic lexical and pattern enumerator over the
+10. Build one independent deterministic lexical and pattern enumerator over the
    same scope. It cannot consume the semantic enumerator's model response or
    candidates.
-10. Freeze source-local narration and composed-event expected occurrence slots,
+11. Freeze source-local narration and composed-event expected occurrence slots,
    member comparators and ordinals before value extraction.
-11. Reconcile the two event inventories and retain their disagreement rate.
-12. Retain complete candidate, rejected and residual inventories.
-13. Add bounded model proposal attempts only where useful.
-14. Build deterministic normalisation into candidate process graphs.
-15. Create a versioned canonical paragraph-segmentation projection with exact
+12. Reconcile the two event inventories and retain their disagreement rate.
+13. Retain complete candidate, rejected and residual inventories.
+14. Add bounded model proposal attempts only where useful.
+15. Build deterministic normalisation into candidate process graphs.
+16. Create a versioned canonical paragraph-segmentation projection with exact
    source-map lineage for context expansion.
-16. Validate exact spans, event boundaries, entities, chronology, roles,
+17. Validate exact spans, event boundaries, entities, chronology, roles,
    tracks, positions, economics and relationships.
-17. Route disagreement and unknown semantics to the governed review queue.
-18. Record run, contract, source and extractor identities.
+18. Route disagreement and unknown semantics to the governed review queue.
+19. Record run, contract, source and extractor identities.
 
 ### Storylines rule treatment
 
@@ -452,6 +494,12 @@ Partition them into tuning and untouched holdout sets before extraction.
 12. Require a separately pre-registered evaluation generation and
     repeated-testing policy for any later candidate before prior holdout details
     become tuning evidence.
+13. Before opening the first holdout, pre-register the finite ordered evaluation
+    generation schedule or record that no later generalisation attempt is
+    authorised.
+14. After a failed candidate's release decision, permit a failed holdout deal
+    to enter a later exact-corpus certification exercise only without repairing,
+    rerunning or retroactively passing the failed generalisation evaluation.
 
 ### Owner-effort budget
 
@@ -468,16 +516,21 @@ Initial planning budget:
 - WP10 release evidence: 1 to 2 hours; and
 - activation review: 2 to 4 hours.
 
-The programme therefore reserves 29 to 49 Ben-hours. If disagreement volume
-would exceed that budget, improve the extractors or propose a successor
+The Process work packages therefore reserve 29 to 49 Ben-hours, excluding the
+separately planned shared fact and entity authority workstream. If disagreement
+volume would exceed that budget, improve the extractors or propose a successor
 mandatory-predicate bundle for express legal-semantic and product approval. Do
 not silently shrink the predicate set, lower the evidence standard or ask Ben
 to perform first-pass enumeration across the entire pilot.
 
 ### Gate
 
-All mandatory predicates pass the untouched holdout. No
-Metsera-specific rule or unreviewed vocabulary exception remains.
+A release claiming generality requires every mandatory predicate to pass the
+untouched holdout. If that fails, the candidate permanently loses the
+generality claim but may proceed only as an exact enumerated-corpus release
+after every published row and predicate passes source-exact certification and
+Ben approves the explicit coverage limitation. No Metsera-specific rule or
+unreviewed vocabulary exception remains.
 
 ## Work package 7: implement one query and field system
 
@@ -565,6 +618,10 @@ to an admitted executable plan.
 13. Bind related passages to a bounded child collection.
 14. Make share links exact-manifest-bound and return
     `RELEASE_NOT_ACTIVE` after release change.
+15. From `RELEASE_NOT_ACTIVE`, offer a separate
+    `RERUN_ON_ACTIVE_RELEASE` action that recompiles the governed query, warns
+    visibly that results may differ and never substitutes for the original
+    citation.
 
 ### UI invariants
 
@@ -632,6 +689,8 @@ repetitions and percentile method.
 5. Separately authorise and rate-limit exports, share links and corrections.
 6. Exercise the frozen `SEMANTIC_OR_SOURCE_INTEGRITY` action, whole-tuple
    exposure-off transition, rollback and recovery under its generated lock plan.
+7. Exercise automatic Process-wide serving-fence acknowledgement, escalation,
+   no-reenable behaviour and the policy-bound canonical-disposition deadline.
 
 ### Gate
 
@@ -661,7 +720,8 @@ invariants.
 13. Roll back the whole release tuple. Do not activate or revoke only a Process
     namespace.
 14. Certify the pre-frozen semantic/source-integrity revocation action and
-    containment SLA before activation.
+    `OperationalPolicySet` containment deadlines and incident procedure before
+    activation.
 
 ### Gate
 
@@ -684,12 +744,14 @@ Activation remains a separate explicit decision.
 8. Reopen affected-predicate certification on any unsupported served fact,
    critical omission, source-map failure, cross-track error or material drift
    beyond the pre-activation disagreement and exception thresholds.
-9. On a credible material false fact, source-map failure or cross-track error,
-   disable the Process route within 15 minutes as an operational kill switch,
-   then invoke the already frozen and certified
-   `SEMANTIC_OR_SOURCE_INTEGRITY` whole-tuple revocation or rollback within 60
-   minutes. The route switch is not a canonical state transition. Do not wait
-   for a successor release.
+9. On a validated material false fact, source-map failure or cross-track error,
+   automatically raise the Process-wide serving fence within the frozen
+   `OperationalPolicySet` acknowledgement bound. Do not re-enable Process while
+   the defect remains unresolved. If it invalidates the certified active tuple,
+   invoke the already frozen and certified `SEMANTIC_OR_SOURCE_INTEGRITY`
+   whole-tuple revocation or rollback through the rehearsed incident procedure
+   within the policy-bound canonical-disposition deadline. The route switch is
+   not a canonical state transition. Do not wait for a successor release.
 
 ### Expansion
 
@@ -712,6 +774,7 @@ The provisional RACI is:
 | Work | Responsible | Accountable / approver |
 | --- | --- | --- |
 | Canonical integration and gate status | Codex primary implementation lead | Ben |
+| Shared fact and entity authority | Separate PM platform workstream | Ben |
 | Source acquisition and reconciliation | Codex evidence lead | Codex primary implementation lead |
 | Legal-semantic gold and holdout custody | Independent evidence reader | Ben |
 | Extraction, query and UI | Codex primary implementation lead | Ben for product acceptance |
@@ -720,19 +783,29 @@ The provisional RACI is:
 | Post-activation containment | Codex release controller | Ben |
 
 The same agent cannot act as both ordinary and independent enumerator or certify
-its own independence. The named task identities and immutable input roots are
+its own independence. A model-based independent legal-semantic reader uses a
+different model family, a cold context, immutable source-only inputs and no
+access to extractor rules, outputs or candidate inventories. Otherwise the
+reader is human. Two prompts to the same model family do not satisfy
+independence.
+
+The holdout custodian has no extractor role, controls case-level result release
+and keeps the sealed manifest outside the extractor task's accessible inputs.
+Ben or a designated human controls the access capability. Named task identities,
+available runtime or model-family evidence and immutable input roots are
 recorded at kickoff. If a responsible lane cannot be staffed independently, its
 WP is blocked.
 
-Provisional team effort, excluding the existing Canonical V2 programme:
+Provisional team effort, excluding the existing Canonical V2 programme and the
+separately planned shared fact and entity authority workstream:
 
 | WP | Team hours | Ben hours | Critical predecessor |
 | --- | ---: | ---: | --- |
 | 0 | 24-40 | 2-4 | specification-review authority |
 | 1 | 80-140 | 0 | full bundle design and gate status |
-| 2 | 100-180 | 1-2 | WP1 and canonical entity/fact contract approval |
+| 2 | 40-80 | 1-2 | WP1 and certified upstream entity/fact projection |
 | 3 | 40-70 | 6-10 | WP1 |
-| 3A | 80-140 | 1-2 | WP1-WP3 and new full-bundle freeze |
+| 3A | 80-140 | 1-2 | WP1-WP3, promised upstream PM projections and new full-bundle freeze |
 | 4 | 180-300 | 0 | `candidate_scope_and_extraction` |
 | 5 | 60-100 | 4-6 | WP2-WP4 |
 | 6 | 180-320 | 11-16 | WP5 and frozen tuning extractor |
@@ -864,7 +937,8 @@ The plan is not ready for implementation until attacks cover:
 - [ ] Exclusivity question contracts reconcile.
 - [ ] Metsera gold passes.
 - [ ] Mandatory predicate floor passes.
-- [ ] Untouched stratified holdout passes.
+- [ ] Every generality claim passes its untouched stratified holdout; otherwise
+      the release and UI identify only the exact enumerated certified corpus.
 - [ ] Ask, Browse and filters share one Query IR.
 - [ ] All enabled PM fields are release-compatible.
 - [ ] Exact passages and source reader pass.
