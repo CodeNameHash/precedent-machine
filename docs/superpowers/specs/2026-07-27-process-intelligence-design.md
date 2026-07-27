@@ -259,6 +259,21 @@ release path. Agreement, Process and future CVR domains consume the same
 authority. Process owns only its projection, participant traversal and typed
 missing behaviour.
 
+The approved upstream specification is:
+
+- path:
+  `docs/superpowers/specs/2026-07-27-shared-deal-facts-and-entity-authority-design.md`;
+- SHA-256:
+  `7dd9552c2634e4f64f0fc662f40002879fd6fca595a2394d8e3eb27baf35dbbe`.
+
+`SharedAuthorityConsumedContractManifest` pins that specification identity, the
+later generated projection schema and digest, required field set, frozen pair,
+serving namespace, corpus release and compatibility rules.
+
+The specification digest records the approved requirement. It grants no writer,
+release or serving authority. Process cannot consume the projection until the
+generated contract and release also pass.
+
 Before Process can consume these facts, that upstream PM workstream must define,
 generate and admit through the existing canonical primitives:
 
@@ -269,8 +284,12 @@ generate and admit through the existing canonical primitives:
 - reviewed alias and identity-bridge relationships, including conflict and
   supersession;
 - deal-level date, structure, consideration and value claims;
-- adviser and lawyer assignment relationships with entity, role and temporal
-  scope;
+- legal and commercial participant roles, transaction legs, structure and
+  control resolutions;
+- share-purchase interest components;
+- adviser and lawyer assignment relationships with entity, role, bidder track,
+  transaction leg and temporal scope;
+- lawyer-firm affiliation relationships;
 - field-level evidence, states and derivations; and
 - release-compatible result and query projections.
 
@@ -281,11 +300,15 @@ An `EntityNameOccurrence` is source evidence about an `EntitySubject`; it is
 not itself the entity. Conflicting aliases block unification. A source-local
 party remains source-local when no governed entity subject can be established.
 
-The canonical writer and whole release own those objects. Process may propose
-missing occurrences or relationships, but it cannot create another entity,
-fact or adviser store. If the upstream authorities are not ready, the initial
-Process release must omit the affected named-entity, adviser and cross-deal
-filters rather than project legacy strings.
+The canonical writer and whole release own those objects. Process may propose a
+value for an existing frozen expected slot. A new semantic or slot proposal has
+no current-release writer path. It requires open-world review, a successor
+bundle, review, freeze and fresh same-pair slices. Process cannot create another
+entity, fact or adviser store.
+
+If the upstream authorities are not ready, the initial Process release must
+omit the affected named-entity, adviser and cross-deal filters rather than
+project legacy strings.
 
 Source-exact Process passage work may proceed with source-local participant
 labels and typed missing states while the upstream workstream runs in parallel.
@@ -300,21 +323,31 @@ PM. At minimum it covers:
 
 - canonical deal ID and source-document IDs;
 - target and buyer entity IDs and display names;
+- combination-party and selling-shareholder entity IDs and display names;
 - other bidder and counterparty entity IDs;
 - announcement and signing dates;
-- sector, jurisdiction, transaction structure and buyer type;
+- sector and jurisdiction;
+- legal structure, source characterisation, transaction legs and control
+  outcome;
+- typed target, buyer and buyer-type applicability;
 - consideration form and components;
+- share-purchase interest components, including seller, class, amount or
+  percentage and consideration;
 - headline price per share;
 - stated transaction value;
 - normalised equity value and calculation basis;
-- target and buyer law firms;
+- target, buyer, combination-party and selling-shareholder law firms;
 - named lawyers;
-- target and buyer financial advisers; and
+- target, buyer, combination-party and selling-shareholder financial advisers;
 - the exact source and evidence state for each fact.
 
-An extractor may propose a missing fact with evidence. Only the canonical writer
-may admit it. The process domain cannot persist `pm_target`, `pm_acquirer` or
-similar cached copies as an alternative truth.
+Every field carries the shared specification's closed typed lineage union. A
+generic revision ID is invalid.
+
+An extractor may propose a missing value for an existing frozen expected slot
+with evidence. Only the canonical writer may admit it. A new semantic or slot
+candidate follows the successor-bundle path. The process domain cannot persist
+`pm_target`, `pm_acquirer` or similar cached copies as an alternative truth.
 
 ### Economics
 
@@ -336,8 +369,8 @@ be added to an offer price unless a governed calculation expressly permits it.
 
 ### Advisers
 
-Advisers attach to named entities and, where necessary, to a dated bidder track.
-They do not attach merely to "acquirer side".
+Advisers attach to named entities and, where necessary, to a dated bidder track
+and transaction leg. They do not attach merely to "acquirer side".
 
 The canonical resolver may use notices, proxy disclosure and announcement press
 releases as evidence. It retains the source and role basis. In a multi-bidder
@@ -349,6 +382,17 @@ or anonymous bidders. `UNDISCLOSED` is an honest state, distinct from
 `NOT_EXAMINED` and `NO_ADVISER`. Certification requires both a positive
 named-bidder attribution fixture and negative fixtures proving that missing
 disclosure is not filled from another bidder or from a generic side.
+
+Professional filters use the complete shared assignment component. They bind
+represented entity, bidder track, transaction leg, professional role,
+professional entity and state. Legacy adviser or lawyer text arrays are
+display-only and cannot satisfy a canonical filter.
+
+The existing Process implementation plan predates this consumed specification.
+It is not current for WP2 or WP3A. Its first permitted
+`implementation_planning` amendment must pin the same manifest, add the new
+fields and tests, regress affected prior dispositions and make WP3A fail on an
+absent or incompatible shared projection.
 
 ## Process semantic model
 
@@ -1044,6 +1088,11 @@ proves all of the following:
 14. Every enabled field and predicate has a certification identity.
 15. A deliberately malformed sibling row or detail leaves the remaining
     results usable.
+
+Items 10 and 11 apply to the exact WP3A release-scope decision. A deliberately
+reduced release does not fail because it omits a field that the approved scope
+expressly removed. The omitted field and control remain unavailable. A full
+release cannot claim success while any promised shared field is absent.
 
 Passing Metsera permits the stratified pilot. It does not permit production
 activation by itself.

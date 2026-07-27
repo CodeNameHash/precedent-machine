@@ -188,11 +188,35 @@ system does not rekey old records. A reviewed supersession or equivalence
 relationship selects the surviving subject for a successor release. A conflict
 blocks that selection.
 
+Entity equivalence and supersession are release-pinned.
+
+An exact citation to an old release keeps the old entity ID and result. It never
+redirects.
+
+A saved query that uses an old entity ID records its exact release and query
+identity. Against a successor release, the user must invoke
+`RERUN_ON_ACTIVE_RELEASE`.
+
+That action:
+
+- compiles against the active release's equivalence projection;
+- shows the old and new entity treatment;
+- removes duplicate expanded IDs under one governed rule;
+- binds new grouping and count semantics to the new query identity; and
+- never claims to be the old citation result.
+
+If equivalence is conflicting or incomplete, rerun returns a typed unavailable
+or conflicting result. It does not choose a subject.
+
 ### EntityNameOccurrence
 
 `EntityNameOccurrence` means one exact name in one source location.
 
-It records:
+Its stable ID derives from the admitted source occurrence, expected name-slot
+key, name role and governed ordinal. It does not derive from the extracted name
+text.
+
+`EntityNameRevision` records:
 
 - the exact text;
 - the source occurrence;
@@ -359,7 +383,34 @@ target and buyer classification.
 
 Control is a deal fact. It is not inferred from a participant label.
 
-`TransactionControlOutcome` records:
+`TransactionControlOutcomeOccurrence` means one expected control answer for one
+deal and effective-time scope.
+
+It is owned by the governed deal subject through one frozen
+`TRANSACTION_CONTROL_OUTCOME` expected-slot variant.
+
+Its stable ID derives from:
+
+- governed deal ID;
+- control-outcome definition and version;
+- effective-time slot;
+- expected control-outcome slot key; and
+- governed ordinal.
+
+It does not derive from a controlling entity, ownership percentage, management
+choice or extracted value.
+
+`TransactionControlOutcomeRevision` selects the complete ordered applicable:
+
+- participant relationship revisions;
+- transaction-leg resolution revisions;
+- voting ownership fact resolutions;
+- board-composition fact resolutions;
+- management fact resolutions;
+- source-characterisation fact resolutions; and
+- exact evidence edges.
+
+The revision records:
 
 - control state;
 - controlling entity IDs, when supported;
@@ -370,6 +421,10 @@ Control is a deal fact. It is not inferred from a participant label.
 - source characterisation;
 - exact derivation rule; and
 - exact source evidence.
+
+Its revision ID covers the occurrence ID, complete selected input set, state,
+outcome, effective time, derivation, evidence, conflict disposition and resolver
+version.
 
 It uses one canonical state:
 
@@ -467,10 +522,8 @@ Each `TransactionLegResolutionRevision` selects:
 Each participant relationship can point to one
 `TransactionLegResolutionOccurrence` or to the whole transaction.
 
-`TransactionStructureResolution` selects the complete ordered set of deal-level
-leg resolution revisions and participant-role revisions. A missing required
-leg, unreconciled duplicate deal-level leg or unresolved endpoint blocks a
-complete resolution. Several sources can support the same resolved leg.
+Several sources can support the same resolved leg. An unreconciled duplicate
+deal-level leg blocks structure resolution.
 
 This is required for a Reverse Morris Trust. The distribution, contribution
 or internal reorganisation, and merger remain separate when the sources state
@@ -481,6 +534,46 @@ subsidiary and surviving entity keep their own roles.
 
 The system keeps legal structure separate from source or market
 characterisation.
+
+`TransactionStructureResolutionOccurrence` means one expected legal-structure
+answer for one deal and effective-time scope.
+
+It is owned by the governed deal subject through one frozen
+`TRANSACTION_STRUCTURE_RESOLUTION` expected-slot variant.
+
+Its stable ID derives from:
+
+- governed deal ID;
+- structure-resolution definition and version;
+- expected structure-resolution slot key;
+- effective-time slot; and
+- governed ordinal.
+
+`TransactionStructureResolutionRevision` selects:
+
+- the complete ordered deal-level transaction-leg resolution revisions;
+- the complete ordered participant relationship revisions;
+- the source-characterisation fact resolutions;
+- the selected legal structure code;
+- canonical state;
+- conflict disposition;
+- exact evidence; and
+- resolver version.
+
+Its canonical state is exactly one of:
+
+- `PRESENT`;
+- `ABSENT`;
+- `NOT_EXAMINED`;
+- `NOT_APPLICABLE`; or
+- `FAILED`.
+
+A `PRESENT` revision requires one admitted structure code and complete evidence.
+The other states follow the shared canonical state rules and carry no asserted
+structure code.
+
+Its revision ID covers every selected input and output. A missing leg,
+unresolved endpoint or unresolved structure conflict blocks terminal selection.
 
 Initial legal structure codes include:
 
@@ -521,17 +614,35 @@ the legal merger path.
 separate. The acquired entity is not the seller only because its shares are
 being sold.
 
-The share-purchase resolution preserves:
+`SharePurchaseInterestComponent` is one repeatable purchased-interest component.
 
+Its occurrence identity derives before value extraction from:
+
+- governed deal ID;
+- share-purchase transaction-leg resolution occurrence;
+- expected component-slot key;
+- occurrence-independent buyer endpoint key;
+- occurrence-independent acquired-entity endpoint key;
+- occurrence-independent selling-shareholder endpoint key;
+- expected security-class slot key; and
+- governed ordinal.
+
+Each immutable component revision binds:
+
+- buyer;
+- acquired entity;
+- selling shareholder;
 - purchased security or share class;
 - number or percentage purchased, when stated;
-- each selling shareholder;
 - direct or indirect ownership path;
 - partial or full acquisition state;
 - consideration for the purchased shares; and
 - exact source evidence.
 
 It does not convert a share purchase into an asset acquisition.
+
+Query, grouping and export operations use the complete component. They cannot
+combine independent seller, class, amount or consideration arrays.
 
 A reviewed PM classification can differ from source characterisation. The
 projection must show which value is source-stated and which value is a governed
@@ -541,7 +652,12 @@ When target and buyer roles are supported, the product can show the simple
 Target and Buyer labels. Otherwise it shows Combination Parties. It does not
 fill a false Target or Buyer value for display convenience.
 
-`buyer_type` is `NOT_APPLICABLE` when no reviewed buyer role exists.
+`buyer_type` is `NOT_APPLICABLE` only when a source-backed structure resolution
+proves that the buyer role does not apply.
+
+If buyer-role examination is incomplete, failed or conflicting, `buyer_type`
+uses `NOT_EXAMINED`, `FAILED` or the blocking conflict. Missing buyer evidence
+does not prove non-applicability.
 
 ### ProfessionalAssignmentRelationship
 
@@ -553,6 +669,7 @@ It links:
 - a represented entity or source-local subject;
 - a deal;
 - an optional bidder track;
+- an optional transaction-leg resolution occurrence;
 - a professional role;
 - an optional time scope; and
 - exact evidence.
@@ -604,6 +721,42 @@ The permitted combinations are:
 
 `CONFLICTING_ASSIGNMENTS` is a candidate-review reason. It blocks terminal
 selection.
+
+### LawyerFirmAffiliationRelationship
+
+`LawyerFirmAffiliationRelationship` links one natural-person lawyer to one law
+firm for a source-backed time scope.
+
+Its stable occurrence ID derives from:
+
+- lawyer source-local occurrence or governed entity endpoint key;
+- law-firm source-local occurrence or governed entity endpoint key;
+- admitted source occurrence;
+- expected affiliation-slot key;
+- effective-time slot; and
+- governed ordinal.
+
+It records:
+
+- lawyer entity or unresolved source-local lawyer occurrence;
+- law-firm entity or unresolved source-local firm occurrence;
+- effective-time expression;
+- source role;
+- exact evidence;
+- canonical state;
+- relationship definition and version; and
+- immutable revision.
+
+The immutable revision ID covers occurrence, state, resolved endpoints,
+effective time, evidence, relationship definition and resolver version.
+
+A name match, a firm-level deal assignment or proximity in source text cannot
+create this relationship.
+
+A professional assignment can use the affiliation only when its time scope and
+source scope permit it. An unresolved affiliation does not prevent display of
+the exact source-local lawyer name. It prevents a canonical firm-affiliation
+claim and related filter.
 
 ### SourceDealFactOccurrence and SourceDealFactRevision
 
@@ -825,8 +978,14 @@ states:
 Expected source slots are created from the admitted source universe before
 value extraction. Candidate values cannot define the source universe.
 
-An independent source-universe check must reconcile exact accession membership,
-not only source counts.
+An independent source-universe check must reconcile exact admitted
+source-occurrence membership, not only source counts.
+
+For an SEC source, this includes exact accession membership. For a press
+release, adviser announcement or other non-SEC source, it includes the governed
+immutable import identity and its authority-specific expected-source manifest.
+
+A source without an SEC accession cannot disappear from the completeness proof.
 
 `ABSENT` and the display reason `UNDISCLOSED` require complete examination of
 the frozen required source set. A missing or failed source gives
@@ -893,6 +1052,7 @@ At minimum, it must define IDs for:
 - entity-classification revision;
 - external-identifier assertion;
 - entity-name occurrence;
+- entity-name revision;
 - source-local subject occurrence;
 - identity-bridge occurrence;
 - identity-bridge revision;
@@ -906,10 +1066,16 @@ At minimum, it must define IDs for:
 - source transaction-leg revision;
 - transaction-leg resolution occurrence;
 - transaction-leg resolution revision;
-- transaction-structure resolution;
-- transaction-control-outcome resolution;
+- transaction-structure resolution occurrence;
+- transaction-structure resolution revision;
+- transaction-control-outcome occurrence;
+- transaction-control-outcome revision;
+- share-purchase interest-component occurrence;
+- share-purchase interest-component revision;
 - professional assignment occurrence;
 - professional assignment revision;
+- lawyer-firm affiliation occurrence;
+- lawyer-firm affiliation revision;
 - value derivation;
 - candidate proposal;
 - serving projection record; and
@@ -928,6 +1094,7 @@ Agreement, Process and CVR can submit a `SharedAuthorityCandidateProposal`.
 
 A proposal contains:
 
+- proposal kind;
 - proposed logical type;
 - proposed occurrence or relationship slot;
 - proposed value or endpoint;
@@ -940,15 +1107,37 @@ A proposal contains:
 
 A proposal is not canonical data.
 
+The proposal kind is exactly one of:
+
+- `EXISTING_EXPECTED_SLOT_VALUE_CANDIDATE`; or
+- `NEW_SEMANTIC_OR_SLOT_CANDIDATE`.
+
+An `EXISTING_EXPECTED_SLOT_VALUE_CANDIDATE` must name one exact frozen
+`ExpectedOccurrenceSlot`. It can propose only an answer permitted by that slot.
+It cannot change the slot, definition, endpoint, ordinal or closure.
+
+A `NEW_SEMANTIC_OR_SLOT_CANDIDATE` enters open-world review. It has no
+current-release writer path. Admission requires:
+
+- a successor contract amendment;
+- delta review with disposition regression;
+- the required exact-root cold review;
+- a new contract freeze;
+- a frozen expected slot; and
+- fresh same-pair slices.
+
 Only registered canonical writer actions can:
 
-- create expected occurrences;
+- materialise frozen expected occurrences;
 - select revisions;
 - admit identity bridges;
 - admit relationships;
 - admit derivations;
 - write candidate-release records; or
 - publish a release.
+
+A writer cannot create a new semantic type or expected slot from a candidate
+proposal.
 
 The bundle must register:
 
@@ -986,8 +1175,9 @@ After extraction:
 1. Extractors produce candidate revisions and relationships.
 2. Independent checks recompute occurrence IDs, revision IDs, evidence
    intervals, derivations and result projections.
-3. Reconciliation compares exact accession membership and exact object
-   membership. Count equality is not sufficient.
+3. Reconciliation compares exact admitted source-occurrence membership and
+   exact object membership. It also compares accession membership where
+   applicable. Count equality is not sufficient.
 4. Negative tests challenge wrong identity, wrong side, wrong bidder track,
    wrong basis, wrong date and missing evidence.
 5. The candidate release must pass whole-bundle validation, import parity,
@@ -1017,11 +1207,38 @@ For each field, it provides:
 - display label;
 - typed state;
 - entity ID or relationship ID, when applicable;
-- selected resolution revision ID;
+- typed lineage;
 - exact-detail action;
 - conflict indicator;
 - derivation reference, when applicable; and
 - release identity.
+
+Typed lineage is a closed union. Each union member contains:
+
+- terminal logical type;
+- stable occurrence or subject ID;
+- selected revision ID;
+- canonical payload digest;
+- permitted exact-detail action; and
+- complete release identity.
+
+Permitted terminal types are separately registered for:
+
+- entity revision;
+- entity-name revision;
+- identity-bridge revision;
+- deal-fact resolution revision;
+- participant relationship revision;
+- professional assignment revision;
+- lawyer-firm affiliation revision;
+- transaction-leg resolution revision;
+- transaction-structure resolution revision;
+- transaction-control-outcome revision;
+- share-purchase interest-component revision; and
+- registered derivation.
+
+A field cannot supply a generic ID whose logical type is inferred by the
+consumer.
 
 The projection must not provide a service-role credential or direct write path.
 
@@ -1099,6 +1316,29 @@ compatibility display fields. After migration, they must be generated from
 certified entity and assignment relationships. They cannot remain the source of
 identity or filter truth.
 
+The replacement professional-assignment query dimension is one governed
+repeatable component. It binds:
+
+- represented entity ID;
+- bidder-track ID, when applicable;
+- transaction-leg resolution occurrence ID, when applicable;
+- professional role;
+- professional entity ID;
+- assignment state;
+- effective-time expression; and
+- assignment revision lineage.
+
+Filtering uses the complete assignment component. One assignment must satisfy
+all predicates inside the same component scope.
+
+The dimension defines separate `EXISTS`, `NONE` and non-vacuous `ALL`
+semantics. An incomplete assignment collection produces `UNKNOWN`, not a false
+match.
+
+The legacy `adviser_either` and `lawyer_either` text filters cannot compile
+against a release that admits the canonical replacement. A saved legacy query
+must use an explicit governed migration or return a typed unavailable result.
+
 If a field is not certified in the selected release:
 
 - the user interface does not offer it as an active filter;
@@ -1107,6 +1347,35 @@ If a field is not certified in the selected release:
 - the server rejects a direct request for it.
 
 Ask, Browse, manual filters and saved searches use the same field definition.
+
+## Performance contract
+
+Every shared-authority query dimension is materialised, indexed, bounded and
+release-pinned.
+
+An interactive query:
+
+- uses one mandatory admission RPC and at most one bounded set-based serving
+  RPC;
+- does not traverse the canonical relationship graph at runtime;
+- does not issue one entity, fact or assignment query per result row;
+- does not load a broad corpus into Node for filtering;
+- uses governed query-plan and repeatable-component limits; and
+- binds cache identity to contract, namespace, release, field definitions,
+  filters, quantifiers, columns, sort and cursor.
+
+The shared joins enter the same load-certification suite as Process.
+
+Acceptance requires:
+
+- p95 warm query response under 500 ms;
+- p95 cold query response under 1.5 seconds;
+- p95 local Browse and filter interaction under 200 ms; and
+- no unindexed admitted filter path.
+
+The frozen load contract states corpus size, concurrency, package limits,
+runtime, database class, cache state and measurement method. Passing a small
+fixture does not satisfy load certification.
 
 ## Release and serving rules
 
@@ -1123,8 +1392,11 @@ The release includes:
 - selected deal-fact resolution revisions;
 - selected source transaction-leg revisions;
 - selected transaction-leg resolution revisions;
-- selected transaction-structure and control-outcome resolutions;
+- selected transaction-structure resolution revisions;
+- selected transaction-control-outcome revisions;
+- selected share-purchase interest-component revisions;
 - selected participant and professional relationships;
+- selected lawyer-firm affiliation relationships;
 - selected derivations;
 - generated serving projections;
 - generated field definitions;
@@ -1139,8 +1411,20 @@ There is no in-place update to an active release.
 Live queries and pinned-release queries must return the same logical result
 when they point to the same release.
 
-A changed name map, value rule, bridge rule or assignment rule requires a new
-candidate release.
+A data-only revision under unchanged frozen rules requires a new candidate
+release.
+
+A changed name map, value rule, bridge rule, assignment rule, identity rule,
+query rule or other contract byte requires:
+
+- a successor canonical bundle;
+- delta review with disposition regression;
+- the required exact-root cold review;
+- a new contract freeze;
+- fresh same-pair Agreement and affected-domain slices; and
+- a candidate release under that new frozen pair.
+
+A candidate release cannot change frozen semantics.
 
 ## Legacy migration
 
@@ -1301,24 +1585,39 @@ The shared authority is not ready until all applicable conditions pass.
 34. A missing losing-bidder adviser remains `UNDISCLOSED` or
     `NOT_EXAMINED`.
 35. Every adviser assignment can open its exact source evidence.
+36. An RMT adviser assignment cannot move between transaction legs.
+37. A lawyer cannot inherit a firm affiliation from name similarity or a
+    firm-level deal assignment.
 
 ### Query and release
 
-36. Identity filters use canonical IDs, not display text.
-37. Live and pinned participant filters return the same logical rows.
-38. An unavailable field cannot be selected through Ask, Browse, a manual
+38. Identity filters use canonical IDs, not display text.
+39. Live and pinned participant filters return the same logical rows.
+40. An unavailable field cannot be selected through Ask, Browse, a manual
     filter or a saved query.
-39. Current display arrays derive from certified relationships.
-40. Every result is bound to one contract, namespace and release.
-41. A changed fact, bridge or assignment produces a new candidate release.
+41. Current display arrays derive from certified relationships.
+42. Every result is bound to one contract, namespace and release.
+43. A data-only changed fact, bridge or assignment produces a new candidate
+    release.
+44. A changed contract rule requires a successor bundle, review, freeze and
+    fresh same-pair slices.
+45. Every projected field has a permitted typed lineage member.
+46. Professional filters bind side, track, leg, role and entity inside one
+    assignment component.
+47. Legacy text filters cannot satisfy a canonical professional filter.
+48. An old entity query never silently redirects after supersession.
+49. Shared query performance passes the frozen load contract.
 
 ### Cross-domain
 
-42. Agreement and Process read the same selected fact resolution revision.
-43. A future CVR domain can use the same entity and fact projection.
-44. No domain contains a second canonical entity or deal-fact store.
-45. A domain proposal cannot bypass the canonical writer.
-46. Every shared field has one field-registry definition.
+50. Agreement and Process read the same selected fact resolution revision.
+51. A future CVR domain can use the same entity and fact projection.
+52. No domain contains a second canonical entity or deal-fact store.
+53. A domain proposal cannot bypass the canonical writer.
+54. A new semantic or slot candidate cannot write under the current frozen
+    pair.
+55. Every shared field has one field-registry definition.
+56. SEC and non-SEC sources both enter the exact source-membership proof.
 
 ### Transaction-structure test set
 
@@ -1340,8 +1639,25 @@ After the formal gate opens, the mandatory structure set includes:
 - sponsor consortium; and
 - joint-venture combination.
 
+Before extraction, freeze a `TransactionStructureGoldSamplingManifest`.
+
+It records:
+
+- eligible deal universe;
+- source cutoff;
+- admitted source roles;
+- structure-classification rules;
+- minimum examples per structure;
+- positive and negative selection rules;
+- tuning set;
+- untouched holdout set;
+- exclusions and reasons;
+- treatment when no eligible public deal exists; and
+- exact manifest identity.
+
 Each structure needs:
 
+- at least one reviewed public-deal gold example;
 - one positive role and leg fixture;
 - one negative fixture that challenges a false target, buyer or control
   inference;
@@ -1349,8 +1665,16 @@ Each structure needs:
 - live and pinned projection equality; and
 - filter tests for every admitted structure field.
 
-The suite must include reviewed public-deal gold. Synthetic contract fixtures
-can test extra shapes. They cannot replace the reviewed public-deal gold.
+The highest-risk structures include an untouched holdout selected before
+extraction. They include at least merger of equals, reverse merger, Reverse
+Morris Trust and share purchase.
+
+Synthetic contract fixtures can test extra shapes. They cannot replace the
+reviewed public-deal gold.
+
+If the first release cannot meet the mandatory set, Ben must approve an exact
+reduced structure set before freeze. The omitted structure controls and claims
+remain unavailable in that release.
 
 ### Metsera gated anchor
 
