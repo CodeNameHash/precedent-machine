@@ -1052,7 +1052,15 @@ function ClauseSidebarContent({ card, rowFocus = null, dealId, dealSector, onClo
       .then((version) => fetch(`/api/corpus-stats?${query}${version ? `&v=${encodeURIComponent(version)}` : ''}`, { signal: controller.signal }))
       .then(async (r) => {
         const payload = await r.json().catch(() => ({}));
-        if (!r.ok) throw new Error(payload.error || `HTTP ${r.status}`);
+        if (!r.ok) {
+          const message = typeof payload.error === 'string'
+            ? payload.error
+            : payload.error?.message || payload.message || `HTTP ${r.status}`;
+          const requestError = new Error(message);
+          requestError.code = payload.error?.code || payload.code || null;
+          requestError.status = r.status;
+          throw requestError;
+        }
         return payload;
       })
       .then((next) => {

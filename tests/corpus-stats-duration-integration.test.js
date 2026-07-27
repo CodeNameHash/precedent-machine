@@ -2,19 +2,22 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
-const SOURCE = fs.readFileSync('pages/api/corpus-stats.js', 'utf8');
+const ROUTE_SOURCE = fs.readFileSync('pages/api/corpus-stats.js', 'utf8');
+const CORE_SOURCE = fs.readFileSync('lib/queries/corpus-stats-core.js', 'utf8');
+const DURATION_SOURCE = fs.readFileSync('lib/queries/corpus-duration.js', 'utf8');
+const CLAIMS_ADAPTER_SOURCE = fs.readFileSync('lib/queries/claims-adapter.js', 'utf8');
 
-test('corpus-stats duration rows use strict claim cohorts without requiring canonical_numeric', () => {
-  assert.match(SOURCE, /selectDurationCohort/);
-  assert.match(SOURCE, /requestedCode:\s*code/);
-  assert.match(SOURCE, /evidenceByCardKey/);
-  assert.match(SOURCE, /primary_quote, region_full_text/);
-  assert.doesNotMatch(SOURCE, /\.select\([^)]*canonical_numeric/);
+test('contained corpus-stats keeps strict duration normalisation in the non-routable core', () => {
+  assert.match(ROUTE_SOURCE, /createBroadCorpusContainedHandler\('GET'\)/);
+  assert.match(DURATION_SOURCE, /selectDurationCohort/);
+  assert.match(DURATION_SOURCE, /requestedCode/);
+  assert.match(DURATION_SOURCE, /evidenceByCardKey/);
+  assert.match(DURATION_SOURCE, /durationInDays/);
+  assert.doesNotMatch(DURATION_SOURCE, /canonical_numeric/);
 });
 
-test('corpus-stats exposes means, material-contract item frequency, and equity-only instrument classification', () => {
-  assert.match(SOURCE, /mean:\s*nums\.reduce/);
-  assert.match(SOURCE, /materialContractsBuckets/);
-  assert.match(SOURCE, /EQUITY_INSTRUMENT_FEATURE_KEYS/);
-  assert.match(SOURCE, /equityInstrumentContext/);
+test('contained corpus-stats retains means and material-contract claim metadata off the request path', () => {
+  assert.match(CORE_SOURCE, /mean:\s*nums\.reduce/);
+  assert.match(CLAIMS_ADAPTER_SOURCE, /materialContractsBuckets/);
+  assert.doesNotMatch(ROUTE_SOURCE, /supabase|canonical_numeric|materialContractsBuckets/i);
 });

@@ -1,4 +1,5 @@
 import { getServiceSupabase } from '../../../lib/supabase';
+const { sendBroadCorpusRouteContained } = require('../../../lib/broad-corpus-containment');
 
 export const config = {
   maxDuration: 60,
@@ -132,17 +133,14 @@ function splitCondProvision(text, condType) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
 
-  const { deal_id, dry_run } = req.body;
+  const { deal_id, dry_run } = req.body || {};
+  if (!deal_id) return sendBroadCorpusRouteContained(res);
+
   const sb = getServiceSupabase();
   if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
 
   const results = [];
-  const dealIds = deal_id ? [deal_id] : [];
-
-  if (!dealIds.length) {
-    const { data: deals } = await sb.from('deals').select('id');
-    if (deals) dealIds.push(...deals.map(d => d.id));
-  }
+  const dealIds = [deal_id];
 
   for (const did of dealIds) {
     const { data: deal } = await sb.from('deals').select('acquirer, target').eq('id', did).single();

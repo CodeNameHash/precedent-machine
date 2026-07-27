@@ -234,10 +234,10 @@ test('sidebar rowContext returns null when no peer value converts', () => {
   assert.equal(dist, null);
 });
 
-test('pages/api/corpus-stats.js routes registry fields to the relative distribution', () => {
+test('the non-routable corpus stats core routes registry fields to the relative distribution', () => {
   const fs = require('fs');
   const path = require('path');
-  const src = fs.readFileSync(path.join(__dirname, '..', '..', 'pages', 'api', 'corpus-stats.js'), 'utf8');
+  const src = fs.readFileSync(path.join(__dirname, '..', '..', 'lib', 'queries', 'corpus-stats-core.js'), 'utf8');
   assert.match(src, /isRelativePeriodField\(attribute\)/,
     'buildFeatureDistribution must branch on isRelativePeriodField');
   assert.match(src, /buildRelativePeriodDistribution\(/,

@@ -1,4 +1,5 @@
 import { getServiceSupabase } from '../../../lib/supabase';
+const { sendBroadCorpusRouteContained } = require('../../../lib/broad-corpus-containment');
 
 const { buildParserReview } = require('../../../lib/parser-v2/structural');
 const {
@@ -530,6 +531,10 @@ export default async function handler(req, res) {
   if (!['GET', 'POST'].includes(req.method)) {
     res.setHeader('Allow', 'GET, POST');
     return fail(res, 405, 'GET or POST only');
+  }
+
+  if (req.method === 'GET' && shouldRefreshMetrics(req)) {
+    return sendBroadCorpusRouteContained(res);
   }
 
   const sb = getServiceSupabase();

@@ -320,14 +320,11 @@ export default function GapReviewAdmin() {
     return `/api/admin/gaps?${sp.toString()}`;
   }, [limit, minCoverage]);
 
-  const loadSummary = async (refreshMetrics = false) => {
+  const loadSummary = async () => {
     setLoading(true);
     setError(null);
     try {
-      const url = refreshMetrics
-        ? `${summaryUrl}${summaryUrl.includes('?') ? '&' : '?'}refresh_metrics=1`
-        : summaryUrl;
-      const data = await readJson(await fetch(url));
+      const data = await readJson(await fetch(summaryUrl));
       setRows(data.rows || []);
       setPagination(data.pagination || null);
     } catch (err) {
@@ -512,13 +509,7 @@ export default function GapReviewAdmin() {
               className="ml-2 w-24 rounded border border-border px-2 py-1 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-accent"
             />
           </label>
-          <button
-            onClick={() => loadSummary(true)}
-            disabled={loading}
-            className="rounded border border-border px-3 py-1.5 text-sm font-ui text-inkLight hover:border-accent hover:text-ink disabled:opacity-40"
-          >
-            Refresh
-          </button>
+          <span className="px-2 py-1.5 text-xs font-ui text-inkFaint">Stored metrics only</span>
         </div>
       </div>
 

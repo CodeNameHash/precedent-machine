@@ -1,4 +1,5 @@
 import { getServiceSupabase } from '../../lib/supabase';
+const { getHomePayload } = require('../../lib/home-snapshot');
 
 // Cap runaway executions: when Supabase stalls, uncapped functions run the
 // full 300s each holding a DB connection (2026-07-19 pile-up). 60s is far
@@ -107,6 +108,23 @@ async function fetchProvisionCounts(sb, dealIds) {
 }
 
 export default async function handler(req, res) {
+  if (!['GET', 'POST', 'PATCH', 'DELETE'].includes(req.method)) {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  if (req.method === 'GET' && !(req.query && req.query.id)) {
+    const deals = getHomePayload().deals.map((deal) => ({
+      ...deal,
+      acquirer: deal.buyer_display,
+      target: deal.target_display,
+      value_usd: deal.value,
+      announce_date: deal.signing_date,
+      provision_count: null,
+    }));
+    res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=3600');
+    return res.json({ deals });
+  }
+
   const sb = getServiceSupabase();
   if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
 
