@@ -9,7 +9,7 @@ changes to an active release.
 
 The evidence bases reviewed were:
 
-- Precedent Machine `origin/main` at `0092e10`;
+- Precedent Machine `origin/main` at `3a39885`;
 - the active canonical programme in `docs/CODEX-PROGRAM.md` and
   `docs/codex-program/canonical-contracts.md`;
 - Deal Storylines review branch
@@ -157,7 +157,9 @@ generic row variant, free-form attributes or a separate query response.
 
 ### Development while Canonical V2 is active
 
-Process work may proceed in parallel with the canonical programme by using:
+Before the generated canonical programme gates open, Process work is limited to
+specification review and other work expressly authorised by the current
+programme status. After the applicable work class opens, isolation uses:
 
 - a pinned canonical contract fingerprint;
 - immutable contract fixtures;
@@ -168,26 +170,86 @@ Process work may proceed in parallel with the canonical programme by using:
 - no production write capability; and
 - no compatibility fallback to Storylines serving tables.
 
-The module can propose and validate against fixtures before the relevant PM
-contracts are physically available. Integration happens by replacing the
-fixture adapter with the generated canonical adapter, not by migrating a
-temporary process database into production.
+Contract fixtures may be authored as non-executable specification artefacts.
+Executable fixture adapters or product surfaces begin only when their generated
+work class is open. Integration replaces any authorised fixture adapter with
+the generated canonical adapter. It never migrates a temporary process
+database into production.
 
 All domain and field additions are append-only successor contracts. They must
-not remint, reinterpret or invalidate the contract, release, row or query
-identities used by the active Agreement domain. Existing PM results and queries
-must remain byte-identical unless an independently approved migration expressly
-changes them.
+not reinterpret or invalidate frozen Agreement definitions, historical release
+objects or saved query definitions. A whole successor release necessarily
+creates new release-bound serving identities. Agreement semantic and content
+parity therefore excludes only fields the canonical contract declares
+release-bound. Any other change requires an independently approved migration.
 
 Process maintains a consumed-contract freeze manifest naming the exact PM
 contracts it relies on, including the writer, `SharedServingRow`, release,
 Serving Exact Detail, Query IR and field registry. Any merge changing one of
 those contracts triggers fixture regeneration and a divergence gate. Heavy
 extractor implementation does not begin until this consumed subset is frozen.
-Evidence work and fixture-only product work may continue while unrelated
-Canonical V2 contracts evolve.
+That manifest detects drift only. It grants no implementation, data or release
+authority.
+
+The generated `programme-gates.yaml` status is the sole sequencing authority.
+With an absent, stale or failing status artefact, only specification review and
+emergency containment may proceed. Process work classes inherit the canonical
+dependencies:
+
+- implementation planning requires `implementation_planning`;
+- canonical implementation or data work requires `canonical_work_start`;
+- the complete Agreement-plus-Process successor bundle must compile and receive
+  exact-root review, Ben approval and its own full-bundle
+  `ContractFreezeAttestation`;
+- that exact frozen pair must add a generated Process vertical-slice gate, run
+  one bounded Process-bearing source-to-UI fixture under
+  `vertical_slice_execution` and record `PROCESS_VERTICAL_SLICE_PASS`;
+- broad source discovery, extraction, reprocessing and candidate work require
+  `candidate_scope_and_extraction`, whose successor dependency set cannot open
+  before both the existing `P1_VERTICAL_SLICE_PASS` and
+  `PROCESS_VERTICAL_SLICE_PASS`; and
+- import, activation and rollback require the complete Phase 9 gates.
+
+No local Process approval, branch state, fixture adapter or subset freeze may
+infer a passing gate.
 
 ## Shared deal facts and entity authority
+
+### Required upstream canonical authority
+
+The current repository does not yet contain a canonical entity master or the
+source-backed deal-fact and adviser contracts required by this design. Legacy
+`deals` columns, `metadata.deal_facts`, `metadata.advisors_v2`, read-time name
+maps and backfill output are candidate evidence only. They cannot be relabelled
+as a canonical projection.
+
+Before Process can consume these facts, the PM bundle must define, generate and
+admit through its existing canonical primitives:
+
+- an `EntitySubject` logical type whose stable identity derives from a governed
+  external identifier or Ben-approved immutable import seed, never display
+  name;
+- entity-name occurrences and source-local labels;
+- reviewed alias and identity-bridge relationships, including conflict and
+  supersession;
+- deal-level date, structure, consideration and value claims;
+- adviser and lawyer assignment relationships with entity, role and temporal
+  scope;
+- field-level evidence, states and derivations; and
+- release-compatible result and query projections.
+
+The successor bundle registers entity expected-occurrence variants, identities,
+revisions, supersession, physical carriers, writer actions, relationship
+endpoints, release and import treatment, traceability and serving projections.
+An `EntityNameOccurrence` is source evidence about an `EntitySubject`; it is
+not itself the entity. Conflicting aliases block unification. A source-local
+party remains source-local when no governed entity subject can be established.
+
+The canonical writer and whole release own those objects. Process may propose
+missing occurrences or relationships, but it cannot create another entity,
+fact or adviser store. If the upstream authorities are not ready, the initial
+Process release must omit the affected named-entity, adviser and cross-deal
+filters rather than project legacy strings.
 
 ### Canonical fact projection
 
@@ -250,9 +312,12 @@ disclosure is not filled from another bidder or from a generic side.
 
 ### Core objects
 
-The process domain requires governed logical objects for:
+The process domain authors governed logical definitions for:
 
-- `ProcessEvent`: one legally or commercially meaningful narrated occurrence;
+- `ProcessNarrationOccurrence`: one source-local narrated occurrence, anchored
+  to exact source intervals and identified before candidate value extraction;
+- `ProcessEvent`: one legally or commercially meaningful real-world occurrence
+  composed from one or more narration occurrences;
 - `ProcessParticipant`: a canonical entity in a typed event role;
 - `BidderTrack`: the source-backed sequence for one named or source-local
   counterparty;
@@ -265,10 +330,47 @@ The process domain requires governed logical objects for:
   retelling or cross-reference between occurrences; and
 - `ProcessPassage`: the exact citable source passage and source map.
 
-### Event identity and granularity
+These labels do not author ad hoc storage. Each logical type is compiled into
+the closed canonical object system and receives an expressly registered generic
+or dedicated physical carrier:
 
-An event is the smallest occurrence at which the user asks a distinct process
-question. Paragraph boundaries do not define event boundaries.
+- `ProcessNarrationOccurrence` becomes a new governed logical occurrence type
+  in the successor bundle. Its identity derives from frozen pair, deal
+  admission, narration-definition version, occurrence-independent canonical
+  source interval set and governed ordinal, never extracted value;
+- the successor bundle adds `PROCESS_NARRATION` to
+  `ExpectedOccurrenceSlot`, permits it as a claim owner and relationship
+  endpoint, and registers its revision, carrier, writer disposition,
+  release/import/trace treatment and serving access;
+- its source-backed attributes map to governed `ClaimOccurrence`,
+  `ClaimRevision`, evidence and excerpt definitions owned by that narration;
+- participant, response, continuation, retelling, identity bridge, amendment
+  and supersession map to typed relationship occurrences and revisions;
+- a composed event maps to a frozen `ResultDefinition`, expected result and
+  component occurrence slots, `DerivedResultRevision` and complete
+  `ResultInputLineage`;
+- each phrasebook passage maps to a dedicated canonical
+  `ProcessPhrasebookPassageResult` at `RESULT_ROW` grain, with the selected
+  narration and predicate witness in its lineage, a bounded inline exact
+  preview and existing result-parent exact-detail actions; and
+- an Exclusivity history row selects the composed canonical result grain.
+
+The phrasebook `ResultDefinition` creates one occurrence per admitted
+predicate-witness narration. Its occurrence-independent member key is the
+precomputed narration occurrence and exact evidence-role slot; its ordinal
+comes from the frozen source-interval comparator. A claim query or application
+join cannot mint the card or its exact-detail parent.
+
+A successor bundle must define every required occurrence identity, carrier,
+writer action, result definition, query dimension and output grain, exact-detail
+parent and generated registry entry before implementation. `CANONICAL_RESULT`
+is an output variant, not an authority shortcut.
+
+### Narration, event identity and granularity
+
+A narration occurrence is source-local. An event is the smallest real-world
+occurrence at which the user asks a distinct process question. Paragraph
+boundaries do not define either boundary.
 
 One multi-paragraph board meeting remains one event when the source presents one
 continuous meeting. Two events on the same date remain separate when a new
@@ -276,7 +378,14 @@ occasion, actor, proposal, response or decision begins.
 
 Continuation and retelling are first-class relationships. They are not repaired
 by deleting or silently merging rows. A later proxy summary may link to an
-earlier event without becoming a duplicate market observation.
+earlier event without becoming a duplicate market observation. It remains a
+separate narration and phrasebook passage even when linked to the same event.
+
+Scope-stage discovery freezes the complete occurrence-independent narration and
+event member universe, comparator and deterministic ordinals before candidate
+values are extracted. Candidate values, selected revisions, insertion order,
+worker order and model output cannot create identities or ordinals. An
+unresolved member universe blocks the context.
 
 ### Source-local and named party identity
 
@@ -321,31 +430,115 @@ Where applicable and supported, a process event carries:
 No required dimension is fabricated to satisfy a schema. Unknown,
 not-applicable, not-examined, conflicting and failed states remain distinct.
 
+### Exclusivity clock expressions
+
+Exclusivity timing is not one date and one duration. A governed clock-expression
+AST retains:
+
+- request, execution, effectiveness and other legal anchors;
+- exact time and timezone;
+- calendar or business-day basis and versioned calendar;
+- counting convention and inclusive or exclusive boundaries;
+- earlier-of, later-of and conditional branches;
+- extension, waiver, expiry and termination events; and
+- separately stated and computed duration values with derivation.
+
+Unresolved clock semantics remain unresolved. A displayed computed duration
+cannot replace the source's stated formulation.
+
+### Release-one predicate floor
+
+The first release freezes a non-optional exclusivity predicate set and its
+dependency closure before extraction. At minimum it covers express request,
+express refusal, counterproposal, conditional acceptance, grant, extension or
+amendment, expiry or ending, requester, recipient, grantor, beneficiary, bidder
+track, timing and actual drafting.
+
+An exclusivity-subject dimension distinguishes at least:
+
+- negotiation or transaction exclusivity;
+- exclusive diligence or data access; and
+- another separately governed subject.
+
+`EXPRESS_REFUSAL`, `COUNTERPROPOSAL` and `CONDITIONAL_ACCEPTANCE` are distinct
+response states. A generic Browse label may compile only to an expressly
+governed union that preserves the constituent state and subject in every
+result.
+
+Silence or lack of a recorded grant is not an exclusivity decline. Release one
+does not publish “declined by omission”. A future absence predicate would need a
+complete governed source universe and would be labelled
+`NO_RECORDED_GRANT_WITHIN_GOVERNED_INTERVAL`, not refusal. Removing or weakening
+a mandatory predicate requires a successor bundle and fresh certification. A
+failure blocks the release rather than shrinking it until it passes.
+
+## Source-universe completeness
+
+Canonical source admission proves the documents it has received. Process also
+needs a governed acquisition universe that proves which filings should have
+been received.
+
+Before semantic discovery, a successor canonical
+`ExternalSourceAcquisitionManifest` is built:
+
+1. two implementation-disjoint acquisition paths enumerate relevant SEC
+   filings, amendments, supplements, exhibits, incorporated references and
+   approved non-SEC sources from frozen external snapshots under a frozen
+   cutoff;
+   for SEC material, one path uses complete issuer submissions history,
+   including paginated older-file indexes, while the other uses daily or
+   full-index accession inventories plus recursive filing-package and
+   cross-reference traversal;
+2. each path records forms, accession and version identity, package members,
+   expected fetch receipts, cross-document references and terminal
+   dispositions;
+3. a third reconciler requires exact membership or a blocking unresolved
+   expectation, with an independent authority source where available;
+4. every expected source resolves to a verified intake receipt or an expressly
+   reviewed non-receipt disposition, while an unresolved fetch blocks;
+5. the manifest, external snapshot identities and reconciliation bind
+   `IntakeCutoffAttestation`, receipt expectations, `IntakeUniverseManifest`,
+   deal admission, `CorpusScopeManifest`, candidate release, coverage metadata
+   and end-to-end traceability;
+6. the reconciled acquisition manifest feeds PM intake and the existing
+   independent deal-document admission machinery; and
+7. gold readers receive a separately frozen source manifest, not a list derived
+   from extractor output.
+
+An 8-K-only catalogue, manually curated accession list or admitted-document list
+cannot establish Process completeness. Any predicate based on absence requires
+both acquisition and admission completeness.
+
 ## Extraction and certification
 
 ### Pipeline
 
-1. PM admits immutable source bytes and creates the canonical text occurrence
+1. The independently reconciled acquisition universe resolves through PM intake
+   and complete deal-document admission.
+2. PM admits immutable source bytes and creates the canonical text occurrence
    and source map.
-2. A structural scope pass identifies likely narrative sections and proves
+3. A structural scope pass identifies likely narrative sections and proves
    which source regions were included. It is not counted as an independent
    event enumerator.
-3. A semantic enumerator searches the full governed source scope for the
+4. A semantic enumerator searches the full governed source scope for the
    complete question set.
-4. A mechanistically separate deterministic lexical and pattern enumerator
-   searches the same full scope without using the semantic enumerator's model
-   response or candidate list.
-5. Model inference, if used, produces non-authoritative proposal transcripts.
-6. A reviewed inference payload retains selected, rejected and unresolved
+5. A mechanistically separate family-appropriate enumerator searches the same
+   full scope without using the semantic enumerator's model response or
+   candidate list. Exclusivity uses a deterministic lexical and pattern path.
+   Future families must certify their own genuinely independent second
+   mechanism.
+6. The paths freeze occurrence-independent narration and event slots.
+7. Model inference, if used, produces non-authoritative proposal transcripts.
+8. A reviewed inference payload retains selected, rejected and unresolved
    observations with evidence.
-7. A deterministic normaliser produces the candidate semantic graph.
-8. Validators test span integrity, source mapping, entity resolution,
+9. A deterministic normaliser produces the candidate semantic graph.
+10. Validators test span integrity, source mapping, entity resolution,
    chronology, participant roles, event granularity, economics and
    relationships.
-9. Independent inventories reconcile the two event enumerations and all
+11. Independent inventories reconcile the two event enumerations and all
    discovered, rejected and residual observations.
-10. The canonical writer creates candidate objects and revisions.
-11. Predicate-specific certification and release admission determine what may
+12. The canonical writer creates candidate objects and revisions.
+13. Predicate-specific certification and release admission determine what may
     serve.
 
 The two event enumerators may share immutable source bytes and primitive
@@ -357,12 +550,17 @@ drift evidence.
 
 Every published process assertion must resolve through:
 
-`result -> typed field -> semantic object -> exact passage -> canonical source
-map -> immutable document bytes`
+`displayed field or component -> selected claim or relationship revision ->
+field-specific evidence or derivation -> exact passage or multi-span excerpt ->
+canonical source map -> immutable document bytes`
 
 The passage text must reproduce from the stored half-open source interval.
 Whitespace or punctuation rewriting is a failure. Context expansion may render
 surrounding source text, but cannot change the evidence interval.
+
+A displayed identity bridge, adviser assignment, calculation or relationship
+must cite its own witness. The primary quote cannot be made to appear to support
+a fact established elsewhere.
 
 ### Predicate-scoped certification
 
@@ -371,10 +569,12 @@ as a headline.
 
 For exclusivity, separately certify at least:
 
-- exclusivity requested;
+- exclusivity requested and its subject;
 - requester and recipient;
-- exclusivity declined;
-- form of decline;
+- express refusal;
+- counterproposal;
+- conditional acceptance;
+- generic response unions and their preserved constituent state;
 - exclusivity granted;
 - grantor and beneficiary;
 - start, end and duration;
@@ -386,6 +586,7 @@ For exclusivity, separately certify at least:
 
 A passing predicate cannot admit a failing sibling. A filter or Browse entry is
 generated only when the exact predicate is admitted by the pinned release.
+Every mandatory first-release predicate must pass.
 
 ### Gold and pilot sets
 
@@ -400,9 +601,24 @@ Metsera is the anchor gold deal because it stresses:
 - adviser and party identity.
 
 Metsera is the development and anchor set, not generalisation evidence. A
-sealed, stratified pilot must add
-different structures, source types, process shapes, periods and drafting styles.
-The first release target is at least 25 deals.
+pre-registered development and tuning set adds different structures, source
+types, process shapes, periods and drafting styles. A separately sealed
+holdout is selected from a frozen sampling frame with fixed strata, quotas,
+source cutoff and exclusions. The total first-release certification corpus is
+at least 25 deals.
+
+Rules and contracts may be revised against Metsera and the tuning set. The
+generalisation holdout is one-shot for one frozen candidate. Its contents and
+case-level failures remain withheld from the extractor team until the release
+decision. A failure permanently fails that candidate's generalisation claim and
+cannot be converted into tuning evidence or replaced within that evaluation
+generation.
+
+A later candidate needs a separately pre-registered evaluation generation,
+sampling frame, cutoff, quotas, minimum size and repeated-testing policy fixed
+by the independent holdout custodian before prior holdout details are released.
+Otherwise the product may claim only the exact enumerated certified corpus and
+no broader generality.
 
 For every certified predicate:
 
@@ -461,6 +677,20 @@ If a request is ambiguous or unsupported, the compiler returns a typed refusal
 with the nearest valid concepts. It never substitutes a close predicate and
 never uses a narrative LLM to conceal a refusal.
 
+Every admitted mapping has a frozen practitioner-utterance suite containing
+positive phrasings, drafting synonyms, abbreviations and ordinary misspellings,
+plus legally adjacent negative and ambiguous phrasings. Independent
+enumeration, mapping reconciliation and query goldens bind the compiler version
+and predicate admission. A handwritten lexicon with inspected examples is not
+certification.
+
+The global front door compiles each initial request to exactly one domain plan.
+Browse `All` is catalogue navigation, not a union query. A Boolean request that
+combines Agreement, Process or future CVR predicates returns typed unsupported
+until a successor bundle defines one composite result, output grain, set-based
+projection and certified QueryPlan. The client cannot join separate domain
+answers.
+
 ### Browse mode
 
 Browse is a dynamic governed hierarchy:
@@ -497,6 +727,11 @@ Each field definition binds:
 - data type;
 - supported operators;
 - domains and result kinds;
+- output grain and same-deal, same-event, same-track or same-component scope;
+- scalar or repeatable multiplicity, canonical equality and ordering;
+- completeness state, maximum cardinality and overflow behaviour;
+- explicit `EXISTS`, `NONE`, non-vacuous `ALL`, `CANONICAL_SET` or governed
+  reducer semantics for each capability;
 - filter, sort, group and display capabilities;
 - source and derivation requirements;
 - release and admission requirements; and
@@ -529,10 +764,27 @@ The cache identity includes release, contract, query definition, predicate
 admission, filters, columns, sort, diversity and cursor. A cache result from one
 release or predicate cannot satisfy another.
 
+That description is shorthand only. Execution reuses the complete generated
+`CanonicalServingCacheIdentity`, including manifest, corpus, namespace and
+header, serving metadata, import attestation, frozen pair, release-state tuple
+and generation, serving epoch, authorisation scope, policy and revocation
+generations, response schema and canonical action input. Each action performs
+the mandatory admission-token RPC and at most one route-specific bounded serving
+RPC.
+
 Counts, coverage and deterministic deal-and-track diversification are produced
 by a governed serving projection. Its generator version, inputs, diversity
 keys, output digest and projection rows are bound by the release identity. The
 query does not recreate ranking authority in application memory.
+
+Phrasebook results are materialised at an existing governed claim or
+result-component output grain. Each row carries one bounded verbatim
+`matched_passage_preview`, its exact interval and digest, evidence role,
+source-local narration identity and exact-detail reference. The default order
+is a compiled total comparator: direct predicate witness before contextual or
+retold evidence, source-local primary narration before later retellings, then
+governed source order. Diversification applies after that comparator by deal and
+track. The UI does not perform one exact-detail request per visible passage.
 
 ## Interface
 
@@ -596,10 +848,17 @@ Paragraph boundaries are a versioned canonical-text projection with source-map
 lineage. A normaliser or segmentation change creates a new projection identity.
 Expansion cannot depend on browser whitespace or an unversioned string split.
 
+The current byte-cursor source action cannot implement this interaction. A
+successor parent-bound paragraph-context action must fix the evidence parent,
+segmentation projection, selected paragraph ordinal, maximum context, bounded
+bidirectional cursor, object-level authorisation and response schema. The server
+derives every ordinal. The caller cannot submit an arbitrary byte offset.
+
 The reader also exposes related process discussions from the same proxy.
 Each related item has a deterministic typed relationship label and a verbatim
-preview. Any short classification or summary is secondary. The user can always
-open the actual drafting.
+preview. They use a bounded governed child collection and exact-detail
+references, not application-side graph traversal. Any short classification or
+summary is secondary. The user can always open the actual drafting.
 
 ### Result actions
 
@@ -612,6 +871,10 @@ Initial actions are:
 - export selected results.
 
 Actions use the same release and exact-detail identity as the parent row.
+Share links are explicitly bound to the exact active
+`CandidateReleaseManifest`. If it is no longer active, the link returns
+`RELEASE_NOT_ACTIVE`. Durable historical links are deferred until historical
+serving is separately certified.
 
 ### Corrections
 
@@ -620,6 +883,19 @@ proposal binds the released row, exact source detail and requested field change.
 It enters PM's canonical correction workflow and cannot mutate the active row.
 A corrected result requires a new revision, affected-predicate recertification
 and a successor release before it serves.
+
+A material unsupported fact, source-map defect or cross-track error triggers
+immediate containment. The successor bundle adds
+`SEMANTIC_OR_SOURCE_INTEGRITY` to the closed
+`ActiveReleaseRevocationActionRegistry`, with typed evidence identifying the
+served row, source, defect class, severity, discovery authority and exact
+active-before and exposure-off tuples.
+
+A credible material report disables the Process serving route within 15 minutes
+as an operational kill switch. It does not alter canonical release state or
+count as revocation. The registered action then revokes or rolls back the whole
+release tuple within 60 minutes. There is no partial Process release transition.
+Preparing a successor is not containment.
 
 ## Failure and trust behaviour
 
@@ -645,12 +921,13 @@ surfaces.
 
 Serving targets:
 
-- warm query response under 500 ms;
-- cold query response under 1.5 seconds;
-- local Browse and filter interaction under 200 ms;
-- source-context expansion under 300 ms when cached or range-addressable;
+- p95 warm query response under 500 ms and p99 under the separately frozen
+  ceiling;
+- p95 cold query response under 1.5 seconds;
+- p95 local Browse and filter interaction under 200 ms;
+- p95 source-context expansion under 300 ms when cached or range-addressable;
 - stable cursor pagination independent of corpus size; and
-- one bounded set-based database operation per ordinary query.
+- one mandatory admission RPC plus at most one bounded set-based serving RPC.
 
 Extraction target:
 
@@ -661,11 +938,15 @@ Extraction target:
 - human attention only for governed exceptions.
 
 Performance failure does not relax evidence or certification requirements.
+The benchmark manifest fixes corpus and source-package sizes, ordinary and
+maximum package definitions, concurrency, cold-cache definition, runtime,
+hardware, database state, repetitions, error budget and percentile method.
 
-## Metsera vertical-slice acceptance
+## Metsera Process-slice acceptance
 
-The Metsera exclusivity slice is complete only when it proves all of the
-following:
+This slice follows the canonical `P1_VERTICAL_SLICE_PASS`; it is not a
+substitute for that gate. The Metsera exclusivity slice is complete only when it
+proves all of the following:
 
 1. Every adjudicated exclusivity request, response, grant, change and ending is
    found.
@@ -749,6 +1030,14 @@ query engine, field registry or UI shell.
 - Feature flags and the active-release pointer remain separate controls.
 - Candidate releases are staging-only until explicit activation.
 - Rollback restores the prior release and invalidates incompatible caches.
+- Process actions are generated into PM's action-authorisation matrix with
+  default-deny service identities, object-level predicates, CSRF and origin
+  rules.
+- Filing and archive intake is sandboxed and tested for path traversal,
+  decompression bombs, hostile markup and prompt injection.
+- Data-bearing previews use isolated project identities and protected access.
+- Export, share and correction actions have separate generated authorisation
+  and rate contracts.
 
 ## Post-activation assurance
 
@@ -765,10 +1054,11 @@ For every release containing newly admitted process deals:
 - retain the audit and population identities with the release.
 
 Any unsupported served fact, critical omission, source-map failure or
-cross-track attribution error immediately blocks the affected predicate from a
-successor release and opens recertification. A material increase over the
-pilot's discovery-disagreement or exception rate also opens review under a
-frozen threshold defined before activation.
+cross-track attribution error immediately invokes the containment rule above,
+blocks the affected predicate from a successor release and opens
+recertification. A material increase over the pilot's discovery-disagreement or
+exception rate also opens review under a frozen threshold defined before
+activation.
 
 ## Definition of done
 
@@ -783,7 +1073,10 @@ Process Intelligence is ready for an activation decision only when:
 - the shared serving-row and exact-detail contracts pass on every surface;
 - performance, accessibility and responsive-browser acceptance pass;
 - Storylines data is treated only as source-backed evidence;
-- active PM agreement surfaces remain unchanged;
+- one complete successor `CandidateReleaseManifest` contains Agreement and
+  Process;
+- Agreement content and semantics pass parity, excluding documented
+  release-bound identity fields;
 - feature flags remain closed until the explicit activation decision; and
 - independent architecture and legal-semantic reviews pass.
 
@@ -803,6 +1096,41 @@ Fable's ten findings at `383ffee` are accepted:
 8. Storylines evidence includes a checksummed ledger snapshot;
 9. post-activation audit and drift-triggered recertification are required; and
 10. adviser sparsity and non-vacuous positive tests are explicit.
+
+## Sol extra-high adversarial review disposition
+
+The first cold Sol review examined the byte-identical design and plan at:
+
+- design SHA-256
+  `c09e848cbb523cd98cb25809ba4a665232bd855f7e2d5cda83a136b794ad97c5`;
+- plan SHA-256
+  `928ca53c6a2fd59937817e9f7412528259cb3329ce5645cf0fb2256f9ccdfde5`;
+  and
+- review root
+  `5fe32d3a125241dd2002622069e35fa5e6358ba17f3d56a8543b05b91301dcb3`.
+
+It returned `REJECT`. All seventeen findings are accepted: canonical programme
+sequencing, missing shared-fact authority, source-universe completeness,
+closed-contract mapping, whole-release atomicity, mandatory predicate floor,
+clock semantics, query multiplicity, field-level evidence, paragraph context,
+canonical RPC and cache contracts, active-release containment, security,
+release-bound share links, pilot leakage, executable ownership and
+family-specific enumerator independence.
+
+The amendment also accepts four defects found in the parallel primary review:
+governed inline passage delivery, natural-language utterance certification,
+untouched holdout protection and deterministic within-sample relevance order.
+This section records disposition only. The rejected review does not approve
+this successor root, which requires a fresh cold review.
+
+The second cold review examined successor root
+`c44f2083020506962384f306e4a55d230499bbd0bced971b2a2d6830ec761d80`
+and also returned `REJECT`. All eight findings are accepted: successor-bundle
+vertical-slice authority, a closed narration carrier, an actual canonical
+entity subject, result-parent phrasebook rows, acquisition-manifest release
+lineage, legally distinct response and exclusivity-subject semantics, one-shot
+holdout integrity and a registered semantic/source-integrity revocation cause.
+That review does not approve the next successor root.
 
 ## Decisions deliberately deferred
 
