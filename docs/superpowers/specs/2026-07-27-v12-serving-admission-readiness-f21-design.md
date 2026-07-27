@@ -34,12 +34,20 @@ attestation. It must:
 - bind the approved legal decisions to the governed version where they first
   appear;
 - bind the exact F20 candidate and indexed-query certification;
+- bind exact content-addressed snapshots of every cumulative V6–V11 carrier
+  and its operative `NONE` serving and release status;
+- bind exact content-addressed snapshots of both active serving validators and
+  derive their fingerprint-wide admission mechanism from that evidence;
 - prove V12 remains absent from the active serving fingerprint set;
 - prove the candidate retains no active serving, query or pointer authority;
 - reject a missing intermediate version, unexpected contract delta, changed
   legal decision, drifted F20 evidence or widened serving allowlist; and
-- return either `READY_FOR_SEPARATE_SERVING_ADMISSION_DECISION` or exact
-  blocker codes.
+- distinguish the F20-certified copy-delivery metric from cumulative V6–V11
+  surfaces that still retain no serving authority;
+- refuse to describe V12 as ready for fingerprint-wide admission while any
+  cumulative surface lacks serving certification; and
+- return the exact blocker codes and the next permitted metric-scoped boundary
+  design.
 
 The approval record is readiness evidence only. It is not a serving admission,
 release activation or production-cutover authorisation.
@@ -49,7 +57,14 @@ release activation or production-cutover authorisation.
 - The V6 through V12 chain is complete and immutable.
 - Each version changes only its governed contract area.
 - The F20 attestation is exact and independently validated.
-- The three approved legal decisions and definition rules are explicit.
+- The approved legal decisions and definition rules are explicit.
+- F20 is classified as metric-scoped evidence, not evidence for every
+  cumulative V6–V12 surface.
+- Every V6–V11 retained-authority claim and the current fingerprint-wide
+  admission-policy claim is part of the F21 content identity, so source drift
+  invalidates the attestation.
+- Fingerprint-wide admission remains blocked while the atomic-action,
+  definition/notice and parent copy-clock surfaces lack serving certification.
 - V12 remains outside `FIXTURE_SERVING_CONTRACT_FINGERPRINTS`.
 - Canonical Query and market statistics remain feature-gated closed.
 - No database command, release mutation or activation path exists in F21.
