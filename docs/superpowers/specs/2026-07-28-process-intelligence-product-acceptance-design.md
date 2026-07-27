@@ -842,6 +842,17 @@ exact approved PM data version and one exact catalogue digest.
 64. A new permitted field value creates a catalogue difference before it
     becomes active.
 
+### Visual and future-domain boundary tests
+
+65. Final visual review confirms that Process uses PM’s approved typography,
+    spacing, colours and controls. It does not copy the Fable layout.
+66. An Ask result opens the answer-first passage view. The user does not need
+    to open a Deals table before reading the precedent language.
+67. CVR does not appear as an active domain until its checked legal questions,
+    fields, certification and approved PM data version exist.
+68. A new domain reuses PM’s source and entity authority, field registry, query
+    engine and user-interface structure. It does not create parallel copies.
+
 ## Metsera product acceptance
 
 Metsera is the first Process test case.

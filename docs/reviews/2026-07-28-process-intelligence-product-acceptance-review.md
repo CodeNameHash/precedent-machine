@@ -21,7 +21,7 @@ Product acceptance specification:
 - path:
   `docs/superpowers/specs/2026-07-28-process-intelligence-product-acceptance-design.md`;
 - SHA-256:
-  `0e686a2cc898fd68ff5f4915228e09edd47469f9b3ee0d824475ee90b1694ed7`.
+  `87ca60deba2130b63e0f6b5e168653daeaae8100e4e68dba0b2534efba0621d0`.
 
 Governing Process specification:
 
@@ -57,7 +57,7 @@ The field check found:
 - 15 Deals-table fields;
 - all 15 exact keys and labels in the product specification;
 - 331 distinct user-facing Agreement field keys in the present query layer;
-- 64 sequential product acceptance tests; and
+- 68 sequential product acceptance tests; and
 - no missing current Deals-table field.
 
 The 331-field count is evidence of the present PM query layer. It is not a
@@ -188,6 +188,27 @@ value needs later review, checks and an approved PM data version.
 
 The specification keeps the existing query and context time limits. It also
 prohibits loading the full corpus before filtering.
+
+## User requirement traceability
+
+| User requirement | Specification evidence | Acceptance evidence |
+|---|---|---|
+| Natural-language precedent search | Product rule and Ask | Tests 9, 10, 13, 14 and 60 |
+| Verbatim examples, not narrative output | Product rule and Results | Tests 26 and 27 |
+| Guided navigation as well as Ask | Browse | Tests 9 to 12, 61 and 62 |
+| Dynamic next-level Browse choices | Browse | Tests 11 and 61 |
+| No large field of pills | Filter interaction | Tests 16 and 17 |
+| All PM Deals-table fields | Current PM field baseline | Tests 1 to 8 and 15 |
+| Flexible growth as PM terms expand | Flexible field growth and Browse | Tests 5 to 8 and 61 to 64 |
+| Repeat-clickable context above and below | Source reader | Tests 32 to 36 |
+| Related discussions elsewhere in the proxy | Related passages | Tests 37 and 38 |
+| Actual drafting always available | Results and Related passages | Tests 26, 37 and 38 |
+| Answer-first results | Results | Test 66 |
+| PM design language | Scope limits | Test 65 |
+| Rapid queries and context | Speed | Test 49 |
+| PM equity value, counsel and adviser integration | Shared deal facts | Tests 23 to 25 |
+| Merger of equals, reverse merger, RMT and share purchase | Transaction structures | Tests 20 to 22 |
+| Future CVR and other extractors | Future domains | Tests 67 and 68 |
 
 ## Open carry-forward items
 
