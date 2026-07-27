@@ -342,6 +342,7 @@ test('the production market-stats route remains hard-closed and the new query do
   const route = fs.readFileSync('pages/api/market-stats.js', 'utf8');
   const querySource = fs.readFileSync('lib/canonical-v2/market-cohort-query.js', 'utf8');
 
-  assert.match(route, /enabled:\s*false/);
+  assert.match(route, /marketStatsContainedHandler/);
+  assert.doesNotMatch(route, /supabase|row-market-stats|market-metrics/i);
   assert.doesNotMatch(querySource, /provision_cards|\.from\(['"]claims['"]\)|loadMarketDataset/);
 });

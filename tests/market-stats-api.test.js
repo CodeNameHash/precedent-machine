@@ -62,9 +62,14 @@ function minimalDataset() {
 
 test('market-stats production route is hard-closed in code', () => {
   const route = fs.readFileSync('pages/api/market-stats.js', 'utf8');
-  assert.match(route, /enabled: false/);
-  assert.doesNotMatch(route, /MARKET_STATS_ENABLED|process\.env/);
-  assert.match(route, /maxConcurrent: 1/);
+  assert.match(route, /require\(['"]\.\.\/\.\.\/lib\/market-stats-containment['"]\)/);
+  assert.match(route, /export default marketStatsContainedHandler/);
+  assert.doesNotMatch(
+    route,
+    /supabase|createClient|market-metrics|row-market-stats|process\.env|fetch|readFile|from\(/i,
+  );
+  assert.equal((route.match(/\brequire\(/g) || []).length, 1);
+  assert.equal((route.match(/\bimport\s/g) || []).length, 0);
 });
 
 test('default-closed handler rejects before parsing, Supabase initialisation or DB work', async () => {
@@ -81,7 +86,7 @@ test('default-closed handler rejects before parsing, Supabase initialisation or 
 
   assert.equal(res.statusCode, 503);
   assert.equal(res.body.error.code, 'MARKET_STATS_DISABLED');
-  assert.equal(res.headers['Retry-After'], '30');
+  assert.equal(res.headers['Retry-After'], undefined);
   assert.equal(res.headers['Cache-Control'], 'private, no-store');
   assert.equal(supabaseCalls, 0);
   assert.equal(loadCalls, 0);

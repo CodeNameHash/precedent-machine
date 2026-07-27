@@ -352,6 +352,7 @@ test('canonical Query route is contained before serving-client creation', () => 
   const marketStatsRoute = fs.readFileSync('pages/api/market-stats.js', 'utf8');
   assert.match(route, /lib\/query-containment/);
   assert.doesNotMatch(route, /isCanonicalV2QueryEnabled|getCanonicalV2ServingClient|process\.env/);
-  assert.match(marketStatsRoute, /enabled: false/);
+  assert.match(marketStatsRoute, /marketStatsContainedHandler/);
+  assert.doesNotMatch(marketStatsRoute, /supabase|row-market-stats|market-metrics/i);
   assert.doesNotMatch(route, /market-stats|SUPABASE_SERVICE_ROLE_KEY|NEXT_PUBLIC_SUPABASE/);
 });
