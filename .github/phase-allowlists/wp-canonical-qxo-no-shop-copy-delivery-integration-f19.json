@@ -1,0 +1,28 @@
+{
+  "phase": "WP-CANONICAL-QXO-NO-SHOP-COPY-DELIVERY-INTEGRATION-F19",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-qxo-no-shop-copy-delivery-integration-f19.json",
+    "lib/canonical-v2/admitted-composition-exact-detail.js",
+    "lib/canonical-v2/candidate-release.js",
+    "lib/canonical-v2/candidate-metric-definition-policy.js",
+    "lib/canonical-v2/market-cohort-query.js",
+    "lib/canonical-v2/qxo-no-shop-copy-delivery-canonical-f19.js",
+    "lib/canonical-v2/query-result.js",
+    "lib/canonical-v2/serving-projection.js",
+    "lib/canonical-v2/shared-serving-row.js",
+    "scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs",
+    "tests/canonical-v2-qxo-no-shop-copy-delivery-canonical-f19.test.js",
+    "tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-canonical-f19-staging-attestation.json"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "docs/**",
+    "lib/canonical-v2/canonical-writer.js",
+    "pages/**",
+    "sql/**",
+    "supabase/**",
+    "next.config.js"
+  ],
+  "note": "Integrates the interpreted QXO copy-delivery metric into offline canonical observation, class-keyed cohort, SharedServingRow/V2, admitted exact detail, query projection and candidate release contracts. V12 remains outside active serving, active query and active pointer authority."
+}

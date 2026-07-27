@@ -113,6 +113,14 @@ const {
   validateQxoNoShopCopyDeliveryServingF18,
 } = require('../lib/canonical-v2/qxo-no-shop-copy-delivery-serving-f18');
 const {
+  buildQxoNoShopCopyDeliveryCanonicalF19,
+  validateQxoNoShopCopyDeliveryCanonicalF19,
+} = require('../lib/canonical-v2/qxo-no-shop-copy-delivery-canonical-f19');
+const {
+  buildDealServingDirectoryRecord,
+  validateOfflineCandidateRelease,
+} = require('../lib/canonical-v2/candidate-release');
+const {
   buildQxoAdmittedNoShopActionsSlice,
 } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
 const {
@@ -222,6 +230,10 @@ const COPY_DELIVERY_SERVING_F18_FIXTURE_PATH = join(
   ROOT,
   'tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-serving-f18-staging-attestation.json',
 );
+const COPY_DELIVERY_CANONICAL_F19_FIXTURE_PATH = join(
+  ROOT,
+  'tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-canonical-f19-staging-attestation.json',
+);
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
 function fail(message) {
@@ -266,6 +278,11 @@ LIMIT 2;`;
       cwd: ROOT,
       encoding: 'utf8',
       timeout: 90_000,
+      ...(process.env.QXO_STAGING_QUERY_TIMEOUT_MS
+        ? {
+          timeout: Number(process.env.QXO_STAGING_QUERY_TIMEOUT_MS),
+        }
+        : {}),
       maxBuffer: 6 * 1024 * 1024,
       shell: false,
     },
@@ -2875,6 +2892,7 @@ function buildCopyDeliveryClaimF17Runtime() {
   return {
     carrier,
     inputs,
+    noticeSourceCarrier,
   };
 }
 
@@ -2998,6 +3016,302 @@ function buildCopyDeliveryServingF18Attestation() {
     status: carrier.status,
     qxo_no_shop_copy_delivery_serving_f18_id:
       carrier.qxo_no_shop_copy_delivery_serving_f18_id,
+    canonical_payload_digest: carrier.canonical_payload_digest,
+  };
+}
+
+function buildCopyDeliveryCanonicalF19Runtime() {
+  const {
+    carrier: f17Carrier,
+    noticeSourceCarrier,
+  } = buildCopyDeliveryClaimF17Runtime();
+  const { carrier: f18Carrier } = buildCopyDeliveryServingF18Runtime();
+  const {
+    contractBundle,
+    admittedSourceContext,
+    parserInputs,
+  } = buildSourceInputs(compileFixtureContractV12());
+  const sourceExcerpts = Object.fromEntries(
+    noticeSourceCarrier.source_evidence.map((entry) => [
+      entry.source_excerpt.excerpt_id,
+      entry.source_excerpt,
+    ]),
+  );
+  const inputs = {
+    contract_bundle: contractBundle,
+    qxo_no_shop_copy_delivery_claim_f17: f17Carrier,
+    qxo_no_shop_copy_delivery_serving_f18: f18Carrier,
+    admitted_source_context: admittedSourceContext,
+    source_admission_manifest: parserInputs.source_admission_manifest,
+    reviewed_no_shop_slice: { excerpts: sourceExcerpts },
+  };
+  const carrier = buildQxoNoShopCopyDeliveryCanonicalF19(inputs);
+  validateQxoNoShopCopyDeliveryCanonicalF19({
+    qxo_no_shop_copy_delivery_canonical_f19: carrier,
+    ...inputs,
+  });
+  return { carrier, inputs };
+}
+
+function buildCopyDeliveryCanonicalF19Attestation() {
+  const { carrier, inputs } = buildCopyDeliveryCanonicalF19Runtime();
+  const sourceTextField = ['exact', 'text'].join('_');
+  const exactText = carrier.exact_detail_package.detail_payloads[0]
+    .response_body.excerpts.map(
+      (excerpt) => excerpt[sourceTextField],
+    ).join('\n');
+  const changedF17 = JSON.parse(JSON.stringify(
+    inputs.qxo_no_shop_copy_delivery_claim_f17,
+  ));
+  changedF17.presentation.ambiguity_warning_text = 'Drifted warning';
+  let nestedF17DriftRejected = false;
+  try {
+    buildQxoNoShopCopyDeliveryCanonicalF19({
+      ...inputs,
+      qxo_no_shop_copy_delivery_claim_f17: changedF17,
+    });
+  } catch (_) {
+    nestedF17DriftRejected = true;
+  }
+  const changedRelease = JSON.parse(JSON.stringify(
+    carrier.candidate_release,
+  ));
+  changedRelease.query_records[0].canonical_value = '2';
+  const changedQueryBody = {
+    ...changedRelease.query_records[0],
+  };
+  delete changedQueryBody.canonical_payload_digest;
+  changedRelease.query_records[0].canonical_payload_digest = contentId(
+    'QUERY_PROJECTION_RECORD_PAYLOAD/V3',
+    changedQueryBody,
+  );
+  changedRelease.manifest.roots.query_projection_root = contentId(
+    'OFFLINE_RELEASE_QUERY/V1',
+    [changedRelease.query_records[0].canonical_payload_digest],
+  );
+  const changedManifestBody = { ...changedRelease.manifest };
+  delete changedManifestBody.candidate_release_manifest_id;
+  delete changedManifestBody.canonical_payload_digest;
+  changedRelease.manifest.candidate_release_manifest_id = contentId(
+    'OFFLINE_CANDIDATE_RELEASE_MANIFEST/V1',
+    changedManifestBody,
+  );
+  changedRelease.manifest.canonical_payload_digest = contentId(
+    'OFFLINE_CANDIDATE_RELEASE_MANIFEST_PAYLOAD/V1',
+    changedManifestBody,
+  );
+  let resignedQueryDriftRejected = false;
+  try {
+    validateOfflineCandidateRelease(changedRelease);
+  } catch (_) {
+    resignedQueryDriftRejected = true;
+  }
+  const changedDetail = JSON.parse(JSON.stringify(
+    carrier.candidate_release,
+  ));
+  changedDetail.exact_detail_packages[0].detail_payloads[0]
+    .response_body.excerpts[0][sourceTextField] = 'Drifted source';
+  let exactDetailDriftRejected = false;
+  try {
+    validateOfflineCandidateRelease(changedDetail);
+  } catch (_) {
+    exactDetailDriftRejected = true;
+  }
+  const resignedDetail = JSON.parse(JSON.stringify(
+    carrier.candidate_release,
+  ));
+  const resignedPackage = resignedDetail.exact_detail_packages[0];
+  const resignedPayload = resignedPackage.detail_payloads[0];
+  resignedPayload.response_body.derived_result_revision_id = 'f'.repeat(64);
+  resignedPayload.response_body_digest = contentId(
+    'SERVING_EXACT_DETAIL_RESPONSE_BODY/V2',
+    resignedPayload.response_body,
+  );
+  const resignedPayloadBody = { ...resignedPayload };
+  delete resignedPayloadBody.source_detail_payload_id;
+  delete resignedPayloadBody.canonical_payload_digest;
+  resignedPayload.source_detail_payload_id = contentId(
+    'SERVING_EXACT_DETAIL_PAYLOAD/V2',
+    resignedPayloadBody,
+  );
+  resignedPayload.canonical_payload_digest = contentId(
+    'SERVING_EXACT_DETAIL_PAYLOAD_BODY/V2',
+    resignedPayloadBody,
+  );
+  const resignedRow = resignedDetail.shared_rows[0];
+  resignedRow.source_actions[0].source_detail_payload_id =
+    resignedPayload.source_detail_payload_id;
+  const resignedRowBody = { ...resignedRow };
+  delete resignedRowBody.canonical_payload_digest;
+  resignedRow.canonical_payload_digest = contentId(
+    'SHARED_SERVING_ROW_PAYLOAD/V2',
+    resignedRowBody,
+  );
+  resignedPackage.row = JSON.parse(JSON.stringify(resignedRow));
+  resignedDetail.manifest.roots.shared_row_root = contentId(
+    'OFFLINE_RELEASE_ROWS/V1',
+    [resignedRow.canonical_payload_digest],
+  );
+  resignedDetail.manifest.roots.exact_detail_root = contentId(
+    'OFFLINE_RELEASE_DETAILS/V1',
+    [resignedPayload.canonical_payload_digest],
+  );
+  const resignedManifestBody = { ...resignedDetail.manifest };
+  delete resignedManifestBody.candidate_release_manifest_id;
+  delete resignedManifestBody.canonical_payload_digest;
+  resignedDetail.manifest.candidate_release_manifest_id = contentId(
+    'OFFLINE_CANDIDATE_RELEASE_MANIFEST/V1',
+    resignedManifestBody,
+  );
+  resignedDetail.manifest.canonical_payload_digest = contentId(
+    'OFFLINE_CANDIDATE_RELEASE_MANIFEST_PAYLOAD/V1',
+    resignedManifestBody,
+  );
+  let resignedExactDetailDriftRejected = false;
+  try {
+    validateOfflineCandidateRelease(resignedDetail);
+  } catch (_) {
+    resignedExactDetailDriftRejected = true;
+  }
+  const resignedDirectory = JSON.parse(JSON.stringify(
+    carrier.candidate_release,
+  ));
+  resignedDirectory.deal_directory_entries[0] =
+    buildDealServingDirectoryRecord({
+      servingNamespaceId:
+        resignedDirectory.manifest.serving_namespace_id,
+      corpusReleaseId: resignedDirectory.manifest.corpus_release_id,
+      contractFingerprint: 'e'.repeat(64),
+      applicationDealId:
+        resignedDirectory.deal_directory_entries[0].application_deal_id,
+      governedDealKey: 'deal:substituted',
+      dealAdmissionId: 'd'.repeat(64),
+    });
+  resignedDirectory.manifest.roots.deal_directory_root = contentId(
+    'OFFLINE_RELEASE_DEALS/V1',
+    [
+      resignedDirectory.deal_directory_entries[0]
+        .canonical_payload_digest,
+    ],
+  );
+  const resignedDirectoryManifestBody = {
+    ...resignedDirectory.manifest,
+  };
+  delete resignedDirectoryManifestBody.candidate_release_manifest_id;
+  delete resignedDirectoryManifestBody.canonical_payload_digest;
+  resignedDirectory.manifest.candidate_release_manifest_id = contentId(
+    'OFFLINE_CANDIDATE_RELEASE_MANIFEST/V1',
+    resignedDirectoryManifestBody,
+  );
+  resignedDirectory.manifest.canonical_payload_digest = contentId(
+    'OFFLINE_CANDIDATE_RELEASE_MANIFEST_PAYLOAD/V1',
+    resignedDirectoryManifestBody,
+  );
+  let resignedDirectoryDriftRejected = false;
+  try {
+    validateOfflineCandidateRelease(resignedDirectory);
+  } catch (_) {
+    resignedDirectoryDriftRejected = true;
+  }
+  const resignedNamespace = JSON.parse(JSON.stringify(
+    carrier.candidate_release,
+  ));
+  const substitutedNamespace = 'c'.repeat(64);
+  resignedNamespace.cohort_requests[0].serving_namespace_id =
+    substitutedNamespace;
+  resignedNamespace.cohort_requests[0].cache_key = contentId(
+    'MARKET_COHORT_CACHE/V2',
+    {
+      serving_namespace_id: substitutedNamespace,
+      corpus_release_id:
+        resignedNamespace.cohort_requests[0].corpus_release_id,
+      cohort_digest:
+        resignedNamespace.cohort_requests[0].cohort_digest,
+      comparability_class_digest:
+        resignedNamespace.cohort_requests[0]
+          .comparability_class_digest,
+    },
+  );
+  resignedNamespace.cohort_results[0].serving_namespace_id =
+    substitutedNamespace;
+  resignedNamespace.manifest.roots.cohort_request_root = contentId(
+    'OFFLINE_RELEASE_COHORT_REQUESTS/V1',
+    [contentId(
+      'MARKET_COHORT_REQUEST_PAYLOAD/V2',
+      resignedNamespace.cohort_requests[0],
+    )],
+  );
+  resignedNamespace.manifest.roots.cohort_result_root = contentId(
+    'OFFLINE_RELEASE_COHORT_RESULTS/V1',
+    [contentId(
+      'MARKET_COHORT_RESULT_PAYLOAD/V2',
+      resignedNamespace.cohort_results[0],
+    )],
+  );
+  const resignedNamespaceManifestBody = {
+    ...resignedNamespace.manifest,
+  };
+  delete resignedNamespaceManifestBody.candidate_release_manifest_id;
+  delete resignedNamespaceManifestBody.canonical_payload_digest;
+  resignedNamespace.manifest.candidate_release_manifest_id = contentId(
+    'OFFLINE_CANDIDATE_RELEASE_MANIFEST/V1',
+    resignedNamespaceManifestBody,
+  );
+  resignedNamespace.manifest.canonical_payload_digest = contentId(
+    'OFFLINE_CANDIDATE_RELEASE_MANIFEST_PAYLOAD/V1',
+    resignedNamespaceManifestBody,
+  );
+  let resignedNamespaceDriftRejected = false;
+  try {
+    validateOfflineCandidateRelease(resignedNamespace);
+  } catch (_) {
+    resignedNamespaceDriftRejected = true;
+  }
+  return {
+    schema_version:
+      'QXO_NO_SHOP_COPY_DELIVERY_CANONICAL_F19_STAGING_ATTESTATION/V1',
+    environment: 'STAGING',
+    authority_scope: carrier.authority_scope,
+    corpus_release_id: carrier.corpus_release_id,
+    serving_namespace_id: carrier.serving_namespace_id,
+    result_component_revision_id:
+      carrier.result.component_revision_id,
+    observation_serving_key:
+      carrier.projection.observation.market_observation_serving_key,
+    comparability_class_digest:
+      carrier.cohort_request.comparability_class_digest,
+    cohort_digest: carrier.cohort_request.cohort_digest,
+    cache_key: carrier.cohort_request.cache_key,
+    row_serving_key: carrier.shared_row.row_serving_key,
+    exact_detail_payload_id:
+      carrier.exact_detail_package.detail_payloads[0]
+        .source_detail_payload_id,
+    exact_excerpt_ids:
+      carrier.exact_detail_package.detail_payloads[0]
+        .response_body.excerpts.map((excerpt) => excerpt.excerpt_id),
+    exact_detail_legal_evidence: {
+      primary_trigger_present:
+        exactText.includes('after receipt of any Company Acquisition Proposal or any Company Request'),
+      company_request_definition_present:
+        exactText.includes('would reasonably be expected to give rise to or result in a Company Acquisition Proposal')
+          && exactText.includes('Company Request'),
+    },
+    adversarial_rejections: {
+      nested_f17_drift: nestedF17DriftRejected,
+      resigned_query_drift: resignedQueryDriftRejected,
+      exact_detail_drift: exactDetailDriftRejected,
+      resigned_exact_detail_drift: resignedExactDetailDriftRejected,
+      resigned_directory_drift: resignedDirectoryDriftRejected,
+      resigned_namespace_drift: resignedNamespaceDriftRejected,
+    },
+    query_projection_digest:
+      carrier.query_projection.canonical_payload_digest,
+    offline_manifest_id:
+      carrier.candidate_release.manifest
+        .candidate_release_manifest_id,
+    status: carrier.status,
+    qxo_no_shop_copy_delivery_canonical_f19_id:
+      carrier.qxo_no_shop_copy_delivery_canonical_f19_id,
     canonical_payload_digest: carrier.canonical_payload_digest,
   };
 }
@@ -3242,13 +3556,18 @@ if (![
   '--copy-delivery-claim-f17-verify',
   '--copy-delivery-serving-f18-print',
   '--copy-delivery-serving-f18-verify',
+  '--copy-delivery-canonical-f19-print',
+  '--copy-delivery-canonical-f19-verify',
 ].includes(mode)
   || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--inline-permission-f9-print|--inline-permission-f9-verify|--notice-source-f6-print|--notice-source-f6-verify|--notice-semantic-closure-f6-print|--notice-semantic-closure-f6-verify|--notice-review-materialisation-f7-print|--notice-review-materialisation-f7-verify|--notice-definition-relationships-f8-print|--notice-definition-relationships-f8-verify|--notice-receipt-f10-print|--notice-receipt-f10-verify|--definition-control-f11-print|--definition-control-f11-verify|--definition-scope-f13-print|--definition-scope-f13-verify|--notice-revision-f14-print|--notice-revision-f14-verify|--copy-clock-f15-print|--copy-clock-f15-verify|--copy-delivery-metric-f16-print|--copy-delivery-metric-f16-verify|--copy-delivery-claim-f17-print|--copy-delivery-claim-f17-verify|--copy-delivery-serving-f18-print|--copy-delivery-serving-f18-verify');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs [supported attestation print/verify mode, including --copy-delivery-canonical-f19-print|--copy-delivery-canonical-f19-verify]');
 }
 
 try {
-  const copyDeliveryServingF18Mode =
+  const copyDeliveryCanonicalF19Mode =
+    mode.startsWith('--copy-delivery-canonical-f19-');
+  const copyDeliveryServingF18Mode = !copyDeliveryCanonicalF19Mode
+    &&
     mode.startsWith('--copy-delivery-serving-f18-');
   const copyDeliveryClaimF17Mode = !copyDeliveryServingF18Mode
     &&
@@ -3295,7 +3614,9 @@ try {
     && mode.startsWith('--definitions-f6-');
   const actionsF6Mode = !definitionsF6Mode && mode.startsWith('--actions-f6-');
   const actionsMode = !actionsF6Mode && mode.startsWith('--actions-');
-  const attestation = copyDeliveryServingF18Mode
+  const attestation = copyDeliveryCanonicalF19Mode
+    ? buildCopyDeliveryCanonicalF19Attestation()
+    : copyDeliveryServingF18Mode
     ? buildCopyDeliveryServingF18Attestation()
     : copyDeliveryClaimF17Mode
     ? buildCopyDeliveryClaimF17Attestation()
@@ -3335,7 +3656,9 @@ try {
     : attestation;
   if (mode.endsWith('verify')) {
     const expected = JSON.parse(readFileSync(
-      copyDeliveryServingF18Mode
+      copyDeliveryCanonicalF19Mode
+        ? COPY_DELIVERY_CANONICAL_F19_FIXTURE_PATH
+        : copyDeliveryServingF18Mode
         ? COPY_DELIVERY_SERVING_F18_FIXTURE_PATH
         : copyDeliveryClaimF17Mode
         ? COPY_DELIVERY_CLAIM_F17_FIXTURE_PATH
