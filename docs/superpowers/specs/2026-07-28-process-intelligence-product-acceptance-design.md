@@ -853,6 +853,23 @@ exact approved PM data version and one exact catalogue digest.
 68. A new domain reuses PM’s source and entity authority, field registry, query
     engine and user-interface structure. It does not create parallel copies.
 
+### Interaction detail tests
+
+69. An active share link opens the exact same result and approved PM data
+    version.
+70. A copied passage contains the exact verbatim text and citation. It does not
+    copy only the shortened on-screen preview.
+71. The user can edit or clear each part of the active-filter sentence.
+72. A fixed-value filter shows only admitted values that occur after the other
+    active filters apply.
+73. A selected filter value stays visible while the user edits that filter.
+74. A field that was not examined shows “Not examined”. It does not show blank
+    text or “No”.
+75. A shared-fact source conflict shows the checked conflict state. The browser
+    does not select a value.
+76. An invalid context cursor fails only that context request. It does not
+    change the selected passage or remove valid results.
+
 ## Metsera product acceptance
 
 Metsera is the first Process test case.

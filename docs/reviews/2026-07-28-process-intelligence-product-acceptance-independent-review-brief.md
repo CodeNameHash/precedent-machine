@@ -31,7 +31,7 @@ Return `PASS` only if the exact reviewed specification is:
 - path:
   `docs/superpowers/specs/2026-07-28-process-intelligence-product-acceptance-design.md`;
 - SHA-256:
-  `87ca60deba2130b63e0f6b5e168653daeaae8100e4e68dba0b2534efba0621d0`.
+  `e13bf1594119e9bef23811dfeae5f462232e59c602a15f838a4b18340d29a7b6`.
 
 ### Governing Process specification
 
@@ -234,7 +234,7 @@ requirements.
 
 ### 11. Acceptance-test quality
 
-Review all 68 acceptance tests.
+Review all 76 acceptance tests.
 
 Find:
 
@@ -310,4 +310,4 @@ End with:
 - unresolved findings;
 - accepted carry-forward items;
 - exact reviewed SHA-256 values; and
-- the result of the 15-field, 331-field and 68-test checks.
+- the result of the 15-field, 331-field and 76-test checks.

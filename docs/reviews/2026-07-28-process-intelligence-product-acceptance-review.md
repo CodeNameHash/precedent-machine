@@ -21,7 +21,7 @@ Product acceptance specification:
 - path:
   `docs/superpowers/specs/2026-07-28-process-intelligence-product-acceptance-design.md`;
 - SHA-256:
-  `87ca60deba2130b63e0f6b5e168653daeaae8100e4e68dba0b2534efba0621d0`.
+  `e13bf1594119e9bef23811dfeae5f462232e59c602a15f838a4b18340d29a7b6`.
 
 Governing Process specification:
 
@@ -57,7 +57,7 @@ The field check found:
 - 15 Deals-table fields;
 - all 15 exact keys and labels in the product specification;
 - 331 distinct user-facing Agreement field keys in the present query layer;
-- 68 sequential product acceptance tests; and
+- 76 sequential product acceptance tests; and
 - no missing current Deals-table field.
 
 The 331-field count is evidence of the present PM query layer. It is not a
@@ -188,6 +188,14 @@ value needs later review, checks and an approved PM data version.
 
 The specification keeps the existing query and context time limits. It also
 prohibits loading the full corpus before filtering.
+
+### A16. Described interactions could lack direct tests
+
+**Result:** Resolved
+
+The final test set now covers active share links, full copied passages, filter
+editing, available-value behaviour, selected-value persistence, “Not
+examined”, shared-fact conflicts and invalid context cursors.
 
 ## User requirement traceability
 
