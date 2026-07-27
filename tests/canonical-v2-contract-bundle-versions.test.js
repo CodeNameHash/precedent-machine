@@ -31,6 +31,7 @@ const {
   FIXTURE_CONTRACT_INPUT_V8,
   FIXTURE_CONTRACT_INPUT_V9,
   FIXTURE_CONTRACT_INPUT_V10,
+  FIXTURE_CONTRACT_INPUT_V11,
   FIXTURE_CONTRACT_FINGERPRINTS,
   FIXTURE_SERVING_CONTRACT_FINGERPRINTS,
   CLAIM_INTERPRETATION_POLICY_V1,
@@ -42,6 +43,7 @@ const {
   NO_SHOP_NOTICE_OBLIGATION_SCHEMA_V3,
   NO_SHOP_NOTICE_OBLIGATION_SCHEMA_V4,
   NO_SHOP_NOTICE_OBLIGATION_SCHEMA_V5,
+  NO_SHOP_NOTICE_OBLIGATION_SCHEMA_V6,
   NOTICE_DEFINITION_SCOPE_CLOSURE_V1,
   NO_SHOP_EXCEPTION_PREREQUISITE_CODES_V2,
   USES_DEFINITION_EFFECT_SCHEMA_V1,
@@ -56,6 +58,7 @@ const {
   compileFixtureContractV8,
   compileFixtureContractV9,
   compileFixtureContractV10,
+  compileFixtureContractV11,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -70,6 +73,7 @@ const FROZEN_F7 = '5037e25762892f44f660516913d58a23c17ebab0c10c160fcf8cbd0f65a90
 const FROZEN_F8 = 'dd0f1d4afc02492edf1bbbebe1a6699498fd6c3d26d890254a151b1d8c7d0a80';
 const FROZEN_F9 = '8576011555a67b18f6539bb259dea4285d2e3d982c4b906a3edc73162dc9e8c7';
 const FROZEN_F10 = 'aee4b40ead2e76ed744b0f20967a48493c618125959a023f8262612da23aa0e5';
+const FROZEN_F11 = '7cf669cb86e8cda58b33a623b7f5405e56b7c1aa4c9dfdbe1136edb6beffa6ca';
 
 const APPROVED_V2_ADDITIONS = [
   'TERMR-BREACH',
@@ -130,7 +134,7 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F10 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F11 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
@@ -140,6 +144,7 @@ test('F1 through F10 are distinct recognised fixture contract fingerprints', () 
   assert.notEqual(FROZEN_F7, FROZEN_F8);
   assert.notEqual(FROZEN_F8, FROZEN_F9);
   assert.notEqual(FROZEN_F9, FROZEN_F10);
+  assert.notEqual(FROZEN_F10, FROZEN_F11);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -153,6 +158,7 @@ test('F1 through F10 are distinct recognised fixture contract fingerprints', () 
       FROZEN_F8,
       FROZEN_F9,
       FROZEN_F10,
+      FROZEN_F11,
     ].sort(),
   );
   assert.deepEqual(
@@ -1754,6 +1760,217 @@ test('F10 refuses opaque, unbounded and silently lossy closure hybrids', () => {
   }), /contract version/);
 });
 
+test('F11 separates the selected primary copy clock from the unresolved alternative', () => {
+  const f10 = compileFixtureContractV10();
+  const f11 = compileFixtureContractV11();
+  assert.equal(f11.fingerprint, FROZEN_F11);
+  assert.equal(validateContractBundle(f11), true);
+  assert.equal(
+    canonicalJson(f11),
+    canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V11)),
+  );
+  assert.equal(
+    canonicalJson(NO_SHOP_NOTICE_OBLIGATION_SCHEMA_V6),
+    canonicalJson(FIXTURE_CONTRACT_INPUT_V11.no_shop_semantic_schemas.find(
+      (entry) => entry.schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+    )),
+  );
+  const notice = f11.no_shop_semantic_schema_definitions.find(
+    (entry) => entry.semantic_schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  );
+  const clock = notice.copy_clock_scope_contract;
+  assert.equal(notice.semantic_schema_version, 6);
+  assert.equal(notice.record_schema, 'NO_SHOP_NOTICE_OBLIGATION/V6');
+  assert.equal(clock.record_schema, 'NOTICE_COPY_CLOCK_SCOPE/V2');
+  assert.equal(
+    clock.interpretation_payload_binding.payload_schema,
+    'NOTICE_CLOCK_INTERPRETATION/V2',
+  );
+  assert.equal(
+    clock.required_primary_receipt_interpretation_code,
+    'RECEIPT_OF_PRIOR_CLAUSE_COMPANY_ACQUISITION_PROPOSAL_OR_COMPANY_REQUEST',
+  );
+  assert.equal(
+    clock.required_primary_clock_application_scope_code,
+    'EACH_SATISFYING_PRIOR_TRIGGER_OCCURRENCE',
+  );
+  assert.equal(
+    clock.required_primary_item_or_batch_cardinality_state,
+    'NOT_APPLICABLE',
+  );
+  assert.equal(
+    clock.required_alternative_clock_application_scope_state,
+    'UNRESOLVED_ITEM_OR_BATCH',
+  );
+  assert.equal(
+    clock.required_alternative_item_or_batch_cardinality_state,
+    'UNRESOLVED',
+  );
+  assert.equal(
+    clock.required_cardinality_ambiguity_scope_code,
+    'ALTERNATIVE_ITEM_RECEIPT_INTERPRETATION_ONLY',
+  );
+  assert.equal(
+    clock.required_comparability_state,
+    'PRIMARY_INTERPRETATION_COMPARABLE_WITH_AMBIGUITY_FLAG',
+  );
+  assert.equal(clock.required_resolution_state, 'RESOLVED_WITH_REVIEW_NOTE');
+  assert.equal(
+    clock.required_fields.includes('item_or_batch_cardinality_state'),
+    false,
+  );
+  assert.equal(clock.legacy_combined_item_or_batch_cardinality_state_forbidden, true);
+  assert.deepEqual(clock.primary_metric_contract, {
+    metric_role: 'COPY_DEADLINE_FROM_PROPOSAL_OR_REQUEST_RECEIPT',
+    normalisation_schema: 'OBSERVATION_NORMALISATION/V1',
+    value_kind: 'DURATION',
+    required_raw_magnitude: '24',
+    required_raw_unit: 'HOURS',
+    required_canonical_value: '1',
+    required_canonical_unit: 'DAYS',
+    required_day_basis: 'ELAPSED',
+    required_basis_key:
+      'DAYS:ELAPSED:PROPOSAL_OR_REQUEST_RECEIPT',
+    required_trigger: 'PROPOSAL_OR_REQUEST_RECEIPT',
+    required_derivation_version: 'QXO_NO_SHOP_COPY_CLOCK_F15/V1',
+    normalisation_payload_digest_required: true,
+    source_timing_claim_revision_id_required: true,
+    source_normalisation_payload_digest_required: true,
+    cohort_requires_same_metric_role: true,
+    cohort_requires_same_basis_key: true,
+    item_receipt_clock_cohort_mix_forbidden: true,
+    generic_notice_period_label_forbidden: true,
+    promptly_qualifier_preservation_required: true,
+  });
+  assert.equal(
+    notice.notice_revision_identity_contract.content_address_domain,
+    'NO_SHOP_NOTICE_OBLIGATION/V6',
+  );
+  assert.deepEqual(
+    notice.definition_scope_closure_contract,
+    NOTICE_DEFINITION_SCOPE_CLOSURE_V1,
+  );
+  assert.equal(
+    FIXTURE_SERVING_CONTRACT_FINGERPRINTS.includes(FROZEN_F11),
+    false,
+  );
+  assert.equal(
+    canonicalJson(fixtureContractForFingerprint(FROZEN_F11)),
+    canonicalJson(f11),
+  );
+  assert.equal(canonicalJson(compileFixtureContractV10()), canonicalJson(f10));
+});
+
+test('F11 changes only the versioned notice copy-clock and revision contract', () => {
+  const f10 = compileFixtureContractV10();
+  const f11 = compileFixtureContractV11();
+  const stable = (bundle) => {
+    const {
+      fingerprint: _fingerprint,
+      no_shop_semantic_schema_definitions: _noShopSchemas,
+      ...rest
+    } = bundle;
+    return rest;
+  };
+  assert.equal(canonicalJson(stable(f11)), canonicalJson(stable(f10)));
+  assert.deepEqual(
+    f11.no_shop_semantic_schema_definitions.filter(
+      (entry) => entry.semantic_schema_key !== 'NO_SHOP_NOTICE_OBLIGATION',
+    ),
+    f10.no_shop_semantic_schema_definitions.filter(
+      (entry) => entry.semantic_schema_key !== 'NO_SHOP_NOTICE_OBLIGATION',
+    ),
+  );
+  const notice10 = f10.no_shop_semantic_schema_definitions.find(
+    (entry) => entry.semantic_schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  );
+  const notice11 = f11.no_shop_semantic_schema_definitions.find(
+    (entry) => entry.semantic_schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  );
+  assert.deepEqual(
+    notice11.definition_scope_closure_contract,
+    notice10.definition_scope_closure_contract,
+  );
+  assert.deepEqual(
+    notice11.definition_child_resolution_contract,
+    notice10.definition_child_resolution_contract,
+  );
+  assert.deepEqual(notice11.required_fields, notice10.required_fields);
+});
+
+test('F11 refuses lossy copy-clock hybrids and silent ambiguity removal', () => {
+  const mutateClock = (mutation) => {
+    const schemas = JSON.parse(JSON.stringify(
+      FIXTURE_CONTRACT_INPUT_V11.no_shop_semantic_schemas,
+    ));
+    const notice = schemas.find(
+      (entry) => entry.schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+    );
+    mutation(notice.copy_clock_scope_contract, notice);
+    return schemas;
+  };
+  const reject = (mutation) => assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V11,
+    no_shop_semantic_schemas: mutateClock(mutation),
+  }), /contract version/);
+
+  reject((clock) => {
+    clock.record_schema = 'NOTICE_COPY_CLOCK_SCOPE/V1';
+  });
+  reject((clock) => {
+    clock.interpretation_payload_binding.payload_schema =
+      'NOTICE_CLOCK_INTERPRETATION/V1';
+  });
+  reject((clock) => {
+    clock.required_primary_interpretation_subject_code =
+      'ITEM_REQUIRED_TO_BE_COPIED';
+  });
+  reject((clock) => {
+    clock.required_primary_item_or_batch_cardinality_state = 'UNRESOLVED';
+  });
+  reject((clock) => {
+    delete clock.required_alternative_item_or_batch_cardinality_state;
+  });
+  reject((clock) => {
+    clock.required_alternative_item_or_batch_cardinality_state = 'RESOLVED';
+  });
+  reject((clock) => {
+    clock.required_cardinality_ambiguity_scope_code = 'NONE';
+  });
+  reject((clock) => {
+    clock.lawyer_ambiguity_flag_required = false;
+  });
+  reject((clock) => {
+    clock.required_resolution_state = 'RESOLVED_CLEAR';
+  });
+  reject((_clock, notice) => {
+    notice.notice_revision_identity_contract.content_address_domain =
+      'NO_SHOP_NOTICE_OBLIGATION/V5';
+  });
+});
+
+test('F11 defines semantic comparison but grants no serving authority', () => {
+  const f11 = compileFixtureContractV11();
+  const notice = f11.no_shop_semantic_schema_definitions.find(
+    (entry) => entry.semantic_schema_key === 'NO_SHOP_NOTICE_OBLIGATION',
+  );
+  assert.equal(
+    notice.copy_clock_scope_contract.required_comparability_effect_code,
+    'AMBIGUITY_AFFECTS_METRIC_OR_COHORT',
+  );
+  assert.equal(
+    notice.copy_clock_scope_contract.ambiguity_presentation_contract
+      .ambiguity_flag_required_in_every_review_compare_and_query_result,
+    true,
+  );
+  assert.equal(
+    notice.copy_clock_scope_contract.ambiguity_presentation_contract
+      .alternative_interpretation_required_in_every_review_compare_and_query_result,
+    true,
+  );
+  assert.equal(FIXTURE_SERVING_CONTRACT_FINGERPRINTS.includes(FROZEN_F11), false);
+});
+
 // ---------------------------------------------------------------------------
 // Per-version validation: validateInput (exercised via compileFixtureContract)
 // accepts either frozen concept-key vocabulary and rejects anything else.
@@ -1780,7 +1997,7 @@ test('a bundle missing one of the four V2 additions is rejected (not silently ac
   assert.throws(() => compileFixtureContract(partial), /concept keys do not match any frozen fixture contract version/);
 });
 
-test('validateContractBundle accepts compiled V1 through V10 bundles', () => {
+test('validateContractBundle accepts compiled V1 through V11 bundles', () => {
   assert.equal(validateContractBundle(compileFixtureContract()), true);
   assert.equal(validateContractBundle(compileFixtureContractV2()), true);
   assert.equal(validateContractBundle(compileFixtureContractV3()), true);
@@ -1791,4 +2008,5 @@ test('validateContractBundle accepts compiled V1 through V10 bundles', () => {
   assert.equal(validateContractBundle(compileFixtureContractV8()), true);
   assert.equal(validateContractBundle(compileFixtureContractV9()), true);
   assert.equal(validateContractBundle(compileFixtureContractV10()), true);
+  assert.equal(validateContractBundle(compileFixtureContractV11()), true);
 });
