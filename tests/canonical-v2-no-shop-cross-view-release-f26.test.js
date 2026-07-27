@@ -53,6 +53,14 @@ function sealedMarketResult(request, mutate = (value) => value) {
       metric_key: binding.metric_key,
       metric_serving_admission_id:
         binding.metric_serving_admission_id,
+      subject_exclusion: {
+        subject_deal_key: request.subject_deal_key,
+        exclusion_predicate:
+          'GOVERNED_DEAL_KEY_NOT_EQUAL_SUBJECT_DEAL_KEY',
+        state: 'APPLIED_AND_VERIFIED',
+        residual_subject_deals: 0,
+        residual_subject_observations: 0,
+      },
       counts: {
         eligible_deals: 1,
         comparable_deals: 1,
@@ -74,6 +82,7 @@ function sealedMarketResult(request, mutate = (value) => value) {
     release_manifest_id: request.release_manifest_id,
     request_digest: request.request_digest,
     cache_key: request.cache_key,
+    subject_deal_key: request.subject_deal_key,
     metric_serving_admission_ids:
       request.metric_bindings.map(
         (entry) => entry.metric_serving_admission_id,
@@ -217,6 +226,11 @@ test('duration normalisation, day basis, triggers and the copy-clock ambiguity s
   assert.equal(copy.subject.canonical_value, '1');
   assert.equal(copy.subject.day_basis, 'ELAPSED');
   assert.equal(copy.subject.raw_value, 'twenty-four (24) hours after receipt');
+  assert.deepEqual(copy.subject.timing_semantics, {
+    promptly_qualifier: true,
+    outside_cap_semantic_code:
+      'PROMPTLY_AND_NO_LATER_THAN_STATED_DURATION',
+  });
   assert.equal(copy.lawyer_warning.required, true);
   assert.match(copy.lawyer_warning.text, /receipt by the Company/i);
   assert.equal(notice.subject.raw_value.magnitude, '24');
@@ -429,6 +443,35 @@ test('F26 result validation reconciles scalar duration buckets and typed failure
   assert.equal(
     validateNoShopF26MarketResult(valid, request),
     true,
+  );
+  const wrongSubject = sealedMarketResult(
+    request,
+    (body) => {
+      body.subject_deal_key = 'deal:not-qxo';
+      return body;
+    },
+  );
+  assert.throws(
+    () => validateNoShopF26MarketResult(
+      wrongSubject,
+      request,
+    ),
+    /identity/i,
+  );
+  const subjectLeak = sealedMarketResult(
+    request,
+    (body) => {
+      body.metric_results[0].subject_exclusion
+        .residual_subject_deals = 1;
+      return body;
+    },
+  );
+  assert.throws(
+    () => validateNoShopF26MarketResult(
+      subjectLeak,
+      request,
+    ),
+    /invalid|unbounded/i,
   );
   const missingDurationDeal = sealedMarketResult(
     request,

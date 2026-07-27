@@ -52,7 +52,14 @@ function rawValue(subject) {
 function durationLabel(subject) {
   const amount = Number(subject.canonical_value);
   const basis = subject.day_basis === 'BUSINESS' ? 'business day' : 'elapsed day';
-  return `${subject.canonical_value} ${basis}${amount === 1 ? '' : 's'}`;
+  const outsideCap =
+    `${subject.canonical_value} ${basis}${amount === 1 ? '' : 's'}`;
+  if (subject.timing_semantics?.promptly_qualifier
+    && subject.timing_semantics.outside_cap_semantic_code
+      === 'PROMPTLY_AND_NO_LATER_THAN_STATED_DURATION') {
+    return `Promptly, and no later than ${outsideCap}`;
+  }
+  return outsideCap;
 }
 
 function percentage(count, denominator) {
