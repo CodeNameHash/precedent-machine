@@ -109,6 +109,10 @@ const {
   validateQxoNoShopCopyDeliveryClaimF17,
 } = require('../lib/canonical-v2/qxo-no-shop-copy-delivery-claim-f17');
 const {
+  buildQxoNoShopCopyDeliveryServingF18,
+  validateQxoNoShopCopyDeliveryServingF18,
+} = require('../lib/canonical-v2/qxo-no-shop-copy-delivery-serving-f18');
+const {
   buildQxoAdmittedNoShopActionsSlice,
 } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
 const {
@@ -213,6 +217,10 @@ const COPY_DELIVERY_METRIC_F16_FIXTURE_PATH = join(
 const COPY_DELIVERY_CLAIM_F17_FIXTURE_PATH = join(
   ROOT,
   'tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-claim-f17-staging-attestation.json',
+);
+const COPY_DELIVERY_SERVING_F18_FIXTURE_PATH = join(
+  ROOT,
+  'tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-serving-f18-staging-attestation.json',
 );
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
@@ -2847,7 +2855,7 @@ function buildCopyDeliveryMetricF16Attestation() {
   };
 }
 
-function buildCopyDeliveryClaimF17Attestation() {
+function buildCopyDeliveryClaimF17Runtime() {
   const {
     carrier: f16Carrier,
     f15Carrier,
@@ -2865,6 +2873,16 @@ function buildCopyDeliveryClaimF17Attestation() {
     ...inputs,
   });
   return {
+    carrier,
+    inputs,
+  };
+}
+
+function buildCopyDeliveryClaimF17Attestation() {
+  const {
+    carrier,
+  } = buildCopyDeliveryClaimF17Runtime();
+  return {
     schema_version:
       'QXO_NO_SHOP_COPY_DELIVERY_CLAIM_F17_STAGING_ATTESTATION/V1',
     environment: 'STAGING',
@@ -2880,6 +2898,106 @@ function buildCopyDeliveryClaimF17Attestation() {
     status: carrier.status,
     qxo_no_shop_copy_delivery_claim_f17_id:
       carrier.qxo_no_shop_copy_delivery_claim_f17_id,
+    canonical_payload_digest: carrier.canonical_payload_digest,
+  };
+}
+
+function buildCopyDeliveryServingF18Runtime() {
+  const {
+    carrier: f17Carrier,
+  } = buildCopyDeliveryClaimF17Runtime();
+  const inputs = {
+    contract_bundle: compileFixtureContractV12(),
+    qxo_no_shop_copy_delivery_claim_f17: f17Carrier,
+  };
+  const carrier = buildQxoNoShopCopyDeliveryServingF18(inputs);
+  validateQxoNoShopCopyDeliveryServingF18({
+    qxo_no_shop_copy_delivery_serving_f18: carrier,
+    ...inputs,
+  });
+  return {
+    carrier,
+    inputs,
+  };
+}
+
+function buildCopyDeliveryServingF18Attestation() {
+  const {
+    carrier,
+  } = buildCopyDeliveryServingF18Runtime();
+  return {
+    schema_version:
+      'QXO_NO_SHOP_COPY_DELIVERY_SERVING_F18_STAGING_ATTESTATION/V1',
+    environment: 'STAGING',
+    authority_scope: carrier.authority_scope,
+    upstream_binding: carrier.upstream_binding,
+    corpus_release_id: carrier.corpus_release_id,
+    serving_namespace_id: carrier.serving_namespace_id,
+    interpretation_projection:
+      carrier.observation.interpretation_projection,
+    observation_summary: {
+      metric_key: carrier.observation.metric_key,
+      metric_observation_occurrence_id:
+        carrier.observation.metric_observation_occurrence_id,
+      market_observation_serving_key:
+        carrier.observation.market_observation_serving_key,
+      canonical_value: carrier.observation.canonical_value,
+      unit: carrier.observation.unit,
+      day_basis: carrier.observation.day_basis,
+      basis_key: carrier.observation.basis_key,
+      cohort_membership: carrier.observation.cohort_membership,
+      canonical_payload_digest:
+        carrier.observation.canonical_payload_digest,
+    },
+    cohort_summary: {
+      cohort_digest: carrier.cohort.cohort_digest,
+      cache_key: carrier.cohort.cache_key,
+      comparability_class_digest:
+        carrier.cohort.comparability_class_digest,
+      counts: carrier.cohort.counts,
+      query_plan: carrier.cohort.query_plan,
+    },
+    shared_row_summary: {
+      schema_version: carrier.shared_row.schema_version,
+      row_serving_key: carrier.shared_row.row_serving_key,
+      canonical_payload_digest:
+        carrier.shared_row.canonical_payload_digest,
+      lawyer_warning_required:
+        carrier.shared_row.canonical_result.presentation
+          .lawyer_warning_required,
+      ambiguity_warning_code:
+        carrier.shared_row.canonical_result.presentation
+          .ambiguity_warning_code,
+    },
+    exact_detail_summary: {
+      source_detail_payload_id:
+        carrier.exact_detail_package.source_detail_payload_id,
+      canonical_payload_digest:
+        carrier.exact_detail_package.canonical_payload_digest,
+      evidence_reference_count:
+        carrier.exact_detail_package.response_body
+          .evidence_references.length,
+      claim_revision_id:
+        carrier.exact_detail_package.response_body.components[0]
+          .claim.claim_revision_id,
+      interpretation_payload_id:
+        carrier.exact_detail_package.response_body.components[0]
+          .interpretation.interpretation_payload_id,
+    },
+    candidate_release_summary: {
+      candidate_release_manifest_id:
+        carrier.candidate_release.manifest
+          .candidate_release_manifest_id,
+      release_state:
+        carrier.candidate_release.manifest.release_state,
+      counts: carrier.candidate_release.manifest.counts,
+      roots: carrier.candidate_release.manifest.roots,
+      active_pointer_authority:
+        carrier.candidate_release.manifest.active_pointer_authority,
+    },
+    status: carrier.status,
+    qxo_no_shop_copy_delivery_serving_f18_id:
+      carrier.qxo_no_shop_copy_delivery_serving_f18_id,
     canonical_payload_digest: carrier.canonical_payload_digest,
   };
 }
@@ -3122,13 +3240,18 @@ if (![
   '--copy-delivery-metric-f16-verify',
   '--copy-delivery-claim-f17-print',
   '--copy-delivery-claim-f17-verify',
+  '--copy-delivery-serving-f18-print',
+  '--copy-delivery-serving-f18-verify',
 ].includes(mode)
   || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--inline-permission-f9-print|--inline-permission-f9-verify|--notice-source-f6-print|--notice-source-f6-verify|--notice-semantic-closure-f6-print|--notice-semantic-closure-f6-verify|--notice-review-materialisation-f7-print|--notice-review-materialisation-f7-verify|--notice-definition-relationships-f8-print|--notice-definition-relationships-f8-verify|--notice-receipt-f10-print|--notice-receipt-f10-verify|--definition-control-f11-print|--definition-control-f11-verify|--definition-scope-f13-print|--definition-scope-f13-verify|--notice-revision-f14-print|--notice-revision-f14-verify|--copy-clock-f15-print|--copy-clock-f15-verify|--copy-delivery-metric-f16-print|--copy-delivery-metric-f16-verify|--copy-delivery-claim-f17-print|--copy-delivery-claim-f17-verify');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs --print|--verify|--actions-print|--actions-verify|--actions-f6-print|--actions-f6-verify|--definitions-f6-print|--definitions-f6-verify|--definition-graph-f6-print|--definition-graph-f6-verify|--exception-source-f6-print|--exception-source-f6-verify|--inline-permission-f9-print|--inline-permission-f9-verify|--notice-source-f6-print|--notice-source-f6-verify|--notice-semantic-closure-f6-print|--notice-semantic-closure-f6-verify|--notice-review-materialisation-f7-print|--notice-review-materialisation-f7-verify|--notice-definition-relationships-f8-print|--notice-definition-relationships-f8-verify|--notice-receipt-f10-print|--notice-receipt-f10-verify|--definition-control-f11-print|--definition-control-f11-verify|--definition-scope-f13-print|--definition-scope-f13-verify|--notice-revision-f14-print|--notice-revision-f14-verify|--copy-clock-f15-print|--copy-clock-f15-verify|--copy-delivery-metric-f16-print|--copy-delivery-metric-f16-verify|--copy-delivery-claim-f17-print|--copy-delivery-claim-f17-verify|--copy-delivery-serving-f18-print|--copy-delivery-serving-f18-verify');
 }
 
 try {
-  const copyDeliveryClaimF17Mode =
+  const copyDeliveryServingF18Mode =
+    mode.startsWith('--copy-delivery-serving-f18-');
+  const copyDeliveryClaimF17Mode = !copyDeliveryServingF18Mode
+    &&
     mode.startsWith('--copy-delivery-claim-f17-');
   const copyDeliveryMetricF16Mode = !copyDeliveryClaimF17Mode
     &&
@@ -3172,7 +3295,9 @@ try {
     && mode.startsWith('--definitions-f6-');
   const actionsF6Mode = !definitionsF6Mode && mode.startsWith('--actions-f6-');
   const actionsMode = !actionsF6Mode && mode.startsWith('--actions-');
-  const attestation = copyDeliveryClaimF17Mode
+  const attestation = copyDeliveryServingF18Mode
+    ? buildCopyDeliveryServingF18Attestation()
+    : copyDeliveryClaimF17Mode
     ? buildCopyDeliveryClaimF17Attestation()
     : copyDeliveryMetricF16Mode
     ? buildCopyDeliveryMetricF16Attestation()
@@ -3210,7 +3335,9 @@ try {
     : attestation;
   if (mode.endsWith('verify')) {
     const expected = JSON.parse(readFileSync(
-      copyDeliveryClaimF17Mode
+      copyDeliveryServingF18Mode
+        ? COPY_DELIVERY_SERVING_F18_FIXTURE_PATH
+        : copyDeliveryClaimF17Mode
         ? COPY_DELIVERY_CLAIM_F17_FIXTURE_PATH
         : copyDeliveryMetricF16Mode
         ? COPY_DELIVERY_METRIC_F16_FIXTURE_PATH
