@@ -1,0 +1,26 @@
+{
+  "phase": "WP-CANONICAL-QXO-NO-SHOP-COPY-CLOCK-F15",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-qxo-no-shop-copy-clock-f15.json",
+    "lib/canonical-v2/contract-bundle.js",
+    "lib/canonical-v2/qxo-no-shop-copy-clock-f15.js",
+    "scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs",
+    "tests/canonical-v2-contract-bundle-versions.test.js",
+    "tests/canonical-v2-qxo-no-shop-copy-clock-f15.test.js",
+    "tests/fixtures/canonical-v2/qxo-no-shop-copy-clock-f15-staging-attestation.json"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "docs/**",
+    "lib/canonical-v2/canonical-writer.js",
+    "lib/canonical-v2/query/**",
+    "lib/canonical-v2/serving/**",
+    "pages/**",
+    "scripts/canonical-v2-staging-qxo-no-shop.mjs",
+    "sql/**",
+    "supabase/**",
+    "next.config.js"
+  ],
+  "note": "Freezes V11 and materialises one review-only QXO V6 notice revision. The primary 24-hour clock runs on each qualifying proposal or request receipt; the item-receipt alternative and its unresolved cardinality remain visible. No writer, serving, market, query, release or production authority is granted."
+}
