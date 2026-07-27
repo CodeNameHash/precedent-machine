@@ -137,6 +137,10 @@ const {
   validateMetricScopedCandidateReleaseF23,
 } = require('../lib/canonical-v2/metric-scoped-candidate-release-f23');
 const {
+  buildNoShopTimingCertificationF24,
+  validateNoShopTimingCertificationF24,
+} = require('../lib/canonical-v2/no-shop-timing-certification-f24');
+const {
   buildDealServingDirectoryRecord,
   validateOfflineCandidateRelease,
 } = require('../lib/canonical-v2/candidate-release');
@@ -167,6 +171,9 @@ const {
 const {
   buildQxoAdmittedNoShopNoticeSlice,
 } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-slice');
+const {
+  buildQxoAdmittedNoShopRematchSlice,
+} = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-rematch-slice');
 const {
   convertSecHtmlToCanonicalText,
 } = require('../lib/canonical-v2/sec-html-canonical-text');
@@ -279,6 +286,10 @@ const COPY_DELIVERY_QUERY_F20_FIXTURE_PATH = join(
 const COPY_DELIVERY_RELEASE_F23_FIXTURE_PATH = join(
   ROOT,
   'tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-release-f23-staging-attestation.json',
+);
+const NO_SHOP_TIMING_F24_FIXTURE_PATH = join(
+  ROOT,
+  'tests/fixtures/canonical-v2/qxo-no-shop-timing-f24-staging-attestation.json',
 );
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
@@ -4818,6 +4829,224 @@ function buildCopyDeliveryReleaseF23Attestation() {
 }
 // F23_ROLLBACK_ONLY_STAGING_CERTIFICATION_END
 
+// F24_ROLLBACK_ONLY_STAGING_CERTIFICATION_BEGIN
+function buildNoShopTimingF24Runtime() {
+  const {
+    carrier: f19Carrier,
+  } = buildCopyDeliveryCanonicalF19Runtime();
+  const f23Bundle = buildMetricScopedCandidateReleaseF23({
+    qxo_no_shop_copy_delivery_canonical_f19: f19Carrier,
+  });
+  const {
+    carrier: f15Carrier,
+  } = buildCopyClockF15Runtime();
+  const {
+    contractBundle,
+    admittedSourceContext,
+  } = buildSourceInputs(compileFixtureContractV12());
+  const noticeSlice = buildQxoAdmittedNoShopNoticeSlice({
+    sourceContext: admittedSourceContext,
+    contractBundle,
+  });
+  const rematchSlice = buildQxoAdmittedNoShopRematchSlice({
+    sourceContext: admittedSourceContext,
+    contractBundle,
+  });
+  const inputs = {
+    contract_bundle: contractBundle,
+    f23_candidate_release_bundle: f23Bundle,
+    qxo_no_shop_copy_clock_f15: f15Carrier,
+    admitted_source_context: admittedSourceContext,
+    reviewed_no_shop_notice_slice: noticeSlice,
+    reviewed_no_shop_rematch_slice: rematchSlice,
+  };
+  const bundle = buildNoShopTimingCertificationF24(inputs);
+  validateNoShopTimingCertificationF24({
+    no_shop_timing_certification_f24: bundle,
+    ...inputs,
+  });
+  return { bundle, inputs };
+}
+
+function f24RollbackSql(bundle) {
+  const records = bundle.timing_certifications.map((carrier) => ({
+    metric_key: carrier.observation.metric_key,
+    metric_serving_admission_id:
+      carrier.metric_serving_admission
+        .metric_serving_admission_id,
+    carrier,
+  }));
+  return `BEGIN;
+SET LOCAL lock_timeout = '2000ms';
+SET LOCAL statement_timeout = '15000ms';
+SELECT pg_advisory_xact_lock(20260727, 24);
+
+DO $f24_guard$
+BEGIN
+  IF to_regclass(
+    'canonical_v2_staging.no_shop_timing_f24_probe'
+  ) IS NOT NULL THEN
+    RAISE EXCEPTION 'F24 staging probe already exists';
+  END IF;
+END
+$f24_guard$;
+
+CREATE TABLE canonical_v2_staging.no_shop_timing_f24_probe (
+  metric_key text PRIMARY KEY,
+  metric_serving_admission_id text UNIQUE NOT NULL
+    CHECK (
+      metric_serving_admission_id ~ '^[a-f0-9]{64}$'
+    ),
+  carrier jsonb NOT NULL
+);
+ALTER TABLE
+  canonical_v2_staging.no_shop_timing_f24_probe
+  ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON
+  canonical_v2_staging.no_shop_timing_f24_probe
+  FROM PUBLIC;
+
+INSERT INTO canonical_v2_staging.no_shop_timing_f24_probe (
+  metric_key,
+  metric_serving_admission_id,
+  carrier
+)
+SELECT
+  record.metric_key,
+  record.metric_serving_admission_id,
+  record.carrier
+FROM jsonb_to_recordset(
+  ${f20SqlJson(records, 'f24_timing_records')}
+) AS record(
+  metric_key text,
+  metric_serving_admission_id text,
+  carrier jsonb
+);
+
+SELECT jsonb_build_object(
+  'timing_rows', count(*)::integer,
+  'distinct_admissions',
+    count(DISTINCT metric_serving_admission_id)::integer,
+  'bound_carriers', sum(
+    (
+      (carrier #>>
+        '{metric_serving_admission,metric_serving_admission_id}') =
+        metric_serving_admission_id
+    )::integer
+    + (
+      (carrier #>>
+        '{observation,metric_serving_admission_id}') =
+        metric_serving_admission_id
+    )::integer
+    + (
+      (carrier #>>
+        '{cohort_request,metric_serving_admission_id}') =
+        metric_serving_admission_id
+    )::integer
+    + (
+      (carrier #>>
+        '{cohort_result,metric_serving_admission_id}') =
+        metric_serving_admission_id
+    )::integer
+    + (
+      (carrier #>>
+        '{query_projection,metric_serving_admission_id}') =
+        metric_serving_admission_id
+    )::integer
+  )::integer,
+  'metric_keys',
+    jsonb_agg(metric_key ORDER BY metric_key),
+  'active_pointer_during',
+    public.canonical_v2_active_release('staging')
+) AS evidence
+FROM canonical_v2_staging.no_shop_timing_f24_probe;
+ROLLBACK;`;
+}
+
+function f24PostRollbackSql() {
+  return `SELECT jsonb_build_object(
+  'probe_table_exists', to_regclass(
+    'canonical_v2_staging.no_shop_timing_f24_probe'
+  ) IS NOT NULL,
+  'active_pointer_after',
+    public.canonical_v2_active_release('staging')
+) AS evidence;`;
+}
+
+function buildNoShopTimingF24Attestation() {
+  guardProject();
+  const { bundle } = buildNoShopTimingF24Runtime();
+  const activePointerBefore = oneEvidenceRow(
+    runF20SqlFile(f23PointerSql()),
+    'F24 active pointer precheck',
+    'active_pointer',
+  );
+  const transaction = oneEvidenceRow(
+    runF20SqlFile(f24RollbackSql(bundle)),
+    'F24 rollback transaction',
+  );
+  const postRollback = oneEvidenceRow(
+    runF20SqlFile(f24PostRollbackSql()),
+    'F24 post-rollback check',
+  );
+  const expectedMetrics = [
+    'NO_SHOP_INITIAL_MATCH_PERIOD_DAYS',
+    'NO_SHOP_NOTICE_PERIOD_DAYS',
+    'NO_SHOP_SUBSEQUENT_MATCH_PERIOD_DAYS',
+  ];
+  if (transaction.timing_rows !== 3
+    || transaction.distinct_admissions !== 3
+    || transaction.bound_carriers !== 15
+    || canonicalJson(transaction.metric_keys)
+      !== canonicalJson(expectedMetrics)
+    || canonicalJson(transaction.active_pointer_during)
+      !== canonicalJson(activePointerBefore)
+    || postRollback.probe_table_exists !== false
+    || canonicalJson(postRollback.active_pointer_after)
+      !== canonicalJson(activePointerBefore)) {
+    throw new Error(
+      'F24 rollback proof changed staging state or lost timing identity.',
+    );
+  }
+  const body = {
+    schema_version:
+      'QXO_NO_SHOP_TIMING_F24_STAGING_ATTESTATION/V1',
+    environment: 'STAGING',
+    authority_scope:
+      'ROLLBACK_ONLY_NO_SHOP_TIMING_F24',
+    project_ref: PROJECT.ref,
+    timing_certification_bundle: bundle,
+    staging_execution: {
+      database_calls: 3,
+      immediate_retries: 0,
+      statement_timeout_ms: 15000,
+      lock_timeout_ms: 2000,
+      insert_shape: 'ONE_SET_BASED_JSONB_TO_RECORDSET',
+      transaction,
+      post_rollback: postRollback,
+      active_pointer_before: activePointerBefore,
+      active_pointer_unchanged: true,
+      rollback_verified: true,
+      durable_rows_written: 0,
+    },
+    authority: bundle.manifest.authority,
+    status: bundle.manifest.status,
+  };
+  return {
+    ...body,
+    qxo_no_shop_timing_f24_staging_attestation_id:
+      contentId(
+        'QXO_NO_SHOP_TIMING_F24_STAGING_ATTESTATION/V1',
+        body,
+      ),
+    canonical_payload_digest: contentId(
+      'QXO_NO_SHOP_TIMING_F24_STAGING_ATTESTATION_PAYLOAD/V1',
+      body,
+    ),
+  };
+}
+// F24_ROLLBACK_ONLY_STAGING_CERTIFICATION_END
+
 function verifyActionsFailureIsolation(bridgeInputs) {
   const missingFirstAction = JSON.parse(JSON.stringify(
     bridgeInputs.reviewed_no_shop_actions_slice,
@@ -5064,14 +5293,19 @@ if (![
   '--copy-delivery-query-f20-verify',
   '--copy-delivery-release-f23-print',
   '--copy-delivery-release-f23-verify',
+  '--no-shop-timing-f24-print',
+  '--no-shop-timing-f24-verify',
 ].includes(mode)
   || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs [supported attestation print/verify mode, including --copy-delivery-release-f23-print|--copy-delivery-release-f23-verify]');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs [supported attestation print/verify mode, including --no-shop-timing-f24-print|--no-shop-timing-f24-verify]');
 }
 
 try {
+  const noShopTimingF24Mode =
+    mode.startsWith('--no-shop-timing-f24-');
   const copyDeliveryReleaseF23Mode =
-    mode.startsWith('--copy-delivery-release-f23-');
+    !noShopTimingF24Mode
+    && mode.startsWith('--copy-delivery-release-f23-');
   const copyDeliveryQueryF20Mode = !copyDeliveryReleaseF23Mode
     &&
     mode.startsWith('--copy-delivery-query-f20-');
@@ -5126,7 +5360,9 @@ try {
     && mode.startsWith('--definitions-f6-');
   const actionsF6Mode = !definitionsF6Mode && mode.startsWith('--actions-f6-');
   const actionsMode = !actionsF6Mode && mode.startsWith('--actions-');
-  const attestation = copyDeliveryReleaseF23Mode
+  const attestation = noShopTimingF24Mode
+    ? buildNoShopTimingF24Attestation()
+    : copyDeliveryReleaseF23Mode
     ? buildCopyDeliveryReleaseF23Attestation()
     : copyDeliveryQueryF20Mode
     ? buildCopyDeliveryQueryF20Attestation()
@@ -5172,7 +5408,9 @@ try {
     : attestation;
   if (mode.endsWith('verify')) {
     const expected = JSON.parse(readFileSync(
-      copyDeliveryReleaseF23Mode
+      noShopTimingF24Mode
+        ? NO_SHOP_TIMING_F24_FIXTURE_PATH
+        : copyDeliveryReleaseF23Mode
         ? COPY_DELIVERY_RELEASE_F23_FIXTURE_PATH
         : copyDeliveryQueryF20Mode
         ? COPY_DELIVERY_QUERY_F20_FIXTURE_PATH
