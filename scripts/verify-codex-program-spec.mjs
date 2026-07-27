@@ -172,11 +172,14 @@ function validateGateRegistry() {
   }
   const requiredReviewerFields = [
     'controller_id', 'controller_version',
+    'review_runtime_version', 'review_runtime_binary_digest',
+    'fixed_controller_runtime_context_digest',
     'exact_specification_root', 'exact_model_identifier', 'reasoning_level',
     'immutable_task_id', 'immutable_session_id', 'immutable_review_id',
     'registered_prompt_id', 'cold_review_prompt_digest',
-    'exact_input_context_digest', 'review_output_digest', 'review_start_time',
-    'review_end_time', 'reviewer_principal_id',
+    'controller_supplied_input_manifest_digest', 'exact_input_context_digest',
+    'input_context_digest_before_review', 'input_context_digest_after_review',
+    'review_output_digest', 'review_start_time', 'review_end_time', 'reviewer_principal_id',
     'reviewer_source_control_identity_set', 'reviewer_disposition',
     'reviewer_edit_set_root',
     'parent_session_state', 'no_earlier_review_conclusions_were_inputs',
@@ -184,6 +187,53 @@ function validateGateRegistry() {
   ];
   if (JSON.stringify(reviewer.review_record_required_fields) !== JSON.stringify(requiredReviewerFields)) {
     fail('Trusted review-controller record fields changed');
+  }
+  const taskPayload = reviewer.controller_supplied_task_payload;
+  if (JSON.stringify(taskPayload?.exact_members_in_order) !== JSON.stringify([
+    'EXACT_FROZEN_SPECIFICATION_BYTES',
+    'ONE_REGISTERED_LANE_SPECIFIC_COLD_PROMPT',
+    'REQUIRED_OUTPUT_SCHEMA',
+  ])
+    || taskPayload?.extra_member_effect !== 'INELIGIBLE'
+    || !taskPayload?.manifest_must_bind_every_member_digest_and_byte_length) {
+    fail('Controller-supplied task payload is not closed');
+  }
+  const runtimeContext = reviewer.fixed_controller_runtime_context;
+  if (JSON.stringify(runtimeContext?.permitted_members) !== JSON.stringify([
+    'PINNED_PLATFORM_INSTRUCTIONS',
+    'PINNED_TOOL_SCHEMAS',
+  ])
+    || !runtimeContext?.must_be_fixed_for_CONTROLLER_ID_VERSION_AND_REVIEW_RUNTIME_VERSION
+    || runtimeContext?.case_specific_content_permitted !== false
+    || runtimeContext?.prior_review_finding_or_conclusion_content_permitted !== false
+    || runtimeContext?.unknown_changed_or_unrecorded_context_effect !== 'INELIGIBLE') {
+    fail('Fixed controller runtime context is open or case-specific');
+  }
+  const principal = reviewer.reviewer_principal_definition;
+  if (principal?.identity !== 'EXACT_CONTROLLER_RUN_PLUS_FRESH_EPHEMERAL_CLI_SESSION'
+    || principal?.model_family_is_reviewer_principal !== false) {
+    fail('Reviewer principal is not bound to the exact controller run and session');
+  }
+  const isolation = reviewer.review_session_isolation;
+  if (!isolation?.fresh_ephemeral_cli_session
+    || !isolation?.new_CODEX_HOME
+    || isolation?.resume_prior_session !== false
+    || isolation?.project_rules_loaded !== false
+    || isolation?.user_configuration_loaded !== false
+    || isolation?.plugins_loaded !== false
+    || isolation?.memory_loaded !== false
+    || isolation?.prior_session_content_loaded !== false
+    || !isolation?.review_execution_read_only
+    || !isolation?.input_context_digest_before_and_after_must_match) {
+    fail('Review CLI session isolation is incomplete');
+  }
+  const evidenceLimit = reviewer.controller_evidence_limit;
+  if (evidenceLimit?.proves_provider_internal_build !== false
+    || evidenceLimit?.proves_provider_signature !== false
+    || evidenceLimit?.proves_absence_of_hidden_provider_context !== false
+    || evidenceLimit?.claims_any_of_these !== false
+    || evidenceLimit?.formal_evidence_scope !== 'CONTROLLER_EXECUTION_EVIDENCE_UNDER_THIS_AMENDED_STANDARD') {
+    fail('Controller evidence overclaims provider-internal facts');
   }
   const profiles = reviewer.reviewer_profiles;
   if (profiles?.FABLE_ELIGIBLE?.reviewer_identity_class !== 'FABLE'
@@ -219,6 +269,11 @@ function validateGateRegistry() {
   }
   const reviewAcceptance = reviewer.review_record_acceptance;
   if (!reviewAcceptance?.controller_id_and_version_must_be_allowlisted
+    || !reviewAcceptance?.review_runtime_version_and_binary_digest_must_be_allowlisted
+    || !reviewAcceptance?.fixed_controller_runtime_context_digest_must_be_allowlisted
+    || !reviewAcceptance?.controller_supplied_input_manifest_must_equal_exact_task_payload
+    || reviewAcceptance?.unknown_changed_or_extra_runtime_or_task_input_effect !== 'INELIGIBLE'
+    || !reviewAcceptance?.input_context_digests_before_and_after_must_match
     || !reviewAcceptance?.exact_specification_root_must_equal_review_set_root
     || reviewAcceptance?.parent_session_state_must_be !== 'GENESIS'
     || reviewAcceptance?.no_earlier_review_conclusions_were_inputs_must_be !== true
@@ -233,10 +288,10 @@ function validateGateRegistry() {
     || !independenceUniverse?.reviewed_bytes_must_be_committed
     || independenceUniverse?.reviewer_principal_identity_mapping !== 'REVIEWER_PRINCIPAL_TO_COMPLETE_SOURCE_CONTROL_IDENTITY_SET_FROM_CONTROLLER_RECORD'
     || independenceUniverse?.authorship_membership !== 'EVERY_GIT_COMMIT_CONTRIBUTING_A_BYTE_TO_THE_EXACT_REVIEWED_ROOT_WITH_COMPLETE_HISTORY_BLAME_AND_COPY_TRACING'
-    || !independenceUniverse?.review_input_membership
-    || !independenceUniverse?.allowed_review_input
+    || independenceUniverse?.review_input_membership !== 'EVERY_CONTROLLER_OBSERVED_TASK_INPUT_PLUS_THE_PINNED_FIXED_CONTROLLER_RUNTIME_CONTEXT'
+    || independenceUniverse?.allowed_review_input !== 'EXACT_CONTROLLER_SUPPLIED_TASK_PAYLOAD_PLUS_FIXED_CONTROLLER_RUNTIME_CONTEXT'
     || !independenceUniverse?.cold_prompt_constraint
-    || !independenceUniverse?.prior_conclusion_membership
+    || independenceUniverse?.prior_conclusion_membership !== 'EVERY_CONTROLLER_OBSERVED_INPUT_OUTSIDE_THE_ALLOWED_TASK_AND_FIXED_RUNTIME_CONTEXT_PLUS_ANY_PRIOR_REVIEW_OUTPUT'
     || !independenceUniverse?.cutoff
     || independenceUniverse?.authorship_source !== 'COMPLETE_GIT_COMMIT_DAG_SUPPLEMENTARY_TO_CONTROLLER_REVIEW_EVIDENCE'
     || independenceUniverse?.review_input_source !== 'TRUSTED_REVIEW_CONTROLLER_RECORD_ONLY'
@@ -408,12 +463,12 @@ function validateAdversarialTests() {
     [...read(filePath).toString('utf8').matchAll(definition)].map((match) => ({ filePath, id: match[1] }))
   ));
   const ids = rows.map((row) => row.id);
-  if (ids.length !== 282) fail(`Expected 282 adversarial tests, found ${ids.length}`);
+  if (ids.length !== 283) fail(`Expected 283 adversarial tests, found ${ids.length}`);
   assertUnique(ids, 'adversarial test ID');
   if (rows.some((row) => row.filePath !== 'docs/codex-program/adversarial-tests.md')) {
     fail('Adversarial test definition outside authoritative file');
   }
-  if (sha256(`${ids.join('\n')}\n`) !== '172ae17e2d6a5472c4a0ef852d9e43f03466e94eea3a89f3cf62b0d38b07abd0') {
+  if (sha256(`${ids.join('\n')}\n`) !== '0ce163d192c2fb191521b8554a69a1bdef64a37bbee222fa87b8178c14562a1a') {
     fail('Current adversarial test ID list changed');
   }
   const addedIds = new Set([
@@ -423,6 +478,7 @@ function validateAdversarialTests() {
     'SOURCE-SPECIFIC-CARDINALITY-01',
     'SHADOW-REEXTRACTION-01',
     'GATE-BOOTSTRAP-01',
+    'REVIEW-CONTEXT-01',
   ]);
   const baselineIds = ids.filter((id) => !addedIds.has(id));
   if (sha256(`${baselineIds.join('\n')}\n`) !== 'c4d52483beb08c1feacac9222e4ab24b7156173dea8c2e6599fe3c11d575fe1c') {

@@ -682,14 +682,20 @@ This file is the sole authority for detailed identities, state machines, writer 
   validator or unverifiable member leaves the gate `OPEN`.
 - `TrustedReviewControllerRecord/V1` replaces the unavailable provider-record
   interface as the proof that a cold review occurred. The trusted controller
-  directly controls and observes one read-only review execution. It supplies
-  the exact frozen specification root and one registered cold prompt. It
-  records the controller ID and version, exact model identifier, reasoning
-  level, immutable task, session and review IDs, registered prompt ID and
-  digest, exact input-context and output digests, start and end times, reviewer
-  principal and its complete source-control identity set, disposition, empty
-  reviewer edit-set root, genesis parent-session state, the fact that no earlier
-  review conclusions were inputs, unique nonce, signature algorithm and key ID.
+  directly controls and observes one read-only review execution. Its only
+  controller-supplied task payload is the exact frozen specification bytes, one
+  registered lane-specific cold prompt and the required output schema. The
+  controller runtime may add only fixed pinned platform instructions and tool
+  schemas. This fixed context is not case-specific and contains no prior review
+  finding or conclusion. The controller records its ID and version, review
+  runtime version and binary digest, fixed controller-context digest, exact
+  model identifier, reasoning level, immutable task, session and review IDs,
+  registered prompt ID and digest, controller-supplied input-manifest digest,
+  exact input-context digest and its before-and-after values, output digest,
+  start and end times, reviewer principal and its complete source-control
+  identity set, disposition, empty reviewer edit-set root, genesis
+  parent-session state, the fact that no earlier review conclusions were inputs,
+  unique nonce, signature algorithm and key ID.
   The controller signs the immutable record and emits it into the closed
   evidence set. The validator deterministically enumerates that set, loads the
   exact record and verifies it against the frozen trusted-key registry. The
@@ -698,8 +704,16 @@ This file is the sole authority for detailed identities, state machines, writer 
   repository. The private key never enters the review environment, logs or
   checkout. A transcript, reviewer statement or user-supplied substitute cannot
   replace the controller record.
-- The controller record is the authority for review execution, exact inputs,
-  output and timing. Complete Git history is supplementary authorship evidence.
+- The reviewer principal is the exact controller run plus one fresh ephemeral
+  CLI session, not the model family. The controller creates a new `CODEX_HOME`,
+  does not resume a session and does not load project rules, user configuration,
+  plugins, memory or prior-session content. The review is read-only. The
+  input-context digest must be byte-equal before and after execution. A changed
+  or unknown fixed runtime context, case-specific runtime context or extra
+  controller-supplied task input makes the review ineligible.
+- The controller record is the authority for review execution,
+  controller-observed task and fixed runtime inputs, output and timing. Complete
+  Git history is supplementary authorship evidence.
   The controller record maps the reviewer principal to its complete
   source-control identity set. The validator requires the reviewed bytes to be
   committed and uses complete history, blame and copy tracing to find every
@@ -709,6 +723,10 @@ This file is the sole authority for detailed identities, state machines, writer 
   inaccessible execution facts, mutable review, prior conclusion input,
   non-empty edit set, ineligible model or reasoning level, untrusted key,
   invalid signature or incomplete history makes the review ineligible.
+- Controller evidence does not prove a provider-internal build, provider
+  signature or absence of hidden provider context. It makes none of those
+  claims. Formal evidence is the signed controller execution evidence under this
+  amended standard.
 - `GateStatusBootstrapAuthority/V1` is a temporary one-use authority under
   `specification_review`. Its predecessor is `NONE`. Its identity binds the
   exact registry amendment, nonce `gate-status-bootstrap-2026-07-27-v1` and the

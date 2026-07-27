@@ -23,7 +23,9 @@ The following adversarial closure tests are mandatory traceability entries:
   record must map the reviewer principal to its complete source-control identity
   set, and the validator must use complete history, blame and copy tracing to
   prove that the reviewer did not author the reviewed bytes. A missing or
-  ambiguous mapping is ineligible. Mutating any manifest byte, including an identifier-
+  ambiguous mapping is ineligible. The reviewer principal is the exact
+  controller run and fresh ephemeral CLI session, not the model family.
+  Mutating any manifest byte, including an identifier-
   continuity count or digest, must change the detached five-member specification
   root and invalidate every earlier review and approval. Every gate must reject
   an unknown evidence schema, wrong typed object, missing or extra acceptance
@@ -43,6 +45,22 @@ The following adversarial closure tests are mandatory traceability entries:
   every injected validation or compare-and-swap failure. The existing
   generation-4 V1 owner-deemed file is historical only. It cannot act as
   evidence, executable authority or a V2 predecessor.
+- `REVIEW-CONTEXT-01`: the controller supplies exactly the frozen specification
+  bytes, one registered lane-specific cold prompt and the required output schema
+  as the task payload. Adding any file, message, prompt, schema or other task
+  input makes the review ineligible. The fixed controller runtime context may
+  contain only its pinned platform instructions and tool schemas. Changing its
+  digest, using an unknown runtime or binary, adding case-specific material or
+  adding a prior review finding or conclusion makes the review ineligible. The
+  controller record must bind the runtime version, runtime binary digest, fixed
+  context digest, controller-supplied input-manifest digest and equal
+  before-and-after input-context digests. The controller must create a new
+  `CODEX_HOME` and fresh ephemeral CLI session, use no resume, project rules,
+  user configuration, plugins, memory or prior-session content, and permit no
+  writes. A model-family identity cannot replace the exact controller-run and
+  session principal. The record may prove only the observable controller
+  execution. It must not claim a provider-internal build, provider signature or
+  absence of hidden provider context.
 - `VERTICAL-SLICE-01`: before the slice passes, the gate registry permits only
   its fixed reviewed staging fixture through `vertical_slice_execution` and
   blocks broad `candidate_scope_and_extraction`. The fixture must traverse the
@@ -756,10 +774,12 @@ The following adversarial closure tests are mandatory traceability entries:
   each PASS over the byte-identical post-check specification root, the legal lane
   must use Fable or an independent 5.6 Sol reviewer using extra-high reasoning,
   with one trusted-controller-signed immutable record from the closed evidence
-  set for the exact controller, model, reasoning level, immutable task, session
-  and review IDs, input root and context, registered prompt, output, start and
-  end time, reviewer principal and source-control identities, parent-session
-  state, no-prior-conclusion fact, nonce, signing data and empty edit-set root,
+  set for the exact controller, review runtime and fixed-context digests, model,
+  reasoning level, immutable task, session and review IDs, input root and
+  controller-supplied task manifest, before-and-after context, registered
+  prompt, output, start and end time, exact controller-run and session reviewer
+  principal, source-control identities, parent-session state,
+  no-prior-conclusion fact, nonce, signing data and empty edit-set root,
   and Ben's
   approval must foreign-key that exact review set. One missing lane, advisory-
   only substitution, before/after digest mismatch, intervening edit or approval
