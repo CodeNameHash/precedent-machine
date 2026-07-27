@@ -1,0 +1,22 @@
+{
+  "phase": "WP-GATE-STATUS-BOOTSTRAP-GOVERNANCE",
+  "allowed": [
+    ".github/phase-allowlists/wp-gate-status-bootstrap-governance.json",
+    "docs/CODEX-PROGRAM.md",
+    "docs/codex-program/adversarial-tests.md",
+    "docs/codex-program/canonical-contracts.md",
+    "docs/codex-program/programme-gates.yaml",
+    "docs/codex-program/specification-manifest.json",
+    "scripts/verify-codex-program-spec.mjs"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "lib/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Governance-only amendment for the temporary one-use gate-status bootstrap and trusted review-controller proof source. It grants no corpus, data, release or product activation authority."
+}

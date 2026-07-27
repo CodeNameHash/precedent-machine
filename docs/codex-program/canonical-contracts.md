@@ -680,6 +680,54 @@ This file is the sole authority for detailed identities, state machines, writer 
   and accepts only terminal `PASS`. A missing schema, unregistered predicate,
   request-supplied result, unknown or missing claim, stale subject, untrusted
   validator or unverifiable member leaves the gate `OPEN`.
+- `TrustedReviewControllerRecord/V1` replaces the unavailable provider-record
+  interface as the proof that a cold review occurred. The trusted controller
+  directly controls and observes one read-only review execution. It supplies
+  the exact frozen specification root and one registered cold prompt. It
+  records the controller ID and version, exact model identifier, reasoning
+  level, immutable task, session and review IDs, registered prompt ID and
+  digest, exact input-context and output digests, start and end times, reviewer
+  principal and its complete source-control identity set, disposition, empty
+  reviewer edit-set root, genesis parent-session state, the fact that no earlier
+  review conclusions were inputs, unique nonce, signature algorithm and key ID.
+  The controller signs the immutable record and emits it into the closed
+  evidence set. The validator deterministically enumerates that set, loads the
+  exact record and verifies it against the frozen trusted-key registry. The
+  controller process is the only process permitted to use the signing key. The
+  key is inaccessible to the reviewer, review process, operator input and
+  repository. The private key never enters the review environment, logs or
+  checkout. A transcript, reviewer statement or user-supplied substitute cannot
+  replace the controller record.
+- The controller record is the authority for review execution, exact inputs,
+  output and timing. Complete Git history is supplementary authorship evidence.
+  The controller record maps the reviewer principal to its complete
+  source-control identity set. The validator requires the reviewed bytes to be
+  committed and uses complete history, blame and copy tracing to find every
+  commit that contributed a byte to the exact root. No contributing author may
+  map to the reviewer principal. Git history alone cannot prove that a review
+  occurred. A missing or ambiguous identity mapping, missing controller record,
+  inaccessible execution facts, mutable review, prior conclusion input,
+  non-empty edit set, ineligible model or reasoning level, untrusted key,
+  invalid signature or incomplete history makes the review ineligible.
+- `GateStatusBootstrapAuthority/V1` is a temporary one-use authority under
+  `specification_review`. Its predecessor is `NONE`. Its identity binds the
+  exact registry amendment, nonce `gate-status-bootstrap-2026-07-27-v1` and the
+  closed permitted and prohibited action lists in the registry. It permits only the governance
+  amendment, review-controller software and evidence schemas, gate evidence
+  schemas and acceptance definitions, enumerators, predicates, certification
+  integrity validator, signing system, status publisher,
+  `ProgrammeStatusPublicationHead` and their tests. It cannot authorise corpus
+  extraction, reprocessing, writes, backfills, production data changes, release
+  import or activation, or product feature activation. An owner statement
+  cannot create, widen or replace it.
+- The protected publisher consumes the bootstrap nonce only when it publishes
+  the first valid `ProgrammeGateStatusArtefact/V2`. That event must be generation
+  1 from predecessor `NONE`, include all 35 registry gates once in registry
+  order, leave every unsupported P1 and P9 gate `OPEN`, and derive
+  `canonical_work_start: PASS` from validated evidence. The same successful
+  compare-and-swap expires the authority. A failed validation or stale
+  publication does not consume the nonce. Reuse is prohibited. Reissue requires
+  another governing registry amendment.
 - `ProgrammeGateStatusArtefact/V2` is the sole ordinary status projection. It
   hashes schema, exact specification root, code commit, environment, monotonic
   predecessor generation, the complete gate registry digest, and the ordered
@@ -693,6 +741,20 @@ This file is the sole authority for detailed identities, state machines, writer 
   predicate passes. Missing, duplicated, manually edited or unverifiable rows
   are `OPEN`. The terminal status-plus-POST_COMPLETION pair remains the sole
   programme-completion exception described below.
+- `ProgrammeStatusPublicationHead/V1` uses the repository-native
+  `refs/heads/programme-status-publication-head` Git ref as its sole mutable
+  head. Only the protected GitHub Action can publish. It reads the exact current
+  Git object ID, validates the complete successor and updates the ref with one
+  compare-and-swap. The first expected predecessor is `NONE`. Every later
+  publication names the exact predecessor object and generation. A stale
+  predecessor, manual status edit, validation failure or partial output makes
+  no ref change. The status file and head state are committed together, so no
+  second publication head or owner-deemed projection can become authoritative.
+- The existing generation-4
+  `docs/certification/programme-gate-status.json` file is a historical V1
+  owner-deemed record. It is not a V2 predecessor, evidence source, publication
+  head or executable authority. The first V2 status is written to
+  `docs/certification/programme-gate-status-v2.json`.
 
 - `ShadowReextractionAttestation` hashes its schema, exact frozen contract pair,
   CandidateInputHead and CandidateBuildHead IDs and payload digests, candidate
@@ -10064,8 +10126,10 @@ plan. Runtime compares the generated plan digest before the first mutation;
 ad-hoc locking or an action not in the registry performs zero DML.
 
 `ProgrammeStatusPublicationHead` is the sole mutable pointer for programme
-status. Ordinary status publication is one serialisable CAS from the exact
-predecessor to one immutable successor status and emits its generated receipt.
+status. It is implemented by the repository-native
+`refs/heads/programme-status-publication-head` Git ref. Ordinary status
+publication is one protected compare-and-swap from the exact predecessor Git
+object to one immutable successor status and emits its generated receipt.
 The completion transaction is the only exception: it atomically publishes the
 proposed terminal status and POST_COMPLETION extension as the one terminal pair.
 Neither member can become current alone. No programme status, readiness mirror

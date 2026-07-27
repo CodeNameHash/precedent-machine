@@ -119,6 +119,19 @@ function validateGateRegistry() {
     fail('Gate registry does not bind the specification root');
   }
   if (registry.specification_manifest !== manifestPath) fail('Gate registry manifest path mismatch');
+  if (registry.status_artifact !== 'docs/certification/programme-gate-status-v2.json') {
+    fail('V2 programme status path changed');
+  }
+  const [historicalStatus] = registry.historical_status_artifacts || [];
+  if ((registry.historical_status_artifacts || []).length !== 1
+    || historicalStatus?.path !== 'docs/certification/programme-gate-status.json'
+    || historicalStatus?.schema !== 'canonical-programme-gates/v1-status'
+    || historicalStatus?.generation !== 4
+    || historicalStatus?.disposition !== 'HISTORICAL_OWNER_DEEMED_RECORD_ONLY'
+    || historicalStatus?.v2_predecessor !== false
+    || historicalStatus?.executable_authority !== false) {
+    fail('Historical generation-4 V1 status disposition changed');
+  }
 
   const workClassNames = Object.keys(registry.work_classes || {});
   const gates = registry.gates || [];
@@ -129,16 +142,18 @@ function validateGateRegistry() {
   assertUnique(gateIds, 'gate ID');
   assertUnique(evidenceContracts, 'gate evidence contract');
   assertUnique(evidenceObjectTypes, 'gate evidence object type');
-  if (workClassNames.length !== 12) fail(`Expected 12 work classes, found ${workClassNames.length}`);
+  if (workClassNames.length !== 13) fail(`Expected 13 work classes, found ${workClassNames.length}`);
   if (gateIds.length !== 35) fail(`Expected 35 gates, found ${gateIds.length}`);
   if (sha256(`${gateIds.join('\n')}\n`) !== '5d107d8889326538adc021370f17df0bd1e2799292ef81072bcb7a5ed0c1c182') {
     fail('Current gate ID list changed');
   }
-  if (sha256(`${workClassNames.join('\n')}\n`) !== '7d87cf8e9060a134677564cbc106f667650be01a259fabec39450d9e2cc08c67') {
+  if (sha256(`${workClassNames.join('\n')}\n`) !== '3d213f5416bd9e119cb1c891626d273baef8a60439c9fa1afa55fc74b009d9d0') {
     fail('Current work-class list changed');
   }
   const baselineGateIds = gateIds.filter((id) => id !== 'P1_VERTICAL_SLICE_PASS');
-  const baselineWorkClasses = workClassNames.filter((name) => name !== 'vertical_slice_execution');
+  const baselineWorkClasses = workClassNames.filter((name) => (
+    name !== 'vertical_slice_execution' && name !== 'gate_status_bootstrap'
+  ));
   if (sha256(`${baselineGateIds.join('\n')}\n`) !== '93ef3d6a1f8bc7790e2b3589e94a26d4dee7a96e8e61f86455ff4e391256e5d5') {
     fail('A relocated baseline gate ID was removed, renamed, duplicated or reordered');
   }
@@ -156,48 +171,77 @@ function validateGateRegistry() {
     fail('Reviewer eligibility failure semantics changed');
   }
   const requiredReviewerFields = [
-    'provider', 'exact_model_id_or_build', 'provider_reasoning_value',
-    'immutable_session_id', 'immutable_review_id', 'input_specification_root',
-    'prompt_digest', 'output_evidence_digest', 'root_before_review',
-    'root_after_review', 'reviewer_edit_set', 'issued_at', 'nonce',
-    'signing_key_id', 'signature',
+    'controller_id', 'controller_version',
+    'exact_specification_root', 'exact_model_identifier', 'reasoning_level',
+    'immutable_task_id', 'immutable_session_id', 'immutable_review_id',
+    'registered_prompt_id', 'cold_review_prompt_digest',
+    'exact_input_context_digest', 'review_output_digest', 'review_start_time',
+    'review_end_time', 'reviewer_principal_id',
+    'reviewer_source_control_identity_set', 'reviewer_disposition',
+    'reviewer_edit_set_root',
+    'parent_session_state', 'no_earlier_review_conclusions_were_inputs',
+    'nonce', 'signature_algorithm', 'controller_key_id', 'controller_signature',
   ];
-  if (JSON.stringify(reviewer.provider_attestation_required_fields) !== JSON.stringify(requiredReviewerFields)) {
-    fail('Reviewer provider-attestation fields changed');
+  if (JSON.stringify(reviewer.review_record_required_fields) !== JSON.stringify(requiredReviewerFields)) {
+    fail('Trusted review-controller record fields changed');
   }
-  const profiles = reviewer.provider_profiles;
-  if (profiles?.FABLE_ELIGIBLE?.provider_id !== 'FABLE'
-    || profiles?.SOL_5_6_EXTRA_HIGH_ELIGIBLE?.provider_id !== 'OPENAI'
-    || profiles?.SOL_5_6_EXTRA_HIGH_ELIGIBLE?.exact_build_rule !== 'gpt-5.6-sol'
-    || profiles?.SOL_5_6_EXTRA_HIGH_ELIGIBLE?.exact_reasoning_value !== 'xhigh') {
-    fail('Reviewer provider profiles are incomplete');
+  const profiles = reviewer.reviewer_profiles;
+  if (profiles?.FABLE_ELIGIBLE?.reviewer_identity_class !== 'FABLE'
+    || profiles?.SOL_5_6_EXTRA_HIGH_ELIGIBLE?.reviewer_identity_class !== 'OPENAI_MODEL'
+    || profiles?.SOL_5_6_EXTRA_HIGH_ELIGIBLE?.exact_model_rule !== 'gpt-5.6-sol'
+    || profiles?.SOL_5_6_EXTRA_HIGH_ELIGIBLE?.exact_reasoning_level !== 'xhigh') {
+    fail('Reviewer profiles are incomplete');
   }
-  if (reviewer.provider_evidence_source !== 'AUTHENTICATED_PROVIDER_REVIEW_RECORD_API'
-    || reviewer.provider_signature_verification !== 'DSSE_OR_JWS_SIGNATURE_AND_CERTIFICATE_CHAIN_TO_TRUST_ROOT'
-    || reviewer.provider_record_unavailable_or_unverifiable_effect !== 'INELIGIBLE'
+  const controllerCapabilities = reviewer.review_controller_required_capabilities;
+  if (reviewer.review_evidence_source !== 'TRUSTED_REVIEW_CONTROLLER_SIGNED_IMMUTABLE_RECORD'
+    || reviewer.review_evidence_retrieval !== 'VALIDATOR_DETERMINISTICALLY_ENUMERATES_CLOSED_EVIDENCE_SET_AND_LOADS_EXACT_RECORD'
+    || reviewer.review_controller_signature_verification !== 'SIGNATURE_TO_ALLOWLISTED_CONTROLLER_PROCESS_ONLY_KEY'
+    || !controllerCapabilities?.directly_controls_review_execution
+    || !controllerCapabilities?.directly_observes_exact_inputs_outputs_and_times
+    || controllerCapabilities?.permits_review_mutation !== false
+    || !controllerCapabilities?.owns_signing_key
+    || !controllerCapabilities?.controller_process_is_sole_permitted_signing_key_user
+    || controllerCapabilities?.signing_key_accessible_to_reviewer_review_process_operator_input_or_repository !== false
+    || controllerCapabilities?.private_key_enters_review_environment_logs_or_checkout !== false
+    || reviewer.controller_record_unavailable_or_unverifiable_effect !== 'INELIGIBLE'
     || reviewer.local_cli_or_transcript_only_effect !== 'ADVISORY_ONLY') {
-    fail('Authenticated reviewer-provider evidence oracle changed');
+    fail('Trusted review-controller evidence oracle changed');
   }
-  const verification = reviewer.provider_verification_predicate;
-  if (!verification?.fetch_record_from_provider_not_evidence_file
-    || !verification.verify_signature_and_trust_chain
-    || !verification.verify_nonce_is_single_use
+  const verification = reviewer.review_controller_verification_predicate;
+  if (!verification?.deterministically_enumerate_closed_evidence_set_and_load_exact_record
+    || !verification.verify_signature_to_allowlisted_controller_process_only_key
+    || !verification.verify_controller_directly_controlled_and_observed_execution
+    || !verification.verify_review_was_read_only
     || !verification.verify_all_payload_fields_against_review_set
-    || !verification.reject_user_or_reviewer_supplied_substitute) {
-    fail('Reviewer-provider authenticity predicate is incomplete');
+    || !verification.verify_record_nonce_is_unique
+    || !verification.reject_user_reviewer_or_repository_supplied_substitute) {
+    fail('Review-controller authenticity predicate is incomplete');
+  }
+  const reviewAcceptance = reviewer.review_record_acceptance;
+  if (!reviewAcceptance?.controller_id_and_version_must_be_allowlisted
+    || !reviewAcceptance?.exact_specification_root_must_equal_review_set_root
+    || reviewAcceptance?.parent_session_state_must_be !== 'GENESIS'
+    || reviewAcceptance?.no_earlier_review_conclusions_were_inputs_must_be !== true
+    || reviewAcceptance?.reviewer_edit_set_root_must_be !== 'EMPTY'
+    || reviewAcceptance?.reviewer_disposition_must_be !== 'PASS'
+    || !reviewAcceptance?.record_nonce_must_be_unique) {
+    fail('Review-controller record acceptance rules are incomplete');
   }
   const independence = reviewer.independence_acceptance;
   const independenceUniverse = reviewer.independence_universe_contract;
-  if (reviewer.independence_evidence_source !== 'STATUS_VALIDATOR_RECOMPUTED_FROM_AUTHORSHIP_RECEIPTS_AND_PROVIDER_SESSION_GRAPH'
-    || !independenceUniverse?.authorship_membership
+  if (reviewer.independence_evidence_source !== 'STATUS_VALIDATOR_RECOMPUTED_FROM_CONTROLLER_RECORD_AND_COMPLETE_GIT_HISTORY'
+    || !independenceUniverse?.reviewed_bytes_must_be_committed
+    || independenceUniverse?.reviewer_principal_identity_mapping !== 'REVIEWER_PRINCIPAL_TO_COMPLETE_SOURCE_CONTROL_IDENTITY_SET_FROM_CONTROLLER_RECORD'
+    || independenceUniverse?.authorship_membership !== 'EVERY_GIT_COMMIT_CONTRIBUTING_A_BYTE_TO_THE_EXACT_REVIEWED_ROOT_WITH_COMPLETE_HISTORY_BLAME_AND_COPY_TRACING'
     || !independenceUniverse?.review_input_membership
     || !independenceUniverse?.allowed_review_input
     || !independenceUniverse?.cold_prompt_constraint
     || !independenceUniverse?.prior_conclusion_membership
     || !independenceUniverse?.cutoff
-    || !independenceUniverse?.authorship_write_authority
-    || !independenceUniverse?.prior_conclusion_write_authority
-    || !independenceUniverse?.completeness_proof
+    || independenceUniverse?.authorship_source !== 'COMPLETE_GIT_COMMIT_DAG_SUPPLEMENTARY_TO_CONTROLLER_REVIEW_EVIDENCE'
+    || independenceUniverse?.review_input_source !== 'TRUSTED_REVIEW_CONTROLLER_RECORD_ONLY'
+    || independenceUniverse?.completeness_proof !== 'VALIDATOR_REBUILDS_BYTE_AUTHORSHIP_WITH_COMPLETE_HISTORY_BLAME_AND_COPY_TRACING_AND_MAPS_ALL_AUTHORS_TO_THE_REVIEWER_PRINCIPAL_IDENTITY_SET'
+    || independenceUniverse?.missing_or_ambiguous_reviewer_identity_mapping_effect !== 'INELIGIBLE'
     || independenceUniverse?.missing_unsigned_unattributed_or_unenumerable_event_effect !== 'INELIGIBLE'
     || independence?.session_parent_must_be !== 'GENESIS'
     || independence?.authoring_event_intersection_root_must_be !== 'EMPTY'
@@ -235,6 +279,67 @@ function validateGateRegistry() {
     || acceptance?.terminal_state_must_equal !== 'PASS') {
     fail('Gate evidence acceptance predicate is incomplete');
   }
+  const bootstrap = registry.work_classes.gate_status_bootstrap;
+  const permittedBootstrapActions = [
+    'GOVERNING_SPECIFICATION_AMENDMENT_FOR_GATE_STATUS_BOOTSTRAP',
+    'REVIEW_CONTROLLER_SOFTWARE',
+    'REVIEW_CONTROLLER_EVIDENCE_SCHEMAS',
+    'GATE_EVIDENCE_SCHEMAS',
+    'GATE_ACCEPTANCE_DEFINITIONS',
+    'EVIDENCE_ENUMERATORS',
+    'EVIDENCE_PREDICATES',
+    'CERTIFICATION_INTEGRITY_VALIDATOR',
+    'SIGNING_SYSTEM',
+    'STATUS_PUBLISHER',
+    'PROGRAMME_STATUS_PUBLICATION_HEAD',
+    'TESTS_FOR_THESE_ITEMS',
+  ];
+  const prohibitedBootstrapActions = [
+    'CORPUS_EXTRACTION',
+    'CORPUS_REPROCESSING',
+    'CORPUS_WRITES',
+    'BACKFILLS',
+    'PRODUCTION_DATA_CHANGES',
+    'RELEASE_IMPORT',
+    'RELEASE_ACTIVATION',
+    'PRODUCT_FEATURE_ACTIVATION',
+  ];
+  const bootstrapTerminal = bootstrap?.terminal_condition;
+  if (JSON.stringify(bootstrap?.all_of) !== JSON.stringify(['specification_review'])
+    || bootstrap?.authority_model !== 'TEMPORARY_ONE_USE'
+    || bootstrap?.predecessor !== 'NONE'
+    || bootstrap?.nonce !== 'gate-status-bootstrap-2026-07-27-v1'
+    || JSON.stringify(bootstrap?.required_adversarial_tests) !== JSON.stringify(['GATE-BOOTSTRAP-01'])
+    || JSON.stringify(bootstrap?.authority_scope?.permitted) !== JSON.stringify(permittedBootstrapActions)
+    || JSON.stringify(bootstrap?.authority_scope?.prohibited) !== JSON.stringify(prohibitedBootstrapActions)
+    || bootstrapTerminal?.event !== 'FIRST_VALID_PROGRAMME_GATE_STATUS_ARTEFACT_V2_PUBLICATION'
+    || bootstrapTerminal?.required_generation !== 1
+    || bootstrapTerminal?.required_predecessor !== 'NONE'
+    || bootstrapTerminal?.required_work_class_state !== 'canonical_work_start'
+    || bootstrapTerminal?.required_work_class_result !== 'PASS'
+    || !bootstrapTerminal?.consume_nonce
+    || !bootstrapTerminal?.expires_immediately
+    || bootstrapTerminal?.reissue_without_new_registry_amendment !== 'PROHIBITED') {
+    fail('One-use gate-status bootstrap authority is incomplete or widened');
+  }
+  const publication = registry.ordinary_status_publication;
+  const firstPublication = publication?.first_v2_publication;
+  if (publication?.status_schema !== 'ProgrammeGateStatusArtefact/V2'
+    || publication?.publication_head_schema !== 'ProgrammeStatusPublicationHead/V1'
+    || publication?.publication_head_authority !== 'REPOSITORY_NATIVE_SINGLE_GIT_REF'
+    || publication?.publication_head_git_ref !== 'refs/heads/programme-status-publication-head'
+    || publication?.publication_writer !== 'PROTECTED_GITHUB_ACTION_ONLY'
+    || publication?.compare_and_swap?.status_and_head_commit !== 'ONE_ATOMIC_GIT_REF_UPDATE'
+    || publication?.compare_and_swap?.stale_predecessor_effect !== 'REJECT_WITH_ZERO_REF_CHANGE'
+    || publication?.compare_and_swap?.manual_status_edit_effect !== 'INVALID'
+    || firstPublication?.generation !== 1
+    || firstPublication?.predecessor !== 'NONE'
+    || firstPublication?.gate_projection !== 'ALL_35_REGISTRY_GATES_EXACTLY_ONCE_IN_REGISTRY_ORDER'
+    || firstPublication?.unsupported_p1_and_p9_gate_state !== 'OPEN'
+    || firstPublication?.canonical_work_start_must_be !== 'PASS'
+    || !firstPublication?.consumes_gate_status_bootstrap_nonce) {
+    fail('Repository-native programme-status publication contract is incomplete');
+  }
   if (JSON.stringify(registry.work_classes.vertical_slice_execution?.all_of) !== JSON.stringify(['canonical_work_start', 'P1_CONTRACT_FREEZE_ATTESTED'])) {
     fail('Vertical-slice execution dependencies changed');
   }
@@ -244,7 +349,9 @@ function validateGateRegistry() {
 
   const known = new Set([...workClassNames, ...gateIds]);
   for (const [name, definition] of Object.entries(registry.work_classes)) {
-    for (const dependency of definition.all_of || []) {
+    const dependencies = definition.all_of || [];
+    assertUnique(dependencies, `dependency in work class ${name}`);
+    for (const dependency of dependencies) {
       if (!known.has(dependency)) fail(`Unknown dependency ${dependency} in ${name}`);
     }
   }
@@ -301,12 +408,12 @@ function validateAdversarialTests() {
     [...read(filePath).toString('utf8').matchAll(definition)].map((match) => ({ filePath, id: match[1] }))
   ));
   const ids = rows.map((row) => row.id);
-  if (ids.length !== 281) fail(`Expected 281 adversarial tests, found ${ids.length}`);
+  if (ids.length !== 282) fail(`Expected 282 adversarial tests, found ${ids.length}`);
   assertUnique(ids, 'adversarial test ID');
   if (rows.some((row) => row.filePath !== 'docs/codex-program/adversarial-tests.md')) {
     fail('Adversarial test definition outside authoritative file');
   }
-  if (sha256(`${ids.join('\n')}\n`) !== '4061d08d6470720334881c4fc11c7a92b37f9543eeb78b4f11f5c96c5409efac') {
+  if (sha256(`${ids.join('\n')}\n`) !== '172ae17e2d6a5472c4a0ef852d9e43f03466e94eea3a89f3cf62b0d38b07abd0') {
     fail('Current adversarial test ID list changed');
   }
   const addedIds = new Set([
@@ -315,6 +422,7 @@ function validateAdversarialTests() {
     'RESIDUAL-TOTALITY-01',
     'SOURCE-SPECIFIC-CARDINALITY-01',
     'SHADOW-REEXTRACTION-01',
+    'GATE-BOOTSTRAP-01',
   ]);
   const baselineIds = ids.filter((id) => !addedIds.has(id));
   if (sha256(`${baselineIds.join('\n')}\n`) !== 'c4d52483beb08c1feacac9222e4ab24b7156173dea8c2e6599fe3c11d575fe1c') {

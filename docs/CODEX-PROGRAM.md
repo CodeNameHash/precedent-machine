@@ -167,7 +167,15 @@ CORRECTED (the plan below rests on these, not the review's wording):
   touching extraction, drift tests for anything touching registries.
 - Piecemeal implementation is paused until every start gate in the authoritative
   gate registry is closed. Only the enumerated emergency P0 containment work may
-  change application code while those gates are open. After the start gate,
+  change application code while those gates are open. The temporary
+  `gate_status_bootstrap` work class is the only other exception. It permits only
+  the governance amendment, trusted review-controller software and evidence
+  schemas, gate evidence schemas and acceptance definitions, enumerators,
+  predicates, the certification integrity validator, signing system, status
+  publisher, `ProgrammeStatusPublicationHead` and their tests. It does not
+  permit corpus extraction, reprocessing, writes, backfills, production data
+  changes, release import or activation, or product feature activation. After
+  the start gate,
   approved architectural slices proceed independently and leave `main`
   deployable.
 - Before canonical implementation, reproduce and freeze the complete
@@ -189,37 +197,44 @@ CORRECTED (the plan below rests on these, not the review's wording):
   names, each immutable reviewer identity, eligibility, input root, terminal
   disposition and evidence digest, the root observed before and after each
   review, an empty intervening-edit set and terminal `PASS`. Reviewer eligibility
-  is determined only by the machine-readable registry contract. The Sol class
-  requires immutable provider attestation of exact model ID or build,
-  provider reasoning value, session and review IDs, prompt and output digests,
-  both observed roots and an empty edit set. The validator fetches that record
-  from the authenticated provider review-record API, verifies its DSSE or JWS
-  signature and certificate chain against the frozen provider trust-root set,
-  consumes a single-use nonce and compares every field with the review set.
+  is determined only by the machine-readable registry contract. A trusted
+  review controller directly starts and observes each read-only review. It
+  records its controller ID and version, the exact specification root, model
+  identifier, reasoning level, immutable task, session and review IDs,
+  registered prompt ID and digest, exact input-context and output digests, start
+  and end times, reviewer principal and complete source-control identity set,
+  disposition, edit-set root, parent-session state, the fact that no earlier
+  review conclusions were inputs, a unique nonce, signature algorithm and key
+  ID. The controller emits the signed immutable record into the closed evidence
+  set. The validator deterministically enumerates that set, loads the exact
+  record, verifies its signature against the frozen controller-key registry and
+  compares every field with the review set. The controller process is the only
+  process permitted to use the signing key. The key is inaccessible to the
+  reviewer, review process, operator input and repository. The private key never
+  enters the review environment, logs or checkout.
   The registry separately maps `FABLE_ELIGIBLE` and
-  `SOL_5_6_EXTRA_HIGH_ELIGIBLE` to their provider identity, exact build rule,
-  reasoning rule where applicable and provider-specific trust-root set.
-  Repository evidence, a CLI transcript or reviewer-supplied metadata cannot
-  substitute for the provider record; an unavailable or unverifiable record is
+  `SOL_5_6_EXTRA_HIGH_ELIGIBLE` to their reviewer identity, exact model rule and
+  reasoning rule where applicable. Repository evidence, a CLI transcript or
+  reviewer-supplied metadata cannot substitute for the controller record; an
+  unavailable or unverifiable record is
   ineligible. Self-asserted metadata is invalid.
   Independence is not a reviewer assertion. The status validator creates a
-  signed `ReviewerIndependenceAttestation` by comparing the provider session
-  graph with the complete authorship-receipt and prior-review-conclusion
-  registries. The authorship registry contains every signed source-control commit
-  or integration-owner workspace-change receipt that contributed a byte to the
-  exact root. The validator separately enumerates every provider-recorded input
-  or message delivered to the immutable review session. The only permitted
+  signed `ReviewerIndependenceAttestation` by comparing the controller record
+  with the complete Git history for the committed reviewed bytes. The controller
+  record maps the reviewer principal to its complete source-control identity
+  set. The validator uses complete history, blame and copy tracing to find every
+  commit that contributed a byte to the exact root and confirms that none maps
+  to the reviewer principal. A missing or ambiguous identity mapping is
+  ineligible. It separately enumerates every
+  input that the controller delivered to the review. The only permitted
   inputs are the exact reviewed-root bytes and one root-bound, lane-specific cold
   prompt whose registered digest is reviewed to contain no prior finding or
-  conclusion. The prior-conclusion universe contains every input outside that
-  closed allowed set and every provider-linked prior review output. Root freeze
-  precedes creation of that genesis session, and review start is the closed
-  cutoff. The status validator rebuilds the first universe from the complete
-  commit DAG and workspace-change ledger and the second from the authenticated
-  provider session graph, including linked prior outputs. Only the source-control provider or integration owner
-  may append a signed authorship receipt; only the provider record API supplies
-  session inputs. Any unsigned, unattributed or unenumerable event makes the
-  reviewer ineligible. The session must be genesis, and the authorship-event,
+  conclusion. The controller record is the authority for review execution,
+  inputs and output. Git history is supplementary authorship evidence only and
+  cannot prove that a review occurred. Root freeze precedes the genesis review
+  execution, and review start is the closed input cutoff. Any unsigned,
+  unattributed or unenumerable review event makes the reviewer ineligible. The
+  parent-session state must be genesis, and the authorship-event,
   prior-conclusion and reviewer-edit intersections must each be the exact empty
   root. Independence requires that the reviewer neither authored nor modified
   the reviewed root and received no prior conclusions. Exactly one PASS is required
@@ -232,6 +247,11 @@ CORRECTED (the plan below rests on these, not the review's wording):
 
 - One integration owner controls shared schemas, generators, migrations, writer
   registries and merge sequencing.
+- Each PR uses one isolated branch with the repository-approved prefix.
+  Containment, governance, gate software and evidence remain separate PRs.
+  Current executable CI accepts `wp/*`. This rule does not claim that `codex/*`
+  works now, and it replaces any instruction to use one branch for all
+  gate-recovery increments.
 - Each agent receives a bounded work packet with fixed inputs, outputs,
   permitted files, forbidden changes and acceptance tests.
 - Two agents cannot independently modify the same identity, registry, migration
@@ -2187,13 +2207,34 @@ After those gates, import, parity, activation, containment, restoration and comp
 - Generated programme-gate status authority is the sole sequencing authority.
   Programme completion additionally requires its atomic terminal pair. With the
   status artefact absent, only specification review and emergency containment
-  are permitted. Thereafter each work class opens only through its registry
-  dependencies. Bounded implementation planning requires
+  are normally permitted. The one-use `gate_status_bootstrap` exception has
+  predecessor `NONE` and the registry-bound nonce
+  `gate-status-bootstrap-2026-07-27-v1`. Its scope is the closed list in the gate
+  registry. It expires when the protected publisher consumes that nonce
+  during the first valid `ProgrammeGateStatusArtefact/V2` publication, at
+  generation 1 from predecessor `NONE`, with `canonical_work_start: PASS`.
+  It cannot be reused or reissued without another governing registry amendment.
+  An owner statement cannot create or extend this authority. Thereafter each
+  work class opens only through its registry dependencies. Bounded implementation
+  planning requires
   `implementation_planning`; isolation-boundary setup requires its three
   security dispositions. A production-snapshot restore or data-bearing preview
   additionally requires isolated project identities and default-deny access
   protection. No post-containment factual baseline, canonical implementation or
   canonical data work begins until `canonical_work_start` is green.
+- Ordinary status publication uses the repository-native
+  `refs/heads/programme-status-publication-head` as its single publication head.
+  A protected GitHub Action reads the exact predecessor Git object ID, validates
+  the complete status projection and updates the ref with one compare-and-swap.
+  A stale predecessor makes no ref change. The first V2 status is a genesis
+  event at generation 1 with predecessor `NONE`. It includes all 35 gates once
+  in registry order. Every unsupported P1 and P9 gate remains `OPEN`. Manual
+  edits and owner-deemed states do not pass validation.
+- The existing generation-4
+  `docs/certification/programme-gate-status.json` file is a historical V1
+  owner-deemed record. It is not a V2 predecessor, evidence source, publication
+  head or executable authority. The first V2 publication uses
+  `docs/certification/programme-gate-status-v2.json`.
 - After contract freeze, `vertical_slice_execution` permits only the bounded
   reviewed staging fixture and the ordered thin Phase 1 through 7 path described
   above. `P1_VERTICAL_SLICE_PASS` requires its full source-to-UI and bounded-

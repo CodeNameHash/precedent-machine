@@ -2,8 +2,15 @@ programme_gate_registry:
   schema: canonical-programme-gates/v1
   specification_identity: DOMAIN_SEPARATED_SPECIFICATION_ROOT_DIGEST
   specification_manifest: docs/codex-program/specification-manifest.json
-  status_artifact: docs/certification/programme-gate-status.json
+  status_artifact: docs/certification/programme-gate-status-v2.json
   status_source: GENERATED_STATUS_ARTEFACT_WITH_TERMINAL_PAIR_FOR_COMPLETION
+  historical_status_artifacts:
+    - path: docs/certification/programme-gate-status.json
+      schema: canonical-programme-gates/v1-status
+      generation: 4
+      disposition: HISTORICAL_OWNER_DEEMED_RECORD_ONLY
+      v2_predecessor: false
+      executable_authority: false
   absent_status_effect: ALL_GATES_OPEN
   evidence_directory: docs/certification/evidence
   default_state: OPEN
@@ -85,62 +92,89 @@ programme_gate_registry:
     sol_provider_model_id: gpt-5.6-sol
     sol_provider_reasoning_value: xhigh
     sol_canonical_reasoning_label: extra-high
-    provider_evidence_schema: reviewer-provider-evidence/dsse-v1
-    provider_evidence_source: AUTHENTICATED_PROVIDER_REVIEW_RECORD_API
-    provider_evidence_retrieval: VALIDATOR_FETCH_BY_IMMUTABLE_SESSION_AND_REVIEW_ID
-    provider_trust_root_set: reviewer-provider-trust-roots/v1
-    provider_signature_verification: DSSE_OR_JWS_SIGNATURE_AND_CERTIFICATE_CHAIN_TO_TRUST_ROOT
-    provider_transport: MUTUALLY_AUTHENTICATED_TLS
-    provider_attestation_required_fields:
-      - provider
-      - exact_model_id_or_build
-      - provider_reasoning_value
+    review_evidence_schema: trusted-review-controller-record/v1
+    review_evidence_source: TRUSTED_REVIEW_CONTROLLER_SIGNED_IMMUTABLE_RECORD
+    review_evidence_retrieval: VALIDATOR_DETERMINISTICALLY_ENUMERATES_CLOSED_EVIDENCE_SET_AND_LOADS_EXACT_RECORD
+    review_controller_trust_root_set: trusted-review-controller-keys/v1
+    review_controller_signature_verification: SIGNATURE_TO_ALLOWLISTED_CONTROLLER_PROCESS_ONLY_KEY
+    review_controller_required_capabilities:
+      directly_controls_review_execution: true
+      directly_observes_exact_inputs_outputs_and_times: true
+      permits_review_mutation: false
+      owns_signing_key: true
+      controller_process_is_sole_permitted_signing_key_user: true
+      signing_key_accessible_to_reviewer_review_process_operator_input_or_repository: false
+      private_key_enters_review_environment_logs_or_checkout: false
+    review_record_required_fields:
+      - controller_id
+      - controller_version
+      - exact_specification_root
+      - exact_model_identifier
+      - reasoning_level
+      - immutable_task_id
       - immutable_session_id
       - immutable_review_id
-      - input_specification_root
-      - prompt_digest
-      - output_evidence_digest
-      - root_before_review
-      - root_after_review
-      - reviewer_edit_set
-      - issued_at
+      - registered_prompt_id
+      - cold_review_prompt_digest
+      - exact_input_context_digest
+      - review_output_digest
+      - review_start_time
+      - review_end_time
+      - reviewer_principal_id
+      - reviewer_source_control_identity_set
+      - reviewer_disposition
+      - reviewer_edit_set_root
+      - parent_session_state
+      - no_earlier_review_conclusions_were_inputs
       - nonce
-      - signing_key_id
-      - signature
-    provider_profiles:
+      - signature_algorithm
+      - controller_key_id
+      - controller_signature
+    reviewer_profiles:
       FABLE_ELIGIBLE:
-        provider_id: FABLE
-        exact_build_rule: PROVIDER_ATTESTED_FABLE_ELIGIBLE_BUILD
-        trust_root_set: fable-review-provider-trust-roots/v1
+        reviewer_identity_class: FABLE
+        exact_model_rule: CONTROLLER_OBSERVED_FABLE_ELIGIBLE_MODEL
       SOL_5_6_EXTRA_HIGH_ELIGIBLE:
-        provider_id: OPENAI
-        exact_build_rule: gpt-5.6-sol
-        exact_reasoning_value: xhigh
-        trust_root_set: openai-review-provider-trust-roots/v1
-    provider_verification_predicate:
-      fetch_record_from_provider_not_evidence_file: true
-      verify_signature_and_trust_chain: true
-      verify_nonce_is_single_use: true
+        reviewer_identity_class: OPENAI_MODEL
+        exact_model_rule: gpt-5.6-sol
+        exact_reasoning_level: xhigh
+    review_controller_verification_predicate:
+      deterministically_enumerate_closed_evidence_set_and_load_exact_record: true
+      verify_signature_to_allowlisted_controller_process_only_key: true
+      verify_controller_directly_controlled_and_observed_execution: true
+      verify_review_was_read_only: true
       verify_all_payload_fields_against_review_set: true
-      reject_user_or_reviewer_supplied_substitute: true
-    provider_record_unavailable_or_unverifiable_effect: INELIGIBLE
+      verify_record_nonce_is_unique: true
+      reject_user_reviewer_or_repository_supplied_substitute: true
+    review_record_acceptance:
+      controller_id_and_version_must_be_allowlisted: true
+      exact_specification_root_must_equal_review_set_root: true
+      parent_session_state_must_be: GENESIS
+      no_earlier_review_conclusions_were_inputs_must_be: true
+      reviewer_edit_set_root_must_be: EMPTY
+      reviewer_disposition_must_be: PASS
+      record_nonce_must_be_unique: true
+    controller_record_unavailable_or_unverifiable_effect: INELIGIBLE
     local_cli_or_transcript_only_effect: ADVISORY_ONLY
     independence_predicate:
       reviewer_did_not_author_or_modify_input_root: true
       reviewer_received_prior_conclusions: false
       reviewer_edit_set_must_be_empty: true
     independence_evidence_schema: reviewer-independence-attestation/v1
-    independence_evidence_source: STATUS_VALIDATOR_RECOMPUTED_FROM_AUTHORSHIP_RECEIPTS_AND_PROVIDER_SESSION_GRAPH
+    independence_evidence_source: STATUS_VALIDATOR_RECOMPUTED_FROM_CONTROLLER_RECORD_AND_COMPLETE_GIT_HISTORY
     independence_universe_contract:
-      authorship_membership: EVERY_SIGNED_COMMIT_OR_INTEGRATION_OWNER_WORKSPACE_CHANGE_RECEIPT_CONTRIBUTING_A_BYTE_TO_THE_EXACT_REVIEWED_ROOT
-      review_input_membership: EVERY_PROVIDER_RECORDED_INPUT_OR_MESSAGE_DELIVERED_TO_THE_IMMUTABLE_REVIEW_SESSION
+      reviewed_bytes_must_be_committed: true
+      reviewer_principal_identity_mapping: REVIEWER_PRINCIPAL_TO_COMPLETE_SOURCE_CONTROL_IDENTITY_SET_FROM_CONTROLLER_RECORD
+      authorship_membership: EVERY_GIT_COMMIT_CONTRIBUTING_A_BYTE_TO_THE_EXACT_REVIEWED_ROOT_WITH_COMPLETE_HISTORY_BLAME_AND_COPY_TRACING
+      review_input_membership: EVERY_CONTROLLER_OBSERVED_INPUT_DELIVERED_TO_THE_READ_ONLY_REVIEW_EXECUTION
       allowed_review_input: EXACT_REVIEWED_ROOT_BYTES_PLUS_ONE_REGISTERED_LANE_SPECIFIC_COLD_PROMPT
       cold_prompt_constraint: ROOT_BOUND_PROMPT_DIGEST_WITH_ZERO_PRIOR_REVIEW_FINDING_OR_CONCLUSION_CONTENT
-      prior_conclusion_membership: EVERY_REVIEW_INPUT_OUTSIDE_THE_ALLOWED_REVIEW_INPUT_PLUS_EVERY_PROVIDER_LINKED_PRIOR_REVIEW_OUTPUT
-      cutoff: ROOT_FREEZE_PRECEDES_REVIEW_SESSION_CREATION_AND_PROVIDER_INPUT_CUTOFF_EQUALS_REVIEW_START
-      authorship_write_authority: APPEND_ONLY_SIGNED_INTEGRATION_OWNER_OR_SOURCE_CONTROL_PROVIDER_RECEIPT
-      prior_conclusion_write_authority: AUTHENTICATED_PROVIDER_SESSION_RECORD_API_ONLY
-      completeness_proof: VALIDATOR_REBUILDS_AUTHORSHIP_FROM_COMPLETE_COMMIT_DAG_AND_WORKSPACE_CHANGE_LEDGER_AND_REVIEW_INPUTS_AND_LINKED_OUTPUTS_FROM_COMPLETE_PROVIDER_SESSION_GRAPH
+      prior_conclusion_membership: EVERY_CONTROLLER_OBSERVED_INPUT_OUTSIDE_THE_ALLOWED_REVIEW_INPUT
+      cutoff: ROOT_FREEZE_PRECEDES_REVIEW_EXECUTION_AND_CONTROLLER_INPUT_CUTOFF_EQUALS_REVIEW_START
+      authorship_source: COMPLETE_GIT_COMMIT_DAG_SUPPLEMENTARY_TO_CONTROLLER_REVIEW_EVIDENCE
+      review_input_source: TRUSTED_REVIEW_CONTROLLER_RECORD_ONLY
+      completeness_proof: VALIDATOR_REBUILDS_BYTE_AUTHORSHIP_WITH_COMPLETE_HISTORY_BLAME_AND_COPY_TRACING_AND_MAPS_ALL_AUTHORS_TO_THE_REVIEWER_PRINCIPAL_IDENTITY_SET
+      missing_or_ambiguous_reviewer_identity_mapping_effect: INELIGIBLE
       missing_unsigned_unattributed_or_unenumerable_event_effect: INELIGIBLE
     independence_required_fields:
       - reviewer_principal_id
@@ -166,6 +200,46 @@ programme_gate_registry:
   work_classes:
     specification_review:
       all_of: []
+    gate_status_bootstrap:
+      all_of:
+        - specification_review
+      authority_model: TEMPORARY_ONE_USE
+      predecessor: NONE
+      nonce: gate-status-bootstrap-2026-07-27-v1
+      required_adversarial_tests:
+        - GATE-BOOTSTRAP-01
+      authority_scope:
+        permitted:
+          - GOVERNING_SPECIFICATION_AMENDMENT_FOR_GATE_STATUS_BOOTSTRAP
+          - REVIEW_CONTROLLER_SOFTWARE
+          - REVIEW_CONTROLLER_EVIDENCE_SCHEMAS
+          - GATE_EVIDENCE_SCHEMAS
+          - GATE_ACCEPTANCE_DEFINITIONS
+          - EVIDENCE_ENUMERATORS
+          - EVIDENCE_PREDICATES
+          - CERTIFICATION_INTEGRITY_VALIDATOR
+          - SIGNING_SYSTEM
+          - STATUS_PUBLISHER
+          - PROGRAMME_STATUS_PUBLICATION_HEAD
+          - TESTS_FOR_THESE_ITEMS
+        prohibited:
+          - CORPUS_EXTRACTION
+          - CORPUS_REPROCESSING
+          - CORPUS_WRITES
+          - BACKFILLS
+          - PRODUCTION_DATA_CHANGES
+          - RELEASE_IMPORT
+          - RELEASE_ACTIVATION
+          - PRODUCT_FEATURE_ACTIVATION
+      terminal_condition:
+        event: FIRST_VALID_PROGRAMME_GATE_STATUS_ARTEFACT_V2_PUBLICATION
+        required_generation: 1
+        required_predecessor: NONE
+        required_work_class_state: canonical_work_start
+        required_work_class_result: PASS
+        consume_nonce: true
+        expires_immediately: true
+        reissue_without_new_registry_amendment: PROHIBITED
     emergency_containment:
       all_of: []
     implementation_planning:
@@ -235,6 +309,25 @@ programme_gate_registry:
         - P9_PROGRAMME_COMPLETION_ATTESTATION
       terminal_pair_required: true
       terminal_pair_contract: PROPOSED_STATUS_PLUS_POST_COMPLETION_TRACE/V1
+
+  ordinary_status_publication:
+    status_schema: ProgrammeGateStatusArtefact/V2
+    publication_head_schema: ProgrammeStatusPublicationHead/V1
+    publication_head_authority: REPOSITORY_NATIVE_SINGLE_GIT_REF
+    publication_head_git_ref: refs/heads/programme-status-publication-head
+    publication_writer: PROTECTED_GITHUB_ACTION_ONLY
+    compare_and_swap:
+      expected_current_git_object_id: REQUIRED_EXCEPT_FOR_GENESIS
+      stale_predecessor_effect: REJECT_WITH_ZERO_REF_CHANGE
+      status_and_head_commit: ONE_ATOMIC_GIT_REF_UPDATE
+      manual_status_edit_effect: INVALID
+    first_v2_publication:
+      generation: 1
+      predecessor: NONE
+      gate_projection: ALL_35_REGISTRY_GATES_EXACTLY_ONCE_IN_REGISTRY_ORDER
+      unsupported_p1_and_p9_gate_state: OPEN
+      canonical_work_start_must_be: PASS
+      consumes_gate_status_bootstrap_nonce: true
 
   terminal_completion_binding:
     proposed_status_gates:
