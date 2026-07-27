@@ -1,0 +1,38 @@
+{
+  "phase": "WP-QUERY-CONTAINMENT-GATE-RECOVERY-P0",
+  "allowed": [
+    ".github/phase-allowlists/wp-query-containment-gate-recovery-p0.json",
+    "components/chrome/AppHeader.jsx",
+    "components/review-v2/GlobalMarketBridge.jsx",
+    "lib/query-containment.js",
+    "lib/query/contained-routes/**",
+    "pages/api/canonical-v2/query.js",
+    "pages/api/query/demo-set.js",
+    "pages/api/query/field-options.js",
+    "pages/api/query/interpret.js",
+    "pages/api/query/kinds.js",
+    "pages/api/query/run.js",
+    "pages/api/saved-queries.js",
+    "pages/index.js",
+    "pages/library.js",
+    "pages/query/[kind]/[id].js",
+    "pages/query/index.js",
+    "pages/query/whats-market/adhoc.js",
+    "pages/review/[id].js",
+    "tests/canonical-v2-query-api.test.js",
+    "tests/canonical-v2-review-row-overlay.test.js",
+    "tests/global-market-bridge.test.js",
+    "tests/query-containment.test.js",
+    "tests/query-field-options-sentences.test.js",
+    "tests/query-natural-language.test.js",
+    "tests/query-staging-exclusion.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "docs/**",
+    "lib/schema/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Fail-closed Query containment. Live route modules return ROUTE_CONTAINED before database, corpus, environment or model imports. Query code and saved data remain preserved but are not routable."
+}

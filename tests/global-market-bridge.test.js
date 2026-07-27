@@ -114,12 +114,11 @@ test('market page bounds typed request pressure and stages lower-priority corpus
   assert.match(COMPARE_DATA, /const MARKET_BATCH_RETRIES = 0/);
   const typed = REVIEW_PAGE.indexOf('useRowMarketStats(');
   const legacy = REVIEW_PAGE.indexOf('useSectionMarketStats(legacyMarketEnabled');
-  const scorecard = REVIEW_PAGE.indexOf('useDealToMarket(');
   assert.ok(typed >= 0);
   assert.ok(legacy > typed);
-  assert.ok(scorecard > legacy);
+  assert.doesNotMatch(REVIEW_PAGE, /useDealToMarket|\/api\/query\/run/);
   assert.match(REVIEW_PAGE, /rowMarketStats\.attempted && !rowMarketStats\.loading/);
-  assert.match(REVIEW_PAGE, /sectionMarketStats\.attempted && !sectionMarketStats\.loading/);
+  assert.match(REVIEW_PAGE, /rows:\s*marketOffMarketRows/);
 });
 
 test('legacy corpus fallback never fans a backend 5xx into per-code requests', () => {

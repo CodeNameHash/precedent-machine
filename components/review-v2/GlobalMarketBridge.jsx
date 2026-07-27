@@ -7,6 +7,8 @@ import { exactMarketContextForCell } from './rowMarketContext';
 import { encodeMarketPayload } from './marketPayload';
 import { whatsMarketPayload } from '../../lib/query/whats-market';
 
+const QUERY_UI_CONTAINED = true;
+
 function plainText(value, fallback = '') {
   if (value === null || value === undefined) return fallback;
   if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return String(value);
@@ -210,7 +212,7 @@ export default function GlobalMarketBridge() {
   }, [mounted, marketMode, router.asPath]);
 
   useEffect(() => {
-    if (!mounted || router.pathname !== '/') {
+    if (QUERY_UI_CONTAINED || !mounted || router.pathname !== '/') {
       setLauncherHost(null);
       return undefined;
     }
@@ -314,7 +316,7 @@ export default function GlobalMarketBridge() {
 
   return (
     <>
-      {launcherHost ? createPortal(
+      {!QUERY_UI_CONTAINED && launcherHost ? createPortal(
         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(180px,1fr) minmax(220px,1.4fr) auto', gap: 10, alignItems: 'center', padding: '10px 14px', borderBottom: '1px solid #EEEEEE', background: '#fff' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <strong style={{ fontSize: 12 }}>What’s market?</strong>
