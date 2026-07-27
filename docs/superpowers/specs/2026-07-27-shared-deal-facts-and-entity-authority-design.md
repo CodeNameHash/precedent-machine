@@ -287,7 +287,9 @@ The relationship records:
 
 - deal ID;
 - entity ID or source-local subject occurrence;
-- role;
+- role layer and role code;
+- transaction-leg resolution occurrence ID, when the deal has several legal
+  steps;
 - bidder-track ID, when needed;
 - start and end scope, when stated;
 - exact evidence;
@@ -295,22 +297,231 @@ The relationship records:
 - relationship definition and version; and
 - revision.
 
-Initial roles include:
+One entity can have several roles. Each role has its own relationship and
+evidence.
+
+The model has three separate parts.
+
+#### Legal document role
+
+This layer records the role used by the source document.
+
+Initial legal roles include:
+
+- `COMPANY`;
+- `PARENT`;
+- `MERGER_SUB`;
+- `ACQUIROR`;
+- `ISSUER`;
+- `SELLER`;
+- `SURVIVING_ENTITY`;
+- `CONSTITUENT_ENTITY`;
+- `NEW_HOLDCO`;
+- `DISTRIBUTING_PARENT`;
+- `SPINCO`;
+- `REMAINCO`; and
+- `OTHER_LEGAL_PARTY`.
+
+A legal role does not prove the economic role. The surviving entity is not
+automatically the buyer. The share issuer is not automatically the controlling
+party.
+
+#### Transaction role
+
+This layer records the reviewed commercial role.
+
+Initial transaction roles include:
 
 - `TARGET`;
 - `BUYER`;
 - `BIDDER`;
-- `PARENT`;
-- `MERGER_SUB`;
+- `COMBINATION_PARTY`;
 - `SPONSOR`;
 - `CONSORTIUM_MEMBER`;
-- `OTHER_COUNTERPARTY`; and
-- `GOVERNMENT_BODY`.
+- `DIVESTING_PARENT`;
+- `CONTRIBUTING_PARTY`;
+- `ACQUIRED_BUSINESS`;
+- `MERGER_COUNTERPARTY`; and
+- `OTHER_COUNTERPARTY`.
 
 A role is not inherited from a general side label.
 
 For example, an adviser for Pfizer does not become an adviser for Novo because
 both are possible buyers.
+
+`TARGET` and `BUYER` are optional. A merger of equals can use two or more
+`COMBINATION_PARTY` relationships when the evidence does not support a simple
+target and buyer classification.
+
+#### Control outcome
+
+Control is a deal fact. It is not inferred from a participant label.
+
+`TransactionControlOutcome` records:
+
+- control state;
+- controlling entity IDs, when supported;
+- effective time;
+- voting ownership evidence;
+- board-composition evidence;
+- management evidence;
+- source characterisation;
+- exact derivation rule; and
+- exact source evidence.
+
+It uses one canonical state:
+
+- `PRESENT`;
+- `ABSENT`;
+- `NOT_EXAMINED`;
+- `NOT_APPLICABLE`; or
+- `FAILED`.
+
+When the state is `PRESENT`, the control outcome is one of:
+
+- `CONTROLLED_BY_ONE_PARTICIPANT`;
+- `SHARED_CONTROL`;
+- `NEW_HOLDCO_SHARED_CONTROL`;
+- `NO_CLEAR_CONTROL`.
+
+`ABSENT` means that complete frozen source examination found no qualifying
+control statement or derivation. It does not mean that nobody controls the
+combined company.
+
+Company name, headquarters, chief executive, surviving entity, share issuer
+and relative ownership are evidence inputs. No one input decides control by
+itself.
+
+#### Source transaction legs
+
+`SourceTransactionLegOccurrence` records one source statement about one legal
+step inside a transaction.
+
+Its stable ID derives from:
+
+- governed deal ID;
+- leg definition and version;
+- admitted source occurrence;
+- expected source-leg-slot key; and
+- governed repeatable ordinal.
+
+It does not derive from a later structure classification, party label or
+extracted value.
+
+Initial leg types include:
+
+- `DIRECT_MERGER`;
+- `FORWARD_TRIANGULAR_MERGER`;
+- `REVERSE_TRIANGULAR_MERGER`;
+- `TENDER_OFFER`;
+- `SECOND_STEP_MERGER`;
+- `DISTRIBUTION_OR_SPIN_OFF`;
+- `CONTRIBUTION`;
+- `SHARE_EXCHANGE`;
+- `ASSET_TRANSFER`;
+- `NEW_HOLDCO_FORMATION`; and
+- `OTHER_GOVERNED_STEP`.
+
+Each `SourceTransactionLegRevision` records:
+
+- canonical state;
+- exact source endpoints;
+- observed participant roles;
+- observed predecessor and successor source-leg occurrence IDs;
+- closing condition, when stated;
+- effective-time expression;
+- source order;
+- exact evidence; and
+- revision and resolver version.
+
+#### Deal-level transaction legs
+
+`TransactionLegResolutionOccurrence` records one reviewed legal step at the
+deal level.
+
+Its stable ID derives from:
+
+- governed deal ID;
+- leg definition and version;
+- expected deal-leg-slot key; and
+- governed repeatable ordinal.
+
+It does not derive from a source label, participant name, later classification
+or extracted value.
+
+Each `TransactionLegResolutionRevision` selects:
+
+- the complete ordered supporting source-leg revisions;
+- resolved participant-role relationships;
+- resolved source and target entities;
+- predecessor and successor deal-leg occurrence IDs;
+- effective-time expression;
+- closing conditions;
+- exact evidence;
+- conflict disposition; and
+- resolver version.
+
+Each participant relationship can point to one
+`TransactionLegResolutionOccurrence` or to the whole transaction.
+
+`TransactionStructureResolution` selects the complete ordered set of deal-level
+leg resolution revisions and participant-role revisions. A missing required
+leg, unreconciled duplicate deal-level leg or unresolved endpoint blocks a
+complete resolution. Several sources can support the same resolved leg.
+
+This is required for a Reverse Morris Trust. The distribution, contribution
+or internal reorganisation, and merger remain separate when the sources state
+them. The divesting parent, separated business, merger counterparty, merger
+subsidiary and surviving entity keep their own roles.
+
+#### Transaction structure and characterisation
+
+The system keeps legal structure separate from source or market
+characterisation.
+
+Initial legal structure codes include:
+
+- `DIRECT_MERGER`;
+- `FORWARD_TRIANGULAR_MERGER`;
+- `REVERSE_TRIANGULAR_MERGER`;
+- `REVERSE_MERGER`;
+- `REVERSE_MORRIS_TRUST`;
+- `TENDER_OFFER_WITH_SECOND_STEP_MERGER`;
+- `NEW_HOLDCO_COMBINATION`;
+- `ASSET_ACQUISITION`;
+- `SHARE_EXCHANGE`;
+- `SPIN_MERGE`;
+- `DE_SPAC`;
+- `JOINT_VENTURE_COMBINATION`; and
+- `OTHER_REVIEWED_STRUCTURE`.
+
+Initial characterisation codes include:
+
+- `ACQUISITION`;
+- `MERGER_OF_EQUALS_STATED`;
+- `COMBINATION`;
+- `STRATEGIC_MERGER`;
+- `DIVESTITURE`.
+
+Missing and conflicting characterisations use the existing deal-fact
+resolution states and dispositions. They are not characterisation values.
+
+`MERGER_OF_EQUALS_STATED` requires exact source language. It does not follow
+only from relative ownership, board allocation or an unadmitted market label.
+
+`REVERSE_MERGER` means that legal form and economic acquisition direction do
+not align. It is different from `REVERSE_TRIANGULAR_MERGER`, which describes
+the legal merger path.
+
+A reviewed PM classification can differ from source characterisation. The
+projection must show which value is source-stated and which value is a governed
+classification.
+
+When target and buyer roles are supported, the product can show the simple
+Target and Buyer labels. Otherwise it shows Combination Parties. It does not
+fill a false Target or Buyer value for display convenience.
+
+`buyer_type` is `NOT_APPLICABLE` when no reviewed buyer role exists.
 
 ### ProfessionalAssignmentRelationship
 
@@ -399,7 +610,11 @@ Initial fact families are:
 - closing date, when used;
 - sector;
 - jurisdiction;
-- transaction structure;
+- transaction legal structure;
+- transaction source characterisation;
+- transaction control outcome;
+- post-closing voting ownership, when stated;
+- post-closing board composition, when stated;
 - buyer type;
 - consideration form;
 - consideration component;
@@ -667,6 +882,12 @@ At minimum, it must define IDs for:
 - deal-fact resolution revision;
 - participant relationship occurrence;
 - participant relationship revision;
+- source transaction-leg occurrence;
+- source transaction-leg revision;
+- transaction-leg resolution occurrence;
+- transaction-leg resolution revision;
+- transaction-structure resolution;
+- transaction-control-outcome resolution;
 - professional assignment occurrence;
 - professional assignment revision;
 - value derivation;
@@ -791,13 +1012,17 @@ The target first full projection contains:
 - governed deal ID;
 - target entity;
 - buyer entity;
+- combination-party entities;
 - other named bidder entities;
 - source-local bidder labels;
 - announcement date;
 - signing date;
 - sector;
 - jurisdiction;
-- transaction structure;
+- transaction legal structure;
+- transaction source characterisation;
+- transaction legs;
+- transaction control outcome;
 - buyer type;
 - consideration form;
 - consideration components;
@@ -808,6 +1033,9 @@ The target first full projection contains:
 - named lawyers;
 - target and buyer financial advisers; and
 - exact evidence state for every field.
+
+Target, buyer and buyer-type fields can have a typed `NOT_APPLICABLE` state.
+Combination-party fields remain available for those structures.
 
 An initial reduced release can omit fields that are not certified. It must not
 serve legacy values under canonical field names.
@@ -871,6 +1099,9 @@ The release includes:
 - selected name and bridge revisions;
 - selected source deal-fact revisions;
 - selected deal-fact resolution revisions;
+- selected source transaction-leg revisions;
+- selected transaction-leg resolution revisions;
+- selected transaction-structure and control-outcome resolutions;
 - selected participant and professional relationships;
 - selected derivations;
 - generated serving projections;
@@ -939,7 +1170,8 @@ Agreement does not change its legal extraction model.
 
 Process uses the projection for:
 
-- target, buyer and bidder identity;
+- target, buyer, bidder and combination-party identity;
+- transaction legs, structure and control outcome;
 - bidder-track participants;
 - deal economics;
 - counsel and advisers;
@@ -972,6 +1204,12 @@ Examples:
 - conflicting bridge: do not merge;
 - unknown value basis: do not normalise;
 - incomplete derivation: do not publish normalised equity value;
+- unsupported target or buyer classification: show combination parties;
+- surviving entity or share issuer without economic-role proof: keep only the
+  legal role;
+- source-backed conclusion of no clear control: use `NO_CLEAR_CONTROL`;
+- unresolved control outcome: use `NOT_EXAMINED` or block a required field;
+- missing transaction leg: block the complete structure resolution;
 - missing adviser disclosure: use the correct typed state;
 - wrong bidder track: block admission;
 - source evidence outside the admitted source: block admission;
@@ -1003,33 +1241,86 @@ The shared authority is not ready until all applicable conditions pass.
 12. A missing share count prevents the derivation.
 13. Conflicting source facts remain visible and versioned.
 
+### Transaction roles and structures
+
+14. A direct merger keeps the legal company, parent and merger-sub roles.
+15. A forward triangular merger identifies the correct surviving entity.
+16. A reverse triangular merger identifies the correct surviving entity.
+17. A merger of equals can use `COMBINATION_PARTY` without a false buyer.
+18. A source-stated merger of equals keeps the exact source language.
+19. A reverse merger does not infer the buyer from the surviving entity or
+    share issuer.
+20. A Reverse Morris Trust keeps its stated distribution, reorganisation,
+    contribution and merger legs separate.
+21. A Reverse Morris Trust keeps the divesting parent, SpinCo, merger
+    counterparty, merger subsidiary and surviving entity distinct.
+22. A tender offer and second-step merger remain separate transaction legs.
+23. A new-holdco combination does not treat the new holding company as the
+    historical buyer without evidence.
+24. An asset acquisition does not invent merger roles.
+25. A de-SPAC does not infer economic control only from the surviving listed
+    entity.
+26. Every role, leg, structure and control outcome can open its exact evidence.
+
 ### Advisers and lawyers
 
-14. Buyer and target counsel cannot swap.
-15. A firm and an individual lawyer remain different entity kinds.
-16. A side-level adviser cannot fill an undisclosed bidder-track adviser.
-17. A named multi-bidder example proves correct per-track attribution.
-18. A missing losing-bidder adviser remains `UNDISCLOSED` or
+27. Buyer and target counsel cannot swap.
+28. A law-firm organisation and a natural-person lawyer remain distinct
+    subjects.
+29. A side-level adviser cannot fill an undisclosed bidder-track adviser.
+30. A named multi-bidder example proves correct per-track attribution.
+31. A missing losing-bidder adviser remains `UNDISCLOSED` or
     `NOT_EXAMINED`.
-19. Every adviser assignment can open its exact source evidence.
+32. Every adviser assignment can open its exact source evidence.
 
 ### Query and release
 
-20. Identity filters use canonical IDs, not display text.
-21. Live and pinned participant filters return the same logical rows.
-22. An unavailable field cannot be selected through Ask, Browse, a manual
+33. Identity filters use canonical IDs, not display text.
+34. Live and pinned participant filters return the same logical rows.
+35. An unavailable field cannot be selected through Ask, Browse, a manual
     filter or a saved query.
-23. Current display arrays derive from certified relationships.
-24. Every result is bound to one contract, namespace and release.
-25. A changed fact, bridge or assignment produces a new candidate release.
+36. Current display arrays derive from certified relationships.
+37. Every result is bound to one contract, namespace and release.
+38. A changed fact, bridge or assignment produces a new candidate release.
 
 ### Cross-domain
 
-26. Agreement and Process read the same selected fact resolution revision.
-27. A future CVR domain can use the same entity and fact projection.
-28. No domain contains a second canonical entity or deal-fact store.
-29. A domain proposal cannot bypass the canonical writer.
-30. Every shared field has one field-registry definition.
+39. Agreement and Process read the same selected fact resolution revision.
+40. A future CVR domain can use the same entity and fact projection.
+41. No domain contains a second canonical entity or deal-fact store.
+42. A domain proposal cannot bypass the canonical writer.
+43. Every shared field has one field-registry definition.
+
+### Transaction-structure test set
+
+After the formal gate opens, the mandatory structure set includes:
+
+- direct merger;
+- forward triangular merger;
+- reverse triangular merger;
+- merger of equals;
+- reverse merger;
+- Reverse Morris Trust;
+- tender offer with a second-step merger;
+- new-holdco stock combination;
+- stock-for-stock combination;
+- spin-merge;
+- asset acquisition;
+- de-SPAC;
+- sponsor consortium; and
+- joint-venture combination.
+
+Each structure needs:
+
+- one positive role and leg fixture;
+- one negative fixture that challenges a false target, buyer or control
+  inference;
+- exact source evidence;
+- live and pinned projection equality; and
+- filter tests for every admitted structure field.
+
+The suite must include reviewed public-deal gold. Synthetic contract fixtures
+can test extra shapes. They cannot replace the reviewed public-deal gold.
 
 ### Metsera gated anchor
 
@@ -1061,6 +1352,7 @@ This workstream owns:
 - shared deal facts;
 - shared economics derivations;
 - participant relationships;
+- transaction legs, structures and control outcomes;
 - professional assignments;
 - candidate proposals;
 - read-only projections;
