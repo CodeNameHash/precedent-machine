@@ -48,6 +48,20 @@ Amended specification:
 
 The Process specification pins the amended shared design digest exactly.
 
+Current rebase equivalence, 28 July 2026:
+
+- current amended-specification commit:
+  `8ea96335c316da0df629c2fd53d9047f38da13cc`;
+- current advisory-review commit:
+  `20f2a2b39d2d92d0cd06bb8a7764c310a1c475bb`;
+- current PM main:
+  `c5737a59b01654d81380ff48771576d1f00e289f`; and
+- both amended specification SHA-256 fingerprints remain unchanged.
+
+The six new PM main commits add gate software and emergency containment. They
+do not change the three PM field-source files used by the product acceptance
+review.
+
 ## Finding dispositions
 
 ### O1. Candidate proposal and frozen expected-slot universe
