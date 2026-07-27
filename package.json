@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "generate:home-snapshots": "node scripts/generate-home-snapshots.js",
     "generate:query-registry": "node scripts/generate-query-serving-registry.js",
     "start": "next start",
     "test": "node --test tests/*.test.js \"tests/**/*.spec.js\"",
