@@ -3,6 +3,7 @@ import { useState } from 'react';
 import MergertraceStyles from '../../components/review-v2/MergertraceStyles';
 import { MarketMetricCell } from '../../components/review-v2/MarketColumn';
 import MarketDrilldownSidebar from '../../components/review-v2/MarketDrilldownSidebar';
+import NoShopCrossViewPreview from '../../components/review-v2/NoShopCrossViewPreview';
 import { buildTypedRowMarketContext } from '../../components/review-v2/rowMarketContext';
 import { designPreviewServerSideProps } from '../../lib/design/route-guard';
 
@@ -16,6 +17,7 @@ export async function getServerSideProps(context) {
   const { buildLandosTerminationFeeServingFixture } = require('../../__fixtures__/canonical-v2/landos-termination-fee-row');
   const { buildLandosSourceSpecificServingFixture } = require('../../__fixtures__/canonical-v2/landos-source-specific-row');
   const { buildQueryCohortSummary } = require('../../__fixtures__/canonical-v2/query-cohort-summary');
+  const noShopCrossViewF26 = require('../../__fixtures__/canonical-v2/qxo-no-shop-cross-view-f26.json');
   const { contentId } = require('../../lib/canonical-v2/canonical-bytes');
   const {
     buildCanonicalQueryResultView,
@@ -93,9 +95,12 @@ export async function getServerSideProps(context) {
         row.row_serving_key,
         noShopFixture.detailPackages[index].detail_payloads[0].response_body.excerpt.exact_text,
       ])),
-      exact_source_text: fixture.exactDetail.detail_payloads[0].response_body.excerpt.exact_text,
+      exact_source_text: fixture.exactDetail.detail_payloads[0].response_body.excerpts
+        .map((excerpt) => excerpt.exact_text)
+        .join(' '),
       reviewed_mapping_id: fixture.reviewed_mapping.reviewed_mapping_id,
       preview_environment: context?.req?.headers?.host || 'local',
+      no_shop_cross_view_f26: noShopCrossViewF26,
     },
   };
 }
@@ -448,6 +453,7 @@ export default function CanonicalV2DesignFixture({
   source_specific_excerpts: sourceSpecificExcerpts,
   reviewed_mapping_id: reviewedMappingId,
   preview_environment: previewEnvironment,
+  no_shop_cross_view_f26: noShopCrossViewF26,
 }) {
   const adapted = reviewedRow.render_kind === 'ROW' ? reviewedRow.prepared : null;
   const context = adapted ? buildTypedRowMarketContext(adapted.resolution, adapted.data) : null;
@@ -519,6 +525,7 @@ export default function CanonicalV2DesignFixture({
           </section>
 
           <QueryContractPreview view={queryView} />
+          <NoShopCrossViewPreview preview={noShopCrossViewF26} />
           <RowIsolationProof item={unrecognisedRow} />
           <SourceSpecificRow item={sourceSpecificRow} sourceExcerpts={sourceSpecificExcerpts} />
           <IocCapexRow item={iocCapexRow} sourceText={iocCapexSourceText} />

@@ -60,6 +60,8 @@ test('the canonical design fixture is production-gated and performs no runtime d
   assert.match(page, /Termination fees market check/);
   assert.match(page, /Refine by/);
   assert.match(page, /buildCanonicalQueryResultView/);
+  assert.match(page, /NoShopCrossViewPreview/);
+  assert.match(page, /qxo-no-shop-cross-view-f26\.json/);
   assert.match(page, /Row isolation proof/);
   assert.match(page, /This provision could not be mapped safely/);
   assert.match(page, /adaptSharedServingRows/);
@@ -67,6 +69,48 @@ test('the canonical design fixture is production-gated and performs no runtime d
   assert.match(page, /CanonicalV2DesignFixture\.noLayout = true/);
   assert.doesNotMatch(page, /fetch\s*\(/);
   assert.doesNotMatch(page, /\/api\//);
+});
+
+test('the F26 preview is compact, inactive and uses one bounded provision layout', () => {
+  const preview = require('../__fixtures__/canonical-v2/qxo-no-shop-cross-view-f26.json');
+  const component = fs.readFileSync(
+    'components/review-v2/NoShopCrossViewPreview.jsx',
+    'utf8',
+  );
+  const route = fs.readFileSync(
+    'pages/design/canonical-v2-no-shop-f26.js',
+    'utf8',
+  );
+
+  assert.equal(preview.release_state, 'INACTIVE_CANDIDATE');
+  assert.equal(preview.provision_row.subrows.length, 9);
+  assert.deepEqual(preview.surfaces, ['COMPARE', 'CORPUS_CONTEXT', 'QUERY', 'REVIEW']);
+  assert.equal(preview.serving_plan.database_calls_per_request, 1);
+  assert.equal(preview.serving_plan.immediate_retries, 0);
+  assert.equal(
+    fs.statSync('__fixtures__/canonical-v2/qxo-no-shop-cross-view-f26.json').size < 100000,
+    true,
+  );
+  assert.match(component, /lg:grid-cols-\[180px_minmax\(0,1fr\)_minmax\(280px,340px\)\]/);
+  assert.match(component, /Hide market context/);
+  assert.match(component, /aria-label="No-shop provision terms"/);
+  assert.match(component, /data-duration-range/);
+  assert.match(component, /Selected deal term/);
+  assert.match(component, /Comparable terms/);
+  assert.match(component, /One-deal certification preview/);
+  assert.match(component, /no market percentage or distribution is shown/);
+  assert.match(component, /Affected action:/);
+  assert.match(component, /Applies to:/);
+  assert.match(component, /Relationship:/);
+  assert.match(component, /Qualifies .* limb-B prohibited-action outcomes/);
+  assert.match(component, /item\.raw_value\?\.text|raw_value\?\.text/);
+  assert.doesNotMatch(component, /No market data/);
+  assert.match(route, /designPreviewServerSideProps/);
+  assert.match(route, /NoShopCrossViewPreview/);
+  assert.match(route, /overflow-x-hidden/);
+  assert.match(route, /CanonicalV2NoShopF26\.noLayout = true/);
+  assert.doesNotMatch(route, /fetch\s*\(/);
+  assert.doesNotMatch(route, /\/api\//);
 });
 
 test('the real Material Contracts fixture exposes its relative threshold and criterion everywhere', () => {
