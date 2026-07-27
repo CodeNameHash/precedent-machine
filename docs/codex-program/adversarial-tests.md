@@ -8,22 +8,41 @@ The following adversarial closure tests are mandatory traceability entries:
   blocked; prose cannot change the result. The formal legal-semantic lane accepts
   only Fable or an independent 5.6 Sol reviewer using extra-high reasoning. An
   ordinary Sol review is advisory unless the recorded reviewer meets those exact
-  model, reasoning and independence requirements. Missing or mutable provider
-  attestation, a self-asserted model or reasoning label, an author reviewing the
-  root they changed, prior conclusions, a non-empty reviewer edit set or a
-  before-and-after root mismatch is ineligible and leaves the gate open. The
-  validator must fetch the record from the authenticated provider API, verify
-  its signature and certificate chain to the frozen trust roots, consume its
-  single-use nonce and match every field. A repository file, CLI transcript,
-  copied provider response, unverifiable key or unavailable provider record is
-  advisory only. Mutating any manifest byte, including an identifier-continuity
-  count or digest, must change the detached five-member specification root and
-  invalidate every earlier review and approval. Every gate must reject an
-  unknown evidence schema, wrong typed object, missing or extra acceptance
+  model, reasoning and independence requirements. The trusted review controller
+  must directly control and observe a read-only review and sign its immutable
+  record. Only the controller process may use its signing key. The key must be
+  inaccessible to the reviewer, review process, operator input and repository,
+  and never enter the review environment, logs or checkout. A self-asserted
+  model or reasoning label, an author reviewing bytes they changed, prior
+  conclusions, a non-empty reviewer edit set or a root mismatch is ineligible
+  and leaves the gate open. The validator deterministically enumerates the
+  closed evidence set, loads the exact controller record, verifies its signature
+  against the frozen controller-key registry and matches every required field.
+  A Git record, CLI transcript, copied record or reviewer/user substitute is
+  advisory only as proof of review. Git history is supplementary. The controller
+  record must map the reviewer principal to its complete source-control identity
+  set, and the validator must use complete history, blame and copy tracing to
+  prove that the reviewer did not author the reviewed bytes. A missing or
+  ambiguous mapping is ineligible. Mutating any manifest byte, including an identifier-
+  continuity count or digest, must change the detached five-member specification
+  root and invalidate every earlier review and approval. Every gate must reject
+  an unknown evidence schema, wrong typed object, missing or extra acceptance
   claim, unbacked boolean `PASS`, untrusted validator or missing mandatory-test
-  result. Reviewer independence must be recomputed from the provider session
-  graph and authorship and prior-conclusion registries; a fresh-looking session
-  or empty edit set alone cannot pass.
+  result. A fresh-looking session or empty edit set alone cannot pass.
+- `GATE-BOOTSTRAP-01`: `gate_status_bootstrap` has predecessor `NONE`, nonce
+  `gate-status-bootstrap-2026-07-27-v1` and only its closed authority scope.
+  Corpus extraction, reprocessing,
+  writes, backfills, production data changes, release import or activation and
+  product feature activation must fail. A stale predecessor, duplicate nonce,
+  second use, owner statement, manual status edit or publication with an
+  unsupported P1 or P9 `PASS` must fail without changing the publication head.
+  The first valid V2 status is generation 1, contains all 35 gates once in
+  registry order, has `canonical_work_start: PASS`, leaves every unsupported P1
+  and P9 gate `OPEN`, and atomically consumes the nonce and expires the
+  bootstrap. The repository-native publication ref must remain unchanged after
+  every injected validation or compare-and-swap failure. The existing
+  generation-4 V1 owner-deemed file is historical only. It cannot act as
+  evidence, executable authority or a V2 predecessor.
 - `VERTICAL-SLICE-01`: before the slice passes, the gate registry permits only
   its fixed reviewed staging fixture through `vertical_slice_execution` and
   blocks broad `candidate_scope_and_extraction`. The fixture must traverse the
@@ -736,9 +755,12 @@ The following adversarial closure tests are mandatory traceability entries:
   legal-semantic, query-efficiency, open-world and release-propagation lanes must
   each PASS over the byte-identical post-check specification root, the legal lane
   must use Fable or an independent 5.6 Sol reviewer using extra-high reasoning,
-  with immutable provider evidence for the exact model ID or build, provider
-  reasoning value, session, review, input, prompt, output, before-and-after root
-  and empty edit set, and Ben's
+  with one trusted-controller-signed immutable record from the closed evidence
+  set for the exact controller, model, reasoning level, immutable task, session
+  and review IDs, input root and context, registered prompt, output, start and
+  end time, reviewer principal and source-control identities, parent-session
+  state, no-prior-conclusion fact, nonce, signing data and empty edit-set root,
+  and Ben's
   approval must foreign-key that exact review set. One missing lane, advisory-
   only substitution, before/after digest mismatch, intervening edit or approval
   of another digest keeps both G0 gates open. Changing one bundle byte,
