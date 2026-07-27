@@ -132,6 +132,11 @@ const {
   validateQxoNoShopCopyDeliveryQueryF20,
 } = require('../lib/canonical-v2/qxo-no-shop-copy-delivery-query-f20');
 const {
+  buildMetricScopedCandidateReleaseF23,
+  releaseManifestAdmissionResolution,
+  validateMetricScopedCandidateReleaseF23,
+} = require('../lib/canonical-v2/metric-scoped-candidate-release-f23');
+const {
   buildDealServingDirectoryRecord,
   validateOfflineCandidateRelease,
 } = require('../lib/canonical-v2/candidate-release');
@@ -270,6 +275,10 @@ const COPY_DELIVERY_CANONICAL_F19_FIXTURE_PATH = join(
 const COPY_DELIVERY_QUERY_F20_FIXTURE_PATH = join(
   ROOT,
   'tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-query-f20-staging-attestation.json',
+);
+const COPY_DELIVERY_RELEASE_F23_FIXTURE_PATH = join(
+  ROOT,
+  'tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-release-f23-staging-attestation.json',
 );
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
@@ -4591,6 +4600,224 @@ function buildCopyDeliveryQueryF20Attestation() {
 }
 // F20_ROLLBACK_ONLY_STAGING_CERTIFICATION_END
 
+// F23_ROLLBACK_ONLY_STAGING_CERTIFICATION_BEGIN
+function f23PointerSql() {
+  return `SELECT public.canonical_v2_active_release('staging')
+  AS active_pointer;`;
+}
+
+function f23RollbackSql(bundle) {
+  const manifest = bundle.manifest;
+  const admissionId = manifest.metric_serving_admission_ids[0];
+  return `BEGIN;
+SET LOCAL lock_timeout = '2000ms';
+SET LOCAL statement_timeout = '15000ms';
+SELECT pg_advisory_xact_lock(20260727, 23);
+
+DO $f23_guard$
+BEGIN
+  IF to_regclass(
+    'canonical_v2_staging.metric_serving_admission_f23_probe'
+  ) IS NOT NULL THEN
+    RAISE EXCEPTION 'F23 staging probe already exists';
+  END IF;
+END
+$f23_guard$;
+
+CREATE TABLE canonical_v2_staging.metric_serving_admission_f23_probe (
+  candidate_release_manifest_id text PRIMARY KEY
+    CHECK (
+      candidate_release_manifest_id ~ '^[a-f0-9]{64}$'
+    ),
+  metric_serving_admission_id text NOT NULL
+    CHECK (
+      metric_serving_admission_id ~ '^[a-f0-9]{64}$'
+    ),
+  manifest jsonb NOT NULL,
+  shared_row jsonb NOT NULL,
+  exact_detail_package jsonb NOT NULL,
+  cohort_request jsonb NOT NULL,
+  cohort_result jsonb NOT NULL,
+  query_record jsonb NOT NULL
+);
+ALTER TABLE
+  canonical_v2_staging.metric_serving_admission_f23_probe
+  ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON
+  canonical_v2_staging.metric_serving_admission_f23_probe
+  FROM PUBLIC;
+
+INSERT INTO
+  canonical_v2_staging.metric_serving_admission_f23_probe (
+    candidate_release_manifest_id,
+    metric_serving_admission_id,
+    manifest,
+    shared_row,
+    exact_detail_package,
+    cohort_request,
+    cohort_result,
+    query_record
+  )
+VALUES (
+  ${f20SqlText(manifest.candidate_release_manifest_id)},
+  ${f20SqlText(admissionId)},
+  ${f20SqlJson(manifest, 'f23_manifest')},
+  ${f20SqlJson(bundle.shared_rows[0], 'f23_row')},
+  ${f20SqlJson(
+    bundle.exact_detail_packages[0],
+    'f23_detail',
+  )},
+  ${f20SqlJson(bundle.cohort_requests[0], 'f23_request')},
+  ${f20SqlJson(bundle.cohort_results[0], 'f23_result')},
+  ${f20SqlJson(bundle.query_records[0], 'f23_query')}
+);
+
+SELECT jsonb_build_object(
+  'manifest_rows', count(*)::integer,
+  'bound_carriers', sum(
+    (
+      (shared_row ->> 'metric_serving_admission_id') =
+        metric_serving_admission_id
+    )::integer
+    + (
+      (exact_detail_package #>>
+        '{row,metric_serving_admission_id}') =
+        metric_serving_admission_id
+    )::integer
+    + (
+      (cohort_request ->> 'metric_serving_admission_id') =
+        metric_serving_admission_id
+    )::integer
+    + (
+      (cohort_result ->> 'metric_serving_admission_id') =
+        metric_serving_admission_id
+    )::integer
+    + (
+      (query_record ->> 'metric_serving_admission_id') =
+        metric_serving_admission_id
+    )::integer
+  )::integer,
+  'manifest_admission_exact', bool_and(
+    (manifest -> 'metric_serving_admission_ids') =
+      jsonb_build_array(metric_serving_admission_id)
+  ),
+  'release_manifest_id_exact', bool_and(
+    (manifest ->> 'candidate_release_manifest_id') =
+      candidate_release_manifest_id
+  ),
+  'active_pointer_during',
+    public.canonical_v2_active_release('staging')
+) AS evidence
+FROM canonical_v2_staging.metric_serving_admission_f23_probe;
+ROLLBACK;`;
+}
+
+function f23PostRollbackSql() {
+  return `SELECT jsonb_build_object(
+  'probe_table_exists', to_regclass(
+    'canonical_v2_staging.metric_serving_admission_f23_probe'
+  ) IS NOT NULL,
+  'active_pointer_after',
+    public.canonical_v2_active_release('staging')
+) AS evidence;`;
+}
+
+function oneEvidenceRow(rows, label, key = 'evidence') {
+  if (!Array.isArray(rows)
+    || rows.length !== 1
+    || !Object.hasOwn(rows[0], key)) {
+    throw new Error(`${label} returned invalid evidence.`);
+  }
+  return rows[0][key];
+}
+
+function buildCopyDeliveryReleaseF23Attestation() {
+  guardProject();
+  const {
+    carrier: f19Carrier,
+  } = buildCopyDeliveryCanonicalF19Runtime();
+  const bundle = buildMetricScopedCandidateReleaseF23({
+    qxo_no_shop_copy_delivery_canonical_f19: f19Carrier,
+  });
+  validateMetricScopedCandidateReleaseF23(bundle);
+  const resolution = releaseManifestAdmissionResolution(bundle);
+  const activePointerBefore = oneEvidenceRow(
+    runF20SqlFile(f23PointerSql()),
+    'F23 active pointer precheck',
+    'active_pointer',
+  );
+  const transaction = oneEvidenceRow(
+    runF20SqlFile(f23RollbackSql(bundle)),
+    'F23 rollback transaction',
+  );
+  const postRollback = oneEvidenceRow(
+    runF20SqlFile(f23PostRollbackSql()),
+    'F23 post-rollback check',
+  );
+  if (transaction.manifest_rows !== 1
+    || transaction.bound_carriers !== 5
+    || transaction.manifest_admission_exact !== true
+    || transaction.release_manifest_id_exact !== true
+    || canonicalJson(transaction.active_pointer_during)
+      !== canonicalJson(activePointerBefore)
+    || postRollback.probe_table_exists !== false
+    || canonicalJson(postRollback.active_pointer_after)
+      !== canonicalJson(activePointerBefore)) {
+    throw new Error(
+      'F23 rollback proof changed staging state or lost admission identity.',
+    );
+  }
+  const body = {
+    schema_version:
+      'QXO_COPY_DELIVERY_RELEASE_F23_STAGING_ATTESTATION/V1',
+    environment: 'STAGING',
+    authority_scope:
+      'ROLLBACK_ONLY_METRIC_SCOPED_RELEASE_F23',
+    project_ref: PROJECT.ref,
+    candidate_release_bundle: bundle,
+    release_manifest_resolution: resolution,
+    staging_execution: {
+      database_calls: 3,
+      immediate_retries: 0,
+      statement_timeout_ms: 15000,
+      lock_timeout_ms: 2000,
+      transaction,
+      post_rollback: postRollback,
+      active_pointer_before: activePointerBefore,
+      active_pointer_unchanged: true,
+      rollback_verified: true,
+      durable_rows_written: 0,
+    },
+    authority: {
+      active_release_authority: 'NONE',
+      active_query_authority: 'NONE',
+      active_pointer_authority: 'NONE',
+      corpus_write_authority: 'NONE',
+      production_activation_authority: 'NONE',
+    },
+    status: {
+      publication_blocked: true,
+      release_eligible: false,
+      blocker_codes: [
+        'ACTIVE_RELEASE_ACTIVATION_REQUIRED',
+      ],
+    },
+  };
+  return {
+    ...body,
+    qxo_copy_delivery_release_f23_staging_attestation_id:
+      contentId(
+        'QXO_COPY_DELIVERY_RELEASE_F23_STAGING_ATTESTATION/V1',
+        body,
+      ),
+    canonical_payload_digest: contentId(
+      'QXO_COPY_DELIVERY_RELEASE_F23_STAGING_ATTESTATION_PAYLOAD/V1',
+      body,
+    ),
+  };
+}
+// F23_ROLLBACK_ONLY_STAGING_CERTIFICATION_END
+
 function verifyActionsFailureIsolation(bridgeInputs) {
   const missingFirstAction = JSON.parse(JSON.stringify(
     bridgeInputs.reviewed_no_shop_actions_slice,
@@ -4835,13 +5062,18 @@ if (![
   '--copy-delivery-canonical-f19-verify',
   '--copy-delivery-query-f20-print',
   '--copy-delivery-query-f20-verify',
+  '--copy-delivery-release-f23-print',
+  '--copy-delivery-release-f23-verify',
 ].includes(mode)
   || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs [supported attestation print/verify mode, including --copy-delivery-query-f20-print|--copy-delivery-query-f20-verify]');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs [supported attestation print/verify mode, including --copy-delivery-release-f23-print|--copy-delivery-release-f23-verify]');
 }
 
 try {
-  const copyDeliveryQueryF20Mode =
+  const copyDeliveryReleaseF23Mode =
+    mode.startsWith('--copy-delivery-release-f23-');
+  const copyDeliveryQueryF20Mode = !copyDeliveryReleaseF23Mode
+    &&
     mode.startsWith('--copy-delivery-query-f20-');
   const copyDeliveryCanonicalF19Mode = !copyDeliveryQueryF20Mode
     &&
@@ -4894,7 +5126,9 @@ try {
     && mode.startsWith('--definitions-f6-');
   const actionsF6Mode = !definitionsF6Mode && mode.startsWith('--actions-f6-');
   const actionsMode = !actionsF6Mode && mode.startsWith('--actions-');
-  const attestation = copyDeliveryQueryF20Mode
+  const attestation = copyDeliveryReleaseF23Mode
+    ? buildCopyDeliveryReleaseF23Attestation()
+    : copyDeliveryQueryF20Mode
     ? buildCopyDeliveryQueryF20Attestation()
     : copyDeliveryCanonicalF19Mode
     ? buildCopyDeliveryCanonicalF19Attestation()
@@ -4938,7 +5172,9 @@ try {
     : attestation;
   if (mode.endsWith('verify')) {
     const expected = JSON.parse(readFileSync(
-      copyDeliveryQueryF20Mode
+      copyDeliveryReleaseF23Mode
+        ? COPY_DELIVERY_RELEASE_F23_FIXTURE_PATH
+        : copyDeliveryQueryF20Mode
         ? COPY_DELIVERY_QUERY_F20_FIXTURE_PATH
         : copyDeliveryCanonicalF19Mode
         ? COPY_DELIVERY_CANONICAL_F19_FIXTURE_PATH

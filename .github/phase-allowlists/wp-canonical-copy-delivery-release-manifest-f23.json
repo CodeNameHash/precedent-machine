@@ -1,0 +1,24 @@
+{
+  "phase": "WP-CANONICAL-COPY-DELIVERY-RELEASE-MANIFEST-F23",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-copy-delivery-release-manifest-f23.json",
+    "docs/superpowers/plans/2026-07-27-copy-delivery-release-manifest-f23-plan.md",
+    "lib/canonical-v2/metric-scoped-candidate-release-f23.js",
+    "scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs",
+    "tests/canonical-v2-copy-delivery-release-f23.test.js",
+    "tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-release-f23-staging-attestation.json",
+    "tests/helpers/canonical-v2-staging-runner-scope.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "lib/canonical-v2/contract-bundle.js",
+    "lib/canonical-v2/market-cohort-query.js",
+    "lib/canonical-v2/shared-serving-row.js",
+    "pages/**",
+    "sql/**",
+    "supabase/**",
+    "next.config.js"
+  ],
+  "note": "Binds the one F22 copy-delivery admission to a content-addressed successor release manifest and all five offline serving carriers. The linked staging proof uses one bounded set-based insert inside an unconditional rollback, writes no durable data, preserves the active pointer and grants no production, Query or active-release authority."
+}
