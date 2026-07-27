@@ -533,14 +533,12 @@ export default async function handler(req, res) {
     return fail(res, 405, 'GET or POST only');
   }
 
-  if (req.method === 'GET' && shouldRefreshMetrics(req)) {
+  if (req.method === 'POST' || shouldRefreshMetrics(req)) {
     return sendBroadCorpusRouteContained(res);
   }
 
   const sb = getServiceSupabase();
   if (!sb) return fail(res, 500, 'Supabase not configured');
-
-  if (req.method === 'POST') return createCodingTask(req, res, sb);
 
   const dealId = Array.isArray(req.query.deal_id) ? req.query.deal_id[0] : req.query.deal_id;
   if (dealId) return getDetail(req, res, sb, dealId);

@@ -1,5 +1,6 @@
 import { getServiceSupabase } from '../../lib/supabase';
 import { diffCorrectionType, logCorrection } from '../../lib/corrections/log';
+const { sendBroadCorpusRouteContained } = require('../../lib/broad-corpus-containment');
 
 // Re-exported for backward compatibility (pages/api/provisions.js and other
 // existing callers import these two names from this module). The
@@ -9,6 +10,15 @@ import { diffCorrectionType, logCorrection } from '../../lib/corrections/log';
 export { diffCorrectionType, logCorrection };
 
 export default async function handler(req, res) {
+  if (!['GET', 'POST'].includes(req.method)) {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+  const query = req.query || {};
+  const summary = query.summary === 'true' || query.summary === '1';
+  if (req.method === 'POST' || summary || !(query.deal_id || query.provision_id)) {
+    return sendBroadCorpusRouteContained(res);
+  }
+
   const sb = getServiceSupabase();
   if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
 

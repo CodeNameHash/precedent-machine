@@ -338,6 +338,7 @@ export default function ReviewPage() {
     [router.isReady, router.query.compare, dealId],
   );
   const marketMode = router.isReady && ['1', 'true'].includes(String(router.query.market || ''));
+  const legacyMarketStatsContained = true;
   // C (deal-to-market/compare robustness): each hook now returns its data
   // alongside a retry() -- see compareData.js's fetchJson timeout/retry
   // fix -- so a hung/degraded corpus-stats or compared-deal fetch surfaces
@@ -362,6 +363,7 @@ export default function ReviewPage() {
     [marketSections, dealId],
   );
   const typedMarketEnabled = marketMode
+    && !legacyMarketStatsContained
     && !CANONICAL_REVIEW_ENABLED
     && Boolean(reviewDeal)
     && marketRequest.specs.length > 0;
@@ -375,6 +377,7 @@ export default function ReviewPage() {
   const typedMarketSettled = !typedMarketEnabled
     || (rowMarketStats.attempted && !rowMarketStats.loading);
   const legacyMarketEnabled = marketMode
+    && !legacyMarketStatsContained
     && !CANONICAL_REVIEW_ENABLED
     && Boolean(reviewDeal)
     && typedMarketSettled;

@@ -4,6 +4,7 @@ import { useUser } from '../../lib/useUser';
 import AdminNav from '../../components/admin/AdminNav';
 
 IngestRunsPage.noLayout = true;
+const INGEST_RUN_ADMIN_CONTAINED = true;
 
 const STATUS_CLASS = {
   pending: 'border-neutral-300 bg-white text-neutral-700',
@@ -78,6 +79,12 @@ export default function IngestRunsPage() {
   );
 
   async function loadRuns() {
+    if (INGEST_RUN_ADMIN_CONTAINED) {
+      setRuns([]);
+      setSelectedRunId(null);
+      setMessage({ kind: 'error', text: 'Ingest-run administration is temporarily unavailable while authenticated corpus writes are being rebuilt.' });
+      return;
+    }
     setLoadingRuns(true);
     setMessage(null);
     try {
@@ -151,7 +158,7 @@ export default function IngestRunsPage() {
                 type="button"
                 onClick={loadRuns}
                 className="rounded-md border border-neutral-300 bg-white px-3 py-2 font-medium hover:bg-neutral-100 disabled:opacity-60"
-                disabled={loadingRuns}
+                disabled={INGEST_RUN_ADMIN_CONTAINED || loadingRuns}
               >
                 {loadingRuns ? 'Refreshing' : 'Refresh'}
               </button>

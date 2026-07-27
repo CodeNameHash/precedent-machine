@@ -92,21 +92,19 @@ test('loading the broad containment module loads no database or corpus dependenc
   assert.deepEqual(loaded, [containmentPath]);
 });
 
-test('partial routes reject broad work before creating a Supabase client', () => {
+test('remaining partial routes reject broad work before creating a Supabase client', () => {
   const provisions = source('pages/api/provisions.js');
-  const reprocess = source('pages/api/admin/reprocess-cond.js');
   const gaps = source('pages/api/admin/gaps.js');
 
   assert.ok(provisions.indexOf('if (!hasScope)') < provisions.indexOf('const sb = getServiceSupabase()'));
   assert.match(provisions, /query\.id \|\| query\.deal_id/);
-  assert.match(provisions, /Boolean\(body\.deal_id\)/);
-  assert.match(provisions, /Boolean\(body\.id\)/);
-
-  assert.ok(reprocess.indexOf('if (!deal_id)') < reprocess.indexOf('const sb = getServiceSupabase()'));
-  assert.doesNotMatch(reprocess, /from\('deals'\)\.select\('id'\)/);
+  assert.ok(
+    provisions.indexOf("req.method !== 'GET'")
+      < provisions.indexOf('const sb = getServiceSupabase()'),
+  );
 
   assert.ok(
-    gaps.indexOf("req.method === 'GET' && shouldRefreshMetrics(req)")
+    gaps.indexOf("req.method === 'POST' || shouldRefreshMetrics(req)")
       < gaps.indexOf('const sb = getServiceSupabase()'),
   );
   assert.match(gaps, /if \(dealId\) return getDetail/);
