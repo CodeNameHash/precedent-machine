@@ -241,6 +241,17 @@ test('duration normalisation, day basis, triggers and the copy-clock ambiguity s
         0,
       );
     }
+    if ('excluded_slots' in row.market_context.counts) {
+      assert.equal(
+        row.market_context.counts.excluded_slots
+          >= row.market_context.counts.excluded_deals,
+        true,
+      );
+      assert.equal(
+        row.market_context.counts.excluded_slots,
+        row.market_context.counts.observation_slots,
+      );
+    }
   }
 });
 
@@ -322,6 +333,10 @@ test('F26 compiles one compact, release-aware and corpus-independent market requ
   assert.equal(request.immediate_retries, 0);
   assert.equal(request.metric_bindings.length, 9);
   assert.equal(request.release_id, value.no_shop_cross_view_release_f26_id);
+  assert.equal(
+    request.subject_deal_key,
+    value.provision_row.governed_deal_key,
+  );
   assert.doesNotMatch(JSON.stringify(request), /claims|cards|canonical_text|items/);
   assert.throws(() => compileNoShopF26MarketRequest({
     release: value,
