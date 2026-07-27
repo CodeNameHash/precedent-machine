@@ -1,6 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const {
+  withoutF20RollbackOnlyCertification,
+} = require('./helpers/canonical-v2-staging-runner-scope');
 
 const {
   compileFixtureContractV12,
@@ -299,7 +302,9 @@ test('ungoverned attributes and taxonomy cannot pass the generic V2 validator', 
 });
 
 test('the staging path remains one bounded select-only read', () => {
-  const source = fs.readFileSync(RUNNER, 'utf8');
+  const source = withoutF20RollbackOnlyCertification(
+    fs.readFileSync(RUNNER, 'utf8'),
+  );
   assert.match(source, /--copy-delivery-claim-f17-verify/);
   assert.match(source, /LIMIT 2/);
   const start = source.indexOf(

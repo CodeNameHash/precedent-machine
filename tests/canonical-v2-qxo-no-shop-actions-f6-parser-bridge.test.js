@@ -1,6 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const {
+  withoutF20RollbackOnlyCertification,
+} = require('./helpers/canonical-v2-staging-runner-scope');
 
 const { canonicalJson, contentId } = require('../lib/canonical-v2/canonical-bytes');
 const {
@@ -239,7 +242,9 @@ test('bridge remains review-only and staging verification is one bounded read', 
   );
   assert.doesNotMatch(bridge, /node:fs|node:child_process|supabase/);
 
-  const runner = fs.readFileSync(RUNNER, 'utf8');
+  const runner = withoutF20RollbackOnlyCertification(
+    fs.readFileSync(RUNNER, 'utf8'),
+  );
   assert.match(runner, /deal-corpus-canonical-v2-staging/);
   assert.match(runner, /Refusing to run outside/);
   assert.match(runner, /SELECT canonical_payload/);

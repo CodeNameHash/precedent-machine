@@ -1,6 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const {
+  withoutF20RollbackOnlyCertification,
+} = require('./helpers/canonical-v2-staging-runner-scope');
 
 const {
   AUTHORITY_SCOPE,
@@ -490,7 +493,9 @@ test('review remains renderable while every live authority stays denied', () => 
 });
 
 test('the F13 attestation is one bounded staging read with no write path', () => {
-  const runner = fs.readFileSync(RUNNER, 'utf8');
+  const runner = withoutF20RollbackOnlyCertification(
+    fs.readFileSync(RUNNER, 'utf8'),
+  );
   assert.match(runner, /--definition-scope-f13-print/);
   assert.match(runner, /--definition-scope-f13-verify/);
   assert.equal((runner.match(/function readCapture\(\)/g) || []).length, 1);

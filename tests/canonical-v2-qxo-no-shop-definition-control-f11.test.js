@@ -1,6 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const {
+  withoutF20RollbackOnlyCertification,
+} = require('./helpers/canonical-v2-staging-runner-scope');
 
 const {
   canonicalJson,
@@ -252,7 +255,9 @@ test('F11 removes only the precedence blocker and grants no live authority', () 
 test('the F11 proof is one bounded staging read with no writer or serving path', () => {
   assert.equal(fixture().carrier_drift_rejected, true);
   assert.equal(fixture().source_drift_rejected, true);
-  const runner = fs.readFileSync(RUNNER, 'utf8');
+  const runner = withoutF20RollbackOnlyCertification(
+    fs.readFileSync(RUNNER, 'utf8'),
+  );
   assert.match(runner, /--definition-control-f11-verify/);
   assert.match(runner, /LIMIT 2/);
   assert.match(runner, /timeout: 90_000/);

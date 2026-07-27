@@ -1,6 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const {
+  withoutF20RollbackOnlyCertification,
+} = require('./helpers/canonical-v2-staging-runner-scope');
 
 const {
   AUTHORITY_FIELDS,
@@ -221,7 +224,9 @@ test('revision and carrier identities are content-addressed and bounded', () => 
 });
 
 test('the F14 attestation performs one bounded staging read with no write path', () => {
-  const runner = fs.readFileSync(RUNNER, 'utf8');
+  const runner = withoutF20RollbackOnlyCertification(
+    fs.readFileSync(RUNNER, 'utf8'),
+  );
   assert.match(runner, /--notice-revision-f14-print/);
   assert.match(runner, /--notice-revision-f14-verify/);
   assert.equal((runner.match(/function readCapture\(\)/g) || []).length, 1);

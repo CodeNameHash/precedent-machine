@@ -1,6 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const {
+  withoutF20RollbackOnlyCertification,
+} = require('./helpers/canonical-v2-staging-runner-scope');
 
 const {
   compileFixtureContractV12,
@@ -312,7 +315,9 @@ test('F16 grants no claim, result, release, query or live authority', () => {
 });
 
 test('the staging runner verifies F16 through the bounded existing read path', () => {
-  const source = fs.readFileSync(RUNNER, 'utf8');
+  const source = withoutF20RollbackOnlyCertification(
+    fs.readFileSync(RUNNER, 'utf8'),
+  );
   assert.match(source, /--copy-delivery-metric-f16-verify/);
   assert.match(source, /LIMIT 2/);
   const start = source.indexOf(

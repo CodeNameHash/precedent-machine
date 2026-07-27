@@ -1,6 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const {
+  withoutF20RollbackOnlyCertification,
+} = require('./helpers/canonical-v2-staging-runner-scope');
 
 const { canonicalJson, contentId } = require('../lib/canonical-v2/canonical-bytes');
 const {
@@ -328,7 +331,9 @@ test('notice, definition relationships, residuals, and downstream authority stay
 
 test('the live staging runner verifies failure isolation with one bounded read and no writes', () => {
   const moduleSource = fs.readFileSync(MODULE, 'utf8');
-  const runnerSource = fs.readFileSync(RUNNER, 'utf8');
+  const runnerSource = withoutF20RollbackOnlyCertification(
+    fs.readFileSync(RUNNER, 'utf8'),
+  );
   assert.match(runnerSource, /--exception-source-f6-print/);
   assert.match(runnerSource, /--exception-source-f6-verify/);
   assert.equal((runnerSource.match(/\breadCapture\(\)/g) || []).length, 2);

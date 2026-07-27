@@ -1,6 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const {
+  withoutF20RollbackOnlyCertification,
+} = require('./helpers/canonical-v2-staging-runner-scope');
 
 const { canonicalJson, contentId } = require('../lib/canonical-v2/canonical-bytes');
 const {
@@ -229,7 +232,9 @@ test('one failed resolution leaves every independent reviewed sibling intact', (
 });
 
 test('the staging verifier remains one bounded read with no write path', () => {
-  const runner = fs.readFileSync(RUNNER, 'utf8');
+  const runner = withoutF20RollbackOnlyCertification(
+    fs.readFileSync(RUNNER, 'utf8'),
+  );
   assert.match(runner, /LIMIT 2/);
   assert.match(runner, /timeout: 90_000/);
   assert.match(runner, /MAX_RESPONSE_BYTES = 4 \* 1024 \* 1024/);

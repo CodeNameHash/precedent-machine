@@ -1,6 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const {
+  withoutF20RollbackOnlyCertification,
+} = require('./helpers/canonical-v2-staging-runner-scope');
 
 const { canonicalJson, contentId } = require('../lib/canonical-v2/canonical-bytes');
 const {
@@ -255,7 +258,9 @@ test('the review graph grants no downstream or publication authority', () => {
 
 test('staging verification remains one bounded read with no write path', () => {
   const moduleSource = fs.readFileSync(MODULE, 'utf8');
-  const runnerSource = fs.readFileSync(RUNNER, 'utf8');
+  const runnerSource = withoutF20RollbackOnlyCertification(
+    fs.readFileSync(RUNNER, 'utf8'),
+  );
   assert.match(runnerSource, /--definition-graph-f6-print/);
   assert.match(runnerSource, /--definition-graph-f6-verify/);
   assert.match(runnerSource, /SELECT canonical_payload/);

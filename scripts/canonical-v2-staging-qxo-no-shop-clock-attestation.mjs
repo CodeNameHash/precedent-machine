@@ -1,7 +1,13 @@
 #!/usr/bin/env node
 
-import { readFileSync } from 'node:fs';
+import {
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { createRequire } from 'node:module';
+import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
@@ -16,6 +22,7 @@ const {
 const {
   canonicalJson,
   contentId,
+  sha256Hex,
 } = require('../lib/canonical-v2/canonical-bytes');
 const {
   compileFixtureContract,
@@ -110,6 +117,7 @@ const {
 } = require('../lib/canonical-v2/qxo-no-shop-copy-delivery-claim-f17');
 const {
   buildQxoNoShopCopyDeliveryServingF18,
+  buildComparabilityClass,
   validateQxoNoShopCopyDeliveryServingF18,
 } = require('../lib/canonical-v2/qxo-no-shop-copy-delivery-serving-f18');
 const {
@@ -117,9 +125,34 @@ const {
   validateQxoNoShopCopyDeliveryCanonicalF19,
 } = require('../lib/canonical-v2/qxo-no-shop-copy-delivery-canonical-f19');
 const {
+  BASE_EXECUTOR_DEFINITION_DIGEST,
+  CANDIDATE_EXECUTOR_NAME,
+  CANDIDATE_INDEX_NAME,
+  buildQxoNoShopCopyDeliveryQueryF20,
+  validateQxoNoShopCopyDeliveryQueryF20,
+} = require('../lib/canonical-v2/qxo-no-shop-copy-delivery-query-f20');
+const {
   buildDealServingDirectoryRecord,
   validateOfflineCandidateRelease,
 } = require('../lib/canonical-v2/candidate-release');
+const {
+  QUERY_PROJECTION_CONTRACT_DIGEST_V2,
+} = require('../lib/canonical-v2/serving-projection-contract');
+const {
+  validateOfflineCandidateSharedServingRow,
+} = require('../lib/canonical-v2/shared-serving-row');
+const {
+  compileOfflineInterpretedMarketCohortRequest,
+} = require('../lib/canonical-v2/market-cohort-query');
+const {
+  buildClaimInterpretation,
+  buildInterpretedPresentClaimRevision,
+  validateClaimInterpretation,
+  validateInterpretedPresentClaimRevision,
+} = require('../lib/canonical-v2/claim-interpretation');
+const {
+  buildFixtureResultComponent,
+} = require('../lib/canonical-v2/serving-projection');
 const {
   buildQxoAdmittedNoShopActionsSlice,
 } = require('../lib/canonical-v2/reviewed-qxo-admitted-no-shop-actions-slice');
@@ -233,6 +266,10 @@ const COPY_DELIVERY_SERVING_F18_FIXTURE_PATH = join(
 const COPY_DELIVERY_CANONICAL_F19_FIXTURE_PATH = join(
   ROOT,
   'tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-canonical-f19-staging-attestation.json',
+);
+const COPY_DELIVERY_QUERY_F20_FIXTURE_PATH = join(
+  ROOT,
+  'tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-query-f20-staging-attestation.json',
 );
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
@@ -3316,6 +3353,1244 @@ function buildCopyDeliveryCanonicalF19Attestation() {
   };
 }
 
+// F20_ROLLBACK_ONLY_STAGING_CERTIFICATION_BEGIN
+function f20SqlText(value) {
+  return `'${String(value).replaceAll("'", "''")}'`;
+}
+
+function f20SqlJson(value, tag) {
+  const json = canonicalJson(value);
+  if (json.includes(`$${tag}$`)) {
+    throw new Error(`F20 SQL JSON contains its ${tag} delimiter.`);
+  }
+  return `$${tag}$${json}$${tag}$::jsonb`;
+}
+
+function f20ProjectionContractDigest() {
+  return contentId(
+    'CANONICAL_V2_QUERY_PROJECTION_CONTRACT/V3-OFFLINE',
+    {
+      base_query_projection_contract_digest:
+        QUERY_PROJECTION_CONTRACT_DIGEST_V2,
+      physical_comparability_class_projection:
+        "canonical_payload #>> '{canonical_result,comparability_context,comparability_class_digest}'",
+      required_query_dimension: 'comparability_class_digest',
+      authority: 'ROLLBACK_ONLY_STAGING_CERTIFICATION',
+    },
+  );
+}
+
+function f20QuerySemanticsDigest(carrier) {
+  return contentId(
+    'OFFLINE_QUERY_SEMANTICS/V2',
+    {
+      qxo_no_shop_copy_delivery_canonical_f19_id:
+        carrier.qxo_no_shop_copy_delivery_canonical_f19_id,
+      candidate_release_manifest_id:
+        carrier.candidate_release.manifest
+          .candidate_release_manifest_id,
+      query_projection_digest:
+        carrier.query_projection.canonical_payload_digest,
+      comparability_class_digest:
+        carrier.cohort_request.comparability_class_digest,
+      executor_contract:
+        'CANONICAL_V2_QUERY_PAGE_V3_CANDIDATE/ROLLBACK_ONLY',
+      page_size: 25,
+      sort_contract: [
+        'governed_deal_key',
+        'row_serving_key',
+      ],
+    },
+  );
+}
+
+function f20QuerySql(carrier) {
+  const projection = carrier.query_projection;
+  const manifest = carrier.candidate_release.manifest;
+  return `${CANDIDATE_EXECUTOR_NAME}(
+    p_environment => 'staging',
+    p_serving_namespace_id => ${f20SqlText(carrier.serving_namespace_id)},
+    p_corpus_release_id => ${f20SqlText(carrier.corpus_release_id)},
+    p_contract_fingerprint => ${f20SqlText(manifest.contract_fingerprint)},
+    p_query_semantics_digest => ${f20SqlText(
+    f20QuerySemanticsDigest(carrier),
+  )},
+    p_metric_key => ${f20SqlText(projection.metric_key)},
+    p_metric_version => ${projection.metric_version},
+    p_concept_key => ${f20SqlText(projection.concept_key)},
+    p_party_role => ${f20SqlText(projection.party.role)},
+    p_party_value => ${f20SqlText(projection.party.value)},
+    p_party_capacity => ${f20SqlText(projection.party.capacity)},
+    p_basis_key => ${f20SqlText(projection.basis_key)},
+    p_comparability_class_digest => ${f20SqlText(
+    carrier.cohort_request.comparability_class_digest,
+  )},
+    p_page_size => 25
+  )`;
+}
+
+function runF20SqlFile(sql) {
+  const directory = mkdtempSync(
+    join(tmpdir(), 'canonical-v2-qxo-query-f20-'),
+  );
+  const file = join(directory, 'rollback.sql');
+  writeFileSync(file, sql, { mode: 0o600 });
+  try {
+    const result = spawnSync(
+      'supabase',
+      [
+        '--workdir',
+        ROOT,
+        'db',
+        'query',
+        '--linked',
+        '--file',
+        file,
+        '--output',
+        'json',
+      ],
+      {
+        cwd: ROOT,
+        encoding: 'utf8',
+        timeout: 90_000,
+        maxBuffer: 4 * 1024 * 1024,
+        shell: false,
+      },
+    );
+    if (result.error || result.status !== 0) {
+      throw new Error(safeDiagnostic(
+        `${result.error?.message || ''}\n${result.stderr || ''}`,
+      ));
+    }
+    if (Buffer.byteLength(result.stdout || '', 'utf8')
+      > MAX_RESPONSE_BYTES) {
+      throw new Error('F20 staging response exceeded its byte limit.');
+    }
+    return JSON.parse(result.stdout)?.rows;
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+}
+
+function f20MatchingPageSql(carrier) {
+  const projection = carrier.query_projection;
+  const fingerprint =
+    carrier.candidate_release.manifest.contract_fingerprint;
+  return `SELECT governed_deal_key, row_serving_key
+FROM canonical_v2_staging.shared_serving_rows row
+WHERE row.serving_namespace_id =
+  ${f20SqlText(carrier.serving_namespace_id)}
+  AND row.corpus_release_id = ${f20SqlText(carrier.corpus_release_id)}
+  AND row.contract_fingerprint = ${f20SqlText(fingerprint)}
+  AND row.row_kind = 'CANONICAL_RESULT'
+  AND row.metric_key = ${f20SqlText(projection.metric_key)}
+  AND row.metric_version = ${projection.metric_version}
+  AND row.concept_key = ${f20SqlText(projection.concept_key)}
+  AND row.party_role = ${f20SqlText(projection.party.role)}
+  AND row.party_value = ${f20SqlText(projection.party.value)}
+  AND row.party_capacity = ${f20SqlText(projection.party.capacity)}
+  AND row.basis_key = ${f20SqlText(projection.basis_key)}
+  AND row.comparability_class_digest = ${f20SqlText(
+    carrier.cohort_request.comparability_class_digest,
+  )}
+ORDER BY row.governed_deal_key, row.row_serving_key
+LIMIT 26`;
+}
+
+function buildF20CoherentPoisonRow(
+  carrier,
+  f17Carrier,
+  contractBundle,
+) {
+  const baselineScope = f17Carrier.claim.attributes
+    .primary_clock_application_scope_code;
+  const alternativeScope = 'ONE_SHARED_CLOCK';
+  if (baselineScope === alternativeScope) {
+    throw new Error('F20 poison semantic dimension did not change.');
+  }
+  const interpretation = f17Carrier.interpretation;
+  const hypotheticalNoteDigest = contentId(
+    'F20_HYPOTHETICAL_NON_ADMITTED_WARNING/V1',
+    {
+      baseline_interpretation_payload_id:
+        interpretation.interpretation_payload_id,
+      governed_dimension:
+        'primary_clock_application_scope_code',
+      alternative_value: alternativeScope,
+    },
+  );
+  const alternativeInterpretation = buildClaimInterpretation({
+    claim_occurrence_id: f17Carrier.claim.claim_occurrence_id,
+    policy: contractBundle.claim_interpretation_policy_definition,
+    policy_version: interpretation.policy_version,
+    clarity_state: interpretation.clarity_state,
+    primary_interpretation: {
+      ...interpretation.primary_interpretation,
+      clock_application_scope_code: alternativeScope,
+    },
+    alternative_interpretations: JSON.parse(JSON.stringify(
+      interpretation.alternative_interpretations,
+    )),
+    ambiguity_dimension_codes: [
+      ...interpretation.ambiguity_dimension_codes,
+    ],
+    evidence_excerpt_ids: [
+      ...interpretation.evidence_excerpt_ids,
+    ],
+    lawyer_note_digest: hypotheticalNoteDigest,
+    review_provenance: {
+      review_authority: 'NONE',
+      decision_key:
+        'F20_HYPOTHETICAL_ONE_SHARED_CLOCK_COHORT_ISOLATION',
+      source_review_scope: 'SYNTHETIC_ADVERSARIAL_DELTA_ONLY',
+      baseline_interpretation_payload_id:
+        interpretation.interpretation_payload_id,
+      adversarial_test_authority:
+        'HYPOTHETICAL_NON_ADMITTED_ROLLBACK_ONLY',
+      adversarial_semantic_delta:
+        'PRIMARY_CLOCK_APPLICATION_SCOPE_ONE_SHARED_CLOCK',
+      publication_authority: 'NONE',
+    },
+  });
+  validateClaimInterpretation({
+    claim_interpretation: alternativeInterpretation,
+    policy: contractBundle.claim_interpretation_policy_definition,
+  });
+  const alternativeAttributes = {
+    ...f17Carrier.claim.attributes,
+    primary_clock_application_scope_code: alternativeScope,
+    interpretation_payload_id:
+      alternativeInterpretation.interpretation_payload_id,
+  };
+  const alternativeClaim = buildInterpretedPresentClaimRevision({
+    policy: contractBundle.claim_interpretation_policy_definition,
+    interpretation: alternativeInterpretation,
+    subject_occurrence_id:
+      f17Carrier.claim.subject_occurrence_id,
+    claim_definition_key:
+      f17Carrier.claim.claim_definition_key,
+    claim_definition_version:
+      f17Carrier.claim.claim_definition_version,
+    ordinal: f17Carrier.claim.ordinal,
+    raw_value: f17Carrier.claim.raw_value,
+    canonical_value: f17Carrier.claim.canonical_value,
+    unit: f17Carrier.claim.unit,
+    day_basis: f17Carrier.claim.day_basis,
+    denominator: f17Carrier.claim.denominator,
+    scope: f17Carrier.claim.scope,
+    attributes: alternativeAttributes,
+    allowed_attributes: Object.keys(f17Carrier.claim.attributes),
+    codebooks: {},
+    taxonomy_codes: f17Carrier.claim.taxonomy_codes,
+    evidence: f17Carrier.claim.evidence,
+    extraction_version:
+      f17Carrier.claim.extraction_version,
+    normalisation_version:
+      f17Carrier.claim.normalisation_version,
+    derivation_version:
+      'F20_HYPOTHETICAL_NON_ADMITTED_ADVERSARIAL/V1',
+  });
+  validateInterpretedPresentClaimRevision({
+    claim: alternativeClaim,
+    interpretation: alternativeInterpretation,
+    policy: contractBundle.claim_interpretation_policy_definition,
+    allowed_attributes: Object.keys(f17Carrier.claim.attributes),
+    codebooks: {},
+    expected_attributes: alternativeAttributes,
+  });
+  const alternativeCompositionScopeClosureId = contentId(
+    'COMPOSITION_SCOPE_CLOSURE/V2',
+    {
+      claim_revision_id: alternativeClaim.claim_revision_id,
+      interpretation_payload_id:
+        alternativeInterpretation.interpretation_payload_id,
+      relationship_revision_ids: [],
+    },
+  );
+  const alternativeResult = buildFixtureResultComponent({
+    deal_admission_id: carrier.shared_row.deal_admission_id,
+    result_key: f17Carrier.result.result_key,
+    result_version: f17Carrier.result.result_version,
+    concept_key: f17Carrier.result.concept_key,
+    party: f17Carrier.result.party,
+    value_slot_key: f17Carrier.result.value_slot_key,
+    ordinal: f17Carrier.result.ordinal,
+    claim: alternativeClaim,
+    relationships: [],
+    composition_scope_closure_id:
+      alternativeCompositionScopeClosureId,
+    completeness: 'COMPLETE',
+    comparability: 'COMPARABLE',
+  });
+  const changedInterpretation = {
+    ...f17Carrier,
+    interpretation: alternativeInterpretation,
+    claim: alternativeClaim,
+    result: alternativeResult,
+  };
+  const alternativeClass = buildComparabilityClass(
+    changedInterpretation,
+  );
+  const baselineClassDigest =
+    carrier.cohort_request.comparability_class_digest;
+  if (alternativeClass.comparability_class_digest
+      === baselineClassDigest) {
+    throw new Error('F20 governed poison class did not rekey.');
+  }
+  const row = JSON.parse(JSON.stringify(carrier.shared_row));
+  const baselineContext =
+    row.canonical_result.comparability_context;
+  const hypotheticalWarning = {
+    required: true,
+    code:
+      'HYPOTHETICAL_NON_ADMITTED_ADVERSARIAL_INTERPRETATION',
+    text:
+      'Synthetic one-shared-clock interpretation used only to test cohort isolation; not a source-backed or admitted reading.',
+    lawyer_note_digest: hypotheticalNoteDigest,
+  };
+  const alternativeContext = {
+    ...baselineContext,
+    interpretation_payload_id:
+      alternativeInterpretation.interpretation_payload_id,
+    comparability_class_digest:
+      alternativeClass.comparability_class_digest,
+    primary_semantic_class:
+      alternativeClass.primary_semantic_class,
+    alternative_semantic_classes:
+      alternativeClass.alternative_semantic_classes,
+    lawyer_warning: hypotheticalWarning,
+  };
+  row.canonical_result.comparability_context =
+    JSON.parse(JSON.stringify(alternativeContext));
+  const component = row.canonical_result.components[0];
+  component.component_occurrence_id =
+    alternativeResult.component_occurrence_id;
+  component.component_revision_id =
+    alternativeResult.component_revision_id;
+  component.component_slot_key =
+    alternativeResult.value_slot_key;
+  component.governed_ordinal = alternativeResult.ordinal;
+  component.claim_schema_version =
+    alternativeClaim.schema_version;
+  component.claim_occurrence_id =
+    alternativeClaim.claim_occurrence_id;
+  component.claim_revision_id =
+    alternativeClaim.claim_revision_id;
+  component.interpretation_payload_id =
+    alternativeInterpretation.interpretation_payload_id;
+  component.raw_value =
+    JSON.parse(JSON.stringify(alternativeClaim.raw_value));
+  component.canonical_value =
+    JSON.parse(JSON.stringify(alternativeClaim.canonical_value));
+  component.unit = alternativeClaim.unit;
+  component.day_basis = alternativeClaim.day_basis;
+  component.denominator =
+    JSON.parse(JSON.stringify(alternativeClaim.denominator));
+  component.derivation_version =
+    alternativeClaim.derivation_version;
+  component.comparability_context =
+    JSON.parse(JSON.stringify(alternativeContext));
+  row.provenance.owner_occurrence_id =
+    alternativeResult.component_occurrence_id;
+  row.provenance.owner_revision_id =
+    alternativeResult.component_revision_id;
+  row.provenance.interpretation_payload_id =
+    alternativeInterpretation.interpretation_payload_id;
+  row.source_actions = [];
+  row.canonical_result.source_detail_state = {
+    state: 'UNAVAILABLE',
+    reason_code:
+      'HYPOTHETICAL_NON_ADMITTED_ADVERSARIAL_ROW',
+  };
+
+  const alternativeRequest =
+    compileOfflineInterpretedMarketCohortRequest({
+      authority_scope: carrier.cohort_request.authority_scope,
+      integration_admission_id:
+        carrier.cohort_request.integration_admission_id,
+      serving_namespace_id: carrier.serving_namespace_id,
+      corpus_release_id: carrier.corpus_release_id,
+      contract_fingerprint:
+        carrier.candidate_release.manifest.contract_fingerprint,
+      metric_key: carrier.cohort_request.metric_key,
+      metric_version: carrier.cohort_request.metric_version,
+      concept_key: carrier.cohort_request.concept_key,
+      party: carrier.cohort_request.party,
+      subject_deal_key: carrier.cohort_request.subject_deal_key,
+      comparability_class_digest:
+        alternativeClass.comparability_class_digest,
+      filters: carrier.cohort_request.filters,
+    });
+  row.canonical_result.market_context.cohort
+    .comparability_class_digest =
+      alternativeClass.comparability_class_digest;
+  row.canonical_result.market_context.cohort.cohort_digest =
+    alternativeRequest.cohort_digest;
+
+  const observation = carrier.projection.observation;
+  const observationOccurrenceBody = {
+    schema_version: 'METRIC_OBSERVATION_OCCURRENCE/V2',
+    deal_key: observation.deal_key,
+    deal_admission_id: observation.deal_admission_id,
+    concept_key: observation.concept_key,
+    metric_key: observation.metric_key,
+    metric_version: observation.metric_version,
+    party: observation.party,
+    result_key: observation.result_key,
+    result_version: observation.result_version,
+    owner_type: observation.owner_type,
+    owner_occurrence_id:
+      alternativeResult.component_occurrence_id,
+    scope_type: observation.scope_type,
+    scope_id: alternativeResult.component_occurrence_id,
+    value_slot_key: observation.value_slot_key,
+    ordinal: observation.ordinal,
+    comparability_class_digest:
+      alternativeClass.comparability_class_digest,
+  };
+  const observationOccurrenceId = contentId(
+    'METRIC_OBSERVATION_OCCURRENCE/V2',
+    observationOccurrenceBody,
+  );
+  const observationServingKey = contentId(
+    'MARKET_OBSERVATION/V2',
+    {
+      corpus_release_id: carrier.corpus_release_id,
+      metric_observation_occurrence_id:
+        observationOccurrenceId,
+    },
+  );
+  row.provenance.metric_observation_occurrence_id =
+    observationOccurrenceId;
+  row.provenance.market_observation_serving_key =
+    observationServingKey;
+  row.canonical_result.market_context.subject_observation
+    .market_observation_serving_key = observationServingKey;
+  row.canonical_result.market_context.subject_observation
+    .comparability_class_digest =
+      alternativeClass.comparability_class_digest;
+
+  const resultOccurrenceId = contentId(
+    'DERIVED_RESULT_OCCURRENCE/V2',
+    {
+      deal_admission_id: row.deal_admission_id,
+      result_key: row.canonical_result.result_key,
+      result_version: row.canonical_result.result_version,
+      concept_key: row.canonical_result.concept_key,
+      party: row.canonical_result.party,
+      result_ordinal: component.governed_ordinal,
+      comparability_class_digest:
+        alternativeClass.comparability_class_digest,
+    },
+  );
+  const resultRevisionId = contentId(
+    'DERIVED_RESULT_REVISION/V2',
+    {
+      derived_result_occurrence_id: resultOccurrenceId,
+      component_revision_ids: [component.component_revision_id],
+      interpretation_payload_ids: [
+        component.interpretation_payload_id,
+      ],
+      comparability_class_digest:
+        alternativeClass.comparability_class_digest,
+      result_completeness: 'COMPLETE',
+      market_comparability:
+        'COMPARABLE_WITH_GOVERNED_AMBIGUITY',
+    },
+  );
+  row.canonical_result.derived_result_occurrence_id =
+    resultOccurrenceId;
+  row.canonical_result.derived_result_revision_id =
+    resultRevisionId;
+  row.row_serving_key = contentId('RESULT_SERVING_ROW/V2', {
+    corpus_release_id: row.corpus_release_id,
+    derived_result_occurrence_id: resultOccurrenceId,
+  });
+  const propagatedInterpretationIds = [
+    row.canonical_result.comparability_context
+      .interpretation_payload_id,
+    component.comparability_context.interpretation_payload_id,
+    component.interpretation_payload_id,
+    row.provenance.interpretation_payload_id,
+  ];
+  if (new Set(propagatedInterpretationIds).size !== 1
+    || propagatedInterpretationIds[0]
+      !== alternativeInterpretation.interpretation_payload_id) {
+    throw new Error(
+      'F20 hypothetical interpretation identity did not propagate.',
+    );
+  }
+  if (alternativeInterpretation.lawyer_note_digest
+      !== row.canonical_result.comparability_context
+        .lawyer_warning.lawyer_note_digest
+    || canonicalJson(alternativeInterpretation.review_provenance)
+      .includes('BEN_APPROVED')
+    || alternativeInterpretation.review_provenance.review_authority
+      !== 'NONE'
+    || alternativeInterpretation.review_provenance
+      .publication_authority !== 'NONE') {
+    throw new Error(
+      'F20 hypothetical warning or review authority did not remain non-admitted.',
+    );
+  }
+  delete row.canonical_payload_digest;
+  row.canonical_payload_digest = contentId(
+    'SHARED_SERVING_ROW_PAYLOAD/V2',
+    row,
+  );
+  validateOfflineCandidateSharedServingRow(row);
+  return {
+    row,
+    comparabilityClass: alternativeClass,
+    semanticProof: {
+      governed_dimension:
+        'primary_clock_application_scope_code',
+      baseline_value: baselineScope,
+      alternative_value: alternativeScope,
+      baseline_comparability_class_digest:
+        baselineClassDigest,
+      alternative_comparability_class_digest:
+        alternativeClass.comparability_class_digest,
+      alternative_primary_semantic_class:
+        alternativeClass.primary_semantic_class,
+      shared_row_validation: 'PASSED',
+      interpretation_validation: 'PASSED',
+      claim_revision_validation: 'PASSED',
+      interpretation_identity_propagation: 'PASSED',
+      interpretation_warning_digest_alignment: 'PASSED',
+      review_authority: 'HYPOTHETICAL_NON_ADMITTED_ONLY',
+      warning_authority: 'HYPOTHETICAL_NON_ADMITTED_ONLY',
+      admission_state:
+        'HYPOTHETICAL_NON_ADMITTED_ROLLBACK_ONLY',
+      alternative_interpretation_payload_id:
+        alternativeInterpretation.interpretation_payload_id,
+      alternative_claim_revision_id:
+        alternativeClaim.claim_revision_id,
+      alternative_component_revision_id:
+        alternativeResult.component_revision_id,
+      alternative_row_serving_key: row.row_serving_key,
+      alternative_row_payload_digest:
+        row.canonical_payload_digest,
+    },
+  };
+}
+
+function f20RollbackSql(carrier, f17Carrier, contractBundle) {
+  const row = carrier.shared_row;
+  const observation = carrier.projection.observation;
+  const manifest = carrier.candidate_release.manifest;
+  const directory = carrier.deal_directory_entry;
+  const classDigest =
+    carrier.cohort_request.comparability_class_digest;
+  const poison = buildF20CoherentPoisonRow(
+    carrier,
+    f17Carrier,
+    contractBundle,
+  );
+  const poisonRow = poison.row;
+  const poisonClassDigest =
+    poison.comparabilityClass.comparability_class_digest;
+  const releasePayload = {
+    schema_version: 'F20_ROLLBACK_RELEASE_ADMISSION/V1',
+    authority: 'ROLLBACK_ONLY_STAGING_CERTIFICATION',
+    candidate_manifest: manifest,
+    serving_projection_version: 'canonical-v2-serving/v3-offline',
+    query_projection_contract_digest:
+      f20ProjectionContractDigest(),
+    response_schema_version: 'MARKET_COHORT_RESULT/V2',
+  };
+  const releasePayloadDigest = contentId(
+    'F20_ROLLBACK_RELEASE_ADMISSION/V1',
+    releasePayload,
+  );
+  const querySql = f20QuerySql(carrier);
+  const matchingPageSql = f20MatchingPageSql(carrier);
+  const explainedSql = `EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON, TIMING OFF)
+${matchingPageSql}`;
+  return `BEGIN;
+SET LOCAL lock_timeout = '2000ms';
+SET LOCAL statement_timeout = '15000ms';
+SELECT pg_advisory_xact_lock(20260726, 20);
+
+DO $f20_guard$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'canonical_v2_staging'
+      AND table_name = 'shared_serving_rows'
+      AND column_name = 'comparability_class_digest'
+  ) OR to_regclass(
+    'canonical_v2_staging.${CANDIDATE_INDEX_NAME}'
+  ) IS NOT NULL OR EXISTS (
+    SELECT 1
+    FROM pg_proc proc
+    JOIN pg_namespace namespace ON namespace.oid = proc.pronamespace
+    WHERE namespace.nspname = 'canonical_v2_staging'
+      AND proc.proname = 'canonical_v2_query_page_v3_candidate'
+  ) THEN
+    RAISE EXCEPTION 'F20 candidate DDL already exists';
+  END IF;
+  IF EXISTS (
+    SELECT 1 FROM canonical_v2_staging.fixture_corpus_releases
+    WHERE corpus_release_id = ${f20SqlText(carrier.corpus_release_id)}
+  ) OR EXISTS (
+    SELECT 1 FROM canonical_v2_staging.shared_serving_rows
+    WHERE corpus_release_id = ${f20SqlText(carrier.corpus_release_id)}
+  ) OR EXISTS (
+    SELECT 1 FROM canonical_v2_staging.query_response_cache
+    WHERE corpus_release_id = ${f20SqlText(carrier.corpus_release_id)}
+  ) THEN
+    RAISE EXCEPTION 'F20 exact release has pre-existing state';
+  END IF;
+  IF (
+    SELECT encode(digest(pg_get_functiondef(proc.oid), 'sha256'), 'hex')
+    FROM pg_proc proc
+    JOIN pg_namespace namespace ON namespace.oid = proc.pronamespace
+    WHERE namespace.nspname = 'public'
+      AND proc.proname = 'canonical_v2_query_page_v2'
+      AND proc.proargnames[1] = 'p_environment'
+    LIMIT 1
+  ) IS DISTINCT FROM ${f20SqlText(BASE_EXECUTOR_DEFINITION_DIGEST)} THEN
+    RAISE EXCEPTION 'F20 pinned V2 executor drifted';
+  END IF;
+END
+$f20_guard$;
+
+ALTER TABLE canonical_v2_staging.fixture_corpus_releases
+  DROP CONSTRAINT fixture_corpus_releases_projection_version_check,
+  DROP CONSTRAINT fixture_corpus_releases_projection_contract_check,
+  DROP CONSTRAINT fixture_corpus_releases_response_schema_version_check;
+ALTER TABLE canonical_v2_staging.fixture_corpus_releases
+  ADD CONSTRAINT fixture_corpus_releases_projection_version_check
+    CHECK (projection_version IN (
+      'canonical-v2-serving/v1',
+      'canonical-v2-serving/v2',
+      'canonical-v2-serving/v3-offline'
+    )),
+  ADD CONSTRAINT fixture_corpus_releases_projection_contract_check CHECK (
+    (projection_version = 'canonical-v2-serving/v1'
+      AND query_projection_contract_digest IS NULL)
+    OR (projection_version = 'canonical-v2-serving/v2'
+      AND query_projection_contract_digest =
+        ${f20SqlText(QUERY_PROJECTION_CONTRACT_DIGEST_V2)})
+    OR (projection_version = 'canonical-v2-serving/v3-offline'
+      AND query_projection_contract_digest =
+        ${f20SqlText(f20ProjectionContractDigest())})
+  ),
+  ADD CONSTRAINT fixture_corpus_releases_response_schema_version_check
+    CHECK (response_schema_version IN (
+      'MARKET_COHORT_RESULT/V1',
+      'MARKET_COHORT_RESULT/V2'
+    ));
+
+ALTER TABLE canonical_v2_staging.shared_serving_rows
+  ADD COLUMN comparability_class_digest text
+  GENERATED ALWAYS AS (
+    canonical_payload #>>
+      '{canonical_result,comparability_context,comparability_class_digest}'
+  ) STORED;
+ALTER TABLE canonical_v2_staging.shared_serving_rows
+  ADD CONSTRAINT canonical_v2_shared_rows_f20_class_digest_check
+  CHECK (
+    comparability_class_digest IS NULL
+    OR comparability_class_digest ~ '^[a-f0-9]{64}$'
+  );
+CREATE INDEX ${CANDIDATE_INDEX_NAME}
+  ON canonical_v2_staging.shared_serving_rows (
+    serving_namespace_id,
+    corpus_release_id,
+    contract_fingerprint,
+    concept_key,
+    metric_key,
+    metric_version,
+    party_role,
+    party_value,
+    party_capacity,
+    basis_key,
+    comparability_class_digest,
+    governed_deal_key,
+    row_serving_key
+  )
+  WHERE row_kind = 'CANONICAL_RESULT'
+    AND comparability_class_digest IS NOT NULL;
+
+DO $f20_executor$
+DECLARE
+  source_definition text;
+  transformed_definition text;
+  next_definition text;
+  candidate_identity text;
+BEGIN
+  SELECT pg_get_functiondef(proc.oid)
+  INTO source_definition
+  FROM pg_proc proc
+  JOIN pg_namespace namespace ON namespace.oid = proc.pronamespace
+  WHERE namespace.nspname = 'public'
+    AND proc.proname = 'canonical_v2_query_page_v2'
+    AND proc.proargnames[1] = 'p_environment'
+  LIMIT 1;
+  transformed_definition := source_definition;
+
+  next_definition := replace(
+    transformed_definition,
+    'CREATE OR REPLACE FUNCTION public.canonical_v2_query_page_v2(',
+    'CREATE OR REPLACE FUNCTION ${CANDIDATE_EXECUTOR_NAME}('
+  );
+  IF next_definition = transformed_definition THEN
+    RAISE EXCEPTION 'F20 function-name transform failed';
+  END IF;
+  transformed_definition := next_definition;
+
+  next_definition := replace(
+    transformed_definition,
+    'p_basis_key text, p_sector text DEFAULT NULL::text',
+    'p_basis_key text, p_comparability_class_digest text, p_sector text DEFAULT NULL::text'
+  );
+  IF next_definition = transformed_definition THEN
+    RAISE EXCEPTION 'F20 parameter transform failed';
+  END IF;
+  transformed_definition := next_definition;
+
+  next_definition := replace(
+    transformed_definition,
+    ' SECURITY DEFINER',
+    ' SECURITY INVOKER'
+  );
+  IF next_definition = transformed_definition THEN
+    RAISE EXCEPTION 'F20 invoker transform failed';
+  END IF;
+  transformed_definition := next_definition;
+
+  next_definition := replace(
+    transformed_definition,
+    '    OR coalesce(length(trim(p_basis_key)), 0) = 0',
+    E'    OR coalesce(length(trim(p_basis_key)), 0) = 0\\n    OR p_comparability_class_digest IS NULL\\n    OR p_comparability_class_digest !~ ''^[a-f0-9]{64}$'''
+  );
+  IF next_definition = transformed_definition THEN
+    RAISE EXCEPTION 'F20 validation transform failed';
+  END IF;
+  transformed_definition := next_definition;
+
+  next_definition := replace(
+    transformed_definition,
+    E'    ''basis_key'', p_basis_key,\\n',
+    E'    ''basis_key'', p_basis_key,\\n    ''comparability_class_digest'', p_comparability_class_digest,\\n'
+  );
+  IF next_definition = transformed_definition THEN
+    RAISE EXCEPTION 'F20 cache-identity transform failed';
+  END IF;
+  transformed_definition := next_definition;
+
+  next_definition := replace(
+    transformed_definition,
+    E'      AND row.basis_key = p_basis_key\\n',
+    E'      AND row.basis_key = p_basis_key\\n      AND row.comparability_class_digest = p_comparability_class_digest\\n'
+  );
+  IF next_definition = transformed_definition THEN
+    RAISE EXCEPTION 'F20 class-predicate transform failed';
+  END IF;
+  transformed_definition := next_definition;
+
+  EXECUTE transformed_definition;
+  SELECT proc.oid::regprocedure::text
+  INTO candidate_identity
+  FROM pg_proc proc
+  JOIN pg_namespace namespace ON namespace.oid = proc.pronamespace
+  WHERE namespace.nspname = 'canonical_v2_staging'
+    AND proc.proname = 'canonical_v2_query_page_v3_candidate'
+  LIMIT 1;
+  EXECUTE 'REVOKE ALL ON FUNCTION ' || candidate_identity || ' FROM PUBLIC';
+END
+$f20_executor$;
+
+INSERT INTO canonical_v2_staging.fixture_corpus_releases (
+  corpus_release_id,
+  candidate_manifest_id,
+  frozen_pair_root_id,
+  contract_fingerprint,
+  projection_version,
+  query_projection_contract_digest,
+  response_schema_version,
+  canonical_payload,
+  canonical_payload_digest
+) VALUES (
+  ${f20SqlText(carrier.corpus_release_id)},
+  ${f20SqlText(manifest.candidate_release_manifest_id)},
+  ${f20SqlText(row.frozen_pair_id)},
+  ${f20SqlText(manifest.contract_fingerprint)},
+  'canonical-v2-serving/v3-offline',
+  ${f20SqlText(f20ProjectionContractDigest())},
+  'MARKET_COHORT_RESULT/V2',
+  ${f20SqlJson(releasePayload, 'f20_release')},
+  ${f20SqlText(releasePayloadDigest)}
+);
+INSERT INTO canonical_v2_staging.deal_serving_directory (
+  serving_namespace_id,
+  corpus_release_id,
+  contract_fingerprint,
+  application_deal_id,
+  governed_deal_key,
+  deal_admission_id,
+  deal_serving_directory_record_id,
+  canonical_payload_digest
+) VALUES (
+  ${f20SqlText(carrier.serving_namespace_id)},
+  ${f20SqlText(carrier.corpus_release_id)},
+  ${f20SqlText(manifest.contract_fingerprint)},
+  ${f20SqlText(directory.application_deal_id)}::uuid,
+  ${f20SqlText(directory.governed_deal_key)},
+  ${f20SqlText(directory.deal_admission_id)},
+  ${f20SqlText(directory.deal_serving_directory_record_id)},
+  ${f20SqlText(directory.canonical_payload_digest)}
+);
+INSERT INTO canonical_v2_staging.shared_serving_rows (
+  serving_namespace_id, corpus_release_id, row_serving_key,
+  contract_fingerprint, governed_deal_key, concept_key, metric_key,
+  metric_version, party_role, party_value, party_capacity, basis_key,
+  sector, buyer, merger_form, adviser_firms, lawyers, announce_year,
+  deal_value_usd, canonical_numeric_value, fee_side, payer_capacity,
+  payee_capacity, trigger_codes, payment_timings, trigger_conditions,
+  criterion_code, contract_scope_code, cash_flow_direction_code,
+  measurement_period_code, comparison_operator, canonical_payload,
+  canonical_payload_digest
+) VALUES (
+  ${f20SqlText(carrier.serving_namespace_id)},
+  ${f20SqlText(carrier.corpus_release_id)},
+  ${f20SqlText(row.row_serving_key)},
+  ${f20SqlText(manifest.contract_fingerprint)},
+  ${f20SqlText(row.governed_deal_key)},
+  ${f20SqlText(observation.concept_key)},
+  ${f20SqlText(observation.metric_key)},
+  ${observation.metric_version},
+  ${f20SqlText(observation.party.role)},
+  ${f20SqlText(observation.party.value)},
+  ${f20SqlText(observation.party.capacity)},
+  ${f20SqlText(observation.basis_key)},
+  NULL, 'QXO', NULL, '{}'::text[], '{}'::text[], 2024, NULL,
+  ${Number(carrier.query_projection.canonical_value)},
+  NULL, NULL, NULL, '{}'::text[], '{}'::text[], '{}'::text[],
+  NULL, NULL, NULL, NULL, NULL,
+  ${f20SqlJson(row, 'f20_row')},
+  ${f20SqlText(row.canonical_payload_digest)}
+), (
+  ${f20SqlText(carrier.serving_namespace_id)},
+  ${f20SqlText(carrier.corpus_release_id)},
+  ${f20SqlText(poisonRow.row_serving_key)},
+  ${f20SqlText(manifest.contract_fingerprint)},
+  ${f20SqlText(poisonRow.governed_deal_key)},
+  ${f20SqlText(observation.concept_key)},
+  ${f20SqlText(observation.metric_key)},
+  ${observation.metric_version},
+  ${f20SqlText(observation.party.role)},
+  ${f20SqlText(observation.party.value)},
+  ${f20SqlText(observation.party.capacity)},
+  ${f20SqlText(observation.basis_key)},
+  NULL, 'QXO', NULL, '{}'::text[], '{}'::text[], 2024, NULL,
+  ${Number(carrier.query_projection.canonical_value)},
+  NULL, NULL, NULL, '{}'::text[], '{}'::text[], '{}'::text[],
+  NULL, NULL, NULL, NULL, NULL,
+  ${f20SqlJson(poisonRow, 'f20_poison')},
+  ${f20SqlText(poisonRow.canonical_payload_digest)}
+);
+
+CREATE OR REPLACE FUNCTION pg_temp.f20_explain_plan()
+RETURNS jsonb
+LANGUAGE plpgsql
+AS $f20_plan_function$
+DECLARE
+  plan_body jsonb;
+BEGIN
+  EXECUTE $f20_explained_sql$${explainedSql}$f20_explained_sql$
+    INTO plan_body;
+  RETURN plan_body;
+END
+$f20_plan_function$;
+
+CREATE TEMP TABLE f20_execution_results (
+  explain_plan jsonb NOT NULL,
+  cold_result jsonb NOT NULL,
+  warm_result jsonb NOT NULL
+) ON COMMIT DROP;
+INSERT INTO f20_execution_results (
+  explain_plan,
+  cold_result,
+  warm_result
+)
+WITH plan AS MATERIALIZED (
+  SELECT pg_temp.f20_explain_plan() AS body
+), cold AS MATERIALIZED (
+  SELECT ${querySql} AS body
+  FROM plan
+  WHERE plan.body IS NOT NULL
+), warm AS MATERIALIZED (
+  SELECT ${querySql} AS body
+  FROM cold
+  WHERE cold.body IS NOT NULL
+)
+SELECT plan.body, cold.body, warm.body
+FROM plan CROSS JOIN cold CROSS JOIN warm;
+
+SELECT jsonb_build_object(
+  'transaction', jsonb_build_object(
+    'cold_result', result.cold_result,
+    'warm_result', result.warm_result,
+    'cache_entry', (
+      SELECT jsonb_build_object(
+        'row_count', count(*)::integer,
+        'physical_request', (jsonb_agg(cache.physical_request))->0,
+        'response_bytes', max(cache.response_payload_bytes)
+      )
+      FROM canonical_v2_staging.query_response_cache cache
+      WHERE cache.serving_namespace_id =
+        ${f20SqlText(carrier.serving_namespace_id)}
+        AND cache.corpus_release_id =
+          ${f20SqlText(carrier.corpus_release_id)}
+        AND cache.query_semantics_digest =
+          ${f20SqlText(f20QuerySemanticsDigest(carrier))}
+    ),
+    'cohort_probe', jsonb_build_object(
+      'same_metric_all_classes', (
+        SELECT count(*)::integer
+        FROM canonical_v2_staging.shared_serving_rows probe
+        WHERE probe.serving_namespace_id =
+          ${f20SqlText(carrier.serving_namespace_id)}
+          AND probe.corpus_release_id =
+            ${f20SqlText(carrier.corpus_release_id)}
+          AND probe.metric_key = ${f20SqlText(observation.metric_key)}
+      ),
+      'exact_class_rows', (
+        SELECT count(*)::integer
+        FROM canonical_v2_staging.shared_serving_rows probe
+        WHERE probe.serving_namespace_id =
+          ${f20SqlText(carrier.serving_namespace_id)}
+          AND probe.corpus_release_id =
+            ${f20SqlText(carrier.corpus_release_id)}
+          AND probe.metric_key = ${f20SqlText(observation.metric_key)}
+          AND probe.comparability_class_digest =
+            ${f20SqlText(classDigest)}
+      ),
+      'poison_class_rows', (
+        SELECT count(*)::integer
+        FROM canonical_v2_staging.shared_serving_rows probe
+        WHERE probe.serving_namespace_id =
+          ${f20SqlText(carrier.serving_namespace_id)}
+          AND probe.corpus_release_id =
+            ${f20SqlText(carrier.corpus_release_id)}
+          AND probe.metric_key = ${f20SqlText(observation.metric_key)}
+          AND probe.comparability_class_digest =
+            ${f20SqlText(poisonClassDigest)}
+      )
+    ),
+    'active_pointer_before', public.canonical_v2_active_release('staging'),
+    'explain_plan', result.explain_plan
+  ),
+  'base_executor_definition_digest', (
+    SELECT encode(digest(pg_get_functiondef(proc.oid), 'sha256'), 'hex')
+    FROM pg_proc proc
+    JOIN pg_namespace namespace ON namespace.oid = proc.pronamespace
+    WHERE namespace.nspname = 'public'
+      AND proc.proname = 'canonical_v2_query_page_v2'
+      AND proc.proargnames[1] = 'p_environment'
+    LIMIT 1
+  ),
+  'candidate_executor_definition', (
+    SELECT pg_get_functiondef(proc.oid)
+    FROM pg_proc proc
+    JOIN pg_namespace namespace ON namespace.oid = proc.pronamespace
+    WHERE namespace.nspname = 'canonical_v2_staging'
+      AND proc.proname = 'canonical_v2_query_page_v3_candidate'
+    LIMIT 1
+  ),
+  'candidate_security_definer', (
+    SELECT proc.prosecdef
+    FROM pg_proc proc
+    JOIN pg_namespace namespace ON namespace.oid = proc.pronamespace
+    WHERE namespace.nspname = 'canonical_v2_staging'
+      AND proc.proname = 'canonical_v2_query_page_v3_candidate'
+    LIMIT 1
+  ),
+  'candidate_public_execute_granted', EXISTS (
+    SELECT 1
+    FROM pg_proc proc
+    JOIN pg_namespace namespace ON namespace.oid = proc.pronamespace
+    CROSS JOIN LATERAL aclexplode(
+      coalesce(proc.proacl, acldefault('f', proc.proowner))
+    ) privilege
+    WHERE namespace.nspname = 'canonical_v2_staging'
+      AND proc.proname = 'canonical_v2_query_page_v3_candidate'
+      AND privilege.grantee = 0
+      AND privilege.privilege_type = 'EXECUTE'
+  ),
+  'candidate_index_definition', (
+    SELECT indexdef
+    FROM pg_indexes
+    WHERE schemaname = 'canonical_v2_staging'
+      AND indexname = ${f20SqlText(CANDIDATE_INDEX_NAME)}
+  ),
+  'explained_sql_digest', ${f20SqlText(sha256Hex(Buffer.from(
+    matchingPageSql,
+    'utf8',
+  )))},
+  'poison_semantic_proof',
+    ${f20SqlJson(poison.semanticProof, 'f20_poison_proof')}
+) AS evidence
+FROM f20_execution_results result;
+ROLLBACK;`;
+}
+
+function f20PostRollbackSql(carrier) {
+  const fingerprint =
+    carrier.candidate_release.manifest.contract_fingerprint;
+  return `SELECT jsonb_build_object(
+  'release_rows', (
+    SELECT count(*)::integer
+    FROM canonical_v2_staging.fixture_corpus_releases
+    WHERE corpus_release_id = ${f20SqlText(carrier.corpus_release_id)}
+  ),
+  'directory_rows', (
+    SELECT count(*)::integer
+    FROM canonical_v2_staging.deal_serving_directory
+    WHERE serving_namespace_id =
+      ${f20SqlText(carrier.serving_namespace_id)}
+      AND corpus_release_id =
+        ${f20SqlText(carrier.corpus_release_id)}
+  ),
+  'shared_row_rows', (
+    SELECT count(*)::integer
+    FROM canonical_v2_staging.shared_serving_rows
+    WHERE serving_namespace_id =
+      ${f20SqlText(carrier.serving_namespace_id)}
+      AND corpus_release_id =
+        ${f20SqlText(carrier.corpus_release_id)}
+  ),
+  'cache_rows', (
+    SELECT count(*)::integer
+    FROM canonical_v2_staging.query_response_cache
+    WHERE serving_namespace_id =
+      ${f20SqlText(carrier.serving_namespace_id)}
+      AND corpus_release_id =
+        ${f20SqlText(carrier.corpus_release_id)}
+  ),
+  'class_column_exists', EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'canonical_v2_staging'
+      AND table_name = 'shared_serving_rows'
+      AND column_name = 'comparability_class_digest'
+  ),
+  'candidate_index_exists', to_regclass(
+    'canonical_v2_staging.${CANDIDATE_INDEX_NAME}'
+  ) IS NOT NULL,
+  'candidate_function_exists', EXISTS (
+    SELECT 1
+    FROM pg_proc proc
+    JOIN pg_namespace namespace ON namespace.oid = proc.pronamespace
+    WHERE namespace.nspname = 'canonical_v2_staging'
+      AND proc.proname = 'canonical_v2_query_page_v3_candidate'
+  ),
+  'active_pointer_after', public.canonical_v2_active_release('staging'),
+  'base_executor_definition_digest', (
+    SELECT encode(digest(pg_get_functiondef(proc.oid), 'sha256'), 'hex')
+    FROM pg_proc proc
+    JOIN pg_namespace namespace ON namespace.oid = proc.pronamespace
+    WHERE namespace.nspname = 'public'
+      AND proc.proname = 'canonical_v2_query_page_v2'
+      AND proc.proargnames[1] = 'p_environment'
+    LIMIT 1
+  ),
+  'contract_fingerprint', ${f20SqlText(fingerprint)}
+) AS evidence;`;
+}
+
+function buildCopyDeliveryQueryF20Runtime() {
+  guardProject();
+  const {
+    carrier: f19Carrier,
+    inputs: f19Inputs,
+  } =
+    buildCopyDeliveryCanonicalF19Runtime();
+  const transactionRows = runF20SqlFile(
+    f20RollbackSql(
+      f19Carrier,
+      f19Inputs.qxo_no_shop_copy_delivery_claim_f17,
+      f19Inputs.contract_bundle,
+    ),
+  );
+  if (!Array.isArray(transactionRows)
+    || transactionRows.length !== 1
+    || !transactionRows[0]?.evidence) {
+    throw new Error('F20 rollback transaction returned invalid evidence.');
+  }
+  const postRows = runF20SqlFile(f20PostRollbackSql(f19Carrier));
+  if (!Array.isArray(postRows)
+    || postRows.length !== 1
+    || !postRows[0]?.evidence) {
+    throw new Error('F20 post-rollback verification returned invalid evidence.');
+  }
+  const transactionEvidence = transactionRows[0].evidence;
+  const postEvidence = postRows[0].evidence;
+  delete postEvidence.contract_fingerprint;
+  const execution = {
+    schema_version:
+      'QXO_NO_SHOP_COPY_DELIVERY_QUERY_F20_EXECUTION/V2',
+    environment: 'STAGING',
+    authority_scope: 'ROLLBACK_ONLY_STAGING_CERTIFICATION',
+    query_semantics_digest: f20QuerySemanticsDigest(f19Carrier),
+    comparability_class_digest:
+      f19Carrier.cohort_request.comparability_class_digest,
+    poison_semantic_proof:
+      transactionEvidence.poison_semantic_proof,
+    explained_sql_digest:
+      transactionEvidence.explained_sql_digest,
+    base_executor: {
+      name: 'canonical_v2_query_page_v2',
+      definition_digest:
+        transactionEvidence.base_executor_definition_digest,
+    },
+    candidate_executor: {
+      name: CANDIDATE_EXECUTOR_NAME,
+      definition:
+        transactionEvidence.candidate_executor_definition,
+      security_definer:
+        transactionEvidence.candidate_security_definer,
+      public_execute_granted:
+        transactionEvidence.candidate_public_execute_granted,
+    },
+    candidate_index: {
+      name: CANDIDATE_INDEX_NAME,
+      definition:
+        transactionEvidence.candidate_index_definition,
+    },
+    transaction: transactionEvidence.transaction,
+    post_rollback: postEvidence,
+  };
+  const contractBundle = compileFixtureContractV12();
+  const carrier = buildQxoNoShopCopyDeliveryQueryF20({
+    contract_bundle: contractBundle,
+    qxo_no_shop_copy_delivery_canonical_f19: f19Carrier,
+    staging_execution: execution,
+  });
+  validateQxoNoShopCopyDeliveryQueryF20({
+    qxo_no_shop_copy_delivery_query_f20: carrier,
+    contract_bundle: contractBundle,
+    qxo_no_shop_copy_delivery_canonical_f19: f19Carrier,
+    staging_execution: execution,
+  });
+  return {
+    carrier,
+    contractBundle,
+    f19Carrier,
+    execution,
+  };
+}
+
+function buildCopyDeliveryQueryF20Attestation() {
+  const runtime = buildCopyDeliveryQueryF20Runtime();
+  const {
+    carrier,
+    contractBundle,
+    f19Carrier,
+    execution,
+  } = runtime;
+  const mutatedF19 = JSON.parse(JSON.stringify(f19Carrier));
+  mutatedF19.status.publication_blocked = false;
+  let nestedF19DriftRejected = false;
+  try {
+    buildQxoNoShopCopyDeliveryQueryF20({
+      contract_bundle: contractBundle,
+      qxo_no_shop_copy_delivery_canonical_f19: mutatedF19,
+      staging_execution: execution,
+    });
+  } catch (_) {
+    nestedF19DriftRejected = true;
+  }
+  const mutatedPlan = JSON.parse(JSON.stringify(execution));
+  const planStack = [mutatedPlan.transaction.explain_plan];
+  let indexMutated = false;
+  while (planStack.length && !indexMutated) {
+    const value = planStack.pop();
+    if (Array.isArray(value)) {
+      planStack.push(...value);
+    } else if (value && typeof value === 'object') {
+      if (value['Index Name']
+          === CANDIDATE_INDEX_NAME) {
+        value['Index Name'] = 'substituted_index';
+        indexMutated = true;
+      } else {
+        planStack.push(...Object.values(value));
+      }
+    }
+  }
+  let planDriftRejected = false;
+  try {
+    buildQxoNoShopCopyDeliveryQueryF20({
+      contract_bundle: contractBundle,
+      qxo_no_shop_copy_delivery_canonical_f19: f19Carrier,
+      staging_execution: mutatedPlan,
+    });
+  } catch (_) {
+    planDriftRejected = true;
+  }
+  const mutatedResult = JSON.parse(JSON.stringify(execution));
+  mutatedResult.transaction.warm_result.rows[0]
+    .canonical_result.components[0].canonical_value = '2';
+  let resultDriftRejected = false;
+  try {
+    buildQxoNoShopCopyDeliveryQueryF20({
+      contract_bundle: contractBundle,
+      qxo_no_shop_copy_delivery_canonical_f19: f19Carrier,
+      staging_execution: mutatedResult,
+    });
+  } catch (_) {
+    resultDriftRejected = true;
+  }
+  const mutatedRollback = JSON.parse(JSON.stringify(execution));
+  mutatedRollback.post_rollback.cache_rows = 1;
+  let rollbackResidueRejected = false;
+  try {
+    buildQxoNoShopCopyDeliveryQueryF20({
+      contract_bundle: contractBundle,
+      qxo_no_shop_copy_delivery_canonical_f19: f19Carrier,
+      staging_execution: mutatedRollback,
+    });
+  } catch (_) {
+    rollbackResidueRejected = true;
+  }
+  const mutatedClass = JSON.parse(JSON.stringify(execution));
+  mutatedClass.transaction.cohort_probe.exact_class_rows = 2;
+  let poisonClassLeakRejected = false;
+  try {
+    buildQxoNoShopCopyDeliveryQueryF20({
+      contract_bundle: contractBundle,
+      qxo_no_shop_copy_delivery_canonical_f19: f19Carrier,
+      staging_execution: mutatedClass,
+    });
+  } catch (_) {
+    poisonClassLeakRejected = true;
+  }
+  return {
+    schema_version:
+      'QXO_NO_SHOP_COPY_DELIVERY_QUERY_F20_STAGING_ATTESTATION/V2',
+    environment: 'STAGING',
+    authority_scope: carrier.authority_scope,
+    upstream_f19_id:
+      carrier.upstream_binding
+        .qxo_no_shop_copy_delivery_canonical_f19_id,
+    query_certification: carrier.query_certification,
+    adversarial_rejections: {
+      nested_f19_drift: nestedF19DriftRejected,
+      plan_drift: planDriftRejected,
+      result_drift: resultDriftRejected,
+      rollback_residue: rollbackResidueRejected,
+      poison_class_leak: poisonClassLeakRejected,
+    },
+    status: carrier.status,
+    qxo_no_shop_copy_delivery_query_f20_id:
+      carrier.qxo_no_shop_copy_delivery_query_f20_id,
+    canonical_payload_digest: carrier.canonical_payload_digest,
+  };
+}
+// F20_ROLLBACK_ONLY_STAGING_CERTIFICATION_END
+
 function verifyActionsFailureIsolation(bridgeInputs) {
   const missingFirstAction = JSON.parse(JSON.stringify(
     bridgeInputs.reviewed_no_shop_actions_slice,
@@ -3558,13 +4833,18 @@ if (![
   '--copy-delivery-serving-f18-verify',
   '--copy-delivery-canonical-f19-print',
   '--copy-delivery-canonical-f19-verify',
+  '--copy-delivery-query-f20-print',
+  '--copy-delivery-query-f20-verify',
 ].includes(mode)
   || process.argv.length !== 3) {
-  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs [supported attestation print/verify mode, including --copy-delivery-canonical-f19-print|--copy-delivery-canonical-f19-verify]');
+  fail('Usage: node scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs [supported attestation print/verify mode, including --copy-delivery-query-f20-print|--copy-delivery-query-f20-verify]');
 }
 
 try {
-  const copyDeliveryCanonicalF19Mode =
+  const copyDeliveryQueryF20Mode =
+    mode.startsWith('--copy-delivery-query-f20-');
+  const copyDeliveryCanonicalF19Mode = !copyDeliveryQueryF20Mode
+    &&
     mode.startsWith('--copy-delivery-canonical-f19-');
   const copyDeliveryServingF18Mode = !copyDeliveryCanonicalF19Mode
     &&
@@ -3614,7 +4894,9 @@ try {
     && mode.startsWith('--definitions-f6-');
   const actionsF6Mode = !definitionsF6Mode && mode.startsWith('--actions-f6-');
   const actionsMode = !actionsF6Mode && mode.startsWith('--actions-');
-  const attestation = copyDeliveryCanonicalF19Mode
+  const attestation = copyDeliveryQueryF20Mode
+    ? buildCopyDeliveryQueryF20Attestation()
+    : copyDeliveryCanonicalF19Mode
     ? buildCopyDeliveryCanonicalF19Attestation()
     : copyDeliveryServingF18Mode
     ? buildCopyDeliveryServingF18Attestation()
@@ -3656,7 +4938,9 @@ try {
     : attestation;
   if (mode.endsWith('verify')) {
     const expected = JSON.parse(readFileSync(
-      copyDeliveryCanonicalF19Mode
+      copyDeliveryQueryF20Mode
+        ? COPY_DELIVERY_QUERY_F20_FIXTURE_PATH
+        : copyDeliveryCanonicalF19Mode
         ? COPY_DELIVERY_CANONICAL_F19_FIXTURE_PATH
         : copyDeliveryServingF18Mode
         ? COPY_DELIVERY_SERVING_F18_FIXTURE_PATH

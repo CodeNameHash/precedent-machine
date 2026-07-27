@@ -1,0 +1,40 @@
+{
+  "phase": "WP-CANONICAL-QXO-NO-SHOP-COPY-DELIVERY-QUERY-F20",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-qxo-no-shop-copy-delivery-query-f20.json",
+    "lib/canonical-v2/qxo-no-shop-copy-delivery-query-f20.js",
+    "scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs",
+    "tests/canonical-v2-qxo-no-shop-actions-f6-parser-bridge.test.js",
+    "tests/canonical-v2-qxo-no-shop-actions-parser-bridge.test.js",
+    "tests/canonical-v2-qxo-no-shop-clock-parser-bridge.test.js",
+    "tests/canonical-v2-qxo-no-shop-copy-clock-f15.test.js",
+    "tests/canonical-v2-qxo-no-shop-copy-delivery-claim-f17.test.js",
+    "tests/canonical-v2-qxo-no-shop-copy-delivery-metric-f16.test.js",
+    "tests/canonical-v2-qxo-no-shop-copy-delivery-query-f20.test.js",
+    "tests/canonical-v2-qxo-no-shop-copy-delivery-serving-f18.test.js",
+    "tests/canonical-v2-qxo-no-shop-definition-control-f11.test.js",
+    "tests/canonical-v2-qxo-no-shop-definition-relationships-f8.test.js",
+    "tests/canonical-v2-qxo-no-shop-definition-scope-closure-f13.test.js",
+    "tests/canonical-v2-qxo-no-shop-exception-source-binding-f6.test.js",
+    "tests/canonical-v2-qxo-no-shop-nested-definition-candidate-supplement.test.js",
+    "tests/canonical-v2-qxo-no-shop-notice-receipt-f10.test.js",
+    "tests/canonical-v2-qxo-no-shop-notice-review-materialisation-f7.test.js",
+    "tests/canonical-v2-qxo-no-shop-notice-revision-f14.test.js",
+    "tests/canonical-v2-qxo-no-shop-notice-semantic-closure-f6.test.js",
+    "tests/canonical-v2-qxo-no-shop-notice-source-binding-f6.test.js",
+    "tests/canonical-v2-qxo-no-shop-reviewed-definition-graph-f6.test.js",
+    "tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-query-f20-staging-attestation.json",
+    "tests/helpers/canonical-v2-staging-runner-scope.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "docs/**",
+    "lib/canonical-v2/canonical-writer.js",
+    "pages/**",
+    "sql/**",
+    "supabase/**",
+    "next.config.js"
+  ],
+  "note": "Certifies, in one rollback-only staging transaction, a private V3 candidate executor derived from the pinned V2 executor with an exact comparability-class projection, class-keyed index and cache identity, natural indexed plan, cold and warm cache flow, poison-class exclusion and zero durable residue. V12 remains outside active serving, query and pointer authority."
+}
