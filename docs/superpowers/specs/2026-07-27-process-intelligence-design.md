@@ -198,15 +198,19 @@ dependencies:
 
 - implementation planning requires `implementation_planning`;
 - canonical implementation or data work requires `canonical_work_start`;
-- the complete Agreement-plus-Process successor bundle must compile and receive
-  exact-root review, Ben approval and its own full-bundle
-  `ContractFreezeAttestation`;
-- that exact frozen pair must add a generated Process vertical-slice gate, run
-  one bounded Process-bearing source-to-UI fixture under
-  `vertical_slice_execution` and record `PROCESS_VERTICAL_SLICE_PASS`;
+- before review or freeze, the specification root must already contain the
+  complete Agreement-plus-Process bundle, `PROCESS_VERTICAL_SLICE_PASS` gate
+  entry, acceptance definition, evidence schema, adversarial test, verifier
+  changes, successor `candidate_scope_and_extraction` dependencies,
+  acquisition contracts and semantic-integrity revocation action;
+- that complete root must then compile and receive exact-root review, Ben
+  approval and its own full-bundle `ContractFreezeAttestation`;
+- the exact frozen pair must receive fresh Agreement and Process
+  vertical-slice attestations under `vertical_slice_execution`; prior
+  Agreement-only evidence cannot carry forward to the successor fingerprint;
 - broad source discovery, extraction, reprocessing and candidate work require
   `candidate_scope_and_extraction`, whose successor dependency set cannot open
-  before both the existing `P1_VERTICAL_SLICE_PASS` and
+  before both a fresh same-pair `P1_VERTICAL_SLICE_PASS` and
   `PROCESS_VERTICAL_SLICE_PASS`; and
 - import, activation and rollback require the complete Phase 9 gates.
 
@@ -350,9 +354,10 @@ or dedicated physical carrier:
   component occurrence slots, `DerivedResultRevision` and complete
   `ResultInputLineage`;
 - each phrasebook passage maps to a dedicated canonical
-  `ProcessPhrasebookPassageResult` at `RESULT_ROW` grain, with the selected
-  narration and predicate witness in its lineage, a bounded inline exact
-  preview and existing result-parent exact-detail actions; and
+  `ProcessPhrasebookPassageResult` with `output_grain=RESULT` and
+  `parent_kind=RESULT_ROW`, with the selected narration and predicate witness
+  in its lineage, a bounded inline exact preview and existing result-parent
+  exact-detail actions; and
 - an Exclusivity history row selects the composed canonical result grain.
 
 The phrasebook `ResultDefinition` creates one occurrence per admitted
@@ -777,14 +782,16 @@ by a governed serving projection. Its generator version, inputs, diversity
 keys, output digest and projection rows are bound by the release identity. The
 query does not recreate ranking authority in application memory.
 
-Phrasebook results are materialised at an existing governed claim or
-result-component output grain. Each row carries one bounded verbatim
-`matched_passage_preview`, its exact interval and digest, evidence role,
-source-local narration identity and exact-detail reference. The default order
-is a compiled total comparator: direct predicate witness before contextual or
-retold evidence, source-local primary narration before later retellings, then
-governed source order. Diversification applies after that comparator by deal and
-track. The UI does not perform one exact-detail request per visible passage.
+Phrasebook results are dedicated `ProcessPhrasebookPassageResult` objects with
+`output_grain=RESULT` and `parent_kind=RESULT_ROW`. Narration, claim and
+result-component identities appear only in lineage. Each row carries one
+bounded verbatim `matched_passage_preview`, its exact interval and digest,
+evidence role, source-local narration identity and exact-detail reference. The
+default order is a compiled total comparator: direct predicate witness before
+contextual or retold evidence, source-local primary narration before later
+retellings, then governed source order. Diversification applies after that
+comparator by deal and track. The UI does not perform one exact-detail request
+per visible passage.
 
 ## Interface
 
@@ -885,7 +892,7 @@ A corrected result requires a new revision, affected-predicate recertification
 and a successor release before it serves.
 
 A material unsupported fact, source-map defect or cross-track error triggers
-immediate containment. The successor bundle adds
+immediate containment. Before review and freeze, the successor root adds
 `SEMANTIC_OR_SOURCE_INTEGRITY` to the closed
 `ActiveReleaseRevocationActionRegistry`, with typed evidence identifying the
 served row, source, defect class, severity, discovery authority and exact
@@ -1131,6 +1138,14 @@ entity subject, result-parent phrasebook rows, acquisition-manifest release
 lineage, legally distinct response and exclusivity-subject semantics, one-shot
 holdout integrity and a registered semantic/source-integrity revocation cause.
 That review does not approve the next successor root.
+
+The third cold review examined successor root
+`99bbb2836dd6a50ded93d86c5cccc4b095d971b7d995099e13b3fffe72a0868c`
+and returned `REJECT`. Its four findings are accepted: pre-freeze gate
+authorship and fresh same-pair slice attestations, pre-freeze acquisition
+contracts, pre-freeze semantic-integrity revocation authority and consistent
+phrasebook `RESULT` output with `RESULT_ROW` parentage. That review does not
+approve the next successor root.
 
 ## Decisions deliberately deferred
 

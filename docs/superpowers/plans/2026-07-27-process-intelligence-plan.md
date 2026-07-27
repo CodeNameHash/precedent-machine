@@ -63,12 +63,13 @@ and emergency containment proceed. The bounded vertical slice requires
 `vertical_slice_execution`.
 
 Process changes the complete bundle fingerprint. After WP1-WP3, WP3A compiles
-the Agreement-plus-Process successor bundle, obtains a new freeze and runs a
-Process-bearing bounded slice for that exact frozen pair. Broad Process source
-discovery, extraction, reprocessing and candidate work requires the successor
-`candidate_scope_and_extraction` dependency set after both
-`P1_VERTICAL_SLICE_PASS` and `PROCESS_VERTICAL_SLICE_PASS`. Phase 9 gates govern
-import and activation.
+the Agreement-plus-Process successor specification root only after that root
+already contains every gate, acquisition, revocation, acceptance, evidence,
+adversarial-test and verifier change. It then obtains a new freeze and runs
+fresh Agreement and Process bounded slices for that exact frozen pair. Broad
+Process source discovery, extraction, reprocessing and candidate work requires
+the successor `candidate_scope_and_extraction` dependency set after both fresh
+same-pair slice attestations. Phase 9 gates govern import and activation.
 
 ## Work package 0: freeze evidence and attack the design
 
@@ -113,19 +114,29 @@ release, serving-row, exact-detail or query contracts.
    `ResultDefinition`, expected occurrence slots, revisions and
    `ResultInputLineage`.
 5. Define how event and `ProcessPhrasebookPassageResult` `CANONICAL_RESULT` rows
-   inhabit `SharedServingRow` at `RESULT_ROW` grain without a new generic
-   variant.
+   inhabit `SharedServingRow` with `output_grain=RESULT` and
+   `parent_kind=RESULT_ROW`, without a new generic variant.
 6. Define the bounded inline exact-passage preview, child collections and
    successor parent-bound paragraph-context exact-detail action.
 7. Define process residual and open-world candidate handling.
 8. Define process admission identities at predicate granularity.
-9. Create contract fixtures for development before the host contracts land.
-10. Prove that fixture and generated adapters expose byte-equivalent logical
-   shapes.
-11. Create the consumed-contract freeze manifest.
-12. Regenerate fixtures and run a divergence gate after any merge touching a
-   consumed contract and at every downstream work-package gate.
-13. Stop dependent implementation on an unadjudicated divergence.
+9. Define the complete `ExternalSourceAcquisitionManifest`, independent-path
+    and reconciliation contracts, external snapshot and cutoff identities,
+    expected-source and receipt schemas, carrier and writer registrations,
+    trace edges and `P9_SCOPE_EXACT` acceptance changes.
+10. Define `SEMANTIC_OR_SOURCE_INTEGRITY` in the generated
+    `ActiveReleaseRevocationActionRegistry`, including evidence schema,
+    producer, tuple transition, carrier, lock plan and controller coupling.
+11. Author `PROCESS_VERTICAL_SLICE_PASS`, its acceptance definition, evidence
+    object, adversarial test, verifier changes and successor
+    `candidate_scope_and_extraction` dependency before exact-root review.
+12. Create contract fixtures for development before the host contracts land.
+13. Prove that fixture and generated adapters expose byte-equivalent logical
+    shapes.
+14. Create the consumed-contract freeze manifest.
+15. Regenerate fixtures and run a divergence gate after any merge touching a
+    consumed contract and at every downstream work-package gate.
+16. Stop dependent implementation on an unadjudicated divergence.
 
 ### Negative tests
 
@@ -266,20 +277,27 @@ semantic contract.
 
 ### Deliverables
 
-1. Compile one complete Agreement-plus-Process successor
-   `CanonicalContractBundle`.
-2. Run all required exact-digest cold review lanes and obtain Ben approval for
+1. Compile one complete Agreement-plus-Process successor specification root,
+   including the bundle, gate registry, acceptance and evidence definitions,
+   acquisition and revocation contracts, adversarial tests and verifier.
+2. Prove that every pre-freeze member and successor dependency is present
+   before review.
+3. Run all required exact-digest cold review lanes and obtain Ben approval for
    that exact root.
-3. Issue the new full-bundle `ContractFreezeAttestation` and generated
+4. Issue the new full-bundle `ContractFreezeAttestation` and generated
    programme-status evidence.
-4. Add `PROCESS_VERTICAL_SLICE_PASS` and make the successor
-   `candidate_scope_and_extraction` dependency set require it.
-5. Under `vertical_slice_execution`, run one bounded Process-bearing source
+5. Under `vertical_slice_execution`, freshly rerun the bounded Agreement
+   source-to-UI slice against the successor frozen pair.
+   Earlier evidence bound to the prior fingerprint is ineligible.
+6. Under `vertical_slice_execution`, run one bounded Process-bearing source
    package through acquisition expectation, intake, canonical text, narration,
    claims, relationships, result, writer, candidate release, serving row,
    phrasebook query and exact detail.
-6. Prove authoritative-writer-only DML, bounded database work, exact passage,
+7. Prove authoritative-writer-only DML, bounded database work, exact passage,
    source action and sibling isolation.
+8. Record fresh same-pair `P1_VERTICAL_SLICE_PASS` and
+   `PROCESS_VERTICAL_SLICE_PASS` evidence, then and only then open the successor
+   `candidate_scope_and_extraction`.
 
 ### Gate
 
@@ -291,9 +309,8 @@ authorise Process extraction.
 
 ### Deliverables
 
-1. Define `ExternalSourceAcquisitionManifest`, frozen external snapshot and
-   cutoff identities, expected-source and receipt schemas, terminal
-   dispositions, carriers, writer actions and trace edges.
+1. Implement the two acquisition paths against the complete WP1 frozen
+   `ExternalSourceAcquisitionManifest` and independence contracts.
 2. Build two implementation-disjoint acquisition enumerators over SEC filing
    history, amendments, supplements, exhibits, incorporated references and
    approved non-SEC sources. The SEC paths use complete issuer submissions
@@ -304,7 +321,8 @@ authorise Process extraction.
    terminal dispositions. Common under-inclusive endpoints do not prove
    independence.
 4. Block every unresolved expected fetch or reference.
-5. Bind the acquisition manifest through `IntakeCutoffAttestation`,
+5. Materialise the frozen acquisition contract through
+   `IntakeCutoffAttestation`,
    `IntakeUniverseManifest`, deal admission, `CorpusScopeManifest`, candidate
    release, coverage and traceability.
 6. Feed the reconciled universe into canonical immutable source, independent
@@ -476,8 +494,9 @@ Metsera-specific rule or unreviewed vocabulary exception remains.
    same-component scope, multiplicity, completeness, quantifier, reducer and
    overflow semantics using the canonical query algebra.
 8. Implement release-pinned, set-based execution and stable cursors.
-9. Query `ProcessPhrasebookPassageResult` at `RESULT_ROW` grain and return its
-   bounded inline preview and existing result-parent exact-detail references.
+9. Query `ProcessPhrasebookPassageResult` with `output_grain=RESULT` and
+   `parent_kind=RESULT_ROW`, returning its bounded inline preview and existing
+   result-parent exact-detail references.
 10. Implement governed passage relevance order, then 8 to 12 result
    diversification by deal and bidder track using
    deterministic round-robin rules. Do not use an embedding or ungoverned
@@ -507,6 +526,7 @@ Metsera-specific rule or unreviewed vocabulary exception remains.
 - Empty and incomplete repeatable sets obey non-vacuous three-valued semantics.
 - A cross-domain Boolean request cannot cause client-side answer joining.
 - A phrasebook `CLAIM` row cannot masquerade as an exact-detail parent.
+- `RESULT_ROW` cannot be submitted as a Query IR output grain.
 - Empty results do not claim absence without an absence-proof contract.
 - A result from one release, predicate or filter set cannot poison another
   cache entry.
@@ -610,6 +630,8 @@ repetitions and percentile method.
    markup and prompt-injection attacks.
 4. Isolate and protect every data-bearing preview.
 5. Separately authorise and rate-limit exports, share links and corrections.
+6. Exercise the frozen `SEMANTIC_OR_SOURCE_INTEGRITY` action, whole-tuple
+   exposure-off transition, rollback and recovery under its generated lock plan.
 
 ### Gate
 
@@ -638,6 +660,8 @@ invariants.
 12. Prepare rollback and activation evidence.
 13. Roll back the whole release tuple. Do not activate or revoke only a Process
     namespace.
+14. Certify the pre-frozen semantic/source-integrity revocation action and
+    containment SLA before activation.
 
 ### Gate
 
@@ -660,13 +684,12 @@ Activation remains a separate explicit decision.
 8. Reopen affected-predicate certification on any unsupported served fact,
    critical omission, source-map failure, cross-track error or material drift
    beyond the pre-activation disagreement and exception thresholds.
-9. Add `SEMANTIC_OR_SOURCE_INTEGRITY` and its typed evidence schema to the
-   successor `ActiveReleaseRevocationActionRegistry`.
-10. On a credible material false fact, source-map failure or cross-track error,
-    disable the Process route within 15 minutes as an operational kill switch,
-    then execute the registered whole-tuple revocation or rollback within 60
-    minutes. The route switch is not a canonical state transition. Do not wait
-    for a successor release.
+9. On a credible material false fact, source-map failure or cross-track error,
+   disable the Process route within 15 minutes as an operational kill switch,
+   then invoke the already frozen and certified
+   `SEMANTIC_OR_SOURCE_INTEGRITY` whole-tuple revocation or rollback within 60
+   minutes. The route switch is not a canonical state transition. Do not wait
+   for a successor release.
 
 ### Expansion
 
