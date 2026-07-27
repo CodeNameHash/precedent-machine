@@ -1,0 +1,23 @@
+{
+  "phase": "WP-CANONICAL-V12-SERVING-ADMISSION-READINESS-F21",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-v12-serving-admission-readiness-f21.json",
+    "docs/superpowers/specs/2026-07-27-v12-serving-admission-readiness-f21-design.md",
+    "lib/canonical-v2/v12-serving-admission-readiness-f21.js",
+    "tests/canonical-v2-v12-serving-admission-readiness-f21.test.js",
+    "tests/fixtures/canonical-v2/v12-serving-admission-readiness-f21.json"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "lib/canonical-v2/contract-bundle.js",
+    "lib/canonical-v2/market-cohort-query.js",
+    "lib/canonical-v2/shared-serving-row.js",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**",
+    "next.config.js"
+  ],
+  "note": "Records Ben's approved V6 through V12 legal decisions, proves the exact cumulative contract deltas and F20 evidence, and reports readiness for a separate serving-admission decision. It cannot widen the serving allowlist, activate V12, write corpus data or change a release pointer."
+}

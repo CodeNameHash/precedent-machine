@@ -1,0 +1,417 @@
+{
+  "schema_version": "V12_SERVING_ADMISSION_READINESS_F21/V1",
+  "authority_scope": "OFFLINE_V12_SERVING_ADMISSION_READINESS_F21_ONLY",
+  "target_contract_fingerprint": "261525a8268a1392428a610bbf0c2166c87318192971d08bc7e6ac5f2c7235e5",
+  "active_serving_predecessor_fingerprint": "f80a77651d1b6a6a9eec8ac67526a8704f498761cbb22a67e6ceb4716abb5478",
+  "approval_record": {
+    "schema_version": "LEGAL_DECISION_APPROVAL_RECORD/V1",
+    "review_authority": "BEN",
+    "approved_on": "2026-07-27",
+    "source_context": "MAIN_CODEX_TASK",
+    "approval_scope": "V6_THROUGH_V12_LEGAL_SEMANTICS_READINESS_ONLY",
+    "decisions": [
+      {
+        "decision_key": "ATOMIC_NO_SHOP_ACTIONS_AND_EXACT_EXCEPTION_GROUPING",
+        "first_governed_version": 6,
+        "approved_value": "TWENTY_THREE_SOURCE_FAITHFUL_ACTIONS_WITH_NINE_COMPARISON_ROLLUPS_ONE_UNROLLED_DGCL_203_ACTION_EIGHT_SHARED_PREREQUISITES_AND_TWO_INFORMATION_SPECIFIC_PREREQUISITES"
+      },
+      {
+        "decision_key": "QXO_COPY_CLOCK_PRIMARY_TRIGGER_AND_APPLICATION_SCOPE",
+        "first_governed_version": 9,
+        "approved_value": "EACH_QUALIFYING_COMPANY_ACQUISITION_PROPOSAL_OR_COMPANY_REQUEST_RECEIPT_STARTS_A_SEPARATE_PRIMARY_24_ELAPSED_HOUR_CLOCK_WITH_ITEM_RECEIPT_RETAINED_AS_UNRESOLVED_ALTERNATIVE"
+      },
+      {
+        "decision_key": "AMBIGUITY_QUALIFIED_COPY_DELIVERY_MARKET_COMPARISON",
+        "first_governed_version": 12,
+        "approved_value": "SELECTED_PRIMARY_INTERPRETATION_MAY_ENTER_ONLY_AN_INTERPRETATION_KEYED_METRIC_COHORT_WITH_MANDATORY_ALTERNATIVE_AND_LAWYER_WARNING"
+      },
+      {
+        "decision_key": "SOURCE_LOCAL_PLURAL_AND_NESTED_DEFINITION_HANDLING",
+        "first_governed_version": 7,
+        "approved_value": "ORDINARY_PLURAL_IS_NOT_A_DUPLICATE_OR_ALIAS_NESTED_DEFINITIONS_ARE_TRANSITIVE_AND_UNRESOLVED_TERMS_ARE_NEVER_SILENTLY_SKIPPED"
+      }
+    ],
+    "serving_admission_authority": "NONE",
+    "release_activation_authority": "NONE",
+    "production_cutover_authority": "NONE",
+    "legal_decision_approval_record_id": "e65a45d9b71ed4961d016e6def5de06e270a4e7276f4821f2cb6bc078575ba39"
+  },
+  "version_inventory": [
+    {
+      "contract_version": 6,
+      "predecessor_version": 5,
+      "contract_fingerprint": "161083b014a35d800dec0b0c41a97dc6d97f38a5dd206b388ba51b3ab9f68c08",
+      "predecessor_fingerprint": "f80a77651d1b6a6a9eec8ac67526a8704f498761cbb22a67e6ceb4716abb5478",
+      "governed_change": "ATOMIC_NO_SHOP_ACTION_EXCEPTION_AND_NOTICE_CONTRACT",
+      "exact_delta_fields": [
+        "claim_definitions",
+        "no_shop_semantic_schema_definitions",
+        "relationship_definitions"
+      ],
+      "contract_validation": "PASSED"
+    },
+    {
+      "contract_version": 7,
+      "predecessor_version": 6,
+      "contract_fingerprint": "5037e25762892f44f660516913d58a23c17ebab0c10c160fcf8cbd0f65a90969",
+      "predecessor_fingerprint": "161083b014a35d800dec0b0c41a97dc6d97f38a5dd206b388ba51b3ab9f68c08",
+      "governed_change": "INTERPRETATION_CLARITY_EXACT_DEFINITION_USE_AND_NOTICE_CLOCK_CONTRACT",
+      "exact_delta_fields": [
+        "claim_interpretation_policy_definition",
+        "definition_use_effect_schema_definition",
+        "no_shop_semantic_schema_definitions",
+        "relationship_definitions"
+      ],
+      "contract_validation": "PASSED"
+    },
+    {
+      "contract_version": 8,
+      "predecessor_version": 7,
+      "contract_fingerprint": "dd0f1d4afc02492edf1bbbebe1a6699498fd6c3d26d890254a151b1d8c7d0a80",
+      "predecessor_fingerprint": "5037e25762892f44f660516913d58a23c17ebab0c10c160fcf8cbd0f65a90969",
+      "governed_change": "STABLE_NOTICE_DEFINITION_USE_AND_PARTY_OCCURRENCE_IDENTITIES",
+      "exact_delta_fields": [
+        "definition_use_effect_schema_definition",
+        "no_shop_semantic_schema_definitions",
+        "relationship_definitions"
+      ],
+      "contract_validation": "PASSED"
+    },
+    {
+      "contract_version": 9,
+      "predecessor_version": 8,
+      "contract_fingerprint": "8576011555a67b18f6539bb259dea4285d2e3d982c4b906a3edc73162dc9e8c7",
+      "predecessor_fingerprint": "dd0f1d4afc02492edf1bbbebe1a6699498fd6c3d26d890254a151b1d8c7d0a80",
+      "governed_change": "QXO_PROPOSAL_OR_REQUEST_RECEIPT_PRIMARY_INTERPRETATION",
+      "exact_delta_fields": [
+        "no_shop_semantic_schema_definitions"
+      ],
+      "contract_validation": "PASSED"
+    },
+    {
+      "contract_version": 10,
+      "predecessor_version": 9,
+      "contract_fingerprint": "aee4b40ead2e76ed744b0f20967a48493c618125959a023f8262612da23aa0e5",
+      "predecessor_fingerprint": "8576011555a67b18f6539bb259dea4285d2e3d982c4b906a3edc73162dc9e8c7",
+      "governed_change": "BOUNDED_FIXED_POINT_DEFINITION_SCOPE_CLOSURE",
+      "exact_delta_fields": [
+        "no_shop_semantic_schema_definitions"
+      ],
+      "contract_validation": "PASSED"
+    },
+    {
+      "contract_version": 11,
+      "predecessor_version": 10,
+      "contract_fingerprint": "7cf669cb86e8cda58b33a623b7f5405e56b7c1aa4c9dfdbe1136edb6beffa6ca",
+      "predecessor_fingerprint": "aee4b40ead2e76ed744b0f20967a48493c618125959a023f8262612da23aa0e5",
+      "governed_change": "SEPARATE_PRIMARY_COPY_CLOCK_AND_UNRESOLVED_ALTERNATIVE",
+      "exact_delta_fields": [
+        "no_shop_semantic_schema_definitions"
+      ],
+      "contract_validation": "PASSED"
+    },
+    {
+      "contract_version": 12,
+      "predecessor_version": 11,
+      "contract_fingerprint": "261525a8268a1392428a610bbf0c2166c87318192971d08bc7e6ac5f2c7235e5",
+      "predecessor_fingerprint": "7cf669cb86e8cda58b33a623b7f5405e56b7c1aa4c9dfdbe1136edb6beffa6ca",
+      "governed_change": "DISTINCT_COPY_DELIVERY_METRIC_SPECIFIC_AMBIGUITY_ADMISSION",
+      "exact_delta_fields": [
+        "claim_definitions",
+        "claim_interpretation_policy_definition"
+      ],
+      "contract_validation": "PASSED"
+    }
+  ],
+  "governed_semantic_checks": [
+    {
+      "check": "ATOMIC_ACTION_AND_EXCEPTION_CONTRACT",
+      "state": "PASSED"
+    },
+    {
+      "check": "EXACT_USE_PLURAL_AND_NESTED_DEFINITION_CONTRACT",
+      "state": "PASSED"
+    },
+    {
+      "check": "STABLE_OCCURRENCE_IDENTITY_CONTRACT",
+      "state": "PASSED"
+    },
+    {
+      "check": "PRIMARY_RECEIPT_INTERPRETATION_WITH_ALTERNATIVE",
+      "state": "PASSED"
+    },
+    {
+      "check": "BOUNDED_FIXED_POINT_DEFINITION_CLOSURE",
+      "state": "PASSED"
+    },
+    {
+      "check": "PER_RECEIPT_COPY_CLOCK_AND_DURATION_NORMALISATION",
+      "state": "PASSED"
+    },
+    {
+      "check": "INTERPRETATION_KEYED_AMBIGUITY_QUALIFIED_METRIC",
+      "state": "PASSED"
+    }
+  ],
+  "f20_binding": {
+    "qxo_no_shop_copy_delivery_query_f20_id": "c9045081e5950fbb2d9785ae8c8f40e30f4251b34135ce9e14d8e04c3ed1bc00",
+    "canonical_payload_digest": "829074d4bca5bd45e974a1b7c9ef198118702516d6c361e358f71c51f22361fe",
+    "query_semantics_digest": "63269c715368c4062c6c2528c35ffe28e6b8d4b5ad2c75c4f5624f76be2aa47f",
+    "comparability_class_digest": "c03185351732d02916e7ffce1fc05f21d2a0a338475fb426c79bbd5665e30bc3",
+    "candidate_executor_definition_digest": "7877b79a819189b361cef243023aed5bc42cfd672a6dd536018b278abcf1dd23",
+    "index_definition_digest": "6220d19e22833e1e4b8260e073bd5696be2d2ef72cfd254065cd190b4d4c215d",
+    "validation": "PASSED"
+  },
+  "serving_evidence_inventory": [
+    {
+      "scope_key": "V6_ATOMIC_ACTIONS_AND_EXCEPTION_EFFECTS",
+      "contract_versions": [
+        6
+      ],
+      "certification_state": "NOT_SERVING_CERTIFIED",
+      "retained_authority": "NONE",
+      "blocker_code": "V6_ATOMIC_ACTION_EXCEPTION_SERVING_CERTIFICATION_REQUIRED",
+      "source_artifacts": [
+        {
+          "source_path": "lib/canonical-v2/qxo-no-shop-actions-f6-parser-bridge.js",
+          "evidence_scope": "V6_ATOMIC_ACTIONS_AND_EXCEPTION_EFFECTS",
+          "evidence_role": "ATOMIC_ACTION_CARRIER",
+          "source_snapshot_digest": "b0a9f3ca71e96e56517215956a7556aab2363199623e288ad27bd1460f0b8d9c",
+          "operative_status": {
+            "serving_authority": "NONE",
+            "release_authority": "NONE"
+          },
+          "source_artifact_id": "e46b4532c80725b86adf0b8083af781f20be9b9340cfad0ed6e226865155fd12"
+        },
+        {
+          "source_path": "lib/canonical-v2/qxo-no-shop-exception-source-binding-f6.js",
+          "evidence_scope": "V6_ATOMIC_ACTIONS_AND_EXCEPTION_EFFECTS",
+          "evidence_role": "EXCEPTION_EFFECT_CARRIER",
+          "source_snapshot_digest": "250394f670406ce5c7d00e214fbe80f88148a49f36904108efcc73be287f9e49",
+          "operative_status": {
+            "serving_authority": "NONE",
+            "release_authority": "NONE"
+          },
+          "source_artifact_id": "afeef1287439f616c93c49938b030d441e9bcf74da313c3a1ab0e358f725fc2a"
+        }
+      ]
+    },
+    {
+      "scope_key": "V7_V10_NOTICE_AND_DEFINITION_GRAPH",
+      "contract_versions": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "certification_state": "NOT_SERVING_CERTIFIED",
+      "retained_authority": "NONE",
+      "blocker_code": "V7_V10_NOTICE_DEFINITION_SERVING_CERTIFICATION_REQUIRED",
+      "source_artifacts": [
+        {
+          "source_path": "lib/canonical-v2/qxo-no-shop-notice-review-materialisation-f7.js",
+          "evidence_scope": "V7_V10_NOTICE_AND_DEFINITION_GRAPH",
+          "evidence_role": "NOTICE_REVIEW_CARRIER",
+          "source_snapshot_digest": "633c4c04f7c58c4be8756f7a07e8fa3b4fd2d8a0375b86cd1ebe280955a485cf",
+          "operative_status": {
+            "serving_authority": "NONE",
+            "release_authority": "NONE"
+          },
+          "source_artifact_id": "ba4a9fdf6ef5b38fd796a6338d3d18d79c1a59a61bdb27bfe956d541d400afd2"
+        },
+        {
+          "source_path": "lib/canonical-v2/qxo-no-shop-definition-relationships-f8.js",
+          "evidence_scope": "V7_V10_NOTICE_AND_DEFINITION_GRAPH",
+          "evidence_role": "DEFINITION_RELATIONSHIP_CARRIER",
+          "source_snapshot_digest": "59c990bf990d91f6deda64029ed7af4282c156c9630469a4d3d40b065718f5cc",
+          "operative_status": {
+            "serving_authority": "NONE",
+            "release_authority": "NONE"
+          },
+          "source_artifact_id": "6de57f75be9beab7fb11467f93bdda8c0d8373d540a08591a90ef1144aa2f6fc"
+        },
+        {
+          "source_path": "lib/canonical-v2/qxo-no-shop-notice-receipt-f10.js",
+          "evidence_scope": "V7_V10_NOTICE_AND_DEFINITION_GRAPH",
+          "evidence_role": "NOTICE_RECEIPT_CARRIER",
+          "source_snapshot_digest": "b08f1982f6f5d6af68242da5fc4cafbc0fe5c600354a75a644827266b9ad1b9a",
+          "operative_status": {
+            "serving_authority": "NONE",
+            "release_authority": "NONE"
+          },
+          "source_artifact_id": "0eaa9831dbc55eca4a9141834fb12149760010409956c2ddb2e637be80c03b13"
+        },
+        {
+          "source_path": "lib/canonical-v2/qxo-no-shop-definition-control-f11.js",
+          "evidence_scope": "V7_V10_NOTICE_AND_DEFINITION_GRAPH",
+          "evidence_role": "DEFINITION_CONTROL_CARRIER",
+          "source_snapshot_digest": "a3446bcd3194da47156c702ffab0c81e8252ea86c121ec3472db05d43e0b06e7",
+          "operative_status": {
+            "serving_authority": "NONE",
+            "release_authority": "NONE"
+          },
+          "source_artifact_id": "2e8af9e8226c8ce4edf363fd5488e09915ca8279d0767cb1ff13b9797d32b749"
+        },
+        {
+          "source_path": "lib/canonical-v2/qxo-no-shop-definition-scope-closure-f13.js",
+          "evidence_scope": "V7_V10_NOTICE_AND_DEFINITION_GRAPH",
+          "evidence_role": "DEFINITION_SCOPE_CLOSURE_CARRIER",
+          "source_snapshot_digest": "ae573ac37b88182f39c8eaad14c530879aa27f0b0105a9c0997482839d84baac",
+          "operative_status": {
+            "serving_authority": "NONE",
+            "release_authority": "NONE"
+          },
+          "source_artifact_id": "bcbb7248208b573be49732bd1c35ae118491e22f0baf29467d870baab5ec281f"
+        },
+        {
+          "source_path": "lib/canonical-v2/qxo-no-shop-notice-revision-f14.js",
+          "evidence_scope": "V7_V10_NOTICE_AND_DEFINITION_GRAPH",
+          "evidence_role": "NOTICE_REVISION_CARRIER",
+          "source_snapshot_digest": "be10c44afa5afe638e0cab19735f2720ee521213e392386a0be1f59bfaeace1d",
+          "operative_status": {
+            "serving_authority": "NONE",
+            "release_authority": "NONE"
+          },
+          "source_artifact_id": "1f30bf7fa2feb5063521c2721a6cc0a312b2a8650b2087878d7414e5a1155251"
+        }
+      ]
+    },
+    {
+      "scope_key": "V11_PARENT_NOTICE_COPY_CLOCK_RESULT",
+      "contract_versions": [
+        11
+      ],
+      "certification_state": "NOT_SERVING_CERTIFIED",
+      "retained_authority": "NONE",
+      "blocker_code": "V11_PARENT_NOTICE_COPY_CLOCK_SERVING_CERTIFICATION_REQUIRED",
+      "source_artifacts": [
+        {
+          "source_path": "lib/canonical-v2/qxo-no-shop-copy-clock-f15.js",
+          "evidence_scope": "V11_PARENT_NOTICE_COPY_CLOCK_RESULT",
+          "evidence_role": "PARENT_COPY_CLOCK_CARRIER",
+          "source_snapshot_digest": "6c0e6dcf0a6a34cb7adb893c7d3c6637d43e71d1e435a9dbd1ed0fe967f15aed",
+          "operative_status": {
+            "serving_authority": "NONE",
+            "release_authority": "NONE"
+          },
+          "source_artifact_id": "ab1bb3ff55e12035fcc360898e1c775787adc85d54d33d6750ec8ac845553eaa"
+        }
+      ]
+    },
+    {
+      "scope_key": "V12_COPY_DELIVERY_METRIC",
+      "contract_versions": [
+        12
+      ],
+      "certification_state": "CERTIFIED_OFFLINE_METRIC_SCOPED_BY_F20",
+      "retained_authority": "NONE",
+      "blocker_code": null,
+      "certification_artifacts": {
+        "qxo_no_shop_copy_delivery_canonical_f19_id": "362d2a28419eb77a321267a733ba84ab6d61e44afc42a45a8d13a4ce3586afa1",
+        "qxo_no_shop_copy_delivery_query_f20_id": "c9045081e5950fbb2d9785ae8c8f40e30f4251b34135ce9e14d8e04c3ed1bc00",
+        "f20_canonical_payload_digest": "829074d4bca5bd45e974a1b7c9ef198118702516d6c361e358f71c51f22361fe"
+      }
+    }
+  ],
+  "serving_policy": {
+    "active_serving_fingerprints": [
+      "46553f1a743dbf9f4ebfd07bff20939f66a57c4973826b5619c8bdfd196b1b83",
+      "56da82bee06331793ba2ed8b78ef4186361407e60733595091e5951853e7d41d",
+      "5cc5607bee8fc816e8682f71b9482ff839ff744cebaaf0f26bfcfa54ea64512c",
+      "d4ce5235be1818a42d9aba0dfb34198456eb062381e7d7db7b8289dd88671c74",
+      "f80a77651d1b6a6a9eec8ac67526a8704f498761cbb22a67e6ceb4716abb5478"
+    ],
+    "current_admission_mechanism_scope": "CONTRACT_FINGERPRINT_WIDE",
+    "current_admission_policy_evidence": {
+      "mechanism_scope": "CONTRACT_FINGERPRINT_WIDE",
+      "admission_key": "contract_fingerprint",
+      "validator_source_artifacts": [
+        {
+          "source_path": "lib/canonical-v2/market-cohort-query.js",
+          "evidence_scope": "CURRENT_SERVING_ADMISSION_POLICY",
+          "evidence_role": "MARKET_QUERY_VALIDATOR",
+          "source_snapshot_digest": "5a4f29bada0792b784441cb38ac47e08d80ba16bf9add853644a2f152e848b9c",
+          "operative_status": {
+            "admission_key": "contract_fingerprint",
+            "admission_match": "FIXTURE_SERVING_CONTRACT_FINGERPRINTS.includes",
+            "mechanism_scope": "CONTRACT_FINGERPRINT_WIDE"
+          },
+          "source_artifact_id": "c1693ad7667851d161b61878a04d11cbbadf20d26f750694ef45b55852210359"
+        },
+        {
+          "source_path": "lib/canonical-v2/shared-serving-row.js",
+          "evidence_scope": "CURRENT_SERVING_ADMISSION_POLICY",
+          "evidence_role": "SHARED_ROW_VALIDATOR",
+          "source_snapshot_digest": "9932470f033914cc861b7134987b8afbc625301b48c3c2c82e830140136014ad",
+          "operative_status": {
+            "admission_key": "contract_fingerprint",
+            "admission_match": "FIXTURE_SERVING_CONTRACT_FINGERPRINTS.includes",
+            "mechanism_scope": "CONTRACT_FINGERPRINT_WIDE"
+          },
+          "source_artifact_id": "35c266121ea05c4c1945664c0c1009fc240c054e28fd272a87b947a5ded406fe"
+        }
+      ],
+      "serving_policy_snapshot_id": "193bc712759172cb9e756fe28183463f76b94077f4cd1566ef0e02dcf5632701"
+    },
+    "target_v12_admitted": false,
+    "cumulative_v6_through_v12_admitted": false,
+    "policy_unchanged": true
+  },
+  "readiness": {
+    "state": "NOT_READY_FOR_CURRENT_GLOBAL_SERVING_ADMISSION",
+    "metric_scoped_candidate_state": "COPY_DELIVERY_METRIC_EVIDENCE_COMPLETE_PENDING_SCOPED_ADMISSION_MECHANISM",
+    "certified_scope": {
+      "contract_fingerprint": "261525a8268a1392428a610bbf0c2166c87318192971d08bc7e6ac5f2c7235e5",
+      "metric_key": "NO_SHOP_COPY_DELIVERY_PERIOD_DAYS",
+      "metric_version": 1,
+      "metric_definition_id": "9182ca9ccdba84e9d6f45458b29b9146aab525c55b8fedaa8b482b95ecd114a3",
+      "concept_key": "NOSOL-NOTICE",
+      "required_claim_definition_key": "NO_SHOP_COPY_DELIVERY_PERIOD_DAYS",
+      "interpretation_admission_digest": "a398d8a4bcafbc6765dcf8106c6d42f89827cba80ebbf32da41596ce0e81d069",
+      "candidate_metric_definition_admission_id": "5c0300e32520520db7258b59ccdd133c4ab16d2ad4e636208d47af0148b382a0",
+      "integration_admission_id": "03bdc0671b85755d517a994fb903960beae5969c2bbb5443e1be3fe288524714",
+      "qxo_no_shop_copy_delivery_canonical_f19_id": "362d2a28419eb77a321267a733ba84ab6d61e44afc42a45a8d13a4ce3586afa1",
+      "qxo_no_shop_copy_delivery_query_f20_id": "c9045081e5950fbb2d9785ae8c8f40e30f4251b34135ce9e14d8e04c3ed1bc00",
+      "certification_state": "CERTIFIED_OFFLINE_ONLY"
+    },
+    "required_metric_scoped_gate_key_fields": [
+      "contract_fingerprint",
+      "metric_key",
+      "metric_version",
+      "concept_key",
+      "required_claim_definition_key",
+      "interpretation_admission_digest",
+      "candidate_metric_definition_admission_id",
+      "integration_admission_id"
+    ],
+    "next_permitted_slice": "METRIC_SCOPED_V12_SERVING_ADMISSION_BOUNDARY_DESIGN",
+    "remaining_required_authority": [
+      "SEPARATE_METRIC_SCOPED_V12_SERVING_POLICY_ADMISSION"
+    ],
+    "evidence_blocker_codes": [
+      "CURRENT_ADMISSION_POLICY_IS_FINGERPRINT_WIDE",
+      "F20_CERTIFIES_COPY_DELIVERY_METRIC_ONLY",
+      "GLOBAL_V12_ADMISSION_WOULD_ENABLE_UNCERTIFIED_METRICS",
+      "NON_COPY_DELIVERY_V6_V12_FAMILIES_RETAIN_NO_SERVING_AUTHORITY",
+      "METRIC_SCOPED_SERVING_ADMISSION_NOT_IMPLEMENTED"
+    ]
+  },
+  "authority": {
+    "active_serving_authority": "NONE",
+    "active_query_authority": "NONE",
+    "active_pointer_authority": "NONE",
+    "corpus_write_authority": "NONE",
+    "release_activation_authority": "NONE",
+    "production_cutover_authority": "NONE"
+  },
+  "status": {
+    "publication_blocked": true,
+    "release_eligible": false,
+    "blocker_codes": [
+      "GLOBAL_V12_FINGERPRINT_ADMISSION_FORBIDDEN_WITH_CURRENT_EVIDENCE",
+      "V12_COPY_DELIVERY_METRIC_SCOPED_ADMISSION_REQUIRED"
+    ]
+  },
+  "v12_serving_admission_readiness_f21_id": "5c01b73dccef292d23591d0e351ed51b68bad1cb24fe710a503cf120b5ae2825",
+  "canonical_payload_digest": "33a7611cbe6277cae2fed77a9269f8e03cc90366590417b9cd02a49530064f8e"
+}
