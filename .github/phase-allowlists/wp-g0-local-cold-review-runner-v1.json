@@ -1,0 +1,21 @@
+{
+  "phase": "WP-G0-LOCAL-COLD-REVIEW-RUNNER-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-g0-local-cold-review-runner-v1.json",
+    "lib/programme-gates/cold-review-tasks.js",
+    "scripts/run-g0-local-cold-reviews.mjs",
+    "tests/programme-gates/cold-review-tasks.spec.js",
+    "tests/programme-gates/local-cold-review-runner.spec.js",
+    ".github/workflows/programme-gate-local-cold-reviews.yml"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Runs the five frozen-root cold reviews through the protected one-use local controller using ChatGPT authentication, fresh ephemeral read-only Codex sessions and closed outputs. It cannot edit the specification, publish status, write corpus data, activate a release or change product behaviour."
+}
