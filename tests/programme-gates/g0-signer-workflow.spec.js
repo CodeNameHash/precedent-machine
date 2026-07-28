@@ -27,6 +27,7 @@ test('the G0 signer workflow is manual, main-only and read-only', () => {
 
 test('the protected credentials exist only in the combined in-memory signer step', () => {
   const workflowSource = fs.readFileSync(WORKFLOW_PATH, 'utf8');
+  const workflow = YAML.parse(workflowSource);
   const validatorReferences = workflowSource.match(
     /secrets\.PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM/g,
   ) || [];
@@ -39,7 +40,19 @@ test('the protected credentials exist only in the combined in-memory signer step
   );
   assert.match(workflowSource, /umask 077/);
   assert.match(workflowSource, /actions\/upload-artifact@v4/);
-  assert.match(workflowSource, /rm -f programme-gate-g0-evidence\.json/);
+  assert.equal(
+    workflow.jobs.sign.steps.find((step) => step.name === 'Upload signed evidence')
+      .with.path,
+    '${{ runner.temp }}/programme-gate-g0-evidence.json',
+  );
+  assert.match(
+    workflowSource,
+    /rm -f "\$\{RUNNER_TEMP\}\/programme-gate-g0-evidence\.json"/,
+  );
+  assert.doesNotMatch(
+    workflowSource,
+    /> programme-gate-g0-evidence\.json/,
+  );
 });
 
 test('the signer excludes both protected credentials from every child process and payload', () => {
