@@ -416,5 +416,6 @@ test('the review signing module exposes no private-key operation', () => {
     'buildReviewApprovalSigningRequest',
     'createReviewApprovalSigningAuthority',
     'preflightReviewApprovalSignature',
+    'recomputeReviewApprovalVerifications',
   ]);
 });
