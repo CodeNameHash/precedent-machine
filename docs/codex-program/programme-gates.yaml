@@ -26,6 +26,33 @@ programme_gate_registry:
     acceptance_definition_schema: programme-gate-acceptance-definition/v1
     acceptance_definition_resolution: UNIQUE_CONTENT_ADDRESSED_DEFINITION_FOR_EVIDENCE_CONTRACT
     acceptance_definition_binding: EXACT_SPECIFICATION_ROOT_AND_WHERE_APPLICABLE_FROZEN_CONTRACT_PAIR
+    normative_semantic_authority: EXACT_GATE_ENTRY_PLUS_NORMATIVE_EVIDENCE_OBJECT_CONTRACT_AT_THE_REVIEWED_SPECIFICATION_ROOT
+    definition_identity_formula: HASH_OF_SCHEMA_SPECIFICATION_ROOT_CANONICAL_GATE_ENTRY_AND_NORMATIVE_OBJECT_CONTRACT_DIGEST
+    post_review_semantic_authoring: PROHIBITED
+    frozen_predicate_dsl:
+      schema: programme-gate-predicate-dsl/v1
+      permitted_operators: [BOOLEAN_IS_TRUE, EQUALS, SET_EQUALS, EMPTY_SET, NONEMPTY_SET, LESS_THAN_OR_EQUAL, GREATER_THAN_OR_EQUAL, DIGEST_EQUALS, SIGNATURE_VALID, ALL_MEMBERS_PASS]
+      implicit_operator_or_expected_value: PROHIBITED
+      request_supplied_measurement: PROHIBITED
+      executable_role: NON_AUTHORITATIVE_IMPLEMENTATION_OF_FROZEN_DSL
+      conformance: TWO_INDEPENDENT_COMPILERS_AND_REFERENCE_INTERPRETER_MUST_PRODUCE_BYTE_EQUAL_DEFINITION_AND_RESULT
+    claim_ast_derivation:
+      claim_identity: HASH_OF_SPECIFICATION_ROOT_EVIDENCE_CONTRACT_REQUIRED_OBJECT_TYPE_AND_CLAIM_KEY
+      member_paths: EXACT_PATHS_DECLARED_BY_THE_NORMATIVE_EVIDENCE_OBJECT_CONTRACT
+      measurement: REFERENCE_INTERPRETER_RECOMPUTES_CLAIM_FROM_ENUMERATED_IMMUTABLE_MEMBERS_AND_NAMED_TEST_RESULTS
+      result_type: BOOLEAN
+      comparison_operator: BOOLEAN_IS_TRUE
+      expected_typed_value: true
+      asserted_boolean_without_RECOMPUTED_MEMBER_WITNESS_ROOT: OPEN
+    complete_acceptance_source_root:
+      members: [CANONICAL_GATE_ENTRY, NORMATIVE_EVIDENCE_OBJECT_CONTRACT, MEMBER_UNIVERSE_DEFINITION, ORDERED_CLAIM_PREDICATE_AST_SET, REQUIRED_ADVERSARIAL_TEST_SET, TRUST_ROOT_SET]
+      source: REVIEWED_SPECIFICATION_ROOT_ONLY
+      missing_or_post_review_selected_member_effect: OPEN
+    bootstrap_compiled_registry_binding:
+      source_path: lib/programme-gates/registry.js
+      source_sha256: 4c494bce58e8b9e1061986adb753ea65efca1e9de1b369b293f89c1fe92b37b4
+      authority: NON_AUTHORITATIVE_COMPILED_OUTPUT_MATCHING_THE_FROZEN_SOURCE_CONTRACT
+      runtime_digest_mismatch_effect: OPEN
     acceptance_definition_required_fields:
       - definition_id
       - definition_digest
@@ -84,6 +111,17 @@ programme_gate_registry:
     request_supplied_result_effect: OPEN
     status_projection: RECOMPUTED_FROM_VALIDATED_EVIDENCE_ONLY
 
+  mandatory_adversarial_test_binding:
+    source: docs/codex-program/adversarial-tests.md
+    enumeration_rule: EVERY_BACKTICKED_LIST_ITEM_IDENTIFIER_IN_SOURCE_ORDER
+    expected_identifier_count: 284
+    expected_identifier_set_sha256: 8f5d904b2476815b138d3af7b52fab09d82e01062c98c728e91108b2674d4acb
+    authoritative_root: DOMAIN_SEPARATED_ROOT_OVER_ORDERED_IDENTIFIER_TEST_DEFINITION_AND_EXECUTABLE_DIGEST_TUPLES
+    enforcement_gate: P9_SCOPE_EXACT
+    pre_cutover_requirement: EVERY_MEMBER_TERMINAL_PASS
+    local_gate_required_adversarial_tests_semantics: EARLY_MINIMUM_ONLY_NOT_COMPLETE_PRECUTOVER_UNIVERSE
+    missing_extra_duplicate_or_unbound_member_effect: OPEN
+
   reviewer_eligibility:
     formal_legal_semantic_reviewer: Fable or an independent 5.6 Sol reviewer using extra-high reasoning.
     accepted_reviewer_classes:
@@ -95,7 +133,16 @@ programme_gate_registry:
     review_evidence_schema: trusted-review-controller-record/v1
     review_evidence_source: TRUSTED_REVIEW_CONTROLLER_SIGNED_IMMUTABLE_RECORD
     review_evidence_retrieval: VALIDATOR_DETERMINISTICALLY_ENUMERATES_CLOSED_EVIDENCE_SET_AND_LOADS_EXACT_RECORD
-    review_controller_trust_root_set: trusted-review-controller-keys/v1
+    review_controller_trust_root_set: trusted-review-controller-keys/2026-07-frozen-v1
+    frozen_trust_root_set:
+      registry_schema: programme-gate-trusted-public-keys/v1
+      registry_source_sha256: 4c494bce58e8b9e1061986adb753ea65efca1e9de1b369b293f89c1fe92b37b4
+      keys:
+        PROGRAMME_GATE_VALIDATOR_2026_07: 5b028d01aaa4f077c6f2f28ef8075195330eff00c2f81061fad8622b761de566
+        PROGRAMME_STATUS_PUBLISHER_2026_07: d7f562af345fcb04a78f26c87b3e3f19b1cad6c8627ccc612396a4217d8a02c1
+        PROGRAMME_GATE_REVIEW_CONTROLLER_2026_07: d32aebc95114afab334ab1afa2b7c4130a2dafdec93af05dcab56589d4e063d0
+        PROGRAMME_GATE_BEN_APPROVER_2026_07: 2baac1c454dfb918097f2816fc9a230eb93139f735db35b9ed64d0e6846b4c17
+      unknown_replacement_or_post_review_key_effect: OPEN
     review_controller_signature_verification: SIGNATURE_TO_ALLOWLISTED_CONTROLLER_PROCESS_ONLY_KEY
     review_controller_required_capabilities:
       directly_controls_review_execution: true
@@ -260,10 +307,10 @@ programme_gate_registry:
           - REVIEW_CONTROLLER_SOFTWARE
           - REVIEW_CONTROLLER_EVIDENCE_SCHEMAS
           - GATE_EVIDENCE_SCHEMAS
-          - GATE_ACCEPTANCE_DEFINITIONS
-          - EVIDENCE_ENUMERATORS
-          - EVIDENCE_PREDICATES
-          - CERTIFICATION_INTEGRITY_VALIDATOR
+          - DETERMINISTIC_COMPILATION_OF_FROZEN_GATE_ACCEPTANCE_DEFINITIONS
+          - IMPLEMENTATION_OF_FROZEN_EVIDENCE_ENUMERATORS
+          - IMPLEMENTATION_OF_FROZEN_EVIDENCE_PREDICATES
+          - IMPLEMENTATION_OF_FROZEN_CERTIFICATION_INTEGRITY_VALIDATOR
           - SIGNING_SYSTEM
           - STATUS_PUBLISHER
           - PROGRAMME_STATUS_PUBLICATION_HEAD
@@ -273,6 +320,8 @@ programme_gate_registry:
           - STAGING_ACCESS_PROTECTION_AND_VALIDATION
           - TESTS_FOR_THESE_ITEMS
         prohibited:
+          - AUTHOR_OR_AMEND_GATE_ACCEPTANCE_SEMANTICS
+          - SELECT_OR_REPLACE_TRUST_ROOTS
           - CORPUS_EXTRACTION
           - CORPUS_REPROCESSING
           - CORPUS_WRITES
@@ -389,10 +438,13 @@ programme_gate_registry:
     required_trace_variant: PASS_PHASE
     forbidden_trace_variant: FAILURE_TERMINAL
     publication: DATABASE_TERMINAL_PAIR_THEN_PROTECTED_GIT_REF_CAS
-    database_terminal_pair_slot: COMPLETION_TERMINAL_PAIR_SLOT
+    database_terminal_pair_authority: APPEND_ONLY_COMPLETION_TERMINAL_PAIR_ATTEMPTS
+    attempt_unique_key: [status_generation, expected_git_predecessor_object_id, proposed_status_payload_digest]
+    open_attempt_cardinality: AT_MOST_ONE_PER_EXPECTED_GIT_PREDECESSOR
+    published_attempt_cardinality: AT_MOST_ONE_GLOBALLY
     git_head_remains_sole_programme_status_publication_head: true
     cross_system_atomic_commit_required: false
-    retry_rule: UNPUBLISHED_VALID_DATABASE_PAIR_MAY_BE_REVALIDATED_AND_PUBLISHED_BY_STALE_SAFE_GIT_REF_CAS
+    retry_rule: SAME_PREDECESSOR_REVALIDATES_EXISTING_ATTEMPT;ADVANCED_PREDECESSOR_APPENDS_STALE_ABANDONMENT_AND_FULLY_RECOMPUTES_FRESH_NEXT_GENERATION_ATTEMPT
     partial_pair_effect: OPEN_UNTIL_GIT_HEAD_REFERENCES_THE_EXACT_DATABASE_PAIR
     later_untraced_status_effect: OPEN
 
@@ -490,7 +542,7 @@ programme_gate_registry:
       evidence_contract: corpus-intake-source-open-world-semantic-composition-exactness/v9
       required_evidence_object_type: ScopeExactnessAttestation
       acceptance_claims: [intake_and_source_universes_exact, open_world_and_residual_partitions_total, semantic_and_composition_reconciliations_pass]
-      required_adversarial_tests: [SCOPE-OMISSION-01, DEAL-IDENTITY-AUTHORITY-01, SEMANTIC-OPEN-WORLD-01, OPEN-WORLD-REP-ATTRIBUTE-01, OPEN-WORLD-RELATIONSHIP-01, OPEN-WORLD-PARTY-01, OPEN-WORLD-BASIS-01, OPEN-WORLD-COMPOSITION-01, OPEN-WORLD-SOURCE-ROLE-01, SOURCE-ROLE-ADMISSION-TOPOLOGY-01, OPEN-WORLD-MULTIPLICITY-01, OPEN-WORLD-ISOLATED-01, OPEN-WORLD-IMPACT-ESCAPE-01, OPEN-WORLD-ADOPTION-NOT-EXAMINED-01, OPEN-WORLD-PREVALENCE-BLOCK-01, OPEN-WORLD-SIMILARITY-NO-AUTHORITY-01, OPEN-WORLD-DISPOSITION-TOTALITY-01, OPEN-WORLD-KIND-SUPERSESSION-01, OPEN-WORLD-IMPACT-INDEPENDENCE-01, OPEN-WORLD-STATUS-AXES-01, OPEN-WORLD-RELEASE-PROPAGATION-01, OPEN-WORLD-SERVING-ACCESS-01, OPEN-WORLD-UI-ISOLATION-01, SOURCE-SPECIFIC-METRIC-BOUNDARY-01, SOURCE-SPECIFIC-CLOSURE-ACYCLIC-01, RESIDUAL-TOTALITY-01]
+      required_adversarial_tests: [SCOPE-OMISSION-01, DEAL-IDENTITY-AUTHORITY-01, SEMANTIC-OPEN-WORLD-01, OPEN-WORLD-REP-ATTRIBUTE-01, OPEN-WORLD-RELATIONSHIP-01, OPEN-WORLD-PARTY-01, OPEN-WORLD-BASIS-01, OPEN-WORLD-COMPOSITION-01, OPEN-WORLD-SOURCE-ROLE-01, SOURCE-ROLE-ADMISSION-TOPOLOGY-01, OPEN-WORLD-MULTIPLICITY-01, OPEN-WORLD-ISOLATED-01, OPEN-WORLD-IMPACT-ESCAPE-01, OPEN-WORLD-ADOPTION-NOT-EXAMINED-01, OPEN-WORLD-PREVALENCE-BLOCK-01, OPEN-WORLD-SIMILARITY-NO-AUTHORITY-01, OPEN-WORLD-DISPOSITION-TOTALITY-01, OPEN-WORLD-KIND-SUPERSESSION-01, OPEN-WORLD-IMPACT-INDEPENDENCE-01, OPEN-WORLD-STATUS-AXES-01, OPEN-WORLD-RELEASE-PROPAGATION-01, OPEN-WORLD-SERVING-ACCESS-01, OPEN-WORLD-UI-ISOLATION-01, SOURCE-SPECIFIC-METRIC-BOUNDARY-01, SOURCE-SPECIFIC-CLOSURE-ACYCLIC-01, SOURCE-SPECIFIC-CARDINALITY-01, RESIDUAL-TOTALITY-01]
     - id: P9_REGISTRY_DISPOSITIONS
       phase: 9
       evidence_contract: frozen-registry-full-disposition/v1
@@ -520,7 +572,7 @@ programme_gate_registry:
       evidence_contract: source-fidelity-and-cross-view-render-parity-certification/v3
       required_evidence_object_type: RenderParityAttestation
       acceptance_claims: [source_fidelity_pass, shared_row_contract_equal_across_views, visual_and_browser_parity_pass]
-      required_adversarial_tests: [OPEN-WORLD-UI-ISOLATION-01]
+      required_adversarial_tests: [OPEN-WORLD-UI-ISOLATION-01, SOURCE-FIDELITY-01, CROSS-VIEW-SURFACE-01]
     - id: P9_STRUCTURED_CLAIMS
       phase: 9
       evidence_contract: claims-and-relationship-effects-validation-persistence-enforcement/v2
@@ -550,7 +602,7 @@ programme_gate_registry:
       evidence_contract: identity-open-world-residual-recovery-drift/v5
       required_evidence_object_type: IdentityAndDriftAttestation
       acceptance_claims: [exact_identity_stable, zero_silent_semantic_drift, residual_queue_empty, recovery_counters_zero]
-      required_adversarial_tests: [RESIDUAL-TOTALITY-01, OPEN-WORLD-RELEASE-PROPAGATION-01]
+      required_adversarial_tests: [RESIDUAL-TOTALITY-01, OPEN-WORLD-RELEASE-PROPAGATION-01, CORRECTION-DISCHARGE-01, CORRECTION-APPLY-RECEIPT-01]
     - id: P9_BROWSER_A11Y_PERFORMANCE
       phase: 9
       evidence_contract: browser-row-isolation-a11y-performance/v3
@@ -562,7 +614,7 @@ programme_gate_registry:
       evidence_contract: first-cutover-legacy-and-advanced-head-historical-reactivation/v6
       required_evidence_object_type: StagingSmokeRollbackAttestation
       acceptance_claims: [staging_smoke_pass, first_cutover_rollback_pass, advanced_head_reactivation_pass]
-      required_adversarial_tests: [DEPLOY-CUTOVER-01, RELEASE-STATE-V3-01]
+      required_adversarial_tests: [DEPLOY-CUTOVER-01, RELEASE-STATE-V3-01, HISTORICAL-REACTIVATION-ADVANCED-HEAD-01]
     - id: P9_DATABASE_SOAK
       phase: 9
       evidence_contract: sixty-connection-load-soak/v1

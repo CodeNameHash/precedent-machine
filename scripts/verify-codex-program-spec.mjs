@@ -282,6 +282,20 @@ function validateGateRegistry() {
     || !reviewAcceptance?.record_nonce_must_be_unique) {
     fail('Review-controller record acceptance rules are incomplete');
   }
+  const frozenTrust = reviewer.frozen_trust_root_set;
+  const expectedTrustKeys = {
+    PROGRAMME_GATE_VALIDATOR_2026_07: '5b028d01aaa4f077c6f2f28ef8075195330eff00c2f81061fad8622b761de566',
+    PROGRAMME_STATUS_PUBLISHER_2026_07: 'd7f562af345fcb04a78f26c87b3e3f19b1cad6c8627ccc612396a4217d8a02c1',
+    PROGRAMME_GATE_REVIEW_CONTROLLER_2026_07: 'd32aebc95114afab334ab1afa2b7c4130a2dafdec93af05dcab56589d4e063d0',
+    PROGRAMME_GATE_BEN_APPROVER_2026_07: '2baac1c454dfb918097f2816fc9a230eb93139f735db35b9ed64d0e6846b4c17',
+  };
+  if (reviewer.review_controller_trust_root_set !== 'trusted-review-controller-keys/2026-07-frozen-v1'
+    || frozenTrust?.registry_source_sha256 !== '4c494bce58e8b9e1061986adb753ea65efca1e9de1b369b293f89c1fe92b37b4'
+    || sha256(read('lib/programme-gates/registry.js')) !== frozenTrust?.registry_source_sha256
+    || JSON.stringify(frozenTrust?.keys) !== JSON.stringify(expectedTrustKeys)
+    || frozenTrust?.unknown_replacement_or_post_review_key_effect !== 'OPEN') {
+    fail('Frozen programme-gate trust root changed');
+  }
   const independence = reviewer.independence_acceptance;
   const independenceUniverse = reviewer.independence_universe_contract;
   if (reviewer.independence_evidence_source !== 'STATUS_VALIDATOR_RECOMPUTED_FROM_CONTROLLER_RECORD_AND_COMPLETE_GIT_HISTORY'
@@ -309,6 +323,8 @@ function validateGateRegistry() {
   if (gateEvidence?.contract_identifier_semantics !== 'CLOSED_SCHEMA_ID_NOT_OPAQUE_LABEL'
     || gateEvidence?.acceptance_definition_schema !== 'programme-gate-acceptance-definition/v1'
     || gateEvidence?.acceptance_definition_resolution !== 'UNIQUE_CONTENT_ADDRESSED_DEFINITION_FOR_EVIDENCE_CONTRACT'
+    || gateEvidence?.normative_semantic_authority !== 'EXACT_GATE_ENTRY_PLUS_NORMATIVE_EVIDENCE_OBJECT_CONTRACT_AT_THE_REVIEWED_SPECIFICATION_ROOT'
+    || gateEvidence?.post_review_semantic_authoring !== 'PROHIBITED'
     || gateEvidence?.unresolved_ambiguous_or_unbound_acceptance_definition_effect !== 'OPEN'
     || gateEvidence?.schema_or_predicate_unregistered_effect !== 'OPEN'
     || gateEvidence?.status_projection !== 'RECOMPUTED_FROM_VALIDATED_EVIDENCE_ONLY') {
@@ -323,6 +339,10 @@ function validateGateRegistry() {
     if (!claimPredicateFields.has(field)) fail(`Gate claim predicate missing ${field}`);
   }
   const acceptance = gateEvidence.acceptance_predicate;
+  const frozenDsl = gateEvidence.frozen_predicate_dsl;
+  const claimAst = gateEvidence.claim_ast_derivation;
+  const sourceRoot = gateEvidence.complete_acceptance_source_root;
+  const compiledRegistry = gateEvidence.bootstrap_compiled_registry_binding;
   if (!acceptance?.evidence_contract_selects_exact_schema
     || !acceptance?.acceptance_definition_is_unique_root_bound_and_content_addressed
     || !acceptance?.subject_type_identity_and_payload_match_definition
@@ -334,16 +354,40 @@ function validateGateRegistry() {
     || acceptance?.terminal_state_must_equal !== 'PASS') {
     fail('Gate evidence acceptance predicate is incomplete');
   }
+  if (frozenDsl?.schema !== 'programme-gate-predicate-dsl/v1'
+    || frozenDsl?.implicit_operator_or_expected_value !== 'PROHIBITED'
+    || frozenDsl?.request_supplied_measurement !== 'PROHIBITED'
+    || frozenDsl?.executable_role !== 'NON_AUTHORITATIVE_IMPLEMENTATION_OF_FROZEN_DSL'
+    || claimAst?.result_type !== 'BOOLEAN'
+    || claimAst?.comparison_operator !== 'BOOLEAN_IS_TRUE'
+    || claimAst?.expected_typed_value !== true
+    || claimAst?.asserted_boolean_without_RECOMPUTED_MEMBER_WITNESS_ROOT !== 'OPEN'
+    || sourceRoot?.source !== 'REVIEWED_SPECIFICATION_ROOT_ONLY'
+    || sourceRoot?.missing_or_post_review_selected_member_effect !== 'OPEN'
+    || compiledRegistry?.source_path !== 'lib/programme-gates/registry.js'
+    || compiledRegistry?.source_sha256 !== sha256(read('lib/programme-gates/registry.js'))
+    || compiledRegistry?.authority !== 'NON_AUTHORITATIVE_COMPILED_OUTPUT_MATCHING_THE_FROZEN_SOURCE_CONTRACT'
+    || compiledRegistry?.runtime_digest_mismatch_effect !== 'OPEN') {
+    fail('Frozen gate acceptance semantics are incomplete');
+  }
+  const mandatoryTests = registry.mandatory_adversarial_test_binding;
+  if (mandatoryTests?.expected_identifier_count !== 284
+    || mandatoryTests?.expected_identifier_set_sha256 !== '8f5d904b2476815b138d3af7b52fab09d82e01062c98c728e91108b2674d4acb'
+    || mandatoryTests?.enforcement_gate !== 'P9_SCOPE_EXACT'
+    || mandatoryTests?.pre_cutover_requirement !== 'EVERY_MEMBER_TERMINAL_PASS'
+    || mandatoryTests?.missing_extra_duplicate_or_unbound_member_effect !== 'OPEN') {
+    fail('Mandatory adversarial-test catalogue binding is incomplete');
+  }
   const bootstrap = registry.work_classes.gate_status_bootstrap;
   const permittedBootstrapActions = [
     'GOVERNING_SPECIFICATION_AMENDMENT_FOR_GATE_STATUS_BOOTSTRAP',
     'REVIEW_CONTROLLER_SOFTWARE',
     'REVIEW_CONTROLLER_EVIDENCE_SCHEMAS',
     'GATE_EVIDENCE_SCHEMAS',
-    'GATE_ACCEPTANCE_DEFINITIONS',
-    'EVIDENCE_ENUMERATORS',
-    'EVIDENCE_PREDICATES',
-    'CERTIFICATION_INTEGRITY_VALIDATOR',
+    'DETERMINISTIC_COMPILATION_OF_FROZEN_GATE_ACCEPTANCE_DEFINITIONS',
+    'IMPLEMENTATION_OF_FROZEN_EVIDENCE_ENUMERATORS',
+    'IMPLEMENTATION_OF_FROZEN_EVIDENCE_PREDICATES',
+    'IMPLEMENTATION_OF_FROZEN_CERTIFICATION_INTEGRITY_VALIDATOR',
     'SIGNING_SYSTEM',
     'STATUS_PUBLISHER',
     'PROGRAMME_STATUS_PUBLICATION_HEAD',
@@ -354,6 +398,8 @@ function validateGateRegistry() {
     'TESTS_FOR_THESE_ITEMS',
   ];
   const prohibitedBootstrapActions = [
+    'AUTHOR_OR_AMEND_GATE_ACCEPTANCE_SEMANTICS',
+    'SELECT_OR_REPLACE_TRUST_ROOTS',
     'CORPUS_EXTRACTION',
     'CORPUS_REPROCESSING',
     'CORPUS_WRITES',
@@ -450,11 +496,15 @@ function validateGateRegistry() {
   }
   const terminalBinding = registry.terminal_completion_binding;
   if (terminalBinding?.publication !== 'DATABASE_TERMINAL_PAIR_THEN_PROTECTED_GIT_REF_CAS'
-    || terminalBinding?.database_terminal_pair_slot !== 'COMPLETION_TERMINAL_PAIR_SLOT'
+    || terminalBinding?.database_terminal_pair_authority !== 'APPEND_ONLY_COMPLETION_TERMINAL_PAIR_ATTEMPTS'
+    || JSON.stringify(terminalBinding?.attempt_unique_key)
+      !== JSON.stringify(['status_generation', 'expected_git_predecessor_object_id', 'proposed_status_payload_digest'])
+    || terminalBinding?.open_attempt_cardinality !== 'AT_MOST_ONE_PER_EXPECTED_GIT_PREDECESSOR'
+    || terminalBinding?.published_attempt_cardinality !== 'AT_MOST_ONE_GLOBALLY'
     || terminalBinding?.git_head_remains_sole_programme_status_publication_head !== true
     || terminalBinding?.cross_system_atomic_commit_required !== false
     || terminalBinding?.retry_rule
-      !== 'UNPUBLISHED_VALID_DATABASE_PAIR_MAY_BE_REVALIDATED_AND_PUBLISHED_BY_STALE_SAFE_GIT_REF_CAS'
+      !== 'SAME_PREDECESSOR_REVALIDATES_EXISTING_ATTEMPT;ADVANCED_PREDECESSOR_APPENDS_STALE_ABANDONMENT_AND_FULLY_RECOMPUTES_FRESH_NEXT_GENERATION_ATTEMPT'
     || terminalBinding?.partial_pair_effect
       !== 'OPEN_UNTIL_GIT_HEAD_REFERENCES_THE_EXACT_DATABASE_PAIR') {
     fail('Terminal status publication still claims split or cross-system authority');

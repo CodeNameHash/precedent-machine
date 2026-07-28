@@ -170,11 +170,14 @@ CORRECTED (the plan below rests on these, not the review's wording):
   change application code while those gates are open. The temporary
   `gate_status_bootstrap` work class is the only other exception. It permits only
   the governance amendment, trusted review-controller software and evidence
-  schemas, gate evidence schemas and acceptance definitions, enumerators,
-  predicates, the certification integrity validator, signing system, status
+  schemas, gate evidence schemas, deterministic compilation and implementation
+  of the already frozen acceptance definitions, enumerators and predicates, the
+  certification integrity validator, signing system, status
   publisher, `ProgrammeStatusPublicationHead` and their tests. It does not
   permit corpus extraction, reprocessing, writes, backfills, production data
-  changes, release import or activation, or product feature activation. After
+  changes, release import or activation, product feature activation, or any
+  change to an acceptance AST, expected value, member universe, required test or
+  trust-root fingerprint. After
   the start gate,
   approved architectural slices proceed independently and leave `main`
   deployable.
@@ -2062,9 +2065,13 @@ The pre-cutover gates are:
   `10N` proving unchanged route call and Node row/byte ceilings;
 - `N` is the exact deal, observation, metric-slot, aggregate and serving-row
   cardinality tuple of the sealed CandidateReleaseManifest selected for import.
-  `10N` is a deterministic ten-namespace expansion of those exact rows that
-  preserves the candidate's metric, party, value-state and cohort-selectivity
-  distributions while changing every namespace-bound identity. “Maximum
+  `10N` is a deterministic tenfold expansion inside one query-visible active
+  serving namespace. It remints every deal, observation, aggregate and serving-
+  row identity, preserves the candidate's metric, party, value-state and cohort-
+  selectivity distributions, and makes each governed benchmark query address a
+  cohort ten times the corresponding `N` cohort. A separate multi-namespace
+  isolation fixture proves routing isolation but cannot satisfy the scale test.
+  “Maximum
   scale” is the larger of that `10N` fixture and the maximum cardinalities
   certified by the selected CapacityManifest. The load manifest records all
   three exact roots and counts before execution; a smaller fixture, changed
@@ -2274,12 +2281,17 @@ After those gates, import, parity, activation, containment, restoration and comp
   edits and owner-deemed states do not pass validation.
 - `ProgrammeStatusPublicationHead` is only that Git ref. It is not a database
   row and is excluded from database lock plans. Programme completion first
-  commits the immutable status-plus-POST_COMPLETION pair to the database
-  `CompletionTerminalPairSlot`; the protected publisher then revalidates that
+  commits the immutable status-plus-POST_COMPLETION pair to a database
+  `CompletionTerminalPairAttempt` keyed by status generation, exact Git
+  predecessor and proposed-status digest; the protected publisher then revalidates that
   exact pair and advances the Git ref by compare-and-swap. Until the Git ref
   points to a status binding that pair, `programme_complete` remains `OPEN`.
   A failed Git update leaves a non-current immutable pair that may be retried
-  after full revalidation; no cross-system atomic transaction is claimed.
+  against the same predecessor after full revalidation. If the Git head has
+  advanced, the protected publisher appends an immutable stale-attempt
+  abandonment and a fresh attempt is fully recomputed at the next generation.
+  Old attempts never occupy a global one-use slot. No cross-system atomic
+  transaction is claimed.
 - The existing generation-4
   `docs/certification/programme-gate-status.json` file is a historical V1
   owner-deemed record. It is not a V2 predecessor, evidence source, publication

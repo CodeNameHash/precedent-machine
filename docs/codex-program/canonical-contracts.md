@@ -667,7 +667,21 @@ This file is the sole authority for detailed identities, state machines, writer 
   types and paths, measurement executable and configuration digests, comparison
   operator and expected typed value. A missing, ambiguous, differently digested
   or unbound definition leaves the gate `OPEN`; a claim name alone has no
-  acceptance meaning. The common V2 `ProgrammeGateEvidenceEnvelope` contains the
+  acceptance meaning. The definition is not authored during bootstrap. Its
+  sole normative source is the canonical gate entry plus the named evidence-
+  object contract and member-universe contract in this file at the reviewed
+  specification root. Its ID is the domain-separated hash of those exact bytes
+  and the frozen `programme-gate-predicate-dsl/v1` AST. That DSL permits only
+  the operators and explicit typed expected values listed in the registry. No
+  executable, bootstrap principal, evidence producer, request or owner
+  statement may choose or weaken the AST. Two implementation-disjoint compilers
+  and a small reference interpreter must derive byte-identical acceptance-
+  definition bytes and results before the definition is usable. Executable and
+  configuration digests prove which conforming implementation ran; they are not
+  semantic authority. The exact public-key fingerprints in the frozen trust-
+  root set are also source members, so bootstrap cannot select its own
+  validator, reviewer or publisher trust anchor. The common V2
+  `ProgrammeGateEvidenceEnvelope` contains the
   gate and contract IDs, acceptance-definition ID and digest, exact five-member
   specification root, code commit, environment, evidence subject type, ID and
   payload digest, required typed object and payload digest, exact claim map,
@@ -731,11 +745,17 @@ This file is the sole authority for detailed identities, state machines, writer 
   `specification_review`. Its predecessor is `NONE`. Its identity binds the
   exact registry amendment, nonce `gate-status-bootstrap-2026-07-27-v1` and the
   closed permitted and prohibited action lists in the registry. It permits only the governance
-  amendment, review-controller software and evidence schemas, gate evidence
-  schemas and acceptance definitions, enumerators, predicates, certification
-  integrity validator, signing system, status publisher,
+  amendment, review-controller software and evidence schemas, deterministic
+  compilation of the already frozen gate-acceptance source contracts,
+  certification-integrity validator implementation, signing system, status publisher,
   `ProgrammeStatusPublicationHead`, the eight G0 evidence collections, empty
   isolated-staging boundary setup, preview access protection and their tests.
+  It cannot choose, amend or approve an acceptance member universe, predicate,
+  measurement, comparison operator, expected value, trust root or test
+  requirement. Those semantics are part of the reviewed specification root
+  before bootstrap begins. Compiled acceptance definitions and validator
+  implementations are non-authoritative derived artefacts and must reproduce
+  the frozen reference-interpreter result byte-for-byte.
   It cannot authorise a snapshot restore, corpus
   extraction, reprocessing, writes, backfills, production data changes, release
   import or activation, or product feature activation. An owner statement
@@ -1074,8 +1094,15 @@ This file is the sole authority for detailed identities, state machines, writer 
   `GovernedResidualDisposition`: `COVERED_BY_GOVERNED_OBJECT`,
   `COVERED_BY_OPEN_WORLD_CANDIDATE`, `REVIEWED_NON_SUBSTANTIVE_OR_INVALID` or
   `REVIEWED_DUPLICATE`. The first two name the exact object or source-backed
-  candidate without implying comparability; the duplicate names an earlier
-  byte-identical residual; the non-substantive branch carries affirmative review
+  candidate without implying comparability. The duplicate names the earliest
+  prior residual with the same producer contract, immutable governed subject,
+  ordered evidence spans, neutral residual kind, raw-value digest, validation
+  semantics and proposed-object links. Byte equality alone is insufficient.
+  Duplicate chains are flattened to that earliest residual, cycles and forward
+  links block, and the duplicate inherits the earlier residual's final
+  disposition, exact governed link and reconciled impact closure. It may use a
+  zero-effect closure only when the inherited closure is itself the reviewed
+  zero-effect non-substantive branch. The non-substantive branch carries affirmative review
   evidence that no legal proposition or primitive was discarded. Pending,
   failed, not-examined, generic ignored and a fifth catch-all value are invalid.
   A final `GovernedResidualImpactClosure` either selects the mapped object's or
@@ -1660,8 +1687,12 @@ This file is the sole authority for detailed identities, state machines, writer 
   `REGISTERED_EXTERNAL_TRANSACTION` branch contains a registry-governed issuer
   namespace key and version plus the issuer's exact immutable transaction ID;
   a bare external ID is invalid. The `BEN_APPROVED_IMPORT_IDENTITY` branch
-  contains one immutable `DealIdentityApprovalAttestation` ID and payload
-  digest. That signed attestation binds the exact proposed import seed,
+  contains the canonical proposed-import seed itself: governed source namespace,
+  immutable submitted transaction identifier and seed-schema version. The
+  approval attestation authorises that seed but does not enter the seed or
+  governed key. The manifest separately carries one immutable
+  `DealIdentityApprovalAttestation` ID and payload digest. That signed
+  attestation binds the exact proposed import seed,
   approving identity, approval scope, non-reuse nonce, any reviewed
   supersession references and terminal unconditional `APPROVED`; an owner
   statement or unsigned label cannot substitute. Buyer, seller, title, value,
@@ -1683,6 +1714,16 @@ This file is the sole authority for detailed identities, state machines, writer 
   issuer namespaces, an unregistered issuer, reused approval nonce, missing
   approval, wrong seed binding or conflicting supersession makes the manifest
   invalid.
+  `DealIdentitySeedSlot` is the sole mutable identity-allocation authority,
+  keyed by `(deal_identity_schema_version, proposed_import_seed_digest)` for a
+  Ben-approved import and by the registered issuer tuple for an external
+  transaction. A serialisable compare-and-swap may bind that slot to exactly one
+  governed deal key and one current manifest lineage. A second attestation or
+  nonce for the same seed must resolve to that same key and may only create a
+  reviewed authority successor; it cannot allocate another deal. Conflicting
+  keys, simultaneous genesis claims or a proposed seed already governed under
+  another branch perform zero identity DML and enter the duplicate-or-
+  supersession review queue.
   The exact DealIdentityApprovalAttestation or registered external-issuer
   authority is selected by SourceAdmissionPreparationReceipt and every
   DealIdentityManifest consumer, and is inventoried through scope, candidate
@@ -2547,7 +2588,21 @@ This file is the sole authority for detailed identities, state machines, writer 
 - `REVIEWED_SOURCE_SPECIFIC` means the item is real, source-backed and
   publishable in Review, but has no governed cross-deal cohort in that
   CorpusRelease. It requires a reviewed source-specific display label, exact
-  evidence closure and complete publishable primitive set. It is never rendered
+  evidence closure and complete publishable primitive set. It also requires one
+  immutable `ReviewedSourceSpecificPublicationDecision`. That decision binds the
+  exact candidate, disposition and primitive-collection root and selects exactly
+  one source-backed primitive-observation occurrence as the display claim. The
+  selected occurrence must be a member of that root, must have a publishable
+  explicit claim state, and supplies the row's sole `source_claim_state`.
+  Every other primitive remains in the complete ordered collection and child
+  detail but cannot silently replace or aggregate the selected display claim.
+  If no one primitive fairly represents the proposition, review must create a
+  source-backed proposition claim with its own evidence and primitive linkage or
+  leave the candidate unresolved; first, majority, most favourable and
+  implementation-order selection are prohibited. The authoritative writer
+  persists that decision transactionally with the disposition and propagates
+  its exact ID and payload digest through candidate output, manifest, bundle,
+  production import, traceability and SharedServingRow. It is never rendered
   as absence, failure, not examined, an empty canonical result or generic “No
   market data”. `REJECTED_NON_SUBSTANTIVE_OR_INVALID` retains the candidate,
   evidence, primitives, reason and review proof for audit but creates no Review
@@ -4415,7 +4470,8 @@ This file is the sole authority for detailed identities, state machines, writer 
   registry entry is backed by exactly one generated relation, constraint and
   writer path.
 - That closure includes work authorisation; every WalkerTrustStatusHead;
-  IntakeProcessingPolicyHead; accession and import keys; receipt attempt,
+  IntakeProcessingPolicyHead; accession and import keys; DealIdentitySeedSlot;
+  receipt attempt,
   resolution and replacement heads; IntakeLedgerHead; IntakeRevocationHead;
   CutoffBuildHead and CutoffPreparationHead; BlobAvailabilityReceipt;
   CandidatePromotionFence; CandidateInputHead; ScopeBuildHead; scope and post-
@@ -4431,13 +4487,15 @@ This file is the sole authority for detailed identities, state machines, writer 
   erasure journal tip and target-receipt slot; every AttemptAuditTerminalSlot;
   DeploymentReadinessMirror;
   canonical release state; CanonicalCutoverGenesisHead;
+  OngoingReleasePromotionHead;
   PostActivationControlHead, PostActivationControl action-idempotency slot and
   PostActivationPassCommitLease consumption or revocation slot;
   FailureRecoveryBranchSlot, FailureRecoveryBranchHead and historical-
   reactivation attempt slot; LegacyBaselineRestoration action ordinal and
   receipt-chain head; LegacyBaselineRestorationPostCommitHead and its action-
-  idempotency slots; TraceabilityFailureTerminalSlot; and completion terminal-
-  pair slot. The repository-native `ProgrammeStatusPublicationHead` Git ref is
+  idempotency slots; TraceabilityFailureTerminalSlot; and every
+  CompletionTerminalPairAttempt and its disposition slot. The repository-native
+  `ProgrammeStatusPublicationHead` Git ref is
   expressly outside this database authority registry and its generated SQL lock
   plans. Adding any later database mutable authority without regenerating this
   closure blocks contract freeze and DML.
@@ -5672,7 +5730,8 @@ This file is the sole authority for detailed identities, state machines, writer 
   passing CompositionContractSetAttestation; canonical result rows and
   certified incomplete-result Review rows, each with its exact claim-state,
   result-completeness, market-comparability and governed-reason fields; reviewed
-  source-specific serving rows, each with its exact source-claim state,
+  source-specific serving rows, each with its exact
+  ReviewedSourceSpecificPublicationDecision and derived source-claim state,
   market-comparability and governed-reason fields and with no result-
   completeness field because no canonical result exists; child rows, market
   observations and aggregates;
@@ -6154,7 +6213,9 @@ This file is the sole authority for detailed identities, state machines, writer 
   PreCutoverCertification, POST_IMPORT trace, consumed CutoverAuthorisation,
   ActivationEvent, READY_CANONICAL ServingFenceVersion, passing
   PostCutoverSmokeAttestation, released AVAILABLE promotion fence,
-  ProgrammeCompletionAttestation and its atomically published terminal pair.
+  POST_ACTIVATION trace and the target release's
+  `ReleaseActivationCertification`. The historical proof never requires a
+  ProgrammeCompletionAttestation or programme-status terminal pair.
   It also hashes the exact current IntakeProcessingPolicyHead and activation,
   IntakeRevocationHead, a fresh target-release `POST_CUTOFF`
   IntakeEligibilityRecheckAttestation, the target
@@ -8496,7 +8557,8 @@ This file is the sole authority for detailed identities, state machines, writer 
   `market_comparability=NOT_CERTIFIED` and exact incomplete reason; it forbids
   observations, cohort and denominator. `REVIEWED_SOURCE_SPECIFIC` requires its
   candidate occurrence, final disposition, reviewed display label and reason,
-  exact source-claim state from its reviewed source-backed primitive set,
+  exact ReviewedSourceSpecificPublicationDecision and the source-claim state
+  derived from its selected reviewed source-backed primitive occurrence,
   observed party tokens, OpenWorldPrimitiveCollectionRoot opaque ID and certified
   digest, exact primitive total, bounded inline prefix, open-world child-
   collection reference, exact impact value and SemanticImpactClosure, evidence refs and
@@ -8798,6 +8860,21 @@ This file is the sole authority for detailed identities, state machines, writer 
   never candidate members, release trace rows or corpus truth and cannot mutate
   a completed trace. CompletionTraceCutoff may capture the operational-audit
   head at completion without purporting to enumerate later requests.
+  Per-request admission-consumption records and ServingResponseBindings live in
+  UTC-day Postgres partitions with exactly the current and preceding two
+  partitions online. Before an older partition is dropped, an independent
+  exporter writes its canonical member root, counts and hourly typed aggregates
+  to immutable object storage and a signed
+  `OperationalAuditPartitionArchiveReceipt`; only a verified receipt permits
+  the generated partition-drop action. Raw rows are retained online for at most
+  72 hours. Archive receipts and hourly aggregates use monthly partitions, have
+  a fixed 400-day online retention, and are then exported and dropped under the
+  same rule. `CapacityManifest` fixes maximum admission rate, per-row bytes,
+  partition bytes, indexes, export deadline and emergency backpressure below the
+  database storage and write ceilings. A missing export, oversized row, late
+  partition, unbounded index or failed drop opens the circuit before the bound
+  is exceeded. CompletionTraceCutoff binds the current partition-head and
+  archived-root tuple, not indefinite raw-row retention.
 - Before fence admission, every serving action creates one tagged
   `serving_request_intent_digest` hashing `SERVING_REQUEST_INTENT/V1`, route and
   action definition, canonical caller-input digest, requested selector or saved-
@@ -8806,7 +8883,8 @@ This file is the sole authority for detailed identities, state machines, writer 
   bound, response-schema digest, authorisation-scope digest, request nonce and
   idempotency key or explicit `NONE`. The closed tags are query initial, query
   cursor, child cursor, facet, field values, INLINE detail, source initial,
-  source cursor, saved-query execution, export start and export chunk. It
+  source cursor, saved-query execution, immutable execution-result fetch,
+  export start and export chunk. It
   contains no fetched saved-query template, active state or fence returned by
   admission. The admission token binds this intent. Any saved-query lookup
   occurs only after admission and must return that exact ID and definition
@@ -8981,7 +9059,18 @@ This file is the sole authority for detailed identities, state machines, writer 
 - One user action creates one `query_execution_id` and idempotency key. After
   its mandatory admission-token RPC, it makes at most one route-specific
   serving RPC. Navigation carries the validated response or fetches
-  that immutable execution result by exact ID. Launcher validation, saved-query
+  that immutable execution result by exact ID. The
+  `IMMUTABLE_EXECUTION_RESULT_FETCH` intent is authorised only to the same
+  caller, tenant and authorisation-scope digest as the originating execution,
+  binds the exact execution ID, response-schema digest and active release tuple,
+  and after its mandatory admission-token RPC performs exactly one indexed
+  lookup on `(tenant_id, caller_subject_id, query_execution_id,
+  serving_epoch_id)`. It returns at most one immutable response body within the
+  original route's row and byte ceilings, performs zero query compilation,
+  cache lookup, corpus read or route-serving RPC, and is rejected when the
+  execution's epoch or authorisation scope is no longer admitted. Execution
+  bodies expire at the earlier of 15 minutes and their serving epoch; the fetch
+  path cannot extend retention. Launcher validation, saved-query
   validation, redirects and result mounting cannot execute the plan again.
 - The five current product intents are views over this plan, not five separate
   truth systems:
@@ -9367,7 +9456,10 @@ This file is the sole authority for detailed identities, state machines, writer 
   set or source page, with at most one additional immutable-carrier range read
   for a source page; and one indexed bounded query for facet or field-value
   options. Exact detail is capped at 20 references and 512 KB; option output is capped at 200
-  values and 256 KB.
+  values and 256 KB. An immutable execution-result fetch uses only its one
+  indexed ownership-and-epoch lookup after token consumption and returns at most
+  the originating response bound; it performs no catalogue, cache, corpus or
+  serving RPC.
   After token consumption, query compilation performs no corpus read and may make at
   most one bounded catalogue lookup. Authentication is separately declared
   fixed overhead.
@@ -10220,15 +10312,50 @@ publication is one protected compare-and-swap from the exact predecessor Git
 object to one immutable successor status and emits its generated receipt.
 Completion uses no cross-system transaction. A database serialisable
 transaction first writes the proposed terminal status and POST_COMPLETION
-extension as one immutable pair to the one-use
-`CompletionTerminalPairSlot`. Neither member can occupy that slot alone. The
+extension as one immutable pair to an append-only
+`CompletionTerminalPairAttempt` keyed by `(status_generation,
+expected_git_predecessor_object_id, proposed_status_payload_digest)`. Neither
+member can occupy an attempt alone. Exactly one attempt may become current. The
 protected status publisher then revalidates the exact pair and advances the Git
 ref by stale-safe compare-and-swap to a status commit that binds it. Until that
 Git publication succeeds, the database pair is non-current and
 `programme_complete` remains `OPEN`; a failed ref update may be retried only
-after full revalidation. No programme status, readiness mirror or prose
+after full revalidation. If the Git predecessor has advanced, the protected
+publisher immutably marks that attempt `ABANDONED_STALE_PREDECESSOR`; a fresh
+completion validation may then create a new attempt at the next status
+generation against the new head. The new attempt must rebind and recompute its
+status, completion context, readiness lease and POST_COMPLETION extension; it
+cannot copy the stale pair. A unique partial index permits at most one `OPEN`
+attempt per observed predecessor and at most one `PUBLISHED` attempt globally.
+No programme status, readiness mirror or prose
 assertion marks the programme complete unless the target
 PostActivationControlHead is already terminal `PASS_FIXED`.
+
+`ReleaseActivationCertification` is the release-scoped success authority for
+every canonical release, including the first. It hashes the exact candidate,
+PreCutoverCertification, import and POST_IMPORT trace, consumed
+CutoverAuthorisation, ActivationEvent, READY_CANONICAL fence, POST_ACTIVATION
+trace, passing smoke, consumed pass-commit lease, `PASS_FIXED` control head,
+AVAILABLE promotion-fence successor, complete active tuple and the release's
+passing rollback rehearsal. It is created before any programme-completion
+artefact and contains no programme-status generation or terminal-pair field.
+The first release's ProgrammeCompletionAttestation selects this certification.
+After the one-time programme head becomes absorbing `COMPLETE`, later canonical
+releases use the separate `OngoingReleasePromotionHead`: an append-only,
+serialisable database authority over the current certified release activation.
+It is keyed once per production environment, is registered in
+GlobalMutableAuthorityRegistry and GeneratedLockPlanRegistry, and permits only
+an exact-predecessor compare-and-swap after the successor
+ReleaseActivationCertification is terminal `PASS`.
+Each later promotion must satisfy the same candidate, import, cutover, smoke,
+trace, rollback and release-activation contracts and compare-and-swap that head
+from the exact current ReleaseActivationCertification to the successor. It does
+not reopen, increment or depend on ProgrammeStatusPublicationHead. A prior
+canonical release becomes a historical-reactivation target as soon as its own
+ReleaseActivationCertification is current and its retention proof passes.
+Both objects, every compare-and-swap receipt and every historical-reactivation
+dependency are mandatory traceability-matrix members and operational release-
+trace entries; they do not mutate the already completed programme trace.
 
 For the first canonical cutover only, the precondition to step 16 is one
 LegacyBaselineRollbackTarget, a current passing
@@ -10561,10 +10688,17 @@ or typed-exclusion parity roots; passing `SOURCE-PACKAGE-DIGEST-01`,
 `SEMANTIC-EXTRACTION-DRY-RUN-01`, `CANONICAL-WRITER-AUTHORITY-01`,
 `SEMANTIC-GRAPH-PARITY-01`, `SEMANTIC-INFERENCE-BOUNDARY-01`,
 `SEMANTIC-INFERENCE-NO-RERUN-01`, `SOURCE-ADMISSION-PREPARATION-01`,
-`SOURCE-ROLE-ADMISSION-TOPOLOGY-01` and the exact contract-ordered union of
-`required_adversarial_tests` named by every gate transitively required by the
-`production_import` work class. No filename scan, test-name prefix, prose
-classification or later-discovered test may widen or narrow that frozen set;
+`SOURCE-ROLE-ADMISSION-TOPOLOGY-01` and the exact
+`MandatoryAdversarialTestCatalogueRoot`. That root is mechanically enumerated
+from every backticked test identifier in
+`docs/codex-program/adversarial-tests.md` under the frozen YAML rule and binds
+each identifier, complete test-definition digest, executable digest and
+terminal result. Its count and identifier-set digest must equal the values in
+`mandatory_adversarial_test_binding`, and every member must be `PASS`.
+Per-gate `required_adversarial_tests` are early local minima only; their union is
+not the pre-cutover universe. No filename scan outside the selected catalogue,
+test-name prefix, prose classification or later-discovered test may widen or
+narrow that frozen set;
 every PRE_FREEZE_CONTRACT,
 SOURCE_BUILD and CANDIDATE_BUILD SemanticStageOutputSetRoot and
 SemanticNeutralProjectionSetRoot, RelationshipEffectFieldUniverseSetRoot, both
@@ -13051,10 +13185,10 @@ predecessor, verifies the signed lease and consumes its exact one-use
 database token without contacting the external control plane, then writes the terminal pair
 `(proposed_status_id, proposed_status_payload_digest,
 POST_COMPLETION_extension_id, POST_COMPLETION_payload_digest,
-status_generation)` to the empty `CompletionTerminalPairSlot`. It writes no
+status_generation)` to a fresh empty `CompletionTerminalPairAttempt`. It writes no
 later immutable database receipt or status artefact and does not update a Git
 ref under the database lock. After commit, the protected GitHub publisher reads
-and revalidates the exact slot, status and extension and compare-and-swaps
+and revalidates the exact attempt, status and extension and compare-and-swaps
 ProgrammeStatusPublicationHead from its captured predecessor to the proposed
 terminal status commit. `programme_complete` evaluates that Git head and its
 bound database pair, including the extension's
@@ -13062,6 +13196,10 @@ coverage reconciliation and cumulative root, never the proposed status alone.
 A stale database predecessor, revocation-first race, partial pair, later
 untraced status or missing extension performs zero pair DML. A stale Git
 predecessor performs zero ref change, leaves the immutable pair non-current and
-leaves completion blocked pending revalidation or abandonment. Completion
+requires the protected publisher to append its
+`ABANDONED_STALE_PREDECESSOR` disposition. A later attempt is permitted only
+after that disposition and complete recomputation against the new Git head;
+neither an occupied old attempt nor its immutable members can block the fresh
+attempt. Completion
 locking first may write the pair before a later revocation, which
 then follows the ordinary blocking and exposure-off path.
