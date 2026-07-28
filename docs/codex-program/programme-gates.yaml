@@ -666,9 +666,9 @@ programme_gate_registry:
       required_adversarial_tests: [DEPLOY-CUTOVER-01, RELEASE-STATE-V3-01, HISTORICAL-REACTIVATION-ADVANCED-HEAD-01]
     - id: P9_DATABASE_SOAK
       phase: 9
-      evidence_contract: sixty-connection-load-soak/v1
+      evidence_contract: sixty-connection-load-soak/v2
       required_evidence_object_type: DatabaseLoadSoakAttestation
-      acceptance_claims: [load_dataset_bound_to_exact_candidate_release_and_capacity_manifest, micro_pool_not_exhausted, fixed_call_and_statement_budgets_hold, n_and_ten_n_invariance_pass, no_fault_success_and_throughput_floors_pass, latency_budgets_pass, post_fault_recovery_floor_pass]
+      acceptance_claims: [load_dataset_bound_to_exact_candidate_release_and_capacity_manifest, complete_composite_shape_and_worst_case_witness_coverage_pass, micro_pool_not_exhausted, fixed_call_and_statement_budgets_hold, n_and_ten_n_invariance_pass, no_fault_success_and_throughput_floors_pass, latency_budgets_pass, post_fault_recovery_floor_pass]
       required_adversarial_tests: [CAPACITY-LOAD-01]
     - id: P9_BACKUP_RESTORE
       phase: 9

@@ -1823,8 +1823,13 @@ The following adversarial closure tests are mandatory traceability entries:
   activation's REVOKED fence returns to AVAILABLE only through
   RESTORE_CANDIDATE_PROMOTION_AVAILABILITY after terminal containment, passing
   prior-tuple restoration smoke and the fixed failure terminal. Omit, duplicate
-  or race any genesis, abandonment or recovery event, lock, successor or receipt:
-  the fence stays unavailable and no input head advances.
+  or race any genesis, abandonment or recovery event, lock, successor or
+  receipt: the fence stays unavailable and no input head advances. The closed
+  `CANDIDATE_RELEASE_FREEZE` action grammar must itself enumerate
+  `ABANDON_HELD_PROMOTION`, and must reject it before
+  `HELD(CURRENT_CANDIDATE)`. Omitting that action from the closed grammar,
+  admitting it as an open extension or using `ABANDON_GENERATION` after hold
+  acquisition fails before writer dispatch.
 - `SERVING-FENCE-CACHE-01`: every request, including a warm cache hit, obtains
   one fresh request-nonce-bound admission for the exact READY fence and retains
   its lease through the last response byte, then consumes the token through the
@@ -2363,21 +2368,41 @@ The following adversarial closure tests are mandatory traceability entries:
   proves isolation only. The recorded roots, per-kind counts and selectivity distributions
   must match before load begins. A smaller or differently distributed fixture
   fails. The benchmark root must equal the complete
-  SupportedQueryShapeRegistry coverage root across every active route, action,
-  request variant, plan family, filter/operator/value class, page, facet,
-  option, saved lookup, carried-response navigation and exact-detail/source page.
+  SupportedQueryShapeRegistry template root and the selected release's complete
+  ReleaseQueryExecutionClassRegistry and WorstCaseWitnessDominanceProof roots
+  across every active route, action, request variant, plan family, complete
+  predicate and cohort-filter AST, ordered projection, grouping, facet and sort
+  vectors, literal quotient and correlation class, page, option, saved lookup,
+  carried-response navigation and exact-detail/source page.
   The registry itself must be the frozen closed member selected by
   `QUERY_DEFINITION_SET_ROOT/V2`; both independent query-shape compilers must
   reproduce its complete member set and root without using test fixtures as
-  authority. Selectivity class is deterministic: valid estimates at or below
-  `0.10` are `SELECTIVE`, values above `0.10` are `UNSELECTIVE`, and missing,
-  invalid or conflicting estimates fail before planning. Facet and field-option
+  authority. Give the compilers two plans with the same first predicate and
+  singular field/operator/value/sort tuple but a different second predicate,
+  Boolean topology, cohort filter, grouping, facet or later sort key. Collapsing
+  them into one class without a complete CompositeShapeEquivalenceProof and
+  common dominance proof fails. So does any admitted plan with zero or multiple
+  template or release-class matches; it must be refused before database
+  checkout.
+  Selectivity class is deterministic: valid estimates at or below `0.10` are
+  `SELECTIVE`, values above `0.10` are `UNSELECTIVE`, and missing, invalid or
+  conflicting estimates fail before planning. Those two labels alone never
+  establish load coverage. For equality, range and capped `IN`, and for
+  correlated `AND`, `OR` and nested forms, independently recompute the complete
+  ParameterDomainQuotient and Pareto-maximal witness set. Substitute a benign
+  selective or unselective fixture while a non-witness member exceeds it in
+  planner cost, visited rows, fan-out, intermediate or sort/group/facet rows,
+  output bytes, temporary bytes, `IN` cardinality or parameter bytes: dominance
+  and the gate fail. Omit an incomparable witness, change a physical plan
+  fingerprint, or use sampled or caller-supplied estimates: the gate fails.
+  Facet and field-option
   endpoints return at most 200 values and 256 KiB per page with a signed
   release-aware cursor; overflow must paginate or refuse before corpus access,
   never truncate.
-  Every class must satisfy its binding p95, p99 and browser threshold at N and
-  maximum scale. A missing class or smaller CapacityManifest cardinality
-  component fails. No-fault steady and all-miss profiles must satisfy the fixed 99.9%
+  Every release execution class and every member of its bound witness set must
+  satisfy its p95, p99 and browser threshold at N and maximum scale. A missing
+  class, missing witness or smaller CapacityManifest cardinality component
+  fails. No-fault steady and all-miss profiles must satisfy the fixed 99.9%
   schema-valid success and target-throughput floors, all passing profiles must
   meet the contract latency budgets, and every injected fault must recover
   target throughput and latency within the frozen recovery bound. A dynamic

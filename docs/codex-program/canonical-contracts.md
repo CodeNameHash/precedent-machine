@@ -5708,8 +5708,12 @@ This file is the sole authority for detailed identities, state machines, writer 
   `OPEN_GENERATION`, bounded `PREPARE_INPUT_BATCH`, `SEAL_INPUT`, bounded
   `PREPARE_OUTPUT_BATCH`, `SEAL_PREPARE`, bounded
   `PREPARE_FREEZE_CONTROL_BATCH`, `FREEZE`, bounded
-  `BUILD_CANDIDATE_RELEASE_PROJECTION`, `ISSUE_INPUT_RECHECK` and
-  `ABANDON_GENERATION` actions. `ISSUE_INPUT_RECHECK` is legal only after the
+  `BUILD_CANDIDATE_RELEASE_PROJECTION`, `ISSUE_INPUT_RECHECK`,
+  `ABANDON_GENERATION` and `ABANDON_HELD_PROMOTION` actions.
+  `ABANDON_GENERATION` applies only before a CandidatePromotionFence is held
+  for the generation. `ABANDON_HELD_PROMOTION` applies only to the exact
+  pre-activation `HELD(CURRENT_CANDIDATE)` fence and cannot replace ordinary
+  generation abandonment. `ISSUE_INPUT_RECHECK` is legal only after the
   two projection roots exist and is the sole producer of
   `CandidateInputRecheckAttestation`.
   `PREPARE_INPUT_BATCH` has a closed `RESIDUAL_CLOSURE` discriminator with
@@ -6272,8 +6276,11 @@ This file is the sole authority for detailed identities, state machines, writer 
   size.
 - `ABANDON_GENERATION` may move any non-terminal candidate state to `ABANDONED`
   under the exact expected head, captured `AVAILABLE` promotion-fence version
-  and reason. Deadline expiry must invoke this transition and can never extend,
-  freeze or publish the generation. If an output head exists, the transaction
+  and reason. It is forbidden after acquisition of
+  `HELD(CURRENT_CANDIDATE)`; that state is governed only by
+  `ABANDON_HELD_PROMOTION`. A pre-hold deadline expiry must invoke
+  `ABANDON_GENERATION` and can never extend, freeze or publish the generation.
+  If an output head exists, the transaction
   first appends its terminal OUTPUT_ABANDONED event and compare-and-swaps it to
   `ABANDONED`, writes its CandidateOutputPreparationReceipt, and only then writes
   the ABANDONED CandidateBuildTransition over that receipt, head compare-and-
@@ -9045,7 +9052,9 @@ This file is the sole authority for detailed identities, state machines, writer 
   route and action definitions; request, result, cursor and error schemas;
   every ServingCacheIdentityDefinition; compiler executable, configuration and
   reproducible-build digests; generated SQL and RPC definitions; required
-  indexes and materialised views; and route budgets. Its ID hashes
+  indexes and materialised views; route budgets; and the complete
+  SupportedQueryShapeRegistry, every CompositeQueryShapeTemplate and every
+  CompositeShapeEquivalenceProof. Its ID hashes
   `QUERY_DEFINITION_SET_ROOT/V2`, schema, exact CanonicalBundleInputIdentity ID
   and payload digest, contract-ordered member stable IDs and canonical payload
   digests, per-kind counts and fixed empty missing, extra, duplicate and
@@ -9055,7 +9064,8 @@ This file is the sole authority for detailed identities, state machines, writer 
   fixtures in the governed bundle-input set. It inventories every fixture and
   its canonical plan AST, SQL and parameter-schema digest, result-schema digest,
   expected typed rows, cohort and aggregate semantics, error branch, index and
-  plan requirement and test ID. Its ID hashes
+  plan requirement, complete CompositeQueryShapeTemplate ID and payload digest
+  and test ID. Its ID hashes
   `QUERY_GOLDEN_SUITE_MANIFEST/V2`, schema, exact
   CanonicalBundleInputIdentity ID and payload digest, exact
   QueryDefinitionSetRoot ID and payload digest, the contract-ordered fixture IDs
@@ -9069,10 +9079,11 @@ This file is the sole authority for detailed identities, state machines, writer 
   `QUERY_GOLDEN_CERTIFICATION/V2`, schema, exact bundle fingerprint and root-
   manifest digest, ContractFreezeAttestation ID and payload digest, exact
   QueryDefinitionSetRoot and QueryGoldenSuiteManifest IDs and payload digests,
-  frozen fixture roots, executed actual plan, SQL and typed-result roots and
-  digests, expected-versus-actual empty difference roots, index and performance
-  proofs, validator executable, configuration and evidence digests and terminal
-  `PASS`. It is external certification evidence: its ID, payload digest and
+  frozen fixture and CompositeQueryShapeTemplate coverage roots, executed
+  actual plan, SQL and typed-result roots and digests, expected-versus-actual
+  empty missing, extra, duplicate, ambiguous and unsupported roots, index and
+  performance proofs, validator executable, configuration and evidence digests
+  and terminal `PASS`. It is external certification evidence: its ID, payload digest and
   exact frozen pair enter ServingContractMetadata, candidate certification,
   the tenth governed promotion-evidence slot, ReleaseBundleEnvelope,
   production-import parity and traceability, but neither the attestation nor any
@@ -10300,9 +10311,15 @@ includes:
   `aggregate_input_set_digest`, ServingExactDetailPayload including
   `OPEN_WORLD_EVIDENCE`, ServingExactDetailReference and parent-reference edge,
   serving-key schema, CanonicalBundleInputIdentity,
-  QueryDefinitionSetRoot and every definition member,
+  QueryDefinitionSetRoot and every definition member, including
+  SupportedQueryShapeRegistry, every CompositeQueryShapeTemplate and
+  CompositeShapeEquivalenceProof,
   QueryGoldenSuiteManifest and every golden case,
-  QueryGoldenCertificationAttestation, request, result, cursor, error,
+  QueryGoldenCertificationAttestation, every selected-release
+  ParameterDomainQuotient, ReleaseQueryExecutionClassRegistry,
+  WorstCaseWitnessDominanceProof, ActiveQueryExecutionClassProjection, soak
+  benchmark member and empty-difference root selected by
+  DatabaseLoadSoakAttestation, request, result, cursor, error,
   CanonicalServingCacheIdentity, CanonicalServingCacheValue and
   ServingResponseBinding schemas, every ServingCacheIdentityDefinition and
   tests; BlockedResultPreviewDefinition, its pure-builder executable,
@@ -13619,37 +13636,129 @@ records both inputs and the derived tuple; any smaller component fails
 `P9_DATABASE_SOAK`.
 
 `SupportedQueryShapeRegistry` is generated from the closed query grammar and
-ServingObjectAccessRegistry. It enumerates every active route and action, request
-variant, QueryPlan family, metric and party dimension, filter field, operator
-and value type, sort and direction, initial and cursor page, facet and
-field-value request, saved-query lookup, carried-response navigation,
-inline exact-detail batch and source-document initial and cursor page. It is a
-versioned CanonicalContractBundle member with a closed JSON schema. Each row
-hashes route and action definition, request-variant schema, plan family, output
-grain, metric and party dimension, field, operator, value class, sort,
-page/action class, response schema and applicable index or aggregate contract.
-Rows are UTF-8 sorted by that tuple; the domain-separated row root and count are
-bound by `QUERY_DEFINITION_SET_ROOT/V2`. Two implementation-disjoint compilers,
-one walking the query grammar and one walking route/action plus serving-access
-registries, must emit byte-identical row sets with empty missing, extra,
-duplicate and unsupported roots. Golden fixtures and submitted benchmark rows
-are never authority for registry membership.
+ServingObjectAccessRegistry. Its unit is a complete
+`CompositeQueryShapeTemplate`, never one atomic field/operator/sort tuple. It
+enumerates every active route and action, request variant and QueryPlan family,
+including inline exact-detail batch, source-document initial and cursor page,
+field-value request, saved-query lookup and carried-response navigation. Each
+template contains the complete normalised plan-shape program: output grain;
+metric and party dimensions; ordered selected-column vector; the full Boolean
+predicate AST topology and every ordered leaf's field, operator and value-type
+slot; the full cohort-filter AST; ordered grouping, facet and sort vectors;
+initial or cursor page/action class; response schema; and every applicable
+index, aggregate and SQL-template contract. The grammar bounds and every
+per-slot permitted substitution are part of the template. Omitting a second or
+later predicate, Boolean edge, filter, grouping, facet or sort key therefore
+changes the template or makes the plan unsupported.
 
-Infinite literal values are partitioned in a selected release by deterministic
-indexed frequency. Null, invalid and typed boundary minimum or maximum take
-precedence. Every other valid literal is `ordinary-selective` when its exact
-matching subject count divided by the eligible cohort count is at most 0.10,
-and `ordinary-unselective` when it is greater than 0.10. Zero matches are
-selective. Counts come from the release-certified dimension projection and
-denominator, use no sampled statistics and are recorded before load begins.
-These rules are total and mutually exclusive. `QueryGoldenSuiteManifest`
-contains at least one fixture for every
-valid registry class and one refusal fixture for every invalid class.
-`QueryGoldenCertificationAttestation` requires exact equality between the
-registry class root and fixture-coverage root with empty missing, extra,
-duplicate and unsupported roots. The soak manifest selects that same root and
-runs every class at N and maximum scale under the applicable traffic profile.
-A hand-picked benign subset cannot satisfy either gate.
+Every compiler invocation derives an `ExecutionShapeKey` from those complete
+normalised vectors before corpus access. Exactly one
+CompositeQueryShapeTemplate must accept that key. Zero matches, multiple
+matches, an unbound slot or an omitted vector return typed
+`UNSUPPORTED_QUERY_SHAPE` with zero database checkout. Two keys may share one
+template only when a generated `CompositeShapeEquivalenceProof` proves that
+every permitted substitution emits the same parameterised SQL-template digest,
+physical access and index-contract set, output bound and cost dimensions used
+by release certification. An asserted family label, a common first predicate
+or a common singular field/operator/value/sort tuple is never an equivalence
+proof.
+
+The registry is a versioned CanonicalContractBundle member with a closed JSON
+schema. Each row hashes the route and action definition, request-variant
+schema, complete plan-shape program, response schema, SQL-template digest,
+physical-access contract set and CompositeShapeEquivalenceProof ID and payload
+digest. Rows are UTF-8 sorted by that tuple; the domain-separated row root and
+count are bound by `QUERY_DEFINITION_SET_ROOT/V2`. Two
+implementation-disjoint compilers, one walking the query grammar and one
+walking route/action plus serving-access registries, must emit byte-identical
+row sets with empty missing, extra, duplicate, ambiguous and unsupported roots.
+Golden fixtures and submitted benchmark rows are never authority for registry
+membership.
+
+`QueryGoldenSuiteManifest` contains at least one semantic fixture for every
+CompositeQueryShapeTemplate and one refusal fixture for every invalid grammar
+class. `QueryGoldenCertificationAttestation` requires exact equality between
+the template root and fixture-coverage root with empty missing, extra,
+duplicate, ambiguous and unsupported roots. This proves compiler and result
+semantics for the release-independent structural grammar. It does not purport
+to certify release-dependent literal, correlation or physical-plan cost.
+
+For each selected release, two implementation-disjoint, indexed set-based
+classifiers expand every CompositeQueryShapeTemplate into the closed
+`ReleaseQueryExecutionClassRegistry`. A release execution class hashes the
+selected CorpusRelease and CapacityManifest, template ID and payload digest,
+complete ExecutionShapeKey, SQL-template digest, physical plan fingerprint,
+index and aggregate contracts, full ordered leaf-selectivity vector, joint
+predicate-correlation class, qualifying and intermediate cardinality bounds,
+group/facet/sort cardinality bounds, output row and byte bounds and its
+`WorstCaseWitnessDominanceProof`. Every admitted parameter instantiation must
+map to exactly one release execution class. A missing, extra, duplicate or
+ambiguous class blocks certification; runtime performs the same resolution and
+returns `UNSUPPORTED_QUERY_SHAPE` before checkout if the active release has no
+exact class.
+
+The release classifier forms a complete finite, symbolic
+`ParameterDomainQuotient` from the release-certified dimension projection and
+denominator. Its members cover observed typed equality values and a canonical
+all-miss class; null, invalid and typed boundaries; range boundary-equivalence
+intervals and inclusivity; permitted `IN` cardinality and physical-plan
+intervals through the cap; and the joint cost classes created by Boolean
+composition, cohort filters and correlated dimensions. Each member hashes its
+closed parameter-domain predicate, SQL template and physical plan fingerprint,
+exact indexed release-summary inputs, derived cost upper-bound vector and
+proof. Concrete values or combinations may share one member only when the
+proof shows that they retain their parameterised query semantics, use that same
+SQL template and physical plan, and are all dominated by the member's bound
+vector. The quotient is therefore complete without materialising the
+Cartesian product of literal tuples. Classification and coverage use bounded,
+indexed, set-based summaries; no certification request scans the broad corpus
+once per literal or composite plan. Counts use no sampled statistics and are
+recorded before load begins. Ordinary valid literals retain the deterministic labels
+`ordinary-selective` when their exact matching subject count divided by the
+eligible cohort count is at most 0.10 and `ordinary-unselective` when it is
+greater than 0.10; zero matches are selective. Those labels are diagnostic
+dimensions, not sufficient benchmark classes.
+
+Each `WorstCaseWitnessDominanceProof` binds the complete quotient-member root
+for its release execution class and a non-empty Pareto-maximal witness set. The
+fixed cost vector contains PostgreSQL planner total cost and rows, indexed and
+heap rows visited, join fan-out, intermediate rows, group/facet/sort input and
+distinct counts, output rows and bytes, temporary bytes, `IN` cardinality and
+normalised parameter bytes. For every quotient member, the proof identifies a
+benchmarked witness whose vector is component-wise greater than or equal to
+that member's vector and whose SQL template and physical plan fingerprint are
+the same; incomparable members require separate witnesses. The witness set is
+the deterministic UTF-8-ordered set of all non-dominated vectors, with
+byte-equal members reduced by the lowest canonical parameter digest. Both
+classifiers must reproduce the parameter quotient, execution classes, witness
+sets and roots with empty differences. If dominance cannot be proved, the
+class must be split or the query shape rejected. A selected fixture, one
+nominal value per selective/unselective label or a caller-supplied cost estimate
+cannot establish dominance.
+
+ParameterDomainQuotient, ReleaseQueryExecutionClassRegistry and
+WorstCaseWitnessDominanceProof are immutable, content-addressed, offline
+certification artefacts built only from the FROZEN candidate release, its
+CapacityManifest, the frozen query definition set, exact PostgreSQL major
+version, planner configuration, schema/index root and release statistics root.
+They are not corpus truth and their construction performs no canonical DML.
+DatabaseLoadSoakAttestation selects their exact IDs, payload digests and roots.
+ReleaseBundleEnvelope carries them as governed promotion-evidence support, and
+production import verifies them before constructing the compact
+`ActiveQueryExecutionClassProjection` under the same expected, physical and
+independent-enumerator parity rule as other serving control projections. The
+projection is keyed by active release and ExecutionShapeKey and contains only
+the exact class, SQL-template, physical-plan, index-contract and bound identity
+needed for runtime resolution. It becomes visible only with the atomic active-
+release pointer swap, rolls back with that pointer and is never loaded broadly
+into Node.
+
+The soak manifest selects the exact ReleaseQueryExecutionClassRegistry and
+runs every member of every WorstCaseWitnessDominanceProof at N and maximum
+scale under the applicable traffic profile. It binds empty missing, extra,
+duplicate, ambiguous and unbenchmarked roots against the release registry and
+witness-set roots. A hand-picked benign subset cannot satisfy
+`P9_DATABASE_SOAK`.
 
 Facet and field-value option sets are never silently truncated. Each response
 contains at most 200 UTF-8 ordered values and 256 KiB plus exact total-distinct
@@ -13667,8 +13776,10 @@ one ordinary initial-page action and therefore receives the same admission,
 compiler, one-RPC and response bounds as any other initial page. Saved-query
 lookup resolves the stored plan identity and then executes that plan once.
 
-The binding performance matrix covers every `SupportedQueryShapeRegistry`
-class. Cache-eligible lookup classes must meet API p95 at or below 500 ms.
+The binding performance matrix covers every
+`ReleaseQueryExecutionClassRegistry` class and every member of its
+WorstCaseWitnessDominanceProof. Cache-eligible lookup classes must meet API p95
+at or below 500 ms.
 Every uncached initial or cursor page, facet,
 field-value option, saved-query resolution, exact-detail batch and
 source-document page must meet API p95 at or below 1.5 seconds and p99 at or
