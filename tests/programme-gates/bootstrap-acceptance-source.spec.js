@@ -46,6 +46,10 @@ test('P1 compiles from the bootstrap source contract and enumerates its closed w
       semantic_identity_review_id: 'c'.repeat(64),
       freeze_gate_approval_id: 'd'.repeat(64),
       status_generation: 1,
+      authority_member_inventory: [{
+        member_id: 'authority-evidence:test',
+        member_type: 'ContractFreezeAuthorityEvidence',
+      }],
     },
   });
   assert.deepEqual(
@@ -56,6 +60,7 @@ test('P1 compiles from the bootstrap source contract and enumerates its closed w
       'ContractDiffReviewAttestation',
       'ContractFreezeApproval',
       'ProgrammeGateStatusArtefact',
+      'ContractFreezeAuthorityEvidence',
     ],
   );
 });

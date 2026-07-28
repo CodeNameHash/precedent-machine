@@ -182,6 +182,7 @@ function fixture() {
       immutable_session_id: controller.immutable_session_id,
       session_parent_or_genesis: 'GENESIS',
       exact_input_context_digest: controller.exact_input_context_digest,
+      reviewed_code_commit: 'f'.repeat(40),
       source_control_history_scope: 'ALL_REFS_FROM_REPOSITORY_GENESIS',
       source_control_authorship_events: [{
         commit_id: `${index + 1}`.repeat(40),

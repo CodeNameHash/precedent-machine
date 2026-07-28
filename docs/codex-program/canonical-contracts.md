@@ -880,6 +880,15 @@ This file is the sole authority for detailed identities, state machines, writer 
   signatures from those immutable members. Any missing member, unknown field,
   compile, cycle or drift error, blocking review finding, ineligible reviewer,
   mismatched root or unverifiable signature leaves the gate `OPEN`.
+  `authority_member_inventory` is the closed enumeration source for those
+  additional authority members. It must carry the exact source bytes for every
+  governing-specification member, the actual G0 review-set and Ben-approval
+  records, and one content-addressed typed authority-evidence record for every
+  catalogue authorship, input-access and review disposition, reconciliation,
+  semantic-stage root, neutral-projection root, relationship-field universe,
+  reviewer-eligibility set and Ben taxonomy/codebook decision set. Acceptance
+  recomputes every payload digest and content-derived ID and rejects any
+  missing, extra, duplicate or digest-only substitute.
 - `ContractFreezeAttestation` is an approval object outside the closed bundle.
   It contains no source, deal, candidate revision, snapshot or release reference;
   generated bundle outputs may embed the bundle fingerprint but never the
@@ -13633,14 +13642,18 @@ or byte-different source member or output definition leaves every affected gate
 `OPEN`. Runtime input cannot select or alter a schema, member, path, predicate,
 operator or expected value.
 
-The same YAML member freezes the sole eligible controller ID and version, Codex
-runtime version and entrypoint digest, model and reasoning level, five
+The same YAML member freezes the eligible controller ID and version, Codex
+runtime version and entrypoint digest, the Sol model and reasoning level, the
+closed `FABLE_ELIGIBLE` model identifier and provider-default reasoning marker
+for Fable or an independent 5.6 Sol reviewer using extra-high reasoning, five
 lane-specific prompt IDs and digests, validator key and configuration, and the
 closed runtime-context derivation. Run-local working, HOME, CODEX_HOME and TMP
 paths vary only under the one controller-created run root and are inputs to the
 signed context digest; all non-path context fields are frozen constants.
 Unknown fields, another path root, another binary, prompt, model, controller or
-validator are ineligible. No post-review allowlist choice exists.
+validator are ineligible. The `FABLE_ELIGIBLE` branch is eligible only for the
+`LEGAL_SEMANTIC` lane; the current Sol path remains eligible for all five lanes.
+No post-review allowlist choice exists.
 
 #### Residual and open-world authority
 

@@ -487,26 +487,6 @@ function reviewArtifact() {
   return JSON.parse(fs.readFileSync(reviewPath, 'utf8'));
 }
 
-function sourceControlAuthorshipEvents() {
-  const output = successful('git', [
-    'log',
-    '--all',
-    '-z',
-    '--format=%H%x00%an%x00%ae%x00%aN%x00%aE',
-  ]);
-  const fields = output.split('\0');
-  const events = [];
-  for (let index = 0; index + 4 < fields.length; index += 5) {
-    events.push({
-      commit_id: fields[index].trim(),
-      identity_set: [...new Set(fields.slice(index + 1, index + 5)
-        .map((value) => value.trim())
-        .filter(Boolean))].sort(),
-    });
-  }
-  return events;
-}
-
 function evidenceResult(candidate, preflight) {
   if (preflight.evidence_validation.valid !== true
     || preflight.evidence_validation.state !== 'PASS'
@@ -628,8 +608,8 @@ async function main() {
     expectedCodeCommit: codeCommit,
     expectedSpecificationRoot: specificationDigest,
     keyRegistry: TRUSTED_PUBLIC_KEY_REGISTRY,
+    repositoryRoot: ROOT,
     signIndependence: (bytes) => signatureForBytes(bytes, privateKey),
-    sourceControlAuthorshipEvents: sourceControlAuthorshipEvents(),
     validatorConfigurationDigest: REGISTRY_DIGESTS.validator_configuration,
     validatorExecutableDigest,
     validatorKeyId: VALIDATOR_KEY_ID,

@@ -1,5 +1,10 @@
 programme_gate_registry:
   schema: canonical-programme-gates/v1
+  yaml_parser_binding:
+    yaml_version: "1.2"
+    package: yaml
+    package_version: "2.9.0"
+    options: [STRICT, UNIQUE_KEYS, NO_ALIASES]
   specification_identity: DOMAIN_SEPARATED_SPECIFICATION_ROOT_DIGEST
   specification_manifest: docs/codex-program/specification-manifest.json
   status_artifact: docs/certification/programme-gate-status-v2.json
@@ -41,7 +46,7 @@ programme_gate_registry:
       member_paths: EXACT_PATHS_DECLARED_BY_THE_NORMATIVE_EVIDENCE_OBJECT_CONTRACT
       measurement: REFERENCE_INTERPRETER_RECOMPUTES_CLAIM_FROM_ENUMERATED_IMMUTABLE_MEMBERS_AND_NAMED_TEST_RESULTS
       result_type: BOOLEAN
-      comparison_operator: BOOLEAN_IS_TRUE
+      comparison_operator: EQUALS
       expected_typed_value: true
       asserted_boolean_without_RECOMPUTED_MEMBER_WITNESS_ROOT: OPEN
     acceptance_authority_tiers:
@@ -61,8 +66,8 @@ programme_gate_registry:
       missing_or_post_review_selected_member_effect: OPEN
     bootstrap_compiled_registry_binding:
       source_path: docs/codex-program/bootstrap-acceptance-source.json
-      source_sha256: 2627c3683d78d690f09d11509bfa870b64c9dcacfcec71435a65027135fe6035
-      closed_validator_executable_set_digest: afbb87142e7379ee4824f4cf87bff0b27ae39260ea8d891e68d6e4f0821a2c8a
+      source_sha256: 7ddc66b18932ac716028063c6846673eb451f16884bd50cdc65e3c4a4d29ddcc
+      closed_validator_executable_set_digest: c15bc336938092ecea534018e6c80da15d41e05d1e55facc259661ddd5171cae
       authority: ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE
       exact_active_definition_count: 11
       exact_genesis_gate_count: 10
@@ -136,6 +141,8 @@ programme_gate_registry:
 
   mandatory_adversarial_test_binding:
     source: docs/codex-program/adversarial-tests.md
+    executable_registry_source: lib/programme-gates/test-executable-registry.js
+    fail_closed_unimplemented_executable: scripts/run-unimplemented-adversarial-test.mjs
     enumeration_rule: EVERY_BACKTICKED_LIST_ITEM_IDENTIFIER_IN_SOURCE_ORDER
     expected_identifier_count: 286
     expected_identifier_set_sha256: e4ad6ea4d87db62d405f954007067f7eca87c32511c0aef97a5b258a5d3a87ed
@@ -143,6 +150,7 @@ programme_gate_registry:
     enforcement_gate: P9_SCOPE_EXACT
     pre_cutover_requirement: EVERY_MEMBER_TERMINAL_PASS
     local_gate_required_adversarial_tests_semantics: EARLY_MINIMUM_ONLY_NOT_COMPLETE_PRECUTOVER_UNIVERSE
+    executable_mapping_totality: EVERY_IDENTIFIER_HAS_ONE_FROZEN_EXECUTABLE_DIGEST_AND_UNIMPLEMENTED_HANDLERS_CANNOT_EXIT_ZERO
     missing_extra_duplicate_or_unbound_member_effect: OPEN
 
   reviewer_eligibility:
@@ -167,7 +175,7 @@ programme_gate_registry:
       reasoning_level: xhigh
       fixed_context_rule: HASH_OF_CLOSED_TRUSTED_REVIEW_RUNTIME_CONTEXT_WITH_FRESH_CONTROLLER_CREATED_PATHS
       fixed_context_closed_fields: [context_version, review_runtime_binary_path, review_runtime_version, review_runtime_binary_digest, working_directory, operating_system, architecture, home_path, codex_home_path, tmpdir_path, path_value, lang, lc_all, term]
-      fixed_context_constants: [TrustedReviewRuntimeContext/V1, /opt/homebrew/bin/codex, codex-cli/0.145.0, darwin, arm64, /opt/homebrew/bin:/usr/bin:/bin, en_US.UTF-8, en_US.UTF-8, dumb]
+      fixed_context_constants: [TrustedReviewRuntimeContext/V1, /opt/homebrew/bin/codex, codex-cli/0.145.0, darwin, arm64, "/opt/homebrew/bin:/usr/bin:/bin", en_US.UTF-8, en_US.UTF-8, dumb]
       fresh_path_rule: EACH_WORKING_HOME_CODEX_HOME_AND_TMPDIR_PATH_IS_CONTROLLER_CREATED_UNDER_THE_ONE_RUN_TEMP_ROOT_AND_IS_PAIRWISE_DISTINCT
       unknown_runtime_field_constant_OR_path_outside_run_root_effect: INELIGIBLE
     frozen_lane_prompt_allowlist:
@@ -179,11 +187,11 @@ programme_gate_registry:
       missing_extra_or_digest_mismatched_prompt_effect: INELIGIBLE
     frozen_independence_validator_allowlist:
       validator_key_id: PROGRAMME_GATE_VALIDATOR_2026_07
-      validator_executable_digest: afbb87142e7379ee4824f4cf87bff0b27ae39260ea8d891e68d6e4f0821a2c8a
+      validator_executable_digest: c15bc336938092ecea534018e6c80da15d41e05d1e55facc259661ddd5171cae
       validator_configuration_digest: 8518fca95839fcf5ab0463c5cbb1009265a7240314f84acd392f2d4287a72a5a
     frozen_trust_root_set:
       registry_schema: programme-gate-trusted-public-keys/v1
-      registry_source_sha256: 7c4bc2081f0b0c94a7cbed8f521cf396fedb6468fbe9fd4400dd53fab96f7e83
+      registry_source_sha256: c10f66a62220a84e82118d6fac35cb45fbb97b87feed3ecf564cef077b9f5575
       keys:
         PROGRAMME_GATE_VALIDATOR_2026_07: 5b028d01aaa4f077c6f2f28ef8075195330eff00c2f81061fad8622b761de566
         PROGRAMME_STATUS_PUBLISHER_2026_07: d7f562af345fcb04a78f26c87b3e3f19b1cad6c8627ccc612396a4217d8a02c1
@@ -271,6 +279,8 @@ programme_gate_registry:
       FABLE_ELIGIBLE:
         reviewer_identity_class: FABLE
         exact_model_rule: CONTROLLER_OBSERVED_FABLE_ELIGIBLE_MODEL
+        exact_model_identifiers: [fable-legal-reviewer]
+        exact_reasoning_level: provider_default
       SOL_5_6_EXTRA_HIGH_ELIGIBLE:
         reviewer_identity_class: OPENAI_MODEL
         exact_model_rule: gpt-5.6-sol
@@ -307,7 +317,7 @@ programme_gate_registry:
     independence_universe_contract:
       reviewed_bytes_must_be_committed: true
       reviewer_principal_identity_mapping: REVIEWER_PRINCIPAL_TO_COMPLETE_SOURCE_CONTROL_IDENTITY_SET_FROM_CONTROLLER_RECORD
-      authorship_membership: EVERY_GIT_COMMIT_CONTRIBUTING_A_BYTE_TO_THE_EXACT_REVIEWED_ROOT_WITH_COMPLETE_HISTORY_BLAME_AND_COPY_TRACING
+      authorship_membership: COMPLETE_NON_SHALLOW_GIT_COMMIT_DAG_AT_THE_REVIEWED_COMMIT_AS_A_CONSERVATIVE_SUPERSET_OF_EVERY_BYTE_AUTHOR
       review_input_membership: EVERY_CONTROLLER_OBSERVED_TASK_INPUT_PLUS_THE_PINNED_FIXED_CONTROLLER_RUNTIME_CONTEXT
       allowed_review_input: EXACT_CONTROLLER_SUPPLIED_TASK_PAYLOAD_PLUS_FIXED_CONTROLLER_RUNTIME_CONTEXT
       cold_prompt_constraint: ROOT_BOUND_PROMPT_DIGEST_WITH_ZERO_PRIOR_REVIEW_FINDING_OR_CONCLUSION_CONTENT
@@ -315,7 +325,7 @@ programme_gate_registry:
       cutoff: ROOT_FREEZE_PRECEDES_REVIEW_EXECUTION_AND_CONTROLLER_INPUT_CUTOFF_EQUALS_REVIEW_START
       authorship_source: COMPLETE_GIT_COMMIT_DAG_SUPPLEMENTARY_TO_CONTROLLER_REVIEW_EVIDENCE
       review_input_source: TRUSTED_REVIEW_CONTROLLER_RECORD_ONLY
-      completeness_proof: VALIDATOR_REBUILDS_BYTE_AUTHORSHIP_WITH_COMPLETE_HISTORY_BLAME_AND_COPY_TRACING_AND_MAPS_ALL_AUTHORS_TO_THE_REVIEWER_PRINCIPAL_IDENTITY_SET
+      completeness_proof: FROZEN_VALIDATOR_ENUMERATES_THE_COMPLETE_NON_SHALLOW_GIT_DAG_DIRECTLY_AND_MAPS_ALL_AUTHOR_AND_COMMITTER_IDENTITIES_TO_THE_REVIEWER_PRINCIPAL_IDENTITY_SET
       missing_or_ambiguous_reviewer_identity_mapping_effect: INELIGIBLE
       missing_unsigned_unattributed_or_unenumerable_event_effect: INELIGIBLE
     independence_required_fields:
@@ -323,6 +333,9 @@ programme_gate_registry:
       - immutable_session_id
       - session_parent_or_genesis
       - exact_input_context_digest
+      - reviewed_code_commit
+      - source_control_authorship_events
+      - source_control_authorship_event_set_root
       - authoring_event_intersection_root
       - prior_conclusion_intersection_root
       - reviewer_edit_set_root

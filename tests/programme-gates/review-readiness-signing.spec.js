@@ -1,5 +1,7 @@
 const assert = require('node:assert/strict');
+const { execFileSync } = require('node:child_process');
 const crypto = require('node:crypto');
+const path = require('node:path');
 const test = require('node:test');
 
 const { domainDigest, signatureBytes } = require('../../lib/programme-gates/bytes');
@@ -40,9 +42,20 @@ const {
 const {
   expectedTestExecutableDigest,
 } = require('../../lib/programme-gates/test-executable-registry');
+const {
+  enumerateCompleteGitAuthorshipUniverse,
+} = require('../../lib/programme-gates/git-authorship');
 
 const ROOT = 'a'.repeat(64);
-const COMMIT = 'b'.repeat(40);
+const REPOSITORY_ROOT = path.resolve(__dirname, '../..');
+const COMMIT = execFileSync('git', ['rev-parse', 'HEAD'], {
+  cwd: REPOSITORY_ROOT,
+  encoding: 'utf8',
+}).trim();
+const AUTHORSHIP_EVENTS = enumerateCompleteGitAuthorshipUniverse({
+  repositoryRoot: REPOSITORY_ROOT,
+  expectedCommit: COMMIT,
+});
 const DIGEST_B = 'b'.repeat(64);
 const DIGEST_C = 'c'.repeat(64);
 const DIGEST_D = 'd'.repeat(64);
@@ -258,11 +271,9 @@ function fixture() {
       immutable_session_id: controllerRecord.immutable_session_id,
       session_parent_or_genesis: 'GENESIS',
       exact_input_context_digest: controllerRecord.exact_input_context_digest,
+      reviewed_code_commit: COMMIT,
       source_control_history_scope: 'ALL_REFS_FROM_REPOSITORY_GENESIS',
-      source_control_authorship_events: [{
-        commit_id: `${index + 1}`.repeat(40),
-        identity_set: ['Ben Goodchild', 'bengoodchild@gmail.com'],
-      }],
+      source_control_authorship_events: AUTHORSHIP_EVENTS,
       source_control_authorship_event_set_root: '',
       prior_conclusion_input_set: [],
       authoring_event_intersection_root: EMPTY_AUTHORING_EVENT_INTERSECTION_ROOT,
@@ -390,6 +401,32 @@ function reviewClaims(sample) {
     },
   });
 }
+
+test('the legal-semantic lane accepts the frozen Fable profile while other lanes remain Sol', () => {
+  const sample = fixture();
+  const legalIndex = sample.members.findIndex((member) => member.lane_id === 'LEGAL_SEMANTIC');
+  sample.members[legalIndex].controller_record.exact_model_identifier =
+    'fable-legal-reviewer';
+  sample.members[legalIndex].controller_record.reasoning_level = 'provider_default';
+  resignController(sample, legalIndex);
+  assert.deepEqual(
+    reviewClaims(sample).map((claim) => claim.typed_value),
+    [true, true, true, true],
+  );
+});
+
+test('the exact-review predicate rejects a signed but under-enumerated Git authorship set', () => {
+  const sample = fixture();
+  const independence = sample.members[0].independence_attestation;
+  independence.source_control_authorship_events =
+    independence.source_control_authorship_events.slice(0, 1);
+  independence.source_control_authorship_event_set_root = domainDigest(
+    'PROGRAMME_GATE_SOURCE_CONTROL_AUTHORSHIP_EVENT_SET_ROOT/V1',
+    independence.source_control_authorship_events,
+  );
+  resignIndependence(sample, 0);
+  assert.ok(reviewClaims(sample).some((claim) => claim.typed_value === false));
+});
 
 function testResult(testId) {
   return {
