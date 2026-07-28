@@ -76,7 +76,7 @@ test('the first authored source compiles twice byte-identically without claiming
   const second = compileCanonicalContractInput({ root_directory: sourceRoot });
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 51);
+  assert.equal(first.authored_members.length, 56);
   assert.equal(
     first.authored_members.some(
       (member) => member.object_kind === 'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY',
@@ -207,6 +207,49 @@ test('the compiler refuses the authored relationship when its effect schema is a
   );
 });
 
+test('every no-shop semantic schema input preserves the exact nested V12 source', () => {
+  const compiled = compileCanonicalContractInput({ root_directory: sourceRoot });
+  const members = compiled.authored_members.filter(
+    (member) => member.object_kind === 'NO_SHOP_SEMANTIC_SCHEMA_INPUT',
+  );
+  const expected = [...FIXTURE_CONTRACT_INPUT_V12.no_shop_semantic_schemas]
+    .sort((left, right) => left.schema_key.localeCompare(right.schema_key));
+
+  assert.equal(members.length, 5);
+  const actual = members.map((member) => {
+    const value = member.canonical_value;
+    assert.deepEqual(Object.keys(value).sort(), [
+      'authored_schema',
+      'object_kind',
+      'schema_version',
+      'stable_id',
+    ]);
+    assert.equal(value.object_kind, 'NO_SHOP_SEMANTIC_SCHEMA_INPUT');
+    assert.equal(value.schema_version, 'NO_SHOP_SEMANTIC_SCHEMA_INPUT/V1');
+    assert.equal(value.stable_id, value.authored_schema.schema_key);
+    assert.equal(Object.hasOwn(value, 'semantic_schema_key'), false);
+    assert.equal(Object.hasOwn(value, 'semantic_schema_version'), false);
+    assert.equal(Object.hasOwn(value, 'semantic_schema_definition_id'), false);
+    assert.equal(
+      Object.hasOwn(value, 'semantic_schema_definition_payload_digest'),
+      false,
+    );
+    return value.authored_schema;
+  }).sort((left, right) => left.schema_key.localeCompare(right.schema_key));
+
+  assert.deepEqual(
+    actual.map((entry) => [entry.schema_key, entry.schema_version]),
+    [
+      ['NO_SHOP_ACTION_COMPARISON_ROLLUP', 1],
+      ['NO_SHOP_ACTION_OCCURRENCE', 1],
+      ['NO_SHOP_EXCEPTION_EFFECT', 1],
+      ['NO_SHOP_INLINE_PERMISSION_EFFECT', 1],
+      ['NO_SHOP_NOTICE_OBLIGATION', 6],
+    ],
+  );
+  assert.equal(canonicalJson(actual), canonicalJson(expected));
+});
+
 test('every authored exact-detail action is the exact existing V12 source record', () => {
   const compiled = compileCanonicalContractInput({ root_directory: sourceRoot });
   const actual = authoredPayloads(
@@ -282,18 +325,19 @@ test('the authored claim interpretation policy is the exact existing V12 policy'
   );
 });
 
-test('the manifest exactly closes the complete 51-file V12 authored source tree', () => {
+test('the manifest exactly closes the complete 56-file V12 authored source tree', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
   const actualMembers = jsonMembers(sourceRoot);
   const declaredMembers = manifest.members.map((member) => member.relative_path);
 
   assert.deepEqual(actualMembers, declaredMembers);
-  assert.equal(manifest.members.length, 51);
+  assert.equal(manifest.members.length, 56);
   assert.deepEqual(manifest.per_kind_counts, {
     CLAIM_DEFINITION: 13,
     CLAIM_INTERPRETATION_POLICY: 1,
     COMPONENT_DEFINITION: 9,
     MONEY_DENOMINATOR_PRECISION_POLICY: 1,
+    NO_SHOP_SEMANTIC_SCHEMA_INPUT: 5,
     PARSER_PROPOSAL_BOUNDARY_DEFINITION: 1,
     PROVISION_CONCEPT: 19,
     RELATIONSHIP_DEFINITION: 1,
@@ -305,6 +349,7 @@ test('the manifest exactly closes the complete 51-file V12 authored source tree'
     CLAIM_INTERPRETATION_POLICY: ['CLAIM_INTERPRETATION_POLICY/V2'],
     COMPONENT_DEFINITION: ['COMPONENT_DEFINITION/V1'],
     MONEY_DENOMINATOR_PRECISION_POLICY: ['MONEY_DENOMINATOR_PRECISION_POLICY/V1'],
+    NO_SHOP_SEMANTIC_SCHEMA_INPUT: ['NO_SHOP_SEMANTIC_SCHEMA_INPUT/V1'],
     PARSER_PROPOSAL_BOUNDARY_DEFINITION: ['PARSER_PROPOSAL_BOUNDARY_DEFINITION/V1'],
     PROVISION_CONCEPT: ['PROVISION_CONCEPT/V1'],
     RELATIONSHIP_DEFINITION: ['RELATIONSHIP_DEFINITION/V1'],

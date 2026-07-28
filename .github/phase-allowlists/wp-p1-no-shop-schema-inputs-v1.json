@@ -1,0 +1,22 @@
+{
+  "phase": "WP-P1-NO-SHOP-SCHEMA-INPUTS-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-p1-no-shop-schema-inputs-v1.json",
+    "lib/canonical-v2/canonical-contract-input-compiler.js",
+    "lib/canonical-v2/canonical-contract-no-shop-schema-input-validator.js",
+    "lib/schema/canonical/contract-v2/manifest.json",
+    "lib/schema/canonical/contract-v2/no-shop-semantic-schema-inputs/*.json",
+    "tests/canonical-v2-canonical-contract-input-compiler.test.js",
+    "tests/canonical-v2-canonical-contract-source-tree.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Preserves all five exact V12 no-shop semantic schemas as validated migration inputs without promoting unresolved dependencies into canonical relationship or effect authority."
+}
