@@ -1,0 +1,37 @@
+{
+  "object_kind": "RELATIONSHIP_EFFECT_SCHEMA",
+  "stable_id": "CONTAINED_IN_EFFECT",
+  "schema_version": "RELATIONSHIP_EFFECT_SCHEMA/V1",
+  "effect_schema_key": "CONTAINED_IN_EFFECT",
+  "effect_schema_version": 1,
+  "definition": {
+    "schema_version": "CONTAINED_IN_EFFECT/V1",
+    "relationship_key": "CONTAINED_IN",
+    "relationship_definition_version": 2,
+    "effect_mode": "NON_SEMANTIC",
+    "required_effect_fields": [
+      "effect_mode",
+      "legal_operation"
+    ],
+    "required_exact_values": {
+      "effect_mode": "NON_SEMANTIC",
+      "legal_operation": "GEOMETRIC_ONLY"
+    },
+    "endpoint_contract": {
+      "source_occurrence_kind": "SOURCE_OCCURRENCE",
+      "target_occurrence_kind": "SOURCE_OCCURRENCE",
+      "target_cardinality": "EXACTLY_ONE",
+      "same_document_required": true,
+      "source_span_relation_to_target": "WITHIN_OR_EQUAL"
+    },
+    "propagation": "NONE",
+    "party_transfer": "NONE",
+    "concept_transfer": "NONE",
+    "qualifier_transfer": "NONE",
+    "exception_transfer": "NONE",
+    "definition_transfer": "NONE",
+    "claim_transfer": "NONE",
+    "evidence_transfer": "NONE",
+    "semantic_use_satisfaction": "FORBIDDEN"
+  }
+}

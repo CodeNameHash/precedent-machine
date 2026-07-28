@@ -1,0 +1,99 @@
+{
+  "object_kind": "RELATIONSHIP_EFFECT_SCHEMA",
+  "stable_id": "BRINGS_DOWN_EFFECT",
+  "schema_version": "RELATIONSHIP_EFFECT_SCHEMA/V1",
+  "effect_schema_key": "BRINGS_DOWN_EFFECT",
+  "effect_schema_version": 1,
+  "definition": {
+    "schema_version": "BRINGS_DOWN_EFFECT/V1",
+    "relationship_key": "BRINGS_DOWN",
+    "relationship_definition_version": 2,
+    "effect_mode": "TYPED_LEGAL_EFFECT",
+    "required_effect_fields": [
+      "effect_mode",
+      "legal_operation",
+      "accuracy_standard",
+      "exception",
+      "time_points"
+    ],
+    "conditional_effect_fields": [
+      {
+        "field_key": "materiality_scrape",
+        "required_when_accuracy_standard_in": [
+          "MAT_ALL_MATERIAL",
+          "MAT_MAE_QUALIFIED"
+        ],
+        "forbidden_otherwise": true,
+        "required_fields": [
+          "applied",
+          "disregarded_qualifiers"
+        ]
+      }
+    ],
+    "required_exact_values": {
+      "effect_mode": "TYPED_LEGAL_EFFECT",
+      "legal_operation": "TEST_ACCURACY_AT_SIGNING_AND_CLOSING",
+      "time_points": [
+        "SIGNING",
+        "CLOSING",
+        "EXPRESS_EARLIER_DATE_IF_APPLICABLE"
+      ]
+    },
+    "allowed_accuracy_standards": [
+      "MAT_ALL_RESPECTS",
+      "MAT_ALL_RESPECTS_DE_MINIMIS",
+      "MAT_ALL_MATERIAL",
+      "MAT_MAE_QUALIFIED"
+    ],
+    "accuracy_exception_contract": [
+      {
+        "accuracy_standard": "MAT_ALL_RESPECTS",
+        "required_exception": null
+      },
+      {
+        "accuracy_standard": "MAT_ALL_RESPECTS_DE_MINIMIS",
+        "required_exception": "DE_MINIMIS_INACCURACIES"
+      },
+      {
+        "accuracy_standard": "MAT_ALL_MATERIAL",
+        "required_exception": null
+      },
+      {
+        "accuracy_standard": "MAT_MAE_QUALIFIED",
+        "required_exception": null
+      }
+    ],
+    "materiality_scrape_contract": {
+      "applied": true,
+      "disregarded_qualifiers": [
+        "MATERIAL",
+        "MATERIALITY",
+        "COMPANY_MATERIAL_ADVERSE_EFFECT"
+      ]
+    },
+    "endpoint_contract": {
+      "source_occurrence_kind": "PROVISION_INSTANCE",
+      "target_occurrence_kind": "PROVISION_COMPONENT",
+      "target_cardinality": "ONE_OR_MORE_BOUNDED",
+      "same_deal_required": true,
+      "target_ids_in_governed_component_order": true,
+      "source_party_tuple_required": true,
+      "target_parent_party_tuple_required": true
+    },
+    "scope_contract": {
+      "raw_scope_required": true,
+      "coverage_status": "COMPLETE",
+      "required_intervals_include_source_and_every_target": true,
+      "examined_intervals_equal_required_intervals": true,
+      "target_intervals_equal_resolved_target_excerpts": true
+    },
+    "evidence_role_contract": {
+      "source_role": "CROSS_REFERENCE",
+      "target_role": "DERIVATION_INPUT",
+      "exception_role": "DEFINITION",
+      "materiality_scrape_role": "DERIVATION_INPUT"
+    },
+    "propagation": "EXACT_NAMED_TARGETS_ONLY",
+    "party_transfer": "NONE"
+  }
+}
