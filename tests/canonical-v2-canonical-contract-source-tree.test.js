@@ -55,12 +55,27 @@ function authoredPayloads(compiled, objectKind, keyField, schemaVersion) {
     .sort((left, right) => left[keyField].localeCompare(right[keyField]));
 }
 
+function authoredPolicyPayload(compiled, objectKind, stableId, schemaVersion) {
+  const members = compiled.authored_members
+    .filter((member) => member.object_kind === objectKind);
+  assert.equal(members.length, 1);
+  const {
+    object_kind: valueObjectKind,
+    stable_id: valueStableId,
+    ...payload
+  } = members[0].canonical_value;
+  assert.equal(valueObjectKind, objectKind);
+  assert.equal(valueStableId, stableId);
+  assert.equal(payload.schema_version, schemaVersion);
+  return payload;
+}
+
 test('the first authored source compiles twice byte-identically without claiming completeness', () => {
   const first = compileCanonicalContractInput({ root_directory: sourceRoot });
   const second = compileCanonicalContractInput({ root_directory: sourceRoot });
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 41);
+  assert.equal(first.authored_members.length, 49);
   assert.equal(
     first.authored_members.some(
       (member) => member.object_kind === 'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY',
@@ -123,22 +138,107 @@ test('every authored concept is the exact existing V12 payload under the require
   assert.equal(canonicalJson(actual), canonicalJson(expected));
 });
 
-test('the manifest exactly closes the complete 41-file V12 authored vocabulary tree', () => {
+test('every authored exact-detail action is the exact existing V12 source record', () => {
+  const compiled = compileCanonicalContractInput({ root_directory: sourceRoot });
+  const actual = authoredPayloads(
+    compiled,
+    'SERVING_EXACT_DETAIL_ACTION_DEFINITION',
+    'action_slot_key',
+    'SERVING_EXACT_DETAIL_ACTION_DEFINITION/V1',
+  );
+  const expected = [...FIXTURE_CONTRACT_INPUT_V12.serving_exact_detail_actions]
+    .sort((left, right) => left.action_slot_key.localeCompare(right.action_slot_key));
+
+  assert.equal(actual.length, 5);
+  assert.equal(canonicalJson(actual), canonicalJson(expected));
+  for (const member of compiled.authored_members.filter(
+    (entry) => entry.object_kind === 'SERVING_EXACT_DETAIL_ACTION_DEFINITION',
+  )) {
+    assert.equal(Object.hasOwn(member.canonical_value, 'action_definition_id'), false);
+    assert.equal(
+      Object.hasOwn(member.canonical_value, 'action_definition_payload_digest'),
+      false,
+    );
+  }
+});
+
+test('the authored parser proposal boundary is the exact existing V12 source record', () => {
+  const compiled = compileCanonicalContractInput({ root_directory: sourceRoot });
+  const actual = authoredPayloads(
+    compiled,
+    'PARSER_PROPOSAL_BOUNDARY_DEFINITION',
+    'adapter_key',
+    'PARSER_PROPOSAL_BOUNDARY_DEFINITION/V1',
+  );
+
+  assert.equal(actual.length, 1);
+  assert.equal(canonicalJson(actual[0]), canonicalJson(FIXTURE_CONTRACT_INPUT_V12.parser_proposal_boundary));
+  const member = compiled.authored_members.find(
+    (entry) => entry.object_kind === 'PARSER_PROPOSAL_BOUNDARY_DEFINITION',
+  );
+  assert.equal(Object.hasOwn(member.canonical_value, 'proposal_boundary_definition_id'), false);
+  assert.equal(
+    Object.hasOwn(member.canonical_value, 'proposal_boundary_definition_payload_digest'),
+    false,
+  );
+});
+
+test('the authored money denominator precision policy is the exact existing V12 policy', () => {
+  const compiled = compileCanonicalContractInput({ root_directory: sourceRoot });
+  const actual = authoredPolicyPayload(
+    compiled,
+    'MONEY_DENOMINATOR_PRECISION_POLICY',
+    'MONEY_DENOMINATOR_PRECISION_POLICY',
+    'MONEY_DENOMINATOR_PRECISION_POLICY/V1',
+  );
+
+  assert.equal(
+    canonicalJson(actual),
+    canonicalJson(FIXTURE_CONTRACT_INPUT_V12.money_denominator_precision_policy),
+  );
+});
+
+test('the authored claim interpretation policy is the exact existing V12 policy', () => {
+  const compiled = compileCanonicalContractInput({ root_directory: sourceRoot });
+  const actual = authoredPolicyPayload(
+    compiled,
+    'CLAIM_INTERPRETATION_POLICY',
+    'CLAIM_INTERPRETATION_POLICY',
+    'CLAIM_INTERPRETATION_POLICY/V2',
+  );
+
+  assert.equal(
+    canonicalJson(actual),
+    canonicalJson(FIXTURE_CONTRACT_INPUT_V12.claim_interpretation_policy),
+  );
+});
+
+test('the manifest exactly closes the complete 49-file V12 authored source tree', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
   const actualMembers = jsonMembers(sourceRoot);
   const declaredMembers = manifest.members.map((member) => member.relative_path);
 
   assert.deepEqual(actualMembers, declaredMembers);
-  assert.equal(manifest.members.length, 41);
+  assert.equal(manifest.members.length, 49);
   assert.deepEqual(manifest.per_kind_counts, {
     CLAIM_DEFINITION: 13,
+    CLAIM_INTERPRETATION_POLICY: 1,
     COMPONENT_DEFINITION: 9,
+    MONEY_DENOMINATOR_PRECISION_POLICY: 1,
+    PARSER_PROPOSAL_BOUNDARY_DEFINITION: 1,
     PROVISION_CONCEPT: 19,
+    SERVING_EXACT_DETAIL_ACTION_DEFINITION: 5,
   });
   assert.deepEqual(manifest.per_kind_schema_versions, {
     CLAIM_DEFINITION: ['CLAIM_DEFINITION/V1'],
+    CLAIM_INTERPRETATION_POLICY: ['CLAIM_INTERPRETATION_POLICY/V2'],
     COMPONENT_DEFINITION: ['COMPONENT_DEFINITION/V1'],
+    MONEY_DENOMINATOR_PRECISION_POLICY: ['MONEY_DENOMINATOR_PRECISION_POLICY/V1'],
+    PARSER_PROPOSAL_BOUNDARY_DEFINITION: ['PARSER_PROPOSAL_BOUNDARY_DEFINITION/V1'],
     PROVISION_CONCEPT: ['PROVISION_CONCEPT/V1'],
+    SERVING_EXACT_DETAIL_ACTION_DEFINITION: [
+      'SERVING_EXACT_DETAIL_ACTION_DEFINITION/V1',
+    ],
   });
   for (const declaredMember of manifest.members) {
     const canonicalMember = JSON.parse(

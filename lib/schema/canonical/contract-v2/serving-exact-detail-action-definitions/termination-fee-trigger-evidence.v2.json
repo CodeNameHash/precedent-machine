@@ -1,0 +1,20 @@
+{
+  "object_kind": "SERVING_EXACT_DETAIL_ACTION_DEFINITION",
+  "stable_id": "TERMINATION_FEE_TRIGGER_EVIDENCE",
+  "schema_version": "SERVING_EXACT_DETAIL_ACTION_DEFINITION/V1",
+  "action_slot_key": "TERMINATION_FEE_TRIGGER_EVIDENCE",
+  "action_version": 2,
+  "parent_kind": "RESULT_ROW",
+  "detail_kind": "TERMINATION_FEE_TRIGGER_EVIDENCE",
+  "selection_path_schema": "RESULT_TERMINATION_FEE_TRIGGER_SET/V2",
+  "contextual_cardinality": "EXACTLY_ONE",
+  "comparator": "RELATIONSHIP_ORDINAL_THEN_SOURCE_ORDER",
+  "duplicate_policy": "REJECT_NON_IDENTICAL_COLLAPSE_EXACT",
+  "maximum_references": 1,
+  "maximum_encoded_bytes": 32768,
+  "whole_document_permission": false,
+  "object_authorisation_predicate": "PARENT_SELECTED_TERMINATION_FEE_TRIGGER_SET_ONLY",
+  "route": "INLINE_BATCH",
+  "response_schema": "SERVING_EXACT_DETAIL_TERMINATION_FEE_TRIGGERS_RESPONSE/V2",
+  "projection_version": 2
+}
