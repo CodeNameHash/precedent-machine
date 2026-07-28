@@ -175,6 +175,68 @@ function noShopSchemaFixture(mutator = () => {}) {
   });
 }
 
+function servingMetricBindingFixture(mutator = () => {}) {
+  return fixture((state) => {
+    const value = member(
+      'SERVING_METRIC_OPERATION_BINDING_INPUT',
+      'TEST_METRIC_BINDING/V2',
+      'SERVING_METRIC_OPERATION_BINDING_INPUT/V1',
+      {
+        authored_binding: {
+          binding_key: 'TEST_METRIC_BINDING/V2',
+          metric_version: 1,
+          trigger_path_schema_version: 2,
+        },
+      },
+    );
+    mutator(value);
+    state.valuesByPath['migration-inputs/test-metric-binding.json'] = value;
+    refreshManifest(state);
+  });
+}
+
+function servingTriggerPathSchemaFixture(mutator = () => {}) {
+  return fixture((state) => {
+    const value = member(
+      'SERVING_TRIGGER_PATH_SCHEMA_INPUT',
+      'TEST_TRIGGER_PATH',
+      'SERVING_TRIGGER_PATH_SCHEMA_INPUT/V1',
+      {
+        authored_schema: {
+          schema_key: 'TEST_TRIGGER_PATH',
+          schema_version: 2,
+        },
+      },
+    );
+    mutator(value);
+    state.valuesByPath['migration-inputs/test-trigger-path.json'] = value;
+    refreshManifest(state);
+  });
+}
+
+function codebookMigrationFixture(
+  objectKind,
+  stableId,
+  orderedField,
+  mutator = () => {},
+) {
+  return fixture((state) => {
+    const value = member(
+      objectKind,
+      stableId,
+      `${objectKind}/V1`,
+      {
+        authority: 'MIGRATION_INPUT_ONLY',
+        source_fixture: 'FIXTURE_CONTRACT_INPUT_V12',
+        [orderedField]: ['SECOND', 'FIRST'],
+      },
+    );
+    mutator(value);
+    state.valuesByPath[`migration-inputs/${objectKind.toLowerCase()}.json`] = value;
+    refreshManifest(state);
+  });
+}
+
 function expectCode(code) {
   return (error) => error?.code === code;
 }
@@ -274,6 +336,170 @@ test('rejects mutated no-shop semantic schema input envelopes', (t) => {
       () => compileCanonicalContractInput({ root_directory: root }),
       expectCode('INVALID_CANONICAL_BUNDLE_NO_SHOP_SEMANTIC_SCHEMA_INPUT'),
     );
+  }
+});
+
+test('accepts serving migration inputs and preserves authored list order', (t) => {
+  const roots = [
+    servingMetricBindingFixture(),
+    servingTriggerPathSchemaFixture(),
+    codebookMigrationFixture(
+      'CLAIM_STATE_CODEBOOK_MIGRATION_INPUT',
+      'FIXTURE_CONTRACT_INPUT_V12_CLAIM_STATES',
+      'ordered_values',
+    ),
+  ];
+  for (const root of roots) {
+    t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  }
+
+  const metric = compileCanonicalContractInput({ root_directory: roots[0] })
+    .authored_members.find(
+      (entry) => entry.object_kind === 'SERVING_METRIC_OPERATION_BINDING_INPUT',
+    );
+  const trigger = compileCanonicalContractInput({ root_directory: roots[1] })
+    .authored_members.find(
+      (entry) => entry.object_kind === 'SERVING_TRIGGER_PATH_SCHEMA_INPUT',
+    );
+  const codebook = compileCanonicalContractInput({ root_directory: roots[2] })
+    .authored_members.find(
+      (entry) => entry.object_kind === 'CLAIM_STATE_CODEBOOK_MIGRATION_INPUT',
+    );
+
+  assert.equal(metric.canonical_value.authored_binding.metric_version, 1);
+  assert.equal(trigger.canonical_value.authored_schema.schema_version, 2);
+  assert.deepEqual(codebook.canonical_value.ordered_values, ['SECOND', 'FIRST']);
+});
+
+test('rejects mutated serving metric-operation binding inputs', (t) => {
+  const mutations = [
+    (value) => {
+      value.stable_id = 'WRONG_BINDING/V2';
+    },
+    (value) => {
+      value.schema_version = 'SERVING_METRIC_OPERATION_BINDING_INPUT/V2';
+    },
+    (value) => {
+      value.authored_binding.binding_key = '';
+    },
+    (value) => {
+      value.authored_binding.metric_version = 0;
+    },
+    (value) => {
+      value.authored_binding.metric_version = 1.5;
+    },
+    (value) => {
+      value.authored_binding.trigger_path_schema_version = 0;
+    },
+    (value) => {
+      value.authored_binding.trigger_path_schema_version = 1.5;
+    },
+    (value) => {
+      value.metric_operation_binding_definition_id = 'generated';
+    },
+  ];
+
+  for (const mutate of mutations) {
+    const root = servingMetricBindingFixture(mutate);
+    t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+    assert.throws(
+      () => compileCanonicalContractInput({ root_directory: root }),
+      expectCode('INVALID_CANONICAL_BUNDLE_SERVING_METRIC_OPERATION_BINDING_INPUT'),
+    );
+  }
+});
+
+test('rejects mutated serving trigger-path schema inputs', (t) => {
+  const mutations = [
+    (value) => {
+      value.stable_id = 'WRONG_TRIGGER_PATH';
+    },
+    (value) => {
+      value.schema_version = 'SERVING_TRIGGER_PATH_SCHEMA_INPUT/V2';
+    },
+    (value) => {
+      value.authored_schema.schema_key = '';
+    },
+    (value) => {
+      value.authored_schema.schema_version = 0;
+    },
+    (value) => {
+      value.authored_schema.schema_version = 1.5;
+    },
+    (value) => {
+      value.trigger_path_schema_definition_id = 'generated';
+    },
+  ];
+
+  for (const mutate of mutations) {
+    const root = servingTriggerPathSchemaFixture(mutate);
+    t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+    assert.throws(
+      () => compileCanonicalContractInput({ root_directory: root }),
+      expectCode('INVALID_CANONICAL_BUNDLE_SERVING_TRIGGER_PATH_SCHEMA_INPUT'),
+    );
+  }
+});
+
+test('rejects mutated codebook and tuple-shape migration inputs', (t) => {
+  const configs = [
+    [
+      'CLAIM_STATE_CODEBOOK_MIGRATION_INPUT',
+      'FIXTURE_CONTRACT_INPUT_V12_CLAIM_STATES',
+      'ordered_values',
+    ],
+    [
+      'PARTY_TUPLE_SHAPE_MIGRATION_INPUT',
+      'FIXTURE_CONTRACT_INPUT_V12_PARTY_TUPLE_FIELDS',
+      'ordered_fields',
+    ],
+    [
+      'RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT',
+      'FIXTURE_CONTRACT_INPUT_V12_RESIDUAL_REASON_CODES',
+      'ordered_values',
+    ],
+  ];
+  const mutations = [
+    (value) => {
+      value.schema_version = `${value.object_kind}/V2`;
+    },
+    (value) => {
+      value.stable_id = 'WRONG_STABLE_ID';
+    },
+    (value) => {
+      value.source_fixture = 'OTHER_FIXTURE';
+    },
+    (value) => {
+      value.authority = 'FINAL_CODEBOOK';
+    },
+    (value, orderedField) => {
+      value[orderedField] = [];
+    },
+    (value, orderedField) => {
+      value[orderedField] = ['VALID', ''];
+    },
+    (value, orderedField) => {
+      value[orderedField] = ['DUPLICATE', 'DUPLICATE'];
+    },
+    (value) => {
+      value.definition_id = 'generated';
+    },
+  ];
+
+  for (const [objectKind, stableId, orderedField] of configs) {
+    for (const mutate of mutations) {
+      const root = codebookMigrationFixture(
+        objectKind,
+        stableId,
+        orderedField,
+        (value) => mutate(value, orderedField),
+      );
+      t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+      assert.throws(
+        () => compileCanonicalContractInput({ root_directory: root }),
+        expectCode(`INVALID_CANONICAL_BUNDLE_${objectKind}`),
+      );
+    }
   }
 });
 

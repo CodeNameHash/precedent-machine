@@ -76,7 +76,7 @@ test('the first authored source compiles twice byte-identically without claiming
   const second = compileCanonicalContractInput({ root_directory: sourceRoot });
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 56);
+  assert.equal(first.authored_members.length, 62);
   assert.equal(
     first.authored_members.some(
       (member) => member.object_kind === 'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY',
@@ -250,6 +250,126 @@ test('every no-shop semantic schema input preserves the exact nested V12 source'
   assert.equal(canonicalJson(actual), canonicalJson(expected));
 });
 
+test('every serving metric-operation binding input preserves the exact nested V12 source', () => {
+  const compiled = compileCanonicalContractInput({ root_directory: sourceRoot });
+  const members = compiled.authored_members.filter(
+    (member) => member.object_kind === 'SERVING_METRIC_OPERATION_BINDING_INPUT',
+  );
+  const expected = [...FIXTURE_CONTRACT_INPUT_V12.serving_metric_operation_bindings]
+    .sort((left, right) => left.binding_key.localeCompare(right.binding_key));
+
+  assert.equal(members.length, 2);
+  const actual = members.map((member) => {
+    const value = member.canonical_value;
+    assert.deepEqual(Object.keys(value).sort(), [
+      'authored_binding',
+      'object_kind',
+      'schema_version',
+      'stable_id',
+    ]);
+    assert.equal(value.object_kind, 'SERVING_METRIC_OPERATION_BINDING_INPUT');
+    assert.equal(value.schema_version, 'SERVING_METRIC_OPERATION_BINDING_INPUT/V1');
+    assert.equal(value.stable_id, value.authored_binding.binding_key);
+    assert.equal(Object.hasOwn(value, 'metric_operation_binding_definition_id'), false);
+    assert.equal(
+      Object.hasOwn(value, 'metric_operation_binding_definition_payload_digest'),
+      false,
+    );
+    return value.authored_binding;
+  }).sort((left, right) => left.binding_key.localeCompare(right.binding_key));
+
+  assert.deepEqual(
+    actual.map((entry) => [
+      entry.binding_key,
+      entry.metric_version,
+      entry.trigger_path_schema_version,
+    ]),
+    [
+      ['BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V2', 1, 2],
+      ['SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V2', 1, 2],
+    ],
+  );
+  assert.equal(canonicalJson(actual), canonicalJson(expected));
+});
+
+test('the serving trigger-path schema input preserves the exact nested V12 source', () => {
+  const compiled = compileCanonicalContractInput({ root_directory: sourceRoot });
+  const members = compiled.authored_members.filter(
+    (member) => member.object_kind === 'SERVING_TRIGGER_PATH_SCHEMA_INPUT',
+  );
+
+  assert.equal(members.length, 1);
+  const value = members[0].canonical_value;
+  assert.deepEqual(Object.keys(value).sort(), [
+    'authored_schema',
+    'object_kind',
+    'schema_version',
+    'stable_id',
+  ]);
+  assert.equal(value.object_kind, 'SERVING_TRIGGER_PATH_SCHEMA_INPUT');
+  assert.equal(value.schema_version, 'SERVING_TRIGGER_PATH_SCHEMA_INPUT/V1');
+  assert.equal(value.stable_id, value.authored_schema.schema_key);
+  assert.equal(value.authored_schema.schema_key, 'TERMINATION_FEE_TRIGGER_PATH');
+  assert.equal(value.authored_schema.schema_version, 2);
+  assert.equal(
+    canonicalJson(value.authored_schema),
+    canonicalJson(FIXTURE_CONTRACT_INPUT_V12.serving_trigger_path_schemas[0]),
+  );
+  assert.equal(Object.hasOwn(value, 'trigger_path_schema_key'), false);
+  assert.equal(Object.hasOwn(value, 'trigger_path_schema_version'), false);
+  assert.equal(Object.hasOwn(value, 'trigger_path_schema_definition_id'), false);
+  assert.equal(
+    Object.hasOwn(value, 'trigger_path_schema_definition_payload_digest'),
+    false,
+  );
+});
+
+test('the three migration-only codebook and tuple inputs preserve exact V12 order', () => {
+  const compiled = compileCanonicalContractInput({ root_directory: sourceRoot });
+  const configs = [
+    {
+      object_kind: 'CLAIM_STATE_CODEBOOK_MIGRATION_INPUT',
+      stable_id: 'FIXTURE_CONTRACT_INPUT_V12_CLAIM_STATES',
+      ordered_field: 'ordered_values',
+      expected: FIXTURE_CONTRACT_INPUT_V12.claim_states,
+    },
+    {
+      object_kind: 'PARTY_TUPLE_SHAPE_MIGRATION_INPUT',
+      stable_id: 'FIXTURE_CONTRACT_INPUT_V12_PARTY_TUPLE_FIELDS',
+      ordered_field: 'ordered_fields',
+      expected: FIXTURE_CONTRACT_INPUT_V12.party_tuple_fields,
+    },
+    {
+      object_kind: 'RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT',
+      stable_id: 'FIXTURE_CONTRACT_INPUT_V12_RESIDUAL_REASON_CODES',
+      ordered_field: 'ordered_values',
+      expected: FIXTURE_CONTRACT_INPUT_V12.residual_reason_codes,
+    },
+  ];
+
+  for (const config of configs) {
+    const members = compiled.authored_members.filter(
+      (member) => member.object_kind === config.object_kind,
+    );
+    assert.equal(members.length, 1);
+    const value = members[0].canonical_value;
+    assert.deepEqual(Object.keys(value).sort(), [
+      'authority',
+      'object_kind',
+      config.ordered_field,
+      'schema_version',
+      'source_fixture',
+      'stable_id',
+    ].sort());
+    assert.equal(value.object_kind, config.object_kind);
+    assert.equal(value.schema_version, `${config.object_kind}/V1`);
+    assert.equal(value.stable_id, config.stable_id);
+    assert.equal(value.source_fixture, 'FIXTURE_CONTRACT_INPUT_V12');
+    assert.equal(value.authority, 'MIGRATION_INPUT_ONLY');
+    assert.equal(canonicalJson(value[config.ordered_field]), canonicalJson(config.expected));
+  }
+});
+
 test('every authored exact-detail action is the exact existing V12 source record', () => {
   const compiled = compileCanonicalContractInput({ root_directory: sourceRoot });
   const actual = authoredPayloads(
@@ -325,38 +445,54 @@ test('the authored claim interpretation policy is the exact existing V12 policy'
   );
 });
 
-test('the manifest exactly closes the complete 56-file V12 authored source tree', () => {
+test('the manifest exactly closes the complete 62-file V12 authored source tree', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
   const actualMembers = jsonMembers(sourceRoot);
   const declaredMembers = manifest.members.map((member) => member.relative_path);
 
   assert.deepEqual(actualMembers, declaredMembers);
-  assert.equal(manifest.members.length, 56);
+  assert.equal(manifest.members.length, 62);
   assert.deepEqual(manifest.per_kind_counts, {
     CLAIM_DEFINITION: 13,
     CLAIM_INTERPRETATION_POLICY: 1,
+    CLAIM_STATE_CODEBOOK_MIGRATION_INPUT: 1,
     COMPONENT_DEFINITION: 9,
     MONEY_DENOMINATOR_PRECISION_POLICY: 1,
     NO_SHOP_SEMANTIC_SCHEMA_INPUT: 5,
     PARSER_PROPOSAL_BOUNDARY_DEFINITION: 1,
+    PARTY_TUPLE_SHAPE_MIGRATION_INPUT: 1,
     PROVISION_CONCEPT: 19,
     RELATIONSHIP_DEFINITION: 1,
     RELATIONSHIP_EFFECT_SCHEMA: 1,
+    RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT: 1,
     SERVING_EXACT_DETAIL_ACTION_DEFINITION: 5,
+    SERVING_METRIC_OPERATION_BINDING_INPUT: 2,
+    SERVING_TRIGGER_PATH_SCHEMA_INPUT: 1,
   });
   assert.deepEqual(manifest.per_kind_schema_versions, {
     CLAIM_DEFINITION: ['CLAIM_DEFINITION/V1'],
     CLAIM_INTERPRETATION_POLICY: ['CLAIM_INTERPRETATION_POLICY/V2'],
+    CLAIM_STATE_CODEBOOK_MIGRATION_INPUT: [
+      'CLAIM_STATE_CODEBOOK_MIGRATION_INPUT/V1',
+    ],
     COMPONENT_DEFINITION: ['COMPONENT_DEFINITION/V1'],
     MONEY_DENOMINATOR_PRECISION_POLICY: ['MONEY_DENOMINATOR_PRECISION_POLICY/V1'],
     NO_SHOP_SEMANTIC_SCHEMA_INPUT: ['NO_SHOP_SEMANTIC_SCHEMA_INPUT/V1'],
     PARSER_PROPOSAL_BOUNDARY_DEFINITION: ['PARSER_PROPOSAL_BOUNDARY_DEFINITION/V1'],
+    PARTY_TUPLE_SHAPE_MIGRATION_INPUT: ['PARTY_TUPLE_SHAPE_MIGRATION_INPUT/V1'],
     PROVISION_CONCEPT: ['PROVISION_CONCEPT/V1'],
     RELATIONSHIP_DEFINITION: ['RELATIONSHIP_DEFINITION/V1'],
     RELATIONSHIP_EFFECT_SCHEMA: ['RELATIONSHIP_EFFECT_SCHEMA/V1'],
+    RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT: [
+      'RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT/V1',
+    ],
     SERVING_EXACT_DETAIL_ACTION_DEFINITION: [
       'SERVING_EXACT_DETAIL_ACTION_DEFINITION/V1',
     ],
+    SERVING_METRIC_OPERATION_BINDING_INPUT: [
+      'SERVING_METRIC_OPERATION_BINDING_INPUT/V1',
+    ],
+    SERVING_TRIGGER_PATH_SCHEMA_INPUT: ['SERVING_TRIGGER_PATH_SCHEMA_INPUT/V1'],
   });
   for (const declaredMember of manifest.members) {
     const canonicalMember = JSON.parse(
