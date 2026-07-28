@@ -1,0 +1,22 @@
+{
+  "schema_version": "ProgrammeOwnerSecurityDispositionSource/V1",
+  "source_id": "BEN_CONFIRMATION_2026_07_28",
+  "confirmed_by": "BEN_GOODCHILD",
+  "observed_at": "2026-07-28T07:21:18.000Z",
+  "zayo": {
+    "owner": "OWNER_IDENTITY_CONFIRMED_BY_BEN_GOODCHILD",
+    "purpose": "AUTHORISED_DATABASE_TRAFFIC",
+    "recognition_status": "RECOGNISED",
+    "rotation_required": false,
+    "rotation_completed": false
+  },
+  "claude": {
+    "compromised_credential_set_label": "EXPOSED_CLAUDE_CREDENTIALS",
+    "revoked": true,
+    "replacements_activated": true
+  },
+  "supabase": {
+    "disposition": "ROTATED"
+  },
+  "secret_field_count": 0
+}
