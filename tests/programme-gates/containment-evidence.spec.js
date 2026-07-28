@@ -222,9 +222,12 @@ test('the containment contract bundle activates only two closed definitions', ()
       'G0_ZAYO_DISPOSITION',
       'G0_CLAUDE_CREDENTIAL_ROTATION',
       'G0_SUPABASE_SECRET_DISPOSITION',
+      'G0_STAGING_SUPABASE_ISOLATED',
+      'G0_STAGING_VERCEL_ISOLATED',
+      'G0_STAGING_ACCESS_PROTECTED',
     ],
   );
-  assert.ok(ACCEPTANCE_DEFINITION_DESCRIPTORS.slice(5).every(
+  assert.ok(ACCEPTANCE_DEFINITION_DESCRIPTORS.slice(8).every(
     (descriptor) => descriptor.activation_state === 'BLOCKED_PENDING_EXECUTABLE_BINDINGS',
   ));
 });

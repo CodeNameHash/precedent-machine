@@ -58,7 +58,7 @@ function controllerRecord() {
 
 test('the schema registry is closed and rejects unknown schema IDs', () => {
   assert.deepEqual(SCHEMA_IDS, VALIDATOR_CONFIGURATION.schema_registry_ids);
-  assert.equal(SCHEMA_IDS.length, 17);
+  assert.equal(SCHEMA_IDS.length, 20);
   for (const schemaId of SCHEMA_IDS) {
     assert.equal(schemaFor(schemaId).$id, schemaId);
     assert.equal(schemaFor(schemaId).additionalProperties, false);
@@ -133,7 +133,7 @@ test('nested programme status rows are closed', () => {
   );
 });
 
-test('only containment and approved security-disposition descriptors are active', () => {
+test('containment, security-disposition and isolation descriptors are active', () => {
   assert.equal(ACCEPTANCE_DEFINITION_DESCRIPTORS.length, 10);
   assert.equal(
     new Set(ACCEPTANCE_DEFINITION_DESCRIPTORS.map((entry) => entry.evidence_contract)).size,
@@ -149,9 +149,12 @@ test('only containment and approved security-disposition descriptors are active'
       'G0_ZAYO_DISPOSITION',
       'G0_CLAUDE_CREDENTIAL_ROTATION',
       'G0_SUPABASE_SECRET_DISPOSITION',
+      'G0_STAGING_SUPABASE_ISOLATED',
+      'G0_STAGING_VERCEL_ISOLATED',
+      'G0_STAGING_ACCESS_PROTECTED',
     ],
   );
-  assert.ok(ACCEPTANCE_DEFINITION_DESCRIPTORS.slice(5).every(
+  assert.ok(ACCEPTANCE_DEFINITION_DESCRIPTORS.slice(8).every(
     (entry) => entry.activation_state === 'BLOCKED_PENDING_EXECUTABLE_BINDINGS',
   ));
   assert.equal(

@@ -177,6 +177,7 @@ const FIXTURES = Object.freeze({
   }),
   G0_STAGING_ACCESS_PROTECTED: Object.freeze({
     unauthenticated_status: 403,
+    unauthenticated_redirect_origin: null,
     authorised_status: 200,
   }),
   G0_EXACT_DIGEST_REVIEW_SET: Object.freeze({
