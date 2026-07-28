@@ -11,6 +11,10 @@ on:
         description: Exact production Vercel deployment ID
         required: true
         type: string
+      preview_deployment_id:
+        description: Exact canonical branch Preview Vercel deployment ID
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -46,6 +50,8 @@ jobs:
         env:
           EXPECTED_PROGRAMME_COMMIT: ${{ inputs.expected_commit }}
           EXPECTED_VERCEL_DEPLOYMENT_ID: ${{ inputs.deployment_id }}
+          EXPECTED_VERCEL_PREVIEW_DEPLOYMENT_ID: ${{ inputs.preview_deployment_id }}
+          PROGRAMME_GATE_STAGING_SUPABASE_SECRET_KEY: ${{ secrets.PROGRAMME_GATE_STAGING_SUPABASE_SECRET_KEY }}
           PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM: ${{ secrets.PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |

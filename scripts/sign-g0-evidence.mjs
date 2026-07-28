@@ -33,6 +33,19 @@ const {
   createGoverningRegistryAuthority,
 } = require('../lib/programme-gates/governing-registry');
 const {
+  buildIsolationObservationSource,
+  PREVIEW_BRANCH,
+} = require('../lib/programme-gates/isolation-collector');
+const {
+  buildIsolationReadiness,
+  createIsolationReadinessAuthority,
+} = require('../lib/programme-gates/isolation-readiness');
+const {
+  buildIsolationSigningRequest,
+  createIsolationSigningAuthority,
+  preflightIsolationSignature,
+} = require('../lib/programme-gates/isolation-signing');
+const {
   REGISTRY_DIGESTS,
   TRUSTED_PUBLIC_KEY_REGISTRY,
 } = require('../lib/programme-gates/registry');
@@ -57,11 +70,17 @@ const SOURCE_PATH = path.resolve(
 const GATE_TEST_FILES = Object.freeze([
   'tests/programme-gates-schema-registry.test.js',
   'tests/programme-gates/g0-signer-workflow.spec.js',
+  'tests/programme-gates/isolation-evidence.spec.js',
   'tests/programme-gates/predicates.spec.js',
   'tests/programme-gates/security-disposition-signing.spec.js',
   'tests/programme-gates/security-dispositions.spec.js',
   'tests/programme-gates/validator-executable.spec.js',
   'tests/programme-gates/validator.spec.js',
+]);
+const DEPLOY_CUTOVER_TEST_FILES = Object.freeze([
+  'tests/programme-gates/isolation-evidence.spec.js',
+  'tests/canonical-v2-staging-preview-access.test.js',
+  'tests/canonical-v2-staging-runtime.test.js',
 ]);
 const VALIDATOR_KEY_ID = 'PROGRAMME_GATE_VALIDATOR_2026_07';
 const PRODUCTION_ORIGIN = 'https://deal-corpus.vercel.app';
@@ -91,6 +110,7 @@ function sha256(bytes) {
 function childEnvironment(overrides = {}) {
   const environment = { ...process.env, ...overrides };
   delete environment.PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM;
+  delete environment.PROGRAMME_GATE_STAGING_SUPABASE_SECRET_KEY;
   delete environment.VERCEL_TOKEN;
   return environment;
 }
@@ -127,8 +147,8 @@ function specificationRoot() {
   return match[1];
 }
 
-function gateTestResult(codeCommit, environment) {
-  const args = ['--test', ...GATE_TEST_FILES];
+function testResult(testId, testFiles, codeCommit, environment) {
+  const args = ['--test', ...testFiles];
   const startedAt = new Date().toISOString();
   const result = run(process.execPath, args, {
     env: childEnvironment({
@@ -136,7 +156,7 @@ function gateTestResult(codeCommit, environment) {
     }),
   });
   const completedAt = new Date().toISOString();
-  const executableMembers = GATE_TEST_FILES.map((file) => {
+  const executableMembers = testFiles.map((file) => {
     const bytes = fs.readFileSync(path.resolve(ROOT, file));
     return {
       path: file,
@@ -146,7 +166,7 @@ function gateTestResult(codeCommit, environment) {
   });
   const record = Object.freeze({
     schema_version: 'ProgrammeGateTestExecutionRecord/V1',
-    test_id: 'GATE-01',
+    test_id: testId,
     code_commit: codeCommit,
     environment,
     command_digest: domainDigest(
@@ -165,7 +185,7 @@ function gateTestResult(codeCommit, environment) {
       { stdout: result.stdout, stderr: result.stderr },
     ),
   });
-  if (record.exit_code !== 0) throw new Error('GATE-01 did not pass');
+  if (record.exit_code !== 0) throw new Error(`${testId} did not pass`);
   return record;
 }
 
@@ -190,6 +210,129 @@ async function vercelDeployment(identifier, token) {
     throw new Error('protected Vercel deployment lookup failed');
   }
   return response.json();
+}
+
+async function vercelApi(pathname, token, search = {}) {
+  const url = new URL(pathname, VERCEL_API_ORIGIN);
+  url.searchParams.set('teamId', VERCEL_TEAM_ID);
+  for (const [key, value] of Object.entries(search)) {
+    if (value !== null && value !== undefined) url.searchParams.set(key, value);
+  }
+  const response = await fetch(url, {
+    headers: { authorization: `Bearer ${token}` },
+    signal: AbortSignal.timeout(10000),
+  });
+  if (!response.ok) throw new Error('protected Vercel API lookup failed');
+  return response.json();
+}
+
+async function vercelEnvironmentRecords(token, target, gitBranch = null) {
+  const payload = await vercelApi(
+    `/v10/projects/${VERCEL_PROJECT_ID}/env`,
+    token,
+    { target, decrypt: 'true', gitBranch },
+  );
+  if (!Array.isArray(payload.envs)) {
+    throw new Error('protected Vercel environment lookup returned no records');
+  }
+  return payload.envs;
+}
+
+async function vercelProductionEnvironment(token) {
+  const payload = await vercelApi(
+    `/v3/env/pull/${VERCEL_PROJECT_ID}/production`,
+    token,
+  );
+  const environment = payload && payload.env;
+  if (!environment || typeof environment !== 'object' || Array.isArray(environment)) {
+    throw new Error('protected Vercel production environment lookup failed');
+  }
+  return environment;
+}
+
+function stagingSupabaseSecretKey() {
+  const value = process.env.PROGRAMME_GATE_STAGING_SUPABASE_SECRET_KEY;
+  if (typeof value !== 'string' || !/^sb_secret_[A-Za-z0-9_-]+$/.test(value)) {
+    throw new Error('protected staging Supabase secret key is unavailable');
+  }
+  return value;
+}
+
+async function fetchObservation(url, options = {}) {
+  const response = await fetch(url, {
+    ...options,
+    redirect: 'manual',
+    signal: AbortSignal.timeout(15000),
+  });
+  return {
+    status: response.status,
+    location: response.headers.get('location'),
+  };
+}
+
+function automationBypassSecret(project) {
+  const matches = Object.entries(project.protectionBypass || {})
+    .filter(([, value]) => value && value.scope === 'automation-bypass');
+  if (matches.length !== 1) {
+    throw new Error('one protected automation bypass credential is required');
+  }
+  return matches[0][0];
+}
+
+async function collectLiveIsolationSource({ codeCommit, previewDeploymentId }) {
+  const token = vercelToken();
+  const productionDeploymentBefore = await vercelDeployment(PRODUCTION_ALIAS, token);
+  const [
+    previewDeployment,
+    productionEnvironment,
+    previewEnvironmentRecords,
+    project,
+  ] = await Promise.all([
+    vercelDeployment(previewDeploymentId, token),
+    vercelProductionEnvironment(token),
+    vercelEnvironmentRecords(token, 'preview', PREVIEW_BRANCH),
+    vercelApi(`/v9/projects/${VERCEL_PROJECT_ID}`, token),
+  ]);
+  const stagingServiceKey = stagingSupabaseSecretKey();
+  const productionUrl = productionEnvironment.NEXT_PUBLIC_SUPABASE_URL;
+  const previewUrl = `https://${previewDeployment.url}/api/canonical-v2/review-context?dealId=7dc3a05f-b170-4d59-a255-b7103cca16e1`;
+  const [
+    productionDmlResponse,
+    unauthenticatedResponse,
+    authorisedResponse,
+  ] = await Promise.all([
+    fetchObservation(`${productionUrl}/rest/v1/deals?id=is.null`, {
+      method: 'DELETE',
+      headers: {
+        apikey: stagingServiceKey,
+        authorization: `Bearer ${stagingServiceKey}`,
+        prefer: 'return=minimal',
+      },
+    }),
+    fetchObservation(previewUrl),
+    fetchObservation(previewUrl, {
+      headers: {
+        'x-vercel-protection-bypass': automationBypassSecret(project),
+      },
+    }),
+  ]);
+  const productionDeploymentAfter = await vercelDeployment(PRODUCTION_ALIAS, token);
+  return buildIsolationObservationSource({
+    observedAt: new Date().toISOString(),
+    codeCommit,
+    projectId: VERCEL_PROJECT_ID,
+    previewDeploymentId,
+    productionEnvironment,
+    previewEnvironmentRecords,
+    stagingServiceKey,
+    productionDmlResponse,
+    previewDeployment,
+    productionDeploymentBefore,
+    productionDeploymentAfter,
+    unauthenticatedResponse,
+    authorisedResponse,
+    previewRuntimeResponse: authorisedResponse,
+  });
 }
 
 async function deploymentBinding({
@@ -322,6 +465,9 @@ async function main() {
   const deploymentId = requireDeploymentId(
     process.env.EXPECTED_VERCEL_DEPLOYMENT_ID,
   );
+  const previewDeploymentId = requireDeploymentId(
+    process.env.EXPECTED_VERCEL_PREVIEW_DEPLOYMENT_ID,
+  );
   const environment = 'PRODUCTION';
   const specificationDigest = specificationRoot();
   await deploymentBinding({
@@ -342,7 +488,13 @@ async function main() {
     specificationRoot: specificationDigest,
     gates: governingGates(),
   });
-  const gateTest = gateTestResult(codeCommit, environment);
+  const gateTest = testResult('GATE-01', GATE_TEST_FILES, codeCommit, environment);
+  const deployCutoverTest = testResult(
+    'DEPLOY-CUTOVER-01',
+    DEPLOY_CUTOVER_TEST_FILES,
+    codeCommit,
+    environment,
+  );
   const securityObservedAt = new Date().toISOString();
   const verificationTime = securityObservedAt;
   const securitySource = JSON.parse(fs.readFileSync(SOURCE_PATH, 'utf8'));
@@ -356,6 +508,23 @@ async function main() {
     }),
     source: securitySource,
     testResult: gateTest,
+  });
+  const isolationSource = await collectLiveIsolationSource({
+    codeCommit,
+    previewDeploymentId,
+  });
+  const isolationVerificationTime = new Date().toISOString();
+  const isolationBundle = buildIsolationReadiness({
+    authority: createIsolationReadinessAuthority({
+      specificationRoot: specificationDigest,
+      codeCommit,
+      environment,
+      observedAt: isolationSource.observed_at,
+      verificationTime: isolationVerificationTime,
+    }),
+    source: isolationSource,
+    gateTestResult: gateTest,
+    deployCutoverTestResult: deployCutoverTest,
   });
   const validatorExecutableDigest = programmeGateValidatorExecutableDigest({
     root: ROOT,
@@ -378,6 +547,28 @@ async function main() {
     const preflight = preflightSecurityDispositionSignature({
       authority: securityAuthority,
       bundle: securityBundle,
+      candidate,
+      signingRequest,
+      signature: signatureFor(signingRequest, privateKey),
+    });
+    return evidenceResult(candidate, preflight);
+  });
+  const isolationAuthority = createIsolationSigningAuthority({
+    keyRegistry: TRUSTED_PUBLIC_KEY_REGISTRY,
+    validatorConfigurationDigest: REGISTRY_DIGESTS.validator_configuration,
+    validatorExecutableDigest,
+    validatorKeyId: VALIDATOR_KEY_ID,
+    verificationTime: isolationVerificationTime,
+  });
+  const isolationEvidence = isolationBundle.candidates.map((candidate) => {
+    const signingRequest = buildIsolationSigningRequest({
+      authority: isolationAuthority,
+      bundle: isolationBundle,
+      candidate,
+    });
+    const preflight = preflightIsolationSignature({
+      authority: isolationAuthority,
+      bundle: isolationBundle,
       candidate,
       signingRequest,
       signature: signatureFor(signingRequest, privateKey),
@@ -447,10 +638,12 @@ async function main() {
     environment,
     containment_observed_at: containmentBundle.observed_at,
     security_observed_at: securityObservedAt,
+    isolation_observed_at: isolationSource.observed_at,
     validator_executable_digest: validatorExecutableDigest,
     validator_configuration_digest: REGISTRY_DIGESTS.validator_configuration,
     validator_key_id: VALIDATOR_KEY_ID,
     security_attestation_source_digest: securityBundle.attestation_source_digest,
+    isolation_source_digest: isolationBundle.isolation_source_digest,
     containment_status_readiness: {
       readiness_state: containmentStatusReadiness.readiness_state,
       passing_gate_ids: containmentStatusReadiness.passing_gate_ids,
@@ -458,7 +651,7 @@ async function main() {
       status_publication_attempted:
         containmentStatusReadiness.status_publication_attempted,
     },
-    evidence: [...containmentEvidence, ...securityEvidence],
+    evidence: [...containmentEvidence, ...securityEvidence, ...isolationEvidence],
   };
   process.stdout.write(`${JSON.stringify(output)}\n`);
 }

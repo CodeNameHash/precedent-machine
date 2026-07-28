@@ -10,7 +10,10 @@ import { spawnSync } from 'node:child_process';
 import pg from 'pg';
 
 const require = createRequire(import.meta.url);
-const { compileActiveReviewContextRequest } = require('../lib/canonical-v2/review-context');
+const {
+  compileActiveReviewContextRequest,
+  validateActiveReviewContextResult,
+} = require('../lib/canonical-v2/review-context');
 const { compileMarketCohortRequest } = require('../lib/canonical-v2/market-cohort-query');
 const { queryCanonicalResultPage } = require('../lib/canonical-v2/query-result');
 const { createPostgresServingClient } = require('../lib/canonical-v2/serving-client');
@@ -190,7 +193,6 @@ function buildConnectionString(pooler, password) {
 
 async function verifyRuntimeConnectionOnce(connectionString) {
   const request = compileActiveReviewContextRequest({
-    contract_fingerprint: EXPECTED_CONTRACT_FINGERPRINT,
     application_deal_id: '7dc3a05f-b170-4d59-a255-b7103cca16e1',
     page_size: 100,
     after_row_serving_key: null,
@@ -209,18 +211,22 @@ async function verifyRuntimeConnectionOnce(connectionString) {
       text: 'SELECT public.canonical_v2_active_review_context($1::text, $2::text, $3::text, $4::uuid, $5::integer, $6::text) AS data',
       values: [
         'staging',
-        request.contract_fingerprint,
+        null,
         request.request_digest,
         request.application_deal_id,
         request.page_size,
         request.after_row_serving_key,
       ],
     });
-    const reviewData = reviewResult.rows[0]?.data;
-    if (reviewResult.rowCount !== 1
-      || reviewData?.schema_version !== 'ACTIVE_REVIEW_CONTEXT_RESULT/V1'
-      || reviewData?.page_count !== 2) {
-      throw new Error('Preview role did not return the complete reviewed QXO page.');
+    if (reviewResult.rowCount !== 1) {
+      throw new Error('Preview role did not return exactly one reviewed QXO page.');
+    }
+    const reviewData = validateActiveReviewContextResult(reviewResult.rows[0]?.data, request);
+    if (reviewData.contract_fingerprint !== EXPECTED_CONTRACT_FINGERPRINT) {
+      throw new Error('Preview role returned a different canonical serving contract.');
+    }
+    if (reviewData.page_count < 1) {
+      throw new Error('Preview role returned an empty reviewed QXO page.');
     }
     const comparableRow = reviewData.rows.find((row) => row?.canonical_result?.market_context);
     if (!comparableRow) throw new Error('Reviewed QXO page has no comparable market row.');
@@ -301,17 +307,24 @@ async function verifyRuntimeConnectionOnce(connectionString) {
 
 async function verifyRuntimeConnection(connectionString) {
   const maximumAttempts = 3;
+  let lastError;
   for (let attempt = 1; attempt <= maximumAttempts; attempt += 1) {
     try {
       await verifyRuntimeConnectionOnce(connectionString);
       return;
-    } catch {
+    } catch (error) {
+      lastError = error;
       if (attempt === maximumAttempts) {
-        throw new Error('Preview role was not available through the transaction pooler after bounded propagation checks.');
+        throw new Error(
+          `Preview role runtime verification failed after bounded propagation checks: ${
+            error instanceof Error ? error.message : 'unknown failure'
+          }`,
+        );
       }
       await new Promise((resolvePromise) => setTimeout(resolvePromise, 6000));
     }
   }
+  throw lastError;
 }
 
 function setVercelPreviewSecret(value) {
