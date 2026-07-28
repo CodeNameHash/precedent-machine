@@ -93,14 +93,218 @@
       "stable_id": "SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE",
       "schema_version": "CLAIM_DEFINITION/V1",
       "canonical_bytes_digest": "79b15c9783beb7590b749ed25f1d5f3ddc1b8c774a4f7720567c0c0744659315"
+    },
+    {
+      "relative_path": "component-definitions/covenant-limb.v1.json",
+      "object_kind": "COMPONENT_DEFINITION",
+      "stable_id": "COVENANT_LIMB",
+      "schema_version": "COMPONENT_DEFINITION/V1",
+      "canonical_bytes_digest": "9d8e2c7985f5051c04af3771513cb506cf4385447dedc91c6e2a4ffea1d118e0"
+    },
+    {
+      "relative_path": "component-definitions/exception-limb.v1.json",
+      "object_kind": "COMPONENT_DEFINITION",
+      "stable_id": "EXCEPTION_LIMB",
+      "schema_version": "COMPONENT_DEFINITION/V1",
+      "canonical_bytes_digest": "378a3a424e1886da2b45fbc4b105dbb24979b5a45bc8622a8992fed1dfb7b5cf"
+    },
+    {
+      "relative_path": "component-definitions/fee-amount-limb.v1.json",
+      "object_kind": "COMPONENT_DEFINITION",
+      "stable_id": "FEE_AMOUNT_LIMB",
+      "schema_version": "COMPONENT_DEFINITION/V1",
+      "canonical_bytes_digest": "c4189028abe863514d338cec04cf11313da143239b57e5c8d85653b1f704094c"
+    },
+    {
+      "relative_path": "component-definitions/match-period-limb.v1.json",
+      "object_kind": "COMPONENT_DEFINITION",
+      "stable_id": "MATCH_PERIOD_LIMB",
+      "schema_version": "COMPONENT_DEFINITION/V1",
+      "canonical_bytes_digest": "f66e810c6f73c4a8c7cc1c827dfe4dff806bcce28ed774633e4e98dd8fc2b7c9"
+    },
+    {
+      "relative_path": "component-definitions/material-contract-criterion.v1.json",
+      "object_kind": "COMPONENT_DEFINITION",
+      "stable_id": "MATERIAL_CONTRACT_CRITERION",
+      "schema_version": "COMPONENT_DEFINITION/V1",
+      "canonical_bytes_digest": "7570cc00386041e3133883f84b2f6881e0435df1c1de5d7dd4ea61e4a1013cf9"
+    },
+    {
+      "relative_path": "component-definitions/notice-limb.v1.json",
+      "object_kind": "COMPONENT_DEFINITION",
+      "stable_id": "NOTICE_LIMB",
+      "schema_version": "COMPONENT_DEFINITION/V1",
+      "canonical_bytes_digest": "313bb491a1d170ab5ce379a0142ff13545b796eb110975516b0870a2e3ce9797"
+    },
+    {
+      "relative_path": "component-definitions/representation-limb.v1.json",
+      "object_kind": "COMPONENT_DEFINITION",
+      "stable_id": "REPRESENTATION_LIMB",
+      "schema_version": "COMPONENT_DEFINITION/V1",
+      "canonical_bytes_digest": "69f57a29472694a5ee04d409fee4009ee714d86a496d65079bb9f7395bf570df"
+    },
+    {
+      "relative_path": "component-definitions/restricted-action.v1.json",
+      "object_kind": "COMPONENT_DEFINITION",
+      "stable_id": "RESTRICTED_ACTION",
+      "schema_version": "COMPONENT_DEFINITION/V1",
+      "canonical_bytes_digest": "d3c904b9ab545adee9956daaad85c9adaef76b824a819996773e8236aaa9cf38"
+    },
+    {
+      "relative_path": "component-definitions/termination-trigger-limb.v1.json",
+      "object_kind": "COMPONENT_DEFINITION",
+      "stable_id": "TERMINATION_TRIGGER_LIMB",
+      "schema_version": "COMPONENT_DEFINITION/V1",
+      "canonical_bytes_digest": "fff4cdca25f715e7e8142419c850fdb2db36f743b30a65b4f44377cbdccc9527"
+    },
+    {
+      "relative_path": "provision-concepts/cond-b-rep.v1.json",
+      "object_kind": "PROVISION_CONCEPT",
+      "stable_id": "COND-B-REP",
+      "schema_version": "PROVISION_CONCEPT/V1",
+      "canonical_bytes_digest": "43fbd10c4380be2ddfe4b19e3c3986a8363612b372e2e30c23b12573781cf03c"
+    },
+    {
+      "relative_path": "provision-concepts/ioc-capex.v1.json",
+      "object_kind": "PROVISION_CONCEPT",
+      "stable_id": "IOC-CAPEX",
+      "schema_version": "PROVISION_CONCEPT/V1",
+      "canonical_bytes_digest": "f88a6dc8e7b97af61b21b8bc862a50dc838cb3671fd8b35091893659746c06a9"
+    },
+    {
+      "relative_path": "provision-concepts/ioc-general-except.v1.json",
+      "object_kind": "PROVISION_CONCEPT",
+      "stable_id": "IOC-GENERAL-EXCEPT",
+      "schema_version": "PROVISION_CONCEPT/V1",
+      "canonical_bytes_digest": "7181171ede01b3e1746175c0ae6d3eb594368e47e457a9b3f125ba6a217cb5e2"
+    },
+    {
+      "relative_path": "provision-concepts/nosol-except.v1.json",
+      "object_kind": "PROVISION_CONCEPT",
+      "stable_id": "NOSOL-EXCEPT",
+      "schema_version": "PROVISION_CONCEPT/V1",
+      "canonical_bytes_digest": "9d67f334b86b82f04aa9cd23c9cecbcbac814b36ffbeeab138beb58758129ab2"
+    },
+    {
+      "relative_path": "provision-concepts/nosol-match.v1.json",
+      "object_kind": "PROVISION_CONCEPT",
+      "stable_id": "NOSOL-MATCH",
+      "schema_version": "PROVISION_CONCEPT/V1",
+      "canonical_bytes_digest": "a8f5b0598afa2b6dc8bc6ead769c7221c1d4a140b9919b698ae77c7f2c84bb3e"
+    },
+    {
+      "relative_path": "provision-concepts/nosol-notice.v1.json",
+      "object_kind": "PROVISION_CONCEPT",
+      "stable_id": "NOSOL-NOTICE",
+      "schema_version": "PROVISION_CONCEPT/V1",
+      "canonical_bytes_digest": "219889dc83e76f0957a857ab76da725b31e6f6f2d4b7ec186b4a271b782345df"
+    },
+    {
+      "relative_path": "provision-concepts/nosol-prohibit.v1.json",
+      "object_kind": "PROVISION_CONCEPT",
+      "stable_id": "NOSOL-PROHIBIT",
+      "schema_version": "PROVISION_CONCEPT/V1",
+      "canonical_bytes_digest": "433dc4281f486d458add9345f7a0d0b67e94b773281b5888a0f762b7feacc9c4"
+    },
+    {
+      "relative_path": "provision-concepts/nosol-rematch.v1.json",
+      "object_kind": "PROVISION_CONCEPT",
+      "stable_id": "NOSOL-REMATCH",
+      "schema_version": "PROVISION_CONCEPT/V1",
+      "canonical_bytes_digest": "f0ffa67961145cd594f29f425a2f713f67e0e9cc25c89ee93761eaebdecefc7e"
+    },
+    {
+      "relative_path": "provision-concepts/rep-t-cap.v1.json",
+      "object_kind": "PROVISION_CONCEPT",
+      "stable_id": "REP-T-CAP",
+      "schema_version": "PROVISION_CONCEPT/V1",
+      "canonical_bytes_digest": "ecbb9148b180a05a78e8ec9dba394813db786e0133770ab2c2ea531708912318"
+    },
+    {
+      "relative_path": "provision-concepts/rep-t-contracts.v1.json",
+      "object_kind": "PROVISION_CONCEPT",
+      "stable_id": "REP-T-CONTRACTS",
+      "schema_version": "PROVISION_CONCEPT/V1",
+      "canonical_bytes_digest": "bc474b7367f71d9f283c32ef89fddb09d84a8574cb965889e801ee03c91ae044"
+    },
+    {
+      "relative_path": "provision-concepts/termf-reverse.v1.json",
+      "object_kind": "PROVISION_CONCEPT",
+      "stable_id": "TERMF-REVERSE",
+      "schema_version": "PROVISION_CONCEPT/V1",
+      "canonical_bytes_digest": "5f8554a588abcaa96372d58cf542af8b56e83f4ce5bf624f1c338ede301164c2"
+    },
+    {
+      "relative_path": "provision-concepts/termf-tail.v1.json",
+      "object_kind": "PROVISION_CONCEPT",
+      "stable_id": "TERMF-TAIL",
+      "schema_version": "PROVISION_CONCEPT/V1",
+      "canonical_bytes_digest": "39c689f48546eca5f32c83e2dedf0e36a6f10129edb33bdb096c4cae4a1b5f65"
+    },
+    {
+      "relative_path": "provision-concepts/termf-target.v1.json",
+      "object_kind": "PROVISION_CONCEPT",
+      "stable_id": "TERMF-TARGET",
+      "schema_version": "PROVISION_CONCEPT/V1",
+      "canonical_bytes_digest": "a15f7be3b0d7cedbd9b640064b8eea1cca1da438bb0b7f7e734fa9407422a85e"
+    },
+    {
+      "relative_path": "provision-concepts/termr-breach.v1.json",
+      "object_kind": "PROVISION_CONCEPT",
+      "stable_id": "TERMR-BREACH",
+      "schema_version": "PROVISION_CONCEPT/V1",
+      "canonical_bytes_digest": "6bb59a5095b90893a5872d8eb109e3aa54a0752d45f0b2e82a302932d0d02f6d"
+    },
+    {
+      "relative_path": "provision-concepts/termr-nosol-breach.v1.json",
+      "object_kind": "PROVISION_CONCEPT",
+      "stable_id": "TERMR-NOSOL-BREACH",
+      "schema_version": "PROVISION_CONCEPT/V1",
+      "canonical_bytes_digest": "a414f9fc3d65ffad9de1cacaf9e8583077d7cd5bee5ab93562e3ae7f8a5ef2c3"
+    },
+    {
+      "relative_path": "provision-concepts/termr-novote.v1.json",
+      "object_kind": "PROVISION_CONCEPT",
+      "stable_id": "TERMR-NOVOTE",
+      "schema_version": "PROVISION_CONCEPT/V1",
+      "canonical_bytes_digest": "46fcdb39430451024e0ca57420eefbf814e9a2d847eb48be03cfe221d43231a6"
+    },
+    {
+      "relative_path": "provision-concepts/termr-outside.v1.json",
+      "object_kind": "PROVISION_CONCEPT",
+      "stable_id": "TERMR-OUTSIDE",
+      "schema_version": "PROVISION_CONCEPT/V1",
+      "canonical_bytes_digest": "d89efbb105207817f0c2bdd74de359ce8b9cc4d571fc0e17a7f5d33642f31769"
+    },
+    {
+      "relative_path": "provision-concepts/termr-recommend.v1.json",
+      "object_kind": "PROVISION_CONCEPT",
+      "stable_id": "TERMR-RECOMMEND",
+      "schema_version": "PROVISION_CONCEPT/V1",
+      "canonical_bytes_digest": "c407484bc51cd50cde8c047b828e241c92d4534ad82c96d5268bf61c35d2a7d1"
+    },
+    {
+      "relative_path": "provision-concepts/termr-superior.v1.json",
+      "object_kind": "PROVISION_CONCEPT",
+      "stable_id": "TERMR-SUPERIOR",
+      "schema_version": "PROVISION_CONCEPT/V1",
+      "canonical_bytes_digest": "1a77924503fe034eac15e3da2a5c7e569cff9160e337ee1ef241ce162f90d0ff"
     }
   ],
   "per_kind_counts": {
-    "CLAIM_DEFINITION": 13
+    "CLAIM_DEFINITION": 13,
+    "COMPONENT_DEFINITION": 9,
+    "PROVISION_CONCEPT": 19
   },
   "per_kind_schema_versions": {
     "CLAIM_DEFINITION": [
       "CLAIM_DEFINITION/V1"
+    ],
+    "COMPONENT_DEFINITION": [
+      "COMPONENT_DEFINITION/V1"
+    ],
+    "PROVISION_CONCEPT": [
+      "PROVISION_CONCEPT/V1"
     ]
   }
 }
