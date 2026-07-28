@@ -21,6 +21,8 @@ test('workflow is manual, exact-commit and protected self-hosted only', () => {
   assert.match(source, /runs-on: \[self-hosted, macOS, ARM64, canonical-review\]/);
   assert.match(source, /environment: programme-gate-production/);
   assert.match(source, /persist-credentials: false/);
+  assert.match(source, /actions\/setup-node@v4/);
+  assert.match(source, /Install locked dependencies without protected credentials[\s\S]*npm ci[\s\S]*Preflight protected local controller/);
   assert.match(source, /PROGRAMME_GATE_REVIEW_CONTROLLER_ED25519_PRIVATE_KEY_PEM/);
   assert.match(source, /PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM/);
   assert.doesNotMatch(source, /OPENAI_API_KEY|CODEX_API_KEY|CODEX_ACCESS_TOKEN/);
