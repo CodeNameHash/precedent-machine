@@ -158,6 +158,27 @@
       "canonical_bytes_digest": "fff4cdca25f715e7e8142419c850fdb2db36f743b30a65b4f44377cbdccc9527"
     },
     {
+      "relative_path": "migration-inputs/claim-state-codebook.v1.json",
+      "object_kind": "CLAIM_STATE_CODEBOOK_MIGRATION_INPUT",
+      "stable_id": "FIXTURE_CONTRACT_INPUT_V12_CLAIM_STATES",
+      "schema_version": "CLAIM_STATE_CODEBOOK_MIGRATION_INPUT/V1",
+      "canonical_bytes_digest": "cfa0a7b23b13c25180e85503ab49c5b48610720e117d9ee59a1b31489f83696f"
+    },
+    {
+      "relative_path": "migration-inputs/party-tuple-shape.v1.json",
+      "object_kind": "PARTY_TUPLE_SHAPE_MIGRATION_INPUT",
+      "stable_id": "FIXTURE_CONTRACT_INPUT_V12_PARTY_TUPLE_FIELDS",
+      "schema_version": "PARTY_TUPLE_SHAPE_MIGRATION_INPUT/V1",
+      "canonical_bytes_digest": "212150311525b9a5c549bcb322098be4e1ecda41f5b1fbac70e52dd680517541"
+    },
+    {
+      "relative_path": "migration-inputs/residual-reason-codebook.v1.json",
+      "object_kind": "RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT",
+      "stable_id": "FIXTURE_CONTRACT_INPUT_V12_RESIDUAL_REASON_CODES",
+      "schema_version": "RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT/V1",
+      "canonical_bytes_digest": "79b8b5eb942abe0ed76aa4602af137ac927b56b1035bc14bfe6f007674a2d351"
+    },
+    {
       "relative_path": "no-shop-semantic-schema-inputs/no-shop-action-comparison-rollup.v1.json",
       "object_kind": "NO_SHOP_SEMANTIC_SCHEMA_INPUT",
       "stable_id": "NO_SHOP_ACTION_COMPARISON_ROLLUP",
@@ -394,19 +415,45 @@
       "stable_id": "TERMINATION_FEE_TRIGGER_EVIDENCE",
       "schema_version": "SERVING_EXACT_DETAIL_ACTION_DEFINITION/V1",
       "canonical_bytes_digest": "6d4f5f81952cc53c5a69af89068580670bc176c229322a094e3bc7c3909dc22d"
+    },
+    {
+      "relative_path": "serving-metric-operation-binding-inputs/buyer-termination-fee-percent-of-deal-value.v2.json",
+      "object_kind": "SERVING_METRIC_OPERATION_BINDING_INPUT",
+      "stable_id": "BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V2",
+      "schema_version": "SERVING_METRIC_OPERATION_BINDING_INPUT/V1",
+      "canonical_bytes_digest": "67cdee54690770d1ae46e2465e960e94c5aeb4d5bd1526fd0db8f41fd9ce9a7f"
+    },
+    {
+      "relative_path": "serving-metric-operation-binding-inputs/seller-termination-fee-percent-of-deal-value.v2.json",
+      "object_kind": "SERVING_METRIC_OPERATION_BINDING_INPUT",
+      "stable_id": "SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V2",
+      "schema_version": "SERVING_METRIC_OPERATION_BINDING_INPUT/V1",
+      "canonical_bytes_digest": "8162d98742dfd4105386c73c8c559f18f0801ff4d784fdf19948420a17a6f36c"
+    },
+    {
+      "relative_path": "serving-trigger-path-schema-inputs/termination-fee-trigger-path.v2.json",
+      "object_kind": "SERVING_TRIGGER_PATH_SCHEMA_INPUT",
+      "stable_id": "TERMINATION_FEE_TRIGGER_PATH",
+      "schema_version": "SERVING_TRIGGER_PATH_SCHEMA_INPUT/V1",
+      "canonical_bytes_digest": "a20a17e8efba58d6bf3337f4e42a867124f9c8bf89de97b838d118828e7214ad"
     }
   ],
   "per_kind_counts": {
     "CLAIM_DEFINITION": 13,
     "CLAIM_INTERPRETATION_POLICY": 1,
+    "CLAIM_STATE_CODEBOOK_MIGRATION_INPUT": 1,
     "COMPONENT_DEFINITION": 9,
     "MONEY_DENOMINATOR_PRECISION_POLICY": 1,
     "NO_SHOP_SEMANTIC_SCHEMA_INPUT": 5,
     "PARSER_PROPOSAL_BOUNDARY_DEFINITION": 1,
+    "PARTY_TUPLE_SHAPE_MIGRATION_INPUT": 1,
     "PROVISION_CONCEPT": 19,
     "RELATIONSHIP_DEFINITION": 1,
     "RELATIONSHIP_EFFECT_SCHEMA": 1,
-    "SERVING_EXACT_DETAIL_ACTION_DEFINITION": 5
+    "RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT": 1,
+    "SERVING_EXACT_DETAIL_ACTION_DEFINITION": 5,
+    "SERVING_METRIC_OPERATION_BINDING_INPUT": 2,
+    "SERVING_TRIGGER_PATH_SCHEMA_INPUT": 1
   },
   "per_kind_schema_versions": {
     "CLAIM_DEFINITION": [
@@ -414,6 +461,9 @@
     ],
     "CLAIM_INTERPRETATION_POLICY": [
       "CLAIM_INTERPRETATION_POLICY/V2"
+    ],
+    "CLAIM_STATE_CODEBOOK_MIGRATION_INPUT": [
+      "CLAIM_STATE_CODEBOOK_MIGRATION_INPUT/V1"
     ],
     "COMPONENT_DEFINITION": [
       "COMPONENT_DEFINITION/V1"
@@ -427,6 +477,9 @@
     "PARSER_PROPOSAL_BOUNDARY_DEFINITION": [
       "PARSER_PROPOSAL_BOUNDARY_DEFINITION/V1"
     ],
+    "PARTY_TUPLE_SHAPE_MIGRATION_INPUT": [
+      "PARTY_TUPLE_SHAPE_MIGRATION_INPUT/V1"
+    ],
     "PROVISION_CONCEPT": [
       "PROVISION_CONCEPT/V1"
     ],
@@ -436,8 +489,17 @@
     "RELATIONSHIP_EFFECT_SCHEMA": [
       "RELATIONSHIP_EFFECT_SCHEMA/V1"
     ],
+    "RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT": [
+      "RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT/V1"
+    ],
     "SERVING_EXACT_DETAIL_ACTION_DEFINITION": [
       "SERVING_EXACT_DETAIL_ACTION_DEFINITION/V1"
+    ],
+    "SERVING_METRIC_OPERATION_BINDING_INPUT": [
+      "SERVING_METRIC_OPERATION_BINDING_INPUT/V1"
+    ],
+    "SERVING_TRIGGER_PATH_SCHEMA_INPUT": [
+      "SERVING_TRIGGER_PATH_SCHEMA_INPUT/V1"
     ]
   }
 }
