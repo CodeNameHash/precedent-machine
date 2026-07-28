@@ -1,0 +1,106 @@
+{
+  "schema_version": "CANONICAL_BUNDLE_INPUT_MANIFEST/V1",
+  "compiler_input_schema_version": "CANONICAL_BUNDLE_INPUT_COMPILER/V1",
+  "generator_input_schema_version": "CANONICAL_BUNDLE_GENERATOR_INPUT/V1",
+  "members": [
+    {
+      "relative_path": "claim-definitions/buyer-termination-fee-percent-of-deal-value.v1.json",
+      "object_kind": "CLAIM_DEFINITION",
+      "stable_id": "BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE",
+      "schema_version": "CLAIM_DEFINITION/V1",
+      "canonical_bytes_digest": "a3d30e72825a7d85221476a569b951163aa67f0d47334c81d2e2e686b125928e"
+    },
+    {
+      "relative_path": "claim-definitions/ioc-capex-threshold-percent-of-deal-value.v1.json",
+      "object_kind": "CLAIM_DEFINITION",
+      "stable_id": "IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE",
+      "schema_version": "CLAIM_DEFINITION/V1",
+      "canonical_bytes_digest": "f5ca15535599a044c53196dc822678867a26ea909934f258fffce7ae166ebf13"
+    },
+    {
+      "relative_path": "claim-definitions/knowledge-qualifier.v1.json",
+      "object_kind": "CLAIM_DEFINITION",
+      "stable_id": "KNOWLEDGE_QUALIFIER",
+      "schema_version": "CLAIM_DEFINITION/V1",
+      "canonical_bytes_digest": "96485365bd5327bdc28abe5195063019d158266d04437ebf1946be11e258092d"
+    },
+    {
+      "relative_path": "claim-definitions/material-contract-cash-flow-threshold-percent-of-deal-value.v1.json",
+      "object_kind": "CLAIM_DEFINITION",
+      "stable_id": "MATERIAL_CONTRACT_CASH_FLOW_THRESHOLD_PERCENT_OF_DEAL_VALUE",
+      "schema_version": "CLAIM_DEFINITION/V1",
+      "canonical_bytes_digest": "03d190f31c59e9f8b2d659a059b5f08972a4e5506ed8a92f137fb8f6a07a6c6a"
+    },
+    {
+      "relative_path": "claim-definitions/no-shop-copy-delivery-period-days.v1.json",
+      "object_kind": "CLAIM_DEFINITION",
+      "stable_id": "NO_SHOP_COPY_DELIVERY_PERIOD_DAYS",
+      "schema_version": "CLAIM_DEFINITION/V1",
+      "canonical_bytes_digest": "304057b2d043e00bc6d93be3276b7fe52d65168624b58426d2cf62f7896ac232"
+    },
+    {
+      "relative_path": "claim-definitions/no-shop-exception-prerequisite.v1.json",
+      "object_kind": "CLAIM_DEFINITION",
+      "stable_id": "NO_SHOP_EXCEPTION_PREREQUISITE",
+      "schema_version": "CLAIM_DEFINITION/V1",
+      "canonical_bytes_digest": "8b514232c2f29195237b5b7a7ca050ab1328701af0ff1b29c4893fbea1d89a91"
+    },
+    {
+      "relative_path": "claim-definitions/no-shop-initial-match-period-days.v1.json",
+      "object_kind": "CLAIM_DEFINITION",
+      "stable_id": "NO_SHOP_INITIAL_MATCH_PERIOD_DAYS",
+      "schema_version": "CLAIM_DEFINITION/V1",
+      "canonical_bytes_digest": "04ecf066af8f5195cb197a7041306b3e5adfb3e3ddbadf6ccdd965659866db13"
+    },
+    {
+      "relative_path": "claim-definitions/no-shop-notice-period-days.v1.json",
+      "object_kind": "CLAIM_DEFINITION",
+      "stable_id": "NO_SHOP_NOTICE_PERIOD_DAYS",
+      "schema_version": "CLAIM_DEFINITION/V1",
+      "canonical_bytes_digest": "cb53a5779db96c7d84a59071d492f05c35e6aa72c29872354488f6224ded75b5"
+    },
+    {
+      "relative_path": "claim-definitions/no-shop-prohibited-action.v1.json",
+      "object_kind": "CLAIM_DEFINITION",
+      "stable_id": "NO_SHOP_PROHIBITED_ACTION",
+      "schema_version": "CLAIM_DEFINITION/V1",
+      "canonical_bytes_digest": "24078ff95a138db0265241851e14b0bfc9f89839d0fc4d001f96dd3daafb4f5a"
+    },
+    {
+      "relative_path": "claim-definitions/no-shop-subsequent-match-period-days.v1.json",
+      "object_kind": "CLAIM_DEFINITION",
+      "stable_id": "NO_SHOP_SUBSEQUENT_MATCH_PERIOD_DAYS",
+      "schema_version": "CLAIM_DEFINITION/V1",
+      "canonical_bytes_digest": "1a48e5a996e28f234884bc370d59ce68ec3797e04fdba375bc87e006a107426d"
+    },
+    {
+      "relative_path": "claim-definitions/representation-accuracy-exception.v1.json",
+      "object_kind": "CLAIM_DEFINITION",
+      "stable_id": "REPRESENTATION_ACCURACY_EXCEPTION",
+      "schema_version": "CLAIM_DEFINITION/V1",
+      "canonical_bytes_digest": "66d9a2e0f3d19b7769adedf6355903a895a2deffb11a079d526f7b2e9f934ce9"
+    },
+    {
+      "relative_path": "claim-definitions/representation-accuracy-standard.v1.json",
+      "object_kind": "CLAIM_DEFINITION",
+      "stable_id": "REPRESENTATION_ACCURACY_STANDARD",
+      "schema_version": "CLAIM_DEFINITION/V1",
+      "canonical_bytes_digest": "7ba207a55b1b76761a8f16a97639f3f913ad6a59d8051e9359beee194cf2dd8a"
+    },
+    {
+      "relative_path": "claim-definitions/seller-termination-fee-percent-of-deal-value.v1.json",
+      "object_kind": "CLAIM_DEFINITION",
+      "stable_id": "SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE",
+      "schema_version": "CLAIM_DEFINITION/V1",
+      "canonical_bytes_digest": "79b15c9783beb7590b749ed25f1d5f3ddc1b8c774a4f7720567c0c0744659315"
+    }
+  ],
+  "per_kind_counts": {
+    "CLAIM_DEFINITION": 13
+  },
+  "per_kind_schema_versions": {
+    "CLAIM_DEFINITION": [
+      "CLAIM_DEFINITION/V1"
+    ]
+  }
+}
