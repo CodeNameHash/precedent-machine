@@ -189,7 +189,7 @@ function validateGateRegistry() {
     || independenceAllowlist?.validator_key_id
       !== 'PROGRAMME_GATE_VALIDATOR_2026_07'
     || independenceAllowlist?.validator_executable_digest
-      !== '705288937d64b8c05896bb8fdef6112fd9b98c974bf783fb469f1b7682f04f20'
+      !== '48b67c56d8eacba57ca5fd97e508c95f739c887f7bcf88f753a9d2b069cdf0b8'
     || independenceAllowlist?.validator_configuration_digest
       !== 'fe8cefd32ef973fdbffcf098585710387e7393f3d556ce6081ceab0a26401444') {
     fail('Frozen review controller, runtime, prompt or validator allowlist changed');
@@ -325,7 +325,7 @@ function validateGateRegistry() {
     PROGRAMME_GATE_BEN_APPROVER_2026_07: '2baac1c454dfb918097f2816fc9a230eb93139f735db35b9ed64d0e6846b4c17',
   };
   if (reviewer.review_controller_trust_root_set !== 'trusted-review-controller-keys/2026-07-frozen-v1'
-    || frozenTrust?.registry_source_sha256 !== '6dbdf7cfddc8562931375526a54fccd3a2361b3292df7129ebca83f328902b48'
+    || frozenTrust?.registry_source_sha256 !== '2d596fde231b187dc5e19855a21571175363870be930bab3f4950b01b396f4c0'
     || sha256(read('lib/programme-gates/registry.js')) !== frozenTrust?.registry_source_sha256
     || JSON.stringify(frozenTrust?.keys) !== JSON.stringify(expectedTrustKeys)
     || frozenTrust?.unknown_replacement_or_post_review_key_effect !== 'OPEN') {
@@ -404,7 +404,7 @@ function validateGateRegistry() {
     || compiledRegistry?.source_sha256
       !== sha256(read('docs/codex-program/bootstrap-acceptance-source.json'))
     || compiledRegistry?.closed_validator_executable_set_digest
-      !== '705288937d64b8c05896bb8fdef6112fd9b98c974bf783fb469f1b7682f04f20'
+      !== '48b67c56d8eacba57ca5fd97e508c95f739c887f7bcf88f753a9d2b069cdf0b8'
     || compiledRegistry?.authority
       !== 'ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE'
     || compiledRegistry?.exact_active_definition_count !== 11
@@ -431,8 +431,8 @@ function validateGateRegistry() {
     fail('Gate acceptance authority tiers are incomplete or overlapping');
   }
   const mandatoryTests = registry.mandatory_adversarial_test_binding;
-  if (mandatoryTests?.expected_identifier_count !== 284
-    || mandatoryTests?.expected_identifier_set_sha256 !== '8f5d904b2476815b138d3af7b52fab09d82e01062c98c728e91108b2674d4acb'
+  if (mandatoryTests?.expected_identifier_count !== 286
+    || mandatoryTests?.expected_identifier_set_sha256 !== 'e4ad6ea4d87db62d405f954007067f7eca87c32511c0aef97a5b258a5d3a87ed'
     || mandatoryTests?.enforcement_gate !== 'P9_SCOPE_EXACT'
     || mandatoryTests?.pre_cutover_requirement !== 'EVERY_MEMBER_TERMINAL_PASS'
     || mandatoryTests?.missing_extra_duplicate_or_unbound_member_effect !== 'OPEN') {
@@ -791,7 +791,7 @@ function validateRootCauseClosure() {
     '`VERIFY_PRODUCTION_BLOB_AVAILABILITY`, `IMPORT_MEMBER_BATCH`',
     'No result-page carrier, per-query result',
     'impact_clear_for_metric_slot=PASS',
-    'prevents the required successor `ContractFreezeAttestation`',
+    'approved successor ContractFreezeAttestation',
     '`COMMIT_PASS` is the sole producer of `ReleaseActivationCertification`',
     'prohibits every field and lock owned only by the other',
   ];

@@ -20,6 +20,9 @@ const {
   EVIDENCE_SIGNATURE_DOMAIN,
   EVIDENCE_SIGNATURE_ROLE,
 } = require('../../lib/programme-gates/validator');
+const {
+  expectedTestExecutableDigest,
+} = require('../../lib/programme-gates/test-executable-registry');
 
 const ROOT = 'a'.repeat(64);
 const COMMIT = 'b'.repeat(40);
@@ -43,7 +46,7 @@ function testResult() {
     code_commit: COMMIT,
     environment: 'PRODUCTION',
     command_digest: 'd'.repeat(64),
-    executable_digest: 'e'.repeat(64),
+    executable_digest: expectedTestExecutableDigest('GATE-01'),
     started_at: '2026-07-28T07:19:00.000Z',
     completed_at: '2026-07-28T07:20:00.000Z',
     exit_code: 0,

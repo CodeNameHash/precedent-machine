@@ -2,7 +2,10 @@ const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
 const test = require('node:test');
 
-const { buildIsolationObservationSource } = require(
+const {
+  REQUIRED_PREVIEW_ACTION_CLASSES,
+  buildIsolationObservationSource,
+} = require(
   '../../lib/programme-gates/isolation-collector',
 );
 const {
@@ -26,6 +29,9 @@ const {
   EVIDENCE_SIGNATURE_ROLE,
 } = require('../../lib/programme-gates/validator');
 const { validateSchema } = require('../../lib/programme-gates/schema-registry');
+const {
+  expectedTestExecutableDigest,
+} = require('../../lib/programme-gates/test-executable-registry');
 
 const ROOT = 'a'.repeat(64);
 const COMMIT = 'b'.repeat(40);
@@ -114,6 +120,18 @@ function previewEnvironment(serviceKey = 'staging-service-secret') {
   ];
 }
 
+function previewRouteActions() {
+  return REQUIRED_PREVIEW_ACTION_CLASSES.map((actionClass) => ({
+    action_id: actionClass,
+    action_class: actionClass,
+    unauthenticated_before_restore_status: 403,
+    unauthenticated_after_restore_status: 403,
+    authenticated_non_admin_status: 403,
+    authorised_test_status: actionClass === 'READ_ONLY_TEST' ? 200 : null,
+    feature_enabled: actionClass === 'READ_ONLY_TEST',
+  }));
+}
+
 function observationInput(overrides = {}) {
   return {
     observedAt: OBSERVED_AT,
@@ -152,6 +170,7 @@ function observationInput(overrides = {}) {
     },
     authorisedResponse: { status: 200 },
     previewRuntimeResponse: { status: 200 },
+    previewRouteActions: previewRouteActions(),
     ...overrides,
   };
 }
@@ -163,7 +182,7 @@ function testResult(testId) {
     code_commit: COMMIT,
     environment: 'PRODUCTION',
     command_digest: 'c'.repeat(64),
-    executable_digest: 'd'.repeat(64),
+    executable_digest: expectedTestExecutableDigest(testId),
     started_at: '2026-07-28T11:55:00.000Z',
     completed_at: '2026-07-28T11:56:00.000Z',
     exit_code: 0,
@@ -187,6 +206,7 @@ function readiness() {
     source: source(),
     gateTestResult: testResult('GATE-01'),
     deployCutoverTestResult: testResult('DEPLOY-CUTOVER-01'),
+    previewAuthTestResult: testResult('PREVIEW-AUTH-01'),
   });
 }
 
@@ -201,9 +221,16 @@ test('live inputs reduce to three non-secret isolation observations', () => {
   assert.equal(result.production_dml_probe, 'DENIED');
   assert.equal(result.restore_mode, 'PRODUCTION_SNAPSHOT_ONLY');
   assert.equal(result.preview_credential_scope, 'STAGING_ONLY');
-  assert.equal(result.unauthenticated_status, 302);
-  assert.equal(result.unauthenticated_redirect_origin, 'https://vercel.com/sso-api');
-  assert.equal(result.authorised_status, 200);
+  assert.deepEqual(
+    result.preview_route_actions.map((entry) => entry.action_class),
+    REQUIRED_PREVIEW_ACTION_CLASSES,
+  );
+  assert.equal(
+    result.preview_route_actions.find(
+      (entry) => entry.action_class === 'READ_ONLY_TEST',
+    ).authorised_test_status,
+    200,
+  );
   assert.equal(result.secret_field_count, 0);
   assert.doesNotMatch(
     JSON.stringify(result),
@@ -276,8 +303,14 @@ test('three active contracts produce exact unsigned readiness', () => {
   assert.equal(bundle.private_key_used, false);
   assert.equal(bundle.status_publication_attempted, false);
   assert.deepEqual(
-    bundle.candidates.map((candidate) => candidate.test_results[0].test_id),
-    ['DEPLOY-CUTOVER-01', 'DEPLOY-CUTOVER-01', 'GATE-01'],
+    bundle.candidates.map((candidate) => (
+      candidate.test_results.map((entry) => entry.test_id)
+    )),
+    [
+      ['DEPLOY-CUTOVER-01'],
+      ['DEPLOY-CUTOVER-01'],
+      ['GATE-01', 'PREVIEW-AUTH-01'],
+    ],
   );
   assert.ok(bundle.candidates.every(
     (candidate) => candidate.exact_acceptance_claims.every(

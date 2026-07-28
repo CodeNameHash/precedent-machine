@@ -1,8 +1,11 @@
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
+const fs = require('node:fs');
+const path = require('node:path');
 const test = require('node:test');
 
 const {
+  P0_TEST_FILES,
   collectContainmentEvidence,
   sourceContainmentInventory,
 } = require('../../lib/programme-gates/containment-collector');
@@ -122,6 +125,8 @@ function fakeRuntime(options = {}) {
     fetchCalls,
     commandCalls,
     readFile(file) {
+      const p0File = P0_TEST_FILES.find((candidate) => file.endsWith(candidate));
+      if (p0File) return fs.readFileSync(path.resolve(__dirname, '../..', p0File));
       if (file.endsWith('.next/server/pages-manifest.json')) {
         return Buffer.from(JSON.stringify(manifest));
       }

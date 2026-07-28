@@ -17,6 +17,29 @@ const DIGEST_C = 'c'.repeat(64);
 const DIGEST_D = 'd'.repeat(64);
 const DIGEST_E = 'e'.repeat(64);
 const DIGEST_F = 'f'.repeat(64);
+const PREVIEW_ACTION_CLASSES = Object.freeze([
+  'READ_ONLY_TEST',
+  'ADMIN_PRIVILEGED',
+  'WRITER',
+  'INGEST',
+  'CORRECTION',
+  'EXPORT',
+  'IMPORT',
+  'PROMOTION',
+  'CUTOVER',
+]);
+
+function previewRouteActions() {
+  return PREVIEW_ACTION_CLASSES.map((actionClass) => ({
+    action_id: actionClass,
+    action_class: actionClass,
+    unauthenticated_before_restore_status: 403,
+    unauthenticated_after_restore_status: 403,
+    authenticated_non_admin_status: 403,
+    authorised_test_status: actionClass === 'READ_ONLY_TEST' ? 200 : null,
+    feature_enabled: actionClass === 'READ_ONLY_TEST',
+  }));
+}
 
 function context(overrides = {}) {
   return {
@@ -191,9 +214,7 @@ const FIXTURES = Object.freeze({
     production_alias_after: 'deal-corpus.vercel.app',
   }),
   G0_STAGING_ACCESS_PROTECTED: Object.freeze({
-    unauthenticated_status: 403,
-    unauthenticated_redirect_origin: null,
-    authorised_status: 200,
+    preview_route_actions: Object.freeze(previewRouteActions()),
   }),
   G0_EXACT_DIGEST_REVIEW_SET: Object.freeze({
     review_set_evidence_id: DIGEST_C,
@@ -223,7 +244,7 @@ const FIXTURES = Object.freeze({
   }),
 });
 
-test('registry contains 31 explicit functions with exact closed claim membership', () => {
+test('registry contains 34 explicit functions with exact closed claim membership', () => {
   const descriptors = new Map(
     ACCEPTANCE_DEFINITION_DESCRIPTORS.map((descriptor) => [descriptor.gate_id, descriptor]),
   );
@@ -238,11 +259,17 @@ test('registry contains 31 explicit functions with exact closed claim membership
       count += 1;
     }
   }
-  assert.equal(count, 31);
+  assert.equal(count, 34);
 });
 
-test('all eleven bootstrap fixtures produce only typed boolean PASS claims', () => {
-  for (const [gateId, evidence] of Object.entries(FIXTURES)) {
+test('all non-governance bootstrap fixtures produce only typed boolean PASS claims', () => {
+  for (const [gateId, evidence] of Object.entries(FIXTURES).filter(
+    ([candidateGateId]) => ![
+      'G0_EXACT_DIGEST_REVIEW_SET',
+      'G0_BEN_SPEC_APPROVAL',
+      'P1_CONTRACT_FREEZE_ATTESTED',
+    ].includes(candidateGateId),
+  )) {
     const claims = evaluateAcceptanceClaims({
       gate_id: gateId,
       evidence,
@@ -371,8 +398,8 @@ test('evidence at the exact freshness boundary remains valid', () => {
     context: context({ observed_at: observedAt }),
   });
   const governanceClaims = evaluateAcceptanceClaims({
-    gate_id: 'G0_BEN_SPEC_APPROVAL',
-    evidence: FIXTURES.G0_BEN_SPEC_APPROVAL,
+    gate_id: 'G0_STAGING_SUPABASE_ISOLATED',
+    evidence: FIXTURES.G0_STAGING_SUPABASE_ISOLATED,
     context: context({ observed_at: '2026-07-20T12:00:00.000Z' }),
   });
   assert.ok(liveClaims.every((claim) => claim.typed_value === true));

@@ -75,6 +75,11 @@ const {
   programmeGateValidatorExecutableDigest,
 } = require('../lib/programme-gates/validator-executable');
 const {
+  TEST_EXECUTABLE_SET_DOMAIN,
+  expectedTestExecutableDigest,
+  testExecutableFiles,
+} = require('../lib/programme-gates/test-executable-registry');
+const {
   buildG0StatusReadiness,
   createG0StatusReadinessAuthority,
 } = require('../lib/programme-gates/g0-status-readiness');
@@ -84,27 +89,10 @@ const SOURCE_PATH = path.resolve(
   ROOT,
   'docs/certification/evidence/G0-SECURITY-DISPOSITIONS-2026-07-28.json',
 );
-const GATE_TEST_FILES = Object.freeze([
-  'tests/programme-gates-schema-registry.test.js',
-  'tests/programme-gates/g0-signer-workflow.spec.js',
-  'tests/programme-gates/isolation-evidence.spec.js',
-  'tests/programme-gates/predicates.spec.js',
-  'tests/programme-gates/security-disposition-signing.spec.js',
-  'tests/programme-gates/security-dispositions.spec.js',
-  'tests/programme-gates/validator-executable.spec.js',
-  'tests/programme-gates/validator.spec.js',
-]);
-const DEPLOY_CUTOVER_TEST_FILES = Object.freeze([
-  'tests/programme-gates/isolation-evidence.spec.js',
-  'tests/canonical-v2-staging-preview-access.test.js',
-  'tests/canonical-v2-staging-runtime.test.js',
-]);
-const REVIEW_CONTEXT_TEST_FILES = Object.freeze([
-  'tests/programme-gates/review-artifact.spec.js',
-  'tests/programme-gates/review-evidence.spec.js',
-  'tests/programme-gates/review-readiness-signing.spec.js',
-  'tests/programme-gates/g0-status-readiness.spec.js',
-]);
+const GATE_TEST_FILES = testExecutableFiles('GATE-01');
+const DEPLOY_CUTOVER_TEST_FILES = testExecutableFiles('DEPLOY-CUTOVER-01');
+const PREVIEW_AUTH_TEST_FILES = testExecutableFiles('PREVIEW-AUTH-01');
+const REVIEW_CONTEXT_TEST_FILES = testExecutableFiles('REVIEW-CONTEXT-01');
 const VALIDATOR_KEY_ID = 'PROGRAMME_GATE_VALIDATOR_2026_07';
 const BEN_APPROVER_KEY_ID = 'PROGRAMME_GATE_BEN_APPROVER_2026_07';
 const PRODUCTION_ORIGIN = 'https://deal-corpus.vercel.app';
@@ -138,6 +126,18 @@ function childEnvironment(overrides = {}) {
   delete environment.PROGRAMME_GATE_STAGING_SUPABASE_SECRET_KEY;
   delete environment.VERCEL_TOKEN;
   return environment;
+}
+
+function previewAccessMatrix() {
+  const value = process.env.PROGRAMME_GATE_PREVIEW_ACCESS_MATRIX_JSON;
+  if (typeof value !== 'string' || value.length === 0) {
+    throw new Error('protected preview access matrix evidence is unavailable');
+  }
+  const parsed = JSON.parse(value);
+  if (!Array.isArray(parsed)) {
+    throw new Error('protected preview access matrix evidence is not an array');
+  }
+  return parsed;
 }
 
 function run(command, args, options = {}) {
@@ -189,6 +189,13 @@ function testResult(testId, testFiles, codeCommit, environment) {
       sha256: sha256(bytes),
     };
   });
+  const executableDigest = domainDigest(
+    TEST_EXECUTABLE_SET_DOMAIN,
+    executableMembers,
+  );
+  if (executableDigest !== expectedTestExecutableDigest(testId)) {
+    throw new Error(`${testId} executable set does not match the frozen registry`);
+  }
   const record = Object.freeze({
     schema_version: 'ProgrammeGateTestExecutionRecord/V1',
     test_id: testId,
@@ -198,10 +205,7 @@ function testResult(testId, testFiles, codeCommit, environment) {
       'PROGRAMME_GATE_TEST_COMMAND/V1',
       { executable: process.execPath, args },
     ),
-    executable_digest: domainDigest(
-      'PROGRAMME_GATE_TEST_EXECUTABLE_SET/V1',
-      executableMembers,
-    ),
+    executable_digest: executableDigest,
     started_at: startedAt,
     completed_at: completedAt,
     exit_code: result.status,
@@ -357,6 +361,7 @@ async function collectLiveIsolationSource({ codeCommit, previewDeploymentId }) {
     unauthenticatedResponse,
     authorisedResponse,
     previewRuntimeResponse: authorisedResponse,
+    previewRouteActions: previewAccessMatrix(),
   });
 }
 
@@ -561,6 +566,12 @@ async function main() {
     codeCommit,
     environment,
   );
+  const previewAuthTest = testResult(
+    'PREVIEW-AUTH-01',
+    PREVIEW_AUTH_TEST_FILES,
+    codeCommit,
+    environment,
+  );
   const securityObservedAt = new Date().toISOString();
   const verificationTime = securityObservedAt;
   const securitySource = JSON.parse(fs.readFileSync(SOURCE_PATH, 'utf8'));
@@ -591,6 +602,7 @@ async function main() {
     source: isolationSource,
     gateTestResult: gateTest,
     deployCutoverTestResult: deployCutoverTest,
+    previewAuthTestResult: previewAuthTest,
   });
   const validatorExecutableDigest = programmeGateValidatorExecutableDigest({
     root: ROOT,

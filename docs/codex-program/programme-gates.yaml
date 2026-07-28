@@ -61,8 +61,8 @@ programme_gate_registry:
       missing_or_post_review_selected_member_effect: OPEN
     bootstrap_compiled_registry_binding:
       source_path: docs/codex-program/bootstrap-acceptance-source.json
-      source_sha256: 653782ca7a4af4a99d054acaf57432458e7a6cd5ec6f85b7d0f2694ec441506b
-      closed_validator_executable_set_digest: 705288937d64b8c05896bb8fdef6112fd9b98c974bf783fb469f1b7682f04f20
+      source_sha256: 19bddc029ffd8add4382f47b948ce10c06515db831216ed0a667d4ac8c18545c
+      closed_validator_executable_set_digest: 48b67c56d8eacba57ca5fd97e508c95f739c887f7bcf88f753a9d2b069cdf0b8
       authority: ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE
       exact_active_definition_count: 11
       exact_genesis_gate_count: 10
@@ -137,8 +137,8 @@ programme_gate_registry:
   mandatory_adversarial_test_binding:
     source: docs/codex-program/adversarial-tests.md
     enumeration_rule: EVERY_BACKTICKED_LIST_ITEM_IDENTIFIER_IN_SOURCE_ORDER
-    expected_identifier_count: 284
-    expected_identifier_set_sha256: 8f5d904b2476815b138d3af7b52fab09d82e01062c98c728e91108b2674d4acb
+    expected_identifier_count: 286
+    expected_identifier_set_sha256: e4ad6ea4d87db62d405f954007067f7eca87c32511c0aef97a5b258a5d3a87ed
     authoritative_root: DOMAIN_SEPARATED_ROOT_OVER_ORDERED_IDENTIFIER_TEST_DEFINITION_AND_EXECUTABLE_DIGEST_TUPLES
     enforcement_gate: P9_SCOPE_EXACT
     pre_cutover_requirement: EVERY_MEMBER_TERMINAL_PASS
@@ -179,11 +179,11 @@ programme_gate_registry:
       missing_extra_or_digest_mismatched_prompt_effect: INELIGIBLE
     frozen_independence_validator_allowlist:
       validator_key_id: PROGRAMME_GATE_VALIDATOR_2026_07
-      validator_executable_digest: 705288937d64b8c05896bb8fdef6112fd9b98c974bf783fb469f1b7682f04f20
+      validator_executable_digest: 48b67c56d8eacba57ca5fd97e508c95f739c887f7bcf88f753a9d2b069cdf0b8
       validator_configuration_digest: fe8cefd32ef973fdbffcf098585710387e7393f3d556ce6081ceab0a26401444
     frozen_trust_root_set:
       registry_schema: programme-gate-trusted-public-keys/v1
-      registry_source_sha256: 6dbdf7cfddc8562931375526a54fccd3a2361b3292df7129ebca83f328902b48
+      registry_source_sha256: 2d596fde231b187dc5e19855a21571175363870be930bab3f4950b01b396f4c0
       keys:
         PROGRAMME_GATE_VALIDATOR_2026_07: 5b028d01aaa4f077c6f2f28ef8075195330eff00c2f81061fad8622b761de566
         PROGRAMME_STATUS_PUBLISHER_2026_07: d7f562af345fcb04a78f26c87b3e3f19b1cad6c8627ccc612396a4217d8a02c1

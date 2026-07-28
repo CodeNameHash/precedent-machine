@@ -30,7 +30,10 @@ The following adversarial closure tests are mandatory traceability entries:
   root and invalidate every earlier review and approval. Every gate must reject
   an unknown evidence schema, wrong typed object, missing or extra acceptance
   claim, unbacked boolean `PASS`, untrusted validator or missing mandatory-test
-  result. PreCutoverCertification must bind the exact 284-member
+  result. Each result must carry the exact frozen executable-set digest for its
+  test ID; a self-reported digest, changed test file, unregistered executable
+  set or valid result from another binding leaves the gate open.
+  PreCutoverCertification must bind the exact 286-member
   MandatoryAdversarialTestCatalogueRoot and every member's definition,
   executable and passing result; the union of per-gate early minima cannot
   substitute. A fresh-looking session or empty edit set alone cannot pass.
@@ -1278,6 +1281,12 @@ The following adversarial closure tests are mandatory traceability entries:
   flatten to the earliest equivalent residual and inherit its disposition,
   governed link and impact closure exactly; it cannot create a zero-effect
   branch unless the original closure is the reviewed non-substantive zero.
+  Each residual-capable semantic boundary emits an admission receipt before a
+  typed carrier can be discarded and a terminal consumption reconciliation
+  proving every receipt became exactly one governed carrier or one residual.
+  Drop an unknown proposition before candidate or residual creation, omit its
+  receipt, or consume one receipt twice: reconciliation fails and publication
+  remains blocked without suppressing independently valid siblings.
 - `OPEN-WORLD-KIND-SUPERSESSION-01`: an effective-terminal
   `UNRESOLVED_CANDIDATE_KIND` blocks. Resolving it creates a new candidate and
   occurrence plus one exact kind-only supersession; the predecessor remains in
@@ -2029,7 +2038,16 @@ The following adversarial closure tests are mandatory traceability entries:
   bring-down tiers coexist despite legacy uniqueness constraints; poisoning a
   compatibility row changes no canonical output.
 - `CONTRACT-01`: direct edits to generated registries fail, and every active key
-  resolves once to the CanonicalContractBundle.
+  resolves once to the CanonicalContractBundle. Contract freeze is a registered
+  canonical-writer operation with exactly one
+  `INITIALISE_CANDIDATE_PROMOTION_FENCE` action. Its acceptance predicates
+  recompute the compilation receipt, legal-semantic and identity review, signed
+  Ben approval and signed status generation directly from immutable members.
+  Caller-supplied summaries, booleans, expected generations or verification
+  objects have no authority. A contract-impacting novel candidate blocks the
+  predecessor release, may create only a non-authoritative
+  ContractAmendmentProposal, and becomes publishable only after the successor
+  bundle freezes and affected spans plus transitive dependants are reprocessed.
 - `POLICY-AUTHORITY-01`: duplicate configuration ownership, a value above a
   protocol bound or any OperationalPolicySet mismatch among scope, candidate,
   deployment and certification fails compilation or certification.
@@ -2148,6 +2166,13 @@ The following adversarial closure tests are mandatory traceability entries:
   renderable. Substitute the reviewer principal, eligibility proof, signed
   representativeness decision, effective disposition or evidence closure while
   retaining the selected primitive: the writer must reject publication.
+  The effective decision must be present exactly once in the admitted scope
+  inventory, CandidateInputSeal, candidate-output inventory,
+  CandidateReleaseManifest, ReleaseBundleEnvelope, production-import parity,
+  traceability and SharedServingRow. Omit, duplicate, cross-wire or substitute
+  it at any boundary and certification fails. A `CANONICAL_RESULT` row carrying
+  `REVIEWED_SOURCE_SPECIFIC`, or a source-specific row entering a canonical
+  market cohort, fails before serving while valid sibling rows remain available.
 - `RESULT-LINEAGE-01`: changing only a ClaimScopeClosure,
   CompositionScopeClosure, RelationshipRevision, effect payload, endpoint,
   party, precedence rule or evidence changes ResultInputLineage, result-component and DerivedResult
@@ -2283,7 +2308,12 @@ The following adversarial closure tests are mandatory traceability entries:
   rollback window.
 - `P0-ROUTE-01`: source, built-route and instrumented discovery agree, every
   unbounded route is contained, and `N` versus `10N` preserves fixed call and
-  Node payload ceilings.
+  Node payload ceilings. Source membership is independently enumerated from the
+  frozen route/action source inventory, never reconstructed from the evidence
+  being tested. Deleting one source member while deleting the same member from
+  evidence and runtime discovery must still fail. The execution record's
+  executable digest must equal the frozen digest of the exact registered test
+  files, including byte lengths and file hashes.
 - `PREVIEW-AUTH-01`: every preview page and action denies unauthenticated access
   before and after snapshot restore; cross-user, forged-owner, forged-admin and
   CSRF attempts fail.
@@ -2303,7 +2333,16 @@ The following adversarial closure tests are mandatory traceability entries:
   fails. The benchmark root must equal the complete
   SupportedQueryShapeRegistry coverage root across every active route, action,
   request variant, plan family, filter/operator/value class, page, facet,
-  option, saved lookup, immutable result fetch and exact-detail/source page.
+  option, saved lookup, carried-response navigation and exact-detail/source page.
+  The registry itself must be the frozen closed member selected by
+  `QUERY_DEFINITION_SET_ROOT/V2`; both independent query-shape compilers must
+  reproduce its complete member set and root without using test fixtures as
+  authority. Selectivity class is deterministic: valid estimates at or below
+  `0.10` are `SELECTIVE`, values above `0.10` are `UNSELECTIVE`, and missing,
+  invalid or conflicting estimates fail before planning. Facet and field-option
+  endpoints return at most 200 values and 256 KiB per page with a signed
+  release-aware cursor; overflow must paginate or refuse before corpus access,
+  never truncate.
   Every class must satisfy its binding p95, p99 and browser threshold at N and
   maximum scale. A missing class or smaller CapacityManifest cardinality
   component fails. No-fault steady and all-miss profiles must satisfy the fixed 99.9%
