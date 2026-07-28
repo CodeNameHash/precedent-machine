@@ -1,0 +1,18 @@
+{
+  "phase": "WP-GATE-SIGNED-PREFLIGHT-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-gate-signed-preflight-v1.json",
+    "lib/programme-gates/containment-signed-preflight.js",
+    "tests/programme-gates/containment-evidence.spec.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Attaches an externally produced signature to exact containment readiness and runs the full closed evidence validator. It has no private-key, signing, status-projection, publication, corpus or product authority. Formal gate state remains OPEN."
+}
