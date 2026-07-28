@@ -227,6 +227,7 @@ test('the containment contract bundle activates only two closed definitions', ()
       'G0_STAGING_ACCESS_PROTECTED',
       'G0_EXACT_DIGEST_REVIEW_SET',
       'G0_BEN_SPEC_APPROVAL',
+      'P1_CONTRACT_FREEZE_ATTESTED',
     ],
   );
 });

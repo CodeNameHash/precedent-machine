@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 import YAML from 'yaml';
 
 const root = process.cwd();
@@ -8,6 +9,7 @@ const manifestPath = 'docs/codex-program/specification-manifest.json';
 const contentPaths = [
   'docs/CODEX-PROGRAM.md',
   'docs/codex-program/programme-gates.yaml',
+  'docs/codex-program/bootstrap-acceptance-source.json',
   'docs/codex-program/canonical-contracts.md',
   'docs/codex-program/adversarial-tests.md',
 ];
@@ -54,8 +56,8 @@ function generatedManifest() {
   return {
     schema: 'codex-program-specification-manifest/v1',
     domain_separator: domain,
-    root_input_encoding: 'UTF-8 domain separator plus LF, then exact manifest bytes as ordered member 1 followed by each declared content file as ordered members 2 through 5; every member record is path plus NUL, decimal byte length plus NUL, lowercase SHA-256 plus LF',
-    root_membership: 'EXACT_MANIFEST_BYTES_THEN_DECLARED_CONTENT_FILES',
+    root_input_encoding: 'SHA-256 over UTF-8 domain separator plus LF followed only by ordered member records 1 through 6; each record is UTF-8 path plus NUL, ASCII decimal byte length plus NUL, lowercase SHA-256 of raw member bytes plus LF; member 1 is the manifest record computed from raw manifest bytes, members 2 through 6 are the declared content-file records; no raw member bytes or implicit records are appended',
+    root_membership: 'EXACT_ORDERED_MEMBER_RECORDS_MANIFEST_THEN_FIVE_DECLARED_CONTENT_FILES',
     files,
     baseline_identifier_continuity: {
       schema: 'codex-program-baseline-identifier-continuity/v1',
@@ -187,9 +189,9 @@ function validateGateRegistry() {
     || independenceAllowlist?.validator_key_id
       !== 'PROGRAMME_GATE_VALIDATOR_2026_07'
     || independenceAllowlist?.validator_executable_digest
-      !== '892bd3d1b29cc1a970ef70aff6005c3ab30901c153a20de6da1a8bd22bfbe9ed'
+      !== '705288937d64b8c05896bb8fdef6112fd9b98c974bf783fb469f1b7682f04f20'
     || independenceAllowlist?.validator_configuration_digest
-      !== '33bfc1ff13fd8ad3b5fa903bf2c9f33f1298f424aa9a33dd79d5f9d1b6e97a20') {
+      !== 'fe8cefd32ef973fdbffcf098585710387e7393f3d556ce6081ceab0a26401444') {
     fail('Frozen review controller, runtime, prompt or validator allowlist changed');
   }
   if (reviewer.self_asserted_metadata_effect !== 'INELIGIBLE' || reviewer.ordinary_sol_effect !== 'ADVISORY_ONLY') {
@@ -240,7 +242,15 @@ function validateGateRegistry() {
     fail('Reviewer principal is not bound to the exact controller run and session');
   }
   const isolation = reviewer.review_session_isolation;
-  if (!isolation?.fresh_ephemeral_cli_session
+  if (!isolation?.all_five_lanes_start_concurrently
+    || JSON.stringify(isolation?.output_bundle_order) !== JSON.stringify([
+      'ARCHITECTURE',
+      'LEGAL_SEMANTIC',
+      'QUERY_EFFICIENCY',
+      'OPEN_WORLD',
+      'RELEASE_PROPAGATION',
+    ])
+    || !isolation?.fresh_ephemeral_cli_session
     || !isolation?.new_CODEX_HOME
     || isolation?.resume_prior_session !== false
     || isolation?.project_rules_loaded !== false
@@ -315,7 +325,7 @@ function validateGateRegistry() {
     PROGRAMME_GATE_BEN_APPROVER_2026_07: '2baac1c454dfb918097f2816fc9a230eb93139f735db35b9ed64d0e6846b4c17',
   };
   if (reviewer.review_controller_trust_root_set !== 'trusted-review-controller-keys/2026-07-frozen-v1'
-    || frozenTrust?.registry_source_sha256 !== '1d61b3e8e7d522540f20dde431897033b34840a1448826bf13b69460da3c691b'
+    || frozenTrust?.registry_source_sha256 !== '6dbdf7cfddc8562931375526a54fccd3a2361b3292df7129ebca83f328902b48'
     || sha256(read('lib/programme-gates/registry.js')) !== frozenTrust?.registry_source_sha256
     || JSON.stringify(frozenTrust?.keys) !== JSON.stringify(expectedTrustKeys)
     || frozenTrust?.unknown_replacement_or_post_review_key_effect !== 'OPEN') {
@@ -390,13 +400,16 @@ function validateGateRegistry() {
     || claimAst?.asserted_boolean_without_RECOMPUTED_MEMBER_WITNESS_ROOT !== 'OPEN'
     || sourceRoot?.source !== 'AUTHORITY_TIER_SELECTED_BY_GATE_ID'
     || sourceRoot?.missing_or_post_review_selected_member_effect !== 'OPEN'
-    || compiledRegistry?.source_path !== 'lib/programme-gates/registry.js'
-    || compiledRegistry?.source_sha256 !== sha256(read('lib/programme-gates/registry.js'))
+    || compiledRegistry?.source_path !== 'docs/codex-program/bootstrap-acceptance-source.json'
+    || compiledRegistry?.source_sha256
+      !== sha256(read('docs/codex-program/bootstrap-acceptance-source.json'))
     || compiledRegistry?.closed_validator_executable_set_digest
-      !== '892bd3d1b29cc1a970ef70aff6005c3ab30901c153a20de6da1a8bd22bfbe9ed'
+      !== '705288937d64b8c05896bb8fdef6112fd9b98c974bf783fb469f1b7682f04f20'
     || compiledRegistry?.authority
-      !== 'AUTHORITATIVE_CONTENT_ADDRESSED_BOOTSTRAP_FROZEN_ACCEPTANCE_SOURCE'
-    || compiledRegistry?.exact_active_definition_count !== 10
+      !== 'ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE'
+    || compiledRegistry?.exact_active_definition_count !== 11
+    || compiledRegistry?.exact_genesis_gate_count !== 10
+    || compiledRegistry?.exact_active_gate_order?.at(-1) !== 'P1_CONTRACT_FREEZE_ATTESTED'
     || compiledRegistry?.required_definition_field_totality
       !== 'EXACTLY_ALL_ACCEPTANCE_DEFINITION_REQUIRED_FIELDS_AND_CLAIM_PREDICATE_REQUIRED_FIELDS'
     || compiledRegistry?.runtime_or_request_supplied_semantics !== 'PROHIBITED'
@@ -408,7 +421,8 @@ function validateGateRegistry() {
     ...(authorityTiers?.BOOTSTRAP_FROZEN?.gates || []),
     ...(authorityTiers?.BUNDLE_FROZEN?.gates || []),
   ];
-  if (authorityTiers?.BOOTSTRAP_FROZEN?.source !== 'REVIEWED_SPECIFICATION_PLUS_EXACT_VALIDATOR_EXECUTABLE_SET'
+  if (authorityTiers?.BOOTSTRAP_FROZEN?.source
+      !== 'ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE'
     || authorityTiers?.BUNDLE_FROZEN?.source !== 'CANONICAL_CONTRACT_BUNDLE_MEMBER_APPROVED_BY_CONTRACT_FREEZE_ATTESTATION'
     || authorityTiers?.BUNDLE_FROZEN?.unresolved_before_freeze_effect !== 'OPEN_NOT_PERMANENTLY_UNDEFINED'
     || tierGateIds.length !== registry.gates.length
@@ -578,12 +592,12 @@ function validateAdversarialTests() {
     [...read(filePath).toString('utf8').matchAll(definition)].map((match) => ({ filePath, id: match[1] }))
   ));
   const ids = rows.map((row) => row.id);
-  if (ids.length !== 284) fail(`Expected 284 adversarial tests, found ${ids.length}`);
+  if (ids.length !== 286) fail(`Expected 286 adversarial tests, found ${ids.length}`);
   assertUnique(ids, 'adversarial test ID');
   if (rows.some((row) => row.filePath !== 'docs/codex-program/adversarial-tests.md')) {
     fail('Adversarial test definition outside authoritative file');
   }
-  if (sha256(`${ids.join('\n')}\n`) !== '8f5d904b2476815b138d3af7b52fab09d82e01062c98c728e91108b2674d4acb') {
+  if (sha256(`${ids.join('\n')}\n`) !== 'e4ad6ea4d87db62d405f954007067f7eca87c32511c0aef97a5b258a5d3a87ed') {
     fail('Current adversarial test ID list changed');
   }
   const addedIds = new Set([
@@ -595,6 +609,8 @@ function validateAdversarialTests() {
     'GATE-BOOTSTRAP-01',
     'REVIEW-CONTEXT-01',
     'DEAL-IDENTITY-AUTHORITY-01',
+    'RESIDUAL-IMPACT-PUBLICATION-01',
+    'CLAIM-ONLY-IMPACT-CLEARANCE-01',
   ]);
   const baselineIds = ids.filter((id) => !addedIds.has(id));
   if (sha256(`${baselineIds.join('\n')}\n`) !== 'c4d52483beb08c1feacac9222e4ab24b7156173dea8c2e6599fe3c11d575fe1c') {
@@ -716,6 +732,95 @@ function validateGateReferences(gateIds) {
   }
 }
 
+function validateBootstrapAcceptanceSource() {
+  execFileSync(
+    process.execPath,
+    ['scripts/generate-bootstrap-acceptance-source.mjs', '--check'],
+    { cwd: root, stdio: 'pipe' },
+  );
+  const source = JSON.parse(
+    read('docs/codex-program/bootstrap-acceptance-source.json').toString('utf8'),
+  );
+  const expectedGateIds = [
+    'G0_MARKET_STATS_CONTAINED',
+    'G0_BROAD_CORPUS_ROUTES_CONTAINED',
+    'G0_ZAYO_DISPOSITION',
+    'G0_CLAUDE_CREDENTIAL_ROTATION',
+    'G0_SUPABASE_SECRET_DISPOSITION',
+    'G0_STAGING_SUPABASE_ISOLATED',
+    'G0_STAGING_VERCEL_ISOLATED',
+    'G0_STAGING_ACCESS_PROTECTED',
+    'G0_EXACT_DIGEST_REVIEW_SET',
+    'G0_BEN_SPEC_APPROVAL',
+    'P1_CONTRACT_FREEZE_ATTESTED',
+  ];
+  if (source.schema_version !== 'ProgrammeGateBootstrapAcceptanceSource/V1'
+    || source.authority !== 'ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE'
+    || source.definition_count !== 11
+    || source.genesis_gate_count !== 10
+    || JSON.stringify(source.ordered_gate_ids) !== JSON.stringify(expectedGateIds)
+    || source.definitions?.length !== 11) {
+    fail('Bootstrap acceptance source does not contain the closed eleven-gate authority');
+  }
+  for (const [index, definition] of source.definitions.entries()) {
+    if (definition.descriptor?.gate_id !== expectedGateIds[index]
+      || definition.descriptor?.activation_state !== 'ACTIVE'
+      || !definition.evidence_schema
+      || !Array.isArray(definition.member_schemas)
+      || definition.member_schemas.length === 0
+      || !Array.isArray(definition.ordered_claim_predicates)
+      || definition.ordered_claim_predicates.length === 0
+      || definition.ordered_claim_predicates.some((predicate) => (
+        predicate.measurement_language !== 'ECMASCRIPT_FUNCTION_SOURCE_V1'
+        || typeof predicate.measurement_source !== 'string'
+        || predicate.measurement_source.length === 0
+        || predicate.comparison_operator !== 'EQUALS'
+        || predicate.expected_typed_value !== true
+      ))) {
+      fail(`Bootstrap acceptance source definition ${expectedGateIds[index]} is incomplete`);
+    }
+  }
+}
+
+function validateRootCauseClosure() {
+  const contracts = read('docs/codex-program/canonical-contracts.md').toString('utf8');
+  const adversarial = read('docs/codex-program/adversarial-tests.md').toString('utf8');
+  const programme = read('docs/CODEX-PROGRAM.md').toString('utf8');
+  const requiredContractTerms = [
+    'exactly eight top-level actions: `OPEN_IMPORT`,',
+    '`VERIFY_PRODUCTION_BLOB_AVAILABILITY`, `IMPORT_MEMBER_BATCH`',
+    'No result-page carrier, per-query result',
+    'impact_clear_for_metric_slot=PASS',
+    'prevents the required successor `ContractFreezeAttestation`',
+    '`COMMIT_PASS` is the sole producer of `ReleaseActivationCertification`',
+    'prohibits every field and lock owned only by the other',
+  ];
+  for (const term of requiredContractTerms) {
+    if (!contracts.includes(term)) fail(`Root-cause closure contract missing: ${term}`);
+  }
+  for (const forbidden of [
+    'ImmutableQueryExecutionResult',
+    'IMMUTABLE_EXECUTION_RESULT_FETCH',
+    '`CERTIFY_RELEASE_ACTIVATION`',
+  ]) {
+    if (`${programme}\n${contracts}\n${adversarial}`.includes(forbidden)) {
+      fail(`Removed root-cause contract remains present: ${forbidden}`);
+    }
+  }
+  for (const testId of [
+    'IMPORT-LIFECYCLE-01',
+    'QUERY-EXEC-01',
+    'RESIDUAL-IMPACT-PUBLICATION-01',
+    'CLAIM-ONLY-IMPACT-CLEARANCE-01',
+    'POST-ACTIVATION-FAULT-BOUNDARY-01',
+    'HISTORICAL-REACTIVATION-ADVANCED-HEAD-01',
+  ]) {
+    if (!adversarial.includes(`\`${testId}\``)) {
+      fail(`Root-cause closure adversarial test missing: ${testId}`);
+    }
+  }
+}
+
 function validateManifest(writeManifest) {
   const generated = generatedManifest();
   const absoluteManifest = path.join(root, manifestPath);
@@ -734,8 +839,8 @@ function validateManifest(writeManifest) {
     byte_length: manifestBytes.length,
     sha256: sha256(manifestBytes),
   }, ...actual.files];
-  if (rootMembers.map((entry) => entry.order).join(',') !== '1,2,3,4,5') {
-    fail('Specification root members are not ordered 1 through 5');
+  if (rootMembers.map((entry) => entry.order).join(',') !== '1,2,3,4,5,6') {
+    fail('Specification root members are not ordered 1 through 6');
   }
   const rootDigest = specificationRoot(rootMembers);
   const mutated = structuredClone(actual);
@@ -756,6 +861,8 @@ const { gateIds } = validateGateRegistry();
 validateGateReferences(gateIds);
 validateAdversarialTests();
 validateAuthorityAndReviewerLanguage();
+validateBootstrapAcceptanceSource();
+validateRootCauseClosure();
 const rootDigest = validateManifest(writeManifest);
 validateMarkdownLinksAndFences();
 console.log(`CODEX programme specification PASS ${rootDigest}`);

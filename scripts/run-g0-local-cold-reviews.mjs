@@ -4,7 +4,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
@@ -23,6 +23,7 @@ const SPEC_PATHS = Object.freeze([
   'docs/codex-program/specification-manifest.json',
   'docs/CODEX-PROGRAM.md',
   'docs/codex-program/programme-gates.yaml',
+  'docs/codex-program/bootstrap-acceptance-source.json',
   'docs/codex-program/canonical-contracts.md',
   'docs/codex-program/adversarial-tests.md',
 ]);
@@ -51,6 +52,42 @@ function command(commandName, args, options = {}) {
     throw new Error(`${commandName} failed with exit code ${result.status}`);
   }
   return { stdout: result.stdout || '', stderr: result.stderr || '' };
+}
+
+function commandAsync(commandName, args, options = {}) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(commandName, args, {
+      cwd: options.cwd || ROOT,
+      env: options.env || process.env,
+      stdio: ['pipe', 'pipe', 'pipe'],
+    });
+    const stdout = [];
+    const stderr = [];
+    let byteCount = 0;
+    const collect = (target) => (chunk) => {
+      byteCount += chunk.length;
+      if (byteCount > 64 * 1024 * 1024) {
+        child.kill('SIGKILL');
+        reject(new Error(`${commandName} exceeded the closed output bound`));
+        return;
+      }
+      target.push(chunk);
+    };
+    child.stdout.on('data', collect(stdout));
+    child.stderr.on('data', collect(stderr));
+    child.on('error', reject);
+    child.on('close', (status) => {
+      if (status !== 0) {
+        reject(new Error(`${commandName} failed with exit code ${status}`));
+        return;
+      }
+      resolve({
+        stdout: Buffer.concat(stdout).toString('utf8'),
+        stderr: Buffer.concat(stderr).toString('utf8'),
+      });
+    });
+    child.stdin.end(options.input);
+  });
 }
 
 function specificationRoot() {
@@ -106,7 +143,7 @@ function copySpecification(target) {
   }
 }
 
-function runLane({ lane, runRoot, exactSpecificationRoot, privateKey, commit }) {
+async function runLane({ lane, runRoot, exactSpecificationRoot, privateKey, commit }) {
   const laneRoot = fs.mkdtempSync(path.join(runRoot, `${lane.lane_id.toLowerCase()}-`));
   const specificationDirectory = path.join(laneRoot, 'specification');
   const home = path.join(laneRoot, 'home');
@@ -180,7 +217,7 @@ function runLane({ lane, runRoot, exactSpecificationRoot, privateKey, commit }) 
   });
   const before = sourceDigest(specificationDirectory);
   const startedAt = new Date().toISOString();
-  const result = command(plan.invocation.executable, plan.invocation.arguments, {
+  const result = await commandAsync(plan.invocation.executable, plan.invocation.arguments, {
     cwd: plan.invocation.working_directory,
     input: lane.prompt,
     env: {},
@@ -234,13 +271,13 @@ const runRoot = fs.mkdtempSync(path.join(process.env.RUNNER_TEMP, 'g0-cold-revie
 try {
   const root = specificationRoot();
   const privateKey = protectedKey();
-  const reviews = COLD_REVIEW_TASKS.map((lane) => runLane({
+  const reviews = await Promise.all(COLD_REVIEW_TASKS.map((lane) => runLane({
     lane,
     runRoot,
     exactSpecificationRoot: root,
     privateKey,
     commit,
-  }));
+  })));
   fs.writeFileSync(outputPath, JSON.stringify({
     schema_version: 'ProgrammeGateColdReviewControllerBundle/V1',
     code_commit: commit,

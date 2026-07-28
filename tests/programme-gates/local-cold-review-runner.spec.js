@@ -19,6 +19,15 @@ test('runner creates five fresh read-only ChatGPT-authenticated review sessions'
   assert.doesNotMatch(source, /OPENAI_API_KEY|CODEX_API_KEY|CODEX_ACCESS_TOKEN/);
 });
 
+test('runner starts all five isolated lanes concurrently and preserves lane order', () => {
+  const source = fs.readFileSync(SCRIPT, 'utf8');
+  assert.match(source, /await Promise\.all\(COLD_REVIEW_TASKS\.map/);
+  assert.match(source, /await commandAsync\(plan\.invocation\.executable/);
+  assert.match(source, /const laneRoot = fs\.mkdtempSync/);
+  assert.match(source, /reviews,\s*\}\), \{ mode: 0o600 \}\)/);
+  assert.doesNotMatch(source, /for \(const lane of COLD_REVIEW_TASKS\)/);
+});
+
 test('workflow is manual, protected, exact-commit and one-use-runner compatible', () => {
   const source = fs.readFileSync(WORKFLOW, 'utf8');
   assert.match(source, /workflow_dispatch:/);
