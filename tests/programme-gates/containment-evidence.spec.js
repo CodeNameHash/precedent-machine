@@ -1,4 +1,5 @@
 const assert = require('node:assert/strict');
+const crypto = require('node:crypto');
 const test = require('node:test');
 
 const {
@@ -8,6 +9,10 @@ const {
 const {
   createContainmentContractBundle,
 } = require('../../lib/programme-gates/containment-contracts');
+const {
+  buildContainmentEvidenceSigningRequest,
+  createContainmentSigningRequestAuthority,
+} = require('../../lib/programme-gates/containment-signing-request');
 const {
   containmentMembers,
   enumerateContainmentExpectedMembers,
@@ -22,10 +27,18 @@ const {
 } = require('../../lib/programme-gates/containment-runtime');
 const {
   ACCEPTANCE_DEFINITION_DESCRIPTORS,
+  REGISTRY_DIGESTS,
 } = require('../../lib/programme-gates/registry');
 const {
   validateSchema,
 } = require('../../lib/programme-gates/schema-registry');
+const {
+  EVIDENCE_SIGNATURE_DOMAIN,
+  EVIDENCE_SIGNATURE_ROLE,
+} = require('../../lib/programme-gates/validator');
+const {
+  verifySignature,
+} = require('../../lib/programme-gates/signatures');
 
 const ROOT = 'a'.repeat(64);
 const COMMIT = 'b'.repeat(40);
@@ -37,10 +50,12 @@ const GATES = Object.freeze([
   Object.freeze({
     id: 'G0_MARKET_STATS_CONTAINED',
     evidence_contract: 'route-disabled-code-test-live-response/v1',
+    required_evidence_object_type: 'MarketStatsContainmentAttestation',
   }),
   Object.freeze({
     id: 'G0_BROAD_CORPUS_ROUTES_CONTAINED',
     evidence_contract: 'broad-route-inventory-and-containment/v1',
+    required_evidence_object_type: 'BroadRouteContainmentAttestation',
   }),
 ]);
 
@@ -377,5 +392,170 @@ test('deployment proof requires exact READY runtime, commit and specification me
       ...input,
       originDeployment: { ...deployment, id: 'dpl_other' },
     }),
+  );
+});
+
+test('a trusted public-key binding produces an exact unsigned signing frame without key use', async () => {
+  const { publicKey, privateKey } = crypto.generateKeyPairSync('ed25519');
+  const keyRegistry = {
+    schema_version: 'TrustedProgrammeGatePublicKeys/V1',
+    registry_state: 'ACTIVE',
+    keys: [{
+      key_id: 'TEST_CONTAINMENT_VALIDATOR',
+      algorithm: 'Ed25519',
+      public_key_pem: publicKey.export({ format: 'pem', type: 'spki' }).toString('utf8'),
+      permitted_roles: [EVIDENCE_SIGNATURE_ROLE],
+      permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN],
+      valid_from: '2026-07-27T00:00:00.000Z',
+      valid_until: '2026-07-29T00:00:00.000Z',
+      revoked_at: null,
+    }],
+  };
+  const authority = createContainmentSigningRequestAuthority({
+    keyRegistry,
+    validatorConfigurationDigest: REGISTRY_DIGESTS.validator_configuration,
+    validatorExecutableDigest: 'e'.repeat(64),
+    validatorKeyId: 'TEST_CONTAINMENT_VALIDATOR',
+    verificationTime: OBSERVED_AT,
+  });
+  const bundle = await readyBundle();
+  for (const candidate of bundle.candidates) {
+    const gate = GATES.find((entry) => entry.id === candidate.gate_id);
+    const request = buildContainmentEvidenceSigningRequest({
+      authority,
+      bundle,
+      candidate,
+      gate,
+    });
+    assert.equal(request.readiness_state, 'READY_FOR_EXTERNAL_SIGNATURE');
+    assert.equal(request.formal_gate_state, 'OPEN');
+    assert.equal(request.private_key_used, false);
+    assert.equal(request.signature, null);
+    assert.equal(request.unsigned_envelope.signature, undefined);
+    assert.equal(request.unsigned_envelope.terminal_state, 'PASS');
+    assert.equal(request.unsigned_envelope.code_commit, COMMIT);
+    assert.equal(request.unsigned_envelope.environment, 'PRODUCTION');
+    assert.equal(Object.isFrozen(request), true);
+
+    const signature = crypto.sign(
+      null,
+      Buffer.from(request.signing_frame_base64, 'base64'),
+      privateKey,
+    ).toString('base64');
+    assert.equal(verifySignature({
+      keyRegistry,
+      keyId: request.unsigned_envelope.validator_key_id,
+      role: request.signing_role,
+      domain: request.signing_domain,
+      payload: request.unsigned_envelope,
+      signature,
+      at: OBSERVED_AT,
+    }), true);
+  }
+});
+
+test('signing-request construction refuses untrusted keys, drift and non-ready candidates', async () => {
+  const { publicKey } = crypto.generateKeyPairSync('ed25519');
+  const key = {
+    key_id: 'TEST_CONTAINMENT_VALIDATOR',
+    algorithm: 'Ed25519',
+    public_key_pem: publicKey.export({ format: 'pem', type: 'spki' }).toString('utf8'),
+    permitted_roles: [EVIDENCE_SIGNATURE_ROLE],
+    permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN],
+    valid_from: '2026-07-27T00:00:00.000Z',
+    valid_until: '2026-07-29T00:00:00.000Z',
+    revoked_at: null,
+  };
+  assert.throws(
+    () => createContainmentSigningRequestAuthority({
+      keyRegistry: {
+        schema_version: 'TrustedProgrammeGatePublicKeys/V1',
+        registry_state: 'EMPTY_NOT_ACTIVATED',
+        keys: [],
+      },
+      validatorConfigurationDigest: REGISTRY_DIGESTS.validator_configuration,
+      validatorExecutableDigest: 'e'.repeat(64),
+      validatorKeyId: key.key_id,
+      verificationTime: OBSERVED_AT,
+    }),
+    /not active/,
+  );
+  assert.throws(
+    () => createContainmentSigningRequestAuthority({
+      keyRegistry: {
+        schema_version: 'TrustedProgrammeGatePublicKeys/V1',
+        registry_state: 'ACTIVE',
+        keys: [key],
+      },
+      validatorConfigurationDigest: 'f'.repeat(64),
+      validatorExecutableDigest: 'e'.repeat(64),
+      validatorKeyId: key.key_id,
+      verificationTime: OBSERVED_AT,
+    }),
+    /not the registered configuration/,
+  );
+
+  const authority = createContainmentSigningRequestAuthority({
+    keyRegistry: {
+      schema_version: 'TrustedProgrammeGatePublicKeys/V1',
+      registry_state: 'ACTIVE',
+      keys: [key],
+    },
+    validatorConfigurationDigest: REGISTRY_DIGESTS.validator_configuration,
+    validatorExecutableDigest: 'e'.repeat(64),
+    validatorKeyId: key.key_id,
+    verificationTime: OBSERVED_AT,
+  });
+  const bundle = await readyBundle();
+  const candidate = bundle.candidates[0];
+  assert.throws(
+    () => buildContainmentEvidenceSigningRequest({
+      authority,
+      bundle,
+      candidate: { ...candidate, formal_gate_state: 'PASS' },
+      gate: GATES[0],
+    }),
+    /only unsigned OPEN readiness/,
+  );
+  assert.throws(
+    () => buildContainmentEvidenceSigningRequest({
+      authority,
+      bundle,
+      candidate: {
+        ...candidate,
+        members: candidate.members.slice(1),
+      },
+      gate: GATES[0],
+    }),
+    /missing required member_id/,
+  );
+  assert.throws(
+    () => buildContainmentEvidenceSigningRequest({
+      authority,
+      bundle,
+      candidate: {
+        ...candidate,
+        exact_acceptance_claims: candidate.exact_acceptance_claims.map((claim, index) => (
+          index === 0 ? { ...claim, typed_value: false } : claim
+        )),
+      },
+      gate: GATES[0],
+    }),
+    /claims are not exact passing measurements/,
+  );
+  assert.throws(
+    () => buildContainmentEvidenceSigningRequest({
+      authority,
+      bundle,
+      candidate: {
+        ...candidate,
+        evidence_object: {
+          ...candidate.evidence_object,
+          route_feature_enabled: true,
+        },
+      },
+      gate: GATES[0],
+    }),
+    /validation failed/,
   );
 });

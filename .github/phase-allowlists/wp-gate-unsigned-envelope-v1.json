@@ -1,0 +1,18 @@
+{
+  "phase": "WP-GATE-UNSIGNED-ENVELOPE-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-gate-unsigned-envelope-v1.json",
+    "lib/programme-gates/containment-signing-request.js",
+    "tests/programme-gates/containment-evidence.spec.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Builds a deterministic external-signature request from exact unsigned containment readiness. It accepts only an active trusted public-key binding, uses no private key, performs no signing or status publication, and leaves formal gate state OPEN."
+}
