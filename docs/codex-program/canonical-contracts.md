@@ -74,7 +74,9 @@ This file is the sole authority for detailed identities, state machines, writer 
   schemas, units, `GovernedObjectImpactWalkerOutput`,
   `OpenWorldSemanticCandidate`, `OpenWorldCandidateOccurrence`,
   `OpenWorldCandidateSupersession`, `OpenWorldCandidateKindSupersession`,
+  `SourceRoleAdmissionAuthorisation`,
   `OpenWorldCandidateAdmissionTransition`,
+  `SourceRoleAdmissionMaterialisationReceipt`,
   `OpenWorldCandidateAuditChainRoot`, `OpenWorldEffectiveOccurrenceRoot`,
   `OpenWorldCandidateChainReconciliation`,
   `OpenWorldEvidenceClosure`, `OpenWorldPrimitiveObservation`,
@@ -87,6 +89,8 @@ This file is the sole authority for detailed identities, state machines, writer 
   `OpenWorldCandidateDispositionManifest`, `OpenWorldReviewQueueRoot`,
   `SemanticImpactWalkerOutput`,
   `SemanticImpactEnumeratorIndependenceAttestation`, `SemanticImpactClosure`,
+  `ProvisionalContractImpactWalkerOutput`,
+  `ProvisionalContractImpactClosure`,
   `ApplicabilityEligibleMemberKindProducerRegistry`,
   `ApplicabilityReexaminationRequirementDefinition`,
   `ApplicabilityReexaminationRequirementSetRoot`,
@@ -1108,13 +1112,24 @@ This file is the sole authority for detailed identities, state machines, writer 
   `ResidualCapableBoundaryUniverse` from that second authority and requires
   bidirectional equality with the producer registry; an unregistered producer,
   residual-capable carrier or boundary is therefore detectable and blocking.
-  For the exact intake cutoff, deal scope, extraction runs and candidate
-  generation, the two bounded roots and a third
+  Residual totality is phase-scoped, never future-dependent. A
+  `PRE_SCOPE` universe contains every observation reachable from the exact
+  intake cutoff, source-admission, offline-review and open scope-generation
+  heads before scope inventory begins, and expressly excludes extraction and
+  candidate-generation carriers. A `CANDIDATE_COMPLETE` universe selects that
+  exact frozen PRE_SCOPE manifest and additionally contains every observation
+  reachable from the selected extraction runs and candidate generation through
+  the captured candidate-input prefix. The producer registry assigns every
+  residual-capable carrier to exactly one first-eligible scope; an observation
+  cannot be omitted, counted twice or moved between scopes. For each scope, the
+  two bounded roots and a third
   `GovernedResidualUniverseReconciliation` must agree on the complete ordered
   residual ID-and-payload-digest set. `GovernedResidualUniverseManifest` hashes
-  those roots, reconciliation, both authority roots, producer-registry digest,
-  exact frozen pair and empty missing, extra, duplicate, unregistered-carrier,
-  unregistered-producer and conflicting-payload roots. Counts, one review
+  its exact scope code, predecessor PRE_SCOPE manifest or genesis marker,
+  captured terminal head tuple, those roots, reconciliation, both authority
+  roots, producer-registry digest, exact frozen pair and empty missing, extra,
+  duplicate, unregistered-carrier, unregistered-producer and conflicting-
+  payload roots. Counts, one review
   payload or the open-world candidate universe cannot substitute for this
   independent total inventory.
 - Neither enumerator may take already emitted residuals as its expected
@@ -1198,12 +1213,14 @@ This file is the sole authority for detailed identities, state machines, writer 
   `AFFECTS_CORPUS_SCOPE` or `AFFECTS_CANONICAL_CONTRACT`. The same closed
   impact-to-publication mapping used for an open-world candidate applies to the
   residual; terminal review never neutralises a nonzero impact.
-- `GovernedResidualDispositionManifest` partitions every member of
-  GovernedResidualUniverseManifest exactly once by final disposition and exactly
-  one reconciled impact closure. `GovernedResidualReviewQueueRoot` independently
+- `GovernedResidualDispositionManifest` binds the same scope code and partitions
+  every member of its exact GovernedResidualUniverseManifest exactly once by
+  final disposition and exactly one reconciled impact closure.
+  `GovernedResidualReviewQueueRoot` binds that scope and independently
   enumerates missing, duplicate, conflicting, invalid-link and unresolved-impact
   members. Scope or candidate work may display a typed affected-row preview, but
-  candidate sealing requires its domain-separated empty root. These objects are
+  scope inventory and candidate sealing require its domain-separated empty
+  root. These objects are
   written through the authoritative writer and propagate through scope,
   candidate input, CandidateReleaseManifest, bundle, import and traceability.
   Serving and query roles receive only the resulting governed row or explicit
@@ -1860,8 +1877,9 @@ This file is the sole authority for detailed identities, state machines, writer 
   and `VERIFIED` source admission. The
   entry generated from a role candidate additionally binds its exact pre-
   admission candidate occurrence and final reviewed disposition solely to decide
-  document membership, but cannot bind a later admitted occurrence or
-  SemanticImpactClosure. `MAPPED_EXISTING` or `MAPPED_ALIAS` produces
+  document membership and selects the exact SourceRoleAdmissionAuthorisation,
+  but cannot bind a later admitted occurrence, effective publication decision
+  or SemanticImpactClosure. `MAPPED_EXISTING` or `MAPPED_ALIAS` produces
   `INCLUDE_AS_ROLE` and projects the existing frozen document role into the
   final included tuple while retaining candidate lineage.
   `ADOPTED_NEW_CANONICAL` is usable only under the successor frozen bundle that
@@ -1875,7 +1893,9 @@ This file is the sole authority for detailed identities, state machines, writer 
   exists, the canonical writer must create the exact
   admitted candidate occurrence, mechanically rekeyed evidence and primitives,
   `OpenWorldCandidateAdmissionTransition` and carried-forward current
-  disposition, in that order, as described below. The pre-
+  disposition under MATERIALISE_SOURCE_ROLE_ADMISSION, in that order, as
+  described below. Publication then requires a fresh signature over the exact
+  effective admitted decision. The pre-
   admission occurrence and disposition remain immutable audit evidence and have
   no impact, applicability, serving or market authority. After
   PotentialDependencyUniverse exists, DealScopeRunManifest must select only the
@@ -2527,18 +2547,29 @@ This file is the sole authority for detailed identities, state machines, writer 
   No disposition mutates the release under which the candidate was discovered.
 - A contract-impacting candidate does not need an impossible final disposition
   before the successor contract can exist. While it remains unresolved and
-  unpublishable under the predecessor, Freeze Gate may create one
-  `ContractAmendmentProposal` from its exact source-backed occurrence, evidence
-  closure, primitive root, reconciled `AFFECTS_CANONICAL_CONTRACT` closure,
-  proposed neutral semantics and immutable legal-semantic and Ben approvals.
+  unpublishable under the predecessor, two implementation-disjoint provisional
+  impact walkers and a third reconciler may create one terminal
+  `ProvisionalContractImpactClosure`. Its identity binds the exact source-backed
+  occurrence, evidence closure, primitive root, PotentialDependencyUniverse,
+  affected-node and traversed-edge roots, executable and configuration digests,
+  walker-independence attestation, empty reconciliation-difference roots and
+  `AFFECTS_CANONICAL_CONTRACT`; it binds the explicit
+  `UNRESOLVED_CONTRACT_AMENDMENT_PROPOSAL` marker and no final disposition ID.
+  It cannot satisfy `SemanticImpactClosure`, `W_open`, publication or impact
+  clearance. Freeze Gate may create one `ContractAmendmentProposal` from that
+  exact provisional closure, proposed neutral semantics and immutable
+  legal-semantic and Ben approvals.
   The proposal has no concept key, disposition, serving or cohort authority.
   The successor CanonicalContractBundle and its ContractFreezeAttestation bind
   the complete approved proposal-set root. Only after that freeze may affected
   spans and transitive dependants be reprocessed under the successor and
-  receive `ADOPTED_NEW_CANONICAL` or another final disposition. A proposal
-  omitted from the successor, a disposition created before freeze or a
-  published unresolved predecessor candidate fails closed. This is the only
-  contract-amendment bridge.
+  receive `ADOPTED_NEW_CANONICAL` or another final disposition and the ordinary
+  disposition-bound `SemanticImpactClosure`. That final closure independently
+  recomputes the impact and must reconcile with or conservatively widen the
+  provisional closure. A proposal omitted from the successor, a final
+  disposition created before freeze, use of provisional evidence as final
+  impact clearance or a published unresolved predecessor candidate fails
+  closed. This is the only contract-amendment bridge.
 - A new canonical item or alias never authorises “reprocess the discovered
   spans” as its complete scope. Bundle compilation first creates a
   pair-independent applicability contract. During candidate preparation, the
@@ -2796,7 +2827,8 @@ This file is the sole authority for detailed identities, state machines, writer 
 - Every candidate's reconciled SemanticImpactClosure carries exactly one
   independently validated `OpenWorldSemanticImpactDisposition` field:
   `ISOLATED_SOURCE_SPECIFIC`,
-  `AFFECTS_CANONICAL_RESULT`, `AFFECTS_CORPUS_SCOPE` or
+  `FULLY_INCORPORATED_CANONICAL`, `AFFECTS_CANONICAL_RESULT`,
+  `AFFECTS_CORPUS_SCOPE` or
   `AFFECTS_CANONICAL_CONTRACT`. Two implementation-disjoint dependency walkers
   derive a `SemanticImpactClosure` from the frozen dependency and composition
   graphs, complete PotentialDependencyUniverse, source-admission and open-world
@@ -2833,6 +2865,19 @@ This file is the sole authority for detailed identities, state machines, writer 
   OpenWorldSemanticImpactDisposition value, third-reconciler evidence and fixed
   empty missing, extra, conflict, unbounded and walker-difference roots. Only a
   terminal reconciled closure supplies the impact field used downstream.
+- `FULLY_INCORPORATED_CANONICAL` is the sole canonical discharge state. It is
+  permitted only for `MAPPED_EXISTING`, `MAPPED_ALIAS` or
+  `ADOPTED_NEW_CANONICAL` after the selected target exists in the effective
+  frozen bundle and every affected span and transitive dependant has been
+  reprocessed under that bundle. Both walkers must prove that the candidate's
+  complete proposition, primitives, evidence and relationships are losslessly
+  represented by the selected governed target and that every enumerated
+  dependant selects the resulting current revision. Any unrepresented
+  primitive, stale dependant, unresolved edge, walker difference or
+  source-specific or rejected disposition prohibits discharge and selects the
+  highest applicable nonzero impact tier. The discharged closure remains
+  lineage and permits only the ordinary per-slot impact-clearance checks; it
+  does not itself create a result, observation or cohort member.
 - `REVIEWED_SOURCE_SPECIFIC` is not an escape hatch. It may pair with
   `ISOLATED_SOURCE_SPECIFIC` only when the reconciled SemanticImpactClosure proves
   no path to a known result, scope or contract object. If a novel exception,
@@ -2885,8 +2930,10 @@ This file is the sole authority for detailed identities, state machines, writer 
   GovernedObjectImpactClosure, every reconciled GovernedResidualImpactClosure
   and the empty GovernedResidualReviewQueueRoot;
   no residual may rely solely on candidate-occurrence totality. `W_open = PASS`
-  does not mean the source-specific partition or residual-observation set is
-  empty.
+  at scope freeze selects the exact PRE_SCOPE partition; at CandidateInputSeal
+  it selects the CANDIDATE_COMPLETE partition and its exact PRE_SCOPE
+  predecessor. It does not mean the source-specific partition or residual-
+  observation set is empty.
 - The IndependentSemanticQuestionUniverseManifest additionally hashes the exact
   dimension-discovery and mapping manifests, complete open-world candidate,
   occurrence, primitive, closure, disposition, impact and SemanticImpactClosure
@@ -5010,11 +5057,12 @@ This file is the sole authority for detailed identities, state machines, writer 
   object may enter a cutoff.
 - `canonical_write(operation=DEAL_SCOPE_RUN)` has exactly
   `PREPARE_SOURCE_ADMISSION`, `MATERIALISE_OPEN_WORLD_REVIEW`,
-  `RECORD_OPEN_WORLD_DISPOSITIONS`, `MATERIALISE_SCOPE`,
-  and `CERTIFY_SCOPE_CARRY_FORWARD`. This is the complete five-action set.
+  `RECORD_OPEN_WORLD_DISPOSITIONS`, `MATERIALISE_SOURCE_ROLE_ADMISSION`,
+  `MATERIALISE_SCOPE`, and `CERTIFY_SCOPE_CARRY_FORWARD`. This is the complete
+  six-action set.
   `MATERIALISE_SCOPE` has exactly two mechanically
   derived discriminators, `SINGLE_SUBJECT` and
-  `MULTI_SUBJECT_CORRECTION`; the other four actions use their declared closed
+  `MULTI_SUBJECT_CORRECTION`; the other five actions use their declared closed
   non-scope discriminator and no second materialisation action exists.
   `PREPARE_SOURCE_ADMISSION` is the
   mandatory first action for each source subject. It consumes the exact cutoff,
@@ -5061,13 +5109,29 @@ This file is the sole authority for detailed identities, state machines, writer 
   cannot alter a candidate, primitive, mapping or contract key. Both variants are
   receipt-required, have no serving grant and create no CandidateInputEvent.
   For a pre-admission source-role occurrence, this action may record only its
-  directly reviewed admission-decision disposition after predecessor evidence
-  closure, primitive collection and signed source-specific publication
-  selection are complete. That selection binds the neutral legal-semantic body
-  and predecessor occurrence, not a future admitted ID. It cannot create an impact
+  directly reviewed admission-decision disposition and one signed
+  `SourceRoleAdmissionAuthorisation` after predecessor evidence closure and
+  primitive collection are complete. That authorisation binds the neutral
+  legal-semantic body, primitive selection, evidence closure and predecessor
+  occurrence, expressly authorises admission for review, and binds no future
+  admitted ID, carried disposition or publication decision. It cannot create an impact
   walker, impact closure, disposition manifest, applicability object, admitted
   occurrence, admitted evidence or primitive body, admission transition or
   carry-forward disposition before the exact DealAdmissionManifest exists.
+  `MATERIALISE_SOURCE_ROLE_ADMISSION` consumes that authorisation and the exact
+  source-admission preparation chain. In one bounded serialisable transaction
+  it may create only the IndependentDealDocumentManifest, DealAdmissionManifest,
+  admitted occurrence, mechanically rekeyed evidence and primitive collection,
+  OpenWorldCandidateAdmissionTransition, carried-forward disposition and one
+  `SourceRoleAdmissionMaterialisationReceipt`. It creates no
+  ReviewedSourceSpecificPublicationDecision, impact closure, scope member,
+  CandidateInputEvent or serving row. The admitted occurrence and carried
+  disposition are then exact review inputs. A legal-semantic reviewer signs a
+  new effective `ReviewedSourceSpecificPublicationDecision` over those exact
+  admitted fields, and a later `RECORD_OPEN_WORLD_DISPOSITIONS` call persists
+  that signed decision and its disposition-bound impact closure. Only
+  `MATERIALISE_SCOPE` may revalidate and select the complete admitted chain and
+  post-admission signed decision into release-input carriers.
   Neither review action may rerun a model while validating a stored graph. The
   selected graph is deterministically reproduced only from the receipt-bound
   SemanticExtractionInputEnvelope, exact ReviewedInferencePayload and frozen
@@ -5091,9 +5155,18 @@ This file is the sole authority for detailed identities, state machines, writer 
   and is never a release source by location. Preflight disposition, impact-
   walker, impact-closure and disposition-manifest tuples are also
   `OPERATIONAL_AUDIT(OFFLINE_SEMANTIC_REVIEW)`; MATERIALISE_SCOPE independently
-  revalidates them into the canonical carrier. A source-role admission-transition
-  carrier is `RELEASE_INPUT` only when the applicable scope-selecting action
-  selects the exact DealAdmissionManifest; it is never an offline-review carrier. Final-disposition and impact
+  revalidates them into the canonical carrier.
+  SourceRoleAdmissionAuthorisation and
+  SourceRoleAdmissionMaterialisationReceipt are
+  `OPERATIONAL_AUDIT(SOURCE_ROLE_ADMISSION_REVIEW)` with no outbox or serving
+  grant until scope selection. The admitted occurrence, rekeyed body, transition and carried
+  disposition produced by MATERIALISE_SOURCE_ROLE_ADMISSION remain in that
+  non-serving preparation namespace until the applicable scope-selecting action
+  selects their exact receipt and post-admission signed publication decision.
+  The authorisation, receipt and source-role admission-transition carriers
+  become non-serving `RELEASE_INPUT` lineage kinds only after that selection;
+  pre-admission authorisation alone never grants release membership.
+  Final-disposition and impact
   carriers are likewise `RELEASE_INPUT` only when selected by their declared
   action. ApplicabilityEligibleMemberKindProducerRegistry,
   ApplicabilityReexaminationRequirementDefinition and
@@ -5229,20 +5302,19 @@ This file is the sole authority for detailed identities, state machines, writer 
   graph whose exact envelope, reviewed-payload or normaliser lineage differs from
   the offline reviewed objects.
   For an included open-world source role, the applicable scope-selecting action
-  is the sole producer of the admitted occurrence, mechanically rekeyed admitted
-  evidence closure and primitive collection, admission transition and carry-
-  forward disposition: `MATERIALISE_SCOPE/SINGLE_SUBJECT` only for a one-subject
-  rebuild with no membership or source-admission transition, or
-  `MATERIALISE_SCOPE/MULTI_SUBJECT_CORRECTION` whenever the registry rule derives
-  that discriminator, including for a one-subject source-admission transition.
-  It writes or selects the admitted occurrence first,
-  then its mechanically rekeyed evidence closure and primitive collection, then
-  the transition and finally the carried disposition, all only after the
-  DealAdmissionManifest,
-  then rebuilds the audit-chain, effective-occurrence and disposition roots in
-  the same scope operation. A transaction exposing both occurrence variants as
-  effective, or either pre-admission occurrence or disposition as a serving row,
-  writes nothing.
+  is selection-only for the admitted occurrence, mechanically rekeyed admitted
+  evidence closure and primitive collection, admission transition, carry-
+  forward disposition and SourceRoleAdmissionMaterialisationReceipt produced by
+  `MATERIALISE_SOURCE_ROLE_ADMISSION`. It also selects the later
+  post-admission signed effective publication decision. The mechanically
+  selected `MATERIALISE_SCOPE/SINGLE_SUBJECT` or
+  `MATERIALISE_SCOPE/MULTI_SUBJECT_CORRECTION` dispatch independently revalidates
+  that complete chain, then rebuilds the audit-chain, effective-occurrence,
+  disposition and impact roots in the same scope operation. It cannot originate,
+  rekey or repair an admission-chain member. A transaction exposing both
+  occurrence variants as effective, either pre-admission occurrence or
+  disposition as a serving row, or an effective row without the post-admission
+  signature writes nothing.
   After writing or selecting the terminal DealScopeRunManifest, each
   single-subject materialise or carry-forward dispatch compare-and-swaps its one
   ScopeSubjectHead, creates the exact
@@ -5452,7 +5524,21 @@ This file is the sole authority for detailed identities, state machines, writer 
   independent carry-forward proof above. This is the only recovery from a wrong
   committed current-generation scope run; the replacement work uses a higher
   generation.
-  `PREPARE_BATCH` writes immutable, inaccessible scope slices,
+  `PREPARE_BATCH` has the closed ordered discriminators
+  `PRE_SCOPE_RESIDUAL_CLOSURE/{ENTRY_BATCH|TERMINAL_SET}` and
+  `SCOPE_INVENTORY/{CONTENT_BATCH|TERMINAL_ROOTS}`. Residual ENTRY_BATCH is the
+  sole producer of GovernedResidualDisposition, both independent governed-
+  object impact walker outputs, GovernedObjectImpactClosure, both independent
+  residual-impact projections and GovernedResidualImpactClosure for the exact
+  open generation's sealed `PRE_SCOPE` residual universe. Residual TERMINAL_SET
+  is the sole producer of the PRE_SCOPE GovernedResidualDispositionManifest and
+  GovernedResidualReviewQueueRoot after independently recomputing exact universe
+  coverage and impact equality. SCOPE_INVENTORY cannot begin until that terminal
+  PRE_SCOPE queue root is the governed empty root, and both inventory root sets
+  select the resulting manifest and closures. No PRE_SCOPE residual closure
+  object depends on
+  CorpusScopeManifest, CorpusScopeFreezeAttestation or a candidate generation.
+  The remaining `PREPARE_BATCH` phases write immutable, inaccessible scope slices,
   global composition children, shards, roots, reconciliations and closures,
   CompositionContextKeyUniverseRoot, neutral content digest and every reachable
   BoundedInventoryTree node, their global
@@ -5463,11 +5549,16 @@ This file is the sole authority for detailed identities, state machines, writer 
   fixed kinds expressly include ImmutableSourceDocument,
   SourceAdmissionPreparationReceipt, SemanticExtractionInputEnvelope,
   SemanticInferenceTranscript, ReviewedInferencePayload,
-  SemanticGraphNormaliserDefinition and ValidatedSemanticGraph, every open-world
+  SemanticGraphNormaliserDefinition and ValidatedSemanticGraph,
+  PRE_SCOPE GovernedResidualDisposition, GovernedObjectImpactWalkerOutput,
+  GovernedObjectImpactClosure, GovernedResidualImpactClosure,
+  PRE_SCOPE GovernedResidualDispositionManifest and the exact empty PRE_SCOPE
+  GovernedResidualReviewQueueRoot, every open-world
   candidate, occurrence, current candidate- and kind-supersession, every
   source-role admission transition, evidence closure, primitive,
   candidate-audit-chain root, effective-occurrence root,
   candidate-chain reconciliation, primitive-collection root,
+  SourceRoleAdmissionAuthorisation, SourceRoleAdmissionMaterialisationReceipt,
   final disposition, disposition manifest, impact-walker output,
   SemanticImpactEnumeratorIndependenceAttestation, SemanticImpactClosure,
   ApplicabilityReexaminationRequirement,
@@ -5731,20 +5822,19 @@ This file is the sole authority for detailed identities, state machines, writer 
   generation abandonment. `ISSUE_INPUT_RECHECK` is legal only after the
   two projection roots exist and is the sole producer of
   `CandidateInputRecheckAttestation`.
-  `PREPARE_INPUT_BATCH` has a closed `RESIDUAL_CLOSURE` discriminator with
-  `ENTRY_BATCH` and `TERMINAL_SET` phases. `ENTRY_BATCH` is the sole producer of
-  GovernedResidualDisposition, both independent governed-object impact walker
-  outputs, their GovernedObjectImpactClosure, both independent residual-impact
-  projections and GovernedResidualImpactClosure members for the sealed input
-  residual universe.
-  `TERMINAL_SET` is the sole producer of
-  GovernedResidualDispositionManifest and GovernedResidualReviewQueueRoot after
-  independently recomputing exact universe coverage and impact equality.
-  CanonicalWriterDispositionRegistry admits only those logical types under
-  those tuples, uses content-addressed batch or terminal-root receipts, emits no
-  serving row or outbox, and blocks `SEAL_INPUT` unless the terminal queue root
-  is the governed empty root. Direct DML, a DEAL_SCOPE_RUN substitute or another
-  candidate action is prohibited.
+  `PREPARE_INPUT_BATCH` has a later closed
+  `CANDIDATE_COMPLETE_RESIDUAL_CLOSURE/{ENTRY_BATCH|TERMINAL_SET}`
+  discriminator. It selects the exact scope-bound PRE_SCOPE universe,
+  dispositions, impact closures and governed empty queue, then independently
+  enumerates the complete candidate-input prefix and constructs the
+  `CANDIDATE_COMPLETE` residual universe. ENTRY_BATCH is the sole producer of
+  dispositions and impact closures for residuals first eligible after
+  PRE_SCOPE; it selects but cannot repair the PRE_SCOPE members. TERMINAL_SET is
+  the sole producer of the CANDIDATE_COMPLETE disposition manifest and queue
+  after proving the phase partition, predecessor carry-forward and complete
+  impact equality. CanonicalWriterDispositionRegistry rejects creation or
+  repair of a PRE_SCOPE object by any candidate action and blocks `SEAL_INPUT`
+  on a missing, non-empty or cross-wired CANDIDATE_COMPLETE terminal root.
   `CandidateBuildHead` stores only current contiguous candidate
   generation, `OPEN`, `INPUT_SEALED`, `PREPARED`, `FROZEN` or `ABANDONED` and
   exact current immutable `CandidateBuildTransition` ID. The OPEN transition
@@ -7628,10 +7718,11 @@ This file is the sole authority for detailed identities, state machines, writer 
   SemanticInferenceTranscript set, ReviewedInferencePayload,
   SemanticGraphNormaliserDefinition and ValidatedSemanticGraph with validation
   report and payload digest, and canonical-text occurrence,
-  GovernedResidualProducerRegistry, every GovernedResidualObservation, both
-  complete residual-universe roots, GovernedResidualUniverseReconciliation and
-  GovernedResidualUniverseManifest, every GovernedResidualDisposition,
-  GovernedResidualDispositionManifest, every selected
+  GovernedResidualProducerRegistry, every PRE_SCOPE
+  GovernedResidualObservation, both complete PRE_SCOPE residual-universe roots,
+  GovernedResidualUniverseReconciliation and GovernedResidualUniverseManifest,
+  every PRE_SCOPE GovernedResidualDisposition,
+  GovernedResidualDispositionManifest, every selected PRE_SCOPE
   GovernedObjectImpactClosure, both residual-impact projections, every
   reconciled GovernedResidualImpactClosure and the exact empty
   GovernedResidualReviewQueueRoot,
@@ -7658,6 +7749,8 @@ This file is the sole authority for detailed identities, state machines, writer 
   IndependentLegalDimensionMappingManifest,
   every OpenWorldSemanticCandidate, OpenWorldCandidateOccurrence and current
   OpenWorldCandidateSupersession, OpenWorldCandidateKindSupersession, every
+  SourceRoleAdmissionAuthorisation and
+  SourceRoleAdmissionMaterialisationReceipt, every
   OpenWorldCandidateAdmissionTransition and its transition-bound historical
   disposition,
   OpenWorldCandidateAuditChainRoot, OpenWorldEffectiveOccurrenceRoot,
@@ -7734,8 +7827,8 @@ This file is the sole authority for detailed identities, state machines, writer 
   SourceAdmissionPreparationReceipt, selected corpus
   SemanticExtractionInputEnvelope, complete SemanticInferenceTranscript set,
   ReviewedInferencePayload, GovernedResidualProducerRegistry, complete
-  GovernedResidualUniverseManifest and its two roots and reconciliation,
-  GovernedResidualDispositionManifest, every selected
+  PRE_SCOPE GovernedResidualUniverseManifest and its two roots and
+  reconciliation, PRE_SCOPE GovernedResidualDispositionManifest, every selected
   GovernedObjectImpactClosure, every reconciled residual impact closure and the
   exact empty GovernedResidualReviewQueueRoot,
   SemanticGraphNormaliserDefinition and
@@ -7748,7 +7841,8 @@ This file is the sole authority for detailed identities, state machines, writer 
   IndependentLegalDimensionDiscoveryManifest,
   IndependentLegalDimensionMappingManifest,
   complete open-world candidate, occurrence, current candidate- and kind-supersession,
-  every source-role admission transition,
+  every SourceRoleAdmissionAuthorisation,
+  SourceRoleAdmissionMaterialisationReceipt and source-role admission transition,
   candidate-audit-chain root, effective-occurrence root and chain reconciliation,
   evidence-closure, primitive, primitive-collection, final-disposition, disposition-manifest,
   impact-walker, SemanticImpactEnumeratorIndependenceAttestation and
@@ -10209,9 +10303,11 @@ includes:
 - ImmutableSourceDocument, SourceAdmissionPreparationReceipt,
   SemanticExtractionInputEnvelope, every selected SemanticInferenceTranscript,
   ReviewedInferencePayload, GovernedResidualProducerRegistry, every
-  GovernedResidualObservation, both residual-universe roots,
-  GovernedResidualUniverseReconciliation, GovernedResidualUniverseManifest,
-  every GovernedResidualDisposition, GovernedResidualDispositionManifest, both
+  CANDIDATE_COMPLETE GovernedResidualObservation, both residual-universe roots,
+  GovernedResidualUniverseReconciliation, the PRE_SCOPE predecessor and
+  CANDIDATE_COMPLETE GovernedResidualUniverseManifest, every
+  GovernedResidualDisposition, the CANDIDATE_COMPLETE
+  GovernedResidualDispositionManifest, both
   residual-impact projections, every selected GovernedObjectImpactClosure,
   every reconciled GovernedResidualImpactClosure and the exact empty
   GovernedResidualReviewQueueRoot,
@@ -10223,7 +10319,9 @@ includes:
   catalogue, base-subject, question-disposition and slot reconciliations,
   legal-dimension discovery and mapping and every challenge entry and
   disposition; every OpenWorldSemanticCandidate and occurrence, general and
-  kind supersession, every OpenWorldCandidateAdmissionTransition,
+  kind supersession, every SourceRoleAdmissionAuthorisation,
+  SourceRoleAdmissionMaterialisationReceipt and
+  OpenWorldCandidateAdmissionTransition,
   every transition-bound historical disposition,
   OpenWorldCandidateAuditChainRoot,
   OpenWorldEffectiveOccurrenceRoot and OpenWorldCandidateChainReconciliation,
@@ -10428,10 +10526,13 @@ SemanticExtractionInputEnvelope, the complete selected
 SemanticInferenceTranscript set, ReviewedInferencePayload,
 SemanticGraphNormaliserDefinition and graph signal to the open-world candidate.
 For a source-role candidate the chain then names the pre-admission occurrence,
-evidence and primitives, direct disposition, document-membership entry,
+evidence and primitives, direct disposition, SourceRoleAdmissionAuthorisation,
+document-membership entry,
 DealAdmissionManifest, admitted effective occurrence, mechanically rekeyed
-evidence and primitives, admission transition and carried-forward current
-disposition. It continues through the reconciled impact closure to the exact result
+evidence and primitives, admission transition, carried-forward current
+disposition, SourceRoleAdmissionMaterialisationReceipt and post-admission signed
+effective ReviewedSourceSpecificPublicationDecision. It continues through the
+reconciled impact closure to the exact result
 and component state, completeness, comparability and reason, serving-row
 variant, market-observation eligibility or typed zero-observation exclusion and,
 when eligible, exact observation occurrence, serving key and payload, each
@@ -13571,12 +13672,18 @@ current-head verification in its receipt; it cannot accept an opaque eligibility
 digest or implementation-selected authority. For an ordinary admitted occurrence,
 `RECORD_OPEN_WORLD_DISPOSITIONS` writes the decision transactionally with the
 disposition. For a pre-admission source-role occurrence it writes only the
-signed neutral selection. `MATERIALISE_SCOPE` later revalidates that signature
-and atomically writes the admitted occurrence, carried-forward disposition and
-effective ReviewedSourceSpecificPublicationDecision, rekeying only occurrence
-identity and proving the legal-semantic body, primitive selection and evidence
-closure are byte-identical. An unsigned, differently reviewed, cross-wired or
-implementation-selected primitive blocks only that candidate's publication.
+signed SourceRoleAdmissionAuthorisation. The separate
+`MATERIALISE_SOURCE_ROLE_ADMISSION` action revalidates that signature and writes
+the admitted occurrence, rekeyed body, transition and carried disposition but
+no publication decision. A reviewer must then sign the effective
+ReviewedSourceSpecificPublicationDecision over the exact admitted occurrence,
+effective disposition ID and payload digest and other fields above.
+`RECORD_OPEN_WORLD_DISPOSITIONS` persists that post-admission decision, and
+`MATERIALISE_SCOPE` selects it only after independently revalidating its
+signature and the byte-identical legal-semantic body, primitive selection and
+evidence closure. An unsigned, pre-signed-for-future-fields, differently
+reviewed, cross-wired or implementation-selected primitive blocks only that
+candidate's publication.
 The effective decision ID and payload digest are required members of scope
 inventory, CandidateInputSeal, the applicable candidate-output root,
 CandidateReleaseManifest, ReleaseBundleEnvelope, production-import parity,
@@ -13586,6 +13693,10 @@ The same impact-to-state mapping is closed for every reconciled open-world
 candidate and every nonzero `GovernedResidualImpactClosure`:
 
 - `ISOLATED_SOURCE_SPECIFIC` may publish only the reviewed source-specific row.
+- `FULLY_INCORPORATED_CANONICAL` may clear only a mapped, alias-mapped or
+  successor-adopted candidate after complete reprocessing and ordinary
+  per-slot conformance. It is prohibited for reviewed-source-specific and
+  rejected candidates.
 - `AFFECTS_CANONICAL_RESULT` forces every affected result to
   `INCOMPLETE_NOVEL_SEMANTIC`, forces every intersecting claim-only or
   result-owned metric-slot impact-clearance projection to `FAIL`, and excludes

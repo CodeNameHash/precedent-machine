@@ -1049,11 +1049,14 @@ The following adversarial closure tests are mandatory traceability entries:
   agreement, side letter, amendment, exhibit or schedule whose role is unknown.
   It remains in the deal under `OPEN_WORLD_ROLE_UNMAPPED`, creates a
   `SOURCE_OR_DOCUMENT_ROLE` candidate and blocks only dependent results. Its
-  directly reviewed pre-admission occurrence and disposition authorise the
-  document-membership decision; after DealAdmissionManifest, exactly one
-  admitted occurrence and mechanically rekeyed evidence and primitive body
-  precede exactly one OpenWorldCandidateAdmissionTransition and a carried-
-  forward disposition with a byte-identical legal-semantic body. The audit root retains both
+  directly reviewed pre-admission occurrence, disposition and signed
+  SourceRoleAdmissionAuthorisation authorise only the document-membership
+  decision. After DealAdmissionManifest, exactly one admitted occurrence and
+  mechanically rekeyed evidence and primitive body precede exactly one
+  OpenWorldCandidateAdmissionTransition and a carried-forward disposition with
+  a byte-identical legal-semantic body. A fresh post-admission signature must
+  bind the exact effective publication decision before final scope selection.
+  The audit root retains both
   occurrences and the historical disposition, the effective root selects only
   the admitted occurrence, and output closure proves exactly one admitted
   `REVIEWED_SOURCE_SPECIFIC` row and zero pre-admission rows. Omitting,
@@ -1064,12 +1067,16 @@ The following adversarial closure tests are mandatory traceability entries:
 - `SOURCE-ROLE-ADMISSION-TOPOLOGY-01`: require the exact order
   SourceAdmissionPreparationReceipt, source-role candidate, pre-admission
   occurrence, predecessor evidence and primitive collection, direct reviewed
-  disposition, IndependentDealDocumentManifest, DealAdmissionManifest, admitted
-  occurrence, rekeyed evidence and primitive collection, transition and carried
-  disposition. Reverse one edge, omit one body, hash the later carried
-  disposition into the transition, build impact or applicability from the
-  predecessor, or render or serve it. The cycle, topology, carrier and release
-  validators fail before scope selection.
+  disposition and signed SourceRoleAdmissionAuthorisation,
+  IndependentDealDocumentManifest, DealAdmissionManifest, admitted occurrence,
+  rekeyed evidence and primitive collection, transition, carried disposition,
+  SourceRoleAdmissionMaterialisationReceipt, post-admission signed effective
+  ReviewedSourceSpecificPublicationDecision, impact closure and final scope
+  selection. Reverse one edge, omit one body, pre-sign future admitted fields,
+  reuse the admission authorisation as publication authority, hash the later
+  carried disposition into the transition, build impact or applicability from
+  the predecessor, or render or serve before the post-admission signature. The
+  cycle, topology, carrier and release validators fail before scope selection.
 - `OPEN-WORLD-MULTIPLICITY-01`: provide several valid fees, periods, standards,
   exceptions or party-specific variants. The complete ordered collection and
   governed ordinals survive extraction, release, import and rendering. First,
@@ -1086,10 +1093,14 @@ The following adversarial closure tests are mandatory traceability entries:
   a complete familiar-component row or a market observation fails closure and
   candidate sealing. `AFFECTS_CORPUS_SCOPE` blocks scope freeze and
   CandidateInputSeal; `AFFECTS_CANONICAL_CONTRACT` blocks candidate
-  certification and the required successor contract freeze without
-  invalidating the immutable predecessor contract that authorised discovery.
-  It also blocks CandidateOutputSeal. Neither may satisfy W_open, while a valid
-  sibling outside the reconciled impact closure remains renderable.
+  certification under the predecessor, but a reconciled provisional contract-
+  impact closure may support only the approved ContractAmendmentProposal and
+  required successor contract freeze without invalidating the immutable
+  predecessor contract that authorised discovery. It also blocks
+  CandidateOutputSeal. Using provisional evidence as a final disposition or
+  impact clearance, or blocking the approved successor freeze, fails. Neither
+  blocking tier may satisfy W_open, while a valid sibling outside the reconciled
+  impact closure remains renderable.
 - `RESIDUAL-IMPACT-PUBLICATION-01`: finally disposition a source-backed
   residual whose reconciled closure affects a result, scope or contract.
   Terminal review empties the residual queue but preserves the nonzero impact.
@@ -1217,7 +1228,14 @@ The following adversarial closure tests are mandatory traceability entries:
   CanonicalContractBundle, re-examine its complete governed universe and publish
   a later CorpusRelease. The prior bundle, candidate disposition, examination
   states, serving rows and cohort membership remain byte-identical and
-  addressable; no in-place mutation or backfilled absence is permitted.
+  addressable; no in-place mutation or backfilled absence is permitted. The
+  successor candidate may reach `FULLY_INCORPORATED_CANONICAL` only after both
+  walkers prove its complete proposition, primitives, evidence and
+  relationships are represented by the selected governed target and every
+  affected span and transitive dependant has been reprocessed under the
+  successor. Using that state for a source-specific or rejected disposition,
+  with a stale dependant or unresolved edge, or to bypass ordinary per-slot
+  conformance fails release certification.
 - `SOURCE-PACKAGE-DIGEST-01`: preserve the exact original package bytes, file
   type, length, SHA-256 and converter provenance. A one-byte package change,
   substituted derivative, altered source map or digest mismatch changes source
@@ -1283,6 +1301,15 @@ The following adversarial closure tests are mandatory traceability entries:
   treating candidate totality as residual totality keeps
   GovernedResidualReviewQueueRoot non-empty and blocks candidate sealing while
   independently valid sibling previews remain renderable.
+  PRE_SCOPE residual ENTRY_BATCH and TERMINAL_SET must complete under the open
+  CORPUS_SCOPE_FREEZE generation before SCOPE_INVENTORY begins. Making that
+  closure depend on CorpusScopeManifest, CorpusScopeFreezeAttestation or a
+  candidate generation, or attempting to create or repair a PRE_SCOPE member
+  during candidate preparation, fails the producer-topology and scope-freeze
+  checks. The later CANDIDATE_COMPLETE universe must select the exact PRE_SCOPE
+  closure and add every extraction- and candidate-phase residual once. Omitting,
+  duplicating or re-dispositioning a carried PRE_SCOPE member blocks
+  CandidateInputSeal.
   The registry-driven enumerator and the independently schema-, stage- and
   physical-carrier-driven ResidualCapableBoundaryUniverse must also agree
   bidirectionally. Add a residual-capable carrier or producer to either
@@ -1321,7 +1348,10 @@ The following adversarial closure tests are mandatory traceability entries:
 - `OPEN-WORLD-IMPACT-INDEPENDENCE-01`: each impact walker receives the exact
   effective disposition and complete candidate graph but not the other's code,
   rows or output. A co-wrong shared affected set, copied root, disagreement or
-  unbounded closure cannot yield an impact disposition or isolated status.
+  unbounded closure cannot yield an impact disposition, isolated status or
+  `FULLY_INCORPORATED_CANONICAL`. The provisional contract-impact walkers bind
+  the unresolved marker and no disposition, use separate outputs and cannot be
+  substituted for the final disposition-bound walkers.
 - `OPEN-WORLD-STATUS-AXES-01`: independently permute claim state, result
   completeness and market comparability through every schema-valid combination.
   Renderer, query, cache and aggregate retain all three fields. Any conversion
@@ -2076,9 +2106,13 @@ The following adversarial closure tests are mandatory traceability entries:
   Ben approval and signed status generation directly from immutable members.
   Caller-supplied summaries, booleans, expected generations or verification
   objects have no authority. A contract-impacting novel candidate blocks the
-  predecessor release, may create only a non-authoritative
-  ContractAmendmentProposal, and becomes publishable only after the successor
-  bundle freezes and affected spans plus transitive dependants are reprocessed.
+  predecessor release. Before final disposition it may create only a
+  disposition-free ProvisionalContractImpactClosure and non-authoritative
+  ContractAmendmentProposal. Treating either as W_open, publication or final
+  impact-clearance evidence fails. The candidate becomes publishable only after
+  the successor bundle freezes, affected spans plus transitive dependants are
+  reprocessed, and a disposition-bound final SemanticImpactClosure independently
+  reconciles or widens the provisional affected set.
 - `POLICY-AUTHORITY-01`: duplicate configuration ownership, a value above a
   protocol bound or any OperationalPolicySet mismatch among scope, candidate,
   deployment and certification fails compilation or certification.
