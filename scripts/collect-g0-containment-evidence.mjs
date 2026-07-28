@@ -68,14 +68,20 @@ const specificationMatch = specificationOutput.match(
   /CODEX programme specification PASS ([a-f0-9]{64})/,
 );
 if (!specificationMatch) fail('could not resolve the exact specification root');
-const deployment = JSON.parse(await successful(
+const originDeployment = JSON.parse(await successful(
   'vercel',
   ['inspect', origin, '--json'],
+  root,
+));
+const deployment = JSON.parse(await successful(
+  'vercel',
+  ['api', `/v13/deployments/${deploymentId}`, '--raw'],
   root,
 ));
 try {
   validateDeploymentBinding({
     deployment,
+    originDeployment,
     deploymentId,
     environment,
     codeCommit,
