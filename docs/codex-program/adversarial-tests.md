@@ -44,6 +44,12 @@ The following adversarial closure tests are mandatory traceability entries:
   required test, measurement or public key while keeping its own generated
   definition internally consistent: the reference interpreter or exact source-
   root comparison must reject it and leave the gate open.
+  The compiler must produce exactly ten root-bound G0 acceptance definitions
+  from the content-addressed bootstrap registry and validator set. Omit or alter
+  one evidence schema digest, subject identity field, member universe,
+  enumerator digest, member path, predicate digest, operator or expected value,
+  or substitute any controller, runtime, prompt or validator allowlist member:
+  bootstrap remains OPEN without signing or publication.
   Corpus extraction, reprocessing,
   writes, backfills, production data changes, release import or activation and
   product feature activation must fail. A stale predecessor, duplicate nonce,
@@ -426,6 +432,11 @@ The following adversarial closure tests are mandatory traceability entries:
   terminal ProductionBlobAvailabilityRoot and importer
   CompositionContractSetRecompositionRoot and every reachable node must appear
   in POST_IMPORT trace and exact omission coverage.
+  Upload an exact B generation, then require
+  `VERIFY_PRODUCTION_BLOB_AVAILABILITY` to stream it and create one idempotent
+  receipt through the registered writer action before root construction.
+  Direct receipt DML, an uploader database grant, altered replay, unavailable
+  generation or receipt created during import writes nothing.
 - `IMPORT-SEMANTIC-PARITY-01`: after SEALED import, independently omit, alter,
   duplicate or cross-wire one original-package integrity row, graph-validation
   result, audit/effective candidate edge, source-role admission transition or
@@ -1065,7 +1076,10 @@ The following adversarial closure tests are mandatory traceability entries:
   attribute or source document source-specific while it can change a known
   result. Both impact walkers must reach that result. A claimed isolated tier,
   a complete familiar-component row or a market observation fails closure and
-  candidate sealing.
+  candidate sealing. `AFFECTS_CORPUS_SCOPE` blocks scope freeze and
+  CandidateInputSeal; `AFFECTS_CANONICAL_CONTRACT` also blocks contract freeze
+  and CandidateOutputSeal. Neither may satisfy W_open, while a valid sibling
+  outside the reconciled impact closure remains renderable.
 - `OPEN-WORLD-ADOPTION-NOT-EXAMINED-01`: adopt a new concept, attribute,
   relationship, role or basis in a successor bundle. Every earlier eligible
   member lacking examination under that version is `NOT_EXAMINED`, never
@@ -2070,7 +2084,10 @@ The following adversarial closure tests are mandatory traceability entries:
   same tenant, caller, scope and serving epoch, one indexed execution lookup,
   original row/byte ceiling, and zero compilation, cache, catalogue, corpus or
   route-serving calls. Cross-user, cross-epoch, expired, oversized and altered-
-  schema fetches fail before a result body.
+  schema fetches fail before a result body. The originating serving RPC writes
+  the immutable execution result in its own bounded transaction and returns
+  that same page, with no third database call; a different replay for the same
+  key fails.
 - `CROSS-VIEW-SURFACE-01`: browser goldens cover QXO Review and Compare, the
   query builder and Eli Lilly definitions. Compare retains visible left
   provision navigation, a Review-density centre region and a collapsible right
@@ -2113,7 +2130,9 @@ The following adversarial closure tests are mandatory traceability entries:
   collection, select two, derive a majority state or change the state without a
   new reviewed decision, or select any state other than `PRESENT`: publication
   must block while valid sibling rows remain
-  renderable.
+  renderable. Substitute the reviewer principal, eligibility proof, signed
+  representativeness decision, effective disposition or evidence closure while
+  retaining the selected primitive: the writer must reject publication.
 - `RESULT-LINEAGE-01`: changing only a ClaimScopeClosure,
   CompositionScopeClosure, RelationshipRevision, effect payload, endpoint,
   party, precedence rule or evidence changes ResultInputLineage, result-component and DerivedResult
@@ -2266,7 +2285,13 @@ The following adversarial closure tests are mandatory traceability entries:
   mutually invisible namespaces fails. A separate multi-namespace fixture
   proves isolation only. The recorded roots, per-kind counts and selectivity distributions
   must match before load begins. A smaller or differently distributed fixture
-  fails. No-fault steady and all-miss profiles must satisfy the fixed 99.9%
+  fails. The benchmark root must equal the complete
+  SupportedQueryShapeRegistry coverage root across every active route, action,
+  request variant, plan family, filter/operator/value class, page, facet,
+  option, saved lookup, immutable result fetch and exact-detail/source page.
+  Every class must satisfy its binding p95, p99 and browser threshold at N and
+  maximum scale. A missing class or smaller CapacityManifest cardinality
+  component fails. No-fault steady and all-miss profiles must satisfy the fixed 99.9%
   schema-valid success and target-throughput floors, all passing profiles must
   meet the contract latency budgets, and every injected fault must recover
   target throughput and latency within the frozen recovery bound. A dynamic
@@ -2694,7 +2719,11 @@ The following adversarial closure tests are mandatory traceability entries:
   programme-status head now absorbing, advance CandidateInputHead through R2
   scope, extraction and correction changes, certify R2 and activate it solely
   through the OngoingReleasePromotionHead, then force its smoke to fail. No R2
-  step may reopen or increment ProgrammeStatusPublicationHead. After the
+  step may reopen or increment ProgrammeStatusPublicationHead. The R1
+  certification transaction creates the genesis ongoing head, R2 produces a
+  terminal PASS certification and exact-predecessor CAS receipt, and its
+  CutoverAuthorisation selects OngoingReleaseReadiness with every
+  programme-status and DeploymentReadinessMirror field absent. After the
   RollbackEvent, unique FailureRecoveryBranch, `OPEN` head and exposure-off tuple
   commit, CAS the head to `HISTORICAL_REACTIVATION_IN_PROGRESS` and revalidate R1's retained namespace
   and exact R1 ReleaseActivationCertification against current policy, revocation and dependency

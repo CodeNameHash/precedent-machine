@@ -167,6 +167,31 @@ function validateGateRegistry() {
   if (reviewer.sol_provider_model_id !== 'gpt-5.6-sol' || reviewer.sol_provider_reasoning_value !== 'xhigh') {
     fail('Sol provider model or reasoning attestation binding changed');
   }
+  const controllerAllowlist = reviewer.frozen_controller_and_runtime_allowlist;
+  const laneAllowlist = reviewer.frozen_lane_prompt_allowlist;
+  const independenceAllowlist = reviewer.frozen_independence_validator_allowlist;
+  if (controllerAllowlist?.controller_id !== 'CODEX_CLI_REVIEW_CONTROLLER'
+    || controllerAllowlist?.controller_version !== 'LOCAL_REVIEW_CONTROLLER/V1'
+    || controllerAllowlist?.review_runtime_version !== 'codex-cli/0.145.0'
+    || controllerAllowlist?.review_runtime_entrypoint_sha256
+      !== '134063e133f0b4244fa3b251acf973d4fe4b4aeeacbdc135211bf480f59f1477'
+    || controllerAllowlist?.exact_model_identifier !== 'gpt-5.6-sol'
+    || controllerAllowlist?.reasoning_level !== 'xhigh'
+    || laneAllowlist?.ARCHITECTURE?.[0] !== 'COLD_ARCHITECTURE_REVIEW/V1'
+    || laneAllowlist?.LEGAL_SEMANTIC?.[0] !== 'COLD_LEGAL_SEMANTIC_REVIEW/V1'
+    || laneAllowlist?.QUERY_EFFICIENCY?.[0] !== 'COLD_QUERY_EFFICIENCY_REVIEW/V1'
+    || laneAllowlist?.OPEN_WORLD?.[0] !== 'COLD_OPEN_WORLD_REVIEW/V1'
+    || laneAllowlist?.RELEASE_PROPAGATION?.[0]
+      !== 'COLD_RELEASE_PROPAGATION_REVIEW/V1'
+    || laneAllowlist?.missing_extra_or_digest_mismatched_prompt_effect !== 'INELIGIBLE'
+    || independenceAllowlist?.validator_key_id
+      !== 'PROGRAMME_GATE_VALIDATOR_2026_07'
+    || independenceAllowlist?.validator_executable_digest
+      !== '892bd3d1b29cc1a970ef70aff6005c3ab30901c153a20de6da1a8bd22bfbe9ed'
+    || independenceAllowlist?.validator_configuration_digest
+      !== '33bfc1ff13fd8ad3b5fa903bf2c9f33f1298f424aa9a33dd79d5f9d1b6e97a20') {
+    fail('Frozen review controller, runtime, prompt or validator allowlist changed');
+  }
   if (reviewer.self_asserted_metadata_effect !== 'INELIGIBLE' || reviewer.ordinary_sol_effect !== 'ADVISORY_ONLY') {
     fail('Reviewer eligibility failure semantics changed');
   }
@@ -368,8 +393,14 @@ function validateGateRegistry() {
     || compiledRegistry?.source_path !== 'lib/programme-gates/registry.js'
     || compiledRegistry?.source_sha256 !== sha256(read('lib/programme-gates/registry.js'))
     || compiledRegistry?.closed_validator_executable_set_digest
-      !== 'ad64915774fa0dfffaf698a385f4e96d434a7e60b3daff6bad3dff3b8c54a36b'
-    || compiledRegistry?.authority !== 'NON_AUTHORITATIVE_COMPILED_OUTPUT_MATCHING_THE_FROZEN_SOURCE_CONTRACT'
+      !== '892bd3d1b29cc1a970ef70aff6005c3ab30901c153a20de6da1a8bd22bfbe9ed'
+    || compiledRegistry?.authority
+      !== 'AUTHORITATIVE_CONTENT_ADDRESSED_BOOTSTRAP_FROZEN_ACCEPTANCE_SOURCE'
+    || compiledRegistry?.exact_active_definition_count !== 10
+    || compiledRegistry?.required_definition_field_totality
+      !== 'EXACTLY_ALL_ACCEPTANCE_DEFINITION_REQUIRED_FIELDS_AND_CLAIM_PREDICATE_REQUIRED_FIELDS'
+    || compiledRegistry?.runtime_or_request_supplied_semantics !== 'PROHIBITED'
+    || compiledRegistry?.missing_extra_duplicate_or_digest_mismatched_definition_effect !== 'OPEN'
     || compiledRegistry?.runtime_digest_mismatch_effect !== 'OPEN') {
     fail('Frozen gate acceptance semantics are incomplete');
   }

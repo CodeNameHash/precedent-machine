@@ -56,14 +56,24 @@ programme_gate_registry:
         definition_required_before_gate_evidence: true
         unresolved_before_freeze_effect: OPEN_NOT_PERMANENTLY_UNDEFINED
     complete_acceptance_source_root:
-      members: [CANONICAL_GATE_ENTRY, NORMATIVE_EVIDENCE_OBJECT_CONTRACT, MEMBER_UNIVERSE_DEFINITION, ORDERED_CLAIM_PREDICATE_AST_SET, REQUIRED_ADVERSARIAL_TEST_SET, TRUST_ROOT_SET]
+      members: [CANONICAL_GATE_ENTRY, NORMATIVE_EVIDENCE_OBJECT_CONTRACT, MEMBER_UNIVERSE_DEFINITION, ORDERED_CLAIM_PREDICATE_AST_SET, REQUIRED_ADVERSARIAL_TEST_SET, TRUST_ROOT_SET, BOOTSTRAP_COMPILED_REGISTRY_BYTES_WHEN_TIER_IS_BOOTSTRAP_FROZEN]
       source: AUTHORITY_TIER_SELECTED_BY_GATE_ID
       missing_or_post_review_selected_member_effect: OPEN
     bootstrap_compiled_registry_binding:
       source_path: lib/programme-gates/registry.js
       source_sha256: 1d61b3e8e7d522540f20dde431897033b34840a1448826bf13b69460da3c691b
-      closed_validator_executable_set_digest: ad64915774fa0dfffaf698a385f4e96d434a7e60b3daff6bad3dff3b8c54a36b
-      authority: NON_AUTHORITATIVE_COMPILED_OUTPUT_MATCHING_THE_FROZEN_SOURCE_CONTRACT
+      closed_validator_executable_set_digest: 892bd3d1b29cc1a970ef70aff6005c3ab30901c153a20de6da1a8bd22bfbe9ed
+      authority: AUTHORITATIVE_CONTENT_ADDRESSED_BOOTSTRAP_FROZEN_ACCEPTANCE_SOURCE
+      exact_active_definition_count: 10
+      exact_active_gate_order: [G0_MARKET_STATS_CONTAINED, G0_BROAD_CORPUS_ROUTES_CONTAINED, G0_ZAYO_DISPOSITION, G0_CLAUDE_CREDENTIAL_ROTATION, G0_SUPABASE_SECRET_DISPOSITION, G0_STAGING_SUPABASE_ISOLATED, G0_STAGING_VERCEL_ISOLATED, G0_STAGING_ACCESS_PROTECTED, G0_EXACT_DIGEST_REVIEW_SET, G0_BEN_SPEC_APPROVAL]
+      required_definition_field_totality: EXACTLY_ALL_ACCEPTANCE_DEFINITION_REQUIRED_FIELDS_AND_CLAIM_PREDICATE_REQUIRED_FIELDS
+      evidence_schema_source: CLOSED_SCHEMA_REGISTRY_INSIDE_THE_BOUND_VALIDATOR_EXECUTABLE_SET
+      member_universe_source: CONTRACT_SPECIFIC_CLOSED_ENUMERATOR_INSIDE_THE_BOUND_VALIDATOR_EXECUTABLE_SET
+      predicate_ast_source: CONTRACT_SPECIFIC_ORDERED_PREDICATE_DEFINITION_INSIDE_THE_BOUND_VALIDATOR_EXECUTABLE_SET
+      definition_compile_input: EXACT_REVIEWED_SPECIFICATION_ROOT_PLUS_FROZEN_GATE_DESCRIPTOR_PLUS_CONTENT_ADDRESSED_SCHEMA_ENUMERATOR_AND_PREDICATE_MEMBERS
+      definition_compile_output: EXACTLY_ONE_CONTENT_ADDRESSED_PROGRAMME_GATE_ACCEPTANCE_DEFINITION_PER_ACTIVE_GATE
+      runtime_or_request_supplied_semantics: PROHIBITED
+      missing_extra_duplicate_or_digest_mismatched_definition_effect: OPEN
       runtime_digest_mismatch_effect: OPEN
     acceptance_definition_required_fields:
       - definition_id
@@ -146,6 +156,30 @@ programme_gate_registry:
     review_evidence_source: TRUSTED_REVIEW_CONTROLLER_SIGNED_IMMUTABLE_RECORD
     review_evidence_retrieval: VALIDATOR_DETERMINISTICALLY_ENUMERATES_CLOSED_EVIDENCE_SET_AND_LOADS_EXACT_RECORD
     review_controller_trust_root_set: trusted-review-controller-keys/2026-07-frozen-v1
+    frozen_controller_and_runtime_allowlist:
+      controller_id: CODEX_CLI_REVIEW_CONTROLLER
+      controller_version: LOCAL_REVIEW_CONTROLLER/V1
+      review_runtime_version: codex-cli/0.145.0
+      review_runtime_binary_path: /opt/homebrew/bin/codex
+      review_runtime_entrypoint_sha256: 134063e133f0b4244fa3b251acf973d4fe4b4aeeacbdc135211bf480f59f1477
+      exact_model_identifier: gpt-5.6-sol
+      reasoning_level: xhigh
+      fixed_context_rule: HASH_OF_CLOSED_TRUSTED_REVIEW_RUNTIME_CONTEXT_WITH_FRESH_CONTROLLER_CREATED_PATHS
+      fixed_context_closed_fields: [context_version, review_runtime_binary_path, review_runtime_version, review_runtime_binary_digest, working_directory, operating_system, architecture, home_path, codex_home_path, tmpdir_path, path_value, lang, lc_all, term]
+      fixed_context_constants: [TrustedReviewRuntimeContext/V1, /opt/homebrew/bin/codex, codex-cli/0.145.0, darwin, arm64, /opt/homebrew/bin:/usr/bin:/bin, en_US.UTF-8, en_US.UTF-8, dumb]
+      fresh_path_rule: EACH_WORKING_HOME_CODEX_HOME_AND_TMPDIR_PATH_IS_CONTROLLER_CREATED_UNDER_THE_ONE_RUN_TEMP_ROOT_AND_IS_PAIRWISE_DISTINCT
+      unknown_runtime_field_constant_OR_path_outside_run_root_effect: INELIGIBLE
+    frozen_lane_prompt_allowlist:
+      ARCHITECTURE: [COLD_ARCHITECTURE_REVIEW/V1, b5f47d4e2168ab82ac93e72cbf1dede2ec631e2f7c11a3ca5b408a3591061ce8]
+      LEGAL_SEMANTIC: [COLD_LEGAL_SEMANTIC_REVIEW/V1, c952e7467dbf402e9d401984fdf863801d2f2fe7b05e2c6373b159c22525924a]
+      QUERY_EFFICIENCY: [COLD_QUERY_EFFICIENCY_REVIEW/V1, 71f44adbf34cbffbe55fddeb7abc151ec551a57fa5b3f414517a98d7256a8c78]
+      OPEN_WORLD: [COLD_OPEN_WORLD_REVIEW/V1, 8c0a29ff28b2691fe5630210c8360231b998f101ac4cd95bdd4a3be8c47017e6]
+      RELEASE_PROPAGATION: [COLD_RELEASE_PROPAGATION_REVIEW/V1, cf6e793a394f836c842a7a607cb01e52bc049691c7d6ace20ffeb091aa78f3a7]
+      missing_extra_or_digest_mismatched_prompt_effect: INELIGIBLE
+    frozen_independence_validator_allowlist:
+      validator_key_id: PROGRAMME_GATE_VALIDATOR_2026_07
+      validator_executable_digest: 892bd3d1b29cc1a970ef70aff6005c3ab30901c153a20de6da1a8bd22bfbe9ed
+      validator_configuration_digest: 33bfc1ff13fd8ad3b5fa903bf2c9f33f1298f424aa9a33dd79d5f9d1b6e97a20
     frozen_trust_root_set:
       registry_schema: programme-gate-trusted-public-keys/v1
       registry_source_sha256: 1d61b3e8e7d522540f20dde431897033b34840a1448826bf13b69460da3c691b
