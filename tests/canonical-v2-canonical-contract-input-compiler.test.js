@@ -14,6 +14,9 @@ const {
   GENERATOR_INPUT_SCHEMA_VERSION,
   IDENTITY_DOMAIN,
   MANIFEST_SCHEMA_VERSION,
+  REQUIRED_KIND_REGISTRY_OBJECT_KIND,
+  REQUIRED_KIND_REGISTRY_SCHEMA_VERSION,
+  REQUIRED_KIND_REGISTRY_STABLE_ID,
   compileCanonicalContractInput,
 } = require('../lib/canonical-v2/canonical-contract-input-compiler');
 
@@ -57,6 +60,48 @@ function perKind(declaredMembers) {
     counts: Object.fromEntries(Object.entries(counts).sort()),
     versions: Object.fromEntries(Object.entries(versions).sort()),
   };
+}
+
+function refreshManifest(state) {
+  state.manifest.members = declarations(state.valuesByPath);
+  const kinds = perKind(state.manifest.members);
+  state.manifest.per_kind_counts = kinds.counts;
+  state.manifest.per_kind_schema_versions = kinds.versions;
+}
+
+function requirement(
+  objectKind,
+  allowedSchemaVersions,
+  minimumCount = 1,
+  maximumCount = minimumCount,
+) {
+  return {
+    object_kind: objectKind,
+    minimum_count: minimumCount,
+    maximum_count: maximumCount,
+    allowed_schema_versions: allowedSchemaVersions,
+  };
+}
+
+function addRequiredKindRegistry(state, requiredKinds = null) {
+  state.valuesByPath['governance/required-kinds.json'] = member(
+    REQUIRED_KIND_REGISTRY_OBJECT_KIND,
+    REQUIRED_KIND_REGISTRY_STABLE_ID,
+    REQUIRED_KIND_REGISTRY_SCHEMA_VERSION,
+    {
+      required_kinds: requiredKinds || [
+        requirement(
+          REQUIRED_KIND_REGISTRY_OBJECT_KIND,
+          [REQUIRED_KIND_REGISTRY_SCHEMA_VERSION],
+          1,
+          1,
+        ),
+        requirement('CLAIM_DEFINITION', ['CLAIM_DEFINITION/V1']),
+        requirement('PROVISION_CONCEPT', ['PROVISION_CONCEPT/V1'], 2, 2),
+      ],
+    },
+  );
+  refreshManifest(state);
 }
 
 function writeJson(root, relativePath, value, pretty = false) {
@@ -153,9 +198,240 @@ test('compiles a closed authored JSON set twice to byte-identical input identity
   assert.equal(first.disposition.freeze_eligible, false);
   assert.equal(first.disposition.canonical_contract_bundle_authority, 'NONE');
   assert.equal(first.disposition.p1_gate_status, 'NOT_EVALUATED');
+  assert.deepEqual(first.authored_universe_assessment, {
+    schema_version: 'CANONICAL_BUNDLE_INPUT_UNIVERSE_ASSESSMENT/V1',
+    status: 'NOT_ASSESSED',
+    required_kind_registry_binding: null,
+    ordered_kind_results: [],
+  });
   assert.equal(Object.hasOwn(first, 'canonical_contract_bundle'), false);
   assert.equal(Object.isFrozen(first), true);
   assert.equal(Object.isFrozen(first.authored_members[0].canonical_value), true);
+});
+
+test('mechanically closes the authored kind universe without claiming bundle or gate authority', (t) => {
+  const root = fixture((state) => addRequiredKindRegistry(state));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+
+  const first = compileCanonicalContractInput({ root_directory: root });
+  const second = compileCanonicalContractInput({ root_directory: root });
+  const assessment = first.authored_universe_assessment;
+
+  assert.equal(canonicalJson(first), canonicalJson(second));
+  assert.equal(assessment.status, 'COMPLETE_AGAINST_GOVERNED_REQUIRED_KIND_REGISTRY');
+  assert.equal(
+    assessment.required_kind_registry_binding.relative_path,
+    'governance/required-kinds.json',
+  );
+  assert.deepEqual(
+    assessment.ordered_kind_results.map((result) => [result.object_kind, result.status]),
+    [
+      [REQUIRED_KIND_REGISTRY_OBJECT_KIND, 'PASS'],
+      ['CLAIM_DEFINITION', 'PASS'],
+      ['PROVISION_CONCEPT', 'PASS'],
+    ],
+  );
+  assert.equal(first.disposition.status, 'AUTHORED_UNIVERSE_MECHANICALLY_COMPLETE');
+  assert.equal(first.disposition.reason_code, 'BUNDLE_GENERATION_AND_FREEZE_NOT_EVALUATED');
+  assert.equal(first.disposition.freeze_eligible, false);
+  assert.equal(first.disposition.canonical_contract_bundle_authority, 'NONE');
+  assert.equal(first.disposition.p1_gate_status, 'NOT_EVALUATED');
+  assert.equal(Object.hasOwn(first, 'canonical_contract_bundle'), false);
+});
+
+test('binds valid required-kind registry changes into the input identity', (t) => {
+  const firstRoot = fixture((state) => addRequiredKindRegistry(state));
+  const secondRoot = fixture((state) => {
+    addRequiredKindRegistry(state);
+    state.valuesByPath['governance/required-kinds.json']
+      .required_kinds[2].allowed_schema_versions = [
+        'PROVISION_CONCEPT/V1',
+        'PROVISION_CONCEPT/V2',
+      ];
+    refreshManifest(state);
+  });
+  t.after(() => fs.rmSync(firstRoot, { recursive: true, force: true }));
+  t.after(() => fs.rmSync(secondRoot, { recursive: true, force: true }));
+
+  const first = compileCanonicalContractInput({ root_directory: firstRoot });
+  const second = compileCanonicalContractInput({ root_directory: secondRoot });
+
+  assert.notEqual(
+    first.canonical_bundle_input_identity.canonical_bundle_input_identity_id,
+    second.canonical_bundle_input_identity.canonical_bundle_input_identity_id,
+  );
+  assert.ok(first.canonical_bundle_input_identity.ordered_entries.some(
+    (entry) => entry.object_kind === REQUIRED_KIND_REGISTRY_OBJECT_KIND,
+  ));
+});
+
+test('reports missing and undeclared kinds together in deterministic order', (t) => {
+  const root = fixture((state) => {
+    addRequiredKindRegistry(state, [
+      requirement(
+        REQUIRED_KIND_REGISTRY_OBJECT_KIND,
+        [REQUIRED_KIND_REGISTRY_SCHEMA_VERSION],
+        1,
+        1,
+      ),
+      requirement('CLAIM_DEFINITION', ['CLAIM_DEFINITION/V1']),
+      requirement('MISSING_ALPHA', ['MISSING_ALPHA/V1']),
+      requirement('MISSING_ZETA', ['MISSING_ZETA/V1']),
+    ]);
+  });
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+
+  assert.throws(
+    () => compileCanonicalContractInput({ root_directory: root }),
+    (error) => {
+      assert.equal(error.code, 'CANONICAL_BUNDLE_INPUT_UNIVERSE_MISMATCH');
+      assert.deepEqual(error.details, {
+        missing_required_kinds: ['MISSING_ALPHA', 'MISSING_ZETA'],
+        undeclared_authored_kinds: ['PROVISION_CONCEPT'],
+        count_mismatches: [],
+        schema_version_mismatches: [],
+      });
+      return true;
+    },
+  );
+});
+
+test('rejects required-kind count bounds and unsupported member schema versions', (t) => {
+  const belowMinimumRoot = fixture((state) => {
+    addRequiredKindRegistry(state);
+    state.valuesByPath['governance/required-kinds.json']
+      .required_kinds[1].minimum_count = 2;
+    state.valuesByPath['governance/required-kinds.json']
+      .required_kinds[1].maximum_count = 2;
+    refreshManifest(state);
+  });
+  const aboveMaximumRoot = fixture((state) => {
+    addRequiredKindRegistry(state);
+    state.valuesByPath['governance/required-kinds.json']
+      .required_kinds[2].minimum_count = 1;
+    state.valuesByPath['governance/required-kinds.json']
+      .required_kinds[2].maximum_count = 1;
+    refreshManifest(state);
+  });
+  const unsupportedSchemaRoot = fixture((state) => {
+    addRequiredKindRegistry(state);
+    state.valuesByPath['governance/required-kinds.json']
+      .required_kinds[1].allowed_schema_versions = ['CLAIM_DEFINITION/V2'];
+    refreshManifest(state);
+  });
+  t.after(() => fs.rmSync(belowMinimumRoot, { recursive: true, force: true }));
+  t.after(() => fs.rmSync(aboveMaximumRoot, { recursive: true, force: true }));
+  t.after(() => fs.rmSync(unsupportedSchemaRoot, { recursive: true, force: true }));
+
+  assert.throws(
+    () => compileCanonicalContractInput({ root_directory: belowMinimumRoot }),
+    (error) => error.code === 'CANONICAL_BUNDLE_INPUT_UNIVERSE_MISMATCH'
+      && error.details.count_mismatches[0].object_kind === 'CLAIM_DEFINITION',
+  );
+  assert.throws(
+    () => compileCanonicalContractInput({ root_directory: aboveMaximumRoot }),
+    (error) => error.code === 'CANONICAL_BUNDLE_INPUT_UNIVERSE_MISMATCH'
+      && error.details.count_mismatches[0].object_kind === 'PROVISION_CONCEPT',
+  );
+  assert.throws(
+    () => compileCanonicalContractInput({ root_directory: unsupportedSchemaRoot }),
+    (error) => error.code === 'CANONICAL_BUNDLE_INPUT_UNIVERSE_MISMATCH'
+      && error.details.schema_version_mismatches[0].unsupported_schema_versions[0]
+        === 'CLAIM_DEFINITION/V1',
+  );
+});
+
+test('rejects duplicate, reordered and invalid required-kind registry entries', (t) => {
+  const duplicateRoot = fixture((state) => {
+    addRequiredKindRegistry(state);
+    state.valuesByPath['governance/required-kinds.json']
+      .required_kinds.splice(2, 0, {
+        ...state.valuesByPath['governance/required-kinds.json'].required_kinds[1],
+      });
+    refreshManifest(state);
+  });
+  const reorderedRoot = fixture((state) => {
+    addRequiredKindRegistry(state);
+    [
+      state.valuesByPath['governance/required-kinds.json'].required_kinds[1],
+      state.valuesByPath['governance/required-kinds.json'].required_kinds[2],
+    ] = [
+      state.valuesByPath['governance/required-kinds.json'].required_kinds[2],
+      state.valuesByPath['governance/required-kinds.json'].required_kinds[1],
+    ];
+    refreshManifest(state);
+  });
+  const invalidSelfRoot = fixture((state) => {
+    addRequiredKindRegistry(state);
+    state.valuesByPath['governance/required-kinds.json']
+      .required_kinds[0].allowed_schema_versions = [
+        REQUIRED_KIND_REGISTRY_SCHEMA_VERSION,
+        'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY/V2',
+      ];
+    refreshManifest(state);
+  });
+  t.after(() => fs.rmSync(duplicateRoot, { recursive: true, force: true }));
+  t.after(() => fs.rmSync(reorderedRoot, { recursive: true, force: true }));
+  t.after(() => fs.rmSync(invalidSelfRoot, { recursive: true, force: true }));
+
+  assert.throws(
+    () => compileCanonicalContractInput({ root_directory: duplicateRoot }),
+    expectCode('DUPLICATE_CANONICAL_BUNDLE_INPUT_REQUIRED_KIND'),
+  );
+  assert.throws(
+    () => compileCanonicalContractInput({ root_directory: reorderedRoot }),
+    expectCode('UNSTABLE_CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_ORDER'),
+  );
+  assert.throws(
+    () => compileCanonicalContractInput({ root_directory: invalidSelfRoot }),
+    expectCode('INVALID_CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_SELF_REQUIREMENT'),
+  );
+});
+
+test('rejects malformed required-kind bounds and schema-version sets', (t) => {
+  const boundsRoot = fixture((state) => {
+    addRequiredKindRegistry(state);
+    state.valuesByPath['governance/required-kinds.json']
+      .required_kinds[1].maximum_count = 0;
+    refreshManifest(state);
+  });
+  const versionsRoot = fixture((state) => {
+    addRequiredKindRegistry(state);
+    state.valuesByPath['governance/required-kinds.json']
+      .required_kinds[1].allowed_schema_versions = [
+        'CLAIM_DEFINITION/V1',
+        'CLAIM_DEFINITION/V1',
+      ];
+    refreshManifest(state);
+  });
+  t.after(() => fs.rmSync(boundsRoot, { recursive: true, force: true }));
+  t.after(() => fs.rmSync(versionsRoot, { recursive: true, force: true }));
+
+  assert.throws(
+    () => compileCanonicalContractInput({ root_directory: boundsRoot }),
+    expectCode('INVALID_CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY'),
+  );
+  assert.throws(
+    () => compileCanonicalContractInput({ root_directory: versionsRoot }),
+    expectCode('INVALID_CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY'),
+  );
+});
+
+test('rejects multiple required-kind registry members before selecting authority', (t) => {
+  const root = fixture((state) => {
+    addRequiredKindRegistry(state);
+    state.valuesByPath['governance/required-kinds-copy.json'] = {
+      ...state.valuesByPath['governance/required-kinds.json'],
+      stable_id: 'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY_COPY',
+    };
+    refreshManifest(state);
+  });
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+
+  assert.throws(
+    () => compileCanonicalContractInput({ root_directory: root }),
+    expectCode('CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY_CARDINALITY'),
+  );
 });
 
 test('canonicalises member bytes so source JSON formatting does not change the identity', (t) => {
