@@ -71,7 +71,7 @@ This file is the sole authority for detailed identities, state machines, writer 
   `SemanticExtractionInputEnvelope`, `SemanticInferenceTranscript`,
   `ReviewedInferencePayload`, `SemanticGraphNormaliserDefinition`,
   `ValidatedSemanticGraph`, its `DefinitionCue` and `DefinitionUseCue` graph-node
-  schemas, units,
+  schemas, units, `GovernedObjectImpactWalkerOutput`,
   `OpenWorldSemanticCandidate`, `OpenWorldCandidateOccurrence`,
   `OpenWorldCandidateSupersession`, `OpenWorldCandidateKindSupersession`,
   `OpenWorldCandidateAdmissionTransition`,
@@ -79,6 +79,9 @@ This file is the sole authority for detailed identities, state machines, writer 
   `OpenWorldCandidateChainReconciliation`,
   `OpenWorldEvidenceClosure`, `OpenWorldPrimitiveObservation`,
   `OpenWorldPrimitiveRelationship`, `OpenWorldPrimitiveCollectionRoot`,
+  `LegalSemanticReviewPolicy`, `LegalReviewerTrustRegistry`,
+  `LegalReviewerRevocationEvent`, `LegalReviewerRevocationHead` and
+  `LegalSemanticReviewerEligibilityProof`,
   `OpenWorldCandidateDisposition`,
   `ReviewedSourceSpecificPublicationDecision`,
   `OpenWorldCandidateDispositionManifest`, `OpenWorldReviewQueueRoot`,
@@ -1129,12 +1132,53 @@ This file is the sole authority for detailed identities, state machines, writer 
   zero-effect non-substantive branch. The non-substantive branch carries affirmative review
   evidence that no legal proposition or primitive was discarded. Pending,
   failed, not-examined, generic ignored and a fifth catch-all value are invalid.
-  A final `GovernedResidualImpactClosure` either selects the mapped object's or
-  candidate's reconciled impact closure and affected results, or proves a typed
-  zero-effect branch for a reviewed non-substantive or duplicate residual. Two
-  independent impact projections and a third reconciliation must agree. Every
-  nonzero residual closure derives exactly one effective impact tier from the
-  selected governed object or candidate:
+- `GovernedObjectImpactWalkerOutput` hashes
+  `GOVERNED_OBJECT_IMPACT_WALKER/V1`, schema, frozen contract pair, exact
+  GovernedResidualObservation, `COVERED_BY_GOVERNED_OBJECT` disposition,
+  selected governed-object kind, stable ID and canonical payload digest,
+  complete source-evidence containment proof, walker role, fixed-fanout affected-
+  node and traversed-edge roots, counts, executable, configuration and complete
+  transitive-dependency-graph digests and terminal state. Each of two
+  implementation-disjoint walkers starts from the selected object's registered
+  semantic owner and independently enumerates every dependent claim,
+  relationship, result component, result, metric slot, cohort, scope and
+  contract object. It may not accept the residual, reviewer, target object or
+  candidate writer's asserted affected set.
+- `GovernedObjectImpactClosure` supplies the previously separate governed-object
+  branch. Its ID hashes `GOVERNED_OBJECT_IMPACT_CLOSURE/V1`, schema, frozen
+  contract pair, exact residual and disposition, selected governed object, both
+  GovernedObjectImpactWalkerOutput IDs and payload digests, the exact
+  InventoryEnumeratorIndependenceAttestation proving their implementation
+  separation, reconciled affected-node and edge roots, complete differences and
+  terminal state. A third implementation performs the reconciliation and cannot
+  select or repair either walker output.
+- The reconciled governed-object closure has exactly one state:
+  `FULLY_INCORPORATED`, `AFFECTS_CANONICAL_RESULT`,
+  `AFFECTS_CORPUS_SCOPE` or `AFFECTS_CANONICAL_CONTRACT`.
+  `FULLY_INCORPORATED` is the sole zero-additional-impact state. It requires the
+  residual's complete raw semantics, evidence and proposed-object links to be
+  losslessly represented by the selected governed object, and every enumerated
+  dependent release object to select that exact object revision and pass its
+  ordinary conformance and lineage checks. Text overlap, a matching key or a
+  reviewer assertion is insufficient. Any unrepresented semantic difference,
+  stale dependant, conflicting evidence, unresolved walker edge or
+  reconciliation difference prohibits `FULLY_INCORPORATED` and selects the
+  highest applicable nonzero state. The selected target and closure remain
+  source and traceability lineage even when fully incorporated.
+- A final `GovernedResidualImpactClosure` selects the exact
+  GovernedObjectImpactClosure for `COVERED_BY_GOVERNED_OBJECT`, the candidate's
+  reconciled SemanticImpactClosure for `COVERED_BY_OPEN_WORLD_CANDIDATE`, or a
+  typed zero-effect proof for `REVIEWED_NON_SUBSTANTIVE_OR_INVALID`. A
+  `REVIEWED_DUPLICATE` selects the flattened predecessor's exact closure and
+  cannot independently change impact. Its ID hashes the branch, selected
+  closure ID and payload digest, affected-result set and complete branch
+  validation. Two independent residual-impact projections and a third
+  reconciliation must agree. `FULLY_INCORPORATED` projects only to the typed
+  `ZERO_ADDITIONAL_IMPACT_FULLY_INCORPORATED` residual branch; it never implies
+  that the residual was non-substantive. Missing, cross-wired, stale or wrong-
+  branch closure selection is unresolved impact. Every nonzero residual closure
+  derives exactly one effective impact tier from the selected governed-object
+  or candidate closure:
   `ISOLATED_SOURCE_SPECIFIC`, `AFFECTS_CANONICAL_RESULT`,
   `AFFECTS_CORPUS_SCOPE` or `AFFECTS_CANONICAL_CONTRACT`. The same closed
   impact-to-publication mapping used for an open-world candidate applies to the
@@ -2030,6 +2074,66 @@ This file is the sole authority for detailed identities, state machines, writer 
   scope is valid only when independent dependency enumeration proves that the
   complete dependency set is empty. An extractor or contract author's bare
   assertion that there is no external dependency is not proof.
+- Legal-semantic review authority for corpus decisions is frozen, explicit
+  contract data. `LegalSemanticReviewPolicy` is a generated
+  CanonicalContractBundle member whose ID hashes
+  `LEGAL_SEMANTIC_REVIEW_POLICY/V1`, schema, CanonicalBundleInputIdentity,
+  policy key and version, the closed reviewer classes `FABLE_ELIGIBLE` and
+  `SOL_5_6_EXTRA_HIGH_ELIGIBLE`, the exact Sol model and reasoning requirement,
+  the closed action set `DISCOVERY_PARTITION`,
+  `DIMENSION_MAPPING_STATE`, `OPEN_WORLD_FINAL_DISPOSITION` and
+  `SOURCE_SPECIFIC_PUBLICATION_SELECTION`, action-to-class and review-domain
+  rules, terminal dispositions, signature and nonce rules, clock and validity
+  rules, and the revocation-authority public verification roots. This is corpus
+  review authority, not the G0 cold-review controller or a runtime-selected
+  substitute.
+- `LegalReviewerTrustRegistry` is a second generated bundle member. Its ID hashes
+  `LEGAL_REVIEWER_TRUST_REGISTRY/V1`, schema, CanonicalBundleInputIdentity,
+  registry key and version and the complete contract-ordered member set. Each
+  member hashes principal ID, reviewer class, public-key ID, public verification
+  key bytes and fingerprint, permitted actions and legal domains, validity
+  interval and status. Unknown fields, duplicate principals or keys, overlapping
+  conflicting memberships and a member not admitted by
+  LegalSemanticReviewPolicy fail bundle compilation. Only public verification
+  material enters the bundle. Implementation
+  configuration, an environment variable or a caller-supplied key cannot extend
+  membership.
+- Revocation is governed after freeze without mutating either member.
+  `LegalReviewerRevocationEvent` hashes schema, exact trust-registry ID and
+  payload digest, principal and key, effective time, reason, predecessor head
+  and the signature of a revocation authority admitted by the policy.
+  `LegalReviewerRevocationHead` hashes
+  `LEGAL_REVIEWER_REVOCATION_HEAD/V1`, schema, that same registry, monotonic
+  sequence, predecessor head or `GENESIS` and the complete ordered event
+  ID-and-payload-digest set. The authoritative writer is the sole head
+  transition authority; a fork, gap, wrong registry, invalid signature or
+  non-monotonic event blocks review validation.
+- `LegalSemanticReviewerEligibilityProof` binds one review decision to this
+  authority. Its ID hashes
+  `LEGAL_SEMANTIC_REVIEWER_ELIGIBILITY_PROOF/V1`, schema, exact policy and trust-
+  registry IDs and payload digests, signing-time revocation-head ID and payload
+  digest, registry-member ID and payload digest, principal, reviewer class,
+  action, legal domain, exact subject ID and payload digest, reviewed decision-
+  body digest, signing time, nonce, key ID, signature algorithm and signature.
+  Validation recomputes the decision-body digest, verifies registry membership,
+  class, action, domain, validity, nonce and signature, and proves the key was
+  unrevoked at signing. Every authoritative-writer use, candidate seal,
+  production import and promotion also selects the then-current revocation head
+  and rejects a now-revoked, stale-registry or policy-mismatched proof. The
+  operation receipt binds that verification head. A self-asserted reviewer
+  label, opaque eligibility digest or signature without these exact authority
+  objects has no legal-semantic effect.
+- Every discovery negative, dimension-mapping state, final open-world
+  disposition and source-specific publication decision selects its exact
+  eligibility proof. CandidateInputSeal, CandidateReleaseManifest,
+  ReleaseBundleEnvelope, production import and traceability select those proofs,
+  their signing-time revocation heads and every authoritative-writer receipt
+  with its current verification head. Missing, extra, duplicate, revoked or
+  cross-policy authority evidence blocks only the affected decision and every
+  dependant output; it cannot convert that item to absence or suppress valid
+  sibling rows. Serving roles receive only the validated disposition or
+  publication-decision reference and governed non-comparability reason, never
+  trust-registry members, keys, signatures or revocation payloads.
 - Before the ordinary expectation compiler runs, a separately implemented
   challenger creates one immutable `IndependentSemanticChallengeManifest` for
   the exact PotentialDependencyUniverse and frozen contract pair. It receives
@@ -2102,9 +2206,12 @@ This file is the sole authority for detailed identities, state machines, writer 
   exact source interval set, source-only cue digest, broad dimension kind and
   source comparator ordinal. The discovery-manifest ID additionally hashes the
   exact frozen pair, complete candidate inventory, atom partition, executable and configuration
-  digests, transitive input-firewall proof and eligible independent-review
-  evidence for every negative or candidate disposition. A gap, unexplained cue,
-  catalogue-derived cue rule or unresolved cell blocks.
+  digests, transitive input-firewall proof and exact
+  `DISCOVERY_PARTITION` LegalSemanticReviewerEligibilityProof for every
+  `DIMENSION_CANDIDATE` or `NO_LEGAL_DIMENSION_CUE` disposition. A blocking
+  disposition retains its source evidence and cannot be converted to a terminal
+  partition by that proof. A gap, unexplained cue, missing or authority-invalid
+  partition review, catalogue-derived cue rule or unresolved cell blocks.
 - The source-only discovery worker cannot observe or branch on the contract
   fingerprint, freeze-attestation digest, either catalogue digest or review
   disposition. A separate non-semantic attester wraps its completed payload with
@@ -2123,10 +2230,12 @@ This file is the sole authority for detailed identities, state machines, writer 
   exact frozen pair, IndependentSemanticQuestionCatalogue root, base-subject
   reconciliation, both complete inputs, every candidate-to-subject-and-question
   mapping edge or mapping state, source evidence, governed reason, evaluator and
-  configuration digests and eligible independent-review evidence for every
-  mapping and state. It may read the independently authored question catalogue
-  but not ordinary definitions or question-universe output. It cannot create or
-  alias a question.
+  configuration digests and exact `DIMENSION_MAPPING_STATE`
+  LegalSemanticReviewerEligibilityProof for every mapping and state. It may read
+  the independently authored question catalogue but not ordinary definitions or
+  question-universe output. A proof under another policy, registry, action,
+  domain, subject or decision-body digest is invalid. It cannot create or alias
+  a question.
 - `UNMAPPED_LEGAL_DIMENSION` is a required discovery signal, not a final legal
   disposition and not permission to force source text into the nearest known
   key. Every signal that may express an unmapped proposition, question,
@@ -2354,7 +2463,8 @@ This file is the sole authority for detailed identities, state machines, writer 
   `OPEN_WORLD_CANDIDATE_DISPOSITION/V1`, schema, exact frozen pair, candidate and
   occurrence IDs and payload digests, disposition origin, disposition, every
   disposition-specific field or exact forbidden-field marker, governed reason, immutable legal-
-  semantic review disposition, reviewer identity and eligibility proof and
+  semantic review disposition, reviewer identity and the exact
+  `OPEN_WORLD_FINAL_DISPOSITION` LegalSemanticReviewerEligibilityProof and
   required Ben approval or the contract-declared
   `NO_BEN_TAXONOMY_DECISION_REQUIRED` marker, plus the exact transition and
   predecessor-disposition references for `ADMISSION_CARRY_FORWARD` or their
@@ -2654,12 +2764,18 @@ This file is the sole authority for detailed identities, state machines, writer 
   If no one primitive fairly represents the proposition, review must create a
   source-backed proposition claim with its own evidence and primitive linkage or
   leave the candidate unresolved; first, majority, most favourable and
-  implementation-order selection are prohibited. The authoritative writer
-  persists that decision transactionally with the disposition and propagates
-  its exact ID and payload digest through candidate output, manifest, bundle,
-  production import, traceability and SharedServingRow. It is never rendered
-  as absence, failure, not examined, an empty canonical result or generic “No
-  market data”. `REJECTED_NON_SUBSTANTIVE_OR_INVALID` retains the candidate,
+  implementation-order selection are prohibited. The decision selects the exact
+  LegalSemanticReviewPolicy and LegalReviewerTrustRegistry IDs and payload
+  digests and one valid `SOURCE_SPECIFIC_PUBLICATION_SELECTION`
+  LegalSemanticReviewerEligibilityProof over its complete decision body. The
+  authoritative writer revalidates that proof against the current
+  LegalReviewerRevocationHead, persists the decision transactionally with the
+  disposition and binds the verification head in its operation receipt. It
+  propagates the decision's exact ID and payload digest through candidate
+  output, manifest, bundle, production import, traceability and
+  SharedServingRow. It is never rendered as absence, failure, not examined, an
+  empty canonical result or generic “No market data”.
+  `REJECTED_NON_SUBSTANTIVE_OR_INVALID` retains the candidate,
   evidence, primitives, reason and review proof for audit but creates no Review
   serving row, canonical question, claim, result, metric or cohort member.
 - Every candidate's reconciled SemanticImpactClosure carries exactly one
@@ -2750,8 +2866,9 @@ This file is the sole authority for detailed identities, state machines, writer 
   roots are empty;
   and mapped and adopted entries resolve only to the selected frozen bundle.
   It also selects the complete GovernedResidualUniverseManifest,
-  GovernedResidualDispositionManifest, every reconciled
-  GovernedResidualImpactClosure and the empty GovernedResidualReviewQueueRoot;
+  GovernedResidualDispositionManifest, every selected
+  GovernedObjectImpactClosure, every reconciled GovernedResidualImpactClosure
+  and the empty GovernedResidualReviewQueueRoot;
   no residual may rely solely on candidate-occurrence totality. `W_open = PASS`
   does not mean the source-specific partition or residual-observation set is
   empty.
@@ -5597,8 +5714,10 @@ This file is the sole authority for detailed identities, state machines, writer 
   `CandidateInputRecheckAttestation`.
   `PREPARE_INPUT_BATCH` has a closed `RESIDUAL_CLOSURE` discriminator with
   `ENTRY_BATCH` and `TERMINAL_SET` phases. `ENTRY_BATCH` is the sole producer of
-  GovernedResidualDisposition, both independent impact projections and
-  GovernedResidualImpactClosure members for the sealed input residual universe.
+  GovernedResidualDisposition, both independent governed-object impact walker
+  outputs, their GovernedObjectImpactClosure, both independent residual-impact
+  projections and GovernedResidualImpactClosure members for the sealed input
+  residual universe.
   `TERMINAL_SET` is the sole producer of
   GovernedResidualDispositionManifest and GovernedResidualReviewQueueRoot after
   independently recomputing exact universe coverage and impact equality.
@@ -7490,7 +7609,8 @@ This file is the sole authority for detailed identities, state machines, writer 
   GovernedResidualProducerRegistry, every GovernedResidualObservation, both
   complete residual-universe roots, GovernedResidualUniverseReconciliation and
   GovernedResidualUniverseManifest, every GovernedResidualDisposition,
-  GovernedResidualDispositionManifest, both residual-impact projections, every
+  GovernedResidualDispositionManifest, every selected
+  GovernedObjectImpactClosure, both residual-impact projections, every
   reconciled GovernedResidualImpactClosure and the exact empty
   GovernedResidualReviewQueueRoot,
   CanonicalTextVerificationManifest, SourceAdmissionManifest, every required
@@ -7593,8 +7713,9 @@ This file is the sole authority for detailed identities, state machines, writer 
   SemanticExtractionInputEnvelope, complete SemanticInferenceTranscript set,
   ReviewedInferencePayload, GovernedResidualProducerRegistry, complete
   GovernedResidualUniverseManifest and its two roots and reconciliation,
-  GovernedResidualDispositionManifest, every reconciled residual impact closure
-  and the exact empty GovernedResidualReviewQueueRoot,
+  GovernedResidualDispositionManifest, every selected
+  GovernedObjectImpactClosure, every reconciled residual impact closure and the
+  exact empty GovernedResidualReviewQueueRoot,
   SemanticGraphNormaliserDefinition and
   ValidatedSemanticGraph with validation-report digests,
   CanonicalTextVerificationManifest, every required
@@ -8671,12 +8792,17 @@ This file is the sole authority for detailed identities, state machines, writer 
   or impermissibly reordered lineage member fails server validation before cache
   insertion or rendering.
 - The general `CANONICAL_RESULT` variant may use only `COMPARABLE`,
-  `NOT_COMPARABLE` or `NOT_CERTIFIED` comparability values generated by its
-  frozen ResultDefinition. `REVIEWED_SOURCE_SPECIFIC` is schema-invalid in that
-  branch even when the underlying disposition has that value. The sole
-  publication path is the separately tagged `REVIEWED_SOURCE_SPECIFIC` variant
-  with its exact publication decision. No nullable, generic or canonical-result
-  path may bypass that decision.
+  `MISSING_BASIS`, `INCOMPATIBLE_BASIS` or `NOT_CERTIFIED` comparability values
+  generated by its frozen ResultDefinition. `MISSING_BASIS` means a required
+  denominator, unit or day-count basis was not established; `INCOMPATIBLE_BASIS`
+  means the established bases cannot be normalised under the frozen contract.
+  They are distinct schema values with distinct governed reasons and may not be
+  collapsed to a generic `NOT_COMPARABLE`, null or “No market data”.
+  `REVIEWED_SOURCE_SPECIFIC` is schema-invalid in that branch even when the
+  underlying disposition has that value. The sole publication path is the
+  separately tagged `REVIEWED_SOURCE_SPECIFIC` variant with its exact
+  publication decision. No nullable, generic or canonical-result path may
+  bypass that decision.
 - Review and authorised Admin may render all three release-certified variants.
   Corpus Context, Compare and Query may return a source-specific or incomplete
   row only as typed selected-deal context with its exact non-comparability
@@ -10060,8 +10186,9 @@ includes:
   GovernedResidualObservation, both residual-universe roots,
   GovernedResidualUniverseReconciliation, GovernedResidualUniverseManifest,
   every GovernedResidualDisposition, GovernedResidualDispositionManifest, both
-  residual-impact projections, every reconciled GovernedResidualImpactClosure
-  and the exact empty GovernedResidualReviewQueueRoot,
+  residual-impact projections, every selected GovernedObjectImpactClosure,
+  every reconciled GovernedResidualImpactClosure and the exact empty
+  GovernedResidualReviewQueueRoot,
   SemanticGraphNormaliserDefinition,
   ValidatedSemanticGraph and validation report, CanonicalTextVerificationManifest,
   IndependentDealDocumentManifest,
@@ -13386,7 +13513,9 @@ validator are ineligible. No post-review allowlist choice exists.
 
 `CanonicalContractBundle` also includes the complete
 `GovernedResidualProducerRegistry`, `GovernedResidualObservation`,
-`GovernedResidualDisposition`, `GovernedResidualImpactClosure` and
+`GovernedResidualDisposition`, `GovernedObjectImpactWalkerOutput`,
+`GovernedObjectImpactClosure`,
+`GovernedResidualImpactClosure` and
 `GovernedResidualReviewQueueRoot` schemas, enums, producer mappings, identity
 rules and writer actions. They are authored and Freeze-Gate reviewed with the
 other bundle members. No residual producer, disposition or empty-queue rule may
@@ -13395,17 +13524,19 @@ be added after freeze.
 `ReviewedSourceSpecificPublicationDecision` hashes its schema, frozen pair,
 exact candidate occurrence, effective `REVIEWED_SOURCE_SPECIFIC`
 `OpenWorldCandidateDisposition` ID and payload digest, legal-semantic reviewer
-principal, reviewer-eligibility proof ID and digest, review disposition and
-review time, primitive-collection root, selected PRESENT primitive occurrence,
-representativeness decision `FAIR_SOURCE_BACKED_DISPLAY` and exact evidence
-closure. The reviewer must be eligible under the bundle's legal-semantic review
-policy and must sign the exact selection. The authoritative writer revalidates
-that proof. Its closed signed payload includes
-`signature_algorithm=Ed25519`, reviewer key ID, trust-registry digest,
-signed-payload digest, signature, signing time and nonce. Validation resolves
-the key from the frozen legal-reviewer trust registry, verifies role, domain,
-validity and revocation at signing and verification time and recomputes the
-payload digest. For an ordinary admitted occurrence,
+principal, exact LegalSemanticReviewPolicy and LegalReviewerTrustRegistry IDs
+and payload digests, `SOURCE_SPECIFIC_PUBLICATION_SELECTION`
+LegalSemanticReviewerEligibilityProof ID and payload digest, review disposition
+and review time, primitive-collection root, selected PRESENT primitive
+occurrence, representativeness decision `FAIR_SOURCE_BACKED_DISPLAY` and exact
+evidence closure. The signed decision-body digest in the proof must equal those
+exact fields. Validation applies the policy, resolves the key only from the
+frozen registry, verifies membership, reviewer class, action, legal domain,
+validity, nonce and signature, and proves the key unrevoked under both the
+proof's signing-time LegalReviewerRevocationHead and the writer transaction's
+current head. The authoritative writer recomputes every field and records the
+current-head verification in its receipt; it cannot accept an opaque eligibility
+digest or implementation-selected authority. For an ordinary admitted occurrence,
 `RECORD_OPEN_WORLD_DISPOSITIONS` writes the decision transactionally with the
 disposition. For a pre-admission source-role occurrence it writes only the
 signed neutral selection. `MATERIALISE_SCOPE` later revalidates that signature

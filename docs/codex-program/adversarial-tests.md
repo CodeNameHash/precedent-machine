@@ -1035,7 +1035,11 @@ The following adversarial closure tests are mandatory traceability entries:
   absent from the frozen contract. Raw amount or duration and all familiar
   primitives remain visible, but no percentage, converted duration, compatible
   cohort or statistic publishes until the basis is governed and the full
-  applicability universe is re-examined.
+  applicability universe is re-examined. A complete result with no established
+  basis must carry `MISSING_BASIS`; one with established but non-normalisable
+  bases must carry `INCOMPATIBLE_BASIS`. Substituting a generic
+  `NOT_COMPARABLE`, swapping those values or collapsing either to null or “No
+  market data” fails schema, serving parity and cohort certification.
 - `OPEN-WORLD-COMPOSITION-01`: make a lawyer-facing result require a combination
   of otherwise recognised spans that no frozen ResultDefinition permits. A
   `RESULT_COMPOSITION` candidate retains all components and relationships but
@@ -1259,7 +1263,16 @@ The following adversarial closure tests are mandatory traceability entries:
   predecessor retains its exact transition-bound disposition in audit only.
   Missing, duplicate, conflicting, sixth-value,
   forked, merged, cyclic or orphaned chains fail both the independently rebuilt
-  effective root and release sealing.
+  effective root and release sealing. Every final disposition, including
+  `REJECTED_NON_SUBSTANTIVE_OR_INVALID`, must bind an exact permitted action in
+  the frozen LegalSemanticReviewPolicy, a member and key in the frozen
+  LegalReviewerTrustRegistry, and a valid
+  LegalSemanticReviewerEligibilityProof under both the signing-time and current
+  LegalReviewerRevocationHeads. Substitute a policy, registry, principal,
+  action, domain, decision-body digest or nonce, use an unknown key, revoke the
+  key before signing or before current validation, or fork the revocation head:
+  the affected disposition remains unresolved and cannot suppress valid
+  sibling rows.
 - `RESIDUAL-TOTALITY-01`: seed one residual in every registered producer kind,
   including a validation residual with no open-world candidate. Both independent
   universe roots and their reconciliation must enumerate the same complete set;
@@ -1275,6 +1288,18 @@ The following adversarial closure tests are mandatory traceability entries:
   bidirectionally. Add a residual-capable carrier or producer to either
   authority alone; the other path must detect the unregistered boundary before
   candidate sealing.
+  For `COVERED_BY_GOVERNED_OBJECT`, require an exact
+  GovernedObjectImpactClosure from two independent dependency walkers and a
+  third reconciliation. `FULLY_INCORPORATED` passes only when the selected
+  governed object losslessly contains the residual semantics and evidence and
+  every enumerated dependant selects that exact revision. Substitute a
+  text-overlapping object, omit a dependant, leave a stale revision, force zero
+  additional impact despite an unrepresented semantic difference, cross-wire a
+  candidate SemanticImpactClosure or make the walkers disagree: residual impact
+  remains unresolved and no market comparability may be inferred. A valid
+  `FULLY_INCORPORATED` closure must project exactly
+  `ZERO_ADDITIONAL_IMPACT_FULLY_INCORPORATED`, not the non-substantive
+  zero-effect branch.
   Mark an impactful residual as a duplicate of an earlier byte-identical
   residual with different governed subject, evidence context or validation
   semantics: review must reject the duplicate link. A valid duplicate must
@@ -2165,7 +2190,14 @@ The following adversarial closure tests are mandatory traceability entries:
   must block while valid sibling rows remain
   renderable. Substitute the reviewer principal, eligibility proof, signed
   representativeness decision, effective disposition or evidence closure while
-  retaining the selected primitive: the writer must reject publication.
+  retaining the selected primitive: the writer must reject publication. The
+  decision must bind the exact frozen LegalSemanticReviewPolicy,
+  LegalReviewerTrustRegistry and
+  `SOURCE_SPECIFIC_PUBLICATION_SELECTION` proof. Substitute the policy,
+  registry, action, legal domain or signed decision-body digest, use a
+  non-member key, or revoke the key under either the signing-time or current
+  LegalReviewerRevocationHead: publication remains blocked for that row while
+  valid sibling rows remain renderable.
   The effective decision must be present exactly once in the admitted scope
   inventory, CandidateInputSeal, candidate-output inventory,
   CandidateReleaseManifest, ReleaseBundleEnvelope, production-import parity,
