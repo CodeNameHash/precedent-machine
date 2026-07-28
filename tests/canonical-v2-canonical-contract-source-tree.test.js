@@ -37,12 +37,36 @@ function jsonMembers(directory, relativeDirectory = '') {
   }).sort();
 }
 
+function authoredPayloads(compiled, objectKind, keyField, schemaVersion) {
+  return compiled.authored_members
+    .filter((member) => member.object_kind === objectKind)
+    .map((member) => {
+      const {
+        object_kind: valueObjectKind,
+        stable_id: stableId,
+        schema_version: valueSchemaVersion,
+        ...payload
+      } = member.canonical_value;
+      assert.equal(valueObjectKind, objectKind);
+      assert.equal(stableId, payload[keyField]);
+      assert.equal(valueSchemaVersion, schemaVersion);
+      return payload;
+    })
+    .sort((left, right) => left[keyField].localeCompare(right[keyField]));
+}
+
 test('the first authored source compiles twice byte-identically without claiming completeness', () => {
   const first = compileCanonicalContractInput({ root_directory: sourceRoot });
   const second = compileCanonicalContractInput({ root_directory: sourceRoot });
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 13);
+  assert.equal(first.authored_members.length, 41);
+  assert.equal(
+    first.authored_members.some(
+      (member) => member.object_kind === 'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY',
+    ),
+    false,
+  );
   assert.equal(first.authored_universe_assessment.status, 'NOT_ASSESSED');
   assert.equal(first.authored_universe_assessment.required_kind_registry_binding, null);
   assert.deepEqual(first.authored_universe_assessment.ordered_kind_results, []);
@@ -56,18 +80,12 @@ test('the first authored source compiles twice byte-identically without claiming
 
 test('every authored claim is the exact existing V12 payload under the required envelope', () => {
   const compiled = compileCanonicalContractInput({ root_directory: sourceRoot });
-  const actual = compiled.authored_members.map((member) => {
-    const {
-      object_kind: objectKind,
-      stable_id: stableId,
-      schema_version: schemaVersion,
-      ...payload
-    } = member.canonical_value;
-    assert.equal(objectKind, 'CLAIM_DEFINITION');
-    assert.equal(stableId, payload.claim_definition_key);
-    assert.equal(schemaVersion, 'CLAIM_DEFINITION/V1');
-    return payload;
-  }).sort((left, right) => left.claim_definition_key.localeCompare(right.claim_definition_key));
+  const actual = authoredPayloads(
+    compiled,
+    'CLAIM_DEFINITION',
+    'claim_definition_key',
+    'CLAIM_DEFINITION/V1',
+  );
   const expected = [...FIXTURE_CONTRACT_INPUT_V12.claim_definitions]
     .sort((left, right) => left.claim_definition_key.localeCompare(right.claim_definition_key));
 
@@ -75,16 +93,52 @@ test('every authored claim is the exact existing V12 payload under the required 
   assert.equal(canonicalJson(actual), canonicalJson(expected));
 });
 
-test('the manifest exactly closes the complete 13-file V12 claim-definition source tree', () => {
+test('every authored component is the exact existing V12 payload under the required envelope', () => {
+  const compiled = compileCanonicalContractInput({ root_directory: sourceRoot });
+  const actual = authoredPayloads(
+    compiled,
+    'COMPONENT_DEFINITION',
+    'component_key',
+    'COMPONENT_DEFINITION/V1',
+  );
+  const expected = [...FIXTURE_CONTRACT_INPUT_V12.component_definitions]
+    .sort((left, right) => left.component_key.localeCompare(right.component_key));
+
+  assert.equal(actual.length, 9);
+  assert.equal(canonicalJson(actual), canonicalJson(expected));
+});
+
+test('every authored concept is the exact existing V12 payload under the required envelope', () => {
+  const compiled = compileCanonicalContractInput({ root_directory: sourceRoot });
+  const actual = authoredPayloads(
+    compiled,
+    'PROVISION_CONCEPT',
+    'concept_key',
+    'PROVISION_CONCEPT/V1',
+  );
+  const expected = [...FIXTURE_CONTRACT_INPUT_V12.concepts]
+    .sort((left, right) => left.concept_key.localeCompare(right.concept_key));
+
+  assert.equal(actual.length, 19);
+  assert.equal(canonicalJson(actual), canonicalJson(expected));
+});
+
+test('the manifest exactly closes the complete 41-file V12 authored vocabulary tree', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
   const actualMembers = jsonMembers(sourceRoot);
   const declaredMembers = manifest.members.map((member) => member.relative_path);
 
   assert.deepEqual(actualMembers, declaredMembers);
-  assert.equal(manifest.members.length, 13);
-  assert.deepEqual(manifest.per_kind_counts, { CLAIM_DEFINITION: 13 });
+  assert.equal(manifest.members.length, 41);
+  assert.deepEqual(manifest.per_kind_counts, {
+    CLAIM_DEFINITION: 13,
+    COMPONENT_DEFINITION: 9,
+    PROVISION_CONCEPT: 19,
+  });
   assert.deepEqual(manifest.per_kind_schema_versions, {
     CLAIM_DEFINITION: ['CLAIM_DEFINITION/V1'],
+    COMPONENT_DEFINITION: ['COMPONENT_DEFINITION/V1'],
+    PROVISION_CONCEPT: ['PROVISION_CONCEPT/V1'],
   });
   for (const declaredMember of manifest.members) {
     const canonicalMember = JSON.parse(
