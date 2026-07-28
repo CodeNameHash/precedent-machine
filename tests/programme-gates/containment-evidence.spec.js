@@ -14,6 +14,10 @@ const {
   createContainmentSigningRequestAuthority,
 } = require('../../lib/programme-gates/containment-signing-request');
 const {
+  createContainmentSignedPreflightAuthority,
+  preflightContainmentEvidenceSignature,
+} = require('../../lib/programme-gates/containment-signed-preflight');
+const {
   containmentMembers,
   enumerateContainmentExpectedMembers,
   memberSchemaSetForContract,
@@ -51,11 +55,23 @@ const GATES = Object.freeze([
     id: 'G0_MARKET_STATS_CONTAINED',
     evidence_contract: 'route-disabled-code-test-live-response/v1',
     required_evidence_object_type: 'MarketStatsContainmentAttestation',
+    acceptance_claims: Object.freeze([
+      'feature_gate_off',
+      'live_route_zero_corpus_reads',
+      'containment_test_pass',
+    ]),
+    required_adversarial_tests: Object.freeze(['P0-ROUTE-01']),
   }),
   Object.freeze({
     id: 'G0_BROAD_CORPUS_ROUTES_CONTAINED',
     evidence_contract: 'broad-route-inventory-and-containment/v1',
     required_evidence_object_type: 'BroadRouteContainmentAttestation',
+    acceptance_claims: Object.freeze([
+      'source_built_and_runtime_route_inventories_equal',
+      'every_broad_route_contained',
+      'zero_broad_node_fallback',
+    ]),
+    required_adversarial_tests: Object.freeze(['P0-ROUTE-01']),
   }),
 ]);
 
@@ -557,5 +573,160 @@ test('signing-request construction refuses untrusted keys, drift and non-ready c
       gate: GATES[0],
     }),
     /validation failed/,
+  );
+});
+
+test('an external signature passes full evidence preflight without publishing gate status', async () => {
+  const { publicKey, privateKey } = crypto.generateKeyPairSync('ed25519');
+  const validatorExecutableDigest = 'e'.repeat(64);
+  const keyRegistry = {
+    schema_version: 'TrustedProgrammeGatePublicKeys/V1',
+    registry_state: 'ACTIVE',
+    keys: [{
+      key_id: 'TEST_CONTAINMENT_VALIDATOR',
+      algorithm: 'Ed25519',
+      public_key_pem: publicKey.export({ format: 'pem', type: 'spki' }).toString('utf8'),
+      permitted_roles: [EVIDENCE_SIGNATURE_ROLE],
+      permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN],
+      valid_from: '2026-07-27T00:00:00.000Z',
+      valid_until: '2026-07-29T00:00:00.000Z',
+      revoked_at: null,
+    }],
+  };
+  const signingAuthority = createContainmentSigningRequestAuthority({
+    keyRegistry,
+    validatorConfigurationDigest: REGISTRY_DIGESTS.validator_configuration,
+    validatorExecutableDigest,
+    validatorKeyId: 'TEST_CONTAINMENT_VALIDATOR',
+    verificationTime: OBSERVED_AT,
+  });
+  const preflightAuthority = createContainmentSignedPreflightAuthority({
+    keyRegistry,
+    validatorExecutableDigests: [validatorExecutableDigest],
+    verificationTime: OBSERVED_AT,
+  });
+  const bundle = await readyBundle();
+
+  for (const candidate of bundle.candidates) {
+    const gate = GATES.find((entry) => entry.id === candidate.gate_id);
+    const signingRequest = buildContainmentEvidenceSigningRequest({
+      authority: signingAuthority,
+      bundle,
+      candidate,
+      gate,
+    });
+    const signature = crypto.sign(
+      null,
+      Buffer.from(signingRequest.signing_frame_base64, 'base64'),
+      privateKey,
+    ).toString('base64');
+    const result = preflightContainmentEvidenceSignature({
+      authority: preflightAuthority,
+      bundle,
+      candidate,
+      gate,
+      signingRequest,
+      signature,
+    });
+
+    assert.equal(result.evidence_validation.valid, true);
+    assert.equal(result.evidence_validation_state, 'PASS');
+    assert.equal(result.formal_gate_state, 'OPEN');
+    assert.equal(result.private_key_used, false);
+    assert.equal(result.status_publication_attempted, false);
+    assert.equal(result.signed_envelope.signature, signature);
+    assert.equal(Object.isFrozen(result), true);
+  }
+});
+
+test('signed evidence preflight refuses invalid signatures, drift and injected authority', async () => {
+  const { publicKey } = crypto.generateKeyPairSync('ed25519');
+  const validatorExecutableDigest = 'e'.repeat(64);
+  const keyRegistry = {
+    schema_version: 'TrustedProgrammeGatePublicKeys/V1',
+    registry_state: 'ACTIVE',
+    keys: [{
+      key_id: 'TEST_CONTAINMENT_VALIDATOR',
+      algorithm: 'Ed25519',
+      public_key_pem: publicKey.export({ format: 'pem', type: 'spki' }).toString('utf8'),
+      permitted_roles: [EVIDENCE_SIGNATURE_ROLE],
+      permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN],
+      valid_from: '2026-07-27T00:00:00.000Z',
+      valid_until: '2026-07-29T00:00:00.000Z',
+      revoked_at: null,
+    }],
+  };
+  const signingAuthority = createContainmentSigningRequestAuthority({
+    keyRegistry,
+    validatorConfigurationDigest: REGISTRY_DIGESTS.validator_configuration,
+    validatorExecutableDigest,
+    validatorKeyId: 'TEST_CONTAINMENT_VALIDATOR',
+    verificationTime: OBSERVED_AT,
+  });
+  const authority = createContainmentSignedPreflightAuthority({
+    keyRegistry,
+    validatorExecutableDigests: [validatorExecutableDigest],
+    verificationTime: OBSERVED_AT,
+  });
+  const bundle = await readyBundle();
+  const candidate = bundle.candidates[0];
+  const gate = GATES[0];
+  const signingRequest = buildContainmentEvidenceSigningRequest({
+    authority: signingAuthority,
+    bundle,
+    candidate,
+    gate,
+  });
+  const invalidSignature = Buffer.alloc(64, 9).toString('base64');
+
+  const invalid = preflightContainmentEvidenceSignature({
+    authority,
+    bundle,
+    candidate,
+    gate,
+    signingRequest,
+    signature: invalidSignature,
+  });
+  assert.equal(invalid.evidence_validation_state, 'OPEN');
+  assert.equal(invalid.evidence_validation.reason_code, 'SIGNATURE_NOT_TRUSTED');
+  assert.equal(invalid.signed_envelope, null);
+
+  const drifted = preflightContainmentEvidenceSignature({
+    authority,
+    bundle,
+    candidate,
+    gate,
+    signingRequest: {
+      ...signingRequest,
+      signing_frame_sha256: 'f'.repeat(64),
+    },
+    signature: invalidSignature,
+  });
+  assert.equal(drifted.evidence_validation.reason_code, 'SIGNING_REQUEST_MISMATCH');
+  assert.equal(drifted.formal_gate_state, 'OPEN');
+
+  assert.throws(
+    () => preflightContainmentEvidenceSignature({
+      authority: {
+        keyRegistry,
+        validatorExecutableDigests: [validatorExecutableDigest],
+        verificationTime: OBSERVED_AT,
+      },
+      bundle,
+      candidate,
+      gate,
+      signingRequest,
+      signature: invalidSignature,
+    }),
+    /closed containment signed-evidence preflight authority/,
+  );
+  assert.throws(
+    () => createContainmentSignedPreflightAuthority({
+      keyRegistry,
+      validatorExecutableDigests: [validatorExecutableDigest],
+      verificationTime: OBSERVED_AT,
+      privateKey: 'forbidden',
+    }),
+    /closed input/,
   );
 });
