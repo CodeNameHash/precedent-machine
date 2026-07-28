@@ -1,0 +1,23 @@
+{
+  "phase": "WP-G0-COMPLETE-STATUS-READINESS",
+  "allowed": [
+    ".github/phase-allowlists/wp-g0-complete-status-readiness.json",
+    "docs/codex-program/programme-gates.yaml",
+    "docs/codex-program/specification-manifest.json",
+    "lib/programme-gates/g0-status-readiness.js",
+    "lib/programme-gates/review-signing.js",
+    "lib/programme-gates/validator-executable.js",
+    "scripts/verify-codex-program-spec.mjs",
+    "tests/programme-gates/g0-status-readiness.spec.js",
+    "tests/programme-gates/review-readiness-signing.spec.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Combines ten independently signed G0 evidence envelopes into unsigned generation-1 status readiness. It does not sign or publish status, consume the bootstrap nonce, access a database or mutate the corpus."
+}
