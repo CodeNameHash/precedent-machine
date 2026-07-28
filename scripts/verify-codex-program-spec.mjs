@@ -368,7 +368,7 @@ function validateGateRegistry() {
     || compiledRegistry?.source_path !== 'lib/programme-gates/registry.js'
     || compiledRegistry?.source_sha256 !== sha256(read('lib/programme-gates/registry.js'))
     || compiledRegistry?.closed_validator_executable_set_digest
-      !== 'd9745a7acaa403623e77f0233525e37b6ce0f81fda64888e75a99e70baf174e1'
+      !== '8969ae1404f74a4f6e83e407135e4d991df5d7f5288d50637bd93d031ef60969'
     || compiledRegistry?.authority !== 'NON_AUTHORITATIVE_COMPILED_OUTPUT_MATCHING_THE_FROZEN_SOURCE_CONTRACT'
     || compiledRegistry?.runtime_digest_mismatch_effect !== 'OPEN') {
     fail('Frozen gate acceptance semantics are incomplete');
