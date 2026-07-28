@@ -164,7 +164,7 @@ test('containment, security-disposition and isolation descriptors are active', (
   assert.throws(() => acceptanceDescriptorForContract('unknown/v1'), /unknown or ambiguous/);
 });
 
-test('trust configuration contains only the two approved public signing keys', () => {
+test('trust configuration contains only the four approved public signing keys', () => {
   assert.equal(validateSchema(
     'ProgrammeGateValidatorConfiguration/V1',
     VALIDATOR_CONFIGURATION,
@@ -183,13 +183,17 @@ test('trust configuration contains only the two approved public signing keys', (
     [
       'PROGRAMME_GATE_VALIDATOR_2026_07',
       'PROGRAMME_STATUS_PUBLISHER_2026_07',
+      'PROGRAMME_GATE_REVIEW_CONTROLLER_2026_07',
+      'PROGRAMME_GATE_BEN_APPROVER_2026_07',
     ],
   );
   assert.deepEqual(
     TRUSTED_PUBLIC_KEY_REGISTRY.keys.map((key) => key.permitted_domains),
     [
-      ['PROGRAMME_GATE_EVIDENCE/V2'],
+      ['PROGRAMME_GATE_EVIDENCE/V2', 'PROGRAMME_GATE_REVIEWER_INDEPENDENCE/V1'],
       ['PROGRAMME_GATE_STATUS/V2', 'PROGRAMME_GATE_PUBLICATION_HEAD/V1'],
+      ['PROGRAMME_GATE_REVIEW_CONTROLLER_RECORD/V1'],
+      ['PROGRAMME_GATE_BEN_APPROVAL/V1'],
     ],
   );
   assert.deepEqual(
@@ -197,6 +201,8 @@ test('trust configuration contains only the two approved public signing keys', (
     [
       ['VALIDATOR'],
       ['STATUS_PUBLISHER', 'VALIDATOR'],
+      ['REVIEW_CONTROLLER'],
+      ['BEN_APPROVER'],
     ],
   );
   for (const key of TRUSTED_PUBLIC_KEY_REGISTRY.keys) {
