@@ -12,6 +12,7 @@ test('local review preflight uses ChatGPT auth without API credentials', () => {
   assert.match(source, /CODEX_API_KEY/);
   assert.match(source, /CODEX_ACCESS_TOKEN/);
   assert.match(source, /delete childEnvironment\[name\]/);
+  assert.match(source, /runCombined\('codex', \['login', 'status'\]/);
   assert.doesNotMatch(source, /console\.log\(.*pem|process\.stdout\.write\(.*pem/);
 });
 
