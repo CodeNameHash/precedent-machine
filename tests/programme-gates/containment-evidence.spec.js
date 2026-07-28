@@ -347,6 +347,7 @@ test('deployment proof requires exact READY runtime, commit and specification me
   };
   const input = {
     deployment,
+    originDeployment: deployment,
     deploymentId: DEPLOYMENT_ID,
     environment: 'PRODUCTION',
     codeCommit: COMMIT,
@@ -371,4 +372,10 @@ test('deployment proof requires exact READY runtime, commit and specification me
       () => validateDeploymentBinding({ ...input, deployment: alteredDeployment }),
     );
   }
+  assert.throws(
+    () => validateDeploymentBinding({
+      ...input,
+      originDeployment: { ...deployment, id: 'dpl_other' },
+    }),
+  );
 });
