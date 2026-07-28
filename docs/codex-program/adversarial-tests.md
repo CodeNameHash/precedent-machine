@@ -33,6 +33,8 @@ The following adversarial closure tests are mandatory traceability entries:
   result. A fresh-looking session or empty edit set alone cannot pass.
 - `GATE-BOOTSTRAP-01`: `gate_status_bootstrap` has predecessor `NONE`, nonce
   `gate-status-bootstrap-2026-07-27-v1` and only its closed authority scope.
+  It permits the eight G0 evidence collections, empty isolated-staging boundary
+  setup and preview access protection, but not snapshot restore or corpus data.
   Corpus extraction, reprocessing,
   writes, backfills, production data changes, release import or activation and
   product feature activation must fail. A stale predecessor, duplicate nonce,
@@ -40,7 +42,9 @@ The following adversarial closure tests are mandatory traceability entries:
   unsupported P1 or P9 `PASS` must fail without changing the publication head.
   The first valid V2 status is generation 1, contains all 35 gates once in
   registry order, has `canonical_work_start: PASS`, leaves every unsupported P1
-  and P9 gate `OPEN`, and atomically consumes the nonce and expires the
+  and P9 gate `OPEN`, recomputes its G0 gates and work classes from validated
+  evidence inside the proposed genesis status without reading a predecessor,
+  and atomically consumes the nonce and expires the
   bootstrap. The repository-native publication ref must remain unchanged after
   every injected validation or compare-and-swap failure. The existing
   generation-4 V1 owner-deemed file is historical only. It cannot act as
@@ -605,6 +609,14 @@ The following adversarial closure tests are mandatory traceability entries:
   or substituting that receipt in DealScopeRunManifest, either inventory
   registry, candidate release, bundle, production import or traceability also
   fails the applicable set-equality or lineage gate.
+- `DEAL-IDENTITY-AUTHORITY-01`: registered external transaction seeds include
+  the exact governed issuer namespace and version; equal external IDs from two
+  issuers produce different governed deal keys. A Ben-approved import seed
+  requires one unconditional signed DealIdentityApprovalAttestation bound to
+  the exact seed, nonce and supersession set. A bare external ID, unregistered
+  issuer, unsigned owner statement, approval replay, changed seed, conflicting
+  supersession or proposed DealIdentityManifest without its exact authority
+  evidence fails PREPARE_SOURCE_ADMISSION with zero writes.
 - `INTAKE-UNIVERSE-01`: omit or replace one received agreement, amendment,
   schedule, exhibit, archive member or source version, or swap two document
   roles while keeping every ordinary admission and downstream semantic object
@@ -1209,6 +1221,11 @@ The following adversarial closure tests are mandatory traceability entries:
   treating candidate totality as residual totality keeps
   GovernedResidualReviewQueueRoot non-empty and blocks candidate sealing while
   independently valid sibling previews remain renderable.
+  The registry-driven enumerator and the independently schema-, stage- and
+  physical-carrier-driven ResidualCapableBoundaryUniverse must also agree
+  bidirectionally. Add a residual-capable carrier or producer to either
+  authority alone; the other path must detect the unregistered boundary before
+  candidate sealing.
 - `OPEN-WORLD-KIND-SUPERSESSION-01`: an effective-terminal
   `UNRESOLVED_CANDIDATE_KIND` blocks. Resolving it creates a new candidate and
   occurrence plus one exact kind-only supersession; the predecessor remains in
@@ -2143,7 +2160,10 @@ The following adversarial closure tests are mandatory traceability entries:
 - `CURSOR-SCOPE-01`: every selector grain rejects replay across grain, parent,
   slot, child collection, content digest, total, CandidateReleaseManifest ID or
   digest, CorpusRelease, namespace or header, metadata pair, import attestation,
-  authorisation, access-policy, fence, schema or page size. The cursor ends on the complete
+  authorisation, access-policy, serving epoch, schema or page size. A routine
+  physical-fence renewal inside the identical serving epoch preserves validity;
+  a new-epoch fence rejects the cursor before cache or database access. The
+  cursor ends on the complete
   typed selected-row key and contains no self-reference to QueryPlan.
 - `CURSOR-PAGE-01`: zero, one, `n-1`, `n`, `n+1` and `2n` rows with duplicate
   and null sort values page exactly once for deal, result, provision, component,
@@ -2152,7 +2172,9 @@ The following adversarial closure tests are mandatory traceability entries:
   revocation and active-release lifetime.
 - `SAVED-QUERY-FENCE-01`: follow-active plans before and after activation and a
   pinned plan equal to active pass under a fresh fence. Pinned not equal to
-  active returns `RELEASE_NOT_ACTIVE` with zero cache, database or corpus calls;
+  active returns `RELEASE_NOT_ACTIVE` after exactly one admission-token RPC and
+  one bounded saved-definition ownership-and-digest lookup, with zero cache,
+  route-specific serving RPC or corpus-row access;
   stale cache and save-time validation cannot authorise it. A missing,
   unauthorised, replaced or digest-mismatched saved-query definition fails its
   single post-admission lookup before cache or corpus access, and a token for
@@ -2192,7 +2214,16 @@ The following adversarial closure tests are mandatory traceability entries:
   measured connection reserve and recover without a retry storm. Database-owned
   instrumentation proves every request stays within its exact top-level and
   nested SQL-statement budget; `N` versus `10N` leaves that count unchanged, and
-  a dynamic statement, procedural row loop or unregistered query ID fails. Cap-plus-one
+  `N` equals the exact selected CandidateReleaseManifest cardinality tuple,
+  `10N` is its deterministic distribution-preserving ten-namespace expansion
+  and maximum-scale is the larger of `10N` and the selected CapacityManifest
+  maxima. The recorded roots, per-kind counts and selectivity distributions
+  must match before load begins. A smaller or differently distributed fixture
+  fails. No-fault steady and all-miss profiles must satisfy the fixed 99.9%
+  schema-valid success and target-throughput floors, all passing profiles must
+  meet the contract latency budgets, and every injected fault must recover
+  target throughput and latency within the frozen recovery bound. A dynamic
+  statement, procedural row loop or unregistered query ID fails. Cap-plus-one
   rejects before checkout, a dead fill leader expires, a stale fence cannot
   publish, maximum application instances still produce one shared fill,
   controller outage produces zero checkout and half-open state permits exactly
@@ -2633,7 +2664,12 @@ The following adversarial closure tests are mandatory traceability entries:
   `P9_PROGRAMME_COMPLETION_ATTESTATION` evidence envelope proves only those
   preterminal facts and does not claim later POST_COMPLETION coverage or atomic
   publication. Only a passing
-  POST_COMPLETION extension covering those final objects and that status, plus
-  atomic publication of their exact pair, satisfies the final registry
-  predicate. Any missing, mismatched, reordered, partial, stale or later
-  untraced status reference fails closed.
+  POST_COMPLETION extension covering those final objects and that status may be
+  written only with the status as one immutable database
+  CompletionTerminalPairSlot pair. That pair is not current. Only the protected
+  publisher's later stale-safe Git-ref compare-and-swap to a status commit
+  binding the exact revalidated pair satisfies the final registry predicate.
+  Failure between the database commit and Git CAS leaves completion OPEN and
+  permits only full revalidation plus retry or governed abandonment. Any
+  missing, mismatched, reordered, partial, stale or later untraced status
+  reference fails closed, and no test may claim a cross-system atomic commit.

@@ -267,6 +267,10 @@ programme_gate_registry:
           - SIGNING_SYSTEM
           - STATUS_PUBLISHER
           - PROGRAMME_STATUS_PUBLICATION_HEAD
+          - G0_SECURITY_DISPOSITION_EVIDENCE_COLLECTION
+          - G0_CONTAINMENT_EVIDENCE_COLLECTION
+          - ISOLATED_STAGING_BOUNDARY_SETUP
+          - STAGING_ACCESS_PROTECTION_AND_VALIDATION
           - TESTS_FOR_THESE_ITEMS
         prohibited:
           - CORPUS_EXTRACTION
@@ -283,6 +287,7 @@ programme_gate_registry:
         required_predecessor: NONE
         required_work_class_state: canonical_work_start
         required_work_class_result: PASS
+        work_class_evaluation_source: PROPOSED_STATUS_RECOMPUTED_FROM_VALIDATED_G0_EVIDENCE
         consume_nonce: true
         expires_immediately: true
         reissue_without_new_registry_amendment: PROHIBITED
@@ -373,6 +378,7 @@ programme_gate_registry:
       gate_projection: ALL_35_REGISTRY_GATES_EXACTLY_ONCE_IN_REGISTRY_ORDER
       unsupported_p1_and_p9_gate_state: OPEN
       canonical_work_start_must_be: PASS
+      canonical_work_start_evaluation: RECOMPUTE_WITHIN_PROPOSED_STATUS_FROM_VALIDATED_G0_EVIDENCE_NOT_PREDECESSOR_STATUS
       consumes_gate_status_bootstrap_nonce: true
 
   terminal_completion_binding:
@@ -382,8 +388,12 @@ programme_gate_registry:
     required_trace_phase: POST_COMPLETION
     required_trace_variant: PASS_PHASE
     forbidden_trace_variant: FAILURE_TERMINAL
-    publication: ATOMIC_SINGLETON_PAIR_CAS
-    partial_pair_effect: OPEN
+    publication: DATABASE_TERMINAL_PAIR_THEN_PROTECTED_GIT_REF_CAS
+    database_terminal_pair_slot: COMPLETION_TERMINAL_PAIR_SLOT
+    git_head_remains_sole_programme_status_publication_head: true
+    cross_system_atomic_commit_required: false
+    retry_rule: UNPUBLISHED_VALID_DATABASE_PAIR_MAY_BE_REVALIDATED_AND_PUBLISHED_BY_STALE_SAFE_GIT_REF_CAS
+    partial_pair_effect: OPEN_UNTIL_GIT_HEAD_REFERENCES_THE_EXACT_DATABASE_PAIR
     later_untraced_status_effect: OPEN
 
   gates:
@@ -445,8 +455,8 @@ programme_gate_registry:
       permits_not_applicable: false
       evidence_contract: default-deny-preview-access-test/v1
       required_evidence_object_type: StagingAccessProtectionAttestation
-      acceptance_claims: [unauthenticated_access_denied, authorised_test_access_pass]
-      required_adversarial_tests: [GATE-01]
+      acceptance_claims: [complete_preview_route_action_inventory, unauthenticated_access_denied_before_and_after_restore, authenticated_non_admin_privileged_actions_denied, writer_ingest_correction_export_import_promotion_and_cutover_actions_disabled, authorised_read_only_test_access_pass]
+      required_adversarial_tests: [GATE-01, PREVIEW-AUTH-01]
     - id: G0_EXACT_DIGEST_REVIEW_SET
       phase: governance
       permits_not_applicable: false
@@ -480,7 +490,7 @@ programme_gate_registry:
       evidence_contract: corpus-intake-source-open-world-semantic-composition-exactness/v9
       required_evidence_object_type: ScopeExactnessAttestation
       acceptance_claims: [intake_and_source_universes_exact, open_world_and_residual_partitions_total, semantic_and_composition_reconciliations_pass]
-      required_adversarial_tests: [SCOPE-OMISSION-01, OPEN-WORLD-DISPOSITION-TOTALITY-01, RESIDUAL-TOTALITY-01]
+      required_adversarial_tests: [SCOPE-OMISSION-01, DEAL-IDENTITY-AUTHORITY-01, SEMANTIC-OPEN-WORLD-01, OPEN-WORLD-REP-ATTRIBUTE-01, OPEN-WORLD-RELATIONSHIP-01, OPEN-WORLD-PARTY-01, OPEN-WORLD-BASIS-01, OPEN-WORLD-COMPOSITION-01, OPEN-WORLD-SOURCE-ROLE-01, SOURCE-ROLE-ADMISSION-TOPOLOGY-01, OPEN-WORLD-MULTIPLICITY-01, OPEN-WORLD-ISOLATED-01, OPEN-WORLD-IMPACT-ESCAPE-01, OPEN-WORLD-ADOPTION-NOT-EXAMINED-01, OPEN-WORLD-PREVALENCE-BLOCK-01, OPEN-WORLD-SIMILARITY-NO-AUTHORITY-01, OPEN-WORLD-DISPOSITION-TOTALITY-01, OPEN-WORLD-KIND-SUPERSESSION-01, OPEN-WORLD-IMPACT-INDEPENDENCE-01, OPEN-WORLD-STATUS-AXES-01, OPEN-WORLD-RELEASE-PROPAGATION-01, OPEN-WORLD-SERVING-ACCESS-01, OPEN-WORLD-UI-ISOLATION-01, SOURCE-SPECIFIC-METRIC-BOUNDARY-01, SOURCE-SPECIFIC-CLOSURE-ACYCLIC-01, RESIDUAL-TOTALITY-01]
     - id: P9_REGISTRY_DISPOSITIONS
       phase: 9
       evidence_contract: frozen-registry-full-disposition/v1
@@ -557,7 +567,7 @@ programme_gate_registry:
       phase: 9
       evidence_contract: sixty-connection-load-soak/v1
       required_evidence_object_type: DatabaseLoadSoakAttestation
-      acceptance_claims: [micro_pool_not_exhausted, fixed_call_and_statement_budgets_hold, n_and_ten_n_invariance_pass]
+      acceptance_claims: [load_dataset_bound_to_exact_candidate_release_and_capacity_manifest, micro_pool_not_exhausted, fixed_call_and_statement_budgets_hold, n_and_ten_n_invariance_pass, no_fault_success_and_throughput_floors_pass, latency_budgets_pass, post_fault_recovery_floor_pass]
       required_adversarial_tests: [CAPACITY-LOAD-01]
     - id: P9_BACKUP_RESTORE
       phase: 9

@@ -347,6 +347,10 @@ function validateGateRegistry() {
     'SIGNING_SYSTEM',
     'STATUS_PUBLISHER',
     'PROGRAMME_STATUS_PUBLICATION_HEAD',
+    'G0_SECURITY_DISPOSITION_EVIDENCE_COLLECTION',
+    'G0_CONTAINMENT_EVIDENCE_COLLECTION',
+    'ISOLATED_STAGING_BOUNDARY_SETUP',
+    'STAGING_ACCESS_PROTECTION_AND_VALIDATION',
     'TESTS_FOR_THESE_ITEMS',
   ];
   const prohibitedBootstrapActions = [
@@ -372,6 +376,8 @@ function validateGateRegistry() {
     || bootstrapTerminal?.required_predecessor !== 'NONE'
     || bootstrapTerminal?.required_work_class_state !== 'canonical_work_start'
     || bootstrapTerminal?.required_work_class_result !== 'PASS'
+    || bootstrapTerminal?.work_class_evaluation_source
+      !== 'PROPOSED_STATUS_RECOMPUTED_FROM_VALIDATED_G0_EVIDENCE'
     || !bootstrapTerminal?.consume_nonce
     || !bootstrapTerminal?.expires_immediately
     || bootstrapTerminal?.reissue_without_new_registry_amendment !== 'PROHIBITED') {
@@ -392,6 +398,8 @@ function validateGateRegistry() {
     || firstPublication?.gate_projection !== 'ALL_35_REGISTRY_GATES_EXACTLY_ONCE_IN_REGISTRY_ORDER'
     || firstPublication?.unsupported_p1_and_p9_gate_state !== 'OPEN'
     || firstPublication?.canonical_work_start_must_be !== 'PASS'
+    || firstPublication?.canonical_work_start_evaluation
+      !== 'RECOMPUTE_WITHIN_PROPOSED_STATUS_FROM_VALIDATED_G0_EVIDENCE_NOT_PREDECESSOR_STATUS'
     || !firstPublication?.consumes_gate_status_bootstrap_nonce) {
     fail('Repository-native programme-status publication contract is incomplete');
   }
@@ -440,6 +448,17 @@ function validateGateRegistry() {
   for (const gateId of registry.terminal_completion_binding?.proposed_status_gates || []) {
     if (!gateIds.includes(gateId)) fail(`Unknown terminal gate ${gateId}`);
   }
+  const terminalBinding = registry.terminal_completion_binding;
+  if (terminalBinding?.publication !== 'DATABASE_TERMINAL_PAIR_THEN_PROTECTED_GIT_REF_CAS'
+    || terminalBinding?.database_terminal_pair_slot !== 'COMPLETION_TERMINAL_PAIR_SLOT'
+    || terminalBinding?.git_head_remains_sole_programme_status_publication_head !== true
+    || terminalBinding?.cross_system_atomic_commit_required !== false
+    || terminalBinding?.retry_rule
+      !== 'UNPUBLISHED_VALID_DATABASE_PAIR_MAY_BE_REVALIDATED_AND_PUBLISHED_BY_STALE_SAFE_GIT_REF_CAS'
+    || terminalBinding?.partial_pair_effect
+      !== 'OPEN_UNTIL_GIT_HEAD_REFERENCES_THE_EXACT_DATABASE_PAIR') {
+    fail('Terminal status publication still claims split or cross-system authority');
+  }
 
   const visiting = new Set();
   const visited = new Set();
@@ -463,12 +482,12 @@ function validateAdversarialTests() {
     [...read(filePath).toString('utf8').matchAll(definition)].map((match) => ({ filePath, id: match[1] }))
   ));
   const ids = rows.map((row) => row.id);
-  if (ids.length !== 283) fail(`Expected 283 adversarial tests, found ${ids.length}`);
+  if (ids.length !== 284) fail(`Expected 284 adversarial tests, found ${ids.length}`);
   assertUnique(ids, 'adversarial test ID');
   if (rows.some((row) => row.filePath !== 'docs/codex-program/adversarial-tests.md')) {
     fail('Adversarial test definition outside authoritative file');
   }
-  if (sha256(`${ids.join('\n')}\n`) !== '0ce163d192c2fb191521b8554a69a1bdef64a37bbee222fa87b8178c14562a1a') {
+  if (sha256(`${ids.join('\n')}\n`) !== '8f5d904b2476815b138d3af7b52fab09d82e01062c98c728e91108b2674d4acb') {
     fail('Current adversarial test ID list changed');
   }
   const addedIds = new Set([
@@ -479,6 +498,7 @@ function validateAdversarialTests() {
     'SHADOW-REEXTRACTION-01',
     'GATE-BOOTSTRAP-01',
     'REVIEW-CONTEXT-01',
+    'DEAL-IDENTITY-AUTHORITY-01',
   ]);
   const baselineIds = ids.filter((id) => !addedIds.has(id));
   if (sha256(`${baselineIds.join('\n')}\n`) !== 'c4d52483beb08c1feacac9222e4ab24b7156173dea8c2e6599fe3c11d575fe1c') {

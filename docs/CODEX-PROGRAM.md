@@ -178,6 +178,13 @@ CORRECTED (the plan below rests on these, not the review's wording):
   the start gate,
   approved architectural slices proceed independently and leave `main`
   deployable.
+  The bootstrap exception also permits collection and validation of the eight
+  G0 containment, security-disposition and isolated-staging facts, including
+  creation of the empty isolated staging boundary and default-deny preview
+  access controls. It grants no staging corpus restore, replay or canonical
+  data authority. Generation 1 recomputes the G0 gate projection and
+  `canonical_work_start` from those validated evidence envelopes inside the
+  proposed status; it does not require a predecessor status that cannot exist.
 - Before canonical implementation, reproduce and freeze the complete
   specification-root digest after all mechanical checks. Five independent cold
   reviews must each record `PASS` against that exact root: architecture,
@@ -2053,6 +2060,15 @@ The pre-cutover gates are:
   cancellation; circuit open, cooldown and one half-open probe; the normal mix
   while the importer completes ten batches; and corpus fixtures at `N` and
   `10N` proving unchanged route call and Node row/byte ceilings;
+- `N` is the exact deal, observation, metric-slot, aggregate and serving-row
+  cardinality tuple of the sealed CandidateReleaseManifest selected for import.
+  `10N` is a deterministic ten-namespace expansion of those exact rows that
+  preserves the candidate's metric, party, value-state and cohort-selectivity
+  distributions while changing every namespace-bound identity. “Maximum
+  scale” is the larger of that `10N` fixture and the maximum cardinalities
+  certified by the selected CapacityManifest. The load manifest records all
+  three exact roots and counts before execution; a smaller fixture, changed
+  distribution or unbound synthetic set cannot satisfy the soak gate;
 - in the no-fault steady and target-rate all-miss profiles, at least 99.9% of
   requests return a schema-valid successful response and achieved throughput is
   at least 99.9% of the fixed target, with zero admission, circuit-open or
@@ -2234,6 +2250,11 @@ After those gates, import, parity, activation, containment, restoration and comp
   registry. It expires when the protected publisher consumes that nonce
   during the first valid `ProgrammeGateStatusArtefact/V2` publication, at
   generation 1 from predecessor `NONE`, with `canonical_work_start: PASS`.
+  Before that genesis publication, the same closed bootstrap authority permits
+  only G0 containment and security evidence collection plus isolated empty-
+  staging and preview-access boundary setup. The genesis publisher validates
+  those envelopes and derives the proposed gate and work-class projection in
+  one pass. It never reads `canonical_work_start` from an absent predecessor.
   It cannot be reused or reissued without another governing registry amendment.
   An owner statement cannot create or extend this authority. Thereafter each
   work class opens only through its registry dependencies. Bounded implementation
@@ -2251,6 +2272,14 @@ After those gates, import, parity, activation, containment, restoration and comp
   event at generation 1 with predecessor `NONE`. It includes all 35 gates once
   in registry order. Every unsupported P1 and P9 gate remains `OPEN`. Manual
   edits and owner-deemed states do not pass validation.
+- `ProgrammeStatusPublicationHead` is only that Git ref. It is not a database
+  row and is excluded from database lock plans. Programme completion first
+  commits the immutable status-plus-POST_COMPLETION pair to the database
+  `CompletionTerminalPairSlot`; the protected publisher then revalidates that
+  exact pair and advances the Git ref by compare-and-swap. Until the Git ref
+  points to a status binding that pair, `programme_complete` remains `OPEN`.
+  A failed Git update leaves a non-current immutable pair that may be retried
+  after full revalidation; no cross-system atomic transaction is claimed.
 - The existing generation-4
   `docs/certification/programme-gate-status.json` file is a historical V1
   owner-deemed record. It is not a V2 predecessor, evidence source, publication
