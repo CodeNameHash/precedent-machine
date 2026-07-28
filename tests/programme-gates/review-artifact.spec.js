@@ -1,5 +1,7 @@
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
+const path = require('node:path');
+const { execFileSync } = require('node:child_process');
 const test = require('node:test');
 
 const { domainDigest, signatureBytes } = require('../../lib/programme-gates/bytes');
@@ -16,7 +18,11 @@ const {
 const { REVIEW_LANES } = require('../../lib/programme-gates/registry');
 
 const ROOT = 'a'.repeat(64);
-const COMMIT = 'b'.repeat(40);
+const REPOSITORY_ROOT = path.resolve(__dirname, '../..');
+const COMMIT = execFileSync('git', ['rev-parse', 'HEAD'], {
+  cwd: REPOSITORY_ROOT,
+  encoding: 'utf8',
+}).trim();
 const VALIDATOR_DIGEST = 'c'.repeat(64);
 const CONFIGURATION_DIGEST = 'd'.repeat(64);
 const AT = '2026-07-28T12:00:00.000Z';
@@ -187,13 +193,10 @@ function reviewSet(sample) {
     expectedCodeCommit: COMMIT,
     expectedSpecificationRoot: ROOT,
     keyRegistry: sample.keyRegistry,
+    repositoryRoot: REPOSITORY_ROOT,
     signIndependence: (bytes) => (
       crypto.sign(null, bytes, sample.validator.privateKey).toString('base64')
     ),
-    sourceControlAuthorshipEvents: [{
-      commit_id: COMMIT,
-      identity_set: ['Ben Goodchild', 'bengoodchild@gmail.com'],
-    }],
     validatorConfigurationDigest: CONFIGURATION_DIGEST,
     validatorExecutableDigest: VALIDATOR_DIGEST,
     validatorKeyId: 'VALIDATOR_KEY',

@@ -38,6 +38,7 @@ const SOURCE_MODULES = Object.freeze([
   'lib/programme-gates/schema-registry.js',
   'lib/programme-gates/predicates.js',
   'lib/programme-gates/test-executable-registry.js',
+  'scripts/run-unimplemented-adversarial-test.mjs',
   'lib/programme-gates/validator.js',
   'lib/programme-gates/validator-executable.js',
   'lib/programme-gates/containment-contracts.js',
@@ -49,6 +50,8 @@ const SOURCE_MODULES = Object.freeze([
   'lib/programme-gates/isolation-enumerator.js',
   'lib/programme-gates/review-contracts.js',
   'lib/programme-gates/review-enumerator.js',
+  'lib/programme-gates/git-authorship.js',
+  'lib/programme-gates/review-artifact.js',
   'lib/programme-gates/contract-freeze-contracts.js',
 ]);
 

@@ -2,7 +2,16 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
+import { createRequire } from 'node:module';
 import YAML from 'yaml';
+
+const require = createRequire(import.meta.url);
+const {
+  MANDATORY_ADVERSARIAL_TEST_IDS,
+  TEST_EXECUTABLE_DIGESTS,
+  TEST_EXECUTABLE_FILES,
+  testExecutableState,
+} = require('../lib/programme-gates/test-executable-registry');
 
 const root = process.cwd();
 const manifestPath = 'docs/codex-program/specification-manifest.json';
@@ -117,6 +126,13 @@ function validateGateRegistry() {
   const parsed = parseYaml('docs/codex-program/programme-gates.yaml');
   const registry = parsed.programme_gate_registry;
   if (!registry) fail('Missing programme_gate_registry');
+  if (registry.yaml_parser_binding?.yaml_version !== '1.2'
+    || registry.yaml_parser_binding?.package !== 'yaml'
+    || registry.yaml_parser_binding?.package_version !== '2.9.0'
+    || JSON.stringify(registry.yaml_parser_binding?.options)
+      !== JSON.stringify(['STRICT', 'UNIQUE_KEYS', 'NO_ALIASES'])) {
+    fail('Gate registry YAML parser binding changed');
+  }
   if (registry.specification_identity !== 'DOMAIN_SEPARATED_SPECIFICATION_ROOT_DIGEST') {
     fail('Gate registry does not bind the specification root');
   }
@@ -189,7 +205,7 @@ function validateGateRegistry() {
     || independenceAllowlist?.validator_key_id
       !== 'PROGRAMME_GATE_VALIDATOR_2026_07'
     || independenceAllowlist?.validator_executable_digest
-      !== 'afbb87142e7379ee4824f4cf87bff0b27ae39260ea8d891e68d6e4f0821a2c8a'
+      !== 'c15bc336938092ecea534018e6c80da15d41e05d1e55facc259661ddd5171cae'
     || independenceAllowlist?.validator_configuration_digest
       !== '8518fca95839fcf5ab0463c5cbb1009265a7240314f84acd392f2d4287a72a5a') {
     fail('Frozen review controller, runtime, prompt or validator allowlist changed');
@@ -272,6 +288,9 @@ function validateGateRegistry() {
   }
   const profiles = reviewer.reviewer_profiles;
   if (profiles?.FABLE_ELIGIBLE?.reviewer_identity_class !== 'FABLE'
+    || JSON.stringify(profiles?.FABLE_ELIGIBLE?.exact_model_identifiers)
+      !== JSON.stringify(['fable-legal-reviewer'])
+    || profiles?.FABLE_ELIGIBLE?.exact_reasoning_level !== 'provider_default'
     || profiles?.SOL_5_6_EXTRA_HIGH_ELIGIBLE?.reviewer_identity_class !== 'OPENAI_MODEL'
     || profiles?.SOL_5_6_EXTRA_HIGH_ELIGIBLE?.exact_model_rule !== 'gpt-5.6-sol'
     || profiles?.SOL_5_6_EXTRA_HIGH_ELIGIBLE?.exact_reasoning_level !== 'xhigh') {
@@ -325,7 +344,7 @@ function validateGateRegistry() {
     PROGRAMME_GATE_BEN_APPROVER_2026_07: '2baac1c454dfb918097f2816fc9a230eb93139f735db35b9ed64d0e6846b4c17',
   };
   if (reviewer.review_controller_trust_root_set !== 'trusted-review-controller-keys/2026-07-frozen-v1'
-    || frozenTrust?.registry_source_sha256 !== '7c4bc2081f0b0c94a7cbed8f521cf396fedb6468fbe9fd4400dd53fab96f7e83'
+    || frozenTrust?.registry_source_sha256 !== 'c10f66a62220a84e82118d6fac35cb45fbb97b87feed3ecf564cef077b9f5575'
     || sha256(read('lib/programme-gates/registry.js')) !== frozenTrust?.registry_source_sha256
     || JSON.stringify(frozenTrust?.keys) !== JSON.stringify(expectedTrustKeys)
     || frozenTrust?.unknown_replacement_or_post_review_key_effect !== 'OPEN') {
@@ -336,7 +355,7 @@ function validateGateRegistry() {
   if (reviewer.independence_evidence_source !== 'STATUS_VALIDATOR_RECOMPUTED_FROM_CONTROLLER_RECORD_AND_COMPLETE_GIT_HISTORY'
     || !independenceUniverse?.reviewed_bytes_must_be_committed
     || independenceUniverse?.reviewer_principal_identity_mapping !== 'REVIEWER_PRINCIPAL_TO_COMPLETE_SOURCE_CONTROL_IDENTITY_SET_FROM_CONTROLLER_RECORD'
-    || independenceUniverse?.authorship_membership !== 'EVERY_GIT_COMMIT_CONTRIBUTING_A_BYTE_TO_THE_EXACT_REVIEWED_ROOT_WITH_COMPLETE_HISTORY_BLAME_AND_COPY_TRACING'
+    || independenceUniverse?.authorship_membership !== 'COMPLETE_NON_SHALLOW_GIT_COMMIT_DAG_AT_THE_REVIEWED_COMMIT_AS_A_CONSERVATIVE_SUPERSET_OF_EVERY_BYTE_AUTHOR'
     || independenceUniverse?.review_input_membership !== 'EVERY_CONTROLLER_OBSERVED_TASK_INPUT_PLUS_THE_PINNED_FIXED_CONTROLLER_RUNTIME_CONTEXT'
     || independenceUniverse?.allowed_review_input !== 'EXACT_CONTROLLER_SUPPLIED_TASK_PAYLOAD_PLUS_FIXED_CONTROLLER_RUNTIME_CONTEXT'
     || !independenceUniverse?.cold_prompt_constraint
@@ -344,7 +363,7 @@ function validateGateRegistry() {
     || !independenceUniverse?.cutoff
     || independenceUniverse?.authorship_source !== 'COMPLETE_GIT_COMMIT_DAG_SUPPLEMENTARY_TO_CONTROLLER_REVIEW_EVIDENCE'
     || independenceUniverse?.review_input_source !== 'TRUSTED_REVIEW_CONTROLLER_RECORD_ONLY'
-    || independenceUniverse?.completeness_proof !== 'VALIDATOR_REBUILDS_BYTE_AUTHORSHIP_WITH_COMPLETE_HISTORY_BLAME_AND_COPY_TRACING_AND_MAPS_ALL_AUTHORS_TO_THE_REVIEWER_PRINCIPAL_IDENTITY_SET'
+    || independenceUniverse?.completeness_proof !== 'FROZEN_VALIDATOR_ENUMERATES_THE_COMPLETE_NON_SHALLOW_GIT_DAG_DIRECTLY_AND_MAPS_ALL_AUTHOR_AND_COMMITTER_IDENTITIES_TO_THE_REVIEWER_PRINCIPAL_IDENTITY_SET'
     || independenceUniverse?.missing_or_ambiguous_reviewer_identity_mapping_effect !== 'INELIGIBLE'
     || independenceUniverse?.missing_unsigned_unattributed_or_unenumerable_event_effect !== 'INELIGIBLE'
     || independence?.session_parent_must_be !== 'GENESIS'
@@ -395,7 +414,7 @@ function validateGateRegistry() {
     || frozenDsl?.request_supplied_measurement !== 'PROHIBITED'
     || frozenDsl?.executable_role !== 'NON_AUTHORITATIVE_IMPLEMENTATION_OF_FROZEN_DSL'
     || claimAst?.result_type !== 'BOOLEAN'
-    || claimAst?.comparison_operator !== 'BOOLEAN_IS_TRUE'
+    || claimAst?.comparison_operator !== 'EQUALS'
     || claimAst?.expected_typed_value !== true
     || claimAst?.asserted_boolean_without_RECOMPUTED_MEMBER_WITNESS_ROOT !== 'OPEN'
     || sourceRoot?.source !== 'AUTHORITY_TIER_SELECTED_BY_GATE_ID'
@@ -404,7 +423,7 @@ function validateGateRegistry() {
     || compiledRegistry?.source_sha256
       !== sha256(read('docs/codex-program/bootstrap-acceptance-source.json'))
     || compiledRegistry?.closed_validator_executable_set_digest
-      !== 'afbb87142e7379ee4824f4cf87bff0b27ae39260ea8d891e68d6e4f0821a2c8a'
+      !== 'c15bc336938092ecea534018e6c80da15d41e05d1e55facc259661ddd5171cae'
     || compiledRegistry?.authority
       !== 'ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE'
     || compiledRegistry?.exact_active_definition_count !== 11
@@ -432,10 +451,25 @@ function validateGateRegistry() {
   }
   const mandatoryTests = registry.mandatory_adversarial_test_binding;
   if (mandatoryTests?.expected_identifier_count !== 286
+    || mandatoryTests?.executable_registry_source
+      !== 'lib/programme-gates/test-executable-registry.js'
+    || mandatoryTests?.fail_closed_unimplemented_executable
+      !== 'scripts/run-unimplemented-adversarial-test.mjs'
     || mandatoryTests?.expected_identifier_set_sha256 !== 'e4ad6ea4d87db62d405f954007067f7eca87c32511c0aef97a5b258a5d3a87ed'
     || mandatoryTests?.enforcement_gate !== 'P9_SCOPE_EXACT'
     || mandatoryTests?.pre_cutover_requirement !== 'EVERY_MEMBER_TERMINAL_PASS'
-    || mandatoryTests?.missing_extra_duplicate_or_unbound_member_effect !== 'OPEN') {
+    || mandatoryTests?.executable_mapping_totality
+      !== 'EVERY_IDENTIFIER_HAS_ONE_FROZEN_EXECUTABLE_DIGEST_AND_UNIMPLEMENTED_HANDLERS_CANNOT_EXIT_ZERO'
+    || mandatoryTests?.missing_extra_duplicate_or_unbound_member_effect !== 'OPEN'
+    || MANDATORY_ADVERSARIAL_TEST_IDS.length !== 286
+    || Object.keys(TEST_EXECUTABLE_FILES).length !== 286
+    || Object.keys(TEST_EXECUTABLE_DIGESTS).length !== 286
+    || MANDATORY_ADVERSARIAL_TEST_IDS.some((testId) => (
+      !Array.isArray(TEST_EXECUTABLE_FILES[testId])
+      || !/^[a-f0-9]{64}$/.test(TEST_EXECUTABLE_DIGESTS[testId])
+      || !['IMPLEMENTED', 'BOUND_FAIL_CLOSED_UNIMPLEMENTED']
+        .includes(testExecutableState(testId))
+    ))) {
     fail('Mandatory adversarial-test catalogue binding is incomplete');
   }
   const bootstrap = registry.work_classes.gate_status_bootstrap;
@@ -789,6 +823,13 @@ function validateRootCauseClosure() {
   const requiredContractTerms = [
     'exactly eight top-level actions: `OPEN_IMPORT`,',
     '`VERIFY_PRODUCTION_BLOB_AVAILABILITY`, `IMPORT_MEMBER_BATCH`',
+    'exact eight-action\n  top-level set',
+    'A ninth action,',
+    '`N_capacity` is the exact eight-field tuple measured',
+    'Its first seven fields are therefore exactly ten times',
+    'sums\n`pg_relation_size` for each distinct selected index',
+    'observed production physical-plan-fingerprint root',
+    'exact equality of the certified and production statistics roots',
     'No result-page carrier, per-query result',
     'impact_clear_for_metric_slot=PASS',
     'approved successor ContractFreezeAttestation',
@@ -802,6 +843,8 @@ function validateRootCauseClosure() {
     'ImmutableQueryExecutionResult',
     'IMMUTABLE_EXECUTION_RESULT_FETCH',
     '`CERTIFY_RELEASE_ACTIVATION`',
+    'exact seven-action\n  top-level set',
+    'An eighth action,\n  an omitted action, a semantic-parity phase',
   ]) {
     if (`${programme}\n${contracts}\n${adversarial}`.includes(forbidden)) {
       fail(`Removed root-cause contract remains present: ${forbidden}`);
