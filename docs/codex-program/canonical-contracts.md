@@ -734,7 +734,9 @@ This file is the sole authority for detailed identities, state machines, writer 
   amendment, review-controller software and evidence schemas, gate evidence
   schemas and acceptance definitions, enumerators, predicates, certification
   integrity validator, signing system, status publisher,
-  `ProgrammeStatusPublicationHead` and their tests. It cannot authorise corpus
+  `ProgrammeStatusPublicationHead`, the eight G0 evidence collections, empty
+  isolated-staging boundary setup, preview access protection and their tests.
+  It cannot authorise a snapshot restore, corpus
   extraction, reprocessing, writes, backfills, production data changes, release
   import or activation, or product feature activation. An owner statement
   cannot create, widen or replace it.
@@ -742,7 +744,9 @@ This file is the sole authority for detailed identities, state machines, writer 
   the first valid `ProgrammeGateStatusArtefact/V2`. That event must be generation
   1 from predecessor `NONE`, include all 35 registry gates once in registry
   order, leave every unsupported P1 and P9 gate `OPEN`, and derive
-  `canonical_work_start: PASS` from validated evidence. The same successful
+  `canonical_work_start: PASS` by recomputing the proposed G0 projection from
+  validated evidence inside the genesis publication. It does not require or
+  consult a predecessor status. The same successful
   compare-and-swap expires the authority. A failed validation or stale
   publication does not consume the nonce. Reuse is prohibited. Reissue requires
   another governing registry amendment.
@@ -768,6 +772,8 @@ This file is the sole authority for detailed identities, state machines, writer 
   predecessor, manual status edit, validation failure or partial output makes
   no ref change. The status file and head state are committed together, so no
   second publication head or owner-deemed projection can become authoritative.
+  It is not a database row and is excluded from
+  GlobalMutableAuthorityRegistry and GeneratedLockPlanRegistry.
 - The existing generation-4
   `docs/certification/programme-gate-status.json` file is a historical V1
   owner-deemed record. It is not a V2 predecessor, evidence source, publication
@@ -1043,15 +1049,27 @@ This file is the sole authority for detailed identities, state machines, writer 
   disposition and impact IDs, so same-contract reapproval does not change the
   observed residual. An unregistered residual carrier, dropped error, generic
   string-only warning or unresolved ordinal is blocking.
-- Before candidate sealing, two implementation-disjoint enumerators walk every
-  carrier named by GovernedResidualProducerRegistry for the exact intake cutoff,
-  deal scope, extraction runs and candidate generation. Their bounded roots and
-  a third `GovernedResidualUniverseReconciliation` must agree on the complete
-  ordered residual ID-and-payload-digest set. `GovernedResidualUniverseManifest`
-  hashes those roots, reconciliation, producer-registry digest, exact frozen pair
-  and empty missing, extra, duplicate, unregistered-carrier and conflicting-
-  payload roots. Counts, one review payload or the open-world candidate universe
-  cannot substitute for this independent total inventory.
+- Before candidate sealing, two implementation-disjoint enumerators derive the
+  residual universe from different authorities. The first walks every carrier
+  named by GovernedResidualProducerRegistry. The second starts from the closed
+  SemanticStageRegistry, CanonicalWriterDispositionRegistry, physical carrier
+  schemas and generated stage-output and write-disposition manifests, derives
+  every boundary and carrier capable of producing or retaining an unknown,
+  invalid, conflicting, lossy or unconsumed observation, and then reads those
+  carriers without consulting GovernedResidualProducerRegistry or the first
+  enumerator. Contract freeze creates a
+  `ResidualCapableBoundaryUniverse` from that second authority and requires
+  bidirectional equality with the producer registry; an unregistered producer,
+  residual-capable carrier or boundary is therefore detectable and blocking.
+  For the exact intake cutoff, deal scope, extraction runs and candidate
+  generation, the two bounded roots and a third
+  `GovernedResidualUniverseReconciliation` must agree on the complete ordered
+  residual ID-and-payload-digest set. `GovernedResidualUniverseManifest` hashes
+  those roots, reconciliation, both authority roots, producer-registry digest,
+  exact frozen pair and empty missing, extra, duplicate, unregistered-carrier,
+  unregistered-producer and conflicting-payload roots. Counts, one review
+  payload or the open-world candidate universe cannot substitute for this
+  independent total inventory.
 - Every universe member has exactly one final reviewed
   `GovernedResidualDisposition`: `COVERED_BY_GOVERNED_OBJECT`,
   `COVERED_BY_OPEN_WORLD_CANDIDATE`, `REVIEWED_NON_SUBSTANTIVE_OR_INVALID` or
@@ -1638,8 +1656,16 @@ This file is the sole authority for detailed identities, state machines, writer 
   lineage even when the same bytes and span IDs remain.
 - `governed_deal_key` is the domain-separated hash of
   `(deal_identity_schema_version, immutable_deal_seed)` in a
-  `DealIdentityManifest`. The seed is one immutable external transaction ID or
-  Ben-approved import identity. Buyer, seller, title, value, dates, aliases and
+  `DealIdentityManifest`. The immutable seed is a closed tagged union. The
+  `REGISTERED_EXTERNAL_TRANSACTION` branch contains a registry-governed issuer
+  namespace key and version plus the issuer's exact immutable transaction ID;
+  a bare external ID is invalid. The `BEN_APPROVED_IMPORT_IDENTITY` branch
+  contains one immutable `DealIdentityApprovalAttestation` ID and payload
+  digest. That signed attestation binds the exact proposed import seed,
+  approving identity, approval scope, non-reuse nonce, any reviewed
+  supersession references and terminal unconditional `APPROVED`; an owner
+  statement or unsigned label cannot substitute. Buyer, seller, title, value,
+  dates, aliases and
   environment-allocated UUIDs do not enter it. `DealAdmissionManifest`
   separately maps ordered source occurrences and document roles to that key.
   Source-membership changes revise the admission manifest without changing deal
@@ -1650,8 +1676,18 @@ This file is the sole authority for detailed identities, state machines, writer 
   rows, comparator tuples, ordinals or output. Duplicate, merge or split
   decisions require an explicit reviewed supersession map.
 - `deal_identity_manifest_id` is the content hash of the identity-schema
-  version, immutable seed, governed deal key and any reviewed supersession
-  references.
+  version, complete tagged immutable seed, its registered issuer-authority
+  object or exact DealIdentityApprovalAttestation ID and payload digest,
+  governed deal key and any reviewed supersession references. Contract freeze
+  fixes the external-issuer namespace registry and approval schema. Duplicate
+  issuer namespaces, an unregistered issuer, reused approval nonce, missing
+  approval, wrong seed binding or conflicting supersession makes the manifest
+  invalid.
+  The exact DealIdentityApprovalAttestation or registered external-issuer
+  authority is selected by SourceAdmissionPreparationReceipt and every
+  DealIdentityManifest consumer, and is inventoried through scope, candidate
+  input, CandidateReleaseManifest, release bundle, production import and
+  traceability. Serving roles cannot read either authority payload.
 - After every relevant source has an exact CanonicalTextVerificationManifest and
   terminal SourceAdmissionManifest, and after the exact DealIdentityManifest
   exists, but before ordinary deal admission, a separate
@@ -4400,21 +4436,25 @@ This file is the sole authority for detailed identities, state machines, writer 
   FailureRecoveryBranchSlot, FailureRecoveryBranchHead and historical-
   reactivation attempt slot; LegacyBaselineRestoration action ordinal and
   receipt-chain head; LegacyBaselineRestorationPostCommitHead and its action-
-  idempotency slots; TraceabilityFailureTerminalSlot; completion terminal-pair
-  slot; and `ProgrammeStatusPublicationHead`. Adding any later mutable authority
-  without regenerating this closure blocks contract freeze and DML.
-- `ProgrammeStatusPublicationHead` is the signed singleton pointer to the
-  immutable programme-status event chain. Its tuple contains production
-  environment, contiguous generation, current status-event ID and payload
-  digest and one frozen-policy state. Only the generated status-publisher action
-  may compare-and-swap it; terminal `COMPLETE` is absorbing. It is an
-  operational authority only and never enters a semantic, release or result ID
-  except through an expressly named captured status tuple. Direct update,
-  maximum-timestamp selection and a second completion event are prohibited.
+  idempotency slots; TraceabilityFailureTerminalSlot; and completion terminal-
+  pair slot. The repository-native `ProgrammeStatusPublicationHead` Git ref is
+  expressly outside this database authority registry and its generated SQL lock
+  plans. Adding any later database mutable authority without regenerating this
+  closure blocks contract freeze and DML.
+- `ProgrammeStatusPublicationHead` is the signed singleton repository Git-ref
+  pointer to the immutable programme-status event chain. Its committed payload
+  contains production environment, contiguous generation, current status-event
+  ID and payload digest and one frozen-policy state. Only the protected GitHub
+  status-publisher action may compare-and-swap the ref; terminal `COMPLETE` is
+  absorbing. It is not a database authority or SQL lock target and never enters
+  a semantic, release or result ID except through an expressly named captured
+  status tuple. Direct update, maximum-timestamp selection and a second
+  completion event are prohibited.
 - The same compilation creates `GeneratedLockPlanRegistry`. For every complete
   OperationActionRegistry dispatch, activation, rollback, readiness,
-  post-activation, restoration, recovery, failure-terminal and programme-status
-  action, every spool-erasure journal, receipt and receipt-set phase and both
+  post-activation, restoration, recovery, failure-terminal and database
+  completion-terminal-pair action, every spool-erasure journal, receipt and
+  receipt-set phase and both
   attempt-audit terminal actions, it fixes the exact authority-entry set, key extractor, lock mode,
   bounded key cardinality and one unique canonical topological order. The
   authority dependency graph plus the frozen unsigned-key comparator must yield
@@ -4726,14 +4766,17 @@ This file is the sole authority for detailed identities, state machines, writer 
   mandatory first action for each source subject. It consumes the exact cutoff,
   frozen pair, programme-status and authorisation generation, source occurrence,
   immutable source and blob-availability inputs, proposed source admission and
-  exact DealIdentityManifest or `NON_DEAL_SUBJECT` marker and idempotency key. In
+  exact DealIdentityManifest, its registered issuer authority or exact passing
+  DealIdentityApprovalAttestation, or `NON_DEAL_SUBJECT` marker and idempotency
+  key. In
   one bounded serialisable transaction it locks the authorisation row, current
   IntakeProcessingPolicyHead, IntakeRevocationHead and exact blob-availability
   receipts, revalidates the cutoff and source chain, and may write or select only
   CanonicalTextContent and occurrence, ImmutableSourceDocument,
   CanonicalTextVerificationManifest, any required
   SourceAdmissionApprovalAttestation, terminal SourceAdmissionManifest, exact
-  DealIdentityManifest or marker and one SourceAdmissionPreparationReceipt. It
+  validated DealIdentityManifest and its seed-authority evidence or marker and
+  one SourceAdmissionPreparationReceipt. It
   creates no semantic envelope, inference transcript, reviewed payload, graph,
   candidate, disposition, deal-document or deal-admission manifest, structure,
   impact, applicability, scope, candidate-input event or serving row. The
@@ -5626,10 +5669,13 @@ This file is the sole authority for detailed identities, state machines, writer 
   reconciliation and instance conformance; exactly two
   CompositionContractSetRecompositionRoots, one
   CompositionContractSetEnumeratorIndependenceAttestation and one terminal
-  passing CompositionContractSetAttestation; canonical result rows, reviewed
-  source-specific serving rows and certified incomplete-result Review rows, each
-  with its exact claim-state, result-completeness, market-comparability and
-  governed-reason fields; child rows, market observations and aggregates;
+  passing CompositionContractSetAttestation; canonical result rows and
+  certified incomplete-result Review rows, each with its exact claim-state,
+  result-completeness, market-comparability and governed-reason fields; reviewed
+  source-specific serving rows, each with its exact source-claim state,
+  market-comparability and governed-reason fields and with no result-
+  completeness field because no canonical result exists; child rows, market
+  observations and aggregates;
   one `MarketMetricSlotExclusion` for every excluded canonical metric slot;
   ServingExactDetailPayload, ServingExactDetailReference and
   ServingExactDetailParentEdge projections; and ServingContractMetadata. Pre-
@@ -5650,9 +5696,14 @@ This file is the sole authority for detailed identities, state machines, writer 
   `REVIEWED_SOURCE_SPECIFIC` occurrence produces exactly one source-specific
   row and participates in ReviewedSourceSpecificOutputClosure, but produces no
   canonical metric-slot definition basis. Every eligible canonical metric slot
-  produces a market observation if and only if
-  its complete owner is `COMPLETE` and `COMPARABLE` and every exact intersecting
-  applicability requirement is `COMPLETE_EXAMINED`; and every other canonical
+  produces a market observation if and only if every exact intersecting
+  applicability requirement is `COMPLETE_EXAMINED` and its owner-lineage branch
+  is eligible. A `RESULT_RELATIONSHIP` owner requires its selected result and
+  component to be `COMPLETE` and `COMPARABLE`. A `CLAIM_ONLY` owner instead
+  requires a publishable present canonical ClaimRevision, complete
+  ClaimScopeClosure, discharged pre-claim dependencies and the
+  MetricDefinition's claim-only eligibility predicate; it carries
+  `NO_RESULT_LINEAGE` and invents no result state. Every other canonical
   metric slot has exactly one `MarketMetricSlotExclusion`. Incomplete canonical
   rows remain in that canonical partition; source-specific rows do not. Both
   candidate-output enumerators and the production
@@ -8189,15 +8240,21 @@ This file is the sole authority for detailed identities, state machines, writer 
   there is exactly one disjoint terminal output: a market observation or a
   `MarketMetricSlotExclusion`. The exclusion stable key hashes
   `MARKET_METRIC_SLOT_EXCLUSION/V1`, schema, CorpusRelease ID and exact
-  metric-slot key. Its canonical payload hashes the frozen pair, metric and owner
-  lineage, selected result and component revisions, claim state, result
-  completeness, market comparability, exact closed exclusion-reason code,
+  metric-slot key. Its canonical payload is a closed owner-lineage tagged
+  union. Both branches hash the frozen pair, metric and owner lineage, claim
+  state, exact closed exclusion-reason code,
   source-backed raw value and unresolved basis where permitted, exact
   MetricApplicabilityRequirementProjection ID and payload digest, terminal
   `metric_applicability_requirement_projection_set_digest`, ordered intersecting
   requirement IDs and per-requirement manifest states, intersecting impact
   closures, governed reason and evidence IDs, derivation versions and explicit
   `NO_COHORT_MEMBERSHIP` and `NO_AGGREGATE_AUTHORITY` markers.
+  `RESULT_RELATIONSHIP` additionally requires selected result and component
+  revisions, result completeness and market comparability. `CLAIM_ONLY`
+  instead requires the selected ClaimRevision, ClaimScopeClosure, pre-claim
+  dependency-discharge set and explicit `NO_RESULT_LINEAGE`, and forbids
+  selected-result, component, result-completeness and result-comparability
+  fields, including null placeholders.
 - `CANDIDATE_RELEASE_FREEZE/PREPARE_OUTPUT_BATCH/MATERIALISE_OUTPUT_BATCH` with
   discriminator `MARKET_METRIC_SLOT_EXCLUSION` is its sole producer. Its sole
   generated physical carrier is classified as the concrete
@@ -8213,9 +8270,12 @@ This file is the sole authority for detailed identities, state machines, writer 
   exclusion for one slot, or neither output blocks sealing. The candidate and
   production roots and traceability matrix inventory the logical type, carrier,
   kind entry, producer, slot key, payload digest and import parity result.
-- A market observation additionally requires its owner result and every required
-  component to be `COMPLETE` and its exact market-comparability state to be
-  `COMPARABLE`, with no intersecting unresolved impact and every requirement in
+- A `RESULT_RELATIONSHIP` market observation additionally requires its owner
+  result and every required component to be `COMPLETE` and its exact market-
+  comparability state to be `COMPARABLE`. A `CLAIM_ONLY` observation instead
+  requires its selected ClaimRevision and ClaimScopeClosure to satisfy the
+  preceding claim-only branch and has no result fields. Both branches require
+  no intersecting unresolved impact and every requirement in
   the slot's exact MetricApplicabilityRequirementProjection entry at
   `COMPLETE_EXAMINED` in the ApplicabilityReexaminationManifest. The manifest's
   unrelated per-requirement states and overall summary cannot exclude the slot.
@@ -8436,6 +8496,7 @@ This file is the sole authority for detailed identities, state machines, writer 
   `market_comparability=NOT_CERTIFIED` and exact incomplete reason; it forbids
   observations, cohort and denominator. `REVIEWED_SOURCE_SPECIFIC` requires its
   candidate occurrence, final disposition, reviewed display label and reason,
+  exact source-claim state from its reviewed source-backed primitive set,
   observed party tokens, OpenWorldPrimitiveCollectionRoot opaque ID and certified
   digest, exact primitive total, bounded inline prefix, open-world child-
   collection reference, exact impact value and SemanticImpactClosure, evidence refs and
@@ -9029,7 +9090,9 @@ This file is the sole authority for detailed identities, state machines, writer 
   recompiles against that admitted active manifest selector and its underlying
   CorpusRelease. `PINNED` executes only when its manifest ID and payload digest
   equal the admitted active selector; otherwise it returns typed
-  `RELEASE_NOT_ACTIVE` with zero cache, database or corpus access. Historical
+  `RELEASE_NOT_ACTIVE` after exactly the mandatory admission-token RPC and one
+  bounded saved-definition ownership-and-digest lookup, with zero cache access,
+  zero route-specific serving RPC and zero corpus-row access. Historical
   serving requires a future separately certified fenced readable-release set.
   Plan and schema migrations reject stale incompatible templates. Migration,
   cache and response bind the newly admitted tuple; save-time validation never
@@ -9090,6 +9153,9 @@ This file is the sole authority for detailed identities, state machines, writer 
   until its governed deadline and reacquires request-specific admission for
   every chunk. Release retention cannot expire either reference early, and an
   export or cursor lifetime cannot exceed its epoch's certified retention.
+  A cursor therefore rejects a different serving epoch or changed release-state
+  tuple, but does not bind the replaceable physical fence ID within the same
+  serving epoch.
 - The current and immediately prior cursor signing keys may overlap only for the
   cursor lifetime. Tampering, expiry, retired key or release, plan, contract,
   authorisation, collation or sort mismatch returns a typed cursor error and
@@ -9897,9 +9963,11 @@ includes:
   version; every
   ServingObjectAccessRegistry, OfflineCertificationArtefactDenylist,
   ServingEmbeddedReferenceAllowlist, ServingExactDetailActionDefinition,
-  each `CANONICAL_RESULT`, `INCOMPLETE_CANONICAL_RESULT` and
-  `REVIEWED_SOURCE_SPECIFIC` SharedServingRow with its separate claim-state,
-  result-completeness and market-comparability fields, the source-specific
+  each `CANONICAL_RESULT` and `INCOMPLETE_CANONICAL_RESULT` SharedServingRow
+  with separate claim-state, result-completeness and market-comparability
+  fields, each `REVIEWED_SOURCE_SPECIFIC` SharedServingRow with separate source-
+  claim-state and market-comparability fields and an expressly absent result-
+  completeness field, the source-specific
   direct-selection proof and ReviewedSourceSpecificOutputClosure, every market-
   observation eligibility or typed exclusion member, every market-observation occurrence,
   serving key and canonical payload digest, every materialised aggregate slot,
@@ -10132,10 +10200,12 @@ matching count or omitted failed object cannot pass.
 
 ## Phase 9 release and traceability contracts
 
-Every Phase 9 operation/action/discriminator tuple, including each bundle,
-import, semantic-parity, readiness, activation, post-activation, containment,
-restoration, recovery, trace and status-publication action, must select exactly
-one generated entry in `GeneratedLockPlanRegistry`. The entry names every
+Every database-backed Phase 9 operation/action/discriminator tuple, including
+each bundle, import, semantic-parity, readiness, activation, post-activation,
+containment, restoration, recovery, trace and completion-terminal-pair action,
+must select exactly one generated entry in `GeneratedLockPlanRegistry`. The
+repository Git-ref status publication is governed by its protected compare-and-
+swap contract and is not a SQL action. Each generated entry names every
 mutable authority from `GlobalMutableAuthorityRegistry`, the complete database
 lock set and one global acquisition order, CAS predicates, external-fence and
 lease preconditions, no-external-call-under-lock proof and terminal receipt
@@ -10143,15 +10213,21 @@ cardinality. Contract freeze rejects a missing, extra, caller-selected or cyclic
 plan. Runtime compares the generated plan digest before the first mutation;
 ad-hoc locking or an action not in the registry performs zero DML.
 
-`ProgrammeStatusPublicationHead` is the sole mutable pointer for programme
-status. It is implemented by the repository-native
+`ProgrammeStatusPublicationHead` is the sole mutable pointer for published
+programme status. It is implemented by the repository-native
 `refs/heads/programme-status-publication-head` Git ref. Ordinary status
 publication is one protected compare-and-swap from the exact predecessor Git
 object to one immutable successor status and emits its generated receipt.
-The completion transaction is the only exception: it atomically publishes the
-proposed terminal status and POST_COMPLETION extension as the one terminal pair.
-Neither member can become current alone. No programme status, readiness mirror
-or prose assertion marks the programme complete unless the target
+Completion uses no cross-system transaction. A database serialisable
+transaction first writes the proposed terminal status and POST_COMPLETION
+extension as one immutable pair to the one-use
+`CompletionTerminalPairSlot`. Neither member can occupy that slot alone. The
+protected status publisher then revalidates the exact pair and advances the Git
+ref by stale-safe compare-and-swap to a status commit that binds it. Until that
+Git publication succeeds, the database pair is non-current and
+`programme_complete` remains `OPEN`; a failed ref update may be retried only
+after full revalidation. No programme status, readiness mirror or prose
+assertion marks the programme complete unless the target
 PostActivationControlHead is already terminal `PASS_FIXED`.
 
 For the first canonical cutover only, the precondition to step 16 is one
@@ -10485,8 +10561,10 @@ or typed-exclusion parity roots; passing `SOURCE-PACKAGE-DIGEST-01`,
 `SEMANTIC-EXTRACTION-DRY-RUN-01`, `CANONICAL-WRITER-AUTHORITY-01`,
 `SEMANTIC-GRAPH-PARITY-01`, `SEMANTIC-INFERENCE-BOUNDARY-01`,
 `SEMANTIC-INFERENCE-NO-RERUN-01`, `SOURCE-ADMISSION-PREPARATION-01`,
-`SOURCE-ROLE-ADMISSION-TOPOLOGY-01` and every mandatory open-world adversarial
-test;
+`SOURCE-ROLE-ADMISSION-TOPOLOGY-01` and the exact contract-ordered union of
+`required_adversarial_tests` named by every gate transitively required by the
+`production_import` work class. No filename scan, test-name prefix, prose
+classification or later-discovered test may widen or narrow that frozen set;
 every PRE_FREEZE_CONTRACT,
 SOURCE_BUILD and CANDIDATE_BUILD SemanticStageOutputSetRoot and
 SemanticNeutralProjectionSetRoot, RelationshipEffectFieldUniverseSetRoot, both
@@ -12967,16 +13045,23 @@ ordinary drain-before-database-lock rule; no external call occurs while a
 database lock is held. One final serialisable compare-and-swap locks and
 revalidates the exact pre-completion status, readiness mirror, AVAILABLE
 CandidatePromotionFence, IntakeProcessingPolicyHead, IntakeRevocationHead and
-active-state tuple, `PASS_FIXED` PostActivationControlHead and exact current
-ProgrammeStatusPublicationHead, verifies the signed lease and consumes its exact one-use
-database token without contacting the external control plane, then publishes the terminal pair
+active-state tuple and `PASS_FIXED` PostActivationControlHead, verifies that the
+pair is bound to the previously captured ProgrammeStatusPublicationHead
+predecessor, verifies the signed lease and consumes its exact one-use
+database token without contacting the external control plane, then writes the terminal pair
 `(proposed_status_id, proposed_status_payload_digest,
 POST_COMPLETION_extension_id, POST_COMPLETION_payload_digest,
-status_generation)` as current. It writes no later immutable receipt or status
-artefact and atomically CASes ProgrammeStatusPublicationHead to the proposed
-terminal pair. `programme_complete` evaluates that head and pair, including the extension's
+status_generation)` to the empty `CompletionTerminalPairSlot`. It writes no
+later immutable database receipt or status artefact and does not update a Git
+ref under the database lock. After commit, the protected GitHub publisher reads
+and revalidates the exact slot, status and extension and compare-and-swaps
+ProgrammeStatusPublicationHead from its captured predecessor to the proposed
+terminal status commit. `programme_complete` evaluates that Git head and its
+bound database pair, including the extension's
 coverage reconciliation and cumulative root, never the proposed status alone.
-A stale predecessor, revocation-first race, partial pair, later untraced status,
-missing extension or failed CAS performs zero publication and leaves completion
-blocked. Completion locking first may publish before a later revocation, which
+A stale database predecessor, revocation-first race, partial pair, later
+untraced status or missing extension performs zero pair DML. A stale Git
+predecessor performs zero ref change, leaves the immutable pair non-current and
+leaves completion blocked pending revalidation or abandonment. Completion
+locking first may write the pair before a later revocation, which
 then follows the ordinary blocking and exposure-off path.
