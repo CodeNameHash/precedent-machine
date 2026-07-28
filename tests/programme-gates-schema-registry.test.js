@@ -193,7 +193,10 @@ test('trust configuration contains only the four approved public signing keys', 
       ['PROGRAMME_GATE_EVIDENCE/V2', 'PROGRAMME_GATE_REVIEWER_INDEPENDENCE/V1'],
       ['PROGRAMME_GATE_STATUS/V2', 'PROGRAMME_GATE_PUBLICATION_HEAD/V1'],
       ['PROGRAMME_GATE_REVIEW_CONTROLLER_RECORD/V1'],
-      ['PROGRAMME_GATE_BEN_APPROVAL/V1'],
+      [
+        'PROGRAMME_GATE_BEN_APPROVAL/V1',
+        'PROGRAMME_GATE_CONTRACT_FREEZE_APPROVAL/V1',
+      ],
     ],
   );
   assert.deepEqual(

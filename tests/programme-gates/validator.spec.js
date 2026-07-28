@@ -23,6 +23,9 @@ const {
 } = require('../../lib/programme-gates/schema-registry');
 const { verifySignature } = require('../../lib/programme-gates/signatures');
 const {
+  expectedTestExecutableDigest,
+} = require('../../lib/programme-gates/test-executable-registry');
+const {
   ACCEPTANCE_DEFINITION_ID_DOMAIN,
   EVIDENCE_SIGNATURE_DOMAIN,
   EVIDENCE_SIGNATURE_ROLE,
@@ -116,7 +119,7 @@ const EVIDENCE = Object.freeze({
     code_commit: COMMIT,
     environment: 'STAGING',
     command_digest: '2'.repeat(64),
-    executable_digest: '3'.repeat(64),
+    executable_digest: expectedTestExecutableDigest('P0-ROUTE-01'),
     started_at: '2026-07-27T10:00:00.000Z',
     completed_at: '2026-07-27T10:30:00.000Z',
     exit_code: 0,
@@ -422,7 +425,7 @@ test('a descriptor that has not activated its executable bindings returns OPEN',
   assertOpen(validate(sample), 'ACCEPTANCE_DESCRIPTOR_MISMATCH');
 });
 
-test('all 31 registered claim functions remain closed and callable', () => {
+test('all 34 registered claim functions remain closed and callable', () => {
   const descriptorKeys = Object.fromEntries(
     ACCEPTANCE_DEFINITION_DESCRIPTORS.map((descriptor) => [
       descriptor.gate_id,
@@ -437,7 +440,7 @@ test('all 31 registered claim functions remain closed and callable', () => {
       count += 1;
     }
   }
-  assert.equal(count, 31);
+  assert.equal(count, 34);
 });
 
 test('missing or malformed evidence returns OPEN and never crosses the gate boundary', () => {
@@ -563,6 +566,7 @@ test('missing, extra or failed adversarial test results return OPEN', () => {
     [],
     [...TEST_RESULTS, { ...TEST_RESULTS[0], test_id: 'UNREGISTERED-01' }],
     [{ ...TEST_RESULTS[0], exit_code: 1 }],
+    [{ ...TEST_RESULTS[0], executable_digest: '9'.repeat(64) }],
   ]) {
     const sample = fixture();
     sample.input.testResults = testResults;

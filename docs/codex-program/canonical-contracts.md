@@ -1099,6 +1099,21 @@ This file is the sole authority for detailed identities, state machines, writer 
   unregistered-producer and conflicting-payload roots. Counts, one review
   payload or the open-world candidate universe cannot substitute for this
   independent total inventory.
+- Neither enumerator may take already emitted residuals as its expected
+  universe. Before any semantic producer runs, an implementation-disjoint
+  boundary recorder deterministically enumerates every admitted parser output,
+  model observation, validator rejection, normaliser input and writer input
+  from the immutable source and closed boundary schemas. It writes one
+  `SemanticBoundaryAdmissionReceipt` per exact input atom, carrying source
+  coordinates or a governed no-span source, raw digest, boundary kind and
+  ordinal. Every receipt must terminate exactly once in a governed object, an
+  open-world candidate, an affirmative non-substantive decision or a
+  GovernedResidualObservation. A
+  `SemanticBoundaryConsumptionReconciliation` compares that independent
+  receipt root with the complete terminal-consumption root and carries empty
+  missing, extra, duplicate and unconsumed roots. A proposition, exception,
+  relationship, unknown attribute or error dropped before a producer or
+  carrier therefore leaves an unconsumed receipt and blocks publication.
 - Every universe member has exactly one final reviewed
   `GovernedResidualDisposition`: `COVERED_BY_GOVERNED_OBJECT`,
   `COVERED_BY_OPEN_WORLD_CANDIDATE`, `REVIEWED_NON_SUBSTANTIVE_OR_INVALID` or
@@ -2385,6 +2400,20 @@ This file is the sole authority for detailed identities, state machines, writer 
   ContractFreezeAttestation. Adoption and a new alias require eligible Freeze
   Gate legal-semantic review and Ben's immutable taxonomy or codebook approval.
   No disposition mutates the release under which the candidate was discovered.
+- A contract-impacting candidate does not need an impossible final disposition
+  before the successor contract can exist. While it remains unresolved and
+  unpublishable under the predecessor, Freeze Gate may create one
+  `ContractAmendmentProposal` from its exact source-backed occurrence, evidence
+  closure, primitive root, reconciled `AFFECTS_CANONICAL_CONTRACT` closure,
+  proposed neutral semantics and immutable legal-semantic and Ben approvals.
+  The proposal has no concept key, disposition, serving or cohort authority.
+  The successor CanonicalContractBundle and its ContractFreezeAttestation bind
+  the complete approved proposal-set root. Only after that freeze may affected
+  spans and transitive dependants be reprocessed under the successor and
+  receive `ADOPTED_NEW_CANONICAL` or another final disposition. A proposal
+  omitted from the successor, a disposition created before freeze or a
+  published unresolved predecessor candidate fails closed. This is the only
+  contract-amendment bridge.
 - A new canonical item or alias never authorises “reprocess the discovered
   spans” as its complete scope. Bundle compilation first creates a
   pair-independent applicability contract. During candidate preparation, the
@@ -4019,7 +4048,7 @@ This file is the sole authority for detailed identities, state machines, writer 
   reassignment can become current alone.
 - The only database entry point with canonical-object-table DML authority is the
   versioned `canonical_write` `SECURITY DEFINER` PostgreSQL RPC. Its generated
-  operation schema permits `INTAKE_CAPTURE`, `INTAKE_CUTOFF_BUILD`,
+  operation schema permits `CONTRACT_FREEZE`, `INTAKE_CAPTURE`, `INTAKE_CUTOFF_BUILD`,
   `DEAL_SCOPE_RUN`, `CORPUS_SCOPE_FREEZE`, `CORRECTION_APPLY`, `DEAL_EXTRACTION_RUN`,
   `CANDIDATE_RELEASE_FREEZE`, `RELEASE_BUNDLE_CONTROL_BUILD` and
   `CERTIFIED_RELEASE_IMPORT_BATCH` only.
@@ -4039,6 +4068,14 @@ This file is the sole authority for detailed identities, state machines, writer 
   receipt policy, outbox policy, bundle disposition and import disposition.
   There is no wildcard, inferred carrier, caller-selected type, `OTHER` or
   unclassified physical write.
+- `canonical_write(operation=CONTRACT_FREEZE)` has exactly one action,
+  `INITIALISE_CANDIDATE_PROMOTION_FENCE`. In one serialisable transaction it
+  installs the approved ContractFreezeAttestation, genesis CandidateInputHead,
+  genesis AVAILABLE CandidatePromotionFence and one idempotent receipt.
+  OperationActionRegistry, CanonicalPhysicalCarrierRegistry,
+  CanonicalWriterDispositionRegistry and GeneratedLockPlanRegistry contain that
+  exact action and no other contract-freeze writer. Split installation, direct
+  DML and a second genesis write are prohibited.
 - `ReleaseBundleControlPolicy` is a generated frozen contract object. Its ID
   hashes `RELEASE_BUNDLE_CONTROL_POLICY/V1`, schema, the exact five-action set,
   lifecycle and event schemas, failure-evidence variants, role and carrier
@@ -4885,7 +4922,7 @@ This file is the sole authority for detailed identities, state machines, writer 
   serving row. The offline reviewer renders `ValidatedSemanticGraph` and its
   candidates through an exhaustive non-persisting view; there is no separate
   writable review-row carrier. `RECORD_OPEN_WORLD_DISPOSITIONS` may append only the exact final
-  reviewed dispositions, ReviewedSourceSpecificPublicationDecision objects for
+  reviewed dispositions, source-specific publication selections for
   `REVIEWED_SOURCE_SPECIFIC` dispositions, both independent impact-walker outputs,
   SemanticImpactEnumeratorIndependenceAttestation, reconciled
   SemanticImpactClosures, disposition manifest and OpenWorldReviewQueueRoot. It
@@ -4893,7 +4930,9 @@ This file is the sole authority for detailed identities, state machines, writer 
   receipt-required, have no serving grant and create no CandidateInputEvent.
   For a pre-admission source-role occurrence, this action may record only its
   directly reviewed admission-decision disposition after predecessor evidence
-  closure and primitive collection are complete. It cannot create an impact
+  closure, primitive collection and signed source-specific publication
+  selection are complete. That selection binds the neutral legal-semantic body
+  and predecessor occurrence, not a future admitted ID. It cannot create an impact
   walker, impact closure, disposition manifest, applicability object, admitted
   occurrence, admitted evidence or primitive body, admission transition or
   carry-forward disposition before the exact DealAdmissionManifest exists.
@@ -5015,6 +5054,7 @@ This file is the sole authority for detailed identities, state machines, writer 
   evidence closure,
   primitive observation and relationship, OpenWorldPrimitiveCollectionRoot,
   final candidate disposition,
+  every effective ReviewedSourceSpecificPublicationDecision,
   OpenWorldCandidateDispositionManifest, both impact-walker outputs,
   SemanticImpactEnumeratorIndependenceAttestation, reconciled SemanticImpactClosure,
   applicable post-freeze ApplicabilityReexaminationRequirement instances
@@ -8630,6 +8670,13 @@ This file is the sole authority for detailed identities, state machines, writer 
   several components form one row. An omitted, duplicated, stale, schema-invalid
   or impermissibly reordered lineage member fails server validation before cache
   insertion or rendering.
+- The general `CANONICAL_RESULT` variant may use only `COMPARABLE`,
+  `NOT_COMPARABLE` or `NOT_CERTIFIED` comparability values generated by its
+  frozen ResultDefinition. `REVIEWED_SOURCE_SPECIFIC` is schema-invalid in that
+  branch even when the underlying disposition has that value. The sole
+  publication path is the separately tagged `REVIEWED_SOURCE_SPECIFIC` variant
+  with its exact publication decision. No nullable, generic or canonical-result
+  path may bypass that decision.
 - Review and authorised Admin may render all three release-certified variants.
   Corpus Context, Compare and Query may return a source-specific or incomplete
   row only as typed selected-deal context with its exact non-comparability
@@ -10540,6 +10587,7 @@ every selected OpenWorldSemanticCandidate and OpenWorldCandidateOccurrence,
 current OpenWorldCandidateSupersession and OpenWorldCandidateKindSupersession,
 every OpenWorldCandidateAdmissionTransition and transition-bound historical
 disposition,
+every effective ReviewedSourceSpecificPublicationDecision,
 OpenWorldCandidateAuditChainRoot, OpenWorldEffectiveOccurrenceRoot and
 OpenWorldCandidateChainReconciliation,
 OpenWorldEvidenceClosure,
@@ -13352,9 +13400,24 @@ review time, primitive-collection root, selected PRESENT primitive occurrence,
 representativeness decision `FAIR_SOURCE_BACKED_DISPLAY` and exact evidence
 closure. The reviewer must be eligible under the bundle's legal-semantic review
 policy and must sign the exact selection. The authoritative writer revalidates
-that proof in `RECORD_OPEN_WORLD_DISPOSITIONS`; an unsigned, differently
-reviewed or implementation-selected primitive blocks only that candidate's
-publication.
+that proof. Its closed signed payload includes
+`signature_algorithm=Ed25519`, reviewer key ID, trust-registry digest,
+signed-payload digest, signature, signing time and nonce. Validation resolves
+the key from the frozen legal-reviewer trust registry, verifies role, domain,
+validity and revocation at signing and verification time and recomputes the
+payload digest. For an ordinary admitted occurrence,
+`RECORD_OPEN_WORLD_DISPOSITIONS` writes the decision transactionally with the
+disposition. For a pre-admission source-role occurrence it writes only the
+signed neutral selection. `MATERIALISE_SCOPE` later revalidates that signature
+and atomically writes the admitted occurrence, carried-forward disposition and
+effective ReviewedSourceSpecificPublicationDecision, rekeying only occurrence
+identity and proving the legal-semantic body, primitive selection and evidence
+closure are byte-identical. An unsigned, differently reviewed, cross-wired or
+implementation-selected primitive blocks only that candidate's publication.
+The effective decision ID and payload digest are required members of scope
+inventory, CandidateInputSeal, the applicable candidate-output root,
+CandidateReleaseManifest, ReleaseBundleEnvelope, production-import parity,
+traceability and SharedServingRow.
 
 The same impact-to-state mapping is closed for every reconciled open-world
 candidate and every nonzero `GovernedResidualImpactClosure`:
@@ -13369,11 +13432,13 @@ candidate and every nonzero `GovernedResidualImpactClosure`:
   `CandidateInputSeal`, and cannot satisfy `W_open`.
 - `AFFECTS_CANONICAL_CONTRACT` forces the candidate occurrence and candidate
   generation to `BLOCKED`, prevents certification under the predecessor
-  contract and prevents the required successor `ContractFreezeAttestation`,
-  scope freeze, `CandidateInputSeal` and `CandidateOutputSeal` until the
-  successor bundle is approved and affected spans and transitive dependants are
-  reprocessed. It does not retroactively invalidate or mutate the immutable
-  predecessor `ContractFreezeAttestation` that authorised discovery.
+  contract, scope freeze, `CandidateInputSeal` and `CandidateOutputSeal`. It may
+  feed only the ContractAmendmentProposal bridge above. It does not prevent the
+  approved successor ContractFreezeAttestation. Publication remains blocked
+  until the successor freezes, affected spans and transitive dependants are
+  reprocessed and every effective candidate receives a final disposition. It
+  does not retroactively invalidate or mutate the immutable predecessor
+  ContractFreezeAttestation that authorised discovery.
 
 `W_open` therefore requires zero members in either blocking impact tier in
 addition to final reviewed dispositions and empty unresolved roots. These
@@ -13427,16 +13492,41 @@ ServingObjectAccessRegistry. It enumerates every active route and action, reques
 variant, QueryPlan family, metric and party dimension, filter field, operator
 and value type, sort and direction, initial and cursor page, facet and
 field-value request, saved-query lookup, carried-response navigation,
-inline exact-detail batch and source-document initial and cursor page. Infinite
-literal values are partitioned into the finite semantic classes null,
-boundary-minimum, boundary-maximum, ordinary-selective, ordinary-unselective and
-invalid. `QueryGoldenSuiteManifest` contains at least one fixture for every
+inline exact-detail batch and source-document initial and cursor page. It is a
+versioned CanonicalContractBundle member with a closed JSON schema. Each row
+hashes route and action definition, request-variant schema, plan family, output
+grain, metric and party dimension, field, operator, value class, sort,
+page/action class, response schema and applicable index or aggregate contract.
+Rows are UTF-8 sorted by that tuple; the domain-separated row root and count are
+bound by `QUERY_DEFINITION_SET_ROOT/V2`. Two implementation-disjoint compilers,
+one walking the query grammar and one walking route/action plus serving-access
+registries, must emit byte-identical row sets with empty missing, extra,
+duplicate and unsupported roots. Golden fixtures and submitted benchmark rows
+are never authority for registry membership.
+
+Infinite literal values are partitioned in a selected release by deterministic
+indexed frequency. Null, invalid and typed boundary minimum or maximum take
+precedence. Every other valid literal is `ordinary-selective` when its exact
+matching subject count divided by the eligible cohort count is at most 0.10,
+and `ordinary-unselective` when it is greater than 0.10. Zero matches are
+selective. Counts come from the release-certified dimension projection and
+denominator, use no sampled statistics and are recorded before load begins.
+These rules are total and mutually exclusive. `QueryGoldenSuiteManifest`
+contains at least one fixture for every
 valid registry class and one refusal fixture for every invalid class.
 `QueryGoldenCertificationAttestation` requires exact equality between the
 registry class root and fixture-coverage root with empty missing, extra,
 duplicate and unsupported roots. The soak manifest selects that same root and
 runs every class at N and maximum scale under the applicable traffic profile.
 A hand-picked benign subset cannot satisfy either gate.
+
+Facet and field-value option sets are never silently truncated. Each response
+contains at most 200 UTF-8 ordered values and 256 KiB plus exact total-distinct
+count and either a signed continuation cursor or `END`. The cursor binds the
+release, dimension, filter semantics, last complete typed option key and access
+policy. Each page is one indexed bounded option RPC. Facet counts still cover
+the full cohort. An unpageable, over-byte or cursor-mismatched option set returns
+a typed refusal before corpus access; it cannot return an undocumented prefix.
 
 Query result delivery has no persistent result carrier. The route-specific
 serving RPC returns the bounded page it constructs and performs no per-query

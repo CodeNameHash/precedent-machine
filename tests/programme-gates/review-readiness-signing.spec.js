@@ -5,6 +5,7 @@ const test = require('node:test');
 const { signatureBytes } = require('../../lib/programme-gates/bytes');
 const {
   REGISTRY_DIGESTS,
+  REVIEW_CONTROLLER_POLICY,
   REVIEW_LANES,
 } = require('../../lib/programme-gates/registry');
 const {
@@ -33,6 +34,9 @@ const {
   EVIDENCE_SIGNATURE_DOMAIN,
   EVIDENCE_SIGNATURE_ROLE,
 } = require('../../lib/programme-gates/validator');
+const {
+  expectedTestExecutableDigest,
+} = require('../../lib/programme-gates/test-executable-registry');
 
 const ROOT = 'a'.repeat(64);
 const COMMIT = 'b'.repeat(40);
@@ -114,17 +118,17 @@ function fixture() {
     key_registry: keyRegistry,
     allowed_controllers: [{
       controller_id: 'CODEX_CLI_REVIEW_CONTROLLER',
-      controller_version: '1.0.0',
+      controller_version: 'LOCAL_REVIEW_CONTROLLER/V1',
     }],
     allowed_runtimes: [{
-      review_runtime_version: 'codex-cli/0.145.0',
-      review_runtime_binary_digest: DIGEST_B,
+      review_runtime_version: REVIEW_CONTROLLER_POLICY.review_runtime_version,
+      review_runtime_binary_digest: REVIEW_CONTROLLER_POLICY.review_runtime_binary_digest,
       fixed_controller_runtime_context_digest: DIGEST_C,
     }],
     allowed_prompts: REVIEW_LANES.map((lane) => ({
       lane_id: lane.lane_id,
       registered_prompt_id: lane.registered_prompt_id,
-      cold_review_prompt_digest: DIGEST_D,
+      cold_review_prompt_digest: REVIEW_CONTROLLER_POLICY.prompt_digests[lane.lane_id],
     })),
     allowed_independence_validators: [{
       validator_executable_digest: DIGEST_B,
@@ -138,9 +142,9 @@ function fixture() {
     const controllerRecord = {
       schema_version: 'TrustedReviewControllerRecord/V1',
       controller_id: 'CODEX_CLI_REVIEW_CONTROLLER',
-      controller_version: '1.0.0',
-      review_runtime_version: 'codex-cli/0.145.0',
-      review_runtime_binary_digest: DIGEST_B,
+      controller_version: 'LOCAL_REVIEW_CONTROLLER/V1',
+      review_runtime_version: REVIEW_CONTROLLER_POLICY.review_runtime_version,
+      review_runtime_binary_digest: REVIEW_CONTROLLER_POLICY.review_runtime_binary_digest,
       fixed_controller_runtime_context_digest: DIGEST_C,
       exact_specification_root: ROOT,
       exact_model_identifier: 'gpt-5.6-sol',
@@ -149,7 +153,7 @@ function fixture() {
       immutable_session_id: `session-${index}`,
       immutable_review_id: `review-${index}`,
       registered_prompt_id: lane.registered_prompt_id,
-      cold_review_prompt_digest: DIGEST_D,
+      cold_review_prompt_digest: REVIEW_CONTROLLER_POLICY.prompt_digests[lane.lane_id],
       controller_supplied_input_manifest_digest: DIGEST_B,
       exact_input_context_digest: DIGEST_C,
       input_context_digest_before_review: DIGEST_C,
@@ -243,7 +247,7 @@ function testResult(testId) {
     code_commit: COMMIT,
     environment: 'PRODUCTION',
     command_digest: 'f'.repeat(64),
-    executable_digest: '1'.repeat(64),
+    executable_digest: expectedTestExecutableDigest(testId),
     started_at: '2026-07-28T11:30:00.000Z',
     completed_at: '2026-07-28T11:45:00.000Z',
     exit_code: 0,
@@ -386,16 +390,8 @@ test('member, verification, request and signature drift all fail closed', () => 
     signature: validSignature,
   }).evidence_validation.reason_code, 'SIGNING_REQUEST_MISMATCH');
 
-  const driftedBundle = structuredClone(bundle);
-  driftedBundle.verified_review_set.reviewed_root = DIGEST_D;
-  assert.throws(
-    () => buildReviewApprovalSigningRequest({
-      authority,
-      bundle: driftedBundle,
-      candidate: driftedBundle.candidates[0],
-    }),
-    /verification facts have drifted/,
-  );
+  assert.equal(Object.hasOwn(bundle, 'verified_review_set'), false);
+  assert.equal(Object.hasOwn(bundle, 'verified_ben_approval'), false);
 
   const driftedMemberBundle = structuredClone(bundle);
   driftedMemberBundle.candidates[0].members[0].payload.controller_signature = 'invalid';
