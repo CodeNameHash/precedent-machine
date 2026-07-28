@@ -696,9 +696,9 @@ programme_gate_registry:
       required_adversarial_tests: [PROMOTION-EVIDENCE-01]
     - id: P9_DEPLOYMENT_PARITY
       phase: 9
-      evidence_contract: certified-executable-and-live-readiness-parity/v6
+      evidence_contract: certified-executable-and-live-readiness-parity/v7
       required_evidence_object_type: DeploymentParityAttestation
-      acceptance_claims: [certified_and_deployed_builds_equal, runtime_configuration_equal, readiness_tuple_equal]
+      acceptance_claims: [certified_and_deployed_builds_equal, runtime_configuration_equal, readiness_tuple_equal, production_release_statistics_root_equal, live_physical_plan_fingerprint_root_equal]
       required_adversarial_tests: [DEPLOY-CUTOVER-01]
     - id: P9_CUTOVER_AUTHORISATION
       phase: 9
@@ -708,10 +708,10 @@ programme_gate_registry:
       required_adversarial_tests: [CUTOVER-STATUS-TOPOLOGY-01]
     - id: P9_POSTCUTOVER_SMOKE
       phase: 9
-      evidence_contract: readiness-bound-postcutover-smoke-attestation/v6
+      evidence_contract: readiness-bound-postcutover-smoke-attestation/v7
       required_evidence_object_type: PostCutoverSmokeAttestation
-      acceptance_claims: [smoke_bound_to_active_readiness_tuple, live_suite_pass, failure_controller_not_triggered]
-      required_adversarial_tests: [POST-ACTIVATION-CONTROLLER-01]
+      acceptance_claims: [smoke_bound_to_active_readiness_tuple, live_suite_pass, live_query_plan_smoke_equal, failure_controller_not_triggered]
+      required_adversarial_tests: [POST-ACTIVATION-CONTROLLER-01, DEPLOY-CUTOVER-01]
     - id: P9_TRACEABILITY
       phase: 9
       evidence_contract: preterminal-bidirectional-trace-set-equality/v6

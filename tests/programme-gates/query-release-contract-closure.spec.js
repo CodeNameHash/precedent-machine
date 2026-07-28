@@ -12,6 +12,10 @@ const adversarial = fs.readFileSync(
   path.join(ROOT, 'docs/codex-program/adversarial-tests.md'),
   'utf8',
 );
+const gates = fs.readFileSync(
+  path.join(ROOT, 'docs/codex-program/programme-gates.yaml'),
+  'utf8',
+);
 
 test('candidate release closed action grammar includes held-promotion abandonment', () => {
   const closedActions = contracts.match(
@@ -67,4 +71,84 @@ test('capacity adversary rejects singular-tuple collapse and benign witnesses', 
       `CAPACITY-LOAD-01 is missing ${required}`,
     );
   }
+});
+
+test('capacity scale tuple derives all eight dimensions at 10N', () => {
+  const capacityContract = contracts.match(
+    /`CapacityManifest` additionally owns(?<body>[\s\S]*?)(?=\n`SupportedQueryShapeRegistry`)/,
+  );
+  assert.ok(capacityContract, 'CapacityManifest scale contract is missing');
+  const body = capacityContract.groups.body.replace(/\s+/g, ' ');
+  for (const required of [
+    'deal, observation, metric-slot, aggregate, serving-row, cohort-member, indexed-row and indexed-byte',
+    'Its first seven fields are therefore exactly ten times',
+    'sums `pg_relation_size` for each distinct selected index',
+    'field-by-field maximum',
+    'eight declared CapacityManifest maxima',
+  ]) {
+    assert.ok(body.includes(required), `capacity derivation is missing ${required}`);
+  }
+
+  const capacityAdversary = adversarial.match(
+    /- `CAPACITY-LOAD-01`:(?<body>[\s\S]*?)(?=\n- `[A-Z0-9-]+-\d{2}`:|\s*$)/,
+  );
+  const adversarialBody = capacityAdversary.groups.body.replace(/\s+/g, ' ');
+  for (const required of [
+    'first seven dimensions must each equal ten times',
+    'measure its exact indexed bytes',
+    'Multiplying the N indexed-byte value by ten',
+    'all eight selected CapacityManifest maxima',
+  ]) {
+    assert.ok(
+      adversarialBody.includes(required),
+      `capacity adversary is missing ${required}`,
+    );
+  }
+});
+
+test('deployment parity binds production statistics and actual live plans', () => {
+  const body = contracts.replace(/\s+/g, ' ');
+  for (const required of [
+    'the certified release-statistics root',
+    'the actual production PostgreSQL planner',
+    'observed production physical-plan-fingerprint root',
+    'exact equality of the certified and production statistics roots',
+    'PostCutoverSmokeAttestation repeats the live-plan probe',
+  ]) {
+    assert.ok(body.includes(required), `deployment parity is missing ${required}`);
+  }
+  for (const required of [
+    'production_release_statistics_root_equal',
+    'live_physical_plan_fingerprint_root_equal',
+    'live_query_plan_smoke_equal',
+    'required_adversarial_tests: [POST-ACTIVATION-CONTROLLER-01, DEPLOY-CUTOVER-01]',
+  ]) {
+    assert.ok(gates.includes(required), `programme gate is missing ${required}`);
+  }
+});
+
+test('certified release import grammar contains exactly eight actions', () => {
+  const importContract = contracts.match(
+    /For `CERTIFIED_RELEASE_IMPORT_BATCH`, OperationActionRegistry contains(?<body>[\s\S]*?)(?=\n- `ProductionImportFailureEvidence`)/,
+  );
+  assert.ok(importContract, 'certified release import grammar is missing');
+  const body = importContract.groups.body;
+  const declaration = body.match(/exactly eight top-level actions: (?<actions>[\s\S]*?)\./);
+  assert.ok(declaration, 'certified release import eight-action declaration is missing');
+  const actions = [...declaration.groups.actions.matchAll(/`([A-Z_]+)`/g)]
+    .map((match) => match[1]);
+  assert.deepEqual(actions, [
+    'OPEN_IMPORT',
+    'VERIFY_PRODUCTION_BLOB_AVAILABILITY',
+    'IMPORT_MEMBER_BATCH',
+    'BUILD_IMPORT_PARITY_BATCH',
+    'SEAL_IMPORT',
+    'BUILD_IMPORT_SEMANTIC_PARITY_BATCH',
+    'ATTEST_IMPORT',
+    'ABANDON_IMPORT',
+  ]);
+  assert.match(body, /exact eight-action\s+top-level set/);
+  assert.match(body, /A ninth action/);
+  assert.doesNotMatch(body, /seven-action\s+top-level set/);
+  assert.doesNotMatch(body, /An eighth action/);
 });

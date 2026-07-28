@@ -789,6 +789,13 @@ function validateRootCauseClosure() {
   const requiredContractTerms = [
     'exactly eight top-level actions: `OPEN_IMPORT`,',
     '`VERIFY_PRODUCTION_BLOB_AVAILABILITY`, `IMPORT_MEMBER_BATCH`',
+    'exact eight-action\n  top-level set',
+    'A ninth action,',
+    '`N_capacity` is the exact eight-field tuple measured',
+    'Its first seven fields are therefore exactly ten times',
+    'sums\n`pg_relation_size` for each distinct selected index',
+    'observed production physical-plan-fingerprint root',
+    'exact equality of the certified and production statistics roots',
     'No result-page carrier, per-query result',
     'impact_clear_for_metric_slot=PASS',
     'approved successor ContractFreezeAttestation',
@@ -802,6 +809,8 @@ function validateRootCauseClosure() {
     'ImmutableQueryExecutionResult',
     'IMMUTABLE_EXECUTION_RESULT_FETCH',
     '`CERTIFY_RELEASE_ACTIVATION`',
+    'exact seven-action\n  top-level set',
+    'An eighth action,\n  an omitted action, a semantic-parity phase',
   ]) {
     if (`${programme}\n${contracts}\n${adversarial}`.includes(forbidden)) {
       fail(`Removed root-cause contract remains present: ${forbidden}`);

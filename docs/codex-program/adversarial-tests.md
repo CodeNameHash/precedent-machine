@@ -1969,7 +1969,8 @@ The following adversarial closure tests are mandatory traceability entries:
   closed operation-schema equality. Assigning receipt policy only at action
   level, exposing other than the exact five DEAL_SCOPE_RUN actions or two
   MATERIALISE_SCOPE discriminators, retaining a standalone multi-subject scope
-  action, exposing other than the exact seven import actions, omitting either
+  action, exposing other than the exact eight import actions, omitting
+  `VERIFY_PRODUCTION_BLOB_AVAILABILITY`, adding a ninth action, omitting either
   `WRITE_WALKER_OUTPUT` phase or any import pre-seal
   dispatch, or omitting, wildcarding or widening any post-seal semantic-parity
   PRECOMMIT_ROLES, role-specific CLAIM_ROLE, role-specific TREE_BATCH or
@@ -2358,11 +2359,18 @@ The following adversarial closure tests are mandatory traceability entries:
   controller-failure, latency, cancellation and importer profiles respect the
   measured connection reserve and recover without a retry storm. Database-owned
   instrumentation proves every request stays within its exact top-level and
-  nested SQL-statement budget; `N` versus `10N` leaves that count unchanged, and
-  `N` equals the exact selected CandidateReleaseManifest cardinality tuple,
-  `10N` is its deterministic distribution-preserving tenfold expansion inside
-  one query-visible active serving namespace, and maximum-scale is the larger of
-  `10N` and the selected CapacityManifest maxima. Every governed benchmark query
+  nested SQL-statement budget; `N_capacity` versus `10N_capacity` leaves that
+  count unchanged, and `N_capacity` equals the exact selected
+  CandidateReleaseManifest cardinality tuple,
+  `10N_capacity` is its deterministic distribution-preserving tenfold expansion
+  inside one query-visible active serving namespace. The first seven dimensions
+  must each equal ten times `N_capacity`; independently enumerate cohort-
+  membership relations and selected-index entries, then rebuild the closed
+  index set under the frozen settings and measure its exact indexed bytes.
+  Multiplying the N indexed-byte value by ten, counting one selected index
+  twice, omitting a partial-index entry or using heap bytes fails. Maximum-scale
+  is the field-by-field larger of the measured `10N_capacity` tuple and all
+  eight selected CapacityManifest maxima. Every governed benchmark query
   must address a cohort ten times its `N` cohort; spreading the rows across
   mutually invisible namespaces fails. A separate multi-namespace fixture
   proves isolation only. The recorded roots, per-kind counts and selectivity distributions
@@ -2400,7 +2408,8 @@ The following adversarial closure tests are mandatory traceability entries:
   release-aware cursor; overflow must paginate or refuse before corpus access,
   never truncate.
   Every release execution class and every member of its bound witness set must
-  satisfy its p95, p99 and browser threshold at N and maximum scale. A missing
+  satisfy its p95, p99 and browser threshold at `N_capacity` and maximum scale.
+  A missing
   class, missing witness or smaller CapacityManifest cardinality component
   fails. No-fault steady and all-miss profiles must satisfy the fixed 99.9%
   schema-valid success and target-throughput floors, all passing profiles must
@@ -2585,7 +2594,17 @@ The following adversarial closure tests are mandatory traceability entries:
   commit. The readiness
   generation changes or the locked recheck fails with zero release-state change;
   a stale or replayed live-provider assertion fails, and an out-of-band runtime
-  identity mismatch serves zero corpus data.
+  identity mismatch serves zero corpus data. Independently alter one production
+  relation cardinality, column or extended-statistics payload, planner setting,
+  prepared-statement mode, schema or index; or make the actual production
+  `EXPLAIN (FORMAT JSON)` plan for one certified class or worst-case witness
+  differ in node, relation, index, join, predicate, grouping, sorting or
+  parallelism. Deployment parity fails on the unequal production statistics or
+  physical-plan root even if the stored serving projection still asserts the
+  certified fingerprint. Omitting a class or witness, copying the expected root,
+  probing a different role or namespace or reusing cached `EXPLAIN` also fails.
+  Post-cutover smoke binds every exercised class to the passing deployment-
+  parity member and takes the ordinary containment path on drift.
 - `READINESS-CAS-01`: stale predecessors, duplicate generations, forks and two
   concurrent revokers cannot produce two current mirrors. Gate expiry, selected
   intake revocation, status revocation, alias repoint, environment-reference

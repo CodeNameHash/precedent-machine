@@ -4429,8 +4429,8 @@ This file is the sole authority for detailed identities, state machines, writer 
   production-attempt audit. It covers unfinished import and semantic-parity
   targets in the one generation and precludes a second semantic-specific
   abandonment action. Generated RPC dispatch,
-  SQL branches and every registry projection must equal this exact seven-action
-  top-level set and each action's complete closed subgrammar. An eighth action,
+  SQL branches and every registry projection must equal this exact eight-action
+  top-level set and each action's complete closed subgrammar. A ninth action,
   an omitted action, a semantic-parity phase attached to another action or a
   lifecycle phase attached to `BUILD_IMPORT_SEMANTIC_PARITY_BATCH` blocks
   contract freeze and runtime DML.
@@ -13645,10 +13645,37 @@ application-side import write.
 metric-slot, aggregate, serving-row, cohort-member, indexed-row and indexed-byte
 cardinalities for the certified release, plus the maximum number of release
 namespaces used by load certification. Each value is a positive integer at or
-below the protocol bound. The maximum-scale fixture is mechanically the
-field-by-field maximum of `10N` and those declared values. The load manifest
-records both inputs and the derived tuple; any smaller component fails
-`P9_DATABASE_SOAK`.
+below the protocol bound. `N_capacity` is the exact eight-field tuple measured
+from the sealed candidate fixture. Its first five fields are the
+CandidateReleaseManifest's deal, observation, metric-slot, aggregate and
+serving-row counts. Its cohort-member field is the sum of the rows in every
+distinct query-visible cohort-membership relation selected by the
+SupportedQueryShapeRegistry, with each relation counted once. Its indexed-row
+field is the sum of logical index entries in every distinct index selected by
+that registry, again counted once; heap rows are excluded. Both sets and their
+per-relation counts are reproduced by two independent enumerators.
+
+The deterministic `10N_capacity` builder makes ten namespace-local, identity-
+disjoint copies of every `N_capacity` deal and all of its dependent
+observations, metric slots, aggregates, serving rows, cohort memberships and
+index-eligible rows, preserving values, predicates and selectivity
+distributions. Its first seven fields are therefore exactly ten times the
+corresponding `N_capacity` fields. The indexed-byte field is not guessed as ten
+times the original. The builder inserts rows in canonical identity order,
+rebuilds the closed index set once in canonical index-contract order under the
+frozen PostgreSQL major version, block size, collation, index definitions,
+fillfactor and build settings, runs the frozen statistics procedure, and sums
+`pg_relation_size` for each distinct selected index. The load manifest binds
+the builder executable and configuration digests, both independent relation
+and index inventories, the `N_capacity` tuple, the complete ten-copy derivation
+root, the measured `10N_capacity` tuple and the empty difference roots. A
+multiplied byte estimate, duplicate index count, omitted partial-index entry or
+multi-namespace copy fails before load.
+
+The maximum-scale tuple is mechanically the field-by-field maximum of that
+measured `10N_capacity` tuple and the eight declared CapacityManifest maxima.
+The load manifest records both inputs and the derived tuple; any smaller
+component fails `P9_DATABASE_SOAK`.
 
 `SupportedQueryShapeRegistry` is generated from the closed query grammar and
 ServingObjectAccessRegistry. Its unit is a complete
@@ -13768,8 +13795,47 @@ needed for runtime resolution. It becomes visible only with the atomic active-
 release pointer swap, rolls back with that pointer and is never loaded broadly
 into Node.
 
+`DeploymentManifest` binds the exact selected
+ReleaseQueryExecutionClassRegistry and WorstCaseWitnessDominanceProof roots,
+the certified release-statistics root, the frozen PostgreSQL major version and
+planner configuration, schema/index root, prepared-statement mode and the
+ordered certified physical-plan-fingerprint root. The release-statistics root
+is the canonical root over the complete statistics inputs actually consumed by
+the classifier and PostgreSQL planner, including relation cardinalities and
+the selected column and extended-statistics payloads. An asserted class or the
+fingerprint stored in ActiveQueryExecutionClassProjection is expected state,
+not evidence of the production planner's output.
+
+After ProductionImportAttestation and before cutover authorisation, one
+`DeploymentParityAttestation` runs against the inactive production namespace
+through the exact deployed serving role, RPC, search path, prepared-statement
+mode and planner configuration. A production-side enumerator independently
+recomputes the complete production release-statistics root after the frozen
+statistics procedure. A separate live-plan probe asks the actual production
+PostgreSQL planner for canonical `EXPLAIN (FORMAT JSON)` output for every
+release execution class and every bound worst-case witness. The plan
+canonicaliser retains node types, relation and index identities, join order and
+strategy, scan direction, predicates, grouping, sorting and parallelism, while
+removing only expressly registered volatile display fields. It hashes each
+result with its class, witness, SQL-template and parameter digests into the
+observed production physical-plan-fingerprint root.
+
+DeploymentParityAttestation selects the DeploymentManifest,
+ProductionImportAttestation and provider-signed immutable deployment identity
+and requires exact equality of the certified and production statistics roots,
+the certified and observed physical-plan-fingerprint roots and their complete
+class-and-witness member sets, with empty missing, extra, duplicate and
+mismatched roots. Caller-supplied statistics, cached `EXPLAIN`, a plan identity
+copied from the serving projection, partial class coverage or a probe under a
+different role, configuration or namespace cannot satisfy
+`P9_DEPLOYMENT_PARITY`. PostCutoverSmokeAttestation repeats the live-plan probe
+for every class exercised by the live smoke suite and binds its observed member
+root to the corresponding members of the passing DeploymentParityAttestation.
+Any statistics or plan drift before activation blocks cutover; any drift during
+the live smoke triggers the ordinary post-activation containment path.
+
 The soak manifest selects the exact ReleaseQueryExecutionClassRegistry and
-runs every member of every WorstCaseWitnessDominanceProof at N and maximum
+runs every member of every WorstCaseWitnessDominanceProof at `N_capacity` and maximum
 scale under the applicable traffic profile. It binds empty missing, extra,
 duplicate, ambiguous and unbenchmarked roots against the release registry and
 witness-set roots. A hand-picked benign subset cannot satisfy

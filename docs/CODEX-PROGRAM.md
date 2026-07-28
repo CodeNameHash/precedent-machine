@@ -2069,21 +2069,31 @@ The pre-cutover gates are:
   across one, four and maximum configured instances; cache and controller
   outages; two-second database latency; locked-query timeout; 25% client
   cancellation; circuit open, cooldown and one half-open probe; the normal mix
-  while the importer completes ten batches; and corpus fixtures at `N` and
-  `10N` proving unchanged route call and Node row/byte ceilings;
-- `N` is the exact deal, observation, metric-slot, aggregate and serving-row
-  cardinality tuple of the sealed CandidateReleaseManifest selected for import.
-  `10N` is a deterministic tenfold expansion inside one query-visible active
-  serving namespace. It remints every deal, observation, aggregate and serving-
-  row identity, preserves the candidate's metric, party, value-state and cohort-
-  selectivity distributions, and makes each governed benchmark query address a
-  cohort ten times the corresponding `N` cohort. A separate multi-namespace
-  isolation fixture proves routing isolation but cannot satisfy the scale test.
-  “Maximum
-  scale” is the larger of that `10N` fixture and the maximum cardinalities
-  certified by the selected CapacityManifest. The load manifest records all
-  three exact roots and counts before execution; a smaller fixture, changed
-  distribution or unbound synthetic set cannot satisfy the soak gate;
+  while the importer completes ten batches; and corpus fixtures at
+  `N_capacity` and `10N_capacity` proving unchanged route call and Node row/byte
+  ceilings;
+- `N_capacity` is the exact eight-field deal, observation, metric-slot,
+  aggregate, serving-row, cohort-member, indexed-row and indexed-byte tuple of
+  the sealed CandidateReleaseManifest fixture selected for import. Cohort
+  members and logical index entries are independently enumerated across the
+  exact distinct query-visible relations and indexes selected by the frozen
+  query registry. `10N_capacity` is a deterministic tenfold expansion inside
+  one query-visible active serving namespace. It remints every deal and all
+  dependent observations, metric slots, aggregates, serving rows, cohort
+  memberships and index-eligible rows, preserves the candidate's metric, party,
+  value-state and cohort-selectivity distributions, and makes each governed
+  benchmark query address a cohort ten times the corresponding `N_capacity`
+  cohort. Its first seven fields are exactly ten times `N_capacity`. Its indexed-
+  byte field is the measured sum of the closed selected index set after
+  canonical-order fixture loading and index rebuilding under the frozen
+  PostgreSQL and index-build settings, never a multiplied byte estimate. A
+  separate multi-namespace isolation fixture proves routing isolation but
+  cannot satisfy the scale test. “Maximum scale” is the field-by-field larger
+  of that measured `10N_capacity` fixture and all eight maximum cardinalities
+  certified by the selected CapacityManifest. The load manifest records the
+  two input tuples, derivation and inventory roots and derived maximum-scale
+  tuple before execution; a smaller fixture, changed distribution or unbound
+  synthetic set cannot satisfy the soak gate;
 - in the no-fault steady and target-rate all-miss profiles, at least 99.9% of
   requests return a schema-valid successful response and achieved throughput is
   at least 99.9% of the fixed target, with zero admission, circuit-open or
@@ -2219,7 +2229,13 @@ The pre-cutover gates are:
   scope while released payload-digest projections exactly equal the candidate
   manifest, with zero unmanifested or untraced IDs; and
 - the exact DeploymentManifest is certified for the executable production
-  system.
+  system. Deployment parity recomputes the complete production release-
+  statistics root and obtains canonical plans from the actual production
+  PostgreSQL planner for every certified execution class and worst-case witness
+  under the deployed serving role, RPC, prepared-statement mode and
+  configuration. Both roots and complete member sets must equal the certified
+  roots before cutover. Live smoke repeats the same plan probe for every class
+  it exercises and contains exposure on any drift.
 
 Phase 9 cannot advance on prose conformance. The mechanical acceptance set must
 also pass `APPLICABILITY-RELEASE-ORDER-01`,
