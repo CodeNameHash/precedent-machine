@@ -1,0 +1,38 @@
+name: Preflight local review controller
+
+on:
+  workflow_dispatch:
+    inputs:
+      expected_commit:
+        description: Exact main commit to preflight
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: [self-hosted, macOS, ARM64, canonical-review]
+    environment: programme-gate-production
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.expected_commit }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify exact main commit
+        env:
+          EXPECTED_COMMIT: ${{ inputs.expected_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_SHA}" = "${EXPECTED_COMMIT}"
+          test "$(git rev-parse HEAD)" = "${EXPECTED_COMMIT}"
+          test -z "$(git status --porcelain)"
+      - name: Preflight protected local controller
+        env:
+          EXPECTED_PROGRAMME_COMMIT: ${{ inputs.expected_commit }}
+          PROGRAMME_GATE_REVIEW_CONTROLLER_ED25519_PRIVATE_KEY_PEM: ${{ secrets.PROGRAMME_GATE_REVIEW_CONTROLLER_ED25519_PRIVATE_KEY_PEM }}
+          PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM: ${{ secrets.PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM }}
+        run: node scripts/preflight-local-review-controller.mjs
