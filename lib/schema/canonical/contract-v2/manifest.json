@@ -312,6 +312,20 @@
       "canonical_bytes_digest": "1a77924503fe034eac15e3da2a5c7e569cff9160e337ee1ef241ce162f90d0ff"
     },
     {
+      "relative_path": "relationship-definitions/uses-definition.v3.json",
+      "object_kind": "RELATIONSHIP_DEFINITION",
+      "stable_id": "USES_DEFINITION",
+      "schema_version": "RELATIONSHIP_DEFINITION/V1",
+      "canonical_bytes_digest": "14929d382dfe14b072efd458da317a790b6fec333ec894c960a38275408e121d"
+    },
+    {
+      "relative_path": "relationship-effect-schemas/uses-definition-effect.v2.json",
+      "object_kind": "RELATIONSHIP_EFFECT_SCHEMA",
+      "stable_id": "USES_DEFINITION_EFFECT",
+      "schema_version": "RELATIONSHIP_EFFECT_SCHEMA/V1",
+      "canonical_bytes_digest": "423f7d673d10e4b4e1073d6d739efa254e211ef650e518494b4c9458f82efdcd"
+    },
+    {
       "relative_path": "serving-exact-detail-action-definitions/accuracy-standard-claim-evidence.v1.json",
       "object_kind": "SERVING_EXACT_DETAIL_ACTION_DEFINITION",
       "stable_id": "ACCURACY_STANDARD_CLAIM_EVIDENCE",
@@ -354,6 +368,8 @@
     "MONEY_DENOMINATOR_PRECISION_POLICY": 1,
     "PARSER_PROPOSAL_BOUNDARY_DEFINITION": 1,
     "PROVISION_CONCEPT": 19,
+    "RELATIONSHIP_DEFINITION": 1,
+    "RELATIONSHIP_EFFECT_SCHEMA": 1,
     "SERVING_EXACT_DETAIL_ACTION_DEFINITION": 5
   },
   "per_kind_schema_versions": {
@@ -374,6 +390,12 @@
     ],
     "PROVISION_CONCEPT": [
       "PROVISION_CONCEPT/V1"
+    ],
+    "RELATIONSHIP_DEFINITION": [
+      "RELATIONSHIP_DEFINITION/V1"
+    ],
+    "RELATIONSHIP_EFFECT_SCHEMA": [
+      "RELATIONSHIP_EFFECT_SCHEMA/V1"
     ],
     "SERVING_EXACT_DETAIL_ACTION_DEFINITION": [
       "SERVING_EXACT_DETAIL_ACTION_DEFINITION/V1"
