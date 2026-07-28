@@ -18,6 +18,10 @@ const {
   preflightContainmentEvidenceSignature,
 } = require('../../lib/programme-gates/containment-signed-preflight');
 const {
+  buildContainmentStatusReadiness,
+  createContainmentStatusReadinessAuthority,
+} = require('../../lib/programme-gates/containment-status-readiness');
+const {
   containmentMembers,
   enumerateContainmentExpectedMembers,
   memberSchemaSetForContract,
@@ -43,6 +47,9 @@ const {
 const {
   verifySignature,
 } = require('../../lib/programme-gates/signatures');
+const {
+  attachProgrammeGateStatusSignature,
+} = require('../../lib/programme-gates/status');
 
 const ROOT = 'a'.repeat(64);
 const COMMIT = 'b'.repeat(40);
@@ -729,4 +736,179 @@ test('signed evidence preflight refuses invalid signatures, drift and injected a
     }),
     /closed input/,
   );
+});
+
+test('two validated containment envelopes produce only two PASS rows in unsigned status', async () => {
+  const { publicKey, privateKey } = crypto.generateKeyPairSync('ed25519');
+  const validatorExecutableDigest = 'e'.repeat(64);
+  const keyRegistry = {
+    schema_version: 'TrustedProgrammeGatePublicKeys/V1',
+    registry_state: 'ACTIVE',
+    keys: [{
+      key_id: 'TEST_CONTAINMENT_VALIDATOR',
+      algorithm: 'Ed25519',
+      public_key_pem: publicKey.export({ format: 'pem', type: 'spki' }).toString('utf8'),
+      permitted_roles: [EVIDENCE_SIGNATURE_ROLE],
+      permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN],
+      valid_from: '2026-07-27T00:00:00.000Z',
+      valid_until: '2026-07-29T00:00:00.000Z',
+      revoked_at: null,
+    }],
+  };
+  const signingAuthority = createContainmentSigningRequestAuthority({
+    keyRegistry,
+    validatorConfigurationDigest: REGISTRY_DIGESTS.validator_configuration,
+    validatorExecutableDigest,
+    validatorKeyId: 'TEST_CONTAINMENT_VALIDATOR',
+    verificationTime: OBSERVED_AT,
+  });
+  const preflightAuthority = createContainmentSignedPreflightAuthority({
+    keyRegistry,
+    validatorExecutableDigests: [validatorExecutableDigest],
+    verificationTime: OBSERVED_AT,
+  });
+  const statusAuthority = createContainmentStatusReadinessAuthority({
+    codeCommit: COMMIT,
+    environment: 'PRODUCTION',
+    keyRegistry,
+    specificationRoot: ROOT,
+    validatorExecutableDigest,
+    validatorKeyId: 'TEST_CONTAINMENT_VALIDATOR',
+    verificationTime: OBSERVED_AT,
+  });
+  const bundle = await readyBundle();
+  const signedPreflights = bundle.candidates.map((candidate) => {
+    const gate = GATES.find((entry) => entry.id === candidate.gate_id);
+    const signingRequest = buildContainmentEvidenceSigningRequest({
+      authority: signingAuthority,
+      bundle,
+      candidate,
+      gate,
+    });
+    return preflightContainmentEvidenceSignature({
+      authority: preflightAuthority,
+      bundle,
+      candidate,
+      gate,
+      signingRequest,
+      signature: crypto.sign(
+        null,
+        Buffer.from(signingRequest.signing_frame_base64, 'base64'),
+        privateKey,
+      ).toString('base64'),
+    });
+  });
+  const readiness = buildContainmentStatusReadiness({
+    authority: statusAuthority,
+    bundle,
+    signedPreflights,
+  });
+
+  assert.equal(readiness.readiness_state, 'READY_FOR_REMAINING_G0_EVIDENCE');
+  assert.deepEqual(readiness.passing_gate_ids, [
+    'G0_MARKET_STATS_CONTAINED',
+    'G0_BROAD_CORPUS_ROUTES_CONTAINED',
+  ]);
+  assert.equal(readiness.unsigned_status.ordered_gate_projection.length, 35);
+  assert.deepEqual(
+    readiness.unsigned_status.ordered_gate_projection.map((row) => row.state),
+    ['PASS', 'PASS', ...Array(33).fill('OPEN')],
+  );
+  assert.equal(readiness.unsigned_status.ordered_work_class_projection.length, 13);
+  assert.deepEqual(
+    readiness.unsigned_status.ordered_work_class_projection
+      .filter((row) => row.state === 'PASS')
+      .map((row) => row.work_class),
+    ['specification_review', 'gate_status_bootstrap', 'emergency_containment'],
+  );
+  assert.equal(
+    readiness.unsigned_status.ordered_work_class_projection
+      .find((row) => row.work_class === 'canonical_work_start').state,
+    'OPEN',
+  );
+  assert.equal(readiness.status_signature, null);
+  assert.equal(Object.hasOwn(readiness.unsigned_status, 'signature'), false);
+  assert.equal(readiness.formal_status_state, 'OPEN');
+  assert.equal(readiness.bootstrap_nonce_consumed, false);
+  assert.equal(readiness.status_publication_attempted, false);
+  assert.equal(Object.isFrozen(readiness), true);
+  assert.throws(
+    () => attachProgrammeGateStatusSignature({
+      authority: statusAuthority.statusAuthority,
+      unsignedStatus: readiness.unsigned_status,
+      signature: 'AA==',
+    }),
+    /status signature was not verified/,
+  );
+});
+
+test('status readiness independently rejects a forged passing preflight', async () => {
+  const { publicKey } = crypto.generateKeyPairSync('ed25519');
+  const validatorExecutableDigest = 'e'.repeat(64);
+  const keyRegistry = {
+    schema_version: 'TrustedProgrammeGatePublicKeys/V1',
+    registry_state: 'ACTIVE',
+    keys: [{
+      key_id: 'TEST_CONTAINMENT_VALIDATOR',
+      algorithm: 'Ed25519',
+      public_key_pem: publicKey.export({ format: 'pem', type: 'spki' }).toString('utf8'),
+      permitted_roles: [EVIDENCE_SIGNATURE_ROLE],
+      permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN],
+      valid_from: '2026-07-27T00:00:00.000Z',
+      valid_until: '2026-07-29T00:00:00.000Z',
+      revoked_at: null,
+    }],
+  };
+  const signingAuthority = createContainmentSigningRequestAuthority({
+    keyRegistry,
+    validatorConfigurationDigest: REGISTRY_DIGESTS.validator_configuration,
+    validatorExecutableDigest,
+    validatorKeyId: 'TEST_CONTAINMENT_VALIDATOR',
+    verificationTime: OBSERVED_AT,
+  });
+  const statusAuthority = createContainmentStatusReadinessAuthority({
+    codeCommit: COMMIT,
+    environment: 'PRODUCTION',
+    keyRegistry,
+    specificationRoot: ROOT,
+    validatorExecutableDigest,
+    validatorKeyId: 'TEST_CONTAINMENT_VALIDATOR',
+    verificationTime: OBSERVED_AT,
+  });
+  const bundle = await readyBundle();
+  const signedPreflights = bundle.candidates.map((candidate) => {
+    const gate = GATES.find((entry) => entry.id === candidate.gate_id);
+    const request = buildContainmentEvidenceSigningRequest({
+      authority: signingAuthority,
+      bundle,
+      candidate,
+      gate,
+    });
+    return {
+      preflight_type: 'ProgrammeGateContainmentSignedEvidencePreflight/V1',
+      gate_id: candidate.gate_id,
+      evidence_validation: { valid: true, state: 'PASS' },
+      signed_envelope: {
+        ...request.unsigned_envelope,
+        signature: Buffer.alloc(64, 9).toString('base64'),
+      },
+      evidence_validation_state: 'PASS',
+      formal_gate_state: 'OPEN',
+      private_key_used: false,
+      status_publication_attempted: false,
+    };
+  });
+  const readiness = buildContainmentStatusReadiness({
+    authority: statusAuthority,
+    bundle,
+    signedPreflights,
+  });
+
+  assert.equal(readiness.readiness_state, 'OPEN');
+  assert.deepEqual(readiness.passing_gate_ids, []);
+  assert.ok(readiness.unsigned_status.ordered_gate_projection.every(
+    (row) => row.state === 'OPEN',
+  ));
+  assert.equal(readiness.status_signature, null);
+  assert.equal(readiness.bootstrap_nonce_consumed, false);
 });
