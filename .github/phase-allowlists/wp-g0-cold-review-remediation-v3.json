@@ -1,0 +1,22 @@
+{
+  "phase": "WP-G0-COLD-REVIEW-REMEDIATION-V3",
+  "allowed": [
+    ".github/phase-allowlists/wp-g0-cold-review-remediation-v3.json",
+    "docs/CODEX-PROGRAM.md",
+    "docs/codex-program/adversarial-tests.md",
+    "docs/codex-program/canonical-contracts.md",
+    "docs/codex-program/programme-gates.yaml",
+    "docs/codex-program/specification-manifest.json",
+    "scripts/verify-codex-program-spec.mjs"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "lib/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Closes the remaining writer, promotion-fence, response-audit and acceptance-definition lifecycle gaps found by the third signed cold review. It changes no product runtime, corpus data, production release pointer or taxonomy value."
+}

@@ -171,13 +171,15 @@ CORRECTED (the plan below rests on these, not the review's wording):
   `gate_status_bootstrap` work class is the only other exception. It permits only
   the governance amendment, trusted review-controller software and evidence
   schemas, gate evidence schemas, deterministic compilation and implementation
-  of the already frozen acceptance definitions, enumerators and predicates, the
+  of the bootstrap-frozen acceptance definitions, enumerators and predicates, the
   certification integrity validator, signing system, status
   publisher, `ProgrammeStatusPublicationHead` and their tests. It does not
   permit corpus extraction, reprocessing, writes, backfills, production data
   changes, release import or activation, product feature activation, or any
-  change to an acceptance AST, expected value, member universe, required test or
-  trust-root fingerprint. After
+  change to a bootstrap-frozen acceptance AST, expected value, member universe,
+  required test or trust-root fingerprint. Later P1 and P9 definitions are
+  CanonicalContractBundle members and remain `OPEN` until Freeze Gate approval;
+  bootstrap cannot create them. After
   the start gate,
   approved architectural slices proceed independently and leave `main`
   deployable.

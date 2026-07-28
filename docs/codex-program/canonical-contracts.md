@@ -80,6 +80,7 @@ This file is the sole authority for detailed identities, state machines, writer 
   `OpenWorldEvidenceClosure`, `OpenWorldPrimitiveObservation`,
   `OpenWorldPrimitiveRelationship`, `OpenWorldPrimitiveCollectionRoot`,
   `OpenWorldCandidateDisposition`,
+  `ReviewedSourceSpecificPublicationDecision`,
   `OpenWorldCandidateDispositionManifest`, `OpenWorldReviewQueueRoot`,
   `SemanticImpactWalkerOutput`,
   `SemanticImpactEnumeratorIndependenceAttestation`, `SemanticImpactClosure`,
@@ -667,14 +668,22 @@ This file is the sole authority for detailed identities, state machines, writer 
   types and paths, measurement executable and configuration digests, comparison
   operator and expected typed value. A missing, ambiguous, differently digested
   or unbound definition leaves the gate `OPEN`; a claim name alone has no
-  acceptance meaning. The definition is not authored during bootstrap. Its
-  sole normative source is the canonical gate entry plus the named evidence-
-  object contract and member-universe contract in this file at the reviewed
-  specification root. Its ID is the domain-separated hash of those exact bytes
+  acceptance meaning. The definition is not authored during bootstrap.
+  `BOOTSTRAP_FROZEN` gates select the reviewed specification and exact closed
+  validator-executable set. `BUNDLE_FROZEN` gates select an evidence-object
+  schema, member-universe definition and predicate AST that are authored
+  CanonicalContractBundle members and become immutable only through the passing
+  ContractFreezeAttestation; they remain `OPEN` before that freeze and cannot be
+  supplied by evidence, status or runtime callers. The tier mapping is total and
+  frozen in the gate registry. A bundle-frozen definition cannot evaluate
+  P1_CONTRACT_FREEZE_ATTESTED itself, which is bootstrap-frozen, so there is no
+  circular self-certification. Each definition's ID is the domain-separated hash of those exact bytes
   and the frozen `programme-gate-predicate-dsl/v1` AST. That DSL permits only
   the operators and explicit typed expected values listed in the registry. No
   executable, bootstrap principal, evidence producer, request or owner
-  statement may choose or weaken the AST. Two implementation-disjoint compilers
+  statement may choose or weaken the AST. For bundle-frozen gates, Freeze Gate
+  review and Ben approval cover the semantic diff of every new or changed
+  evidence schema, member path, measurement, operator and expected value. Two implementation-disjoint compilers
   and a small reference interpreter must derive byte-identical acceptance-
   definition bytes and results before the definition is usable. Executable and
   configuration digests prove which conforming implementation ran; they are not
@@ -2330,6 +2339,14 @@ This file is the sole authority for detailed identities, state machines, writer 
   predecessor-disposition references for `ADMISSION_CARRY_FORWARD` or their
   forbidden-field markers for `DIRECT_REVIEW`. Pending, deferred, generic
   unmapped, failed, not examined and a sixth catch-all value are invalid.
+  `REJECTED_NON_SUBSTANTIVE_OR_INVALID` additionally requires exactly one
+  closed proof: `NO_SUBSTANTIVE_PROPOSITION`, with affirmative legal review that
+  the complete evidence closure contains no independently supportable legal
+  proposition or primitive; or `PRESERVED_BY_EXACT_CANDIDATE`, naming another
+  final candidate whose evidence closure and primitive collection fully cover
+  the signal without loss. An invalid model shape, weak confidence or proximity
+  to a known concept is never enough. Missing proof, partial coverage or a
+  genuinely novel proposition under the rejection branch keeps `W_open` false.
   `OpenWorldCandidateDispositionManifest` partitions every effective terminal
   candidate occurrence from the reconciled `OpenWorldEffectiveOccurrenceRoot`
   exactly once with empty missing, extra, duplicate, conflicting,
@@ -2593,7 +2610,10 @@ This file is the sole authority for detailed identities, state machines, writer 
   exact candidate, disposition and primitive-collection root and selects exactly
   one source-backed primitive-observation occurrence as the display claim. The
   selected occurrence must be a member of that root, must have a publishable
-  explicit claim state, and supplies the row's sole `source_claim_state`.
+  explicit claim state of `PRESENT`, and supplies the row's sole
+  `source_claim_state`. `ABSENT`, `NOT_APPLICABLE`, `NOT_EXAMINED` and `FAILED`
+  are prohibited for this variant; absence and applicability require a governed
+  canonical question, while the latter two remain review-only states.
   Every other primitive remains in the complete ordered collection and child
   detail but cannot silently replace or aggregate the selected display claim.
   If no one primitive fairly represents the proposition, review must create a
@@ -4858,7 +4878,8 @@ This file is the sole authority for detailed identities, state machines, writer 
   serving row. The offline reviewer renders `ValidatedSemanticGraph` and its
   candidates through an exhaustive non-persisting view; there is no separate
   writable review-row carrier. `RECORD_OPEN_WORLD_DISPOSITIONS` may append only the exact final
-  reviewed dispositions, both independent impact-walker outputs,
+  reviewed dispositions, ReviewedSourceSpecificPublicationDecision objects for
+  `REVIEWED_SOURCE_SPECIFIC` dispositions, both independent impact-walker outputs,
   SemanticImpactEnumeratorIndependenceAttestation, reconciled
   SemanticImpactClosures, disposition manifest and OpenWorldReviewQueueRoot. It
   cannot alter a candidate, primitive, mapping or contract key. Both variants are
@@ -5527,6 +5548,18 @@ This file is the sole authority for detailed identities, state machines, writer 
   `ABANDON_GENERATION` actions. `ISSUE_INPUT_RECHECK` is legal only after the
   two projection roots exist and is the sole producer of
   `CandidateInputRecheckAttestation`.
+  `PREPARE_INPUT_BATCH` has a closed `RESIDUAL_CLOSURE` discriminator with
+  `ENTRY_BATCH` and `TERMINAL_SET` phases. `ENTRY_BATCH` is the sole producer of
+  GovernedResidualDisposition, both independent impact projections and
+  GovernedResidualImpactClosure members for the sealed input residual universe.
+  `TERMINAL_SET` is the sole producer of
+  GovernedResidualDispositionManifest and GovernedResidualReviewQueueRoot after
+  independently recomputing exact universe coverage and impact equality.
+  CanonicalWriterDispositionRegistry admits only those logical types under
+  those tuples, uses content-addressed batch or terminal-root receipts, emits no
+  serving row or outbox, and blocks `SEAL_INPUT` unless the terminal queue root
+  is the governed empty root. Direct DML, a DEAL_SCOPE_RUN substitute or another
+  candidate action is prohibited.
   `CandidateBuildHead` stores only current contiguous candidate
   generation, `OPEN`, `INPUT_SEALED`, `PREPARED`, `FROZEN` or `ABANDONED` and
   exact current immutable `CandidateBuildTransition` ID. The OPEN transition
@@ -6657,6 +6690,13 @@ This file is the sole authority for detailed identities, state machines, writer 
   HistoricalReactivationEligibilityAttestation, originating
   RollbackEvent, exact exposure-off before tuple and exact retained target tuple;
   it forbids a CandidateBuildHead-currentness claim for the historical target.
+  Its genesis `AVAILABLE` version is created only by the generated
+  `CONTRACT_FREEZE/INITIALISE_CANDIDATE_PROMOTION_FENCE` action in the same
+  serialisable transaction that first installs the approved
+  ContractFreezeAttestation and genesis CandidateInputHead. It requires no
+  existing fence, carries `NO_CANDIDATE`, generation 1 and the exact frozen
+  contract pair, and its receipt is the sole genesis evidence. Exact replay
+  returns that version; any second genesis or split transaction writes nothing.
   The controller signature is stored outside the version payload and covers its
   completed digest. Pre-cutover certification locks CandidatePromotionFence,
   CandidateInputHead and CandidateBuildHead in its generated lock-plan order and may compare-and-
@@ -6681,10 +6721,20 @@ This file is the sole authority for detailed identities, state machines, writer 
   variant. Only the winning PostActivation `COMMIT_PASS` action may install a higher
   `AVAILABLE` version; it hashes the PASS_FIXED context head, consumed
   PostActivationPassCommitLease, exact COMMIT_PASS receipt and exact passing READY, trace and smoke
-  evidence. A passing smoke alone has no fence authority. Explicit current-candidate
-  abandonment may install `AVAILABLE` only after proving no ActivationEvent
+  evidence. A passing smoke alone has no fence authority.
+  `CANDIDATE_RELEASE_FREEZE/ABANDON_HELD_PROMOTION` is the sole pre-activation
+  current-candidate abandonment action. It may install `AVAILABLE` only after
+  proving no ActivationEvent
   exists for the held target or the acknowledged ServingFenceVersion is BLOCKED
-  and database exposure is off. Historical-reactivation abandonment instead
+  and database exposure is off, and it atomically appends the typed abandonment
+  event, fence successor and receipt under the generated lock plan. After a
+  failed activation has installed `REVOKED`, only
+  `FAILURE_RECOVERY/RESTORE_CANDIDATE_PROMOTION_AVAILABILITY` may return the
+  fence to `AVAILABLE`. It requires the exact failed attempt's terminal
+  containment, passing legacy or historical restoration smoke, exposure on only
+  for that restored prior tuple, fixed FailureRecoveryBranchHead and
+  TraceabilityFailureTerminal, and writes the recovery event, no-candidate
+  AVAILABLE successor and receipt atomically. Historical-reactivation abandonment instead
   installs a higher `REVOKED` version and records immutable typed abandonment
   evidence naming its originating RollbackEvent; the later failure terminal
   selects that evidence. An expired hold installs `REVOKED`, never automatically
@@ -8860,9 +8910,8 @@ This file is the sole authority for detailed identities, state machines, writer 
   never candidate members, release trace rows or corpus truth and cannot mutate
   a completed trace. CompletionTraceCutoff may capture the operational-audit
   head at completion without purporting to enumerate later requests.
-  Per-request admission-consumption records and ServingResponseBindings live in
-  UTC-day Postgres partitions with exactly the current and preceding two
-  partitions online. Before an older partition is dropped, an independent
+  Per-request admission-consumption records live in UTC-day Postgres partitions
+  with exactly the current and preceding two partitions online. Before an older partition is dropped, an independent
   exporter writes its canonical member root, counts and hourly typed aggregates
   to immutable object storage and a signed
   `OperationalAuditPartitionArchiveReceipt`; only a verified receipt permits
@@ -8871,7 +8920,14 @@ This file is the sole authority for detailed identities, state machines, writer 
   a fixed 400-day online retention, and are then exported and dropped under the
   same rule. `CapacityManifest` fixes maximum admission rate, per-row bytes,
   partition bytes, indexes, export deadline and emergency backpressure below the
-  database storage and write ceilings. A missing export, oversized row, late
+  database storage and write ceilings. ServingResponseBinding is never written
+  to Postgres. After the final wire bytes and digest exist, the runtime appends
+  it to the external immutable operational-audit sink through a bounded local
+  queue. This append is not a database call or route-serving dependency, carries
+  no response authority and cannot delay or alter corpus data. CapacityManifest
+  fixes queue entries, bytes and flush deadline; sink failure opens admission
+  before the queue bound and drains or rejects later requests, never drops or
+  fabricates a binding. A missing export, oversized row, late
   partition, unbounded index or failed drop opens the circuit before the bound
   is exceeded. CompletionTraceCutoff binds the current partition-head and
   archived-root tuple, not indefinite raw-row retention.

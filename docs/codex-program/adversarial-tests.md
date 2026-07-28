@@ -993,7 +993,10 @@ The following adversarial closure tests are mandatory traceability entries:
   disposing the cue, or making discovery catalogue-aware, fails its total atom
   partition and input firewall. `W_open = PASS` requires one terminal occurrence,
   one final disposition and one reconciled impact closure, not an empty source-
-  specific partition. A shared definition cue used by three operative
+  specific partition. `REJECTED_NON_SUBSTANTIVE_OR_INVALID` passes only with
+  affirmative `NO_SUBSTANTIVE_PROPOSITION` review or a complete
+  `PRESERVED_BY_EXACT_CANDIDATE` mapping; invalid model shape, low confidence
+  and nearest-concept similarity cannot discard a real cue. A shared definition cue used by three operative
   provisions retains all three dependency edges without duplicating the cue;
   omitting or collapsing any edge fails even when counts are preserved.
 - `OPEN-WORLD-REP-ATTRIBUTE-01`: place a previously unseen substantive
@@ -1540,10 +1543,13 @@ The following adversarial closure tests are mandatory traceability entries:
   no canonical rows.
 - `MUTABLE-AUTHORITY-CLOSURE-01`: regenerate GlobalMutableAuthorityRegistry from
   every mutable head, controller, readiness mirror, fence, status and publication
-  carrier. Each has exactly one authorised operation/action and one stable
-  authority-key extractor, and the registry complement against
+  carrier. Each carrier has exactly one registry entry and one stable authority-
+  key extractor. Every permitted state-transition edge has exactly one
+  authorised operation/action tuple, although one authority may have several
+  disjoint transition edges, and the registry complement against
   CanonicalPhysicalCarrierRegistry is empty. Delete, duplicate, alias or leave
-  unclassified one mutable carrier; give two actions authority; or attempt a
+  unclassified one mutable carrier; give two actions the same transition edge;
+  omit the promotion-fence genesis or recovery edge; or attempt a
   state change through a content-addressed builder or direct DML. Contract
   compilation or the writer fails before any head, event, receipt or outbox
   mutation.
@@ -1745,8 +1751,16 @@ The following adversarial closure tests are mandatory traceability entries:
   only while that observed head remains current and never rewinds it.
 - `PROMOTION-HOLD-EXPIRY-01`: expiry of a HELD CandidatePromotionFence installs
   only a higher REVOKED version. It never restores AVAILABLE or exposure.
-  Abandonment may release the hold only after proving no activation exists or
-  an acknowledged BLOCKED serving fence and exposure-off state.
+  Genesis AVAILABLE is created exactly once by
+  CONTRACT_FREEZE/INITIALISE_CANDIDATE_PROMOTION_FENCE with the genesis input
+  head and no candidate. Pre-activation abandonment may release the hold only
+  through ABANDON_HELD_PROMOTION after proving no activation exists or an
+  acknowledged BLOCKED serving fence and exposure-off state. A failed
+  activation's REVOKED fence returns to AVAILABLE only through
+  RESTORE_CANDIDATE_PROMOTION_AVAILABILITY after terminal containment, passing
+  prior-tuple restoration smoke and the fixed failure terminal. Omit, duplicate
+  or race any genesis, abandonment or recovery event, lock, successor or receipt:
+  the fence stays unavailable and no input head advances.
 - `SERVING-FENCE-CACHE-01`: every request, including a warm cache hit, obtains
   one fresh request-nonce-bound admission for the exact READY fence and retains
   its lease through the last response byte, then consumes the token through the
@@ -2097,7 +2111,8 @@ The following adversarial closure tests are mandatory traceability entries:
   singular source-claim state must equal the exact primitive selected by its
   ReviewedSourceSpecificPublicationDecision. Remove that primitive from the
   collection, select two, derive a majority state or change the state without a
-  new reviewed decision: publication must block while valid sibling rows remain
+  new reviewed decision, or select any state other than `PRESENT`: publication
+  must block while valid sibling rows remain
   renderable.
 - `RESULT-LINEAGE-01`: changing only a ClaimScopeClosure,
   CompositionScopeClosure, RelationshipRevision, effect payload, endpoint,
@@ -2264,7 +2279,11 @@ The following adversarial closure tests are mandatory traceability entries:
   older member root before its generated drop, keep monthly aggregates within
   the fixed 400-day bound and stay below the CapacityManifest row, byte, index
   and export ceilings. A missing archive receipt, stalled drop or oversized
-  partition opens the circuit before the database bound is exceeded. The lease
+  partition opens the circuit before the database bound is exceeded.
+  ServingResponseBinding produces zero Postgres calls: each final wire digest
+  appends to the bounded external audit sink, and sink outage fills only the
+  CapacityManifest queue before admission opens the circuit with no dropped
+  binding or unbudgeted response-write RPC. The lease
   TTL and every route or chunk deadline satisfy
   the frozen skew, flush and cancellation inequalities; maximum-minus-one
   passes, maximum-plus-one fails before corpus access, and transition waits for
