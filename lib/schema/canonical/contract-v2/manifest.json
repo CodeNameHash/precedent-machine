@@ -158,6 +158,41 @@
       "canonical_bytes_digest": "fff4cdca25f715e7e8142419c850fdb2db36f743b30a65b4f44377cbdccc9527"
     },
     {
+      "relative_path": "no-shop-semantic-schema-inputs/no-shop-action-comparison-rollup.v1.json",
+      "object_kind": "NO_SHOP_SEMANTIC_SCHEMA_INPUT",
+      "stable_id": "NO_SHOP_ACTION_COMPARISON_ROLLUP",
+      "schema_version": "NO_SHOP_SEMANTIC_SCHEMA_INPUT/V1",
+      "canonical_bytes_digest": "619f051d5ed9d72689dae19e1d329a0c10018903c8a01ff716e79f46227016de"
+    },
+    {
+      "relative_path": "no-shop-semantic-schema-inputs/no-shop-action-occurrence.v1.json",
+      "object_kind": "NO_SHOP_SEMANTIC_SCHEMA_INPUT",
+      "stable_id": "NO_SHOP_ACTION_OCCURRENCE",
+      "schema_version": "NO_SHOP_SEMANTIC_SCHEMA_INPUT/V1",
+      "canonical_bytes_digest": "a7fbde9e4154fd434e8b830d05605a90e015ac278a0a64b413cba34f1e85ff14"
+    },
+    {
+      "relative_path": "no-shop-semantic-schema-inputs/no-shop-exception-effect.v1.json",
+      "object_kind": "NO_SHOP_SEMANTIC_SCHEMA_INPUT",
+      "stable_id": "NO_SHOP_EXCEPTION_EFFECT",
+      "schema_version": "NO_SHOP_SEMANTIC_SCHEMA_INPUT/V1",
+      "canonical_bytes_digest": "60074dd8a734be0b33eee400c14e6b3f78854de75295a802c3a494300267d906"
+    },
+    {
+      "relative_path": "no-shop-semantic-schema-inputs/no-shop-inline-permission-effect.v1.json",
+      "object_kind": "NO_SHOP_SEMANTIC_SCHEMA_INPUT",
+      "stable_id": "NO_SHOP_INLINE_PERMISSION_EFFECT",
+      "schema_version": "NO_SHOP_SEMANTIC_SCHEMA_INPUT/V1",
+      "canonical_bytes_digest": "b12e73979cb631f14e076e6a27107d88c05dea6de5c0c734b0ba4cfb25e5d18b"
+    },
+    {
+      "relative_path": "no-shop-semantic-schema-inputs/no-shop-notice-obligation.v6.json",
+      "object_kind": "NO_SHOP_SEMANTIC_SCHEMA_INPUT",
+      "stable_id": "NO_SHOP_NOTICE_OBLIGATION",
+      "schema_version": "NO_SHOP_SEMANTIC_SCHEMA_INPUT/V1",
+      "canonical_bytes_digest": "9f7d2e76f4eef5bd9f0b270b89512b74341786347c1b607fad531b5815e0155d"
+    },
+    {
       "relative_path": "parser-proposal-boundary-definitions/parser-v2-structural-definition-proposal.v1.json",
       "object_kind": "PARSER_PROPOSAL_BOUNDARY_DEFINITION",
       "stable_id": "PARSER_V2_STRUCTURAL_DEFINITION_PROPOSAL",
@@ -366,6 +401,7 @@
     "CLAIM_INTERPRETATION_POLICY": 1,
     "COMPONENT_DEFINITION": 9,
     "MONEY_DENOMINATOR_PRECISION_POLICY": 1,
+    "NO_SHOP_SEMANTIC_SCHEMA_INPUT": 5,
     "PARSER_PROPOSAL_BOUNDARY_DEFINITION": 1,
     "PROVISION_CONCEPT": 19,
     "RELATIONSHIP_DEFINITION": 1,
@@ -384,6 +420,9 @@
     ],
     "MONEY_DENOMINATOR_PRECISION_POLICY": [
       "MONEY_DENOMINATOR_PRECISION_POLICY/V1"
+    ],
+    "NO_SHOP_SEMANTIC_SCHEMA_INPUT": [
+      "NO_SHOP_SEMANTIC_SCHEMA_INPUT/V1"
     ],
     "PARSER_PROPOSAL_BOUNDARY_DEFINITION": [
       "PARSER_PROPOSAL_BOUNDARY_DEFINITION/V1"

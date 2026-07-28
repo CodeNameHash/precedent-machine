@@ -155,6 +155,26 @@ function fixture(mutator = () => {}) {
   return root;
 }
 
+function noShopSchemaFixture(mutator = () => {}) {
+  return fixture((state) => {
+    const value = member(
+      'NO_SHOP_SEMANTIC_SCHEMA_INPUT',
+      'NO_SHOP_ACTION_OCCURRENCE',
+      'NO_SHOP_SEMANTIC_SCHEMA_INPUT/V1',
+      {
+        authored_schema: {
+          schema_key: 'NO_SHOP_ACTION_OCCURRENCE',
+          schema_version: 1,
+          record_schema: 'NO_SHOP_ACTION_OCCURRENCE/V1',
+        },
+      },
+    );
+    mutator(value);
+    state.valuesByPath['schemas/no-shop-action-occurrence.json'] = value;
+    refreshManifest(state);
+  });
+}
+
 function expectCode(code) {
   return (error) => error?.code === code;
 }
@@ -207,6 +227,54 @@ test('compiles a closed authored JSON set twice to byte-identical input identity
   assert.equal(Object.hasOwn(first, 'canonical_contract_bundle'), false);
   assert.equal(Object.isFrozen(first), true);
   assert.equal(Object.isFrozen(first.authored_members[0].canonical_value), true);
+});
+
+test('accepts a valid no-shop semantic schema input envelope', (t) => {
+  const root = noShopSchemaFixture();
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+
+  const compiled = compileCanonicalContractInput({ root_directory: root });
+  const member = compiled.authored_members.find(
+    (entry) => entry.object_kind === 'NO_SHOP_SEMANTIC_SCHEMA_INPUT',
+  );
+
+  assert.equal(member.stable_id, 'NO_SHOP_ACTION_OCCURRENCE');
+  assert.equal(member.canonical_value.authored_schema.schema_version, 1);
+});
+
+test('rejects mutated no-shop semantic schema input envelopes', (t) => {
+  const mutations = [
+    (value) => {
+      value.stable_id = 'NO_SHOP_WRONG_KEY';
+    },
+    (value) => {
+      value.schema_version = 'NO_SHOP_SEMANTIC_SCHEMA_INPUT/V2';
+    },
+    (value) => {
+      value.authored_schema.schema_key = '';
+    },
+    (value) => {
+      value.authored_schema.schema_version = 0;
+    },
+    (value) => {
+      value.authored_schema.schema_version = 1.5;
+    },
+    (value) => {
+      value.semantic_schema_definition_id = 'generated';
+    },
+    (value) => {
+      value.semantic_schema_definition_payload_digest = 'generated';
+    },
+  ];
+
+  for (const mutate of mutations) {
+    const root = noShopSchemaFixture(mutate);
+    t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+    assert.throws(
+      () => compileCanonicalContractInput({ root_directory: root }),
+      expectCode('INVALID_CANONICAL_BUNDLE_NO_SHOP_SEMANTIC_SCHEMA_INPUT'),
+    );
+  }
 });
 
 test('mechanically closes the authored kind universe without claiming bundle or gate authority', (t) => {
