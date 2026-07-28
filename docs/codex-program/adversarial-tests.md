@@ -26,7 +26,7 @@ The following adversarial closure tests are mandatory traceability entries:
   ambiguous mapping is ineligible. The reviewer principal is the exact
   controller run and fresh ephemeral CLI session, not the model family.
   Mutating any manifest byte, including an identifier-
-  continuity count or digest, must change the detached five-member specification
+  continuity count or digest, must change the detached six-member specification
   root and invalidate every earlier review and approval. Every gate must reject
   an unknown evidence schema, wrong typed object, missing or extra acceptance
   claim, unbacked boolean `PASS`, untrusted validator or missing mandatory-test
@@ -500,8 +500,9 @@ The following adversarial closure tests are mandatory traceability entries:
   ProductionSemanticParityAttestation and ATTEST_IMPORT with zero serving grant.
 - `IMPORT-LIFECYCLE-01`: inject failure before and after every import manifest,
   row write, event, head CAS, spool erasure and receipt. The generated operation,
-  carrier, disposition and SQL registries contain exactly seven top-level
-  actions: `OPEN_IMPORT`, `IMPORT_MEMBER_BATCH`,
+  carrier, disposition and SQL registries contain exactly eight top-level
+  actions: `OPEN_IMPORT`, `VERIFY_PRODUCTION_BLOB_AVAILABILITY`,
+  `IMPORT_MEMBER_BATCH`,
   `BUILD_IMPORT_PARITY_BATCH`, `SEAL_IMPORT`,
   `BUILD_IMPORT_SEMANTIC_PARITY_BATCH`, `ATTEST_IMPORT` and `ABANDON_IMPORT`.
   OPEN_IMPORT/NONE/OPEN_CONTEXT is the sole `INIT_EMPTY` producer for
@@ -1077,9 +1078,24 @@ The following adversarial closure tests are mandatory traceability entries:
   result. Both impact walkers must reach that result. A claimed isolated tier,
   a complete familiar-component row or a market observation fails closure and
   candidate sealing. `AFFECTS_CORPUS_SCOPE` blocks scope freeze and
-  CandidateInputSeal; `AFFECTS_CANONICAL_CONTRACT` also blocks contract freeze
-  and CandidateOutputSeal. Neither may satisfy W_open, while a valid sibling
-  outside the reconciled impact closure remains renderable.
+  CandidateInputSeal; `AFFECTS_CANONICAL_CONTRACT` blocks candidate
+  certification and the required successor contract freeze without
+  invalidating the immutable predecessor contract that authorised discovery.
+  It also blocks CandidateOutputSeal. Neither may satisfy W_open, while a valid
+  sibling outside the reconciled impact closure remains renderable.
+- `RESIDUAL-IMPACT-PUBLICATION-01`: finally disposition a source-backed
+  residual whose reconciled closure affects a result, scope or contract.
+  Terminal review empties the residual queue but preserves the nonzero impact.
+  The affected result and metric slots, scope or successor contract remain
+  blocked according to the same mapping as an open-world candidate. Treating
+  final disposition as zero impact or publishing an affected cohort member
+  fails candidate sealing.
+- `CLAIM-ONLY-IMPACT-CLEARANCE-01`: attach a finally reviewed novel qualifier,
+  basis or exception to the evidence closure of a familiar claim-owned metric
+  slot. The slot's `impact_clear_for_metric_slot` projection must fail and no
+  observation, denominator, aggregate or cache member may publish. Omitting the
+  projection because the impact is terminal, because the slot is `CLAIM_ONLY`
+  or because no result relationship owns it fails candidate sealing.
 - `OPEN-WORLD-ADOPTION-NOT-EXAMINED-01`: adopt a new concept, attribute,
   relationship, role or basis in a successor bundle. Every earlier eligible
   member lacking examination under that version is `NOT_EXAMINED`, never
@@ -2079,15 +2095,14 @@ The following adversarial closure tests are mandatory traceability entries:
   fingerprint, or allowing expected metadata parity to select another copy
   fails envelope, import, metadata parity and traceability certification.
 - `QUERY-EXEC-01`: browser and RPC instrumentation record one execution from
-  launch through rendered result. Navigation may fetch the stored immutable
-  result only through `IMMUTABLE_EXECUTION_RESULT_FETCH`: fresh admission, the
-  same tenant, caller, scope and serving epoch, one indexed execution lookup,
-  original row/byte ceiling, and zero compilation, cache, catalogue, corpus or
-  route-serving calls. Cross-user, cross-epoch, expired, oversized and altered-
-  schema fetches fail before a result body. The originating serving RPC writes
-  the immutable execution result in its own bounded transaction and returns
-  that same page, with no third database call; a different replay for the same
-  key fails.
+  launch through rendered result. In-app navigation carries the validated
+  bounded response and performs zero new database calls. A direct load, reload
+  or missing client response state obtains fresh admission, compiles once and
+  performs exactly one bounded set-based route-serving RPC. Launcher
+  validation, saved-query validation and redirects cannot execute and discard
+  an earlier query. Repository, generated schema, database and deployment
+  inspection prove there is no result-page carrier, per-query result write,
+  retention table, cleanup job or result-fetch intent.
 - `CROSS-VIEW-SURFACE-01`: browser goldens cover QXO Review and Compare, the
   query builder and Eli Lilly definitions. Compare retains visible left
   provision navigation, a Review-density centre region and a collapsible right
@@ -2578,7 +2593,8 @@ The following adversarial closure tests are mandatory traceability entries:
   smoke requires the typed no-failed-smoke absence proof. Unknown,
   duplicate, caller-selected or stage-inapplicable triggers fail closed.
 - `POST-ACTIVATION-LATE-PASS-01`: pause each READY, trace, smoke, pass-lease,
-  COMMIT_PASS, AVAILABLE and first-cutover establish transaction and race the
+  COMMIT_PASS, certification, AVAILABLE, first-cutover genesis-head and
+  later-cutover ongoing-head effect and race the
   registered BEGIN action and every ActiveReleaseRevocationActionRegistry cause.
   The shared control-head, tuple, promotion and readiness locks allow only one
   predecessor-valid linearisation. The lock winner may commit its one complete
@@ -2588,7 +2604,8 @@ The following adversarial closure tests are mandatory traceability entries:
   wins while the head is awaiting, its database commit must include the typed
   revocation evidence and coupled pending head, not merely make COMMIT fail;
   once FAILURE_CONTAINMENT_PENDING, every late
-  pass, AVAILABLE, establish and programme-completion write fails, and once
+  pass, certification, AVAILABLE, promotion-head, establish and
+  programme-completion write fails, and once
   FAILURE_FIXED it remains failed. Once PASS_FIXED, every late BEGIN or COMPLETE
   fails. A stale passing smoke or lease from another context never closes the race.
 - `POST-ACTIVATION-FAULT-BOUNDARY-01`: inject a database fault before and after
@@ -2599,8 +2616,10 @@ The following adversarial closure tests are mandatory traceability entries:
   receipt. No partial READY exposure, unheaded event, head without receipt,
   orphan or terminally stranded expired pass lease, containment-owned external
   work without a pending head, adopted ordinary controls without the atomically
-  coupled pending head, AVAILABLE fence after BEGIN or untraceable failure
-  evidence is possible; retry is exact
+  coupled pending head, PASS_FIXED or AVAILABLE without the matching
+  ReleaseActivationCertification and genesis or exact-predecessor ongoing head,
+  certification without PASS_FIXED, AVAILABLE fence after BEGIN or untraceable
+  failure evidence is possible; retry is exact
   replay or a new governed successor.
 - `LEGACY-RESTORATION-TRANSACTION-01`: for each writer-derived restoration
   ordinal, inject failure before and after every tuple-field, attestation,
@@ -2720,10 +2739,15 @@ The following adversarial closure tests are mandatory traceability entries:
   scope, extraction and correction changes, certify R2 and activate it solely
   through the OngoingReleasePromotionHead, then force its smoke to fail. No R2
   step may reopen or increment ProgrammeStatusPublicationHead. The R1
-  certification transaction creates the genesis ongoing head, R2 produces a
-  terminal PASS certification and exact-predecessor CAS receipt, and its
+  COMMIT_PASS transaction creates the certification and genesis ongoing head,
+  while R2's COMMIT_PASS atomically produces PASS_FIXED, a terminal PASS
+  certification, AVAILABLE fence and exact-predecessor CAS receipt and head.
+  Its
   CutoverAuthorisation selects OngoingReleaseReadiness with every
-  programme-status and DeploymentReadinessMirror field absent. After the
+  programme-status and DeploymentReadinessMirror field absent. The sole
+  activation RPC must lock, revalidate and consume that readiness and its exact
+  current promotion-head predecessor; a stale readiness object performs zero
+  activation DML. After the
   RollbackEvent, unique FailureRecoveryBranch, `OPEN` head and exposure-off tuple
   commit, CAS the head to `HISTORICAL_REACTIVATION_IN_PROGRESS` and revalidate R1's retained namespace
   and exact R1 ReleaseActivationCertification against current policy, revocation and dependency

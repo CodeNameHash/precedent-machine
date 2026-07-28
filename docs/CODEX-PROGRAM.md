@@ -29,6 +29,9 @@ the spine:
   implementation sequence;
 - [programme-gates.yaml](codex-program/programme-gates.yaml): sole authority for
   gates and work classes;
+- [bootstrap-acceptance-source.json](codex-program/bootstrap-acceptance-source.json):
+  root-independent, self-contained schemas, member universes and typed
+  predicates for the ten genesis G0 gates and the pre-bundle P1 freeze gate;
 - [canonical-contracts.md](codex-program/canonical-contracts.md): sole authority
   for detailed identities, state machines, writer grammars, release contracts
   and traceability contracts;
@@ -38,12 +41,15 @@ the spine:
   ordered paths, byte lengths and SHA-256 values used to compute the detached
   domain-separated specification-root digest.
 
-The root hashes the manifest's exact bytes as member one, followed by the four
-content files declared in it as members two through five. The derived root is
-reported by the verifier and stored in review, approval and freeze evidence,
-not inside the manifest it commits. A reference to the governing specification,
-its bytes or its digest means that complete ordered five-file set, never one
-file in isolation.
+The root hashes one exact record for the manifest as member one, followed by
+the five content-file records declared in it as members two through six. Each
+record is UTF-8 path, NUL, ASCII decimal raw-byte length, NUL, lowercase
+SHA-256 of the raw file bytes and LF. The hash input is the UTF-8 domain
+separator and LF followed only by those six records. No raw bytes or implicit
+records are appended. The derived root is reported by the verifier and stored
+in review, approval and freeze evidence, not inside the manifest it commits. A
+reference to the governing specification, its bytes or its digest means that
+complete ordered six-file set, never one file in isolation.
 
 Each evidence record contains gate ID, specification and code commits,
 environment, evidence schema, immutable artefact references and digests,
@@ -203,7 +209,7 @@ CORRECTED (the plan below rests on these, not the review's wording):
   requires the mechanical checks and complete review set again. Ben's approval
   must name the same root. No canonical implementation starts from an earlier
   reviewed root.
-- `G0_EXACT_DIGEST_REVIEW_SET` evidence hashes its schema, the ordered five file
+- `G0_EXACT_DIGEST_REVIEW_SET` evidence hashes its schema, the ordered six-file
   entries, each byte length and SHA-256, the specification-root digest,
   mechanical-check command and result digests, the five contract-ordered lane
   names, each immutable reviewer identity, eligibility, input root, terminal
@@ -2354,16 +2360,16 @@ The later, detailed closure contract in
 `docs/codex-program/canonical-contracts.md` section 10 controls any conflicting
 earlier shorthand. In particular:
 
-- the content-addressed bootstrap registry and validator set are the
-  authoritative frozen source for exactly ten complete G0 acceptance
-  definitions, and the controller, runtime, prompt and validator allowlists are
-  fixed in `programme-gates.yaml`;
+- the reviewed bootstrap acceptance source is the authoritative frozen source
+  for ten genesis G0 definitions and the pre-bundle P1 definition, and the
+  controller, runtime, prompt and validator allowlists are fixed in
+  `programme-gates.yaml`;
 - production blob availability has one registered verifier action and
   idempotent writer transaction before pre-seal root construction;
 - CapacityManifest carries the exact maximum-scale cardinality tuple, every
   supported query-shape class reconciles to a golden and load fixture, the
-  originating serving RPC persists its immutable execution result without an
-  extra database call, and latency gates cover every interactive class;
+  originating serving RPC returns one bounded response without a result-page
+  persistence write, and latency gates cover every interactive class;
 - residual contracts are CanonicalContractBundle members, source-specific
   publication binds the actual eligible legal review and selected PRESENT
   primitive, and scope- or contract-impacting novel propositions block only

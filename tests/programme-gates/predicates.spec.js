@@ -45,6 +45,21 @@ function context(overrides = {}) {
       identity_and_signature_verified: true,
       unconditional: true,
     },
+    expectedStatusGeneration: 1,
+    verifiedContractFreeze: {
+      contract_bundle_id: DIGEST_C,
+      contract_bundle_digest: DIGEST_D,
+      frozen_contract_pair_digest: DIGEST_E,
+      compilation_receipt_id: DIGEST_F,
+      semantic_identity_review_id: '1'.repeat(64),
+      freeze_gate_approval_id: '2'.repeat(64),
+      status_generation: 1,
+      status_payload_digest: '3'.repeat(64),
+      bundle_compiles: true,
+      semantic_and_identity_diff_reviewed: true,
+      freeze_gate_approved: true,
+      status_generation_matches: true,
+    },
     ...overrides,
   };
 }
@@ -190,9 +205,25 @@ const FIXTURES = Object.freeze({
     passing_review_set_evidence_id: DIGEST_C,
     conditions: Object.freeze([]),
   }),
+  P1_CONTRACT_FREEZE_ATTESTED: Object.freeze({
+    schema_version: 'ContractFreezeAttestation/V1',
+    gate_id: 'P1_CONTRACT_FREEZE_ATTESTED',
+    specification_root: ROOT,
+    code_commit: COMMIT,
+    environment: 'STAGING',
+    observed_at: OBSERVED_AT,
+    contract_bundle_id: DIGEST_C,
+    contract_bundle_digest: DIGEST_D,
+    frozen_contract_pair_digest: DIGEST_E,
+    compilation_receipt_id: DIGEST_F,
+    semantic_identity_review_id: '1'.repeat(64),
+    freeze_gate_approval_id: '2'.repeat(64),
+    status_generation: 1,
+    status_payload_digest: '3'.repeat(64),
+  }),
 });
 
-test('registry contains 27 explicit functions with exact closed claim membership', () => {
+test('registry contains 31 explicit functions with exact closed claim membership', () => {
   const descriptors = new Map(
     ACCEPTANCE_DEFINITION_DESCRIPTORS.map((descriptor) => [descriptor.gate_id, descriptor]),
   );
@@ -207,10 +238,10 @@ test('registry contains 27 explicit functions with exact closed claim membership
       count += 1;
     }
   }
-  assert.equal(count, 27);
+  assert.equal(count, 31);
 });
 
-test('all ten raw fixtures produce only typed boolean PASS claims', () => {
+test('all eleven bootstrap fixtures produce only typed boolean PASS claims', () => {
   for (const [gateId, evidence] of Object.entries(FIXTURES)) {
     const claims = evaluateAcceptanceClaims({
       gate_id: gateId,

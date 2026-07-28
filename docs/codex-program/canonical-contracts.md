@@ -691,7 +691,7 @@ This file is the sole authority for detailed identities, state machines, writer 
   root set are also source members, so bootstrap cannot select its own
   validator, reviewer or publisher trust anchor. The common V2
   `ProgrammeGateEvidenceEnvelope` contains the
-  gate and contract IDs, acceptance-definition ID and digest, exact five-member
+  gate and contract IDs, acceptance-definition ID and digest, exact six-member
   specification root, code commit, environment, evidence subject type, ID and
   payload digest, required typed object and payload digest, exact claim map,
   immutable member root, test-result root, validator executable and configuration digests,
@@ -1117,7 +1117,13 @@ This file is the sole authority for detailed identities, state machines, writer 
   A final `GovernedResidualImpactClosure` either selects the mapped object's or
   candidate's reconciled impact closure and affected results, or proves a typed
   zero-effect branch for a reviewed non-substantive or duplicate residual. Two
-  independent impact projections and a third reconciliation must agree.
+  independent impact projections and a third reconciliation must agree. Every
+  nonzero residual closure derives exactly one effective impact tier from the
+  selected governed object or candidate:
+  `ISOLATED_SOURCE_SPECIFIC`, `AFFECTS_CANONICAL_RESULT`,
+  `AFFECTS_CORPUS_SCOPE` or `AFFECTS_CANONICAL_CONTRACT`. The same closed
+  impact-to-publication mapping used for an open-world candidate applies to the
+  residual; terminal review never neutralises a nonzero impact.
 - `GovernedResidualDispositionManifest` partitions every member of
   GovernedResidualUniverseManifest exactly once by final disposition and exactly
   one reconciled impact closure. `GovernedResidualReviewQueueRoot` independently
@@ -4207,7 +4213,8 @@ This file is the sole authority for detailed identities, state machines, writer 
   Generated SQL, carrier projections and writer disposition must reproduce this
   exact five-action grammar before contract freeze.
 - For `CERTIFIED_RELEASE_IMPORT_BATCH`, OperationActionRegistry contains
-  exactly seven top-level actions: `OPEN_IMPORT`, `IMPORT_MEMBER_BATCH`,
+  exactly eight top-level actions: `OPEN_IMPORT`,
+  `VERIFY_PRODUCTION_BLOB_AVAILABILITY`, `IMPORT_MEMBER_BATCH`,
   `BUILD_IMPORT_PARITY_BATCH`, `SEAL_IMPORT`,
   `BUILD_IMPORT_SEMANTIC_PARITY_BATCH`, `ATTEST_IMPORT` and `ABANDON_IMPORT`.
   `OPEN_IMPORT/NONE/OPEN_CONTEXT` alone creates the controller lease, genesis
@@ -8386,7 +8393,10 @@ This file is the sole authority for detailed identities, state machines, writer 
   comparability state to be `COMPARABLE`. A `CLAIM_ONLY` observation instead
   requires its selected ClaimRevision and ClaimScopeClosure to satisfy the
   preceding claim-only branch and has no result fields. Both branches require
-  no intersecting unresolved impact and every requirement in
+  an `impact_clear_for_metric_slot=PASS` projection over the complete evidence,
+  primitive and dependency closure. Any intersecting non-isolated residual or
+  novel-concept impact fails that projection whether unresolved or finally
+  dispositioned. Both branches also require every requirement in
   the slot's exact MetricApplicabilityRequirementProjection entry at
   `COMPLETE_EXAMINED` in the ApplicabilityReexaminationManifest. The manifest's
   unrelated per-requirement states and overall summary cannot exclude the slot.
@@ -8939,8 +8949,7 @@ This file is the sole authority for detailed identities, state machines, writer 
   bound, response-schema digest, authorisation-scope digest, request nonce and
   idempotency key or explicit `NONE`. The closed tags are query initial, query
   cursor, child cursor, facet, field values, INLINE detail, source initial,
-  source cursor, saved-query execution, immutable execution-result fetch,
-  export start and export chunk. It
+  source cursor, saved-query execution, export start and export chunk. It
   contains no fetched saved-query template, active state or fence returned by
   admission. The admission token binds this intent. Any saved-query lookup
   occurs only after admission and must return that exact ID and definition
@@ -9114,20 +9123,13 @@ This file is the sole authority for detailed identities, state machines, writer 
   the same limits independently of the compiler.
 - One user action creates one `query_execution_id` and idempotency key. After
   its mandatory admission-token RPC, it makes at most one route-specific
-  serving RPC. Navigation carries the validated response or fetches
-  that immutable execution result by exact ID. The
-  `IMMUTABLE_EXECUTION_RESULT_FETCH` intent is authorised only to the same
-  caller, tenant and authorisation-scope digest as the originating execution,
-  binds the exact execution ID, response-schema digest and active release tuple,
-  and after its mandatory admission-token RPC performs exactly one indexed
-  lookup on `(tenant_id, caller_subject_id, query_execution_id,
-  serving_epoch_id)`. It returns at most one immutable response body within the
-  original route's row and byte ceilings, performs zero query compilation,
-  cache lookup, corpus read or route-serving RPC, and is rejected when the
-  execution's epoch or authorisation scope is no longer admitted. Execution
-  bodies expire at the earlier of 15 minutes and their serving epoch; the fetch
-  path cannot extend retention. Launcher validation, saved-query
-  validation, redirects and result mounting cannot execute the plan again.
+  serving RPC. In-app navigation carries the validated bounded response and
+  performs no new database action. A direct load, reload or missing client
+  response state is a new `query initial` action: after admission it compiles
+  once and executes exactly one bounded set-based serving RPC. Launcher
+  validation, saved-query validation and redirects cannot execute and discard
+  a query before mounting the result. No result-page carrier, per-query result
+  write, retention table or result-fetch intent exists.
 - The five current product intents are views over this plan, not five separate
   truth systems:
   - `DEAL_COMPARE` returns the same governed results across selected deals and
@@ -9512,10 +9514,9 @@ This file is the sole authority for detailed identities, state machines, writer 
   set or source page, with at most one additional immutable-carrier range read
   for a source page; and one indexed bounded query for facet or field-value
   options. Exact detail is capped at 20 references and 512 KB; option output is capped at 200
-  values and 256 KB. An immutable execution-result fetch uses only its one
-  indexed ownership-and-epoch lookup after token consumption and returns at most
-  the originating response bound; it performs no catalogue, cache, corpus or
-  serving RPC.
+  values and 256 KB. In-app navigation with a carried response uses no
+  admission or database call; direct and reload navigation use the ordinary
+  initial-page budget once.
   After token consumption, query compilation performs no corpus read and may make at
   most one bounded catalogue lookup. Authentication is separately declared
   fixed overhead.
@@ -9957,7 +9958,9 @@ forward reference and a premature full-trace pass.
   same-state head advance and PostActivationControlReceipt, the exact
   PostActivationPassCommitLease, then the terminal `COMMIT_PASS` event,
   PostActivationControlReceipt and `PASS_FIXED` head and all of that action's
-  atomic success effects, including the AVAILABLE promotion-fence successor,
+  atomic success effects, including ReleaseActivationCertification, the
+  AVAILABLE promotion-fence successor and genesis or exact-predecessor ongoing
+  promotion-head effect,
   the first-cutover `ESTABLISH_FIRST_CANONICAL_RELEASE` event and terminal
   CanonicalCutoverGenesisHead where applicable,
   exact P9_TRACEABILITY prefix evidence, ProgrammeCompletionAttestation, the
@@ -10393,19 +10396,24 @@ PreCutoverCertification, import and POST_IMPORT trace, consumed
 CutoverAuthorisation, ActivationEvent, READY_CANONICAL fence, POST_ACTIVATION
 trace, passing smoke, consumed pass-commit lease, `PASS_FIXED` control head,
 AVAILABLE promotion-fence successor, complete active tuple and the release's
-passing rollback rehearsal. It is created before any programme-completion
-artefact and contains no programme-status generation or terminal-pair field.
+passing rollback rehearsal. It is created atomically by the successful
+`COMMIT_PASS` transaction with `PASS_FIXED`, the AVAILABLE fence and the
+applicable genesis or exact-predecessor ongoing promotion-head effect. It
+precedes any programme-completion artefact and contains no programme-status
+generation or terminal-pair field.
 The first release's ProgrammeCompletionAttestation selects this certification.
 After the one-time programme head becomes absorbing `COMPLETE`, later canonical
 releases use the separate `OngoingReleasePromotionHead`: an append-only,
 serialisable database authority over the current certified release activation.
 It is keyed once per production environment, is registered in
 GlobalMutableAuthorityRegistry and GeneratedLockPlanRegistry, and permits only
-an exact-predecessor compare-and-swap after the successor
-ReleaseActivationCertification is terminal `PASS`.
+an exact-predecessor compare-and-swap in the same transaction that creates the
+successor terminal `PASS` ReleaseActivationCertification.
 Each later promotion must satisfy the same candidate, import, cutover, smoke,
-trace, rollback and release-activation contracts and compare-and-swap that head
-from the exact current ReleaseActivationCertification to the successor. It does
+trace, rollback and release-activation contracts. Its successful `COMMIT_PASS`
+compare-and-swaps that head from the exact current
+ReleaseActivationCertification to the successor atomically with the new
+certification and receipt. It does
 not reopen, increment or depend on ProgrammeStatusPublicationHead. A prior
 canonical release becomes a historical-reactivation target as soon as its own
 ReleaseActivationCertification is current and its retention proof passes.
@@ -11426,8 +11434,9 @@ ReleaseBundleControlContext has the one exact FINALISED event, tuple and
 terminal receipt. OPEN or ABANDONED context state, a missing receipt, a
 different envelope, or any later lifecycle fork performs zero import DML.
 The generated OperationActionRegistry and RPC dispatch for
-`CERTIFIED_RELEASE_IMPORT_BATCH` contain exactly seven bounded top-level
-actions: `OPEN_IMPORT`, `IMPORT_MEMBER_BATCH`, `BUILD_IMPORT_PARITY_BATCH`,
+`CERTIFIED_RELEASE_IMPORT_BATCH` contain exactly eight bounded top-level
+actions: `OPEN_IMPORT`, `VERIFY_PRODUCTION_BLOB_AVAILABILITY`,
+`IMPORT_MEMBER_BATCH`, `BUILD_IMPORT_PARITY_BATCH`,
 `SEAL_IMPORT`, `BUILD_IMPORT_SEMANTIC_PARITY_BATCH`, `ATTEST_IMPORT` and
 `ABANDON_IMPORT`. Their complete closed subgrammars are the sole permitted
 dispatches below and must equal the CanonicalPhysicalCarrierRegistry,
@@ -12803,8 +12812,7 @@ exact current IntakeEligibilityRecheckAttestation and IntakeRevocationHead,
 exact current IntakeProcessingPolicyHead and activation,
 CandidateReleaseFreezeAttestation, the variant-selected recheck or eligibility
 attestation and held CandidatePromotionFence version,
-exact current pre-authorisation programme-status digest and generation, exact
-signed `CUTOVER_READY` mirror digest and readiness generation, provider deployment,
+the variant-selected readiness authority described below, provider deployment,
 runtime build and configuration, alias or traffic generation, database schema
 and migration generations, expected release-state
 generation, exact complete before-tuple digest, exact proposed complete
@@ -12816,9 +12824,17 @@ root and the proposed first-attempt ID; the expected before tuple must be the
 matching exposed `LEGACY_BASELINE` variant and the proposed tuple must be
 `CANONICAL_RELEASE`. Later cutovers carry an explicit
 `NOT_FIRST_CANONICAL_CUTOVER` marker and require the genesis head to be terminal
-`CANONICAL_ESTABLISHED`. Reuse, expiry or any mismatch fails closed.
+`CANONICAL_ESTABLISHED`. The authorisation is a closed tagged union.
+`FIRST_CANONICAL_CUTOVER` requires the exact current pre-authorisation
+programme-status digest and generation and signed `CUTOVER_READY` mirror digest
+and readiness generation; every ongoing-authority field is absent.
+`NOT_FIRST_CANONICAL_CUTOVER` requires the exact current
+`OngoingReleasePromotionHead` predecessor and fresh
+`OngoingReleaseReadiness` ID and payload digest; every programme-status and
+`DeploymentReadinessMirror` field is absent. Reuse, expiry or any mismatch
+fails closed.
 
-That exact authorisation is the evidence for
+For `FIRST_CANONICAL_CUTOVER`, that exact authorisation is the evidence for
 `P9_CUTOVER_AUTHORISATION`. The status validator may then publish one higher
 status generation through ProgrammeStatusPublicationHead and one signed
 `ACTIVATION_READY` mirror whose predecessor is
@@ -12828,18 +12844,29 @@ whose deployment, configuration, alias, schema, release, import and intake
 eligibility fields are otherwise byte-identical. This single permitted successor avoids a digest
 cycle between the authorisation and the status artefact. Any other gate or
 environmental change revokes readiness and requires a new Ben authorisation.
+For `NOT_FIRST_CANONICAL_CUTOVER`, no programme-status or readiness-mirror
+successor exists. The exact `OngoingReleaseReadiness` is the sole readiness
+authority and remains bound to the authorisation and its current promotion-head
+predecessor.
 
 One serialisable database RPC locks current IntakeProcessingPolicyHead,
 IntakeRevocationHead, the held CandidatePromotionFence, signed
-DeploymentReadinessMirror, the CanonicalCutoverGenesisHead when the
-authorisation selects the first-cutover variant, and singleton canonical
-release-state row in generated global order, revalidates the exact policy
+DeploymentReadinessMirror and programme-status head only for
+`FIRST_CANONICAL_CUTOVER`, or the exact `OngoingReleaseReadiness` and current
+`OngoingReleasePromotionHead` only for `NOT_FIRST_CANONICAL_CUTOVER`. It also
+locks the CanonicalCutoverGenesisHead when the authorisation selects the
+first-cutover variant and the singleton canonical release-state row in
+generated global order, then revalidates the exact policy
 activation, authorisation-bound
 PromotionEligibilityProof and target-release IntakeEligibilityRecheckAttestation with a
-set-based no-later-revocation proof, the signature,
-`ACTIVATION_READY` state, exact authorised predecessor mirror and
-CutoverAuthorisation ID, still-current programme-status digest and generation,
-mechanical `production_cutover=PASS`, byte-identical deployment,
+set-based no-later-revocation proof and signature. The first variant revalidates
+the `ACTIVATION_READY` state, exact authorised predecessor mirror and
+CutoverAuthorisation ID, still-current programme-status digest and generation
+and mechanical `production_cutover=PASS`. The later variant revalidates the
+exact current promotion-head predecessor, unexpired readiness object, current
+policy and revocation heads, successor candidate, deployment tuple and
+Ben-authorised scope, and consumes that readiness in the same transaction.
+Both variants revalidate byte-identical deployment,
 runtime-configuration, alias, database schema, migration, release and import
 fields, exact locked before-tuple and proposed after-tuple digests and every
 other authorisation field. For `HISTORICAL_REACTIVATION`, the locked before
@@ -12863,9 +12890,10 @@ CanonicalCutoverGenesisEvent and before and after genesis-head tuples, or the
 explicit later-cutover marker, then ProductionImportAttestation, exact terminal
 ATTESTED ProductionImportHead, ATTEST_IMPORT event and receipt, POST_IMPORT
 TraceabilityExtension, exact released IDLE ProductionImportControllerHead tuple,
-ReleaseBundleEnvelope and DeploymentManifest IDs, programme-status digest and
-generation, authorised predecessor and activation-readiness mirror digests and
-generations, exact PromotionEligibilityProof, its selected
+ReleaseBundleEnvelope and DeploymentManifest IDs, the exact selected
+first-cutover programme-status and readiness-mirror authority or later-cutover
+`OngoingReleaseReadiness` and promotion-head predecessor, exact
+PromotionEligibilityProof, its selected
 CandidateInputRecheckAttestation or HistoricalReactivationEligibilityAttestation,
 exact originating RollbackEvent where required, exact
 IntakeEligibilityRecheckAttestation and observed IntakeProcessingPolicyHead
@@ -12910,15 +12938,22 @@ nonce. `ISSUE_PASS_COMMIT_LEASE` alone creates it, appends its issuance event,
 advances the AWAITING_SMOKE head generation without changing state and writes
 the issuance receipt. Consuming that lease in the generated `COMMIT_PASS`
 serialisable action locks the control head, lease, active tuple, promotion,
-readiness and applicable genesis head in generated order, revalidates exact
+readiness and applicable genesis or current ongoing-promotion head in generated
+order, revalidates exact
 context-bound exposure, HELD/READY and smoke evidence, appends the PASS event, CASes
 `AWAITING_SMOKE -> PASS_FIXED`, consumes the lease and writes the immutable PASS
-action receipt over the exact pre-effect success plan. Only then, in the same
-transaction, does it write the AVAILABLE CandidatePromotionFence successor
-that hashes that receipt and, for the first cutover, the establish event and
-terminal genesis head. The receipt hashes no later successor object. A stale,
-expired or already consumed lease, or an ordinary revocation that wins any
-shared lock first, writes no pass state.
+action receipt over the exact pre-effect success plan. The receipt hashes no
+later successor object. Using that fixed receipt identity, the same transaction
+writes the terminal `ReleaseActivationCertification` and AVAILABLE
+CandidatePromotionFence successor. For the first cutover it also writes the
+establish event, terminal genesis head and generation-one
+`OngoingReleasePromotionHead`. For every later promotion or historical
+reactivation it writes the immutable `OngoingReleasePromotionReceipt` and
+exact-predecessor ongoing-head successor. The certification and head effects
+are mandatory `COMMIT_PASS` effects, not later actions. A stale, expired or
+already consumed lease, stale ongoing head, or ordinary revocation that wins
+any shared lock first writes no PASS_FIXED head, certification, AVAILABLE fence
+or promotion-head effect.
 
 The closed failure-trigger union has exactly nine variants:
 `READY_PUBLICATION_FAIL`, `READY_PUBLICATION_TIMEOUT`,
@@ -13269,18 +13304,21 @@ ambiguous reading instead of this subsection fails contract freeze.
 
 #### Bootstrap gate acceptance
 
-For the ten genesis G0 gates, the
-`bootstrap_compiled_registry_binding` in `programme-gates.yaml` is an
-authoritative content-addressed member of the reviewed specification, not an
-informational implementation pointer. Its exact registry SHA-256 and closed
-validator-executable-set digest bind the complete evidence schemas, schema
-digests, subject types and identity fields, immutable member universes, member
-schema-set digests, enumerator executable and configuration digests, ordered
-predicate definitions, exact member types and JSON pointers, measurement
-executable and configuration digests, comparison operators and typed expected
-values. The compiler receives only that bound source, the exact reviewed
-specification root and the frozen gate descriptor. It emits exactly ten
-`ProgrammeGateAcceptanceDefinition/V1` instances in G0 gate order. The
+For the ten genesis G0 gates and `P1_CONTRACT_FREEZE_ATTESTED`, the
+`bootstrap_compiled_registry_binding` in `programme-gates.yaml` selects
+`bootstrap-acceptance-source.json` as an authoritative, root-independent
+member of the reviewed specification, not an informational implementation
+pointer. Its exact SHA-256 binds the complete evidence and member JSON schemas,
+subject types and identity fields, immutable member universes, enumerator
+source and digests, ordered predicate definitions, exact member types and JSON
+pointers, measurement source, comparison operators and typed expected values.
+The committed generator proves that those reviewed bytes reproduce exactly
+from the corresponding runtime schemas and sources. The compiler receives only
+that bound source, the exact reviewed specification root and the frozen gate
+descriptor. It emits exactly eleven
+`ProgrammeGateAcceptanceDefinition/V1` instances in the declared order. The
+first ten form the genesis G0 status set; the eleventh is the pre-bundle P1
+definition and is not genesis status evidence. The
 definition ID and digest are the domain-separated hash of every required field,
 including the exact specification root. A missing, extra, duplicate, reordered
 or byte-different source member or output definition leaves every affected gate
@@ -13318,24 +13356,34 @@ that proof in `RECORD_OPEN_WORLD_DISPOSITIONS`; an unsigned, differently
 reviewed or implementation-selected primitive blocks only that candidate's
 publication.
 
-The open-world impact-to-state mapping is closed:
+The same impact-to-state mapping is closed for every reconciled open-world
+candidate and every nonzero `GovernedResidualImpactClosure`:
 
 - `ISOLATED_SOURCE_SPECIFIC` may publish only the reviewed source-specific row.
 - `AFFECTS_CANONICAL_RESULT` forces every affected result to
-  `INCOMPLETE_NOVEL_SEMANTIC` until its governed closure is repaired.
+  `INCOMPLETE_NOVEL_SEMANTIC`, forces every intersecting claim-only or
+  result-owned metric-slot impact-clearance projection to `FAIL`, and excludes
+  those slots until the governed closure is repaired.
 - `AFFECTS_CORPUS_SCOPE` forces the candidate occurrence and affected scope
   generation to `BLOCKED`, prevents `CorpusScopeFreezeAttestation` and
   `CandidateInputSeal`, and cannot satisfy `W_open`.
 - `AFFECTS_CANONICAL_CONTRACT` forces the candidate occurrence and candidate
-  generation to `BLOCKED`, prevents contract freeze, scope freeze,
-  `CandidateInputSeal` and `CandidateOutputSeal`, and cannot satisfy `W_open`.
+  generation to `BLOCKED`, prevents certification under the predecessor
+  contract and prevents the required successor `ContractFreezeAttestation`,
+  scope freeze, `CandidateInputSeal` and `CandidateOutputSeal` until the
+  successor bundle is approved and affected spans and transitive dependants are
+  reprocessed. It does not retroactively invalidate or mutate the immutable
+  predecessor `ContractFreezeAttestation` that authorised discovery.
 
 `W_open` therefore requires zero members in either blocking impact tier in
 addition to final reviewed dispositions and empty unresolved roots. These
 failures are occurrence and transitive-impact scoped. Valid sibling provisions
 outside the reconciled impact closure continue through writing, candidate
 review and Review rendering; no unfamiliar proposition creates a page-level or
-deal-level renderer failure.
+deal-level renderer failure. A terminal disposition is not impact clearance:
+every canonical market slot also requires an explicit
+`impact_clear_for_metric_slot=PASS` projection over its full claim, result,
+evidence and dependency closure.
 
 #### Blob availability writer
 
@@ -13343,7 +13391,10 @@ deal-level renderer failure.
 production `BlobAvailabilityReceipt`. It is present in
 `OperationActionRegistry`, `CanonicalPhysicalCarrierRegistry`,
 `CanonicalWriterDispositionRegistry`, `GlobalMutableAuthorityRegistry` and
-`GeneratedLockPlanRegistry`. The external uploader may write only an exact
+`GeneratedLockPlanRegistry` as the second of exactly eight
+`CERTIFIED_RELEASE_IMPORT_BATCH` top-level actions. It requires the exact OPEN
+import generation created by `OPEN_IMPORT`; its only subphase is
+`VERIFY_GENERATION/NONE/AVAILABLE_RECEIPT`. The external uploader may write only an exact
 generation to the non-serving content-addressed namespace. It has no database
 role. The trusted verifier streams that generation, recomputes namespace,
 length and digest, then calls one idempotent writer RPC keyed by
@@ -13375,7 +13426,7 @@ records both inputs and the derived tuple; any smaller component fails
 ServingObjectAccessRegistry. It enumerates every active route and action, request
 variant, QueryPlan family, metric and party dimension, filter field, operator
 and value type, sort and direction, initial and cursor page, facet and
-field-value request, saved-query lookup, immutable execution-result fetch,
+field-value request, saved-query lookup, carried-response navigation,
 inline exact-detail batch and source-document initial and cursor page. Infinite
 literal values are partitioned into the finite semantic classes null,
 boundary-minimum, boundary-maximum, ordinary-selective, ordinary-unselective and
@@ -13387,23 +13438,17 @@ duplicate and unsupported roots. The soak manifest selects that same root and
 runs every class at N and maximum scale under the applicable traffic profile.
 A hand-picked benign subset cannot satisfy either gate.
 
-`ImmutableQueryExecutionResult/V1` is the closed result carrier keyed and
-uniquely indexed by
-`(tenant_id, caller_subject_id, query_execution_id, serving_epoch_id)`. Its
-payload contains the exact QueryPlan and request digests, release and serving
-identity, response-schema digest, ordered result-page payload digest, cursor or
-terminal marker, created and expiry times and byte count. The one route-specific
-serving RPC that executes the originating query writes this carrier
-transactionally after constructing the bounded page and returns the same page;
-this is not a third database call. It is idempotent for the key and fails on a
-different payload. `IMMUTABLE_EXECUTION_RESULT_FETCH` is one indexed
-authorisation-scoped RPC, reads exactly one unexpired carrier, performs no
-corpus query and never retries. CapacityManifest fixes maximum rows, bytes and
-retention; expiry cleanup is a separately admitted bounded job.
+Query result delivery has no persistent result carrier. The route-specific
+serving RPC returns the bounded page it constructs and performs no per-query
+result write. A carried-response navigation is a client transition over those
+same validated bytes. A direct load, reload or missing carried response starts
+one ordinary initial-page action and therefore receives the same admission,
+compiler, one-RPC and response bounds as any other initial page. Saved-query
+lookup resolves the stored plan identity and then executes that plan once.
 
 The binding performance matrix covers every `SupportedQueryShapeRegistry`
-class. Cache-eligible lookup and immutable-result-fetch classes must meet API
-p95 at or below 500 ms. Every uncached initial or cursor page, facet,
+class. Cache-eligible lookup classes must meet API p95 at or below 500 ms.
+Every uncached initial or cursor page, facet,
 field-value option, saved-query resolution, exact-detail batch and
 source-document page must meet API p95 at or below 1.5 seconds and p99 at or
 below 2.5 seconds. Every browser interaction must show its usable result,
@@ -13417,24 +13462,27 @@ missing class measurement fails `P9_BROWSER_A11Y_PERFORMANCE` and
 `CanonicalContractBundle` also includes the schemas and writer grammar for
 `ReleaseActivationCertification`, `OngoingReleasePromotionHead`,
 `OngoingReleasePromotionReceipt` and `OngoingReleaseReadiness`.
-`CERTIFY_RELEASE_ACTIVATION` is the sole producer of
-`ReleaseActivationCertification`. After `PASS_FIXED`, it runs one serialisable
-transaction that revalidates the exact candidate, import and POST_IMPORT trace,
-consumed CutoverAuthorisation, ActivationEvent, READY_CANONICAL fence,
-POST_ACTIVATION trace, passing smoke, consumed pass lease, PASS_FIXED control
-head, AVAILABLE fence successor, active tuple and rollback rehearsal, then
-writes the immutable terminal `PASS` certification. Failure writes nothing.
-The first `ProgrammeCompletionAttestation` must select its exact ID and payload
-digest, and the binding completion chain includes it between COMMIT_PASS and
+`COMMIT_PASS` is the sole producer of `ReleaseActivationCertification`. Its
+single serialisable transaction revalidates the exact candidate, import and
+POST_IMPORT trace, consumed CutoverAuthorisation, ActivationEvent,
+READY_CANONICAL fence, POST_ACTIVATION trace, passing smoke, consumed pass
+lease, active tuple and rollback rehearsal. It then writes the PASS event,
+`PASS_FIXED` control head, consumed lease, action receipt, immutable terminal
+`PASS` certification and AVAILABLE fence successor as one atomic result.
+Failure writes none of them. The first `ProgrammeCompletionAttestation` must
+select the certification's exact ID and payload digest, and the binding
+completion chain includes it as a `COMMIT_PASS` effect before
 ProgrammeCompletionAttestation.
 
-That first certification transaction also creates the production environment's
-genesis `OngoingReleasePromotionHead` if and only if no head exists. Genesis
-stores generation 1, current certification ID and payload digest and the first
-active-release tuple. A conflicting existing head blocks the transaction.
-Every later certification is followed by one exact-predecessor CAS that writes
-an immutable `OngoingReleasePromotionReceipt` and advances the head by one.
-Historical reactivation follows the same rule with a fresh certification.
+For the first cutover that same transaction creates the production
+environment's genesis `OngoingReleasePromotionHead` if and only if no head
+exists. Genesis stores generation 1, current certification ID and payload
+digest and the first active-release tuple. A conflicting existing head blocks
+the complete `COMMIT_PASS` transaction. For every later promotion or historical
+reactivation, the transaction locks the exact current head, writes one
+immutable `OngoingReleasePromotionReceipt` and compare-and-swaps the head by
+one to the certification it creates. A stale predecessor writes no PASS_FIXED,
+certification, AVAILABLE fence, receipt or head successor.
 
 After the one-time programme status becomes absorbing COMPLETE, later releases
 and historical reactivations do not create a programme-status generation or
@@ -13444,6 +13492,10 @@ candidate and certification inputs, fresh policy and revocation heads,
 deployment tuple, expiry and Ben-authorised cutover scope. For
 `NOT_FIRST_CANONICAL_CUTOVER`, `CutoverAuthorisation` must select that readiness
 object and its current head predecessor; any programme-status or readiness-
-mirror field is prohibited. First cutover continues to use the programme status
-and DeploymentReadinessMirror. This tagged union removes the contradictory
-requirement to increment an absorbing programme-status head.
+mirror field is prohibited. The sole activation RPC locks, revalidates and
+consumes that readiness and locks its exact promotion-head predecessor in the
+same activation transaction. First cutover instead locks and consumes the
+programme status and DeploymentReadinessMirror authority. Each variant
+prohibits every field and lock owned only by the other. This tagged union
+removes the contradictory requirement to increment an absorbing
+programme-status head and prevents stale ongoing readiness.

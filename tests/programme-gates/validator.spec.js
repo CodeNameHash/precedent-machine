@@ -422,7 +422,7 @@ test('a descriptor that has not activated its executable bindings returns OPEN',
   assertOpen(validate(sample), 'ACCEPTANCE_DESCRIPTOR_MISMATCH');
 });
 
-test('all 27 registered claim functions remain closed and callable', () => {
+test('all 31 registered claim functions remain closed and callable', () => {
   const descriptorKeys = Object.fromEntries(
     ACCEPTANCE_DEFINITION_DESCRIPTORS.map((descriptor) => [
       descriptor.gate_id,
@@ -437,7 +437,7 @@ test('all 27 registered claim functions remain closed and callable', () => {
       count += 1;
     }
   }
-  assert.equal(count, 27);
+  assert.equal(count, 31);
 });
 
 test('missing or malformed evidence returns OPEN and never crosses the gate boundary', () => {

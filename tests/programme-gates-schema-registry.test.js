@@ -58,7 +58,7 @@ function controllerRecord() {
 
 test('the schema registry is closed and rejects unknown schema IDs', () => {
   assert.deepEqual(SCHEMA_IDS, VALIDATOR_CONFIGURATION.schema_registry_ids);
-  assert.equal(SCHEMA_IDS.length, 23);
+  assert.equal(SCHEMA_IDS.length, 27);
   for (const schemaId of SCHEMA_IDS) {
     assert.equal(schemaFor(schemaId).$id, schemaId);
     assert.equal(schemaFor(schemaId).additionalProperties, false);
@@ -133,11 +133,11 @@ test('nested programme status rows are closed', () => {
   );
 });
 
-test('containment, security-disposition and isolation descriptors are active', () => {
-  assert.equal(ACCEPTANCE_DEFINITION_DESCRIPTORS.length, 10);
+test('the ten G0 and pre-bundle P1 bootstrap descriptors are active', () => {
+  assert.equal(ACCEPTANCE_DEFINITION_DESCRIPTORS.length, 11);
   assert.equal(
     new Set(ACCEPTANCE_DEFINITION_DESCRIPTORS.map((entry) => entry.evidence_contract)).size,
-    10,
+    11,
   );
   assert.deepEqual(
     ACCEPTANCE_DEFINITION_DESCRIPTORS
@@ -154,6 +154,7 @@ test('containment, security-disposition and isolation descriptors are active', (
       'G0_STAGING_ACCESS_PROTECTED',
       'G0_EXACT_DIGEST_REVIEW_SET',
       'G0_BEN_SPEC_APPROVAL',
+      'P1_CONTRACT_FREEZE_ATTESTED',
     ],
   );
   assert.equal(
