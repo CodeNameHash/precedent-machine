@@ -1,5 +1,6 @@
-const test = require('node:test');
 const assert = require('node:assert/strict');
+const crypto = require('node:crypto');
+const test = require('node:test');
 
 const {
   SCHEMA_IDS,
@@ -154,7 +155,7 @@ test('only the two containment descriptors activate executable bindings', () => 
   assert.throws(() => acceptanceDescriptorForContract('unknown/v1'), /unknown or ambiguous/);
 });
 
-test('trust and review configuration cannot create authority in this slice', () => {
+test('trust configuration contains only the two approved public signing keys', () => {
   assert.equal(validateSchema(
     'ProgrammeGateValidatorConfiguration/V1',
     VALIDATOR_CONFIGURATION,
@@ -167,8 +168,35 @@ test('trust and review configuration cannot create authority in this slice', () 
     'ProgrammeGateReviewLaneRegistry/V1',
     REVIEW_LANE_REGISTRY,
   ), true);
-  assert.equal(TRUSTED_PUBLIC_KEY_REGISTRY.registry_state, 'EMPTY_NOT_ACTIVATED');
-  assert.deepEqual(TRUSTED_PUBLIC_KEY_REGISTRY.keys, []);
+  assert.equal(TRUSTED_PUBLIC_KEY_REGISTRY.registry_state, 'ACTIVE');
+  assert.deepEqual(
+    TRUSTED_PUBLIC_KEY_REGISTRY.keys.map((key) => key.key_id),
+    [
+      'PROGRAMME_GATE_VALIDATOR_2026_07',
+      'PROGRAMME_STATUS_PUBLISHER_2026_07',
+    ],
+  );
+  assert.deepEqual(
+    TRUSTED_PUBLIC_KEY_REGISTRY.keys.map((key) => key.permitted_domains),
+    [
+      ['PROGRAMME_GATE_EVIDENCE/V2'],
+      ['PROGRAMME_GATE_STATUS/V2', 'PROGRAMME_GATE_PUBLICATION_HEAD/V1'],
+    ],
+  );
+  assert.deepEqual(
+    TRUSTED_PUBLIC_KEY_REGISTRY.keys.map((key) => key.permitted_roles),
+    [
+      ['VALIDATOR'],
+      ['STATUS_PUBLISHER', 'VALIDATOR'],
+    ],
+  );
+  for (const key of TRUSTED_PUBLIC_KEY_REGISTRY.keys) {
+    assert.equal(crypto.createPublicKey(key.public_key_pem).asymmetricKeyType, 'ed25519');
+    assert.equal(key.valid_from, '2026-07-28T07:08:01.000Z');
+    assert.equal(key.valid_until, '2026-10-26T07:08:01.000Z');
+    assert.equal(key.revoked_at, null);
+    assert.equal(key.public_key_pem.includes('PRIVATE KEY'), false);
+  }
   assert.deepEqual(
     REVIEW_LANES.map((lane) => lane.lane_id),
     ['ARCHITECTURE', 'LEGAL_SEMANTIC', 'QUERY_EFFICIENCY', 'OPEN_WORLD', 'RELEASE_PROPAGATION'],

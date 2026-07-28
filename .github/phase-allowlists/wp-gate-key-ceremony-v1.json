@@ -1,0 +1,19 @@
+{
+  "phase": "WP-GATE-KEY-CEREMONY-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-gate-key-ceremony-v1.json",
+    "lib/programme-gates/registry.js",
+    "tests/programme-gates-schema-registry.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Activates only the two Ben-approved Ed25519 public keys. Private keys exist solely as write-only secrets in the main-only programme-gate-production GitHub environment. This slice adds no signer workflow, signature, status publication, corpus authority, database mutation or product change."
+}
