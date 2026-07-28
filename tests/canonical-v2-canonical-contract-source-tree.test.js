@@ -76,7 +76,7 @@ test('the first authored source compiles twice byte-identically without claiming
   const second = compileCanonicalContractInput({ root_directory: sourceRoot });
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 62);
+  assert.equal(first.authored_members.length, 68);
   assert.equal(
     first.authored_members.some(
       (member) => member.object_kind === 'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY',
@@ -139,7 +139,7 @@ test('every authored concept is the exact existing V12 payload under the require
   assert.equal(canonicalJson(actual), canonicalJson(expected));
 });
 
-test('the sole authored relationship is the exact V12 USES_DEFINITION definition', () => {
+test('the authored relationships preserve USES_DEFINITION and add three successor schemas', () => {
   const compiled = compileCanonicalContractInput({ root_directory: sourceRoot });
   const actual = authoredPayloads(
     compiled,
@@ -147,31 +147,39 @@ test('the sole authored relationship is the exact V12 USES_DEFINITION definition
     'relationship_key',
     'RELATIONSHIP_DEFINITION/V1',
   );
-  const expected = FIXTURE_CONTRACT_INPUT_V12.relationship_definitions.filter(
-    (entry) => entry.relationship_key === 'USES_DEFINITION',
-  );
-
-  assert.equal(actual.length, 1);
-  assert.equal(canonicalJson(actual), canonicalJson(expected));
-  assert.equal(actual[0].version, 3);
-  assert.equal(actual[0].effect_schema, 'USES_DEFINITION_EFFECT/V2');
+  assert.equal(actual.length, 4);
+  assert.deepEqual(actual.map((entry) => [
+    entry.relationship_key,
+    entry.effect_mode,
+    entry.version,
+    entry.effect_schema,
+  ]), [
+    ['BRINGS_DOWN', 'TYPED_LEGAL_EFFECT', 2, 'BRINGS_DOWN_EFFECT/V1'],
+    ['CONTAINED_IN', 'NON_SEMANTIC', 2, 'CONTAINED_IN_EFFECT/V1'],
+    ['TRIGGERED_BY', 'TYPED_LEGAL_EFFECT', 2, 'TERMINATION_FEE_TRIGGER_EFFECT/V2'],
+    ['USES_DEFINITION', 'TYPED_LEGAL_EFFECT', 3, 'USES_DEFINITION_EFFECT/V2'],
+  ]);
   assert.deepEqual(
     FIXTURE_CONTRACT_INPUT_V12.relationship_definitions
-      .filter((entry) => entry.relationship_key !== 'USES_DEFINITION')
+      .filter((entry) => !actual.some(
+        (authored) => authored.relationship_key === entry.relationship_key,
+      ))
       .map((entry) => entry.relationship_key)
       .sort(),
-    ['BRINGS_DOWN', 'CONTAINED_IN', 'EXCEPTED_BY', 'TRIGGERED_BY'],
+    ['EXCEPTED_BY'],
   );
 });
 
-test('the authored USES_DEFINITION effect schema preserves the exact nested V12 definition', () => {
+test('the authored relationship effect schemas select one closed schema each', () => {
   const compiled = compileCanonicalContractInput({ root_directory: sourceRoot });
   const members = compiled.authored_members.filter(
     (member) => member.object_kind === 'RELATIONSHIP_EFFECT_SCHEMA',
   );
 
-  assert.equal(members.length, 1);
-  const member = members[0].canonical_value;
+  assert.equal(members.length, 4);
+  const member = members.find(
+    (entry) => entry.canonical_value.effect_schema_key === 'USES_DEFINITION_EFFECT',
+  ).canonical_value;
   assert.equal(member.object_kind, 'RELATIONSHIP_EFFECT_SCHEMA');
   assert.equal(member.stable_id, 'USES_DEFINITION_EFFECT');
   assert.equal(member.schema_version, 'RELATIONSHIP_EFFECT_SCHEMA/V1');
@@ -185,6 +193,18 @@ test('the authored USES_DEFINITION effect schema preserves the exact nested V12 
     canonicalJson(member.definition),
     canonicalJson(FIXTURE_CONTRACT_INPUT_V12.definition_use_effect_schema),
   );
+  assert.deepEqual(
+    members.map((entry) => [
+      entry.canonical_value.effect_schema_key,
+      entry.canonical_value.effect_schema_version,
+    ]).sort((left, right) => left[0].localeCompare(right[0])),
+    [
+      ['BRINGS_DOWN_EFFECT', 1],
+      ['CONTAINED_IN_EFFECT', 1],
+      ['TERMINATION_FEE_TRIGGER_EFFECT', 2],
+      ['USES_DEFINITION_EFFECT', 2],
+    ],
+  );
 });
 
 test('the compiler refuses the authored relationship when its effect schema is absent', (t) => {
@@ -197,8 +217,7 @@ test('the compiler refuses the authored relationship when its effect schema is a
   const manifestPath = path.join(root, 'manifest.json');
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
   manifest.members = manifest.members.filter((member) => member.relative_path !== effectPath);
-  delete manifest.per_kind_counts.RELATIONSHIP_EFFECT_SCHEMA;
-  delete manifest.per_kind_schema_versions.RELATIONSHIP_EFFECT_SCHEMA;
+  manifest.per_kind_counts.RELATIONSHIP_EFFECT_SCHEMA = 3;
   fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
 
   assert.throws(
@@ -445,13 +464,13 @@ test('the authored claim interpretation policy is the exact existing V12 policy'
   );
 });
 
-test('the manifest exactly closes the complete 62-file V12 authored source tree', () => {
+test('the manifest exactly closes the complete 68-file authored source tree', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
   const actualMembers = jsonMembers(sourceRoot);
   const declaredMembers = manifest.members.map((member) => member.relative_path);
 
   assert.deepEqual(actualMembers, declaredMembers);
-  assert.equal(manifest.members.length, 62);
+  assert.equal(manifest.members.length, 68);
   assert.deepEqual(manifest.per_kind_counts, {
     CLAIM_DEFINITION: 13,
     CLAIM_INTERPRETATION_POLICY: 1,
@@ -462,8 +481,8 @@ test('the manifest exactly closes the complete 62-file V12 authored source tree'
     PARSER_PROPOSAL_BOUNDARY_DEFINITION: 1,
     PARTY_TUPLE_SHAPE_MIGRATION_INPUT: 1,
     PROVISION_CONCEPT: 19,
-    RELATIONSHIP_DEFINITION: 1,
-    RELATIONSHIP_EFFECT_SCHEMA: 1,
+    RELATIONSHIP_DEFINITION: 4,
+    RELATIONSHIP_EFFECT_SCHEMA: 4,
     RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT: 1,
     SERVING_EXACT_DETAIL_ACTION_DEFINITION: 5,
     SERVING_METRIC_OPERATION_BINDING_INPUT: 2,

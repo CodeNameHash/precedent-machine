@@ -57,7 +57,6 @@ test('accepts the exact authored USES_DEFINITION relationship and effect-schema 
 test('rejects invalid typed relationship envelopes', () => {
   for (const mutate of [
     (value) => { value.stable_id = 'OTHER'; },
-    (value) => { value.effect_mode = 'NON_SEMANTIC'; },
     (value) => { delete value.effect_schema; },
     (value) => { value.version = 0; },
   ]) {
@@ -71,6 +70,29 @@ test('rejects invalid typed relationship envelopes', () => {
       expectCode('INVALID_CANONICAL_BUNDLE_RELATIONSHIP_DEFINITION'),
     );
   }
+});
+
+test('accepts a closed non-semantic relationship and rejects mode drift', () => {
+  const relationship = require(
+    '../lib/schema/canonical/contract-v2/relationship-definitions/contained-in.v2.json'
+  );
+  const effect = require(
+    '../lib/schema/canonical/contract-v2/relationship-effect-schemas/contained-in-effect.v1.json'
+  );
+  assert.doesNotThrow(() => validateAuthoredRelationshipInputs([
+    member(relationship),
+    member(effect),
+  ]));
+
+  const changed = clone(effect);
+  changed.definition.effect_mode = 'TYPED_LEGAL_EFFECT';
+  assert.throws(
+    () => validateAuthoredRelationshipInputs([
+      member(relationship),
+      member(changed),
+    ]),
+    expectCode('CANONICAL_BUNDLE_RELATIONSHIP_EFFECT_BINDING_MISMATCH'),
+  );
 });
 
 test('rejects invalid effect-schema envelopes and nested version drift', () => {

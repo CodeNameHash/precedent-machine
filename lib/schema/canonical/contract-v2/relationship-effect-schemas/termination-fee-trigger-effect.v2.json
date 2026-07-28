@@ -1,0 +1,65 @@
+{
+  "object_kind": "RELATIONSHIP_EFFECT_SCHEMA",
+  "stable_id": "TERMINATION_FEE_TRIGGER_EFFECT",
+  "schema_version": "RELATIONSHIP_EFFECT_SCHEMA/V1",
+  "effect_schema_key": "TERMINATION_FEE_TRIGGER_EFFECT",
+  "effect_schema_version": 2,
+  "definition": {
+    "schema_version": "TERMINATION_FEE_TRIGGER_EFFECT/V2",
+    "relationship_key": "TRIGGERED_BY",
+    "relationship_definition_version": 2,
+    "effect_mode": "TYPED_LEGAL_EFFECT",
+    "required_effect_fields": [
+      "effect_mode",
+      "legal_operation",
+      "trigger_path_schema_key",
+      "trigger_path_schema_version",
+      "pathway_code",
+      "trigger_code",
+      "terminating_party",
+      "payment_timing",
+      "indexed_facts",
+      "condition_expression"
+    ],
+    "required_exact_values": {
+      "effect_mode": "TYPED_LEGAL_EFFECT",
+      "trigger_path_schema_key": "TERMINATION_FEE_TRIGGER_PATH",
+      "trigger_path_schema_version": 2
+    },
+    "allowed_legal_operations": [
+      "CREATES_BUYER_TERMINATION_FEE_PAYMENT_TRIGGER",
+      "CREATES_SELLER_TERMINATION_FEE_PAYMENT_TRIGGER"
+    ],
+    "required_metric_operation_binding_keys": [
+      "BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V2",
+      "SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V2"
+    ],
+    "trigger_path_schema": "TERMINATION_FEE_TRIGGER_PATH/V2",
+    "endpoint_contract": {
+      "source_occurrence_kind": "PROVISION_COMPONENT",
+      "target_occurrence_kind": "PROVISION_COMPONENT",
+      "target_cardinality": "EXACTLY_ONE",
+      "same_deal_required": true
+    },
+    "condition_expression_contract": {
+      "root_operator_from_trigger_path_schema": true,
+      "operators_from_trigger_path_schema": true,
+      "bounds_from_trigger_path_schema": true,
+      "declared_trigger_required_at_root": true,
+      "pathway_template_digest_required": true
+    },
+    "indexed_fact_contract": {
+      "sorted_unique": true,
+      "derived_from_condition_expression": true,
+      "trigger_codes_excluded": true,
+      "semantics": "SET_MEMBERSHIP_SEARCH_AID_ONLY"
+    },
+    "party_contract": {
+      "payer_and_payee_from_metric_operation_binding": true,
+      "terminating_party_from_pathway_constraint": true,
+      "party_inference_forbidden": true
+    },
+    "propagation": "EXACT_NAMED_TARGET_ONLY",
+    "party_transfer": "NONE"
+  }
+}

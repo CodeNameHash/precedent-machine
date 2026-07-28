@@ -368,11 +368,53 @@
       "canonical_bytes_digest": "1a77924503fe034eac15e3da2a5c7e569cff9160e337ee1ef241ce162f90d0ff"
     },
     {
+      "relative_path": "relationship-definitions/brings-down.v2.json",
+      "object_kind": "RELATIONSHIP_DEFINITION",
+      "stable_id": "BRINGS_DOWN",
+      "schema_version": "RELATIONSHIP_DEFINITION/V1",
+      "canonical_bytes_digest": "9c104bacfe90fdba9d88c7e699fcd99f3ba1551f3c96297c329f362ccb48e4dc"
+    },
+    {
+      "relative_path": "relationship-definitions/contained-in.v2.json",
+      "object_kind": "RELATIONSHIP_DEFINITION",
+      "stable_id": "CONTAINED_IN",
+      "schema_version": "RELATIONSHIP_DEFINITION/V1",
+      "canonical_bytes_digest": "2f4e2e6bb7d1fc4845cebcfe1ef7a7c1bf8dbb1b47632e2f1622bf44ae2d8d28"
+    },
+    {
+      "relative_path": "relationship-definitions/triggered-by.v2.json",
+      "object_kind": "RELATIONSHIP_DEFINITION",
+      "stable_id": "TRIGGERED_BY",
+      "schema_version": "RELATIONSHIP_DEFINITION/V1",
+      "canonical_bytes_digest": "9877dc202e03d76fbb1eb787d3bb4aaa4d7d0ae0c5ef6e932ba2e21c7e142e0e"
+    },
+    {
       "relative_path": "relationship-definitions/uses-definition.v3.json",
       "object_kind": "RELATIONSHIP_DEFINITION",
       "stable_id": "USES_DEFINITION",
       "schema_version": "RELATIONSHIP_DEFINITION/V1",
       "canonical_bytes_digest": "14929d382dfe14b072efd458da317a790b6fec333ec894c960a38275408e121d"
+    },
+    {
+      "relative_path": "relationship-effect-schemas/brings-down-effect.v1.json",
+      "object_kind": "RELATIONSHIP_EFFECT_SCHEMA",
+      "stable_id": "BRINGS_DOWN_EFFECT",
+      "schema_version": "RELATIONSHIP_EFFECT_SCHEMA/V1",
+      "canonical_bytes_digest": "a4f7e50f3c057fcbc3cfc47489d6e6a037bee1da034955017800054bff8ca20f"
+    },
+    {
+      "relative_path": "relationship-effect-schemas/contained-in-effect.v1.json",
+      "object_kind": "RELATIONSHIP_EFFECT_SCHEMA",
+      "stable_id": "CONTAINED_IN_EFFECT",
+      "schema_version": "RELATIONSHIP_EFFECT_SCHEMA/V1",
+      "canonical_bytes_digest": "2e006ecf116701fb027ca0c85920e0f7c063c99c8050399198b76c6af5d8d9b7"
+    },
+    {
+      "relative_path": "relationship-effect-schemas/termination-fee-trigger-effect.v2.json",
+      "object_kind": "RELATIONSHIP_EFFECT_SCHEMA",
+      "stable_id": "TERMINATION_FEE_TRIGGER_EFFECT",
+      "schema_version": "RELATIONSHIP_EFFECT_SCHEMA/V1",
+      "canonical_bytes_digest": "73f82545c20c1e039b7c8383843007d94c3ecea943e04b7464f2407d106a1e55"
     },
     {
       "relative_path": "relationship-effect-schemas/uses-definition-effect.v2.json",
@@ -448,8 +490,8 @@
     "PARSER_PROPOSAL_BOUNDARY_DEFINITION": 1,
     "PARTY_TUPLE_SHAPE_MIGRATION_INPUT": 1,
     "PROVISION_CONCEPT": 19,
-    "RELATIONSHIP_DEFINITION": 1,
-    "RELATIONSHIP_EFFECT_SCHEMA": 1,
+    "RELATIONSHIP_DEFINITION": 4,
+    "RELATIONSHIP_EFFECT_SCHEMA": 4,
     "RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT": 1,
     "SERVING_EXACT_DETAIL_ACTION_DEFINITION": 5,
     "SERVING_METRIC_OPERATION_BINDING_INPUT": 2,
