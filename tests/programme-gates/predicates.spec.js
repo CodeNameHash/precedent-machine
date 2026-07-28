@@ -196,6 +196,7 @@ const FIXTURES = Object.freeze({
     attestation_source_digest: DIGEST_D,
     disposition: 'ROTATED',
     rotation_verified_at: '2026-07-27T10:00:00.000Z',
+    zayo_disposition_id: null,
     ben_approval_id: null,
     secret_field_count: 0,
   }),

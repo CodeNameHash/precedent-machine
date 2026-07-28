@@ -1035,7 +1035,11 @@ The following adversarial closure tests are mandatory traceability entries:
   absent from the frozen contract. Raw amount or duration and all familiar
   primitives remain visible, but no percentage, converted duration, compatible
   cohort or statistic publishes until the basis is governed and the full
-  applicability universe is re-examined.
+  applicability universe is re-examined. A complete result with no established
+  basis must carry `MISSING_BASIS`; one with established but non-normalisable
+  bases must carry `INCOMPATIBLE_BASIS`. Substituting a generic
+  `NOT_COMPARABLE`, swapping those values or collapsing either to null or “No
+  market data” fails schema, serving parity and cohort certification.
 - `OPEN-WORLD-COMPOSITION-01`: make a lawyer-facing result require a combination
   of otherwise recognised spans that no frozen ResultDefinition permits. A
   `RESULT_COMPOSITION` candidate retains all components and relationships but
@@ -1259,7 +1263,16 @@ The following adversarial closure tests are mandatory traceability entries:
   predecessor retains its exact transition-bound disposition in audit only.
   Missing, duplicate, conflicting, sixth-value,
   forked, merged, cyclic or orphaned chains fail both the independently rebuilt
-  effective root and release sealing.
+  effective root and release sealing. Every final disposition, including
+  `REJECTED_NON_SUBSTANTIVE_OR_INVALID`, must bind an exact permitted action in
+  the frozen LegalSemanticReviewPolicy, a member and key in the frozen
+  LegalReviewerTrustRegistry, and a valid
+  LegalSemanticReviewerEligibilityProof under both the signing-time and current
+  LegalReviewerRevocationHeads. Substitute a policy, registry, principal,
+  action, domain, decision-body digest or nonce, use an unknown key, revoke the
+  key before signing or before current validation, or fork the revocation head:
+  the affected disposition remains unresolved and cannot suppress valid
+  sibling rows.
 - `RESIDUAL-TOTALITY-01`: seed one residual in every registered producer kind,
   including a validation residual with no open-world candidate. Both independent
   universe roots and their reconciliation must enumerate the same complete set;
@@ -1275,6 +1288,18 @@ The following adversarial closure tests are mandatory traceability entries:
   bidirectionally. Add a residual-capable carrier or producer to either
   authority alone; the other path must detect the unregistered boundary before
   candidate sealing.
+  For `COVERED_BY_GOVERNED_OBJECT`, require an exact
+  GovernedObjectImpactClosure from two independent dependency walkers and a
+  third reconciliation. `FULLY_INCORPORATED` passes only when the selected
+  governed object losslessly contains the residual semantics and evidence and
+  every enumerated dependant selects that exact revision. Substitute a
+  text-overlapping object, omit a dependant, leave a stale revision, force zero
+  additional impact despite an unrepresented semantic difference, cross-wire a
+  candidate SemanticImpactClosure or make the walkers disagree: residual impact
+  remains unresolved and no market comparability may be inferred. A valid
+  `FULLY_INCORPORATED` closure must project exactly
+  `ZERO_ADDITIONAL_IMPACT_FULLY_INCORPORATED`, not the non-substantive
+  zero-effect branch.
   Mark an impactful residual as a duplicate of an earlier byte-identical
   residual with different governed subject, evidence context or validation
   semantics: review must reject the duplicate link. A valid duplicate must
@@ -1798,8 +1823,13 @@ The following adversarial closure tests are mandatory traceability entries:
   activation's REVOKED fence returns to AVAILABLE only through
   RESTORE_CANDIDATE_PROMOTION_AVAILABILITY after terminal containment, passing
   prior-tuple restoration smoke and the fixed failure terminal. Omit, duplicate
-  or race any genesis, abandonment or recovery event, lock, successor or receipt:
-  the fence stays unavailable and no input head advances.
+  or race any genesis, abandonment or recovery event, lock, successor or
+  receipt: the fence stays unavailable and no input head advances. The closed
+  `CANDIDATE_RELEASE_FREEZE` action grammar must itself enumerate
+  `ABANDON_HELD_PROMOTION`, and must reject it before
+  `HELD(CURRENT_CANDIDATE)`. Omitting that action from the closed grammar,
+  admitting it as an open extension or using `ABANDON_GENERATION` after hold
+  acquisition fails before writer dispatch.
 - `SERVING-FENCE-CACHE-01`: every request, including a warm cache hit, obtains
   one fresh request-nonce-bound admission for the exact READY fence and retains
   its lease through the last response byte, then consumes the token through the
@@ -2165,7 +2195,14 @@ The following adversarial closure tests are mandatory traceability entries:
   must block while valid sibling rows remain
   renderable. Substitute the reviewer principal, eligibility proof, signed
   representativeness decision, effective disposition or evidence closure while
-  retaining the selected primitive: the writer must reject publication.
+  retaining the selected primitive: the writer must reject publication. The
+  decision must bind the exact frozen LegalSemanticReviewPolicy,
+  LegalReviewerTrustRegistry and
+  `SOURCE_SPECIFIC_PUBLICATION_SELECTION` proof. Substitute the policy,
+  registry, action, legal domain or signed decision-body digest, use a
+  non-member key, or revoke the key under either the signing-time or current
+  LegalReviewerRevocationHead: publication remains blocked for that row while
+  valid sibling rows remain renderable.
   The effective decision must be present exactly once in the admitted scope
   inventory, CandidateInputSeal, candidate-output inventory,
   CandidateReleaseManifest, ReleaseBundleEnvelope, production-import parity,
@@ -2331,21 +2368,41 @@ The following adversarial closure tests are mandatory traceability entries:
   proves isolation only. The recorded roots, per-kind counts and selectivity distributions
   must match before load begins. A smaller or differently distributed fixture
   fails. The benchmark root must equal the complete
-  SupportedQueryShapeRegistry coverage root across every active route, action,
-  request variant, plan family, filter/operator/value class, page, facet,
-  option, saved lookup, carried-response navigation and exact-detail/source page.
+  SupportedQueryShapeRegistry template root and the selected release's complete
+  ReleaseQueryExecutionClassRegistry and WorstCaseWitnessDominanceProof roots
+  across every active route, action, request variant, plan family, complete
+  predicate and cohort-filter AST, ordered projection, grouping, facet and sort
+  vectors, literal quotient and correlation class, page, option, saved lookup,
+  carried-response navigation and exact-detail/source page.
   The registry itself must be the frozen closed member selected by
   `QUERY_DEFINITION_SET_ROOT/V2`; both independent query-shape compilers must
   reproduce its complete member set and root without using test fixtures as
-  authority. Selectivity class is deterministic: valid estimates at or below
-  `0.10` are `SELECTIVE`, values above `0.10` are `UNSELECTIVE`, and missing,
-  invalid or conflicting estimates fail before planning. Facet and field-option
+  authority. Give the compilers two plans with the same first predicate and
+  singular field/operator/value/sort tuple but a different second predicate,
+  Boolean topology, cohort filter, grouping, facet or later sort key. Collapsing
+  them into one class without a complete CompositeShapeEquivalenceProof and
+  common dominance proof fails. So does any admitted plan with zero or multiple
+  template or release-class matches; it must be refused before database
+  checkout.
+  Selectivity class is deterministic: valid estimates at or below `0.10` are
+  `SELECTIVE`, values above `0.10` are `UNSELECTIVE`, and missing, invalid or
+  conflicting estimates fail before planning. Those two labels alone never
+  establish load coverage. For equality, range and capped `IN`, and for
+  correlated `AND`, `OR` and nested forms, independently recompute the complete
+  ParameterDomainQuotient and Pareto-maximal witness set. Substitute a benign
+  selective or unselective fixture while a non-witness member exceeds it in
+  planner cost, visited rows, fan-out, intermediate or sort/group/facet rows,
+  output bytes, temporary bytes, `IN` cardinality or parameter bytes: dominance
+  and the gate fail. Omit an incomparable witness, change a physical plan
+  fingerprint, or use sampled or caller-supplied estimates: the gate fails.
+  Facet and field-option
   endpoints return at most 200 values and 256 KiB per page with a signed
   release-aware cursor; overflow must paginate or refuse before corpus access,
   never truncate.
-  Every class must satisfy its binding p95, p99 and browser threshold at N and
-  maximum scale. A missing class or smaller CapacityManifest cardinality
-  component fails. No-fault steady and all-miss profiles must satisfy the fixed 99.9%
+  Every release execution class and every member of its bound witness set must
+  satisfy its p95, p99 and browser threshold at N and maximum scale. A missing
+  class, missing witness or smaller CapacityManifest cardinality component
+  fails. No-fault steady and all-miss profiles must satisfy the fixed 99.9%
   schema-valid success and target-throughput floors, all passing profiles must
   meet the contract latency budgets, and every injected fault must recover
   target throughput and latency within the frozen recovery bound. A dynamic

@@ -41,6 +41,7 @@ test('P1 compiles from the bootstrap source contract and enumerates its closed w
 
   const members = enumerateContractFreezeExpectedMembers({
     evidenceObject: {
+      contract_authority_manifest_id: 'a'.repeat(64),
       compilation_receipt_id: 'b'.repeat(64),
       semantic_identity_review_id: 'c'.repeat(64),
       freeze_gate_approval_id: 'd'.repeat(64),
@@ -50,6 +51,7 @@ test('P1 compiles from the bootstrap source contract and enumerates its closed w
   assert.deepEqual(
     members.map((member) => member.member_type),
     [
+      'ContractFreezeAuthorityManifest',
       'ContractBundleCompilationReceipt',
       'ContractDiffReviewAttestation',
       'ContractFreezeApproval',

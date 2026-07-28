@@ -1,9 +1,14 @@
 const assert = require('node:assert/strict');
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 
-const { domainDigest } = require('../../lib/programme-gates/bytes');
+const { domainDigest, signatureBytes } = require('../../lib/programme-gates/bytes');
+const {
+  evaluateAcceptanceClaims,
+} = require('../../lib/programme-gates/predicates');
+const { verifySignature } = require('../../lib/programme-gates/signatures');
 const {
   createSecurityDispositionContractBundle,
 } = require('../../lib/programme-gates/security-disposition-contracts');
@@ -113,7 +118,7 @@ test('the three active contracts are closed and bind distinct evidence schemas',
   assert.deepEqual(
     bundle.definitions[2].ordered_claim_predicate_definitions[0]
       .exact_input_member_types_and_paths.map((entry) => entry.json_pointer),
-    ['/disposition', '/rotation_verified_at', '/ben_approval_id'],
+    ['/disposition', '/rotation_verified_at', '/zayo_disposition_id', '/ben_approval_id'],
   );
 });
 
@@ -223,4 +228,115 @@ test('wrong, failed or post-attestation GATE-01 executions fail closed', () => {
       /GATE-01 execution/,
     );
   }
+});
+
+test('Supabase N/A requires the exact recognised Zayo fact and signed Ben approval', () => {
+  const ben = crypto.generateKeyPairSync('ed25519');
+  const sourceDigest = '3'.repeat(64);
+  const zayo = {
+    schema_version: 'ZayoTrafficDisposition/V1',
+    gate_id: 'G0_ZAYO_DISPOSITION',
+    code_commit: COMMIT,
+    environment: 'PRODUCTION',
+    observed_at: OBSERVED_AT,
+    attestation_source_digest: sourceDigest,
+    process_identity_digest: '4'.repeat(64),
+    owner: 'OWNER_IDENTITY_CONFIRMED_BY_BEN_GOODCHILD',
+    purpose: 'AUTHORISED_DATABASE_TRAFFIC',
+    recognition_status: 'RECOGNISED',
+    rotation_required: false,
+    rotation_completed: false,
+    secret_field_count: 0,
+  };
+  const zayoId = domainDigest('PROGRAMME_GATE_ZAYO_DISPOSITION_ID/V1', zayo);
+  const approvalIdentity = {
+    schema_version: 'SupabaseSecretNaApproval/V1',
+    supabase_attestation_source_digest: sourceDigest,
+    zayo_process_identity_digest: zayo.process_identity_digest,
+    approved_disposition: 'RECOGNISED_TRAFFIC_APPROVED_NA',
+    approver_identity: 'BEN_GOODCHILD',
+    conditions: [],
+    approved_at: OBSERVED_AT,
+    signature_algorithm: 'Ed25519',
+    approver_key_id: 'BEN_NA_KEY',
+  };
+  const approvalId = domainDigest(
+    'PROGRAMME_GATE_SUPABASE_SECRET_NA_APPROVAL_ID/V1',
+    approvalIdentity,
+  );
+  const approvalUnsigned = { ...approvalIdentity, approval_id: approvalId };
+  const approval = {
+    ...approvalUnsigned,
+    signature: crypto.sign(
+      null,
+      signatureBytes({
+        domain: 'PROGRAMME_GATE_SUPABASE_SECRET_NA_APPROVAL/V1',
+        role: 'BEN_APPROVER',
+        payload: approvalUnsigned,
+      }),
+      ben.privateKey,
+    ).toString('base64'),
+  };
+  const evidence = {
+    schema_version: 'SupabaseSecretDisposition/V1',
+    gate_id: 'G0_SUPABASE_SECRET_DISPOSITION',
+    code_commit: COMMIT,
+    environment: 'PRODUCTION',
+    observed_at: OBSERVED_AT,
+    attestation_source_digest: sourceDigest,
+    disposition: 'RECOGNISED_TRAFFIC_APPROVED_NA',
+    rotation_verified_at: null,
+    zayo_disposition_id: zayoId,
+    ben_approval_id: approvalId,
+    secret_field_count: 0,
+  };
+  const keyRegistry = {
+    schema_version: 'TrustedProgrammeGatePublicKeys/V1',
+    registry_state: 'ACTIVE',
+    keys: [{
+      key_id: 'BEN_NA_KEY',
+      algorithm: 'Ed25519',
+      public_key_pem: ben.publicKey.export({ format: 'pem', type: 'spki' }).toString(),
+      permitted_roles: ['BEN_APPROVER'],
+      permitted_domains: ['PROGRAMME_GATE_SUPABASE_SECRET_NA_APPROVAL/V1'],
+      valid_from: '2026-07-28T00:00:00.000Z',
+      valid_until: '2026-07-29T00:00:00.000Z',
+      revoked_at: null,
+    }],
+  };
+  const claims = (members) => evaluateAcceptanceClaims({
+    gate_id: 'G0_SUPABASE_SECRET_DISPOSITION',
+    evidence,
+    context: {
+      specificationRoot: ROOT,
+      codeCommit: COMMIT,
+      environment: 'PRODUCTION',
+      expectedSpecificationRoot: ROOT,
+      expectedCodeCommit: COMMIT,
+      expectedEnvironment: 'PRODUCTION',
+      observed_at: OBSERVED_AT,
+      clock: { now: () => '2026-07-28T07:25:00.000Z' },
+      immutableMembers: members,
+      keyRegistry,
+      verifySignature,
+      domainDigest,
+    },
+  });
+  const members = [
+    {
+      member_id: `zayo:${zayoId}`,
+      member_type: 'ZayoTrafficDisposition',
+      payload: zayo,
+    },
+    {
+      member_id: `approval:${approvalId}`,
+      member_type: 'SupabaseSecretNaApproval',
+      payload: approval,
+    },
+  ];
+  assert.deepEqual(claims(members).map((claim) => claim.typed_value), [true, true]);
+  assert.equal(claims(members.slice(1))[0].typed_value, false);
+  const forged = structuredClone(members);
+  forged[1].payload.signature = Buffer.alloc(64, 1).toString('base64');
+  assert.equal(claims(forged)[0].typed_value, false);
 });
