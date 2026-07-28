@@ -46,6 +46,19 @@ const {
   preflightIsolationSignature,
 } = require('../lib/programme-gates/isolation-signing');
 const {
+  buildBenApproval,
+  buildReviewSetInput,
+} = require('../lib/programme-gates/review-artifact');
+const {
+  buildReviewApprovalReadiness,
+  createReviewApprovalReadinessAuthority,
+} = require('../lib/programme-gates/review-readiness');
+const {
+  buildReviewApprovalSigningRequest,
+  createReviewApprovalSigningAuthority,
+  preflightReviewApprovalSignature,
+} = require('../lib/programme-gates/review-signing');
+const {
   REGISTRY_DIGESTS,
   TRUSTED_PUBLIC_KEY_REGISTRY,
 } = require('../lib/programme-gates/registry');
@@ -61,6 +74,10 @@ const {
 const {
   programmeGateValidatorExecutableDigest,
 } = require('../lib/programme-gates/validator-executable');
+const {
+  buildG0StatusReadiness,
+  createG0StatusReadinessAuthority,
+} = require('../lib/programme-gates/g0-status-readiness');
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SOURCE_PATH = path.resolve(
@@ -82,7 +99,14 @@ const DEPLOY_CUTOVER_TEST_FILES = Object.freeze([
   'tests/canonical-v2-staging-preview-access.test.js',
   'tests/canonical-v2-staging-runtime.test.js',
 ]);
+const REVIEW_CONTEXT_TEST_FILES = Object.freeze([
+  'tests/programme-gates/review-artifact.spec.js',
+  'tests/programme-gates/review-evidence.spec.js',
+  'tests/programme-gates/review-readiness-signing.spec.js',
+  'tests/programme-gates/g0-status-readiness.spec.js',
+]);
 const VALIDATOR_KEY_ID = 'PROGRAMME_GATE_VALIDATOR_2026_07';
+const BEN_APPROVER_KEY_ID = 'PROGRAMME_GATE_BEN_APPROVER_2026_07';
 const PRODUCTION_ORIGIN = 'https://deal-corpus.vercel.app';
 const PRODUCTION_ALIAS = 'deal-corpus.vercel.app';
 const VERCEL_API_ORIGIN = 'https://api.vercel.com';
@@ -110,6 +134,7 @@ function sha256(bytes) {
 function childEnvironment(overrides = {}) {
   const environment = { ...process.env, ...overrides };
   delete environment.PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM;
+  delete environment.PROGRAMME_GATE_BEN_APPROVER_ED25519_PRIVATE_KEY_PEM;
   delete environment.PROGRAMME_GATE_STAGING_SUPABASE_SECRET_KEY;
   delete environment.VERCEL_TOKEN;
   return environment;
@@ -393,19 +418,19 @@ function governingGates() {
   }).gates;
 }
 
-function privateValidatorKey() {
-  const pem = process.env.PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM;
+function protectedPrivateKey(environmentName, keyId) {
+  const pem = process.env[environmentName];
   if (typeof pem !== 'string' || pem.length === 0) {
-    throw new Error('protected validator signing key is unavailable');
+    throw new Error(`protected ${keyId} signing key is unavailable`);
   }
   const privateKey = crypto.createPrivateKey(pem);
   if (privateKey.asymmetricKeyType !== 'ed25519') {
-    throw new Error('protected validator signing key is not Ed25519');
+    throw new Error(`protected ${keyId} signing key is not Ed25519`);
   }
   const trusted = TRUSTED_PUBLIC_KEY_REGISTRY.keys.find(
-    (entry) => entry.key_id === VALIDATOR_KEY_ID,
+    (entry) => entry.key_id === keyId,
   );
-  if (!trusted) throw new Error('trusted validator public key is unavailable');
+  if (!trusted) throw new Error(`trusted ${keyId} public key is unavailable`);
   const derivedPublic = crypto.createPublicKey(privateKey).export({
     type: 'spki',
     format: 'pem',
@@ -418,9 +443,23 @@ function privateValidatorKey() {
     crypto.createHash('sha256').update(derivedPublic).digest(),
     crypto.createHash('sha256').update(trustedPublic).digest(),
   )) {
-    throw new Error('protected signing key does not match the trusted public key');
+    throw new Error(`protected ${keyId} key does not match the trusted public key`);
   }
   return privateKey;
+}
+
+function privateValidatorKey() {
+  return protectedPrivateKey(
+    'PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM',
+    VALIDATOR_KEY_ID,
+  );
+}
+
+function privateBenApproverKey() {
+  return protectedPrivateKey(
+    'PROGRAMME_GATE_BEN_APPROVER_ED25519_PRIVATE_KEY_PEM',
+    BEN_APPROVER_KEY_ID,
+  );
 }
 
 function signatureFor(request, privateKey) {
@@ -429,6 +468,27 @@ function signatureFor(request, privateKey) {
     Buffer.from(request.signing_frame_base64, 'base64'),
     privateKey,
   ).toString('base64');
+}
+
+function signatureForBytes(bytes, privateKey) {
+  return crypto.sign(null, bytes, privateKey).toString('base64');
+}
+
+function reviewArtifact() {
+  const reviewPath = process.env.PROGRAMME_GATE_COLD_REVIEW_BUNDLE;
+  if (typeof reviewPath !== 'string' || !path.isAbsolute(reviewPath)) {
+    throw new Error('cold-review bundle path is unavailable');
+  }
+  return JSON.parse(fs.readFileSync(reviewPath, 'utf8'));
+}
+
+function sourceControlIdentities() {
+  const output = successful('git', [
+    'log',
+    '--all',
+    '--format=%an%x00%ae%x00%aN%x00%aE',
+  ]);
+  return [...new Set(output.split('\0').map((value) => value.trim()).filter(Boolean))];
 }
 
 function evidenceResult(candidate, preflight) {
@@ -495,6 +555,12 @@ async function main() {
     codeCommit,
     environment,
   );
+  const reviewContextTest = testResult(
+    'REVIEW-CONTEXT-01',
+    REVIEW_CONTEXT_TEST_FILES,
+    codeCommit,
+    environment,
+  );
   const securityObservedAt = new Date().toISOString();
   const verificationTime = securityObservedAt;
   const securitySource = JSON.parse(fs.readFileSync(SOURCE_PATH, 'utf8'));
@@ -530,6 +596,78 @@ async function main() {
     root: ROOT,
   });
   const privateKey = privateValidatorKey();
+  const benPrivateKey = privateBenApproverKey();
+
+  const reviewVerificationTime = new Date().toISOString();
+  const reviewSet = buildReviewSetInput({
+    at: reviewVerificationTime,
+    bundle: reviewArtifact(),
+    expectedCodeCommit: codeCommit,
+    expectedSpecificationRoot: specificationDigest,
+    keyRegistry: TRUSTED_PUBLIC_KEY_REGISTRY,
+    signIndependence: (bytes) => signatureForBytes(bytes, privateKey),
+    sourceControlIdentities: sourceControlIdentities(),
+    validatorConfigurationDigest: REGISTRY_DIGESTS.validator_configuration,
+    validatorExecutableDigest,
+    validatorKeyId: VALIDATOR_KEY_ID,
+  });
+  const approvalTime = new Date().toISOString();
+  const benApproval = buildBenApproval({
+    approvedAt: approvalTime,
+    approvedRoot: specificationDigest,
+    approverKeyId: BEN_APPROVER_KEY_ID,
+    keyRegistry: TRUSTED_PUBLIC_KEY_REGISTRY,
+    nonce: crypto.randomUUID(),
+    passingReviewSetEvidenceId: reviewSet.verification.evidence_id,
+    signApproval: (bytes) => signatureForBytes(bytes, benPrivateKey),
+    verificationTime: approvalTime,
+  });
+  const reviewObservedAt = new Date().toISOString();
+  const reviewBundle = buildReviewApprovalReadiness({
+    authority: createReviewApprovalReadinessAuthority({
+      specificationRoot: specificationDigest,
+      codeCommit,
+      environment,
+      observedAt: reviewObservedAt,
+      verificationTime: reviewObservedAt,
+    }),
+    reviewSet: {
+      members: reviewSet.members,
+      authority: reviewSet.authority,
+    },
+    benApproval: {
+      record: benApproval.record,
+      authority: benApproval.authority,
+    },
+    gateTestResult: gateTest,
+    reviewContextTestResult: reviewContextTest,
+  });
+  const reviewSigningAuthority = createReviewApprovalSigningAuthority({
+    keyRegistry: TRUSTED_PUBLIC_KEY_REGISTRY,
+    validatorConfigurationDigest: REGISTRY_DIGESTS.validator_configuration,
+    validatorExecutableDigest,
+    validatorKeyId: VALIDATOR_KEY_ID,
+    verificationTime: reviewObservedAt,
+    reviewSetAuthority: reviewSet.authority,
+    benApprovalAuthority: benApproval.authority,
+  });
+  const reviewPreflights = reviewBundle.candidates.map((candidate) => {
+    const signingRequest = buildReviewApprovalSigningRequest({
+      authority: reviewSigningAuthority,
+      bundle: reviewBundle,
+      candidate,
+    });
+    return preflightReviewApprovalSignature({
+      authority: reviewSigningAuthority,
+      bundle: reviewBundle,
+      candidate,
+      signingRequest,
+      signature: signatureFor(signingRequest, privateKey),
+    });
+  });
+  const reviewEvidence = reviewBundle.candidates.map(
+    (candidate, index) => evidenceResult(candidate, reviewPreflights[index]),
+  );
 
   const securityAuthority = createSecurityDispositionSigningAuthority({
     keyRegistry: TRUSTED_PUBLIC_KEY_REGISTRY,
@@ -629,9 +767,53 @@ async function main() {
     || containmentStatusReadiness.status_publication_attempted !== false) {
     throw new Error('containment evidence did not produce exact unsigned status readiness');
   }
+  const g0StatusReadiness = buildG0StatusReadiness({
+    authority: createG0StatusReadinessAuthority({
+      specificationRoot: specificationDigest,
+      codeCommit,
+      environment,
+      keyRegistry: TRUSTED_PUBLIC_KEY_REGISTRY,
+      validatorExecutableDigest,
+      validatorKeyId: VALIDATOR_KEY_ID,
+      verificationTime: reviewObservedAt,
+      reviewSigningAuthority,
+    }),
+    containment: {
+      bundle: containmentBundle,
+      signedPreflights: containmentPreflights,
+    },
+    security: {
+      bundle: securityBundle,
+      signedPreflights: securityEvidence.map((entry) => ({
+        preflight_type: 'ProgrammeGateSecurityDispositionSignedPreflight/V1',
+        gate_id: entry.gate_id,
+        evidence_validation: entry.evidence_validation,
+        signed_envelope: entry.signed_envelope,
+      })),
+    },
+    isolation: {
+      bundle: isolationBundle,
+      signedPreflights: isolationEvidence.map((entry) => ({
+        preflight_type: 'ProgrammeGateIsolationSignedPreflight/V1',
+        gate_id: entry.gate_id,
+        evidence_validation: entry.evidence_validation,
+        signed_envelope: entry.signed_envelope,
+      })),
+    },
+    review: {
+      bundle: reviewBundle,
+      signedPreflights: reviewPreflights,
+    },
+  });
+  if (g0StatusReadiness.readiness_state !== 'READY_FOR_STATUS_SIGNATURE'
+    || g0StatusReadiness.formal_status_state !== 'OPEN'
+    || g0StatusReadiness.bootstrap_nonce_consumed !== false
+    || g0StatusReadiness.status_publication_attempted !== false) {
+    throw new Error('ten-gate evidence did not produce exact unsigned G0 status readiness');
+  }
 
   const output = {
-    schema_version: 'ProgrammeGateG0SignedEvidenceBundle/V1',
+    schema_version: 'ProgrammeGateG0SignedEvidenceBundle/V2',
     specification_root: specificationDigest,
     code_commit: codeCommit,
     runtime_deployment_id: deploymentId,
@@ -639,6 +821,7 @@ async function main() {
     containment_observed_at: containmentBundle.observed_at,
     security_observed_at: securityObservedAt,
     isolation_observed_at: isolationSource.observed_at,
+    review_observed_at: reviewObservedAt,
     validator_executable_digest: validatorExecutableDigest,
     validator_configuration_digest: REGISTRY_DIGESTS.validator_configuration,
     validator_key_id: VALIDATOR_KEY_ID,
@@ -651,7 +834,13 @@ async function main() {
       status_publication_attempted:
         containmentStatusReadiness.status_publication_attempted,
     },
-    evidence: [...containmentEvidence, ...securityEvidence, ...isolationEvidence],
+    g0_status_readiness: g0StatusReadiness,
+    evidence: [
+      ...containmentEvidence,
+      ...securityEvidence,
+      ...isolationEvidence,
+      ...reviewEvidence,
+    ],
   };
   process.stdout.write(`${JSON.stringify(output)}\n`);
 }

@@ -15,8 +15,13 @@ on:
         description: Exact canonical branch Preview Vercel deployment ID
         required: true
         type: string
+      review_run_id:
+        description: Exact passing local cold-review workflow run ID
+        required: true
+        type: string
 
 permissions:
+  actions: read
   contents: read
 
 concurrency:
@@ -33,7 +38,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.expected_commit }}
-          fetch-depth: 1
+          fetch-depth: 0
       - name: Verify exact main commit
         env:
           EXPECTED_PROGRAMME_COMMIT: ${{ inputs.expected_commit }}
@@ -46,11 +51,20 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Download exact signed cold-review bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: programme-gate-cold-reviews-${{ inputs.expected_commit }}
+          path: ${{ runner.temp }}/cold-reviews
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.review_run_id }}
       - name: Collect, validate and sign G0 evidence
         env:
           EXPECTED_PROGRAMME_COMMIT: ${{ inputs.expected_commit }}
           EXPECTED_VERCEL_DEPLOYMENT_ID: ${{ inputs.deployment_id }}
           EXPECTED_VERCEL_PREVIEW_DEPLOYMENT_ID: ${{ inputs.preview_deployment_id }}
+          PROGRAMME_GATE_COLD_REVIEW_BUNDLE: ${{ runner.temp }}/cold-reviews/programme-gate-cold-reviews.json
+          PROGRAMME_GATE_BEN_APPROVER_ED25519_PRIVATE_KEY_PEM: ${{ secrets.PROGRAMME_GATE_BEN_APPROVER_ED25519_PRIVATE_KEY_PEM }}
           PROGRAMME_GATE_STAGING_SUPABASE_SECRET_KEY: ${{ secrets.PROGRAMME_GATE_STAGING_SUPABASE_SECRET_KEY }}
           PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM: ${{ secrets.PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
@@ -68,4 +82,6 @@ jobs:
           retention-days: 7
       - name: Remove runner output
         if: always()
-        run: rm -f "${RUNNER_TEMP}/programme-gate-g0-evidence.json"
+        run: |
+          rm -f "${RUNNER_TEMP}/programme-gate-g0-evidence.json"
+          rm -rf "${RUNNER_TEMP}/cold-reviews"
