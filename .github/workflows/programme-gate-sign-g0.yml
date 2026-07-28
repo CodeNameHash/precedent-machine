@@ -51,15 +51,15 @@ jobs:
         run: |
           set -euo pipefail
           umask 077
-          node scripts/sign-g0-evidence.mjs > programme-gate-g0-evidence.json
-          test -s programme-gate-g0-evidence.json
+          node scripts/sign-g0-evidence.mjs > "${RUNNER_TEMP}/programme-gate-g0-evidence.json"
+          test -s "${RUNNER_TEMP}/programme-gate-g0-evidence.json"
       - name: Upload signed evidence
         uses: actions/upload-artifact@v4
         with:
           name: programme-gate-g0-evidence-${{ inputs.expected_commit }}
-          path: programme-gate-g0-evidence.json
+          path: ${{ runner.temp }}/programme-gate-g0-evidence.json
           if-no-files-found: error
           retention-days: 7
       - name: Remove runner output
         if: always()
-        run: rm -f programme-gate-g0-evidence.json
+        run: rm -f "${RUNNER_TEMP}/programme-gate-g0-evidence.json"
