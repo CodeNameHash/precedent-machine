@@ -343,6 +343,7 @@ function validateGateRegistry() {
   const claimAst = gateEvidence.claim_ast_derivation;
   const sourceRoot = gateEvidence.complete_acceptance_source_root;
   const compiledRegistry = gateEvidence.bootstrap_compiled_registry_binding;
+  const authorityTiers = gateEvidence.acceptance_authority_tiers;
   if (!acceptance?.evidence_contract_selects_exact_schema
     || !acceptance?.acceptance_definition_is_unique_root_bound_and_content_addressed
     || !acceptance?.subject_type_identity_and_payload_match_definition
@@ -362,13 +363,27 @@ function validateGateRegistry() {
     || claimAst?.comparison_operator !== 'BOOLEAN_IS_TRUE'
     || claimAst?.expected_typed_value !== true
     || claimAst?.asserted_boolean_without_RECOMPUTED_MEMBER_WITNESS_ROOT !== 'OPEN'
-    || sourceRoot?.source !== 'REVIEWED_SPECIFICATION_ROOT_ONLY'
+    || sourceRoot?.source !== 'AUTHORITY_TIER_SELECTED_BY_GATE_ID'
     || sourceRoot?.missing_or_post_review_selected_member_effect !== 'OPEN'
     || compiledRegistry?.source_path !== 'lib/programme-gates/registry.js'
     || compiledRegistry?.source_sha256 !== sha256(read('lib/programme-gates/registry.js'))
+    || compiledRegistry?.closed_validator_executable_set_digest
+      !== 'b9d069722f83ac72545174bf64654c5a20724dcd8926302f1cab37cf213753a0'
     || compiledRegistry?.authority !== 'NON_AUTHORITATIVE_COMPILED_OUTPUT_MATCHING_THE_FROZEN_SOURCE_CONTRACT'
     || compiledRegistry?.runtime_digest_mismatch_effect !== 'OPEN') {
     fail('Frozen gate acceptance semantics are incomplete');
+  }
+  const tierGateIds = [
+    ...(authorityTiers?.BOOTSTRAP_FROZEN?.gates || []),
+    ...(authorityTiers?.BUNDLE_FROZEN?.gates || []),
+  ];
+  if (authorityTiers?.BOOTSTRAP_FROZEN?.source !== 'REVIEWED_SPECIFICATION_PLUS_EXACT_VALIDATOR_EXECUTABLE_SET'
+    || authorityTiers?.BUNDLE_FROZEN?.source !== 'CANONICAL_CONTRACT_BUNDLE_MEMBER_APPROVED_BY_CONTRACT_FREEZE_ATTESTATION'
+    || authorityTiers?.BUNDLE_FROZEN?.unresolved_before_freeze_effect !== 'OPEN_NOT_PERMANENTLY_UNDEFINED'
+    || tierGateIds.length !== registry.gates.length
+    || new Set(tierGateIds).size !== registry.gates.length
+    || registry.gates.some((gate) => !tierGateIds.includes(gate.id))) {
+    fail('Gate acceptance authority tiers are incomplete or overlapping');
   }
   const mandatoryTests = registry.mandatory_adversarial_test_binding;
   if (mandatoryTests?.expected_identifier_count !== 284
