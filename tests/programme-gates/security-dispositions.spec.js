@@ -22,7 +22,8 @@ const { validateSchema } = require('../../lib/programme-gates/schema-registry');
 
 const ROOT = 'a'.repeat(64);
 const COMMIT = 'b'.repeat(40);
-const OBSERVED_AT = '2026-07-28T07:21:18.000Z';
+const CONFIRMED_AT = '2026-07-28T07:21:18.000Z';
+const OBSERVED_AT = '2026-07-28T07:24:00.000Z';
 const SOURCE_PATH = path.resolve(
   __dirname,
   '../../docs/certification/evidence/G0-SECURITY-DISPOSITIONS-2026-07-28.json',
@@ -53,7 +54,8 @@ function authority(overrides = {}) {
     specificationRoot: ROOT,
     codeCommit: COMMIT,
     environment: 'PRODUCTION',
-    verificationTime: '2026-07-28T07:22:00.000Z',
+    observedAt: OBSERVED_AT,
+    verificationTime: '2026-07-28T07:25:00.000Z',
     ...overrides,
   });
 }
@@ -64,13 +66,13 @@ test('the approved source records only the three non-secret owner confirmations'
     'schema_version',
     'source_id',
     'confirmed_by',
-    'observed_at',
+    'confirmed_at',
     'zayo',
     'claude',
     'supabase',
     'secret_field_count',
   ]);
-  assert.equal(record.observed_at, OBSERVED_AT);
+  assert.equal(record.confirmed_at, CONFIRMED_AT);
   assert.equal(record.zayo.recognition_status, 'RECOGNISED');
   assert.equal(record.claude.revoked, true);
   assert.equal(record.claude.replacements_activated, true);
@@ -208,8 +210,8 @@ test('wrong, failed or post-attestation GATE-01 executions fail closed', () => {
     testResult({ exit_code: 1 }),
     testResult({ code_commit: 'f'.repeat(40) }),
     testResult({
-      started_at: '2026-07-28T07:22:00.000Z',
-      completed_at: '2026-07-28T07:23:00.000Z',
+      started_at: '2026-07-28T07:25:00.000Z',
+      completed_at: '2026-07-28T07:26:00.000Z',
     }),
   ]) {
     assert.throws(
