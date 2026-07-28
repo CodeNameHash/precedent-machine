@@ -2347,3 +2347,30 @@ After those gates, import, parity, activation, containment, restoration and comp
   extra-high reasoning), R9→Phase 1 vocabulary work
   (Ben-gated), R10→independent cosmetic. Product work that touches shared rows
   also enters the Phase 8 traceability matrix.
+
+## Binding cold-review closure
+
+The later, detailed closure contract in
+`docs/codex-program/canonical-contracts.md` section 10 controls any conflicting
+earlier shorthand. In particular:
+
+- the content-addressed bootstrap registry and validator set are the
+  authoritative frozen source for exactly ten complete G0 acceptance
+  definitions, and the controller, runtime, prompt and validator allowlists are
+  fixed in `programme-gates.yaml`;
+- production blob availability has one registered verifier action and
+  idempotent writer transaction before pre-seal root construction;
+- CapacityManifest carries the exact maximum-scale cardinality tuple, every
+  supported query-shape class reconciles to a golden and load fixture, the
+  originating serving RPC persists its immutable execution result without an
+  extra database call, and latency gates cover every interactive class;
+- residual contracts are CanonicalContractBundle members, source-specific
+  publication binds the actual eligible legal review and selected PRESENT
+  primitive, and scope- or contract-impacting novel propositions block only
+  their governed occurrence and transitive closure while unaffected siblings
+  continue to render;
+- every successful activation produces a terminal PASS
+  ReleaseActivationCertification. The first creates the genesis ongoing
+  promotion head and is selected by programme completion. Later promotions use
+  their own readiness and exact-predecessor head CAS and never increment the
+  absorbing completed programme-status head.
