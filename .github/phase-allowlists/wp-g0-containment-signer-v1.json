@@ -1,0 +1,22 @@
+{
+  "phase": "WP-G0-CONTAINMENT-SIGNER-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-g0-containment-signer-v1.json",
+    ".github/workflows/programme-gate-sign-g0.yml",
+    ".github/workflows/programme-gate-sign-security.yml",
+    "lib/programme-gates/validator-executable.js",
+    "scripts/sign-g0-evidence.mjs",
+    "scripts/sign-g0-security-dispositions.mjs",
+    "tests/programme-gates/g0-signer-workflow.spec.js",
+    "tests/programme-gates/security-signer-workflow.spec.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Replaces the security-only ceremony with one main-only protected G0 signer. It independently binds the live production alias and deployment metadata to the exact commit and programme root, collects both containment attestations, signs all five currently ready G0 evidence envelopes with one validator path and produces no status publication or database mutation."
+}

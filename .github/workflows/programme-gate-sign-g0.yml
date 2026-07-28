@@ -1,10 +1,14 @@
-name: Sign G0 security dispositions
+name: Sign G0 evidence
 
 on:
   workflow_dispatch:
     inputs:
       expected_commit:
-        description: Exact main commit to validate and sign
+        description: Exact deployed main commit to validate and sign
+        required: true
+        type: string
+      deployment_id:
+        description: Exact production Vercel deployment ID
         required: true
         type: string
 
@@ -12,7 +16,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: programme-gate-sign-security
+  group: programme-gate-sign-g0
   cancel-in-progress: false
 
 jobs:
@@ -20,7 +24,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: programme-gate-production
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,22 +42,24 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Build and preflight signed evidence
+      - name: Collect, validate and sign G0 evidence
         env:
           EXPECTED_PROGRAMME_COMMIT: ${{ inputs.expected_commit }}
+          EXPECTED_VERCEL_DEPLOYMENT_ID: ${{ inputs.deployment_id }}
           PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM: ${{ secrets.PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           set -euo pipefail
           umask 077
-          node scripts/sign-g0-security-dispositions.mjs > programme-gate-security-evidence.json
-          test -s programme-gate-security-evidence.json
+          node scripts/sign-g0-evidence.mjs > programme-gate-g0-evidence.json
+          test -s programme-gate-g0-evidence.json
       - name: Upload signed evidence
         uses: actions/upload-artifact@v4
         with:
-          name: programme-gate-security-evidence-${{ inputs.expected_commit }}
-          path: programme-gate-security-evidence.json
+          name: programme-gate-g0-evidence-${{ inputs.expected_commit }}
+          path: programme-gate-g0-evidence.json
           if-no-files-found: error
           retention-days: 7
       - name: Remove runner output
         if: always()
-        run: rm -f programme-gate-security-evidence.json
+        run: rm -f programme-gate-g0-evidence.json
