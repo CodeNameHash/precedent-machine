@@ -1,0 +1,21 @@
+{
+  "phase": "WP-G0-SIGNER-TEN-GATE-INTEGRATION",
+  "allowed": [
+    ".github/phase-allowlists/wp-g0-signer-ten-gate-integration.json",
+    ".github/workflows/programme-gate-sign-g0.yml",
+    "lib/programme-gates/review-artifact.js",
+    "lib/programme-gates/validator-executable.js",
+    "scripts/sign-g0-evidence.mjs",
+    "tests/programme-gates/g0-signer-workflow.spec.js",
+    "tests/programme-gates/review-artifact.spec.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Consumes one exact signed five-lane cold-review artefact, recomputes and signs reviewer independence, records the authorised unconditional Ben approval, signs the final two G0 evidence envelopes and assembles unsigned ten-gate status readiness. It does not sign or publish status, consume the bootstrap nonce, access a corpus database or mutate the corpus."
+}

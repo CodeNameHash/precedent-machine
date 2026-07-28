@@ -14,14 +14,20 @@ const SCRIPT_PATH = path.resolve(ROOT, 'scripts/sign-g0-evidence.mjs');
 test('the G0 signer workflow is manual, main-only and read-only', () => {
   const workflow = YAML.parse(fs.readFileSync(WORKFLOW_PATH, 'utf8'));
   assert.deepEqual(Object.keys(workflow.on), ['workflow_dispatch']);
-  assert.deepEqual(workflow.permissions, { contents: 'read' });
   assert.equal(workflow.jobs.sign.if, "github.ref == 'refs/heads/main'");
   assert.equal(workflow.jobs.sign.environment, 'programme-gate-production');
   assert.equal(workflow.jobs.sign['timeout-minutes'], 20);
   assert.equal(workflow.concurrency['cancel-in-progress'], false);
   assert.deepEqual(
     Object.keys(workflow.on.workflow_dispatch.inputs).sort(),
-    ['deployment_id', 'expected_commit', 'preview_deployment_id'],
+    ['deployment_id', 'expected_commit', 'preview_deployment_id', 'review_run_id'],
+  );
+  assert.deepEqual(workflow.permissions, { actions: 'read', contents: 'read' });
+  assert.equal(
+    workflow.jobs.sign.steps.find(
+      (step) => step.name === 'Download exact signed cold-review bundle',
+    ).with['run-id'],
+    '${{ inputs.review_run_id }}',
   );
 });
 
@@ -31,11 +37,15 @@ test('the protected credentials exist only in the combined in-memory signer step
   const validatorReferences = workflowSource.match(
     /secrets\.PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM/g,
   ) || [];
+  const benApproverReferences = workflowSource.match(
+    /secrets\.PROGRAMME_GATE_BEN_APPROVER_ED25519_PRIVATE_KEY_PEM/g,
+  ) || [];
   const vercelReferences = workflowSource.match(/secrets\.VERCEL_TOKEN/g) || [];
   const supabaseReferences = workflowSource.match(
     /secrets\.PROGRAMME_GATE_STAGING_SUPABASE_SECRET_KEY/g,
   ) || [];
   assert.equal(validatorReferences.length, 1);
+  assert.equal(benApproverReferences.length, 1);
   assert.equal(vercelReferences.length, 1);
   assert.equal(supabaseReferences.length, 1);
   assert.doesNotMatch(
@@ -64,6 +74,10 @@ test('the signer excludes both protected credentials from every child process an
   assert.match(
     script,
     /delete environment\.PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM/,
+  );
+  assert.match(
+    script,
+    /delete environment\.PROGRAMME_GATE_BEN_APPROVER_ED25519_PRIVATE_KEY_PEM/,
   );
   assert.match(script, /delete environment\.VERCEL_TOKEN/);
   assert.match(
