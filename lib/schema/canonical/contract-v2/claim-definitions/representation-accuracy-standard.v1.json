@@ -1,0 +1,14 @@
+{
+  "object_kind": "CLAIM_DEFINITION",
+  "stable_id": "REPRESENTATION_ACCURACY_STANDARD",
+  "schema_version": "CLAIM_DEFINITION/V1",
+  "claim_definition_key": "REPRESENTATION_ACCURACY_STANDARD",
+  "version": 1,
+  "allowed_canonical_values": [
+    "MAT_ALL_RESPECTS",
+    "MAT_ALL_RESPECTS_DE_MINIMIS",
+    "MAT_ALL_MATERIAL",
+    "MAT_MAE_QUALIFIED"
+  ],
+  "canonical_value_required_when_present": true
+}

@@ -1,0 +1,19 @@
+{
+  "phase": "WP-P1-FIRST-AUTHORED-SOURCE-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-p1-first-authored-source-v1.json",
+    "lib/schema/canonical/contract-v2/manifest.json",
+    "lib/schema/canonical/contract-v2/claim-definitions/*.json",
+    "tests/canonical-v2-canonical-contract-source-tree.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Migrates the complete 13-member V12 claim-definition set into the first authored canonical source tree. The source remains explicitly incomplete and grants no registry, bundle, freeze or P1 authority."
+}
