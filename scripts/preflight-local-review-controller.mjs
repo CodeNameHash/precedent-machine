@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import crypto from 'node:crypto';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
@@ -20,6 +20,16 @@ function run(command, args, environment = process.env) {
     env: environment,
     stdio: ['ignore', 'pipe', 'pipe'],
   }).trim();
+}
+
+function runCombined(command, args, environment) {
+  const result = spawnSync(command, args, {
+    encoding: 'utf8',
+    env: environment,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  if (result.status !== 0) throw new Error(`${command} exited unsuccessfully`);
+  return `${result.stdout || ''}${result.stderr || ''}`.trim();
 }
 
 function requireCommit(value, label) {
@@ -73,7 +83,7 @@ for (const name of [
 ]) delete childEnvironment[name];
 
 const version = run('codex', ['--version'], childEnvironment);
-const auth = run('codex', ['login', 'status'], childEnvironment);
+const auth = runCombined('codex', ['login', 'status'], childEnvironment);
 if (!/^codex-cli 0\.\d+\.\d+$/.test(version) || auth !== 'Logged in using ChatGPT') {
   throw new Error('local Codex CLI is not authenticated through ChatGPT');
 }
