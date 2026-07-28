@@ -1,0 +1,28 @@
+{
+  "phase": "WP-G0-SECURITY-DISPOSITIONS-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-g0-security-dispositions-v1.json",
+    "docs/certification/evidence/G0-SECURITY-DISPOSITIONS-2026-07-28.json",
+    "lib/programme-gates/containment-contracts.js",
+    "lib/programme-gates/predicates.js",
+    "lib/programme-gates/registry.js",
+    "lib/programme-gates/schema-registry.js",
+    "lib/programme-gates/security-disposition-contracts.js",
+    "lib/programme-gates/security-disposition-enumerator.js",
+    "lib/programme-gates/security-disposition-readiness.js",
+    "tests/programme-gates-schema-registry.test.js",
+    "tests/programme-gates/containment-evidence.spec.js",
+    "tests/programme-gates/predicates.spec.js",
+    "tests/programme-gates/security-dispositions.spec.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Activates typed non-secret readiness for the three approved owner security dispositions. It records no credential or secret value, creates no signature, adds no signer workflow, publishes no status and grants no corpus, database or product authority."
+}

@@ -216,9 +216,15 @@ test('the containment contract bundle activates only two closed definitions', ()
     ACCEPTANCE_DEFINITION_DESCRIPTORS
       .filter((descriptor) => descriptor.activation_state === 'ACTIVE')
       .map((descriptor) => descriptor.gate_id),
-    ['G0_MARKET_STATS_CONTAINED', 'G0_BROAD_CORPUS_ROUTES_CONTAINED'],
+    [
+      'G0_MARKET_STATS_CONTAINED',
+      'G0_BROAD_CORPUS_ROUTES_CONTAINED',
+      'G0_ZAYO_DISPOSITION',
+      'G0_CLAUDE_CREDENTIAL_ROTATION',
+      'G0_SUPABASE_SECRET_DISPOSITION',
+    ],
   );
-  assert.ok(ACCEPTANCE_DEFINITION_DESCRIPTORS.slice(2).every(
+  assert.ok(ACCEPTANCE_DEFINITION_DESCRIPTORS.slice(5).every(
     (descriptor) => descriptor.activation_state === 'BLOCKED_PENDING_EXECUTABLE_BINDINGS',
   ));
 });
