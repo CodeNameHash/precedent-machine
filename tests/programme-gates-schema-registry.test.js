@@ -58,7 +58,7 @@ function controllerRecord() {
 
 test('the schema registry is closed and rejects unknown schema IDs', () => {
   assert.deepEqual(SCHEMA_IDS, VALIDATOR_CONFIGURATION.schema_registry_ids);
-  assert.equal(SCHEMA_IDS.length, 20);
+  assert.equal(SCHEMA_IDS.length, 23);
   for (const schemaId of SCHEMA_IDS) {
     assert.equal(schemaFor(schemaId).$id, schemaId);
     assert.equal(schemaFor(schemaId).additionalProperties, false);
@@ -152,11 +152,10 @@ test('containment, security-disposition and isolation descriptors are active', (
       'G0_STAGING_SUPABASE_ISOLATED',
       'G0_STAGING_VERCEL_ISOLATED',
       'G0_STAGING_ACCESS_PROTECTED',
+      'G0_EXACT_DIGEST_REVIEW_SET',
+      'G0_BEN_SPEC_APPROVAL',
     ],
   );
-  assert.ok(ACCEPTANCE_DEFINITION_DESCRIPTORS.slice(8).every(
-    (entry) => entry.activation_state === 'BLOCKED_PENDING_EXECUTABLE_BINDINGS',
-  ));
   assert.equal(
     acceptanceDescriptorForContract('route-disabled-code-test-live-response/v1').gate_id,
     'G0_MARKET_STATS_CONTAINED',

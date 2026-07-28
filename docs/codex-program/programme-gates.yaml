@@ -61,8 +61,8 @@ programme_gate_registry:
       missing_or_post_review_selected_member_effect: OPEN
     bootstrap_compiled_registry_binding:
       source_path: lib/programme-gates/registry.js
-      source_sha256: 4c494bce58e8b9e1061986adb753ea65efca1e9de1b369b293f89c1fe92b37b4
-      closed_validator_executable_set_digest: b9d069722f83ac72545174bf64654c5a20724dcd8926302f1cab37cf213753a0
+      source_sha256: 1d61b3e8e7d522540f20dde431897033b34840a1448826bf13b69460da3c691b
+      closed_validator_executable_set_digest: d9745a7acaa403623e77f0233525e37b6ce0f81fda64888e75a99e70baf174e1
       authority: NON_AUTHORITATIVE_COMPILED_OUTPUT_MATCHING_THE_FROZEN_SOURCE_CONTRACT
       runtime_digest_mismatch_effect: OPEN
     acceptance_definition_required_fields:
@@ -148,7 +148,7 @@ programme_gate_registry:
     review_controller_trust_root_set: trusted-review-controller-keys/2026-07-frozen-v1
     frozen_trust_root_set:
       registry_schema: programme-gate-trusted-public-keys/v1
-      registry_source_sha256: 4c494bce58e8b9e1061986adb753ea65efca1e9de1b369b293f89c1fe92b37b4
+      registry_source_sha256: 1d61b3e8e7d522540f20dde431897033b34840a1448826bf13b69460da3c691b
       keys:
         PROGRAMME_GATE_VALIDATOR_2026_07: 5b028d01aaa4f077c6f2f28ef8075195330eff00c2f81061fad8622b761de566
         PROGRAMME_STATUS_PUBLISHER_2026_07: d7f562af345fcb04a78f26c87b3e3f19b1cad6c8627ccc612396a4217d8a02c1

@@ -1,0 +1,30 @@
+{
+  "phase": "WP-G0-REVIEW-APPROVAL-ACCEPTANCE-CONTRACTS",
+  "allowed": [
+    ".github/phase-allowlists/wp-g0-review-approval-acceptance-contracts.json",
+    "docs/CODEX-PROGRAM.md",
+    "docs/codex-program/programme-gates.yaml",
+    "docs/codex-program/specification-manifest.json",
+    "lib/programme-gates/containment-contracts.js",
+    "lib/programme-gates/registry.js",
+    "lib/programme-gates/review-contracts.js",
+    "lib/programme-gates/review-enumerator.js",
+    "lib/programme-gates/review-evidence.js",
+    "lib/programme-gates/schema-registry.js",
+    "lib/programme-gates/validator-executable.js",
+    "scripts/verify-codex-program-spec.mjs",
+    "tests/programme-gates-schema-registry.test.js",
+    "tests/programme-gates/containment-evidence.spec.js",
+    "tests/programme-gates/review-contracts.spec.js",
+    "tests/programme-gates/review-evidence.spec.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Activates the two remaining G0 review and Ben approval acceptance contracts. It changes no product runtime, corpus data, database or release pointer."
+}

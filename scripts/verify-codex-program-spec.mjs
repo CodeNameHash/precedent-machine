@@ -290,7 +290,7 @@ function validateGateRegistry() {
     PROGRAMME_GATE_BEN_APPROVER_2026_07: '2baac1c454dfb918097f2816fc9a230eb93139f735db35b9ed64d0e6846b4c17',
   };
   if (reviewer.review_controller_trust_root_set !== 'trusted-review-controller-keys/2026-07-frozen-v1'
-    || frozenTrust?.registry_source_sha256 !== '4c494bce58e8b9e1061986adb753ea65efca1e9de1b369b293f89c1fe92b37b4'
+    || frozenTrust?.registry_source_sha256 !== '1d61b3e8e7d522540f20dde431897033b34840a1448826bf13b69460da3c691b'
     || sha256(read('lib/programme-gates/registry.js')) !== frozenTrust?.registry_source_sha256
     || JSON.stringify(frozenTrust?.keys) !== JSON.stringify(expectedTrustKeys)
     || frozenTrust?.unknown_replacement_or_post_review_key_effect !== 'OPEN') {
@@ -368,7 +368,7 @@ function validateGateRegistry() {
     || compiledRegistry?.source_path !== 'lib/programme-gates/registry.js'
     || compiledRegistry?.source_sha256 !== sha256(read('lib/programme-gates/registry.js'))
     || compiledRegistry?.closed_validator_executable_set_digest
-      !== 'b9d069722f83ac72545174bf64654c5a20724dcd8926302f1cab37cf213753a0'
+      !== 'd9745a7acaa403623e77f0233525e37b6ce0f81fda64888e75a99e70baf174e1'
     || compiledRegistry?.authority !== 'NON_AUTHORITATIVE_COMPILED_OUTPUT_MATCHING_THE_FROZEN_SOURCE_CONTRACT'
     || compiledRegistry?.runtime_digest_mismatch_effect !== 'OPEN') {
     fail('Frozen gate acceptance semantics are incomplete');
