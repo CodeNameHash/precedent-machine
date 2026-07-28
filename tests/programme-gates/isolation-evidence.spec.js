@@ -129,7 +129,7 @@ function observationInput(overrides = {}) {
     productionDmlResponse: { status: 401 },
     previewDeployment: {
       id: PREVIEW_ID,
-      target: 'preview',
+      target: null,
       projectId: PROJECT_ID,
       meta: {
         githubCommitRef: 'codex/canonical-corpus-v2',
@@ -209,6 +209,15 @@ test('live inputs reduce to three non-secret isolation observations', () => {
     JSON.stringify(result),
     /production-service-secret|staging-service-secret|postgresql:/,
   );
+});
+
+test('a production-target deployment cannot satisfy the isolated Preview boundary', () => {
+  assert.throws(() => buildIsolationObservationSource(observationInput({
+    previewDeployment: {
+      ...observationInput().previewDeployment,
+      target: 'production',
+    },
+  })), /not the exact isolated branch commit/);
 });
 
 test('credential reuse, public preview, production access and deployment drift fail closed', () => {
