@@ -1,0 +1,18 @@
+{
+  "object_kind": "PARSER_PROPOSAL_BOUNDARY_DEFINITION",
+  "stable_id": "PARSER_V2_STRUCTURAL_DEFINITION_PROPOSAL",
+  "schema_version": "PARSER_PROPOSAL_BOUNDARY_DEFINITION/V1",
+  "adapter_key": "PARSER_V2_STRUCTURAL_DEFINITION_PROPOSAL",
+  "adapter_version": 1,
+  "allowed_proposal_kinds": [
+    "STRUCTURAL_SECTION",
+    "DEFINITION_CANDIDATE"
+  ],
+  "canonical_write_permission": false,
+  "absence_decision_permission": false,
+  "comparability_decision_permission": false,
+  "semantic_identity_permission": false,
+  "exact_evidence_required": true,
+  "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES",
+  "source_transform": "PARSER_V2_TEXT_LAYERS/V1"
+}

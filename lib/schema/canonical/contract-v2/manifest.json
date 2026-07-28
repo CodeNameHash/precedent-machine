@@ -158,6 +158,27 @@
       "canonical_bytes_digest": "fff4cdca25f715e7e8142419c850fdb2db36f743b30a65b4f44377cbdccc9527"
     },
     {
+      "relative_path": "parser-proposal-boundary-definitions/parser-v2-structural-definition-proposal.v1.json",
+      "object_kind": "PARSER_PROPOSAL_BOUNDARY_DEFINITION",
+      "stable_id": "PARSER_V2_STRUCTURAL_DEFINITION_PROPOSAL",
+      "schema_version": "PARSER_PROPOSAL_BOUNDARY_DEFINITION/V1",
+      "canonical_bytes_digest": "6e55a16b4568986d762b9dd95fa930ad1afde092a0b024d4b8562a394fb4e8c8"
+    },
+    {
+      "relative_path": "policies/claim-interpretation-policy.v2.json",
+      "object_kind": "CLAIM_INTERPRETATION_POLICY",
+      "stable_id": "CLAIM_INTERPRETATION_POLICY",
+      "schema_version": "CLAIM_INTERPRETATION_POLICY/V2",
+      "canonical_bytes_digest": "8a346fe871618fde9ea47b3cbdf23638179ac0f6d4abab3e8c5db51eb6e1046d"
+    },
+    {
+      "relative_path": "policies/money-denominator-precision-policy.v1.json",
+      "object_kind": "MONEY_DENOMINATOR_PRECISION_POLICY",
+      "stable_id": "MONEY_DENOMINATOR_PRECISION_POLICY",
+      "schema_version": "MONEY_DENOMINATOR_PRECISION_POLICY/V1",
+      "canonical_bytes_digest": "4d7aa146615ca4c2ebf25f4dad10b97b05b36164b31e3e600fe220923cf36e3d"
+    },
+    {
       "relative_path": "provision-concepts/cond-b-rep.v1.json",
       "object_kind": "PROVISION_CONCEPT",
       "stable_id": "COND-B-REP",
@@ -289,22 +310,73 @@
       "stable_id": "TERMR-SUPERIOR",
       "schema_version": "PROVISION_CONCEPT/V1",
       "canonical_bytes_digest": "1a77924503fe034eac15e3da2a5c7e569cff9160e337ee1ef241ce162f90d0ff"
+    },
+    {
+      "relative_path": "serving-exact-detail-action-definitions/accuracy-standard-claim-evidence.v1.json",
+      "object_kind": "SERVING_EXACT_DETAIL_ACTION_DEFINITION",
+      "stable_id": "ACCURACY_STANDARD_CLAIM_EVIDENCE",
+      "schema_version": "SERVING_EXACT_DETAIL_ACTION_DEFINITION/V1",
+      "canonical_bytes_digest": "b01909e4a1840aab9f2f6e060d1cde5273a45494315e8ffc5e741c6578124191"
+    },
+    {
+      "relative_path": "serving-exact-detail-action-definitions/result-component-claim-evidence.v1.json",
+      "object_kind": "SERVING_EXACT_DETAIL_ACTION_DEFINITION",
+      "stable_id": "RESULT_COMPONENT_CLAIM_EVIDENCE",
+      "schema_version": "SERVING_EXACT_DETAIL_ACTION_DEFINITION/V1",
+      "canonical_bytes_digest": "b907a52bb6d1839ab20ea77403d6891be34a8ce4a6c0580159a25b3204b6d4cc"
+    },
+    {
+      "relative_path": "serving-exact-detail-action-definitions/result-composition-evidence.v1.json",
+      "object_kind": "SERVING_EXACT_DETAIL_ACTION_DEFINITION",
+      "stable_id": "RESULT_COMPOSITION_EVIDENCE",
+      "schema_version": "SERVING_EXACT_DETAIL_ACTION_DEFINITION/V1",
+      "canonical_bytes_digest": "7ff3769c224d0d437c1082c3bb19c0c635b5de4753c9de54cd2f9886a7f7e0b1"
+    },
+    {
+      "relative_path": "serving-exact-detail-action-definitions/reviewed-source-specific-open-world-evidence.v1.json",
+      "object_kind": "SERVING_EXACT_DETAIL_ACTION_DEFINITION",
+      "stable_id": "REVIEWED_SOURCE_SPECIFIC_OPEN_WORLD_EVIDENCE",
+      "schema_version": "SERVING_EXACT_DETAIL_ACTION_DEFINITION/V1",
+      "canonical_bytes_digest": "bb701e57c0d8e5a089fe21c233c8cb296ca71e894ec5ca3682fd2a67d1317d3e"
+    },
+    {
+      "relative_path": "serving-exact-detail-action-definitions/termination-fee-trigger-evidence.v2.json",
+      "object_kind": "SERVING_EXACT_DETAIL_ACTION_DEFINITION",
+      "stable_id": "TERMINATION_FEE_TRIGGER_EVIDENCE",
+      "schema_version": "SERVING_EXACT_DETAIL_ACTION_DEFINITION/V1",
+      "canonical_bytes_digest": "6d4f5f81952cc53c5a69af89068580670bc176c229322a094e3bc7c3909dc22d"
     }
   ],
   "per_kind_counts": {
     "CLAIM_DEFINITION": 13,
+    "CLAIM_INTERPRETATION_POLICY": 1,
     "COMPONENT_DEFINITION": 9,
-    "PROVISION_CONCEPT": 19
+    "MONEY_DENOMINATOR_PRECISION_POLICY": 1,
+    "PARSER_PROPOSAL_BOUNDARY_DEFINITION": 1,
+    "PROVISION_CONCEPT": 19,
+    "SERVING_EXACT_DETAIL_ACTION_DEFINITION": 5
   },
   "per_kind_schema_versions": {
     "CLAIM_DEFINITION": [
       "CLAIM_DEFINITION/V1"
     ],
+    "CLAIM_INTERPRETATION_POLICY": [
+      "CLAIM_INTERPRETATION_POLICY/V2"
+    ],
     "COMPONENT_DEFINITION": [
       "COMPONENT_DEFINITION/V1"
     ],
+    "MONEY_DENOMINATOR_PRECISION_POLICY": [
+      "MONEY_DENOMINATOR_PRECISION_POLICY/V1"
+    ],
+    "PARSER_PROPOSAL_BOUNDARY_DEFINITION": [
+      "PARSER_PROPOSAL_BOUNDARY_DEFINITION/V1"
+    ],
     "PROVISION_CONCEPT": [
       "PROVISION_CONCEPT/V1"
+    ],
+    "SERVING_EXACT_DETAIL_ACTION_DEFINITION": [
+      "SERVING_EXACT_DETAIL_ACTION_DEFINITION/V1"
     ]
   }
 }
