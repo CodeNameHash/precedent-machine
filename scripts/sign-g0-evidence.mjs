@@ -487,13 +487,24 @@ function reviewArtifact() {
   return JSON.parse(fs.readFileSync(reviewPath, 'utf8'));
 }
 
-function sourceControlIdentities() {
+function sourceControlAuthorshipEvents() {
   const output = successful('git', [
     'log',
     '--all',
-    '--format=%an%x00%ae%x00%aN%x00%aE',
+    '-z',
+    '--format=%H%x00%an%x00%ae%x00%aN%x00%aE',
   ]);
-  return [...new Set(output.split('\0').map((value) => value.trim()).filter(Boolean))];
+  const fields = output.split('\0');
+  const events = [];
+  for (let index = 0; index + 4 < fields.length; index += 5) {
+    events.push({
+      commit_id: fields[index].trim(),
+      identity_set: [...new Set(fields.slice(index + 1, index + 5)
+        .map((value) => value.trim())
+        .filter(Boolean))].sort(),
+    });
+  }
+  return events;
 }
 
 function evidenceResult(candidate, preflight) {
@@ -618,7 +629,7 @@ async function main() {
     expectedSpecificationRoot: specificationDigest,
     keyRegistry: TRUSTED_PUBLIC_KEY_REGISTRY,
     signIndependence: (bytes) => signatureForBytes(bytes, privateKey),
-    sourceControlIdentities: sourceControlIdentities(),
+    sourceControlAuthorshipEvents: sourceControlAuthorshipEvents(),
     validatorConfigurationDigest: REGISTRY_DIGESTS.validator_configuration,
     validatorExecutableDigest,
     validatorKeyId: VALIDATOR_KEY_ID,

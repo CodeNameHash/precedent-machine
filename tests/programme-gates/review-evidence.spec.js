@@ -2,7 +2,7 @@ const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
 const test = require('node:test');
 
-const { signatureBytes } = require('../../lib/programme-gates/bytes');
+const { domainDigest, signatureBytes } = require('../../lib/programme-gates/bytes');
 const { REVIEW_LANES } = require('../../lib/programme-gates/registry');
 const {
   BEN_APPROVAL_DOMAIN,
@@ -100,6 +100,48 @@ function fixture() {
       review_runtime_version: 'codex-cli/0.145.0',
       review_runtime_binary_digest: DIGEST_B,
       fixed_controller_runtime_context_digest: DIGEST_C,
+      controller_supplied_input_manifest: {
+        manifest_version: 'TrustedReviewTaskManifest/V1',
+        lane_id: lane.lane_id,
+        exact_specification_root: ROOT,
+        frozen_specification: {
+          manifest_id: 'codex-program-specification-manifest/v1',
+          manifest_digest: DIGEST_B,
+          file_count: 6,
+          immutable: true,
+        },
+        registered_prompt: {
+          prompt_id: lane.registered_prompt_id,
+          path: `/tmp/prompt-${index}.txt`,
+          payload_digest: DIGEST_D,
+          byte_length: 1,
+          immutable: true,
+          contains_prior_review_conclusions: false,
+        },
+        output_schema: {
+          schema_id: 'ColdReviewOutput/V1',
+          path: `/tmp/schema-${index}.json`,
+          payload_digest: DIGEST_D,
+          byte_length: 1,
+          immutable: true,
+        },
+      },
+      fixed_controller_runtime_context: {
+        context_version: 'TrustedReviewRuntimeContext/V1',
+        review_runtime_binary_path: '/opt/homebrew/bin/codex',
+        review_runtime_version: 'codex-cli/0.145.0',
+        review_runtime_binary_digest: DIGEST_B,
+        working_directory: `/tmp/review-${index}`,
+        operating_system: 'darwin',
+        architecture: 'arm64',
+        home_path: `/tmp/home-${index}`,
+        codex_home_path: `/tmp/codex-${index}`,
+        tmpdir_path: `/tmp/tmp-${index}`,
+        path_value: '/opt/homebrew/bin:/usr/bin:/bin',
+        lang: 'en_US.UTF-8',
+        lc_all: 'en_US.UTF-8',
+        term: 'dumb',
+      },
       exact_specification_root: ROOT,
       exact_model_identifier: 'gpt-5.6-sol',
       reasoning_level: 'xhigh',
@@ -140,6 +182,13 @@ function fixture() {
       immutable_session_id: controller.immutable_session_id,
       session_parent_or_genesis: 'GENESIS',
       exact_input_context_digest: controller.exact_input_context_digest,
+      source_control_history_scope: 'ALL_REFS_FROM_REPOSITORY_GENESIS',
+      source_control_authorship_events: [{
+        commit_id: `${index + 1}`.repeat(40),
+        identity_set: ['Ben Goodchild', 'bengoodchild@gmail.com'],
+      }],
+      source_control_authorship_event_set_root: '',
+      prior_conclusion_input_set: [],
       authoring_event_intersection_root: EMPTY_AUTHORING_EVENT_INTERSECTION_ROOT,
       prior_conclusion_intersection_root: EMPTY_PRIOR_CONCLUSION_INTERSECTION_ROOT,
       reviewer_edit_set_root: EMPTY_REVIEWER_EDIT_SET_ROOT,
@@ -149,6 +198,10 @@ function fixture() {
       signature_algorithm: 'Ed25519',
       signature: '',
     };
+    independence.source_control_authorship_event_set_root = domainDigest(
+      'PROGRAMME_GATE_SOURCE_CONTROL_AUTHORSHIP_EVENT_SET_ROOT/V1',
+      independence.source_control_authorship_events,
+    );
     independence.signature = sign(
       keySet.private.VALIDATOR_KEY,
       INDEPENDENCE_DOMAIN,

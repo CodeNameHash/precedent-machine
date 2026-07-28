@@ -2,12 +2,15 @@ const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
 const test = require('node:test');
 
-const { signatureBytes } = require('../../lib/programme-gates/bytes');
+const { domainDigest, signatureBytes } = require('../../lib/programme-gates/bytes');
 const {
   REGISTRY_DIGESTS,
   REVIEW_CONTROLLER_POLICY,
   REVIEW_LANES,
 } = require('../../lib/programme-gates/registry');
+const {
+  evaluateAcceptanceClaims,
+} = require('../../lib/programme-gates/predicates');
 const {
   BEN_APPROVAL_DOMAIN,
   BEN_APPROVAL_ROLE,
@@ -146,6 +149,48 @@ function fixture() {
       review_runtime_version: REVIEW_CONTROLLER_POLICY.review_runtime_version,
       review_runtime_binary_digest: REVIEW_CONTROLLER_POLICY.review_runtime_binary_digest,
       fixed_controller_runtime_context_digest: DIGEST_C,
+      controller_supplied_input_manifest: {
+        manifest_version: 'TrustedReviewTaskManifest/V1',
+        lane_id: lane.lane_id,
+        exact_specification_root: ROOT,
+        frozen_specification: {
+          manifest_id: 'codex-program-specification-manifest/v1',
+          manifest_digest: DIGEST_B,
+          file_count: 6,
+          immutable: true,
+        },
+        registered_prompt: {
+          prompt_id: lane.registered_prompt_id,
+          path: `/tmp/prompt-${index}.txt`,
+          payload_digest: REVIEW_CONTROLLER_POLICY.prompt_digests[lane.lane_id],
+          byte_length: 1,
+          immutable: true,
+          contains_prior_review_conclusions: false,
+        },
+        output_schema: {
+          schema_id: 'ColdReviewOutput/V1',
+          path: `/tmp/schema-${index}.json`,
+          payload_digest: DIGEST_D,
+          byte_length: 1,
+          immutable: true,
+        },
+      },
+      fixed_controller_runtime_context: {
+        context_version: 'TrustedReviewRuntimeContext/V1',
+        review_runtime_binary_path: REVIEW_CONTROLLER_POLICY.review_runtime_binary_path,
+        review_runtime_version: REVIEW_CONTROLLER_POLICY.review_runtime_version,
+        review_runtime_binary_digest: REVIEW_CONTROLLER_POLICY.review_runtime_binary_digest,
+        working_directory: '/tmp/review',
+        operating_system: REVIEW_CONTROLLER_POLICY.operating_system,
+        architecture: REVIEW_CONTROLLER_POLICY.architecture,
+        home_path: '/tmp/home',
+        codex_home_path: '/tmp/codex-home',
+        tmpdir_path: '/tmp/review-tmp',
+        path_value: REVIEW_CONTROLLER_POLICY.path_value,
+        lang: REVIEW_CONTROLLER_POLICY.locale,
+        lc_all: REVIEW_CONTROLLER_POLICY.locale,
+        term: REVIEW_CONTROLLER_POLICY.terminal,
+      },
       exact_specification_root: ROOT,
       exact_model_identifier: 'gpt-5.6-sol',
       reasoning_level: 'xhigh',
@@ -172,6 +217,35 @@ function fixture() {
       controller_key_id: 'CONTROLLER_KEY',
       controller_signature: '',
     };
+    controllerRecord.controller_supplied_input_manifest_digest = domainDigest(
+      'PROGRAMME_GATE_REVIEW_TASK_MANIFEST/V1',
+      controllerRecord.controller_supplied_input_manifest,
+    );
+    controllerRecord.fixed_controller_runtime_context_digest = domainDigest(
+      'PROGRAMME_GATE_REVIEW_RUNTIME_CONTEXT/V1',
+      controllerRecord.fixed_controller_runtime_context,
+    );
+    controllerRecord.exact_input_context_digest = domainDigest(
+      'PROGRAMME_GATE_REVIEW_EXACT_INPUT_CONTEXT/V1',
+      {
+        context_version: 'TrustedReviewExactInputContext/V1',
+        task_manifest_digest: controllerRecord.controller_supplied_input_manifest_digest,
+        exact_specification_root: ROOT,
+        frozen_specification_manifest_digest:
+          controllerRecord.controller_supplied_input_manifest
+            .frozen_specification.manifest_digest,
+        registered_prompt_digest:
+          controllerRecord.controller_supplied_input_manifest.registered_prompt.payload_digest,
+        output_schema_digest:
+          controllerRecord.controller_supplied_input_manifest.output_schema.payload_digest,
+        fixed_runtime_context_digest:
+          controllerRecord.fixed_controller_runtime_context_digest,
+      },
+    );
+    controllerRecord.input_context_digest_before_review =
+      controllerRecord.exact_input_context_digest;
+    controllerRecord.input_context_digest_after_review =
+      controllerRecord.exact_input_context_digest;
     controllerRecord.controller_signature = sign(
       controller.privateKey,
       CONTROLLER_DOMAIN,
@@ -184,6 +258,13 @@ function fixture() {
       immutable_session_id: controllerRecord.immutable_session_id,
       session_parent_or_genesis: 'GENESIS',
       exact_input_context_digest: controllerRecord.exact_input_context_digest,
+      source_control_history_scope: 'ALL_REFS_FROM_REPOSITORY_GENESIS',
+      source_control_authorship_events: [{
+        commit_id: `${index + 1}`.repeat(40),
+        identity_set: ['Ben Goodchild', 'bengoodchild@gmail.com'],
+      }],
+      source_control_authorship_event_set_root: '',
+      prior_conclusion_input_set: [],
       authoring_event_intersection_root: EMPTY_AUTHORING_EVENT_INTERSECTION_ROOT,
       prior_conclusion_intersection_root: EMPTY_PRIOR_CONCLUSION_INTERSECTION_ROOT,
       reviewer_edit_set_root: EMPTY_REVIEWER_EDIT_SET_ROOT,
@@ -193,6 +274,10 @@ function fixture() {
       signature_algorithm: 'Ed25519',
       signature: '',
     };
+    independenceRecord.source_control_authorship_event_set_root = domainDigest(
+      'PROGRAMME_GATE_SOURCE_CONTROL_AUTHORSHIP_EVENT_SET_ROOT/V1',
+      independenceRecord.source_control_authorship_events,
+    );
     independenceRecord.signature = sign(
       independence.privateKey,
       INDEPENDENCE_DOMAIN,
@@ -205,6 +290,8 @@ function fixture() {
       independence_attestation: independenceRecord,
     };
   });
+  reviewAuthority.allowed_runtimes[0].fixed_controller_runtime_context_digest =
+    members[0].controller_record.fixed_controller_runtime_context_digest;
   const review = verifyReviewSetEvidence({
     expected_specification_root: ROOT,
     members,
@@ -233,11 +320,75 @@ function fixture() {
   return {
     approvalRecord,
     benAuthority: { key_registry: keyRegistry },
+    controllerPrivateKey: controller.privateKey,
     evidencePrivateKey: evidence.privateKey,
+    independencePrivateKey: independence.privateKey,
     keyRegistry,
     members,
     reviewAuthority,
   };
+}
+
+function resignController(sample, index) {
+  const record = sample.members[index].controller_record;
+  record.controller_signature = sign(
+    sample.controllerPrivateKey,
+    CONTROLLER_DOMAIN,
+    CONTROLLER_ROLE,
+    unsigned(record, 'controller_signature'),
+  );
+}
+
+function resignIndependence(sample, index) {
+  const record = sample.members[index].independence_attestation;
+  record.signature = sign(
+    sample.independencePrivateKey,
+    INDEPENDENCE_DOMAIN,
+    INDEPENDENCE_ROLE,
+    unsigned(record, 'signature'),
+  );
+}
+
+function reviewClaims(sample) {
+  const verification = verifyReviewSetEvidence({
+    expected_specification_root: ROOT,
+    members: sample.members,
+    authority: sample.reviewAuthority,
+    at: VERIFICATION_TIME,
+  });
+  assert.equal(verification.valid, true);
+  return evaluateAcceptanceClaims({
+    gate_id: 'G0_EXACT_DIGEST_REVIEW_SET',
+    evidence: {
+      review_set_evidence_id: verification.evidence_id,
+      reviewed_root: ROOT,
+    },
+    context: {
+      specificationRoot: ROOT,
+      codeCommit: COMMIT,
+      environment: 'PRODUCTION',
+      expectedSpecificationRoot: ROOT,
+      expectedCodeCommit: COMMIT,
+      expectedEnvironment: 'PRODUCTION',
+      observed_at: OBSERVED_AT,
+      clock: { now: () => VERIFICATION_TIME },
+      immutableMembers: sample.members.flatMap((member) => [
+        {
+          member_id: `controller:${member.lane_id}`,
+          member_type: 'TrustedReviewControllerRecord',
+          payload: member.controller_record,
+        },
+        {
+          member_id: `independence:${member.lane_id}`,
+          member_type: 'ReviewerIndependenceAttestation',
+          payload: member.independence_attestation,
+        },
+      ]),
+      keyRegistry: sample.keyRegistry,
+      verifySignature: require('../../lib/programme-gates/signatures').verifySignature,
+      domainDigest,
+    },
+  });
 }
 
 function testResult(testId) {
@@ -318,6 +469,54 @@ test('verified review and Ben approval become two exact unsigned readiness candi
       (claim) => claim.typed_value === true,
     ),
   ));
+});
+
+test('the exact-review predicate rejects an unallowlisted task context after valid signatures', () => {
+  const sample = fixture();
+  const record = sample.members[0].controller_record;
+  record.controller_supplied_input_manifest.output_schema.schema_id = 'InjectedOutput/V1';
+  record.controller_supplied_input_manifest_digest = domainDigest(
+    'PROGRAMME_GATE_REVIEW_TASK_MANIFEST/V1',
+    record.controller_supplied_input_manifest,
+  );
+  record.exact_input_context_digest = domainDigest(
+    'PROGRAMME_GATE_REVIEW_EXACT_INPUT_CONTEXT/V1',
+    {
+      context_version: 'TrustedReviewExactInputContext/V1',
+      task_manifest_digest: record.controller_supplied_input_manifest_digest,
+      exact_specification_root: ROOT,
+      frozen_specification_manifest_digest:
+        record.controller_supplied_input_manifest.frozen_specification.manifest_digest,
+      registered_prompt_digest:
+        record.controller_supplied_input_manifest.registered_prompt.payload_digest,
+      output_schema_digest:
+        record.controller_supplied_input_manifest.output_schema.payload_digest,
+      fixed_runtime_context_digest: record.fixed_controller_runtime_context_digest,
+    },
+  );
+  record.input_context_digest_before_review = record.exact_input_context_digest;
+  record.input_context_digest_after_review = record.exact_input_context_digest;
+  sample.members[0].independence_attestation.exact_input_context_digest =
+    record.exact_input_context_digest;
+  resignController(sample, 0);
+  resignIndependence(sample, 0);
+  assert.ok(reviewClaims(sample).every((claim) => claim.typed_value === false));
+});
+
+test('the exact-review predicate rejects reused task IDs and non-concurrent lanes', () => {
+  const reused = fixture();
+  reused.members[1].controller_record.immutable_task_id =
+    reused.members[0].controller_record.immutable_task_id;
+  resignController(reused, 1);
+  assert.ok(reviewClaims(reused).every((claim) => claim.typed_value === false));
+
+  const sequential = fixture();
+  sequential.members[0].controller_record.review_start_time =
+    '2026-07-28T11:00:00.000Z';
+  sequential.members[0].controller_record.review_end_time =
+    '2026-07-28T11:30:00.000Z';
+  resignController(sequential, 0);
+  assert.ok(reviewClaims(sequential).every((claim) => claim.typed_value === false));
 });
 
 test('both externally signed review envelopes pass the complete validator', () => {

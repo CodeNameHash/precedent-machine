@@ -189,9 +189,9 @@ function validateGateRegistry() {
     || independenceAllowlist?.validator_key_id
       !== 'PROGRAMME_GATE_VALIDATOR_2026_07'
     || independenceAllowlist?.validator_executable_digest
-      !== '48b67c56d8eacba57ca5fd97e508c95f739c887f7bcf88f753a9d2b069cdf0b8'
+      !== 'afbb87142e7379ee4824f4cf87bff0b27ae39260ea8d891e68d6e4f0821a2c8a'
     || independenceAllowlist?.validator_configuration_digest
-      !== 'fe8cefd32ef973fdbffcf098585710387e7393f3d556ce6081ceab0a26401444') {
+      !== '8518fca95839fcf5ab0463c5cbb1009265a7240314f84acd392f2d4287a72a5a') {
     fail('Frozen review controller, runtime, prompt or validator allowlist changed');
   }
   if (reviewer.self_asserted_metadata_effect !== 'INELIGIBLE' || reviewer.ordinary_sol_effect !== 'ADVISORY_ONLY') {
@@ -325,7 +325,7 @@ function validateGateRegistry() {
     PROGRAMME_GATE_BEN_APPROVER_2026_07: '2baac1c454dfb918097f2816fc9a230eb93139f735db35b9ed64d0e6846b4c17',
   };
   if (reviewer.review_controller_trust_root_set !== 'trusted-review-controller-keys/2026-07-frozen-v1'
-    || frozenTrust?.registry_source_sha256 !== '2d596fde231b187dc5e19855a21571175363870be930bab3f4950b01b396f4c0'
+    || frozenTrust?.registry_source_sha256 !== '7c4bc2081f0b0c94a7cbed8f521cf396fedb6468fbe9fd4400dd53fab96f7e83'
     || sha256(read('lib/programme-gates/registry.js')) !== frozenTrust?.registry_source_sha256
     || JSON.stringify(frozenTrust?.keys) !== JSON.stringify(expectedTrustKeys)
     || frozenTrust?.unknown_replacement_or_post_review_key_effect !== 'OPEN') {
@@ -404,7 +404,7 @@ function validateGateRegistry() {
     || compiledRegistry?.source_sha256
       !== sha256(read('docs/codex-program/bootstrap-acceptance-source.json'))
     || compiledRegistry?.closed_validator_executable_set_digest
-      !== '48b67c56d8eacba57ca5fd97e508c95f739c887f7bcf88f753a9d2b069cdf0b8'
+      !== 'afbb87142e7379ee4824f4cf87bff0b27ae39260ea8d891e68d6e4f0821a2c8a'
     || compiledRegistry?.authority
       !== 'ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE'
     || compiledRegistry?.exact_active_definition_count !== 11

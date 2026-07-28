@@ -28,6 +28,48 @@ function controllerRecord() {
     review_runtime_version: 'codex-cli/0.145.0',
     review_runtime_binary_digest: DIGEST,
     fixed_controller_runtime_context_digest: DIGEST,
+    controller_supplied_input_manifest: {
+      manifest_version: 'TrustedReviewTaskManifest/V1',
+      lane_id: 'LEGAL_SEMANTIC',
+      exact_specification_root: DIGEST,
+      frozen_specification: {
+        manifest_id: 'codex-program-specification-manifest/v1',
+        manifest_digest: DIGEST,
+        file_count: 6,
+        immutable: true,
+      },
+      registered_prompt: {
+        prompt_id: 'COLD_LEGAL_SEMANTIC_REVIEW/V1',
+        path: '/tmp/prompt.txt',
+        payload_digest: DIGEST,
+        byte_length: 1,
+        immutable: true,
+        contains_prior_review_conclusions: false,
+      },
+      output_schema: {
+        schema_id: 'ColdReviewOutput/V1',
+        path: '/tmp/output.json',
+        payload_digest: DIGEST,
+        byte_length: 1,
+        immutable: true,
+      },
+    },
+    fixed_controller_runtime_context: {
+      context_version: 'TrustedReviewRuntimeContext/V1',
+      review_runtime_binary_path: '/opt/homebrew/bin/codex',
+      review_runtime_version: 'codex-cli/0.145.0',
+      review_runtime_binary_digest: DIGEST,
+      working_directory: '/tmp/review',
+      operating_system: 'darwin',
+      architecture: 'arm64',
+      home_path: '/tmp/home',
+      codex_home_path: '/tmp/codex-home',
+      tmpdir_path: '/tmp/review-tmp',
+      path_value: '/opt/homebrew/bin:/usr/bin:/bin',
+      lang: 'en_US.UTF-8',
+      lc_all: 'en_US.UTF-8',
+      term: 'dumb',
+    },
     exact_specification_root: DIGEST,
     exact_model_identifier: 'gpt-5.6-sol',
     reasoning_level: 'xhigh',
@@ -58,7 +100,7 @@ function controllerRecord() {
 
 test('the schema registry is closed and rejects unknown schema IDs', () => {
   assert.deepEqual(SCHEMA_IDS, VALIDATOR_CONFIGURATION.schema_registry_ids);
-  assert.equal(SCHEMA_IDS.length, 27);
+  assert.equal(SCHEMA_IDS.length, 29);
   for (const schemaId of SCHEMA_IDS) {
     assert.equal(schemaFor(schemaId).$id, schemaId);
     assert.equal(schemaFor(schemaId).additionalProperties, false);
@@ -190,9 +232,16 @@ test('trust configuration contains only the four approved public signing keys', 
   assert.deepEqual(
     TRUSTED_PUBLIC_KEY_REGISTRY.keys.map((key) => key.permitted_domains),
     [
-      ['PROGRAMME_GATE_EVIDENCE/V2', 'PROGRAMME_GATE_REVIEWER_INDEPENDENCE/V1'],
+      [
+        'PROGRAMME_GATE_EVIDENCE/V2',
+        'PROGRAMME_GATE_REVIEWER_INDEPENDENCE/V1',
+        'PROGRAMME_GATE_CONTRACT_COMPILATION_RECEIPT/V1',
+      ],
       ['PROGRAMME_GATE_STATUS/V2', 'PROGRAMME_GATE_PUBLICATION_HEAD/V1'],
-      ['PROGRAMME_GATE_REVIEW_CONTROLLER_RECORD/V1'],
+      [
+        'PROGRAMME_GATE_REVIEW_CONTROLLER_RECORD/V1',
+        'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW/V1',
+      ],
       [
         'PROGRAMME_GATE_BEN_APPROVAL/V1',
         'PROGRAMME_GATE_CONTRACT_FREEZE_APPROVAL/V1',

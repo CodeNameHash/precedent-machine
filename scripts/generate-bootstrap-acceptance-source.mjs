@@ -42,6 +42,7 @@ const SOURCE_MODULES = Object.freeze([
   'lib/programme-gates/validator-executable.js',
   'lib/programme-gates/containment-contracts.js',
   'lib/programme-gates/containment-enumerator.js',
+  'lib/programme-gates/containment-source-inventory.js',
   'lib/programme-gates/security-disposition-contracts.js',
   'lib/programme-gates/security-disposition-enumerator.js',
   'lib/programme-gates/isolation-contracts.js',

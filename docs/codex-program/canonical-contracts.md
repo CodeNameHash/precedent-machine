@@ -861,6 +861,21 @@ This file is the sole authority for detailed identities, state machines, writer 
   [the programme governance](../CODEX-PROGRAM.md#governance-non-negotiable-applies-to-every-phase).
   Run IDs, timestamps and workflow status
   are provenance outside identity.
+- The bootstrap `ContractFreezeAttestation/V1` is the authoritative executable
+  representation of that approval object. It selects exactly one immutable
+  `ContractFreezeAuthorityManifest/V1` by both content-derived ID and payload
+  digest. The manifest carries the pre-review authority members, while the
+  attestation directly carries the content-derived legal-semantic, identity and
+  Ben approval IDs, avoiding an identity cycle. Together they carry every
+  identity member listed above; the attestation is not a reduced surrogate and
+  no listed member may be omitted, replaced by a boolean or supplied only as
+  caller context. The closed
+  P1 member universe also contains the manifest, signed compilation receipt,
+  signed semantic-and-identity diff review, signed Ben approval and signed
+  programme status. Acceptance recomputes their IDs, roots, cross-bindings and
+  signatures from those immutable members. Any missing member, unknown field,
+  compile, cycle or drift error, blocking review finding, ineligible reviewer,
+  mismatched root or unverifiable signature leaves the gate `OPEN`.
 - `ContractFreezeAttestation` is an approval object outside the closed bundle.
   It contains no source, deal, candidate revision, snapshot or release reference;
   generated bundle outputs may embed the bundle fingerprint but never the
