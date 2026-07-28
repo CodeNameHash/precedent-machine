@@ -1,0 +1,59 @@
+name: Sign G0 security dispositions
+
+on:
+  workflow_dispatch:
+    inputs:
+      expected_commit:
+        description: Exact main commit to validate and sign
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: programme-gate-sign-security
+  cancel-in-progress: false
+
+jobs:
+  sign:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: programme-gate-production
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.expected_commit }}
+          fetch-depth: 1
+      - name: Verify exact main commit
+        env:
+          EXPECTED_PROGRAMME_COMMIT: ${{ inputs.expected_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_SHA}" = "${EXPECTED_PROGRAMME_COMMIT}"
+          test "$(git rev-parse HEAD)" = "${EXPECTED_PROGRAMME_COMMIT}"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build and preflight signed evidence
+        env:
+          EXPECTED_PROGRAMME_COMMIT: ${{ inputs.expected_commit }}
+          PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM: ${{ secrets.PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM }}
+        run: |
+          set -euo pipefail
+          umask 077
+          node scripts/sign-g0-security-dispositions.mjs > programme-gate-security-evidence.json
+          test -s programme-gate-security-evidence.json
+      - name: Upload signed evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: programme-gate-security-evidence-${{ inputs.expected_commit }}
+          path: programme-gate-security-evidence.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Remove runner output
+        if: always()
+        run: rm -f programme-gate-security-evidence.json
