@@ -41,6 +41,7 @@ const {
 
 const ROOT = 'a'.repeat(64);
 const COMMIT = 'b'.repeat(40);
+const DEPLOYMENT_ID = 'dpl_test_containment';
 const EXECUTABLE_DIGEST = 'c'.repeat(64);
 const MEMBER_ENUMERATOR_DIGEST = 'd'.repeat(64);
 const MEMBER_ENUMERATOR_CONFIG_DIGEST = 'e'.repeat(64);
@@ -50,13 +51,18 @@ const RAW_SCHEMA_ID = 'MarketStatsContainmentAttestation/V1';
 const MEMBER_SCHEMA_ID = 'RouteProbe/V1';
 const NOW = '2026-07-27T12:00:00.000Z';
 const OBSERVED_AT = '2026-07-27T11:00:00.000Z';
-const RAW_KEYS = Object.freeze(['method_probes', 'route_feature_enabled', 'tests']);
-const RAW_SCHEMA = Object.freeze({
-  $id: RAW_SCHEMA_ID,
-  type: 'object',
-  additionalProperties: false,
-  required: RAW_KEYS,
-});
+const RAW_KEYS = Object.freeze([
+  'schema_version',
+  'gate_id',
+  'code_commit',
+  'runtime_deployment_id',
+  'environment',
+  'observed_at',
+  'route_feature_enabled',
+  'method_probes',
+  'tests',
+]);
+const RAW_SCHEMA = registeredSchemaFor(RAW_SCHEMA_ID);
 const MEMBER_SCHEMA = Object.freeze({
   $id: MEMBER_SCHEMA_ID,
   type: 'object',
@@ -81,18 +87,40 @@ const GATE = Object.freeze({
 });
 
 const EVIDENCE = Object.freeze({
+  schema_version: 'MarketStatsContainmentAttestation/V1',
+  gate_id: GATE.id,
+  code_commit: COMMIT,
+  runtime_deployment_id: DEPLOYMENT_ID,
+  environment: 'STAGING',
+  observed_at: OBSERVED_AT,
   route_feature_enabled: false,
   method_probes: Object.freeze([Object.freeze({
-    method: 'GET',
+    schema_version: 'ContainedRouteMethodProbe/V1',
+    member_id: 'POST /api/market-stats',
+    route_id: '/api/market-stats',
+    method: 'POST',
     status: 503,
     error_code: 'MARKET_STATS_DISABLED',
+    cache_control: 'private, no-store',
     database_calls: 0,
     corpus_reads: 0,
     retry_after: null,
+    code_commit: COMMIT,
+    runtime_deployment_id: DEPLOYMENT_ID,
+    environment: 'STAGING',
+    observed_at: OBSERVED_AT,
   })]),
   tests: Object.freeze([Object.freeze({
+    schema_version: 'ProgrammeGateTestExecutionRecord/V1',
     test_id: 'P0-ROUTE-01',
-    state: 'PASS',
+    code_commit: COMMIT,
+    environment: 'STAGING',
+    command_digest: '2'.repeat(64),
+    executable_digest: '3'.repeat(64),
+    started_at: '2026-07-27T10:00:00.000Z',
+    completed_at: '2026-07-27T10:30:00.000Z',
+    exit_code: 0,
+    output_digest: '4'.repeat(64),
   })]),
 });
 
@@ -112,21 +140,10 @@ const MEMBERS = Object.freeze([Object.freeze({
     database_calls: 0,
   }),
 })]);
-const TEST_RESULTS = Object.freeze([Object.freeze({
-  test_id: 'P0-ROUTE-01',
-  state: 'PASS',
-})]);
+const TEST_RESULTS = EVIDENCE.tests;
 
 function exactRawSchema(value) {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) {
-    throw new Error('raw evidence must be an object');
-  }
-  const actual = Object.keys(value).sort();
-  if (actual.length !== RAW_KEYS.length
-    || actual.some((key, index) => key !== RAW_KEYS[index])) {
-    throw new Error('raw evidence has missing or extra fields');
-  }
-  return true;
+  return validateRegisteredSchema(RAW_SCHEMA_ID, value);
 }
 
 function schemaValidator(schemaId, value) {
@@ -398,7 +415,10 @@ test('valid raw evidence produces one typed PASS result', () => {
 
 test('a descriptor that has not activated its executable bindings returns OPEN', () => {
   const sample = fixture();
-  sample.dependencies.acceptanceDescriptorForContract = acceptanceDescriptorForContract;
+  sample.dependencies.acceptanceDescriptorForContract = (contract) => ({
+    ...acceptanceDescriptorForContract(contract),
+    activation_state: 'BLOCKED_PENDING_EXECUTABLE_BINDINGS',
+  });
   assertOpen(validate(sample), 'ACCEPTANCE_DESCRIPTOR_MISMATCH');
 });
 
@@ -440,6 +460,15 @@ test('old evidence and an absent trusted clock return OPEN', () => {
   old.envelope.evidence_subject_payload_digest = domainDigest(
     EVIDENCE_SUBJECT_PAYLOAD_DOMAIN,
     old.input.evidenceSubject,
+  );
+  old.input.testResults = [{
+    ...TEST_RESULTS[0],
+    started_at: '2026-07-26T10:00:00.000Z',
+    completed_at: '2026-07-26T10:30:00.000Z',
+  }];
+  old.envelope.test_result_root = domainDigest(
+    TEST_RESULT_ROOT_DOMAIN,
+    old.input.testResults,
   );
   old.sign();
   assertOpen(validate(old), 'CLAIM_SET_MISMATCH');
@@ -532,8 +561,8 @@ test('wrong definition, member and test roots return OPEN', () => {
 test('missing, extra or failed adversarial test results return OPEN', () => {
   for (const testResults of [
     [],
-    [...TEST_RESULTS, { test_id: 'UNREGISTERED-01', state: 'PASS' }],
-    [{ test_id: 'P0-ROUTE-01', state: 'FAIL' }],
+    [...TEST_RESULTS, { ...TEST_RESULTS[0], test_id: 'UNREGISTERED-01' }],
+    [{ ...TEST_RESULTS[0], exit_code: 1 }],
   ]) {
     const sample = fixture();
     sample.input.testResults = testResults;
@@ -622,5 +651,5 @@ test('a false raw observation cannot become PASS through a signed manual claim',
     sample.input.evidenceObject,
   );
   sample.sign();
-  assertOpen(validate(sample), 'CLAIM_SET_MISMATCH');
+  assertOpen(validate(sample), 'SCHEMA_VALIDATION_FAILED');
 });

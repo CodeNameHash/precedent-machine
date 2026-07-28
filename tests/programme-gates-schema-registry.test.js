@@ -57,7 +57,7 @@ function controllerRecord() {
 
 test('the schema registry is closed and rejects unknown schema IDs', () => {
   assert.deepEqual(SCHEMA_IDS, VALIDATOR_CONFIGURATION.schema_registry_ids);
-  assert.equal(SCHEMA_IDS.length, 9);
+  assert.equal(SCHEMA_IDS.length, 14);
   for (const schemaId of SCHEMA_IDS) {
     assert.equal(schemaFor(schemaId).$id, schemaId);
     assert.equal(schemaFor(schemaId).additionalProperties, false);
@@ -132,13 +132,19 @@ test('nested programme status rows are closed', () => {
   );
 });
 
-test('the checked-in G0 descriptors stay inactive until predicates and enumerators bind', () => {
+test('only the two containment descriptors activate executable bindings', () => {
   assert.equal(ACCEPTANCE_DEFINITION_DESCRIPTORS.length, 10);
   assert.equal(
     new Set(ACCEPTANCE_DEFINITION_DESCRIPTORS.map((entry) => entry.evidence_contract)).size,
     10,
   );
-  assert.ok(ACCEPTANCE_DEFINITION_DESCRIPTORS.every(
+  assert.deepEqual(
+    ACCEPTANCE_DEFINITION_DESCRIPTORS
+      .filter((entry) => entry.activation_state === 'ACTIVE')
+      .map((entry) => entry.gate_id),
+    ['G0_MARKET_STATS_CONTAINED', 'G0_BROAD_CORPUS_ROUTES_CONTAINED'],
+  );
+  assert.ok(ACCEPTANCE_DEFINITION_DESCRIPTORS.slice(2).every(
     (entry) => entry.activation_state === 'BLOCKED_PENDING_EXECUTABLE_BINDINGS',
   ));
   assert.equal(

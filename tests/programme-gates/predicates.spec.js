@@ -11,6 +11,7 @@ const {
 
 const ROOT = 'a'.repeat(64);
 const COMMIT = 'b'.repeat(40);
+const DEPLOYMENT_ID = 'dpl_test_containment';
 const NOW = '2026-07-27T12:00:00.000Z';
 const DIGEST_C = 'c'.repeat(64);
 const DIGEST_D = 'd'.repeat(64);
@@ -48,31 +49,76 @@ function context(overrides = {}) {
   };
 }
 
-const TESTS = Object.freeze([{ test_id: 'gate-test-1', state: 'PASS' }]);
+const OBSERVED_AT = '2026-07-27T11:00:00.000Z';
+const TESTS = Object.freeze([Object.freeze({
+  schema_version: 'ProgrammeGateTestExecutionRecord/V1',
+  test_id: 'P0-ROUTE-01',
+  code_commit: COMMIT,
+  environment: 'STAGING',
+  command_digest: DIGEST_C,
+  executable_digest: DIGEST_D,
+  started_at: '2026-07-27T10:00:00.000Z',
+  completed_at: '2026-07-27T10:30:00.000Z',
+  exit_code: 0,
+  output_digest: DIGEST_E,
+})]);
 
 const FIXTURES = Object.freeze({
   G0_MARKET_STATS_CONTAINED: Object.freeze({
+    schema_version: 'MarketStatsContainmentAttestation/V1',
+    gate_id: 'G0_MARKET_STATS_CONTAINED',
+    code_commit: COMMIT,
+    runtime_deployment_id: DEPLOYMENT_ID,
+    environment: 'STAGING',
+    observed_at: OBSERVED_AT,
     route_feature_enabled: false,
     method_probes: Object.freeze([{
-      method: 'GET',
+      schema_version: 'ContainedRouteMethodProbe/V1',
+      member_id: 'POST /api/market-stats',
+      route_id: '/api/market-stats',
+      method: 'POST',
       status: 503,
       error_code: 'MARKET_STATS_DISABLED',
+      cache_control: 'private, no-store',
       database_calls: 0,
       corpus_reads: 0,
       retry_after: null,
+      code_commit: COMMIT,
+      runtime_deployment_id: DEPLOYMENT_ID,
+      environment: 'STAGING',
+      observed_at: OBSERVED_AT,
     }]),
     tests: TESTS,
   }),
   G0_BROAD_CORPUS_ROUTES_CONTAINED: Object.freeze({
-    source_route_ids: Object.freeze(['/api/query/run']),
-    built_route_ids: Object.freeze(['/api/query/run']),
-    runtime_route_ids: Object.freeze(['/api/query/run']),
+    schema_version: 'BroadRouteContainmentAttestation/V1',
+    gate_id: 'G0_BROAD_CORPUS_ROUTES_CONTAINED',
+    code_commit: COMMIT,
+    runtime_deployment_id: DEPLOYMENT_ID,
+    environment: 'STAGING',
+    observed_at: OBSERVED_AT,
+    source_route_ids: Object.freeze(['GET /api/query/run']),
+    built_route_ids: Object.freeze(['GET /api/query/run']),
+    runtime_route_ids: Object.freeze(['GET /api/query/run']),
     routes: Object.freeze([{
+      schema_version: 'BroadRouteActionObservation/V1',
+      member_id: 'GET /api/query/run',
       route_id: '/api/query/run',
-      is_broad: true,
-      contained: true,
+      method: 'GET',
+      containment_class: 'QUERY_ROUTE',
+      source_contained: true,
+      built_contained: true,
+      runtime_contained: true,
+      runtime_status: 503,
+      runtime_error_code: 'ROUTE_CONTAINED',
+      database_calls: 0,
+      corpus_reads: 0,
       node_corpus_reads: 0,
       legacy_fallback_used: false,
+      code_commit: COMMIT,
+      runtime_deployment_id: DEPLOYMENT_ID,
+      environment: 'STAGING',
+      observed_at: OBSERVED_AT,
     }]),
     tests: TESTS,
   }),
@@ -196,7 +242,7 @@ test('each claim derives from raw measurements instead of a supplied PASS', () =
         ...FIXTURES.G0_MARKET_STATS_CONTAINED.method_probes[0],
         database_calls: 1,
       }],
-      tests: [{ test_id: 'gate-test-1', state: 'FAIL' }],
+      tests: [{ ...TESTS[0], exit_code: 1 }],
     },
     context: context(),
   });
@@ -224,9 +270,12 @@ test('live route and access evidence expires after 24 hours', () => {
     'G0_BROAD_CORPUS_ROUTES_CONTAINED',
     'G0_STAGING_ACCESS_PROTECTED',
   ]) {
+    const evidence = gateId.startsWith('G0_') && Object.hasOwn(FIXTURES[gateId], 'observed_at')
+      ? { ...FIXTURES[gateId], observed_at: '2026-07-26T11:59:59.999Z' }
+      : FIXTURES[gateId];
     const claims = evaluateAcceptanceClaims({
       gate_id: gateId,
-      evidence: FIXTURES[gateId],
+      evidence,
       context: context({ observed_at: '2026-07-26T11:59:59.999Z' }),
     });
     assert.ok(claims.every((claim) => claim.typed_value === false), gateId);
@@ -253,10 +302,23 @@ test('credential, isolation, review and Ben evidence expires after seven days', 
 });
 
 test('evidence at the exact freshness boundary remains valid', () => {
+  const observedAt = '2026-07-26T12:00:00.000Z';
   const liveClaims = evaluateAcceptanceClaims({
     gate_id: 'G0_MARKET_STATS_CONTAINED',
-    evidence: FIXTURES.G0_MARKET_STATS_CONTAINED,
-    context: context({ observed_at: '2026-07-26T12:00:00.000Z' }),
+    evidence: {
+      ...FIXTURES.G0_MARKET_STATS_CONTAINED,
+      observed_at: observedAt,
+      method_probes: [{
+        ...FIXTURES.G0_MARKET_STATS_CONTAINED.method_probes[0],
+        observed_at: observedAt,
+      }],
+      tests: [{
+        ...FIXTURES.G0_MARKET_STATS_CONTAINED.tests[0],
+        started_at: '2026-07-26T10:00:00.000Z',
+        completed_at: '2026-07-26T10:30:00.000Z',
+      }],
+    },
+    context: context({ observed_at: observedAt }),
   });
   const governanceClaims = evaluateAcceptanceClaims({
     gate_id: 'G0_BEN_SPEC_APPROVAL',
@@ -268,10 +330,18 @@ test('evidence at the exact freshness boundary remains valid', () => {
 });
 
 test('future evidence fails and no system-clock fallback is allowed', () => {
+  const futureObservedAt = '2026-07-27T12:00:00.001Z';
   const future = evaluateAcceptanceClaims({
     gate_id: 'G0_MARKET_STATS_CONTAINED',
-    evidence: FIXTURES.G0_MARKET_STATS_CONTAINED,
-    context: context({ observed_at: '2026-07-27T12:00:00.001Z' }),
+    evidence: {
+      ...FIXTURES.G0_MARKET_STATS_CONTAINED,
+      observed_at: futureObservedAt,
+      method_probes: [{
+        ...FIXTURES.G0_MARKET_STATS_CONTAINED.method_probes[0],
+        observed_at: futureObservedAt,
+      }],
+    },
+    context: context({ observed_at: futureObservedAt }),
   });
   assert.ok(future.every((claim) => claim.typed_value === false));
 
