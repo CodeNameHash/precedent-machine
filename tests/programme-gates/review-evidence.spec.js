@@ -14,6 +14,8 @@ const {
   EMPTY_REVIEWER_EDIT_SET_ROOT,
   INDEPENDENCE_DOMAIN,
   INDEPENDENCE_ROLE,
+  projectBenApprovalEvidence,
+  projectReviewSetAttestation,
   verifyBenApprovalEvidence,
   verifyReviewSetEvidence,
 } = require('../../lib/programme-gates/review-evidence');
@@ -177,6 +179,10 @@ test('five signed cold lanes and independence attestations produce one reviewed 
   assert.equal(result.facts.reviewed_root, ROOT);
   assert.deepEqual(result.facts.lane_ids, REVIEW_LANES.map((lane) => lane.lane_id));
   assert.match(result.evidence_id, /^[a-f0-9]{64}$/);
+  assert.deepEqual(projectReviewSetAttestation(result), {
+    review_set_evidence_id: result.evidence_id,
+    reviewed_root: ROOT,
+  });
 });
 
 test('missing, duplicate, boolean-substitute and reused review members stay OPEN', () => {
@@ -251,6 +257,12 @@ test('Ben approval must be signed, unconditional and bound to the passing review
   });
   assert.equal(result.state, 'PASS');
   assert.equal(result.facts.passing_review_set_evidence_id, review.evidence_id);
+  assert.deepEqual(projectBenApprovalEvidence(result, record), {
+    approval_evidence_id: result.evidence_id,
+    approved_root: ROOT,
+    passing_review_set_evidence_id: review.evidence_id,
+    conditions: [],
+  });
 
   for (const changed of [
     { record: benRecord(sample, review.evidence_id, { conditions: ['subject to changes'] }) },
@@ -266,4 +278,15 @@ test('Ben approval must be signed, unconditional and bound to the passing review
       at: NOW,
     }).state, 'OPEN');
   }
+});
+
+test('only passing verification results can enter formal evidence projections', () => {
+  assert.throws(
+    () => projectReviewSetAttestation({ valid: false, state: 'OPEN' }),
+    /passing review-set verification/,
+  );
+  assert.throws(
+    () => projectBenApprovalEvidence({ valid: false, state: 'OPEN' }, {}),
+    /passing Ben approval verification/,
+  );
 });

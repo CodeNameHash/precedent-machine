@@ -225,11 +225,10 @@ test('the containment contract bundle activates only two closed definitions', ()
       'G0_STAGING_SUPABASE_ISOLATED',
       'G0_STAGING_VERCEL_ISOLATED',
       'G0_STAGING_ACCESS_PROTECTED',
+      'G0_EXACT_DIGEST_REVIEW_SET',
+      'G0_BEN_SPEC_APPROVAL',
     ],
   );
-  assert.ok(ACCEPTANCE_DEFINITION_DESCRIPTORS.slice(8).every(
-    (descriptor) => descriptor.activation_state === 'BLOCKED_PENDING_EXECUTABLE_BINDINGS',
-  ));
 });
 
 test('closed enumeration binds every observation and execution exactly once', async () => {
