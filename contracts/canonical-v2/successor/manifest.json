@@ -494,6 +494,27 @@
       "canonical_bytes_digest": "a20a17e8efba58d6bf3337f4e42a867124f9c8bf89de97b838d118828e7214ad"
     },
     {
+      "relative_path": "process/domain/process-domain-registry.v1.json",
+      "object_kind": "PROCESS_DOMAIN_REGISTRY_INPUT",
+      "stable_id": "PROCESS",
+      "schema_version": "PROCESS_DOMAIN_REGISTRY_INPUT/V1",
+      "canonical_bytes_digest": "55f8034fe60c1f58cab7b1d8544e8f545a9c221695525107b438c55a768d7526"
+    },
+    {
+      "relative_path": "process/narration/process-narration-occurrence.v1.json",
+      "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
+      "stable_id": "PROCESS_NARRATION_OCCURRENCE",
+      "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "5e80f7d479771ba196065e89e90d085b71fd7510fd334ca6143aebc56d962377"
+    },
+    {
+      "relative_path": "process/occurrence-slots/process-narration.v1.json",
+      "object_kind": "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT",
+      "stable_id": "PROCESS_NARRATION",
+      "schema_version": "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT/V1",
+      "canonical_bytes_digest": "49bb48e4974934fe01f0ba3d0c840be7dfe35b66367304912870dbbbb3096fbe"
+    },
+    {
       "relative_path": "shared/deal-facts/deal-fact-resolution-occurrence.v1.json",
       "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
       "stable_id": "DEAL_FACT_RESOLUTION_OCCURRENCE",
@@ -615,6 +636,9 @@
     "NO_SHOP_SEMANTIC_SCHEMA_INPUT": 5,
     "PARSER_PROPOSAL_BOUNDARY_DEFINITION": 1,
     "PARTY_TUPLE_SHAPE_MIGRATION_INPUT": 1,
+    "PROCESS_DOMAIN_REGISTRY_INPUT": 1,
+    "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT": 1,
+    "PROCESS_LOGICAL_TYPE_INPUT": 1,
     "PROVISION_CONCEPT": 19,
     "RELATIONSHIP_DEFINITION": 5,
     "RELATIONSHIP_EFFECT_SCHEMA": 5,
@@ -649,6 +673,15 @@
     ],
     "PARTY_TUPLE_SHAPE_MIGRATION_INPUT": [
       "PARTY_TUPLE_SHAPE_MIGRATION_INPUT/V1"
+    ],
+    "PROCESS_DOMAIN_REGISTRY_INPUT": [
+      "PROCESS_DOMAIN_REGISTRY_INPUT/V1"
+    ],
+    "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT": [
+      "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT/V1"
+    ],
+    "PROCESS_LOGICAL_TYPE_INPUT": [
+      "PROCESS_LOGICAL_TYPE_INPUT/V1"
     ],
     "PROVISION_CONCEPT": [
       "PROVISION_CONCEPT/V1"
