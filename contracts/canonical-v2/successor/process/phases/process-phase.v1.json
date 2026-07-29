@@ -1,0 +1,174 @@
+{
+  "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
+  "stable_id": "PROCESS_PHASE",
+  "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "logical_type": "ProcessPhase",
+    "logical_type_version": 1,
+    "phase_identity": {
+      "stable_id_domain": "PROCESS_PHASE/V1",
+      "stable_id_inputs": [
+        "frozen_contract_pair_digest",
+        "governed_deal_admission_id",
+        "phase_scope_kind_and_id",
+        "process_phase_slot_key",
+        "governed_ordinal"
+      ],
+      "prohibited_inputs": [
+        "event_ids",
+        "extracted_attributes",
+        "model_output",
+        "phase_code",
+        "phase_end",
+        "phase_label",
+        "phase_start"
+      ]
+    },
+    "occurrence_slot_contract": {
+      "slot_key_field": "process_phase_slot_key",
+      "slot_frozen_before_candidate_values": true,
+      "slot_key_is_self_authorising": false,
+      "precomputed_expected_occurrence_id_binding_required": true,
+      "unresolved_or_missing_slot_blocks_materialisation": true,
+      "identity_only_kernel_grants_materialisation_authority": false
+    },
+    "scope_contract": {
+      "allowed_scope_kinds": [
+        "DEAL",
+        "BIDDER_TRACK"
+      ],
+      "phase_scope_kind_and_id_schema": {
+        "discriminant": "scope_kind",
+        "closed_variants": [
+          {
+            "scope_kind": "DEAL",
+            "exact_fields": [
+              "scope_kind",
+              "governed_deal_admission_id"
+            ],
+            "governed_deal_admission_id_must_equal_phase_deal": true
+          },
+          {
+            "scope_kind": "BIDDER_TRACK",
+            "exact_fields": [
+              "scope_kind",
+              "bidder_track_id"
+            ],
+            "bidder_track_frozen_contract_pair_digest_must_equal_phase_pair": true,
+            "bidder_track_governed_deal_admission_id_must_equal_phase_deal": true
+          }
+        ],
+        "arbitrary_ids_permitted": false,
+        "cross_deal_binding_permitted": false,
+        "cross_contract_binding_permitted": false
+      },
+      "exactly_one_scope_required": true,
+      "bidder_track_id_required_for_bidder_track_scope": true,
+      "bidder_track_definition_stable_id": "BIDDER_TRACK",
+      "scope_frozen_before_candidate_values": true,
+      "chronology_alone_can_select_scope": false
+    },
+    "phase_code_contract": {
+      "phase_code_is_revision_value_not_identity": true,
+      "phase_code_registry_required_before_materialisation": true,
+      "unknown_phase_code_has_runtime_path": false,
+      "phase_label_can_create_code": false
+    },
+    "event_membership_contract": {
+      "member_logical_type": "ProcessEvent",
+      "member_definition_stable_id": "PROCESS_EVENT",
+      "typed_relationship_required": true,
+      "event_membership_evidence_required": true,
+      "event_ids_are_revision_values_not_phase_identity": true,
+      "same_date_can_establish_membership": false,
+      "phase_order_uses_governed_ordinal_not_inferred_date": true
+    },
+    "temporal_contract": {
+      "consumed_shared_logical_type": "TemporalExpression",
+      "shared_definition_stable_id": "TEMPORAL_EXPRESSION",
+      "exact_stated_formulation_retained": true,
+      "computed_value_replaces_source_formulation": false,
+      "unresolved_temporal_state_permitted": true
+    },
+    "revision_identity": {
+      "revision_type": "ProcessPhaseRevision",
+      "revision_id_domain": "PROCESS_PHASE_REVISION/V1",
+      "immutable_inputs": [
+        "evidence_edges",
+        "ordered_process_event_relationship_revision_ids",
+        "phase_code",
+        "phase_scope_kind_and_id",
+        "phase_state",
+        "process_phase_id",
+        "temporal_expression_revision_ids"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": [
+        "PRESENT",
+        "ABSENT",
+        "NOT_APPLICABLE",
+        "NOT_EXAMINED",
+        "FAILED"
+      ],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "phase_membership_evidence_separate_from_temporal_evidence": true,
+      "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES",
+      "complete_scope_required_for_absent": true
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_OCCURRENCE_TABLE",
+      "carrier_name": "process_phases",
+      "release_partitioned": true
+    },
+    "writer_action": {
+      "action_key": "ADMIT_PROCESS_PHASE",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false,
+      "definition_grants_execution_authority": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "scope_event_and_temporal_lineage_required": true
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "PROCESS_PHASE_REVISION",
+      "phase_id_required": true,
+      "revision_id_required": true,
+      "scope_lineage_required": true,
+      "event_relationship_lineage_required": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "PROCESS_PHASE_EVIDENCE",
+      "membership_evidence_only": true,
+      "temporal_evidence_uses_own_action": true,
+      "preserve_release_identity": true
+    },
+    "authority_contract": {
+      "creates_runtime_phase": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

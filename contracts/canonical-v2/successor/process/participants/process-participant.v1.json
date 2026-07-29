@@ -32,7 +32,13 @@
       "participant_slot_frozen_before_candidate_values": true,
       "one_event_required": true,
       "one_or_more_participants_per_event_permitted": true,
-      "same_entity_multiple_event_roles_permitted": true
+      "same_entity_multiple_event_roles_permitted": true,
+      "event_slot_binding_definition_required_before_materialisation": true,
+      "event_slot_binding_definition_stable_id": "PROCESS_EVENT_SLOT_BINDING",
+      "process_event_slot_key_equals_process_event_id": false,
+      "precomputed_event_id_must_equal_materialised_event_id": true,
+      "unresolved_event_slot_binding_blocks_materialisation": true,
+      "final_process_event_id_is_revision_lineage_not_participant_identity": true
     },
     "subject_binding_contract": {
       "consumed_authority": "SHARED_AUTHORITY",

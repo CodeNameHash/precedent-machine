@@ -33,11 +33,13 @@ function clone(value) {
 
 function members() {
   return [
+    member('process/bidder-tracks/bidder-track.v1.json'),
     member('process/domain/process-domain-registry.v1.json'),
     member('process/events/process-event.v1.json'),
     member('process/narration/process-narration-occurrence.v1.json'),
     member('process/occurrence-slots/process-narration.v1.json'),
     member('process/participants/process-participant.v1.json'),
+    member('process/phases/process-phase.v1.json'),
   ];
 }
 
@@ -203,7 +205,7 @@ test('extends deterministic authored inputs but remains an incomplete, non-freez
   const second = compileCanonicalContractInput({ root_directory: ROOT });
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 91);
+  assert.equal(first.authored_members.length, 93);
   assert.equal(first.disposition.status, 'INCOMPLETE_UNIVERSE');
   assert.equal(first.disposition.freeze_eligible, false);
   assert.equal(first.disposition.canonical_contract_bundle_authority, 'NONE');

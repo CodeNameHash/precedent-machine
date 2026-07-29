@@ -1,0 +1,27 @@
+{
+  "phase": "WP-PROCESS-P1-TRACK-PHASE-CONTRACT-INPUTS-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-p1-track-phase-contract-inputs-v1.json",
+    "contracts/canonical-v2/successor/manifest.json",
+    "contracts/canonical-v2/successor/process/bidder-tracks/bidder-track.v1.json",
+    "contracts/canonical-v2/successor/process/events/process-event.v1.json",
+    "contracts/canonical-v2/successor/process/participants/process-participant.v1.json",
+    "contracts/canonical-v2/successor/process/phases/process-phase.v1.json",
+    "lib/canonical-v2/process-contract-input-validator.js",
+    "tests/canonical-v2-canonical-contract-excepted-by-effect.test.js",
+    "tests/canonical-v2-canonical-contract-source-tree.test.js",
+    "tests/canonical-v2-process-contract-input.test.js",
+    "tests/canonical-v2-process-event-participant-contract-input.test.js",
+    "tests/canonical-v2-process-track-phase-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Authors only the BidderTrack and ProcessPhase successor inputs and deterministic validation. It grants no identity inference, writer, serving, release, database, activation, UI, or production authority."
+}

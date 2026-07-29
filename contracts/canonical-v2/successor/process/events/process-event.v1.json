@@ -35,7 +35,12 @@
       "unresolved_member_universe_blocks_context": true,
       "paragraph_boundary_defines_event": false,
       "event_definition_required_before_result": true,
-      "expected_result_slot_required_before_materialisation": true
+      "expected_result_slot_required_before_materialisation": true,
+      "governed_discovery_freeze_carrier_required_before_candidate_materialisation": true,
+      "caller_occurrence_array_can_prove_deal_wide_completeness": false,
+      "precomputed_expected_event_id_binding_required": true,
+      "event_slot_binding_definition_stable_id": "PROCESS_EVENT_SLOT_BINDING",
+      "identity_only_kernel_grants_materialisation_authority": false
     },
     "granularity_contract": {
       "boundary_rule": "SMALLEST_REAL_WORLD_OCCURRENCE_WITH_DISTINCT_PROCESS_QUESTION",

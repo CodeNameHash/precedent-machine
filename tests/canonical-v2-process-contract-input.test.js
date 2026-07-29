@@ -34,11 +34,13 @@ function clone(value) {
 
 function processMembers() {
   return [
+    loadMember('process/bidder-tracks/bidder-track.v1.json'),
     loadMember('process/domain/process-domain-registry.v1.json'),
     loadMember('process/events/process-event.v1.json'),
     loadMember('process/narration/process-narration-occurrence.v1.json'),
     loadMember('process/occurrence-slots/process-narration.v1.json'),
     loadMember('process/participants/process-participant.v1.json'),
+    loadMember('process/phases/process-phase.v1.json'),
   ];
 }
 
@@ -50,15 +52,17 @@ test('compiles the bounded Process core contracts deterministically without free
   );
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 91);
+  assert.equal(first.authored_members.length, 93);
   assert.deepEqual(
     processEntries.map((member) => [member.object_kind, member.stable_id]),
     [
+      ['PROCESS_LOGICAL_TYPE_INPUT', 'BIDDER_TRACK'],
       ['PROCESS_DOMAIN_REGISTRY_INPUT', 'PROCESS'],
       ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_EVENT'],
       ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_NARRATION_OCCURRENCE'],
       ['PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT', 'PROCESS_NARRATION'],
       ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_PARTICIPANT'],
+      ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_PHASE'],
     ],
   );
   assert.equal(first.authored_universe_assessment.status, 'NOT_ASSESSED');
