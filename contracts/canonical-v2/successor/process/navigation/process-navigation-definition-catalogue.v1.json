@@ -1,0 +1,141 @@
+{
+  "object_kind": "PROCESS_NAVIGATION_CATALOGUE_INPUT",
+  "stable_id": "PROCESS_NAVIGATION_DEFINITION_CATALOGUE",
+  "schema_version": "PROCESS_NAVIGATION_CATALOGUE_INPUT/V1",
+  "definition": {
+    "catalogue_version": 1,
+    "pm_wide_catalogue_binding": {
+      "combined_catalogue_stable_id": "PRODUCT_NAVIGATION_CATALOGUE",
+      "process_domain_registry_stable_id": "PROCESS",
+      "predicate_catalogue_stable_id": "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
+      "second_product_navigation_catalogue_permitted": false,
+      "process_contribution_is_additive_only": true
+    },
+    "hierarchy_contract": {
+      "levels": [
+        "DOMAIN",
+        "TOPIC",
+        "PATTERN"
+      ],
+      "maximum_depth": 3,
+      "selected_topic_controls_pattern_membership": true,
+      "all_is_catalogue_navigation_not_union_query": true,
+      "remaining_distinctions_are_fields_or_predicates": true,
+      "display_only_entry_permitted": false
+    },
+    "domains": [
+      {
+        "domain_key": "PROCESS",
+        "label": "Process",
+        "domain_registry_stable_id": "PROCESS",
+        "topics": [
+          {
+            "topic_key": "EXCLUSIVITY",
+            "label": "Exclusivity",
+            "predicate_catalogue_stable_id": "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
+            "patterns": [
+              {
+                "pattern_key": "EXCLUSIVITY_REQUESTED",
+                "label": "Requested",
+                "predicate_key": "EXCLUSIVITY_REQUESTED",
+                "predicate_version": 1,
+                "predicate_shape": "ATOMIC"
+              },
+              {
+                "pattern_key": "EXCLUSIVITY_RESPONSE_ANY",
+                "label": "Responded",
+                "predicate_key": "EXCLUSIVITY_RESPONSE_ANY",
+                "predicate_version": 1,
+                "predicate_shape": "GOVERNED_UNION_PRESERVING_ATOMIC_CONSTITUENT"
+              },
+              {
+                "pattern_key": "EXCLUSIVITY_EXPRESS_REFUSAL",
+                "label": "Expressly refused",
+                "predicate_key": "EXCLUSIVITY_EXPRESS_REFUSAL",
+                "predicate_version": 1,
+                "predicate_shape": "ATOMIC"
+              },
+              {
+                "pattern_key": "EXCLUSIVITY_COUNTERPROPOSAL",
+                "label": "Counterproposed",
+                "predicate_key": "EXCLUSIVITY_COUNTERPROPOSAL",
+                "predicate_version": 1,
+                "predicate_shape": "ATOMIC"
+              },
+              {
+                "pattern_key": "EXCLUSIVITY_CONDITIONAL_ACCEPTANCE",
+                "label": "Conditionally accepted",
+                "predicate_key": "EXCLUSIVITY_CONDITIONAL_ACCEPTANCE",
+                "predicate_version": 1,
+                "predicate_shape": "ATOMIC"
+              },
+              {
+                "pattern_key": "EXCLUSIVITY_GRANTED",
+                "label": "Granted",
+                "predicate_key": "EXCLUSIVITY_GRANTED",
+                "predicate_version": 1,
+                "predicate_shape": "ATOMIC"
+              },
+              {
+                "pattern_key": "EXCLUSIVITY_EXTENSION",
+                "label": "Extended",
+                "predicate_key": "EXCLUSIVITY_EXTENSION",
+                "predicate_version": 1,
+                "predicate_shape": "ATOMIC"
+              },
+              {
+                "pattern_key": "EXCLUSIVITY_AMENDMENT",
+                "label": "Amended",
+                "predicate_key": "EXCLUSIVITY_AMENDMENT",
+                "predicate_version": 1,
+                "predicate_shape": "ATOMIC"
+              },
+              {
+                "pattern_key": "EXCLUSIVITY_WAIVER",
+                "label": "Waived",
+                "predicate_key": "EXCLUSIVITY_WAIVER",
+                "predicate_version": 1,
+                "predicate_shape": "ATOMIC"
+              },
+              {
+                "pattern_key": "EXCLUSIVITY_EXPIRY",
+                "label": "Expired",
+                "predicate_key": "EXCLUSIVITY_EXPIRY",
+                "predicate_version": 1,
+                "predicate_shape": "ATOMIC"
+              },
+              {
+                "pattern_key": "EXCLUSIVITY_END",
+                "label": "Ended",
+                "predicate_key": "EXCLUSIVITY_END",
+                "predicate_version": 1,
+                "predicate_shape": "ATOMIC"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "admission_contract": {
+      "domain_topic_and_pattern_compile_to_one_query_ir": true,
+      "pattern_requires_exact_predicate_admission": true,
+      "unknown_domain_topic_pattern_or_predicate_has_runtime_path": false,
+      "failed_predicate_cannot_enter_through_passing_sibling": true,
+      "generic_response_preserves_atomic_response_state_and_subject": true,
+      "declined_label_can_replace_express_refusal_counterproposal_or_conditional_acceptance": false,
+      "request_can_satisfy_grant": false,
+      "silence_can_satisfy_express_refusal": false,
+      "cross_domain_boolean_query_permitted_without_composite_contract": false,
+      "ask_and_browse_byte_equivalence_required": true
+    },
+    "authority_contract": {
+      "creates_runtime_navigation": false,
+      "creates_query_authority": false,
+      "creates_extraction_authority": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

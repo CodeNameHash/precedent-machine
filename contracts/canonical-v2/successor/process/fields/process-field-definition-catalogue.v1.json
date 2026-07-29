@@ -1,0 +1,523 @@
+{
+  "object_kind": "PROCESS_FIELD_CATALOGUE_INPUT",
+  "stable_id": "PROCESS_FIELD_DEFINITION_CATALOGUE",
+  "schema_version": "PROCESS_FIELD_CATALOGUE_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "catalogue_version": 1,
+    "pm_wide_catalogue_binding": {
+      "combined_catalogue_stable_id": "PRODUCT_FIELD_CATALOGUE",
+      "shared_deal_catalogue_stable_id": "SHARED_DEAL_FIELD_CATALOGUE",
+      "shared_deal_catalogue_schema_version": "SHARED_AUTHORITY_FIELD_CATALOGUE_INPUT/V1",
+      "process_contribution_is_additive_only": true,
+      "second_product_field_catalogue_permitted": false,
+      "shared_field_reauthoring_permitted": false
+    },
+    "field_groups": [
+      "PROCESS_EVENT",
+      "PROCESS_PARTIES_AND_TRACKS",
+      "PROCESS_TIMING",
+      "PROCESS_SOURCE_AND_CERTIFICATION"
+    ],
+    "field_definitions": [
+      {
+        "field_key": "process_event_type",
+        "field_version": 1,
+        "label": "Process event",
+        "field_group": "PROCESS_EVENT",
+        "value_type": "GOVERNED_CODE",
+        "source_definition_stable_id": "PROCESS_EVENT",
+        "source_member_path": "event_type_code",
+        "required_value_registry": "PROCESS_EVENT_TYPE_REGISTRY",
+        "permitted_result_definitions": [
+          "PROCESS_EXCLUSIVITY_EVENT_RESULT",
+          "PROCESS_PHRASEBOOK_PASSAGE_RESULT"
+        ],
+        "output_grain": "RESULT",
+        "filter_scope": "SAME_PROCESS_EVENT",
+        "multiplicity": "ONE",
+        "capabilities": {
+          "display": true,
+          "filter": true,
+          "sort": true,
+          "group": true
+        },
+        "permitted_operators": [
+          "EQ",
+          "IN"
+        ],
+        "control_type": "ENUM_MULTISELECT",
+        "canonical_equality": "GOVERNED_CODE_EQUALITY",
+        "ordering": "GOVERNED_CODE_ORDER",
+        "completeness_semantics": "UNKNOWN_IF_REQUIRED_REGISTRY_OR_VALUE_NOT_ADMITTED",
+        "maximum_cardinality": 1,
+        "overflow_behaviour": "BLOCK_RESULT",
+        "source_requirement": "FIELD_SPECIFIC_EVIDENCE_REQUIRED",
+        "derivation_requirement": "NO_LABEL_TO_CODE_DERIVATION",
+        "release_admission_required": true,
+        "unavailable_reason": "FIELD_OR_VALUE_REGISTRY_NOT_ADMITTED_IN_SELECTED_RELEASE",
+        "legacy_filter_authority": false
+      },
+      {
+        "field_key": "process_event_time",
+        "field_version": 1,
+        "label": "Process event timing",
+        "field_group": "PROCESS_TIMING",
+        "value_type": "TEMPORAL_EXPRESSION_REFERENCE",
+        "source_definition_stable_id": "TEMPORAL_EXPRESSION",
+        "source_member_path": "temporal_expression_revision_id",
+        "required_value_registry": "TEMPORAL_EXPRESSION.type_contract.structured_node_registry",
+        "permitted_result_definitions": [
+          "PROCESS_EXCLUSIVITY_EVENT_RESULT",
+          "PROCESS_PHRASEBOOK_PASSAGE_RESULT"
+        ],
+        "output_grain": "RESULT",
+        "filter_scope": "SAME_PROCESS_EVENT",
+        "multiplicity": "ZERO_OR_ONE",
+        "capabilities": {
+          "display": true,
+          "filter": true,
+          "sort": true,
+          "group": false
+        },
+        "permitted_operators": [
+          "EQ",
+          "BEFORE",
+          "AFTER",
+          "BETWEEN",
+          "EXISTS",
+          "NONE"
+        ],
+        "control_type": "TEMPORAL_RANGE",
+        "canonical_equality": "TEMPORAL_EXPRESSION_IDENTITY",
+        "ordering": "ADMITTED_TEMPORAL_ORDER_WITH_UNRESOLVED_LAST",
+        "completeness_semantics": "TYPED_STATE_NEVER_EMPTY_TEXT",
+        "maximum_cardinality": 1,
+        "overflow_behaviour": "BLOCK_RESULT",
+        "source_requirement": "EXACT_SOURCE_FORMULATION_AND_INTERVAL_REQUIRED",
+        "derivation_requirement": "COMPUTED_VALUE_REQUIRES_ADMITTED_NODE_CALENDAR_ANCHOR_AND_LINEAGE",
+        "release_admission_required": true,
+        "unavailable_reason": "TEMPORAL_FORM_NOT_ADMITTED_IN_SELECTED_RELEASE",
+        "legacy_filter_authority": false
+      },
+      {
+        "field_key": "process_phase",
+        "field_version": 1,
+        "label": "Process phase",
+        "field_group": "PROCESS_EVENT",
+        "value_type": "GOVERNED_CODE",
+        "source_definition_stable_id": "PROCESS_PHASE",
+        "source_member_path": "phase_code",
+        "required_value_registry": "PROCESS_PHASE_CODE_REGISTRY",
+        "permitted_result_definitions": [
+          "PROCESS_EXCLUSIVITY_EVENT_RESULT",
+          "PROCESS_PHRASEBOOK_PASSAGE_RESULT"
+        ],
+        "output_grain": "RESULT",
+        "filter_scope": "SAME_PROCESS_EVENT",
+        "multiplicity": "ZERO_OR_ONE",
+        "capabilities": {
+          "display": true,
+          "filter": true,
+          "sort": true,
+          "group": true
+        },
+        "permitted_operators": [
+          "EQ",
+          "IN",
+          "EXISTS",
+          "NONE"
+        ],
+        "control_type": "ENUM_MULTISELECT",
+        "canonical_equality": "GOVERNED_CODE_EQUALITY",
+        "ordering": "GOVERNED_PHASE_ORDER",
+        "completeness_semantics": "UNKNOWN_IF_REQUIRED_REGISTRY_OR_VALUE_NOT_ADMITTED",
+        "maximum_cardinality": 1,
+        "overflow_behaviour": "BLOCK_RESULT",
+        "source_requirement": "FIELD_SPECIFIC_EVIDENCE_REQUIRED",
+        "derivation_requirement": "NO_LABEL_OR_CHRONOLOGY_TO_CODE_DERIVATION",
+        "release_admission_required": true,
+        "unavailable_reason": "FIELD_OR_VALUE_REGISTRY_NOT_ADMITTED_IN_SELECTED_RELEASE",
+        "legacy_filter_authority": false
+      },
+      {
+        "field_key": "process_channel",
+        "field_version": 1,
+        "label": "Process channel",
+        "field_group": "PROCESS_EVENT",
+        "value_type": "GOVERNED_CODE",
+        "source_definition_stable_id": "PROCESS_EVENT",
+        "source_member_path": "channel_code",
+        "required_value_registry": "PROCESS_CHANNEL_REGISTRY",
+        "permitted_result_definitions": [
+          "PROCESS_EXCLUSIVITY_EVENT_RESULT",
+          "PROCESS_PHRASEBOOK_PASSAGE_RESULT"
+        ],
+        "output_grain": "RESULT",
+        "filter_scope": "SAME_PROCESS_EVENT",
+        "multiplicity": "ZERO_OR_ONE",
+        "capabilities": {
+          "display": true,
+          "filter": true,
+          "sort": true,
+          "group": true
+        },
+        "permitted_operators": [
+          "EQ",
+          "IN",
+          "EXISTS",
+          "NONE"
+        ],
+        "control_type": "ENUM_MULTISELECT",
+        "canonical_equality": "GOVERNED_CODE_EQUALITY",
+        "ordering": "GOVERNED_CODE_ORDER",
+        "completeness_semantics": "UNKNOWN_IF_REQUIRED_REGISTRY_OR_VALUE_NOT_ADMITTED",
+        "maximum_cardinality": 1,
+        "overflow_behaviour": "BLOCK_RESULT",
+        "source_requirement": "FIELD_SPECIFIC_EVIDENCE_REQUIRED",
+        "derivation_requirement": "NO_SOURCE_MEDIUM_LABEL_TO_CODE_DERIVATION",
+        "release_admission_required": true,
+        "unavailable_reason": "FIELD_OR_VALUE_REGISTRY_NOT_ADMITTED_IN_SELECTED_RELEASE",
+        "legacy_filter_authority": false
+      },
+      {
+        "field_key": "process_outcome",
+        "field_version": 1,
+        "label": "Process outcome",
+        "field_group": "PROCESS_EVENT",
+        "value_type": "ADMITTED_PREDICATE_KEY",
+        "source_definition_stable_id": "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
+        "source_member_path": "admitted_atomic_predicate_key",
+        "required_value_registry": "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
+        "permitted_result_definitions": [
+          "PROCESS_EXCLUSIVITY_EVENT_RESULT",
+          "PROCESS_PHRASEBOOK_PASSAGE_RESULT"
+        ],
+        "output_grain": "RESULT",
+        "filter_scope": "SAME_PROCESS_EVENT",
+        "multiplicity": "ONE_OR_MORE",
+        "capabilities": {
+          "display": true,
+          "filter": true,
+          "sort": false,
+          "group": true
+        },
+        "permitted_operators": [
+          "EQ",
+          "IN",
+          "EXISTS",
+          "NONE",
+          "ALL",
+          "CANONICAL_SET"
+        ],
+        "control_type": "ENUM_MULTISELECT",
+        "canonical_equality": "PREDICATE_KEY_AND_VERSION_EQUALITY",
+        "ordering": "PREDICATE_CATALOGUE_ORDER",
+        "completeness_semantics": "NON_VACUOUS_ALL_AND_UNKNOWN_IF_COLLECTION_INCOMPLETE",
+        "maximum_cardinality": 23,
+        "overflow_behaviour": "BLOCK_RESULT",
+        "source_requirement": "ADMITTED_PREDICATE_WITNESS_REQUIRED_PER_VALUE",
+        "derivation_requirement": "UNION_PRESERVES_EACH_ATOMIC_CONSTITUENT",
+        "release_admission_required": true,
+        "unavailable_reason": "PREDICATE_NOT_ADMITTED_IN_SELECTED_RELEASE",
+        "legacy_filter_authority": false
+      },
+      {
+        "field_key": "bidder_track",
+        "field_version": 1,
+        "label": "Bidder track",
+        "field_group": "PROCESS_PARTIES_AND_TRACKS",
+        "value_type": "BIDDER_TRACK_REFERENCE",
+        "source_definition_stable_id": "BIDDER_TRACK",
+        "source_member_path": "bidder_track_id",
+        "required_value_registry": "BIDDER_TRACK",
+        "permitted_result_definitions": [
+          "PROCESS_EXCLUSIVITY_EVENT_RESULT",
+          "PROCESS_PHRASEBOOK_PASSAGE_RESULT"
+        ],
+        "output_grain": "RESULT",
+        "filter_scope": "SAME_BIDDER_TRACK",
+        "multiplicity": "ZERO_OR_ONE",
+        "capabilities": {
+          "display": true,
+          "filter": true,
+          "sort": true,
+          "group": true
+        },
+        "permitted_operators": [
+          "EQ",
+          "IN",
+          "EXISTS",
+          "NONE"
+        ],
+        "control_type": "IDENTITY_MULTISELECT",
+        "canonical_equality": "CANONICAL_BIDDER_TRACK_ID_EQUALITY",
+        "ordering": "GOVERNED_TRACK_ORDINAL",
+        "completeness_semantics": "TYPED_STATE_NEVER_EMPTY_TEXT",
+        "maximum_cardinality": 1,
+        "overflow_behaviour": "BLOCK_RESULT",
+        "source_requirement": "TRACK_BINDING_AND_EVIDENCE_REQUIRED",
+        "derivation_requirement": "NO_NAME_DATE_ECONOMICS_OR_SIDE_BASED_UNIFICATION",
+        "release_admission_required": true,
+        "unavailable_reason": "BIDDER_TRACK_NOT_ADMITTED_IN_SELECTED_RELEASE",
+        "legacy_filter_authority": false
+      },
+      {
+        "field_key": "exclusivity_subject",
+        "field_version": 1,
+        "label": "Exclusivity subject",
+        "field_group": "PROCESS_EVENT",
+        "value_type": "GOVERNED_CODE",
+        "source_definition_stable_id": "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
+        "source_member_path": "subject_code",
+        "required_value_registry": "PROCESS_EXCLUSIVITY_SUBJECT_CODE_SET",
+        "permitted_result_definitions": [
+          "PROCESS_EXCLUSIVITY_EVENT_RESULT",
+          "PROCESS_PHRASEBOOK_PASSAGE_RESULT"
+        ],
+        "output_grain": "RESULT",
+        "filter_scope": "SAME_PROCESS_EVENT",
+        "multiplicity": "ONE",
+        "capabilities": {
+          "display": true,
+          "filter": true,
+          "sort": true,
+          "group": true
+        },
+        "permitted_operators": [
+          "EQ",
+          "IN"
+        ],
+        "control_type": "ENUM_MULTISELECT",
+        "canonical_equality": "GOVERNED_CODE_EQUALITY",
+        "ordering": "PREDICATE_CATALOGUE_SUBJECT_ORDER",
+        "completeness_semantics": "SUBJECT_REQUIRED_FOR_REQUEST_RESPONSE_AND_GRANT",
+        "maximum_cardinality": 1,
+        "overflow_behaviour": "BLOCK_RESULT",
+        "source_requirement": "SUBJECT_SPECIFIC_EVIDENCE_REQUIRED",
+        "derivation_requirement": "NO_ADJACENT_SUBJECT_SUBSTITUTION",
+        "release_admission_required": true,
+        "unavailable_reason": "SUBJECT_CODE_NOT_ADMITTED_IN_SELECTED_RELEASE",
+        "legacy_filter_authority": false
+      },
+      {
+        "field_key": "process_participant",
+        "field_version": 1,
+        "label": "Process participant",
+        "field_group": "PROCESS_PARTIES_AND_TRACKS",
+        "value_type": "PROCESS_PARTICIPANT_REFERENCE",
+        "source_definition_stable_id": "PROCESS_PARTICIPANT",
+        "source_member_path": "process_participant_id",
+        "required_value_registry": "PROCESS_PARTICIPANT",
+        "permitted_result_definitions": [
+          "PROCESS_EXCLUSIVITY_EVENT_RESULT",
+          "PROCESS_PHRASEBOOK_PASSAGE_RESULT"
+        ],
+        "output_grain": "RESULT",
+        "filter_scope": "SAME_EVENT_AND_BIDDER_TRACK",
+        "multiplicity": "ONE_OR_MORE",
+        "capabilities": {
+          "display": true,
+          "filter": true,
+          "sort": false,
+          "group": true
+        },
+        "permitted_operators": [
+          "EQ",
+          "IN",
+          "EXISTS",
+          "NONE",
+          "ALL",
+          "CANONICAL_SET"
+        ],
+        "control_type": "IDENTITY_MULTISELECT",
+        "canonical_equality": "CANONICAL_PARTICIPANT_ID_EQUALITY",
+        "ordering": "GOVERNED_PARTICIPANT_ORDINAL",
+        "completeness_semantics": "NON_VACUOUS_ALL_AND_UNKNOWN_IF_COLLECTION_INCOMPLETE",
+        "maximum_cardinality": 64,
+        "overflow_behaviour": "BLOCK_RESULT",
+        "source_requirement": "ROLE_AND_IDENTITY_EVIDENCE_REMAIN_SEPARATE",
+        "derivation_requirement": "NO_GENERIC_SIDE_TO_ROLE_OR_ENTITY_INFERENCE",
+        "release_admission_required": true,
+        "unavailable_reason": "PARTICIPANT_OR_COLLECTION_NOT_ADMITTED_IN_SELECTED_RELEASE",
+        "legacy_filter_authority": false
+      },
+      {
+        "field_key": "process_participant_role",
+        "field_version": 1,
+        "label": "Process role",
+        "field_group": "PROCESS_PARTIES_AND_TRACKS",
+        "value_type": "GOVERNED_CODE",
+        "source_definition_stable_id": "PROCESS_PARTICIPANT",
+        "source_member_path": "event_role_code",
+        "required_value_registry": "PROCESS_EVENT_ROLE_REGISTRY",
+        "permitted_result_definitions": [
+          "PROCESS_EXCLUSIVITY_EVENT_RESULT",
+          "PROCESS_PHRASEBOOK_PASSAGE_RESULT"
+        ],
+        "output_grain": "RESULT",
+        "filter_scope": "SAME_PARTICIPANT_COMPONENT",
+        "multiplicity": "ONE_OR_MORE",
+        "capabilities": {
+          "display": true,
+          "filter": true,
+          "sort": false,
+          "group": true
+        },
+        "permitted_operators": [
+          "EQ",
+          "IN",
+          "EXISTS",
+          "NONE",
+          "ALL",
+          "CANONICAL_SET"
+        ],
+        "control_type": "ENUM_MULTISELECT",
+        "canonical_equality": "GOVERNED_CODE_EQUALITY",
+        "ordering": "GOVERNED_ROLE_ORDER",
+        "completeness_semantics": "NON_VACUOUS_ALL_AND_UNKNOWN_IF_COLLECTION_INCOMPLETE",
+        "maximum_cardinality": 64,
+        "overflow_behaviour": "BLOCK_RESULT",
+        "source_requirement": "EVENT_ROLE_EVIDENCE_REQUIRED_PER_PARTICIPANT_COMPONENT",
+        "derivation_requirement": "NO_LEGAL_TRANSACTION_OR_SIDE_ROLE_INFERENCE",
+        "release_admission_required": true,
+        "unavailable_reason": "ROLE_REGISTRY_OR_COLLECTION_NOT_ADMITTED_IN_SELECTED_RELEASE",
+        "legacy_filter_authority": false
+      },
+      {
+        "field_key": "actual_drafting",
+        "field_version": 1,
+        "label": "Actual drafting",
+        "field_group": "PROCESS_SOURCE_AND_CERTIFICATION",
+        "value_type": "PROCESS_PASSAGE_REFERENCE",
+        "source_definition_stable_id": "PROCESS_PASSAGE",
+        "source_member_path": "actual_drafting_passage_id",
+        "required_value_registry": "PROCESS_PASSAGE_ROLE_REGISTRY",
+        "permitted_result_definitions": [
+          "PROCESS_EXCLUSIVITY_EVENT_RESULT",
+          "PROCESS_PHRASEBOOK_PASSAGE_RESULT"
+        ],
+        "output_grain": "RESULT",
+        "filter_scope": "SAME_RESULT_COMPONENT",
+        "multiplicity": "ONE_OR_MORE",
+        "capabilities": {
+          "display": true,
+          "filter": false,
+          "sort": false,
+          "group": false
+        },
+        "permitted_operators": [],
+        "control_type": "NONE",
+        "canonical_equality": "CANONICAL_PASSAGE_ID_EQUALITY",
+        "ordering": "CANONICAL_SOURCE_INTERVAL_ORDER",
+        "completeness_semantics": "ACTUAL_DRAFTING_REQUIRED_SUMMARY_CANNOT_SUBSTITUTE",
+        "maximum_cardinality": 32,
+        "overflow_behaviour": "BLOCK_RESULT",
+        "source_requirement": "EXACT_VERBATIM_PASSAGE_AND_SOURCE_MAP_REQUIRED",
+        "derivation_requirement": "NO_RECONSTRUCTION_OR_SUMMARY_SUBSTITUTION",
+        "release_admission_required": true,
+        "unavailable_reason": "ACTUAL_DRAFTING_NOT_ADMITTED_IN_SELECTED_RELEASE",
+        "legacy_filter_authority": false
+      },
+      {
+        "field_key": "source_document_role",
+        "field_version": 1,
+        "label": "Source document role",
+        "field_group": "PROCESS_SOURCE_AND_CERTIFICATION",
+        "value_type": "GOVERNED_CODE",
+        "source_definition_stable_id": "EXTERNAL_SOURCE_ACQUISITION_MANIFEST",
+        "source_member_path": "source_role_code",
+        "required_value_registry": "PROCESS_SOURCE_ROLE_REGISTRY",
+        "permitted_result_definitions": [
+          "PROCESS_EXCLUSIVITY_EVENT_RESULT",
+          "PROCESS_PHRASEBOOK_PASSAGE_RESULT"
+        ],
+        "output_grain": "RESULT",
+        "filter_scope": "SAME_SOURCE_DOCUMENT",
+        "multiplicity": "ONE",
+        "capabilities": {
+          "display": true,
+          "filter": true,
+          "sort": true,
+          "group": true
+        },
+        "permitted_operators": [
+          "EQ",
+          "IN"
+        ],
+        "control_type": "ENUM_MULTISELECT",
+        "canonical_equality": "GOVERNED_CODE_EQUALITY",
+        "ordering": "GOVERNED_SOURCE_ROLE_ORDER",
+        "completeness_semantics": "SOURCE_ROLE_REQUIRED_FOR_ADMITTED_DOCUMENT",
+        "maximum_cardinality": 1,
+        "overflow_behaviour": "BLOCK_RESULT",
+        "source_requirement": "ACQUISITION_MANIFEST_AND_SOURCE_IDENTITY_REQUIRED",
+        "derivation_requirement": "NO_FILENAME_OR_URL_TO_ROLE_INFERENCE",
+        "release_admission_required": true,
+        "unavailable_reason": "SOURCE_ROLE_NOT_ADMITTED_IN_SELECTED_RELEASE",
+        "legacy_filter_authority": false
+      },
+      {
+        "field_key": "certification_state",
+        "field_version": 1,
+        "label": "Certification",
+        "field_group": "PROCESS_SOURCE_AND_CERTIFICATION",
+        "value_type": "GOVERNED_CODE",
+        "source_definition_stable_id": "PROCESS_VERTICAL_SLICE_PASS",
+        "source_member_path": "certification_state",
+        "required_value_registry": "PROCESS_CERTIFICATION_STATE_REGISTRY",
+        "permitted_result_definitions": [
+          "PROCESS_EXCLUSIVITY_EVENT_RESULT",
+          "PROCESS_PHRASEBOOK_PASSAGE_RESULT"
+        ],
+        "output_grain": "RESULT",
+        "filter_scope": "SAME_RELEASE_ADMISSION",
+        "multiplicity": "ONE",
+        "capabilities": {
+          "display": true,
+          "filter": true,
+          "sort": true,
+          "group": true
+        },
+        "permitted_operators": [
+          "EQ",
+          "IN"
+        ],
+        "control_type": "ENUM_MULTISELECT",
+        "canonical_equality": "GOVERNED_CODE_EQUALITY",
+        "ordering": "GOVERNED_CERTIFICATION_STATE_ORDER",
+        "completeness_semantics": "UNAVAILABLE_UNTIL_EXACT_RELEASE_CERTIFICATION",
+        "maximum_cardinality": 1,
+        "overflow_behaviour": "BLOCK_RESULT",
+        "source_requirement": "EXACT_RELEASE_PREDICATE_AND_FIELD_ADMISSION_REQUIRED",
+        "derivation_requirement": "NO_UI_OR_RUNTIME_CERTIFICATION_INFERENCE",
+        "release_admission_required": true,
+        "unavailable_reason": "PROCESS_CERTIFICATION_NOT_PRESENT_IN_SELECTED_RELEASE",
+        "legacy_filter_authority": false
+      }
+    ],
+    "catalogue_contract": {
+      "all_current_shared_deal_fields_remain_in_combined_catalogue": true,
+      "unknown_field_has_runtime_path": false,
+      "physical_column_can_create_field": false,
+      "display_label_can_create_field_or_code": false,
+      "raw_ids_hashes_run_ids_and_storage_paths_are_user_fields": false,
+      "same_event_track_component_and_source_scopes_are_enforced": true,
+      "all_operator_is_non_vacuous": true,
+      "incomplete_repeatable_collection_returns_unknown": true,
+      "selected_values_remain_visible_while_editing": true,
+      "value_options_apply_other_admitted_filters_first": true,
+      "field_without_exact_release_admission_is_unavailable_not_false_zero": true,
+      "append_only_successor_required_for_new_field_group_control_type_or_domain": true
+    },
+    "authority_contract": {
+      "creates_runtime_field": false,
+      "creates_query_authority": false,
+      "creates_extraction_authority": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

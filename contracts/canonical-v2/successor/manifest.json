@@ -550,6 +550,13 @@
       "canonical_bytes_digest": "c3f227216bce15984e1c105c336a6aea198b8c3b2fd674e96de5d9e227a24b7a"
     },
     {
+      "relative_path": "process/fields/process-field-definition-catalogue.v1.json",
+      "object_kind": "PROCESS_FIELD_CATALOGUE_INPUT",
+      "stable_id": "PROCESS_FIELD_DEFINITION_CATALOGUE",
+      "schema_version": "PROCESS_FIELD_CATALOGUE_INPUT/V1",
+      "canonical_bytes_digest": "bcb87a92a5c4da81af609dd0379df9a09c123b9c1b1742870dfcb6ea4d8ca45c"
+    },
+    {
       "relative_path": "process/integrity/process-semantic-or-source-integrity-revocation-cause.v1.json",
       "object_kind": "PROCESS_INTEGRITY_CONTRACT_INPUT",
       "stable_id": "PROCESS_SEMANTIC_OR_SOURCE_INTEGRITY_REVOCATION_CAUSE",
@@ -569,6 +576,13 @@
       "stable_id": "PROCESS_NARRATION_OCCURRENCE",
       "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
       "canonical_bytes_digest": "5e80f7d479771ba196065e89e90d085b71fd7510fd334ca6143aebc56d962377"
+    },
+    {
+      "relative_path": "process/navigation/process-navigation-definition-catalogue.v1.json",
+      "object_kind": "PROCESS_NAVIGATION_CATALOGUE_INPUT",
+      "stable_id": "PROCESS_NAVIGATION_DEFINITION_CATALOGUE",
+      "schema_version": "PROCESS_NAVIGATION_CATALOGUE_INPUT/V1",
+      "canonical_bytes_digest": "3d1bc31d865fd769a96cbff0a6a7a445f9d91133a4fe28d50759eb90bfa97009"
     },
     {
       "relative_path": "process/occurrence-slots/process-narration.v1.json",
@@ -806,8 +820,10 @@
     "PARTY_TUPLE_SHAPE_MIGRATION_INPUT": 1,
     "PROCESS_DOMAIN_REGISTRY_INPUT": 1,
     "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT": 1,
+    "PROCESS_FIELD_CATALOGUE_INPUT": 1,
     "PROCESS_INTEGRITY_CONTRACT_INPUT": 2,
     "PROCESS_LOGICAL_TYPE_INPUT": 10,
+    "PROCESS_NAVIGATION_CATALOGUE_INPUT": 1,
     "PROCESS_PREDICATE_CONTRACT_INPUT": 2,
     "PROCESS_RESULT_ACTION_CONTRACT_INPUT": 4,
     "PROVISION_CONCEPT": 19,
@@ -853,11 +869,17 @@
     "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT": [
       "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT/V1"
     ],
+    "PROCESS_FIELD_CATALOGUE_INPUT": [
+      "PROCESS_FIELD_CATALOGUE_INPUT/V1"
+    ],
     "PROCESS_INTEGRITY_CONTRACT_INPUT": [
       "PROCESS_INTEGRITY_CONTRACT_INPUT/V1"
     ],
     "PROCESS_LOGICAL_TYPE_INPUT": [
       "PROCESS_LOGICAL_TYPE_INPUT/V1"
+    ],
+    "PROCESS_NAVIGATION_CATALOGUE_INPUT": [
+      "PROCESS_NAVIGATION_CATALOGUE_INPUT/V1"
     ],
     "PROCESS_PREDICATE_CONTRACT_INPUT": [
       "PROCESS_PREDICATE_CONTRACT_INPUT/V1"

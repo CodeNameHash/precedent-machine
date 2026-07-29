@@ -224,7 +224,7 @@ test('authored dependencies and comparison isolation fail closed under drift', (
 
 test('the completed relationship universe remains non-authoritative until registry freeze', () => {
   const output = compiled();
-  assert.equal(output.authored_members.length, 113);
+  assert.equal(output.authored_members.length, 115);
   assert.equal(output.disposition.status, 'INCOMPLETE_UNIVERSE');
   assert.equal(output.disposition.freeze_eligible, false);
   assert.equal(output.disposition.canonical_contract_bundle_authority, 'NONE');
