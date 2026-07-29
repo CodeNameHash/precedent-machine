@@ -6,6 +6,9 @@ const test = require('node:test');
 
 const { domainDigest, signatureBytes } = require('../../lib/programme-gates/bytes');
 const {
+  CONTRACT_FREEZE_MEMBER_SCHEMA_SET,
+} = require('../../lib/programme-gates/contract-freeze-contracts');
+const {
   enumerateCompleteGitAuthorshipUniverse,
 } = require('../../lib/programme-gates/git-authorship');
 const {
@@ -18,8 +21,31 @@ const {
   REVIEW_CONTROLLER_POLICY,
   REVIEW_LANES,
 } = require('../../lib/programme-gates/registry');
+const {
+  specificationRootFromMembers,
+} = require('../../lib/programme-gates/review-controller');
 
-const ROOT = 'a'.repeat(64);
+const SPECIFICATION_MEMBERS = Object.freeze([
+  'docs/codex-program/specification-manifest.json',
+  'docs/CODEX-PROGRAM.md',
+  'docs/codex-program/programme-gates.yaml',
+  'docs/codex-program/bootstrap-acceptance-source.json',
+  'docs/codex-program/canonical-contracts.md',
+  'docs/codex-program/adversarial-tests.md',
+].map((memberPath, index) => {
+  const bytes = Buffer.from(String(index + 1));
+  return Object.freeze({
+    order: index + 1,
+    path: memberPath,
+    byte_length: bytes.length,
+    payload_digest: crypto.createHash('sha256').update(bytes).digest('hex'),
+    source_bytes_base64: bytes.toString('base64'),
+  });
+}));
+const ROOT = specificationRootFromMembers(SPECIFICATION_MEMBERS);
+const OUTPUT_SCHEMA_BYTES = Buffer.from('{}');
+const OUTPUT_SCHEMA_DIGEST =
+  crypto.createHash('sha256').update(OUTPUT_SCHEMA_BYTES).digest('hex');
 const REPOSITORY_ROOT = path.resolve(__dirname, '../..');
 const COMMIT = execFileSync('git', ['rev-parse', 'HEAD'], {
   cwd: REPOSITORY_ROOT,
@@ -31,6 +57,15 @@ const AUTHORSHIP_EVENTS = enumerateCompleteGitAuthorshipUniverse({
 });
 const OBSERVED_AT = '2026-07-28T12:00:00.000Z';
 const VERIFICATION_TIME = '2026-07-28T12:01:00.000Z';
+
+test('P1 member schema bindings are unique and validator-satisfiable', () => {
+  const memberTypes = CONTRACT_FREEZE_MEMBER_SCHEMA_SET.map((entry) => entry.member_type);
+  assert.equal(new Set(memberTypes).size, memberTypes.length);
+  assert.equal(
+    memberTypes.filter((memberType) => memberType === 'ReviewerIndependenceAttestation').length,
+    1,
+  );
+});
 
 function sign(privateKey, domain, role, payload) {
   return crypto.sign(
@@ -307,8 +342,9 @@ function fixture({ includePrivateKeys = false } = {}) {
       exact_specification_root: ROOT,
       frozen_specification: {
         manifest_id: REVIEW_CONTROLLER_POLICY.frozen_specification_manifest_id,
-        manifest_digest: 'b'.repeat(64),
-        file_count: REVIEW_CONTROLLER_POLICY.frozen_specification_file_count,
+        manifest_digest: SPECIFICATION_MEMBERS[0].payload_digest,
+        file_count: SPECIFICATION_MEMBERS.length,
+        ordered_members: SPECIFICATION_MEMBERS,
         immutable: true,
       },
       registered_prompt: {
@@ -322,8 +358,9 @@ function fixture({ includePrivateKeys = false } = {}) {
       output_schema: {
         schema_id: REVIEW_CONTROLLER_POLICY.output_schema_id,
         path: `${laneRoot}/output-schema.json`,
-        payload_digest: 'c'.repeat(64),
-        byte_length: 1,
+        payload_digest: OUTPUT_SCHEMA_DIGEST,
+        byte_length: OUTPUT_SCHEMA_BYTES.length,
+        source_bytes_base64: OUTPUT_SCHEMA_BYTES.toString('base64'),
         immutable: true,
       },
     };
@@ -684,6 +721,42 @@ function fixture({ includePrivateKeys = false } = {}) {
     accessField: 'independent_composition_catalogue_input_access_id',
     reviewField: 'independent_composition_catalogue_review_id',
   });
+  const semanticStageOutput = addAuthority({
+    kind: 'PRE_FREEZE_SEMANTIC_STAGE_OUTPUT_SET',
+    subjectId: contractBundleId,
+    payload: {
+      stage_id: 'SEMANTIC_QUESTION_CATALOGUE_OUTPUT',
+      catalogue_kind: 'SEMANTIC_QUESTION',
+      catalogue_root: semanticCatalogueRoot,
+      catalogue_review_disposition_id:
+        authorityManifest.independent_semantic_question_catalogue_review_id,
+      output_set_root: '7'.repeat(64),
+      output_member_count: 2,
+      failed_member_ids: [],
+    },
+    actorIdentity: 'SEMANTIC_STAGE_EXECUTOR',
+    relatedAuthorityIds: [semanticReview.authority_evidence_id],
+  });
+  const compositionStageOutput = addAuthority({
+    kind: 'PRE_FREEZE_SEMANTIC_STAGE_OUTPUT_SET',
+    subjectId: contractBundleId,
+    payload: {
+      stage_id: 'COMPOSITION_CATALOGUE_OUTPUT',
+      catalogue_kind: 'COMPOSITION',
+      catalogue_root: compositionCatalogueRoot,
+      catalogue_review_disposition_id:
+        authorityManifest.independent_composition_catalogue_review_id,
+      output_set_root: '8'.repeat(64),
+      output_member_count: 2,
+      failed_member_ids: [],
+    },
+    actorIdentity: 'SEMANTIC_STAGE_EXECUTOR',
+    relatedAuthorityIds: [compositionReview.authority_evidence_id],
+  });
+  authorityManifest.pre_freeze_semantic_stage_output_set_roots = [
+    semanticStageOutput.authority_payload.output_set_root,
+    compositionStageOutput.authority_payload.output_set_root,
+  ];
   const reconciliation = addAuthority({
     kind: 'SEMANTIC_QUESTION_CATALOGUE_RECONCILIATION',
     subjectId: contractBundleId,
@@ -694,14 +767,18 @@ function fixture({ includePrivateKeys = false } = {}) {
         authorityManifest.independent_semantic_question_catalogue_review_id,
       composition_review_disposition_id:
         authorityManifest.independent_composition_catalogue_review_id,
+      semantic_question_stage_output_set_root:
+        semanticStageOutput.authority_payload.output_set_root,
+      composition_stage_output_set_root:
+        compositionStageOutput.authority_payload.output_set_root,
       reconciliation_status: 'NO_UNRESOLVED_CONFLICTS',
       conflict_ids: [],
     },
     actorIdentity: 'CATALOGUE_RECONCILIATION_VALIDATOR',
     disposition: 'RECONCILED',
     relatedAuthorityIds: [
-      semanticReview.authority_evidence_id,
-      compositionReview.authority_evidence_id,
+      semanticStageOutput.authority_evidence_id,
+      compositionStageOutput.authority_evidence_id,
     ],
   });
   authorityManifest.semantic_question_catalogue_reconciliation_digest =
@@ -719,49 +796,35 @@ function fixture({ includePrivateKeys = false } = {}) {
     relatedAuthorityIds: [reconciliation.authority_evidence_id],
   });
   authorityManifest.neutral_projection_digest = neutralProjection.authority_payload_digest;
-  const stageOutput = addAuthority({
-    kind: 'PRE_FREEZE_SEMANTIC_STAGE_OUTPUT_SET',
-    subjectId: contractBundleId,
-    payload: {
-      stage_id: 'PRE_FREEZE_SEMANTIC_STAGE',
-      input_projection_digest: neutralProjection.authority_payload_digest,
-      output_set_root: '7'.repeat(64),
-      output_member_count: 2,
-      failed_member_ids: [],
-    },
-    actorIdentity: 'SEMANTIC_STAGE_EXECUTOR',
-    relatedAuthorityIds: [neutralProjection.authority_evidence_id],
-  });
-  authorityManifest.pre_freeze_semantic_stage_output_set_roots = [
-    stageOutput.authority_payload_digest,
-  ];
   const projectionSet = addAuthority({
     kind: 'PRE_FREEZE_NEUTRAL_PROJECTION_SET',
     subjectId: contractBundleId,
     payload: {
-      semantic_stage_output_set_root: stageOutput.authority_payload_digest,
-      neutral_projection_set_root: '8'.repeat(64),
+      neutral_projection_digest: neutralProjection.authority_payload_digest,
+      neutral_projection_set_root: '9'.repeat(64),
       projection_member_count: 2,
       unresolved_member_ids: [],
     },
     actorIdentity: 'NEUTRAL_PROJECTION_COMPILER',
-    relatedAuthorityIds: [stageOutput.authority_evidence_id],
+    relatedAuthorityIds: [neutralProjection.authority_evidence_id],
   });
   authorityManifest.pre_freeze_neutral_projection_set_roots = [
-    projectionSet.authority_payload_digest,
+    projectionSet.authority_payload.neutral_projection_set_root,
   ];
-  authorityManifest.relationship_effect_field_universe_set_root = addAuthority({
+  const fieldUniverse = addAuthority({
     kind: 'RELATIONSHIP_EFFECT_FIELD_UNIVERSE',
     subjectId: contractBundleId,
     payload: {
-      field_universe_set_root: '9'.repeat(64),
+      field_universe_set_root: 'a'.repeat(64),
       relationship_definition_set_root: 'a'.repeat(64),
       effect_schema_set_root: 'b'.repeat(64),
       unresolved_field_ids: [],
     },
     actorIdentity: 'RELATIONSHIP_EFFECT_FIELD_UNIVERSE_COMPILER',
-  }).authority_payload_digest;
-  authorityManifest.reviewer_eligibility_set_root = addAuthority({
+  });
+  authorityManifest.relationship_effect_field_universe_set_root =
+    fieldUniverse.authority_payload.field_universe_set_root;
+  const reviewerEligibility = addAuthority({
     kind: 'REVIEWER_ELIGIBILITY_SET',
     subjectId: contractBundleId,
     payload: {
@@ -774,8 +837,10 @@ function fixture({ includePrivateKeys = false } = {}) {
       excluded_reviewer_ids: [],
     },
     actorIdentity: 'REVIEW_ELIGIBILITY_VALIDATOR',
-  }).authority_payload_digest;
-  authorityManifest.ben_taxonomy_codebook_decision_set_root = addAuthority({
+  });
+  authorityManifest.reviewer_eligibility_set_root =
+    reviewerEligibility.authority_payload.eligibility_set_root;
+  const benDecisions = addAuthority({
     kind: 'BEN_TAXONOMY_CODEBOOK_DECISION_SET',
     subjectId: contractBundleId,
     payload: {
@@ -788,7 +853,9 @@ function fixture({ includePrivateKeys = false } = {}) {
     actorIdentity: 'BEN_GOODCHILD',
     disposition: 'APPROVED',
     attestorRole: 'BEN_APPROVER',
-  }).authority_payload_digest;
+  });
+  authorityManifest.ben_taxonomy_codebook_decision_set_root =
+    benDecisions.authority_payload.decision_set_root;
   const compilationUnsignedIdentity = {
     schema_version: 'ContractBundleCompilationReceipt/V1',
     contract_bundle_id: contractBundleId,

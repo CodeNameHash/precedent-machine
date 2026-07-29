@@ -50,8 +50,31 @@ const {
 const {
   enumerateCompleteGitAuthorshipUniverse,
 } = require('../../lib/programme-gates/git-authorship');
+const {
+  specificationRootFromMembers,
+} = require('../../lib/programme-gates/review-controller');
 
-const ROOT = 'a'.repeat(64);
+const SPECIFICATION_MEMBERS = Object.freeze([
+  'docs/codex-program/specification-manifest.json',
+  'docs/CODEX-PROGRAM.md',
+  'docs/codex-program/programme-gates.yaml',
+  'docs/codex-program/bootstrap-acceptance-source.json',
+  'docs/codex-program/canonical-contracts.md',
+  'docs/codex-program/adversarial-tests.md',
+].map((memberPath, index) => {
+  const bytes = Buffer.from(String(index + 1));
+  return Object.freeze({
+    order: index + 1,
+    path: memberPath,
+    byte_length: bytes.length,
+    payload_digest: crypto.createHash('sha256').update(bytes).digest('hex'),
+    source_bytes_base64: bytes.toString('base64'),
+  });
+}));
+const ROOT = specificationRootFromMembers(SPECIFICATION_MEMBERS);
+const OUTPUT_SCHEMA_BYTES = Buffer.from('{}');
+const OUTPUT_SCHEMA_DIGEST =
+  crypto.createHash('sha256').update(OUTPUT_SCHEMA_BYTES).digest('hex');
 const REPOSITORY_ROOT = path.resolve(__dirname, '../..');
 const COMMIT = execFileSync('git', ['rev-parse', 'HEAD'], {
   cwd: REPOSITORY_ROOT,
@@ -173,8 +196,9 @@ function fixture() {
         exact_specification_root: ROOT,
         frozen_specification: {
           manifest_id: 'codex-program-specification-manifest/v1',
-          manifest_digest: DIGEST_B,
-          file_count: 6,
+          manifest_digest: SPECIFICATION_MEMBERS[0].payload_digest,
+          file_count: SPECIFICATION_MEMBERS.length,
+          ordered_members: SPECIFICATION_MEMBERS,
           immutable: true,
         },
         registered_prompt: {
@@ -189,8 +213,9 @@ function fixture() {
           schema_id: 'ColdReviewOutput/V1',
           path:
             `/tmp/g0-cold-review-readiness/${lane.lane_id.toLowerCase()}-lane/output-schema.json`,
-          payload_digest: DIGEST_D,
-          byte_length: 1,
+          payload_digest: OUTPUT_SCHEMA_DIGEST,
+          byte_length: OUTPUT_SCHEMA_BYTES.length,
+          source_bytes_base64: OUTPUT_SCHEMA_BYTES.toString('base64'),
           immutable: true,
         },
       },

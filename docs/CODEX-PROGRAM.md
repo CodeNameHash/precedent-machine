@@ -224,6 +224,13 @@ CORRECTED (the plan below rests on these, not the review's wording):
   is not case-specific and contains no prior review finding or conclusion.
   These fixed runtime inputs are permitted and are not part of the
   controller-supplied task payload.
+  The signed task manifest carries the exact ordered six specification members,
+  including each repository path, one-based order, byte length, SHA-256 and
+  canonical base64 source bytes, plus the canonical base64 output-schema bytes.
+  The validator decodes those bytes, recomputes every length and SHA-256, derives
+  the domain-separated specification root from the exact ordered records and
+  recomputes the output-schema digest. A detached asserted root, manifest digest
+  or schema digest has no authority.
   The controller record contains its controller ID and version, review runtime
   version and binary digest, fixed controller-context digest, the exact
   specification root, model identifier, reasoning level, immutable task,
@@ -745,6 +752,14 @@ contract equality or CandidateCompositionInstanceConformance.
   a short-lived non-web credential and has no preview route. Credential
   isolation alone does not satisfy access isolation. No production credential
   or browser-visible service credential is permitted.
+  The access attestation binds three separately enumerated immutable inventories:
+  the source route-action inventory, built inventory and runtime-observed
+  inventory. Their exact `(action_id, action_class)` sets and independently
+  recomputed roots must agree with the complete runtime observation set. Action
+  IDs are unique, every closed action class is covered, and any number of
+  distinct actions may share one class. Omitting the same action from the
+  attestation and runtime evidence still fails against the source or built
+  inventory member.
 - The restore procedure excludes or replaces production auth sessions, API and
   webhook secrets, scheduled jobs, outbound integrations, replication targets
   and production user invitations before any application connection is enabled.
@@ -782,7 +797,11 @@ contract equality or CandidateCompositionInstanceConformance.
   and verifies exact stable-ID and checksum parity before cutover. This
   promotion import is the only canonical corpus write to production before
   cutover; it performs no extraction, backfill, replay or mutation of the active
-  release.
+  release. PreCutoverCertification and the release envelope require only the
+  pre-import gate set. Import parity and deployment parity are necessarily later:
+  the importer first attests the inaccessible namespace, deployment parity then
+  probes that exact namespace and deployed production plan, POST_IMPORT
+  traceability covers both, and only then may CutoverAuthorisation issue.
 - Bundle members import only to the three contract-derived inactive
   destinations: `C` to the corpus-object namespace, `B` to the corpus-blob
   namespace and `E` to the immutable promotion-evidence namespace.
@@ -1716,21 +1735,25 @@ The chain is:
     ProductionSemanticParityAttestation and all
     their reachable nodes, `ProductionImportAttestation` and terminal ATTESTED
     head, event and receipt;
-15. `POST_IMPORT` TraceabilityExtension;
-16. cutover-ready `DeploymentReadinessMirror` and `CutoverAuthorisation`;
-17. exact acknowledged BLOCKED `ServingFenceVersion`; one atomic
+15. passing `DeploymentParityAttestation` over the exact ATTESTED inactive
+    production namespace, live serving role, production statistics and physical
+    plan roots;
+16. `POST_IMPORT` TraceabilityExtension covering that exact import and
+    deployment-parity evidence;
+17. cutover-ready `DeploymentReadinessMirror` and `CutoverAuthorisation`;
+18. exact acknowledged BLOCKED `ServingFenceVersion`; one atomic
     `ActivationEvent`, `PostActivationControlContext` and
     `PostActivationControlHead(AWAITING_READY)` transaction with its
     `OPEN_WITH_ACTIVATION` event and `PostActivationControlReceipt`;
-18. the context-bound `READY_CANONICAL` ServingFenceVersion and
+19. the context-bound `READY_CANONICAL` ServingFenceVersion and
     `AWAITING_POST_ACTIVATION_TRACE` control-head transition within its fixed
     deadline;
-19. `POST_ACTIVATION` TraceabilityExtension and the corresponding
+20. `POST_ACTIVATION` TraceabilityExtension and the corresponding
     `AWAITING_SMOKE` control-head transition;
-20. passing `PostCutoverSmokeAttestation`;
-21. one unexpired `PostActivationPassCommitLease`, its
+21. passing `PostCutoverSmokeAttestation`;
+22. one unexpired `PostActivationPassCommitLease`, its
     `ISSUE_PASS_COMMIT_LEASE` event, successor AWAITING_SMOKE head and receipt;
-22. the atomic `COMMIT_PASS` and `PASS_FIXED`
+23. the atomic `COMMIT_PASS` and `PASS_FIXED`
     terminal CAS that also releases the AVAILABLE `CandidatePromotionFence`
     successor and, for the first canonical cutover, writes
     `ESTABLISH_FIRST_CANONICAL_RELEASE` and the terminal
@@ -2088,12 +2111,24 @@ The pre-cutover gates are:
   canonical-order fixture loading and index rebuilding under the frozen
   PostgreSQL and index-build settings, never a multiplied byte estimate. A
   separate multi-namespace isolation fixture proves routing isolation but
-  cannot satisfy the scale test. “Maximum scale” is the field-by-field larger
-  of that measured `10N_capacity` fixture and all eight maximum cardinalities
-  certified by the selected CapacityManifest. The load manifest records the
-  two input tuples, derivation and inventory roots and derived maximum-scale
-  tuple before execution; a smaller fixture, changed distribution or unbound
-  synthetic set cannot satisfy the soak gate;
+  cannot satisfy the scale test. “Maximum scale” is one deterministic,
+  physically loaded fixture, not the field-by-field tuple alone. Its first
+  seven construction targets are the larger of the corresponding measured
+  `10N_capacity` values and CapacityManifest maxima. Starting from the exact
+  `10N_capacity` rows, the frozen builder chooses the unique canonical
+  non-negative multiplicity vector over schema-valid expansion archetypes that
+  jointly realises all seven targets in one namespace, preserves required
+  quotient and worst-case-witness cells and applies the frozen exact-rational
+  distribution objective and UTF-8 tie-break. Every row retains source and
+  parent fixture lineage. The builder then inserts in canonical order, rebuilds
+  the closed index set and measures the eighth indexed-byte value from
+  `pg_relation_size` under the frozen settings. CapacityManifest cannot freeze
+  unless a scratch build and two independent enumerators reproduce the exact
+  lineage, distribution, relation, index, per-index byte and measured-tuple
+  roots. The load manifest selects that exact MaximumScaleFixtureManifest and
+  rebuilds it byte-for-byte. An unrealizable target, smaller or independently
+  assembled fixture, changed distribution, unbound synthetic set or multiplied
+  byte estimate cannot satisfy the soak gate;
 - in the no-fault steady and target-rate all-miss profiles, at least 99.9% of
   requests return a schema-valid successful response and achieved throughput is
   at least 99.9% of the fixed target, with zero admission, circuit-open or
@@ -2382,10 +2417,16 @@ earlier shorthand. In particular:
   `programme-gates.yaml`;
 - production blob availability has one registered verifier action and
   idempotent writer transaction before pre-seal root construction;
-- CapacityManifest carries the exact maximum-scale cardinality tuple, every
-  supported query-shape class reconciles to a golden and load fixture, the
-  originating serving RPC returns one bounded response without a result-page
-  persistence write, and latency gates cover every interactive class;
+- CapacityManifest binds the deterministic, jointly realised
+  MaximumScaleFixtureRecipe and its exact lineage, distribution and physical
+  index-measurement roots. Database and API execution shapes use
+  `DATABASE_API`; carried-response transitions use the disjoint
+  `CLIENT_ONLY_NO_SQL_NO_API` registry and have a separate browser-only
+  zero-effect timing obligation. Every class reconciles to its tagged golden
+  and performance fixture, the originating serving RPC returns one bounded
+  response without a result-page persistence write, and latency gates cover
+  every interactive class without inventing SQL or API evidence for a client
+  transition;
 - residual contracts are CanonicalContractBundle members, source-specific
   publication binds the actual eligible legal review and selected PRESENT
   primitive, and scope- or contract-impacting novel propositions block only

@@ -82,7 +82,12 @@ The following adversarial closure tests are mandatory traceability entries:
   writes. A model-family identity cannot replace the exact controller-run and
   session principal. The record may prove only the observable controller
   execution. It must not claim a provider-internal build, provider signature or
-  absence of hidden provider context.
+  absence of hidden provider context. Replace one specification member's
+  supplied bytes while retaining its declared digest, replace the output-schema
+  bytes while retaining its digest, reorder two members or substitute a
+  self-consistent detached root. Each mutation must fail after the validator
+  independently decodes the bytes and recomputes all lengths, digests and the
+  ordered specification root.
 - `VERTICAL-SLICE-01`: before the slice passes, the gate registry permits only
   its fixed reviewed staging fixture through `vertical_slice_execution` and
   blocks broad `candidate_scope_and_extraction`. The fixture must traverse the
@@ -1346,8 +1351,17 @@ The following adversarial closure tests are mandatory traceability entries:
   typed carrier can be discarded and a terminal consumption reconciliation
   proving every receipt became exactly one governed carrier or one residual.
   Drop an unknown proposition before candidate or residual creation, omit its
-  receipt, or consume one receipt twice: reconciliation fails and publication
-  remains blocked without suppressing independently valid siblings.
+  receipt, delete the same input atom from both residual enumerators, omit or
+  substitute one subject receipt root or reconciliation from either phase,
+  cross-wire captured heads, or consume one receipt twice: the independently
+  generated boundary-slot universe, receipt-to-terminal reconciliation,
+  GovernedResidualUniverseManifest, scope and candidate inventory roots,
+  CandidateInputSeal, CandidateReleaseManifest and PRE_SEAL trace cannot all
+  pass. Publication remains blocked without suppressing independently valid
+  siblings. Direct DML, a review action that creates the final reconciliation,
+  a scope action that creates a phase root set, a PRE_SCOPE object created by a
+  candidate action, or any manifest, bundle, import or trace path that omits
+  one receipt-chain object fails its closed producer and set-equality checks.
 - `OPEN-WORLD-KIND-SUPERSESSION-01`: an effective-terminal
   `UNRESOLVED_CANDIDATE_KIND` blocks. Resolving it creates a new candidate and
   occurrence plus one exact kind-only supersession; the predecessor remains in
@@ -2121,7 +2135,12 @@ The following adversarial closure tests are mandatory traceability entries:
   impact-clearance evidence fails. The candidate becomes publishable only after
   the successor bundle freezes, affected spans plus transitive dependants are
   reprocessed, and a disposition-bound final SemanticImpactClosure independently
-  reconciles or widens the provisional affected set.
+  reconciles or widens the provisional affected set. Both catalogue
+  SemanticStageOutputSetRoots must exist before the catalogue THIRD_RECONCILER
+  and must bind their typed payload `output_set_root` values. Reversing the
+  dependency, substituting an authority-envelope digest for any semantic-stage,
+  neutral-projection, relationship-field, reviewer-eligibility or Ben-decision
+  set root, or omitting either catalogue stage fails freeze.
 - `POLICY-AUTHORITY-01`: duplicate configuration ownership, a value above a
   protocol bound or any OperationalPolicySet mismatch among scope, candidate,
   deployment and certification fails compilation or certification.
@@ -2403,7 +2422,12 @@ The following adversarial closure tests are mandatory traceability entries:
   files, including byte lengths and file hashes.
 - `PREVIEW-AUTH-01`: every preview page and action denies unauthenticated access
   before and after snapshot restore; cross-user, forged-owner, forged-admin and
-  CSRF attempts fail.
+  CSRF attempts fail. Independently enumerate source, built and runtime
+  `(action_id, action_class)` inventories and require exact set and root equality
+  with the observed action matrix. Multiple action IDs in one class pass when
+  every closed class remains covered. Omitting the same action from the runtime
+  matrix and access attestation, duplicating an ID, changing a class or
+  substituting any asserted inventory root fails.
 - `CAPACITY-LOAD-01`: normal, cold, all-miss, stampede, maximum-scale,
   controller-failure, latency, cancellation and importer profiles respect the
   measured connection reserve and recover without a retry storm. Database-owned
@@ -2418,19 +2442,45 @@ The following adversarial closure tests are mandatory traceability entries:
   index set under the frozen settings and measure its exact indexed bytes.
   Multiplying the N indexed-byte value by ten, counting one selected index
   twice, omitting a partial-index entry or using heap bytes fails. Maximum-scale
-  is the field-by-field larger of the measured `10N_capacity` tuple and all
-  eight selected CapacityManifest maxima. Every governed benchmark query
+  is one physically loaded fixture, not the field-by-field tuple alone. Its
+  first seven targets are the larger of the corresponding measured
+  `10N_capacity` values and selected CapacityManifest maxima. Starting from the
+  exact `10N_capacity` rows, solve the frozen expansion-archetype constraint
+  problem to its exact-rational distribution objectives and lexicographically
+  lowest multiplicity vector, preserve every required quotient and worst-case-
+  witness cell, bind every base and expanded row to its source and parent
+  fixture lineage, load in canonical order, rebuild the closed index set and
+  measure indexed bytes with `pg_relation_size`. Two independent enumerators
+  must reproduce the archetype, multiplicity, lineage, joint-distribution,
+  relation, index, per-index entry and byte roots and the exact measured tuple
+  before load. An unrealizable target, separately padded dimension, caller-
+  selected solution, unlineaged row, post-freeze recipe or target substitution,
+  changed cell count or multiplied byte value fails. Every governed benchmark query
   must address a cohort ten times its `N` cohort; spreading the rows across
   mutually invisible namespaces fails. A separate multi-namespace fixture
   proves isolation only. The recorded roots, per-kind counts and selectivity distributions
-  must match before load begins. A smaller or differently distributed fixture
-  fails. The benchmark root must equal the complete
+  must match before load begins. At maximum scale every witness query must
+  address the exact qualifying cohort and joint-distribution cell bound by the
+  MaximumScaleFixtureManifest. A smaller, partially addressed or differently
+  distributed fixture fails. The benchmark root must equal the complete
   SupportedQueryShapeRegistry template root and the selected release's complete
   ReleaseQueryExecutionClassRegistry and WorstCaseWitnessDominanceProof roots
   across every active route, action, request variant, plan family, complete
   predicate and cohort-filter AST, ordered projection, grouping, facet and sort
-  vectors, literal quotient and correlation class, page, option, saved lookup,
-  carried-response navigation and exact-detail/source page.
+  vectors, literal quotient and correlation class, page, option, saved lookup
+  and exact-detail/source page.
+  Independently enumerate every active query action and require its exact,
+  disjoint membership in one closed QueryExecutionKind: `DATABASE_API` or
+  `CLIENT_ONLY_NO_SQL_NO_API`. Carried-response navigation belongs only to
+  SupportedClientTransitionRegistry. Giving it an ExecutionShapeKey, SQL
+  template, physical plan, quotient, witness, release execution class, API
+  attempt or database checkout fails. Omitting it from the client registry,
+  also placing it in SupportedQueryShapeRegistry or using it to clear database
+  or API coverage fails. Its golden and browser fixtures must render the
+  governed destination from validated carried bytes with zero admission,
+  network, API, cache and database counters. Direct, reload and missing-
+  carried-response navigation must instead enter the ordinary `DATABASE_API`
+  initial-page class.
   The registry itself must be the frozen closed member selected by
   `QUERY_DEFINITION_SET_ROOT/V2`; both independent query-shape compilers must
   reproduce its complete member set and root without using test fixtures as
@@ -2473,10 +2523,15 @@ The following adversarial closure tests are mandatory traceability entries:
   meet the contract latency budgets, and every injected fault must recover
   target throughput and latency within the frozen recovery bound. A dynamic
   API measurement must contain exactly 1,000 post-warm-up attempts for every
-  class, witness, scale and required profile, and every browser measurement
-  exactly 200 post-warm-up interactions. Recompute nearest-rank p95 and p99 from
+  `DATABASE_API` class, witness, scale and required profile. Every server
+  browser measurement and every separately enumerated
+  `CLIENT_ONLY_NO_SQL_NO_API` transition measurement must contain exactly 200
+  post-warm-up interactions. A client transition has no API sample set, scale
+  or witness and must use the maximum valid carried-response fixture with zero
+  effect counters. Recompute nearest-rank p95 and p99 from
   the complete terminal-attempt set using the frozen request-byte-to-validated-
-  response and user-input-to-accessible-paint boundaries. Omitting, replacing,
+  response boundary for server attempts and user-input-to-accessible-paint
+  boundary for all browser attempts. Omitting, replacing,
   retrying or trimming a failed or timeout attempt, pooling classes, changing
   concurrency or region, counting warm-up attempts, using interpolation or
   submitting only aggregate duration fails.
@@ -2645,7 +2700,17 @@ The following adversarial closure tests are mandatory traceability entries:
 - `DEPLOY-CUTOVER-01`: changing any certified executable input blocks
   promotion; concurrent or partially failed activation yields one complete old
   or new generation; a self-referential or forward-referential release bundle
-  fails; authorisation replay fails; every typed post-activation READY, trace or
+  fails. Regenerate the gate work-class and candidate dependency DAG and require
+  the sole order PreCutoverCertification, ReleaseBundleEnvelope,
+  ProductionImportAttestation, DeploymentParityAttestation, POST_IMPORT
+  TraceabilityExtension, CutoverAuthorisation. Put deployment or import parity
+  into `production_import` or PreCutoverCertification, create deployment parity
+  before the inactive namespace is ATTESTED, create POST_IMPORT trace before
+  deployment parity, or issue cutover authority without all three exact
+  post-import objects: cycle lint or the predecessor predicate fails with zero
+  import, exposure or release-state DML. A failing deployment-parity probe can
+  affect only the inaccessible import and cannot certify its own import.
+  Authorisation replay fails; every typed post-activation READY, trace or
   smoke failure first commits its BEGIN receipt and pending head, then disables
   exposure through the acknowledged higher BLOCKED fence and drain before the
   COMPLETE receipt may fix the selected containment outcome through its owned
