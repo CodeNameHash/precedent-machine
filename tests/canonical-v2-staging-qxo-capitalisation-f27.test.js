@@ -71,6 +71,7 @@ test('F27 staging proof is exact-project, bounded and rollback-only', () => {
   assert.match(source, /MAX_RESULT_BYTES = 64 \* 1024/);
   assert.equal((source.match(/spawnSync\(/g) || []).length, 1);
   assert.match(source, /--agent=yes/);
+  assert.match(source, /CANONICAL_V2_F27_FIXTURE_SUPABASE_EXECUTABLE/);
   assert.doesNotMatch(source, /setTimeout|retry|maximumAttempts/);
   assert.match(
     source,
@@ -174,8 +175,8 @@ test('staging verification accepts the pinned agent envelope and exact array sha
           encoding: 'utf8',
           env: {
             ...process.env,
-            PATH: `${directory}${path.delimiter}${process.env.PATH}`,
             CANONICAL_V2_VERTICAL_SLICE_EXECUTION: 'APPROVED',
+            CANONICAL_V2_F27_FIXTURE_SUPABASE_EXECUTABLE: executable,
           },
         },
       );
@@ -185,6 +186,28 @@ test('staging verification accepts the pinned agent envelope and exact array sha
       fs.rmSync(directory, { recursive: true, force: true });
     }
   }
+});
+
+test('fixture rollback refuses ambient or linked Supabase execution', () => {
+  const result = spawnSync(
+    process.execPath,
+    [RUNNER, '--verify-fixture-rollback'],
+    {
+      cwd: process.cwd(),
+      encoding: 'utf8',
+      env: {
+        ...process.env,
+        CANONICAL_V2_VERTICAL_SLICE_EXECUTION: 'APPROVED',
+        CANONICAL_V2_F27_FIXTURE_SUPABASE_EXECUTABLE: '',
+      },
+    },
+  );
+  assert.equal(result.status, 1);
+  assert.match(
+    result.stderr,
+    /Fixture rollback requires an absolute/,
+  );
+  assert.equal(result.stdout, '');
 });
 
 test('ambiguous invocation fails before database work', () => {

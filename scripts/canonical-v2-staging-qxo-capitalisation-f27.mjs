@@ -4,12 +4,20 @@ import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import {
   mkdtempSync,
+  lstatSync,
   readFileSync,
+  realpathSync,
   rmSync,
   writeFileSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join, resolve } from 'node:path';
+import {
+  dirname,
+  isAbsolute,
+  join,
+  relative,
+  resolve,
+} from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
@@ -105,6 +113,31 @@ function guardProject() {
       `Refusing to run outside ${PROJECT.name} (${PROJECT.ref}).`,
     );
   }
+}
+
+function fixtureSupabaseExecutable() {
+  const configured =
+    process.env.CANONICAL_V2_F27_FIXTURE_SUPABASE_EXECUTABLE;
+  if (!configured || !isAbsolute(configured)) {
+    throw new Error(
+      'Fixture rollback requires an absolute '
+        + 'CANONICAL_V2_F27_FIXTURE_SUPABASE_EXECUTABLE.',
+    );
+  }
+  const temporaryRoot = realpathSync(tmpdir());
+  const executable = realpathSync(configured);
+  const relativeToTemporaryRoot = relative(temporaryRoot, executable);
+  if (relativeToTemporaryRoot === ''
+    || relativeToTemporaryRoot.startsWith('..')
+    || isAbsolute(relativeToTemporaryRoot)
+    || lstatSync(configured).isSymbolicLink()
+    || !lstatSync(configured).isFile()) {
+    throw new Error(
+      'Fixture rollback executable must be a non-symlink file '
+        + 'inside the operating-system temporary directory.',
+    );
+  }
+  return executable;
 }
 
 function buildCandidate(inputs) {
@@ -385,6 +418,7 @@ ROLLBACK;
 function runLinkedSql(
   sql,
   {
+    executable = 'supabase',
     fileName,
     maxBuffer,
     timeout = 30000,
@@ -398,7 +432,7 @@ function runLinkedSql(
   writeFileSync(file, sql, { mode: 0o600 });
   try {
     const result = spawnSync(
-      'supabase',
+      executable,
       [
         'db',
         'query',
@@ -509,8 +543,9 @@ ROLLBACK;
   return { sourceContext, parserSourceClosure, contractBundle };
 }
 
-function runRollbackProof(sql, candidate) {
+function runRollbackProof(sql, candidate, { executable = 'supabase' } = {}) {
   const rows = runLinkedSql(sql, {
+    executable,
     fileName: 'rollback-proof.sql',
     maxBuffer: MAX_RESULT_BYTES,
   });
@@ -598,13 +633,18 @@ try {
         `Refusing database access until ${EXECUTION_GATE}=${EXECUTION_GATE_VALUE}.`,
       );
     }
-    guardProject();
+    const fixtureExecutable = args[0] === '--verify'
+      ? null
+      : fixtureSupabaseExecutable();
+    if (args[0] === '--verify') guardProject();
     const inputs = args[0] === '--verify'
       ? readAdmittedF27Inputs()
       : buildF27Inputs();
     const candidate = buildCandidate(inputs);
     const sql = buildRollbackProofSql(candidate);
-    const attestation = runRollbackProof(sql, candidate);
+    const attestation = runRollbackProof(sql, candidate, {
+      executable: fixtureExecutable || 'supabase',
+    });
     process.stdout.write(`${JSON.stringify(attestation)}\n`);
   }
 } catch (error) {
