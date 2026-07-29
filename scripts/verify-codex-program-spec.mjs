@@ -12,6 +12,11 @@ const {
   TEST_EXECUTABLE_FILES,
   testExecutableState,
 } = require('../lib/programme-gates/test-executable-registry');
+const { domainDigest } = require('../lib/programme-gates/bytes');
+const {
+  VALIDATOR_EXECUTABLE_FILES,
+  programmeGateValidatorExecutableDigest,
+} = require('../lib/programme-gates/validator-executable');
 
 const root = process.cwd();
 const manifestPath = 'docs/codex-program/specification-manifest.json';
@@ -207,7 +212,7 @@ function validateGateRegistry() {
     || independenceAllowlist?.validator_key_id
       !== 'PROGRAMME_GATE_VALIDATOR_2026_07'
     || independenceAllowlist?.validator_executable_digest
-      !== 'ec8a39078c2df6b5564744c8f45ec01f50da87860d9c690ea4f237652cbe8d5b'
+      !== '9fe7158b182286636ead8d151394e3b5536375ef4d06442dfe6abbe2b1ccf077'
     || independenceAllowlist?.validator_configuration_digest
       !== 'cf81cbe11a55801efdbd7eab3376fa61f83823e3bfa1fe51e0decd98a00abd02') {
     fail('Frozen review controller, runtime, prompt or validator allowlist changed');
@@ -435,7 +440,7 @@ function validateGateRegistry() {
     || compiledRegistry?.source_sha256
       !== sha256(read('docs/codex-program/bootstrap-acceptance-source.json'))
     || compiledRegistry?.closed_validator_executable_set_digest
-      !== 'ec8a39078c2df6b5564744c8f45ec01f50da87860d9c690ea4f237652cbe8d5b'
+      !== '9fe7158b182286636ead8d151394e3b5536375ef4d06442dfe6abbe2b1ccf077'
     || compiledRegistry?.authority
       !== 'ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE'
     || compiledRegistry?.exact_active_definition_count !== 11
@@ -808,6 +813,53 @@ function validateBootstrapAcceptanceSource() {
     || source.definitions?.length !== 11) {
     fail('Bootstrap acceptance source does not contain the closed eleven-gate authority');
   }
+  const runtimeModules = source.runtime_source_modules;
+  const modulePaths = runtimeModules?.map((module) => module.path) || [];
+  const modulePathSet = new Set(modulePaths);
+  if (!Array.isArray(runtimeModules)
+    || runtimeModules.length === 0
+    || modulePathSet.size !== runtimeModules.length
+    || JSON.stringify(modulePaths) !== JSON.stringify([...modulePaths].sort())
+    || source.local_dependency_closure?.resolver
+      !== 'STATIC_RELATIVE_REQUIRE_IMPORT_EXPORT/V1'
+    || source.local_dependency_closure?.unresolved_local_dependencies?.length !== 0
+    || VALIDATOR_EXECUTABLE_FILES.some((file) => !modulePathSet.has(file))
+    || source.acceptance_executable_closure_digest
+      !== programmeGateValidatorExecutableDigest({ root })
+    || runtimeModules.some((module) => (
+      typeof module.utf8_source !== 'string'
+      || Buffer.byteLength(module.utf8_source) !== module.byte_length
+      || sha256(Buffer.from(module.utf8_source, 'utf8')) !== module.sha256
+    ))
+    || source.runtime_source_set_digest !== domainDigest(
+      'PROGRAMME_GATE_BOOTSTRAP_RUNTIME_SOURCE_SET/V1',
+      runtimeModules.map((module) => ({
+        path: module.path,
+        byte_length: module.byte_length,
+        sha256: module.sha256,
+      })),
+    )) {
+    fail('Bootstrap acceptance runtime source closure is incomplete');
+  }
+  for (const module of runtimeModules.filter((entry) => /\.(?:js|mjs)$/.test(entry.path))) {
+    const specifiers = [
+      ...module.utf8_source.matchAll(/\brequire\(\s*['"](\.[^'"]+)['"]\s*\)/g),
+      ...module.utf8_source.matchAll(
+        /\b(?:import|export)\s+(?:[^'"]+\s+from\s+)?['"](\.[^'"]+)['"]/g,
+      ),
+    ].map((match) => match[1]);
+    for (const specifier of specifiers) {
+      const base = path.posix.normalize(
+        path.posix.join(path.posix.dirname(module.path), specifier),
+      );
+      const candidates = path.posix.extname(base)
+        ? [base]
+        : [base, `${base}.js`, `${base}.mjs`, `${base}.json`, `${base}/index.js`];
+      if (!candidates.some((candidate) => modulePathSet.has(candidate))) {
+        fail(`Bootstrap source omits ${specifier} required by ${module.path}`);
+      }
+    }
+  }
   for (const [index, definition] of source.definitions.entries()) {
     if (definition.descriptor?.gate_id !== expectedGateIds[index]
       || definition.descriptor?.activation_state !== 'ACTIVE'
@@ -820,10 +872,36 @@ function validateBootstrapAcceptanceSource() {
         predicate.measurement_language !== 'ECMASCRIPT_FUNCTION_SOURCE_V1'
         || typeof predicate.measurement_source !== 'string'
         || predicate.measurement_source.length === 0
+        || !/^[a-f0-9]{64}$/.test(predicate.measurement_executable_digest)
+        || predicate.measurement_transitive_source_closure_digest
+          !== source.acceptance_executable_closure_digest
         || predicate.comparison_operator !== 'EQUALS'
         || predicate.expected_typed_value !== true
-      ))) {
+      ))
+      || definition.member_universe?.enumerator_transitive_source_closure_digest
+        !== source.acceptance_executable_closure_digest) {
       fail(`Bootstrap acceptance source definition ${expectedGateIds[index]} is incomplete`);
+    }
+  }
+  const reviewDefinition = source.definitions.find(
+    (definition) => definition.descriptor.gate_id === 'G0_EXACT_DIGEST_REVIEW_SET',
+  );
+  const reviewInputs = reviewDefinition.ordered_claim_predicates.find(
+    (predicate) => predicate.claim_key === 'five_named_lanes_pass_same_root',
+  ).exact_input_member_types_and_paths;
+  for (const jsonPointer of [
+    '/registered_prompt_id',
+    '/cold_review_prompt_digest',
+    '/parent_session_state',
+    '/no_earlier_review_conclusions_were_inputs',
+    '/controller_key_id',
+    '/reviewer_principal_id',
+  ]) {
+    if (!reviewInputs.some((input) => (
+      input.member_type === 'TrustedReviewControllerRecord'
+      && input.json_pointer === jsonPointer
+    ))) {
+      fail(`Exact review acceptance input is not total: ${jsonPointer}`);
     }
   }
 }

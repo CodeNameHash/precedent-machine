@@ -66,7 +66,16 @@ The following adversarial closure tests are mandatory traceability entries:
   bootstrap. The repository-native publication ref must remain unchanged after
   every injected validation or compare-and-swap failure. The existing
   generation-4 V1 owner-deemed file is historical only. It cannot act as
-  evidence, executable authority or a V2 predecessor.
+  evidence, executable authority or a V2 predecessor. Independently resolve
+  every local `require`, `import` and `export` from the bootstrap source and
+  require the exact carried module bytes, ordered source-set digest and complete
+  validator-executable inventory. Remove one helper, mutate a helper without
+  changing its caller, or retain an entry-function digest while changing a
+  transitive helper: enumeration and measurement compilation must fail.
+  Instrument each frozen predicate and helper to record immutable-member path
+  reads and require exact equality with its declared input set. An undeclared
+  controller prompt, session, key or reviewer-principal path, and a declared but
+  unread path, both fail definition compilation.
 - `REVIEW-CONTEXT-01`: the controller supplies exactly the frozen specification
   bytes, one registered lane-specific cold prompt and the required output schema
   as the task payload. Adding any file, message, prompt, schema or other task

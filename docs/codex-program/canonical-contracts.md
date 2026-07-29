@@ -13878,6 +13878,16 @@ pointer. Its exact SHA-256 binds the complete evidence and member JSON schemas,
 subject types and identity fields, immutable member universes, enumerator
 source and digests, ordered predicate definitions, exact member types and JSON
 pointers, measurement source, comparison operators and typed expected values.
+Every exact-input list is total for all immutable-member fields read directly or
+through a helper by that claim. A read from an undeclared member path, including
+a signature key, reviewer principal, prompt binding or session-state field,
+invalidates the definition rather than becoming an implicit runtime input.
+Every predicate and enumerator executable digest binds both its entry-function
+digest and one content-addressed transitive source-closure digest. That closure
+contains the byte length, SHA-256 and complete UTF-8 source of every recursively
+resolved local dependency and the ordered validator-executable file inventory.
+Changing a helper therefore rekeys every affected executable binding even when
+the outer function text is unchanged.
 The committed generator proves that those reviewed bytes reproduce exactly
 from the corresponding runtime schemas and sources. The compiler receives only
 that bound source, the exact reviewed specification root and the frozen gate
@@ -13889,7 +13899,11 @@ definition ID and digest are the domain-separated hash of every required field,
 including the exact specification root. A missing, extra, duplicate, reordered
 or byte-different source member or output definition leaves every affected gate
 `OPEN`. Runtime input cannot select or alter a schema, member, path, predicate,
-operator or expected value.
+operator or expected value. The source package is executable only if recursive
+static resolution of every local `require`, `import` and `export` reaches a
+carried module with matching bytes. An unresolved, omitted or digest-mismatched
+local dependency leaves all dependent gates `OPEN`; the compiler may not read a
+repository fallback to repair the package.
 
 The same YAML member freezes the eligible controller ID and version, Codex
 runtime version and entrypoint digest, the Sol model and reasoning level, the

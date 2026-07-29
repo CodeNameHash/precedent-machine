@@ -31,7 +31,11 @@ the spine:
   gates and work classes;
 - [bootstrap-acceptance-source.json](codex-program/bootstrap-acceptance-source.json):
   root-independent, self-contained schemas, member universes and typed
-  predicates for the ten genesis G0 gates and the pre-bundle P1 freeze gate;
+  predicates for the ten genesis G0 gates and the pre-bundle P1 freeze gate. It
+  carries the byte length, SHA-256 and UTF-8 source for the complete recursively
+  resolved local runtime dependency closure, its ordered source-set digest and
+  the exact validator-executable file inventory. An unresolved local import or
+  omitted helper makes the source invalid;
 - [canonical-contracts.md](codex-program/canonical-contracts.md): sole authority
   for detailed identities, state machines, writer grammars, release contracts
   and traceability contracts;
