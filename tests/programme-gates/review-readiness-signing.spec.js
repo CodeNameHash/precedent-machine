@@ -43,6 +43,11 @@ const {
   expectedTestExecutableDigest,
 } = require('../../lib/programme-gates/test-executable-registry');
 const {
+  TEST_EXECUTION_SIGNATURE_DOMAIN,
+  TEST_EXECUTION_SIGNATURE_ROLE,
+  attestTestExecutionRecord,
+} = require('../../lib/programme-gates/test-execution-attestation');
+const {
   enumerateCompleteGitAuthorshipUniverse,
 } = require('../../lib/programme-gates/git-authorship');
 
@@ -125,8 +130,8 @@ function fixture() {
       keyEntry({
         keyId: 'EVIDENCE_KEY',
         publicKey: evidence.publicKey,
-        roles: [EVIDENCE_SIGNATURE_ROLE],
-        domains: [EVIDENCE_SIGNATURE_DOMAIN],
+        roles: [TEST_EXECUTION_SIGNATURE_ROLE, EVIDENCE_SIGNATURE_ROLE],
+        domains: [EVIDENCE_SIGNATURE_DOMAIN, TEST_EXECUTION_SIGNATURE_DOMAIN],
       }),
     ],
   };
@@ -477,8 +482,9 @@ test('the exact-review predicate rejects a signed but under-enumerated Git autho
   assert.ok(reviewClaims(sample).some((claim) => claim.typed_value === false));
 });
 
-function testResult(testId) {
-  return {
+function testResult(testId, sample) {
+  return attestTestExecutionRecord({
+    record: {
     schema_version: 'ProgrammeGateTestExecutionRecord/V1',
     test_id: testId,
     code_commit: COMMIT,
@@ -489,7 +495,14 @@ function testResult(testId) {
     completed_at: '2026-07-28T11:45:00.000Z',
     exit_code: 0,
     output_digest: '2'.repeat(64),
-  };
+    },
+    attesterKeyId: 'EVIDENCE_KEY',
+    sign: (bytes) => crypto.sign(
+      null,
+      bytes,
+      sample.evidencePrivateKey,
+    ).toString('base64'),
+  });
 }
 
 function readiness(sample = fixture()) {
@@ -509,8 +522,8 @@ function readiness(sample = fixture()) {
       record: sample.approvalRecord,
       authority: sample.benAuthority,
     },
-    gateTestResult: testResult('GATE-01'),
-    reviewContextTestResult: testResult('REVIEW-CONTEXT-01'),
+    gateTestResult: testResult('GATE-01', sample),
+    reviewContextTestResult: testResult('REVIEW-CONTEXT-01', sample),
   });
 }
 

@@ -66,8 +66,8 @@ programme_gate_registry:
       missing_or_post_review_selected_member_effect: OPEN
     bootstrap_compiled_registry_binding:
       source_path: docs/codex-program/bootstrap-acceptance-source.json
-      source_sha256: dca34853834b1138ef1bd3e5b4a7cf5faaf6c0c7efdb6bef2f2fd0b74daa9180
-      closed_validator_executable_set_digest: 081df6bc5b53352b420e7670ded9353934f7f38023a8d6f9899d6733f98f20da
+      source_sha256: 1f3b02352756c00031667884b675bbe97c4b3320dd96e5f97d445bdf27e35d19
+      closed_validator_executable_set_digest: b6af477e876a9336310d1200bd6b1ddb5ba6a1a35e8be7796679606b667ef59c
       authority: ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE
       exact_active_definition_count: 11
       exact_genesis_gate_count: 10
@@ -133,7 +133,15 @@ programme_gate_registry:
       validator_executable_and_configuration_are_allowlisted: true
       verify_signature_and_trust_chain: true
       required_adversarial_tests_are_terminal_pass: true
+      required_adversarial_test_execution_signatures_are_trusted: true
       terminal_state_must_equal: PASS
+    adversarial_test_execution_attestation:
+      schema: ProgrammeGateTestExecutionRecord/V1
+      protected_signer_role: TEST_EXECUTION_ATTESTER
+      signature_domain: PROGRAMME_GATE_TEST_EXECUTION/V1
+      attester_key_must_equal_envelope_validator_key: true
+      signed_fields_include_exit_code_and_output_digest: true
+      caller_supplied_unsigned_or_tampered_result_effect: OPEN
     schema_or_predicate_unregistered_effect: OPEN
     unknown_extra_or_missing_claim_effect: OPEN
     request_supplied_result_effect: OPEN
@@ -187,11 +195,11 @@ programme_gate_registry:
       missing_extra_or_digest_mismatched_prompt_effect: INELIGIBLE
     frozen_independence_validator_allowlist:
       validator_key_id: PROGRAMME_GATE_VALIDATOR_2026_07
-      validator_executable_digest: c15bc336938092ecea534018e6c80da15d41e05d1e55facc259661ddd5171cae
-      validator_configuration_digest: 8518fca95839fcf5ab0463c5cbb1009265a7240314f84acd392f2d4287a72a5a
+      validator_executable_digest: b6af477e876a9336310d1200bd6b1ddb5ba6a1a35e8be7796679606b667ef59c
+      validator_configuration_digest: cf81cbe11a55801efdbd7eab3376fa61f83823e3bfa1fe51e0decd98a00abd02
     frozen_trust_root_set:
       registry_schema: programme-gate-trusted-public-keys/v1
-      registry_source_sha256: c10f66a62220a84e82118d6fac35cb45fbb97b87feed3ecf564cef077b9f5575
+      registry_source_sha256: d6efe4b49c56c58f385a01c3b8a9f7bd896e8b0934ffb31363d265c472aebed3
       keys:
         PROGRAMME_GATE_VALIDATOR_2026_07: 5b028d01aaa4f077c6f2f28ef8075195330eff00c2f81061fad8622b761de566
         PROGRAMME_STATUS_PUBLISHER_2026_07: d7f562af345fcb04a78f26c87b3e3f19b1cad6c8627ccc612396a4217d8a02c1

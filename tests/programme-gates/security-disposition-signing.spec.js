@@ -23,6 +23,11 @@ const {
 const {
   expectedTestExecutableDigest,
 } = require('../../lib/programme-gates/test-executable-registry');
+const {
+  TEST_EXECUTION_SIGNATURE_DOMAIN,
+  TEST_EXECUTION_SIGNATURE_ROLE,
+  attestTestExecutionRecord,
+} = require('../../lib/programme-gates/test-execution-attestation');
 
 const ROOT = 'a'.repeat(64);
 const COMMIT = 'b'.repeat(40);
@@ -30,6 +35,7 @@ const VALIDATOR_DIGEST = 'c'.repeat(64);
 const KEY_ID = 'TEST_SECURITY_VALIDATOR';
 const OBSERVED_AT = '2026-07-28T07:24:00.000Z';
 const VERIFICATION_TIME = '2026-07-28T07:25:00.000Z';
+const TEST_KEY_PAIR = crypto.generateKeyPairSync('ed25519');
 const SOURCE_PATH = path.resolve(
   __dirname,
   '../../docs/certification/evidence/G0-SECURITY-DISPOSITIONS-2026-07-28.json',
@@ -40,7 +46,8 @@ function source() {
 }
 
 function testResult() {
-  return Object.freeze({
+  return attestTestExecutionRecord({
+    record: Object.freeze({
     schema_version: 'ProgrammeGateTestExecutionRecord/V1',
     test_id: 'GATE-01',
     code_commit: COMMIT,
@@ -51,6 +58,13 @@ function testResult() {
     completed_at: '2026-07-28T07:20:00.000Z',
     exit_code: 0,
     output_digest: 'f'.repeat(64),
+    }),
+    attesterKeyId: KEY_ID,
+    sign: (bytes) => crypto.sign(
+      null,
+      bytes,
+      TEST_KEY_PAIR.privateKey,
+    ).toString('base64'),
   });
 }
 
@@ -69,7 +83,7 @@ function readiness() {
 }
 
 function fixture() {
-  const { publicKey, privateKey } = crypto.generateKeyPairSync('ed25519');
+  const { publicKey, privateKey } = TEST_KEY_PAIR;
   const keyRegistry = {
     schema_version: 'TrustedProgrammeGatePublicKeys/V1',
     registry_state: 'ACTIVE',
@@ -77,8 +91,8 @@ function fixture() {
       key_id: KEY_ID,
       algorithm: 'Ed25519',
       public_key_pem: publicKey.export({ type: 'spki', format: 'pem' }),
-      permitted_roles: [EVIDENCE_SIGNATURE_ROLE],
-      permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN],
+      permitted_roles: [TEST_EXECUTION_SIGNATURE_ROLE, EVIDENCE_SIGNATURE_ROLE],
+      permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN, TEST_EXECUTION_SIGNATURE_DOMAIN],
       valid_from: '2026-07-28T00:00:00.000Z',
       valid_until: '2026-07-29T00:00:00.000Z',
       revoked_at: null,

@@ -85,6 +85,9 @@ const {
   testExecutableFiles,
 } = require('../lib/programme-gates/test-executable-registry');
 const {
+  attestTestExecutionRecord,
+} = require('../lib/programme-gates/test-execution-attestation');
+const {
   buildG0StatusReadiness,
   createG0SignedStatusAuthority,
   createG0StatusReadinessAuthority,
@@ -196,7 +199,13 @@ function specificationRoot() {
   return match[1];
 }
 
-function testResult(testId, testFiles, codeCommit, environment) {
+function testResult(
+  testId,
+  testFiles,
+  codeCommit,
+  environment,
+  attestTestExecution,
+) {
   const args = ['--test', ...testFiles];
   const startedAt = new Date().toISOString();
   const result = run(process.execPath, args, {
@@ -220,7 +229,7 @@ function testResult(testId, testFiles, codeCommit, environment) {
   if (executableDigest !== expectedTestExecutableDigest(testId)) {
     throw new Error(`${testId} executable set does not match the frozen registry`);
   }
-  const record = Object.freeze({
+  const unsignedRecord = Object.freeze({
     schema_version: 'ProgrammeGateTestExecutionRecord/V1',
     test_id: testId,
     code_commit: codeCommit,
@@ -238,6 +247,7 @@ function testResult(testId, testFiles, codeCommit, environment) {
       { stdout: result.stdout, stderr: result.stderr },
     ),
   });
+  const record = attestTestExecution(unsignedRecord);
   if (record.exit_code !== 0) throw new Error(`${testId} did not pass`);
   return record;
 }
@@ -557,6 +567,12 @@ async function main() {
   );
   const environment = 'PRODUCTION';
   const specificationDigest = specificationRoot();
+  const privateKey = privateValidatorKey();
+  const attestTestExecution = (record) => attestTestExecutionRecord({
+    record,
+    attesterKeyId: VALIDATOR_KEY_ID,
+    sign: (bytes) => signatureForBytes(bytes, privateKey),
+  });
   await deploymentBinding({
     codeCommit,
     deploymentId,
@@ -574,25 +590,35 @@ async function main() {
     deploymentId,
     specificationRoot: specificationDigest,
     gates: governingGates(),
+    attestTestExecution,
   });
-  const gateTest = testResult('GATE-01', GATE_TEST_FILES, codeCommit, environment);
+  const gateTest = testResult(
+    'GATE-01',
+    GATE_TEST_FILES,
+    codeCommit,
+    environment,
+    attestTestExecution,
+  );
   const deployCutoverTest = testResult(
     'DEPLOY-CUTOVER-01',
     DEPLOY_CUTOVER_TEST_FILES,
     codeCommit,
     environment,
+    attestTestExecution,
   );
   const reviewContextTest = testResult(
     'REVIEW-CONTEXT-01',
     REVIEW_CONTEXT_TEST_FILES,
     codeCommit,
     environment,
+    attestTestExecution,
   );
   const previewAuthTest = testResult(
     'PREVIEW-AUTH-01',
     PREVIEW_AUTH_TEST_FILES,
     codeCommit,
     environment,
+    attestTestExecution,
   );
   const securityObservedAt = new Date().toISOString();
   const verificationTime = securityObservedAt;
@@ -629,7 +655,6 @@ async function main() {
   const validatorExecutableDigest = programmeGateValidatorExecutableDigest({
     root: ROOT,
   });
-  const privateKey = privateValidatorKey();
   const benPrivateKey = privateBenApproverKey();
   const publisherPrivateKey = privateStatusPublisherKey();
 

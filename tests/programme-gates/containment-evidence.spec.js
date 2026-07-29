@@ -51,6 +51,11 @@ const {
   verifySignature,
 } = require('../../lib/programme-gates/signatures');
 const {
+  TEST_EXECUTION_SIGNATURE_DOMAIN,
+  TEST_EXECUTION_SIGNATURE_ROLE,
+  attestTestExecutionRecord,
+} = require('../../lib/programme-gates/test-execution-attestation');
+const {
   attachProgrammeGateStatusSignature,
 } = require('../../lib/programme-gates/status');
 
@@ -60,6 +65,8 @@ const DEPLOYMENT_ID = 'dpl_test_containment';
 const OBSERVED_AT = '2026-07-28T01:00:00.000Z';
 const TEST_STARTED_AT = '2026-07-28T00:00:00.000Z';
 const TEST_COMPLETED_AT = '2026-07-28T00:30:00.000Z';
+const TEST_KEY_PAIR = crypto.generateKeyPairSync('ed25519');
+const TEST_VALIDATOR_KEY_ID = 'TEST_CONTAINMENT_VALIDATOR';
 const GATES = Object.freeze([
   Object.freeze({
     id: 'G0_MARKET_STATS_CONTAINED',
@@ -198,6 +205,15 @@ async function readyBundle(runtime = fakeRuntime()) {
     deploymentId: DEPLOYMENT_ID,
     specificationRoot: ROOT,
     gates: GATES,
+    attestTestExecution: (record) => attestTestExecutionRecord({
+      record,
+      attesterKeyId: TEST_VALIDATOR_KEY_ID,
+      sign: (bytes) => crypto.sign(
+        null,
+        bytes,
+        TEST_KEY_PAIR.privateKey,
+      ).toString('base64'),
+    }),
   });
 }
 
@@ -433,7 +449,7 @@ test('deployment proof requires exact READY runtime, commit and specification me
 });
 
 test('a trusted public-key binding produces an exact unsigned signing frame without key use', async () => {
-  const { publicKey, privateKey } = crypto.generateKeyPairSync('ed25519');
+  const { publicKey, privateKey } = TEST_KEY_PAIR;
   const keyRegistry = {
     schema_version: 'TrustedProgrammeGatePublicKeys/V1',
     registry_state: 'ACTIVE',
@@ -441,8 +457,8 @@ test('a trusted public-key binding produces an exact unsigned signing frame with
       key_id: 'TEST_CONTAINMENT_VALIDATOR',
       algorithm: 'Ed25519',
       public_key_pem: publicKey.export({ format: 'pem', type: 'spki' }).toString('utf8'),
-      permitted_roles: [EVIDENCE_SIGNATURE_ROLE],
-      permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN],
+      permitted_roles: [TEST_EXECUTION_SIGNATURE_ROLE, EVIDENCE_SIGNATURE_ROLE],
+      permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN, TEST_EXECUTION_SIGNATURE_DOMAIN],
       valid_from: '2026-07-27T00:00:00.000Z',
       valid_until: '2026-07-29T00:00:00.000Z',
       revoked_at: null,
@@ -492,13 +508,13 @@ test('a trusted public-key binding produces an exact unsigned signing frame with
 });
 
 test('signing-request construction refuses untrusted keys, drift and non-ready candidates', async () => {
-  const { publicKey } = crypto.generateKeyPairSync('ed25519');
+  const { publicKey } = TEST_KEY_PAIR;
   const key = {
     key_id: 'TEST_CONTAINMENT_VALIDATOR',
     algorithm: 'Ed25519',
     public_key_pem: publicKey.export({ format: 'pem', type: 'spki' }).toString('utf8'),
-    permitted_roles: [EVIDENCE_SIGNATURE_ROLE],
-    permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN],
+    permitted_roles: [TEST_EXECUTION_SIGNATURE_ROLE, EVIDENCE_SIGNATURE_ROLE],
+    permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN, TEST_EXECUTION_SIGNATURE_DOMAIN],
     valid_from: '2026-07-27T00:00:00.000Z',
     valid_until: '2026-07-29T00:00:00.000Z',
     revoked_at: null,
@@ -598,7 +614,7 @@ test('signing-request construction refuses untrusted keys, drift and non-ready c
 });
 
 test('an external signature passes full evidence preflight without publishing gate status', async () => {
-  const { publicKey, privateKey } = crypto.generateKeyPairSync('ed25519');
+  const { publicKey, privateKey } = TEST_KEY_PAIR;
   const validatorExecutableDigest = 'e'.repeat(64);
   const keyRegistry = {
     schema_version: 'TrustedProgrammeGatePublicKeys/V1',
@@ -607,8 +623,8 @@ test('an external signature passes full evidence preflight without publishing ga
       key_id: 'TEST_CONTAINMENT_VALIDATOR',
       algorithm: 'Ed25519',
       public_key_pem: publicKey.export({ format: 'pem', type: 'spki' }).toString('utf8'),
-      permitted_roles: [EVIDENCE_SIGNATURE_ROLE],
-      permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN],
+      permitted_roles: [TEST_EXECUTION_SIGNATURE_ROLE, EVIDENCE_SIGNATURE_ROLE],
+      permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN, TEST_EXECUTION_SIGNATURE_DOMAIN],
       valid_from: '2026-07-27T00:00:00.000Z',
       valid_until: '2026-07-29T00:00:00.000Z',
       revoked_at: null,
@@ -661,7 +677,7 @@ test('an external signature passes full evidence preflight without publishing ga
 });
 
 test('signed evidence preflight refuses invalid signatures, drift and injected authority', async () => {
-  const { publicKey } = crypto.generateKeyPairSync('ed25519');
+  const { publicKey } = TEST_KEY_PAIR;
   const validatorExecutableDigest = 'e'.repeat(64);
   const keyRegistry = {
     schema_version: 'TrustedProgrammeGatePublicKeys/V1',
@@ -670,8 +686,8 @@ test('signed evidence preflight refuses invalid signatures, drift and injected a
       key_id: 'TEST_CONTAINMENT_VALIDATOR',
       algorithm: 'Ed25519',
       public_key_pem: publicKey.export({ format: 'pem', type: 'spki' }).toString('utf8'),
-      permitted_roles: [EVIDENCE_SIGNATURE_ROLE],
-      permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN],
+      permitted_roles: [TEST_EXECUTION_SIGNATURE_ROLE, EVIDENCE_SIGNATURE_ROLE],
+      permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN, TEST_EXECUTION_SIGNATURE_DOMAIN],
       valid_from: '2026-07-27T00:00:00.000Z',
       valid_until: '2026-07-29T00:00:00.000Z',
       revoked_at: null,
@@ -753,7 +769,7 @@ test('signed evidence preflight refuses invalid signatures, drift and injected a
 });
 
 test('two validated containment envelopes produce only two PASS rows in unsigned status', async () => {
-  const { publicKey, privateKey } = crypto.generateKeyPairSync('ed25519');
+  const { publicKey, privateKey } = TEST_KEY_PAIR;
   const validatorExecutableDigest = 'e'.repeat(64);
   const keyRegistry = {
     schema_version: 'TrustedProgrammeGatePublicKeys/V1',
@@ -762,8 +778,8 @@ test('two validated containment envelopes produce only two PASS rows in unsigned
       key_id: 'TEST_CONTAINMENT_VALIDATOR',
       algorithm: 'Ed25519',
       public_key_pem: publicKey.export({ format: 'pem', type: 'spki' }).toString('utf8'),
-      permitted_roles: [EVIDENCE_SIGNATURE_ROLE],
-      permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN],
+      permitted_roles: [TEST_EXECUTION_SIGNATURE_ROLE, EVIDENCE_SIGNATURE_ROLE],
+      permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN, TEST_EXECUTION_SIGNATURE_DOMAIN],
       valid_from: '2026-07-27T00:00:00.000Z',
       valid_until: '2026-07-29T00:00:00.000Z',
       revoked_at: null,
@@ -857,7 +873,7 @@ test('two validated containment envelopes produce only two PASS rows in unsigned
 });
 
 test('status readiness independently rejects a forged passing preflight', async () => {
-  const { publicKey } = crypto.generateKeyPairSync('ed25519');
+  const { publicKey } = TEST_KEY_PAIR;
   const validatorExecutableDigest = 'e'.repeat(64);
   const keyRegistry = {
     schema_version: 'TrustedProgrammeGatePublicKeys/V1',
@@ -866,8 +882,8 @@ test('status readiness independently rejects a forged passing preflight', async 
       key_id: 'TEST_CONTAINMENT_VALIDATOR',
       algorithm: 'Ed25519',
       public_key_pem: publicKey.export({ format: 'pem', type: 'spki' }).toString('utf8'),
-      permitted_roles: [EVIDENCE_SIGNATURE_ROLE],
-      permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN],
+      permitted_roles: [TEST_EXECUTION_SIGNATURE_ROLE, EVIDENCE_SIGNATURE_ROLE],
+      permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN, TEST_EXECUTION_SIGNATURE_DOMAIN],
       valid_from: '2026-07-27T00:00:00.000Z',
       valid_until: '2026-07-29T00:00:00.000Z',
       revoked_at: null,

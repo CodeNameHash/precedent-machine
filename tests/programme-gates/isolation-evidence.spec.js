@@ -32,6 +32,11 @@ const { validateSchema } = require('../../lib/programme-gates/schema-registry');
 const {
   expectedTestExecutableDigest,
 } = require('../../lib/programme-gates/test-executable-registry');
+const {
+  TEST_EXECUTION_SIGNATURE_DOMAIN,
+  TEST_EXECUTION_SIGNATURE_ROLE,
+  attestTestExecutionRecord,
+} = require('../../lib/programme-gates/test-execution-attestation');
 
 const ROOT = 'a'.repeat(64);
 const COMMIT = 'b'.repeat(40);
@@ -39,6 +44,8 @@ const OBSERVED_AT = '2026-07-28T12:00:00.000Z';
 const PREVIEW_ID = 'dpl_Preview123';
 const PROJECT_ID = 'prj_Test123';
 const PRODUCTION_ID = 'dpl_Production123';
+const TEST_KEY_PAIR = crypto.generateKeyPairSync('ed25519');
+const TEST_VALIDATOR_KEY_ID = 'TEST_ISOLATION_VALIDATOR';
 
 function envRecord(key, value, target, gitBranch) {
   return {
@@ -176,7 +183,8 @@ function observationInput(overrides = {}) {
 }
 
 function testResult(testId) {
-  return {
+  return attestTestExecutionRecord({
+    record: {
     schema_version: 'ProgrammeGateTestExecutionRecord/V1',
     test_id: testId,
     code_commit: COMMIT,
@@ -187,7 +195,14 @@ function testResult(testId) {
     completed_at: '2026-07-28T11:56:00.000Z',
     exit_code: 0,
     output_digest: 'e'.repeat(64),
-  };
+    },
+    attesterKeyId: TEST_VALIDATOR_KEY_ID,
+    sign: (bytes) => crypto.sign(
+      null,
+      bytes,
+      TEST_KEY_PAIR.privateKey,
+    ).toString('base64'),
+  });
 }
 
 function source() {
@@ -320,8 +335,8 @@ test('three active contracts produce exact unsigned readiness', () => {
 });
 
 test('externally signed isolation evidence passes the complete validator', () => {
-  const { publicKey, privateKey } = crypto.generateKeyPairSync('ed25519');
-  const keyId = 'TEST_ISOLATION_VALIDATOR';
+  const { publicKey, privateKey } = TEST_KEY_PAIR;
+  const keyId = TEST_VALIDATOR_KEY_ID;
   const authority = createIsolationSigningAuthority({
     keyRegistry: {
       schema_version: 'TrustedProgrammeGatePublicKeys/V1',
@@ -330,8 +345,8 @@ test('externally signed isolation evidence passes the complete validator', () =>
         key_id: keyId,
         algorithm: 'Ed25519',
         public_key_pem: publicKey.export({ type: 'spki', format: 'pem' }),
-        permitted_roles: [EVIDENCE_SIGNATURE_ROLE],
-        permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN],
+        permitted_roles: [TEST_EXECUTION_SIGNATURE_ROLE, EVIDENCE_SIGNATURE_ROLE],
+        permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN, TEST_EXECUTION_SIGNATURE_DOMAIN],
         valid_from: '2026-07-28T00:00:00.000Z',
         valid_until: '2026-07-29T00:00:00.000Z',
         revoked_at: null,

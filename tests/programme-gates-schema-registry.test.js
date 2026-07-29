@@ -236,6 +236,7 @@ test('trust configuration contains only the four approved public signing keys', 
     [
       [
         'PROGRAMME_GATE_EVIDENCE/V2',
+        'PROGRAMME_GATE_TEST_EXECUTION/V1',
         'PROGRAMME_GATE_REVIEWER_INDEPENDENCE/V1',
         'PROGRAMME_GATE_CONTRACT_COMPILATION_RECEIPT/V1',
       ],
@@ -253,7 +254,7 @@ test('trust configuration contains only the four approved public signing keys', 
   assert.deepEqual(
     TRUSTED_PUBLIC_KEY_REGISTRY.keys.map((key) => key.permitted_roles),
     [
-      ['VALIDATOR'],
+      ['TEST_EXECUTION_ATTESTER', 'VALIDATOR'],
       ['STATUS_PUBLISHER', 'VALIDATOR'],
       ['REVIEW_CONTROLLER'],
       ['BEN_APPROVER'],

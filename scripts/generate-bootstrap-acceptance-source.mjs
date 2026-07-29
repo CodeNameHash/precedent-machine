@@ -38,6 +38,7 @@ const SOURCE_MODULES = Object.freeze([
   'lib/programme-gates/schema-registry.js',
   'lib/programme-gates/predicates.js',
   'lib/programme-gates/test-executable-registry.js',
+  'lib/programme-gates/test-execution-attestation.js',
   'scripts/run-unimplemented-adversarial-test.mjs',
   'lib/programme-gates/validator.js',
   'lib/programme-gates/validator-executable.js',

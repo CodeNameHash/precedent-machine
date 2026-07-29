@@ -99,6 +99,9 @@ const TESTS = Object.freeze([Object.freeze({
   completed_at: '2026-07-27T10:30:00.000Z',
   exit_code: 0,
   output_digest: DIGEST_E,
+  attester_key_id: 'TEST_VALIDATOR_KEY',
+  signature_algorithm: 'Ed25519',
+  execution_signature: 'AA==',
 })]);
 
 const FIXTURES = Object.freeze({
