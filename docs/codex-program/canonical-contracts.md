@@ -1136,26 +1136,64 @@ This file is the sole authority for detailed identities, state machines, writer 
   residual ID-and-payload-digest set. `GovernedResidualUniverseManifest` hashes
   its exact scope code, predecessor PRE_SCOPE manifest or genesis marker,
   captured terminal head tuple, those roots, reconciliation, both authority
-  roots, producer-registry digest, exact frozen pair and empty missing, extra,
-  duplicate, unregistered-carrier, unregistered-producer and conflicting-
-  payload roots. Counts, one review
+  roots, producer-registry digest, exact frozen pair, the
+  `SemanticBoundaryAdmissionReceiptRootSet`,
+  `SemanticBoundaryTerminalConsumptionRootSet` and
+  `SemanticBoundaryConsumptionReconciliationSetRoot` IDs and payload digests
+  for that same scope, and empty missing, extra, duplicate, unregistered-carrier,
+  unregistered-producer and conflicting-payload roots. Counts, one review
   payload or the open-world candidate universe cannot substitute for this
   independent total inventory.
 - Neither enumerator may take already emitted residuals as its expected
   universe. Before any semantic producer runs, an implementation-disjoint
   boundary recorder deterministically enumerates every admitted parser output,
   model observation, validator rejection, normaliser input and writer input
-  from the immutable source and closed boundary schemas. It writes one
+  from the immutable source and the frozen
+  `SemanticBoundaryAdmissionSlotRegistry`. That registry is generated from the
+  complete closed semantic-stage, writer-disposition, physical-carrier and
+  boundary-schema registries and fixes every boundary kind, input-atom key
+  extractor, source-coordinate rule, first-eligible scope and terminal-kind
+  domain. Its exact bidirectional equality with
+  `ResidualCapableBoundaryUniverse` is a ContractFreezeAttestation condition.
+  It writes one
   `SemanticBoundaryAdmissionReceipt` per exact input atom, carrying source
   coordinates or a governed no-span source, raw digest, boundary kind and
-  ordinal. Every receipt must terminate exactly once in a governed object, an
+  ordinal. The receipt ID hashes schema, frozen pair, exact registry entry ID
+  and payload digest, immutable source subject, boundary kind, input-atom key,
+  source coordinates or governed no-span source, raw digest and ordinal. The
+  bounded `SemanticBoundaryAdmissionReceiptRoot` hashes the exact first-eligible
+  scope code, immutable source subject, captured source-local terminal heads,
+  registry ID and payload digest and the complete ordered receipt
+  ID-and-payload-digest set for that subject. Every receipt must terminate
+  exactly once in a governed object, an
   open-world candidate, an affirmative non-substantive decision or a
-  GovernedResidualObservation. A
+  GovernedResidualObservation. One
+  `SemanticBoundaryTerminalConsumption` hashes the exact receipt ID and payload
+  digest, exactly one closed terminal kind, terminal object ID and payload
+  digest and the terminal producer action and receipt. The bounded
+  `SemanticBoundaryTerminalConsumptionRoot` hashes the same subject, scope and
+  captured heads and the complete ordered consumption set. A
   `SemanticBoundaryConsumptionReconciliation` compares that independent
-  receipt root with the complete terminal-consumption root and carries empty
-  missing, extra, duplicate and unconsumed roots. A proposition, exception,
-  relationship, unknown attribute or error dropped before a producer or
-  carrier therefore leaves an unconsumed receipt and blocks publication.
+  receipt root with the complete terminal-consumption root, requires a
+  one-to-one receipt-key join and carries empty missing, extra, duplicate,
+  multiply-consumed, wrong-terminal-kind and unconsumed roots. Its ID hashes
+  schema, frozen pair, subject, scope, captured heads, both roots, the independent
+  recorder and consumption-enumerator executable and configuration digests and
+  the exact difference roots. For each residual phase, its closed preparation
+  action independently enumerates the complete subject-key universe and builds
+  fixed-fanout `SemanticBoundaryAdmissionReceiptRootSet`,
+  `SemanticBoundaryTerminalConsumptionRootSet` and
+  `SemanticBoundaryConsumptionReconciliationSetRoot` objects. Their identities
+  hash the phase, captured global heads, complete ordered subject-to-root
+  mappings, empty missing, extra, duplicate, wrong-subject and non-passing-
+  reconciliation roots and the enumerator executable and configuration digest.
+  `PRE_SCOPE` selects only the receipt and consumption prefix assigned to
+  PRE_SCOPE. `CANDIDATE_COMPLETE` selects the exact PRE_SCOPE root sets and
+  reconciliation set and adds the extraction- and candidate-phase suffix once.
+  A proposition, exception, relationship, unknown
+  attribute or error dropped before a producer or carrier therefore leaves an
+  unconsumed receipt and blocks publication. Neither residual enumerator may
+  omit, infer, repair or replace any member of this separate receipt chain.
 - Every universe member has exactly one final reviewed
   `GovernedResidualDisposition`: `COVERED_BY_GOVERNED_OBJECT`,
   `COVERED_BY_OPEN_WORLD_CANDIDATE`, `REVIEWED_NON_SUBSTANTIVE_OR_INVALID` or
@@ -5123,25 +5161,38 @@ This file is the sole authority for detailed identities, state machines, writer 
   SourceAdmissionPreparationReceipt, exact cutoff,
   frozen pair, programme-status and authorisation generation, immutable source
   subject and idempotency key but neither select nor advance a scope generation.
-  `MATERIALISE_OPEN_WORLD_REVIEW` may write only content-addressed
+  `MATERIALISE_OPEN_WORLD_REVIEW` first runs the implementation-disjoint
+  boundary recorder and may write only content-addressed
+  SemanticBoundaryAdmissionReceipts before any semantic producer subphase,
+  then the bounded SemanticBoundaryAdmissionReceiptRoot and
   SemanticExtractionInputEnvelope, SemanticInferenceTranscript,
   ReviewedInferencePayload, ValidatedSemanticGraph, open-world candidate,
   occurrence, candidate-supersession, kind-supersession,
   OpenWorldCandidateAuditChainRoot, OpenWorldEffectiveOccurrenceRoot,
   OpenWorldCandidateChainReconciliation, evidence-closure, primitive,
-  OpenWorldPrimitiveCollectionRoot and optional similarity-proposal
-  objects into the offline review namespace. It may preserve unresolved
+  OpenWorldPrimitiveCollectionRoot, GovernedResidualObservation and optional
+  similarity-proposal objects into the offline review namespace. The recorder
+  subphase selects the frozen SemanticBoundaryAdmissionSlotRegistry, source
+  subject and captured heads and commits its complete bounded root before a
+  producer subphase can consume an atom. It may preserve unresolved
   candidates, but cannot write a final
   disposition, canonical occurrence, scope member, candidate-release member or
   serving row. The offline reviewer renders `ValidatedSemanticGraph` and its
   candidates through an exhaustive non-persisting view; there is no separate
   writable review-row carrier. `RECORD_OPEN_WORLD_DISPOSITIONS` may append only the exact final
   reviewed dispositions, source-specific publication selections for
-  `REVIEWED_SOURCE_SPECIFIC` dispositions, both independent impact-walker outputs,
+  `REVIEWED_SOURCE_SPECIFIC` dispositions, GovernedResidualReviewDecisions,
+  GovernedResidualDispositions, both residual-impact projections,
+  GovernedObjectImpactWalkerOutputs, GovernedObjectImpactClosures,
+  GovernedResidualImpactClosures, both independent impact-walker outputs,
   SemanticImpactEnumeratorIndependenceAttestation, reconciled
-  SemanticImpactClosures, disposition manifest and OpenWorldReviewQueueRoot. It
+  SemanticImpactClosures, candidate and residual disposition manifests and
+  candidate and residual review-queue roots. It
   cannot alter a candidate, primitive, mapping or contract key. Both variants are
   receipt-required, have no serving grant and create no CandidateInputEvent.
+  Neither may create a final SemanticBoundaryTerminalConsumptionRoot or
+  SemanticBoundaryConsumptionReconciliation, because only the scope-selecting
+  writer sees the complete governed-object and reviewed terminal set.
   For a pre-admission source-role occurrence, this action may record only its
   directly reviewed admission-decision disposition and one signed
   `SourceRoleAdmissionAuthorisation` after predecessor evidence closure and
@@ -5179,14 +5230,15 @@ This file is the sole authority for detailed identities, state machines, writer 
   `SOURCE_ADMISSION_PREPARATION_RECEIPT_IS_RECEIPT`, no outbox and no serving
   grant. Every preflight
   extraction-envelope, inference-transcript, reviewed-inference-payload,
-  validated-graph, candidate,
+  validated-graph, boundary-admission receipt and root, residual-observation,
+  candidate,
   candidate-supersession, kind-supersession, candidate-audit-chain root,
   effective-occurrence root, candidate-chain reconciliation, evidence-closure,
   primitive and primitive-collection carrier is classified as
   `OPERATIONAL_AUDIT(OFFLINE_SEMANTIC_REVIEW)`. The exact scope-selecting
   dispatch revalidates and writes or selects digest-identical canonical carriers
   under separate `RELEASE_INPUT` tuples; preflight storage confers no membership
-  and is never a release source by location. Preflight disposition, impact-
+  and is never a release source by location. Preflight disposition, residual-review, impact-
   walker, impact-closure and disposition-manifest tuples are also
   `OPERATIONAL_AUDIT(OFFLINE_SEMANTIC_REVIEW)`; MATERIALISE_SCOPE independently
   revalidates them into the canonical carrier.
@@ -5279,6 +5331,7 @@ This file is the sole authority for detailed identities, state machines, writer 
   SourceAdmissionPreparationReceipt and its admission-only object chain; it
   cannot create, replace or amend any member of that chain. It may write or
   select only digest-identical canonical carriers for
+  the complete SemanticBoundaryAdmissionReceipt set and bounded receipt root,
   SemanticExtractionInputEnvelope, SemanticInferenceTranscript,
   ReviewedInferencePayload, ValidatedSemanticGraph, both deal-document
   projections and reconciliation, structure, atoms,
@@ -5296,6 +5349,7 @@ This file is the sole authority for detailed identities, state machines, writer 
   every effective ReviewedSourceSpecificPublicationDecision,
   OpenWorldCandidateDispositionManifest, both impact-walker outputs,
   SemanticImpactEnumeratorIndependenceAttestation, reconciled SemanticImpactClosure,
+  every GovernedResidualObservation and GovernedResidualReviewDecision,
   applicable post-freeze ApplicabilityReexaminationRequirement instances
   already created by the scope-generation opening action, and only the source-
   backed ApplicabilityReexaminationEntries and bounded local
@@ -5321,7 +5375,20 @@ This file is the sole authority for detailed identities, state machines, writer 
   CorrectionApplicabilityProjections that change those objects, the exact
   reconciled CorrectionApplicabilitySlice, their exact
   declared corrected outputs, CorrectionDischarges, CorrectionDischargeMap and
-  reviewed non-deal dispositions.
+  reviewed non-deal dispositions. After that closed output set is fixed and
+  before DealScopeRunManifest or CandidateInputEvent creation, the same
+  serialisable scope action independently enumerates one
+  SemanticBoundaryTerminalConsumption per selected admission receipt, writes
+  the bounded SemanticBoundaryTerminalConsumptionRoot and
+  SemanticBoundaryConsumptionReconciliation, requires every difference root
+  empty, and carries those subject-bound objects into its DealScopeRunManifest.
+  The later PRE_SCOPE_RESIDUAL_CLOSURE preparation is the sole producer of the
+  phase root sets, phase residual universe, final residual closures and empty
+  review queue.
+  The writer cannot accept caller-supplied terminal memberships, reconcile an
+  admission root from another subject or head tuple, or commit the scope
+  manifest, subject-head CAS or event unless the receipt and terminal domains
+  are equal.
   Within that list, a requirement instance is selection-only. Each
   `MATERIALISE_SCOPE` discriminator may originate only the registry-assigned
   scope Entry and Slice members under their per-kind creation slots and the one
@@ -5561,13 +5628,20 @@ This file is the sole authority for detailed identities, state machines, writer 
   `PREPARE_BATCH` has the closed ordered discriminators
   `PRE_SCOPE_RESIDUAL_CLOSURE/{ENTRY_BATCH|TERMINAL_SET}` and
   `SCOPE_INVENTORY/{CONTENT_BATCH|TERMINAL_ROOTS}`. Residual ENTRY_BATCH is the
-  sole producer of GovernedResidualDisposition, both independent governed-
+  sole producer of the fixed-fanout PRE_SCOPE
+  SemanticBoundaryAdmissionReceiptRootSet,
+  SemanticBoundaryTerminalConsumptionRootSet and
+  SemanticBoundaryConsumptionReconciliationSetRoot and of
+  GovernedResidualDisposition, both independent governed-
   object impact walker outputs, GovernedObjectImpactClosure, both independent
   residual-impact projections and GovernedResidualImpactClosure for the exact
   open generation's sealed `PRE_SCOPE` residual universe. Residual TERMINAL_SET
-  is the sole producer of the PRE_SCOPE GovernedResidualDispositionManifest and
-  GovernedResidualReviewQueueRoot after independently recomputing exact universe
-  coverage and impact equality. SCOPE_INVENTORY cannot begin until that terminal
+  is the sole producer of the PRE_SCOPE
+  GovernedResidualUniverseReconciliation and GovernedResidualUniverseManifest,
+  GovernedResidualDispositionManifest and GovernedResidualReviewQueueRoot after
+  independently recomputing exact receipt-to-consumption equality, residual
+  universe coverage and impact equality. The universe manifest must select
+  those three exact semantic-boundary root sets. SCOPE_INVENTORY cannot begin until that terminal
   PRE_SCOPE queue root is the governed empty root, and both inventory root sets
   select the resulting manifest and closures. No PRE_SCOPE residual closure
   object depends on
@@ -5584,6 +5658,19 @@ This file is the sole authority for detailed identities, state machines, writer 
   SourceAdmissionPreparationReceipt, SemanticExtractionInputEnvelope,
   SemanticInferenceTranscript, ReviewedInferencePayload,
   SemanticGraphNormaliserDefinition and ValidatedSemanticGraph,
+  SemanticBoundaryAdmissionReceipt,
+  SemanticBoundaryAdmissionReceiptRoot,
+  SemanticBoundaryTerminalConsumption,
+  SemanticBoundaryTerminalConsumptionRoot and
+  SemanticBoundaryConsumptionReconciliation,
+  PRE_SCOPE SemanticBoundaryAdmissionReceiptRootSet,
+  PRE_SCOPE SemanticBoundaryTerminalConsumptionRootSet,
+  PRE_SCOPE SemanticBoundaryConsumptionReconciliationSetRoot,
+  GovernedResidualProducerRegistry, every PRE_SCOPE
+  GovernedResidualObservation, both PRE_SCOPE residual-universe roots,
+  GovernedResidualUniverseReconciliation and
+  GovernedResidualUniverseManifest, every PRE_SCOPE
+  GovernedResidualReviewDecision,
   PRE_SCOPE GovernedResidualDisposition, GovernedObjectImpactWalkerOutput,
   GovernedObjectImpactClosure, GovernedResidualImpactClosure,
   PRE_SCOPE GovernedResidualDispositionManifest and the exact empty PRE_SCOPE
@@ -5862,11 +5949,17 @@ This file is the sole authority for detailed identities, state machines, writer 
   dispositions, impact closures and governed empty queue, then independently
   enumerates the complete candidate-input prefix and constructs the
   `CANDIDATE_COMPLETE` residual universe. ENTRY_BATCH is the sole producer of
+  the candidate-complete SemanticBoundaryAdmissionReceiptRootSet,
+  SemanticBoundaryTerminalConsumptionRootSet and
+  SemanticBoundaryConsumptionReconciliationSetRoot and of
   dispositions and impact closures for residuals first eligible after
   PRE_SCOPE; it selects but cannot repair the PRE_SCOPE members. TERMINAL_SET is
-  the sole producer of the CANDIDATE_COMPLETE disposition manifest and queue
-  after proving the phase partition, predecessor carry-forward and complete
-  impact equality. CanonicalWriterDispositionRegistry rejects creation or
+  the sole producer of the CANDIDATE_COMPLETE
+  GovernedResidualUniverseReconciliation, GovernedResidualUniverseManifest,
+  disposition manifest and queue after proving the receipt-to-consumption
+  equality, phase partition, predecessor carry-forward and complete impact
+  equality. Both manifests select their exact phase root sets.
+  CanonicalWriterDispositionRegistry rejects creation or
   repair of a PRE_SCOPE object by any candidate action and blocks `SEAL_INPUT`
   on a missing, non-empty or cross-wired CANDIDATE_COMPLETE terminal root.
   `CandidateBuildHead` stores only current contiguous candidate
@@ -5955,7 +6048,19 @@ This file is the sole authority for detailed identities, state machines, writer 
   SemanticInferenceTranscript and ReviewedInferencePayload kinds. It also
   includes the complete selected immutable source-document, exact frozen
   SemanticGraphNormaliserDefinition, validated-semantic-graph and reviewed
-  open-world object set,
+  open-world object set, every CANDIDATE_COMPLETE
+  SemanticBoundaryAdmissionReceipt, SemanticBoundaryAdmissionReceiptRoot,
+  SemanticBoundaryTerminalConsumption, SemanticBoundaryTerminalConsumptionRoot
+  and SemanticBoundaryConsumptionReconciliation, the CANDIDATE_COMPLETE
+  SemanticBoundaryAdmissionReceiptRootSet,
+  SemanticBoundaryTerminalConsumptionRootSet and
+  SemanticBoundaryConsumptionReconciliationSetRoot, its exact PRE_SCOPE
+  predecessors, GovernedResidualProducerRegistry, every CANDIDATE_COMPLETE
+  GovernedResidualObservation, both residual-universe roots,
+  GovernedResidualUniverseReconciliation and
+  GovernedResidualUniverseManifest, every GovernedResidualReviewDecision and
+  final disposition, complete disposition and impact closure set and exact
+  empty GovernedResidualReviewQueueRoot,
   including every candidate and occurrence, current general and kind
   supersession, every source-role admission transition and its transition-bound
   historical and current dispositions, complete OpenWorldCandidateAuditChainRoot,
@@ -6010,7 +6115,12 @@ This file is the sole authority for detailed identities, state machines, writer 
   attestation, exact ApplicabilityReexaminationReconciliation, exact candidate-
   wide ApplicabilityReexaminationManifest, complete metric-projection-entry
   root, and exact MetricApplicabilityRequirementProjectionSet ID, payload digest and
-  metric_applicability_requirement_projection_set_digest.
+  metric_applicability_requirement_projection_set_digest. It also directly
+  selects the CANDIDATE_COMPLETE semantic-boundary receipt, terminal-consumption
+  and reconciliation root sets, exact PRE_SCOPE predecessor root sets, matching
+  GovernedResidualUniverseManifest, disposition manifest and governed empty
+  review queue. Every one must be the same member and payload already sealed by
+  both release-input inventory root sets.
   An unknown input
   member kind, omitted empty kind or
   self-declared member list blocks sealing.
@@ -6037,6 +6147,8 @@ This file is the sole authority for detailed identities, state machines, writer 
   kind and root-set content, distinct governed IDs, a passing reconciliation
   and empty differences, one current frozen extraction receipt per required deal
   and no extra, stale, open or abandoned selection, then validates both
+  semantic-boundary root-set chains and the matching CANDIDATE_COMPLETE
+  residual-universe, disposition and empty-queue closure, then both
   applicability roots, independence, reconciliation, manifest, projection-entry
   root and projection set in that exact order against those sealed roots. It
   creates a fresh passing
@@ -6393,6 +6505,11 @@ This file is the sole authority for detailed identities, state machines, writer 
   CandidateOutputInventoryReconciliation, both control-receipt tree roots,
   CandidateOutputControlReceiptReconciliation and terminal OUTPUT_SEALED
   CandidateOutputPreparationReceipt, passing CompositionContractSetAttestation,
+  the CANDIDATE_COMPLETE SemanticBoundaryAdmissionReceiptRootSet,
+  SemanticBoundaryTerminalConsumptionRootSet,
+  SemanticBoundaryConsumptionReconciliationSetRoot and matching
+  GovernedResidualUniverseManifest, disposition manifest and empty queue
+  already selected by CandidateInputSeal,
   PreSealTraceabilityRoot and exact CandidateManifestMemberRoot and
   reconciliation,
   and writes only the immutable CandidateReleaseManifest and
@@ -6406,7 +6523,8 @@ This file is the sole authority for detailed identities, state machines, writer 
   digests, their common content digest and
   CandidateOutputInventoryReconciliation, both control-receipt tree roots,
   CandidateOutputControlReceiptReconciliation and terminal preparation receipt,
-  CandidateOutputSeal, PreSealTraceabilityRoot, CandidateManifestMemberRoot,
+  CandidateOutputSeal, all three semantic-boundary root sets and residual
+  universe closure, PreSealTraceabilityRoot, CandidateManifestMemberRoot,
   CorpusRelease and CandidateReleaseManifest IDs, fresh
   intake recheck, captured promotion-fence version, opened-at evidence, fixed
   deadline and measured age, authorisation, writer executable and configuration
@@ -7789,6 +7907,13 @@ This file is the sole authority for detailed identities, state machines, writer 
   SemanticInferenceTranscript set, ReviewedInferencePayload,
   SemanticGraphNormaliserDefinition and ValidatedSemanticGraph with validation
   report and payload digest, and canonical-text occurrence,
+  SemanticBoundaryAdmissionSlotRegistry, every PRE_SCOPE
+  SemanticBoundaryAdmissionReceipt, SemanticBoundaryAdmissionReceiptRoot,
+  SemanticBoundaryTerminalConsumption, SemanticBoundaryTerminalConsumptionRoot
+  and SemanticBoundaryConsumptionReconciliation, the complete PRE_SCOPE
+  SemanticBoundaryAdmissionReceiptRootSet,
+  SemanticBoundaryTerminalConsumptionRootSet and
+  SemanticBoundaryConsumptionReconciliationSetRoot,
   GovernedResidualProducerRegistry, every PRE_SCOPE
   GovernedResidualObservation, both complete PRE_SCOPE residual-universe roots,
   GovernedResidualUniverseReconciliation and GovernedResidualUniverseManifest,
@@ -7897,7 +8022,12 @@ This file is the sole authority for detailed identities, state machines, writer 
   set, ordered IntakeUniverseManifest and ImmutableSourceDocument, every
   SourceAdmissionPreparationReceipt, selected corpus
   SemanticExtractionInputEnvelope, complete SemanticInferenceTranscript set,
-  ReviewedInferencePayload, GovernedResidualProducerRegistry, complete
+  ReviewedInferencePayload, SemanticBoundaryAdmissionSlotRegistry, complete
+  PRE_SCOPE SemanticBoundaryAdmissionReceiptRootSet,
+  SemanticBoundaryTerminalConsumptionRootSet and
+  SemanticBoundaryConsumptionReconciliationSetRoot and every selected
+  subject-bound receipt, receipt root, terminal consumption, consumption root
+  and reconciliation, GovernedResidualProducerRegistry, complete
   PRE_SCOPE GovernedResidualUniverseManifest and its two roots and
   reconciliation, PRE_SCOPE GovernedResidualDispositionManifest, every selected
   GovernedObjectImpactClosure, every reconciled residual impact closure and the
@@ -10227,7 +10357,15 @@ forward reference and a premature full-trace pass.
   ApplicabilityReexaminationEnumeratorIndependenceAttestation; the named
   ApplicabilityReexaminationReconciliation and Manifest; every
   MetricApplicabilityRequirementProjection entry and the terminal projection
-  set; the materialisation-time intake recheck; CandidateInputSeal;
+  set; every SemanticBoundaryAdmissionReceipt,
+  SemanticBoundaryAdmissionReceiptRoot, SemanticBoundaryTerminalConsumption,
+  SemanticBoundaryTerminalConsumptionRoot and
+  SemanticBoundaryConsumptionReconciliation; the complete PRE_SCOPE and
+  CANDIDATE_COMPLETE SemanticBoundaryAdmissionReceiptRootSets,
+  SemanticBoundaryTerminalConsumptionRootSets and
+  SemanticBoundaryConsumptionReconciliationSetRoots; both matching
+  GovernedResidualUniverseManifests and complete disposition, impact and empty-
+  queue closures; the materialisation-time intake recheck; CandidateInputSeal;
   CorpusRelease; the exact QueryGoldenCertificationAttestation; and
   all remaining candidate inputs and outputs created before CandidateOutputSeal
   except ReviewedSourceSpecificOutputClosure, whose first trace phase is the
@@ -10290,7 +10428,10 @@ forward reference and a premature full-trace pass.
   ProductionMarketAggregateParityRootPair,
   ProductionServingContractMetadataParityRootPair, every reachable semantic-parity and
   difference node and ProductionSemanticParityAttestation,
-  ProductionImportAttestation and terminal ATTESTED head, event and receipt.
+  ProductionImportAttestation and terminal ATTESTED head, event and receipt,
+  then the passing DeploymentParityAttestation over that exact inactive
+  namespace and import. The POST_IMPORT extension cannot be created before
+  deployment parity and cannot be used to authorise import.
   CutoverAuthorisation binds it.
 - `POST_ACTIVATION` covers the `CURRENT_CANDIDATE` PromotionEligibilityProof,
   readiness, authorisation, ServingFenceVersion and release-state transitions
@@ -10382,7 +10523,14 @@ includes:
   IntakeEligibilityRecheckAttestation and ReleaseIntakeDependencyProjection;
 - ImmutableSourceDocument, SourceAdmissionPreparationReceipt,
   SemanticExtractionInputEnvelope, every selected SemanticInferenceTranscript,
-  ReviewedInferencePayload, GovernedResidualProducerRegistry, every
+  ReviewedInferencePayload, SemanticBoundaryAdmissionSlotRegistry, every
+  SemanticBoundaryAdmissionReceipt, SemanticBoundaryAdmissionReceiptRoot,
+  SemanticBoundaryTerminalConsumption, SemanticBoundaryTerminalConsumptionRoot
+  and SemanticBoundaryConsumptionReconciliation, both phases'
+  SemanticBoundaryAdmissionReceiptRootSets,
+  SemanticBoundaryTerminalConsumptionRootSets and
+  SemanticBoundaryConsumptionReconciliationSetRoots,
+  GovernedResidualProducerRegistry, every
   CANDIDATE_COMPLETE GovernedResidualObservation, both residual-universe roots,
   GovernedResidualUniverseReconciliation, the PRE_SCOPE predecessor and
   CANDIDATE_COMPLETE GovernedResidualUniverseManifest, every
@@ -10812,13 +10960,13 @@ Both objects, every compare-and-swap receipt and every historical-reactivation
 dependency are mandatory traceability-matrix members and operational release-
 trace entries; they do not mutate the already completed programme trace.
 
-For the first canonical cutover only, the precondition to step 16 is one
+For the first canonical cutover only, the precondition to step 17 is one
 LegacyBaselineRollbackTarget, a current passing
 LegacyBaselineRollbackRehearsalAttestation, V3 `LEGACY_BASELINE` release state,
 `READY_LEGACY_BASELINE` ServingFenceVersion and CanonicalCutoverGenesisHead at
-`READY_LEGACY_BASELINE`. Step 17's activation atomically moves that head to
-`FIRST_CANONICAL_IN_PROGRESS`; step 18 publishes `READY_CANONICAL`. Passing step
-20 permits steps 21 and 22 to fix the head at `CANONICAL_ESTABLISHED` before programme
+`READY_LEGACY_BASELINE`. Step 18's activation atomically moves that head to
+`FIRST_CANONICAL_IN_PROGRESS`; step 19 publishes `READY_CANONICAL`. Passing step
+21 permits steps 22 and 23 to fix the head at `CANONICAL_ESTABLISHED` before programme
 completion. Any closed post-activation failure trigger before `PASS_FIXED`
 follows exactly one disposition order: owned BEGIN then external BLOCKED and
 drain, or registered ordinary BLOCKED and drain followed by the atomically
@@ -11125,7 +11273,12 @@ source-package byte/hash/file-type/converter-lineage proof,
 ImmutableSourceDocument, SourceAdmissionPreparationReceipt,
 SemanticExtractionInputEnvelope, complete SemanticInferenceTranscript set,
 ReviewedInferencePayload, SemanticGraphNormaliserDefinition and
-ValidatedSemanticGraph with its validation report, complete
+ValidatedSemanticGraph with its validation report, SemanticBoundaryAdmissionSlotRegistry,
+every semantic-boundary admission receipt, terminal consumption and
+subject reconciliation, both phase receipt-root, terminal-root and
+reconciliation-root sets and their exact PRE_SCOPE predecessor links, both
+GovernedResidualUniverseManifests and their complete disposition, impact and
+empty-queue closures, complete
 OpenWorldCandidateAuditChainRoot,
 OpenWorldEffectiveOccurrenceRoot and OpenWorldCandidateChainReconciliation,
 final-disposition manifest, exact empty review queue, both impact-walker outputs,
@@ -11178,9 +11331,14 @@ reconciliations, all lifecycle transitions, seals and roots, exact POST_FREEZE
 TraceabilityExtension, scope and
 deployment digests, code and
 specification commits, environment, threshold, measured value, immutable
-evidence, validator, reviewer and Ben approval where required. Import parity, cutover authorisation,
-activation and post-cutover smoke produce their later chain artefacts and may
-not be pre-attested. A missing required gate, digest mismatch, scope mismatch or
+evidence, validator, reviewer and Ben approval where required. Import parity,
+deployment parity, cutover authorisation, activation and post-cutover smoke
+produce their later chain artefacts and may not be pre-attested. Neither
+`P9_IMPORT_PARITY` nor `P9_DEPLOYMENT_PARITY` is a member or transitive
+dependency of the `production_import` work class or
+PreCutoverCertification. The pre-import certification may bind the expected
+DeploymentManifest but no observation of an inactive production namespace,
+ProductionImportAttestation or live production plan. A missing required gate, digest mismatch, scope mismatch or
 prose assertion fails closed.
 
 #### Normative ReleaseBundleEnvelope contract, sole authority
@@ -13733,14 +13891,36 @@ No post-review allowlist choice exists.
 #### Residual and open-world authority
 
 `CanonicalContractBundle` also includes the complete
+`SemanticBoundaryAdmissionSlotRegistry`, `SemanticBoundaryAdmissionReceipt`,
+`SemanticBoundaryAdmissionReceiptRoot`,
+`SemanticBoundaryTerminalConsumption`,
+`SemanticBoundaryTerminalConsumptionRoot`,
+`SemanticBoundaryConsumptionReconciliation`,
+`SemanticBoundaryAdmissionReceiptRootSet`,
+`SemanticBoundaryTerminalConsumptionRootSet`,
+`SemanticBoundaryConsumptionReconciliationSetRoot`,
 `GovernedResidualProducerRegistry`, `GovernedResidualObservation`,
 `GovernedResidualDisposition`, `GovernedObjectImpactWalkerOutput`,
 `GovernedObjectImpactClosure`,
-`GovernedResidualImpactClosure` and
+`GovernedResidualUniverseReconciliation`,
+`GovernedResidualUniverseManifest`, `GovernedResidualImpactClosure` and
 `GovernedResidualReviewQueueRoot` schemas, enums, producer mappings, identity
 rules and writer actions. They are authored and Freeze-Gate reviewed with the
 other bundle members. No residual producer, disposition or empty-queue rule may
 be added after freeze.
+
+The complete semantic-boundary registry, receipts, subject roots,
+consumptions, reconciliations and both phase root sets propagate through the
+authoritative writer, DealScopeRunManifest, CorpusScopeManifest,
+CorpusScopeInventoryKindRegistry, CandidateInputSeal,
+CorpusReleaseInventoryKindRegistry, CandidateReleaseManifest,
+ReleaseBundleEnvelope, production-import expected and physical parity,
+PreCutoverCertification and traceability. CandidateInputSeal and
+CandidateReleaseManifest are the publication seals for this chain. Omitting or
+substituting one member, accepting two independently empty residual carrier
+universes without this chain, or importing a candidate whose physical receipt
+chain differs from the expected root blocks publication and grants no
+comparability.
 
 `ReviewedSourceSpecificPublicationDecisionBody` hashes its schema, frozen pair,
 exact candidate occurrence, effective `REVIEWED_SOURCE_SPECIFIC`
@@ -14101,7 +14281,8 @@ the selected column and extended-statistics payloads. An asserted class or the
 fingerprint stored in ActiveQueryExecutionClassProjection is expected state,
 not evidence of the production planner's output.
 
-After ProductionImportAttestation and before cutover authorisation, one
+After ProductionImportAttestation and before the POST_IMPORT
+TraceabilityExtension or cutover authorisation, one
 `DeploymentParityAttestation` runs against the inactive production namespace
 through the exact deployed serving role, RPC, search path, prepared-statement
 mode and planner configuration. A production-side enumerator independently
@@ -14123,7 +14304,14 @@ class-and-witness member sets, with empty missing, extra, duplicate and
 mismatched roots. Caller-supplied statistics, cached `EXPLAIN`, a plan identity
 copied from the serving projection, partial class coverage or a probe under a
 different role, configuration or namespace cannot satisfy
-`P9_DEPLOYMENT_PARITY`. PostCutoverSmokeAttestation repeats the live-plan probe
+`P9_DEPLOYMENT_PARITY`. The fixed dependency order is
+`PreCutoverCertification -> ReleaseBundleEnvelope ->
+ProductionImportAttestation -> DeploymentParityAttestation -> POST_IMPORT
+TraceabilityExtension -> CutoverAuthorisation`. The candidate dependency DAG,
+gate work-class compiler and trace registry must reproduce that order and
+reject every reverse edge. Deployment parity can block or abandon the inactive
+import but can neither authorise that import nor alter its namespace.
+PostCutoverSmokeAttestation repeats the live-plan probe
 for every class exercised by the live smoke suite and binds its observed member
 root to the corresponding members of the passing DeploymentParityAttestation.
 Any statistics or plan drift before activation blocks cutover; any drift during

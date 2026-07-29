@@ -1346,8 +1346,17 @@ The following adversarial closure tests are mandatory traceability entries:
   typed carrier can be discarded and a terminal consumption reconciliation
   proving every receipt became exactly one governed carrier or one residual.
   Drop an unknown proposition before candidate or residual creation, omit its
-  receipt, or consume one receipt twice: reconciliation fails and publication
-  remains blocked without suppressing independently valid siblings.
+  receipt, delete the same input atom from both residual enumerators, omit or
+  substitute one subject receipt root or reconciliation from either phase,
+  cross-wire captured heads, or consume one receipt twice: the independently
+  generated boundary-slot universe, receipt-to-terminal reconciliation,
+  GovernedResidualUniverseManifest, scope and candidate inventory roots,
+  CandidateInputSeal, CandidateReleaseManifest and PRE_SEAL trace cannot all
+  pass. Publication remains blocked without suppressing independently valid
+  siblings. Direct DML, a review action that creates the final reconciliation,
+  a scope action that creates a phase root set, a PRE_SCOPE object created by a
+  candidate action, or any manifest, bundle, import or trace path that omits
+  one receipt-chain object fails its closed producer and set-equality checks.
 - `OPEN-WORLD-KIND-SUPERSESSION-01`: an effective-terminal
   `UNRESOLVED_CANDIDATE_KIND` blocks. Resolving it creates a new candidate and
   occurrence plus one exact kind-only supersession; the predecessor remains in
@@ -2676,7 +2685,17 @@ The following adversarial closure tests are mandatory traceability entries:
 - `DEPLOY-CUTOVER-01`: changing any certified executable input blocks
   promotion; concurrent or partially failed activation yields one complete old
   or new generation; a self-referential or forward-referential release bundle
-  fails; authorisation replay fails; every typed post-activation READY, trace or
+  fails. Regenerate the gate work-class and candidate dependency DAG and require
+  the sole order PreCutoverCertification, ReleaseBundleEnvelope,
+  ProductionImportAttestation, DeploymentParityAttestation, POST_IMPORT
+  TraceabilityExtension, CutoverAuthorisation. Put deployment or import parity
+  into `production_import` or PreCutoverCertification, create deployment parity
+  before the inactive namespace is ATTESTED, create POST_IMPORT trace before
+  deployment parity, or issue cutover authority without all three exact
+  post-import objects: cycle lint or the predecessor predicate fails with zero
+  import, exposure or release-state DML. A failing deployment-parity probe can
+  affect only the inaccessible import and cannot certify its own import.
+  Authorisation replay fails; every typed post-activation READY, trace or
   smoke failure first commits its BEGIN receipt and pending head, then disables
   exposure through the acknowledged higher BLOCKED fence and drain before the
   COMPLETE receipt may fix the selected containment outcome through its owned

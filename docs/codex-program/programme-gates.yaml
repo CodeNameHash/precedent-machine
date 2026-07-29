@@ -461,12 +461,12 @@ programme_gate_registry:
         - P9_DATABASE_SOAK
         - P9_BACKUP_RESTORE
         - P9_PREIMPORT_TRACEABILITY
-        - P9_DEPLOYMENT_PARITY
     cutover_authorisation_issue:
       all_of:
         - production_import
         - P9_IMPORT_PARITY
         - P9_PROMOTION_ELIGIBILITY
+        - P9_DEPLOYMENT_PARITY
     production_cutover:
       all_of:
         - cutover_authorisation_issue

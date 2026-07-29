@@ -782,7 +782,11 @@ contract equality or CandidateCompositionInstanceConformance.
   and verifies exact stable-ID and checksum parity before cutover. This
   promotion import is the only canonical corpus write to production before
   cutover; it performs no extraction, backfill, replay or mutation of the active
-  release.
+  release. PreCutoverCertification and the release envelope require only the
+  pre-import gate set. Import parity and deployment parity are necessarily later:
+  the importer first attests the inaccessible namespace, deployment parity then
+  probes that exact namespace and deployed production plan, POST_IMPORT
+  traceability covers both, and only then may CutoverAuthorisation issue.
 - Bundle members import only to the three contract-derived inactive
   destinations: `C` to the corpus-object namespace, `B` to the corpus-blob
   namespace and `E` to the immutable promotion-evidence namespace.
@@ -1716,21 +1720,25 @@ The chain is:
     ProductionSemanticParityAttestation and all
     their reachable nodes, `ProductionImportAttestation` and terminal ATTESTED
     head, event and receipt;
-15. `POST_IMPORT` TraceabilityExtension;
-16. cutover-ready `DeploymentReadinessMirror` and `CutoverAuthorisation`;
-17. exact acknowledged BLOCKED `ServingFenceVersion`; one atomic
+15. passing `DeploymentParityAttestation` over the exact ATTESTED inactive
+    production namespace, live serving role, production statistics and physical
+    plan roots;
+16. `POST_IMPORT` TraceabilityExtension covering that exact import and
+    deployment-parity evidence;
+17. cutover-ready `DeploymentReadinessMirror` and `CutoverAuthorisation`;
+18. exact acknowledged BLOCKED `ServingFenceVersion`; one atomic
     `ActivationEvent`, `PostActivationControlContext` and
     `PostActivationControlHead(AWAITING_READY)` transaction with its
     `OPEN_WITH_ACTIVATION` event and `PostActivationControlReceipt`;
-18. the context-bound `READY_CANONICAL` ServingFenceVersion and
+19. the context-bound `READY_CANONICAL` ServingFenceVersion and
     `AWAITING_POST_ACTIVATION_TRACE` control-head transition within its fixed
     deadline;
-19. `POST_ACTIVATION` TraceabilityExtension and the corresponding
+20. `POST_ACTIVATION` TraceabilityExtension and the corresponding
     `AWAITING_SMOKE` control-head transition;
-20. passing `PostCutoverSmokeAttestation`;
-21. one unexpired `PostActivationPassCommitLease`, its
+21. passing `PostCutoverSmokeAttestation`;
+22. one unexpired `PostActivationPassCommitLease`, its
     `ISSUE_PASS_COMMIT_LEASE` event, successor AWAITING_SMOKE head and receipt;
-22. the atomic `COMMIT_PASS` and `PASS_FIXED`
+23. the atomic `COMMIT_PASS` and `PASS_FIXED`
     terminal CAS that also releases the AVAILABLE `CandidatePromotionFence`
     successor and, for the first canonical cutover, writes
     `ESTABLISH_FIRST_CANONICAL_RELEASE` and the terminal
