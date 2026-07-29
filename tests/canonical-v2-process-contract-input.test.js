@@ -35,12 +35,14 @@ function clone(value) {
 function processMembers() {
   return [
     loadMember('process/domain/process-domain-registry.v1.json'),
+    loadMember('process/events/process-event.v1.json'),
     loadMember('process/narration/process-narration-occurrence.v1.json'),
     loadMember('process/occurrence-slots/process-narration.v1.json'),
+    loadMember('process/participants/process-participant.v1.json'),
   ];
 }
 
-test('compiles the bounded Process narration contracts deterministically without freeze authority', () => {
+test('compiles the bounded Process core contracts deterministically without freeze authority', () => {
   const first = compileCanonicalContractInput({ root_directory: ROOT });
   const second = compileCanonicalContractInput({ root_directory: ROOT });
   const processEntries = first.authored_members.filter(
@@ -48,13 +50,15 @@ test('compiles the bounded Process narration contracts deterministically without
   );
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 89);
+  assert.equal(first.authored_members.length, 91);
   assert.deepEqual(
     processEntries.map((member) => [member.object_kind, member.stable_id]),
     [
       ['PROCESS_DOMAIN_REGISTRY_INPUT', 'PROCESS'],
+      ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_EVENT'],
       ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_NARRATION_OCCURRENCE'],
       ['PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT', 'PROCESS_NARRATION'],
+      ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_PARTICIPANT'],
     ],
   );
   assert.equal(first.authored_universe_assessment.status, 'NOT_ASSESSED');
@@ -70,7 +74,7 @@ test('binds narration identity to exact source intervals before candidate values
   assert.doesNotThrow(() => validateAuthoredProcessInputs(members));
 
   const narration = members.find(
-    (member) => member.object_kind === 'PROCESS_LOGICAL_TYPE_INPUT',
+    (member) => member.canonical_value.stable_id === 'PROCESS_NARRATION_OCCURRENCE',
   ).canonical_value.definition;
   const slot = members.find(
     (member) => member.object_kind === 'PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT',
@@ -93,7 +97,7 @@ test('grants no current writer, serving or release authority', () => {
     (member) => member.object_kind === 'PROCESS_DOMAIN_REGISTRY_INPUT',
   ).canonical_value;
   const narration = members.find(
-    (member) => member.object_kind === 'PROCESS_LOGICAL_TYPE_INPUT',
+    (member) => member.canonical_value.stable_id === 'PROCESS_NARRATION_OCCURRENCE',
   ).canonical_value.definition;
   const slot = members.find(
     (member) => member.object_kind === 'PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT',
@@ -126,7 +130,7 @@ test('rejects an unknown Process domain and logical type', () => {
 
   const unknownType = processMembers();
   unknownType.find(
-    (member) => member.object_kind === 'PROCESS_LOGICAL_TYPE_INPUT',
+    (member) => member.canonical_value.stable_id === 'PROCESS_NARRATION_OCCURRENCE',
   ).canonical_value.definition.logical_type = 'ProcessParagraph';
   assert.throws(
     () => validateAuthoredProcessInputs(unknownType),
@@ -137,7 +141,7 @@ test('rejects an unknown Process domain and logical type', () => {
 test('rejects value-derived narration identity and paragraph-derived occurrence boundaries', () => {
   const valueIdentity = processMembers();
   valueIdentity.find(
-    (member) => member.object_kind === 'PROCESS_LOGICAL_TYPE_INPUT',
+    (member) => member.canonical_value.stable_id === 'PROCESS_NARRATION_OCCURRENCE',
   ).canonical_value.definition.occurrence_identity.stable_id_inputs[0] = 'model_output';
   assert.throws(
     () => validateAuthoredProcessInputs(valueIdentity),
@@ -146,7 +150,7 @@ test('rejects value-derived narration identity and paragraph-derived occurrence 
 
   const paragraphIdentity = processMembers();
   paragraphIdentity.find(
-    (member) => member.object_kind === 'PROCESS_LOGICAL_TYPE_INPUT',
+    (member) => member.canonical_value.stable_id === 'PROCESS_NARRATION_OCCURRENCE',
   ).canonical_value.definition.source_interval_contract
     .paragraph_boundary_defines_occurrence = true;
   assert.throws(

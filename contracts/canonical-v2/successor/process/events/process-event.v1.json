@@ -1,0 +1,159 @@
+{
+  "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
+  "stable_id": "PROCESS_EVENT",
+  "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "logical_type": "ProcessEvent",
+    "logical_type_version": 1,
+    "event_identity": {
+      "stable_id_domain": "PROCESS_EVENT/V1",
+      "stable_id_inputs": [
+        "frozen_contract_pair_digest",
+        "governed_deal_admission_id",
+        "event_definition_key_and_version",
+        "ordered_process_narration_occurrence_ids",
+        "governed_ordinal"
+      ],
+      "prohibited_inputs": [
+        "candidate_values",
+        "event_date",
+        "event_type_code",
+        "extracted_attributes",
+        "model_output",
+        "participant_revision_ids",
+        "selected_revision_id"
+      ]
+    },
+    "composition_contract": {
+      "member_logical_type": "ProcessNarrationOccurrence",
+      "member_definition_stable_id": "PROCESS_NARRATION_OCCURRENCE",
+      "one_or_more_narrations_required": true,
+      "ordered_unique_member_ids_required": true,
+      "complete_member_universe_required_before_candidate_values": true,
+      "scope_stage_freeze_required": true,
+      "unresolved_member_universe_blocks_context": true,
+      "paragraph_boundary_defines_event": false,
+      "event_definition_required_before_result": true,
+      "expected_result_slot_required_before_materialisation": true
+    },
+    "granularity_contract": {
+      "boundary_rule": "SMALLEST_REAL_WORLD_OCCURRENCE_WITH_DISTINCT_PROCESS_QUESTION",
+      "continuous_multi_paragraph_meeting_is_one_event": true,
+      "same_date_implies_same_event": false,
+      "new_occasion_actor_proposal_response_or_decision_may_start_new_event": true,
+      "continuation_and_retelling_are_relationships": true,
+      "later_retelling_deletes_source_narration": false
+    },
+    "revision_identity": {
+      "revision_type": "ProcessEventRevision",
+      "revision_id_domain": "PROCESS_EVENT_REVISION/V1",
+      "immutable_inputs": [
+        "claim_revision_ids",
+        "event_definition_key_and_version",
+        "event_state",
+        "evidence_edges",
+        "ordered_process_narration_occurrence_ids",
+        "participant_relationship_revision_ids",
+        "process_event_id",
+        "process_relationship_revision_ids",
+        "temporal_expression_revision_id"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": [
+        "PRESENT",
+        "ABSENT",
+        "NOT_APPLICABLE",
+        "NOT_EXAMINED",
+        "FAILED"
+      ],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "dimension_contract": {
+      "required_dimensions_where_applicable": [
+        "event_type_and_governed_family",
+        "temporal_expression",
+        "actor_counterparty_present_party_and_recipient",
+        "participant_side_capacity_and_cardinality",
+        "bidder_track",
+        "deal_phase",
+        "channel",
+        "outcome_or_valence",
+        "publicity",
+        "cause_or_trigger",
+        "agreement_type_and_document_stage",
+        "linked_position_or_consideration_package",
+        "process_relationships",
+        "complete_evidence_and_derivation_lineage"
+      ],
+      "unsupported_or_unclear_dimension_policy": "PRESERVE_TYPED_STATE_NEVER_FABRICATE",
+      "unknown_event_type_has_runtime_path": false,
+      "event_type_registry_required_before_materialisation": true,
+      "participant_role_registry_required_before_materialisation": true
+    },
+    "temporal_contract": {
+      "consumed_shared_logical_type": "TemporalExpression",
+      "shared_definition_stable_id": "TEMPORAL_EXPRESSION",
+      "exact_stated_formulation_retained": true,
+      "computed_value_replaces_source_formulation": false,
+      "unresolved_temporal_state_permitted": true
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "all_member_narrations_required": true,
+      "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES",
+      "complete_scope_required_for_absent": true,
+      "event_grouping_evidence_required": true
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_RESULT_TABLE",
+      "carrier_name": "process_event_results",
+      "release_partitioned": true,
+      "result_definition_required": true
+    },
+    "writer_action": {
+      "action_key": "MATERIALISE_PROCESS_EVENT_RESULT",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false,
+      "definition_grants_execution_authority": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "complete_result_input_lineage_required": true
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "PROCESS_EVENT_REVISION",
+      "event_id_required": true,
+      "revision_id_required": true,
+      "narration_lineage_required": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "PROCESS_EVENT_EVIDENCE",
+      "exact_member_evidence_only": true,
+      "preserve_release_identity": true
+    },
+    "authority_contract": {
+      "creates_runtime_event": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

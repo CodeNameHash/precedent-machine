@@ -1,0 +1,161 @@
+{
+  "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
+  "stable_id": "PROCESS_PARTICIPANT",
+  "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "logical_type": "ProcessParticipant",
+    "logical_type_version": 1,
+    "participant_identity": {
+      "stable_id_domain": "PROCESS_PARTICIPANT/V1",
+      "stable_id_inputs": [
+        "frozen_contract_pair_digest",
+        "governed_deal_admission_id",
+        "process_event_slot_key",
+        "process_participant_slot_key",
+        "governed_ordinal"
+      ],
+      "prohibited_inputs": [
+        "bidder_track_id",
+        "cleaned_name",
+        "display_name",
+        "entity_subject_id",
+        "event_role_code",
+        "model_output",
+        "source_local_label"
+      ]
+    },
+    "event_binding_contract": {
+      "owner_logical_type": "ProcessEvent",
+      "owner_definition_stable_id": "PROCESS_EVENT",
+      "event_slot_frozen_before_candidate_values": true,
+      "participant_slot_frozen_before_candidate_values": true,
+      "one_event_required": true,
+      "one_or_more_participants_per_event_permitted": true,
+      "same_entity_multiple_event_roles_permitted": true
+    },
+    "subject_binding_contract": {
+      "consumed_authority": "SHARED_AUTHORITY",
+      "named_subject_logical_type": "EntitySubject",
+      "named_subject_definition_stable_id": "ENTITY_SUBJECT",
+      "source_local_subject_logical_type": "EntityNameOccurrence",
+      "source_local_subject_definition_stable_id": "ENTITY_NAME_OCCURRENCE",
+      "exactly_one_named_or_source_local_subject_required_when_present": true,
+      "governed_identity_bridge_only": true,
+      "identity_bridge_definition_stable_id": "ENTITY_IDENTITY_BRIDGE",
+      "matching_date_and_economics_can_establish_identity": false,
+      "shared_fact_reauthoring_permitted": false
+    },
+    "identity_state_contract": {
+      "allowed_states": [
+        "NAMED",
+        "GOVERNED_BRIDGE_CONFIRMED",
+        "SOURCE_LOCAL_ONLY",
+        "CONFLICTING"
+      ],
+      "conflicting_state_blocks_grouping_and_filtering": true,
+      "source_local_state_cross_deal_grouping_permitted": false,
+      "source_local_display_rule": "SOURCE_LABEL_WITH_NOT_PUBLICLY_IDENTIFIED_QUALIFIER"
+    },
+    "event_role_contract": {
+      "typed_event_role_required_when_present": true,
+      "event_role_code_is_revision_value_not_identity": true,
+      "event_role_evidence_required": true,
+      "event_role_registry_required_before_materialisation": true,
+      "unknown_event_role_has_runtime_path": false,
+      "legal_or_transaction_role_infers_event_role": false,
+      "side_label_infers_event_role": false
+    },
+    "shared_participant_contract": {
+      "consumed_relationship_logical_type": "DealParticipantRelationship",
+      "consumed_relationship_definition_stable_id": "DEAL_PARTICIPANT_RELATIONSHIP",
+      "deal_participant_relationship_required_when_available": true,
+      "process_event_role_is_distinct_from_legal_and_transaction_roles": true,
+      "bidder_track_binding_required_when_role_or_identity_varies_by_track": true,
+      "bidder_track_definition_required_before_track_binding": true
+    },
+    "revision_identity": {
+      "revision_type": "ProcessParticipantRevision",
+      "revision_id_domain": "PROCESS_PARTICIPANT_REVISION/V1",
+      "immutable_inputs": [
+        "bidder_track_id",
+        "deal_participant_relationship_revision_id",
+        "entity_identity_bridge_revision_id",
+        "entity_subject_id",
+        "event_role_code",
+        "evidence_edges",
+        "identity_state",
+        "process_event_id",
+        "process_participant_id",
+        "revision_state",
+        "source_local_subject_occurrence_id"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": [
+        "PRESENT",
+        "ABSENT",
+        "NOT_APPLICABLE",
+        "NOT_EXAMINED",
+        "FAILED"
+      ],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "event_role_evidence_separate_from_identity_bridge_evidence": true,
+      "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES",
+      "complete_scope_required_for_absent": true
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_RELATIONSHIP_TABLE",
+      "carrier_name": "process_event_participants",
+      "release_partitioned": true
+    },
+    "writer_action": {
+      "action_key": "ADMIT_PROCESS_EVENT_PARTICIPANT",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false,
+      "definition_grants_execution_authority": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "event_and_subject_lineage_required": true
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "PROCESS_PARTICIPANT_REVISION",
+      "participant_id_required": true,
+      "revision_id_required": true,
+      "event_id_required": true,
+      "subject_lineage_required": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "PROCESS_PARTICIPANT_EVIDENCE",
+      "event_role_evidence_only": true,
+      "identity_evidence_uses_own_action": true,
+      "preserve_release_identity": true
+    },
+    "authority_contract": {
+      "creates_runtime_participant": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}
