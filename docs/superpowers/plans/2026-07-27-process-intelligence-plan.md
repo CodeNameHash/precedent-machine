@@ -88,6 +88,32 @@ the remaining findings, classification, cost and recommendation. After freeze,
 any changed contract byte still requires a new exact-root review, freeze and
 fresh same-pair Agreement and Process slices.
 
+## Authorised implementation-planning amendment
+
+The protected V2 programme status now records `implementation_planning: PASS`
+and `canonical_work_start: PASS`.
+
+The detailed bounded plans are:
+
+- Process execution:
+  `docs/superpowers/plans/2026-07-29-process-intelligence-execution-plan.md`,
+  SHA-256
+  `a255661cd51ee121b2d66b9691bd7e55dd2bda44d22c074efe8856973f1d49b0`;
+  and
+- shared deal facts and entity authority:
+  `docs/superpowers/plans/2026-07-29-shared-deal-facts-and-entity-authority-plan.md`,
+  SHA-256
+  `8fb83ae3ac2f71b00f9a951b87d0ce6882eeb18e6954ee027363bf96f79790bf`.
+
+These plans convert the approved Process, shared-authority and product
+acceptance specifications into exact files, tasks, tests and stop conditions.
+They control implementation detail. This parent plan continues to control the
+programme sequence, gates and release boundary.
+
+The first implementation batch is limited to the factual baseline and
+contract-only successor inputs. It stops for delta review before deal-data
+work.
+
 ## Work package 0: freeze evidence and attack the design
 
 ### Deliverables
