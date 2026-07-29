@@ -1,0 +1,173 @@
+{
+  "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
+  "stable_id": "PROCESS_POSITION",
+  "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "logical_type": "ProcessPosition",
+    "logical_type_version": 1,
+    "position_identity": {
+      "stable_id_domain": "PROCESS_POSITION/V1",
+      "stable_id_inputs": [
+        "frozen_contract_pair_digest",
+        "governed_deal_admission_id",
+        "process_position_slot_key",
+        "governed_ordinal"
+      ],
+      "prohibited_inputs": [
+        "bidder_track_id",
+        "consideration_package_id",
+        "extracted_attributes",
+        "model_output",
+        "position_code",
+        "process_event_id",
+        "process_participant_id",
+        "term_code",
+        "temporal_expression_revision_id"
+      ]
+    },
+    "occurrence_slot_contract": {
+      "slot_key_field": "process_position_slot_key",
+      "slot_frozen_before_candidate_values": true,
+      "slot_key_is_self_authorising": false,
+      "precomputed_expected_occurrence_id_binding_required": true,
+      "unresolved_or_missing_slot_blocks_materialisation": true,
+      "identity_only_kernel_grants_materialisation_authority": false
+    },
+    "subject_contract": {
+      "allowed_subject_logical_types": [
+        "BidderTrack",
+        "ProcessParticipant"
+      ],
+      "allowed_subject_definition_stable_ids": [
+        "BIDDER_TRACK",
+        "PROCESS_PARTICIPANT"
+      ],
+      "exactly_one_typed_subject_required_when_present": true,
+      "same_frozen_contract_pair_required": true,
+      "same_governed_deal_required": true,
+      "subject_is_revision_value_not_position_identity": true,
+      "unresolved_or_conflicting_subject_blocks_filtering_and_grouping": true,
+      "free_text_label_can_create_subject": false
+    },
+    "term_contract": {
+      "term_code_is_revision_value_not_identity": true,
+      "term_code_registry_required_before_materialisation": true,
+      "unknown_term_code_has_runtime_path": false,
+      "free_text_term_label_can_create_code": false
+    },
+    "position_value_contract": {
+      "position_code_is_revision_value_not_identity": true,
+      "position_code_registry_required_before_materialisation": true,
+      "exact_source_formulation_retained": true,
+      "silence_can_create_express_refusal": false,
+      "no_recorded_grant_can_create_express_refusal": false,
+      "unsupported_or_unclear_value_policy": "PRESERVE_TYPED_STATE_NEVER_FABRICATE"
+    },
+    "event_link_contract": {
+      "consumed_logical_type": "ProcessEvent",
+      "consumed_definition_stable_id": "PROCESS_EVENT",
+      "typed_relationship_required": true,
+      "relationship_evidence_required": true,
+      "event_id_is_revision_value_not_position_identity": true,
+      "matching_date_alone_can_create_link": false
+    },
+    "consideration_contract": {
+      "consumed_logical_type": "ConsiderationPackage",
+      "consumed_definition_stable_id": "CONSIDERATION_PACKAGE",
+      "typed_link_required_when_applicable": true,
+      "link_evidence_required": true,
+      "consideration_id_is_revision_value_not_position_identity": true,
+      "shared_economic_fact_reauthoring_permitted": false
+    },
+    "temporal_contract": {
+      "consumed_shared_logical_type": "TemporalExpression",
+      "shared_definition_stable_id": "TEMPORAL_EXPRESSION",
+      "exact_stated_formulation_retained": true,
+      "computed_value_replaces_source_formulation": false,
+      "unresolved_temporal_state_permitted": true
+    },
+    "revision_identity": {
+      "revision_type": "ProcessPositionRevision",
+      "revision_id_domain": "PROCESS_POSITION_REVISION/V1",
+      "immutable_inputs": [
+        "bidder_track_revision_id",
+        "consideration_package_revision_id",
+        "evidence_edges",
+        "exact_source_formulation",
+        "position_code",
+        "position_state",
+        "process_event_revision_id",
+        "process_participant_revision_id",
+        "process_position_id",
+        "term_code",
+        "temporal_expression_revision_id"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": [
+        "PRESENT",
+        "ABSENT",
+        "NOT_APPLICABLE",
+        "NOT_EXAMINED",
+        "FAILED"
+      ],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "subject_term_value_and_link_evidence_separable": true,
+      "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES",
+      "complete_scope_required_for_absent": true
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_OCCURRENCE_TABLE",
+      "carrier_name": "process_positions",
+      "release_partitioned": true
+    },
+    "writer_action": {
+      "action_key": "ADMIT_PROCESS_POSITION",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false,
+      "definition_grants_execution_authority": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "subject_term_event_consideration_and_temporal_lineage_required": true
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "PROCESS_POSITION_REVISION",
+      "position_id_required": true,
+      "revision_id_required": true,
+      "subject_and_event_lineage_required": true,
+      "term_value_and_temporal_lineage_required": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "PROCESS_POSITION_EVIDENCE",
+      "exact_evidence_only": true,
+      "preserve_release_identity": true
+    },
+    "authority_contract": {
+      "creates_runtime_position": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
+  "stable_id": "PROCESS_PASSAGE",
+  "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "logical_type": "ProcessPassage",
+    "logical_type_version": 1,
+    "passage_identity": {
+      "stable_id_domain": "PROCESS_PASSAGE/V1",
+      "stable_id_inputs": [
+        "frozen_contract_pair_digest",
+        "governed_deal_admission_id",
+        "admitted_source_occurrence_id",
+        "canonical_source_interval_set",
+        "process_passage_definition_key_and_version",
+        "governed_ordinal"
+      ],
+      "prohibited_inputs": [
+        "citation_label",
+        "inline_preview_text",
+        "model_output",
+        "paragraph_context",
+        "related_process_passage_ids",
+        "rendered_text"
+      ]
+    },
+    "source_contract": {
+      "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES",
+      "exact_ordered_unique_intervals_required": true,
+      "admitted_source_occurrence_required": true,
+      "source_document_identity_required": true,
+      "source_accession_or_equivalent_identity_required": true,
+      "source_intervals_fixed_before_candidate_values": true,
+      "paragraph_boundary_defines_passage": false,
+      "clipped_or_reconstructed_text_permitted": false
+    },
+    "role_contract": {
+      "passage_role_registry_required_before_materialisation": true,
+      "one_or_more_typed_roles_required_when_present": true,
+      "role_codes_are_revision_values_not_identity": true,
+      "free_text_label_can_create_role": false,
+      "actual_drafting_role_supported": true,
+      "summary_cannot_substitute_for_actual_drafting": true
+    },
+    "citation_contract": {
+      "exact_release_identity_required": true,
+      "source_document_identity_required": true,
+      "source_interval_identity_required": true,
+      "citation_open_preserves_release_identity": true,
+      "silent_redirect_to_newer_release_permitted": false,
+      "stale_release_requires_explicit_rerun_action": true
+    },
+    "context_contract": {
+      "bounded_inline_preview_definition_stable_id": "BOUNDED_INLINE_PASSAGE_PREVIEW",
+      "parent_bound_paragraph_context_definition_stable_id": "PARENT_BOUND_PARAGRAPH_CONTEXT",
+      "related_passage_collection_stable_id": "RELATED_PASSAGE_CHILD_COLLECTION",
+      "context_action_must_bind_exact_parent_passage_and_release": true,
+      "show_more_is_repeat_clickable": true,
+      "each_show_more_expands_monotonically": true,
+      "show_less_reverses_one_expansion_step": true,
+      "related_passages_require_typed_relationships": true
+    },
+    "revision_identity": {
+      "revision_type": "ProcessPassageRevision",
+      "revision_id_domain": "PROCESS_PASSAGE_REVISION/V1",
+      "immutable_inputs": [
+        "citation_identity",
+        "evidence_edges",
+        "passage_role_codes",
+        "passage_state",
+        "process_passage_id",
+        "process_relationship_revision_ids",
+        "source_map",
+        "source_text_digest"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": [
+        "PRESENT",
+        "ABSENT",
+        "NOT_APPLICABLE",
+        "NOT_EXAMINED",
+        "FAILED"
+      ],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "passage_text_must_match_admitted_source_bytes": true,
+      "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES",
+      "complete_scope_required_for_absent": true
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_PASSAGE_TABLE",
+      "carrier_name": "process_passages",
+      "release_partitioned": true
+    },
+    "writer_action": {
+      "action_key": "ADMIT_PROCESS_PASSAGE",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false,
+      "definition_grants_execution_authority": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "source_citation_relationship_and_evidence_lineage_required": true
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "PROCESS_PASSAGE_REVISION",
+      "passage_id_required": true,
+      "revision_id_required": true,
+      "source_and_citation_lineage_required": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "PROCESS_PASSAGE_EVIDENCE",
+      "exact_source_bytes_only": true,
+      "preserve_release_identity": true
+    },
+    "authority_contract": {
+      "creates_runtime_passage": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

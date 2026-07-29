@@ -1,0 +1,170 @@
+{
+  "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
+  "stable_id": "PROCESS_RELATIONSHIP",
+  "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "logical_type": "ProcessRelationship",
+    "logical_type_version": 1,
+    "relationship_identity": {
+      "stable_id_domain": "PROCESS_RELATIONSHIP/V1",
+      "stable_id_inputs": [
+        "frozen_contract_pair_digest",
+        "governed_deal_admission_id",
+        "relationship_definition_key_and_version",
+        "source_process_object_kind_and_id",
+        "target_process_object_kind_and_id",
+        "process_relationship_slot_key",
+        "governed_ordinal"
+      ],
+      "prohibited_inputs": [
+        "candidate_values",
+        "evidence_edges",
+        "extracted_attributes",
+        "model_output",
+        "relationship_effect",
+        "source_revision_id",
+        "target_revision_id",
+        "temporal_expression_revision_id"
+      ]
+    },
+    "occurrence_slot_contract": {
+      "slot_key_field": "process_relationship_slot_key",
+      "slot_frozen_before_candidate_values": true,
+      "slot_key_is_self_authorising": false,
+      "precomputed_expected_occurrence_id_binding_required": true,
+      "unresolved_or_missing_slot_blocks_materialisation": true,
+      "identity_only_kernel_grants_materialisation_authority": false
+    },
+    "endpoint_contract": {
+      "allowed_endpoint_logical_types": [
+        "BidderTrack",
+        "ConsiderationPackage",
+        "ProcessAgreement",
+        "ProcessEvent",
+        "ProcessNarrationOccurrence",
+        "ProcessParticipant",
+        "ProcessPassage",
+        "ProcessPhase",
+        "ProcessPosition"
+      ],
+      "allowed_endpoint_definition_stable_ids": [
+        "BIDDER_TRACK",
+        "CONSIDERATION_PACKAGE",
+        "PROCESS_AGREEMENT",
+        "PROCESS_EVENT",
+        "PROCESS_NARRATION_OCCURRENCE",
+        "PROCESS_PARTICIPANT",
+        "PROCESS_PASSAGE",
+        "PROCESS_PHASE",
+        "PROCESS_POSITION"
+      ],
+      "stable_object_ids_not_revision_ids_define_relationship_identity": true,
+      "same_frozen_contract_pair_required": true,
+      "same_governed_deal_required": true,
+      "source_and_target_must_be_distinct": true,
+      "unresolved_endpoint_blocks_materialisation": true,
+      "free_text_label_can_create_endpoint": false
+    },
+    "relationship_type_contract": {
+      "minimum_governed_types": [
+        "AMENDMENT",
+        "CONTINUATION",
+        "CROSS_REFERENCE",
+        "RESPONSE",
+        "RETELLING",
+        "SUPERSESSION"
+      ],
+      "relationship_type_registry_required_before_materialisation": true,
+      "unknown_relationship_type_has_runtime_path": false,
+      "direction_required": true,
+      "free_text_label_can_create_type": false
+    },
+    "semantic_contract": {
+      "continuation_merges_source_objects": false,
+      "retelling_deletes_or_merges_source_object": false,
+      "retelling_automatically_creates_new_market_observation": false,
+      "amendment_and_supersession_preserve_history": true,
+      "cross_reference_implies_identity_equivalence": false,
+      "response_direction_is_source_to_target": true
+    },
+    "revision_identity": {
+      "revision_type": "ProcessRelationshipRevision",
+      "revision_id_domain": "PROCESS_RELATIONSHIP_REVISION/V1",
+      "immutable_inputs": [
+        "evidence_edges",
+        "process_relationship_id",
+        "relationship_effect",
+        "relationship_state",
+        "relationship_type_code",
+        "source_revision_id",
+        "target_revision_id",
+        "temporal_expression_revision_id"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": [
+        "PRESENT",
+        "ABSENT",
+        "NOT_APPLICABLE",
+        "NOT_EXAMINED",
+        "FAILED"
+      ],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "endpoint_type_and_effect_evidence_separable": true,
+      "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES",
+      "complete_scope_required_for_absent": true
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_RELATIONSHIP_TABLE",
+      "carrier_name": "process_relationships",
+      "release_partitioned": true
+    },
+    "writer_action": {
+      "action_key": "ADMIT_PROCESS_RELATIONSHIP",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false,
+      "definition_grants_execution_authority": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "endpoint_type_effect_and_evidence_lineage_required": true
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "PROCESS_RELATIONSHIP_REVISION",
+      "relationship_id_required": true,
+      "revision_id_required": true,
+      "source_and_target_lineage_required": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "PROCESS_RELATIONSHIP_EVIDENCE",
+      "exact_evidence_only": true,
+      "preserve_release_identity": true
+    },
+    "authority_contract": {
+      "creates_runtime_relationship": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

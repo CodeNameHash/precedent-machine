@@ -24,13 +24,17 @@ function member(relativePath) {
 
 function members() {
   return [
+    member('process/agreements/process-agreement.v1.json'),
     member('process/bidder-tracks/bidder-track.v1.json'),
     member('process/domain/process-domain-registry.v1.json'),
     member('process/events/process-event.v1.json'),
     member('process/narration/process-narration-occurrence.v1.json'),
     member('process/occurrence-slots/process-narration.v1.json'),
     member('process/participants/process-participant.v1.json'),
+    member('process/passages/process-passage.v1.json'),
     member('process/phases/process-phase.v1.json'),
+    member('process/positions/process-position.v1.json'),
+    member('process/relationships/process-relationship.v1.json'),
   ];
 }
 
@@ -44,7 +48,7 @@ function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
-test('validates the complete bounded seven-member Process contract input set', () => {
+test('validates the complete bounded Process contract input set', () => {
   assert.doesNotThrow(() => validateAuthoredProcessInputs(members()));
 });
 
@@ -314,7 +318,7 @@ test('rejects identity inference and event-slot semantic drift', () => {
 test('extends authored inputs but remains incomplete and non-freezable', () => {
   const compiled = compileCanonicalContractInput({ root_directory: ROOT });
 
-  assert.equal(compiled.authored_members.length, 99);
+  assert.equal(compiled.authored_members.length, 103);
   assert.equal(compiled.disposition.status, 'INCOMPLETE_UNIVERSE');
   assert.equal(compiled.disposition.freeze_eligible, false);
   assert.equal(compiled.disposition.canonical_contract_bundle_authority, 'NONE');
