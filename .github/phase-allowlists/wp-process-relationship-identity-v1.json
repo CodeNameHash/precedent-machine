@@ -1,0 +1,19 @@
+{
+  "phase": "WP-PROCESS-RELATIONSHIP-IDENTITY-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-relationship-identity-v1.json",
+    "lib/canonical-v2/process-relationship.js",
+    "tests/canonical-v2-process-relationship.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Builds deterministic ProcessRelationship identities from exact frozen endpoint references and a governed slot. It leaves endpoint resolution, relationship type, occurrence-slot binding and materialisation unresolved, and grants no runtime, writer, serving, release, database, import, activation, UI, or production authority."
+}
