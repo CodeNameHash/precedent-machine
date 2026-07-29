@@ -1,0 +1,23 @@
+{
+  "object_kind": "PROCESS_DOMAIN_REGISTRY_INPUT",
+  "stable_id": "PROCESS",
+  "schema_version": "PROCESS_DOMAIN_REGISTRY_INPUT/V1",
+  "domain_key": "PROCESS",
+  "domain_version": 1,
+  "logical_namespace": "CANONICAL_V2_PROCESS",
+  "consumed_authorities": [
+    "AGREEMENT_CONTRACT",
+    "SHARED_AUTHORITY"
+  ],
+  "registry_contract": {
+    "definitions_are_authored_inputs_only": true,
+    "definitions_create_writer_authority": false,
+    "definitions_create_serving_authority": false,
+    "definitions_create_release_authority": false,
+    "unknown_domain_fails_closed": true,
+    "runtime_taxonomy_admission_permitted": false,
+    "published_release_taxonomy_closed": true,
+    "successor_taxonomy_extension_permitted": true,
+    "shared_authority_can_be_consumed_but_not_reauthored": true
+  }
+}

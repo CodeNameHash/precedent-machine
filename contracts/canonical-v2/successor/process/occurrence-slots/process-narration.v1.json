@@ -1,0 +1,53 @@
+{
+  "object_kind": "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT",
+  "stable_id": "PROCESS_NARRATION",
+  "schema_version": "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "slot_key": "PROCESS_NARRATION",
+    "slot_version": 1,
+    "slot_schema": "PROCESS_NARRATION_EXPECTED_OCCURRENCE_SLOT/V1",
+    "owner_logical_type": "ProcessNarrationOccurrence",
+    "owner_definition_stable_id": "PROCESS_NARRATION_OCCURRENCE",
+    "cardinality": "REPEATABLE",
+    "identity_inputs": [
+      "frozen_contract_pair_digest",
+      "governed_deal_admission_id",
+      "narration_definition_key_and_version",
+      "canonical_source_interval_set",
+      "governed_ordinal"
+    ],
+    "value_fields_excluded_from_identity": [
+      "candidate_values",
+      "extracted_attributes",
+      "inferred_event_id",
+      "model_output",
+      "selected_revision_id"
+    ],
+    "owner_and_endpoint_permissions": {
+      "claim_owner": true,
+      "relationship_endpoint": true,
+      "result_input_lineage": true
+    },
+    "scope_and_freeze_contract": {
+      "scope_stage_required": true,
+      "complete_member_universe_required_before_extraction": true,
+      "deterministic_ordinal_required": true,
+      "unresolved_member_universe_blocks_context": true,
+      "candidate_values_can_create_slot": false
+    },
+    "authority_contract": {
+      "creates_runtime_occurrence": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "current_release_writer_path": false
+    },
+    "open_world_contract": {
+      "new_semantic_or_slot_proposal_has_current_release_writer_path": false,
+      "successor_bundle_required": true,
+      "freeze_review_required": true,
+      "fresh_same_pair_slice_required": true
+    }
+  }
+}

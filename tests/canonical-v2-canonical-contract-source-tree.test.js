@@ -75,7 +75,7 @@ test('the single successor source compiles twice byte-identically without claimi
   const second = compileCanonicalContractInput({ root_directory: sourceRoot });
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 86);
+  assert.equal(first.authored_members.length, 89);
   assert.equal(
     first.authored_members.some(
       (member) => member.object_kind === 'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY',
@@ -465,13 +465,13 @@ test('the authored claim interpretation policy is the exact existing V12 policy'
   );
 });
 
-test('the manifest exactly closes the single 86-file Agreement and shared source tree', () => {
+test('the manifest exactly closes the 89-file Agreement, shared and Process source tree', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
   const actualMembers = jsonMembers(sourceRoot);
   const declaredMembers = manifest.members.map((member) => member.relative_path);
 
   assert.deepEqual(actualMembers, declaredMembers);
-  assert.equal(manifest.members.length, 86);
+  assert.equal(manifest.members.length, 89);
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('agreement/')).length,
     70,
@@ -479,6 +479,10 @@ test('the manifest exactly closes the single 86-file Agreement and shared source
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('shared/')).length,
     16,
+  );
+  assert.equal(
+    manifest.members.filter((member) => member.relative_path.startsWith('process/')).length,
+    3,
   );
   assert.equal(
     fs.existsSync(path.join(__dirname, '../lib/schema/canonical/contract-v2')),
@@ -493,6 +497,9 @@ test('the manifest exactly closes the single 86-file Agreement and shared source
     NO_SHOP_SEMANTIC_SCHEMA_INPUT: 5,
     PARSER_PROPOSAL_BOUNDARY_DEFINITION: 1,
     PARTY_TUPLE_SHAPE_MIGRATION_INPUT: 1,
+    PROCESS_DOMAIN_REGISTRY_INPUT: 1,
+    PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT: 1,
+    PROCESS_LOGICAL_TYPE_INPUT: 1,
     PROVISION_CONCEPT: 19,
     RELATIONSHIP_DEFINITION: 5,
     RELATIONSHIP_EFFECT_SCHEMA: 5,
@@ -514,6 +521,11 @@ test('the manifest exactly closes the single 86-file Agreement and shared source
     NO_SHOP_SEMANTIC_SCHEMA_INPUT: ['NO_SHOP_SEMANTIC_SCHEMA_INPUT/V1'],
     PARSER_PROPOSAL_BOUNDARY_DEFINITION: ['PARSER_PROPOSAL_BOUNDARY_DEFINITION/V1'],
     PARTY_TUPLE_SHAPE_MIGRATION_INPUT: ['PARTY_TUPLE_SHAPE_MIGRATION_INPUT/V1'],
+    PROCESS_DOMAIN_REGISTRY_INPUT: ['PROCESS_DOMAIN_REGISTRY_INPUT/V1'],
+    PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT: [
+      'PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT/V1',
+    ],
+    PROCESS_LOGICAL_TYPE_INPUT: ['PROCESS_LOGICAL_TYPE_INPUT/V1'],
     PROVISION_CONCEPT: ['PROVISION_CONCEPT/V1'],
     RELATIONSHIP_DEFINITION: ['RELATIONSHIP_DEFINITION/V1'],
     RELATIONSHIP_EFFECT_SCHEMA: ['RELATIONSHIP_EFFECT_SCHEMA/V1'],

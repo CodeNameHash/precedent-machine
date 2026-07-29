@@ -1,0 +1,134 @@
+{
+  "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
+  "stable_id": "PROCESS_NARRATION_OCCURRENCE",
+  "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "logical_type": "ProcessNarrationOccurrence",
+    "logical_type_version": 1,
+    "expected_occurrence_slot_key": "PROCESS_NARRATION",
+    "occurrence_identity": {
+      "stable_id_domain": "PROCESS_NARRATION_OCCURRENCE/V1",
+      "stable_id_inputs": [
+        "frozen_contract_pair_digest",
+        "governed_deal_admission_id",
+        "narration_definition_key_and_version",
+        "canonical_source_interval_set",
+        "governed_ordinal"
+      ],
+      "prohibited_inputs": [
+        "candidate_values",
+        "extracted_attributes",
+        "inferred_event_id",
+        "model_output",
+        "selected_revision_id"
+      ]
+    },
+    "source_interval_contract": {
+      "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES",
+      "exact_ordered_intervals_required": true,
+      "occurrence_independent": true,
+      "paragraph_boundary_defines_occurrence": false,
+      "unresolved_member_universe_blocks_context": true
+    },
+    "ordinal_contract": {
+      "comparator": "CANONICAL_SOURCE_INTERVAL_COMPARATOR/V1",
+      "frozen_before_candidate_values": true,
+      "candidate_value_order_permitted": false,
+      "insertion_order_permitted": false,
+      "worker_order_permitted": false,
+      "model_output_order_permitted": false
+    },
+    "revision_identity": {
+      "revision_type": "ProcessNarrationRevision",
+      "revision_id_domain": "PROCESS_NARRATION_REVISION/V1",
+      "immutable_inputs": [
+        "claim_revision_ids",
+        "evidence_edges",
+        "process_narration_occurrence_id",
+        "relationship_revision_ids",
+        "revision_status",
+        "source_backed_attributes"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": [
+        "PRESENT",
+        "ABSENT",
+        "NOT_APPLICABLE",
+        "NOT_EXAMINED",
+        "FAILED"
+      ],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "source_occurrence_required": true,
+      "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES",
+      "complete_scope_required_for_absent": true
+    },
+    "ownership_contract": {
+      "claim_owner_permitted": true,
+      "relationship_endpoint_permitted": true,
+      "result_input_lineage_permitted": true,
+      "event_identity_equivalence_implied": false
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_TABLE",
+      "carrier_name": "process_narration_occurrences",
+      "release_partitioned": true
+    },
+    "writer_action": {
+      "action_key": "MATERIALISE_PROCESS_NARRATION_OCCURRENCE",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false,
+      "definition_grants_execution_authority": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "exact_release_citation_redirect": false
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "PROCESS_NARRATION_REVISION",
+      "occurrence_id_required": true,
+      "revision_id_required": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "PROCESS_NARRATION_EVIDENCE",
+      "exact_evidence_only": true,
+      "preserve_release_identity": true
+    },
+    "consumer_projection_rule": {
+      "projection_type": "ProcessPhrasebookPassageResult",
+      "terminal_type": "PROCESS_NARRATION_REVISION",
+      "typed_state_required": true,
+      "release_identity_required": true,
+      "conflict_indicator_required": true,
+      "projection_definition_required_before_serving": true
+    },
+    "type_contract": {
+      "source_local": true,
+      "event_composition_required_for_real_world_event": true,
+      "paragraph_boundary_defines_identity": false,
+      "continuation_and_retelling_are_relationships": true,
+      "later_retelling_deletes_source_narration": false,
+      "candidate_values_can_create_identity": false,
+      "unresolved_scope_blocks_publication": true
+    }
+  }
+}
