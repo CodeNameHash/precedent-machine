@@ -183,6 +183,7 @@ const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
   'tests/programme-gates/integration-window.spec.js',
   'tests/programme-gates/programme-status-consumer.spec.js',
   'tests/programme-gates/programme-status-successor.spec.js',
+  'tests/programme-gates/publication-executor.spec.js',
   'tests/programme-gates/predicates.spec.js',
   'tests/programme-gates/review-artifact.spec.js',
   'tests/programme-gates/review-contracts.spec.js',
