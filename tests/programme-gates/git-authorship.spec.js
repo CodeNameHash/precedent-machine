@@ -9,14 +9,14 @@ const {
 
 const ROOT = path.resolve(__dirname, '../..');
 
-test('review independence enumerates the complete non-shallow Git DAG itself', () => {
-  const expectedCommit = execFileSync('git', ['rev-parse', 'HEAD'], {
+test('review independence enumerates exact reviewed-commit ancestry itself', () => {
+  const expectedCommit = execFileSync('git', ['rev-parse', 'HEAD~1'], {
     cwd: ROOT,
     encoding: 'utf8',
   }).trim();
   const expectedCommits = new Set(execFileSync(
     'git',
-    ['rev-list', '--all', expectedCommit],
+    ['rev-list', expectedCommit],
     { cwd: ROOT, encoding: 'utf8' },
   ).trim().split('\n'));
   const events = enumerateCompleteGitAuthorshipUniverse({
@@ -27,7 +27,7 @@ test('review independence enumerates the complete non-shallow Git DAG itself', (
   assert.ok(events.every((event) => event.identity_set.length > 0));
 });
 
-test('review independence rejects a commit other than repository HEAD', () => {
+test('review independence rejects an unknown reviewed commit', () => {
   assert.throws(
     () => enumerateCompleteGitAuthorshipUniverse({
       repositoryRoot: ROOT,

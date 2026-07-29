@@ -3161,3 +3161,19 @@ The following adversarial closure tests are mandatory traceability entries:
   inventory and require zero writes. The abandoned attestation must be
   ineligible for every import, readiness, cutover, reactivation and serving
   predicate.
+# Generation-1 owner-authorisation adversarial cases
+
+- A signed `FAIL` output whose disposition or digest differs from its
+  controller record is rejected.
+- The review-set identity changes if the outer artefact hash, byte size,
+  reviewed commit, reviewed root or ordered lane members change.
+- The owner-authorisation is rejected if its current root or commit, reviewed
+  root or commit, governance diff, actor identity, run identity or exact intent
+  changes.
+- A deleted governance file is included in the closed changed-path set, and a
+  successor that is not descended from the reviewed basis is rejected.
+- Any production write, re-extraction, backfill, import, release activation,
+  feature activation or cutover permission is rejected.
+- A V2 outcome record, including one carrying only `PASS` strings, cannot
+  satisfy the strict V1 P1 authority contract. P1 requires all five signed V1
+  lanes to pass independently.

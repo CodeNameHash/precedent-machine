@@ -24,6 +24,9 @@ const ROOT = 'a'.repeat(64);
 const DIGEST_B = 'b'.repeat(64);
 const DIGEST_C = 'c'.repeat(64);
 const DIGEST_D = 'd'.repeat(64);
+const COMMIT = 'f'.repeat(40);
+const REVIEW_ARTIFACT_SHA256 = 'e'.repeat(64);
+const REVIEW_ARTIFACT_BYTE_SIZE = 16759182;
 const NOW = '2026-07-27T12:00:00.000Z';
 
 function keys() {
@@ -93,6 +96,10 @@ function fixture() {
     other_lane_model_identifiers: ['gpt-5.6-sol'],
   };
   const members = REVIEW_LANES.map((lane, index) => {
+    const reviewOutput = {
+      disposition: 'PASS',
+      findings: [],
+    };
     const controller = {
       schema_version: 'TrustedReviewControllerRecord/V1',
       controller_id: 'CODEX_CLI_REVIEW_CONTROLLER',
@@ -174,7 +181,10 @@ function fixture() {
       exact_input_context_digest: DIGEST_C,
       input_context_digest_before_review: DIGEST_C,
       input_context_digest_after_review: DIGEST_C,
-      review_output_digest: DIGEST_D,
+      review_output_digest: domainDigest(
+        'PROGRAMME_GATE_REVIEW_OUTPUT/V1',
+        reviewOutput,
+      ),
       review_start_time: '2026-07-27T10:00:00.000Z',
       review_end_time: '2026-07-27T10:30:00.000Z',
       reviewer_principal_id: `controller-${index}/session-${index}`,
@@ -202,8 +212,8 @@ function fixture() {
       immutable_session_id: controller.immutable_session_id,
       session_parent_or_genesis: 'GENESIS',
       exact_input_context_digest: controller.exact_input_context_digest,
-      reviewed_code_commit: 'f'.repeat(40),
-      source_control_history_scope: 'ALL_REFS_FROM_REPOSITORY_GENESIS',
+      reviewed_code_commit: COMMIT,
+      source_control_history_scope: 'REVIEWED_COMMIT_ANCESTRY_FROM_REPOSITORY_GENESIS',
       source_control_authorship_events: [{
         commit_id: `${index + 1}`.repeat(40),
         identity_set: ['Ben Goodchild', 'bengoodchild@gmail.com'],
@@ -232,6 +242,7 @@ function fixture() {
     return {
       lane_id: lane.lane_id,
       controller_record: controller,
+      review_output: reviewOutput,
       independence_attestation: independence,
     };
   });
@@ -241,6 +252,9 @@ function fixture() {
 function verifyReview(sample) {
   return verifyReviewSetEvidence({
     expected_specification_root: ROOT,
+    expected_code_commit: COMMIT,
+    review_artifact_sha256: REVIEW_ARTIFACT_SHA256,
+    review_artifact_byte_size: REVIEW_ARTIFACT_BYTE_SIZE,
     members: sample.members,
     authority: sample.authority,
     at: NOW,
@@ -256,6 +270,12 @@ test('five signed cold lanes and independence attestations produce one reviewed 
   assert.deepEqual(projectReviewSetAttestation(result), {
     review_set_evidence_id: result.evidence_id,
     reviewed_root: ROOT,
+    reviewed_code_commit: COMMIT,
+    review_artifact_sha256: REVIEW_ARTIFACT_SHA256,
+    review_artifact_byte_size: REVIEW_ARTIFACT_BYTE_SIZE,
+    lane_outcomes: result.facts.lane_outcomes.map((outcome) => ({ ...outcome })),
+    full_review_disposition: 'PASS',
+    full_review_pass_claimed: false,
   });
 });
 
@@ -295,11 +315,46 @@ test('wrong root, Sol reasoning, signatures and non-empty independence roots sta
   }
 });
 
-function benRecord(sample, passingReviewSetId, overrides = {}) {
+function benRecord(sample, reviewSetId, overrides = {}) {
   const record = {
-    schema_version: 'BenSpecificationApproval/V1',
+    schema_version: 'BenSpecificationApproval/V2',
     approved_root: ROOT,
-    passing_review_set_evidence_id: passingReviewSetId,
+    approved_code_commit: COMMIT,
+    review_set_evidence_id: reviewSetId,
+    reviewed_root: ROOT,
+    reviewed_code_commit: COMMIT,
+    review_artifact_sha256: REVIEW_ARTIFACT_SHA256,
+    review_artifact_byte_size: REVIEW_ARTIFACT_BYTE_SIZE,
+    full_review_pass_claimed: false,
+    authorisation_scope: 'ISOLATED_STAGING_CANONICAL_IMPLEMENTATION',
+    permitted_actions: [
+      'IMPLEMENTATION_PLANNING',
+      'ISOLATED_STAGING_SETUP',
+      'STAGING_SNAPSHOT_RESTORE_AND_PREVIEW',
+      'STAGING_ONLY_CANONICAL_ENGINEERING_BEHIND_DISABLED_PRODUCTION_FLAGS',
+    ],
+    prohibited_actions: [
+      'PRODUCTION_DATA_OR_CORPUS_WRITE',
+      'PRODUCTION_REEXTRACTION_OR_BACKFILL',
+      'PRODUCTION_OR_RELEASE_IMPORT',
+      'RELEASE_ACTIVATION',
+      'PRODUCT_FEATURE_ACTIVATION',
+      'PRODUCTION_CUTOVER',
+    ],
+    review_findings_disposition: 'ACKNOWLEDGED_NOT_RESOLVED_OR_WAIVED',
+    p1_p9_gate_state: 'OPEN',
+    governance_diff: {
+      basis_code_commit: COMMIT,
+      authorised_code_commit: COMMIT,
+      changed_paths: ['docs/CODEX-PROGRAM.md'],
+      allowed_path_set_digest: DIGEST_B,
+      patch_digest: DIGEST_C,
+      unexpected_paths: [],
+    },
+    github_actor_login: 'CodeNameHash',
+    github_actor_id: '264183176',
+    github_run_id: '30439653818',
+    approval_intent: 'AUTHORISE_ISOLATED_STAGING_CANONICAL_IMPLEMENTATION',
     approver_identity: 'BEN_GOODCHILD',
     conditions: [],
     approved_at: '2026-07-27T11:00:00.000Z',
@@ -325,16 +380,38 @@ test('Ben approval must be signed, unconditional and bound to the passing review
   const result = verifyBenApprovalEvidence({
     record,
     expected_specification_root: ROOT,
-    passing_review_set_evidence_id: review.evidence_id,
+    expected_code_commit: COMMIT,
+    review_set_evidence_id: review.evidence_id,
+    reviewed_root: ROOT,
+    reviewed_code_commit: COMMIT,
     authority: { key_registry: sample.keySet.registry },
     at: NOW,
   });
   assert.equal(result.state, 'PASS');
-  assert.equal(result.facts.passing_review_set_evidence_id, review.evidence_id);
+  assert.equal(result.facts.review_set_evidence_id, review.evidence_id);
   assert.deepEqual(projectBenApprovalEvidence(result, record), {
     approval_evidence_id: result.evidence_id,
     approved_root: ROOT,
-    passing_review_set_evidence_id: review.evidence_id,
+    approved_code_commit: COMMIT,
+    review_set_evidence_id: review.evidence_id,
+    reviewed_root: ROOT,
+    reviewed_code_commit: COMMIT,
+    review_artifact_sha256: REVIEW_ARTIFACT_SHA256,
+    review_artifact_byte_size: REVIEW_ARTIFACT_BYTE_SIZE,
+    full_review_pass_claimed: false,
+    authorisation_scope: record.authorisation_scope,
+    permitted_actions: record.permitted_actions,
+    prohibited_actions: record.prohibited_actions,
+    review_findings_disposition: record.review_findings_disposition,
+    p1_p9_gate_state: 'OPEN',
+    governance_diff_digest: domainDigest(
+      'PROGRAMME_GATE_GOVERNANCE_DIFF/V1',
+      record.governance_diff,
+    ),
+    github_actor_login: 'CodeNameHash',
+    github_actor_id: '264183176',
+    github_run_id: '30439653818',
+    approval_intent: 'AUTHORISE_ISOLATED_STAGING_CANONICAL_IMPLEMENTATION',
     conditions: [],
   });
 
@@ -347,7 +424,10 @@ test('Ben approval must be signed, unconditional and bound to the passing review
     assert.equal(verifyBenApprovalEvidence({
       ...changed,
       expected_specification_root: ROOT,
-      passing_review_set_evidence_id: review.evidence_id,
+      expected_code_commit: COMMIT,
+      review_set_evidence_id: review.evidence_id,
+      reviewed_root: ROOT,
+      reviewed_code_commit: COMMIT,
       authority: { key_registry: sample.keySet.registry },
       at: NOW,
     }).state, 'OPEN');
