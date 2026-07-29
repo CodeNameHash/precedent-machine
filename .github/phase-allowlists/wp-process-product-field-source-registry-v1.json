@@ -1,0 +1,18 @@
+{
+  "phase": "WP-PROCESS-PRODUCT-FIELD-SOURCE-REGISTRY-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-product-field-source-registry-v1.json",
+    "lib/canonical-v2/product-field-source-registry.js",
+    "tests/canonical-v2-product-field-source-registry.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Implements one pure PM-wide Product field source-registry compiler against separately admitted source catalogues, the pinned Agreement inventory and reviewed field and alias decisions. It grants no UI, network, database, extraction, canonical-write, writer, serving, release, import, activation, production or contract-freeze authority."
+}
