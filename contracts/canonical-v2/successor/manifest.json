@@ -494,6 +494,13 @@
       "canonical_bytes_digest": "a20a17e8efba58d6bf3337f4e42a867124f9c8bf89de97b838d118828e7214ad"
     },
     {
+      "relative_path": "process/bidder-tracks/bidder-track.v1.json",
+      "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
+      "stable_id": "BIDDER_TRACK",
+      "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "55c2c3e7e276ff80e4c0d6ba4c12c7d8716978f7fba839b556be946ecd386975"
+    },
+    {
       "relative_path": "process/domain/process-domain-registry.v1.json",
       "object_kind": "PROCESS_DOMAIN_REGISTRY_INPUT",
       "stable_id": "PROCESS",
@@ -505,7 +512,7 @@
       "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
       "stable_id": "PROCESS_EVENT",
       "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
-      "canonical_bytes_digest": "d9fcaf32ec4c5382487a9a4018b6cb97fb0ace7767eb9a437c51b56149c30b87"
+      "canonical_bytes_digest": "c3f227216bce15984e1c105c336a6aea198b8c3b2fd674e96de5d9e227a24b7a"
     },
     {
       "relative_path": "process/narration/process-narration-occurrence.v1.json",
@@ -526,7 +533,14 @@
       "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
       "stable_id": "PROCESS_PARTICIPANT",
       "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
-      "canonical_bytes_digest": "dcebd7a29dca05db51c14e21b79bbcfdca05cc16ae84125e73f279ea90ab3cea"
+      "canonical_bytes_digest": "f79f1dd0ae110f24e1e293d094673333df32f8c07567103244d23ceeebc3b93a"
+    },
+    {
+      "relative_path": "process/phases/process-phase.v1.json",
+      "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
+      "stable_id": "PROCESS_PHASE",
+      "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "791d8d83f3ed79b596b27c7352df21dab74216e6f51c9629f7c308e909909e31"
     },
     {
       "relative_path": "shared/deal-facts/deal-fact-resolution-occurrence.v1.json",
@@ -652,7 +666,7 @@
     "PARTY_TUPLE_SHAPE_MIGRATION_INPUT": 1,
     "PROCESS_DOMAIN_REGISTRY_INPUT": 1,
     "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT": 1,
-    "PROCESS_LOGICAL_TYPE_INPUT": 3,
+    "PROCESS_LOGICAL_TYPE_INPUT": 5,
     "PROVISION_CONCEPT": 19,
     "RELATIONSHIP_DEFINITION": 5,
     "RELATIONSHIP_EFFECT_SCHEMA": 5,
