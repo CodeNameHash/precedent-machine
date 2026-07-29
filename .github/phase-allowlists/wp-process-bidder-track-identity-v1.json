@@ -1,0 +1,19 @@
+{
+  "phase": "WP-PROCESS-BIDDER-TRACK-IDENTITY-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-bidder-track-identity-v1.json",
+    "lib/canonical-v2/process-bidder-track-identity.js",
+    "tests/canonical-v2-process-bidder-track-identity.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Constructs deterministic BidderTrack identities from bounded synthetic slot inputs. It grants no expected-slot binding, extraction, subject identity, participant or event membership, track state, writer, serving, release, canonical-write, database, import, activation, UI, or production authority."
+}
