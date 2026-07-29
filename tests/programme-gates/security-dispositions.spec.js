@@ -50,6 +50,9 @@ function testResult(overrides = {}) {
     completed_at: '2026-07-28T07:20:00.000Z',
     exit_code: 0,
     output_digest: 'e'.repeat(64),
+    attester_key_id: 'TEST_VALIDATOR_KEY',
+    signature_algorithm: 'Ed25519',
+    execution_signature: 'AA==',
     ...overrides,
   });
 }

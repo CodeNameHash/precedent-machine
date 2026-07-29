@@ -66,8 +66,8 @@ programme_gate_registry:
       missing_or_post_review_selected_member_effect: OPEN
     bootstrap_compiled_registry_binding:
       source_path: docs/codex-program/bootstrap-acceptance-source.json
-      source_sha256: 9c0948292ee63d69c56145d32d5bbe91f4bbfb7ca9a813f8f1342f93041ade49
-      closed_validator_executable_set_digest: ef039de82fe0098a0146179a469384ed7a6865b15c026a5dcbb6a1439efd4904
+      source_sha256: 2d6b03906cac7f28499c7b02da66e041a43bd0a54067adc604476431f26ff0ce
+      closed_validator_executable_set_digest: c74c019db434483b4cb49574fa9e4d8d7b1b9b8448e294ffa2d0bcbb6aed7b93
       authority: ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE
       exact_active_definition_count: 11
       exact_genesis_gate_count: 10
@@ -133,7 +133,15 @@ programme_gate_registry:
       validator_executable_and_configuration_are_allowlisted: true
       verify_signature_and_trust_chain: true
       required_adversarial_tests_are_terminal_pass: true
+      required_adversarial_test_execution_signatures_are_trusted: true
       terminal_state_must_equal: PASS
+    adversarial_test_execution_attestation:
+      schema: ProgrammeGateTestExecutionRecord/V1
+      protected_signer_role: TEST_EXECUTION_ATTESTER
+      signature_domain: PROGRAMME_GATE_TEST_EXECUTION/V1
+      attester_key_must_equal_envelope_validator_key: true
+      signed_fields_include_exit_code_and_output_digest: true
+      caller_supplied_unsigned_or_tampered_result_effect: OPEN
     schema_or_predicate_unregistered_effect: OPEN
     unknown_extra_or_missing_claim_effect: OPEN
     request_supplied_result_effect: OPEN
@@ -174,7 +182,7 @@ programme_gate_registry:
       exact_model_identifier: gpt-5.6-sol
       reasoning_level: xhigh
       fixed_context_rule: HASH_OF_CLOSED_TRUSTED_REVIEW_RUNTIME_CONTEXT_WITH_FRESH_CONTROLLER_CREATED_PATHS
-      fixed_context_closed_fields: [context_version, review_runtime_binary_path, review_runtime_version, review_runtime_binary_digest, working_directory, operating_system, architecture, home_path, codex_home_path, tmpdir_path, path_value, lang, lc_all, term]
+      fixed_context_closed_fields: [context_version, review_runtime_binary_path, review_runtime_version, review_runtime_binary_digest, controller_run_root, lane_run_root, working_directory, operating_system, architecture, home_path, codex_home_path, tmpdir_path, path_value, lang, lc_all, term]
       fixed_context_constants: [TrustedReviewRuntimeContext/V1, /opt/homebrew/bin/codex, codex-cli/0.145.0, darwin, arm64, "/opt/homebrew/bin:/usr/bin:/bin", en_US.UTF-8, en_US.UTF-8, dumb]
       fresh_path_rule: EACH_WORKING_HOME_CODEX_HOME_AND_TMPDIR_PATH_IS_CONTROLLER_CREATED_UNDER_THE_ONE_RUN_TEMP_ROOT_AND_IS_PAIRWISE_DISTINCT
       unknown_runtime_field_constant_OR_path_outside_run_root_effect: INELIGIBLE
@@ -187,11 +195,11 @@ programme_gate_registry:
       missing_extra_or_digest_mismatched_prompt_effect: INELIGIBLE
     frozen_independence_validator_allowlist:
       validator_key_id: PROGRAMME_GATE_VALIDATOR_2026_07
-      validator_executable_digest: c15bc336938092ecea534018e6c80da15d41e05d1e55facc259661ddd5171cae
-      validator_configuration_digest: 8518fca95839fcf5ab0463c5cbb1009265a7240314f84acd392f2d4287a72a5a
+      validator_executable_digest: c74c019db434483b4cb49574fa9e4d8d7b1b9b8448e294ffa2d0bcbb6aed7b93
+      validator_configuration_digest: cf81cbe11a55801efdbd7eab3376fa61f83823e3bfa1fe51e0decd98a00abd02
     frozen_trust_root_set:
       registry_schema: programme-gate-trusted-public-keys/v1
-      registry_source_sha256: c10f66a62220a84e82118d6fac35cb45fbb97b87feed3ecf564cef077b9f5575
+      registry_source_sha256: d6efe4b49c56c58f385a01c3b8a9f7bd896e8b0934ffb31363d265c472aebed3
       keys:
         PROGRAMME_GATE_VALIDATOR_2026_07: 5b028d01aaa4f077c6f2f28ef8075195330eff00c2f81061fad8622b761de566
         PROGRAMME_STATUS_PUBLISHER_2026_07: d7f562af345fcb04a78f26c87b3e3f19b1cad6c8627ccc612396a4217d8a02c1

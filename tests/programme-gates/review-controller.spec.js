@@ -56,12 +56,14 @@ function runtimeContext(overrides = {}) {
     review_runtime_binary_path: '/opt/homebrew/bin/codex',
     review_runtime_version: 'codex-cli/0.145.0',
     review_runtime_binary_digest: DIGEST_D,
-    working_directory: '/immutable/specification-checkout',
+    controller_run_root: '/private/tmp/g0-cold-review-test',
+    lane_run_root: '/private/tmp/g0-cold-review-test/legal_semantic-lane',
+    working_directory: '/private/tmp/g0-cold-review-test/legal_semantic-lane/specification',
     operating_system: 'darwin',
     architecture: 'arm64',
-    home_path: '/private/tmp/review-run/home',
-    codex_home_path: '/private/tmp/review-run/codex-home',
-    tmpdir_path: '/private/tmp/review-run/tmp',
+    home_path: '/private/tmp/g0-cold-review-test/legal_semantic-lane/home',
+    codex_home_path: '/private/tmp/g0-cold-review-test/legal_semantic-lane/codex-home',
+    tmpdir_path: '/private/tmp/g0-cold-review-test/legal_semantic-lane/tmp',
     path_value: '/opt/homebrew/bin:/usr/bin:/bin',
     lang: 'C.UTF-8',
     lc_all: 'C.UTF-8',
@@ -113,9 +115,9 @@ test('plans the exact read-only fresh Codex CLI audit under env -i', () => {
   assert.equal(plan.invocation.executable, '/usr/bin/env');
   assert.deepEqual(plan.invocation.arguments.slice(0, 10), [
     '-i',
-    'HOME=/private/tmp/review-run/home',
-    'CODEX_HOME=/private/tmp/review-run/codex-home',
-    'TMPDIR=/private/tmp/review-run/tmp',
+    'HOME=/private/tmp/g0-cold-review-test/legal_semantic-lane/home',
+    'CODEX_HOME=/private/tmp/g0-cold-review-test/legal_semantic-lane/codex-home',
+    'TMPDIR=/private/tmp/g0-cold-review-test/legal_semantic-lane/tmp',
     'PATH=/opt/homebrew/bin:/usr/bin:/bin',
     'LANG=C.UTF-8',
     'LC_ALL=C.UTF-8',
@@ -227,7 +229,7 @@ test('rejects mutable task inputs and extra task input', () => {
   );
 });
 
-test('rejects unknown fixed runtime context and non-fresh scratch paths', () => {
+test('rejects unknown context, shared paths and paths outside the signed run root', () => {
   assert.throws(
     () => buildTrustedReviewPlan(planInput({
       runtime_context: {
@@ -240,10 +242,18 @@ test('rejects unknown fixed runtime context and non-fresh scratch paths', () => 
   assert.throws(
     () => buildTrustedReviewPlan(planInput({
       runtime_context: runtimeContext({
-        codex_home_path: '/private/tmp/review-run/home',
+        codex_home_path: '/private/tmp/g0-cold-review-test/legal_semantic-lane/home',
       }),
     })),
-    /must be separate fresh directories/,
+    /must be distinct/,
+  );
+  assert.throws(
+    () => buildTrustedReviewPlan(planInput({
+      runtime_context: runtimeContext({
+        tmpdir_path: '/private/tmp/outside-run/tmp',
+      }),
+    })),
+    /exact provenance/,
   );
 });
 

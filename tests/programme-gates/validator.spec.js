@@ -26,6 +26,12 @@ const {
   expectedTestExecutableDigest,
 } = require('../../lib/programme-gates/test-executable-registry');
 const {
+  TEST_EXECUTION_SIGNATURE_DOMAIN,
+  TEST_EXECUTION_SIGNATURE_ROLE,
+  attestTestExecutionRecord,
+  unsignedTestExecutionRecord,
+} = require('../../lib/programme-gates/test-execution-attestation');
+const {
   ACCEPTANCE_DEFINITION_ID_DOMAIN,
   EVIDENCE_SIGNATURE_DOMAIN,
   EVIDENCE_SIGNATURE_ROLE,
@@ -54,6 +60,10 @@ const RAW_SCHEMA_ID = 'MarketStatsContainmentAttestation/V1';
 const MEMBER_SCHEMA_ID = 'RouteProbe/V1';
 const NOW = '2026-07-27T12:00:00.000Z';
 const OBSERVED_AT = '2026-07-27T11:00:00.000Z';
+const {
+  publicKey: TEST_PUBLIC_KEY,
+  privateKey: TEST_PRIVATE_KEY,
+} = crypto.generateKeyPairSync('ed25519');
 const RAW_KEYS = Object.freeze([
   'schema_version',
   'gate_id',
@@ -113,7 +123,8 @@ const EVIDENCE = Object.freeze({
     environment: 'STAGING',
     observed_at: OBSERVED_AT,
   })]),
-  tests: Object.freeze([Object.freeze({
+  tests: Object.freeze([attestTestExecutionRecord({
+    record: Object.freeze({
     schema_version: 'ProgrammeGateTestExecutionRecord/V1',
     test_id: 'P0-ROUTE-01',
     code_commit: COMMIT,
@@ -124,6 +135,9 @@ const EVIDENCE = Object.freeze({
     completed_at: '2026-07-27T10:30:00.000Z',
     exit_code: 0,
     output_digest: '4'.repeat(64),
+    }),
+    attesterKeyId: 'TEST_VALIDATOR_KEY',
+    sign: (bytes) => crypto.sign(null, bytes, TEST_PRIVATE_KEY).toString('base64'),
   })]),
 });
 
@@ -224,7 +238,8 @@ function definitionFixture() {
 }
 
 function fixture() {
-  const { publicKey, privateKey } = crypto.generateKeyPairSync('ed25519');
+  const publicKey = TEST_PUBLIC_KEY;
+  const privateKey = TEST_PRIVATE_KEY;
   const definition = definitionFixture();
   const evidenceSubject = {
     gate_id: GATE.id,
@@ -248,8 +263,8 @@ function fixture() {
     key_id: 'TEST_VALIDATOR_KEY',
     algorithm: 'Ed25519',
     public_key_pem: publicKey.export({ format: 'pem', type: 'spki' }).toString('utf8'),
-    permitted_roles: [EVIDENCE_SIGNATURE_ROLE],
-    permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN],
+    permitted_roles: [TEST_EXECUTION_SIGNATURE_ROLE, EVIDENCE_SIGNATURE_ROLE],
+    permitted_domains: [EVIDENCE_SIGNATURE_DOMAIN, TEST_EXECUTION_SIGNATURE_DOMAIN],
     valid_from: '2026-07-27T00:00:00.000Z',
     valid_until: '2026-07-28T00:00:00.000Z',
     revoked_at: null,
@@ -464,11 +479,15 @@ test('old evidence and an absent trusted clock return OPEN', () => {
     EVIDENCE_SUBJECT_PAYLOAD_DOMAIN,
     old.input.evidenceSubject,
   );
-  old.input.testResults = [{
-    ...TEST_RESULTS[0],
-    started_at: '2026-07-26T10:00:00.000Z',
-    completed_at: '2026-07-26T10:30:00.000Z',
-  }];
+  old.input.testResults = [attestTestExecutionRecord({
+    record: {
+      ...unsignedTestExecutionRecord(TEST_RESULTS[0]),
+      started_at: '2026-07-26T10:00:00.000Z',
+      completed_at: '2026-07-26T10:30:00.000Z',
+    },
+    attesterKeyId: 'TEST_VALIDATOR_KEY',
+    sign: (bytes) => crypto.sign(null, bytes, TEST_PRIVATE_KEY).toString('base64'),
+  })];
   old.envelope.test_result_root = domainDigest(
     TEST_RESULT_ROOT_DOMAIN,
     old.input.testResults,
@@ -478,7 +497,7 @@ test('old evidence and an absent trusted clock return OPEN', () => {
 
   const noClock = fixture();
   noClock.input.clock = undefined;
-  assertOpen(validate(noClock), 'CLAIM_EVALUATION_FAILED');
+  assertOpen(validate(noClock), 'ADVERSARIAL_TEST_ATTESTATION_NOT_TRUSTED');
 });
 
 test('another specification root, code commit or environment returns OPEN', () => {
@@ -574,6 +593,33 @@ test('missing, extra or failed adversarial test results return OPEN', () => {
   }
 });
 
+test('caller-supplied passing execution fields cannot pass after re-rooting and re-signing', () => {
+  for (const mutation of [
+    { output_digest: '9'.repeat(64) },
+    { exit_code: 0, command_digest: '8'.repeat(64) },
+  ]) {
+    const sample = fixture();
+    sample.input.testResults = [{
+      ...TEST_RESULTS[0],
+      ...mutation,
+    }];
+    sample.input.evidenceObject = {
+      ...EVIDENCE,
+      tests: sample.input.testResults,
+    };
+    sample.envelope.required_evidence_object_payload_digest = domainDigest(
+      EVIDENCE_OBJECT_PAYLOAD_DOMAIN,
+      sample.input.evidenceObject,
+    );
+    sample.envelope.test_result_root = domainDigest(
+      TEST_RESULT_ROOT_DOMAIN,
+      sample.input.testResults,
+    );
+    sample.sign();
+    assertOpen(validate(sample), 'ADVERSARIAL_TEST_ATTESTATION_NOT_TRUSTED');
+  }
+});
+
 test('invalid signature and untrusted key return OPEN', () => {
   const invalidSignature = fixture();
   invalidSignature.envelope.signature = Buffer.alloc(64, 9).toString('base64');
@@ -585,28 +631,33 @@ test('invalid signature and untrusted key return OPEN', () => {
     registry_state: 'ACTIVE',
     keys: [],
   };
-  assertOpen(validate(untrusted), 'SIGNATURE_NOT_TRUSTED');
+  assertOpen(validate(untrusted), 'ADVERSARIAL_TEST_ATTESTATION_NOT_TRUSTED');
 
   const falseVerifier = fixture();
   falseVerifier.dependencies.verifySignature = () => false;
-  assertOpen(validate(falseVerifier), 'SIGNATURE_NOT_TRUSTED');
+  assertOpen(validate(falseVerifier), 'ADVERSARIAL_TEST_ATTESTATION_NOT_TRUSTED');
 });
 
 test('wrong key role, domain, validity or revocation returns OPEN', () => {
   const keyMutations = [
-    { permitted_roles: ['STATUS_PUBLISHER'] },
-    { permitted_domains: ['PROGRAMME_GATE_STATUS/V2'] },
+    { permitted_roles: [TEST_EXECUTION_SIGNATURE_ROLE] },
+    { permitted_domains: [TEST_EXECUTION_SIGNATURE_DOMAIN] },
     { valid_from: '2026-07-27T12:00:00.001Z' },
     { valid_until: '2026-07-27T12:00:00.000Z' },
     { revoked_at: '2026-07-27T11:00:00.000Z' },
   ];
-  for (const mutation of keyMutations) {
+  for (const [index, mutation] of keyMutations.entries()) {
     const sample = fixture();
     sample.dependencies.keyRegistry = {
       ...sample.dependencies.keyRegistry,
       keys: [{ ...sample.key, ...mutation }],
     };
-    assertOpen(validate(sample), 'SIGNATURE_NOT_TRUSTED');
+    assertOpen(
+      validate(sample),
+      index < 2
+        ? 'SIGNATURE_NOT_TRUSTED'
+        : 'ADVERSARIAL_TEST_ATTESTATION_NOT_TRUSTED',
+    );
   }
 });
 

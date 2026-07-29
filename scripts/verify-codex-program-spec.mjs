@@ -188,6 +188,8 @@ function validateGateRegistry() {
   const controllerAllowlist = reviewer.frozen_controller_and_runtime_allowlist;
   const laneAllowlist = reviewer.frozen_lane_prompt_allowlist;
   const independenceAllowlist = reviewer.frozen_independence_validator_allowlist;
+  const testExecutionAttestation = registry.gate_evidence_validation
+    ?.adversarial_test_execution_attestation;
   if (controllerAllowlist?.controller_id !== 'CODEX_CLI_REVIEW_CONTROLLER'
     || controllerAllowlist?.controller_version !== 'LOCAL_REVIEW_CONTROLLER/V1'
     || controllerAllowlist?.review_runtime_version !== 'codex-cli/0.145.0'
@@ -205,10 +207,20 @@ function validateGateRegistry() {
     || independenceAllowlist?.validator_key_id
       !== 'PROGRAMME_GATE_VALIDATOR_2026_07'
     || independenceAllowlist?.validator_executable_digest
-      !== 'c15bc336938092ecea534018e6c80da15d41e05d1e55facc259661ddd5171cae'
+      !== 'c74c019db434483b4cb49574fa9e4d8d7b1b9b8448e294ffa2d0bcbb6aed7b93'
     || independenceAllowlist?.validator_configuration_digest
-      !== '8518fca95839fcf5ab0463c5cbb1009265a7240314f84acd392f2d4287a72a5a') {
+      !== 'cf81cbe11a55801efdbd7eab3376fa61f83823e3bfa1fe51e0decd98a00abd02') {
     fail('Frozen review controller, runtime, prompt or validator allowlist changed');
+  }
+  if (testExecutionAttestation?.schema !== 'ProgrammeGateTestExecutionRecord/V1'
+    || testExecutionAttestation?.protected_signer_role !== 'TEST_EXECUTION_ATTESTER'
+    || testExecutionAttestation?.signature_domain !== 'PROGRAMME_GATE_TEST_EXECUTION/V1'
+    || !testExecutionAttestation?.attester_key_must_equal_envelope_validator_key
+    || !testExecutionAttestation?.signed_fields_include_exit_code_and_output_digest
+    || testExecutionAttestation?.caller_supplied_unsigned_or_tampered_result_effect !== 'OPEN'
+    || !registry.gate_evidence_validation?.acceptance_predicate
+      ?.required_adversarial_test_execution_signatures_are_trusted) {
+    fail('Adversarial test execution attestation contract is incomplete');
   }
   if (reviewer.self_asserted_metadata_effect !== 'INELIGIBLE' || reviewer.ordinary_sol_effect !== 'ADVISORY_ONLY') {
     fail('Reviewer eligibility failure semantics changed');
@@ -344,7 +356,7 @@ function validateGateRegistry() {
     PROGRAMME_GATE_BEN_APPROVER_2026_07: '2baac1c454dfb918097f2816fc9a230eb93139f735db35b9ed64d0e6846b4c17',
   };
   if (reviewer.review_controller_trust_root_set !== 'trusted-review-controller-keys/2026-07-frozen-v1'
-    || frozenTrust?.registry_source_sha256 !== 'c10f66a62220a84e82118d6fac35cb45fbb97b87feed3ecf564cef077b9f5575'
+    || frozenTrust?.registry_source_sha256 !== 'd6efe4b49c56c58f385a01c3b8a9f7bd896e8b0934ffb31363d265c472aebed3'
     || sha256(read('lib/programme-gates/registry.js')) !== frozenTrust?.registry_source_sha256
     || JSON.stringify(frozenTrust?.keys) !== JSON.stringify(expectedTrustKeys)
     || frozenTrust?.unknown_replacement_or_post_review_key_effect !== 'OPEN') {
@@ -423,7 +435,7 @@ function validateGateRegistry() {
     || compiledRegistry?.source_sha256
       !== sha256(read('docs/codex-program/bootstrap-acceptance-source.json'))
     || compiledRegistry?.closed_validator_executable_set_digest
-      !== 'ef039de82fe0098a0146179a469384ed7a6865b15c026a5dcbb6a1439efd4904'
+      !== 'c74c019db434483b4cb49574fa9e4d8d7b1b9b8448e294ffa2d0bcbb6aed7b93'
     || compiledRegistry?.authority
       !== 'ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE'
     || compiledRegistry?.exact_active_definition_count !== 11

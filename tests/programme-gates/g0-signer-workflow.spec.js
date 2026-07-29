@@ -117,3 +117,21 @@ test('the signer excludes both protected credentials from every child process an
     assert.match(executor, new RegExp(`delete environment\\.${secret}`));
   }
 });
+
+test('the protected signer authenticates every test execution before gate validation', () => {
+  const script = fs.readFileSync(SCRIPT_PATH, 'utf8');
+  assert.match(script, /attestTestExecutionRecord/);
+  assert.match(script, /attesterKeyId: VALIDATOR_KEY_ID/);
+  assert.match(
+    script,
+    /sign: \(bytes\) => signatureForBytes\(bytes, privateKey\)/,
+  );
+  assert.match(
+    script,
+    /collectContainmentEvidence\(\{[\s\S]*attestTestExecution,[\s\S]*\}\)/,
+  );
+  assert.match(
+    script,
+    /testResult\([\s\S]*attestTestExecution,[\s\S]*\)/,
+  );
+});
