@@ -732,6 +732,13 @@
       "canonical_bytes_digest": "f7c464ddc74e2a888259492f266ae700825a57ea68e4489cf15af1d058b1f7d5"
     },
     {
+      "relative_path": "product/query/product-query-result-definition.v1.json",
+      "object_kind": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT",
+      "stable_id": "PRODUCT_QUERY_RESULT_DEFINITION",
+      "schema_version": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "dcd6dc4e942c6ba0345a9d681ff8c91413883a4a256a41f11be29572cbe33f47"
+    },
+    {
       "relative_path": "product/query/product-rerun-on-active-release.v1.json",
       "object_kind": "PRODUCT_QUERY_ACTION_CONTRACT_INPUT",
       "stable_id": "PRODUCT_RERUN_ON_ACTIVE_RELEASE",
@@ -879,6 +886,7 @@
     "PROCESS_RESULT_ACTION_CONTRACT_INPUT": 4,
     "PRODUCT_QUERY_ACTION_CONTRACT_INPUT": 2,
     "PRODUCT_QUERY_CONTRACT_INPUT": 1,
+    "PRODUCT_QUERY_RESULT_CONTRACT_INPUT": 1,
     "PROVISION_CONCEPT": 19,
     "RELATIONSHIP_DEFINITION": 5,
     "RELATIONSHIP_EFFECT_SCHEMA": 5,
@@ -951,6 +959,9 @@
     ],
     "PRODUCT_QUERY_CONTRACT_INPUT": [
       "PRODUCT_QUERY_CONTRACT_INPUT/V1"
+    ],
+    "PRODUCT_QUERY_RESULT_CONTRACT_INPUT": [
+      "PRODUCT_QUERY_RESULT_CONTRACT_INPUT/V1"
     ],
     "PROVISION_CONCEPT": [
       "PROVISION_CONCEPT/V1"
