@@ -14,6 +14,11 @@ test('five registered cold prompts are lane-specific and contain no prior conclu
   );
   assert.equal(new Set(COLD_REVIEW_TASKS.map((task) => task.prompt)).size, 5);
   for (const task of COLD_REVIEW_TASKS) {
+    assert.match(task.prompt, /G0 start-safety/);
+    assert.match(task.prompt, /P1 contract freeze/);
+    assert.match(task.prompt, /remain OPEN/);
+    assert.match(task.prompt, /outside this G0 disposition/);
+    assert.match(task.prompt, /bypass a later OPEN gate/);
     assert.match(task.prompt, /Do not modify files/);
     assert.match(task.prompt, /Do not use prior review findings or conclusions/);
     assert.doesNotMatch(task.prompt, /earlier review (passed|failed)|reviewer found/i);

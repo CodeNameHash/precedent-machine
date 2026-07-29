@@ -200,19 +200,27 @@ CORRECTED (the plan below rests on these, not the review's wording):
   data authority. Generation 1 recomputes the G0 gate projection and
   `canonical_work_start` from those validated evidence envelopes inside the
   proposed status; it does not require a predecessor status that cannot exist.
-- Before canonical implementation, reproduce and freeze the complete
+- Before the generation-1 start permission, reproduce and freeze the complete
   specification-root digest after all mechanical checks. Five independent cold
-  reviews must each record `PASS` against that exact root: architecture,
-  legal-semantic, query-efficiency, open-world and release-propagation. The
+  reviews must each record `PASS` against that exact root for the bounded G0
+  start-safety decision: architecture, legal-semantic, query-efficiency,
+  open-world and release-propagation. The G0 disposition asks only whether the
+  status can safely permit implementation planning, isolated staging setup and
+  staging-only canonical engineering behind disabled production flags. A defect
+  confined to an `OPEN` P1 or P9 requirement is non-blocking at G0 unless it can
+  falsify G0 evidence, widen the permitted start scope or bypass a later gate.
+  The complete architecture, contract, corpus, query, release and cutover review
+  remains mandatory at `P1_CONTRACT_FREEZE_ATTESTED` before
+  `vertical_slice_execution` can pass. The
   legal-semantic lane must be satisfied by Fable or an independent 5.6 Sol
   reviewer using extra-high reasoning. An ordinary Sol review remains advisory
   unless the recorded reviewer meets those exact model, reasoning and
   independence requirements. Run the broader Sol adversarial review
   concurrently. Reviewers receive no prior conclusions. Recheck the root before
   and after every review. Any edit or non-PASS result invalidates all five and
-  requires the mechanical checks and complete review set again. Ben's approval
-  must name the same root. No canonical implementation starts from an earlier
-  reviewed root.
+  requires the mechanical checks and complete G0 review set again. Ben's
+  approval must name the same root and the bounded G0 start-safety purpose. No
+  staging-only canonical engineering starts from an earlier reviewed root.
 - `G0_EXACT_DIGEST_REVIEW_SET` evidence hashes its schema, the ordered six-file
   entries, each byte length and SHA-256, the specification-root digest,
   mechanical-check command and result digests, the five contract-ordered lane

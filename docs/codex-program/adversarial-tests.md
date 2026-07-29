@@ -76,6 +76,13 @@ The following adversarial closure tests are mandatory traceability entries:
   reads and require exact equality with its declared input set. An undeclared
   controller prompt, session, key or reviewer-principal path, and a declared but
   unread path, both fail definition compilation.
+  Give each G0 reviewer a defect confined to an unsupported `OPEN` P1 or P9
+  contract: the G0 disposition must not fail unless that defect can falsify a
+  G0 evidence claim, widen start authority or bypass the later gate. Give the
+  reviewer a defect that permits a production write, release activation or
+  feature activation under `canonical_work_start`: the G0 disposition must
+  fail. The scoped G0 review cannot satisfy the fresh full-architecture review
+  required for `P1_CONTRACT_FREEZE_ATTESTED`.
 - `REVIEW-CONTEXT-01`: the controller supplies exactly the frozen specification
   bytes, one registered lane-specific cold prompt and the required output schema
   as the task payload. Adding any file, message, prompt, schema or other task
