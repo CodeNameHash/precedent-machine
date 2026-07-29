@@ -1,0 +1,19 @@
+{
+  "phase": "WP-PRODUCT-QUERY-RESULT-CONTRACT-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-product-query-result-contract-v1.json",
+    "contracts/canonical-v2/successor/product/query/product-query-result-definition.v1.json",
+    "lib/canonical-v2/product-query-result-contract-input-validator.js",
+    "tests/canonical-v2-product-query-result-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Pure PM-wide Product query-result contract input. No result materialisation, query execution, data access, UI, extraction, database, serving, export, import, activation, production, or contract-freeze authority."
+}

@@ -1,0 +1,151 @@
+{
+  "object_kind": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT",
+  "stable_id": "PRODUCT_QUERY_RESULT_DEFINITION",
+  "schema_version": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PRODUCT",
+    "contract_type": "QUERY_RESULT_DEFINITION",
+    "contract_version": 1,
+    "result_contract": {
+      "logical_type": "ProductQueryResult",
+      "schema_version": "PRODUCT_QUERY_RESULT/V1",
+      "output_grain": "RESULT_ROW",
+      "parent_kind": "PRODUCT_QUERY_IR",
+      "exactly_one_domain_result_required": true,
+      "domain_result_definition_required_before_materialisation": true,
+      "domain_result_payload_can_be_invented_by_product_wrapper": false,
+      "narrative_summary_can_substitute_for_domain_result": false
+    },
+    "domain_contract": {
+      "initial_required_domains": [
+        "AGREEMENT",
+        "PROCESS"
+      ],
+      "selected_domain_must_match_product_query_ir": true,
+      "domain_result_definition_stable_id_and_version_must_match_product_query_ir": true,
+      "domain_result_identity_must_pass_its_release_admitted_domain_validator": true,
+      "product_wrapper_can_weaken_domain_evidence_or_lineage": false,
+      "product_wrapper_can_relabel_domain_legal_meaning": false,
+      "historical_process_result_is_not_product_result": true,
+      "future_domain_admission_is_registry_driven": true,
+      "future_cvr_domain_requires_no_product_compiler_code_change": true
+    },
+    "query_binding_contract": {
+      "query_ir_definition_stable_id": "PRODUCT_QUERY_IR",
+      "query_ir_schema_version": "PRODUCT_QUERY_IR/V1",
+      "exact_query_definition_id_required": true,
+      "exact_release_contract_required": true,
+      "exact_domain_predicate_and_result_definition_required": true,
+      "result_must_satisfy_query_cohort_and_filters": true,
+      "result_must_be_in_query_covered_set": true,
+      "source_entry_mode_can_change_result_identity": false,
+      "equivalent_ask_and_browse_queries_require_identical_ordered_result_identities": true
+    },
+    "release_contract": {
+      "exact_approved_pm_data_version_required": true,
+      "exact_candidate_release_manifest_id_required": true,
+      "exact_candidate_release_manifest_payload_digest_required": true,
+      "domain_result_candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "inactive_disposition": "RELEASE_NOT_ACTIVE",
+      "historical_serving_permitted": false,
+      "silent_redirect_or_result_substitution_permitted": false,
+      "explicit_active_release_rerun_required_for_new_results": true
+    },
+    "identity_contract": {
+      "stable_id_domain": "PRODUCT_QUERY_RESULT/V1",
+      "schema_version_participates_in_identity": true,
+      "required_identity_inputs": [
+        "product_query_definition_id",
+        "approved_pm_data_version_id",
+        "candidate_release_manifest_id",
+        "candidate_release_manifest_payload_digest",
+        "domain_key",
+        "domain_result_definition_stable_id",
+        "domain_result_definition_version",
+        "domain_result_identity"
+      ],
+      "prohibited_identity_inputs": [
+        "source_entry_mode",
+        "raw_ask_text",
+        "browse_display_label",
+        "application_row_order",
+        "page_number",
+        "selected_view",
+        "display_text",
+        "narrative_model_output",
+        "context_expansion_state",
+        "share_token"
+      ],
+      "same_query_and_domain_result_produce_same_product_result_identity": true,
+      "passage_table_export_and_share_views_preserve_product_result_identity": true,
+      "correctly_rehashed_structural_forgery_permitted": false
+    },
+    "citation_and_action_contract": {
+      "exact_release_pinned_citation_required": true,
+      "exact_parent_product_result_identity_required": true,
+      "exact_domain_result_identity_required": true,
+      "exact_source_document_and_evidence_identity_required": true,
+      "query_admitted_exact_detail_action_required": true,
+      "citation_can_rewrite_or_summarise_source_text": false,
+      "citation_open_preserves_release_and_result_identity": true,
+      "inactive_share_disposition": "RELEASE_NOT_ACTIVE",
+      "silent_share_redirect_permitted": false,
+      "citation_or_share_identity_is_bearer_authorisation": false
+    },
+    "view_and_export_contract": {
+      "answer_first_view_uses_domain_result_payload": true,
+      "passage_and_table_views_use_same_result_rows": true,
+      "view_change_can_execute_second_query": false,
+      "selected_export_is_exact_result_identity_subset": true,
+      "export_can_add_unrequested_field": false,
+      "copy_passage_requires_exact_verbatim_text_and_citation": true,
+      "generated_narrative_output_in_first_product": false
+    },
+    "coverage_and_empty_contract": {
+      "exact_query_coverage_identity_required": true,
+      "covered_set_and_exclusions_retained": true,
+      "zero_result_disposition": "NO_RESULTS_IN_COVERED_DEALS",
+      "zero_results_can_claim_market_absence": false,
+      "operational_failure_can_render_as_zero_results": false,
+      "incomplete_coverage_can_render_as_complete": false
+    },
+    "ordering_and_failure_contract": {
+      "query_ir_sort_diversity_and_cursor_state_govern_order": true,
+      "application_memory_can_recreate_ordering_authority": false,
+      "duplicate_product_result_identity_per_result_set_permitted": false,
+      "invalid_domain_result_fails_only_that_result": true,
+      "invalid_domain_result_retained_as_typed_failure": true,
+      "invalid_domain_result_can_be_silently_omitted": false,
+      "invalid_domain_result_can_be_replaced_by_valid_sibling": false,
+      "result_count_reconciles_valid_failed_and_excluded_slots": true,
+      "valid_sibling_results_remain_publishable": true,
+      "failed_result_can_mutate_query_or_release_identity": false
+    },
+    "extensibility_contract": {
+      "field_result_and_domain_registries_are_pm_wide": true,
+      "new_domain_requires_admitted_result_definition_and_domain_validator": true,
+      "new_domain_can_bypass_product_query_ir": false,
+      "new_domain_can_create_second_result_engine": false,
+      "agreement_process_and_future_cvr_use_same_product_result_schema": true
+    },
+    "authority_contract": {
+      "creates_runtime_result": false,
+      "creates_query_execution_authority": false,
+      "creates_domain_result_authority": false,
+      "creates_extraction_authority": false,
+      "creates_canonical_write_authority": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_database_authority": false,
+      "creates_ui_authority": false,
+      "creates_export_authority": false,
+      "creates_release_authority": false,
+      "creates_import_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}
