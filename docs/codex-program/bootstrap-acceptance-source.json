@@ -266,8 +266,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "7e2d6857ee63e85f79c7232768f0e655b03d8c52f9716f20258891928cd12188",
-        "enumerator_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197"
+        "enumerator_executable_digest": "ab0cbb83c199ed24b55fab018126ccb207bd2137a6f021bb76e8357a44cfacd1",
+        "enumerator_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5"
       },
       "member_schemas": [
         {
@@ -459,8 +459,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function featureGateOff(evidence) {\n  return evidence.route_feature_enabled === false;\n}",
-          "measurement_executable_digest": "e11abf28a7311f5965acb39958d3f900c31625d849bd7aee60c1243946bbc410",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "9850561cbbfba6af9312dc223c25f1acfd8082866c68cdebf16edc129fd55603",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -479,8 +479,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function liveRouteZeroCorpusReads(evidence, context) {\n  return sameClosedStringSet(\n    evidence.method_probes.map((probe) => probe.method),\n    MARKET_STATS_METHODS,\n  ) && evidence.method_probes.every((probe) => (\n    probe.member_id === `${probe.method} /api/market-stats`\n    && probe.route_id === '/api/market-stats'\n    && probe.status === 503\n    && probe.error_code === 'MARKET_STATS_DISABLED'\n    && /private/i.test(probe.cache_control)\n    && /no-store/i.test(probe.cache_control)\n    && probe.database_calls === 0\n    && probe.corpus_reads === 0\n    && probe.retry_after === null\n    && probe.code_commit === context.codeCommit\n    && probe.runtime_deployment_id === evidence.runtime_deployment_id\n    && probe.environment === context.environment\n    && probe.observed_at === context.observed_at\n  ));\n}",
-          "measurement_executable_digest": "91ffd3339acdc33c1aaf26520c8f70bf1a8a19afbc0b78b90c6b9dbcdf03615c",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "51b3d518ecb7892fb01b0282b728d957845da8cbfea7f7c7b2446fffee284f8f",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -495,8 +495,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function containmentTestPass(evidence, context) {\n  return sameClosedStringSet(\n    evidence.tests.map((entry) => entry.test_id),\n    REQUIRED_CONTAINMENT_TEST_IDS,\n  ) && evidence.tests.every((entry) => (\n    entry.exit_code === 0\n    && entry.code_commit === context.codeCommit\n    && entry.environment === context.environment\n    && Date.parse(entry.completed_at) <= Date.parse(context.observed_at)\n  ));\n}",
-          "measurement_executable_digest": "faf1274b16ce3dad0c28bf6590e81955cb6d7b43289bf024493ae40c69fdc89f",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "da68a94d33eb9fae126faa7bbfb13362413771aec7190f3e0a6b0265aaef4730",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -793,8 +793,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "7e2d6857ee63e85f79c7232768f0e655b03d8c52f9716f20258891928cd12188",
-        "enumerator_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197"
+        "enumerator_executable_digest": "ab0cbb83c199ed24b55fab018126ccb207bd2137a6f021bb76e8357a44cfacd1",
+        "enumerator_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5"
       },
       "member_schemas": [
         {
@@ -1013,8 +1013,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function sourceBuiltAndRuntimeRouteInventoriesEqual(evidence) {\n  return sameClosedStringSet(evidence.source_route_ids, evidence.built_route_ids)\n    && sameClosedStringSet(evidence.source_route_ids, evidence.runtime_route_ids);\n}",
-          "measurement_executable_digest": "d747dc69ca4f86788f49e9f41dd640decc1bfb45c559d7bed6bbd30a909e5288",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "6d705aae2a26590d774985b62746ddf892654fa939b38cd9bf07801a4f0763cc",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -1029,8 +1029,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function everyBroadRouteContained(evidence, context) {\n  return sameClosedStringSet(\n    evidence.source_route_ids,\n    evidence.routes.map((route) => route.member_id),\n  )\n    && evidence.routes.every((route) => (\n      route.source_contained === true\n      && route.built_contained === true\n      && route.runtime_contained === true\n      && route.runtime_status === 503\n      && (\n        route.runtime_error_code === 'ROUTE_CONTAINED'\n        || (route.method === 'HEAD' && route.runtime_error_code === null)\n      )\n      && route.database_calls === 0\n      && route.corpus_reads === 0\n      && route.code_commit === context.codeCommit\n      && route.runtime_deployment_id === evidence.runtime_deployment_id\n      && route.environment === context.environment\n      && route.observed_at === context.observed_at\n    ))\n    && containmentTestPass(evidence, context);\n}",
-          "measurement_executable_digest": "478a1d6a5a02ba1c5e2c9de87d87d82d0d36c1038611bfd78c7567ad008ce9f6",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "ccb67644dd2ac0ae211ac48a4cf4fe10bac34fc7085f48f6af8950570192a96e",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -1045,8 +1045,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function zeroBroadNodeFallback(evidence) {\n  return evidence.routes.every((route) => (\n    route.node_corpus_reads === 0\n    && route.legacy_fallback_used === false\n  ));\n}",
-          "measurement_executable_digest": "8be07e955917a560d615f07d19f528bf15cde500ff9931a02980f8f96f9749f0",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "7a1b97aab7297b4122acf95bfad672e553d08013a8e756c9fefc97cca124e7a6",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -1153,8 +1153,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "f5c0407bd85ca0ebedf2af1c9d31d2c9321958741ac8965e15eef1e53bb14f3d",
-        "enumerator_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197"
+        "enumerator_executable_digest": "a3ff6d24585309ad0ca67c91fadf649c1f7f4d941d8e0677a074987c78e28ef4",
+        "enumerator_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5"
       },
       "member_schemas": [
         {
@@ -1259,8 +1259,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function ownerAndPurposeRecordedWithoutSecret(evidence) {\n  return isNonEmptyString(evidence.process_identity_digest)\n    && isNonEmptyString(evidence.owner)\n    && isNonEmptyString(evidence.purpose)\n    && evidence.secret_field_count === 0;\n}",
-          "measurement_executable_digest": "cadb849bfaa9f0683f8dda5098ea3c9d355a921fb70c31fc18d4790511343cac",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "dc7b8409831422ba33a4340b689cdf4329aa2cfa0fceaaeb9c70fd2da158645f",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -1283,8 +1283,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function recognisedOrRotationRequired(evidence) {\n  return (\n    evidence.recognition_status === 'RECOGNISED'\n    && evidence.rotation_required === false\n  ) || (\n    evidence.recognition_status === 'UNRECOGNISED'\n    && evidence.rotation_required === true\n    && evidence.rotation_completed === true\n  );\n}",
-          "measurement_executable_digest": "69b1080207fa825d4018d7092c4d743884e0c0a2c01cdd4166d168d25ab384cb",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "525bd195a04e20ed4cd8eb0bc9b60b91c79066b798308e60c37b1a980f2d5980",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -1387,8 +1387,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "f5c0407bd85ca0ebedf2af1c9d31d2c9321958741ac8965e15eef1e53bb14f3d",
-        "enumerator_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197"
+        "enumerator_executable_digest": "a3ff6d24585309ad0ca67c91fadf649c1f7f4d941d8e0677a074987c78e28ef4",
+        "enumerator_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5"
       },
       "member_schemas": [
         {
@@ -1480,8 +1480,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function compromisedCredentialsRevoked(evidence) {\n  return sameClosedStringSet(evidence.compromised_credential_ids, evidence.revoked_ids);\n}",
-          "measurement_executable_digest": "e2e584c02533b719fecf59673b59cefbd56dc4a7326823aece6a1f050c4710bb",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "3cc8a2b5016c756957f8f911d4081129c3f0e8be6d641d7a254b2fc1c1fd3a19",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -1496,8 +1496,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function replacementActivationVerified(evidence) {\n  return isTimestamp(evidence.replacement_activation_verified_at);\n}",
-          "measurement_executable_digest": "82eea28dbd2e2036fa105681e928ea5e4b3a788dddd344170b73685aeff08d18",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "7f1813414dfe8a0e687472fa666ccb9ce36e7bec312c2cc4e3246b38b9dc1398",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -1512,8 +1512,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function noSecretInEvidence(evidence) {\n  return evidence.secret_field_count === 0;\n}",
-          "measurement_executable_digest": "d47ffb7b7970d038e45728f76f98b48fa1881c49f21cc66379add6d3daae178f",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "cb184892b7e8a8ec2849a4a6eab19e827d5b00d048795a86838b96db7bd8eabf",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -1633,8 +1633,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "f5c0407bd85ca0ebedf2af1c9d31d2c9321958741ac8965e15eef1e53bb14f3d",
-        "enumerator_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197"
+        "enumerator_executable_digest": "a3ff6d24585309ad0ca67c91fadf649c1f7f4d941d8e0677a074987c78e28ef4",
+        "enumerator_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5"
       },
       "member_schemas": [
         {
@@ -1894,8 +1894,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function rotationVerifiedOrRecognisedTrafficNaWithBenApproval(evidence, context) {\n  if (\n    evidence.disposition === 'ROTATED'\n    && isTimestamp(evidence.rotation_verified_at)\n    && evidence.zayo_disposition_id === null\n    && evidence.ben_approval_id === null\n  ) return true;\n  if (evidence.disposition !== 'RECOGNISED_TRAFFIC_APPROVED_NA'\n    || evidence.rotation_verified_at !== null\n    || !isDigest(evidence.zayo_disposition_id)\n    || !isDigest(evidence.ben_approval_id)) return false;\n  const zayo = memberFor(\n    context,\n    `zayo:${evidence.zayo_disposition_id}`,\n    'ZayoTrafficDisposition',\n  );\n  const approval = memberFor(\n    context,\n    `approval:${evidence.ben_approval_id}`,\n    'SupabaseSecretNaApproval',\n  );\n  const {\n    approval_id: approvalId,\n    signature: approvalSignature,\n    ...approvalIdentityPayload\n  } = approval || {};\n  void approvalSignature;\n  if (!zayo\n    || !approval\n    || zayo.gate_id !== 'G0_ZAYO_DISPOSITION'\n    || zayo.attestation_source_digest !== evidence.attestation_source_digest\n    || zayo.recognition_status !== 'RECOGNISED'\n    || zayo.rotation_required !== false\n    || zayo.purpose !== 'AUTHORISED_DATABASE_TRAFFIC'\n    || context.domainDigest(\n      'PROGRAMME_GATE_ZAYO_DISPOSITION_ID/V1',\n      zayo,\n    ) !== evidence.zayo_disposition_id\n    || approval.approval_id !== evidence.ben_approval_id\n    || approval.supabase_attestation_source_digest !== evidence.attestation_source_digest\n    || approval.zayo_process_identity_digest !== zayo.process_identity_digest\n    || approval.approved_disposition !== evidence.disposition\n    || approval.approver_identity !== 'BEN_GOODCHILD'\n    || approval.conditions.length !== 0\n    || context.domainDigest(\n      'PROGRAMME_GATE_SUPABASE_SECRET_NA_APPROVAL_ID/V1',\n      approvalIdentityPayload,\n    ) !== approvalId) return false;\n  return signatureIsValid(context, {\n    record: approval,\n    signatureField: 'signature',\n    keyId: approval.approver_key_id,\n    role: 'BEN_APPROVER',\n    domain: 'PROGRAMME_GATE_SUPABASE_SECRET_NA_APPROVAL/V1',\n  });\n}",
-          "measurement_executable_digest": "7672441440b01cce4342202894d2ed118daf68a474b72cf0d33d1c6aef8195bb",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "af8041752b190f26cd698ed9aecf89476d006f714c909f18304825b2776b51a4",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -1910,8 +1910,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function noSecretInEvidence(evidence) {\n  return evidence.secret_field_count === 0;\n}",
-          "measurement_executable_digest": "3f091322363a73e3e5bd624ef2300eb3279cd0d9835736b2a624a33ed1370faf",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "fd2acf67063737debfef7857feedfa8219e9f58bf22f373568fdae243f7bbf1c",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -1983,8 +1983,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "d99279b9cd7f3dcbf4c4211b7094c7d552c01a6307a9865183fa10abf833bae0",
-        "enumerator_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197"
+        "enumerator_executable_digest": "d219c5f888c4aa26d6336c5f2f0ad1a03ca69d78e291232c31f3251b74f68bcf",
+        "enumerator_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5"
       },
       "member_schemas": [
         {
@@ -2053,8 +2053,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function distinctProjectAndCredentials(evidence) {\n  return evidence.production_project_identity_digest !== evidence.staging_project_identity_digest\n    && evidence.production_credential_identity_digest !== evidence.staging_credential_identity_digest;\n}",
-          "measurement_executable_digest": "3607bc876fa85838aaa0272e5ec786388f2306173b93c44f6738932f1acb5920",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "b442331e50ae18edaefed08b8891951f4ad1d1a032c535eb5cc6fecb172d85ba",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2069,8 +2069,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function productionDmlDenied(evidence) {\n  return evidence.production_dml_probe === 'DENIED';\n}",
-          "measurement_executable_digest": "514a9863c9f3f77353efe48d11490aa46ea1f9f6fa4b7e170a488a8939336072",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "34cb374fe6ee5968c1b19d7f7f96aba80c85facb338d358ec4a9c5a2c47d13b0",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2085,8 +2085,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function snapshotRestoreOnly(evidence) {\n  return evidence.restore_mode === 'PRODUCTION_SNAPSHOT_ONLY';\n}",
-          "measurement_executable_digest": "012fb1738313c5e696fe57496488c9c459e926881068f6b20d1b57ef45950d35",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "4b0befb417fa6f3a102345cd0fda7fcc833a0659f15d3efaed179fb54c315665",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -2148,8 +2148,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "d99279b9cd7f3dcbf4c4211b7094c7d552c01a6307a9865183fa10abf833bae0",
-        "enumerator_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197"
+        "enumerator_executable_digest": "d219c5f888c4aa26d6336c5f2f0ad1a03ca69d78e291232c31f3251b74f68bcf",
+        "enumerator_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5"
       },
       "member_schemas": [
         {
@@ -2201,8 +2201,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function branchPreviewUsesStagingOnlyCredentials(evidence) {\n  return isNonEmptyString(evidence.preview_deployment_id)\n    && evidence.preview_credential_scope === 'STAGING_ONLY';\n}",
-          "measurement_executable_digest": "158c1e40b53d03106873da2d116001c233a1e572fd56d44d43ba6f16bb0cba64",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "472a9fbba3937035af20eb5e0de19bd05536436a6b64d86d8204c9763418c8f5",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2221,8 +2221,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function productionAliasUnchanged(evidence) {\n  return evidence.production_alias_before === evidence.production_alias_after;\n}",
-          "measurement_executable_digest": "c987a278155d59e10a32ee13c6e943702d277f8bb8f7173071e3c889ae4d7f17",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "f061e3fcbbc95565143e29eacd6ed45bc5c2de0f287e6b4ba68cd31e7c899a9e",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -2451,8 +2451,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "d99279b9cd7f3dcbf4c4211b7094c7d552c01a6307a9865183fa10abf833bae0",
-        "enumerator_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197"
+        "enumerator_executable_digest": "d219c5f888c4aa26d6336c5f2f0ad1a03ca69d78e291232c31f3251b74f68bcf",
+        "enumerator_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5"
       },
       "member_schemas": [
         {
@@ -2687,8 +2687,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function completePreviewRouteActionInventory(evidence) {\n  const actions = evidence.preview_route_actions;\n  const source = evidence.source_route_action_inventory;\n  const built = evidence.built_route_action_inventory;\n  const runtime = evidence.runtime_route_action_inventory;\n  const identity = (entry) => `${entry.action_id}\\0${entry.action_class}`;\n  const closedInventory = (inventory) => (\n    Array.isArray(inventory)\n    && inventory.length >= PREVIEW_ACTION_CLASSES.length\n    && new Set(inventory.map((entry) => entry.action_id)).size === inventory.length\n    && inventory.every((entry) => PREVIEW_ACTION_CLASSES.includes(entry.action_class))\n    && PREVIEW_ACTION_CLASSES.every(\n      (actionClass) => inventory.some((entry) => entry.action_class === actionClass),\n    )\n  );\n  return Array.isArray(actions)\n    && new Set(actions.map((entry) => entry.action_id)).size === actions.length\n    && closedInventory(source)\n    && closedInventory(built)\n    && closedInventory(runtime)\n    && exactStringSet(source.map(identity), built.map(identity))\n    && exactStringSet(source.map(identity), runtime.map(identity))\n    && exactStringSet(source.map(identity), actions.map(identity))\n    && evidence.source_route_action_inventory_root === contextlessDomainDigest(\n      'PROGRAMME_GATE_PREVIEW_ROUTE_ACTION_INVENTORY/V1',\n      source,\n    )\n    && evidence.built_route_action_inventory_root === contextlessDomainDigest(\n      'PROGRAMME_GATE_PREVIEW_ROUTE_ACTION_INVENTORY/V1',\n      built,\n    )\n    && evidence.runtime_route_action_inventory_root === contextlessDomainDigest(\n      'PROGRAMME_GATE_PREVIEW_ROUTE_ACTION_INVENTORY/V1',\n      runtime,\n    );\n}",
-          "measurement_executable_digest": "aff75750374ba81c768f5e1bd9944f04bcfcbc3b3299b4a38f3f321595a8453b",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "6d64a59d84172f112897d0818106da4ba972e21e5cd676e4c499bd68697d9aa4",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2727,8 +2727,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function unauthenticatedAccessDeniedBeforeAndAfterRestore(evidence) {\n  return completePreviewRouteActionInventory(evidence)\n    && evidence.preview_route_actions.every((entry) => (\n      accessDenied(entry.unauthenticated_before_restore_status)\n      && accessDenied(entry.unauthenticated_after_restore_status)\n    ));\n}",
-          "measurement_executable_digest": "9bdfda16f2e7cbae7bcfa7b7de18fd175259f25bf3aaabdbec6a92599c36ba4e",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "3f934930691f5bbd8fb71c08e8a0d29b56855410442cfd4d8548871c420195b6",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2767,8 +2767,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function authenticatedNonAdminPrivilegedActionsDenied(evidence) {\n  return completePreviewRouteActionInventory(evidence)\n    && evidence.preview_route_actions\n      .filter((entry) => entry.action_class !== 'READ_ONLY_TEST')\n      .every((entry) => accessDenied(entry.authenticated_non_admin_status));\n}",
-          "measurement_executable_digest": "4187200bfa95a72a2bc9db9a7f6f8fe9f6c9c0098bf04db356dbbe7205f8743f",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "c7b4a09570c92ab14a1eeb238d76478d76109a0a716ea0d5ebe270e7b0861a0f",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2807,8 +2807,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function privilegedPreviewActionsDisabled(evidence) {\n  return completePreviewRouteActionInventory(evidence)\n    && evidence.preview_route_actions\n      .filter((entry) => DISABLED_PREVIEW_ACTION_CLASSES.includes(entry.action_class))\n      .every((entry) => (\n        entry.feature_enabled === false\n        && entry.authorised_test_status === null\n      ));\n}",
-          "measurement_executable_digest": "9a8f9a0668175a417d5ecff735f55f6d8dea1ca4e76ebb341c6f54faa3572960",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "2f60cf1d2cc360dcaf394418da4d777cefc1bb6896b5c961301be32b75e70df9",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2847,8 +2847,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function authorisedReadOnlyTestAccessPass(evidence) {\n  return completePreviewRouteActionInventory(evidence)\n    && evidence.preview_route_actions\n      .filter((entry) => entry.action_class === 'READ_ONLY_TEST')\n      .every((entry) => (\n        entry.feature_enabled === true\n        && entry.authorised_test_status >= 200\n        && entry.authorised_test_status < 300\n      ));\n}",
-          "measurement_executable_digest": "6981ec2cd436bb83eef3c89039cf2e03a1a747b4d4ab8dc6c5525ebcb8bc266f",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "d56a34c31fce5f72596f6fdc4dbcbe871ddcfb46878978d55c7ab2184b918cbd",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -2967,8 +2967,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "cb19725f9aa046a51f3fce57018225c9c1f313b27e1746b3b6b59792c3bfc8ea",
-        "enumerator_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197"
+        "enumerator_executable_digest": "8053794e42ede1df694337ca7fa3ddaf8369dfea900a30cd230ff3418f2f936a",
+        "enumerator_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5"
       },
       "member_schemas": [
         {
@@ -3796,8 +3796,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function fiveNamedLaneOutcomesRecordedSameRoot(evidence, context) {\n  return reviewSetFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "74dece5b428470040edaa4664fbe3d5b47840a3155df7a64a0e03373981555c7",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "dae1e7c1806ed9b69b938c73187987f461b1a8de02a1a296b55e18b219466aab",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -4016,8 +4016,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function reviewOutputsMatchSignedControllerDigests(evidence, context) {\n  return reviewSetFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "c14d0ffd45b98ce1949e356ee0b957476b3833280b54e08842ac581f2c9098ff",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "2296712e2b4f4edd67f7778eee8cd4bba0c91a7bbcf5b8d705db4c17382f74fe",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -4244,8 +4244,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function eligibleLegalReviewer(evidence, context) {\n  return reviewSetFacts(evidence, context)?.legalReviewerEligible === true;\n}",
-          "measurement_executable_digest": "f0712625879a47303cf3041fa177ad3e571cf50522f981d8e6d77e555e560309",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "130ed19177489e654d5bf70a4698d205233b59bca9330e74cf5dcd58b7fede6b",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -4464,8 +4464,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function reviewerIndependenceRecomputed(evidence, context) {\n  return reviewSetFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "b5815c6e94fcb05232cc01e6007bb61bff80ef0fa83ec44ca9f1c72ceebec5f5",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "d9a382ef98165eb2c871a8ab1c687aba76fcad84d4374bd7a31e7c39b4898343",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -4684,8 +4684,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function fullReviewPassNotClaimed(evidence, context) {\n  if (evidence?.full_review_pass_claimed !== false) return false;\n  if (evidence?.approval_evidence_id) return benApprovalFacts(evidence, context) !== null;\n  return reviewSetFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "b57f4d3c88e274c407ab7dd4660a456a58405d8ca683bb1fd264fb868e270574",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "9a491418f7a6a7a0acf3c420ee61953818d5eaf407d9aa7458431a91bfa6f037",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -4838,8 +4838,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "cb19725f9aa046a51f3fce57018225c9c1f313b27e1746b3b6b59792c3bfc8ea",
-        "enumerator_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197"
+        "enumerator_executable_digest": "8053794e42ede1df694337ca7fa3ddaf8369dfea900a30cd230ff3418f2f936a",
+        "enumerator_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5"
       },
       "member_schemas": [
         {
@@ -5140,8 +5140,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function approvedRootAndCommitExact(evidence, context) {\n  return benApprovalFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "fba4cccee42bedda3071280fe4e0f81b4491b0358b308c1cc240d29638ceb8c1",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "3d01e510da7566472ea2ddeb06771e4583e3723f1588c1c6ac13a9e6eceabb78",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -5216,8 +5216,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function reviewOutcomeSetAcknowledged(evidence, context) {\n  return benApprovalFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "c02499a8e17c8464908251782c4b1fa5ebe341558286509f684e16ff1b28f916",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "d03c70046f72a51f1d60b396d97b1a08d40b5618bc61d3f0db28b35372c5eaf4",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -5256,8 +5256,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function benIdentityAndSignatureValid(evidence, context) {\n  return benApprovalFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "ba91e9b8477b52ab39d5702f3fbcf005045a5cf3b925c772ea6de902165d0e77",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "2126231941729413ae9aa60811ffb6ce297ccde7fb910423ac3418c52fdce137",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -5324,8 +5324,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function authorisationScopeBounded(evidence, context) {\n  return benApprovalFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "58bf911f845f2de974b6df936b243435cd51d0bb8918f15077910fdc9903b3d6",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "acc943d214206051ea0c8dd80f5a1da5530a7cda3f0edec989b3e47e49506b82",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -5352,8 +5352,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function fullReviewPassNotClaimed(evidence, context) {\n  if (evidence?.full_review_pass_claimed !== false) return false;\n  if (evidence?.approval_evidence_id) return benApprovalFacts(evidence, context) !== null;\n  return reviewSetFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "67da42c0794635863830d16184b5e5f39480f0a0e4267ce48c064b82761cf6b4",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "09f8cb1545e9e320a8e86701c5ab22c273d80961ce7ab729c8beef863669b1af",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -5525,8 +5525,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "0f1560abb7c0be1cc1cc81166a28c2e241c99845bfcb8deea10c8f196f766648",
-        "enumerator_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197"
+        "enumerator_executable_digest": "d5a96b893cbbf4c83fa0503c712c07dee8c6918fc011b49d3ca8c90d383cc7e0",
+        "enumerator_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5"
       },
       "member_schemas": [
         {
@@ -9094,8 +9094,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function bundleCompiles(evidence, context) {\n  const members = contractFreezeMembers(evidence, context);\n  const bundle = canonicalContractBundleFacts(context);\n  return Boolean(members)\n    && Boolean(bundle)\n    && contractFreezeAttestationIdentityIsValid(\n      evidence,\n      context,\n      members.attestationIdentity,\n    )\n    && evidence.specification_root === context.expectedSpecificationRoot\n    && contractAuthorityManifestMatches(evidence, context, members.authorityManifest)\n    && members.compilation.receipt_id === evidence.compilation_receipt_id\n    && members.compilation.contract_bundle_id === evidence.contract_bundle_id\n    && members.compilation.contract_bundle_digest === evidence.contract_bundle_digest\n    && members.compilation.frozen_contract_pair_digest === evidence.frozen_contract_pair_digest\n    && members.compilation.canonical_contract_bundle_member_root === bundle.memberRoot\n    && members.compilation.canonical_contract_bundle_member_count === bundle.records.length\n    && members.compilation.canonical_contract_bundle_required_kind_set_root\n      === bundle.requiredKindSetRoot\n    && members.authorityManifest.canonical_contract_bundle_member_root === bundle.memberRoot\n    && members.authorityManifest.canonical_contract_bundle_member_count\n      === bundle.records.length\n    && members.authorityManifest.canonical_contract_bundle_required_kind_set_root\n      === bundle.requiredKindSetRoot\n    && JSON.stringify(members.review.contract_bundle_members)\n      === JSON.stringify(bundle.projection)\n    && members.compilation.compiler_version === members.authorityManifest.compiler_version\n    && members.compilation.generator_version === members.authorityManifest.generator_version\n    && members.compilation.compile_report_digest\n      === members.authorityManifest.compile_report_digest\n    && members.compilation.cycle_report_digest\n      === members.authorityManifest.cycle_report_digest\n    && members.compilation.drift_report_digest\n      === members.authorityManifest.drift_report_digest\n    && context.domainDigest(\n      'PROGRAMME_GATE_CONTRACT_GENERATED_OUTPUT_SET/V1',\n      members.compilation.generated_outputs,\n    ) === context.domainDigest(\n      'PROGRAMME_GATE_CONTRACT_GENERATED_OUTPUT_SET/V1',\n      members.authorityManifest.generated_outputs,\n    )\n    && members.compilation.compile_errors.length === 0\n    && members.compilation.cycle_errors.length === 0\n    && members.compilation.drift_errors.length === 0\n    && members.compilation.terminal_state === 'PASS'\n    && context.domainDigest(\n      'PROGRAMME_GATE_CONTRACT_COMPILATION_RECEIPT_ID/V1',\n      recordIdentityPayload(members.compilation, 'receipt_id', 'signature'),\n    ) === members.compilation.receipt_id\n    && signatureIsValid(context, {\n      record: members.compilation,\n      signatureField: 'signature',\n      keyId: members.compilation.validator_key_id,\n      role: 'VALIDATOR',\n      domain: 'PROGRAMME_GATE_CONTRACT_COMPILATION_RECEIPT/V1',\n    });\n}",
-          "measurement_executable_digest": "a541fa9a374a7aec1da90fd320f4e8e1afc011963c0e8412323a36da358e88df",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "5dff5a5f43d0e2c92a7341c26e2b53dd48b788523d92eb396d0d1ee4872110fb",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -9290,8 +9290,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function semanticAndIdentityDiffReviewed(evidence, context) {\n  const members = contractFreezeMembers(evidence, context);\n  return Boolean(members)\n    && contractFreezeAttestationIdentityIsValid(\n      evidence,\n      context,\n      members.attestationIdentity,\n    )\n    && contractAuthorityManifestMatches(evidence, context, members.authorityManifest)\n    && members.review.review_id === evidence.semantic_identity_review_id\n    && members.review.contract_bundle_id === evidence.contract_bundle_id\n    && members.review.contract_bundle_digest === evidence.contract_bundle_digest\n    && members.review.frozen_contract_pair_digest === evidence.frozen_contract_pair_digest\n    && members.review.semantic_identity_diff_digest\n      === members.authorityManifest.semantic_identity_diff_digest\n    && contractDiffReviewIsMechanicallyBound(members.review, evidence, context)\n    && members.review.review_scope === 'SEMANTIC_AND_IDENTITY_DIFF'\n    && members.review.review_disposition === 'PASS'\n    && members.review.blocking_finding_count === 0\n    && members.review.blocking_finding_ids.length === 0\n    && (\n      (\n        members.review.reviewer_model_identifier\n          === REVIEW_CONTROLLER_POLICY.exact_model_identifier\n        && members.review.reasoning_level === REVIEW_CONTROLLER_POLICY.reasoning_level\n      )\n      || (\n        REVIEW_CONTROLLER_POLICY.fable_model_identifiers\n          .includes(members.review.reviewer_model_identifier)\n        && members.review.reasoning_level\n          === REVIEW_CONTROLLER_POLICY.fable_reasoning_level\n      )\n    )\n    && members.review.reviewer_eligibility_digest\n      === members.authorityManifest.reviewer_eligibility_set_root\n    && contractReviewerEligibilityIsBound(members.review, context)\n    && contractReviewIndependenceIsValid(members.review, evidence, context)\n    && members.authorityManifest.independent_reviewer_bindings.some((binding) => (\n      binding.reviewer_identity === members.review.reviewer_identity\n      && binding.eligibility_evidence_digest === members.review.reviewer_eligibility_digest\n      && binding.review_disposition_id === members.review.review_id\n    ))\n    && members.review.review_set_root === evidence.specification_root\n    && evidence.legal_semantic_review_disposition_id === members.review.review_id\n    && evidence.identity_review_disposition_id === members.review.review_id\n    && context.domainDigest(\n      'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW_ID/V1',\n      recordIdentityPayload(members.review, 'review_id', 'signature'),\n    ) === members.review.review_id\n    && signatureIsValid(context, {\n      record: members.review,\n      signatureField: 'signature',\n      keyId: members.review.controller_key_id,\n      role: 'REVIEW_CONTROLLER',\n      domain: 'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW/V1',\n    });\n}",
-          "measurement_executable_digest": "c7535348a11fb4b10f4863f235310d7d557d9fef2457c3492a432fb59afa1b31",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "40ab346f151e45671c770a8eb8e389827e74accf4f588590e616ff516da1e44e",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -9330,8 +9330,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function freezeGateApproved(evidence, context) {\n  const members = contractFreezeMembers(evidence, context);\n  return Boolean(members)\n    && contractAuthorityManifestMatches(evidence, context, members.authorityManifest)\n    && members.approval.approval_id === evidence.freeze_gate_approval_id\n    && members.approval.authority_manifest_id\n      === evidence.contract_authority_manifest_id\n    && members.approval.frozen_contract_pair_digest === evidence.frozen_contract_pair_digest\n    && evidence.ben_bundle_approval_evidence_id === members.approval.approval_id\n    && members.approval.approver_identity === 'BEN_GOODCHILD'\n    && members.approval.conditions.length === 0\n    && signatureIsValid(context, {\n      record: members.approval,\n      signatureField: 'signature',\n      keyId: members.approval.approver_key_id,\n      role: 'BEN_APPROVER',\n      domain: 'PROGRAMME_GATE_CONTRACT_FREEZE_APPROVAL/V1',\n    });\n}",
-          "measurement_executable_digest": "bacf7d6c0f60dda726e9a9b9367faa951e275442495e827f937cf2cffc2fd518",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "a9a132faec6889f787501b0f7f8a3f3e29ff58515923b6ed3a08dfcf0a3d3cde",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -9366,15 +9366,15 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function statusGenerationMatches(evidence, context) {\n  const members = contractFreezeMembers(evidence, context);\n  return Boolean(members)\n    && members.status.specification_root === evidence.specification_root\n    && members.status.code_commit === evidence.code_commit\n    && members.status.environment === evidence.environment\n    && members.status.generation === evidence.status_generation\n    && signatureIsValid(context, {\n      record: members.status,\n      signatureField: 'signature',\n      keyId: members.status.validator_key_id,\n      role: 'STATUS_PUBLISHER',\n      domain: 'PROGRAMME_GATE_STATUS/V2',\n    })\n    && context.domainDigest(\n      'PROGRAMME_GATE_STATUS_ARTEFACT_PAYLOAD/V2',\n      members.status,\n    ) === evidence.status_payload_digest;\n}",
-          "measurement_executable_digest": "97d9794c7be34c4f629d1d7febe41709ab08f110cf5d70eb663cc66c2aed4f56",
-          "measurement_transitive_source_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+          "measurement_executable_digest": "115980ffa1ea03a115faece035d0903ffc5c5d7a13e3b438b054e29c952e0dea",
+          "measurement_transitive_source_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
       ]
     }
   ],
-  "acceptance_executable_closure_digest": "15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197",
+  "acceptance_executable_closure_digest": "88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5",
   "validator_executable_files": [
     "lib/broad-corpus-containment.js",
     "lib/canonical-v2/canonical-bytes.js",
@@ -9422,7 +9422,7 @@
     "lib/query-containment.js",
     "lib/service-client-route-actions.js"
   ],
-  "runtime_source_set_digest": "1b4dc8abb6f734a39c22cc501f41d89626db236e4724fe85e1a1faedba8b418a",
+  "runtime_source_set_digest": "d67f19bd0d47856554fafbb1d0a07a1cf6e9565f32bfdb1eb7eabd29ef40879f",
   "local_dependency_closure": {
     "resolver": "STATIC_RELATIVE_REQUIRE_IMPORT_EXPORT/V1",
     "seed_paths": [
@@ -9580,9 +9580,9 @@
     },
     {
       "path": "lib/programme-gates/g0-status-readiness.js",
-      "byte_length": 14703,
-      "sha256": "5f0336544e61d35dffb04d1afd6b60ea58efe7b7564241b6767ea24d8511a586",
-      "utf8_source": "const fs = require('node:fs');\nconst YAML = require('yaml');\n\nconst { domainDigest } = require('./bytes');\nconst {\n  createContainmentContractBundle,\n} = require('./containment-contracts');\nconst {\n  BROAD_ROUTE_CONTRACT,\n  MARKET_STATS_CONTRACT,\n  enumerateContainmentExpectedMembers,\n} = require('./containment-enumerator');\nconst { enumerateClosedMembers } = require('./enumerate');\nconst {\n  createGoverningRegistryAuthority,\n} = require('./governing-registry');\nconst {\n  ISOLATION_CONTRACTS,\n  enumerateIsolationExpectedMembers,\n} = require('./isolation-enumerator');\nconst { createIsolationContractBundle } = require('./isolation-contracts');\nconst { ACCEPTANCE_PREDICATES, evaluateAcceptanceClaims } = require('./predicates');\nconst {\n  REGISTRY_DIGESTS,\n  VALIDATOR_CONFIGURATION,\n  acceptanceDescriptorForContract,\n} = require('./registry');\nconst { createReviewContractBundle } = require('./review-contracts');\nconst {\n  BEN_APPROVAL_CONTRACT,\n  REVIEW_SET_CONTRACT,\n  enumerateReviewExpectedMembers,\n} = require('./review-enumerator');\nconst {\n  recomputeReviewApprovalVerifications,\n} = require('./review-signing');\nconst {\n  SECURITY_DISPOSITION_CONTRACTS,\n  enumerateSecurityDispositionExpectedMembers,\n} = require('./security-disposition-enumerator');\nconst {\n  createSecurityDispositionContractBundle,\n} = require('./security-disposition-contracts');\nconst { SCHEMA_IDS, schemaFor, validateSchema } = require('./schema-registry');\nconst { verifySignature } = require('./signatures');\nconst {\n  buildUnsignedProgrammeGateStatus,\n  createProgrammeStatusAuthority,\n} = require('./status');\nconst {\n  createProgrammeGateEvidenceValidator,\n  unsignedEnvelope,\n} = require('./validator');\n\nconst G0_GATE_ORDER = Object.freeze([\n  'G0_MARKET_STATS_CONTAINED',\n  'G0_BROAD_CORPUS_ROUTES_CONTAINED',\n  'G0_ZAYO_DISPOSITION',\n  'G0_CLAUDE_CREDENTIAL_ROTATION',\n  'G0_SUPABASE_SECRET_DISPOSITION',\n  'G0_STAGING_SUPABASE_ISOLATED',\n  'G0_STAGING_VERCEL_ISOLATED',\n  'G0_STAGING_ACCESS_PROTECTED',\n  'G0_EXACT_DIGEST_REVIEW_SET',\n  'G0_BEN_SPEC_APPROVAL',\n]);\nconst GROUPS = Object.freeze([\n  Object.freeze({\n    key: 'containment',\n    gates: G0_GATE_ORDER.slice(0, 2),\n    preflightType: 'ProgrammeGateContainmentSignedEvidencePreflight/V1',\n  }),\n  Object.freeze({\n    key: 'security',\n    gates: G0_GATE_ORDER.slice(2, 5),\n    preflightType: 'ProgrammeGateSecurityDispositionSignedPreflight/V1',\n  }),\n  Object.freeze({\n    key: 'isolation',\n    gates: G0_GATE_ORDER.slice(5, 8),\n    preflightType: 'ProgrammeGateIsolationSignedPreflight/V1',\n  }),\n  Object.freeze({\n    key: 'review',\n    gates: G0_GATE_ORDER.slice(8, 10),\n    preflightType: 'ProgrammeGateReviewApprovalSignedPreflight/V1',\n  }),\n]);\nconst DIGEST_PATTERN = /^[a-f0-9]{64}$/;\nconst COMMIT_PATTERN = /^[a-f0-9]{40}$/;\nconst authorityBrands = new WeakSet();\nconst statusAuthorities = new WeakMap();\n\nfunction requireExactKeys(value, keys, label) {\n  if (!value || typeof value !== 'object' || Array.isArray(value)) {\n    throw new TypeError(`${label} must be an object`);\n  }\n  const actual = Object.keys(value).sort();\n  const expected = [...keys].sort();\n  if (actual.length !== expected.length\n    || actual.some((key, index) => key !== expected[index])) {\n    throw new Error(`${label} does not match its closed input`);\n  }\n}\n\nfunction requirePattern(value, pattern, label) {\n  if (typeof value !== 'string' || !pattern.test(value)) {\n    throw new TypeError(`${label} is invalid`);\n  }\n  return value;\n}\n\nfunction requireTimestamp(value, label) {\n  if (typeof value !== 'string'\n    || !Number.isFinite(Date.parse(value))\n    || new Date(value).toISOString() !== value) {\n    throw new TypeError(`${label} must be a canonical UTC timestamp`);\n  }\n  return value;\n}\n\nfunction deepFreeze(value) {\n  if (!value || typeof value !== 'object' || Object.isFrozen(value)) return value;\n  for (const child of Object.values(value)) deepFreeze(child);\n  return Object.freeze(value);\n}\n\nfunction combinedContracts(specificationRoot) {\n  const bundles = [\n    createContainmentContractBundle({ specificationRoot }),\n    createSecurityDispositionContractBundle({ specificationRoot }),\n    createIsolationContractBundle({ specificationRoot }),\n    createReviewContractBundle({ specificationRoot }),\n  ];\n  const definitions = bundles.flatMap((bundle) => bundle.definitions);\n  const executableBindings = Object.assign(\n    {},\n    ...bundles.map((bundle) => bundle.executable_bindings),\n  );\n  if (definitions.length !== G0_GATE_ORDER.length\n    || new Set(definitions.map((definition) => definition.evidence_contract)).size\n      !== G0_GATE_ORDER.length\n    || Object.keys(executableBindings).length !== G0_GATE_ORDER.length) {\n    throw new Error('combined G0 acceptance contracts are incomplete');\n  }\n  const definitionGateOrder = definitions.map((definition) => (\n    acceptanceDescriptorForContract(definition.evidence_contract).gate_id\n  ));\n  if (definitionGateOrder.some((gateId, index) => gateId !== G0_GATE_ORDER[index])) {\n    throw new Error('combined G0 acceptance contracts are out of order');\n  }\n  return deepFreeze({ definitions, executableBindings });\n}\n\nfunction enumerateG0ExpectedMembers(input) {\n  const contract = input.definition && input.definition.evidence_contract;\n  if ([MARKET_STATS_CONTRACT, BROAD_ROUTE_CONTRACT].includes(contract)) {\n    return enumerateContainmentExpectedMembers(input);\n  }\n  if (Object.values(SECURITY_DISPOSITION_CONTRACTS).includes(contract)) {\n    return enumerateSecurityDispositionExpectedMembers(input);\n  }\n  if (Object.values(ISOLATION_CONTRACTS).includes(contract)) {\n    return enumerateIsolationExpectedMembers(input);\n  }\n  if ([REVIEW_SET_CONTRACT, BEN_APPROVAL_CONTRACT].includes(contract)) {\n    return enumerateReviewExpectedMembers(input);\n  }\n  throw new Error(`unsupported G0 evidence contract: ${contract}`);\n}\n\nfunction createG0StatusReadinessAuthority(input) {\n  requireExactKeys(input, [\n    'codeCommit',\n    'environment',\n    'keyRegistry',\n    'reviewSigningAuthority',\n    'specificationRoot',\n    'validatorExecutableDigest',\n    'validatorKeyId',\n    'verificationTime',\n  ], 'G0 status-readiness authority');\n  const specificationRoot = requirePattern(\n    input.specificationRoot,\n    DIGEST_PATTERN,\n    'specification root',\n  );\n  const codeCommit = requirePattern(input.codeCommit, COMMIT_PATTERN, 'code commit');\n  const validatorExecutableDigest = requirePattern(\n    input.validatorExecutableDigest,\n    DIGEST_PATTERN,\n    'validator executable digest',\n  );\n  if (!['STAGING', 'PRODUCTION'].includes(input.environment)) {\n    throw new Error('environment must be STAGING or PRODUCTION');\n  }\n  validateSchema('TrustedProgrammeGatePublicKeys/V1', input.keyRegistry);\n  if (input.keyRegistry.registry_state !== 'ACTIVE') {\n    throw new Error('trusted public-key registry is not active');\n  }\n  const verificationTime = requireTimestamp(input.verificationTime, 'verification time');\n  const contracts = combinedContracts(specificationRoot);\n  const validateEvidence = createProgrammeGateEvidenceValidator({\n    domainDigest,\n    validateSchema,\n    schemaFor,\n    knownSchemaIds: SCHEMA_IDS,\n    acceptanceDescriptorForContract,\n    acceptanceDefinitions: contracts.definitions,\n    enumerateClosedMembers,\n    enumerateExpectedMembers: enumerateG0ExpectedMembers,\n    evaluateAcceptanceClaims,\n    predicateRegistry: ACCEPTANCE_PREDICATES,\n    verifySignature,\n    validatorConfiguration: VALIDATOR_CONFIGURATION,\n    allowedValidatorExecutableDigests: [validatorExecutableDigest],\n    executableBindings: contracts.executableBindings,\n    keyRegistry: structuredClone(input.keyRegistry),\n  });\n  const governingRegistryAuthority = createGoverningRegistryAuthority({\n    readFileSync: fs.readFileSync,\n    parseYaml: YAML.parse,\n    domainDigest,\n  });\n  const statusAuthority = createProgrammeStatusAuthority({\n    governingRegistryAuthority,\n    domainDigest,\n    validateEvidence(candidateInput) {\n      return validateEvidence({\n        ...candidateInput,\n        expectedSpecificationRoot: specificationRoot,\n        expectedFrozenContractPairDigest: null,\n        expectedCodeCommit: codeCommit,\n        expectedEnvironment: input.environment,\n        clock: { now: () => verificationTime },\n      });\n    },\n    evidencePayloadForDigest: unsignedEnvelope,\n    validateStatusSchema: validateSchema,\n    verifyStatusSignature: () => false,\n    validatorExecutableDigest,\n    validatorConfigurationDigest: REGISTRY_DIGESTS.validator_configuration,\n    validatorKeyId: input.validatorKeyId,\n    bootstrapState: 'AVAILABLE',\n    terminalPairState: 'UNVALIDATED',\n  });\n  const authority = deepFreeze({\n    specificationRoot,\n    codeCommit,\n    environment: input.environment,\n    validatorExecutableDigest,\n    validatorKeyId: input.validatorKeyId,\n    verificationTime,\n    keyRegistry: structuredClone(input.keyRegistry),\n    reviewSigningAuthority: input.reviewSigningAuthority,\n  });\n  authorityBrands.add(authority);\n  statusAuthorities.set(authority, statusAuthority);\n  return authority;\n}\n\nfunction requireAuthority(value) {\n  if (!authorityBrands.has(value)) {\n    throw new TypeError('a closed G0 status-readiness authority is required');\n  }\n  return value;\n}\n\nfunction createG0SignedStatusAuthority(input) {\n  requireExactKeys(\n    input,\n    ['authority', 'verifyStatusSignature'],\n    'G0 signed-status authority input',\n  );\n  const authority = requireAuthority(input.authority);\n  if (typeof input.verifyStatusSignature !== 'function') {\n    throw new TypeError('status-signature verifier must be a function');\n  }\n  const source = statusAuthorities.get(authority);\n  return createProgrammeStatusAuthority({\n    governingRegistryAuthority: source.registry,\n    domainDigest: source.domainDigest,\n    validateEvidence: source.validateEvidence,\n    evidencePayloadForDigest: source.evidencePayloadForDigest,\n    validateStatusSchema: source.validateStatusSchema,\n    verifyStatusSignature: input.verifyStatusSignature,\n    validatorExecutableDigest: source.validatorExecutableDigest,\n    validatorConfigurationDigest: source.validatorConfigurationDigest,\n    validatorKeyId: source.validatorKeyId,\n    bootstrapState: source.bootstrapState,\n    terminalPairState: source.terminalPairState,\n  });\n}\n\nfunction validateGroup(group, authority, expectedGroup) {\n  requireExactKeys(group, ['bundle', 'signedPreflights'], `${expectedGroup.key} group`);\n  const { bundle, signedPreflights } = group;\n  if (!bundle\n    || bundle.specification_root !== authority.specificationRoot\n    || bundle.code_commit !== authority.codeCommit\n    || bundle.environment !== authority.environment\n    || bundle.formal_gate_state !== 'OPEN'\n    || bundle.status_publication_attempted !== false\n    || !Array.isArray(bundle.candidates)\n    || !Array.isArray(signedPreflights)\n    || bundle.candidates.length !== expectedGroup.gates.length\n    || signedPreflights.length !== expectedGroup.gates.length\n    || bundle.candidates.some(\n      (candidate, index) => candidate.gate_id !== expectedGroup.gates[index],\n    )) {\n    throw new Error(`${expectedGroup.key} readiness does not match the G0 authority`);\n  }\n  const preflightByGate = new Map(\n    signedPreflights.map((preflight) => [preflight && preflight.gate_id, preflight]),\n  );\n  if (preflightByGate.size !== expectedGroup.gates.length) {\n    throw new Error(`${expectedGroup.key} preflights are missing or duplicated`);\n  }\n  return bundle.candidates.map((candidate) => {\n    const preflight = preflightByGate.get(candidate.gate_id);\n    if (!preflight\n      || preflight.preflight_type !== expectedGroup.preflightType\n      || preflight.evidence_validation?.valid !== true\n      || preflight.evidence_validation?.state !== 'PASS'\n      || !preflight.signed_envelope) {\n      throw new Error(`passing signed preflight is missing for ${candidate.gate_id}`);\n    }\n    return { candidate, preflight };\n  });\n}\n\nfunction buildG0StatusReadiness(input) {\n  requireExactKeys(\n    input,\n    ['authority', 'containment', 'isolation', 'review', 'security'],\n    'G0 status readiness',\n  );\n  const authority = requireAuthority(input.authority);\n  const reviewVerifications = recomputeReviewApprovalVerifications(\n    authority.reviewSigningAuthority,\n    input.review.bundle,\n  );\n  const pairs = GROUPS.flatMap((group) => validateGroup(\n    input[group.key],\n    authority,\n    group,\n  ));\n  if (pairs.map(({ candidate }) => candidate.gate_id)\n    .some((gateId, index) => gateId !== G0_GATE_ORDER[index])) {\n    throw new Error('G0 candidates do not match the governing order');\n  }\n  const evidenceCandidates = pairs.map(({ candidate, preflight }) => Object.freeze({\n    envelope: structuredClone(preflight.signed_envelope),\n    validation_input: Object.freeze({\n      evidenceSubject: structuredClone(candidate.evidence_subject),\n      evidenceObject: structuredClone(candidate.evidence_object),\n      members: structuredClone(candidate.members),\n      memberSchemaSet: structuredClone(candidate.member_schema_set),\n      testResults: structuredClone(candidate.test_results),\n      ...(candidate.gate_id === 'G0_EXACT_DIGEST_REVIEW_SET'\n        || candidate.gate_id === 'G0_BEN_SPEC_APPROVAL'\n        ? reviewVerifications\n        : {}),\n    }),\n  }));\n  const unsignedStatus = buildUnsignedProgrammeGateStatus({\n    authority: statusAuthorities.get(authority),\n    evidenceCandidates,\n    specificationRoot: authority.specificationRoot,\n    codeCommit: authority.codeCommit,\n    environment: authority.environment,\n    generation: 1,\n    predecessorStatusId: 'NONE',\n  });\n  const passingGateIds = unsignedStatus.ordered_gate_projection\n    .filter((row) => row.state === 'PASS')\n    .map((row) => row.gate_id);\n  const workClasses = new Map(\n    unsignedStatus.ordered_work_class_projection.map(\n      (row) => [row.work_class, row.state],\n    ),\n  );\n  const ready = passingGateIds.length === G0_GATE_ORDER.length\n    && passingGateIds.every((gateId, index) => gateId === G0_GATE_ORDER[index])\n    && workClasses.get('canonical_work_start') === 'PASS'\n    && workClasses.get('gate_status_bootstrap') === 'PASS';\n  return deepFreeze({\n    readiness_type: 'ProgrammeGateG0StatusReadiness/V1',\n    readiness_state: ready ? 'READY_FOR_STATUS_SIGNATURE' : 'OPEN',\n    passing_gate_ids: passingGateIds,\n    evidence_candidates: evidenceCandidates,\n    unsigned_status: unsignedStatus,\n    status_signature: null,\n    formal_status_state: 'OPEN',\n    bootstrap_nonce_consumed: false,\n    status_publication_attempted: false,\n  });\n}\n\nmodule.exports = {\n  G0_GATE_ORDER,\n  buildG0StatusReadiness,\n  createG0SignedStatusAuthority,\n  createG0StatusReadinessAuthority,\n  enumerateG0ExpectedMembers,\n};\n"
+      "byte_length": 16295,
+      "sha256": "ba9191f3c88bfdb0c84cda4f27c3e04aa447bdf686eb8569beb6b6d93a8e244e",
+      "utf8_source": "const fs = require('node:fs');\nconst YAML = require('yaml');\n\nconst { domainDigest } = require('./bytes');\nconst {\n  createContainmentContractBundle,\n} = require('./containment-contracts');\nconst {\n  BROAD_ROUTE_CONTRACT,\n  MARKET_STATS_CONTRACT,\n  enumerateContainmentExpectedMembers,\n} = require('./containment-enumerator');\nconst { enumerateClosedMembers } = require('./enumerate');\nconst {\n  createGoverningRegistryAuthority,\n} = require('./governing-registry');\nconst {\n  ISOLATION_CONTRACTS,\n  enumerateIsolationExpectedMembers,\n} = require('./isolation-enumerator');\nconst { createIsolationContractBundle } = require('./isolation-contracts');\nconst { ACCEPTANCE_PREDICATES, evaluateAcceptanceClaims } = require('./predicates');\nconst {\n  REGISTRY_DIGESTS,\n  VALIDATOR_CONFIGURATION,\n  acceptanceDescriptorForContract,\n} = require('./registry');\nconst { createReviewContractBundle } = require('./review-contracts');\nconst {\n  BEN_APPROVAL_CONTRACT,\n  REVIEW_SET_CONTRACT,\n  enumerateReviewExpectedMembers,\n} = require('./review-enumerator');\nconst {\n  recomputeReviewApprovalVerifications,\n} = require('./review-signing');\nconst {\n  SECURITY_DISPOSITION_CONTRACTS,\n  enumerateSecurityDispositionExpectedMembers,\n} = require('./security-disposition-enumerator');\nconst {\n  createSecurityDispositionContractBundle,\n} = require('./security-disposition-contracts');\nconst { SCHEMA_IDS, schemaFor, validateSchema } = require('./schema-registry');\nconst { verifySignature } = require('./signatures');\nconst {\n  buildUnsignedProgrammeGateStatus,\n  createProgrammeStatusAuthority,\n} = require('./status');\nconst {\n  createProgrammeGateEvidenceValidator,\n  unsignedEnvelope,\n} = require('./validator');\n\nconst G0_GATE_ORDER = Object.freeze([\n  'G0_MARKET_STATS_CONTAINED',\n  'G0_BROAD_CORPUS_ROUTES_CONTAINED',\n  'G0_ZAYO_DISPOSITION',\n  'G0_CLAUDE_CREDENTIAL_ROTATION',\n  'G0_SUPABASE_SECRET_DISPOSITION',\n  'G0_STAGING_SUPABASE_ISOLATED',\n  'G0_STAGING_VERCEL_ISOLATED',\n  'G0_STAGING_ACCESS_PROTECTED',\n  'G0_EXACT_DIGEST_REVIEW_SET',\n  'G0_BEN_SPEC_APPROVAL',\n]);\nconst GROUPS = Object.freeze([\n  Object.freeze({\n    key: 'containment',\n    gates: G0_GATE_ORDER.slice(0, 2),\n    preflightType: 'ProgrammeGateContainmentSignedEvidencePreflight/V1',\n  }),\n  Object.freeze({\n    key: 'security',\n    gates: G0_GATE_ORDER.slice(2, 5),\n    preflightType: 'ProgrammeGateSecurityDispositionSignedPreflight/V1',\n  }),\n  Object.freeze({\n    key: 'isolation',\n    gates: G0_GATE_ORDER.slice(5, 8),\n    preflightType: 'ProgrammeGateIsolationSignedPreflight/V1',\n  }),\n  Object.freeze({\n    key: 'review',\n    gates: G0_GATE_ORDER.slice(8, 10),\n    preflightType: 'ProgrammeGateReviewApprovalSignedPreflight/V1',\n  }),\n]);\nconst DIGEST_PATTERN = /^[a-f0-9]{64}$/;\nconst COMMIT_PATTERN = /^[a-f0-9]{40}$/;\nconst authorityBrands = new WeakSet();\nconst statusAuthorities = new WeakMap();\nconst AUTHORITY_KEYS = Object.freeze([\n  'codeCommit',\n  'environment',\n  'keyRegistry',\n  'reviewSigningAuthority',\n  'specificationRoot',\n  'validatorExecutableDigest',\n  'validatorKeyId',\n  'verificationTime',\n]);\nconst STATUS_CONTEXT_KEYS = Object.freeze([\n  'bootstrapState',\n  'generation',\n  'predecessorStatusId',\n]);\n\nfunction requireExactKeys(value, keys, label) {\n  if (!value || typeof value !== 'object' || Array.isArray(value)) {\n    throw new TypeError(`${label} must be an object`);\n  }\n  const actual = Object.keys(value).sort();\n  const expected = [...keys].sort();\n  if (actual.length !== expected.length\n    || actual.some((key, index) => key !== expected[index])) {\n    throw new Error(`${label} does not match its closed input`);\n  }\n}\n\nfunction requirePattern(value, pattern, label) {\n  if (typeof value !== 'string' || !pattern.test(value)) {\n    throw new TypeError(`${label} is invalid`);\n  }\n  return value;\n}\n\nfunction requireTimestamp(value, label) {\n  if (typeof value !== 'string'\n    || !Number.isFinite(Date.parse(value))\n    || new Date(value).toISOString() !== value) {\n    throw new TypeError(`${label} must be a canonical UTC timestamp`);\n  }\n  return value;\n}\n\nfunction statusContextForAuthority(input) {\n  const explicitContext = Boolean(input)\n    && typeof input === 'object'\n    && !Array.isArray(input)\n    && STATUS_CONTEXT_KEYS.some((key) => Object.hasOwn(input, key));\n  requireExactKeys(\n    input,\n    explicitContext ? [...AUTHORITY_KEYS, ...STATUS_CONTEXT_KEYS] : AUTHORITY_KEYS,\n    'G0 status-readiness authority',\n  );\n  if (!explicitContext) {\n    return Object.freeze({\n      bootstrapState: 'AVAILABLE',\n      generation: 1,\n      predecessorStatusId: 'NONE',\n    });\n  }\n  if (!Number.isInteger(input.generation) || input.generation < 1) {\n    throw new TypeError('status generation must be a positive integer');\n  }\n  if (input.generation === 1) {\n    if (input.predecessorStatusId !== 'NONE' || input.bootstrapState !== 'AVAILABLE') {\n      throw new Error(\n        'generation 1 requires predecessor NONE and bootstrap state AVAILABLE',\n      );\n    }\n  } else if (!DIGEST_PATTERN.test(input.predecessorStatusId)\n    || input.bootstrapState !== 'CONSUMED') {\n    throw new Error(\n      'a successor requires an exact predecessor status ID and bootstrap state CONSUMED',\n    );\n  }\n  return Object.freeze({\n    bootstrapState: input.bootstrapState,\n    generation: input.generation,\n    predecessorStatusId: input.predecessorStatusId,\n  });\n}\n\nfunction deepFreeze(value) {\n  if (!value || typeof value !== 'object' || Object.isFrozen(value)) return value;\n  for (const child of Object.values(value)) deepFreeze(child);\n  return Object.freeze(value);\n}\n\nfunction combinedContracts(specificationRoot) {\n  const bundles = [\n    createContainmentContractBundle({ specificationRoot }),\n    createSecurityDispositionContractBundle({ specificationRoot }),\n    createIsolationContractBundle({ specificationRoot }),\n    createReviewContractBundle({ specificationRoot }),\n  ];\n  const definitions = bundles.flatMap((bundle) => bundle.definitions);\n  const executableBindings = Object.assign(\n    {},\n    ...bundles.map((bundle) => bundle.executable_bindings),\n  );\n  if (definitions.length !== G0_GATE_ORDER.length\n    || new Set(definitions.map((definition) => definition.evidence_contract)).size\n      !== G0_GATE_ORDER.length\n    || Object.keys(executableBindings).length !== G0_GATE_ORDER.length) {\n    throw new Error('combined G0 acceptance contracts are incomplete');\n  }\n  const definitionGateOrder = definitions.map((definition) => (\n    acceptanceDescriptorForContract(definition.evidence_contract).gate_id\n  ));\n  if (definitionGateOrder.some((gateId, index) => gateId !== G0_GATE_ORDER[index])) {\n    throw new Error('combined G0 acceptance contracts are out of order');\n  }\n  return deepFreeze({ definitions, executableBindings });\n}\n\nfunction enumerateG0ExpectedMembers(input) {\n  const contract = input.definition && input.definition.evidence_contract;\n  if ([MARKET_STATS_CONTRACT, BROAD_ROUTE_CONTRACT].includes(contract)) {\n    return enumerateContainmentExpectedMembers(input);\n  }\n  if (Object.values(SECURITY_DISPOSITION_CONTRACTS).includes(contract)) {\n    return enumerateSecurityDispositionExpectedMembers(input);\n  }\n  if (Object.values(ISOLATION_CONTRACTS).includes(contract)) {\n    return enumerateIsolationExpectedMembers(input);\n  }\n  if ([REVIEW_SET_CONTRACT, BEN_APPROVAL_CONTRACT].includes(contract)) {\n    return enumerateReviewExpectedMembers(input);\n  }\n  throw new Error(`unsupported G0 evidence contract: ${contract}`);\n}\n\nfunction createG0StatusReadinessAuthority(input) {\n  const statusContext = statusContextForAuthority(input);\n  const specificationRoot = requirePattern(\n    input.specificationRoot,\n    DIGEST_PATTERN,\n    'specification root',\n  );\n  const codeCommit = requirePattern(input.codeCommit, COMMIT_PATTERN, 'code commit');\n  const validatorExecutableDigest = requirePattern(\n    input.validatorExecutableDigest,\n    DIGEST_PATTERN,\n    'validator executable digest',\n  );\n  if (!['STAGING', 'PRODUCTION'].includes(input.environment)) {\n    throw new Error('environment must be STAGING or PRODUCTION');\n  }\n  validateSchema('TrustedProgrammeGatePublicKeys/V1', input.keyRegistry);\n  if (input.keyRegistry.registry_state !== 'ACTIVE') {\n    throw new Error('trusted public-key registry is not active');\n  }\n  const verificationTime = requireTimestamp(input.verificationTime, 'verification time');\n  const contracts = combinedContracts(specificationRoot);\n  const validateEvidence = createProgrammeGateEvidenceValidator({\n    domainDigest,\n    validateSchema,\n    schemaFor,\n    knownSchemaIds: SCHEMA_IDS,\n    acceptanceDescriptorForContract,\n    acceptanceDefinitions: contracts.definitions,\n    enumerateClosedMembers,\n    enumerateExpectedMembers: enumerateG0ExpectedMembers,\n    evaluateAcceptanceClaims,\n    predicateRegistry: ACCEPTANCE_PREDICATES,\n    verifySignature,\n    validatorConfiguration: VALIDATOR_CONFIGURATION,\n    allowedValidatorExecutableDigests: [validatorExecutableDigest],\n    executableBindings: contracts.executableBindings,\n    keyRegistry: structuredClone(input.keyRegistry),\n  });\n  const governingRegistryAuthority = createGoverningRegistryAuthority({\n    readFileSync: fs.readFileSync,\n    parseYaml: YAML.parse,\n    domainDigest,\n  });\n  const statusAuthority = createProgrammeStatusAuthority({\n    governingRegistryAuthority,\n    domainDigest,\n    validateEvidence(candidateInput) {\n      return validateEvidence({\n        ...candidateInput,\n        expectedSpecificationRoot: specificationRoot,\n        expectedFrozenContractPairDigest: null,\n        expectedCodeCommit: codeCommit,\n        expectedEnvironment: input.environment,\n        clock: { now: () => verificationTime },\n      });\n    },\n    evidencePayloadForDigest: unsignedEnvelope,\n    validateStatusSchema: validateSchema,\n    verifyStatusSignature: () => false,\n    validatorExecutableDigest,\n    validatorConfigurationDigest: REGISTRY_DIGESTS.validator_configuration,\n    validatorKeyId: input.validatorKeyId,\n    bootstrapState: statusContext.bootstrapState,\n    terminalPairState: 'UNVALIDATED',\n  });\n  const authority = deepFreeze({\n    specificationRoot,\n    codeCommit,\n    environment: input.environment,\n    validatorExecutableDigest,\n    validatorKeyId: input.validatorKeyId,\n    verificationTime,\n    keyRegistry: structuredClone(input.keyRegistry),\n    reviewSigningAuthority: input.reviewSigningAuthority,\n    ...statusContext,\n  });\n  authorityBrands.add(authority);\n  statusAuthorities.set(authority, statusAuthority);\n  return authority;\n}\n\nfunction requireAuthority(value) {\n  if (!authorityBrands.has(value)) {\n    throw new TypeError('a closed G0 status-readiness authority is required');\n  }\n  return value;\n}\n\nfunction createG0SignedStatusAuthority(input) {\n  requireExactKeys(\n    input,\n    ['authority', 'verifyStatusSignature'],\n    'G0 signed-status authority input',\n  );\n  const authority = requireAuthority(input.authority);\n  if (typeof input.verifyStatusSignature !== 'function') {\n    throw new TypeError('status-signature verifier must be a function');\n  }\n  const source = statusAuthorities.get(authority);\n  return createProgrammeStatusAuthority({\n    governingRegistryAuthority: source.registry,\n    domainDigest: source.domainDigest,\n    validateEvidence: source.validateEvidence,\n    evidencePayloadForDigest: source.evidencePayloadForDigest,\n    validateStatusSchema: source.validateStatusSchema,\n    verifyStatusSignature: input.verifyStatusSignature,\n    validatorExecutableDigest: source.validatorExecutableDigest,\n    validatorConfigurationDigest: source.validatorConfigurationDigest,\n    validatorKeyId: source.validatorKeyId,\n    bootstrapState: source.bootstrapState,\n    terminalPairState: source.terminalPairState,\n  });\n}\n\nfunction validateGroup(group, authority, expectedGroup) {\n  requireExactKeys(group, ['bundle', 'signedPreflights'], `${expectedGroup.key} group`);\n  const { bundle, signedPreflights } = group;\n  if (!bundle\n    || bundle.specification_root !== authority.specificationRoot\n    || bundle.code_commit !== authority.codeCommit\n    || bundle.environment !== authority.environment\n    || bundle.formal_gate_state !== 'OPEN'\n    || bundle.status_publication_attempted !== false\n    || !Array.isArray(bundle.candidates)\n    || !Array.isArray(signedPreflights)\n    || bundle.candidates.length !== expectedGroup.gates.length\n    || signedPreflights.length !== expectedGroup.gates.length\n    || bundle.candidates.some(\n      (candidate, index) => candidate.gate_id !== expectedGroup.gates[index],\n    )) {\n    throw new Error(`${expectedGroup.key} readiness does not match the G0 authority`);\n  }\n  const preflightByGate = new Map(\n    signedPreflights.map((preflight) => [preflight && preflight.gate_id, preflight]),\n  );\n  if (preflightByGate.size !== expectedGroup.gates.length) {\n    throw new Error(`${expectedGroup.key} preflights are missing or duplicated`);\n  }\n  return bundle.candidates.map((candidate) => {\n    const preflight = preflightByGate.get(candidate.gate_id);\n    if (!preflight\n      || preflight.preflight_type !== expectedGroup.preflightType\n      || preflight.evidence_validation?.valid !== true\n      || preflight.evidence_validation?.state !== 'PASS'\n      || !preflight.signed_envelope) {\n      throw new Error(`passing signed preflight is missing for ${candidate.gate_id}`);\n    }\n    return { candidate, preflight };\n  });\n}\n\nfunction buildG0StatusReadiness(input) {\n  requireExactKeys(\n    input,\n    ['authority', 'containment', 'isolation', 'review', 'security'],\n    'G0 status readiness',\n  );\n  const authority = requireAuthority(input.authority);\n  const reviewVerifications = recomputeReviewApprovalVerifications(\n    authority.reviewSigningAuthority,\n    input.review.bundle,\n  );\n  const pairs = GROUPS.flatMap((group) => validateGroup(\n    input[group.key],\n    authority,\n    group,\n  ));\n  if (pairs.map(({ candidate }) => candidate.gate_id)\n    .some((gateId, index) => gateId !== G0_GATE_ORDER[index])) {\n    throw new Error('G0 candidates do not match the governing order');\n  }\n  const evidenceCandidates = pairs.map(({ candidate, preflight }) => Object.freeze({\n    envelope: structuredClone(preflight.signed_envelope),\n    validation_input: Object.freeze({\n      evidenceSubject: structuredClone(candidate.evidence_subject),\n      evidenceObject: structuredClone(candidate.evidence_object),\n      members: structuredClone(candidate.members),\n      memberSchemaSet: structuredClone(candidate.member_schema_set),\n      testResults: structuredClone(candidate.test_results),\n      ...(candidate.gate_id === 'G0_EXACT_DIGEST_REVIEW_SET'\n        || candidate.gate_id === 'G0_BEN_SPEC_APPROVAL'\n        ? reviewVerifications\n        : {}),\n    }),\n  }));\n  const unsignedStatus = buildUnsignedProgrammeGateStatus({\n    authority: statusAuthorities.get(authority),\n    evidenceCandidates,\n    specificationRoot: authority.specificationRoot,\n    codeCommit: authority.codeCommit,\n    environment: authority.environment,\n    generation: authority.generation,\n    predecessorStatusId: authority.predecessorStatusId,\n  });\n  const passingGateIds = unsignedStatus.ordered_gate_projection\n    .filter((row) => row.state === 'PASS')\n    .map((row) => row.gate_id);\n  const workClasses = new Map(\n    unsignedStatus.ordered_work_class_projection.map(\n      (row) => [row.work_class, row.state],\n    ),\n  );\n  const ready = passingGateIds.length === G0_GATE_ORDER.length\n    && passingGateIds.every((gateId, index) => gateId === G0_GATE_ORDER[index])\n    && workClasses.get('canonical_work_start') === 'PASS'\n    && workClasses.get('gate_status_bootstrap')\n      === (authority.generation === 1 ? 'PASS' : 'OPEN');\n  return deepFreeze({\n    readiness_type: 'ProgrammeGateG0StatusReadiness/V1',\n    readiness_state: ready ? 'READY_FOR_STATUS_SIGNATURE' : 'OPEN',\n    passing_gate_ids: passingGateIds,\n    evidence_candidates: evidenceCandidates,\n    unsigned_status: unsignedStatus,\n    status_signature: null,\n    formal_status_state: 'OPEN',\n    bootstrap_nonce_consumed: authority.bootstrapState === 'CONSUMED',\n    status_publication_attempted: false,\n  });\n}\n\nmodule.exports = {\n  G0_GATE_ORDER,\n  buildG0StatusReadiness,\n  createG0SignedStatusAuthority,\n  createG0StatusReadinessAuthority,\n  enumerateG0ExpectedMembers,\n};\n"
     },
     {
       "path": "lib/programme-gates/git-authorship.js",
@@ -9725,8 +9725,8 @@
     {
       "path": "lib/programme-gates/test-executable-registry.js",
       "byte_length": 4793,
-      "sha256": "07e17e1ed92c71b07f4b0620c167b53d8cf8143b0e06e55a88caeecdcebc61e8",
-      "utf8_source": "const crypto = require('node:crypto');\nconst fs = require('node:fs');\nconst path = require('node:path');\n\nconst TEST_EXECUTABLE_SET_DOMAIN = 'PROGRAMME_GATE_TEST_EXECUTABLE_SET/V1';\nconst ADVERSARIAL_SOURCE_PATH = path.resolve(\n  __dirname,\n  '../../docs/codex-program/adversarial-tests.md',\n);\nconst UNIMPLEMENTED_EXECUTABLE_FILES = Object.freeze([\n  'scripts/run-unimplemented-adversarial-test.mjs',\n]);\nconst UNIMPLEMENTED_EXECUTABLE_DIGEST =\n  'f1d8e5796856f8db729ae5a6f65d5cac5538175dd6b88ec1559d92f200ae7572';\nconst MANDATORY_ADVERSARIAL_TEST_IDS = Object.freeze(\n  [...fs.readFileSync(ADVERSARIAL_SOURCE_PATH, 'utf8').matchAll(/^- `([^`]+)`/gm)]\n    .map((match) => match[1]),\n);\nif (MANDATORY_ADVERSARIAL_TEST_IDS.length !== 289\n  || new Set(MANDATORY_ADVERSARIAL_TEST_IDS).size !== 289\n  || crypto.createHash('sha256')\n    .update(`${MANDATORY_ADVERSARIAL_TEST_IDS.join('\\n')}\\n`)\n    .digest('hex') !== 'a03e2ac797ce941f1b04f82b30be78eb183ab5f26bf24c46b34046eef62b16a8') {\n  throw new Error('mandatory adversarial test identifier universe changed');\n}\n\nconst IMPLEMENTED_TEST_EXECUTABLE_FILES = Object.freeze({\n  'P0-ROUTE-01': Object.freeze([\n    'tests/query-containment.test.js',\n    'tests/broad-corpus-containment.test.js',\n    'tests/service-client-route-actions.test.js',\n  ]),\n  'GATE-01': Object.freeze([\n    'tests/programme-gates-schema-registry.test.js',\n    'tests/programme-gates/g0-signer-workflow.spec.js',\n    'tests/programme-gates/isolation-evidence.spec.js',\n    'tests/programme-gates/predicates.spec.js',\n    'tests/programme-gates/publication-executor.spec.js',\n    'tests/programme-gates/publication.spec.js',\n    'tests/programme-gates/security-disposition-signing.spec.js',\n    'tests/programme-gates/security-dispositions.spec.js',\n    'tests/programme-gates/validator-executable.spec.js',\n    'tests/programme-gates/validator.spec.js',\n  ]),\n  'GATE-BOOTSTRAP-01': Object.freeze([\n    'tests/programme-gates/bootstrap-acceptance-source.spec.js',\n  ]),\n  'DEPLOY-CUTOVER-01': Object.freeze([\n    'tests/programme-gates/isolation-evidence.spec.js',\n    'tests/canonical-v2-staging-preview-access.test.js',\n    'tests/canonical-v2-staging-runtime.test.js',\n  ]),\n  'PREVIEW-AUTH-01': Object.freeze([\n    'tests/canonical-v2-staging-preview-access.test.js',\n  ]),\n  'REVIEW-CONTEXT-01': Object.freeze([\n    'tests/programme-gates/review-artifact.spec.js',\n    'tests/programme-gates/review-evidence.spec.js',\n    'tests/programme-gates/review-readiness-signing.spec.js',\n    'tests/programme-gates/g0-status-readiness.spec.js',\n  ]),\n  'CONTRACT-01': Object.freeze([\n    'tests/programme-gates/contract-freeze-predicates.spec.js',\n    'tests/programme-gates/predicates.spec.js',\n    'tests/programme-gates/validator.spec.js',\n  ]),\n});\n\nconst IMPLEMENTED_TEST_EXECUTABLE_DIGESTS = Object.freeze({\n  'P0-ROUTE-01': '3256da535b37bc8072189fffbd07fc0d9bfdd093a2b17ab0166c31434fc27cfa',\n  'GATE-01': '6bcd59aae0d213a3edb2df8f5e63160f7658bf0a826e6101d14eeddbbf981dd7',\n  'GATE-BOOTSTRAP-01': 'e02bc9acb2c965857e245f074eb2400a476b327792f6a4eda240abaa13b08a5b',\n  'DEPLOY-CUTOVER-01': '53be6cb521df070c63974ddc1a75befed4ba7619975a3ce6d7b8cc228caf17ed',\n  'PREVIEW-AUTH-01': '727809074a09e2617f67abf710a8b171873fce9c821556fa20311de97762037f',\n  'REVIEW-CONTEXT-01': '2ce15e3a5635e7cfc3a2d2b9ba050139bb9c622e979fbc7400dd1a8fe9aa45e5',\n  'CONTRACT-01': '3886fc33e3a9c3a3fcaaf3d71be09e1f9097200ce32632dfc0f50f43c29b883f',\n});\n\nconst TEST_EXECUTABLE_FILES = Object.freeze(Object.fromEntries(\n  MANDATORY_ADVERSARIAL_TEST_IDS.map((testId) => [\n    testId,\n    IMPLEMENTED_TEST_EXECUTABLE_FILES[testId] || UNIMPLEMENTED_EXECUTABLE_FILES,\n  ]),\n));\n\nconst TEST_EXECUTABLE_DIGESTS = Object.freeze(Object.fromEntries(\n  MANDATORY_ADVERSARIAL_TEST_IDS.map((testId) => [\n    testId,\n    IMPLEMENTED_TEST_EXECUTABLE_DIGESTS[testId] || UNIMPLEMENTED_EXECUTABLE_DIGEST,\n  ]),\n));\n\nfunction testExecutableState(testId) {\n  if (!Object.hasOwn(TEST_EXECUTABLE_FILES, testId)) {\n    throw new Error(`unregistered programme-gate test ID: ${testId}`);\n  }\n  return Object.hasOwn(IMPLEMENTED_TEST_EXECUTABLE_FILES, testId)\n    ? 'IMPLEMENTED'\n    : 'BOUND_FAIL_CLOSED_UNIMPLEMENTED';\n}\n\nfunction testExecutableFiles(testId) {\n  const files = TEST_EXECUTABLE_FILES[testId];\n  if (!files) throw new Error(`unregistered programme-gate test ID: ${testId}`);\n  return files;\n}\n\nfunction expectedTestExecutableDigest(testId) {\n  const digest = TEST_EXECUTABLE_DIGESTS[testId];\n  if (!digest) throw new Error(`unregistered programme-gate test ID: ${testId}`);\n  return digest;\n}\n\nmodule.exports = {\n  TEST_EXECUTABLE_DIGESTS,\n  TEST_EXECUTABLE_FILES,\n  TEST_EXECUTABLE_SET_DOMAIN,\n  MANDATORY_ADVERSARIAL_TEST_IDS,\n  expectedTestExecutableDigest,\n  testExecutableState,\n  testExecutableFiles,\n};\n"
+      "sha256": "e6b36ba624e184baca5ce2a92a6863c699b26421e854a74ed103d9c7e5c6333a",
+      "utf8_source": "const crypto = require('node:crypto');\nconst fs = require('node:fs');\nconst path = require('node:path');\n\nconst TEST_EXECUTABLE_SET_DOMAIN = 'PROGRAMME_GATE_TEST_EXECUTABLE_SET/V1';\nconst ADVERSARIAL_SOURCE_PATH = path.resolve(\n  __dirname,\n  '../../docs/codex-program/adversarial-tests.md',\n);\nconst UNIMPLEMENTED_EXECUTABLE_FILES = Object.freeze([\n  'scripts/run-unimplemented-adversarial-test.mjs',\n]);\nconst UNIMPLEMENTED_EXECUTABLE_DIGEST =\n  'f1d8e5796856f8db729ae5a6f65d5cac5538175dd6b88ec1559d92f200ae7572';\nconst MANDATORY_ADVERSARIAL_TEST_IDS = Object.freeze(\n  [...fs.readFileSync(ADVERSARIAL_SOURCE_PATH, 'utf8').matchAll(/^- `([^`]+)`/gm)]\n    .map((match) => match[1]),\n);\nif (MANDATORY_ADVERSARIAL_TEST_IDS.length !== 289\n  || new Set(MANDATORY_ADVERSARIAL_TEST_IDS).size !== 289\n  || crypto.createHash('sha256')\n    .update(`${MANDATORY_ADVERSARIAL_TEST_IDS.join('\\n')}\\n`)\n    .digest('hex') !== 'a03e2ac797ce941f1b04f82b30be78eb183ab5f26bf24c46b34046eef62b16a8') {\n  throw new Error('mandatory adversarial test identifier universe changed');\n}\n\nconst IMPLEMENTED_TEST_EXECUTABLE_FILES = Object.freeze({\n  'P0-ROUTE-01': Object.freeze([\n    'tests/query-containment.test.js',\n    'tests/broad-corpus-containment.test.js',\n    'tests/service-client-route-actions.test.js',\n  ]),\n  'GATE-01': Object.freeze([\n    'tests/programme-gates-schema-registry.test.js',\n    'tests/programme-gates/g0-signer-workflow.spec.js',\n    'tests/programme-gates/isolation-evidence.spec.js',\n    'tests/programme-gates/predicates.spec.js',\n    'tests/programme-gates/publication-executor.spec.js',\n    'tests/programme-gates/publication.spec.js',\n    'tests/programme-gates/security-disposition-signing.spec.js',\n    'tests/programme-gates/security-dispositions.spec.js',\n    'tests/programme-gates/validator-executable.spec.js',\n    'tests/programme-gates/validator.spec.js',\n  ]),\n  'GATE-BOOTSTRAP-01': Object.freeze([\n    'tests/programme-gates/bootstrap-acceptance-source.spec.js',\n  ]),\n  'DEPLOY-CUTOVER-01': Object.freeze([\n    'tests/programme-gates/isolation-evidence.spec.js',\n    'tests/canonical-v2-staging-preview-access.test.js',\n    'tests/canonical-v2-staging-runtime.test.js',\n  ]),\n  'PREVIEW-AUTH-01': Object.freeze([\n    'tests/canonical-v2-staging-preview-access.test.js',\n  ]),\n  'REVIEW-CONTEXT-01': Object.freeze([\n    'tests/programme-gates/review-artifact.spec.js',\n    'tests/programme-gates/review-evidence.spec.js',\n    'tests/programme-gates/review-readiness-signing.spec.js',\n    'tests/programme-gates/g0-status-readiness.spec.js',\n  ]),\n  'CONTRACT-01': Object.freeze([\n    'tests/programme-gates/contract-freeze-predicates.spec.js',\n    'tests/programme-gates/predicates.spec.js',\n    'tests/programme-gates/validator.spec.js',\n  ]),\n});\n\nconst IMPLEMENTED_TEST_EXECUTABLE_DIGESTS = Object.freeze({\n  'P0-ROUTE-01': '3256da535b37bc8072189fffbd07fc0d9bfdd093a2b17ab0166c31434fc27cfa',\n  'GATE-01': '6b9a7daa489f61c5cc7bde2a953a706e56a3336f42540dc8e9104dc768d62f80',\n  'GATE-BOOTSTRAP-01': 'e02bc9acb2c965857e245f074eb2400a476b327792f6a4eda240abaa13b08a5b',\n  'DEPLOY-CUTOVER-01': '53be6cb521df070c63974ddc1a75befed4ba7619975a3ce6d7b8cc228caf17ed',\n  'PREVIEW-AUTH-01': '727809074a09e2617f67abf710a8b171873fce9c821556fa20311de97762037f',\n  'REVIEW-CONTEXT-01': '1ea858b9914ab4c49a16510dfe126466c283a692e7baab1e9cca23d248b2d8aa',\n  'CONTRACT-01': '3886fc33e3a9c3a3fcaaf3d71be09e1f9097200ce32632dfc0f50f43c29b883f',\n});\n\nconst TEST_EXECUTABLE_FILES = Object.freeze(Object.fromEntries(\n  MANDATORY_ADVERSARIAL_TEST_IDS.map((testId) => [\n    testId,\n    IMPLEMENTED_TEST_EXECUTABLE_FILES[testId] || UNIMPLEMENTED_EXECUTABLE_FILES,\n  ]),\n));\n\nconst TEST_EXECUTABLE_DIGESTS = Object.freeze(Object.fromEntries(\n  MANDATORY_ADVERSARIAL_TEST_IDS.map((testId) => [\n    testId,\n    IMPLEMENTED_TEST_EXECUTABLE_DIGESTS[testId] || UNIMPLEMENTED_EXECUTABLE_DIGEST,\n  ]),\n));\n\nfunction testExecutableState(testId) {\n  if (!Object.hasOwn(TEST_EXECUTABLE_FILES, testId)) {\n    throw new Error(`unregistered programme-gate test ID: ${testId}`);\n  }\n  return Object.hasOwn(IMPLEMENTED_TEST_EXECUTABLE_FILES, testId)\n    ? 'IMPLEMENTED'\n    : 'BOUND_FAIL_CLOSED_UNIMPLEMENTED';\n}\n\nfunction testExecutableFiles(testId) {\n  const files = TEST_EXECUTABLE_FILES[testId];\n  if (!files) throw new Error(`unregistered programme-gate test ID: ${testId}`);\n  return files;\n}\n\nfunction expectedTestExecutableDigest(testId) {\n  const digest = TEST_EXECUTABLE_DIGESTS[testId];\n  if (!digest) throw new Error(`unregistered programme-gate test ID: ${testId}`);\n  return digest;\n}\n\nmodule.exports = {\n  TEST_EXECUTABLE_DIGESTS,\n  TEST_EXECUTABLE_FILES,\n  TEST_EXECUTABLE_SET_DOMAIN,\n  MANDATORY_ADVERSARIAL_TEST_IDS,\n  expectedTestExecutableDigest,\n  testExecutableState,\n  testExecutableFiles,\n};\n"
     },
     {
       "path": "lib/programme-gates/test-execution-attestation.js",

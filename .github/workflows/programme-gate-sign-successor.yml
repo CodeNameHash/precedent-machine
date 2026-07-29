@@ -1,4 +1,4 @@
-name: Sign G0 evidence
+name: Sign programme status successor
 
 on:
   workflow_dispatch:
@@ -7,12 +7,28 @@ on:
         description: Exact deployed main commit to validate and sign
         required: true
         type: string
+      predecessor_publication_commit:
+        description: Exact protected publication commit to replace
+        required: true
+        type: string
       deployment_id:
         description: Exact production Vercel deployment ID
         required: true
         type: string
       preview_deployment_id:
         description: Exact canonical branch Preview Vercel deployment ID
+        required: true
+        type: string
+      review_basis_commit:
+        description: Exact main commit used by the cold review
+        required: true
+        type: string
+      review_basis_root:
+        description: Exact specification root used by the cold review
+        required: true
+        type: string
+      cold_review_run_id:
+        description: Successful protected cold-review workflow run ID
         required: true
         type: string
       authorisation_intent:
@@ -38,19 +54,26 @@ jobs:
       && inputs.authorisation_intent == 'AUTHORISE_ISOLATED_STAGING_CANONICAL_IMPLEMENTATION'
     runs-on: ubuntu-latest
     environment: programme-gate-production
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.expected_commit }}
           fetch-depth: 0
-      - name: Verify exact main commit
+      - name: Verify exact current main and predecessor
         env:
           EXPECTED_PROGRAMME_COMMIT: ${{ inputs.expected_commit }}
+          EXPECTED_PROGRAMME_PREDECESSOR_COMMIT: ${{ inputs.predecessor_publication_commit }}
         run: |
           set -euo pipefail
           test "${GITHUB_SHA}" = "${EXPECTED_PROGRAMME_COMMIT}"
           test "$(git rev-parse HEAD)" = "${EXPECTED_PROGRAMME_COMMIT}"
+          git fetch --quiet --no-tags origin \
+            refs/heads/main:refs/remotes/origin/main \
+            refs/heads/programme-status-publication-head:refs/remotes/origin/programme-status-publication-head
+          test "$(git rev-parse refs/remotes/origin/main)" = "${EXPECTED_PROGRAMME_COMMIT}"
+          test "$(git rev-parse refs/remotes/origin/programme-status-publication-head)" = "${EXPECTED_PROGRAMME_PREDECESSOR_COMMIT}"
+          test -z "$(git status --porcelain)"
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -59,37 +82,43 @@ jobs:
       - name: Download exact signed cold-review bundle
         uses: actions/download-artifact@v4
         with:
-          name: programme-gate-cold-reviews-d62456a81567baf8bf6aef7ae0c6290567086a08
+          name: programme-gate-cold-reviews-${{ inputs.review_basis_commit }}
           path: ${{ runner.temp }}/cold-reviews
           github-token: ${{ github.token }}
-          run-id: 30439653818
-      - name: Collect, validate and sign G0 evidence
+          run-id: ${{ inputs.cold_review_run_id }}
+      - name: Collect, validate, sign and publish successor
         env:
           EXPECTED_PROGRAMME_COMMIT: ${{ inputs.expected_commit }}
+          EXPECTED_PROGRAMME_PREDECESSOR_COMMIT: ${{ inputs.predecessor_publication_commit }}
           EXPECTED_VERCEL_DEPLOYMENT_ID: ${{ inputs.deployment_id }}
           EXPECTED_VERCEL_PREVIEW_DEPLOYMENT_ID: ${{ inputs.preview_deployment_id }}
           PROGRAMME_GATE_APPROVAL_INTENT: ${{ inputs.authorisation_intent }}
-          PROGRAMME_GATE_COLD_REVIEW_BUNDLE: ${{ runner.temp }}/cold-reviews/programme-gate-cold-reviews.json
           PROGRAMME_GATE_BEN_APPROVER_ED25519_PRIVATE_KEY_PEM: ${{ secrets.PROGRAMME_GATE_BEN_APPROVER_ED25519_PRIVATE_KEY_PEM }}
+          PROGRAMME_GATE_COLD_REVIEW_BUNDLE: ${{ runner.temp }}/cold-reviews/programme-gate-cold-reviews.json
           PROGRAMME_GATE_PREVIEW_ACCESS_MATRIX_JSON: ${{ secrets.PROGRAMME_GATE_PREVIEW_ACCESS_MATRIX_JSON }}
+          PROGRAMME_GATE_REVIEW_BASIS_COMMIT: ${{ inputs.review_basis_commit }}
+          PROGRAMME_GATE_REVIEW_BASIS_ROOT: ${{ inputs.review_basis_root }}
           PROGRAMME_GATE_STAGING_SUPABASE_SECRET_KEY: ${{ secrets.PROGRAMME_GATE_STAGING_SUPABASE_SECRET_KEY }}
           PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM: ${{ secrets.PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM }}
+          PROGRAMME_STATUS_PUBLICATION_MODE: SUCCESSOR
           PROGRAMME_STATUS_PUBLISHER_ED25519_PRIVATE_KEY_PEM: ${{ secrets.PROGRAMME_STATUS_PUBLISHER_ED25519_PRIVATE_KEY_PEM }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           set -euo pipefail
           umask 077
-          node scripts/sign-g0-evidence.mjs > "${RUNNER_TEMP}/programme-gate-g0-evidence.json"
-          test -s "${RUNNER_TEMP}/programme-gate-g0-evidence.json"
+          node scripts/sign-g0-evidence.mjs > "${RUNNER_TEMP}/programme-gate-successor-evidence.json"
+          test -s "${RUNNER_TEMP}/programme-gate-successor-evidence.json"
+      - name: Verify published successor
+        run: node scripts/verify-programme-status-publication.mjs
       - name: Upload signed evidence
         uses: actions/upload-artifact@v4
         with:
-          name: programme-gate-g0-evidence-${{ inputs.expected_commit }}
-          path: ${{ runner.temp }}/programme-gate-g0-evidence.json
+          name: programme-gate-successor-evidence-${{ inputs.expected_commit }}
+          path: ${{ runner.temp }}/programme-gate-successor-evidence.json
           if-no-files-found: error
           retention-days: 7
       - name: Remove runner output
         if: always()
         run: |
-          rm -f "${RUNNER_TEMP}/programme-gate-g0-evidence.json"
+          rm -f "${RUNNER_TEMP}/programme-gate-successor-evidence.json"
           rm -rf "${RUNNER_TEMP}/cold-reviews"

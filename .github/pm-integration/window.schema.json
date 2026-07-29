@@ -1,0 +1,638 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://precedent-machine.local/schemas/programme-integration-window-v1.json",
+  "title": "ProgrammeIntegrationWindow/V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "window_id",
+    "window_revision_id",
+    "state",
+    "transition_ordinal",
+    "base_main_commit",
+    "predecessor_publication",
+    "work_units",
+    "expected_test_ids",
+    "candidate_main_commit",
+    "ready_test_result",
+    "main_movement",
+    "successor_publication",
+    "final_verifier_result",
+    "recovery"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "ProgrammeIntegrationWindow/V1"
+    },
+    "window_id": {
+      "$ref": "#/definitions/digest"
+    },
+    "window_revision_id": {
+      "$ref": "#/definitions/digest"
+    },
+    "state": {
+      "enum": [
+        "ASSEMBLING",
+        "READY",
+        "MAIN_MOVED",
+        "SUCCESSOR_PUBLISHED",
+        "VERIFIED",
+        "RECOVERY_REQUIRED"
+      ]
+    },
+    "transition_ordinal": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4
+    },
+    "base_main_commit": {
+      "$ref": "#/definitions/commit"
+    },
+    "predecessor_publication": {
+      "$ref": "#/definitions/predecessorPublication"
+    },
+    "work_units": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/workUnit"
+      }
+    },
+    "expected_test_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/identifier"
+      }
+    },
+    "candidate_main_commit": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/definitions/commit"
+        }
+      ]
+    },
+    "ready_test_result": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/definitions/readyTestResult"
+        }
+      ]
+    },
+    "main_movement": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/definitions/mainMovement"
+        }
+      ]
+    },
+    "successor_publication": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/definitions/successorPublication"
+        }
+      ]
+    },
+    "final_verifier_result": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/definitions/finalVerifierResult"
+        }
+      ]
+    },
+    "recovery": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/definitions/recovery"
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "ASSEMBLING"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "transition_ordinal": {
+            "const": 0
+          },
+          "candidate_main_commit": {
+            "type": "null"
+          },
+          "ready_test_result": {
+            "type": "null"
+          },
+          "main_movement": {
+            "type": "null"
+          },
+          "successor_publication": {
+            "type": "null"
+          },
+          "final_verifier_result": {
+            "type": "null"
+          },
+          "recovery": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "READY"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "transition_ordinal": {
+            "const": 1
+          },
+          "candidate_main_commit": {
+            "$ref": "#/definitions/commit"
+          },
+          "ready_test_result": {
+            "$ref": "#/definitions/readyTestResult"
+          },
+          "main_movement": {
+            "type": "null"
+          },
+          "successor_publication": {
+            "type": "null"
+          },
+          "final_verifier_result": {
+            "type": "null"
+          },
+          "recovery": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "MAIN_MOVED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "transition_ordinal": {
+            "const": 2
+          },
+          "candidate_main_commit": {
+            "$ref": "#/definitions/commit"
+          },
+          "ready_test_result": {
+            "$ref": "#/definitions/readyTestResult"
+          },
+          "main_movement": {
+            "$ref": "#/definitions/mainMovement"
+          },
+          "successor_publication": {
+            "type": "null"
+          },
+          "final_verifier_result": {
+            "type": "null"
+          },
+          "recovery": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "SUCCESSOR_PUBLISHED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "transition_ordinal": {
+            "const": 3
+          },
+          "candidate_main_commit": {
+            "$ref": "#/definitions/commit"
+          },
+          "ready_test_result": {
+            "$ref": "#/definitions/readyTestResult"
+          },
+          "main_movement": {
+            "$ref": "#/definitions/mainMovement"
+          },
+          "successor_publication": {
+            "$ref": "#/definitions/successorPublication"
+          },
+          "final_verifier_result": {
+            "type": "null"
+          },
+          "recovery": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "VERIFIED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "transition_ordinal": {
+            "const": 4
+          },
+          "candidate_main_commit": {
+            "$ref": "#/definitions/commit"
+          },
+          "ready_test_result": {
+            "$ref": "#/definitions/readyTestResult"
+          },
+          "main_movement": {
+            "$ref": "#/definitions/mainMovement"
+          },
+          "successor_publication": {
+            "$ref": "#/definitions/successorPublication"
+          },
+          "final_verifier_result": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/finalVerifierResult"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "const": "PASS"
+                  },
+                  "failure_code": {
+                    "type": "null"
+                  }
+                }
+              }
+            ]
+          },
+          "recovery": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "state",
+          "recovery"
+        ],
+        "properties": {
+          "state": {
+            "const": "RECOVERY_REQUIRED"
+          },
+          "recovery": {
+            "type": "object",
+            "required": [
+              "stage"
+            ],
+            "properties": {
+              "stage": {
+                "const": "SUCCESSOR_PUBLICATION"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "transition_ordinal": {
+            "const": 3
+          },
+          "candidate_main_commit": {
+            "$ref": "#/definitions/commit"
+          },
+          "ready_test_result": {
+            "$ref": "#/definitions/readyTestResult"
+          },
+          "main_movement": {
+            "$ref": "#/definitions/mainMovement"
+          },
+          "successor_publication": {
+            "type": "null"
+          },
+          "final_verifier_result": {
+            "type": "null"
+          },
+          "recovery": {
+            "$ref": "#/definitions/recovery"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "state",
+          "recovery"
+        ],
+        "properties": {
+          "state": {
+            "const": "RECOVERY_REQUIRED"
+          },
+          "recovery": {
+            "type": "object",
+            "required": [
+              "stage"
+            ],
+            "properties": {
+              "stage": {
+                "const": "FINAL_VERIFICATION"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "transition_ordinal": {
+            "const": 4
+          },
+          "candidate_main_commit": {
+            "$ref": "#/definitions/commit"
+          },
+          "ready_test_result": {
+            "$ref": "#/definitions/readyTestResult"
+          },
+          "main_movement": {
+            "$ref": "#/definitions/mainMovement"
+          },
+          "successor_publication": {
+            "$ref": "#/definitions/successorPublication"
+          },
+          "final_verifier_result": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/finalVerifierResult"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "const": "FAIL"
+                  },
+                  "failure_code": {
+                    "$ref": "#/definitions/token"
+                  }
+                }
+              }
+            ]
+          },
+          "recovery": {
+            "$ref": "#/definitions/recovery"
+          }
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "commit": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "token": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_./:-]{0,127}$"
+    },
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "predecessorPublication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "git_object_id",
+        "status_artefact_id",
+        "generation"
+      ],
+      "properties": {
+        "git_object_id": {
+          "$ref": "#/definitions/commit"
+        },
+        "status_artefact_id": {
+          "$ref": "#/definitions/digest"
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "workUnit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unit_id",
+        "ordinal",
+        "range_start_exclusive",
+        "range_end_inclusive",
+        "phase",
+        "required_work_class",
+        "allowlist_digest",
+        "authority_status_artefact_id"
+      ],
+      "properties": {
+        "unit_id": {
+          "$ref": "#/definitions/identifier"
+        },
+        "ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "range_start_exclusive": {
+          "$ref": "#/definitions/commit"
+        },
+        "range_end_inclusive": {
+          "$ref": "#/definitions/commit"
+        },
+        "phase": {
+          "$ref": "#/definitions/token"
+        },
+        "required_work_class": {
+          "$ref": "#/definitions/identifier"
+        },
+        "allowlist_digest": {
+          "$ref": "#/definitions/digest"
+        },
+        "authority_status_artefact_id": {
+          "$ref": "#/definitions/digest"
+        }
+      }
+    },
+    "readyTestResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "result",
+        "passed_test_ids"
+      ],
+      "properties": {
+        "result": {
+          "const": "PASS"
+        },
+        "passed_test_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/identifier"
+          }
+        }
+      }
+    },
+    "mainMovement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "move_ordinal",
+        "expected_old_main_commit",
+        "new_main_commit"
+      ],
+      "properties": {
+        "move_ordinal": {
+          "const": 1
+        },
+        "expected_old_main_commit": {
+          "$ref": "#/definitions/commit"
+        },
+        "new_main_commit": {
+          "$ref": "#/definitions/commit"
+        }
+      }
+    },
+    "successorPublication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected_predecessor_git_object_id",
+        "new_publication_git_object_id",
+        "status_artefact_id",
+        "generation",
+        "code_commit"
+      ],
+      "properties": {
+        "expected_predecessor_git_object_id": {
+          "$ref": "#/definitions/commit"
+        },
+        "new_publication_git_object_id": {
+          "$ref": "#/definitions/commit"
+        },
+        "status_artefact_id": {
+          "$ref": "#/definitions/digest"
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "code_commit": {
+          "$ref": "#/definitions/commit"
+        }
+      }
+    },
+    "finalVerifierResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "result",
+        "origin_main_commit",
+        "publication_git_object_id",
+        "status_artefact_id",
+        "failure_code"
+      ],
+      "properties": {
+        "result": {
+          "enum": [
+            "PASS",
+            "FAIL"
+          ]
+        },
+        "origin_main_commit": {
+          "$ref": "#/definitions/commit"
+        },
+        "publication_git_object_id": {
+          "$ref": "#/definitions/commit"
+        },
+        "status_artefact_id": {
+          "$ref": "#/definitions/digest"
+        },
+        "failure_code": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/definitions/token"
+            }
+          ]
+        }
+      }
+    },
+    "recovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stage",
+        "failure_code"
+      ],
+      "properties": {
+        "stage": {
+          "enum": [
+            "SUCCESSOR_PUBLICATION",
+            "FINAL_VERIFICATION"
+          ]
+        },
+        "failure_code": {
+          "$ref": "#/definitions/token"
+        }
+      }
+    }
+  }
+}

@@ -111,7 +111,8 @@ test('the publication head must bind the exact signed status', async () => {
 });
 
 test('the protected live publication passes the complete verifier', {
-  skip: !hasLocalPublicationRefs(),
+  skip: process.env.PROGRAMME_STATUS_LIVE_ACCEPTANCE !== '1'
+    || !hasLocalPublicationRefs(),
 }, async () => {
   const { verifyFetchedPublication } = await import(MODULE_URL);
   const result = verifyFetchedPublication({ root: ROOT });
