@@ -184,18 +184,42 @@ function fixture({ includePrivateKeys = false } = {}) {
       identity_digest: '4'.repeat(64),
     },
   ];
-  const contractBundleMembers = [
-    {
-      member_key: 'CLAIM_ALPHA',
-      semantic_digest: '5'.repeat(64),
-      identity_digest: '2'.repeat(64),
-    },
-    {
-      member_key: 'CLAIM_GAMMA',
-      semantic_digest: '6'.repeat(64),
-      identity_digest: '7'.repeat(64),
-    },
+  const requiredBundleKinds = [
+    'COMPARABILITY',
+    'COMPOSITION_CATALOGUE',
+    'CORE_CANONICAL_CONTRACT',
+    'GOVERNED_RESIDUAL',
+    'OPEN_WORLD_CONCEPT',
+    'RELATIONSHIP_EFFECT_FIELD_UNIVERSE',
+    'SEMANTIC_CATALOGUE',
+    'SOURCE_SPECIFIC_PUBLICATION',
   ];
+  const canonicalContractBundleMembers = requiredBundleKinds.map((memberKind, index) => {
+    const sourceBytes = Buffer.from(`contract-${memberKind}`);
+    return {
+      schema_version: 'CanonicalContractBundleMember/V1',
+      member_key: `CONTRACT_${String(index + 1).padStart(2, '0')}`,
+      member_kind: memberKind,
+      logical_type: `Contract${index + 1}`,
+      member_schema_version: 'V1',
+      byte_length: sourceBytes.length,
+      payload_digest: crypto.createHash('sha256').update(sourceBytes).digest('hex'),
+      source_bytes_base64: sourceBytes.toString('base64'),
+      semantic_digest: domainDigest(
+        'TEST_CONTRACT_SEMANTIC/V1',
+        { member_kind: memberKind },
+      ),
+      identity_digest: domainDigest(
+        'TEST_CONTRACT_IDENTITY/V1',
+        { member_kind: memberKind },
+      ),
+    };
+  });
+  const contractBundleMembers = canonicalContractBundleMembers.map((member) => ({
+    member_key: member.member_key,
+    semantic_digest: member.semantic_digest,
+    identity_digest: member.identity_digest,
+  }));
   const predecessorContractBundleDigest = domainDigest(
     'PROGRAMME_GATE_CONTRACT_BUNDLE_SNAPSHOT/V1',
     predecessorContractMembers,
@@ -212,6 +236,25 @@ function fixture({ includePrivateKeys = false } = {}) {
     'PROGRAMME_GATE_CONTRACT_BUNDLE_ID/V1',
     { contract_bundle_digest: contractBundleDigest },
   );
+  const attestationIdentityUnsigned = {
+    schema_version: 'ContractFreezeAttestationIdentity/V1',
+    specification_root: ROOT,
+    code_commit: COMMIT,
+    environment: 'STAGING',
+    predecessor_contract_bundle_id: predecessorContractBundleId,
+    predecessor_contract_bundle_digest: predecessorContractBundleDigest,
+    contract_bundle_id: contractBundleId,
+    contract_bundle_digest: contractBundleDigest,
+    approval_epoch_nonce: 'freeze-approval-epoch-1',
+  };
+  const contractFreezeAttestationId = domainDigest(
+    'PROGRAMME_GATE_CONTRACT_FREEZE_ATTESTATION_ID/V1',
+    attestationIdentityUnsigned,
+  );
+  const attestationIdentity = {
+    ...attestationIdentityUnsigned,
+    contract_freeze_attestation_id: contractFreezeAttestationId,
+  };
   const frozenPairDigest = domainDigest(
     'PROGRAMME_GATE_FROZEN_CONTRACT_PAIR/V1',
     {
@@ -219,14 +262,15 @@ function fixture({ includePrivateKeys = false } = {}) {
       predecessor_contract_bundle_digest: predecessorContractBundleDigest,
       successor_contract_bundle_id: contractBundleId,
       successor_contract_bundle_digest: contractBundleDigest,
+      contract_freeze_attestation_id: contractFreezeAttestationId,
     },
   );
   const semanticIdentityDiff = {
     predecessor_contract_bundle_id: predecessorContractBundleId,
     successor_contract_bundle_id: contractBundleId,
-    added_member_keys: ['CLAIM_GAMMA'],
-    removed_member_keys: ['CLAIM_BETA'],
-    semantic_changed_member_keys: ['CLAIM_ALPHA'],
+    added_member_keys: contractBundleMembers.map((member) => member.member_key),
+    removed_member_keys: ['CLAIM_ALPHA', 'CLAIM_BETA'],
+    semantic_changed_member_keys: [],
     identity_changed_member_keys: [],
   };
   const semanticIdentityDiffDigest = domainDigest(
@@ -251,6 +295,14 @@ function fixture({ includePrivateKeys = false } = {}) {
     path: 'generated/contracts.json',
     payload_digest: contractBundleDigest,
   }];
+  const canonicalBundleMemberRoot = domainDigest(
+    'PROGRAMME_GATE_CANONICAL_CONTRACT_BUNDLE_MEMBER_ROOT/V1',
+    canonicalContractBundleMembers,
+  );
+  const requiredBundleKindSetRoot = domainDigest(
+    'PROGRAMME_GATE_CANONICAL_CONTRACT_BUNDLE_REQUIRED_KIND_SET_ROOT/V1',
+    requiredBundleKinds,
+  );
   const authorityManifest = {
     schema_version: 'ContractFreezeAuthorityManifest/V1',
     authority_manifest_id: '',
@@ -290,6 +342,9 @@ function fixture({ includePrivateKeys = false } = {}) {
     reviewer_eligibility_set_root: '1'.repeat(64),
     independent_reviewer_bindings: [],
     ben_taxonomy_codebook_decision_set_root: '2'.repeat(64),
+    canonical_contract_bundle_member_root: canonicalBundleMemberRoot,
+    canonical_contract_bundle_member_count: canonicalContractBundleMembers.length,
+    canonical_contract_bundle_required_kind_set_root: requiredBundleKindSetRoot,
   };
   const governingSource = Buffer.from('a');
   authorityManifest.governing_specification_members[0].payload_digest =
@@ -645,6 +700,7 @@ function fixture({ includePrivateKeys = false } = {}) {
     authorPrincipalId,
     reviewerPrincipalId,
     reviewScope,
+    catalogueMembers,
     authorshipField,
     accessField,
     reviewField,
@@ -659,9 +715,26 @@ function fixture({ includePrivateKeys = false } = {}) {
         author_principal_id: authorPrincipalId,
         input_isolation_disposition_id: authorityManifest[accessField],
         authorship_method: 'INDEPENDENT_COLD_AUTHORSHIP',
+        authoring_session_id: `${prefix.toLowerCase()}-authoring-session`,
+        authoring_executable_digest: '1'.repeat(64),
+        catalogue_members: catalogueMembers,
       },
       actorIdentity: `INDEPENDENT_${prefix}_CATALOGUE_AUTHOR`,
     });
+    const inputBytes = Buffer.from(`${prefix}-source-input`);
+    const permittedInputMembers = [{
+      input_key: `${prefix}_SOURCE`,
+      input_class: 'SOURCE_DOCUMENT',
+      byte_length: inputBytes.length,
+      payload_digest: crypto.createHash('sha256').update(inputBytes).digest('hex'),
+      source_bytes_base64: inputBytes.toString('base64'),
+    }];
+    const observedInputMembers = permittedInputMembers.map((member) => ({
+      input_key: member.input_key,
+      input_class: member.input_class,
+      byte_length: member.byte_length,
+      payload_digest: member.payload_digest,
+    }));
     const access = addAuthority({
       kind: `${prefix}_CATALOGUE_INPUT_ACCESS`,
       subjectId: authorityManifest[accessField],
@@ -671,7 +744,19 @@ function fixture({ includePrivateKeys = false } = {}) {
         catalogue_root: catalogueRoot,
         author_principal_id: authorPrincipalId,
         access_mode: 'NO_FROZEN_CATALOGUE_OR_PRIOR_REVIEW_ACCESS',
-        observed_input_set_root: '3'.repeat(64),
+        observed_input_set_root: domainDigest(
+          'PROGRAMME_GATE_CATALOGUE_BLIND_INPUT_SET_ROOT/V1',
+          observedInputMembers,
+        ),
+        authoring_session_id: `${prefix.toLowerCase()}-authoring-session`,
+        sandbox_profile_digest: '2'.repeat(64),
+        authoring_executable_digest: '1'.repeat(64),
+        permitted_input_members: permittedInputMembers,
+        observed_input_members: observedInputMembers,
+        prohibited_access_attempt_ids: [],
+        ordinary_contract_mount_present: false,
+        generated_output_mount_present: false,
+        prior_review_mount_present: false,
       },
       actorIdentity: 'INPUT_ISOLATION_VALIDATOR',
       relatedAuthorityIds: [authorship.authority_evidence_id],
@@ -684,10 +769,16 @@ function fixture({ includePrivateKeys = false } = {}) {
         catalogue_kind: catalogueKind,
         catalogue_root: catalogueRoot,
         reviewer_principal_id: reviewerPrincipalId,
+        reviewer_identity: reviewerPrincipalId,
+        reviewer_model_identifier: 'gpt-5.6-sol',
+        reasoning_level: 'xhigh',
+        reviewer_eligibility_set_root: 'c'.repeat(64),
         authorship_disposition_id: authorityManifest[authorshipField],
         input_access_disposition_id: authorityManifest[accessField],
         review_scope: reviewScope,
         blocking_finding_ids: [],
+        authoring_event_intersection_ids: [],
+        prior_conclusion_input_ids: [],
       },
       actorIdentity: `INDEPENDENT_${prefix}_CATALOGUE_REVIEWER`,
       attestorRole: 'REVIEW_CONTROLLER',
@@ -697,8 +788,25 @@ function fixture({ includePrivateKeys = false } = {}) {
       ],
     });
   }
-  const semanticCatalogueRoot = '4'.repeat(64);
-  const compositionCatalogueRoot = '5'.repeat(64);
+  function catalogueFixture(kind, key) {
+    const bytes = Buffer.from(`${kind}-catalogue-member`);
+    const members = [{
+      member_key: key,
+      payload_digest: crypto.createHash('sha256').update(bytes).digest('hex'),
+      source_bytes_base64: bytes.toString('base64'),
+    }];
+    return {
+      members,
+      root: domainDigest(
+        `PROGRAMME_GATE_${kind}_CATALOGUE_ROOT/V1`,
+        members.map(({ member_key, payload_digest }) => ({ member_key, payload_digest })),
+      ),
+    };
+  }
+  const semanticCatalogue = catalogueFixture('SEMANTIC_QUESTION', 'SEMANTIC_ALPHA');
+  const compositionCatalogue = catalogueFixture('COMPOSITION', 'COMPOSITION_ALPHA');
+  const semanticCatalogueRoot = semanticCatalogue.root;
+  const compositionCatalogueRoot = compositionCatalogue.root;
   const semanticReview = addCatalogueAuthorities({
     prefix: 'SEMANTIC_QUESTION',
     catalogueKind: 'SEMANTIC_QUESTION',
@@ -706,6 +814,7 @@ function fixture({ includePrivateKeys = false } = {}) {
     authorPrincipalId: 'semantic-catalogue-author',
     reviewerPrincipalId: 'semantic-catalogue-reviewer',
     reviewScope: 'LEGAL_SEMANTIC_COMPLETENESS',
+    catalogueMembers: semanticCatalogue.members,
     authorshipField: 'independent_semantic_question_catalogue_authorship_id',
     accessField: 'independent_semantic_question_catalogue_input_access_id',
     reviewField: 'independent_semantic_question_catalogue_review_id',
@@ -717,6 +826,7 @@ function fixture({ includePrivateKeys = false } = {}) {
     authorPrincipalId: 'composition-catalogue-author',
     reviewerPrincipalId: 'composition-catalogue-reviewer',
     reviewScope: 'LEGAL_COMPOSITION_COMPLETENESS',
+    catalogueMembers: compositionCatalogue.members,
     authorshipField: 'independent_composition_catalogue_authorship_id',
     accessField: 'independent_composition_catalogue_input_access_id',
     reviewField: 'independent_composition_catalogue_review_id',
@@ -730,8 +840,12 @@ function fixture({ includePrivateKeys = false } = {}) {
       catalogue_root: semanticCatalogueRoot,
       catalogue_review_disposition_id:
         authorityManifest.independent_semantic_question_catalogue_review_id,
-      output_set_root: '7'.repeat(64),
-      output_member_count: 2,
+      output_set_root: domainDigest(
+        'PROGRAMME_GATE_SEMANTIC_STAGE_OUTPUT_SET_ROOT/V1',
+        contractBundleMembers.slice(0, 4),
+      ),
+      output_member_count: 4,
+      output_members: contractBundleMembers.slice(0, 4),
       failed_member_ids: [],
     },
     actorIdentity: 'SEMANTIC_STAGE_EXECUTOR',
@@ -746,8 +860,12 @@ function fixture({ includePrivateKeys = false } = {}) {
       catalogue_root: compositionCatalogueRoot,
       catalogue_review_disposition_id:
         authorityManifest.independent_composition_catalogue_review_id,
-      output_set_root: '8'.repeat(64),
-      output_member_count: 2,
+      output_set_root: domainDigest(
+        'PROGRAMME_GATE_SEMANTIC_STAGE_OUTPUT_SET_ROOT/V1',
+        contractBundleMembers.slice(4),
+      ),
+      output_member_count: 4,
+      output_members: contractBundleMembers.slice(4),
       failed_member_ids: [],
     },
     actorIdentity: 'SEMANTIC_STAGE_EXECUTOR',
@@ -801,8 +919,12 @@ function fixture({ includePrivateKeys = false } = {}) {
     subjectId: contractBundleId,
     payload: {
       neutral_projection_digest: neutralProjection.authority_payload_digest,
-      neutral_projection_set_root: '9'.repeat(64),
-      projection_member_count: 2,
+      neutral_projection_set_root: domainDigest(
+        'PROGRAMME_GATE_NEUTRAL_PROJECTION_SET_ROOT/V1',
+        contractBundleMembers,
+      ),
+      projection_member_count: contractBundleMembers.length,
+      projection_members: contractBundleMembers,
       unresolved_member_ids: [],
     },
     actorIdentity: 'NEUTRAL_PROJECTION_COMPILER',
@@ -815,9 +937,21 @@ function fixture({ includePrivateKeys = false } = {}) {
     kind: 'RELATIONSHIP_EFFECT_FIELD_UNIVERSE',
     subjectId: contractBundleId,
     payload: {
-      field_universe_set_root: 'a'.repeat(64),
-      relationship_definition_set_root: 'a'.repeat(64),
-      effect_schema_set_root: 'b'.repeat(64),
+      field_universe_set_root: domainDigest(
+        'PROGRAMME_GATE_RELATIONSHIP_EFFECT_FIELD_UNIVERSE_SET_ROOT/V1',
+        contractBundleMembers.slice(0, 2),
+      ),
+      relationship_definition_set_root: domainDigest(
+        'PROGRAMME_GATE_RELATIONSHIP_DEFINITION_SET_ROOT/V1',
+        contractBundleMembers.slice(2, 4),
+      ),
+      effect_schema_set_root: domainDigest(
+        'PROGRAMME_GATE_EFFECT_SCHEMA_SET_ROOT/V1',
+        contractBundleMembers.slice(4, 6),
+      ),
+      field_universe_members: contractBundleMembers.slice(0, 2),
+      relationship_definition_members: contractBundleMembers.slice(2, 4),
+      effect_schema_members: contractBundleMembers.slice(4, 6),
       unresolved_field_ids: [],
     },
     actorIdentity: 'RELATIONSHIP_EFFECT_FIELD_UNIVERSE_COMPILER',
@@ -830,7 +964,18 @@ function fixture({ includePrivateKeys = false } = {}) {
     payload: {
       eligibility_set_root: 'c'.repeat(64),
       eligible_reviewers: [{
+        reviewer_principal_id: 'independent-sol-reviewer-principal',
         reviewer_identity: 'independent-sol-reviewer',
+        reviewer_model_identifier: 'gpt-5.6-sol',
+        reasoning_level: 'xhigh',
+      }, {
+        reviewer_principal_id: 'semantic-catalogue-reviewer',
+        reviewer_identity: 'semantic-catalogue-reviewer',
+        reviewer_model_identifier: 'gpt-5.6-sol',
+        reasoning_level: 'xhigh',
+      }, {
+        reviewer_principal_id: 'composition-catalogue-reviewer',
+        reviewer_identity: 'composition-catalogue-reviewer',
         reviewer_model_identifier: 'gpt-5.6-sol',
         reasoning_level: 'xhigh',
       }],
@@ -867,6 +1012,9 @@ function fixture({ includePrivateKeys = false } = {}) {
     cycle_report_digest: authorityManifest.cycle_report_digest,
     drift_report_digest: authorityManifest.drift_report_digest,
     generated_outputs: generatedOutputs,
+    canonical_contract_bundle_member_root: canonicalBundleMemberRoot,
+    canonical_contract_bundle_member_count: canonicalContractBundleMembers.length,
+    canonical_contract_bundle_required_kind_set_root: requiredBundleKindSetRoot,
     compile_errors: [],
     cycle_errors: [],
     drift_errors: [],
@@ -991,9 +1139,20 @@ function fixture({ includePrivateKeys = false } = {}) {
     ),
   };
   authorityManifest.independent_reviewer_bindings = [{
+    reviewer_principal_id: 'composition-catalogue-reviewer',
+    reviewer_identity: 'composition-catalogue-reviewer',
+    eligibility_evidence_digest: authorityManifest.reviewer_eligibility_set_root,
+    review_disposition_id: compositionReview.authority_subject_id,
+  }, {
+    reviewer_principal_id: review.reviewer_principal_id,
     reviewer_identity: review.reviewer_identity,
     eligibility_evidence_digest: review.reviewer_eligibility_digest,
     review_disposition_id: review.review_id,
+  }, {
+    reviewer_principal_id: 'semantic-catalogue-reviewer',
+    reviewer_identity: 'semantic-catalogue-reviewer',
+    eligibility_evidence_digest: authorityManifest.reviewer_eligibility_set_root,
+    review_disposition_id: semanticReview.authority_subject_id,
   }];
   authorityManifest.authority_manifest_id = domainDigest(
     'PROGRAMME_GATE_CONTRACT_FREEZE_AUTHORITY_MANIFEST_ID/V1',
@@ -1082,6 +1241,7 @@ function fixture({ includePrivateKeys = false } = {}) {
     observed_at: OBSERVED_AT,
     contract_bundle_id: contractBundleId,
     contract_bundle_digest: contractBundleDigest,
+    contract_freeze_attestation_id: contractFreezeAttestationId,
     frozen_contract_pair_digest: frozenPairDigest,
     contract_authority_manifest_id: authorityManifest.authority_manifest_id,
     contract_authority_manifest_digest: domainDigest(
@@ -1095,6 +1255,10 @@ function fixture({ includePrivateKeys = false } = {}) {
     freeze_gate_approval_id: approvalId,
     ben_bundle_approval_evidence_id: approvalId,
     authority_member_inventory: [
+      ...canonicalContractBundleMembers.map((member) => ({
+        member_id: `bundle-member:${member.member_key}`,
+        member_type: 'CanonicalContractBundleMember',
+      })),
       {
         member_id: `governing:${governingMember.specification_member_id}`,
         member_type: 'ContractFreezeGoverningSpecificationMember',
@@ -1139,6 +1303,16 @@ function fixture({ includePrivateKeys = false } = {}) {
     ),
   };
   const immutableMembers = [
+    {
+      member_id: `freeze-identity:${contractFreezeAttestationId}`,
+      member_type: 'ContractFreezeAttestationIdentity',
+      payload: attestationIdentity,
+    },
+    ...canonicalContractBundleMembers.map((member) => ({
+      member_id: `bundle-member:${member.member_key}`,
+      member_type: 'CanonicalContractBundleMember',
+      payload: member,
+    })),
     {
       member_id: `authority:${authorityManifest.authority_manifest_id}`,
       member_type: 'ContractFreezeAuthorityManifest',
@@ -1343,6 +1517,101 @@ test('contract freeze predicates recompute all authority from immutable members'
     context: context(sample),
   });
   assert.deepEqual(claims.map((claim) => claim.typed_value), [true, true, true, true]);
+});
+
+test('catalogue blindness, legal-review eligibility and semantic roots are recomputed', () => {
+  for (const mutate of [
+    (sample) => {
+      const member = sample.immutableMembers.find((candidate) => (
+        candidate.member_type === 'ContractFreezeAuthorityEvidence'
+        && candidate.payload.authority_kind === 'SEMANTIC_QUESTION_CATALOGUE_INPUT_ACCESS'
+      ));
+      member.payload.authority_payload.ordinary_contract_mount_present = true;
+      member.payload.authority_payload_digest = domainDigest(
+        'PROGRAMME_GATE_CONTRACT_AUTHORITY_PAYLOAD/V1',
+        member.payload.authority_payload,
+      );
+      resealAuthority(sample, member);
+    },
+    (sample) => {
+      const member = sample.immutableMembers.find((candidate) => (
+        candidate.member_type === 'ContractFreezeAuthorityEvidence'
+        && candidate.payload.authority_kind === 'REVIEWER_ELIGIBILITY_SET'
+      ));
+      member.payload.authority_payload.eligible_reviewers =
+        member.payload.authority_payload.eligible_reviewers.filter(
+          (reviewer) => reviewer.reviewer_identity !== 'semantic-catalogue-reviewer',
+        );
+      member.payload.authority_payload_digest = domainDigest(
+        'PROGRAMME_GATE_CONTRACT_AUTHORITY_PAYLOAD/V1',
+        member.payload.authority_payload,
+      );
+      resealAuthority(sample, member);
+    },
+    (sample) => {
+      const member = sample.immutableMembers.find((candidate) => (
+        candidate.member_type === 'ContractFreezeAuthorityEvidence'
+        && candidate.payload.authority_kind === 'PRE_FREEZE_SEMANTIC_STAGE_OUTPUT_SET'
+        && candidate.payload.authority_payload.catalogue_kind === 'SEMANTIC_QUESTION'
+      ));
+      member.payload.authority_payload.output_members[0].semantic_digest = 'f'.repeat(64);
+      member.payload.authority_payload_digest = domainDigest(
+        'PROGRAMME_GATE_CONTRACT_AUTHORITY_PAYLOAD/V1',
+        member.payload.authority_payload,
+      );
+      resealAuthority(sample, member);
+    },
+  ]) {
+    const sample = fixture({ includePrivateKeys: true });
+    mutate(sample);
+    const claims = evaluateAcceptanceClaims({
+      gate_id: 'P1_CONTRACT_FREEZE_ATTESTED',
+      evidence: sample.evidence,
+      context: context(sample),
+    });
+    assert.equal(claims.every((claim) => claim.typed_value), false);
+  }
+});
+
+test('the frozen pair binds the approval epoch and complete bundle-member bytes', () => {
+  const sample = fixture();
+  const identity = sample.immutableMembers.find(
+    (member) => member.member_type === 'ContractFreezeAttestationIdentity',
+  ).payload;
+  const successorIdentity = {
+    ...identity,
+    approval_epoch_nonce: 'freeze-approval-epoch-2',
+  };
+  delete successorIdentity.contract_freeze_attestation_id;
+  const successorId = domainDigest(
+    'PROGRAMME_GATE_CONTRACT_FREEZE_ATTESTATION_ID/V1',
+    successorIdentity,
+  );
+  const successorPair = domainDigest(
+    'PROGRAMME_GATE_FROZEN_CONTRACT_PAIR/V1',
+    {
+      predecessor_contract_bundle_id: identity.predecessor_contract_bundle_id,
+      predecessor_contract_bundle_digest: identity.predecessor_contract_bundle_digest,
+      successor_contract_bundle_id: identity.contract_bundle_id,
+      successor_contract_bundle_digest: identity.contract_bundle_digest,
+      contract_freeze_attestation_id: successorId,
+    },
+  );
+  assert.notEqual(successorId, sample.evidence.contract_freeze_attestation_id);
+  assert.notEqual(successorPair, sample.evidence.frozen_contract_pair_digest);
+
+  const missing = fixture();
+  const index = missing.immutableMembers.findIndex(
+    (member) => member.member_type === 'CanonicalContractBundleMember'
+      && member.payload.member_kind === 'GOVERNED_RESIDUAL',
+  );
+  missing.immutableMembers.splice(index, 1);
+  const claims = evaluateAcceptanceClaims({
+    gate_id: 'P1_CONTRACT_FREEZE_ATTESTED',
+    evidence: missing.evidence,
+    context: context(missing),
+  });
+  assert.equal(claims.every((claim) => claim.typed_value), false);
 });
 
 test('trusted signatures cannot turn an untyped or wrongly authored authority into proof', () => {

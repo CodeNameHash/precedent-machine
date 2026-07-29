@@ -66,7 +66,16 @@ The following adversarial closure tests are mandatory traceability entries:
   bootstrap. The repository-native publication ref must remain unchanged after
   every injected validation or compare-and-swap failure. The existing
   generation-4 V1 owner-deemed file is historical only. It cannot act as
-  evidence, executable authority or a V2 predecessor.
+  evidence, executable authority or a V2 predecessor. Independently resolve
+  every local `require`, `import` and `export` from the bootstrap source and
+  require the exact carried module bytes, ordered source-set digest and complete
+  validator-executable inventory. Remove one helper, mutate a helper without
+  changing its caller, or retain an entry-function digest while changing a
+  transitive helper: enumeration and measurement compilation must fail.
+  Instrument each frozen predicate and helper to record immutable-member path
+  reads and require exact equality with its declared input set. An undeclared
+  controller prompt, session, key or reviewer-principal path, and a declared but
+  unread path, both fail definition compilation.
 - `REVIEW-CONTEXT-01`: the controller supplies exactly the frozen specification
   bytes, one registered lane-specific cold prompt and the required output schema
   as the task payload. Adding any file, message, prompt, schema or other task
@@ -838,6 +847,12 @@ The following adversarial closure tests are mandatory traceability entries:
   changes the frozen pair and every IntakeCutoffAttestation, question
   disposition, expectation, challenge, composition, closure, selection and
   later artefact.
+  Reapprove byte-identical bundle members with a fresh precommitted approval-
+  epoch nonce. The ContractFreezeAttestationIdentity, attestation ID and frozen
+  pair must all change. Reusing the prior identity or pair, or choosing the nonce
+  after seeing review or approval conclusions, fails. Delete any one mandatory
+  CanonicalContractBundleMember family while preserving a self-consistent
+  compilation receipt: exact member-set and required-kind reconciliation fails.
 - `FREEZE-INFLIGHT-01`: a candidate job starts with the current frozen pair,
   status digest and generation while a supersession races it. If the writer
   locks first, it may commit only under the old pair and the later candidate
@@ -908,6 +923,12 @@ The following adversarial closure tests are mandatory traceability entries:
   an attester changing the semantic bytes fails. Only a self-contained eligible
   review of the exact completed payload may precede a passing attestation and
   governed wrapper.
+  Mount an ordinary/generated definition, the other catalogue or a prior review
+  in a catalogue authoring sandbox, omit one observed input event, substitute an
+  ineligible reviewer, or let the author review their own catalogue. Freeze
+  remains open. Alter one immutable stage, neutral-projection or relationship-
+  effect member while re-signing unchanged generic root summaries. Root
+  recomputation from the actual member bytes must detect the drift.
 - `SEMANTIC-ATTESTER-NONTRANSFORM-01`: for every semantic stage, ask the
   non-semantic attester to add, delete, reorder, map or classify one field. It
   must fail and create no governed object. Metadata-only changes preserve the
@@ -1375,6 +1396,17 @@ The following adversarial closure tests are mandatory traceability entries:
   `FULLY_INCORPORATED_CANONICAL`. The provisional contract-impact walkers bind
   the unresolved marker and no disposition, use separate outputs and cannot be
   substituted for the final disposition-bound walkers.
+  Remove the same source-to-known-result edge from the dependency input shared
+  by both walkers so both walkers agree on the omission. The independently
+  source-enumerated SourceToImpactEdgeSlotUniverse must retain the slot, and a
+  missing positive edge or exact reviewed negative decision blocks closure.
+  Missing slots, copied enumerator output, unsigned or ineligible negative
+  decisions, a negative signed by its author, and a decision for a different
+  source occurrence or target all fail. A valid independently reviewed negative
+  discharges only its exact slot. The positive-or-negative partition, empty
+  missing and overlap roots and negative-proof checks apply identically to novel
+  candidates and governed residuals. Two walkers may never establish negative
+  proof merely by repeating the same omission.
 - `OPEN-WORLD-STATUS-AXES-01`: independently permute claim state, result
   completeness and market comparability through every schema-valid combination.
   Renderer, query, cache and aggregate retain all three fields. Any conversion
@@ -2141,6 +2173,12 @@ The following adversarial closure tests are mandatory traceability entries:
   dependency, substituting an authority-envelope digest for any semantic-stage,
   neutral-projection, relationship-field, reviewer-eligibility or Ben-decision
   set root, or omitting either catalogue stage fails freeze.
+  Catalogue authorship and independence are accepted only from the recomputed
+  authored member bytes and exact observed sandbox-input projection. A signed
+  assertion of blindness, an ordinary/generated/prior-review mount or an
+  ineligible or non-independent catalogue reviewer fails. The authority
+  manifest and compilation receipt must select the same complete immutable
+  CanonicalContractBundleMember set and all mandatory member families.
 - `POLICY-AUTHORITY-01`: duplicate configuration ownership, a value above a
   protocol bound or any OperationalPolicySet mismatch among scope, candidate,
   deployment and certification fails compilation or certification.
@@ -2469,6 +2507,30 @@ The following adversarial closure tests are mandatory traceability entries:
   predicate and cohort-filter AST, ordered projection, grouping, facet and sort
   vectors, literal quotient and correlation class, page, option, saved lookup
   and exact-detail/source page.
+  Run all three fixture scales before ProductionImportAttestation exists.
+  Each scale must have one exact LoadCertificationReleaseState, independently
+  sealed staging namespace and OPEN_LOAD_BLOCKED, ISSUE_LOAD_READY and
+  REVOKE_LOAD_AND_DRAIN receipt chain. The harness must enter only through the
+  authenticated internal LoadCertificationRouteDefinition and its live
+  LOAD_CERTIFICATION_READY fence. Its built handler, compiler, resolver, cache,
+  admission-token RPC, serving RPC, role, grants, search path, SQL and plan
+  fingerprints, bounds, response schema and instrumentation must equal the
+  production path except for the one closed authority predicate. A mock route,
+  direct SQL, reduced RPC, caller-selected namespace or copied equivalence root
+  fails. So does a load state or fence carrying ProductionImportAttestation,
+  CANONICAL_RELEASE_STATE/V3, ActivationEvent, READY_CANONICAL, production
+  credentials or an active-release pointer. The load route must reject an
+  ordinary user, production deployment or wrong staging project before cache
+  or database access. Load fixture construction must follow exactly
+  OPEN_LOAD_NAMESPACE, bounded WRITE_LOAD_FIXTURE_BATCH,
+  FINALISE_LOAD_NAMESPACE and optional ABANDON_LOAD_NAMESPACE. Issuing a ready
+  fence before finalisation, physical-root verification and permanent builder-
+  grant revocation, writing outside the new load namespace or retaining any
+  load writer while ready fails. A load fence cannot satisfy import, readiness, promotion,
+  cutover, ordinary serving or completion. The soak attestation cannot issue
+  until all three fences are BLOCKED, their external leases and database
+  tokens/statements are drained and the exact terminal revocation receipts
+  exist.
   Independently enumerate every active query action and require its exact,
   disjoint membership in one closed QueryExecutionKind: `DATABASE_API` or
   `CLIENT_ONLY_NO_SQL_NO_API`. Carried-response navigation belongs only to
@@ -2508,14 +2570,23 @@ The following adversarial closure tests are mandatory traceability entries:
   never truncate.
   Every release execution class and every member of its bound witness set must
   satisfy its p95, p99 and browser threshold at `N_capacity` and maximum scale.
-  Runtime must derive the exact ReleaseExecutionResolutionKey from the active
-  release, complete ExecutionShapeKey and the one matching parameter-quotient,
-  selectivity, correlation, cardinality-bound and physical-plan class before
-  checkout. Two parameter tuples with the same structural ExecutionShapeKey but
-  different quotient members or cost classes must select different resolution
-  keys and their exact certified classes; keying only by release and structural
-  shape, zero or multiple matches or a caller-supplied class fails before
-  checkout.
+  Before admission-token issuance, runtime must derive exactly one
+  ExecutionClassResolverLookupKey from only the signed release or load-release
+  selector, complete ExecutionShapeKey and classifier-program version. The
+  lookup key must not contain a quotient member, selectivity, correlation,
+  cardinality class, execution class or physical-plan fingerprint. Evaluate the
+  one returned bounded LiteralClassifierProgram over the complete normalised
+  literal tuple. Two parameter tuples with the same structural
+  ExecutionShapeKey but different quotient or cost classes must use the same
+  input-side lookup and reach their different exact terminal classes. Making
+  either output part of the lookup, using a caller-supplied class, performing a
+  catalogue or corpus query, or checking out a database connection before a
+  successful terminal fails. Mutate an exact-value table, range boundary,
+  correlation node, terminal, class-coverage root or program digest: parity
+  fails. Missing, duplicate, overlapping, unreachable or over-bound programs or
+  terminals must return UNSUPPORTED_QUERY_SHAPE with zero database checkout.
+  The terminal's expected plan fingerprint cannot satisfy the independent
+  deployment or live-plan fingerprint measurement.
   A missing
   class, missing witness or smaller CapacityManifest cardinality component
   fails. No-fault steady and all-miss profiles must satisfy the fixed 99.9%
@@ -3052,3 +3123,34 @@ The following adversarial closure tests are mandatory traceability entries:
   The abandoned immutable attempt cannot occupy or block a global slot. Any
   missing, mismatched, reordered, partial, stale or later untraced status
   reference fails closed, and no test may claim a cross-system atomic commit.
+- `DEPLOYMENT-PARITY-FRESHNESS-01`: create a passing
+  DeploymentParityAttestation, then change each production statistics
+  generation, physical-plan member, provider deployment, runtime configuration,
+  alias, schema and migration generation before authorisation and before
+  activation. A fresh `ActivationDeploymentParityRecheck/V1` must independently
+  rerun the complete production statistics and actual-planner member sets,
+  expire within ten minutes and be selected by CutoverAuthorisation. Activation
+  consumes its one-use nonce and rechecks current generations before any
+  release-state DML. A stale, cached, copied, expired, replayed, partial or
+  caller-supplied recheck writes zero activation DML.
+- `ONGOING-READINESS-AUTHORITY-01`: after programme completion, issue exactly
+  one `OngoingReleaseReadiness/V2` through
+  `ISSUE_ONGOING_RELEASE_READINESS` against an EMPTY
+  `OngoingReleaseReadinessSlot/V1`. Substitute an untrusted key, wrong signature
+  domain, stale promotion head, missing promotion proof, stale policy or
+  revocation head, wrong deployment tuple, expired parity recheck, over-ten-
+  minute expiry, duplicate object or caller-authored payload and require no
+  ISSUED slot. Activation must consume the exact ISSUED slot atomically with the
+  state CAS. Replay, revocation or a changed predecessor writes zero activation
+  DML and a replacement requires a new slot generation and full issuance.
+- `POST-ATTESTATION-ABANDONMENT-01`: create an inactive ATTESTED import, then
+  fail the fresh activation parity recheck before any readiness,
+  CutoverAuthorisation or ActivationEvent. The existing `ABANDON_IMPORT` action
+  must select only `ATTESTED_DEPLOYMENT_PARITY_FAILURE`, enumerate the complete
+  attested import and inactive namespace, preserve immutable attestation and
+  failure history, erase the namespace and atomically reach terminal
+  ABANDONED. Attempt the same variant with exposure, authorisation, activation,
+  a non-empty ongoing-readiness slot, another failure reason or an incomplete
+  inventory and require zero writes. The abandoned attestation must be
+  ineligible for every import, readiness, cutover, reactivation and serving
+  predicate.

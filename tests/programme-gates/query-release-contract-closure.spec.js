@@ -148,6 +148,105 @@ test('client-only transitions are disjoint from database and API execution class
   }
 });
 
+test('pre-import soak uses a closed staging load authority and the exact serving path', () => {
+  const loadAuthority = contracts.match(
+    /Database load certification has its own pre-import authority\.(?<body>[\s\S]*?)(?=\nThe soak manifest selects)/,
+  );
+  assert.ok(loadAuthority, 'load-certification authority contract is missing');
+  const body = loadAuthority.groups.body.replace(/\s+/g, ' ');
+  for (const required of [
+    '`LoadCertificationReleaseState`',
+    '`N_CAPACITY`, `TEN_N_CAPACITY` and `MAXIMUM_SCALE`',
+    '`LoadCertificationNamespaceSeal`',
+    '`LoadFixtureBuildPolicy`',
+    '`OPEN_LOAD_NAMESPACE`, `WRITE_LOAD_FIXTURE_BATCH`, `FINALISE_LOAD_NAMESPACE`',
+    '`OPEN_LOAD_BLOCKED`, `ISSUE_LOAD_READY` and `REVOKE_LOAD_AND_DRAIN`',
+    '`LoadCertificationFenceVersion(state=BLOCKED)`',
+    '`LOAD_CERTIFICATION_READY`',
+    '`ServingExecutionAuthority` union',
+    '`PRODUCTION_READY_CANONICAL | LOAD_CERTIFICATION_READY`',
+    '`LoadRouteEquivalenceAttestation`',
+    'byte-identical to the corresponding production branch',
+    'all three control heads terminal, BLOCKED and drained',
+  ]) {
+    assert.ok(body.includes(required), `load authority is missing ${required}`);
+  }
+
+  const capacity = adversarial.match(
+    /- `CAPACITY-LOAD-01`:(?<body>[\s\S]*?)(?=\n- `[A-Z0-9-]+-\d{2}`:|\s*$)/,
+  );
+  assert.ok(capacity, 'CAPACITY-LOAD-01 is missing');
+  const adversarialBody = capacity.groups.body.replace(/\s+/g, ' ');
+  for (const required of [
+    'before ProductionImportAttestation exists',
+    'internal LoadCertificationRouteDefinition',
+    'except for the one closed authority predicate',
+    'A load fence cannot satisfy import, readiness, promotion, cutover, ordinary serving or completion',
+    'all three fences are BLOCKED',
+  ]) {
+    assert.ok(
+      adversarialBody.includes(required),
+      `load-authority adversary is missing ${required}`,
+    );
+  }
+});
+
+test('execution class lookup is input-keyed and resolves literals before checkout', () => {
+  const resolver = contracts.match(
+    /The two independent release classifiers also compile one immutable(?<body>[\s\S]*?)(?=\n`DeploymentManifest` binds)/,
+  );
+  assert.ok(resolver, 'execution-class resolver contract is missing');
+  const body = resolver.groups.body.replace(/\s+/g, ' ');
+  for (const required of [
+    '`QueryExecutionClassResolverProjection`',
+    '`ExecutionClassResolverLookupKey',
+    'release_or_load_release_selector, complete ExecutionShapeKey, classifier_program_version',
+    'contains no quotient-member, selectivity, correlation, cardinality, release-execution-class or physical-plan output',
+    '`LiteralClassifierProgram`',
+    'Every terminal directly names one `ResolvedExecutionClass`',
+    'never an input to lookup',
+    'before an admission lease or database checkout',
+    'exactly one ExecutionClassResolverLookupKey lookup',
+    'returns `UNSUPPORTED_QUERY_SHAPE` with zero database checkout',
+    'expected fingerprint cannot prove it',
+  ]) {
+    assert.ok(body.includes(required), `execution-class resolver is missing ${required}`);
+  }
+
+  const lookupFormula = body.match(
+    /ExecutionClassResolverLookupKey = H\((?<formula>.*?)\)`\. It contains no/,
+  );
+  assert.ok(lookupFormula, 'input-side resolver lookup formula is missing');
+  for (const forbidden of [
+    'quotient',
+    'selectivity',
+    'correlation',
+    'cardinality',
+    'physical-plan',
+  ]) {
+    assert.ok(
+      !lookupFormula.groups.formula.includes(forbidden),
+      `resolver lookup formula circularly includes ${forbidden}`,
+    );
+  }
+
+  const capacity = adversarial.match(
+    /- `CAPACITY-LOAD-01`:(?<body>[\s\S]*?)(?=\n- `[A-Z0-9-]+-\d{2}`:|\s*$)/,
+  );
+  const adversarialBody = capacity.groups.body.replace(/\s+/g, ' ');
+  for (const required of [
+    'lookup key must not contain a quotient member',
+    'same input-side lookup and reach their different exact terminal classes',
+    'zero database checkout',
+    'expected plan fingerprint cannot satisfy the independent',
+  ]) {
+    assert.ok(
+      adversarialBody.includes(required),
+      `execution-class adversary is missing ${required}`,
+    );
+  }
+});
+
 test('deployment parity binds production statistics and actual live plans', () => {
   const body = contracts.replace(/\s+/g, ' ');
   for (const required of [
@@ -156,6 +255,9 @@ test('deployment parity binds production statistics and actual live plans', () =
     'observed production physical-plan-fingerprint root',
     'exact equality of the certified and production statistics roots',
     'PostCutoverSmokeAttestation repeats the live-plan probe',
+    'ActivationDeploymentParityRecheck/V1',
+    'expires_at` is no later than ten minutes after `issued_at',
+    'actual production PostgreSQL planner reruns the complete class-and-worst-case-witness live-plan probe',
   ]) {
     assert.ok(body.includes(required), `deployment parity is missing ${required}`);
   }
@@ -163,9 +265,32 @@ test('deployment parity binds production statistics and actual live plans', () =
     'production_release_statistics_root_equal',
     'live_physical_plan_fingerprint_root_equal',
     'live_query_plan_smoke_equal',
+    'activation_parity_recheck_fresh_and_current',
+    'DEPLOYMENT-PARITY-FRESHNESS-01',
     'required_adversarial_tests: [POST-ACTIVATION-CONTROLLER-01, DEPLOY-CUTOVER-01]',
   ]) {
     assert.ok(gates.includes(required), `programme gate is missing ${required}`);
+  }
+});
+
+test('later-cutover readiness and attested-import abandonment have closed authorities', () => {
+  const body = contracts.replace(/\s+/g, ' ');
+  for (const required of [
+    '`ISSUE_ONGOING_RELEASE_READINESS` is its sole producer',
+    '`PM/ONGOING_RELEASE_READINESS/V2`',
+    '`DEPLOYMENT_READINESS_ISSUER` role',
+    '`OngoingReleaseReadinessSlot/V1` is part of `GlobalMutableAuthorityRegistry`',
+    '`EMPTY`, `ISSUED`, `CONSUMED` and `REVOKED`',
+    '`ATTESTED_DEPLOYMENT_PARITY_FAILURE`',
+    'CAS the import head from `ATTESTED` to terminal `ABANDONED`',
+  ]) {
+    assert.ok(body.includes(required), `release authority closure is missing ${required}`);
+  }
+  for (const required of [
+    '`ONGOING-READINESS-AUTHORITY-01`',
+    '`POST-ATTESTATION-ABANDONMENT-01`',
+  ]) {
+    assert.ok(adversarial.includes(required), `release adversary is missing ${required}`);
   }
 });
 

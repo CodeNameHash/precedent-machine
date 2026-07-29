@@ -31,7 +31,11 @@ the spine:
   gates and work classes;
 - [bootstrap-acceptance-source.json](codex-program/bootstrap-acceptance-source.json):
   root-independent, self-contained schemas, member universes and typed
-  predicates for the ten genesis G0 gates and the pre-bundle P1 freeze gate;
+  predicates for the ten genesis G0 gates and the pre-bundle P1 freeze gate. It
+  carries the byte length, SHA-256 and UTF-8 source for the complete recursively
+  resolved local runtime dependency closure, its ordered source-set digest and
+  the exact validator-executable file inventory. An unresolved local import or
+  omitted helper makes the source invalid;
 - [canonical-contracts.md](codex-program/canonical-contracts.md): sole authority
   for detailed identities, state machines, writer grammars, release contracts
   and traceability contracts;
@@ -1740,7 +1744,11 @@ The chain is:
     plan roots;
 16. `POST_IMPORT` TraceabilityExtension covering that exact import and
     deployment-parity evidence;
-17. cutover-ready `DeploymentReadinessMirror` and `CutoverAuthorisation`;
+17. a fresh, one-use `ActivationDeploymentParityRecheck/V1` over the current
+    production statistics, actual planner outputs and deployment generations;
+    then the first-cutover `DeploymentReadinessMirror` or later-cutover signed
+    `OngoingReleaseReadiness/V2` and ISSUED readiness slot, and exact
+    `CutoverAuthorisation`;
 18. exact acknowledged BLOCKED `ServingFenceVersion`; one atomic
     `ActivationEvent`, `PostActivationControlContext` and
     `PostActivationControlHead(AWAITING_READY)` transaction with its
@@ -2056,6 +2064,17 @@ The pre-cutover gates are:
   non-test occupancy by role and source. Prove staging parity for tier, region,
   extensions, indexes, RPCs, pooler and relevant Vercel runtime settings. The
   test cannot assume all nominal connections are usable;
+- because this gate precedes production import, it runs only through the closed
+  staging load-certification authority. Exactly three immutable load release
+  states bind the N, 10N and maximum-scale fixtures, their sealed staging
+  namespaces and the frozen query artefacts. A separate two-state load fence
+  admits only the authenticated controller, under fixed expiry, request and
+  concurrency bounds. The internal load route then enters the same compiler,
+  resolver, cache, admission-token RPC, serving RPC, role, search path, SQL
+  template and instrumentation as the production route. Its only permitted
+  difference is the closed authority predicate. The gate cannot claim
+  READY_CANONICAL, depend on ProductionImportAttestation, touch an active
+  release or pass until every load fence is BLOCKED and drained;
 - the workload may never consume the final 20 connections or final one-third of
   measured `max_connections`, whichever reserve is larger. Serving is capped at
   30 and all application work at 40, but either cap is reduced when measured
@@ -2072,6 +2091,14 @@ The pre-cutover gates are:
   rejected after BEGIN with zero cache or corpus access. The combined admission
   and serving workload must remain within the same CapacityManifest caps and
   connection reserve;
+- before that admission RPC, each DATABASE_API request derives one lookup key
+  from only the signed release or load selector and complete structural
+  ExecutionShapeKey. One bounded external immutable resolver program classifies
+  the normalised literal tuple and returns the quotient member, cost classes,
+  release execution class and expected plan fingerprint as output. None of
+  those outputs may be required to find the program. Missing, ambiguous or
+  over-bound resolution rejects with zero database checkout; the expected
+  fingerprint remains subject to independent live-plan parity;
 - the normal profile measures trailing-30-day
   production peak as both maximum one-minute request rate and maximum one-minute
   in-flight concurrency, then fixes steady targets of at least five requests per
@@ -2426,7 +2453,11 @@ earlier shorthand. In particular:
   and performance fixture, the originating serving RPC returns one bounded
   response without a result-page persistence write, and latency gates cover
   every interactive class without inventing SQL or API evidence for a client
-  transition;
+  transition. Pre-import soak uses the separate staging-only load release/fence
+  authority and the byte-identical serving path, never production readiness.
+  Execution-class lookup is keyed only by the resolved selector and structural
+  shape; a bounded literal classifier returns the member, class and expected
+  plan fingerprint and never requires those outputs as lookup inputs;
 - residual contracts are CanonicalContractBundle members, source-specific
   publication binds the actual eligible legal review and selected PRESENT
   primitive, and scope- or contract-impacting novel propositions block only
@@ -2435,5 +2466,11 @@ earlier shorthand. In particular:
 - every successful activation produces a terminal PASS
   ReleaseActivationCertification. The first creates the genesis ongoing
   promotion head and is selected by programme completion. Later promotions use
-  their own readiness and exact-predecessor head CAS and never increment the
-  absorbing completed programme-status head.
+  only deployment-controller-issued, trusted-signature
+  `OngoingReleaseReadiness/V2`, an exact ISSUED-to-CONSUMED readiness-slot
+  transition and exact-predecessor head CAS, and never increment the absorbing
+  completed programme-status head. Cutover authority also selects a fresh
+  ten-minute activation parity recheck that is consumed and currentness-tested
+  before release-state DML. A deployment-parity failure after import attestation
+  uses the existing `ABANDON_IMPORT` action's closed ATTESTED predecessor
+  variant and cannot strand or activate the inactive namespace.

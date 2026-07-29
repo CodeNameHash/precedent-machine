@@ -66,8 +66,8 @@ programme_gate_registry:
       missing_or_post_review_selected_member_effect: OPEN
     bootstrap_compiled_registry_binding:
       source_path: docs/codex-program/bootstrap-acceptance-source.json
-      source_sha256: 80bbaf074b6cab7a51cd40187a95ce5abd0b01968b4eed9a8d3f77b7585d0fbb
-      closed_validator_executable_set_digest: ec8a39078c2df6b5564744c8f45ec01f50da87860d9c690ea4f237652cbe8d5b
+      source_sha256: 51d19c3c450b001480ef7d69c440a8d847f02e92a26f3acf513781aa67a24d49
+      closed_validator_executable_set_digest: ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231
       authority: ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE
       exact_active_definition_count: 11
       exact_genesis_gate_count: 10
@@ -152,8 +152,8 @@ programme_gate_registry:
     executable_registry_source: lib/programme-gates/test-executable-registry.js
     fail_closed_unimplemented_executable: scripts/run-unimplemented-adversarial-test.mjs
     enumeration_rule: EVERY_BACKTICKED_LIST_ITEM_IDENTIFIER_IN_SOURCE_ORDER
-    expected_identifier_count: 286
-    expected_identifier_set_sha256: e4ad6ea4d87db62d405f954007067f7eca87c32511c0aef97a5b258a5d3a87ed
+    expected_identifier_count: 289
+    expected_identifier_set_sha256: a03e2ac797ce941f1b04f82b30be78eb183ab5f26bf24c46b34046eef62b16a8
     authoritative_root: DOMAIN_SEPARATED_ROOT_OVER_ORDERED_IDENTIFIER_TEST_DEFINITION_AND_EXECUTABLE_DIGEST_TUPLES
     enforcement_gate: P9_SCOPE_EXACT
     pre_cutover_requirement: EVERY_MEMBER_TERMINAL_PASS
@@ -195,11 +195,11 @@ programme_gate_registry:
       missing_extra_or_digest_mismatched_prompt_effect: INELIGIBLE
     frozen_independence_validator_allowlist:
       validator_key_id: PROGRAMME_GATE_VALIDATOR_2026_07
-      validator_executable_digest: ec8a39078c2df6b5564744c8f45ec01f50da87860d9c690ea4f237652cbe8d5b
+      validator_executable_digest: ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231
       validator_configuration_digest: cf81cbe11a55801efdbd7eab3376fa61f83823e3bfa1fe51e0decd98a00abd02
     frozen_trust_root_set:
       registry_schema: programme-gate-trusted-public-keys/v1
-      registry_source_sha256: d6efe4b49c56c58f385a01c3b8a9f7bd896e8b0934ffb31363d265c472aebed3
+      registry_source_sha256: f8e032dd770d5004711af3481f5933a1f8c763470159dc39719a1dc7582d6605
       keys:
         PROGRAMME_GATE_VALIDATOR_2026_07: 5b028d01aaa4f077c6f2f28ef8075195330eff00c2f81061fad8622b761de566
         PROGRAMME_STATUS_PUBLISHER_2026_07: d7f562af345fcb04a78f26c87b3e3f19b1cad6c8627ccc612396a4217d8a02c1
@@ -717,16 +717,16 @@ programme_gate_registry:
       required_adversarial_tests: [PROMOTION-EVIDENCE-01]
     - id: P9_DEPLOYMENT_PARITY
       phase: 9
-      evidence_contract: certified-executable-and-live-readiness-parity/v7
+      evidence_contract: certified-executable-and-live-readiness-parity/v8
       required_evidence_object_type: DeploymentParityAttestation
-      acceptance_claims: [certified_and_deployed_builds_equal, runtime_configuration_equal, readiness_tuple_equal, production_release_statistics_root_equal, live_physical_plan_fingerprint_root_equal]
-      required_adversarial_tests: [DEPLOY-CUTOVER-01]
+      acceptance_claims: [certified_and_deployed_builds_equal, runtime_configuration_equal, readiness_tuple_equal, production_release_statistics_root_equal, live_physical_plan_fingerprint_root_equal, activation_parity_recheck_fresh_and_current]
+      required_adversarial_tests: [DEPLOY-CUTOVER-01, DEPLOYMENT-PARITY-FRESHNESS-01]
     - id: P9_CUTOVER_AUTHORISATION
       phase: 9
-      evidence_contract: one-use-ben-authorisation-readiness-successor/v6
+      evidence_contract: one-use-ben-authorisation-readiness-successor/v7
       required_evidence_object_type: CutoverAuthorisation
-      acceptance_claims: [ben_authorisation_valid_and_single_use, readiness_predecessor_exact, proposed_successor_exact]
-      required_adversarial_tests: [CUTOVER-STATUS-TOPOLOGY-01]
+      acceptance_claims: [ben_authorisation_valid_and_single_use, readiness_predecessor_exact, proposed_successor_exact, activation_parity_recheck_selected, ongoing_readiness_authority_valid_for_later_cutover]
+      required_adversarial_tests: [CUTOVER-STATUS-TOPOLOGY-01, DEPLOYMENT-PARITY-FRESHNESS-01, ONGOING-READINESS-AUTHORITY-01]
     - id: P9_POSTCUTOVER_SMOKE
       phase: 9
       evidence_contract: readiness-bound-postcutover-smoke-attestation/v7
