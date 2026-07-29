@@ -1,0 +1,120 @@
+{
+  "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+  "stable_id": "TRANSACTION_LEG_RESOLUTION_OCCURRENCE",
+  "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "logical_type": "TransactionLegResolutionOccurrence",
+    "logical_type_version": 1,
+    "expected_slot": {
+      "slot_kind": "DEAL_TRANSACTION_LEG_SLOT",
+      "slot_schema": "TRANSACTION_LEG_RESOLUTION_SLOT/V1",
+      "identity_inputs": [
+        "expected_deal_leg_slot_key",
+        "governed_deal_id",
+        "governed_repeatable_ordinal",
+        "leg_definition_and_version"
+      ],
+      "value_fields_excluded_from_identity": [
+        "resolved_participant_relationships",
+        "resolved_source_and_target_entities",
+        "supporting_source_leg_revisions"
+      ]
+    },
+    "occurrence_identity": {
+      "stable_id_domain": "TRANSACTION_LEG_RESOLUTION_OCCURRENCE/V1",
+      "stable_id_inputs": [
+        "expected_deal_leg_slot_key",
+        "governed_deal_id",
+        "governed_repeatable_ordinal",
+        "leg_definition_and_version"
+      ],
+      "prohibited_inputs": [
+        "extracted_value",
+        "later_structure_classification",
+        "participant_name",
+        "source_label"
+      ]
+    },
+    "revision_identity": {
+      "revision_type": "TransactionLegResolutionRevision",
+      "revision_id_domain": "TRANSACTION_LEG_RESOLUTION_REVISION/V1",
+      "immutable_inputs": [
+        "closing_conditions",
+        "conflict_disposition",
+        "effective_time_expression",
+        "evidence_edges",
+        "predecessor_and_successor_occurrence_ids",
+        "resolved_participant_relationships",
+        "resolved_source_and_target_entities",
+        "resolver_version",
+        "state",
+        "supporting_source_leg_revisions",
+        "transaction_leg_resolution_occurrence_id"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": ["PRESENT", "ABSENT", "NOT_APPLICABLE", "NOT_EXAMINED", "FAILED"],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "source_occurrence_required": false,
+      "approved_seed_attestation_permitted": false,
+      "coordinate_space": "SELECTED_EXACT_SOURCE_EVIDENCE_EDGES",
+      "complete_scope_required_for_absent": true
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_TABLE",
+      "carrier_name": "transaction_leg_resolutions",
+      "release_partitioned": true
+    },
+    "writer_action": {
+      "action_key": "RESOLVE_TRANSACTION_LEG",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "exact_release_citation_redirect": false
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "TRANSACTION_LEG_RESOLUTION_REVISION",
+      "occurrence_id_required": true,
+      "revision_id_required": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "TRANSACTION_LEG_RESOLUTION_EVIDENCE",
+      "exact_evidence_only": true,
+      "preserve_release_identity": true
+    },
+    "consumer_projection_rule": {
+      "projection_type": "CanonicalDealFactProjection",
+      "terminal_type": "TRANSACTION_LEG_RESOLUTION_REVISION",
+      "typed_state_required": true,
+      "release_identity_required": true,
+      "conflict_indicator_required": true
+    },
+    "type_contract": {
+      "complete_ordered_supporting_source_legs_required": true,
+      "resolved_participant_relationships_required": true,
+      "resolved_source_and_target_entities_required": true,
+      "unreconciled_duplicate_blocks_structure_resolution": true,
+      "participant_relationship_scope": ["WHOLE_TRANSACTION", "ONE_TRANSACTION_LEG"]
+    }
+  }
+}

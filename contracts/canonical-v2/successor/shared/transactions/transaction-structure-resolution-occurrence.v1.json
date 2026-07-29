@@ -1,0 +1,144 @@
+{
+  "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+  "stable_id": "TRANSACTION_STRUCTURE_RESOLUTION_OCCURRENCE",
+  "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "logical_type": "TransactionStructureResolutionOccurrence",
+    "logical_type_version": 1,
+    "expected_slot": {
+      "slot_kind": "TRANSACTION_STRUCTURE_RESOLUTION_SLOT",
+      "slot_schema": "TRANSACTION_STRUCTURE_RESOLUTION_SLOT/V1",
+      "identity_inputs": [
+        "effective_time_slot",
+        "expected_structure_resolution_slot_key",
+        "governed_deal_id",
+        "governed_ordinal",
+        "structure_resolution_definition_and_version"
+      ],
+      "value_fields_excluded_from_identity": [
+        "characterisation_code",
+        "legal_structure_code",
+        "selected_transaction_leg_revisions"
+      ]
+    },
+    "occurrence_identity": {
+      "stable_id_domain": "TRANSACTION_STRUCTURE_RESOLUTION_OCCURRENCE/V1",
+      "stable_id_inputs": [
+        "effective_time_slot",
+        "expected_structure_resolution_slot_key",
+        "governed_deal_id",
+        "governed_ordinal",
+        "structure_resolution_definition_and_version"
+      ],
+      "prohibited_inputs": [
+        "characterisation_code",
+        "legal_structure_code",
+        "participant_name",
+        "source_label"
+      ]
+    },
+    "revision_identity": {
+      "revision_type": "TransactionStructureResolutionRevision",
+      "revision_id_domain": "TRANSACTION_STRUCTURE_RESOLUTION_REVISION/V1",
+      "immutable_inputs": [
+        "conflict_disposition",
+        "evidence_edges",
+        "legal_structure_code",
+        "participant_relationship_revisions",
+        "resolver_version",
+        "source_characterisation_fact_resolutions",
+        "state",
+        "transaction_leg_resolution_revisions",
+        "transaction_structure_resolution_occurrence_id"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": ["PRESENT", "ABSENT", "NOT_APPLICABLE", "NOT_EXAMINED", "FAILED"],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "source_occurrence_required": false,
+      "approved_seed_attestation_permitted": false,
+      "coordinate_space": "SELECTED_EXACT_SOURCE_EVIDENCE_EDGES",
+      "complete_scope_required_for_absent": true
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_TABLE",
+      "carrier_name": "transaction_structure_resolutions",
+      "release_partitioned": true
+    },
+    "writer_action": {
+      "action_key": "RESOLVE_TRANSACTION_STRUCTURE",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "exact_release_citation_redirect": false
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "TRANSACTION_STRUCTURE_RESOLUTION_REVISION",
+      "occurrence_id_required": true,
+      "revision_id_required": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "TRANSACTION_STRUCTURE_RESOLUTION_EVIDENCE",
+      "exact_evidence_only": true,
+      "preserve_release_identity": true
+    },
+    "consumer_projection_rule": {
+      "projection_type": "CanonicalDealFactProjection",
+      "terminal_type": "TRANSACTION_STRUCTURE_RESOLUTION_REVISION",
+      "typed_state_required": true,
+      "release_identity_required": true,
+      "conflict_indicator_required": true
+    },
+    "type_contract": {
+      "legal_structure_codes": [
+        "DIRECT_MERGER", "FORWARD_TRIANGULAR_MERGER", "REVERSE_TRIANGULAR_MERGER",
+        "REVERSE_MERGER", "REVERSE_MORRIS_TRUST",
+        "TENDER_OFFER_WITH_SECOND_STEP_MERGER", "NEW_HOLDCO_COMBINATION",
+        "SHARE_PURCHASE", "ASSET_ACQUISITION", "SHARE_EXCHANGE", "SPIN_MERGE",
+        "DE_SPAC", "JOINT_VENTURE_COMBINATION", "OTHER_REVIEWED_STRUCTURE"
+      ],
+      "characterisation_codes": [
+        "ACQUISITION", "MERGER_OF_EQUALS_STATED", "COMBINATION",
+        "STRATEGIC_MERGER", "DIVESTITURE"
+      ],
+      "source_characterisation_is_separate_fact": true,
+      "merger_of_equals_requires_exact_source_language": true,
+      "reverse_merger_is_not_reverse_triangular_merger": true,
+      "rmt_requires_stated_distribution_reorganisation_and_merger": true,
+      "new_holdco_infers_buyer": false,
+      "new_holdco_infers_control": false,
+      "share_purchase_becomes_asset_acquisition": false,
+      "required_separate_leg_groups": {
+        "REVERSE_MORRIS_TRUST": [
+          ["DISTRIBUTION_OR_SPIN_OFF"],
+          ["CONTRIBUTION", "OTHER_GOVERNED_STEP"],
+          ["DIRECT_MERGER", "FORWARD_TRIANGULAR_MERGER", "REVERSE_TRIANGULAR_MERGER", "OTHER_GOVERNED_STEP"]
+        ],
+        "TENDER_OFFER_WITH_SECOND_STEP_MERGER": [
+          ["TENDER_OFFER"],
+          ["SECOND_STEP_MERGER"]
+        ]
+      }
+    }
+  }
+}

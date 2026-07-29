@@ -1,0 +1,143 @@
+{
+  "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+  "stable_id": "DEAL_PARTICIPANT_RELATIONSHIP",
+  "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "logical_type": "DealParticipantRelationship",
+    "logical_type_version": 1,
+    "expected_slot": {
+      "slot_kind": "DEAL_PARTICIPANT_RELATIONSHIP_SLOT",
+      "slot_schema": "DEAL_PARTICIPANT_RELATIONSHIP_SLOT/V1",
+      "identity_inputs": [
+        "bidder_track_slot_key",
+        "expected_participant_slot_key",
+        "governed_deal_id",
+        "governed_ordinal",
+        "participant_endpoint_slot_key",
+        "role_code",
+        "role_layer",
+        "transaction_leg_slot_key"
+      ],
+      "value_fields_excluded_from_identity": [
+        "effective_time_scope",
+        "entity_subject_id",
+        "source_local_subject_occurrence_id"
+      ]
+    },
+    "occurrence_identity": {
+      "stable_id_domain": "DEAL_PARTICIPANT_RELATIONSHIP/V1",
+      "stable_id_inputs": [
+        "bidder_track_slot_key",
+        "expected_participant_slot_key",
+        "governed_deal_id",
+        "governed_ordinal",
+        "participant_endpoint_slot_key",
+        "role_code",
+        "role_layer",
+        "transaction_leg_slot_key"
+      ],
+      "prohibited_inputs": [
+        "cleaned_name",
+        "display_name",
+        "entity_subject_id",
+        "source_local_subject_occurrence_id"
+      ]
+    },
+    "revision_identity": {
+      "revision_type": "DealParticipantRelationshipRevision",
+      "revision_id_domain": "DEAL_PARTICIPANT_RELATIONSHIP_REVISION/V1",
+      "immutable_inputs": [
+        "bidder_track_id",
+        "deal_participant_relationship_id",
+        "effective_time_scope",
+        "entity_subject_id",
+        "evidence_edges",
+        "relationship_definition_and_version",
+        "resolver_version",
+        "role_code",
+        "role_layer",
+        "source_local_subject_occurrence_id",
+        "state",
+        "transaction_leg_resolution_occurrence_id"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": ["PRESENT", "ABSENT", "NOT_APPLICABLE", "NOT_EXAMINED", "FAILED"],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "source_occurrence_required": true,
+      "approved_seed_attestation_permitted": false,
+      "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES",
+      "complete_scope_required_for_absent": true
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_RELATIONSHIP_TABLE",
+      "carrier_name": "deal_participant_relationships",
+      "release_partitioned": true
+    },
+    "writer_action": {
+      "action_key": "ADMIT_DEAL_PARTICIPANT_RELATIONSHIP",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "exact_release_citation_redirect": false
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "PARTICIPANT_RELATIONSHIP_REVISION",
+      "occurrence_id_required": true,
+      "revision_id_required": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "DEAL_PARTICIPANT_RELATIONSHIP_EVIDENCE",
+      "exact_evidence_only": true,
+      "preserve_release_identity": true
+    },
+    "consumer_projection_rule": {
+      "projection_type": "CanonicalDealFactProjection",
+      "terminal_type": "PARTICIPANT_RELATIONSHIP_REVISION",
+      "typed_state_required": true,
+      "release_identity_required": true,
+      "conflict_indicator_required": true
+    },
+    "type_contract": {
+      "role_layers": ["LEGAL_DOCUMENT_ROLE", "TRANSACTION_ROLE"],
+      "legal_roles": [
+        "COMPANY", "PARENT", "MERGER_SUB", "ACQUIROR", "ISSUER", "SELLER",
+        "SURVIVING_ENTITY", "CONSTITUENT_ENTITY", "NEW_HOLDCO",
+        "DISTRIBUTING_PARENT", "SPINCO", "REMAINCO", "OTHER_LEGAL_PARTY"
+      ],
+      "transaction_roles": [
+        "TARGET", "BUYER", "BIDDER", "COMBINATION_PARTY", "SPONSOR",
+        "CONSORTIUM_MEMBER", "DIVESTING_PARENT", "CONTRIBUTING_PARTY",
+        "ACQUIRED_BUSINESS", "ACQUIRED_ENTITY", "SELLING_SHAREHOLDER",
+        "MERGER_COUNTERPARTY", "OTHER_COUNTERPARTY"
+      ],
+      "target_and_buyer_optional": true,
+      "combination_party_permitted_without_target_or_buyer": true,
+      "role_inheritance_from_side_label": false,
+      "surviving_entity_infers_buyer": false,
+      "share_issuer_infers_buyer": false,
+      "share_issuer_infers_control": false,
+      "bidder_track_scope_required_when_role_varies": true
+    }
+  }
+}

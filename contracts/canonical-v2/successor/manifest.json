@@ -23,10 +23,52 @@
       "stable_id": "ENTITY_SUBJECT",
       "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
       "canonical_bytes_digest": "8f16e192ae88a8e9f078e544e621aed9075e78b6eb5daf8f11aea4187ca1c2f3"
+    },
+    {
+      "relative_path": "shared/transactions/deal-participant-relationship.v1.json",
+      "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+      "stable_id": "DEAL_PARTICIPANT_RELATIONSHIP",
+      "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "cdf7c421f50148959da2640e009eaac5a136c35ff68dbaa65a739436308f6b1b"
+    },
+    {
+      "relative_path": "shared/transactions/share-purchase-interest-component.v1.json",
+      "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+      "stable_id": "SHARE_PURCHASE_INTEREST_COMPONENT",
+      "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "9fc0092b4ccd63cd9481b575a290987cb34e9f86647d78bd134cb62ad89c90a5"
+    },
+    {
+      "relative_path": "shared/transactions/source-transaction-leg-occurrence.v1.json",
+      "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+      "stable_id": "SOURCE_TRANSACTION_LEG_OCCURRENCE",
+      "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "904a08c052aaee219434ba9f96216d04ccc2ee8852c509b26b9ddda206557f16"
+    },
+    {
+      "relative_path": "shared/transactions/transaction-control-outcome-occurrence.v1.json",
+      "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+      "stable_id": "TRANSACTION_CONTROL_OUTCOME_OCCURRENCE",
+      "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "f2785ae8341dbf3d748cd8e4a630c08953c6fee9e3ed63acdf3650e717c95872"
+    },
+    {
+      "relative_path": "shared/transactions/transaction-leg-resolution-occurrence.v1.json",
+      "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+      "stable_id": "TRANSACTION_LEG_RESOLUTION_OCCURRENCE",
+      "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "cc858c070d36029e13f2c2ff6e0e5bb2f9db9b9b5a7050950b669df1a65e83b7"
+    },
+    {
+      "relative_path": "shared/transactions/transaction-structure-resolution-occurrence.v1.json",
+      "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+      "stable_id": "TRANSACTION_STRUCTURE_RESOLUTION_OCCURRENCE",
+      "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "d7f5e009bff38a4f8186f812a243ffd0505508f0544cc8c3e154cd4c50572941"
     }
   ],
   "per_kind_counts": {
-    "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT": 3
+    "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT": 9
   },
   "per_kind_schema_versions": {
     "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT": [

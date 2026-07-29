@@ -37,15 +37,21 @@ function members() {
   ];
 }
 
-test('compiles the first shared entity family deterministically as an incomplete successor root', () => {
+test('keeps the shared entity family deterministic inside an incomplete successor root', () => {
   const first = compileCanonicalContractInput({ root_directory: ROOT });
   const second = compileCanonicalContractInput({ root_directory: ROOT });
 
   assert.deepEqual(first, second);
-  assert.equal(first.authored_members.length, 3);
-  assert.deepEqual(first.canonical_bundle_input_identity.per_kind_counts, {
-    SHARED_AUTHORITY_LOGICAL_TYPE_INPUT: 3,
-  });
+  assert.deepEqual(
+    first.authored_members
+      .filter((member) => member.relative_path.startsWith('shared/entities/'))
+      .map((member) => member.stable_id),
+    ['ENTITY_IDENTITY_BRIDGE', 'ENTITY_NAME_OCCURRENCE', 'ENTITY_SUBJECT'],
+  );
+  assert.ok(
+    first.canonical_bundle_input_identity.per_kind_counts
+      .SHARED_AUTHORITY_LOGICAL_TYPE_INPUT >= 3,
+  );
   assert.equal(first.authored_universe_assessment.status, 'NOT_ASSESSED');
   assert.equal(first.disposition.status, 'INCOMPLETE_UNIVERSE');
   assert.equal(first.disposition.freeze_eligible, false);

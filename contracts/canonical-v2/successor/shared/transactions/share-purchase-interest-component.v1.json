@@ -1,0 +1,133 @@
+{
+  "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+  "stable_id": "SHARE_PURCHASE_INTEREST_COMPONENT",
+  "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "logical_type": "SharePurchaseInterestComponent",
+    "logical_type_version": 1,
+    "expected_slot": {
+      "slot_kind": "SHARE_PURCHASE_INTEREST_COMPONENT_SLOT",
+      "slot_schema": "SHARE_PURCHASE_INTEREST_COMPONENT_SLOT/V1",
+      "identity_inputs": [
+        "acquired_entity_endpoint_key",
+        "buyer_endpoint_key",
+        "expected_component_slot_key",
+        "expected_security_class_slot_key",
+        "governed_deal_id",
+        "governed_ordinal",
+        "selling_shareholder_endpoint_key",
+        "transaction_leg_resolution_occurrence_id"
+      ],
+      "value_fields_excluded_from_identity": [
+        "consideration",
+        "number_or_percentage_purchased",
+        "purchased_security_or_share_class"
+      ]
+    },
+    "occurrence_identity": {
+      "stable_id_domain": "SHARE_PURCHASE_INTEREST_COMPONENT/V1",
+      "stable_id_inputs": [
+        "acquired_entity_endpoint_key",
+        "buyer_endpoint_key",
+        "expected_component_slot_key",
+        "expected_security_class_slot_key",
+        "governed_deal_id",
+        "governed_ordinal",
+        "selling_shareholder_endpoint_key",
+        "transaction_leg_resolution_occurrence_id"
+      ],
+      "prohibited_inputs": [
+        "consideration",
+        "number_or_percentage_purchased",
+        "purchased_security_or_share_class",
+        "selected_entity_names"
+      ]
+    },
+    "revision_identity": {
+      "revision_type": "SharePurchaseInterestComponentRevision",
+      "revision_id_domain": "SHARE_PURCHASE_INTEREST_COMPONENT_REVISION/V1",
+      "immutable_inputs": [
+        "acquired_entity",
+        "buyer",
+        "consideration",
+        "evidence_edges",
+        "number_or_percentage_purchased",
+        "ownership_path",
+        "partial_or_full_acquisition_state",
+        "purchased_security_or_share_class",
+        "resolver_version",
+        "selling_shareholder",
+        "share_purchase_interest_component_id",
+        "state"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": ["PRESENT", "ABSENT", "NOT_APPLICABLE", "NOT_EXAMINED", "FAILED"],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "source_occurrence_required": true,
+      "approved_seed_attestation_permitted": false,
+      "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES",
+      "complete_scope_required_for_absent": true
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_COMPONENT_TABLE",
+      "carrier_name": "share_purchase_interest_components",
+      "release_partitioned": true
+    },
+    "writer_action": {
+      "action_key": "MATERIALISE_SHARE_PURCHASE_INTEREST_COMPONENT",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "exact_release_citation_redirect": false
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "SHARE_PURCHASE_INTEREST_COMPONENT_REVISION",
+      "occurrence_id_required": true,
+      "revision_id_required": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "SHARE_PURCHASE_INTEREST_COMPONENT_EVIDENCE",
+      "exact_evidence_only": true,
+      "preserve_release_identity": true
+    },
+    "consumer_projection_rule": {
+      "projection_type": "CanonicalDealFactProjection",
+      "terminal_type": "SHARE_PURCHASE_INTEREST_COMPONENT_REVISION",
+      "typed_state_required": true,
+      "release_identity_required": true,
+      "conflict_indicator_required": true
+    },
+    "type_contract": {
+      "required_endpoint_roles": ["BUYER", "ACQUIRED_ENTITY", "SELLING_SHAREHOLDER"],
+      "ownership_paths": ["DIRECT", "INDIRECT", "MIXED", "NOT_STATED"],
+      "acquisition_states": ["PARTIAL", "FULL", "NOT_STATED"],
+      "security_class_required_when_present": true,
+      "amount_or_percentage_preserved_when_stated": true,
+      "consideration_bound_to_component": true,
+      "independent_parallel_arrays_permitted": false,
+      "converts_to_asset_acquisition": false,
+      "query_group_and_export_use_complete_component": true
+    }
+  }
+}

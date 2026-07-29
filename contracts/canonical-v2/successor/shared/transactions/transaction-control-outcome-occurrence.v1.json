@@ -1,0 +1,137 @@
+{
+  "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+  "stable_id": "TRANSACTION_CONTROL_OUTCOME_OCCURRENCE",
+  "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "logical_type": "TransactionControlOutcomeOccurrence",
+    "logical_type_version": 1,
+    "expected_slot": {
+      "slot_kind": "TRANSACTION_CONTROL_OUTCOME_SLOT",
+      "slot_schema": "TRANSACTION_CONTROL_OUTCOME_SLOT/V1",
+      "identity_inputs": [
+        "control_outcome_definition_and_version",
+        "effective_time_slot",
+        "expected_control_outcome_slot_key",
+        "governed_deal_id",
+        "governed_ordinal"
+      ],
+      "value_fields_excluded_from_identity": [
+        "controlling_entity_ids",
+        "control_outcome",
+        "ownership_percentage"
+      ]
+    },
+    "occurrence_identity": {
+      "stable_id_domain": "TRANSACTION_CONTROL_OUTCOME_OCCURRENCE/V1",
+      "stable_id_inputs": [
+        "control_outcome_definition_and_version",
+        "effective_time_slot",
+        "expected_control_outcome_slot_key",
+        "governed_deal_id",
+        "governed_ordinal"
+      ],
+      "prohibited_inputs": [
+        "controlling_entity_ids",
+        "control_outcome",
+        "management_choice",
+        "ownership_percentage"
+      ]
+    },
+    "revision_identity": {
+      "revision_type": "TransactionControlOutcomeRevision",
+      "revision_id_domain": "TRANSACTION_CONTROL_OUTCOME_REVISION/V1",
+      "immutable_inputs": [
+        "complete_selected_input_set",
+        "conflict_disposition",
+        "controlling_entity_ids",
+        "control_outcome",
+        "derivation_rule",
+        "effective_time",
+        "evidence_edges",
+        "resolver_version",
+        "state",
+        "transaction_control_outcome_occurrence_id"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": ["PRESENT", "ABSENT", "NOT_APPLICABLE", "NOT_EXAMINED", "FAILED"],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "source_occurrence_required": false,
+      "approved_seed_attestation_permitted": false,
+      "coordinate_space": "SELECTED_EXACT_SOURCE_EVIDENCE_EDGES",
+      "complete_scope_required_for_absent": true
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_TABLE",
+      "carrier_name": "transaction_control_outcomes",
+      "release_partitioned": true
+    },
+    "writer_action": {
+      "action_key": "RESOLVE_TRANSACTION_CONTROL_OUTCOME",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "exact_release_citation_redirect": false
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "TRANSACTION_CONTROL_OUTCOME_REVISION",
+      "occurrence_id_required": true,
+      "revision_id_required": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "TRANSACTION_CONTROL_OUTCOME_EVIDENCE",
+      "exact_evidence_only": true,
+      "preserve_release_identity": true
+    },
+    "consumer_projection_rule": {
+      "projection_type": "CanonicalDealFactProjection",
+      "terminal_type": "TRANSACTION_CONTROL_OUTCOME_REVISION",
+      "typed_state_required": true,
+      "release_identity_required": true,
+      "conflict_indicator_required": true
+    },
+    "type_contract": {
+      "control_outcomes": [
+        "CONTROLLED_BY_ONE_PARTICIPANT", "SHARED_CONTROL",
+        "NEW_HOLDCO_SHARED_CONTROL", "NO_CLEAR_CONTROL"
+      ],
+      "complete_selected_input_families": [
+        "PARTICIPANT_RELATIONSHIP_REVISIONS",
+        "TRANSACTION_LEG_RESOLUTION_REVISIONS",
+        "VOTING_OWNERSHIP_FACT_RESOLUTIONS",
+        "BOARD_COMPOSITION_FACT_RESOLUTIONS",
+        "MANAGEMENT_FACT_RESOLUTIONS",
+        "SOURCE_CHARACTERISATION_FACT_RESOLUTIONS",
+        "EXACT_EVIDENCE_EDGES"
+      ],
+      "single_inputs_never_decide_control": [
+        "COMPANY_NAME", "HEADQUARTERS", "CHIEF_EXECUTIVE", "SURVIVING_ENTITY",
+        "SHARE_ISSUER", "RELATIVE_OWNERSHIP"
+      ],
+      "participant_label_infers_control": false,
+      "surviving_entity_infers_control": false,
+      "share_issuer_infers_control": false,
+      "absent_does_not_mean_no_controller": true
+    }
+  }
+}

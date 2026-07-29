@@ -1,0 +1,127 @@
+{
+  "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+  "stable_id": "SOURCE_TRANSACTION_LEG_OCCURRENCE",
+  "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "logical_type": "SourceTransactionLegOccurrence",
+    "logical_type_version": 1,
+    "expected_slot": {
+      "slot_kind": "SOURCE_TRANSACTION_LEG_SLOT",
+      "slot_schema": "SOURCE_TRANSACTION_LEG_SLOT/V1",
+      "identity_inputs": [
+        "admitted_source_occurrence_id",
+        "expected_source_leg_slot_key",
+        "governed_deal_id",
+        "governed_repeatable_ordinal",
+        "leg_definition_and_version"
+      ],
+      "value_fields_excluded_from_identity": [
+        "leg_type",
+        "observed_participant_roles",
+        "source_endpoints"
+      ]
+    },
+    "occurrence_identity": {
+      "stable_id_domain": "SOURCE_TRANSACTION_LEG_OCCURRENCE/V1",
+      "stable_id_inputs": [
+        "admitted_source_occurrence_id",
+        "expected_source_leg_slot_key",
+        "governed_deal_id",
+        "governed_repeatable_ordinal",
+        "leg_definition_and_version"
+      ],
+      "prohibited_inputs": [
+        "extracted_value",
+        "later_structure_classification",
+        "leg_type",
+        "party_label"
+      ]
+    },
+    "revision_identity": {
+      "revision_type": "SourceTransactionLegRevision",
+      "revision_id_domain": "SOURCE_TRANSACTION_LEG_REVISION/V1",
+      "immutable_inputs": [
+        "closing_condition",
+        "effective_time_expression",
+        "evidence_edges",
+        "leg_type",
+        "observed_participant_roles",
+        "predecessor_and_successor_occurrence_ids",
+        "resolver_version",
+        "source_endpoints",
+        "source_order",
+        "source_transaction_leg_occurrence_id",
+        "state"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": ["PRESENT", "ABSENT", "NOT_APPLICABLE", "NOT_EXAMINED", "FAILED"],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "source_occurrence_required": true,
+      "approved_seed_attestation_permitted": false,
+      "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES",
+      "complete_scope_required_for_absent": true
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_TABLE",
+      "carrier_name": "source_transaction_leg_occurrences",
+      "release_partitioned": true
+    },
+    "writer_action": {
+      "action_key": "MATERIALISE_SOURCE_TRANSACTION_LEG_OCCURRENCE",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "exact_release_citation_redirect": false
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "SOURCE_TRANSACTION_LEG_REVISION",
+      "occurrence_id_required": true,
+      "revision_id_required": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "SOURCE_TRANSACTION_LEG_EVIDENCE",
+      "exact_evidence_only": true,
+      "preserve_release_identity": true
+    },
+    "consumer_projection_rule": {
+      "projection_type": "CanonicalDealFactProjection",
+      "terminal_type": "SOURCE_TRANSACTION_LEG_REVISION",
+      "typed_state_required": true,
+      "release_identity_required": true,
+      "conflict_indicator_required": true
+    },
+    "type_contract": {
+      "leg_types": [
+        "DIRECT_MERGER", "FORWARD_TRIANGULAR_MERGER", "REVERSE_TRIANGULAR_MERGER",
+        "TENDER_OFFER", "SECOND_STEP_MERGER", "DISTRIBUTION_OR_SPIN_OFF",
+        "CONTRIBUTION", "SHARE_EXCHANGE", "SHARE_PURCHASE", "ASSET_TRANSFER",
+        "NEW_HOLDCO_FORMATION", "OTHER_GOVERNED_STEP"
+      ],
+      "exact_source_endpoints_required_when_present": true,
+      "predecessor_and_successor_links_permitted": true,
+      "source_order_required": true,
+      "later_structure_classification_creates_identity": false
+    }
+  }
+}
