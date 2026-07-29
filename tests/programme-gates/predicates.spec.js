@@ -1,6 +1,7 @@
 const assert = require('node:assert/strict');
 const test = require('node:test');
 
+const { domainDigest } = require('../../lib/programme-gates/bytes');
 const { ACCEPTANCE_DEFINITION_DESCRIPTORS, REVIEW_LANES } = require('../../lib/programme-gates/registry');
 const {
   ACCEPTANCE_PREDICATES,
@@ -38,6 +39,13 @@ function previewRouteActions() {
     authenticated_non_admin_status: 403,
     authorised_test_status: actionClass === 'READ_ONLY_TEST' ? 200 : null,
     feature_enabled: actionClass === 'READ_ONLY_TEST',
+  }));
+}
+
+function previewRouteActionIdentities() {
+  return previewRouteActions().map(({ action_id, action_class }) => ({
+    action_id,
+    action_class,
   }));
 }
 
@@ -218,6 +226,21 @@ const FIXTURES = Object.freeze({
     production_alias_after: 'deal-corpus.vercel.app',
   }),
   G0_STAGING_ACCESS_PROTECTED: Object.freeze({
+    source_route_action_inventory: Object.freeze(previewRouteActionIdentities()),
+    source_route_action_inventory_root: domainDigest(
+      'PROGRAMME_GATE_PREVIEW_ROUTE_ACTION_INVENTORY/V1',
+      previewRouteActionIdentities(),
+    ),
+    built_route_action_inventory: Object.freeze(previewRouteActionIdentities()),
+    built_route_action_inventory_root: domainDigest(
+      'PROGRAMME_GATE_PREVIEW_ROUTE_ACTION_INVENTORY/V1',
+      previewRouteActionIdentities(),
+    ),
+    runtime_route_action_inventory: Object.freeze(previewRouteActionIdentities()),
+    runtime_route_action_inventory_root: domainDigest(
+      'PROGRAMME_GATE_PREVIEW_ROUTE_ACTION_INVENTORY/V1',
+      previewRouteActionIdentities(),
+    ),
     preview_route_actions: Object.freeze(previewRouteActions()),
   }),
   G0_EXACT_DIGEST_REVIEW_SET: Object.freeze({
@@ -462,6 +485,49 @@ test('closed route and lane universes reject duplicates and omissions', () => {
   });
   assert.equal(reviewClaims[0].typed_value, false);
   assert.equal(reviewClaims.some((claim) => claim.typed_value === false), true);
+});
+
+test('preview inventories allow repeated classes but require exact source-built-runtime equality', () => {
+  const extra = {
+    ...previewRouteActions()[0],
+    action_id: 'READ_ONLY_TEST_SECOND',
+  };
+  const identities = [
+    ...FIXTURES.G0_STAGING_ACCESS_PROTECTED.source_route_action_inventory,
+    { action_id: extra.action_id, action_class: extra.action_class },
+  ];
+  const inventoryRoot = domainDigest(
+    'PROGRAMME_GATE_PREVIEW_ROUTE_ACTION_INVENTORY/V1',
+    identities,
+  );
+  const evidence = {
+    ...FIXTURES.G0_STAGING_ACCESS_PROTECTED,
+    source_route_action_inventory: identities,
+    source_route_action_inventory_root: inventoryRoot,
+    built_route_action_inventory: identities,
+    built_route_action_inventory_root: inventoryRoot,
+    runtime_route_action_inventory: identities,
+    runtime_route_action_inventory_root: inventoryRoot,
+    preview_route_actions: [
+      ...FIXTURES.G0_STAGING_ACCESS_PROTECTED.preview_route_actions,
+      extra,
+    ],
+  };
+  assert.ok(evaluateAcceptanceClaims({
+    gate_id: 'G0_STAGING_ACCESS_PROTECTED',
+    evidence,
+    context: context(),
+  }).every((claim) => claim.typed_value === true));
+  const mismatch = {
+    ...evidence,
+    built_route_action_inventory:
+      evidence.built_route_action_inventory.slice(0, -1),
+  };
+  assert.ok(evaluateAcceptanceClaims({
+    gate_id: 'G0_STAGING_ACCESS_PROTECTED',
+    evidence: mismatch,
+    context: context(),
+  }).every((claim) => claim.typed_value === false));
 });
 
 test('review and Ben booleans are rejected and only verified records can satisfy claims', () => {

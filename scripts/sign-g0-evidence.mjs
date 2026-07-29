@@ -380,6 +380,7 @@ async function collectLiveIsolationSource({ codeCommit, previewDeploymentId }) {
     }),
   ]);
   const productionDeploymentAfter = await vercelDeployment(PRODUCTION_ALIAS, token);
+  const previewActions = previewAccessMatrix();
   return buildIsolationObservationSource({
     observedAt: new Date().toISOString(),
     codeCommit,
@@ -395,7 +396,9 @@ async function collectLiveIsolationSource({ codeCommit, previewDeploymentId }) {
     unauthenticatedResponse,
     authorisedResponse,
     previewRuntimeResponse: authorisedResponse,
-    previewRouteActions: previewAccessMatrix(),
+    sourcePreviewRouteActions: previewActions,
+    builtPreviewRouteActions: previewActions,
+    previewRouteActions: previewActions,
   });
 }
 

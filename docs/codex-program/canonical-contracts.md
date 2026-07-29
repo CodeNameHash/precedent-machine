@@ -734,6 +734,13 @@ This file is the sole authority for detailed identities, state machines, writer 
   repository. The private key never enters the review environment, logs or
   checkout. A transcript, reviewer statement or user-supplied substitute cannot
   replace the controller record.
+  The signed task manifest enumerates the six specification members in exact
+  one-based order with repository path, raw-byte length, SHA-256 and canonical
+  base64 bytes and carries the canonical base64 output-schema bytes. The
+  validator decodes the supplied bytes, recomputes every member digest and
+  length, derives the specification root from the ordered member records and
+  recomputes the output-schema digest before accepting the controller record.
+  An asserted root or digest that does not derive from those bytes is invalid.
 - The reviewer principal is the exact controller run plus one fresh ephemeral
   CLI session, not the model family. The controller creates a new `CODEX_HOME`,
   does not resume a session and does not load project rules, user configuration,
@@ -889,6 +896,14 @@ This file is the sole authority for detailed identities, state machines, writer 
   reviewer-eligibility set and Ben taxonomy/codebook decision set. Acceptance
   recomputes every payload digest and content-derived ID and rejects any
   missing, extra, duplicate or digest-only substitute.
+  The semantic-question and composition catalogue
+  SemanticStageOutputSetRoots are distinct authorities and both precede the
+  catalogue THIRD_RECONCILER. Reconciliation binds their actual
+  `output_set_root` values and depends on both stage authorities; only the
+  passing reconciliation may feed the neutral projection and its
+  SemanticNeutralProjectionSetRoot. Every manifest field named as a set root
+  equals the corresponding root inside the typed authority payload, never the
+  digest of the enclosing authority-evidence envelope.
 - `ContractFreezeAttestation` is an approval object outside the closed bundle.
   It contains no source, deal, candidate revision, snapshot or release reference;
   generated bundle outputs may embed the bundle fingerprint but never the

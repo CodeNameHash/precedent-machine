@@ -224,6 +224,13 @@ CORRECTED (the plan below rests on these, not the review's wording):
   is not case-specific and contains no prior review finding or conclusion.
   These fixed runtime inputs are permitted and are not part of the
   controller-supplied task payload.
+  The signed task manifest carries the exact ordered six specification members,
+  including each repository path, one-based order, byte length, SHA-256 and
+  canonical base64 source bytes, plus the canonical base64 output-schema bytes.
+  The validator decodes those bytes, recomputes every length and SHA-256, derives
+  the domain-separated specification root from the exact ordered records and
+  recomputes the output-schema digest. A detached asserted root, manifest digest
+  or schema digest has no authority.
   The controller record contains its controller ID and version, review runtime
   version and binary digest, fixed controller-context digest, the exact
   specification root, model identifier, reasoning level, immutable task,
@@ -745,6 +752,14 @@ contract equality or CandidateCompositionInstanceConformance.
   a short-lived non-web credential and has no preview route. Credential
   isolation alone does not satisfy access isolation. No production credential
   or browser-visible service credential is permitted.
+  The access attestation binds three separately enumerated immutable inventories:
+  the source route-action inventory, built inventory and runtime-observed
+  inventory. Their exact `(action_id, action_class)` sets and independently
+  recomputed roots must agree with the complete runtime observation set. Action
+  IDs are unique, every closed action class is covered, and any number of
+  distinct actions may share one class. Omitting the same action from the
+  attestation and runtime evidence still fails against the source or built
+  inventory member.
 - The restore procedure excludes or replaces production auth sessions, API and
   webhook secrets, scheduled jobs, outbound integrations, replication targets
   and production user invitations before any application connection is enabled.

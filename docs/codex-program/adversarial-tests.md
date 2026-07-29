@@ -82,7 +82,12 @@ The following adversarial closure tests are mandatory traceability entries:
   writes. A model-family identity cannot replace the exact controller-run and
   session principal. The record may prove only the observable controller
   execution. It must not claim a provider-internal build, provider signature or
-  absence of hidden provider context.
+  absence of hidden provider context. Replace one specification member's
+  supplied bytes while retaining its declared digest, replace the output-schema
+  bytes while retaining its digest, reorder two members or substitute a
+  self-consistent detached root. Each mutation must fail after the validator
+  independently decodes the bytes and recomputes all lengths, digests and the
+  ordered specification root.
 - `VERTICAL-SLICE-01`: before the slice passes, the gate registry permits only
   its fixed reviewed staging fixture through `vertical_slice_execution` and
   blocks broad `candidate_scope_and_extraction`. The fixture must traverse the
@@ -2130,7 +2135,12 @@ The following adversarial closure tests are mandatory traceability entries:
   impact-clearance evidence fails. The candidate becomes publishable only after
   the successor bundle freezes, affected spans plus transitive dependants are
   reprocessed, and a disposition-bound final SemanticImpactClosure independently
-  reconciles or widens the provisional affected set.
+  reconciles or widens the provisional affected set. Both catalogue
+  SemanticStageOutputSetRoots must exist before the catalogue THIRD_RECONCILER
+  and must bind their typed payload `output_set_root` values. Reversing the
+  dependency, substituting an authority-envelope digest for any semantic-stage,
+  neutral-projection, relationship-field, reviewer-eligibility or Ben-decision
+  set root, or omitting either catalogue stage fails freeze.
 - `POLICY-AUTHORITY-01`: duplicate configuration ownership, a value above a
   protocol bound or any OperationalPolicySet mismatch among scope, candidate,
   deployment and certification fails compilation or certification.
@@ -2412,7 +2422,12 @@ The following adversarial closure tests are mandatory traceability entries:
   files, including byte lengths and file hashes.
 - `PREVIEW-AUTH-01`: every preview page and action denies unauthenticated access
   before and after snapshot restore; cross-user, forged-owner, forged-admin and
-  CSRF attempts fail.
+  CSRF attempts fail. Independently enumerate source, built and runtime
+  `(action_id, action_class)` inventories and require exact set and root equality
+  with the observed action matrix. Multiple action IDs in one class pass when
+  every closed class remains covered. Omitting the same action from the runtime
+  matrix and access attestation, duplicating an ID, changing a class or
+  substituting any asserted inventory root fails.
 - `CAPACITY-LOAD-01`: normal, cold, all-miss, stampede, maximum-scale,
   controller-failure, latency, cancellation and importer profiles respect the
   measured connection reserve and recover without a retry storm. Database-owned

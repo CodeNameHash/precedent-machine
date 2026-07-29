@@ -1,4 +1,5 @@
 const assert = require('node:assert/strict');
+const crypto = require('node:crypto');
 const test = require('node:test');
 
 const { domainDigest, signatureBytes } = require('../../lib/programme-gates/bytes');
@@ -12,6 +13,7 @@ const {
   REASONING_LEVEL,
   buildTrustedReviewPlan,
   buildUnsignedTrustedReviewControllerRecord,
+  specificationRootFromMembers,
   validateTrustedReviewPlan,
 } = require('../../lib/programme-gates/review-controller');
 
@@ -19,16 +21,38 @@ const DIGEST_A = 'a'.repeat(64);
 const DIGEST_B = 'b'.repeat(64);
 const DIGEST_C = 'c'.repeat(64);
 const DIGEST_D = 'd'.repeat(64);
+const SPECIFICATION_MEMBERS = Object.freeze([
+  'docs/codex-program/specification-manifest.json',
+  'docs/CODEX-PROGRAM.md',
+  'docs/codex-program/programme-gates.yaml',
+  'docs/codex-program/bootstrap-acceptance-source.json',
+  'docs/codex-program/canonical-contracts.md',
+  'docs/codex-program/adversarial-tests.md',
+].map((memberPath, index) => {
+  const bytes = Buffer.from(String(index + 1));
+  return Object.freeze({
+    order: index + 1,
+    path: memberPath,
+    byte_length: bytes.length,
+    payload_digest: crypto.createHash('sha256').update(bytes).digest('hex'),
+    source_bytes_base64: bytes.toString('base64'),
+  });
+}));
+const SPECIFICATION_ROOT = specificationRootFromMembers(SPECIFICATION_MEMBERS);
+const OUTPUT_SCHEMA_BYTES = Buffer.from('{}');
+const OUTPUT_SCHEMA_DIGEST =
+  crypto.createHash('sha256').update(OUTPUT_SCHEMA_BYTES).digest('hex');
 
 function taskManifest(overrides = {}) {
   return {
     manifest_version: 'TrustedReviewTaskManifest/V1',
     lane_id: 'LEGAL_SEMANTIC',
-    exact_specification_root: DIGEST_A,
+    exact_specification_root: SPECIFICATION_ROOT,
     frozen_specification: {
       manifest_id: 'canonical-specification-root/v1',
-      manifest_digest: DIGEST_B,
-      file_count: 5,
+      manifest_digest: SPECIFICATION_MEMBERS[0].payload_digest,
+      file_count: SPECIFICATION_MEMBERS.length,
+      ordered_members: SPECIFICATION_MEMBERS,
       immutable: true,
     },
     registered_prompt: {
@@ -42,8 +66,9 @@ function taskManifest(overrides = {}) {
     output_schema: {
       schema_id: 'ColdReviewOutput/V1',
       path: '/immutable/review/output-schema.json',
-      payload_digest: DIGEST_D,
-      byte_length: 256,
+      payload_digest: OUTPUT_SCHEMA_DIGEST,
+      byte_length: OUTPUT_SCHEMA_BYTES.length,
+      source_bytes_base64: OUTPUT_SCHEMA_BYTES.toString('base64'),
       immutable: true,
     },
     ...overrides,

@@ -97,6 +97,20 @@ function fixture() {
           manifest_id: 'codex-program-specification-manifest/v1',
           manifest_digest: '7'.repeat(64),
           file_count: 6,
+          ordered_members: [
+            'docs/codex-program/specification-manifest.json',
+            'docs/CODEX-PROGRAM.md',
+            'docs/codex-program/programme-gates.yaml',
+            'docs/codex-program/bootstrap-acceptance-source.json',
+            'docs/codex-program/canonical-contracts.md',
+            'docs/codex-program/adversarial-tests.md',
+          ].map((memberPath, memberIndex) => ({
+            order: memberIndex + 1,
+            path: memberPath,
+            byte_length: 1,
+            payload_digest: '7'.repeat(64),
+            source_bytes_base64: 'YQ==',
+          })),
           immutable: true,
         },
         registered_prompt: {
@@ -113,6 +127,7 @@ function fixture() {
             `/tmp/g0-cold-review-artifact/${lane.lane_id.toLowerCase()}-lane/output-schema.json`,
           payload_digest: '6'.repeat(64),
           byte_length: 1,
+          source_bytes_base64: 'YQ==',
           immutable: true,
         },
       },

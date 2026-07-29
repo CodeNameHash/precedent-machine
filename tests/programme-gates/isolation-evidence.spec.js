@@ -177,6 +177,8 @@ function observationInput(overrides = {}) {
     },
     authorisedResponse: { status: 200 },
     previewRuntimeResponse: { status: 200 },
+    sourcePreviewRouteActions: previewRouteActions(),
+    builtPreviewRouteActions: previewRouteActions(),
     previewRouteActions: previewRouteActions(),
     ...overrides,
   };

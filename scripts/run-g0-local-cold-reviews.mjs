@@ -183,6 +183,17 @@ async function runLane({ lane, runRoot, exactSpecificationRoot, privateKey, comm
     term: 'dumb',
   };
   const manifestBytes = fs.readFileSync(path.join(ROOT, SPEC_PATHS[0]));
+  const orderedSpecificationMembers = SPEC_PATHS.map((relativePath, index) => {
+    const bytes = fs.readFileSync(path.join(ROOT, relativePath));
+    return {
+      order: index + 1,
+      path: relativePath,
+      byte_length: bytes.length,
+      payload_digest: sha256(bytes),
+      source_bytes_base64: bytes.toString('base64'),
+    };
+  });
+  const outputSchemaBytes = Buffer.from(JSON.stringify(OUTPUT_SCHEMA));
   const plan = buildTrustedReviewPlan({
     controller_version: 'LOCAL_REVIEW_CONTROLLER/V1',
     controller_run_id: `g0-${commit}`,
@@ -197,6 +208,7 @@ async function runLane({ lane, runRoot, exactSpecificationRoot, privateKey, comm
         manifest_id: 'codex-program-specification-manifest/v1',
         manifest_digest: sha256(manifestBytes),
         file_count: SPEC_PATHS.length,
+        ordered_members: orderedSpecificationMembers,
         immutable: true,
       },
       registered_prompt: {
@@ -210,8 +222,9 @@ async function runLane({ lane, runRoot, exactSpecificationRoot, privateKey, comm
       output_schema: {
         schema_id: 'ColdReviewOutput/V1',
         path: schemaPath,
-        payload_digest: sha256(Buffer.from(JSON.stringify(OUTPUT_SCHEMA))),
-        byte_length: Buffer.byteLength(JSON.stringify(OUTPUT_SCHEMA)),
+        payload_digest: sha256(outputSchemaBytes),
+        byte_length: outputSchemaBytes.length,
+        source_bytes_base64: outputSchemaBytes.toString('base64'),
         immutable: true,
       },
     },
