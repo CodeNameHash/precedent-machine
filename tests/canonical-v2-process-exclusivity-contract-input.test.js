@@ -267,7 +267,7 @@ test('rejects any semantic weakening of the three governed definitions', () => {
 
 test('compiles without freeze, extraction, writer, serving or release authority', () => {
   const compiled = compileCanonicalContractInput({ root_directory: ROOT });
-  assert.equal(compiled.authored_members.length, 123);
+  assert.equal(compiled.authored_members.length, 125);
   assert.equal(compiled.authored_universe_assessment.status, 'NOT_ASSESSED');
   assert.equal(compiled.disposition.status, 'INCOMPLETE_UNIVERSE');
   assert.equal(compiled.disposition.freeze_eligible, false);

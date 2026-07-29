@@ -739,6 +739,13 @@
       "canonical_bytes_digest": "dcd6dc4e942c6ba0345a9d681ff8c91413883a4a256a41f11be29572cbe33f47"
     },
     {
+      "relative_path": "product/query/product-release-pinned-citation-and-share.v1.json",
+      "object_kind": "PRODUCT_RESULT_ACTION_CONTRACT_INPUT",
+      "stable_id": "PRODUCT_RELEASE_PINNED_CITATION_AND_SHARE",
+      "schema_version": "PRODUCT_RESULT_ACTION_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "432a45f2380be3d9e7069802178abdd3cdea34a7f51466bb30ea62c36bf9e123"
+    },
+    {
       "relative_path": "product/query/product-rerun-on-active-release.v1.json",
       "object_kind": "PRODUCT_QUERY_ACTION_CONTRACT_INPUT",
       "stable_id": "PRODUCT_RERUN_ON_ACTIVE_RELEASE",
@@ -751,6 +758,13 @@
       "stable_id": "PRODUCT_SAVED_QUERY_DEFINITION",
       "schema_version": "PRODUCT_QUERY_ACTION_CONTRACT_INPUT/V1",
       "canonical_bytes_digest": "dde8e396866656cdb3e4f9e081fcbb62b64c83d82093b5b4e8460376365a198f"
+    },
+    {
+      "relative_path": "product/query/product-selected-result-export.v1.json",
+      "object_kind": "PRODUCT_RESULT_ACTION_CONTRACT_INPUT",
+      "stable_id": "PRODUCT_SELECTED_RESULT_EXPORT",
+      "schema_version": "PRODUCT_RESULT_ACTION_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "2faa9f2d7ef8ecf89db498445b239e38f95220ecf87eb71f9bd399624006e2f9"
     },
     {
       "relative_path": "shared/deal-facts/deal-fact-resolution-occurrence.v1.json",
@@ -887,6 +901,7 @@
     "PRODUCT_QUERY_ACTION_CONTRACT_INPUT": 2,
     "PRODUCT_QUERY_CONTRACT_INPUT": 1,
     "PRODUCT_QUERY_RESULT_CONTRACT_INPUT": 1,
+    "PRODUCT_RESULT_ACTION_CONTRACT_INPUT": 2,
     "PROVISION_CONCEPT": 19,
     "RELATIONSHIP_DEFINITION": 5,
     "RELATIONSHIP_EFFECT_SCHEMA": 5,
@@ -962,6 +977,9 @@
     ],
     "PRODUCT_QUERY_RESULT_CONTRACT_INPUT": [
       "PRODUCT_QUERY_RESULT_CONTRACT_INPUT/V1"
+    ],
+    "PRODUCT_RESULT_ACTION_CONTRACT_INPUT": [
+      "PRODUCT_RESULT_ACTION_CONTRACT_INPUT/V1"
     ],
     "PROVISION_CONCEPT": [
       "PROVISION_CONCEPT/V1"
