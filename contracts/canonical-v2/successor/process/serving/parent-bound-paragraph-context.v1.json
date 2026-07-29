@@ -1,0 +1,63 @@
+{
+  "object_kind": "SERVING_PROCESS_CONTRACT_INPUT",
+  "stable_id": "PARENT_BOUND_PARAGRAPH_CONTEXT",
+  "schema_version": "SERVING_PROCESS_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "contract_type": "EXACT_DETAIL_ACTION_DEFINITION",
+    "contract_version": 1,
+    "action_contract": {
+      "action_key": "PROCESS_PARAGRAPH_CONTEXT",
+      "action_version": 1,
+      "parent_definition_stable_id": "PROCESS_PHRASEBOOK_PASSAGE_RESULT",
+      "parent_kind": "RESULT_ROW",
+      "response_schema": "PROCESS_PARAGRAPH_CONTEXT_RESPONSE/V1",
+      "route": "BOUNDED_PARENT_DETAIL",
+      "object_level_authorisation_required": true
+    },
+    "segmentation_contract": {
+      "projection_kind": "VERSIONED_CANONICAL_TEXT_PARAGRAPH_PROJECTION",
+      "projection_identity_required": true,
+      "source_map_lineage_required": true,
+      "browser_whitespace_can_define_paragraph": false,
+      "unversioned_string_split_permitted": false
+    },
+    "expansion_contract": {
+      "directions": [
+        "ABOVE",
+        "BELOW"
+      ],
+      "paragraphs_per_request": 1,
+      "maximum_paragraphs_per_direction": 12,
+      "repeat_click_permitted": true,
+      "selected_evidence_remains_highlighted": true,
+      "selected_evidence_remains_visible": true
+    },
+    "cursor_contract": {
+      "cursor_kind": "OPAQUE_SERVER_ISSUED_PARENT_BOUND_CURSOR",
+      "caller_input_fields": [
+        "direction",
+        "opaque_cursor",
+        "parent_result_id"
+      ],
+      "maximum_encoded_bytes": 2048,
+      "server_derives_every_paragraph_ordinal": true,
+      "caller_byte_offset_permitted": false,
+      "caller_paragraph_ordinal_permitted": false,
+      "caller_maximum_context_permitted": false,
+      "cursor_binds_parent_release_projection_and_boundary": true
+    },
+    "failure_contract": {
+      "invalid_cursor_fails_request_only": true,
+      "valid_sibling_rows_remain_available": true,
+      "whole_document_permission": false
+    },
+    "authority_contract": {
+      "creates_runtime_context": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "object_kind": "SERVING_PROCESS_CONTRACT_INPUT",
+  "stable_id": "PROCESS_PHRASEBOOK_PASSAGE_RESULT",
+  "schema_version": "SERVING_PROCESS_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "contract_type": "RESULT_DEFINITION",
+    "contract_version": 1,
+    "result_contract": {
+      "logical_type": "ProcessPhrasebookPassageResult",
+      "output_grain": "RESULT",
+      "parent_kind": "RESULT_ROW",
+      "one_occurrence_per_admitted_predicate_witness_narration": true,
+      "claim_or_application_join_can_mint_result": false,
+      "result_definition_required_before_materialisation": true
+    },
+    "occurrence_identity": {
+      "stable_id_domain": "PROCESS_PHRASEBOOK_PASSAGE_RESULT/V1",
+      "stable_id_inputs": [
+        "frozen_contract_pair_digest",
+        "governed_deal_admission_id",
+        "precomputed_process_narration_occurrence_id",
+        "exact_evidence_role_slot_key",
+        "governed_ordinal"
+      ],
+      "prohibited_inputs": [
+        "application_join_order",
+        "candidate_values",
+        "display_text",
+        "model_output",
+        "query_text",
+        "selected_revision_id"
+      ],
+      "ordinal_comparator": "CANONICAL_SOURCE_INTERVAL_COMPARATOR/V1",
+      "expected_result_slot_required_before_materialisation": true
+    },
+    "lineage_contract": {
+      "required_terminal_types": [
+        "PROCESS_NARRATION_REVISION",
+        "PREDICATE_WITNESS_REVISION"
+      ],
+      "selected_narration_required": true,
+      "predicate_witness_required": true,
+      "complete_result_input_lineage_required": true,
+      "source_local_narration_identity_required": true,
+      "retelling_relationship_retained": true
+    },
+    "preview_contract": {
+      "definition_stable_id": "BOUNDED_INLINE_PASSAGE_PREVIEW",
+      "matched_passage_preview_required": true,
+      "inline_with_result_row": true,
+      "one_detail_request_per_visible_passage_permitted": false
+    },
+    "ordering_contract": {
+      "total_comparator": [
+        "DIRECT_PREDICATE_WITNESS_BEFORE_CONTEXTUAL_OR_RETOLD_EVIDENCE",
+        "SOURCE_LOCAL_PRIMARY_NARRATION_BEFORE_LATER_RETELLING",
+        "GOVERNED_SOURCE_ORDER"
+      ],
+      "diversification_applies_after_total_comparator": true,
+      "diversification_keys": [
+        "governed_deal_admission_id",
+        "bidder_track_id"
+      ],
+      "application_memory_can_recreate_ranking_authority": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "exact_release_citation_redirect": false
+    },
+    "authority_contract": {
+      "creates_runtime_result": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

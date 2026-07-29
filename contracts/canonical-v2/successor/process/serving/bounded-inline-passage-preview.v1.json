@@ -1,0 +1,48 @@
+{
+  "object_kind": "SERVING_PROCESS_CONTRACT_INPUT",
+  "stable_id": "BOUNDED_INLINE_PASSAGE_PREVIEW",
+  "schema_version": "SERVING_PROCESS_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "contract_type": "INLINE_PREVIEW_DEFINITION",
+    "contract_version": 1,
+    "parent_contract": {
+      "parent_definition_stable_id": "PROCESS_PHRASEBOOK_PASSAGE_RESULT",
+      "parent_kind": "RESULT_ROW",
+      "exactly_one_parent_required": true,
+      "parent_release_identity_required": true
+    },
+    "preview_contract": {
+      "field_name": "matched_passage_preview",
+      "content_mode": "VERBATIM_CANONICAL_TEXT",
+      "maximum_utf8_bytes": 8192,
+      "exact_source_interval_required": true,
+      "canonical_text_digest_required": true,
+      "evidence_role_required": true,
+      "source_local_narration_id_required": true,
+      "exact_detail_reference_required": true,
+      "truncation_state_required": true,
+      "source_text_rewrite_permitted": false
+    },
+    "delivery_contract": {
+      "delivered_with_parent_row": true,
+      "separate_detail_request_required": false,
+      "one_preview_per_result": true,
+      "malformed_preview_blocks_parent_only": true,
+      "valid_sibling_rows_remain_publishable": true
+    },
+    "trace_contract": {
+      "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES",
+      "source_revision_id_required": true,
+      "segmentation_projection_id_required": true,
+      "release_identity_required": true
+    },
+    "authority_contract": {
+      "creates_runtime_preview": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}
