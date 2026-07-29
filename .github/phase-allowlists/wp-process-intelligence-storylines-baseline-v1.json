@@ -1,0 +1,21 @@
+{
+  "phase": "WP-PROCESS-INTELLIGENCE-STORYLINES-BASELINE-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-intelligence-storylines-baseline-v1.json",
+    "evidence/process-intelligence/baseline/storylines-evidence-inventory.json",
+    "scripts/process-intelligence-storylines-baseline.mjs",
+    "tests/process-intelligence-storylines-baseline.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "lib/canonical-v2/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Records content-addressed Storylines prototype evidence. It grants no canonical authority, source review, deal extraction, release, import, activation, UI, database write, dual write, or production authority."
+}
