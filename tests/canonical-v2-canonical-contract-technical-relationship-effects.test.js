@@ -73,7 +73,7 @@ test('the six technical relationship members have pinned canonical identities', 
   }
 });
 
-test('legacy V12 remains byte-frozen while only EXCEPTED_BY is unauthored', () => {
+test('legacy V12 remains byte-frozen while every relationship has a successor schema', () => {
   assert.equal(
     FIXTURE_CONTRACT_FINGERPRINT_V12,
     '261525a8268a1392428a610bbf0c2166c87318192971d08bc7e6ac5f2c7235e5',
@@ -98,7 +98,7 @@ test('legacy V12 remains byte-frozen while only EXCEPTED_BY is unauthored', () =
     FIXTURE_CONTRACT_INPUT_V12.relationship_definitions
       .map((entry) => entry.relationship_key)
       .filter((key) => !authored.has(key)),
-    ['EXCEPTED_BY'],
+    [],
   );
   assert.equal(output.disposition.status, 'INCOMPLETE_UNIVERSE');
   assert.equal(output.disposition.freeze_eligible, false);

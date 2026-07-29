@@ -76,7 +76,7 @@ test('the first authored source compiles twice byte-identically without claiming
   const second = compileCanonicalContractInput({ root_directory: sourceRoot });
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 68);
+  assert.equal(first.authored_members.length, 70);
   assert.equal(
     first.authored_members.some(
       (member) => member.object_kind === 'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY',
@@ -139,7 +139,7 @@ test('every authored concept is the exact existing V12 payload under the require
   assert.equal(canonicalJson(actual), canonicalJson(expected));
 });
 
-test('the authored relationships preserve USES_DEFINITION and add three successor schemas', () => {
+test('the authored relationships preserve USES_DEFINITION and add four successor schemas', () => {
   const compiled = compileCanonicalContractInput({ root_directory: sourceRoot });
   const actual = authoredPayloads(
     compiled,
@@ -147,7 +147,7 @@ test('the authored relationships preserve USES_DEFINITION and add three successo
     'relationship_key',
     'RELATIONSHIP_DEFINITION/V1',
   );
-  assert.equal(actual.length, 4);
+  assert.equal(actual.length, 5);
   assert.deepEqual(actual.map((entry) => [
     entry.relationship_key,
     entry.effect_mode,
@@ -156,6 +156,7 @@ test('the authored relationships preserve USES_DEFINITION and add three successo
   ]), [
     ['BRINGS_DOWN', 'TYPED_LEGAL_EFFECT', 2, 'BRINGS_DOWN_EFFECT/V1'],
     ['CONTAINED_IN', 'NON_SEMANTIC', 2, 'CONTAINED_IN_EFFECT/V1'],
+    ['EXCEPTED_BY', 'TYPED_LEGAL_EFFECT', 3, 'EXCEPTED_BY_EFFECT/V1'],
     ['TRIGGERED_BY', 'TYPED_LEGAL_EFFECT', 2, 'TERMINATION_FEE_TRIGGER_EFFECT/V2'],
     ['USES_DEFINITION', 'TYPED_LEGAL_EFFECT', 3, 'USES_DEFINITION_EFFECT/V2'],
   ]);
@@ -166,7 +167,7 @@ test('the authored relationships preserve USES_DEFINITION and add three successo
       ))
       .map((entry) => entry.relationship_key)
       .sort(),
-    ['EXCEPTED_BY'],
+    [],
   );
 });
 
@@ -176,7 +177,7 @@ test('the authored relationship effect schemas select one closed schema each', (
     (member) => member.object_kind === 'RELATIONSHIP_EFFECT_SCHEMA',
   );
 
-  assert.equal(members.length, 4);
+  assert.equal(members.length, 5);
   const member = members.find(
     (entry) => entry.canonical_value.effect_schema_key === 'USES_DEFINITION_EFFECT',
   ).canonical_value;
@@ -201,6 +202,7 @@ test('the authored relationship effect schemas select one closed schema each', (
     [
       ['BRINGS_DOWN_EFFECT', 1],
       ['CONTAINED_IN_EFFECT', 1],
+      ['EXCEPTED_BY_EFFECT', 1],
       ['TERMINATION_FEE_TRIGGER_EFFECT', 2],
       ['USES_DEFINITION_EFFECT', 2],
     ],
@@ -464,13 +466,13 @@ test('the authored claim interpretation policy is the exact existing V12 policy'
   );
 });
 
-test('the manifest exactly closes the complete 68-file authored source tree', () => {
+test('the manifest exactly closes the complete 70-file authored source tree', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
   const actualMembers = jsonMembers(sourceRoot);
   const declaredMembers = manifest.members.map((member) => member.relative_path);
 
   assert.deepEqual(actualMembers, declaredMembers);
-  assert.equal(manifest.members.length, 68);
+  assert.equal(manifest.members.length, 70);
   assert.deepEqual(manifest.per_kind_counts, {
     CLAIM_DEFINITION: 13,
     CLAIM_INTERPRETATION_POLICY: 1,
@@ -481,8 +483,8 @@ test('the manifest exactly closes the complete 68-file authored source tree', ()
     PARSER_PROPOSAL_BOUNDARY_DEFINITION: 1,
     PARTY_TUPLE_SHAPE_MIGRATION_INPUT: 1,
     PROVISION_CONCEPT: 19,
-    RELATIONSHIP_DEFINITION: 4,
-    RELATIONSHIP_EFFECT_SCHEMA: 4,
+    RELATIONSHIP_DEFINITION: 5,
+    RELATIONSHIP_EFFECT_SCHEMA: 5,
     RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT: 1,
     SERVING_EXACT_DETAIL_ACTION_DEFINITION: 5,
     SERVING_METRIC_OPERATION_BINDING_INPUT: 2,

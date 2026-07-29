@@ -1,0 +1,114 @@
+{
+  "object_kind": "RELATIONSHIP_EFFECT_SCHEMA",
+  "stable_id": "EXCEPTED_BY_EFFECT",
+  "schema_version": "RELATIONSHIP_EFFECT_SCHEMA/V1",
+  "effect_schema_key": "EXCEPTED_BY_EFFECT",
+  "effect_schema_version": 1,
+  "definition": {
+    "schema_version": "EXCEPTED_BY_EFFECT/V1",
+    "relationship_key": "EXCEPTED_BY",
+    "relationship_definition_version": 3,
+    "effect_mode": "TYPED_LEGAL_EFFECT",
+    "variant_discriminator": "effect_variant",
+    "allowed_effect_variants": [
+      "CONDITIONAL_ACTION_PERMISSION",
+      "INLINE_PERMISSION",
+      "RESTRICTION_CARVEOUT"
+    ],
+    "variant_contracts": [
+      {
+        "effect_variant": "CONDITIONAL_ACTION_PERMISSION",
+        "source_contract": "NO_SHOP_EXCEPTION_EFFECT/V1",
+        "required_effect_fields": [
+          "effect_mode",
+          "effect_variant",
+          "legal_operation",
+          "affected_action_code",
+          "shared_prerequisite_codes",
+          "action_specific_prerequisite_codes",
+          "temporal_start",
+          "temporal_end",
+          "obligated_party",
+          "protected_party",
+          "governing_notice_obligation_revision_id",
+          "definition_use_relationship_ids",
+          "precedence_code"
+        ],
+        "endpoint_contract": {
+          "source_occurrence_kind": "PROVISION_COMPONENT",
+          "target_occurrence_kind": "PROVISION_COMPONENT",
+          "target_cardinality": "EXACTLY_ONE",
+          "same_deal_required": true
+        }
+      },
+      {
+        "effect_variant": "INLINE_PERMISSION",
+        "source_contract": "NO_SHOP_INLINE_PERMISSION_EFFECT/V1",
+        "required_effect_fields": [
+          "effect_mode",
+          "effect_variant",
+          "legal_operation",
+          "permitted_action_code",
+          "qualified_action_occurrence_ids",
+          "permitted_actor_party",
+          "information_subject_code",
+          "temporal_scope_inheritance",
+          "cross_reference_excerpt_id",
+          "evidence_excerpt_ids",
+          "scope_closure_id"
+        ],
+        "endpoint_contract": {
+          "source_occurrence_kind": "PROVISION_INSTANCE",
+          "target_occurrence_kind": "PROVISION_COMPONENT",
+          "target_cardinality": "EXACTLY_ONE",
+          "same_deal_required": true
+        }
+      },
+      {
+        "effect_variant": "RESTRICTION_CARVEOUT",
+        "source_contract": "REVIEWED_IOC_CAPEX_SLICE/V1",
+        "required_effect_fields": [
+          "effect_mode",
+          "effect_variant",
+          "legal_operation",
+          "restriction_period",
+          "obligors",
+          "exceptions",
+          "consent_standard"
+        ],
+        "allowed_legal_operations": [
+          "EXCLUDES_CAPEX_RESTRICTION_WHEN_APPLICABLE"
+        ],
+        "allowed_restriction_periods": [
+          "PRE_CLOSING_PERIOD"
+        ],
+        "allowed_exception_codes": [
+          "REQUIRED_OR_CONTEMPLATED_BY_AGREEMENT_OR_LAW",
+          "PARENT_WRITTEN_CONSENT",
+          "COMPANY_DISCLOSURE_SCHEDULE"
+        ],
+        "allowed_consent_standards": [
+          "NOT_UNREASONABLY_WITHHELD_CONDITIONED_OR_DELAYED"
+        ],
+        "endpoint_contract": {
+          "source_occurrence_kind": "PROVISION_COMPONENT",
+          "target_occurrence_kind": "PROVISION_COMPONENT",
+          "target_cardinality": "EXACTLY_ONE",
+          "same_deal_required": true
+        }
+      }
+    ],
+    "comparison_contract": {
+      "cohort_key_fields": [
+        "effect_variant",
+        "legal_operation"
+      ],
+      "cross_variant_comparison": "FORBIDDEN",
+      "missing_variant_disposition": "QUARANTINE_RELATIONSHIP",
+      "unknown_variant_disposition": "RETAIN_RESIDUAL_AND_QUARANTINE_RELATIONSHIP"
+    },
+    "propagation": "EXACT_NAMED_TARGETS_ONLY",
+    "party_transfer": "NONE",
+    "automatic_variant_inference": "FORBIDDEN"
+  }
+}

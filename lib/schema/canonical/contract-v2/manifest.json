@@ -382,6 +382,13 @@
       "canonical_bytes_digest": "2f4e2e6bb7d1fc4845cebcfe1ef7a7c1bf8dbb1b47632e2f1622bf44ae2d8d28"
     },
     {
+      "relative_path": "relationship-definitions/excepted-by.v3.json",
+      "object_kind": "RELATIONSHIP_DEFINITION",
+      "stable_id": "EXCEPTED_BY",
+      "schema_version": "RELATIONSHIP_DEFINITION/V1",
+      "canonical_bytes_digest": "ea7a0f2d3c91430bde6bf532e8dc06d3e55aa4e91f25fbc57e6f87fbca2feeb9"
+    },
+    {
       "relative_path": "relationship-definitions/triggered-by.v2.json",
       "object_kind": "RELATIONSHIP_DEFINITION",
       "stable_id": "TRIGGERED_BY",
@@ -408,6 +415,13 @@
       "stable_id": "CONTAINED_IN_EFFECT",
       "schema_version": "RELATIONSHIP_EFFECT_SCHEMA/V1",
       "canonical_bytes_digest": "2e006ecf116701fb027ca0c85920e0f7c063c99c8050399198b76c6af5d8d9b7"
+    },
+    {
+      "relative_path": "relationship-effect-schemas/excepted-by-effect.v1.json",
+      "object_kind": "RELATIONSHIP_EFFECT_SCHEMA",
+      "stable_id": "EXCEPTED_BY_EFFECT",
+      "schema_version": "RELATIONSHIP_EFFECT_SCHEMA/V1",
+      "canonical_bytes_digest": "43b05d5c61330da35eaa9ac3c72b73d3fa05f6e0c9dfdc98f8a19f69c7755ed0"
     },
     {
       "relative_path": "relationship-effect-schemas/termination-fee-trigger-effect.v2.json",
@@ -490,8 +504,8 @@
     "PARSER_PROPOSAL_BOUNDARY_DEFINITION": 1,
     "PARTY_TUPLE_SHAPE_MIGRATION_INPUT": 1,
     "PROVISION_CONCEPT": 19,
-    "RELATIONSHIP_DEFINITION": 4,
-    "RELATIONSHIP_EFFECT_SCHEMA": 4,
+    "RELATIONSHIP_DEFINITION": 5,
+    "RELATIONSHIP_EFFECT_SCHEMA": 5,
     "RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT": 1,
     "SERVING_EXACT_DETAIL_ACTION_DEFINITION": 5,
     "SERVING_METRIC_OPERATION_BINDING_INPUT": 2,
