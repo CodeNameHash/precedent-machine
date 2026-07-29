@@ -1,0 +1,139 @@
+{
+  "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+  "stable_id": "ENTITY_IDENTITY_BRIDGE",
+  "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "logical_type": "EntityIdentityBridge",
+    "logical_type_version": 1,
+    "expected_slot": {
+      "slot_kind": "SOURCE_IDENTITY_RELATIONSHIP_SLOT",
+      "slot_schema": "ENTITY_IDENTITY_BRIDGE_SLOT/V1",
+      "identity_inputs": [
+        "bridge_rule_key",
+        "expected_identity_bridge_slot_key",
+        "governed_ordinal",
+        "source_local_subject_occurrence_id"
+      ],
+      "value_fields_excluded_from_identity": [
+        "identity_disposition",
+        "selected_entity_subject_id",
+        "state"
+      ]
+    },
+    "occurrence_identity": {
+      "stable_id_domain": "ENTITY_IDENTITY_BRIDGE/V1",
+      "stable_id_inputs": [
+        "bridge_rule_key",
+        "expected_identity_bridge_slot_key",
+        "governed_ordinal",
+        "source_local_subject_occurrence_id"
+      ],
+      "prohibited_inputs": [
+        "identity_disposition",
+        "normalised_name",
+        "selected_entity_subject_id",
+        "state"
+      ]
+    },
+    "revision_identity": {
+      "revision_type": "EntityIdentityBridgeRevision",
+      "revision_id_domain": "ENTITY_IDENTITY_BRIDGE_REVISION/V1",
+      "immutable_inputs": [
+        "bridge_rule_and_version",
+        "conflict_checks",
+        "entity_identity_bridge_id",
+        "evidence_edges",
+        "identity_disposition",
+        "review_evidence",
+        "selected_entity_subject_id",
+        "state",
+        "supersession"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": [
+        "PRESENT",
+        "ABSENT",
+        "NOT_APPLICABLE",
+        "NOT_EXAMINED",
+        "FAILED"
+      ],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "source_occurrence_required": true,
+      "approved_seed_attestation_permitted": false,
+      "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES",
+      "complete_scope_required_for_absent": true
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_RELATIONSHIP_TABLE",
+      "carrier_name": "entity_identity_bridges",
+      "release_partitioned": true
+    },
+    "writer_action": {
+      "action_key": "ADMIT_ENTITY_IDENTITY_BRIDGE",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "exact_release_citation_redirect": false
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "IDENTITY_BRIDGE_REVISION",
+      "occurrence_id_required": true,
+      "revision_id_required": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "ENTITY_IDENTITY_BRIDGE_EVIDENCE",
+      "exact_evidence_only": true,
+      "preserve_release_identity": true
+    },
+    "consumer_projection_rule": {
+      "projection_type": "CanonicalDealFactProjection",
+      "terminal_type": "IDENTITY_BRIDGE_REVISION",
+      "typed_state_required": true,
+      "release_identity_required": true,
+      "conflict_indicator_required": true
+    },
+    "type_contract": {
+      "identity_dispositions": [
+        "NAMED",
+        "GOVERNED_BRIDGE_CONFIRMED",
+        "SOURCE_LOCAL_ONLY",
+        "CONFLICTING",
+        "NO_BRIDGE_WITNESS"
+      ],
+      "permitted_terminal_combinations": [
+        "PRESENT:NAMED",
+        "PRESENT:GOVERNED_BRIDGE_CONFIRMED",
+        "ABSENT:NO_BRIDGE_WITNESS",
+        "NOT_EXAMINED:SOURCE_LOCAL_ONLY",
+        "NOT_APPLICABLE:SOURCE_LOCAL_ONLY",
+        "FAILED:NONE"
+      ],
+      "candidate_only_dispositions": [
+        "CONFLICTING"
+      ],
+      "normalised_name_match_sufficient": false,
+      "conflict_blocks_terminal_selection": true
+    }
+  }
+}

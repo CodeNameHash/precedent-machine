@@ -1,0 +1,140 @@
+{
+  "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+  "stable_id": "ENTITY_SUBJECT",
+  "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "logical_type": "EntitySubject",
+    "logical_type_version": 1,
+    "expected_slot": {
+      "slot_kind": "SUBJECT_IDENTITY_SLOT",
+      "slot_schema": "ENTITY_SUBJECT_IDENTITY_SLOT/V1",
+      "identity_inputs": [
+        "identity_authority_type",
+        "identity_authority_value"
+      ],
+      "value_fields_excluded_from_identity": [
+        "classification_codes",
+        "display_label",
+        "status"
+      ]
+    },
+    "occurrence_identity": {
+      "stable_id_domain": "ENTITY_SUBJECT/V1",
+      "stable_id_inputs": [
+        "identity_authority_type",
+        "identity_authority_value"
+      ],
+      "prohibited_inputs": [
+        "cleaned_name",
+        "database_row_id",
+        "deal_date",
+        "deal_economics",
+        "display_name",
+        "source_order",
+        "ticker"
+      ]
+    },
+    "revision_identity": {
+      "revision_type": "EntitySubjectRevision",
+      "revision_id_domain": "ENTITY_SUBJECT_REVISION/V1",
+      "immutable_inputs": [
+        "classification_revisions",
+        "display_label",
+        "entity_subject_id",
+        "evidence_edges",
+        "revision_status"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": [
+        "PRESENT",
+        "ABSENT",
+        "NOT_APPLICABLE",
+        "NOT_EXAMINED",
+        "FAILED"
+      ],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "source_occurrence_required": false,
+      "approved_seed_attestation_permitted": true,
+      "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES_OR_GOVERNED_APPROVAL_ATTESTATION",
+      "complete_scope_required_for_absent": true
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_TABLE",
+      "carrier_name": "entity_subjects",
+      "release_partitioned": true
+    },
+    "writer_action": {
+      "action_key": "MATERIALISE_ENTITY_SUBJECT",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "exact_release_citation_redirect": false
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "ENTITY_REVISION",
+      "occurrence_id_required": true,
+      "revision_id_required": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "ENTITY_SUBJECT_EVIDENCE",
+      "exact_evidence_only": true,
+      "preserve_release_identity": true
+    },
+    "consumer_projection_rule": {
+      "projection_type": "CanonicalDealFactProjection",
+      "terminal_type": "ENTITY_REVISION",
+      "typed_state_required": true,
+      "release_identity_required": true,
+      "conflict_indicator_required": true
+    },
+    "type_contract": {
+      "subject_classes": [
+        "NATURAL_PERSON",
+        "ORGANISATION",
+        "GOVERNMENT_BODY"
+      ],
+      "identity_authority_types": [
+        "SEC_CIK",
+        "LEI",
+        "BEN_APPROVED_IMMUTABLE_IMPORT_SEED"
+      ],
+      "evidence_rule_by_identity_authority": {
+        "SEC_CIK": "EXACT_SOURCE_OCCURRENCE_REQUIRED",
+        "LEI": "EXACT_SOURCE_OCCURRENCE_REQUIRED",
+        "BEN_APPROVED_IMMUTABLE_IMPORT_SEED": "GOVERNED_APPROVAL_ATTESTATION_REQUIRED"
+      },
+      "classification_codes": [
+        "PUBLIC_COMPANY",
+        "PRIVATE_COMPANY",
+        "INVESTMENT_FIRM",
+        "LAW_FIRM",
+        "FINANCIAL_SERVICES_FIRM",
+        "OTHER_ORGANISATION"
+      ],
+      "display_name_creates_identity": false,
+      "equivalence_requires_reviewed_relationship": true,
+      "conflict_blocks_selection": true
+    }
+  }
+}

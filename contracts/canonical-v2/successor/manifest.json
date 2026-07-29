@@ -1,0 +1,36 @@
+{
+  "schema_version": "CANONICAL_BUNDLE_INPUT_MANIFEST/V1",
+  "compiler_input_schema_version": "CANONICAL_BUNDLE_INPUT_COMPILER/V1",
+  "generator_input_schema_version": "CANONICAL_BUNDLE_GENERATOR_INPUT/V1",
+  "members": [
+    {
+      "relative_path": "shared/entities/entity-identity-bridge.v1.json",
+      "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+      "stable_id": "ENTITY_IDENTITY_BRIDGE",
+      "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "e3722675dffab74fccfbcc0e904bba2b40d7384296040e33de6f644767c2ee8b"
+    },
+    {
+      "relative_path": "shared/entities/entity-name-occurrence.v1.json",
+      "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+      "stable_id": "ENTITY_NAME_OCCURRENCE",
+      "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "49f00f8d3fc274b0de6400c905fefb7e426db41b51eab68ad019fe5263706728"
+    },
+    {
+      "relative_path": "shared/entities/entity-subject.v1.json",
+      "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+      "stable_id": "ENTITY_SUBJECT",
+      "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "8f16e192ae88a8e9f078e544e621aed9075e78b6eb5daf8f11aea4187ca1c2f3"
+    }
+  ],
+  "per_kind_counts": {
+    "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT": 3
+  },
+  "per_kind_schema_versions": {
+    "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT": [
+      "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1"
+    ]
+  }
+}
