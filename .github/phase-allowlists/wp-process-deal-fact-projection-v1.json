@@ -1,0 +1,19 @@
+{
+  "phase": "WP-PROCESS-DEAL-FACT-PROJECTION-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-deal-fact-projection-v1.json",
+    "lib/canonical-v2/process-deal-fact-projection.js",
+    "tests/canonical-v2-process-shared-authority-integration.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Validates and preserves the release-pinned shared deal-fact projection for read-only Process use with synthetic tests only. It grants no deal extraction, canonical write, database, import, activation, UI, or production authority."
+}
