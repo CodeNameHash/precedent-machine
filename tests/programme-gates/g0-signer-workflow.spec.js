@@ -47,6 +47,9 @@ test('the protected credentials exist only in the combined in-memory signer step
   const publisherReferences = workflowSource.match(
     /secrets\.PROGRAMME_STATUS_PUBLISHER_ED25519_PRIVATE_KEY_PEM/g,
   ) || [];
+  const previewAccessMatrixReferences = workflowSource.match(
+    /secrets\.PROGRAMME_GATE_PREVIEW_ACCESS_MATRIX_JSON/g,
+  ) || [];
   const vercelReferences = workflowSource.match(/secrets\.VERCEL_TOKEN/g) || [];
   const supabaseReferences = workflowSource.match(
     /secrets\.PROGRAMME_GATE_STAGING_SUPABASE_SECRET_KEY/g,
@@ -54,6 +57,7 @@ test('the protected credentials exist only in the combined in-memory signer step
   assert.equal(validatorReferences.length, 1);
   assert.equal(benApproverReferences.length, 1);
   assert.equal(publisherReferences.length, 1);
+  assert.equal(previewAccessMatrixReferences.length, 1);
   assert.equal(vercelReferences.length, 1);
   assert.equal(supabaseReferences.length, 1);
   assert.doesNotMatch(
