@@ -1,0 +1,21 @@
+{
+  "phase": "WP-PROCESS-INTELLIGENCE-BASELINE-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-intelligence-baseline-v1.json",
+    "evidence/process-intelligence/baseline/product-field-source-inventory.json",
+    "scripts/process-intelligence-baseline.mjs",
+    "tests/process-intelligence-baseline.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "lib/canonical-v2/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Records a content-addressed observational baseline of current PM product fields. It grants no canonical authority, source review, deal extraction, release, import, activation, UI, database, or production authority."
+}
