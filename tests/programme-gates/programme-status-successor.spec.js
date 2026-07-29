@@ -183,4 +183,8 @@ test('signer loads the exact predecessor and uses the successor nonce path', () 
     signer,
     /executeProgrammeStatusPublication\(\{[\s\S]*plan: publicationPlan,[\s\S]*repositoryRoot: ROOT,[\s\S]*remote: 'origin'/,
   );
+  assert.match(
+    signer,
+    /'tests\/programme-gates\/publication-executor\.spec\.js'/,
+  );
 });
