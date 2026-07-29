@@ -35,7 +35,13 @@ const ROLE = 'STATUS_PUBLISHER';
 function run(cwd, args, options = {}) {
   const result = spawnSync('git', ['-C', cwd, ...args], {
     encoding: options.encoding === null ? null : 'utf8',
-    env: options.env || process.env,
+    env: options.env || {
+      ...process.env,
+      GIT_AUTHOR_NAME: 'Programme Status Test',
+      GIT_AUTHOR_EMAIL: 'programme-status-test@example.invalid',
+      GIT_COMMITTER_NAME: 'Programme Status Test',
+      GIT_COMMITTER_EMAIL: 'programme-status-test@example.invalid',
+    },
     input: options.input,
     maxBuffer: 16 * 1024 * 1024,
   });
