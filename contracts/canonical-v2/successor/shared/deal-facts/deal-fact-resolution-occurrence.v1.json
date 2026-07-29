@@ -1,0 +1,151 @@
+{
+  "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+  "stable_id": "DEAL_FACT_RESOLUTION_OCCURRENCE",
+  "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "logical_type": "DealFactResolutionOccurrence",
+    "logical_type_version": 1,
+    "expected_slot": {
+      "slot_kind": "DEAL_FACT_RESOLUTION_SLOT",
+      "slot_schema": "DEAL_FACT_RESOLUTION_OCCURRENCE_SLOT/V1",
+      "identity_inputs": [
+        "basis_slot",
+        "effective_time_slot",
+        "expected_resolution_slot_key",
+        "fact_definition_and_version",
+        "governed_deal_id",
+        "governed_ordinal"
+      ],
+      "value_fields_excluded_from_identity": [
+        "canonical_value",
+        "resolution_disposition",
+        "selected_source_revisions"
+      ]
+    },
+    "occurrence_identity": {
+      "stable_id_domain": "DEAL_FACT_RESOLUTION_OCCURRENCE/V1",
+      "stable_id_inputs": [
+        "basis_slot",
+        "effective_time_slot",
+        "expected_resolution_slot_key",
+        "fact_definition_and_version",
+        "governed_deal_id",
+        "governed_ordinal"
+      ],
+      "prohibited_inputs": [
+        "canonical_value",
+        "resolution_disposition",
+        "selected_source_revision_id",
+        "source_order"
+      ]
+    },
+    "revision_identity": {
+      "revision_type": "DealFactResolutionRevision",
+      "revision_id_domain": "DEAL_FACT_RESOLUTION_REVISION/V1",
+      "immutable_inputs": [
+        "basis",
+        "canonical_value",
+        "complete_selected_source_revision_set",
+        "conflict_detail",
+        "deal_fact_resolution_occurrence_id",
+        "derivation",
+        "evidence_edges",
+        "resolution_disposition",
+        "resolver_version",
+        "review_evidence",
+        "state"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": ["PRESENT", "ABSENT", "NOT_APPLICABLE", "NOT_EXAMINED", "FAILED"],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "source_occurrence_required": false,
+      "approved_seed_attestation_permitted": false,
+      "coordinate_space": "SELECTED_EXACT_SOURCE_EVIDENCE_EDGES",
+      "complete_scope_required_for_absent": true
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_TABLE",
+      "carrier_name": "deal_fact_resolutions",
+      "release_partitioned": true
+    },
+    "writer_action": {
+      "action_key": "RESOLVE_DEAL_FACT",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "exact_release_citation_redirect": false
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "DEAL_FACT_RESOLUTION_REVISION",
+      "occurrence_id_required": true,
+      "revision_id_required": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "DEAL_FACT_RESOLUTION_EVIDENCE",
+      "exact_evidence_only": true,
+      "preserve_release_identity": true
+    },
+    "consumer_projection_rule": {
+      "projection_type": "CanonicalDealFactProjection",
+      "terminal_type": "DEAL_FACT_RESOLUTION_REVISION",
+      "typed_state_required": true,
+      "release_identity_required": true,
+      "conflict_indicator_required": true
+    },
+    "type_contract": {
+      "resolution_dispositions": [
+        "SELECTED_EXACT_STATEMENT", "SELECTED_REGISTERED_DERIVATION",
+        "CONSISTENT_MULTI_SOURCE", "RESOLVED_SOURCE_CONFLICT", "UNDISCLOSED",
+        "NOT_EXAMINED", "NOT_APPLICABLE", "UNRESOLVED_CONFLICT", "FAILED"
+      ],
+      "permitted_terminal_combinations": [
+        "PRESENT:SELECTED_EXACT_STATEMENT",
+        "PRESENT:SELECTED_REGISTERED_DERIVATION",
+        "PRESENT:CONSISTENT_MULTI_SOURCE",
+        "PRESENT:RESOLVED_SOURCE_CONFLICT",
+        "ABSENT:UNDISCLOSED",
+        "NOT_EXAMINED:NOT_EXAMINED",
+        "NOT_APPLICABLE:NOT_APPLICABLE",
+        "FAILED:FAILED"
+      ],
+      "candidate_only_dispositions": ["UNRESOLVED_CONFLICT"],
+      "complete_ordered_source_revision_set_required": true,
+      "unresolved_conflict_blocks_filter_group_sort_and_denominator": true,
+      "selection_preserves_all_source_statements": true,
+      "registered_derivation_required_for_normalised_equity_value": true,
+      "normalised_equity_derivation_inputs": [
+        "INPUT_FACT_RESOLUTIONS", "INPUT_VALUE_AND_UNIT", "EFFECTIVE_DATE",
+        "SHARE_OR_SECURITY_CLASS", "INCLUSION_RULE", "EXCLUSION_RULE",
+        "ARITHMETIC_OPERATION", "ROUNDING_RULE", "RESULT",
+        "EXACT_SOURCE_EVIDENCE_FOR_EACH_INPUT"
+      ],
+      "enterprise_value_can_be_renamed_equity_value": false,
+      "cvr_ceiling_can_be_treated_as_certain_cash": false,
+      "target_paid_dividend_requires_approved_inclusion_rule": true,
+      "incompatible_dates_can_be_combined": false,
+      "unexplained_share_count_permitted": false,
+      "cross_deal_derivation_input_permitted": false
+    }
+  }
+}

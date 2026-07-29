@@ -1,0 +1,151 @@
+{
+  "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+  "stable_id": "SOURCE_DEAL_FACT_OCCURRENCE",
+  "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "logical_type": "SourceDealFactOccurrence",
+    "logical_type_version": 1,
+    "expected_slot": {
+      "slot_kind": "SOURCE_DEAL_FACT_SLOT",
+      "slot_schema": "SOURCE_DEAL_FACT_OCCURRENCE_SLOT/V1",
+      "identity_inputs": [
+        "admitted_source_occurrence_id",
+        "effective_time_slot",
+        "expected_source_slot_key",
+        "fact_definition_and_version",
+        "governed_deal_id",
+        "governed_repeatable_ordinal",
+        "governed_source_role"
+      ],
+      "value_fields_excluded_from_identity": [
+        "basis",
+        "canonical_value",
+        "raw_source_text",
+        "unit"
+      ]
+    },
+    "occurrence_identity": {
+      "stable_id_domain": "SOURCE_DEAL_FACT_OCCURRENCE/V1",
+      "stable_id_inputs": [
+        "admitted_source_occurrence_id",
+        "effective_time_slot",
+        "expected_source_slot_key",
+        "fact_definition_and_version",
+        "governed_deal_id",
+        "governed_repeatable_ordinal",
+        "governed_source_role"
+      ],
+      "prohibited_inputs": [
+        "basis",
+        "canonical_value",
+        "normalised_value",
+        "raw_source_text",
+        "unit"
+      ]
+    },
+    "revision_identity": {
+      "revision_type": "SourceDealFactRevision",
+      "revision_id_domain": "SOURCE_DEAL_FACT_REVISION/V1",
+      "immutable_inputs": [
+        "basis",
+        "canonical_value",
+        "derivation_version",
+        "evidence_edges",
+        "normalisation_version",
+        "raw_source_text",
+        "review_state",
+        "source_date",
+        "source_deal_fact_occurrence_id",
+        "source_role",
+        "state",
+        "unit"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": ["PRESENT", "ABSENT", "NOT_APPLICABLE", "NOT_EXAMINED", "FAILED"],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "source_occurrence_required": true,
+      "approved_seed_attestation_permitted": false,
+      "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES",
+      "complete_scope_required_for_absent": true
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_TABLE",
+      "carrier_name": "source_deal_fact_occurrences",
+      "release_partitioned": true
+    },
+    "writer_action": {
+      "action_key": "MATERIALISE_SOURCE_DEAL_FACT_OCCURRENCE",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "exact_release_citation_redirect": false
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "SOURCE_DEAL_FACT_REVISION",
+      "occurrence_id_required": true,
+      "revision_id_required": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "SOURCE_DEAL_FACT_EVIDENCE",
+      "exact_evidence_only": true,
+      "preserve_release_identity": true
+    },
+    "consumer_projection_rule": {
+      "projection_type": "CanonicalDealFactProjection",
+      "terminal_type": "SOURCE_DEAL_FACT_REVISION",
+      "typed_state_required": true,
+      "release_identity_required": true,
+      "conflict_indicator_required": true
+    },
+    "type_contract": {
+      "fact_families": [
+        "DEAL_ANNOUNCEMENT_DATE", "AGREEMENT_SIGNING_DATE", "CLOSING_DATE",
+        "SECTOR", "JURISDICTION", "TRANSACTION_LEGAL_STRUCTURE",
+        "TRANSACTION_SOURCE_CHARACTERISATION", "TRANSACTION_CONTROL_OUTCOME",
+        "POST_CLOSING_VOTING_OWNERSHIP", "POST_CLOSING_BOARD_COMPOSITION",
+        "BUYER_TYPE", "CONSIDERATION_FORM", "CONSIDERATION_COMPONENT",
+        "HEADLINE_PRICE_PER_SHARE", "STATED_TRANSACTION_VALUE",
+        "STATED_VALUE_BASIS", "OUTSTANDING_SHARE_OR_SECURITY_COUNT",
+        "DEBT_OR_CASH_ADJUSTMENT", "REGISTERED_DERIVATION_INPUT"
+      ],
+      "value_types": [
+        "EQUITY_VALUE", "ENTERPRISE_VALUE", "HEADLINE_TRANSACTION_VALUE",
+        "OFFER_PRICE_PER_SHARE", "STOCK_EXCHANGE_RATIO", "TARGET_PAID_DIVIDEND",
+        "CVR_MAXIMUM_PAYMENT", "CVR_EXPECTED_PAYMENT", "OTHER_STATED_VALUE"
+      ],
+      "source_roles": [
+        "ANNOUNCEMENT_PRESS_RELEASE", "MERGER_AGREEMENT", "PROXY_STATEMENT",
+        "SCHEDULE_14D_9", "SCHEDULE_TO", "AMENDMENT", "CLOSING_RELEASE",
+        "NOTICES_PROVISION", "OTHER_REGISTERED_SOURCE_ROLE"
+      ],
+      "announcement_release_preferred_for_stated_headline_value": true,
+      "preferred_source_silently_overrides_other_sources": false,
+      "different_basis_is_automatic_conflict": false,
+      "same_basis_same_time_difference_creates_conflict": true,
+      "cvr_expected_payment_requires_later_governed_method": true,
+      "empty_string_represents_state": false,
+      "absent_requires_zero_witness_proof": true
+    }
+  }
+}

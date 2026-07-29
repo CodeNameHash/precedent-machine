@@ -4,6 +4,20 @@
   "generator_input_schema_version": "CANONICAL_BUNDLE_GENERATOR_INPUT/V1",
   "members": [
     {
+      "relative_path": "shared/deal-facts/deal-fact-resolution-occurrence.v1.json",
+      "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+      "stable_id": "DEAL_FACT_RESOLUTION_OCCURRENCE",
+      "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "a9883c5ff6229b2d594cbc602d62b8815799cb16dbcaf7843e42a2a354b3e3b0"
+    },
+    {
+      "relative_path": "shared/deal-facts/source-deal-fact-occurrence.v1.json",
+      "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+      "stable_id": "SOURCE_DEAL_FACT_OCCURRENCE",
+      "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "086267640453e0ece4e91a57d029d923df4b233c3de97f48efec0debfd2a68e7"
+    },
+    {
       "relative_path": "shared/entities/entity-identity-bridge.v1.json",
       "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
       "stable_id": "ENTITY_IDENTITY_BRIDGE",
@@ -23,6 +37,13 @@
       "stable_id": "ENTITY_SUBJECT",
       "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
       "canonical_bytes_digest": "8f16e192ae88a8e9f078e544e621aed9075e78b6eb5daf8f11aea4187ca1c2f3"
+    },
+    {
+      "relative_path": "shared/temporal/temporal-expression.v1.json",
+      "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+      "stable_id": "TEMPORAL_EXPRESSION",
+      "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "d730b3f62b644cc7ea55c16531b5bff1256e64257ed003e5780b7cdf49cd6fc6"
     },
     {
       "relative_path": "shared/transactions/deal-participant-relationship.v1.json",
@@ -68,7 +89,7 @@
     }
   ],
   "per_kind_counts": {
-    "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT": 9
+    "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT": 12
   },
   "per_kind_schema_versions": {
     "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT": [
