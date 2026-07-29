@@ -6,6 +6,9 @@ const test = require('node:test');
 
 const { domainDigest, signatureBytes } = require('../../lib/programme-gates/bytes');
 const {
+  CONTRACT_FREEZE_MEMBER_SCHEMA_SET,
+} = require('../../lib/programme-gates/contract-freeze-contracts');
+const {
   enumerateCompleteGitAuthorshipUniverse,
 } = require('../../lib/programme-gates/git-authorship');
 const {
@@ -31,6 +34,15 @@ const AUTHORSHIP_EVENTS = enumerateCompleteGitAuthorshipUniverse({
 });
 const OBSERVED_AT = '2026-07-28T12:00:00.000Z';
 const VERIFICATION_TIME = '2026-07-28T12:01:00.000Z';
+
+test('P1 member schema bindings are unique and validator-satisfiable', () => {
+  const memberTypes = CONTRACT_FREEZE_MEMBER_SCHEMA_SET.map((entry) => entry.member_type);
+  assert.equal(new Set(memberTypes).size, memberTypes.length);
+  assert.equal(
+    memberTypes.filter((memberType) => memberType === 'ReviewerIndependenceAttestation').length,
+    1,
+  );
+});
 
 function sign(privateKey, domain, role, payload) {
   return crypto.sign(
