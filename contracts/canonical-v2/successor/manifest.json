@@ -557,6 +557,13 @@
       "canonical_bytes_digest": "bcb87a92a5c4da81af609dd0379df9a09c123b9c1b1742870dfcb6ea4d8ca45c"
     },
     {
+      "relative_path": "process/gates/process-vertical-slice-pass.v1.json",
+      "object_kind": "PROCESS_GATE_CONTRACT_INPUT",
+      "stable_id": "PROCESS_VERTICAL_SLICE_PASS",
+      "schema_version": "PROCESS_GATE_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "09c679fa120acd4f6c0f49de1eaea15d3bc15683993776f1dff51a222495e993"
+    },
+    {
       "relative_path": "process/integrity/process-semantic-or-source-integrity-revocation-cause.v1.json",
       "object_kind": "PROCESS_INTEGRITY_CONTRACT_INPUT",
       "stable_id": "PROCESS_SEMANTIC_OR_SOURCE_INTEGRITY_REVOCATION_CAUSE",
@@ -842,6 +849,7 @@
     "PROCESS_DOMAIN_REGISTRY_INPUT": 1,
     "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT": 1,
     "PROCESS_FIELD_CATALOGUE_INPUT": 1,
+    "PROCESS_GATE_CONTRACT_INPUT": 1,
     "PROCESS_INTEGRITY_CONTRACT_INPUT": 2,
     "PROCESS_LOGICAL_TYPE_INPUT": 10,
     "PROCESS_NAVIGATION_CATALOGUE_INPUT": 1,
@@ -893,6 +901,9 @@
     ],
     "PROCESS_FIELD_CATALOGUE_INPUT": [
       "PROCESS_FIELD_CATALOGUE_INPUT/V1"
+    ],
+    "PROCESS_GATE_CONTRACT_INPUT": [
+      "PROCESS_GATE_CONTRACT_INPUT/V1"
     ],
     "PROCESS_INTEGRITY_CONTRACT_INPUT": [
       "PROCESS_INTEGRITY_CONTRACT_INPUT/V1"

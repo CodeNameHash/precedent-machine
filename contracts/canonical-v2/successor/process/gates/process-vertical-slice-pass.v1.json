@@ -1,0 +1,183 @@
+{
+  "object_kind": "PROCESS_GATE_CONTRACT_INPUT",
+  "stable_id": "PROCESS_VERTICAL_SLICE_PASS",
+  "schema_version": "PROCESS_GATE_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "contract_type": "VERTICAL_SLICE_PASS_DEFINITION",
+    "contract_version": 1,
+    "gate_identity_contract": {
+      "gate_id": "PROCESS_VERTICAL_SLICE_PASS",
+      "evidence_schema_id": "PROCESS_VERTICAL_SLICE_ATTESTATION/V1",
+      "required_status": "PASS",
+      "canonical_predecessor_gate_id": "P1_VERTICAL_SLICE_PASS",
+      "canonical_predecessor_is_substitutable": false,
+      "governing_gate_activation_state": "DEFERRED_UNTIL_P8_EXACT_ROOT_AMENDMENT",
+      "governing_gate_entry_required_before_evidence_execution": true,
+      "successor_candidate_scope_dependency_required": true
+    },
+    "frozen_basis_contract": {
+      "exact_canonical_contract_bundle_id_required": true,
+      "exact_canonical_contract_bundle_payload_digest_required": true,
+      "exact_agreement_shared_and_process_input_root_required": true,
+      "exact_code_commit_required": true,
+      "exact_frozen_pair_id_required": true,
+      "exact_candidate_release_manifest_id_and_digest_required": true,
+      "exact_pm_data_version_required": true,
+      "exact_product_field_catalogue_id_and_digest_required": true,
+      "exact_navigation_catalogue_id_and_digest_required": true,
+      "process_and_canonical_attestations_must_bind_same_pair": true,
+      "prior_pair_or_prior_process_evidence_permitted": false
+    },
+    "pilot_admission_contract": {
+      "anchor_deal_key": "METSERA",
+      "exact_admitted_source_universe_manifest_id_and_digest_required": true,
+      "sealed_source_only_gold_package_id_and_digest_required": true,
+      "independent_source_only_enumeration_receipts_required": 2,
+      "gold_package_can_consume_extractor_output": false,
+      "extractor_can_access_case_level_gold_before_comparison": false,
+      "exact_release_scope_decision_id_and_digest_required": true,
+      "release_scope_can_shrink_after_evidence_begins": false
+    },
+    "acceptance_contract": {
+      "all_items_required": true,
+      "item_evidence_must_be_independently_addressable": true,
+      "required_items": [
+        "ALL_ADJUDICATED_EXCLUSIVITY_REQUEST_RESPONSE_GRANT_CHANGE_AND_ENDING_FOUND",
+        "PFIZER_AND_NOVO_EVENTS_REMAIN_ON_CORRECT_BIDDER_TRACKS",
+        "REQUESTER_RECIPIENT_GRANTOR_AND_BENEFICIARY_NOT_INFERRED_FROM_GENERIC_SIDE_LABELS",
+        "EVERY_NAMED_TO_SOURCE_LOCAL_BIDDER_UNIFICATION_HAS_PERMITTED_BRIDGE_WITNESS_AND_STATE",
+        "EXACT_DATES_INTERVALS_AND_UNCERTAINTY_REPRODUCE_FROM_SOURCE",
+        "REPEATED_NARRATION_IS_SAME_OCCURRENCE_OR_EXPLICIT_DISTINCT_OCCURRENCE",
+        "RELATED_EXCLUSIVITY_DISCUSSIONS_ARE_DISCOVERABLE_AS_VERBATIM_PASSAGES",
+        "REPEATED_CONTEXT_EXPANSION_PRESERVES_SELECTED_EVIDENCE",
+        "ASK_AND_BROWSE_RETURN_IDENTICAL_ROWS_FOR_IDENTICAL_EXCLUSIVITY_PREDICATE",
+        "PINNED_RELEASE_FILTERS_PASS_FOR_PARTY_ADVISER_ECONOMICS_AND_DOCUMENT",
+        "PM_SHARED_DEAL_IDENTITY_EQUITY_VALUE_COUNSEL_AND_ADVISER_FACTS_RETAIN_SOURCE_LINEAGE",
+        "CASH_DIVIDEND_AND_CVR_COMPONENTS_DO_NOT_CONTAMINATE_ONE_ANOTHER",
+        "QUERY_AND_CONTEXT_PERFORMANCE_CONTRACTS_PASS",
+        "EVERY_ENABLED_FIELD_AND_PREDICATE_HAS_CERTIFICATION_IDENTITY",
+        "MALFORMED_SIBLING_ROW_OR_DETAIL_LEAVES_VALID_RESULTS_USABLE"
+      ],
+      "promised_shared_field_may_be_absent": false,
+      "unproved_track_must_remain_source_local": true,
+      "enabled_predicate_or_field_may_lack_certification_identity": false
+    },
+    "predicate_and_field_contract": {
+      "complete_mandatory_exclusivity_predicate_catalogue_required": true,
+      "every_mandatory_predicate_must_pass": true,
+      "every_enabled_field_must_pass": true,
+      "every_enabled_field_and_predicate_must_bind_exact_definition_version": true,
+      "unknown_or_unexamined_cannot_equal_absent_or_empty": true,
+      "one_predicate_failure_can_admit_sibling_predicate": false,
+      "scope_removed_field_must_remain_unavailable": true
+    },
+    "source_and_identity_contract": {
+      "exact_source_intervals_and_ordered_evidence_required": true,
+      "source_local_occurrence_identity_required_before_values": true,
+      "governed_party_and_bidder_track_bindings_required": true,
+      "generic_side_label_can_establish_party_role": false,
+      "chronology_or_matching_economics_can_merge_bidder_tracks": false,
+      "repeated_narration_resolution_disposition_required": true,
+      "related_passage_and_parent_context_identity_required": true,
+      "source_text_rewrite_or_silent_normalisation_permitted": false
+    },
+    "query_and_context_contract": {
+      "ask_and_browse_byte_equivalent_query_ir_required": true,
+      "stable_cursor_pagination_required": true,
+      "one_mandatory_admission_rpc_required": true,
+      "maximum_bounded_set_based_serving_rpcs": 1,
+      "corpus_proportional_database_calls_permitted": false,
+      "p95_warm_query_milliseconds_less_than": 500,
+      "p95_cold_query_milliseconds_less_than": 1500,
+      "p95_local_browse_and_filter_milliseconds_less_than": 200,
+      "p95_cached_or_range_addressable_context_milliseconds_less_than": 300,
+      "benchmark_manifest_required": true
+    },
+    "failure_isolation_contract": {
+      "malformed_row_fails_closed_locally": true,
+      "malformed_detail_fails_closed_locally": true,
+      "valid_sibling_rows_remain_renderable": true,
+      "valid_sibling_details_remain_renderable": true,
+      "one_unrecognised_provision_can_block_other_provisions": false,
+      "release_wide_failure_requires_governed_integrity_trigger": true
+    },
+    "evidence_contract": {
+      "content_addressed_immutable_attestation_required": true,
+      "required_identity_bindings": [
+        "gate_id",
+        "frozen_pair_id",
+        "canonical_contract_bundle_id",
+        "canonical_contract_bundle_payload_digest",
+        "agreement_shared_and_process_input_root",
+        "code_commit",
+        "candidate_release_manifest_id",
+        "candidate_release_manifest_payload_digest",
+        "pm_data_version",
+        "product_field_catalogue_id",
+        "product_field_catalogue_payload_digest",
+        "navigation_catalogue_id",
+        "navigation_catalogue_payload_digest",
+        "source_universe_manifest_id",
+        "source_universe_manifest_payload_digest",
+        "sealed_gold_package_id",
+        "sealed_gold_package_payload_digest",
+        "release_scope_decision_id",
+        "release_scope_decision_payload_digest",
+        "benchmark_manifest_id",
+        "benchmark_manifest_payload_digest"
+      ],
+      "per_acceptance_item_evidence_required": true,
+      "per_predicate_certification_identity_required": true,
+      "per_field_certification_identity_required": true,
+      "adversarial_rejection_receipts_required": true,
+      "all_claims_must_pass": true,
+      "missing_stale_conflicting_or_unresolved_evidence_fails": true,
+      "earlier_gate_or_release_status_can_infer_pass": false,
+      "caller_supplied_pass_boolean_permitted": false
+    },
+    "adversarial_contract": {
+      "required_rejections": [
+        "WRONG_FROZEN_PAIR",
+        "STALE_CODE_COMMIT",
+        "STALE_OR_CHANGED_SOURCE_UNIVERSE",
+        "GOLD_PACKAGE_DERIVED_FROM_EXTRACTOR",
+        "CROSS_TRACK_EVENT_ATTRIBUTION",
+        "GENERIC_SIDE_LABEL_ROLE_INFERENCE",
+        "UNPROVED_BIDDER_TRACK_MERGE",
+        "MISSING_OR_DISTINCT_REPEATED_NARRATION",
+        "ASK_BROWSE_QUERY_DRIFT",
+        "SHARED_FACT_WITHOUT_SOURCE_LINEAGE",
+        "ECONOMIC_COMPONENT_CONTAMINATION",
+        "UNCERTIFIED_ENABLED_FIELD_OR_PREDICATE",
+        "CORPUS_PROPORTIONAL_QUERY_PATH",
+        "SIBLING_FAILURE_PROPAGATION",
+        "PRIOR_PAIR_EVIDENCE_REUSE"
+      ],
+      "every_rejection_requires_focused_test": true,
+      "absence_of_adversarial_case_can_pass": false
+    },
+    "downstream_effect_contract": {
+      "passing_effect": "PERMITS_STRATIFIED_PROCESS_PILOT_ONLY",
+      "production_activation_permitted": false,
+      "broad_candidate_scope_and_extraction_requires_governing_dependency_pass": true,
+      "feature_flag_activation_permitted": false,
+      "current_release_mutation_permitted": false
+    },
+    "authority_contract": {
+      "creates_runtime_gate": false,
+      "creates_gate_evidence": false,
+      "creates_extraction_authority": false,
+      "creates_query_execution_authority": false,
+      "creates_canonical_write_authority": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_database_authority": false,
+      "creates_ui_authority": false,
+      "creates_release_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

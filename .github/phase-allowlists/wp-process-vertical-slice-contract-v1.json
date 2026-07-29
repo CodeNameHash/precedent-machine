@@ -1,0 +1,33 @@
+{
+  "phase": "WP-PROCESS-VERTICAL-SLICE-CONTRACT-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-vertical-slice-contract-v1.json",
+    "contracts/canonical-v2/successor/manifest.json",
+    "contracts/canonical-v2/successor/process/gates/process-vertical-slice-pass.v1.json",
+    "lib/canonical-v2/canonical-contract-input-compiler.js",
+    "lib/canonical-v2/process-contract-input-validator.js",
+    "lib/canonical-v2/process-gate-contract-input-validator.js",
+    "tests/canonical-v2-canonical-contract-excepted-by-effect.test.js",
+    "tests/canonical-v2-canonical-contract-source-tree.test.js",
+    "tests/canonical-v2-process-contract-input.test.js",
+    "tests/canonical-v2-process-event-participant-contract-input.test.js",
+    "tests/canonical-v2-process-exclusivity-completeness-challenge.test.js",
+    "tests/canonical-v2-process-exclusivity-contract-input.test.js",
+    "tests/canonical-v2-process-field-navigation-contract-input.test.js",
+    "tests/canonical-v2-process-object-contract-input.test.js",
+    "tests/canonical-v2-process-track-phase-contract-input.test.js",
+    "tests/canonical-v2-process-vertical-slice-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "docs/codex-program/**",
+    "lib/programme-gates/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Defines the future Process vertical-slice pass contract without activating a programme gate or granting execution, extraction, canonical-write, writer, serving, database, UI, release, activation, production or contract-freeze authority."
+}
