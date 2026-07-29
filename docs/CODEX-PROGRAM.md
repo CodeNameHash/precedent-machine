@@ -2064,6 +2064,17 @@ The pre-cutover gates are:
   non-test occupancy by role and source. Prove staging parity for tier, region,
   extensions, indexes, RPCs, pooler and relevant Vercel runtime settings. The
   test cannot assume all nominal connections are usable;
+- because this gate precedes production import, it runs only through the closed
+  staging load-certification authority. Exactly three immutable load release
+  states bind the N, 10N and maximum-scale fixtures, their sealed staging
+  namespaces and the frozen query artefacts. A separate two-state load fence
+  admits only the authenticated controller, under fixed expiry, request and
+  concurrency bounds. The internal load route then enters the same compiler,
+  resolver, cache, admission-token RPC, serving RPC, role, search path, SQL
+  template and instrumentation as the production route. Its only permitted
+  difference is the closed authority predicate. The gate cannot claim
+  READY_CANONICAL, depend on ProductionImportAttestation, touch an active
+  release or pass until every load fence is BLOCKED and drained;
 - the workload may never consume the final 20 connections or final one-third of
   measured `max_connections`, whichever reserve is larger. Serving is capped at
   30 and all application work at 40, but either cap is reduced when measured
@@ -2080,6 +2091,14 @@ The pre-cutover gates are:
   rejected after BEGIN with zero cache or corpus access. The combined admission
   and serving workload must remain within the same CapacityManifest caps and
   connection reserve;
+- before that admission RPC, each DATABASE_API request derives one lookup key
+  from only the signed release or load selector and complete structural
+  ExecutionShapeKey. One bounded external immutable resolver program classifies
+  the normalised literal tuple and returns the quotient member, cost classes,
+  release execution class and expected plan fingerprint as output. None of
+  those outputs may be required to find the program. Missing, ambiguous or
+  over-bound resolution rejects with zero database checkout; the expected
+  fingerprint remains subject to independent live-plan parity;
 - the normal profile measures trailing-30-day
   production peak as both maximum one-minute request rate and maximum one-minute
   in-flight concurrency, then fixes steady targets of at least five requests per
@@ -2434,7 +2453,11 @@ earlier shorthand. In particular:
   and performance fixture, the originating serving RPC returns one bounded
   response without a result-page persistence write, and latency gates cover
   every interactive class without inventing SQL or API evidence for a client
-  transition;
+  transition. Pre-import soak uses the separate staging-only load release/fence
+  authority and the byte-identical serving path, never production readiness.
+  Execution-class lookup is keyed only by the resolved selector and structural
+  shape; a bounded literal classifier returns the member, class and expected
+  plan fingerprint and never requires those outputs as lookup inputs;
 - residual contracts are CanonicalContractBundle members, source-specific
   publication binds the actual eligible legal review and selected PRESENT
   primitive, and scope- or contract-impacting novel propositions block only

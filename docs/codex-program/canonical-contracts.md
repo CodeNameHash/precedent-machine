@@ -9282,8 +9282,9 @@ This file is the sole authority for detailed identities, state machines, writer 
   classification must be byte-equal; unknown imports fail build and startup.
   Poisoning a denylisted payload cannot change a row or cache result. A digest
   mismatch may revoke readiness or exposure, but never supplies serving truth.
-  At request admission, `admit_and_resolve_fence` supplies the complete live
-  canonical release-state tuple and exact READY_CANONICAL ServingFenceVersion.
+  At ordinary production request admission, `admit_and_resolve_fence` supplies
+  the complete live canonical release-state tuple and exact READY_CANONICAL
+  ServingFenceVersion.
   It rejects an expired fence before cache lookup or admission-RPC checkout. While
   the matching PostActivationControlHead is non-terminal, that fence's expiry
   cannot exceed the context's frozen READY deadline; only `PASS_FIXED` permits
@@ -9311,6 +9312,16 @@ This file is the sole authority for detailed identities, state machines, writer 
   schemas and traceability. Candidate certification, release-bundle walking and
   production-import parity reject any preview instance or carrier while
   requiring byte-equal propagation of the definition and its route denial.
+  The sole non-production branch is the authenticated, staging-only
+  LoadCertificationRouteDefinition in section 10. It supplies a
+  LoadCertificationReleaseState and LOAD_CERTIFICATION_READY fence through the
+  closed ServingExecutionAuthority union and cannot satisfy this production
+  branch. Every request, cursor, cache and audit schema below hashes the exact
+  authority tag and complete selected branch. Where a production branch
+  requires CANONICAL_RELEASE_STATE/V3, ProductionImportAttestation,
+  ActivationEvent or READY_CANONICAL, the load branch instead requires its
+  exact load state, namespace seal, controller head and load fence and carries
+  explicit forbidden markers for those production fields.
 - Production semantic parity has exactly the three registered execution roles
   `SEMANTIC_EXPECTED`, `SEMANTIC_PHYSICAL` and `SEMANTIC_RECONCILER`, but those
   roles reconstruct and reconcile exactly four closed serving categories:
@@ -9469,9 +9480,14 @@ This file is the sole authority for detailed identities, state machines, writer 
   cursor, child cursor, facet, field values, INLINE detail, source initial,
   source cursor, saved-query execution, export start and export chunk. It
   contains no fetched saved-query template, active state or fence returned by
-  admission. The admission token binds this intent. Any saved-query lookup
+  admission. For saved-query execution, canonical caller input additionally
+  includes one untrusted candidate semantic-template payload and digest. Before
+  admission-token issuance the compiler validates that payload, resolves its
+  execution class and binds its digest to the intent; it grants no ownership or
+  saved-definition authority. The admission token binds this intent. Any saved-query lookup
   occurs only after admission and must return that exact ID and definition
-  digest. The post-admission QueryPageRequest, exact-detail request,
+  digest and a semantic-template payload byte-equal to the pre-admission
+  candidate. The post-admission QueryPageRequest, exact-detail request,
   export-chunk request or other generated execution request then hashes both the
   same intent and the resolved tuple and fence. RPC execution requires byte-
   equality among caller intent, token intent and execution-request intent. A
@@ -9493,9 +9509,10 @@ This file is the sole authority for detailed identities, state machines, writer 
   launch actions compile to one versioned, cursor-free `QueryPlan`. They never
   address raw feature aliases or choose arbitrary cards.
   `query_semantics_digest` hashes `QUERY_SEMANTICS/V2`, query-contract version,
-  exact active CandidateReleaseManifest ID and payload digest, active
-  CorpusRelease ID, active serving-namespace ID and header digest, active
-  ServingContractMetadata ID and payload digest, frozen contract pair, exact
+  exact ServingExecutionAuthority tag and payload digest, its selected
+  CandidateReleaseManifest ID and payload digest, CorpusRelease ID, serving-
+  namespace ID and header digest, ServingContractMetadata ID and payload
+  digest, frozen contract pair, exact
   release-certified `composition_contract_set_digest`, generated serving and query schema
   digests, ServingObjectAccessRegistry, denylist and embedded-reference
   allowlist digests, output grain, result and metric keys and versions,
@@ -9515,8 +9532,9 @@ This file is the sole authority for detailed identities, state machines, writer 
   refinement request, not an invented field.
 - An immutable `QueryPageRequest` has
   `query_page_request_digest` equal to the hash of `QUERY_PAGE_REQUEST/V2`,
-  serving-request-intent digest, query-semantics digest, exact canonical release-state tuple digest and
-  generation, exact READY ServingFence ID and generation, page kind, requested
+  serving-request-intent digest, query-semantics digest, exact
+  ServingExecutionAuthority tag and payload digest, exact branch-matching fence
+  ID and generation, page kind, requested
   page size, `FIRST_PAGE` or exact cursor-payload digest and `child_scope` or
   `NONE`. Child scope is the parent
   result-row serving key, slot key, child-collection key,
@@ -9538,11 +9556,11 @@ This file is the sole authority for detailed identities, state machines, writer 
 - A `CanonicalServingCacheIdentity` hashes
   `CANONICAL_SERVING_CACHE_IDENTITY/V1`, schema, exact
   ServingCacheIdentityDefinition ID and version, route and action-definition ID
-  and payload digest, exact CandidateReleaseManifest ID and payload digest,
+  and payload digest, exact ServingExecutionAuthority tag and payload digest,
+  CandidateReleaseManifest ID and payload digest,
   CorpusRelease ID, serving-namespace ID and header digest,
-  ServingContractMetadata ID and payload digest, ProductionImportAttestation ID
-  and payload digest, frozen contract pair, complete canonical release-state
-  tuple digest and generation, exact `serving_epoch_id`,
+  ServingContractMetadata ID and payload digest, frozen contract pair, exact
+  branch-matching serving epoch,
   authorisation-scope digest, access-policy, revocation and result-contract
   generations, response-schema digest and canonical-action-input digest. Its
   schema expressly forbids serving-request-intent, QueryPageRequest,
@@ -9748,11 +9766,14 @@ This file is the sole authority for detailed identities, state machines, writer 
   schema-invalid. Each immutable version has a stable ID and canonical
   definition digest. It never stores a
   cursor, ServingFence version or previously resolved active tuple. Every run
-  first obtains a fresh `admit_and_resolve_fence` over the saved-query ID and
-  expected definition digest, then performs its one bounded ownership-and-
-  digest lookup. A missing, changed or unauthorised definition fails before
-  corpus access. `FOLLOW_ACTIVE` resolves and
-  recompiles against that admitted active manifest selector and its underlying
+  first resolves a fresh signed external fence over the saved-query ID,
+  expected definition digest and untrusted candidate semantic-template payload.
+  It validates and compiles that candidate and resolves its execution class
+  before any database checkout. Only then may it consume an admission token and
+  perform its one bounded ownership, digest and byte-equality lookup. A
+  missing, changed, unauthorised or non-byte-equal definition fails before
+  corpus access. `FOLLOW_ACTIVE` resolves and recompiles against that externally
+  admitted manifest selector and its underlying
   CorpusRelease. `PINNED` executes only when its manifest ID and payload digest
   equal the admitted active selector; otherwise it returns typed
   `RELEASE_NOT_ACTIVE` after exactly the mandatory admission-token RPC and one
@@ -10024,8 +10045,13 @@ This file is the sole authority for detailed identities, state machines, writer 
   CanonicalServingCacheIdentity from the canonical action input and complete
   security and release partition. A hit never substitutes for object-level
   authorisation.
-- Route call budgets are exact. Every serving request first uses the one fixed
-  admission-token RPC above; the following route-specific calls are additional:
+- Route call budgets are exact. Authentication, signed external-fence
+  resolution, request-schema and action validation and, for every
+  `DATABASE_API` query action, the one bounded external
+  ExecutionClassResolverLookupKey lookup occur before database checkout. A
+  request rejected there performs zero admission or route RPC. Every request
+  that survives those checks then uses the one fixed admission-token RPC above;
+  the following route-specific calls are additional:
   one serving RPC for an ad hoc initial page,
   refinement, sort, result-child page or list page; one saved-plan lookup plus
   one serving RPC for a saved query; one bounded exact-detail RPC for a reference
@@ -10035,9 +10061,10 @@ This file is the sole authority for detailed identities, state machines, writer 
   values and 256 KB. In-app navigation with a carried response uses no
   admission or database call; direct and reload navigation use the ordinary
   initial-page budget once.
-  After token consumption, query compilation performs no corpus read and may make at
-  most one bounded catalogue lookup. Authentication is separately declared
-  fixed overhead.
+  Class resolution performs no corpus read, database or catalogue lookup.
+  Saved-query ownership and byte equality are checked only by the one bounded
+  post-admission lookup already budgeted above. Authentication and the external
+  resolver lookup are separately declared fixed overhead.
 - Every generated RPC also has an exact `RpcStatementBudget`. Each ordinary
   admission, serving, option, exact-detail or catalogue RPC executes one top-
   level parameterised SQL statement whose set-based plan may contain only its
@@ -10675,11 +10702,16 @@ includes:
   QueryGoldenSuiteManifest and every golden case,
   QueryGoldenCertificationAttestation, every selected-release
   ParameterDomainQuotient, ReleaseQueryExecutionClassRegistry,
-  WorstCaseWitnessDominanceProof, ActiveQueryExecutionClassProjection,
+  WorstCaseWitnessDominanceProof, QueryExecutionClassResolverProjection,
   MaximumScaleFixtureRecipe, FixtureExpansionArchetype and
   MaximumScaleFixtureManifest schemas, soak benchmark member and
   empty-difference root selected by
-  DatabaseLoadSoakAttestation, request, result, cursor, error,
+  DatabaseLoadSoakAttestation, LoadCertificationReleaseState,
+  LoadCertificationNamespaceSeal, LoadCertificationControlPolicy and its
+  event, head and receipt schemas, LoadCertificationFenceVersion,
+  LoadFixtureBuildPolicy and its event, head, receipt and builder-role schemas,
+  LoadCertificationRouteDefinition, ServingExecutionAuthority and
+  LoadRouteEquivalenceAttestation, request, result, cursor, error,
   CanonicalServingCacheIdentity, CanonicalServingCacheValue and
   ServingResponseBinding schemas, every ServingCacheIdentityDefinition and
   tests; BlockedResultPreviewDefinition, its pure-builder executable,
@@ -14280,25 +14312,63 @@ CapacityManifest, the frozen query definition set, exact PostgreSQL major
 version, planner configuration, schema/index root and release statistics root.
 They are not corpus truth and their construction performs no canonical DML.
 DatabaseLoadSoakAttestation selects their exact IDs, payload digests and roots.
-ReleaseBundleEnvelope carries them as governed promotion-evidence support, and
-production import verifies them before constructing the compact
-`ActiveQueryExecutionClassProjection` under the same expected, physical and
-independent-enumerator parity rule as other serving control projections. The
-projection is keyed by one closed `ReleaseExecutionResolutionKey`, never by
-release and `ExecutionShapeKey` alone. That key hashes the active release,
-complete `ExecutionShapeKey`, exact `ParameterDomainQuotient` member ID and
-payload digest, ordered leaf-selectivity vector, joint predicate-correlation
-class, qualifying and intermediate cardinality-bound class,
-group/facet/sort-bound class and certified physical-plan fingerprint. The
-request compiler deterministically classifies the complete normalised literal
-and predicate tuple into exactly one quotient member using the compact indexed
-projection before database checkout, recomputes the resolution key and requires
-exactly one projected release execution class. Zero or multiple quotient
-members or classes return `UNSUPPORTED_QUERY_SHAPE` with zero checkout. The
-projection contains only the exact class, SQL-template, physical-plan,
-index-contract and bound identity needed for that resolution. It becomes
-visible only with the atomic active-release pointer swap, rolls back with that
-pointer and is never loaded broadly into Node.
+
+The two independent release classifiers also compile one immutable
+`QueryExecutionClassResolverProjection`. Its external lookup key is exactly
+`ExecutionClassResolverLookupKey = H(EXECUTION_CLASS_RESOLVER_LOOKUP/V1,
+schema, release_or_load_release_selector, complete ExecutionShapeKey,
+classifier_program_version)`. It contains no quotient-member, selectivity,
+correlation, cardinality, release-execution-class or physical-plan output. The
+key therefore depends only on authority already resolved by the signed fence
+and the normalised structural browser input.
+
+Each lookup returns one bounded `LiteralClassifierProgram` and terminal table.
+The program is a closed, loop-free typed decision DAG compiled from the complete
+ParameterDomainQuotient. Its inputs are only the request's schema-validated,
+normalised literal values, operators, leaf ordinals, Boolean topology and
+cohort-filter values. Its nodes contain the certified exact-value membership
+tables, null and invalid branches, range boundaries and inclusivity, capped
+`IN` intervals, joint-correlation decisions and cardinality-class boundaries
+required by that shape. Every terminal directly names one
+`ResolvedExecutionClass` containing the quotient-member ID and digest,
+leaf-selectivity vector, correlation and cardinality classes, release-
+execution-class ID, SQL-template digest, expected physical-plan fingerprint,
+index contracts and output bounds. The terminal is the output of evaluation,
+never an input to lookup. The full projection binds the primary lookup-key
+root, program and terminal roots, complete class-coverage root and empty
+missing, extra, duplicate, overlapping and unreachable-terminal roots.
+
+The CapacityManifest sets hard per-lookup node, exact-membership-entry and byte
+ceilings. The resolver projection is stored in the external immutable control
+plane that already protects admission, partitioned by frozen release or
+load-release selector and fetched on demand by the server runtime. One lookup
+returns at most the fixed per-shape bound and no corpus row or canonical
+payload. It is never supplied to the browser and is never loaded release-wide
+into Node. If a quotient cannot compile within the bound, the shape must be
+split by a structural input available in ExecutionShapeKey or rejected before
+freeze. Truncation, probabilistic membership, a caller-supplied member or class,
+or a database-backed fallback is prohibited.
+
+After authentication and signed external-fence resolution, but before an
+admission lease or database checkout, the request compiler derives
+ExecutionShapeKey, performs exactly one ExecutionClassResolverLookupKey lookup
+and evaluates the returned program. Zero or multiple programs or terminals,
+an over-bound program, an invalid literal, a digest mismatch or a missing class
+returns `UNSUPPORTED_QUERY_SHAPE` with zero database checkout. A successful
+terminal then supplies the complete `ResolvedExecutionClass` to admission and
+the serving RPC. Those database operations revalidate the selected class,
+SQL-template and expected fingerprint against the admitted authority but never
+use them to find the class. The actual planner fingerprint remains independent
+evidence produced by deployment parity and live-plan probes; the terminal's
+expected fingerprint cannot prove it.
+
+ReleaseBundleEnvelope carries the resolver projection as governed promotion-
+evidence support. Production import independently reconstructs it and requires
+byte equality before installing the exact bytes under the inactive production
+release selector. Atomic activation makes only that selector visible; rollback
+removes it with the release. The pre-import load-certification route below
+installs the same bytes under its disjoint load-release selector and can never
+create an active production selector.
 
 `DeploymentManifest` binds the exact selected
 ReleaseQueryExecutionClassRegistry and WorstCaseWitnessDominanceProof roots,
@@ -14308,7 +14378,7 @@ ordered certified physical-plan-fingerprint root. The release-statistics root
 is the canonical root over the complete statistics inputs actually consumed by
 the classifier and PostgreSQL planner, including relation cardinalities and
 the selected column and extended-statistics payloads. An asserted class or the
-fingerprint stored in ActiveQueryExecutionClassProjection is expected state,
+fingerprint stored in QueryExecutionClassResolverProjection is expected state,
 not evidence of the production planner's output.
 
 After ProductionImportAttestation and before the POST_IMPORT
@@ -14347,13 +14417,125 @@ root to the corresponding members of the passing DeploymentParityAttestation.
 Any statistics or plan drift before activation blocks cutover; any drift during
 the live smoke triggers the ordinary post-activation containment path.
 
+Database load certification has its own pre-import authority. It never borrows
+the production active-release pointer, CANONICAL_RELEASE_STATE/V3,
+ProductionImportAttestation, ActivationEvent or READY_CANONICAL fence.
+`LoadCertificationReleaseState` hashes
+`LOAD_CERTIFICATION_RELEASE_STATE/V1`, schema, exact isolated-staging
+environment and restored-snapshot identities, staging-only deployment, runtime
+build and non-secret configuration, database schema, migration, PostgreSQL and
+planner settings, FROZEN CandidateReleaseManifest and CorpusRelease,
+CapacityManifest, QueryDefinitionSetRoot, QueryGoldenCertificationAttestation,
+ReleaseQueryExecutionClassRegistry, WorstCaseWitnessDominanceProof and
+QueryExecutionClassResolverProjection, one closed scale tag and exact fixture
+and namespace fields. The scale tags are exactly `N_CAPACITY`,
+`TEN_N_CAPACITY` and `MAXIMUM_SCALE`. Their fixture fields respectively select
+the sealed candidate fixture, deterministic tenfold fixture or exact
+MaximumScaleFixtureManifest. Each state selects one load-only namespace/header,
+the byte-equal ServingContractMetadata, resolver selector, cache partition,
+authorisation scope and route/action coverage root. It has explicit forbidden
+markers for every production-import, active-state, activation, production-
+alias, production-credential and production-fence field. It is immutable,
+non-serving without a live load fence and never enters an active-release table.
+
+`LoadCertificationNamespaceSeal` is produced only in the isolated staging
+project through `LoadFixtureBuildPolicy`. That policy has exactly
+`OPEN_LOAD_NAMESPACE`, `WRITE_LOAD_FIXTURE_BATCH`, `FINALISE_LOAD_NAMESPACE`
+and `ABANDON_LOAD_NAMESPACE`. Its staging-only builder role can write only the
+new non-serving load namespace named by the open receipt, in bounded batches
+from the exact selected fixture and resolver projection. It has no canonical,
+candidate, production-import, active-state, correction or source-document
+grant. FINALISE locks the namespace, builds the registered indexes, runs the
+frozen statistics procedure, verifies the expected physical roots, permanently
+revokes the builder grant and only then permits the seal. A ready load fence
+cannot coexist with a writer grant or non-terminal build head.
+Two
+implementation-disjoint read-only enumerators reproduce its fixture,
+distribution, lineage, serving-row, relation, index, metadata and resolver
+roots and prove that the namespace contains no writer, import, promotion,
+cutover or production-state carrier. The seal binds the exact staging database
+target and read-only serving role, grants, search path, RPC definitions,
+prepared-statement mode and physical schema/index roots. A mock view, reduced
+RPC, substituted role or copied root cannot seal.
+
+`LoadCertificationControlPolicy` has exactly three actions:
+`OPEN_LOAD_BLOCKED`, `ISSUE_LOAD_READY` and `REVOKE_LOAD_AND_DRAIN`.
+OPEN consumes one registered slot for one of the three exact scale states,
+selects its namespace seal and creates a genesis
+`LoadCertificationFenceVersion(state=BLOCKED)`. ISSUE compare-and-swaps that
+fence to `LOAD_CERTIFICATION_READY` only after external old-generation drain,
+requires the authenticated load-controller principal and provider-signed
+staging deployment, and fixes one non-renewable expiry, request count,
+concurrency, route/action and traffic-profile envelope from CapacityManifest.
+REVOKE first installs the next BLOCKED version, stops new leases, waits for the
+external lease set and database token/statement drain and writes one terminal
+revocation receipt. Event, fence CAS, receipt and head transition are
+serialisable and idempotent for the exact predecessor. A deadline, controller
+loss, test failure or bound exhaustion must take the same revocation path.
+`DatabaseLoadSoakAttestation` requires all three control heads terminal,
+BLOCKED and drained. It cannot select a still-ready or expired-without-drain
+fence.
+
+LoadCertificationFenceVersion is a separate two-state schema and signing
+domain. It is not a ServingFenceVersion and `LOAD_CERTIFICATION_READY` is not a
+fourth production fence state. Its ready payload binds the exact
+LoadCertificationReleaseState, namespace seal, controller head, staging
+environment and deployment, harness principal, bounded envelope, expiry and a
+load-specific serving epoch. Production runtime startup, production aliases,
+ordinary users and any database target other than the bound isolated staging
+project reject this fence before cache or database access.
+
+The generated internal `LoadCertificationRouteDefinition` accepts only
+authenticated load-controller requests in the bound staging preview. Its thin
+adapter resolves the signed load fence and emits the load branch of the closed
+`ServingExecutionAuthority` union:
+`PRODUCTION_READY_CANONICAL | LOAD_CERTIFICATION_READY`. The production branch
+retains every existing CANONICAL_RELEASE_STATE/V3, READY_CANONICAL and
+ProductionImportAttestation check. The load branch requires the exact state,
+seal, fence, harness principal and remaining bound. Both branches then enter
+the byte-identical request-schema validator, QueryExecutionKind dispatcher,
+query compiler, ExecutionClassResolverLookupKey lookup, cache implementation,
+admission-lease logic, fixed admission-token RPC, route-budget enforcement,
+serving RPC, response validator and audit instrumentation. The authority tag,
+state and serving epoch partition every token, cache key, cursor and audit
+record.
+
+The admission and serving RPCs contain one closed authority predicate. For the
+load branch they revalidate the exact current load state, READY fence, expiry,
+controller head, harness principal, namespace/header, metadata and resolver
+projection before any corpus read. After that predicate, their SQL template,
+set-based corpus plan, indexes, statement budget, row/byte bounds and result
+schema are byte-identical to the corresponding production branch. A
+`LoadRouteEquivalenceAttestation` independently compares the built handler call
+graph, compiler and resolver digests, RPC SQL and plan fingerprints, role
+grants, search path, cache behaviour, instrumentation and response schemas for
+every DATABASE_API action and permits a difference only in that closed
+authority predicate. The load adapter cannot call a mock, direct SQL or
+test-only result builder.
+
+The load authority branch and harness credentials expose read-only access only
+to the sealed load namespace and resolver projection. The shared role's
+production authority branch is unreachable under that tag and staging
+principal; production credentials, production namespaces, active-release
+state, canonical writers and import, promotion or cutover RPCs remain denied.
+Neither load state nor load fence can satisfy an ordinary request, serving
+readiness, import parity, activation, cutover or completion predicate. The
+passing soak attestation is pre-import certification evidence carried into the
+release bundle. Production import later verifies that attestation; no
+ProductionImportAttestation, import state or import action is an input to the
+soak.
+
 The soak manifest selects the exact ReleaseQueryExecutionClassRegistry and
 runs every member of every WorstCaseWitnessDominanceProof at `N_capacity` and
 the exact MaximumScaleFixtureManifest under the applicable traffic profile. It
 binds empty missing, extra, duplicate, ambiguous and unbenchmarked roots
 against the release registry and witness-set roots. A
 ClientTransitionTemplate is outside this API and SQL universe. A hand-picked
-benign subset cannot satisfy `P9_DATABASE_SOAK`.
+benign subset cannot satisfy `P9_DATABASE_SOAK`. Every request also binds one
+of the exact three load states, its live load fence and the passing
+LoadRouteEquivalenceAttestation. Missing 10N execution, a production
+READY_CANONICAL dependency, a direct namespace bypass or an unrevoked load
+fence fails the gate.
 
 Facet and field-value option sets are never silently truncated. Each response
 contains at most 200 UTF-8 ordered values and 256 KiB plus exact total-distinct

@@ -2478,6 +2478,30 @@ The following adversarial closure tests are mandatory traceability entries:
   predicate and cohort-filter AST, ordered projection, grouping, facet and sort
   vectors, literal quotient and correlation class, page, option, saved lookup
   and exact-detail/source page.
+  Run all three fixture scales before ProductionImportAttestation exists.
+  Each scale must have one exact LoadCertificationReleaseState, independently
+  sealed staging namespace and OPEN_LOAD_BLOCKED, ISSUE_LOAD_READY and
+  REVOKE_LOAD_AND_DRAIN receipt chain. The harness must enter only through the
+  authenticated internal LoadCertificationRouteDefinition and its live
+  LOAD_CERTIFICATION_READY fence. Its built handler, compiler, resolver, cache,
+  admission-token RPC, serving RPC, role, grants, search path, SQL and plan
+  fingerprints, bounds, response schema and instrumentation must equal the
+  production path except for the one closed authority predicate. A mock route,
+  direct SQL, reduced RPC, caller-selected namespace or copied equivalence root
+  fails. So does a load state or fence carrying ProductionImportAttestation,
+  CANONICAL_RELEASE_STATE/V3, ActivationEvent, READY_CANONICAL, production
+  credentials or an active-release pointer. The load route must reject an
+  ordinary user, production deployment or wrong staging project before cache
+  or database access. Load fixture construction must follow exactly
+  OPEN_LOAD_NAMESPACE, bounded WRITE_LOAD_FIXTURE_BATCH,
+  FINALISE_LOAD_NAMESPACE and optional ABANDON_LOAD_NAMESPACE. Issuing a ready
+  fence before finalisation, physical-root verification and permanent builder-
+  grant revocation, writing outside the new load namespace or retaining any
+  load writer while ready fails. A load fence cannot satisfy import, readiness, promotion,
+  cutover, ordinary serving or completion. The soak attestation cannot issue
+  until all three fences are BLOCKED, their external leases and database
+  tokens/statements are drained and the exact terminal revocation receipts
+  exist.
   Independently enumerate every active query action and require its exact,
   disjoint membership in one closed QueryExecutionKind: `DATABASE_API` or
   `CLIENT_ONLY_NO_SQL_NO_API`. Carried-response navigation belongs only to
@@ -2517,14 +2541,23 @@ The following adversarial closure tests are mandatory traceability entries:
   never truncate.
   Every release execution class and every member of its bound witness set must
   satisfy its p95, p99 and browser threshold at `N_capacity` and maximum scale.
-  Runtime must derive the exact ReleaseExecutionResolutionKey from the active
-  release, complete ExecutionShapeKey and the one matching parameter-quotient,
-  selectivity, correlation, cardinality-bound and physical-plan class before
-  checkout. Two parameter tuples with the same structural ExecutionShapeKey but
-  different quotient members or cost classes must select different resolution
-  keys and their exact certified classes; keying only by release and structural
-  shape, zero or multiple matches or a caller-supplied class fails before
-  checkout.
+  Before admission-token issuance, runtime must derive exactly one
+  ExecutionClassResolverLookupKey from only the signed release or load-release
+  selector, complete ExecutionShapeKey and classifier-program version. The
+  lookup key must not contain a quotient member, selectivity, correlation,
+  cardinality class, execution class or physical-plan fingerprint. Evaluate the
+  one returned bounded LiteralClassifierProgram over the complete normalised
+  literal tuple. Two parameter tuples with the same structural
+  ExecutionShapeKey but different quotient or cost classes must use the same
+  input-side lookup and reach their different exact terminal classes. Making
+  either output part of the lookup, using a caller-supplied class, performing a
+  catalogue or corpus query, or checking out a database connection before a
+  successful terminal fails. Mutate an exact-value table, range boundary,
+  correlation node, terminal, class-coverage root or program digest: parity
+  fails. Missing, duplicate, overlapping, unreachable or over-bound programs or
+  terminals must return UNSUPPORTED_QUERY_SHAPE with zero database checkout.
+  The terminal's expected plan fingerprint cannot satisfy the independent
+  deployment or live-plan fingerprint measurement.
   A missing
   class, missing witness or smaller CapacityManifest cardinality component
   fails. No-fault steady and all-miss profiles must satisfy the fixed 99.9%
