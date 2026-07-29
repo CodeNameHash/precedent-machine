@@ -1,0 +1,127 @@
+{
+  "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+  "stable_id": "LAWYER_FIRM_AFFILIATION_RELATIONSHIP",
+  "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "logical_type": "LawyerFirmAffiliationRelationship",
+    "logical_type_version": 1,
+    "expected_slot": {
+      "slot_kind": "LAWYER_FIRM_AFFILIATION_RELATIONSHIP_SLOT",
+      "slot_schema": "LAWYER_FIRM_AFFILIATION_RELATIONSHIP_SLOT/V1",
+      "identity_inputs": [
+        "admitted_source_occurrence_id",
+        "effective_time_slot",
+        "expected_affiliation_slot_key",
+        "governed_ordinal",
+        "law_firm_endpoint_slot_key",
+        "lawyer_endpoint_slot_key"
+      ],
+      "value_fields_excluded_from_identity": [
+        "law_firm_entity_id",
+        "lawyer_entity_id",
+        "resolved_source_local_occurrences"
+      ]
+    },
+    "occurrence_identity": {
+      "stable_id_domain": "LAWYER_FIRM_AFFILIATION_RELATIONSHIP/V1",
+      "stable_id_inputs": [
+        "admitted_source_occurrence_id",
+        "effective_time_slot",
+        "expected_affiliation_slot_key",
+        "governed_ordinal",
+        "law_firm_endpoint_slot_key",
+        "lawyer_endpoint_slot_key"
+      ],
+      "prohibited_inputs": [
+        "cleaned_firm_name",
+        "cleaned_lawyer_name",
+        "law_firm_entity_id",
+        "lawyer_entity_id"
+      ]
+    },
+    "revision_identity": {
+      "revision_type": "LawyerFirmAffiliationRevision",
+      "revision_id_domain": "LAWYER_FIRM_AFFILIATION_REVISION/V1",
+      "immutable_inputs": [
+        "effective_time_expression",
+        "evidence_edges",
+        "law_firm_endpoint",
+        "lawyer_endpoint",
+        "lawyer_firm_affiliation_relationship_id",
+        "relationship_definition_and_version",
+        "resolver_version",
+        "source_role",
+        "state"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": ["PRESENT", "ABSENT", "NOT_APPLICABLE", "NOT_EXAMINED", "FAILED"],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "source_occurrence_required": true,
+      "approved_seed_attestation_permitted": false,
+      "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES",
+      "complete_scope_required_for_absent": true
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_RELATIONSHIP_TABLE",
+      "carrier_name": "lawyer_firm_affiliation_relationships",
+      "release_partitioned": true
+    },
+    "writer_action": {
+      "action_key": "ADMIT_LAWYER_FIRM_AFFILIATION_RELATIONSHIP",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "exact_release_citation_redirect": false
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "LAWYER_FIRM_AFFILIATION_REVISION",
+      "occurrence_id_required": true,
+      "revision_id_required": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "LAWYER_FIRM_AFFILIATION_EVIDENCE",
+      "exact_evidence_only": true,
+      "preserve_release_identity": true
+    },
+    "consumer_projection_rule": {
+      "projection_type": "CanonicalDealFactProjection",
+      "terminal_type": "LAWYER_FIRM_AFFILIATION_REVISION",
+      "typed_state_required": true,
+      "release_identity_required": true,
+      "conflict_indicator_required": true
+    },
+    "type_contract": {
+      "lawyer_endpoint_subject_class": "NATURAL_PERSON",
+      "law_firm_endpoint_classification": "LAW_FIRM",
+      "effective_time_expression_required": true,
+      "name_match_sufficient": false,
+      "firm_level_deal_assignment_sufficient": false,
+      "text_proximity_sufficient": false,
+      "professional_assignment_use_requires_matching_source_scope": true,
+      "professional_assignment_use_requires_matching_time_scope": true,
+      "unresolved_source_local_lawyer_name_remains_displayable": true,
+      "unresolved_affiliation_blocks_canonical_firm_filter": true
+    }
+  }
+}

@@ -39,6 +39,20 @@
       "canonical_bytes_digest": "8f16e192ae88a8e9f078e544e621aed9075e78b6eb5daf8f11aea4187ca1c2f3"
     },
     {
+      "relative_path": "shared/professionals/lawyer-firm-affiliation-relationship.v1.json",
+      "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+      "stable_id": "LAWYER_FIRM_AFFILIATION_RELATIONSHIP",
+      "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "dc9d597bb203af0c4356718dcfc449bdeb569577893e9edf627e7b4b8aaa7e55"
+    },
+    {
+      "relative_path": "shared/professionals/professional-assignment-relationship.v1.json",
+      "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+      "stable_id": "PROFESSIONAL_ASSIGNMENT_RELATIONSHIP",
+      "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "1b92630e3659666c443a21645ba4622117e25a75d7e2a9075a1f6ebd8447cbe6"
+    },
+    {
       "relative_path": "shared/temporal/temporal-expression.v1.json",
       "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
       "stable_id": "TEMPORAL_EXPRESSION",
@@ -89,7 +103,7 @@
     }
   ],
   "per_kind_counts": {
-    "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT": 12
+    "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT": 14
   },
   "per_kind_schema_versions": {
     "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT": [

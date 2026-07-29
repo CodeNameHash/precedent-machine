@@ -1,0 +1,155 @@
+{
+  "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+  "stable_id": "PROFESSIONAL_ASSIGNMENT_RELATIONSHIP",
+  "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "logical_type": "ProfessionalAssignmentRelationship",
+    "logical_type_version": 1,
+    "expected_slot": {
+      "slot_kind": "PROFESSIONAL_ASSIGNMENT_RELATIONSHIP_SLOT",
+      "slot_schema": "PROFESSIONAL_ASSIGNMENT_RELATIONSHIP_SLOT/V1",
+      "identity_inputs": [
+        "bidder_track_slot_key",
+        "effective_time_slot",
+        "expected_assignment_slot_key",
+        "governed_deal_id",
+        "governed_ordinal",
+        "professional_endpoint_slot_key",
+        "professional_role",
+        "represented_endpoint_slot_key",
+        "transaction_leg_slot_key"
+      ],
+      "value_fields_excluded_from_identity": [
+        "professional_entity_id",
+        "represented_entity_id",
+        "source_local_subject_occurrence_ids"
+      ]
+    },
+    "occurrence_identity": {
+      "stable_id_domain": "PROFESSIONAL_ASSIGNMENT_RELATIONSHIP/V1",
+      "stable_id_inputs": [
+        "bidder_track_slot_key",
+        "effective_time_slot",
+        "expected_assignment_slot_key",
+        "governed_deal_id",
+        "governed_ordinal",
+        "professional_endpoint_slot_key",
+        "professional_role",
+        "represented_endpoint_slot_key",
+        "transaction_leg_slot_key"
+      ],
+      "prohibited_inputs": [
+        "cleaned_professional_name",
+        "professional_entity_id",
+        "represented_entity_id",
+        "side_label"
+      ]
+    },
+    "revision_identity": {
+      "revision_type": "ProfessionalAssignmentRevision",
+      "revision_id_domain": "PROFESSIONAL_ASSIGNMENT_REVISION/V1",
+      "immutable_inputs": [
+        "bidder_track_id",
+        "effective_time_scope",
+        "evidence_edges",
+        "professional_assignment_reason",
+        "professional_assignment_relationship_id",
+        "professional_entity_id",
+        "professional_role",
+        "relationship_definition_and_version",
+        "represented_entity_id",
+        "resolver_version",
+        "source_local_subject_occurrence_ids",
+        "state",
+        "transaction_leg_resolution_occurrence_id"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": ["PRESENT", "ABSENT", "NOT_APPLICABLE", "NOT_EXAMINED", "FAILED"],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "source_occurrence_required": true,
+      "approved_seed_attestation_permitted": false,
+      "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES",
+      "complete_scope_required_for_absent": true
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_RELATIONSHIP_TABLE",
+      "carrier_name": "professional_assignment_relationships",
+      "release_partitioned": true
+    },
+    "writer_action": {
+      "action_key": "ADMIT_PROFESSIONAL_ASSIGNMENT_RELATIONSHIP",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "exact_release_citation_redirect": false
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "PROFESSIONAL_ASSIGNMENT_REVISION",
+      "occurrence_id_required": true,
+      "revision_id_required": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "PROFESSIONAL_ASSIGNMENT_EVIDENCE",
+      "exact_evidence_only": true,
+      "preserve_release_identity": true
+    },
+    "consumer_projection_rule": {
+      "projection_type": "CanonicalDealFactProjection",
+      "terminal_type": "PROFESSIONAL_ASSIGNMENT_REVISION",
+      "typed_state_required": true,
+      "release_identity_required": true,
+      "conflict_indicator_required": true
+    },
+    "type_contract": {
+      "professional_roles": [
+        "LEGAL_COUNSEL", "FINANCIAL_ADVISER", "SPECIAL_COMMITTEE_COUNSEL",
+        "BOARD_COUNSEL", "FINANCING_COUNSEL", "REGULATORY_COUNSEL",
+        "NAMED_LAWYER"
+      ],
+      "assignment_reasons": [
+        "DISCLOSED", "UNDISCLOSED", "NO_ADVISER_STATED",
+        "CONFLICTING_ASSIGNMENTS", "OUTSIDE_REQUIRED_SOURCE_SCOPE",
+        "EXTRACTION_FAILED"
+      ],
+      "permitted_terminal_combinations": [
+        "PRESENT:DISCLOSED",
+        "ABSENT:UNDISCLOSED",
+        "NOT_APPLICABLE:NO_ADVISER_STATED",
+        "NOT_EXAMINED:OUTSIDE_REQUIRED_SOURCE_SCOPE",
+        "FAILED:EXTRACTION_FAILED"
+      ],
+      "absent_state_meaning": "NO_DISCLOSED_ASSIGNMENT_IN_COMPLETE_REQUIRED_SOURCE_SCOPE",
+      "absent_state_proves_no_professional_engaged": false,
+      "candidate_only_reasons": ["CONFLICTING_ASSIGNMENTS"],
+      "professional_endpoints_per_assignment_occurrence": "EXACTLY_ONE",
+      "several_professionals_use_separate_occurrences": true,
+      "represented_endpoints_per_assignment_occurrence": "EXACTLY_ONE",
+      "silence_proves_no_adviser": false,
+      "no_adviser_stated_requires_positive_fact_evidence": true,
+      "role_inheritance_from_general_side_label": false,
+      "bidder_track_required_when_assignment_varies_by_bidder": true,
+      "affiliation_use_requires_matching_source_and_time_scope": true
+    }
+  }
+}
