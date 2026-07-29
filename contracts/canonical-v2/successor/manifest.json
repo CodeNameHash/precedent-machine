@@ -606,6 +606,13 @@
       "canonical_bytes_digest": "203343cb17bd003460302933891e32f0c1ac555c287b36de29ab28d9fb549150"
     },
     {
+      "relative_path": "process/predicates/exclusivity-completeness-challenge-protocol.v1.json",
+      "object_kind": "PROCESS_PREDICATE_CONTRACT_INPUT",
+      "stable_id": "PROCESS_EXCLUSIVITY_COMPLETENESS_CHALLENGE_PROTOCOL",
+      "schema_version": "PROCESS_PREDICATE_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "966ae4ee382609617ea4ad7b437f664e988d18077fc0c62779c6aecec086e863"
+    },
+    {
       "relative_path": "process/predicates/exclusivity-predicate-catalogue.v1.json",
       "object_kind": "PROCESS_PREDICATE_CONTRACT_INPUT",
       "stable_id": "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
@@ -801,7 +808,7 @@
     "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT": 1,
     "PROCESS_INTEGRITY_CONTRACT_INPUT": 2,
     "PROCESS_LOGICAL_TYPE_INPUT": 10,
-    "PROCESS_PREDICATE_CONTRACT_INPUT": 1,
+    "PROCESS_PREDICATE_CONTRACT_INPUT": 2,
     "PROCESS_RESULT_ACTION_CONTRACT_INPUT": 4,
     "PROVISION_CONCEPT": 19,
     "RELATIONSHIP_DEFINITION": 5,

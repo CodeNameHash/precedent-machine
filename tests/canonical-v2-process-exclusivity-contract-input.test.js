@@ -51,6 +51,9 @@ function logicalMembers() {
 
 function predicateMembers() {
   return [
+    loadMember(
+      'process/predicates/exclusivity-completeness-challenge-protocol.v1.json',
+    ),
     loadMember('process/predicates/exclusivity-predicate-catalogue.v1.json'),
   ];
 }
@@ -264,7 +267,7 @@ test('rejects any semantic weakening of the three governed definitions', () => {
 
 test('compiles without freeze, extraction, writer, serving or release authority', () => {
   const compiled = compileCanonicalContractInput({ root_directory: ROOT });
-  assert.equal(compiled.authored_members.length, 112);
+  assert.equal(compiled.authored_members.length, 113);
   assert.equal(compiled.authored_universe_assessment.status, 'NOT_ASSESSED');
   assert.equal(compiled.disposition.status, 'INCOMPLETE_UNIVERSE');
   assert.equal(compiled.disposition.freeze_eligible, false);

@@ -1,0 +1,147 @@
+{
+  "object_kind": "PROCESS_PREDICATE_CONTRACT_INPUT",
+  "stable_id": "PROCESS_EXCLUSIVITY_COMPLETENESS_CHALLENGE_PROTOCOL",
+  "schema_version": "PROCESS_PREDICATE_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "topic_key": "EXCLUSIVITY",
+    "protocol_version": 1,
+    "ordinary_catalogue_binding": {
+      "ordinary_catalogue_stable_id": "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
+      "ordinary_catalogue_schema_version": "PROCESS_PREDICATE_CONTRACT_INPUT/V1",
+      "ordinary_catalogue_must_be_sealed_before_reconciliation": true,
+      "ordinary_catalogue_is_permitted_blind_authoring_input": false,
+      "ordinary_predicate_keys_are_permitted_blind_authoring_input": false
+    },
+    "operational_independence_contract": {
+      "separate_authoring_task_required": true,
+      "separate_task_ancestry_required": true,
+      "ordinary_catalogue_author_cannot_author_challenge_catalogue": true,
+      "mechanism_class_must_differ_from_ordinary_authoring": true,
+      "same_model_family_with_second_prompt_proves_independence": false,
+      "shared_model_transcript_permitted": false,
+      "shared_candidate_list_permitted": false,
+      "shared_draft_or_mapping_permitted": false,
+      "independence_is_mechanically_evidenced_not_self_asserted": true
+    },
+    "blind_input_contract": {
+      "frozen_input_manifest_required": true,
+      "input_manifest_requires_exact_content_digests": true,
+      "permitted_input_classes": [
+        "APPROVED_USER_PRODUCT_REQUIREMENTS",
+        "EXCLUSIVITY_TOPIC_SCOPE",
+        "GENERAL_LEGAL_DOMAIN_KNOWLEDGE",
+        "INDEPENDENTLY_SELECTED_PUBLIC_PRECEDENT_SAMPLE"
+      ],
+      "prohibited_input_classes": [
+        "ORDINARY_CATALOGUE_BYTES",
+        "ORDINARY_PREDICATE_KEY_LIST",
+        "ORDINARY_TO_CHALLENGE_MAPPING",
+        "ORDINARY_CATALOGUE_AUTHOR_TRANSCRIPT",
+        "ORDINARY_CATALOGUE_CANDIDATE_LIST",
+        "TEST_FIXTURE_DERIVED_FROM_ORDINARY_KEYS"
+      ],
+      "input_exclusion_evidence_required": true,
+      "unproved_input_provenance_blocks_challenge_admission": true
+    },
+    "challenge_output_contract": {
+      "catalogue_schema": "PROCESS_EXCLUSIVITY_COMPLETENESS_CHALLENGE_CATALOGUE/V1",
+      "challenge_catalogue_stable_id_domain": "PROCESS_EXCLUSIVITY_COMPLETENESS_CHALLENGE_CATALOGUE/V1",
+      "challenge_question_stable_id_domain": "PROCESS_EXCLUSIVITY_CHALLENGE_QUESTION/V1",
+      "challenge_answer_slot_stable_id_domain": "PROCESS_EXCLUSIVITY_CHALLENGE_ANSWER_SLOT/V1",
+      "required_catalogue_fields": [
+        "blind_input_manifest_digest",
+        "challenge_authoring_method_class",
+        "challenge_questions",
+        "coverage_argument",
+        "known_limits",
+        "sealed_catalogue_digest"
+      ],
+      "required_question_fields": [
+        "challenge_question_id",
+        "user_question",
+        "legal_proposition",
+        "answer_slots",
+        "evidence_demand",
+        "source_scenario"
+      ],
+      "required_answer_slot_fields": [
+        "challenge_answer_slot_id",
+        "answer_meaning",
+        "answer_state_classes",
+        "multiplicity"
+      ],
+      "ordinary_predicate_key_field_permitted": false,
+      "ordinary_mapping_field_permitted": false,
+      "one_or_more_questions_required": true,
+      "one_or_more_answer_slots_per_question_required": true,
+      "question_count_can_be_fixed_from_ordinary_catalogue": false,
+      "challenge_author_must_record_own_coverage_argument": true,
+      "known_limits_must_be_explicit": true
+    },
+    "seal_contract": {
+      "challenge_catalogue_sealed_before_ordinary_catalogue_disclosure": true,
+      "sealed_bytes_are_immutable": true,
+      "sealed_catalogue_digest_required": true,
+      "blind_input_manifest_digest_required": true,
+      "authoring_task_identity_required": true,
+      "authoring_method_identity_required": true,
+      "post_disclosure_edit_permitted": false,
+      "failed_independence_cannot_be_repaired_by_resigning_same_output": true
+    },
+    "reconciliation_contract": {
+      "reconciliation_starts_only_after_both_catalogues_are_sealed": true,
+      "reconciliation_schema": "PROCESS_EXCLUSIVITY_QUESTION_RECONCILIATION/V1",
+      "reconciliation_is_separate_from_both_authorship_tasks": true,
+      "ordinary_predicate_coverage_required": "EVERY_MANDATORY_PREDICATE_KEY_AND_VERSION",
+      "challenge_coverage_required": "EVERY_CHALLENGE_ANSWER_SLOT",
+      "allowed_challenge_slot_dispositions": [
+        "MATCHED_TO_ORDINARY_PREDICATE",
+        "NEW_ORDINARY_PREDICATE_REQUIRED",
+        "OUT_OF_SCOPE_WITH_GOVERNED_REASON",
+        "DUPLICATE_WITH_GOVERNED_REASON",
+        "UNSOUND_WITH_GOVERNED_REASON"
+      ],
+      "allowed_ordinary_predicate_dispositions": [
+        "CHALLENGE_COVERED",
+        "ORDINARY_ONLY_WITH_GOVERNED_REASON"
+      ],
+      "composite_question_requires_explicit_answer_slot_decomposition": true,
+      "many_challenge_slots_can_map_to_one_ordinary_predicate": true,
+      "one_challenge_slot_can_map_to_many_ordinary_predicates": false,
+      "new_required_predicate_requires_successor_ordinary_catalogue_amendment": true,
+      "governed_reason_requires_independent_review": true,
+      "silent_drop_or_merge_permitted": false,
+      "unreconciled_member_blocks_contract_freeze": true
+    },
+    "completion_contract": {
+      "this_member_is_challenge_catalogue": false,
+      "this_member_satisfies_independent_challenge": false,
+      "challenge_catalogue_member_required": true,
+      "reconciliation_member_required": true,
+      "independence_evidence_member_required": true,
+      "ordinary_and_challenge_catalogue_digests_required": true,
+      "all_member_dispositions_required": true,
+      "complete_reconciliation_required_before_contract_freeze": true
+    },
+    "failure_contract": {
+      "same_author_or_mechanism_class": "BLOCK_CHALLENGE_ADMISSION",
+      "prohibited_input_observed": "BLOCK_CHALLENGE_ADMISSION",
+      "input_provenance_unproved": "BLOCK_CHALLENGE_ADMISSION",
+      "catalogue_changed_after_disclosure": "BLOCK_CHALLENGE_ADMISSION",
+      "missing_or_unreconciled_question": "BLOCK_CONTRACT_FREEZE",
+      "missing_or_unreconciled_answer_slot": "BLOCK_CONTRACT_FREEZE",
+      "missing_or_unreconciled_ordinary_predicate": "BLOCK_CONTRACT_FREEZE"
+    },
+    "authority_contract": {
+      "creates_runtime_predicate": false,
+      "creates_challenge_catalogue": false,
+      "creates_reconciliation": false,
+      "creates_extraction_authority": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}
