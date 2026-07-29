@@ -56,7 +56,7 @@ test('compiles the bounded Process core contracts deterministically without free
   );
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 103);
+  assert.equal(first.authored_members.length, 105);
   assert.deepEqual(
     processEntries.map((member) => [member.object_kind, member.stable_id]),
     [
@@ -64,6 +64,11 @@ test('compiles the bounded Process core contracts deterministically without free
       ['PROCESS_LOGICAL_TYPE_INPUT', 'BIDDER_TRACK'],
       ['PROCESS_DOMAIN_REGISTRY_INPUT', 'PROCESS'],
       ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_EVENT'],
+      [
+        'PROCESS_INTEGRITY_CONTRACT_INPUT',
+        'PROCESS_SEMANTIC_OR_SOURCE_INTEGRITY_REVOCATION_CAUSE',
+      ],
+      ['PROCESS_INTEGRITY_CONTRACT_INPUT', 'PROCESS_SERVING_CONTAINMENT_POLICY'],
       ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_NARRATION_OCCURRENCE'],
       ['PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT', 'PROCESS_NARRATION'],
       ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_PARTICIPANT'],

@@ -1,0 +1,91 @@
+{
+  "object_kind": "PROCESS_INTEGRITY_CONTRACT_INPUT",
+  "stable_id": "PROCESS_SEMANTIC_OR_SOURCE_INTEGRITY_REVOCATION_CAUSE",
+  "schema_version": "PROCESS_INTEGRITY_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "contract_type": "REVOCATION_CAUSE_DEFINITION",
+    "contract_version": 1,
+    "registry_contract": {
+      "required_registry": "ActiveReleaseRevocationActionRegistry",
+      "proposed_cause_code": "SEMANTIC_OR_SOURCE_INTEGRITY",
+      "closed_registry_entry_required_before_runtime": true,
+      "typed_trigger_evidence_required": true,
+      "authoritative_producer_definition_required": true,
+      "permitted_release_tuple_difference_required": true,
+      "generated_lock_plan_required": true,
+      "receipt_contract_required": true,
+      "label_or_model_output_can_create_cause": false,
+      "unregistered_cause_has_runtime_path": false
+    },
+    "trigger_contract": {
+      "defect_classes": [
+        "MATERIAL_UNSUPPORTED_FACT",
+        "SOURCE_MAP_DEFECT",
+        "CROSS_TRACK_ATTRIBUTION_ERROR"
+      ],
+      "validated_material_trigger_required": true,
+      "governed_severity_required": true,
+      "governed_discovery_authority_required": true,
+      "exact_released_process_row_required": true,
+      "source_backed_evidence_required": true,
+      "unknown_defect_class_has_runtime_path": false,
+      "unvalidated_suspicion_can_revoke_release": false
+    },
+    "evidence_contract": {
+      "schema_key": "PROCESS_SEMANTIC_OR_SOURCE_INTEGRITY_EVIDENCE/V1",
+      "required_identity_bindings": [
+        "served_process_row_identity",
+        "source_document_identity",
+        "source_detail_identity",
+        "exact_ordered_evidence_spans",
+        "defect_class",
+        "severity",
+        "discovery_authority",
+        "active_before_release_tuple",
+        "exposure_off_release_tuple"
+      ],
+      "content_addressed": true,
+      "immutable": true,
+      "release_pinned": true,
+      "generic_reason_permitted": false,
+      "caller_selected_release_tuple_permitted": false
+    },
+    "serving_fence_contract": {
+      "scope": "PROCESS",
+      "validated_material_trigger_raises_fence": true,
+      "maximum_acknowledgement_time_source": "OperationalPolicySet",
+      "blocks_new_process_exposure": true,
+      "drains_process_serving_leases": true,
+      "alters_canonical_release_state": false,
+      "counts_as_revocation": false,
+      "resume_while_defect_unresolved_permitted": false
+    },
+    "canonical_disposition_contract": {
+      "required_only_if_certified_active_tuple_invalidated": true,
+      "registered_action_required": true,
+      "permitted_outcomes": [
+        "REVOKE_WHOLE_RELEASE_TUPLE",
+        "ROLL_BACK_WHOLE_RELEASE_TUPLE"
+      ],
+      "canonical_disposition_deadline_source": "OperationalPolicySet",
+      "rehearsed_incident_procedure_required": true,
+      "serialisable_compare_and_swap_required": true,
+      "partial_process_release_transition_permitted": false,
+      "successor_preparation_counts_as_containment": false,
+      "active_row_mutation_permitted": false
+    },
+    "authority_contract": {
+      "creates_runtime_cause": false,
+      "creates_extraction_authority": false,
+      "creates_serving_authority": false,
+      "creates_serving_fence_authority": false,
+      "creates_revocation_authority": false,
+      "creates_rollback_authority": false,
+      "creates_writer_authority": false,
+      "creates_release_authority": false,
+      "creates_activation_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

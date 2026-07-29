@@ -1,0 +1,31 @@
+{
+  "phase": "WP-PROCESS-P1-INTEGRITY-CONTRACT-INPUTS-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-p1-integrity-contract-inputs-v1.json",
+    "contracts/canonical-v2/successor/manifest.json",
+    "contracts/canonical-v2/successor/process/integrity/process-semantic-or-source-integrity-revocation-cause.v1.json",
+    "contracts/canonical-v2/successor/process/integrity/process-serving-containment-policy.v1.json",
+    "lib/canonical-v2/canonical-contract-input-compiler.js",
+    "lib/canonical-v2/process-contract-input-validator.js",
+    "lib/canonical-v2/process-integrity-contract-input-validator.js",
+    "tests/canonical-v2-canonical-contract-excepted-by-effect.test.js",
+    "tests/canonical-v2-canonical-contract-source-tree.test.js",
+    "tests/canonical-v2-process-contract-input.test.js",
+    "tests/canonical-v2-process-event-participant-contract-input.test.js",
+    "tests/canonical-v2-process-integrity-contract-input.test.js",
+    "tests/canonical-v2-process-object-contract-input.test.js",
+    "tests/canonical-v2-process-track-phase-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "evidence/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Authors only the Process semantic-or-source-integrity cause and serving-containment policy inputs. It grants no runtime cause, serving-fence, revocation, rollback, writer, release, database, activation, UI, extraction, or production authority."
+}

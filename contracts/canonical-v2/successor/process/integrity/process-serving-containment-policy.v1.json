@@ -1,0 +1,68 @@
+{
+  "object_kind": "PROCESS_INTEGRITY_CONTRACT_INPUT",
+  "stable_id": "PROCESS_SERVING_CONTAINMENT_POLICY",
+  "schema_version": "PROCESS_INTEGRITY_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "contract_type": "SERVING_CONTAINMENT_POLICY_DEFINITION",
+    "contract_version": 1,
+    "policy_binding_contract": {
+      "required_policy_set": "OperationalPolicySet",
+      "required_revocation_cause_definition": "PROCESS_SEMANTIC_OR_SOURCE_INTEGRITY_REVOCATION_CAUSE",
+      "required_registered_cause_code": "SEMANTIC_OR_SOURCE_INTEGRITY",
+      "exact_selected_policy_set_required": true,
+      "request_supplied_policy_can_authorise_action": false,
+      "domain_contract_can_select_numeric_deadline": false
+    },
+    "fence_contract": {
+      "scope": "PROCESS",
+      "before_state": "OPEN",
+      "after_state": "BLOCKED",
+      "validated_material_trigger_required": true,
+      "maximum_acknowledgement_time_source": "OperationalPolicySet",
+      "new_process_admission_blocked": true,
+      "process_serving_lease_drain_required": true,
+      "acknowledged_blocked_fence_required": true,
+      "canonical_release_state_unchanged": true,
+      "revocation_receipt_created_by_fence": false,
+      "unresolved_defect_can_resume_exposure": false
+    },
+    "release_disposition_contract": {
+      "certified_active_tuple_invalidation_required": true,
+      "registered_revocation_action_required": true,
+      "whole_release_tuple_only": true,
+      "canonical_disposition_deadline_source": "OperationalPolicySet",
+      "domain_local_shorter_deadline_permitted": false,
+      "serialisable_compare_and_swap_required": true,
+      "exact_active_before_and_exposure_off_tuples_required": true,
+      "partial_process_release_transition_permitted": false,
+      "successor_preparation_counts_as_containment": false
+    },
+    "recovery_contract": {
+      "validated_resolution_required": true,
+      "affected_predicates_recertified": true,
+      "fresh_certified_active_tuple_or_proven_rollback_required": true,
+      "rehearsed_recovery_procedure_required": true,
+      "authorised_reopen_required": true,
+      "silent_automatic_reopen_permitted": false
+    },
+    "failure_isolation_contract": {
+      "request_row_and_detail_failures_fail_closed_locally": true,
+      "valid_sibling_rows_remain_publishable": true,
+      "release_wide_containment_requires_certified_tuple_invalidation": true,
+      "local_failure_can_expand_without_validated_release_invalidation": false
+    },
+    "authority_contract": {
+      "creates_runtime_policy": false,
+      "creates_extraction_authority": false,
+      "creates_serving_authority": false,
+      "creates_serving_fence_authority": false,
+      "creates_revocation_authority": false,
+      "creates_rollback_authority": false,
+      "creates_writer_authority": false,
+      "creates_release_authority": false,
+      "creates_activation_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}
