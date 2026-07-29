@@ -1,0 +1,21 @@
+{
+  "phase": "WP-PRODUCT-QUERY-ACTION-COMPILERS-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-product-query-action-compilers-v1.json",
+    "lib/canonical-v2/product-rerun-compiler.js",
+    "lib/canonical-v2/product-saved-query-compiler.js",
+    "tests/canonical-v2-product-query-action-compilers.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Implements pure Product saved-query and explicit active-release rerun compilers under the signed Product Query IR, query-action and query-result contracts. The unit is cursor-free, release-bound, owner-bound and fail-closed. It performs no query execution, data access, database checkout, network call, UI action, write, serving, export, release, activation or production operation."
+}
