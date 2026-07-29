@@ -717,16 +717,16 @@ programme_gate_registry:
       required_adversarial_tests: [PROMOTION-EVIDENCE-01]
     - id: P9_DEPLOYMENT_PARITY
       phase: 9
-      evidence_contract: certified-executable-and-live-readiness-parity/v7
+      evidence_contract: certified-executable-and-live-readiness-parity/v8
       required_evidence_object_type: DeploymentParityAttestation
-      acceptance_claims: [certified_and_deployed_builds_equal, runtime_configuration_equal, readiness_tuple_equal, production_release_statistics_root_equal, live_physical_plan_fingerprint_root_equal]
-      required_adversarial_tests: [DEPLOY-CUTOVER-01]
+      acceptance_claims: [certified_and_deployed_builds_equal, runtime_configuration_equal, readiness_tuple_equal, production_release_statistics_root_equal, live_physical_plan_fingerprint_root_equal, activation_parity_recheck_fresh_and_current]
+      required_adversarial_tests: [DEPLOY-CUTOVER-01, DEPLOYMENT-PARITY-FRESHNESS-01]
     - id: P9_CUTOVER_AUTHORISATION
       phase: 9
-      evidence_contract: one-use-ben-authorisation-readiness-successor/v6
+      evidence_contract: one-use-ben-authorisation-readiness-successor/v7
       required_evidence_object_type: CutoverAuthorisation
-      acceptance_claims: [ben_authorisation_valid_and_single_use, readiness_predecessor_exact, proposed_successor_exact]
-      required_adversarial_tests: [CUTOVER-STATUS-TOPOLOGY-01]
+      acceptance_claims: [ben_authorisation_valid_and_single_use, readiness_predecessor_exact, proposed_successor_exact, activation_parity_recheck_selected, ongoing_readiness_authority_valid_for_later_cutover]
+      required_adversarial_tests: [CUTOVER-STATUS-TOPOLOGY-01, DEPLOYMENT-PARITY-FRESHNESS-01, ONGOING-READINESS-AUTHORITY-01]
     - id: P9_POSTCUTOVER_SMOKE
       phase: 9
       evidence_contract: readiness-bound-postcutover-smoke-attestation/v7

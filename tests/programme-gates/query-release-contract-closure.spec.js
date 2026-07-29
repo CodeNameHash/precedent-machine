@@ -156,6 +156,9 @@ test('deployment parity binds production statistics and actual live plans', () =
     'observed production physical-plan-fingerprint root',
     'exact equality of the certified and production statistics roots',
     'PostCutoverSmokeAttestation repeats the live-plan probe',
+    'ActivationDeploymentParityRecheck/V1',
+    'expires_at` is no later than ten minutes after `issued_at',
+    'actual production PostgreSQL planner reruns the complete class-and-worst-case-witness live-plan probe',
   ]) {
     assert.ok(body.includes(required), `deployment parity is missing ${required}`);
   }
@@ -163,9 +166,32 @@ test('deployment parity binds production statistics and actual live plans', () =
     'production_release_statistics_root_equal',
     'live_physical_plan_fingerprint_root_equal',
     'live_query_plan_smoke_equal',
+    'activation_parity_recheck_fresh_and_current',
+    'DEPLOYMENT-PARITY-FRESHNESS-01',
     'required_adversarial_tests: [POST-ACTIVATION-CONTROLLER-01, DEPLOY-CUTOVER-01]',
   ]) {
     assert.ok(gates.includes(required), `programme gate is missing ${required}`);
+  }
+});
+
+test('later-cutover readiness and attested-import abandonment have closed authorities', () => {
+  const body = contracts.replace(/\s+/g, ' ');
+  for (const required of [
+    '`ISSUE_ONGOING_RELEASE_READINESS` is its sole producer',
+    '`PM/ONGOING_RELEASE_READINESS/V2`',
+    '`DEPLOYMENT_READINESS_ISSUER` role',
+    '`OngoingReleaseReadinessSlot/V1` is part of `GlobalMutableAuthorityRegistry`',
+    '`EMPTY`, `ISSUED`, `CONSUMED` and `REVOKED`',
+    '`ATTESTED_DEPLOYMENT_PARITY_FAILURE`',
+    'CAS the import head from `ATTESTED` to terminal `ABANDONED`',
+  ]) {
+    assert.ok(body.includes(required), `release authority closure is missing ${required}`);
+  }
+  for (const required of [
+    '`ONGOING-READINESS-AUTHORITY-01`',
+    '`POST-ATTESTATION-ABANDONMENT-01`',
+  ]) {
+    assert.ok(adversarial.includes(required), `release adversary is missing ${required}`);
   }
 });
 

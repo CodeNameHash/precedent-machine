@@ -1740,7 +1740,11 @@ The chain is:
     plan roots;
 16. `POST_IMPORT` TraceabilityExtension covering that exact import and
     deployment-parity evidence;
-17. cutover-ready `DeploymentReadinessMirror` and `CutoverAuthorisation`;
+17. a fresh, one-use `ActivationDeploymentParityRecheck/V1` over the current
+    production statistics, actual planner outputs and deployment generations;
+    then the first-cutover `DeploymentReadinessMirror` or later-cutover signed
+    `OngoingReleaseReadiness/V2` and ISSUED readiness slot, and exact
+    `CutoverAuthorisation`;
 18. exact acknowledged BLOCKED `ServingFenceVersion`; one atomic
     `ActivationEvent`, `PostActivationControlContext` and
     `PostActivationControlHead(AWAITING_READY)` transaction with its
@@ -2435,5 +2439,11 @@ earlier shorthand. In particular:
 - every successful activation produces a terminal PASS
   ReleaseActivationCertification. The first creates the genesis ongoing
   promotion head and is selected by programme completion. Later promotions use
-  their own readiness and exact-predecessor head CAS and never increment the
-  absorbing completed programme-status head.
+  only deployment-controller-issued, trusted-signature
+  `OngoingReleaseReadiness/V2`, an exact ISSUED-to-CONSUMED readiness-slot
+  transition and exact-predecessor head CAS, and never increment the absorbing
+  completed programme-status head. Cutover authority also selects a fresh
+  ten-minute activation parity recheck that is consumed and currentness-tested
+  before release-state DML. A deployment-parity failure after import attestation
+  uses the existing `ABANDON_IMPORT` action's closed ATTESTED predecessor
+  variant and cannot strand or activate the inactive namespace.

@@ -3052,3 +3052,34 @@ The following adversarial closure tests are mandatory traceability entries:
   The abandoned immutable attempt cannot occupy or block a global slot. Any
   missing, mismatched, reordered, partial, stale or later untraced status
   reference fails closed, and no test may claim a cross-system atomic commit.
+- `DEPLOYMENT-PARITY-FRESHNESS-01`: create a passing
+  DeploymentParityAttestation, then change each production statistics
+  generation, physical-plan member, provider deployment, runtime configuration,
+  alias, schema and migration generation before authorisation and before
+  activation. A fresh `ActivationDeploymentParityRecheck/V1` must independently
+  rerun the complete production statistics and actual-planner member sets,
+  expire within ten minutes and be selected by CutoverAuthorisation. Activation
+  consumes its one-use nonce and rechecks current generations before any
+  release-state DML. A stale, cached, copied, expired, replayed, partial or
+  caller-supplied recheck writes zero activation DML.
+- `ONGOING-READINESS-AUTHORITY-01`: after programme completion, issue exactly
+  one `OngoingReleaseReadiness/V2` through
+  `ISSUE_ONGOING_RELEASE_READINESS` against an EMPTY
+  `OngoingReleaseReadinessSlot/V1`. Substitute an untrusted key, wrong signature
+  domain, stale promotion head, missing promotion proof, stale policy or
+  revocation head, wrong deployment tuple, expired parity recheck, over-ten-
+  minute expiry, duplicate object or caller-authored payload and require no
+  ISSUED slot. Activation must consume the exact ISSUED slot atomically with the
+  state CAS. Replay, revocation or a changed predecessor writes zero activation
+  DML and a replacement requires a new slot generation and full issuance.
+- `POST-ATTESTATION-ABANDONMENT-01`: create an inactive ATTESTED import, then
+  fail the fresh activation parity recheck before any readiness,
+  CutoverAuthorisation or ActivationEvent. The existing `ABANDON_IMPORT` action
+  must select only `ATTESTED_DEPLOYMENT_PARITY_FAILURE`, enumerate the complete
+  attested import and inactive namespace, preserve immutable attestation and
+  failure history, erase the namespace and atomically reach terminal
+  ABANDONED. Attempt the same variant with exposure, authorisation, activation,
+  a non-empty ongoing-readiness slot, another failure reason or an incomplete
+  inventory and require zero writes. The abandoned attestation must be
+  ineligible for every import, readiness, cutover, reactivation and serving
+  predicate.

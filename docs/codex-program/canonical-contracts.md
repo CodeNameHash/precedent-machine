@@ -12711,7 +12711,8 @@ receipt over every preceding output and before/after tuple. Failure at any point
 rolls back all six effects. The header cannot hash the later attestation, and
 the attestation cannot hash that later event, head, controller head or receipt;
 CutoverAuthorisation and POST_IMPORT traceability must bind them beside it.
-`ABANDON_IMPORT` is legal only from the exact `OPEN` or `SEALED` head and has
+`ABANDON_IMPORT` is legal from the exact `OPEN` or `SEALED` head, and from an
+exact `ATTESTED` head only under the closed post-attestation rule below. It has
 the closed ordered subphases `FAILURE_EVIDENCE`,
 `PARTIAL_STATE_TREE_BATCH`, `ABANDON_CONTEXT`, `FAILED_SPOOL_ERASURE`,
 `SPOOL_ERASURE_RECEIPT_SET`, `ATTEMPT_AUDIT_TREE_BATCH` and
@@ -14466,3 +14467,82 @@ programme status and DeploymentReadinessMirror authority. Each variant
 prohibits every field and lock owned only by the other. This tagged union
 removes the contradictory requirement to increment an absorbing
 programme-status head and prevents stale ongoing readiness.
+
+#### V6 release-readiness and post-import failure closure
+
+The following contracts are normative `CanonicalContractBundle` members and
+override any less specific earlier lifecycle sentence.
+
+`ActivationDeploymentParityRecheck/V1` is the sole activation-time parity
+authority. The deployment controller is its only producer. It is created after
+the exact `ProductionImportAttestation`, `DeploymentParityAttestation`,
+`POST_IMPORT` trace, `PromotionEligibilityProof`, provider deployment,
+runtime-configuration, alias or traffic, schema and migration generations have
+all reached their authorisation-time values. Its request contains no asserted
+statistics root or plan result. A production-side enumerator reruns the frozen
+statistics procedure, and the actual production PostgreSQL planner reruns the
+complete class-and-worst-case-witness live-plan probe under the exact deployed
+role, search path, prepared-statement mode and inactive namespace. The producer
+recomputes the member sets and roots and requires exact equality with the
+selected `DeploymentManifest` and earlier passing
+`DeploymentParityAttestation`.
+
+The recheck identity binds the exact input artefacts, complete observed member
+sets, recomputed roots, controller key, issued-at, expires-at and a one-use
+nonce. `expires_at` is no later than ten minutes after `issued_at`.
+`CutoverAuthorisation` must select an unexpired recheck issued after every
+selected deployment or database generation. The activation RPC locks and
+consumes its nonce, reruns the provider-generation and database-statistics-
+generation currentness reads, and requires byte-identical current generations
+before any release-state DML. A changed statistics generation, plan member,
+provider deployment, runtime configuration, alias, schema, migration, release
+or import identity invalidates the recheck. There is no cached, indefinitely
+reusable or caller-renewable parity authority.
+
+`OngoingReleaseReadiness/V2` is a signed, closed object, not a caller payload.
+`ISSUE_ONGOING_RELEASE_READINESS` is its sole producer and is permitted only
+after the one-time programme status is absorbing `COMPLETE`. In one
+serialisable transaction the deployment controller locks the current
+`OngoingReleasePromotionHead`, current intake policy and revocation heads,
+held candidate-promotion fence, exact promotion proof, production import,
+POST_IMPORT trace, fresh `ActivationDeploymentParityRecheck/V1`, provider
+deployment tuple and an empty candidate-scoped
+`OngoingReleaseReadinessSlot/V1`. It revalidates their signatures, complete
+member sets, currentness and Ben-authorised scope, then writes exactly one
+`OngoingReleaseReadiness/V2`, one issuance receipt and changes the slot from
+`EMPTY` to `ISSUED`. The readiness signature domain is
+`PM/ONGOING_RELEASE_READINESS/V2`; the trusted key must have the
+`DEPLOYMENT_READINESS_ISSUER` role. Its identity binds every locked predecessor,
+the exact candidate, proposed complete release-state tuple, parity recheck,
+issued-at, expiry no more than ten minutes later and one-use nonce.
+
+`OngoingReleaseReadinessSlot/V1` is part of
+`GlobalMutableAuthorityRegistry`, ordered immediately after
+`OngoingReleasePromotionHead`. Its states are exactly `EMPTY`, `ISSUED`,
+`CONSUMED` and `REVOKED`. Cutover authorisation requires the exact `ISSUED`
+slot and readiness digest. The later-cutover activation RPC locks that slot
+and promotion-head predecessor, revalidates the trusted signature, expiry,
+nonce, parity recheck and every bound current head and generation, then changes
+`ISSUED` to `CONSUMED` in the same transaction as the release-state CAS and
+`ActivationEvent`. Any expiry, replay, stale predecessor, conflicting object or
+revocation writes zero activation DML. A deployment, policy, revocation,
+promotion-head or parity change may only move `ISSUED` to `REVOKED`; it cannot
+rewrite or refresh the object. A new readiness requires a new empty successor
+slot generation and full issuance transaction.
+
+The eight-action certified-import grammar remains closed. Its existing
+`ABANDON_IMPORT` action gains one tagged predecessor variant,
+`ATTESTED_DEPLOYMENT_PARITY_FAILURE`. That variant is legal only while the
+namespace is inactive, exposure is false, no `CutoverAuthorisation`,
+`ActivationEvent` or non-empty ongoing-readiness slot exists, and a failed or
+expired `ActivationDeploymentParityRecheck/V1` is committed as the exact
+failure reason. It locks the terminal `ATTESTED` import head, immutable
+`ProductionImportAttestation`, serving header, released controller head,
+inactive namespace and all import receipts. The existing abandonment
+subphases then enumerate those objects, erase the inaccessible namespace,
+preserve the attestation and failure evidence as immutable audit history, and
+CAS the import head from `ATTESTED` to terminal `ABANDONED`. That abandoned
+attestation can never satisfy import parity, readiness issuance, cutover
+authorisation, historical reactivation or serving. Any other reason or any
+exposure, authorisation, activation or readiness evidence makes this variant
+illegal and writes nothing.
