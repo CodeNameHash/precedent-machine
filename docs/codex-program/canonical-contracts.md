@@ -14052,6 +14052,17 @@ release, load, cutover or completion design. Those requirements remain `OPEN`.
 contract review before `vertical_slice_execution`; it cannot reuse the scoped
 G0 disposition as that proof.
 
+Generation 1 has one bounded owner-authorisation path. It records all five
+signed basis-root outcomes, including `FAIL`, in
+`ExactDigestReviewSetAttestation/V2` and sets
+`full_review_pass_claimed=false`. `BenSpecificationApproval/V2` binds the
+review artefact hash and byte size, reviewed commit and root, exact successor
+commit and root, closed governance diff, GitHub actor and run identity, and the
+exact isolated-staging intent. Its permitted and prohibited action sets are
+closed. Findings are acknowledged but not waived, and P1 and P9 remain
+`OPEN`. P1 continues to consume only the strict V1 review and approval
+contracts with five `PASS` outcomes.
+
 #### Residual and open-world authority
 
 `CanonicalContractBundle` also includes the complete

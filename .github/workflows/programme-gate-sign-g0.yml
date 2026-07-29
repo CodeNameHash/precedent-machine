@@ -15,9 +15,10 @@ on:
         description: Exact canonical branch Preview Vercel deployment ID
         required: true
         type: string
-      review_run_id:
-        description: Exact passing local cold-review workflow run ID
+      authorisation_intent:
+        description: Exact Ben owner-authorisation scope
         required: true
+        default: AUTHORISE_ISOLATED_STAGING_CANONICAL_IMPLEMENTATION
         type: string
 
 permissions:
@@ -30,7 +31,11 @@ concurrency:
 
 jobs:
   sign:
-    if: github.ref == 'refs/heads/main'
+    if: >-
+      github.ref == 'refs/heads/main'
+      && github.actor == 'CodeNameHash'
+      && github.actor_id == '264183176'
+      && inputs.authorisation_intent == 'AUTHORISE_ISOLATED_STAGING_CANONICAL_IMPLEMENTATION'
     runs-on: ubuntu-latest
     environment: programme-gate-production
     timeout-minutes: 20
@@ -54,15 +59,16 @@ jobs:
       - name: Download exact signed cold-review bundle
         uses: actions/download-artifact@v4
         with:
-          name: programme-gate-cold-reviews-${{ inputs.expected_commit }}
+          name: programme-gate-cold-reviews-d62456a81567baf8bf6aef7ae0c6290567086a08
           path: ${{ runner.temp }}/cold-reviews
           github-token: ${{ github.token }}
-          run-id: ${{ inputs.review_run_id }}
+          run-id: 30439653818
       - name: Collect, validate and sign G0 evidence
         env:
           EXPECTED_PROGRAMME_COMMIT: ${{ inputs.expected_commit }}
           EXPECTED_VERCEL_DEPLOYMENT_ID: ${{ inputs.deployment_id }}
           EXPECTED_VERCEL_PREVIEW_DEPLOYMENT_ID: ${{ inputs.preview_deployment_id }}
+          PROGRAMME_GATE_APPROVAL_INTENT: ${{ inputs.authorisation_intent }}
           PROGRAMME_GATE_COLD_REVIEW_BUNDLE: ${{ runner.temp }}/cold-reviews/programme-gate-cold-reviews.json
           PROGRAMME_GATE_BEN_APPROVER_ED25519_PRIVATE_KEY_PEM: ${{ secrets.PROGRAMME_GATE_BEN_APPROVER_ED25519_PRIVATE_KEY_PEM }}
           PROGRAMME_GATE_PREVIEW_ACCESS_MATRIX_JSON: ${{ secrets.PROGRAMME_GATE_PREVIEW_ACCESS_MATRIX_JSON }}

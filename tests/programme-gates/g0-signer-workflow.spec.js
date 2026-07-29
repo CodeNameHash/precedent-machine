@@ -10,6 +10,10 @@ const WORKFLOW_PATH = path.resolve(
   '.github/workflows/programme-gate-sign-g0.yml',
 );
 const SCRIPT_PATH = path.resolve(ROOT, 'scripts/sign-g0-evidence.mjs');
+const REVIEW_ARTIFACT_PATH = path.resolve(
+  ROOT,
+  'lib/programme-gates/review-artifact.js',
+);
 const EXECUTOR_PATH = path.resolve(
   ROOT,
   'lib/programme-gates/publication-executor.js',
@@ -18,20 +22,23 @@ const EXECUTOR_PATH = path.resolve(
 test('the G0 signer workflow is manual, main-only and can update only through its signer', () => {
   const workflow = YAML.parse(fs.readFileSync(WORKFLOW_PATH, 'utf8'));
   assert.deepEqual(Object.keys(workflow.on), ['workflow_dispatch']);
-  assert.equal(workflow.jobs.sign.if, "github.ref == 'refs/heads/main'");
+  assert.match(workflow.jobs.sign.if, /github\.ref == 'refs\/heads\/main'/);
+  assert.match(workflow.jobs.sign.if, /github\.actor == 'CodeNameHash'/);
+  assert.match(workflow.jobs.sign.if, /github\.actor_id == '264183176'/);
+  assert.match(workflow.jobs.sign.if, /AUTHORISE_ISOLATED_STAGING_CANONICAL_IMPLEMENTATION/);
   assert.equal(workflow.jobs.sign.environment, 'programme-gate-production');
   assert.equal(workflow.jobs.sign['timeout-minutes'], 20);
   assert.equal(workflow.concurrency['cancel-in-progress'], false);
   assert.deepEqual(
     Object.keys(workflow.on.workflow_dispatch.inputs).sort(),
-    ['deployment_id', 'expected_commit', 'preview_deployment_id', 'review_run_id'],
+    ['authorisation_intent', 'deployment_id', 'expected_commit', 'preview_deployment_id'],
   );
   assert.deepEqual(workflow.permissions, { actions: 'read', contents: 'write' });
   assert.equal(
     workflow.jobs.sign.steps.find(
       (step) => step.name === 'Download exact signed cold-review bundle',
     ).with['run-id'],
-    '${{ inputs.review_run_id }}',
+    30439653818,
   );
 });
 
@@ -116,6 +123,21 @@ test('the signer excludes both protected credentials from every child process an
   ]) {
     assert.match(executor, new RegExp(`delete environment\\.${secret}`));
   }
+});
+
+test('owner authority binds the reviewed basis, complete diff and exact review artefact', () => {
+  const script = fs.readFileSync(SCRIPT_PATH, 'utf8');
+  const reviewArtifact = fs.readFileSync(REVIEW_ARTIFACT_PATH, 'utf8');
+  assert.match(script, /d62456a81567baf8bf6aef7ae0c6290567086a08/);
+  assert.match(script, /6b5d7c2c0c57f4a6d7a508ae9cd5cf9f77370d53e956797504e080415eb7330a/);
+  assert.match(script, /77ef5f3366f7019a31240cbea2b0825ff96566e7861e3df1f18221416be76ce7/);
+  assert.match(script, /16759182/);
+  assert.match(script, /merge-base[\s\S]*--is-ancestor/);
+  assert.doesNotMatch(script, /--diff-filter=ACMRT/);
+  assert.match(script, /PROGRAMME_GATE_OWNER_AUTHORITY_PATCH\/V1/);
+  assert.match(script, /reviewSetEvidenceId: reviewSet\.verification\.evidence_id/);
+  assert.match(reviewArtifact, /PRODUCTION_DATA_OR_CORPUS_WRITE/);
+  assert.match(reviewArtifact, /full_review_pass_claimed: false/);
 });
 
 test('the protected signer authenticates every test execution before gate validation', () => {

@@ -126,6 +126,50 @@ const PRODUCTION_ALIAS = 'deal-corpus.vercel.app';
 const VERCEL_API_ORIGIN = 'https://api.vercel.com';
 const VERCEL_TEAM_ID = 'team_Zu8dnrxhP3FY0BcfOZtQ4z71';
 const VERCEL_PROJECT_ID = 'prj_pseZ68ISXsxADzNcffHTO2NuGM8b';
+const REVIEW_BASIS_COMMIT = 'd62456a81567baf8bf6aef7ae0c6290567086a08';
+const REVIEW_BASIS_ROOT = '6b5d7c2c0c57f4a6d7a508ae9cd5cf9f77370d53e956797504e080415eb7330a';
+const REVIEW_ARTIFACT_SHA256 =
+  '77ef5f3366f7019a31240cbea2b0825ff96566e7861e3df1f18221416be76ce7';
+const REVIEW_ARTIFACT_BYTE_SIZE = 16759182;
+const APPROVAL_INTENT = 'AUTHORISE_ISOLATED_STAGING_CANONICAL_IMPLEMENTATION';
+const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
+  '.github/phase-allowlists/wp-g0-owner-authority.json',
+  '.github/workflows/programme-gate-sign-g0.yml',
+  'docs/CODEX-PROGRAM.md',
+  'docs/codex-program/adversarial-tests.md',
+  'docs/codex-program/bootstrap-acceptance-source.json',
+  'docs/codex-program/canonical-contracts.md',
+  'docs/codex-program/programme-gates.yaml',
+  'docs/codex-program/specification-manifest.json',
+  'lib/programme-gates/contract-freeze-contracts.js',
+  'lib/programme-gates/g0-status-readiness.js',
+  'lib/programme-gates/git-authorship.js',
+  'lib/programme-gates/predicates.js',
+  'lib/programme-gates/registry.js',
+  'lib/programme-gates/review-artifact.js',
+  'lib/programme-gates/review-contracts.js',
+  'lib/programme-gates/review-enumerator.js',
+  'lib/programme-gates/review-evidence.js',
+  'lib/programme-gates/review-readiness.js',
+  'lib/programme-gates/review-signing.js',
+  'lib/programme-gates/schema-registry.js',
+  'lib/programme-gates/test-executable-registry.js',
+  'scripts/generate-bootstrap-acceptance-source.mjs',
+  'scripts/sign-g0-evidence.mjs',
+  'scripts/verify-codex-program-spec.mjs',
+  'tests/programme-gates-schema-registry.test.js',
+  'tests/programme-gates/bootstrap-acceptance-source.spec.js',
+  'tests/programme-gates/containment-evidence.spec.js',
+  'tests/programme-gates/contract-freeze-predicates.spec.js',
+  'tests/programme-gates/g0-signer-workflow.spec.js',
+  'tests/programme-gates/g0-status-readiness.spec.js',
+  'tests/programme-gates/predicates.spec.js',
+  'tests/programme-gates/review-artifact.spec.js',
+  'tests/programme-gates/review-contracts.spec.js',
+  'tests/programme-gates/review-evidence.spec.js',
+  'tests/programme-gates/review-readiness-signing.spec.js',
+  'tests/programme-gates/validator.spec.js',
+]);
 
 function requireCommit(value, label) {
   if (typeof value !== 'string' || !/^[a-f0-9]{40}$/.test(value)) {
@@ -169,7 +213,7 @@ function previewAccessMatrix() {
 
 function run(command, args, options = {}) {
   const result = spawnSync(command, args, {
-    cwd: ROOT,
+    cwd: options.cwd || ROOT,
     encoding: 'utf8',
     env: options.env || childEnvironment(),
     maxBuffer: 32 * 1024 * 1024,
@@ -528,7 +572,77 @@ function reviewArtifact() {
   if (typeof reviewPath !== 'string' || !path.isAbsolute(reviewPath)) {
     throw new Error('cold-review bundle path is unavailable');
   }
-  return JSON.parse(fs.readFileSync(reviewPath, 'utf8'));
+  const bytes = fs.readFileSync(reviewPath);
+  const reviewArtifactSha256 = sha256(bytes);
+  if (bytes.length !== REVIEW_ARTIFACT_BYTE_SIZE
+    || reviewArtifactSha256 !== REVIEW_ARTIFACT_SHA256) {
+    throw new Error('cold-review bundle bytes do not match the frozen reviewed artefact');
+  }
+  const bundle = JSON.parse(bytes.toString('utf8'));
+  if (bundle.code_commit !== REVIEW_BASIS_COMMIT
+    || bundle.specification_root !== REVIEW_BASIS_ROOT) {
+    throw new Error('cold-review bundle does not match the frozen basis root');
+  }
+  return {
+    bundle,
+    reviewArtifactByteSize: bytes.length,
+    reviewArtifactSha256,
+  };
+}
+
+function governanceDiff(codeCommit) {
+  const ancestry = run('git', [
+    'merge-base',
+    '--is-ancestor',
+    REVIEW_BASIS_COMMIT,
+    codeCommit,
+  ]);
+  if (ancestry.status !== 0) {
+    throw new Error('owner-authority commit is not a descendant of the reviewed basis');
+  }
+  const changedPaths = successful('git', [
+    'diff',
+    '--name-only',
+    REVIEW_BASIS_COMMIT,
+    codeCommit,
+    '--',
+  ]).split('\n').filter(Boolean).sort();
+  const allowedPaths = [...OWNER_AUTHORITY_ALLOWED_PATHS].sort();
+  const allowed = new Set(allowedPaths);
+  const unexpectedPaths = changedPaths.filter((changedPath) => !allowed.has(changedPath));
+  if (changedPaths.length === 0 || unexpectedPaths.length > 0) {
+    throw new Error('owner-authority governance diff is empty or exceeds its closed path set');
+  }
+  const patchResult = run('git', [
+    'diff',
+    '--binary',
+    '--no-ext-diff',
+    REVIEW_BASIS_COMMIT,
+    codeCommit,
+    '--',
+    ...changedPaths,
+  ]);
+  if (patchResult.status !== 0) {
+    throw new Error('owner-authority governance patch could not be read');
+  }
+  return Object.freeze({
+    basis_code_commit: REVIEW_BASIS_COMMIT,
+    authorised_code_commit: codeCommit,
+    changed_paths: changedPaths,
+    allowed_path_set_digest: domainDigest(
+      'PROGRAMME_GATE_OWNER_AUTHORITY_ALLOWED_PATH_SET/V1',
+      allowedPaths,
+    ),
+    patch_digest: domainDigest(
+      'PROGRAMME_GATE_OWNER_AUTHORITY_PATCH/V1',
+      {
+        basis_code_commit: REVIEW_BASIS_COMMIT,
+        authorised_code_commit: codeCommit,
+        patch_sha256: sha256(Buffer.from(patchResult.stdout, 'utf8')),
+      },
+    ),
+    unexpected_paths: unexpectedPaths,
+  });
 }
 
 function evidenceResult(candidate, preflight) {
@@ -662,26 +776,39 @@ async function main() {
   const publisherPrivateKey = privateStatusPublisherKey();
 
   const reviewVerificationTime = new Date().toISOString();
+  const reviewArtefact = reviewArtifact();
   const reviewSet = buildReviewSetInput({
-    at: reviewVerificationTime,
-    bundle: reviewArtifact(),
-    expectedCodeCommit: codeCommit,
-    expectedSpecificationRoot: specificationDigest,
-    keyRegistry: TRUSTED_PUBLIC_KEY_REGISTRY,
-    repositoryRoot: ROOT,
-    signIndependence: (bytes) => signatureForBytes(bytes, privateKey),
-    validatorConfigurationDigest: REGISTRY_DIGESTS.validator_configuration,
-    validatorExecutableDigest,
-    validatorKeyId: VALIDATOR_KEY_ID,
+      at: reviewVerificationTime,
+      bundle: reviewArtefact.bundle,
+      expectedCodeCommit: REVIEW_BASIS_COMMIT,
+      expectedSpecificationRoot: REVIEW_BASIS_ROOT,
+      keyRegistry: TRUSTED_PUBLIC_KEY_REGISTRY,
+      repositoryRoot: ROOT,
+      reviewArtifactByteSize: reviewArtefact.reviewArtifactByteSize,
+      reviewArtifactSha256: reviewArtefact.reviewArtifactSha256,
+      signIndependence: (bytes) => signatureForBytes(bytes, privateKey),
+      validatorConfigurationDigest: REGISTRY_DIGESTS.validator_configuration,
+      validatorExecutableDigest,
+      validatorKeyId: VALIDATOR_KEY_ID,
   });
   const approvalTime = new Date().toISOString();
   const benApproval = buildBenApproval({
     approvedAt: approvalTime,
+    approvedCodeCommit: codeCommit,
     approvedRoot: specificationDigest,
+    approvalIntent: process.env.PROGRAMME_GATE_APPROVAL_INTENT,
     approverKeyId: BEN_APPROVER_KEY_ID,
+    githubActorId: process.env.GITHUB_ACTOR_ID,
+    githubActorLogin: process.env.GITHUB_ACTOR,
+    githubRunId: process.env.GITHUB_RUN_ID,
+    governanceDiff: governanceDiff(codeCommit),
     keyRegistry: TRUSTED_PUBLIC_KEY_REGISTRY,
     nonce: crypto.randomUUID(),
-    passingReviewSetEvidenceId: reviewSet.verification.evidence_id,
+    reviewArtifactByteSize: reviewArtefact.reviewArtifactByteSize,
+    reviewArtifactSha256: reviewArtefact.reviewArtifactSha256,
+    reviewSetEvidenceId: reviewSet.verification.evidence_id,
+    reviewedCodeCommit: REVIEW_BASIS_COMMIT,
+    reviewedRoot: REVIEW_BASIS_ROOT,
     signApproval: (bytes) => signatureForBytes(bytes, benPrivateKey),
     verificationTime: approvalTime,
   });

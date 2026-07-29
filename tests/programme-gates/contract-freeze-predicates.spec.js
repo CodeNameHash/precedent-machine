@@ -507,7 +507,7 @@ function fixture({ includePrivateKeys = false } = {}) {
       session_parent_or_genesis: 'GENESIS',
       exact_input_context_digest: exactInputDigest,
       reviewed_code_commit: COMMIT,
-      source_control_history_scope: 'ALL_REFS_FROM_REPOSITORY_GENESIS',
+      source_control_history_scope: 'REVIEWED_COMMIT_ANCESTRY_FROM_REPOSITORY_GENESIS',
       source_control_authorship_events: AUTHORSHIP_EVENTS,
       source_control_authorship_event_set_root: domainDigest(
         'PROGRAMME_GATE_SOURCE_CONTROL_AUTHORSHIP_EVENT_SET_ROOT/V1',
@@ -1051,7 +1051,7 @@ function fixture({ includePrivateKeys = false } = {}) {
     session_parent_or_genesis: 'GENESIS',
     exact_input_context_digest: exactReviewInputContextDigest,
     reviewed_code_commit: COMMIT,
-    source_control_history_scope: 'ALL_REFS_FROM_REPOSITORY_GENESIS',
+    source_control_history_scope: 'REVIEWED_COMMIT_ANCESTRY_FROM_REPOSITORY_GENESIS',
     source_control_authorship_events: sourceControlAuthorshipEvents,
     source_control_authorship_event_set_root: domainDigest(
       'PROGRAMME_GATE_SOURCE_CONTROL_AUTHORSHIP_EVENT_SET_ROOT/V1',

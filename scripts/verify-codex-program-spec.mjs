@@ -222,9 +222,9 @@ function validateGateRegistry() {
     || independenceAllowlist?.validator_key_id
       !== 'PROGRAMME_GATE_VALIDATOR_2026_07'
     || independenceAllowlist?.validator_executable_digest
-      !== 'bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b'
+      !== '15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197'
     || independenceAllowlist?.validator_configuration_digest
-      !== 'c37298016599d6cb09b3b100a536219376e6a68199f6bd5fe088dd75a47e6784') {
+      !== '44c470631cc0d9cd7b48796f25c12addd3a735ca650f5622dd55db5ed8d30d21') {
     fail('Frozen review controller, runtime, prompt or validator allowlist changed');
   }
   if (testExecutionAttestation?.schema !== 'ProgrammeGateTestExecutionRecord/V1'
@@ -359,7 +359,9 @@ function validateGateRegistry() {
     || reviewAcceptance?.parent_session_state_must_be !== 'GENESIS'
     || reviewAcceptance?.no_earlier_review_conclusions_were_inputs_must_be !== true
     || reviewAcceptance?.reviewer_edit_set_root_must_be !== 'EMPTY'
-    || reviewAcceptance?.reviewer_disposition_must_be !== 'PASS'
+    || reviewAcceptance?.reviewer_disposition_must_match_signed_review_output !== true
+    || reviewAcceptance?.pass_and_fail_outcomes_are_recordable !== true
+    || reviewAcceptance?.recorded_fail_outcome_does_not_mean_substantive_review_pass !== true
     || !reviewAcceptance?.record_nonce_must_be_unique) {
     fail('Review-controller record acceptance rules are incomplete');
   }
@@ -371,7 +373,7 @@ function validateGateRegistry() {
     PROGRAMME_GATE_BEN_APPROVER_2026_07: '2baac1c454dfb918097f2816fc9a230eb93139f735db35b9ed64d0e6846b4c17',
   };
   if (reviewer.review_controller_trust_root_set !== 'trusted-review-controller-keys/2026-07-frozen-v1'
-    || frozenTrust?.registry_source_sha256 !== '55fbd67d3c90e8f1a6e2843ab04753522e343d857e726961689830658e016b47'
+    || frozenTrust?.registry_source_sha256 !== '5700fa4c26ddb98207265e988cb9672b5509a43bfe4084e77694bd40f4043d24'
     || sha256(read('lib/programme-gates/registry.js')) !== frozenTrust?.registry_source_sha256
     || JSON.stringify(frozenTrust?.keys) !== JSON.stringify(expectedTrustKeys)
     || frozenTrust?.unknown_replacement_or_post_review_key_effect !== 'OPEN') {
@@ -450,7 +452,7 @@ function validateGateRegistry() {
     || compiledRegistry?.source_sha256
       !== sha256(read('docs/codex-program/bootstrap-acceptance-source.json'))
     || compiledRegistry?.closed_validator_executable_set_digest
-      !== 'bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b'
+      !== '15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197'
     || compiledRegistry?.authority
       !== 'ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE'
     || compiledRegistry?.exact_active_definition_count !== 11
@@ -900,7 +902,7 @@ function validateBootstrapAcceptanceSource() {
     (definition) => definition.descriptor.gate_id === 'G0_EXACT_DIGEST_REVIEW_SET',
   );
   const reviewInputs = reviewDefinition.ordered_claim_predicates.find(
-    (predicate) => predicate.claim_key === 'five_named_lanes_pass_same_root',
+    (predicate) => predicate.claim_key === 'five_named_lane_outcomes_recorded_same_root',
   ).exact_input_member_types_and_paths;
   for (const jsonPointer of [
     '/registered_prompt_id',

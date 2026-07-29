@@ -70,7 +70,7 @@ test('the combined member enumerator dispatches every active G0 contract family'
       review_set_evidence_id: 'd'.repeat(64),
       reviewed_root: ROOT,
     },
-  }).length, 10);
+  }).length, 15);
   assert.throws(
     () => enumerateG0ExpectedMembers({
       definition: { evidence_contract: 'invented/v1' },

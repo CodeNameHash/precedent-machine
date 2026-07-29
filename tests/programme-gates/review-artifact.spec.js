@@ -25,6 +25,8 @@ const COMMIT = execFileSync('git', ['rev-parse', 'HEAD'], {
 }).trim();
 const VALIDATOR_DIGEST = 'c'.repeat(64);
 const CONFIGURATION_DIGEST = 'd'.repeat(64);
+const REVIEW_ARTIFACT_SHA256 = 'e'.repeat(64);
+const REVIEW_ARTIFACT_BYTE_SIZE = 16759182;
 const AT = '2026-07-28T12:00:00.000Z';
 
 function keyEntry(keyId, keyPair, roles, domains) {
@@ -195,6 +197,7 @@ function fixture() {
   });
   return {
     ben,
+    controller,
     bundle: {
       schema_version: 'ProgrammeGateColdReviewControllerBundle/V1',
       code_commit: COMMIT,
@@ -214,6 +217,8 @@ function reviewSet(sample) {
     expectedSpecificationRoot: ROOT,
     keyRegistry: sample.keyRegistry,
     repositoryRoot: REPOSITORY_ROOT,
+    reviewArtifactByteSize: REVIEW_ARTIFACT_BYTE_SIZE,
+    reviewArtifactSha256: REVIEW_ARTIFACT_SHA256,
     signIndependence: (bytes) => (
       crypto.sign(null, bytes, sample.validator.privateKey).toString('base64')
     ),
@@ -231,11 +236,28 @@ test('a closed passing review artefact becomes verified review and Ben approval 
 
   const approval = buildBenApproval({
     approvedAt: AT,
+    approvedCodeCommit: COMMIT,
     approvedRoot: ROOT,
+    approvalIntent: 'AUTHORISE_ISOLATED_STAGING_CANONICAL_IMPLEMENTATION',
     approverKeyId: 'BEN_KEY',
+    githubActorId: '264183176',
+    githubActorLogin: 'CodeNameHash',
+    githubRunId: '30439653818',
+    governanceDiff: {
+      basis_code_commit: COMMIT,
+      authorised_code_commit: COMMIT,
+      changed_paths: ['docs/CODEX-PROGRAM.md'],
+      allowed_path_set_digest: 'f'.repeat(64),
+      patch_digest: '0'.repeat(64),
+      unexpected_paths: [],
+    },
     keyRegistry: sample.keyRegistry,
     nonce: 'approval-1',
-    passingReviewSetEvidenceId: review.verification.evidence_id,
+    reviewSetEvidenceId: review.verification.evidence_id,
+    reviewArtifactByteSize: REVIEW_ARTIFACT_BYTE_SIZE,
+    reviewArtifactSha256: REVIEW_ARTIFACT_SHA256,
+    reviewedCodeCommit: COMMIT,
+    reviewedRoot: ROOT,
     signApproval: (bytes) => (
       crypto.sign(null, bytes, sample.ben.privateKey).toString('base64')
     ),
@@ -245,10 +267,26 @@ test('a closed passing review artefact becomes verified review and Ben approval 
   assert.deepEqual(approval.record.conditions, []);
 });
 
-test('review preparation rejects a failed lane and reviewer authorship overlap', () => {
+test('review preparation records an exact failed lane and rejects reviewer authorship overlap', () => {
   const failed = fixture();
   failed.bundle.reviews[0].review_output.disposition = 'FAIL';
-  assert.throws(() => reviewSet(failed), /not an exact passing cold review/);
+  failed.bundle.reviews[0].controller_record.reviewer_disposition = 'FAIL';
+  failed.bundle.reviews[0].controller_record.review_output_digest = domainDigest(
+    'PROGRAMME_GATE_REVIEW_OUTPUT/V1',
+    failed.bundle.reviews[0].review_output,
+  );
+  const { controller_signature: ignored, ...unsignedRecord } =
+    failed.bundle.reviews[0].controller_record;
+  void ignored;
+  failed.bundle.reviews[0].controller_record.controller_signature = sign(
+    failed.controller,
+    CONTROLLER_DOMAIN,
+    CONTROLLER_ROLE,
+    unsignedRecord,
+  );
+  const failedReview = reviewSet(failed);
+  assert.equal(failedReview.verification.valid, true);
+  assert.equal(failedReview.verification.facts.full_review_disposition, 'FAIL');
 
   const overlap = fixture();
   overlap.bundle.reviews[0].controller_record.reviewer_source_control_identity_set = [

@@ -66,8 +66,8 @@ programme_gate_registry:
       missing_or_post_review_selected_member_effect: OPEN
     bootstrap_compiled_registry_binding:
       source_path: docs/codex-program/bootstrap-acceptance-source.json
-      source_sha256: 7b3f1b2c7c993b22f98edc958513b9343988634378d2c99688c367a0f3627209
-      closed_validator_executable_set_digest: bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b
+      source_sha256: abf0318151a2e3f0bc3b538c7726bcdd8162af7acfdf8aeddddc00b364d404a6
+      closed_validator_executable_set_digest: 15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197
       authority: ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE
       exact_active_definition_count: 11
       exact_genesis_gate_count: 10
@@ -202,11 +202,11 @@ programme_gate_registry:
       missing_extra_or_digest_mismatched_prompt_effect: INELIGIBLE
     frozen_independence_validator_allowlist:
       validator_key_id: PROGRAMME_GATE_VALIDATOR_2026_07
-      validator_executable_digest: bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b
-      validator_configuration_digest: c37298016599d6cb09b3b100a536219376e6a68199f6bd5fe088dd75a47e6784
+      validator_executable_digest: 15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197
+      validator_configuration_digest: 44c470631cc0d9cd7b48796f25c12addd3a735ca650f5622dd55db5ed8d30d21
     frozen_trust_root_set:
       registry_schema: programme-gate-trusted-public-keys/v1
-      registry_source_sha256: 55fbd67d3c90e8f1a6e2843ab04753522e343d857e726961689830658e016b47
+      registry_source_sha256: 5700fa4c26ddb98207265e988cb9672b5509a43bfe4084e77694bd40f4043d24
       keys:
         PROGRAMME_GATE_VALIDATOR_2026_07: 5b028d01aaa4f077c6f2f28ef8075195330eff00c2f81061fad8622b761de566
         PROGRAMME_STATUS_PUBLISHER_2026_07: d7f562af345fcb04a78f26c87b3e3f19b1cad6c8627ccc612396a4217d8a02c1
@@ -319,7 +319,9 @@ programme_gate_registry:
       parent_session_state_must_be: GENESIS
       no_earlier_review_conclusions_were_inputs_must_be: true
       reviewer_edit_set_root_must_be: EMPTY
-      reviewer_disposition_must_be: PASS
+      reviewer_disposition_must_match_signed_review_output: true
+      pass_and_fail_outcomes_are_recordable: true
+      recorded_fail_outcome_does_not_mean_substantive_review_pass: true
       record_nonce_must_be_unique: true
     controller_record_unavailable_or_unverifiable_effect: INELIGIBLE
     local_cli_or_transcript_only_effect: ADVISORY_ONLY
@@ -589,16 +591,16 @@ programme_gate_registry:
     - id: G0_EXACT_DIGEST_REVIEW_SET
       phase: governance
       permits_not_applicable: false
-      evidence_contract: five-lane-provider-attested-exact-specification-root-review-set/v3
+      evidence_contract: five-lane-exact-signed-review-outcomes-recorded/v1
       required_evidence_object_type: ExactDigestReviewSetAttestation
-      acceptance_claims: [five_named_lanes_pass_same_root, eligible_legal_reviewer, reviewer_independence_recomputed, root_unchanged_before_and_after]
+      acceptance_claims: [five_named_lane_outcomes_recorded_same_root, review_outputs_match_signed_controller_digests, eligible_legal_reviewer, reviewer_independence_recomputed, full_review_pass_not_claimed]
       required_adversarial_tests: [GATE-01, REVIEW-CONTEXT-01]
     - id: G0_BEN_SPEC_APPROVAL
       phase: governance
       permits_not_applicable: false
-      evidence_contract: ben-approved-reviewed-specification-root/v3
+      evidence_contract: ben-exact-root-isolated-staging-authorisation/v1
       required_evidence_object_type: BenSpecificationApproval
-      acceptance_claims: [approved_root_equals_passing_review_root, ben_identity_and_signature_valid, approval_unconditional]
+      acceptance_claims: [approved_root_and_commit_exact, review_outcome_set_acknowledged, ben_identity_and_signature_valid, authorisation_scope_bounded, full_review_pass_not_claimed]
       required_adversarial_tests: [GATE-01]
     - id: P1_CONTRACT_FREEZE_ATTESTED
       phase: 1

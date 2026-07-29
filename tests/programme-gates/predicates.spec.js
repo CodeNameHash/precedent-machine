@@ -271,7 +271,7 @@ const FIXTURES = Object.freeze({
   }),
 });
 
-test('registry contains 34 explicit functions with exact closed claim membership', () => {
+test('registry contains 37 explicit functions with exact closed claim membership', () => {
   const descriptors = new Map(
     ACCEPTANCE_DEFINITION_DESCRIPTORS.map((descriptor) => [descriptor.gate_id, descriptor]),
   );
@@ -286,7 +286,7 @@ test('registry contains 34 explicit functions with exact closed claim membership
       count += 1;
     }
   }
-  assert.equal(count, 34);
+  assert.equal(count, 37);
 });
 
 test('all non-governance bootstrap fixtures produce only typed boolean PASS claims', () => {

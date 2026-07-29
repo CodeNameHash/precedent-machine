@@ -21,11 +21,30 @@ const {
 const ROOT = 'a'.repeat(64);
 const REVIEW_ID = 'b'.repeat(64);
 const APPROVAL_ID = 'c'.repeat(64);
+const COMMIT = 'd'.repeat(40);
+const ARTIFACT = 'e'.repeat(64);
 
 function reviewEvidence() {
   return {
     review_set_evidence_id: REVIEW_ID,
     reviewed_root: ROOT,
+    reviewed_code_commit: COMMIT,
+    review_artifact_sha256: ARTIFACT,
+    review_artifact_byte_size: 16759182,
+    lane_outcomes: [
+      'ARCHITECTURE',
+      'LEGAL_SEMANTIC',
+      'QUERY_EFFICIENCY',
+      'OPEN_WORLD',
+      'RELEASE_PROPAGATION',
+    ].map((lane_id) => ({
+      lane_id,
+      disposition: 'FAIL',
+      review_output_digest: ARTIFACT,
+      blocking_finding_count: 1,
+    })),
+    full_review_disposition: 'FAIL',
+    full_review_pass_claimed: false,
   };
 }
 
@@ -33,7 +52,35 @@ function approvalEvidence() {
   return {
     approval_evidence_id: APPROVAL_ID,
     approved_root: ROOT,
-    passing_review_set_evidence_id: REVIEW_ID,
+    approved_code_commit: COMMIT,
+    review_set_evidence_id: REVIEW_ID,
+    reviewed_root: ROOT,
+    reviewed_code_commit: COMMIT,
+    review_artifact_sha256: ARTIFACT,
+    review_artifact_byte_size: 16759182,
+    full_review_pass_claimed: false,
+    authorisation_scope: 'ISOLATED_STAGING_CANONICAL_IMPLEMENTATION',
+    permitted_actions: [
+      'IMPLEMENTATION_PLANNING',
+      'ISOLATED_STAGING_SETUP',
+      'STAGING_SNAPSHOT_RESTORE_AND_PREVIEW',
+      'STAGING_ONLY_CANONICAL_ENGINEERING_BEHIND_DISABLED_PRODUCTION_FLAGS',
+    ],
+    prohibited_actions: [
+      'PRODUCTION_DATA_OR_CORPUS_WRITE',
+      'PRODUCTION_REEXTRACTION_OR_BACKFILL',
+      'PRODUCTION_OR_RELEASE_IMPORT',
+      'RELEASE_ACTIVATION',
+      'PRODUCT_FEATURE_ACTIVATION',
+      'PRODUCTION_CUTOVER',
+    ],
+    review_findings_disposition: 'ACKNOWLEDGED_NOT_RESOLVED_OR_WAIVED',
+    p1_p9_gate_state: 'OPEN',
+    governance_diff_digest: ARTIFACT,
+    github_actor_login: 'CodeNameHash',
+    github_actor_id: '264183176',
+    github_run_id: '30439653818',
+    approval_intent: 'AUTHORISE_ISOLATED_STAGING_CANONICAL_IMPLEMENTATION',
     conditions: [],
   };
 }
@@ -74,6 +121,7 @@ test('review claim definitions name their exact evidence and signed member paths
     )),
     new Set([
       'ExactDigestReviewSetAttestation',
+      'ColdReviewOutput',
       'TrustedReviewControllerRecord',
       'ReviewerIndependenceAttestation',
     ]),
@@ -100,7 +148,7 @@ test('review member universes reject missing, extra and duplicate members', () =
     evidenceObject: reviewEvidence(),
   });
   const actual = expected.map((entry) => ({ ...entry, payload: {} }));
-  assert.equal(enumerateClosedMembers({ expectedMembers: expected, members: actual }).length, 10);
+  assert.equal(enumerateClosedMembers({ expectedMembers: expected, members: actual }).length, 15);
   assert.throws(
     () => enumerateClosedMembers({ expectedMembers: expected, members: actual.slice(1) }),
     /missing required member_id/,
@@ -121,7 +169,7 @@ test('review member universes reject missing, extra and duplicate members', () =
   );
 });
 
-test('Ben approval universe binds one approval to its exact passing review set', () => {
+test('Ben approval universe binds one authorisation to its exact review outcome set', () => {
   const { definitions } = createReviewContractBundle({ specificationRoot: ROOT });
   const definition = definitions.find(
     (entry) => entry.evidence_contract === BEN_APPROVAL_CONTRACT,
@@ -145,26 +193,26 @@ test('Ben approval universe binds one approval to its exact passing review set',
   assert.deepEqual(memberSchemaSetForReview(BEN_APPROVAL_CONTRACT), [
     {
       member_type: 'BenSpecificationApproval',
-      schema_id: 'BenSpecificationApproval/V1',
+      schema_id: 'BenSpecificationApproval/V2',
     },
     {
       member_type: 'ExactDigestReviewSetAttestation',
-      schema_id: 'ExactDigestReviewSetAttestation/V1',
+      schema_id: 'ExactDigestReviewSetAttestation/V2',
     },
   ]);
 });
 
 test('review evidence projections are closed schemas', () => {
   assert.equal(
-    validateSchema('ExactDigestReviewSetAttestation/V1', reviewEvidence()),
+    validateSchema('ExactDigestReviewSetAttestation/V2', reviewEvidence()),
     true,
   );
   assert.equal(
-    validateSchema('BenSpecificationApprovalEvidence/V1', approvalEvidence()),
+    validateSchema('BenSpecificationApprovalEvidence/V2', approvalEvidence()),
     true,
   );
   assert.throws(
-    () => validateSchema('ExactDigestReviewSetAttestation/V1', {
+    () => validateSchema('ExactDigestReviewSetAttestation/V2', {
       ...reviewEvidence(),
       passing: true,
     }),

@@ -90,6 +90,8 @@ const DIGEST_D = 'd'.repeat(64);
 const OBSERVED_AT = '2026-07-28T12:00:00.000Z';
 const VERIFICATION_TIME = '2026-07-28T12:01:00.000Z';
 const VALIDATOR_DIGEST = 'e'.repeat(64);
+const REVIEW_ARTIFACT_SHA256 = 'f'.repeat(64);
+const REVIEW_ARTIFACT_BYTE_SIZE = 16759182;
 
 function sign(privateKey, domain, role, payload) {
   return crypto.sign(
@@ -183,6 +185,10 @@ function fixture() {
     other_lane_model_identifiers: ['gpt-5.6-sol'],
   };
   const members = REVIEW_LANES.map((lane, index) => {
+    const reviewOutput = {
+      disposition: 'PASS',
+      findings: [],
+    };
     const controllerRecord = {
       schema_version: 'TrustedReviewControllerRecord/V1',
       controller_id: 'CODEX_CLI_REVIEW_CONTROLLER',
@@ -251,7 +257,10 @@ function fixture() {
       exact_input_context_digest: DIGEST_C,
       input_context_digest_before_review: DIGEST_C,
       input_context_digest_after_review: DIGEST_C,
-      review_output_digest: DIGEST_D,
+      review_output_digest: domainDigest(
+        'PROGRAMME_GATE_REVIEW_OUTPUT/V1',
+        reviewOutput,
+      ),
       review_start_time: '2026-07-28T10:00:00.000Z',
       review_end_time: '2026-07-28T10:30:00.000Z',
       reviewer_principal_id: `controller-${index}/session-${index}`,
@@ -307,7 +316,7 @@ function fixture() {
       session_parent_or_genesis: 'GENESIS',
       exact_input_context_digest: controllerRecord.exact_input_context_digest,
       reviewed_code_commit: COMMIT,
-      source_control_history_scope: 'ALL_REFS_FROM_REPOSITORY_GENESIS',
+      source_control_history_scope: 'REVIEWED_COMMIT_ANCESTRY_FROM_REPOSITORY_GENESIS',
       source_control_authorship_events: AUTHORSHIP_EVENTS,
       source_control_authorship_event_set_root: '',
       prior_conclusion_input_set: [],
@@ -333,6 +342,7 @@ function fixture() {
     return {
       lane_id: lane.lane_id,
       controller_record: controllerRecord,
+      review_output: reviewOutput,
       independence_attestation: independenceRecord,
     };
   });
@@ -344,15 +354,53 @@ function fixture() {
   }));
   const review = verifyReviewSetEvidence({
     expected_specification_root: ROOT,
+    expected_code_commit: COMMIT,
+    review_artifact_sha256: REVIEW_ARTIFACT_SHA256,
+    review_artifact_byte_size: REVIEW_ARTIFACT_BYTE_SIZE,
     members,
     authority: reviewAuthority,
     at: VERIFICATION_TIME,
   });
   assert.equal(review.valid, true);
   const approvalRecord = {
-    schema_version: 'BenSpecificationApproval/V1',
+    schema_version: 'BenSpecificationApproval/V2',
     approved_root: ROOT,
-    passing_review_set_evidence_id: review.evidence_id,
+    approved_code_commit: COMMIT,
+    review_set_evidence_id: review.evidence_id,
+    reviewed_root: ROOT,
+    reviewed_code_commit: COMMIT,
+    review_artifact_sha256: REVIEW_ARTIFACT_SHA256,
+    review_artifact_byte_size: REVIEW_ARTIFACT_BYTE_SIZE,
+    full_review_pass_claimed: false,
+    authorisation_scope: 'ISOLATED_STAGING_CANONICAL_IMPLEMENTATION',
+    permitted_actions: [
+      'IMPLEMENTATION_PLANNING',
+      'ISOLATED_STAGING_SETUP',
+      'STAGING_SNAPSHOT_RESTORE_AND_PREVIEW',
+      'STAGING_ONLY_CANONICAL_ENGINEERING_BEHIND_DISABLED_PRODUCTION_FLAGS',
+    ],
+    prohibited_actions: [
+      'PRODUCTION_DATA_OR_CORPUS_WRITE',
+      'PRODUCTION_REEXTRACTION_OR_BACKFILL',
+      'PRODUCTION_OR_RELEASE_IMPORT',
+      'RELEASE_ACTIVATION',
+      'PRODUCT_FEATURE_ACTIVATION',
+      'PRODUCTION_CUTOVER',
+    ],
+    review_findings_disposition: 'ACKNOWLEDGED_NOT_RESOLVED_OR_WAIVED',
+    p1_p9_gate_state: 'OPEN',
+    governance_diff: {
+      basis_code_commit: COMMIT,
+      authorised_code_commit: COMMIT,
+      changed_paths: ['docs/CODEX-PROGRAM.md'],
+      allowed_path_set_digest: DIGEST_B,
+      patch_digest: DIGEST_C,
+      unexpected_paths: [],
+    },
+    github_actor_login: 'CodeNameHash',
+    github_actor_id: '264183176',
+    github_run_id: '30439653818',
+    approval_intent: 'AUTHORISE_ISOLATED_STAGING_CANONICAL_IMPLEMENTATION',
     approver_identity: 'BEN_GOODCHILD',
     conditions: [],
     approved_at: '2026-07-28T11:00:00.000Z',
@@ -442,6 +490,9 @@ function rebindReviewContext(sample, index, change) {
 function reviewClaims(sample) {
   const verification = verifyReviewSetEvidence({
     expected_specification_root: ROOT,
+    expected_code_commit: COMMIT,
+    review_artifact_sha256: REVIEW_ARTIFACT_SHA256,
+    review_artifact_byte_size: REVIEW_ARTIFACT_BYTE_SIZE,
     members: sample.members,
     authority: sample.reviewAuthority,
     at: VERIFICATION_TIME,
@@ -452,6 +503,14 @@ function reviewClaims(sample) {
     evidence: {
       review_set_evidence_id: verification.evidence_id,
       reviewed_root: ROOT,
+      reviewed_code_commit: COMMIT,
+      review_artifact_sha256: REVIEW_ARTIFACT_SHA256,
+      review_artifact_byte_size: REVIEW_ARTIFACT_BYTE_SIZE,
+      lane_outcomes: verification.facts.lane_outcomes.map(
+        (outcome) => ({ ...outcome }),
+      ),
+      full_review_disposition: verification.facts.full_review_disposition,
+      full_review_pass_claimed: false,
     },
     context: {
       specificationRoot: ROOT,
@@ -463,6 +522,11 @@ function reviewClaims(sample) {
       observed_at: OBSERVED_AT,
       clock: { now: () => VERIFICATION_TIME },
       immutableMembers: sample.members.flatMap((member) => [
+        {
+          member_id: `output:${member.lane_id}`,
+          member_type: 'ColdReviewOutput',
+          payload: member.review_output,
+        },
         {
           member_id: `controller:${member.lane_id}`,
           member_type: 'TrustedReviewControllerRecord',
@@ -490,7 +554,7 @@ test('the legal-semantic lane accepts the frozen Fable profile while other lanes
   resignController(sample, legalIndex);
   assert.deepEqual(
     reviewClaims(sample).map((claim) => claim.typed_value),
-    [true, true, true, true],
+    [true, true, true, true, true],
   );
 });
 
@@ -700,7 +764,7 @@ test('missing review lanes, invalid Ben links and future records fail readiness'
   assert.throws(() => readiness(missing), /review set is OPEN/);
 
   const wrongLink = fixture();
-  wrongLink.approvalRecord.passing_review_set_evidence_id = DIGEST_D;
+  wrongLink.approvalRecord.review_set_evidence_id = DIGEST_D;
   assert.throws(() => readiness(wrongLink), /Ben approval is OPEN/);
 
   const future = fixture();

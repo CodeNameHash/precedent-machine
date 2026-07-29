@@ -82,7 +82,9 @@ test('the reviewed bootstrap source is reproducible and contains eleven complete
     (definition) => definition.descriptor.gate_id === 'G0_EXACT_DIGEST_REVIEW_SET',
   );
   const inputs = review.ordered_claim_predicates.find(
-    (predicate) => predicate.claim_key === 'five_named_lanes_pass_same_root',
+    (predicate) => (
+      predicate.claim_key === 'five_named_lane_outcomes_recorded_same_root'
+    ),
   ).exact_input_member_types_and_paths;
   for (const jsonPointer of [
     '/registered_prompt_id',

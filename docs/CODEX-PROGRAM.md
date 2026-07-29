@@ -301,6 +301,32 @@ CORRECTED (the plan below rests on these, not the review's wording):
   and root. A stale review, different root, ineligible legal reviewer, missing
   lane or approval of unreviewed files is `OPEN`, never an inferred pass.
 
+#### Generation-1 owner authorisation
+
+For generation 1 only, the five signed review outcomes for basis commit
+`d62456a81567baf8bf6aef7ae0c6290567086a08` and specification root
+`6b5d7c2c0c57f4a6d7a508ae9cd5cf9f77370d53e956797504e080415eb7330a`
+are recorded truthfully as `FAIL`. The outer review artefact is additionally
+bound by SHA-256
+`77ef5f3366f7019a31240cbea2b0825ff96566e7861e3df1f18221416be76ce7`
+and byte size `16759182`. Recording those outcomes is not a claim that the full
+review passed.
+
+Ben may sign an exact successor root and governance diff to authorise only
+implementation planning, isolated staging setup, staging snapshot restore and
+preview, and staging-only canonical engineering behind disabled production
+flags. Production corpus writes, production re-extraction or backfill,
+production or release import, release activation, product feature activation
+and production cutover remain prohibited. The review findings are acknowledged,
+not resolved or waived. P1 and P9 remain `OPEN`.
+
+This bounded owner-authorisation uses
+`ExactDigestReviewSetAttestation/V2`, `BenSpecificationApproval/V2` and
+`BenSpecificationApprovalEvidence/V2`. The strict V1 PASS contracts remain the
+only G0 authority accepted inside `P1_CONTRACT_FREEZE_ATTESTED`. The P1
+predicate requires every lane to be `PASS`; the generation-1 V2 outcome record
+cannot satisfy or be substituted for that authority.
+
 ### Agent implementation protocol
 
 - One integration owner controls shared schemas, generators, migrations, writer
