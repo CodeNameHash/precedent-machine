@@ -139,6 +139,7 @@ const REVIEW_ARTIFACT_BYTE_SIZE = 16759182;
 const APPROVAL_INTENT = 'AUTHORISE_ISOLATED_STAGING_CANONICAL_IMPLEMENTATION';
 const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
   '.github/phase-allowlists/wp-canonical-successor-root-v1.json',
+  '.github/phase-allowlists/wp-process-intelligence-baseline-v1.json',
   '.github/phase-allowlists/wp-process-p1-narration-contract-inputs-v1.json',
   '.github/phase-allowlists/wp-process-status-consumer-v1.json',
   '.github/phase-allowlists/wp-programme-successor-publication-v2.json',
@@ -253,6 +254,7 @@ const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
   'docs/codex-program/canonical-contracts.md',
   'docs/codex-program/programme-gates.yaml',
   'docs/codex-program/specification-manifest.json',
+  'evidence/process-intelligence/baseline/product-field-source-inventory.json',
   'lib/programme-gates/contract-freeze-contracts.js',
   'lib/programme-gates/g0-status-readiness.js',
   'lib/programme-gates/current-publication.js',
@@ -282,6 +284,7 @@ const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
   'lib/schema/canonical/contract-v2/manifest.json',
   'scripts/generate-bootstrap-acceptance-source.mjs',
   'scripts/generate-canonical-v2-successor-manifest.mjs',
+  'scripts/process-intelligence-baseline.mjs',
   'scripts/sign-g0-evidence.mjs',
   'scripts/verify-programme-status-publication.mjs',
   'scripts/verify-codex-program-spec.mjs',
@@ -305,6 +308,7 @@ const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
   'tests/canonical-v2-transaction-leg.test.js',
   'tests/canonical-v2-transaction-structure-resolution.test.js',
   'tests/programme-gates-schema-registry.test.js',
+  'tests/process-intelligence-baseline.test.js',
   'tests/programme-gates/bootstrap-acceptance-source.spec.js',
   'tests/programme-gates/containment-evidence.spec.js',
   'tests/programme-gates/contract-freeze-predicates.spec.js',
