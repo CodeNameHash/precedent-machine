@@ -75,7 +75,7 @@ test('the single successor source compiles twice byte-identically without claimi
   const second = compileCanonicalContractInput({ root_directory: sourceRoot });
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 109);
+  assert.equal(first.authored_members.length, 112);
   assert.equal(
     first.authored_members.some(
       (member) => member.object_kind === 'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY',
@@ -465,13 +465,13 @@ test('the authored claim interpretation policy is the exact existing V12 policy'
   );
 });
 
-test('the manifest exactly closes the 109-file Agreement, shared and Process source tree', () => {
+test('the manifest exactly closes the 112-file Agreement, shared and Process source tree', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
   const actualMembers = jsonMembers(sourceRoot);
   const declaredMembers = manifest.members.map((member) => member.relative_path);
 
   assert.deepEqual(actualMembers, declaredMembers);
-  assert.equal(manifest.members.length, 109);
+  assert.equal(manifest.members.length, 112);
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('agreement/')).length,
     70,
@@ -482,7 +482,7 @@ test('the manifest exactly closes the 109-file Agreement, shared and Process sou
   );
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('process/')).length,
-    23,
+    26,
   );
   assert.equal(
     fs.existsSync(path.join(__dirname, '../lib/schema/canonical/contract-v2')),
@@ -500,7 +500,8 @@ test('the manifest exactly closes the 109-file Agreement, shared and Process sou
     PROCESS_DOMAIN_REGISTRY_INPUT: 1,
     PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT: 1,
     PROCESS_INTEGRITY_CONTRACT_INPUT: 2,
-    PROCESS_LOGICAL_TYPE_INPUT: 9,
+    PROCESS_LOGICAL_TYPE_INPUT: 10,
+    PROCESS_PREDICATE_CONTRACT_INPUT: 1,
     PROCESS_RESULT_ACTION_CONTRACT_INPUT: 4,
     PROVISION_CONCEPT: 19,
     RELATIONSHIP_DEFINITION: 5,
@@ -508,7 +509,7 @@ test('the manifest exactly closes the 109-file Agreement, shared and Process sou
     RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT: 1,
     SERVING_EXACT_DETAIL_ACTION_DEFINITION: 5,
     SERVING_METRIC_OPERATION_BINDING_INPUT: 2,
-    SERVING_PROCESS_CONTRACT_INPUT: 4,
+    SERVING_PROCESS_CONTRACT_INPUT: 5,
     SERVING_TRIGGER_PATH_SCHEMA_INPUT: 1,
     SHARED_AUTHORITY_FIELD_CATALOGUE_INPUT: 1,
     SHARED_AUTHORITY_LOGICAL_TYPE_INPUT: 15,
@@ -533,6 +534,7 @@ test('the manifest exactly closes the 109-file Agreement, shared and Process sou
       'PROCESS_INTEGRITY_CONTRACT_INPUT/V1',
     ],
     PROCESS_LOGICAL_TYPE_INPUT: ['PROCESS_LOGICAL_TYPE_INPUT/V1'],
+    PROCESS_PREDICATE_CONTRACT_INPUT: ['PROCESS_PREDICATE_CONTRACT_INPUT/V1'],
     PROCESS_RESULT_ACTION_CONTRACT_INPUT: [
       'PROCESS_RESULT_ACTION_CONTRACT_INPUT/V1',
     ],

@@ -1,0 +1,159 @@
+{
+  "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
+  "stable_id": "PROCESS_PREDICATE_WITNESS",
+  "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "logical_type": "ProcessPredicateWitness",
+    "logical_type_version": 1,
+    "witness_identity": {
+      "stable_id_domain": "PROCESS_PREDICATE_WITNESS/V1",
+      "stable_id_inputs": [
+        "frozen_contract_pair_digest",
+        "governed_deal_admission_id",
+        "process_narration_occurrence_id",
+        "predicate_definition_key_and_version",
+        "predicate_evidence_role_slot_key",
+        "governed_ordinal"
+      ],
+      "prohibited_inputs": [
+        "candidate_values",
+        "extracted_attributes",
+        "model_output",
+        "predicate_state",
+        "process_event_id",
+        "process_participant_revision_ids",
+        "selected_revision_id",
+        "subject_code"
+      ]
+    },
+    "scope_and_slot_contract": {
+      "predicate_evidence_role_slot_frozen_before_candidate_values": true,
+      "slot_key_is_self_authorising": false,
+      "precomputed_expected_witness_id_binding_required": true,
+      "complete_witness_member_universe_required_before_extraction": true,
+      "unresolved_or_missing_slot_blocks_materialisation": true,
+      "identity_definition_grants_materialisation_authority": false
+    },
+    "predicate_contract": {
+      "catalogue_stable_id": "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
+      "catalogue_schema_version": "PROCESS_PREDICATE_CONTRACT_INPUT/V1",
+      "predicate_key_and_version_required": true,
+      "unknown_predicate_has_runtime_path": false,
+      "predicate_state_is_revision_value_not_identity": true,
+      "passing_witness_can_admit_sibling_predicate": false
+    },
+    "narration_contract": {
+      "consumed_logical_type": "ProcessNarrationOccurrence",
+      "consumed_definition_stable_id": "PROCESS_NARRATION_OCCURRENCE",
+      "exactly_one_source_local_narration_required": true,
+      "same_frozen_contract_pair_required": true,
+      "same_governed_deal_required": true,
+      "paragraph_boundary_can_create_witness": false,
+      "narration_text_can_supply_predicate_without_evidence_role": false
+    },
+    "dimension_contract": {
+      "permitted_link_definition_stable_ids": [
+        "BIDDER_TRACK",
+        "PROCESS_AGREEMENT",
+        "PROCESS_EVENT",
+        "PROCESS_PARTICIPANT",
+        "PROCESS_PASSAGE",
+        "PROCESS_POSITION",
+        "PROCESS_RELATIONSHIP",
+        "TEMPORAL_EXPRESSION"
+      ],
+      "each_link_requires_typed_revision_and_own_evidence": true,
+      "unresolved_link_is_preserved_not_inferred": true,
+      "subject_role_temporal_track_relationship_and_drafting_are_separable": true,
+      "actual_drafting_requires_process_passage_revision": true,
+      "summary_can_satisfy_actual_drafting": false
+    },
+    "revision_identity": {
+      "revision_type": "PredicateWitnessRevision",
+      "revision_id_domain": "PREDICATE_WITNESS_REVISION/V1",
+      "immutable_inputs": [
+        "bidder_track_revision_id",
+        "evidence_edges",
+        "predicate_key",
+        "predicate_state",
+        "process_agreement_revision_ids",
+        "process_event_revision_id",
+        "process_participant_revision_ids",
+        "process_passage_revision_ids",
+        "process_position_revision_ids",
+        "process_predicate_witness_id",
+        "process_relationship_revision_ids",
+        "subject_code",
+        "temporal_expression_revision_ids"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": [
+        "PRESENT",
+        "ABSENT",
+        "NOT_APPLICABLE",
+        "NOT_EXAMINED",
+        "FAILED"
+      ],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES",
+      "predicate_and_each_dimension_evidence_separable": true,
+      "complete_scope_required_for_absent": true,
+      "silence_can_support_express_refusal": false
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_OCCURRENCE_TABLE",
+      "carrier_name": "process_predicate_witnesses",
+      "release_partitioned": true
+    },
+    "writer_action": {
+      "action_key": "ADMIT_PROCESS_PREDICATE_WITNESS",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false,
+      "definition_grants_execution_authority": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "predicate_narration_dimension_and_evidence_lineage_required": true
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "PREDICATE_WITNESS_REVISION",
+      "witness_id_required": true,
+      "revision_id_required": true,
+      "predicate_and_narration_lineage_required": true,
+      "dimension_lineage_required_when_present": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "PROCESS_PREDICATE_WITNESS_EVIDENCE",
+      "exact_evidence_only": true,
+      "preserve_release_identity": true
+    },
+    "authority_contract": {
+      "creates_runtime_witness": false,
+      "creates_extraction_authority": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

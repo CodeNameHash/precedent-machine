@@ -606,11 +606,32 @@
       "canonical_bytes_digest": "203343cb17bd003460302933891e32f0c1ac555c287b36de29ab28d9fb549150"
     },
     {
+      "relative_path": "process/predicates/exclusivity-predicate-catalogue.v1.json",
+      "object_kind": "PROCESS_PREDICATE_CONTRACT_INPUT",
+      "stable_id": "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
+      "schema_version": "PROCESS_PREDICATE_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "cd748728a6b5e6cc17cd8f68a45c535b90362b6381fa1e4bad47887f9a84df8e"
+    },
+    {
+      "relative_path": "process/predicates/process-predicate-witness.v1.json",
+      "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
+      "stable_id": "PROCESS_PREDICATE_WITNESS",
+      "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "3fe92976cfdbc2743c8a0cd3765f184da91e29dd8f8f942135bc8b5e10de2e3c"
+    },
+    {
       "relative_path": "process/relationships/process-relationship.v1.json",
       "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
       "stable_id": "PROCESS_RELATIONSHIP",
       "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
       "canonical_bytes_digest": "4b06eea3d5a0572bae81e8ab3a7f309d96fa93f57bd2f49242f81c82f523671c"
+    },
+    {
+      "relative_path": "process/results/process-exclusivity-event-result.v1.json",
+      "object_kind": "SERVING_PROCESS_CONTRACT_INPUT",
+      "stable_id": "PROCESS_EXCLUSIVITY_EVENT_RESULT",
+      "schema_version": "SERVING_PROCESS_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "608bdf89fa27c5199c307bf5acb918c6fc704906e2cc420fc92e87e725c3e65f"
     },
     {
       "relative_path": "process/results/process-phrasebook-passage-result.v1.json",
@@ -779,7 +800,8 @@
     "PROCESS_DOMAIN_REGISTRY_INPUT": 1,
     "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT": 1,
     "PROCESS_INTEGRITY_CONTRACT_INPUT": 2,
-    "PROCESS_LOGICAL_TYPE_INPUT": 9,
+    "PROCESS_LOGICAL_TYPE_INPUT": 10,
+    "PROCESS_PREDICATE_CONTRACT_INPUT": 1,
     "PROCESS_RESULT_ACTION_CONTRACT_INPUT": 4,
     "PROVISION_CONCEPT": 19,
     "RELATIONSHIP_DEFINITION": 5,
@@ -787,7 +809,7 @@
     "RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT": 1,
     "SERVING_EXACT_DETAIL_ACTION_DEFINITION": 5,
     "SERVING_METRIC_OPERATION_BINDING_INPUT": 2,
-    "SERVING_PROCESS_CONTRACT_INPUT": 4,
+    "SERVING_PROCESS_CONTRACT_INPUT": 5,
     "SERVING_TRIGGER_PATH_SCHEMA_INPUT": 1,
     "SHARED_AUTHORITY_FIELD_CATALOGUE_INPUT": 1,
     "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT": 15,
@@ -829,6 +851,9 @@
     ],
     "PROCESS_LOGICAL_TYPE_INPUT": [
       "PROCESS_LOGICAL_TYPE_INPUT/V1"
+    ],
+    "PROCESS_PREDICATE_CONTRACT_INPUT": [
+      "PROCESS_PREDICATE_CONTRACT_INPUT/V1"
     ],
     "PROCESS_RESULT_ACTION_CONTRACT_INPUT": [
       "PROCESS_RESULT_ACTION_CONTRACT_INPUT/V1"

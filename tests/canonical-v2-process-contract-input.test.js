@@ -44,6 +44,7 @@ function processMembers() {
     loadMember('process/passages/process-passage.v1.json'),
     loadMember('process/phases/process-phase.v1.json'),
     loadMember('process/positions/process-position.v1.json'),
+    loadMember('process/predicates/process-predicate-witness.v1.json'),
     loadMember('process/relationships/process-relationship.v1.json'),
   ];
 }
@@ -56,7 +57,7 @@ test('compiles the bounded Process core contracts deterministically without free
   );
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 109);
+  assert.equal(first.authored_members.length, 112);
   assert.deepEqual(
     processEntries.map((member) => [member.object_kind, member.stable_id]),
     [
@@ -85,7 +86,10 @@ test('compiles the bounded Process core contracts deterministically without free
       ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_PASSAGE'],
       ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_PHASE'],
       ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_POSITION'],
+      ['PROCESS_PREDICATE_CONTRACT_INPUT', 'PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE'],
+      ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_PREDICATE_WITNESS'],
       ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_RELATIONSHIP'],
+      ['SERVING_PROCESS_CONTRACT_INPUT', 'PROCESS_EXCLUSIVITY_EVENT_RESULT'],
       ['SERVING_PROCESS_CONTRACT_INPUT', 'PROCESS_PHRASEBOOK_PASSAGE_RESULT'],
       ['SERVING_PROCESS_CONTRACT_INPUT', 'BOUNDED_INLINE_PASSAGE_PREVIEW'],
       ['SERVING_PROCESS_CONTRACT_INPUT', 'PARENT_BOUND_PARAGRAPH_CONTEXT'],

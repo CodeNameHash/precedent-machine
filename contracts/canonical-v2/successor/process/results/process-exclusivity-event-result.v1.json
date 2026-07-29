@@ -1,0 +1,119 @@
+{
+  "object_kind": "SERVING_PROCESS_CONTRACT_INPUT",
+  "stable_id": "PROCESS_EXCLUSIVITY_EVENT_RESULT",
+  "schema_version": "SERVING_PROCESS_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "contract_type": "RESULT_DEFINITION",
+    "contract_version": 1,
+    "result_contract": {
+      "logical_type": "ProcessExclusivityEventResult",
+      "output_grain": "RESULT",
+      "parent_kind": "RESULT_ROW",
+      "one_occurrence_per_precomputed_process_event": true,
+      "query_or_application_join_can_mint_result": false,
+      "result_definition_required_before_materialisation": true
+    },
+    "occurrence_identity": {
+      "stable_id_domain": "PROCESS_EXCLUSIVITY_EVENT_RESULT/V1",
+      "stable_id_inputs": [
+        "frozen_contract_pair_digest",
+        "governed_deal_admission_id",
+        "precomputed_process_event_id",
+        "result_definition_key_and_version",
+        "governed_ordinal"
+      ],
+      "prohibited_inputs": [
+        "application_join_order",
+        "candidate_values",
+        "display_text",
+        "model_output",
+        "query_text",
+        "selected_revision_id"
+      ],
+      "expected_result_slot_required_before_materialisation": true
+    },
+    "component_slot_contract": {
+      "required_slots": [
+        {
+          "slot_key": "PROCESS_EVENT",
+          "terminal_type": "PROCESS_EVENT_REVISION",
+          "cardinality": "EXACTLY_ONE"
+        },
+        {
+          "slot_key": "PREDICATE_WITNESSES",
+          "terminal_type": "PREDICATE_WITNESS_REVISION",
+          "cardinality": "ONE_OR_MORE"
+        },
+        {
+          "slot_key": "ACTUAL_DRAFTING",
+          "terminal_type": "PROCESS_PASSAGE_REVISION",
+          "cardinality": "ONE_OR_MORE"
+        }
+      ],
+      "optional_terminal_types": [
+        "BIDDER_TRACK_REVISION",
+        "CONSIDERATION_PACKAGE_REVISION",
+        "PROCESS_AGREEMENT_REVISION",
+        "PROCESS_PARTICIPANT_REVISION",
+        "PROCESS_POSITION_REVISION",
+        "PROCESS_RELATIONSHIP_REVISION",
+        "TEMPORAL_EXPRESSION_REVISION"
+      ],
+      "complete_result_input_lineage_required": true,
+      "component_can_be_created_by_display_join": false
+    },
+    "predicate_contract": {
+      "catalogue_stable_id": "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
+      "all_witnesses_require_predicate_admission": true,
+      "generic_response_union_preserves_atomic_constituent": true,
+      "failing_predicate_cannot_enter_result_through_passing_sibling": true,
+      "unknown_predicate_has_runtime_path": false
+    },
+    "composition_contract": {
+      "same_frozen_contract_pair_required": true,
+      "same_governed_deal_required": true,
+      "all_components_bind_selected_process_event": true,
+      "same_date_alone_can_merge_events": false,
+      "unresolved_or_conflicting_event_composition_blocks_result": true,
+      "retellings_remain_separate_narrations": true,
+      "source_evidence_required_per_component": true
+    },
+    "history_projection_contract": {
+      "projection_name": "EXCLUSIVITY_HISTORY",
+      "selects_this_composed_result_grain": true,
+      "label_as_complete_deal_chronology_permitted": false,
+      "bidder_track_selection_requires_exact_typed_link": true,
+      "separate_bidder_tracks_can_be_mixed": false,
+      "projection_can_create_facts_or_summaries": false
+    },
+    "phrasebook_link_contract": {
+      "phrasebook_result_definition_stable_id": "PROCESS_PHRASEBOOK_PASSAGE_RESULT",
+      "shared_predicate_witness_revision_required": true,
+      "shared_source_local_narration_required": true,
+      "phrasebook_result_and_event_result_are_identity_equivalent": false,
+      "one_result_can_replace_the_other": false
+    },
+    "exact_detail_contract": {
+      "actual_drafting_definition_stable_id": "PROCESS_PASSAGE",
+      "actual_drafting_required": true,
+      "summary_can_replace_actual_drafting": false,
+      "exact_release_identity_required": true,
+      "silent_redirect_to_newer_release_permitted": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "complete_event_predicate_component_and_evidence_lineage_required": true
+    },
+    "authority_contract": {
+      "creates_runtime_result": false,
+      "creates_extraction_authority": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

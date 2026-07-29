@@ -34,6 +34,7 @@ function members() {
     member('process/passages/process-passage.v1.json'),
     member('process/phases/process-phase.v1.json'),
     member('process/positions/process-position.v1.json'),
+    member('process/predicates/process-predicate-witness.v1.json'),
     member('process/relationships/process-relationship.v1.json'),
   ];
 }
@@ -207,7 +208,7 @@ test('rejects semantic drift in each complete governed definition', () => {
 test('remains incomplete and grants no contract-freeze authority', () => {
   const compiled = compileCanonicalContractInput({ root_directory: ROOT });
 
-  assert.equal(compiled.authored_members.length, 109);
+  assert.equal(compiled.authored_members.length, 112);
   assert.equal(compiled.disposition.status, 'INCOMPLETE_UNIVERSE');
   assert.equal(compiled.disposition.freeze_eligible, false);
   assert.equal(compiled.disposition.canonical_contract_bundle_authority, 'NONE');

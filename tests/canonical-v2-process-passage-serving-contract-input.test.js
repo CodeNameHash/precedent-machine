@@ -24,6 +24,7 @@ function loadMember(relativePath) {
 
 function servingMembers() {
   return [
+    loadMember('process/results/process-exclusivity-event-result.v1.json'),
     loadMember('process/results/process-phrasebook-passage-result.v1.json'),
     loadMember('process/serving/bounded-inline-passage-preview.v1.json'),
     loadMember('process/serving/parent-bound-paragraph-context.v1.json'),
@@ -41,7 +42,7 @@ function byId(members, stableId) {
   ).canonical_value.definition;
 }
 
-test('validates the four bounded passage-serving contracts', () => {
+test('validates the five bounded Process serving contracts', () => {
   const members = servingMembers();
   assert.doesNotThrow(() => validateAuthoredProcessServingInputs(members));
 
@@ -110,7 +111,7 @@ test('grants no runtime, writer, serving, release or freeze authority', () => {
   const members = servingMembers();
   for (const member of members) {
     const values = Object.values(member.canonical_value.definition.authority_contract);
-    assert.deepEqual(values, [false, false, false, false, false]);
+    assert.equal(values.every((value) => value === false), true);
   }
 });
 
