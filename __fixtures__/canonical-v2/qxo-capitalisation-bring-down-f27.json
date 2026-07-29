@@ -1,0 +1,604 @@
+{
+  "schema_version": "QXO_CAPITALISATION_PREVIEW_F27/V1",
+  "preview_scope": "UNIT_TEST_EXACT_TEXT_PREVIEW",
+  "release_id": "0f1378f204d7f49e1175803489d22ae14079b114290ea0436e52dc163c2f5e80",
+  "release_manifest_id": "c498a6ac42e1c788c6d3d6ca5c73a18a2ef0d5a86fafe2cb5757f2241e91adf5",
+  "release_state": "INACTIVE_CANDIDATE",
+  "contract_fingerprint": "3c8ca48ff4f1f2f482b14a188045aa3a1ec7072704d396f7306b483e6338f2ac",
+  "provision_row": {
+    "schema_version": "CAPITALISATION_SHARED_PROVISION_ROW_F27/V1",
+    "release_id": "0f1378f204d7f49e1175803489d22ae14079b114290ea0436e52dc163c2f5e80",
+    "governed_deal_key": "deal:qxo-topbuild",
+    "document_hash": "4e5a41ac924ac6de7f07b269944122462810eb6fe96e5787e3725253e00f29a0",
+    "provision_key": "TARGET_CAPITAL_STRUCTURE_REPRESENTATION_AND_BRING_DOWN",
+    "label": "Capital structure representation and bring-down",
+    "party": {
+      "role": "CONDITION_BENEFICIARY",
+      "value": "BUYER_GROUP",
+      "capacity": "ACQUIRER"
+    },
+    "presentation_order": "SUBJECT_TERMS_THEN_MARKET_CONTEXT",
+    "prevalence_display": "SECONDARY",
+    "generic_no_market_data_authority": "NONE",
+    "class_aggregation": "FORBIDDEN",
+    "local_failure_isolation": "REQUIRED",
+    "subrows": [
+      {
+        "schema_version": "CAPITALISATION_SUBROW_F27/V1",
+        "value_slot_key": "CAPITALISATION_CLAUSE_B_LIMBS_I_III",
+        "display_ordinal": 0,
+        "row_role": "PRIMARY_COMPARABLE_TERM",
+        "section": "ACCURACY_AT_CLOSING",
+        "label": "Clause (B) group",
+        "comparison_class_key": "CAPITALISATION_CLAUSE_B_LIMBS_I_III",
+        "state": "PRESENT",
+        "comparability_state": "COMPARABLE_IN_EXACT_FROZEN_CLASS",
+        "party": {
+          "role": "CONDITION_BENEFICIARY",
+          "value": "BUYER_GROUP",
+          "capacity": "ACQUIRER"
+        },
+        "representation_maker": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "COMPANY",
+          "capacity": "TARGET"
+        },
+        "subject": {
+          "display_value": "True and correct, subject to De Minimis Inaccuracies",
+          "raw_value": "(B) the representations and warranties of the Company set forth in Section 3.1(b)(i) and Section 3.1(b)(iii) (Capital Structure) shall be true and correct at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date except for De Minimis Inaccuracies",
+          "canonical_value": "MAT_ALL_RESPECTS_DE_MINIMIS",
+          "canonical_unit": "ACCURACY_STANDARD_CODE",
+          "accuracy_exception": "DE_MINIMIS_INACCURACIES",
+          "denominator": {
+            "basis": "FULLY_DILUTED_EQUITY_CAPITALISATION",
+            "party_value": "COMPANY"
+          },
+          "target_limb_ordinals": [
+            1,
+            3
+          ],
+          "dated_representation_proviso": {
+            "application": "EXPRESS_DATE_OR_PERIOD_ONLY",
+            "evidence_excerpt_id": "fdfc53ea9a6e698fa4f15483ef8724eade1ea98fc16ac21e1801f3ec5139aefe"
+          },
+          "materiality_scrape": {
+            "state": "NOT_APPLIED",
+            "disregarded_qualifier_codes": [],
+            "evidence_excerpt_id": null
+          }
+        },
+        "market_context": {
+          "display_priority": "SECONDARY",
+          "subject_deal_included": true,
+          "independent_comparable_deals": 0,
+          "state": "INACTIVE_CANDIDATE_NO_INDEPENDENT_COHORT",
+          "presence_frequency": {
+            "eligible_deals": 0,
+            "present_deals": 0,
+            "percentage": null,
+            "reason_code": "NO_INDEPENDENT_COMPARABLE_DEALS"
+          },
+          "distribution": []
+        },
+        "source": {
+          "state": "AVAILABLE",
+          "document_hash": "4e5a41ac924ac6de7f07b269944122462810eb6fe96e5787e3725253e00f29a0",
+          "evidence_reference_ids": [
+            "0bc7727807aec73cee02e89c9cfc8db1d44d1bd3ee69501d6b434e48950c4724",
+            "3be32de7c1b03e627f6a1ae6dffd4f70e9132aa68434a267fabde08bf385a60b",
+            "5ef5fb3583de3f9d6a3c280081629d600400c415a9ec7aae94d6c7c4339e8bfd",
+            "5f456ebf73c543942e079c0a9fc4c96546472ff74c94b14f529d2a3ec2ddff52",
+            "7c8abf1513dab84d72bae6b9262fd10baf44beca9b2dc8313030fea91103b952",
+            "85f031b64296536b1eeeb54511e2a88e41db589a0daa34f8b1a93bdcf56ee175",
+            "9e2dd07af152b52478481cad11fa21125998f5db45381e1c76c206fd7c04c481",
+            "c435e8228036f28a3bf0b08a09abcc393d1f58ff424f4cfba897ac795b6158ec",
+            "e6b56d9bba391806dd653d916239ed692210982a0b3261d0d3cc786177700218",
+            "fdfc53ea9a6e698fa4f15483ef8724eade1ea98fc16ac21e1801f3ec5139aefe"
+          ],
+          "exact_detail": {
+            "schema_version": "F27_EXACT_DETAIL_REFERENCE/V1",
+            "detail_kind": "CLAUSE_B_LIMBS_ACCURACY_PROVISO_DEFINITION_AND_DENOMINATOR",
+            "evidence_reference_ids": [
+              "0bc7727807aec73cee02e89c9cfc8db1d44d1bd3ee69501d6b434e48950c4724",
+              "3be32de7c1b03e627f6a1ae6dffd4f70e9132aa68434a267fabde08bf385a60b",
+              "5ef5fb3583de3f9d6a3c280081629d600400c415a9ec7aae94d6c7c4339e8bfd",
+              "5f456ebf73c543942e079c0a9fc4c96546472ff74c94b14f529d2a3ec2ddff52",
+              "7c8abf1513dab84d72bae6b9262fd10baf44beca9b2dc8313030fea91103b952",
+              "85f031b64296536b1eeeb54511e2a88e41db589a0daa34f8b1a93bdcf56ee175",
+              "9e2dd07af152b52478481cad11fa21125998f5db45381e1c76c206fd7c04c481",
+              "c435e8228036f28a3bf0b08a09abcc393d1f58ff424f4cfba897ac795b6158ec",
+              "e6b56d9bba391806dd653d916239ed692210982a0b3261d0d3cc786177700218",
+              "fdfc53ea9a6e698fa4f15483ef8724eade1ea98fc16ac21e1801f3ec5139aefe"
+            ],
+            "source_detail_ids": [
+              "03db92b46c36a2723f4d3f664e0c0ffd4245041fffc64d27926b37d917f55796",
+              "4e7bf059948eac814ea51149eac7a767fec9611a24f37138f70c9edd45fc7d3c",
+              "773e7a0a1f864fc3ea10302090bd7d8f4270ce0d65c4fb1e55d70c14074a6a7d",
+              "d89207976d244dca498e128bcf52f80970ae958876516a2eb809f610f10e9fc8",
+              "e07fcde4e228758be00f359695e190db96c4e26d4ea595450c6fbc46bcebdb03"
+            ],
+            "whole_document_permission": false,
+            "exact_detail_reference_id": "feb00bdea3141158bb1d9e8dc0b456afbdd6fea819034fcee47824ba3f9b50c1"
+          }
+        },
+        "dependency_subrow_keys": [],
+        "subrow_id": "bc9d132bb66b3f7e4d0c0d525fa12047b5e937e419b69c65967685d5c06fc04c"
+      },
+      {
+        "schema_version": "CAPITALISATION_SUBROW_F27/V1",
+        "value_slot_key": "CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V",
+        "display_ordinal": 1,
+        "row_role": "PRIMARY_COMPARABLE_TERM",
+        "section": "ACCURACY_AT_CLOSING",
+        "label": "Clause (C) group",
+        "comparison_class_key": "CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V",
+        "state": "PRESENT",
+        "comparability_state": "COMPARABLE_IN_EXACT_FROZEN_CLASS",
+        "party": {
+          "role": "CONDITION_BENEFICIARY",
+          "value": "BUYER_GROUP",
+          "capacity": "ACQUIRER"
+        },
+        "representation_maker": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "COMPANY",
+          "capacity": "TARGET"
+        },
+        "subject": {
+          "display_value": "True and correct in all material respects, with materiality scrape",
+          "raw_value": "(C) the representations and warranties of the Company set forth in Section 3.1(a) (Organization, Good Standing and Qualification), Section 3.1(b) (Capital Structure) (other than Section 3.1(b)(i) and Section 3.1(b)(iii) thereof), Section 3.1(c) (Corporate Authority and Approval) and Section 3.1(s) (Brokers and Finders) shall be true and correct (disregarding all qualifications or limitations as to \"material\", \"materiality\" or \"Company Material Adverse Effect\") in all material respects at and as of the date of this Agreement and the Closing Date as though made at and as of the Closing Date",
+          "canonical_value": "MAT_ALL_MATERIAL",
+          "canonical_unit": "ACCURACY_STANDARD_CODE",
+          "accuracy_exception": null,
+          "denominator": null,
+          "target_limb_ordinals": [
+            2,
+            4,
+            5
+          ],
+          "dated_representation_proviso": {
+            "application": "EXPRESS_DATE_OR_PERIOD_ONLY",
+            "evidence_excerpt_id": "fdfc53ea9a6e698fa4f15483ef8724eade1ea98fc16ac21e1801f3ec5139aefe"
+          },
+          "materiality_scrape": {
+            "state": "APPLIED",
+            "disregarded_qualifier_codes": [
+              "MATERIAL",
+              "MATERIALITY",
+              "COMPANY_MATERIAL_ADVERSE_EFFECT"
+            ],
+            "evidence_excerpt_id": "36cf55c34688298866adeca06ec44fba51f9af20e60d43add9e7d0b084249fde"
+          }
+        },
+        "market_context": {
+          "display_priority": "SECONDARY",
+          "subject_deal_included": true,
+          "independent_comparable_deals": 0,
+          "state": "INACTIVE_CANDIDATE_NO_INDEPENDENT_COHORT",
+          "presence_frequency": {
+            "eligible_deals": 0,
+            "present_deals": 0,
+            "percentage": null,
+            "reason_code": "NO_INDEPENDENT_COMPARABLE_DEALS"
+          },
+          "distribution": []
+        },
+        "source": {
+          "state": "AVAILABLE",
+          "document_hash": "4e5a41ac924ac6de7f07b269944122462810eb6fe96e5787e3725253e00f29a0",
+          "evidence_reference_ids": [
+            "105a21b5432481830dd84c3deeee06018a2a01a8e1647d46f85930dd8dcf5ab7",
+            "36cf55c34688298866adeca06ec44fba51f9af20e60d43add9e7d0b084249fde",
+            "3e81060d8eb691aa1012dce18b749841b54474d688e87b62abdb73a44f6fc46a",
+            "4224b4eb1301b1b98ea293dc5d8fcd36b9898d61ecb785a225c6a982c232dec0",
+            "669d5d71d828f4d1e05f72b8cb1e6d7892093f7a3943873cf4f666528d4ab7ba",
+            "9b138f34fd0f9e4f81bd91c28b6614c986f90e77c833fa5c70c924f9b57554b8",
+            "fdfc53ea9a6e698fa4f15483ef8724eade1ea98fc16ac21e1801f3ec5139aefe"
+          ],
+          "exact_detail": {
+            "schema_version": "F27_EXACT_DETAIL_REFERENCE/V1",
+            "detail_kind": "CLAUSE_C_LIMBS_ACCURACY_PROVISO_AND_SCRAPE",
+            "evidence_reference_ids": [
+              "105a21b5432481830dd84c3deeee06018a2a01a8e1647d46f85930dd8dcf5ab7",
+              "36cf55c34688298866adeca06ec44fba51f9af20e60d43add9e7d0b084249fde",
+              "3e81060d8eb691aa1012dce18b749841b54474d688e87b62abdb73a44f6fc46a",
+              "4224b4eb1301b1b98ea293dc5d8fcd36b9898d61ecb785a225c6a982c232dec0",
+              "669d5d71d828f4d1e05f72b8cb1e6d7892093f7a3943873cf4f666528d4ab7ba",
+              "9b138f34fd0f9e4f81bd91c28b6614c986f90e77c833fa5c70c924f9b57554b8",
+              "fdfc53ea9a6e698fa4f15483ef8724eade1ea98fc16ac21e1801f3ec5139aefe"
+            ],
+            "source_detail_ids": [
+              "5ad631d0464008e111d2a5bd11907c273773e95eb7d3e868cfdfee62928e43ab",
+              "7f19d1c3415755df9d029050e9729ec576b03defba819c81316f70e95fbb6ebc",
+              "c7745283083278d90f1e7537fe94b072b8bd19fb101de82286035eb52a8c770e"
+            ],
+            "whole_document_permission": false,
+            "exact_detail_reference_id": "98621a2df61566b6792715de43372b1ac534af61c17f5d3594e02d1fbfd88036"
+          }
+        },
+        "dependency_subrow_keys": [],
+        "subrow_id": "bd6c02d8c6c98c674398ad0d64a736be8bd19efcaec6ab348f625ee553f32495"
+      },
+      {
+        "schema_version": "CAPITALISATION_SUBROW_F27/V1",
+        "value_slot_key": "CAPITALISATION_MEASUREMENT_DATE",
+        "display_ordinal": 2,
+        "row_role": "SUBJECT_CONTEXT",
+        "section": "REPRESENTATION_CONTEXT",
+        "label": "Measurement date",
+        "comparison_class_key": null,
+        "state": "PRESENT",
+        "comparability_state": "SUBJECT_CONTEXT_ONLY_NOT_METRIC_ADMITTED",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "COMPANY",
+          "capacity": "TARGET"
+        },
+        "result_party": {
+          "role": "CONDITION_BENEFICIARY",
+          "value": "BUYER_GROUP",
+          "capacity": "ACQUIRER"
+        },
+        "subject": {
+          "display_value": "17 April 2026, one calendar day before signing",
+          "raw_value": "April 17, 2026",
+          "canonical_value": "2026-04-17",
+          "canonical_unit": "CALENDAR_DAY",
+          "claim_attributes": {
+            "raw_measurement_date": "2026-04-17",
+            "signing_date": "2026-04-18",
+            "signing_relative_offset": -1,
+            "offset_unit": "CALENDAR_DAY",
+            "day_basis": "CALENDAR_DAY",
+            "semantic_class": "NEAR_SIGNING_MEASUREMENT_SNAPSHOT",
+            "precision": "EXACT",
+            "derivation_version": "QXO_CAPITALISATION_BRING_DOWN_F27/V1",
+            "signing_anchor_evidence_excerpt_ids": [
+              "dc6f27b98e11d17318482c37250c000090f7d1f3bc94b196ffd89b4bfdb0f501"
+            ]
+          },
+          "scope_closure_id": null
+        },
+        "market_context": {
+          "display_priority": "SECONDARY",
+          "subject_deal_included": true,
+          "independent_comparable_deals": 0,
+          "state": "INACTIVE_CANDIDATE_NO_INDEPENDENT_COHORT",
+          "presence_frequency": {
+            "eligible_deals": 0,
+            "present_deals": 0,
+            "percentage": null,
+            "reason_code": "NO_INDEPENDENT_COMPARABLE_DEALS"
+          },
+          "distribution": []
+        },
+        "source": {
+          "state": "AVAILABLE",
+          "document_hash": "4e5a41ac924ac6de7f07b269944122462810eb6fe96e5787e3725253e00f29a0",
+          "evidence_reference_ids": [
+            "105a21b5432481830dd84c3deeee06018a2a01a8e1647d46f85930dd8dcf5ab7",
+            "4224b4eb1301b1b98ea293dc5d8fcd36b9898d61ecb785a225c6a982c232dec0",
+            "c435e8228036f28a3bf0b08a09abcc393d1f58ff424f4cfba897ac795b6158ec",
+            "dc6f27b98e11d17318482c37250c000090f7d1f3bc94b196ffd89b4bfdb0f501"
+          ],
+          "exact_detail": {
+            "schema_version": "F27_EXACT_DETAIL_REFERENCE/V1",
+            "detail_kind": "CAPITALISATION_MEASUREMENT_DATE",
+            "evidence_reference_ids": [
+              "105a21b5432481830dd84c3deeee06018a2a01a8e1647d46f85930dd8dcf5ab7",
+              "4224b4eb1301b1b98ea293dc5d8fcd36b9898d61ecb785a225c6a982c232dec0",
+              "c435e8228036f28a3bf0b08a09abcc393d1f58ff424f4cfba897ac795b6158ec",
+              "dc6f27b98e11d17318482c37250c000090f7d1f3bc94b196ffd89b4bfdb0f501"
+            ],
+            "source_detail_ids": [
+              "7dc03983f8a227e88163e2bf1359a566f8df6c81b18f27640e824493fc8a02db"
+            ],
+            "whole_document_permission": false,
+            "exact_detail_reference_id": "1b8a29f5c1179a742e45f0e7f17936e6aa54b5de674ed9204f1ba13c8240d107"
+          }
+        },
+        "dependency_subrow_keys": [],
+        "subrow_id": "3bb7b08fe0647f82718cdff53bfae70debac0482d10c5e13f51341c5fba7e704"
+      },
+      {
+        "schema_version": "CAPITALISATION_SUBROW_F27/V1",
+        "value_slot_key": "GENERAL_KNOWLEDGE_QUALIFIER",
+        "display_ordinal": 3,
+        "row_role": "SUBJECT_CONTEXT",
+        "section": "REPRESENTATION_CONTEXT",
+        "label": "General knowledge qualifier",
+        "comparison_class_key": null,
+        "state": "ABSENT",
+        "comparability_state": "EXPLICIT_ABSENCE_SUBJECT_CONTEXT",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "COMPANY",
+          "capacity": "TARGET"
+        },
+        "result_party": {
+          "role": "CONDITION_BENEFICIARY",
+          "value": "BUYER_GROUP",
+          "capacity": "ACQUIRER"
+        },
+        "subject": {
+          "display_value": "Absent",
+          "raw_value": null,
+          "canonical_value": null,
+          "canonical_unit": null,
+          "claim_attributes": {},
+          "scope_closure_id": "2e402e0feff299a68bbf8692a12f6b266d19947bed64d88feb945f2d3602073e"
+        },
+        "market_context": {
+          "display_priority": "SECONDARY",
+          "subject_deal_included": true,
+          "independent_comparable_deals": 0,
+          "state": "INACTIVE_CANDIDATE_NO_INDEPENDENT_COHORT",
+          "presence_frequency": {
+            "eligible_deals": 0,
+            "present_deals": 0,
+            "percentage": null,
+            "reason_code": "NO_INDEPENDENT_COMPARABLE_DEALS"
+          },
+          "distribution": []
+        },
+        "source": {
+          "state": "AVAILABLE",
+          "document_hash": "4e5a41ac924ac6de7f07b269944122462810eb6fe96e5787e3725253e00f29a0",
+          "evidence_reference_ids": [
+            "0275da95e0154b07c69799e60b122e518363595136a0e89b4e854a2dea5a629a",
+            "0bc7727807aec73cee02e89c9cfc8db1d44d1bd3ee69501d6b434e48950c4724",
+            "105a21b5432481830dd84c3deeee06018a2a01a8e1647d46f85930dd8dcf5ab7",
+            "4224b4eb1301b1b98ea293dc5d8fcd36b9898d61ecb785a225c6a982c232dec0",
+            "5ef5fb3583de3f9d6a3c280081629d600400c415a9ec7aae94d6c7c4339e8bfd",
+            "669d5d71d828f4d1e05f72b8cb1e6d7892093f7a3943873cf4f666528d4ab7ba",
+            "7c8abf1513dab84d72bae6b9262fd10baf44beca9b2dc8313030fea91103b952",
+            "85f031b64296536b1eeeb54511e2a88e41db589a0daa34f8b1a93bdcf56ee175",
+            "9b138f34fd0f9e4f81bd91c28b6614c986f90e77c833fa5c70c924f9b57554b8",
+            "9e2dd07af152b52478481cad11fa21125998f5db45381e1c76c206fd7c04c481",
+            "a2eb374ceaf748d4d34297e2f5e9b7ce4ea9aad94854507e723b965a5bb8ae3a",
+            "aa6c67a9c09648526f93cce3d086c066518b43fcbe00c9fd507119499338e528",
+            "ac2d5db563c232413c04caf92840e9609cd3dfbfb00100000afc6e9214be3983",
+            "c435e8228036f28a3bf0b08a09abcc393d1f58ff424f4cfba897ac795b6158ec",
+            "d3f05364e32a5157bb8682149e3241ba2f3ff575417f23b672d48ff599d44182",
+            "dde2d3674d0fbe4614e5365acb7b9d0891111503c7c0b8d18f74336f1f94d241",
+            "fdfc53ea9a6e698fa4f15483ef8724eade1ea98fc16ac21e1801f3ec5139aefe"
+          ],
+          "exact_detail": {
+            "schema_version": "F27_EXACT_DETAIL_REFERENCE/V1",
+            "detail_kind": "GENERAL_KNOWLEDGE_QUALIFIER",
+            "evidence_reference_ids": [
+              "0275da95e0154b07c69799e60b122e518363595136a0e89b4e854a2dea5a629a",
+              "0bc7727807aec73cee02e89c9cfc8db1d44d1bd3ee69501d6b434e48950c4724",
+              "105a21b5432481830dd84c3deeee06018a2a01a8e1647d46f85930dd8dcf5ab7",
+              "4224b4eb1301b1b98ea293dc5d8fcd36b9898d61ecb785a225c6a982c232dec0",
+              "5ef5fb3583de3f9d6a3c280081629d600400c415a9ec7aae94d6c7c4339e8bfd",
+              "669d5d71d828f4d1e05f72b8cb1e6d7892093f7a3943873cf4f666528d4ab7ba",
+              "7c8abf1513dab84d72bae6b9262fd10baf44beca9b2dc8313030fea91103b952",
+              "85f031b64296536b1eeeb54511e2a88e41db589a0daa34f8b1a93bdcf56ee175",
+              "9b138f34fd0f9e4f81bd91c28b6614c986f90e77c833fa5c70c924f9b57554b8",
+              "9e2dd07af152b52478481cad11fa21125998f5db45381e1c76c206fd7c04c481",
+              "a2eb374ceaf748d4d34297e2f5e9b7ce4ea9aad94854507e723b965a5bb8ae3a",
+              "aa6c67a9c09648526f93cce3d086c066518b43fcbe00c9fd507119499338e528",
+              "ac2d5db563c232413c04caf92840e9609cd3dfbfb00100000afc6e9214be3983",
+              "c435e8228036f28a3bf0b08a09abcc393d1f58ff424f4cfba897ac795b6158ec",
+              "d3f05364e32a5157bb8682149e3241ba2f3ff575417f23b672d48ff599d44182",
+              "dde2d3674d0fbe4614e5365acb7b9d0891111503c7c0b8d18f74336f1f94d241",
+              "fdfc53ea9a6e698fa4f15483ef8724eade1ea98fc16ac21e1801f3ec5139aefe"
+            ],
+            "source_detail_ids": [
+              "9e420a8b45c8f6442ccd1583f5498902e1cda3bec73081a842cca37a7661618b"
+            ],
+            "whole_document_permission": false,
+            "exact_detail_reference_id": "f8e3e6cb8827475d82e3d31f83ce75484e12fef1c008ff018e6fc540410d1c37"
+          }
+        },
+        "dependency_subrow_keys": [],
+        "subrow_id": "8761c93685b54f14c2a36862884dc53e700584669f214a2da062af085456e702"
+      },
+      {
+        "schema_version": "CAPITALISATION_SUBROW_F27/V1",
+        "value_slot_key": "GENERAL_MATERIALITY_QUALIFIER",
+        "display_ordinal": 4,
+        "row_role": "SUBJECT_CONTEXT",
+        "section": "REPRESENTATION_CONTEXT",
+        "label": "General materiality qualifier",
+        "comparison_class_key": null,
+        "state": "ABSENT",
+        "comparability_state": "EXPLICIT_ABSENCE_SUBJECT_CONTEXT",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "COMPANY",
+          "capacity": "TARGET"
+        },
+        "result_party": {
+          "role": "CONDITION_BENEFICIARY",
+          "value": "BUYER_GROUP",
+          "capacity": "ACQUIRER"
+        },
+        "subject": {
+          "display_value": "Absent",
+          "raw_value": null,
+          "canonical_value": null,
+          "canonical_unit": null,
+          "claim_attributes": {},
+          "scope_closure_id": "b68e95329faef910b11e0c5d042f1999e2a0bdb225da8c8c7657c462b649050b"
+        },
+        "market_context": {
+          "display_priority": "SECONDARY",
+          "subject_deal_included": true,
+          "independent_comparable_deals": 0,
+          "state": "INACTIVE_CANDIDATE_NO_INDEPENDENT_COHORT",
+          "presence_frequency": {
+            "eligible_deals": 0,
+            "present_deals": 0,
+            "percentage": null,
+            "reason_code": "NO_INDEPENDENT_COMPARABLE_DEALS"
+          },
+          "distribution": []
+        },
+        "source": {
+          "state": "AVAILABLE",
+          "document_hash": "4e5a41ac924ac6de7f07b269944122462810eb6fe96e5787e3725253e00f29a0",
+          "evidence_reference_ids": [
+            "0275da95e0154b07c69799e60b122e518363595136a0e89b4e854a2dea5a629a",
+            "0bc7727807aec73cee02e89c9cfc8db1d44d1bd3ee69501d6b434e48950c4724",
+            "105a21b5432481830dd84c3deeee06018a2a01a8e1647d46f85930dd8dcf5ab7",
+            "4224b4eb1301b1b98ea293dc5d8fcd36b9898d61ecb785a225c6a982c232dec0",
+            "5ef5fb3583de3f9d6a3c280081629d600400c415a9ec7aae94d6c7c4339e8bfd",
+            "669d5d71d828f4d1e05f72b8cb1e6d7892093f7a3943873cf4f666528d4ab7ba",
+            "7c8abf1513dab84d72bae6b9262fd10baf44beca9b2dc8313030fea91103b952",
+            "85f031b64296536b1eeeb54511e2a88e41db589a0daa34f8b1a93bdcf56ee175",
+            "9b138f34fd0f9e4f81bd91c28b6614c986f90e77c833fa5c70c924f9b57554b8",
+            "9e2dd07af152b52478481cad11fa21125998f5db45381e1c76c206fd7c04c481",
+            "a2eb374ceaf748d4d34297e2f5e9b7ce4ea9aad94854507e723b965a5bb8ae3a",
+            "aa6c67a9c09648526f93cce3d086c066518b43fcbe00c9fd507119499338e528",
+            "ac2d5db563c232413c04caf92840e9609cd3dfbfb00100000afc6e9214be3983",
+            "c435e8228036f28a3bf0b08a09abcc393d1f58ff424f4cfba897ac795b6158ec",
+            "d3f05364e32a5157bb8682149e3241ba2f3ff575417f23b672d48ff599d44182",
+            "dde2d3674d0fbe4614e5365acb7b9d0891111503c7c0b8d18f74336f1f94d241",
+            "fdfc53ea9a6e698fa4f15483ef8724eade1ea98fc16ac21e1801f3ec5139aefe"
+          ],
+          "exact_detail": {
+            "schema_version": "F27_EXACT_DETAIL_REFERENCE/V1",
+            "detail_kind": "GENERAL_MATERIALITY_QUALIFIER",
+            "evidence_reference_ids": [
+              "0275da95e0154b07c69799e60b122e518363595136a0e89b4e854a2dea5a629a",
+              "0bc7727807aec73cee02e89c9cfc8db1d44d1bd3ee69501d6b434e48950c4724",
+              "105a21b5432481830dd84c3deeee06018a2a01a8e1647d46f85930dd8dcf5ab7",
+              "4224b4eb1301b1b98ea293dc5d8fcd36b9898d61ecb785a225c6a982c232dec0",
+              "5ef5fb3583de3f9d6a3c280081629d600400c415a9ec7aae94d6c7c4339e8bfd",
+              "669d5d71d828f4d1e05f72b8cb1e6d7892093f7a3943873cf4f666528d4ab7ba",
+              "7c8abf1513dab84d72bae6b9262fd10baf44beca9b2dc8313030fea91103b952",
+              "85f031b64296536b1eeeb54511e2a88e41db589a0daa34f8b1a93bdcf56ee175",
+              "9b138f34fd0f9e4f81bd91c28b6614c986f90e77c833fa5c70c924f9b57554b8",
+              "9e2dd07af152b52478481cad11fa21125998f5db45381e1c76c206fd7c04c481",
+              "a2eb374ceaf748d4d34297e2f5e9b7ce4ea9aad94854507e723b965a5bb8ae3a",
+              "aa6c67a9c09648526f93cce3d086c066518b43fcbe00c9fd507119499338e528",
+              "ac2d5db563c232413c04caf92840e9609cd3dfbfb00100000afc6e9214be3983",
+              "c435e8228036f28a3bf0b08a09abcc393d1f58ff424f4cfba897ac795b6158ec",
+              "d3f05364e32a5157bb8682149e3241ba2f3ff575417f23b672d48ff599d44182",
+              "dde2d3674d0fbe4614e5365acb7b9d0891111503c7c0b8d18f74336f1f94d241",
+              "fdfc53ea9a6e698fa4f15483ef8724eade1ea98fc16ac21e1801f3ec5139aefe"
+            ],
+            "source_detail_ids": [
+              "dd5b490fd60da9dd0c3dc2e4c52126afa3edd392f5b182220dc37681747cc1e2"
+            ],
+            "whole_document_permission": false,
+            "exact_detail_reference_id": "351feb5501e5f380d76c79d1626fedc1118085f029eac64a71102b6469ae3211"
+          }
+        },
+        "dependency_subrow_keys": [],
+        "subrow_id": "acb9ff7bcdbab5a998fe3cc44375417a2741e6c0b092c40b248b9f67fceb5ecc"
+      },
+      {
+        "schema_version": "CAPITALISATION_SUBROW_F27/V1",
+        "value_slot_key": "RETROSPECTIVE_LOOKBACK",
+        "display_ordinal": 5,
+        "row_role": "SUBJECT_CONTEXT",
+        "section": "REPRESENTATION_CONTEXT",
+        "label": "Retrospective lookback",
+        "comparison_class_key": null,
+        "state": "ABSENT",
+        "comparability_state": "EXPLICIT_ABSENCE_SUBJECT_CONTEXT",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "COMPANY",
+          "capacity": "TARGET"
+        },
+        "result_party": {
+          "role": "CONDITION_BENEFICIARY",
+          "value": "BUYER_GROUP",
+          "capacity": "ACQUIRER"
+        },
+        "subject": {
+          "display_value": "Absent",
+          "raw_value": null,
+          "canonical_value": null,
+          "canonical_unit": null,
+          "claim_attributes": {},
+          "scope_closure_id": "253f6f5aa2d5c7853dfe515999e8f0c83abadc22b13011ed5fbbe04fe2fc0243"
+        },
+        "market_context": {
+          "display_priority": "SECONDARY",
+          "subject_deal_included": true,
+          "independent_comparable_deals": 0,
+          "state": "INACTIVE_CANDIDATE_NO_INDEPENDENT_COHORT",
+          "presence_frequency": {
+            "eligible_deals": 0,
+            "present_deals": 0,
+            "percentage": null,
+            "reason_code": "NO_INDEPENDENT_COMPARABLE_DEALS"
+          },
+          "distribution": []
+        },
+        "source": {
+          "state": "AVAILABLE",
+          "document_hash": "4e5a41ac924ac6de7f07b269944122462810eb6fe96e5787e3725253e00f29a0",
+          "evidence_reference_ids": [
+            "0275da95e0154b07c69799e60b122e518363595136a0e89b4e854a2dea5a629a",
+            "0bc7727807aec73cee02e89c9cfc8db1d44d1bd3ee69501d6b434e48950c4724",
+            "105a21b5432481830dd84c3deeee06018a2a01a8e1647d46f85930dd8dcf5ab7",
+            "4224b4eb1301b1b98ea293dc5d8fcd36b9898d61ecb785a225c6a982c232dec0",
+            "5ef5fb3583de3f9d6a3c280081629d600400c415a9ec7aae94d6c7c4339e8bfd",
+            "669d5d71d828f4d1e05f72b8cb1e6d7892093f7a3943873cf4f666528d4ab7ba",
+            "7c8abf1513dab84d72bae6b9262fd10baf44beca9b2dc8313030fea91103b952",
+            "85f031b64296536b1eeeb54511e2a88e41db589a0daa34f8b1a93bdcf56ee175",
+            "9b138f34fd0f9e4f81bd91c28b6614c986f90e77c833fa5c70c924f9b57554b8",
+            "9e2dd07af152b52478481cad11fa21125998f5db45381e1c76c206fd7c04c481",
+            "a2eb374ceaf748d4d34297e2f5e9b7ce4ea9aad94854507e723b965a5bb8ae3a",
+            "aa6c67a9c09648526f93cce3d086c066518b43fcbe00c9fd507119499338e528",
+            "ac2d5db563c232413c04caf92840e9609cd3dfbfb00100000afc6e9214be3983",
+            "c435e8228036f28a3bf0b08a09abcc393d1f58ff424f4cfba897ac795b6158ec",
+            "d3f05364e32a5157bb8682149e3241ba2f3ff575417f23b672d48ff599d44182",
+            "dde2d3674d0fbe4614e5365acb7b9d0891111503c7c0b8d18f74336f1f94d241",
+            "fdfc53ea9a6e698fa4f15483ef8724eade1ea98fc16ac21e1801f3ec5139aefe"
+          ],
+          "exact_detail": {
+            "schema_version": "F27_EXACT_DETAIL_REFERENCE/V1",
+            "detail_kind": "RETROSPECTIVE_LOOKBACK",
+            "evidence_reference_ids": [
+              "0275da95e0154b07c69799e60b122e518363595136a0e89b4e854a2dea5a629a",
+              "0bc7727807aec73cee02e89c9cfc8db1d44d1bd3ee69501d6b434e48950c4724",
+              "105a21b5432481830dd84c3deeee06018a2a01a8e1647d46f85930dd8dcf5ab7",
+              "4224b4eb1301b1b98ea293dc5d8fcd36b9898d61ecb785a225c6a982c232dec0",
+              "5ef5fb3583de3f9d6a3c280081629d600400c415a9ec7aae94d6c7c4339e8bfd",
+              "669d5d71d828f4d1e05f72b8cb1e6d7892093f7a3943873cf4f666528d4ab7ba",
+              "7c8abf1513dab84d72bae6b9262fd10baf44beca9b2dc8313030fea91103b952",
+              "85f031b64296536b1eeeb54511e2a88e41db589a0daa34f8b1a93bdcf56ee175",
+              "9b138f34fd0f9e4f81bd91c28b6614c986f90e77c833fa5c70c924f9b57554b8",
+              "9e2dd07af152b52478481cad11fa21125998f5db45381e1c76c206fd7c04c481",
+              "a2eb374ceaf748d4d34297e2f5e9b7ce4ea9aad94854507e723b965a5bb8ae3a",
+              "aa6c67a9c09648526f93cce3d086c066518b43fcbe00c9fd507119499338e528",
+              "ac2d5db563c232413c04caf92840e9609cd3dfbfb00100000afc6e9214be3983",
+              "c435e8228036f28a3bf0b08a09abcc393d1f58ff424f4cfba897ac795b6158ec",
+              "d3f05364e32a5157bb8682149e3241ba2f3ff575417f23b672d48ff599d44182",
+              "dde2d3674d0fbe4614e5365acb7b9d0891111503c7c0b8d18f74336f1f94d241",
+              "fdfc53ea9a6e698fa4f15483ef8724eade1ea98fc16ac21e1801f3ec5139aefe"
+            ],
+            "source_detail_ids": [
+              "5387c8f3491f3b2a8557c569a221581ab383a9ca4318f72a8351d62e444e273a"
+            ],
+            "whole_document_permission": false,
+            "exact_detail_reference_id": "79bbe7e18d64cdccc0fddeabcbdc2efe05b316b3ca739bc0a5870167778c437f"
+          }
+        },
+        "dependency_subrow_keys": [],
+        "subrow_id": "284caee7c7946dba52e75326461e29a058d26c455dd4e7dc381f886f335431fb"
+      }
+    ],
+    "provision_row_id": "97772af3bb0317303d8615c1e8723814c1e2c319d60368dca30f67d6284eb91f"
+  },
+  "surfaces": [
+    "COMPARE",
+    "CORPUS_CONTEXT",
+    "QUERY",
+    "REVIEW"
+  ],
+  "authority": {
+    "active_release_authority": "NONE",
+    "active_query_authority": "NONE",
+    "active_pointer_authority": "NONE",
+    "corpus_write_authority": "NONE",
+    "production_activation_authority": "NONE"
+  }
+}

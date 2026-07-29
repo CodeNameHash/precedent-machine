@@ -1,0 +1,35 @@
+{
+  "phase": "WP-CANONICAL-QXO-CAPITALISATION-F27",
+  "allowed": [
+    ".phase-id",
+    ".phase-raw-id",
+    ".github/phase-allowlists/wp-canonical-qxo-capitalisation-f27.json",
+    "__fixtures__/canonical-v2/qxo-capitalisation-bring-down-f27.json",
+    "docs/codex-program/bootstrap-acceptance-source.json",
+    "docs/codex-program/programme-gates.yaml",
+    "docs/codex-program/specification-manifest.json",
+    "docs/superpowers/plans/2026-07-27-qxo-capitalisation-bring-down-f27-plan.md",
+    "docs/superpowers/specs/2026-07-27-qxo-capitalisation-bring-down-f27-design.md",
+    "lib/canonical-v2/contract-bundle.js",
+    "lib/canonical-v2/qxo-capitalisation-cross-view-release-f27.js",
+    "lib/canonical-v2/qxo-capitalisation-parser-source-closure-f27.js",
+    "lib/canonical-v2/reviewed-qxo-capitalisation-f27.js",
+    "scripts/generate-qxo-capitalisation-f27-fixture.mjs",
+    "scripts/canonical-v2-staging-qxo-capitalisation-f27.mjs",
+    "tests/canonical-v2-contract-bundle-versions.test.js",
+    "tests/canonical-v2-qxo-capitalisation-cross-view-release-f27.test.js",
+    "tests/canonical-v2-qxo-capitalisation-parser-source-closure-f27.test.js",
+    "tests/canonical-v2-reviewed-qxo-capitalisation-f27.test.js",
+    "tests/canonical-v2-staging-qxo-capitalisation-f27.test.js",
+    "tests/fixtures/canonical-v2/qxo-capitalisation-f27-inputs.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**",
+    "next.config.js"
+  ],
+  "note": "Inactive F27 implementation authority for the QXO Capital Structure representation and bring-down slice. Production routes, flags, pointers, corpus writes and activation remain outside scope."
+}
