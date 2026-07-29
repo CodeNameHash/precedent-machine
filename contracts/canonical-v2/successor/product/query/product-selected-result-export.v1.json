@@ -1,0 +1,124 @@
+{
+  "object_kind": "PRODUCT_RESULT_ACTION_CONTRACT_INPUT",
+  "stable_id": "PRODUCT_SELECTED_RESULT_EXPORT",
+  "schema_version": "PRODUCT_RESULT_ACTION_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PRODUCT",
+    "contract_type": "SELECTED_RESULT_EXPORT_DEFINITION",
+    "contract_version": 1,
+    "selection_contract": {
+      "parent_definition_stable_id": "PRODUCT_QUERY_RESULT_DEFINITION",
+      "parent_schema_version": "PRODUCT_QUERY_RESULT/V1",
+      "exact_product_query_definition_id_required": true,
+      "exact_approved_pm_data_version_id_required": true,
+      "exact_candidate_release_manifest_id_and_payload_digest_required": true,
+      "selected_product_result_identities_required": true,
+      "selected_result_identities_must_be_unique_and_in_query_order": true,
+      "selected_results_must_belong_to_same_query_and_release": true,
+      "minimum_selected_results": 1,
+      "maximum_selected_results": 50,
+      "unselected_result_can_enter_export": false
+    },
+    "field_contract": {
+      "required_provenance_fields": [
+        "product_query_definition_id",
+        "product_query_result_identity",
+        "approved_pm_data_version_id",
+        "candidate_release_manifest_id",
+        "candidate_release_manifest_payload_digest",
+        "domain_key",
+        "domain_result_definition",
+        "domain_result_identity",
+        "exact_citation"
+      ],
+      "requested_field_must_be_query_admitted": true,
+      "requested_field_must_be_present_in_checked_result_shape": true,
+      "query_filter_contract_included_as_query_provenance": true,
+      "query_coverage_contract_included_as_query_provenance": true,
+      "unrequested_field_can_be_added": false,
+      "physical_database_field_can_be_exported": false,
+      "generated_narrative_can_be_exported": false
+    },
+    "payload_contract": {
+      "logical_type": "ProductSelectedResultExportPayload",
+      "schema_version": "PRODUCT_SELECTED_RESULT_EXPORT_PAYLOAD/V1",
+      "canonical_json_payload_required": true,
+      "one_canonical_payload_shared_by_all_render_formats": true,
+      "render_format_can_add_omit_or_reorder_payload_content": false,
+      "pdf_clipboard_and_download_are_derived_renderers_only": true,
+      "renderer_can_execute_query_or_source_read": false,
+      "format_specific_bytes_create_canonical_data_authority": false
+    },
+    "source_contract": {
+      "every_exported_result_requires_exact_release_pinned_citation": true,
+      "verbatim_result_text_must_match_domain_result": true,
+      "structured_result_value_and_evidence_must_match_domain_result": true,
+      "source_document_and_evidence_identity_required": true,
+      "citation_can_be_rewritten_for_export": false,
+      "actual_related_drafting_can_be_replaced_by_classification_summary": false
+    },
+    "completeness_contract": {
+      "export_result_identity_set_equals_selected_result_identity_set": true,
+      "export_order_equals_selected_query_order": true,
+      "missing_selected_result_fails_entire_export": true,
+      "invalid_selected_result_fails_entire_export": true,
+      "partial_export_after_failure_permitted": false,
+      "duplicate_result_can_pad_export": false,
+      "failed_result_can_be_replaced_by_valid_sibling": false,
+      "export_count_reconciles_selected_and_emitted_results": true
+    },
+    "identity_contract": {
+      "stable_id_domain": "PRODUCT_SELECTED_RESULT_EXPORT/V1",
+      "required_identity_inputs": [
+        "product_query_definition_id",
+        "approved_pm_data_version_id",
+        "candidate_release_manifest_id",
+        "candidate_release_manifest_payload_digest",
+        "ordered_selected_product_result_identities",
+        "ordered_requested_field_references",
+        "export_contract_version"
+      ],
+      "prohibited_identity_inputs": [
+        "display_label",
+        "application_row_order",
+        "physical_database_identifier",
+        "narrative_model_output",
+        "render_timestamp",
+        "temporary_download_url"
+      ],
+      "same_inputs_produce_byte_equivalent_export_payload": true,
+      "correctly_rehashed_structural_forgery_permitted": false
+    },
+    "failure_contract": {
+      "inactive_release_disposition": "RELEASE_NOT_ACTIVE",
+      "stale_result_disposition": "RESULT_NOT_IN_PINNED_RELEASE",
+      "field_mismatch_disposition": "FIELD_NOT_IN_CHECKED_RESULT",
+      "operational_failure_can_render_as_successful_empty_export": false,
+      "failed_export_can_mutate_query_or_result_identity": false,
+      "failed_export_can_create_saved_query_or_rerun": false
+    },
+    "extensibility_contract": {
+      "agreement_process_and_future_cvr_use_same_export_schema": true,
+      "domain_result_validator_required": true,
+      "future_domain_export_admission_is_registry_driven": true,
+      "new_domain_can_create_second_export_engine": false
+    },
+    "authority_contract": {
+      "creates_runtime_export": false,
+      "creates_query_execution_authority": false,
+      "creates_domain_result_authority": false,
+      "creates_extraction_authority": false,
+      "creates_canonical_write_authority": false,
+      "creates_serving_authority": false,
+      "creates_database_authority": false,
+      "creates_ui_authority": false,
+      "creates_export_authority": false,
+      "creates_writer_authority": false,
+      "creates_release_authority": false,
+      "creates_import_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

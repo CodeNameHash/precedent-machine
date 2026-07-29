@@ -1,0 +1,20 @@
+{
+  "phase": "WP-PRODUCT-RESULT-ACTION-CONTRACTS-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-product-result-action-contracts-v1.json",
+    "contracts/canonical-v2/successor/product/query/product-release-pinned-citation-and-share.v1.json",
+    "contracts/canonical-v2/successor/product/query/product-selected-result-export.v1.json",
+    "lib/canonical-v2/product-result-action-contract-input-validator.js",
+    "tests/canonical-v2-product-result-action-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Pure PM-wide Product result-action contract inputs. No citation, share, export, query execution, data access, UI, extraction, database, serving, write, import, activation, production, or contract-freeze authority."
+}

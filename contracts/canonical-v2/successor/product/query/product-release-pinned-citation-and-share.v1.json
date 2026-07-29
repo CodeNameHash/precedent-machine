@@ -1,0 +1,88 @@
+{
+  "object_kind": "PRODUCT_RESULT_ACTION_CONTRACT_INPUT",
+  "stable_id": "PRODUCT_RELEASE_PINNED_CITATION_AND_SHARE",
+  "schema_version": "PRODUCT_RESULT_ACTION_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PRODUCT",
+    "contract_type": "CITATION_AND_SHARE_DEFINITION",
+    "contract_version": 1,
+    "parent_binding_contract": {
+      "parent_definition_stable_id": "PRODUCT_QUERY_RESULT_DEFINITION",
+      "parent_schema_version": "PRODUCT_QUERY_RESULT/V1",
+      "exact_parent_product_result_identity_required": true,
+      "exact_product_query_definition_id_required": true,
+      "exact_approved_pm_data_version_id_required": true,
+      "exact_candidate_release_manifest_id_and_payload_digest_required": true,
+      "exact_domain_result_definition_and_identity_required": true,
+      "query_admitted_exact_detail_action_required": true,
+      "object_level_authorisation_required": true
+    },
+    "citation_contract": {
+      "exact_source_document_identity_required": true,
+      "exact_source_evidence_identity_required": true,
+      "exact_source_interval_and_digest_required_for_verbatim_result": true,
+      "exact_result_component_evidence_required_for_structured_result": true,
+      "source_accession_or_equivalent_identity_required": true,
+      "source_filing_type_and_filing_date_required_when_applicable": true,
+      "source_location_label_required": true,
+      "domain_result_source_representation_kind_retained": true,
+      "human_readable_source_label_required": true,
+      "citation_label_derived_from_admitted_source_metadata": true,
+      "citation_link_binds_exact_source_document_and_release": true,
+      "citation_can_rewrite_or_summarise_source_text": false,
+      "citation_open_preserves_release_result_and_source_identity": true,
+      "citation_reference_is_bearer_authorisation": false
+    },
+    "copy_contract": {
+      "verbatim_text_copy_requires_exact_domain_result_text": true,
+      "structured_result_copy_requires_exact_domain_result_value_and_evidence": true,
+      "citation_required_in_copy": true,
+      "generated_narrative_permitted": false,
+      "non_textual_result_can_be_rendered_as_invented_passage": false,
+      "unsupported_copy_shape_disposition": "TYPED_UNSUPPORTED"
+    },
+    "share_contract": {
+      "share_reference_binds_exact_parent_and_action_identity": true,
+      "share_reference_binds_exact_candidate_release_manifest": true,
+      "share_reference_binds_exact_product_query_and_result_identity": true,
+      "active_release_required": true,
+      "inactive_disposition": "RELEASE_NOT_ACTIVE",
+      "historical_serving_permitted": false,
+      "silent_redirect_or_result_substitution_permitted": false,
+      "explicit_active_release_rerun_is_separate_action": true,
+      "fresh_authentication_and_object_authorisation_required": true,
+      "share_reference_is_bearer_authorisation": false
+    },
+    "failure_contract": {
+      "invalid_citation_or_share_fails_parent_action_only": true,
+      "valid_sibling_results_remain_unchanged": true,
+      "failed_action_can_mutate_parent_result_or_query": false,
+      "failed_action_can_hide_original_result": false,
+      "operational_failure_can_render_as_empty_citation": false,
+      "operational_failure_can_redirect_to_newer_release": false
+    },
+    "extensibility_contract": {
+      "agreement_process_and_future_cvr_use_same_action_schema": true,
+      "domain_source_validator_required": true,
+      "future_domain_action_admission_is_registry_driven": true,
+      "new_domain_can_create_second_share_or_citation_engine": false
+    },
+    "authority_contract": {
+      "creates_runtime_citation_or_share": false,
+      "creates_query_execution_authority": false,
+      "creates_domain_result_authority": false,
+      "creates_extraction_authority": false,
+      "creates_canonical_write_authority": false,
+      "creates_serving_authority": false,
+      "creates_database_authority": false,
+      "creates_ui_authority": false,
+      "creates_export_authority": false,
+      "creates_writer_authority": false,
+      "creates_release_authority": false,
+      "creates_import_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}
