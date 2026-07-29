@@ -22,7 +22,7 @@ on:
 
 permissions:
   actions: read
-  contents: read
+  contents: write
 
 concurrency:
   group: programme-gate-sign-g0
@@ -67,6 +67,7 @@ jobs:
           PROGRAMME_GATE_BEN_APPROVER_ED25519_PRIVATE_KEY_PEM: ${{ secrets.PROGRAMME_GATE_BEN_APPROVER_ED25519_PRIVATE_KEY_PEM }}
           PROGRAMME_GATE_STAGING_SUPABASE_SECRET_KEY: ${{ secrets.PROGRAMME_GATE_STAGING_SUPABASE_SECRET_KEY }}
           PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM: ${{ secrets.PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM }}
+          PROGRAMME_STATUS_PUBLISHER_ED25519_PRIVATE_KEY_PEM: ${{ secrets.PROGRAMME_STATUS_PUBLISHER_ED25519_PRIVATE_KEY_PEM }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           set -euo pipefail

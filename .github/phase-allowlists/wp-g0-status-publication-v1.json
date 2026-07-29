@@ -1,0 +1,26 @@
+{
+  "phase": "WP-G0-STATUS-PUBLICATION-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-g0-status-publication-v1.json",
+    ".github/workflows/programme-gate-sign-g0.yml",
+    "docs/codex-program/bootstrap-acceptance-source.json",
+    "docs/codex-program/programme-gates.yaml",
+    "docs/codex-program/specification-manifest.json",
+    "lib/programme-gates/g0-status-readiness.js",
+    "lib/programme-gates/publication-executor.js",
+    "lib/programme-gates/test-executable-registry.js",
+    "scripts/sign-g0-evidence.mjs",
+    "scripts/verify-codex-program-spec.mjs",
+    "tests/programme-gates/g0-signer-workflow.spec.js",
+    "tests/programme-gates/publication-executor.spec.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Signs the validator-derived ten-gate V2 status, binds a signed publication head, and atomically publishes the exact two-file generation-one tree through the protected Git ref compare-and-swap. It does not access or mutate a corpus database."
+}
