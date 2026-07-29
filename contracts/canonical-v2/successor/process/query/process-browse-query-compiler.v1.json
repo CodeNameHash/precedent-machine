@@ -1,0 +1,82 @@
+{
+  "object_kind": "PROCESS_QUERY_CONTRACT_INPUT",
+  "stable_id": "PROCESS_BROWSE_QUERY_COMPILER",
+  "schema_version": "PROCESS_QUERY_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "contract_type": "BROWSE_QUERY_COMPILER_DEFINITION",
+    "contract_version": 1,
+    "compiler_contract": {
+      "logical_type": "ProcessBrowseQueryCompiler",
+      "compiler_version_required": true,
+      "output_definition_stable_id": "PROCESS_QUERY_IR",
+      "output_schema_version": "PROCESS_QUERY_IR/V1",
+      "deterministic_and_bounded": true,
+      "exactly_one_domain_plan_required": true,
+      "browse_display_label_can_enter_query_ir_identity": false
+    },
+    "navigation_input_contract": {
+      "navigation_catalogue_id_and_digest_required": true,
+      "approved_pm_data_version_required": true,
+      "hierarchy": [
+        "DOMAIN",
+        "TOPIC",
+        "PATTERN"
+      ],
+      "hierarchy_stops_after_pattern": true,
+      "selected_topic_controls_pattern_membership": true,
+      "pattern_must_bind_one_real_admitted_predicate": true,
+      "display_only_label_permitted": false,
+      "fixed_topic_or_pattern_list_in_compiler_permitted": false,
+      "remaining_distinctions_are_filters": true
+    },
+    "all_and_domain_boundary_contract": {
+      "all_view_is_catalogue_navigation": true,
+      "all_view_can_compile_union_query": false,
+      "all_view_can_combine_domain_result_rows": false,
+      "cross_domain_boolean_query_permitted": false,
+      "cross_domain_boolean_disposition": "TYPED_UNSUPPORTED",
+      "client_join_of_separate_domain_answers_permitted": false
+    },
+    "admission_contract": {
+      "selected_domain_topic_pattern_membership_required": true,
+      "exact_predicate_admission_required": true,
+      "field_catalogue_admission_required_for_filters_columns_and_ordering": true,
+      "stale_navigation_selection_disposition": "TYPED_UNSUPPORTED",
+      "unadmitted_pattern_can_execute_query": false,
+      "nearest_predicate_substitution_permitted": false
+    },
+    "equivalence_contract": {
+      "semantic_equivalence_inputs": [
+        "approved_pm_data_version",
+        "canonical_contract_identity",
+        "domain",
+        "certified_predicate",
+        "result_and_evidence_requirements",
+        "cohort_and_filters",
+        "sort_and_diversity",
+        "requested_columns",
+        "pagination",
+        "exact_detail_actions",
+        "coverage_and_exclusions"
+      ],
+      "same_semantic_inputs_as_ask_require_same_query_definition_id": true,
+      "same_semantic_inputs_as_ask_require_byte_equivalent_query_ir": true,
+      "navigation_path_or_label_changes_query_semantics": false
+    },
+    "authority_contract": {
+      "creates_runtime_browse_compiler": false,
+      "creates_query_execution_authority": false,
+      "creates_extraction_authority": false,
+      "creates_canonical_write_authority": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_database_authority": false,
+      "creates_ui_authority": false,
+      "creates_release_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

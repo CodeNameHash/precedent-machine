@@ -1,0 +1,92 @@
+{
+  "object_kind": "PROCESS_QUERY_CONTRACT_INPUT",
+  "stable_id": "PROCESS_ASK_QUERY_COMPILER",
+  "schema_version": "PROCESS_QUERY_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "contract_type": "ASK_QUERY_COMPILER_DEFINITION",
+    "contract_version": 1,
+    "compiler_contract": {
+      "logical_type": "ProcessAskQueryCompiler",
+      "compiler_version_required": true,
+      "output_definition_stable_id": "PROCESS_QUERY_IR",
+      "output_schema_version": "PROCESS_QUERY_IR/V1",
+      "deterministic_and_bounded": true,
+      "exactly_one_domain_plan_required": true,
+      "raw_ask_text_can_enter_query_ir_identity": false,
+      "narrative_llm_permitted": false
+    },
+    "mapping_contract": {
+      "checked_mapping_registry_required": true,
+      "exact_mapping_registry_id_and_digest_required": true,
+      "exact_predicate_admission_required": true,
+      "frozen_practitioner_utterance_suite_required": true,
+      "required_positive_classes": [
+        "PRACTITIONER_PHRASE",
+        "DRAFTING_SYNONYM",
+        "ABBREVIATION",
+        "ORDINARY_MISSPELLING"
+      ],
+      "required_boundary_classes": [
+        "LEGALLY_ADJACENT_NEGATIVE",
+        "AMBIGUOUS_LEGAL_PHRASE",
+        "UNSUPPORTED_PHRASE"
+      ],
+      "independent_enumeration_required": true,
+      "mapping_reconciliation_required": true,
+      "query_goldens_required": true,
+      "handwritten_lexicon_alone_can_certify": false
+    },
+    "outcome_contract": {
+      "closed_outcomes": [
+        "COMPILED",
+        "AMBIGUOUS_REQUIRES_LEGAL_CHOICE",
+        "TYPED_UNSUPPORTED"
+      ],
+      "ambiguous_output_requires_legal_choice": true,
+      "unsupported_output_can_execute_query": false,
+      "nearest_supported_concepts_are_explanatory_only": true,
+      "nearest_predicate_substitution_permitted": false,
+      "no_result_output_can_claim_market_absence": false
+    },
+    "domain_boundary_contract": {
+      "initial_request_exactly_one_domain_plan": true,
+      "cross_domain_boolean_query_permitted": false,
+      "cross_domain_boolean_disposition": "TYPED_UNSUPPORTED",
+      "composite_query_requires_successor_contract_and_certified_query_plan": true,
+      "client_join_of_separate_domain_answers_permitted": false
+    },
+    "equivalence_contract": {
+      "semantic_equivalence_inputs": [
+        "approved_pm_data_version",
+        "canonical_contract_identity",
+        "domain",
+        "certified_predicate",
+        "result_and_evidence_requirements",
+        "cohort_and_filters",
+        "sort_and_diversity",
+        "requested_columns",
+        "pagination",
+        "exact_detail_actions",
+        "coverage_and_exclusions"
+      ],
+      "same_semantic_inputs_as_browse_require_same_query_definition_id": true,
+      "same_semantic_inputs_as_browse_require_byte_equivalent_query_ir": true,
+      "source_phrase_changes_query_semantics": false
+    },
+    "authority_contract": {
+      "creates_runtime_ask_compiler": false,
+      "creates_query_execution_authority": false,
+      "creates_extraction_authority": false,
+      "creates_canonical_write_authority": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_database_authority": false,
+      "creates_ui_authority": false,
+      "creates_release_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

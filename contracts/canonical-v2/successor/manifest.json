@@ -641,6 +641,27 @@
       "canonical_bytes_digest": "3fe92976cfdbc2743c8a0cd3765f184da91e29dd8f8f942135bc8b5e10de2e3c"
     },
     {
+      "relative_path": "process/query/process-ask-query-compiler.v1.json",
+      "object_kind": "PROCESS_QUERY_CONTRACT_INPUT",
+      "stable_id": "PROCESS_ASK_QUERY_COMPILER",
+      "schema_version": "PROCESS_QUERY_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "41d645de939bbc546981e1daa3bb1c9667dd54a14a49cf1bceed7345047910da"
+    },
+    {
+      "relative_path": "process/query/process-browse-query-compiler.v1.json",
+      "object_kind": "PROCESS_QUERY_CONTRACT_INPUT",
+      "stable_id": "PROCESS_BROWSE_QUERY_COMPILER",
+      "schema_version": "PROCESS_QUERY_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "37b7107e36ba1ff496811f412611b346a4506c35b482318b16aa7227128277e4"
+    },
+    {
+      "relative_path": "process/query/process-query-ir.v1.json",
+      "object_kind": "PROCESS_QUERY_CONTRACT_INPUT",
+      "stable_id": "PROCESS_QUERY_IR",
+      "schema_version": "PROCESS_QUERY_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "fb9ff015991f02dcbd3e555c3fffbdd1e16f8c4f8099597d880d60c436e86a7f"
+    },
+    {
       "relative_path": "process/relationships/process-relationship.v1.json",
       "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
       "stable_id": "PROCESS_RELATIONSHIP",
@@ -825,6 +846,7 @@
     "PROCESS_LOGICAL_TYPE_INPUT": 10,
     "PROCESS_NAVIGATION_CATALOGUE_INPUT": 1,
     "PROCESS_PREDICATE_CONTRACT_INPUT": 2,
+    "PROCESS_QUERY_CONTRACT_INPUT": 3,
     "PROCESS_RESULT_ACTION_CONTRACT_INPUT": 4,
     "PROVISION_CONCEPT": 19,
     "RELATIONSHIP_DEFINITION": 5,
@@ -883,6 +905,9 @@
     ],
     "PROCESS_PREDICATE_CONTRACT_INPUT": [
       "PROCESS_PREDICATE_CONTRACT_INPUT/V1"
+    ],
+    "PROCESS_QUERY_CONTRACT_INPUT": [
+      "PROCESS_QUERY_CONTRACT_INPUT/V1"
     ],
     "PROCESS_RESULT_ACTION_CONTRACT_INPUT": [
       "PROCESS_RESULT_ACTION_CONTRACT_INPUT/V1"

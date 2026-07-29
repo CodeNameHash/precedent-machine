@@ -1,0 +1,157 @@
+{
+  "object_kind": "PROCESS_QUERY_CONTRACT_INPUT",
+  "stable_id": "PROCESS_QUERY_IR",
+  "schema_version": "PROCESS_QUERY_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "contract_type": "QUERY_IR_DEFINITION",
+    "contract_version": 1,
+    "query_ir_contract": {
+      "logical_type": "ProcessQueryIR",
+      "schema_version": "PROCESS_QUERY_IR/V1",
+      "one_pm_wide_query_door_required": true,
+      "canonical_json_bytes_required": true,
+      "exactly_one_domain_plan_required": true,
+      "source_entry_modes": [
+        "ASK",
+        "BROWSE",
+        "SAVED_QUERY",
+        "MANUAL_FILTER",
+        "EXACT_SHARE_LINK",
+        "ACTIVE_RELEASE_RERUN"
+      ],
+      "source_entry_mode_changes_query_semantics": false,
+      "equivalent_semantics_require_byte_equivalent_query_ir": true
+    },
+    "required_sections": {
+      "ordered_top_level_fields": [
+        "schema_version",
+        "query_definition_id",
+        "release_contract",
+        "semantic_contract",
+        "cohort_contract",
+        "filter_contract",
+        "presentation_contract",
+        "pagination_contract",
+        "detail_action_contract",
+        "coverage_contract"
+      ],
+      "additional_top_level_fields_permitted": false
+    },
+    "release_contract": {
+      "exact_approved_pm_data_version_required": true,
+      "exact_candidate_release_manifest_id_required": true,
+      "exact_candidate_release_manifest_payload_digest_required": true,
+      "exact_canonical_contract_identity_required": true,
+      "exact_product_field_catalogue_manifest_id_and_digest_required": true,
+      "exact_navigation_catalogue_id_and_digest_required": true,
+      "fresh_active_manifest_admission_required_before_execution": true,
+      "bare_release_id_permitted": false,
+      "unversioned_catalogue_permitted": false
+    },
+    "semantic_contract": {
+      "exact_domain_key_required": true,
+      "exact_certified_predicate_stable_id_and_revision_required": true,
+      "exact_predicate_admission_identity_required": true,
+      "exact_result_definition_stable_id_and_version_required": true,
+      "exact_evidence_requirements_required": true,
+      "multi_domain_plan_permitted": false,
+      "client_joined_domain_answers_permitted": false,
+      "unadmitted_predicate_permitted": false
+    },
+    "cohort_and_filter_contract": {
+      "exact_cohort_definition_required": true,
+      "typed_filter_expression_required": true,
+      "field_catalogue_admission_required_for_each_filter": true,
+      "operator_admission_required_for_each_filter": true,
+      "field_scope_preserved": [
+        "SAME_DEAL",
+        "SAME_EVENT",
+        "SAME_BIDDER_TRACK",
+        "SAME_COMPONENT"
+      ],
+      "repeatable_set_semantics": [
+        "EXISTS",
+        "NONE",
+        "NON_VACUOUS_ALL",
+        "CANONICAL_SET",
+        "GOVERNED_REDUCER"
+      ],
+      "three_valued_completeness_required": true,
+      "unknown_or_unexamined_cannot_equal_empty": true,
+      "physical_database_field_permitted": false,
+      "raw_sql_permitted": false
+    },
+    "presentation_contract": {
+      "exact_sort_definition_required": true,
+      "exact_diversity_definition_required": true,
+      "typed_requested_columns_required": true,
+      "field_catalogue_admission_required_for_each_column": true,
+      "display_label_changes_query_semantics": false,
+      "application_memory_can_recreate_ordering_authority": false
+    },
+    "pagination_contract": {
+      "stable_cursor_pagination_required": true,
+      "cursor_binds_exact_release_contract_and_query_definition": true,
+      "cursor_binds_exact_sort_and_diversity_state": true,
+      "caller_physical_offset_permitted": false,
+      "corpus_size_dependent_pagination_permitted": false
+    },
+    "detail_and_coverage_contract": {
+      "typed_exact_detail_actions_required": true,
+      "coverage_identity_required": true,
+      "covered_set_required": true,
+      "exclusions_and_reasons_required": true,
+      "zero_results_can_claim_market_absence": false,
+      "incomplete_coverage_can_render_as_complete": false
+    },
+    "identity_contract": {
+      "stable_id_domain": "PROCESS_QUERY_IR/V1",
+      "required_semantic_inputs": [
+        "release_contract",
+        "semantic_contract",
+        "cohort_contract",
+        "filter_contract",
+        "presentation_contract",
+        "pagination_contract",
+        "detail_action_contract",
+        "coverage_contract"
+      ],
+      "prohibited_identity_inputs": [
+        "source_entry_mode",
+        "raw_ask_text",
+        "browse_display_label",
+        "user_label",
+        "narrative_model_output",
+        "physical_database_identifier",
+        "application_row_order"
+      ],
+      "same_semantic_inputs_produce_same_query_definition_id": true,
+      "same_semantic_inputs_produce_byte_equivalent_query_ir": true
+    },
+    "refusal_contract": {
+      "unsupported_disposition": "TYPED_UNSUPPORTED",
+      "ambiguous_disposition": "AMBIGUOUS_REQUIRES_LEGAL_CHOICE",
+      "unadmitted_disposition": "PREDICATE_NOT_ADMITTED",
+      "cross_domain_boolean_disposition": "TYPED_UNSUPPORTED",
+      "nearest_supported_concepts_are_explanatory_only": true,
+      "nearest_predicate_substitution_permitted": false,
+      "hidden_legacy_fallback_permitted": false,
+      "narrative_llm_fallback_permitted": false
+    },
+    "authority_contract": {
+      "creates_runtime_query_ir": false,
+      "creates_query_execution_authority": false,
+      "creates_extraction_authority": false,
+      "creates_canonical_write_authority": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_database_authority": false,
+      "creates_ui_authority": false,
+      "creates_release_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}
