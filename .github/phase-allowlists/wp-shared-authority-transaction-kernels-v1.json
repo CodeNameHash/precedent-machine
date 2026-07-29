@@ -1,0 +1,20 @@
+{
+  "phase": "WP-SHARED-AUTHORITY-TRANSACTION-KERNELS-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-shared-authority-transaction-kernels-v1.json",
+    "lib/canonical-v2/deal-participant-relationship.js",
+    "lib/canonical-v2/transaction-leg.js",
+    "tests/canonical-v2-deal-participant-relationship.test.js",
+    "tests/canonical-v2-transaction-leg.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Implements pure participant-role and transaction-leg kernels with synthetic tests only. It grants no source review, extraction, structure selection, control selection, release, import, activation, or production authority."
+}
