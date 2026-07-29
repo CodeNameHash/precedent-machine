@@ -222,7 +222,7 @@ function validateGateRegistry() {
     || independenceAllowlist?.validator_key_id
       !== 'PROGRAMME_GATE_VALIDATOR_2026_07'
     || independenceAllowlist?.validator_executable_digest
-      !== '15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197'
+      !== '88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5'
     || independenceAllowlist?.validator_configuration_digest
       !== '44c470631cc0d9cd7b48796f25c12addd3a735ca650f5622dd55db5ed8d30d21') {
     fail('Frozen review controller, runtime, prompt or validator allowlist changed');
@@ -452,7 +452,7 @@ function validateGateRegistry() {
     || compiledRegistry?.source_sha256
       !== sha256(read('docs/codex-program/bootstrap-acceptance-source.json'))
     || compiledRegistry?.closed_validator_executable_set_digest
-      !== '15709cf6055d1301aecf17b0f3adf587956bc7eb2d788269334f1cf330185197'
+      !== '88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5'
     || compiledRegistry?.authority
       !== 'ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE'
     || compiledRegistry?.exact_active_definition_count !== 11

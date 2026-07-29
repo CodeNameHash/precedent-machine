@@ -1,0 +1,39 @@
+{
+  "phase": "WP-PROGRAMME-SUCCESSOR-PUBLICATION-V2",
+  "required_work_class": "implementation_planning",
+  "allowed": [
+    ".phase-id",
+    ".phase-raw-id",
+    ".github/phase-allowlists/wp-process-status-consumer-v1.json",
+    ".github/phase-allowlists/wp-programme-successor-publication-v2.json",
+    ".github/pm-integration/window.schema.json",
+    ".github/workflows/programme-gate-sign-g0.yml",
+    ".github/workflows/programme-gate-sign-successor.yml",
+    "docs/certification/PM-PROCESS-CONCURRENCY-RULE.md",
+    "docs/codex-program/bootstrap-acceptance-source.json",
+    "docs/codex-program/programme-gates.yaml",
+    "docs/codex-program/specification-manifest.json",
+    "lib/programme-gates/current-publication.js",
+    "lib/programme-gates/g0-status-readiness.js",
+    "lib/programme-gates/integration-window.js",
+    "lib/programme-gates/test-executable-registry.js",
+    "scripts/sign-g0-evidence.mjs",
+    "scripts/verify-codex-program-spec.mjs",
+    "scripts/verify-programme-status-publication.mjs",
+    "tests/programme-gates/current-publication.spec.js",
+    "tests/programme-gates/g0-status-readiness.spec.js",
+    "tests/programme-gates/integration-window.spec.js",
+    "tests/programme-gates/programme-status-consumer.spec.js",
+    "tests/programme-gates/programme-status-successor.spec.js",
+    "tests/programme-gates/publication-executor.spec.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Adds the protected successor publisher, exact status consumer and a fail-closed PM integration-window controller. It does not write canonical data or activate production features."
+}

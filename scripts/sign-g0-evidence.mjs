@@ -34,6 +34,10 @@ const {
   createContainmentStatusReadinessAuthority,
 } = require('../lib/programme-gates/containment-status-readiness');
 const {
+  createCurrentPublicationAuthority,
+  loadCurrentProgrammePublication,
+} = require('../lib/programme-gates/current-publication');
+const {
   BOOTSTRAP_NONCE,
   createGoverningRegistryAuthority,
 } = require('../lib/programme-gates/governing-registry');
@@ -101,6 +105,7 @@ const {
 } = require('../lib/programme-gates/publication');
 const {
   executeProgrammeStatusPublication,
+  remoteRef,
 } = require('../lib/programme-gates/publication-executor');
 const { validateSchema } = require('../lib/programme-gates/schema-registry');
 const { verifySignature } = require('../lib/programme-gates/signatures');
@@ -133,9 +138,16 @@ const REVIEW_ARTIFACT_SHA256 =
 const REVIEW_ARTIFACT_BYTE_SIZE = 16759182;
 const APPROVAL_INTENT = 'AUTHORISE_ISOLATED_STAGING_CANONICAL_IMPLEMENTATION';
 const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
+  '.github/phase-allowlists/wp-process-status-consumer-v1.json',
+  '.github/phase-allowlists/wp-programme-successor-publication-v2.json',
+  '.github/pm-integration/window.schema.json',
   '.github/phase-allowlists/wp-g0-owner-authority.json',
   '.github/workflows/programme-gate-sign-g0.yml',
+  '.github/workflows/programme-gate-sign-successor.yml',
+  '.phase-id',
+  '.phase-raw-id',
   'docs/CODEX-PROGRAM.md',
+  'docs/certification/PM-PROCESS-CONCURRENCY-RULE.md',
   'docs/codex-program/adversarial-tests.md',
   'docs/codex-program/bootstrap-acceptance-source.json',
   'docs/codex-program/canonical-contracts.md',
@@ -143,7 +155,9 @@ const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
   'docs/codex-program/specification-manifest.json',
   'lib/programme-gates/contract-freeze-contracts.js',
   'lib/programme-gates/g0-status-readiness.js',
+  'lib/programme-gates/current-publication.js',
   'lib/programme-gates/git-authorship.js',
+  'lib/programme-gates/integration-window.js',
   'lib/programme-gates/predicates.js',
   'lib/programme-gates/registry.js',
   'lib/programme-gates/review-artifact.js',
@@ -156,6 +170,7 @@ const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
   'lib/programme-gates/test-executable-registry.js',
   'scripts/generate-bootstrap-acceptance-source.mjs',
   'scripts/sign-g0-evidence.mjs',
+  'scripts/verify-programme-status-publication.mjs',
   'scripts/verify-codex-program-spec.mjs',
   'tests/programme-gates-schema-registry.test.js',
   'tests/programme-gates/bootstrap-acceptance-source.spec.js',
@@ -163,7 +178,11 @@ const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
   'tests/programme-gates/contract-freeze-predicates.spec.js',
   'tests/programme-gates/g0-signer-workflow.spec.js',
   'tests/programme-gates/g0-status-readiness.spec.js',
+  'tests/programme-gates/current-publication.spec.js',
   'tests/programme-gates/git-authorship.spec.js',
+  'tests/programme-gates/integration-window.spec.js',
+  'tests/programme-gates/programme-status-consumer.spec.js',
+  'tests/programme-gates/programme-status-successor.spec.js',
   'tests/programme-gates/predicates.spec.js',
   'tests/programme-gates/review-artifact.spec.js',
   'tests/programme-gates/review-contracts.spec.js',
@@ -175,6 +194,13 @@ const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
 function requireCommit(value, label) {
   if (typeof value !== 'string' || !/^[a-f0-9]{40}$/.test(value)) {
     throw new TypeError(`${label} must be a Git commit ID`);
+  }
+  return value;
+}
+
+function requireDigest(value, label) {
+  if (typeof value !== 'string' || !/^[a-f0-9]{64}$/.test(value)) {
+    throw new TypeError(`${label} must be a SHA-256 digest`);
   }
   return value;
 }
@@ -568,20 +594,52 @@ function signatureForBytes(bytes, privateKey) {
   return crypto.sign(null, bytes, privateKey).toString('base64');
 }
 
-function reviewArtifact() {
+function publicationMode() {
+  const mode = process.env.PROGRAMME_STATUS_PUBLICATION_MODE || 'GENESIS';
+  if (!['GENESIS', 'SUCCESSOR'].includes(mode)) {
+    throw new Error('programme status publication mode is invalid');
+  }
+  return mode;
+}
+
+function reviewBasis(mode) {
+  if (mode === 'GENESIS') {
+    return Object.freeze({
+      codeCommit: REVIEW_BASIS_COMMIT,
+      specificationRoot: REVIEW_BASIS_ROOT,
+      artifactSha256: REVIEW_ARTIFACT_SHA256,
+      artifactByteSize: REVIEW_ARTIFACT_BYTE_SIZE,
+    });
+  }
+  return Object.freeze({
+    codeCommit: requireCommit(
+      process.env.PROGRAMME_GATE_REVIEW_BASIS_COMMIT,
+      'review basis commit',
+    ),
+    specificationRoot: requireDigest(
+      process.env.PROGRAMME_GATE_REVIEW_BASIS_ROOT,
+      'review basis specification root',
+    ),
+    artifactSha256: null,
+    artifactByteSize: null,
+  });
+}
+
+function reviewArtifact(basis) {
   const reviewPath = process.env.PROGRAMME_GATE_COLD_REVIEW_BUNDLE;
   if (typeof reviewPath !== 'string' || !path.isAbsolute(reviewPath)) {
     throw new Error('cold-review bundle path is unavailable');
   }
   const bytes = fs.readFileSync(reviewPath);
   const reviewArtifactSha256 = sha256(bytes);
-  if (bytes.length !== REVIEW_ARTIFACT_BYTE_SIZE
-    || reviewArtifactSha256 !== REVIEW_ARTIFACT_SHA256) {
+  if (basis.artifactByteSize !== null
+    && (bytes.length !== basis.artifactByteSize
+      || reviewArtifactSha256 !== basis.artifactSha256)) {
     throw new Error('cold-review bundle bytes do not match the frozen reviewed artefact');
   }
   const bundle = JSON.parse(bytes.toString('utf8'));
-  if (bundle.code_commit !== REVIEW_BASIS_COMMIT
-    || bundle.specification_root !== REVIEW_BASIS_ROOT) {
+  if (bundle.code_commit !== basis.codeCommit
+    || bundle.specification_root !== basis.specificationRoot) {
     throw new Error('cold-review bundle does not match the frozen basis root');
   }
   return {
@@ -591,11 +649,11 @@ function reviewArtifact() {
   };
 }
 
-function governanceDiff(codeCommit) {
+function governanceDiff(codeCommit, basis) {
   const ancestry = run('git', [
     'merge-base',
     '--is-ancestor',
-    REVIEW_BASIS_COMMIT,
+    basis.codeCommit,
     codeCommit,
   ]);
   if (ancestry.status !== 0) {
@@ -604,7 +662,7 @@ function governanceDiff(codeCommit) {
   const changedPaths = successful('git', [
     'diff',
     '--name-only',
-    REVIEW_BASIS_COMMIT,
+    basis.codeCommit,
     codeCommit,
     '--',
   ]).split('\n').filter(Boolean).sort();
@@ -618,7 +676,7 @@ function governanceDiff(codeCommit) {
     'diff',
     '--binary',
     '--no-ext-diff',
-    REVIEW_BASIS_COMMIT,
+    basis.codeCommit,
     codeCommit,
     '--',
     ...changedPaths,
@@ -627,7 +685,7 @@ function governanceDiff(codeCommit) {
     throw new Error('owner-authority governance patch could not be read');
   }
   return Object.freeze({
-    basis_code_commit: REVIEW_BASIS_COMMIT,
+    basis_code_commit: basis.codeCommit,
     authorised_code_commit: codeCommit,
     changed_paths: changedPaths,
     allowed_path_set_digest: domainDigest(
@@ -637,7 +695,7 @@ function governanceDiff(codeCommit) {
     patch_digest: domainDigest(
       'PROGRAMME_GATE_OWNER_AUTHORITY_PATCH/V1',
       {
-        basis_code_commit: REVIEW_BASIS_COMMIT,
+        basis_code_commit: basis.codeCommit,
         authorised_code_commit: codeCommit,
         patch_sha256: sha256(Buffer.from(patchResult.stdout, 'utf8')),
       },
@@ -667,6 +725,8 @@ function evidenceResult(candidate, preflight) {
 }
 
 async function main() {
+  const mode = publicationMode();
+  const basis = reviewBasis(mode);
   const codeCommit = requireCommit(process.env.GITHUB_SHA, 'GITHUB_SHA');
   const expectedCommit = requireCommit(
     process.env.EXPECTED_PROGRAMME_COMMIT,
@@ -676,6 +736,41 @@ async function main() {
     || successful('git', ['rev-parse', 'HEAD']) !== expectedCommit
     || successful('git', ['status', '--porcelain']) !== '') {
     throw new Error('signer does not have the exact clean requested main commit');
+  }
+  const remoteMain = successful('git', [
+    'ls-remote',
+    '--refs',
+    'origin',
+    'refs/heads/main',
+  ]).split(/\s+/)[0];
+  if (remoteMain !== expectedCommit) {
+    throw new Error('requested commit is not the exact current origin main');
+  }
+  const currentRef = mode === 'SUCCESSOR'
+    ? loadCurrentProgrammePublication({
+      authority: createCurrentPublicationAuthority({
+        canonicalBytes,
+        domainDigest,
+        keyRegistry: TRUSTED_PUBLIC_KEY_REGISTRY,
+        validateSchema,
+        verifySignature,
+      }),
+      repositoryRoot: ROOT,
+      remote: 'origin',
+    })
+    : {
+      ref: 'refs/heads/programme-status-publication-head',
+      state: 'ABSENT',
+      observed_git_object_id: 'NONE',
+      status_artefact_id: 'NONE',
+      generation: 0,
+    };
+  if (mode === 'SUCCESSOR'
+    && currentRef.observed_git_object_id !== requireCommit(
+      process.env.EXPECTED_PROGRAMME_PREDECESSOR_COMMIT,
+      'expected programme predecessor commit',
+    )) {
+    throw new Error('protected publication predecessor does not match the request');
   }
   const deploymentId = requireDeploymentId(
     process.env.EXPECTED_VERCEL_DEPLOYMENT_ID,
@@ -777,12 +872,12 @@ async function main() {
   const publisherPrivateKey = privateStatusPublisherKey();
 
   const reviewVerificationTime = new Date().toISOString();
-  const reviewArtefact = reviewArtifact();
+  const reviewArtefact = reviewArtifact(basis);
   const reviewSet = buildReviewSetInput({
       at: reviewVerificationTime,
       bundle: reviewArtefact.bundle,
-      expectedCodeCommit: REVIEW_BASIS_COMMIT,
-      expectedSpecificationRoot: REVIEW_BASIS_ROOT,
+      expectedCodeCommit: basis.codeCommit,
+      expectedSpecificationRoot: basis.specificationRoot,
       keyRegistry: TRUSTED_PUBLIC_KEY_REGISTRY,
       repositoryRoot: ROOT,
       reviewArtifactByteSize: reviewArtefact.reviewArtifactByteSize,
@@ -802,14 +897,14 @@ async function main() {
     githubActorId: process.env.GITHUB_ACTOR_ID,
     githubActorLogin: process.env.GITHUB_ACTOR,
     githubRunId: process.env.GITHUB_RUN_ID,
-    governanceDiff: governanceDiff(codeCommit),
+    governanceDiff: governanceDiff(codeCommit, basis),
     keyRegistry: TRUSTED_PUBLIC_KEY_REGISTRY,
     nonce: crypto.randomUUID(),
     reviewArtifactByteSize: reviewArtefact.reviewArtifactByteSize,
     reviewArtifactSha256: reviewArtefact.reviewArtifactSha256,
     reviewSetEvidenceId: reviewSet.verification.evidence_id,
-    reviewedCodeCommit: REVIEW_BASIS_COMMIT,
-    reviewedRoot: REVIEW_BASIS_ROOT,
+    reviewedCodeCommit: basis.codeCommit,
+    reviewedRoot: basis.specificationRoot,
     signApproval: (bytes) => signatureForBytes(bytes, benPrivateKey),
     verificationTime: approvalTime,
   });
@@ -967,6 +1062,11 @@ async function main() {
     validatorKeyId: VALIDATOR_KEY_ID,
     verificationTime: reviewObservedAt,
     reviewSigningAuthority,
+    ...(mode === 'SUCCESSOR' ? {
+      generation: currentRef.generation + 1,
+      predecessorStatusId: currentRef.status_artefact_id,
+      bootstrapState: 'CONSUMED',
+    } : {}),
   });
   const g0StatusReadiness = buildG0StatusReadiness({
     authority: g0ReadinessAuthority,
@@ -999,7 +1099,7 @@ async function main() {
   });
   if (g0StatusReadiness.readiness_state !== 'READY_FOR_STATUS_SIGNATURE'
     || g0StatusReadiness.formal_status_state !== 'OPEN'
-    || g0StatusReadiness.bootstrap_nonce_consumed !== false
+    || g0StatusReadiness.bootstrap_nonce_consumed !== (mode === 'SUCCESSOR')
     || g0StatusReadiness.status_publication_attempted !== false) {
     throw new Error('ten-gate evidence did not produce exact unsigned G0 status readiness');
   }
@@ -1038,7 +1138,9 @@ async function main() {
   const unsignedPublicationHead = {
     schema_version: 'ProgrammeStatusPublicationHead/V1',
     generation: signedStatus.generation,
-    predecessor_git_object_id: 'NONE',
+    predecessor_git_object_id: mode === 'SUCCESSOR'
+      ? currentRef.observed_git_object_id
+      : 'NONE',
     status_git_object_id: gitBlobObjectId(signedStatus, canonicalBytes),
     status_artefact_id: statusArtefactId,
     status_artefact_payload_digest: domainDigest(
@@ -1083,22 +1185,29 @@ async function main() {
     status: signedStatus,
     evidenceCandidates: g0StatusReadiness.evidence_candidates,
     publicationHead,
-    currentRef: {
-      ref: 'refs/heads/programme-status-publication-head',
-      state: 'ABSENT',
-      observed_git_object_id: 'NONE',
-      status_artefact_id: 'NONE',
-      generation: 0,
-    },
-    bootstrapNonce: BOOTSTRAP_NONCE,
+    currentRef,
+    bootstrapNonce: mode === 'SUCCESSOR' ? 'NONE' : BOOTSTRAP_NONCE,
     commitIdentity: {
       author_name: 'Programme Gate Publisher',
       author_email: 'bengoodchild@gmail.com',
       timestamp: String(Math.floor(Date.parse(reviewObservedAt) / 1000)),
       timezone: '+0000',
-      message: 'Publish programme gate status generation 1',
+      message: `Publish programme gate status generation ${signedStatus.generation}`,
     },
   });
+  const exactMainBeforePublication = successful('git', [
+    'ls-remote',
+    '--refs',
+    'origin',
+    'refs/heads/main',
+  ]).split(/\s+/)[0];
+  if (exactMainBeforePublication !== expectedCommit) {
+    throw new Error('origin main changed before status publication');
+  }
+  if (mode === 'SUCCESSOR'
+    && remoteRef(ROOT, 'origin', currentRef.ref) !== currentRef.observed_git_object_id) {
+    throw new Error('publication predecessor changed before status publication');
+  }
   const publicationReceipt = executeProgrammeStatusPublication({
     plan: publicationPlan,
     repositoryRoot: ROOT,
