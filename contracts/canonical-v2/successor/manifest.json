@@ -522,6 +522,20 @@
       "canonical_bytes_digest": "c3f227216bce15984e1c105c336a6aea198b8c3b2fd674e96de5d9e227a24b7a"
     },
     {
+      "relative_path": "process/integrity/process-semantic-or-source-integrity-revocation-cause.v1.json",
+      "object_kind": "PROCESS_INTEGRITY_CONTRACT_INPUT",
+      "stable_id": "PROCESS_SEMANTIC_OR_SOURCE_INTEGRITY_REVOCATION_CAUSE",
+      "schema_version": "PROCESS_INTEGRITY_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "bcb83a6e9a3e736e23312811b387ad63bc11a536799a8abed1f46b1c75027790"
+    },
+    {
+      "relative_path": "process/integrity/process-serving-containment-policy.v1.json",
+      "object_kind": "PROCESS_INTEGRITY_CONTRACT_INPUT",
+      "stable_id": "PROCESS_SERVING_CONTAINMENT_POLICY",
+      "schema_version": "PROCESS_INTEGRITY_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "4f91209b13ee9b35df9a8e133ae163d31f22d252db1f174a4e960556cb3ee678"
+    },
+    {
       "relative_path": "process/narration/process-narration-occurrence.v1.json",
       "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
       "stable_id": "PROCESS_NARRATION_OCCURRENCE",
@@ -736,6 +750,7 @@
     "PARTY_TUPLE_SHAPE_MIGRATION_INPUT": 1,
     "PROCESS_DOMAIN_REGISTRY_INPUT": 1,
     "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT": 1,
+    "PROCESS_INTEGRITY_CONTRACT_INPUT": 2,
     "PROCESS_LOGICAL_TYPE_INPUT": 9,
     "PROVISION_CONCEPT": 19,
     "RELATIONSHIP_DEFINITION": 5,
@@ -779,6 +794,9 @@
     ],
     "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT": [
       "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT/V1"
+    ],
+    "PROCESS_INTEGRITY_CONTRACT_INPUT": [
+      "PROCESS_INTEGRITY_CONTRACT_INPUT/V1"
     ],
     "PROCESS_LOGICAL_TYPE_INPUT": [
       "PROCESS_LOGICAL_TYPE_INPUT/V1"
