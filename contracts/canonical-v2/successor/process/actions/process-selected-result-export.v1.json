@@ -1,0 +1,56 @@
+{
+  "object_kind": "PROCESS_RESULT_ACTION_CONTRACT_INPUT",
+  "stable_id": "PROCESS_SELECTED_RESULT_EXPORT",
+  "schema_version": "PROCESS_RESULT_ACTION_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "contract_type": "SELECTED_RESULT_EXPORT_DEFINITION",
+    "contract_version": 1,
+    "selection_contract": {
+      "query_ir_definition_stable_id": "PROCESS_QUERY_IR",
+      "exact_query_semantics_digest_required": true,
+      "exact_candidate_release_manifest_id_and_payload_digest_required": true,
+      "typed_selected_row_keys_required": true,
+      "mixed_release_selection_permitted": false,
+      "physical_database_identifiers_permitted": false
+    },
+    "content_contract": {
+      "generated_result_schema_required": true,
+      "exact_row_and_source_identity_required": true,
+      "coverage_and_exclusions_required": true,
+      "certification_and_provenance_required": true,
+      "canonical_states_preserved": true,
+      "source_text_rewrite_permitted": false,
+      "page_one_only_export_permitted": false,
+      "browser_corpus_hydration_permitted": false,
+      "silent_truncation_permitted": false
+    },
+    "execution_contract": {
+      "server_side_bounded_execution_required": true,
+      "fresh_admission_per_chunk_required": true,
+      "one_set_based_statement_per_chunk_required": true,
+      "global_route_and_capacity_manifests_own_numeric_limits": true,
+      "domain_contract_can_select_numeric_limit": false,
+      "exact_total_and_final_checksum_required": true,
+      "publish_only_after_complete_validation": true,
+      "failed_or_partial_artefact_visible": false
+    },
+    "failure_contract": {
+      "unsupported_format_disposition": "TYPED_REFUSAL",
+      "budget_excess_disposition": "EXPORT_TOO_LARGE",
+      "operational_failure_can_render_as_empty_export": false,
+      "automatic_retry_policy_source": "RouteBudgetManifest",
+      "immediate_retry_permitted": false,
+      "retry_without_typed_envelope_permission_permitted": false
+    },
+    "authority_contract": {
+      "creates_runtime_export": false,
+      "creates_query_execution_authority": false,
+      "creates_serving_authority": false,
+      "creates_writer_authority": false,
+      "creates_release_authority": false,
+      "creates_activation_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

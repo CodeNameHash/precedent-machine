@@ -1,0 +1,50 @@
+{
+  "object_kind": "PROCESS_RESULT_ACTION_CONTRACT_INPUT",
+  "stable_id": "PROCESS_RELEASE_PINNED_CITATION_AND_SHARE",
+  "schema_version": "PROCESS_RESULT_ACTION_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "contract_type": "CITATION_AND_SHARE_DEFINITION",
+    "contract_version": 1,
+    "parent_binding_contract": {
+      "permitted_parent_kind": "RESULT_ROW",
+      "exact_parent_row_identity_required": true,
+      "exact_candidate_release_manifest_id_and_payload_digest_required": true,
+      "exact_corpus_release_identity_required": true,
+      "exact_detail_reference_required": true,
+      "object_level_authorisation_required": true
+    },
+    "citation_contract": {
+      "verbatim_passage_required": true,
+      "exact_source_document_identity_required": true,
+      "exact_source_interval_and_digest_required": true,
+      "source_local_narration_identity_required": true,
+      "human_readable_source_label_required": true,
+      "citation_can_rewrite_source_text": false,
+      "citation_reference_is_bearer_token": false
+    },
+    "share_contract": {
+      "share_link_binds_exact_candidate_release_manifest": true,
+      "share_link_binds_exact_parent_and_action_identity": true,
+      "active_release_required": true,
+      "inactive_disposition": "RELEASE_NOT_ACTIVE",
+      "historical_serving_permitted": false,
+      "silent_redirect_or_result_substitution_permitted": false,
+      "fresh_authentication_and_object_authorisation_required": true
+    },
+    "failure_contract": {
+      "invalid_citation_fails_parent_action_only": true,
+      "valid_sibling_rows_remain_publishable": true,
+      "operational_failure_can_render_as_empty_citation": false
+    },
+    "authority_contract": {
+      "creates_runtime_citation_or_share": false,
+      "creates_query_execution_authority": false,
+      "creates_serving_authority": false,
+      "creates_writer_authority": false,
+      "creates_release_authority": false,
+      "creates_activation_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

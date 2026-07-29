@@ -56,10 +56,20 @@ test('compiles the bounded Process core contracts deterministically without free
   );
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 105);
+  assert.equal(first.authored_members.length, 109);
   assert.deepEqual(
     processEntries.map((member) => [member.object_kind, member.stable_id]),
     [
+      [
+        'PROCESS_RESULT_ACTION_CONTRACT_INPUT',
+        'PROCESS_RELEASE_PINNED_CITATION_AND_SHARE',
+      ],
+      [
+        'PROCESS_RESULT_ACTION_CONTRACT_INPUT',
+        'PROCESS_RERUN_ON_ACTIVE_RELEASE',
+      ],
+      ['PROCESS_RESULT_ACTION_CONTRACT_INPUT', 'PROCESS_SAVED_QUERY_DEFINITION'],
+      ['PROCESS_RESULT_ACTION_CONTRACT_INPUT', 'PROCESS_SELECTED_RESULT_EXPORT'],
       ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_AGREEMENT'],
       ['PROCESS_LOGICAL_TYPE_INPUT', 'BIDDER_TRACK'],
       ['PROCESS_DOMAIN_REGISTRY_INPUT', 'PROCESS'],

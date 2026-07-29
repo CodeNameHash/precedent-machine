@@ -494,6 +494,34 @@
       "canonical_bytes_digest": "a20a17e8efba58d6bf3337f4e42a867124f9c8bf89de97b838d118828e7214ad"
     },
     {
+      "relative_path": "process/actions/process-release-pinned-citation-and-share.v1.json",
+      "object_kind": "PROCESS_RESULT_ACTION_CONTRACT_INPUT",
+      "stable_id": "PROCESS_RELEASE_PINNED_CITATION_AND_SHARE",
+      "schema_version": "PROCESS_RESULT_ACTION_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "7dd8c56fb7eeba2260907cb388e7b3e11801b16a8a4a303c3f48974708188236"
+    },
+    {
+      "relative_path": "process/actions/process-rerun-on-active-release.v1.json",
+      "object_kind": "PROCESS_RESULT_ACTION_CONTRACT_INPUT",
+      "stable_id": "PROCESS_RERUN_ON_ACTIVE_RELEASE",
+      "schema_version": "PROCESS_RESULT_ACTION_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "20933b01ff85736c0e9a1a909746be2bb062c37b99fd3b643a9aaefebbf57fa4"
+    },
+    {
+      "relative_path": "process/actions/process-saved-query-definition.v1.json",
+      "object_kind": "PROCESS_RESULT_ACTION_CONTRACT_INPUT",
+      "stable_id": "PROCESS_SAVED_QUERY_DEFINITION",
+      "schema_version": "PROCESS_RESULT_ACTION_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "699b7933b0590267b4dd208ef7ab5e3a7610d51efb3dc8c52901155d365b2075"
+    },
+    {
+      "relative_path": "process/actions/process-selected-result-export.v1.json",
+      "object_kind": "PROCESS_RESULT_ACTION_CONTRACT_INPUT",
+      "stable_id": "PROCESS_SELECTED_RESULT_EXPORT",
+      "schema_version": "PROCESS_RESULT_ACTION_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "d7f97c7d1651830da733d005fcfdaf7b6e70dabd93d38f70f3e1108d5b796686"
+    },
+    {
       "relative_path": "process/agreements/process-agreement.v1.json",
       "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
       "stable_id": "PROCESS_AGREEMENT",
@@ -752,6 +780,7 @@
     "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT": 1,
     "PROCESS_INTEGRITY_CONTRACT_INPUT": 2,
     "PROCESS_LOGICAL_TYPE_INPUT": 9,
+    "PROCESS_RESULT_ACTION_CONTRACT_INPUT": 4,
     "PROVISION_CONCEPT": 19,
     "RELATIONSHIP_DEFINITION": 5,
     "RELATIONSHIP_EFFECT_SCHEMA": 5,
@@ -800,6 +829,9 @@
     ],
     "PROCESS_LOGICAL_TYPE_INPUT": [
       "PROCESS_LOGICAL_TYPE_INPUT/V1"
+    ],
+    "PROCESS_RESULT_ACTION_CONTRACT_INPUT": [
+      "PROCESS_RESULT_ACTION_CONTRACT_INPUT/V1"
     ],
     "PROVISION_CONCEPT": [
       "PROVISION_CONCEPT/V1"
