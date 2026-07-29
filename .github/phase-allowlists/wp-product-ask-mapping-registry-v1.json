@@ -1,0 +1,18 @@
+{
+  "phase": "WP-PRODUCT-ASK-MAPPING-REGISTRY-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-product-ask-mapping-registry-v1.json",
+    "lib/canonical-v2/product-ask-mapping-registry.js",
+    "tests/canonical-v2-product-ask-mapping-registry.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Pure PM-wide checked Ask phrase registry compiler. No narrative LLM, data query, UI, extraction, database, serving, import, activation, production, or contract-freeze authority."
+}
