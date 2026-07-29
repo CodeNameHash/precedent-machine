@@ -18,10 +18,9 @@ const {
 const sourceRoot = path.join(
   __dirname,
   '..',
-  'lib',
-  'schema',
-  'canonical',
-  'contract-v2',
+  'contracts',
+  'canonical-v2',
+  'successor',
 );
 
 function jsonMembers(directory, relativeDirectory = '') {
@@ -71,12 +70,12 @@ function authoredPolicyPayload(compiled, objectKind, stableId, schemaVersion) {
   return payload;
 }
 
-test('the first authored source compiles twice byte-identically without claiming completeness', () => {
+test('the single successor source compiles twice byte-identically without claiming completeness', () => {
   const first = compileCanonicalContractInput({ root_directory: sourceRoot });
   const second = compileCanonicalContractInput({ root_directory: sourceRoot });
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 70);
+  assert.equal(first.authored_members.length, 86);
   assert.equal(
     first.authored_members.some(
       (member) => member.object_kind === 'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY',
@@ -214,7 +213,7 @@ test('the compiler refuses the authored relationship when its effect schema is a
   fs.cpSync(sourceRoot, root, { recursive: true });
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
 
-  const effectPath = 'relationship-effect-schemas/uses-definition-effect.v2.json';
+  const effectPath = 'agreement/relationship-effect-schemas/uses-definition-effect.v2.json';
   fs.rmSync(path.join(root, ...effectPath.split('/')));
   const manifestPath = path.join(root, 'manifest.json');
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
@@ -466,13 +465,25 @@ test('the authored claim interpretation policy is the exact existing V12 policy'
   );
 });
 
-test('the manifest exactly closes the complete 70-file authored source tree', () => {
+test('the manifest exactly closes the single 86-file Agreement and shared source tree', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
   const actualMembers = jsonMembers(sourceRoot);
   const declaredMembers = manifest.members.map((member) => member.relative_path);
 
   assert.deepEqual(actualMembers, declaredMembers);
-  assert.equal(manifest.members.length, 70);
+  assert.equal(manifest.members.length, 86);
+  assert.equal(
+    manifest.members.filter((member) => member.relative_path.startsWith('agreement/')).length,
+    70,
+  );
+  assert.equal(
+    manifest.members.filter((member) => member.relative_path.startsWith('shared/')).length,
+    16,
+  );
+  assert.equal(
+    fs.existsSync(path.join(__dirname, '../lib/schema/canonical/contract-v2')),
+    false,
+  );
   assert.deepEqual(manifest.per_kind_counts, {
     CLAIM_DEFINITION: 13,
     CLAIM_INTERPRETATION_POLICY: 1,
@@ -489,6 +500,8 @@ test('the manifest exactly closes the complete 70-file authored source tree', ()
     SERVING_EXACT_DETAIL_ACTION_DEFINITION: 5,
     SERVING_METRIC_OPERATION_BINDING_INPUT: 2,
     SERVING_TRIGGER_PATH_SCHEMA_INPUT: 1,
+    SHARED_AUTHORITY_FIELD_CATALOGUE_INPUT: 1,
+    SHARED_AUTHORITY_LOGICAL_TYPE_INPUT: 15,
   });
   assert.deepEqual(manifest.per_kind_schema_versions, {
     CLAIM_DEFINITION: ['CLAIM_DEFINITION/V1'],
@@ -514,6 +527,12 @@ test('the manifest exactly closes the complete 70-file authored source tree', ()
       'SERVING_METRIC_OPERATION_BINDING_INPUT/V1',
     ],
     SERVING_TRIGGER_PATH_SCHEMA_INPUT: ['SERVING_TRIGGER_PATH_SCHEMA_INPUT/V1'],
+    SHARED_AUTHORITY_FIELD_CATALOGUE_INPUT: [
+      'SHARED_AUTHORITY_FIELD_CATALOGUE_INPUT/V1',
+    ],
+    SHARED_AUTHORITY_LOGICAL_TYPE_INPUT: [
+      'SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1',
+    ],
   });
   for (const declaredMember of manifest.members) {
     const canonicalMember = JSON.parse(

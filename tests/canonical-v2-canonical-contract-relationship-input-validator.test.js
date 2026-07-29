@@ -74,10 +74,10 @@ test('rejects invalid typed relationship envelopes', () => {
 
 test('accepts a closed non-semantic relationship and rejects mode drift', () => {
   const relationship = require(
-    '../lib/schema/canonical/contract-v2/relationship-definitions/contained-in.v2.json'
+    '../contracts/canonical-v2/successor/agreement/relationship-definitions/contained-in.v2.json'
   );
   const effect = require(
-    '../lib/schema/canonical/contract-v2/relationship-effect-schemas/contained-in-effect.v1.json'
+    '../contracts/canonical-v2/successor/agreement/relationship-effect-schemas/contained-in-effect.v1.json'
   );
   assert.doesNotThrow(() => validateAuthoredRelationshipInputs([
     member(relationship),

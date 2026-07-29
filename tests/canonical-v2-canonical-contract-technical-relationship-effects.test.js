@@ -33,10 +33,9 @@ const {
 const sourceRoot = path.join(
   __dirname,
   '..',
-  'lib',
-  'schema',
-  'canonical',
-  'contract-v2',
+  'contracts',
+  'canonical-v2',
+  'successor',
 );
 
 function clone(value) {

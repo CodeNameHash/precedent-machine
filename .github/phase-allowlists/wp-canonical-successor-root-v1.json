@@ -1,0 +1,34 @@
+{
+  "phase": "WP-CANONICAL-SUCCESSOR-ROOT-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-successor-root-v1.json",
+    "contracts/canonical-v2/successor/agreement/claim-definitions/*.json",
+    "contracts/canonical-v2/successor/agreement/component-definitions/*.json",
+    "contracts/canonical-v2/successor/agreement/migration-inputs/*.json",
+    "contracts/canonical-v2/successor/agreement/no-shop-semantic-schema-inputs/*.json",
+    "contracts/canonical-v2/successor/agreement/parser-proposal-boundary-definitions/*.json",
+    "contracts/canonical-v2/successor/agreement/policies/*.json",
+    "contracts/canonical-v2/successor/agreement/provision-concepts/*.json",
+    "contracts/canonical-v2/successor/agreement/relationship-definitions/*.json",
+    "contracts/canonical-v2/successor/agreement/relationship-effect-schemas/*.json",
+    "contracts/canonical-v2/successor/agreement/serving-exact-detail-action-definitions/*.json",
+    "contracts/canonical-v2/successor/agreement/serving-metric-operation-binding-inputs/*.json",
+    "contracts/canonical-v2/successor/agreement/serving-trigger-path-schema-inputs/*.json",
+    "contracts/canonical-v2/successor/manifest.json",
+    "lib/schema/canonical/contract-v2/manifest.json",
+    "scripts/sign-g0-evidence.mjs",
+    "tests/canonical-v2-canonical-contract-excepted-by-effect.test.js",
+    "tests/canonical-v2-canonical-contract-relationship-input-validator.test.js",
+    "tests/canonical-v2-canonical-contract-source-tree.test.js",
+    "tests/canonical-v2-canonical-contract-technical-relationship-effects.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Moves the 70 byte-identical Agreement inputs into the existing successor root and closes one 86-member Agreement and shared manifest. It changes no legal semantics and grants no bundle, freeze, release, import, activation or production authority."
+}
