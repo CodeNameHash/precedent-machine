@@ -1,0 +1,19 @@
+{
+  "phase": "WP-PROCESS-SHARED-AUTHORITY-CONSUMER-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-shared-authority-consumer-v1.json",
+    "lib/canonical-v2/shared-authority-consumed-contract-manifest.js",
+    "tests/canonical-v2-shared-authority-consumed-contract.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Binds Process to the exact shared-authority authored input set and defines a read-only release binding. It grants no contract freeze, deal extraction, canonical write, database, import, activation, UI, or production authority."
+}
