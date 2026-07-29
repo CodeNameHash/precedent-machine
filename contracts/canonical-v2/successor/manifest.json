@@ -571,6 +571,20 @@
       "canonical_bytes_digest": "c1e8a8b01a83f54c765f99dfa9e208511fc449dcd75d5697948f9e256595bd0a"
     },
     {
+      "relative_path": "process/source-acquisition/external-source-acquisition-manifest.v1.json",
+      "object_kind": "SOURCE_ACQUISITION_CONTRACT_INPUT",
+      "stable_id": "EXTERNAL_SOURCE_ACQUISITION_MANIFEST",
+      "schema_version": "SOURCE_ACQUISITION_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "05928cafe07261446e6c0850a5b8c37c3b34518b4fb9e50941fd7ecadf6edc24"
+    },
+    {
+      "relative_path": "process/source-acquisition/source-universe-completeness.v1.json",
+      "object_kind": "SOURCE_ACQUISITION_CONTRACT_INPUT",
+      "stable_id": "SOURCE_UNIVERSE_COMPLETENESS",
+      "schema_version": "SOURCE_ACQUISITION_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "ca494ca2107610fa1aee46db55a3427d1e1b0ea520f37e771f5789df229e97ac"
+    },
+    {
       "relative_path": "shared/deal-facts/deal-fact-resolution-occurrence.v1.json",
       "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
       "stable_id": "DEAL_FACT_RESOLUTION_OCCURRENCE",
@@ -704,7 +718,8 @@
     "SERVING_PROCESS_CONTRACT_INPUT": 4,
     "SERVING_TRIGGER_PATH_SCHEMA_INPUT": 1,
     "SHARED_AUTHORITY_FIELD_CATALOGUE_INPUT": 1,
-    "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT": 15
+    "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT": 15,
+    "SOURCE_ACQUISITION_CONTRACT_INPUT": 2
   },
   "per_kind_schema_versions": {
     "CLAIM_DEFINITION": [
@@ -769,6 +784,9 @@
     ],
     "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT": [
       "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1"
+    ],
+    "SOURCE_ACQUISITION_CONTRACT_INPUT": [
+      "SOURCE_ACQUISITION_CONTRACT_INPUT/V1"
     ]
   }
 }

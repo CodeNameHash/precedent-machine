@@ -1,0 +1,71 @@
+{
+  "object_kind": "SOURCE_ACQUISITION_CONTRACT_INPUT",
+  "stable_id": "SOURCE_UNIVERSE_COMPLETENESS",
+  "schema_version": "SOURCE_ACQUISITION_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "contract_type": "COMPLETENESS_RECONCILIATION_DEFINITION",
+    "contract_version": 1,
+    "input_contract": {
+      "acquisition_manifest_definition_stable_id": "EXTERNAL_SOURCE_ACQUISITION_MANIFEST",
+      "production_inventory_required": true,
+      "independent_sec_oracle_inventory_required": true,
+      "frozen_governed_source_scope_rule_required": true,
+      "non_sec_expected_source_manifests_required_where_applicable": true,
+      "complete_intake_receipt_and_disposition_inventory_required": true,
+      "complete_deal_document_admission_inventory_required": true
+    },
+    "sec_reconciliation_contract": {
+      "membership_rule": "EXACT_ACCESSION_SET_EQUALITY",
+      "missing_accession_permitted": false,
+      "extra_accession_permitted": false,
+      "duplicate_accession_permitted": false,
+      "package_member_validation_required": true,
+      "cross_document_reference_validation_required": true,
+      "expected_fetch_receipt_validation_required": true,
+      "terminal_disposition_validation_required": true
+    },
+    "completeness_state_contract": {
+      "states": [
+        "COMPLETE",
+        "INCOMPLETE",
+        "UNRESOLVED"
+      ],
+      "complete_requires_exact_reconciliation": true,
+      "complete_requires_no_unbounded_reviewed_non_receipt": true,
+      "incomplete_requires_source_backed_discrepancy": true,
+      "unresolved_fetch_or_disposition_is_unresolved": true,
+      "unresolved_blocks_semantic_discovery": true,
+      "incomplete_blocks_claimed_complete_scope": true
+    },
+    "absence_claim_contract": {
+      "acquisition_completeness_required": true,
+      "admission_completeness_required": true,
+      "non_sec_absence_limited_to_proved_universe": true,
+      "silence_can_establish_express_refusal": false,
+      "no_recorded_grant_requires_governed_interval": true
+    },
+    "insufficient_basis_contract": {
+      "eight_k_only_catalogue_can_establish_completeness": false,
+      "manually_curated_accession_list_can_establish_completeness": false,
+      "admitted_document_list_alone_can_establish_completeness": false,
+      "production_inventory_alone_can_establish_sec_completeness": false,
+      "oracle_inventory_alone_can_establish_acquisition_and_admission_completeness": false
+    },
+    "publication_contract": {
+      "manifest_and_reconciliation_identity_required": true,
+      "coverage_limit_must_be_published": true,
+      "release_pinned": true,
+      "candidate_release_membership_required": true,
+      "historical_release_immutable": true
+    },
+    "authority_contract": {
+      "creates_runtime_completeness": false,
+      "creates_source_admission_authority": false,
+      "creates_extraction_authority": false,
+      "creates_writer_authority": false,
+      "creates_release_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

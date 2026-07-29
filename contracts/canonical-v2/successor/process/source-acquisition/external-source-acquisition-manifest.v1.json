@@ -1,0 +1,94 @@
+{
+  "object_kind": "SOURCE_ACQUISITION_CONTRACT_INPUT",
+  "stable_id": "EXTERNAL_SOURCE_ACQUISITION_MANIFEST",
+  "schema_version": "SOURCE_ACQUISITION_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "contract_type": "ACQUISITION_MANIFEST_DEFINITION",
+    "contract_version": 1,
+    "manifest_identity": {
+      "stable_id_domain": "EXTERNAL_SOURCE_ACQUISITION_MANIFEST/V1",
+      "stable_id_inputs": [
+        "frozen_external_snapshot_identities",
+        "intake_cutoff_attestation_id",
+        "source_scope_rule_key_and_version",
+        "production_source_inventory_digest",
+        "sec_oracle_inventory_digest",
+        "non_sec_expected_source_manifest_digests",
+        "reconciliation_rule_key_and_version"
+      ],
+      "runtime_fetch_order_is_identity_input": false
+    },
+    "production_acquisition_contract": {
+      "source_path_key": "PROCESS_PRODUCTION_ACQUISITION/V1",
+      "frozen_cutoff_required": true,
+      "relevant_source_classes": [
+        "FILING",
+        "AMENDMENT",
+        "SUPPLEMENT",
+        "EXHIBIT",
+        "INCORPORATED_REFERENCE",
+        "APPROVED_NON_SEC_SOURCE"
+      ],
+      "sec_inventory_source": "COMPLETE_ISSUER_SUBMISSIONS_HISTORY",
+      "paginated_older_file_indexes_required": true,
+      "recursive_package_traversal_required": true,
+      "recursive_cross_reference_traversal_required": true,
+      "governed_source_scope_rule_required": true,
+      "runtime_label_can_expand_or_narrow_scope": false,
+      "production_path_can_consume_sec_oracle_output": false
+    },
+    "sec_completeness_oracle_contract": {
+      "oracle_path_key": "PROCESS_SEC_COMPLETENESS_ORACLE/V1",
+      "inventory_source": "SEC_DAILY_OR_FULL_INDEXES",
+      "can_consume_production_submissions_history": false,
+      "implementation_independent_from_production_path": true,
+      "separate_executable_identity_required": true,
+      "same_governed_source_scope_rule_required": true,
+      "shared_enumeration_output_permitted": false,
+      "exact_accession_inventory_required": true
+    },
+    "non_sec_source_contract": {
+      "authority_specific_expected_source_manifest_required": true,
+      "frozen_external_snapshot_required": true,
+      "independent_completeness_limit_must_be_disclosed": true,
+      "absence_claim_beyond_proved_universe_permitted": false,
+      "manual_unmanifested_source_permitted": false
+    },
+    "expected_source_resolution_contract": {
+      "terminal_dispositions": [
+        "VERIFIED_INTAKE_RECEIPT",
+        "REVIEWED_NON_RECEIPT"
+      ],
+      "every_expected_source_requires_one_terminal_disposition": true,
+      "unresolved_fetch_blocks_manifest": true,
+      "reviewed_non_receipt_counts_as_verified_intake_receipt": false,
+      "reviewed_non_receipt_must_propagate_coverage_limit": true,
+      "duplicate_expected_source_permitted": false
+    },
+    "downstream_binding_contract": {
+      "required_bindings": [
+        "INTAKE_CUTOFF_ATTESTATION",
+        "RECEIPT_EXPECTATIONS",
+        "INTAKE_UNIVERSE_MANIFEST",
+        "DEAL_ADMISSION",
+        "CORPUS_SCOPE_MANIFEST",
+        "CANDIDATE_RELEASE",
+        "COVERAGE_METADATA",
+        "END_TO_END_TRACEABILITY"
+      ],
+      "feeds_existing_pm_intake": true,
+      "feeds_independent_deal_document_admission": true,
+      "gold_source_manifest_is_separately_frozen": true,
+      "gold_source_manifest_can_derive_from_extractor_output": false
+    },
+    "authority_contract": {
+      "creates_runtime_acquisition": false,
+      "creates_source_admission_authority": false,
+      "creates_extraction_authority": false,
+      "creates_writer_authority": false,
+      "creates_release_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}
