@@ -15,6 +15,9 @@ const {
   compileProductQueryIr,
   compileProductQueryTemplate,
 } = require('../lib/canonical-v2/product-query-ir');
+const productQueryContract = require(
+  '../contracts/canonical-v2/successor/product/query/product-query-ir.v1.json',
+);
 
 const AGREEMENT_RESULT = Object.freeze({
   stable_id: 'AGREEMENT_COMPARABLE_RESULT',
@@ -598,6 +601,48 @@ test('rejects the historical Process admission at the Product boundary', () => {
     }),
     { code: 'INVALID_PRODUCT_QUERY_ADMISSION' },
   );
+});
+
+test('fails closed on any governed Product Query contract drift', () => {
+  const original = productQueryContract.definition.domain_contract
+    .cross_domain_boolean_query_permitted;
+  productQueryContract.definition.domain_contract
+    .cross_domain_boolean_query_permitted = true;
+  try {
+    assert.throws(
+      () => compileProductQueryIr({
+        admission: admission(),
+        query: fullQuery(
+          'AGREEMENT',
+          'SELLER_TERMINATION_FEE',
+          agreementTemplate(),
+        ),
+      }),
+      { code: 'INVALID_PRODUCT_QUERY_CONTRACT_BINDING' },
+    );
+  } finally {
+    productQueryContract.definition.domain_contract
+      .cross_domain_boolean_query_permitted = original;
+  }
+
+  productQueryContract.definition.boundary_contract
+    .invented_authority = true;
+  try {
+    assert.throws(
+      () => compileProductQueryIr({
+        admission: admission(),
+        query: fullQuery(
+          'PROCESS',
+          'EXCLUSIVITY_GRANTED',
+          processTemplate(),
+        ),
+      }),
+      { code: 'INVALID_PRODUCT_QUERY_CONTRACT_BINDING' },
+    );
+  } finally {
+    delete productQueryContract.definition.boundary_contract
+      .invented_authority;
+  }
 });
 
 test('does not mutate the admitted catalogue or query template', () => {

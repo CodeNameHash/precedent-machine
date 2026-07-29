@@ -725,6 +725,13 @@
       "canonical_bytes_digest": "ca494ca2107610fa1aee46db55a3427d1e1b0ea520f37e771f5789df229e97ac"
     },
     {
+      "relative_path": "product/query/product-query-ir.v1.json",
+      "object_kind": "PRODUCT_QUERY_CONTRACT_INPUT",
+      "stable_id": "PRODUCT_QUERY_IR",
+      "schema_version": "PRODUCT_QUERY_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "f7c464ddc74e2a888259492f266ae700825a57ea68e4489cf15af1d058b1f7d5"
+    },
+    {
       "relative_path": "shared/deal-facts/deal-fact-resolution-occurrence.v1.json",
       "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
       "stable_id": "DEAL_FACT_RESOLUTION_OCCURRENCE",
@@ -856,6 +863,7 @@
     "PROCESS_PREDICATE_CONTRACT_INPUT": 2,
     "PROCESS_QUERY_CONTRACT_INPUT": 3,
     "PROCESS_RESULT_ACTION_CONTRACT_INPUT": 4,
+    "PRODUCT_QUERY_CONTRACT_INPUT": 1,
     "PROVISION_CONCEPT": 19,
     "RELATIONSHIP_DEFINITION": 5,
     "RELATIONSHIP_EFFECT_SCHEMA": 5,
@@ -922,6 +930,9 @@
     ],
     "PROCESS_RESULT_ACTION_CONTRACT_INPUT": [
       "PROCESS_RESULT_ACTION_CONTRACT_INPUT/V1"
+    ],
+    "PRODUCT_QUERY_CONTRACT_INPUT": [
+      "PRODUCT_QUERY_CONTRACT_INPUT/V1"
     ],
     "PROVISION_CONCEPT": [
       "PROVISION_CONCEPT/V1"
