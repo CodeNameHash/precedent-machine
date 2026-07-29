@@ -404,6 +404,18 @@ This file is the sole authority for detailed identities, state machines, writer 
   separate authorship and eligible legal-semantic review evidence for the
   composition catalogue and rejects a catalogue question copied from generated
   ordinary composition output.
+- Catalogue independence is proved from captured bytes, not asserted in a
+  signed summary. Each catalogue authorship record binds its authoring session,
+  executable and the complete ordered catalogue-member byte set. Its sandbox
+  access record binds the complete permitted input-member byte set, the actual
+  observed input-member projection, closed input classes and empty prohibited-
+  access events. Acceptance recomputes every member digest and both roots,
+  requires observed inputs to equal permitted inputs exactly and rejects any
+  ordinary definition, generated output, other catalogue, reconciliation or
+  prior-review mount. Each catalogue review binds an eligible reviewer principal
+  and the exact reviewer-eligibility root. The reviewer must be independent of
+  the catalogue authorship events and prior conclusions. A self-authored,
+  ineligible or merely caller-asserted review cannot satisfy the Freeze Gate.
 - The ordinary ClaimDefinition, ClaimScopeDefinition, RelationshipDefinition and
   RelationshipEffectSchema question projection and the separately authored
   `IndependentSemanticQuestionCatalogue` are also disjoint inputs. Neither may
@@ -896,6 +908,12 @@ This file is the sole authority for detailed identities, state machines, writer 
   reviewer-eligibility set and Ben taxonomy/codebook decision set. Acceptance
   recomputes every payload digest and content-derived ID and rejects any
   missing, extra, duplicate or digest-only substitute.
+  Every semantic catalogue, composition catalogue, semantic-stage output,
+  neutral projection and relationship-effect universe authority contains its
+  complete immutable member bytes. Acceptance recomputes the ordered member
+  roots from those bytes. A signed root summary, count or reviewer statement is
+  never evidence of membership and cannot conceal a missing, substituted or
+  changed member.
   The semantic-question and composition catalogue
   SemanticStageOutputSetRoots are distinct authorities and both precede the
   catalogue THIRD_RECONCILER. Reconciliation binds their actual
@@ -913,6 +931,24 @@ This file is the sole authority for detailed identities, state machines, writer 
   missing, stale, mismatched or unverifiable approval is `OPEN` and blocks
   `candidate_scope_and_extraction`. It cannot be repaired by a later candidate
   artefact or a prose assertion.
+- Before review begins, the authority controller creates one immutable
+  `ContractFreezeAttestationIdentity` from the specification root, commit,
+  environment, predecessor, successor bundle fingerprint and a unique approval-
+  epoch nonce. The attestation must consume that exact identity, and the frozen
+  pair hashes both the bundle fingerprint and the resulting attestation ID.
+  Reapproval of unchanged bundle bytes is therefore a new approval epoch with a
+  new identity, attestation ID and frozen pair. The nonce is fixed before any
+  reviewer or Ben approval signs and cannot be chosen from their conclusions.
+- The bundle member universe is the complete immutable
+  `CanonicalContractBundleMember` set, not a compilation receipt projection.
+  Every selected bundle contains at least one member in each closed family:
+  core canonical contract, semantic catalogue, composition catalogue,
+  relationship-effect field universe, open-world concept, governed residual,
+  source-specific publication and comparability. Acceptance recomputes each
+  member byte digest, the ordered member root, member count and required-kind
+  root and requires exact equality among the authority manifest, compilation
+  receipt and contract review. The compiler may validate that already captured
+  set but may not author, omit or invent its membership.
 - `candidate_scope_and_extraction` authorisation is parameterised by the exact
   frozen pair, programme-status artefact digest and monotonic status generation
   in the requested work envelope. A passing status record for a different pair
@@ -2932,6 +2968,30 @@ This file is the sole authority for detailed identities, state machines, writer 
   cannot bound the closure or the walkers disagree, `ISOLATED_SOURCE_SPECIFIC`
   is prohibited and the candidate widens to the applicable result, corpus-scope
   or contract blocking tier until reconciliation succeeds.
+- Agreement between the two walkers is not negative proof. Before either walker
+  runs, two source-only enumerators and a third reconciler build one immutable
+  `SourceToImpactEdgeSlotUniverse` from the exact source intervals, structural
+  edges, definitions, primitives, PotentialDependencyUniverse and complete
+  governed target-key universe. Neither enumerator may read an extractor-
+  supplied affected set, either walker output or a disposition conclusion. A
+  legal-semantic author must partition every slot exactly once into either a
+  source-backed `SourceToImpactPositiveEdge` or a
+  `SourceToImpactNegativeEdgeDecisionBody`. For every negative body, a different
+  eligible reviewer signs a `SOURCE_TO_IMPACT_NEGATIVE_EDGE` eligibility proof,
+  producing a final `SourceToImpactNegativeEdgeDecision`. The exact slot,
+  source occurrence, target, evidence reviewed, reason and policy versions are
+  content-addressed. Similarity, graph distance and absence from a frozen graph
+  are not valid negative reasons.
+- `SourceToImpactEdgePartitionManifest` binds the independently enumerated slot
+  universe, all positive edges and all final negative decisions. Its missing,
+  overlap, unsigned, ineligible, author-reviewer-intersection and unresolved
+  roots must be empty. Both impact walkers bind that manifest and begin from
+  every positive edge. They independently validate, but cannot create or share,
+  every negative decision. The reconciled SemanticImpactClosure binds the slot
+  universe, partition manifest, positive and negative roots and fixed empty
+  `unaccounted_slot`, `omitted_positive_edge` and `invalid_negative_proof`
+  roots. Two walkers that repeat the same omitted edge therefore fail even when
+  their affected-node and traversed-edge roots agree.
 - Each `SemanticImpactWalkerOutput` hashes
   `OPEN_WORLD_SEMANTIC_IMPACT_WALKER/V1`, schema, frozen pair, exact candidate
   occurrence, its exact effective `OpenWorldCandidateDisposition` ID and payload
@@ -2967,12 +3027,24 @@ This file is the sole authority for detailed identities, state machines, writer 
   does not itself create a result, observation or cohort member.
 - `REVIEWED_SOURCE_SPECIFIC` is not an escape hatch. It may pair with
   `ISOLATED_SOURCE_SPECIFIC` only when the reconciled SemanticImpactClosure proves
-  no path to a known result, scope or contract object. If a novel exception,
+  no path to a known result, scope or contract object. That proof requires an
+  individually reviewed negative decision for every enumerated source-to-known-
+  target slot not represented by a positive edge. A missing, generic, cross-
+  target, unsigned or author-approved negative decision prohibits isolation.
+  If a novel exception,
   relationship, party, attribute, document or basis may change a known result,
   the affected result receives `INCOMPLETE_NOVEL_SEMANTIC` or `BLOCKED` according
   to its state contract and cannot be represented as complete merely because its
   familiar components were extracted. Unaffected results outside the exact
   transitive closure remain complete and render normally.
+- The same independently enumerated source-to-impact slot universe, exact
+  positive-or-reviewed-negative partition and closure fields apply to every
+  governed residual and `GovernedObjectImpactWalkerOutput`. A residual cannot be
+  classified as isolated, non-substantive or fully incorporated while any
+  source-to-known-target slot is unaccounted, or while two walkers merely agree
+  on the same omission. This fail-closed result blocks only the affected
+  candidate output. Independently valid sibling provisions remain publishable
+  and render normally.
 - A novel item is never a page-level failure boundary, but publication authority
   depends on its terminal state. `INCOMPLETE_NOVEL_SEMANTIC` is final, reviewed
   and release-certifiable and may produce an `INCOMPLETE_CANONICAL_RESULT`.
@@ -5198,6 +5270,11 @@ This file is the sole authority for detailed identities, state machines, writer 
   reviewed dispositions, source-specific publication selections for
   `REVIEWED_SOURCE_SPECIFIC` dispositions, GovernedResidualReviewDecisions,
   GovernedResidualDispositions, both residual-impact projections,
+  both SourceToImpactEdgeSlotUniverse enumerator outputs and their
+  reconciliation, SourceToImpactPositiveEdges,
+  SourceToImpactNegativeEdgeDecisionBodies, signed
+  SourceToImpactNegativeEdgeDecisions and the
+  SourceToImpactEdgePartitionManifest,
   GovernedObjectImpactWalkerOutputs, GovernedObjectImpactClosures,
   GovernedResidualImpactClosures, both independent impact-walker outputs,
   SemanticImpactEnumeratorIndependenceAttestation, reconciled
@@ -5208,6 +5285,11 @@ This file is the sole authority for detailed identities, state machines, writer 
   Neither may create a final SemanticBoundaryTerminalConsumptionRoot or
   SemanticBoundaryConsumptionReconciliation, because only the scope-selecting
   writer sees the complete governed-object and reviewed terminal set.
+  `MATERIALISE_SCOPE` independently re-enumerates the source-to-impact slot
+  universe, validates the exact positive-or-reviewed-negative partition and
+  selects those objects with the resulting candidate and residual impact
+  closures. Review may author decisions; it cannot author the scope inventory
+  or its release eligibility.
   For a pre-admission source-role occurrence, this action may record only its
   directly reviewed admission-decision disposition and one signed
   `SourceRoleAdmissionAuthorisation` after predecessor evidence closure and
@@ -5568,6 +5650,9 @@ This file is the sole authority for detailed identities, state machines, writer 
   SemanticInferenceTranscript set, ReviewedInferencePayload,
   SemanticGraphNormaliserDefinition and ValidatedSemanticGraph with validation
   report and exact lineage,
+  every selected SourceToImpactEdgeSlotUniverse reconciliation,
+  SourceToImpactPositiveEdge, reviewed SourceToImpactNegativeEdgeDecision,
+  SourceToImpactEdgePartitionManifest and candidate or residual impact closure,
   complete selected pre-extraction inventory, the exact
   `ScopeSubjectApplicabilityRoot` ID and payload digest and its complete
   expected-versus-actual reconciliation, every applicable

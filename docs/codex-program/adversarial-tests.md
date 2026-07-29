@@ -847,6 +847,12 @@ The following adversarial closure tests are mandatory traceability entries:
   changes the frozen pair and every IntakeCutoffAttestation, question
   disposition, expectation, challenge, composition, closure, selection and
   later artefact.
+  Reapprove byte-identical bundle members with a fresh precommitted approval-
+  epoch nonce. The ContractFreezeAttestationIdentity, attestation ID and frozen
+  pair must all change. Reusing the prior identity or pair, or choosing the nonce
+  after seeing review or approval conclusions, fails. Delete any one mandatory
+  CanonicalContractBundleMember family while preserving a self-consistent
+  compilation receipt: exact member-set and required-kind reconciliation fails.
 - `FREEZE-INFLIGHT-01`: a candidate job starts with the current frozen pair,
   status digest and generation while a supersession races it. If the writer
   locks first, it may commit only under the old pair and the later candidate
@@ -917,6 +923,12 @@ The following adversarial closure tests are mandatory traceability entries:
   an attester changing the semantic bytes fails. Only a self-contained eligible
   review of the exact completed payload may precede a passing attestation and
   governed wrapper.
+  Mount an ordinary/generated definition, the other catalogue or a prior review
+  in a catalogue authoring sandbox, omit one observed input event, substitute an
+  ineligible reviewer, or let the author review their own catalogue. Freeze
+  remains open. Alter one immutable stage, neutral-projection or relationship-
+  effect member while re-signing unchanged generic root summaries. Root
+  recomputation from the actual member bytes must detect the drift.
 - `SEMANTIC-ATTESTER-NONTRANSFORM-01`: for every semantic stage, ask the
   non-semantic attester to add, delete, reorder, map or classify one field. It
   must fail and create no governed object. Metadata-only changes preserve the
@@ -1384,6 +1396,17 @@ The following adversarial closure tests are mandatory traceability entries:
   `FULLY_INCORPORATED_CANONICAL`. The provisional contract-impact walkers bind
   the unresolved marker and no disposition, use separate outputs and cannot be
   substituted for the final disposition-bound walkers.
+  Remove the same source-to-known-result edge from the dependency input shared
+  by both walkers so both walkers agree on the omission. The independently
+  source-enumerated SourceToImpactEdgeSlotUniverse must retain the slot, and a
+  missing positive edge or exact reviewed negative decision blocks closure.
+  Missing slots, copied enumerator output, unsigned or ineligible negative
+  decisions, a negative signed by its author, and a decision for a different
+  source occurrence or target all fail. A valid independently reviewed negative
+  discharges only its exact slot. The positive-or-negative partition, empty
+  missing and overlap roots and negative-proof checks apply identically to novel
+  candidates and governed residuals. Two walkers may never establish negative
+  proof merely by repeating the same omission.
 - `OPEN-WORLD-STATUS-AXES-01`: independently permute claim state, result
   completeness and market comparability through every schema-valid combination.
   Renderer, query, cache and aggregate retain all three fields. Any conversion
@@ -2150,6 +2173,12 @@ The following adversarial closure tests are mandatory traceability entries:
   dependency, substituting an authority-envelope digest for any semantic-stage,
   neutral-projection, relationship-field, reviewer-eligibility or Ben-decision
   set root, or omitting either catalogue stage fails freeze.
+  Catalogue authorship and independence are accepted only from the recomputed
+  authored member bytes and exact observed sandbox-input projection. A signed
+  assertion of blindness, an ordinary/generated/prior-review mount or an
+  ineligible or non-independent catalogue reviewer fails. The authority
+  manifest and compilation receipt must select the same complete immutable
+  CanonicalContractBundleMember set and all mandatory member families.
 - `POLICY-AUTHORITY-01`: duplicate configuration ownership, a value above a
   protocol bound or any OperationalPolicySet mismatch among scope, candidate,
   deployment and certification fails compilation or certification.
