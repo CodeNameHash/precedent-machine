@@ -1,0 +1,19 @@
+{
+  "phase": "WP-PROCESS-PHASE-IDENTITY-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-phase-identity-v1.json",
+    "lib/canonical-v2/process-phase-identity.js",
+    "tests/canonical-v2-process-phase-identity.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Constructs deterministic deal-scoped or governed BidderTrack-scoped ProcessPhase identities from frozen synthetic inputs. It grants no phase-value, event-membership, slot-resolution, materialisation, writer, serving, release, canonical-write, database, import, activation, UI, or production authority."
+}
