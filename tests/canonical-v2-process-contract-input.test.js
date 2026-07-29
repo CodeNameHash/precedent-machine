@@ -52,7 +52,7 @@ test('compiles the bounded Process core contracts deterministically without free
   );
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 97);
+  assert.equal(first.authored_members.length, 99);
   assert.deepEqual(
     processEntries.map((member) => [member.object_kind, member.stable_id]),
     [
@@ -67,6 +67,8 @@ test('compiles the bounded Process core contracts deterministically without free
       ['SERVING_PROCESS_CONTRACT_INPUT', 'BOUNDED_INLINE_PASSAGE_PREVIEW'],
       ['SERVING_PROCESS_CONTRACT_INPUT', 'PARENT_BOUND_PARAGRAPH_CONTEXT'],
       ['SERVING_PROCESS_CONTRACT_INPUT', 'RELATED_PASSAGE_CHILD_COLLECTION'],
+      ['SOURCE_ACQUISITION_CONTRACT_INPUT', 'EXTERNAL_SOURCE_ACQUISITION_MANIFEST'],
+      ['SOURCE_ACQUISITION_CONTRACT_INPUT', 'SOURCE_UNIVERSE_COMPLETENESS'],
     ],
   );
   assert.equal(first.authored_universe_assessment.status, 'NOT_ASSESSED');

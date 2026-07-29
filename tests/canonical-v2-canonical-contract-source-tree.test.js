@@ -75,7 +75,7 @@ test('the single successor source compiles twice byte-identically without claimi
   const second = compileCanonicalContractInput({ root_directory: sourceRoot });
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 97);
+  assert.equal(first.authored_members.length, 99);
   assert.equal(
     first.authored_members.some(
       (member) => member.object_kind === 'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY',
@@ -465,13 +465,13 @@ test('the authored claim interpretation policy is the exact existing V12 policy'
   );
 });
 
-test('the manifest exactly closes the 97-file Agreement, shared and Process source tree', () => {
+test('the manifest exactly closes the 99-file Agreement, shared and Process source tree', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
   const actualMembers = jsonMembers(sourceRoot);
   const declaredMembers = manifest.members.map((member) => member.relative_path);
 
   assert.deepEqual(actualMembers, declaredMembers);
-  assert.equal(manifest.members.length, 97);
+  assert.equal(manifest.members.length, 99);
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('agreement/')).length,
     70,
@@ -482,7 +482,7 @@ test('the manifest exactly closes the 97-file Agreement, shared and Process sour
   );
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('process/')).length,
-    11,
+    13,
   );
   assert.equal(
     fs.existsSync(path.join(__dirname, '../lib/schema/canonical/contract-v2')),
@@ -510,6 +510,7 @@ test('the manifest exactly closes the 97-file Agreement, shared and Process sour
     SERVING_TRIGGER_PATH_SCHEMA_INPUT: 1,
     SHARED_AUTHORITY_FIELD_CATALOGUE_INPUT: 1,
     SHARED_AUTHORITY_LOGICAL_TYPE_INPUT: 15,
+    SOURCE_ACQUISITION_CONTRACT_INPUT: 2,
   });
   assert.deepEqual(manifest.per_kind_schema_versions, {
     CLAIM_DEFINITION: ['CLAIM_DEFINITION/V1'],
@@ -546,6 +547,9 @@ test('the manifest exactly closes the 97-file Agreement, shared and Process sour
     ],
     SHARED_AUTHORITY_LOGICAL_TYPE_INPUT: [
       'SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1',
+    ],
+    SOURCE_ACQUISITION_CONTRACT_INPUT: [
+      'SOURCE_ACQUISITION_CONTRACT_INPUT/V1',
     ],
   });
   for (const declaredMember of manifest.members) {
