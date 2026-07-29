@@ -1,0 +1,18 @@
+{
+  "phase": "WP-PROCESS-TEMPORAL-EXPRESSION-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-temporal-expression-v1.json",
+    "lib/canonical-v2/process-temporal-expression.js",
+    "tests/canonical-v2-process-temporal-expression.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Builds pure identity-only and lossless draft TemporalExpression carriers against the empty signed node registry. It grants no extraction, interpretation, computation, revision, writer, serving, release, canonical-write, database, import, activation, UI or production authority."
+}
