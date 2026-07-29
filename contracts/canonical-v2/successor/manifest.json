@@ -39,6 +39,13 @@
       "canonical_bytes_digest": "8f16e192ae88a8e9f078e544e621aed9075e78b6eb5daf8f11aea4187ca1c2f3"
     },
     {
+      "relative_path": "shared/field-definitions/shared-deal-field-catalogue.v1.json",
+      "object_kind": "SHARED_AUTHORITY_FIELD_CATALOGUE_INPUT",
+      "stable_id": "SHARED_DEAL_FIELD_CATALOGUE",
+      "schema_version": "SHARED_AUTHORITY_FIELD_CATALOGUE_INPUT/V1",
+      "canonical_bytes_digest": "e2be1596428a1c0db063b79cc06de9a51ac8a374bd65dd6bdc92812e06cb4a26"
+    },
+    {
       "relative_path": "shared/professionals/lawyer-firm-affiliation-relationship.v1.json",
       "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
       "stable_id": "LAWYER_FIRM_AFFILIATION_RELATIONSHIP",
@@ -51,6 +58,13 @@
       "stable_id": "PROFESSIONAL_ASSIGNMENT_RELATIONSHIP",
       "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
       "canonical_bytes_digest": "1b92630e3659666c443a21645ba4622117e25a75d7e2a9075a1f6ebd8447cbe6"
+    },
+    {
+      "relative_path": "shared/projections/canonical-deal-fact-projection.v1.json",
+      "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+      "stable_id": "CANONICAL_DEAL_FACT_PROJECTION",
+      "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "363e277e4df210436937dcdfe52045f7377fbb1b8c089712b22323e247f99e24"
     },
     {
       "relative_path": "shared/temporal/temporal-expression.v1.json",
@@ -103,9 +117,13 @@
     }
   ],
   "per_kind_counts": {
-    "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT": 14
+    "SHARED_AUTHORITY_FIELD_CATALOGUE_INPUT": 1,
+    "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT": 15
   },
   "per_kind_schema_versions": {
+    "SHARED_AUTHORITY_FIELD_CATALOGUE_INPUT": [
+      "SHARED_AUTHORITY_FIELD_CATALOGUE_INPUT/V1"
+    ],
     "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT": [
       "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1"
     ]

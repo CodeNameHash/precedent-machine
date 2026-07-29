@@ -1,0 +1,156 @@
+{
+  "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+  "stable_id": "CANONICAL_DEAL_FACT_PROJECTION",
+  "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+  "definition": {
+    "logical_type": "CanonicalDealFactProjection",
+    "logical_type_version": 1,
+    "expected_slot": {
+      "slot_kind": "CANONICAL_DEAL_FACT_PROJECTION_SLOT",
+      "slot_schema": "CANONICAL_DEAL_FACT_PROJECTION_SLOT/V1",
+      "identity_inputs": [
+        "canonical_contract_fingerprint",
+        "serving_namespace_id",
+        "corpus_release_id",
+        "governed_deal_id",
+        "projection_version"
+      ],
+      "value_fields_excluded_from_identity": [
+        "display_label",
+        "field_entries",
+        "write_credentials"
+      ]
+    },
+    "occurrence_identity": {
+      "stable_id_domain": "CANONICAL_DEAL_FACT_PROJECTION/V1",
+      "stable_id_inputs": [
+        "canonical_contract_fingerprint",
+        "serving_namespace_id",
+        "corpus_release_id",
+        "governed_deal_id",
+        "projection_version"
+      ],
+      "prohibited_inputs": [
+        "database_row_id",
+        "display_label",
+        "field_entries",
+        "legacy_deal_facts",
+        "write_credentials"
+      ]
+    },
+    "revision_identity": {
+      "revision_type": "CanonicalDealFactProjectionRevision",
+      "revision_id_domain": "CANONICAL_DEAL_FACT_PROJECTION_REVISION/V1",
+      "immutable_inputs": [
+        "canonical_deal_fact_projection_id",
+        "field_entries",
+        "projection_payload_digest",
+        "release_identity",
+        "revision_status"
+      ]
+    },
+    "state_rules": {
+      "allowed_states": ["PRESENT", "ABSENT", "NOT_APPLICABLE", "NOT_EXAMINED", "FAILED"],
+      "value_rule_by_state": {
+        "PRESENT": "VALUE_AND_EVIDENCE_REQUIRED",
+        "ABSENT": "COMPLETE_SCOPE_AND_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_APPLICABLE": "APPLICABILITY_EVIDENCE_REQUIRED_NO_VALUE",
+        "NOT_EXAMINED": "NO_VALUE",
+        "FAILED": "FAILURE_DETAIL_REQUIRED_NO_VALUE"
+      }
+    },
+    "evidence_rules": {
+      "exact_evidence_required": true,
+      "source_occurrence_required": false,
+      "approved_seed_attestation_permitted": false,
+      "coordinate_space": "SELECTED_TYPED_LINEAGE_AND_RELEASE_IDENTITY",
+      "complete_scope_required_for_absent": true
+    },
+    "physical_carrier": {
+      "carrier_kind": "CANDIDATE_RELEASE_PROJECTION_TABLE",
+      "carrier_name": "canonical_deal_fact_projections",
+      "release_partitioned": true
+    },
+    "writer_action": {
+      "action_key": "MATERIALISE_CANONICAL_DEAL_FACT_PROJECTION",
+      "action_version": 1,
+      "candidate_only": true,
+      "current_release_writer_path": false
+    },
+    "release_treatment": {
+      "candidate_membership_required": true,
+      "release_pinned": true,
+      "immutable_after_release": true,
+      "exact_release_citation_redirect": false
+    },
+    "import_treatment": {
+      "mode": "WHOLE_RELEASE_ONLY",
+      "stable_id_preserved": true,
+      "revision_id_preserved": true
+    },
+    "trace_treatment": {
+      "terminal_type": "CANONICAL_DEAL_FACT_PROJECTION_REVISION",
+      "occurrence_id_required": true,
+      "revision_id_required": true,
+      "evidence_edges_required": true
+    },
+    "exact_detail_treatment": {
+      "action_key": "CANONICAL_DEAL_FACT_PROJECTION_EVIDENCE",
+      "exact_evidence_only": true,
+      "preserve_release_identity": true
+    },
+    "consumer_projection_rule": {
+      "projection_type": "CanonicalDealFactProjection",
+      "terminal_type": "CANONICAL_DEAL_FACT_PROJECTION_REVISION",
+      "typed_state_required": true,
+      "release_identity_required": true,
+      "conflict_indicator_required": true
+    },
+    "type_contract": {
+      "release_identity_inputs": [
+        "canonical_contract_fingerprint",
+        "serving_namespace_id",
+        "corpus_release_id",
+        "governed_deal_id",
+        "projection_version"
+      ],
+      "field_entry_required_keys": [
+        "field_key",
+        "field_version",
+        "canonical_value",
+        "display_label",
+        "typed_state",
+        "typed_lineage",
+        "exact_detail_action",
+        "conflict_indicator",
+        "derivation_reference",
+        "release_identity"
+      ],
+      "terminal_lineage_types": [
+        "ENTITY_REVISION",
+        "ENTITY_NAME_REVISION",
+        "IDENTITY_BRIDGE_REVISION",
+        "DEAL_FACT_RESOLUTION_REVISION",
+        "PARTICIPANT_RELATIONSHIP_REVISION",
+        "PROFESSIONAL_ASSIGNMENT_REVISION",
+        "LAWYER_FIRM_AFFILIATION_REVISION",
+        "TRANSACTION_LEG_RESOLUTION_REVISION",
+        "TRANSACTION_STRUCTURE_RESOLUTION_REVISION",
+        "TRANSACTION_CONTROL_OUTCOME_REVISION",
+        "SHARE_PURCHASE_INTEREST_COMPONENT_REVISION",
+        "REGISTERED_DERIVATION"
+      ],
+      "admitted_fields_only": true,
+      "selected_revision_required": true,
+      "generic_revision_id_permitted": false,
+      "complete_release_identity_per_field": true,
+      "conflict_indicator_required": true,
+      "derivation_reference_required_when_applicable": true,
+      "exact_detail_action_from_terminal_lineage": true,
+      "write_credential_in_projection": false,
+      "direct_write_path": false,
+      "legacy_value_fallback": false,
+      "same_release_live_and_pinned_rows_equal": true
+    }
+  }
+}
