@@ -101,7 +101,7 @@ function fixture() {
         },
         registered_prompt: {
           prompt_id: lane.registered_prompt_id,
-          path: `/tmp/prompt-${index}.txt`,
+          path: `/tmp/g0-cold-review-artifact/${lane.lane_id.toLowerCase()}-lane/prompt.txt`,
           payload_digest: crypto.createHash('sha256').update(task.prompt).digest('hex'),
           byte_length: Buffer.byteLength(task.prompt),
           immutable: true,
@@ -109,7 +109,8 @@ function fixture() {
         },
         output_schema: {
           schema_id: 'ColdReviewOutput/V1',
-          path: `/tmp/schema-${index}.json`,
+          path:
+            `/tmp/g0-cold-review-artifact/${lane.lane_id.toLowerCase()}-lane/output-schema.json`,
           payload_digest: '6'.repeat(64),
           byte_length: 1,
           immutable: true,
@@ -120,12 +121,16 @@ function fixture() {
         review_runtime_binary_path: '/opt/homebrew/bin/codex',
         review_runtime_version: 'codex-cli/0.145.0',
         review_runtime_binary_digest: '1'.repeat(64),
-        working_directory: `/tmp/review-${index}`,
+        controller_run_root: '/tmp/g0-cold-review-artifact',
+        lane_run_root: `/tmp/g0-cold-review-artifact/${lane.lane_id.toLowerCase()}-lane`,
+        working_directory:
+          `/tmp/g0-cold-review-artifact/${lane.lane_id.toLowerCase()}-lane/specification`,
         operating_system: 'darwin',
         architecture: 'arm64',
-        home_path: `/tmp/home-${index}`,
-        codex_home_path: `/tmp/codex-${index}`,
-        tmpdir_path: `/tmp/tmp-${index}`,
+        home_path: `/tmp/g0-cold-review-artifact/${lane.lane_id.toLowerCase()}-lane/home`,
+        codex_home_path:
+          `/tmp/g0-cold-review-artifact/${lane.lane_id.toLowerCase()}-lane/codex-home`,
+        tmpdir_path: `/tmp/g0-cold-review-artifact/${lane.lane_id.toLowerCase()}-lane/tmp`,
         path_value: '/opt/homebrew/bin:/usr/bin:/bin',
         lang: 'en_US.UTF-8',
         lc_all: 'en_US.UTF-8',

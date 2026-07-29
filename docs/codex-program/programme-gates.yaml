@@ -66,8 +66,8 @@ programme_gate_registry:
       missing_or_post_review_selected_member_effect: OPEN
     bootstrap_compiled_registry_binding:
       source_path: docs/codex-program/bootstrap-acceptance-source.json
-      source_sha256: 9c0948292ee63d69c56145d32d5bbe91f4bbfb7ca9a813f8f1342f93041ade49
-      closed_validator_executable_set_digest: ef039de82fe0098a0146179a469384ed7a6865b15c026a5dcbb6a1439efd4904
+      source_sha256: dca34853834b1138ef1bd3e5b4a7cf5faaf6c0c7efdb6bef2f2fd0b74daa9180
+      closed_validator_executable_set_digest: 081df6bc5b53352b420e7670ded9353934f7f38023a8d6f9899d6733f98f20da
       authority: ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE
       exact_active_definition_count: 11
       exact_genesis_gate_count: 10
@@ -174,7 +174,7 @@ programme_gate_registry:
       exact_model_identifier: gpt-5.6-sol
       reasoning_level: xhigh
       fixed_context_rule: HASH_OF_CLOSED_TRUSTED_REVIEW_RUNTIME_CONTEXT_WITH_FRESH_CONTROLLER_CREATED_PATHS
-      fixed_context_closed_fields: [context_version, review_runtime_binary_path, review_runtime_version, review_runtime_binary_digest, working_directory, operating_system, architecture, home_path, codex_home_path, tmpdir_path, path_value, lang, lc_all, term]
+      fixed_context_closed_fields: [context_version, review_runtime_binary_path, review_runtime_version, review_runtime_binary_digest, controller_run_root, lane_run_root, working_directory, operating_system, architecture, home_path, codex_home_path, tmpdir_path, path_value, lang, lc_all, term]
       fixed_context_constants: [TrustedReviewRuntimeContext/V1, /opt/homebrew/bin/codex, codex-cli/0.145.0, darwin, arm64, "/opt/homebrew/bin:/usr/bin:/bin", en_US.UTF-8, en_US.UTF-8, dumb]
       fresh_path_rule: EACH_WORKING_HOME_CODEX_HOME_AND_TMPDIR_PATH_IS_CONTROLLER_CREATED_UNDER_THE_ONE_RUN_TEMP_ROOT_AND_IS_PAIRWISE_DISTINCT
       unknown_runtime_field_constant_OR_path_outside_run_root_effect: INELIGIBLE

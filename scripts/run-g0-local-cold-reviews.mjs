@@ -169,6 +169,8 @@ async function runLane({ lane, runRoot, exactSpecificationRoot, privateKey, comm
     review_runtime_binary_path: CODEX_PATH,
     review_runtime_version: command(CODEX_PATH, ['--version']).stdout.trim().replace('codex-cli ', 'codex-cli/'),
     review_runtime_binary_digest: sha256(fs.readFileSync(fs.realpathSync(CODEX_PATH))),
+    controller_run_root: runRoot,
+    lane_run_root: laneRoot,
     working_directory: specificationDirectory,
     operating_system: process.platform,
     architecture: process.arch,

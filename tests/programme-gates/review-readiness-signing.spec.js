@@ -174,7 +174,7 @@ function fixture() {
         },
         registered_prompt: {
           prompt_id: lane.registered_prompt_id,
-          path: `/tmp/prompt-${index}.txt`,
+          path: `/tmp/g0-cold-review-readiness/${lane.lane_id.toLowerCase()}-lane/prompt.txt`,
           payload_digest: REVIEW_CONTROLLER_POLICY.prompt_digests[lane.lane_id],
           byte_length: 1,
           immutable: true,
@@ -182,7 +182,8 @@ function fixture() {
         },
         output_schema: {
           schema_id: 'ColdReviewOutput/V1',
-          path: `/tmp/schema-${index}.json`,
+          path:
+            `/tmp/g0-cold-review-readiness/${lane.lane_id.toLowerCase()}-lane/output-schema.json`,
           payload_digest: DIGEST_D,
           byte_length: 1,
           immutable: true,
@@ -193,12 +194,16 @@ function fixture() {
         review_runtime_binary_path: REVIEW_CONTROLLER_POLICY.review_runtime_binary_path,
         review_runtime_version: REVIEW_CONTROLLER_POLICY.review_runtime_version,
         review_runtime_binary_digest: REVIEW_CONTROLLER_POLICY.review_runtime_binary_digest,
-        working_directory: '/tmp/review',
+        controller_run_root: '/tmp/g0-cold-review-readiness',
+        lane_run_root: `/tmp/g0-cold-review-readiness/${lane.lane_id.toLowerCase()}-lane`,
+        working_directory:
+          `/tmp/g0-cold-review-readiness/${lane.lane_id.toLowerCase()}-lane/specification`,
         operating_system: REVIEW_CONTROLLER_POLICY.operating_system,
         architecture: REVIEW_CONTROLLER_POLICY.architecture,
-        home_path: '/tmp/home',
-        codex_home_path: '/tmp/codex-home',
-        tmpdir_path: '/tmp/review-tmp',
+        home_path: `/tmp/g0-cold-review-readiness/${lane.lane_id.toLowerCase()}-lane/home`,
+        codex_home_path:
+          `/tmp/g0-cold-review-readiness/${lane.lane_id.toLowerCase()}-lane/codex-home`,
+        tmpdir_path: `/tmp/g0-cold-review-readiness/${lane.lane_id.toLowerCase()}-lane/tmp`,
         path_value: REVIEW_CONTROLLER_POLICY.path_value,
         lang: REVIEW_CONTROLLER_POLICY.locale,
         lc_all: REVIEW_CONTROLLER_POLICY.locale,
@@ -301,8 +306,12 @@ function fixture() {
       independence_attestation: independenceRecord,
     };
   });
-  reviewAuthority.allowed_runtimes[0].fixed_controller_runtime_context_digest =
-    members[0].controller_record.fixed_controller_runtime_context_digest;
+  reviewAuthority.allowed_runtimes = members.map((member) => ({
+    review_runtime_version: member.controller_record.review_runtime_version,
+    review_runtime_binary_digest: member.controller_record.review_runtime_binary_digest,
+    fixed_controller_runtime_context_digest:
+      member.controller_record.fixed_controller_runtime_context_digest,
+  }));
   const review = verifyReviewSetEvidence({
     expected_specification_root: ROOT,
     members,
@@ -358,6 +367,46 @@ function resignIndependence(sample, index) {
     INDEPENDENCE_ROLE,
     unsigned(record, 'signature'),
   );
+}
+
+function rebindReviewContext(sample, index, change) {
+  const record = sample.members[index].controller_record;
+  change(record);
+  record.controller_supplied_input_manifest_digest = domainDigest(
+    'PROGRAMME_GATE_REVIEW_TASK_MANIFEST/V1',
+    record.controller_supplied_input_manifest,
+  );
+  record.fixed_controller_runtime_context_digest = domainDigest(
+    'PROGRAMME_GATE_REVIEW_RUNTIME_CONTEXT/V1',
+    record.fixed_controller_runtime_context,
+  );
+  record.exact_input_context_digest = domainDigest(
+    'PROGRAMME_GATE_REVIEW_EXACT_INPUT_CONTEXT/V1',
+    {
+      context_version: 'TrustedReviewExactInputContext/V1',
+      task_manifest_digest: record.controller_supplied_input_manifest_digest,
+      exact_specification_root: ROOT,
+      frozen_specification_manifest_digest:
+        record.controller_supplied_input_manifest.frozen_specification.manifest_digest,
+      registered_prompt_digest:
+        record.controller_supplied_input_manifest.registered_prompt.payload_digest,
+      output_schema_digest:
+        record.controller_supplied_input_manifest.output_schema.payload_digest,
+      fixed_runtime_context_digest: record.fixed_controller_runtime_context_digest,
+    },
+  );
+  record.input_context_digest_before_review = record.exact_input_context_digest;
+  record.input_context_digest_after_review = record.exact_input_context_digest;
+  const independence = sample.members[index].independence_attestation;
+  independence.exact_input_context_digest = record.exact_input_context_digest;
+  sample.reviewAuthority.allowed_runtimes.push({
+    review_runtime_version: record.review_runtime_version,
+    review_runtime_binary_digest: record.review_runtime_binary_digest,
+    fixed_controller_runtime_context_digest:
+      record.fixed_controller_runtime_context_digest,
+  });
+  resignController(sample, index);
+  resignIndependence(sample, index);
 }
 
 function reviewClaims(sample) {
@@ -554,6 +603,32 @@ test('the exact-review predicate rejects reused task IDs and non-concurrent lane
     '2026-07-28T11:30:00.000Z';
   resignController(sequential, 0);
   assert.ok(reviewClaims(sequential).every((claim) => claim.typed_value === false));
+});
+
+test('the exact-review predicate rejects signed path escape and split controller roots', () => {
+  const escaped = fixture();
+  rebindReviewContext(escaped, 0, (record) => {
+    record.fixed_controller_runtime_context.working_directory =
+      '/tmp/outside-controller-root/specification';
+  });
+  assert.ok(reviewClaims(escaped).every((claim) => claim.typed_value === false));
+
+  const split = fixture();
+  rebindReviewContext(split, 0, (record) => {
+    const runtime = record.fixed_controller_runtime_context;
+    const laneRoot = `/tmp/g0-cold-review-other/${REVIEW_LANES[0].lane_id.toLowerCase()}-lane`;
+    runtime.controller_run_root = '/tmp/g0-cold-review-other';
+    runtime.lane_run_root = laneRoot;
+    runtime.working_directory = `${laneRoot}/specification`;
+    runtime.home_path = `${laneRoot}/home`;
+    runtime.codex_home_path = `${laneRoot}/codex-home`;
+    runtime.tmpdir_path = `${laneRoot}/tmp`;
+    record.controller_supplied_input_manifest.registered_prompt.path =
+      `${laneRoot}/prompt.txt`;
+    record.controller_supplied_input_manifest.output_schema.path =
+      `${laneRoot}/output-schema.json`;
+  });
+  assert.ok(reviewClaims(split).every((claim) => claim.typed_value === false));
 });
 
 test('both externally signed review envelopes pass the complete validator', () => {

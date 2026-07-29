@@ -1,5 +1,7 @@
 const assert = require('node:assert/strict');
+const { execFileSync } = require('node:child_process');
 const crypto = require('node:crypto');
+const path = require('node:path');
 const test = require('node:test');
 
 const { domainDigest, signatureBytes } = require('../../lib/programme-gates/bytes');
@@ -7,9 +9,24 @@ const {
   evaluateAcceptanceClaims,
 } = require('../../lib/programme-gates/predicates');
 const { verifySignature } = require('../../lib/programme-gates/signatures');
+const {
+  REVIEW_CONTROLLER_POLICY,
+  REVIEW_LANES,
+} = require('../../lib/programme-gates/registry');
+const {
+  enumerateCompleteGitAuthorshipUniverse,
+} = require('../../lib/programme-gates/git-authorship');
 
 const ROOT = 'a'.repeat(64);
-const COMMIT = 'b'.repeat(40);
+const REPOSITORY_ROOT = path.resolve(__dirname, '../..');
+const COMMIT = execFileSync('git', ['rev-parse', 'HEAD'], {
+  cwd: REPOSITORY_ROOT,
+  encoding: 'utf8',
+}).trim();
+const AUTHORSHIP_EVENTS = enumerateCompleteGitAuthorshipUniverse({
+  repositoryRoot: REPOSITORY_ROOT,
+  expectedCommit: COMMIT,
+});
 const OBSERVED_AT = '2026-07-28T12:00:00.000Z';
 const VERIFICATION_TIME = '2026-07-28T12:01:00.000Z';
 
@@ -26,11 +43,90 @@ function keyEntry({ keyId, publicKey, role, domain }) {
     key_id: keyId,
     algorithm: 'Ed25519',
     public_key_pem: publicKey.export({ format: 'pem', type: 'spki' }).toString('utf8'),
-    permitted_roles: [role],
-    permitted_domains: [domain],
+    permitted_roles: Array.isArray(role) ? role : [role],
+    permitted_domains: Array.isArray(domain) ? domain : [domain],
     valid_from: '2026-07-28T00:00:00.000Z',
     valid_until: '2026-07-29T00:00:00.000Z',
     revoked_at: null,
+  };
+}
+
+function unsigned(record, signatureField = 'signature') {
+  return Object.fromEntries(
+    Object.entries(record).filter(([key]) => key !== signatureField),
+  );
+}
+
+function compareMembers(left, right) {
+  return Buffer.compare(
+    Buffer.from(`${left.member_type}\0${left.member_id}`, 'utf8'),
+    Buffer.from(`${right.member_type}\0${right.member_id}`, 'utf8'),
+  );
+}
+
+function g0Envelope({
+  gateId,
+  evidenceContract,
+  subjectType,
+  objectType,
+  evidenceObject,
+  claims,
+  members,
+  validatorPrivateKey,
+}) {
+  const envelopeUnsigned = {
+    schema_version: 'ProgrammeGateEvidenceEnvelope/V2',
+    gate_id: gateId,
+    evidence_contract: evidenceContract,
+    acceptance_definition_id: domainDigest(
+      'TEST_ACCEPTANCE_DEFINITION_ID/V1',
+      { gate_id: gateId },
+    ),
+    acceptance_definition_digest: domainDigest(
+      'TEST_ACCEPTANCE_DEFINITION_PAYLOAD/V1',
+      { gate_id: gateId, evidence_contract: evidenceContract },
+    ),
+    specification_root: ROOT,
+    code_commit: COMMIT,
+    environment: 'STAGING',
+    evidence_subject_type: subjectType,
+    evidence_subject_id: domainDigest(
+      'TEST_EVIDENCE_SUBJECT_ID/V1',
+      { gate_id: gateId },
+    ),
+    evidence_subject_payload_digest: domainDigest(
+      'TEST_EVIDENCE_SUBJECT_PAYLOAD/V1',
+      { gate_id: gateId },
+    ),
+    required_evidence_object_type: objectType,
+    required_evidence_object_payload_digest: domainDigest(
+      'PROGRAMME_GATE_EVIDENCE_OBJECT_PAYLOAD/V1',
+      evidenceObject,
+    ),
+    exact_acceptance_claims: claims.map((claimKey) => ({
+      claim_key: claimKey,
+      result_type: 'BOOLEAN',
+      typed_value: true,
+    })),
+    immutable_member_root: domainDigest(
+      'PROGRAMME_GATE_IMMUTABLE_MEMBER_ROOT/V1',
+      [...members].sort(compareMembers),
+    ),
+    test_result_root: '7'.repeat(64),
+    validator_executable_digest: '8'.repeat(64),
+    validator_configuration_digest: '9'.repeat(64),
+    validator_key_id: 'VALIDATOR_KEY',
+    terminal_state: 'PASS',
+    signature_algorithm: 'Ed25519',
+  };
+  return {
+    ...envelopeUnsigned,
+    signature: sign(
+      validatorPrivateKey,
+      'PROGRAMME_GATE_EVIDENCE/V2',
+      'VALIDATOR',
+      envelopeUnsigned,
+    ),
   };
 }
 
@@ -120,9 +216,257 @@ function fixture() {
     passing_review_set_evidence_id: g0Review.review_set_evidence_id,
     conditions: [],
   };
+  const emptyReviewRoot = domainDigest('PROGRAMME_GATE_REVIEWER_EDIT_SET_ROOT/V1', []);
+  const emptyAuthorRoot = domainDigest(
+    'PROGRAMME_GATE_AUTHORING_EVENT_INTERSECTION_ROOT/V1',
+    [],
+  );
+  const emptyPriorRoot = domainDigest(
+    'PROGRAMME_GATE_PRIOR_CONCLUSION_INTERSECTION_ROOT/V1',
+    [],
+  );
+  const g0ReviewMembers = REVIEW_LANES.flatMap((lane, index) => {
+    const laneRoot =
+      `/tmp/g0-cold-review-contract/${lane.lane_id.toLowerCase()}-lane`;
+    const manifest = {
+      manifest_version: 'TrustedReviewTaskManifest/V1',
+      lane_id: lane.lane_id,
+      exact_specification_root: ROOT,
+      frozen_specification: {
+        manifest_id: REVIEW_CONTROLLER_POLICY.frozen_specification_manifest_id,
+        manifest_digest: 'b'.repeat(64),
+        file_count: REVIEW_CONTROLLER_POLICY.frozen_specification_file_count,
+        immutable: true,
+      },
+      registered_prompt: {
+        prompt_id: lane.registered_prompt_id,
+        path: `${laneRoot}/prompt.txt`,
+        payload_digest: REVIEW_CONTROLLER_POLICY.prompt_digests[lane.lane_id],
+        byte_length: 1,
+        immutable: true,
+        contains_prior_review_conclusions: false,
+      },
+      output_schema: {
+        schema_id: REVIEW_CONTROLLER_POLICY.output_schema_id,
+        path: `${laneRoot}/output-schema.json`,
+        payload_digest: 'c'.repeat(64),
+        byte_length: 1,
+        immutable: true,
+      },
+    };
+    const runtime = {
+      context_version: 'TrustedReviewRuntimeContext/V1',
+      review_runtime_binary_path: REVIEW_CONTROLLER_POLICY.review_runtime_binary_path,
+      review_runtime_version: REVIEW_CONTROLLER_POLICY.review_runtime_version,
+      review_runtime_binary_digest: REVIEW_CONTROLLER_POLICY.review_runtime_binary_digest,
+      controller_run_root: '/tmp/g0-cold-review-contract',
+      lane_run_root: laneRoot,
+      working_directory: `${laneRoot}/specification`,
+      operating_system: REVIEW_CONTROLLER_POLICY.operating_system,
+      architecture: REVIEW_CONTROLLER_POLICY.architecture,
+      home_path: `${laneRoot}/home`,
+      codex_home_path: `${laneRoot}/codex-home`,
+      tmpdir_path: `${laneRoot}/tmp`,
+      path_value: REVIEW_CONTROLLER_POLICY.path_value,
+      lang: REVIEW_CONTROLLER_POLICY.locale,
+      lc_all: REVIEW_CONTROLLER_POLICY.locale,
+      term: REVIEW_CONTROLLER_POLICY.terminal,
+    };
+    const manifestDigest = domainDigest(
+      'PROGRAMME_GATE_REVIEW_TASK_MANIFEST/V1',
+      manifest,
+    );
+    const runtimeDigest = domainDigest(
+      'PROGRAMME_GATE_REVIEW_RUNTIME_CONTEXT/V1',
+      runtime,
+    );
+    const exactInputDigest = domainDigest(
+      'PROGRAMME_GATE_REVIEW_EXACT_INPUT_CONTEXT/V1',
+      {
+        context_version: 'TrustedReviewExactInputContext/V1',
+        task_manifest_digest: manifestDigest,
+        exact_specification_root: ROOT,
+        frozen_specification_manifest_digest: manifest.frozen_specification.manifest_digest,
+        registered_prompt_digest: manifest.registered_prompt.payload_digest,
+        output_schema_digest: manifest.output_schema.payload_digest,
+        fixed_runtime_context_digest: runtimeDigest,
+      },
+    );
+    const controllerUnsigned = {
+      schema_version: 'TrustedReviewControllerRecord/V1',
+      controller_id: REVIEW_CONTROLLER_POLICY.controller_id,
+      controller_version: REVIEW_CONTROLLER_POLICY.controller_version,
+      review_runtime_version: REVIEW_CONTROLLER_POLICY.review_runtime_version,
+      review_runtime_binary_digest: REVIEW_CONTROLLER_POLICY.review_runtime_binary_digest,
+      fixed_controller_runtime_context_digest: runtimeDigest,
+      controller_supplied_input_manifest: manifest,
+      fixed_controller_runtime_context: runtime,
+      exact_specification_root: ROOT,
+      exact_model_identifier: REVIEW_CONTROLLER_POLICY.exact_model_identifier,
+      reasoning_level: REVIEW_CONTROLLER_POLICY.reasoning_level,
+      immutable_task_id: `contract-task-${index}`,
+      immutable_session_id: `contract-session-${index}`,
+      immutable_review_id: `contract-review-${index}`,
+      registered_prompt_id: lane.registered_prompt_id,
+      cold_review_prompt_digest: REVIEW_CONTROLLER_POLICY.prompt_digests[lane.lane_id],
+      controller_supplied_input_manifest_digest: manifestDigest,
+      exact_input_context_digest: exactInputDigest,
+      input_context_digest_before_review: exactInputDigest,
+      input_context_digest_after_review: exactInputDigest,
+      review_output_digest: 'd'.repeat(64),
+      review_start_time: '2026-07-28T10:00:00.000Z',
+      review_end_time: '2026-07-28T10:30:00.000Z',
+      reviewer_principal_id: `contract-controller-${index}/session-${index}`,
+      reviewer_source_control_identity_set: [`contract-reviewer-${index}@example.test`],
+      reviewer_disposition: 'PASS',
+      reviewer_edit_set_root: emptyReviewRoot,
+      parent_session_state: 'GENESIS',
+      no_earlier_review_conclusions_were_inputs: true,
+      nonce: `contract-nonce-${index}`,
+      signature_algorithm: 'Ed25519',
+      controller_key_id: 'CONTROLLER_KEY',
+    };
+    const controllerRecord = {
+      ...controllerUnsigned,
+      controller_signature: sign(
+        controller.privateKey,
+        'PROGRAMME_GATE_REVIEW_CONTROLLER_RECORD/V1',
+        'REVIEW_CONTROLLER',
+        controllerUnsigned,
+      ),
+    };
+    const independenceUnsigned = {
+      schema_version: 'ReviewerIndependenceAttestation/V1',
+      reviewer_principal_id: controllerRecord.reviewer_principal_id,
+      immutable_session_id: controllerRecord.immutable_session_id,
+      session_parent_or_genesis: 'GENESIS',
+      exact_input_context_digest: exactInputDigest,
+      reviewed_code_commit: COMMIT,
+      source_control_history_scope: 'ALL_REFS_FROM_REPOSITORY_GENESIS',
+      source_control_authorship_events: AUTHORSHIP_EVENTS,
+      source_control_authorship_event_set_root: domainDigest(
+        'PROGRAMME_GATE_SOURCE_CONTROL_AUTHORSHIP_EVENT_SET_ROOT/V1',
+        AUTHORSHIP_EVENTS,
+      ),
+      prior_conclusion_input_set: [],
+      authoring_event_intersection_root: emptyAuthorRoot,
+      prior_conclusion_intersection_root: emptyPriorRoot,
+      reviewer_edit_set_root: emptyReviewRoot,
+      validator_executable_digest: 'e'.repeat(64),
+      validator_configuration_digest: 'f'.repeat(64),
+      validator_key_id: 'VALIDATOR_KEY',
+      signature_algorithm: 'Ed25519',
+    };
+    const independenceRecord = {
+      ...independenceUnsigned,
+      signature: sign(
+        validator.privateKey,
+        'PROGRAMME_GATE_REVIEWER_INDEPENDENCE/V1',
+        'VALIDATOR',
+        independenceUnsigned,
+      ),
+    };
+    return [
+      {
+        member_id: `controller:${lane.lane_id}`,
+        member_type: 'TrustedReviewControllerRecord',
+        payload: controllerRecord,
+      },
+      {
+        member_id: `independence:${lane.lane_id}`,
+        member_type: 'ReviewerIndependenceAttestation',
+        payload: independenceRecord,
+      },
+    ];
+  });
+  g0Review.review_set_evidence_id = domainDigest(
+    'PROGRAMME_GATE_REVIEW_SET/V1',
+    REVIEW_LANES.map((lane) => ({
+      lane_id: lane.lane_id,
+      controller_record: g0ReviewMembers.find(
+        (member) => member.member_id === `controller:${lane.lane_id}`,
+      ).payload,
+      independence_attestation: g0ReviewMembers.find(
+        (member) => member.member_id === `independence:${lane.lane_id}`,
+      ).payload,
+    })),
+  );
+  authorityManifest.g0_review_set_evidence_id = g0Review.review_set_evidence_id;
+  g0Approval.passing_review_set_evidence_id = g0Review.review_set_evidence_id;
+  const benApprovalUnsigned = {
+    schema_version: 'BenSpecificationApproval/V1',
+    approved_root: ROOT,
+    passing_review_set_evidence_id: g0Review.review_set_evidence_id,
+    approver_identity: 'BEN_GOODCHILD',
+    conditions: [],
+    approved_at: '2026-07-28T11:00:00.000Z',
+    nonce: 'g0-ben-approval',
+    signature_algorithm: 'Ed25519',
+    approver_key_id: 'BEN_KEY',
+  };
+  const benApprovalRecord = {
+    ...benApprovalUnsigned,
+    signature: sign(
+      ben.privateKey,
+      'PROGRAMME_GATE_BEN_APPROVAL/V1',
+      'BEN_APPROVER',
+      benApprovalUnsigned,
+    ),
+  };
+  g0Approval.approval_evidence_id = domainDigest(
+    'PROGRAMME_GATE_BEN_APPROVAL_ID/V1',
+    benApprovalRecord,
+  );
+  authorityManifest.g0_ben_approval_evidence_id = g0Approval.approval_evidence_id;
+  const g0ApprovalMembers = [
+    {
+      member_id: `approval:${g0Approval.approval_evidence_id}`,
+      member_type: 'BenSpecificationApproval',
+      payload: benApprovalRecord,
+    },
+    {
+      member_id: `review-set:${g0Review.review_set_evidence_id}`,
+      member_type: 'ExactDigestReviewSetAttestation',
+      payload: g0Review,
+    },
+  ];
+  const g0ReviewEnvelope = g0Envelope({
+    gateId: 'G0_EXACT_DIGEST_REVIEW_SET',
+    evidenceContract:
+      'five-lane-provider-attested-exact-specification-root-review-set/v3',
+    subjectType: 'ExactDigestReviewSetSubject',
+    objectType: 'ExactDigestReviewSetAttestation',
+    evidenceObject: g0Review,
+    claims: [
+      'five_named_lanes_pass_same_root',
+      'eligible_legal_reviewer',
+      'reviewer_independence_recomputed',
+      'root_unchanged_before_and_after',
+    ],
+    members: g0ReviewMembers,
+    validatorPrivateKey: validator.privateKey,
+  });
+  const g0ApprovalEnvelope = g0Envelope({
+    gateId: 'G0_BEN_SPEC_APPROVAL',
+    evidenceContract: 'ben-approved-reviewed-specification-root/v3',
+    subjectType: 'BenSpecificationApprovalSubject',
+    objectType: 'BenSpecificationApproval',
+    evidenceObject: g0Approval,
+    claims: [
+      'approved_root_equals_passing_review_root',
+      'ben_identity_and_signature_valid',
+      'approval_unconditional',
+    ],
+    members: g0ApprovalMembers,
+    validatorPrivateKey: validator.privateKey,
+  });
+  authorityManifest.g0_review_set_payload_digest = domainDigest(
+    'PROGRAMME_GATE_EVIDENCE_PAYLOAD/V2',
+    unsigned(g0ReviewEnvelope),
+  );
   authorityManifest.g0_ben_approval_payload_digest = domainDigest(
-    'PROGRAMME_GATE_G0_BEN_APPROVAL_PAYLOAD/V1',
-    g0Approval,
+    'PROGRAMME_GATE_EVIDENCE_PAYLOAD/V2',
+    unsigned(g0ApprovalEnvelope),
   );
   const authorityEvidence = [];
   function addAuthority(kind, subjectId, payload, disposition = 'PASS') {
@@ -297,12 +641,32 @@ function fixture() {
     generation: 1,
     predecessor_status_id: 'NONE',
     gate_registry_digest: '4'.repeat(64),
-    ordered_gate_projection: [{
-      gate_id: 'P1_CONTRACT_FREEZE_ATTESTED',
-      state: 'PASS',
-      evidence_envelope_id: '5'.repeat(64),
-      evidence_payload_digest: '6'.repeat(64),
-    }],
+    ordered_gate_projection: [
+      {
+        gate_id: 'G0_EXACT_DIGEST_REVIEW_SET',
+        state: 'PASS',
+        evidence_envelope_id: domainDigest(
+          'PROGRAMME_GATE_EVIDENCE_ENVELOPE/V2',
+          g0ReviewEnvelope,
+        ),
+        evidence_payload_digest: authorityManifest.g0_review_set_payload_digest,
+      },
+      {
+        gate_id: 'G0_BEN_SPEC_APPROVAL',
+        state: 'PASS',
+        evidence_envelope_id: domainDigest(
+          'PROGRAMME_GATE_EVIDENCE_ENVELOPE/V2',
+          g0ApprovalEnvelope,
+        ),
+        evidence_payload_digest: authorityManifest.g0_ben_approval_payload_digest,
+      },
+      {
+        gate_id: 'P1_CONTRACT_FREEZE_ATTESTED',
+        state: 'PASS',
+        evidence_envelope_id: '5'.repeat(64),
+        evidence_payload_digest: '6'.repeat(64),
+      },
+    ],
     ordered_work_class_projection: [{
       work_class: 'canonical_work_start',
       state: 'PASS',
@@ -348,12 +712,28 @@ function fixture() {
         member_type: 'ContractFreezeGoverningSpecificationMember',
       },
       {
-        member_id: `g0-review:${g0Review.review_set_evidence_id}`,
+        member_id: `review-set:${g0Review.review_set_evidence_id}`,
         member_type: 'ExactDigestReviewSetAttestation',
       },
       {
         member_id: `g0-approval:${g0Approval.approval_evidence_id}`,
         member_type: 'BenSpecificationApprovalEvidence',
+      },
+      {
+        member_id: 'g0-envelope:G0_EXACT_DIGEST_REVIEW_SET',
+        member_type: 'ProgrammeGateEvidenceEnvelope',
+      },
+      {
+        member_id: 'g0-envelope:G0_BEN_SPEC_APPROVAL',
+        member_type: 'ProgrammeGateEvidenceEnvelope',
+      },
+      ...g0ReviewMembers.map(({ member_id, member_type }) => ({
+        member_id,
+        member_type,
+      })),
+      {
+        member_id: `approval:${g0Approval.approval_evidence_id}`,
+        member_type: 'BenSpecificationApproval',
       },
       ...authorityEvidence.map((record) => ({
         member_id: `authority-evidence:${record.authority_evidence_id}`,
@@ -398,7 +778,7 @@ function fixture() {
       payload: governingMember,
     },
     {
-      member_id: `g0-review:${g0Review.review_set_evidence_id}`,
+      member_id: `review-set:${g0Review.review_set_evidence_id}`,
       member_type: 'ExactDigestReviewSetAttestation',
       payload: g0Review,
     },
@@ -406,6 +786,22 @@ function fixture() {
       member_id: `g0-approval:${g0Approval.approval_evidence_id}`,
       member_type: 'BenSpecificationApprovalEvidence',
       payload: g0Approval,
+    },
+    {
+      member_id: 'g0-envelope:G0_EXACT_DIGEST_REVIEW_SET',
+      member_type: 'ProgrammeGateEvidenceEnvelope',
+      payload: g0ReviewEnvelope,
+    },
+    {
+      member_id: 'g0-envelope:G0_BEN_SPEC_APPROVAL',
+      member_type: 'ProgrammeGateEvidenceEnvelope',
+      payload: g0ApprovalEnvelope,
+    },
+    ...g0ReviewMembers,
+    {
+      member_id: `approval:${g0Approval.approval_evidence_id}`,
+      member_type: 'BenSpecificationApproval',
+      payload: benApprovalRecord,
     },
     ...authorityEvidence.map((record) => ({
       member_id: `authority-evidence:${record.authority_evidence_id}`,
@@ -421,19 +817,29 @@ function fixture() {
         keyId: 'VALIDATOR_KEY',
         publicKey: validator.publicKey,
         role: 'VALIDATOR',
-        domain: 'PROGRAMME_GATE_CONTRACT_COMPILATION_RECEIPT/V1',
+        domain: [
+          'PROGRAMME_GATE_CONTRACT_COMPILATION_RECEIPT/V1',
+          'PROGRAMME_GATE_REVIEWER_INDEPENDENCE/V1',
+          'PROGRAMME_GATE_EVIDENCE/V2',
+        ],
       }),
       keyEntry({
         keyId: 'CONTROLLER_KEY',
         publicKey: controller.publicKey,
         role: 'REVIEW_CONTROLLER',
-        domain: 'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW/V1',
+        domain: [
+          'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW/V1',
+          'PROGRAMME_GATE_REVIEW_CONTROLLER_RECORD/V1',
+        ],
       }),
       keyEntry({
         keyId: 'BEN_KEY',
         publicKey: ben.publicKey,
         role: 'BEN_APPROVER',
-        domain: 'PROGRAMME_GATE_CONTRACT_FREEZE_APPROVAL/V1',
+        domain: [
+          'PROGRAMME_GATE_CONTRACT_FREEZE_APPROVAL/V1',
+          'PROGRAMME_GATE_BEN_APPROVAL/V1',
+        ],
       }),
       keyEntry({
         keyId: 'STATUS_KEY',
@@ -443,7 +849,12 @@ function fixture() {
       }),
     ],
   };
-  return { evidence, immutableMembers, keyRegistry };
+  return {
+    evidence,
+    immutableMembers,
+    keyRegistry,
+    publisherPrivateKey: publisher.privateKey,
+  };
 }
 
 function context(sample, overrides = {}) {
@@ -561,4 +972,53 @@ test('unsigned compilation and asserted review summaries cannot authorise P1', (
       false,
     );
   }
+});
+
+test('P1 rejects substituted G0 authority and non-PASS G0 status rows', () => {
+  const tamperedController = fixture();
+  tamperedController.immutableMembers.find(
+    (member) => member.member_type === 'TrustedReviewControllerRecord',
+  ).payload.controller_signature = Buffer.alloc(64, 1).toString('base64');
+  const tamperedClaims = evaluateAcceptanceClaims({
+    gate_id: 'P1_CONTRACT_FREEZE_ATTESTED',
+    evidence: tamperedController.evidence,
+    context: context(tamperedController),
+  });
+  assert.deepEqual(
+    tamperedClaims.map((claim) => claim.typed_value),
+    [false, false, false, true],
+  );
+
+  const openStatus = fixture();
+  const status = openStatus.immutableMembers.find(
+    (member) => member.member_type === 'ProgrammeGateStatusArtefact',
+  ).payload;
+  status.ordered_gate_projection.find(
+    (row) => row.gate_id === 'G0_EXACT_DIGEST_REVIEW_SET',
+  ).state = 'OPEN';
+  status.ordered_gate_projection.find(
+    (row) => row.gate_id === 'G0_EXACT_DIGEST_REVIEW_SET',
+  ).evidence_envelope_id = null;
+  status.ordered_gate_projection.find(
+    (row) => row.gate_id === 'G0_EXACT_DIGEST_REVIEW_SET',
+  ).evidence_payload_digest = null;
+  status.signature = sign(
+    openStatus.publisherPrivateKey,
+    'PROGRAMME_GATE_STATUS/V2',
+    'STATUS_PUBLISHER',
+    unsigned(status),
+  );
+  openStatus.evidence.status_payload_digest = domainDigest(
+    'PROGRAMME_GATE_STATUS_ARTEFACT_PAYLOAD/V2',
+    status,
+  );
+  const openClaims = evaluateAcceptanceClaims({
+    gate_id: 'P1_CONTRACT_FREEZE_ATTESTED',
+    evidence: openStatus.evidence,
+    context: context(openStatus),
+  });
+  assert.deepEqual(
+    openClaims.map((claim) => claim.typed_value),
+    [false, false, false, true],
+  );
 });
