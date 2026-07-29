@@ -163,6 +163,7 @@ const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
   'tests/programme-gates/contract-freeze-predicates.spec.js',
   'tests/programme-gates/g0-signer-workflow.spec.js',
   'tests/programme-gates/g0-status-readiness.spec.js',
+  'tests/programme-gates/git-authorship.spec.js',
   'tests/programme-gates/predicates.spec.js',
   'tests/programme-gates/review-artifact.spec.js',
   'tests/programme-gates/review-contracts.spec.js',
