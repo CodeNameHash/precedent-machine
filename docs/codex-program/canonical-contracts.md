@@ -1171,6 +1171,25 @@ This file is the sole authority for detailed identities, state machines, writer 
   zero-effect non-substantive branch. The non-substantive branch carries affirmative review
   evidence that no legal proposition or primitive was discarded. Pending,
   failed, not-examined, generic ignored and a fifth catch-all value are invalid.
+  Every disposition selects one immutable `GovernedResidualReviewDecision`.
+  Its closed decision body hashes schema, frozen pair, scope code, exact
+  residual ID and payload digest, proposed disposition, exact governed-object,
+  candidate or flattened-duplicate target when applicable, complete evidence
+  closure, legal-semantic reviewer principal, review time, exact
+  LegalSemanticReviewPolicy and LegalReviewerTrustRegistry IDs and payload
+  digests and the signing-time LegalReviewerRevocationHead. A
+  `RESIDUAL_FINAL_DISPOSITION` LegalSemanticReviewerEligibilityProof signs that
+  body digest and is created only after the body is fixed. The final decision
+  ID hashes the body digest and proof ID and payload digest. The authoritative
+  writer revalidates policy membership, reviewer class, action, legal domain,
+  validity, nonce, signature and absence of revocation under both the signing-
+  time and current heads before it writes the decision and disposition
+  transactionally. The disposition ID and payload digest bind the exact
+  decision ID and payload digest. `PREPARE_BATCH` may consume this reviewed
+  decision but cannot create, alter or infer it. A caller-authored disposition,
+  unsigned decision, opaque authority digest, wrong action or target, revoked
+  reviewer or decision over another residual remains in the review queue and
+  cannot clear impact or publication.
 - `GovernedObjectImpactWalkerOutput` hashes
   `GOVERNED_OBJECT_IMPACT_WALKER/V1`, schema, frozen contract pair, exact
   GovernedResidualObservation, `COVERED_BY_GOVERNED_OBJECT` disposition,
@@ -2125,12 +2144,12 @@ This file is the sole authority for detailed identities, state machines, writer 
   policy key and version, the closed reviewer classes `FABLE_ELIGIBLE` and
   `SOL_5_6_EXTRA_HIGH_ELIGIBLE`, the exact Sol model and reasoning requirement,
   the closed action set `DISCOVERY_PARTITION`,
-  `DIMENSION_MAPPING_STATE`, `OPEN_WORLD_FINAL_DISPOSITION` and
-  `SOURCE_SPECIFIC_PUBLICATION_SELECTION`, action-to-class and review-domain
-  rules, terminal dispositions, signature and nonce rules, clock and validity
-  rules, and the revocation-authority public verification roots. This is corpus
-  review authority, not the G0 cold-review controller or a runtime-selected
-  substitute.
+  `DIMENSION_MAPPING_STATE`, `OPEN_WORLD_FINAL_DISPOSITION`,
+  `SOURCE_SPECIFIC_PUBLICATION_SELECTION` and
+  `RESIDUAL_FINAL_DISPOSITION`, action-to-class and review-domain rules,
+  terminal dispositions, signature and nonce rules, clock and validity rules,
+  and the revocation-authority public verification roots. This is corpus review
+  authority, not the G0 cold-review controller or a runtime-selected substitute.
 - `LegalReviewerTrustRegistry` is a second generated bundle member. Its ID hashes
   `LEGAL_REVIEWER_TRUST_REGISTRY/V1`, schema, CanonicalBundleInputIdentity,
   registry key and version and the complete contract-ordered member set. Each
@@ -2822,7 +2841,13 @@ This file is the sole authority for detailed identities, state machines, writer 
   implementation-order selection are prohibited. The decision selects the exact
   LegalSemanticReviewPolicy and LegalReviewerTrustRegistry IDs and payload
   digests and one valid `SOURCE_SPECIFIC_PUBLICATION_SELECTION`
-  LegalSemanticReviewerEligibilityProof over its complete decision body. The
+  LegalSemanticReviewerEligibilityProof over its complete proof-excluded
+  decision body. The body is fixed and content-addressed before the proof
+  exists; it contains no proof ID, proof payload digest, proof signature, final
+  decision ID or final decision payload digest. The proof signs that body digest
+  and likewise contains no final decision identity. Only then is the final
+  decision ID computed from the decision-body ID and payload digest plus the
+  proof ID and payload digest. The
   authoritative writer revalidates that proof against the current
   LegalReviewerRevocationHead, persists the decision transactionally with the
   disposition and binds the verification head in its operation receipt. It
@@ -6635,8 +6660,11 @@ This file is the sole authority for detailed identities, state machines, writer 
   and first-cutover success effects. `ACTIVE_RELEASE_REVOCATION` binds the exact
   ActiveReleaseRevocationActionRegistry entry and cause evidence, acknowledged
   BLOCKED fence and drain, ordinary RollbackEvent and
-  ActiveReleaseRevocationReceipt, observed awaiting control head and exact
-  higher exposure-off tuple. Each ID hashes
+  ActiveReleaseRevocationReceipt, exact observed control head and exact higher
+  exposure-off tuple. The observed head is either one eligible `AWAITING_*`
+  head, which enters ordinary containment, or terminal `PASS_FIXED`, which
+  enters the closed post-pass rollback branch below without mutating that
+  terminal head. Each ID hashes
   `POST_ACTIVATION_FAILURE_EVIDENCE/V1`, schema, context, exact current head,
   variant, stage inputs, evidence and policy. There is no generic failure reason
   or caller-selected variant. Only `SMOKE_FAIL` requires a failed smoke;
@@ -6725,10 +6753,31 @@ This file is the sole authority for detailed identities, state machines, writer 
   observed head and pre-effect coupling plan, so the order is acyclic. All
   release-state and controller effects commit or none do. An already-pending
   controller must be joined through its byte-identical COMPLETE action or the
-  ordinary transaction writes zero database DML. A terminal controller or no
-  active controller requires no new failure evidence. This coupling creates no
-  new controller action and grants the revocation producer no direct controller-
-  carrier authority.
+  ordinary transaction writes zero database DML.
+  If the locks instead observe the active tuple's exact terminal `PASS_FIXED`
+  context, current ReleaseActivationCertification and current
+  OngoingReleasePromotionHead, the same transaction must create
+  `ACTIVE_RELEASE_REVOCATION` evidence over that terminal context, consume the
+  context's unique FailureRecoveryBranchSlot, create one FailureRecoveryBranch
+  with origin `POST_PASS_ORDINARY_REVOCATION`, and install its head at `OPEN`.
+  That branch binds the immutable PASS_FIXED head, consumed pass lease,
+  COMMIT_PASS receipt, ReleaseActivationCertification, exact pre-revocation
+  ongoing-promotion head, registered revocation evidence, RollbackEvent and
+  exposure-off tuple. Its intended historical target is the latest retained
+  eligible predecessor selected by the pre-revocation promotion chain, or an
+  explicit `NO_RETAINED_ELIGIBLE_PREDECESSOR` marker derived under the same
+  locks. It never permits a caller-selected target. If no predecessor exists,
+  the ordinary recovery writer must fix `NO_HISTORICAL_REACTIVATION`; otherwise
+  the normal historical-reactivation path alone may consume the open branch.
+  The revocation receipt, release-state change, evidence, slot consumption,
+  branch and OPEN head commit atomically or none do. Creating the branch in a
+  later repair transaction, omitting it, changing its target or opening it from
+  a non-current certification is invalid. This is a registered revocation
+  writer effect, not an eighth PostActivationControlPolicy action, and it never
+  reopens or mutates PASS_FIXED.
+  A terminal `FAILURE_FIXED` controller or no active controller requires no new
+  failure evidence. This coupling creates no new controller action and grants
+  the revocation producer no direct controller-carrier authority.
 - `BEGIN_FAILURE_CONTAINMENT` may start from any exact `AWAITING_*` head,
   including the post-issuance `AWAITING_SMOKE` generation selected by
   `PASS_COMMIT_LEASE_EXPIRED`. It validates and
@@ -6775,9 +6824,17 @@ This file is the sole authority for detailed identities, state machines, writer 
   `FAILURE_RECOVERY_BRANCH_SLOT/V1`, schema, production environment and
   PostActivationControlContext and is independent of failure reason. The branch
   ID hashes `FAILURE_RECOVERY_BRANCH/V2`, schema, slot, frozen pair, candidate
-  generation, ActivationEvent, exact typed PostActivationFailureEvidence and
-  selected containment-owned or adopted ordinary-revocation RollbackEvent and
-  exposure-off tuple. Its smoke fields follow the selected trigger:
+  generation, ActivationEvent, exact typed PostActivationFailureEvidence,
+  selected RollbackEvent, exposure-off tuple and exactly one closed origin.
+  `PRE_PASS_CONTAINMENT` requires the originating BEGIN receipt, pending head,
+  COMPLETE receipt and terminal FAILURE_FIXED head.
+  `POST_PASS_ORDINARY_REVOCATION` instead requires the immutable PASS_FIXED
+  head, consumed pass lease, COMMIT_PASS receipt,
+  ReleaseActivationCertification, pre-revocation
+  OngoingReleasePromotionHead, registered ordinary-revocation receipt and its
+  writer-derived intended historical target or explicit no-target marker; it
+  forbids every containment BEGIN, pending, COMPLETE and FAILURE_FIXED object.
+  Its smoke fields follow the selected trigger:
   `SMOKE_FAIL` requires the failed smoke, `PASS_COMMIT_LEASE_EXPIRED` requires
   the passing smoke and issuance chain, and every other trigger carries only its
   stage-applicable smoke or absence proof. Terminal reason, recovery choice and
@@ -6947,10 +7004,15 @@ This file is the sole authority for detailed identities, state machines, writer 
   PASS_FIXED plus consumed pass lease and COMMIT_PASS receipt. The first
   three map to `NO_HISTORICAL_REACTIVATION`, the next two to
   `HISTORICAL_REACTIVATION_ABANDONED_OR_FAILED`, and the last to
-  `HISTORICAL_REACTIVATION_SUCCEEDED`. Every topology binds the originating
-  ContainmentReleaseTupleDisposition; the post-commit-abandonment and
-  historical-after-activation topologies additionally bind their distinct later
-  dispositions. No open evidence variant or generic
+  `HISTORICAL_REACTIVATION_SUCCEEDED`. Every topology binds exactly one
+  FailureRecoveryBranch origin. `PRE_PASS_CONTAINMENT` binds the originating
+  ContainmentReleaseTupleDisposition and complete BEGIN-pending-COMPLETE chain.
+  `POST_PASS_ORDINARY_REVOCATION` instead binds the terminal PASS chain,
+  ReleaseActivationCertification, pre-revocation ongoing-promotion head,
+  ordinary RollbackEvent and ActiveReleaseRevocationReceipt and forbids that
+  containment chain. The post-commit-abandonment and historical-after-
+  activation topologies additionally bind their distinct later dispositions.
+  No open evidence variant or generic
   reason is permitted.
 - The failure terminal is selected by one immutable
   `TraceabilityFailureTerminalSlot` whose identity is
@@ -10772,9 +10834,9 @@ After `CANONICAL_ESTABLISHED`, historical reactivation is the sole closed
 alternative to the failed target's release path; the first-cutover legacy
 restoration above is the only exception. Historical reactivation never reruns
 extraction, creates a replacement manifest or reimports a namespace. After
-post-activation containment
-has atomically committed the exact RollbackEvent, FailureRecoveryBranch and
-`OPEN` FailureRecoveryBranchHead,
+either post-activation containment or a registered post-PASS ordinary
+revocation has atomically committed the exact RollbackEvent,
+FailureRecoveryBranch and `OPEN` FailureRecoveryBranchHead,
 the revoked deployment controller may restore only the event's intended prior
 provider, configuration, alias, schema and migration fields. The validator then
 creates a fresh HistoricalReactivationEligibilityAttestation and
@@ -13667,22 +13729,29 @@ rules and writer actions. They are authored and Freeze-Gate reviewed with the
 other bundle members. No residual producer, disposition or empty-queue rule may
 be added after freeze.
 
-`ReviewedSourceSpecificPublicationDecision` hashes its schema, frozen pair,
+`ReviewedSourceSpecificPublicationDecisionBody` hashes its schema, frozen pair,
 exact candidate occurrence, effective `REVIEWED_SOURCE_SPECIFIC`
 `OpenWorldCandidateDisposition` ID and payload digest, legal-semantic reviewer
 principal, exact LegalSemanticReviewPolicy and LegalReviewerTrustRegistry IDs
-and payload digests, `SOURCE_SPECIFIC_PUBLICATION_SELECTION`
-LegalSemanticReviewerEligibilityProof ID and payload digest, review disposition
-and review time, primitive-collection root, selected PRESENT primitive
-occurrence, representativeness decision `FAIR_SOURCE_BACKED_DISPLAY` and exact
-evidence closure. The signed decision-body digest in the proof must equal those
-exact fields. Validation applies the policy, resolves the key only from the
+and payload digests, review disposition and review time, primitive-collection
+root, selected PRESENT primitive occurrence, representativeness decision
+`FAIR_SOURCE_BACKED_DISPLAY`, exact evidence closure and signing-time
+LegalReviewerRevocationHead. It expressly excludes every eligibility-proof
+field, signature and final publication-decision identity. A
+`SOURCE_SPECIFIC_PUBLICATION_SELECTION`
+LegalSemanticReviewerEligibilityProof then signs the exact body ID and payload
+digest and contains no final decision identity. The final
+`ReviewedSourceSpecificPublicationDecision` ID hashes its schema, exact body ID
+and payload digest and exact proof ID and payload digest. Validation recomputes
+the body and final identity, applies the policy, resolves the key only from the
 frozen registry, verifies membership, reviewer class, action, legal domain,
 validity, nonce and signature, and proves the key unrevoked under both the
 proof's signing-time LegalReviewerRevocationHead and the writer transaction's
-current head. The authoritative writer recomputes every field and records the
-current-head verification in its receipt; it cannot accept an opaque eligibility
-digest or implementation-selected authority. For an ordinary admitted occurrence,
+current head. Any body that contains or hashes a future proof or final decision,
+or any proof whose identity depends on the final decision, is structurally
+invalid. The authoritative writer recomputes every field and records the
+current-head verification in its receipt; it cannot accept an opaque
+eligibility digest or implementation-selected authority. For an ordinary admitted occurrence,
 `RECORD_OPEN_WORLD_DISPOSITIONS` writes the decision transactionally with the
 disposition. For a pre-admission source-role occurrence it writes only the
 signed SourceRoleAdmissionAuthorisation. The separate
@@ -13913,11 +13982,21 @@ ReleaseBundleEnvelope carries them as governed promotion-evidence support, and
 production import verifies them before constructing the compact
 `ActiveQueryExecutionClassProjection` under the same expected, physical and
 independent-enumerator parity rule as other serving control projections. The
-projection is keyed by active release and ExecutionShapeKey and contains only
-the exact class, SQL-template, physical-plan, index-contract and bound identity
-needed for runtime resolution. It becomes visible only with the atomic active-
-release pointer swap, rolls back with that pointer and is never loaded broadly
-into Node.
+projection is keyed by one closed `ReleaseExecutionResolutionKey`, never by
+release and `ExecutionShapeKey` alone. That key hashes the active release,
+complete `ExecutionShapeKey`, exact `ParameterDomainQuotient` member ID and
+payload digest, ordered leaf-selectivity vector, joint predicate-correlation
+class, qualifying and intermediate cardinality-bound class,
+group/facet/sort-bound class and certified physical-plan fingerprint. The
+request compiler deterministically classifies the complete normalised literal
+and predicate tuple into exactly one quotient member using the compact indexed
+projection before database checkout, recomputes the resolution key and requires
+exactly one projected release execution class. Zero or multiple quotient
+members or classes return `UNSUPPORTED_QUERY_SHAPE` with zero checkout. The
+projection contains only the exact class, SQL-template, physical-plan,
+index-contract and bound identity needed for that resolution. It becomes
+visible only with the atomic active-release pointer swap, rolls back with that
+pointer and is never loaded broadly into Node.
 
 `DeploymentManifest` binds the exact selected
 ReleaseQueryExecutionClassRegistry and WorstCaseWitnessDominanceProof roots,
@@ -13993,6 +14072,38 @@ detail, facet, option or next page within 2 seconds. These thresholds apply at N
 and maximum scale subject to the existing success and throughput floors; a
 missing class measurement fails `P9_BROWSER_A11Y_PERFORMANCE` and
 `P9_DATABASE_SOAK`.
+
+`LatencyMeasurementProtocol` is a frozen CanonicalContractBundle member selected
+by the soak and browser manifests. For each release execution class, each bound
+worst-case witness, each required traffic profile and each of `N_capacity` and
+maximum scale, the API measurement set contains exactly 1,000 post-warm-up
+attempts under the manifest's fixed instance count, concurrency, request order,
+seed, region and network path. Twenty separately labelled warm-up attempts are
+discarded before measurement and cannot be reused. The monotonic API clock
+starts immediately before the load controller writes the first request byte
+and ends only after it receives and validates the complete bounded response
+bytes or the governed terminal error. Timeout, malformed and failed attempts
+remain members at their measured terminal latency and also count against the
+success floor; they cannot be deleted, retried or replaced. Percentiles use the
+nearest-rank rule over the complete ordered 1,000-member set,
+`rank=ceil(percentile*1000)`, with no interpolation, trimming or coordinated-
+omission correction.
+
+For every governed browser interaction and corresponding class/witness/scale
+tuple, the browser measurement set contains exactly 200 post-warm-up
+interactions. Its monotonic clock starts at the trusted synthetic user input
+event before application dispatch and ends at the first painted, accessible
+and interaction-ready governed result whose response identity has passed
+client validation. Ten separately labelled warm-up interactions are discarded.
+The browser p95 uses nearest rank over all 200 terminal attempts; failures and
+timeouts remain members and are not replaced. Each measurement record binds the
+protocol ID and digest, class, witness, scale, profile, attempt ordinal,
+controller and browser build, hardware, region, concurrency, start and end
+monotonic timestamps, terminal state and response identity. Independent
+reconciliation requires exact sample counts and empty missing, extra,
+duplicate, retried and discarded-measurement roots. An aggregate workload
+duration, pooled percentile across classes, smaller sample, different boundary
+or caller-supplied percentile cannot satisfy either performance gate.
 
 #### Release activation and later promotions
 

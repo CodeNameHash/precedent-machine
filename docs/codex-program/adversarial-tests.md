@@ -1310,6 +1310,15 @@ The following adversarial closure tests are mandatory traceability entries:
   closure and add every extraction- and candidate-phase residual once. Omitting,
   duplicating or re-dispositioning a carried PRE_SCOPE member blocks
   CandidateInputSeal.
+  For every final residual disposition, require one immutable
+  GovernedResidualReviewDecision whose proof is signed for the exact
+  `RESIDUAL_FINAL_DISPOSITION` action by an eligible legal-semantic reviewer
+  under both the signing-time and current revocation heads. A caller-authored
+  or unsigned decision, wrong action, wrong residual or scope, substituted
+  target, revoked reviewer, opaque authority digest or decision created by
+  PREPARE_BATCH leaves that residual in the queue. Cross-wire two otherwise
+  valid decisions and require both dispositions to fail without suppressing
+  independently valid sibling previews.
   The registry-driven enumerator and the independently schema-, stage- and
   physical-carrier-driven ResidualCapableBoundaryUniverse must also agree
   bidirectionally. Add a residual-capable carrier or producer to either
@@ -2238,6 +2247,12 @@ The following adversarial closure tests are mandatory traceability entries:
   non-member key, or revoke the key under either the signing-time or current
   LegalReviewerRevocationHead: publication remains blocked for that row while
   valid sibling rows remain renderable.
+  The source-specific decision body must be fixed before the eligibility proof,
+  exclude every proof and final-decision identity field, and be the exact digest
+  signed by the proof. The proof must exclude the final decision identity, and
+  the final decision must derive only from the already fixed body and proof.
+  Make the body hash the proof, make the proof hash the final decision or supply
+  any self-consistent circular placeholder: construction and validation fail.
   The effective decision must be present exactly once in the admitted scope
   inventory, CandidateInputSeal, candidate-output inventory,
   CandidateReleaseManifest, ReleaseBundleEnvelope, production-import parity,
@@ -2443,12 +2458,29 @@ The following adversarial closure tests are mandatory traceability entries:
   never truncate.
   Every release execution class and every member of its bound witness set must
   satisfy its p95, p99 and browser threshold at `N_capacity` and maximum scale.
+  Runtime must derive the exact ReleaseExecutionResolutionKey from the active
+  release, complete ExecutionShapeKey and the one matching parameter-quotient,
+  selectivity, correlation, cardinality-bound and physical-plan class before
+  checkout. Two parameter tuples with the same structural ExecutionShapeKey but
+  different quotient members or cost classes must select different resolution
+  keys and their exact certified classes; keying only by release and structural
+  shape, zero or multiple matches or a caller-supplied class fails before
+  checkout.
   A missing
   class, missing witness or smaller CapacityManifest cardinality component
   fails. No-fault steady and all-miss profiles must satisfy the fixed 99.9%
   schema-valid success and target-throughput floors, all passing profiles must
   meet the contract latency budgets, and every injected fault must recover
   target throughput and latency within the frozen recovery bound. A dynamic
+  API measurement must contain exactly 1,000 post-warm-up attempts for every
+  class, witness, scale and required profile, and every browser measurement
+  exactly 200 post-warm-up interactions. Recompute nearest-rank p95 and p99 from
+  the complete terminal-attempt set using the frozen request-byte-to-validated-
+  response and user-input-to-accessible-paint boundaries. Omitting, replacing,
+  retrying or trimming a failed or timeout attempt, pooling classes, changing
+  concurrency or region, counting warm-up attempts, using interpolation or
+  submitting only aggregate duration fails.
+  A dynamic
   statement, procedural row loop or unregistered query ID fails. Cap-plus-one
   rejects before checkout, a dead fill leader expires, a stale fence cannot
   publish, maximum application instances still produce one shared fill,
@@ -2922,6 +2954,19 @@ The following adversarial closure tests are mandatory traceability entries:
   failed-or-abandoned recovery outcome but never the evidence variant, reason or
   disposition. All three variants produce one complete terminal through the
   same reason-independent slot and cannot satisfy programme_complete.
+  In a separate fixture, let R2 reach PASS_FIXED and become the current
+  OngoingReleasePromotionHead, then execute a registered ordinary revocation.
+  The one serialisable revocation transaction must write the BLOCKED and drain
+  evidence, exposure-off tuple, RollbackEvent, receipt, terminal-context
+  ACTIVE_RELEASE_REVOCATION evidence, consume the unique branch slot and open
+  one `POST_PASS_ORDINARY_REVOCATION` FailureRecoveryBranch bound to R1 as the
+  writer-derived retained predecessor. The PASS_FIXED head remains immutable
+  and no eighth post-activation action exists. Omitting the branch, creating it
+  in a repair transaction, selecting a caller-supplied target, using a stale
+  promotion head, splitting any effect across commits or replaying the slot
+  fails atomically. The valid branch may reactivate R1 through the same current-
+  policy eligibility path. A no-predecessor fixture must bind the explicit
+  marker and fix `NO_HISTORICAL_REACTIVATION`.
 - `PROGRAMME-COMPLETE-01`: passing smoke alone cannot open programme completion;
   the exact POST_ACTIVATION extension, passing P9_TRACEABILITY prefix evidence,
   passing smoke, AVAILABLE promotion successor and ProgrammeCompletionAttestation
