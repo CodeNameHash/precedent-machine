@@ -746,6 +746,14 @@ This file is the sole authority for detailed identities, state machines, writer 
   repository. The private key never enters the review environment, logs or
   checkout. A transcript, reviewer statement or user-supplied substitute cannot
   replace the controller record.
+  For generation 1, the registered prompts bind the disposition to G0
+  start-safety only: the ten G0 gates, evidence, work-class projection, one-use
+  bootstrap, protected signer, two-file compare-and-swap publication and the
+  prohibition on production data, release and feature activation. A defect
+  confined to an `OPEN` P1 or P9 requirement cannot block this disposition
+  unless it falsifies G0 evidence, widens G0 authority or bypasses a later gate.
+  This scoped review does not satisfy the full architecture and contract review
+  required within `P1_CONTRACT_FREEZE_ATTESTED`.
   The signed task manifest enumerates the six specification members in exact
   one-based order with repository path, raw-byte length, SHA-256 and canonical
   base64 bytes and carries the canonical base64 output-schema bytes. The
@@ -14034,6 +14042,15 @@ Unknown fields, another path root, another binary, prompt, model, controller or
 validator are ineligible. The `FABLE_ELIGIBLE` branch is eligible only for the
 `LEGAL_SEMANTIC` lane; the current Sol path remains eligible for all five lanes.
 No post-review allowlist choice exists.
+
+The five generation-1 prompts are stage-bound. Their terminal disposition is
+only G0 start-safety: implementation planning, isolated staging setup and
+staging-only canonical engineering behind disabled production flags. They
+cannot certify P1 contract completeness or any P9 corpus, query, serving,
+release, load, cutover or completion design. Those requirements remain `OPEN`.
+`P1_CONTRACT_FREEZE_ATTESTED` must obtain a fresh full-architecture and
+contract review before `vertical_slice_execution`; it cannot reuse the scoped
+G0 disposition as that proof.
 
 #### Residual and open-world authority
 

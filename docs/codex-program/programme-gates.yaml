@@ -66,8 +66,8 @@ programme_gate_registry:
       missing_or_post_review_selected_member_effect: OPEN
     bootstrap_compiled_registry_binding:
       source_path: docs/codex-program/bootstrap-acceptance-source.json
-      source_sha256: 51d19c3c450b001480ef7d69c440a8d847f02e92a26f3acf513781aa67a24d49
-      closed_validator_executable_set_digest: ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231
+      source_sha256: 7b3f1b2c7c993b22f98edc958513b9343988634378d2c99688c367a0f3627209
+      closed_validator_executable_set_digest: bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b
       authority: ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE
       exact_active_definition_count: 11
       exact_genesis_gate_count: 10
@@ -172,6 +172,13 @@ programme_gate_registry:
     review_evidence_schema: trusted-review-controller-record/v1
     review_evidence_source: TRUSTED_REVIEW_CONTROLLER_SIGNED_IMMUTABLE_RECORD
     review_evidence_retrieval: VALIDATOR_DETERMINISTICALLY_ENUMERATES_CLOSED_EVIDENCE_SET_AND_LOADS_EXACT_RECORD
+    g0_disposition_scope:
+      purpose: G0_START_SAFETY
+      permits: [IMPLEMENTATION_PLANNING, ISOLATED_STAGING_SETUP, STAGING_ONLY_CANONICAL_ENGINEERING_BEHIND_DISABLED_PRODUCTION_FLAGS]
+      reviews: [TEN_G0_GATES, G0_EVIDENCE, WORK_CLASS_PROJECTION, ONE_USE_BOOTSTRAP, PROTECTED_SIGNER, TWO_FILE_CAS_PUBLICATION, NO_PRODUCTION_DATA_RELEASE_OR_FEATURE_ACTIVATION]
+      later_open_scope: [P1_CONTRACT_FREEZE, P1_VERTICAL_SLICE, P9_CORPUS, P9_QUERY, P9_SERVING, P9_RELEASE, P9_LOAD, P9_CUTOVER, P9_COMPLETION]
+      later_scope_finding_effect: NON_BLOCKING_UNLESS_G0_EVIDENCE_FALSE_START_AUTHORITY_WIDENED_OR_LATER_GATE_BYPASSED
+      p1_reuse_effect: PROHIBITED_FRESH_FULL_ARCHITECTURE_AND_CONTRACT_REVIEW_REQUIRED
     review_controller_trust_root_set: trusted-review-controller-keys/2026-07-frozen-v1
     frozen_controller_and_runtime_allowlist:
       controller_id: CODEX_CLI_REVIEW_CONTROLLER
@@ -187,19 +194,19 @@ programme_gate_registry:
       fresh_path_rule: EACH_WORKING_HOME_CODEX_HOME_AND_TMPDIR_PATH_IS_CONTROLLER_CREATED_UNDER_THE_ONE_RUN_TEMP_ROOT_AND_IS_PAIRWISE_DISTINCT
       unknown_runtime_field_constant_OR_path_outside_run_root_effect: INELIGIBLE
     frozen_lane_prompt_allowlist:
-      ARCHITECTURE: [COLD_ARCHITECTURE_REVIEW/V1, b5f47d4e2168ab82ac93e72cbf1dede2ec631e2f7c11a3ca5b408a3591061ce8]
-      LEGAL_SEMANTIC: [COLD_LEGAL_SEMANTIC_REVIEW/V1, c952e7467dbf402e9d401984fdf863801d2f2fe7b05e2c6373b159c22525924a]
-      QUERY_EFFICIENCY: [COLD_QUERY_EFFICIENCY_REVIEW/V1, 71f44adbf34cbffbe55fddeb7abc151ec551a57fa5b3f414517a98d7256a8c78]
-      OPEN_WORLD: [COLD_OPEN_WORLD_REVIEW/V1, 8c0a29ff28b2691fe5630210c8360231b998f101ac4cd95bdd4a3be8c47017e6]
-      RELEASE_PROPAGATION: [COLD_RELEASE_PROPAGATION_REVIEW/V1, cf6e793a394f836c842a7a607cb01e52bc049691c7d6ace20ffeb091aa78f3a7]
+      ARCHITECTURE: [COLD_ARCHITECTURE_REVIEW/V1, e8aa3359ecf632383562b66d61114b0556d8954527610498663642ab0b972297]
+      LEGAL_SEMANTIC: [COLD_LEGAL_SEMANTIC_REVIEW/V1, 3f3d2e3b0e169a306307082cd3a0681e07164ca6dad73237794ccb78b0de4b6b]
+      QUERY_EFFICIENCY: [COLD_QUERY_EFFICIENCY_REVIEW/V1, 0e5d489625e6cf9124951eb9df47672a668f7f535d3641a972aed5c363f23b06]
+      OPEN_WORLD: [COLD_OPEN_WORLD_REVIEW/V1, 6d792fd85342d5cfa7b3863b32f9f6648afb91c2a27ed4e4b8b80519895d04d0]
+      RELEASE_PROPAGATION: [COLD_RELEASE_PROPAGATION_REVIEW/V1, 57f06078844342428cef8a88f1ccfc731d7a389cc157fb5e4916c98e61e49f56]
       missing_extra_or_digest_mismatched_prompt_effect: INELIGIBLE
     frozen_independence_validator_allowlist:
       validator_key_id: PROGRAMME_GATE_VALIDATOR_2026_07
-      validator_executable_digest: ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231
-      validator_configuration_digest: cf81cbe11a55801efdbd7eab3376fa61f83823e3bfa1fe51e0decd98a00abd02
+      validator_executable_digest: bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b
+      validator_configuration_digest: c37298016599d6cb09b3b100a536219376e6a68199f6bd5fe088dd75a47e6784
     frozen_trust_root_set:
       registry_schema: programme-gate-trusted-public-keys/v1
-      registry_source_sha256: f8e032dd770d5004711af3481f5933a1f8c763470159dc39719a1dc7582d6605
+      registry_source_sha256: 55fbd67d3c90e8f1a6e2843ab04753522e343d857e726961689830658e016b47
       keys:
         PROGRAMME_GATE_VALIDATOR_2026_07: 5b028d01aaa4f077c6f2f28ef8075195330eff00c2f81061fad8622b761de566
         PROGRAMME_STATUS_PUBLISHER_2026_07: d7f562af345fcb04a78f26c87b3e3f19b1cad6c8627ccc612396a4217d8a02c1

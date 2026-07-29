@@ -266,8 +266,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "0c6dc4cfdef7d7e3fac7e92d940d82174f61663d25509a0d05c996c6319d7858",
-        "enumerator_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231"
+        "enumerator_executable_digest": "545048eb81ec64c548e0c8928c1eb93bb06f49276ca10654389c896751e6cce1",
+        "enumerator_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b"
       },
       "member_schemas": [
         {
@@ -459,8 +459,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function featureGateOff(evidence) {\n  return evidence.route_feature_enabled === false;\n}",
-          "measurement_executable_digest": "00c5d23ab4fdc48ff6d093514406e37a2047a8509c642dec3fa40ce04427ba93",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "4690bafed4dfc60981703fa6b439e6ea3b1cacc11bc2b3ff882c58aa435e32a8",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -471,12 +471,16 @@
             {
               "member_type": "MarketStatsContainmentAttestation",
               "json_pointer": "/method_probes"
+            },
+            {
+              "member_type": "MarketStatsContainmentAttestation",
+              "json_pointer": "/runtime_deployment_id"
             }
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function liveRouteZeroCorpusReads(evidence, context) {\n  return sameClosedStringSet(\n    evidence.method_probes.map((probe) => probe.method),\n    MARKET_STATS_METHODS,\n  ) && evidence.method_probes.every((probe) => (\n    probe.member_id === `${probe.method} /api/market-stats`\n    && probe.route_id === '/api/market-stats'\n    && probe.status === 503\n    && probe.error_code === 'MARKET_STATS_DISABLED'\n    && /private/i.test(probe.cache_control)\n    && /no-store/i.test(probe.cache_control)\n    && probe.database_calls === 0\n    && probe.corpus_reads === 0\n    && probe.retry_after === null\n    && probe.code_commit === context.codeCommit\n    && probe.runtime_deployment_id === evidence.runtime_deployment_id\n    && probe.environment === context.environment\n    && probe.observed_at === context.observed_at\n  ));\n}",
-          "measurement_executable_digest": "19fa677794d17627b4bb51171e73518055c3456f2e23321f187ad22ae5397255",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "2a98ea99cb217a89be206a010e045b6e596d3c323e70e4181c2dc6d1a825900f",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -491,8 +495,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function containmentTestPass(evidence, context) {\n  return sameClosedStringSet(\n    evidence.tests.map((entry) => entry.test_id),\n    REQUIRED_CONTAINMENT_TEST_IDS,\n  ) && evidence.tests.every((entry) => (\n    entry.exit_code === 0\n    && entry.code_commit === context.codeCommit\n    && entry.environment === context.environment\n    && Date.parse(entry.completed_at) <= Date.parse(context.observed_at)\n  ));\n}",
-          "measurement_executable_digest": "6b3e798df53c4c477b6e2c4dc38847f849e78c803f463945cd3f7a30bdae407c",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "0b3c8426ee1a7edad2a899ae3ea33c5b704b5acf4eaef2caf1c5a2b3b2436825",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -789,8 +793,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "0c6dc4cfdef7d7e3fac7e92d940d82174f61663d25509a0d05c996c6319d7858",
-        "enumerator_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231"
+        "enumerator_executable_digest": "545048eb81ec64c548e0c8928c1eb93bb06f49276ca10654389c896751e6cce1",
+        "enumerator_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b"
       },
       "member_schemas": [
         {
@@ -997,12 +1001,20 @@
             {
               "member_type": "BroadRouteContainmentAttestation",
               "json_pointer": "/source_route_ids"
+            },
+            {
+              "member_type": "BroadRouteContainmentAttestation",
+              "json_pointer": "/built_route_ids"
+            },
+            {
+              "member_type": "BroadRouteContainmentAttestation",
+              "json_pointer": "/runtime_route_ids"
             }
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function sourceBuiltAndRuntimeRouteInventoriesEqual(evidence) {\n  return sameClosedStringSet(evidence.source_route_ids, evidence.built_route_ids)\n    && sameClosedStringSet(evidence.source_route_ids, evidence.runtime_route_ids);\n}",
-          "measurement_executable_digest": "aec5a86cc3f236260fac1c67d4ad7912faf087b919898a238433ad8169803cdc",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "9b30d212c3aea79c85b901132004004669cfd55a964f06a6a7e7a096d3c402b2",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -1017,8 +1029,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function everyBroadRouteContained(evidence, context) {\n  return sameClosedStringSet(\n    evidence.source_route_ids,\n    evidence.routes.map((route) => route.member_id),\n  )\n    && evidence.routes.every((route) => (\n      route.source_contained === true\n      && route.built_contained === true\n      && route.runtime_contained === true\n      && route.runtime_status === 503\n      && (\n        route.runtime_error_code === 'ROUTE_CONTAINED'\n        || (route.method === 'HEAD' && route.runtime_error_code === null)\n      )\n      && route.database_calls === 0\n      && route.corpus_reads === 0\n      && route.code_commit === context.codeCommit\n      && route.runtime_deployment_id === evidence.runtime_deployment_id\n      && route.environment === context.environment\n      && route.observed_at === context.observed_at\n    ))\n    && containmentTestPass(evidence, context);\n}",
-          "measurement_executable_digest": "d612d2c7580abd4af3771be0a53b3a5f44e27ac94d3701af083ab59014fd804e",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "6c63d6a9dd47edd71ebfc647a70d01a54ee101cc1840db56db1243a3f9cd656d",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -1033,8 +1045,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function zeroBroadNodeFallback(evidence) {\n  return evidence.routes.every((route) => (\n    route.node_corpus_reads === 0\n    && route.legacy_fallback_used === false\n  ));\n}",
-          "measurement_executable_digest": "7f40f7eb5c1013f13bc925444d27ac2100925c0ac42edfbe34667924b0e76e7e",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "c82f2f2ce2fbe40dfab47d7585d8832b0deebde48f8a3521a554cfa21bbedc89",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -1141,8 +1153,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "cf272e1e9d043bfe0d4cb64b0b3978fce61d862ab989dca42d1fba3f4c54ba67",
-        "enumerator_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231"
+        "enumerator_executable_digest": "4a21ac81a30e93d3cc3234115b107bea64de6652d1f2c2d83c0ba77d1c356e05",
+        "enumerator_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b"
       },
       "member_schemas": [
         {
@@ -1247,8 +1259,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function ownerAndPurposeRecordedWithoutSecret(evidence) {\n  return isNonEmptyString(evidence.process_identity_digest)\n    && isNonEmptyString(evidence.owner)\n    && isNonEmptyString(evidence.purpose)\n    && evidence.secret_field_count === 0;\n}",
-          "measurement_executable_digest": "da9760e3fd8e3cd710540a2839cef8fb9dfc5de0df00d77c73306392eccb85da",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "9ff99cbc5ccb5b43c9301f0c808cf5e5c889adc8893b393753d2133b97af85c6",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -1271,8 +1283,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function recognisedOrRotationRequired(evidence) {\n  return (\n    evidence.recognition_status === 'RECOGNISED'\n    && evidence.rotation_required === false\n  ) || (\n    evidence.recognition_status === 'UNRECOGNISED'\n    && evidence.rotation_required === true\n    && evidence.rotation_completed === true\n  );\n}",
-          "measurement_executable_digest": "213bd4ecedd90659120426bc65cae394d5678f8bc2fe601518a56fa2a93f7ce2",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "073c48f72f0fc3c942da8ff6c892e1a4f9a74de03903a7fe560cc4a5d6a8ddcb",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -1375,8 +1387,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "cf272e1e9d043bfe0d4cb64b0b3978fce61d862ab989dca42d1fba3f4c54ba67",
-        "enumerator_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231"
+        "enumerator_executable_digest": "4a21ac81a30e93d3cc3234115b107bea64de6652d1f2c2d83c0ba77d1c356e05",
+        "enumerator_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b"
       },
       "member_schemas": [
         {
@@ -1468,8 +1480,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function compromisedCredentialsRevoked(evidence) {\n  return sameClosedStringSet(evidence.compromised_credential_ids, evidence.revoked_ids);\n}",
-          "measurement_executable_digest": "a617fdf9c656322903e367b793fdd709ea7849b5deb197fbfb3356a6175e2d30",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "4a157c42a2990da74d4a3386e699bd6e026e7b1c4fdd1aac19b488770f209676",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -1484,8 +1496,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function replacementActivationVerified(evidence) {\n  return isTimestamp(evidence.replacement_activation_verified_at);\n}",
-          "measurement_executable_digest": "99d94b6aa36f722b5dee3f2ea631d8702c7609d7cd45bb16953b032b1bad8292",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "a0c7c16f23822e06b9f69211245fe7dd02baf1553b9a1aa5dbf7971aba0f457a",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -1500,8 +1512,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function noSecretInEvidence(evidence) {\n  return evidence.secret_field_count === 0;\n}",
-          "measurement_executable_digest": "f43eebf1a1d5346893f9bf334eb7c371edd3e0e5a1108390f50459416fbe1de5",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "1f597e60ce9dd89df06fb26714bcbc03c625241628ceb9c0f2fbbd94e438a14c",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -1621,8 +1633,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "cf272e1e9d043bfe0d4cb64b0b3978fce61d862ab989dca42d1fba3f4c54ba67",
-        "enumerator_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231"
+        "enumerator_executable_digest": "4a21ac81a30e93d3cc3234115b107bea64de6652d1f2c2d83c0ba77d1c356e05",
+        "enumerator_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b"
       },
       "member_schemas": [
         {
@@ -1882,8 +1894,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function rotationVerifiedOrRecognisedTrafficNaWithBenApproval(evidence, context) {\n  if (\n    evidence.disposition === 'ROTATED'\n    && isTimestamp(evidence.rotation_verified_at)\n    && evidence.zayo_disposition_id === null\n    && evidence.ben_approval_id === null\n  ) return true;\n  if (evidence.disposition !== 'RECOGNISED_TRAFFIC_APPROVED_NA'\n    || evidence.rotation_verified_at !== null\n    || !isDigest(evidence.zayo_disposition_id)\n    || !isDigest(evidence.ben_approval_id)) return false;\n  const zayo = memberFor(\n    context,\n    `zayo:${evidence.zayo_disposition_id}`,\n    'ZayoTrafficDisposition',\n  );\n  const approval = memberFor(\n    context,\n    `approval:${evidence.ben_approval_id}`,\n    'SupabaseSecretNaApproval',\n  );\n  const {\n    approval_id: approvalId,\n    signature: approvalSignature,\n    ...approvalIdentityPayload\n  } = approval || {};\n  void approvalSignature;\n  if (!zayo\n    || !approval\n    || zayo.gate_id !== 'G0_ZAYO_DISPOSITION'\n    || zayo.attestation_source_digest !== evidence.attestation_source_digest\n    || zayo.recognition_status !== 'RECOGNISED'\n    || zayo.rotation_required !== false\n    || zayo.purpose !== 'AUTHORISED_DATABASE_TRAFFIC'\n    || context.domainDigest(\n      'PROGRAMME_GATE_ZAYO_DISPOSITION_ID/V1',\n      zayo,\n    ) !== evidence.zayo_disposition_id\n    || approval.approval_id !== evidence.ben_approval_id\n    || approval.supabase_attestation_source_digest !== evidence.attestation_source_digest\n    || approval.zayo_process_identity_digest !== zayo.process_identity_digest\n    || approval.approved_disposition !== evidence.disposition\n    || approval.approver_identity !== 'BEN_GOODCHILD'\n    || approval.conditions.length !== 0\n    || context.domainDigest(\n      'PROGRAMME_GATE_SUPABASE_SECRET_NA_APPROVAL_ID/V1',\n      approvalIdentityPayload,\n    ) !== approvalId) return false;\n  return signatureIsValid(context, {\n    record: approval,\n    signatureField: 'signature',\n    keyId: approval.approver_key_id,\n    role: 'BEN_APPROVER',\n    domain: 'PROGRAMME_GATE_SUPABASE_SECRET_NA_APPROVAL/V1',\n  });\n}",
-          "measurement_executable_digest": "cf215c68a410542a3228139f03da58c80dd545254da7c3ec7e616332aac59b4a",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "4d5fbfccb584b568bb2c8744ea0fad1495f0970b9a66d02c7707c986a23578a2",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -1898,8 +1910,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function noSecretInEvidence(evidence) {\n  return evidence.secret_field_count === 0;\n}",
-          "measurement_executable_digest": "86586987b5665d384e73e79b1604d88052c394b2963e8085413431ffebc318d4",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "d6954162508e1b95770cf9627a674c0e0bcdf08514c3ed5dbd64e528d04e1f01",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -1971,8 +1983,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "f852dbfbf9c4544b3fcb4f3cc41540467cd7ea0371e1582352c89eb23abc2504",
-        "enumerator_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231"
+        "enumerator_executable_digest": "de124d0beb29cb7a3938bbad0ed4056431c13171d576fe171cb0c4ed655c5427",
+        "enumerator_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b"
       },
       "member_schemas": [
         {
@@ -2041,8 +2053,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function distinctProjectAndCredentials(evidence) {\n  return evidence.production_project_identity_digest !== evidence.staging_project_identity_digest\n    && evidence.production_credential_identity_digest !== evidence.staging_credential_identity_digest;\n}",
-          "measurement_executable_digest": "d12b6d244a6acdb63719d4cc36ce479500df71cc3001de02e6c826afb0f8b57e",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "944963a4e564e4c82c42adc2c5a8d0e9ca97f21cc4dbd588e0a833acf82892de",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2057,8 +2069,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function productionDmlDenied(evidence) {\n  return evidence.production_dml_probe === 'DENIED';\n}",
-          "measurement_executable_digest": "24ff1401742ab0f30d590ea9a05cf9ab3f62c7d8dabd9a9f46f00911a05a4585",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "5fcfd1d19073096fa1049c6133a56857ab92d5842d1b877cac081ff01a9703dd",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2073,8 +2085,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function snapshotRestoreOnly(evidence) {\n  return evidence.restore_mode === 'PRODUCTION_SNAPSHOT_ONLY';\n}",
-          "measurement_executable_digest": "ec502d53cf303ce89d7483475884873c64627a34d9b966b5aa26c8629ec87fb8",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "16bee7d92992b5977e969cdcac0cc2056046a6213393b4da6a040c0655512805",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -2136,8 +2148,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "f852dbfbf9c4544b3fcb4f3cc41540467cd7ea0371e1582352c89eb23abc2504",
-        "enumerator_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231"
+        "enumerator_executable_digest": "de124d0beb29cb7a3938bbad0ed4056431c13171d576fe171cb0c4ed655c5427",
+        "enumerator_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b"
       },
       "member_schemas": [
         {
@@ -2189,8 +2201,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function branchPreviewUsesStagingOnlyCredentials(evidence) {\n  return isNonEmptyString(evidence.preview_deployment_id)\n    && evidence.preview_credential_scope === 'STAGING_ONLY';\n}",
-          "measurement_executable_digest": "1353af90a55a82281e3ab4c828092ec4764585ac697c16cdd106bbd4b6c6aea1",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "17e26e589671c3bd8c254e821adf67064168bf149c000e71de67ec9e5a424fd6",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2209,8 +2221,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function productionAliasUnchanged(evidence) {\n  return evidence.production_alias_before === evidence.production_alias_after;\n}",
-          "measurement_executable_digest": "c41712b4f1c54e9e6e832f7b7c3f8ab5df369baadb1ee4299dffd6094ade9941",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "457ab87f96e4c5014b5b6bcab61f9b4240ba312f0310748365e5b2dd1b57b86f",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -2439,8 +2451,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "f852dbfbf9c4544b3fcb4f3cc41540467cd7ea0371e1582352c89eb23abc2504",
-        "enumerator_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231"
+        "enumerator_executable_digest": "de124d0beb29cb7a3938bbad0ed4056431c13171d576fe171cb0c4ed655c5427",
+        "enumerator_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b"
       },
       "member_schemas": [
         {
@@ -2675,8 +2687,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function completePreviewRouteActionInventory(evidence) {\n  const actions = evidence.preview_route_actions;\n  const source = evidence.source_route_action_inventory;\n  const built = evidence.built_route_action_inventory;\n  const runtime = evidence.runtime_route_action_inventory;\n  const identity = (entry) => `${entry.action_id}\\0${entry.action_class}`;\n  const closedInventory = (inventory) => (\n    Array.isArray(inventory)\n    && inventory.length >= PREVIEW_ACTION_CLASSES.length\n    && new Set(inventory.map((entry) => entry.action_id)).size === inventory.length\n    && inventory.every((entry) => PREVIEW_ACTION_CLASSES.includes(entry.action_class))\n    && PREVIEW_ACTION_CLASSES.every(\n      (actionClass) => inventory.some((entry) => entry.action_class === actionClass),\n    )\n  );\n  return Array.isArray(actions)\n    && new Set(actions.map((entry) => entry.action_id)).size === actions.length\n    && closedInventory(source)\n    && closedInventory(built)\n    && closedInventory(runtime)\n    && exactStringSet(source.map(identity), built.map(identity))\n    && exactStringSet(source.map(identity), runtime.map(identity))\n    && exactStringSet(source.map(identity), actions.map(identity))\n    && evidence.source_route_action_inventory_root === contextlessDomainDigest(\n      'PROGRAMME_GATE_PREVIEW_ROUTE_ACTION_INVENTORY/V1',\n      source,\n    )\n    && evidence.built_route_action_inventory_root === contextlessDomainDigest(\n      'PROGRAMME_GATE_PREVIEW_ROUTE_ACTION_INVENTORY/V1',\n      built,\n    )\n    && evidence.runtime_route_action_inventory_root === contextlessDomainDigest(\n      'PROGRAMME_GATE_PREVIEW_ROUTE_ACTION_INVENTORY/V1',\n      runtime,\n    );\n}",
-          "measurement_executable_digest": "93915f79523faabee2618b76ecbd345a8ee227c5276716a35e1a28362c600c6c",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "8b1b239bad1c67d06739a5e629945ec35e61e1fb16d09c81832ec874084381eb",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2715,8 +2727,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function unauthenticatedAccessDeniedBeforeAndAfterRestore(evidence) {\n  return completePreviewRouteActionInventory(evidence)\n    && evidence.preview_route_actions.every((entry) => (\n      accessDenied(entry.unauthenticated_before_restore_status)\n      && accessDenied(entry.unauthenticated_after_restore_status)\n    ));\n}",
-          "measurement_executable_digest": "b54fd7412f0f6a4c3408d057cdd4edef71876f5b08d7efc3209d9bbb3494bd53",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "6ae210aaf9717a7db6f68c0b0ada207e6aebddb0f42a46b39ceb8a1878c5df5a",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2755,8 +2767,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function authenticatedNonAdminPrivilegedActionsDenied(evidence) {\n  return completePreviewRouteActionInventory(evidence)\n    && evidence.preview_route_actions\n      .filter((entry) => entry.action_class !== 'READ_ONLY_TEST')\n      .every((entry) => accessDenied(entry.authenticated_non_admin_status));\n}",
-          "measurement_executable_digest": "efb8dbdd784ce9829b341faa8c3bd484786030eee51684b2f0e419db1e912905",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "93afe27749c1a22c39f201dc895bafab8d45fb9a318d59afb9a7f79c1c6a82f0",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2795,8 +2807,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function privilegedPreviewActionsDisabled(evidence) {\n  return completePreviewRouteActionInventory(evidence)\n    && evidence.preview_route_actions\n      .filter((entry) => DISABLED_PREVIEW_ACTION_CLASSES.includes(entry.action_class))\n      .every((entry) => (\n        entry.feature_enabled === false\n        && entry.authorised_test_status === null\n      ));\n}",
-          "measurement_executable_digest": "fa124d723e70535e023d00e237670df6fa1c99a988c03845920405f57d7ee0ce",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "4dd36ee7cdf485a7aa6c2ed6884e01ddc79eb3a7e64cc7dbf94ff30feaa577e3",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2835,8 +2847,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function authorisedReadOnlyTestAccessPass(evidence) {\n  return completePreviewRouteActionInventory(evidence)\n    && evidence.preview_route_actions\n      .filter((entry) => entry.action_class === 'READ_ONLY_TEST')\n      .every((entry) => (\n        entry.feature_enabled === true\n        && entry.authorised_test_status >= 200\n        && entry.authorised_test_status < 300\n      ));\n}",
-          "measurement_executable_digest": "19987a9de68ad3c9af925a073cf08ced13dd1b1967567c8fe5b1638319082b1c",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "71d17875cf5e93d4437f557072826e7ea779f859b99a7a7d83f4ded8d743feac",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -2890,8 +2902,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "a74eacc724355b3cf3cc9d288568954ed505c2d253ef0012edd49923135cd143",
-        "enumerator_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231"
+        "enumerator_executable_digest": "536cc7347acfdb24e072ad1f07428c86c7a7241b5245b5f250850b4d122dcdc8",
+        "enumerator_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b"
       },
       "member_schemas": [
         {
@@ -3632,8 +3644,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function fiveNamedLanesPassSameRoot(evidence, context) {\n  return reviewSetFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "05a71da5c4869e02f84f7e88207ed62a0f4e4cc4d8442d5be0ac9e57325bc078",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "f6414d33ce8ee8318e7249ad0639992b04a52b8b70d6d748447ea6f94ec3cf61",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -3828,8 +3840,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function eligibleLegalReviewer(evidence, context) {\n  return reviewSetFacts(evidence, context)?.legalReviewerEligible === true;\n}",
-          "measurement_executable_digest": "0b5b143fb4f9c29ad9d9c7157e1975c80c495a646b60805c7f2e7d276c1f20ef",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "78a15160a318df0c066bd0ddda7a40ca18f9a7e93ba5ef0cf35a7cc3de241a26",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -4016,8 +4028,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function reviewerIndependenceRecomputed(evidence, context) {\n  return reviewSetFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "2cc7f8f190c8f369627fd71bdff00f2540ee220a683c9efef491f15895de8637",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "85bb9167e094d929050e083a1066e68e3398c2c78009012885cda1e7fe87a563",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -4204,8 +4216,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function rootUnchangedBeforeAndAfter(evidence, context) {\n  return reviewSetFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "d6840535f7bf1996cff2670e57f393cc0ca06683da917d38f6526a67b6fecafc",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "eca83bec24c2d2a0fbe17e04bc4548a1a25a69ce0d3a87adab7faaee166baf3d",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -4271,8 +4283,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "a74eacc724355b3cf3cc9d288568954ed505c2d253ef0012edd49923135cd143",
-        "enumerator_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231"
+        "enumerator_executable_digest": "536cc7347acfdb24e072ad1f07428c86c7a7241b5245b5f250850b4d122dcdc8",
+        "enumerator_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b"
       },
       "member_schemas": [
         {
@@ -4396,8 +4408,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function approvedRootEqualsPassingReviewRoot(evidence, context) {\n  return benApprovalFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "59f1c6a3c89fd09eca4577fc86b2bc4a80e749c516ccdea116e87d60169b06e2",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "4ac996b3fb8a6e18e898372c559ea31ab1e9582aca71be21fdf860b7e7b1d7df",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -4420,8 +4432,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function benIdentityAndSignatureValid(evidence, context) {\n  return benApprovalFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "d8f5c6a67c34dc92774db17e9f5659c826c36fe23c08165fa00a3fb3bac45c7a",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "1c22fde9fa6d1830acbd9041d95983549afeeeada09439a071315ef63c7acd70",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -4440,8 +4452,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function approvalUnconditional(evidence, context) {\n  return benApprovalFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "9387a030140642a09f8d8b62018da1fa5179a88457b45d997b911a930780753a",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "3de771445567f4a8d46d0bf79240210643a9454d7499d527e2f6de2d08406ca5",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -4613,8 +4625,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "b609bc1d6e69f0616aa076e9a2849f87311ccafe9741f36e9749afcdd24f9b98",
-        "enumerator_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231"
+        "enumerator_executable_digest": "eaa5a29fbde79e7abee1cc89424099000cd3bd71b8383bfe87422028045773b6",
+        "enumerator_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b"
       },
       "member_schemas": [
         {
@@ -8182,8 +8194,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function bundleCompiles(evidence, context) {\n  const members = contractFreezeMembers(evidence, context);\n  const bundle = canonicalContractBundleFacts(context);\n  return Boolean(members)\n    && Boolean(bundle)\n    && contractFreezeAttestationIdentityIsValid(\n      evidence,\n      context,\n      members.attestationIdentity,\n    )\n    && evidence.specification_root === context.expectedSpecificationRoot\n    && contractAuthorityManifestMatches(evidence, context, members.authorityManifest)\n    && members.compilation.receipt_id === evidence.compilation_receipt_id\n    && members.compilation.contract_bundle_id === evidence.contract_bundle_id\n    && members.compilation.contract_bundle_digest === evidence.contract_bundle_digest\n    && members.compilation.frozen_contract_pair_digest === evidence.frozen_contract_pair_digest\n    && members.compilation.canonical_contract_bundle_member_root === bundle.memberRoot\n    && members.compilation.canonical_contract_bundle_member_count === bundle.records.length\n    && members.compilation.canonical_contract_bundle_required_kind_set_root\n      === bundle.requiredKindSetRoot\n    && members.authorityManifest.canonical_contract_bundle_member_root === bundle.memberRoot\n    && members.authorityManifest.canonical_contract_bundle_member_count\n      === bundle.records.length\n    && members.authorityManifest.canonical_contract_bundle_required_kind_set_root\n      === bundle.requiredKindSetRoot\n    && JSON.stringify(members.review.contract_bundle_members)\n      === JSON.stringify(bundle.projection)\n    && members.compilation.compiler_version === members.authorityManifest.compiler_version\n    && members.compilation.generator_version === members.authorityManifest.generator_version\n    && members.compilation.compile_report_digest\n      === members.authorityManifest.compile_report_digest\n    && members.compilation.cycle_report_digest\n      === members.authorityManifest.cycle_report_digest\n    && members.compilation.drift_report_digest\n      === members.authorityManifest.drift_report_digest\n    && context.domainDigest(\n      'PROGRAMME_GATE_CONTRACT_GENERATED_OUTPUT_SET/V1',\n      members.compilation.generated_outputs,\n    ) === context.domainDigest(\n      'PROGRAMME_GATE_CONTRACT_GENERATED_OUTPUT_SET/V1',\n      members.authorityManifest.generated_outputs,\n    )\n    && members.compilation.compile_errors.length === 0\n    && members.compilation.cycle_errors.length === 0\n    && members.compilation.drift_errors.length === 0\n    && members.compilation.terminal_state === 'PASS'\n    && context.domainDigest(\n      'PROGRAMME_GATE_CONTRACT_COMPILATION_RECEIPT_ID/V1',\n      recordIdentityPayload(members.compilation, 'receipt_id', 'signature'),\n    ) === members.compilation.receipt_id\n    && signatureIsValid(context, {\n      record: members.compilation,\n      signatureField: 'signature',\n      keyId: members.compilation.validator_key_id,\n      role: 'VALIDATOR',\n      domain: 'PROGRAMME_GATE_CONTRACT_COMPILATION_RECEIPT/V1',\n    });\n}",
-          "measurement_executable_digest": "8019b213864ee5a96cbc6326ac1dbf63547d49e827335035a76d0d2681972fee",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "92e32ef07dd3352d060cd5e86fb75b78f936456023f57825caf5f7e4181d9954",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -8378,8 +8390,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function semanticAndIdentityDiffReviewed(evidence, context) {\n  const members = contractFreezeMembers(evidence, context);\n  return Boolean(members)\n    && contractFreezeAttestationIdentityIsValid(\n      evidence,\n      context,\n      members.attestationIdentity,\n    )\n    && contractAuthorityManifestMatches(evidence, context, members.authorityManifest)\n    && members.review.review_id === evidence.semantic_identity_review_id\n    && members.review.contract_bundle_id === evidence.contract_bundle_id\n    && members.review.contract_bundle_digest === evidence.contract_bundle_digest\n    && members.review.frozen_contract_pair_digest === evidence.frozen_contract_pair_digest\n    && members.review.semantic_identity_diff_digest\n      === members.authorityManifest.semantic_identity_diff_digest\n    && contractDiffReviewIsMechanicallyBound(members.review, evidence, context)\n    && members.review.review_scope === 'SEMANTIC_AND_IDENTITY_DIFF'\n    && members.review.review_disposition === 'PASS'\n    && members.review.blocking_finding_count === 0\n    && members.review.blocking_finding_ids.length === 0\n    && (\n      (\n        members.review.reviewer_model_identifier\n          === REVIEW_CONTROLLER_POLICY.exact_model_identifier\n        && members.review.reasoning_level === REVIEW_CONTROLLER_POLICY.reasoning_level\n      )\n      || (\n        REVIEW_CONTROLLER_POLICY.fable_model_identifiers\n          .includes(members.review.reviewer_model_identifier)\n        && members.review.reasoning_level\n          === REVIEW_CONTROLLER_POLICY.fable_reasoning_level\n      )\n    )\n    && members.review.reviewer_eligibility_digest\n      === members.authorityManifest.reviewer_eligibility_set_root\n    && contractReviewerEligibilityIsBound(members.review, context)\n    && contractReviewIndependenceIsValid(members.review, evidence, context)\n    && members.authorityManifest.independent_reviewer_bindings.some((binding) => (\n      binding.reviewer_identity === members.review.reviewer_identity\n      && binding.eligibility_evidence_digest === members.review.reviewer_eligibility_digest\n      && binding.review_disposition_id === members.review.review_id\n    ))\n    && members.review.review_set_root === evidence.specification_root\n    && evidence.legal_semantic_review_disposition_id === members.review.review_id\n    && evidence.identity_review_disposition_id === members.review.review_id\n    && context.domainDigest(\n      'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW_ID/V1',\n      recordIdentityPayload(members.review, 'review_id', 'signature'),\n    ) === members.review.review_id\n    && signatureIsValid(context, {\n      record: members.review,\n      signatureField: 'signature',\n      keyId: members.review.controller_key_id,\n      role: 'REVIEW_CONTROLLER',\n      domain: 'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW/V1',\n    });\n}",
-          "measurement_executable_digest": "2411989b62bb4a9c4b21d6198c766e81c9c5f817a4605e5fa46a32f530ab40f8",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "250af30a862af81544995db81dcfa73564829f9a513a85a2193f6b5c5a4b12fa",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -8418,8 +8430,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function freezeGateApproved(evidence, context) {\n  const members = contractFreezeMembers(evidence, context);\n  return Boolean(members)\n    && contractAuthorityManifestMatches(evidence, context, members.authorityManifest)\n    && members.approval.approval_id === evidence.freeze_gate_approval_id\n    && members.approval.authority_manifest_id\n      === evidence.contract_authority_manifest_id\n    && members.approval.frozen_contract_pair_digest === evidence.frozen_contract_pair_digest\n    && evidence.ben_bundle_approval_evidence_id === members.approval.approval_id\n    && members.approval.approver_identity === 'BEN_GOODCHILD'\n    && members.approval.conditions.length === 0\n    && signatureIsValid(context, {\n      record: members.approval,\n      signatureField: 'signature',\n      keyId: members.approval.approver_key_id,\n      role: 'BEN_APPROVER',\n      domain: 'PROGRAMME_GATE_CONTRACT_FREEZE_APPROVAL/V1',\n    });\n}",
-          "measurement_executable_digest": "286c6cacfceb219179033907b86e8876fb5c0b2da7c76ef2a21d8c7b6ce04b5d",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "aaa53da45c1a067b5688c4b3b20433eef7fd8bed9547840ae01bf04d87950f69",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -8454,15 +8466,15 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function statusGenerationMatches(evidence, context) {\n  const members = contractFreezeMembers(evidence, context);\n  return Boolean(members)\n    && members.status.specification_root === evidence.specification_root\n    && members.status.code_commit === evidence.code_commit\n    && members.status.environment === evidence.environment\n    && members.status.generation === evidence.status_generation\n    && signatureIsValid(context, {\n      record: members.status,\n      signatureField: 'signature',\n      keyId: members.status.validator_key_id,\n      role: 'STATUS_PUBLISHER',\n      domain: 'PROGRAMME_GATE_STATUS/V2',\n    })\n    && context.domainDigest(\n      'PROGRAMME_GATE_STATUS_ARTEFACT_PAYLOAD/V2',\n      members.status,\n    ) === evidence.status_payload_digest;\n}",
-          "measurement_executable_digest": "c7e3837653cffff2b187d37455c969526db0fd266dede7ad0b6742ca3f0df3c8",
-          "measurement_transitive_source_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+          "measurement_executable_digest": "783875cceabcdf87a687013f654075418feffba12cef001f2398e76cad138eab",
+          "measurement_transitive_source_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
       ]
     }
   ],
-  "acceptance_executable_closure_digest": "ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231",
+  "acceptance_executable_closure_digest": "bbae26b08e1366f5f5c0036c9bb99ad7949e5b611716790eeeb3f2ac9949096b",
   "validator_executable_files": [
     "lib/broad-corpus-containment.js",
     "lib/canonical-v2/canonical-bytes.js",
@@ -8510,7 +8522,7 @@
     "lib/query-containment.js",
     "lib/service-client-route-actions.js"
   ],
-  "runtime_source_set_digest": "0421662098d09dac41083b40c1a744d34135e9dafa4e9e3f7cf321c9a2dde997",
+  "runtime_source_set_digest": "30eeba768337a3b77bda940163c52cbfdc0b43ac997b27452e1344748b4fa083",
   "local_dependency_closure": {
     "resolver": "STATIC_RELATIVE_REQUIRE_IMPORT_EXPORT/V1",
     "seed_paths": [
@@ -8602,9 +8614,9 @@
     },
     {
       "path": "lib/programme-gates/cold-review-tasks.js",
-      "byte_length": 2401,
-      "sha256": "4c894cbdc6ad2d093131d4724dbc6ac7e54bf2d6da28e7d1cee3294b2a3cbfe4",
-      "utf8_source": "const { REVIEW_LANES } = require('./registry');\n\nconst OUTPUT_SCHEMA = Object.freeze({\n  type: 'object',\n  additionalProperties: false,\n  required: ['disposition', 'findings'],\n  properties: {\n    disposition: { type: 'string', enum: ['PASS', 'FAIL'] },\n    findings: {\n      type: 'array',\n      items: {\n        type: 'object',\n        additionalProperties: false,\n        required: ['severity', 'code', 'message', 'evidence'],\n        properties: {\n          severity: { type: 'string', enum: ['BLOCKING', 'NON_BLOCKING'] },\n          code: { type: 'string', pattern: '^[A-Z][A-Z0-9_]{2,63}$' },\n          message: { type: 'string', minLength: 1 },\n          evidence: { type: 'string', minLength: 1 },\n        },\n      },\n    },\n  },\n});\n\nconst LANE_FOCUS = Object.freeze({\n  ARCHITECTURE: 'identity stability, authoritative write paths, transactional boundaries, failure isolation and implementability',\n  LEGAL_SEMANTIC: 'legal meaning, party and scope fidelity, qualifiers, exceptions, definitions, relationships and absence semantics',\n  QUERY_EFFICIENCY: 'bounded set-based reads, indexed cohorts, cacheability, concurrency, database load and interactive latency',\n  OPEN_WORLD: 'novel proposition discovery, reviewed source-specific publication, residual blocking and refusal of false comparability',\n  RELEASE_PROPAGATION: 'immutable candidate releases, correction survival, certification, atomic activation, rollback and cross-view parity',\n});\n\nfunction promptFor(lane) {\n  return [\n    `You are the independent ${lane.lane_id} cold reviewer.`,\n    'Review only the five frozen specification members in this directory.',\n    `Focus on ${LANE_FOCUS[lane.lane_id]}.`,\n    'Do not modify files. Do not use prior review findings or conclusions.',\n    'A BLOCKING finding is a contradiction, missing binding rule, unsafe authority, unverifiable gate, or defect that prevents the stated outcome.',\n    'Return FAIL if any BLOCKING finding exists. Otherwise return PASS.',\n    'Every finding must cite the exact specification path and section or identifier in evidence.',\n    'Return only the required structured output.',\n  ].join('\\n');\n}\n\nconst COLD_REVIEW_TASKS = Object.freeze(REVIEW_LANES.map((lane) => Object.freeze({\n  lane_id: lane.lane_id,\n  registered_prompt_id: lane.registered_prompt_id,\n  prompt: promptFor(lane),\n})));\n\nmodule.exports = {\n  COLD_REVIEW_TASKS,\n  OUTPUT_SCHEMA,\n};\n"
+      "byte_length": 3234,
+      "sha256": "89be26092c1e35808603cfe2f2a14524ae9fdcbe3d54b2d8030f50ad1a71c83d",
+      "utf8_source": "const { REVIEW_LANES } = require('./registry');\n\nconst OUTPUT_SCHEMA = Object.freeze({\n  type: 'object',\n  additionalProperties: false,\n  required: ['disposition', 'findings'],\n  properties: {\n    disposition: { type: 'string', enum: ['PASS', 'FAIL'] },\n    findings: {\n      type: 'array',\n      items: {\n        type: 'object',\n        additionalProperties: false,\n        required: ['severity', 'code', 'message', 'evidence'],\n        properties: {\n          severity: { type: 'string', enum: ['BLOCKING', 'NON_BLOCKING'] },\n          code: { type: 'string', pattern: '^[A-Z][A-Z0-9_]{2,63}$' },\n          message: { type: 'string', minLength: 1 },\n          evidence: { type: 'string', minLength: 1 },\n        },\n      },\n    },\n  },\n});\n\nconst LANE_FOCUS = Object.freeze({\n  ARCHITECTURE: 'the implementability and authority boundaries of the G0 gate, signer, status projection and publication path',\n  LEGAL_SEMANTIC: 'whether G0 grants any legal-semantic, taxonomy, corpus-write or publication authority beyond isolated staging implementation',\n  QUERY_EFFICIENCY: 'whether containment evidence proves zero corpus reads and whether G0 can expose an unsafe market or Query request path',\n  OPEN_WORLD: 'whether G0 can publish, compare or silently discard unresolved legal propositions before the later governed gates pass',\n  RELEASE_PROPAGATION: 'whether G0 can import, activate or mutate a corpus release, production data or a product feature before later gates pass',\n});\n\nfunction promptFor(lane) {\n  return [\n    `You are the independent ${lane.lane_id} G0 start-safety cold reviewer.`,\n    'Review the five frozen specification members in this directory only for the generation-1 G0 decision.',\n    'The decision is whether the signed V2 status can safely permit implementation planning, isolated staging setup and staging-only canonical engineering behind disabled production feature flags.',\n    'In scope are the ten G0 gates, their evidence, the work-class projection, the one-use bootstrap, the protected signer, the two-file compare-and-swap publication and the prohibition on production data, release and feature activation.',\n    'P1 contract freeze, vertical-slice completeness, corpus architecture and every P9 import, serving, load, cutover and completion requirement remain OPEN.',\n    'A defect confined to an OPEN P1 or P9 requirement is outside this G0 disposition. It can be NON_BLOCKING only.',\n    'A defect is BLOCKING only if it can falsify a G0 evidence claim, prevent the generation-1 V2 publication, grant authority beyond the permitted start scope, or bypass a later OPEN gate.',\n    `Focus on ${LANE_FOCUS[lane.lane_id]}.`,\n    'Do not modify files. Do not use prior review findings or conclusions.',\n    'Return FAIL if any BLOCKING finding exists. Otherwise return PASS.',\n    'Every finding must cite the exact specification path and section or identifier in evidence.',\n    'Return only the required structured output.',\n  ].join('\\n');\n}\n\nconst COLD_REVIEW_TASKS = Object.freeze(REVIEW_LANES.map((lane) => Object.freeze({\n  lane_id: lane.lane_id,\n  registered_prompt_id: lane.registered_prompt_id,\n  prompt: promptFor(lane),\n})));\n\nmodule.exports = {\n  COLD_REVIEW_TASKS,\n  OUTPUT_SCHEMA,\n};\n"
     },
     {
       "path": "lib/programme-gates/containment-collector.js",
@@ -8614,9 +8626,9 @@
     },
     {
       "path": "lib/programme-gates/containment-contracts.js",
-      "byte_length": 9952,
-      "sha256": "8b918606adaf47254550059e95dc7e41c735c0f1344c840e8ef8715d62a1bc3a",
-      "utf8_source": "const path = require('node:path');\nconst { domainDigest } = require('./bytes');\nconst {\n  BROAD_ROUTE_CONTRACT,\n  MARKET_STATS_CONTRACT,\n  SOURCE_CONTAINMENT_INVENTORY_EXECUTABLE_DIGEST,\n  enumerateContainmentExpectedMembers,\n  memberSchemaSetForContract,\n} = require('./containment-enumerator');\nconst { ACCEPTANCE_PREDICATES } = require('./predicates');\nconst { acceptanceDescriptorForContract } = require('./registry');\nconst { schemaFor } = require('./schema-registry');\nconst {\n  ACCEPTANCE_DEFINITION_ID_DOMAIN,\n  EVIDENCE_OBJECT_SCHEMA_DOMAIN,\n  MEMBER_SCHEMA_SET_DOMAIN,\n  acceptanceDefinitionPayload,\n} = require('./validator');\nconst {\n  programmeGateValidatorExecutableDigest,\n} = require('./validator-executable');\n\nconst ENUMERATOR_EXECUTABLE_DOMAIN = 'PROGRAMME_GATE_CONTAINMENT_ENUMERATOR_EXECUTABLE/V1';\nconst ENUMERATOR_CONFIGURATION_DOMAIN =\n  'PROGRAMME_GATE_CONTAINMENT_ENUMERATOR_CONFIGURATION/V1';\nconst PREDICATE_EXECUTABLE_DOMAIN = 'PROGRAMME_GATE_CONTAINMENT_PREDICATE_EXECUTABLE/V1';\nconst PREDICATE_CONFIGURATION_DOMAIN =\n  'PROGRAMME_GATE_CONTAINMENT_PREDICATE_CONFIGURATION/V1';\nconst TRANSITIVE_EXECUTABLE_DOMAIN =\n  'PROGRAMME_GATE_ACCEPTANCE_TRANSITIVE_EXECUTABLE/V1';\nconst ACCEPTANCE_EXECUTABLE_CLOSURE_DIGEST = programmeGateValidatorExecutableDigest({\n  root: path.resolve(__dirname, '../..'),\n});\nconst ENUMERATOR_EXECUTABLE_DIGEST = domainDigest(\n  ENUMERATOR_EXECUTABLE_DOMAIN,\n  {\n    source: enumerateContainmentExpectedMembers.toString(),\n    source_inventory_executable_digest: SOURCE_CONTAINMENT_INVENTORY_EXECUTABLE_DIGEST,\n  },\n);\n\nconst CONTRACT_CONFIGURATIONS = Object.freeze([\n  Object.freeze({\n    gate_id: 'G0_MARKET_STATS_CONTAINED',\n    evidence_contract: MARKET_STATS_CONTRACT,\n    evidence_schema_id: 'MarketStatsContainmentAttestation/V1',\n    evidence_subject_type: 'MarketStatsContainmentSubject',\n    universe_id: 'G0_MARKET_STATS_CONTAINMENT_MEMBERS',\n    member_schema_set: memberSchemaSetForContract(MARKET_STATS_CONTRACT),\n    member_enumerator_executable_digest: ENUMERATOR_EXECUTABLE_DIGEST,\n    claim_paths: Object.freeze({\n      feature_gate_off: '/route_feature_enabled',\n      live_route_zero_corpus_reads: '/method_probes',\n      containment_test_pass: '/tests',\n    }),\n  }),\n  Object.freeze({\n    gate_id: 'G0_BROAD_CORPUS_ROUTES_CONTAINED',\n    evidence_contract: BROAD_ROUTE_CONTRACT,\n    evidence_schema_id: 'BroadRouteContainmentAttestation/V1',\n    evidence_subject_type: 'BroadRouteContainmentSubject',\n    universe_id: 'G0_BROAD_ROUTE_CONTAINMENT_MEMBERS',\n    member_schema_set: memberSchemaSetForContract(BROAD_ROUTE_CONTRACT),\n    member_enumerator_executable_digest: ENUMERATOR_EXECUTABLE_DIGEST,\n    claim_paths: Object.freeze({\n      source_built_and_runtime_route_inventories_equal: '/source_route_ids',\n      every_broad_route_contained: '/routes',\n      zero_broad_node_fallback: '/routes',\n    }),\n  }),\n]);\n\nfunction deepFreeze(value) {\n  if (!value || typeof value !== 'object' || Object.isFrozen(value)) return value;\n  for (const child of Object.values(value)) deepFreeze(child);\n  return Object.freeze(value);\n}\n\nfunction requireDigest(value, label) {\n  if (typeof value !== 'string' || !/^[a-f0-9]{64}$/.test(value)) {\n    throw new TypeError(`${label} must be a SHA-256 digest`);\n  }\n  return value;\n}\n\nfunction executableBindingsFor(configuration) {\n  const descriptor = acceptanceDescriptorForContract(configuration.evidence_contract);\n  if (descriptor.activation_state !== 'ACTIVE') {\n    throw new Error(`${configuration.gate_id} acceptance descriptor is not active`);\n  }\n  const memberSchemaSet = configuration.member_schema_set;\n  const enumeratorConfiguration = {\n    evidence_contract: configuration.evidence_contract,\n    member_schema_set: memberSchemaSet,\n    ordering_rule: 'UTF8_MEMBER_TYPE_THEN_ID',\n  };\n  const predicates = ACCEPTANCE_PREDICATES[configuration.gate_id];\n  const predicateBindings = {};\n  for (const claimKey of descriptor.ordered_claim_keys) {\n    const predicate = predicates && predicates[claimKey];\n    const exactInputs = configuration.claim_inputs?.[claimKey]\n      || (\n        Array.isArray(configuration.claim_paths[claimKey])\n          ? configuration.claim_paths[claimKey]\n          : [configuration.claim_paths[claimKey]]\n      ).map((jsonPointer) => ({\n        member_type: descriptor.evidence_object_type,\n        json_pointer: jsonPointer,\n      }));\n    if (typeof predicate !== 'function') {\n      throw new Error(`${configuration.gate_id} has no executable predicate ${claimKey}`);\n    }\n    if (!Array.isArray(exactInputs) || exactInputs.length === 0) {\n      throw new Error(`${configuration.gate_id} has no exact inputs for ${claimKey}`);\n    }\n    if (exactInputs.some((entry) => (\n      !entry\n      || typeof entry.member_type !== 'string'\n      || entry.member_type.length === 0\n      || typeof entry.json_pointer !== 'string'\n      || !entry.json_pointer.startsWith('/')\n    ))) {\n      throw new Error(`${configuration.gate_id} has an invalid exact input for ${claimKey}`);\n    }\n    const predicateEntryDigest = domainDigest(\n      PREDICATE_EXECUTABLE_DOMAIN,\n      { gate_id: configuration.gate_id, claim_key: claimKey, source: predicate.toString() },\n    );\n    predicateBindings[claimKey] = Object.freeze({\n      exact_inputs: Object.freeze(exactInputs.map((entry) => Object.freeze({ ...entry }))),\n      executable_digest: domainDigest(\n        TRANSITIVE_EXECUTABLE_DOMAIN,\n        {\n          executable_kind: 'PREDICATE',\n          entry_executable_digest: predicateEntryDigest,\n          transitive_source_closure_digest: ACCEPTANCE_EXECUTABLE_CLOSURE_DIGEST,\n        },\n      ),\n      configuration_digest: domainDigest(\n        PREDICATE_CONFIGURATION_DOMAIN,\n        {\n          gate_id: configuration.gate_id,\n          claim_key: claimKey,\n          exact_inputs: exactInputs,\n        },\n      ),\n    });\n  }\n  return Object.freeze({\n    member_enumerator: Object.freeze({\n      executable_digest: domainDigest(\n        TRANSITIVE_EXECUTABLE_DOMAIN,\n        {\n          executable_kind: 'MEMBER_ENUMERATOR',\n          entry_executable_digest: configuration.member_enumerator_executable_digest\n            || ENUMERATOR_EXECUTABLE_DIGEST,\n          transitive_source_closure_digest: ACCEPTANCE_EXECUTABLE_CLOSURE_DIGEST,\n        },\n      ),\n      configuration_digest: domainDigest(\n        ENUMERATOR_CONFIGURATION_DOMAIN,\n        enumeratorConfiguration,\n      ),\n    }),\n    predicates: Object.freeze(predicateBindings),\n  });\n}\n\nfunction definitionFor(configuration, specificationRoot, executableBindings) {\n  const descriptor = acceptanceDescriptorForContract(configuration.evidence_contract);\n  const memberSchemaSet = configuration.member_schema_set;\n  const definition = {\n    schema_version: 'ProgrammeGateAcceptanceDefinition/V1',\n    definition_id: '0'.repeat(64),\n    definition_digest: '0'.repeat(64),\n    evidence_contract: configuration.evidence_contract,\n    specification_root: specificationRoot,\n    frozen_contract_pair_digest: null,\n    evidence_object_json_schema_id: configuration.evidence_schema_id,\n    evidence_object_json_schema_digest: domainDigest(\n      EVIDENCE_OBJECT_SCHEMA_DOMAIN,\n      schemaFor(configuration.evidence_schema_id),\n    ),\n    evidence_subject_type: configuration.evidence_subject_type,\n    evidence_subject_identity_fields: configuration.evidence_subject_identity_fields || [\n      'gate_id',\n      'code_commit',\n      'runtime_deployment_id',\n      'environment',\n    ],\n    immutable_member_universe_definition: {\n      universe_id: configuration.universe_id,\n      ordering_rule: 'UTF8_MEMBER_TYPE_THEN_ID',\n      duplicate_effect: 'OPEN',\n      missing_or_extra_effect: 'OPEN',\n    },\n    immutable_member_json_schema_set_digest: domainDigest(\n      MEMBER_SCHEMA_SET_DOMAIN,\n      memberSchemaSet,\n    ),\n    member_enumerator_executable_digest:\n      executableBindings.member_enumerator.executable_digest,\n    member_enumerator_configuration_digest:\n      executableBindings.member_enumerator.configuration_digest,\n    ordered_claim_predicate_definitions: descriptor.ordered_claim_keys.map((claimKey) => ({\n      claim_key: claimKey,\n      result_type: 'BOOLEAN',\n      exact_input_member_types_and_paths:\n        executableBindings.predicates[claimKey].exact_inputs,\n      measurement_executable_digest:\n        executableBindings.predicates[claimKey].executable_digest,\n      measurement_configuration_digest:\n        executableBindings.predicates[claimKey].configuration_digest,\n      comparison_operator: 'EQUALS',\n      expected_typed_value: true,\n    })),\n  };\n  const definitionDigest = domainDigest(\n    ACCEPTANCE_DEFINITION_ID_DOMAIN,\n    acceptanceDefinitionPayload(definition),\n  );\n  definition.definition_id = definitionDigest;\n  definition.definition_digest = definitionDigest;\n  return deepFreeze(definition);\n}\n\nfunction createAcceptanceContractBundle({ configurations, specificationRoot }) {\n  requireDigest(specificationRoot, 'specification root');\n  if (!Array.isArray(configurations) || configurations.length === 0) {\n    throw new TypeError('acceptance contract configurations must be non-empty');\n  }\n  const definitions = [];\n  const executableBindings = {};\n  for (const configuration of configurations) {\n    const bindings = executableBindingsFor(configuration);\n    executableBindings[configuration.gate_id] = bindings;\n    definitions.push(definitionFor(configuration, specificationRoot, bindings));\n  }\n  return deepFreeze({\n    definitions,\n    executable_bindings: executableBindings,\n  });\n}\n\nfunction createContainmentContractBundle({ specificationRoot }) {\n  return createAcceptanceContractBundle({\n    configurations: CONTRACT_CONFIGURATIONS,\n    specificationRoot,\n  });\n}\n\nmodule.exports = {\n  ACCEPTANCE_EXECUTABLE_CLOSURE_DIGEST,\n  CONTRACT_CONFIGURATIONS,\n  ENUMERATOR_EXECUTABLE_DIGEST,\n  createAcceptanceContractBundle,\n  createContainmentContractBundle,\n  executableBindingsFor,\n};\n"
+      "byte_length": 10680,
+      "sha256": "ddaca61e484166e1b0ac550d3561d37d7b2af0d2e6f0ead7c8d82457ab290d6f",
+      "utf8_source": "const path = require('node:path');\nconst { domainDigest } = require('./bytes');\nconst {\n  BROAD_ROUTE_CONTRACT,\n  MARKET_STATS_CONTRACT,\n  SOURCE_CONTAINMENT_INVENTORY_EXECUTABLE_DIGEST,\n  enumerateContainmentExpectedMembers,\n  memberSchemaSetForContract,\n} = require('./containment-enumerator');\nconst { ACCEPTANCE_PREDICATES } = require('./predicates');\nconst { acceptanceDescriptorForContract } = require('./registry');\nconst { schemaFor } = require('./schema-registry');\nconst {\n  ACCEPTANCE_DEFINITION_ID_DOMAIN,\n  EVIDENCE_OBJECT_SCHEMA_DOMAIN,\n  MEMBER_SCHEMA_SET_DOMAIN,\n  acceptanceDefinitionPayload,\n} = require('./validator');\nconst {\n  programmeGateValidatorExecutableDigest,\n} = require('./validator-executable');\n\nconst ENUMERATOR_EXECUTABLE_DOMAIN = 'PROGRAMME_GATE_CONTAINMENT_ENUMERATOR_EXECUTABLE/V1';\nconst ENUMERATOR_CONFIGURATION_DOMAIN =\n  'PROGRAMME_GATE_CONTAINMENT_ENUMERATOR_CONFIGURATION/V1';\nconst PREDICATE_EXECUTABLE_DOMAIN = 'PROGRAMME_GATE_CONTAINMENT_PREDICATE_EXECUTABLE/V1';\nconst PREDICATE_CONFIGURATION_DOMAIN =\n  'PROGRAMME_GATE_CONTAINMENT_PREDICATE_CONFIGURATION/V1';\nconst TRANSITIVE_EXECUTABLE_DOMAIN =\n  'PROGRAMME_GATE_ACCEPTANCE_TRANSITIVE_EXECUTABLE/V1';\nconst ACCEPTANCE_EXECUTABLE_CLOSURE_DIGEST = programmeGateValidatorExecutableDigest({\n  root: path.resolve(__dirname, '../..'),\n});\nconst ENUMERATOR_EXECUTABLE_DIGEST = domainDigest(\n  ENUMERATOR_EXECUTABLE_DOMAIN,\n  {\n    source: enumerateContainmentExpectedMembers.toString(),\n    source_inventory_executable_digest: SOURCE_CONTAINMENT_INVENTORY_EXECUTABLE_DIGEST,\n  },\n);\n\nfunction input(memberType, jsonPointer) {\n  return Object.freeze({\n    member_type: memberType,\n    json_pointer: jsonPointer,\n  });\n}\n\nconst CONTRACT_CONFIGURATIONS = Object.freeze([\n  Object.freeze({\n    gate_id: 'G0_MARKET_STATS_CONTAINED',\n    evidence_contract: MARKET_STATS_CONTRACT,\n    evidence_schema_id: 'MarketStatsContainmentAttestation/V1',\n    evidence_subject_type: 'MarketStatsContainmentSubject',\n    universe_id: 'G0_MARKET_STATS_CONTAINMENT_MEMBERS',\n    member_schema_set: memberSchemaSetForContract(MARKET_STATS_CONTRACT),\n    member_enumerator_executable_digest: ENUMERATOR_EXECUTABLE_DIGEST,\n    claim_paths: Object.freeze({\n      feature_gate_off: '/route_feature_enabled',\n      live_route_zero_corpus_reads: '/method_probes',\n      containment_test_pass: '/tests',\n    }),\n    claim_inputs: Object.freeze({\n      live_route_zero_corpus_reads: Object.freeze([\n        input('MarketStatsContainmentAttestation', '/method_probes'),\n        input('MarketStatsContainmentAttestation', '/runtime_deployment_id'),\n      ]),\n    }),\n  }),\n  Object.freeze({\n    gate_id: 'G0_BROAD_CORPUS_ROUTES_CONTAINED',\n    evidence_contract: BROAD_ROUTE_CONTRACT,\n    evidence_schema_id: 'BroadRouteContainmentAttestation/V1',\n    evidence_subject_type: 'BroadRouteContainmentSubject',\n    universe_id: 'G0_BROAD_ROUTE_CONTAINMENT_MEMBERS',\n    member_schema_set: memberSchemaSetForContract(BROAD_ROUTE_CONTRACT),\n    member_enumerator_executable_digest: ENUMERATOR_EXECUTABLE_DIGEST,\n    claim_paths: Object.freeze({\n      source_built_and_runtime_route_inventories_equal: '/source_route_ids',\n      every_broad_route_contained: '/routes',\n      zero_broad_node_fallback: '/routes',\n    }),\n    claim_inputs: Object.freeze({\n      source_built_and_runtime_route_inventories_equal: Object.freeze([\n        input('BroadRouteContainmentAttestation', '/source_route_ids'),\n        input('BroadRouteContainmentAttestation', '/built_route_ids'),\n        input('BroadRouteContainmentAttestation', '/runtime_route_ids'),\n      ]),\n    }),\n  }),\n]);\n\nfunction deepFreeze(value) {\n  if (!value || typeof value !== 'object' || Object.isFrozen(value)) return value;\n  for (const child of Object.values(value)) deepFreeze(child);\n  return Object.freeze(value);\n}\n\nfunction requireDigest(value, label) {\n  if (typeof value !== 'string' || !/^[a-f0-9]{64}$/.test(value)) {\n    throw new TypeError(`${label} must be a SHA-256 digest`);\n  }\n  return value;\n}\n\nfunction executableBindingsFor(configuration) {\n  const descriptor = acceptanceDescriptorForContract(configuration.evidence_contract);\n  if (descriptor.activation_state !== 'ACTIVE') {\n    throw new Error(`${configuration.gate_id} acceptance descriptor is not active`);\n  }\n  const memberSchemaSet = configuration.member_schema_set;\n  const enumeratorConfiguration = {\n    evidence_contract: configuration.evidence_contract,\n    member_schema_set: memberSchemaSet,\n    ordering_rule: 'UTF8_MEMBER_TYPE_THEN_ID',\n  };\n  const predicates = ACCEPTANCE_PREDICATES[configuration.gate_id];\n  const predicateBindings = {};\n  for (const claimKey of descriptor.ordered_claim_keys) {\n    const predicate = predicates && predicates[claimKey];\n    const exactInputs = configuration.claim_inputs?.[claimKey]\n      || (\n        Array.isArray(configuration.claim_paths[claimKey])\n          ? configuration.claim_paths[claimKey]\n          : [configuration.claim_paths[claimKey]]\n      ).map((jsonPointer) => ({\n        member_type: descriptor.evidence_object_type,\n        json_pointer: jsonPointer,\n      }));\n    if (typeof predicate !== 'function') {\n      throw new Error(`${configuration.gate_id} has no executable predicate ${claimKey}`);\n    }\n    if (!Array.isArray(exactInputs) || exactInputs.length === 0) {\n      throw new Error(`${configuration.gate_id} has no exact inputs for ${claimKey}`);\n    }\n    if (exactInputs.some((entry) => (\n      !entry\n      || typeof entry.member_type !== 'string'\n      || entry.member_type.length === 0\n      || typeof entry.json_pointer !== 'string'\n      || !entry.json_pointer.startsWith('/')\n    ))) {\n      throw new Error(`${configuration.gate_id} has an invalid exact input for ${claimKey}`);\n    }\n    const predicateEntryDigest = domainDigest(\n      PREDICATE_EXECUTABLE_DOMAIN,\n      { gate_id: configuration.gate_id, claim_key: claimKey, source: predicate.toString() },\n    );\n    predicateBindings[claimKey] = Object.freeze({\n      exact_inputs: Object.freeze(exactInputs.map((entry) => Object.freeze({ ...entry }))),\n      executable_digest: domainDigest(\n        TRANSITIVE_EXECUTABLE_DOMAIN,\n        {\n          executable_kind: 'PREDICATE',\n          entry_executable_digest: predicateEntryDigest,\n          transitive_source_closure_digest: ACCEPTANCE_EXECUTABLE_CLOSURE_DIGEST,\n        },\n      ),\n      configuration_digest: domainDigest(\n        PREDICATE_CONFIGURATION_DOMAIN,\n        {\n          gate_id: configuration.gate_id,\n          claim_key: claimKey,\n          exact_inputs: exactInputs,\n        },\n      ),\n    });\n  }\n  return Object.freeze({\n    member_enumerator: Object.freeze({\n      executable_digest: domainDigest(\n        TRANSITIVE_EXECUTABLE_DOMAIN,\n        {\n          executable_kind: 'MEMBER_ENUMERATOR',\n          entry_executable_digest: configuration.member_enumerator_executable_digest\n            || ENUMERATOR_EXECUTABLE_DIGEST,\n          transitive_source_closure_digest: ACCEPTANCE_EXECUTABLE_CLOSURE_DIGEST,\n        },\n      ),\n      configuration_digest: domainDigest(\n        ENUMERATOR_CONFIGURATION_DOMAIN,\n        enumeratorConfiguration,\n      ),\n    }),\n    predicates: Object.freeze(predicateBindings),\n  });\n}\n\nfunction definitionFor(configuration, specificationRoot, executableBindings) {\n  const descriptor = acceptanceDescriptorForContract(configuration.evidence_contract);\n  const memberSchemaSet = configuration.member_schema_set;\n  const definition = {\n    schema_version: 'ProgrammeGateAcceptanceDefinition/V1',\n    definition_id: '0'.repeat(64),\n    definition_digest: '0'.repeat(64),\n    evidence_contract: configuration.evidence_contract,\n    specification_root: specificationRoot,\n    frozen_contract_pair_digest: null,\n    evidence_object_json_schema_id: configuration.evidence_schema_id,\n    evidence_object_json_schema_digest: domainDigest(\n      EVIDENCE_OBJECT_SCHEMA_DOMAIN,\n      schemaFor(configuration.evidence_schema_id),\n    ),\n    evidence_subject_type: configuration.evidence_subject_type,\n    evidence_subject_identity_fields: configuration.evidence_subject_identity_fields || [\n      'gate_id',\n      'code_commit',\n      'runtime_deployment_id',\n      'environment',\n    ],\n    immutable_member_universe_definition: {\n      universe_id: configuration.universe_id,\n      ordering_rule: 'UTF8_MEMBER_TYPE_THEN_ID',\n      duplicate_effect: 'OPEN',\n      missing_or_extra_effect: 'OPEN',\n    },\n    immutable_member_json_schema_set_digest: domainDigest(\n      MEMBER_SCHEMA_SET_DOMAIN,\n      memberSchemaSet,\n    ),\n    member_enumerator_executable_digest:\n      executableBindings.member_enumerator.executable_digest,\n    member_enumerator_configuration_digest:\n      executableBindings.member_enumerator.configuration_digest,\n    ordered_claim_predicate_definitions: descriptor.ordered_claim_keys.map((claimKey) => ({\n      claim_key: claimKey,\n      result_type: 'BOOLEAN',\n      exact_input_member_types_and_paths:\n        executableBindings.predicates[claimKey].exact_inputs,\n      measurement_executable_digest:\n        executableBindings.predicates[claimKey].executable_digest,\n      measurement_configuration_digest:\n        executableBindings.predicates[claimKey].configuration_digest,\n      comparison_operator: 'EQUALS',\n      expected_typed_value: true,\n    })),\n  };\n  const definitionDigest = domainDigest(\n    ACCEPTANCE_DEFINITION_ID_DOMAIN,\n    acceptanceDefinitionPayload(definition),\n  );\n  definition.definition_id = definitionDigest;\n  definition.definition_digest = definitionDigest;\n  return deepFreeze(definition);\n}\n\nfunction createAcceptanceContractBundle({ configurations, specificationRoot }) {\n  requireDigest(specificationRoot, 'specification root');\n  if (!Array.isArray(configurations) || configurations.length === 0) {\n    throw new TypeError('acceptance contract configurations must be non-empty');\n  }\n  const definitions = [];\n  const executableBindings = {};\n  for (const configuration of configurations) {\n    const bindings = executableBindingsFor(configuration);\n    executableBindings[configuration.gate_id] = bindings;\n    definitions.push(definitionFor(configuration, specificationRoot, bindings));\n  }\n  return deepFreeze({\n    definitions,\n    executable_bindings: executableBindings,\n  });\n}\n\nfunction createContainmentContractBundle({ specificationRoot }) {\n  return createAcceptanceContractBundle({\n    configurations: CONTRACT_CONFIGURATIONS,\n    specificationRoot,\n  });\n}\n\nmodule.exports = {\n  ACCEPTANCE_EXECUTABLE_CLOSURE_DIGEST,\n  CONTRACT_CONFIGURATIONS,\n  ENUMERATOR_EXECUTABLE_DIGEST,\n  createAcceptanceContractBundle,\n  createContainmentContractBundle,\n  executableBindingsFor,\n};\n"
     },
     {
       "path": "lib/programme-gates/containment-enumerator.js",
@@ -8723,8 +8735,8 @@
     {
       "path": "lib/programme-gates/registry.js",
       "byte_length": 13258,
-      "sha256": "f8e032dd770d5004711af3481f5933a1f8c763470159dc39719a1dc7582d6605",
-      "utf8_source": "const { domainDigest } = require('./bytes');\nconst { schemaFor } = require('./schema-registry');\n\nconst SCHEMA_REGISTRY_DOMAIN = 'PROGRAMME_GATE_SCHEMA_REGISTRY/V1';\nconst VALIDATOR_CONFIGURATION_DOMAIN = 'PROGRAMME_GATE_VALIDATOR_CONFIGURATION/V1';\nconst TRUSTED_PUBLIC_KEY_REGISTRY_DOMAIN = 'PROGRAMME_GATE_TRUSTED_PUBLIC_KEY_REGISTRY/V1';\nconst REVIEW_LANE_REGISTRY_DOMAIN = 'PROGRAMME_GATE_REVIEW_LANE_REGISTRY/V1';\nconst ACCEPTANCE_DESCRIPTOR_SET_DOMAIN =\n  'PROGRAMME_GATE_ACCEPTANCE_DEFINITION_DESCRIPTOR_SET/V1';\n\nconst REVIEW_LANES = Object.freeze([\n  Object.freeze({\n    lane_id: 'ARCHITECTURE',\n    required_reviewer_profile: 'INDEPENDENT_REVIEWER',\n    registered_prompt_id: 'COLD_ARCHITECTURE_REVIEW/V1',\n  }),\n  Object.freeze({\n    lane_id: 'LEGAL_SEMANTIC',\n    required_reviewer_profile: 'FABLE_OR_SOL_5_6_EXTRA_HIGH',\n    registered_prompt_id: 'COLD_LEGAL_SEMANTIC_REVIEW/V1',\n  }),\n  Object.freeze({\n    lane_id: 'QUERY_EFFICIENCY',\n    required_reviewer_profile: 'INDEPENDENT_REVIEWER',\n    registered_prompt_id: 'COLD_QUERY_EFFICIENCY_REVIEW/V1',\n  }),\n  Object.freeze({\n    lane_id: 'OPEN_WORLD',\n    required_reviewer_profile: 'INDEPENDENT_REVIEWER',\n    registered_prompt_id: 'COLD_OPEN_WORLD_REVIEW/V1',\n  }),\n  Object.freeze({\n    lane_id: 'RELEASE_PROPAGATION',\n    required_reviewer_profile: 'INDEPENDENT_REVIEWER',\n    registered_prompt_id: 'COLD_RELEASE_PROPAGATION_REVIEW/V1',\n  }),\n]);\n\nconst REVIEW_LANE_REGISTRY = Object.freeze({\n  schema_version: 'ProgrammeGateReviewLaneRegistry/V1',\n  lanes: REVIEW_LANES,\n});\n\nconst REVIEWER_PROFILES = Object.freeze({\n  FABLE_ELIGIBLE: Object.freeze({\n    reviewer_identity_class: 'FABLE',\n    exact_model_rule: 'CONTROLLER_OBSERVED_FABLE_ELIGIBLE_MODEL',\n    exact_model_identifiers: Object.freeze(['fable-legal-reviewer']),\n    exact_reasoning_level: 'provider_default',\n  }),\n  SOL_5_6_EXTRA_HIGH_ELIGIBLE: Object.freeze({\n    reviewer_identity_class: 'OPENAI_MODEL',\n    exact_model_identifier: 'gpt-5.6-sol',\n    exact_reasoning_level: 'xhigh',\n  }),\n});\n\nconst REVIEW_CONTROLLER_POLICY = Object.freeze({\n  controller_id: 'CODEX_CLI_REVIEW_CONTROLLER',\n  controller_version: 'LOCAL_REVIEW_CONTROLLER/V1',\n  task_manifest_version: 'TrustedReviewTaskManifest/V1',\n  frozen_specification_manifest_id: 'codex-program-specification-manifest/v1',\n  frozen_specification_file_count: 6,\n  output_schema_id: 'ColdReviewOutput/V1',\n  review_runtime_version: 'codex-cli/0.145.0',\n  review_runtime_binary_path: '/opt/homebrew/bin/codex',\n  review_runtime_binary_digest:\n    '134063e133f0b4244fa3b251acf973d4fe4b4aeeacbdc135211bf480f59f1477',\n  operating_system: 'darwin',\n  architecture: 'arm64',\n  path_value: '/opt/homebrew/bin:/usr/bin:/bin',\n  locale: 'en_US.UTF-8',\n  terminal: 'dumb',\n  exact_model_identifier: 'gpt-5.6-sol',\n  reasoning_level: 'xhigh',\n  fable_model_identifiers: Object.freeze(['fable-legal-reviewer']),\n  fable_reasoning_level: 'provider_default',\n  prompt_digests: Object.freeze({\n    ARCHITECTURE:\n      'b5f47d4e2168ab82ac93e72cbf1dede2ec631e2f7c11a3ca5b408a3591061ce8',\n    LEGAL_SEMANTIC:\n      'c952e7467dbf402e9d401984fdf863801d2f2fe7b05e2c6373b159c22525924a',\n    QUERY_EFFICIENCY:\n      '71f44adbf34cbffbe55fddeb7abc151ec551a57fa5b3f414517a98d7256a8c78',\n    OPEN_WORLD:\n      '8c0a29ff28b2691fe5630210c8360231b998f101ac4cd95bdd4a3be8c47017e6',\n    RELEASE_PROPAGATION:\n      'cf6e793a394f836c842a7a607cb01e52bc049691c7d6ace20ffeb091aa78f3a7',\n  }),\n});\n\nconst VALIDATOR_CONFIGURATION = Object.freeze({\n  schema_version: 'ProgrammeGateValidatorConfiguration/V1',\n  configuration_id: 'PROGRAMME_GATE_VALIDATOR_CONFIG/V1',\n  schema_registry_ids: Object.freeze([\n    'ContainedRouteMethodProbe/V1',\n    'BroadRouteActionObservation/V1',\n    'ProgrammeGateTestExecutionRecord/V1',\n    'MarketStatsContainmentAttestation/V1',\n    'BroadRouteContainmentAttestation/V1',\n    'ZayoTrafficDisposition/V1',\n    'ClaudeCredentialRotationReceipt/V1',\n    'SupabaseSecretDisposition/V1',\n    'SupabaseSecretNaApproval/V1',\n    'StagingSupabaseIsolationAttestation/V1',\n    'StagingVercelIsolationAttestation/V1',\n    'StagingAccessProtectionAttestation/V1',\n    'ProgrammeGateAcceptanceDefinition/V1',\n    'ProgrammeGateEvidenceEnvelope/V2',\n    'TrustedReviewControllerRecord/V1',\n    'ReviewerIndependenceAttestation/V1',\n    'ExactDigestReviewSetAttestation/V1',\n    'BenSpecificationApproval/V1',\n    'BenSpecificationApprovalEvidence/V1',\n    'ContractFreezeAttestation/V1',\n    'ContractFreezeAttestationIdentity/V1',\n    'ContractFreezeAuthorityManifest/V1',\n    'CanonicalContractBundleMember/V1',\n    'ContractFreezeGoverningSpecificationMember/V1',\n    'ContractFreezeAuthorityEvidence/V1',\n    'ContractBundleCompilationReceipt/V1',\n    'ContractDiffReviewAttestation/V1',\n    'ContractFreezeApproval/V1',\n    'ProgrammeGateStatusArtefact/V2',\n    'ProgrammeStatusPublicationHead/V1',\n    'ProgrammeGateValidatorConfiguration/V1',\n    'TrustedProgrammeGatePublicKeys/V1',\n    'ProgrammeGateReviewLaneRegistry/V1',\n  ]),\n  signature_algorithm: 'Ed25519',\n  invalid_or_missing_evidence_state: 'OPEN',\n  unknown_schema_effect: 'OPEN',\n  unknown_key_effect: 'OPEN',\n  invalid_signature_effect: 'OPEN',\n  unknown_or_extra_claim_effect: 'OPEN',\n  permitted_environments: Object.freeze(['STAGING', 'PRODUCTION']),\n});\n\nconst TRUSTED_PUBLIC_KEY_REGISTRY = Object.freeze({\n  schema_version: 'TrustedProgrammeGatePublicKeys/V1',\n  registry_state: 'ACTIVE',\n  keys: Object.freeze([\n    Object.freeze({\n      key_id: 'PROGRAMME_GATE_VALIDATOR_2026_07',\n      algorithm: 'Ed25519',\n      public_key_pem: [\n        '-----BEGIN PUBLIC KEY-----',\n        'MCowBQYDK2VwAyEAiKkmqx3weHtAqBiTr6j5zWGaXNMyO9rF55dT8cpOx20=',\n        '-----END PUBLIC KEY-----',\n        '',\n      ].join('\\n'),\n      permitted_roles: Object.freeze(['TEST_EXECUTION_ATTESTER', 'VALIDATOR']),\n      permitted_domains: Object.freeze([\n        'PROGRAMME_GATE_EVIDENCE/V2',\n        'PROGRAMME_GATE_TEST_EXECUTION/V1',\n        'PROGRAMME_GATE_REVIEWER_INDEPENDENCE/V1',\n        'PROGRAMME_GATE_CONTRACT_COMPILATION_RECEIPT/V1',\n      ]),\n      valid_from: '2026-07-28T07:08:01.000Z',\n      valid_until: '2026-10-26T07:08:01.000Z',\n      revoked_at: null,\n    }),\n    Object.freeze({\n      key_id: 'PROGRAMME_STATUS_PUBLISHER_2026_07',\n      algorithm: 'Ed25519',\n      public_key_pem: [\n        '-----BEGIN PUBLIC KEY-----',\n        'MCowBQYDK2VwAyEAn7kdajyQhTpRcOKsBdGK5ChSgXqGvcIAFkC0a+RlZw0=',\n        '-----END PUBLIC KEY-----',\n        '',\n      ].join('\\n'),\n      permitted_roles: Object.freeze(['STATUS_PUBLISHER', 'VALIDATOR']),\n      permitted_domains: Object.freeze([\n        'PROGRAMME_GATE_STATUS/V2',\n        'PROGRAMME_GATE_PUBLICATION_HEAD/V1',\n      ]),\n      valid_from: '2026-07-28T07:08:01.000Z',\n      valid_until: '2026-10-26T07:08:01.000Z',\n      revoked_at: null,\n    }),\n    Object.freeze({\n      key_id: 'PROGRAMME_GATE_REVIEW_CONTROLLER_2026_07',\n      algorithm: 'Ed25519',\n      public_key_pem: [\n        '-----BEGIN PUBLIC KEY-----',\n        'MCowBQYDK2VwAyEAjDjroH2I2mViDwiXI3AjoogNKXL2P2hVEBmM8ArLWio=',\n        '-----END PUBLIC KEY-----',\n        '',\n      ].join('\\n'),\n      permitted_roles: Object.freeze(['REVIEW_CONTROLLER']),\n      permitted_domains: Object.freeze([\n        'PROGRAMME_GATE_REVIEW_CONTROLLER_RECORD/V1',\n        'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW/V1',\n      ]),\n      valid_from: '2026-07-28T07:08:01.000Z',\n      valid_until: '2026-10-26T07:08:01.000Z',\n      revoked_at: null,\n    }),\n    Object.freeze({\n      key_id: 'PROGRAMME_GATE_BEN_APPROVER_2026_07',\n      algorithm: 'Ed25519',\n      public_key_pem: [\n        '-----BEGIN PUBLIC KEY-----',\n        'MCowBQYDK2VwAyEAhbHlf10h8sqMSAvxPlB9DMxL6h3A9zryaMM/Atgy4t8=',\n        '-----END PUBLIC KEY-----',\n        '',\n      ].join('\\n'),\n      permitted_roles: Object.freeze(['BEN_APPROVER']),\n      permitted_domains: Object.freeze([\n        'PROGRAMME_GATE_BEN_APPROVAL/V1',\n        'PROGRAMME_GATE_CONTRACT_FREEZE_APPROVAL/V1',\n      ]),\n      valid_from: '2026-07-28T07:08:01.000Z',\n      valid_until: '2026-10-26T07:08:01.000Z',\n      revoked_at: null,\n    }),\n  ]),\n});\n\nconst BOOTSTRAP_ACCEPTANCE_INPUTS = Object.freeze([\n  ['G0_MARKET_STATS_CONTAINED', 'route-disabled-code-test-live-response/v1', 'MarketStatsContainmentAttestation',\n    ['feature_gate_off', 'live_route_zero_corpus_reads', 'containment_test_pass'], ['P0-ROUTE-01']],\n  ['G0_BROAD_CORPUS_ROUTES_CONTAINED', 'broad-route-inventory-and-containment/v1', 'BroadRouteContainmentAttestation',\n    ['source_built_and_runtime_route_inventories_equal', 'every_broad_route_contained', 'zero_broad_node_fallback'], ['P0-ROUTE-01']],\n  ['G0_ZAYO_DISPOSITION', 'non-secret-owner-purpose-disposition/v1', 'ZayoTrafficDisposition',\n    ['owner_and_purpose_recorded_without_secret', 'recognised_or_rotation_required'], ['GATE-01']],\n  ['G0_CLAUDE_CREDENTIAL_ROTATION', 'non-secret-rotation-completion/v1', 'ClaudeCredentialRotationReceipt',\n    ['compromised_credentials_revoked', 'replacement_activation_verified', 'no_secret_in_evidence'], ['GATE-01']],\n  ['G0_SUPABASE_SECRET_DISPOSITION', 'non-secret-rotation-or-approved-na/v1', 'SupabaseSecretDisposition',\n    ['rotation_verified_or_recognised_traffic_na_with_ben_approval', 'no_secret_in_evidence'], ['GATE-01']],\n  ['G0_STAGING_SUPABASE_ISOLATED', 'staging-project-credential-isolation/v1', 'StagingSupabaseIsolationAttestation',\n    ['distinct_project_and_credentials', 'production_dml_denied', 'snapshot_restore_only'], ['DEPLOY-CUTOVER-01']],\n  ['G0_STAGING_VERCEL_ISOLATED', 'preview-project-credential-isolation/v1', 'StagingVercelIsolationAttestation',\n    ['branch_preview_uses_staging_only_credentials', 'production_alias_unchanged'], ['DEPLOY-CUTOVER-01']],\n  ['G0_STAGING_ACCESS_PROTECTED', 'default-deny-preview-access-test/v1', 'StagingAccessProtectionAttestation',\n    [\n      'complete_preview_route_action_inventory',\n      'unauthenticated_access_denied_before_and_after_restore',\n      'authenticated_non_admin_privileged_actions_denied',\n      'writer_ingest_correction_export_import_promotion_and_cutover_actions_disabled',\n      'authorised_read_only_test_access_pass',\n    ], ['GATE-01', 'PREVIEW-AUTH-01']],\n  ['G0_EXACT_DIGEST_REVIEW_SET', 'five-lane-provider-attested-exact-specification-root-review-set/v3', 'ExactDigestReviewSetAttestation',\n    ['five_named_lanes_pass_same_root', 'eligible_legal_reviewer', 'reviewer_independence_recomputed', 'root_unchanged_before_and_after'], ['GATE-01', 'REVIEW-CONTEXT-01']],\n  ['G0_BEN_SPEC_APPROVAL', 'ben-approved-reviewed-specification-root/v3', 'BenSpecificationApproval',\n    ['approved_root_equals_passing_review_root', 'ben_identity_and_signature_valid', 'approval_unconditional'], ['GATE-01']],\n  ['P1_CONTRACT_FREEZE_ATTESTED', 'exact-contract-freeze-attestation-and-status-generation/v7', 'ContractFreezeAttestation',\n    ['bundle_compiles', 'semantic_and_identity_diff_reviewed', 'freeze_gate_approved', 'status_generation_matches'], ['CONTRACT-01']],\n]);\n\nconst ACCEPTANCE_DEFINITION_DESCRIPTORS = Object.freeze(BOOTSTRAP_ACCEPTANCE_INPUTS.map(([\n  gateId,\n  evidenceContract,\n  evidenceObjectType,\n  orderedClaimKeys,\n  requiredAdversarialTests,\n]) => Object.freeze({\n  descriptor_version: 'ProgrammeGateAcceptanceDefinitionDescriptor/V1',\n  activation_state: [\n    'G0_MARKET_STATS_CONTAINED',\n    'G0_BROAD_CORPUS_ROUTES_CONTAINED',\n    'G0_ZAYO_DISPOSITION',\n    'G0_CLAUDE_CREDENTIAL_ROTATION',\n    'G0_SUPABASE_SECRET_DISPOSITION',\n    'G0_STAGING_SUPABASE_ISOLATED',\n    'G0_STAGING_VERCEL_ISOLATED',\n    'G0_STAGING_ACCESS_PROTECTED',\n    'G0_EXACT_DIGEST_REVIEW_SET',\n    'G0_BEN_SPEC_APPROVAL',\n    'P1_CONTRACT_FREEZE_ATTESTED',\n  ].includes(gateId)\n    ? 'ACTIVE'\n    : 'BLOCKED_PENDING_EXECUTABLE_BINDINGS',\n  gate_id: gateId,\n  evidence_contract: evidenceContract,\n  evidence_object_type: evidenceObjectType,\n  ordered_claim_keys: Object.freeze([...orderedClaimKeys]),\n  required_adversarial_tests: Object.freeze([...requiredAdversarialTests]),\n})));\n\nfunction acceptanceDescriptorForContract(evidenceContract) {\n  const matches = ACCEPTANCE_DEFINITION_DESCRIPTORS.filter(\n    (entry) => entry.evidence_contract === evidenceContract,\n  );\n  if (matches.length !== 1) {\n    throw new Error(`unknown or ambiguous G0 evidence contract: ${evidenceContract}`);\n  }\n  return matches[0];\n}\n\nconst REGISTRY_DIGESTS = Object.freeze({\n  schema_registry: domainDigest(\n    SCHEMA_REGISTRY_DOMAIN,\n    VALIDATOR_CONFIGURATION.schema_registry_ids.map((schemaId) => schemaFor(schemaId)),\n  ),\n  validator_configuration: domainDigest(\n    VALIDATOR_CONFIGURATION_DOMAIN,\n    VALIDATOR_CONFIGURATION,\n  ),\n  trusted_public_keys: domainDigest(\n    TRUSTED_PUBLIC_KEY_REGISTRY_DOMAIN,\n    TRUSTED_PUBLIC_KEY_REGISTRY,\n  ),\n  review_lanes: domainDigest(REVIEW_LANE_REGISTRY_DOMAIN, REVIEW_LANE_REGISTRY),\n  acceptance_definition_descriptors: domainDigest(\n    ACCEPTANCE_DESCRIPTOR_SET_DOMAIN,\n    ACCEPTANCE_DEFINITION_DESCRIPTORS,\n  ),\n});\n\nmodule.exports = {\n  ACCEPTANCE_DEFINITION_DESCRIPTORS,\n  REGISTRY_DIGESTS,\n  REVIEW_CONTROLLER_POLICY,\n  REVIEWER_PROFILES,\n  REVIEW_LANES,\n  REVIEW_LANE_REGISTRY,\n  TRUSTED_PUBLIC_KEY_REGISTRY,\n  VALIDATOR_CONFIGURATION,\n  acceptanceDescriptorForContract,\n};\n"
+      "sha256": "55fbd67d3c90e8f1a6e2843ab04753522e343d857e726961689830658e016b47",
+      "utf8_source": "const { domainDigest } = require('./bytes');\nconst { schemaFor } = require('./schema-registry');\n\nconst SCHEMA_REGISTRY_DOMAIN = 'PROGRAMME_GATE_SCHEMA_REGISTRY/V1';\nconst VALIDATOR_CONFIGURATION_DOMAIN = 'PROGRAMME_GATE_VALIDATOR_CONFIGURATION/V1';\nconst TRUSTED_PUBLIC_KEY_REGISTRY_DOMAIN = 'PROGRAMME_GATE_TRUSTED_PUBLIC_KEY_REGISTRY/V1';\nconst REVIEW_LANE_REGISTRY_DOMAIN = 'PROGRAMME_GATE_REVIEW_LANE_REGISTRY/V1';\nconst ACCEPTANCE_DESCRIPTOR_SET_DOMAIN =\n  'PROGRAMME_GATE_ACCEPTANCE_DEFINITION_DESCRIPTOR_SET/V1';\n\nconst REVIEW_LANES = Object.freeze([\n  Object.freeze({\n    lane_id: 'ARCHITECTURE',\n    required_reviewer_profile: 'INDEPENDENT_REVIEWER',\n    registered_prompt_id: 'COLD_ARCHITECTURE_REVIEW/V1',\n  }),\n  Object.freeze({\n    lane_id: 'LEGAL_SEMANTIC',\n    required_reviewer_profile: 'FABLE_OR_SOL_5_6_EXTRA_HIGH',\n    registered_prompt_id: 'COLD_LEGAL_SEMANTIC_REVIEW/V1',\n  }),\n  Object.freeze({\n    lane_id: 'QUERY_EFFICIENCY',\n    required_reviewer_profile: 'INDEPENDENT_REVIEWER',\n    registered_prompt_id: 'COLD_QUERY_EFFICIENCY_REVIEW/V1',\n  }),\n  Object.freeze({\n    lane_id: 'OPEN_WORLD',\n    required_reviewer_profile: 'INDEPENDENT_REVIEWER',\n    registered_prompt_id: 'COLD_OPEN_WORLD_REVIEW/V1',\n  }),\n  Object.freeze({\n    lane_id: 'RELEASE_PROPAGATION',\n    required_reviewer_profile: 'INDEPENDENT_REVIEWER',\n    registered_prompt_id: 'COLD_RELEASE_PROPAGATION_REVIEW/V1',\n  }),\n]);\n\nconst REVIEW_LANE_REGISTRY = Object.freeze({\n  schema_version: 'ProgrammeGateReviewLaneRegistry/V1',\n  lanes: REVIEW_LANES,\n});\n\nconst REVIEWER_PROFILES = Object.freeze({\n  FABLE_ELIGIBLE: Object.freeze({\n    reviewer_identity_class: 'FABLE',\n    exact_model_rule: 'CONTROLLER_OBSERVED_FABLE_ELIGIBLE_MODEL',\n    exact_model_identifiers: Object.freeze(['fable-legal-reviewer']),\n    exact_reasoning_level: 'provider_default',\n  }),\n  SOL_5_6_EXTRA_HIGH_ELIGIBLE: Object.freeze({\n    reviewer_identity_class: 'OPENAI_MODEL',\n    exact_model_identifier: 'gpt-5.6-sol',\n    exact_reasoning_level: 'xhigh',\n  }),\n});\n\nconst REVIEW_CONTROLLER_POLICY = Object.freeze({\n  controller_id: 'CODEX_CLI_REVIEW_CONTROLLER',\n  controller_version: 'LOCAL_REVIEW_CONTROLLER/V1',\n  task_manifest_version: 'TrustedReviewTaskManifest/V1',\n  frozen_specification_manifest_id: 'codex-program-specification-manifest/v1',\n  frozen_specification_file_count: 6,\n  output_schema_id: 'ColdReviewOutput/V1',\n  review_runtime_version: 'codex-cli/0.145.0',\n  review_runtime_binary_path: '/opt/homebrew/bin/codex',\n  review_runtime_binary_digest:\n    '134063e133f0b4244fa3b251acf973d4fe4b4aeeacbdc135211bf480f59f1477',\n  operating_system: 'darwin',\n  architecture: 'arm64',\n  path_value: '/opt/homebrew/bin:/usr/bin:/bin',\n  locale: 'en_US.UTF-8',\n  terminal: 'dumb',\n  exact_model_identifier: 'gpt-5.6-sol',\n  reasoning_level: 'xhigh',\n  fable_model_identifiers: Object.freeze(['fable-legal-reviewer']),\n  fable_reasoning_level: 'provider_default',\n  prompt_digests: Object.freeze({\n    ARCHITECTURE:\n      'e8aa3359ecf632383562b66d61114b0556d8954527610498663642ab0b972297',\n    LEGAL_SEMANTIC:\n      '3f3d2e3b0e169a306307082cd3a0681e07164ca6dad73237794ccb78b0de4b6b',\n    QUERY_EFFICIENCY:\n      '0e5d489625e6cf9124951eb9df47672a668f7f535d3641a972aed5c363f23b06',\n    OPEN_WORLD:\n      '6d792fd85342d5cfa7b3863b32f9f6648afb91c2a27ed4e4b8b80519895d04d0',\n    RELEASE_PROPAGATION:\n      '57f06078844342428cef8a88f1ccfc731d7a389cc157fb5e4916c98e61e49f56',\n  }),\n});\n\nconst VALIDATOR_CONFIGURATION = Object.freeze({\n  schema_version: 'ProgrammeGateValidatorConfiguration/V1',\n  configuration_id: 'PROGRAMME_GATE_VALIDATOR_CONFIG/V1',\n  schema_registry_ids: Object.freeze([\n    'ContainedRouteMethodProbe/V1',\n    'BroadRouteActionObservation/V1',\n    'ProgrammeGateTestExecutionRecord/V1',\n    'MarketStatsContainmentAttestation/V1',\n    'BroadRouteContainmentAttestation/V1',\n    'ZayoTrafficDisposition/V1',\n    'ClaudeCredentialRotationReceipt/V1',\n    'SupabaseSecretDisposition/V1',\n    'SupabaseSecretNaApproval/V1',\n    'StagingSupabaseIsolationAttestation/V1',\n    'StagingVercelIsolationAttestation/V1',\n    'StagingAccessProtectionAttestation/V1',\n    'ProgrammeGateAcceptanceDefinition/V1',\n    'ProgrammeGateEvidenceEnvelope/V2',\n    'TrustedReviewControllerRecord/V1',\n    'ReviewerIndependenceAttestation/V1',\n    'ExactDigestReviewSetAttestation/V1',\n    'BenSpecificationApproval/V1',\n    'BenSpecificationApprovalEvidence/V1',\n    'ContractFreezeAttestation/V1',\n    'ContractFreezeAttestationIdentity/V1',\n    'ContractFreezeAuthorityManifest/V1',\n    'CanonicalContractBundleMember/V1',\n    'ContractFreezeGoverningSpecificationMember/V1',\n    'ContractFreezeAuthorityEvidence/V1',\n    'ContractBundleCompilationReceipt/V1',\n    'ContractDiffReviewAttestation/V1',\n    'ContractFreezeApproval/V1',\n    'ProgrammeGateStatusArtefact/V2',\n    'ProgrammeStatusPublicationHead/V1',\n    'ProgrammeGateValidatorConfiguration/V1',\n    'TrustedProgrammeGatePublicKeys/V1',\n    'ProgrammeGateReviewLaneRegistry/V1',\n  ]),\n  signature_algorithm: 'Ed25519',\n  invalid_or_missing_evidence_state: 'OPEN',\n  unknown_schema_effect: 'OPEN',\n  unknown_key_effect: 'OPEN',\n  invalid_signature_effect: 'OPEN',\n  unknown_or_extra_claim_effect: 'OPEN',\n  permitted_environments: Object.freeze(['STAGING', 'PRODUCTION']),\n});\n\nconst TRUSTED_PUBLIC_KEY_REGISTRY = Object.freeze({\n  schema_version: 'TrustedProgrammeGatePublicKeys/V1',\n  registry_state: 'ACTIVE',\n  keys: Object.freeze([\n    Object.freeze({\n      key_id: 'PROGRAMME_GATE_VALIDATOR_2026_07',\n      algorithm: 'Ed25519',\n      public_key_pem: [\n        '-----BEGIN PUBLIC KEY-----',\n        'MCowBQYDK2VwAyEAiKkmqx3weHtAqBiTr6j5zWGaXNMyO9rF55dT8cpOx20=',\n        '-----END PUBLIC KEY-----',\n        '',\n      ].join('\\n'),\n      permitted_roles: Object.freeze(['TEST_EXECUTION_ATTESTER', 'VALIDATOR']),\n      permitted_domains: Object.freeze([\n        'PROGRAMME_GATE_EVIDENCE/V2',\n        'PROGRAMME_GATE_TEST_EXECUTION/V1',\n        'PROGRAMME_GATE_REVIEWER_INDEPENDENCE/V1',\n        'PROGRAMME_GATE_CONTRACT_COMPILATION_RECEIPT/V1',\n      ]),\n      valid_from: '2026-07-28T07:08:01.000Z',\n      valid_until: '2026-10-26T07:08:01.000Z',\n      revoked_at: null,\n    }),\n    Object.freeze({\n      key_id: 'PROGRAMME_STATUS_PUBLISHER_2026_07',\n      algorithm: 'Ed25519',\n      public_key_pem: [\n        '-----BEGIN PUBLIC KEY-----',\n        'MCowBQYDK2VwAyEAn7kdajyQhTpRcOKsBdGK5ChSgXqGvcIAFkC0a+RlZw0=',\n        '-----END PUBLIC KEY-----',\n        '',\n      ].join('\\n'),\n      permitted_roles: Object.freeze(['STATUS_PUBLISHER', 'VALIDATOR']),\n      permitted_domains: Object.freeze([\n        'PROGRAMME_GATE_STATUS/V2',\n        'PROGRAMME_GATE_PUBLICATION_HEAD/V1',\n      ]),\n      valid_from: '2026-07-28T07:08:01.000Z',\n      valid_until: '2026-10-26T07:08:01.000Z',\n      revoked_at: null,\n    }),\n    Object.freeze({\n      key_id: 'PROGRAMME_GATE_REVIEW_CONTROLLER_2026_07',\n      algorithm: 'Ed25519',\n      public_key_pem: [\n        '-----BEGIN PUBLIC KEY-----',\n        'MCowBQYDK2VwAyEAjDjroH2I2mViDwiXI3AjoogNKXL2P2hVEBmM8ArLWio=',\n        '-----END PUBLIC KEY-----',\n        '',\n      ].join('\\n'),\n      permitted_roles: Object.freeze(['REVIEW_CONTROLLER']),\n      permitted_domains: Object.freeze([\n        'PROGRAMME_GATE_REVIEW_CONTROLLER_RECORD/V1',\n        'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW/V1',\n      ]),\n      valid_from: '2026-07-28T07:08:01.000Z',\n      valid_until: '2026-10-26T07:08:01.000Z',\n      revoked_at: null,\n    }),\n    Object.freeze({\n      key_id: 'PROGRAMME_GATE_BEN_APPROVER_2026_07',\n      algorithm: 'Ed25519',\n      public_key_pem: [\n        '-----BEGIN PUBLIC KEY-----',\n        'MCowBQYDK2VwAyEAhbHlf10h8sqMSAvxPlB9DMxL6h3A9zryaMM/Atgy4t8=',\n        '-----END PUBLIC KEY-----',\n        '',\n      ].join('\\n'),\n      permitted_roles: Object.freeze(['BEN_APPROVER']),\n      permitted_domains: Object.freeze([\n        'PROGRAMME_GATE_BEN_APPROVAL/V1',\n        'PROGRAMME_GATE_CONTRACT_FREEZE_APPROVAL/V1',\n      ]),\n      valid_from: '2026-07-28T07:08:01.000Z',\n      valid_until: '2026-10-26T07:08:01.000Z',\n      revoked_at: null,\n    }),\n  ]),\n});\n\nconst BOOTSTRAP_ACCEPTANCE_INPUTS = Object.freeze([\n  ['G0_MARKET_STATS_CONTAINED', 'route-disabled-code-test-live-response/v1', 'MarketStatsContainmentAttestation',\n    ['feature_gate_off', 'live_route_zero_corpus_reads', 'containment_test_pass'], ['P0-ROUTE-01']],\n  ['G0_BROAD_CORPUS_ROUTES_CONTAINED', 'broad-route-inventory-and-containment/v1', 'BroadRouteContainmentAttestation',\n    ['source_built_and_runtime_route_inventories_equal', 'every_broad_route_contained', 'zero_broad_node_fallback'], ['P0-ROUTE-01']],\n  ['G0_ZAYO_DISPOSITION', 'non-secret-owner-purpose-disposition/v1', 'ZayoTrafficDisposition',\n    ['owner_and_purpose_recorded_without_secret', 'recognised_or_rotation_required'], ['GATE-01']],\n  ['G0_CLAUDE_CREDENTIAL_ROTATION', 'non-secret-rotation-completion/v1', 'ClaudeCredentialRotationReceipt',\n    ['compromised_credentials_revoked', 'replacement_activation_verified', 'no_secret_in_evidence'], ['GATE-01']],\n  ['G0_SUPABASE_SECRET_DISPOSITION', 'non-secret-rotation-or-approved-na/v1', 'SupabaseSecretDisposition',\n    ['rotation_verified_or_recognised_traffic_na_with_ben_approval', 'no_secret_in_evidence'], ['GATE-01']],\n  ['G0_STAGING_SUPABASE_ISOLATED', 'staging-project-credential-isolation/v1', 'StagingSupabaseIsolationAttestation',\n    ['distinct_project_and_credentials', 'production_dml_denied', 'snapshot_restore_only'], ['DEPLOY-CUTOVER-01']],\n  ['G0_STAGING_VERCEL_ISOLATED', 'preview-project-credential-isolation/v1', 'StagingVercelIsolationAttestation',\n    ['branch_preview_uses_staging_only_credentials', 'production_alias_unchanged'], ['DEPLOY-CUTOVER-01']],\n  ['G0_STAGING_ACCESS_PROTECTED', 'default-deny-preview-access-test/v1', 'StagingAccessProtectionAttestation',\n    [\n      'complete_preview_route_action_inventory',\n      'unauthenticated_access_denied_before_and_after_restore',\n      'authenticated_non_admin_privileged_actions_denied',\n      'writer_ingest_correction_export_import_promotion_and_cutover_actions_disabled',\n      'authorised_read_only_test_access_pass',\n    ], ['GATE-01', 'PREVIEW-AUTH-01']],\n  ['G0_EXACT_DIGEST_REVIEW_SET', 'five-lane-provider-attested-exact-specification-root-review-set/v3', 'ExactDigestReviewSetAttestation',\n    ['five_named_lanes_pass_same_root', 'eligible_legal_reviewer', 'reviewer_independence_recomputed', 'root_unchanged_before_and_after'], ['GATE-01', 'REVIEW-CONTEXT-01']],\n  ['G0_BEN_SPEC_APPROVAL', 'ben-approved-reviewed-specification-root/v3', 'BenSpecificationApproval',\n    ['approved_root_equals_passing_review_root', 'ben_identity_and_signature_valid', 'approval_unconditional'], ['GATE-01']],\n  ['P1_CONTRACT_FREEZE_ATTESTED', 'exact-contract-freeze-attestation-and-status-generation/v7', 'ContractFreezeAttestation',\n    ['bundle_compiles', 'semantic_and_identity_diff_reviewed', 'freeze_gate_approved', 'status_generation_matches'], ['CONTRACT-01']],\n]);\n\nconst ACCEPTANCE_DEFINITION_DESCRIPTORS = Object.freeze(BOOTSTRAP_ACCEPTANCE_INPUTS.map(([\n  gateId,\n  evidenceContract,\n  evidenceObjectType,\n  orderedClaimKeys,\n  requiredAdversarialTests,\n]) => Object.freeze({\n  descriptor_version: 'ProgrammeGateAcceptanceDefinitionDescriptor/V1',\n  activation_state: [\n    'G0_MARKET_STATS_CONTAINED',\n    'G0_BROAD_CORPUS_ROUTES_CONTAINED',\n    'G0_ZAYO_DISPOSITION',\n    'G0_CLAUDE_CREDENTIAL_ROTATION',\n    'G0_SUPABASE_SECRET_DISPOSITION',\n    'G0_STAGING_SUPABASE_ISOLATED',\n    'G0_STAGING_VERCEL_ISOLATED',\n    'G0_STAGING_ACCESS_PROTECTED',\n    'G0_EXACT_DIGEST_REVIEW_SET',\n    'G0_BEN_SPEC_APPROVAL',\n    'P1_CONTRACT_FREEZE_ATTESTED',\n  ].includes(gateId)\n    ? 'ACTIVE'\n    : 'BLOCKED_PENDING_EXECUTABLE_BINDINGS',\n  gate_id: gateId,\n  evidence_contract: evidenceContract,\n  evidence_object_type: evidenceObjectType,\n  ordered_claim_keys: Object.freeze([...orderedClaimKeys]),\n  required_adversarial_tests: Object.freeze([...requiredAdversarialTests]),\n})));\n\nfunction acceptanceDescriptorForContract(evidenceContract) {\n  const matches = ACCEPTANCE_DEFINITION_DESCRIPTORS.filter(\n    (entry) => entry.evidence_contract === evidenceContract,\n  );\n  if (matches.length !== 1) {\n    throw new Error(`unknown or ambiguous G0 evidence contract: ${evidenceContract}`);\n  }\n  return matches[0];\n}\n\nconst REGISTRY_DIGESTS = Object.freeze({\n  schema_registry: domainDigest(\n    SCHEMA_REGISTRY_DOMAIN,\n    VALIDATOR_CONFIGURATION.schema_registry_ids.map((schemaId) => schemaFor(schemaId)),\n  ),\n  validator_configuration: domainDigest(\n    VALIDATOR_CONFIGURATION_DOMAIN,\n    VALIDATOR_CONFIGURATION,\n  ),\n  trusted_public_keys: domainDigest(\n    TRUSTED_PUBLIC_KEY_REGISTRY_DOMAIN,\n    TRUSTED_PUBLIC_KEY_REGISTRY,\n  ),\n  review_lanes: domainDigest(REVIEW_LANE_REGISTRY_DOMAIN, REVIEW_LANE_REGISTRY),\n  acceptance_definition_descriptors: domainDigest(\n    ACCEPTANCE_DESCRIPTOR_SET_DOMAIN,\n    ACCEPTANCE_DEFINITION_DESCRIPTORS,\n  ),\n});\n\nmodule.exports = {\n  ACCEPTANCE_DEFINITION_DESCRIPTORS,\n  REGISTRY_DIGESTS,\n  REVIEW_CONTROLLER_POLICY,\n  REVIEWER_PROFILES,\n  REVIEW_LANES,\n  REVIEW_LANE_REGISTRY,\n  TRUSTED_PUBLIC_KEY_REGISTRY,\n  VALIDATOR_CONFIGURATION,\n  acceptanceDescriptorForContract,\n};\n"
     },
     {
       "path": "lib/programme-gates/review-artifact.js",
