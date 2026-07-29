@@ -212,7 +212,7 @@ function validateGateRegistry() {
     || independenceAllowlist?.validator_key_id
       !== 'PROGRAMME_GATE_VALIDATOR_2026_07'
     || independenceAllowlist?.validator_executable_digest
-      !== '9fe7158b182286636ead8d151394e3b5536375ef4d06442dfe6abbe2b1ccf077'
+      !== 'ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231'
     || independenceAllowlist?.validator_configuration_digest
       !== 'cf81cbe11a55801efdbd7eab3376fa61f83823e3bfa1fe51e0decd98a00abd02') {
     fail('Frozen review controller, runtime, prompt or validator allowlist changed');
@@ -361,7 +361,7 @@ function validateGateRegistry() {
     PROGRAMME_GATE_BEN_APPROVER_2026_07: '2baac1c454dfb918097f2816fc9a230eb93139f735db35b9ed64d0e6846b4c17',
   };
   if (reviewer.review_controller_trust_root_set !== 'trusted-review-controller-keys/2026-07-frozen-v1'
-    || frozenTrust?.registry_source_sha256 !== 'd6efe4b49c56c58f385a01c3b8a9f7bd896e8b0934ffb31363d265c472aebed3'
+    || frozenTrust?.registry_source_sha256 !== 'f8e032dd770d5004711af3481f5933a1f8c763470159dc39719a1dc7582d6605'
     || sha256(read('lib/programme-gates/registry.js')) !== frozenTrust?.registry_source_sha256
     || JSON.stringify(frozenTrust?.keys) !== JSON.stringify(expectedTrustKeys)
     || frozenTrust?.unknown_replacement_or_post_review_key_effect !== 'OPEN') {
@@ -440,7 +440,7 @@ function validateGateRegistry() {
     || compiledRegistry?.source_sha256
       !== sha256(read('docs/codex-program/bootstrap-acceptance-source.json'))
     || compiledRegistry?.closed_validator_executable_set_digest
-      !== '9fe7158b182286636ead8d151394e3b5536375ef4d06442dfe6abbe2b1ccf077'
+      !== 'ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231'
     || compiledRegistry?.authority
       !== 'ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE'
     || compiledRegistry?.exact_active_definition_count !== 11
@@ -467,20 +467,20 @@ function validateGateRegistry() {
     fail('Gate acceptance authority tiers are incomplete or overlapping');
   }
   const mandatoryTests = registry.mandatory_adversarial_test_binding;
-  if (mandatoryTests?.expected_identifier_count !== 286
+  if (mandatoryTests?.expected_identifier_count !== 289
     || mandatoryTests?.executable_registry_source
       !== 'lib/programme-gates/test-executable-registry.js'
     || mandatoryTests?.fail_closed_unimplemented_executable
       !== 'scripts/run-unimplemented-adversarial-test.mjs'
-    || mandatoryTests?.expected_identifier_set_sha256 !== 'e4ad6ea4d87db62d405f954007067f7eca87c32511c0aef97a5b258a5d3a87ed'
+    || mandatoryTests?.expected_identifier_set_sha256 !== 'a03e2ac797ce941f1b04f82b30be78eb183ab5f26bf24c46b34046eef62b16a8'
     || mandatoryTests?.enforcement_gate !== 'P9_SCOPE_EXACT'
     || mandatoryTests?.pre_cutover_requirement !== 'EVERY_MEMBER_TERMINAL_PASS'
     || mandatoryTests?.executable_mapping_totality
       !== 'EVERY_IDENTIFIER_HAS_ONE_FROZEN_EXECUTABLE_DIGEST_AND_UNIMPLEMENTED_HANDLERS_CANNOT_EXIT_ZERO'
     || mandatoryTests?.missing_extra_duplicate_or_unbound_member_effect !== 'OPEN'
-    || MANDATORY_ADVERSARIAL_TEST_IDS.length !== 286
-    || Object.keys(TEST_EXECUTABLE_FILES).length !== 286
-    || Object.keys(TEST_EXECUTABLE_DIGESTS).length !== 286
+    || MANDATORY_ADVERSARIAL_TEST_IDS.length !== 289
+    || Object.keys(TEST_EXECUTABLE_FILES).length !== 289
+    || Object.keys(TEST_EXECUTABLE_DIGESTS).length !== 289
     || MANDATORY_ADVERSARIAL_TEST_IDS.some((testId) => (
       !Array.isArray(TEST_EXECUTABLE_FILES[testId])
       || !/^[a-f0-9]{64}$/.test(TEST_EXECUTABLE_DIGESTS[testId])
@@ -643,12 +643,12 @@ function validateAdversarialTests() {
     [...read(filePath).toString('utf8').matchAll(definition)].map((match) => ({ filePath, id: match[1] }))
   ));
   const ids = rows.map((row) => row.id);
-  if (ids.length !== 286) fail(`Expected 286 adversarial tests, found ${ids.length}`);
+  if (ids.length !== 289) fail(`Expected 289 adversarial tests, found ${ids.length}`);
   assertUnique(ids, 'adversarial test ID');
   if (rows.some((row) => row.filePath !== 'docs/codex-program/adversarial-tests.md')) {
     fail('Adversarial test definition outside authoritative file');
   }
-  if (sha256(`${ids.join('\n')}\n`) !== 'e4ad6ea4d87db62d405f954007067f7eca87c32511c0aef97a5b258a5d3a87ed') {
+  if (sha256(`${ids.join('\n')}\n`) !== 'a03e2ac797ce941f1b04f82b30be78eb183ab5f26bf24c46b34046eef62b16a8') {
     fail('Current adversarial test ID list changed');
   }
   const addedIds = new Set([
@@ -662,6 +662,9 @@ function validateAdversarialTests() {
     'DEAL-IDENTITY-AUTHORITY-01',
     'RESIDUAL-IMPACT-PUBLICATION-01',
     'CLAIM-ONLY-IMPACT-CLEARANCE-01',
+    'DEPLOYMENT-PARITY-FRESHNESS-01',
+    'ONGOING-READINESS-AUTHORITY-01',
+    'POST-ATTESTATION-ABANDONMENT-01',
   ]);
   const baselineIds = ids.filter((id) => !addedIds.has(id));
   if (sha256(`${baselineIds.join('\n')}\n`) !== 'c4d52483beb08c1feacac9222e4ab24b7156173dea8c2e6599fe3c11d575fe1c') {

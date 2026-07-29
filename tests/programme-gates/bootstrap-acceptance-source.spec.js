@@ -123,6 +123,7 @@ test('P1 compiles from the bootstrap source contract and enumerates its closed w
   assert.deepEqual(
     members.map((member) => member.member_type),
     [
+      'ContractFreezeAttestationIdentity',
       'ContractFreezeAuthorityManifest',
       'ContractBundleCompilationReceipt',
       'ContractDiffReviewAttestation',

@@ -51,10 +51,10 @@ test('gate registry is strict YAML 1.2 and bootstrap predicates use EQUALS', () 
   )));
 });
 
-test('all 286 adversarial IDs have an exact executable mapping and placeholders fail closed', () => {
-  assert.equal(MANDATORY_ADVERSARIAL_TEST_IDS.length, 286);
-  assert.equal(Object.keys(TEST_EXECUTABLE_FILES).length, 286);
-  assert.equal(Object.keys(TEST_EXECUTABLE_DIGESTS).length, 286);
+test('all 289 adversarial IDs have an exact executable mapping and placeholders fail closed', () => {
+  assert.equal(MANDATORY_ADVERSARIAL_TEST_IDS.length, 289);
+  assert.equal(Object.keys(TEST_EXECUTABLE_FILES).length, 289);
+  assert.equal(Object.keys(TEST_EXECUTABLE_DIGESTS).length, 289);
   for (const testId of MANDATORY_ADVERSARIAL_TEST_IDS) {
     const members = TEST_EXECUTABLE_FILES[testId].map((file) => {
       const bytes = fs.readFileSync(path.join(ROOT, file));

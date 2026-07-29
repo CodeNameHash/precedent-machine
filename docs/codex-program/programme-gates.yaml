@@ -66,8 +66,8 @@ programme_gate_registry:
       missing_or_post_review_selected_member_effect: OPEN
     bootstrap_compiled_registry_binding:
       source_path: docs/codex-program/bootstrap-acceptance-source.json
-      source_sha256: be752ba604654c225523ce188a47021c7a17bee32b72fd5d4aa2b47efaf8aff4
-      closed_validator_executable_set_digest: 9fe7158b182286636ead8d151394e3b5536375ef4d06442dfe6abbe2b1ccf077
+      source_sha256: 51d19c3c450b001480ef7d69c440a8d847f02e92a26f3acf513781aa67a24d49
+      closed_validator_executable_set_digest: ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231
       authority: ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE
       exact_active_definition_count: 11
       exact_genesis_gate_count: 10
@@ -152,8 +152,8 @@ programme_gate_registry:
     executable_registry_source: lib/programme-gates/test-executable-registry.js
     fail_closed_unimplemented_executable: scripts/run-unimplemented-adversarial-test.mjs
     enumeration_rule: EVERY_BACKTICKED_LIST_ITEM_IDENTIFIER_IN_SOURCE_ORDER
-    expected_identifier_count: 286
-    expected_identifier_set_sha256: e4ad6ea4d87db62d405f954007067f7eca87c32511c0aef97a5b258a5d3a87ed
+    expected_identifier_count: 289
+    expected_identifier_set_sha256: a03e2ac797ce941f1b04f82b30be78eb183ab5f26bf24c46b34046eef62b16a8
     authoritative_root: DOMAIN_SEPARATED_ROOT_OVER_ORDERED_IDENTIFIER_TEST_DEFINITION_AND_EXECUTABLE_DIGEST_TUPLES
     enforcement_gate: P9_SCOPE_EXACT
     pre_cutover_requirement: EVERY_MEMBER_TERMINAL_PASS
@@ -195,11 +195,11 @@ programme_gate_registry:
       missing_extra_or_digest_mismatched_prompt_effect: INELIGIBLE
     frozen_independence_validator_allowlist:
       validator_key_id: PROGRAMME_GATE_VALIDATOR_2026_07
-      validator_executable_digest: 9fe7158b182286636ead8d151394e3b5536375ef4d06442dfe6abbe2b1ccf077
+      validator_executable_digest: ff6a6e18446cac0a3cdfc81765fca98e8b71ab190671d5281d3f788cab22d231
       validator_configuration_digest: cf81cbe11a55801efdbd7eab3376fa61f83823e3bfa1fe51e0decd98a00abd02
     frozen_trust_root_set:
       registry_schema: programme-gate-trusted-public-keys/v1
-      registry_source_sha256: d6efe4b49c56c58f385a01c3b8a9f7bd896e8b0934ffb31363d265c472aebed3
+      registry_source_sha256: f8e032dd770d5004711af3481f5933a1f8c763470159dc39719a1dc7582d6605
       keys:
         PROGRAMME_GATE_VALIDATOR_2026_07: 5b028d01aaa4f077c6f2f28ef8075195330eff00c2f81061fad8622b761de566
         PROGRAMME_STATUS_PUBLISHER_2026_07: d7f562af345fcb04a78f26c87b3e3f19b1cad6c8627ccc612396a4217d8a02c1
