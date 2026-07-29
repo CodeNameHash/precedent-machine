@@ -423,7 +423,7 @@ function validateGateRegistry() {
     || compiledRegistry?.source_sha256
       !== sha256(read('docs/codex-program/bootstrap-acceptance-source.json'))
     || compiledRegistry?.closed_validator_executable_set_digest
-      !== 'c15bc336938092ecea534018e6c80da15d41e05d1e55facc259661ddd5171cae'
+      !== 'b83acdd3c3dfd1004afb4120038be7ab6247b7e5388a0871fad0659ca82a6e5d'
     || compiledRegistry?.authority
       !== 'ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE'
     || compiledRegistry?.exact_active_definition_count !== 11

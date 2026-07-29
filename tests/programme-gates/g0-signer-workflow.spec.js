@@ -10,8 +10,12 @@ const WORKFLOW_PATH = path.resolve(
   '.github/workflows/programme-gate-sign-g0.yml',
 );
 const SCRIPT_PATH = path.resolve(ROOT, 'scripts/sign-g0-evidence.mjs');
+const EXECUTOR_PATH = path.resolve(
+  ROOT,
+  'lib/programme-gates/publication-executor.js',
+);
 
-test('the G0 signer workflow is manual, main-only and read-only', () => {
+test('the G0 signer workflow is manual, main-only and can update only through its signer', () => {
   const workflow = YAML.parse(fs.readFileSync(WORKFLOW_PATH, 'utf8'));
   assert.deepEqual(Object.keys(workflow.on), ['workflow_dispatch']);
   assert.equal(workflow.jobs.sign.if, "github.ref == 'refs/heads/main'");
@@ -22,7 +26,7 @@ test('the G0 signer workflow is manual, main-only and read-only', () => {
     Object.keys(workflow.on.workflow_dispatch.inputs).sort(),
     ['deployment_id', 'expected_commit', 'preview_deployment_id', 'review_run_id'],
   );
-  assert.deepEqual(workflow.permissions, { actions: 'read', contents: 'read' });
+  assert.deepEqual(workflow.permissions, { actions: 'read', contents: 'write' });
   assert.equal(
     workflow.jobs.sign.steps.find(
       (step) => step.name === 'Download exact signed cold-review bundle',
@@ -40,12 +44,16 @@ test('the protected credentials exist only in the combined in-memory signer step
   const benApproverReferences = workflowSource.match(
     /secrets\.PROGRAMME_GATE_BEN_APPROVER_ED25519_PRIVATE_KEY_PEM/g,
   ) || [];
+  const publisherReferences = workflowSource.match(
+    /secrets\.PROGRAMME_STATUS_PUBLISHER_ED25519_PRIVATE_KEY_PEM/g,
+  ) || [];
   const vercelReferences = workflowSource.match(/secrets\.VERCEL_TOKEN/g) || [];
   const supabaseReferences = workflowSource.match(
     /secrets\.PROGRAMME_GATE_STAGING_SUPABASE_SECRET_KEY/g,
   ) || [];
   assert.equal(validatorReferences.length, 1);
   assert.equal(benApproverReferences.length, 1);
+  assert.equal(publisherReferences.length, 1);
   assert.equal(vercelReferences.length, 1);
   assert.equal(supabaseReferences.length, 1);
   assert.doesNotMatch(
@@ -71,6 +79,7 @@ test('the protected credentials exist only in the combined in-memory signer step
 
 test('the signer excludes both protected credentials from every child process and payload', () => {
   const script = fs.readFileSync(SCRIPT_PATH, 'utf8');
+  const executor = fs.readFileSync(EXECUTOR_PATH, 'utf8');
   assert.match(
     script,
     /delete environment\.PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM/,
@@ -78,6 +87,10 @@ test('the signer excludes both protected credentials from every child process an
   assert.match(
     script,
     /delete environment\.PROGRAMME_GATE_BEN_APPROVER_ED25519_PRIVATE_KEY_PEM/,
+  );
+  assert.match(
+    script,
+    /delete environment\.PROGRAMME_STATUS_PUBLISHER_ED25519_PRIVATE_KEY_PEM/,
   );
   assert.match(script, /delete environment\.VERCEL_TOKEN/);
   assert.match(
@@ -88,6 +101,15 @@ test('the signer excludes both protected credentials from every child process an
   assert.match(script, /process\.stdout\.write\(`\$\{JSON\.stringify\(output\)\}\\n`\)/);
   assert.doesNotMatch(
     script,
-    /private[_A-Za-z]*:\s*privateKey|pem:\s*pem|vercel_token|vercelToken:\s*token/,
+    /private[_A-Za-z]*:\s*privateKey|pem:\s*pem|vercel_token|vercelToken:\s*token|publisherPrivateKey:/,
   );
+  for (const secret of [
+    'PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM',
+    'PROGRAMME_GATE_BEN_APPROVER_ED25519_PRIVATE_KEY_PEM',
+    'PROGRAMME_STATUS_PUBLISHER_ED25519_PRIVATE_KEY_PEM',
+    'PROGRAMME_GATE_STAGING_SUPABASE_SECRET_KEY',
+    'VERCEL_TOKEN',
+  ]) {
+    assert.match(executor, new RegExp(`delete environment\\.${secret}`));
+  }
 });

@@ -9,7 +9,11 @@ import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
 const YAML = require('yaml');
-const { domainDigest } = require('../lib/programme-gates/bytes');
+const {
+  canonicalBytes,
+  domainDigest,
+  signatureBytes,
+} = require('../lib/programme-gates/bytes');
 const {
   collectContainmentEvidence,
 } = require('../lib/programme-gates/containment-collector');
@@ -30,6 +34,7 @@ const {
   createContainmentStatusReadinessAuthority,
 } = require('../lib/programme-gates/containment-status-readiness');
 const {
+  BOOTSTRAP_NONCE,
   createGoverningRegistryAuthority,
 } = require('../lib/programme-gates/governing-registry');
 const {
@@ -81,8 +86,25 @@ const {
 } = require('../lib/programme-gates/test-executable-registry');
 const {
   buildG0StatusReadiness,
+  createG0SignedStatusAuthority,
   createG0StatusReadinessAuthority,
 } = require('../lib/programme-gates/g0-status-readiness');
+const {
+  STATUS_ARTEFACT_ID_DOMAIN,
+  STATUS_ARTEFACT_PAYLOAD_DOMAIN,
+  createProgrammePublicationAuthority,
+  gitBlobObjectId,
+  planProgrammeStatusPublication,
+} = require('../lib/programme-gates/publication');
+const {
+  executeProgrammeStatusPublication,
+} = require('../lib/programme-gates/publication-executor');
+const { validateSchema } = require('../lib/programme-gates/schema-registry');
+const { verifySignature } = require('../lib/programme-gates/signatures');
+const {
+  attachProgrammeGateStatusSignature,
+  unsignedProgrammeGateStatus,
+} = require('../lib/programme-gates/status');
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SOURCE_PATH = path.resolve(
@@ -95,6 +117,7 @@ const PREVIEW_AUTH_TEST_FILES = testExecutableFiles('PREVIEW-AUTH-01');
 const REVIEW_CONTEXT_TEST_FILES = testExecutableFiles('REVIEW-CONTEXT-01');
 const VALIDATOR_KEY_ID = 'PROGRAMME_GATE_VALIDATOR_2026_07';
 const BEN_APPROVER_KEY_ID = 'PROGRAMME_GATE_BEN_APPROVER_2026_07';
+const STATUS_PUBLISHER_KEY_ID = 'PROGRAMME_STATUS_PUBLISHER_2026_07';
 const PRODUCTION_ORIGIN = 'https://deal-corpus.vercel.app';
 const PRODUCTION_ALIAS = 'deal-corpus.vercel.app';
 const VERCEL_API_ORIGIN = 'https://api.vercel.com';
@@ -123,6 +146,7 @@ function childEnvironment(overrides = {}) {
   const environment = { ...process.env, ...overrides };
   delete environment.PROGRAMME_GATE_VALIDATOR_ED25519_PRIVATE_KEY_PEM;
   delete environment.PROGRAMME_GATE_BEN_APPROVER_ED25519_PRIVATE_KEY_PEM;
+  delete environment.PROGRAMME_STATUS_PUBLISHER_ED25519_PRIVATE_KEY_PEM;
   delete environment.PROGRAMME_GATE_STAGING_SUPABASE_SECRET_KEY;
   delete environment.VERCEL_TOKEN;
   return environment;
@@ -467,6 +491,13 @@ function privateBenApproverKey() {
   );
 }
 
+function privateStatusPublisherKey() {
+  return protectedPrivateKey(
+    'PROGRAMME_STATUS_PUBLISHER_ED25519_PRIVATE_KEY_PEM',
+    STATUS_PUBLISHER_KEY_ID,
+  );
+}
+
 function signatureFor(request, privateKey) {
   return crypto.sign(
     null,
@@ -600,6 +631,7 @@ async function main() {
   });
   const privateKey = privateValidatorKey();
   const benPrivateKey = privateBenApproverKey();
+  const publisherPrivateKey = privateStatusPublisherKey();
 
   const reviewVerificationTime = new Date().toISOString();
   const reviewSet = buildReviewSetInput({
@@ -770,17 +802,18 @@ async function main() {
     || containmentStatusReadiness.status_publication_attempted !== false) {
     throw new Error('containment evidence did not produce exact unsigned status readiness');
   }
+  const g0ReadinessAuthority = createG0StatusReadinessAuthority({
+    specificationRoot: specificationDigest,
+    codeCommit,
+    environment,
+    keyRegistry: TRUSTED_PUBLIC_KEY_REGISTRY,
+    validatorExecutableDigest,
+    validatorKeyId: VALIDATOR_KEY_ID,
+    verificationTime: reviewObservedAt,
+    reviewSigningAuthority,
+  });
   const g0StatusReadiness = buildG0StatusReadiness({
-    authority: createG0StatusReadinessAuthority({
-      specificationRoot: specificationDigest,
-      codeCommit,
-      environment,
-      keyRegistry: TRUSTED_PUBLIC_KEY_REGISTRY,
-      validatorExecutableDigest,
-      validatorKeyId: VALIDATOR_KEY_ID,
-      verificationTime: reviewObservedAt,
-      reviewSigningAuthority,
-    }),
+    authority: g0ReadinessAuthority,
     containment: {
       bundle: containmentBundle,
       signedPreflights: containmentPreflights,
@@ -815,6 +848,107 @@ async function main() {
     throw new Error('ten-gate evidence did not produce exact unsigned G0 status readiness');
   }
 
+  const signedStatusAuthority = createG0SignedStatusAuthority({
+    authority: g0ReadinessAuthority,
+    verifyStatusSignature(status) {
+      return verifySignature({
+        keyRegistry: TRUSTED_PUBLIC_KEY_REGISTRY,
+        keyId: STATUS_PUBLISHER_KEY_ID,
+        role: 'STATUS_PUBLISHER',
+        domain: 'PROGRAMME_GATE_STATUS/V2',
+        payload: unsignedProgrammeGateStatus(status),
+        signature: status.signature,
+        at: reviewObservedAt,
+      });
+    },
+  });
+  const statusSignature = signatureForBytes(
+    signatureBytes({
+      domain: 'PROGRAMME_GATE_STATUS/V2',
+      role: 'STATUS_PUBLISHER',
+      payload: g0StatusReadiness.unsigned_status,
+    }),
+    publisherPrivateKey,
+  );
+  const signedStatus = attachProgrammeGateStatusSignature({
+    authority: signedStatusAuthority,
+    unsignedStatus: g0StatusReadiness.unsigned_status,
+    signature: statusSignature,
+  });
+  const statusArtefactId = domainDigest(
+    STATUS_ARTEFACT_ID_DOMAIN,
+    signedStatus,
+  );
+  const unsignedPublicationHead = {
+    schema_version: 'ProgrammeStatusPublicationHead/V1',
+    generation: signedStatus.generation,
+    predecessor_git_object_id: 'NONE',
+    status_git_object_id: gitBlobObjectId(signedStatus, canonicalBytes),
+    status_artefact_id: statusArtefactId,
+    status_artefact_payload_digest: domainDigest(
+      STATUS_ARTEFACT_PAYLOAD_DOMAIN,
+      signedStatus,
+    ),
+    publisher_key_id: STATUS_PUBLISHER_KEY_ID,
+    signature_algorithm: 'Ed25519',
+  };
+  const publicationHead = {
+    ...unsignedPublicationHead,
+    signature: signatureForBytes(
+      signatureBytes({
+        domain: 'PROGRAMME_GATE_PUBLICATION_HEAD/V1',
+        role: 'STATUS_PUBLISHER',
+        payload: unsignedPublicationHead,
+      }),
+      publisherPrivateKey,
+    ),
+  };
+  validateSchema('ProgrammeStatusPublicationHead/V1', publicationHead);
+  const publicationAuthority = createProgrammePublicationAuthority({
+    statusAuthority: signedStatusAuthority,
+    canonicalBytes,
+    domainDigest,
+    validatePublicationHeadSchema: validateSchema,
+    verifyPublicationHeadSignature(head) {
+      const { signature, ...unsignedHead } = head;
+      return verifySignature({
+        keyRegistry: TRUSTED_PUBLIC_KEY_REGISTRY,
+        keyId: STATUS_PUBLISHER_KEY_ID,
+        role: 'STATUS_PUBLISHER',
+        domain: 'PROGRAMME_GATE_PUBLICATION_HEAD/V1',
+        payload: unsignedHead,
+        signature,
+        at: reviewObservedAt,
+      });
+    },
+  });
+  const publicationPlan = planProgrammeStatusPublication({
+    authority: publicationAuthority,
+    status: signedStatus,
+    evidenceCandidates: g0StatusReadiness.evidence_candidates,
+    publicationHead,
+    currentRef: {
+      ref: 'refs/heads/programme-status-publication-head',
+      state: 'ABSENT',
+      observed_git_object_id: 'NONE',
+      status_artefact_id: 'NONE',
+      generation: 0,
+    },
+    bootstrapNonce: BOOTSTRAP_NONCE,
+    commitIdentity: {
+      author_name: 'Programme Gate Publisher',
+      author_email: 'bengoodchild@gmail.com',
+      timestamp: String(Math.floor(Date.parse(reviewObservedAt) / 1000)),
+      timezone: '+0000',
+      message: 'Publish programme gate status generation 1',
+    },
+  });
+  const publicationReceipt = executeProgrammeStatusPublication({
+    plan: publicationPlan,
+    repositoryRoot: ROOT,
+    remote: 'origin',
+  });
+
   const output = {
     schema_version: 'ProgrammeGateG0SignedEvidenceBundle/V2',
     specification_root: specificationDigest,
@@ -837,7 +971,16 @@ async function main() {
       status_publication_attempted:
         containmentStatusReadiness.status_publication_attempted,
     },
-    g0_status_readiness: g0StatusReadiness,
+    g0_status_readiness: {
+      ...g0StatusReadiness,
+      status_signature: signedStatus.signature,
+      formal_status_state: 'PASS',
+      bootstrap_nonce_consumed: true,
+      status_publication_attempted: true,
+    },
+    programme_gate_status_v2: signedStatus,
+    programme_status_publication_head: publicationHead,
+    programme_status_publication_receipt: publicationReceipt,
     evidence: [
       ...containmentEvidence,
       ...securityEvidence,
