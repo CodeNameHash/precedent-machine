@@ -215,7 +215,7 @@ export default function ProvisionDetail() {
           }),
         });
         const propData = await propResp.json();
-        if (propData.matches && propData.matches.length > 0) {
+        if (propResp.ok && propData.matches && propData.matches.length > 0) {
           setPropagateInfo(propData);
         }
       } catch {}

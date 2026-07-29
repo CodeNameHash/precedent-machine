@@ -1,0 +1,29 @@
+{
+  "phase": "WP-P1-TECHNICAL-RELATIONSHIP-EFFECTS-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-p1-technical-relationship-effects-v1.json",
+    "lib/canonical-v2/canonical-contract-input-compiler.js",
+    "lib/canonical-v2/canonical-contract-relationship-input-validator.js",
+    "lib/canonical-v2/canonical-contract-technical-relationship-validator.js",
+    "lib/schema/canonical/contract-v2/manifest.json",
+    "lib/schema/canonical/contract-v2/relationship-definitions/brings-down.v2.json",
+    "lib/schema/canonical/contract-v2/relationship-definitions/contained-in.v2.json",
+    "lib/schema/canonical/contract-v2/relationship-definitions/triggered-by.v2.json",
+    "lib/schema/canonical/contract-v2/relationship-effect-schemas/brings-down-effect.v1.json",
+    "lib/schema/canonical/contract-v2/relationship-effect-schemas/contained-in-effect.v1.json",
+    "lib/schema/canonical/contract-v2/relationship-effect-schemas/termination-fee-trigger-effect.v2.json",
+    "tests/canonical-v2-canonical-contract-relationship-input-validator.test.js",
+    "tests/canonical-v2-canonical-contract-source-tree.test.js",
+    "tests/canonical-v2-canonical-contract-technical-relationship-effects.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Authors three successor technical relationship/effect pairs while leaving EXCEPTED_BY unresolved and preserving incomplete-universe, no-bundle and no-P1 authority."
+}

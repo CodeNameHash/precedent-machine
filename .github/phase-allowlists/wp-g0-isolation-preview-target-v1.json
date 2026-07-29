@@ -1,0 +1,20 @@
+{
+  "phase": "WP-G0-ISOLATION-PREVIEW-TARGET-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-g0-isolation-preview-target-v1.json",
+    "lib/programme-gates/isolation-collector.js",
+    "tests/programme-gates/isolation-evidence.spec.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Aligns the Preview deployment assertion with Vercel deployment API semantics, where a Preview target is null and only production is named. Exact project, branch, commit and deployment identity checks remain mandatory. No signer, credential, status, corpus, database or product authority changes."
+}

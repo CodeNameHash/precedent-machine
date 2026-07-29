@@ -1,0 +1,20 @@
+{
+  "object_kind": "SERVING_EXACT_DETAIL_ACTION_DEFINITION",
+  "stable_id": "REVIEWED_SOURCE_SPECIFIC_OPEN_WORLD_EVIDENCE",
+  "schema_version": "SERVING_EXACT_DETAIL_ACTION_DEFINITION/V1",
+  "action_slot_key": "REVIEWED_SOURCE_SPECIFIC_OPEN_WORLD_EVIDENCE",
+  "action_version": 1,
+  "parent_kind": "REVIEWED_SOURCE_SPECIFIC_ROW",
+  "detail_kind": "OPEN_WORLD_EVIDENCE",
+  "selection_path_schema": "REVIEWED_SOURCE_SPECIFIC_OPEN_WORLD_EVIDENCE/V1",
+  "contextual_cardinality": "EXACTLY_ONE",
+  "comparator": "EVIDENCE_ORDINAL",
+  "duplicate_policy": "REJECT_NON_IDENTICAL_COLLAPSE_EXACT",
+  "maximum_references": 1,
+  "maximum_encoded_bytes": 16384,
+  "whole_document_permission": false,
+  "object_authorisation_predicate": "PARENT_SELECTED_OPEN_WORLD_EVIDENCE_ONLY",
+  "route": "INLINE_BATCH",
+  "response_schema": "SERVING_EXACT_DETAIL_OPEN_WORLD_EVIDENCE_RESPONSE/V1",
+  "projection_version": 1
+}

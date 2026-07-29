@@ -1,0 +1,20 @@
+{
+  "object_kind": "SERVING_EXACT_DETAIL_ACTION_DEFINITION",
+  "stable_id": "ACCURACY_STANDARD_CLAIM_EVIDENCE",
+  "schema_version": "SERVING_EXACT_DETAIL_ACTION_DEFINITION/V1",
+  "action_slot_key": "ACCURACY_STANDARD_CLAIM_EVIDENCE",
+  "action_version": 1,
+  "parent_kind": "RESULT_ROW",
+  "detail_kind": "CLAIM_EVIDENCE",
+  "selection_path_schema": "RESULT_COMPONENT_CLAIM_EVIDENCE/V1",
+  "contextual_cardinality": "EXACTLY_ONE",
+  "comparator": "COMPONENT_ORDINAL_THEN_EVIDENCE_ORDINAL",
+  "duplicate_policy": "REJECT_NON_IDENTICAL_COLLAPSE_EXACT",
+  "maximum_references": 1,
+  "maximum_encoded_bytes": 16384,
+  "whole_document_permission": false,
+  "object_authorisation_predicate": "PARENT_SELECTED_CLAIM_EVIDENCE_ONLY",
+  "route": "INLINE_BATCH",
+  "response_schema": "SERVING_EXACT_DETAIL_CLAIM_EVIDENCE_RESPONSE/V1",
+  "projection_version": 1
+}

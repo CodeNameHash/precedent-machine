@@ -48,7 +48,6 @@ import {
   useComparedDeals,
   useRowMarketStats,
   useSectionMarketStats,
-  useDealToMarket,
   dominantSectionCode,
   dealDisplayName,
   isCommercialField,
@@ -339,6 +338,7 @@ export default function ReviewPage() {
     [router.isReady, router.query.compare, dealId],
   );
   const marketMode = router.isReady && ['1', 'true'].includes(String(router.query.market || ''));
+  const legacyMarketStatsContained = true;
   // C (deal-to-market/compare robustness): each hook now returns its data
   // alongside a retry() -- see compareData.js's fetchJson timeout/retry
   // fix -- so a hung/degraded corpus-stats or compared-deal fetch surfaces
@@ -363,6 +363,7 @@ export default function ReviewPage() {
     [marketSections, dealId],
   );
   const typedMarketEnabled = marketMode
+    && !legacyMarketStatsContained
     && !CANONICAL_REVIEW_ENABLED
     && Boolean(reviewDeal)
     && marketRequest.specs.length > 0;
@@ -371,24 +372,17 @@ export default function ReviewPage() {
     marketRequest,
   );
   // The typed row contract is the primary market source. Let it finish before
-  // starting the legacy section summary, then let that finish before the
-  // DEAL_TO_MARKET off-market feed. These endpoints each read broad slices of
-  // the same corpus; mounting all three together can overwhelm a degraded data
-  // source and turn one failure into a page-wide partial result.
+  // starting the legacy section summary. Both endpoints read broad slices of
+  // the same corpus.
   const typedMarketSettled = !typedMarketEnabled
     || (rowMarketStats.attempted && !rowMarketStats.loading);
   const legacyMarketEnabled = marketMode
+    && !legacyMarketStatsContained
     && !CANONICAL_REVIEW_ENABLED
     && Boolean(reviewDeal)
     && typedMarketSettled;
   const sectionMarketStats = useSectionMarketStats(legacyMarketEnabled, dealId, sectionCodes);
   const marketStats = sectionMarketStats.bySection;
-  const legacyMarketSettled = !sectionCodes.some((section) => section.code)
-    || (sectionMarketStats.attempted && !sectionMarketStats.loading);
-  const dealToMarket = useDealToMarket(
-    legacyMarketEnabled && legacyMarketSettled,
-    dealId,
-  );
   // r19 (WP-A, "off-market feed"): the unified market column's per-row
   // off-market marker (coded: differs from the corpus mode; numeric:
   // outside p25-p75 — CompareColumn.jsx's isOffMarketRow) used to mark
@@ -419,9 +413,11 @@ export default function ReviewPage() {
     return out;
   }, [marketMode, sections, reviewDealForTables, marketStats]);
   const offMarketData = useMemo(() => ({
-    ...dealToMarket,
-    rows: [...(dealToMarket.rows || []), ...marketOffMarketRows],
-  }), [dealToMarket, marketOffMarketRows]);
+    rows: marketOffMarketRows,
+    loading: false,
+    error: null,
+    retry: null,
+  }), [marketOffMarketRows]);
   const canonicalReviewRows = useMemo(() => sections.flatMap((section) => (
     enumerateMarketSectionRows(section, reviewDealForTables).map(({ row, groupPath }) => (
       canonicalReviewIdentity(

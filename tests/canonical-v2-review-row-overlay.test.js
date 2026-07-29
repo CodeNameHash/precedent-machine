@@ -13,7 +13,8 @@ test('canonical Review mode disables every legacy market request path', () => {
   assert.equal((PAGE.match(/&& !CANONICAL_REVIEW_ENABLED/g) || []).length, 5);
   assert.match(PAGE, /const typedMarketEnabled = marketMode[\s\S]*&& !CANONICAL_REVIEW_ENABLED/);
   assert.match(PAGE, /const legacyMarketEnabled = marketMode[\s\S]*&& !CANONICAL_REVIEW_ENABLED/);
-  assert.match(PAGE, /useDealToMarket\(\s*legacyMarketEnabled && legacyMarketSettled/);
+  assert.doesNotMatch(PAGE, /useDealToMarket|\/api\/query\/run/);
+  assert.match(PAGE, /rows:\s*marketOffMarketRows/);
   assert.match(PAGE, /standalone=\{false\}/);
   assert.match(PAGE, /autoLoadAll/);
   assert.match(PAGE, /reloadKey=\{canonicalReloadKey\}/);

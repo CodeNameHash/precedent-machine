@@ -70,6 +70,7 @@ const SEL = 'w-full border border-[#E0E0E0] bg-white text-[10px] px-1.5 py-1 tex
 const INPUT = 'w-full border border-[#E0E0E0] bg-white text-[10px] px-1.5 py-1 text-[#1F1F1F] placeholder:text-[#B0B0B0]';
 
 const EDITOR_KEY_STORAGE = 'mtx_editor_key';
+const CORRECTION_SUBMISSION_CONTAINED = true;
 
 const WRONG_KINDS = [
   { key: '', label: 'Select…' },
@@ -138,7 +139,7 @@ function CorrectTab({ card, dealId }) {
   }, []);
 
   const claimOptions = useMemo(() => cardClaimOptions(card), [card]);
-  const canSubmit = kind && proposed.trim() && rationale.trim() && !submitting;
+  const canSubmit = !CORRECTION_SUBMISSION_CONTAINED && kind && proposed.trim() && rationale.trim() && !submitting;
 
   const submit = async () => {
     if (!canSubmit) return;
@@ -181,6 +182,11 @@ function CorrectTab({ card, dealId }) {
 
   return (
     <div className="px-3.5 py-4" style={{ fontFamily: 'var(--mtx-sans)' }} data-testid="correct-tab">
+      {CORRECTION_SUBMISSION_CONTAINED ? (
+        <div className={`${BODY} mb-3 border border-[#E0E0E0] bg-[#F7F7F7] p-2.5 text-[#666]`}>
+          Corrections are temporarily read-only while authenticated corpus writes are being rebuilt.
+        </div>
+      ) : null}
       <div className="mb-3">
         <div className={LAB}>What&apos;s wrong</div>
         <select className={SEL} value={kind} onChange={(e) => setKind(e.target.value)} aria-label="What's wrong">
@@ -1052,7 +1058,15 @@ function ClauseSidebarContent({ card, rowFocus = null, dealId, dealSector, onClo
       .then((version) => fetch(`/api/corpus-stats?${query}${version ? `&v=${encodeURIComponent(version)}` : ''}`, { signal: controller.signal }))
       .then(async (r) => {
         const payload = await r.json().catch(() => ({}));
-        if (!r.ok) throw new Error(payload.error || `HTTP ${r.status}`);
+        if (!r.ok) {
+          const message = typeof payload.error === 'string'
+            ? payload.error
+            : payload.error?.message || payload.message || `HTTP ${r.status}`;
+          const requestError = new Error(message);
+          requestError.code = payload.error?.code || payload.code || null;
+          requestError.status = r.status;
+          throw requestError;
+        }
         return payload;
       })
       .then((next) => {

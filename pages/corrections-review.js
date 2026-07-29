@@ -14,6 +14,7 @@ import { useViewMode } from '../components/ViewModeContext';
 import { Breadcrumbs, SkeletonCard, ErrorState } from '../components/UI';
 
 const EDITOR_KEY_STORAGE = 'mtx_editor_key';
+const CORRECTIONS_QUEUE_CONTAINED = true;
 
 function ageDays(createdAt) {
   if (!createdAt) return null;
@@ -55,6 +56,12 @@ export default function CorrectionsReviewPage() {
   }, []);
 
   const load = useCallback(() => {
+    if (CORRECTIONS_QUEUE_CONTAINED) {
+      setRows([]);
+      setLoading(false);
+      setError(new Error('The broad corrections queue is temporarily unavailable while its bounded serving projection is rebuilt.'));
+      return;
+    }
     setLoading(true);
     setError(null);
     fetch('/api/corrections?status=pending&order=asc&limit=500')

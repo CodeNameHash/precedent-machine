@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const { mockSupabase } = require('./helpers/mock-supabase');
 const { handleReviewAction } = require('../lib/corrections/review');
 
-process.env.EDITOR_KEYS = 'ben:sekrit1';
+const EDITOR = { name: 'ben' };
 
 function pendingRow(overrides = {}) {
   return {
@@ -21,12 +21,10 @@ function pendingRow(overrides = {}) {
   };
 }
 
-test('review requires a valid editor key for both approve and reject', async () => {
+test('review core requires a pre-resolved editor for both approve and reject', async () => {
   const sb = mockSupabase({ corrections: [pendingRow()] });
-  const noKey = await handleReviewAction(sb, { id: 'corr-1', action: 'approve' }, { editorKeyHeader: undefined });
+  const noKey = await handleReviewAction(sb, { id: 'corr-1', action: 'approve' });
   assert.equal(noKey.httpStatus, 403);
-  const wrongKey = await handleReviewAction(sb, { id: 'corr-1', action: 'approve' }, { editorKeyHeader: 'nope' });
-  assert.equal(wrongKey.httpStatus, 403);
 });
 
 test('approve with a mappable target runs the apply path: patches provisions AND flips the row to applied', async () => {
@@ -34,7 +32,7 @@ test('approve with a mappable target runs the apply path: patches provisions AND
     provisions: [{ id: 'prov-1', deal_id: 'deal-1', full_text: 'old text' }],
     corrections: [pendingRow()],
   });
-  const result = await handleReviewAction(sb, { id: 'corr-1', action: 'approve' }, { editorKeyHeader: 'sekrit1' });
+  const result = await handleReviewAction(sb, { id: 'corr-1', action: 'approve' }, { editor: EDITOR });
 
   assert.equal(result.httpStatus, 200);
   assert.equal(result.outcome, 'applied');
@@ -50,7 +48,7 @@ test('approve on a non-mappable (manual_review) proposal still marks applied/rev
     provisions: [],
     corrections: [pendingRow({ context: { target: { kind: 'other' }, proposed: 'free text note' }, correction_type: 'manual_review' })],
   });
-  const result = await handleReviewAction(sb, { id: 'corr-1', action: 'approve' }, { editorKeyHeader: 'sekrit1' });
+  const result = await handleReviewAction(sb, { id: 'corr-1', action: 'approve' }, { editor: EDITOR });
 
   assert.equal(result.outcome, 'applied');
   assert.equal(result.correction.reviewed_by, 'ben');
@@ -59,10 +57,10 @@ test('approve on a non-mappable (manual_review) proposal still marks applied/rev
 
 test('reject requires a note and appends it to context', async () => {
   const sb = mockSupabase({ corrections: [pendingRow()] });
-  const missingNote = await handleReviewAction(sb, { id: 'corr-1', action: 'reject' }, { editorKeyHeader: 'sekrit1' });
+  const missingNote = await handleReviewAction(sb, { id: 'corr-1', action: 'reject' }, { editor: EDITOR });
   assert.equal(missingNote.httpStatus, 400);
 
-  const result = await handleReviewAction(sb, { id: 'corr-1', action: 'reject', note: 'Not supported by the filing.' }, { editorKeyHeader: 'sekrit1' });
+  const result = await handleReviewAction(sb, { id: 'corr-1', action: 'reject', note: 'Not supported by the filing.' }, { editor: EDITOR });
   assert.equal(result.outcome, 'rejected');
   assert.equal(result.correction.status, 'rejected');
   assert.equal(result.correction.context.rejection_note, 'Not supported by the filing.');
@@ -71,6 +69,6 @@ test('reject requires a note and appends it to context', async () => {
 
 test('acting on an already-resolved correction is rejected with 409', async () => {
   const sb = mockSupabase({ corrections: [pendingRow({ status: 'applied' })] });
-  const result = await handleReviewAction(sb, { id: 'corr-1', action: 'approve' }, { editorKeyHeader: 'sekrit1' });
+  const result = await handleReviewAction(sb, { id: 'corr-1', action: 'approve' }, { editor: EDITOR });
   assert.equal(result.httpStatus, 409);
 });

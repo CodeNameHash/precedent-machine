@@ -37,13 +37,10 @@ function readSource(relPath) {
 // filtered `{ deals, provisions }` it gets back; the staging-exclusion
 // LOGIC itself now lives in the shared module, so this checks each file for
 // the half of the guarantee it's responsible for.
-test('pages/api/query/run.js hands runQuery the shared, staging-filtered query context', () => {
+test('pages/api/query/run.js is contained before the staging-filtered query context can load', () => {
   const src = readSource('pages/api/query/run.js');
-  assert.match(src, /require\(['"].*lib\/query\/context-cache['"]\)/);
-  // The filtered `deals` (not a raw fetch) must be what's handed to
-  // runQuery — guards against a future edit re-introducing an unfiltered
-  // deal set into the query context.
-  assert.match(src, /context:\s*{\s*deals,\s*provisions\s*}/);
+  assert.match(src, /lib\/query-containment/);
+  assert.doesNotMatch(src, /context-cache|runQuery|supabase/i);
 });
 
 test('lib/query/context-cache.js excludes staging deals from the shared query context (deals AND their provisions)', () => {
@@ -62,8 +59,8 @@ test('scripts/query-demo-check.js excludes staging deals from the live corpus it
   assert.match(src, /liveDealIds\.has\(p\.deal_id\)/);
 });
 
-test('pages/api/query/demo-set.js excludes staging deals before resolving @deal:/@all_deals references', () => {
+test('pages/api/query/demo-set.js is contained before it can resolve live deal references', () => {
   const src = readSource('pages/api/query/demo-set.js');
-  assert.match(src, /isStagingDeal/);
-  assert.match(src, /resolveDemoPayload\(entry\.payload, deals \|\| \[\]\)/);
+  assert.match(src, /lib\/query-containment/);
+  assert.doesNotMatch(src, /resolveDemoPayload|supabase|from\(/i);
 });

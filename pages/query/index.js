@@ -13,6 +13,15 @@ import DealPicker, { dealPickerLabel } from '../../components/query/DealPicker';
 
 QueryIndexPage.noLayout = true;
 
+export function getServerSideProps() {
+  return {
+    redirect: {
+      destination: '/',
+      permanent: false,
+    },
+  };
+}
+
 // r15 item 1: plain-English kind names come from the shared label layer
 // (lib/query/filter-labels.js KIND_LABELS) so this page, the launch box,
 // and result titles can never drift.

@@ -64,14 +64,14 @@ test('summarizeSchemaCoverage returns per-feature empty-state counts', () => {
   assert.equal(silent.silent, 1);
 });
 
-test('P7 schema coverage API, needs-review page, and render chips are wired', () => {
+test('P7 schema coverage route is contained while needs-review and render chips remain wired', () => {
   const api = fs.readFileSync(path.join(__dirname, '..', 'pages', 'api', 'schema-coverage.js'), 'utf8');
   const needsReview = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id]', 'needs-review.js'), 'utf8');
   const shared = fs.readFileSync(path.join(__dirname, '..', 'components', 'review', 'shared.js'), 'utf8');
   const review = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
 
-  assert.match(api, /summarizeSchemaCoverage\(provisions\)/);
-  assert.match(api, /range\(from, from \+ PAGE_SIZE - 1\)/);
+  assert.match(api, /createBroadCorpusContainedHandler\('GET'\)/);
+  assert.doesNotMatch(api, /supabase|summarizeSchemaCoverage|\.range\(/i);
   assert.match(needsReview, /emptyFieldRowsForProvision/);
   assert.match(needsReview, /filterProvisionsForViewMode/);
   assert.match(needsReview, /states: \['needs_review'\]/);

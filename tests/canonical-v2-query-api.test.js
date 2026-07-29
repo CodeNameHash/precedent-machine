@@ -347,12 +347,12 @@ test('Query serving rejects a one-row response above the 1 MiB byte ceiling', ()
   assert.match(response.error.message, /exceeded its bounds/);
 });
 
-test('Query route remains separate from the contained market-stats route', () => {
+test('canonical Query route is contained before serving-client creation', () => {
   const route = fs.readFileSync('pages/api/canonical-v2/query.js', 'utf8');
   const marketStatsRoute = fs.readFileSync('pages/api/market-stats.js', 'utf8');
-  assert.match(route, /isCanonicalV2QueryEnabled/);
-  assert.match(route, /getCanonicalV2ServingClient/);
-  assert.match(route, /sizeLimit: '32kb'/);
-  assert.match(marketStatsRoute, /enabled: false/);
+  assert.match(route, /lib\/query-containment/);
+  assert.doesNotMatch(route, /isCanonicalV2QueryEnabled|getCanonicalV2ServingClient|process\.env/);
+  assert.match(marketStatsRoute, /marketStatsContainedHandler/);
+  assert.doesNotMatch(marketStatsRoute, /supabase|row-market-stats|market-metrics/i);
   assert.doesNotMatch(route, /market-stats|SUPABASE_SERVICE_ROLE_KEY|NEXT_PUBLIC_SUPABASE/);
 });

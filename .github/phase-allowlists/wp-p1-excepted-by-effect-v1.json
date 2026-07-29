@@ -1,0 +1,24 @@
+{
+  "phase": "WP-P1-EXCEPTED-BY-EFFECT-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-p1-excepted-by-effect-v1.json",
+    "lib/canonical-v2/canonical-contract-excepted-by-validator.js",
+    "lib/canonical-v2/canonical-contract-input-compiler.js",
+    "lib/schema/canonical/contract-v2/manifest.json",
+    "lib/schema/canonical/contract-v2/relationship-definitions/excepted-by.v3.json",
+    "lib/schema/canonical/contract-v2/relationship-effect-schemas/excepted-by-effect.v1.json",
+    "tests/canonical-v2-canonical-contract-excepted-by-effect.test.js",
+    "tests/canonical-v2-canonical-contract-source-tree.test.js",
+    "tests/canonical-v2-canonical-contract-technical-relationship-effects.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Authors the Ben-approved EXCEPTED_BY V3 relationship with three closed effect variants and cross-variant cohort isolation, without runtime migration, bundle authority or P1 gate authority."
+}

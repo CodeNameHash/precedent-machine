@@ -196,6 +196,7 @@ const FAV_LEVELS = [
 ];
 
 export default function AddAgreements() {
+  const productionIngestContained = true;
   const fileRef = useRef(null);
 
   // step: input | extracting | preview | saving | done
@@ -857,6 +858,16 @@ export default function AddAgreements() {
               </div>
             </div>
 
+            {productionIngestContained && (
+              <div style={{
+                padding: '10px 16px', marginBottom: 16, borderRadius: 8,
+                background: '#FFF8E1', border: '1px solid #FFE082',
+                fontSize: 12, color: '#8A5B00',
+              }}>
+                Production ingest and corpus writes are temporarily unavailable. Use the Ben-run local canonical writer against staging.
+              </div>
+            )}
+
             {/* Error banner */}
             {error && (
               <div style={{
@@ -1146,7 +1157,7 @@ export default function AddAgreements() {
                   <div style={{ marginTop: 20 }}>
                     <button
                       onClick={handleGo}
-                      disabled={processing || !hasInput}
+                      disabled={productionIngestContained || processing || !hasInput}
                       style={{
                         width: '100%', padding: '14px 24px', borderRadius: 8,
                         background: 'var(--gold)', color: '#fff', border: 'none',
@@ -1538,7 +1549,7 @@ export default function AddAgreements() {
                     <div style={{ marginTop: 20 }}>
                       <button
                         onClick={handleGoWithText}
-                        disabled={processing || (inputMode === 'paste' ? pastedText.length < 500 : files.length === 0)}
+                        disabled={productionIngestContained || processing || (inputMode === 'paste' ? pastedText.length < 500 : files.length === 0)}
                         style={{
                           width: '100%', padding: '14px 24px', borderRadius: 8,
                           background: 'var(--gold)', color: '#fff', border: 'none',
@@ -1637,7 +1648,7 @@ export default function AddAgreements() {
                       </button>
                       <button
                         onClick={saveToDatabase}
-                        disabled={processing || previewProvisions.length === 0}
+                        disabled={productionIngestContained || processing || previewProvisions.length === 0}
                         className="save-btn"
                         style={{
                           padding: '10px 20px', fontSize: 13,

@@ -1,0 +1,23 @@
+{
+  "phase": "WP-P1-AUTHORED-USES-DEFINITION-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-p1-authored-uses-definition-v1.json",
+    "lib/canonical-v2/canonical-contract-input-compiler.js",
+    "lib/canonical-v2/canonical-contract-relationship-input-validator.js",
+    "lib/schema/canonical/contract-v2/manifest.json",
+    "lib/schema/canonical/contract-v2/relationship-definitions/uses-definition.v3.json",
+    "lib/schema/canonical/contract-v2/relationship-effect-schemas/uses-definition-effect.v2.json",
+    "tests/canonical-v2-canonical-contract-relationship-input-validator.test.js",
+    "tests/canonical-v2-canonical-contract-source-tree.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Authors the exact USES_DEFINITION relationship and V2 effect schema as one validated pair. Other relationships remain excluded, and the source grants no registry, bundle, freeze or P1 authority."
+}

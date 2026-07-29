@@ -1,0 +1,20 @@
+{
+  "phase": "WP-G0-SIGNER-RUNNER-OUTPUT-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-g0-signer-runner-output-v1.json",
+    ".github/workflows/programme-gate-sign-g0.yml",
+    "tests/programme-gates/g0-signer-workflow.spec.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "lib/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Moves the transient signed-evidence output outside the repository checkout so the protected signer can retain its exact clean-commit proof. No evidence, signing, status, database or product logic changes."
+}

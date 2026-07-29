@@ -29,6 +29,13 @@ the spine:
   implementation sequence;
 - [programme-gates.yaml](codex-program/programme-gates.yaml): sole authority for
   gates and work classes;
+- [bootstrap-acceptance-source.json](codex-program/bootstrap-acceptance-source.json):
+  root-independent, self-contained schemas, member universes and typed
+  predicates for the ten genesis G0 gates and the pre-bundle P1 freeze gate. It
+  carries the byte length, SHA-256 and UTF-8 source for the complete recursively
+  resolved local runtime dependency closure, its ordered source-set digest and
+  the exact validator-executable file inventory. An unresolved local import or
+  omitted helper makes the source invalid;
 - [canonical-contracts.md](codex-program/canonical-contracts.md): sole authority
   for detailed identities, state machines, writer grammars, release contracts
   and traceability contracts;
@@ -38,12 +45,15 @@ the spine:
   ordered paths, byte lengths and SHA-256 values used to compute the detached
   domain-separated specification-root digest.
 
-The root hashes the manifest's exact bytes as member one, followed by the four
-content files declared in it as members two through five. The derived root is
-reported by the verifier and stored in review, approval and freeze evidence,
-not inside the manifest it commits. A reference to the governing specification,
-its bytes or its digest means that complete ordered five-file set, never one
-file in isolation.
+The root hashes one exact record for the manifest as member one, followed by
+the five content-file records declared in it as members two through six. Each
+record is UTF-8 path, NUL, ASCII decimal raw-byte length, NUL, lowercase
+SHA-256 of the raw file bytes and LF. The hash input is the UTF-8 domain
+separator and LF followed only by those six records. No raw bytes or implicit
+records are appended. The derived root is reported by the verifier and stored
+in review, approval and freeze evidence, not inside the manifest it commits. A
+reference to the governing specification, its bytes or its digest means that
+complete ordered six-file set, never one file in isolation.
 
 Each evidence record contains gate ID, specification and code commits,
 environment, evidence schema, immutable artefact references and digests,
@@ -167,59 +177,122 @@ CORRECTED (the plan below rests on these, not the review's wording):
   touching extraction, drift tests for anything touching registries.
 - Piecemeal implementation is paused until every start gate in the authoritative
   gate registry is closed. Only the enumerated emergency P0 containment work may
-  change application code while those gates are open. After the start gate,
+  change application code while those gates are open. The temporary
+  `gate_status_bootstrap` work class is the only other exception. It permits only
+  the governance amendment, trusted review-controller software and evidence
+  schemas, gate evidence schemas, deterministic compilation and implementation
+  of the bootstrap-frozen acceptance definitions, enumerators and predicates, the
+  certification integrity validator, signing system, status
+  publisher, `ProgrammeStatusPublicationHead` and their tests. It does not
+  permit corpus extraction, reprocessing, writes, backfills, production data
+  changes, release import or activation, product feature activation, or any
+  change to a bootstrap-frozen acceptance AST, expected value, member universe,
+  required test or trust-root fingerprint. Later P1 and P9 definitions are
+  CanonicalContractBundle members and remain `OPEN` until Freeze Gate approval;
+  bootstrap cannot create them. After
+  the start gate,
   approved architectural slices proceed independently and leave `main`
   deployable.
-- Before canonical implementation, reproduce and freeze the complete
+  The bootstrap exception also permits collection and validation of the eight
+  G0 containment, security-disposition and isolated-staging facts, including
+  creation of the empty isolated staging boundary and default-deny preview
+  access controls. It grants no staging corpus restore, replay or canonical
+  data authority. Generation 1 recomputes the G0 gate projection and
+  `canonical_work_start` from those validated evidence envelopes inside the
+  proposed status; it does not require a predecessor status that cannot exist.
+- Before the generation-1 start permission, reproduce and freeze the complete
   specification-root digest after all mechanical checks. Five independent cold
-  reviews must each record `PASS` against that exact root: architecture,
-  legal-semantic, query-efficiency, open-world and release-propagation. The
+  reviews must each record `PASS` against that exact root for the bounded G0
+  start-safety decision: architecture, legal-semantic, query-efficiency,
+  open-world and release-propagation. The G0 disposition asks only whether the
+  status can safely permit implementation planning, isolated staging setup and
+  staging-only canonical engineering behind disabled production flags. A defect
+  confined to an `OPEN` P1 or P9 requirement is non-blocking at G0 unless it can
+  falsify G0 evidence, widen the permitted start scope or bypass a later gate.
+  The complete architecture, contract, corpus, query, release and cutover review
+  remains mandatory at `P1_CONTRACT_FREEZE_ATTESTED` before
+  `vertical_slice_execution` can pass. The
   legal-semantic lane must be satisfied by Fable or an independent 5.6 Sol
   reviewer using extra-high reasoning. An ordinary Sol review remains advisory
   unless the recorded reviewer meets those exact model, reasoning and
   independence requirements. Run the broader Sol adversarial review
   concurrently. Reviewers receive no prior conclusions. Recheck the root before
   and after every review. Any edit or non-PASS result invalidates all five and
-  requires the mechanical checks and complete review set again. Ben's approval
-  must name the same root. No canonical implementation starts from an earlier
-  reviewed root.
-- `G0_EXACT_DIGEST_REVIEW_SET` evidence hashes its schema, the ordered five file
+  requires the mechanical checks and complete G0 review set again. Ben's
+  approval must name the same root and the bounded G0 start-safety purpose. No
+  staging-only canonical engineering starts from an earlier reviewed root.
+- `G0_EXACT_DIGEST_REVIEW_SET` evidence hashes its schema, the ordered six-file
   entries, each byte length and SHA-256, the specification-root digest,
   mechanical-check command and result digests, the five contract-ordered lane
   names, each immutable reviewer identity, eligibility, input root, terminal
   disposition and evidence digest, the root observed before and after each
   review, an empty intervening-edit set and terminal `PASS`. Reviewer eligibility
-  is determined only by the machine-readable registry contract. The Sol class
-  requires immutable provider attestation of exact model ID or build,
-  provider reasoning value, session and review IDs, prompt and output digests,
-  both observed roots and an empty edit set. The validator fetches that record
-  from the authenticated provider review-record API, verifies its DSSE or JWS
-  signature and certificate chain against the frozen provider trust-root set,
-  consumes a single-use nonce and compares every field with the review set.
+  is determined only by the machine-readable registry contract. A trusted
+  review controller directly starts and observes each read-only review. It
+  supplies exactly three task-payload members: the exact frozen specification
+  bytes, one registered lane-specific cold prompt and the required output
+  schema. It also starts the review under fixed controller runtime context. That
+  context contains only the pinned platform instructions and tool schemas. It
+  is not case-specific and contains no prior review finding or conclusion.
+  These fixed runtime inputs are permitted and are not part of the
+  controller-supplied task payload.
+  The signed task manifest carries the exact ordered six specification members,
+  including each repository path, one-based order, byte length, SHA-256 and
+  canonical base64 source bytes, plus the canonical base64 output-schema bytes.
+  The validator decodes those bytes, recomputes every length and SHA-256, derives
+  the domain-separated specification root from the exact ordered records and
+  recomputes the output-schema digest. A detached asserted root, manifest digest
+  or schema digest has no authority.
+  The controller record contains its controller ID and version, review runtime
+  version and binary digest, fixed controller-context digest, the exact
+  specification root, model identifier, reasoning level, immutable task,
+  session and review IDs, registered prompt ID and digest, controller-supplied
+  input-manifest digest, exact input-context digest and its before-and-after
+  values, output digest, start and end times, reviewer principal and complete
+  source-control identity set, disposition, edit-set root, parent-session
+  state, the fact that no earlier review conclusions were inputs, a unique
+  nonce, signature algorithm and key ID. The controller emits the signed
+  immutable record into the closed evidence set. The validator deterministically
+  enumerates that set, loads the exact record, verifies its signature against
+  the frozen controller-key registry and compares every field with the review
+  set.
+  The reviewer principal is the exact controller run plus one fresh ephemeral
+  CLI session. It is not the model family. The controller creates a new
+  `CODEX_HOME`, does not resume a session and does not load project rules, user
+  configuration, plugins, memory or prior-session content. The execution is
+  read-only. The input-context digest must be equal before and after review.
+  The controller process is the only process permitted to use the signing key.
+  The key is inaccessible to the reviewer, review process, operator input and
+  repository. The private key never enters the review environment, logs or
+  checkout.
   The registry separately maps `FABLE_ELIGIBLE` and
-  `SOL_5_6_EXTRA_HIGH_ELIGIBLE` to their provider identity, exact build rule,
-  reasoning rule where applicable and provider-specific trust-root set.
-  Repository evidence, a CLI transcript or reviewer-supplied metadata cannot
-  substitute for the provider record; an unavailable or unverifiable record is
+  `SOL_5_6_EXTRA_HIGH_ELIGIBLE` to their reviewer identity, exact model rule and
+  reasoning rule where applicable. Repository evidence, a CLI transcript or
+  reviewer-supplied metadata cannot substitute for the controller record; an
+  unavailable or unverifiable record is
   ineligible. Self-asserted metadata is invalid.
   Independence is not a reviewer assertion. The status validator creates a
-  signed `ReviewerIndependenceAttestation` by comparing the provider session
-  graph with the complete authorship-receipt and prior-review-conclusion
-  registries. The authorship registry contains every signed source-control commit
-  or integration-owner workspace-change receipt that contributed a byte to the
-  exact root. The validator separately enumerates every provider-recorded input
-  or message delivered to the immutable review session. The only permitted
-  inputs are the exact reviewed-root bytes and one root-bound, lane-specific cold
-  prompt whose registered digest is reviewed to contain no prior finding or
-  conclusion. The prior-conclusion universe contains every input outside that
-  closed allowed set and every provider-linked prior review output. Root freeze
-  precedes creation of that genesis session, and review start is the closed
-  cutoff. The status validator rebuilds the first universe from the complete
-  commit DAG and workspace-change ledger and the second from the authenticated
-  provider session graph, including linked prior outputs. Only the source-control provider or integration owner
-  may append a signed authorship receipt; only the provider record API supplies
-  session inputs. Any unsigned, unattributed or unenumerable event makes the
-  reviewer ineligible. The session must be genesis, and the authorship-event,
+  signed `ReviewerIndependenceAttestation` by comparing the controller record
+  with the complete Git history for the committed reviewed bytes. The controller
+  record maps the reviewer principal to its complete source-control identity
+  set. The validator uses complete history, blame and copy tracing to find every
+  commit that contributed a byte to the exact root and confirms that none maps
+  to the reviewer principal. A missing or ambiguous identity mapping is
+  ineligible. It separately enumerates every
+  task input that the controller delivered to the review and the fixed runtime
+  context. The only controller-supplied task inputs are the exact reviewed-root
+  bytes, one root-bound lane-specific cold prompt with no prior conclusion and
+  the required output schema. Any extra task input, changed or unknown runtime
+  context or context with case-specific material is ineligible. The controller
+  record is the authority for review execution, observable inputs and output.
+  It does not prove a provider-internal build, a provider signature or the
+  absence of hidden provider context, and it does not claim to do so. Formal
+  evidence is controller execution evidence under this amended standard. Git
+  history is supplementary authorship evidence only and cannot prove that a
+  review occurred. Root freeze precedes the genesis review
+  execution, and review start is the closed input cutoff. Any unsigned,
+  unattributed or unenumerable review event makes the reviewer ineligible. The
+  parent-session state must be genesis, and the authorship-event,
   prior-conclusion and reviewer-edit intersections must each be the exact empty
   root. Independence requires that the reviewer neither authored nor modified
   the reviewed root and received no prior conclusions. Exactly one PASS is required
@@ -228,10 +301,41 @@ CORRECTED (the plan below rests on these, not the review's wording):
   and root. A stale review, different root, ineligible legal reviewer, missing
   lane or approval of unreviewed files is `OPEN`, never an inferred pass.
 
+#### Generation-1 owner authorisation
+
+For generation 1 only, the five signed review outcomes for basis commit
+`d62456a81567baf8bf6aef7ae0c6290567086a08` and specification root
+`6b5d7c2c0c57f4a6d7a508ae9cd5cf9f77370d53e956797504e080415eb7330a`
+are recorded truthfully as `FAIL`. The outer review artefact is additionally
+bound by SHA-256
+`77ef5f3366f7019a31240cbea2b0825ff96566e7861e3df1f18221416be76ce7`
+and byte size `16759182`. Recording those outcomes is not a claim that the full
+review passed.
+
+Ben may sign an exact successor root and governance diff to authorise only
+implementation planning, isolated staging setup, staging snapshot restore and
+preview, and staging-only canonical engineering behind disabled production
+flags. Production corpus writes, production re-extraction or backfill,
+production or release import, release activation, product feature activation
+and production cutover remain prohibited. The review findings are acknowledged,
+not resolved or waived. P1 and P9 remain `OPEN`.
+
+This bounded owner-authorisation uses
+`ExactDigestReviewSetAttestation/V2`, `BenSpecificationApproval/V2` and
+`BenSpecificationApprovalEvidence/V2`. The strict V1 PASS contracts remain the
+only G0 authority accepted inside `P1_CONTRACT_FREEZE_ATTESTED`. The P1
+predicate requires every lane to be `PASS`; the generation-1 V2 outcome record
+cannot satisfy or be substituted for that authority.
+
 ### Agent implementation protocol
 
 - One integration owner controls shared schemas, generators, migrations, writer
   registries and merge sequencing.
+- Each PR uses one isolated branch with the repository-approved prefix.
+  Containment, governance, gate software and evidence remain separate PRs.
+  Current executable CI accepts `wp/*`. This rule does not claim that `codex/*`
+  works now, and it replaces any instruction to use one branch for all
+  gate-recovery increments.
 - Each agent receives a bounded work packet with fixed inputs, outputs,
   permitted files, forbidden changes and acceptance tests.
 - Two agents cannot independently modify the same identity, registry, migration
@@ -686,6 +790,14 @@ contract equality or CandidateCompositionInstanceConformance.
   a short-lived non-web credential and has no preview route. Credential
   isolation alone does not satisfy access isolation. No production credential
   or browser-visible service credential is permitted.
+  The access attestation binds three separately enumerated immutable inventories:
+  the source route-action inventory, built inventory and runtime-observed
+  inventory. Their exact `(action_id, action_class)` sets and independently
+  recomputed roots must agree with the complete runtime observation set. Action
+  IDs are unique, every closed action class is covered, and any number of
+  distinct actions may share one class. Omitting the same action from the
+  attestation and runtime evidence still fails against the source or built
+  inventory member.
 - The restore procedure excludes or replaces production auth sessions, API and
   webhook secrets, scheduled jobs, outbound integrations, replication targets
   and production user invitations before any application connection is enabled.
@@ -723,7 +835,11 @@ contract equality or CandidateCompositionInstanceConformance.
   and verifies exact stable-ID and checksum parity before cutover. This
   promotion import is the only canonical corpus write to production before
   cutover; it performs no extraction, backfill, replay or mutation of the active
-  release.
+  release. PreCutoverCertification and the release envelope require only the
+  pre-import gate set. Import parity and deployment parity are necessarily later:
+  the importer first attests the inaccessible namespace, deployment parity then
+  probes that exact namespace and deployed production plan, POST_IMPORT
+  traceability covers both, and only then may CutoverAuthorisation issue.
 - Bundle members import only to the three contract-derived inactive
   destinations: `C` to the corpus-object namespace, `B` to the corpus-blob
   namespace and `E` to the immutable promotion-evidence namespace.
@@ -1657,21 +1773,29 @@ The chain is:
     ProductionSemanticParityAttestation and all
     their reachable nodes, `ProductionImportAttestation` and terminal ATTESTED
     head, event and receipt;
-15. `POST_IMPORT` TraceabilityExtension;
-16. cutover-ready `DeploymentReadinessMirror` and `CutoverAuthorisation`;
-17. exact acknowledged BLOCKED `ServingFenceVersion`; one atomic
+15. passing `DeploymentParityAttestation` over the exact ATTESTED inactive
+    production namespace, live serving role, production statistics and physical
+    plan roots;
+16. `POST_IMPORT` TraceabilityExtension covering that exact import and
+    deployment-parity evidence;
+17. a fresh, one-use `ActivationDeploymentParityRecheck/V1` over the current
+    production statistics, actual planner outputs and deployment generations;
+    then the first-cutover `DeploymentReadinessMirror` or later-cutover signed
+    `OngoingReleaseReadiness/V2` and ISSUED readiness slot, and exact
+    `CutoverAuthorisation`;
+18. exact acknowledged BLOCKED `ServingFenceVersion`; one atomic
     `ActivationEvent`, `PostActivationControlContext` and
     `PostActivationControlHead(AWAITING_READY)` transaction with its
     `OPEN_WITH_ACTIVATION` event and `PostActivationControlReceipt`;
-18. the context-bound `READY_CANONICAL` ServingFenceVersion and
+19. the context-bound `READY_CANONICAL` ServingFenceVersion and
     `AWAITING_POST_ACTIVATION_TRACE` control-head transition within its fixed
     deadline;
-19. `POST_ACTIVATION` TraceabilityExtension and the corresponding
+20. `POST_ACTIVATION` TraceabilityExtension and the corresponding
     `AWAITING_SMOKE` control-head transition;
-20. passing `PostCutoverSmokeAttestation`;
-21. one unexpired `PostActivationPassCommitLease`, its
+21. passing `PostCutoverSmokeAttestation`;
+22. one unexpired `PostActivationPassCommitLease`, its
     `ISSUE_PASS_COMMIT_LEASE` event, successor AWAITING_SMOKE head and receipt;
-22. the atomic `COMMIT_PASS` and `PASS_FIXED`
+23. the atomic `COMMIT_PASS` and `PASS_FIXED`
     terminal CAS that also releases the AVAILABLE `CandidatePromotionFence`
     successor and, for the first canonical cutover, writes
     `ESTABLISH_FIRST_CANONICAL_RELEASE` and the terminal
@@ -1974,6 +2098,17 @@ The pre-cutover gates are:
   non-test occupancy by role and source. Prove staging parity for tier, region,
   extensions, indexes, RPCs, pooler and relevant Vercel runtime settings. The
   test cannot assume all nominal connections are usable;
+- because this gate precedes production import, it runs only through the closed
+  staging load-certification authority. Exactly three immutable load release
+  states bind the N, 10N and maximum-scale fixtures, their sealed staging
+  namespaces and the frozen query artefacts. A separate two-state load fence
+  admits only the authenticated controller, under fixed expiry, request and
+  concurrency bounds. The internal load route then enters the same compiler,
+  resolver, cache, admission-token RPC, serving RPC, role, search path, SQL
+  template and instrumentation as the production route. Its only permitted
+  difference is the closed authority predicate. The gate cannot claim
+  READY_CANONICAL, depend on ProductionImportAttestation, touch an active
+  release or pass until every load fence is BLOCKED and drained;
 - the workload may never consume the final 20 connections or final one-third of
   measured `max_connections`, whichever reserve is larger. Serving is capped at
   30 and all application work at 40, but either cap is reduced when measured
@@ -1990,6 +2125,14 @@ The pre-cutover gates are:
   rejected after BEGIN with zero cache or corpus access. The combined admission
   and serving workload must remain within the same CapacityManifest caps and
   connection reserve;
+- before that admission RPC, each DATABASE_API request derives one lookup key
+  from only the signed release or load selector and complete structural
+  ExecutionShapeKey. One bounded external immutable resolver program classifies
+  the normalised literal tuple and returns the quotient member, cost classes,
+  release execution class and expected plan fingerprint as output. None of
+  those outputs may be required to find the program. Missing, ambiguous or
+  over-bound resolution rejects with zero database checkout; the expected
+  fingerprint remains subject to independent live-plan parity;
 - the normal profile measures trailing-30-day
   production peak as both maximum one-minute request rate and maximum one-minute
   in-flight concurrency, then fixes steady targets of at least five requests per
@@ -2010,8 +2153,43 @@ The pre-cutover gates are:
   across one, four and maximum configured instances; cache and controller
   outages; two-second database latency; locked-query timeout; 25% client
   cancellation; circuit open, cooldown and one half-open probe; the normal mix
-  while the importer completes ten batches; and corpus fixtures at `N` and
-  `10N` proving unchanged route call and Node row/byte ceilings;
+  while the importer completes ten batches; and corpus fixtures at
+  `N_capacity` and `10N_capacity` proving unchanged route call and Node row/byte
+  ceilings;
+- `N_capacity` is the exact eight-field deal, observation, metric-slot,
+  aggregate, serving-row, cohort-member, indexed-row and indexed-byte tuple of
+  the sealed CandidateReleaseManifest fixture selected for import. Cohort
+  members and logical index entries are independently enumerated across the
+  exact distinct query-visible relations and indexes selected by the frozen
+  query registry. `10N_capacity` is a deterministic tenfold expansion inside
+  one query-visible active serving namespace. It remints every deal and all
+  dependent observations, metric slots, aggregates, serving rows, cohort
+  memberships and index-eligible rows, preserves the candidate's metric, party,
+  value-state and cohort-selectivity distributions, and makes each governed
+  benchmark query address a cohort ten times the corresponding `N_capacity`
+  cohort. Its first seven fields are exactly ten times `N_capacity`. Its indexed-
+  byte field is the measured sum of the closed selected index set after
+  canonical-order fixture loading and index rebuilding under the frozen
+  PostgreSQL and index-build settings, never a multiplied byte estimate. A
+  separate multi-namespace isolation fixture proves routing isolation but
+  cannot satisfy the scale test. “Maximum scale” is one deterministic,
+  physically loaded fixture, not the field-by-field tuple alone. Its first
+  seven construction targets are the larger of the corresponding measured
+  `10N_capacity` values and CapacityManifest maxima. Starting from the exact
+  `10N_capacity` rows, the frozen builder chooses the unique canonical
+  non-negative multiplicity vector over schema-valid expansion archetypes that
+  jointly realises all seven targets in one namespace, preserves required
+  quotient and worst-case-witness cells and applies the frozen exact-rational
+  distribution objective and UTF-8 tie-break. Every row retains source and
+  parent fixture lineage. The builder then inserts in canonical order, rebuilds
+  the closed index set and measures the eighth indexed-byte value from
+  `pg_relation_size` under the frozen settings. CapacityManifest cannot freeze
+  unless a scratch build and two independent enumerators reproduce the exact
+  lineage, distribution, relation, index, per-index byte and measured-tuple
+  roots. The load manifest selects that exact MaximumScaleFixtureManifest and
+  rebuilds it byte-for-byte. An unrealizable target, smaller or independently
+  assembled fixture, changed distribution, unbound synthetic set or multiplied
+  byte estimate cannot satisfy the soak gate;
 - in the no-fault steady and target-rate all-miss profiles, at least 99.9% of
   requests return a schema-valid successful response and achieved throughput is
   at least 99.9% of the fixed target, with zero admission, circuit-open or
@@ -2147,7 +2325,13 @@ The pre-cutover gates are:
   scope while released payload-digest projections exactly equal the candidate
   manifest, with zero unmanifested or untraced IDs; and
 - the exact DeploymentManifest is certified for the executable production
-  system.
+  system. Deployment parity recomputes the complete production release-
+  statistics root and obtains canonical plans from the actual production
+  PostgreSQL planner for every certified execution class and worst-case witness
+  under the deployed serving role, RPC, prepared-statement mode and
+  configuration. Both roots and complete member sets must equal the certified
+  roots before cutover. Live smoke repeats the same plan probe for every class
+  it exercises and contains exposure on any drift.
 
 Phase 9 cannot advance on prose conformance. The mechanical acceptance set must
 also pass `APPLICABILITY-RELEASE-ORDER-01`,
@@ -2187,13 +2371,52 @@ After those gates, import, parity, activation, containment, restoration and comp
 - Generated programme-gate status authority is the sole sequencing authority.
   Programme completion additionally requires its atomic terminal pair. With the
   status artefact absent, only specification review and emergency containment
-  are permitted. Thereafter each work class opens only through its registry
-  dependencies. Bounded implementation planning requires
+  are normally permitted. The one-use `gate_status_bootstrap` exception has
+  predecessor `NONE` and the registry-bound nonce
+  `gate-status-bootstrap-2026-07-27-v1`. Its scope is the closed list in the gate
+  registry. It expires when the protected publisher consumes that nonce
+  during the first valid `ProgrammeGateStatusArtefact/V2` publication, at
+  generation 1 from predecessor `NONE`, with `canonical_work_start: PASS`.
+  Before that genesis publication, the same closed bootstrap authority permits
+  only G0 containment and security evidence collection plus isolated empty-
+  staging and preview-access boundary setup. The genesis publisher validates
+  those envelopes and derives the proposed gate and work-class projection in
+  one pass. It never reads `canonical_work_start` from an absent predecessor.
+  It cannot be reused or reissued without another governing registry amendment.
+  An owner statement cannot create or extend this authority. Thereafter each
+  work class opens only through its registry dependencies. Bounded implementation
+  planning requires
   `implementation_planning`; isolation-boundary setup requires its three
   security dispositions. A production-snapshot restore or data-bearing preview
   additionally requires isolated project identities and default-deny access
   protection. No post-containment factual baseline, canonical implementation or
   canonical data work begins until `canonical_work_start` is green.
+- Ordinary status publication uses the repository-native
+  `refs/heads/programme-status-publication-head` as its single publication head.
+  A protected GitHub Action reads the exact predecessor Git object ID, validates
+  the complete status projection and updates the ref with one compare-and-swap.
+  A stale predecessor makes no ref change. The first V2 status is a genesis
+  event at generation 1 with predecessor `NONE`. It includes all 35 gates once
+  in registry order. Every unsupported P1 and P9 gate remains `OPEN`. Manual
+  edits and owner-deemed states do not pass validation.
+- `ProgrammeStatusPublicationHead` is only that Git ref. It is not a database
+  row and is excluded from database lock plans. Programme completion first
+  commits the immutable status-plus-POST_COMPLETION pair to a database
+  `CompletionTerminalPairAttempt` keyed by status generation, exact Git
+  predecessor and proposed-status digest; the protected publisher then revalidates that
+  exact pair and advances the Git ref by compare-and-swap. Until the Git ref
+  points to a status binding that pair, `programme_complete` remains `OPEN`.
+  A failed Git update leaves a non-current immutable pair that may be retried
+  against the same predecessor after full revalidation. If the Git head has
+  advanced, the protected publisher appends an immutable stale-attempt
+  abandonment and a fresh attempt is fully recomputed at the next generation.
+  Old attempts never occupy a global one-use slot. No cross-system atomic
+  transaction is claimed.
+- The existing generation-4
+  `docs/certification/programme-gate-status.json` file is a historical V1
+  owner-deemed record. It is not a V2 predecessor, evidence source, publication
+  head or executable authority. The first V2 publication uses
+  `docs/certification/programme-gate-status-v2.json`.
 - After contract freeze, `vertical_slice_execution` permits only the bounded
   reviewed staging fixture and the ordered thin Phase 1 through 7 path described
   above. `P1_VERTICAL_SLICE_PASS` requires its full source-to-UI and bounded-
@@ -2242,3 +2465,46 @@ After those gates, import, parity, activation, containment, restoration and comp
   extra-high reasoning), R9→Phase 1 vocabulary work
   (Ben-gated), R10→independent cosmetic. Product work that touches shared rows
   also enters the Phase 8 traceability matrix.
+
+## Binding cold-review closure
+
+The later, detailed closure contract in
+`docs/codex-program/canonical-contracts.md` section 10 controls any conflicting
+earlier shorthand. In particular:
+
+- the reviewed bootstrap acceptance source is the authoritative frozen source
+  for ten genesis G0 definitions and the pre-bundle P1 definition, and the
+  controller, runtime, prompt and validator allowlists are fixed in
+  `programme-gates.yaml`;
+- production blob availability has one registered verifier action and
+  idempotent writer transaction before pre-seal root construction;
+- CapacityManifest binds the deterministic, jointly realised
+  MaximumScaleFixtureRecipe and its exact lineage, distribution and physical
+  index-measurement roots. Database and API execution shapes use
+  `DATABASE_API`; carried-response transitions use the disjoint
+  `CLIENT_ONLY_NO_SQL_NO_API` registry and have a separate browser-only
+  zero-effect timing obligation. Every class reconciles to its tagged golden
+  and performance fixture, the originating serving RPC returns one bounded
+  response without a result-page persistence write, and latency gates cover
+  every interactive class without inventing SQL or API evidence for a client
+  transition. Pre-import soak uses the separate staging-only load release/fence
+  authority and the byte-identical serving path, never production readiness.
+  Execution-class lookup is keyed only by the resolved selector and structural
+  shape; a bounded literal classifier returns the member, class and expected
+  plan fingerprint and never requires those outputs as lookup inputs;
+- residual contracts are CanonicalContractBundle members, source-specific
+  publication binds the actual eligible legal review and selected PRESENT
+  primitive, and scope- or contract-impacting novel propositions block only
+  their governed occurrence and transitive closure while unaffected siblings
+  continue to render;
+- every successful activation produces a terminal PASS
+  ReleaseActivationCertification. The first creates the genesis ongoing
+  promotion head and is selected by programme completion. Later promotions use
+  only deployment-controller-issued, trusted-signature
+  `OngoingReleaseReadiness/V2`, an exact ISSUED-to-CONSUMED readiness-slot
+  transition and exact-predecessor head CAS, and never increment the absorbing
+  completed programme-status head. Cutover authority also selects a fresh
+  ten-minute activation parity recheck that is consumed and currentness-tested
+  before release-state DML. A deployment-parity failure after import attestation
+  uses the existing `ABANDON_IMPORT` action's closed ATTESTED predecessor
+  variant and cannot strand or activate the inactive namespace.

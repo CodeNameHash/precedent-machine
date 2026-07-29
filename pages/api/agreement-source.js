@@ -1,52 +1,55 @@
-import { getServiceSupabase } from '../../lib/supabase';
+import { getServiceSupabase } from '../../lib/supabase.js';
 
 // Cap runaway executions: when Supabase stalls, uncapped functions run the
 // full 300s each holding a DB connection (2026-07-19 pile-up).
 export const config = { maxDuration: 60 };
 
-export default async function handler(req, res) {
-  const sb = getServiceSupabase();
-  if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
-
-  if (req.method === 'GET') {
-    const { deal_id, id } = req.query;
-
-    // Fetch by deal_id — read from deals.metadata.full_text
-    if (deal_id || id) {
-      const targetId = deal_id || id;
-      const { data: deal, error } = await sb.from('deals')
-        .select('id, metadata')
-        .eq('id', targetId)
-        .single();
-
-      if (error || !deal) {
-        return res.json({ agreement_source: null });
-      }
-
-      const meta = deal.metadata || {};
-      if (!meta.full_text) {
-        return res.json({ agreement_source: null });
-      }
-
-      // Q6 (perf quick-wins): agreement full_text is deal_id-scoped, not
-      // per-viewer — safe to cache at the CDN edge with SWR.
-      res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=3600');
-      return res.json({
-        agreement_source: {
-          id: deal.id,
-          title: meta.agreement_title || 'Agreement',
-          full_text: meta.full_text,
-          metadata: {
-            char_count: meta.char_count,
-            ingested_at: meta.ingested_at,
-            pipeline: meta.pipeline,
-          },
-        },
-      });
+export function createAgreementSourceHandler({ getSupabase = getServiceSupabase } = {}) {
+  return async function handler(req, res) {
+    if (req.method !== 'GET') {
+      return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    return res.status(400).json({ error: 'id or deal_id required' });
-  }
+    const { deal_id, id } = req.query;
+    if (!deal_id && !id) {
+      return res.status(400).json({ error: 'id or deal_id required' });
+    }
 
-  return res.status(405).json({ error: 'Method not allowed' });
+    const sb = getSupabase();
+    if (!sb) return res.status(500).json({ error: 'Supabase not configured' });
+
+    // Fetch by deal_id — read from deals.metadata.full_text
+    const targetId = deal_id || id;
+    const { data: deal, error } = await sb.from('deals')
+      .select('id, metadata')
+      .eq('id', targetId)
+      .single();
+
+    if (error || !deal) {
+      return res.json({ agreement_source: null });
+    }
+
+    const meta = deal.metadata || {};
+    if (!meta.full_text) {
+      return res.json({ agreement_source: null });
+    }
+
+    // Q6 (perf quick-wins): agreement full_text is deal_id-scoped, not
+    // per-viewer — safe to cache at the CDN edge with SWR.
+    res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=3600');
+    return res.json({
+      agreement_source: {
+        id: deal.id,
+        title: meta.agreement_title || 'Agreement',
+        full_text: meta.full_text,
+        metadata: {
+          char_count: meta.char_count,
+          ingested_at: meta.ingested_at,
+          pipeline: meta.pipeline,
+        },
+      },
+    });
+  };
 }
+
+export default createAgreementSourceHandler();

@@ -1,0 +1,19 @@
+{
+  "phase": "WP-GATE-DEPLOYMENT-METADATA-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-gate-deployment-metadata-v1.json",
+    "lib/programme-gates/containment-runtime.js",
+    "scripts/collect-g0-containment-evidence.mjs",
+    "tests/programme-gates/containment-evidence.spec.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Corrects Vercel deployment identity collection only. The production alias and authenticated deployment record must agree on one READY deployment, whose metadata binds the exact code commit and specification root. No key, signature, PASS status, publication authority, corpus path or product path is added."
+}

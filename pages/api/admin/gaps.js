@@ -1,4 +1,5 @@
 import { getServiceSupabase } from '../../../lib/supabase';
+const { sendBroadCorpusRouteContained } = require('../../../lib/broad-corpus-containment');
 
 const { buildParserReview } = require('../../../lib/parser-v2/structural');
 const {
@@ -532,10 +533,12 @@ export default async function handler(req, res) {
     return fail(res, 405, 'GET or POST only');
   }
 
+  if (req.method === 'POST' || shouldRefreshMetrics(req)) {
+    return sendBroadCorpusRouteContained(res);
+  }
+
   const sb = getServiceSupabase();
   if (!sb) return fail(res, 500, 'Supabase not configured');
-
-  if (req.method === 'POST') return createCodingTask(req, res, sb);
 
   const dealId = Array.isArray(req.query.deal_id) ? req.query.deal_id[0] : req.query.deal_id;
   if (dealId) return getDetail(req, res, sb, dealId);

@@ -1,32 +1,38 @@
 {
   "schema": "codex-program-specification-manifest/v1",
   "domain_separator": "CODEX_PROGRAM_SPECIFICATION_ROOT_V1",
-  "root_input_encoding": "UTF-8 domain separator plus LF, then exact manifest bytes as ordered member 1 followed by each declared content file as ordered members 2 through 5; every member record is path plus NUL, decimal byte length plus NUL, lowercase SHA-256 plus LF",
-  "root_membership": "EXACT_MANIFEST_BYTES_THEN_DECLARED_CONTENT_FILES",
+  "root_input_encoding": "SHA-256 over UTF-8 domain separator plus LF followed only by ordered member records 1 through 6; each record is UTF-8 path plus NUL, ASCII decimal byte length plus NUL, lowercase SHA-256 of raw member bytes plus LF; member 1 is the manifest record computed from raw manifest bytes, members 2 through 6 are the declared content-file records; no raw member bytes or implicit records are appended",
+  "root_membership": "EXACT_ORDERED_MEMBER_RECORDS_MANIFEST_THEN_FIVE_DECLARED_CONTENT_FILES",
   "files": [
     {
       "order": 2,
       "path": "docs/CODEX-PROGRAM.md",
-      "byte_length": 149062,
-      "sha256": "fc065124cb29fa1c7a4095fa8d63c96976ecdd0186ade641f322e7781d42b0f3"
+      "byte_length": 167350,
+      "sha256": "72b6b31a4396e35dd9fcd4fc51d5e928e7b93955e177ede3f7fe858fe7867d24"
     },
     {
       "order": 3,
       "path": "docs/codex-program/programme-gates.yaml",
-      "byte_length": 23646,
-      "sha256": "5cbdaa60100c0f1acee2a0b5b68f470a140bf928abc90ca67ea7674b6dd5a7f8"
+      "byte_length": 43625,
+      "sha256": "0b25e5af7dd15d2c73bd9d2a54567269573447f8f705c025bdc63a85103ffec6"
     },
     {
       "order": 4,
-      "path": "docs/codex-program/canonical-contracts.md",
-      "byte_length": 898834,
-      "sha256": "0da889ecd1e1975c7cf86b55a339390a2107e02c9a52f9f87b9090ccdf1af1df"
+      "path": "docs/codex-program/bootstrap-acceptance-source.json",
+      "byte_length": 1101311,
+      "sha256": "abf0318151a2e3f0bc3b538c7726bcdd8162af7acfdf8aeddddc00b364d404a6"
     },
     {
       "order": 5,
+      "path": "docs/codex-program/canonical-contracts.md",
+      "byte_length": 1030609,
+      "sha256": "0f51a791d5e7802e1f8e88aa4ca94f9fe996b6bad594d23a19bd2c833fc4dc4d"
+    },
+    {
+      "order": 6,
       "path": "docs/codex-program/adversarial-tests.md",
-      "byte_length": 186460,
-      "sha256": "2dab3377841c6ba11d5222836ddbae21e5cfa8da79f2be99dc3089390512bf1a"
+      "byte_length": 228573,
+      "sha256": "a903f2da2ad292e53816d3272dad4e96c89bb2dc1a4a09486f1baf6c4a145a8b"
     }
   ],
   "baseline_identifier_continuity": {
@@ -46,8 +52,8 @@
     },
     "current_gate_count": 35,
     "current_gate_ordered_id_list_sha256": "5d107d8889326538adc021370f17df0bd1e2799292ef81072bcb7a5ed0c1c182",
-    "current_work_class_count": 12,
-    "current_work_class_ordered_name_list_sha256": "7d87cf8e9060a134677564cbc106f667650be01a259fabec39450d9e2cc08c67",
-    "current_adversarial_definition_block_sha256": "7e2f7e12f9aab999d2fc9cedd5aee5dc4b07d5a1482b3a2fdd305685f9c7d6e8"
+    "current_work_class_count": 13,
+    "current_work_class_ordered_name_list_sha256": "3d213f5416bd9e119cb1c891626d273baef8a60439c9fa1afa55fc74b009d9d0",
+    "current_adversarial_definition_block_sha256": "65e3c600708ccb3d4fd98e20e82f07d468f5ba8e3498629bce6f29711f90d571"
   }
 }

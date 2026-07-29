@@ -1,0 +1,125 @@
+{
+  "object_kind": "CLAIM_INTERPRETATION_POLICY",
+  "stable_id": "CLAIM_INTERPRETATION_POLICY",
+  "schema_version": "CLAIM_INTERPRETATION_POLICY/V2",
+  "applies_only_to_claim_state": "PRESENT",
+  "interpretation_payload_schema": "CLAIM_INTERPRETATION/V1",
+  "interpretation_payload_content_address_domain": "CLAIM_INTERPRETATION/V1",
+  "referenced_by_claim_revision_schema": "CLAIM_REVISION/V2",
+  "claim_revision_reference_field": "interpretation_payload_id",
+  "identity_inputs": [
+    "claim_occurrence_id",
+    "policy_version",
+    "clarity_state",
+    "primary_interpretation",
+    "alternative_interpretations",
+    "ambiguity_dimension_codes",
+    "evidence_excerpt_ids",
+    "lawyer_note_digest",
+    "review_provenance"
+  ],
+  "maximum_alternative_interpretations": 4,
+  "maximum_evidence_excerpts": 16,
+  "clarity_states": [
+    {
+      "clarity_state": "CLEAR",
+      "primary_interpretation_cardinality": "EXACTLY_ONE",
+      "minimum_alternative_interpretations": 0,
+      "maximum_alternative_interpretations": 0,
+      "minimum_ambiguity_dimensions": 0,
+      "maximum_ambiguity_dimensions": 0,
+      "review_renderable": true,
+      "canonical_claim_publishable": true,
+      "default_metric_comparability": "ALLOWED_IF_OTHERWISE_COMPLETE"
+    },
+    {
+      "clarity_state": "REASONABLE_BUT_AMBIGUOUS",
+      "primary_interpretation_cardinality": "EXACTLY_ONE",
+      "minimum_alternative_interpretations": 1,
+      "maximum_alternative_interpretations": 4,
+      "minimum_ambiguity_dimensions": 1,
+      "maximum_ambiguity_dimensions": 7,
+      "review_renderable": true,
+      "canonical_claim_publishable": true,
+      "default_metric_comparability": "BLOCKED_UNLESS_METRIC_EXPLICITLY_ACCEPTS"
+    },
+    {
+      "clarity_state": "MULTIPLE_PLAUSIBLE_NO_PRIMARY",
+      "primary_interpretation_cardinality": "NONE",
+      "minimum_alternative_interpretations": 2,
+      "maximum_alternative_interpretations": 4,
+      "minimum_ambiguity_dimensions": 1,
+      "maximum_ambiguity_dimensions": 7,
+      "review_renderable": true,
+      "canonical_claim_publishable": false,
+      "default_metric_comparability": "BLOCKED"
+    }
+  ],
+  "ambiguity_dimension_codes": [
+    "REFERENT",
+    "SCOPE",
+    "PARTY",
+    "TIMING",
+    "CARDINALITY",
+    "DEFINITION_PRECEDENCE",
+    "OTHER_REVIEWED"
+  ],
+  "comparability_effect_codes": [
+    "AMBIGUITY_IMMATERIAL_TO_SELECTED_METRIC",
+    "AMBIGUITY_AFFECTS_METRIC_OR_COHORT",
+    "AMBIGUITY_EFFECT_UNRESOLVED"
+  ],
+  "default_metric_accepted_clarity_states": [
+    "CLEAR"
+  ],
+  "ambiguous_metric_admission_requires": [
+    "metric_definition_id",
+    "accepted_clarity_states",
+    "accepted_ambiguity_dimension_codes",
+    "comparability_effect_code"
+  ],
+  "ambiguous_metric_admission_code": "AMBIGUITY_IMMATERIAL_TO_SELECTED_METRIC",
+  "projection_retention_fields": [
+    "policy_version",
+    "interpretation_payload_id",
+    "clarity_state",
+    "ambiguity_dimension_codes",
+    "comparability_effect_code"
+  ],
+  "cohort_denominator_and_cache_identity_fields": [
+    "policy_version",
+    "interpretation_payload_id",
+    "clarity_state",
+    "ambiguity_dimension_codes",
+    "comparability_effect_code"
+  ],
+  "cohort_denominator_and_cache_identity_include_projection_fields": true,
+  "every_observed_ambiguity_dimension_must_be_explicitly_accepted": true,
+  "absent_or_unclassified_ambiguity_admission_blocks_comparison": true,
+  "other_reviewed_dimension_always_blocks_comparison": true,
+  "interpretation_payload_id_must_be_retained_for_lawyer_output": true,
+  "lawyer_facing_output_required_for_ambiguous_states": true,
+  "other_reviewed_dimension_requires_typed_reason_and_note": true,
+  "unresolved_primary_blocks_dependent_canonical_result": true,
+  "metric_specific_ambiguous_admissions": [
+    {
+      "metric_key": "NO_SHOP_COPY_DELIVERY_PERIOD_DAYS",
+      "metric_version": 1,
+      "accepted_clarity_states": [
+        "CLEAR",
+        "REASONABLE_BUT_AMBIGUOUS"
+      ],
+      "accepted_ambiguity_dimension_codes": [
+        "REFERENT",
+        "SCOPE",
+        "CARDINALITY"
+      ],
+      "accepted_comparability_effect_codes": [
+        "AMBIGUITY_AFFECTS_METRIC_OR_COHORT"
+      ],
+      "admission_semantics": "SELECTED_PRIMARY_INTERPRETATION_FOR_SEPARATE_RELEASE_KEYED_COHORT_WITH_MANDATORY_LAWYER_WARNING",
+      "cohort_identity_must_include_interpretation_projection": true,
+      "lawyer_warning_required": true
+    }
+  ]
+}

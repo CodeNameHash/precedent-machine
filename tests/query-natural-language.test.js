@@ -379,11 +379,17 @@ test('question input is capped before it reaches the model', () => {
   assert.throws(() => normaliseQuestion('x'.repeat(MAX_QUERY_LENGTH + 1)), /under 600 characters/);
 });
 
-test('interpret API forces Anthropic tool use and keeps the frontend response contract', () => {
-  const source = fs.readFileSync(path.join(__dirname, '..', 'pages/api/query/interpret.js'), 'utf8');
-  assert.match(source, /tools:\s*\[tool\]/);
-  assert.match(source, /tool_choice:\s*\{\s*type:\s*'tool'/);
-  assert.match(source, /compileIntent\(block\.input/);
-  assert.match(source, /status:\s*'needs_clarification'/);
-  assert.match(source, /fallback\.status === 'needs_clarification' && requiresRowChoice/);
+test('the live interpret API is contained and its prior model contract remains preserved', () => {
+  const liveSource = fs.readFileSync(path.join(__dirname, '..', 'pages/api/query/interpret.js'), 'utf8');
+  const preservedSource = fs.readFileSync(
+    path.join(__dirname, '..', 'lib/query/contained-routes/interpret.js'),
+    'utf8',
+  );
+  assert.match(liveSource, /queryContainedHandler/);
+  assert.doesNotMatch(liveSource, /Anthropic|tools:\s*\[tool\]|compileIntent/);
+  assert.match(preservedSource, /tools:\s*\[tool\]/);
+  assert.match(preservedSource, /tool_choice:\s*\{\s*type:\s*'tool'/);
+  assert.match(preservedSource, /compileIntent\(block\.input/);
+  assert.match(preservedSource, /status:\s*'needs_clarification'/);
+  assert.match(preservedSource, /fallback\.status === 'needs_clarification' && requiresRowChoice/);
 });

@@ -1,0 +1,20 @@
+{
+  "object_kind": "MONEY_DENOMINATOR_PRECISION_POLICY",
+  "stable_id": "MONEY_DENOMINATOR_PRECISION_POLICY",
+  "schema_version": "MONEY_DENOMINATOR_PRECISION_POLICY/V1",
+  "value_kind": "MONEY_RELATIVE_TO_DEAL_VALUE",
+  "required_claim_state": "PRESENT",
+  "applicable_claim_definition_keys": [
+    "BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE",
+    "IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE",
+    "MATERIAL_CONTRACT_CASH_FLOW_THRESHOLD_PERCENT_OF_DEAL_VALUE",
+    "SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE"
+  ],
+  "authoritative_path": "denominator.precision",
+  "allowed_precision_values": [
+    "APPROXIMATE",
+    "EXACT"
+  ],
+  "compatibility_projection_path": "attributes.denominator_precision",
+  "compatibility_projection_must_equal_authoritative": true
+}

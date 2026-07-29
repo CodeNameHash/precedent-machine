@@ -665,6 +665,7 @@ function FeatureFieldEditor({ field, value, onChange, onAddCustomOption }) {
    existing realtime subscription on the provisions table — no callback hook
    needed. */
 function ReextractSectionButton({ provision, deal }) {
+  const reextractionContained = true;
   const [status, setStatus] = useState('idle'); // idle | running | done | failed
   const [message, setMessage] = useState('');
 
@@ -742,7 +743,7 @@ function ReextractSectionButton({ provision, deal }) {
   };
 
   const sectionTarget = resolveSectionTarget();
-  const disabled = !sectionTarget || status === 'running';
+  const disabled = reextractionContained || !sectionTarget || status === 'running';
   return (
     <div className="space-y-1">
       <button
@@ -750,9 +751,9 @@ function ReextractSectionButton({ provision, deal }) {
         onClick={handleClick}
         disabled={disabled}
         className="w-full px-3 py-1.5 text-xs font-ui border border-border text-inkLight rounded hover:bg-bg disabled:opacity-50 transition-colors"
-        title={sectionTarget ? `Re-extract ${sectionTarget.regionId || sectionTarget.sectionId}` : 'No source section found'}
+        title={reextractionContained ? 'Re-extraction is temporarily available only through the local canonical writer' : (sectionTarget ? `Re-extract ${sectionTarget.regionId || sectionTarget.sectionId}` : 'No source section found')}
       >
-        {status === 'running' ? 'Re-extracting...' : 'Re-extract this section'}
+        {reextractionContained ? 'Re-extraction temporarily unavailable' : (status === 'running' ? 'Re-extracting...' : 'Re-extract this section')}
       </button>
       {status === 'done' && (
         <p className="text-[10px] font-ui text-green-700">Done — {message}</p>

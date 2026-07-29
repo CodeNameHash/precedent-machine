@@ -7,6 +7,7 @@ import AdminNav from '../../components/admin/AdminNav';
 CandidatesPage.noLayout = true;
 
 const STATUSES = ['all', 'pending', 'queued', 'ingested', 'needs_review', 'skipped', 'error'];
+const CANDIDATE_ADMIN_CONTAINED = true;
 
 function money(value) {
   if (!value) return 'Not parsed';
@@ -43,6 +44,12 @@ export default function CandidatesPage() {
   }, [status, limit]);
 
   async function load() {
+    if (CANDIDATE_ADMIN_CONTAINED) {
+      setRows([]);
+      setStats({});
+      setMessage({ kind: 'error', text: 'Candidate administration is temporarily read-only while authenticated corpus writes are being rebuilt.' });
+      return;
+    }
     setLoading(true);
     setMessage(null);
     try {
@@ -95,7 +102,7 @@ export default function CandidatesPage() {
                 type="button"
                 onClick={load}
                 className="rounded-md border border-neutral-300 bg-white px-3 py-2 font-medium hover:bg-neutral-100 disabled:opacity-60"
-                disabled={loading}
+                disabled={CANDIDATE_ADMIN_CONTAINED || loading}
               >
                 {loading ? 'Refreshing' : 'Refresh'}
               </button>
@@ -194,6 +201,7 @@ export default function CandidatesPage() {
                           type="button"
                           className="rounded-md border border-neutral-300 bg-white px-2 py-1 text-xs font-medium hover:bg-neutral-100"
                           onClick={() => updateCandidate(row.id, { status: 'queued', skip_reason: null })}
+                          disabled={CANDIDATE_ADMIN_CONTAINED}
                         >
                           Queue
                         </button>
@@ -201,6 +209,7 @@ export default function CandidatesPage() {
                           type="button"
                           className="rounded-md border border-neutral-300 bg-white px-2 py-1 text-xs font-medium hover:bg-neutral-100"
                           onClick={() => updateCandidate(row.id, { status: 'skipped', skip_reason: 'Skipped after admin review' })}
+                          disabled={CANDIDATE_ADMIN_CONTAINED}
                         >
                           Skip
                         </button>
@@ -208,6 +217,7 @@ export default function CandidatesPage() {
                           type="button"
                           className="rounded-md border border-neutral-300 bg-white px-2 py-1 text-xs font-medium hover:bg-neutral-100"
                           onClick={() => updateCandidate(row.id, { status: 'pending', skip_reason: null })}
+                          disabled={CANDIDATE_ADMIN_CONTAINED}
                         >
                           Reset
                         </button>

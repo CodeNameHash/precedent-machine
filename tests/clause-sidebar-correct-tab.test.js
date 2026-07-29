@@ -35,7 +35,8 @@ test('Correct tab claim dropdown reads from the card\'s features (attribute — 
 });
 
 test('Correct tab requires kind + proposed + rationale before enabling submit', () => {
-  assert.match(SOURCE, /canSubmit = kind && proposed\.trim\(\) && rationale\.trim\(\) && !submitting/);
+  assert.match(SOURCE, /canSubmit = !CORRECTION_SUBMISSION_CONTAINED && kind && proposed\.trim\(\) && rationale\.trim\(\) && !submitting/);
+  assert.match(SOURCE, /Corrections are temporarily read-only/);
 });
 
 // r13 (Ben, "No corpus comparison captured for this row yet" investigation):

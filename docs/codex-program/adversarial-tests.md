@@ -8,22 +8,102 @@ The following adversarial closure tests are mandatory traceability entries:
   blocked; prose cannot change the result. The formal legal-semantic lane accepts
   only Fable or an independent 5.6 Sol reviewer using extra-high reasoning. An
   ordinary Sol review is advisory unless the recorded reviewer meets those exact
-  model, reasoning and independence requirements. Missing or mutable provider
-  attestation, a self-asserted model or reasoning label, an author reviewing the
-  root they changed, prior conclusions, a non-empty reviewer edit set or a
-  before-and-after root mismatch is ineligible and leaves the gate open. The
-  validator must fetch the record from the authenticated provider API, verify
-  its signature and certificate chain to the frozen trust roots, consume its
-  single-use nonce and match every field. A repository file, CLI transcript,
-  copied provider response, unverifiable key or unavailable provider record is
-  advisory only. Mutating any manifest byte, including an identifier-continuity
-  count or digest, must change the detached five-member specification root and
-  invalidate every earlier review and approval. Every gate must reject an
-  unknown evidence schema, wrong typed object, missing or extra acceptance
+  model, reasoning and independence requirements. The trusted review controller
+  must directly control and observe a read-only review and sign its immutable
+  record. Only the controller process may use its signing key. The key must be
+  inaccessible to the reviewer, review process, operator input and repository,
+  and never enter the review environment, logs or checkout. A self-asserted
+  model or reasoning label, an author reviewing bytes they changed, prior
+  conclusions, a non-empty reviewer edit set or a root mismatch is ineligible
+  and leaves the gate open. The validator deterministically enumerates the
+  closed evidence set, loads the exact controller record, verifies its signature
+  against the frozen controller-key registry and matches every required field.
+  A Git record, CLI transcript, copied record or reviewer/user substitute is
+  advisory only as proof of review. Git history is supplementary. The controller
+  record must map the reviewer principal to its complete source-control identity
+  set, and the validator must use complete history, blame and copy tracing to
+  prove that the reviewer did not author the reviewed bytes. A missing or
+  ambiguous mapping is ineligible. The reviewer principal is the exact
+  controller run and fresh ephemeral CLI session, not the model family.
+  Mutating any manifest byte, including an identifier-
+  continuity count or digest, must change the detached six-member specification
+  root and invalidate every earlier review and approval. Every gate must reject
+  an unknown evidence schema, wrong typed object, missing or extra acceptance
   claim, unbacked boolean `PASS`, untrusted validator or missing mandatory-test
-  result. Reviewer independence must be recomputed from the provider session
-  graph and authorship and prior-conclusion registries; a fresh-looking session
-  or empty edit set alone cannot pass.
+  result. Each result must carry the exact frozen executable-set digest for its
+  test ID; a self-reported digest, changed test file, unregistered executable
+  set or valid result from another binding leaves the gate open.
+  PreCutoverCertification must bind the exact 286-member
+  MandatoryAdversarialTestCatalogueRoot and every member's definition,
+  executable and passing result; the union of per-gate early minima cannot
+  substitute. A fresh-looking session or empty edit set alone cannot pass.
+- `GATE-BOOTSTRAP-01`: `gate_status_bootstrap` has predecessor `NONE`, nonce
+  `gate-status-bootstrap-2026-07-27-v1` and only its closed authority scope.
+  It permits the eight G0 evidence collections, empty isolated-staging boundary
+  setup and preview access protection, but not snapshot restore or corpus data.
+  It may compile and implement only the exact acceptance ASTs and trust-root
+  fingerprints already bound by the reviewed specification. Let the bootstrap
+  principal change a member universe, predicate, operator, expected value,
+  required test, measurement or public key while keeping its own generated
+  definition internally consistent: the reference interpreter or exact source-
+  root comparison must reject it and leave the gate open.
+  The compiler must produce exactly ten root-bound G0 acceptance definitions
+  from the content-addressed bootstrap registry and validator set. Omit or alter
+  one evidence schema digest, subject identity field, member universe,
+  enumerator digest, member path, predicate digest, operator or expected value,
+  or substitute any controller, runtime, prompt or validator allowlist member:
+  bootstrap remains OPEN without signing or publication.
+  Corpus extraction, reprocessing,
+  writes, backfills, production data changes, release import or activation and
+  product feature activation must fail. A stale predecessor, duplicate nonce,
+  second use, owner statement, manual status edit or publication with an
+  unsupported P1 or P9 `PASS` must fail without changing the publication head.
+  The first valid V2 status is generation 1, contains all 35 gates once in
+  registry order, has `canonical_work_start: PASS`, leaves every unsupported P1
+  and P9 gate `OPEN`, recomputes its G0 gates and work classes from validated
+  evidence inside the proposed genesis status without reading a predecessor,
+  and atomically consumes the nonce and expires the
+  bootstrap. The repository-native publication ref must remain unchanged after
+  every injected validation or compare-and-swap failure. The existing
+  generation-4 V1 owner-deemed file is historical only. It cannot act as
+  evidence, executable authority or a V2 predecessor. Independently resolve
+  every local `require`, `import` and `export` from the bootstrap source and
+  require the exact carried module bytes, ordered source-set digest and complete
+  validator-executable inventory. Remove one helper, mutate a helper without
+  changing its caller, or retain an entry-function digest while changing a
+  transitive helper: enumeration and measurement compilation must fail.
+  Instrument each frozen predicate and helper to record immutable-member path
+  reads and require exact equality with its declared input set. An undeclared
+  controller prompt, session, key or reviewer-principal path, and a declared but
+  unread path, both fail definition compilation.
+  Give each G0 reviewer a defect confined to an unsupported `OPEN` P1 or P9
+  contract: the G0 disposition must not fail unless that defect can falsify a
+  G0 evidence claim, widen start authority or bypass the later gate. Give the
+  reviewer a defect that permits a production write, release activation or
+  feature activation under `canonical_work_start`: the G0 disposition must
+  fail. The scoped G0 review cannot satisfy the fresh full-architecture review
+  required for `P1_CONTRACT_FREEZE_ATTESTED`.
+- `REVIEW-CONTEXT-01`: the controller supplies exactly the frozen specification
+  bytes, one registered lane-specific cold prompt and the required output schema
+  as the task payload. Adding any file, message, prompt, schema or other task
+  input makes the review ineligible. The fixed controller runtime context may
+  contain only its pinned platform instructions and tool schemas. Changing its
+  digest, using an unknown runtime or binary, adding case-specific material or
+  adding a prior review finding or conclusion makes the review ineligible. The
+  controller record must bind the runtime version, runtime binary digest, fixed
+  context digest, controller-supplied input-manifest digest and equal
+  before-and-after input-context digests. The controller must create a new
+  `CODEX_HOME` and fresh ephemeral CLI session, use no resume, project rules,
+  user configuration, plugins, memory or prior-session content, and permit no
+  writes. A model-family identity cannot replace the exact controller-run and
+  session principal. The record may prove only the observable controller
+  execution. It must not claim a provider-internal build, provider signature or
+  absence of hidden provider context. Replace one specification member's
+  supplied bytes while retaining its declared digest, replace the output-schema
+  bytes while retaining its digest, reorder two members or substitute a
+  self-consistent detached root. Each mutation must fail after the validator
+  independently decodes the bytes and recomputes all lengths, digests and the
+  ordered specification root.
 - `VERTICAL-SLICE-01`: before the slice passes, the gate registry permits only
   its fixed reviewed staging fixture through `vertical_slice_execution` and
   blocks broad `candidate_scope_and_extraction`. The fixture must traverse the
@@ -376,6 +456,11 @@ The following adversarial closure tests are mandatory traceability entries:
   terminal ProductionBlobAvailabilityRoot and importer
   CompositionContractSetRecompositionRoot and every reachable node must appear
   in POST_IMPORT trace and exact omission coverage.
+  Upload an exact B generation, then require
+  `VERIFY_PRODUCTION_BLOB_AVAILABILITY` to stream it and create one idempotent
+  receipt through the registered writer action before root construction.
+  Direct receipt DML, an uploader database grant, altered replay, unavailable
+  generation or receipt created during import writes nothing.
 - `IMPORT-SEMANTIC-PARITY-01`: after SEALED import, independently omit, alter,
   duplicate or cross-wire one original-package integrity row, graph-validation
   result, audit/effective candidate edge, source-role admission transition or
@@ -439,8 +524,9 @@ The following adversarial closure tests are mandatory traceability entries:
   ProductionSemanticParityAttestation and ATTEST_IMPORT with zero serving grant.
 - `IMPORT-LIFECYCLE-01`: inject failure before and after every import manifest,
   row write, event, head CAS, spool erasure and receipt. The generated operation,
-  carrier, disposition and SQL registries contain exactly seven top-level
-  actions: `OPEN_IMPORT`, `IMPORT_MEMBER_BATCH`,
+  carrier, disposition and SQL registries contain exactly eight top-level
+  actions: `OPEN_IMPORT`, `VERIFY_PRODUCTION_BLOB_AVAILABILITY`,
+  `IMPORT_MEMBER_BATCH`,
   `BUILD_IMPORT_PARITY_BATCH`, `SEAL_IMPORT`,
   `BUILD_IMPORT_SEMANTIC_PARITY_BATCH`, `ATTEST_IMPORT` and `ABANDON_IMPORT`.
   OPEN_IMPORT/NONE/OPEN_CONTEXT is the sole `INIT_EMPTY` producer for
@@ -568,6 +654,18 @@ The following adversarial closure tests are mandatory traceability entries:
   or substituting that receipt in DealScopeRunManifest, either inventory
   registry, candidate release, bundle, production import or traceability also
   fails the applicable set-equality or lineage gate.
+- `DEAL-IDENTITY-AUTHORITY-01`: registered external transaction seeds include
+  the exact governed issuer namespace and version; equal external IDs from two
+  issuers produce different governed deal keys. A Ben-approved import seed
+  requires one unconditional signed DealIdentityApprovalAttestation bound to
+  the exact seed, nonce and supersession set, but the governed deal key derives
+  from the seed rather than the attestation. Submit two otherwise valid
+  approvals with distinct nonces for the same proposed seed concurrently:
+  DealIdentitySeedSlot must bind both to one governed key and permit at most an
+  authority successor, never a second logical deal. A bare external ID, unregistered
+  issuer, unsigned owner statement, approval replay, changed seed, conflicting
+  supersession or proposed DealIdentityManifest without its exact authority
+  evidence fails PREPARE_SOURCE_ADMISSION with zero writes.
 - `INTAKE-UNIVERSE-01`: omit or replace one received agreement, amendment,
   schedule, exhibit, archive member or source version, or swap two document
   roles while keeping every ordinary admission and downstream semantic object
@@ -736,9 +834,14 @@ The following adversarial closure tests are mandatory traceability entries:
   legal-semantic, query-efficiency, open-world and release-propagation lanes must
   each PASS over the byte-identical post-check specification root, the legal lane
   must use Fable or an independent 5.6 Sol reviewer using extra-high reasoning,
-  with immutable provider evidence for the exact model ID or build, provider
-  reasoning value, session, review, input, prompt, output, before-and-after root
-  and empty edit set, and Ben's
+  with one trusted-controller-signed immutable record from the closed evidence
+  set for the exact controller, review runtime and fixed-context digests, model,
+  reasoning level, immutable task, session and review IDs, input root and
+  controller-supplied task manifest, before-and-after context, registered
+  prompt, output, start and end time, exact controller-run and session reviewer
+  principal, source-control identities, parent-session state,
+  no-prior-conclusion fact, nonce, signing data and empty edit-set root,
+  and Ben's
   approval must foreign-key that exact review set. One missing lane, advisory-
   only substitution, before/after digest mismatch, intervening edit or approval
   of another digest keeps both G0 gates open. Changing one bundle byte,
@@ -751,6 +854,12 @@ The following adversarial closure tests are mandatory traceability entries:
   changes the frozen pair and every IntakeCutoffAttestation, question
   disposition, expectation, challenge, composition, closure, selection and
   later artefact.
+  Reapprove byte-identical bundle members with a fresh precommitted approval-
+  epoch nonce. The ContractFreezeAttestationIdentity, attestation ID and frozen
+  pair must all change. Reusing the prior identity or pair, or choosing the nonce
+  after seeing review or approval conclusions, fails. Delete any one mandatory
+  CanonicalContractBundleMember family while preserving a self-consistent
+  compilation receipt: exact member-set and required-kind reconciliation fails.
 - `FREEZE-INFLIGHT-01`: a candidate job starts with the current frozen pair,
   status digest and generation while a supersession races it. If the writer
   locks first, it may commit only under the old pair and the later candidate
@@ -821,6 +930,12 @@ The following adversarial closure tests are mandatory traceability entries:
   an attester changing the semantic bytes fails. Only a self-contained eligible
   review of the exact completed payload may precede a passing attestation and
   governed wrapper.
+  Mount an ordinary/generated definition, the other catalogue or a prior review
+  in a catalogue authoring sandbox, omit one observed input event, substitute an
+  ineligible reviewer, or let the author review their own catalogue. Freeze
+  remains open. Alter one immutable stage, neutral-projection or relationship-
+  effect member while re-signing unchanged generic root summaries. Root
+  recomputation from the actual member bytes must detect the drift.
 - `SEMANTIC-ATTESTER-NONTRANSFORM-01`: for every semantic stage, ask the
   non-semantic attester to add, delete, reorder, map or classify one field. It
   must fail and create no governed object. Metadata-only changes preserve the
@@ -926,7 +1041,10 @@ The following adversarial closure tests are mandatory traceability entries:
   disposing the cue, or making discovery catalogue-aware, fails its total atom
   partition and input firewall. `W_open = PASS` requires one terminal occurrence,
   one final disposition and one reconciled impact closure, not an empty source-
-  specific partition. A shared definition cue used by three operative
+  specific partition. `REJECTED_NON_SUBSTANTIVE_OR_INVALID` passes only with
+  affirmative `NO_SUBSTANTIVE_PROPOSITION` review or a complete
+  `PRESERVED_BY_EXACT_CANDIDATE` mapping; invalid model shape, low confidence
+  and nearest-concept similarity cannot discard a real cue. A shared definition cue used by three operative
   provisions retains all three dependency edges without duplicating the cue;
   omitting or collapsing any edge fails even when counts are preserved.
 - `OPEN-WORLD-REP-ATTRIBUTE-01`: place a previously unseen substantive
@@ -950,7 +1068,11 @@ The following adversarial closure tests are mandatory traceability entries:
   absent from the frozen contract. Raw amount or duration and all familiar
   primitives remain visible, but no percentage, converted duration, compatible
   cohort or statistic publishes until the basis is governed and the full
-  applicability universe is re-examined.
+  applicability universe is re-examined. A complete result with no established
+  basis must carry `MISSING_BASIS`; one with established but non-normalisable
+  bases must carry `INCOMPATIBLE_BASIS`. Substituting a generic
+  `NOT_COMPARABLE`, swapping those values or collapsing either to null or “No
+  market data” fails schema, serving parity and cohort certification.
 - `OPEN-WORLD-COMPOSITION-01`: make a lawyer-facing result require a combination
   of otherwise recognised spans that no frozen ResultDefinition permits. A
   `RESULT_COMPOSITION` candidate retains all components and relationships but
@@ -960,11 +1082,14 @@ The following adversarial closure tests are mandatory traceability entries:
   agreement, side letter, amendment, exhibit or schedule whose role is unknown.
   It remains in the deal under `OPEN_WORLD_ROLE_UNMAPPED`, creates a
   `SOURCE_OR_DOCUMENT_ROLE` candidate and blocks only dependent results. Its
-  directly reviewed pre-admission occurrence and disposition authorise the
-  document-membership decision; after DealAdmissionManifest, exactly one
-  admitted occurrence and mechanically rekeyed evidence and primitive body
-  precede exactly one OpenWorldCandidateAdmissionTransition and a carried-
-  forward disposition with a byte-identical legal-semantic body. The audit root retains both
+  directly reviewed pre-admission occurrence, disposition and signed
+  SourceRoleAdmissionAuthorisation authorise only the document-membership
+  decision. After DealAdmissionManifest, exactly one admitted occurrence and
+  mechanically rekeyed evidence and primitive body precede exactly one
+  OpenWorldCandidateAdmissionTransition and a carried-forward disposition with
+  a byte-identical legal-semantic body. A fresh post-admission signature must
+  bind the exact effective publication decision before final scope selection.
+  The audit root retains both
   occurrences and the historical disposition, the effective root selects only
   the admitted occurrence, and output closure proves exactly one admitted
   `REVIEWED_SOURCE_SPECIFIC` row and zero pre-admission rows. Omitting,
@@ -975,12 +1100,16 @@ The following adversarial closure tests are mandatory traceability entries:
 - `SOURCE-ROLE-ADMISSION-TOPOLOGY-01`: require the exact order
   SourceAdmissionPreparationReceipt, source-role candidate, pre-admission
   occurrence, predecessor evidence and primitive collection, direct reviewed
-  disposition, IndependentDealDocumentManifest, DealAdmissionManifest, admitted
-  occurrence, rekeyed evidence and primitive collection, transition and carried
-  disposition. Reverse one edge, omit one body, hash the later carried
-  disposition into the transition, build impact or applicability from the
-  predecessor, or render or serve it. The cycle, topology, carrier and release
-  validators fail before scope selection.
+  disposition and signed SourceRoleAdmissionAuthorisation,
+  IndependentDealDocumentManifest, DealAdmissionManifest, admitted occurrence,
+  rekeyed evidence and primitive collection, transition, carried disposition,
+  SourceRoleAdmissionMaterialisationReceipt, post-admission signed effective
+  ReviewedSourceSpecificPublicationDecision, impact closure and final scope
+  selection. Reverse one edge, omit one body, pre-sign future admitted fields,
+  reuse the admission authorisation as publication authority, hash the later
+  carried disposition into the transition, build impact or applicability from
+  the predecessor, or render or serve before the post-admission signature. The
+  cycle, topology, carrier and release validators fail before scope selection.
 - `OPEN-WORLD-MULTIPLICITY-01`: provide several valid fees, periods, standards,
   exceptions or party-specific variants. The complete ordered collection and
   governed ordinals survive extraction, release, import and rendering. First,
@@ -995,7 +1124,29 @@ The following adversarial closure tests are mandatory traceability entries:
   attribute or source document source-specific while it can change a known
   result. Both impact walkers must reach that result. A claimed isolated tier,
   a complete familiar-component row or a market observation fails closure and
-  candidate sealing.
+  candidate sealing. `AFFECTS_CORPUS_SCOPE` blocks scope freeze and
+  CandidateInputSeal; `AFFECTS_CANONICAL_CONTRACT` blocks candidate
+  certification under the predecessor, but a reconciled provisional contract-
+  impact closure may support only the approved ContractAmendmentProposal and
+  required successor contract freeze without invalidating the immutable
+  predecessor contract that authorised discovery. It also blocks
+  CandidateOutputSeal. Using provisional evidence as a final disposition or
+  impact clearance, or blocking the approved successor freeze, fails. Neither
+  blocking tier may satisfy W_open, while a valid sibling outside the reconciled
+  impact closure remains renderable.
+- `RESIDUAL-IMPACT-PUBLICATION-01`: finally disposition a source-backed
+  residual whose reconciled closure affects a result, scope or contract.
+  Terminal review empties the residual queue but preserves the nonzero impact.
+  The affected result and metric slots, scope or successor contract remain
+  blocked according to the same mapping as an open-world candidate. Treating
+  final disposition as zero impact or publishing an affected cohort member
+  fails candidate sealing.
+- `CLAIM-ONLY-IMPACT-CLEARANCE-01`: attach a finally reviewed novel qualifier,
+  basis or exception to the evidence closure of a familiar claim-owned metric
+  slot. The slot's `impact_clear_for_metric_slot` projection must fail and no
+  observation, denominator, aggregate or cache member may publish. Omitting the
+  projection because the impact is terminal, because the slot is `CLAIM_ONLY`
+  or because no result relationship owns it fails candidate sealing.
 - `OPEN-WORLD-ADOPTION-NOT-EXAMINED-01`: adopt a new concept, attribute,
   relationship, role or basis in a successor bundle. Every earlier eligible
   member lacking examination under that version is `NOT_EXAMINED`, never
@@ -1110,7 +1261,14 @@ The following adversarial closure tests are mandatory traceability entries:
   CanonicalContractBundle, re-examine its complete governed universe and publish
   a later CorpusRelease. The prior bundle, candidate disposition, examination
   states, serving rows and cohort membership remain byte-identical and
-  addressable; no in-place mutation or backfilled absence is permitted.
+  addressable; no in-place mutation or backfilled absence is permitted. The
+  successor candidate may reach `FULLY_INCORPORATED_CANONICAL` only after both
+  walkers prove its complete proposition, primitives, evidence and
+  relationships are represented by the selected governed target and every
+  affected span and transitive dependant has been reprocessed under the
+  successor. Using that state for a source-specific or rejected disposition,
+  with a stale dependant or unresolved edge, or to bypass ordinary per-slot
+  conformance fails release certification.
 - `SOURCE-PACKAGE-DIGEST-01`: preserve the exact original package bytes, file
   type, length, SHA-256 and converter provenance. A one-byte package change,
   substituted derivative, altered source map or digest mismatch changes source
@@ -1156,7 +1314,16 @@ The following adversarial closure tests are mandatory traceability entries:
   predecessor retains its exact transition-bound disposition in audit only.
   Missing, duplicate, conflicting, sixth-value,
   forked, merged, cyclic or orphaned chains fail both the independently rebuilt
-  effective root and release sealing.
+  effective root and release sealing. Every final disposition, including
+  `REJECTED_NON_SUBSTANTIVE_OR_INVALID`, must bind an exact permitted action in
+  the frozen LegalSemanticReviewPolicy, a member and key in the frozen
+  LegalReviewerTrustRegistry, and a valid
+  LegalSemanticReviewerEligibilityProof under both the signing-time and current
+  LegalReviewerRevocationHeads. Substitute a policy, registry, principal,
+  action, domain, decision-body digest or nonce, use an unknown key, revoke the
+  key before signing or before current validation, or fork the revocation head:
+  the affected disposition remains unresolved and cannot suppress valid
+  sibling rows.
 - `RESIDUAL-TOTALITY-01`: seed one residual in every registered producer kind,
   including a validation residual with no open-world candidate. Both independent
   universe roots and their reconciliation must enumerate the same complete set;
@@ -1167,6 +1334,62 @@ The following adversarial closure tests are mandatory traceability entries:
   treating candidate totality as residual totality keeps
   GovernedResidualReviewQueueRoot non-empty and blocks candidate sealing while
   independently valid sibling previews remain renderable.
+  PRE_SCOPE residual ENTRY_BATCH and TERMINAL_SET must complete under the open
+  CORPUS_SCOPE_FREEZE generation before SCOPE_INVENTORY begins. Making that
+  closure depend on CorpusScopeManifest, CorpusScopeFreezeAttestation or a
+  candidate generation, or attempting to create or repair a PRE_SCOPE member
+  during candidate preparation, fails the producer-topology and scope-freeze
+  checks. The later CANDIDATE_COMPLETE universe must select the exact PRE_SCOPE
+  closure and add every extraction- and candidate-phase residual once. Omitting,
+  duplicating or re-dispositioning a carried PRE_SCOPE member blocks
+  CandidateInputSeal.
+  For every final residual disposition, require one immutable
+  GovernedResidualReviewDecision whose proof is signed for the exact
+  `RESIDUAL_FINAL_DISPOSITION` action by an eligible legal-semantic reviewer
+  under both the signing-time and current revocation heads. A caller-authored
+  or unsigned decision, wrong action, wrong residual or scope, substituted
+  target, revoked reviewer, opaque authority digest or decision created by
+  PREPARE_BATCH leaves that residual in the queue. Cross-wire two otherwise
+  valid decisions and require both dispositions to fail without suppressing
+  independently valid sibling previews.
+  The registry-driven enumerator and the independently schema-, stage- and
+  physical-carrier-driven ResidualCapableBoundaryUniverse must also agree
+  bidirectionally. Add a residual-capable carrier or producer to either
+  authority alone; the other path must detect the unregistered boundary before
+  candidate sealing.
+  For `COVERED_BY_GOVERNED_OBJECT`, require an exact
+  GovernedObjectImpactClosure from two independent dependency walkers and a
+  third reconciliation. `FULLY_INCORPORATED` passes only when the selected
+  governed object losslessly contains the residual semantics and evidence and
+  every enumerated dependant selects that exact revision. Substitute a
+  text-overlapping object, omit a dependant, leave a stale revision, force zero
+  additional impact despite an unrepresented semantic difference, cross-wire a
+  candidate SemanticImpactClosure or make the walkers disagree: residual impact
+  remains unresolved and no market comparability may be inferred. A valid
+  `FULLY_INCORPORATED` closure must project exactly
+  `ZERO_ADDITIONAL_IMPACT_FULLY_INCORPORATED`, not the non-substantive
+  zero-effect branch.
+  Mark an impactful residual as a duplicate of an earlier byte-identical
+  residual with different governed subject, evidence context or validation
+  semantics: review must reject the duplicate link. A valid duplicate must
+  flatten to the earliest equivalent residual and inherit its disposition,
+  governed link and impact closure exactly; it cannot create a zero-effect
+  branch unless the original closure is the reviewed non-substantive zero.
+  Each residual-capable semantic boundary emits an admission receipt before a
+  typed carrier can be discarded and a terminal consumption reconciliation
+  proving every receipt became exactly one governed carrier or one residual.
+  Drop an unknown proposition before candidate or residual creation, omit its
+  receipt, delete the same input atom from both residual enumerators, omit or
+  substitute one subject receipt root or reconciliation from either phase,
+  cross-wire captured heads, or consume one receipt twice: the independently
+  generated boundary-slot universe, receipt-to-terminal reconciliation,
+  GovernedResidualUniverseManifest, scope and candidate inventory roots,
+  CandidateInputSeal, CandidateReleaseManifest and PRE_SEAL trace cannot all
+  pass. Publication remains blocked without suppressing independently valid
+  siblings. Direct DML, a review action that creates the final reconciliation,
+  a scope action that creates a phase root set, a PRE_SCOPE object created by a
+  candidate action, or any manifest, bundle, import or trace path that omits
+  one receipt-chain object fails its closed producer and set-equality checks.
 - `OPEN-WORLD-KIND-SUPERSESSION-01`: an effective-terminal
   `UNRESOLVED_CANDIDATE_KIND` blocks. Resolving it creates a new candidate and
   occurrence plus one exact kind-only supersession; the predecessor remains in
@@ -1176,7 +1399,21 @@ The following adversarial closure tests are mandatory traceability entries:
 - `OPEN-WORLD-IMPACT-INDEPENDENCE-01`: each impact walker receives the exact
   effective disposition and complete candidate graph but not the other's code,
   rows or output. A co-wrong shared affected set, copied root, disagreement or
-  unbounded closure cannot yield an impact disposition or isolated status.
+  unbounded closure cannot yield an impact disposition, isolated status or
+  `FULLY_INCORPORATED_CANONICAL`. The provisional contract-impact walkers bind
+  the unresolved marker and no disposition, use separate outputs and cannot be
+  substituted for the final disposition-bound walkers.
+  Remove the same source-to-known-result edge from the dependency input shared
+  by both walkers so both walkers agree on the omission. The independently
+  source-enumerated SourceToImpactEdgeSlotUniverse must retain the slot, and a
+  missing positive edge or exact reviewed negative decision blocks closure.
+  Missing slots, copied enumerator output, unsigned or ineligible negative
+  decisions, a negative signed by its author, and a decision for a different
+  source occurrence or target all fail. A valid independently reviewed negative
+  discharges only its exact slot. The positive-or-negative partition, empty
+  missing and overlap roots and negative-proof checks apply identically to novel
+  candidates and governed residuals. Two walkers may never establish negative
+  proof merely by repeating the same omission.
 - `OPEN-WORLD-STATUS-AXES-01`: independently permute claim state, result
   completeness and market comparability through every schema-valid combination.
   Renderer, query, cache and aggregate retain all three fields. Any conversion
@@ -1462,10 +1699,13 @@ The following adversarial closure tests are mandatory traceability entries:
   no canonical rows.
 - `MUTABLE-AUTHORITY-CLOSURE-01`: regenerate GlobalMutableAuthorityRegistry from
   every mutable head, controller, readiness mirror, fence, status and publication
-  carrier. Each has exactly one authorised operation/action and one stable
-  authority-key extractor, and the registry complement against
+  carrier. Each carrier has exactly one registry entry and one stable authority-
+  key extractor. Every permitted state-transition edge has exactly one
+  authorised operation/action tuple, although one authority may have several
+  disjoint transition edges, and the registry complement against
   CanonicalPhysicalCarrierRegistry is empty. Delete, duplicate, alias or leave
-  unclassified one mutable carrier; give two actions authority; or attempt a
+  unclassified one mutable carrier; give two actions the same transition edge;
+  omit the promotion-fence genesis or recovery edge; or attempt a
   state change through a content-addressed builder or direct DML. Contract
   compilation or the writer fails before any head, event, receipt or outbox
   mutation.
@@ -1667,8 +1907,21 @@ The following adversarial closure tests are mandatory traceability entries:
   only while that observed head remains current and never rewinds it.
 - `PROMOTION-HOLD-EXPIRY-01`: expiry of a HELD CandidatePromotionFence installs
   only a higher REVOKED version. It never restores AVAILABLE or exposure.
-  Abandonment may release the hold only after proving no activation exists or
-  an acknowledged BLOCKED serving fence and exposure-off state.
+  Genesis AVAILABLE is created exactly once by
+  CONTRACT_FREEZE/INITIALISE_CANDIDATE_PROMOTION_FENCE with the genesis input
+  head and no candidate. Pre-activation abandonment may release the hold only
+  through ABANDON_HELD_PROMOTION after proving no activation exists or an
+  acknowledged BLOCKED serving fence and exposure-off state. A failed
+  activation's REVOKED fence returns to AVAILABLE only through
+  RESTORE_CANDIDATE_PROMOTION_AVAILABILITY after terminal containment, passing
+  prior-tuple restoration smoke and the fixed failure terminal. Omit, duplicate
+  or race any genesis, abandonment or recovery event, lock, successor or
+  receipt: the fence stays unavailable and no input head advances. The closed
+  `CANDIDATE_RELEASE_FREEZE` action grammar must itself enumerate
+  `ABANDON_HELD_PROMOTION`, and must reject it before
+  `HELD(CURRENT_CANDIDATE)`. Omitting that action from the closed grammar,
+  admitting it as an open extension or using `ABANDON_GENERATION` after hold
+  acquisition fails before writer dispatch.
 - `SERVING-FENCE-CACHE-01`: every request, including a warm cache hit, obtains
   one fresh request-nonce-bound admission for the exact READY fence and retains
   its lease through the last response byte, then consumes the token through the
@@ -1808,7 +2061,8 @@ The following adversarial closure tests are mandatory traceability entries:
   closed operation-schema equality. Assigning receipt policy only at action
   level, exposing other than the exact five DEAL_SCOPE_RUN actions or two
   MATERIALISE_SCOPE discriminators, retaining a standalone multi-subject scope
-  action, exposing other than the exact seven import actions, omitting either
+  action, exposing other than the exact eight import actions, omitting
+  `VERIFY_PRODUCTION_BLOB_AVAILABILITY`, adding a ninth action, omitting either
   `WRITE_WALKER_OUTPUT` phase or any import pre-seal
   dispatch, or omitting, wildcarding or widening any post-seal semantic-parity
   PRECOMMIT_ROLES, role-specific CLAIM_ROLE, role-specific TREE_BATCH or
@@ -1907,7 +2161,31 @@ The following adversarial closure tests are mandatory traceability entries:
   bring-down tiers coexist despite legacy uniqueness constraints; poisoning a
   compatibility row changes no canonical output.
 - `CONTRACT-01`: direct edits to generated registries fail, and every active key
-  resolves once to the CanonicalContractBundle.
+  resolves once to the CanonicalContractBundle. Contract freeze is a registered
+  canonical-writer operation with exactly one
+  `INITIALISE_CANDIDATE_PROMOTION_FENCE` action. Its acceptance predicates
+  recompute the compilation receipt, legal-semantic and identity review, signed
+  Ben approval and signed status generation directly from immutable members.
+  Caller-supplied summaries, booleans, expected generations or verification
+  objects have no authority. A contract-impacting novel candidate blocks the
+  predecessor release. Before final disposition it may create only a
+  disposition-free ProvisionalContractImpactClosure and non-authoritative
+  ContractAmendmentProposal. Treating either as W_open, publication or final
+  impact-clearance evidence fails. The candidate becomes publishable only after
+  the successor bundle freezes, affected spans plus transitive dependants are
+  reprocessed, and a disposition-bound final SemanticImpactClosure independently
+  reconciles or widens the provisional affected set. Both catalogue
+  SemanticStageOutputSetRoots must exist before the catalogue THIRD_RECONCILER
+  and must bind their typed payload `output_set_root` values. Reversing the
+  dependency, substituting an authority-envelope digest for any semantic-stage,
+  neutral-projection, relationship-field, reviewer-eligibility or Ben-decision
+  set root, or omitting either catalogue stage fails freeze.
+  Catalogue authorship and independence are accepted only from the recomputed
+  authored member bytes and exact observed sandbox-input projection. A signed
+  assertion of blindness, an ordinary/generated/prior-review mount or an
+  ineligible or non-independent catalogue reviewer fails. The authority
+  manifest and compilation receipt must select the same complete immutable
+  CanonicalContractBundleMember set and all mandatory member families.
 - `POLICY-AUTHORITY-01`: duplicate configuration ownership, a value above a
   protocol bound or any OperationalPolicySet mismatch among scope, candidate,
   deployment and certification fails compilation or certification.
@@ -1973,7 +2251,14 @@ The following adversarial closure tests are mandatory traceability entries:
   fingerprint, or allowing expected metadata parity to select another copy
   fails envelope, import, metadata parity and traceability certification.
 - `QUERY-EXEC-01`: browser and RPC instrumentation record one execution from
-  launch through rendered result.
+  launch through rendered result. In-app navigation carries the validated
+  bounded response and performs zero new database calls. A direct load, reload
+  or missing client response state obtains fresh admission, compiles once and
+  performs exactly one bounded set-based route-serving RPC. Launcher
+  validation, saved-query validation and redirects cannot execute and discard
+  an earlier query. Repository, generated schema, database and deployment
+  inspection prove there is no result-page carrier, per-query result write,
+  retention table, cleanup job or result-fetch intent.
 - `CROSS-VIEW-SURFACE-01`: browser goldens cover QXO Review and Compare, the
   query builder and Eli Lilly definitions. Compare retains visible left
   provision navigation, a Review-density centre region and a collapsible right
@@ -2010,7 +2295,35 @@ The following adversarial closure tests are mandatory traceability entries:
   and 8 MiB passes; either cap plus one retains a GovernedResidualObservation,
   blocks only that candidate and never truncates or suppresses sibling rows.
   Parent total, collection digest, child ordering, keyset cursor and one set-
-  based RPC must agree for source-specific and incomplete rows.
+  based RPC must agree for source-specific and incomplete rows. The row's
+  singular source-claim state must equal the exact primitive selected by its
+  ReviewedSourceSpecificPublicationDecision. Remove that primitive from the
+  collection, select two, derive a majority state or change the state without a
+  new reviewed decision, or select any state other than `PRESENT`: publication
+  must block while valid sibling rows remain
+  renderable. Substitute the reviewer principal, eligibility proof, signed
+  representativeness decision, effective disposition or evidence closure while
+  retaining the selected primitive: the writer must reject publication. The
+  decision must bind the exact frozen LegalSemanticReviewPolicy,
+  LegalReviewerTrustRegistry and
+  `SOURCE_SPECIFIC_PUBLICATION_SELECTION` proof. Substitute the policy,
+  registry, action, legal domain or signed decision-body digest, use a
+  non-member key, or revoke the key under either the signing-time or current
+  LegalReviewerRevocationHead: publication remains blocked for that row while
+  valid sibling rows remain renderable.
+  The source-specific decision body must be fixed before the eligibility proof,
+  exclude every proof and final-decision identity field, and be the exact digest
+  signed by the proof. The proof must exclude the final decision identity, and
+  the final decision must derive only from the already fixed body and proof.
+  Make the body hash the proof, make the proof hash the final decision or supply
+  any self-consistent circular placeholder: construction and validation fail.
+  The effective decision must be present exactly once in the admitted scope
+  inventory, CandidateInputSeal, candidate-output inventory,
+  CandidateReleaseManifest, ReleaseBundleEnvelope, production-import parity,
+  traceability and SharedServingRow. Omit, duplicate, cross-wire or substitute
+  it at any boundary and certification fails. A `CANONICAL_RESULT` row carrying
+  `REVIEWED_SOURCE_SPECIFIC`, or a source-specific row entering a canonical
+  market cohort, fails before serving while valid sibling rows remain available.
 - `RESULT-LINEAGE-01`: changing only a ClaimScopeClosure,
   CompositionScopeClosure, RelationshipRevision, effect payload, endpoint,
   party, precedence rule or evidence changes ResultInputLineage, result-component and DerivedResult
@@ -2101,7 +2414,10 @@ The following adversarial closure tests are mandatory traceability entries:
 - `CURSOR-SCOPE-01`: every selector grain rejects replay across grain, parent,
   slot, child collection, content digest, total, CandidateReleaseManifest ID or
   digest, CorpusRelease, namespace or header, metadata pair, import attestation,
-  authorisation, access-policy, fence, schema or page size. The cursor ends on the complete
+  authorisation, access-policy, serving epoch, schema or page size. A routine
+  physical-fence renewal inside the identical serving epoch preserves validity;
+  a new-epoch fence rejects the cursor before cache or database access. The
+  cursor ends on the complete
   typed selected-row key and contains no self-reference to QueryPlan.
 - `CURSOR-PAGE-01`: zero, one, `n-1`, `n`, `n+1` and `2n` rows with duplicate
   and null sort values page exactly once for deal, result, provision, component,
@@ -2110,7 +2426,9 @@ The following adversarial closure tests are mandatory traceability entries:
   revocation and active-release lifetime.
 - `SAVED-QUERY-FENCE-01`: follow-active plans before and after activation and a
   pinned plan equal to active pass under a fresh fence. Pinned not equal to
-  active returns `RELEASE_NOT_ACTIVE` with zero cache, database or corpus calls;
+  active returns `RELEASE_NOT_ACTIVE` after exactly one admission-token RPC and
+  one bounded saved-definition ownership-and-digest lookup, with zero cache,
+  route-specific serving RPC or corpus-row access;
   stale cache and save-time validation cannot authorise it. A missing,
   unauthorised, replaced or digest-mismatched saved-query definition fails its
   single post-admission lookup before cache or corpus access, and a token for
@@ -2141,20 +2459,176 @@ The following adversarial closure tests are mandatory traceability entries:
   rollback window.
 - `P0-ROUTE-01`: source, built-route and instrumented discovery agree, every
   unbounded route is contained, and `N` versus `10N` preserves fixed call and
-  Node payload ceilings.
+  Node payload ceilings. Source membership is independently enumerated from the
+  frozen route/action source inventory, never reconstructed from the evidence
+  being tested. Deleting one source member while deleting the same member from
+  evidence and runtime discovery must still fail. The execution record's
+  executable digest must equal the frozen digest of the exact registered test
+  files, including byte lengths and file hashes.
 - `PREVIEW-AUTH-01`: every preview page and action denies unauthenticated access
   before and after snapshot restore; cross-user, forged-owner, forged-admin and
-  CSRF attempts fail.
+  CSRF attempts fail. Independently enumerate source, built and runtime
+  `(action_id, action_class)` inventories and require exact set and root equality
+  with the observed action matrix. Multiple action IDs in one class pass when
+  every closed class remains covered. Omitting the same action from the runtime
+  matrix and access attestation, duplicating an ID, changing a class or
+  substituting any asserted inventory root fails.
 - `CAPACITY-LOAD-01`: normal, cold, all-miss, stampede, maximum-scale,
   controller-failure, latency, cancellation and importer profiles respect the
   measured connection reserve and recover without a retry storm. Database-owned
   instrumentation proves every request stays within its exact top-level and
-  nested SQL-statement budget; `N` versus `10N` leaves that count unchanged, and
-  a dynamic statement, procedural row loop or unregistered query ID fails. Cap-plus-one
+  nested SQL-statement budget; `N_capacity` versus `10N_capacity` leaves that
+  count unchanged, and `N_capacity` equals the exact selected
+  CandidateReleaseManifest cardinality tuple,
+  `10N_capacity` is its deterministic distribution-preserving tenfold expansion
+  inside one query-visible active serving namespace. The first seven dimensions
+  must each equal ten times `N_capacity`; independently enumerate cohort-
+  membership relations and selected-index entries, then rebuild the closed
+  index set under the frozen settings and measure its exact indexed bytes.
+  Multiplying the N indexed-byte value by ten, counting one selected index
+  twice, omitting a partial-index entry or using heap bytes fails. Maximum-scale
+  is one physically loaded fixture, not the field-by-field tuple alone. Its
+  first seven targets are the larger of the corresponding measured
+  `10N_capacity` values and selected CapacityManifest maxima. Starting from the
+  exact `10N_capacity` rows, solve the frozen expansion-archetype constraint
+  problem to its exact-rational distribution objectives and lexicographically
+  lowest multiplicity vector, preserve every required quotient and worst-case-
+  witness cell, bind every base and expanded row to its source and parent
+  fixture lineage, load in canonical order, rebuild the closed index set and
+  measure indexed bytes with `pg_relation_size`. Two independent enumerators
+  must reproduce the archetype, multiplicity, lineage, joint-distribution,
+  relation, index, per-index entry and byte roots and the exact measured tuple
+  before load. An unrealizable target, separately padded dimension, caller-
+  selected solution, unlineaged row, post-freeze recipe or target substitution,
+  changed cell count or multiplied byte value fails. Every governed benchmark query
+  must address a cohort ten times its `N` cohort; spreading the rows across
+  mutually invisible namespaces fails. A separate multi-namespace fixture
+  proves isolation only. The recorded roots, per-kind counts and selectivity distributions
+  must match before load begins. At maximum scale every witness query must
+  address the exact qualifying cohort and joint-distribution cell bound by the
+  MaximumScaleFixtureManifest. A smaller, partially addressed or differently
+  distributed fixture fails. The benchmark root must equal the complete
+  SupportedQueryShapeRegistry template root and the selected release's complete
+  ReleaseQueryExecutionClassRegistry and WorstCaseWitnessDominanceProof roots
+  across every active route, action, request variant, plan family, complete
+  predicate and cohort-filter AST, ordered projection, grouping, facet and sort
+  vectors, literal quotient and correlation class, page, option, saved lookup
+  and exact-detail/source page.
+  Run all three fixture scales before ProductionImportAttestation exists.
+  Each scale must have one exact LoadCertificationReleaseState, independently
+  sealed staging namespace and OPEN_LOAD_BLOCKED, ISSUE_LOAD_READY and
+  REVOKE_LOAD_AND_DRAIN receipt chain. The harness must enter only through the
+  authenticated internal LoadCertificationRouteDefinition and its live
+  LOAD_CERTIFICATION_READY fence. Its built handler, compiler, resolver, cache,
+  admission-token RPC, serving RPC, role, grants, search path, SQL and plan
+  fingerprints, bounds, response schema and instrumentation must equal the
+  production path except for the one closed authority predicate. A mock route,
+  direct SQL, reduced RPC, caller-selected namespace or copied equivalence root
+  fails. So does a load state or fence carrying ProductionImportAttestation,
+  CANONICAL_RELEASE_STATE/V3, ActivationEvent, READY_CANONICAL, production
+  credentials or an active-release pointer. The load route must reject an
+  ordinary user, production deployment or wrong staging project before cache
+  or database access. Load fixture construction must follow exactly
+  OPEN_LOAD_NAMESPACE, bounded WRITE_LOAD_FIXTURE_BATCH,
+  FINALISE_LOAD_NAMESPACE and optional ABANDON_LOAD_NAMESPACE. Issuing a ready
+  fence before finalisation, physical-root verification and permanent builder-
+  grant revocation, writing outside the new load namespace or retaining any
+  load writer while ready fails. A load fence cannot satisfy import, readiness, promotion,
+  cutover, ordinary serving or completion. The soak attestation cannot issue
+  until all three fences are BLOCKED, their external leases and database
+  tokens/statements are drained and the exact terminal revocation receipts
+  exist.
+  Independently enumerate every active query action and require its exact,
+  disjoint membership in one closed QueryExecutionKind: `DATABASE_API` or
+  `CLIENT_ONLY_NO_SQL_NO_API`. Carried-response navigation belongs only to
+  SupportedClientTransitionRegistry. Giving it an ExecutionShapeKey, SQL
+  template, physical plan, quotient, witness, release execution class, API
+  attempt or database checkout fails. Omitting it from the client registry,
+  also placing it in SupportedQueryShapeRegistry or using it to clear database
+  or API coverage fails. Its golden and browser fixtures must render the
+  governed destination from validated carried bytes with zero admission,
+  network, API, cache and database counters. Direct, reload and missing-
+  carried-response navigation must instead enter the ordinary `DATABASE_API`
+  initial-page class.
+  The registry itself must be the frozen closed member selected by
+  `QUERY_DEFINITION_SET_ROOT/V2`; both independent query-shape compilers must
+  reproduce its complete member set and root without using test fixtures as
+  authority. Give the compilers two plans with the same first predicate and
+  singular field/operator/value/sort tuple but a different second predicate,
+  Boolean topology, cohort filter, grouping, facet or later sort key. Collapsing
+  them into one class without a complete CompositeShapeEquivalenceProof and
+  common dominance proof fails. So does any admitted plan with zero or multiple
+  template or release-class matches; it must be refused before database
+  checkout.
+  Selectivity class is deterministic: valid estimates at or below `0.10` are
+  `SELECTIVE`, values above `0.10` are `UNSELECTIVE`, and missing, invalid or
+  conflicting estimates fail before planning. Those two labels alone never
+  establish load coverage. For equality, range and capped `IN`, and for
+  correlated `AND`, `OR` and nested forms, independently recompute the complete
+  ParameterDomainQuotient and Pareto-maximal witness set. Substitute a benign
+  selective or unselective fixture while a non-witness member exceeds it in
+  planner cost, visited rows, fan-out, intermediate or sort/group/facet rows,
+  output bytes, temporary bytes, `IN` cardinality or parameter bytes: dominance
+  and the gate fail. Omit an incomparable witness, change a physical plan
+  fingerprint, or use sampled or caller-supplied estimates: the gate fails.
+  Facet and field-option
+  endpoints return at most 200 values and 256 KiB per page with a signed
+  release-aware cursor; overflow must paginate or refuse before corpus access,
+  never truncate.
+  Every release execution class and every member of its bound witness set must
+  satisfy its p95, p99 and browser threshold at `N_capacity` and maximum scale.
+  Before admission-token issuance, runtime must derive exactly one
+  ExecutionClassResolverLookupKey from only the signed release or load-release
+  selector, complete ExecutionShapeKey and classifier-program version. The
+  lookup key must not contain a quotient member, selectivity, correlation,
+  cardinality class, execution class or physical-plan fingerprint. Evaluate the
+  one returned bounded LiteralClassifierProgram over the complete normalised
+  literal tuple. Two parameter tuples with the same structural
+  ExecutionShapeKey but different quotient or cost classes must use the same
+  input-side lookup and reach their different exact terminal classes. Making
+  either output part of the lookup, using a caller-supplied class, performing a
+  catalogue or corpus query, or checking out a database connection before a
+  successful terminal fails. Mutate an exact-value table, range boundary,
+  correlation node, terminal, class-coverage root or program digest: parity
+  fails. Missing, duplicate, overlapping, unreachable or over-bound programs or
+  terminals must return UNSUPPORTED_QUERY_SHAPE with zero database checkout.
+  The terminal's expected plan fingerprint cannot satisfy the independent
+  deployment or live-plan fingerprint measurement.
+  A missing
+  class, missing witness or smaller CapacityManifest cardinality component
+  fails. No-fault steady and all-miss profiles must satisfy the fixed 99.9%
+  schema-valid success and target-throughput floors, all passing profiles must
+  meet the contract latency budgets, and every injected fault must recover
+  target throughput and latency within the frozen recovery bound. A dynamic
+  API measurement must contain exactly 1,000 post-warm-up attempts for every
+  `DATABASE_API` class, witness, scale and required profile. Every server
+  browser measurement and every separately enumerated
+  `CLIENT_ONLY_NO_SQL_NO_API` transition measurement must contain exactly 200
+  post-warm-up interactions. A client transition has no API sample set, scale
+  or witness and must use the maximum valid carried-response fixture with zero
+  effect counters. Recompute nearest-rank p95 and p99 from
+  the complete terminal-attempt set using the frozen request-byte-to-validated-
+  response boundary for server attempts and user-input-to-accessible-paint
+  boundary for all browser attempts. Omitting, replacing,
+  retrying or trimming a failed or timeout attempt, pooling classes, changing
+  concurrency or region, counting warm-up attempts, using interpolation or
+  submitting only aggregate duration fails.
+  A dynamic
+  statement, procedural row loop or unregistered query ID fails. Cap-plus-one
   rejects before checkout, a dead fill leader expires, a stale fence cannot
   publish, maximum application instances still produce one shared fill,
   controller outage produces zero checkout and half-open state permits exactly
-  one fleet-wide probe. The lease TTL and every route or chunk deadline satisfy
+  one fleet-wide probe. Sustained maximum admission volume must keep only the
+  current and preceding two UTC-day raw audit partitions online, archive each
+  older member root before its generated drop, keep monthly aggregates within
+  the fixed 400-day bound and stay below the CapacityManifest row, byte, index
+  and export ceilings. A missing archive receipt, stalled drop or oversized
+  partition opens the circuit before the database bound is exceeded.
+  ServingResponseBinding produces zero Postgres calls: each final wire digest
+  appends to the bounded external audit sink, and sink outage fills only the
+  CapacityManifest queue before admission opens the circuit with no dropped
+  binding or unbudgeted response-write RPC. The lease
+  TTL and every route or chunk deadline satisfy
   the frozen skew, flush and cancellation inequalities; maximum-minus-one
   passes, maximum-plus-one fails before corpus access, and transition waits for
   both external lease drain and the database no-active-old-epoch proof. Each
@@ -2304,7 +2778,17 @@ The following adversarial closure tests are mandatory traceability entries:
 - `DEPLOY-CUTOVER-01`: changing any certified executable input blocks
   promotion; concurrent or partially failed activation yields one complete old
   or new generation; a self-referential or forward-referential release bundle
-  fails; authorisation replay fails; every typed post-activation READY, trace or
+  fails. Regenerate the gate work-class and candidate dependency DAG and require
+  the sole order PreCutoverCertification, ReleaseBundleEnvelope,
+  ProductionImportAttestation, DeploymentParityAttestation, POST_IMPORT
+  TraceabilityExtension, CutoverAuthorisation. Put deployment or import parity
+  into `production_import` or PreCutoverCertification, create deployment parity
+  before the inactive namespace is ATTESTED, create POST_IMPORT trace before
+  deployment parity, or issue cutover authority without all three exact
+  post-import objects: cycle lint or the predecessor predicate fails with zero
+  import, exposure or release-state DML. A failing deployment-parity probe can
+  affect only the inaccessible import and cannot certify its own import.
+  Authorisation replay fails; every typed post-activation READY, trace or
   smoke failure first commits its BEGIN receipt and pending head, then disables
   exposure through the acknowledged higher BLOCKED fence and drain before the
   COMPLETE receipt may fix the selected containment outcome through its owned
@@ -2319,7 +2803,17 @@ The following adversarial closure tests are mandatory traceability entries:
   commit. The readiness
   generation changes or the locked recheck fails with zero release-state change;
   a stale or replayed live-provider assertion fails, and an out-of-band runtime
-  identity mismatch serves zero corpus data.
+  identity mismatch serves zero corpus data. Independently alter one production
+  relation cardinality, column or extended-statistics payload, planner setting,
+  prepared-statement mode, schema or index; or make the actual production
+  `EXPLAIN (FORMAT JSON)` plan for one certified class or worst-case witness
+  differ in node, relation, index, join, predicate, grouping, sorting or
+  parallelism. Deployment parity fails on the unequal production statistics or
+  physical-plan root even if the stored serving projection still asserts the
+  certified fingerprint. Omitting a class or witness, copying the expected root,
+  probing a different role or namespace or reusing cached `EXPLAIN` also fails.
+  Post-cutover smoke binds every exercised class to the passing deployment-
+  parity member and takes the ordinary containment path on drift.
 - `READINESS-CAS-01`: stale predecessors, duplicate generations, forks and two
   concurrent revokers cannot produce two current mirrors. Gate expiry, selected
   intake revocation, status revocation, alias repoint, environment-reference
@@ -2423,7 +2917,8 @@ The following adversarial closure tests are mandatory traceability entries:
   smoke requires the typed no-failed-smoke absence proof. Unknown,
   duplicate, caller-selected or stage-inapplicable triggers fail closed.
 - `POST-ACTIVATION-LATE-PASS-01`: pause each READY, trace, smoke, pass-lease,
-  COMMIT_PASS, AVAILABLE and first-cutover establish transaction and race the
+  COMMIT_PASS, certification, AVAILABLE, first-cutover genesis-head and
+  later-cutover ongoing-head effect and race the
   registered BEGIN action and every ActiveReleaseRevocationActionRegistry cause.
   The shared control-head, tuple, promotion and readiness locks allow only one
   predecessor-valid linearisation. The lock winner may commit its one complete
@@ -2433,7 +2928,8 @@ The following adversarial closure tests are mandatory traceability entries:
   wins while the head is awaiting, its database commit must include the typed
   revocation evidence and coupled pending head, not merely make COMMIT fail;
   once FAILURE_CONTAINMENT_PENDING, every late
-  pass, AVAILABLE, establish and programme-completion write fails, and once
+  pass, certification, AVAILABLE, promotion-head, establish and
+  programme-completion write fails, and once
   FAILURE_FIXED it remains failed. Once PASS_FIXED, every late BEGIN or COMPLETE
   fails. A stale passing smoke or lease from another context never closes the race.
 - `POST-ACTIVATION-FAULT-BOUNDARY-01`: inject a database fault before and after
@@ -2444,8 +2940,10 @@ The following adversarial closure tests are mandatory traceability entries:
   receipt. No partial READY exposure, unheaded event, head without receipt,
   orphan or terminally stranded expired pass lease, containment-owned external
   work without a pending head, adopted ordinary controls without the atomically
-  coupled pending head, AVAILABLE fence after BEGIN or untraceable failure
-  evidence is possible; retry is exact
+  coupled pending head, PASS_FIXED or AVAILABLE without the matching
+  ReleaseActivationCertification and genesis or exact-predecessor ongoing head,
+  certification without PASS_FIXED, AVAILABLE fence after BEGIN or untraceable
+  failure evidence is possible; retry is exact
   replay or a new governed successor.
 - `LEGACY-RESTORATION-TRANSACTION-01`: for each writer-derived restoration
   ordinal, inject failure before and after every tuple-field, attestation,
@@ -2559,12 +3057,24 @@ The following adversarial closure tests are mandatory traceability entries:
   mixed, wrong-variant, stale-generation and cross-fence payloads fail before
   cache or data access. Blocking either ready state drains its own leases, and
   no cache entry or admission token survives the variant or generation change.
-- `HISTORICAL-REACTIVATION-ADVANCED-HEAD-01`: activate release R1, complete its
-  immutable PASS chain, advance CandidateInputHead through R2 scope, extraction
-  and correction changes, activate R2 and force its smoke to fail. After the
+- `HISTORICAL-REACTIVATION-ADVANCED-HEAD-01`: activate release R1, create its
+  ReleaseActivationCertification and complete the one-time programme. With the
+  programme-status head now absorbing, advance CandidateInputHead through R2
+  scope, extraction and correction changes, certify R2 and activate it solely
+  through the OngoingReleasePromotionHead, then force its smoke to fail. No R2
+  step may reopen or increment ProgrammeStatusPublicationHead. The R1
+  COMMIT_PASS transaction creates the certification and genesis ongoing head,
+  while R2's COMMIT_PASS atomically produces PASS_FIXED, a terminal PASS
+  certification, AVAILABLE fence and exact-predecessor CAS receipt and head.
+  Its
+  CutoverAuthorisation selects OngoingReleaseReadiness with every
+  programme-status and DeploymentReadinessMirror field absent. The sole
+  activation RPC must lock, revalidate and consume that readiness and its exact
+  current promotion-head predecessor; a stale readiness object performs zero
+  activation DML. After the
   RollbackEvent, unique FailureRecoveryBranch, `OPEN` head and exposure-off tuple
   commit, CAS the head to `HISTORICAL_REACTIVATION_IN_PROGRESS` and revalidate R1's retained namespace
-  and exact prior PASS evidence against current policy, revocation and dependency
+  and exact R1 ReleaseActivationCertification against current policy, revocation and dependency
   heads, restore its exact deployment, runtime, configuration, alias, schema and
   migration fields, acquire `HELD(HISTORICAL_REACTIVATION)` from REVOKED and
   reactivate every R1 tuple field under one higher state generation. The old R1
@@ -2573,7 +3083,10 @@ The following adversarial closure tests are mandatory traceability entries:
   advanced current head without equating or rewinding it. Mutate each current
   policy, revocation, dependency, retained byte, namespace/header, prior PASS
   evidence, provider assertion, schema-compatibility proof, before tuple and
-  target field independently and require zero exposure-enabling DML. Passing
+  target field independently and require zero exposure-enabling DML. Removing
+  R1's ReleaseActivationCertification blocks reactivation, while removing a
+  ProgrammeCompletionAttestation from the historical input has no effect
+  because that field is forbidden. Passing
   fresh smoke releases AVAILABLE, fixes `HISTORICAL_REACTIVATION_SUCCEEDED` and
   selects `HISTORICAL_SUCCEEDED` only with the exact issue-lease and COMMIT_PASS
   receipts. Abandonment before ActivationEvent remains
@@ -2584,6 +3097,19 @@ The following adversarial closure tests are mandatory traceability entries:
   failed-or-abandoned recovery outcome but never the evidence variant, reason or
   disposition. All three variants produce one complete terminal through the
   same reason-independent slot and cannot satisfy programme_complete.
+  In a separate fixture, let R2 reach PASS_FIXED and become the current
+  OngoingReleasePromotionHead, then execute a registered ordinary revocation.
+  The one serialisable revocation transaction must write the BLOCKED and drain
+  evidence, exposure-off tuple, RollbackEvent, receipt, terminal-context
+  ACTIVE_RELEASE_REVOCATION evidence, consume the unique branch slot and open
+  one `POST_PASS_ORDINARY_REVOCATION` FailureRecoveryBranch bound to R1 as the
+  writer-derived retained predecessor. The PASS_FIXED head remains immutable
+  and no eighth post-activation action exists. Omitting the branch, creating it
+  in a repair transaction, selecting a caller-supplied target, using a stale
+  promotion head, splitting any effect across commits or replaying the slot
+  fails atomically. The valid branch may reactivate R1 through the same current-
+  policy eligibility path. A no-predecessor fixture must bind the explicit
+  marker and fix `NO_HISTORICAL_REACTIVATION`.
 - `PROGRAMME-COMPLETE-01`: passing smoke alone cannot open programme completion;
   the exact POST_ACTIVATION extension, passing P9_TRACEABILITY prefix evidence,
   passing smoke, AVAILABLE promotion successor and ProgrammeCompletionAttestation
@@ -2591,7 +3117,63 @@ The following adversarial closure tests are mandatory traceability entries:
   `P9_PROGRAMME_COMPLETION_ATTESTATION` evidence envelope proves only those
   preterminal facts and does not claim later POST_COMPLETION coverage or atomic
   publication. Only a passing
-  POST_COMPLETION extension covering those final objects and that status, plus
-  atomic publication of their exact pair, satisfies the final registry
-  predicate. Any missing, mismatched, reordered, partial, stale or later
-  untraced status reference fails closed.
+  POST_COMPLETION extension covering those final objects and that status may be
+  written only with the status as one immutable database
+  CompletionTerminalPairAttempt keyed by generation, expected Git predecessor
+  and status digest. That pair is not current. Only the protected
+  publisher's later stale-safe Git-ref compare-and-swap to a status commit
+  binding the exact revalidated pair satisfies the final registry predicate.
+  Failure between the database commit and Git CAS leaves completion OPEN and
+  permits only full revalidation plus retry against the same predecessor. If the
+  head advanced, the publisher appends `ABANDONED_STALE_PREDECESSOR`; a fresh
+  next-generation attempt must recompute status, context, lease and extension.
+  The abandoned immutable attempt cannot occupy or block a global slot. Any
+  missing, mismatched, reordered, partial, stale or later untraced status
+  reference fails closed, and no test may claim a cross-system atomic commit.
+- `DEPLOYMENT-PARITY-FRESHNESS-01`: create a passing
+  DeploymentParityAttestation, then change each production statistics
+  generation, physical-plan member, provider deployment, runtime configuration,
+  alias, schema and migration generation before authorisation and before
+  activation. A fresh `ActivationDeploymentParityRecheck/V1` must independently
+  rerun the complete production statistics and actual-planner member sets,
+  expire within ten minutes and be selected by CutoverAuthorisation. Activation
+  consumes its one-use nonce and rechecks current generations before any
+  release-state DML. A stale, cached, copied, expired, replayed, partial or
+  caller-supplied recheck writes zero activation DML.
+- `ONGOING-READINESS-AUTHORITY-01`: after programme completion, issue exactly
+  one `OngoingReleaseReadiness/V2` through
+  `ISSUE_ONGOING_RELEASE_READINESS` against an EMPTY
+  `OngoingReleaseReadinessSlot/V1`. Substitute an untrusted key, wrong signature
+  domain, stale promotion head, missing promotion proof, stale policy or
+  revocation head, wrong deployment tuple, expired parity recheck, over-ten-
+  minute expiry, duplicate object or caller-authored payload and require no
+  ISSUED slot. Activation must consume the exact ISSUED slot atomically with the
+  state CAS. Replay, revocation or a changed predecessor writes zero activation
+  DML and a replacement requires a new slot generation and full issuance.
+- `POST-ATTESTATION-ABANDONMENT-01`: create an inactive ATTESTED import, then
+  fail the fresh activation parity recheck before any readiness,
+  CutoverAuthorisation or ActivationEvent. The existing `ABANDON_IMPORT` action
+  must select only `ATTESTED_DEPLOYMENT_PARITY_FAILURE`, enumerate the complete
+  attested import and inactive namespace, preserve immutable attestation and
+  failure history, erase the namespace and atomically reach terminal
+  ABANDONED. Attempt the same variant with exposure, authorisation, activation,
+  a non-empty ongoing-readiness slot, another failure reason or an incomplete
+  inventory and require zero writes. The abandoned attestation must be
+  ineligible for every import, readiness, cutover, reactivation and serving
+  predicate.
+# Generation-1 owner-authorisation adversarial cases
+
+- A signed `FAIL` output whose disposition or digest differs from its
+  controller record is rejected.
+- The review-set identity changes if the outer artefact hash, byte size,
+  reviewed commit, reviewed root or ordered lane members change.
+- The owner-authorisation is rejected if its current root or commit, reviewed
+  root or commit, governance diff, actor identity, run identity or exact intent
+  changes.
+- A deleted governance file is included in the closed changed-path set, and a
+  successor that is not descended from the reviewed basis is rejected.
+- Any production write, re-extraction, backfill, import, release activation,
+  feature activation or cutover permission is rejected.
+- A V2 outcome record, including one carrying only `PASS` strings, cannot
+  satisfy the strict V1 P1 authority contract. P1 requires all five signed V1
+  lanes to pass independently.

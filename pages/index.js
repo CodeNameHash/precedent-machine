@@ -6,19 +6,16 @@ import MergertraceStyles from '../components/review-v2/MergertraceStyles';
 import QueryLaunchBox from '../components/query/QueryLaunchBox';
 import { buildDealFilterPayload } from '../components/query/QueryFilterControls';
 import { COLUMNS, getColumn, defaultVisibleKeys, signedYear } from '../lib/deals-index-columns';
-import { getServiceSupabase } from '../lib/supabase';
+import {
+  homeSearchSuggestions,
+  SEARCH_SNAPSHOT_URL,
+  shouldLoadHomeSearchIndex,
+  validateHomeSearchSnapshot,
+} from '../lib/home-search';
 const { getHomeStaticProps } = require('../lib/home-static-props');
 
-// F3: ISR snapshot — fetches the same { deals, search_index } shape as
-// /api/home server-side at build/revalidate time, so the deals table
-// renders with real data on first paint with no client fetch wait. The
-// client-side fetch in HomePage still runs and hydrates over this if
-// there's a fresher payload; the table itself never re-blanks in between
-// (see the `data` fallback in the fetch effect below). Fail-soft logic
-// (Supabase env absent at build time, etc.) lives in
-// lib/home-static-props.js so it's unit-testable without a JSX transform.
 export async function getStaticProps() {
-  return getHomeStaticProps(getServiceSupabase);
+  return getHomeStaticProps();
 }
 
 HomePage.noLayout = true;
@@ -26,6 +23,7 @@ HomePage.noLayout = true;
 const COLUMNS_STORAGE_KEY = 'deals_index_columns_v2';
 const LEGACY_COLUMNS_STORAGE_KEY = 'deals_index_columns_v1';
 const VALUE_BANDS = ['<$1B', '$1B-$10B', '>$10B'];
+const QUERY_UI_CONTAINED = true;
 
 function encodePayload(payload) {
   return btoa(JSON.stringify(payload)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -170,6 +168,8 @@ export default function HomePage({ initialData }) {
   const [data, setData] = useState(() => initialData || null);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
+  const [searchIndex, setSearchIndex] = useState(null);
+  const [searchIndexStatus, setSearchIndexStatus] = useState('idle');
   const [sort, setSort] = useState({ key: 'signed', dir: 'desc' });
   const [filters, setFilters] = useState({});
   const [visibleCols, setVisibleCols] = useState(() => defaultVisibleKeys());
@@ -221,6 +221,21 @@ export default function HomePage({ initialData }) {
       })
       .catch((err) => setError(err.message));
   }, []);
+
+  useEffect(() => {
+    if (!shouldLoadHomeSearchIndex(search) || searchIndexStatus !== 'idle') return;
+    setSearchIndexStatus('loading');
+    fetch(SEARCH_SNAPSHOT_URL)
+      .then((res) => {
+        if (!res.ok) throw new Error(`Search index request failed (${res.status})`);
+        return res.json();
+      })
+      .then((snapshot) => {
+        setSearchIndex(validateHomeSearchSnapshot(snapshot).entries);
+        setSearchIndexStatus('loaded');
+      })
+      .catch(() => setSearchIndexStatus('failed'));
+  }, [search, searchIndexStatus]);
 
   useEffect(() => {
     const stored = readColumnsFromStorage();
@@ -322,17 +337,16 @@ export default function HomePage({ initialData }) {
   }, [deals, filters, sort]);
 
   const suggestions = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (q.length < 2) return [];
-    return (data?.search_index || [])
-      .filter((hit) => `${hit.label} ${hit.detail}`.toLowerCase().includes(q))
-      .slice(0, 15);
-  }, [search, data]);
+    return homeSearchSuggestions(search, deals, searchIndex);
+  }, [search, deals, searchIndex]);
 
   // Preserve r15's specific-feature shortcut while leaving broad provision
   // families to the natural-language query box, where they can be narrowed
   // to a comparable metric.
-  const showAllMatch = useMemo(() => matchFeatureVocab(search), [search]);
+  const showAllMatch = useMemo(
+    () => (QUERY_UI_CONTAINED ? null : matchFeatureVocab(search)),
+    [search],
+  );
 
   function runShowAll(entry) {
     if (!entry) return;
@@ -425,7 +439,7 @@ export default function HomePage({ initialData }) {
               <div className="wrap">
                 {/* Query surface — its own bordered panel, clearly separate
                     from the deal list below (Ben r15, item 6). */}
-                <div className="querySurface">
+                {!QUERY_UI_CONTAINED && <div className="querySurface">
                   <QueryLaunchBox
                     bordered={false}
                     deals={deals}
@@ -443,7 +457,7 @@ export default function HomePage({ initialData }) {
                       <button type="button" className="pickCancel" onClick={cancelPick}>Clear (Esc)</button>
                     </div>
                   )}
-                </div>
+                </div>}
 
                 {/* Deal list — its own surface with its own header band, in
                     the same voice as the review page's grey title bars. */}

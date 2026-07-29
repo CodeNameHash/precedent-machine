@@ -1,0 +1,20 @@
+{
+  "phase": "WP-G0-LOCAL-REVIEW-AUTH-CHANNEL-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-g0-local-review-auth-channel-v1.json",
+    "scripts/preflight-local-review-controller.mjs",
+    "tests/programme-gates/local-review-controller-preflight.spec.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "lib/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Reads the non-secret Codex authentication status from the CLI's stderr channel as well as stdout. It does not inspect authentication material, add an API credential, execute a review, create a signature or PASS, publish status, or touch corpus, database or product paths."
+}

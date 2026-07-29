@@ -89,6 +89,7 @@ async function fetchJson(url, { signal, timeoutMs = FETCH_TIMEOUT_MS, ...request
         : payload.error?.message || payload.message || `HTTP ${response.status}`;
       const error = new Error(message);
       error.status = response.status;
+      error.code = payload.error?.code || payload.code || null;
       throw error;
     }
     return payload;

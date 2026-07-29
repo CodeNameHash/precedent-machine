@@ -91,3 +91,16 @@ test('an exact Bearer secret may initialise Supabase and run discovery', async (
   assert.equal(res.statusCode, 200);
   assert.deepEqual(guarded.calls(), { supabaseCalls: 1, discoveryCalls: 1 });
 });
+
+test('over-cap work is rejected before Supabase initialisation', async () => {
+  const guarded = guardedHandler('expected-secret');
+  const days = responseRecorder();
+  const limit = responseRecorder();
+
+  await guarded.handler(request('Bearer expected-secret', { days: '31' }), days);
+  await guarded.handler(request('Bearer expected-secret', { limit: '101' }), limit);
+
+  assert.equal(days.statusCode, 400);
+  assert.equal(limit.statusCode, 400);
+  assert.deepEqual(guarded.calls(), { supabaseCalls: 0, discoveryCalls: 0 });
+});
