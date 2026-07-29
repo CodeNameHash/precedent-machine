@@ -1,0 +1,52 @@
+{
+  "object_kind": "PRODUCT_QUERY_ACTION_CONTRACT_INPUT",
+  "stable_id": "PRODUCT_RERUN_ON_ACTIVE_RELEASE",
+  "schema_version": "PRODUCT_QUERY_ACTION_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PRODUCT",
+    "contract_type": "ACTIVE_RELEASE_RERUN_DEFINITION",
+    "contract_version": 1,
+    "eligibility_contract": {
+      "source_definition_stable_id": "PRODUCT_SAVED_QUERY_DEFINITION",
+      "source_release_is_no_longer_active": true,
+      "explicit_user_action_required": true,
+      "changed_results_warning_required_before_action": true,
+      "automatic_rerun_permitted": false,
+      "durable_historical_serving_permitted": false
+    },
+    "compilation_contract": {
+      "query_ir_definition_stable_id": "PRODUCT_QUERY_IR",
+      "query_ir_schema_version": "PRODUCT_QUERY_IR/V1",
+      "original_cursor_free_semantic_template_required": true,
+      "fresh_active_candidate_release_manifest_admission_required": true,
+      "fresh_compilation_against_product_query_contract_required": true,
+      "field_navigation_and_mapping_admission_revalidation_required": true,
+      "same_query_door_required": true,
+      "unsupported_or_incompatible_disposition": "TYPED_REFUSAL",
+      "nearest_predicate_substitution_permitted": false
+    },
+    "result_contract": {
+      "new_execution_identity_required": true,
+      "new_active_release_identity_required": true,
+      "original_saved_definition_remains_immutable": true,
+      "original_citation_or_result_substitution_permitted": false,
+      "silent_redirect_permitted": false,
+      "result_difference_warning_retained": true
+    },
+    "failure_contract": {
+      "active_release_resolution_failure_fails_closed": true,
+      "failed_rerun_can_mutate_saved_definition": false,
+      "failed_rerun_can_hide_original_reference": false,
+      "operational_failure_can_render_as_empty_result": false
+    },
+    "authority_contract": {
+      "creates_runtime_rerun": false,
+      "creates_query_execution_authority": false,
+      "creates_serving_authority": false,
+      "creates_writer_authority": false,
+      "creates_release_authority": false,
+      "creates_activation_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

@@ -732,6 +732,20 @@
       "canonical_bytes_digest": "f7c464ddc74e2a888259492f266ae700825a57ea68e4489cf15af1d058b1f7d5"
     },
     {
+      "relative_path": "product/query/product-rerun-on-active-release.v1.json",
+      "object_kind": "PRODUCT_QUERY_ACTION_CONTRACT_INPUT",
+      "stable_id": "PRODUCT_RERUN_ON_ACTIVE_RELEASE",
+      "schema_version": "PRODUCT_QUERY_ACTION_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "cac09a407b0f0c1ab8e9f9615b7e4098fd1e55826623fc05f1944395ec02edea"
+    },
+    {
+      "relative_path": "product/query/product-saved-query-definition.v1.json",
+      "object_kind": "PRODUCT_QUERY_ACTION_CONTRACT_INPUT",
+      "stable_id": "PRODUCT_SAVED_QUERY_DEFINITION",
+      "schema_version": "PRODUCT_QUERY_ACTION_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "dde8e396866656cdb3e4f9e081fcbb62b64c83d82093b5b4e8460376365a198f"
+    },
+    {
       "relative_path": "shared/deal-facts/deal-fact-resolution-occurrence.v1.json",
       "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
       "stable_id": "DEAL_FACT_RESOLUTION_OCCURRENCE",
@@ -863,6 +877,7 @@
     "PROCESS_PREDICATE_CONTRACT_INPUT": 2,
     "PROCESS_QUERY_CONTRACT_INPUT": 3,
     "PROCESS_RESULT_ACTION_CONTRACT_INPUT": 4,
+    "PRODUCT_QUERY_ACTION_CONTRACT_INPUT": 2,
     "PRODUCT_QUERY_CONTRACT_INPUT": 1,
     "PROVISION_CONCEPT": 19,
     "RELATIONSHIP_DEFINITION": 5,
@@ -930,6 +945,9 @@
     ],
     "PROCESS_RESULT_ACTION_CONTRACT_INPUT": [
       "PROCESS_RESULT_ACTION_CONTRACT_INPUT/V1"
+    ],
+    "PRODUCT_QUERY_ACTION_CONTRACT_INPUT": [
+      "PRODUCT_QUERY_ACTION_CONTRACT_INPUT/V1"
     ],
     "PRODUCT_QUERY_CONTRACT_INPUT": [
       "PRODUCT_QUERY_CONTRACT_INPUT/V1"

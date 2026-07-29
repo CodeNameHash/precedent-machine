@@ -1,0 +1,59 @@
+{
+  "object_kind": "PRODUCT_QUERY_ACTION_CONTRACT_INPUT",
+  "stable_id": "PRODUCT_SAVED_QUERY_DEFINITION",
+  "schema_version": "PRODUCT_QUERY_ACTION_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PRODUCT",
+    "contract_type": "SAVED_QUERY_DEFINITION",
+    "contract_version": 1,
+    "definition_contract": {
+      "logical_type": "ProductSavedQueryDefinition",
+      "immutable_version_required": true,
+      "stable_id_and_canonical_definition_digest_required": true,
+      "cursor_free_semantic_template_required": true,
+      "query_ir_definition_stable_id": "PRODUCT_QUERY_IR",
+      "query_ir_schema_version": "PRODUCT_QUERY_IR/V1",
+      "exactly_one_admitted_domain_plan_required": true,
+      "release_modes": [
+        "PINNED",
+        "FOLLOW_ACTIVE"
+      ],
+      "bare_release_id_permitted": false,
+      "cursor_permitted": false,
+      "serving_fence_version_permitted": false,
+      "resolved_active_tuple_permitted": false
+    },
+    "pinned_release_contract": {
+      "exact_candidate_release_manifest_id_required": true,
+      "exact_candidate_release_manifest_payload_digest_required": true,
+      "active_manifest_byte_equality_required": true,
+      "inactive_disposition": "RELEASE_NOT_ACTIVE",
+      "historical_serving_permitted": false,
+      "silent_active_release_substitution_permitted": false
+    },
+    "follow_active_contract": {
+      "fresh_external_fence_resolution_required": true,
+      "fresh_active_manifest_admission_required": true,
+      "recompile_against_product_query_contract_required": true,
+      "field_navigation_and_mapping_admission_revalidation_required": true,
+      "save_time_validation_can_authorise_execution": false
+    },
+    "execution_preflight_contract": {
+      "candidate_semantic_template_validation_required": true,
+      "saved_definition_ownership_required": true,
+      "saved_definition_digest_and_byte_equality_required": true,
+      "execution_class_resolution_before_database_checkout": true,
+      "incompatible_template_disposition": "TYPED_REFUSAL",
+      "read_execution_can_update_mutable_counters_synchronously": false
+    },
+    "authority_contract": {
+      "creates_runtime_saved_query": false,
+      "creates_query_execution_authority": false,
+      "creates_serving_authority": false,
+      "creates_writer_authority": false,
+      "creates_release_authority": false,
+      "creates_activation_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}
