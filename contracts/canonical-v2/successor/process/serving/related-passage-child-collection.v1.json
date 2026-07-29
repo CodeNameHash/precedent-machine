@@ -1,0 +1,58 @@
+{
+  "object_kind": "SERVING_PROCESS_CONTRACT_INPUT",
+  "stable_id": "RELATED_PASSAGE_CHILD_COLLECTION",
+  "schema_version": "SERVING_PROCESS_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "contract_type": "CHILD_COLLECTION_DEFINITION",
+    "contract_version": 1,
+    "action_contract": {
+      "action_key": "PROCESS_RELATED_PASSAGES",
+      "action_version": 1,
+      "response_schema": "PROCESS_RELATED_PASSAGES_RESPONSE/V1",
+      "route": "BOUNDED_PARENT_CHILD_COLLECTION",
+      "object_level_authorisation_required": true
+    },
+    "parent_contract": {
+      "parent_definition_stable_id": "PROCESS_PHRASEBOOK_PASSAGE_RESULT",
+      "parent_kind": "RESULT_ROW",
+      "exactly_one_parent_required": true,
+      "same_source_document_required": true,
+      "parent_release_identity_required": true
+    },
+    "collection_contract": {
+      "collection_key": "PROCESS_RELATED_PASSAGES",
+      "maximum_children": 12,
+      "precomputed_release_projection_required": true,
+      "application_side_graph_traversal_permitted": false,
+      "deterministic_order_required": true,
+      "duplicate_child_result_ids_permitted": false
+    },
+    "child_contract": {
+      "required_fields": [
+        "exact_detail_reference",
+        "relationship_definition_key_and_version",
+        "relationship_label",
+        "related_result_id",
+        "verbatim_passage_preview"
+      ],
+      "typed_relationship_label_required": true,
+      "verbatim_preview_definition_stable_id": "BOUNDED_INLINE_PASSAGE_PREVIEW",
+      "exact_detail_reference_required": true,
+      "classification_is_secondary": true,
+      "classification_can_replace_actual_drafting": false
+    },
+    "failure_contract": {
+      "malformed_child_isolated": true,
+      "malformed_child_can_remove_valid_siblings": false,
+      "unresolved_relationship_is_publishable_as_related": false
+    },
+    "authority_contract": {
+      "creates_runtime_relationship": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}
