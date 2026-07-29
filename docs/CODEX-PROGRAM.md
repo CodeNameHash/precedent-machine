@@ -2088,12 +2088,24 @@ The pre-cutover gates are:
   canonical-order fixture loading and index rebuilding under the frozen
   PostgreSQL and index-build settings, never a multiplied byte estimate. A
   separate multi-namespace isolation fixture proves routing isolation but
-  cannot satisfy the scale test. “Maximum scale” is the field-by-field larger
-  of that measured `10N_capacity` fixture and all eight maximum cardinalities
-  certified by the selected CapacityManifest. The load manifest records the
-  two input tuples, derivation and inventory roots and derived maximum-scale
-  tuple before execution; a smaller fixture, changed distribution or unbound
-  synthetic set cannot satisfy the soak gate;
+  cannot satisfy the scale test. “Maximum scale” is one deterministic,
+  physically loaded fixture, not the field-by-field tuple alone. Its first
+  seven construction targets are the larger of the corresponding measured
+  `10N_capacity` values and CapacityManifest maxima. Starting from the exact
+  `10N_capacity` rows, the frozen builder chooses the unique canonical
+  non-negative multiplicity vector over schema-valid expansion archetypes that
+  jointly realises all seven targets in one namespace, preserves required
+  quotient and worst-case-witness cells and applies the frozen exact-rational
+  distribution objective and UTF-8 tie-break. Every row retains source and
+  parent fixture lineage. The builder then inserts in canonical order, rebuilds
+  the closed index set and measures the eighth indexed-byte value from
+  `pg_relation_size` under the frozen settings. CapacityManifest cannot freeze
+  unless a scratch build and two independent enumerators reproduce the exact
+  lineage, distribution, relation, index, per-index byte and measured-tuple
+  roots. The load manifest selects that exact MaximumScaleFixtureManifest and
+  rebuilds it byte-for-byte. An unrealizable target, smaller or independently
+  assembled fixture, changed distribution, unbound synthetic set or multiplied
+  byte estimate cannot satisfy the soak gate;
 - in the no-fault steady and target-rate all-miss profiles, at least 99.9% of
   requests return a schema-valid successful response and achieved throughput is
   at least 99.9% of the fixed target, with zero admission, circuit-open or
@@ -2382,10 +2394,16 @@ earlier shorthand. In particular:
   `programme-gates.yaml`;
 - production blob availability has one registered verifier action and
   idempotent writer transaction before pre-seal root construction;
-- CapacityManifest carries the exact maximum-scale cardinality tuple, every
-  supported query-shape class reconciles to a golden and load fixture, the
-  originating serving RPC returns one bounded response without a result-page
-  persistence write, and latency gates cover every interactive class;
+- CapacityManifest binds the deterministic, jointly realised
+  MaximumScaleFixtureRecipe and its exact lineage, distribution and physical
+  index-measurement roots. Database and API execution shapes use
+  `DATABASE_API`; carried-response transitions use the disjoint
+  `CLIENT_ONLY_NO_SQL_NO_API` registry and have a separate browser-only
+  zero-effect timing obligation. Every class reconciles to its tagged golden
+  and performance fixture, the originating serving RPC returns one bounded
+  response without a result-page persistence write, and latency gates cover
+  every interactive class without inventing SQL or API evidence for a client
+  transition;
 - residual contracts are CanonicalContractBundle members, source-specific
   publication binds the actual eligible legal review and selected PRESENT
   primitive, and scope- or contract-impacting novel propositions block only

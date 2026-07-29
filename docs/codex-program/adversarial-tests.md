@@ -2418,19 +2418,45 @@ The following adversarial closure tests are mandatory traceability entries:
   index set under the frozen settings and measure its exact indexed bytes.
   Multiplying the N indexed-byte value by ten, counting one selected index
   twice, omitting a partial-index entry or using heap bytes fails. Maximum-scale
-  is the field-by-field larger of the measured `10N_capacity` tuple and all
-  eight selected CapacityManifest maxima. Every governed benchmark query
+  is one physically loaded fixture, not the field-by-field tuple alone. Its
+  first seven targets are the larger of the corresponding measured
+  `10N_capacity` values and selected CapacityManifest maxima. Starting from the
+  exact `10N_capacity` rows, solve the frozen expansion-archetype constraint
+  problem to its exact-rational distribution objectives and lexicographically
+  lowest multiplicity vector, preserve every required quotient and worst-case-
+  witness cell, bind every base and expanded row to its source and parent
+  fixture lineage, load in canonical order, rebuild the closed index set and
+  measure indexed bytes with `pg_relation_size`. Two independent enumerators
+  must reproduce the archetype, multiplicity, lineage, joint-distribution,
+  relation, index, per-index entry and byte roots and the exact measured tuple
+  before load. An unrealizable target, separately padded dimension, caller-
+  selected solution, unlineaged row, post-freeze recipe or target substitution,
+  changed cell count or multiplied byte value fails. Every governed benchmark query
   must address a cohort ten times its `N` cohort; spreading the rows across
   mutually invisible namespaces fails. A separate multi-namespace fixture
   proves isolation only. The recorded roots, per-kind counts and selectivity distributions
-  must match before load begins. A smaller or differently distributed fixture
-  fails. The benchmark root must equal the complete
+  must match before load begins. At maximum scale every witness query must
+  address the exact qualifying cohort and joint-distribution cell bound by the
+  MaximumScaleFixtureManifest. A smaller, partially addressed or differently
+  distributed fixture fails. The benchmark root must equal the complete
   SupportedQueryShapeRegistry template root and the selected release's complete
   ReleaseQueryExecutionClassRegistry and WorstCaseWitnessDominanceProof roots
   across every active route, action, request variant, plan family, complete
   predicate and cohort-filter AST, ordered projection, grouping, facet and sort
-  vectors, literal quotient and correlation class, page, option, saved lookup,
-  carried-response navigation and exact-detail/source page.
+  vectors, literal quotient and correlation class, page, option, saved lookup
+  and exact-detail/source page.
+  Independently enumerate every active query action and require its exact,
+  disjoint membership in one closed QueryExecutionKind: `DATABASE_API` or
+  `CLIENT_ONLY_NO_SQL_NO_API`. Carried-response navigation belongs only to
+  SupportedClientTransitionRegistry. Giving it an ExecutionShapeKey, SQL
+  template, physical plan, quotient, witness, release execution class, API
+  attempt or database checkout fails. Omitting it from the client registry,
+  also placing it in SupportedQueryShapeRegistry or using it to clear database
+  or API coverage fails. Its golden and browser fixtures must render the
+  governed destination from validated carried bytes with zero admission,
+  network, API, cache and database counters. Direct, reload and missing-
+  carried-response navigation must instead enter the ordinary `DATABASE_API`
+  initial-page class.
   The registry itself must be the frozen closed member selected by
   `QUERY_DEFINITION_SET_ROOT/V2`; both independent query-shape compilers must
   reproduce its complete member set and root without using test fixtures as
@@ -2473,10 +2499,15 @@ The following adversarial closure tests are mandatory traceability entries:
   meet the contract latency budgets, and every injected fault must recover
   target throughput and latency within the frozen recovery bound. A dynamic
   API measurement must contain exactly 1,000 post-warm-up attempts for every
-  class, witness, scale and required profile, and every browser measurement
-  exactly 200 post-warm-up interactions. Recompute nearest-rank p95 and p99 from
+  `DATABASE_API` class, witness, scale and required profile. Every server
+  browser measurement and every separately enumerated
+  `CLIENT_ONLY_NO_SQL_NO_API` transition measurement must contain exactly 200
+  post-warm-up interactions. A client transition has no API sample set, scale
+  or witness and must use the maximum valid carried-response fixture with zero
+  effect counters. Recompute nearest-rank p95 and p99 from
   the complete terminal-attempt set using the frozen request-byte-to-validated-
-  response and user-input-to-accessible-paint boundaries. Omitting, replacing,
+  response boundary for server attempts and user-input-to-accessible-paint
+  boundary for all browser attempts. Omitting, replacing,
   retrying or trimming a failed or timeout attempt, pooling classes, changing
   concurrency or region, counting warm-up attempts, using interpolation or
   submitting only aggregate duration fails.

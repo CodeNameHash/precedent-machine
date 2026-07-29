@@ -73,7 +73,7 @@ test('capacity adversary rejects singular-tuple collapse and benign witnesses', 
   }
 });
 
-test('capacity scale tuple derives all eight dimensions at 10N', () => {
+test('capacity scale fixture jointly realises and measures all eight dimensions', () => {
   const capacityContract = contracts.match(
     /`CapacityManifest` additionally owns(?<body>[\s\S]*?)(?=\n`SupportedQueryShapeRegistry`)/,
   );
@@ -82,9 +82,14 @@ test('capacity scale tuple derives all eight dimensions at 10N', () => {
   for (const required of [
     'deal, observation, metric-slot, aggregate, serving-row, cohort-member, indexed-row and indexed-byte',
     'Its first seven fields are therefore exactly ten times',
+    '`MaximumScaleFixtureRecipe`',
+    '`FixtureExpansionArchetype`',
+    'all seven target values true in one namespace at the same time',
+    'complete row-lineage root',
+    'joint-distribution cell root',
     'sums `pg_relation_size` for each distinct selected index',
-    'field-by-field maximum',
-    'eight declared CapacityManifest maxima',
+    'measured eight-field output tuple',
+    'No solution means the CapacityManifest is unrealizable',
   ]) {
     assert.ok(body.includes(required), `capacity derivation is missing ${required}`);
   }
@@ -97,11 +102,48 @@ test('capacity scale tuple derives all eight dimensions at 10N', () => {
     'first seven dimensions must each equal ten times',
     'measure its exact indexed bytes',
     'Multiplying the N indexed-byte value by ten',
-    'all eight selected CapacityManifest maxima',
+    'one physically loaded fixture',
+    'expansion-archetype constraint',
+    'source and parent fixture lineage',
+    'Two independent enumerators',
+    '`pg_relation_size`',
   ]) {
     assert.ok(
       adversarialBody.includes(required),
       `capacity adversary is missing ${required}`,
+    );
+  }
+});
+
+test('client-only transitions are disjoint from database and API execution classes', () => {
+  const body = contracts.replace(/\s+/g, ' ');
+  for (const required of [
+    '`QueryExecutionKind` is `DATABASE_API`',
+    '`QueryExecutionKind` is `CLIENT_ONLY_NO_SQL_NO_API`',
+    '`SupportedClientTransitionRegistry`',
+    '`GovernedQueryActionCoverageRoot`',
+    'no admission, network request, API invocation, cache lookup or database checkout',
+    'can never produce or satisfy a release execution class',
+    '`ClientTransitionPerformanceRegistry`',
+    'no request-byte boundary and no API sample set',
+  ]) {
+    assert.ok(body.includes(required), `client transition closure is missing ${required}`);
+  }
+
+  const capacity = adversarial.match(
+    /- `CAPACITY-LOAD-01`:(?<body>[\s\S]*?)(?=\n- `[A-Z0-9-]+-\d{2}`:|\s*$)/,
+  );
+  assert.ok(capacity, 'CAPACITY-LOAD-01 is missing');
+  const adversarialBody = capacity.groups.body.replace(/\s+/g, ' ');
+  for (const required of [
+    '`DATABASE_API` or `CLIENT_ONLY_NO_SQL_NO_API`',
+    'Carried-response navigation belongs only to SupportedClientTransitionRegistry',
+    'zero admission, network, API, cache and database counters',
+    'A client transition has no API sample set, scale or witness',
+  ]) {
+    assert.ok(
+      adversarialBody.includes(required),
+      `client transition adversary is missing ${required}`,
     );
   }
 });

@@ -9234,18 +9234,26 @@ This file is the sole authority for detailed identities, state machines, writer 
   reproducible-build digests; generated SQL and RPC definitions; required
   indexes and materialised views; route budgets; and the complete
   SupportedQueryShapeRegistry, every CompositeQueryShapeTemplate and every
-  CompositeShapeEquivalenceProof. Its ID hashes
+  CompositeShapeEquivalenceProof, SupportedClientTransitionRegistry, every
+  ClientTransitionTemplate and the disjoint
+  GovernedQueryActionCoverageRoot and ClientTransitionPerformanceRegistry. Its
+  ID hashes
   `QUERY_DEFINITION_SET_ROOT/V2`, schema, exact CanonicalBundleInputIdentity ID
   and payload digest, contract-ordered member stable IDs and canonical payload
   digests, per-kind counts and fixed empty missing, extra, duplicate and
   conflicting-definition roots. It expressly excludes the bundle fingerprint,
   ContractFreezeAttestation and frozen pair.
 - `QueryGoldenSuiteManifest` is generated from the human-reviewed golden
-  fixtures in the governed bundle-input set. It inventories every fixture and
-  its canonical plan AST, SQL and parameter-schema digest, result-schema digest,
-  expected typed rows, cohort and aggregate semantics, error branch, index and
-  plan requirement, complete CompositeQueryShapeTemplate ID and payload digest
-  and test ID. Its ID hashes
+  fixtures in the governed bundle-input set. It is a closed tagged union. A
+  `DATABASE_API` fixture inventories its canonical plan AST, SQL and parameter-
+  schema digest, result-schema digest, expected typed rows, cohort and aggregate
+  semantics, error branch, index and plan requirement and complete
+  CompositeQueryShapeTemplate ID and payload digest. A
+  `CLIENT_ONLY_NO_SQL_NO_API` fixture inventories its validated carried-response
+  bytes and schema, expected destination state and render tree, five zero-effect
+  counters and complete ClientTransitionTemplate ID and payload digest, and
+  forbids every plan, SQL, parameter, index and API field. Both carry a test ID.
+  The manifest ID hashes
   `QUERY_GOLDEN_SUITE_MANIFEST/V2`, schema, exact
   CanonicalBundleInputIdentity ID and payload digest, exact
   QueryDefinitionSetRoot ID and payload digest, the contract-ordered fixture IDs
@@ -9259,11 +9267,12 @@ This file is the sole authority for detailed identities, state machines, writer 
   `QUERY_GOLDEN_CERTIFICATION/V2`, schema, exact bundle fingerprint and root-
   manifest digest, ContractFreezeAttestation ID and payload digest, exact
   QueryDefinitionSetRoot and QueryGoldenSuiteManifest IDs and payload digests,
-  frozen fixture and CompositeQueryShapeTemplate coverage roots, executed
-  actual plan, SQL and typed-result roots and digests, expected-versus-actual
-  empty missing, extra, duplicate, ambiguous and unsupported roots, index and
-  performance proofs, validator executable, configuration and evidence digests
-  and terminal `PASS`. It is external certification evidence: its ID, payload digest and
+  frozen fixture and tagged template-coverage roots, executed server plan, SQL
+  and typed-result roots and client rendered-state and zero-effect roots and
+  digests, expected-versus-actual empty missing, extra, duplicate, overlapping,
+  mode-conflicting, ambiguous and unsupported roots, index and performance
+  proofs, validator executable, configuration and evidence digests and terminal
+  `PASS`. It is external certification evidence: its ID, payload digest and
   exact frozen pair enter ServingContractMetadata, candidate certification,
   the tenth governed promotion-evidence slot, ReleaseBundleEnvelope,
   production-import parity and traceability, but neither the attestation nor any
@@ -10497,12 +10506,16 @@ includes:
   serving-key schema, CanonicalBundleInputIdentity,
   QueryDefinitionSetRoot and every definition member, including
   SupportedQueryShapeRegistry, every CompositeQueryShapeTemplate and
-  CompositeShapeEquivalenceProof,
+  CompositeShapeEquivalenceProof, SupportedClientTransitionRegistry, every
+  ClientTransitionTemplate, GovernedQueryActionCoverageRoot and
+  ClientTransitionPerformanceRegistry,
   QueryGoldenSuiteManifest and every golden case,
   QueryGoldenCertificationAttestation, every selected-release
   ParameterDomainQuotient, ReleaseQueryExecutionClassRegistry,
-  WorstCaseWitnessDominanceProof, ActiveQueryExecutionClassProjection, soak
-  benchmark member and empty-difference root selected by
+  WorstCaseWitnessDominanceProof, ActiveQueryExecutionClassProjection,
+  MaximumScaleFixtureRecipe, FixtureExpansionArchetype and
+  MaximumScaleFixtureManifest schemas, soak benchmark member and
+  empty-difference root selected by
   DatabaseLoadSoakAttestation, request, result, cursor, error,
   CanonicalServingCacheIdentity, CanonicalServingCacheValue and
   ServingResponseBinding schemas, every ServingCacheIdentityDefinition and
@@ -13837,9 +13850,16 @@ application-side import write.
 `CapacityManifest` additionally owns exact maximum deal, observation,
 metric-slot, aggregate, serving-row, cohort-member, indexed-row and indexed-byte
 cardinalities for the certified release, plus the maximum number of release
-namespaces used by load certification. Each value is a positive integer at or
-below the protocol bound. `N_capacity` is the exact eight-field tuple measured
-from the sealed candidate fixture. Its first five fields are the
+namespaces used by load certification. Those eight values are not independently
+composable assertions. The manifest also binds one
+`MaximumScaleFixtureRecipe`, its builder and configuration digests, frozen
+PostgreSQL and index-build settings, source-archetype root, joint-distribution
+rule and expected row-lineage, distribution and measured-tuple roots. A
+CapacityManifest cannot freeze until the recipe has been built once in an
+isolated staging scratch namespace and two implementation-disjoint enumerators
+have reproduced those roots. Each value is a positive integer at or below the
+protocol bound. `N_capacity` is the exact eight-field tuple measured from the
+sealed candidate fixture. Its first five fields are the
 CandidateReleaseManifest's deal, observation, metric-slot, aggregate and
 serving-row counts. Its cohort-member field is the sum of the rows in every
 distinct query-visible cohort-membership relation selected by the
@@ -13865,17 +13885,55 @@ root, the measured `10N_capacity` tuple and the empty difference roots. A
 multiplied byte estimate, duplicate index count, omitted partial-index entry or
 multi-namespace copy fails before load.
 
-The maximum-scale tuple is mechanically the field-by-field maximum of that
-measured `10N_capacity` tuple and the eight declared CapacityManifest maxima.
-The load manifest records both inputs and the derived tuple; any smaller
-component fails `P9_DATABASE_SOAK`.
+The `MaximumScaleFixtureRecipe` first computes the field-by-field maximum of the
+first seven measured `10N_capacity` values and the corresponding seven declared
+CapacityManifest maxima. That seven-field vector is a construction target, not
+a fixture. The recipe starts from the exact `10N_capacity` rows and derives a
+closed set of schema-valid `FixtureExpansionArchetype`s from the sealed
+candidate. Each archetype is an insertion fragment with its complete required
+parent bindings, seven-field contribution vector, query-visible
+joint-distribution cell and canonical source-row lineage. The builder solves
+for non-negative archetype multiplicities whose combined contribution makes
+all seven target values true in one namespace at the same time. Among all valid
+solutions it chooses, in order, the one that preserves every required quotient
+and worst-case-witness cell, minimises the maximum exact rational deviation
+from the `10N_capacity` joint distribution, minimises the sum of those
+deviations and has the lexicographically lowest UTF-8-ordered multiplicity
+vector. No sampled statistic or caller-selected solution is permitted. No
+solution means the CapacityManifest is unrealizable and cannot freeze.
+
+Every resulting row has exactly one fixture-lineage branch:
+`TEN_N_COPY(source_row_id, copy_ordinal)` or
+`CAPACITY_EXPANSION(archetype_id, archetype_ordinal, source_row_id,
+parent_fixture_lineage_ids)`. The builder inserts the jointly realised rows in
+canonical identity order, rebuilds the closed selected index set once under the
+frozen settings, runs the frozen statistics procedure, independently
+enumerates the first seven counts and joint-cell counts and measures indexed
+bytes by summing `pg_relation_size` for each distinct selected index. That
+measured byte count is the eighth field of the actual maximum-scale tuple. It
+must equal the CapacityManifest's declared indexed-byte value and be at least
+the measured `10N_capacity` value. The resulting
+`MaximumScaleFixtureManifest` binds the CapacityManifest, recipe, builder and
+configuration digests, exact `10N_capacity` input and derivation roots,
+archetype and multiplicity roots, complete row-lineage root,
+joint-distribution cell root, relation and index inventories, per-index
+logical-entry and measured-byte counts, frozen physical settings and the
+measured eight-field output tuple. Two independent enumerators must reproduce
+all counts and roots before load. Load certification rebuilds this exact
+fixture and requires byte equality to the roots fixed before CapacityManifest
+freeze. A field-wise
+tuple without this one physical fixture, unrelated per-dimension fixtures,
+unlineaged padding, changed distribution, multiplied byte estimate or
+post-freeze measurement fails `P9_DATABASE_SOAK`.
 
 `SupportedQueryShapeRegistry` is generated from the closed query grammar and
-ServingObjectAccessRegistry. Its unit is a complete
+ServingObjectAccessRegistry and contains only actions whose closed
+`QueryExecutionKind` is `DATABASE_API`. Its unit is a complete
 `CompositeQueryShapeTemplate`, never one atomic field/operator/sort tuple. It
-enumerates every active route and action, request variant and QueryPlan family,
+enumerates every active `DATABASE_API` route and action, request variant and
+QueryPlan family,
 including inline exact-detail batch, source-document initial and cursor page,
-field-value request, saved-query lookup and carried-response navigation. Each
+field-value request and saved-query lookup. Each
 template contains the complete normalised plan-shape program: output grain;
 metric and party dimensions; ordered selected-column vector; the full Boolean
 predicate AST topology and every ordered leaf's field, operator and value-type
@@ -13898,25 +13956,56 @@ by release certification. An asserted family label, a common first predicate
 or a common singular field/operator/value/sort tuple is never an equivalence
 proof.
 
-The registry is a versioned CanonicalContractBundle member with a closed JSON
-schema. Each row hashes the route and action definition, request-variant
+`SupportedClientTransitionRegistry` is a separate versioned
+CanonicalContractBundle member containing only actions whose closed
+`QueryExecutionKind` is `CLIENT_ONLY_NO_SQL_NO_API`. Its unit is a complete
+`ClientTransitionTemplate` binding the source response schema and validation
+digest, carried-response identity, maximum carried rows and bytes, client
+action, destination view-state schema, render contract and typed refusal when
+carried bytes are missing or invalid. Carried-response navigation appears
+exactly once in this registry. It performs no admission, network request, API
+invocation, cache lookup or database checkout and therefore has no
+ExecutionShapeKey, SQL-template digest, physical plan, index contract,
+ParameterDomainQuotient member, release execution class or
+WorstCaseWitnessDominanceProof. Supplying any such field is schema-invalid. A
+direct load, reload or navigation without a valid carried response is not a
+client-transition fallback. It starts the ordinary `DATABASE_API`
+initial-page action and resolves its normal release execution class.
+
+`GovernedQueryActionCoverageRoot` independently enumerates every active query
+route/action from source and built artefacts and reconciles that universe to
+the disjoint union of SupportedQueryShapeRegistry and
+SupportedClientTransitionRegistry. Every action has exactly one of the two
+closed QueryExecutionKind values. Missing, extra, duplicate, overlapping or
+mode-conflicting members block `QUERY_DEFINITION_SET_ROOT/V2`.
+
+Both registries are versioned CanonicalContractBundle members with closed JSON
+schemas. Each server row hashes the route and action definition, request-variant
 schema, complete plan-shape program, response schema, SQL-template digest,
 physical-access contract set and CompositeShapeEquivalenceProof ID and payload
-digest. Rows are UTF-8 sorted by that tuple; the domain-separated row root and
-count are bound by `QUERY_DEFINITION_SET_ROOT/V2`. Two
+digest. Each client row hashes its route/action definition, source and
+destination schemas, carried-response bounds, validation and render contracts
+and expressly fixed `CLIENT_ONLY_NO_SQL_NO_API` kind. Rows are UTF-8 sorted
+within their tagged registries; both domain-separated row roots, counts and the
+disjoint coverage root are bound by `QUERY_DEFINITION_SET_ROOT/V2`. Two
 implementation-disjoint compilers, one walking the query grammar and one
 walking route/action plus serving-access registries, must emit byte-identical
-row sets with empty missing, extra, duplicate, ambiguous and unsupported roots.
+server and client row sets with empty missing, extra, duplicate, overlapping,
+mode-conflicting, ambiguous and unsupported roots.
 Golden fixtures and submitted benchmark rows are never authority for registry
 membership.
 
 `QueryGoldenSuiteManifest` contains at least one semantic fixture for every
-CompositeQueryShapeTemplate and one refusal fixture for every invalid grammar
-class. `QueryGoldenCertificationAttestation` requires exact equality between
-the template root and fixture-coverage root with empty missing, extra,
-duplicate, ambiguous and unsupported roots. This proves compiler and result
-semantics for the release-independent structural grammar. It does not purport
-to certify release-dependent literal, correlation or physical-plan cost.
+CompositeQueryShapeTemplate, at least one client fixture for every
+ClientTransitionTemplate and one refusal fixture for every invalid grammar or
+transition class. Every client fixture proves the expected rendered state and
+instrumented zero admission, network, API, cache and database counters.
+`QueryGoldenCertificationAttestation` requires exact equality between both
+template roots and their tagged fixture-coverage roots with empty missing,
+extra, duplicate, overlapping, mode-conflicting, ambiguous and unsupported
+roots. This proves compiler, client-transition and result semantics for the
+release-independent structural grammar. It does not purport to certify
+release-dependent literal, correlation or physical-plan cost.
 
 For each selected release, two implementation-disjoint, indexed set-based
 classifiers expand every CompositeQueryShapeTemplate into the closed
@@ -13931,6 +14020,9 @@ map to exactly one release execution class. A missing, extra, duplicate or
 ambiguous class blocks certification; runtime performs the same resolution and
 returns `UNSUPPORTED_QUERY_SHAPE` before checkout if the active release has no
 exact class.
+The classifiers consume only SupportedQueryShapeRegistry. A
+ClientTransitionTemplate can never produce or satisfy a release execution
+class, witness, soak API member or API-latency member.
 
 The release classifier forms a complete finite, symbolic
 `ParameterDomainQuotient` from the release-certified dimension projection and
@@ -14038,11 +14130,12 @@ Any statistics or plan drift before activation blocks cutover; any drift during
 the live smoke triggers the ordinary post-activation containment path.
 
 The soak manifest selects the exact ReleaseQueryExecutionClassRegistry and
-runs every member of every WorstCaseWitnessDominanceProof at `N_capacity` and maximum
-scale under the applicable traffic profile. It binds empty missing, extra,
-duplicate, ambiguous and unbenchmarked roots against the release registry and
-witness-set roots. A hand-picked benign subset cannot satisfy
-`P9_DATABASE_SOAK`.
+runs every member of every WorstCaseWitnessDominanceProof at `N_capacity` and
+the exact MaximumScaleFixtureManifest under the applicable traffic profile. It
+binds empty missing, extra, duplicate, ambiguous and unbenchmarked roots
+against the release registry and witness-set roots. A
+ClientTransitionTemplate is outside this API and SQL universe. A hand-picked
+benign subset cannot satisfy `P9_DATABASE_SOAK`.
 
 Facet and field-value option sets are never silently truncated. Each response
 contains at most 200 UTF-8 ordered values and 256 KiB plus exact total-distinct
@@ -14054,11 +14147,13 @@ a typed refusal before corpus access; it cannot return an undocumented prefix.
 
 Query result delivery has no persistent result carrier. The route-specific
 serving RPC returns the bounded page it constructs and performs no per-query
-result write. A carried-response navigation is a client transition over those
-same validated bytes. A direct load, reload or missing carried response starts
-one ordinary initial-page action and therefore receives the same admission,
-compiler, one-RPC and response bounds as any other initial page. Saved-query
-lookup resolves the stored plan identity and then executes that plan once.
+result write. A carried-response navigation executes its
+ClientTransitionTemplate over those same validated bytes with instrumented
+zero admission, network, API, cache and database calls. A direct load, reload
+or missing carried response starts one ordinary initial-page action and
+therefore receives the same admission, compiler, one-RPC and response bounds as
+any other initial page. Saved-query lookup resolves the stored plan identity
+and then executes that plan once.
 
 The binding performance matrix covers every
 `ReleaseQueryExecutionClassRegistry` class and every member of its
@@ -14069,9 +14164,19 @@ field-value option, saved-query resolution, exact-detail batch and
 source-document page must meet API p95 at or below 1.5 seconds and p99 at or
 below 2.5 seconds. Every browser interaction must show its usable result,
 detail, facet, option or next page within 2 seconds. These thresholds apply at N
-and maximum scale subject to the existing success and throughput floors; a
+and the exact MaximumScaleFixtureManifest subject to the existing success and
+throughput floors; a
 missing class measurement fails `P9_BROWSER_A11Y_PERFORMANCE` and
 `P9_DATABASE_SOAK`.
+
+`ClientTransitionPerformanceRegistry` separately covers every
+ClientTransitionTemplate. Each member binds the template, source-response
+schema, exact maximum valid carried-response fixture contract and expected
+destination state. It has no scale, SQL or API dimension. Every member
+must show its usable, accessible destination state within 2 seconds while
+trusted instrumentation records zero admission, network, API, cache and
+database calls. A client transition cannot satisfy a server execution-class
+measurement or vice versa.
 
 `LatencyMeasurementProtocol` is a frozen CanonicalContractBundle member selected
 by the soak and browser manifests. For each release execution class, each bound
@@ -14089,8 +14194,9 @@ nearest-rank rule over the complete ordered 1,000-member set,
 `rank=ceil(percentile*1000)`, with no interpolation, trimming or coordinated-
 omission correction.
 
-For every governed browser interaction and corresponding class/witness/scale
-tuple, the browser measurement set contains exactly 200 post-warm-up
+For every governed server browser interaction and corresponding
+class/witness/scale tuple, the browser measurement set contains exactly 200
+post-warm-up
 interactions. Its monotonic clock starts at the trusted synthetic user input
 event before application dispatch and ends at the first painted, accessible
 and interaction-ready governed result whose response identity has passed
@@ -14104,6 +14210,16 @@ reconciliation requires exact sample counts and empty missing, extra,
 duplicate, retried and discarded-measurement roots. An aggregate workload
 duration, pooled percentile across classes, smaller sample, different boundary
 or caller-supplied percentile cannot satisfy either performance gate.
+
+For every ClientTransitionPerformanceRegistry member, a separate browser
+measurement set contains exactly 200 post-warm-up interactions after ten
+separately labelled warm-ups. It uses the same user-input-to-accessible-paint
+clock boundary, terminal-attempt retention and nearest-rank p95 rule, but has
+no request-byte boundary and no API sample set. Every attempt binds the
+ClientTransitionTemplate and carried-response fixture digests and records the
+five zero-effect counters. Any network request, admission, API, cache or
+database effect, any server class or witness field, or any attempt to use this
+set as API-latency evidence fails certification.
 
 #### Release activation and later promotions
 
