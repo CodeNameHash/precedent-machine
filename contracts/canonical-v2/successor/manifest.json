@@ -501,6 +501,13 @@
       "canonical_bytes_digest": "55f8034fe60c1f58cab7b1d8544e8f545a9c221695525107b438c55a768d7526"
     },
     {
+      "relative_path": "process/events/process-event.v1.json",
+      "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
+      "stable_id": "PROCESS_EVENT",
+      "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "d9fcaf32ec4c5382487a9a4018b6cb97fb0ace7767eb9a437c51b56149c30b87"
+    },
+    {
       "relative_path": "process/narration/process-narration-occurrence.v1.json",
       "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
       "stable_id": "PROCESS_NARRATION_OCCURRENCE",
@@ -513,6 +520,13 @@
       "stable_id": "PROCESS_NARRATION",
       "schema_version": "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT/V1",
       "canonical_bytes_digest": "49bb48e4974934fe01f0ba3d0c840be7dfe35b66367304912870dbbbb3096fbe"
+    },
+    {
+      "relative_path": "process/participants/process-participant.v1.json",
+      "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
+      "stable_id": "PROCESS_PARTICIPANT",
+      "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "dcebd7a29dca05db51c14e21b79bbcfdca05cc16ae84125e73f279ea90ab3cea"
     },
     {
       "relative_path": "shared/deal-facts/deal-fact-resolution-occurrence.v1.json",
@@ -638,7 +652,7 @@
     "PARTY_TUPLE_SHAPE_MIGRATION_INPUT": 1,
     "PROCESS_DOMAIN_REGISTRY_INPUT": 1,
     "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT": 1,
-    "PROCESS_LOGICAL_TYPE_INPUT": 1,
+    "PROCESS_LOGICAL_TYPE_INPUT": 3,
     "PROVISION_CONCEPT": 19,
     "RELATIONSHIP_DEFINITION": 5,
     "RELATIONSHIP_EFFECT_SCHEMA": 5,
