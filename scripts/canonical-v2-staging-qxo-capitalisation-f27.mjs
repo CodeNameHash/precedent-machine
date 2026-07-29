@@ -1,0 +1,612 @@
+#!/usr/bin/env node
+
+import { createHash } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
+import {
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
+import { tmpdir } from 'node:os';
+import { dirname, join, resolve } from 'node:path';
+import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
+
+const require = createRequire(import.meta.url);
+const {
+  canonicalJson,
+  contentId,
+} = require('../lib/canonical-v2/canonical-bytes');
+const {
+  buildAdmittedSemanticSourceContext,
+} = require('../lib/canonical-v2/admitted-semantic-source');
+const {
+  compileFixtureContractV13,
+} = require('../lib/canonical-v2/contract-bundle');
+const {
+  buildQxoCapitalisationParserSourceClosureF27,
+} = require('../lib/canonical-v2/qxo-capitalisation-parser-source-closure-f27');
+const {
+  CLAUSE_B_CLASS,
+  CLAUSE_C_CLASS,
+  buildQxoReviewedCapitalisationF27,
+} = require('../lib/canonical-v2/reviewed-qxo-capitalisation-f27');
+const {
+  buildQxoCapitalisationCrossViewReleaseF27,
+  compileQxoCapitalisationF27MarketRequest,
+  validateQxoCapitalisationCrossViewReleaseF27,
+} = require('../lib/canonical-v2/qxo-capitalisation-cross-view-release-f27');
+const {
+  CAPITAL_STRUCTURE_INTERVAL,
+  SECTION_5_2_INTERVAL,
+} = require('../lib/canonical-v2/reviewed-qxo-capitalisation-slice');
+const {
+  buildF27Inputs,
+} = require('../tests/fixtures/canonical-v2/qxo-capitalisation-f27-inputs');
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const PROJECT = Object.freeze({
+  ref: 'sjumbznveyyiizhwvixj',
+  name: 'deal-corpus-canonical-v2-staging',
+});
+const EXECUTION_GATE = 'CANONICAL_V2_VERTICAL_SLICE_EXECUTION';
+const EXECUTION_GATE_VALUE = 'APPROVED';
+const DEAL_KEY = 'deal:qxo-topbuild';
+const ADMITTED_SOURCE = Object.freeze({
+  immutable_source_document_id:
+    '5c6f01b194e7f195a5c5fe48ac88b3cf900656d8dcc70028a3e8f103bba9fc6b',
+  source_admission_manifest_id:
+    'f31cad8c3813ededa01c644891b0b2e14c6a475d868ba89f6b60b597f0e1d819',
+  semantic_extraction_input_envelope_id:
+    '9dcc596af6312d3d9ac65cc5266bc564ee00f99d0a6b23a9b5b822813bc3fd07',
+  canonical_text_id:
+    'bcc60682b1914dcd2dc81417399a74d3f2b82451b8b3119af0d6c8c7e7213ce1',
+  document_hash:
+    'abba043018410d718c207e7d7a43c9567166f6a10c4c9a6b4b0c8c7761cd6b9d',
+});
+const MAX_PROBE_RECORDS = 6;
+const MAX_PROBE_PAYLOAD_BYTES = 256 * 1024;
+const MAX_RESULT_BYTES = 64 * 1024;
+const CLASS_KEYS = Object.freeze([
+  CLAUSE_B_CLASS,
+  CLAUSE_C_CLASS,
+]);
+
+function fail(message) {
+  process.stderr.write(`${message}\n`);
+  process.exit(1);
+}
+
+function safeDiagnostic(output) {
+  const text = String(output || '');
+  const allowed = [
+    'F27 probe payload failed its bounded shape contract',
+    'F27 classes were missing, reordered or aggregated',
+    'canceling statement due to statement timeout',
+    'canceling statement due to lock timeout',
+  ].find((message) => text.includes(message));
+  return allowed || 'F27 staging proof failed without publishing database diagnostics.';
+}
+
+function guardProject() {
+  const ref = readFileSync(
+    join(ROOT, 'supabase/.temp/project-ref'),
+    'utf8',
+  ).trim();
+  const linked = JSON.parse(readFileSync(
+    join(ROOT, 'supabase/.temp/linked-project.json'),
+    'utf8',
+  ));
+  if (ref !== PROJECT.ref
+    || linked.ref !== PROJECT.ref
+    || linked.name !== PROJECT.name) {
+    throw new Error(
+      `Refusing to run outside ${PROJECT.name} (${PROJECT.ref}).`,
+    );
+  }
+}
+
+function buildCandidate(inputs) {
+  const reviewedGraph = buildQxoReviewedCapitalisationF27(inputs);
+  const release = buildQxoCapitalisationCrossViewReleaseF27({
+    reviewedGraph,
+    sourceContext: inputs.sourceContext,
+    parserSourceClosure: inputs.parserSourceClosure,
+    contractBundle: inputs.contractBundle,
+  });
+  validateQxoCapitalisationCrossViewReleaseF27({
+    candidate: release,
+    reviewedGraph,
+    sourceContext: inputs.sourceContext,
+    parserSourceClosure: inputs.parserSourceClosure,
+    contractBundle: inputs.contractBundle,
+  });
+  const request = compileQxoCapitalisationF27MarketRequest({ release });
+  if (canonicalJson(
+    release.admissions.map((entry) => entry.comparison_class_key),
+  ) !== canonicalJson(CLASS_KEYS)
+    || canonicalJson(
+      release.observations.map((entry) => entry.comparison_class_key),
+    ) !== canonicalJson(CLASS_KEYS)
+    || release.manifest.release_state !== 'INACTIVE_CANDIDATE'
+    || release.manifest.status.publication_blocked !== true
+    || Object.values(release.manifest.authority).some(
+      (authority) => authority !== 'NONE',
+    )
+    || request.database_call_budget !== 1
+    || request.immediate_retries !== 0) {
+    throw new Error('The locally built F27 candidate is not execution-safe.');
+  }
+  const sourceBinding =
+    inputs.sourceContext.immutable_source_document_id
+        === ADMITTED_SOURCE.immutable_source_document_id
+      && inputs.sourceContext.source_admission_manifest_id
+        === ADMITTED_SOURCE.source_admission_manifest_id
+      && inputs.sourceContext.canonical_text_id
+        === ADMITTED_SOURCE.canonical_text_id
+      && inputs.sourceContext.document_hash
+        === ADMITTED_SOURCE.document_hash
+      ? 'ADMITTED_QXO_IMMUTABLE_SOURCE'
+      : 'UNIT_TEST_EXACT_TEXT_FIXTURE';
+  return {
+    inputs,
+    reviewedGraph,
+    release,
+    request,
+    sourceBinding,
+  };
+}
+
+function sourceSlice(text, interval) {
+  return Buffer.from(text, 'utf8')
+    .subarray(interval.start, interval.end)
+    .toString('utf8');
+}
+
+function buildProbeRecords(release) {
+  const records = [
+    {
+      record_kind: 'RELEASE_MANIFEST',
+      record_id: release.manifest.release_manifest_id,
+      release_id: release.release_id,
+      comparison_class_key: null,
+      governed_deal_key: null,
+      canonical_payload: release.manifest,
+    },
+    ...release.admissions.map((entry) => ({
+      record_kind: 'METRIC_ADMISSION',
+      record_id: entry.metric_serving_admission_id,
+      release_id: release.release_id,
+      comparison_class_key: entry.comparison_class_key,
+      governed_deal_key: null,
+      canonical_payload: entry,
+    })),
+    ...release.observations.map((entry) => ({
+      record_kind: 'MARKET_OBSERVATION',
+      record_id: entry.market_observation_id,
+      release_id: release.release_id,
+      comparison_class_key: entry.comparison_class_key,
+      governed_deal_key: entry.governed_deal_key,
+      canonical_payload: entry,
+    })),
+    {
+      record_kind: 'PROVISION_ROW',
+      record_id: release.provision_row.provision_row_id,
+      release_id: release.release_id,
+      comparison_class_key: null,
+      governed_deal_key: release.provision_row.governed_deal_key,
+      canonical_payload: release.provision_row,
+    },
+  ];
+  const payloadBytes = Buffer.byteLength(canonicalJson(records), 'utf8');
+  if (records.length !== MAX_PROBE_RECORDS
+    || payloadBytes > MAX_PROBE_PAYLOAD_BYTES
+    || new Set(records.map((entry) => entry.record_id)).size !== records.length
+    || records.some((entry) => entry.release_id !== release.release_id)) {
+    throw new Error('The bounded F27 staging payload is invalid.');
+  }
+  return { records, payloadBytes };
+}
+
+function sqlJson(value) {
+  const json = canonicalJson(value);
+  const tag = `$f27_${createHash('sha256')
+    .update(json)
+    .digest('hex')
+    .slice(0, 16)}$`;
+  if (json.includes(tag)) {
+    throw new Error('Unable to construct a safe F27 JSON literal.');
+  }
+  return `${tag}${json}${tag}::jsonb`;
+}
+
+function sqlText(value) {
+  return `'${String(value).replaceAll("'", "''")}'`;
+}
+
+function buildRollbackProofSql(candidate) {
+  const { release } = candidate;
+  const { records } = buildProbeRecords(release);
+  const classSummary = CLASS_KEYS.map((comparisonClassKey) => ({
+    comparison_class_key: comparisonClassKey,
+    metric_admissions: 1,
+    subject_market_observations: 1,
+    independent_market_observations: 0,
+  }));
+  return `BEGIN;
+SET LOCAL lock_timeout='2000ms';
+SET LOCAL statement_timeout='15000ms';
+CREATE TEMP TABLE qxo_capitalisation_f27_guard ON COMMIT DROP AS
+SELECT
+  (SELECT to_jsonb(pointer)
+    FROM canonical_v2_staging.active_corpus_release_pointers pointer
+    WHERE environment='staging') AS active_pointer,
+  (SELECT count(*)
+    FROM canonical_v2_staging.fixture_corpus_releases
+    WHERE corpus_release_id=${sqlText(release.release_id)}) AS release_rows,
+  (SELECT count(*)
+    FROM canonical_v2_staging.market_observations
+    WHERE corpus_release_id=${sqlText(release.release_id)}) AS observation_rows,
+  (SELECT count(*)
+    FROM canonical_v2_staging.shared_serving_rows
+    WHERE corpus_release_id=${sqlText(release.release_id)}) AS serving_rows;
+SAVEPOINT qxo_capitalisation_f27_probe_start;
+CREATE TEMP TABLE qxo_capitalisation_f27_probe (
+  record_kind text NOT NULL,
+  record_id text NOT NULL CHECK (record_id ~ '^[a-f0-9]{64}$'),
+  release_id text NOT NULL CHECK (release_id ~ '^[a-f0-9]{64}$'),
+  comparison_class_key text,
+  governed_deal_key text,
+  canonical_payload jsonb NOT NULL,
+  PRIMARY KEY (record_kind, record_id)
+) ON COMMIT DROP;
+INSERT INTO qxo_capitalisation_f27_probe (
+  record_kind,
+  record_id,
+  release_id,
+  comparison_class_key,
+  governed_deal_key,
+  canonical_payload
+)
+SELECT
+  record_kind,
+  record_id,
+  release_id,
+  comparison_class_key,
+  governed_deal_key,
+  canonical_payload
+FROM jsonb_to_recordset(${sqlJson(records)}) AS input(
+  record_kind text,
+  record_id text,
+  release_id text,
+  comparison_class_key text,
+  governed_deal_key text,
+  canonical_payload jsonb
+);
+DO $f27_validate$
+DECLARE
+  class_read jsonb;
+BEGIN
+  IF (SELECT count(*) FROM qxo_capitalisation_f27_probe) <> ${MAX_PROBE_RECORDS}
+    OR (SELECT count(*) FROM qxo_capitalisation_f27_probe
+      WHERE record_kind='RELEASE_MANIFEST') <> 1
+    OR (SELECT count(*) FROM qxo_capitalisation_f27_probe
+      WHERE record_kind='PROVISION_ROW') <> 1
+    OR EXISTS (
+      SELECT 1
+      FROM qxo_capitalisation_f27_probe
+      WHERE release_id <> ${sqlText(release.release_id)}
+        OR record_kind NOT IN (
+          'RELEASE_MANIFEST',
+          'METRIC_ADMISSION',
+          'MARKET_OBSERVATION',
+          'PROVISION_ROW'
+        )
+    ) THEN
+    RAISE EXCEPTION 'F27 probe payload failed its bounded shape contract';
+  END IF;
+
+  SELECT jsonb_agg(to_jsonb(class_counts) ORDER BY comparison_class_key)
+  INTO class_read
+  FROM (
+    SELECT
+      comparison_class_key,
+      count(*) FILTER (
+        WHERE record_kind='METRIC_ADMISSION'
+      )::integer AS metric_admissions,
+      count(*) FILTER (
+        WHERE record_kind='MARKET_OBSERVATION'
+          AND governed_deal_key=${sqlText(DEAL_KEY)}
+      )::integer AS subject_market_observations,
+      count(*) FILTER (
+        WHERE record_kind='MARKET_OBSERVATION'
+          AND governed_deal_key<>${sqlText(DEAL_KEY)}
+      )::integer AS independent_market_observations
+    FROM qxo_capitalisation_f27_probe
+    WHERE comparison_class_key IS NOT NULL
+    GROUP BY comparison_class_key
+  ) AS class_counts;
+
+  IF class_read <> ${sqlJson(classSummary)} THEN
+    RAISE EXCEPTION 'F27 classes were missing, reordered or aggregated';
+  END IF;
+END
+$f27_validate$;
+ROLLBACK TO SAVEPOINT qxo_capitalisation_f27_probe_start;
+SELECT jsonb_build_object(
+  'schema_version', 'QXO_CAPITALISATION_STAGING_PROOF_F27/V1',
+  'project_ref', ${sqlText(PROJECT.ref)},
+  'release_id', ${sqlText(release.release_id)},
+  'release_manifest_id', ${sqlText(release.manifest.release_manifest_id)},
+  'provision_row_id', ${sqlText(release.provision_row.provision_row_id)},
+  'contract_fingerprint', ${sqlText(release.manifest.contract_fingerprint)},
+  'source_binding', ${sqlText(candidate.sourceBinding)},
+  'source_context_id',
+    ${sqlText(candidate.inputs.sourceContext.admitted_semantic_source_context_id)},
+  'document_hash', ${sqlText(candidate.inputs.sourceContext.document_hash)},
+  'probe_records', ${MAX_PROBE_RECORDS},
+  'comparison_classes', ${CLASS_KEYS.length},
+  'set_based_insert_statements', 1,
+  'set_based_class_reads', 1,
+  'subject_exclusion_verified', true,
+  'active_pointer_unchanged',
+    (SELECT active_pointer
+      FROM qxo_capitalisation_f27_guard)
+    IS NOT DISTINCT FROM
+    (SELECT to_jsonb(pointer)
+      FROM canonical_v2_staging.active_corpus_release_pointers pointer
+      WHERE environment='staging'),
+  'candidate_counts_unchanged',
+    (SELECT jsonb_build_array(release_rows, observation_rows, serving_rows)
+      FROM qxo_capitalisation_f27_guard)
+    IS NOT DISTINCT FROM
+    jsonb_build_array(
+      (SELECT count(*)
+        FROM canonical_v2_staging.fixture_corpus_releases
+        WHERE corpus_release_id=${sqlText(release.release_id)}),
+      (SELECT count(*)
+        FROM canonical_v2_staging.market_observations
+        WHERE corpus_release_id=${sqlText(release.release_id)}),
+      (SELECT count(*)
+        FROM canonical_v2_staging.shared_serving_rows
+        WHERE corpus_release_id=${sqlText(release.release_id)})
+    ),
+  'probe_rolled_back',
+    to_regclass('pg_temp.qxo_capitalisation_f27_probe') IS NULL,
+  'durable_candidate_writes', 0,
+  'active_pointer_writes', 0,
+  'immediate_retries', 0
+) AS attestation;
+ROLLBACK;
+`;
+}
+
+function runLinkedSql(
+  sql,
+  {
+    fileName,
+    maxBuffer,
+    timeout = 30000,
+  },
+) {
+  const directory = mkdtempSync(join(
+    tmpdir(),
+    'canonical-v2-qxo-capitalisation-f27-',
+  ));
+  const file = join(directory, fileName);
+  writeFileSync(file, sql, { mode: 0o600 });
+  try {
+    const result = spawnSync(
+      'supabase',
+      [
+        'db',
+        'query',
+        '--linked',
+        '--file',
+        file,
+        '--output',
+        'json',
+        '--agent=yes',
+      ],
+      {
+        cwd: ROOT,
+        encoding: 'utf8',
+        timeout,
+        maxBuffer,
+      },
+    );
+    if (result.status !== 0) {
+      throw new Error(safeDiagnostic(`${result.stderr}\n${result.stdout}`));
+    }
+    if (Buffer.byteLength(result.stdout, 'utf8') > maxBuffer) {
+      throw new Error('F27 staging query exceeded its response bound.');
+    }
+    const parsed = JSON.parse(result.stdout);
+    const rows = Array.isArray(parsed) ? parsed : parsed?.rows;
+    if (!Array.isArray(rows)) {
+      throw new Error('F27 staging query returned no rows array.');
+    }
+    return rows;
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+}
+
+function readAdmittedF27Inputs() {
+  const rows = runLinkedSql(`BEGIN TRANSACTION READ ONLY;
+SET LOCAL lock_timeout='2000ms';
+SET LOCAL statement_timeout='15000ms';
+SELECT jsonb_build_object(
+  'immutable_source_document', immutable.canonical_payload,
+  'source_admission_manifest', admission.canonical_payload,
+  'semantic_extraction_input_envelope', envelope.canonical_payload,
+  'conversion', conversion.canonical_payload
+) AS source_graph
+FROM canonical_v2_staging.source_admission_manifests admission
+JOIN canonical_v2_staging.immutable_source_documents immutable
+  ON immutable.immutable_source_document_id =
+    admission.canonical_payload->>'immutable_source_document_id'
+JOIN canonical_v2_staging.semantic_extraction_input_envelopes envelope
+  ON envelope.source_admission_manifest_id =
+    admission.source_admission_manifest_id
+JOIN canonical_v2_staging.canonical_text_conversions conversion
+  ON conversion.canonical_text_id =
+    admission.canonical_payload->>'canonical_text_id'
+WHERE admission.source_admission_manifest_id =
+  ${sqlText(ADMITTED_SOURCE.source_admission_manifest_id)}
+  AND immutable.immutable_source_document_id =
+    ${sqlText(ADMITTED_SOURCE.immutable_source_document_id)}
+  AND envelope.semantic_extraction_input_envelope_id =
+    ${sqlText(ADMITTED_SOURCE.semantic_extraction_input_envelope_id)}
+  AND conversion.canonical_text_id =
+    ${sqlText(ADMITTED_SOURCE.canonical_text_id)}
+LIMIT 2;
+ROLLBACK;
+`, {
+    fileName: 'read-admitted-source.sql',
+    maxBuffer: 4 * 1024 * 1024,
+  });
+  if (rows.length !== 1 || !rows[0]?.source_graph) {
+    throw new Error('The exact admitted QXO source must resolve once.');
+  }
+  const graph = rows[0].source_graph;
+  const contractBundle = compileFixtureContractV13();
+  const dealAdmissionId = contentId('DEAL_ADMISSION/V2', {
+    governed_deal_key: DEAL_KEY,
+    source_admission_manifest_id:
+      ADMITTED_SOURCE.source_admission_manifest_id,
+    contract_fingerprint: contractBundle.fingerprint,
+  });
+  const sourceContext = buildAdmittedSemanticSourceContext({
+    ...graph,
+    governed_deal_key: DEAL_KEY,
+    deal_admission_id: dealAdmissionId,
+    source_ordinal: 0,
+  });
+  if (sourceContext.immutable_source_document_id
+      !== ADMITTED_SOURCE.immutable_source_document_id
+    || sourceContext.source_admission_manifest_id
+      !== ADMITTED_SOURCE.source_admission_manifest_id
+    || sourceContext.semantic_extraction_input_envelope_id
+      !== ADMITTED_SOURCE.semantic_extraction_input_envelope_id
+    || sourceContext.canonical_text_id
+      !== ADMITTED_SOURCE.canonical_text_id
+    || sourceContext.document_hash !== ADMITTED_SOURCE.document_hash) {
+    throw new Error('The admitted QXO source identity has drifted.');
+  }
+  const parserSourceClosure =
+    buildQxoCapitalisationParserSourceClosureF27({
+      capital_structure_text: sourceSlice(
+        sourceContext.canonical_text.text,
+        CAPITAL_STRUCTURE_INTERVAL,
+      ),
+      closing_condition_text: sourceSlice(
+        sourceContext.canonical_text.text,
+        SECTION_5_2_INTERVAL,
+      ),
+    });
+  return { sourceContext, parserSourceClosure, contractBundle };
+}
+
+function runRollbackProof(sql, candidate) {
+  const rows = runLinkedSql(sql, {
+    fileName: 'rollback-proof.sql',
+    maxBuffer: MAX_RESULT_BYTES,
+  });
+  if (!Array.isArray(rows)
+    || rows.length !== 1
+    || !rows[0]?.attestation) {
+    throw new Error('F27 staging proof returned no exact attestation.');
+  }
+  const attestation = rows[0].attestation;
+  if (attestation.schema_version
+        !== 'QXO_CAPITALISATION_STAGING_PROOF_F27/V1'
+      || attestation.project_ref !== PROJECT.ref
+      || attestation.release_id !== candidate.release.release_id
+      || attestation.release_manifest_id
+        !== candidate.release.manifest.release_manifest_id
+      || attestation.provision_row_id
+        !== candidate.release.provision_row.provision_row_id
+      || attestation.contract_fingerprint
+        !== candidate.release.manifest.contract_fingerprint
+      || attestation.source_binding !== candidate.sourceBinding
+      || attestation.source_context_id
+        !== candidate.inputs.sourceContext.admitted_semantic_source_context_id
+      || attestation.document_hash
+        !== candidate.inputs.sourceContext.document_hash
+      || attestation.probe_records !== MAX_PROBE_RECORDS
+      || attestation.comparison_classes !== CLASS_KEYS.length
+      || attestation.set_based_insert_statements !== 1
+      || attestation.set_based_class_reads !== 1
+      || attestation.subject_exclusion_verified !== true
+      || attestation.active_pointer_unchanged !== true
+      || attestation.candidate_counts_unchanged !== true
+      || attestation.probe_rolled_back !== true
+      || attestation.durable_candidate_writes !== 0
+      || attestation.active_pointer_writes !== 0
+      || attestation.immediate_retries !== 0) {
+    throw new Error('F27 rollback proof did not leave staging unchanged.');
+  }
+  return attestation;
+}
+
+function offlineAttestation(candidate) {
+  const { release, request } = candidate;
+  const { records, payloadBytes } = buildProbeRecords(release);
+  return {
+    schema_version: 'QXO_CAPITALISATION_OFFLINE_ATTESTATION_F27/V1',
+    execution_state: 'NOT_EXECUTED_OFFLINE_ONLY',
+    source_binding: candidate.sourceBinding,
+    source_context_id:
+      candidate.inputs.sourceContext.admitted_semantic_source_context_id,
+    document_hash: candidate.inputs.sourceContext.document_hash,
+    project_ref: PROJECT.ref,
+    release_id: release.release_id,
+    release_manifest_id: release.manifest.release_manifest_id,
+    provision_row_id: release.provision_row.provision_row_id,
+    contract_fingerprint: release.manifest.contract_fingerprint,
+    probe_records: records.length,
+    probe_payload_bytes: payloadBytes,
+    comparison_classes: CLASS_KEYS.length,
+    market_database_call_budget: request.database_call_budget,
+    immediate_retries: request.immediate_retries,
+    durable_candidate_writes: 0,
+    active_pointer_writes: 0,
+  };
+}
+
+const args = process.argv.slice(2);
+if (args.length !== 1 || ![
+  '--attest',
+  '--verify',
+  '--verify-fixture-rollback',
+].includes(args[0])) {
+  fail(
+    'Usage: node scripts/canonical-v2-staging-qxo-capitalisation-f27.mjs '
+      + '--attest|--verify|--verify-fixture-rollback',
+  );
+}
+
+try {
+  if (args[0] === '--attest') {
+    const candidate = buildCandidate(buildF27Inputs());
+    process.stdout.write(`${JSON.stringify(offlineAttestation(candidate))}\n`);
+  } else {
+    if (process.env[EXECUTION_GATE] !== EXECUTION_GATE_VALUE) {
+      throw new Error(
+        `Refusing database access until ${EXECUTION_GATE}=${EXECUTION_GATE_VALUE}.`,
+      );
+    }
+    guardProject();
+    const inputs = args[0] === '--verify'
+      ? readAdmittedF27Inputs()
+      : buildF27Inputs();
+    const candidate = buildCandidate(inputs);
+    const sql = buildRollbackProofSql(candidate);
+    const attestation = runRollbackProof(sql, candidate);
+    process.stdout.write(`${JSON.stringify(attestation)}\n`);
+  }
+} catch (error) {
+  fail(error instanceof Error ? error.message : String(error));
+}

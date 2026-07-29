@@ -33,10 +33,14 @@ const {
   FIXTURE_CONTRACT_INPUT_V10,
   FIXTURE_CONTRACT_INPUT_V11,
   FIXTURE_CONTRACT_INPUT_V12,
+  FIXTURE_CONTRACT_INPUT_V13,
   FIXTURE_CONTRACT_FINGERPRINTS,
   FIXTURE_SERVING_CONTRACT_FINGERPRINTS,
+  BRINGS_DOWN_EFFECT_SCHEMA_V1,
+  CAPITALISATION_REPRESENTATION_SCHEMA_V1,
   CLAIM_INTERPRETATION_POLICY_V1,
   CLAIM_INTERPRETATION_POLICY_V2,
+  GENERAL_MATERIALITY_QUALIFIER_CLAIM_DEFINITION_V1,
   NO_SHOP_ACTION_CODES_V2,
   NO_SHOP_ACTION_ROLLUP_SCHEMA_V1,
   NO_SHOP_INLINE_PERMISSION_EFFECT_SCHEMA_V1,
@@ -48,8 +52,13 @@ const {
   NO_SHOP_NOTICE_OBLIGATION_SCHEMA_V6,
   NOTICE_DEFINITION_SCOPE_CLOSURE_V1,
   NO_SHOP_EXCEPTION_PREREQUISITE_CODES_V2,
+  REPRESENTATION_ACCURACY_STANDARD_METRIC_DEFINITION_V2,
+  REPRESENTATION_MEASUREMENT_DATE_CLAIM_DEFINITION_V1,
+  RETROSPECTIVE_LOOKBACK_CLAIM_DEFINITION_V1,
+  TARGET_CAPITALISATION_BRING_DOWN_RESULT_DEFINITION_V2,
   USES_DEFINITION_EFFECT_SCHEMA_V1,
   USES_DEFINITION_EFFECT_SCHEMA_V2,
+  USES_DEFINITION_EFFECT_SCHEMA_V3,
   compileFixtureContract,
   compileFixtureContractV2,
   compileFixtureContractV3,
@@ -62,6 +71,7 @@ const {
   compileFixtureContractV10,
   compileFixtureContractV11,
   compileFixtureContractV12,
+  compileFixtureContractV13,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -78,6 +88,7 @@ const FROZEN_F9 = '8576011555a67b18f6539bb259dea4285d2e3d982c4b906a3edc73162dc9e
 const FROZEN_F10 = 'aee4b40ead2e76ed744b0f20967a48493c618125959a023f8262612da23aa0e5';
 const FROZEN_F11 = '7cf669cb86e8cda58b33a623b7f5405e56b7c1aa4c9dfdbe1136edb6beffa6ca';
 const FROZEN_F12 = '261525a8268a1392428a610bbf0c2166c87318192971d08bc7e6ac5f2c7235e5';
+const FROZEN_F13 = '3c8ca48ff4f1f2f482b14a188045aa3a1ec7072704d396f7306b483e6338f2ac';
 
 const APPROVED_V2_ADDITIONS = [
   'TERMR-BREACH',
@@ -138,7 +149,7 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F12 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F13 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
@@ -150,6 +161,7 @@ test('F1 through F12 are distinct recognised fixture contract fingerprints', () 
   assert.notEqual(FROZEN_F9, FROZEN_F10);
   assert.notEqual(FROZEN_F10, FROZEN_F11);
   assert.notEqual(FROZEN_F11, FROZEN_F12);
+  assert.notEqual(FROZEN_F12, FROZEN_F13);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -165,6 +177,7 @@ test('F1 through F12 are distinct recognised fixture contract fingerprints', () 
       FROZEN_F10,
       FROZEN_F11,
       FROZEN_F12,
+      FROZEN_F13,
     ].sort(),
   );
   assert.deepEqual(
@@ -2043,6 +2056,375 @@ test('F12 adds the distinct copy-delivery claim and interpretation admission', (
   );
 });
 
+test('F13 freezes complete capitalisation bring-down semantics without moving F12', () => {
+  const f12 = compileFixtureContractV12();
+  const f13 = compileFixtureContractV13();
+  assert.equal(f12.fingerprint, FROZEN_F12);
+  assert.equal(f13.fingerprint, FROZEN_F13);
+  assert.equal(validateContractBundle(f13), true);
+  assert.equal(
+    canonicalJson(f13),
+    canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V13)),
+  );
+  const stable = (bundle) => {
+    const {
+      fingerprint: _fingerprint,
+      claim_definitions: _claimDefinitions,
+      relationship_definitions: _relationshipDefinitions,
+      definition_use_effect_schema_definition: _definitionUseEffect,
+      brings_down_effect_schema_definition: _bringsDownEffect,
+      capitalisation_semantic_schema_definition: _capitalisationSchema,
+      result_definitions: _resultDefinitions,
+      market_metric_definitions: _marketMetricDefinitions,
+      ...rest
+    } = bundle;
+    return rest;
+  };
+  assert.equal(canonicalJson(stable(f13)), canonicalJson(stable(f12)));
+  assert.deepEqual(
+    f13.relationship_definitions.filter(
+      (entry) => !['BRINGS_DOWN', 'USES_DEFINITION'].includes(
+        entry.relationship_key,
+      ),
+    ),
+    f12.relationship_definitions.filter(
+      (entry) => !['BRINGS_DOWN', 'USES_DEFINITION'].includes(
+        entry.relationship_key,
+      ),
+    ),
+  );
+  assert.deepEqual(
+    f13.claim_definitions.filter(
+      (definition) => !f12.claim_definitions.some(
+        (prior) => prior.claim_definition_key
+          === definition.claim_definition_key,
+      ),
+    ),
+    [
+      GENERAL_MATERIALITY_QUALIFIER_CLAIM_DEFINITION_V1,
+      REPRESENTATION_MEASUREMENT_DATE_CLAIM_DEFINITION_V1,
+      RETROSPECTIVE_LOOKBACK_CLAIM_DEFINITION_V1,
+    ],
+  );
+  assert.equal(FIXTURE_SERVING_CONTRACT_FINGERPRINTS.includes(FROZEN_F13), false);
+  assert.equal(
+    canonicalJson(fixtureContractForFingerprint(FROZEN_F13)),
+    canonicalJson(f13),
+  );
+});
+
+test('F13 freezes the governed date, clause groups, parties and qualifier absence scope', () => {
+  const f13 = compileFixtureContractV13();
+  const schema = f13.capitalisation_semantic_schema_definition;
+  assert.equal(schema.semantic_schema_key, 'CAPITALISATION_REPRESENTATION');
+  assert.equal(schema.semantic_schema_version, 1);
+  assert.deepEqual(schema.required_limb_ordinals, [1, 2, 3, 4, 5]);
+  assert.equal(schema.exact_limb_count, 5);
+  assert.deepEqual(
+    schema.condition_group_contracts.map((group) => [
+      group.source_clause_code,
+      group.comparison_class_key,
+      group.required_limb_ordinals,
+    ]),
+    [
+      [
+        'B',
+        'CAPITALISATION_CLAUSE_B_LIMBS_I_III',
+        [1, 3],
+      ],
+      [
+        'C',
+        'CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V',
+        [2, 4, 5],
+      ],
+    ],
+  );
+  assert.deepEqual(
+    schema.party_contract.buyer_group_members.map(
+      (member) => [member.value, member.capacity],
+    ),
+    [
+      ['PARENT', 'ACQUIRER'],
+      ['TITANIUM_MERGER_SUB', 'MERGER_SUB'],
+      ['FORWARD_MERGER_SUB', 'MERGER_SUB'],
+    ],
+  );
+  assert.equal(
+    schema.party_contract.one_result_and_observation_party_required,
+    true,
+  );
+  assert.deepEqual(
+    {
+      measurement_date:
+        schema.measurement_date_claim_contract.qxo_required_measurement_date,
+      signing_date:
+        schema.measurement_date_claim_contract.qxo_required_signing_date,
+      offset:
+        schema.measurement_date_claim_contract
+          .qxo_required_signing_relative_offset,
+      offset_unit:
+        schema.measurement_date_claim_contract.required_offset_unit,
+      day_basis:
+        schema.measurement_date_claim_contract.required_day_basis,
+      semantic_class:
+        schema.measurement_date_claim_contract.allowed_semantic_classes,
+    },
+    {
+      measurement_date: '2026-04-17',
+      signing_date: '2026-04-18',
+      offset: -1,
+      offset_unit: 'CALENDAR_DAY',
+      day_basis: 'CALENDAR_DAY',
+      semantic_class: ['NEAR_SIGNING_MEASUREMENT_SNAPSHOT'],
+    },
+  );
+  assert.equal(
+    schema.measurement_date_claim_contract
+      .retrospective_lookback_projection_forbidden,
+    true,
+  );
+  assert.deepEqual(
+    schema.qualifier_absence_scope_contract.claim_definition_keys,
+    [
+      'KNOWLEDGE_QUALIFIER',
+      'GENERAL_MATERIALITY_QUALIFIER',
+      'RETROSPECTIVE_LOOKBACK',
+    ],
+  );
+  assert.equal(
+    schema.qualifier_absence_scope_contract.required_claim_state,
+    'ABSENT',
+  );
+  assert.equal(
+    schema.qualifier_absence_scope_contract.required_coverage_status,
+    'COMPLETE',
+  );
+  assert.deepEqual(
+    schema.qualifier_absence_scope_contract.required_scope_members,
+    [
+      'REPRESENTATION_CHAPEAU',
+      'REPRESENTATION_LIMB_I',
+      'REPRESENTATION_LIMB_II',
+      'REPRESENTATION_LIMB_III',
+      'REPRESENTATION_LIMB_IV',
+      'REPRESENTATION_LIMB_V',
+      'APPLICABLE_PROVISOS',
+      'DEFINED_TERM_USES',
+      'CROSS_REFERENCES',
+    ],
+  );
+  assert.equal(schema.parser_layout_contract.isolated_page_number_line, '16');
+  assert.equal(
+    schema.parser_layout_contract.semantic_object_creation_for_page_marker_forbidden,
+    true,
+  );
+});
+
+test('F13 freezes typed bring-down and definition-use effects for both clause classes', () => {
+  const f12 = compileFixtureContractV12();
+  const f13 = compileFixtureContractV13();
+  assert.deepEqual(
+    f13.relationship_definitions.find(
+      (entry) => entry.relationship_key === 'BRINGS_DOWN',
+    ),
+    {
+      relationship_key: 'BRINGS_DOWN',
+      effect_mode: 'TYPED_LEGAL_EFFECT',
+      version: 2,
+      effect_schema: 'BRINGS_DOWN_EFFECT/V1',
+    },
+  );
+  assert.deepEqual(
+    f13.relationship_definitions.find(
+      (entry) => entry.relationship_key === 'USES_DEFINITION',
+    ),
+    {
+      relationship_key: 'USES_DEFINITION',
+      effect_mode: 'TYPED_LEGAL_EFFECT',
+      version: 4,
+      effect_schema: 'USES_DEFINITION_EFFECT/V3',
+    },
+  );
+  assert.equal(
+    f13.brings_down_effect_schema_definition,
+    BRINGS_DOWN_EFFECT_SCHEMA_V1,
+  );
+  assert.equal(
+    f13.definition_use_effect_schema_definition,
+    USES_DEFINITION_EFFECT_SCHEMA_V3,
+  );
+  assert.deepEqual(
+    f13.brings_down_effect_schema_definition.comparison_class_contracts.map(
+      (entry) => [
+        entry.comparison_class_key,
+        entry.required_target_limb_ordinals,
+        entry.required_accuracy_standard,
+        entry.required_accuracy_exception,
+        entry.required_materiality_scrape_state,
+      ],
+    ),
+    [
+      [
+        'CAPITALISATION_CLAUSE_B_LIMBS_I_III',
+        [1, 3],
+        'MAT_ALL_RESPECTS_DE_MINIMIS',
+        'DE_MINIMIS_INACCURACIES',
+        'NOT_APPLIED',
+      ],
+      [
+        'CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V',
+        [2, 4, 5],
+        'MAT_ALL_MATERIAL',
+        null,
+        'APPLIED',
+      ],
+    ],
+  );
+  assert.deepEqual(
+    f13.brings_down_effect_schema_definition.required_test_point_codes,
+    ['AGREEMENT_DATE', 'CLOSING_DATE'],
+  );
+  assert.equal(
+    f13.brings_down_effect_schema_definition.class_aggregation_forbidden,
+    true,
+  );
+  assert.equal(
+    f13.definition_use_effect_schema_definition
+      .definition_application_contract
+      .required_qxo_target_representation_denominator_party,
+    'COMPANY',
+  );
+  assert.equal(
+    f13.definition_use_effect_schema_definition
+      .definition_application_contract.raw_alternative_phrase_required,
+    'OR_PARENT_AS_THE_CASE_MAY_BE',
+  );
+  assert.equal(
+    f12.relationship_definitions.find(
+      (entry) => entry.relationship_key === 'BRINGS_DOWN',
+    ).version,
+    1,
+  );
+  assert.equal(
+    f12.definition_use_effect_schema_definition,
+    USES_DEFINITION_EFFECT_SCHEMA_V2,
+  );
+});
+
+test('F13 freezes one result and one metric with two non-aggregating clause classes', () => {
+  const f13 = compileFixtureContractV13();
+  assert.equal(f13.result_definitions.length, 1);
+  assert.equal(f13.market_metric_definitions.length, 1);
+  const [result] = f13.result_definitions;
+  const [metric] = f13.market_metric_definitions;
+  assert.equal(
+    result.result_key,
+    TARGET_CAPITALISATION_BRING_DOWN_RESULT_DEFINITION_V2.result_key,
+  );
+  assert.equal(result.result_version, 2);
+  assert.deepEqual(
+    result.primary_comparison_slots.map((slot) => [
+      slot.ordinal,
+      slot.comparison_class_key,
+      slot.required_target_limb_ordinals,
+    ]),
+    [
+      [0, 'CAPITALISATION_CLAUSE_B_LIMBS_I_III', [1, 3]],
+      [1, 'CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V', [2, 4, 5]],
+    ],
+  );
+  assert.deepEqual(
+    result.contextual_claim_slots.map((slot) => [
+      slot.ordinal,
+      slot.claim_definition_key,
+      slot.required_state,
+    ]),
+    [
+      [2, 'REPRESENTATION_MEASUREMENT_DATE', 'PRESENT'],
+      [3, 'KNOWLEDGE_QUALIFIER', 'ABSENT'],
+      [4, 'GENERAL_MATERIALITY_QUALIFIER', 'ABSENT'],
+      [5, 'RETROSPECTIVE_LOOKBACK', 'ABSENT'],
+    ],
+  );
+  assert.deepEqual(
+    result.expected_result_input_lineage_slots.slice(0, 2).map(
+      (slot) => [
+        slot.required_comparison_class_key,
+        slot.required_claim_definition_keys,
+        slot.required_relationship_keys,
+      ],
+    ),
+    [
+      [
+        'CAPITALISATION_CLAUSE_B_LIMBS_I_III',
+        [
+          'REPRESENTATION_ACCURACY_STANDARD',
+          'REPRESENTATION_ACCURACY_EXCEPTION',
+        ],
+        ['BRINGS_DOWN', 'USES_DEFINITION'],
+      ],
+      [
+        'CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V',
+        ['REPRESENTATION_ACCURACY_STANDARD'],
+        ['BRINGS_DOWN'],
+      ],
+    ],
+  );
+  assert.equal(
+    metric.metric_key,
+    REPRESENTATION_ACCURACY_STANDARD_METRIC_DEFINITION_V2.metric_key,
+  );
+  assert.equal(metric.metric_version, 2);
+  assert.equal(metric.required_result_version, 2);
+  assert.deepEqual(
+    metric.comparison_classes.map((entry) => entry.comparison_class_key),
+    [
+      'CAPITALISATION_CLAUSE_B_LIMBS_I_III',
+      'CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V',
+    ],
+  );
+  assert.equal(metric.cohort_identity_requires_comparison_class, true);
+  assert.equal(metric.cross_class_aggregation_forbidden, true);
+  assert.equal(metric.distinct_metric_keys_per_class_forbidden, true);
+});
+
+test('F13 refuses partial and co-mutated capitalisation contract hybrids', () => {
+  for (const field of [
+    'brings_down_effect_schema',
+    'capitalisation_semantic_schema',
+    'result_definitions',
+    'market_metric_definitions',
+  ]) {
+    assert.throws(() => compileFixtureContract({
+      ...FIXTURE_CONTRACT_INPUT_V13,
+      [field]: undefined,
+    }), /contract version/);
+  }
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V13,
+    relationship_definitions:
+      FIXTURE_CONTRACT_INPUT_V12.relationship_definitions,
+  }), /contract version/);
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V12,
+    claim_definitions: FIXTURE_CONTRACT_INPUT_V13.claim_definitions,
+  }), /contract version/);
+  const changedMetrics = JSON.parse(JSON.stringify(
+    FIXTURE_CONTRACT_INPUT_V13.market_metric_definitions,
+  ));
+  changedMetrics[0].comparison_classes = [
+    {
+      comparison_class_key: 'CAPITALISATION_COMBINED',
+      required_value_slot_key: 'CAPITALISATION_COMBINED',
+      required_target_limb_ordinals: [1, 2, 3, 4, 5],
+    },
+  ];
+  assert.throws(() => compileFixtureContract({
+    ...FIXTURE_CONTRACT_INPUT_V13,
+    market_metric_definitions: changedMetrics,
+  }), /contract version/);
+});
+
 // ---------------------------------------------------------------------------
 // Per-version validation: validateInput (exercised via compileFixtureContract)
 // accepts either frozen concept-key vocabulary and rejects anything else.
@@ -2069,7 +2451,7 @@ test('a bundle missing one of the four V2 additions is rejected (not silently ac
   assert.throws(() => compileFixtureContract(partial), /concept keys do not match any frozen fixture contract version/);
 });
 
-test('validateContractBundle accepts compiled V1 through V12 bundles', () => {
+test('validateContractBundle accepts compiled V1 through V13 bundles', () => {
   assert.equal(validateContractBundle(compileFixtureContract()), true);
   assert.equal(validateContractBundle(compileFixtureContractV2()), true);
   assert.equal(validateContractBundle(compileFixtureContractV3()), true);
@@ -2082,4 +2464,5 @@ test('validateContractBundle accepts compiled V1 through V12 bundles', () => {
   assert.equal(validateContractBundle(compileFixtureContractV10()), true);
   assert.equal(validateContractBundle(compileFixtureContractV11()), true);
   assert.equal(validateContractBundle(compileFixtureContractV12()), true);
+  assert.equal(validateContractBundle(compileFixtureContractV13()), true);
 });
