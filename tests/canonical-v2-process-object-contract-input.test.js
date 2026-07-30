@@ -210,7 +210,7 @@ test('rejects semantic drift in each complete governed definition', () => {
 test('is mechanically complete and grants no contract-freeze authority', () => {
   const compiled = compileCanonicalContractInput({ root_directory: ROOT });
 
-  assert.equal(compiled.authored_members.length, 168);
+  assert.equal(compiled.authored_members.length, 170);
   assert.equal(
     compiled.disposition.status,
     'AUTHORED_UNIVERSE_MECHANICALLY_COMPLETE',
