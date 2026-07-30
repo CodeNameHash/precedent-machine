@@ -53,6 +53,16 @@ function input(overrides = {}) {
   };
 }
 
+function rehashReceipt(receipt) {
+  receipt.accession_inventory_digest = contentId('PROCESS_SEC_ACCESSION_INVENTORY/V2', {
+    governed_scope: receipt.governed_scope,
+    accession_inventory: receipt.accession_inventory,
+  });
+  const { oracle_receipt_id, ...body } = receipt;
+  receipt.oracle_receipt_id = contentId(receipt.schema_version, body);
+  return receipt;
+}
+
 test('builds a deterministic exact SEC accession inventory without production imports', () => {
   const first = buildProcessSecCompletenessOracle(input());
   const second = buildProcessSecCompletenessOracle(input());
@@ -82,6 +92,34 @@ test('reconciles only validated independent oracle inventories by exact accessio
   assert.deepEqual(reconciliation.extra_accession_numbers, []);
 });
 
+function assertScopeMismatch(right) {
+  const left = buildProcessSecCompletenessOracle(input());
+  assert.throws(() => reconcileExactProcessSecAccessionMembership(left, right),
+    (error) => error.code === 'PROCESS_SEC_SCOPE_MISMATCH');
+}
+
+test('rejects exact accession reconciliation with a different governed scope ID', () => {
+  assertScopeMismatch(buildProcessSecCompletenessOracle(input({
+    governed_scope: { ...input().governed_scope, scope_id: 'OTHER_SCOPE' },
+  })));
+});
+
+test('rejects exact accession reconciliation with a different governed scope digest', () => {
+  assertScopeMismatch(buildProcessSecCompletenessOracle(input({
+    governed_scope: { ...input().governed_scope, scope_digest: digest('other-scope') },
+  })));
+});
+
+test('rejects exact accession reconciliation with a different issuer CIK', () => {
+  assertScopeMismatch(buildProcessSecCompletenessOracle(input({
+    governed_scope: { ...input().governed_scope, issuer_cik: '1' },
+    sec_index_records: [
+      record('0001193125-25-141749', { issuer_cik: '1' }),
+      record('0001193125-25-141748', { issuer_cik: '1' }),
+    ],
+  })));
+});
+
 test('rejects hostile malformed, duplicate, out-of-scope and tampered inventory input', () => {
   const malformed = input();
   malformed.sec_index_records[0].accession_number = 'not-an-accession';
@@ -98,8 +136,40 @@ test('rejects hostile malformed, duplicate, out-of-scope and tampered inventory 
   assert.throws(() => buildProcessSecCompletenessOracle(outOfScope),
     (error) => error.code === 'INVALID_PROCESS_SEC_INDEX_RECORD');
 
-  const tampered = JSON.parse(JSON.stringify(buildProcessSecCompletenessOracle(input())));
-  tampered.accession_inventory[0].form_type = '8-K';
-  assert.throws(() => validateProcessSecCompletenessOracleReceipt(tampered),
+});
+
+function assertRehashedReceiptForgery(field, value) {
+  const forged = JSON.parse(JSON.stringify(buildProcessSecCompletenessOracle(input())));
+  forged.accession_inventory[0][field] = value;
+  rehashReceipt(forged);
+  assert.throws(() => validateProcessSecCompletenessOracleReceipt(forged),
     (error) => error.code === 'INVALID_PROCESS_SEC_ORACLE_RECEIPT');
+}
+
+test('rejects rehashed receipt forgery of the SEC index source', () => {
+  assertRehashedReceiptForgery('index_source', 'UNTRUSTED_SOURCE');
+});
+
+test('rejects rehashed receipt forgery of the SEC index snapshot', () => {
+  assertRehashedReceiptForgery('index_snapshot_id', 'not-a-digest');
+});
+
+test('rejects rehashed receipt forgery of accession binding', () => {
+  assertRehashedReceiptForgery('accession_number_no_dashes', 'invalid-accession-binding');
+});
+
+test('rejects rehashed receipt forgery of the issuer CIK', () => {
+  assertRehashedReceiptForgery('issuer_cik', '1');
+});
+
+test('rejects rehashed receipt forgery of the filing date', () => {
+  assertRehashedReceiptForgery('filing_date', '2026-01-01');
+});
+
+test('rejects rehashed receipt forgery of the form type', () => {
+  assertRehashedReceiptForgery('form_type', '');
+});
+
+test('rejects rehashed receipt forgery of the primary document', () => {
+  assertRehashedReceiptForgery('primary_document', '');
 });

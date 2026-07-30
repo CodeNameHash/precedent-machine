@@ -164,6 +164,27 @@ test('fails closed for hostile source records, duplicate candidates and reported
   );
 });
 
+test('rejects duplicate scope residual record keys', () => {
+  const duplicateReceipt = scopeReceipt();
+  duplicateReceipt.residuals.push({ ...duplicateReceipt.residuals[0] });
+  assert.throws(
+    () => enumerateProcessLexicalCandidates(input({ scope_receipt: duplicateReceipt })),
+    { code: 'INVALID_PROCESS_LEXICAL_SCOPE_RECEIPT' },
+  );
+});
+
+test('rejects scope residual record keys outside canonical UTF-8 order', () => {
+  const reorderedReceipt = scopeReceipt();
+  reorderedReceipt.residuals = [
+    { ...reorderedReceipt.residuals[0], record_key: '\u00c5_RESIDUAL' },
+    { ...reorderedReceipt.residuals[0], record_key: 'Z_RESIDUAL' },
+  ];
+  assert.throws(
+    () => enumerateProcessLexicalCandidates(input({ scope_receipt: reorderedReceipt })),
+    { code: 'INVALID_PROCESS_LEXICAL_SCOPE_RECEIPT' },
+  );
+});
+
 test('has no source acquisition, semantic enumeration or authority imports', () => {
   const fs = require('node:fs');
   const source = fs.readFileSync(
