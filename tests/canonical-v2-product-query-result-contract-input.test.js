@@ -219,7 +219,7 @@ test('leaves ordering, fields and Product admission with their existing owners',
   );
   assert.equal(
     definition.external_input_contract.product_query_result_admission_source,
-    'EXTERNAL_PRODUCT_QUERY_RESULT_ADMISSION_RECEIPT/V1',
+    'PRODUCT_QUERY_RESULT_ADMISSION_RECEIPT/V1',
   );
   assert.equal(
     definition.external_input_contract.adapter_can_create_product_query_result_admission_receipt,
