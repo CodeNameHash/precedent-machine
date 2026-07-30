@@ -10,7 +10,7 @@ const {
   validateProcessRelationshipIdentity,
 } = require('../lib/canonical-v2/process-relationship');
 const relationshipContract = require(
-  '../contracts/canonical-v2/successor/process/relationships/process-relationship.v1.json',
+  '../contracts/canonical-v2/successor/process/relationships/process-relationship.v2.json',
 );
 
 function syntheticId(label) {
