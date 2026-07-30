@@ -34,6 +34,7 @@ function processMembers() {
     loadMember('process/bidder-tracks/bidder-track.v1.json'),
     loadMember('process/domain/process-domain-registry.v1.json'),
     loadMember('process/events/process-event.v1.json'),
+    loadMember('process/fields/process-field-definition-catalogue.v1.json'),
     loadMember('process/narration/process-narration-occurrence.v1.json'),
     loadMember('process/occurrence-slots/process-event.v1.json'),
     loadMember('process/occurrence-slots/process-narration.v1.json'),
@@ -42,6 +43,7 @@ function processMembers() {
     loadMember('process/phases/process-phase.v1.json'),
     loadMember('process/positions/process-position.v1.json'),
     loadMember('process/predicates/process-predicate-witness.v1.json'),
+    loadMember('process/registries/process-controlled-code-registry.v1.json'),
     loadMember('process/relationships/process-relationship.v1.json'),
   ];
 }
