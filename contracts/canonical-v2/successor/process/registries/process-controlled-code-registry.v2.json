@@ -4,7 +4,7 @@
   "schema_version": "PROCESS_CONTROLLED_CODE_REGISTRY_INPUT/V1",
   "definition": {
     "domain_key": "PROCESS",
-    "registry_version": 1,
+    "registry_version": 2,
     "registry_state": "CLOSED",
     "process_owned_registries": [
       {
@@ -119,6 +119,7 @@
         "value_field": "relationship_type_code",
         "codes": [
           "AMENDMENT",
+          "BIDDER_TRACK_EVENT_MEMBERSHIP",
           "CONTINUATION",
           "CROSS_REFERENCE",
           "RESPONSE",

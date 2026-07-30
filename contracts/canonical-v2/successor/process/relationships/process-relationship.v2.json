@@ -5,7 +5,7 @@
   "definition": {
     "domain_key": "PROCESS",
     "logical_type": "ProcessRelationship",
-    "logical_type_version": 1,
+    "logical_type_version": 2,
     "relationship_identity": {
       "stable_id_domain": "PROCESS_RELATIONSHIP/V1",
       "stable_id_inputs": [
@@ -69,6 +69,7 @@
     "relationship_type_contract": {
       "minimum_governed_types": [
         "AMENDMENT",
+        "BIDDER_TRACK_EVENT_MEMBERSHIP",
         "CONTINUATION",
         "CROSS_REFERENCE",
         "RESPONSE",
@@ -80,6 +81,22 @@
       "direction_required": true,
       "free_text_label_can_create_type": false
     },
+    "bidder_track_event_membership_contract": {
+      "relationship_type_code": "BIDDER_TRACK_EVENT_MEMBERSHIP",
+      "source_logical_type": "BidderTrack",
+      "source_definition_stable_id": "BIDDER_TRACK",
+      "target_logical_type": "ProcessEvent",
+      "target_definition_stable_id": "PROCESS_EVENT",
+      "relationship_effect": {
+        "effect_code": "EVENT_MEMBER_OF_BIDDER_TRACK"
+      },
+      "relationship_state": "PRESENT",
+      "one_membership_per_stable_track_event_pair": true,
+      "same_frozen_contract_pair_required": true,
+      "same_governed_deal_required": true,
+      "exact_evidence_edges_required": true,
+      "chronology_date_economics_names_or_labels_can_establish_membership": false
+    },
     "semantic_contract": {
       "continuation_merges_source_objects": false,
       "retelling_deletes_or_merges_source_object": false,
@@ -90,17 +107,24 @@
     },
     "revision_identity": {
       "revision_type": "ProcessRelationshipRevision",
-      "revision_id_domain": "PROCESS_RELATIONSHIP_REVISION/V1",
+      "revision_id_domain": "PROCESS_RELATIONSHIP_REVISION/V2",
       "immutable_inputs": [
         "evidence_edges",
         "process_relationship_id",
         "relationship_effect",
         "relationship_state",
         "relationship_type_code",
-        "source_revision_id",
-        "target_revision_id",
+        "source_process_object_kind_and_id",
+        "target_process_object_kind_and_id",
         "temporal_expression_revision_id"
-      ]
+      ],
+      "prohibited_inputs": [
+        "source_revision_id",
+        "target_revision_id"
+      ],
+      "endpoint_records_equal_validated_relationship_identity": true,
+      "endpoint_revisions_may_contain_relationship_revision_id": true,
+      "relationship_revision_may_contain_endpoint_revision_ids": false
     },
     "state_rules": {
       "allowed_states": [
