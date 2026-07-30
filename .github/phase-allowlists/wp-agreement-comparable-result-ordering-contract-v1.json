@@ -1,0 +1,21 @@
+{
+  "phase": "WP-AGREEMENT-COMPARABLE-RESULT-ORDERING-CONTRACT-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-agreement-comparable-result-ordering-contract-v1.json",
+    "contracts/canonical-v2/successor/agreement/query/agreement-comparable-result-ordering.v1.json",
+    "lib/canonical-v2/agreement-query-ordering-contract-input-validator.js",
+    "tests/canonical-v2-agreement-query-ordering-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Agreement comparable-result ordering contract only. It defines closed typed comparison, missing-state, diversification, projection and authority limits. No query execution, result ordering, projection materialisation, source read, extraction, UI, network, database, serving, write, import, activation, production or contract-freeze authority."
+}

@@ -1,0 +1,230 @@
+{
+  "object_kind": "AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT",
+  "stable_id": "AGREEMENT_COMPARABLE_RESULT_ORDERING_PROJECTION",
+  "schema_version": "AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "AGREEMENT",
+    "contract_type": "COMPARABLE_RESULT_ORDERING_DEFINITION",
+    "contract_version": 1,
+    "projection_contract": {
+      "logical_type": "AgreementComparableResultOrderingProjection",
+      "schema_version": "AGREEMENT_COMPARABLE_RESULT_ORDERING_PROJECTION/V1",
+      "ordering_fact_schema_version": "AGREEMENT_COMPARABLE_RESULT_ORDERING_FACT/V1",
+      "parent_query_definition_stable_id": "PRODUCT_QUERY_IR",
+      "parent_query_schema_version": "PRODUCT_QUERY_IR/V1",
+      "product_result_definition_stable_id": "PRODUCT_QUERY_RESULT_DEFINITION",
+      "product_result_schema_version": "PRODUCT_QUERY_RESULT/V1",
+      "agreement_result_definition_stable_id": "AGREEMENT_COMPARABLE_RESULT",
+      "agreement_result_definition_version": 1,
+      "maximum_candidates": 512,
+      "minimum_page_size": 8,
+      "maximum_page_size": 12
+    },
+    "query_release_binding_contract": {
+      "exact_product_query_definition_id_required": true,
+      "exact_approved_pm_data_version_id_required": true,
+      "exact_candidate_release_manifest_id_and_payload_digest_required": true,
+      "exact_product_field_catalogue_id_and_payload_digest_required": true,
+      "exact_ordered_sort_vector_and_direction_required": true,
+      "exact_diversity_definition_id_and_payload_digest_required": true,
+      "complete_candidate_set_required": true,
+      "candidate_can_move_between_query_or_release": false,
+      "application_memory_can_recreate_ordering_authority": false
+    },
+    "ordering_fact_contract": {
+      "exactly_one_fact_per_candidate_required": true,
+      "exact_product_query_result_identity_required": true,
+      "exact_agreement_domain_result_identity_required": true,
+      "exact_governed_deal_admission_id_required": true,
+      "one_typed_sort_projection_per_query_sort_field_required": true,
+      "sort_projection_order_equals_query_sort_order": true,
+      "permitted_fact_states": [
+        "VALIDATED_SORT_PROJECTION",
+        "ORDERING_UNAVAILABLE"
+      ],
+      "unavailable_fact_requires_typed_failure_identity_and_disposition": true,
+      "unavailable_fact_can_contain_sort_projection": false,
+      "external_field_projection_validation_receipt_required": true,
+      "external_candidate_membership_validation_receipt_required": true,
+      "caller_rank_or_ordinal_permitted": false,
+      "caller_comparator_callback_permitted": false,
+      "caller_validity_boolean_permitted": false,
+      "display_label_or_locale_value_permitted": false,
+      "free_standing_digest_is_ordering_authority": false
+    },
+    "typed_comparison_contract": {
+      "sortable_value_types": [
+        "DEAL_REFERENCE",
+        "DATE",
+        "ENTITY_REFERENCE",
+        "MONEY_WITH_BASIS",
+        "ENUM"
+      ],
+      "non_sortable_value_types": [
+        "PROFESSIONAL_ASSIGNMENT"
+      ],
+      "unsupported_sort_disposition": "SORT_FIELD_TYPE_NOT_SUPPORTED",
+      "generic_canonical_json_comparison_permitted": false,
+      "display_text_comparison_permitted": false,
+      "locale_dependent_comparison_permitted": false,
+      "implicit_type_coercion_permitted": false,
+      "direction_values": [
+        "ASC",
+        "DESC"
+      ],
+      "direction_applies_to_comparable_values_only": true,
+      "final_tie_breaker": "AGREEMENT_COMPARABLE_RESULT_IDENTITY_UTF8"
+    },
+    "typed_comparator_registry": [
+      {
+        "value_type": "DEAL_REFERENCE",
+        "comparator": "GOVERNED_DEAL_ID_UTF8",
+        "required_projection_components": [
+          "governed_deal_id"
+        ],
+        "multiple_components_per_value_permitted": false
+      },
+      {
+        "value_type": "DATE",
+        "comparator": "ISO_8601_CALENDAR_DATE_ASCII",
+        "required_projection_components": [
+          "iso_8601_calendar_date"
+        ],
+        "multiple_components_per_value_permitted": false
+      },
+      {
+        "value_type": "ENTITY_REFERENCE",
+        "comparator": "GOVERNED_ENTITY_ID_UTF8",
+        "required_projection_components": [
+          "governed_entity_id"
+        ],
+        "multiple_components_per_value_permitted": false
+      },
+      {
+        "value_type": "MONEY_WITH_BASIS",
+        "comparator": "BASIS_THEN_CURRENCY_THEN_DECIMAL_AMOUNT",
+        "required_projection_components": [
+          "value_basis_code",
+          "iso_4217_currency_code",
+          "canonical_decimal_amount"
+        ],
+        "multiple_components_per_value_permitted": false
+      },
+      {
+        "value_type": "ENUM",
+        "comparator": "ORDERED_GOVERNED_ENUM_CODE_SEQUENCE_UTF8",
+        "required_projection_components": [
+          "ordered_governed_enum_codes"
+        ],
+        "multiple_components_per_value_permitted": true
+      }
+    ],
+    "missing_state_contract": {
+      "comparable_value_state": "COMPARABLE_VALUE",
+      "typed_missing_states_in_fixed_order": [
+        "CONFLICT",
+        "KNOWN_MISSING",
+        "NOT_APPLICABLE",
+        "NOT_EXAMINED",
+        "UNKNOWN"
+      ],
+      "ordering_failure_state": "ORDERING_UNAVAILABLE",
+      "comparable_values_precede_typed_missing_states": true,
+      "sort_direction_can_reverse_missing_state_order": false,
+      "missing_state_can_be_recast_as_string_number_date_enum_or_reference": false,
+      "failed_or_unavailable_result_can_be_recast_as_sort_value": false,
+      "ordering_failures_follow_all_comparable_and_typed_missing_candidates": true,
+      "ordering_failure_order": "AGREEMENT_COMPARABLE_RESULT_IDENTITY_UTF8_ASC",
+      "conflict_candidates_and_sources_must_remain_available": true
+    },
+    "total_comparator_contract": {
+      "comparison_sequence": [
+        "ORDERED_QUERY_SORT_FIELDS",
+        "AGREEMENT_COMPARABLE_RESULT_IDENTITY_UTF8"
+      ],
+      "each_sort_field_uses_field_catalogue_value_type": true,
+      "each_sort_field_uses_query_direction": true,
+      "first_non_equal_component_decides_order": true,
+      "result_identity_tie_breaker_is_always_ascending": true,
+      "total_order_required_before_diversification": true,
+      "unstable_runtime_or_database_order_permitted": false
+    },
+    "diversification_contract": {
+      "exact_query_diversity_definition_identity_required": true,
+      "diversification_applies_after_total_comparator": true,
+      "algorithm": "STABLE_GOVERNED_DEAL_ROUND_ROBIN_OVER_TOTAL_ORDER/V1",
+      "bucket_key": "governed_deal_admission_id",
+      "first_bucket_occurrence_order_comes_from_total_order": true,
+      "within_bucket_total_order_preserved": true,
+      "ordering_unavailable_candidates_participate_in_diversity": false,
+      "ordering_unavailable_candidates_append_after_diversified_candidates": true,
+      "candidate_can_be_padded_or_repeated": false,
+      "candidate_can_be_silently_removed": false,
+      "application_can_rerank_or_rediversify": false
+    },
+    "projection_identity_contract": {
+      "stable_id_domain": "AGREEMENT_COMPARABLE_RESULT_ORDERING_PROJECTION/V1",
+      "required_identity_inputs": [
+        "product_query_definition_id",
+        "approved_pm_data_version_id",
+        "candidate_release_manifest_id",
+        "candidate_release_manifest_payload_digest",
+        "product_field_catalogue_id",
+        "product_field_catalogue_payload_digest",
+        "ordered_query_sort_vector",
+        "query_diversity_definition_id",
+        "query_diversity_payload_digest",
+        "canonical_ordering_fact_set_digest",
+        "candidate_count",
+        "page_size",
+        "ordered_agreement_result_identities",
+        "first_page_agreement_result_identities",
+        "ordered_failed_agreement_result_identities"
+      ],
+      "prohibited_identity_inputs": [
+        "application_row_order",
+        "caller_rank",
+        "database_row_order",
+        "display_label",
+        "locale",
+        "render_timestamp"
+      ],
+      "correctly_rehashed_semantic_forgery_permitted": false
+    },
+    "failure_contract": {
+      "unsupported_sort_type_fails_typed": true,
+      "invalid_sort_projection_emits_typed_ordering_failure": true,
+      "failed_candidate_remains_in_projection_membership": true,
+      "failed_candidate_uses_stable_post_diversity_order": true,
+      "duplicate_missing_or_substituted_candidate_fails_projection": true,
+      "query_release_catalogue_sort_or_diversity_drift_fails_projection": true,
+      "one_failed_candidate_keeps_valid_siblings_available": true,
+      "failed_candidate_identity_and_disposition_retained": true,
+      "operational_failure_can_be_returned_as_empty_result": false
+    },
+    "extensibility_contract": {
+      "new_sortable_value_type_requires_contract_successor": true,
+      "new_agreement_result_definition_requires_contract_successor": true,
+      "future_cvr_domain_cannot_use_agreement_validator": true,
+      "shared_product_result_set_requires_exact_admitted_projection_validator": true
+    },
+    "authority_contract": {
+      "creates_runtime_order": false,
+      "creates_ordering_fact_validation_authority": false,
+      "creates_query_execution_authority": false,
+      "creates_result_materialisation_authority": false,
+      "creates_domain_result_authority": false,
+      "creates_extraction_authority": false,
+      "creates_canonical_write_authority": false,
+      "creates_serving_authority": false,
+      "creates_database_authority": false,
+      "creates_ui_authority": false,
+      "creates_writer_authority": false,
+      "creates_release_authority": false,
+      "creates_import_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}
