@@ -40,23 +40,24 @@ exact `origin/main`.
 
 | Item | Exact state |
 | --- | --- |
-| Signed main | `a3149cfb6434f3166aac2c3bd9631e637d5df8ae` |
+| Last signed main | `a3149cfb6434f3166aac2c3bd9631e637d5df8ae` |
+| Current `origin/main` | `286d5050280aff6866e7844353dd4623efd4c221` |
 | Protected publication | `9552de2185b11d80bd1e2b80757f4f07005c58d1` |
 | Generation | `44` |
 | Status artefact ID | `864ec7b5ffbc46be61bcf4547b103d747fdb82bb5ac963beaf61bd3ec7a80de9` |
-| Official verifier | `PASS` on exact signed main |
+| Official verifier | `FAIL_CLOSED`: Generation 44 is stale against current `origin/main` |
 | Work classes `PASS` | `specification_review`, `emergency_containment`, `implementation_planning`, `isolation_boundary_setup`, `snapshot_restore_and_preview`, `canonical_work_start` |
 | Work classes `OPEN` | `gate_status_bootstrap`, `vertical_slice_execution`, `candidate_scope_and_extraction`, `production_import`, `cutover_authorisation_issue`, `production_cutover`, `programme_complete` |
 | Pilot gates | `P1_CONTRACT_FREEZE_ATTESTED: OPEN`; `P1_VERTICAL_SLICE_PASS: OPEN` |
-| CI | Run `30528559666`: 4,425 tests, 4,418 pass, 0 fail, 7 skip; build 29/29 pages; 11 invariants pass |
-| Signed successor run | `30529231084`: success |
-| Production deployment | `dpl_7U2N1eu98tEVmcRQJV2L5FSrWX27`, accepted by Generation 44 signer |
-| Isolated Preview deployment | `dpl_2xUyH1Bzx1oX4iPvNNCtWV6KZTze`, accepted by Generation 44 isolation check |
+| Exact-main tests | 4,781 total: 4,774 pass, 0 fail, 7 environment-only skip; build 29/29 pages |
+| Signed successor | Not yet published for current main. Generation 44 remains the protected predecessor. |
+| Production deployment | `dpl_5Yh5y6XNb73tdwmgBL7knkEsrQXe`, exact current main, HTTP 200; market containment remains active |
+| Isolated Preview deployment | `dpl_EV6b1bdkXCkW1Ljynm2tRsHNKZ2Y`, exact current main, READY and SSO protected |
 | Active PM work package | `PILOT_FREEZE_AND_VERTICAL_SLICE` |
-| Fixed integration basis | Generation 44 tuple above |
-| PM milestone branch | `codex/pilot-freeze-milestone-v1` at `1c667dd7dfa95d865143624757b38f994b49267c` before this ledger update |
+| Fixed blocker-closure basis | Current main `286d5050280aff6866e7844353dd4623efd4c221`; main stays fixed until the batch is complete |
+| PM blocker-closure branch | `codex/p1-pilot-freeze-blocker-closure-v1`; current pushed head is updated by the PM controller |
 | PI Stage 1 branch | `codex/process-exclusivity-predicate-runtime-v2` at `639e1d0c3604273315ee914e7d61374518d9b1f9` |
-| Ready integration receipts | PI Stage 1 and P7 are patch-equivalent on the milestone candidate. P7 Stage 2 is bound to PI head `b27368711157982aadff8a5653e66676002a1119`; all Stage 3 findings are closed through `b8606d8`. |
+| Ready integration receipts | PI Stage 1 is pushed at `639e1d0`; P7 machinery is pushed at `b273687`; governed residuals are pushed at `ee16355`; generated topology is pushed at `385f1b5`; Product query/serving closure is pushed at `c876a59`. |
 
 All 24 Phase 9 gates in the signed status remain `OPEN`.
 
@@ -82,8 +83,10 @@ The exact reserved-path set is machine-generated in
 
 | Unit | Phase | Outcome and owner | Branch and boundary | Class; dependency; evidence | Status; next; Ben |
 | --- | --- | --- | --- | --- | --- |
-| `PM-LEDGER-01` | control | This ledger. PM controller. | `codex/pilot-freeze-milestone-v1`; this file plus `wp-pm-execution-ledger-v1.json`. | `canonical_work_start`; Generation 44; path, state and line-count checks. | `ACTIVE`; commit to current milestone; no Ben. |
-| `PM-FREEZE-ROOT-01` | P1/P8 | Exact bundle compiler, required-kind registry, freeze candidate and pre-review package. PM implementation. | `codex/pilot-freeze-milestone-v1`; exact `canonical-contract-bundle-*` modules, `contracts/canonical-v2/successor/manifest.json`, required-kind registry and focused tests. | `canonical_work_start`; final candidate bytes; two uncached compiles and focused bundle/gate tests. | `ACTIVE`; finish the P2 affected-chain check and protected P8 producer, then compile twice; no Ben until exact root approval. |
+| `PM-LEDGER-01` | control | This ledger. PM controller. | `codex/p1-pilot-freeze-blocker-closure-v1`; this file plus its exact allowlist in the integration commit. | `canonical_work_start`; current Git and protected status; path, state and line-count checks. | `ACTIVE`; ship in the blocker-closure batch; no Ben. |
+| `PM-FREEZE-ROOT-01` | P1/P8 | Exact bundle compiler, generated topology, required-kind registry, freeze candidate and pre-review package. PM implementation. | `codex/p1-pilot-freeze-blocker-closure-v1`; generated-topology unit `385f1b5`, central manifest/compiler integration pending. | `canonical_work_start`; final candidate bytes; two uncached compiles and focused bundle/gate tests. | `ACTIVE`; integrate all blocker contracts, regenerate the closed root, then compile twice; no Ben until exact root approval. |
+| `PM-P1-RESIDUAL-01` | P1 | Governed residual family with admission, consumption, universe, disposition, impact and empty-queue rules. PM implementation. | `codex/p1-governed-residual-contract-family-v1` at `ee16355`; eight contracts, validator and focused test. | `canonical_work_start`; Stage 2/3 and central registration. | `INTEGRATION`; 11/11 focused pass; no Ben. |
+| `PM-P1-QUERY-SERVING-01` | P1/P4/P6/P7 | Product IR bridge, shared row, pilot metrics and bounded set-based serving/cache rules. PM implementation. | `codex/p1-product-query-serving-contracts-v1` at `c876a59`; exact 13-file allowlist. | `canonical_work_start`; Stage 2/3 and central registration. | `INTEGRATION`; 46/46 focused pass; no Ben. |
 | `PI-PILOT-BATCH-01` | P1/P3/P4/P5 | Metsera Process contracts and pure runtime. Process Intelligence. | PI head `639e1d0c3604273315ee914e7d61374518d9b1f9`; patch-equivalent PM commits are already on the milestone candidate. | `canonical_work_start`; Generation 44; affected Process/Product chain passed after PM manifest reconciliation. | `COMPLETE` on the milestone candidate; retain exact Stage 1 handoff; no Ben. |
 | `PI-P7-GENERIC-01` | P7 | Seven generic source, scope, enumeration, graph and validation modules. PI with PM review. | PI head `b27368711157982aadff8a5653e66676002a1119`; patch-equivalent files and accepted corrections are on the milestone candidate through `b8606d8`. | `canonical_work_start`; Stage 2 exact-bound review, Stage 3 disposition and P7 affected chain. | `COMPLETE`; 43/43 P7 mechanical-chain tests pass; no Ben. |
 | `PM-P6-ACCEPTANCE-01` | P6 | Fixture-backed Process research surface and source actions. PM implementation. | `components/process/**`, `pages/query/process/pilot.js`, Process result/filter helpers and focused browser/runtime tests. | `canonical_work_start`; P4/P5; 28 focused/runtime tests and local browser acceptance pass. | `REVIEW`; repeat smoke on exact deployed Preview during Stage 5; no Ben. |
@@ -93,29 +96,26 @@ The exact reserved-path set is machine-generated in
 | `PM-METSERA-GOLD-01` | PE1/P8 | Sealed source-only Metsera gold. PM implementation. | Current milestone, commit `9bff4690a67018ecf8bb5f582bc51dc0b5c68336`; `evidence/process-intelligence/metsera-gold/**`. | `canonical_work_start`; independent source evidence; 8/8 focused pass. | `COMPLETE`; keep sealed until Stage 4 comparison; no Ben. |
 | `PM-PREFLIGHT-01` | control | Read-only nine-stage integration preflight. PM controller. | Current milestone through `b095d1e6070cfc1038f2246c85e1d1c5251c654c`; `pilot-integration-preflight.*`. | `canonical_work_start`; 20/20 focused pass; independent exact-bound review pass. | `COMPLETE`; run after combined candidate exists; no Ben. |
 
-Current machine blockers are `DEPLOYMENT_METADATA_REQUIRED`,
-`FORMAL_FREEZE_COMPILATION_REQUIRED` and `TEST_RECEIPTS_REQUIRED`.
-Current PM focused evidence also includes 49/49 predecessor-source-anchor tests
-and 8/8 sealed-Metsera-gold tests. These are not Stage 4 or freeze evidence.
+The first Stage 4 exact-root review found blocking residual, generated-topology,
+legal-semantic, shared-row, Product-IR, pilot-metric and serving-cache gaps.
+The bounded closure batch is active. The first review result is not freeze
+evidence because the reviewed root failed.
 
 ## 3. Ordered queue for the next 48 hours
 
-1. Update this ledger and the machine current-state record to the exact
-   candidate head.
-2. Run the P1 to P7 mechanical closure checks below. Implement only blocking
-   gaps.
+1. Finish Stage 2 and Stage 3 disposition for the four bounded blocker units.
+2. Integrate the legal-semantic correction unit when its focused tests pass.
 3. Regenerate the required-kind registry, successor manifest, compiler
-   registrations and exact count assertions only if the checks require it.
+   registrations, exact counts and signer inventory once.
 4. Compile the complete Agreement, shared and Process inputs twice without
    cache. Require identical canonical bytes and fingerprint.
 5. Run the affected-chain tests. Then run the complete suite and build once.
-6. Run the nine-stage preflight. Close test receipt gaps. Deployment metadata
-   stays pending until the approved exact commit is deployed.
+6. Run the nine-stage preflight. Close all test and exact-root gaps.
 7. `Stage 4`: run architecture/identity, legal-semantic, and query/release
-    reviews concurrently at high reasoning against the same exact root.
+   reviews concurrently at high reasoning against the corrected exact root.
 8. Prepare the one Ben bundle approval package while Stage 4 runs.
-9. After approval, move `main` once, deploy the exact commit once to production
-   and isolated Preview, retain containment, and publish the signed successor.
+9. Ask Ben once. After approval, create freeze evidence and publish the signed
+   successor. Retain production containment.
 
 ## 4. Remaining bounded units through P11
 
