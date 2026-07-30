@@ -1,0 +1,27 @@
+{
+  "phase": "WP-PROCESS-RESEARCH-INTERACTIONS-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-research-interactions-v1.json",
+    "__fixtures__/canonical-v2/process-research-pilot.js",
+    "components/process/ProcessFilterEditor.jsx",
+    "components/process/ProcessFilterSentence.jsx",
+    "components/process/ProcessResearchSurface.jsx",
+    "components/process/ProcessSourceReader.jsx",
+    "pages/query/process/pilot.js",
+    "tests/canonical-v2-process-research-components.test.js",
+    "tests/canonical-v2-process-research-entry.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "lib/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Preview-only Process research interactions operate only on a frozen synthetic fixture and local UI state. They create no Query, source, database, network, write, authority, release, activation or production path. Clipboard use copies the exact local fixture passage and citation only."
+}

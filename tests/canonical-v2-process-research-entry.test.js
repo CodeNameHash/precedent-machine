@@ -8,7 +8,13 @@ const {
 } = require('../lib/canonical-v2/feature-flags');
 const {
   PROCESS_RESEARCH_PILOT_FIXTURE,
+  admittedFixtureFilterOptions,
+  applyProcessResearchPilotContextAction,
+  exactPassageCopyText,
   getProcessResearchPilotFixture,
+  openProcessResearchPilotReader,
+  openProcessResearchPilotRelatedPassage,
+  resolveProcessResearchPilotShare,
 } = require('../__fixtures__/canonical-v2/process-research-pilot');
 
 const ROOT = path.join(__dirname, '..');
@@ -76,6 +82,7 @@ test('the fixture supplies renderer navigation, filters, source context and verb
   assert.equal(fixture.presentation.filter_sentence.ordered_filter_segments.length >= 2, true);
   assert.equal(fixture.navigation.topics.length > 0, true);
   assert.equal(fixture.filter_fields.length >= 2, true);
+  assert.equal(fixture.admitted_options_projection.length >= 2, true);
   assert.equal(fixture.related_passages.length >= 2, true);
   assert.equal(fixture.related_passages.every((passage) => passage.exact_content.endsWith('.') && passage.exact_citation), true);
   assert.equal(fixture.source_readers.length, 8);
@@ -94,10 +101,110 @@ test('the fixture supplies renderer navigation, filters, source context and verb
   assert.doesNotMatch(JSON.stringify(fixture), /\bCVR\b|Metsera/i);
 });
 
+test('the synthetic share reference is release-pinned and refuses an inactive release', () => {
+  const slot = PROCESS_RESEARCH_PILOT_FIXTURE.presentation.result_slots.find(
+    (candidate) => candidate.slot_state === 'VALID',
+  );
+  const shareAction = slot.action_targets.find(
+    (candidate) => candidate.action_kind === 'SHARE_EXACT_RESULT',
+  );
+  const opened = resolveProcessResearchPilotShare(
+    PROCESS_RESEARCH_PILOT_FIXTURE,
+    shareAction.share_reference,
+  );
+  assert.equal(opened.outcome, 'OPENED');
+  assert.equal(opened.product_query_result_identity, slot.product_query_result_identity);
+  assert.equal(
+    opened.approved_pm_data_version_id,
+    PROCESS_RESEARCH_PILOT_FIXTURE.release.approved_pm_data_version_id,
+  );
+  assert.equal(opened.result_slot, slot);
+
+  const inactiveFixture = {
+    ...PROCESS_RESEARCH_PILOT_FIXTURE,
+    release: { ...PROCESS_RESEARCH_PILOT_FIXTURE.release, release_state: 'INACTIVE' },
+  };
+  const refused = resolveProcessResearchPilotShare(inactiveFixture, shareAction.share_reference);
+  assert.equal(refused.outcome, 'RELEASE_NOT_ACTIVE');
+  assert.equal(refused.product_query_result_identity, slot.product_query_result_identity);
+  assert.equal(refused.approved_pm_data_version_id, opened.approved_pm_data_version_id);
+});
+
+test('the fixture copy payload is exact passage text followed by its exact citation', () => {
+  const slot = PROCESS_RESEARCH_PILOT_FIXTURE.presentation.result_slots.find(
+    (candidate) => candidate.slot_state === 'VALID',
+  );
+  const copyAction = slot.action_targets.find(
+    (candidate) => candidate.action_kind === 'COPY_EXACT_PASSAGE',
+  );
+  const text = exactPassageCopyText({
+    ...copyAction,
+    exact_passage: slot.exact_content,
+    citation: slot.exact_citation,
+  });
+  assert.equal(text, `${slot.exact_content}\n\n${slot.exact_citation.human_readable_source_label}`);
+});
+
+test('fixed-value filter options use the exact projection after other active segments apply', () => {
+  const sentence = PROCESS_RESEARCH_PILOT_FIXTURE.presentation.filter_sentence;
+  const phase = sentence.ordered_filter_segments[0];
+  assert.deepEqual(
+    admittedFixtureFilterOptions({
+      fieldReference: phase.field_reference,
+      activeFilterSegments: sentence.ordered_filter_segments,
+      admittedOptionsProjection: PROCESS_RESEARCH_PILOT_FIXTURE.admitted_options_projection,
+    }),
+    [{ value: 'PRE_SIGNING', label: 'Pre-signing' }],
+  );
+  assert.deepEqual(
+    admittedFixtureFilterOptions({
+      fieldReference: phase.field_reference,
+      activeFilterSegments: [phase],
+      admittedOptionsProjection: PROCESS_RESEARCH_PILOT_FIXTURE.admitted_options_projection,
+    }),
+    [
+      { value: 'PRE_SIGNING', label: 'Pre-signing' },
+      { value: 'POST_SIGNING', label: 'Post-signing' },
+    ],
+  );
+});
+
+test('context adds one admitted paragraph, preserves selected evidence and isolates invalid actions', () => {
+  const source = PROCESS_RESEARCH_PILOT_FIXTURE.source_readers[0];
+  const reader = openProcessResearchPilotReader(source);
+  const above = source.context_actions.find((action) => action.direction === 'ABOVE');
+  const first = applyProcessResearchPilotContextAction(reader, above);
+  assert.equal(first.outcome, 'CONTEXT_EXPANDED');
+  assert.equal(first.reader.context_above.length, 1);
+  assert.equal(first.reader.context_above[0], source.context_paragraphs_above[0]);
+  assert.equal(first.reader.selected_evidence_identity, reader.selected_evidence_identity);
+  assert.equal(first.reader.selected_exact_content, reader.selected_exact_content);
+
+  const second = applyProcessResearchPilotContextAction(first.reader, above);
+  assert.equal(second.outcome, 'CONTEXT_EXPANDED');
+  assert.equal(second.reader.context_above.length, 2);
+  const limited = applyProcessResearchPilotContextAction(second.reader, above);
+  assert.equal(limited.outcome, 'CONTEXT_LIMIT_REACHED');
+  assert.equal(limited.reader, second.reader);
+
+  const invalid = applyProcessResearchPilotContextAction(second.reader, { action_kind: 'UNADMITTED' });
+  assert.equal(invalid.outcome, 'INVALID_CONTEXT_ACTION');
+  assert.equal(invalid.reader, second.reader);
+  assert.equal(invalid.reader.selected_exact_content, reader.selected_exact_content);
+});
+
+test('related drafting opens the exact related passage and citation in the local reader', () => {
+  const related = PROCESS_RESEARCH_PILOT_FIXTURE.related_passages[0];
+  const reader = openProcessResearchPilotRelatedPassage(related);
+  assert.equal(reader.selected_exact_content, related.exact_content);
+  assert.equal(reader.exact_citation, related.exact_citation);
+  assert.equal(reader.selected_evidence_identity, related.slot_identity);
+});
+
 test('each source action opens only the reader bound to the selected Product result', () => {
   const page = source('pages/query/process/pilot.js');
   assert.match(page, /candidate\.product_query_result_identity === action\.product_query_result_identity/);
-  assert.match(page, /setReader\(selectedReader \|\| null\)/);
+  assert.match(page, /openProcessResearchPilotReader\(selectedReader\)/);
   for (const slot of PROCESS_RESEARCH_PILOT_FIXTURE.presentation.result_slots.filter(
     (candidate) => candidate.slot_state === 'VALID',
   )) {
@@ -117,6 +224,18 @@ test('the entry has no network, source, database, execution or authority depende
     assert.doesNotMatch(contents, /\bfetch\s*\(|XMLHttpRequest|WebSocket|readFile|createClient|supabase|serving-client|extract(?:ion)?|query\/run|authority.*(?:grant|write)|writeFile/i);
   }
   assert.doesNotMatch(page, /from ['"][^'"]*(?:canonical-v2\/serving|query\/engine|source)[^'"]*['"]/i);
+});
+
+test('the bounded runtime acceptance inventory needs an explicit preview origin', async (t) => {
+  const origin = process.env.PROCESS_RESEARCH_PILOT_RUNTIME_ORIGIN;
+  if (!origin) {
+    t.skip('No Process research preview origin was supplied.');
+    return;
+  }
+  const response = await fetch(`${origin}/query/process/pilot`);
+  assert.equal(response.ok, true);
+  const body = await response.text();
+  assert.match(body, /SYNTHETIC FIXTURE/);
 });
 
 test('the home link is proven at static generation and the legacy launch box cannot infer the flag', () => {

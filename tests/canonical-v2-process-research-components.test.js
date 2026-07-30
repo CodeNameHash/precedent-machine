@@ -41,6 +41,8 @@ test('component source has declared accessible controls and full-screen mobile r
   assert.match(source('ProcessSourceReader.jsx'), /priorFocusRef\.current\?\.focus\?\.\(\)/);
   assert.match(source('ProcessSourceReader.jsx'), /hidden lg:sticky lg:top-4 lg:flex/);
   assert.match(source('ProcessSourceReader.jsx'), /fixed inset-0 z-50 bg-black\/30 lg:hidden/);
+  assert.match(source('ProcessSourceReader.jsx'), /data-selected-evidence-identity/);
+  assert.match(source('ProcessSourceReader.jsx'), /data-context-direction/);
 });
 
 test('renderer units remain isolated from network, source reads and compilers', () => {
@@ -58,6 +60,8 @@ test('filter sentence is compact and selected values are retained by controlled 
   assert.match(editor, /useState\(selected\[0\]\?\.value/);
   assert.match(editor, /Search catalogue fields/);
   assert.match(editor, /value_options/);
+  assert.match(editor, /admittedOptionsProjection/);
+  assert.match(editor, /options.some/);
 });
 
 test('unavailable slots remain visible without removing valid siblings', () => {
@@ -73,6 +77,8 @@ test('editing the second filter retains that exact segment and its value', () =>
   assert.equal(view.editorSelection(segments[1])[0].value, 'BIOPHARMA');
   assert.deepEqual(view.editorSelection(null), []);
   assert.match(source('ProcessResearchSurface.jsx'), /setEditingSegment\(segment\)/);
+  assert.match(source('ProcessResearchSurface.jsx'), /setFilterSentence/);
+  assert.match(source('ProcessResearchSurface.jsx'), /ordered_filter_segments\.filter/);
 });
 
 test('save and rerun use the immutable presentation, while correction keeps the validated slot', () => {
@@ -83,4 +89,10 @@ test('save and rerun use the immutable presentation, while correction keeps the 
   assert.match(surface, /lg:grid lg:grid-cols/);
   assert.match(card, /onCorrection\(slot\)/);
   assert.doesNotMatch(card, /on(?:Save|Rerun|Correction)\(actionInput\(slot, 'OPEN_EXACT_DETAIL'\)\)/);
+});
+
+test('the unauthorised preview cannot render an active correction control', () => {
+  const page = fs.readFileSync(path.join(root, 'pages/query/process/pilot.js'), 'utf8');
+  assert.doesNotMatch(page, /onCorrection=/);
+  assert.doesNotMatch(page, /Suggest correction/);
 });

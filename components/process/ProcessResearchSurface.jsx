@@ -10,12 +10,13 @@ import ProcessResultsTable from './ProcessResultsTable';
 import ProcessSourceReader from './ProcessSourceReader';
 import { editorSelection, PASSAGE_VIEW, TABLE_VIEW } from './processResearchView';
 
-export default function ProcessResearchSurface({ presentation, navigation, filterFields, relatedPassages, sourceReader, onAsk, onBrowse, onEditSubject, onEditFilter, onClearFilter, onOpenSource, onOpenDetail, onCopyExactPassage, onShare, onSelectForExport, onSave, onRerun, onCorrection, onCloseReader, onReaderContextAction, onOpenRelated }) {
+export default function ProcessResearchSurface({ presentation, navigation, filterFields, admittedOptionsProjection, relatedPassages, sourceReader, onAsk, onBrowse, onEditSubject, onEditFilter, onClearFilter, onOpenSource, onOpenDetail, onCopyExactPassage, onShare, onSelectForExport, onSave, onRerun, onCorrection, onCloseReader, onReaderContextAction, onOpenRelated }) {
   const [mode, setMode] = useState('ASK');
   const [view, setView] = useState(PASSAGE_VIEW);
   const [editing, setEditing] = useState(false);
   const [editingSegment, setEditingSegment] = useState(null);
-  const sentence = presentation?.filter_sentence;
+  const [filterSentence, setFilterSentence] = useState(presentation?.filter_sentence);
+  const sentence = filterSentence;
   const permittedViews = presentation?.view_contract?.permitted_views || [PASSAGE_VIEW];
   const results = view === TABLE_VIEW
     ? <ProcessResultsTable presentation={presentation} onOpenSource={onOpenSource} />
@@ -34,11 +35,11 @@ export default function ProcessResearchSurface({ presentation, navigation, filte
       {mode === 'ASK' ? <ProcessAsk onAsk={onAsk} /> : <ProcessBrowse navigation={navigation} selectedPattern={navigation?.selected_pattern_key} onSelectPattern={onBrowse} />}
       {sentence ? (
         <div className="flex items-start gap-2">
-          <div className="min-w-0 flex-1"><ProcessFilterSentence sentence={sentence} onEditSubject={onEditSubject} onEditSegment={(segment) => { setEditingSegment(segment); setEditing(true); onEditFilter?.(segment); }} onClearSegment={onClearFilter} /></div>
+          <div className="min-w-0 flex-1"><ProcessFilterSentence sentence={sentence} onEditSubject={onEditSubject} onEditSegment={(segment) => { setEditingSegment(segment); setEditing(true); }} onClearSegment={(segment) => { setFilterSentence((current) => ({ ...current, ordered_filter_segments: current.ordered_filter_segments.filter((candidate) => candidate.segment_ordinal !== segment.segment_ordinal) })); onClearFilter?.(segment); }} /></div>
           <button type="button" onClick={() => { setEditingSegment(null); setEditing(true); }} aria-label="Add or edit filters" className="rounded border border-border px-3 py-2 text-sm">Filters</button>
         </div>
       ) : null}
-      {editing ? <ProcessFilterEditor fields={filterFields} selected={editorSelection(editingSegment)} onApply={(filter) => { onEditFilter?.(filter); setEditing(false); }} onClose={() => setEditing(false)} /> : null}
+      {editing ? <ProcessFilterEditor fields={filterFields} selected={editorSelection(editingSegment)} activeSegments={sentence?.ordered_filter_segments || []} admittedOptionsProjection={admittedOptionsProjection || []} onApply={(filter) => { setFilterSentence((current) => { const currentSegments = current?.ordered_filter_segments || []; const matched = currentSegments.find((segment) => segment.field_reference?.field_key === filter.field_reference?.field_key && segment.field_reference?.field_version === filter.field_reference?.field_version); const nextSegment = { ...(matched || { segment_ordinal: currentSegments.length + 1, practitioner_operator: 'is', editable: true, clearable: true }), field_reference: filter.field_reference, field_label: filter.field_label, value: filter.value }; return { ...current, ordered_filter_segments: matched ? currentSegments.map((segment) => segment === matched ? nextSegment : segment) : [...currentSegments, nextSegment] }; }); onEditFilter?.(filter); setEditing(false); }} onClose={() => setEditing(false)} /> : null}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <ProcessCoverageState coverage={presentation?.coverage} counts={presentation?.counts} emptyResult={presentation?.empty_result} />
         <div className="flex flex-wrap gap-3" aria-label="Research controls">

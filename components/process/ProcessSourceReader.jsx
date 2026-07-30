@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
 
 function ReaderContent({ reader, onClose, onContextAction, desktop = false }) {
+  const selectedContent = reader.selected_exact_content || reader.exact_content || reader.content || 'Source content is unavailable.';
   return <>
     <header className="flex items-center justify-between border-b border-border p-4"><h2 className="text-base font-medium text-ink">{reader.label || 'Source reader'}</h2>{onClose ? <button type="button" onClick={onClose} aria-label="Close source reader" className="text-sm text-inkLight">Close</button> : null}</header>
-    <div className="flex-1 overflow-y-auto p-4"><pre className="whitespace-pre-wrap font-sans text-sm leading-6 text-ink">{reader.exact_content || reader.content || 'Source content is unavailable.'}</pre></div>
+    <div className="flex-1 overflow-y-auto p-4"><div className="space-y-3 whitespace-pre-wrap font-sans text-sm leading-6 text-ink">{(reader.context_above || []).map((paragraph, index) => <p key={`above:${index}`} data-context-direction="above">{paragraph}</p>)}<mark data-selected-evidence-identity={reader.selected_evidence_identity} className="bg-amber-100 text-ink">{selectedContent}</mark>{(reader.context_below || []).map((paragraph, index) => <p key={`below:${index}`} data-context-direction="below">{paragraph}</p>)}</div></div>
     {(reader.context_actions || []).length ? <footer className="border-t border-border p-4"><div className="flex flex-wrap gap-2">{reader.context_actions.map((action) => <button key={action.label} type="button" onClick={() => onContextAction?.(action)} className="rounded border border-border px-3 py-2 text-sm text-ink">{action.label}</button>)}</div></footer> : null}
   </>;
 }

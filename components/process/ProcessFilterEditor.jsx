@@ -1,12 +1,36 @@
 import { useMemo, useState } from 'react';
 
-export default function ProcessFilterEditor({ fields = [], selected = [], onApply, onClose }) {
+function optionValue(option) {
+  return option?.value ?? option;
+}
+
+function activeOptions({ active, activeSegments, admittedOptionsProjection, value }) {
+  const others = activeSegments
+    .filter((segment) => (
+      segment.field_reference?.field_key !== active?.field_key
+      || segment.field_reference?.field_version !== active?.field_version
+    ))
+    .map((segment) => `${segment.field_reference?.field_key}:${segment.field_reference?.field_version}:${JSON.stringify(segment.value)}`)
+    .sort();
+  const projection = admittedOptionsProjection.find((candidate) => (
+    candidate.field_reference?.field_key === active?.field_key
+    && candidate.field_reference?.field_version === active?.field_version
+    && JSON.stringify([...candidate.other_active_filter_segment_keys].sort()) === JSON.stringify(others)
+  ));
+  const options = projection?.value_options || (active?.control_type === 'SELECT' ? [] : active?.value_options || active?.options || []);
+  if (value !== '' && !options.some((option) => optionValue(option) === value)) {
+    return [{ value, label: value }, ...options];
+  }
+  return options;
+}
+
+export default function ProcessFilterEditor({ fields = [], selected = [], activeSegments = [], admittedOptionsProjection = [], onApply, onClose }) {
   const [search, setSearch] = useState('');
   const [fieldKey, setFieldKey] = useState(selected[0]?.field_reference?.field_key || '');
   const [value, setValue] = useState(selected[0]?.value ?? '');
   const matches = useMemo(() => fields.filter((field) => field.label?.toLowerCase().includes(search.toLowerCase())), [fields, search]);
   const active = matches.find((field) => field.field_key === fieldKey) || fields.find((field) => field.field_key === fieldKey);
-  const options = active?.value_options || active?.options || [];
+  const options = activeOptions({ active, activeSegments, admittedOptionsProjection, value });
   return (
     <section className="rounded border border-border bg-white p-4" aria-label="More filters">
       <div className="flex items-center justify-between gap-3"><h2 className="text-sm font-medium text-ink">More filters</h2><button type="button" onClick={onClose} aria-label="Close more filters" className="text-sm text-inkLight">Close</button></div>

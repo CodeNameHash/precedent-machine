@@ -6,6 +6,12 @@ const ACTION_KINDS = [
   ['SELECT_FOR_EXPORT', 'Select for export'],
 ];
 
+const SYNTHETIC_RELEASE = Object.freeze({
+  approved_pm_data_version_id: 'synthetic-pm-data-version-process-preview-v1',
+  candidate_release_manifest_id: 'synthetic-process-preview-release-v1',
+  release_state: 'ACTIVE',
+});
+
 function deepFreeze(value) {
   if (!value || typeof value !== 'object' || Object.isFrozen(value)) return value;
   Object.freeze(value);
@@ -20,6 +26,14 @@ function citation(ordinal, section) {
     source_identity: `synthetic-source-${ordinal}`,
     source_interval: { start: ordinal * 100, end: ordinal * 100 + 99 },
   };
+}
+
+function filterSegmentKey(segment) {
+  return `${segment.field_reference?.field_key}:${segment.field_reference?.field_version}:${JSON.stringify(segment.value)}`;
+}
+
+function shareReference(ordinal) {
+  return `synthetic-process-share:${SYNTHETIC_RELEASE.candidate_release_manifest_id}:synthetic-result-${ordinal}`;
 }
 
 const PASSAGES = [
@@ -40,6 +54,11 @@ function actionTargets(ordinal) {
     accessible_name: accessibleName,
     product_query_result_identity: `synthetic-result-${ordinal}`,
     citation_target_identity: `synthetic-citation-${ordinal}`,
+    ...(actionKind === 'SHARE_EXACT_RESULT' ? {
+      share_reference: shareReference(ordinal),
+      approved_pm_data_version_id: SYNTHETIC_RELEASE.approved_pm_data_version_id,
+      candidate_release_manifest_id: SYNTHETIC_RELEASE.candidate_release_manifest_id,
+    } : {}),
   }));
 }
 
@@ -83,9 +102,18 @@ const sourceReaders = PASSAGES.map((content, index) => {
     label: exactCitation.human_readable_source_label,
     exact_content: content,
     exact_citation: exactCitation,
+    selected_evidence_identity: `synthetic-evidence-${ordinal}`,
+    context_paragraphs_above: [
+      `Synthetic earlier context ${ordinal}. This paragraph is admitted only for the selected passage.`,
+      `Synthetic earlier context ${ordinal}, second paragraph. This paragraph remains local to the fixture.`,
+    ],
+    context_paragraphs_below: [
+      `Synthetic later context ${ordinal}. This paragraph is admitted only for the selected passage.`,
+      `Synthetic later context ${ordinal}, second paragraph. This paragraph remains local to the fixture.`,
+    ],
     context_actions: [
-      { label: 'One paragraph above', action_kind: 'EXPAND_CONTEXT_ABOVE' },
-      { label: 'One paragraph below', action_kind: 'EXPAND_CONTEXT_BELOW' },
+      { label: 'One paragraph above', action_kind: 'EXPAND_CONTEXT_ABOVE', direction: 'ABOVE' },
+      { label: 'One paragraph below', action_kind: 'EXPAND_CONTEXT_BELOW', direction: 'BELOW' },
       { label: 'Related drafting', action_kind: 'LIST_RELATED_PASSAGES' },
     ],
   };
@@ -94,6 +122,7 @@ const sourceReaders = PASSAGES.map((content, index) => {
 const PROCESS_RESEARCH_PILOT_FIXTURE = deepFreeze({
   fixture_kind: 'SYNTHETIC_PROCESS_RESEARCH_PREVIEW_ONLY',
   immutable: true,
+  release: SYNTHETIC_RELEASE,
   presentation: {
     fixture_notice: 'SYNTHETIC FIXTURE. PREVIEW ONLY. NOT CORPUS DATA.',
     understood_legal_question: {
@@ -180,6 +209,25 @@ const PROCESS_RESEARCH_PILOT_FIXTURE = deepFreeze({
       value_options: [],
     },
   ],
+  admitted_options_projection: [
+    {
+      field_reference: { field_key: 'process_phase', field_version: 1 },
+      other_active_filter_segment_keys: [
+        'notice_period_business_days:1:4',
+      ],
+      value_options: [
+        { value: 'PRE_SIGNING', label: 'Pre-signing' },
+      ],
+    },
+    {
+      field_reference: { field_key: 'process_phase', field_version: 1 },
+      other_active_filter_segment_keys: [],
+      value_options: [
+        { value: 'PRE_SIGNING', label: 'Pre-signing' },
+        { value: 'POST_SIGNING', label: 'Post-signing' },
+      ],
+    },
+  ],
   related_passages: [
     {
       slot_identity: 'synthetic-related-1',
@@ -193,13 +241,136 @@ const PROCESS_RESEARCH_PILOT_FIXTURE = deepFreeze({
     },
   ],
   source_readers: sourceReaders,
+  share_links: resultSlots
+    .filter((slot) => slot.slot_state === 'VALID')
+    .map((slot) => ({
+      share_reference: shareReference(Number(slot.product_query_result_identity.split('-').pop())),
+      product_query_result_identity: slot.product_query_result_identity,
+      approved_pm_data_version_id: SYNTHETIC_RELEASE.approved_pm_data_version_id,
+      candidate_release_manifest_id: SYNTHETIC_RELEASE.candidate_release_manifest_id,
+      slot_identity: slot.slot_identity,
+    })),
 });
 
 function getProcessResearchPilotFixture() {
   return PROCESS_RESEARCH_PILOT_FIXTURE;
 }
 
+function fixtureShareHref(shareReferenceValue) {
+  return `#process-research-share=${encodeURIComponent(shareReferenceValue)}`;
+}
+
+function resolveProcessResearchPilotShare(fixture, shareReferenceValue) {
+  const shareLink = fixture?.share_links?.find((candidate) => (
+    candidate.share_reference === shareReferenceValue
+  ));
+  if (!shareLink) {
+    return Object.freeze({ outcome: 'SHARE_REFERENCE_NOT_FOUND' });
+  }
+  if (fixture.release?.release_state !== 'ACTIVE') {
+    return Object.freeze({
+      outcome: 'RELEASE_NOT_ACTIVE',
+      product_query_result_identity: shareLink.product_query_result_identity,
+      approved_pm_data_version_id: shareLink.approved_pm_data_version_id,
+      candidate_release_manifest_id: shareLink.candidate_release_manifest_id,
+    });
+  }
+  const resultSlot = fixture.presentation?.result_slots?.find((candidate) => (
+    candidate.slot_identity === shareLink.slot_identity
+    && candidate.product_query_result_identity === shareLink.product_query_result_identity
+  ));
+  if (!resultSlot) return Object.freeze({ outcome: 'SHARE_RESULT_NOT_FOUND' });
+  return Object.freeze({
+    outcome: 'OPENED',
+    product_query_result_identity: shareLink.product_query_result_identity,
+    approved_pm_data_version_id: shareLink.approved_pm_data_version_id,
+    candidate_release_manifest_id: shareLink.candidate_release_manifest_id,
+    result_slot: resultSlot,
+  });
+}
+
+function exactPassageCopyText(action) {
+  const citationLabel = action?.citation?.human_readable_source_label
+    || action?.citation?.source_location_label
+    || 'Exact citation unavailable';
+  return `${action?.exact_passage || ''}\n\n${citationLabel}`;
+}
+
+function admittedFixtureFilterOptions({
+  fieldReference,
+  activeFilterSegments = [],
+  admittedOptionsProjection = [],
+}) {
+  const otherKeys = activeFilterSegments
+    .filter((segment) => (
+      segment.field_reference?.field_key !== fieldReference?.field_key
+      || segment.field_reference?.field_version !== fieldReference?.field_version
+    ))
+    .map(filterSegmentKey)
+    .sort();
+  const projection = admittedOptionsProjection.find((candidate) => (
+    candidate.field_reference?.field_key === fieldReference?.field_key
+    && candidate.field_reference?.field_version === fieldReference?.field_version
+    && JSON.stringify([...candidate.other_active_filter_segment_keys].sort()) === JSON.stringify(otherKeys)
+  ));
+  return Object.freeze([...(projection?.value_options || [])]);
+}
+
+function openProcessResearchPilotReader(sourceReader) {
+  return {
+    ...sourceReader,
+    selected_exact_content: sourceReader.exact_content,
+    context_above: [],
+    context_below: [],
+  };
+}
+
+function applyProcessResearchPilotContextAction(reader, action) {
+  const direction = action?.direction;
+  if (!reader || !['ABOVE', 'BELOW'].includes(direction)) {
+    return Object.freeze({ outcome: 'INVALID_CONTEXT_ACTION', reader });
+  }
+  const key = direction === 'ABOVE' ? 'context_above' : 'context_below';
+  const availableKey = direction === 'ABOVE'
+    ? 'context_paragraphs_above'
+    : 'context_paragraphs_below';
+  const applied = reader[key] || [];
+  const available = reader[availableKey] || [];
+  if (applied.length >= available.length) {
+    return Object.freeze({ outcome: 'CONTEXT_LIMIT_REACHED', reader });
+  }
+  const nextParagraph = available[applied.length];
+  const nextReader = {
+    ...reader,
+    [key]: direction === 'ABOVE'
+      ? [nextParagraph, ...applied]
+      : [...applied, nextParagraph],
+  };
+  return Object.freeze({ outcome: 'CONTEXT_EXPANDED', reader: nextReader });
+}
+
+function openProcessResearchPilotRelatedPassage(passage) {
+  return {
+    product_query_result_identity: passage.slot_identity,
+    selected_evidence_identity: passage.slot_identity,
+    label: passage.exact_citation?.human_readable_source_label,
+    exact_content: passage.exact_content,
+    selected_exact_content: passage.exact_content,
+    exact_citation: passage.exact_citation,
+    context_actions: [],
+    context_above: [],
+    context_below: [],
+  };
+}
+
 module.exports = {
   PROCESS_RESEARCH_PILOT_FIXTURE,
   getProcessResearchPilotFixture,
+  fixtureShareHref,
+  resolveProcessResearchPilotShare,
+  exactPassageCopyText,
+  admittedFixtureFilterOptions,
+  openProcessResearchPilotReader,
+  applyProcessResearchPilotContextAction,
+  openProcessResearchPilotRelatedPassage,
 };
