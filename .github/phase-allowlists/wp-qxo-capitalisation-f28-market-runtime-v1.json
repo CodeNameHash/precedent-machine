@@ -1,0 +1,23 @@
+{
+  "phase": "WP-QXO-CAPITALISATION-F28-MARKET-RUNTIME-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-qxo-capitalisation-f28-market-runtime-v1.json",
+    "lib/canonical-v2/qxo-capitalisation-cross-view-release-f28.js",
+    "lib/canonical-v2/reviewed-qxo-capitalisation-f28.js",
+    "tests/canonical-v2-qxo-capitalisation-cross-view-release-f28.test.js",
+    "tests/canonical-v2-reviewed-qxo-capitalisation-f28.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Pure inactive F28 QXO capitalisation review, cross-view row and bounded 14-metric market request runtime. It preserves the two bring-down classes, signing-relative date, knowledge, materiality and lookback states. It grants no extraction, active query, database, serving, corpus write, release, activation, production or contract-freeze authority."
+}
