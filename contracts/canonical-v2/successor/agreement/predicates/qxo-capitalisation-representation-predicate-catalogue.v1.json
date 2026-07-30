@@ -11,7 +11,7 @@
         "predicate_key": "TARGET_CAPITALISATION_BRING_DOWN",
         "predicate_version": 1,
         "result_definition_stable_id": "TARGET_CAPITALISATION_BRING_DOWN",
-        "result_definition_version": 2,
+        "result_definition_version": 3,
         "exact_detail_action_stable_id": "RESULT_COMPOSITION_EVIDENCE",
         "exact_detail_action_version": 1
       }
@@ -19,8 +19,6 @@
     "admission_contract": {
       "admission_grain": "PREDICATE_KEY_AND_VERSION",
       "one_predicate_only": true,
-      "navigation_catalogue_stable_id": "AGREEMENT_NAVIGATION_DEFINITION_CATALOGUE",
-      "navigation_pattern_key": "TARGET_CAPITALISATION_BRING_DOWN",
       "result_and_exact_detail_action_binding_required": true,
       "unknown_predicate_has_runtime_path": false,
       "predicate_admission_creates_product_query_admission": false,

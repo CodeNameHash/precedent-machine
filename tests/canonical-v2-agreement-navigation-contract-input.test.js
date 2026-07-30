@@ -41,7 +41,7 @@ function resultMember() {
     schema_version: 'RESULT_DEFINITION_INPUT/V1',
     authored_definition: {
       result_key: TARGET_PATTERN_KEY,
-      result_version: 2,
+      result_version: 3,
     },
   });
 }
@@ -58,7 +58,7 @@ function predicateMember() {
         predicate_key: TARGET_PATTERN_KEY,
         predicate_version: 1,
         result_definition_stable_id: TARGET_PATTERN_KEY,
-        result_definition_version: 2,
+        result_definition_version: 3,
         exact_detail_action_stable_id: TARGET_DETAIL_ACTION_STABLE_ID,
         exact_detail_action_version: 1,
       }],
@@ -110,7 +110,7 @@ test('accepts one executable QXO Agreement navigation pattern', () => {
   });
 });
 
-test('binds Browse and Ask admission to result version 2 and exact detail', () => {
+test('binds Browse and Ask admission to result version 3 and exact detail', () => {
   const definition = member(
     members(),
     AGREEMENT_NAVIGATION_STABLE_ID,
@@ -123,7 +123,7 @@ test('binds Browse and Ask admission to result version 2 and exact detail', () =
   );
   assert.equal(
     definition.admission_contract
-      .target_capitalisation_pattern_requires_result_definition_v2,
+      .target_capitalisation_pattern_requires_result_definition_v3,
     true,
   );
   assert.equal(
@@ -160,13 +160,13 @@ test('rejects a missing predicate catalogue instead of publishing display-only',
   );
 });
 
-test('rejects a predicate that does not bind result version 2', () => {
+test('rejects a predicate that does not bind result version 3', () => {
   const authored = clone(members());
   member(
     authored,
     AGREEMENT_REPRESENTATION_PREDICATE_CATALOGUE_STABLE_ID,
   ).canonical_value.definition.predicate_admissions[0]
-    .result_definition_version = 1;
+    .result_definition_version = 2;
 
   assert.throws(
     () => validateAuthoredAgreementNavigationInputs(authored),
@@ -193,7 +193,7 @@ test('rejects result or action dependency drift', () => {
   member(
     resultDrift,
     TARGET_PATTERN_KEY,
-  ).canonical_value.authored_definition.result_version = 1;
+  ).canonical_value.authored_definition.result_version = 2;
   assert.throws(
     () => validateAuthoredAgreementNavigationInputs(resultDrift),
     (error) => error.code === 'AGREEMENT_NAVIGATION_RESULT_DEPENDENCY_INVALID',

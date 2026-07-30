@@ -4,7 +4,6 @@ const path = require('node:path');
 const test = require('node:test');
 
 const {
-  AGREEMENT_NAVIGATION_CATALOGUE_STABLE_ID,
   AGREEMENT_REPRESENTATION_PREDICATE_CATALOGUE_STABLE_ID,
   TARGET_DETAIL_ACTION_STABLE_ID,
   TARGET_PREDICATE_KEY,
@@ -44,7 +43,7 @@ function resultMember() {
     schema_version: 'RESULT_DEFINITION_INPUT/V1',
     authored_definition: {
       result_key: TARGET_PREDICATE_KEY,
-      result_version: 2,
+      result_version: 3,
     },
   });
 }
@@ -83,26 +82,23 @@ test('admits one target capitalisation predicate and no sibling', () => {
     predicate_key: TARGET_PREDICATE_KEY,
     predicate_version: 1,
     result_definition_stable_id: TARGET_PREDICATE_KEY,
-    result_definition_version: 2,
+    result_definition_version: 3,
     exact_detail_action_stable_id: TARGET_DETAIL_ACTION_STABLE_ID,
     exact_detail_action_version: 1,
   }]);
 });
 
-test('binds the exact Agreement navigation pattern without creating query admission', () => {
+test('binds the exact result and action without creating a dependency cycle', () => {
   const definition = member(
     members(),
     AGREEMENT_REPRESENTATION_PREDICATE_CATALOGUE_STABLE_ID,
   ).canonical_value.definition;
 
   assert.equal(
-    definition.admission_contract.navigation_catalogue_stable_id,
-    AGREEMENT_NAVIGATION_CATALOGUE_STABLE_ID,
+    'navigation_catalogue_stable_id' in definition.admission_contract,
+    false,
   );
-  assert.equal(
-    definition.admission_contract.navigation_pattern_key,
-    TARGET_PREDICATE_KEY,
-  );
+  assert.equal('navigation_pattern_key' in definition.admission_contract, false);
   assert.equal(
     definition.admission_contract
       .predicate_admission_creates_product_query_admission,
@@ -136,7 +132,7 @@ test('rejects result version drift in the admission or result definition', () =>
     admissionDrift,
     AGREEMENT_REPRESENTATION_PREDICATE_CATALOGUE_STABLE_ID,
   ).canonical_value.definition.predicate_admissions[0]
-    .result_definition_version = 1;
+    .result_definition_version = 2;
   assert.throws(
     () => validateAuthoredAgreementRepresentationPredicateInputs(admissionDrift),
     (error) => (
@@ -148,7 +144,7 @@ test('rejects result version drift in the admission or result definition', () =>
   member(
     resultDrift,
     TARGET_PREDICATE_KEY,
-  ).canonical_value.authored_definition.result_version = 1;
+  ).canonical_value.authored_definition.result_version = 2;
   assert.throws(
     () => validateAuthoredAgreementRepresentationPredicateInputs(resultDrift),
     (error) => error.code === 'AGREEMENT_REPRESENTATION_PREDICATE_RESULT_INVALID',

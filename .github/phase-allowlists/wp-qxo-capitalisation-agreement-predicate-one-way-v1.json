@@ -1,0 +1,25 @@
+{
+  "phase": "WP-QXO-CAPITALISATION-AGREEMENT-PREDICATE-ONE-WAY-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-qxo-capitalisation-agreement-predicate-one-way-v1.json",
+    "contracts/canonical-v2/successor/agreement/navigation/qxo-capitalisation-navigation-definition-catalogue.v1.json",
+    "contracts/canonical-v2/successor/agreement/predicates/qxo-capitalisation-representation-predicate-catalogue.v1.json",
+    "lib/canonical-v2/agreement-navigation-contract-input-validator.js",
+    "lib/canonical-v2/agreement-representation-predicate-contract-input-validator.js",
+    "tests/canonical-v2-agreement-navigation-contract-input.test.js",
+    "tests/canonical-v2-agreement-representation-predicate-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "The Agreement predicate binds QXO capitalisation result version 3 and its exact-detail action. Navigation depends on the predicate. The predicate does not depend on navigation. No runtime, extraction, writer, serving, database, release, activation, production, or freeze authority is added."
+}
