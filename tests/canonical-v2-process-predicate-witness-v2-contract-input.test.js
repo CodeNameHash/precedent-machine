@@ -44,8 +44,8 @@ function members() {
     member('process/phases/process-phase.v1.json'),
     member('process/positions/process-position.v1.json'),
     member(V2_PATH),
-    member('process/registries/process-controlled-code-registry.v1.json'),
-    member('process/relationships/process-relationship.v1.json'),
+    member('process/registries/process-controlled-code-registry.v2.json'),
+    member('process/relationships/process-relationship.v2.json'),
   ];
 }
 
