@@ -1,0 +1,21 @@
+{
+  "phase": "WP-CANONICAL-CONTRACT-BUNDLE-COMPILER-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-contract-bundle-compiler-v1.json",
+    "lib/canonical-v2/canonical-contract-bundle-compiler.js",
+    "tests/canonical-v2-canonical-contract-bundle-compiler.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Pure deterministic compiler for eight aggregate CanonicalContractBundleMember records. It consumes complete authored-input compilation and separately governed classification and dependency registries. It grants no freeze, signing, writer, serving, database, release, activation or production authority."
+}
