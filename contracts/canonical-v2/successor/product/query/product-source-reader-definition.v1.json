@@ -1,0 +1,201 @@
+{
+  "object_kind": "PRODUCT_SOURCE_READER_CONTRACT_INPUT",
+  "stable_id": "PRODUCT_SOURCE_READER_DEFINITION",
+  "schema_version": "PRODUCT_SOURCE_READER_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PRODUCT",
+    "contract_type": "SOURCE_READER_DEFINITION",
+    "contract_version": 1,
+    "action_contract": {
+      "logical_type": "ProductSourceReaderAction",
+      "schema_version": "PRODUCT_SOURCE_READER_ACTION/V1",
+      "parent_definition_stable_id": "PRODUCT_QUERY_RESULT_DEFINITION",
+      "parent_schema_version": "PRODUCT_QUERY_RESULT/V1",
+      "action_types": [
+        "OPEN_SELECTED_SOURCE",
+        "EXPAND_ONE_PARAGRAPH_ABOVE",
+        "EXPAND_ONE_PARAGRAPH_BELOW",
+        "LIST_RELATED_PASSAGES",
+        "OPEN_RELATED_SOURCE"
+      ],
+      "exactly_one_action_type_per_request": true,
+      "object_level_authorisation_required": true
+    },
+    "parent_binding_contract": {
+      "exact_parent_product_result_identity_required": true,
+      "exact_product_query_definition_id_required": true,
+      "exact_approved_pm_data_version_id_required": true,
+      "exact_candidate_release_manifest_id_and_payload_digest_required": true,
+      "exact_domain_result_definition_and_identity_required": true,
+      "domain_result_release_membership_required": true,
+      "requested_domain_source_action_must_be_query_and_release_admitted": true,
+      "source_action_can_change_parent_result_identity": false
+    },
+    "delegation_contract": {
+      "source_action_authority": "RELEASE_ADMITTED_DOMAIN_SOURCE_ACTION",
+      "product_action_is_adapter_only": true,
+      "product_can_create_second_source_retrieval_engine": false,
+      "product_can_resegment_source_text": false,
+      "product_can_traverse_document_relationships": false,
+      "product_can_infer_source_action_from_display_label": false,
+      "one_required_admission_check_per_action": true,
+      "maximum_bounded_serving_queries_per_action": 1,
+      "unsupported_domain_action_disposition": "SOURCE_ACTION_NOT_ADMITTED"
+    },
+    "agreement_binding_contract": {
+      "domain_key": "AGREEMENT",
+      "selected_source_uses_query_admitted_exact_detail_action": true,
+      "exact_detail_action_stable_id_version_and_digest_required": true,
+      "exact_detail_action_must_belong_to_checked_domain_result": true,
+      "context_or_related_action_requires_separate_release_admission": true,
+      "missing_context_or_related_action_disposition": "SOURCE_ACTION_NOT_ADMITTED",
+      "product_fallback_source_action_permitted": false
+    },
+    "process_binding_contract": {
+      "domain_key": "PROCESS",
+      "domain_result_definition_stable_id": "PROCESS_PHRASEBOOK_PASSAGE_RESULT",
+      "required_source_definitions": [
+        {
+          "stable_id": "PROCESS_PHRASEBOOK_PASSAGE_RESULT",
+          "schema_version": "SERVING_PROCESS_CONTRACT_INPUT/V1",
+          "definition_digest": "4f4becaf81ceaf6db14761980c681158a61865699e5602464fefaee6d3554879"
+        },
+        {
+          "stable_id": "BOUNDED_INLINE_PASSAGE_PREVIEW",
+          "schema_version": "SERVING_PROCESS_CONTRACT_INPUT/V1",
+          "definition_digest": "1d69fc3db62d5f6c9041096a0d11eb1dfc45aff1aa8d79409a93fd518d6575f0"
+        },
+        {
+          "stable_id": "PARENT_BOUND_PARAGRAPH_CONTEXT",
+          "schema_version": "SERVING_PROCESS_CONTRACT_INPUT/V1",
+          "definition_digest": "dcdeeab17201659dbad6eb53056a2449c42d7ec78e01e41e25b3cf4b2cb2f51d"
+        },
+        {
+          "stable_id": "RELATED_PASSAGE_CHILD_COLLECTION",
+          "schema_version": "SERVING_PROCESS_CONTRACT_INPUT/V1",
+          "definition_digest": "5be433eea217b86fc122502f8d1765bfd6b8fbbe4be4a82ebe2234fd169cb134"
+        }
+      ],
+      "selected_source_uses_parent_exact_detail_reference": true,
+      "context_action_key": "PROCESS_PARAGRAPH_CONTEXT",
+      "related_collection_action_key": "PROCESS_RELATED_PASSAGES",
+      "related_source_uses_child_exact_detail_reference": true
+    },
+    "selected_source_contract": {
+      "exact_detail_reference_must_come_from_checked_domain_result": true,
+      "exact_source_document_identity_required": true,
+      "exact_source_evidence_identity_required": true,
+      "exact_release_and_result_identity_preserved": true,
+      "selected_evidence_remains_highlighted": true,
+      "source_text_can_be_rewritten_or_summarised": false,
+      "caller_source_locator_permitted": false,
+      "whole_document_permission_created": false
+    },
+    "context_expansion_contract": {
+      "permitted_action_types": [
+        "EXPAND_ONE_PARAGRAPH_ABOVE",
+        "EXPAND_ONE_PARAGRAPH_BELOW"
+      ],
+      "domain_action_stable_id": "PARENT_BOUND_PARAGRAPH_CONTEXT",
+      "paragraphs_added_per_action": 1,
+      "maximum_paragraphs_per_direction": 12,
+      "repeat_click_permitted": true,
+      "server_issued_parent_bound_cursor_required": true,
+      "caller_byte_offset_or_paragraph_ordinal_permitted": false,
+      "selected_evidence_identity_and_bytes_remain_unchanged": true,
+      "paragraph_order_preserved": true,
+      "context_can_replace_selected_passage": false
+    },
+    "related_passage_contract": {
+      "domain_action_stable_id": "RELATED_PASSAGE_CHILD_COLLECTION",
+      "same_source_document_as_parent_required": true,
+      "maximum_related_passages": 12,
+      "precomputed_release_projection_required": true,
+      "deterministic_order_required": true,
+      "typed_relationship_label_required": true,
+      "verbatim_preview_required": true,
+      "child_exact_detail_reference_required": true,
+      "child_must_belong_to_exact_parent_collection_and_release": true,
+      "classification_can_replace_actual_drafting": false,
+      "runtime_relationship_discovery_permitted": false
+    },
+    "identity_contract": {
+      "stable_id_domain": "PRODUCT_SOURCE_READER_ACTION/V1",
+      "common_identity_inputs": [
+        "parent_product_result_identity",
+        "approved_pm_data_version_id",
+        "candidate_release_manifest_id",
+        "candidate_release_manifest_payload_digest",
+        "domain_key",
+        "domain_result_identity",
+        "domain_source_action_stable_id_and_version",
+        "action_type"
+      ],
+      "action_specific_identity_inputs": {
+        "OPEN_SELECTED_SOURCE": [
+          "parent_exact_detail_reference"
+        ],
+        "EXPAND_ONE_PARAGRAPH_ABOVE": [
+          "server_issued_parent_bound_cursor"
+        ],
+        "EXPAND_ONE_PARAGRAPH_BELOW": [
+          "server_issued_parent_bound_cursor"
+        ],
+        "LIST_RELATED_PASSAGES": [
+          "parent_product_result_identity"
+        ],
+        "OPEN_RELATED_SOURCE": [
+          "related_child_result_identity",
+          "child_exact_detail_reference"
+        ]
+      },
+      "prohibited_identity_inputs": [
+        "display_label",
+        "application_row_order",
+        "caller_byte_offset",
+        "caller_paragraph_ordinal",
+        "client_generated_relationship",
+        "narrative_model_output"
+      ],
+      "correctly_rehashed_structural_forgery_permitted": false
+    },
+    "failure_contract": {
+      "inactive_release_disposition": "RELEASE_NOT_ACTIVE",
+      "invalid_cursor_disposition": "INVALID_PARENT_BOUND_CURSOR",
+      "unadmitted_action_disposition": "SOURCE_ACTION_NOT_ADMITTED",
+      "invalid_child_disposition": "RELATED_PASSAGE_NOT_IN_PARENT_COLLECTION",
+      "failure_affects_requested_action_only": true,
+      "valid_parent_and_sibling_results_remain_unchanged": true,
+      "failure_can_remove_or_replace_selected_passage": false,
+      "failure_can_redirect_to_newer_release": false,
+      "operational_failure_can_render_as_empty_success": false
+    },
+    "extensibility_contract": {
+      "agreement_process_and_future_cvr_use_same_product_action_schema": true,
+      "domain_source_action_registry_required": true,
+      "future_domain_admission_is_registry_driven": true,
+      "domain_without_admitted_context_or_related_action_keeps_that_action_inactive": true,
+      "new_domain_can_create_second_product_source_reader": false
+    },
+    "authority_contract": {
+      "creates_runtime_source_reader": false,
+      "creates_source_retrieval_authority": false,
+      "creates_context_generation_authority": false,
+      "creates_relationship_authority": false,
+      "creates_query_execution_authority": false,
+      "creates_domain_result_authority": false,
+      "creates_extraction_authority": false,
+      "creates_canonical_write_authority": false,
+      "creates_serving_authority": false,
+      "creates_database_authority": false,
+      "creates_ui_authority": false,
+      "creates_export_authority": false,
+      "creates_writer_authority": false,
+      "creates_release_authority": false,
+      "creates_import_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

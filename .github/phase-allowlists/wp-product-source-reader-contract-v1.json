@@ -1,0 +1,19 @@
+{
+  "phase": "WP-PRODUCT-SOURCE-READER-CONTRACT-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-product-source-reader-contract-v1.json",
+    "contracts/canonical-v2/successor/product/query/product-source-reader-definition.v1.json",
+    "lib/canonical-v2/product-source-reader-contract-input-validator.js",
+    "tests/canonical-v2-product-source-reader-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Pure PM-wide Product source-reader contract input. It delegates to admitted domain source actions. No source retrieval, relationship traversal, context generation, query execution, data access, UI, extraction, database, serving, write, import, activation, production, or contract-freeze authority."
+}
