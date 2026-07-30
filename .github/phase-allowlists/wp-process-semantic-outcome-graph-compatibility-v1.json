@@ -1,0 +1,25 @@
+{
+  "phase": "WP-PROCESS-SEMANTIC-OUTCOME-GRAPH-COMPATIBILITY-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-semantic-outcome-graph-compatibility-v1.json",
+    "lib/canonical-v2/process-semantic-enumerator.js",
+    "lib/canonical-v2/process-candidate-graph.js",
+    "tests/canonical-v2-process-semantic-enumerator.test.js",
+    "tests/canonical-v2-process-candidate-graph.test.js",
+    "tests/canonical-v2-process-candidate-validator.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Makes typed semantic rejection and residual outcomes compatible with the existing pure candidate graph. Non-candidates retain evidence and reason codes but cannot create candidate slots, payloads, nodes, materialised values or authority."
+}

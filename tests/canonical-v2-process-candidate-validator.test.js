@@ -1,7 +1,10 @@
 const assert = require('node:assert/strict');
 const test = require('node:test');
 
-const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
+const {
+  contentId,
+  sha256Hex,
+} = require('../lib/canonical-v2/canonical-bytes');
 const {
   CANDIDATE_GRAPH_INPUT_SCHEMA,
   buildProcessCandidateGraph,
@@ -28,6 +31,23 @@ function evidence(label) {
     start_utf8_byte: 0,
     end_utf8_byte: 4,
     exact_text_digest: sha256Hex(`text:${label}`),
+  };
+}
+
+function semanticOutcome(outcomeKind) {
+  const body = {
+    outcome_kind: outcomeKind,
+    scope_receipt_id: 'scope:one',
+    reason_code: 'UNSUPPORTED_SYNTHETIC_INPUT',
+    source_unit_id: `source:${outcomeKind.toLowerCase()}`,
+    slot_key: null,
+    evidence: evidence(outcomeKind.toLowerCase()),
+    semantic_payload: null,
+  };
+  return {
+    schema_version: 'PROCESS_SEMANTIC_OUTCOME/V1',
+    outcome_key: contentId('PROCESS_SEMANTIC_OUTCOME/V1', body),
+    ...body,
   };
 }
 
@@ -59,6 +79,8 @@ function input() {
     'PROCESS_LEXICAL_ENUMERATION/V1',
     'lexical_payload',
   );
+  semantic_enumeration.rejections = [semanticOutcome('REJECTION')];
+  semantic_enumeration.residuals = [semanticOutcome('RESIDUAL')];
   const candidate_graph = buildProcessCandidateGraph({
     schema_version: CANDIDATE_GRAPH_INPUT_SCHEMA,
     semantic_enumeration,
@@ -81,7 +103,24 @@ test('returns one deterministic non-authoritative validation receipt', () => {
   assert.equal(first.validation_state, 'VALIDATED_PURE_RUNTIME');
   assert.equal(first.authority_state, 'NOT_GRANTED');
   assert.equal(first.candidate_node_count, 2);
+  assert.equal(first.retained_record_count, 2);
   assert.equal(Object.isFrozen(first), true);
+});
+
+test('reconciles retained semantic sibling counts and rejects a substituted outcome', () => {
+  const value = input();
+  const receipt = validateProcessCandidateGraph(value);
+
+  assert.equal(receipt.retained_record_count, 2);
+  assert.equal(receipt.candidate_graph_id, value.candidate_graph.candidate_graph_id);
+
+  const hostile = input();
+  hostile.semantic_enumeration.rejections[0].reason_code =
+    'SUBSTITUTED_REASON';
+  assert.throws(
+    () => validateProcessCandidateGraph(hostile),
+    { code: 'INVALID_PROCESS_CANDIDATE_ENUMERATION' },
+  );
 });
 
 test('rejects a substituted graph node and stale graph identity', () => {

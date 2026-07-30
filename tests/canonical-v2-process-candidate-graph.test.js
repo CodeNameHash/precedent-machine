@@ -128,7 +128,7 @@ test('rejects mismatched frozen scope receipts and unsafe bounds', () => {
   }
   assert.throws(
     () => buildProcessCandidateGraph(scopeMismatch),
-    { code: 'INVALID_PROCESS_CANDIDATE_GRAPH_INPUT' },
+    { code: 'INVALID_PROCESS_CANDIDATE_ENUMERATION' },
   );
 
   const overBound = input({ limits: { ...limits(), max_candidate_count: 2 } });
@@ -210,6 +210,66 @@ test('retains a same-key cross-enumerator source conflict as disagreement', () =
     lexical_node_indexes: [1],
     reason_code: 'CANDIDATE_KEY_CONTEXT_CONFLICT',
   }]);
+});
+
+test('retains typed semantic rejection and residual siblings without candidate promotion', () => {
+  const value = input();
+  value.semantic_enumeration.rejections = [record('semantic-rejection')];
+  value.semantic_enumeration.residuals = [record('semantic-residual')];
+  const graph = buildProcessCandidateGraph(value);
+
+  assert.equal(graph.candidate_nodes.length, 3);
+  assert.deepEqual(
+    graph.retained_records
+      .filter((item) => item.enumerator_kind === 'SEMANTIC')
+      .map((item) => item.record_kind)
+      .sort(),
+    ['REJECTION', 'RESIDUAL'],
+  );
+  assert.equal(
+    graph.candidate_nodes.some((node) => node.source_unit_id === 'source:semantic-rejection'),
+    false,
+  );
+});
+
+test('rejects hostile semantic outcome identity and non-candidate value invention', () => {
+  const cases = [
+    (recordValue) => { delete recordValue.schema_version; },
+    (recordValue) => { recordValue.schema_version = 'PROCESS_SEMANTIC_OUTCOME/V2'; },
+    (recordValue) => { delete recordValue.evidence; },
+    (recordValue) => { delete recordValue.reason_code; },
+    (recordValue) => {
+      recordValue.slot_key = 'INVENTED_SLOT';
+      recordValue.semantic_payload = { invented: true };
+      const {
+        schema_version: ignoredSchema,
+        outcome_key: ignoredOutcome,
+        ...body
+      } = recordValue;
+      recordValue.outcome_key = contentId('PROCESS_SEMANTIC_OUTCOME/V1', body);
+    },
+  ];
+  for (const mutate of cases) {
+    const value = input();
+    const hostile = record('semantic-rejection');
+    mutate(hostile);
+    value.semantic_enumeration.rejections = [hostile];
+    assert.throws(
+      () => buildProcessCandidateGraph(value),
+      { code: 'INVALID_PROCESS_CANDIDATE_ENUMERATION' },
+    );
+  }
+});
+
+test('rejects null slot or payload on a semantic candidate', () => {
+  for (const field of ['slot_key', 'semantic_payload']) {
+    const value = input();
+    value.semantic_enumeration.candidates[0][field] = null;
+    assert.throws(
+      () => buildProcessCandidateGraph(value),
+      { code: 'INVALID_PROCESS_CANDIDATE_ENUMERATION' },
+    );
+  }
 });
 
 test('accepts the actual frozen scope, semantic and lexical pure-runtime chain', () => {
