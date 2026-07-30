@@ -13,7 +13,7 @@ main integration.
 | --- | --- |
 | Main basis | `7b6bc64157c49832129fa2ca227399850cd983fc` |
 | Current reviewed branch commit | `affa7464ca2cab2b4715ae084e3de6c2d39b673f` |
-| Active milestone branch | `codex/p8-combined-pilot-integration-v1`, head `627093a3`; includes the generic Agreement envelope, bounded PI pipeline connector and sealed Metsera source-to-sidecar run |
+| Active milestone branch | `codex/p8-combined-pilot-integration-v1`, head `7a7c7263`; includes the generic Agreement envelope, bounded PI pipeline connector, sealed Metsera source-to-sidecar run and signed Process result admission |
 | Contract bundle | 172 authored inputs, 171 substantive contracts, 8 categories |
 | Current bundle ID | `8c765d52d3f95ebfc21b28b5bd0e71689a095c482e113a4329d33b0140dbe83d` |
 | Current contract bundle digest | `b990bf90f98fd83b9dfcf34912ec4b3cd42c37f3e693bee9796b1c63198edc84` |
@@ -24,7 +24,7 @@ main integration.
 | Latest complete suite on this branch | PASS, 4,621 passed, 0 failed, 5 skipped |
 | Latest production build on this branch | PASS, 29/29 pages |
 | M1 contract freeze | PASS. Exact acknowledgement: `docs/acks/M1-CONTRACT-FREEZE-2026-07-30.md` |
-| M2 vertical slice | ACTIVE. QXO F28 passed the real isolated-staging rollback proof. Metsera now passes source acquisition through typed Process sidecar. Product views and candidate-release wiring remain. |
+| M2 vertical slice | ACTIVE. QXO F28 passed the real isolated-staging rollback proof. Metsera now passes source acquisition through typed Process sidecar and signed Process phrasebook-result admission. The shared Product row, product views and candidate-release wiring remain. |
 | Isolated-staging access | PASS. Project `sjumbznveyyiizhwvixj` was re-authorised and verified through the Supabase plugin on 2026-07-30. Production was not queried or changed. |
 | QXO F28 staging proof | PASS. Release `f79d3a9a92567db913da48f84540fa55cdff69d770bf4c9261a72e3428242240`; 14 metric slots; 1 set-based market read; 0 retries; 0 durable writes; active pointer unchanged. |
 | Staging pointer check | PASS. The active staging pointer remains generation 10 at corpus release `c9c19dc1ad92496953ee04f52b4a8dc575ea21ab9502acfd449a9299055817d3`. The F28 test release has zero durable release, market or serving rows and is not active. |
@@ -68,11 +68,12 @@ machinery. It does not change extracted facts or legal meaning.
 | `PM-QUERY-FIXTURE-LINK-01` | P8 | Execute fixture-scoped Product Query and Review paths without opening the production route. | PM implementation | Same branch; `qxo-capitalisation-f28-pilot-preflight.js` and Product surface link. | Query, Review, Compare and Corpus Context use one exact row, citation and source action. | COMPLETE | Preserve this parity in isolated staging. | No |
 | `PI-METSERA-RUNTIME-01` | P8 | Connect sealed Metsera sources through acquisition, enumeration, graph validation and pilot materialisation. | Process Intelligence and PM controller | PI connector commits integrated on `codex/p8-combined-pilot-integration-v1`; pure runtime and focused tests only. | 68 focused acquisition, scope, semantic, lexical, graph, validation and pilot tests PASS. All trusted receipt and typed failure checks remain active. | COMPLETE | Preserve the connector while Product wiring is added. | No |
 | `PM-METSERA-SOURCE-SIDECAR-01` | P8 | Run one real Metsera exclusivity-grant passage from the sealed SEC source universe into the typed Process sidecar. | PM controller | Same branch; commit `627093a3`; four-file staging-pilot boundary. | PASS twice with identical IDs. Nine source documents and eight reviewed passages match exact bytes and hashes. One result materialised. Seven out-of-slice passages remain typed residuals. Materialisation receipt `77fd51973ba0d0873fd3523d7c01a5b442f572615eadffd89e455545bd032c4e`. Focused chain 79/79 PASS. Staging pointer remains generation 10. | COMPLETE | Feed the exact sidecar into the existing Product result adapters. | No |
+| `PM-METSERA-PROCESS-ADMISSION-01` | P8 | Admit the exact Metsera grant sidecar under the signed Process phrasebook-result contract. | PM implementation | Same branch; commit `7a7c7263`; Product-admission adapter, staging runner and focused tests. | PASS twice with byte-identical output. Process result `ce2df4541a9137afb85916aaf08befe361186213eec2b913338c0bc63828bf65`; admission receipt `2498ec6a892f100b36d708774039389057315ef484b05ceca34511e559c0eb50`; 36 focused tests PASS. Source remains Process narration and is not relabelled as actual drafting. | COMPLETE | Feed the complete admission input and receipt to the existing shared Product-row compiler. | No |
 | `PM-METSERA-PRODUCT-LINK-01` | P8 | Carry the exact Metsera Process sidecar through Product Query, Review, Compare, Corpus Context and source reading. | PM implementation | Same branch; existing Process shared-row, result-set and presentation compilers. Exact new adapter boundary is under mechanical inspection. | Same result, source, release, citation and identities across all surfaces. | READY | Build the narrow Product input adapter without a second source or result architecture. | No |
 
 ## 3. Next 48 hours
 
-1. Connect the validated Metsera Process sidecar through Product Query, Review, Compare, Corpus Context and source reading.
+1. Feed the validated Metsera Process admission into the existing shared Product row, then connect that row through Query, Review, Compare, Corpus Context and source reading.
 2. Add the candidate-release and rollback-only writer proof for that same result.
 3. Run the exact 172-contract successor-root checks and the reserved exact-bundle approval only after all checks pass.
 4. Run cross-view browser acceptance and the indexed serving proof.
