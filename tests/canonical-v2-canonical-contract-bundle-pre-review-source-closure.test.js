@@ -406,6 +406,10 @@ test('assembles a deterministic review package with full predecessor bytes', () 
       {
         exact_review_input_schema_version:
           'CANONICAL_CONTRACT_BUNDLE_EXACT_REVIEW_INPUT/V2',
+        canonical_contract_bundle_compiler_input:
+          review.canonical_contract_bundle_compiler_input,
+        governed_topology_input_identity:
+          review.governed_topology_input_identity,
         predecessor_canonical_contract_bundle_members:
           review.predecessor_canonical_contract_bundle_members,
         canonical_contract_bundle_members:

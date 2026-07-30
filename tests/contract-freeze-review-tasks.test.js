@@ -82,6 +82,275 @@ function resealCandidate(candidate) {
   );
 }
 
+function withoutKeys(value, keys) {
+  return Object.fromEntries(
+    Object.entries(value).filter(([key]) => !keys.includes(key)),
+  );
+}
+
+function resealCoordinatedGeneratedSubstitution(input, reviewPackage) {
+  const candidate = reviewPackage.contract_bundle_freeze_candidate;
+  const topology = candidate.generated_contract_topology;
+  const oldMember = topology.generated_contract_bundle_members.find(
+    (entry) => entry.object_type === 'SEMANTIC_STAGE_REGISTRY',
+  );
+  assert.ok(oldMember, 'generated topology must retain its semantic-stage registry');
+  const registry = JSON.parse(
+    Buffer.from(oldMember.source_bytes_base64, 'base64').toString('utf8'),
+  );
+  const changedStage = registry.ordered_stage_contracts[0];
+  changedStage.maximum_output_cardinality += 1;
+  changedStage.semantic_stage_contract_digest = contentId(
+    'SEMANTIC_STAGE_CONTRACT/V1',
+    withoutKeys(changedStage, ['semantic_stage_contract_digest']),
+  );
+  const registryPayload = withoutKeys(registry, [
+    'semantic_stage_registry_id',
+    'canonical_payload_digest',
+  ]);
+  registry.semantic_stage_registry_id = contentId(
+    'SEMANTIC_STAGE_REGISTRY_ID/V1',
+    registryPayload,
+  );
+  registry.canonical_payload_digest = contentId(
+    'SEMANTIC_STAGE_REGISTRY_PAYLOAD/V1',
+    registryPayload,
+  );
+  const registryBytes = Buffer.from(canonicalJson(registry), 'utf8');
+  const changedMember = {
+    ...oldMember,
+    member_key: `GENERATED/${registry.semantic_stage_registry_id.toUpperCase()}`,
+    generated_id: registry.semantic_stage_registry_id,
+    byte_length: registryBytes.length,
+    payload_digest: sha256Hex(registryBytes),
+    source_bytes_base64: registryBytes.toString('base64'),
+    semantic_digest: contentId(
+      'CANONICAL_GENERATED_CONTRACT_BUNDLE_MEMBER_SEMANTIC/V1',
+      registry,
+    ),
+  };
+  changedMember.identity_digest = contentId(
+    'CANONICAL_GENERATED_CONTRACT_BUNDLE_MEMBER_IDENTITY/V1',
+    {
+      member_key: changedMember.member_key,
+      generated_id: changedMember.generated_id,
+      canonical_payload_digest: registry.canonical_payload_digest,
+    },
+  );
+
+  topology.semantic_stage_registry = registry;
+  topology.generated_contract_bundle_members =
+    topology.generated_contract_bundle_members
+      .map((entry) => (
+        entry.member_key === oldMember.member_key ? changedMember : entry
+      ))
+      .sort((left, right) => left.member_key.localeCompare(right.member_key));
+  topology.generated_contract_bundle_projection =
+    topology.generated_contract_bundle_members.map((entry) => ({
+      member_key: entry.member_key,
+      semantic_digest: entry.semantic_digest,
+      identity_digest: entry.identity_digest,
+    }));
+  topology.generated_contract_bundle_member_root = contentId(
+    'CANONICAL_GENERATED_CONTRACT_BUNDLE_MEMBER_ROOT/V1',
+    topology.generated_contract_bundle_members,
+  );
+
+  const manifest = topology.generated_output_manifest;
+  manifest.ordered_outputs = topology.generated_contract_bundle_members
+    .map((entry) => {
+      const value = JSON.parse(
+        Buffer.from(entry.source_bytes_base64, 'base64').toString('utf8'),
+      );
+      return {
+        object_type: entry.object_type,
+        generated_id: entry.generated_id,
+        canonical_payload_digest: value.canonical_payload_digest,
+      };
+    })
+    .sort((left, right) => canonicalJson(left).localeCompare(canonicalJson(right)));
+  manifest.generated_member_root =
+    topology.generated_contract_bundle_member_root;
+  manifest.generated_member_count =
+    topology.generated_contract_bundle_members.length;
+  manifest.output_count = manifest.ordered_outputs.length;
+  const manifestPayload = withoutKeys(manifest, [
+    'generated_output_manifest_id',
+    'canonical_payload_digest',
+  ]);
+  manifest.generated_output_manifest_id = contentId(
+    'CANONICAL_CONTRACT_BUNDLE_GENERATED_OUTPUT_MANIFEST_ID/V1',
+    manifestPayload,
+  );
+  manifest.canonical_payload_digest = contentId(
+    'CANONICAL_CONTRACT_BUNDLE_GENERATED_OUTPUT_MANIFEST_PAYLOAD/V1',
+    manifestPayload,
+  );
+
+  const finalBundle = topology.final_canonical_contract_bundle;
+  finalBundle.generated_output_manifest = clone(manifest);
+  finalBundle.ordered_generated_member_projection =
+    clone(topology.generated_contract_bundle_projection);
+  const finalPayload = withoutKeys(finalBundle, [
+    'canonical_contract_bundle_id',
+    'canonical_contract_bundle_fingerprint',
+  ]);
+  finalBundle.canonical_contract_bundle_id = contentId(
+    'CANONICAL_CONTRACT_BUNDLE_ID/V3',
+    finalPayload,
+  );
+  finalBundle.canonical_contract_bundle_fingerprint = contentId(
+    'CANONICAL_CONTRACT_BUNDLE/V3',
+    finalPayload,
+  );
+  topology.canonical_payload_digest = contentId(
+    'CANONICAL_CONTRACT_BUNDLE_GENERATED_TOPOLOGY_PAYLOAD/V2',
+    withoutKeys(topology, ['schema_version', 'canonical_payload_digest']),
+  );
+
+  const generatedProjection = topology.generated_contract_bundle_projection;
+  const combinedProjection = [
+    ...reviewPackage.aggregate_canonical_contract_bundle_projection,
+    ...generatedProjection,
+  ].sort((left, right) => left.member_key.localeCompare(right.member_key));
+  const memberRoot = contentId(
+    'CANONICAL_CONTRACT_BUNDLE_MEMBER_ROOT/V3',
+    {
+      aggregate_members: reviewPackage.canonical_contract_bundle_members,
+      generated_members: topology.generated_contract_bundle_members,
+    },
+  );
+  reviewPackage.generated_contract_bundle_members =
+    clone(topology.generated_contract_bundle_members);
+  reviewPackage.canonical_contract_bundle_projection = combinedProjection;
+  reviewPackage.contract_bundle_id =
+    finalBundle.canonical_contract_bundle_id;
+  reviewPackage.contract_bundle_digest =
+    finalBundle.canonical_contract_bundle_fingerprint;
+
+  const predecessorByKey = new Map(
+    reviewPackage.predecessor_contract_bundle_projection.map(
+      (entry) => [entry.member_key, entry],
+    ),
+  );
+  const successorByKey = new Map(
+    combinedProjection.map((entry) => [entry.member_key, entry]),
+  );
+  const sharedKeys = [...predecessorByKey.keys()].filter(
+    (key) => successorByKey.has(key),
+  );
+  reviewPackage.semantic_identity_diff = {
+    predecessor_contract_bundle_id:
+      reviewPackage.predecessor_contract_bundle_id,
+    successor_contract_bundle_id: reviewPackage.contract_bundle_id,
+    added_member_keys: [...successorByKey.keys()].filter(
+      (key) => !predecessorByKey.has(key),
+    ),
+    removed_member_keys: [...predecessorByKey.keys()].filter(
+      (key) => !successorByKey.has(key),
+    ),
+    semantic_changed_member_keys: sharedKeys.filter((key) => (
+      predecessorByKey.get(key).semantic_digest
+        !== successorByKey.get(key).semantic_digest
+    )),
+    identity_changed_member_keys: sharedKeys.filter((key) => (
+      predecessorByKey.get(key).identity_digest
+        !== successorByKey.get(key).identity_digest
+    )),
+  };
+  reviewPackage.semantic_identity_diff_digest = domainDigest(
+    'PROGRAMME_GATE_CONTRACT_SEMANTIC_IDENTITY_DIFF/V1',
+    reviewPackage.semantic_identity_diff,
+  );
+
+  const identity = reviewPackage.contract_freeze_attestation_identity;
+  identity.contract_bundle_id = reviewPackage.contract_bundle_id;
+  identity.contract_bundle_digest = reviewPackage.contract_bundle_digest;
+  identity.contract_freeze_attestation_id = domainDigest(
+    'PROGRAMME_GATE_CONTRACT_FREEZE_ATTESTATION_ID/V1',
+    withoutKeys(identity, ['contract_freeze_attestation_id']),
+  );
+  const pairDigest = domainDigest(
+    'PROGRAMME_GATE_FROZEN_CONTRACT_PAIR/V1',
+    {
+      predecessor_contract_bundle_id:
+        reviewPackage.predecessor_contract_bundle_id,
+      predecessor_contract_bundle_digest:
+        reviewPackage.predecessor_contract_bundle_digest,
+      successor_contract_bundle_id: reviewPackage.contract_bundle_id,
+      successor_contract_bundle_digest: reviewPackage.contract_bundle_digest,
+      contract_freeze_attestation_id:
+        identity.contract_freeze_attestation_id,
+    },
+  );
+  reviewPackage.frozen_contract_pair_digest = pairDigest;
+
+  candidate.generated_contract_bundle_members =
+    clone(topology.generated_contract_bundle_members);
+  candidate.canonical_contract_bundle_projection = clone(combinedProjection);
+  candidate.generated_contract_topology = topology;
+  candidate.contract_bundle_id = reviewPackage.contract_bundle_id;
+  candidate.contract_bundle_digest = reviewPackage.contract_bundle_digest;
+  candidate.canonical_contract_bundle_member_root = memberRoot;
+  const topologyOutput = candidate.generated_output_inventory.find(
+    (entry) => entry.path
+      === 'generated/canonical-contract-bundle/generated-topology.json',
+  );
+  assert.ok(topologyOutput, 'freeze candidate must inventory its generated topology');
+  topologyOutput.payload_digest = sha256Hex(
+    Buffer.from(canonicalJson(topology), 'utf8'),
+  );
+  const receipt = candidate.unsigned_contract_bundle_compilation_receipt_payload;
+  receipt.contract_bundle_id = candidate.contract_bundle_id;
+  receipt.contract_bundle_digest = candidate.contract_bundle_digest;
+  receipt.frozen_contract_pair_digest = pairDigest;
+  receipt.generated_outputs = clone(candidate.generated_output_inventory);
+  receipt.canonical_contract_bundle_member_root = memberRoot;
+  receipt.canonical_contract_bundle_member_count =
+    reviewPackage.canonical_contract_bundle_members.length
+      + topology.generated_contract_bundle_members.length;
+  resealCandidate(candidate);
+
+  reviewPackage.reviewed_contract_source_set_digest = domainDigest(
+    'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW_SOURCE_SET/V1',
+    {
+      exact_review_input_schema_version:
+        'CANONICAL_CONTRACT_BUNDLE_EXACT_REVIEW_INPUT/V2',
+      canonical_contract_bundle_compiler_input:
+        reviewPackage.canonical_contract_bundle_compiler_input,
+      governed_topology_input_identity:
+        reviewPackage.governed_topology_input_identity,
+      predecessor_canonical_contract_bundle_members:
+        reviewPackage.predecessor_canonical_contract_bundle_members,
+      canonical_contract_bundle_members:
+        reviewPackage.canonical_contract_bundle_members,
+      generated_contract_bundle_members:
+        reviewPackage.generated_contract_bundle_members,
+    },
+  );
+  reviewPackage.exact_review_input_context_digest = domainDigest(
+    'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW_EXACT_INPUT_CONTEXT/V1',
+    {
+      specification_root: reviewPackage.specification_root,
+      code_commit: input.code_commit,
+      predecessor_contract_bundle_id:
+        reviewPackage.predecessor_contract_bundle_id,
+      predecessor_contract_bundle_digest:
+        reviewPackage.predecessor_contract_bundle_digest,
+      contract_bundle_id: reviewPackage.contract_bundle_id,
+      contract_bundle_digest: reviewPackage.contract_bundle_digest,
+      frozen_contract_pair_digest: pairDigest,
+      semantic_identity_diff_digest:
+        reviewPackage.semantic_identity_diff_digest,
+      reviewed_contract_source_set_digest:
+        reviewPackage.reviewed_contract_source_set_digest,
+    },
+  );
+  input.frozen_contract_pair_digest = pairDigest;
+  input.source_closure_identity = clone(identity);
+  resealPackage(input, reviewPackage);
+}
+
 function resealGoverningMember(record, { bytes, memberPath = record.path }) {
   const source = Buffer.isBuffer(bytes) ? bytes : Buffer.from(bytes, 'utf8');
   const unsigned = {
@@ -417,6 +686,16 @@ test('rejects a self-resealed generated-member substitution', async () => {
   resealPackage(input, reviewPackage);
   expectCode(
     'INVALID_EXACT_GENERATED_MEMBER_SET',
+    () => createRequest(input),
+  );
+});
+
+test('rejects a coordinated self-resealed generated-topology substitution', async () => {
+  const input = await makeExactReviewInput();
+  const reviewPackage = packageValue(input);
+  resealCoordinatedGeneratedSubstitution(input, reviewPackage);
+  expectCode(
+    'INDEPENDENT_GENERATED_TOPOLOGY_MISMATCH',
     () => createRequest(input),
   );
 });
