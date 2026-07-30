@@ -22,11 +22,14 @@
     },
     "payload_mapping": {
       "source_field": "process_admission_input.matched_passage_preview.verbatim_text",
-      "source_digest_field": "process_admission_input.matched_passage_preview.verbatim_text_digest",
+      "source_utf8_digest_field": "process_admission_input.matched_passage_preview.verbatim_text_digest",
       "target_field": "domain_result.domain_result_payload",
       "target_digest_field": "domain_result.domain_result_payload_digest",
       "representation_kind": "VERBATIM_TEXT",
-      "exact_bytes_and_digest_required": true,
+      "exact_verbatim_bytes_required": true,
+      "product_payload_digest_derivation": "SHA256_CANONICAL_JSON_STRING_UTF8",
+      "raw_utf8_digest_remains_bound_in_process_receipt": true,
+      "product_payload_digest_can_replace_raw_utf8_digest": false,
       "rewrite_summary_or_classification_substitution_permitted": false
     },
     "validation_carrier_contract": {

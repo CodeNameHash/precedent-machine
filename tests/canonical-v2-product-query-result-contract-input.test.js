@@ -95,7 +95,19 @@ test('maps one admitted Process phrasebook passage into the existing Product res
     'process_admission_input.matched_passage_preview.verbatim_text',
   );
   assert.equal(definition.payload_mapping.representation_kind, 'VERBATIM_TEXT');
-  assert.equal(definition.payload_mapping.exact_bytes_and_digest_required, true);
+  assert.equal(definition.payload_mapping.exact_verbatim_bytes_required, true);
+  assert.equal(
+    definition.payload_mapping.product_payload_digest_derivation,
+    'SHA256_CANONICAL_JSON_STRING_UTF8',
+  );
+  assert.equal(
+    definition.payload_mapping.raw_utf8_digest_remains_bound_in_process_receipt,
+    true,
+  );
+  assert.equal(
+    definition.payload_mapping.product_payload_digest_can_replace_raw_utf8_digest,
+    false,
+  );
 });
 
 test('retains the exact Process receipt as the authoritative lineage and release proof', () => {
@@ -401,6 +413,17 @@ test('rejects missing, duplicate and semantically changed definitions', () => {
     .digest_only_substitution_that_loses_process_lineage_permitted = true;
   assert.throws(
     () => validateAuthoredProductQueryResultInputs(changedAdapter),
+    {
+      code:
+        'INVALID_PROCESS_PHRASEBOOK_PRODUCT_RESULT_ADAPTER_INPUT',
+    },
+  );
+
+  const replacedSourceDigest = loadMembers();
+  replacedSourceDigest[0].canonical_value.definition.payload_mapping
+    .product_payload_digest_can_replace_raw_utf8_digest = true;
+  assert.throws(
+    () => validateAuthoredProductQueryResultInputs(replacedSourceDigest),
     {
       code:
         'INVALID_PROCESS_PHRASEBOOK_PRODUCT_RESULT_ADAPTER_INPUT',
