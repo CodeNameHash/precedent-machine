@@ -1,0 +1,39 @@
+{
+  "object_kind": "AGREEMENT_PREDICATE_CONTRACT_INPUT",
+  "stable_id": "AGREEMENT_REPRESENTATION_PREDICATE_CATALOGUE",
+  "schema_version": "AGREEMENT_PREDICATE_CONTRACT_INPUT/V1",
+  "definition": {
+    "catalogue_version": 1,
+    "domain_key": "AGREEMENT",
+    "topic_key": "REPRESENTATIONS",
+    "predicate_admissions": [
+      {
+        "predicate_key": "TARGET_CAPITALISATION_BRING_DOWN",
+        "predicate_version": 1,
+        "result_definition_stable_id": "TARGET_CAPITALISATION_BRING_DOWN",
+        "result_definition_version": 2,
+        "exact_detail_action_stable_id": "RESULT_COMPOSITION_EVIDENCE",
+        "exact_detail_action_version": 1
+      }
+    ],
+    "admission_contract": {
+      "admission_grain": "PREDICATE_KEY_AND_VERSION",
+      "one_predicate_only": true,
+      "navigation_catalogue_stable_id": "AGREEMENT_NAVIGATION_DEFINITION_CATALOGUE",
+      "navigation_pattern_key": "TARGET_CAPITALISATION_BRING_DOWN",
+      "result_and_exact_detail_action_binding_required": true,
+      "unknown_predicate_has_runtime_path": false,
+      "predicate_admission_creates_product_query_admission": false,
+      "external_checked_evidence_release_and_coverage_admission_required": true
+    },
+    "authority_contract": {
+      "creates_runtime_predicate": false,
+      "creates_query_authority": false,
+      "creates_extraction_authority": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

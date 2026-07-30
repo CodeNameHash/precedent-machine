@@ -1,0 +1,19 @@
+{
+  "phase": "WP-QXO-CAPITALISATION-AGREEMENT-PREDICATE-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-qxo-capitalisation-agreement-predicate-v1.json",
+    "contracts/canonical-v2/successor/agreement/predicates/qxo-capitalisation-representation-predicate-catalogue.v1.json",
+    "lib/canonical-v2/agreement-representation-predicate-contract-input-validator.js",
+    "tests/canonical-v2-agreement-representation-predicate-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Pure QXO Agreement representation predicate contract input. No runtime predicate, query, extraction, writer, serving, release, activation, production, or contract-freeze authority."
+}
