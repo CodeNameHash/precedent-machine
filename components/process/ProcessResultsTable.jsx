@@ -1,0 +1,7 @@
+import { actionInput, actionTarget, displayValue, visibleSlots } from './processResearchView';
+
+export default function ProcessResultsTable({ presentation, onOpenSource }) {
+  const slots = visibleSlots(presentation);
+  const columns = presentation?.columns || [];
+  return <div className="overflow-x-auto rounded border border-border"><table className="min-w-full text-left text-sm"><thead className="bg-bg"><tr><th className="px-3 py-2 font-medium text-ink">Passage</th>{columns.map((column) => <th key={`${column.field_reference?.field_key}:${column.field_reference?.field_version}`} className="px-3 py-2 font-medium text-ink">{column.label}</th>)}<th className="px-3 py-2"><span className="sr-only">Source</span></th></tr></thead><tbody>{slots.map((slot) => <tr key={slot.slot_identity} className="border-t border-border">{slot.slot_state === 'UNAVAILABLE' ? <td colSpan={columns.length + 2} className="px-3 py-3 text-inkLight">Result unavailable</td> : <><td className="max-w-md px-3 py-3 text-ink">{slot.preview?.content ?? slot.exact_content}</td>{columns.map((column, index) => <td key={`${slot.slot_identity}:${column.field_reference?.field_key}`} className="px-3 py-3 text-ink">{displayValue(slot.metadata?.[index]?.value, slot.metadata?.[index]?.typed_state)}</td>)}<td className="px-3 py-3">{onOpenSource && actionTarget(slot, 'OPEN_SOURCE') ? <button type="button" aria-label="Open source" onClick={() => onOpenSource(actionInput(slot, 'OPEN_SOURCE'))} className="text-xs underline">Source</button> : null}</td></>}</tr>)}</tbody></table></div>;
+}
