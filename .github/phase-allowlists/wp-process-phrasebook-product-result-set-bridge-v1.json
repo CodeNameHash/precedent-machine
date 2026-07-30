@@ -1,0 +1,21 @@
+{
+  "phase": "WP-PROCESS-PHRASEBOOK-PRODUCT-RESULT-SET-BRIDGE-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-phrasebook-product-result-set-bridge-v1.json",
+    "lib/canonical-v2/process-phrasebook-product-result-set-bridge.js",
+    "tests/canonical-v2-process-phrasebook-product-result-set-bridge.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Pure Process-to-Product result-set and presentation bridge. It revalidates complete single-result adapter members, retains external checked failures, and passes the exact candidate partition plus external ordering and coverage inputs to the existing Product result-set compiler. Its presentation handoff passes only the exact result-set output to the existing Product presentation compiler and returns the unchanged result-set sidecar beside the existing Product presentation. It grants no query, source-read, extraction, materialisation, ordering, coverage, UI, network, database, serving, write, release, import, activation, production, or contract-freeze authority."
+}
