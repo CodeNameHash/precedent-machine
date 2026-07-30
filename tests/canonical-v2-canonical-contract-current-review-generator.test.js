@@ -32,13 +32,9 @@ function cleanRepository(t) {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'canonical-review-generator-'));
   t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
   execFileSync('git', ['clone', '--quiet', ROOT, directory]);
-  const scriptDestination = path.join(directory, SCRIPT_RELATIVE_PATH);
-  fs.mkdirSync(path.dirname(scriptDestination), { recursive: true });
-  fs.copyFileSync(SCRIPT, scriptDestination);
+  assert.equal(fs.existsSync(path.join(directory, SCRIPT_RELATIVE_PATH)), true);
   git(directory, ['config', 'user.email', 'tests@example.invalid']);
   git(directory, ['config', 'user.name', 'Generator test']);
-  git(directory, ['add', SCRIPT_RELATIVE_PATH]);
-  git(directory, ['commit', '--quiet', '-m', 'Add review generator fixture']);
   return directory;
 }
 

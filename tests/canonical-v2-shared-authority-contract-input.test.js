@@ -37,7 +37,7 @@ function members() {
   ];
 }
 
-test('keeps the shared entity family deterministic inside an incomplete successor root', () => {
+test('keeps the shared entity family deterministic inside the mechanically complete authored universe', () => {
   const first = compileCanonicalContractInput({ root_directory: ROOT });
   const second = compileCanonicalContractInput({ root_directory: ROOT });
 
@@ -52,8 +52,14 @@ test('keeps the shared entity family deterministic inside an incomplete successo
     first.canonical_bundle_input_identity.per_kind_counts
       .SHARED_AUTHORITY_LOGICAL_TYPE_INPUT >= 3,
   );
-  assert.equal(first.authored_universe_assessment.status, 'NOT_ASSESSED');
-  assert.equal(first.disposition.status, 'INCOMPLETE_UNIVERSE');
+  assert.equal(
+    first.authored_universe_assessment.status,
+    'COMPLETE_AGAINST_GOVERNED_REQUIRED_KIND_REGISTRY',
+  );
+  assert.equal(
+    first.disposition.status,
+    'AUTHORED_UNIVERSE_MECHANICALLY_COMPLETE',
+  );
   assert.equal(first.disposition.freeze_eligible, false);
   assert.equal(first.disposition.canonical_contract_bundle_authority, 'NONE');
 });

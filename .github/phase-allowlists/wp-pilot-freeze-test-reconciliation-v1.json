@@ -1,0 +1,23 @@
+{
+  "phase": "WP-PILOT-FREEZE-TEST-RECONCILIATION-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-pilot-freeze-test-reconciliation-v1.json",
+    "tests/canonical-v2-canonical-contract-current-review-generator.test.js",
+    "tests/canonical-v2-shared-authority-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "lib/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Reconciles two stale test fixtures with the already integrated review generator and mechanically complete authored contract universe. It changes no contract meaning, runtime, authority, data, deployment or production state."
+}
