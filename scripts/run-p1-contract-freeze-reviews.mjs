@@ -3,6 +3,7 @@
 import { createRequire } from 'node:module';
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
 const { canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
@@ -10,6 +11,11 @@ const {
   createP1ContractFreezeReviewRequest,
   validateP1ContractFreezeReviewResults,
 } = require('../lib/programme-gates/contract-freeze-review-tasks');
+const REPOSITORY_ROOT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '..',
+);
+const GIT_RUNTIME = Object.freeze({ repositoryRoot: REPOSITORY_ROOT });
 
 function fail(message) {
   throw new Error(message);
@@ -67,10 +73,12 @@ function main() {
   const output = options.input !== null
     ? createP1ContractFreezeReviewRequest(
       readJsonFile(options.input, '--input'),
+      { gitRuntime: GIT_RUNTIME },
     )
     : validateP1ContractFreezeReviewResults({
       request: readJsonFile(options.request, '--request'),
       results: readJsonFile(options.results, '--results'),
+      gitRuntime: GIT_RUNTIME,
     });
   process.stdout.write(`${canonicalJson(output)}\n`);
 }
