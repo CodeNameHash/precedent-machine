@@ -135,11 +135,20 @@
           "source_backed_evidence_required": true
         }
       ],
-      "every_residual_capable_boundary_has_exactly_one_entry": true,
-      "every_residual_carrier_has_exactly_one_entry": true,
-      "boundary_and_carrier_bidirectional_equality_required": true,
+      "producer_boundary_entry_identity_fields": [
+        "producer_kind",
+        "producer_version",
+        "boundary_kind",
+        "registry_entry_id",
+        "registry_entry_payload_digest"
+      ],
+      "every_registered_producer_boundary_pair_has_exactly_one_entry": true,
+      "every_entry_boundary_has_exactly_one_producer_boundary_identity": true,
+      "producer_boundary_universe_bidirectional_equality_required": true,
+      "shared_residual_carrier_schema_permitted": true,
+      "carrier_schema_uniqueness_required": false,
       "unregistered_producer_permitted": false,
-      "unregistered_boundary_or_carrier_permitted": false,
+      "unregistered_producer_or_boundary_permitted": false,
       "producer_scope_reassignment_permitted": false,
       "generic_warning_substitution_permitted": false
     },

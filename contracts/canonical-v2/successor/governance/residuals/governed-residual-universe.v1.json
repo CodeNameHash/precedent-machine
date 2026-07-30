@@ -33,6 +33,30 @@
       "unregistered_carrier_permitted": false,
       "unregistered_producer_permitted": false
     },
+    "terminal_residual_join_contract": {
+      "schema_id": "GOVERNED_RESIDUAL_TERMINAL_UNIVERSE_JOIN_RECONCILIATION/V1",
+      "required_terminal_kind": "GOVERNED_RESIDUAL_OBSERVATION",
+      "required_join_bindings": [
+        "terminal_consumption_record_id",
+        "terminal_consumption_record_payload_digest",
+        "terminal_kind",
+        "terminal_residual_observation_id",
+        "terminal_residual_observation_payload_digest",
+        "universe_residual_id",
+        "universe_residual_payload_digest"
+      ],
+      "every_governed_residual_terminal_consumption_joins_exactly_one_universe_residual": true,
+      "every_universe_residual_joins_exactly_one_governed_residual_terminal_consumption": true,
+      "terminal_and_universe_residual_identity_equality_required": true,
+      "terminal_and_universe_payload_digest_equality_required": true,
+      "terminal_kind_substitution_permitted": false,
+      "stale_terminal_payload_permitted": false,
+      "required_empty_difference_roots": [
+        "terminal_residual_join_missing_root",
+        "terminal_residual_join_extra_root",
+        "terminal_residual_join_conflict_root"
+      ]
+    },
     "manifest_contract": {
       "required_bindings": [
         "frozen_contract_pair",
@@ -53,6 +77,8 @@
         "terminal_consumption_root_set_payload_digest",
         "consumption_reconciliation_set_root_id",
         "consumption_reconciliation_set_root_payload_digest",
+        "terminal_residual_join_reconciliation_id",
+        "terminal_residual_join_reconciliation_payload_digest",
         "ordered_residual_id_and_payload_digest_set"
       ],
       "required_empty_difference_roots": [
@@ -63,7 +89,10 @@
         "unregistered_carrier_root",
         "unregistered_producer_root",
         "wrong_scope_prefix_root",
-        "admission_consumption_mismatch_root"
+        "admission_consumption_mismatch_root",
+        "terminal_residual_join_missing_root",
+        "terminal_residual_join_extra_root",
+        "terminal_residual_join_conflict_root"
       ],
       "all_root_ids_bind_payload_digests": true,
       "count_only_completeness_permitted": false,
@@ -83,6 +112,7 @@
         "admission_receipt_root_set_id_and_payload_digest",
         "terminal_consumption_root_set_id_and_payload_digest",
         "consumption_reconciliation_set_root_id_and_payload_digest",
+        "terminal_residual_join_reconciliation_id_and_payload_digest",
         "ordered_residual_id_and_payload_digest_set",
         "required_empty_difference_roots"
       ],
