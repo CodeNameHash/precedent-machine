@@ -1,0 +1,19 @@
+{
+  "phase": "WP-PROCESS-PHRASEBOOK-PRODUCT-RESULT-SET-ADAPTER-CONTRACT-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-phrasebook-product-result-set-adapter-contract-v1.json",
+    "contracts/canonical-v2/successor/product/query/process-phrasebook-product-result-set-adapter.v1.json",
+    "lib/canonical-v2/product-query-result-contract-input-validator.js",
+    "tests/canonical-v2-product-query-result-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Pure Process-to-Product result-set adapter contract. It binds complete validated single-result sidecars to the existing Product result-set compiler without granting runtime, query, source-read, extraction, database, serving, write, release, import, activation, production, or contract-freeze authority."
+}

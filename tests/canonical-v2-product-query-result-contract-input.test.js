@@ -21,6 +21,10 @@ const PROCESS_ADAPTER_PATH = path.join(
   ROOT,
   'product/query/process-phrasebook-product-result-adapter.v1.json',
 );
+const PROCESS_RESULT_SET_ADAPTER_PATH = path.join(
+  ROOT,
+  'product/query/process-phrasebook-product-result-set-adapter.v1.json',
+);
 
 function loadPath(filePath) {
   const canonicalValue = JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -38,15 +42,23 @@ function loadProcessAdapter() {
   return loadPath(PROCESS_ADAPTER_PATH);
 }
 
+function loadProcessResultSetAdapter() {
+  return loadPath(PROCESS_RESULT_SET_ADAPTER_PATH);
+}
+
 function loadMembers() {
-  return [loadProcessAdapter(), loadMember()];
+  return [
+    loadProcessAdapter(),
+    loadMember(),
+    loadProcessResultSetAdapter(),
+  ];
 }
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
-test('registers the closed PM-wide Product result definition and Process adapter', () => {
+test('registers the closed Product result definition and both Process adapters', () => {
   const member = loadMember();
   assert.doesNotThrow(
     () => validateAuthoredProductQueryResultInputs(loadMembers()),
@@ -63,6 +75,218 @@ test('registers the closed PM-wide Product result definition and Process adapter
     member.canonical_value.definition.result_contract.parent_kind,
     'PRODUCT_QUERY_IR',
   );
+});
+
+test('requires every valid result-set member to retain and revalidate its complete sidecar', () => {
+  const definition =
+    loadProcessResultSetAdapter().canonical_value.definition;
+  const member = definition.valid_member_contract;
+
+  assert.equal(
+    definition.target_contract.single_result_adapter_stable_id,
+    'PROCESS_PHRASEBOOK_PRODUCT_RESULT_ADAPTER',
+  );
+  assert.equal(
+    definition.target_contract.product_result_set_compiler,
+    'compileProductQueryResultSet',
+  );
+  assert.deepEqual(member.required_member_fields, [
+    'single_result_adapter_input',
+    'single_result_adapter_receipt',
+  ]);
+  assert.equal(member.full_original_single_result_adapter_input_required, true);
+  assert.equal(member.full_single_result_adapter_receipt_required, true);
+  assert.equal(
+    member.single_result_bridge_revalidation_function,
+    'validateProcessPhrasebookSharedRowBridgeReceipt',
+  );
+  assert.equal(member.single_result_bridge_revalidation_required, true);
+  assert.equal(
+    member.caller_validated_boolean_or_digest_substitution_permitted,
+    false,
+  );
+  assert.equal(member.one_valid_member_per_product_result_identity_required, true);
+  assert.equal(member.one_product_valid_slot_per_valid_member_required, true);
+  assert.equal(member.duplicate_sidecar_or_product_result_identity_permitted, false);
+});
+
+test('accepts only externally checked typed failures and reconciles every slot once', () => {
+  const definition =
+    loadProcessResultSetAdapter().canonical_value.definition;
+  const failure = definition.failure_contract;
+  const resultSet = definition.product_result_set_contract;
+
+  assert.equal(failure.failure_schema_version, 'PRODUCT_RESULT_SLOT_FAILURE/V1');
+  assert.equal(
+    failure.failure_source,
+    'EXTERNAL_CHECKED_PRODUCT_RESULT_SLOT_FAILURES',
+  );
+  assert.equal(
+    failure.failure_validation_function,
+    'validateProductResultSlotFailure',
+  );
+  assert.equal(failure.full_failure_value_required, true);
+  assert.equal(failure.bridge_can_invent_reclassify_rewrite_or_drop_failure, false);
+  assert.equal(failure.valid_sidecar_can_replace_failure, false);
+  assert.equal(failure.failure_can_replace_valid_sidecar, false);
+  assert.equal(
+    resultSet.ordered_valid_slots_reconcile_one_to_one_with_valid_sidecars,
+    true,
+  );
+  assert.equal(
+    resultSet.ordered_failed_slots_reconcile_one_to_one_with_external_failures,
+    true,
+  );
+  assert.equal(resultSet.valid_failed_excluded_and_total_counts_reconcile, true);
+});
+
+test('leaves order, coverage, bounds and final output with their signed owners', () => {
+  const definition =
+    loadProcessResultSetAdapter().canonical_value.definition;
+  const ordering = definition.ordering_contract;
+  const bounds = definition.bounds_and_presentation_contract;
+
+  assert.equal(
+    ordering.ordering_authority,
+    'PROCESS_PASSAGE_ORDERING_PROJECTION',
+  );
+  assert.equal(
+    ordering.ordering_projection_schema_version,
+    'PROCESS_PASSAGE_ORDERING_PROJECTION/V1',
+  );
+  assert.equal(
+    ordering.product_ordering_receipt_schema_version,
+    'PRODUCT_QUERY_RESULT_ORDERING_RECEIPT/V1',
+  );
+  assert.equal(ordering.complete_candidate_partition_required, true);
+  assert.equal(ordering.product_result_set_compiler_owns_final_slots_and_summary, true);
+  assert.equal(
+    ordering.bridge_can_rank_rerank_diversify_reorder_exclude_or_append,
+    false,
+  );
+  assert.equal(
+    definition.coverage_contract.full_external_coverage_certification_required,
+    true,
+  );
+  assert.equal(bounds.page_size_source, 'PRODUCT_QUERY_IR');
+  assert.equal(
+    bounds.first_page_eight_to_twelve_rule_owner,
+    'PRODUCT_RESULT_PRESENTATION_DEFINITION',
+  );
+  assert.equal(bounds.bridge_can_pad_repeat_or_manufacture_minimum_result_count, false);
+  assert.equal(bounds.fewer_than_eight_available_results_returns_all_available_results, true);
+});
+
+test('authorises one pure handoff into the existing Product presentation compiler', () => {
+  const handoff =
+    loadProcessResultSetAdapter().canonical_value.definition
+      .presentation_handoff_contract;
+
+  assert.equal(
+    handoff.handoff_function,
+    'compileProcessPhrasebookProductResultPresentation',
+  );
+  assert.equal(
+    handoff.presentation_compiler,
+    'compileProductResultPresentation',
+  );
+  assert.equal(
+    handoff.presentation_schema_version,
+    'PRODUCT_RESULT_PRESENTATION/V1',
+  );
+  assert.deepEqual(handoff.required_handoff_input_fields, [
+    'validated_result_set_adapter_receipt',
+    'product_query_ir',
+    'product_field_catalogue_manifest',
+    'understood_legal_question',
+  ]);
+  assert.equal(handoff.result_set_adapter_receipt_validation_required, true);
+  assert.equal(handoff.product_query_ir_must_equal_receipt_query_ir, true);
+  assert.deepEqual(handoff.presentation_compiler_input_mapping, {
+    understood_legal_question: 'understood_legal_question',
+    product_query_ir: 'product_query_ir',
+    product_field_catalogue_manifest: 'product_field_catalogue_manifest',
+    ordered_result_slots:
+      'validated_result_set_adapter_receipt.product_result_set.ordered_result_slots',
+    query_execution_summary:
+      'validated_result_set_adapter_receipt.product_result_set.query_execution_summary',
+  });
+  assert.deepEqual(
+    handoff.only_result_set_values_passed_from_receipt_to_presentation_compiler,
+    ['ordered_result_slots', 'query_execution_summary'],
+  );
+  assert.deepEqual(handoff.handoff_output_fields, [
+    'product_result_presentation',
+    'result_set_adapter_receipt',
+  ]);
+  assert.equal(
+    handoff.full_process_sidecars_remain_in_result_set_adapter_receipt,
+    true,
+  );
+  assert.equal(
+    handoff.process_sidecars_are_not_passed_into_product_presentation_compiler,
+    true,
+  );
+  assert.equal(
+    handoff.handoff_creates_new_presentation_identity_or_receipt,
+    false,
+  );
+  assert.equal(
+    handoff.handoff_can_query_read_source_reorder_filter_or_rebuild_results,
+    false,
+  );
+  assert.equal(
+    handoff.handoff_can_create_result_source_or_presentation_architecture,
+    false,
+  );
+});
+
+test('binds complete lineage, failures, authority inputs and exact Product output into one receipt', () => {
+  const carrier =
+    loadProcessResultSetAdapter().canonical_value.definition
+      .validation_carrier_contract;
+
+  assert.equal(
+    carrier.schema_version,
+    'PROCESS_PHRASEBOOK_PRODUCT_RESULT_SET_ADAPTER_RECEIPT/V1',
+  );
+  assert.deepEqual(carrier.required_fields, [
+    'schema_version',
+    'result_set_adapter_receipt_id',
+    'valid_adapter_members',
+    'external_failed_slots',
+    'product_result_set_authority_inputs',
+    'product_result_set',
+    'adapter_state',
+    'authority_state',
+  ]);
+  assert.deepEqual(carrier.identity_inputs, [
+    'valid_adapter_members',
+    'external_failed_slots',
+    'product_result_set_authority_inputs',
+    'product_result_set',
+  ]);
+  assert.equal(
+    carrier.valid_adapter_members_retain_full_original_input_and_full_receipt,
+    true,
+  );
+  assert.equal(
+    carrier.product_result_set_authority_inputs_retain_full_query_projection_ordering_and_coverage_values,
+    true,
+  );
+  assert.equal(carrier.product_result_set_retains_exact_compiler_output, true);
+  assert.equal(
+    carrier.receipt_identity_binds_all_sidecars_failures_order_query_release_coverage_and_output,
+    true,
+  );
+  assert.equal(
+    carrier.digest_only_substitution_that_loses_lineage_or_authority_input_permitted,
+    false,
+  );
+  assert.equal(carrier.adapter_state, 'VALIDATED_NOT_MATERIALISED');
+  assert.equal(carrier.authority_state, 'NOT_GRANTED');
+  assert.equal(carrier.carrier_is_product_result_set, false);
+  assert.equal(carrier.carrier_is_serving_payload, false);
 });
 
 test('maps one admitted Process phrasebook passage into the existing Product result boundary', () => {
@@ -447,12 +671,47 @@ test('rejects missing, duplicate and semantically changed definitions', () => {
   const changedResult = loadMember();
   changedResult.canonical_value.definition.release_contract
     .silent_redirect_or_result_substitution_permitted = true;
+  const changedResultMembers = loadMembers();
+  changedResultMembers[1] = changedResult;
   assert.throws(
-    () => validateAuthoredProductQueryResultInputs([
-      loadProcessAdapter(),
-      changedResult,
-    ]),
+    () => validateAuthoredProductQueryResultInputs(changedResultMembers),
     { code: 'INVALID_PRODUCT_QUERY_RESULT_DEFINITION_INPUT' },
+  );
+
+  const changedResultSetAdapter = loadMembers();
+  changedResultSetAdapter[2].canonical_value.definition.ordering_contract
+    .bridge_can_rank_rerank_diversify_reorder_exclude_or_append = true;
+  assert.throws(
+    () => validateAuthoredProductQueryResultInputs(
+      changedResultSetAdapter,
+    ),
+    {
+      code:
+        'INVALID_PROCESS_PHRASEBOOK_PRODUCT_RESULT_SET_ADAPTER_INPUT',
+    },
+  );
+
+  const weakenedLineage = loadMembers();
+  weakenedLineage[2].canonical_value.definition.validation_carrier_contract
+    .digest_only_substitution_that_loses_lineage_or_authority_input_permitted =
+      true;
+  assert.throws(
+    () => validateAuthoredProductQueryResultInputs(weakenedLineage),
+    {
+      code:
+        'INVALID_PROCESS_PHRASEBOOK_PRODUCT_RESULT_SET_ADAPTER_INPUT',
+    },
+  );
+
+  const expandedHandoff = loadMembers();
+  expandedHandoff[2].canonical_value.definition.presentation_handoff_contract
+    .handoff_creates_new_presentation_identity_or_receipt = true;
+  assert.throws(
+    () => validateAuthoredProductQueryResultInputs(expandedHandoff),
+    {
+      code:
+        'INVALID_PROCESS_PHRASEBOOK_PRODUCT_RESULT_SET_ADAPTER_INPUT',
+    },
   );
 
   const nested = loadMembers();
@@ -482,6 +741,7 @@ test('grants no runtime, data, write, serving or production authority', () => {
   const sources = [
     CONTRACT_PATH,
     PROCESS_ADAPTER_PATH,
+    PROCESS_RESULT_SET_ADAPTER_PATH,
     path.join(
       __dirname,
       '../lib/canonical-v2/product-query-result-contract-input-validator.js',
@@ -503,6 +763,14 @@ test('grants no runtime, data, write, serving or production authority', () => {
     loadProcessAdapter().canonical_value.definition.authority_contract;
   assert.equal(
     Object.values(adapterAuthority).every((value) => value === false),
+    true,
+  );
+
+  const resultSetAdapterAuthority =
+    loadProcessResultSetAdapter().canonical_value.definition.authority_contract;
+  assert.equal(
+    Object.values(resultSetAdapterAuthority)
+      .every((value) => value === false),
     true,
   );
 });
