@@ -1,0 +1,17 @@
+{
+  "phase": "WP-P1-PILOT-FREEZE-TEST-RECONCILIATION-V2",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p1-pilot-freeze-test-reconciliation-v2.json",
+    "tests/canonical-v2-canonical-contract-bundle-freeze-candidate-assembler.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Mechanical count-independent hostile test reconciliation for the integrated 167-member pilot freeze root. No contract, runtime, writer, serving, database, release, activation, production, signing, status-publication, or freeze authority."
+}

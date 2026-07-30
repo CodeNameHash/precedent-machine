@@ -367,13 +367,16 @@ test('rejects missing, extra, duplicate and conflicting classifications', () => 
     (kindCounts.get(entry.member_kind) || 0) + 1,
   ));
   const omittedKind = REQUIRED_BUNDLE_KINDS.find(
-    (kind) => kindCounts.get(kind) === 1,
+    (kind) => (kindCounts.get(kind) || 0) > 0,
   );
   const replacementKind = REQUIRED_BUNDLE_KINDS.find(
     (kind) => kind !== omittedKind,
   );
-  conflictEntries.find((entry) => entry.member_kind === omittedKind)
-    .member_kind = replacementKind;
+  conflictEntries
+    .filter((entry) => entry.member_kind === omittedKind)
+    .forEach((entry) => {
+      entry.member_kind = replacementKind;
+    });
   conflict.classification_registry = sealClassificationRegistry(conflictEntries);
   conflict.governed_registry_bindings.classification_registry_id =
     conflict.classification_registry.classification_registry_id;
