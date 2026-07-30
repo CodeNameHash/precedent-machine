@@ -3,6 +3,7 @@ const test = require('node:test');
 const {
   deriveSignerCoverage,
   runPilotIntegrationPreflight,
+  validateSignerPolicyEvolution,
 } = require('../../lib/programme-gates/pilot-integration-preflight');
 
 const commit = 'a'.repeat(40);
@@ -26,6 +27,9 @@ const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
     deriveSignerCoverage(source, ['missing.js', 'allowed.js']),
     {
       review_basis_commit: 'b'.repeat(40),
+      allowed_paths: ['allowed.js', 'unused.js'],
+      non_allowlist_source_digest:
+        deriveSignerCoverage(source, []).non_allowlist_source_digest,
       inventory_paths: ['allowed.js'],
       required_paths: ['allowed.js', 'missing.js'],
     },
@@ -35,5 +39,42 @@ test('rejects signer source without the closed policy declarations', () => {
   assert.throws(
     () => deriveSignerCoverage('const unrelated = true;', []),
     /does not expose the closed owner-authority policy/,
+  );
+});
+test('permits only exact monotonic signer allowlist additions for required paths', () => {
+  const trusted = `
+const REVIEW_BASIS_COMMIT = '${'b'.repeat(40)}';
+const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
+  'existing.js',
+]);
+const unchanged = true;
+`;
+  const candidate = trusted.replace(
+    "  'existing.js',",
+    "  'existing.js',\n  'required.js',",
+  );
+  assert.deepEqual(
+    validateSignerPolicyEvolution(trusted, candidate, ['required.js'])
+      .inventory_paths,
+    ['required.js'],
+  );
+  assert.throws(
+    () => validateSignerPolicyEvolution(
+      trusted,
+      candidate.replace('const unchanged = true;', 'const unchanged = false;'),
+      ['required.js'],
+    ),
+    /changed protected policy/,
+  );
+  assert.throws(
+    () => validateSignerPolicyEvolution(
+      trusted,
+      candidate.replace(
+        "  'required.js',",
+        "  'required.js',\n  'unrelated.js',",
+      ),
+      ['required.js'],
+    ),
+    /not the exact monotonic integration delta/,
   );
 });
