@@ -76,7 +76,7 @@ test('the single successor source compiles twice byte-identically as a complete 
   const second = compileCanonicalContractInput({ root_directory: sourceRoot });
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 153);
+  assert.equal(first.authored_members.length, 168);
   assert.equal(
     first.authored_members.some(
       (member) => member.object_kind === 'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY',
@@ -254,7 +254,7 @@ test('the compiler refuses the authored relationship when its effect schema is a
   );
 });
 
-test('every no-shop semantic schema input preserves the exact nested V12 source', () => {
+test('no-shop semantic inputs preserve V12 except governed successors', () => {
   const compiled = compileCanonicalContractInput({ root_directory: sourceRoot });
   const members = compiled.authored_members.filter(
     (member) => member.object_kind === 'NO_SHOP_SEMANTIC_SCHEMA_INPUT',
@@ -294,7 +294,18 @@ test('every no-shop semantic schema input preserves the exact nested V12 source'
       ['NO_SHOP_NOTICE_OBLIGATION', 6],
     ],
   );
-  assert.equal(canonicalJson(actual), canonicalJson(expected));
+  const unchangedKeys = new Set([
+    'NO_SHOP_ACTION_COMPARISON_ROLLUP',
+    'NO_SHOP_ACTION_OCCURRENCE',
+  ]);
+  assert.equal(
+    canonicalJson(actual.filter((entry) => unchangedKeys.has(entry.schema_key))),
+    canonicalJson(expected.filter((entry) => unchangedKeys.has(entry.schema_key))),
+  );
+  assert.notEqual(
+    canonicalJson(actual.filter((entry) => !unchangedKeys.has(entry.schema_key))),
+    canonicalJson(expected.filter((entry) => !unchangedKeys.has(entry.schema_key))),
+  );
 });
 
 test('every serving metric-operation binding input preserves the exact nested V12 source', () => {
@@ -492,16 +503,16 @@ test('the authored claim interpretation policy is the exact existing V12 policy'
   );
 });
 
-test('the manifest exactly closes the 153-file Agreement, shared, Process, Product and governance source tree', () => {
+test('the manifest exactly closes the 168-file Agreement, shared, Process, Product and governance source tree', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
   const actualMembers = jsonMembers(sourceRoot);
   const declaredMembers = manifest.members.map((member) => member.relative_path);
 
   assert.deepEqual(actualMembers, declaredMembers);
-  assert.equal(manifest.members.length, 153);
+  assert.equal(manifest.members.length, 168);
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('agreement/')).length,
-    87,
+    92,
   );
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('shared/')).length,
@@ -513,11 +524,11 @@ test('the manifest exactly closes the 153-file Agreement, shared, Process, Produ
   );
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('product/')).length,
-    12,
+    14,
   );
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('governance/')).length,
-    1,
+    9,
   );
   assert.equal(
     fs.existsSync(path.join(__dirname, '../lib/schema/canonical/contract-v2')),

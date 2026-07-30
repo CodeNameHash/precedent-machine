@@ -3,7 +3,8 @@
   "required_work_class": "canonical_work_start",
   "allowed": [
     ".github/phase-allowlists/wp-p1-pilot-freeze-test-reconciliation-v2.json",
-    "tests/canonical-v2-canonical-contract-bundle-freeze-candidate-assembler.test.js"
+    "tests/canonical-v2-canonical-contract-bundle-freeze-candidate-assembler.test.js",
+    "tests/canonical-v2-canonical-contract-source-tree.test.js"
   ],
   "denied": [
     ".env*",
