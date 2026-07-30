@@ -13,7 +13,7 @@ main integration.
 | --- | --- |
 | Main basis | `7b6bc64157c49832129fa2ca227399850cd983fc` |
 | Approved M1 review commit | `affa7464ca2cab2b4715ae084e3de6c2d39b673f` |
-| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; candidate head `331a80cb68d52a2f6e007f296bc29b3797ffd2d4`. The batch includes the generic Agreement envelope, bounded PI pipeline connector, sealed Metsera source-to-sidecar run, signed Process result admission, shared Product row, Product result set, answer-first presentation, four-surface Product binding, one-writer candidate persistence, inactive-candidate source-reader proof and real browser acceptance. |
+| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; candidate code head `86e5bc70`. Later commits update only the execution ledger and its mechanical drift manifest. The batch includes the generic Agreement envelope, bounded PI pipeline connector, sealed Metsera source-to-sidecar run, signed Process result admission, shared Product row, Product result set, answer-first presentation, four-surface Product binding, one-writer candidate persistence, inactive-candidate source-reader proof and real browser acceptance. |
 | Current successor bundle | 174 authored inputs, 173 substantive contracts, 8 categories |
 | Current successor bundle ID | `dfab1f31bf31b7ce405dc8a5fc0215a07139634ff535f84b1266f754cba2797a` |
 | Current successor contract digest | `c8f840e70e8b1c1bac467278665fddc9d837123f9a8c44ae47c0b9630eaec540` |
