@@ -105,9 +105,53 @@ test('P1 compiles from the bootstrap source contract and enumerates its closed w
   const bundle = createContractFreezeContractBundle({ specificationRoot: ROOT });
   assert.equal(bundle.definitions.length, 1);
   const [definition] = bundle.definitions;
-  assert.equal(definition.evidence_contract, 'exact-contract-freeze-attestation-and-status-generation/v9');
+  assert.equal(definition.evidence_contract, 'exact-contract-freeze-attestation-and-status-generation/v10');
   assert.equal(definition.specification_root, ROOT);
   assert.equal(validateSchema('ProgrammeGateAcceptanceDefinition/V1', definition), true);
+  const predicates = new Map(definition.ordered_claim_predicate_definitions.map(
+    (predicate) => [predicate.claim_key, predicate],
+  ));
+  const exactInputsFor = (claimKey, memberType, prefix = '/') => (
+    predicates.get(claimKey).exact_input_member_types_and_paths
+      .filter((entry) => (
+        entry.member_type === memberType
+        && entry.json_pointer.startsWith(prefix)
+      ))
+      .map((entry) => entry.json_pointer)
+  );
+  const exactIdentityPaths = [
+    '/schema_version',
+    '/contract_freeze_attestation_id',
+    '/specification_root',
+    '/code_commit',
+    '/environment',
+    '/predecessor_contract_bundle_id',
+    '/predecessor_contract_bundle_digest',
+    '/predecessor_canonical_contract_bundle_member_root',
+    '/predecessor_canonical_contract_bundle_member_count',
+    '/contract_bundle_id',
+    '/contract_bundle_digest',
+    '/approval_epoch_nonce',
+  ];
+  const exactPredecessorReviewPaths = [
+    '/predecessor_contract_bundle_id',
+    '/predecessor_contract_bundle_digest',
+    '/predecessor_contract_members',
+    '/predecessor_canonical_contract_bundle_members',
+  ];
+  for (const claimKey of [
+    'bundle_compiles',
+    'semantic_and_identity_diff_reviewed',
+  ]) {
+    assert.deepEqual(
+      exactInputsFor(claimKey, 'ContractFreezeAttestationIdentity'),
+      exactIdentityPaths,
+    );
+    assert.deepEqual(
+      exactInputsFor(claimKey, 'ContractDiffReviewAttestation', '/predecessor_'),
+      exactPredecessorReviewPaths,
+    );
+  }
 
   const members = enumerateContractFreezeExpectedMembers({
     evidenceObject: {

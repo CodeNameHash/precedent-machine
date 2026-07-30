@@ -21,6 +21,10 @@ const {
   SPECIFICATION_ROOT_INPUT_ENCODING,
   SPECIFICATION_ROOT_MEMBERSHIP,
   REMAINING_FORMAL_FREEZE_INPUTS,
+  PRE_REVIEW_ATTESTATION_PLACEHOLDER_SCHEMA_VERSION,
+  PRE_REVIEW_ATTESTATION_PLACEHOLDER_ID_DOMAIN,
+  PRE_REVIEW_FROZEN_PAIR_PLACEHOLDER_DOMAIN,
+  PRE_REVIEW_INPUT_CONTEXT_PLACEHOLDER_DOMAIN,
   assembleCanonicalContractBundlePreReviewPackage,
 } = require(
   '../lib/canonical-v2/canonical-contract-bundle-pre-review-package-assembler'
@@ -276,7 +280,7 @@ test('assembles one deterministic immutable pre-review package', () => {
     review.contract_bundle_freeze_candidate
       .unsigned_contract_bundle_compilation_receipt_payload
       .frozen_contract_pair_digest,
-    review.pre_review_frozen_contract_pair_digest,
+    review.pre_review_frozen_pair_placeholder_digest,
   );
   assert.equal(first.disposition.state, 'PRE_REVIEW_INPUTS_ASSEMBLED_NOT_REVIEWED');
   assert.equal(first.disposition.architecture_review_conclusion, 'NOT_SUPPLIED');
@@ -285,24 +289,35 @@ test('assembles one deterministic immutable pre-review package', () => {
   assert.equal(first.disposition.freeze_authority, 'NONE');
 });
 
-test('marks its projection-only identity, pair and context as pre-review-only', () => {
+test('uses a structurally distinct schema and digest domains for pre-review placeholders', () => {
   const result = assembleCanonicalContractBundlePreReviewPackage(fixture());
   const review = result.exact_review_package;
-  const identity = review.pre_review_contract_freeze_attestation_identity;
+  const placeholder = review.pre_review_attestation_placeholder;
 
-  assert.throws(() => validateSchema('ContractFreezeAttestationIdentity/V1', identity));
-  const { contract_freeze_attestation_id: ignored, ...unsignedIdentity } = identity;
   assert.equal(
-    identity.contract_freeze_attestation_id,
+    placeholder.schema_version,
+    PRE_REVIEW_ATTESTATION_PLACEHOLDER_SCHEMA_VERSION,
+  );
+  assert.equal('contract_freeze_attestation_id' in placeholder, false);
+  assert.throws(() => validateSchema(
+    'ContractFreezeAttestationIdentity/V1',
+    placeholder,
+  ));
+  const {
+    pre_review_attestation_placeholder_id: ignored,
+    ...unsignedPlaceholder
+  } = placeholder;
+  assert.equal(
+    placeholder.pre_review_attestation_placeholder_id,
     domainDigest(
-      'PROGRAMME_GATE_CONTRACT_FREEZE_ATTESTATION_ID/V1',
-      unsignedIdentity,
+      PRE_REVIEW_ATTESTATION_PLACEHOLDER_ID_DOMAIN,
+      unsignedPlaceholder,
     ),
   );
   assert.equal(
-    review.pre_review_frozen_contract_pair_digest,
+    review.pre_review_frozen_pair_placeholder_digest,
     domainDigest(
-      'PROGRAMME_GATE_FROZEN_CONTRACT_PAIR/V1',
+      PRE_REVIEW_FROZEN_PAIR_PLACEHOLDER_DOMAIN,
       {
         predecessor_contract_bundle_id:
           review.predecessor_contract_bundle_id,
@@ -310,15 +325,15 @@ test('marks its projection-only identity, pair and context as pre-review-only', 
           review.predecessor_contract_bundle_digest,
         successor_contract_bundle_id: review.contract_bundle_id,
         successor_contract_bundle_digest: review.contract_bundle_digest,
-        contract_freeze_attestation_id:
-          identity.contract_freeze_attestation_id,
+        pre_review_attestation_placeholder_id:
+          placeholder.pre_review_attestation_placeholder_id,
       },
     ),
   );
   assert.equal(
-    review.pre_review_exact_input_context_digest,
+    review.pre_review_input_context_placeholder_digest,
     domainDigest(
-      'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW_EXACT_INPUT_CONTEXT/V1',
+      PRE_REVIEW_INPUT_CONTEXT_PLACEHOLDER_DOMAIN,
       {
         specification_root: review.specification_root,
         code_commit: review.code_commit,
@@ -328,7 +343,8 @@ test('marks its projection-only identity, pair and context as pre-review-only', 
           review.predecessor_contract_bundle_digest,
         contract_bundle_id: review.contract_bundle_id,
         contract_bundle_digest: review.contract_bundle_digest,
-        frozen_contract_pair_digest: review.pre_review_frozen_contract_pair_digest,
+        pre_review_frozen_pair_placeholder_digest:
+          review.pre_review_frozen_pair_placeholder_digest,
         semantic_identity_diff_digest:
           review.semantic_identity_diff_digest,
       },

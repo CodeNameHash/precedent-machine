@@ -4,6 +4,14 @@ const crypto = require('node:crypto');
 const path = require('node:path');
 const test = require('node:test');
 
+const {
+  canonicalJson,
+  contentId,
+} = require('../../lib/canonical-v2/canonical-bytes');
+const {
+  AGGREGATE_SOURCE_SCHEMA_VERSION,
+  FIXED_MEMBER_DEFINITIONS,
+} = require('../../lib/canonical-v2/canonical-contract-bundle-compiler');
 const { domainDigest, signatureBytes } = require('../../lib/programme-gates/bytes');
 const {
   CONTRACT_FREEZE_MEMBER_SCHEMA_SET,
@@ -101,6 +109,54 @@ function compareMembers(left, right) {
   );
 }
 
+function predecessorAggregateMember(memberKind, index) {
+  const definition = FIXED_MEMBER_DEFINITIONS[memberKind];
+  const authoredIdentity = {
+    relative_path: `contracts/predecessor-${String(index).padStart(2, '0')}.json`,
+    object_kind: `PREDECESSOR_${memberKind}`,
+    stable_id: `PREDECESSOR_${memberKind}`,
+    schema_version: `PREDECESSOR_${memberKind}/V1`,
+    canonical_bytes_digest: domainDigest(
+      'TEST_PREDECESSOR_AUTHORED_BYTES/V1',
+      { member_kind: memberKind },
+    ),
+  };
+  const source = {
+    schema_version: AGGREGATE_SOURCE_SCHEMA_VERSION,
+    member_kind: memberKind,
+    ordered_authored_members: [{
+      authored_identity: authoredIdentity,
+      ordered_dependency_identities: [],
+    }],
+  };
+  const identityPayload = {
+    member_kind: memberKind,
+    ordered_authored_members: source.ordered_authored_members.map((entry) => ({
+      authored_identity: entry.authored_identity,
+      ordered_dependency_identities: entry.ordered_dependency_identities,
+    })),
+  };
+  const sourceBytes = Buffer.from(canonicalJson(source), 'utf8');
+  return {
+    schema_version: 'CanonicalContractBundleMember/V1',
+    member_key: definition.member_key,
+    member_kind: memberKind,
+    logical_type: definition.logical_type,
+    member_schema_version: AGGREGATE_SOURCE_SCHEMA_VERSION,
+    byte_length: sourceBytes.length,
+    payload_digest: crypto.createHash('sha256').update(sourceBytes).digest('hex'),
+    source_bytes_base64: sourceBytes.toString('base64'),
+    semantic_digest: contentId(
+      'CANONICAL_CONTRACT_BUNDLE_AGGREGATE_SEMANTIC/V1',
+      source,
+    ),
+    identity_digest: contentId(
+      'CANONICAL_CONTRACT_BUNDLE_AGGREGATE_IDENTITY/V1',
+      identityPayload,
+    ),
+  };
+}
+
 function g0Envelope({
   gateId,
   evidenceContract,
@@ -173,23 +229,9 @@ function fixture({ includePrivateKeys = false } = {}) {
   const validator = crypto.generateKeyPairSync('ed25519');
   const controller = crypto.generateKeyPairSync('ed25519');
   const predecessorCanonicalContractBundleMembers = [
-    ['CLAIM_ALPHA', 'CORE_CANONICAL_CONTRACT', '1'.repeat(64), '2'.repeat(64)],
-    ['CLAIM_BETA', 'SEMANTIC_CATALOGUE', '3'.repeat(64), '4'.repeat(64)],
-  ].map(([memberKey, memberKind, semanticDigest, identityDigest]) => {
-    const sourceBytes = Buffer.from(`predecessor-${memberKey}`, 'utf8');
-    return {
-      schema_version: 'CanonicalContractBundleMember/V1',
-      member_key: memberKey,
-      member_kind: memberKind,
-      logical_type: `Predecessor${memberKey}`,
-      member_schema_version: 'V1',
-      byte_length: sourceBytes.length,
-      payload_digest: crypto.createHash('sha256').update(sourceBytes).digest('hex'),
-      source_bytes_base64: sourceBytes.toString('base64'),
-      semantic_digest: semanticDigest,
-      identity_digest: identityDigest,
-    };
-  });
+    predecessorAggregateMember('CORE_CANONICAL_CONTRACT', 1),
+    predecessorAggregateMember('SEMANTIC_CATALOGUE', 2),
+  ];
   const predecessorContractMembers =
     predecessorCanonicalContractBundleMembers.map((member) => ({
       member_key: member.member_key,
@@ -287,7 +329,9 @@ function fixture({ includePrivateKeys = false } = {}) {
     predecessor_contract_bundle_id: predecessorContractBundleId,
     successor_contract_bundle_id: contractBundleId,
     added_member_keys: contractBundleMembers.map((member) => member.member_key),
-    removed_member_keys: ['CLAIM_ALPHA', 'CLAIM_BETA'],
+    removed_member_keys: predecessorContractMembers.map(
+      (member) => member.member_key,
+    ),
     semantic_changed_member_keys: [],
     identity_changed_member_keys: [],
   };
@@ -1777,20 +1821,85 @@ test('a controller-signed projection cannot hide substituted successor source by
   );
 });
 
-test('a controller cannot replace predecessor bytes after recomputing every review digest', () => {
+test('unrecognised predecessor semantics fail after every affected identity and signature is rederived', () => {
   const sample = fixture({ includePrivateKeys: true });
-  const review = sample.immutableMembers.find(
+  const identityMember = sample.immutableMembers.find(
+    (member) => member.member_type === 'ContractFreezeAttestationIdentity',
+  );
+  const manifestMember = sample.immutableMembers.find(
+    (member) => member.member_type === 'ContractFreezeAuthorityManifest',
+  );
+  const compilationMember = sample.immutableMembers.find(
+    (member) => member.member_type === 'ContractBundleCompilationReceipt',
+  );
+  const reviewMember = sample.immutableMembers.find(
     (member) => member.member_type === 'ContractDiffReviewAttestation',
-  ).payload;
+  );
+  const approvalMember = sample.immutableMembers.find(
+    (member) => member.member_type === 'ContractFreezeApproval',
+  );
+  const independenceMember = sample.immutableMembers.find(
+    (member) => (
+      member.member_type === 'ReviewerIndependenceAttestation'
+      && member.member_id.startsWith('review-independence:')
+    ),
+  );
+  const identity = identityMember.payload;
+  const manifest = manifestMember.payload;
+  const compilation = compilationMember.payload;
+  const review = reviewMember.payload;
+  const approval = approvalMember.payload;
+  const independence = independenceMember.payload;
+
   review.predecessor_canonical_contract_bundle_members = structuredClone(
     review.predecessor_canonical_contract_bundle_members,
   );
-  const substituted = Buffer.from('substituted-predecessor-source', 'utf8');
+  const substituted = Buffer.from(canonicalJson({
+    schema_version: 'UNRECOGNISED_PREDECESSOR_SOURCE/V1',
+    member_kind:
+      review.predecessor_canonical_contract_bundle_members[0].member_kind,
+    ordered_authored_members: [],
+  }), 'utf8');
   review.predecessor_canonical_contract_bundle_members[0].byte_length = substituted.length;
   review.predecessor_canonical_contract_bundle_members[0].payload_digest =
     crypto.createHash('sha256').update(substituted).digest('hex');
   review.predecessor_canonical_contract_bundle_members[0].source_bytes_base64 =
     substituted.toString('base64');
+
+  identity.predecessor_canonical_contract_bundle_member_root = domainDigest(
+    'PROGRAMME_GATE_CANONICAL_CONTRACT_BUNDLE_MEMBER_ROOT/V1',
+    review.predecessor_canonical_contract_bundle_members,
+  );
+  identity.contract_freeze_attestation_id = domainDigest(
+    'PROGRAMME_GATE_CONTRACT_FREEZE_ATTESTATION_ID/V1',
+    Object.fromEntries(Object.entries(identity).filter(
+      ([key]) => key !== 'contract_freeze_attestation_id',
+    )),
+  );
+  identityMember.member_id =
+    `freeze-identity:${identity.contract_freeze_attestation_id}`;
+  sample.evidence.contract_freeze_attestation_id =
+    identity.contract_freeze_attestation_id;
+
+  const frozenPairDigest = domainDigest(
+    'PROGRAMME_GATE_FROZEN_CONTRACT_PAIR/V1',
+    {
+      predecessor_contract_bundle_id:
+        identity.predecessor_contract_bundle_id,
+      predecessor_contract_bundle_digest:
+        identity.predecessor_contract_bundle_digest,
+      successor_contract_bundle_id: identity.contract_bundle_id,
+      successor_contract_bundle_digest: identity.contract_bundle_digest,
+      contract_freeze_attestation_id:
+        identity.contract_freeze_attestation_id,
+    },
+  );
+  sample.evidence.frozen_contract_pair_digest = frozenPairDigest;
+  review.frozen_contract_pair_digest = frozenPairDigest;
+  manifest.frozen_contract_pair_digest = frozenPairDigest;
+  compilation.frozen_contract_pair_digest = frozenPairDigest;
+  approval.frozen_contract_pair_digest = frozenPairDigest;
+
   review.reviewed_contract_source_set_digest = domainDigest(
     'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW_SOURCE_SET/V1',
     {
@@ -1816,23 +1925,92 @@ test('a controller cannot replace predecessor bytes after recomputing every revi
         review.reviewed_contract_source_set_digest,
     },
   );
+
+  const previousIndependenceId = review.independence_attestation_id;
+  independence.exact_input_context_digest = review.exact_input_context_digest;
+  independence.signature = sign(
+    sample.privateKeys.validator,
+    'PROGRAMME_GATE_REVIEWER_INDEPENDENCE/V1',
+    'VALIDATOR',
+    unsigned(independence),
+  );
+  review.independence_attestation_id = domainDigest(
+    'PROGRAMME_GATE_CONTRACT_REVIEW_INDEPENDENCE_ATTESTATION_ID/V1',
+    independence,
+  );
+  review.independence_attestation_payload_digest = domainDigest(
+    'PROGRAMME_GATE_CONTRACT_REVIEW_INDEPENDENCE_PAYLOAD/V1',
+    independence,
+  );
+  independenceMember.member_id =
+    `review-independence:${review.independence_attestation_id}`;
+  sample.evidence.authority_member_inventory.find(
+    (entry) => entry.member_id === `review-independence:${previousIndependenceId}`,
+  ).member_id = independenceMember.member_id;
+
+  const previousReviewId = review.review_id;
   resealReview(sample, review);
+  reviewMember.member_id = `review:${review.review_id}`;
+  sample.evidence.semantic_identity_review_id = review.review_id;
+  sample.evidence.legal_semantic_review_disposition_id = review.review_id;
+  sample.evidence.identity_review_disposition_id = review.review_id;
+  manifest.independent_reviewer_bindings.find(
+    (binding) => binding.review_disposition_id === previousReviewId,
+  ).review_disposition_id = review.review_id;
+
+  manifest.authority_manifest_id = domainDigest(
+    'PROGRAMME_GATE_CONTRACT_FREEZE_AUTHORITY_MANIFEST_ID/V1',
+    Object.fromEntries(Object.entries(manifest).filter(
+      ([key]) => key !== 'authority_manifest_id',
+    )),
+  );
+  manifestMember.member_id = `authority:${manifest.authority_manifest_id}`;
+  sample.evidence.contract_authority_manifest_id =
+    manifest.authority_manifest_id;
+  sample.evidence.contract_authority_manifest_digest = domainDigest(
+    'PROGRAMME_GATE_CONTRACT_FREEZE_AUTHORITY_MANIFEST_PAYLOAD/V1',
+    manifest,
+  );
+
+  compilation.receipt_id = domainDigest(
+    'PROGRAMME_GATE_CONTRACT_COMPILATION_RECEIPT_ID/V1',
+    Object.fromEntries(Object.entries(compilation).filter(
+      ([key]) => key !== 'receipt_id' && key !== 'signature',
+    )),
+  );
+  compilation.signature = sign(
+    sample.privateKeys.validator,
+    'PROGRAMME_GATE_CONTRACT_COMPILATION_RECEIPT/V1',
+    'VALIDATOR',
+    unsigned(compilation),
+  );
+  compilationMember.member_id = `compilation:${compilation.receipt_id}`;
+  sample.evidence.compilation_receipt_id = compilation.receipt_id;
+
+  approval.authority_manifest_id = manifest.authority_manifest_id;
+  approval.signature = sign(
+    sample.privateKeys.ben,
+    'PROGRAMME_GATE_CONTRACT_FREEZE_APPROVAL/V1',
+    'BEN_APPROVER',
+    unsigned(approval),
+  );
+
   assert.equal(
     contractDiffReviewIsMechanicallyBound(
       review,
       sample.evidence,
       context(sample),
     ),
-    true,
+    false,
   );
   const claims = evaluateAcceptanceClaims({
     gate_id: 'P1_CONTRACT_FREEZE_ATTESTED',
     evidence: sample.evidence,
     context: context(sample),
   });
-  assert.equal(
-    claims.find((claim) => claim.claim_key === 'bundle_compiles').typed_value,
-    false,
+  assert.deepEqual(
+    claims.map((claim) => claim.typed_value),
+    [false, false, true, true],
   );
 });
 
