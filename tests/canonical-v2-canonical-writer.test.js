@@ -7,6 +7,7 @@ const { buildClaimRevision, buildRelationshipRevision } = require('../lib/canoni
 const {
   compileFixtureContract,
   compileFixtureContractV5,
+  compileFixtureContractV13,
 } = require('../lib/canonical-v2/contract-bundle');
 const {
   InMemoryCanonicalRepository,
@@ -552,7 +553,7 @@ test('an injected failure rolls back every staged object and receipt', async () 
     intakeCaptures: [],
     sources: [], sourceAdmissions: [], deals: [], dealAdmissionRecords: [],
     excerpts: [], validated_semantic_graphs: [],
-    provisions: [], components: [], claims: [], relationships: [],
+    provisions: [], components: [], condition_groups: [], claims: [], relationships: [],
     open_world_candidates: [], open_world_candidate_occurrences: [], open_world_evidence_references: [],
     open_world_candidate_dispositions: [], open_world_primitives: [], semantic_impact_closures: [],
     reviewed_source_specific_rows: [], incomplete_canonical_result_rows: [], residuals: [], quarantines: [], receipts: [],
@@ -906,6 +907,134 @@ test('a quarantined dependency propagates to the referencing closure', async () 
     id('closure:condition'),
     evidenceClosure,
   ].sort());
+});
+
+test('condition groups are strict first-class writer rows with transactional replay protection', async () => {
+  const contract = compileFixtureContractV13();
+  const writeSet = fixtureWriteSet(contract);
+  const source = writeSet.source;
+  const conditionClosure = writeSet.provisions[1].closure_id;
+  const conditionSpan = buildSemanticSpan(
+    source,
+    writeSet.provisions[1].absolute_start,
+    writeSet.provisions[1].absolute_end,
+  );
+  const conditionProvision = buildProvisionInstance({
+    source,
+    span: conditionSpan,
+    conceptKey: 'COND-B-REP',
+    party: { role: 'CONDITION_BENEFICIARY', value: 'BUYER_GROUP', capacity: 'ACQUIRER' },
+    ordinal: 1,
+  });
+  const conditionExcerpt = writeSet.excerpts[1];
+  const evidence = {
+    evidence_role: 'OPERATIVE_TEXT',
+    excerpt_id: conditionExcerpt.excerpt_id,
+    document_ordinal: 0,
+    absolute_start: conditionExcerpt.absolute_start,
+    absolute_end: conditionExcerpt.absolute_end,
+  };
+  const conditionClaim = buildClaimRevision({
+    subject_occurrence_id: conditionProvision.provision_instance_id,
+    claim_definition_key: 'REPRESENTATION_ACCURACY_STANDARD',
+    state: 'PRESENT',
+    raw_value: 'in all material respects',
+    canonical_value: 'MAT_ALL_MATERIAL',
+    evidence: [evidence],
+  });
+  const conditionRelationship = buildRelationshipRevision({
+    source_occurrence_id: conditionProvision.provision_instance_id,
+    relationship_definition_key: 'CONTAINED_IN',
+    state: 'PRESENT',
+    target_occurrence_ids: [conditionProvision.provision_instance_id],
+    effect: { effect_mode: 'NON_SEMANTIC', legal_operation: 'GEOMETRIC_ONLY' },
+    evidence: [evidence],
+  });
+  writeSet.provisions[1] = { ...conditionProvision, closure_id: conditionClosure };
+  writeSet.claims[1] = { ...conditionClaim, closure_id: conditionClosure };
+  writeSet.relationships[1] = { ...conditionRelationship, closure_id: conditionClosure };
+  writeSet.condition_groups = [
+    ['B', 'CAPITALISATION_CLAUSE_B_LIMBS_I_III', [1, 3]],
+    ['C', 'CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V', [2, 4, 5]],
+  ].map(([sourceClauseCode, comparisonClassKey, targetLimbOrdinals], index) => {
+    const occurrence = {
+      document_hash: source.document_hash,
+      parent_provision_instance_id: conditionProvision.provision_instance_id,
+      canonical_text_id: source.canonical_text_id,
+      absolute_start: conditionExcerpt.absolute_start,
+      absolute_end: conditionExcerpt.absolute_end,
+      component_key: 'CAPITALISATION_ACCURACY_GROUP',
+      party: { role: 'CONDITION_BENEFICIARY', value: 'BUYER_GROUP', capacity: 'ACQUIRER' },
+      governed_ordinal: index + 1,
+    };
+    const condition_group_occurrence_id = contentId(
+      'CAPITALISATION_CONDITION_GROUP_OCCURRENCE/V1', occurrence,
+    );
+    const revision = {
+      condition_group_occurrence_id,
+      comparison_class_key: comparisonClassKey,
+      source_clause_code: sourceClauseCode,
+      target_limb_ordinals: targetLimbOrdinals,
+      evidence_excerpt_id: conditionExcerpt.excerpt_id,
+      review_version: 'QXO_CAPITALISATION_BRING_DOWN_F27/V1',
+    };
+    return {
+      schema_version: 'CAPITALISATION_CONDITION_GROUP/V1',
+      ...occurrence,
+      ...revision,
+      condition_group_revision_id: contentId(
+        'CAPITALISATION_CONDITION_GROUP_REVISION/V1', revision,
+      ),
+      closure_id: conditionClosure,
+    };
+  });
+  const repository = new InMemoryCanonicalRepository();
+  const writer = createCanonicalWriter({ repository, contractBundle: contract });
+  const input = {
+    operation: 'FIXTURE_DEAL_EXTRACTION_RUN',
+    idempotencyKey: 'condition-groups-commit',
+    writeSet,
+  };
+  const first = await writer.write(input);
+  const replay = await writer.write(input);
+  assert.equal(first.validation.counts.residuals, 0);
+  assert.equal(replay.replayed, true);
+  assert.deepEqual(repository.snapshot().condition_groups, writeSet.condition_groups);
+
+  const reordered = structuredClone(writeSet);
+  reordered.condition_groups.reverse();
+  await assert.rejects(writer.write({ ...input, idempotencyKey: 'condition-groups-reordered', writeSet: reordered }),
+    /condition-group contract/);
+  const missing = structuredClone(writeSet);
+  missing.condition_groups.pop();
+  await assert.rejects(writer.write({ ...input, idempotencyKey: 'condition-groups-missing', writeSet: missing }),
+    /every frozen capitalisation condition group/);
+  const duplicate = structuredClone(writeSet);
+  duplicate.condition_groups.push(structuredClone(duplicate.condition_groups[1]));
+  await assert.rejects(writer.write({ ...input, idempotencyKey: 'condition-groups-duplicate', writeSet: duplicate }),
+    /every frozen capitalisation condition group/);
+  const forged = structuredClone(writeSet);
+  forged.condition_groups[0].condition_group_revision_id = id('forged-condition-group');
+  await assert.rejects(writer.write({ ...input, idempotencyKey: 'condition-groups-forged', writeSet: forged }),
+    /forged condition-group identity/);
+  const sourceDrift = structuredClone(writeSet);
+  sourceDrift.condition_groups[0].document_hash = id('other-source');
+  await assert.rejects(writer.write({ ...input, idempotencyKey: 'condition-groups-source-drift', writeSet: sourceDrift }),
+    /admitted source document/);
+  const offsetDrift = structuredClone(writeSet);
+  offsetDrift.condition_groups[0].absolute_start += 1;
+  await assert.rejects(writer.write({ ...input, idempotencyKey: 'condition-groups-offset-drift', writeSet: offsetDrift }),
+    /governed parent and evidence/);
+  const changed = structuredClone(writeSet);
+  const changedClosure = id('condition-groups-changed-closure');
+  for (const kind of ['excerpts', 'provisions', 'claims', 'relationships', 'condition_groups']) {
+    for (const row of changed[kind]) {
+      if (row.closure_id === conditionClosure) row.closure_id = changedClosure;
+    }
+  }
+  await assert.rejects(writer.write({ ...input, writeSet: changed }), (error) => (
+    error.code === 'IDEMPOTENCY_CONFLICT'
+  ));
 });
 
 test('the SQL authority is staging-only, transactional and denies direct app-role DML', () => {
