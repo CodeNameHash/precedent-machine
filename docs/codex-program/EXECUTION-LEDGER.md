@@ -12,18 +12,19 @@ main integration.
 | Item | State |
 | --- | --- |
 | Main basis | `7b6bc64157c49832129fa2ca227399850cd983fc` |
-| Current reviewed branch commit | `affa7464ca2cab2b4715ae084e3de6c2d39b673f` |
-| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; candidate code head `86e5bc70`. The batch includes the generic Agreement envelope, bounded PI pipeline connector, sealed Metsera source-to-sidecar run, signed Process result admission, shared Product row, Product result set, answer-first presentation, four-surface Product binding, one-writer candidate persistence, inactive-candidate source-reader proof and real browser acceptance. |
-| Contract bundle | 172 authored inputs, 171 substantive contracts, 8 categories |
-| Current bundle ID | `8c765d52d3f95ebfc21b28b5bd0e71689a095c482e113a4329d33b0140dbe83d` |
-| Current contract bundle digest | `b990bf90f98fd83b9dfcf34912ec4b3cd42c37f3e693bee9796b1c63198edc84` |
-| Current canonical payload digest | `73a9023d3ef831e7a544664929385a1aa61af1efed58139d1cd54bf5985d3ab8` |
-| Contract dependency graph | 171 nodes, 285 links, 0 missing, duplicate, conflict, unresolved or cyclic links |
+| Approved M1 review commit | `affa7464ca2cab2b4715ae084e3de6c2d39b673f` |
+| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; candidate head `331a80cb68d52a2f6e007f296bc29b3797ffd2d4`. The batch includes the generic Agreement envelope, bounded PI pipeline connector, sealed Metsera source-to-sidecar run, signed Process result admission, shared Product row, Product result set, answer-first presentation, four-surface Product binding, one-writer candidate persistence, inactive-candidate source-reader proof and real browser acceptance. |
+| Current successor bundle | 174 authored inputs, 173 substantive contracts, 8 categories |
+| Current successor bundle ID | `dfab1f31bf31b7ce405dc8a5fc0215a07139634ff535f84b1266f754cba2797a` |
+| Current successor contract digest | `c8f840e70e8b1c1bac467278665fddc9d837123f9a8c44ae47c0b9630eaec540` |
+| Current successor payload digest | `a6608b04e9140cb024089639a3989ae9d45a12df5cd6587f6d2695ea2ffb872f` |
+| Contract dependency graph | 173 nodes, 302 links, 0 missing, duplicate, conflict, unresolved or cyclic links |
 | Clean compile check | PASS, two uncached compiles produced identical canonical bytes |
 | Draft generic-envelope successor | Bundle `b37a20b3e343b93ab8d9d223625ef5431d0786f5720f1869572921ab7049ad30`; digest `158ac280eb3bc2b994e4d37281db8045deb48221af81ba84fb7da8a93205f03a`; 172 substantive contracts and 297 links. Two clean compiles are byte-identical. This draft does not replace the acknowledged M1 bundle until its exact bytes pass review and the reserved contract-freeze approval. |
 | Draft Product-writer successor | Bundle `dfab1f31bf31b7ce405dc8a5fc0215a07139634ff535f84b1266f754cba2797a`; digest `c8f840e70e8b1c1bac467278665fddc9d837123f9a8c44ae47c0b9630eaec540`; canonical payload `a6608b04e9140cb024089639a3989ae9d45a12df5cd6587f6d2695ea2ffb872f`; 173 substantive contracts and 302 links. Two clean compiles are byte-identical. It adds only an inactive staging candidate-result write through the existing canonical writer. Exact-root review and the reserved contract-freeze approval remain required before this draft replaces M1. |
-| Latest complete suite on this branch | PASS on candidate code head `86e5bc70`. The first run found only stale count and digest assertions. Those exact bindings were corrected. The clean rerun had no failures. |
+| Latest complete suite on this branch | PASS on candidate code head `86e5bc70`. Later commits change only this ledger and its mechanical drift manifest. The first run found only stale count and digest assertions. Those exact bindings were corrected. The clean rerun had no failures. |
 | Latest production build on this branch | PASS, 29/29 pages |
+| Protected programme status | Generation 44, publication `9552de2185b11d80bd1e2b80757f4f07005c58d1`, is stale against current main. The official verifier fails closed. Pre-production P8 work does not require a successor publication under the current governance balance, so this does not block the pilots. |
 | M1 contract freeze | PASS. Exact acknowledgement: `docs/acks/M1-CONTRACT-FREEZE-2026-07-30.md` |
 | M2 vertical slice | ACTIVE. QXO F28 passed the real isolated-staging rollback proof. Metsera now passes source acquisition through the typed Process sidecar, signed Process phrasebook-result admission, shared Product Query row, Process-ordered Product result set, answer-first presentation, one exact Query/Review/Compare/Corpus Context binding, rollback-only candidate persistence, an honest inactive-release source-reader refusal and desktop/mobile browser acceptance. Exact-root review and reviewed candidate-release activation remain. |
 | Isolated-staging access | PASS. Project `sjumbznveyyiizhwvixj` was re-authorised and verified through the Supabase plugin on 2026-07-30. Production was not queried or changed. |
@@ -45,10 +46,11 @@ product view.
 
 P1-P7 supplied the contracts and pure processing modules. M1 confirms the
 exact 171-contract bundle and permits the isolated staging pilots. QXO F28 has
-now passed its real source-to-product rollback proof. The remaining P8 work is
-to parameterise the envelope for a second Agreement family, then run Metsera
-against isolated staging. The governance balance unit removes obsolete review
-machinery. It does not change extracted facts or legal meaning.
+passed its real source-to-product rollback proof. The second Agreement family
+now uses the generic parameterised envelope. Metsera has passed the real
+source-to-product rollback, browser and inactive-source checks. The remaining
+P8 work is the exact 173-contract successor review, one reserved bundle
+approval and reviewed staging activation.
 
 ## 2. Work underway
 
