@@ -129,7 +129,7 @@ function agreementSourceCatalogue() {
 
 function processSourceCatalogue() {
   return loadJson(
-    'process/navigation/process-navigation-definition-catalogue.v1.json',
+    'process/navigation/process-navigation-definition-catalogue.v2.json',
   );
 }
 
@@ -357,11 +357,11 @@ test('builds one deterministic Agreement and Process navigation catalogue', () =
   assert.equal(first.counts.source_catalogue_count, 2);
   assert.equal(first.counts.source_domain_count, 2);
   assert.equal(first.counts.source_topic_count, 2);
-  assert.equal(first.counts.source_pattern_count, 13);
-  assert.equal(first.counts.admitted_pattern_count, 13);
+  assert.equal(first.counts.source_pattern_count, 43);
+  assert.equal(first.counts.admitted_pattern_count, 43);
   assert.equal(first.counts.excluded_pattern_count, 0);
-  assert.equal(first.pattern_certifications.length, 13);
-  assert.equal(first.difference.added_pattern_definition_ids.length, 13);
+  assert.equal(first.pattern_certifications.length, 43);
+  assert.equal(first.difference.added_pattern_definition_ids.length, 43);
   assert.equal(
     first.navigation_definition.hierarchy_contract.maximum_depth,
     3,
@@ -422,6 +422,36 @@ test('feeds the existing dynamic Browse compiler without an adapter', () => {
   assert.equal(
     queryNavigationAdmission.payload_digest,
     navigationDefinitionPayloadDigest(manifest.navigation_definition),
+  );
+});
+
+test('makes all 41 governed Process predicates executable Browse Patterns', () => {
+  const manifest = buildProductNavigationCatalogueManifest(manifestInputs());
+  const processPatterns = manifest.navigation_definition.domains
+    .find((domain) => domain.domain_key === 'PROCESS')
+    .topics.find((topic) => topic.topic_key === 'EXCLUSIVITY')
+    .patterns;
+  const admission = {
+    navigation_catalogue: productNavigationQueryAdmission(manifest),
+    predicate_admissions: processPatterns.map((entry) => ({
+      domain_key: 'PROCESS',
+      predicate_key: entry.predicate_key,
+      predicate_version: entry.predicate_version,
+    })),
+  };
+  const listed = listProcessBrowseOptions({
+    navigation_definition: manifest.navigation_definition,
+    admission,
+    selection: {
+      domain_key: 'PROCESS',
+      topic_key: 'EXCLUSIVITY',
+    },
+  });
+
+  assert.equal(processPatterns.length, 41);
+  assert.deepEqual(
+    listed.options.map((entry) => entry.predicate_key),
+    processPatterns.map((entry) => entry.predicate_key),
   );
 });
 
@@ -495,7 +525,7 @@ test('records an explicit exclusion and never emits that Pattern', () => {
     identity('FIDUCIARY_OUT_SCOPE_DECISION');
 
   const manifest = buildProductNavigationCatalogueManifest(inputs);
-  assert.equal(manifest.counts.admitted_pattern_count, 12);
+  assert.equal(manifest.counts.admitted_pattern_count, 42);
   assert.equal(manifest.counts.excluded_pattern_count, 1);
   assert.equal(manifest.source_exclusions[0].pattern_key, 'FIDUCIARY_OUT');
   const agreementPatterns = manifest.navigation_definition.domains
@@ -556,7 +586,7 @@ test('adds a future CVR domain without compiler code change', () => {
     'CVR_REGULATORY_MILESTONE',
   );
   assert.equal(manifest.counts.source_catalogue_count, 3);
-  assert.equal(manifest.counts.admitted_pattern_count, 14);
+  assert.equal(manifest.counts.admitted_pattern_count, 44);
 });
 
 test('records an exact successor difference after an admitted label change', () => {
@@ -584,7 +614,7 @@ test('records an exact successor difference after an admitted label change', () 
   );
   assert.equal(
     successor.difference.unchanged_pattern_definition_ids.length,
-    12,
+    42,
   );
 });
 

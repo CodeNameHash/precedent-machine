@@ -75,7 +75,7 @@ function sharedSectorField() {
 
 function navigationDefinition() {
   return loadDefinition(
-    'process/navigation/process-navigation-definition-catalogue.v1.json',
+    'process/navigation/process-navigation-definition-catalogue.v2.json',
   );
 }
 
@@ -616,6 +616,47 @@ test('Browse exposes the dynamic Domain, Topic and admitted Pattern levels', () 
     ['EXCLUSIVITY_EXPRESS_REFUSAL', 'EXCLUSIVITY_GRANTED'],
   );
   assert.equal(patterns.query_ir, null);
+});
+
+test('compiles all 41 admitted exclusivity Browse Patterns through one runtime', () => {
+  const navigation = navigationDefinition();
+  const patterns = navigation.domains[0].topics[0].patterns;
+  const queryAdmission = admission();
+  const seedAdmission = queryAdmission.predicate_admissions[0];
+  queryAdmission.predicate_admissions = patterns.map((pattern) => ({
+    ...clone(seedAdmission),
+    predicate_key: pattern.predicate_key,
+    predicate_version: pattern.predicate_version,
+    admission_id: digest(`admission:${pattern.predicate_key}`),
+  }));
+
+  const listed = listProcessBrowseOptions({
+    navigation_definition: navigation,
+    admission: queryAdmission,
+    selection: {
+      domain_key: 'PROCESS',
+      topic_key: 'EXCLUSIVITY',
+    },
+  });
+  assert.equal(listed.options.length, 41);
+
+  for (const pattern of patterns) {
+    const compiled = compileProcessBrowseQuery({
+      selection: {
+        domain_key: 'PROCESS',
+        topic_key: 'EXCLUSIVITY',
+        pattern_key: pattern.pattern_key,
+      },
+      navigation_definition: navigation,
+      admission: queryAdmission,
+      query_template: queryTemplate(),
+    });
+    assert.equal(compiled.outcome, 'COMPILED');
+    assert.equal(
+      compiled.query_ir.semantic_contract.predicate_key,
+      pattern.predicate_key,
+    );
+  }
 });
 
 test('Browse All and stale selections never compile a union or display label', () => {

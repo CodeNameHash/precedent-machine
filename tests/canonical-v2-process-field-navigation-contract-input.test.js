@@ -4,9 +4,6 @@ const path = require('node:path');
 const test = require('node:test');
 
 const {
-  compileCanonicalContractInput,
-} = require('../lib/canonical-v2/canonical-contract-input-compiler');
-const {
   PROCESS_FIELD_KEYS,
   PROCESS_NAVIGATION_PREDICATE_KEYS,
   validateAuthoredProcessFieldNavigationInputs,
@@ -32,7 +29,7 @@ function fieldNavigationMembers() {
     loadMember('process/domain/process-domain-registry.v1.json'),
     loadMember('process/fields/process-field-definition-catalogue.v1.json'),
     loadMember(
-      'process/navigation/process-navigation-definition-catalogue.v1.json',
+      'process/navigation/process-navigation-definition-catalogue.v2.json',
     ),
     loadMember(
       'process/predicates/exclusivity-predicate-catalogue.v2.json',
@@ -47,34 +44,21 @@ function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
-test('compiles one additive Process field and navigation contribution', () => {
-  const compiled = compileCanonicalContractInput({ root_directory: ROOT });
-  const processCatalogueMembers = compiled.authored_members.filter(
-    (member) => [
-      'PROCESS_FIELD_CATALOGUE_INPUT',
-      'PROCESS_NAVIGATION_CATALOGUE_INPUT',
-    ].includes(member.object_kind),
+test('keeps v2 as the sole active Process navigation successor', () => {
+  assert.equal(
+    fs.existsSync(path.join(
+      ROOT,
+      'process/navigation/process-navigation-definition-catalogue.v1.json',
+    )),
+    false,
   );
-
-  assert.equal(compiled.authored_members.length, 130);
-  assert.deepEqual(
-    processCatalogueMembers.map((member) => [
-      member.object_kind,
-      member.stable_id,
-    ]),
-    [
-      [
-        'PROCESS_FIELD_CATALOGUE_INPUT',
-        'PROCESS_FIELD_DEFINITION_CATALOGUE',
-      ],
-      [
-        'PROCESS_NAVIGATION_CATALOGUE_INPUT',
-        'PROCESS_NAVIGATION_DEFINITION_CATALOGUE',
-      ],
-    ],
+  assert.equal(
+    fs.existsSync(path.join(
+      ROOT,
+      'process/navigation/process-navigation-definition-catalogue.v2.json',
+    )),
+    true,
   );
-  assert.equal(compiled.disposition.freeze_eligible, false);
-  assert.equal(compiled.disposition.canonical_contract_bundle_authority, 'NONE');
 });
 
 test('binds Process fields to the one PM-wide catalogue and typed scopes', () => {
@@ -152,6 +136,7 @@ test('maps each Process navigation pattern to a governed predicate', () => {
     PROCESS_NAVIGATION_PREDICATE_KEYS,
   );
   assert.equal(topic.topic_key, 'EXCLUSIVITY');
+  assert.equal(topic.patterns.length, 41);
   assert.equal(
     topic.patterns.find(
       (pattern) => pattern.predicate_key === 'EXCLUSIVITY_RESPONSE_ANY',
@@ -168,6 +153,16 @@ test('maps each Process navigation pattern to a governed predicate', () => {
     definition.admission_contract
       .declined_label_can_replace_express_refusal_counterproposal_or_conditional_acceptance,
     false,
+  );
+  assert.equal(
+    definition.admission_contract
+      .every_executable_pattern_requires_checked_ask_phrase_or_explicit_release_exclusion,
+    true,
+  );
+  assert.equal(
+    definition.admission_contract
+      .ask_release_exclusion_does_not_remove_browse_pattern,
+    true,
   );
 });
 
@@ -194,7 +189,9 @@ test('rejects a missing contribution and re-signed semantic drift', () => {
   navigationDrift.find(
     (member) => member.object_kind === 'PROCESS_NAVIGATION_CATALOGUE_INPUT',
   ).canonical_value.definition.domains[0].topics[0]
-    .patterns[2].label = 'Declined';
+    .patterns.find(
+      (pattern) => pattern.predicate_key === 'EXCLUSIVITY_EXPRESS_REFUSAL',
+    ).label = 'Declined';
   assert.throws(
     () => validateAuthoredProcessFieldNavigationInputs(navigationDrift),
     (error) => error.code === 'INVALID_PROCESS_NAVIGATION_CATALOGUE_INPUT',
