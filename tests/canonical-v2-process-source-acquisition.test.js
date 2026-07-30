@@ -66,6 +66,19 @@ function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
+function rehashReceipt(receipt) {
+  receipt.source_inventory_digest = contentId(
+    'PROCESS_FROZEN_SOURCE_INVENTORY/V1',
+    receipt.intake_outcomes,
+  );
+  const { acquisition_receipt_id: ignored, ...body } = receipt;
+  receipt.acquisition_receipt_id = contentId(
+    'PROCESS_SOURCE_ACQUISITION_RECEIPT/V1',
+    body,
+  );
+  return receipt;
+}
+
 test('builds a deterministic frozen-source receipt with evidence and coverage history', () => {
   const first = acquireProcessSources(input());
   const second = acquireProcessSources(input());
@@ -116,4 +129,23 @@ test('rejects hostile bytes, evidence and bounded-resource inputs', () => {
   tamperedReceipt.intake_outcomes[0].source_identity.document_hash = digest('substituted');
   assert.throws(() => validateProcessSourceAcquisitionReceipt(tamperedReceipt),
     (error) => error.code === 'INVALID_PROCESS_SOURCE_ACQUISITION_RECEIPT');
+});
+
+test('rejects fabricated receipt meaning even when all receipt hashes are recomputed', () => {
+  const mutations = [
+    (receipt) => { receipt.intake_outcomes[0].intake_outcome = 'FABRICATED'; },
+    (receipt) => { receipt.intake_outcomes[0].source_class = 'UNKNOWN_SOURCE'; },
+    (receipt) => { receipt.intake_outcomes[0].evidence_history = []; },
+    (receipt) => { receipt.coverage_limit.limitation_codes = ['DUPLICATE', 'DUPLICATE']; },
+    (receipt) => { receipt.limits.maximum_sources = 0; },
+  ];
+  for (const mutate of mutations) {
+    const receipt = clone(acquireProcessSources(input()));
+    mutate(receipt);
+    rehashReceipt(receipt);
+    assert.throws(
+      () => validateProcessSourceAcquisitionReceipt(receipt),
+      { name: 'ProcessSourceAcquisitionError' },
+    );
+  }
 });
