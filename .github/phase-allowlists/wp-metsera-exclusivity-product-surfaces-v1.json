@@ -1,0 +1,21 @@
+{
+  "phase": "WP-METSERA-EXCLUSIVITY-PRODUCT-SURFACES-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-metsera-exclusivity-product-surfaces-v1.json",
+    "lib/canonical-v2/metsera-exclusivity-product-surfaces.js",
+    "scripts/canonical-v2-staging-metsera-exclusivity-p8.mjs",
+    "tests/canonical-v2-metsera-exclusivity-product-surfaces.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/migrations/**"
+  ],
+  "note": "Binds one exact Metsera Product result and presentation to Query, Review, Compare and Corpus Context. It retains the exact citation, source action and Process sidecar. It creates no market cohort and grants no rendering, serving, write, release, import, activation or production authority."
+}
