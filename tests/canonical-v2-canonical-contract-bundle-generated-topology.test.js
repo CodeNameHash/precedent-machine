@@ -134,6 +134,31 @@ test('builds the complete generated topology deterministically', () => {
   assert.equal(Object.isFrozen(first), true);
 });
 
+test('admits the active QXO F28 golden adapter and rejects the retired F27 adapter', () => {
+  const governed = compileGovernedTopologyInputs();
+  const qxoDetail = governed.fixtures.find(
+    (fixture) => fixture.test_id === 'QXO-CAP-DETAIL-01',
+  );
+  assert.equal(
+    qxoDetail.canonical_input.carried_result_adapter,
+    'QXO_CAPITALISATION_F28_PRODUCT_RESULT_ADAPTER',
+  );
+
+  const retiredFixtureSets = structuredClone([METSERA_FIXTURES, QXO_FIXTURES]);
+  const retiredQxoDetail = retiredFixtureSets
+    .find((fixtureSet) => (
+      fixtureSet.stable_id === 'QXO_CAPITALISATION_QUERY_GOLDENS'
+    ))
+    .fixtures.find((fixture) => fixture.test_id === 'QXO-CAP-DETAIL-01');
+  retiredQxoDetail.canonical_input.carried_result_adapter =
+    'QXO_CAPITALISATION_PRODUCT_RESULT_ADAPTER';
+
+  assert.throws(
+    () => compileGovernedTopologyInputs({ fixture_sets: retiredFixtureSets }),
+    (error) => error.code === 'RETIRED_QXO_CAPITALISATION_RESULT_ADAPTER',
+  );
+});
+
 test('keeps generated member validation closed at the topology boundary', () => {
   const { inputCompilation, bundleCompilation } = fixture();
   const topology = compileCanonicalContractBundleGeneratedTopology({
