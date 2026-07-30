@@ -1,0 +1,359 @@
+{
+  "object_kind": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
+  "stable_id": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
+  "schema_version": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY/V1",
+  "required_kinds": [
+    {
+      "object_kind": "AGREEMENT_NAVIGATION_CATALOGUE_INPUT",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "AGREEMENT_NAVIGATION_CATALOGUE_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "AGREEMENT_PREDICATE_CONTRACT_INPUT",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "AGREEMENT_PREDICATE_CONTRACT_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY/V1"
+      ]
+    },
+    {
+      "object_kind": "CAPITALISATION_SEMANTIC_SCHEMA_INPUT",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "CAPITALISATION_SEMANTIC_SCHEMA_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "CLAIM_DEFINITION",
+      "minimum_count": 16,
+      "maximum_count": 16,
+      "allowed_schema_versions": [
+        "CLAIM_DEFINITION/V1"
+      ]
+    },
+    {
+      "object_kind": "CLAIM_INTERPRETATION_POLICY",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "CLAIM_INTERPRETATION_POLICY/V2"
+      ]
+    },
+    {
+      "object_kind": "CLAIM_STATE_CODEBOOK_MIGRATION_INPUT",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "CLAIM_STATE_CODEBOOK_MIGRATION_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "COMPONENT_DEFINITION",
+      "minimum_count": 9,
+      "maximum_count": 9,
+      "allowed_schema_versions": [
+        "COMPONENT_DEFINITION/V1"
+      ]
+    },
+    {
+      "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+      "minimum_count": 9,
+      "maximum_count": 9,
+      "allowed_schema_versions": [
+        "MARKET_METRIC_DEFINITION_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "MONEY_DENOMINATOR_PRECISION_POLICY",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "MONEY_DENOMINATOR_PRECISION_POLICY/V1"
+      ]
+    },
+    {
+      "object_kind": "NO_SHOP_SEMANTIC_SCHEMA_INPUT",
+      "minimum_count": 5,
+      "maximum_count": 5,
+      "allowed_schema_versions": [
+        "NO_SHOP_SEMANTIC_SCHEMA_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "PARSER_PROPOSAL_BOUNDARY_DEFINITION",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "PARSER_PROPOSAL_BOUNDARY_DEFINITION/V1"
+      ]
+    },
+    {
+      "object_kind": "PARTY_TUPLE_SHAPE_MIGRATION_INPUT",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "PARTY_TUPLE_SHAPE_MIGRATION_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "PROCESS_CONTROLLED_CODE_REGISTRY_INPUT",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "PROCESS_CONTROLLED_CODE_REGISTRY_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "PROCESS_DOMAIN_REGISTRY_INPUT",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "PROCESS_DOMAIN_REGISTRY_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "PROCESS_EXCLUSIVITY_COMPLETENESS_CHALLENGE_CATALOGUE",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "PROCESS_EXCLUSIVITY_COMPLETENESS_CHALLENGE_CATALOGUE/V1"
+      ]
+    },
+    {
+      "object_kind": "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT",
+      "minimum_count": 2,
+      "maximum_count": 2,
+      "allowed_schema_versions": [
+        "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "PROCESS_FIELD_CATALOGUE_INPUT",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "PROCESS_FIELD_CATALOGUE_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "PROCESS_GATE_CONTRACT_INPUT",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "PROCESS_GATE_CONTRACT_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "PROCESS_INTEGRITY_CONTRACT_INPUT",
+      "minimum_count": 2,
+      "maximum_count": 2,
+      "allowed_schema_versions": [
+        "PROCESS_INTEGRITY_CONTRACT_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
+      "minimum_count": 10,
+      "maximum_count": 10,
+      "allowed_schema_versions": [
+        "PROCESS_LOGICAL_TYPE_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "PROCESS_NAVIGATION_CATALOGUE_INPUT",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "PROCESS_NAVIGATION_CATALOGUE_INPUT/V2"
+      ]
+    },
+    {
+      "object_kind": "PROCESS_PREDICATE_CONTRACT_INPUT",
+      "minimum_count": 2,
+      "maximum_count": 2,
+      "allowed_schema_versions": [
+        "PROCESS_PREDICATE_CONTRACT_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "PROCESS_QUERY_CONTRACT_INPUT",
+      "minimum_count": 3,
+      "maximum_count": 3,
+      "allowed_schema_versions": [
+        "PROCESS_QUERY_CONTRACT_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "PROCESS_RESULT_ACTION_CONTRACT_INPUT",
+      "minimum_count": 4,
+      "maximum_count": 4,
+      "allowed_schema_versions": [
+        "PROCESS_RESULT_ACTION_CONTRACT_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "PRODUCT_QUERY_ACTION_CONTRACT_INPUT",
+      "minimum_count": 2,
+      "maximum_count": 2,
+      "allowed_schema_versions": [
+        "PRODUCT_QUERY_ACTION_CONTRACT_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "PRODUCT_QUERY_CONTRACT_INPUT",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "PRODUCT_QUERY_CONTRACT_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT",
+      "minimum_count": 5,
+      "maximum_count": 5,
+      "allowed_schema_versions": [
+        "PRODUCT_QUERY_RESULT_CONTRACT_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "PRODUCT_RESULT_ACTION_CONTRACT_INPUT",
+      "minimum_count": 2,
+      "maximum_count": 2,
+      "allowed_schema_versions": [
+        "PRODUCT_RESULT_ACTION_CONTRACT_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "PRODUCT_SOURCE_READER_CONTRACT_INPUT",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "PRODUCT_SOURCE_READER_CONTRACT_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "PROVISION_CONCEPT",
+      "minimum_count": 19,
+      "maximum_count": 19,
+      "allowed_schema_versions": [
+        "PROVISION_CONCEPT/V1"
+      ]
+    },
+    {
+      "object_kind": "RELATIONSHIP_DEFINITION",
+      "minimum_count": 5,
+      "maximum_count": 5,
+      "allowed_schema_versions": [
+        "RELATIONSHIP_DEFINITION/V1"
+      ]
+    },
+    {
+      "object_kind": "RELATIONSHIP_EFFECT_SCHEMA",
+      "minimum_count": 5,
+      "maximum_count": 5,
+      "allowed_schema_versions": [
+        "RELATIONSHIP_EFFECT_SCHEMA/V1"
+      ]
+    },
+    {
+      "object_kind": "RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "RESULT_DEFINITION_INPUT",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "RESULT_DEFINITION_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "SERVING_EXACT_DETAIL_ACTION_DEFINITION",
+      "minimum_count": 5,
+      "maximum_count": 5,
+      "allowed_schema_versions": [
+        "SERVING_EXACT_DETAIL_ACTION_DEFINITION/V1"
+      ]
+    },
+    {
+      "object_kind": "SERVING_METRIC_OPERATION_BINDING_INPUT",
+      "minimum_count": 2,
+      "maximum_count": 2,
+      "allowed_schema_versions": [
+        "SERVING_METRIC_OPERATION_BINDING_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "SERVING_PROCESS_CONTRACT_INPUT",
+      "minimum_count": 5,
+      "maximum_count": 5,
+      "allowed_schema_versions": [
+        "SERVING_PROCESS_CONTRACT_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "SERVING_TRIGGER_PATH_SCHEMA_INPUT",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "SERVING_TRIGGER_PATH_SCHEMA_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "SHARED_AUTHORITY_FIELD_CATALOGUE_INPUT",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "SHARED_AUTHORITY_FIELD_CATALOGUE_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+      "minimum_count": 16,
+      "maximum_count": 16,
+      "allowed_schema_versions": [
+        "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1"
+      ]
+    },
+    {
+      "object_kind": "SOURCE_ACQUISITION_CONTRACT_INPUT",
+      "minimum_count": 2,
+      "maximum_count": 2,
+      "allowed_schema_versions": [
+        "SOURCE_ACQUISITION_CONTRACT_INPUT/V1"
+      ]
+    }
+  ]
+}

@@ -188,11 +188,17 @@ test('rejects weakened independence, sealing, reconciliation and completion rule
   }
 });
 
-test('compiles as an incomplete non-authoritative input universe', () => {
+test('compiles as a mechanically complete non-authoritative input universe', () => {
   const compiled = compileCanonicalContractInput({ root_directory: ROOT });
-  assert.equal(compiled.authored_members.length, 130);
-  assert.equal(compiled.authored_universe_assessment.status, 'NOT_ASSESSED');
-  assert.equal(compiled.disposition.status, 'INCOMPLETE_UNIVERSE');
+  assert.equal(compiled.authored_members.length, 153);
+  assert.equal(
+    compiled.authored_universe_assessment.status,
+    'COMPLETE_AGAINST_GOVERNED_REQUIRED_KIND_REGISTRY',
+  );
+  assert.equal(
+    compiled.disposition.status,
+    'AUTHORED_UNIVERSE_MECHANICALLY_COMPLETE',
+  );
   assert.equal(compiled.disposition.freeze_eligible, false);
   assert.equal(compiled.disposition.canonical_contract_bundle_authority, 'NONE');
 

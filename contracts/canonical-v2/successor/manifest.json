@@ -4,11 +4,25 @@
   "generator_input_schema_version": "CANONICAL_BUNDLE_GENERATOR_INPUT/V1",
   "members": [
     {
+      "relative_path": "agreement/capitalisation-semantic-schema-inputs/capitalisation-representation.v1.json",
+      "object_kind": "CAPITALISATION_SEMANTIC_SCHEMA_INPUT",
+      "stable_id": "CAPITALISATION_REPRESENTATION",
+      "schema_version": "CAPITALISATION_SEMANTIC_SCHEMA_INPUT/V1",
+      "canonical_bytes_digest": "1a3a3c0a5a67a9209afc3645632e827ee58b7c0b3f32a96b1732a4c63252285e"
+    },
+    {
       "relative_path": "agreement/claim-definitions/buyer-termination-fee-percent-of-deal-value.v1.json",
       "object_kind": "CLAIM_DEFINITION",
       "stable_id": "BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE",
       "schema_version": "CLAIM_DEFINITION/V1",
       "canonical_bytes_digest": "a3d30e72825a7d85221476a569b951163aa67f0d47334c81d2e2e686b125928e"
+    },
+    {
+      "relative_path": "agreement/claim-definitions/general-materiality-qualifier.v1.json",
+      "object_kind": "CLAIM_DEFINITION",
+      "stable_id": "GENERAL_MATERIALITY_QUALIFIER",
+      "schema_version": "CLAIM_DEFINITION/V1",
+      "canonical_bytes_digest": "a82f48db3e7826d2ec5fdbee46befd09cfe637b281c850735a81fcd7573b6f89"
     },
     {
       "relative_path": "agreement/claim-definitions/ioc-capex-threshold-percent-of-deal-value.v1.json",
@@ -88,6 +102,20 @@
       "canonical_bytes_digest": "7ba207a55b1b76761a8f16a97639f3f913ad6a59d8051e9359beee194cf2dd8a"
     },
     {
+      "relative_path": "agreement/claim-definitions/representation-measurement-date.v1.json",
+      "object_kind": "CLAIM_DEFINITION",
+      "stable_id": "REPRESENTATION_MEASUREMENT_DATE",
+      "schema_version": "CLAIM_DEFINITION/V1",
+      "canonical_bytes_digest": "e346fd9b117047c8eadcb3985f4aacb468c98b43214056226e519ac7a5c43b16"
+    },
+    {
+      "relative_path": "agreement/claim-definitions/retrospective-lookback.v1.json",
+      "object_kind": "CLAIM_DEFINITION",
+      "stable_id": "RETROSPECTIVE_LOOKBACK",
+      "schema_version": "CLAIM_DEFINITION/V1",
+      "canonical_bytes_digest": "a06e915b26714967eae89b152f7f7e94b5be0217869fbb5e13b05c2c3a7650f8"
+    },
+    {
       "relative_path": "agreement/claim-definitions/seller-termination-fee-percent-of-deal-value.v1.json",
       "object_kind": "CLAIM_DEFINITION",
       "stable_id": "SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE",
@@ -158,6 +186,69 @@
       "canonical_bytes_digest": "fff4cdca25f715e7e8142419c850fdb2db36f743b30a65b4f44377cbdccc9527"
     },
     {
+      "relative_path": "agreement/market-metric-definitions/dated-representation-treatment.v1.json",
+      "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+      "stable_id": "DATED_REPRESENTATION_TREATMENT",
+      "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+      "canonical_bytes_digest": "bba55579cc7983c52ef8ae857b8d29291f6a05343ea5e33b3c1d916a6c58e4e7"
+    },
+    {
+      "relative_path": "agreement/market-metric-definitions/general-materiality-qualifier-state.v1.json",
+      "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+      "stable_id": "GENERAL_MATERIALITY_QUALIFIER_STATE",
+      "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+      "canonical_bytes_digest": "8d4e238673f02686206d8554bfc83971e818fa25c151740ee4b683a793308289"
+    },
+    {
+      "relative_path": "agreement/market-metric-definitions/knowledge-qualifier-state.v1.json",
+      "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+      "stable_id": "KNOWLEDGE_QUALIFIER_STATE",
+      "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+      "canonical_bytes_digest": "c93eac1ecc524c93c6527763c4608290d553c7ba7bebae298de23ad61c495e2b"
+    },
+    {
+      "relative_path": "agreement/market-metric-definitions/representation-accuracy-exception-denominator.v1.json",
+      "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+      "stable_id": "REPRESENTATION_ACCURACY_EXCEPTION_DENOMINATOR",
+      "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+      "canonical_bytes_digest": "88f75d62377da08ebb43ebe38ea25d33ac03e9e0e8b4b8a217dc9b9efcd2d691"
+    },
+    {
+      "relative_path": "agreement/market-metric-definitions/representation-accuracy-exception.v1.json",
+      "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+      "stable_id": "REPRESENTATION_ACCURACY_EXCEPTION",
+      "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+      "canonical_bytes_digest": "abe0a7d853b3f759e7a072eeb789e16076398c172016c281084f7d052333d2e6"
+    },
+    {
+      "relative_path": "agreement/market-metric-definitions/representation-accuracy-standard.v3.json",
+      "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+      "stable_id": "REPRESENTATION_ACCURACY_STANDARD",
+      "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+      "canonical_bytes_digest": "7c7dd75e326e83f85fe8946ee93ac2c7bbf844d0908dfbf8c6019294b9972f4f"
+    },
+    {
+      "relative_path": "agreement/market-metric-definitions/representation-materiality-scrape.v1.json",
+      "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+      "stable_id": "REPRESENTATION_MATERIALITY_SCRAPE",
+      "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+      "canonical_bytes_digest": "7d1ad67216dfd9723d6d40e2a4772dbdd7165313f97d02196a98e68f3ad06376"
+    },
+    {
+      "relative_path": "agreement/market-metric-definitions/representation-measurement-date-signing-offset.v1.json",
+      "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+      "stable_id": "REPRESENTATION_MEASUREMENT_DATE_SIGNING_OFFSET",
+      "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+      "canonical_bytes_digest": "8616897b6bfa069a705ec798976274897b5142c5e57c533679f10488acd2c862"
+    },
+    {
+      "relative_path": "agreement/market-metric-definitions/retrospective-lookback-state.v1.json",
+      "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+      "stable_id": "RETROSPECTIVE_LOOKBACK_STATE",
+      "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+      "canonical_bytes_digest": "7b655250ac84de087fddbc3ef05ad527a69d237322a17312b97e50765130b5ac"
+    },
+    {
       "relative_path": "agreement/migration-inputs/claim-state-codebook.v1.json",
       "object_kind": "CLAIM_STATE_CODEBOOK_MIGRATION_INPUT",
       "stable_id": "FIXTURE_CONTRACT_INPUT_V12_CLAIM_STATES",
@@ -177,6 +268,13 @@
       "stable_id": "FIXTURE_CONTRACT_INPUT_V12_RESIDUAL_REASON_CODES",
       "schema_version": "RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT/V1",
       "canonical_bytes_digest": "79b8b5eb942abe0ed76aa4602af137ac927b56b1035bc14bfe6f007674a2d351"
+    },
+    {
+      "relative_path": "agreement/navigation/qxo-capitalisation-navigation-definition-catalogue.v1.json",
+      "object_kind": "AGREEMENT_NAVIGATION_CATALOGUE_INPUT",
+      "stable_id": "AGREEMENT_NAVIGATION_DEFINITION_CATALOGUE",
+      "schema_version": "AGREEMENT_NAVIGATION_CATALOGUE_INPUT/V1",
+      "canonical_bytes_digest": "62c1b58b5cd44ccbc3ac838172cd5f15f8913434fa1e51d31e0a816688504fb4"
     },
     {
       "relative_path": "agreement/no-shop-semantic-schema-inputs/no-shop-action-comparison-rollup.v1.json",
@@ -233,6 +331,13 @@
       "stable_id": "MONEY_DENOMINATOR_PRECISION_POLICY",
       "schema_version": "MONEY_DENOMINATOR_PRECISION_POLICY/V1",
       "canonical_bytes_digest": "4d7aa146615ca4c2ebf25f4dad10b97b05b36164b31e3e600fe220923cf36e3d"
+    },
+    {
+      "relative_path": "agreement/predicates/qxo-capitalisation-representation-predicate-catalogue.v1.json",
+      "object_kind": "AGREEMENT_PREDICATE_CONTRACT_INPUT",
+      "stable_id": "AGREEMENT_REPRESENTATION_PREDICATE_CATALOGUE",
+      "schema_version": "AGREEMENT_PREDICATE_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "df30da5a91774caa9e05e838e8cc3dbd5a39dc46747e21ea1917d30c8c01ca22"
     },
     {
       "relative_path": "agreement/provision-concepts/cond-b-rep.v1.json",
@@ -375,11 +480,11 @@
       "canonical_bytes_digest": "20a2deab111035f69468da9f10249473db0842976b0b277c0f83ebb6cd28d76c"
     },
     {
-      "relative_path": "agreement/relationship-definitions/brings-down.v2.json",
+      "relative_path": "agreement/relationship-definitions/brings-down.v3.json",
       "object_kind": "RELATIONSHIP_DEFINITION",
       "stable_id": "BRINGS_DOWN",
       "schema_version": "RELATIONSHIP_DEFINITION/V1",
-      "canonical_bytes_digest": "9c104bacfe90fdba9d88c7e699fcd99f3ba1551f3c96297c329f362ccb48e4dc"
+      "canonical_bytes_digest": "3bb724af82dd1b0ccf2a17142d6793f2e06630741b96123fae8a10a2b4598241"
     },
     {
       "relative_path": "agreement/relationship-definitions/contained-in.v2.json",
@@ -403,18 +508,18 @@
       "canonical_bytes_digest": "9877dc202e03d76fbb1eb787d3bb4aaa4d7d0ae0c5ef6e932ba2e21c7e142e0e"
     },
     {
-      "relative_path": "agreement/relationship-definitions/uses-definition.v3.json",
+      "relative_path": "agreement/relationship-definitions/uses-definition.v4.json",
       "object_kind": "RELATIONSHIP_DEFINITION",
       "stable_id": "USES_DEFINITION",
       "schema_version": "RELATIONSHIP_DEFINITION/V1",
-      "canonical_bytes_digest": "14929d382dfe14b072efd458da317a790b6fec333ec894c960a38275408e121d"
+      "canonical_bytes_digest": "f2ac0727fc160066c8bd948e7661c5a4ae8e0c20b25c98a82657a2a7124eae06"
     },
     {
-      "relative_path": "agreement/relationship-effect-schemas/brings-down-effect.v1.json",
+      "relative_path": "agreement/relationship-effect-schemas/brings-down-effect.v2.json",
       "object_kind": "RELATIONSHIP_EFFECT_SCHEMA",
       "stable_id": "BRINGS_DOWN_EFFECT",
       "schema_version": "RELATIONSHIP_EFFECT_SCHEMA/V1",
-      "canonical_bytes_digest": "a4f7e50f3c057fcbc3cfc47489d6e6a037bee1da034955017800054bff8ca20f"
+      "canonical_bytes_digest": "6c9c973bba8e65728502bf665c6616f877142b6891ed524c9f23ba5f22b07b81"
     },
     {
       "relative_path": "agreement/relationship-effect-schemas/contained-in-effect.v1.json",
@@ -438,11 +543,18 @@
       "canonical_bytes_digest": "73f82545c20c1e039b7c8383843007d94c3ecea943e04b7464f2407d106a1e55"
     },
     {
-      "relative_path": "agreement/relationship-effect-schemas/uses-definition-effect.v2.json",
+      "relative_path": "agreement/relationship-effect-schemas/uses-definition-effect.v3.json",
       "object_kind": "RELATIONSHIP_EFFECT_SCHEMA",
       "stable_id": "USES_DEFINITION_EFFECT",
       "schema_version": "RELATIONSHIP_EFFECT_SCHEMA/V1",
-      "canonical_bytes_digest": "423f7d673d10e4b4e1073d6d739efa254e211ef650e518494b4c9458f82efdcd"
+      "canonical_bytes_digest": "37e6dd3e4a1a1e0e197f399566e07a222a934d8a440610c1874abfc439d33876"
+    },
+    {
+      "relative_path": "agreement/result-definitions/target-capitalisation-bring-down.v3.json",
+      "object_kind": "RESULT_DEFINITION_INPUT",
+      "stable_id": "TARGET_CAPITALISATION_BRING_DOWN",
+      "schema_version": "RESULT_DEFINITION_INPUT/V1",
+      "canonical_bytes_digest": "7206b630a5bb5e0735a7960db92ac87d6a56320c95a68cf9314cd7210a2709cf"
     },
     {
       "relative_path": "agreement/serving-exact-detail-action-definitions/accuracy-standard-claim-evidence.v1.json",
@@ -499,6 +611,13 @@
       "stable_id": "TERMINATION_FEE_TRIGGER_PATH",
       "schema_version": "SERVING_TRIGGER_PATH_SCHEMA_INPUT/V1",
       "canonical_bytes_digest": "a20a17e8efba58d6bf3337f4e42a867124f9c8bf89de97b838d118828e7214ad"
+    },
+    {
+      "relative_path": "governance/canonical-bundle-input-required-kind-registry.v1.json",
+      "object_kind": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
+      "stable_id": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
+      "schema_version": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY/V1",
+      "canonical_bytes_digest": "53622b9e9360884e1fa3b23cd44a5bb3ccf057c060026f40087f80da54864d9c"
     },
     {
       "relative_path": "process/actions/process-release-pinned-citation-and-share.v1.json",
@@ -592,11 +711,18 @@
       "canonical_bytes_digest": "5e80f7d479771ba196065e89e90d085b71fd7510fd334ca6143aebc56d962377"
     },
     {
-      "relative_path": "process/navigation/process-navigation-definition-catalogue.v1.json",
+      "relative_path": "process/navigation/process-navigation-definition-catalogue.v2.json",
       "object_kind": "PROCESS_NAVIGATION_CATALOGUE_INPUT",
       "stable_id": "PROCESS_NAVIGATION_DEFINITION_CATALOGUE",
-      "schema_version": "PROCESS_NAVIGATION_CATALOGUE_INPUT/V1",
-      "canonical_bytes_digest": "3d1bc31d865fd769a96cbff0a6a7a445f9d91133a4fe28d50759eb90bfa97009"
+      "schema_version": "PROCESS_NAVIGATION_CATALOGUE_INPUT/V2",
+      "canonical_bytes_digest": "2c6cf0fee4b7947fa0b1303841a8a1e3e0bbad1f698509b3baacab8b1302c6d6"
+    },
+    {
+      "relative_path": "process/occurrence-slots/process-event.v1.json",
+      "object_kind": "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT",
+      "stable_id": "PROCESS_EVENT_SLOT_BINDING",
+      "schema_version": "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT/V1",
+      "canonical_bytes_digest": "b83b1b47b7f64ee3145ff53cf794b83252f29a05de10cd5f76b2acbd74ae3ee0"
     },
     {
       "relative_path": "process/occurrence-slots/process-narration.v1.json",
@@ -634,6 +760,13 @@
       "canonical_bytes_digest": "203343cb17bd003460302933891e32f0c1ac555c287b36de29ab28d9fb549150"
     },
     {
+      "relative_path": "process/predicates/exclusivity-completeness-challenge-catalogue.v1.json",
+      "object_kind": "PROCESS_EXCLUSIVITY_COMPLETENESS_CHALLENGE_CATALOGUE",
+      "stable_id": "PROCESS_EXCLUSIVITY_COMPLETENESS_CHALLENGE_CATALOGUE/V1",
+      "schema_version": "PROCESS_EXCLUSIVITY_COMPLETENESS_CHALLENGE_CATALOGUE/V1",
+      "canonical_bytes_digest": "3874b0a4ea42f261c11556a004863cd6dcdf634b6200042b1817f874b0d5e194"
+    },
+    {
       "relative_path": "process/predicates/exclusivity-completeness-challenge-protocol.v1.json",
       "object_kind": "PROCESS_PREDICATE_CONTRACT_INPUT",
       "stable_id": "PROCESS_EXCLUSIVITY_COMPLETENESS_CHALLENGE_PROTOCOL",
@@ -641,18 +774,18 @@
       "canonical_bytes_digest": "966ae4ee382609617ea4ad7b437f664e988d18077fc0c62779c6aecec086e863"
     },
     {
-      "relative_path": "process/predicates/exclusivity-predicate-catalogue.v1.json",
+      "relative_path": "process/predicates/exclusivity-predicate-catalogue.v2.json",
       "object_kind": "PROCESS_PREDICATE_CONTRACT_INPUT",
       "stable_id": "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
       "schema_version": "PROCESS_PREDICATE_CONTRACT_INPUT/V1",
-      "canonical_bytes_digest": "cd748728a6b5e6cc17cd8f68a45c535b90362b6381fa1e4bad47887f9a84df8e"
+      "canonical_bytes_digest": "4a63e0036ba8031e3773289966e589eda09467e9cb045e0adce0f404cc31b2e0"
     },
     {
-      "relative_path": "process/predicates/process-predicate-witness.v1.json",
+      "relative_path": "process/predicates/process-predicate-witness.v2.json",
       "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
       "stable_id": "PROCESS_PREDICATE_WITNESS",
       "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
-      "canonical_bytes_digest": "3fe92976cfdbc2743c8a0cd3765f184da91e29dd8f8f942135bc8b5e10de2e3c"
+      "canonical_bytes_digest": "96dc8cd3fcdab620de0efd1bd36ace95510bf252f4dd3823fcfd0b5937550dfd"
     },
     {
       "relative_path": "process/query/process-ask-query-compiler.v1.json",
@@ -676,11 +809,18 @@
       "canonical_bytes_digest": "fb9ff015991f02dcbd3e555c3fffbdd1e16f8c4f8099597d880d60c436e86a7f"
     },
     {
-      "relative_path": "process/relationships/process-relationship.v1.json",
+      "relative_path": "process/registries/process-controlled-code-registry.v2.json",
+      "object_kind": "PROCESS_CONTROLLED_CODE_REGISTRY_INPUT",
+      "stable_id": "PROCESS_CONTROLLED_CODE_REGISTRY",
+      "schema_version": "PROCESS_CONTROLLED_CODE_REGISTRY_INPUT/V1",
+      "canonical_bytes_digest": "ff2c701370d65d4d1caf03cd21de8c4e43f91108d75e386514e92a3b17543d23"
+    },
+    {
+      "relative_path": "process/relationships/process-relationship.v2.json",
       "object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
       "stable_id": "PROCESS_RELATIONSHIP",
       "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
-      "canonical_bytes_digest": "4b06eea3d5a0572bae81e8ab3a7f309d96fa93f57bd2f49242f81c82f523671c"
+      "canonical_bytes_digest": "2c5d0ce74c3b9fa42df639568742eb6a0fda7baf804c1208279440bfd1f25824"
     },
     {
       "relative_path": "process/results/process-exclusivity-event-result.v1.json",
@@ -802,6 +942,20 @@
       "canonical_bytes_digest": "22a40fa26888d776335ee4fe110f41bbf34f50ae6e6d62c41c6143922dd3d7af"
     },
     {
+      "relative_path": "product/query/qxo-capitalisation-f28-product-result-adapter.v1.json",
+      "object_kind": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT",
+      "stable_id": "QXO_CAPITALISATION_F28_PRODUCT_RESULT_ADAPTER",
+      "schema_version": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "31acc78b535914cd54f6bbb1c3a9037bfa929dc507366775fdad00148efeb607"
+    },
+    {
+      "relative_path": "product/query/qxo-capitalisation-product-result-adapter.v1.json",
+      "object_kind": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT",
+      "stable_id": "QXO_CAPITALISATION_PRODUCT_RESULT_ADAPTER",
+      "schema_version": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "b5e8876762dc11d8bf993fdc3e24623b59a4f3cb914193cbae1e4d305fd1f709"
+    },
+    {
       "relative_path": "shared/deal-facts/deal-fact-resolution-occurrence.v1.json",
       "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
       "stable_id": "DEAL_FACT_RESOLUTION_OCCURRENCE",
@@ -872,6 +1026,13 @@
       "canonical_bytes_digest": "d730b3f62b644cc7ea55c16531b5bff1256e64257ed003e5780b7cdf49cd6fc6"
     },
     {
+      "relative_path": "shared/transactions/consideration-package.v1.json",
+      "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+      "stable_id": "CONSIDERATION_PACKAGE",
+      "schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+      "canonical_bytes_digest": "9d0e79ae22df6f1eba849d7a83e70baa654b38496ec4ce60c23136bd9fe361b6"
+    },
+    {
       "relative_path": "shared/transactions/deal-participant-relationship.v1.json",
       "object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
       "stable_id": "DEAL_PARTICIPANT_RELATIONSHIP",
@@ -915,17 +1076,24 @@
     }
   ],
   "per_kind_counts": {
+    "AGREEMENT_NAVIGATION_CATALOGUE_INPUT": 1,
+    "AGREEMENT_PREDICATE_CONTRACT_INPUT": 1,
     "AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT": 1,
-    "CLAIM_DEFINITION": 13,
+    "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY": 1,
+    "CAPITALISATION_SEMANTIC_SCHEMA_INPUT": 1,
+    "CLAIM_DEFINITION": 16,
     "CLAIM_INTERPRETATION_POLICY": 1,
     "CLAIM_STATE_CODEBOOK_MIGRATION_INPUT": 1,
     "COMPONENT_DEFINITION": 9,
+    "MARKET_METRIC_DEFINITION_INPUT": 9,
     "MONEY_DENOMINATOR_PRECISION_POLICY": 1,
     "NO_SHOP_SEMANTIC_SCHEMA_INPUT": 5,
     "PARSER_PROPOSAL_BOUNDARY_DEFINITION": 1,
     "PARTY_TUPLE_SHAPE_MIGRATION_INPUT": 1,
+    "PROCESS_CONTROLLED_CODE_REGISTRY_INPUT": 1,
     "PROCESS_DOMAIN_REGISTRY_INPUT": 1,
-    "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT": 1,
+    "PROCESS_EXCLUSIVITY_COMPLETENESS_CHALLENGE_CATALOGUE": 1,
+    "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT": 2,
     "PROCESS_FIELD_CATALOGUE_INPUT": 1,
     "PROCESS_GATE_CONTRACT_INPUT": 1,
     "PROCESS_INTEGRITY_CONTRACT_INPUT": 2,
@@ -936,7 +1104,7 @@
     "PROCESS_RESULT_ACTION_CONTRACT_INPUT": 4,
     "PRODUCT_QUERY_ACTION_CONTRACT_INPUT": 2,
     "PRODUCT_QUERY_CONTRACT_INPUT": 1,
-    "PRODUCT_QUERY_RESULT_CONTRACT_INPUT": 3,
+    "PRODUCT_QUERY_RESULT_CONTRACT_INPUT": 5,
     "PRODUCT_RESULT_ACTION_CONTRACT_INPUT": 2,
     "PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT": 1,
     "PRODUCT_SOURCE_READER_CONTRACT_INPUT": 1,
@@ -944,17 +1112,30 @@
     "RELATIONSHIP_DEFINITION": 5,
     "RELATIONSHIP_EFFECT_SCHEMA": 5,
     "RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT": 1,
+    "RESULT_DEFINITION_INPUT": 1,
     "SERVING_EXACT_DETAIL_ACTION_DEFINITION": 5,
     "SERVING_METRIC_OPERATION_BINDING_INPUT": 2,
     "SERVING_PROCESS_CONTRACT_INPUT": 5,
     "SERVING_TRIGGER_PATH_SCHEMA_INPUT": 1,
     "SHARED_AUTHORITY_FIELD_CATALOGUE_INPUT": 1,
-    "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT": 15,
+    "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT": 16,
     "SOURCE_ACQUISITION_CONTRACT_INPUT": 2
   },
   "per_kind_schema_versions": {
+    "AGREEMENT_NAVIGATION_CATALOGUE_INPUT": [
+      "AGREEMENT_NAVIGATION_CATALOGUE_INPUT/V1"
+    ],
+    "AGREEMENT_PREDICATE_CONTRACT_INPUT": [
+      "AGREEMENT_PREDICATE_CONTRACT_INPUT/V1"
+    ],
     "AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT": [
       "AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT/V1"
+    ],
+    "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY": [
+      "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY/V1"
+    ],
+    "CAPITALISATION_SEMANTIC_SCHEMA_INPUT": [
+      "CAPITALISATION_SEMANTIC_SCHEMA_INPUT/V1"
     ],
     "CLAIM_DEFINITION": [
       "CLAIM_DEFINITION/V1"
@@ -968,6 +1149,9 @@
     "COMPONENT_DEFINITION": [
       "COMPONENT_DEFINITION/V1"
     ],
+    "MARKET_METRIC_DEFINITION_INPUT": [
+      "MARKET_METRIC_DEFINITION_INPUT/V1"
+    ],
     "MONEY_DENOMINATOR_PRECISION_POLICY": [
       "MONEY_DENOMINATOR_PRECISION_POLICY/V1"
     ],
@@ -980,8 +1164,14 @@
     "PARTY_TUPLE_SHAPE_MIGRATION_INPUT": [
       "PARTY_TUPLE_SHAPE_MIGRATION_INPUT/V1"
     ],
+    "PROCESS_CONTROLLED_CODE_REGISTRY_INPUT": [
+      "PROCESS_CONTROLLED_CODE_REGISTRY_INPUT/V1"
+    ],
     "PROCESS_DOMAIN_REGISTRY_INPUT": [
       "PROCESS_DOMAIN_REGISTRY_INPUT/V1"
+    ],
+    "PROCESS_EXCLUSIVITY_COMPLETENESS_CHALLENGE_CATALOGUE": [
+      "PROCESS_EXCLUSIVITY_COMPLETENESS_CHALLENGE_CATALOGUE/V1"
     ],
     "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT": [
       "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT/V1"
@@ -999,7 +1189,7 @@
       "PROCESS_LOGICAL_TYPE_INPUT/V1"
     ],
     "PROCESS_NAVIGATION_CATALOGUE_INPUT": [
-      "PROCESS_NAVIGATION_CATALOGUE_INPUT/V1"
+      "PROCESS_NAVIGATION_CATALOGUE_INPUT/V2"
     ],
     "PROCESS_PREDICATE_CONTRACT_INPUT": [
       "PROCESS_PREDICATE_CONTRACT_INPUT/V1"
@@ -1039,6 +1229,9 @@
     ],
     "RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT": [
       "RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT/V1"
+    ],
+    "RESULT_DEFINITION_INPUT": [
+      "RESULT_DEFINITION_INPUT/V1"
     ],
     "SERVING_EXACT_DETAIL_ACTION_DEFINITION": [
       "SERVING_EXACT_DETAIL_ACTION_DEFINITION/V1"

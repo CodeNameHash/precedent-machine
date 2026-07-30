@@ -59,7 +59,7 @@ test('compiles the bounded Process core contracts deterministically without free
   );
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 130);
+  assert.equal(first.authored_members.length, 153);
   assert.deepEqual(
     processEntries.map((member) => [member.object_kind, member.stable_id]),
     [
@@ -92,17 +92,20 @@ test('compiles the bounded Process core contracts deterministically without free
         'PROCESS_NAVIGATION_CATALOGUE_INPUT',
         'PROCESS_NAVIGATION_DEFINITION_CATALOGUE',
       ],
+      ['PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT', 'PROCESS_EVENT_SLOT_BINDING'],
       ['PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT', 'PROCESS_NARRATION'],
       ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_PARTICIPANT'],
       ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_PASSAGE'],
       ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_PHASE'],
       ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_POSITION'],
+      ['PROCESS_EXCLUSIVITY_COMPLETENESS_CHALLENGE_CATALOGUE', 'PROCESS_EXCLUSIVITY_COMPLETENESS_CHALLENGE_CATALOGUE/V1'],
       ['PROCESS_PREDICATE_CONTRACT_INPUT', 'PROCESS_EXCLUSIVITY_COMPLETENESS_CHALLENGE_PROTOCOL'],
       ['PROCESS_PREDICATE_CONTRACT_INPUT', 'PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE'],
       ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_PREDICATE_WITNESS'],
       ['PROCESS_QUERY_CONTRACT_INPUT', 'PROCESS_ASK_QUERY_COMPILER'],
       ['PROCESS_QUERY_CONTRACT_INPUT', 'PROCESS_BROWSE_QUERY_COMPILER'],
       ['PROCESS_QUERY_CONTRACT_INPUT', 'PROCESS_QUERY_IR'],
+      ['PROCESS_CONTROLLED_CODE_REGISTRY_INPUT', 'PROCESS_CONTROLLED_CODE_REGISTRY'],
       ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_RELATIONSHIP'],
       ['SERVING_PROCESS_CONTRACT_INPUT', 'PROCESS_EXCLUSIVITY_EVENT_RESULT'],
       ['SERVING_PROCESS_CONTRACT_INPUT', 'PROCESS_PHRASEBOOK_PASSAGE_RESULT'],
@@ -113,8 +116,14 @@ test('compiles the bounded Process core contracts deterministically without free
       ['SOURCE_ACQUISITION_CONTRACT_INPUT', 'SOURCE_UNIVERSE_COMPLETENESS'],
     ],
   );
-  assert.equal(first.authored_universe_assessment.status, 'NOT_ASSESSED');
-  assert.equal(first.disposition.status, 'INCOMPLETE_UNIVERSE');
+  assert.equal(
+    first.authored_universe_assessment.status,
+    'COMPLETE_AGAINST_GOVERNED_REQUIRED_KIND_REGISTRY',
+  );
+  assert.equal(
+    first.disposition.status,
+    'AUTHORED_UNIVERSE_MECHANICALLY_COMPLETE',
+  );
   assert.equal(first.disposition.freeze_eligible, false);
   assert.equal(first.disposition.canonical_contract_bundle_authority, 'NONE');
   assert.equal(first.disposition.p1_gate_status, 'NOT_EVALUATED');

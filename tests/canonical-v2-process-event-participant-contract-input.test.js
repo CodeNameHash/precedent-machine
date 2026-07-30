@@ -207,13 +207,16 @@ test('rejects semantic drift and incomplete logical-type membership', () => {
   );
 });
 
-test('extends deterministic authored inputs but remains an incomplete, non-freezable universe', () => {
+test('extends a mechanically complete authored universe without freeze authority', () => {
   const first = compileCanonicalContractInput({ root_directory: ROOT });
   const second = compileCanonicalContractInput({ root_directory: ROOT });
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 130);
-  assert.equal(first.disposition.status, 'INCOMPLETE_UNIVERSE');
+  assert.equal(first.authored_members.length, 153);
+  assert.equal(
+    first.disposition.status,
+    'AUTHORED_UNIVERSE_MECHANICALLY_COMPLETE',
+  );
   assert.equal(first.disposition.freeze_eligible, false);
   assert.equal(first.disposition.canonical_contract_bundle_authority, 'NONE');
   assert.equal(first.disposition.p1_gate_status, 'NOT_EVALUATED');

@@ -57,6 +57,7 @@
     ".github/phase-allowlists/wp-pi-spark-premerge-review-v1.json",
     ".github/phase-allowlists/wp-pilot-freeze-pi-integration-v1.json",
     ".github/phase-allowlists/wp-pilot-freeze-release-review-high-v1.json",
+    ".github/phase-allowlists/wp-pilot-freeze-root-regeneration-v1.json",
     ".github/phase-allowlists/wp-pilot-freeze-shared-consumer-v2.json",
     ".github/phase-allowlists/wp-pilot-integration-state-preflight-v1.json",
     ".github/phase-allowlists/wp-pm-execution-ledger-v1.json",
@@ -115,6 +116,8 @@
     "contracts/canonical-v2/successor/agreement/relationship-effect-schemas/uses-definition-effect.v3.json",
     "contracts/canonical-v2/successor/agreement/result-definitions/target-capitalisation-bring-down.v2.json",
     "contracts/canonical-v2/successor/agreement/result-definitions/target-capitalisation-bring-down.v3.json",
+    "contracts/canonical-v2/successor/governance/canonical-bundle-input-required-kind-registry.v1.json",
+    "contracts/canonical-v2/successor/manifest.json",
     "contracts/canonical-v2/successor/process/navigation/process-navigation-definition-catalogue.v1.json",
     "contracts/canonical-v2/successor/process/navigation/process-navigation-definition-catalogue.v2.json",
     "contracts/canonical-v2/successor/process/occurrence-slots/process-event.v1.json",
@@ -245,9 +248,7 @@
   "machine_derived_blockers": [
     "DEPLOYMENT_METADATA_REQUIRED",
     "FORMAL_FREEZE_COMPILATION_REQUIRED",
-    "REQUIRED_KIND_REGISTRY_REQUIRED",
     "SIGNER_PATH_COVERAGE_REQUIRED",
-    "SUCCESSOR_MANIFEST_STALE",
     "TEST_RECEIPTS_REQUIRED"
   ]
 }
