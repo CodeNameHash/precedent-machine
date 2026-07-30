@@ -1,0 +1,47 @@
+{
+  "authored_definition": {
+    "metric_key": "NO_SHOP_COPY_DELIVERY_PERIOD_DAYS",
+    "metric_version": 1,
+    "concept_key": "NOSOL-NOTICE",
+    "owner_lineage_mode": "RESULT_CLAIM",
+    "required_claim_definition_key": "NO_SHOP_COPY_DELIVERY_PERIOD_DAYS",
+    "required_relationship_key": null,
+    "value_dimension": "DURATION",
+    "canonical_unit": "DAYS",
+    "basis_key": "DAYS:ELAPSED:PROPOSAL_OR_REQUEST_RECEIPT",
+    "canonical_value_type": "NON_NEGATIVE_DECIMAL_STRING",
+    "allowed_day_bases": [
+      "ELAPSED"
+    ],
+    "trigger": "PROPOSAL_OR_REQUEST_RECEIPT",
+    "trigger_expression_operator": "ANY_OF",
+    "trigger_operand_codes": [
+      "RECEIPT_OF_COMPANY_ACQUISITION_PROPOSAL",
+      "RECEIPT_OF_SOURCE_DEFINED_COMPANY_REQUEST"
+    ],
+    "trigger_operand_sufficiency": "EACH_OPERAND_INDEPENDENTLY_SUFFICIENT",
+    "company_request_semantic_code": "NON_PUBLIC_INFORMATION_OR_ACCESS_REQUEST_REASONABLY_EXPECTED_TO_GIVE_RISE_TO_OR_RESULT_IN_COMPANY_ACQUISITION_PROPOSAL",
+    "interpretation_policy_version": "CLAIM_INTERPRETATION_POLICY/V2",
+    "accepted_clarity_states": [
+      "CLEAR",
+      "REASONABLE_BUT_AMBIGUOUS"
+    ],
+    "accepted_ambiguity_dimension_codes": [
+      "REFERENT",
+      "SCOPE",
+      "CARDINALITY"
+    ],
+    "accepted_comparability_effect_codes": [
+      "AMBIGUITY_AFFECTS_METRIC_OR_COHORT"
+    ],
+    "metric_role": "COPY_DEADLINE_FROM_PROPOSAL_OR_REQUEST_RECEIPT",
+    "display_label": "Copy-delivery deadline after proposal/request receipt",
+    "trigger_label": "Receipt by the Company of a Company Acquisition Proposal or Company Request",
+    "display_value_policy": "PROMPTLY_WITH_OUTSIDE_CAP",
+    "per_deal_rollup": "DISTINCT_VALUE_SET",
+    "weighting": "DEAL"
+  },
+  "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+  "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+  "stable_id": "NO_SHOP_COPY_DELIVERY_PERIOD_DAYS"
+}

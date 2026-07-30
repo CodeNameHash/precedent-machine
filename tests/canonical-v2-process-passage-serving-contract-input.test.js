@@ -66,7 +66,12 @@ test('requires one bounded verbatim preview in the result row', () => {
 
   assert.equal(preview.preview_contract.content_mode, 'VERBATIM_CANONICAL_TEXT');
   assert.equal(preview.preview_contract.maximum_utf8_bytes, 8192);
-  assert.equal(preview.preview_contract.exact_source_interval_required, true);
+  assert.equal(
+    preview.preview_contract.exact_ordered_source_interval_set_required,
+    true,
+  );
+  assert.equal(preview.preview_contract.source_interval_order_must_match_parent, true);
+  assert.equal(preview.preview_contract.multi_interval_flattening_permitted, false);
   assert.equal(preview.preview_contract.canonical_text_digest_required, true);
   assert.equal(preview.delivery_contract.delivered_with_parent_row, true);
   assert.equal(preview.delivery_contract.separate_detail_request_required, false);
@@ -156,6 +161,16 @@ test('rejects missing, unregistered and semantically weakened contracts', () => 
   ).preview_contract.source_text_rewrite_permitted = true;
   assert.throws(
     () => validateAuthoredProcessServingInputs(rewrittenPreview),
+    (error) => error.code === 'INVALID_PROCESS_INLINE_PREVIEW_INPUT',
+  );
+
+  const flattenedPreview = clone(servingMembers());
+  byId(
+    flattenedPreview,
+    'BOUNDED_INLINE_PASSAGE_PREVIEW',
+  ).preview_contract.multi_interval_flattening_permitted = true;
+  assert.throws(
+    () => validateAuthoredProcessServingInputs(flattenedPreview),
     (error) => error.code === 'INVALID_PROCESS_INLINE_PREVIEW_INPUT',
   );
 });

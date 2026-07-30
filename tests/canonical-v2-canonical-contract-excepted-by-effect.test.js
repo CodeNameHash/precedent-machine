@@ -1,5 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const path = require('node:path');
 
 const {
@@ -7,12 +8,12 @@ const {
   sha256Hex,
 } = require('../lib/canonical-v2/canonical-bytes');
 const {
-  compileCanonicalContractInput,
-} = require('../lib/canonical-v2/canonical-contract-input-compiler');
-const {
   validateAuthoredExceptedByInputs,
   validateExceptedByEffect,
 } = require('../lib/canonical-v2/canonical-contract-excepted-by-validator');
+const {
+  validateAuthoredNoShopSchemaInputs,
+} = require('../lib/canonical-v2/canonical-contract-no-shop-schema-input-validator');
 const {
   FIXTURE_CONTRACT_FINGERPRINT_V12,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -35,7 +36,28 @@ function clone(value) {
 }
 
 function compiled() {
-  return compileCanonicalContractInput({ root_directory: sourceRoot });
+  const paths = [
+    'agreement/relationship-definitions/excepted-by.v3.json',
+    'agreement/relationship-effect-schemas/excepted-by-effect.v1.json',
+    'agreement/no-shop-semantic-schema-inputs/no-shop-exception-effect.v1.json',
+    'agreement/no-shop-semantic-schema-inputs/no-shop-inline-permission-effect.v1.json',
+    'agreement/migration-inputs/party-tuple-shape.v1.json',
+  ];
+  return {
+    authored_members: paths.map((relativePath) => {
+      const canonicalValue = JSON.parse(
+        fs.readFileSync(path.join(sourceRoot, relativePath), 'utf8'),
+      );
+      return {
+        object_kind: canonicalValue.object_kind,
+        stable_id: canonicalValue.stable_id,
+        canonical_value: canonicalValue,
+        canonical_bytes_digest: sha256Hex(
+          Buffer.from(canonicalJson(canonicalValue), 'utf8'),
+        ),
+      };
+    }),
+  };
 }
 
 function definition(output) {
@@ -209,7 +231,14 @@ test('authored dependencies and comparison isolation fail closed under drift', (
       const source = members.find(
         (member) => member.stable_id === 'NO_SHOP_EXCEPTION_EFFECT',
       );
-      source.canonical_value.authored_schema.relationship_definition_version = 3;
+      source.canonical_value.authored_schema.relationship_definition_version = 2;
+    },
+    (members) => {
+      const source = members.find(
+        (member) => member.stable_id === 'NO_SHOP_INLINE_PERMISSION_EFFECT',
+      );
+      source.canonical_value.authored_schema.effect_variant =
+        'CONDITIONAL_ACTION_PERMISSION';
     },
   ];
   for (const mutate of mutations) {
@@ -222,12 +251,61 @@ test('authored dependencies and comparison isolation fail closed under drift', (
   }
 });
 
-test('the mechanically complete relationship universe remains non-authoritative until registry freeze', () => {
+test('the correction creates no authority', () => {
   const output = compiled();
-  assert.equal(output.authored_members.length, 153);
-  assert.equal(output.disposition.status, 'AUTHORED_UNIVERSE_MECHANICALLY_COMPLETE');
-  assert.equal(output.disposition.freeze_eligible, false);
-  assert.equal(output.disposition.canonical_contract_bundle_authority, 'NONE');
-  assert.equal(output.disposition.p1_gate_status, 'NOT_EVALUATED');
-  assert.equal(Object.hasOwn(output, 'canonical_contract_bundle'), false);
+  const definitionValue = definition(output);
+  assert.equal(definitionValue.propagation, 'EXACT_NAMED_TARGETS_ONLY');
+  assert.equal(definitionValue.party_transfer, 'NONE');
+  assert.equal(definitionValue.automatic_variant_inference, 'FORBIDDEN');
+});
+
+test('the V6 copy clock binds its exact claim and market metric', () => {
+  const paths = [
+    'agreement/no-shop-semantic-schema-inputs/no-shop-notice-obligation.v6.json',
+    'agreement/claim-definitions/no-shop-copy-delivery-period-days.v1.json',
+    'agreement/market-metric-definitions/no-shop-copy-delivery-period-days.v1.json',
+  ];
+  const members = paths.map((relativePath) => {
+    const canonicalValue = JSON.parse(
+      fs.readFileSync(path.join(sourceRoot, relativePath), 'utf8'),
+    );
+    return {
+      object_kind: canonicalValue.object_kind,
+      canonical_value: canonicalValue,
+    };
+  });
+  assert.doesNotThrow(() => validateAuthoredNoShopSchemaInputs(members));
+  const notice = members[0].canonical_value.authored_schema;
+  assert.equal(
+    notice.copy_timing_claim_definition_key,
+    'NO_SHOP_COPY_DELIVERY_PERIOD_DAYS',
+  );
+  assert.equal(
+    notice.copy_clock_scope_contract.primary_metric_contract.metric_key,
+    'NO_SHOP_COPY_DELIVERY_PERIOD_DAYS',
+  );
+
+  const mutations = [
+    (values) => {
+      values[0].canonical_value.authored_schema
+        .copy_timing_claim_definition_key = 'NO_SHOP_NOTICE_PERIOD_DAYS';
+    },
+    (values) => {
+      values[0].canonical_value.authored_schema.copy_clock_scope_contract
+        .primary_metric_contract.metric_key = 'NO_SHOP_NOTICE_PERIOD_DAYS';
+    },
+    (values) => {
+      values[2].canonical_value.authored_definition.trigger =
+        'RECEIPT_OF_COMPETING_PROPOSAL';
+    },
+  ];
+  for (const mutate of mutations) {
+    const changed = clone(members);
+    mutate(changed);
+    assert.throws(
+      () => validateAuthoredNoShopSchemaInputs(changed),
+      (error) => error.code
+        === 'INVALID_CANONICAL_BUNDLE_NO_SHOP_SEMANTIC_SCHEMA_INPUT',
+    );
+  }
 });

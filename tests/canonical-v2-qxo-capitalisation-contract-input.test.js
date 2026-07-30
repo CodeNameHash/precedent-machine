@@ -295,5 +295,26 @@ test('keeps measurement-date and lookback metrics legally separate', () => {
     'CALENDAR_DAYS_RELATIVE_TO_SIGNING',
   );
   assert.equal(measurement.raw_absolute_date_is_not_cohort_key, true);
+  assert.deepEqual(measurement.allowed_observation_states, [
+    'PRESENT',
+    'ABSENT',
+    'NOT_EXAMINED',
+  ]);
+  assert.equal(measurement.unresolved_signing_anchor_state, 'NOT_EXAMINED');
   assert.equal(lookback.measurement_date_is_not_retrospective_lookback, true);
+});
+
+test('rejects removal of the unresolved signing-anchor state', () => {
+  const authored = clone(members());
+  member(
+    authored,
+    'REPRESENTATION_MEASUREMENT_DATE_SIGNING_OFFSET',
+  ).canonical_value.authored_definition.allowed_observation_states = [
+    'PRESENT',
+    'ABSENT',
+  ];
+  assert.throws(
+    () => validateAuthoredQxoCapitalisationInputs(authored),
+    (error) => error.code === 'QXO_CAPITALISATION_METRIC_DRIFT',
+  );
 });
