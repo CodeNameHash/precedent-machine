@@ -1,0 +1,22 @@
+{
+  "phase": "WP-PROCESS-SOURCE-ACQUISITION-RUNTIME-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-source-acquisition-runtime-v1.json",
+    "lib/canonical-v2/process-source-acquisition.js",
+    "tests/canonical-v2-process-source-acquisition.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Pure Process frozen-source intake validation only. It processes caller-supplied frozen source records and governed scope input in memory. It performs no network access and grants no source-admission, extraction, writer, release, import, activation, database, serving, production, canonical-write or contract-freeze authority."
+}
