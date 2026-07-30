@@ -1,0 +1,23 @@
+{
+  "phase": "WP-PROCESS-EXCLUSIVITY-PREDICATE-MACHINE-RULES-V2",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-exclusivity-predicate-machine-rules-v2.json",
+    "contracts/canonical-v2/successor/process/predicates/exclusivity-predicate-catalogue.v2.json",
+    "lib/canonical-v2/process-predicate-contract-input-validator.js",
+    "tests/canonical-v2-process-exclusivity-predicate-catalogue-v2-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Closed machine rules for the 18 successor Process exclusivity predicates. The rules fix legal meaning, typed-link families, cardinality, exact evidence and response-union exclusion. They grant no runtime, extraction, writer, serving, database, release, import, activation, production, freeze or canonical-write authority."
+}

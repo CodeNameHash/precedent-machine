@@ -71,94 +71,1002 @@
         {
           "predicate_key": "EXCLUSIVITY_BOUND_ACTOR_SCOPE",
           "predicate_version": 1,
-          "exact_semantic_requirement": "Govern every entity and representative category bound by the exclusivity covenant, plus the control, direction or efforts standard used to cause compliance."
+          "exact_semantic_requirement": "Govern every entity and representative category bound by the exclusivity covenant, plus the control, direction or efforts standard used to cause compliance.",
+          "machine_rule": {
+            "semantic_kind": "BOUND_ACTOR_SCOPE",
+            "value_grain": "ONE_ATOMIC_LEGAL_PROPOSITION_PER_WITNESS",
+            "primary_value_carrier_terminal_type": "PROCESS_PARTICIPANT_REVISION",
+            "required_typed_link_families": [
+              {
+                "terminal_type": "PROCESS_PARTICIPANT_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_PASSAGE_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              }
+            ],
+            "optional_typed_link_families": [
+              {
+                "terminal_type": "BIDDER_TRACK_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_AGREEMENT_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_EVENT_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_RELATIONSHIP_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "TEMPORAL_EXPRESSION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              }
+            ],
+            "unlisted_typed_link_family_rule": "FORBIDDEN",
+            "evidence_binding": {
+              "witness_assertion_evidence": "DIRECT_EXACT_ADMITTED_SOURCE_UTF8_INTERVAL_REQUIRED",
+              "each_link_own_evidence": true,
+              "cross_reference_passage_revision_required": true,
+              "same_governed_deal_required": true,
+              "same_release_required": true,
+              "same_frozen_contract_pair_required": true,
+              "paragraph_or_date_proximity_can_create_link": false
+            }
+          }
         },
         {
           "predicate_key": "EXCLUSIVITY_CONDUCT_LINKAGE_STANDARD",
           "predicate_version": 1,
-          "exact_semantic_requirement": "Govern whether restricted conduct is direct or indirect, alone, jointly or through another person, including each knowledge, intent and materiality qualifier."
+          "exact_semantic_requirement": "Govern whether restricted conduct is direct or indirect, alone, jointly or through another person, including each knowledge, intent and materiality qualifier.",
+          "machine_rule": {
+            "semantic_kind": "CONDUCT_LINKAGE_STANDARD",
+            "value_grain": "ONE_ATOMIC_LEGAL_PROPOSITION_PER_WITNESS",
+            "primary_value_carrier_terminal_type": "PROCESS_PASSAGE_REVISION",
+            "required_typed_link_families": [
+              {
+                "terminal_type": "PROCESS_PASSAGE_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              }
+            ],
+            "optional_typed_link_families": [
+              {
+                "terminal_type": "BIDDER_TRACK_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_AGREEMENT_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_EVENT_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_PARTICIPANT_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_RELATIONSHIP_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "TEMPORAL_EXPRESSION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              }
+            ],
+            "unlisted_typed_link_family_rule": "FORBIDDEN",
+            "evidence_binding": {
+              "witness_assertion_evidence": "DIRECT_EXACT_ADMITTED_SOURCE_UTF8_INTERVAL_REQUIRED",
+              "each_link_own_evidence": true,
+              "cross_reference_passage_revision_required": true,
+              "same_governed_deal_required": true,
+              "same_release_required": true,
+              "same_frozen_contract_pair_required": true,
+              "paragraph_or_date_proximity_can_create_link": false
+            }
+          }
         },
         {
           "predicate_key": "EXCLUSIVITY_RESTRICTED_ACTION",
           "predicate_version": 1,
-          "exact_semantic_requirement": "Govern each action that the exclusivity covenant permits or prohibits, with exact action code, polarity, actor, subject, bidder track, qualifier, condition and source passage."
+          "exact_semantic_requirement": "Govern each action that the exclusivity covenant permits or prohibits, with exact action code, polarity, actor, subject, bidder track, qualifier, condition and source passage.",
+          "machine_rule": {
+            "semantic_kind": "RESTRICTED_ACTION",
+            "value_grain": "ONE_ATOMIC_LEGAL_PROPOSITION_PER_WITNESS",
+            "primary_value_carrier_terminal_type": "PROCESS_PASSAGE_REVISION",
+            "required_typed_link_families": [
+              {
+                "terminal_type": "PROCESS_PARTICIPANT_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_PASSAGE_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              }
+            ],
+            "optional_typed_link_families": [
+              {
+                "terminal_type": "BIDDER_TRACK_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_AGREEMENT_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_EVENT_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_POSITION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_RELATIONSHIP_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "TEMPORAL_EXPRESSION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              }
+            ],
+            "unlisted_typed_link_family_rule": "FORBIDDEN",
+            "evidence_binding": {
+              "witness_assertion_evidence": "DIRECT_EXACT_ADMITTED_SOURCE_UTF8_INTERVAL_REQUIRED",
+              "each_link_own_evidence": true,
+              "cross_reference_passage_revision_required": true,
+              "same_governed_deal_required": true,
+              "same_release_required": true,
+              "same_frozen_contract_pair_required": true,
+              "paragraph_or_date_proximity_can_create_link": false
+            }
+          }
         },
         {
           "predicate_key": "EXCLUSIVITY_SHUTDOWN_OBLIGATION",
           "predicate_version": 1,
-          "exact_semantic_requirement": "Govern each affirmative duty to stop an existing process, including communications, negotiations, information access, data-room access and information return or destruction."
+          "exact_semantic_requirement": "Govern each affirmative duty to stop an existing process, including communications, negotiations, information access, data-room access and information return or destruction.",
+          "machine_rule": {
+            "semantic_kind": "SHUTDOWN_OBLIGATION",
+            "value_grain": "ONE_ATOMIC_LEGAL_PROPOSITION_PER_WITNESS",
+            "primary_value_carrier_terminal_type": "PROCESS_PASSAGE_REVISION",
+            "required_typed_link_families": [
+              {
+                "terminal_type": "PROCESS_PARTICIPANT_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_PASSAGE_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              }
+            ],
+            "optional_typed_link_families": [
+              {
+                "terminal_type": "BIDDER_TRACK_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_AGREEMENT_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_EVENT_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_POSITION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_RELATIONSHIP_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "TEMPORAL_EXPRESSION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              }
+            ],
+            "unlisted_typed_link_family_rule": "FORBIDDEN",
+            "evidence_binding": {
+              "witness_assertion_evidence": "DIRECT_EXACT_ADMITTED_SOURCE_UTF8_INTERVAL_REQUIRED",
+              "each_link_own_evidence": true,
+              "cross_reference_passage_revision_required": true,
+              "same_governed_deal_required": true,
+              "same_release_required": true,
+              "same_frozen_contract_pair_required": true,
+              "paragraph_or_date_proximity_can_create_link": false
+            }
+          }
         },
         {
           "predicate_key": "EXCLUSIVITY_STANDSTILL_TREATMENT",
           "predicate_version": 1,
-          "exact_semantic_requirement": "Govern standstill and similar restrictions, including whether addressed and whether release, waiver or amendment is permitted, required or prohibited, with decision-maker, consent, notice, timing and scope."
+          "exact_semantic_requirement": "Govern standstill and similar restrictions, including whether addressed and whether release, waiver or amendment is permitted, required or prohibited, with decision-maker, consent, notice, timing and scope.",
+          "machine_rule": {
+            "semantic_kind": "STANDSTILL_TREATMENT",
+            "value_grain": "ONE_ATOMIC_LEGAL_PROPOSITION_PER_WITNESS",
+            "primary_value_carrier_terminal_type": "PROCESS_PASSAGE_REVISION",
+            "required_typed_link_families": [
+              {
+                "terminal_type": "PROCESS_AGREEMENT_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_PASSAGE_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              }
+            ],
+            "optional_typed_link_families": [
+              {
+                "terminal_type": "BIDDER_TRACK_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_EVENT_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_PARTICIPANT_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_POSITION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_RELATIONSHIP_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "TEMPORAL_EXPRESSION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              }
+            ],
+            "unlisted_typed_link_family_rule": "FORBIDDEN",
+            "evidence_binding": {
+              "witness_assertion_evidence": "DIRECT_EXACT_ADMITTED_SOURCE_UTF8_INTERVAL_REQUIRED",
+              "each_link_own_evidence": true,
+              "cross_reference_passage_revision_required": true,
+              "same_governed_deal_required": true,
+              "same_release_required": true,
+              "same_frozen_contract_pair_required": true,
+              "paragraph_or_date_proximity_can_create_link": false
+            }
+          }
         },
         {
           "predicate_key": "EXCLUSIVITY_NOTICE_REQUIREMENT",
           "predicate_version": 1,
-          "exact_semantic_requirement": "Govern each exclusivity notice duty with its trigger, recipient, deadline, measuring event, form and recordkeeping requirement."
+          "exact_semantic_requirement": "Govern each exclusivity notice duty with its trigger, recipient, deadline, measuring event, form and recordkeeping requirement.",
+          "machine_rule": {
+            "semantic_kind": "NOTICE_REQUIREMENT",
+            "value_grain": "ONE_ATOMIC_LEGAL_PROPOSITION_PER_WITNESS",
+            "primary_value_carrier_terminal_type": "PROCESS_PASSAGE_REVISION",
+            "required_typed_link_families": [
+              {
+                "terminal_type": "PROCESS_PARTICIPANT_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_PASSAGE_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              }
+            ],
+            "optional_typed_link_families": [
+              {
+                "terminal_type": "BIDDER_TRACK_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_AGREEMENT_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_EVENT_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_POSITION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_RELATIONSHIP_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "TEMPORAL_EXPRESSION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              }
+            ],
+            "unlisted_typed_link_family_rule": "FORBIDDEN",
+            "evidence_binding": {
+              "witness_assertion_evidence": "DIRECT_EXACT_ADMITTED_SOURCE_UTF8_INTERVAL_REQUIRED",
+              "each_link_own_evidence": true,
+              "cross_reference_passage_revision_required": true,
+              "same_governed_deal_required": true,
+              "same_release_required": true,
+              "same_frozen_contract_pair_required": true,
+              "paragraph_or_date_proximity_can_create_link": false
+            }
+          }
         },
         {
           "predicate_key": "EXCLUSIVITY_NOTICE_CONTENT",
           "predicate_version": 1,
-          "exact_semantic_requirement": "Govern the content and continuing-update duties for exclusivity notices, including bidder identity, material terms, documents, correspondence, amendments and matching-process information."
+          "exact_semantic_requirement": "Govern the content and continuing-update duties for exclusivity notices, including bidder identity, material terms, documents, correspondence, amendments and matching-process information.",
+          "machine_rule": {
+            "semantic_kind": "NOTICE_CONTENT",
+            "value_grain": "ONE_ATOMIC_LEGAL_PROPOSITION_PER_WITNESS",
+            "primary_value_carrier_terminal_type": "PROCESS_PASSAGE_REVISION",
+            "required_typed_link_families": [
+              {
+                "terminal_type": "PROCESS_PARTICIPANT_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_PASSAGE_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              }
+            ],
+            "optional_typed_link_families": [
+              {
+                "terminal_type": "BIDDER_TRACK_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_AGREEMENT_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_EVENT_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_POSITION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_RELATIONSHIP_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "TEMPORAL_EXPRESSION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              }
+            ],
+            "unlisted_typed_link_family_rule": "FORBIDDEN",
+            "evidence_binding": {
+              "witness_assertion_evidence": "DIRECT_EXACT_ADMITTED_SOURCE_UTF8_INTERVAL_REQUIRED",
+              "each_link_own_evidence": true,
+              "cross_reference_passage_revision_required": true,
+              "same_governed_deal_required": true,
+              "same_release_required": true,
+              "same_frozen_contract_pair_required": true,
+              "paragraph_or_date_proximity_can_create_link": false
+            }
+          }
         },
         {
           "predicate_key": "EXCLUSIVITY_QUALIFYING_PROPOSAL_STANDARD",
           "predicate_version": 1,
-          "exact_semantic_requirement": "Govern the superior-proposal or comparable qualifying-bid test, including bona fides, form, transaction threshold, financial comparison, non-financial factors and comparison adjustments."
+          "exact_semantic_requirement": "Govern the superior-proposal or comparable qualifying-bid test, including bona fides, form, transaction threshold, financial comparison, non-financial factors and comparison adjustments.",
+          "machine_rule": {
+            "semantic_kind": "QUALIFYING_PROPOSAL_STANDARD",
+            "value_grain": "ONE_ATOMIC_LEGAL_PROPOSITION_PER_WITNESS",
+            "primary_value_carrier_terminal_type": "PROCESS_PASSAGE_REVISION",
+            "required_typed_link_families": [
+              {
+                "terminal_type": "PROCESS_AGREEMENT_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_PASSAGE_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              }
+            ],
+            "optional_typed_link_families": [
+              {
+                "terminal_type": "BIDDER_TRACK_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_EVENT_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_PARTICIPANT_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_POSITION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_RELATIONSHIP_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "TEMPORAL_EXPRESSION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              }
+            ],
+            "unlisted_typed_link_family_rule": "FORBIDDEN",
+            "evidence_binding": {
+              "witness_assertion_evidence": "DIRECT_EXACT_ADMITTED_SOURCE_UTF8_INTERVAL_REQUIRED",
+              "each_link_own_evidence": true,
+              "cross_reference_passage_revision_required": true,
+              "same_governed_deal_required": true,
+              "same_release_required": true,
+              "same_frozen_contract_pair_required": true,
+              "paragraph_or_date_proximity_can_create_link": false
+            }
+          }
         },
         {
           "predicate_key": "EXCLUSIVITY_BIDDER_PARTICIPANT_SCOPE",
           "predicate_version": 1,
-          "exact_semantic_requirement": "Govern the bidder-side people and entities included in permitted or restricted contact, including representatives, financing sources, affiliates, funds, co-investors and groups."
+          "exact_semantic_requirement": "Govern the bidder-side people and entities included in permitted or restricted contact, including representatives, financing sources, affiliates, funds, co-investors and groups.",
+          "machine_rule": {
+            "semantic_kind": "BIDDER_PARTICIPANT_SCOPE",
+            "value_grain": "ONE_ATOMIC_LEGAL_PROPOSITION_PER_WITNESS",
+            "primary_value_carrier_terminal_type": "PROCESS_PARTICIPANT_REVISION",
+            "required_typed_link_families": [
+              {
+                "terminal_type": "BIDDER_TRACK_REVISION",
+                "cardinality": "ONE"
+              },
+              {
+                "terminal_type": "PROCESS_PARTICIPANT_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_PASSAGE_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              }
+            ],
+            "optional_typed_link_families": [
+              {
+                "terminal_type": "PROCESS_AGREEMENT_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_EVENT_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_RELATIONSHIP_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "TEMPORAL_EXPRESSION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              }
+            ],
+            "unlisted_typed_link_family_rule": "FORBIDDEN",
+            "evidence_binding": {
+              "witness_assertion_evidence": "DIRECT_EXACT_ADMITTED_SOURCE_UTF8_INTERVAL_REQUIRED",
+              "each_link_own_evidence": true,
+              "cross_reference_passage_revision_required": true,
+              "same_governed_deal_required": true,
+              "same_release_required": true,
+              "same_frozen_contract_pair_required": true,
+              "paragraph_or_date_proximity_can_create_link": false
+            }
+          }
         },
         {
           "predicate_key": "EXCLUSIVITY_RECOMMENDATION_CHANGE",
           "predicate_version": 1,
-          "exact_semantic_requirement": "Govern each restricted or permitted board recommendation change, including withdrawal, qualification, failure to reaffirm, endorsement, disclosure and applicable exception process."
+          "exact_semantic_requirement": "Govern each restricted or permitted board recommendation change, including withdrawal, qualification, failure to reaffirm, endorsement, disclosure and applicable exception process.",
+          "machine_rule": {
+            "semantic_kind": "RECOMMENDATION_CHANGE",
+            "value_grain": "ONE_ATOMIC_LEGAL_PROPOSITION_PER_WITNESS",
+            "primary_value_carrier_terminal_type": "PROCESS_PASSAGE_REVISION",
+            "required_typed_link_families": [
+              {
+                "terminal_type": "PROCESS_AGREEMENT_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_PASSAGE_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              }
+            ],
+            "optional_typed_link_families": [
+              {
+                "terminal_type": "BIDDER_TRACK_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_EVENT_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_PARTICIPANT_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_POSITION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_RELATIONSHIP_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "TEMPORAL_EXPRESSION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              }
+            ],
+            "unlisted_typed_link_family_rule": "FORBIDDEN",
+            "evidence_binding": {
+              "witness_assertion_evidence": "DIRECT_EXACT_ADMITTED_SOURCE_UTF8_INTERVAL_REQUIRED",
+              "each_link_own_evidence": true,
+              "cross_reference_passage_revision_required": true,
+              "same_governed_deal_required": true,
+              "same_release_required": true,
+              "same_frozen_contract_pair_required": true,
+              "paragraph_or_date_proximity_can_create_link": false
+            }
+          }
         },
         {
           "predicate_key": "EXCLUSIVITY_TENDER_OFFER_RESPONSE",
           "predicate_version": 1,
-          "exact_semantic_requirement": "Govern the special contractual response to a tender offer or exchange offer, including trigger, permitted or required response, deadline and contractual treatment."
+          "exact_semantic_requirement": "Govern the special contractual response to a tender offer or exchange offer, including trigger, permitted or required response, deadline and contractual treatment.",
+          "machine_rule": {
+            "semantic_kind": "TENDER_OFFER_RESPONSE",
+            "value_grain": "ONE_ATOMIC_LEGAL_PROPOSITION_PER_WITNESS",
+            "primary_value_carrier_terminal_type": "PROCESS_PASSAGE_REVISION",
+            "required_typed_link_families": [
+              {
+                "terminal_type": "PROCESS_AGREEMENT_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_PASSAGE_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              }
+            ],
+            "optional_typed_link_families": [
+              {
+                "terminal_type": "BIDDER_TRACK_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_EVENT_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_PARTICIPANT_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_POSITION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_RELATIONSHIP_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "TEMPORAL_EXPRESSION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              }
+            ],
+            "unlisted_typed_link_family_rule": "FORBIDDEN",
+            "evidence_binding": {
+              "witness_assertion_evidence": "DIRECT_EXACT_ADMITTED_SOURCE_UTF8_INTERVAL_REQUIRED",
+              "each_link_own_evidence": true,
+              "cross_reference_passage_revision_required": true,
+              "same_governed_deal_required": true,
+              "same_release_required": true,
+              "same_frozen_contract_pair_required": true,
+              "paragraph_or_date_proximity_can_create_link": false
+            }
+          }
         },
         {
           "predicate_key": "EXCLUSIVITY_INTERVENING_EVENT_EXCEPTION",
           "predicate_version": 1,
-          "exact_semantic_requirement": "Govern an intervening-event exception, including definition, exclusions, board and legal findings, notice and matching consequences."
+          "exact_semantic_requirement": "Govern an intervening-event exception, including definition, exclusions, board and legal findings, notice and matching consequences.",
+          "machine_rule": {
+            "semantic_kind": "INTERVENING_EVENT_EXCEPTION",
+            "value_grain": "ONE_ATOMIC_LEGAL_PROPOSITION_PER_WITNESS",
+            "primary_value_carrier_terminal_type": "PROCESS_PASSAGE_REVISION",
+            "required_typed_link_families": [
+              {
+                "terminal_type": "PROCESS_AGREEMENT_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_PASSAGE_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              }
+            ],
+            "optional_typed_link_families": [
+              {
+                "terminal_type": "BIDDER_TRACK_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_EVENT_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_PARTICIPANT_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_POSITION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_RELATIONSHIP_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "TEMPORAL_EXPRESSION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              }
+            ],
+            "unlisted_typed_link_family_rule": "FORBIDDEN",
+            "evidence_binding": {
+              "witness_assertion_evidence": "DIRECT_EXACT_ADMITTED_SOURCE_UTF8_INTERVAL_REQUIRED",
+              "each_link_own_evidence": true,
+              "cross_reference_passage_revision_required": true,
+              "same_governed_deal_required": true,
+              "same_release_required": true,
+              "same_frozen_contract_pair_required": true,
+              "paragraph_or_date_proximity_can_create_link": false
+            }
+          }
         },
         {
           "predicate_key": "EXCLUSIVITY_SUPERIOR_PROPOSAL_TERMINATION",
           "predicate_version": 1,
-          "exact_semantic_requirement": "Govern termination of the signed agreement for a superior proposal, including availability, board finding, notice, matching completion, fee payment and concurrent alternative agreement."
+          "exact_semantic_requirement": "Govern termination of the signed agreement for a superior proposal, including availability, board finding, notice, matching completion, fee payment and concurrent alternative agreement.",
+          "machine_rule": {
+            "semantic_kind": "SUPERIOR_PROPOSAL_TERMINATION",
+            "value_grain": "ONE_ATOMIC_LEGAL_PROPOSITION_PER_WITNESS",
+            "primary_value_carrier_terminal_type": "PROCESS_PASSAGE_REVISION",
+            "required_typed_link_families": [
+              {
+                "terminal_type": "PROCESS_AGREEMENT_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_PASSAGE_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              }
+            ],
+            "optional_typed_link_families": [
+              {
+                "terminal_type": "BIDDER_TRACK_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_EVENT_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_PARTICIPANT_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_POSITION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_RELATIONSHIP_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "TEMPORAL_EXPRESSION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              }
+            ],
+            "unlisted_typed_link_family_rule": "FORBIDDEN",
+            "evidence_binding": {
+              "witness_assertion_evidence": "DIRECT_EXACT_ADMITTED_SOURCE_UTF8_INTERVAL_REQUIRED",
+              "each_link_own_evidence": true,
+              "cross_reference_passage_revision_required": true,
+              "same_governed_deal_required": true,
+              "same_release_required": true,
+              "same_frozen_contract_pair_required": true,
+              "paragraph_or_date_proximity_can_create_link": false
+            }
+          }
         },
         {
           "predicate_key": "EXCLUSIVITY_ALTERNATIVE_TRANSACTION_FEE",
           "predicate_version": 1,
-          "exact_semantic_requirement": "Govern each fee or payment tied to an alternative transaction or exclusivity outcome, including amount or formula, trigger, payer, payee, timing, method and bidder-category variation."
+          "exact_semantic_requirement": "Govern each fee or payment tied to an alternative transaction or exclusivity outcome, including amount or formula, trigger, payer, payee, timing, method and bidder-category variation.",
+          "machine_rule": {
+            "semantic_kind": "ALTERNATIVE_TRANSACTION_FEE",
+            "value_grain": "ONE_ATOMIC_LEGAL_PROPOSITION_PER_WITNESS",
+            "primary_value_carrier_terminal_type": "PROCESS_PASSAGE_REVISION",
+            "required_typed_link_families": [
+              {
+                "terminal_type": "PROCESS_AGREEMENT_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_PARTICIPANT_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_PASSAGE_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              }
+            ],
+            "optional_typed_link_families": [
+              {
+                "terminal_type": "BIDDER_TRACK_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_EVENT_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_POSITION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_RELATIONSHIP_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "TEMPORAL_EXPRESSION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              }
+            ],
+            "unlisted_typed_link_family_rule": "FORBIDDEN",
+            "evidence_binding": {
+              "witness_assertion_evidence": "DIRECT_EXACT_ADMITTED_SOURCE_UTF8_INTERVAL_REQUIRED",
+              "each_link_own_evidence": true,
+              "cross_reference_passage_revision_required": true,
+              "same_governed_deal_required": true,
+              "same_release_required": true,
+              "same_frozen_contract_pair_required": true,
+              "paragraph_or_date_proximity_can_create_link": false
+            }
+          }
         },
         {
           "predicate_key": "EXCLUSIVITY_PUBLIC_DISCLOSURE",
           "predicate_version": 1,
-          "exact_semantic_requirement": "Govern required and permitted public disclosure about competing approaches or board action, including consultation, notice and legal-requirement limits."
+          "exact_semantic_requirement": "Govern required and permitted public disclosure about competing approaches or board action, including consultation, notice and legal-requirement limits.",
+          "machine_rule": {
+            "semantic_kind": "PUBLIC_DISCLOSURE",
+            "value_grain": "ONE_ATOMIC_LEGAL_PROPOSITION_PER_WITNESS",
+            "primary_value_carrier_terminal_type": "PROCESS_PASSAGE_REVISION",
+            "required_typed_link_families": [
+              {
+                "terminal_type": "PROCESS_PARTICIPANT_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_PASSAGE_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              }
+            ],
+            "optional_typed_link_families": [
+              {
+                "terminal_type": "BIDDER_TRACK_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_AGREEMENT_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_EVENT_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_POSITION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_RELATIONSHIP_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "TEMPORAL_EXPRESSION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              }
+            ],
+            "unlisted_typed_link_family_rule": "FORBIDDEN",
+            "evidence_binding": {
+              "witness_assertion_evidence": "DIRECT_EXACT_ADMITTED_SOURCE_UTF8_INTERVAL_REQUIRED",
+              "each_link_own_evidence": true,
+              "cross_reference_passage_revision_required": true,
+              "same_governed_deal_required": true,
+              "same_release_required": true,
+              "same_frozen_contract_pair_required": true,
+              "paragraph_or_date_proximity_can_create_link": false
+            }
+          }
         },
         {
           "predicate_key": "EXCLUSIVITY_GOVERNING_DOCUMENT",
           "predicate_version": 1,
-          "exact_semantic_requirement": "Govern the agreement, section, party relationship, incorporated document and priority or conflict rule that controls the exclusivity answer."
+          "exact_semantic_requirement": "Govern the agreement, section, party relationship, incorporated document and priority or conflict rule that controls the exclusivity answer.",
+          "machine_rule": {
+            "semantic_kind": "GOVERNING_DOCUMENT",
+            "value_grain": "ONE_ATOMIC_LEGAL_PROPOSITION_PER_WITNESS",
+            "primary_value_carrier_terminal_type": "PROCESS_AGREEMENT_REVISION",
+            "required_typed_link_families": [
+              {
+                "terminal_type": "PROCESS_AGREEMENT_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_PARTICIPANT_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_PASSAGE_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              }
+            ],
+            "optional_typed_link_families": [
+              {
+                "terminal_type": "BIDDER_TRACK_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_EVENT_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_RELATIONSHIP_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "TEMPORAL_EXPRESSION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              }
+            ],
+            "unlisted_typed_link_family_rule": "FORBIDDEN",
+            "evidence_binding": {
+              "witness_assertion_evidence": "DIRECT_EXACT_ADMITTED_SOURCE_UTF8_INTERVAL_REQUIRED",
+              "each_link_own_evidence": true,
+              "cross_reference_passage_revision_required": true,
+              "same_governed_deal_required": true,
+              "same_release_required": true,
+              "same_frozen_contract_pair_required": true,
+              "paragraph_or_date_proximity_can_create_link": false
+            }
+          }
         },
         {
           "predicate_key": "EXCLUSIVITY_REMEDY",
           "predicate_version": 1,
-          "exact_semantic_requirement": "Govern the remedy for breach of exclusivity, including specific performance, injunction, damages, fees, limitations, forum, governing law and dispute process."
+          "exact_semantic_requirement": "Govern the remedy for breach of exclusivity, including specific performance, injunction, damages, fees, limitations, forum, governing law and dispute process.",
+          "machine_rule": {
+            "semantic_kind": "REMEDY",
+            "value_grain": "ONE_ATOMIC_LEGAL_PROPOSITION_PER_WITNESS",
+            "primary_value_carrier_terminal_type": "PROCESS_PASSAGE_REVISION",
+            "required_typed_link_families": [
+              {
+                "terminal_type": "PROCESS_AGREEMENT_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_PASSAGE_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              }
+            ],
+            "optional_typed_link_families": [
+              {
+                "terminal_type": "BIDDER_TRACK_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_EVENT_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_PARTICIPANT_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_POSITION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_RELATIONSHIP_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "TEMPORAL_EXPRESSION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              }
+            ],
+            "unlisted_typed_link_family_rule": "FORBIDDEN",
+            "evidence_binding": {
+              "witness_assertion_evidence": "DIRECT_EXACT_ADMITTED_SOURCE_UTF8_INTERVAL_REQUIRED",
+              "each_link_own_evidence": true,
+              "cross_reference_passage_revision_required": true,
+              "same_governed_deal_required": true,
+              "same_release_required": true,
+              "same_frozen_contract_pair_required": true,
+              "paragraph_or_date_proximity_can_create_link": false
+            }
+          }
         },
         {
           "predicate_key": "EXCLUSIVITY_COUNTERPARTY_RESPONSE_EFFECT",
           "predicate_version": 1,
-          "exact_semantic_requirement": "Govern the downstream contractual effect of counterparty action, inaction or refusal while preserving express refusal as distinct from silence or absence of a recorded response."
+          "exact_semantic_requirement": "Govern the downstream contractual effect of counterparty action, inaction or refusal while preserving express refusal as distinct from silence or absence of a recorded response.",
+          "machine_rule": {
+            "semantic_kind": "COUNTERPARTY_RESPONSE_EFFECT",
+            "value_grain": "ONE_ATOMIC_LEGAL_PROPOSITION_PER_WITNESS",
+            "primary_value_carrier_terminal_type": "PROCESS_RELATIONSHIP_REVISION",
+            "required_typed_link_families": [
+              {
+                "terminal_type": "PROCESS_PARTICIPANT_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_PASSAGE_REVISION",
+                "cardinality": "ONE_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_RELATIONSHIP_REVISION",
+                "cardinality": "ONE"
+              }
+            ],
+            "optional_typed_link_families": [
+              {
+                "terminal_type": "BIDDER_TRACK_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_AGREEMENT_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "PROCESS_EVENT_REVISION",
+                "cardinality": "ZERO_OR_ONE"
+              },
+              {
+                "terminal_type": "PROCESS_POSITION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              },
+              {
+                "terminal_type": "TEMPORAL_EXPRESSION_REVISION",
+                "cardinality": "ZERO_OR_MORE"
+              }
+            ],
+            "unlisted_typed_link_family_rule": "FORBIDDEN",
+            "evidence_binding": {
+              "witness_assertion_evidence": "DIRECT_EXACT_ADMITTED_SOURCE_UTF8_INTERVAL_REQUIRED",
+              "each_link_own_evidence": true,
+              "cross_reference_passage_revision_required": true,
+              "same_governed_deal_required": true,
+              "same_release_required": true,
+              "same_frozen_contract_pair_required": true,
+              "paragraph_or_date_proximity_can_create_link": false
+            }
+          }
         }
       ],
+      "response_union_rule": {
+        "successor_predicate_keys_can_be_atomic_constituents": false,
+        "successor_predicate_keys_can_be_generic_union": false,
+        "atomic_constituent_set_remains_governed_by_response_contract": true,
+        "new_union_membership_requires_successor_contract": true
+      },
       "definitions_are_closed": true,
       "unknown_predicate_has_runtime_path": false,
       "near_key_mapping_permitted": false,

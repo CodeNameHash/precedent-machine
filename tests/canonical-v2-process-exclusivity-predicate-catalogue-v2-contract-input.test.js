@@ -10,8 +10,33 @@ const {
 const ROOT = path.join(__dirname, '../contracts/canonical-v2/successor');
 const ALLOWLIST_PATH = path.join(
   __dirname,
-  '../.github/phase-allowlists/wp-process-exclusivity-predicate-catalogue-v2.json',
+  '../.github/phase-allowlists/wp-process-exclusivity-predicate-machine-rules-v2.json',
 );
+const EXPECTED_PREDECESSOR_KEYS = [
+  'EXCLUSIVITY_REQUESTED',
+  'EXCLUSIVITY_SUBJECT',
+  'EXCLUSIVITY_REQUESTER',
+  'EXCLUSIVITY_RECIPIENT',
+  'EXCLUSIVITY_EXPRESS_REFUSAL',
+  'EXCLUSIVITY_COUNTERPROPOSAL',
+  'EXCLUSIVITY_CONDITIONAL_ACCEPTANCE',
+  'EXCLUSIVITY_RESPONSE_ANY',
+  'EXCLUSIVITY_GRANTED',
+  'EXCLUSIVITY_GRANTOR',
+  'EXCLUSIVITY_BENEFICIARY',
+  'EXCLUSIVITY_START',
+  'EXCLUSIVITY_END',
+  'EXCLUSIVITY_DURATION',
+  'EXCLUSIVITY_EXTENSION',
+  'EXCLUSIVITY_AMENDMENT',
+  'EXCLUSIVITY_WAIVER',
+  'EXCLUSIVITY_EXPIRY',
+  'EXCLUSIVITY_RATIONALE',
+  'EXCLUSIVITY_CONDITION',
+  'EXCLUSIVITY_BIDDER_TRACK',
+  'EXCLUSIVITY_RESPONSE_RELATIONSHIP',
+  'EXCLUSIVITY_ACTUAL_DRAFTING',
+];
 const EXPECTED_NEW_DEFINITIONS = [
   {
     predicate_key: 'EXCLUSIVITY_BOUND_ACTOR_SCOPE',
@@ -122,6 +147,26 @@ const EXPECTED_NEW_DEFINITIONS = [
       'Govern the downstream contractual effect of counterparty action, inaction or refusal while preserving express refusal as distinct from silence or absence of a recorded response.',
   },
 ];
+const EXPECTED_SUCCESSOR_SEMANTIC_KINDS = [
+  'BOUND_ACTOR_SCOPE',
+  'CONDUCT_LINKAGE_STANDARD',
+  'RESTRICTED_ACTION',
+  'SHUTDOWN_OBLIGATION',
+  'STANDSTILL_TREATMENT',
+  'NOTICE_REQUIREMENT',
+  'NOTICE_CONTENT',
+  'QUALIFYING_PROPOSAL_STANDARD',
+  'BIDDER_PARTICIPANT_SCOPE',
+  'RECOMMENDATION_CHANGE',
+  'TENDER_OFFER_RESPONSE',
+  'INTERVENING_EVENT_EXCEPTION',
+  'SUPERIOR_PROPOSAL_TERMINATION',
+  'ALTERNATIVE_TRANSACTION_FEE',
+  'PUBLIC_DISCLOSURE',
+  'GOVERNING_DOCUMENT',
+  'REMEDY',
+  'COUNTERPARTY_RESPONSE_EFFECT',
+];
 
 function loadValue(relativePath) {
   return JSON.parse(fs.readFileSync(path.join(ROOT, relativePath), 'utf8'));
@@ -165,21 +210,28 @@ test('admits one exact version-2 exclusivity predicate catalogue', () => {
 });
 
 test('preserves all 23 predecessor keys and adds the exact 18 definitions', () => {
-  const predecessor = loadValue(
-    'process/predicates/exclusivity-predicate-catalogue.v1.json',
-  ).definition.ordinary_question_contract.mandatory_predicate_keys;
   const definition = members()[1].canonical_value.definition;
   const keys = definition.ordinary_question_contract.mandatory_predicate_keys;
 
   assert.equal(keys.length, 41);
   assert.equal(new Set(keys).size, 41);
-  assert.deepEqual(keys.slice(0, 23), predecessor);
+  assert.deepEqual(keys.slice(0, 23), EXPECTED_PREDECESSOR_KEYS);
   assert.deepEqual(
     keys.slice(23),
     EXPECTED_NEW_DEFINITIONS.map((value) => value.predicate_key),
   );
   assert.deepEqual(
-    definition.successor_predicate_definition_contract.definitions,
+    definition.successor_predicate_definition_contract.definitions.map(
+      ({
+        predicate_key: predicateKey,
+        predicate_version: predicateVersion,
+        exact_semantic_requirement: exactSemanticRequirement,
+      }) => ({
+        predicate_key: predicateKey,
+        predicate_version: predicateVersion,
+        exact_semantic_requirement: exactSemanticRequirement,
+      }),
+    ),
     EXPECTED_NEW_DEFINITIONS,
   );
   assert.equal(
@@ -196,6 +248,55 @@ test('preserves all 23 predecessor keys and adds the exact 18 definitions', () =
       .near_key_mapping_permitted,
     false,
   );
+});
+
+test('closes the machine rule for every successor predicate', () => {
+  const successor = members()[1].canonical_value.definition
+    .successor_predicate_definition_contract;
+  assert.deepEqual(
+    successor.definitions.map(
+      (definition) => definition.machine_rule.semantic_kind,
+    ),
+    EXPECTED_SUCCESSOR_SEMANTIC_KINDS,
+  );
+  for (const definition of successor.definitions) {
+    const rule = definition.machine_rule;
+    assert.equal(
+      rule.value_grain,
+      'ONE_ATOMIC_LEGAL_PROPOSITION_PER_WITNESS',
+    );
+    assert.equal(
+      rule.unlisted_typed_link_family_rule,
+      'FORBIDDEN',
+    );
+    assert.equal(
+      rule.required_typed_link_families.some(
+        (family) => family.terminal_type
+          === rule.primary_value_carrier_terminal_type,
+      ),
+      true,
+    );
+    assert.equal(
+      rule.required_typed_link_families.some(
+        (family) => family.terminal_type === 'PROCESS_PASSAGE_REVISION',
+      ),
+      true,
+    );
+    assert.equal(
+      rule.evidence_binding.witness_assertion_evidence,
+      'DIRECT_EXACT_ADMITTED_SOURCE_UTF8_INTERVAL_REQUIRED',
+    );
+    assert.equal(
+      rule.evidence_binding.paragraph_or_date_proximity_can_create_link,
+      false,
+    );
+  }
+  assert.deepEqual(successor.response_union_rule, {
+    successor_predicate_keys_can_be_atomic_constituents: false,
+    successor_predicate_keys_can_be_generic_union: false,
+    atomic_constituent_set_remains_governed_by_response_contract: true,
+    new_union_membership_requires_successor_contract: true,
+  });
 });
 
 test('binds the sealed complete reconciliation without claiming freeze', () => {
@@ -239,10 +340,10 @@ test('binds the sealed complete reconciliation without claiming freeze', () => {
 });
 
 test('rejects version one, near keys, missing definitions and semantic drift', () => {
+  const predecessorVersion = clone(members()[1].canonical_value);
+  predecessorVersion.definition.catalogue_version = 1;
   assert.throws(
-    () => validateAuthoredProcessPredicateInputs(members(loadValue(
-      'process/predicates/exclusivity-predicate-catalogue.v1.json',
-    ))),
+    () => validateAuthoredProcessPredicateInputs(members(predecessorVersion)),
     (error) => error.code === 'INVALID_PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE',
   );
 
@@ -258,6 +359,19 @@ test('rejects version one, near keys, missing definitions and semantic drift', (
     (catalogue) => {
       catalogue.definition.successor_predicate_definition_contract
         .definitions[0].exact_semantic_requirement = 'Govern actors.';
+    },
+    (catalogue) => {
+      catalogue.definition.successor_predicate_definition_contract
+        .definitions[0].machine_rule.semantic_kind = 'NOTICE_REQUIREMENT';
+    },
+    (catalogue) => {
+      catalogue.definition.successor_predicate_definition_contract
+        .definitions[0].machine_rule.required_typed_link_families.pop();
+    },
+    (catalogue) => {
+      catalogue.definition.successor_predicate_definition_contract
+        .definitions[0].machine_rule.evidence_binding
+        .paragraph_or_date_proximity_can_create_link = true;
     },
     (catalogue) => {
       catalogue.definition.reconciliation_evidence_contract
@@ -290,15 +404,15 @@ test('grants no runtime, freeze or external authority', () => {
   );
 });
 
-test('uses one exact four-file canonical-work-start allowlist', () => {
+test('uses one exact four-file machine-rule allowlist', () => {
   const allowlist = JSON.parse(fs.readFileSync(ALLOWLIST_PATH, 'utf8'));
   assert.equal(
     allowlist.phase,
-    'WP-PROCESS-EXCLUSIVITY-PREDICATE-CATALOGUE-V2',
+    'WP-PROCESS-EXCLUSIVITY-PREDICATE-MACHINE-RULES-V2',
   );
   assert.equal(allowlist.required_work_class, 'canonical_work_start');
   assert.deepEqual(allowlist.allowed, [
-    '.github/phase-allowlists/wp-process-exclusivity-predicate-catalogue-v2.json',
+    '.github/phase-allowlists/wp-process-exclusivity-predicate-machine-rules-v2.json',
     'contracts/canonical-v2/successor/process/predicates/exclusivity-predicate-catalogue.v2.json',
     'lib/canonical-v2/process-predicate-contract-input-validator.js',
     'tests/canonical-v2-process-exclusivity-predicate-catalogue-v2-contract-input.test.js',
