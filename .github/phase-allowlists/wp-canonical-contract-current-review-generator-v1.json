@@ -1,0 +1,21 @@
+{
+  "phase": "WP-CANONICAL-CONTRACT-CURRENT-REVIEW-GENERATOR-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-contract-current-review-generator-v1.json",
+    "scripts/generate-canonical-contract-current-review.mjs",
+    "tests/canonical-v2-canonical-contract-current-review-generator.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Read-only deterministic STAGING review-source-closure generator. It validates the exact governing specification bytes and produces only PRE_REVIEW_SOURCE_CLOSED_NOT_REVIEWED output. It grants no review, approval, freeze, signing, deployment, writer, serving, release, activation, database or production authority."
+}
