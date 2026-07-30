@@ -41,23 +41,24 @@ exact `origin/main`.
 | Item | Exact state |
 | --- | --- |
 | Last signed main | `a3149cfb6434f3166aac2c3bd9631e637d5df8ae` |
-| Current `origin/main` | `286d5050280aff6866e7844353dd4623efd4c221` |
+| Current `origin/main` | `7b6bc64157c49832129fa2ca227399850cd983fc` |
 | Protected publication | `9552de2185b11d80bd1e2b80757f4f07005c58d1` |
 | Generation | `44` |
 | Status artefact ID | `864ec7b5ffbc46be61bcf4547b103d747fdb82bb5ac963beaf61bd3ec7a80de9` |
-| Official verifier | `FAIL_CLOSED`: Generation 44 is stale against current `origin/main` |
+| Official verifier | `FAIL_CLOSED`: Generation 44 is stale against current `origin/main`; no P1 successor has been published |
 | Work classes `PASS` | `specification_review`, `emergency_containment`, `implementation_planning`, `isolation_boundary_setup`, `snapshot_restore_and_preview`, `canonical_work_start` |
 | Work classes `OPEN` | `gate_status_bootstrap`, `vertical_slice_execution`, `candidate_scope_and_extraction`, `production_import`, `cutover_authorisation_issue`, `production_cutover`, `programme_complete` |
 | Pilot gates | `P1_CONTRACT_FREEZE_ATTESTED: OPEN`; `P1_VERTICAL_SLICE_PASS: OPEN` |
-| Exact-main tests | 4,781 total: 4,774 pass, 0 fail, 7 environment-only skip; build 29/29 pages |
+| Exact-main tests | Local: 4,817 total, 4,810 pass, 0 fail, 7 environment-only skip; build 29/29 pages. GitHub CI run `30560764155` passed test/build; invariants were still completing at this ledger update. |
 | Signed successor | Not yet published for current main. Generation 44 remains the protected predecessor. |
-| Production deployment | `dpl_5Yh5y6XNb73tdwmgBL7knkEsrQXe`, exact current main, HTTP 200; market containment remains active |
-| Isolated Preview deployment | `dpl_EV6b1bdkXCkW1Ljynm2tRsHNKZ2Y`, exact current main, READY and SSO protected |
+| Production deployment | Prior deployment `dpl_5Yh5y6XNb73tdwmgBL7knkEsrQXe`; exact `7b6bc64` deployment waits for the protected finaliser correction; market containment remains active |
+| Isolated Preview deployment | Prior deployment `dpl_EV6b1bdkXCkW1Ljynm2tRsHNKZ2Y`; preview branch now points to `7b6bc64`; exact deployment waits for the protected finaliser correction |
 | Active PM work package | `PILOT_FREEZE_AND_VERTICAL_SLICE` |
-| Fixed blocker-closure basis | Current main `286d5050280aff6866e7844353dd4623efd4c221`; main stays fixed until the batch is complete |
-| PM blocker-closure branch | `codex/p1-pilot-freeze-blocker-closure-v1` at `f146d5f`; main remains fixed |
+| Fixed blocker-closure basis | Contract bundle `99b0d267e4d3712c538d3ba206117d2da1bd305c6be71dc664e465fb27854b27`; 170 source files, 169 classified inputs, 94 generated members and eight aggregates |
+| PM blocker-closure branch | `codex/p1-pilot-freeze-blocker-closure-v1` completed at `7b6bc64` and fast-forwarded to main |
+| Active finaliser branch | `codex/p1-protected-freeze-finaliser-v1` from exact main; tooling only, no contract-input change |
 | PI Stage 1 branch | `codex/process-exclusivity-predicate-runtime-v2` at `639e1d0c3604273315ee914e7d61374518d9b1f9` |
-| Ready integration receipts | PI Stage 1 `639e1d0` and P7 `b273687` are pushed and mechanically confirmed as already present on main with later fixes. Corrected PM units: residuals `5536ebd`, topology `59c7435`, Query/serving `0f7880b`, legal/F27 `58d3d64`. All are queued on `f146d5f`. |
+| Ready integration receipts | PI Stage 1 and P7 are pushed and present on main. The contract closure batch and Stage 4 corrections are on main. The only active unit is the missing protected P1 finaliser. |
 
 All 24 Phase 9 gates in the signed status remain `OPEN`.
 
@@ -83,8 +84,9 @@ The exact reserved-path set is machine-generated in
 
 | Unit | Phase | Outcome and owner | Branch and boundary | Class; dependency; evidence | Status; next; Ben |
 | --- | --- | --- | --- | --- | --- |
-| `PM-LEDGER-01` | control | This ledger. PM controller. | `codex/p1-pilot-freeze-blocker-closure-v1`; this file plus its exact allowlist in the integration commit. | `canonical_work_start`; current Git and protected status; path, state and line-count checks. | `ACTIVE`; ship in the blocker-closure batch; no Ben. |
-| `PM-FREEZE-ROOT-01` | P1/P8 | Exact bundle compiler, generated topology, required-kind registry, freeze candidate and pre-review package. PM implementation. | `codex/p1-pilot-freeze-blocker-closure-v1` at `f146d5f`; topology correction `59c7435`; central root `4214b64`. | `canonical_work_start`; 167 authored members, eight categories, no cycle; affected chain 175/175; full Stage 5 and two uncached compiles remain. | `ACTIVE`; run full suite/build, compile twice, then Stage 4; no Ben until exact root approval. |
+| `PM-LEDGER-01` | control | This ledger. PM controller. | `codex/p1-protected-freeze-finaliser-v1`; this file plus its exact allowlist. | `canonical_work_start`; current Git and protected status; path, state and line-count checks. | `ACTIVE`; update again after the signed generation; no Ben. |
+| `PM-FREEZE-ROOT-01` | P1/P8 | Exact bundle compiler, generated topology, required-kind registry, freeze candidate and pre-review package. PM implementation. | Main `7b6bc64`; bundle digest `99b0d267e4d3712c538d3ba206117d2da1bd305c6be71dc664e465fb27854b27`. | `canonical_work_start`; 169 classified inputs, eight categories, zero structural defects; 4,810 tests and build pass; three exact-root reviews pass. | `COMPLETE`; contract bundle approved by Ben; no further Ben unless its bytes change. |
+| `PM-P8-FINALISER-01` | P8 | Protected producer signs the approved freeze records and projects P1 PASS into one successor status. PM implementation/controller. | `codex/p1-protected-freeze-finaliser-v1`; exact workflow, producer, gate-evidence integration, tests and allowlist. | `canonical_work_start`; exact protected review artifact, four fixed signing roles, exact deployments and predecessor publication `9552de2`; hostile signature, root, deployment and CAS tests. | `ACTIVE`; implement without changing contract inputs, repeat exact-root checks, then obtain the unavoidable exact-commit approval; Ben required only for that new commit binding. |
 | `PM-P1-RESIDUAL-01` | P1 | Governed residual family with admission, consumption, universe, disposition, impact and empty-queue rules. PM implementation. | `codex/p1-governed-residual-contract-family-v2` at `5536ebd`; eight contracts, validator and focused test. | `canonical_work_start`; Stage 2 final PASS and central registration PASS. | `COMPLETE`; 13/13 focused and affected chain PASS; no Ben. |
 | `PM-P1-QUERY-SERVING-01` | P1/P4/P6/P7 | Direct Product IR, shared row, pilot metrics and bounded set-based serving/cache rules. PM implementation. | `codex/p1-product-query-serving-contracts-v2` at `0f7880b`; exact cumulative allowlist. | `canonical_work_start`; Stage 2 final PASS and central registration PASS. | `COMPLETE`; direct Product IR and governed result/metric targets pass; no Ben. |
 | `PI-PILOT-BATCH-01` | P1/P3/P4/P5 | Metsera Process contracts and pure runtime. Process Intelligence. | PI head `639e1d0c3604273315ee914e7d61374518d9b1f9`; patch-equivalent PM commits are already on the milestone candidate. | `canonical_work_start`; Generation 44; affected Process/Product chain passed after PM manifest reconciliation. | `COMPLETE` on the milestone candidate; retain exact Stage 1 handoff; no Ben. |
@@ -103,19 +105,16 @@ evidence because the reviewed root failed.
 
 ## 3. Ordered queue for the next 48 hours
 
-1. Finish Stage 2 and Stage 3 disposition for the four bounded blocker units.
-2. Integrate the legal-semantic correction unit when its focused tests pass.
-3. Regenerate the required-kind registry, successor manifest, compiler
-   registrations, exact counts and signer inventory once.
-4. Compile the complete Agreement, shared and Process inputs twice without
-   cache. Require identical canonical bytes and fingerprint.
-5. Run the affected-chain tests. Then run the complete suite and build once.
-6. Run the nine-stage preflight. Close all test and exact-root gaps.
-7. `Stage 4`: run architecture/identity, legal-semantic, and query/release
-   reviews concurrently at high reasoning against the corrected exact root.
-8. Prepare the one Ben bundle approval package while Stage 4 runs.
-9. Ask Ben once. After approval, create freeze evidence and publish the signed
-   successor. Retain production containment.
+1. Complete `PM-P8-FINALISER-01` without changing contract inputs.
+2. Run focused hostile tests, the affected gate chain, complete suite and build.
+3. Rebuild the exact package. Confirm the bundle digest remains `99b0d267...`.
+4. Repeat the three high-reasoning exact-root reviews against the new commit.
+5. Ask Ben once for the unavoidable new exact-commit binding. The approved
+   contract-bundle fingerprint does not change.
+6. Move the tooling-only commit to main and the Preview branch.
+7. Deploy exact production and isolated Preview builds.
+8. Run the protected P1 reviews and finaliser. Publish the signed successor.
+9. Run the official verifier, then execute QXO and Metsera in isolated staging.
 
 ## 4. Remaining bounded units through P11
 
@@ -137,11 +136,11 @@ evidence because the reviewed root failed.
 
 | Unit | Phase | Outcome and owner | Boundary | Class; dependencies; tests | Status; next action; Ben |
 | --- | --- | --- | --- | --- | --- |
-| `P8-INTEGRATION-01` | P8 | One combined, deployable milestone commit. PM controller. | `codex/pilot-freeze-milestone-v1`; exact union of accepted allowlists in `.github/phase-allowlists/`. | `canonical_work_start`; P1-P7 closure; Stage 2/3 records, full suite, build and preflight. | `ACTIVE`; finish P2 chain and protected review producer, then run Stage 5; no Ben. |
-| `P8-BUNDLE-02` | P8 | Deterministic Agreement, shared and Process root. PM implementation. | `canonical-contract-bundle-{compiler,freeze-candidate-assembler,pre-review-package-assembler}.js`, required-kind registry, manifest and tests. | `canonical_work_start`; P8 candidate; two identical uncached compiles and zero structural defects. | `ACTIVE`; compile at final clean head; no Ben. |
-| `P8-REVIEWS-03` | P8 | Three independent reviews of exact bytes. Independent reviewer. | Protected P1 review workflow and runner, immutable external result files and exact package fingerprint. | `canonical_work_start`; P8 bundle; Stage 4 architecture/identity, legal-semantic and query/release reviews at high. | `ACTIVE`; use the protected producer after the final fingerprint exists; no Ben. |
-| `P8-BEN-FREEZE-04` | P8 | Approval of exact bundle and fingerprint. Ben. | External approval record bound to the pre-review package, review results and exact Git commit. | Reserved Ben decision; P8 reviews all pass. | `BLOCKED`; ask once when package is complete; **Ben required**. |
-| `P8-ATTEST-05` | P8 | `P1_CONTRACT_FREEZE_ATTESTED: PASS` and `vertical_slice_execution: PASS`. PM controller. | `contract-freeze-contracts.js`, gate registry/predicates, `sign-g0-evidence.mjs` and protected publication. | Status publisher authority; exact Ben approval; official verifier. | `BLOCKED`; sign and publish after approval; no further Ben. |
+| `P8-INTEGRATION-01` | P8 | One combined, deployable milestone commit. PM controller. | Main `7b6bc64`; exact union of accepted allowlists. | `canonical_work_start`; P1-P7 closure, full suite, build and reviews. | `COMPLETE`; main and Preview branch point to the approved batch; no Ben. |
+| `P8-BUNDLE-02` | P8 | Deterministic Agreement, shared and Process root. PM implementation. | Existing bundle compiler, assemblers, required-kind registry and manifest. | `canonical_work_start`; two identical uncached compiles and zero structural defects. | `COMPLETE`; bundle digest `99b0d267...`; no Ben. |
+| `P8-REVIEWS-03` | P8 | Three independent reviews of exact bytes. Independent reviewer. | Exact package and protected P1 review producer. | `canonical_work_start`; architecture/identity, legal-semantic and query/release reviews at high. | `REVIEW`; local exact-root reviews pass; repeat after the tooling-only commit, then run protected reviews; no Ben. |
+| `P8-BEN-FREEZE-04` | P8 | Approval of exact bundle and fingerprint. Ben. | Approval bound to exact bundle, package and Git commit. | Reserved Ben decision; all reviews pass. | `REVIEW`; bundle approved at `7b6bc64`; formal tooling forces one fresh exact-commit binding after finaliser completion; **Ben required once**. |
+| `P8-ATTEST-05` | P8 | `P1_CONTRACT_FREEZE_ATTESTED: PASS` and `vertical_slice_execution: PASS`. PM controller. | New protected finaliser plus existing contracts, validators and publication CAS. | Status publisher authority; exact Ben approval; official verifier. | `ACTIVE`; implement the missing protected producer, then sign and publish; no further Ben. |
 | `P8-QXO-SLICE-06` | P8 | QXO Agreement control slice through all required staging outputs. PM implementation. | `canonical-v2-staging-qxo-capitalisation-f28.mjs`, QXO F28 fixture/runtime and cross-view tests. | `vertical_slice_execution`; P8 attestation; isolated staging only. | `BLOCKED`; execute after verifier passes; no Ben. |
 | `P8-METSERA-SLICE-07` | P8 | Metsera Process slice through the same staging outputs and failure isolation. PI with PM controller. | `evidence/process-intelligence/metsera-gold/**`, Process pilot/result sidecars, canonical writer, candidate release and Product tests. | `vertical_slice_execution`; QXO control and sealed comparison; isolated staging only. | `BLOCKED`; execute after QXO control; no Ben. |
 | `P8-VERTICAL-PASS-08` | P8 | `P1_VERTICAL_SLICE_PASS`, `PROCESS_VERTICAL_SLICE_PASS` and `candidate_scope_and_extraction: PASS`. PM controller. | Signed evidence and protected status. | Both slices pass; official verifier. | `BLOCKED`; publish exact successor; no Ben unless a material contract changes. |
@@ -178,10 +177,9 @@ evidence because the reviewed root failed.
 
 ## 5. Critical path
 
-Generation 44 fixed basis → PI Stage 2/3 → one combined integration candidate →
-P1 root closure → P2 stale-test correction → P2-P7 mechanical closure →
-protected P8 review producer → two identical bundle compiles → Stage 4
-exact-root reviews → one Ben bundle approval → freeze attestation and
+Generation 44 fixed basis → P1-P7 mechanical closure → exact bundle and Stage 4
+reviews → Ben bundle approval → protected P1 finaliser correction → repeated
+exact-root reviews and exact-commit approval → freeze attestation and
 `vertical_slice_execution: PASS` → QXO control slice → Metsera Process slice →
 `candidate_scope_and_extraction: PASS` → Metsera and stratified certification →
 full-corpus certification → security, soak and rollback proofs → inactive
@@ -234,8 +232,6 @@ successor needs Ben.
 | --- | --- | --- |
 | P6 exact deployed Preview behaviour. | After the final candidate deployment, repeat the desktop/mobile/reflow, filter, source, context and related-drafting smoke on that exact deployment ID. | PM implementation |
 | P2 shared test expectation repair. | Run the four named focused tests and the complete P2 affected chain after `1c667dd`. | PM controller |
-| Final successor member count and kind count. | Regenerate required-kind registry and manifest from the combined tree, then run both generators with `--check`. | PM controller |
-| Final missing, duplicate, conflict, cycle and residual counts. | Run the actual input compiler and bundle compiler twice on the combined tree. Require zero for each count and identical bytes. | PM controller |
-| Protected P8 review producer. | Prove that it creates fresh sessions and signs the exact observed registration and result carriers without caller-asserted session, result or reviewer identity. | PM controller |
-| Combined Stage 5 full-suite and build result. | Run `npm test` and `npm run build` once after all accepted units and manifest repairs are present. | PM controller |
+| Protected P1 finaliser. | Prove that exact signed review evidence, Ben approval, deployments and predecessor publication create one fail-closed P1 PASS successor without changing contract inputs. | PM controller |
+| Finaliser exact-root effect. | Recompile after the tooling-only commit and require unchanged bundle digest `99b0d267...`, then repeat three exact-root reviews. | PM controller |
 | Exact final deployment IDs. | Inspect the two Vercel deployments for the final candidate commit before signed publication. | PM controller |
