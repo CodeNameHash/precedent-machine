@@ -1,0 +1,23 @@
+{
+  "phase": "WP-P8-PROCESS-PIPELINE-INTEGRATION-CORRECTIONS-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p8-process-pipeline-integration-corrections-v1.json",
+    "tests/canonical-v2-process-candidate-graph.test.js",
+    "tests/canonical-v2-process-lexical-enumerator.test.js",
+    "tests/canonical-v2-process-semantic-enumerator.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Reconciles the P8 Process pipeline tests with the newer trusted scope receipt and canonical residual checks already present on the PM integration basis. It changes no runtime authority or legal meaning."
+}

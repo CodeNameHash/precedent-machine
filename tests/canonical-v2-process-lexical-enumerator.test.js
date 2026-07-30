@@ -201,9 +201,12 @@ test('fails closed for hostile source records, duplicate candidates and reported
   );
 
   assert.throws(
-    () => enumerateProcessLexicalCandidates(input({
-      source_units: [sourceUnit({ lexical_observations: [] })],
-    })),
+    () => enumerateProcessLexicalCandidates(
+      input({
+        source_units: [sourceUnit({ lexical_observations: [] })],
+      }),
+      scopeReceipt().scope_receipt_id,
+    ),
     { code: 'INVALID_PROCESS_LEXICAL_SOURCE_UNIT' },
   );
 });
@@ -212,7 +215,10 @@ test('rejects duplicate scope residual record keys', () => {
   const duplicateReceipt = scopeReceipt();
   duplicateReceipt.residuals.push({ ...duplicateReceipt.residuals[0] });
   assert.throws(
-    () => enumerateProcessLexicalCandidates(input({ scope_receipt: duplicateReceipt })),
+    () => enumerateProcessLexicalCandidates(
+      input({ scope_receipt: duplicateReceipt }),
+      duplicateReceipt.scope_receipt_id,
+    ),
     { code: 'INVALID_PROCESS_LEXICAL_SCOPE_RECEIPT' },
   );
 });
@@ -224,7 +230,10 @@ test('rejects scope residual record keys outside canonical UTF-8 order', () => {
     { ...reorderedReceipt.residuals[0], record_key: 'Z_RESIDUAL' },
   ];
   assert.throws(
-    () => enumerateProcessLexicalCandidates(input({ scope_receipt: reorderedReceipt })),
+    () => enumerateProcessLexicalCandidates(
+      input({ scope_receipt: reorderedReceipt }),
+      reorderedReceipt.scope_receipt_id,
+    ),
     { code: 'INVALID_PROCESS_LEXICAL_SCOPE_RECEIPT' },
   );
 });

@@ -114,7 +114,7 @@ test('binds producer-governed rejected and residual outcomes to the semantic out
       sourceUnit('rejected', 'REJECTED'),
       sourceUnit('residual', 'RESIDUAL'),
     ],
-  }));
+  }), scopeReceipt().scope_receipt_id);
   for (const outcome of [...result.rejections, ...result.residuals]) {
     const {
       schema_version: schemaVersion,

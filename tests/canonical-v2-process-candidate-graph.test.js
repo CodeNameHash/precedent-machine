@@ -128,7 +128,7 @@ test('rejects mismatched frozen scope receipts and unsafe bounds', () => {
   }
   assert.throws(
     () => buildProcessCandidateGraph(scopeMismatch),
-    { code: 'INVALID_PROCESS_CANDIDATE_ENUMERATION' },
+    { code: 'INVALID_PROCESS_CANDIDATE_GRAPH_INPUT' },
   );
 
   const overBound = input({ limits: { ...limits(), max_candidate_count: 2 } });
