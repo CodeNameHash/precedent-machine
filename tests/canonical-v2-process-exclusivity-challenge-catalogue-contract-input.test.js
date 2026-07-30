@@ -45,7 +45,7 @@ function processMembers() {
       .filter((member) => member.object_kind.startsWith('PROCESS_')),
     loadMember('process/occurrence-slots/process-event.v1.json'),
     loadMember('process/predicates/exclusivity-completeness-challenge-catalogue.v1.json'),
-    loadMember('process/registries/process-controlled-code-registry.v1.json'),
+    loadMember('process/registries/process-controlled-code-registry.v2.json'),
   ];
 }
 
