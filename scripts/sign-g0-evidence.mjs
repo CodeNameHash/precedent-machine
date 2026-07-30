@@ -174,6 +174,7 @@ const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
   '.github/phase-allowlists/wp-process-phrasebook-product-result-adapter-contract-v1.json',
   '.github/phase-allowlists/wp-process-phrasebook-result-admission-v1.json',
   '.github/phase-allowlists/wp-process-phrasebook-result-identity-v1.json',
+  '.github/phase-allowlists/wp-process-phrasebook-shared-row-bridge-v1.json',
   '.github/phase-allowlists/wp-process-position-identity-v1.json',
   '.github/phase-allowlists/wp-process-related-passages-v1.json',
   '.github/phase-allowlists/wp-product-ask-mapping-registry-v1.json',
