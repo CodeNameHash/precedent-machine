@@ -138,6 +138,7 @@ const REVIEW_ARTIFACT_SHA256 =
 const REVIEW_ARTIFACT_BYTE_SIZE = 16759182;
 const APPROVAL_INTENT = 'AUTHORISE_ISOLATED_STAGING_CANONICAL_IMPLEMENTATION';
 const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
+  '.github/phase-allowlists/wp-agreement-comparable-result-order-v1.json',
   '.github/phase-allowlists/wp-agreement-comparable-result-ordering-contract-v1.json',
   '.github/phase-allowlists/wp-canonical-successor-root-v1.json',
   '.github/phase-allowlists/wp-process-agreement-identity-v1.json',
@@ -180,6 +181,7 @@ const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
   '.github/phase-allowlists/wp-product-query-action-compilers-v1.json',
   '.github/phase-allowlists/wp-product-query-result-compiler-v1.json',
   '.github/phase-allowlists/wp-product-query-result-set-compiler-v1.json',
+  '.github/phase-allowlists/wp-product-query-result-set-agreement-v2.json',
   '.github/phase-allowlists/wp-product-query-result-contract-v1.json',
   '.github/phase-allowlists/wp-product-result-action-compilers-v1.json',
   '.github/phase-allowlists/wp-product-result-action-contracts-v1.json',
@@ -362,6 +364,7 @@ const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
   'lib/programme-gates/schema-registry.js',
   'lib/programme-gates/test-executable-registry.js',
   'lib/canonical-v2/canonical-contract-input-compiler.js',
+  'lib/canonical-v2/agreement-comparable-result-order.js',
   'lib/canonical-v2/agreement-query-ordering-contract-input-validator.js',
   'lib/canonical-v2/deal-participant-relationship.js',
   'lib/canonical-v2/entity-identity-bridge.js',
@@ -441,6 +444,7 @@ const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
   'tests/canonical-v2-canonical-contract-relationship-input-validator.test.js',
   'tests/canonical-v2-canonical-contract-source-tree.test.js',
   'tests/canonical-v2-canonical-contract-technical-relationship-effects.test.js',
+  'tests/canonical-v2-agreement-comparable-result-order.test.js',
   'tests/canonical-v2-agreement-query-ordering-contract-input.test.js',
   'tests/canonical-v2-entity-identity-bridge.test.js',
   'tests/canonical-v2-entity-name-occurrence.test.js',
