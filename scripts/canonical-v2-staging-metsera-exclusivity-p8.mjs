@@ -7,6 +7,12 @@ const {
   compileMetseraExclusivityStagingPilot,
 } = require('../lib/canonical-v2/metsera-exclusivity-staging-pilot');
 const {
+  compileMetseraExclusivityProductAdmission,
+} = require('../lib/canonical-v2/metsera-exclusivity-product-admission');
+const {
+  contentId,
+} = require('../lib/canonical-v2/canonical-bytes');
+const {
   loadSealedMetseraGoldEvidence,
 } = require('../lib/canonical-v2/metsera-gold-evidence');
 
@@ -41,6 +47,44 @@ async function main() {
   const receipt = compileMetseraExclusivityStagingPilot(
     sourceBytesByAccession,
   );
+  const releaseSeed = {
+    materialisation_receipt_id: receipt.materialisation_receipt_id,
+    staging_only: true,
+  };
+  const candidateReleaseBinding = {
+    candidate_release_manifest_id: contentId(
+      'METSERA_EXCLUSIVITY_CANDIDATE_RELEASE_MANIFEST/V1',
+      releaseSeed,
+    ),
+    candidate_release_manifest_payload_digest: contentId(
+      'METSERA_EXCLUSIVITY_CANDIDATE_RELEASE_PAYLOAD/V1',
+      releaseSeed,
+    ),
+    corpus_release_id: contentId(
+      'METSERA_EXCLUSIVITY_CANDIDATE_CORPUS_RELEASE/V1',
+      releaseSeed,
+    ),
+    product_query_definition_id: contentId(
+      'METSERA_EXCLUSIVITY_PRODUCT_QUERY/V1',
+      { predicate_key: 'EXCLUSIVITY_GRANTED' },
+    ),
+    validation_receipt_ids: {
+      narration_revision: receipt.materialisation_receipt_id,
+      predicate_witness_revision: receipt.materialisation_receipt_id,
+      result_input_lineage: receipt.materialisation_receipt_id,
+      preview: receipt.candidate_validation_receipt_id,
+      ordering_fact: receipt.candidate_validation_receipt_id,
+      release_membership: receipt.candidate_validation_receipt_id,
+      exact_detail: receipt.materialisation_receipt_id,
+    },
+    release_state: 'CANDIDATE_NOT_ACTIVE',
+    authority_state: 'NOT_GRANTED',
+  };
+  const productAdmission =
+    compileMetseraExclusivityProductAdmission(
+      receipt,
+      candidateReleaseBinding,
+    );
   process.stdout.write(`${JSON.stringify({
     schema_version: receipt.schema_version,
     selected_passage_id: receipt.selected_passage_id,
@@ -57,6 +101,13 @@ async function main() {
       receipt.candidate_validation_receipt_id,
     materialisation_receipt_id:
       receipt.materialisation_receipt_id,
+    product_admission_adapter_receipt_id:
+      productAdmission.product_admission_adapter_receipt_id,
+    process_phrasebook_admission_receipt_id:
+      productAdmission.admission_receipt.admission_receipt_id,
+    process_phrasebook_result_id:
+      productAdmission.admission_receipt
+        .process_phrasebook_passage_result_id,
     authority_limits: receipt.authority_limits,
   }, null, 2)}\n`);
 }

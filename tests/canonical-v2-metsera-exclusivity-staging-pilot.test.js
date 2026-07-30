@@ -34,6 +34,10 @@ test('grants no operational authority and does not label narration as actual dra
     'utf8',
   );
   assert.doesNotMatch(source, /passage_role_codes:\s*\[\s*'ACTUAL_DRAFTING'/);
+  assert.match(
+    source,
+    /evidence:\s*evidence\('EXCLUSIVITY_GRANTED', narrationInterval\)/,
+  );
   assert.doesNotMatch(
     source,
     /canonical-writer|service[_-]?role|supabase|production.*write/i,
@@ -54,4 +58,20 @@ test('uses the exact four-file phase boundary', () => {
     'scripts/canonical-v2-staging-metsera-exclusivity-p8.mjs',
     'tests/canonical-v2-metsera-exclusivity-staging-pilot.test.js',
   ]);
+});
+
+test('uses the current SEC and candidate-validation receipt fields', () => {
+  const source = fs.readFileSync(
+    require.resolve(
+      '../lib/canonical-v2/metsera-exclusivity-staging-pilot',
+    ),
+    'utf8',
+  );
+  assert.match(source, /\.oracle_receipt_id/);
+  assert.match(source, /\.candidate_validation_receipt_id/);
+  assert.doesNotMatch(source, /\.sec_completeness_oracle_receipt_id/);
+  assert.doesNotMatch(
+    source,
+    /candidate_validation_receipt\.validation_receipt_id/,
+  );
 });

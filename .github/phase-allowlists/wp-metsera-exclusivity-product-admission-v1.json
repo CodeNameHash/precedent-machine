@@ -1,0 +1,23 @@
+{
+  "phase": "WP-METSERA-EXCLUSIVITY-PRODUCT-ADMISSION-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-metsera-exclusivity-product-admission-v1.json",
+    "lib/canonical-v2/metsera-exclusivity-product-admission.js",
+    "lib/canonical-v2/metsera-exclusivity-staging-pilot.js",
+    "scripts/canonical-v2-staging-metsera-exclusivity-p8.mjs",
+    "tests/canonical-v2-metsera-exclusivity-product-admission.test.js",
+    "tests/canonical-v2-metsera-exclusivity-staging-pilot.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/migrations/**"
+  ],
+  "note": "Admits the exact Metsera exclusivity-grant sidecar to the existing Process phrasebook result contract. It retains source evidence and materialisation lineage, creates no new result architecture and grants no query, writer, serving, release, import, activation or production authority."
+}
