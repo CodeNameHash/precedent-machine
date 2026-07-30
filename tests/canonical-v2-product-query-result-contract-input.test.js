@@ -25,6 +25,14 @@ const PROCESS_RESULT_SET_ADAPTER_PATH = path.join(
   ROOT,
   'product/query/process-phrasebook-product-result-set-adapter.v1.json',
 );
+const QXO_ADAPTER_PATH = path.join(
+  ROOT,
+  'product/query/qxo-capitalisation-product-result-adapter.v1.json',
+);
+const QXO_F28_ADAPTER_PATH = path.join(
+  ROOT,
+  'product/query/qxo-capitalisation-f28-product-result-adapter.v1.json',
+);
 
 function loadPath(filePath) {
   const canonicalValue = JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -46,11 +54,21 @@ function loadProcessResultSetAdapter() {
   return loadPath(PROCESS_RESULT_SET_ADAPTER_PATH);
 }
 
+function loadQxoAdapter() {
+  return loadPath(QXO_ADAPTER_PATH);
+}
+
+function loadQxoF28Adapter() {
+  return loadPath(QXO_F28_ADAPTER_PATH);
+}
+
 function loadMembers() {
   return [
     loadProcessAdapter(),
     loadMember(),
     loadProcessResultSetAdapter(),
+    loadQxoAdapter(),
+    loadQxoF28Adapter(),
   ];
 }
 
@@ -58,7 +76,7 @@ function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
-test('registers the closed Product result definition and both Process adapters', () => {
+test('registers the closed Product result and domain adapter set', () => {
   const member = loadMember();
   assert.doesNotThrow(
     () => validateAuthoredProductQueryResultInputs(loadMembers()),
@@ -74,6 +92,30 @@ test('registers the closed Product result definition and both Process adapters',
   assert.equal(
     member.canonical_value.definition.result_contract.parent_kind,
     'PRODUCT_QUERY_IR',
+  );
+});
+
+test('governs the QXO F28 fourteen-metric Product adapter', () => {
+  const definition = loadQxoF28Adapter().canonical_value.definition;
+  assert.equal(
+    definition.source_contract.source_result_definition_version,
+    3,
+  );
+  assert.equal(
+    definition.source_contract.required_market_metric_slot_count,
+    14,
+  );
+  assert.equal(
+    definition.source_contract.generic_no_market_data_permitted,
+    false,
+  );
+  assert.equal(
+    definition.cross_view_contract.generic_no_market_data_authority,
+    'FORBIDDEN',
+  );
+  assert.equal(
+    definition.payload_mapping.all_fourteen_metric_contexts_preserved,
+    true,
   );
 });
 
@@ -742,6 +784,8 @@ test('grants no runtime, data, write, serving or production authority', () => {
     CONTRACT_PATH,
     PROCESS_ADAPTER_PATH,
     PROCESS_RESULT_SET_ADAPTER_PATH,
+    QXO_ADAPTER_PATH,
+    QXO_F28_ADAPTER_PATH,
     path.join(
       __dirname,
       '../lib/canonical-v2/product-query-result-contract-input-validator.js',
