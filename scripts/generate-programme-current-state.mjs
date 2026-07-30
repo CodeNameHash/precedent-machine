@@ -8,12 +8,18 @@ import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url);
 const {
   deriveSignerCoverage,
+  validateSignerPolicyEvolution,
 } = require('../lib/programme-gates/pilot-integration-preflight');
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const target = path.join(root, '.github/pm-integration/current-state.json');
 const args = new Set(process.argv.slice(2));
 if ([...args].some((arg) => !['--check', '--write'].includes(arg)) || args.size !== 1) throw new Error('use exactly one of --check or --write');
-const git = (args) => execFileSync('git', ['-C', root, ...args], { encoding: 'utf8' }).trim();
+const gitRaw = (args) => execFileSync(
+  'git',
+  ['-C', root, ...args],
+  { encoding: 'utf8' },
+);
+const git = (args) => gitRaw(args).trim();
 const gitSucceeds = (args) => {
   try {
     git(args);
@@ -162,22 +168,37 @@ if (!fs.existsSync(path.join(root, '.github/pm-integration/deployment-metadata.j
 if (!fs.existsSync(testReceiptPath)) {
   blockers.push('TEST_RECEIPTS_REQUIRED');
 }
-const signerSource = fs.readFileSync(
+const candidateSignerSource = fs.readFileSync(
   path.join(root, 'scripts/sign-g0-evidence.mjs'),
   'utf8',
 );
-const signerBasis = deriveSignerCoverage(signerSource, []).review_basis_commit;
+const trustedSignerSource = gitRaw([
+  'show',
+  `${signedStatus.code_commit}:scripts/sign-g0-evidence.mjs`,
+]);
+const signerBasis = deriveSignerCoverage(
+  trustedSignerSource,
+  [],
+).review_basis_commit;
 const signerRequiredPaths = git([
   'diff',
   '--name-only',
   `${signerBasis}..${currentHead}`,
 ]).split('\n').filter(Boolean);
-const signerCoverage = deriveSignerCoverage(signerSource, signerRequiredPaths);
-if (
-  signerCoverage.inventory_paths.length
-  !== signerCoverage.required_paths.length
-) {
-  blockers.push('SIGNER_PATH_COVERAGE_REQUIRED');
+try {
+  const signerCoverage = validateSignerPolicyEvolution(
+    trustedSignerSource,
+    candidateSignerSource,
+    signerRequiredPaths,
+  );
+  if (
+    signerCoverage.inventory_paths.length
+    !== signerCoverage.required_paths.length
+  ) {
+    blockers.push('SIGNER_PATH_COVERAGE_REQUIRED');
+  }
+} catch {
+  blockers.push('SIGNER_POLICY_DRIFT');
 }
 const record = {
   schema_version: 'ProgrammeCurrentState/V1', main_commit: main,

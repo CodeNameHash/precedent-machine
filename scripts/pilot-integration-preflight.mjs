@@ -14,7 +14,12 @@ const {
 const args = process.argv.slice(2);
 if (args.length !== 2 || args[0] !== '--input') throw new Error('usage: pilot-integration-preflight.mjs --input <json>');
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const git = (gitArgs) => execFileSync('git', ['-C', root, ...gitArgs], { encoding: 'utf8' }).trim();
+const gitRaw = (gitArgs) => execFileSync(
+  'git',
+  ['-C', root, ...gitArgs],
+  { encoding: 'utf8' },
+);
+const git = (gitArgs) => gitRaw(gitArgs).trim();
 const supplied = JSON.parse(fs.readFileSync(args[1], 'utf8'));
 const protectedPublication = git(['rev-parse', 'origin/programme-status-publication-head']);
 const signedStatus = JSON.parse(git([
@@ -35,7 +40,7 @@ const candidateSignerSource = fs.readFileSync(
   path.join(root, 'scripts/sign-g0-evidence.mjs'),
   'utf8',
 );
-const trustedSignerSource = git([
+const trustedSignerSource = gitRaw([
   'show',
   `${expected}:scripts/sign-g0-evidence.mjs`,
 ]);
