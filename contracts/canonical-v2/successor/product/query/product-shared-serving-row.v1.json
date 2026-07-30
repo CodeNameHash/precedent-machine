@@ -1,0 +1,81 @@
+{
+  "object_kind": "PRODUCT_SERVING_CONTRACT_INPUT",
+  "stable_id": "PRODUCT_SHARED_SERVING_ROW",
+  "schema_version": "PRODUCT_SERVING_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PRODUCT",
+    "contract_type": "SHARED_SERVING_ROW_DEFINITION",
+    "contract_version": 1,
+    "row_contract": {
+      "logical_type": "SharedServingRow",
+      "schema_version": "SHARED_SERVING_ROW/V1",
+      "closed_variants": [
+        "CANONICAL_RESULT",
+        "INCOMPLETE_CANONICAL_RESULT",
+        "REVIEWED_SOURCE_SPECIFIC"
+      ],
+      "variant_discriminator": "row_kind",
+      "exactly_one_variant_payload_required": true,
+      "additional_variant_permitted": false,
+      "null_placeholder_for_forbidden_field_permitted": false,
+      "failed_or_blocked_variant_permitted": false
+    },
+    "variant_contract": {
+      "CANONICAL_RESULT": {
+        "required_payload": "canonical_result",
+        "result_completeness": "COMPLETE",
+        "market_observation_requires_comparable_state": true,
+        "source_lineage_required": true,
+        "canonical_result_fields_forbidden": false
+      },
+      "INCOMPLETE_CANONICAL_RESULT": {
+        "required_payload": "incomplete_canonical_result",
+        "result_completeness": "INCOMPLETE_NOVEL_SEMANTIC",
+        "market_comparability": "NOT_CERTIFIED",
+        "market_observation_forbidden": true,
+        "exact_incomplete_lineage_required": true
+      },
+      "REVIEWED_SOURCE_SPECIFIC": {
+        "required_payload": "reviewed_source_specific",
+        "market_comparability": "REVIEWED_SOURCE_SPECIFIC",
+        "canonical_result_fields_forbidden": true,
+        "metric_and_cohort_fields_forbidden": true,
+        "exact_review_and_evidence_lineage_required": true
+      }
+    },
+    "failure_contract": {
+      "invalid_row_fails_only_its_result_slot": true,
+      "invalid_row_retained_as_typed_failure": true,
+      "invalid_row_can_be_silently_omitted": false,
+      "invalid_row_can_replace_valid_sibling": false,
+      "valid_sibling_rows_remain_publishable": true,
+      "result_count_reconciles_valid_failed_and_excluded_slots": true,
+      "validation_required_before_cache_insertion": true,
+      "validation_required_before_rendering": true
+    },
+    "query_binding_contract": {
+      "parent_query_definition_stable_id": "PRODUCT_QUERY_IR",
+      "parent_query_schema_version": "PRODUCT_QUERY_IR/V1",
+      "parent_result_definition_stable_id": "PRODUCT_QUERY_RESULT_DEFINITION",
+      "parent_result_schema_version": "PRODUCT_QUERY_RESULT/V1",
+      "release_query_and_result_identity_required": true,
+      "ask_and_browse_use_same_row_union": true,
+      "view_change_can_change_row_identity": false
+    },
+    "authority_contract": {
+      "creates_runtime_row": false,
+      "creates_query_execution_authority": false,
+      "creates_extraction_authority": false,
+      "creates_canonical_write_authority": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_database_authority": false,
+      "creates_cache_authority": false,
+      "creates_ui_authority": false,
+      "creates_release_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

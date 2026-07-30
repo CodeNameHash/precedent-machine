@@ -115,6 +115,20 @@ test('makes Ask deterministic, checked and incapable of silent substitution', ()
 
   assert.equal(ask.compiler_contract.deterministic_and_bounded, true);
   assert.equal(ask.compiler_contract.narrative_llm_permitted, false);
+  assert.equal(
+    ask.compiler_contract.internal_validation_definition_stable_id,
+    'PROCESS_QUERY_IR',
+  );
+  assert.equal(
+    ask.compiler_contract.product_boundary_output_definition_stable_id,
+    'PRODUCT_QUERY_IR',
+  );
+  assert.equal(ask.compiler_contract.direct_product_emission_required, true);
+  assert.equal(
+    ask.compiler_contract
+      .historical_process_query_ir_can_escape_product_boundary,
+    false,
+  );
   assert.deepEqual(ask.mapping_contract.required_positive_classes, [
     'PRACTITIONER_PHRASE',
     'DRAFTING_SYNONYM',
@@ -139,6 +153,20 @@ test('makes Ask deterministic, checked and incapable of silent substitution', ()
 test('makes Browse dynamic and prevents display-only, All and cross-domain queries', () => {
   const browse = byId(queryMembers(), 'PROCESS_BROWSE_QUERY_COMPILER');
 
+  assert.equal(
+    browse.compiler_contract.internal_validation_definition_stable_id,
+    'PROCESS_QUERY_IR',
+  );
+  assert.equal(
+    browse.compiler_contract.product_boundary_output_definition_stable_id,
+    'PRODUCT_QUERY_IR',
+  );
+  assert.equal(browse.compiler_contract.direct_product_emission_required, true);
+  assert.equal(
+    browse.compiler_contract
+      .historical_process_query_ir_can_escape_product_boundary,
+    false,
+  );
   assert.deepEqual(browse.navigation_input_contract.hierarchy, [
     'DOMAIN',
     'TOPIC',
@@ -213,6 +241,14 @@ test('requires Ask and Browse byte equivalence for the same legal query', () => 
   assert.equal(
     query.identity_contract.prohibited_identity_inputs.includes('browse_display_label'),
     true,
+  );
+  assert.equal(
+    ask.compiler_contract.product_boundary_output_definition_stable_id,
+    browse.compiler_contract.product_boundary_output_definition_stable_id,
+  );
+  assert.equal(
+    ask.compiler_contract.product_boundary_output_schema_version,
+    browse.compiler_contract.product_boundary_output_schema_version,
   );
 });
 

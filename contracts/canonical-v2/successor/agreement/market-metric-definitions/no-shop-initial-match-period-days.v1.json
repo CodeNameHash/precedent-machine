@@ -1,0 +1,72 @@
+{
+  "authored_definition": {
+    "allowed_day_bases": [
+      "BUSINESS"
+    ],
+    "allowed_observation_states": [
+      "PRESENT",
+      "ABSENT",
+      "NOT_APPLICABLE",
+      "NOT_EXAMINED",
+      "FAILED"
+    ],
+    "basis_key": "DAYS:BUSINESS:SUPERIOR_PROPOSAL_NOTICE",
+    "canonical_unit": "DAYS",
+    "canonical_value_required_states": [
+      "PRESENT"
+    ],
+    "canonical_value_type": "NON_NEGATIVE_DECIMAL_STRING",
+    "concept_key": "NOSOL-MATCH",
+    "duration_lineage_required": [
+      "RAW_MAGNITUDE",
+      "RAW_UNIT",
+      "DAY_BASIS",
+      "START_LEGAL_EVENT",
+      "INCLUSIVITY",
+      "TIMEZONE_IF_STATED",
+      "COUNTING_RULE",
+      "CALENDAR_IF_APPLICABLE",
+      "NORMALISATION_DERIVATION_VERSION"
+    ],
+    "metric_key": "NO_SHOP_INITIAL_MATCH_PERIOD_DAYS",
+    "metric_version": 1,
+    "numeric_aggregate_contract": [
+      "MIN",
+      "MAX",
+      "MEDIAN",
+      "MEAN"
+    ],
+    "owner_lineage_mode": "RESULT_RELATIONSHIP",
+    "per_deal_rollup": "DISTINCT_VALUE_SET",
+    "raw_value_required_when_present": true,
+    "required_claim_definition_key": "NO_SHOP_INITIAL_MATCH_PERIOD_DAYS",
+    "required_lineage_fields": [
+      "CORPUS_RELEASE_ID",
+      "DEAL_ADMISSION_ID",
+      "RESULT_OCCURRENCE_ID",
+      "RESULT_REVISION_ID",
+      "RESULT_COMPONENT_OCCURRENCE_ID",
+      "RESULT_COMPONENT_REVISION_ID",
+      "RESULT_INPUT_LINEAGE_DIGEST",
+      "COMPOSITION_SCOPE_CLOSURE_ID",
+      "CLAIM_OCCURRENCE_ID",
+      "CLAIM_REVISION_ID",
+      "CLAIM_SCOPE_CLOSURE_ID",
+      "EVIDENCE_EDGE_IDS",
+      "CANONICAL_TEXT_ID",
+      "SOURCE_INTERVALS",
+      "NORMALISATION_DERIVATION_VERSION"
+    ],
+    "required_relationship_key": null,
+    "required_result_key": "BUYER_INITIAL_MATCH_RIGHT",
+    "required_result_version": 1,
+    "required_value_slot_key": "INITIAL_MATCH_PERIOD",
+    "source_lineage_required": true,
+    "trigger": "SUPERIOR_PROPOSAL_NOTICE",
+    "value_dimension": "DURATION",
+    "weighting": "DEAL"
+  },
+  "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+  "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+  "stable_id": "NO_SHOP_INITIAL_MATCH_PERIOD_DAYS"
+}
