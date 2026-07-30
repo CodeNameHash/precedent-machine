@@ -1,0 +1,74 @@
+{
+  "object_kind": "GOVERNED_RESIDUAL_CONTRACT_INPUT",
+  "stable_id": "GOVERNED_RESIDUAL_UNIVERSE",
+  "schema_version": "GOVERNED_RESIDUAL_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "GOVERNANCE",
+    "contract_type": "GOVERNED_RESIDUAL_UNIVERSE_DEFINITION",
+    "contract_version": 1,
+    "universe_contract": {
+      "scope_codes": [
+        "PRE_SCOPE",
+        "CANDIDATE_COMPLETE"
+      ],
+      "producer_root_schema_id": "GOVERNED_RESIDUAL_PRODUCER_ENUMERATION_ROOT/V1",
+      "boundary_root_schema_id": "RESIDUAL_CAPABLE_BOUNDARY_UNIVERSE_ROOT/V1",
+      "reconciliation_schema_id": "GOVERNED_RESIDUAL_UNIVERSE_RECONCILIATION/V1",
+      "manifest_schema_id": "GOVERNED_RESIDUAL_UNIVERSE_MANIFEST/V1",
+      "producer_enumerator_source": "GOVERNED_RESIDUAL_PRODUCER_REGISTRY",
+      "boundary_enumerator_must_not_read_producer_registry": true,
+      "enumerators_implementation_disjoint": true,
+      "bidirectional_identity_and_payload_equality_required": true,
+      "pre_scope_excludes_candidate_complete_only_producers": true,
+      "candidate_complete_selects_exact_pre_scope_manifest": true,
+      "candidate_complete_adds_extraction_and_candidate_prefix": true,
+      "phase_reassignment_permitted": false,
+      "unregistered_carrier_permitted": false,
+      "unregistered_producer_permitted": false
+    },
+    "manifest_contract": {
+      "required_bindings": [
+        "governing_contract_bundle_id",
+        "scope_code",
+        "captured_terminal_head_tuple",
+        "producer_enumeration_root",
+        "boundary_enumeration_root",
+        "universe_reconciliation_id",
+        "producer_registry_id",
+        "admission_receipt_root_set_id",
+        "terminal_consumption_root_set_id",
+        "consumption_reconciliation_set_root_id"
+      ],
+      "required_empty_roots": [
+        "conflicting_payload_root",
+        "duplicate_root",
+        "extra_root",
+        "missing_root",
+        "unregistered_carrier_root",
+        "unregistered_producer_root"
+      ],
+      "count_only_completeness_permitted": false,
+      "open_world_candidate_universe_substitution_permitted": false
+    },
+    "identity_contract": {
+      "reconciliation_identity_domain": "GOVERNED_RESIDUAL_UNIVERSE_RECONCILIATION/V1",
+      "manifest_identity_domain": "GOVERNED_RESIDUAL_UNIVERSE_MANIFEST/V1",
+      "ordered_residual_id_and_payload_digest_set_required": true,
+      "database_order_permitted": false,
+      "post_manifest_mutation_permitted": false
+    },
+    "authority_contract": {
+      "definition_only": true,
+      "creates_runtime_authority": false,
+      "creates_extraction_authority": false,
+      "creates_database_authority": false,
+      "creates_writer_execution_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_import_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

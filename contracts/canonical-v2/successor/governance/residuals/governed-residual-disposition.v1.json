@@ -1,0 +1,64 @@
+{
+  "object_kind": "GOVERNED_RESIDUAL_CONTRACT_INPUT",
+  "stable_id": "GOVERNED_RESIDUAL_DISPOSITION",
+  "schema_version": "GOVERNED_RESIDUAL_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "GOVERNANCE",
+    "contract_type": "GOVERNED_RESIDUAL_DISPOSITION_DEFINITION",
+    "contract_version": 1,
+    "disposition_contract": {
+      "disposition_schema_id": "GOVERNED_RESIDUAL_DISPOSITION/V1",
+      "manifest_schema_id": "GOVERNED_RESIDUAL_DISPOSITION_MANIFEST/V1",
+      "closed_final_dispositions": [
+        "CORRECTED_AND_REPROCESSED",
+        "REVIEWED_SOURCE_SPECIFIC",
+        "REJECTED_AS_INVALID",
+        "SUPERSEDED_BY_GOVERNED_RESIDUAL",
+        "REQUIRES_CONTRACT_SUCCESSOR"
+      ],
+      "one_final_disposition_per_effective_residual": true,
+      "source_and_evidence_closure_required": true,
+      "eligible_legal_semantic_review_required": true,
+      "review_decision_signature_required": true,
+      "exact_residual_identity_and_payload_digest_required": true,
+      "caller_supplied_disposition_permitted": false,
+      "unknown_disposition_permitted": false,
+      "terminal_disposition_erases_residual_permitted": false,
+      "terminal_disposition_implies_impact_clearance": false
+    },
+    "manifest_contract": {
+      "complete_universe_manifest_required": true,
+      "ordered_residual_and_disposition_pairs_required": true,
+      "missing_extra_duplicate_and_conflict_roots_required_empty": true,
+      "historical_supersession_chain_retained": true,
+      "count_only_completeness_permitted": false
+    },
+    "identity_contract": {
+      "disposition_identity_domain": "GOVERNED_RESIDUAL_DISPOSITION/V1",
+      "required_identity_inputs": [
+        "governing_contract_bundle_id",
+        "residual_id",
+        "residual_payload_digest",
+        "final_disposition",
+        "review_decision_id",
+        "evidence_closure_id",
+        "superseded_residual_id_or_none"
+      ],
+      "review_time_permitted": false,
+      "database_identifier_permitted": false
+    },
+    "authority_contract": {
+      "definition_only": true,
+      "creates_runtime_authority": false,
+      "creates_extraction_authority": false,
+      "creates_database_authority": false,
+      "creates_writer_execution_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_import_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

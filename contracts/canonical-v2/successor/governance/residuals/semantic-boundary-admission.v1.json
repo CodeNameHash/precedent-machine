@@ -1,0 +1,54 @@
+{
+  "object_kind": "GOVERNED_RESIDUAL_CONTRACT_INPUT",
+  "stable_id": "SEMANTIC_BOUNDARY_ADMISSION",
+  "schema_version": "GOVERNED_RESIDUAL_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "GOVERNANCE",
+    "contract_type": "SEMANTIC_BOUNDARY_ADMISSION_DEFINITION",
+    "contract_version": 1,
+    "admission_contract": {
+      "slot_registry_schema_id": "SEMANTIC_BOUNDARY_ADMISSION_SLOT_REGISTRY/V1",
+      "receipt_schema_id": "SEMANTIC_BOUNDARY_ADMISSION_RECEIPT/V1",
+      "root_schema_id": "SEMANTIC_BOUNDARY_ADMISSION_RECEIPT_ROOT/V1",
+      "root_set_schema_id": "SEMANTIC_BOUNDARY_ADMISSION_RECEIPT_ROOT_SET/V1",
+      "registered_producer_kinds_source": "GOVERNED_RESIDUAL_PRODUCER_REGISTRY",
+      "one_receipt_per_admitted_semantic_atom": true,
+      "receipt_precedes_governed_carrier_or_residual": true,
+      "receipt_binds_exact_source_reference": true,
+      "receipt_binds_exact_boundary_and_slot": true,
+      "receipt_binds_exact_payload_digest": true,
+      "missing_receipt_permitted": false,
+      "duplicate_receipt_permitted": false,
+      "unknown_slot_permitted": false
+    },
+    "identity_contract": {
+      "receipt_identity_domain": "SEMANTIC_BOUNDARY_ADMISSION_RECEIPT/V1",
+      "required_receipt_identity_inputs": [
+        "governing_contract_bundle_id",
+        "producer_kind",
+        "boundary_key",
+        "slot_key",
+        "governed_subject_identity",
+        "source_reference",
+        "payload_digest",
+        "governed_ordinal"
+      ],
+      "root_identity_binds_complete_ordered_receipts": true,
+      "database_order_permitted": false,
+      "runtime_timestamp_permitted": false
+    },
+    "authority_contract": {
+      "definition_only": true,
+      "creates_runtime_authority": false,
+      "creates_extraction_authority": false,
+      "creates_database_authority": false,
+      "creates_writer_execution_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_import_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

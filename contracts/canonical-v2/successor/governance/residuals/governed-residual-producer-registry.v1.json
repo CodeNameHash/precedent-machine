@@ -1,0 +1,100 @@
+{
+  "object_kind": "GOVERNED_RESIDUAL_CONTRACT_INPUT",
+  "stable_id": "GOVERNED_RESIDUAL_PRODUCER_REGISTRY",
+  "schema_version": "GOVERNED_RESIDUAL_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "GOVERNANCE",
+    "contract_type": "GOVERNED_RESIDUAL_PRODUCER_REGISTRY_DEFINITION",
+    "contract_version": 1,
+    "pilot_scope_contract": {
+      "allowed_deal_keys": [
+        "METSERA",
+        "QXO"
+      ],
+      "isolated_staging_only": true,
+      "scope_widening_permitted": false,
+      "production_source_access_permitted": false,
+      "exact_source_universe_manifest_required": true
+    },
+    "producer_registry_contract": {
+      "registry_version": 1,
+      "closed_producer_kinds": [
+        {
+          "producer_kind": "SOURCE_ADMISSION",
+          "producer_version": 1,
+          "first_eligible_scope": "PRE_SCOPE",
+          "source_backed_evidence_required": true
+        },
+        {
+          "producer_kind": "INFERENCE_REVIEW",
+          "producer_version": 1,
+          "first_eligible_scope": "PRE_SCOPE",
+          "source_backed_evidence_required": true
+        },
+        {
+          "producer_kind": "GRAPH_NORMALISATION",
+          "producer_version": 1,
+          "first_eligible_scope": "PRE_SCOPE",
+          "source_backed_evidence_required": true
+        },
+        {
+          "producer_kind": "LEGAL_DISCOVERY",
+          "producer_version": 1,
+          "first_eligible_scope": "PRE_SCOPE",
+          "source_backed_evidence_required": true
+        },
+        {
+          "producer_kind": "TAXONOMY_VALIDATION",
+          "producer_version": 1,
+          "first_eligible_scope": "PRE_SCOPE",
+          "source_backed_evidence_required": true
+        },
+        {
+          "producer_kind": "EXTRACTION_VALIDATION",
+          "producer_version": 1,
+          "first_eligible_scope": "CANDIDATE_COMPLETE",
+          "source_backed_evidence_required": true
+        },
+        {
+          "producer_kind": "WRITER_PREPARATION_VALIDATION",
+          "producer_version": 1,
+          "first_eligible_scope": "CANDIDATE_COMPLETE",
+          "source_backed_evidence_required": true
+        },
+        {
+          "producer_kind": "CANDIDATE_CERTIFICATION",
+          "producer_version": 1,
+          "first_eligible_scope": "CANDIDATE_COMPLETE",
+          "source_backed_evidence_required": true
+        }
+      ],
+      "every_residual_capable_boundary_has_one_producer": true,
+      "unregistered_producer_permitted": false,
+      "producer_scope_reassignment_permitted": false,
+      "generic_warning_substitution_permitted": false
+    },
+    "identity_contract": {
+      "identity_domain": "GOVERNED_RESIDUAL_PRODUCER_REGISTRY/V1",
+      "required_identity_inputs": [
+        "canonical_bundle_input_identity_id",
+        "registry_version",
+        "ordered_producer_entries"
+      ],
+      "runtime_instance_identity_permitted": false,
+      "database_identifier_permitted": false
+    },
+    "authority_contract": {
+      "definition_only": true,
+      "creates_runtime_authority": false,
+      "creates_extraction_authority": false,
+      "creates_database_authority": false,
+      "creates_writer_execution_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_import_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

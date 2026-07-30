@@ -1,0 +1,67 @@
+{
+  "object_kind": "GOVERNED_RESIDUAL_CONTRACT_INPUT",
+  "stable_id": "GOVERNED_RESIDUAL_IMPACT",
+  "schema_version": "GOVERNED_RESIDUAL_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "GOVERNANCE",
+    "contract_type": "GOVERNED_RESIDUAL_IMPACT_DEFINITION",
+    "contract_version": 1,
+    "impact_contract": {
+      "walker_output_schema_id": "GOVERNED_OBJECT_IMPACT_WALKER_OUTPUT/V1",
+      "independent_walker_output_schema_id": "GOVERNED_RESIDUAL_IMPACT_WALKER_OUTPUT/V1",
+      "reconciliation_schema_id": "GOVERNED_RESIDUAL_IMPACT_RECONCILIATION/V1",
+      "closure_schema_id": "GOVERNED_RESIDUAL_IMPACT_CLOSURE/V1",
+      "closed_impact_dispositions": [
+        "NO_CANONICAL_IMPACT",
+        "ISOLATED_SOURCE_SPECIFIC",
+        "AFFECTS_CANONICAL_RESULT",
+        "AFFECTS_CORPUS_SCOPE",
+        "AFFECTS_CANONICAL_CONTRACT"
+      ],
+      "walkers_implementation_disjoint": true,
+      "walkers_start_from_independent_authorities": true,
+      "bidirectional_affected_object_equality_required": true,
+      "transitive_dependency_closure_required": true,
+      "every_nonzero_impact_requires_reconciled_closure": true,
+      "terminal_disposition_implies_zero_impact": false,
+      "empty_walker_outputs_without_complete_universe_permitted": false
+    },
+    "pilot_effect_contract": {
+      "isolated_source_specific_may_publish_reviewed_pilot_row_only": true,
+      "canonical_result_impact_blocks_affected_result": true,
+      "corpus_scope_impact_blocks_scope_freeze": true,
+      "canonical_contract_impact_requires_successor_contract": true,
+      "unaffected_sibling_rows_remain_eligible": true,
+      "production_publication_permitted": false
+    },
+    "identity_contract": {
+      "walker_output_identity_domain": "GOVERNED_RESIDUAL_IMPACT_WALKER_OUTPUT/V1",
+      "reconciliation_identity_domain": "GOVERNED_RESIDUAL_IMPACT_RECONCILIATION/V1",
+      "closure_identity_domain": "GOVERNED_RESIDUAL_IMPACT_CLOSURE/V1",
+      "required_closure_bindings": [
+        "residual_id",
+        "residual_payload_digest",
+        "disposition_id",
+        "first_walker_output_root",
+        "second_walker_output_root",
+        "reconciliation_id",
+        "ordered_affected_object_set"
+      ],
+      "runtime_order_permitted": false,
+      "database_identifier_permitted": false
+    },
+    "authority_contract": {
+      "definition_only": true,
+      "creates_runtime_authority": false,
+      "creates_extraction_authority": false,
+      "creates_database_authority": false,
+      "creates_writer_execution_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_import_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}
