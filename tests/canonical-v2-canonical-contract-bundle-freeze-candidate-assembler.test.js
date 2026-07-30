@@ -58,6 +58,46 @@ function identity(member) {
   };
 }
 
+function canonicalInputIdentity(authoredMembers) {
+  const body = {
+    schema_version: 'CANONICAL_BUNDLE_INPUT_IDENTITY/V1',
+    root_input_manifest_id: contentId('TEST_INPUT_MANIFEST_ID/V1', authoredMembers),
+    root_input_manifest_payload_digest:
+      contentId('TEST_INPUT_MANIFEST_PAYLOAD/V1', authoredMembers),
+    compiler_input_schema_version: 'CANONICAL_BUNDLE_INPUT_COMPILER/V1',
+    generator_input_schema_version: 'CANONICAL_BUNDLE_GENERATOR_INPUT/V1',
+    ordered_entries: authoredMembers.map((member) => ({
+      relative_path: member.relative_path,
+      object_kind: member.object_kind,
+      stable_id: member.stable_id,
+      canonical_bytes_digest: member.canonical_bytes_digest,
+    })),
+    per_kind_counts: Object.fromEntries(authoredMembers.map(
+      (member) => [member.object_kind, 1],
+    )),
+    per_kind_schema_versions: Object.fromEntries(authoredMembers.map(
+      (member) => [member.object_kind, [member.schema_version]],
+    )),
+    validation_roots: {
+      missing_input_root: contentId('CANONICAL_BUNDLE_INPUT_MISSING_ROOT/V1', []),
+      extra_input_root: contentId('CANONICAL_BUNDLE_INPUT_EXTRA_ROOT/V1', []),
+      duplicate_input_root: contentId('CANONICAL_BUNDLE_INPUT_DUPLICATE_ROOT/V1', []),
+      conflicting_input_root: contentId('CANONICAL_BUNDLE_INPUT_CONFLICT_ROOT/V1', []),
+    },
+  };
+  return {
+    ...body,
+    canonical_payload_digest: contentId(
+      'CANONICAL_BUNDLE_INPUT_IDENTITY_PAYLOAD/V1',
+      body,
+    ),
+    canonical_bundle_input_identity_id: contentId(
+      'CANONICAL_BUNDLE_INPUT/V1',
+      body,
+    ),
+  };
+}
+
 function sealClassificationRegistry(orderedClassifications) {
   const body = {
     schema_version: CLASSIFICATION_REGISTRY_SCHEMA_VERSION,
@@ -111,14 +151,21 @@ function sealDependencyRegistry(orderedDependencies) {
 function fixture() {
   const governance = authoredMember(0, GOVERNANCE_KIND, GOVERNANCE_KIND);
   const domainMembers = REQUIRED_BUNDLE_KINDS.map((kind, index) => (
-    authoredMember(index + 1, `TEST_${kind}`, `TEST_${kind}`)
+    authoredMember(
+      index + 1,
+      index === 0 ? `TEST_QUERY_${kind}` : `TEST_${kind}`,
+      index === 0 ? `TEST_QUERY_${kind}` : `TEST_${kind}`,
+    )
   ));
   const authoredMembers = [governance, ...domainMembers];
   const identities = domainMembers
     .map(identity)
     .sort((left, right) => canonicalJson(left).localeCompare(canonicalJson(right)));
   const kindByStableId = new Map(
-    REQUIRED_BUNDLE_KINDS.map((kind) => [`TEST_${kind}`, kind]),
+    REQUIRED_BUNDLE_KINDS.map((kind, index) => [
+      index === 0 ? `TEST_QUERY_${kind}` : `TEST_${kind}`,
+      kind,
+    ]),
   );
   const classificationRegistry = sealClassificationRegistry(
     identities.map((authoredIdentity) => ({
@@ -135,12 +182,7 @@ function fixture() {
   return {
     canonical_contract_input_compilation: {
       schema_version: 'CANONICAL_BUNDLE_INPUT_COMPILATION/V1',
-      canonical_bundle_input_identity: {
-        canonical_bundle_input_identity_id: contentId(
-          'TEST_CANONICAL_BUNDLE_INPUT_IDENTITY/V1',
-          authoredMembers.map(identity),
-        ),
-      },
+      canonical_bundle_input_identity: canonicalInputIdentity(authoredMembers),
       authored_members: authoredMembers,
       authored_universe_assessment: {
         status: 'COMPLETE_AGAINST_GOVERNED_REQUIRED_KIND_REGISTRY',
@@ -213,10 +255,8 @@ test('assembles the same non-authorising freeze candidate twice', () => {
   );
   assert.equal(
     first.contract_bundle_digest,
-    domainDigest(
-      'PROGRAMME_GATE_CONTRACT_BUNDLE_SNAPSHOT/V1',
-      first.canonical_contract_bundle_projection,
-    ),
+    first.generated_contract_topology.final_canonical_contract_bundle
+      .canonical_contract_bundle_fingerprint,
   );
   assert.equal(Object.isFrozen(first), true);
   assert.equal(first.disposition.state, 'ASSEMBLED_NOT_FROZEN');
@@ -228,7 +268,7 @@ test('assembles the same non-authorising freeze candidate twice', () => {
 test('emits an exact generated-output inventory and unsigned receipt body', () => {
   const candidate = assembleCanonicalContractBundleFreezeCandidate(fixture());
   const inventory = candidate.generated_output_inventory;
-  assert.equal(inventory.length, 13);
+  assert.equal(inventory.length, 14);
   assert.equal(
     new Set(inventory.map((entry) => entry.path)).size,
     inventory.length,
