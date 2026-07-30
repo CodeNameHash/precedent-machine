@@ -610,7 +610,7 @@ function productResult(
           start_utf8_byte: ordinal * 100,
           end_utf8_byte: (ordinal * 100)
             + Buffer.byteLength(payload, 'utf8'),
-          exact_text_digest: payloadDigestValue,
+          exact_text_digest: sha256Hex(Buffer.from(payload, 'utf8')),
         }
         : null,
       result_component_evidence_identity: domain === 'PROCESS'
@@ -1143,6 +1143,16 @@ test('rejects payload and identity changes after compilation', () => {
   rehashPresentation(presentation);
   assert.throws(
     () => validateProductResultPresentation(presentation),
+    { code: 'INVALID_PRODUCT_RESULT_PRESENTATION' },
+  );
+
+  const changedCitation = clone(compileFixture());
+  changedCitation.result_slots[0].exact_citation.source_interval
+    .exact_text_digest =
+      changedCitation.result_slots[0].domain_result_payload_digest;
+  rehashPresentation(changedCitation);
+  assert.throws(
+    () => validateProductResultPresentation(changedCitation),
     { code: 'INVALID_PRODUCT_RESULT_PRESENTATION' },
   );
 

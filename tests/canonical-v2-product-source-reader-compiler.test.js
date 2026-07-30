@@ -367,7 +367,7 @@ function productResult(
       ? {
         start_utf8_byte: 100 * ordinal,
         end_utf8_byte: (100 * ordinal) + 50,
-        exact_text_digest: payloadDigest,
+        exact_text_digest: sha256Hex(Buffer.from(payload, 'utf8')),
       }
       : null,
     result_component_evidence_identity:

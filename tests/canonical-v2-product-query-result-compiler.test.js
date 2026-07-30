@@ -345,7 +345,9 @@ function exactCitation(domain, ir, result, ordinal = 1) {
         start_utf8_byte: ordinal * 100,
         end_utf8_byte: (ordinal * 100)
           + Buffer.byteLength(result.domain_result_payload, 'utf8'),
-        exact_text_digest: result.domain_result_payload_digest,
+        exact_text_digest: sha256Hex(
+          Buffer.from(result.domain_result_payload, 'utf8'),
+        ),
       }
       : null,
     result_component_evidence_identity: domain === 'PROCESS'

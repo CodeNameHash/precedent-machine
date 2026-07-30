@@ -200,7 +200,7 @@ function productResult(
       ? {
         start_utf8_byte: 100 * ordinal,
         end_utf8_byte: (100 * ordinal) + 50,
-        exact_text_digest: payloadDigest,
+        exact_text_digest: sha256Hex(Buffer.from(payload, 'utf8')),
       }
       : null,
     result_component_evidence_identity:
@@ -331,6 +331,43 @@ test('validates one exact Product result without materialising it', () => {
   for (const domain of ['AGREEMENT', 'PROCESS', 'CVR']) {
     assert.equal(validateProductQueryResult(productResult(domain)), true);
   }
+});
+
+test('validates canonical Product payload and raw UTF-8 citation digests separately', () => {
+  const result = productResult('PROCESS');
+  const rawUtf8Digest = sha256Hex(
+    Buffer.from(result.domain_result_payload, 'utf8'),
+  );
+  const canonicalPayloadDigest = sha256Hex(
+    Buffer.from(canonicalJson(result.domain_result_payload), 'utf8'),
+  );
+
+  assert.notEqual(rawUtf8Digest, canonicalPayloadDigest);
+  assert.equal(
+    result.domain_result_payload_digest,
+    canonicalPayloadDigest,
+  );
+  assert.equal(
+    result.exact_citation.source_interval.exact_text_digest,
+    rawUtf8Digest,
+  );
+  assert.equal(validateProductQueryResult(result), true);
+
+  const canonicalDigestSubstitutedForRaw = clone(result);
+  canonicalDigestSubstitutedForRaw.exact_citation.source_interval
+    .exact_text_digest = canonicalPayloadDigest;
+  assert.throws(
+    () => validateProductQueryResult(canonicalDigestSubstitutedForRaw),
+    { code: 'INVALID_PRODUCT_QUERY_RESULT' },
+  );
+
+  const rawDigestSubstitutedForCanonical = clone(result);
+  rawDigestSubstitutedForCanonical.domain_result_payload_digest =
+    rawUtf8Digest;
+  assert.throws(
+    () => validateProductQueryResult(rawDigestSubstitutedForCanonical),
+    { code: 'INVALID_PRODUCT_QUERY_RESULT' },
+  );
 });
 
 test('compiles an immutable release-pinned citation action', () => {

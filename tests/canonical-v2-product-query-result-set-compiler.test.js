@@ -699,7 +699,9 @@ function exactCitation(ir, result, ordinal) {
       start_utf8_byte: ordinal * 100,
       end_utf8_byte: (ordinal * 100)
         + Buffer.byteLength(result.domain_result_payload, 'utf8'),
-      exact_text_digest: result.domain_result_payload_digest,
+      exact_text_digest: sha256Hex(
+        Buffer.from(result.domain_result_payload, 'utf8'),
+      ),
     },
     result_component_evidence_identity: null,
     source_accession_or_equivalent_identity:
