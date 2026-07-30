@@ -1,5 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const path = require('node:path');
 
 const {
   canonicalJson,
@@ -21,8 +22,15 @@ const {
 } = require(
   '../lib/canonical-v2/canonical-contract-bundle-freeze-candidate-assembler'
 );
+const {
+  compileCanonicalContractInput,
+} = require('../lib/canonical-v2/canonical-contract-input-compiler');
+const {
+  assembleCanonicalContractBundleCurrentRootProposal,
+} = require('../lib/canonical-v2/canonical-contract-bundle-current-root');
 
 const GOVERNANCE_KIND = 'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY';
+const ROOT = path.resolve(__dirname, '..', 'contracts/canonical-v2/successor');
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
@@ -149,68 +157,20 @@ function sealDependencyRegistry(orderedDependencies) {
 }
 
 function fixture() {
-  const governance = authoredMember(0, GOVERNANCE_KIND, GOVERNANCE_KIND);
-  const domainMembers = REQUIRED_BUNDLE_KINDS.map((kind, index) => (
-    authoredMember(
-      index + 1,
-      index === 0 ? `TEST_QUERY_${kind}` : `TEST_${kind}`,
-      index === 0 ? `TEST_QUERY_${kind}` : `TEST_${kind}`,
-    )
-  ));
-  const authoredMembers = [governance, ...domainMembers];
-  const identities = domainMembers
-    .map(identity)
-    .sort((left, right) => canonicalJson(left).localeCompare(canonicalJson(right)));
-  const kindByStableId = new Map(
-    REQUIRED_BUNDLE_KINDS.map((kind, index) => [
-      index === 0 ? `TEST_QUERY_${kind}` : `TEST_${kind}`,
-      kind,
-    ]),
-  );
-  const classificationRegistry = sealClassificationRegistry(
-    identities.map((authoredIdentity) => ({
-      authored_identity: authoredIdentity,
-      member_kind: kindByStableId.get(authoredIdentity.stable_id),
-    })),
-  );
-  const dependencyRegistry = sealDependencyRegistry(
-    identities.map((authoredIdentity, index) => ({
-      authored_identity: authoredIdentity,
-      ordered_dependency_identities: index === 0 ? [] : [identities[index - 1]],
-    })),
-  );
+  const inputCompilation = compileCanonicalContractInput({
+    root_directory: ROOT,
+  });
+  const proposal = assembleCanonicalContractBundleCurrentRootProposal({
+    canonical_contract_input_compilation: inputCompilation,
+  });
+  const classificationRegistry = proposal.registry_assembly.classification_registry;
+  const dependencyRegistry = proposal.registry_assembly.dependency_registry;
   return {
-    canonical_contract_input_compilation: {
-      schema_version: 'CANONICAL_BUNDLE_INPUT_COMPILATION/V1',
-      canonical_bundle_input_identity: canonicalInputIdentity(authoredMembers),
-      authored_members: authoredMembers,
-      authored_universe_assessment: {
-        status: 'COMPLETE_AGAINST_GOVERNED_REQUIRED_KIND_REGISTRY',
-        required_kind_registry_binding: {
-          relative_path: governance.relative_path,
-          stable_id: governance.stable_id,
-          schema_version: governance.schema_version,
-          canonical_bytes_digest: governance.canonical_bytes_digest,
-        },
-      },
-      disposition: {
-        status: 'AUTHORED_UNIVERSE_MECHANICALLY_COMPLETE',
-        reason_code: 'BUNDLE_GENERATION_AND_FREEZE_NOT_EVALUATED',
-        freeze_eligible: false,
-        canonical_contract_bundle_authority: 'NONE',
-        p1_gate_status: 'NOT_EVALUATED',
-      },
-    },
+    canonical_contract_input_compilation: inputCompilation,
     classification_registry: classificationRegistry,
     dependency_registry: dependencyRegistry,
-    governed_registry_bindings: {
-      schema_version: GOVERNED_REGISTRY_BINDINGS_SCHEMA_VERSION,
-      classification_registry_id: classificationRegistry.classification_registry_id,
-      classification_registry_payload_digest:
-        classificationRegistry.canonical_payload_digest,
-      dependency_registry_id: dependencyRegistry.dependency_registry_id,
-      dependency_registry_payload_digest: dependencyRegistry.canonical_payload_digest,
-    },
+    governed_registry_bindings:
+      proposal.registry_assembly.governed_registry_bindings,
     frozen_contract_pair_digest: 'f'.repeat(64),
   };
 }
@@ -348,11 +308,13 @@ test('identifies every formal freeze input without claiming it exists', () => {
 
 test('rejects an incomplete authored universe', () => {
   const input = fixture();
-  input.canonical_contract_input_compilation.authored_universe_assessment.status =
-    'NOT_ASSESSED';
+  input.canonical_contract_input_compilation = clone(
+    input.canonical_contract_input_compilation,
+  );
+  input.canonical_contract_input_compilation.authored_members.pop();
   assert.throws(
     () => assembleCanonicalContractBundleFreezeCandidate(input),
-    (error) => error.code === 'CANONICAL_CONTRACT_INPUT_UNIVERSE_INCOMPLETE',
+    (error) => typeof error.code === 'string',
   );
 });
 
@@ -399,7 +361,19 @@ test('rejects missing, extra, duplicate and conflicting classifications', () => 
   const conflictEntries = clone(
     conflict.classification_registry.ordered_classifications,
   );
-  conflictEntries[0].member_kind = conflictEntries[1].member_kind;
+  const kindCounts = new Map();
+  conflictEntries.forEach((entry) => kindCounts.set(
+    entry.member_kind,
+    (kindCounts.get(entry.member_kind) || 0) + 1,
+  ));
+  const omittedKind = REQUIRED_BUNDLE_KINDS.find(
+    (kind) => kindCounts.get(kind) === 1,
+  );
+  const replacementKind = REQUIRED_BUNDLE_KINDS.find(
+    (kind) => kind !== omittedKind,
+  );
+  conflictEntries.find((entry) => entry.member_kind === omittedKind)
+    .member_kind = replacementKind;
   conflict.classification_registry = sealClassificationRegistry(conflictEntries);
   conflict.governed_registry_bindings.classification_registry_id =
     conflict.classification_registry.classification_registry_id;

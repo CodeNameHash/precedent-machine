@@ -1,5 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const path = require('node:path');
 
 const {
   canonicalJson,
@@ -39,8 +40,15 @@ const {
 } = require(
   '../lib/canonical-v2/canonical-contract-bundle-pre-review-source-closure'
 );
+const {
+  compileCanonicalContractInput,
+} = require('../lib/canonical-v2/canonical-contract-input-compiler');
+const {
+  assembleCanonicalContractBundleCurrentRootProposal,
+} = require('../lib/canonical-v2/canonical-contract-bundle-current-root');
 
 const GOVERNANCE_KIND = 'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY';
+const ROOT = path.resolve(__dirname, '..', 'contracts/canonical-v2/successor');
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
@@ -150,57 +158,13 @@ function specificationMembers() {
 }
 
 function fixture() {
-  const governance = authoredMember(0, GOVERNANCE_KIND, GOVERNANCE_KIND);
-  const domainMembers = REQUIRED_BUNDLE_KINDS.map((kind, index) => (
-    authoredMember(
-      index + 1,
-      index === 0 ? `TEST_QUERY_${kind}` : `TEST_${kind}`,
-      index === 0 ? `TEST_QUERY_${kind}` : `TEST_${kind}`,
-    )
-  ));
-  const authoredMembers = [governance, ...domainMembers];
-  const identities = domainMembers
-    .map(identity)
-    .sort((left, right) => canonicalJson(left).localeCompare(canonicalJson(right)));
-  const kindByStableId = new Map(
-    REQUIRED_BUNDLE_KINDS.map((kind, index) => [
-      index === 0 ? `TEST_QUERY_${kind}` : `TEST_${kind}`,
-      kind,
-    ]),
-  );
-  const compilation = {
-    schema_version: 'CANONICAL_BUNDLE_INPUT_COMPILATION/V1',
-    canonical_bundle_input_identity: canonicalInputIdentity(authoredMembers),
-    authored_members: authoredMembers,
-    authored_universe_assessment: {
-      status: 'COMPLETE_AGAINST_GOVERNED_REQUIRED_KIND_REGISTRY',
-      required_kind_registry_binding: {
-        relative_path: governance.relative_path,
-        stable_id: governance.stable_id,
-        schema_version: governance.schema_version,
-        canonical_bytes_digest: governance.canonical_bytes_digest,
-      },
-    },
-    disposition: {
-      status: 'AUTHORED_UNIVERSE_MECHANICALLY_COMPLETE',
-      reason_code: 'BUNDLE_GENERATION_AND_FREEZE_NOT_EVALUATED',
-      freeze_eligible: false,
-      canonical_contract_bundle_authority: 'NONE',
-      p1_gate_status: 'NOT_EVALUATED',
-    },
-  };
-  const registryAssembly = assembleCanonicalContractBundleReviewedRegistries({
-    canonical_contract_input_compilation: compilation,
-    reviewed_dispositions: identities.map((authoredIdentity, index) => ({
-      authored_identity: authoredIdentity,
-      member_kind: kindByStableId.get(authoredIdentity.stable_id),
-      ordered_dependency_identities:
-        index === 0 ? [] : [identities[index - 1]],
-    })),
-    registry_version: 1,
-    predecessor_classification_registry: null,
-    predecessor_dependency_registry: null,
+  const compilation = compileCanonicalContractInput({
+    root_directory: ROOT,
   });
+  const proposal = assembleCanonicalContractBundleCurrentRootProposal({
+    canonical_contract_input_compilation: compilation,
+  });
+  const registryAssembly = proposal.registry_assembly;
   return {
     canonical_contract_input_compilation: compilation,
     classification_registry: registryAssembly.classification_registry,
@@ -446,6 +410,8 @@ test('assembles a deterministic review package with full predecessor bytes', () 
           review.predecessor_canonical_contract_bundle_members,
         canonical_contract_bundle_members:
           review.canonical_contract_bundle_members,
+        generated_contract_bundle_members:
+          review.generated_contract_bundle_members,
       },
     ),
   );

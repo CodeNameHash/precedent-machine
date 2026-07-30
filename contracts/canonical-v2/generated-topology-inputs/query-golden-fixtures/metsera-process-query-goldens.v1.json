@@ -1,0 +1,82 @@
+{
+  "object_kind": "QUERY_GOLDEN_FIXTURE_SET",
+  "stable_id": "METSERA_PROCESS_QUERY_GOLDENS",
+  "schema_version": "QUERY_GOLDEN_FIXTURE_SET/V1",
+  "integration_state": "STAGED_FOR_SUCCESSOR_MANIFEST",
+  "fixtures": [
+    {
+      "test_id": "METSERA-PROCESS-EXCLUSIVITY-01",
+      "fixture_kind": "DATABASE_API",
+      "template_id": "METSERA_PROCESS_EXCLUSIVITY",
+      "canonical_input": {
+        "deal_key": "METSERA",
+        "predicate_stable_id": "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
+        "result_definition_stable_id": "PROCESS_EXCLUSIVITY_EVENT_RESULT"
+      },
+      "expected_contract": {
+        "typed_result_state": "SUCCESS",
+        "cohort_semantics": "SAME_PROCESS_AND_BIDDER_TRACK",
+        "aggregate_semantics": "NONE",
+        "required_index_contract": "RELEASE_PROCESS_BIDDER_TRACK_EVENT",
+        "plan_requirement": "INDEXED_SET_BASED"
+      }
+    },
+    {
+      "test_id": "METSERA-PROCESS-PASSAGE-01",
+      "fixture_kind": "CLIENT_ONLY_NO_SQL_NO_API",
+      "template_id": "METSERA_PROCESS_PASSAGE_CONTEXT",
+      "canonical_input": {
+        "carried_result_definition": "PROCESS_PHRASEBOOK_PASSAGE_RESULT",
+        "selected_action": "BOUNDED_INLINE_PASSAGE_PREVIEW"
+      },
+      "expected_contract": {
+        "destination_state": "PROCESS_PASSAGE_CONTEXT",
+        "render_tree": [
+          "PASSAGE",
+          "PARENT_PARAGRAPH",
+          "RELATED_PASSAGES"
+        ],
+        "zero_effect_counters": {
+          "admission": 0,
+          "network": 0,
+          "api": 0,
+          "cache": 0,
+          "database": 0
+        }
+      }
+    },
+    {
+      "test_id": "METSERA-PROCESS-REFUSAL-AMBIGUOUS-01",
+      "fixture_kind": "REFUSAL",
+      "refusal_class": "AMBIGUOUS_REQUIRES_LEGAL_CHOICE",
+      "canonical_input": {
+        "deal_key": "METSERA",
+        "question": "Did the bidder refuse?"
+      },
+      "expected_contract": {
+        "typed_disposition": "AMBIGUOUS_REQUIRES_LEGAL_CHOICE",
+        "database_calls": 0
+      }
+    },
+    {
+      "test_id": "METSERA-PROCESS-REFUSAL-UNSUPPORTED-01",
+      "fixture_kind": "REFUSAL",
+      "refusal_class": "TYPED_UNSUPPORTED",
+      "canonical_input": {
+        "deal_key": "METSERA",
+        "cross_domain_boolean_query": true
+      },
+      "expected_contract": {
+        "typed_disposition": "TYPED_UNSUPPORTED",
+        "database_calls": 0
+      }
+    }
+  ],
+  "authority_contract": {
+    "runtime_execution_authority": "NONE",
+    "serving_authority": "NONE",
+    "database_authority": "NONE",
+    "release_authority": "NONE",
+    "production_authority": "NONE"
+  }
+}

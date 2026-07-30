@@ -1,0 +1,245 @@
+{
+  "object_kind": "GENERATED_TOPOLOGY_GOVERNANCE_INPUT",
+  "stable_id": "P1_PILOT_GENERATED_TOPOLOGY_GOVERNANCE",
+  "schema_version": "GENERATED_TOPOLOGY_GOVERNANCE_INPUT/V1",
+  "integration_state": "STAGED_FOR_SUCCESSOR_MANIFEST",
+  "definition": {
+    "query_definition_stable_ids": [
+      "ACCURACY_STANDARD_CLAIM_EVIDENCE",
+      "AGREEMENT_COMPARABLE_RESULT_ORDERING_PROJECTION",
+      "AGREEMENT_NAVIGATION_DEFINITION_CATALOGUE",
+      "BOUNDED_INLINE_PASSAGE_PREVIEW",
+      "BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V2",
+      "PARENT_BOUND_PARAGRAPH_CONTEXT",
+      "PROCESS_ASK_QUERY_COMPILER",
+      "PROCESS_BROWSE_QUERY_COMPILER",
+      "PROCESS_EXCLUSIVITY_EVENT_RESULT",
+      "PROCESS_FIELD_DEFINITION_CATALOGUE",
+      "PROCESS_NAVIGATION_DEFINITION_CATALOGUE",
+      "PROCESS_PHRASEBOOK_PASSAGE_RESULT",
+      "PROCESS_PHRASEBOOK_PRODUCT_RESULT_ADAPTER",
+      "PROCESS_PHRASEBOOK_PRODUCT_RESULT_SET_ADAPTER",
+      "PROCESS_QUERY_IR",
+      "PROCESS_RELEASE_PINNED_CITATION_AND_SHARE",
+      "PROCESS_RERUN_ON_ACTIVE_RELEASE",
+      "PROCESS_SAVED_QUERY_DEFINITION",
+      "PROCESS_SELECTED_RESULT_EXPORT",
+      "PRODUCT_QUERY_IR",
+      "PRODUCT_QUERY_RESULT_DEFINITION",
+      "PRODUCT_RELEASE_PINNED_CITATION_AND_SHARE",
+      "PRODUCT_RERUN_ON_ACTIVE_RELEASE",
+      "PRODUCT_RESULT_PRESENTATION_DEFINITION",
+      "PRODUCT_SAVED_QUERY_DEFINITION",
+      "PRODUCT_SELECTED_RESULT_EXPORT",
+      "PRODUCT_SOURCE_READER_DEFINITION",
+      "QXO_CAPITALISATION_F28_PRODUCT_RESULT_ADAPTER",
+      "QXO_CAPITALISATION_PRODUCT_RESULT_ADAPTER",
+      "RELATED_PASSAGE_CHILD_COLLECTION",
+      "RESULT_COMPONENT_CLAIM_EVIDENCE",
+      "RESULT_COMPOSITION_EVIDENCE",
+      "REVIEWED_SOURCE_SPECIFIC_OPEN_WORLD_EVIDENCE",
+      "SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V2",
+      "SHARED_DEAL_FIELD_CATALOGUE",
+      "TERMINATION_FEE_TRIGGER_EVIDENCE",
+      "TERMINATION_FEE_TRIGGER_PATH"
+    ],
+    "query_template_contracts": [
+      {
+        "template_id": "METSERA_PROCESS_EXCLUSIVITY",
+        "fixture_kind": "DATABASE_API",
+        "minimum_fixture_count": 1
+      },
+      {
+        "template_id": "QXO_CAPITALISATION_COMPARISON",
+        "fixture_kind": "DATABASE_API",
+        "minimum_fixture_count": 1
+      },
+      {
+        "template_id": "METSERA_PROCESS_PASSAGE_CONTEXT",
+        "fixture_kind": "CLIENT_ONLY_NO_SQL_NO_API",
+        "minimum_fixture_count": 1
+      },
+      {
+        "template_id": "QXO_CAPITALISATION_RESULT_DETAIL",
+        "fixture_kind": "CLIENT_ONLY_NO_SQL_NO_API",
+        "minimum_fixture_count": 1
+      }
+    ],
+    "refusal_classes": [
+      "AMBIGUOUS_REQUIRES_LEGAL_CHOICE",
+      "PREDICATE_NOT_ADMITTED",
+      "TYPED_UNSUPPORTED"
+    ],
+    "applicability_kind_rules": [
+      {
+        "universe_member_kind": "CLAIM_DEFINITION",
+        "owner_class": "DEAL_FAMILY"
+      },
+      {
+        "universe_member_kind": "COMPONENT_DEFINITION",
+        "owner_class": "DEAL_FAMILY"
+      },
+      {
+        "universe_member_kind": "MARKET_METRIC_DEFINITION_INPUT",
+        "owner_class": "DEAL_FAMILY"
+      },
+      {
+        "universe_member_kind": "PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT",
+        "owner_class": "DEAL_FAMILY"
+      },
+      {
+        "universe_member_kind": "PROCESS_LOGICAL_TYPE_INPUT",
+        "owner_class": "DEAL_FAMILY"
+      },
+      {
+        "universe_member_kind": "PROCESS_PREDICATE_CONTRACT_INPUT",
+        "owner_class": "DEAL_FAMILY"
+      },
+      {
+        "universe_member_kind": "PROVISION_CONCEPT",
+        "owner_class": "DEAL_FAMILY"
+      },
+      {
+        "universe_member_kind": "RELATIONSHIP_DEFINITION",
+        "owner_class": "DEAL_FAMILY"
+      },
+      {
+        "universe_member_kind": "RELATIONSHIP_EFFECT_SCHEMA",
+        "owner_class": "DEAL_FAMILY"
+      },
+      {
+        "universe_member_kind": "RESULT_DEFINITION_INPUT",
+        "owner_class": "DEAL_FAMILY"
+      },
+      {
+        "universe_member_kind": "SOURCE_ACQUISITION_CONTRACT_INPUT",
+        "owner_class": "SCOPE_OR_SOURCE_ADMISSION"
+      }
+    ],
+    "mutable_authority_exclusions": [
+      "CANONICAL_DEAL_FACT_PROJECTION_SLOT",
+      "CONSIDERATION_PACKAGE_SLOT",
+      "DEAL_FACT_RESOLUTION_SLOT",
+      "DEAL_PARTICIPANT_RELATIONSHIP_SLOT",
+      "DEAL_TRANSACTION_LEG_SLOT",
+      "EVERY_CHALLENGE_ANSWER_SLOT",
+      "ExpectedOccurrenceSlot",
+      "LAWYER_FIRM_AFFILIATION_RELATIONSHIP_SLOT",
+      "PER_METRIC_SLOT",
+      "PROFESSIONAL_ASSIGNMENT_RELATIONSHIP_SLOT",
+      "SHARE_PURCHASE_INTEREST_COMPONENT_SLOT",
+      "SOURCE_DEAL_FACT_SLOT",
+      "SOURCE_IDENTITY_RELATIONSHIP_SLOT",
+      "SOURCE_NAME_SLOT",
+      "SOURCE_TRANSACTION_LEG_SLOT",
+      "SUBJECT_IDENTITY_SLOT",
+      "TEMPORAL_EXPRESSION_SLOT",
+      "TRANSACTION_CONTROL_OUTCOME_SLOT",
+      "TRANSACTION_STRUCTURE_RESOLUTION_SLOT"
+    ],
+    "mutable_authority_exclusion_rule": {
+      "classification": "IMMUTABLE_LOGICAL_CREATION_SLOT_CONTRACT",
+      "reason": "The pilot contract input names an immutable logical slot. It does not define an admitted database mutable authority or DML target.",
+      "runtime_mutation_admission": "NONE_FOR_PILOT"
+    },
+    "semantic_stage_contracts": [
+      {
+        "stage_key": "SOURCE_ROLE",
+        "permitted_worker_paths": [
+          "INDEPENDENT",
+          "ORDINARY"
+        ],
+        "ordered_input_roles": [
+          "SOURCE_BYTES"
+        ],
+        "output_type": "SOURCE_ROLE_SEMANTIC_OUTPUT",
+        "comparison_body_schema": "SOURCE_ROLE_COMPARISON_BODY/V1",
+        "neutral_projection_schema": "SOURCE_ROLE_NEUTRAL_PROJECTION/V1",
+        "stripping_rule": "REMOVE_PATH_AND_REVIEW_PROVENANCE",
+        "review_class": "INDEPENDENT_PATH_REVIEW",
+        "attestation_variant": "PRE_FREEZE_CONTRACT",
+        "maximum_output_cardinality": 4096
+      },
+      {
+        "stage_key": "CLASSIFICATION",
+        "permitted_worker_paths": [
+          "INDEPENDENT",
+          "ORDINARY"
+        ],
+        "ordered_input_roles": [
+          "SOURCE_BYTES",
+          "SOURCE_ROLE_NEUTRAL_PROJECTION"
+        ],
+        "output_type": "CLASSIFICATION_SEMANTIC_OUTPUT",
+        "comparison_body_schema": "CLASSIFICATION_COMPARISON_BODY/V1",
+        "neutral_projection_schema": "CLASSIFICATION_NEUTRAL_PROJECTION/V1",
+        "stripping_rule": "REMOVE_PATH_AND_REVIEW_PROVENANCE",
+        "review_class": "INDEPENDENT_PATH_REVIEW",
+        "attestation_variant": "PRE_FREEZE_CONTRACT",
+        "maximum_output_cardinality": 4096
+      },
+      {
+        "stage_key": "COMPOSITION",
+        "permitted_worker_paths": [
+          "INDEPENDENT",
+          "ORDINARY"
+        ],
+        "ordered_input_roles": [
+          "SOURCE_BYTES",
+          "CLASSIFICATION_NEUTRAL_PROJECTION"
+        ],
+        "output_type": "COMPOSITION_SEMANTIC_OUTPUT",
+        "comparison_body_schema": "COMPOSITION_COMPARISON_BODY/V1",
+        "neutral_projection_schema": "COMPOSITION_NEUTRAL_PROJECTION/V1",
+        "stripping_rule": "REMOVE_PATH_AND_REVIEW_PROVENANCE",
+        "review_class": "INDEPENDENT_PATH_REVIEW",
+        "attestation_variant": "PRE_FREEZE_CONTRACT",
+        "maximum_output_cardinality": 8192
+      },
+      {
+        "stage_key": "FIELD_UNIVERSE",
+        "permitted_worker_paths": [
+          "INDEPENDENT",
+          "ORDINARY"
+        ],
+        "ordered_input_roles": [
+          "SOURCE_BYTES",
+          "COMPOSITION_NEUTRAL_PROJECTION"
+        ],
+        "output_type": "FIELD_UNIVERSE_SEMANTIC_OUTPUT",
+        "comparison_body_schema": "FIELD_UNIVERSE_COMPARISON_BODY/V1",
+        "neutral_projection_schema": "FIELD_UNIVERSE_NEUTRAL_PROJECTION/V1",
+        "stripping_rule": "REMOVE_PATH_AND_REVIEW_PROVENANCE",
+        "review_class": "INDEPENDENT_PATH_REVIEW",
+        "attestation_variant": "PRE_FREEZE_CONTRACT",
+        "maximum_output_cardinality": 16384
+      },
+      {
+        "stage_key": "THIRD_RECONCILER",
+        "permitted_worker_paths": [
+          "THIRD_RECONCILER"
+        ],
+        "ordered_input_roles": [
+          "INDEPENDENT_COMPARISON_BODY",
+          "ORDINARY_COMPARISON_BODY"
+        ],
+        "output_type": "SEMANTIC_RECONCILIATION_OUTPUT",
+        "comparison_body_schema": "SEMANTIC_RECONCILIATION_BODY/V1",
+        "neutral_projection_schema": "SEMANTIC_RECONCILIATION_NEUTRAL_PROJECTION/V1",
+        "stripping_rule": "REMOVE_REVIEW_PROVENANCE",
+        "review_class": "THIRD_RECONCILIATION_REVIEW",
+        "attestation_variant": "PRE_FREEZE_CONTRACT",
+        "maximum_output_cardinality": 16384
+      }
+    ],
+    "authority_contract": {
+      "freeze_authority": "NONE",
+      "writer_authority": "NONE",
+      "serving_authority": "NONE",
+      "database_authority": "NONE",
+      "release_authority": "NONE",
+      "activation_authority": "NONE",
+      "production_authority": "NONE"
+    }
+  }
+}
