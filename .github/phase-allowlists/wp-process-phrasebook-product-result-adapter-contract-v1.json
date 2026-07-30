@@ -1,0 +1,19 @@
+{
+  "phase": "WP-PROCESS-PHRASEBOOK-PRODUCT-RESULT-ADAPTER-CONTRACT-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-phrasebook-product-result-adapter-contract-v1.json",
+    "contracts/canonical-v2/successor/product/query/process-phrasebook-product-result-adapter.v1.json",
+    "lib/canonical-v2/product-query-result-contract-input-validator.js",
+    "tests/canonical-v2-product-query-result-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Pure Process-to-Product query-result adapter contract. It defines a lossless validation sidecar for the existing Product result row. No result materialisation, query execution, source read, data access, UI, extraction, database, serving, write, import, activation, production, or contract-freeze authority."
+}

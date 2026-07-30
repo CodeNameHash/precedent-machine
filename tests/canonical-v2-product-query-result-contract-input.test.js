@@ -17,23 +17,39 @@ const CONTRACT_PATH = path.join(
   ROOT,
   'product/query/product-query-result-definition.v1.json',
 );
+const PROCESS_ADAPTER_PATH = path.join(
+  ROOT,
+  'product/query/process-phrasebook-product-result-adapter.v1.json',
+);
 
-function loadMember() {
-  const canonicalValue = JSON.parse(fs.readFileSync(CONTRACT_PATH, 'utf8'));
+function loadPath(filePath) {
+  const canonicalValue = JSON.parse(fs.readFileSync(filePath, 'utf8'));
   return {
     object_kind: canonicalValue.object_kind,
     canonical_value: canonicalValue,
   };
 }
 
+function loadMember() {
+  return loadPath(CONTRACT_PATH);
+}
+
+function loadProcessAdapter() {
+  return loadPath(PROCESS_ADAPTER_PATH);
+}
+
+function loadMembers() {
+  return [loadProcessAdapter(), loadMember()];
+}
+
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
-test('registers one closed PM-wide Product query-result definition', () => {
+test('registers the closed PM-wide Product result definition and Process adapter', () => {
   const member = loadMember();
   assert.doesNotThrow(
-    () => validateAuthoredProductQueryResultInputs([member]),
+    () => validateAuthoredProductQueryResultInputs(loadMembers()),
   );
   assert.equal(
     member.canonical_value.stable_id,
@@ -46,6 +62,161 @@ test('registers one closed PM-wide Product query-result definition', () => {
   assert.equal(
     member.canonical_value.definition.result_contract.parent_kind,
     'PRODUCT_QUERY_IR',
+  );
+});
+
+test('maps one admitted Process phrasebook passage into the existing Product result boundary', () => {
+  const definition = loadProcessAdapter().canonical_value.definition;
+
+  assert.equal(
+    definition.target_contract.product_result_definition_stable_id,
+    'PRODUCT_QUERY_RESULT_DEFINITION',
+  );
+  assert.equal(
+    definition.target_contract.product_result_schema_version,
+    'PRODUCT_QUERY_RESULT/V1',
+  );
+  assert.equal(
+    definition.target_contract.process_result_definition_stable_id,
+    'PROCESS_PHRASEBOOK_PASSAGE_RESULT',
+  );
+  assert.equal(definition.target_contract.creates_new_result_architecture, false);
+  assert.equal(
+    definition.identity_mapping.source_field,
+    'process_admission_input.result_identity.process_phrasebook_passage_result_id',
+  );
+  assert.equal(
+    definition.identity_mapping.target_field,
+    'domain_result.domain_result_identity',
+  );
+  assert.equal(definition.identity_mapping.exact_equality_required, true);
+  assert.equal(
+    definition.payload_mapping.source_field,
+    'process_admission_input.matched_passage_preview.verbatim_text',
+  );
+  assert.equal(definition.payload_mapping.representation_kind, 'VERBATIM_TEXT');
+  assert.equal(definition.payload_mapping.exact_bytes_and_digest_required, true);
+});
+
+test('retains the exact Process receipt as the authoritative lineage and release proof', () => {
+  const carrier =
+    loadProcessAdapter().canonical_value.definition.validation_carrier_contract;
+
+  assert.equal(
+    carrier.schema_version,
+    'PROCESS_PHRASEBOOK_PRODUCT_RESULT_ADAPTER_RECEIPT/V1',
+  );
+  assert.deepEqual(carrier.required_fields, [
+    'schema_version',
+    'adapter_receipt_id',
+    'process_admission_receipt',
+    'product_query_result',
+    'adapter_state',
+    'authority_state',
+  ]);
+  assert.deepEqual(carrier.identity_inputs, [
+    'process_admission_receipt',
+    'product_query_result',
+  ]);
+  assert.equal(
+    carrier.authoritative_source_receipt_schema_version,
+    'PROCESS_PHRASEBOOK_RESULT_ADMISSION_RECEIPT/V1',
+  );
+  assert.equal(carrier.full_process_admission_receipt_required, true);
+  assert.equal(carrier.full_product_query_result_required, true);
+  assert.equal(
+    carrier.process_receipt_id_and_canonical_bytes_participate_in_carrier_identity,
+    true,
+  );
+  assert.equal(
+    carrier.product_domain_validation_must_bind_exact_process_receipt,
+    true,
+  );
+  assert.equal(
+    carrier.digest_only_substitution_that_loses_process_lineage_permitted,
+    false,
+  );
+  assert.equal(
+    carrier.process_receipt_remains_authoritative_for_lineage_and_release_validation,
+    true,
+  );
+  assert.equal(carrier.adapter_state, 'VALIDATED_NOT_MATERIALISED');
+  assert.equal(carrier.authority_state, 'NOT_GRANTED');
+  assert.equal(carrier.carrier_is_product_result, false);
+  assert.equal(carrier.carrier_is_serving_payload, false);
+});
+
+test('maps exact source evidence and keeps selected-source and context actions distinct', () => {
+  const definition = loadProcessAdapter().canonical_value.definition;
+  const citation = definition.citation_mapping;
+  const actions = definition.action_mapping;
+
+  assert.equal(
+    citation.source_document_identity_source,
+    'process_admission_input.matched_passage_preview.source_document_identity',
+  );
+  assert.equal(
+    citation.source_evidence_identity_source,
+    'process_admission_input.matched_passage_preview.preview_id',
+  );
+  assert.equal(
+    citation.source_interval_source,
+    'process_admission_input.matched_passage_preview.exact_source_interval',
+  );
+  assert.equal(
+    citation.human_readable_source_label_source,
+    'process_admission_input.exact_detail_reference.human_readable_source_label',
+  );
+  assert.equal(
+    citation.exact_source_document_evidence_interval_digest_and_label_required,
+    true,
+  );
+  assert.deepEqual(actions.selected_source_action, {
+    stable_id: 'PROCESS_NARRATION_EVIDENCE',
+    version: 1,
+  });
+  assert.deepEqual(actions.context_action, {
+    stable_id: 'PARENT_BOUND_PARAGRAPH_CONTEXT',
+    version: 1,
+  });
+  assert.equal(actions.selected_source_and_context_actions_are_distinct, true);
+  assert.equal(
+    actions.context_action_requires_separate_product_source_reader_admission,
+    true,
+  );
+});
+
+test('leaves ordering, fields and Product admission with their existing owners', () => {
+  const definition = loadProcessAdapter().canonical_value.definition;
+
+  assert.equal(
+    definition.ordering_contract.ordering_authority,
+    'PROCESS_PASSAGE_ORDERING_PROJECTION',
+  );
+  assert.equal(
+    definition.ordering_contract.product_result_set_compiler_preserves_governed_order,
+    true,
+  );
+  assert.equal(
+    definition.ordering_contract.adapter_can_rank_rerank_diversify_or_recalculate_order,
+    false,
+  );
+  assert.equal(
+    definition.external_input_contract.requested_product_fields_source,
+    'EXTERNAL_CHECKED_PRODUCT_FIELD_PROJECTION',
+  );
+  assert.equal(
+    definition.external_input_contract.product_query_result_admission_source,
+    'EXTERNAL_PRODUCT_QUERY_RESULT_ADMISSION_RECEIPT/V1',
+  );
+  assert.equal(
+    definition.external_input_contract.adapter_can_create_product_query_result_admission_receipt,
+    false,
+  );
+  assert.equal(
+    Object.values(definition.prohibited_state_contract)
+      .every((value) => value === false),
+    true,
   );
 });
 
@@ -211,32 +382,68 @@ test('rejects missing, duplicate and semantically changed definitions', () => {
   );
   assert.throws(
     () => validateAuthoredProductQueryResultInputs([
-      loadMember(),
-      clone(loadMember()),
+      ...loadMembers(),
+      clone(loadProcessAdapter()),
     ]),
     { code: 'PRODUCT_QUERY_RESULT_CONTRACT_MEMBERSHIP_MISMATCH' },
   );
 
-  const changed = loadMember();
-  changed.canonical_value.definition.release_contract
+  const changed = loadMembers();
+  changed[1].canonical_value.definition.release_contract
     .silent_redirect_or_result_substitution_permitted = true;
   assert.throws(
-    () => validateAuthoredProductQueryResultInputs([changed]),
+    () => validateAuthoredProductQueryResultInputs(changed),
     { code: 'INVALID_PRODUCT_QUERY_RESULT_DEFINITION_INPUT' },
   );
 
-  const nested = loadMember();
-  nested.canonical_value.definition.identity_contract
+  const changedAdapter = loadMembers();
+  changedAdapter[0].canonical_value.definition.validation_carrier_contract
+    .digest_only_substitution_that_loses_process_lineage_permitted = true;
+  assert.throws(
+    () => validateAuthoredProductQueryResultInputs(changedAdapter),
+    {
+      code:
+        'INVALID_PROCESS_PHRASEBOOK_PRODUCT_RESULT_ADAPTER_INPUT',
+    },
+  );
+
+  const changedAction = loadMembers();
+  changedAction[0].canonical_value.definition.action_mapping
+    .context_action = {
+      stable_id: 'PROCESS_NARRATION_EVIDENCE',
+      version: 1,
+    };
+  assert.throws(
+    () => validateAuthoredProductQueryResultInputs(changedAction),
+    {
+      code:
+        'INVALID_PROCESS_PHRASEBOOK_PRODUCT_RESULT_ADAPTER_INPUT',
+    },
+  );
+
+  const changedResult = loadMember();
+  changedResult.canonical_value.definition.release_contract
+    .silent_redirect_or_result_substitution_permitted = true;
+  assert.throws(
+    () => validateAuthoredProductQueryResultInputs([
+      loadProcessAdapter(),
+      changedResult,
+    ]),
+    { code: 'INVALID_PRODUCT_QUERY_RESULT_DEFINITION_INPUT' },
+  );
+
+  const nested = loadMembers();
+  nested[1].canonical_value.definition.identity_contract
     .invented_authority = true;
   assert.throws(
-    () => validateAuthoredProductQueryResultInputs([nested]),
+    () => validateAuthoredProductQueryResultInputs(nested),
     { code: 'INVALID_PRODUCT_QUERY_RESULT_DEFINITION_INPUT' },
   );
 
-  const unknown = loadMember();
-  unknown.canonical_value.stable_id = 'PRODUCT_UNKNOWN_RESULT';
+  const unknown = loadMembers();
+  unknown[0].canonical_value.stable_id = 'PRODUCT_UNKNOWN_RESULT';
   assert.throws(
-    () => validateAuthoredProductQueryResultInputs([unknown]),
+    () => validateAuthoredProductQueryResultInputs(unknown),
     { code: 'PRODUCT_QUERY_RESULT_CONTRACT_MEMBERSHIP_MISMATCH' },
   );
 });
@@ -251,6 +458,7 @@ test('grants no runtime, data, write, serving or production authority', () => {
 
   const sources = [
     CONTRACT_PATH,
+    PROCESS_ADAPTER_PATH,
     path.join(
       __dirname,
       '../lib/canonical-v2/product-query-result-contract-input-validator.js',
@@ -267,4 +475,11 @@ test('grants no runtime, data, write, serving or production authority', () => {
       assert.equal(source.includes(prohibited), false, prohibited);
     }
   }
+
+  const adapterAuthority =
+    loadProcessAdapter().canonical_value.definition.authority_contract;
+  assert.equal(
+    Object.values(adapterAuthority).every((value) => value === false),
+    true,
+  );
 });
