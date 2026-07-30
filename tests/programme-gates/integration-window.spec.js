@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 const Ajv = require('ajv');
+const { domainDigest } = require('../../lib/programme-gates/bytes');
 
 const {
   createIntegrationWindow,
@@ -43,6 +44,7 @@ function workUnits() {
       range_end_inclusive: COMMIT_B,
       phase: 'WP-SHARED-AUTHORITY-ENTITY-CONTRACT-INPUTS-V1',
       required_work_class: 'canonical_work_start',
+      phase_allowlist_path: '.github/phase-allowlists/wp-pi-spark-premerge-review-v1.json',
       allowlist_digest: DIGEST_B,
       authority_status_artefact_id: DIGEST_A,
     },
@@ -53,6 +55,7 @@ function workUnits() {
       range_end_inclusive: COMMIT_C,
       phase: 'WP-SHARED-AUTHORITY-TRANSACTION-CONTRACT-INPUTS-V1',
       required_work_class: 'canonical_work_start',
+      phase_allowlist_path: '.github/phase-allowlists/wp-pi-spark-premerge-review-v1.json',
       allowlist_digest: DIGEST_C,
       authority_status_artefact_id: DIGEST_A,
     },
@@ -77,7 +80,41 @@ function readyWindow() {
     window: assemblingWindow(),
     candidateMainCommit: COMMIT_E,
     passedTestIds: TEST_IDS,
+    stage2PremergeReviews: reviews(),
   });
+}
+
+function review(unit, source = 'SUPPLIED_BY_PI') {
+  const value = {
+    review_stage: 'STAGE_2_PRE_MERGE',
+    work_unit_id: unit.unit_id,
+    source,
+    model: 'gpt-5.3-codex-spark',
+    reasoning_effort: 'medium',
+    base_commit: unit.range_start_exclusive,
+    head_commit: unit.range_end_inclusive,
+    changed_files: ['lib/programme-gates/integration-window.js'],
+    changed_files_digest: domainDigest(
+      'PROGRAMME_INTEGRATION_WINDOW_CHANGED_FILES/V1',
+      ['lib/programme-gates/integration-window.js'],
+    ),
+    phase_allowlist_path: '.github/phase-allowlists/wp-pi-spark-premerge-review-v1.json',
+    phase_allowlist_digest: unit.allowlist_digest,
+    contract_paths: ['.github/pm-integration/window.schema.json'],
+    interface_paths: ['lib/programme-gates/integration-window.js'],
+    focused_test_ids: ['tests/programme-gates/integration-window.spec.js'],
+    programme_gate_evidence_authority: 'NONE',
+    contract_freeze_evidence_authority: 'NONE',
+    findings: [],
+  };
+  return {
+    review_id: domainDigest('PROGRAMME_INTEGRATION_WINDOW_SPARK_REVIEW_ID/V1', value),
+    ...value,
+  };
+}
+
+function reviews(source = 'SUPPLIED_BY_PI') {
+  return workUnits().map((unit) => review(unit, source));
 }
 
 function movedWindow() {
@@ -178,6 +215,66 @@ test('requires the exact ordered test set before the window becomes ready', () =
     }),
     /must advance/,
   );
+});
+
+test('requires complete, exact and authority-free Spark Stage 2 reviews before READY', () => {
+  const valid = reviews();
+  assertValid(markIntegrationWindowReady({
+    window: assemblingWindow(), candidateMainCommit: COMMIT_E,
+    passedTestIds: TEST_IDS, stage2PremergeReviews: valid,
+  }));
+  assertValid(markIntegrationWindowReady({
+    window: assemblingWindow(), candidateMainCommit: COMMIT_E,
+    passedTestIds: TEST_IDS, stage2PremergeReviews: reviews('RUN_BY_PM'),
+  }));
+  const cases = [
+    ['base', (review) => { review.base_commit = COMMIT_D; }],
+    ['head', (review) => { review.head_commit = COMMIT_D; }],
+    ['changed files', (review) => { review.changed_files.push('tests/other.js'); }],
+    ['allowlist', (review) => { review.phase_allowlist_digest = DIGEST_D; }],
+    ['contract coverage', (review) => { review.contract_paths = []; }],
+    ['interface coverage', (review) => { review.interface_paths = []; }],
+    ['test coverage', (review) => { review.focused_test_ids = []; }],
+    ['model', (review) => { review.model = 'gpt-5.3-codex'; }],
+    ['reasoning', (review) => { review.reasoning_effort = 'high'; }],
+    ['forged authority', (review) => { review.programme_gate_evidence_authority = 'PROGRAMME_GATE'; }],
+    ['Stage 4', (review) => { review.review_stage = 'STAGE_4'; }],
+  ];
+  for (const [, mutate] of cases) {
+    const invalid = structuredClone(valid);
+    mutate(invalid[0]);
+    assert.throws(() => markIntegrationWindowReady({
+      window: assemblingWindow(), candidateMainCommit: COMMIT_E,
+      passedTestIds: TEST_IDS, stage2PremergeReviews: invalid,
+    }));
+  }
+  const unresolved = structuredClone(valid);
+  unresolved[0].findings = [{
+    finding_id: 'missing-hostile-test', category: 'MISSING_HOSTILE_TEST',
+    assessment_area: 'OTHER', final_disposition: 'OPEN',
+    escalation_disposition_id: null,
+  }];
+  unresolved[0].review_id = domainDigest(
+    'PROGRAMME_INTEGRATION_WINDOW_SPARK_REVIEW_ID/V1',
+    (({ review_id: _id, ...basis }) => basis)(unresolved[0]),
+  );
+  assert.throws(() => markIntegrationWindowReady({
+    window: assemblingWindow(), candidateMainCommit: COMMIT_E,
+    passedTestIds: TEST_IDS, stage2PremergeReviews: unresolved,
+  }), /final disposition/);
+  const missingEscalation = structuredClone(valid);
+  missingEscalation[0].findings = [{
+    finding_id: 'identity-risk', category: 'IDENTITY', assessment_area: 'IDENTITY',
+    final_disposition: 'RESOLVED', escalation_disposition_id: null,
+  }];
+  missingEscalation[0].review_id = domainDigest(
+    'PROGRAMME_INTEGRATION_WINDOW_SPARK_REVIEW_ID/V1',
+    (({ review_id: _id, ...basis }) => basis)(missingEscalation[0]),
+  );
+  assert.throws(() => markIntegrationWindowReady({
+    window: assemblingWindow(), candidateMainCommit: COMMIT_E,
+    passedTestIds: TEST_IDS, stage2PremergeReviews: missingEscalation,
+  }), /linked Sol escalation/);
 });
 
 test('rejects reordered, duplicate and re-signed work-unit ranges', () => {

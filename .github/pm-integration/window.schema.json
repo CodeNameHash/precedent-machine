@@ -13,6 +13,7 @@
     "base_main_commit",
     "predecessor_publication",
     "work_units",
+    "stage_2_premerge_reviews",
     "expected_test_ids",
     "candidate_main_commit",
     "ready_test_result",
@@ -57,6 +58,12 @@
       "minItems": 1,
       "items": {
         "$ref": "#/definitions/workUnit"
+      }
+    },
+    "stage_2_premerge_reviews": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/stage2PremergeReview"
       }
     },
     "expected_test_ids": {
@@ -476,6 +483,7 @@
         "range_end_inclusive",
         "phase",
         "required_work_class",
+        "phase_allowlist_path",
         "allowlist_digest",
         "authority_status_artefact_id"
       ],
@@ -498,6 +506,9 @@
         },
         "required_work_class": {
           "$ref": "#/definitions/identifier"
+        },
+        "phase_allowlist_path": {
+          "const": ".github/phase-allowlists/wp-pi-spark-premerge-review-v1.json"
         },
         "allowlist_digest": {
           "$ref": "#/definitions/digest"
@@ -526,6 +537,43 @@
             "$ref": "#/definitions/identifier"
           }
         }
+      }
+    },
+    "stage2PremergeReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["review_id", "review_stage", "work_unit_id", "source", "model", "reasoning_effort", "base_commit", "head_commit", "changed_files", "changed_files_digest", "phase_allowlist_path", "phase_allowlist_digest", "contract_paths", "interface_paths", "focused_test_ids", "programme_gate_evidence_authority", "contract_freeze_evidence_authority", "findings"],
+      "properties": {
+        "review_id": { "$ref": "#/definitions/digest" },
+        "review_stage": { "const": "STAGE_2_PRE_MERGE" },
+        "work_unit_id": { "$ref": "#/definitions/identifier" },
+        "source": { "enum": ["SUPPLIED_BY_PI", "RUN_BY_PM"] },
+        "model": { "const": "gpt-5.3-codex-spark" },
+        "reasoning_effort": { "const": "medium" },
+        "base_commit": { "$ref": "#/definitions/commit" },
+        "head_commit": { "$ref": "#/definitions/commit" },
+        "changed_files": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "changed_files_digest": { "$ref": "#/definitions/digest" },
+        "phase_allowlist_path": { "const": ".github/phase-allowlists/wp-pi-spark-premerge-review-v1.json" },
+        "phase_allowlist_digest": { "$ref": "#/definitions/digest" },
+        "contract_paths": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "interface_paths": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "focused_test_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "programme_gate_evidence_authority": { "const": "NONE" },
+        "contract_freeze_evidence_authority": { "const": "NONE" },
+        "findings": { "type": "array", "items": { "$ref": "#/definitions/stage2Finding" } }
+      }
+    },
+    "stage2Finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["finding_id", "category", "assessment_area", "final_disposition", "escalation_disposition_id"],
+      "properties": {
+        "finding_id": { "$ref": "#/definitions/identifier" },
+        "category": { "enum": ["CORRECTNESS", "CONTRACT_BINDING", "IDENTITY", "DIGEST", "EVIDENCE_PRESERVATION", "AUTHORITY_BOUNDARY", "STALE_REFERENCE", "MISSING_HOSTILE_TEST", "FILE_SCOPE"] },
+        "assessment_area": { "enum": ["LEGAL_SEMANTIC", "SECURITY", "IDENTITY", "CROSS_CONTRACT", "UNCERTAIN", "OTHER"] },
+        "final_disposition": { "enum": ["RESOLVED", "ESCALATED_TO_SOL_HIGH_OR_XHIGH"] },
+        "escalation_disposition_id": { "oneOf": [{ "type": "null" }, { "$ref": "#/definitions/digest" }] }
       }
     },
     "mainMovement": {
