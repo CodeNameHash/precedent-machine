@@ -1,0 +1,22 @@
+{
+  "phase": "WP-PROGRAMME-CURRENT-STATE-ACTIVE-UNITS-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-programme-current-state-active-units-v1.json",
+    ".github/pm-integration/current-state.json",
+    "scripts/generate-programme-current-state.mjs"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "lib/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**",
+    "tests/**"
+  ],
+  "note": "Includes the controller branch in the machine-derived active-unit inventory without using commit subjects as identity. It grants no integration, signing, deployment, publication, database, release, activation, production or gate authority."
+}

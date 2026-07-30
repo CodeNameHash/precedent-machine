@@ -46,16 +46,16 @@ const worktrees = git(['worktree', 'list', '--porcelain']).split('\n\n')
     entry.branch !== 'DETACHED'
     && gitSucceeds(['merge-base', '--is-ancestor', main, entry.branch])
   ));
-const currentSubjects = new Set(
-  git(['log', '--format=%s', currentHead]).split('\n').filter(Boolean),
-);
 const pendingCommits = (branch) => {
-  if (branch === currentBranch) return [];
+  if (branch === currentBranch) {
+    return git(['rev-list', '--reverse', `${main}..${currentHead}`])
+      .split('\n')
+      .filter(Boolean);
+  }
   return git(['cherry', currentHead, branch])
     .split('\n')
     .filter((line) => line.startsWith('+ '))
-    .map((line) => line.slice(2))
-    .filter((commit) => !currentSubjects.has(git(['show', '-s', '--format=%s', commit])));
+    .map((line) => line.slice(2));
 };
 const activeWorktrees = worktrees.map((entry) => ({
   ...entry,
@@ -66,24 +66,47 @@ const activeWorktrees = worktrees.map((entry) => ({
   || entry.pending_commits.length > 0
   || entry.clean === false
 ));
-const phaseAllowlistPaths = (entry) => [
-  ...new Set(entry.pending_commits.flatMap((commit) => git([
-    'show',
-    '--format=',
-    '--name-only',
-    commit,
-    '--',
-    '.github/phase-allowlists',
-  ]).split('\n').filter(Boolean)))].sort();
+const phaseAllowlistPaths = (entry) => {
+  if (entry.branch === currentBranch) {
+    return [...new Set([
+      ...git([
+        'diff',
+        '--name-only',
+        main,
+        '--',
+        '.github/phase-allowlists',
+      ]).split('\n').filter(Boolean),
+      ...git([
+        'ls-files',
+        '--others',
+        '--exclude-standard',
+        '--',
+        '.github/phase-allowlists',
+      ]).split('\n').filter(Boolean),
+    ])].sort();
+  }
+  return [
+    ...new Set(entry.pending_commits.flatMap((commit) => git([
+      'show',
+      '--format=',
+      '--name-only',
+      commit,
+      '--',
+      '.github/phase-allowlists',
+    ]).split('\n').filter(Boolean))),
+  ].sort();
+};
 const reservedPaths = new Set();
 for (const entry of activeWorktrees) {
-  if (entry.branch === currentBranch) continue;
   for (const allowlistPath of phaseAllowlistPaths(entry)) {
     let source;
-    try {
-      source = git(['show', `${entry.branch}:${allowlistPath}`]);
-    } catch {
+    if (
+      entry.branch === currentBranch
+      && fs.existsSync(path.join(entry.path, allowlistPath))
+    ) {
       source = fs.readFileSync(path.join(entry.path, allowlistPath), 'utf8');
+    } else {
+      source = git(['show', `${entry.branch}:${allowlistPath}`]);
     }
     for (const allowedPath of JSON.parse(source).allowed || []) {
       reservedPaths.add(allowedPath);
