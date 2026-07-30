@@ -35,9 +35,11 @@
     },
     "scope_and_slot_contract": {
       "predicate_evidence_role_slot_frozen_before_candidate_values": true,
+      "governed_subject_code_frozen_before_candidate_values": true,
       "slot_key_is_self_authorising": false,
       "precomputed_expected_witness_id_binding_required": true,
       "complete_witness_member_universe_required_before_extraction": true,
+      "complete_scope_payload_derived_from_frozen_witness_member_universe": true,
       "unresolved_or_missing_slot_blocks_materialisation": true,
       "identity_definition_grants_materialisation_authority": false
     },
@@ -90,6 +92,9 @@
         "EXCLUSIVITY_GRANTED"
       ],
       "present_union_requires_exactly_one_admitted_atomic_witness": true,
+      "atomic_witness_revision_id_recomputed": true,
+      "same_frozen_pair_deal_narration_and_release_required": true,
+      "self_union_chain_and_cycle_constituents_forbidden": true,
       "constituent_predicate_key_subject_state_typed_links_and_evidence_preserved": true,
       "request_can_satisfy_grant": false,
       "silence_can_become_express_refusal": false,
@@ -106,6 +111,7 @@
         "bidder_track_revision_id",
         "complete_scope_evidence_edges",
         "complete_scope_identity",
+        "complete_scope_payload",
         "dimension_revision_bindings",
         "evidence_edges",
         "failure_detail",
@@ -147,6 +153,8 @@
       "present_source_semantic_kind_must_match_governed_predicate": true,
       "complete_scope_required_for_absent": true,
       "absent_requires_one_complete_scope_identity": true,
+      "absent_complete_scope_identity_is_derived_not_caller_supplied": true,
+      "absent_complete_scope_payload_and_frozen_universe_digest_required": true,
       "absent_complete_scope_evidence_is_separate_from_assertion_evidence": true,
       "not_applicable_requires_separate_applicability_evidence": true,
       "not_examined_retains_no_finding": true,

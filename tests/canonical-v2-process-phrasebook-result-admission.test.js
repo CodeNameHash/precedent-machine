@@ -270,6 +270,7 @@ function predicateWitnessRevision(
       dimensionValues.bidder_track_revision_id,
     complete_scope_evidence_edges: [],
     complete_scope_identity: null,
+    complete_scope_payload: null,
     dimension_revision_bindings: dimensionRevisionBindings,
     evidence_edges: [edge],
     failure_detail: null,
@@ -313,6 +314,7 @@ function predicateWitnessRevision(
     complete_scope_evidence_edges:
       revisionIdentity.complete_scope_evidence_edges,
     complete_scope_identity: revisionIdentity.complete_scope_identity,
+    complete_scope_payload: revisionIdentity.complete_scope_payload,
     evidence_edges: revisionIdentity.evidence_edges,
     failure_detail: revisionIdentity.failure_detail,
     predicate_key: revisionIdentity.predicate_key,
@@ -563,6 +565,7 @@ function fixture({
     result_identity: result,
     narration_revision: narration,
     predicate_witness_revision: witness,
+    atomic_response_predicate_witness_revision: null,
     result_input_lineage: lineage,
     matched_passage_preview: preview,
     passage_order_projection: ordering,
@@ -582,6 +585,7 @@ function rehashPredicateWitnessRevision(witness) {
     complete_scope_evidence_edges:
       witness.complete_scope_evidence_edges,
     complete_scope_identity: witness.complete_scope_identity,
+    complete_scope_payload: witness.complete_scope_payload,
     dimension_revision_bindings: witness.dimension_revision_bindings,
     evidence_edges: witness.evidence_edges,
     failure_detail: witness.failure_detail,
@@ -608,6 +612,69 @@ function rehashPredicateWitnessRevision(witness) {
   witness.predicate_witness_revision_id = contentId(
     PROCESS_PREDICATE_WITNESS_REVISION_SCHEMA,
     identity,
+  );
+}
+
+function retargetPredicateWitnessIdentity(witness, predicateKey, ordinal) {
+  const identity = witness.process_predicate_witness_identity;
+  identity.predicate_definition_key_and_version = {
+    key: predicateKey,
+    version: 1,
+  };
+  identity.governed_ordinal = ordinal;
+  const payload = {
+    frozen_contract_pair_digest: identity.frozen_contract_pair_digest,
+    governed_deal_admission_id: identity.governed_deal_admission_id,
+    process_narration_occurrence_id:
+      identity.process_narration_occurrence_id,
+    predicate_definition_key_and_version:
+      identity.predicate_definition_key_and_version,
+    predicate_evidence_role_slot_key:
+      identity.predicate_evidence_role_slot_key,
+    governed_ordinal: identity.governed_ordinal,
+  };
+  identity.process_predicate_witness_id = contentId(
+    'PROCESS_PREDICATE_WITNESS/V1',
+    payload,
+  );
+}
+
+function configureResponseUnionAdmission(input) {
+  const witness = input.predicate_witness_revision;
+  const atomicWitness = clone(witness);
+  retargetPredicateWitnessIdentity(
+    atomicWitness,
+    'EXCLUSIVITY_GRANTED',
+    witness.process_predicate_witness_identity.governed_ordinal + 1,
+  );
+  atomicWitness.predicate_key = 'EXCLUSIVITY_GRANTED';
+  atomicWitness.source_semantic_kind = 'GRANT';
+  rehashPredicateWitnessRevision(atomicWitness);
+  witness.atomic_response_predicate_key = 'EXCLUSIVITY_GRANTED';
+  witness.atomic_response_predicate_witness_revision_id =
+    atomicWitness.predicate_witness_revision_id;
+  witness.source_semantic_kind = 'GRANT';
+  rehashPredicateWitnessRevision(witness);
+  input.atomic_response_predicate_witness_revision = atomicWitness;
+  rebindPhrasebookWitness(input);
+  return { witness, atomicWitness };
+}
+
+function rebindPhrasebookWitness(input) {
+  const witness = input.predicate_witness_revision;
+  input.result_input_lineage = resultInputLineage(
+    input.result_identity,
+    input.narration_revision,
+    witness,
+  );
+  input.candidate_release_membership = releaseMembership(
+    input.result_identity,
+    input.narration_revision,
+    witness,
+    input.result_input_lineage,
+    input.matched_passage_preview,
+    input.passage_order_projection,
+    input.exact_detail_reference,
   );
 }
 
@@ -685,26 +752,7 @@ test('admits only a response union that retains an atomic response binding', () 
   const input = fixture({
     predicateKey: 'EXCLUSIVITY_RESPONSE_ANY',
   });
-  const witness = input.predicate_witness_revision;
-  witness.atomic_response_predicate_key = 'EXCLUSIVITY_GRANTED';
-  witness.atomic_response_predicate_witness_revision_id =
-    id('admitted-atomic-grant-witness-revision');
-  witness.source_semantic_kind = 'GRANT';
-  rehashPredicateWitnessRevision(witness);
-  input.result_input_lineage = resultInputLineage(
-    input.result_identity,
-    input.narration_revision,
-    witness,
-  );
-  input.candidate_release_membership = releaseMembership(
-    input.result_identity,
-    input.narration_revision,
-    witness,
-    input.result_input_lineage,
-    input.matched_passage_preview,
-    input.passage_order_projection,
-    input.exact_detail_reference,
-  );
+  const { witness } = configureResponseUnionAdmission(input);
 
   assert.doesNotThrow(
     () => compileProcessPhrasebookResultAdmission(input),
@@ -713,6 +761,121 @@ test('admits only a response union that retains an atomic response binding', () 
   rehashPredicateWitnessRevision(witness);
   assert.throws(
     () => compileProcessPhrasebookResultAdmission(input),
+    { code: 'INVALID_PROCESS_PREDICATE_WITNESS_REVISION' },
+  );
+});
+
+test('rejects missing, random, self, union and chained atomic witnesses', () => {
+  const missing = fixture({
+    predicateKey: 'EXCLUSIVITY_RESPONSE_ANY',
+  });
+  configureResponseUnionAdmission(missing);
+  missing.atomic_response_predicate_witness_revision = null;
+  assert.throws(
+    () => compileProcessPhrasebookResultAdmission(missing),
+    { code: 'INVALID_PROCESS_PREDICATE_WITNESS_REVISION' },
+  );
+
+  const random = fixture({
+    predicateKey: 'EXCLUSIVITY_RESPONSE_ANY',
+  });
+  configureResponseUnionAdmission(random);
+  random.predicate_witness_revision
+    .atomic_response_predicate_witness_revision_id =
+      id('nonexistent-atomic-revision');
+  rehashPredicateWitnessRevision(random.predicate_witness_revision);
+  random.atomic_response_predicate_witness_revision = null;
+  rebindPhrasebookWitness(random);
+  assert.throws(
+    () => compileProcessPhrasebookResultAdmission(random),
+    { code: 'INVALID_PROCESS_PREDICATE_WITNESS_REVISION' },
+  );
+
+  const self = fixture({
+    predicateKey: 'EXCLUSIVITY_RESPONSE_ANY',
+  });
+  configureResponseUnionAdmission(self);
+  self.atomic_response_predicate_witness_revision =
+    clone(self.predicate_witness_revision);
+  assert.throws(
+    () => compileProcessPhrasebookResultAdmission(self),
+    { code: 'INVALID_PROCESS_PREDICATE_WITNESS_REVISION' },
+  );
+
+  for (const mutate of [
+    (atomic) => {
+      atomic.predicate_key = 'EXCLUSIVITY_RESPONSE_ANY';
+      retargetPredicateWitnessIdentity(
+        atomic,
+        'EXCLUSIVITY_RESPONSE_ANY',
+        atomic.process_predicate_witness_identity.governed_ordinal,
+      );
+      rehashPredicateWitnessRevision(atomic);
+    },
+    (atomic) => {
+      atomic.atomic_response_predicate_key = 'EXCLUSIVITY_GRANTED';
+      atomic.atomic_response_predicate_witness_revision_id =
+        id('chained-atomic-revision');
+      rehashPredicateWitnessRevision(atomic);
+    },
+  ]) {
+    const input = fixture({
+      predicateKey: 'EXCLUSIVITY_RESPONSE_ANY',
+    });
+    const { atomicWitness } = configureResponseUnionAdmission(input);
+    mutate(atomicWitness);
+    assert.throws(
+      () => compileProcessPhrasebookResultAdmission(input),
+      { code: 'INVALID_PROCESS_PREDICATE_WITNESS_REVISION' },
+    );
+  }
+});
+
+test('rejects cross-scope, release and constituent substitution', () => {
+  const mutations = [
+    (atomic) => {
+      atomic.process_predicate_witness_identity
+        .process_narration_occurrence_id = id('other-narration');
+    },
+    (atomic) => {
+      atomic.process_predicate_witness_identity
+        .frozen_contract_pair_digest = id('other-frozen-pair');
+    },
+    (atomic) => {
+      atomic.process_predicate_witness_identity
+        .governed_deal_admission_id = id('other-deal');
+    },
+    (atomic) => {
+      atomic.candidate_release_manifest_id = id('other-manifest');
+    },
+    (atomic) => {
+      atomic.subject_code = 'EXCLUSIVE_DATA_ACCESS';
+      rehashPredicateWitnessRevision(atomic);
+    },
+    (atomic) => {
+      atomic.process_passage_revision_ids = [id('substitute-passage')];
+      atomic.dimension_revision_bindings[1].revision_id =
+        atomic.process_passage_revision_ids[0];
+      rehashPredicateWitnessRevision(atomic);
+    },
+  ];
+  for (const mutate of mutations) {
+    const input = fixture({
+      predicateKey: 'EXCLUSIVITY_RESPONSE_ANY',
+    });
+    const { atomicWitness } = configureResponseUnionAdmission(input);
+    mutate(atomicWitness);
+    assert.throws(
+      () => compileProcessPhrasebookResultAdmission(input),
+      { code: 'INVALID_PROCESS_PREDICATE_WITNESS_REVISION' },
+    );
+  }
+
+  const extra = fixture();
+  extra.atomic_response_predicate_witness_revision =
+    clone(extra.predicate_witness_revision);
+  assert.throws(
+    () => compileProcessPhrasebookResultAdmission(extra),
     { code: 'INVALID_PROCESS_PREDICATE_WITNESS_REVISION' },
   );
 });
