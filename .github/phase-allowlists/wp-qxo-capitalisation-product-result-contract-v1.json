@@ -1,0 +1,20 @@
+{
+  "phase": "WP-QXO-CAPITALISATION-PRODUCT-RESULT-CONTRACT-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-qxo-capitalisation-product-result-contract-v1.json",
+    "contracts/canonical-v2/successor/product/query/qxo-capitalisation-product-result-adapter.v1.json",
+    "lib/canonical-v2/product-query-result-contract-input-validator.js",
+    "tests/canonical-v2-qxo-capitalisation-product-result-contract.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Governs the exact QXO F27 Agreement row to Product result mapping. It preserves the four-surface row, subrow, source and release identities and grants no runtime, query, extraction, writer, serving, database, release, activation, production or contract-freeze authority."
+}
