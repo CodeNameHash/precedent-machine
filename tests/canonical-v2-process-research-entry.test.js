@@ -186,6 +186,44 @@ test('arbitrary and stale values are not admitted by the exact filter projection
   assert.equal(isAdmittedFixtureFilterValue({ ...input, value: 4 }), true);
 });
 
+test('switching from numeric Notice period to Process phase clears the stale value before Apply', () => {
+  const sentence = PROCESS_RESEARCH_PILOT_FIXTURE.presentation.filter_sentence;
+  const phase = sentence.ordered_filter_segments[0];
+  const notice = sentence.ordered_filter_segments[1];
+  const phaseInput = {
+    fieldReference: phase.field_reference,
+    activeFilterSegments: sentence.ordered_filter_segments,
+    admittedOptionsProjection: PROCESS_RESEARCH_PILOT_FIXTURE.admitted_options_projection,
+  };
+  const phaseOptions = admittedFixtureFilterOptions(phaseInput);
+  assert.equal(notice.value, 4);
+  assert.equal(phaseOptions.some((option) => option.value === notice.value), false);
+
+  const editorSource = source('components/process/ProcessFilterEditor.jsx');
+  const handler = editorSource.match(
+    /onChange=\{\(event\) => \{ (setSelectedFieldIdentity\(event\.target\.value\); setValue\(''\);) \}\}/,
+  );
+  assert.ok(handler);
+  let selectedFieldIdentity = 'notice_period_business_days:1';
+  let selectedValue = notice.value;
+  new Function(
+    'event',
+    'setSelectedFieldIdentity',
+    'setValue',
+    handler[1],
+  )(
+    { target: { value: 'process_phase:1' } },
+    (next) => { selectedFieldIdentity = next; },
+    (next) => { selectedValue = next; },
+  );
+  assert.equal(selectedFieldIdentity, 'process_phase:1');
+  assert.equal(selectedValue, '');
+  assert.equal(
+    isAdmittedFixtureFilterValue({ ...phaseInput, value: selectedValue }),
+    false,
+  );
+});
+
 test('every displayed valid result satisfies every initial active filter segment', () => {
   const segments = PROCESS_RESEARCH_PILOT_FIXTURE.presentation
     .filter_sentence.ordered_filter_segments;
