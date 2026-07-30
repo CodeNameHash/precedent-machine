@@ -166,7 +166,7 @@ test('plans the exact read-only fresh Codex CLI audit under env -i', () => {
     '-m',
     'gpt-5.6-sol',
     '-c',
-    'model_reasoning_effort="xhigh"',
+    'model_reasoning_effort="high"',
     '--disable',
     'multi_agent',
     '--disable',
@@ -206,7 +206,7 @@ test('rejects any wrong flag, value or ordering', () => {
     },
     (arguments_) => {
       arguments_[arguments_.indexOf(`model_reasoning_effort="${REASONING_LEVEL}"`)]
-        = 'model_reasoning_effort="high"';
+        = 'model_reasoning_effort="xhigh"';
     },
     (arguments_) => {
       arguments_.splice(arguments_.indexOf('multi_agent_v2') - 1, 2);
@@ -385,7 +385,7 @@ test('rejects resumed sessions, prior conclusions and unobserved controller exec
 });
 
 test('rejects injected model or reasoning settings even when digests are recomputed', () => {
-  for (const replacement of ['gpt-5.6-terra', 'model_reasoning_effort="high"']) {
+  for (const replacement of ['gpt-5.6-terra', 'model_reasoning_effort="xhigh"']) {
     const plan = mutableClone(buildTrustedReviewPlan(planInput()));
     if (replacement.startsWith('gpt-')) {
       plan.invocation.arguments[plan.invocation.arguments.indexOf(MODEL_IDENTIFIER)] = replacement;

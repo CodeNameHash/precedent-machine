@@ -89,7 +89,7 @@ function controllerRecord() {
     },
     exact_specification_root: DIGEST,
     exact_model_identifier: 'gpt-5.6-sol',
-    reasoning_level: 'xhigh',
+    reasoning_level: 'high',
     immutable_task_id: 'task-1',
     immutable_session_id: 'session-1',
     immutable_review_id: 'review-1',
@@ -286,10 +286,10 @@ test('trust configuration contains only the four approved public signing keys', 
     REVIEW_LANES.map((lane) => lane.lane_id),
     ['ARCHITECTURE', 'LEGAL_SEMANTIC', 'QUERY_EFFICIENCY', 'OPEN_WORLD', 'RELEASE_PROPAGATION'],
   );
-  assert.deepEqual(REVIEWER_PROFILES.SOL_5_6_EXTRA_HIGH_ELIGIBLE, {
+  assert.deepEqual(REVIEWER_PROFILES.SOL_5_6_HIGH_ELIGIBLE, {
     reviewer_identity_class: 'OPENAI_MODEL',
     exact_model_identifier: 'gpt-5.6-sol',
-    exact_reasoning_level: 'xhigh',
+    exact_reasoning_level: 'high',
   });
   for (const value of Object.values(REGISTRY_DIGESTS)) assert.match(value, /^[a-f0-9]{64}$/);
 });

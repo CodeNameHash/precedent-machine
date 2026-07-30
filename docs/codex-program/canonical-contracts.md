@@ -888,7 +888,7 @@ This file is the sole authority for detailed identities, state machines, writer 
   independent reviewer's identity and eligibility-evidence digest,
   the ordered Ben-owned taxonomy and codebook decision IDs, and Ben's immutable
   bundle-approval-evidence ID. A qualifying legal-semantic review is by Fable or
-  an independent 5.6 Sol reviewer using extra-high reasoning under
+  an independent 5.6 Sol reviewer using high reasoning under
   [the programme governance](../CODEX-PROGRAM.md#governance-non-negotiable-applies-to-every-phase).
   Run IDs, timestamps and workflow status
   are provenance outside identity.
@@ -2239,7 +2239,7 @@ This file is the sole authority for detailed identities, state machines, writer 
   CanonicalContractBundle member whose ID hashes
   `LEGAL_SEMANTIC_REVIEW_POLICY/V1`, schema, CanonicalBundleInputIdentity,
   policy key and version, the closed reviewer classes `FABLE_ELIGIBLE` and
-  `SOL_5_6_EXTRA_HIGH_ELIGIBLE`, the exact Sol model and reasoning requirement,
+  `SOL_5_6_HIGH_ELIGIBLE`, the exact Sol model and reasoning requirement,
   the closed action set `DISCOVERY_PARTITION`,
   `DIMENSION_MAPPING_STATE`, `OPEN_WORLD_FINAL_DISPOSITION`,
   `SOURCE_SPECIFIC_PUBLICATION_SELECTION` and
@@ -14033,7 +14033,7 @@ repository fallback to repair the package.
 The same YAML member freezes the eligible controller ID and version, Codex
 runtime version and entrypoint digest, the Sol model and reasoning level, the
 closed `FABLE_ELIGIBLE` model identifier and provider-default reasoning marker
-for Fable or an independent 5.6 Sol reviewer using extra-high reasoning, five
+for Fable or an independent 5.6 Sol reviewer using high reasoning, five
 lane-specific prompt IDs and digests, validator key and configuration, and the
 closed runtime-context derivation. Run-local working, HOME, CODEX_HOME and TMP
 paths vary only under the one controller-created run root and are inputs to the

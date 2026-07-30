@@ -6,7 +6,7 @@ The following adversarial closure tests are mandatory traceability entries:
 
 - `GATE-01`: absent, stale, malformed or mismatched gate evidence leaves work
   blocked; prose cannot change the result. The formal legal-semantic lane accepts
-  only Fable or an independent 5.6 Sol reviewer using extra-high reasoning. An
+  only Fable or an independent 5.6 Sol reviewer using high reasoning. An
   ordinary Sol review is advisory unless the recorded reviewer meets those exact
   model, reasoning and independence requirements. The trusted review controller
   must directly control and observe a read-only review and sign its immutable
@@ -833,7 +833,7 @@ The following adversarial closure tests are mandatory traceability entries:
   Ben approval blocks `candidate_scope_and_extraction`. The architecture,
   legal-semantic, query-efficiency, open-world and release-propagation lanes must
   each PASS over the byte-identical post-check specification root, the legal lane
-  must use Fable or an independent 5.6 Sol reviewer using extra-high reasoning,
+  must use Fable or an independent 5.6 Sol reviewer using high reasoning,
   with one trusted-controller-signed immutable record from the closed evidence
   set for the exact controller, review runtime and fixed-context digests, model,
   reasoning level, immutable task, session and review IDs, input root and

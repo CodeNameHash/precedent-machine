@@ -247,7 +247,7 @@ function fixture() {
       },
       exact_specification_root: ROOT,
       exact_model_identifier: 'gpt-5.6-sol',
-      reasoning_level: 'xhigh',
+      reasoning_level: 'high',
       immutable_task_id: `task-${index}`,
       immutable_session_id: `session-${index}`,
       immutable_review_id: `review-${index}`,

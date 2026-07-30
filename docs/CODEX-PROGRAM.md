@@ -162,7 +162,7 @@ CORRECTED (the plan below rests on these, not the review's wording):
 ## Governance (non-negotiable, applies to every phase)
 
 - Decision rights: Codex agents DRAFT; Fable or an independent 5.6 Sol reviewer
-  using extra-high reasoning REVIEWS every diff that touches legal semantics,
+  using high reasoning REVIEWS every diff that touches legal semantics,
   identity, or extraction behaviour;
   Ben DECIDES taxonomy values, codebook vocabularies, and freeze-gate changes. A
   plausible-but-wrong legal answer is the worst failure class, worse
@@ -213,7 +213,7 @@ CORRECTED (the plan below rests on these, not the review's wording):
   remains mandatory at `P1_CONTRACT_FREEZE_ATTESTED` before
   `vertical_slice_execution` can pass. The
   legal-semantic lane must be satisfied by Fable or an independent 5.6 Sol
-  reviewer using extra-high reasoning. An ordinary Sol review remains advisory
+  reviewer using high reasoning. An ordinary Sol review remains advisory
   unless the recorded reviewer meets those exact model, reasoning and
   independence requirements. Run the broader Sol adversarial review
   concurrently. Reviewers receive no prior conclusions. Recheck the root before
@@ -266,7 +266,7 @@ CORRECTED (the plan below rests on these, not the review's wording):
   repository. The private key never enters the review environment, logs or
   checkout.
   The registry separately maps `FABLE_ELIGIBLE` and
-  `SOL_5_6_EXTRA_HIGH_ELIGIBLE` to their reviewer identity, exact model rule and
+  `SOL_5_6_HIGH_ELIGIBLE` to their reviewer identity, exact model rule and
   reasoning rule where applicable. Repository evidence, a CLI transcript or
   reviewer-supplied metadata cannot substitute for the controller record; an
   unavailable or unverifiable record is
@@ -344,7 +344,7 @@ cannot satisfy or be substituted for that authority.
   implementation.
 - Completed slices land behind disabled flags and leave `main` deployable.
 - Legal-semantic, identity and extraction diffs require review by Fable or an
-  independent 5.6 Sol reviewer using extra-high reasoning.
+  independent 5.6 Sol reviewer using high reasoning.
 - Ben retains taxonomy and codebook decisions through the Freeze Gate.
 - Every request for Ben's approval, consent or Freeze Gate decision must be
   decision-complete and source-contextualised. It must identify the actual deal
@@ -1048,7 +1048,7 @@ a canonical write gate or reverse-sync target. Direct edits to generated
 registries, schemas, types, UI catalogues or database constraints fail CI with a
 deterministic drift diff. The Freeze Gate controls bundle changes; Ben decides
 taxonomy and codebooks after review by Fable or an independent 5.6 Sol reviewer
-using extra-high reasoning.
+using high reasoning.
 
 Numbered `Phase N` headings are programme delivery phases.
 `PRE_CLAIM_SCOPE` and `POST_CLAIM` are relationship-resolution stages;
@@ -2427,7 +2427,7 @@ After those gates, import, parity, activation, containment, restoration and comp
   class permits it, but no deal data may bypass these controls.
 - A stale, absent or invalid status artefact blocks work. No agent, reviewer,
   branch status, prose statement or prior approval may infer a pass. Fable or an
-  independent 5.6 Sol reviewer using extra-high reasoning must approve the
+  independent 5.6 Sol reviewer using high reasoning must approve the
   legal-semantic, identity and extraction design, all five exact-digest cold-
   review lanes above must pass on the same specification root, and Ben must
   approve that exact root.
@@ -2446,7 +2446,7 @@ After those gates, import, parity, activation, containment, restoration and comp
   independently shippable architectural slice receives its own bounded
   implementation plan, acceptance set and rollback. A later plan may depend on
   a certified earlier slice but cannot silently widen its scope or waive a gate.
-- Agents draft. Fable or an independent 5.6 Sol reviewer using extra-high
+- Agents draft. Fable or an independent 5.6 Sol reviewer using high
   reasoning reviews every legal-semantic, identity and extraction diff. Ben
   decides taxonomy and codebooks through the Freeze Gate. No such diff merges
   unreviewed.
@@ -2462,7 +2462,7 @@ After those gates, import, parity, activation, containment, restoration and comp
 - The existing WP-R punchlist in docs/PLAN.md maps: R1/R2→Phase 5,
   R3/R8→Phase 3 data passes, R4→Phase 3, R5→Phase 5, R6→Phase 3,
   R7→Phase 3 (reviewed by Fable or an independent 5.6 Sol reviewer using
-  extra-high reasoning), R9→Phase 1 vocabulary work
+  high reasoning), R9→Phase 1 vocabulary work
   (Ben-gated), R10→independent cosmetic. Product work that touches shared rows
   also enters the Phase 8 traceability matrix.
 

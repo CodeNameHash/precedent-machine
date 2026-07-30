@@ -66,8 +66,8 @@ programme_gate_registry:
       missing_or_post_review_selected_member_effect: OPEN
     bootstrap_compiled_registry_binding:
       source_path: docs/codex-program/bootstrap-acceptance-source.json
-      source_sha256: 6dd9d2527caf220d569032832b9a10e04680a5c555f846d827030c6c6ba93f3c
-      closed_validator_executable_set_digest: 88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5
+      source_sha256: 5edcb0abba3065fdb8fce2519d494dc8a0c07a31a81de1a1da76cee3b2d57fe2
+      closed_validator_executable_set_digest: a5377bdec07a9c333b73ed07f88b9a4aaa78678758a37fffe331839c82a3b5a2
       authority: ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE
       exact_active_definition_count: 11
       exact_genesis_gate_count: 10
@@ -162,13 +162,13 @@ programme_gate_registry:
     missing_extra_duplicate_or_unbound_member_effect: OPEN
 
   reviewer_eligibility:
-    formal_legal_semantic_reviewer: Fable or an independent 5.6 Sol reviewer using extra-high reasoning.
+    formal_legal_semantic_reviewer: Fable or an independent 5.6 Sol reviewer using high reasoning.
     accepted_reviewer_classes:
       - FABLE_ELIGIBLE
-      - SOL_5_6_EXTRA_HIGH_ELIGIBLE
+      - SOL_5_6_HIGH_ELIGIBLE
     sol_provider_model_id: gpt-5.6-sol
-    sol_provider_reasoning_value: xhigh
-    sol_canonical_reasoning_label: extra-high
+    sol_provider_reasoning_value: high
+    sol_canonical_reasoning_label: high
     review_evidence_schema: trusted-review-controller-record/v1
     review_evidence_source: TRUSTED_REVIEW_CONTROLLER_SIGNED_IMMUTABLE_RECORD
     review_evidence_retrieval: VALIDATOR_DETERMINISTICALLY_ENUMERATES_CLOSED_EVIDENCE_SET_AND_LOADS_EXACT_RECORD
@@ -187,7 +187,7 @@ programme_gate_registry:
       review_runtime_binary_path: /opt/homebrew/bin/codex
       review_runtime_entrypoint_sha256: 134063e133f0b4244fa3b251acf973d4fe4b4aeeacbdc135211bf480f59f1477
       exact_model_identifier: gpt-5.6-sol
-      reasoning_level: xhigh
+      reasoning_level: high
       fixed_context_rule: HASH_OF_CLOSED_TRUSTED_REVIEW_RUNTIME_CONTEXT_WITH_FRESH_CONTROLLER_CREATED_PATHS
       fixed_context_closed_fields: [context_version, review_runtime_binary_path, review_runtime_version, review_runtime_binary_digest, controller_run_root, lane_run_root, working_directory, operating_system, architecture, home_path, codex_home_path, tmpdir_path, path_value, lang, lc_all, term]
       fixed_context_constants: [TrustedReviewRuntimeContext/V1, /opt/homebrew/bin/codex, codex-cli/0.145.0, darwin, arm64, "/opt/homebrew/bin:/usr/bin:/bin", en_US.UTF-8, en_US.UTF-8, dumb]
@@ -202,11 +202,11 @@ programme_gate_registry:
       missing_extra_or_digest_mismatched_prompt_effect: INELIGIBLE
     frozen_independence_validator_allowlist:
       validator_key_id: PROGRAMME_GATE_VALIDATOR_2026_07
-      validator_executable_digest: 88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5
+      validator_executable_digest: a5377bdec07a9c333b73ed07f88b9a4aaa78678758a37fffe331839c82a3b5a2
       validator_configuration_digest: 44c470631cc0d9cd7b48796f25c12addd3a735ca650f5622dd55db5ed8d30d21
     frozen_trust_root_set:
       registry_schema: programme-gate-trusted-public-keys/v1
-      registry_source_sha256: 5700fa4c26ddb98207265e988cb9672b5509a43bfe4084e77694bd40f4043d24
+      registry_source_sha256: 488ade024f14a59c11cb7c1ea3d6196aba9de1bc6cca08c2bc2d0bd52468c54e
       keys:
         PROGRAMME_GATE_VALIDATOR_2026_07: 5b028d01aaa4f077c6f2f28ef8075195330eff00c2f81061fad8622b761de566
         PROGRAMME_STATUS_PUBLISHER_2026_07: d7f562af345fcb04a78f26c87b3e3f19b1cad6c8627ccc612396a4217d8a02c1
@@ -296,10 +296,10 @@ programme_gate_registry:
         exact_model_rule: CONTROLLER_OBSERVED_FABLE_ELIGIBLE_MODEL
         exact_model_identifiers: [fable-legal-reviewer]
         exact_reasoning_level: provider_default
-      SOL_5_6_EXTRA_HIGH_ELIGIBLE:
+      SOL_5_6_HIGH_ELIGIBLE:
         reviewer_identity_class: OPENAI_MODEL
         exact_model_rule: gpt-5.6-sol
-        exact_reasoning_level: xhigh
+        exact_reasoning_level: high
     review_controller_verification_predicate:
       deterministically_enumerate_closed_evidence_set_and_load_exact_record: true
       verify_signature_to_allowlisted_controller_process_only_key: true

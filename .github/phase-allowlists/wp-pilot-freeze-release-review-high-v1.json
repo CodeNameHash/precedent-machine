@@ -1,0 +1,39 @@
+{
+  "phase": "WP-PILOT-FREEZE-RELEASE-REVIEW-HIGH-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-pilot-freeze-release-review-high-v1.json",
+    "docs/CODEX-PROGRAM.md",
+    "docs/codex-program/adversarial-tests.md",
+    "docs/codex-program/bootstrap-acceptance-source.json",
+    "docs/codex-program/canonical-contracts.md",
+    "docs/codex-program/programme-gates.yaml",
+    "docs/codex-program/specification-manifest.json",
+    "lib/programme-gates/registry.js",
+    "lib/programme-gates/review-artifact.js",
+    "lib/programme-gates/review-controller.js",
+    "lib/programme-gates/review-evidence.js",
+    "lib/programme-gates/schema-registry.js",
+    "lib/programme-gates/test-executable-registry.js",
+    "scripts/verify-codex-program-spec.mjs",
+    "tests/programme-gates-schema-registry.test.js",
+    "tests/programme-gates/contract-freeze-predicates.spec.js",
+    "tests/programme-gates/review-artifact.spec.js",
+    "tests/programme-gates/review-controller.spec.js",
+    "tests/programme-gates/review-evidence.spec.js",
+    "tests/programme-gates/review-readiness-signing.spec.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "lib/canonical-v2/**",
+    "pages/**",
+    "scripts/sign-g0-evidence.mjs",
+    "sql/**",
+    "supabase/**",
+    "tests/canonical-v2*"
+  ],
+  "note": "Changes the formal Sol review effort from extra-high to high. It preserves the exact model, Fable path, review counts, eligibility, independence, same-bundle binding, signatures, and fail-closed controls."
+}

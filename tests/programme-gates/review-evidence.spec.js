@@ -171,7 +171,7 @@ function fixture() {
       },
       exact_specification_root: ROOT,
       exact_model_identifier: 'gpt-5.6-sol',
-      reasoning_level: 'xhigh',
+      reasoning_level: 'high',
       immutable_task_id: `task-${index}`,
       immutable_session_id: `session-${index}`,
       immutable_review_id: `review-${index}`,
@@ -304,7 +304,7 @@ test('missing, duplicate, boolean-substitute and reused review members stay OPEN
 test('wrong root, Sol reasoning, signatures and non-empty independence roots stay OPEN', () => {
   for (const mutate of [
     (sample) => { sample.members[0].controller_record.exact_specification_root = DIGEST_B; },
-    (sample) => { sample.members[1].controller_record.reasoning_level = 'high'; },
+    (sample) => { sample.members[1].controller_record.reasoning_level = 'xhigh'; },
     (sample) => { sample.members[2].controller_record.controller_signature = 'invalid'; },
     (sample) => { sample.members[3].independence_attestation.signature = 'invalid'; },
     (sample) => { sample.members[4].independence_attestation.authoring_event_intersection_root = DIGEST_D; },

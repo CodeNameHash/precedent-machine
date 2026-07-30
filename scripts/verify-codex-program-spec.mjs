@@ -28,7 +28,7 @@ const contentPaths = [
   'docs/codex-program/adversarial-tests.md',
 ];
 const domain = 'CODEX_PROGRAM_SPECIFICATION_ROOT_V1';
-const expectedReviewer = 'Fable or an independent 5.6 Sol reviewer using extra-high reasoning';
+const expectedReviewer = 'Fable or an independent 5.6 Sol reviewer using high reasoning';
 
 function fail(message) {
   throw new Error(message);
@@ -187,7 +187,7 @@ function validateGateRegistry() {
   if (reviewer?.formal_legal_semantic_reviewer !== `${expectedReviewer}.`) {
     fail('Formal reviewer label does not use the exact required wording');
   }
-  if (reviewer.sol_provider_model_id !== 'gpt-5.6-sol' || reviewer.sol_provider_reasoning_value !== 'xhigh') {
+  if (reviewer.sol_provider_model_id !== 'gpt-5.6-sol' || reviewer.sol_provider_reasoning_value !== 'high') {
     fail('Sol provider model or reasoning attestation binding changed');
   }
   const controllerAllowlist = reviewer.frozen_controller_and_runtime_allowlist;
@@ -201,7 +201,7 @@ function validateGateRegistry() {
     || controllerAllowlist?.review_runtime_entrypoint_sha256
       !== '134063e133f0b4244fa3b251acf973d4fe4b4aeeacbdc135211bf480f59f1477'
     || controllerAllowlist?.exact_model_identifier !== 'gpt-5.6-sol'
-    || controllerAllowlist?.reasoning_level !== 'xhigh'
+    || controllerAllowlist?.reasoning_level !== 'high'
     || laneAllowlist?.ARCHITECTURE?.[0] !== 'COLD_ARCHITECTURE_REVIEW/V1'
     || laneAllowlist?.ARCHITECTURE?.[1]
       !== 'e8aa3359ecf632383562b66d61114b0556d8954527610498663642ab0b972297'
@@ -222,7 +222,7 @@ function validateGateRegistry() {
     || independenceAllowlist?.validator_key_id
       !== 'PROGRAMME_GATE_VALIDATOR_2026_07'
     || independenceAllowlist?.validator_executable_digest
-      !== '88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5'
+      !== 'a5377bdec07a9c333b73ed07f88b9a4aaa78678758a37fffe331839c82a3b5a2'
     || independenceAllowlist?.validator_configuration_digest
       !== '44c470631cc0d9cd7b48796f25c12addd3a735ca650f5622dd55db5ed8d30d21') {
     fail('Frozen review controller, runtime, prompt or validator allowlist changed');
@@ -318,9 +318,9 @@ function validateGateRegistry() {
     || JSON.stringify(profiles?.FABLE_ELIGIBLE?.exact_model_identifiers)
       !== JSON.stringify(['fable-legal-reviewer'])
     || profiles?.FABLE_ELIGIBLE?.exact_reasoning_level !== 'provider_default'
-    || profiles?.SOL_5_6_EXTRA_HIGH_ELIGIBLE?.reviewer_identity_class !== 'OPENAI_MODEL'
-    || profiles?.SOL_5_6_EXTRA_HIGH_ELIGIBLE?.exact_model_rule !== 'gpt-5.6-sol'
-    || profiles?.SOL_5_6_EXTRA_HIGH_ELIGIBLE?.exact_reasoning_level !== 'xhigh') {
+    || profiles?.SOL_5_6_HIGH_ELIGIBLE?.reviewer_identity_class !== 'OPENAI_MODEL'
+    || profiles?.SOL_5_6_HIGH_ELIGIBLE?.exact_model_rule !== 'gpt-5.6-sol'
+    || profiles?.SOL_5_6_HIGH_ELIGIBLE?.exact_reasoning_level !== 'high') {
     fail('Reviewer profiles are incomplete');
   }
   const controllerCapabilities = reviewer.review_controller_required_capabilities;
@@ -373,7 +373,7 @@ function validateGateRegistry() {
     PROGRAMME_GATE_BEN_APPROVER_2026_07: '2baac1c454dfb918097f2816fc9a230eb93139f735db35b9ed64d0e6846b4c17',
   };
   if (reviewer.review_controller_trust_root_set !== 'trusted-review-controller-keys/2026-07-frozen-v1'
-    || frozenTrust?.registry_source_sha256 !== '5700fa4c26ddb98207265e988cb9672b5509a43bfe4084e77694bd40f4043d24'
+    || frozenTrust?.registry_source_sha256 !== '488ade024f14a59c11cb7c1ea3d6196aba9de1bc6cca08c2bc2d0bd52468c54e'
     || sha256(read('lib/programme-gates/registry.js')) !== frozenTrust?.registry_source_sha256
     || JSON.stringify(frozenTrust?.keys) !== JSON.stringify(expectedTrustKeys)
     || frozenTrust?.unknown_replacement_or_post_review_key_effect !== 'OPEN') {
@@ -452,7 +452,7 @@ function validateGateRegistry() {
     || compiledRegistry?.source_sha256
       !== sha256(read('docs/codex-program/bootstrap-acceptance-source.json'))
     || compiledRegistry?.closed_validator_executable_set_digest
-      !== '88abb89131d1dde4f9115a89f7f57ad3ff7b6e181fa3c64a791752dcc1be6be5'
+      !== 'a5377bdec07a9c333b73ed07f88b9a4aaa78678758a37fffe331839c82a3b5a2'
     || compiledRegistry?.authority
       !== 'ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE'
     || compiledRegistry?.exact_active_definition_count !== 11
