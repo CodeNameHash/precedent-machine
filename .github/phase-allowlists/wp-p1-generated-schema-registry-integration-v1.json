@@ -1,10 +1,15 @@
 {
-  "phase": "WP-P1-GENERATED-SCHEMA-REGISTRY-INTEGRATION-V1",
+  "phase": "WP-P1-GENERATED-SCHEMA-BOUNDARY-CORRECTION-V1",
   "required_work_class": "canonical_work_start",
   "allowed": [
     ".github/phase-allowlists/wp-p1-generated-schema-registry-integration-v1.json",
     "docs/codex-program/bootstrap-acceptance-source.json",
+    "docs/codex-program/programme-gates.yaml",
+    "docs/codex-program/specification-manifest.json",
+    "lib/canonical-v2/canonical-contract-bundle-generated-topology.js",
     "lib/programme-gates/registry.js",
+    "lib/programme-gates/schema-registry.js",
+    "tests/canonical-v2-canonical-contract-bundle-generated-topology.test.js",
     "tests/programme-gates-schema-registry.test.js"
   ],
   "denied": [
@@ -16,5 +21,5 @@
     "sql/**",
     "supabase/**"
   ],
-  "note": "Registers the generated contract-bundle member schema and regenerates its existing bootstrap evidence binding. No contract meaning, extraction, database, writer, serving, release, activation, production, signing, status-publication, or freeze authority."
+  "note": "Moves generated contract-bundle member validation to the canonical topology boundary, restores the frozen programme-gate registry, and refreshes only the exact generated bootstrap source binding and specification fingerprints. No contract meaning, extraction, database, writer, serving, release, activation, production, signing, status-publication, or freeze authority."
 }

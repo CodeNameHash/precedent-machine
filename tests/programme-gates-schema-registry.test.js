@@ -117,13 +117,17 @@ function controllerRecord() {
 
 test('the schema registry is closed and rejects unknown schema IDs', () => {
   assert.deepEqual(SCHEMA_IDS, VALIDATOR_CONFIGURATION.schema_registry_ids);
-  assert.equal(SCHEMA_IDS.length, 41);
+  assert.equal(SCHEMA_IDS.length, 40);
   for (const schemaId of SCHEMA_IDS) {
     assert.equal(schemaFor(schemaId).$id, schemaId);
     assert.equal(schemaFor(schemaId).additionalProperties, false);
   }
   assert.throws(() => schemaFor('ProgrammeGateEvidenceEnvelope/V3'), /unknown programme-gate schema ID/);
   assert.throws(() => validateSchema('InventedSchema/V1', {}), /unknown programme-gate schema ID/);
+  assert.throws(
+    () => schemaFor('CanonicalGeneratedContractBundleMember/V1'),
+    /unknown programme-gate schema ID/,
+  );
 });
 
 test('the controller schema includes fixed runtime context and rejects missing or extra fields', () => {

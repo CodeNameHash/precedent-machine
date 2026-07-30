@@ -18,12 +18,10 @@ const {
 const {
   compileCanonicalContractBundleGeneratedTopology,
   compileGovernedTopologyInputs,
+  validateCanonicalGeneratedContractBundleMember,
 } = require(
   '../lib/canonical-v2/canonical-contract-bundle-generated-topology'
 );
-const {
-  validateSchema,
-} = require('../lib/programme-gates/schema-registry');
 const GOVERNANCE = require(
   '../contracts/canonical-v2/generated-topology-inputs/governance/generated-topology-governance.v1.json'
 );
@@ -108,7 +106,7 @@ test('builds the complete generated topology deterministically', () => {
   );
   assert.equal(first.semantic_stage_registry.stage_count, 5);
   first.generated_contract_bundle_members.forEach((member) => assert.equal(
-    validateSchema('CanonicalGeneratedContractBundleMember/V1', member),
+    validateCanonicalGeneratedContractBundleMember(member),
     true,
   ));
   assert.equal(
@@ -134,6 +132,33 @@ test('builds the complete generated topology deterministically', () => {
   assert.equal(first.disposition.freeze_authority, 'NONE');
   assert.equal(first.disposition.production_authority, 'NONE');
   assert.equal(Object.isFrozen(first), true);
+});
+
+test('keeps generated member validation closed at the topology boundary', () => {
+  const { inputCompilation, bundleCompilation } = fixture();
+  const topology = compileCanonicalContractBundleGeneratedTopology({
+    canonical_contract_input_compilation: inputCompilation,
+    canonical_contract_bundle_compilation: bundleCompilation,
+  });
+  const validMember = topology.generated_contract_bundle_members[0];
+  const extraField = structuredClone(validMember);
+  extraField.hostile_authority = true;
+  assert.throws(
+    () => validateCanonicalGeneratedContractBundleMember(extraField),
+    (error) => error.code === 'INVALID_GENERATED_CONTRACT_BUNDLE_MEMBER',
+  );
+
+  const substitutedBytes = structuredClone(validMember);
+  const source = JSON.parse(
+    Buffer.from(substitutedBytes.source_bytes_base64, 'base64').toString('utf8'),
+  );
+  source.hostile_substitution = true;
+  substitutedBytes.source_bytes_base64 =
+    Buffer.from(canonicalJson(source), 'utf8').toString('base64');
+  assert.throws(
+    () => validateCanonicalGeneratedContractBundleMember(substitutedBytes),
+    (error) => error.code === 'INVALID_GENERATED_CONTRACT_BUNDLE_MEMBER',
+  );
 });
 
 test('binds the final fingerprint to every generated output', () => {
