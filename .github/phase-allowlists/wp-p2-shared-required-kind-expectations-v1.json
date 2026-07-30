@@ -1,0 +1,25 @@
+{
+  "phase": "WP-P2-SHARED-REQUIRED-KIND-EXPECTATIONS-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p2-shared-required-kind-expectations-v1.json",
+    "tests/canonical-v2-shared-authority-deal-fact-contract-input.test.js",
+    "tests/canonical-v2-shared-authority-professional-contract-input.test.js",
+    "tests/canonical-v2-shared-authority-projection-contract-input.test.js",
+    "tests/canonical-v2-shared-authority-transaction-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "lib/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Updates four stale shared-authority test expectations to the mechanically complete governed required-kind registry. It changes no contract, legal meaning, identity, authority, runtime, deployment, database, writer, serving, release, import, activation, production or cutover behaviour."
+}

@@ -58,8 +58,11 @@ test('compiles source facts, resolved facts and temporal expressions without rel
       'TEMPORAL_EXPRESSION',
     ],
   );
-  assert.equal(first.authored_universe_assessment.status, 'NOT_ASSESSED');
-  assert.equal(first.disposition.status, 'INCOMPLETE_UNIVERSE');
+  assert.equal(
+    first.authored_universe_assessment.status,
+    'COMPLETE_AGAINST_GOVERNED_REQUIRED_KIND_REGISTRY',
+  );
+  assert.equal(first.disposition.status, 'AUTHORED_UNIVERSE_MECHANICALLY_COMPLETE');
   assert.equal(first.disposition.freeze_eligible, false);
   assert.equal(first.disposition.canonical_contract_bundle_authority, 'NONE');
 });

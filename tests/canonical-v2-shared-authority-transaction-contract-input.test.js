@@ -53,6 +53,7 @@ test('compiles all six transaction contract inputs without granting release auth
       .filter((member) => member.relative_path.startsWith('shared/transactions/'))
       .map((member) => member.stable_id),
     [
+      'CONSIDERATION_PACKAGE',
       'DEAL_PARTICIPANT_RELATIONSHIP',
       'SHARE_PURCHASE_INTEREST_COMPONENT',
       'SOURCE_TRANSACTION_LEG_OCCURRENCE',
@@ -61,8 +62,11 @@ test('compiles all six transaction contract inputs without granting release auth
       'TRANSACTION_STRUCTURE_RESOLUTION_OCCURRENCE',
     ],
   );
-  assert.equal(first.authored_universe_assessment.status, 'NOT_ASSESSED');
-  assert.equal(first.disposition.status, 'INCOMPLETE_UNIVERSE');
+  assert.equal(
+    first.authored_universe_assessment.status,
+    'COMPLETE_AGAINST_GOVERNED_REQUIRED_KIND_REGISTRY',
+  );
+  assert.equal(first.disposition.status, 'AUTHORED_UNIVERSE_MECHANICALLY_COMPLETE');
   assert.equal(first.disposition.freeze_eligible, false);
   assert.equal(first.disposition.canonical_contract_bundle_authority, 'NONE');
 });
