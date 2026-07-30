@@ -30,8 +30,52 @@ test('rejects a caller-supplied forged predecessor pair before evidence is read'
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'pilot-preflight-'));
   try {
     const inputPath = path.join(directory, 'input.json');
-    fs.writeFileSync(inputPath, JSON.stringify({ additional_worktree_paths: [], evidence_paths: {}, publication: { commit: 'b'.repeat(40), generation: 1 } }));
-    assert.throws(() => execFileSync(process.execPath, [path.resolve(__dirname, '../../scripts/pilot-integration-preflight.mjs'), '--input', inputPath], { cwd: path.resolve(__dirname, '../..'), stdio: 'pipe' }), /input must contain only/);
+    fs.writeFileSync(inputPath, JSON.stringify({
+      additional_worktree_paths: [],
+      evidence_paths: {
+        deployment: '/not/read',
+        development_compiles: '/not/read',
+        test_receipts: '/not/read',
+      },
+      publication: { commit: 'b'.repeat(40), generation: 1 },
+    }));
+    assert.throws(
+      () => execFileSync(
+        process.execPath,
+        [
+          path.resolve(__dirname, '../../scripts/pilot-integration-preflight.mjs'),
+          '--input',
+          inputPath,
+        ],
+        { cwd: path.resolve(__dirname, '../..'), stdio: 'pipe' },
+      ),
+      /input must contain only/,
+    );
+  } finally { fs.rmSync(directory, { recursive: true, force: true }); }
+});
+test('requires all three external evidence paths before reading any receipt', () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'pilot-preflight-'));
+  try {
+    const inputPath = path.join(directory, 'input.json');
+    fs.writeFileSync(inputPath, JSON.stringify({
+      additional_worktree_paths: [],
+      evidence_paths: {
+        deployment: '/not/read',
+        development_compiles: '/not/read',
+      },
+    }));
+    assert.throws(
+      () => execFileSync(
+        process.execPath,
+        [
+          path.resolve(__dirname, '../../scripts/pilot-integration-preflight.mjs'),
+          '--input',
+          inputPath,
+        ],
+        { cwd: path.resolve(__dirname, '../..'), stdio: 'pipe' },
+      ),
+      /three evidence_paths/,
+    );
   } finally { fs.rmSync(directory, { recursive: true, force: true }); }
 });
 test('accepts legacy allowedWrites as the exact phase permission set', () => {

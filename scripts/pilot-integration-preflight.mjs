@@ -15,16 +15,37 @@ const git = (gitArgs) => gitRaw(gitArgs).trim();
 const supplied = JSON.parse(fs.readFileSync(args[1], 'utf8'));
 const exactKeys = (value, keys) => value && typeof value === 'object' && !Array.isArray(value)
   && Object.keys(value).sort().join(',') === [...keys].sort().join(',');
-if (!exactKeys(supplied, ['additional_worktree_paths'])
+if (!exactKeys(supplied, ['additional_worktree_paths', 'evidence_paths'])
   || !Array.isArray(supplied.additional_worktree_paths)
-  || supplied.additional_worktree_paths.some((value) => typeof value !== 'string')) {
-  throw new Error('input must contain only additional_worktree_paths');
+  || supplied.additional_worktree_paths.some((value) => typeof value !== 'string')
+  || !exactKeys(supplied.evidence_paths, [
+    'deployment',
+    'development_compiles',
+    'test_receipts',
+  ])
+  || Object.values(supplied.evidence_paths).some(
+    (value) => typeof value !== 'string' || value.length === 0,
+  )) {
+  throw new Error(
+    'input must contain only additional_worktree_paths and the three evidence_paths',
+  );
 }
 const localFile = (value) => {
   const resolved = path.resolve(root, value);
   if (!resolved.startsWith(`${root}${path.sep}`)) throw new Error('evidence path must be repository-local');
   return resolved;
 };
+const evidenceFile = (value) => {
+  const resolved = path.isAbsolute(value) ? value : path.resolve(root, value);
+  if (!fs.statSync(resolved).isFile()) {
+    throw new Error('evidence path must identify a file');
+  }
+  return resolved;
+};
+const readEvidence = (key) => JSON.parse(fs.readFileSync(
+  evidenceFile(supplied.evidence_paths[key]),
+  'utf8',
+));
 const commandSucceeds = (command, commandArgs) => {
   try { execFileSync(command, commandArgs, { cwd: root, stdio: 'ignore' }); return true; } catch { return false; }
 };
@@ -39,6 +60,15 @@ const successorRoot = path.join(root, 'contracts/canonical-v2/successor');
 const successorManifest = JSON.parse(fs.readFileSync(path.join(successorRoot, 'manifest.json'), 'utf8'));
 const manifestFresh = commandSucceeds(process.execPath, [path.join(root, 'scripts/generate-canonical-v2-successor-manifest.mjs'), '--check', '--root', successorRoot]);
 const manifestCount = Array.isArray(successorManifest.members) ? successorManifest.members.length : -1;
+const countJsonFiles = (directory) => fs.readdirSync(directory, {
+  withFileTypes: true,
+}).reduce((count, entry) => {
+  if (entry.name === 'manifest.json') return count;
+  const member = path.join(directory, entry.name);
+  if (entry.isDirectory()) return count + countJsonFiles(member);
+  return count + (entry.isFile() && entry.name.endsWith('.json') ? 1 : 0);
+}, 0);
+const actualContractCount = countJsonFiles(successorRoot);
 const changedPaths = git(['diff', '--name-only', `${expected}..${candidate}`]).split('\n').filter(Boolean).sort();
 const allowlistPaths = git(['diff', '--name-only', `${expected}..${candidate}`, '--', '.github/phase-allowlists'])
   .split('\n').filter(Boolean).sort();
@@ -70,10 +100,10 @@ const live = {
   publication: { commit: protectedPublication, generation: signedStatus.generation },
   specification_root: signedStatus.specification_root,
   evidence: {
-    manifest: { schema_version: 'PilotIntegrationManifestReceipt/V1', candidate_commit: candidate, specification_root: signedStatus.specification_root, registered: manifestFresh, actual_count: manifestCount, expected_count: manifestCount },
-    development_compiles: { schema_version: 'PilotIntegrationCompileReceipt/V1', candidate_commit: candidate, specification_root: signedStatus.specification_root, compile_count: 0, success: false },
-    deployment: { schema_version: 'PilotIntegrationDeploymentReceipt/V1', candidate_commit: candidate, specification_root: signedStatus.specification_root, present: false },
-    test_receipts: { schema_version: 'PilotIntegrationTestReceipt/V1', candidate_commit: candidate, specification_root: signedStatus.specification_root, required_receipts: ['READY_INTEGRATION_WINDOW'], receipts: [] },
+    manifest: { schema_version: 'PilotIntegrationManifestReceipt/V1', candidate_commit: candidate, specification_root: signedStatus.specification_root, registered: manifestFresh, actual_count: actualContractCount, expected_count: manifestCount },
+    development_compiles: readEvidence('development_compiles'),
+    deployment: readEvidence('deployment'),
+    test_receipts: readEvidence('test_receipts'),
   },
 };
 const result = runPilotIntegrationPreflight(live);
