@@ -12,6 +12,30 @@ function read(relativePath) {
   return JSON.parse(fs.readFileSync(path.join(ROOT, relativePath), 'utf8'));
 }
 
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+const EXPECTED_RELATIONSHIP_PREDECESSOR = Object.freeze({
+  stable_id: 'PROCESS_RELATIONSHIP',
+  schema_version: 'PROCESS_LOGICAL_TYPE_INPUT/V1',
+  logical_type_version: 1,
+  definition_digest:
+    '1000d5595c5daa0af96d502fe1469063350494672f1c007c9eb9723bd15d3fdd',
+});
+
+const EXPECTED_REGISTRY_PREDECESSOR = Object.freeze({
+  stable_id: 'PROCESS_CONTROLLED_CODE_REGISTRY',
+  schema_version: 'PROCESS_CONTROLLED_CODE_REGISTRY_INPUT/V1',
+  registry_version: 1,
+  definition_digest:
+    'f233154485889cc2b9f87630c086d84119c336feb070bbef288079963333dd51',
+});
+
+function requireExactPredecessor(actual, expected) {
+  assert.deepEqual(actual, expected);
+}
+
 const relationship = read(
   'relationships/process-relationship.v2.json',
 );
@@ -36,6 +60,49 @@ test('replaces both predecessor contracts with sole active v2 members', () => {
   );
   assert.equal(relationship.definition.logical_type_version, 2);
   assert.equal(registry.definition.registry_version, 2);
+});
+
+test('binds both successor definitions to their exact predecessors', () => {
+  requireExactPredecessor(
+    relationship.definition.predecessor_contract,
+    EXPECTED_RELATIONSHIP_PREDECESSOR,
+  );
+  requireExactPredecessor(
+    registry.definition.predecessor_contract,
+    EXPECTED_REGISTRY_PREDECESSOR,
+  );
+});
+
+test('rejects predecessor identity, version and digest substitution', () => {
+  for (const [expected, mutations] of [
+    [
+      EXPECTED_RELATIONSHIP_PREDECESSOR,
+      [
+        ['stable_id', 'PROCESS_EVENT'],
+        ['schema_version', 'PROCESS_LOGICAL_TYPE_INPUT/V2'],
+        ['logical_type_version', 2],
+        ['definition_digest', '0'.repeat(64)],
+      ],
+    ],
+    [
+      EXPECTED_REGISTRY_PREDECESSOR,
+      [
+        ['stable_id', 'PROCESS_RELATIONSHIP'],
+        ['schema_version', 'PROCESS_CONTROLLED_CODE_REGISTRY_INPUT/V2'],
+        ['registry_version', 2],
+        ['definition_digest', '0'.repeat(64)],
+      ],
+    ],
+  ]) {
+    for (const [key, value] of mutations) {
+      const substituted = clone(expected);
+      substituted[key] = value;
+      assert.throws(
+        () => requireExactPredecessor(substituted, expected),
+        { code: 'ERR_ASSERTION' },
+      );
+    }
+  }
 });
 
 test('preserves the ProcessRelationship stable identity exactly', () => {
