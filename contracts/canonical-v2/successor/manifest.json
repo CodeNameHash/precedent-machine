@@ -666,7 +666,7 @@
       "object_kind": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
       "stable_id": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
       "schema_version": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY/V1",
-      "canonical_bytes_digest": "3765e5b1d4f2dedf8f9d792da5fe6070b567e45209c1e696779ea71ee4c5b4e9"
+      "canonical_bytes_digest": "f3e7aa8b41501c247cf4116f3e56b2fa3d1c3f3b550ef62fe84f7af4f8c812af"
     },
     {
       "relative_path": "governance/residuals/governed-residual-disposition.v1.json",
@@ -1061,6 +1061,13 @@
       "canonical_bytes_digest": "382c9d67f472f917a1a158c061509fcd13f157e83db6096e4f7d09a58bb028c0"
     },
     {
+      "relative_path": "product/query/qxo-capitalisation-f28-candidate-envelope.v1.json",
+      "object_kind": "PRODUCT_QUERY_CONTRACT_INPUT",
+      "stable_id": "QXO_CAPITALISATION_F28_CANDIDATE_ENVELOPE",
+      "schema_version": "PRODUCT_QUERY_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "59fe3520d2aa96aeee3ae5097b428898146852c84f4d255f69250c248ed204a4"
+    },
+    {
       "relative_path": "product/query/qxo-capitalisation-f28-product-result-adapter.v1.json",
       "object_kind": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT",
       "stable_id": "QXO_CAPITALISATION_F28_PRODUCT_RESULT_ADAPTER",
@@ -1223,7 +1230,7 @@
     "PROCESS_QUERY_CONTRACT_INPUT": 3,
     "PROCESS_RESULT_ACTION_CONTRACT_INPUT": 4,
     "PRODUCT_QUERY_ACTION_CONTRACT_INPUT": 2,
-    "PRODUCT_QUERY_CONTRACT_INPUT": 1,
+    "PRODUCT_QUERY_CONTRACT_INPUT": 2,
     "PRODUCT_QUERY_RESULT_CONTRACT_INPUT": 5,
     "PRODUCT_RESULT_ACTION_CONTRACT_INPUT": 2,
     "PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT": 1,

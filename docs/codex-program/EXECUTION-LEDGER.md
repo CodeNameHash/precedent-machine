@@ -13,9 +13,10 @@ main integration.
 | --- | --- |
 | Main basis | `7b6bc64157c49832129fa2ca227399850cd983fc` |
 | Governance balance branch | `claude/codex-attestations-build-balance-z3xm23` |
-| Contract bundle | 170 authored inputs, 169 substantive contracts, 8 categories |
-| Contract bundle fingerprint | `99b0d267e4d3712c538d3ba206117d2da1bd305c6be71dc664e465fb27854b27` |
-| Contract dependency graph | 169 nodes, 273 links, 0 missing, duplicate, conflict, unresolved or cyclic links |
+| Contract bundle | 171 authored inputs, 170 substantive contracts, 8 categories |
+| Current bundle ID | `fe17399f1d09743c9e510a75cc0aff76abce8d59b7e59710010da54e3f631311` |
+| Current canonical bundle digest | `46a1c644c22333ed81490441c5724dad6624ba2bafa5ac7517abe5c98c3ca69a` |
+| Contract dependency graph | 170 nodes, 274 links, 0 missing, duplicate, conflict, unresolved or cyclic links |
 | Clean compile check | PASS, two uncached compiles produced identical canonical bytes |
 | Latest complete suite on governance candidate | 4,576 pass, 0 fail, 7 skip |
 | Latest production build on basis | PASS, 29/29 pages |
@@ -46,7 +47,10 @@ facts or legal meaning.
 | Unit | Phase | Outcome | Owner | Branch and files | Required checks | Status | Next action | Ben |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `PM-GOV-BALANCE-01` | control | Replace pre-production attestation machinery with four milestone reviews and Tier A/Tier B security. | PM controller | `codex/governance-balance-v2`; governing docs, generated manifest and apparatus-only tests; commit `afbf1a4`. | 4,576 pass, 0 fail, 7 skip; production build PASS. | INTEGRATION | Include the committed unit in the next controlled main movement. | No |
-| `PM-QXO-F28-LINK-01` | P8 | Connect the real QXO F28 graph to writer, correction head, candidate release and serving reads. | PM implementation | `codex/qxo-f28-runtime-link-v1`; `lib/canonical-v2/qxo-capitalisation-f28-runtime-link.js`; focused test and fixture only. | Focused F28 runtime-plan chain, then isolated staging run after M1. | ACTIVE | Build the closed in-memory execution plan without granting database or activation authority. | No |
+| `PM-QXO-F28-LINK-01` | P8 | Bind the F28 graph, all 14 metric slots, correction head and Product result without hiding missing runtime links. | PM implementation | `codex/qxo-f28-runtime-link-v1`; commit `d582705`. | 4 focused tests PASS. | COMPLETE | Preserve the fail-closed runtime plan. | No |
+| `PM-QXO-F28-WRITER-01` | P8 | Convert the exact F28 graph into the canonical writer's closed `DEAL_SCOPE_RUN` input. | PM implementation | Same branch; commit `32af4b2`. | 3 focused tests PASS. | COMPLETE | Preserve the typed writer-schema rejection. | No |
+| `PM-QXO-F28-CONDITION-GROUP-WRITER-01` | P2/P8 | Admit the existing `CAPITALISATION_CONDITION_GROUP/V1` rows to the writer without converting or dropping them. | PM implementation | Exact branch and files to be reserved. | Writer structure, identity, persistence, replay and data-loss tests. | READY | Add a governed condition-group collection to the writer path. | No |
+| `PM-QXO-F28-CANDIDATE-01` | P8 | Add one immutable F28 candidate envelope for one row with 14 ordered metric terminals. | PM implementation | Same branch; commit `cec829c`; controller-owned registry and manifest integration. | 6 focused hostile tests plus 27-test bundle chain PASS. | COMPLETE | Build the envelope runtime and additive Product adapter V2. | No |
 | `PM-QUERY-FIXTURE-LINK-01` | P8 | Execute fixture-scoped Product Query and Review paths without opening the production route. | PM implementation | Exact runtime branch and paths to be reserved. | Query, Review, Compare and Corpus Context parity. | READY | Implement after QXO writer link. | No |
 | `PI-METSERA-RUNTIME-01` | P8 | Connect sealed Metsera sources through acquisition, enumeration, validation and pilot materialisation. | Process Intelligence | PI branch and exact files to be supplied in one batch. | Focused Process chain and sealed-gold comparison. | READY | Build the first real-source runtime link. | No |
 
@@ -64,7 +68,7 @@ facts or legal meaning.
 
 | Unit | Phase | Outcome | Owner | Dependency | Evidence | Status | Next action | Ben |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `P1-CONTRACT-BUNDLE` | P1 | One complete Agreement, shared and Process contract bundle. | PM controller | Governance balance merge. | Mechanical bundle checks PASS. Independent exact-byte reviews and M1 acknowledgement remain. | REVIEW | Run the three M1 reviews in parallel, then request exact bundle approval once. | Yes |
+| `P1-CONTRACT-BUNDLE` | P1 | One complete Agreement, shared and Process contract bundle. | PM controller | Complete the condition-group writer contract. | Current 170-contract bundle checks PASS. Final recompile and independent exact-byte reviews remain. | ACTIVE | Close the writer contract gap, then rebuild the exact M1 bundle. | Yes |
 | `P2-IDENTITY-WRITER` | P2 | Stable identities and one canonical writer. | PM implementation | P1 bundle. | Identity and transactional writer tests. | COMPLETE | Preserve. | No |
 | `P3-SCOPE-EXTRACTION` | P3 | Definitions-first scope and extraction with open-world residuals. | PM and PI | P1 bundle. | Goldens, evals, quote verification and hostile correctness tests. | ACTIVE | Complete real Metsera link. | No |
 | `P4-OBSERVATIONS-QUERY` | P4 | Normalised observations and one Product Query IR. | PM and PI | P3 outputs. | Numeric, unit, field, Ask/Browse and filter tests. | ACTIVE | Connect real release inputs. | No |
