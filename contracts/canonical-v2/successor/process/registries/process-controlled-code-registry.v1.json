@@ -1,0 +1,273 @@
+{
+  "object_kind": "PROCESS_CONTROLLED_CODE_REGISTRY_INPUT",
+  "stable_id": "PROCESS_CONTROLLED_CODE_REGISTRY",
+  "schema_version": "PROCESS_CONTROLLED_CODE_REGISTRY_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "registry_version": 1,
+    "registry_state": "CLOSED",
+    "process_owned_registries": [
+      {
+        "registry_stable_id": "PROCESS_AGREEMENT_TYPE_REGISTRY",
+        "value_field": "agreement_type_code",
+        "codes": [
+          "CONFIDENTIALITY",
+          "EXCLUSIVITY",
+          "OTHER_PROCESS_AGREEMENT",
+          "STANDSTILL"
+        ]
+      },
+      {
+        "registry_stable_id": "PROCESS_CERTIFICATION_STATE_REGISTRY",
+        "value_field": "certification_state_code",
+        "codes": [
+          "CERTIFIED_COMPLETE",
+          "CERTIFIED_INCOMPLETE",
+          "FAILED",
+          "NOT_CERTIFIED"
+        ]
+      },
+      {
+        "registry_stable_id": "PROCESS_CHANNEL_REGISTRY",
+        "value_field": "channel_code",
+        "codes": [
+          "IN_PERSON_MEETING",
+          "OTHER_GOVERNED_CHANNEL",
+          "TELEPHONE_CALL",
+          "VIRTUAL_MEETING",
+          "WRITTEN_COMMUNICATION"
+        ]
+      },
+      {
+        "registry_stable_id": "PROCESS_DOCUMENT_STAGE_REGISTRY",
+        "value_field": "document_stage_code",
+        "codes": [
+          "AMENDED",
+          "DRAFT",
+          "EXECUTED",
+          "SUPERSEDED",
+          "TERMINATED"
+        ]
+      },
+      {
+        "registry_stable_id": "PROCESS_EVENT_ROLE_REGISTRY",
+        "value_field": "event_role_code",
+        "codes": [
+          "BENEFICIARY",
+          "GRANTOR",
+          "RECIPIENT",
+          "REQUESTER",
+          "RESPONDER"
+        ]
+      },
+      {
+        "registry_stable_id": "PROCESS_EVENT_TYPE_REGISTRY",
+        "value_field": "event_type_code",
+        "codes": [
+          "EXCLUSIVITY_AMENDMENT",
+          "EXCLUSIVITY_CONDITIONAL_ACCEPTANCE",
+          "EXCLUSIVITY_COUNTERPROPOSAL",
+          "EXCLUSIVITY_END",
+          "EXCLUSIVITY_EXPIRY",
+          "EXCLUSIVITY_EXPRESS_REFUSAL",
+          "EXCLUSIVITY_EXTENSION",
+          "EXCLUSIVITY_GRANT",
+          "EXCLUSIVITY_REQUEST",
+          "EXCLUSIVITY_WAIVER"
+        ]
+      },
+      {
+        "registry_stable_id": "PROCESS_PASSAGE_ROLE_REGISTRY",
+        "value_field": "passage_role_codes",
+        "codes": [
+          "ACTUAL_DRAFTING",
+          "PROCESS_NARRATION",
+          "RELATED_DRAFTING"
+        ]
+      },
+      {
+        "registry_stable_id": "PROCESS_PHASE_CODE_REGISTRY",
+        "value_field": "phase_code",
+        "codes": [
+          "BIDDING",
+          "CONFIDENTIALITY",
+          "DILIGENCE",
+          "EXCLUSIVITY",
+          "POST_SIGNING",
+          "PRE_CONTACT",
+          "SIGNING"
+        ]
+      },
+      {
+        "registry_stable_id": "PROCESS_POSITION_CODE_REGISTRY",
+        "value_field": "position_code",
+        "codes": [
+          "AMENDED",
+          "CONDITIONALLY_ACCEPTED",
+          "COUNTERPROPOSED",
+          "ENDED",
+          "EXPIRED",
+          "EXPRESS_REFUSAL",
+          "EXTENDED",
+          "GRANTED",
+          "REQUESTED",
+          "WAIVED"
+        ]
+      },
+      {
+        "registry_stable_id": "PROCESS_RELATIONSHIP_TYPE_REGISTRY",
+        "value_field": "relationship_type_code",
+        "codes": [
+          "AMENDMENT",
+          "CONTINUATION",
+          "CROSS_REFERENCE",
+          "RESPONSE",
+          "RETELLING",
+          "SUPERSESSION"
+        ]
+      },
+      {
+        "registry_stable_id": "PROCESS_SOURCE_ROLE_REGISTRY",
+        "value_field": "source_role_code",
+        "codes": [
+          "ACTUAL_AGREEMENT_DRAFTING",
+          "ANNOUNCEMENT_PRESS_RELEASE",
+          "OTHER_ADMITTED_PROCESS_SOURCE",
+          "PRIMARY_PROCESS_NARRATION",
+          "PROXY_AMENDMENT_OR_SUPPLEMENT"
+        ]
+      },
+      {
+        "registry_stable_id": "PROCESS_TERM_CODE_REGISTRY",
+        "value_field": "term_code",
+        "codes": [
+          "EXCLUSIVITY_CONDITION",
+          "EXCLUSIVITY_DURATION",
+          "EXCLUSIVITY_END",
+          "EXCLUSIVITY_RATIONALE",
+          "EXCLUSIVITY_START",
+          "EXCLUSIVITY_SUBJECT"
+        ]
+      },
+      {
+        "registry_stable_id": "PROCESS_TRACK_STATE_REGISTRY",
+        "value_field": "track_state",
+        "codes": [
+          "ACTIVE",
+          "ELIMINATED",
+          "ENDED",
+          "PAUSED",
+          "SELECTED",
+          "WITHDRAWN"
+        ]
+      }
+    ],
+    "process_code_admission_contract": {
+      "exact_code_membership_required_before_materialisation": true,
+      "unknown_code_has_runtime_path": false,
+      "unknown_code_state": "UNRESOLVED",
+      "unknown_code_blocks_materialisation": true,
+      "near_code_mapping_permitted": false,
+      "source_label_can_create_code": false,
+      "display_label_can_create_code": false,
+      "model_output_can_create_code": false,
+      "case_normalisation_can_create_code": false
+    },
+    "shared_role_registry_references": [
+      {
+        "registry_stable_id": "PROCESS_PARTICIPANT_ROLE_REGISTRY",
+        "owner_object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+        "owner_stable_id": "DEAL_PARTICIPANT_RELATIONSHIP",
+        "owner_schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+        "exact_value_path": "definition.type_contract.transaction_roles"
+      },
+      {
+        "registry_stable_id": "PROCESS_PARTY_ROLE_REGISTRY",
+        "owner_object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+        "owner_stable_id": "DEAL_PARTICIPANT_RELATIONSHIP",
+        "owner_schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+        "exact_value_path": "definition.type_contract.legal_roles"
+      }
+    ],
+    "process_external_registry_references": [
+      {
+        "registry_stable_id": "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
+        "owner_object_kind": "PROCESS_PREDICATE_CONTRACT_INPUT",
+        "owner_stable_id": "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
+        "owner_schema_version": "PROCESS_PREDICATE_CONTRACT_INPUT/V1",
+        "exact_value_path": "definition.ordinary_question_contract.mandatory_predicate_keys"
+      },
+      {
+        "registry_stable_id": "PROCESS_EXCLUSIVITY_SUBJECT_CODE_SET",
+        "owner_object_kind": "PROCESS_PREDICATE_CONTRACT_INPUT",
+        "owner_stable_id": "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
+        "owner_schema_version": "PROCESS_PREDICATE_CONTRACT_INPUT/V1",
+        "exact_value_path": "definition.subject_contract.initial_subject_codes"
+      },
+      {
+        "registry_stable_id": "TEMPORAL_EXPRESSION.type_contract.structured_node_registry",
+        "owner_object_kind": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT",
+        "owner_stable_id": "TEMPORAL_EXPRESSION",
+        "owner_schema_version": "SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1",
+        "exact_value_path": "definition.type_contract.structured_node_registry"
+      }
+    ],
+    "process_identity_registry_references": [
+      {
+        "registry_stable_id": "BIDDER_TRACK",
+        "owner_object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
+        "owner_stable_id": "BIDDER_TRACK",
+        "owner_schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1"
+      },
+      {
+        "registry_stable_id": "PROCESS_PARTICIPANT",
+        "owner_object_kind": "PROCESS_LOGICAL_TYPE_INPUT",
+        "owner_stable_id": "PROCESS_PARTICIPANT",
+        "owner_schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1"
+      }
+    ],
+    "field_catalogue_registry_reference_contract": {
+      "catalogue_stable_id": "PROCESS_FIELD_DEFINITION_CATALOGUE",
+      "catalogue_schema_version": "PROCESS_FIELD_CATALOGUE_INPUT/V1",
+      "required_registry_references": [
+        "BIDDER_TRACK",
+        "PROCESS_CERTIFICATION_STATE_REGISTRY",
+        "PROCESS_CHANNEL_REGISTRY",
+        "PROCESS_EVENT_ROLE_REGISTRY",
+        "PROCESS_EVENT_TYPE_REGISTRY",
+        "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
+        "PROCESS_EXCLUSIVITY_SUBJECT_CODE_SET",
+        "PROCESS_PARTICIPANT",
+        "PROCESS_PASSAGE_ROLE_REGISTRY",
+        "PROCESS_PHASE_CODE_REGISTRY",
+        "PROCESS_SOURCE_ROLE_REGISTRY",
+        "TEMPORAL_EXPRESSION.type_contract.structured_node_registry"
+      ],
+      "exact_reconciliation_required": true,
+      "unresolved_reference_blocks_catalogue_compilation": true,
+      "label_can_supply_registry_reference": false,
+      "second_field_registry_architecture_permitted": false
+    },
+    "evolution_contract": {
+      "runtime_extension_permitted": false,
+      "source_observation_can_extend_registry": false,
+      "successor_contract_required_for_new_process_code": true,
+      "successor_contract_required_for_changed_meaning": true,
+      "existing_code_meaning_can_change_in_place": false,
+      "removed_code_can_silently_map_to_near_code": false
+    },
+    "authority_contract": {
+      "creates_runtime_code": false,
+      "creates_materialisation_authority": false,
+      "creates_extraction_authority": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_database_authority": false,
+      "creates_release_authority": false,
+      "creates_import_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}
