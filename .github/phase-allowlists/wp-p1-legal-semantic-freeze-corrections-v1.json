@@ -1,0 +1,42 @@
+{
+  "phase": "WP-P1-LEGAL-SEMANTIC-FREEZE-CORRECTIONS-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p1-legal-semantic-freeze-corrections-v1.json",
+    "contracts/canonical-v2/successor/agreement/market-metric-definitions/no-shop-copy-delivery-period-days.v1.json",
+    "contracts/canonical-v2/successor/agreement/market-metric-definitions/representation-measurement-date-signing-offset.v1.json",
+    "contracts/canonical-v2/successor/agreement/no-shop-semantic-schema-inputs/no-shop-exception-effect.v1.json",
+    "contracts/canonical-v2/successor/agreement/no-shop-semantic-schema-inputs/no-shop-inline-permission-effect.v1.json",
+    "contracts/canonical-v2/successor/agreement/no-shop-semantic-schema-inputs/no-shop-notice-obligation.v6.json",
+    "contracts/canonical-v2/successor/process/predicates/exclusivity-predicate-catalogue.v2.json",
+    "contracts/canonical-v2/successor/process/serving/bounded-inline-passage-preview.v1.json",
+    "contracts/canonical-v2/successor/product/query/process-phrasebook-product-result-adapter.v1.json",
+    "contracts/canonical-v2/successor/product/query/product-source-reader-definition.v1.json",
+    "contracts/canonical-v2/successor/product/query/qxo-capitalisation-product-result-adapter.v1.json",
+    "lib/canonical-v2/canonical-contract-excepted-by-validator.js",
+    "lib/canonical-v2/canonical-contract-no-shop-schema-input-validator.js",
+    "lib/canonical-v2/process-predicate-contract-input-validator.js",
+    "lib/canonical-v2/process-serving-contract-input-validator.js",
+    "lib/canonical-v2/product-query-result-contract-input-validator.js",
+    "lib/canonical-v2/product-source-reader-contract-input-validator.js",
+    "tests/canonical-v2-canonical-contract-excepted-by-effect.test.js",
+    "tests/canonical-v2-process-exclusivity-predicate-catalogue-v2-contract-input.test.js",
+    "tests/canonical-v2-process-passage-serving-contract-input.test.js",
+    "tests/canonical-v2-product-query-result-contract-input.test.js",
+    "tests/canonical-v2-product-source-reader-contract-input.test.js",
+    "tests/canonical-v2-qxo-capitalisation-contract-input.test.js",
+    "tests/canonical-v2-qxo-capitalisation-product-result-contract.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Closes the confirmed P1 legal-semantic freeze defects. It binds exact predecessor bytes, current EXCEPTED_BY variants, the copy clock metric, unresolved signing-anchor state and ordered multi-interval citations, and retires the stale F27 adapter. It grants no runtime, writer, serving, database, release, import, activation, production or contract-freeze authority."
+}

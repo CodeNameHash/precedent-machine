@@ -200,13 +200,21 @@ test('admits one exact version-2 exclusivity predicate catalogue', () => {
 
   assert.equal(catalogue.stable_id, 'PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE');
   assert.equal(catalogue.definition.catalogue_version, 2);
-  assert.deepEqual(catalogue.definition.predecessor_contract, {
-    stable_id: 'PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE',
-    schema_version: 'PROCESS_PREDICATE_CONTRACT_INPUT/V1',
-    catalogue_version: 1,
-    definition_digest:
-      'sha256:a75fde64f61ac5d0d6b40034c1c206a3560ec20221db23d9a0cc677ed54f0360',
-  });
+  const predecessor = catalogue.definition.predecessor_contract;
+  assert.equal(predecessor.stable_id, catalogue.stable_id);
+  assert.equal(predecessor.catalogue_version, 1);
+  assert.equal(predecessor.exact_raw_contract_bytes_encoding, 'BASE64');
+  assert.equal(
+    predecessor.exact_raw_contract_bytes_digest,
+    'sha256:0c269fb1d6b58349fd5f8ff3e9fb9cbe0fdef26f727b6c2958bdb0f8b497255c',
+  );
+  const exactContract = JSON.parse(
+    Buffer.from(predecessor.exact_raw_contract_bytes, 'base64').toString('utf8'),
+  );
+  assert.deepEqual(
+    exactContract.definition.ordinary_question_contract.mandatory_predicate_keys,
+    EXPECTED_PREDECESSOR_KEYS,
+  );
 });
 
 test('preserves all 23 predecessor keys and adds the exact 18 definitions', () => {
@@ -377,6 +385,16 @@ test('rejects version one, near keys, missing definitions and semantic drift', (
       catalogue.definition.reconciliation_evidence_contract
         .reconciliation_deterministic_content_digest
           = `sha256:${'0'.repeat(64)}`;
+    },
+    (catalogue) => {
+      const predecessor = catalogue.definition.predecessor_contract;
+      const bytes = Buffer.from(predecessor.exact_raw_contract_bytes, 'base64');
+      bytes[bytes.length - 2] ^= 1;
+      predecessor.exact_raw_contract_bytes = bytes.toString('base64');
+    },
+    (catalogue) => {
+      catalogue.definition.predecessor_contract
+        .exact_raw_contract_bytes_digest = `sha256:${'0'.repeat(64)}`;
     },
   ];
   for (const mutate of mutations) {

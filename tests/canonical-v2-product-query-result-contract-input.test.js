@@ -25,10 +25,6 @@ const PROCESS_RESULT_SET_ADAPTER_PATH = path.join(
   ROOT,
   'product/query/process-phrasebook-product-result-set-adapter.v1.json',
 );
-const QXO_ADAPTER_PATH = path.join(
-  ROOT,
-  'product/query/qxo-capitalisation-product-result-adapter.v1.json',
-);
 const QXO_F28_ADAPTER_PATH = path.join(
   ROOT,
   'product/query/qxo-capitalisation-f28-product-result-adapter.v1.json',
@@ -54,10 +50,6 @@ function loadProcessResultSetAdapter() {
   return loadPath(PROCESS_RESULT_SET_ADAPTER_PATH);
 }
 
-function loadQxoAdapter() {
-  return loadPath(QXO_ADAPTER_PATH);
-}
-
 function loadQxoF28Adapter() {
   return loadPath(QXO_F28_ADAPTER_PATH);
 }
@@ -67,7 +59,6 @@ function loadMembers() {
     loadProcessAdapter(),
     loadMember(),
     loadProcessResultSetAdapter(),
-    loadQxoAdapter(),
     loadQxoF28Adapter(),
   ];
 }
@@ -438,9 +429,11 @@ test('maps exact source evidence and keeps selected-source and context actions d
     'process_admission_input.matched_passage_preview.preview_id',
   );
   assert.equal(
-    citation.source_interval_source,
-    'process_admission_input.matched_passage_preview.exact_source_interval',
+    citation.source_interval_set_source,
+    'process_admission_input.matched_passage_preview.exact_ordered_source_interval_set',
   );
+  assert.equal(citation.source_interval_order_preserved, true);
+  assert.equal(citation.multi_interval_flattening_permitted, false);
   assert.equal(
     citation.human_readable_source_label_source,
     'process_admission_input.exact_detail_reference.human_readable_source_label',
@@ -784,7 +777,6 @@ test('grants no runtime, data, write, serving or production authority', () => {
     CONTRACT_PATH,
     PROCESS_ADAPTER_PATH,
     PROCESS_RESULT_SET_ADAPTER_PATH,
-    QXO_ADAPTER_PATH,
     QXO_F28_ADAPTER_PATH,
     path.join(
       __dirname,
