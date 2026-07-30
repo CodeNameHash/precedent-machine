@@ -220,6 +220,14 @@
       ]
     },
     {
+      "object_kind": "PRODUCT_CANDIDATE_WRITE_CONTRACT_INPUT",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "PRODUCT_CANDIDATE_WRITE_CONTRACT_INPUT/V1"
+      ]
+    },
+    {
       "object_kind": "PRODUCT_QUERY_ACTION_CONTRACT_INPUT",
       "minimum_count": 2,
       "maximum_count": 2,

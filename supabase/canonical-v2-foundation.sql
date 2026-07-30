@@ -512,6 +512,29 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.incomplete_canonical_result_rows
   canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
 );
 
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.product_candidate_results (
+  candidate_product_result_id text PRIMARY KEY
+    CHECK (candidate_product_result_id ~ '^[0-9a-f]{64}$'),
+  candidate_release_manifest_id text NOT NULL
+    CHECK (candidate_release_manifest_id ~ '^[0-9a-f]{64}$'),
+  corpus_release_id text NOT NULL
+    CHECK (corpus_release_id ~ '^[0-9a-f]{64}$'),
+  product_query_result_identity text NOT NULL
+    CHECK (product_query_result_identity ~ '^[0-9a-f]{64}$'),
+  domain_result_identity text NOT NULL
+    CHECK (domain_result_identity ~ '^[0-9a-f]{64}$'),
+  candidate_state text NOT NULL
+    CHECK (candidate_state = 'CANDIDATE_NOT_ACTIVE'),
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text GENERATED ALWAYS AS (
+    canonical_v2_staging.payload_digest(canonical_payload)
+  ) STORED
+);
+ALTER TABLE canonical_v2_staging.product_candidate_results
+  ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON TABLE canonical_v2_staging.product_candidate_results
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;
+
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.residuals (
   residual_id text PRIMARY KEY,
   closure_id text NOT NULL,
@@ -678,7 +701,8 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.write_receipts (
     'INTAKE_CAPTURE',
     'STAGE_SOURCE_ARTIFACT_CHUNK',
     'PREPARE_SOURCE_ADMISSION',
-    'DEAL_SCOPE_RUN'
+    'DEAL_SCOPE_RUN',
+    'PRODUCT_RESULT_CANDIDATE_RUN'
   )),
   idempotency_key text NOT NULL,
   input_digest text NOT NULL,
@@ -697,8 +721,15 @@ ALTER TABLE canonical_v2_staging.write_receipts
     'INTAKE_CAPTURE',
     'STAGE_SOURCE_ARTIFACT_CHUNK',
     'PREPARE_SOURCE_ADMISSION',
-    'DEAL_SCOPE_RUN'
+    'DEAL_SCOPE_RUN',
+    'PRODUCT_RESULT_CANDIDATE_RUN'
   ));
+
+CREATE INDEX IF NOT EXISTS canonical_v2_product_candidate_release_idx
+  ON canonical_v2_staging.product_candidate_results(
+    candidate_release_manifest_id,
+    product_query_result_identity
+  );
 
 CREATE INDEX IF NOT EXISTS canonical_v2_excerpts_closure_idx
   ON canonical_v2_staging.excerpts(closure_id);
@@ -850,7 +881,8 @@ BEGIN
     'INTAKE_CAPTURE',
     'STAGE_SOURCE_ARTIFACT_CHUNK',
     'PREPARE_SOURCE_ADMISSION',
-    'DEAL_SCOPE_RUN'
+    'DEAL_SCOPE_RUN',
+    'PRODUCT_RESULT_CANDIDATE_RUN'
   ) THEN
     RAISE EXCEPTION 'unsupported canonical operation' USING ERRCODE = '22023';
   END IF;
@@ -970,6 +1002,156 @@ BEGIN
   IF input_envelope_version = 'V1' THEN
     RAISE EXCEPTION 'legacy canonical write input can only replay an existing receipt'
       USING ERRCODE = '23514';
+  END IF;
+
+  IF p_operation = 'PRODUCT_RESULT_CANDIDATE_RUN' THEN
+    IF p_write_set - ARRAY[
+        'schema_version',
+        'candidate_release_binding',
+        'process_pilot_materialisation_receipt',
+        'product_admission',
+        'product_row',
+        'product_result_set',
+        'product_presentation',
+        'product_surfaces'
+      ]::text[] <> '{}'::jsonb
+      OR NOT p_write_set ?& ARRAY[
+        'schema_version',
+        'candidate_release_binding',
+        'process_pilot_materialisation_receipt',
+        'product_admission',
+        'product_row',
+        'product_result_set',
+        'product_presentation',
+        'product_surfaces'
+      ]
+      OR p_write_set->>'schema_version'
+        IS DISTINCT FROM 'PRODUCT_CANDIDATE_RESULT_WRITE_SET/V1'
+      OR p_residuals IS DISTINCT FROM '[]'::jsonb
+      OR p_quarantines IS DISTINCT FROM '[]'::jsonb
+      OR (p_receipt->>'publishableObjectCount')::integer <> 1
+      OR (p_receipt->>'residualCount')::integer <> 0
+      OR (p_receipt->>'quarantinedClosureCount')::integer <> 0
+      OR p_write_set->'candidate_release_binding'->>'release_state'
+        IS DISTINCT FROM 'CANDIDATE_NOT_ACTIVE'
+      OR p_write_set->'candidate_release_binding'->>'authority_state'
+        IS DISTINCT FROM 'NOT_GRANTED'
+      OR p_write_set->'product_admission'->>'adapter_state'
+        IS DISTINCT FROM 'VALIDATED_NOT_SERVED'
+      OR p_write_set->'product_row'->>'row_state'
+        IS DISTINCT FROM 'VALIDATED_NOT_SERVED'
+      OR p_write_set->'product_result_set'->>'result_set_state'
+        IS DISTINCT FROM 'VALIDATED_NOT_SERVED'
+      OR p_write_set->'product_presentation'->>'presentation_state'
+        IS DISTINCT FROM 'VALIDATED_NOT_RENDERED'
+      OR p_write_set->'product_surfaces'->>'surface_state'
+        IS DISTINCT FROM 'VALIDATED_NOT_SERVED'
+    THEN
+      RAISE EXCEPTION 'invalid Product candidate-result write set'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF p_write_set->'candidate_release_binding'->>'candidate_release_manifest_id'
+          !~ '^[0-9a-f]{64}$'
+      OR p_write_set->'candidate_release_binding'
+          ->>'candidate_release_manifest_payload_digest' !~ '^[0-9a-f]{64}$'
+      OR p_write_set->'candidate_release_binding'->>'corpus_release_id'
+          !~ '^[0-9a-f]{64}$'
+      OR p_write_set->'product_row'->'product_query_ir'
+          ->'release_contract'->>'candidate_release_manifest_id'
+        IS DISTINCT FROM p_write_set->'candidate_release_binding'
+          ->>'candidate_release_manifest_id'
+      OR p_write_set->'product_row'->'product_query_ir'
+          ->'release_contract'->>'candidate_release_manifest_payload_digest'
+        IS DISTINCT FROM p_write_set->'candidate_release_binding'
+          ->>'candidate_release_manifest_payload_digest'
+      OR p_write_set->'product_row'->'product_query_ir'
+          ->>'query_definition_id'
+        IS DISTINCT FROM p_write_set->'candidate_release_binding'
+          ->>'product_query_definition_id'
+      OR p_write_set->'product_admission'
+          ->>'candidate_release_manifest_id'
+        IS DISTINCT FROM p_write_set->'candidate_release_binding'
+          ->>'candidate_release_manifest_id'
+      OR p_write_set->'product_admission'->>'corpus_release_id'
+        IS DISTINCT FROM p_write_set->'candidate_release_binding'
+          ->>'corpus_release_id'
+      OR p_write_set->'product_row'
+          ->>'product_admission_adapter_receipt_id'
+        IS DISTINCT FROM p_write_set->'product_admission'
+          ->>'product_admission_adapter_receipt_id'
+      OR p_write_set->'product_result_set'->>'product_row_receipt_id'
+        IS DISTINCT FROM p_write_set->'product_row'
+          ->>'product_row_receipt_id'
+      OR p_write_set->'product_presentation'
+          ->>'product_result_set_receipt_id'
+        IS DISTINCT FROM p_write_set->'product_result_set'
+          ->>'product_result_set_receipt_id'
+      OR p_write_set->'product_surfaces'
+          ->>'product_presentation_receipt_id'
+        IS DISTINCT FROM p_write_set->'product_presentation'
+          ->>'product_presentation_receipt_id'
+    THEN
+      RAISE EXCEPTION 'Product candidate-result release or lineage mismatch'
+        USING ERRCODE = '23514';
+    END IF;
+
+    item_id := canonical_v2_staging.content_id(
+      'PRODUCT_CANDIDATE_RESULT_RECORD/V1',
+      p_write_set
+    );
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.product_candidate_results
+    WHERE candidate_product_result_id = item_id;
+    IF FOUND
+      AND existing_digest <> canonical_v2_staging.payload_digest(p_write_set)
+    THEN
+      RAISE EXCEPTION 'Product candidate-result identity conflict'
+        USING ERRCODE = '23505';
+    END IF;
+    INSERT INTO canonical_v2_staging.product_candidate_results(
+      candidate_product_result_id,
+      candidate_release_manifest_id,
+      corpus_release_id,
+      product_query_result_identity,
+      domain_result_identity,
+      candidate_state,
+      canonical_payload
+    ) VALUES (
+      item_id,
+      p_write_set->'candidate_release_binding'
+        ->>'candidate_release_manifest_id',
+      p_write_set->'candidate_release_binding'->>'corpus_release_id',
+      p_write_set->'product_row'->'shared_row_adapter_receipt'
+        ->'product_query_result'->>'product_query_result_identity',
+      p_write_set->'product_row'->'shared_row_adapter_receipt'
+        ->'product_query_result'->>'domain_result_identity',
+      'CANDIDATE_NOT_ACTIVE',
+      p_write_set
+    ) ON CONFLICT (candidate_product_result_id) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.product_candidate_results
+    WHERE candidate_product_result_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(
+      p_write_set
+    ) THEN
+      RAISE EXCEPTION 'Product candidate-result identity conflict'
+        USING ERRCODE = '23505';
+    END IF;
+    INSERT INTO canonical_v2_staging.write_receipts(
+      operation,
+      idempotency_key,
+      input_digest,
+      receipt_id,
+      canonical_payload
+    ) VALUES (
+      p_operation,
+      p_idempotency_key,
+      p_input_digest,
+      p_receipt->>'receiptId',
+      p_receipt
+    );
+    RETURN p_receipt || jsonb_build_object('replayed', false);
   END IF;
 
   IF p_operation = 'INTAKE_CAPTURE' THEN

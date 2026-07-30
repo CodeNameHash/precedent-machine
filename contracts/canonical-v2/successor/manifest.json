@@ -666,7 +666,7 @@
       "object_kind": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
       "stable_id": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
       "schema_version": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY/V1",
-      "canonical_bytes_digest": "380901ea058c90b70f863702e6d925241b3b840f457e668d8b740947cf171d55"
+      "canonical_bytes_digest": "6b86a7c22b86daa99c17428d69e5cbcc913473c06009d2cc3ed66c845af4e599"
     },
     {
       "relative_path": "governance/residuals/governed-residual-disposition.v1.json",
@@ -998,6 +998,13 @@
       "canonical_bytes_digest": "6b05e7d2f070455d0b1dd12b573681e0e9406fbb2388812e9c382f6eb011e92a"
     },
     {
+      "relative_path": "product/query/product-candidate-result-writer.v1.json",
+      "object_kind": "PRODUCT_CANDIDATE_WRITE_CONTRACT_INPUT",
+      "stable_id": "PRODUCT_CANDIDATE_RESULT_WRITER",
+      "schema_version": "PRODUCT_CANDIDATE_WRITE_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "01c595f18c9b55cc3ed8596d9d0174caca22ccfea9d7cd7910c669121460d7a0"
+    },
+    {
       "relative_path": "product/query/product-query-ir.v1.json",
       "object_kind": "PRODUCT_QUERY_CONTRACT_INPUT",
       "stable_id": "PRODUCT_QUERY_IR",
@@ -1243,6 +1250,7 @@
     "PROCESS_PREDICATE_CONTRACT_INPUT": 2,
     "PROCESS_QUERY_CONTRACT_INPUT": 3,
     "PROCESS_RESULT_ACTION_CONTRACT_INPUT": 4,
+    "PRODUCT_CANDIDATE_WRITE_CONTRACT_INPUT": 1,
     "PRODUCT_QUERY_ACTION_CONTRACT_INPUT": 2,
     "PRODUCT_QUERY_CONTRACT_INPUT": 3,
     "PRODUCT_QUERY_RESULT_CONTRACT_INPUT": 6,
@@ -1344,6 +1352,9 @@
     ],
     "PROCESS_RESULT_ACTION_CONTRACT_INPUT": [
       "PROCESS_RESULT_ACTION_CONTRACT_INPUT/V1"
+    ],
+    "PRODUCT_CANDIDATE_WRITE_CONTRACT_INPUT": [
+      "PRODUCT_CANDIDATE_WRITE_CONTRACT_INPUT/V1"
     ],
     "PRODUCT_QUERY_ACTION_CONTRACT_INPUT": [
       "PRODUCT_QUERY_ACTION_CONTRACT_INPUT/V1"

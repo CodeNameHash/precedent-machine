@@ -48,7 +48,7 @@ function assertProposalError(code, operation) {
   });
 }
 
-test('assembles the exact current 172-member root into all eight categories', () => {
+test('assembles the exact current 173-member root into all eight categories', () => {
   const inputCompilation = compilation();
   const proposal = assembleCanonicalContractBundleCurrentRootProposal({
     canonical_contract_input_compilation: inputCompilation,
@@ -57,8 +57,8 @@ test('assembles the exact current 172-member root into all eight categories', ()
     compilerInput(proposal, inputCompilation),
   );
 
-  assert.equal(proposal.proposed_dispositions.length, 172);
-  assert.equal(proposal.dependency_edge_count, 297);
+  assert.equal(proposal.proposed_dispositions.length, 173);
+  assert.equal(proposal.dependency_edge_count, 302);
   const genericEnvelopeDisposition = proposal.proposed_dispositions.find(
     (entry) => entry.authored_identity.stable_id
       === 'AGREEMENT_CANDIDATE_ENVELOPE',

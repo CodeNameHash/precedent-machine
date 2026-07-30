@@ -177,7 +177,7 @@ test('legacy V1 input is read-only compatibility for an exact sealed receipt', (
   );
 });
 
-test('integrity hardening changes no operation/action and exposes no private helper', () => {
+test('writer exposes only the seven governed operations and no private helper', () => {
   const operationStart = sql.indexOf('IF p_operation NOT IN', writerBegin);
   const operationEnd = sql.indexOf(') THEN', operationStart);
   const operationAllowlist = sql.slice(operationStart, operationEnd);
@@ -188,8 +188,9 @@ test('integrity hardening changes no operation/action and exposes no private hel
     'STAGE_SOURCE_ARTIFACT_CHUNK',
     'PREPARE_SOURCE_ADMISSION',
     'DEAL_SCOPE_RUN',
+    'PRODUCT_RESULT_CANDIDATE_RUN',
   ]) assert.match(operationAllowlist, new RegExp(`'${operation}'`));
-  assert.equal((operationAllowlist.match(/'[A-Z][A-Z0-9_]+'/g) || []).length, 6);
+  assert.equal((operationAllowlist.match(/'[A-Z][A-Z0-9_]+'/g) || []).length, 7);
   assert.doesNotMatch(sql, /p_write_set->>'action' = 'VERIFY_WRITER_ENVELOPE'/);
   assert.match(
     sql,

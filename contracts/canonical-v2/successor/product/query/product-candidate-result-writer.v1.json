@@ -1,0 +1,91 @@
+{
+  "object_kind": "PRODUCT_CANDIDATE_WRITE_CONTRACT_INPUT",
+  "stable_id": "PRODUCT_CANDIDATE_RESULT_WRITER",
+  "schema_version": "PRODUCT_CANDIDATE_WRITE_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PRODUCT",
+    "contract_type": "CANDIDATE_RESULT_WRITER",
+    "contract_version": 1,
+    "operation_contract": {
+      "operation": "PRODUCT_RESULT_CANDIDATE_RUN",
+      "canonical_writer_entry_point": "canonical_v2_write",
+      "second_writer_permitted": false,
+      "environment": "staging",
+      "production_permitted": false
+    },
+    "write_set_contract": {
+      "schema_version": "PRODUCT_CANDIDATE_RESULT_WRITE_SET/V1",
+      "required_complete_members": [
+        "candidate_release_binding",
+        "process_pilot_materialisation_receipt",
+        "product_admission",
+        "product_row",
+        "product_result_set",
+        "product_presentation",
+        "product_surfaces"
+      ],
+      "partial_member_persistence_permitted": false,
+      "unknown_members_permitted": false,
+      "all_members_revalidated_before_write": true,
+      "one_product_query_required": true,
+      "one_candidate_release_required": true,
+      "one_domain_result_required": true,
+      "complete_process_lineage_required": true,
+      "complete_source_evidence_required": true
+    },
+    "record_contract": {
+      "schema_version": "PRODUCT_CANDIDATE_RESULT_RECORD/V1",
+      "identity_domain": "PRODUCT_CANDIDATE_RESULT_RECORD/V1",
+      "identity_payload": "COMPLETE_CANONICAL_WRITE_SET",
+      "candidate_state": "CANDIDATE_NOT_ACTIVE",
+      "immutable_after_write": true,
+      "same_identity_different_payload_permitted": false,
+      "result_or_lineage_substitution_permitted": false,
+      "query_release_or_evidence_omission_permitted": false
+    },
+    "dependency_contract": {
+      "product_result_definition_stable_id": "PRODUCT_QUERY_RESULT_DEFINITION",
+      "process_result_adapter_stable_id": "PROCESS_PHRASEBOOK_PRODUCT_RESULT_ADAPTER",
+      "process_result_set_adapter_stable_id": "PROCESS_PHRASEBOOK_PRODUCT_RESULT_SET_ADAPTER",
+      "product_presentation_definition_stable_id": "PRODUCT_RESULT_PRESENTATION_DEFINITION",
+      "shared_row_definition_stable_id": "PRODUCT_SHARED_SERVING_ROW",
+      "all_dependency_versions_must_match_the_compiled_bundle": true
+    },
+    "transaction_contract": {
+      "result_and_complete_sidecars_written_in_one_transaction": true,
+      "receipt_written_in_same_transaction": true,
+      "exact_replay_is_no_op": true,
+      "conflicting_replay_fails_closed": true,
+      "partial_commit_permitted": false
+    },
+    "release_contract": {
+      "candidate_release_manifest_id_required": true,
+      "candidate_release_manifest_payload_digest_required": true,
+      "corpus_release_id_required": true,
+      "product_query_release_binding_must_match": true,
+      "release_state": "CANDIDATE_NOT_ACTIVE",
+      "active_release_pointer_change_permitted": false,
+      "serving_before_activation_permitted": false
+    },
+    "failure_contract": {
+      "invalid_product_result_blocks_write": true,
+      "invalid_process_lineage_blocks_write": true,
+      "invalid_source_evidence_blocks_write": true,
+      "invalid_cross_view_identity_blocks_write": true,
+      "failed_write_can_mutate_candidate_release": false
+    },
+    "authority_contract": {
+      "creates_staging_candidate_write_authority": true,
+      "creates_second_writer_authority": false,
+      "creates_extraction_authority": false,
+      "creates_query_execution_authority": false,
+      "creates_source_read_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_import_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}
