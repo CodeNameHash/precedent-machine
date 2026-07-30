@@ -1,0 +1,24 @@
+{
+  "phase": "WP-PROCESS-EXCLUSIVITY-CHALLENGE-CATALOGUE-VALIDATION-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-exclusivity-challenge-catalogue-validation-v1.json",
+    "lib/canonical-v2/process-contract-input-validator.js",
+    "lib/canonical-v2/process-predicate-contract-input-validator.js",
+    "tests/canonical-v2-process-exclusivity-challenge-catalogue-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "evidence/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Validates one sealed Process exclusivity completeness challenge catalogue. It grants no extraction, materialisation, writer, serving, release, canonical-write, database, import, activation, UI, freeze or production authority."
+}
