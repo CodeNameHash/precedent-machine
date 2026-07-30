@@ -22,13 +22,29 @@ function fail(message) {
 }
 
 function parseArguments(argv) {
-  const options = { input: null, request: null, results: null };
+  const options = {
+    input: null,
+    request: null,
+    results: null,
+    registration: null,
+    authenticatedResults: null,
+    authority: null,
+  };
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index];
-    if (!['--input', '--request', '--results'].includes(argument)) {
+    if (![
+      '--input',
+      '--request',
+      '--results',
+      '--registration',
+      '--authenticated-results',
+      '--authority',
+    ].includes(argument)) {
       fail(`Unknown argument: ${argument}`);
     }
-    const key = argument.slice(2);
+    const key = argument === '--authenticated-results'
+      ? 'authenticatedResults'
+      : argument.slice(2);
     if (options[key] !== null) fail(`${argument} may be supplied only once`);
     index += 1;
     if (!argv[index]) fail(`${argument} requires a file path`);
@@ -41,9 +57,19 @@ function parseArguments(argv) {
   const validateMode =
     options.input === null
     && options.request !== null
-    && options.results !== null;
+    && options.results !== null
+    && [
+      options.registration,
+      options.authenticatedResults,
+      options.authority,
+    ].filter((value) => value !== null).length !== 1
+    && [
+      options.registration,
+      options.authenticatedResults,
+      options.authority,
+    ].filter((value) => value !== null).length !== 2;
   if (!createMode && !validateMode) {
-    fail('Use --input to create tasks, or --request with --results to validate results');
+    fail('Use --input to create tasks, or --request with --results and optional complete signed registration inputs');
   }
   return options;
 }
@@ -78,6 +104,15 @@ function main() {
     : validateP1ContractFreezeReviewResults({
       request: readJsonFile(options.request, '--request'),
       results: readJsonFile(options.results, '--results'),
+      registration: options.registration === null
+        ? null
+        : readJsonFile(options.registration, '--registration'),
+      authenticatedResults: options.authenticatedResults === null
+        ? null
+        : readJsonFile(options.authenticatedResults, '--authenticated-results'),
+      reviewAuthority: options.authority === null
+        ? null
+        : readJsonFile(options.authority, '--authority'),
       gitRuntime: GIT_RUNTIME,
     });
   process.stdout.write(`${canonicalJson(output)}\n`);
