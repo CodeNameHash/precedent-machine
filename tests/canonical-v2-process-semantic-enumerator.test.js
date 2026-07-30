@@ -2,6 +2,10 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 const { contentId, sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const { INPUT_SCHEMA, enumerateProcessSemantics } = require('../lib/canonical-v2/process-semantic-enumerator');
+const {
+  INPUT_SCHEMA: SCOPE_INPUT_SCHEMA,
+  enumerateProcessScope,
+} = require('../lib/canonical-v2/process-scope-enumerator');
 
 function digest(label) { return contentId('SYNTHETIC_SEMANTIC_ENUMERATOR_TEST/V1', { label }); }
 function evidence(label, start = 0, role = 'AGREEMENT_TEXT') {
@@ -53,9 +57,11 @@ function sourceUnit(label, state, overrides = {}) {
   };
 }
 function input(overrides = {}) {
+  const scope = scopeReceipt();
   return {
     schema_version: INPUT_SCHEMA,
-    scope_receipt: scopeReceipt(),
+    scope_receipt: scope,
+    expected_scope_receipt_id: scope.scope_receipt_id,
     source_units: [sourceUnit('late', 'CANDIDATE'), sourceUnit('rejected', 'REJECTED'), sourceUnit('early', 'CANDIDATE')],
     limits: { max_source_units: 8, max_candidates: 4 },
     ...overrides,
@@ -145,4 +151,55 @@ test('rejects mismatched frozen slots and scope receipt identity', () => {
     () => enumerateProcessSemantics(changedId),
     { code: 'INVALID_PROCESS_SEMANTIC_SCOPE_RECEIPT' },
   );
+});
+
+test('rejects a valid-to-valid self-rehashed scope substitution', () => {
+  const trusted = scopeReceipt();
+  const substituted = clone(trusted);
+  substituted.expected_occurrence_slots[0].occurrence_kind =
+    'OTHER_EXCLUSIVITY_EVENT';
+  substituted.scope_receipt_id = contentId(
+    'PROCESS_SCOPE_ENUMERATION_RECEIPT/V1',
+    {
+      governed_deal_admission_id:
+        substituted.expected_occurrence_slots[0].deal_id,
+      expected_occurrence_slots: substituted.expected_occurrence_slots,
+      residuals: substituted.residuals,
+      limits: substituted.limits,
+    },
+  );
+  assert.throws(
+    () => enumerateProcessSemantics(input({
+      scope_receipt: substituted,
+      expected_scope_receipt_id: trusted.scope_receipt_id,
+    })),
+    { code: 'INVALID_PROCESS_SEMANTIC_SCOPE_RECEIPT' },
+  );
+});
+
+test('consumes a producer-valid zero-slot residual scope', () => {
+  const base = scopeReceipt();
+  const scope = enumerateProcessScope({
+    schema_version: SCOPE_INPUT_SCHEMA,
+    governed_deal_admission_id: digest('deal'),
+    scope_records: [{
+      record_key: 'ONLY_RESIDUAL',
+      record_state: 'RESIDUAL',
+      slot_key: null,
+      deal_id: digest('deal'),
+      occurrence_kind: null,
+      required_evidence_roles: null,
+      scope_evidence: base.expected_occurrence_slots[0].scope_evidence,
+      residual_code: 'UNRESOLVED_SCOPE',
+    }],
+    limits: { max_scope_records: 4, max_slots: 4 },
+  });
+  const result = enumerateProcessSemantics(input({
+    scope_receipt: scope,
+    expected_scope_receipt_id: scope.scope_receipt_id,
+    source_units: [],
+  }));
+
+  assert.equal(result.scope_receipt_id, scope.scope_receipt_id);
+  assert.equal(result.candidates.length, 0);
 });

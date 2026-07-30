@@ -6,6 +6,10 @@ const {
   PROCESS_LEXICAL_ENUMERATION_SCHEMA,
   enumerateProcessLexicalCandidates,
 } = require('../lib/canonical-v2/process-lexical-enumerator');
+const {
+  INPUT_SCHEMA: SCOPE_INPUT_SCHEMA,
+  enumerateProcessScope,
+} = require('../lib/canonical-v2/process-scope-enumerator');
 
 function digest(label) {
   return contentId('SYNTHETIC_PROCESS_LEXICAL_ENUMERATOR_TEST/V1', { label });
@@ -70,8 +74,10 @@ function sourceUnit(overrides = {}) {
 }
 
 function input(overrides = {}) {
+  const scope = scopeReceipt();
   return {
-    scope_receipt: scopeReceipt(),
+    scope_receipt: scope,
+    expected_scope_receipt_id: scope.scope_receipt_id,
     source_units: [sourceUnit()],
     limits: {
       max_source_count: 4,
@@ -255,6 +261,58 @@ test('rejects substituted scope slots, residuals, limits and receipt ID', () => 
       { code: 'INVALID_PROCESS_LEXICAL_SCOPE_RECEIPT' },
     );
   }
+});
+
+test('rejects a valid-to-valid self-rehashed scope substitution', () => {
+  const trusted = scopeReceipt();
+  const substituted = clone(trusted);
+  substituted.expected_occurrence_slots[0].occurrence_kind =
+    'OTHER_EXCLUSIVITY_DISCUSSION';
+  substituted.scope_receipt_id = contentId(
+    'PROCESS_SCOPE_ENUMERATION_RECEIPT/V1',
+    {
+      governed_deal_admission_id:
+        substituted.expected_occurrence_slots[0].deal_id,
+      expected_occurrence_slots: substituted.expected_occurrence_slots,
+      residuals: substituted.residuals,
+      limits: substituted.limits,
+    },
+  );
+  assert.throws(
+    () => enumerateProcessLexicalCandidates(input({
+      scope_receipt: substituted,
+      expected_scope_receipt_id: trusted.scope_receipt_id,
+    })),
+    { code: 'INVALID_PROCESS_LEXICAL_SCOPE_RECEIPT' },
+  );
+});
+
+test('consumes a producer-valid zero-slot residual scope', () => {
+  const base = scopeReceipt();
+  const scope = enumerateProcessScope({
+    schema_version: SCOPE_INPUT_SCHEMA,
+    governed_deal_admission_id: digest('deal'),
+    scope_records: [{
+      record_key: 'ONLY_RESIDUAL',
+      record_state: 'RESIDUAL',
+      slot_key: null,
+      deal_id: digest('deal'),
+      occurrence_kind: null,
+      required_evidence_roles: null,
+      scope_evidence: base.residuals[0].scope_evidence,
+      residual_code: 'UNRESOLVED_SCOPE',
+    }],
+    limits: { max_scope_records: 4, max_slots: 4 },
+  });
+  const result = enumerateProcessLexicalCandidates(input({
+    scope_receipt: scope,
+    expected_scope_receipt_id: scope.scope_receipt_id,
+    source_units: [],
+  }));
+
+  assert.equal(result.candidates.length, 0);
+  assert.equal(result.residuals.length, 1);
+  assert.equal(result.residuals[0].reason_code, 'UNRESOLVED_SCOPE');
 });
 
 test('has no source acquisition, semantic enumeration or authority imports', () => {

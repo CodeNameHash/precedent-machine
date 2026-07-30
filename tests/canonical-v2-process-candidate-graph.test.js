@@ -249,6 +249,7 @@ test('accepts the actual frozen scope, semantic and lexical pure-runtime chain',
   const semantic = enumerateProcessSemantics({
     schema_version: SEMANTIC_INPUT_SCHEMA,
     scope_receipt: scope,
+    expected_scope_receipt_id: scope.scope_receipt_id,
     source_units: [{
       source_unit_id: digest('semantic-unit'),
       unit_state: 'CANDIDATE',
@@ -300,6 +301,7 @@ test('accepts the actual frozen scope, semantic and lexical pure-runtime chain',
   const text = 'value';
   const lexical = enumerateProcessLexicalCandidates({
     scope_receipt: scope,
+    expected_scope_receipt_id: scope.scope_receipt_id,
     source_units: [{
       source_unit_id: digest('lexical-unit'),
       source_document_identity: digest('lexical-document'),

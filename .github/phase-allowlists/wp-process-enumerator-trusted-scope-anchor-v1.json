@@ -1,0 +1,25 @@
+{
+  "phase": "WP-PROCESS-ENUMERATOR-TRUSTED-SCOPE-ANCHOR-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-enumerator-trusted-scope-anchor-v1.json",
+    "lib/canonical-v2/process-lexical-enumerator.js",
+    "lib/canonical-v2/process-semantic-enumerator.js",
+    "tests/canonical-v2-process-candidate-graph.test.js",
+    "tests/canonical-v2-process-lexical-enumerator.test.js",
+    "tests/canonical-v2-process-semantic-enumerator.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Requires a separately trusted Process scope-receipt ID before lexical or semantic use and accepts a producer-valid zero-slot residual scope. This grants no extraction, writer, database, serving, release, import, activation, production or canonical-write authority."
+}
