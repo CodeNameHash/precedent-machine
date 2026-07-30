@@ -39,21 +39,24 @@ test('accepts the immutable QXO F28 candidate envelope definition', () => {
 });
 
 test('rejects terminal omission, reorder, and duplication', () => {
-  rejects((value) => value.definition.candidate_envelope_contract.ordered_terminals.pop());
+  rejects((value) => value.definition.candidate_envelope_contract
+    .ordered_terminals.ordered_metric_slots.pop());
   rejects((value) => {
-    const terminals = value.definition.candidate_envelope_contract.ordered_terminals;
+    const terminals = value.definition.candidate_envelope_contract
+      .ordered_terminals.ordered_metric_slots;
     [terminals[0], terminals[1]] = [terminals[1], terminals[0]];
   });
   rejects((value) => {
-    const terminals = value.definition.candidate_envelope_contract.ordered_terminals;
-    terminals[1].terminal_id = terminals[0].terminal_id;
+    const terminals = value.definition.candidate_envelope_contract
+      .ordered_terminals.ordered_metric_slots;
+    terminals[1] = clone(terminals[0]);
   });
 });
 
 test('rejects the 13 plus 1 terminal inventory drifting', () => {
   rejects((value) => {
-    value.definition.candidate_envelope_contract.ordered_terminals[7]
-      .subject_terminal_kind = 'MARKET_OBSERVATION';
+    value.definition.candidate_envelope_contract.ordered_terminals
+      .ordered_metric_slots[7].subject_terminal_kind = 'MARKET_OBSERVATION';
   });
   rejects((value) => {
     value.definition.candidate_envelope_contract.terminal_count_contract
@@ -64,11 +67,11 @@ test('rejects the 13 plus 1 terminal inventory drifting', () => {
 test('rejects row and Product membership mismatch', () => {
   rejects((value) => {
     value.definition.candidate_envelope_contract.product_membership
-      .domain_result_identity = '0'.repeat(64);
+      .domain_result_identity_source = 'CALLER_SUPPLIED_ID';
   });
   rejects((value) => {
     value.definition.candidate_envelope_contract.product_membership
-      .domain_result_payload_digest = '0'.repeat(64);
+      .domain_result_payload_digest_source = 'CALLER_SUPPLIED_DIGEST';
   });
 });
 
@@ -79,8 +82,10 @@ test('rejects extra authority and semantic self-rehash', () => {
   });
   rejects((value) => {
     const envelope = value.definition.candidate_envelope_contract;
-    envelope.provision_row.provision_row_payload_digest = '0'.repeat(64);
-    envelope.product_membership.domain_result_payload_digest = '0'.repeat(64);
+    envelope.provision_row.provision_row_payload_digest_source =
+      'CALLER_SUPPLIED_DIGEST';
+    envelope.product_membership.domain_result_payload_digest_source =
+      'CALLER_SUPPLIED_DIGEST';
   });
 });
 

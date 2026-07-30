@@ -92,11 +92,13 @@ test('rejects Product Query IR manifest, row, terminal, and surface drift', () =
 test('rejects envelope terminal drift and self-rehashed successor definitions', () => {
   rejects((values) => {
     values[1].canonical_value.definition.candidate_envelope_contract
-      .ordered_terminals[7].subject_terminal_kind = 'MARKET_OBSERVATION';
+      .ordered_terminals.ordered_metric_slots[7].subject_terminal_kind =
+        'MARKET_OBSERVATION';
   });
   rejects((values) => {
     values[1].canonical_value.definition.candidate_envelope_contract
-      .ordered_terminals[0].terminal_payload_digest = '0'.repeat(64);
+      .ordered_terminals.ordered_metric_slots[0].metric_key =
+        'FORGED_METRIC';
     const definition = values[0].canonical_value.definition;
     definition.candidate_envelope_dependency.definition_digest = sha256Hex(
       Buffer.from(canonicalJson(values[1].canonical_value.definition), 'utf8'),

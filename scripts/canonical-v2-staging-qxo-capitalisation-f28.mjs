@@ -48,6 +48,12 @@ const {
   '../lib/canonical-v2/qxo-capitalisation-cross-view-release-f28',
 );
 const {
+  buildQxoCapitalisationF28CandidateEnvelope,
+  validateQxoCapitalisationF28CandidateEnvelope,
+} = require(
+  '../lib/canonical-v2/qxo-capitalisation-f28-candidate-envelope',
+);
+const {
   CAPITAL_STRUCTURE_INTERVAL,
   SECTION_5_2_INTERVAL,
 } = require('../lib/canonical-v2/reviewed-qxo-capitalisation-slice');
@@ -158,6 +164,19 @@ function buildCandidate(inputs) {
     ...inputs,
   });
   const request = compileQxoCapitalisationF28MarketRequest({ release });
+  const envelopeInput = {
+    qxo_cross_view_release: release,
+    reviewed_graph: reviewedGraph,
+    source_context: inputs.sourceContext,
+    parser_source_closure: inputs.parserSourceClosure,
+    contract_bundle: inputs.contractBundle,
+  };
+  const candidateEnvelope =
+    buildQxoCapitalisationF28CandidateEnvelope(envelopeInput);
+  validateQxoCapitalisationF28CandidateEnvelope(
+    candidateEnvelope,
+    envelopeInput,
+  );
   if (
     release.admissions.length !== 14
     || release.observations.length !== 13
@@ -190,6 +209,7 @@ function buildCandidate(inputs) {
     reviewedGraph,
     release,
     request,
+    candidateEnvelope,
     sourceBinding,
   };
 }
@@ -429,6 +449,8 @@ SELECT jsonb_build_object(
   'release_id', ${sqlText(release.release_id)},
   'release_manifest_id', ${sqlText(release.manifest.release_manifest_id)},
   'provision_row_id', ${sqlText(release.provision_row.provision_row_id)},
+  'candidate_envelope_id',
+    ${sqlText(candidate.candidateEnvelope.qxo_capitalisation_f28_candidate_envelope_id)},
   'reviewed_graph_payload_digest',
     ${sqlText(release.manifest.reviewed_graph_payload_digest)},
   'source_binding', ${sqlText(candidate.sourceBinding)},
@@ -635,6 +657,9 @@ function runRollbackProof(sql, candidate, permission, executable) {
       !== candidate.release.manifest.release_manifest_id
     || attestation.provision_row_id
       !== candidate.release.provision_row.provision_row_id
+    || attestation.candidate_envelope_id
+      !== candidate.candidateEnvelope
+        .qxo_capitalisation_f28_candidate_envelope_id
     || attestation.reviewed_graph_payload_digest
       !== candidate.release.manifest.reviewed_graph_payload_digest
     || attestation.source_binding !== candidate.sourceBinding
@@ -680,6 +705,9 @@ function offlineAttestation(candidate) {
     release_id: release.release_id,
     release_manifest_id: release.manifest.release_manifest_id,
     provision_row_id: release.provision_row.provision_row_id,
+    candidate_envelope_id:
+      candidate.candidateEnvelope
+        .qxo_capitalisation_f28_candidate_envelope_id,
     reviewed_graph_payload_digest:
       release.manifest.reviewed_graph_payload_digest,
     probe_records: records.length,

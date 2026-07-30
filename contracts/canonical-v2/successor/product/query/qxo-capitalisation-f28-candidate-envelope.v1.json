@@ -9,33 +9,55 @@
     "candidate_envelope_contract": {
       "source_cross_view_release": {
         "schema_version": "QXO_CAPITALISATION_CROSS_VIEW_RELEASE_F28/V1",
-        "release_id": "0d999cb2898d00709bac1585abff39f5b5c02a966168cf44ddf94ea9128974bc",
-        "release_payload_digest": "f26d46d2afc4a743f4610b2a706e73e66c0b51d84922a3f9104daf9fe36908e6"
+        "release_validation_required": true,
+        "release_id_source": "VALIDATED_F28_RELEASE_ID",
+        "release_payload_digest_source": "VALIDATED_F28_RELEASE_CANONICAL_PAYLOAD_DIGEST",
+        "unvalidated_source_substitution_permitted": false
       },
       "provision_row": {
         "schema_version": "CAPITALISATION_SHARED_PROVISION_ROW_F28/V1",
-        "provision_row_id": "c731d66a8aa515e98d0355594f95b817413aee62a5f06f1e6f3050573aa7fedd",
-        "provision_row_payload_digest": "928b096e0baa40513202e56ac7336faef60cdb883b5b99500664a248aba1aca6"
+        "provision_row_id_source": "VALIDATED_F28_RELEASE_PROVISION_ROW_ID",
+        "provision_row_payload_digest_source": "VALIDATED_F28_RELEASE_PROVISION_ROW_CANONICAL_PAYLOAD_DIGEST",
+        "row_substitution_or_rehash_permitted": false
       },
-      "ordered_terminals": [
-        {"ordinal":0,"terminal_id":"3afc3b8e2ea28d9ff1c58451fc0e1899c90207e4207daf4e1cc04965a21e1558","terminal_payload_digest":"c880655b0a12e2fd726a809f164737b55ca512fa53ca1f43eae46798d8d48d40","subject_terminal_kind":"MARKET_OBSERVATION","subject_terminal_id":"bebb40f7f8e861fe4a42fd0712893fab092484a66e9e7d2ebacd0ea3a273e0fc","subject_terminal_payload_digest":"7362e5175397a258bfce432c66d2ccc2ba4b351b3ea6d45afcdb86b15db8cea4"},
-        {"ordinal":1,"terminal_id":"d38082af365c0f4c169dbf1c071c06c69a317fbac2b5ecc6b78656e98fb588ae","terminal_payload_digest":"bca7a9716f55f42d463b413e9ab3f577c5320abe568a801a942c237f913df84c","subject_terminal_kind":"MARKET_OBSERVATION","subject_terminal_id":"aff4da64c8e94aae54a920315d3e3101551bf71d0079c5b268c95b24624a5be6","subject_terminal_payload_digest":"42b142c529f309667f738728a2f2d57631966ec724e4c27563b9a451d997d6d7"},
-        {"ordinal":2,"terminal_id":"bba4453d1c9201256b748d4a7f713f5ac6917781757a72646270a067644f0089","terminal_payload_digest":"b796e36aac942805a6bddcfe6d88638ee234282354c88c3a55bed80926c94d42","subject_terminal_kind":"MARKET_OBSERVATION","subject_terminal_id":"982a385d84cdc61671a9ded3191d8fb1332290b9857ff747e4d7657877fa3496","subject_terminal_payload_digest":"4118718fa32a6ac5295fbf25de38350e1e7adb9ed25005abd4dc9fc69909d5d6"},
-        {"ordinal":3,"terminal_id":"e9a83c6c11033c2c8844d753bce31ad6639ed4d5da3d52e50508e66a98b0c234","terminal_payload_digest":"bdd0b2b6af28b976eba6418d153e413bb263a615ef634868c8c6fd6d584495f4","subject_terminal_kind":"MARKET_OBSERVATION","subject_terminal_id":"26e13fd2f94322f395cbb08a2523fadf48687d3ad59e1518540727aebc23b23a","subject_terminal_payload_digest":"3a2e46d7dd1a2bcb5edfb6a9916592dcb5af329d40e9b5f24080a6f5354f25eb"},
-        {"ordinal":4,"terminal_id":"077262ce2a7529c357c3ed96a1eac6ee6b41f8ec879ac21319f1dbd4af6b2978","terminal_payload_digest":"31e77236bca1445930236d1c3523fd82e17401c18a4ef7413174ff6d65ad5722","subject_terminal_kind":"MARKET_OBSERVATION","subject_terminal_id":"e9675085360db0211f74217001235f5b64f00c96560cb44800cd2d929fd02f48","subject_terminal_payload_digest":"7bfd31e3bc0767b6b7b435636d3c04afa1e5685f8403ecb3ff8a013e23e3b92a"},
-        {"ordinal":5,"terminal_id":"6d4bc0a845b5e262106606d228bb924aaad921ad2b32591f7725eff141bdea98","terminal_payload_digest":"5bb0e2d15f4b957131da87ed2bcd9049cf4a05bf9d879b66a732e51aa02749ee","subject_terminal_kind":"MARKET_OBSERVATION","subject_terminal_id":"cc58e3abd4dbfc4307795e94552186fb74da9ab44ca231e2e5e5b4a76433eb4f","subject_terminal_payload_digest":"c40c36b1f1d8e8dd8744523a7634349b0e4977ddc13b8b2c2138e58b62106e12"},
-        {"ordinal":6,"terminal_id":"e3d7e573f0d45c68ff2abdf3991d0a09364a83db1046fb7f5336300b2057bf69","terminal_payload_digest":"0866b80d6529b5085133c6fb52bb9a37a8154b48a11c4d5142d8907256c5e72c","subject_terminal_kind":"MARKET_OBSERVATION","subject_terminal_id":"24fb3e747619da262df0d964d237d5cd9303eca09586402b3bee08486eb46504","subject_terminal_payload_digest":"94728448a602558b1c018e08bded7f74b459f8b7bb6013f3fd680b0e226a7028"},
-        {"ordinal":7,"terminal_id":"2d765c834ec167796a1834f4ea554f8f7b4eb979fc8ca5521beb09141bf4baca","terminal_payload_digest":"0c3ab069d9b96200167ef20bac97ee1511a6ac62879caa0783914a988a50a35e","subject_terminal_kind":"MARKET_METRIC_SLOT_EXCLUSION","subject_terminal_id":"2329345ea98c98850d5853e176a5aab6ae8a3c55ee85cab835c8778ccc484379","subject_terminal_payload_digest":"b27abbc8d424a01c96d29e94214391ed20414fe0f53a2d29fd1807051de8b3a6"},
-        {"ordinal":8,"terminal_id":"eb6b9dbbb40f0327a66076eacca1b95b9a158ed814ee33a64341bf641838b77b","terminal_payload_digest":"31c50d615ec95436ad7f86d3e8391a79d4fcd02aa26e0a8ab04ef6b92eb30c2b","subject_terminal_kind":"MARKET_OBSERVATION","subject_terminal_id":"eec64720c7e6d3f05bcd14b8985cecefe80a4f9344ae24c1d30374c26d514f96","subject_terminal_payload_digest":"ea247c9b7563593e7bd384017dbdfe13c2b144746e5f57279a11d7ab225d8e9b"},
-        {"ordinal":9,"terminal_id":"4994d74544becb725ab2fd79add1c057635b8bc756bbadf77032cff899589516","terminal_payload_digest":"69d42b81c92d09d97a5a88747c2dff09924a65e1f4c5bdad89827e6edd3a8ae0","subject_terminal_kind":"MARKET_OBSERVATION","subject_terminal_id":"eb882ff2ac1a51e960a7cf764a323593f975005a5cc82e36b5689980c46bf4c9","subject_terminal_payload_digest":"2b562449d86cdbe47b378a4d1f9ad2256071e80d5458aa19d90a1dcdf5aa2986"},
-        {"ordinal":10,"terminal_id":"0a5ca3033cb8799681fb8cf9d45820b187697443799050ac1725b882e4116e20","terminal_payload_digest":"f1366561a7041c1323916fd64128e8efc35c18921917e71699e75e6046638099","subject_terminal_kind":"MARKET_OBSERVATION","subject_terminal_id":"b2036285694868653f83557f3e76548b2587bc046d42329824bf69f46bf16ca4","subject_terminal_payload_digest":"7e1e96d63f990d87856b3706a984ecfe1f2ca6448bb16a34ad2712b44c41fc0e"},
-        {"ordinal":11,"terminal_id":"91087079adb2f0cad6c1283db7227cb99b0bd2a53ad4a50d293758c2ff23e795","terminal_payload_digest":"2d9deb83b42e7440867df07afcc9734296ca40e68105303a5dbf5fb2417e300f","subject_terminal_kind":"MARKET_OBSERVATION","subject_terminal_id":"2cc8bd23f89dc552cb106b1e10a2540321c435f8b9abd7933917dc1b0011fc61","subject_terminal_payload_digest":"3784c938fe90fa20e28d14589145c3a94f8931884fa256f7375b3460bb7e66ae"},
-        {"ordinal":12,"terminal_id":"40aebf236f8942f1b8d88a0ee27a421bf65de17764c7c663f16cde4bfd6b0f3d","terminal_payload_digest":"b926547f218b49190f4b22cda7427c2a270af23928defeb610b14fb1f9d6b0de","subject_terminal_kind":"MARKET_OBSERVATION","subject_terminal_id":"1fefa548586d76688d2485be7562e9a6fdc3ba77ef5267a46d1fb0f1ea091fde","subject_terminal_payload_digest":"1d665180631f2aa570cd431df9fedd5b4f2886cda8a56555b0bcdf3cf786b53b"},
-        {"ordinal":13,"terminal_id":"622e4deeab3bfa2f92dc28ce783d9f559e929f5ba27b1d244aff1c801fc348f0","terminal_payload_digest":"923a418d2ba42497d789b42670c0a9d8b12cd76237bdb6372fc950a402c6a89d","subject_terminal_kind":"MARKET_OBSERVATION","subject_terminal_id":"679cb58b328b4f17f3fbc50e1f12329db7d8da3b82046025415d0f21f792b178","subject_terminal_payload_digest":"ceb4fbe8a68239443f2f557cf778f5a3cc17072b6c4c6b1abc9a35b37941c465"}
-      ],
+      "ordered_terminals": {
+        "terminal_schema_version": "QXO_CAPITALISATION_F28_CANDIDATE_TERMINAL/V1",
+        "terminal_identity_domain": "QXO_CAPITALISATION_F28_CANDIDATE_TERMINAL/V1",
+        "terminal_identity_inputs": [
+          "ordinal",
+          "subject_terminal_kind",
+          "subject_terminal_id",
+          "subject_terminal_payload_digest"
+        ],
+        "terminal_payload_digest_inputs": [
+          "ordinal",
+          "subject_terminal_kind",
+          "subject_terminal_id",
+          "subject_terminal_payload_digest"
+        ],
+        "source_order": "VALIDATED_F28_RELEASE_ADMISSION_ORDER",
+        "subject_terminal_id_source": "VALIDATED_F28_RELEASE_OBSERVATION_OR_TYPED_EXCLUSION_ID",
+        "subject_terminal_payload_digest_source": "CANONICAL_SUBJECT_TERMINAL_PAYLOAD_DIGEST",
+        "ordered_metric_slots": [
+          {"ordinal":0,"metric_key":"REPRESENTATION_ACCURACY_STANDARD","value_slot_key":"CAPITALISATION_CLAUSE_B_LIMBS_I_III","subject_terminal_kind":"MARKET_OBSERVATION"},
+          {"ordinal":1,"metric_key":"REPRESENTATION_ACCURACY_EXCEPTION","value_slot_key":"CAPITALISATION_CLAUSE_B_LIMBS_I_III","subject_terminal_kind":"MARKET_OBSERVATION"},
+          {"ordinal":2,"metric_key":"REPRESENTATION_ACCURACY_EXCEPTION_DENOMINATOR","value_slot_key":"CAPITALISATION_CLAUSE_B_LIMBS_I_III","subject_terminal_kind":"MARKET_OBSERVATION"},
+          {"ordinal":3,"metric_key":"DATED_REPRESENTATION_TREATMENT","value_slot_key":"CAPITALISATION_CLAUSE_B_LIMBS_I_III","subject_terminal_kind":"MARKET_OBSERVATION"},
+          {"ordinal":4,"metric_key":"REPRESENTATION_MATERIALITY_SCRAPE","value_slot_key":"CAPITALISATION_CLAUSE_B_LIMBS_I_III","subject_terminal_kind":"MARKET_OBSERVATION"},
+          {"ordinal":5,"metric_key":"REPRESENTATION_ACCURACY_STANDARD","value_slot_key":"CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V","subject_terminal_kind":"MARKET_OBSERVATION"},
+          {"ordinal":6,"metric_key":"REPRESENTATION_ACCURACY_EXCEPTION","value_slot_key":"CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V","subject_terminal_kind":"MARKET_OBSERVATION"},
+          {"ordinal":7,"metric_key":"REPRESENTATION_ACCURACY_EXCEPTION_DENOMINATOR","value_slot_key":"CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V","subject_terminal_kind":"MARKET_METRIC_SLOT_EXCLUSION"},
+          {"ordinal":8,"metric_key":"DATED_REPRESENTATION_TREATMENT","value_slot_key":"CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V","subject_terminal_kind":"MARKET_OBSERVATION"},
+          {"ordinal":9,"metric_key":"REPRESENTATION_MATERIALITY_SCRAPE","value_slot_key":"CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V","subject_terminal_kind":"MARKET_OBSERVATION"},
+          {"ordinal":10,"metric_key":"REPRESENTATION_MEASUREMENT_DATE_SIGNING_OFFSET","value_slot_key":"CAPITALISATION_MEASUREMENT_DATE","subject_terminal_kind":"MARKET_OBSERVATION"},
+          {"ordinal":11,"metric_key":"KNOWLEDGE_QUALIFIER_STATE","value_slot_key":"GENERAL_KNOWLEDGE_QUALIFIER","subject_terminal_kind":"MARKET_OBSERVATION"},
+          {"ordinal":12,"metric_key":"GENERAL_MATERIALITY_QUALIFIER_STATE","value_slot_key":"GENERAL_MATERIALITY_QUALIFIER","subject_terminal_kind":"MARKET_OBSERVATION"},
+          {"ordinal":13,"metric_key":"RETROSPECTIVE_LOOKBACK_STATE","value_slot_key":"RETROSPECTIVE_LOOKBACK","subject_terminal_kind":"MARKET_OBSERVATION"}
+        ]
+      },
       "terminal_count_contract": {"terminal_count":14,"market_observation_count":13,"typed_exclusion_count":1,"terminal_order_is_immutable":true,"terminal_ids_are_unique":true},
       "preservation_contract": {"all_f28_metric_subrow_evidence_bytes_preserved":true,"row_digest_covers_all_metric_subrows_and_evidence":true,"terminal_digest_covers_each_terminal_payload":true,"semantic_rehash_or_substitution_permitted":false},
-      "product_membership": {"domain_key":"AGREEMENT","result_definition_stable_id":"TARGET_CAPITALISATION_BRING_DOWN","result_definition_version":3,"domain_result_identity":"c731d66a8aa515e98d0355594f95b817413aee62a5f06f1e6f3050573aa7fedd","domain_result_payload_digest":"928b096e0baa40513202e56ac7336faef60cdb883b5b99500664a248aba1aca6","membership_state":"CANDIDATE_ENVELOPE_ONLY"},
+      "product_membership": {"domain_key":"AGREEMENT","result_definition_stable_id":"TARGET_CAPITALISATION_BRING_DOWN","result_definition_version":3,"domain_result_identity_source":"VALIDATED_F28_RELEASE_PROVISION_ROW_ID","domain_result_payload_digest_source":"VALIDATED_F28_RELEASE_PROVISION_ROW_CANONICAL_PAYLOAD_DIGEST","membership_state":"CANDIDATE_ENVELOPE_ONLY"},
       "successor_adapter_requirement": {"required_successor_stable_id":"QXO_CAPITALISATION_F28_PRODUCT_RESULT_ADAPTER_V2","required_successor_contract_version":2,"require_additive_successor_before_product_materialisation":true,"signed_v1_adapter_is_envelope_authority":false},
       "authority": {"authority_state":"NONE","creates_materialisation_authority":false,"creates_import_authority":false,"creates_query_authority":false,"creates_serving_authority":false,"creates_activation_authority":false,"creates_database_authority":false,"creates_writer_authority":false}
     }

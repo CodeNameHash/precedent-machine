@@ -3,6 +3,7 @@ const test = require('node:test');
 
 const {
   canonicalJson,
+  contentId,
 } = require('../lib/canonical-v2/canonical-bytes');
 const {
   AUTHORITY_STATE,
@@ -11,6 +12,14 @@ const {
 } = require(
   '../lib/canonical-v2/qxo-capitalisation-f28-candidate-envelope',
 );
+const {
+  buildQxoCapitalisationCrossViewReleaseF28,
+} = require(
+  '../lib/canonical-v2/qxo-capitalisation-cross-view-release-f28',
+);
+const {
+  buildQxoReviewedCapitalisationF28,
+} = require('../lib/canonical-v2/reviewed-qxo-capitalisation-f28');
 const {
   buildF28ProductInputs,
   clone,
@@ -74,6 +83,44 @@ test('preserves the exact row and terminal payloads from the source release', ()
       true,
     );
   }
+});
+
+test('derives different valid envelope identities from different admitted sources', () => {
+  const firstInput = input();
+  const sourceContext = clone(firstInput.source_context);
+  sourceContext.converter_digest = '1'.repeat(64);
+  delete sourceContext.admitted_semantic_source_context_id;
+  sourceContext.admitted_semantic_source_context_id = contentId(
+    'ADMITTED_SEMANTIC_SOURCE_CONTEXT/V1',
+    sourceContext,
+  );
+  const secondInput = {
+    ...firstInput,
+    source_context: sourceContext,
+  };
+  secondInput.reviewed_graph = buildQxoReviewedCapitalisationF28({
+    sourceContext,
+    parserSourceClosure: secondInput.parser_source_closure,
+    contractBundle: secondInput.contract_bundle,
+  });
+  secondInput.qxo_cross_view_release =
+    buildQxoCapitalisationCrossViewReleaseF28({
+      reviewedGraph: secondInput.reviewed_graph,
+      sourceContext,
+      parserSourceClosure: secondInput.parser_source_closure,
+      contractBundle: secondInput.contract_bundle,
+    });
+  const first = buildQxoCapitalisationF28CandidateEnvelope(firstInput);
+  const second = buildQxoCapitalisationF28CandidateEnvelope(secondInput);
+  assert.notEqual(
+    first.qxo_capitalisation_f28_candidate_envelope_id,
+    second.qxo_capitalisation_f28_candidate_envelope_id,
+  );
+  assert.notEqual(
+    first.source_cross_view_release_id,
+    second.source_cross_view_release_id,
+  );
+  assert.equal(second.ordered_terminals.length, 14);
 });
 
 test('rejects release, row, terminal and authority drift', () => {

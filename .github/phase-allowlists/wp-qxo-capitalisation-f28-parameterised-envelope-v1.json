@@ -1,0 +1,31 @@
+{
+  "phase": "WP-QXO-CAPITALISATION-F28-PARAMETERISED-ENVELOPE-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-qxo-capitalisation-f28-parameterised-envelope-v1.json",
+    "contracts/canonical-v2/successor/manifest.json",
+    "contracts/canonical-v2/successor/product/query/qxo-capitalisation-f28-candidate-envelope.v1.json",
+    "contracts/canonical-v2/successor/product/query/qxo-capitalisation-f28-product-result-adapter.v2.json",
+    "docs/codex-program/EXECUTION-LEDGER.md",
+    "lib/canonical-v2/product-query-contract-input-validator.js",
+    "lib/canonical-v2/product-query-result-contract-input-validator.js",
+    "lib/canonical-v2/qxo-capitalisation-f28-candidate-envelope-contract-input-validator.js",
+    "lib/canonical-v2/qxo-capitalisation-f28-candidate-envelope.js",
+    "lib/canonical-v2/qxo-capitalisation-f28-product-result-adapter-v2-contract-input-validator.js",
+    "scripts/canonical-v2-staging-qxo-capitalisation-f28.mjs",
+    "tests/canonical-v2-qxo-capitalisation-f28-candidate-envelope-contract-input.test.js",
+    "tests/canonical-v2-qxo-capitalisation-f28-candidate-envelope.test.js",
+    "tests/canonical-v2-qxo-capitalisation-f28-product-result-adapter-v2-contract-input.test.js",
+    "tests/canonical-v2-staging-qxo-capitalisation-f28.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Corrects the unmerged F28 candidate contract so one fully validated admitted source determines the release, row and terminal identities. It prevents fixture-only identities from blocking isolated staging. It preserves all F28 legal metrics, evidence and authority restrictions."
+}

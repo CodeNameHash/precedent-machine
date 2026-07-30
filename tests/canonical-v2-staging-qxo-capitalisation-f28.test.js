@@ -47,6 +47,7 @@ test('F28 offline attestation binds all fourteen market metrics', () => {
     'release_id',
     'release_manifest_id',
     'provision_row_id',
+    'candidate_envelope_id',
     'reviewed_graph_payload_digest',
   ]) {
     assert.match(attestation[key], /^[a-f0-9]{64}$/);
@@ -144,6 +145,7 @@ test('fixture rollback accepts only one exact bounded attestation', () => {
       release_id: identity.release_id,
       release_manifest_id: identity.release_manifest_id,
       provision_row_id: identity.provision_row_id,
+      candidate_envelope_id: identity.candidate_envelope_id,
       reviewed_graph_payload_digest:
         identity.reviewed_graph_payload_digest,
       source_binding: identity.source_binding,
