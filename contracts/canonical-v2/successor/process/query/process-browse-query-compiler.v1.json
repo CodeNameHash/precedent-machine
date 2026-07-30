@@ -9,8 +9,12 @@
     "compiler_contract": {
       "logical_type": "ProcessBrowseQueryCompiler",
       "compiler_version_required": true,
-      "output_definition_stable_id": "PROCESS_QUERY_IR",
-      "output_schema_version": "PROCESS_QUERY_IR/V1",
+      "internal_validation_definition_stable_id": "PROCESS_QUERY_IR",
+      "internal_validation_schema_version": "PROCESS_QUERY_IR/V1",
+      "product_boundary_output_definition_stable_id": "PRODUCT_QUERY_IR",
+      "product_boundary_output_schema_version": "PRODUCT_QUERY_IR/V1",
+      "direct_product_emission_required": true,
+      "historical_process_query_ir_can_escape_product_boundary": false,
       "deterministic_and_bounded": true,
       "exactly_one_domain_plan_required": true,
       "browse_display_label_can_enter_query_ir_identity": false

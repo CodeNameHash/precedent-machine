@@ -1,0 +1,81 @@
+{
+  "object_kind": "PRODUCT_SERVING_CONTRACT_INPUT",
+  "stable_id": "PRODUCT_QUERY_SERVING_EXECUTION",
+  "schema_version": "PRODUCT_SERVING_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PRODUCT",
+    "contract_type": "QUERY_SERVING_EXECUTION_DEFINITION",
+    "contract_version": 1,
+    "scope_contract": {
+      "applies_to_all_product_domains": true,
+      "initial_required_domains": [
+        "AGREEMENT",
+        "PROCESS"
+      ],
+      "future_domain_admission_is_registry_driven": true,
+      "second_domain_specific_serving_engine_permitted": false,
+      "product_query_ir_definition_stable_id": "PRODUCT_QUERY_IR",
+      "product_query_ir_schema_version": "PRODUCT_QUERY_IR/V1",
+      "shared_serving_row_definition_stable_id": "PRODUCT_SHARED_SERVING_ROW"
+    },
+    "execution_contract": {
+      "request_shape": "ONE_INDEXED_SET_BASED_SQL_OR_RPC",
+      "maximum_admission_database_calls": 1,
+      "maximum_route_serving_database_calls": 1,
+      "maximum_immediate_retries": 0,
+      "corpus_proportional_database_calls_permitted": false,
+      "broad_canonical_cards_or_claims_loaded_into_application_memory": false,
+      "keyset_pagination_required": true,
+      "offset_pagination_permitted": false,
+      "requested_page_size_plus_one_database_row_budget_required": true,
+      "sentinel_row_can_be_emitted": false,
+      "indexed_query_plan_certification_required_before_serving": true
+    },
+    "route_budget_contract": {
+      "maximum_request_bytes": 32768,
+      "maximum_page_size": 50,
+      "maximum_initial_response_bytes": 1048576,
+      "database_row_budget_formula": "REQUESTED_PAGE_SIZE_PLUS_ONE",
+      "http_row_budget_formula": "REQUESTED_PAGE_SIZE",
+      "over_limit_disposition": "TYPED_FAILURE_BEFORE_CORPUS_ACCESS",
+      "partial_response_permitted": false,
+      "numeric_capacity_manifest_required_before_serving": true,
+      "unset_capacity_limit_disposition": "FAIL_CLOSED"
+    },
+    "cache_contract": {
+      "release_aware_cache_required": true,
+      "cache_identity_binds_exact_product_query_semantics": true,
+      "cache_identity_binds_release_namespace_and_authorisation_scope": true,
+      "request_nonce_or_transport_signature_can_enter_cache_identity": false,
+      "fresh_admission_required_before_cache_lookup": true,
+      "schema_validation_required_before_cache_insertion": true,
+      "empty_valid_result_cacheable": true,
+      "error_partial_or_schema_invalid_result_cacheable": false,
+      "numeric_ttl_entry_and_byte_limits_required": true,
+      "unset_cache_limit_disposition": "FAIL_CLOSED",
+      "cache_budget_manifest_grants_serving_authority": false
+    },
+    "failure_contract": {
+      "database_or_cache_failure_can_render_as_zero_results": false,
+      "timeout_can_render_as_complete_result": false,
+      "invalid_row_isolated_under_shared_row_contract": true,
+      "unknown_execution_shape_disposition": "TYPED_UNSUPPORTED",
+      "load_certification_is_separate_from_this_contract": true
+    },
+    "authority_contract": {
+      "creates_runtime_query_engine": false,
+      "creates_query_execution_authority": false,
+      "creates_extraction_authority": false,
+      "creates_canonical_write_authority": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_database_authority": false,
+      "creates_cache_authority": false,
+      "creates_capacity_authority": false,
+      "creates_release_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

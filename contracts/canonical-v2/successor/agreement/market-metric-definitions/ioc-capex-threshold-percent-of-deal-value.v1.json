@@ -1,0 +1,63 @@
+{
+  "authored_definition": {
+    "allowed_observation_states": [
+      "PRESENT",
+      "ABSENT",
+      "NOT_APPLICABLE",
+      "NOT_EXAMINED",
+      "FAILED"
+    ],
+    "basis_key": "PERCENT_OF_DEAL_VALUE:HEADLINE_TRANSACTION_VALUE:USD",
+    "canonical_unit": "PERCENT_OF_DEAL_VALUE",
+    "canonical_value_required_states": [
+      "PRESENT"
+    ],
+    "canonical_value_type": "NON_NEGATIVE_DECIMAL_STRING",
+    "concept_key": "IOC-CAPEX",
+    "currency": "USD",
+    "denominator_basis": "HEADLINE_TRANSACTION_VALUE",
+    "denominator_lineage_required": true,
+    "metric_key": "IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE",
+    "metric_version": 1,
+    "numeric_aggregate_contract": [
+      "MIN",
+      "MAX",
+      "MEDIAN",
+      "MEAN"
+    ],
+    "owner_lineage_mode": "RESULT_RELATIONSHIP",
+    "per_deal_rollup": "DISTINCT_VALUE_SET",
+    "raw_amount_and_currency_required_when_present": true,
+    "required_claim_definition_key": "IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE",
+    "required_lineage_fields": [
+      "CORPUS_RELEASE_ID",
+      "DEAL_ADMISSION_ID",
+      "RESULT_OCCURRENCE_ID",
+      "RESULT_REVISION_ID",
+      "RESULT_COMPONENT_OCCURRENCE_ID",
+      "RESULT_COMPONENT_REVISION_ID",
+      "RESULT_INPUT_LINEAGE_DIGEST",
+      "COMPOSITION_SCOPE_CLOSURE_ID",
+      "CLAIM_OCCURRENCE_ID",
+      "CLAIM_REVISION_ID",
+      "CLAIM_SCOPE_CLOSURE_ID",
+      "RELATIONSHIP_REVISION_IDS",
+      "EVIDENCE_EDGE_IDS",
+      "CANONICAL_TEXT_ID",
+      "SOURCE_INTERVALS",
+      "DENOMINATOR_SOURCE_LINEAGE_IDS",
+      "NORMALISATION_DERIVATION_VERSION"
+    ],
+    "required_relationship_key": "EXCEPTED_BY",
+    "required_relationship_version": 3,
+    "required_result_key": "TARGET_CAPEX_RESTRICTION",
+    "required_result_version": 1,
+    "required_value_slot_key": "CAPEX_THRESHOLD",
+    "source_lineage_required": true,
+    "value_dimension": "MONEY_RELATIVE_TO_DEAL_VALUE",
+    "weighting": "DEAL"
+  },
+  "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+  "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+  "stable_id": "IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE"
+}
