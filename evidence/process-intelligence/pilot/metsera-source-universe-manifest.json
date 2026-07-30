@@ -1,0 +1,366 @@
+{
+  "schema_version": "metsera-source-universe/v1",
+  "lane": "a",
+  "subject": {
+    "issuer": "Metsera, Inc.",
+    "cik": "0002040807",
+    "transaction": "Metsera process involving Pfizer Inc. and Novo Nordisk A/S"
+  },
+  "scope": {
+    "bounded_pilot": true,
+    "source_policy": "Only primary SEC EDGAR filings and issuer-hosted transaction documents. This lane used SEC EDGAR only; no issuer-hosted document was needed.",
+    "screening_window": {
+      "start": "2024-04-22",
+      "end": "2025-11-24",
+      "reason": "Starts with the Pfizer confidentiality agreement date described in the definitive proxy and ends with the issuer's post-closing deregistration filing date in the SEC submissions response."
+    },
+    "included_source_count": 10,
+    "screened_out_source_count": 7,
+    "source_bytes_retained_outside_repository": "/tmp/metsera-source-evidence-a.foQbfb",
+    "prohibited_inputs_not_accessed": [
+      "repository Metsera fixtures",
+      "Storylines files",
+      "extractor output",
+      "candidate graphs",
+      "process predicate catalogue",
+      "prior Metsera analyses",
+      "tests",
+      "database data",
+      "production systems"
+    ]
+  },
+  "universe_discovery_response": {
+    "url": "https://data.sec.gov/submissions/CIK0002040807.json",
+    "retrieved_at_utc": "2026-07-30T09:14:24Z",
+    "byte_length": 18164,
+    "sha256": "fd5a40b2d8b49b23fe54f6cbae98cec44fa97fb5f878db7c7feaa92df2f91e97",
+    "content_address": "sha256:fd5a40b2d8b49b23fe54f6cbae98cec44fa97fb5f878db7c7feaa92df2f91e97",
+    "use": "SEC's issuer filing index used to enumerate the candidate filings below. It is not itself an issuer filing."
+  },
+  "sources": [
+    {
+      "source_id": "sha256:14286f31779626e6b4906bfdbc59131a4735ab6d6fa8f6bc0c5e7e8af2e80bb8",
+      "accession_number": "0001193125-25-210030",
+      "form": "8-K",
+      "filing_date": "2025-09-22",
+      "report_date": "2025-09-21",
+      "primary_document_url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525210030/d921605d8k.htm",
+      "retrieval": {
+        "url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525210030/0001193125-25-210030.txt",
+        "retrieved_at_utc": "2026-07-30T09:15:14Z",
+        "byte_length": 1146322,
+        "sha256": "14286f31779626e6b4906bfdbc59131a4735ab6d6fa8f6bc0c5e7e8af2e80bb8",
+        "response_type": "canonical SEC complete-submission text"
+      },
+      "scope_status": "included",
+      "why": "Execution and public announcement of the original Pfizer merger agreement. The complete submission contains the executed original merger agreement, form CVR agreement, and voting and support agreements.",
+      "material_documents": [
+        "d921605d8k.htm (8-K)",
+        "d921605dex21.htm (EX-2.1, Agreement and Plan of Merger)",
+        "d921605dex22.htm (EX-2.2, Voting and Support Agreement)",
+        "d921605dex23.htm (EX-2.3, Voting and Support Agreement)"
+      ]
+    },
+    {
+      "source_id": "sha256:8b67c0f4014a58e32ab21ac19f5d8a0d3020b5a546cd35eda665f3f199ac8db7",
+      "accession_number": "0001193125-25-223440",
+      "form": "8-K",
+      "filing_date": "2025-09-29",
+      "report_date": "2025-09-29",
+      "primary_document_url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525223440/d943312d8k.htm",
+      "retrieval": {
+        "url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525223440/0001193125-25-223440.txt",
+        "retrieved_at_utc": "2026-07-30T09:15:14Z",
+        "byte_length": 215774,
+        "sha256": "8b67c0f4014a58e32ab21ac19f5d8a0d3020b5a546cd35eda665f3f199ac8db7",
+        "response_type": "canonical SEC complete-submission text"
+      },
+      "scope_status": "screened_out",
+      "why": "Clinical-data announcement. It mentions generic Pfizer-closing risk in forward-looking text but contains no request, response, exclusivity, amendment, waiver, or process fact needed for this transaction record."
+    },
+    {
+      "source_id": "sha256:3b625f3726452c671bba90a43b594a5d43840b255f44b15ff519409cc746bf12",
+      "accession_number": "0001193125-25-230880",
+      "form": "PREM14A",
+      "filing_date": "2025-10-06",
+      "report_date": "2025-10-06",
+      "primary_document_url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525230880/d53787dprem14a.htm",
+      "retrieval": {
+        "url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525230880/0001193125-25-230880.txt",
+        "retrieved_at_utc": "2026-07-30T09:15:15Z",
+        "byte_length": 10313412,
+        "sha256": "3b625f3726452c671bba90a43b594a5d43840b255f44b15ff519409cc746bf12",
+        "response_type": "canonical SEC complete-submission text"
+      },
+      "scope_status": "screened_out",
+      "why": "Preliminary proxy. The definitive proxy below is the final public account of the same original Pfizer process and is used instead to avoid treating preliminary disclosure as the controlling account."
+    },
+    {
+      "source_id": "sha256:c61246c3bdd8227ff6f525ccbd0c0e14b86572565dc6cb4a835f173c902714f7",
+      "accession_number": "0001193125-25-242494",
+      "form": "DEFM14A",
+      "filing_date": "2025-10-17",
+      "primary_document_url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525242494/d53787ddefm14a.htm",
+      "retrieval": {
+        "url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525242494/0001193125-25-242494.txt",
+        "retrieved_at_utc": "2026-07-30T09:15:16Z",
+        "byte_length": 10204152,
+        "sha256": "c61246c3bdd8227ff6f525ccbd0c0e14b86572565dc6cb4a835f173c902714f7",
+        "response_type": "canonical SEC complete-submission text"
+      },
+      "scope_status": "included",
+      "why": "Definitive, detailed source for the original process, bidder tracks described as Pfizer and Parties 1 through 7, the Party 2 exclusivity grant and end, the proposal and counterproposal sequence, the original terms, and the original no-shop / superior-proposal mechanics.",
+      "material_documents": [
+        "d53787ddefm14a.htm (definitive proxy, including Background of the Merger)",
+        "Annex A in d53787ddefm14a.htm (original executed Pfizer merger agreement)"
+      ]
+    },
+    {
+      "source_id": "sha256:857a1fbb87bbc3dc185cb689ec393f737d155ab6887bf6e63fbf3334c5621df9",
+      "accession_number": "0001193125-25-257435",
+      "form": "8-K",
+      "filing_date": "2025-10-30",
+      "report_date": "2025-10-29",
+      "primary_document_url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525257435/d54035d8k.htm",
+      "retrieval": {
+        "url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525257435/0001193125-25-257435.txt",
+        "retrieved_at_utc": "2026-07-30T09:15:16Z",
+        "byte_length": 1243249,
+        "sha256": "857a1fbb87bbc3dc185cb689ec393f737d155ab6887bf6e63fbf3334c5621df9",
+        "response_type": "canonical SEC complete-submission text"
+      },
+      "scope_status": "included",
+      "why": "First public issuer filing that identifies Novo Nordisk, dates its unsolicited October 25 proposal, records the Board's October 29 superior-proposal determination and the notice to Pfizer, and includes proposed Novo transaction documents.",
+      "material_documents": [
+        "d54035d8k.htm (8-K)",
+        "d54035dex991.htm (EX-99.1, October 30 press release)",
+        "d54035dex992.htm (EX-99.2, proposed Novo merger agreement)",
+        "d54035dex993.htm (EX-99.3, proposed Novo voting and support agreement)",
+        "d54035dex994.htm (EX-99.4, proposed Novo registration rights agreement)"
+      ]
+    },
+    {
+      "source_id": "sha256:2226188782771d0ed6a3e9dc79a523f620d71b92d799e5f6209a5a05863eb8ab",
+      "accession_number": "0001193125-25-257792",
+      "form": "DEFA14A",
+      "filing_date": "2025-10-30",
+      "primary_document_url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525257792/d54035ddefa14a.htm",
+      "retrieval": {
+        "url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525257792/0001193125-25-257792.txt",
+        "retrieved_at_utc": "2026-07-30T09:18:15Z",
+        "byte_length": 892187,
+        "sha256": "2226188782771d0ed6a3e9dc79a523f620d71b92d799e5f6209a5a05863eb8ab",
+        "response_type": "canonical SEC complete-submission text"
+      },
+      "scope_status": "screened_out",
+      "why": "Parallel proxy-solicitation communication for the same October 30 Novo event. The included 8-K carries the proposed documents and is the source used for the event propositions."
+    },
+    {
+      "source_id": "sha256:c166cf70ab6928556a862e3987a10a7ac9be64be21bf145e756cfa694983ddd7",
+      "accession_number": "0001193125-25-261203",
+      "form": "8-K",
+      "filing_date": "2025-11-03",
+      "report_date": "2025-10-31",
+      "primary_document_url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525261203/d20187d8k.htm",
+      "retrieval": {
+        "url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525261203/0001193125-25-261203.txt",
+        "retrieved_at_utc": "2026-07-30T09:15:17Z",
+        "byte_length": 180097,
+        "sha256": "c166cf70ab6928556a862e3987a10a7ac9be64be21bf145e756cfa694983ddd7",
+        "response_type": "canonical SEC complete-submission text"
+      },
+      "scope_status": "included",
+      "why": "Issuer source for the limited fact that Pfizer had filed litigation and for Metsera's stated response. It does not provide the complaint or decide any legal issue."
+    },
+    {
+      "source_id": "sha256:53668e4a75420a4bb8822c292ac845a5bb6ccd047b174897842711c6647d7fc6",
+      "accession_number": "0001193125-25-261205",
+      "form": "DEFA14A",
+      "filing_date": "2025-11-03",
+      "primary_document_url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525261205/d20187ddefa14a.htm",
+      "retrieval": {
+        "url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525261205/0001193125-25-261205.txt",
+        "retrieved_at_utc": "2026-07-30T09:18:16Z",
+        "byte_length": 45655,
+        "sha256": "53668e4a75420a4bb8822c292ac845a5bb6ccd047b174897842711c6647d7fc6",
+        "response_type": "canonical SEC complete-submission text"
+      },
+      "scope_status": "screened_out",
+      "why": "Parallel proxy-solicitation communication that repeats the October 31 issuer statement included through the same-event 8-K."
+    },
+    {
+      "source_id": "sha256:f0f36f81fc83ec6cd149c7dd31fa5c8b24d6d48cb12dcfacc9f8b5a2254dbf44",
+      "accession_number": "0001193125-25-262088",
+      "form": "8-K",
+      "filing_date": "2025-11-03",
+      "report_date": "2025-11-03",
+      "primary_document_url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525262088/d96170d8k.htm",
+      "retrieval": {
+        "url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525262088/0001193125-25-262088.txt",
+        "retrieved_at_utc": "2026-07-30T09:15:17Z",
+        "byte_length": 178874,
+        "sha256": "f0f36f81fc83ec6cd149c7dd31fa5c8b24d6d48cb12dcfacc9f8b5a2254dbf44",
+        "response_type": "canonical SEC complete-submission text"
+      },
+      "scope_status": "included",
+      "why": "Issuer source for the November 3 litigation statement. It is included only as a contemporaneous issuer statement, not as proof of its litigation characterisations."
+    },
+    {
+      "source_id": "sha256:7ace7016347950498315fe13042a5ddd13686d5e6545fb1680ffcf4954fbf769",
+      "accession_number": "0001193125-25-262100",
+      "form": "DEFA14A",
+      "filing_date": "2025-11-03",
+      "primary_document_url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525262100/d96170ddefa14a.htm",
+      "retrieval": {
+        "url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525262100/0001193125-25-262100.txt",
+        "retrieved_at_utc": "2026-07-30T09:18:16Z",
+        "byte_length": 44257,
+        "sha256": "7ace7016347950498315fe13042a5ddd13686d5e6545fb1680ffcf4954fbf769",
+        "response_type": "canonical SEC complete-submission text"
+      },
+      "scope_status": "screened_out",
+      "why": "Parallel proxy-solicitation communication that repeats the included November 3 8-K statement."
+    },
+    {
+      "source_id": "sha256:b2e1bf3c7d6f811871508279e648c5dedcef81140201a3bcbfb9843c2bfe2b6e",
+      "accession_number": "0001193125-25-263828",
+      "form": "8-K",
+      "filing_date": "2025-11-04",
+      "report_date": "2025-11-03",
+      "primary_document_url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525263828/d60790d8k.htm",
+      "retrieval": {
+        "url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525263828/0001193125-25-263828.txt",
+        "retrieved_at_utc": "2026-07-30T09:15:18Z",
+        "byte_length": 237872,
+        "sha256": "b2e1bf3c7d6f811871508279e648c5dedcef81140201a3bcbfb9843c2bfe2b6e",
+        "response_type": "canonical SEC complete-submission text"
+      },
+      "scope_status": "included",
+      "why": "Contains the November 4 revised Novo proposal, the signed Novo irrevocable offer and its conditions, expiry and withdrawal mechanics, and contemporaneous Pfizer proposals to amend the original agreement.",
+      "material_documents": [
+        "d60790d8k.htm (8-K)",
+        "d60790dex991.htm (EX-99.1, November 4 press release)",
+        "d60790dex992.htm (EX-99.2, Novo Irrevocable Offer dated November 4, 2025)"
+      ]
+    },
+    {
+      "source_id": "sha256:e1131d0ca142e8dab998950883d324e9561437426c7c265b8851bae2bcdeb524",
+      "accession_number": "0001193125-25-263933",
+      "form": "DEFA14A",
+      "filing_date": "2025-11-04",
+      "primary_document_url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525263933/d60790ddefa14a.htm",
+      "retrieval": {
+        "url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525263933/0001193125-25-263933.txt",
+        "retrieved_at_utc": "2026-07-30T09:18:17Z",
+        "byte_length": 89770,
+        "sha256": "e1131d0ca142e8dab998950883d324e9561437426c7c265b8851bae2bcdeb524",
+        "response_type": "canonical SEC complete-submission text"
+      },
+      "scope_status": "screened_out",
+      "why": "Parallel proxy-solicitation communication for the included November 4 8-K and offer."
+    },
+    {
+      "source_id": "sha256:aac0646a8f03872e7723edae835e7279de5292e76600a8dc57128ce938a3be27",
+      "accession_number": "0001193125-25-267573",
+      "form": "8-K",
+      "filing_date": "2025-11-06",
+      "report_date": "2025-11-03",
+      "primary_document_url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525267573/d66615d8k.htm",
+      "retrieval": {
+        "url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525267573/0001193125-25-267573.txt",
+        "retrieved_at_utc": "2026-07-30T09:15:18Z",
+        "byte_length": 178504,
+        "sha256": "aac0646a8f03872e7723edae835e7279de5292e76600a8dc57128ce938a3be27",
+        "response_type": "canonical SEC complete-submission text"
+      },
+      "scope_status": "included",
+      "why": "Issuer source for its November 5 statement that the Delaware Court of Chancery denied Pfizer's request for a temporary restraining order. The order itself is not a source in this lane."
+    },
+    {
+      "source_id": "sha256:1f6d8ccec676043a7d148ed64ec9c52244811bd6625da1b6d2bfcd91a240a6a6",
+      "accession_number": "0001193125-25-273292",
+      "form": "8-K",
+      "filing_date": "2025-11-10",
+      "report_date": "2025-11-07",
+      "primary_document_url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525273292/d50740d8k.htm",
+      "retrieval": {
+        "url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525273292/0001193125-25-273292.txt",
+        "retrieved_at_utc": "2026-07-30T09:15:19Z",
+        "byte_length": 389709,
+        "sha256": "1f6d8ccec676043a7d148ed64ec9c52244811bd6625da1b6d2bfcd91a240a6a6",
+        "response_type": "canonical SEC complete-submission text"
+      },
+      "scope_status": "included",
+      "why": "Execution and public announcement of Amendment No. 1 to the Pfizer merger agreement. It supplies the executed amendment and records the increased cash amount, revised CVR economics and obligations, increased termination fee, and mutual release.",
+      "material_documents": [
+        "d50740d8k.htm (8-K)",
+        "d50740dex21.htm (EX-2.1, Amendment No. 1 to Agreement and Plan of Merger)",
+        "d50740dex991.htm (EX-99.1, November 7 press release)"
+      ]
+    },
+    {
+      "source_id": "sha256:fdad167f7360100d26e0e7a9527eb4cce3c95bd06bde57c014cdbab8282739c5",
+      "accession_number": "0001193125-25-273435",
+      "form": "DEFA14A",
+      "filing_date": "2025-11-10",
+      "primary_document_url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525273435/d94128ddefa14a.htm",
+      "retrieval": {
+        "url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525273435/0001193125-25-273435.txt",
+        "retrieved_at_utc": "2026-07-30T09:18:18Z",
+        "byte_length": 740125,
+        "sha256": "fdad167f7360100d26e0e7a9527eb4cce3c95bd06bde57c014cdbab8282739c5",
+        "response_type": "canonical SEC complete-submission text"
+      },
+      "scope_status": "included",
+      "why": "Proxy supplement that presents the executed Pfizer amendment to stockholders, confirms the unchanged November 13 meeting date, and records the unanimous Board recommendation on the amended agreement.",
+      "material_documents": [
+        "d94128ddefa14a.htm (proxy supplement, including Annex A amendment)"
+      ]
+    },
+    {
+      "source_id": "sha256:b07f16907dbcbb8b4b79f824cc7345e031187fb30c71200dc6f346945cca44ef",
+      "accession_number": "0001193125-25-277530",
+      "form": "10-Q",
+      "filing_date": "2025-11-12",
+      "report_date": "2025-09-30",
+      "primary_document_url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525277530/mtsr-20250930.htm",
+      "retrieval": {
+        "url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525277530/0001193125-25-277530.txt",
+        "retrieved_at_utc": "2026-07-30T09:18:50Z",
+        "byte_length": 12145332,
+        "sha256": "b07f16907dbcbb8b4b79f824cc7345e031187fb30c71200dc6f346945cca44ef",
+        "response_type": "canonical SEC complete-submission text"
+      },
+      "scope_status": "screened_out",
+      "why": "Quarterly financial report. It repeats merger risk and final amended terms but does not add a discrete bidding-process event beyond the included transaction-specific filings."
+    },
+    {
+      "source_id": "sha256:628286441c0ea503c2f2a6a75b8a8ae660d3c851b5236648c89e26abee046c9b",
+      "accession_number": "0001193125-25-280387",
+      "form": "8-K",
+      "filing_date": "2025-11-13",
+      "report_date": "2025-11-12",
+      "primary_document_url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525280387/d161976d8k.htm",
+      "retrieval": {
+        "url": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525280387/0001193125-25-280387.txt",
+        "retrieved_at_utc": "2026-07-30T09:15:20Z",
+        "byte_length": 312414,
+        "sha256": "628286441c0ea503c2f2a6a75b8a8ae660d3c851b5236648c89e26abee046c9b",
+        "response_type": "canonical SEC complete-submission text"
+      },
+      "scope_status": "included",
+      "why": "Completion record. It states that Pfizer completed the amended transaction on November 13, records stockholder approval, and states the final cash and CVR consideration."
+    }
+  ],
+  "source_limitations": [
+    "SEC filing schedules and similar attachments identified as omitted under Item 601(a)(5) cannot be inspected from these public source bytes.",
+    "The issuer filings state that Pfizer filed litigation and that a temporary restraining order was denied, but no court complaint, briefing, transcript or order was used in this lane.",
+    "No source used here identifies any anonymised Party 1 through Party 7 in the definitive proxy as Novo Nordisk."
+  ],
+  "verification": {
+    "hash_algorithm": "SHA-256",
+    "recompute_command": "sha256sum /tmp/metsera-source-evidence-a.foQbfb/<accession>.txt",
+    "verified_at_utc": "2026-07-30T09:18:58Z",
+    "result": "Every listed retrieval digest and byte length was recomputed from the retained canonical SEC response bytes."
+  }
+}

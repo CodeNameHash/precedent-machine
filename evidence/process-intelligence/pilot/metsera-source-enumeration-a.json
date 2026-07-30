@@ -1,0 +1,497 @@
+{
+  "schema_version": "metsera-source-enumeration/v1",
+  "lane": "a",
+  "subject": "Metsera process involving Pfizer Inc. and Novo Nordisk A/S",
+  "method": {
+    "source_only": true,
+    "permitted_sources_used": [
+      "primary SEC EDGAR filings"
+    ],
+    "ordinary_predicate_keys_assigned": false,
+    "anchor_rule": "Each support object identifies immutable complete-submission bytes by SHA-256, a document within that submission, a raw-submission line interval, and stable text anchors. Line numbers are 1-based lines in the retained SEC .txt response."
+  },
+  "role_and_track_boundaries": [
+    {
+      "statement": "Pfizer is identified in the public sources as the counterparty to the executed September 21 merger agreement, the executed November 7 amendment, and the acquirer at the November 13 completion.",
+      "support": [
+        {
+          "evidence_id": "sha256:14286f31779626e6b4906bfdbc59131a4735ab6d6fa8f6bc0c5e7e8af2e80bb8#d921605d8k.htm:L147-L157",
+          "accession_number": "0001193125-25-210030",
+          "document_filename": "d921605d8k.htm",
+          "line_interval": [147, 157],
+          "stable_text_start": "On September 21, 2025, Metsera, Inc. ... entered into an Agreement and Plan of Merger ... with Pfizer Inc.",
+          "stable_text_end": "The Merger Agreement includes customary termination provisions"
+        },
+        {
+          "evidence_id": "sha256:628286441c0ea503c2f2a6a75b8a8ae660d3c851b5236648c89e26abee046c9b#d161976d8k.htm:L145-L155",
+          "accession_number": "0001193125-25-280387",
+          "document_filename": "d161976d8k.htm",
+          "line_interval": [145, 155],
+          "stable_text_start": "On November 13, 2025, Pfizer Inc. ... completed its previously announced acquisition of Metsera",
+          "stable_text_end": "the Company surviving the Merger as a wholly owned subsidiary of Pfizer"
+        }
+      ]
+    },
+    {
+      "statement": "Novo Nordisk is identified in the public sources as the maker of an unsolicited October 25 proposal and later a November 4 irrevocable offer. The sources in this lane do not show an executed Novo merger agreement or a completed Novo transaction.",
+      "support": [
+        {
+          "evidence_id": "sha256:857a1fbb87bbc3dc185cb689ec393f737d155ab6887bf6e63fbf3334c5621df9#d54035dex991.htm:L5508-L5528",
+          "accession_number": "0001193125-25-257435",
+          "document_filename": "d54035dex991.htm",
+          "line_interval": [5508, 5528],
+          "stable_text_start": "Metsera Receives Unsolicited Proposal from Novo Nordisk",
+          "stable_text_end": "an unsolicited proposal ... on October 25, 2025 constitutes a Superior Company Proposal"
+        },
+        {
+          "evidence_id": "sha256:b2e1bf3c7d6f811871508279e648c5dedcef81140201a3bcbfb9843c2bfe2b6e#d60790dex992.htm:L368-L380",
+          "accession_number": "0001193125-25-263828",
+          "document_filename": "d60790dex992.htm",
+          "line_interval": [368, 380],
+          "stable_text_start": "Novo Nordisk A/S ... are pleased to make this irrevocable and legally binding offer",
+          "stable_text_end": "the period from the date of this letter to such time, the Offer Period"
+        },
+        {
+          "evidence_id": "sha256:628286441c0ea503c2f2a6a75b8a8ae660d3c851b5236648c89e26abee046c9b#d161976d8k.htm:L145-L155",
+          "accession_number": "0001193125-25-280387",
+          "document_filename": "d161976d8k.htm",
+          "line_interval": [145, 155],
+          "stable_text_start": "On November 13, 2025, Pfizer Inc. ... completed its previously announced acquisition of Metsera",
+          "stable_text_end": "the Company surviving the Merger as a wholly owned subsidiary of Pfizer"
+        }
+      ]
+    },
+    {
+      "statement": "The definitive proxy describes non-Pfizer bidders only as Party 1 through Party 7. It does not identify any numbered party as Novo Nordisk. A connection between Novo and any numbered party is therefore not made in this enumeration.",
+      "support": [
+        {
+          "evidence_id": "sha256:c61246c3bdd8227ff6f525ccbd0c0e14b86572565dc6cb4a835f173c902714f7#d53787ddefm14a.htm:L2691-L2700",
+          "accession_number": "0001193125-25-242494",
+          "document_filename": "d53787ddefm14a.htm",
+          "line_interval": [2691, 2700],
+          "stable_text_start": "Between 2024 and September 2025, Metsera engaged in discussions ... including Pfizer and six other major biopharmaceuticals companies referred to as Party 1, Party 2, Party 3, Party 4, Party 5 and Party 6",
+          "stable_text_end": "None of these confidentiality agreements contained standstill provisions"
+        }
+      ]
+    }
+  ],
+  "propositions": [
+    {
+      "record_id": "p01_original_pfizer_agreement",
+      "date_or_period": "2025-09-21 to 2025-09-22",
+      "statement": "Metsera, Pfizer and Mayfair Merger Sub executed the original Pfizer merger agreement. The 8-K states that the Board unanimously approved it and that closing was subject to stockholder approval, HSR waiting-period expiration or termination, no injunction or similar restraint, and other agreement conditions. The stated consideration was $47.50 cash plus one CVR per share.",
+      "source_character": "issuer 8-K and executed agreement",
+      "support": [
+        {
+          "evidence_id": "sha256:14286f31779626e6b4906bfdbc59131a4735ab6d6fa8f6bc0c5e7e8af2e80bb8#d921605d8k.htm:L147-L157",
+          "accession_number": "0001193125-25-210030",
+          "document_filename": "d921605d8k.htm",
+          "line_interval": [147, 157],
+          "stable_text_start": "On September 21, 2025, Metsera ... entered into an Agreement and Plan of Merger ... with Pfizer Inc.",
+          "stable_text_end": "The Merger Agreement also contains a customary no shop provision"
+        }
+      ]
+    },
+    {
+      "record_id": "p02_original_pfizer_no_shop_and_response_period",
+      "date_or_period": "from 2025-09-21 until termination or closing",
+      "statement": "The original Pfizer agreement restricted solicitation, but permitted specified engagement with an unsolicited proposal that could lead to a Superior Company Proposal. Before an adverse recommendation change or termination for that proposal, Metsera had to give Pfizer at least four business days' written notice, supply the proposal and proposed agreement, and negotiate in good faith. The disclosed original termination fee was $190 million.",
+      "source_character": "executed agreement and issuer 8-K summary",
+      "support": [
+        {
+          "evidence_id": "sha256:14286f31779626e6b4906bfdbc59131a4735ab6d6fa8f6bc0c5e7e8af2e80bb8#d921605dex21.htm:L3152-L3242",
+          "accession_number": "0001193125-25-210030",
+          "document_filename": "d921605dex21.htm",
+          "line_interval": [3152, 3242],
+          "stable_text_start": "SECTION 5.02. No Solicitation",
+          "stable_text_end": "the Company Takeover Proposal continues to constitute a Superior Company Proposal"
+        },
+        {
+          "evidence_id": "sha256:14286f31779626e6b4906bfdbc59131a4735ab6d6fa8f6bc0c5e7e8af2e80bb8#d921605d8k.htm:L157-L157",
+          "accession_number": "0001193125-25-210030",
+          "document_filename": "d921605d8k.htm",
+          "line_interval": [157, 157],
+          "stable_text_start": "The Merger Agreement includes customary termination provisions",
+          "stable_text_end": "fee equal to $190 million"
+        }
+      ]
+    },
+    {
+      "record_id": "p03_pfizer_pre_signing_requests_and_rejection",
+      "date_or_period": "2025-01-24 to 2025-06-03",
+      "statement": "The definitive proxy states that Pfizer received virtual-data-room access on January 24 and that Metsera responded to numerous diligence requests through June 3. Pfizer's June 2 non-binding $30.00-per-share cash proposal was determined insufficient, and Metsera sent a rejection letter saying it significantly undervalued Metsera.",
+      "source_character": "definitive proxy process narrative",
+      "support": [
+        {
+          "evidence_id": "sha256:c61246c3bdd8227ff6f525ccbd0c0e14b86572565dc6cb4a835f173c902714f7#d53787ddefm14a.htm:L2718-L2741",
+          "accession_number": "0001193125-25-242494",
+          "document_filename": "d53787ddefm14a.htm",
+          "line_interval": [2718, 2741],
+          "stable_text_start": "On January 24, 2025, Pfizer was granted access to Metsera's virtual data room",
+          "stable_text_end": "Metsera management sent a letter to representatives of Pfizer rejecting the June 2 Pfizer Proposal"
+        }
+      ]
+    },
+    {
+      "record_id": "p04_party2_exclusivity_request_and_board_terms",
+      "date_or_period": "2025-08-11 to 2025-08-17",
+      "statement": "The definitive proxy says Party 2's August 11 proposal sought exclusivity through September 15. The Board identified open CVR, deadline, equity-award, material-adverse-effect, termination-fee and exclusivity issues. On August 16 it authorised a possible Party 2 exclusivity period only through September 8, conditional on alignment on outstanding CVR milestones.",
+      "source_character": "definitive proxy process narrative",
+      "support": [
+        {
+          "evidence_id": "sha256:c61246c3bdd8227ff6f525ccbd0c0e14b86572565dc6cb4a835f173c902714f7#d53787ddefm14a.htm:L2748-L2810",
+          "accession_number": "0001193125-25-242494",
+          "document_filename": "d53787ddefm14a.htm",
+          "line_interval": [2748, 2810],
+          "stable_text_start": "On August 11, 2025, both Pfizer and Party 2 sent non-binding proposals",
+          "stable_text_end": "to seek to reduce the length of the exclusivity period"
+        },
+        {
+          "evidence_id": "sha256:c61246c3bdd8227ff6f525ccbd0c0e14b86572565dc6cb4a835f173c902714f7#d53787ddefm14a.htm:L2842-L2868",
+          "accession_number": "0001193125-25-242494",
+          "document_filename": "d53787ddefm14a.htm",
+          "line_interval": [2842, 2868],
+          "stable_text_start": "The Board engaged in discussion regarding ... Party 2's statements that it was only willing to engage with Metsera if Metsera was willing to enter into exclusivity",
+          "stable_text_end": "enter into an exclusivity agreement with Party 2 through 9:00 a.m. Eastern Time on September 8, 2025"
+        }
+      ]
+    },
+    {
+      "record_id": "p05_party2_exclusivity_grant_and_end",
+      "date_or_period": "2025-08-17 to 2025-09-03",
+      "statement": "The definitive proxy says Metsera and Party 2 entered an exclusivity agreement on August 17 to negotiate exclusively through 9:00 a.m. Eastern Time on September 8. On September 3, Party 2 said an internal development meant it could not continue a transaction involving Party 2 stock, and the parties agreed to terminate the exclusivity agreement promptly.",
+      "source_character": "definitive proxy process narrative",
+      "support": [
+        {
+          "evidence_id": "sha256:c61246c3bdd8227ff6f525ccbd0c0e14b86572565dc6cb4a835f173c902714f7#d53787ddefm14a.htm:L2870-L2889",
+          "accession_number": "0001193125-25-242494",
+          "document_filename": "d53787ddefm14a.htm",
+          "line_interval": [2870, 2889],
+          "stable_text_start": "On August 17, 2025, Party 2 sent to Metsera a revised non-binding proposal",
+          "stable_text_end": "the parties agreed to negotiate on an exclusive basis through 9:00 a.m. Eastern Time on September 8, 2025"
+        },
+        {
+          "evidence_id": "sha256:c61246c3bdd8227ff6f525ccbd0c0e14b86572565dc6cb4a835f173c902714f7#d53787ddefm14a.htm:L2898-L2906",
+          "accession_number": "0001193125-25-242494",
+          "document_filename": "d53787ddefm14a.htm",
+          "line_interval": [2898, 2906],
+          "stable_text_start": "On September 3, 2025 ... Party 2 would not be able to continue to pursue an acquisition of Metsera",
+          "stable_text_end": "the Party 2 exclusivity agreement should be terminated, which occurred promptly"
+        }
+      ]
+    },
+    {
+      "record_id": "p06_september_pfizer_and_party1_competition",
+      "date_or_period": "2025-09-08 to 2025-09-11",
+      "statement": "The proxy records separate September 8 non-binding proposals from Pfizer and Party 1. Metsera then shared non-public clinical data with both. On September 9 Metsera counterproposed to Pfizer, and on September 10 Pfizer made a revised $45.00 cash plus up to $15.00 CVR proposal. Party 1's September 11 proposal requested fourteen days of exclusivity. The filing does not identify Party 1 as Novo.",
+      "source_character": "definitive proxy process narrative",
+      "support": [
+        {
+          "evidence_id": "sha256:c61246c3bdd8227ff6f525ccbd0c0e14b86572565dc6cb4a835f173c902714f7#d53787ddefm14a.htm:L2912-L2958",
+          "accession_number": "0001193125-25-242494",
+          "document_filename": "d53787ddefm14a.htm",
+          "line_interval": [2912, 2958],
+          "stable_text_start": "On September 8, 2025, both Pfizer and Party 1 sent revised non-binding proposals",
+          "stable_text_end": "Pfizer sent Metsera a revised non-binding proposal ... $45.00 in cash plus ... up to $15.00"
+        },
+        {
+          "evidence_id": "sha256:c61246c3bdd8227ff6f525ccbd0c0e14b86572565dc6cb4a835f173c902714f7#d53787ddefm14a.htm:L2958-L2975",
+          "accession_number": "0001193125-25-242494",
+          "document_filename": "d53787ddefm14a.htm",
+          "line_interval": [2958, 2975],
+          "stable_text_start": "On September 11, 2025, Party 1 sent to Metsera a revised non-binding proposal",
+          "stable_text_end": "requested exclusivity for 14 days"
+        }
+      ]
+    },
+    {
+      "record_id": "p07_pfizer_counterproposal_and_document_negotiation",
+      "date_or_period": "2025-09-14 to 2025-09-21",
+      "statement": "The proxy records Metsera's September 14 written counterproposal to Pfizer for $47.50 cash plus a CVR up to $35.00. Pfizer then proposed $45.00 cash plus a CVR up to $20.00. Metsera signalled willingness to negotiate definitive documents on that basis, while the parties exchanged drafts and negotiated the merger agreement, CVR agreement and support agreements.",
+      "source_character": "definitive proxy process narrative",
+      "support": [
+        {
+          "evidence_id": "sha256:c61246c3bdd8227ff6f525ccbd0c0e14b86572565dc6cb4a835f173c902714f7#d53787ddefm14a.htm:L2988-L3010",
+          "accession_number": "0001193125-25-242494",
+          "document_filename": "d53787ddefm14a.htm",
+          "line_interval": [2988, 3010],
+          "stable_text_start": "On September 14, 2025, representatives of Metsera made a written counterproposal to representatives of Pfizer",
+          "stable_text_end": "Metsera sent Pfizer a letter indicating its willingness to negotiate definitive documentation"
+        },
+        {
+          "evidence_id": "sha256:c61246c3bdd8227ff6f525ccbd0c0e14b86572565dc6cb4a835f173c902714f7#d53787ddefm14a.htm:L3004-L3010",
+          "accession_number": "0001193125-25-242494",
+          "document_filename": "d53787ddefm14a.htm",
+          "line_interval": [3004, 3010],
+          "stable_text_start": "Between September 14, 2025 and September 21, 2025, representatives ... exchanged several drafts of, and engaged in numerous discussions and negotiations",
+          "stable_text_end": "there would not be an exception in the definition of Company Material Adverse Effect for regulatory matters"
+        }
+      ]
+    },
+    {
+      "record_id": "p08_original_pfizer_execution_and_initial_terms",
+      "date_or_period": "2025-09-21",
+      "statement": "The proxy says that, after the Board's September 21 deliberations, Metsera, Pfizer and Merger Sub executed the original merger agreement. The source records a final Pfizer proposal of $47.50 cash plus a CVR up to $22.50 per share and states that the execution versions included Pfizer's $1.5 billion CVR-development-spend agreement, a 3.7% termination fee based on upfront consideration and specified material-adverse-effect exceptions.",
+      "source_character": "definitive proxy process narrative and executed agreement",
+      "support": [
+        {
+          "evidence_id": "sha256:c61246c3bdd8227ff6f525ccbd0c0e14b86572565dc6cb4a835f173c902714f7#d53787ddefm14a.htm:L3073-L3148",
+          "accession_number": "0001193125-25-242494",
+          "document_filename": "d53787ddefm14a.htm",
+          "line_interval": [3073, 3148],
+          "stable_text_start": "representatives of Paul, Weiss and representatives of Wachtell Lipton shared execution versions of the Pfizer transaction documents",
+          "stable_text_end": "Metsera, Pfizer and Merger Sub executed and delivered the Merger Agreement"
+        },
+        {
+          "evidence_id": "sha256:14286f31779626e6b4906bfdbc59131a4735ab6d6fa8f6bc0c5e7e8af2e80bb8#d921605d8k.htm:L147-L156",
+          "accession_number": "0001193125-25-210030",
+          "document_filename": "d921605d8k.htm",
+          "line_interval": [147, 156],
+          "stable_text_start": "At the effective time of the Merger ... $47.50 ... plus one contractual contingent value right",
+          "stable_text_end": "The Merger Agreement includes representations and warranties and covenants"
+        }
+      ]
+    },
+    {
+      "record_id": "p09_novo_october25_proposal_and_board_determination",
+      "date_or_period": "2025-10-25 to 2025-10-30",
+      "statement": "Metsera's October 30 filing states that Novo made an unsolicited proposal on October 25. The Board determined on October 29, after consulting counsel and financial advisers, that the proposal was a Superior Company Proposal under the Pfizer agreement. The proposed structure was a $56.50-per-share cash payment and dividend in a first step, followed by a CVR of up to $21.25 and merger in a second step after stockholder and regulatory approvals.",
+      "source_character": "issuer 8-K, press release and proposed documents",
+      "support": [
+        {
+          "evidence_id": "sha256:857a1fbb87bbc3dc185cb689ec393f737d155ab6887bf6e63fbf3334c5621df9#d54035d8k.htm:L135-L285",
+          "accession_number": "0001193125-25-257435",
+          "document_filename": "d54035d8k.htm",
+          "line_interval": [135, 285],
+          "stable_text_start": "On October 30, 2025 ... an unsolicited proposal ... from Novo Nordisk ... constitutes a Superior Company Proposal",
+          "stable_text_end": "the Novo Transactions Agreements have been included to provide investors with information regarding the terms"
+        },
+        {
+          "evidence_id": "sha256:857a1fbb87bbc3dc185cb689ec393f737d155ab6887bf6e63fbf3334c5621df9#d54035dex991.htm:L5508-L5546",
+          "accession_number": "0001193125-25-257435",
+          "document_filename": "d54035dex991.htm",
+          "line_interval": [5508, 5546],
+          "stable_text_start": "Metsera Declares Novo Nordisk Proposal Superior",
+          "stable_text_end": "This proposal values Metsera at up to $77.75 per share"
+        }
+      ]
+    },
+    {
+      "record_id": "p10_novo_notice_to_pfizer_and_pfizer_response_right",
+      "date_or_period": "2025-10-30",
+      "statement": "Metsera's October 30 press release states that it notified Pfizer of the superior-proposal determination. It describes a four-business-day period in which Pfizer could negotiate adjustments so that the Novo proposal would cease to be superior. The same release states that Pfizer disputed Metsera's right to deliver the notice and Metsera disagreed. This is an issuer report of the parties' positions, not a court finding.",
+      "source_character": "issuer press release",
+      "support": [
+        {
+          "evidence_id": "sha256:857a1fbb87bbc3dc185cb689ec393f737d155ab6887bf6e63fbf3334c5621df9#d54035dex991.htm:L5546-L5562",
+          "accession_number": "0001193125-25-257435",
+          "document_filename": "d54035dex991.htm",
+          "line_interval": [5546, 5562],
+          "stable_text_start": "Metsera today notified Pfizer of its declaration of the Novo Nordisk Proposal as a Superior Company Proposal",
+          "stable_text_end": "Pfizer has informed Metsera that it does not believe Metsera has the right to deliver the Notice. Metsera disagrees"
+        },
+        {
+          "evidence_id": "sha256:14286f31779626e6b4906bfdbc59131a4735ab6d6fa8f6bc0c5e7e8af2e80bb8#d921605dex21.htm:L3232-L3242",
+          "accession_number": "0001193125-25-210030",
+          "document_filename": "d921605dex21.htm",
+          "line_interval": [3232, 3242],
+          "stable_text_start": "after giving effect to all of the adjustments ... offered in writing by Parent during the Notice Period",
+          "stable_text_end": "in the event of any material revisions to the Superior Company Proposal after the start of the Notice Period"
+        }
+      ]
+    },
+    {
+      "record_id": "p11_pfizer_litigation_context_limited",
+      "date_or_period": "2025-10-31 to 2025-11-05",
+      "statement": "Metsera's October 31 and November 3 issuer statements say Pfizer filed litigation against Metsera. The November 5 issuer statement says the Delaware Court of Chancery denied Pfizer's request for a temporary restraining order. The complaint and the court order are not included in this source-only SEC/issuer record, so this enumeration does not state the pleadings, merits or legal effect beyond the issuer's wording.",
+      "source_character": "issuer statements only",
+      "support": [
+        {
+          "evidence_id": "sha256:c166cf70ab6928556a862e3987a10a7ac9be64be21bf145e756cfa694983ddd7#d20187dex991.htm:L248-L262",
+          "accession_number": "0001193125-25-261203",
+          "document_filename": "d20187dex991.htm",
+          "line_interval": [248, 262],
+          "stable_text_start": "Metsera Issues Statement in Response to Litigation",
+          "stable_text_end": "Metsera disagrees with the allegations in Pfizer's complaint"
+        },
+        {
+          "evidence_id": "sha256:aac0646a8f03872e7723edae835e7279de5292e76600a8dc57128ce938a3be27#d66615dex991.htm:L255-L264",
+          "accession_number": "0001193125-25-267573",
+          "document_filename": "d66615dex991.htm",
+          "line_interval": [255, 264],
+          "stable_text_start": "Metsera Issues Statement in Response to Litigation Ruling",
+          "stable_text_end": "decision to deny Pfizer's request for a temporary restraining order"
+        }
+      ]
+    },
+    {
+      "record_id": "p12_pfizer_oct29_and_nov3_revision_requests",
+      "date_or_period": "2025-10-29 to 2025-11-03",
+      "statement": "The November 4 filing states that Pfizer proposed on October 29 to raise cash consideration from $47.50 to $50.50 and seek a Metsera press release describing the Novo proposal as unviable. It states that Pfizer's November 3 revised proposal would raise cash consideration to $60.00, match the Novo proposal's commercially reasonable efforts language, provide for a 14.9% share sale to Pfizer, and again require the requested Metsera press release.",
+      "source_character": "issuer description of non-binding Pfizer proposals",
+      "support": [
+        {
+          "evidence_id": "sha256:b2e1bf3c7d6f811871508279e648c5dedcef81140201a3bcbfb9843c2bfe2b6e#d60790d8k.htm:L135-L218",
+          "accession_number": "0001193125-25-263828",
+          "document_filename": "d60790d8k.htm",
+          "line_interval": [135, 218],
+          "stable_text_start": "Receipt of Revised Pfizer Proposal",
+          "stable_text_end": "On October 29, 2025, Pfizer made a proposal to amend the Merger Agreement"
+        }
+      ]
+    },
+    {
+      "record_id": "p13_novo_nov4_irrevocable_offer_and_expiry_terms",
+      "date_or_period": "2025-11-04 to 2025-11-06",
+      "statement": "The November 4 8-K describes a revised Novo proposal with $62.20 cash and up to $24.00 in cash CVR milestones per share, and says it expired at 10:00 a.m. Eastern Time on November 6. The enclosed Novo irrevocable offer states it would automatically be withdrawn, revoked, void and of no further effect if, among other things, Metsera failed to determine it superior within twenty-four hours, failed to accept by 10:00 a.m. on November 6, failed to complete specified execution steps before the offer-period end, or a Pfizer amendment or consent improved the Pfizer transaction's financial terms.",
+      "source_character": "issuer 8-K and signed Novo offer",
+      "support": [
+        {
+          "evidence_id": "sha256:b2e1bf3c7d6f811871508279e648c5dedcef81140201a3bcbfb9843c2bfe2b6e#d60790d8k.htm:L135-L235",
+          "accession_number": "0001193125-25-263828",
+          "document_filename": "d60790d8k.htm",
+          "line_interval": [135, 235],
+          "stable_text_start": "On November 4, 2025 ... revised unsolicited proposal ... from Novo Nordisk",
+          "stable_text_end": "The Revised Novo Nordisk Proposal expires at 10.00 a.m. Eastern Time on November 6, 2025"
+        },
+        {
+          "evidence_id": "sha256:b2e1bf3c7d6f811871508279e648c5dedcef81140201a3bcbfb9843c2bfe2b6e#d60790dex992.htm:L368-L478",
+          "accession_number": "0001193125-25-263828",
+          "document_filename": "d60790dex992.htm",
+          "line_interval": [368, 478],
+          "stable_text_start": "are pleased to make this irrevocable and legally binding offer",
+          "stable_text_end": "the Parent Offer will be automatically withdrawn and revoked and shall automatically be void and of no further force or effect"
+        }
+      ]
+    },
+    {
+      "record_id": "p14_novo_offer's_executed_drafting_boundary",
+      "date_or_period": "2025-11-04",
+      "statement": "Novo's November 4 offer says Novo, NN US Invest and Novo Nordisk US Research Investments Holdings had executed the offer-side signature pages to the proposed merger agreement, voting and support agreement and registration rights agreement. It makes Metsera's execution and the shareholders' execution conditions to acceptance. This supports an offer-stage record, not an inference that Metsera had executed a Novo merger agreement.",
+      "source_character": "Novo irrevocable offer filed by Metsera",
+      "support": [
+        {
+          "evidence_id": "sha256:b2e1bf3c7d6f811871508279e648c5dedcef81140201a3bcbfb9843c2bfe2b6e#d60790dex992.htm:L368-L409",
+          "accession_number": "0001193125-25-263828",
+          "document_filename": "d60790dex992.htm",
+          "line_interval": [368, 409],
+          "stable_text_start": "the enclosed executed signature pages to the Parent Merger Agreement, the Voting and Support Agreement and the Registration Rights Agreement",
+          "stable_text_end": "if Metsera does not return to the Purchasers a fully executed and delivered Parent Merger Agreement"
+        }
+      ]
+    },
+    {
+      "record_id": "p15_executed_pfizer_amendment",
+      "date_or_period": "2025-11-07",
+      "statement": "Metsera, Pfizer and Merger Sub executed Amendment No. 1 on November 7. The November 10 8-K states that it raised upfront cash from $47.50 to $65.60, reduced the maximum CVR from $22.50 to $20.65, increased the specified termination fee from $190 million to $265 million, required commercially reasonable efforts for each milestone during its milestone period, removed the $1.5 billion development-spend requirement, and provided for a mutual release on stated terms relating in part to Novo-related actions before signing.",
+      "source_character": "issuer 8-K and executed amendment",
+      "support": [
+        {
+          "evidence_id": "sha256:1f6d8ccec676043a7d148ed64ec9c52244811bd6625da1b6d2bfcd91a240a6a6#d50740d8k.htm:L140-L184",
+          "accession_number": "0001193125-25-273292",
+          "document_filename": "d50740d8k.htm",
+          "line_interval": [140, 184],
+          "stable_text_start": "increase the upfront cash consideration ... from $47.50 to $65.60",
+          "stable_text_end": "mutually release claims ... relating to Novo Nordisk ... prior to the signing of the Amendment"
+        },
+        {
+          "evidence_id": "sha256:1f6d8ccec676043a7d148ed64ec9c52244811bd6625da1b6d2bfcd91a240a6a6#d50740dex21.htm:L313-L360",
+          "accession_number": "0001193125-25-273292",
+          "document_filename": "d50740dex21.htm",
+          "line_interval": [313, 360],
+          "stable_text_start": "AMENDMENT NO. 1 TO AGREEMENT AND PLAN OF MERGER",
+          "stable_text_end": "This Amendment shall become effective upon execution and delivery"
+        }
+      ]
+    },
+    {
+      "record_id": "p16_issuer_stated_regulatory_context_for_pfizer_amendment",
+      "date_or_period": "2025-11-07",
+      "statement": "Metsera's November 7 press release says the Board considered a call from the U.S. Federal Trade Commission about potential risks of the proposed Novo structure under U.S. antitrust laws and determined the Novo transaction presented unacceptably high legal and regulatory risks. This is stated issuer rationale. No FTC communication was used or independently verified in this lane.",
+      "source_character": "issuer press release",
+      "support": [
+        {
+          "evidence_id": "sha256:1f6d8ccec676043a7d148ed64ec9c52244811bd6625da1b6d2bfcd91a240a6a6#d50740dex991.htm:L1245-L1277",
+          "accession_number": "0001193125-25-273292",
+          "document_filename": "d50740dex991.htm",
+          "line_interval": [1245, 1277],
+          "stable_text_start": "Pfizer and Metsera Enter into Merger Agreement Amendment",
+          "stable_text_end": "the transaction proposed by Novo Nordisk presents unacceptably high legal and regulatory risks"
+        }
+      ]
+    },
+    {
+      "record_id": "p17_proxy_supplement_and_recommendation",
+      "date_or_period": "2025-11-10",
+      "statement": "The November 10 proxy supplement states that the amendment increased merger consideration, did not change the November 13 special-meeting date or October 24 record date, and records the Board's unanimous recommendation that stockholders approve the amended Pfizer agreement.",
+      "source_character": "definitive additional proxy material",
+      "support": [
+        {
+          "evidence_id": "sha256:fdad167f7360100d26e0e7a9527eb4cce3c95bd06bde57c014cdbab8282739c5#d94128ddefa14a.htm:L123-L167",
+          "accession_number": "0001193125-25-273435",
+          "document_filename": "d94128ddefa14a.htm",
+          "line_interval": [123, 167],
+          "stable_text_start": "On November 7, 2025, Metsera, Pfizer and Merger Sub entered into that certain Amendment No. 1",
+          "stable_text_end": "The definitive proxy statement and this proxy supplement provide detailed information"
+        }
+      ]
+    },
+    {
+      "record_id": "p18_stockholder_approval_and_pfizer_completion",
+      "date_or_period": "2025-11-13",
+      "statement": "The closing 8-K says Metsera stockholders approved the amended merger agreement at the special meeting and that Pfizer completed the acquisition on November 13. Each eligible common share was converted into $65.60 cash plus one CVR. The filing reports 95,071,667 votes for, 20,655 against and 87,802 abstentions.",
+      "source_character": "issuer closing 8-K",
+      "support": [
+        {
+          "evidence_id": "sha256:628286441c0ea503c2f2a6a75b8a8ae660d3c851b5236648c89e26abee046c9b#d161976d8k.htm:L145-L220",
+          "accession_number": "0001193125-25-280387",
+          "document_filename": "d161976d8k.htm",
+          "line_interval": [145, 220],
+          "stable_text_start": "On November 13, 2025, Pfizer Inc. ... completed its previously announced acquisition of Metsera",
+          "stable_text_end": "each ... share ... was converted into the right to receive (A) $65.60 ... plus (B) one contractual contingent value right"
+        },
+        {
+          "evidence_id": "sha256:628286441c0ea503c2f2a6a75b8a8ae660d3c851b5236648c89e26abee046c9b#d161976d8k.htm:L351-L401",
+          "accession_number": "0001193125-25-280387",
+          "document_filename": "d161976d8k.htm",
+          "line_interval": [351, 401],
+          "stable_text_start": "The Company's stockholders approved the adoption of the Merger Agreement",
+          "stable_text_end": "95,071,667 ... 20,655 ... 87,802"
+        }
+      ]
+    }
+  ],
+  "unresolved_or_deliberately_not_inferred": [
+    {
+      "item": "Numbered bidder identities",
+      "status": "unresolved",
+      "detail": "The definitive proxy uses Party 1 through Party 7. No permitted source used in this lane identifies a numbered party as Novo Nordisk. Treating Party 1 or Party 2 as Novo would be a tempting but unsupported match."
+    },
+    {
+      "item": "Novo offer's final mechanical endpoint",
+      "status": "unresolved beyond stated terms and final outcome",
+      "detail": "The November 4 offer states expiry and automatic-withdrawal conditions. The permitted issuer filings used here do not contain a separate declaration that the offer expired, was withdrawn, or was terminated. The later Pfizer amendment and Pfizer completion establish the final executed path, not a substitute label for the Novo offer's precise contractual endpoint."
+    },
+    {
+      "item": "Pfizer litigation merits and court record",
+      "status": "not assessed",
+      "detail": "Only Metsera's SEC-filed statements were used. The complaint, hearing record and court order were outside this lane's allowed source set and were not accessed."
+    },
+    {
+      "item": "FTC communication",
+      "status": "not independently established",
+      "detail": "The only source used is Metsera's November 7 press release, which states that Metsera received an FTC call. No agency source was accessed."
+    },
+    {
+      "item": "Omitted contract schedules",
+      "status": "unavailable in public filing bytes",
+      "detail": "The executed agreement and amendment identify schedules or similar attachments omitted under Item 601(a)(5). They are not represented as reviewed."
+    }
+  ],
+  "summary_counts": {
+    "role_and_track_boundary_records": 3,
+    "supported_substantive_propositions": 18,
+    "unresolved_or_deliberately_not_inferred": 5,
+    "ordinary_predicate_keys": 0
+  }
+}
