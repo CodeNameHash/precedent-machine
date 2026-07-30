@@ -4,6 +4,7 @@
   "allowed": [
     ".github/phase-allowlists/wp-p1-complete-universe-test-reconciliation-v1.json",
     "lib/canonical-v2/canonical-contract-technical-relationship-validator.js",
+    "scripts/sign-g0-evidence.mjs",
     "tests/canonical-v2-canonical-contract-excepted-by-effect.test.js",
     "tests/canonical-v2-canonical-contract-source-tree.test.js",
     "tests/canonical-v2-canonical-contract-technical-relationship-effects.test.js",
@@ -17,7 +18,6 @@
     "data/**",
     "docs/**",
     "pages/**",
-    "scripts/**",
     "sql/**",
     "supabase/**"
   ],
