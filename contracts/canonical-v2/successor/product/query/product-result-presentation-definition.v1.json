@@ -1,0 +1,216 @@
+{
+  "object_kind": "PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT",
+  "stable_id": "PRODUCT_RESULT_PRESENTATION_DEFINITION",
+  "schema_version": "PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PRODUCT",
+    "contract_type": "RESULT_PRESENTATION_DEFINITION",
+    "contract_version": 1,
+    "presentation_contract": {
+      "logical_type": "ProductResultPresentation",
+      "schema_version": "PRODUCT_RESULT_PRESENTATION/V1",
+      "parent_definition_stable_id": "PRODUCT_QUERY_RESULT_DEFINITION",
+      "parent_schema_version": "PRODUCT_QUERY_RESULT/V1",
+      "query_ir_definition_stable_id": "PRODUCT_QUERY_IR",
+      "query_ir_schema_version": "PRODUCT_QUERY_IR/V1",
+      "field_catalogue_stable_id": "PRODUCT_FIELD_CATALOGUE",
+      "field_catalogue_schema_version": "PRODUCT_FIELD_CATALOGUE_MANIFEST/V1"
+    },
+    "parent_binding_contract": {
+      "exact_product_query_definition_id_required": true,
+      "exact_parent_definition_stable_id_version_and_digest_required": true,
+      "exact_product_query_ir_definition_id_and_digest_required": true,
+      "exact_approved_pm_data_version_id_required": true,
+      "exact_candidate_release_manifest_id_and_payload_digest_required": true,
+      "exact_product_field_catalogue_id_and_payload_digest_required": true,
+      "exact_query_coverage_identity_required": true,
+      "ordered_product_result_slots_required": true,
+      "each_valid_slot_requires_exact_product_and_domain_result_identity": true,
+      "presentation_can_create_or_replace_result_identity": false
+    },
+    "payload_contract": {
+      "canonical_json_payload_required": true,
+      "one_canonical_payload_shared_by_all_view_renderers": true,
+      "passage_and_table_renderers_are_derived_views_only": true,
+      "view_renderer_can_add_omit_reorder_or_change_payload_content": false,
+      "view_renderer_can_execute_query_or_source_read": false,
+      "format_specific_bytes_create_canonical_data_authority": false
+    },
+    "identity_contract": {
+      "stable_id_domain": "PRODUCT_RESULT_PRESENTATION/V1",
+      "required_identity_inputs": [
+        "product_query_definition_id",
+        "approved_pm_data_version_id",
+        "candidate_release_manifest_id",
+        "candidate_release_manifest_payload_digest",
+        "product_field_catalogue_id",
+        "product_field_catalogue_payload_digest",
+        "query_coverage_identity",
+        "ordered_product_result_slot_identities",
+        "presentation_contract_version"
+      ],
+      "prohibited_identity_inputs": [
+        "application_row_order",
+        "display_label",
+        "narrative_model_output",
+        "physical_database_identifier",
+        "render_timestamp",
+        "selected_view"
+      ],
+      "correctly_rehashed_structural_forgery_permitted": false
+    },
+    "view_contract": {
+      "default_view": "ANSWER_FIRST_PASSAGES",
+      "permitted_views": [
+        "ANSWER_FIRST_PASSAGES",
+        "DENSE_TABLE"
+      ],
+      "view_switch_executes_second_query": false,
+      "view_switch_changes_result_identity_or_order": false,
+      "view_switch_changes_field_meaning": false,
+      "answer_first_requires_deals_table_navigation": false,
+      "generated_narrative_answer_permitted": false
+    },
+    "first_page_contract": {
+      "preferred_minimum_valid_results": 8,
+      "maximum_valid_results": 12,
+      "fewer_than_preferred_minimum_shows_every_valid_result": true,
+      "result_padding_or_repetition_permitted": false,
+      "query_governed_order_required": true,
+      "query_governed_diversification_required": true,
+      "application_can_rerank_or_rediversify": false,
+      "invalid_result_slot_retained_as_typed_unavailable": true,
+      "invalid_result_slot_can_be_silently_omitted": false,
+      "valid_failed_excluded_and_emitted_counts_reconcile": true
+    },
+    "answer_first_passage_contract": {
+      "one_checked_domain_result_per_passage_card": true,
+      "verbatim_domain_result_content_required": true,
+      "bounded_preview_retains_truncation_state": true,
+      "shortened_preview_can_replace_full_copy_or_source_content": false,
+      "direct_evidence_precedes_contextual_or_retold_evidence": true,
+      "field_catalogue_admission_required_for_every_metadata_field": true,
+      "unrequested_or_unadmitted_metadata_field_can_be_added": false,
+      "required_metadata_when_admitted": [
+        "applicable_transaction_parties",
+        "counsel_and_advisers",
+        "equity_value_and_value_basis",
+        "filing_date",
+        "filing_type",
+        "legal_pattern",
+        "process_event_and_bidder_track",
+        "source_and_citation"
+      ],
+      "checked_source_and_selected_result_actions_required": true,
+      "source_text_can_be_rewritten_or_summarised": false
+    },
+    "table_contract": {
+      "ordered_product_result_identities_equal_passage_view": true,
+      "row_count_equals_passage_view_result_slot_count": true,
+      "columns_equal_query_requested_columns": true,
+      "column_labels_and_values_use_exact_field_catalogue": true,
+      "field_value_equals_same_passage_metadata_value": true,
+      "table_can_execute_independent_query": false,
+      "table_can_add_unrequested_or_physical_database_field": false,
+      "table_can_hide_typed_failed_slot": false
+    },
+    "filter_sentence_contract": {
+      "one_compact_practitioner_sentence_required": true,
+      "checked_legal_question_or_pattern_is_sentence_subject": true,
+      "ordered_filter_segments_equal_ordered_checked_filter_clauses": true,
+      "one_editable_segment_per_checked_filter_clause": true,
+      "subject_and_each_filter_segment_can_be_edited": true,
+      "each_filter_segment_can_be_cleared": true,
+      "field_label_and_value_label_use_exact_catalogue": true,
+      "practitioner_operator_language_required": true,
+      "raw_database_operator_permitted": false,
+      "decorative_pill_collection_is_main_information_structure": false,
+      "sentence_can_hide_or_change_active_filter_meaning": false,
+      "filter_edit_can_mutate_existing_result_or_query_identity": false,
+      "filter_edit_requires_new_checked_query": true
+    },
+    "coverage_contract": {
+      "understood_legal_question_required": true,
+      "active_filter_sentence_required": true,
+      "exact_covered_set_and_exclusions_required": true,
+      "certification_state_required": true,
+      "valid_failed_excluded_and_total_counts_required": true,
+      "zero_result_disposition": "NO_RESULTS_IN_COVERED_DEALS",
+      "zero_result_user_message": "No results in the covered deals",
+      "zero_results_can_claim_market_absence": false,
+      "incomplete_coverage_can_render_as_complete": false,
+      "operational_failure_can_render_as_zero_results": false
+    },
+    "missing_and_conflict_contract": {
+      "permitted_typed_states": [
+        "CONFLICT",
+        "KNOWN_MISSING",
+        "NOT_APPLICABLE",
+        "NOT_EXAMINED",
+        "UNKNOWN"
+      ],
+      "known_typed_state_can_render_as_blank_text": false,
+      "not_examined_can_render_as_no_or_false": false,
+      "unknown_can_render_as_empty_set": false,
+      "not_applicable_requires_checked_evidence": true,
+      "conflict_preserves_each_checked_candidate_and_source": true,
+      "presentation_can_select_one_conflicting_value": false,
+      "same_shared_fact_value_and_state_required_across_filter_passage_table_and_export": true
+    },
+    "shared_fact_display_contract": {
+      "shared_fact_occurrence_identity_preserved_across_filter_passage_table_export_and_source_action": true,
+      "shared_fact_value_basis_role_and_source_preserved": true,
+      "equity_value_from_press_release_keeps_exact_press_release_source_action": true,
+      "professional_name_keeps_represented_party_role_and_exact_source": true,
+      "approved_source_conflict_keeps_checked_conflict_state": true,
+      "merger_of_equals_uses_combination_parties_and_checked_control_outcome": true,
+      "merger_of_equals_can_invent_buyer": false,
+      "reverse_merger_reverse_morris_trust_and_share_purchase_components_remain_separate": true,
+      "presentation_can_combine_separate_components_into_false_transaction_value": false,
+      "buyer_type_not_applicable_requires_checked_no_buyer_role_evidence": true
+    },
+    "practitioner_display_contract": {
+      "practitioner_labels_use_product_field_and_navigation_catalogues": true,
+      "normal_screen_can_show_internal_id_digest_or_pipeline_term": false,
+      "machine_identity_carriers_remain_available_to_checked_actions": true,
+      "machine_identity_carrier_is_bearer_authorisation": false,
+      "pm_design_language_required_for_later_ui": true,
+      "colour_only_state_or_selection_permitted": false,
+      "every_visible_action_requires_accessible_name_and_state": true,
+      "repeated_explanatory_copy_required": false
+    },
+    "failure_contract": {
+      "one_malformed_result_cannot_remove_valid_siblings": true,
+      "one_source_action_failure_cannot_fail_result_page": true,
+      "failed_slot_keeps_exact_failure_identity_and_disposition": true,
+      "hidden_legacy_fallback_permitted": false,
+      "failure_can_redirect_to_newer_release": false,
+      "failure_can_change_query_release_or_field_catalogue_identity": false
+    },
+    "extensibility_contract": {
+      "agreement_process_and_future_cvr_use_same_presentation_schema": true,
+      "domain_result_validator_required_before_presentation": true,
+      "field_and_navigation_catalogues_are_pm_wide": true,
+      "new_admitted_field_with_supported_display_type_requires_no_presentation_code_change": true,
+      "unsupported_display_type_remains_unavailable_until_product_review": true,
+      "new_domain_can_create_second_presentation_engine": false
+    },
+    "authority_contract": {
+      "creates_runtime_presentation": false,
+      "creates_query_execution_authority": false,
+      "creates_domain_result_authority": false,
+      "creates_extraction_authority": false,
+      "creates_canonical_write_authority": false,
+      "creates_serving_authority": false,
+      "creates_database_authority": false,
+      "creates_ui_authority": false,
+      "creates_export_authority": false,
+      "creates_writer_authority": false,
+      "creates_release_authority": false,
+      "creates_import_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}
