@@ -1,24 +1,30 @@
 {
   "object_kind": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT",
-  "stable_id": "QXO_CAPITALISATION_F28_PRODUCT_RESULT_ADAPTER",
+  "stable_id": "QXO_CAPITALISATION_PRODUCT_RESULT_ADAPTER",
   "schema_version": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT/V1",
   "definition": {
     "domain_key": "PRODUCT",
     "contract_type": "AGREEMENT_DOMAIN_RESULT_ADAPTER",
     "contract_version": 1,
     "lifecycle_contract": {
-      "lifecycle_state": "ACTIVE_SUCCESSOR",
-      "retired_predecessor_stable_id": "QXO_CAPITALISATION_PRODUCT_RESULT_ADAPTER",
-      "retired_predecessor_required_lifecycle_state": "RETIRED_NOT_RELEASE_ADMITTED",
-      "release_admission_must_use_this_successor": true,
-      "serving_must_use_this_successor": true
+      "lifecycle_state": "RETIRED_NOT_RELEASE_ADMITTED",
+      "active_successor_stable_id": "QXO_CAPITALISATION_F28_PRODUCT_RESULT_ADAPTER",
+      "active_successor_contract_version": 1,
+      "historical_validation_reference_permitted": true,
+      "release_admission_permitted": false,
+      "serving_permitted": false,
+      "activation_permitted": false
     },
     "source_contract": {
-      "source_release_schema_version": "QXO_CAPITALISATION_CROSS_VIEW_RELEASE_F28/V1",
-      "source_row_schema_version": "CAPITALISATION_SHARED_PROVISION_ROW_F28/V1",
+      "source_release_schema_version": "QXO_CAPITALISATION_CROSS_VIEW_RELEASE_F27/V1",
+      "source_row_schema_version": "CAPITALISATION_SHARED_PROVISION_ROW_F27/V1",
       "source_result_definition_stable_id": "TARGET_CAPITALISATION_BRING_DOWN",
-      "source_result_definition_version": 3,
+      "source_result_definition_version": 2,
       "selected_domain_key": "AGREEMENT",
+      "required_comparison_classes": [
+        "CAPITALISATION_CLAUSE_B_LIMBS_I_III",
+        "CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V"
+      ],
       "required_value_slots": [
         "CAPITALISATION_CLAUSE_B_LIMBS_I_III",
         "CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V",
@@ -27,15 +33,9 @@
         "GENERAL_MATERIALITY_QUALIFIER",
         "RETROSPECTIVE_LOOKBACK"
       ],
-      "required_market_metric_slot_count": 14,
-      "required_market_admission_count": 14,
-      "required_subject_observation_count": 13,
-      "required_typed_exclusion_count": 1,
       "class_aggregation_forbidden": true,
-      "subject_deal_exclusion_required": true,
-      "typed_empty_cohort_required_when_no_independent_comparator_exists": true,
-      "generic_no_market_data_permitted": false,
-      "failed_metric_can_remove_valid_sibling_metric": false
+      "invalid_subrow_isolated_as_typed_failure": true,
+      "valid_sibling_subrows_remain_available": true
     },
     "identity_mapping": {
       "source_field": "qxo_release.provision_row.provision_row_id",
@@ -52,13 +52,11 @@
       "product_payload_digest_derivation": "SHA256_CANONICAL_JSON_UTF8",
       "all_six_subrows_required": true,
       "presentation_order_preserved": true,
-      "all_fourteen_metric_contexts_preserved": true,
-      "raw_and_canonical_metric_values_preserved_in_authoritative_release": true,
-      "party_and_source_lineage_preserved_in_authoritative_release": true,
+      "subrow_source_and_market_context_preserved": true,
       "rewrite_summary_or_tier_label_substitution_permitted": false
     },
     "validation_carrier_contract": {
-      "schema_version": "QXO_CAPITALISATION_F28_PRODUCT_RESULT_ADAPTER_RECEIPT/V1",
+      "schema_version": "QXO_CAPITALISATION_PRODUCT_RESULT_ADAPTER_RECEIPT/V1",
       "required_fields": [
         "schema_version",
         "adapter_receipt_id",
@@ -74,9 +72,10 @@
       "full_qxo_cross_view_release_required": true,
       "full_product_query_result_required": true,
       "qxo_release_and_product_result_canonical_bytes_participate_in_identity": true,
-      "product_domain_validator_stable_id": "QXO_CAPITALISATION_F28_PRODUCT_RESULT_ADAPTER",
+      "product_domain_validator_stable_id": "QXO_CAPITALISATION_PRODUCT_RESULT_ADAPTER",
       "product_domain_validator_version": 1,
       "product_domain_validation_binding_required": true,
+      "product_domain_validation_must_bind_exact_qxo_release": true,
       "digest_only_substitution_that_loses_qxo_lineage_permitted": false,
       "qxo_release_remains_authoritative_for_source_market_and_cross_view_lineage": true,
       "adapter_state": "VALIDATED_NOT_MATERIALISED",
@@ -84,18 +83,26 @@
       "carrier_is_product_result": false,
       "carrier_is_serving_payload": false
     },
-    "citation_and_action_contract": {
-      "source_document_identity_source": "qxo_release.provision_row.document_hash",
+    "citation_and_source_contract": {
+      "source_document_identity_source": "qxo_release.provision_row.subrows[].source.document_hash",
       "source_evidence_identity_source": "qxo_release.provision_row.subrows[].source.evidence_reference_ids",
       "source_exact_detail_source": "qxo_release.provision_row.subrows[].source.exact_detail",
       "all_subrow_source_document_identities_must_match": true,
       "all_subrow_evidence_and_exact_detail_bindings_preserved": true,
+      "product_result_exact_citation_is_release_pinned": true,
+      "product_result_exact_citation_cannot_replace_subrow_exact_detail": true,
+      "source_reader_uses_existing_exact_detail_actions": true,
+      "adapter_can_invent_rewrite_or_summarise_source": false
+    },
+    "action_mapping": {
       "selected_source_action": {
         "stable_id": "RESULT_COMPOSITION_EVIDENCE",
         "version": 1
       },
+      "subrow_actions_preserved_from_qxo_release": true,
+      "selected_source_action_is_product_result_exact_detail_action": true,
       "query_admission_for_selected_source_action_required": true,
-      "adapter_can_invent_rewrite_or_summarise_source": false
+      "adapter_can_collapse_or_relabel_subrow_actions": false
     },
     "cross_view_contract": {
       "required_surfaces": [
@@ -107,8 +114,8 @@
       "all_surfaces_use_exact_same_provision_row_object": true,
       "all_surfaces_use_exact_same_provision_row_identity": true,
       "all_surfaces_use_exact_same_release_identity": true,
-      "market_term_comparison_is_primary": true,
-      "generic_no_market_data_authority": "FORBIDDEN",
+      "prevalence_is_secondary": true,
+      "generic_no_market_data_authority": "NONE",
       "product_wrapper_can_create_second_row_or_source_architecture": false
     },
     "external_input_contract": {
