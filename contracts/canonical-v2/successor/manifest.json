@@ -200,11 +200,32 @@
       "canonical_bytes_digest": "8d4e238673f02686206d8554bfc83971e818fa25c151740ee4b683a793308289"
     },
     {
+      "relative_path": "agreement/market-metric-definitions/ioc-capex-threshold-percent-of-deal-value.v1.json",
+      "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+      "stable_id": "IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE",
+      "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+      "canonical_bytes_digest": "567969eb40a3ce52b2fb01afcf64aa5be496ef34d1da251f5106cb1cc9d33998"
+    },
+    {
       "relative_path": "agreement/market-metric-definitions/knowledge-qualifier-state.v1.json",
       "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
       "stable_id": "KNOWLEDGE_QUALIFIER_STATE",
       "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
       "canonical_bytes_digest": "c93eac1ecc524c93c6527763c4608290d553c7ba7bebae298de23ad61c495e2b"
+    },
+    {
+      "relative_path": "agreement/market-metric-definitions/no-shop-copy-delivery-period-days.v1.json",
+      "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+      "stable_id": "NO_SHOP_COPY_DELIVERY_PERIOD_DAYS",
+      "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+      "canonical_bytes_digest": "86a0d6cf5664f5c0959ec83200ea0f1d5ebd28c13b5234de2d304bc3406d95ac"
+    },
+    {
+      "relative_path": "agreement/market-metric-definitions/no-shop-initial-match-period-days.v1.json",
+      "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+      "stable_id": "NO_SHOP_INITIAL_MATCH_PERIOD_DAYS",
+      "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+      "canonical_bytes_digest": "7102756d1f4da8907b9b8e3cc8ee9adb0e6dfb83c735d7cbc619f71e916909bc"
     },
     {
       "relative_path": "agreement/market-metric-definitions/representation-accuracy-exception-denominator.v1.json",
@@ -239,7 +260,7 @@
       "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
       "stable_id": "REPRESENTATION_MEASUREMENT_DATE_SIGNING_OFFSET",
       "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
-      "canonical_bytes_digest": "8616897b6bfa069a705ec798976274897b5142c5e57c533679f10488acd2c862"
+      "canonical_bytes_digest": "259bb963322e46443405c7c8e1045c6c3d7371ff2b6bad1a60a4dc4c62ed8304"
     },
     {
       "relative_path": "agreement/market-metric-definitions/retrospective-lookback-state.v1.json",
@@ -295,21 +316,21 @@
       "object_kind": "NO_SHOP_SEMANTIC_SCHEMA_INPUT",
       "stable_id": "NO_SHOP_EXCEPTION_EFFECT",
       "schema_version": "NO_SHOP_SEMANTIC_SCHEMA_INPUT/V1",
-      "canonical_bytes_digest": "60074dd8a734be0b33eee400c14e6b3f78854de75295a802c3a494300267d906"
+      "canonical_bytes_digest": "9fddb7e2891051d683fe34af1f942f814e2f5ffae7e6c13585e35f03dfbac3d3"
     },
     {
       "relative_path": "agreement/no-shop-semantic-schema-inputs/no-shop-inline-permission-effect.v1.json",
       "object_kind": "NO_SHOP_SEMANTIC_SCHEMA_INPUT",
       "stable_id": "NO_SHOP_INLINE_PERMISSION_EFFECT",
       "schema_version": "NO_SHOP_SEMANTIC_SCHEMA_INPUT/V1",
-      "canonical_bytes_digest": "b12e73979cb631f14e076e6a27107d88c05dea6de5c0c734b0ba4cfb25e5d18b"
+      "canonical_bytes_digest": "360e1d666b97c5500e6c6ee62bc19c6a4e80c304bfc989b9b1421ec9dc3b94f5"
     },
     {
       "relative_path": "agreement/no-shop-semantic-schema-inputs/no-shop-notice-obligation.v6.json",
       "object_kind": "NO_SHOP_SEMANTIC_SCHEMA_INPUT",
       "stable_id": "NO_SHOP_NOTICE_OBLIGATION",
       "schema_version": "NO_SHOP_SEMANTIC_SCHEMA_INPUT/V1",
-      "canonical_bytes_digest": "9f7d2e76f4eef5bd9f0b270b89512b74341786347c1b607fad531b5815e0155d"
+      "canonical_bytes_digest": "8cfb6c6a259ca8850be423a688dba78723387c292a46fa1738b7baa806d0b647"
     },
     {
       "relative_path": "agreement/parser-proposal-boundary-definitions/parser-v2-structural-definition-proposal.v1.json",
@@ -550,6 +571,20 @@
       "canonical_bytes_digest": "37e6dd3e4a1a1e0e197f399566e07a222a934d8a440610c1874abfc439d33876"
     },
     {
+      "relative_path": "agreement/result-definitions/buyer-initial-match-right.v1.json",
+      "object_kind": "RESULT_DEFINITION_INPUT",
+      "stable_id": "BUYER_INITIAL_MATCH_RIGHT",
+      "schema_version": "RESULT_DEFINITION_INPUT/V1",
+      "canonical_bytes_digest": "f1b6714856a4b654c4db1daaaded89a72f9cf45ef98c35d091042df64ca897f7"
+    },
+    {
+      "relative_path": "agreement/result-definitions/target-capex-restriction.v1.json",
+      "object_kind": "RESULT_DEFINITION_INPUT",
+      "stable_id": "TARGET_CAPEX_RESTRICTION",
+      "schema_version": "RESULT_DEFINITION_INPUT/V1",
+      "canonical_bytes_digest": "c4ff95bc8e8f7ce889a0e46c838fbae8838b68b9c5994145a86dc461a04a21c9"
+    },
+    {
       "relative_path": "agreement/result-definitions/target-capitalisation-bring-down.v3.json",
       "object_kind": "RESULT_DEFINITION_INPUT",
       "stable_id": "TARGET_CAPITALISATION_BRING_DOWN",
@@ -617,7 +652,63 @@
       "object_kind": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
       "stable_id": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
       "schema_version": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY/V1",
-      "canonical_bytes_digest": "53622b9e9360884e1fa3b23cd44a5bb3ccf057c060026f40087f80da54864d9c"
+      "canonical_bytes_digest": "68c2db88aa054ca2b0c7332d2ac7c78e51ab422c02cd7053b12633ed311c879c"
+    },
+    {
+      "relative_path": "governance/residuals/governed-residual-disposition.v1.json",
+      "object_kind": "GOVERNED_RESIDUAL_CONTRACT_INPUT",
+      "stable_id": "GOVERNED_RESIDUAL_DISPOSITION",
+      "schema_version": "GOVERNED_RESIDUAL_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "21d8fffa04ce8249cf45bb4969212fc83f880b459eea5cf35be1998ceb3dc2bc"
+    },
+    {
+      "relative_path": "governance/residuals/governed-residual-impact.v1.json",
+      "object_kind": "GOVERNED_RESIDUAL_CONTRACT_INPUT",
+      "stable_id": "GOVERNED_RESIDUAL_IMPACT",
+      "schema_version": "GOVERNED_RESIDUAL_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "e5cda85ac71084946c858bca7194ca0f04f1889625a40e870594f9a01906309b"
+    },
+    {
+      "relative_path": "governance/residuals/governed-residual-observation.v1.json",
+      "object_kind": "GOVERNED_RESIDUAL_CONTRACT_INPUT",
+      "stable_id": "GOVERNED_RESIDUAL_OBSERVATION",
+      "schema_version": "GOVERNED_RESIDUAL_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "8a10498fa6eb4f2ab80287f89b84037aa7618598e635fd5798d1cbe2bafd7208"
+    },
+    {
+      "relative_path": "governance/residuals/governed-residual-producer-registry.v1.json",
+      "object_kind": "GOVERNED_RESIDUAL_CONTRACT_INPUT",
+      "stable_id": "GOVERNED_RESIDUAL_PRODUCER_REGISTRY",
+      "schema_version": "GOVERNED_RESIDUAL_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "1cebb34e2353f4fd89ca5af61f156f8464c24e75e9e4eebb8bbb7c53b191a6c0"
+    },
+    {
+      "relative_path": "governance/residuals/governed-residual-review-queue.v1.json",
+      "object_kind": "GOVERNED_RESIDUAL_CONTRACT_INPUT",
+      "stable_id": "GOVERNED_RESIDUAL_REVIEW_QUEUE",
+      "schema_version": "GOVERNED_RESIDUAL_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "f8464fa0f87da30f3df8ee7dfcf6f36fba2cd8219369ffadead336b0bd59e086"
+    },
+    {
+      "relative_path": "governance/residuals/governed-residual-universe.v1.json",
+      "object_kind": "GOVERNED_RESIDUAL_CONTRACT_INPUT",
+      "stable_id": "GOVERNED_RESIDUAL_UNIVERSE",
+      "schema_version": "GOVERNED_RESIDUAL_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "cce0dc9f341c93701d2c42e1b49c571e5bca937efb51433395c9e361ef375f8f"
+    },
+    {
+      "relative_path": "governance/residuals/semantic-boundary-admission.v1.json",
+      "object_kind": "GOVERNED_RESIDUAL_CONTRACT_INPUT",
+      "stable_id": "SEMANTIC_BOUNDARY_ADMISSION",
+      "schema_version": "GOVERNED_RESIDUAL_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "e791b550e5bed693f2af72ef02a63b03d145344c52ec48cdb23eeb92eec73773"
+    },
+    {
+      "relative_path": "governance/residuals/semantic-boundary-consumption.v1.json",
+      "object_kind": "GOVERNED_RESIDUAL_CONTRACT_INPUT",
+      "stable_id": "SEMANTIC_BOUNDARY_CONSUMPTION",
+      "schema_version": "GOVERNED_RESIDUAL_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "c18ea720445725a071af62b6ddd8bbd62f6fb70234aed1de12e68489d619ff98"
     },
     {
       "relative_path": "process/actions/process-release-pinned-citation-and-share.v1.json",
@@ -778,7 +869,7 @@
       "object_kind": "PROCESS_PREDICATE_CONTRACT_INPUT",
       "stable_id": "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
       "schema_version": "PROCESS_PREDICATE_CONTRACT_INPUT/V1",
-      "canonical_bytes_digest": "4a63e0036ba8031e3773289966e589eda09467e9cb045e0adce0f404cc31b2e0"
+      "canonical_bytes_digest": "2de217e41b8093a4551ec6ad2cdbc525898fc0f4f12bf15afd27429f26ea74b7"
     },
     {
       "relative_path": "process/predicates/process-predicate-witness.v2.json",
@@ -841,7 +932,7 @@
       "object_kind": "SERVING_PROCESS_CONTRACT_INPUT",
       "stable_id": "BOUNDED_INLINE_PASSAGE_PREVIEW",
       "schema_version": "SERVING_PROCESS_CONTRACT_INPUT/V1",
-      "canonical_bytes_digest": "20e45834a69d8602469bd4affc628fce80570cfe053fbbb2eccf918471643a2b"
+      "canonical_bytes_digest": "f274a04cd44d3c8c58b6a8f758f407ec958227d59bbc957c8222449c5933e81a"
     },
     {
       "relative_path": "process/serving/parent-bound-paragraph-context.v1.json",
@@ -876,7 +967,7 @@
       "object_kind": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT",
       "stable_id": "PROCESS_PHRASEBOOK_PRODUCT_RESULT_ADAPTER",
       "schema_version": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT/V1",
-      "canonical_bytes_digest": "9a1f6f1a8ff7d09f5b6b4606cb56a79998eccb5ec18f2c3a11bc4d4be1cf4480"
+      "canonical_bytes_digest": "2c8c17815b677c1c41d7876a58b3b58fad5f6ace7f5a0cfa73f1b75ea772b8ec"
     },
     {
       "relative_path": "product/query/process-phrasebook-product-result-set-adapter.v1.json",
@@ -898,6 +989,13 @@
       "stable_id": "PRODUCT_QUERY_RESULT_DEFINITION",
       "schema_version": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT/V1",
       "canonical_bytes_digest": "dcd6dc4e942c6ba0345a9d681ff8c91413883a4a256a41f11be29572cbe33f47"
+    },
+    {
+      "relative_path": "product/query/product-query-serving-execution.v1.json",
+      "object_kind": "PRODUCT_SERVING_CONTRACT_INPUT",
+      "stable_id": "PRODUCT_QUERY_SERVING_EXECUTION",
+      "schema_version": "PRODUCT_SERVING_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "6d01f1f121d8133bb8e2d76da7d917616bb4afaa0b424e7b5a62d3ab1a724d13"
     },
     {
       "relative_path": "product/query/product-release-pinned-citation-and-share.v1.json",
@@ -935,25 +1033,32 @@
       "canonical_bytes_digest": "2faa9f2d7ef8ecf89db498445b239e38f95220ecf87eb71f9bd399624006e2f9"
     },
     {
+      "relative_path": "product/query/product-shared-serving-row.v1.json",
+      "object_kind": "PRODUCT_SERVING_CONTRACT_INPUT",
+      "stable_id": "PRODUCT_SHARED_SERVING_ROW",
+      "schema_version": "PRODUCT_SERVING_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "d0b8ddeaac4fd6bf3f40527d14a5d78553e8be198d82788191038a9ab9ccf504"
+    },
+    {
       "relative_path": "product/query/product-source-reader-definition.v1.json",
       "object_kind": "PRODUCT_SOURCE_READER_CONTRACT_INPUT",
       "stable_id": "PRODUCT_SOURCE_READER_DEFINITION",
       "schema_version": "PRODUCT_SOURCE_READER_CONTRACT_INPUT/V1",
-      "canonical_bytes_digest": "22a40fa26888d776335ee4fe110f41bbf34f50ae6e6d62c41c6143922dd3d7af"
+      "canonical_bytes_digest": "382c9d67f472f917a1a158c061509fcd13f157e83db6096e4f7d09a58bb028c0"
     },
     {
       "relative_path": "product/query/qxo-capitalisation-f28-product-result-adapter.v1.json",
       "object_kind": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT",
       "stable_id": "QXO_CAPITALISATION_F28_PRODUCT_RESULT_ADAPTER",
       "schema_version": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT/V1",
-      "canonical_bytes_digest": "31acc78b535914cd54f6bbb1c3a9037bfa929dc507366775fdad00148efeb607"
+      "canonical_bytes_digest": "5fe3caa6723dc1f46d7521816dc20dcf36bd21a8f473830bf0b5526fb71ceed3"
     },
     {
       "relative_path": "product/query/qxo-capitalisation-product-result-adapter.v1.json",
       "object_kind": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT",
       "stable_id": "QXO_CAPITALISATION_PRODUCT_RESULT_ADAPTER",
       "schema_version": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT/V1",
-      "canonical_bytes_digest": "b5e8876762dc11d8bf993fdc3e24623b59a4f3cb914193cbae1e4d305fd1f709"
+      "canonical_bytes_digest": "6fa210143283c48fc2d2c64cec47fc9bf2d2cb69ad92eedc1b2ff307b6169f8a"
     },
     {
       "relative_path": "shared/deal-facts/deal-fact-resolution-occurrence.v1.json",
@@ -1085,7 +1190,8 @@
     "CLAIM_INTERPRETATION_POLICY": 1,
     "CLAIM_STATE_CODEBOOK_MIGRATION_INPUT": 1,
     "COMPONENT_DEFINITION": 9,
-    "MARKET_METRIC_DEFINITION_INPUT": 9,
+    "GOVERNED_RESIDUAL_CONTRACT_INPUT": 8,
+    "MARKET_METRIC_DEFINITION_INPUT": 12,
     "MONEY_DENOMINATOR_PRECISION_POLICY": 1,
     "NO_SHOP_SEMANTIC_SCHEMA_INPUT": 5,
     "PARSER_PROPOSAL_BOUNDARY_DEFINITION": 1,
@@ -1107,12 +1213,13 @@
     "PRODUCT_QUERY_RESULT_CONTRACT_INPUT": 5,
     "PRODUCT_RESULT_ACTION_CONTRACT_INPUT": 2,
     "PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT": 1,
+    "PRODUCT_SERVING_CONTRACT_INPUT": 2,
     "PRODUCT_SOURCE_READER_CONTRACT_INPUT": 1,
     "PROVISION_CONCEPT": 19,
     "RELATIONSHIP_DEFINITION": 5,
     "RELATIONSHIP_EFFECT_SCHEMA": 5,
     "RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT": 1,
-    "RESULT_DEFINITION_INPUT": 1,
+    "RESULT_DEFINITION_INPUT": 3,
     "SERVING_EXACT_DETAIL_ACTION_DEFINITION": 5,
     "SERVING_METRIC_OPERATION_BINDING_INPUT": 2,
     "SERVING_PROCESS_CONTRACT_INPUT": 5,
@@ -1148,6 +1255,9 @@
     ],
     "COMPONENT_DEFINITION": [
       "COMPONENT_DEFINITION/V1"
+    ],
+    "GOVERNED_RESIDUAL_CONTRACT_INPUT": [
+      "GOVERNED_RESIDUAL_CONTRACT_INPUT/V1"
     ],
     "MARKET_METRIC_DEFINITION_INPUT": [
       "MARKET_METRIC_DEFINITION_INPUT/V1"
@@ -1214,6 +1324,9 @@
     ],
     "PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT": [
       "PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT/V1"
+    ],
+    "PRODUCT_SERVING_CONTRACT_INPUT": [
+      "PRODUCT_SERVING_CONTRACT_INPUT/V1"
     ],
     "PRODUCT_SOURCE_READER_CONTRACT_INPUT": [
       "PRODUCT_SOURCE_READER_CONTRACT_INPUT/V1"

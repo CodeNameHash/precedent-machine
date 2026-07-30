@@ -76,9 +76,17 @@
       ]
     },
     {
+      "object_kind": "GOVERNED_RESIDUAL_CONTRACT_INPUT",
+      "minimum_count": 8,
+      "maximum_count": 8,
+      "allowed_schema_versions": [
+        "GOVERNED_RESIDUAL_CONTRACT_INPUT/V1"
+      ]
+    },
+    {
       "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
-      "minimum_count": 9,
-      "maximum_count": 9,
+      "minimum_count": 12,
+      "maximum_count": 12,
       "allowed_schema_versions": [
         "MARKET_METRIC_DEFINITION_INPUT/V1"
       ]
@@ -252,6 +260,14 @@
       ]
     },
     {
+      "object_kind": "PRODUCT_SERVING_CONTRACT_INPUT",
+      "minimum_count": 2,
+      "maximum_count": 2,
+      "allowed_schema_versions": [
+        "PRODUCT_SERVING_CONTRACT_INPUT/V1"
+      ]
+    },
+    {
       "object_kind": "PRODUCT_SOURCE_READER_CONTRACT_INPUT",
       "minimum_count": 1,
       "maximum_count": 1,
@@ -293,8 +309,8 @@
     },
     {
       "object_kind": "RESULT_DEFINITION_INPUT",
-      "minimum_count": 1,
-      "maximum_count": 1,
+      "minimum_count": 3,
+      "maximum_count": 3,
       "allowed_schema_versions": [
         "RESULT_DEFINITION_INPUT/V1"
       ]
