@@ -65,12 +65,16 @@
     ".github/phase-allowlists/wp-p0-executable-digest-reconciliation-v1.json",
     ".github/phase-allowlists/wp-p1-contract-freeze-review-controller-v1.json",
     ".github/phase-allowlists/wp-p1-contract-freeze-review-registration-v1.json",
+    ".github/phase-allowlists/wp-p1-review-controller-domain-authority-v1.json",
+    ".github/phase-allowlists/wp-p1-review-controller-specification-root-v1.json",
+    ".github/phase-allowlists/wp-p1-review-controller-test-digest-reconciliation-v1.json",
     ".github/phase-allowlists/wp-pi-spark-premerge-review-v1.json",
     ".github/phase-allowlists/wp-pilot-freeze-evidence-integration-v1.json",
     ".github/phase-allowlists/wp-pilot-freeze-pi-integration-v1.json",
     ".github/phase-allowlists/wp-pilot-freeze-release-review-high-v1.json",
     ".github/phase-allowlists/wp-pilot-freeze-root-regeneration-v1.json",
     ".github/phase-allowlists/wp-pilot-freeze-shared-consumer-v2.json",
+    ".github/phase-allowlists/wp-pilot-freeze-signer-path-closure-v1.json",
     ".github/phase-allowlists/wp-pilot-freeze-test-reconciliation-v1.json",
     ".github/phase-allowlists/wp-pilot-integration-preflight-evidence-v1.json",
     ".github/phase-allowlists/wp-pilot-integration-state-preflight-v1.json",
@@ -255,6 +259,7 @@
     "scripts/generate-programme-current-state.mjs",
     "scripts/pilot-integration-preflight.mjs",
     "scripts/run-p1-contract-freeze-reviews.mjs",
+    "scripts/sign-g0-evidence.mjs",
     "scripts/verify-codex-program-spec.mjs",
     "tests/canonical-v2-agreement-navigation-contract-input.test.js",
     "tests/canonical-v2-agreement-representation-predicate-contract-input.test.js",
@@ -332,7 +337,6 @@
   "machine_derived_blockers": [
     "DEPLOYMENT_METADATA_REQUIRED",
     "FORMAL_FREEZE_COMPILATION_REQUIRED",
-    "SIGNER_PATH_COVERAGE_REQUIRED",
     "TEST_RECEIPTS_REQUIRED"
   ]
 }

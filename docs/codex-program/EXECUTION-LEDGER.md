@@ -86,8 +86,7 @@ The exact reserved-path set is machine-generated in
 | `PM-PREFLIGHT-01` | control | Read-only nine-stage integration preflight. PM controller. | Current milestone through `b095d1e6070cfc1038f2246c85e1d1c5251c654c`; `pilot-integration-preflight.*`. | `canonical_work_start`; 20/20 focused pass; independent exact-bound review pass. | `COMPLETE`; run after combined candidate exists; no Ben. |
 
 Current machine blockers are `DEPLOYMENT_METADATA_REQUIRED`,
-`FORMAL_FREEZE_COMPILATION_REQUIRED`, `SIGNER_PATH_COVERAGE_REQUIRED` and
-`TEST_RECEIPTS_REQUIRED`.
+`FORMAL_FREEZE_COMPILATION_REQUIRED` and `TEST_RECEIPTS_REQUIRED`.
 Current PM focused evidence also includes 49/49 predecessor-source-anchor tests
 and 8/8 sealed-Metsera-gold tests. These are not Stage 4 or freeze evidence.
 
@@ -102,13 +101,13 @@ and 8/8 sealed-Metsera-gold tests. These are not Stage 4 or freeze evidence.
 4. Compile the complete Agreement, shared and Process inputs twice without
    cache. Require identical canonical bytes and fingerprint.
 5. Run the affected-chain tests. Then run the complete suite and build once.
-6. Run the nine-stage preflight. Close signer coverage, test receipt and exact
-   deployment metadata gaps.
-7. Move `main` once, deploy the exact commit once to production and isolated
-    Preview, and retain containment.
-8. `Stage 4`: run architecture/identity, legal-semantic, and query/release
+6. Run the nine-stage preflight. Close test receipt gaps. Deployment metadata
+   stays pending until the approved exact commit is deployed.
+7. `Stage 4`: run architecture/identity, legal-semantic, and query/release
     reviews concurrently at high reasoning against the same exact root.
-9. Prepare the one Ben bundle approval package while Stage 4 runs.
+8. Prepare the one Ben bundle approval package while Stage 4 runs.
+9. After approval, move `main` once, deploy the exact commit once to production
+   and isolated Preview, retain containment, and publish the signed successor.
 
 ## 4. Remaining bounded units through P11
 
@@ -130,7 +129,7 @@ and 8/8 sealed-Metsera-gold tests. These are not Stage 4 or freeze evidence.
 
 | Unit | Phase | Outcome and owner | Boundary | Class; dependencies; tests | Status; next action; Ben |
 | --- | --- | --- | --- | --- | --- |
-| `P8-INTEGRATION-01` | P8 | One combined, deployable milestone commit. PM controller. | `codex/pilot-freeze-milestone-v1`; exact union of accepted allowlists in `.github/phase-allowlists/`. | `canonical_work_start`; P1-P7 closure; Stage 2/3 records, full suite, build and preflight. | `ACTIVE`; close P7/P8 findings and Stage 5 evidence; no Ben. |
+| `P8-INTEGRATION-01` | P8 | One combined, deployable milestone commit. PM controller. | `codex/pilot-freeze-milestone-v1`; exact union of accepted allowlists in `.github/phase-allowlists/`. | `canonical_work_start`; P1-P7 closure; Stage 2/3 records, full suite, build and preflight. | `ACTIVE`; signer inventory is closed; run final Stage 5 evidence; no Ben. |
 | `P8-BUNDLE-02` | P8 | Deterministic Agreement, shared and Process root. PM implementation. | `canonical-contract-bundle-{compiler,freeze-candidate-assembler,pre-review-package-assembler}.js`, required-kind registry, manifest and tests. | `canonical_work_start`; P8 candidate; two identical uncached compiles and zero structural defects. | `ACTIVE`; compile at final clean head; no Ben. |
 | `P8-REVIEWS-03` | P8 | Three independent reviews of exact bytes. Independent reviewer. | `contract-freeze-review-tasks.js`, `run-p1-contract-freeze-reviews.mjs`, immutable external result files and exact package fingerprint. | `canonical_work_start`; P8 bundle; Stage 4 architecture/identity, legal-semantic and query/release reviews at high. | `ACTIVE`; harden controller, then run concurrently after fingerprint exists; no Ben. |
 | `P8-BEN-FREEZE-04` | P8 | Approval of exact bundle and fingerprint. Ben. | External approval record bound to the pre-review package, review results and exact Git commit. | Reserved Ben decision; P8 reviews all pass. | `BLOCKED`; ask once when package is complete; **Ben required**. |
