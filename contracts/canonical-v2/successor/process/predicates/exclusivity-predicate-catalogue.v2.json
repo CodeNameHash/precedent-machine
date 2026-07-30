@@ -1,0 +1,304 @@
+{
+  "object_kind": "PROCESS_PREDICATE_CONTRACT_INPUT",
+  "stable_id": "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
+  "schema_version": "PROCESS_PREDICATE_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "topic_key": "EXCLUSIVITY",
+    "catalogue_version": 2,
+    "predecessor_contract": {
+      "stable_id": "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
+      "schema_version": "PROCESS_PREDICATE_CONTRACT_INPUT/V1",
+      "catalogue_version": 1,
+      "definition_digest": "sha256:a75fde64f61ac5d0d6b40034c1c206a3560ec20221db23d9a0cc677ed54f0360"
+    },
+    "ordinary_question_contract": {
+      "question_definition_mode": "ONE_GOVERNED_QUESTION_PER_PREDICATE",
+      "mandatory_predicate_keys": [
+        "EXCLUSIVITY_REQUESTED",
+        "EXCLUSIVITY_SUBJECT",
+        "EXCLUSIVITY_REQUESTER",
+        "EXCLUSIVITY_RECIPIENT",
+        "EXCLUSIVITY_EXPRESS_REFUSAL",
+        "EXCLUSIVITY_COUNTERPROPOSAL",
+        "EXCLUSIVITY_CONDITIONAL_ACCEPTANCE",
+        "EXCLUSIVITY_RESPONSE_ANY",
+        "EXCLUSIVITY_GRANTED",
+        "EXCLUSIVITY_GRANTOR",
+        "EXCLUSIVITY_BENEFICIARY",
+        "EXCLUSIVITY_START",
+        "EXCLUSIVITY_END",
+        "EXCLUSIVITY_DURATION",
+        "EXCLUSIVITY_EXTENSION",
+        "EXCLUSIVITY_AMENDMENT",
+        "EXCLUSIVITY_WAIVER",
+        "EXCLUSIVITY_EXPIRY",
+        "EXCLUSIVITY_RATIONALE",
+        "EXCLUSIVITY_CONDITION",
+        "EXCLUSIVITY_BIDDER_TRACK",
+        "EXCLUSIVITY_RESPONSE_RELATIONSHIP",
+        "EXCLUSIVITY_ACTUAL_DRAFTING",
+        "EXCLUSIVITY_BOUND_ACTOR_SCOPE",
+        "EXCLUSIVITY_CONDUCT_LINKAGE_STANDARD",
+        "EXCLUSIVITY_RESTRICTED_ACTION",
+        "EXCLUSIVITY_SHUTDOWN_OBLIGATION",
+        "EXCLUSIVITY_STANDSTILL_TREATMENT",
+        "EXCLUSIVITY_NOTICE_REQUIREMENT",
+        "EXCLUSIVITY_NOTICE_CONTENT",
+        "EXCLUSIVITY_QUALIFYING_PROPOSAL_STANDARD",
+        "EXCLUSIVITY_BIDDER_PARTICIPANT_SCOPE",
+        "EXCLUSIVITY_RECOMMENDATION_CHANGE",
+        "EXCLUSIVITY_TENDER_OFFER_RESPONSE",
+        "EXCLUSIVITY_INTERVENING_EVENT_EXCEPTION",
+        "EXCLUSIVITY_SUPERIOR_PROPOSAL_TERMINATION",
+        "EXCLUSIVITY_ALTERNATIVE_TRANSACTION_FEE",
+        "EXCLUSIVITY_PUBLIC_DISCLOSURE",
+        "EXCLUSIVITY_GOVERNING_DOCUMENT",
+        "EXCLUSIVITY_REMEDY",
+        "EXCLUSIVITY_COUNTERPARTY_RESPONSE_EFFECT"
+      ],
+      "question_text_is_identity": false,
+      "natural_language_maps_only_to_governed_predicates": true,
+      "query_ir_definition_required_before_serving": true,
+      "unknown_question_has_runtime_path": false
+    },
+    "successor_predicate_definition_contract": {
+      "definition_grain": "PREDICATE_KEY_AND_VERSION",
+      "preserved_predecessor_predicate_count": 23,
+      "new_successor_predicate_count": 18,
+      "total_mandatory_predicate_count": 41,
+      "definitions": [
+        {
+          "predicate_key": "EXCLUSIVITY_BOUND_ACTOR_SCOPE",
+          "predicate_version": 1,
+          "exact_semantic_requirement": "Govern every entity and representative category bound by the exclusivity covenant, plus the control, direction or efforts standard used to cause compliance."
+        },
+        {
+          "predicate_key": "EXCLUSIVITY_CONDUCT_LINKAGE_STANDARD",
+          "predicate_version": 1,
+          "exact_semantic_requirement": "Govern whether restricted conduct is direct or indirect, alone, jointly or through another person, including each knowledge, intent and materiality qualifier."
+        },
+        {
+          "predicate_key": "EXCLUSIVITY_RESTRICTED_ACTION",
+          "predicate_version": 1,
+          "exact_semantic_requirement": "Govern each action that the exclusivity covenant permits or prohibits, with exact action code, polarity, actor, subject, bidder track, qualifier, condition and source passage."
+        },
+        {
+          "predicate_key": "EXCLUSIVITY_SHUTDOWN_OBLIGATION",
+          "predicate_version": 1,
+          "exact_semantic_requirement": "Govern each affirmative duty to stop an existing process, including communications, negotiations, information access, data-room access and information return or destruction."
+        },
+        {
+          "predicate_key": "EXCLUSIVITY_STANDSTILL_TREATMENT",
+          "predicate_version": 1,
+          "exact_semantic_requirement": "Govern standstill and similar restrictions, including whether addressed and whether release, waiver or amendment is permitted, required or prohibited, with decision-maker, consent, notice, timing and scope."
+        },
+        {
+          "predicate_key": "EXCLUSIVITY_NOTICE_REQUIREMENT",
+          "predicate_version": 1,
+          "exact_semantic_requirement": "Govern each exclusivity notice duty with its trigger, recipient, deadline, measuring event, form and recordkeeping requirement."
+        },
+        {
+          "predicate_key": "EXCLUSIVITY_NOTICE_CONTENT",
+          "predicate_version": 1,
+          "exact_semantic_requirement": "Govern the content and continuing-update duties for exclusivity notices, including bidder identity, material terms, documents, correspondence, amendments and matching-process information."
+        },
+        {
+          "predicate_key": "EXCLUSIVITY_QUALIFYING_PROPOSAL_STANDARD",
+          "predicate_version": 1,
+          "exact_semantic_requirement": "Govern the superior-proposal or comparable qualifying-bid test, including bona fides, form, transaction threshold, financial comparison, non-financial factors and comparison adjustments."
+        },
+        {
+          "predicate_key": "EXCLUSIVITY_BIDDER_PARTICIPANT_SCOPE",
+          "predicate_version": 1,
+          "exact_semantic_requirement": "Govern the bidder-side people and entities included in permitted or restricted contact, including representatives, financing sources, affiliates, funds, co-investors and groups."
+        },
+        {
+          "predicate_key": "EXCLUSIVITY_RECOMMENDATION_CHANGE",
+          "predicate_version": 1,
+          "exact_semantic_requirement": "Govern each restricted or permitted board recommendation change, including withdrawal, qualification, failure to reaffirm, endorsement, disclosure and applicable exception process."
+        },
+        {
+          "predicate_key": "EXCLUSIVITY_TENDER_OFFER_RESPONSE",
+          "predicate_version": 1,
+          "exact_semantic_requirement": "Govern the special contractual response to a tender offer or exchange offer, including trigger, permitted or required response, deadline and contractual treatment."
+        },
+        {
+          "predicate_key": "EXCLUSIVITY_INTERVENING_EVENT_EXCEPTION",
+          "predicate_version": 1,
+          "exact_semantic_requirement": "Govern an intervening-event exception, including definition, exclusions, board and legal findings, notice and matching consequences."
+        },
+        {
+          "predicate_key": "EXCLUSIVITY_SUPERIOR_PROPOSAL_TERMINATION",
+          "predicate_version": 1,
+          "exact_semantic_requirement": "Govern termination of the signed agreement for a superior proposal, including availability, board finding, notice, matching completion, fee payment and concurrent alternative agreement."
+        },
+        {
+          "predicate_key": "EXCLUSIVITY_ALTERNATIVE_TRANSACTION_FEE",
+          "predicate_version": 1,
+          "exact_semantic_requirement": "Govern each fee or payment tied to an alternative transaction or exclusivity outcome, including amount or formula, trigger, payer, payee, timing, method and bidder-category variation."
+        },
+        {
+          "predicate_key": "EXCLUSIVITY_PUBLIC_DISCLOSURE",
+          "predicate_version": 1,
+          "exact_semantic_requirement": "Govern required and permitted public disclosure about competing approaches or board action, including consultation, notice and legal-requirement limits."
+        },
+        {
+          "predicate_key": "EXCLUSIVITY_GOVERNING_DOCUMENT",
+          "predicate_version": 1,
+          "exact_semantic_requirement": "Govern the agreement, section, party relationship, incorporated document and priority or conflict rule that controls the exclusivity answer."
+        },
+        {
+          "predicate_key": "EXCLUSIVITY_REMEDY",
+          "predicate_version": 1,
+          "exact_semantic_requirement": "Govern the remedy for breach of exclusivity, including specific performance, injunction, damages, fees, limitations, forum, governing law and dispute process."
+        },
+        {
+          "predicate_key": "EXCLUSIVITY_COUNTERPARTY_RESPONSE_EFFECT",
+          "predicate_version": 1,
+          "exact_semantic_requirement": "Govern the downstream contractual effect of counterparty action, inaction or refusal while preserving express refusal as distinct from silence or absence of a recorded response."
+        }
+      ],
+      "definitions_are_closed": true,
+      "unknown_predicate_has_runtime_path": false,
+      "near_key_mapping_permitted": false,
+      "labels_can_create_predicate_keys": false,
+      "new_definition_requires_successor_catalogue": true
+    },
+    "reconciliation_evidence_contract": {
+      "reconciliation_path": "evidence/process-intelligence/freeze/exclusivity-question-reconciliation.v1.json",
+      "reconciliation_stable_id": "PROCESS_EXCLUSIVITY_QUESTION_RECONCILIATION/V1",
+      "reconciliation_schema_version": "PROCESS_EXCLUSIVITY_QUESTION_RECONCILIATION/V1",
+      "reconciliation_deterministic_content_digest": "sha256:a038cc96cdd1db83a0b33ca1de165969c132f1f90261d12a6f927386316686af",
+      "independence_evidence_path": "evidence/process-intelligence/freeze/exclusivity-reconciliation-independence.v1.json",
+      "independence_evidence_stable_id": "PROCESS_EXCLUSIVITY_RECONCILIATION_INDEPENDENCE_EVIDENCE/V1",
+      "independence_evidence_schema_version": "PROCESS_EXCLUSIVITY_RECONCILIATION_INDEPENDENCE_EVIDENCE/V1",
+      "independence_evidence_deterministic_content_digest": "sha256:d423487adb7d481539aa22c5682727e42a198b2531d4f8801147982a9129d8ec",
+      "fixed_main_commit": "a3149cfb6434f3166aac2c3bd9631e637d5df8ae",
+      "ordinary_predicates_reconciled": 23,
+      "challenge_questions_reconciled": 48,
+      "challenge_answer_slots_reconciled": 190,
+      "matched_existing_answer_slots": 104,
+      "new_predicate_answer_slots": 86,
+      "required_new_predicate_count": 18,
+      "all_reconciled_gap_definitions_incorporated": true,
+      "evidence_binding_can_create_runtime_or_freeze_authority": false
+    },
+    "subject_contract": {
+      "initial_subject_codes": [
+        "NEGOTIATION_EXCLUSIVITY",
+        "TRANSACTION_EXCLUSIVITY",
+        "EXCLUSIVE_DILIGENCE",
+        "EXCLUSIVE_DATA_ACCESS"
+      ],
+      "subject_is_required_for_request_response_and_grant": true,
+      "subject_is_preserved_in_union_results": true,
+      "exclusive_data_access_can_become_negotiation_exclusivity": false,
+      "free_text_can_create_subject_code": false,
+      "new_subject_requires_successor_registry_member": true
+    },
+    "response_contract": {
+      "atomic_response_predicate_keys": [
+        "EXCLUSIVITY_EXPRESS_REFUSAL",
+        "EXCLUSIVITY_COUNTERPROPOSAL",
+        "EXCLUSIVITY_CONDITIONAL_ACCEPTANCE",
+        "EXCLUSIVITY_GRANTED"
+      ],
+      "generic_union_predicate_key": "EXCLUSIVITY_RESPONSE_ANY",
+      "union_requires_admitted_atomic_constituent": true,
+      "union_preserves_constituent_predicate_key": true,
+      "union_preserves_exact_subject_and_response_state": true,
+      "request_can_satisfy_grant": false,
+      "shortened_term_can_become_express_refusal": false,
+      "conditional_response_can_become_express_refusal": false,
+      "silence_can_become_express_refusal": false,
+      "no_recorded_grant_can_become_express_refusal": false
+    },
+    "participant_role_contract": {
+      "required_role_predicate_keys": [
+        "EXCLUSIVITY_REQUESTER",
+        "EXCLUSIVITY_RECIPIENT",
+        "EXCLUSIVITY_GRANTOR",
+        "EXCLUSIVITY_BENEFICIARY"
+      ],
+      "consumed_logical_type": "ProcessParticipant",
+      "consumed_definition_stable_id": "PROCESS_PARTICIPANT",
+      "exact_role_and_entity_evidence_required": true,
+      "same_frozen_contract_pair_required": true,
+      "same_governed_deal_required": true,
+      "generic_acquirer_side_can_supply_beneficiary": false,
+      "party_name_can_supply_participant_identity": false
+    },
+    "temporal_contract": {
+      "temporal_predicate_keys": [
+        "EXCLUSIVITY_START",
+        "EXCLUSIVITY_END",
+        "EXCLUSIVITY_DURATION",
+        "EXCLUSIVITY_EXTENSION",
+        "EXCLUSIVITY_AMENDMENT",
+        "EXCLUSIVITY_WAIVER",
+        "EXCLUSIVITY_EXPIRY"
+      ],
+      "consumed_shared_logical_type": "TemporalExpression",
+      "shared_definition_stable_id": "TEMPORAL_EXPRESSION",
+      "exact_source_formulation_required": true,
+      "business_days_can_become_elapsed_days_without_admitted_node": false,
+      "calendar_and_anchor_lineage_required_for_computed_value": true,
+      "date_inheritance_by_same_day_or_paragraph_proximity_permitted": false,
+      "unsupported_structure_is_unresolved_not_normalised": true
+    },
+    "context_contract": {
+      "bidder_track_predicate_key": "EXCLUSIVITY_BIDDER_TRACK",
+      "bidder_track_definition_stable_id": "BIDDER_TRACK",
+      "response_relationship_predicate_key": "EXCLUSIVITY_RESPONSE_RELATIONSHIP",
+      "relationship_definition_stable_id": "PROCESS_RELATIONSHIP",
+      "rationale_predicate_key": "EXCLUSIVITY_RATIONALE",
+      "condition_predicate_key": "EXCLUSIVITY_CONDITION",
+      "actual_drafting_predicate_key": "EXCLUSIVITY_ACTUAL_DRAFTING",
+      "actual_drafting_definition_stable_id": "PROCESS_PASSAGE",
+      "actual_drafting_cannot_be_replaced_by_summary": true,
+      "each_context_value_requires_its_own_evidence": true,
+      "bidder_tracks_cannot_be_mixed": true
+    },
+    "state_and_absence_contract": {
+      "allowed_states": [
+        "PRESENT",
+        "ABSENT",
+        "NOT_APPLICABLE",
+        "NOT_EXAMINED",
+        "FAILED"
+      ],
+      "express_negative_requires_exact_positive_witness": true,
+      "absent_requires_complete_governed_scope_and_evidence": true,
+      "declined_by_omission_is_in_release_one": false,
+      "no_recorded_grant_predicate_is_in_release_one": false,
+      "unknown_or_unsupported_state_is_preserved_as_unresolved": true
+    },
+    "predicate_admission_contract": {
+      "admission_grain": "PREDICATE_KEY_AND_VERSION",
+      "predicate_admission_is_independent": true,
+      "passing_predicate_can_admit_failing_sibling": false,
+      "mandatory_release_requires_all_predicates_admitted": true,
+      "failed_mandatory_predicate_can_be_removed": false,
+      "filter_or_browse_entry_requires_exact_predicate_admission": true,
+      "release_identity_required": true,
+      "unknown_predicate_has_runtime_path": false
+    },
+    "completeness_challenge_contract": {
+      "independent_challenge_catalogue_required_before_freeze": true,
+      "this_catalogue_satisfies_independent_challenge": false,
+      "full_question_contract_reconciliation_required": true,
+      "predecessor_reconciliation_incorporated": true,
+      "successor_reconciliation_required_before_freeze": true,
+      "unreconciled_question_blocks_contract_freeze": true
+    },
+    "authority_contract": {
+      "creates_runtime_predicate": false,
+      "creates_extraction_authority": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}
