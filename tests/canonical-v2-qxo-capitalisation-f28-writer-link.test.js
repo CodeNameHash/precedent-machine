@@ -14,6 +14,7 @@ const {
 } = require('../lib/canonical-v2/reviewed-qxo-capitalisation-f27');
 const {
   buildF27Inputs,
+  buildWriterAdmittedSourceContext,
 } = require('./fixtures/canonical-v2/qxo-capitalisation-f27-inputs');
 
 function clone(value) {
@@ -21,38 +22,7 @@ function clone(value) {
 }
 
 function admittedFixtureContext() {
-  const source = buildF27Inputs().sourceContext;
-  const occurrenceKey = contentId('ADMITTED_SOURCE_OCCURRENCE_KEY/V1', {
-    deal_admission_id: source.deal_admission_id,
-    source_ordinal: source.source_ordinal,
-    immutable_source_document_id: source.immutable_source_document_id,
-  });
-  const occurrenceId = contentId('SOURCE_OCCURRENCE/V1', {
-    source_content_id: source.source_content_id,
-    source_occurrence_key: occurrenceKey,
-  });
-  const body = {
-    ...source,
-    source_occurrence_key: occurrenceKey,
-    source_occurrence_id: occurrenceId,
-    converter_digest: contentId('QXO_F28_WRITER_LINK_TEST/V1', 'converter'),
-    converter_config_digest: contentId('QXO_F28_WRITER_LINK_TEST/V1', 'converter-config'),
-    source_map_encoding: 'DEFLATE_RAW_CANONICAL_JSON_TUPLES/V1',
-    source_map_compressed_sha256: contentId('QXO_F28_WRITER_LINK_TEST/V1', 'source-map-compressed'),
-    source_map_uncompressed_byte_length: 1,
-    input_region_count: 1,
-    output_mapping_count: 1,
-    source_map_digest: contentId('QXO_F28_WRITER_LINK_TEST/V1', 'source-map'),
-    verification_manifest_id: contentId('QXO_F28_WRITER_LINK_TEST/V1', 'verification'),
-  };
-  delete body.admitted_semantic_source_context_id;
-  return Object.freeze({
-    ...body,
-    admitted_semantic_source_context_id: contentId(
-      'ADMITTED_SEMANTIC_SOURCE_CONTEXT/V1',
-      body,
-    ),
-  });
+  return buildWriterAdmittedSourceContext();
 }
 
 function inputs() {

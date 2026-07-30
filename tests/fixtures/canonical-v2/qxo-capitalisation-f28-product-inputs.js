@@ -28,6 +28,7 @@ const {
 } = require('../../../lib/canonical-v2/qxo-capitalisation-f28-product-result-adapter');
 const {
   buildF27Inputs,
+  buildWriterAdmittedSourceContext,
 } = require('./qxo-capitalisation-f27-inputs');
 
 function id(label) {
@@ -264,10 +265,15 @@ function admissionReceipt(ir, result, fields, state = 'PASS') {
 
 function buildF28ProductInputs(options = {}) {
   const inputs = buildF27Inputs();
-  const reviewedGraph = buildQxoReviewedCapitalisationF28(inputs);
+  const sourceContext = buildWriterAdmittedSourceContext();
+  const admittedInputs = {
+    ...inputs,
+    sourceContext,
+  };
+  const reviewedGraph = buildQxoReviewedCapitalisationF28(admittedInputs);
   const release = buildQxoCapitalisationCrossViewReleaseF28({
     reviewedGraph,
-    ...inputs,
+    ...admittedInputs,
   });
   const ir = buildProductQueryIr(release, options);
   const fields = resultFields();
@@ -275,7 +281,7 @@ function buildF28ProductInputs(options = {}) {
   return {
     qxo_cross_view_release: release,
     reviewed_graph: reviewedGraph,
-    source_context: inputs.sourceContext,
+    source_context: sourceContext,
     parser_source_closure: inputs.parserSourceClosure,
     contract_bundle: inputs.contractBundle,
     product_query_ir: ir,

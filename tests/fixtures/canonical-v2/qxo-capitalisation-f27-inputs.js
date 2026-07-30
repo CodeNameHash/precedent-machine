@@ -80,6 +80,43 @@ function buildSourceContext() {
   });
 }
 
+function buildWriterAdmittedSourceContext() {
+  const source = buildSourceContext();
+  const sourceOccurrenceKey = contentId(
+    'ADMITTED_SOURCE_OCCURRENCE_KEY/V1',
+    {
+      deal_admission_id: source.deal_admission_id,
+      source_ordinal: source.source_ordinal,
+      immutable_source_document_id: source.immutable_source_document_id,
+    },
+  );
+  const body = {
+    ...source,
+    source_occurrence_key: sourceOccurrenceKey,
+    source_occurrence_id: contentId('SOURCE_OCCURRENCE/V1', {
+      source_content_id: source.source_content_id,
+      source_occurrence_key: sourceOccurrenceKey,
+    }),
+    converter_digest: digest('writer-converter'),
+    converter_config_digest: digest('writer-converter-config'),
+    source_map_encoding: 'DEFLATE_RAW_CANONICAL_JSON_TUPLES/V1',
+    source_map_compressed_sha256: digest('writer-source-map-compressed'),
+    source_map_uncompressed_byte_length: 1,
+    input_region_count: 1,
+    output_mapping_count: 1,
+    source_map_digest: digest('writer-source-map'),
+    verification_manifest_id: digest('writer-verification'),
+  };
+  delete body.admitted_semantic_source_context_id;
+  return Object.freeze({
+    ...body,
+    admitted_semantic_source_context_id: contentId(
+      'ADMITTED_SEMANTIC_SOURCE_CONTEXT/V1',
+      body,
+    ),
+  });
+}
+
 function buildF27Inputs() {
   return Object.freeze({
     sourceContext: buildSourceContext(),
@@ -95,6 +132,7 @@ function buildF27Inputs() {
 module.exports = {
   buildF27Inputs,
   buildSourceContext,
+  buildWriterAdmittedSourceContext,
   capitalStructureText,
   preambleText,
 };
