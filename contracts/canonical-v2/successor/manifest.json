@@ -739,6 +739,13 @@
       "canonical_bytes_digest": "9a1f6f1a8ff7d09f5b6b4606cb56a79998eccb5ec18f2c3a11bc4d4be1cf4480"
     },
     {
+      "relative_path": "product/query/process-phrasebook-product-result-set-adapter.v1.json",
+      "object_kind": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT",
+      "stable_id": "PROCESS_PHRASEBOOK_PRODUCT_RESULT_SET_ADAPTER",
+      "schema_version": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "6b05e7d2f070455d0b1dd12b573681e0e9406fbb2388812e9c382f6eb011e92a"
+    },
+    {
       "relative_path": "product/query/product-query-ir.v1.json",
       "object_kind": "PRODUCT_QUERY_CONTRACT_INPUT",
       "stable_id": "PRODUCT_QUERY_IR",
@@ -929,7 +936,7 @@
     "PROCESS_RESULT_ACTION_CONTRACT_INPUT": 4,
     "PRODUCT_QUERY_ACTION_CONTRACT_INPUT": 2,
     "PRODUCT_QUERY_CONTRACT_INPUT": 1,
-    "PRODUCT_QUERY_RESULT_CONTRACT_INPUT": 2,
+    "PRODUCT_QUERY_RESULT_CONTRACT_INPUT": 3,
     "PRODUCT_RESULT_ACTION_CONTRACT_INPUT": 2,
     "PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT": 1,
     "PRODUCT_SOURCE_READER_CONTRACT_INPUT": 1,

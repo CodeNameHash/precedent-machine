@@ -75,7 +75,7 @@ test('the single successor source compiles twice byte-identically without claimi
   const second = compileCanonicalContractInput({ root_directory: sourceRoot });
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 129);
+  assert.equal(first.authored_members.length, 130);
   assert.equal(
     first.authored_members.some(
       (member) => member.object_kind === 'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY',
@@ -465,13 +465,13 @@ test('the authored claim interpretation policy is the exact existing V12 policy'
   );
 });
 
-test('the manifest exactly closes the 129-file Agreement, shared, Process and Product source tree', () => {
+test('the manifest exactly closes the 130-file Agreement, shared, Process and Product source tree', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
   const actualMembers = jsonMembers(sourceRoot);
   const declaredMembers = manifest.members.map((member) => member.relative_path);
 
   assert.deepEqual(actualMembers, declaredMembers);
-  assert.equal(manifest.members.length, 129);
+  assert.equal(manifest.members.length, 130);
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('agreement/')).length,
     71,
@@ -486,7 +486,7 @@ test('the manifest exactly closes the 129-file Agreement, shared, Process and Pr
   );
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('product/')).length,
-    9,
+    10,
   );
   assert.equal(
     fs.existsSync(path.join(__dirname, '../lib/schema/canonical/contract-v2')),
@@ -514,7 +514,7 @@ test('the manifest exactly closes the 129-file Agreement, shared, Process and Pr
     PROCESS_RESULT_ACTION_CONTRACT_INPUT: 4,
     PRODUCT_QUERY_ACTION_CONTRACT_INPUT: 2,
     PRODUCT_QUERY_CONTRACT_INPUT: 1,
-    PRODUCT_QUERY_RESULT_CONTRACT_INPUT: 2,
+    PRODUCT_QUERY_RESULT_CONTRACT_INPUT: 3,
     PRODUCT_RESULT_ACTION_CONTRACT_INPUT: 2,
     PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT: 1,
     PRODUCT_SOURCE_READER_CONTRACT_INPUT: 1,
