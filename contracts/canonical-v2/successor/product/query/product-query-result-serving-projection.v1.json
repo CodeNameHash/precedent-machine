@@ -1,0 +1,76 @@
+{
+  "object_kind": "PRODUCT_SERVING_CONTRACT_INPUT",
+  "stable_id": "PRODUCT_QUERY_RESULT_SERVING_PROJECTION",
+  "schema_version": "PRODUCT_SERVING_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PRODUCT",
+    "contract_type": "QUERY_RESULT_SERVING_PROJECTION_DEFINITION",
+    "contract_version": 1,
+    "scope_contract": {
+      "applies_to_all_product_domains": true,
+      "initial_required_domains": [
+        "AGREEMENT",
+        "PROCESS"
+      ],
+      "future_domain_admission_is_registry_driven": true,
+      "second_domain_specific_projection_permitted": false,
+      "product_query_result_schema_version": "PRODUCT_QUERY_RESULT/V1",
+      "candidate_record_schema_version": "PRODUCT_CANDIDATE_RESULT_RECORD/V1",
+      "serving_record_schema_version": "PRODUCT_QUERY_RESULT_SERVING_RECORD/V1"
+    },
+    "record_contract": {
+      "one_product_result_per_record": true,
+      "complete_product_result_preserved_exactly": true,
+      "candidate_record_identity_and_payload_digest_required": true,
+      "candidate_record_must_exist_before_release_import": true,
+      "candidate_release_manifest_and_payload_digest_required": true,
+      "corpus_release_and_serving_namespace_required": true,
+      "query_result_release_binding_must_match": true,
+      "query_result_identity_must_recompute": true,
+      "record_identity_binds_complete_payload": true,
+      "unknown_fields_permitted": false
+    },
+    "release_contract": {
+      "record_root_in_candidate_release_manifest_required": true,
+      "complete_record_count_in_candidate_release_manifest_required": true,
+      "inactive_import_required_before_activation": true,
+      "missing_extra_duplicate_or_conflicting_record_blocks_import": true,
+      "active_pointer_join_required_for_serving": true,
+      "inactive_record_serving_permitted": false,
+      "cross_release_record_serving_permitted": false
+    },
+    "query_contract": {
+      "request_shape": "ONE_INDEXED_SET_BASED_SQL_OR_RPC",
+      "maximum_database_calls": 1,
+      "maximum_immediate_retries": 0,
+      "keyset_pagination_required": true,
+      "offset_pagination_permitted": false,
+      "maximum_page_size": 50,
+      "requested_page_size_plus_one_row_budget_required": true,
+      "corpus_proportional_database_calls_permitted": false,
+      "complete_candidate_sidecar_loaded_in_page_query": false,
+      "exact_detail_reads_use_the_existing_source_action_path": true
+    },
+    "failure_contract": {
+      "invalid_result_is_typed_and_cannot_become_zero_results": true,
+      "missing_candidate_record_blocks_release_import": true,
+      "candidate_record_digest_mismatch_blocks_release_import": true,
+      "release_or_namespace_drift_blocks_serving": true,
+      "one_invalid_record_cannot_replace_a_valid_sibling": true
+    },
+    "authority_contract": {
+      "creates_projection_records": true,
+      "creates_query_execution_authority": false,
+      "creates_extraction_authority": false,
+      "creates_canonical_write_authority": false,
+      "creates_second_writer_authority": false,
+      "creates_source_read_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_import_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}

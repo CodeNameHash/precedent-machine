@@ -666,7 +666,7 @@
       "object_kind": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
       "stable_id": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
       "schema_version": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY/V1",
-      "canonical_bytes_digest": "6b86a7c22b86daa99c17428d69e5cbcc913473c06009d2cc3ed66c845af4e599"
+      "canonical_bytes_digest": "943dcfd1acd918f8af411f0dcbbe6127e53646d05833cdd81c2e547698bd6cc8"
     },
     {
       "relative_path": "governance/residuals/governed-residual-disposition.v1.json",
@@ -1019,6 +1019,13 @@
       "canonical_bytes_digest": "dcd6dc4e942c6ba0345a9d681ff8c91413883a4a256a41f11be29572cbe33f47"
     },
     {
+      "relative_path": "product/query/product-query-result-serving-projection.v1.json",
+      "object_kind": "PRODUCT_SERVING_CONTRACT_INPUT",
+      "stable_id": "PRODUCT_QUERY_RESULT_SERVING_PROJECTION",
+      "schema_version": "PRODUCT_SERVING_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "a8a701e9af3182475da6bbbe7d48580c71612c2f68f87c6d19a2f5f3fefc764b"
+    },
+    {
       "relative_path": "product/query/product-query-serving-execution.v1.json",
       "object_kind": "PRODUCT_SERVING_CONTRACT_INPUT",
       "stable_id": "PRODUCT_QUERY_SERVING_EXECUTION",
@@ -1256,7 +1263,7 @@
     "PRODUCT_QUERY_RESULT_CONTRACT_INPUT": 6,
     "PRODUCT_RESULT_ACTION_CONTRACT_INPUT": 2,
     "PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT": 1,
-    "PRODUCT_SERVING_CONTRACT_INPUT": 2,
+    "PRODUCT_SERVING_CONTRACT_INPUT": 3,
     "PRODUCT_SOURCE_READER_CONTRACT_INPUT": 1,
     "PROVISION_CONCEPT": 19,
     "RELATIONSHIP_DEFINITION": 5,

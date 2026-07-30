@@ -76,7 +76,7 @@ test('the single successor source compiles twice byte-identically as a complete 
   const second = compileCanonicalContractInput({ root_directory: sourceRoot });
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 174);
+  assert.equal(first.authored_members.length, 175);
   assert.equal(
     first.authored_members.some(
       (member) => member.object_kind === 'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY',
@@ -521,13 +521,13 @@ test('the authored claim interpretation policy is the exact existing V12 policy'
   );
 });
 
-test('the manifest exactly closes the 174-file Agreement, shared, Process, Product and governance source tree', () => {
+test('the manifest exactly closes the 175-file Agreement, shared, Process, Product and governance source tree', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
   const actualMembers = jsonMembers(sourceRoot);
   const declaredMembers = manifest.members.map((member) => member.relative_path);
 
   assert.deepEqual(actualMembers, declaredMembers);
-  assert.equal(manifest.members.length, 174);
+  assert.equal(manifest.members.length, 175);
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('agreement/')).length,
     94,
@@ -542,7 +542,7 @@ test('the manifest exactly closes the 174-file Agreement, shared, Process, Produ
   );
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('product/')).length,
-    18,
+    19,
   );
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('governance/')).length,

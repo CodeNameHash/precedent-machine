@@ -16,6 +16,7 @@ const ROOT = path.join(
   '../contracts/canonical-v2/successor',
 );
 const PATHS = [
+  'product/query/product-query-result-serving-projection.v1.json',
   'product/query/product-query-serving-execution.v1.json',
   'product/query/product-shared-serving-row.v1.json',
 ];
@@ -51,9 +52,47 @@ test('validates the closed Product serving contract set', () => {
   assert.deepEqual(
     members().map((member) => member.canonical_value.stable_id),
     [
+      'PRODUCT_QUERY_RESULT_SERVING_PROJECTION',
       'PRODUCT_QUERY_SERVING_EXECUTION',
       'PRODUCT_SHARED_SERVING_ROW',
     ],
+  );
+});
+
+test('requires one generic release-bound Product result projection', () => {
+  const projection = byId('PRODUCT_QUERY_RESULT_SERVING_PROJECTION');
+
+  assert.equal(projection.scope_contract.applies_to_all_product_domains, true);
+  assert.deepEqual(projection.scope_contract.initial_required_domains, [
+    'AGREEMENT',
+    'PROCESS',
+  ]);
+  assert.equal(
+    projection.scope_contract.second_domain_specific_projection_permitted,
+    false,
+  );
+  assert.equal(
+    projection.record_contract.candidate_record_identity_and_payload_digest_required,
+    true,
+  );
+  assert.equal(
+    projection.release_contract.record_root_in_candidate_release_manifest_required,
+    true,
+  );
+  assert.equal(
+    projection.release_contract.active_pointer_join_required_for_serving,
+    true,
+  );
+  assert.equal(
+    projection.query_contract.request_shape,
+    'ONE_INDEXED_SET_BASED_SQL_OR_RPC',
+  );
+  assert.equal(projection.query_contract.maximum_database_calls, 1);
+  assert.equal(projection.query_contract.maximum_immediate_retries, 0);
+  assert.equal(projection.query_contract.maximum_page_size, 50);
+  assert.equal(
+    projection.query_contract.complete_candidate_sidecar_loaded_in_page_query,
+    false,
   );
 });
 
@@ -211,7 +250,11 @@ test('isolates invalid rows and grants no execution or production authority', ()
   for (const member of members()) {
     const authority = member.canonical_value.definition.authority_contract;
     assert.equal(
-      Object.values(authority).every((value) => value === false),
+      Object.entries(authority).every(
+        ([key, value]) => key === 'creates_projection_records'
+          ? value === true
+          : value === false,
+      ),
       true,
     );
   }
@@ -266,6 +309,14 @@ test('rejects incomplete, expanded or weakened Product serving contracts', () =>
   assert.throws(
     () => validateAuthoredProductServingInputs(weakenedBudget),
     { code: 'INVALID_PRODUCT_QUERY_SERVING_EXECUTION_INPUT' },
+  );
+
+  const secondProjection = clone(members());
+  byDefinition(secondProjection, 'PRODUCT_QUERY_RESULT_SERVING_PROJECTION')
+    .scope_contract.second_domain_specific_projection_permitted = true;
+  assert.throws(
+    () => validateAuthoredProductServingInputs(secondProjection),
+    { code: 'INVALID_PRODUCT_QUERY_RESULT_SERVING_PROJECTION_INPUT' },
   );
 });
 
