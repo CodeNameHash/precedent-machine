@@ -9,31 +9,35 @@
     "observation_contract": {
       "schema_id": "GOVERNED_RESIDUAL_OBSERVATION/V1",
       "required_payload_fields": [
-        "governing_contract_bundle_id",
+        "governing_contract_fingerprint",
         "producer_kind",
         "producer_version",
-        "governed_subject_identity",
-        "source_reference",
-        "ordered_evidence_spans_or_explicit_no_span",
+        "immutable_source_or_governed_subject",
+        "ordered_evidence_spans_or_explicit_no_span_source",
         "neutral_residual_kind",
         "raw_value_or_bytes",
         "validation_details",
+        "complete_provenance",
+        "proposed_object_or_candidate_links",
         "governed_ordinal"
       ],
       "raw_value_or_bytes_must_be_retained": true,
       "source_backed_evidence_required": true,
+      "explicit_no_span_requires_source_reference_and_reason": true,
+      "complete_provenance_required": true,
+      "proposed_object_or_candidate_links_required_even_when_empty": true,
       "string_only_warning_permitted": false,
-      "silent_drop_permitted": false
+      "silent_drop_permitted": false,
+      "unresolved_ordinal_permitted": false
     },
     "identity_contract": {
       "identity_domain": "GOVERNED_RESIDUAL_OBSERVATION/V1",
       "required_identity_inputs": [
-        "governing_contract_bundle_id",
+        "governing_contract_fingerprint",
         "producer_kind",
         "producer_version",
-        "governed_subject_identity",
-        "source_reference",
-        "ordered_evidence_span_identities_or_explicit_no_span",
+        "immutable_source_or_governed_subject",
+        "ordered_evidence_span_identities_or_explicit_no_span_source",
         "neutral_residual_kind",
         "raw_value_or_bytes_digest",
         "governed_ordinal"
@@ -48,7 +52,8 @@
         "timestamp"
       ],
       "same_source_semantics_reproduce_identity": true,
-      "changed_raw_bytes_rekey_observation": true
+      "changed_raw_bytes_rekey_observation": true,
+      "review_or_impact_state_rekeys_observation": false
     },
     "authority_contract": {
       "definition_only": true,

@@ -14,7 +14,7 @@ const ROOT = path.join(
 );
 const ALLOWLIST = path.join(
   __dirname,
-  '../.github/phase-allowlists/wp-p1-governed-residual-contract-family-v1.json',
+  '../.github/phase-allowlists/wp-p1-governed-residual-contract-family-v2.json',
 );
 const FILES = Object.freeze([
   'governed-residual-disposition.v1.json',
@@ -43,180 +43,30 @@ function members() {
   });
 }
 
-function byId(values, stableId) {
+function definition(values, stableId) {
   return values.find(
     (member) => member.canonical_value.stable_id === stableId,
+  ).canonical_value.definition;
+}
+
+function expectCode(code, mutate) {
+  const hostile = clone(members());
+  mutate(hostile);
+  assert.throws(
+    () => validateAuthoredGovernedResidualInputs(hostile),
+    (error) => error.code === code,
   );
 }
 
-test('accepts the exact complete governed-residual P1-P7 contract family', () => {
+test('accepts only the complete governed-residual contract family', () => {
   const exact = members();
-
   assert.equal(validateAuthoredGovernedResidualInputs(exact), true);
   assert.equal(validateAuthoredGovernedResidualInputs(clone(exact)), true);
   assert.deepEqual(
     exact.map((member) => member.canonical_value.stable_id).sort(),
     GOVERNED_RESIDUAL_CONTRACT_IDS,
   );
-});
 
-test('binds the producer registry to source-backed isolated QXO and Metsera pilots', () => {
-  const producer = byId(
-    members(),
-    'GOVERNED_RESIDUAL_PRODUCER_REGISTRY',
-  ).canonical_value.definition;
-
-  assert.deepEqual(
-    producer.pilot_scope_contract.allowed_deal_keys,
-    ['METSERA', 'QXO'],
-  );
-  assert.equal(producer.pilot_scope_contract.isolated_staging_only, true);
-  assert.equal(producer.pilot_scope_contract.scope_widening_permitted, false);
-  assert.equal(
-    producer.producer_registry_contract.closed_producer_kinds.length,
-    8,
-  );
-  assert.equal(
-    producer.producer_registry_contract.closed_producer_kinds
-      .every((entry) => entry.source_backed_evidence_required === true),
-    true,
-  );
-});
-
-test('keeps observation identity source-backed and independent of review and runtime state', () => {
-  const observation = byId(
-    members(),
-    'GOVERNED_RESIDUAL_OBSERVATION',
-  ).canonical_value.definition;
-
-  assert.equal(
-    observation.observation_contract.raw_value_or_bytes_must_be_retained,
-    true,
-  );
-  assert.equal(
-    observation.observation_contract.string_only_warning_permitted,
-    false,
-  );
-  assert.deepEqual(
-    observation.identity_contract.prohibited_identity_inputs,
-    [
-      'contract_freeze_attestation_id',
-      'database_row_id',
-      'disposition_id',
-      'impact_closure_id',
-      'model_run_id',
-      'reviewer_id',
-      'timestamp',
-    ],
-  );
-});
-
-test('closes every semantic boundary as one carrier or one residual', () => {
-  const exact = members();
-  const admission = byId(
-    exact,
-    'SEMANTIC_BOUNDARY_ADMISSION',
-  ).canonical_value.definition.admission_contract;
-  const consumption = byId(
-    exact,
-    'SEMANTIC_BOUNDARY_CONSUMPTION',
-  ).canonical_value.definition.consumption_contract;
-
-  assert.equal(admission.one_receipt_per_admitted_semantic_atom, true);
-  assert.equal(admission.receipt_precedes_governed_carrier_or_residual, true);
-  assert.deepEqual(
-    consumption.terminal_outcomes,
-    ['GOVERNED_CARRIER', 'GOVERNED_RESIDUAL'],
-  );
-  assert.equal(
-    consumption.each_admission_has_exactly_one_terminal_outcome,
-    true,
-  );
-  assert.equal(
-    consumption.carrier_and_residual_dual_consumption_permitted,
-    false,
-  );
-});
-
-test('requires two independent residual universes and an exact reconciliation manifest', () => {
-  const universe = byId(
-    members(),
-    'GOVERNED_RESIDUAL_UNIVERSE',
-  ).canonical_value.definition;
-
-  assert.deepEqual(
-    universe.universe_contract.scope_codes,
-    ['PRE_SCOPE', 'CANDIDATE_COMPLETE'],
-  );
-  assert.equal(
-    universe.universe_contract.boundary_enumerator_must_not_read_producer_registry,
-    true,
-  );
-  assert.equal(
-    universe.universe_contract.bidirectional_identity_and_payload_equality_required,
-    true,
-  );
-  assert.equal(universe.manifest_contract.required_empty_roots.length, 6);
-  assert.equal(universe.manifest_contract.count_only_completeness_permitted, false);
-});
-
-test('separates final disposition, impact reconciliation and empty review queue', () => {
-  const exact = members();
-  const disposition = byId(
-    exact,
-    'GOVERNED_RESIDUAL_DISPOSITION',
-  ).canonical_value.definition;
-  const impact = byId(
-    exact,
-    'GOVERNED_RESIDUAL_IMPACT',
-  ).canonical_value.definition;
-  const queue = byId(
-    exact,
-    'GOVERNED_RESIDUAL_REVIEW_QUEUE',
-  ).canonical_value.definition;
-
-  assert.equal(
-    disposition.disposition_contract.terminal_disposition_implies_impact_clearance,
-    false,
-  );
-  assert.equal(
-    impact.impact_contract.walkers_implementation_disjoint,
-    true,
-  );
-  assert.equal(
-    impact.impact_contract.terminal_disposition_implies_zero_impact,
-    false,
-  );
-  assert.equal(
-    queue.queue_contract.missing_or_unreconciled_impact_closure_is_queued,
-    true,
-  );
-  assert.equal(
-    queue.queue_contract.caller_supplied_empty_boolean_permitted,
-    false,
-  );
-  assert.equal(
-    queue.empty_root_contract.empty_root_is_certification_input_not_execution_authority,
-    true,
-  );
-});
-
-test('grants no runtime or downstream authority from any family member', () => {
-  for (const member of members()) {
-    const authority = member.canonical_value.definition.authority_contract;
-    assert.equal(authority.definition_only, true);
-    assert.equal(
-      Object.entries(authority)
-        .filter(([key]) => key !== 'definition_only')
-        .every(([, value]) => value === false),
-      true,
-      member.canonical_value.stable_id,
-    );
-  }
-});
-
-test('rejects missing, duplicate and unregistered family members', () => {
-  const exact = members();
   assert.throws(
     () => validateAuthoredGovernedResidualInputs(exact.slice(1)),
     (error) => error.code === 'GOVERNED_RESIDUAL_CONTRACT_MEMBERSHIP_MISMATCH',
@@ -225,85 +75,250 @@ test('rejects missing, duplicate and unregistered family members', () => {
     () => validateAuthoredGovernedResidualInputs([...exact, clone(exact[0])]),
     (error) => error.code === 'GOVERNED_RESIDUAL_CONTRACT_MEMBERSHIP_MISMATCH',
   );
-
-  const unknown = clone(exact);
-  unknown[0].canonical_value.stable_id = 'UNREGISTERED_RESIDUAL_CONTRACT';
-  assert.throws(
-    () => validateAuthoredGovernedResidualInputs(unknown),
-    (error) => error.code === 'GOVERNED_RESIDUAL_CONTRACT_MEMBERSHIP_MISMATCH',
-  );
 });
 
-test('rejects source loss, scope widening and false empty-queue shortcuts', () => {
-  const sourceLoss = clone(members());
-  byId(
-    sourceLoss,
-    'GOVERNED_RESIDUAL_OBSERVATION',
-  ).canonical_value.definition.observation_contract.source_backed_evidence_required = false;
-  assert.throws(
-    () => validateAuthoredGovernedResidualInputs(sourceLoss),
-    (error) => error.code === 'INVALID_GOVERNED_RESIDUAL_CONTRACT_INPUT',
-  );
-
-  const widened = clone(members());
-  byId(
-    widened,
-    'GOVERNED_RESIDUAL_PRODUCER_REGISTRY',
-  ).canonical_value.definition.pilot_scope_contract.allowed_deal_keys.push('OTHER_DEAL');
-  assert.throws(
-    () => validateAuthoredGovernedResidualInputs(widened),
-    (error) => error.code === 'INVALID_GOVERNED_RESIDUAL_CONTRACT_INPUT',
-  );
-
-  const falseEmpty = clone(members());
-  byId(
-    falseEmpty,
-    'GOVERNED_RESIDUAL_REVIEW_QUEUE',
-  ).canonical_value.definition.queue_contract.caller_supplied_empty_boolean_permitted = true;
-  assert.throws(
-    () => validateAuthoredGovernedResidualInputs(falseEmpty),
-    (error) => error.code === 'INVALID_GOVERNED_RESIDUAL_CONTRACT_INPUT',
-  );
+test('rejects missing producers, carriers and boundary ownership collisions', () => {
+  expectCode('GOVERNED_RESIDUAL_PRODUCER_TOTALITY_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_PRODUCER_REGISTRY',
+    ).producer_registry_contract.closed_producer_entries.shift();
+  });
+  expectCode('GOVERNED_RESIDUAL_PRODUCER_TOTALITY_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_PRODUCER_REGISTRY',
+    ).producer_registry_contract.closed_producer_entries[1]
+      .residual_capable_boundaries[0] = 'INTAKE_REJECTION';
+  });
+  expectCode('GOVERNED_RESIDUAL_PRODUCER_TOTALITY_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_PRODUCER_REGISTRY',
+    ).producer_registry_contract.closed_producer_entries[0]
+      .residual_carrier_schema_id = null;
+  });
 });
 
-test('rejects authority escalation and residual-impact suppression', () => {
-  const authority = clone(members());
-  byId(
-    authority,
-    'GOVERNED_RESIDUAL_IMPACT',
-  ).canonical_value.definition.authority_contract.creates_writer_execution_authority = true;
-  assert.throws(
-    () => validateAuthoredGovernedResidualInputs(authority),
-    (error) => error.code === 'GOVERNED_RESIDUAL_AUTHORITY_ESCALATION',
-  );
-
-  const suppressed = clone(members());
-  byId(
-    suppressed,
-    'GOVERNED_RESIDUAL_DISPOSITION',
-  ).canonical_value.definition.disposition_contract
-    .terminal_disposition_implies_impact_clearance = true;
-  assert.throws(
-    () => validateAuthoredGovernedResidualInputs(suppressed),
-    (error) => error.code === 'INVALID_GOVERNED_RESIDUAL_CONTRACT_INPUT',
-  );
-
-  const oneWalker = clone(members());
-  byId(
-    oneWalker,
-    'GOVERNED_RESIDUAL_IMPACT',
-  ).canonical_value.definition.impact_contract.walkers_implementation_disjoint = false;
-  assert.throws(
-    () => validateAuthoredGovernedResidualInputs(oneWalker),
-    (error) => error.code === 'INVALID_GOVERNED_RESIDUAL_CONTRACT_INPUT',
-  );
+test('rejects observation lineage loss and mutable identity inputs', () => {
+  expectCode('GOVERNED_RESIDUAL_OBSERVATION_LINEAGE_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_OBSERVATION',
+    ).observation_contract.required_payload_fields.splice(8, 2);
+  });
+  expectCode('GOVERNED_RESIDUAL_OBSERVATION_LINEAGE_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_OBSERVATION',
+    ).identity_contract.required_identity_inputs[0] =
+      'governing_contract_bundle_id';
+  });
+  expectCode('GOVERNED_RESIDUAL_OBSERVATION_LINEAGE_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_OBSERVATION',
+    ).observation_contract.explicit_no_span_requires_source_reference_and_reason =
+      false;
+  });
 });
 
-test('uses one exact closed canonical-work-start allowlist', () => {
+test('rejects dropped admission atoms and incomplete source receipts', () => {
+  expectCode('SEMANTIC_BOUNDARY_ADMISSION_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'SEMANTIC_BOUNDARY_ADMISSION',
+    ).admission_contract.one_receipt_per_exact_input_atom = false;
+  });
+  expectCode('SEMANTIC_BOUNDARY_ADMISSION_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'SEMANTIC_BOUNDARY_ADMISSION',
+    ).admission_contract.receipt_binds_exact_source_coordinates_or_governed_no_span =
+      false;
+  });
+  expectCode('SEMANTIC_BOUNDARY_ADMISSION_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'SEMANTIC_BOUNDARY_ADMISSION',
+    ).slot_registry_contract.required_entry_fields.pop();
+  });
+});
+
+test('rejects collapsed terminal branches and double consumption', () => {
+  expectCode('SEMANTIC_BOUNDARY_CONSUMPTION_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'SEMANTIC_BOUNDARY_CONSUMPTION',
+    ).consumption_contract.closed_terminal_kinds = [
+      'GOVERNED_CARRIER',
+      'GOVERNED_RESIDUAL',
+    ];
+  });
+  expectCode('SEMANTIC_BOUNDARY_CONSUMPTION_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'SEMANTIC_BOUNDARY_CONSUMPTION',
+    ).consumption_contract.duplicate_or_multiple_consumption_permitted = true;
+  });
+  expectCode('SEMANTIC_BOUNDARY_CONSUMPTION_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'SEMANTIC_BOUNDARY_CONSUMPTION',
+    ).reconciliation_contract.required_empty_difference_roots.splice(3, 1);
+  });
+});
+
+test('rejects incomplete universe heads, prefixes and root payload bindings', () => {
+  expectCode('GOVERNED_RESIDUAL_UNIVERSE_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_UNIVERSE',
+    ).universe_contract.pre_scope_predecessor_or_genesis_required = false;
+  });
+  expectCode('GOVERNED_RESIDUAL_UNIVERSE_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_UNIVERSE',
+    ).universe_contract.candidate_complete_adds_extraction_and_candidate_prefix_once =
+      false;
+  });
+  expectCode('GOVERNED_RESIDUAL_UNIVERSE_CONTRACT_MISMATCH', (values) => {
+    const bindings = definition(
+      values,
+      'GOVERNED_RESIDUAL_UNIVERSE',
+    ).manifest_contract.required_bindings;
+    bindings.splice(bindings.indexOf('terminal_consumption_root_set_payload_digest'), 1);
+  });
+});
+
+test('rejects wrong dispositions, invalid duplicate links and cross-wired decisions', () => {
+  expectCode('GOVERNED_RESIDUAL_DISPOSITION_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_DISPOSITION',
+    ).disposition_contract.closed_final_dispositions[0] =
+      'CORRECTED_AND_REPROCESSED';
+  });
+  expectCode('GOVERNED_RESIDUAL_DISPOSITION_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_DISPOSITION',
+    ).duplicate_contract.cycles_permitted = true;
+  });
+  expectCode('GOVERNED_RESIDUAL_DISPOSITION_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_DISPOSITION',
+    ).duplicate_contract.links_must_target_earliest_equivalent_residual = false;
+  });
+  expectCode('GOVERNED_RESIDUAL_DISPOSITION_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_DISPOSITION',
+    ).review_decision_contract.required_eligibility_action =
+      'CANDIDATE_FINAL_DISPOSITION';
+  });
+  expectCode('GOVERNED_RESIDUAL_DISPOSITION_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_DISPOSITION',
+    ).review_decision_contract.cross_residual_or_cross_target_decision_reuse_permitted =
+      true;
+  });
+});
+
+test('rejects one-walker, stale-dependant and unresolved impact shortcuts', () => {
+  expectCode('GOVERNED_RESIDUAL_IMPACT_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_IMPACT',
+    ).governed_object_impact_contract.exactly_two_governed_object_walkers_required =
+      false;
+  });
+  expectCode('GOVERNED_RESIDUAL_IMPACT_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_IMPACT',
+    ).governed_object_impact_contract.walker_disagreement_blocks_closure =
+      false;
+  });
+  expectCode('GOVERNED_RESIDUAL_IMPACT_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_IMPACT',
+    ).governed_object_impact_contract.stale_dependant_detection_required =
+      false;
+  });
+  expectCode('GOVERNED_RESIDUAL_IMPACT_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_IMPACT',
+    ).projection_reconciliation_contract.unresolved_impact_root_required_empty =
+      false;
+  });
+  expectCode('GOVERNED_RESIDUAL_IMPACT_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_IMPACT',
+    ).final_residual_impact_contract.fully_incorporated_zero_distinct_from_non_substantive_zero =
+      false;
+  });
+});
+
+test('rejects false empty queues and queue-based nonzero impact blocking', () => {
+  expectCode('GOVERNED_RESIDUAL_REVIEW_QUEUE_CONTRACT_MISMATCH', (values) => {
+    const roots = definition(
+      values,
+      'GOVERNED_RESIDUAL_REVIEW_QUEUE',
+    ).empty_root_contract.required_empty_difference_roots;
+    roots.splice(roots.indexOf('invalid_link_root'), 1);
+  });
+  expectCode('GOVERNED_RESIDUAL_REVIEW_QUEUE_CONTRACT_MISMATCH', (values) => {
+    const roots = definition(
+      values,
+      'GOVERNED_RESIDUAL_REVIEW_QUEUE',
+    ).empty_root_contract.required_empty_difference_roots;
+    roots.splice(roots.indexOf('unresolved_impact_root'), 1);
+  });
+  expectCode('GOVERNED_RESIDUAL_REVIEW_QUEUE_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_REVIEW_QUEUE',
+    ).queue_contract.caller_supplied_empty_boolean_permitted = true;
+  });
+  expectCode('GOVERNED_RESIDUAL_REVIEW_QUEUE_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_REVIEW_QUEUE',
+    ).queue_contract.reconciled_nonzero_impact_alone_is_queued = true;
+  });
+});
+
+test('rejects authority escalation and unreviewed definition drift', () => {
+  expectCode('GOVERNED_RESIDUAL_AUTHORITY_ESCALATION', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_IMPACT',
+    ).authority_contract.creates_writer_execution_authority = true;
+  });
+  expectCode('INVALID_GOVERNED_RESIDUAL_CONTRACT_INPUT', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_OBSERVATION',
+    ).observation_contract.schema_id = 'GOVERNED_RESIDUAL_OBSERVATION/V2';
+  });
+});
+
+test('uses one exact successor phase allowlist', () => {
   const allowlist = JSON.parse(fs.readFileSync(ALLOWLIST, 'utf8'));
+  assert.equal(
+    allowlist.phase,
+    'WP-P1-GOVERNED-RESIDUAL-CONTRACT-FAMILY-V2',
+  );
   assert.equal(allowlist.required_work_class, 'canonical_work_start');
   assert.deepEqual(allowlist.allowed, [
-    '.github/phase-allowlists/wp-p1-governed-residual-contract-family-v1.json',
+    '.github/phase-allowlists/wp-p1-governed-residual-contract-family-v2.json',
     'contracts/canonical-v2/successor/governance/residuals/governed-residual-disposition.v1.json',
     'contracts/canonical-v2/successor/governance/residuals/governed-residual-impact.v1.json',
     'contracts/canonical-v2/successor/governance/residuals/governed-residual-observation.v1.json',
@@ -319,5 +334,8 @@ test('uses one exact closed canonical-work-start allowlist', () => {
     allowlist.note,
     /no extraction, database, writer execution, serving, release, import, activation, production/i,
   );
-  assert.match(allowlist.note, /central manifest, compiler, signer and status integration remain separate/i);
+  assert.match(
+    allowlist.note,
+    /central manifest, compiler, count, signer and status integration remain separate/i,
+  );
 });

@@ -10,41 +10,107 @@
       "disposition_schema_id": "GOVERNED_RESIDUAL_DISPOSITION/V1",
       "manifest_schema_id": "GOVERNED_RESIDUAL_DISPOSITION_MANIFEST/V1",
       "closed_final_dispositions": [
-        "CORRECTED_AND_REPROCESSED",
-        "REVIEWED_SOURCE_SPECIFIC",
-        "REJECTED_AS_INVALID",
-        "SUPERSEDED_BY_GOVERNED_RESIDUAL",
-        "REQUIRES_CONTRACT_SUCCESSOR"
+        "COVERED_BY_GOVERNED_OBJECT",
+        "COVERED_BY_OPEN_WORLD_CANDIDATE",
+        "REVIEWED_NON_SUBSTANTIVE_OR_INVALID",
+        "REVIEWED_DUPLICATE"
       ],
+      "required_target_bindings_by_disposition": {
+        "COVERED_BY_GOVERNED_OBJECT": [
+          "governed_object_id",
+          "governed_object_payload_digest"
+        ],
+        "COVERED_BY_OPEN_WORLD_CANDIDATE": [
+          "open_world_candidate_id",
+          "open_world_candidate_payload_digest"
+        ],
+        "REVIEWED_NON_SUBSTANTIVE_OR_INVALID": [
+          "affirmative_non_substantive_decision_id",
+          "affirmative_non_substantive_decision_payload_digest"
+        ],
+        "REVIEWED_DUPLICATE": [
+          "earliest_equivalent_residual_id",
+          "earliest_equivalent_residual_payload_digest"
+        ]
+      },
       "one_final_disposition_per_effective_residual": true,
+      "exact_residual_and_target_identity_required": true,
       "source_and_evidence_closure_required": true,
-      "eligible_legal_semantic_review_required": true,
-      "review_decision_signature_required": true,
-      "exact_residual_identity_and_payload_digest_required": true,
       "caller_supplied_disposition_permitted": false,
       "unknown_disposition_permitted": false,
       "terminal_disposition_erases_residual_permitted": false,
       "terminal_disposition_implies_impact_clearance": false
     },
+    "duplicate_contract": {
+      "links_must_target_earliest_equivalent_residual": true,
+      "duplicate_chains_are_flattened": true,
+      "cycles_permitted": false,
+      "forward_links_permitted": false,
+      "duplicate_inherits_target_disposition": true,
+      "duplicate_inherits_target_link": true,
+      "duplicate_inherits_target_impact": true
+    },
+    "review_decision_contract": {
+      "schema_id": "GOVERNED_RESIDUAL_REVIEW_DECISION/V1",
+      "required_signed_body_bindings": [
+        "frozen_contract_pair",
+        "scope_code",
+        "residual_id",
+        "residual_payload_digest",
+        "final_disposition",
+        "exact_target_id",
+        "exact_target_payload_digest",
+        "evidence_closure_id",
+        "evidence_closure_payload_digest",
+        "reviewer_principal_id",
+        "review_time",
+        "legal_semantic_review_policy_id",
+        "legal_semantic_review_policy_payload_digest",
+        "legal_reviewer_trust_registry_id",
+        "legal_reviewer_trust_registry_payload_digest",
+        "signing_revocation_head_id",
+        "signing_revocation_head_payload_digest"
+      ],
+      "required_eligibility_action": "RESIDUAL_FINAL_DISPOSITION",
+      "legal_semantic_review_policy_stable_id": "LEGAL_SEMANTIC_REVIEW_POLICY",
+      "legal_reviewer_trust_registry_stable_id": "LEGAL_REVIEWER_TRUST_REGISTRY",
+      "eligibility_proof_required": true,
+      "current_revocation_head_recheck_required": true,
+      "review_decision_signature_required": true,
+      "cross_residual_or_cross_target_decision_reuse_permitted": false
+    },
     "manifest_contract": {
       "complete_universe_manifest_required": true,
+      "exact_one_to_one_universe_partition_required": true,
       "ordered_residual_and_disposition_pairs_required": true,
-      "missing_extra_duplicate_and_conflict_roots_required_empty": true,
-      "historical_supersession_chain_retained": true,
+      "required_empty_difference_roots": [
+        "missing_root",
+        "extra_root",
+        "duplicate_root",
+        "conflict_root",
+        "invalid_link_root"
+      ],
+      "historical_duplicate_links_retained": true,
       "count_only_completeness_permitted": false
     },
     "identity_contract": {
       "disposition_identity_domain": "GOVERNED_RESIDUAL_DISPOSITION/V1",
       "required_identity_inputs": [
-        "governing_contract_bundle_id",
+        "frozen_contract_pair",
+        "scope_code",
         "residual_id",
         "residual_payload_digest",
         "final_disposition",
+        "exact_target_id",
+        "exact_target_payload_digest",
         "review_decision_id",
+        "review_decision_payload_digest",
         "evidence_closure_id",
-        "superseded_residual_id_or_none"
+        "evidence_closure_payload_digest",
+        "legal_semantic_review_policy_id_and_payload_digest",
+        "legal_reviewer_trust_registry_id_and_payload_digest",
+        "signing_revocation_head_id_and_payload_digest"
       ],
-      "review_time_permitted": false,
       "database_identifier_permitted": false
     },
     "authority_contract": {
