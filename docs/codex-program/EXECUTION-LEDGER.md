@@ -12,11 +12,11 @@ main integration.
 | Item | State |
 | --- | --- |
 | Main basis | `7b6bc64157c49832129fa2ca227399850cd983fc` |
-| Governance balance branch | `claude/codex-attestations-build-balance-z3xm23` |
-| Contract bundle | 171 authored inputs, 170 substantive contracts, 8 categories |
-| Current bundle ID | `fe17399f1d09743c9e510a75cc0aff76abce8d59b7e59710010da54e3f631311` |
-| Current canonical bundle digest | `46a1c644c22333ed81490441c5724dad6624ba2bafa5ac7517abe5c98c3ca69a` |
-| Contract dependency graph | 170 nodes, 274 links, 0 missing, duplicate, conflict, unresolved or cyclic links |
+| Active milestone branch | `codex/qxo-f28-runtime-link-v1` |
+| Contract bundle | 172 authored inputs, 171 substantive contracts, 8 categories |
+| Current bundle ID | `1b3e2f4792af0dc7a868bcd707834aaf047cda8c52eb3ecba0a016c12960f761` |
+| Current canonical bundle digest | `33f29f810b627dd191ec6db29361b736c7029b6c8a127f93a655aec2fd528b77` |
+| Contract dependency graph | 171 nodes, 276 links, 0 missing, duplicate, conflict, unresolved or cyclic links |
 | Clean compile check | PASS, two uncached compiles produced identical canonical bytes |
 | Latest complete suite on governance candidate | 4,576 pass, 0 fail, 7 skip |
 | Latest production build on basis | PASS, 29/29 pages |
@@ -48,28 +48,31 @@ facts or legal meaning.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `PM-GOV-BALANCE-01` | control | Replace pre-production attestation machinery with four milestone reviews and Tier A/Tier B security. | PM controller | `codex/governance-balance-v2`; governing docs, generated manifest and apparatus-only tests; commit `afbf1a4`. | 4,576 pass, 0 fail, 7 skip; production build PASS. | INTEGRATION | Include the committed unit in the next controlled main movement. | No |
 | `PM-QXO-F28-LINK-01` | P8 | Bind the F28 graph, all 14 metric slots, correction head and Product result without hiding missing runtime links. | PM implementation | `codex/qxo-f28-runtime-link-v1`; commit `d582705`. | 4 focused tests PASS. | COMPLETE | Preserve the fail-closed runtime plan. | No |
-| `PM-QXO-F28-WRITER-01` | P8 | Convert the exact F28 graph into the canonical writer's closed `DEAL_SCOPE_RUN` input. | PM implementation | Same branch; commit `32af4b2`. | 3 focused tests PASS. | COMPLETE | Preserve the typed writer-schema rejection. | No |
-| `PM-QXO-F28-CONDITION-GROUP-WRITER-01` | P2/P8 | Admit the existing `CAPITALISATION_CONDITION_GROUP/V1` rows to the writer without converting or dropping them. | PM implementation | Exact branch and files to be reserved. | Writer structure, identity, persistence, replay and data-loss tests. | READY | Add a governed condition-group collection to the writer path. | No |
-| `PM-QXO-F28-CANDIDATE-01` | P8 | Add one immutable F28 candidate envelope for one row with 14 ordered metric terminals. | PM implementation | Same branch; commit `cec829c`; controller-owned registry and manifest integration. | 6 focused hostile tests plus 27-test bundle chain PASS. | COMPLETE | Build the envelope runtime and additive Product adapter V2. | No |
+| `PM-QXO-F28-WRITER-01` | P8 | Convert the exact F28 graph into the canonical writer's closed `DEAL_SCOPE_RUN` input. | PM implementation | Same branch; commit `32af4b2`. | 3 focused tests PASS. | ACTIVE | Add the missing nested-definition occurrence row, then require zero residuals. | No |
+| `PM-QXO-F28-CONDITION-GROUP-WRITER-01` | P2/P8 | Admit the existing `CAPITALISATION_CONDITION_GROUP/V1` rows to the writer without converting or dropping them. | PM implementation | Same branch; commit `53868ba`; writer and validation files. | 25 writer tests PASS, including identity, persistence, replay and data-loss checks. | COMPLETE | Preserve the first-class condition-group collection. | No |
+| `PM-QXO-F28-DEFINITION-WRITER-01` | P2/P8 | Persist the nested `DEFINITION_OCCURRENCE/V1` used by the F28 definition relationship. | PM implementation | Same branch; exact writer, validator, F28 link, test and staging SQL paths. | Identity, source, nested-span, relationship, transaction and replay checks. | ACTIVE | Add the typed definition-occurrence collection without treating an excerpt as the definition. | No |
+| `PM-QXO-F28-CANDIDATE-01` | P8 | Add one immutable F28 candidate envelope for one row with 14 ordered metric terminals. | PM implementation | Same branch; commits `cec829c`, `a85832d`, `62f2586` and `f053660`. | 25 Product contract tests and 14 bundle checks PASS. | COMPLETE | Build the envelope and adapter V2 runtime. | No |
+| `PM-GENERIC-ENVELOPE-01` | P8 exit | Prove that the second Agreement family can use one parameterised envelope contract. | PM implementation | New generic files only after F28 passes end to end. No copied F28 contract, validator or runtime. | Second-family identity, terminal, evidence and Product parity tests. | BLOCKED | Start only after F28 passes. If parameterisation fails, report a design defect. | No |
 | `PM-QUERY-FIXTURE-LINK-01` | P8 | Execute fixture-scoped Product Query and Review paths without opening the production route. | PM implementation | Exact runtime branch and paths to be reserved. | Query, Review, Compare and Corpus Context parity. | READY | Implement after QXO writer link. | No |
 | `PI-METSERA-RUNTIME-01` | P8 | Connect sealed Metsera sources through acquisition, enumeration, validation and pilot materialisation. | Process Intelligence | PI branch and exact files to be supplied in one batch. | Focused Process chain and sealed-gold comparison. | READY | Build the first real-source runtime link. | No |
 
 ## 3. Next 48 hours
 
-1. Complete `PM-QXO-F28-LINK-01`.
-2. Implement `PM-QUERY-FIXTURE-LINK-01`.
-3. Integrate the PI Metsera runtime batch once its focused chain passes.
-4. Compile and review the exact M1 bundle.
-5. Ask Ben once to approve that exact bundle fingerprint.
-6. Move the combined milestone batch to main.
-7. Run QXO and Metsera in isolated staging.
+1. Complete the nested-definition writer link.
+2. Build the F28 candidate-envelope and adapter V2 runtime.
+3. Implement `PM-QUERY-FIXTURE-LINK-01`.
+4. Integrate the PI Metsera runtime batch once its focused chain passes.
+5. Compile and review the exact M1 bundle.
+6. Ask Ben once to approve that exact bundle fingerprint.
+7. Move the combined milestone batch to main.
+8. Run QXO and Metsera in isolated staging.
 
 ## 4. Bounded units through P11
 
 | Unit | Phase | Outcome | Owner | Dependency | Evidence | Status | Next action | Ben |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `P1-CONTRACT-BUNDLE` | P1 | One complete Agreement, shared and Process contract bundle. | PM controller | Complete the condition-group writer contract. | Current 170-contract bundle checks PASS. Final recompile and independent exact-byte reviews remain. | ACTIVE | Close the writer contract gap, then rebuild the exact M1 bundle. | Yes |
-| `P2-IDENTITY-WRITER` | P2 | Stable identities and one canonical writer. | PM implementation | P1 bundle. | Identity and transactional writer tests. | COMPLETE | Preserve. | No |
+| `P1-CONTRACT-BUNDLE` | P1 | One complete Agreement, shared and Process contract bundle. | PM controller | Complete the nested-definition writer rule. | Current 171-contract bundle checks PASS. Final recompile and independent exact-byte reviews remain. | ACTIVE | Close the definition writer gap, then rebuild the exact M1 bundle. | Yes |
+| `P2-IDENTITY-WRITER` | P2 | Stable identities and one canonical writer. | PM implementation | P1 bundle. | Identity and transactional writer tests. | ACTIVE | Persist nested definitions in the same deal transaction. | No |
 | `P3-SCOPE-EXTRACTION` | P3 | Definitions-first scope and extraction with open-world residuals. | PM and PI | P1 bundle. | Goldens, evals, quote verification and hostile correctness tests. | ACTIVE | Complete real Metsera link. | No |
 | `P4-OBSERVATIONS-QUERY` | P4 | Normalised observations and one Product Query IR. | PM and PI | P3 outputs. | Numeric, unit, field, Ask/Browse and filter tests. | ACTIVE | Connect real release inputs. | No |
 | `P5-CORRECTIONS-RELEASE` | P5 | Corrections survive re-extraction and candidate releases are immutable. | PM implementation | P3 and P4. | Correction-head and release tests. | ACTIVE | Connect QXO and Metsera pilot outputs. | No |
@@ -80,6 +83,11 @@ facts or legal meaning.
 | `P10-PRODUCTION-IMPORT` | P10 | Exact inactive production import with member parity and resumable checkpoints. | PM controller | M3 pass. | Replay no-op, conflicting replay fail-closed, complete parity. | BLOCKED | Run only after staging certification. | Where contract requires |
 | `P11-CUTOVER` | P11 | Atomic whole-tuple activation, smoke and rollback. | PM controller | M4 pass and Ben authorisation. | Cutover receipt, production smoke and rollback. | BLOCKED | Request one-use authorisation at M4. | Yes |
 | `P12-SECURITY-HARDENING` | P12 | Add attacker-model certification for the internal product. | PM implementation | Successful cutover. | Route/action inventories, probes, egress and revocation tests. | BLOCKED | Start after cutover. | No unless governance changes |
+
+The F28 envelope is source-specific pilot code. After F28 passes end to end,
+the second Agreement family must use a parameterised generic envelope
+contract. The programme must report an inability to parameterise as a design
+defect. It must not copy the F28 files.
 
 ## 5. Critical path
 
