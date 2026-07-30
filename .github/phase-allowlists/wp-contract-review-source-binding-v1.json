@@ -1,0 +1,26 @@
+{
+  "phase": "PILOT_FREEZE_AND_VERTICAL_SLICE",
+  "allowed": [
+    ".github/phase-allowlists/wp-contract-review-source-binding-v1.json",
+    "docs/codex-program/bootstrap-acceptance-source.json",
+    "docs/codex-program/programme-gates.yaml",
+    "docs/codex-program/specification-manifest.json",
+    "lib/programme-gates/contract-freeze-contracts.js",
+    "lib/programme-gates/predicates.js",
+    "lib/programme-gates/registry.js",
+    "lib/programme-gates/schema-registry.js",
+    "lib/programme-gates/test-executable-registry.js",
+    "scripts/verify-codex-program-spec.mjs",
+    "tests/programme-gates/bootstrap-acceptance-source.spec.js",
+    "tests/programme-gates/contract-freeze-predicates.spec.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Binds the formal contract-diff review to complete immutable predecessor and successor source bytes. It grants no review conclusion, approval, deployment, publication, database or runtime authority."
+}

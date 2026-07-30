@@ -172,18 +172,30 @@ function fixture({ includePrivateKeys = false } = {}) {
   const publisher = crypto.generateKeyPairSync('ed25519');
   const validator = crypto.generateKeyPairSync('ed25519');
   const controller = crypto.generateKeyPairSync('ed25519');
-  const predecessorContractMembers = [
-    {
-      member_key: 'CLAIM_ALPHA',
-      semantic_digest: '1'.repeat(64),
-      identity_digest: '2'.repeat(64),
-    },
-    {
-      member_key: 'CLAIM_BETA',
-      semantic_digest: '3'.repeat(64),
-      identity_digest: '4'.repeat(64),
-    },
-  ];
+  const predecessorCanonicalContractBundleMembers = [
+    ['CLAIM_ALPHA', 'CORE_CANONICAL_CONTRACT', '1'.repeat(64), '2'.repeat(64)],
+    ['CLAIM_BETA', 'SEMANTIC_CATALOGUE', '3'.repeat(64), '4'.repeat(64)],
+  ].map(([memberKey, memberKind, semanticDigest, identityDigest]) => {
+    const sourceBytes = Buffer.from(`predecessor-${memberKey}`, 'utf8');
+    return {
+      schema_version: 'CanonicalContractBundleMember/V1',
+      member_key: memberKey,
+      member_kind: memberKind,
+      logical_type: `Predecessor${memberKey}`,
+      member_schema_version: 'V1',
+      byte_length: sourceBytes.length,
+      payload_digest: crypto.createHash('sha256').update(sourceBytes).digest('hex'),
+      source_bytes_base64: sourceBytes.toString('base64'),
+      semantic_digest: semanticDigest,
+      identity_digest: identityDigest,
+    };
+  });
+  const predecessorContractMembers =
+    predecessorCanonicalContractBundleMembers.map((member) => ({
+      member_key: member.member_key,
+      semantic_digest: member.semantic_digest,
+      identity_digest: member.identity_digest,
+    }));
   const requiredBundleKinds = [
     'COMPARABILITY',
     'COMPOSITION_CATALOGUE',
@@ -277,6 +289,16 @@ function fixture({ includePrivateKeys = false } = {}) {
     'PROGRAMME_GATE_CONTRACT_SEMANTIC_IDENTITY_DIFF/V1',
     semanticIdentityDiff,
   );
+  const reviewedContractSourceSetDigest = domainDigest(
+    'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW_SOURCE_SET/V1',
+    {
+      exact_review_input_schema_version:
+        'CANONICAL_CONTRACT_BUNDLE_EXACT_REVIEW_INPUT/V2',
+      predecessor_canonical_contract_bundle_members:
+        predecessorCanonicalContractBundleMembers,
+      canonical_contract_bundle_members: canonicalContractBundleMembers,
+    },
+  );
   const exactReviewInputContextDigest = domainDigest(
     'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW_EXACT_INPUT_CONTEXT/V1',
     {
@@ -288,6 +310,7 @@ function fixture({ includePrivateKeys = false } = {}) {
       contract_bundle_digest: contractBundleDigest,
       frozen_contract_pair_digest: frozenPairDigest,
       semantic_identity_diff_digest: semanticIdentityDiffDigest,
+      reviewed_contract_source_set_digest: reviewedContractSourceSetDigest,
     },
   );
   const approvalId = '2'.repeat(64);
@@ -1097,9 +1120,15 @@ function fixture({ includePrivateKeys = false } = {}) {
     predecessor_contract_bundle_id: predecessorContractBundleId,
     predecessor_contract_bundle_digest: predecessorContractBundleDigest,
     predecessor_contract_members: predecessorContractMembers,
+    predecessor_canonical_contract_bundle_members:
+      predecessorCanonicalContractBundleMembers,
     contract_bundle_id: contractBundleId,
     contract_bundle_digest: contractBundleDigest,
     contract_bundle_members: contractBundleMembers,
+    canonical_contract_bundle_members: canonicalContractBundleMembers,
+    exact_review_input_schema_version:
+      'CANONICAL_CONTRACT_BUNDLE_EXACT_REVIEW_INPUT/V2',
+    reviewed_contract_source_set_digest: reviewedContractSourceSetDigest,
     frozen_contract_pair_digest: frozenPairDigest,
     semantic_identity_diff: semanticIdentityDiff,
     semantic_identity_diff_digest: authorityManifest.semantic_identity_diff_digest,
@@ -1668,6 +1697,8 @@ test('a controller-signed asserted diff cannot replace the mechanically derived 
       contract_bundle_digest: review.contract_bundle_digest,
       frozen_contract_pair_digest: review.frozen_contract_pair_digest,
       semantic_identity_diff_digest: review.semantic_identity_diff_digest,
+      reviewed_contract_source_set_digest:
+        review.reviewed_contract_source_set_digest,
     },
   );
   resealReview(sample, review);
@@ -1685,6 +1716,57 @@ test('a controller-signed asserted diff cannot replace the mechanically derived 
   );
   assert.equal(
     contractDiffReviewIsMechanicallyBound(review, sample.evidence, context(sample)),
+    false,
+  );
+});
+
+test('a controller-signed projection cannot hide substituted successor source bytes', () => {
+  const sample = fixture({ includePrivateKeys: true });
+  const review = sample.immutableMembers.find(
+    (member) => member.member_type === 'ContractDiffReviewAttestation',
+  ).payload;
+  review.canonical_contract_bundle_members =
+    structuredClone(review.canonical_contract_bundle_members);
+  const substituted = Buffer.from('substituted-successor-source', 'utf8');
+  review.canonical_contract_bundle_members[0].byte_length = substituted.length;
+  review.canonical_contract_bundle_members[0].payload_digest =
+    crypto.createHash('sha256').update(substituted).digest('hex');
+  review.canonical_contract_bundle_members[0].source_bytes_base64 =
+    substituted.toString('base64');
+  review.reviewed_contract_source_set_digest = domainDigest(
+    'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW_SOURCE_SET/V1',
+    {
+      exact_review_input_schema_version:
+        review.exact_review_input_schema_version,
+      predecessor_canonical_contract_bundle_members:
+        review.predecessor_canonical_contract_bundle_members,
+      canonical_contract_bundle_members:
+        review.canonical_contract_bundle_members,
+    },
+  );
+  review.exact_input_context_digest = domainDigest(
+    'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW_EXACT_INPUT_CONTEXT/V1',
+    {
+      specification_root: sample.evidence.specification_root,
+      code_commit: sample.evidence.code_commit,
+      predecessor_contract_bundle_id: review.predecessor_contract_bundle_id,
+      predecessor_contract_bundle_digest:
+        review.predecessor_contract_bundle_digest,
+      contract_bundle_id: review.contract_bundle_id,
+      contract_bundle_digest: review.contract_bundle_digest,
+      frozen_contract_pair_digest: review.frozen_contract_pair_digest,
+      semantic_identity_diff_digest: review.semantic_identity_diff_digest,
+      reviewed_contract_source_set_digest:
+        review.reviewed_contract_source_set_digest,
+    },
+  );
+  resealReview(sample, review);
+  assert.equal(
+    contractDiffReviewIsMechanicallyBound(
+      review,
+      sample.evidence,
+      context(sample),
+    ),
     false,
   );
 });

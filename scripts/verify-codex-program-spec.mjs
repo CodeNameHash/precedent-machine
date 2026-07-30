@@ -222,7 +222,7 @@ function validateGateRegistry() {
     || independenceAllowlist?.validator_key_id
       !== 'PROGRAMME_GATE_VALIDATOR_2026_07'
     || independenceAllowlist?.validator_executable_digest
-      !== 'a5377bdec07a9c333b73ed07f88b9a4aaa78678758a37fffe331839c82a3b5a2'
+      !== '78267f05a6e34697220fdff4c46b7e6ea34e50468b6029bdeaea984f9e50d772'
     || independenceAllowlist?.validator_configuration_digest
       !== '44c470631cc0d9cd7b48796f25c12addd3a735ca650f5622dd55db5ed8d30d21') {
     fail('Frozen review controller, runtime, prompt or validator allowlist changed');
@@ -373,7 +373,7 @@ function validateGateRegistry() {
     PROGRAMME_GATE_BEN_APPROVER_2026_07: '2baac1c454dfb918097f2816fc9a230eb93139f735db35b9ed64d0e6846b4c17',
   };
   if (reviewer.review_controller_trust_root_set !== 'trusted-review-controller-keys/2026-07-frozen-v1'
-    || frozenTrust?.registry_source_sha256 !== '488ade024f14a59c11cb7c1ea3d6196aba9de1bc6cca08c2bc2d0bd52468c54e'
+    || frozenTrust?.registry_source_sha256 !== '17bdf7a1bc33c5b3942cd30b288bd661d32bb1ad88862364e6348c4f55ba7ace'
     || sha256(read('lib/programme-gates/registry.js')) !== frozenTrust?.registry_source_sha256
     || JSON.stringify(frozenTrust?.keys) !== JSON.stringify(expectedTrustKeys)
     || frozenTrust?.unknown_replacement_or_post_review_key_effect !== 'OPEN') {
@@ -452,7 +452,7 @@ function validateGateRegistry() {
     || compiledRegistry?.source_sha256
       !== sha256(read('docs/codex-program/bootstrap-acceptance-source.json'))
     || compiledRegistry?.closed_validator_executable_set_digest
-      !== 'a5377bdec07a9c333b73ed07f88b9a4aaa78678758a37fffe331839c82a3b5a2'
+      !== '78267f05a6e34697220fdff4c46b7e6ea34e50468b6029bdeaea984f9e50d772'
     || compiledRegistry?.authority
       !== 'ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE'
     || compiledRegistry?.exact_active_definition_count !== 11
