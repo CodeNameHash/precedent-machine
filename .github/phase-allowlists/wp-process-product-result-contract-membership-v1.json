@@ -1,0 +1,21 @@
+{
+  "phase": "WP-PROCESS-PRODUCT-RESULT-CONTRACT-MEMBERSHIP-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-product-result-contract-membership-v1.json",
+    "lib/canonical-v2/process-phrasebook-product-result-set-bridge.js",
+    "lib/canonical-v2/process-phrasebook-shared-row-bridge.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Makes both Process Product-result bridges validate the complete existing Product query-result contract member set, including both governed QXO adapters. It changes no legal meaning, identity, writer, serving, database, release, activation, production or cutover authority."
+}
