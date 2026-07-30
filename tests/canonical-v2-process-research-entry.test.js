@@ -11,7 +11,9 @@ const {
   admittedFixtureFilterOptions,
   applyProcessResearchPilotContextAction,
   exactPassageCopyText,
+  fixtureSlotSatisfiesFilterSegments,
   getProcessResearchPilotFixture,
+  isAdmittedFixtureFilterValue,
   openProcessResearchPilotReader,
   openProcessResearchPilotRelatedPassage,
   resolveProcessResearchPilotShare,
@@ -164,8 +166,43 @@ test('fixed-value filter options use the exact projection after other active seg
     }),
     [
       { value: 'PRE_SIGNING', label: 'Pre-signing' },
-      { value: 'POST_SIGNING', label: 'Post-signing' },
     ],
+  );
+});
+
+test('arbitrary and stale values are not admitted by the exact filter projection', () => {
+  const sentence = PROCESS_RESEARCH_PILOT_FIXTURE.presentation.filter_sentence;
+  const notice = sentence.ordered_filter_segments[1];
+  const input = {
+    fieldReference: notice.field_reference,
+    activeFilterSegments: sentence.ordered_filter_segments,
+    admittedOptionsProjection: PROCESS_RESEARCH_PILOT_FIXTURE.admitted_options_projection,
+  };
+  assert.deepEqual(admittedFixtureFilterOptions(input), [
+    { value: 4, label: '4 business days' },
+  ]);
+  assert.equal(isAdmittedFixtureFilterValue({ ...input, value: 999 }), false);
+  assert.equal(isAdmittedFixtureFilterValue({ ...input, value: '4' }), false);
+  assert.equal(isAdmittedFixtureFilterValue({ ...input, value: 4 }), true);
+});
+
+test('every displayed valid result satisfies every initial active filter segment', () => {
+  const segments = PROCESS_RESEARCH_PILOT_FIXTURE.presentation
+    .filter_sentence.ordered_filter_segments;
+  const validSlots = PROCESS_RESEARCH_PILOT_FIXTURE.presentation.result_slots
+    .filter((slot) => slot.slot_state === 'VALID');
+  assert.equal(validSlots.length, 8);
+  assert.equal(
+    validSlots.every((slot) => fixtureSlotSatisfiesFilterSegments(slot, segments)),
+    true,
+  );
+  assert.equal(
+    validSlots.every((slot) => fixtureSlotSatisfiesFilterSegments(slot, [segments[0]])),
+    true,
+  );
+  assert.equal(
+    validSlots.every((slot) => fixtureSlotSatisfiesFilterSegments(slot, [segments[1]])),
+    true,
   );
 });
 

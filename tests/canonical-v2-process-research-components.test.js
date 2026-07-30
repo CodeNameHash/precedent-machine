@@ -59,9 +59,19 @@ test('filter sentence is compact and selected values are retained by controlled 
   assert.doesNotMatch(sentence, /pill/i);
   assert.match(editor, /useState\(selected\[0\]\?\.value/);
   assert.match(editor, /Search catalogue fields/);
-  assert.match(editor, /value_options/);
+  assert.match(editor, /field\?\.field_reference/);
   assert.match(editor, /admittedOptionsProjection/);
-  assert.match(editor, /options.some/);
+  assert.match(editor, /\}\)\.some/);
+  assert.match(editor, /setSelectedFieldIdentity\(event\.target\.value\); setValue\(''\)/);
+  assert.match(editor, /disabled=\{!valueIsAdmitted\}/);
+  assert.doesNotMatch(editor, /<input id="process-filter-value"/);
+  assert.doesNotMatch(editor, /return \[\{ value, label: value \}, \.\.\.options\]/);
+});
+
+test('the surface rejects a non-admitted edit before changing the filter sentence', () => {
+  const surface = source('ProcessResearchSurface.jsx');
+  assert.match(surface, /if \(!isAdmittedFilterValue\(/);
+  assert.match(surface, /\)\) return; setFilterSentence/);
 });
 
 test('unavailable slots remain visible without removing valid siblings', () => {

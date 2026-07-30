@@ -200,13 +200,11 @@ const PROCESS_RESEARCH_PILOT_FIXTURE = deepFreeze({
       field_reference: { field_key: 'process_phase', field_version: 1 },
       label: 'Process phase',
       control_type: 'SELECT',
-      value_options: ['PRE_SIGNING', 'POST_SIGNING'],
     },
     {
       field_reference: { field_key: 'notice_period_business_days', field_version: 1 },
       label: 'Notice period',
-      control_type: 'NUMBER',
-      value_options: [],
+      control_type: 'SELECT',
     },
   ],
   admitted_options_projection: [
@@ -224,7 +222,22 @@ const PROCESS_RESEARCH_PILOT_FIXTURE = deepFreeze({
       other_active_filter_segment_keys: [],
       value_options: [
         { value: 'PRE_SIGNING', label: 'Pre-signing' },
-        { value: 'POST_SIGNING', label: 'Post-signing' },
+      ],
+    },
+    {
+      field_reference: { field_key: 'notice_period_business_days', field_version: 1 },
+      other_active_filter_segment_keys: [
+        'process_phase:1:"PRE_SIGNING"',
+      ],
+      value_options: [
+        { value: 4, label: '4 business days' },
+      ],
+    },
+    {
+      field_reference: { field_key: 'notice_period_business_days', field_version: 1 },
+      other_active_filter_segment_keys: [],
+      value_options: [
+        { value: 4, label: '4 business days' },
       ],
     },
   ],
@@ -316,6 +329,23 @@ function admittedFixtureFilterOptions({
   return Object.freeze([...(projection?.value_options || [])]);
 }
 
+function isAdmittedFixtureFilterValue(input) {
+  return admittedFixtureFilterOptions(input).some((option) => (
+    JSON.stringify(option?.value ?? option) === JSON.stringify(input.value)
+  ));
+}
+
+function fixtureSlotSatisfiesFilterSegments(slot, segments) {
+  if (slot?.slot_state !== 'VALID') return false;
+  return segments.every((segment) => {
+    const metadata = slot.metadata?.find((field) => (
+      field.field_reference?.field_key === segment.field_reference?.field_key
+      && field.field_reference?.field_version === segment.field_reference?.field_version
+    ));
+    return JSON.stringify(metadata?.value) === JSON.stringify(segment.value);
+  });
+}
+
 function openProcessResearchPilotReader(sourceReader) {
   return {
     ...sourceReader,
@@ -370,6 +400,8 @@ module.exports = {
   resolveProcessResearchPilotShare,
   exactPassageCopyText,
   admittedFixtureFilterOptions,
+  isAdmittedFixtureFilterValue,
+  fixtureSlotSatisfiesFilterSegments,
   openProcessResearchPilotReader,
   applyProcessResearchPilotContextAction,
   openProcessResearchPilotRelatedPassage,
