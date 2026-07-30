@@ -12,27 +12,57 @@
       "reconciliation_schema_id": "SEMANTIC_BOUNDARY_CONSUMPTION_RECONCILIATION/V1",
       "terminal_root_set_schema_id": "SEMANTIC_BOUNDARY_TERMINAL_CONSUMPTION_ROOT_SET/V1",
       "reconciliation_set_schema_id": "SEMANTIC_BOUNDARY_CONSUMPTION_RECONCILIATION_SET_ROOT/V1",
-      "terminal_outcomes": [
-        "GOVERNED_CARRIER",
-        "GOVERNED_RESIDUAL"
+      "closed_terminal_kinds": [
+        "GOVERNED_OBJECT",
+        "OPEN_WORLD_CANDIDATE",
+        "AFFIRMATIVE_NON_SUBSTANTIVE_DECISION",
+        "GOVERNED_RESIDUAL_OBSERVATION"
       ],
-      "each_admission_has_exactly_one_terminal_outcome": true,
-      "terminal_outcome_binds_admission_receipt": true,
-      "terminal_outcome_binds_governed_object_or_residual": true,
+      "each_admission_has_exactly_one_terminal_consumption": true,
+      "terminal_consumption_binds_receipt_id_and_payload_digest": true,
+      "terminal_consumption_binds_terminal_id_and_payload_digest": true,
+      "terminal_consumption_binds_producer_action_and_receipt": true,
       "missing_consumption_permitted": false,
-      "duplicate_consumption_permitted": false,
-      "unregistered_terminal_outcome_permitted": false,
-      "carrier_and_residual_dual_consumption_permitted": false
+      "duplicate_or_multiple_consumption_permitted": false,
+      "unregistered_terminal_kind_permitted": false
+    },
+    "reconciliation_contract": {
+      "one_to_one_receipt_key_join_required": true,
+      "required_empty_difference_roots": [
+        "missing_root",
+        "extra_root",
+        "duplicate_root",
+        "multiply_consumed_root",
+        "wrong_terminal_kind_root",
+        "unconsumed_root"
+      ],
+      "implementation_disjoint_recorder_and_enumerator_required": true,
+      "root_sets_require_complete_subject_key_universe": true,
+      "pre_scope_selects_only_pre_scope_prefix": true,
+      "candidate_complete_selects_pre_scope_and_adds_suffix_once": true
     },
     "identity_contract": {
       "consumption_identity_domain": "SEMANTIC_BOUNDARY_TERMINAL_CONSUMPTION/V1",
       "required_consumption_identity_inputs": [
         "admission_receipt_id",
-        "terminal_outcome",
-        "governed_object_or_residual_id",
-        "payload_digest"
+        "admission_receipt_payload_digest",
+        "terminal_kind",
+        "terminal_object_id",
+        "terminal_object_payload_digest",
+        "terminal_producer_action",
+        "terminal_producer_receipt_id"
       ],
-      "reconciliation_binds_admission_and_consumption_roots": true,
+      "reconciliation_identity_inputs": [
+        "frozen_contract_pair",
+        "immutable_source_subject",
+        "scope_code",
+        "captured_terminal_heads",
+        "admission_receipt_root_id_and_payload_digest",
+        "terminal_consumption_root_id_and_payload_digest",
+        "recorder_executable_and_configuration_digests",
+        "consumption_enumerator_executable_and_configuration_digests",
+        "required_empty_difference_roots"
+      ],
       "runtime_order_permitted": false,
       "database_identifier_permitted": false
     },

@@ -6,34 +6,60 @@
     "domain_key": "GOVERNANCE",
     "contract_type": "SEMANTIC_BOUNDARY_ADMISSION_DEFINITION",
     "contract_version": 1,
+    "slot_registry_contract": {
+      "schema_id": "SEMANTIC_BOUNDARY_ADMISSION_SLOT_REGISTRY/V1",
+      "generated_from_authorities": [
+        "SEMANTIC_STAGE_REGISTRY",
+        "CANONICAL_WRITER_DISPOSITION_REGISTRY",
+        "PHYSICAL_CARRIER_SCHEMA_REGISTRY",
+        "GENERATED_STAGE_OUTPUT_AND_WRITE_DISPOSITION_MANIFESTS"
+      ],
+      "required_entry_fields": [
+        "boundary_kind",
+        "input_atom_key_extractor",
+        "source_coordinate_rule",
+        "first_eligible_scope",
+        "terminal_kind_domain"
+      ],
+      "bidirectional_equality_with_residual_capable_boundary_universe_required": true,
+      "unknown_boundary_or_slot_permitted": false
+    },
     "admission_contract": {
-      "slot_registry_schema_id": "SEMANTIC_BOUNDARY_ADMISSION_SLOT_REGISTRY/V1",
       "receipt_schema_id": "SEMANTIC_BOUNDARY_ADMISSION_RECEIPT/V1",
       "root_schema_id": "SEMANTIC_BOUNDARY_ADMISSION_RECEIPT_ROOT/V1",
       "root_set_schema_id": "SEMANTIC_BOUNDARY_ADMISSION_RECEIPT_ROOT_SET/V1",
       "registered_producer_kinds_source": "GOVERNED_RESIDUAL_PRODUCER_REGISTRY",
-      "one_receipt_per_admitted_semantic_atom": true,
-      "receipt_precedes_governed_carrier_or_residual": true,
-      "receipt_binds_exact_source_reference": true,
-      "receipt_binds_exact_boundary_and_slot": true,
-      "receipt_binds_exact_payload_digest": true,
+      "one_receipt_per_exact_input_atom": true,
+      "receipt_precedes_semantic_producer": true,
+      "receipt_precedes_governed_carrier_candidate_decision_or_residual": true,
+      "receipt_binds_exact_source_coordinates_or_governed_no_span": true,
+      "receipt_binds_exact_boundary_and_input_atom": true,
+      "receipt_binds_raw_digest": true,
       "missing_receipt_permitted": false,
-      "duplicate_receipt_permitted": false,
-      "unknown_slot_permitted": false
+      "duplicate_receipt_permitted": false
     },
     "identity_contract": {
       "receipt_identity_domain": "SEMANTIC_BOUNDARY_ADMISSION_RECEIPT/V1",
       "required_receipt_identity_inputs": [
-        "governing_contract_bundle_id",
-        "producer_kind",
-        "boundary_key",
-        "slot_key",
-        "governed_subject_identity",
-        "source_reference",
-        "payload_digest",
+        "frozen_contract_pair",
+        "registry_entry_id",
+        "registry_entry_payload_digest",
+        "immutable_source_subject",
+        "boundary_kind",
+        "input_atom_key",
+        "source_coordinates_or_governed_no_span",
+        "raw_digest",
         "governed_ordinal"
       ],
-      "root_identity_binds_complete_ordered_receipts": true,
+      "root_identity_inputs": [
+        "first_eligible_scope",
+        "immutable_source_subject",
+        "captured_source_local_terminal_heads",
+        "slot_registry_id",
+        "slot_registry_payload_digest",
+        "ordered_receipt_id_and_payload_digest_set"
+      ],
+      "root_set_requires_complete_subject_key_universe": true,
       "database_order_permitted": false,
       "runtime_timestamp_permitted": false
     },

@@ -18,58 +18,128 @@
     },
     "producer_registry_contract": {
       "registry_version": 1,
-      "closed_producer_kinds": [
+      "registry_authority_sources": [
+        "SEMANTIC_STAGE_REGISTRY",
+        "CANONICAL_WRITER_DISPOSITION_REGISTRY",
+        "PHYSICAL_CARRIER_SCHEMA_REGISTRY",
+        "GENERATED_STAGE_OUTPUT_AND_WRITE_DISPOSITION_MANIFESTS"
+      ],
+      "closed_producer_entries": [
+        {
+          "producer_kind": "INTAKE_CAPTURE",
+          "producer_version": 1,
+          "first_eligible_scope": "PRE_SCOPE",
+          "residual_capable_boundaries": [
+            "INTAKE_REJECTION",
+            "PACKAGE_EXPANSION_REJECTION"
+          ],
+          "residual_carrier_schema_id": "GOVERNED_RESIDUAL_OBSERVATION/V1",
+          "source_backed_evidence_required": true
+        },
+        {
+          "producer_kind": "SOURCE_CONVERSION",
+          "producer_version": 1,
+          "first_eligible_scope": "PRE_SCOPE",
+          "residual_capable_boundaries": [
+            "SOURCE_CONVERSION_REJECTION",
+            "SOURCE_MAP_REJECTION"
+          ],
+          "residual_carrier_schema_id": "GOVERNED_RESIDUAL_OBSERVATION/V1",
+          "source_backed_evidence_required": true
+        },
         {
           "producer_kind": "SOURCE_ADMISSION",
           "producer_version": 1,
           "first_eligible_scope": "PRE_SCOPE",
+          "residual_capable_boundaries": [
+            "SOURCE_ADMISSION_REJECTION"
+          ],
+          "residual_carrier_schema_id": "GOVERNED_RESIDUAL_OBSERVATION/V1",
           "source_backed_evidence_required": true
         },
         {
           "producer_kind": "INFERENCE_REVIEW",
           "producer_version": 1,
           "first_eligible_scope": "PRE_SCOPE",
+          "residual_capable_boundaries": [
+            "MODEL_OBSERVATION_REJECTION",
+            "REVIEWED_INFERENCE_REJECTION"
+          ],
+          "residual_carrier_schema_id": "GOVERNED_RESIDUAL_OBSERVATION/V1",
           "source_backed_evidence_required": true
         },
         {
           "producer_kind": "GRAPH_NORMALISATION",
           "producer_version": 1,
           "first_eligible_scope": "PRE_SCOPE",
+          "residual_capable_boundaries": [
+            "NORMALISER_INPUT_REJECTION",
+            "GRAPH_VALIDATION_REJECTION"
+          ],
+          "residual_carrier_schema_id": "GOVERNED_RESIDUAL_OBSERVATION/V1",
           "source_backed_evidence_required": true
         },
         {
           "producer_kind": "LEGAL_DISCOVERY",
           "producer_version": 1,
           "first_eligible_scope": "PRE_SCOPE",
+          "residual_capable_boundaries": [
+            "DISCOVERY_COVERAGE_REJECTION",
+            "LEGAL_DIMENSION_MAPPING_REJECTION"
+          ],
+          "residual_carrier_schema_id": "GOVERNED_RESIDUAL_OBSERVATION/V1",
           "source_backed_evidence_required": true
         },
         {
           "producer_kind": "TAXONOMY_VALIDATION",
           "producer_version": 1,
           "first_eligible_scope": "PRE_SCOPE",
+          "residual_capable_boundaries": [
+            "TAXONOMY_CODE_REJECTION",
+            "UNKNOWN_SEMANTIC_KIND"
+          ],
+          "residual_carrier_schema_id": "GOVERNED_RESIDUAL_OBSERVATION/V1",
           "source_backed_evidence_required": true
         },
         {
           "producer_kind": "EXTRACTION_VALIDATION",
           "producer_version": 1,
           "first_eligible_scope": "CANDIDATE_COMPLETE",
+          "residual_capable_boundaries": [
+            "EXTRACTION_OUTPUT_REJECTION",
+            "COMPOSITION_INPUT_REJECTION"
+          ],
+          "residual_carrier_schema_id": "GOVERNED_RESIDUAL_OBSERVATION/V1",
           "source_backed_evidence_required": true
         },
         {
           "producer_kind": "WRITER_PREPARATION_VALIDATION",
           "producer_version": 1,
           "first_eligible_scope": "CANDIDATE_COMPLETE",
+          "residual_capable_boundaries": [
+            "WRITER_INPUT_REJECTION",
+            "WRITE_DISPOSITION_REJECTION"
+          ],
+          "residual_carrier_schema_id": "GOVERNED_RESIDUAL_OBSERVATION/V1",
           "source_backed_evidence_required": true
         },
         {
           "producer_kind": "CANDIDATE_CERTIFICATION",
           "producer_version": 1,
           "first_eligible_scope": "CANDIDATE_COMPLETE",
+          "residual_capable_boundaries": [
+            "CANDIDATE_OUTPUT_REJECTION",
+            "CANDIDATE_CERTIFICATION_REJECTION"
+          ],
+          "residual_carrier_schema_id": "GOVERNED_RESIDUAL_OBSERVATION/V1",
           "source_backed_evidence_required": true
         }
       ],
-      "every_residual_capable_boundary_has_one_producer": true,
+      "every_residual_capable_boundary_has_exactly_one_entry": true,
+      "every_residual_carrier_has_exactly_one_entry": true,
+      "boundary_and_carrier_bidirectional_equality_required": true,
       "unregistered_producer_permitted": false,
+      "unregistered_boundary_or_carrier_permitted": false,
       "producer_scope_reassignment_permitted": false,
       "generic_warning_substitution_permitted": false
     },
@@ -77,6 +147,7 @@
       "identity_domain": "GOVERNED_RESIDUAL_PRODUCER_REGISTRY/V1",
       "required_identity_inputs": [
         "canonical_bundle_input_identity_id",
+        "canonical_bundle_input_identity_payload_digest",
         "registry_version",
         "ordered_producer_entries"
       ],
