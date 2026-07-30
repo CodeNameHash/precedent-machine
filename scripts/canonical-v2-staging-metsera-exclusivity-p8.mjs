@@ -10,8 +10,14 @@ const {
   compileMetseraExclusivityProductAdmission,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-admission');
 const {
+  compileMetseraExclusivityProductQuery,
   compileMetseraExclusivityProductRow,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-row');
+const {
+  compileMetseraExclusivityProductResultSet,
+} = require(
+  '../lib/canonical-v2/metsera-exclusivity-product-result-set',
+);
 const {
   contentId,
 } = require('../lib/canonical-v2/canonical-bytes');
@@ -67,10 +73,7 @@ async function main() {
       'METSERA_EXCLUSIVITY_CANDIDATE_CORPUS_RELEASE/V1',
       releaseSeed,
     ),
-    product_query_definition_id: contentId(
-      'METSERA_EXCLUSIVITY_PRODUCT_QUERY/V1',
-      { predicate_key: 'EXCLUSIVITY_GRANTED' },
-    ),
+    product_query_definition_id: null,
     validation_receipt_ids: {
       narration_revision: receipt.materialisation_receipt_id,
       predicate_witness_revision: receipt.materialisation_receipt_id,
@@ -83,6 +86,16 @@ async function main() {
     release_state: 'CANDIDATE_NOT_ACTIVE',
     authority_state: 'NOT_GRANTED',
   };
+  const productQuery = compileMetseraExclusivityProductQuery({
+    materialisation_receipt_id: receipt.materialisation_receipt_id,
+    candidate_release_manifest_id:
+      candidateReleaseBinding.candidate_release_manifest_id,
+    candidate_release_manifest_payload_digest:
+      candidateReleaseBinding
+        .candidate_release_manifest_payload_digest,
+  });
+  candidateReleaseBinding.product_query_definition_id =
+    productQuery.query_definition_id;
   const productAdmission =
     compileMetseraExclusivityProductAdmission(
       receipt,
@@ -91,6 +104,11 @@ async function main() {
   const productRow = compileMetseraExclusivityProductRow(
     productAdmission,
   );
+  const productResultSet =
+    compileMetseraExclusivityProductResultSet(
+      productAdmission,
+      productRow,
+    );
   process.stdout.write(`${JSON.stringify({
     schema_version: receipt.schema_version,
     selected_passage_id: receipt.selected_passage_id,
@@ -121,6 +139,11 @@ async function main() {
     product_query_result_identity:
       productRow.shared_row_adapter_receipt
         .product_query_result.product_query_result_identity,
+    product_result_set_receipt_id:
+      productResultSet.product_result_set_receipt_id,
+    ordered_product_result_count:
+      productResultSet.result_set_adapter_receipt
+        .product_result_set.ordered_result_slots.length,
     authority_limits: receipt.authority_limits,
   }, null, 2)}\n`);
 }

@@ -1,0 +1,23 @@
+{
+  "phase": "WP-METSERA-EXCLUSIVITY-PRODUCT-RESULT-SET-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-metsera-exclusivity-product-result-set-v1.json",
+    "lib/canonical-v2/metsera-exclusivity-product-result-set.js",
+    "lib/canonical-v2/metsera-exclusivity-product-row.js",
+    "scripts/canonical-v2-staging-metsera-exclusivity-p8.mjs",
+    "tests/canonical-v2-metsera-exclusivity-product-row.test.js",
+    "tests/canonical-v2-metsera-exclusivity-product-result-set.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/migrations/**"
+  ],
+  "note": "Revalidates the exact Metsera single-result adapter and passes its Process-owned order into the existing Product result-set compiler. It retains all sidecars, creates no order or failure and grants no execution, serving, write, release, import, activation or production authority."
+}
