@@ -18,6 +18,16 @@
       "product_query_ir_schema_version": "PRODUCT_QUERY_IR/V1",
       "shared_serving_row_definition_stable_id": "PRODUCT_SHARED_SERVING_ROW"
     },
+    "product_query_ir_runtime_binding": {
+      "definition_stable_id": "PRODUCT_QUERY_IR",
+      "schema_version": "PRODUCT_QUERY_IR/V1",
+      "runtime_module": "lib/canonical-v2/product-query-ir.js",
+      "construction_export": "compileProductQueryIr",
+      "closed_validation_export": "canonicalProductQueryIrBytes",
+      "process_query_ir_is_product_query_ir": false,
+      "process_query_ir_relabelling_permitted": false,
+      "product_ir_construction_and_validation_required_before_serving": true
+    },
     "execution_contract": {
       "request_shape": "ONE_INDEXED_SET_BASED_SQL_OR_RPC",
       "maximum_admission_database_calls": 1,
@@ -54,6 +64,42 @@
       "numeric_ttl_entry_and_byte_limits_required": true,
       "unset_cache_limit_disposition": "FAIL_CLOSED",
       "cache_budget_manifest_grants_serving_authority": false
+    },
+    "governed_budget_reference_contract": {
+      "capacity_manifest": {
+        "stable_id": "CAPACITY_MANIFEST",
+        "schema_version": "CAPACITY_MANIFEST/V1",
+        "route_class": "PRODUCT_QUERY_SERVING",
+        "exact_numeric_limit_bindings": {
+          "maximum_admission_database_calls": 1,
+          "maximum_route_serving_database_calls": 1,
+          "maximum_immediate_retries": 0
+        }
+      },
+      "route_budget_manifest": {
+        "stable_id": "ROUTE_BUDGET_MANIFEST",
+        "schema_version": "ROUTE_BUDGET_MANIFEST/V1",
+        "route_class": "PRODUCT_QUERY_SERVING",
+        "exact_numeric_limit_bindings": {
+          "maximum_request_bytes": 32768,
+          "maximum_page_size": 50,
+          "maximum_initial_response_bytes": 1048576,
+          "maximum_database_rows_per_request": 51,
+          "maximum_http_rows_per_response": 50
+        }
+      },
+      "cache_budget_manifest": {
+        "stable_id": "CACHE_BUDGET_MANIFEST",
+        "schema_version": "CACHE_BUDGET_MANIFEST/V1",
+        "cache_class": "PRODUCT_QUERY_SERVING",
+        "exact_numeric_limit_bindings": {
+          "maximum_value_ttl_seconds": 3600,
+          "maximum_cached_value_bytes": 1048576
+        }
+      },
+      "exact_manifest_identity_and_payload_digest_required_before_serving": true,
+      "manifest_limit_mismatch_disposition": "FAIL_CLOSED",
+      "manifest_reference_grants_runtime_or_serving_authority": false
     },
     "failure_contract": {
       "database_or_cache_failure_can_render_as_zero_results": false,

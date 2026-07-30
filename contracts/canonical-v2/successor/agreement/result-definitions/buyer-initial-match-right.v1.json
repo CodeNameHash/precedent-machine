@@ -1,0 +1,59 @@
+{
+  "authored_definition": {
+    "class_aggregation_forbidden": true,
+    "completeness_rule": "ALL_REQUIRED_PRIMARY_GROUPS_PRESENT",
+    "concept_key": "NOSOL-MATCH",
+    "expected_result_input_lineage_slots": [
+      {
+        "required_claim_definition_keys": [
+          "NO_SHOP_INITIAL_MATCH_PERIOD_DAYS"
+        ],
+        "required_comparison_class_key": null,
+        "required_relationship_keys": [],
+        "value_slot_key": "INITIAL_MATCH_PERIOD"
+      }
+    ],
+    "market_metric_slots": [
+      {
+        "comparison_class_key": null,
+        "metric_keys": [
+          "NO_SHOP_INITIAL_MATCH_PERIOD_DAYS"
+        ],
+        "ordinal": 0,
+        "value_slot_key": "INITIAL_MATCH_PERIOD"
+      }
+    ],
+    "market_metric_slot_count": 1,
+    "market_request_contract": {
+      "database_call_budget": 1,
+      "empty_cohort_state": "EMPTY_COHORT",
+      "failure_isolation": "PER_METRIC_SLOT",
+      "immediate_retries": 0,
+      "subject_exclusion_required": true
+    },
+    "party": {
+      "capacity": "BUYER",
+      "role": "RIGHT_HOLDER",
+      "value": "BUYER_GROUP"
+    },
+    "primary_claim_slots": [
+      {
+        "ordinal": 0,
+        "required_claim_definition_key": "NO_SHOP_INITIAL_MATCH_PERIOD_DAYS",
+        "required_state": "PRESENT",
+        "value_slot_key": "INITIAL_MATCH_PERIOD"
+      }
+    ],
+    "relationship_ownership": {
+      "mode": "RESULT_CLAIM",
+      "optional_relationships": [],
+      "relationship_required_for_result_completeness": false
+    },
+    "result_key": "BUYER_INITIAL_MATCH_RIGHT",
+    "result_version": 1,
+    "tier_naming_in_new_identifiers_forbidden": true
+  },
+  "object_kind": "RESULT_DEFINITION_INPUT",
+  "schema_version": "RESULT_DEFINITION_INPUT/V1",
+  "stable_id": "BUYER_INITIAL_MATCH_RIGHT"
+}

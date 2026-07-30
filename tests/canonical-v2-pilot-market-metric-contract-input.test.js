@@ -67,10 +67,27 @@ test('binds IOC money to its denominator, relationship and source lineage', () =
   assert.equal(money.canonical_unit, 'PERCENT_OF_DEAL_VALUE');
   assert.equal(money.denominator_basis, 'HEADLINE_TRANSACTION_VALUE');
   assert.equal(money.denominator_lineage_required, true);
-  assert.equal(money.owner_lineage_mode, 'RESULT_RELATIONSHIP');
-  assert.equal(money.required_relationship_key, 'EXCEPTED_BY');
+  assert.equal(money.owner_lineage_mode, 'RESULT_OPTIONAL_RELATIONSHIPS');
+  assert.equal(money.required_relationship_key, null);
+  assert.equal(money.required_relationship_version, null);
+  assert.equal(money.optional_relationship_key, 'EXCEPTED_BY');
+  assert.equal(money.optional_relationship_version, 3);
   assert.equal(money.required_result_key, 'TARGET_CAPEX_RESTRICTION');
   assert.equal(money.required_value_slot_key, 'CAPEX_THRESHOLD');
+  assert.deepEqual(money.denominator_source_binding, {
+    source_logical_type: 'SourceDealFactRevision',
+    source_revision_id_domain: 'SOURCE_DEAL_FACT_REVISION/V1',
+    required_fact_family: 'STATED_TRANSACTION_VALUE',
+    required_canonical_value_type: 'HEADLINE_TRANSACTION_VALUE',
+    required_identity_fields: [
+      'CORPUS_RELEASE_ID',
+      'DEAL_ADMISSION_ID',
+      'SOURCE_DEAL_FACT_OCCURRENCE_ID',
+      'SOURCE_DEAL_FACT_REVISION_ID',
+      'EVIDENCE_EDGE_IDS',
+    ],
+    exact_deal_release_occurrence_revision_and_evidence_required: true,
+  });
   assert.ok(
     money.required_lineage_fields.includes(
       'DENOMINATOR_SOURCE_LINEAGE_IDS',
@@ -90,6 +107,8 @@ test('binds duration to legal clock inputs and complete result lineage', () => {
   assert.equal(duration.trigger, 'SUPERIOR_PROPOSAL_NOTICE');
   assert.equal(duration.required_result_key, 'BUYER_INITIAL_MATCH_RIGHT');
   assert.equal(duration.required_value_slot_key, 'INITIAL_MATCH_PERIOD');
+  assert.equal(duration.owner_lineage_mode, 'RESULT_CLAIM');
+  assert.equal(duration.result_ownership_mode, 'RESULT_CLAIM');
   assert.deepEqual(duration.duration_lineage_required, [
     'RAW_MAGNITUDE',
     'RAW_UNIT',
@@ -157,6 +176,22 @@ test('rejects missing and semantically weakened pilot MetricDefinitions', () => 
     .denominator_lineage_required = false;
   assert.throws(
     () => validateAuthoredPilotMarketMetricInputs(money),
+    { code: 'INVALID_PILOT_IOC_MONEY_METRIC_INPUT' },
+  );
+
+  const wrongSourceRevision = clone(metricMembers());
+  wrongSourceRevision[0].canonical_value.authored_definition
+    .denominator_source_binding.source_revision_id_domain = 'CLAIM_REVISION/V1';
+  assert.throws(
+    () => validateAuthoredPilotMarketMetricInputs(wrongSourceRevision),
+    { code: 'INVALID_PILOT_IOC_MONEY_METRIC_INPUT' },
+  );
+
+  const mandatoryException = clone(metricMembers());
+  mandatoryException[0].canonical_value.authored_definition
+    .required_relationship_key = 'EXCEPTED_BY';
+  assert.throws(
+    () => validateAuthoredPilotMarketMetricInputs(mandatoryException),
     { code: 'INVALID_PILOT_IOC_MONEY_METRIC_INPUT' },
   );
 
