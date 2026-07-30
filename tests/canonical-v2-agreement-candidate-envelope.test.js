@@ -17,6 +17,15 @@ const {
 const {
   buildF28ProductInputs,
 } = require('./fixtures/canonical-v2/qxo-capitalisation-f28-product-inputs');
+const {
+  buildQxoCapitalisationF28CandidateEnvelope,
+} = require(
+  '../lib/canonical-v2/qxo-capitalisation-f28-candidate-envelope',
+);
+const {
+  buildReviewedIocCapexServingRow,
+  buildReviewedIocCapexSlice,
+} = require('../lib/canonical-v2/reviewed-ioc-capex-slice');
 
 function f28Input() {
   const value = buildF28ProductInputs();
@@ -103,6 +112,46 @@ test('both profiles use the same immutable runtime schema and identity rules', (
   assert.equal(
     validateAgreementCandidateEnvelope(ioc, iocInput()),
     true,
+  );
+});
+
+test('generic profiles preserve both predecessor family outputs byte for byte', () => {
+  const f28 = f28Input();
+  const genericF28 = buildAgreementCandidateEnvelope(f28);
+  const predecessorF28 = buildQxoCapitalisationF28CandidateEnvelope(
+    f28.family_input,
+  );
+  assert.equal(
+    canonicalJson(genericF28.provision_row),
+    canonicalJson(predecessorF28.provision_row),
+  );
+  assert.deepEqual(
+    genericF28.ordered_terminals.map((terminal) => (
+      canonicalJson(terminal.subject_terminal)
+    )),
+    predecessorF28.ordered_terminals.map((terminal) => (
+      canonicalJson(terminal.subject_terminal)
+    )),
+  );
+
+  const ioc = iocInput();
+  const genericIoc = buildAgreementCandidateEnvelope(ioc);
+  const slice = buildReviewedIocCapexSlice({
+    agreementText: ioc.family_input.agreement_text,
+    dealValueSourceText: ioc.family_input.deal_value_source_text,
+    contractBundle: ioc.family_input.contract_bundle,
+  });
+  const predecessorIocRow = buildReviewedIocCapexServingRow({
+    slice,
+    contractBundle: ioc.family_input.contract_bundle,
+  });
+  assert.equal(
+    canonicalJson(genericIoc.provision_row),
+    canonicalJson(predecessorIocRow),
+  );
+  assert.equal(
+    canonicalJson(genericIoc.ordered_terminals[0].subject_terminal),
+    canonicalJson(slice.projection.observation),
   );
 });
 
