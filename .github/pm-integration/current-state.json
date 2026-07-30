@@ -1,0 +1,105 @@
+{
+  "schema_version": "ProgrammeCurrentState/V1",
+  "main_commit": "a3149cfb6434f3166aac2c3bd9631e637d5df8ae",
+  "publication": {
+    "commit": "9552de2185b11d80bd1e2b80757f4f07005c58d1",
+    "generation": 44
+  },
+  "current_work_package": "PILOT_FREEZE_AND_VERTICAL_SLICE",
+  "open_gates": [
+    "LEGAL_DECISION",
+    "FORMAL_FREEZE_COMPILATION"
+  ],
+  "active_branches_worktrees": [
+    {
+      "branch": "codex/agreement-ordering-generation36-integration-v1",
+      "commit": "f5684e9dde008409ac5d6009e29e7ddf21a9be35"
+    },
+    {
+      "branch": "codex/pilot-freeze-milestone-v1",
+      "commit": "79a4bca6d89577d0d295480d4fe60a640af62e5c"
+    },
+    {
+      "branch": "codex/pilot-freeze-release-review-high-v1",
+      "commit": "0897af4363f01e2c0241aee0afc952bb75e4fa31"
+    },
+    {
+      "branch": "codex/pilot-freeze-shared-consumer-v2",
+      "commit": "03ebe4c4d85ed0aebafece999b7488df1b1d098d"
+    },
+    {
+      "branch": "codex/pm-integration-window-spark-review-v1",
+      "commit": "ea6598abb899798ffb0bc7998edf3b102f821360"
+    },
+    {
+      "branch": "codex/process-exclusivity-pilot-v1",
+      "commit": "8d8169a0abbf880f33555a1121fbf4514201fbe3"
+    },
+    {
+      "branch": "codex/process-generation14-integration-v1",
+      "commit": "cb42782e1454dde3329a51d4160e92aeea58efe0"
+    },
+    {
+      "branch": "codex/process-generation29-integration-v1",
+      "commit": "dc7d8a8026635c49c3776830846044a1d8e3e10c"
+    },
+    {
+      "branch": "codex/process-generation30-integration-v1",
+      "commit": "fbca03e6f0dac2b5f5338ee6598576e460c0b0a2"
+    },
+    {
+      "branch": "codex/process-generation31-integration-v1",
+      "commit": "9f50895682df9c28610d8a662ccba3df8f375dff"
+    },
+    {
+      "branch": "codex/process-generation32-integration-v1",
+      "commit": "7fc8cbc0c3aaae5380faf0e6d35b01b7642bf34d"
+    },
+    {
+      "branch": "codex/process-generation33-integration-v1",
+      "commit": "37ad563ca75729ce61803b197d0e8b7228993786"
+    },
+    {
+      "branch": "codex/process-generation34-integration-v1",
+      "commit": "1c5d8a2aa790a6d52a3f753090ccd3397dcf6b19"
+    },
+    {
+      "branch": "codex/process-generation35-integration-v1",
+      "commit": "0e55d085409799d6dbeed5764102c05f25b87582"
+    },
+    {
+      "branch": "codex/process-generation37-integration-v1",
+      "commit": "01d6fc2ad05e6b142e4a8dccf9841130988642da"
+    },
+    {
+      "branch": "codex/process-identity-integration-v2",
+      "commit": "84469a73ea2420837fb6af856a8b0aba51ea340a"
+    },
+    {
+      "branch": "codex/process-shared-authority-integration-v1",
+      "commit": "e4da858e66516dde4d4c0a93572aa6b55e316c93"
+    },
+    {
+      "branch": "codex/process-p1-contract-integration-v1",
+      "commit": "2f82ce21e7c814a31251ebe31686b62e560587c2"
+    },
+    {
+      "branch": "wp/claims-integration",
+      "commit": "02326f5406a9fecdb0656310b5012fff77cab00e"
+    }
+  ],
+  "reserved_paths": [
+    ".github/phase-allowlists/wp-pilot-integration-state-preflight-v1.json",
+    ".github/pm-integration/current-state.json",
+    "lib/programme-gates/pilot-integration-preflight.js",
+    "scripts/generate-programme-current-state.mjs",
+    "scripts/pilot-integration-preflight.mjs",
+    "tests/programme-gates/pilot-integration-preflight.spec.js"
+  ],
+  "ready_integration_commits": [],
+  "machine_derived_blockers": [
+    "DEPLOYMENT_METADATA_REQUIRED",
+    "TEST_RECEIPTS_REQUIRED",
+    "FORMAL_FREEZE_COMPILATION_REQUIRED"
+  ]
+}
