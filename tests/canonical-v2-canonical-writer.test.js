@@ -552,7 +552,7 @@ test('an injected failure rolls back every staged object and receipt', async () 
   assert.deepEqual(repository.snapshot(), {
     intakeCaptures: [],
     sources: [], sourceAdmissions: [], deals: [], dealAdmissionRecords: [],
-    excerpts: [], validated_semantic_graphs: [],
+    excerpts: [], definition_occurrences: [], validated_semantic_graphs: [],
     provisions: [], components: [], condition_groups: [], claims: [], relationships: [],
     open_world_candidates: [], open_world_candidate_occurrences: [], open_world_evidence_references: [],
     open_world_candidate_dispositions: [], open_world_primitives: [], semantic_impact_closures: [],

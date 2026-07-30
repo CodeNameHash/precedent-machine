@@ -7,7 +7,6 @@ const {
   EXECUTION_AUTHORITY,
   EXECUTION_BOUNDARY,
   QXO_CAPITALISATION_F28_WRITER_LINK_SCHEMA,
-  WRITER_SCHEMA_REJECTION,
   buildQxoCapitalisationF28WriterLink,
 } = require('../lib/canonical-v2/qxo-capitalisation-f28-writer-link');
 const {
@@ -84,10 +83,21 @@ test('builds one frozen exact F28 DEAL_SCOPE_RUN input with no residual world', 
   assert.equal(Object.isFrozen(plan), true);
   assert.equal(writeSet.source_references.length, 1);
   assert.equal(writeSet.excerpts.length, 23);
+  assert.equal(writeSet.definition_occurrences.length, 1);
   assert.equal(writeSet.provisions.length, 2);
-  assert.equal(writeSet.components.length, 7);
+  assert.equal(writeSet.components.length, 5);
+  assert.equal(writeSet.condition_groups.length, 2);
   assert.equal(writeSet.claims.length, 7);
   assert.equal(writeSet.relationships.length, 3);
+  const definition = writeSet.definition_occurrences[0];
+  const definitionUse = writeSet.relationships.find(
+    (row) => row.relationship_definition_key === 'USES_DEFINITION',
+  );
+  assert.equal(definitionUse.target_occurrence_ids[0], definition.definition_occurrence_id);
+  assert.equal(
+    definitionUse.effect.selected_definition_occurrence_id,
+    definition.definition_occurrence_id,
+  );
   for (const key of [
     'validated_semantic_graphs', 'open_world_candidates',
     'open_world_candidate_occurrences', 'open_world_evidence_references',
@@ -95,13 +105,13 @@ test('builds one frozen exact F28 DEAL_SCOPE_RUN input with no residual world', 
     'semantic_impact_closures', 'reviewed_source_specific_rows',
     'incomplete_canonical_result_rows',
   ]) assert.deepEqual(writeSet[key], []);
-  for (const kind of ['excerpts', 'provisions', 'components', 'claims', 'relationships']) {
+  for (const kind of ['excerpts', 'definition_occurrences', 'provisions', 'components', 'condition_groups', 'claims', 'relationships']) {
     for (const row of writeSet[kind]) assert.equal(row.closure_id, plan.closure_id);
   }
-  assert.equal(plan.receipt.validation_state, 'REJECTED_BY_WRITER_SCHEMA');
-  assert.equal(plan.receipt.schema_rejection, WRITER_SCHEMA_REJECTION);
+  assert.equal(plan.receipt.validation_state, 'ACCEPTED');
+  assert.equal(plan.receipt.schema_rejection, null);
   assert.deepEqual(plan.receipt.validation_counts, {
-    publishable: 0,
+    publishable: 43,
     residuals: 0,
     quarantinedClosures: 0,
   });
