@@ -1,0 +1,21 @@
+{
+  "phase": "WP-PROCESS-PHRASEBOOK-RESULT-ADMISSION-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-phrasebook-result-admission-v1.json",
+    "lib/canonical-v2/process-phrasebook-result-admission.js",
+    "tests/canonical-v2-process-phrasebook-result-admission.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Pure Process phrasebook-result admission. It validates one existing result identity against the exact narration revision, predicate-witness revision, complete typed lineage, bounded verbatim preview, governed order, candidate-release membership and exact-detail reference. It emits a validation receipt only. It grants no result materialisation, source read, extraction, query, UI, network, database, serving, write, import, release, activation, production or contract-freeze authority."
+}
