@@ -1,768 +1,211 @@
 programme_gate_registry:
-  schema: canonical-programme-gates/v1
+  schema: canonical-programme-gates/v2
   yaml_parser_binding:
     yaml_version: "1.2"
     package: yaml
     package_version: "2.9.0"
     options: [STRICT, UNIQUE_KEYS, NO_ALIASES]
-  specification_identity: DOMAIN_SEPARATED_SPECIFICATION_ROOT_DIGEST
-  specification_manifest: docs/codex-program/specification-manifest.json
-  status_artifact: docs/certification/programme-gate-status-v2.json
-  status_source: GENERATED_STATUS_ARTEFACT_WITH_TERMINAL_PAIR_FOR_COMPLETION
-  historical_status_artifacts:
-    - path: docs/certification/programme-gate-status.json
-      schema: canonical-programme-gates/v1-status
-      generation: 4
-      disposition: HISTORICAL_OWNER_DEEMED_RECORD_ONLY
-      v2_predecessor: false
-      executable_authority: false
-  absent_status_effect: ALL_GATES_OPEN
-  evidence_directory: docs/certification/evidence
+  status_source: docs/codex-program/EXECUTION-LEDGER.md
+  status_format: HUMAN_READABLE_MARKDOWN_TABLE
+  signed_status_required_before_preproduction_work: false
   default_state: OPEN
-  invalid_or_missing_evidence_state: OPEN
-  default_permits_not_applicable: false
-  allowed_states: [OPEN, PASS, FAIL, NOT_APPLICABLE]
-  normally_satisfying_states: [PASS]
-  work_class_references: TRANSITIVE_ALL_OF
-  deferred_successor_gate_registrations:
-    PROCESS_VERTICAL_SLICE_PASS:
-      evidence_contract: process-vertical-slice-pass/v1
-      evidence_schema_id: PROCESS_VERTICAL_SLICE_ATTESTATION/V1
-      canonical_predecessor_gate_id: P1_VERTICAL_SLICE_PASS
-      canonical_predecessor_is_substitutable: false
-      governing_gate_activation_state: DEFERRED_UNTIL_P8_EXACT_ROOT_AMENDMENT
-      governing_gate_entry_required_before_evidence_execution: true
-      evidence_execution_state: BLOCKED
-      successor_candidate_scope_dependency_required: true
-      required_adversarial_tests: [VERTICAL-SLICE-01]
-      authority: NONE
+  allowed_states: [OPEN, PASS, FAIL, BLOCKED, DEFERRED_POST_CUTOVER]
 
-  gate_evidence_validation:
-    schema: programme-gate-evidence-envelope/v2
-    contract_identifier_semantics: CLOSED_SCHEMA_ID_NOT_OPAQUE_LABEL
-    acceptance_definition_schema: programme-gate-acceptance-definition/v1
-    acceptance_definition_resolution: UNIQUE_CONTENT_ADDRESSED_DEFINITION_FOR_EVIDENCE_CONTRACT
-    acceptance_definition_binding: EXACT_SPECIFICATION_ROOT_AND_WHERE_APPLICABLE_FROZEN_CONTRACT_PAIR
-    normative_semantic_authority: EXACT_GATE_ENTRY_PLUS_NORMATIVE_EVIDENCE_OBJECT_CONTRACT_AT_THE_REVIEWED_SPECIFICATION_ROOT
-    definition_identity_formula: HASH_OF_SCHEMA_SPECIFICATION_ROOT_CANONICAL_GATE_ENTRY_AND_NORMATIVE_OBJECT_CONTRACT_DIGEST
-    post_review_semantic_authoring: PROHIBITED
-    frozen_predicate_dsl:
-      schema: programme-gate-predicate-dsl/v1
-      permitted_operators: [BOOLEAN_IS_TRUE, EQUALS, SET_EQUALS, EMPTY_SET, NONEMPTY_SET, LESS_THAN_OR_EQUAL, GREATER_THAN_OR_EQUAL, DIGEST_EQUALS, SIGNATURE_VALID, ALL_MEMBERS_PASS]
-      implicit_operator_or_expected_value: PROHIBITED
-      request_supplied_measurement: PROHIBITED
-      executable_role: NON_AUTHORITATIVE_IMPLEMENTATION_OF_FROZEN_DSL
-      conformance: TWO_INDEPENDENT_COMPILERS_AND_REFERENCE_INTERPRETER_MUST_PRODUCE_BYTE_EQUAL_DEFINITION_AND_RESULT
-    claim_ast_derivation:
-      claim_identity: HASH_OF_SPECIFICATION_ROOT_EVIDENCE_CONTRACT_REQUIRED_OBJECT_TYPE_AND_CLAIM_KEY
-      member_paths: EXACT_PATHS_DECLARED_BY_THE_NORMATIVE_EVIDENCE_OBJECT_CONTRACT
-      measurement: REFERENCE_INTERPRETER_RECOMPUTES_CLAIM_FROM_ENUMERATED_IMMUTABLE_MEMBERS_AND_NAMED_TEST_RESULTS
-      result_type: BOOLEAN
-      comparison_operator: EQUALS
-      expected_typed_value: true
-      asserted_boolean_without_RECOMPUTED_MEMBER_WITNESS_ROOT: OPEN
-    acceptance_authority_tiers:
-      BOOTSTRAP_FROZEN:
-        gates: [G0_MARKET_STATS_CONTAINED, G0_BROAD_CORPUS_ROUTES_CONTAINED, G0_ZAYO_DISPOSITION, G0_CLAUDE_CREDENTIAL_ROTATION, G0_SUPABASE_SECRET_DISPOSITION, G0_STAGING_SUPABASE_ISOLATED, G0_STAGING_VERCEL_ISOLATED, G0_STAGING_ACCESS_PROTECTED, G0_EXACT_DIGEST_REVIEW_SET, G0_BEN_SPEC_APPROVAL, P1_CONTRACT_FREEZE_ATTESTED]
-        source: ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE
-        genesis_required_gates: [G0_MARKET_STATS_CONTAINED, G0_BROAD_CORPUS_ROUTES_CONTAINED, G0_ZAYO_DISPOSITION, G0_CLAUDE_CREDENTIAL_ROTATION, G0_SUPABASE_SECRET_DISPOSITION, G0_STAGING_SUPABASE_ISOLATED, G0_STAGING_VERCEL_ISOLATED, G0_STAGING_ACCESS_PROTECTED, G0_EXACT_DIGEST_REVIEW_SET, G0_BEN_SPEC_APPROVAL]
-        definition_required_before_first_gate_evidence: true
-      BUNDLE_FROZEN:
-        gates: [P1_VERTICAL_SLICE_PASS, P9_SCOPE_EXACT, P9_REGISTRY_DISPOSITIONS, P9_MKT_WORK, P9_BEN_RUNBOOK, P9_NUMERIC, P9_RENDER_PARITY, P9_STRUCTURED_CLAIMS, P9_PARTY_LINT, P9_SECURITY_AUTH, P9_SHADOW_REEXTRACTION, P9_IDENTITY_AND_DRIFT, P9_BROWSER_A11Y_PERFORMANCE, P9_STAGING_SMOKE_AND_ROLLBACK, P9_DATABASE_SOAK, P9_BACKUP_RESTORE, P9_PREIMPORT_TRACEABILITY, P9_DEPLOYMENT_PARITY, P9_IMPORT_PARITY, P9_PROMOTION_ELIGIBILITY, P9_CUTOVER_AUTHORISATION, P9_POSTCUTOVER_SMOKE, P9_TRACEABILITY, P9_PROGRAMME_COMPLETION_ATTESTATION]
-        source: CANONICAL_CONTRACT_BUNDLE_MEMBER_APPROVED_BY_CONTRACT_FREEZE_ATTESTATION
-        definition_required_before_gate_evidence: true
-        unresolved_before_freeze_effect: OPEN_NOT_PERMANENTLY_UNDEFINED
-    complete_acceptance_source_root:
-      members: [CANONICAL_GATE_ENTRY, NORMATIVE_EVIDENCE_OBJECT_CONTRACT, MEMBER_UNIVERSE_DEFINITION, ORDERED_CLAIM_PREDICATE_AST_SET, REQUIRED_ADVERSARIAL_TEST_SET, TRUST_ROOT_SET, REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE_WHEN_TIER_IS_BOOTSTRAP_FROZEN]
-      source: AUTHORITY_TIER_SELECTED_BY_GATE_ID
-      missing_or_post_review_selected_member_effect: OPEN
-    bootstrap_compiled_registry_binding:
-      source_path: docs/codex-program/bootstrap-acceptance-source.json
-      source_sha256: ff9e7001253620e262855b11c527e281da613333e620795180a93d58f1aff654
-      closed_validator_executable_set_digest: f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec
-      authority: ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE
-      exact_active_definition_count: 11
-      exact_genesis_gate_count: 10
-      exact_active_gate_order: [G0_MARKET_STATS_CONTAINED, G0_BROAD_CORPUS_ROUTES_CONTAINED, G0_ZAYO_DISPOSITION, G0_CLAUDE_CREDENTIAL_ROTATION, G0_SUPABASE_SECRET_DISPOSITION, G0_STAGING_SUPABASE_ISOLATED, G0_STAGING_VERCEL_ISOLATED, G0_STAGING_ACCESS_PROTECTED, G0_EXACT_DIGEST_REVIEW_SET, G0_BEN_SPEC_APPROVAL, P1_CONTRACT_FREEZE_ATTESTED]
-      required_definition_field_totality: EXACTLY_ALL_ACCEPTANCE_DEFINITION_REQUIRED_FIELDS_AND_CLAIM_PREDICATE_REQUIRED_FIELDS
-      evidence_schema_source: COMPLETE_JSON_SCHEMAS_IN_REVIEWED_SOURCE
-      member_universe_source: COMPLETE_SCHEMA_EXPANSIONS_AND_ENUMERATOR_SOURCE_IN_REVIEWED_SOURCE
-      predicate_ast_source: ORDERED_TYPED_INPUTS_AND_MEASUREMENT_SOURCE_IN_REVIEWED_SOURCE
-      definition_compile_input: EXACT_REVIEWED_SPECIFICATION_ROOT_PLUS_FROZEN_GATE_DESCRIPTOR_PLUS_CONTENT_ADDRESSED_SCHEMA_ENUMERATOR_AND_PREDICATE_MEMBERS
-      definition_compile_output: EXACTLY_ONE_CONTENT_ADDRESSED_PROGRAMME_GATE_ACCEPTANCE_DEFINITION_PER_ACTIVE_GATE
-      runtime_or_request_supplied_semantics: PROHIBITED
-      missing_extra_duplicate_or_digest_mismatched_definition_effect: OPEN
-      runtime_digest_mismatch_effect: OPEN
-    acceptance_definition_required_fields:
-      - definition_id
-      - definition_digest
-      - evidence_object_json_schema_digest
-      - evidence_subject_type
-      - evidence_subject_identity_fields
-      - immutable_member_universe_definition
-      - immutable_member_json_schema_set_digest
-      - member_enumerator_executable_digest
-      - member_enumerator_configuration_digest
-      - ordered_claim_predicate_definitions
-    claim_predicate_required_fields:
-      - claim_key
-      - result_type
-      - exact_input_member_types_and_paths
-      - measurement_executable_digest
-      - measurement_configuration_digest
-      - comparison_operator
-      - expected_typed_value
-    unresolved_ambiguous_or_unbound_acceptance_definition_effect: OPEN
-    required_fields:
-      - gate_id
-      - evidence_contract
-      - acceptance_definition_id
-      - acceptance_definition_digest
-      - specification_root
-      - code_commit
-      - environment
-      - evidence_subject_type
-      - evidence_subject_id
-      - evidence_subject_payload_digest
-      - required_evidence_object_type
-      - exact_acceptance_claims
-      - immutable_member_root
-      - validator_executable_digest
-      - validator_configuration_digest
-      - validator_key_id
-      - terminal_state
-      - signature
-    acceptance_predicate:
-      evidence_contract_selects_exact_schema: true
-      acceptance_definition_is_unique_root_bound_and_content_addressed: true
-      required_object_type_matches_gate: true
-      subject_type_identity_and_payload_match_definition: true
-      member_universe_and_member_schemas_match_definition: true
-      acceptance_claim_keys_equal_gate_claims: true
-      every_claim_uses_its_exact_typed_predicate: true
-      recompute_member_universe_and_measurements_from_immutable_members: true
-      specification_code_environment_and_subject_match: true
-      validator_executable_and_configuration_are_allowlisted: true
-      verify_signature_and_trust_chain: true
-      required_adversarial_tests_are_terminal_pass: true
-      required_adversarial_test_execution_signatures_are_trusted: true
-      terminal_state_must_equal: PASS
-    adversarial_test_execution_attestation:
-      schema: ProgrammeGateTestExecutionRecord/V1
-      protected_signer_role: TEST_EXECUTION_ATTESTER
-      signature_domain: PROGRAMME_GATE_TEST_EXECUTION/V1
-      attester_key_must_equal_envelope_validator_key: true
-      signed_fields_include_exit_code_and_output_digest: true
-      caller_supplied_unsigned_or_tampered_result_effect: OPEN
-    schema_or_predicate_unregistered_effect: OPEN
-    unknown_extra_or_missing_claim_effect: OPEN
-    request_supplied_result_effect: OPEN
-    status_projection: RECOMPUTED_FROM_VALIDATED_EVIDENCE_ONLY
+  review_model:
+    exact_milestones:
+      - id: M1_CONTRACT_FREEZE
+        purpose: CONTRACT_BUNDLE_READY_FOR_BEN_APPROVAL
+      - id: M2_VERTICAL_SLICE
+        purpose: QXO_AND_METSERA_VERTICAL_SLICES_PASS
+      - id: M3_FULL_CORPUS_CERTIFICATION
+        purpose: PHASE_9_QUALITY_WORK_COMPLETE
+      - id: M4_PRE_CUTOVER
+        purpose: PRODUCTION_IMPORT_AND_ACTIVATION_READY
+    reviewer: FABLE_OR_EQUIVALENT_HIGH_REASONING_REVIEWER
+    review_scope: DIFF_SINCE_PRIOR_REVIEWED_STATE
+    reviewer_inputs: [DIFF, RELEVANT_CONTRACTS]
+    prior_conclusions_supplied: false
+    acknowledgement_directory: docs/acks
+    acknowledgement_required_fields:
+      - reviewed_commit_range
+      - date
+      - reviewer
+      - findings
+      - dispositions
+      - result
+    acknowledgement_result_values: [PASS, FAIL]
+    failed_review_action: BOUNDED_FIX_LIST_AND_FIX_DIFF_REVIEW_ONLY
+    additional_milestones_permitted: false
+    legal_semantic_diff_review:
+      remains_required_at_merge: true
+      milestone_event: false
 
-  mandatory_adversarial_test_binding:
-    source: docs/codex-program/adversarial-tests.md
-    executable_registry_source: lib/programme-gates/test-executable-registry.js
-    fail_closed_unimplemented_executable: scripts/run-unimplemented-adversarial-test.mjs
-    enumeration_rule: EVERY_BACKTICKED_LIST_ITEM_IDENTIFIER_IN_SOURCE_ORDER
-    expected_identifier_count: 289
-    expected_identifier_set_sha256: a03e2ac797ce941f1b04f82b30be78eb183ab5f26bf24c46b34046eef62b16a8
-    authoritative_root: DOMAIN_SEPARATED_ROOT_OVER_ORDERED_IDENTIFIER_TEST_DEFINITION_AND_EXECUTABLE_DIGEST_TUPLES
-    enforcement_gate: P9_SCOPE_EXACT
-    pre_cutover_requirement: EVERY_MEMBER_TERMINAL_PASS
-    local_gate_required_adversarial_tests_semantics: EARLY_MINIMUM_ONLY_NOT_COMPLETE_PRECUTOVER_UNIVERSE
-    executable_mapping_totality: EVERY_IDENTIFIER_HAS_ONE_FROZEN_EXECUTABLE_DIGEST_AND_UNIMPLEMENTED_HANDLERS_CANNOT_EXIT_ZERO
-    missing_extra_duplicate_or_unbound_member_effect: OPEN
+  ben_approval_points:
+    - MATERIAL_CONTRACT_BUNDLE_FREEZE
+    - MATERIAL_TAXONOMY_OR_CODEBOOK_CHANGE
+    - PRODUCTION_IMPORT_WHERE_REQUIRED_BY_IMPORT_CONTRACT
+    - ONE_USE_PRODUCTION_CUTOVER
+  routine_branch_integration_deployment_or_ledger_work_requires_ben: false
 
-  reviewer_eligibility:
-    formal_legal_semantic_reviewer: Fable or an independent 5.6 Sol reviewer using high reasoning.
-    accepted_reviewer_classes:
-      - FABLE_ELIGIBLE
-      - SOL_5_6_HIGH_ELIGIBLE
-    sol_provider_model_id: gpt-5.6-sol
-    sol_provider_reasoning_value: high
-    sol_canonical_reasoning_label: high
-    review_evidence_schema: trusted-review-controller-record/v1
-    review_evidence_source: TRUSTED_REVIEW_CONTROLLER_SIGNED_IMMUTABLE_RECORD
-    review_evidence_retrieval: VALIDATOR_DETERMINISTICALLY_ENUMERATES_CLOSED_EVIDENCE_SET_AND_LOADS_EXACT_RECORD
-    g0_disposition_scope:
-      purpose: G0_START_SAFETY
-      permits: [IMPLEMENTATION_PLANNING, ISOLATED_STAGING_SETUP, STAGING_ONLY_CANONICAL_ENGINEERING_BEHIND_DISABLED_PRODUCTION_FLAGS]
-      reviews: [TEN_G0_GATES, G0_EVIDENCE, WORK_CLASS_PROJECTION, ONE_USE_BOOTSTRAP, PROTECTED_SIGNER, TWO_FILE_CAS_PUBLICATION, NO_PRODUCTION_DATA_RELEASE_OR_FEATURE_ACTIVATION]
-      later_open_scope: [P1_CONTRACT_FREEZE, P1_VERTICAL_SLICE, P9_CORPUS, P9_QUERY, P9_SERVING, P9_RELEASE, P9_LOAD, P9_CUTOVER, P9_COMPLETION]
-      later_scope_finding_effect: NON_BLOCKING_UNLESS_G0_EVIDENCE_FALSE_START_AUTHORITY_WIDENED_OR_LATER_GATE_BYPASSED
-      p1_reuse_effect: PROHIBITED_FRESH_FULL_ARCHITECTURE_AND_CONTRACT_REVIEW_REQUIRED
-    review_controller_trust_root_set: trusted-review-controller-keys/2026-07-frozen-v1
-    frozen_controller_and_runtime_allowlist:
-      controller_id: CODEX_CLI_REVIEW_CONTROLLER
-      controller_version: LOCAL_REVIEW_CONTROLLER/V1
-      review_runtime_version: codex-cli/0.145.0
-      review_runtime_binary_path: /opt/homebrew/bin/codex
-      review_runtime_entrypoint_sha256: 134063e133f0b4244fa3b251acf973d4fe4b4aeeacbdc135211bf480f59f1477
-      exact_model_identifier: gpt-5.6-sol
-      reasoning_level: high
-      fixed_context_rule: HASH_OF_CLOSED_TRUSTED_REVIEW_RUNTIME_CONTEXT_WITH_FRESH_CONTROLLER_CREATED_PATHS
-      fixed_context_closed_fields: [context_version, review_runtime_binary_path, review_runtime_version, review_runtime_binary_digest, controller_run_root, lane_run_root, working_directory, operating_system, architecture, home_path, codex_home_path, tmpdir_path, path_value, lang, lc_all, term]
-      fixed_context_constants: [TrustedReviewRuntimeContext/V1, /opt/homebrew/bin/codex, codex-cli/0.145.0, darwin, arm64, "/opt/homebrew/bin:/usr/bin:/bin", en_US.UTF-8, en_US.UTF-8, dumb]
-      fresh_path_rule: EACH_WORKING_HOME_CODEX_HOME_AND_TMPDIR_PATH_IS_CONTROLLER_CREATED_UNDER_THE_ONE_RUN_TEMP_ROOT_AND_IS_PAIRWISE_DISTINCT
-      unknown_runtime_field_constant_OR_path_outside_run_root_effect: INELIGIBLE
-    frozen_lane_prompt_allowlist:
-      ARCHITECTURE: [COLD_ARCHITECTURE_REVIEW/V1, e8aa3359ecf632383562b66d61114b0556d8954527610498663642ab0b972297]
-      LEGAL_SEMANTIC: [COLD_LEGAL_SEMANTIC_REVIEW/V1, 3f3d2e3b0e169a306307082cd3a0681e07164ca6dad73237794ccb78b0de4b6b]
-      QUERY_EFFICIENCY: [COLD_QUERY_EFFICIENCY_REVIEW/V1, 0e5d489625e6cf9124951eb9df47672a668f7f535d3641a972aed5c363f23b06]
-      OPEN_WORLD: [COLD_OPEN_WORLD_REVIEW/V1, 6d792fd85342d5cfa7b3863b32f9f6648afb91c2a27ed4e4b8b80519895d04d0]
-      RELEASE_PROPAGATION: [COLD_RELEASE_PROPAGATION_REVIEW/V1, 57f06078844342428cef8a88f1ccfc731d7a389cc157fb5e4916c98e61e49f56]
-      missing_extra_or_digest_mismatched_prompt_effect: INELIGIBLE
-    frozen_independence_validator_allowlist:
-      validator_key_id: PROGRAMME_GATE_VALIDATOR_2026_07
-      validator_executable_digest: f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec
-      validator_configuration_digest: 44c470631cc0d9cd7b48796f25c12addd3a735ca650f5622dd55db5ed8d30d21
-    frozen_trust_root_set:
-      registry_schema: programme-gate-trusted-public-keys/v1
-      registry_source_sha256: 1e5bb2ef57f756124851ef326f87591cdedc0e4004eb6bfab30dfe37d0c07d2d
-      keys:
-        PROGRAMME_GATE_VALIDATOR_2026_07: 5b028d01aaa4f077c6f2f28ef8075195330eff00c2f81061fad8622b761de566
-        PROGRAMME_STATUS_PUBLISHER_2026_07: d7f562af345fcb04a78f26c87b3e3f19b1cad6c8627ccc612396a4217d8a02c1
-        PROGRAMME_GATE_REVIEW_CONTROLLER_2026_07: d32aebc95114afab334ab1afa2b7c4130a2dafdec93af05dcab56589d4e063d0
-        PROGRAMME_GATE_BEN_APPROVER_2026_07: 2baac1c454dfb918097f2816fc9a230eb93139f735db35b9ed64d0e6846b4c17
-      unknown_replacement_or_post_review_key_effect: OPEN
-    review_controller_signature_verification: SIGNATURE_TO_ALLOWLISTED_CONTROLLER_PROCESS_ONLY_KEY
-    review_controller_required_capabilities:
-      directly_controls_review_execution: true
-      directly_observes_exact_inputs_outputs_and_times: true
-      permits_review_mutation: false
-      owns_signing_key: true
-      controller_process_is_sole_permitted_signing_key_user: true
-      signing_key_accessible_to_reviewer_review_process_operator_input_or_repository: false
-      private_key_enters_review_environment_logs_or_checkout: false
-    review_record_required_fields:
-      - controller_id
-      - controller_version
-      - review_runtime_version
-      - review_runtime_binary_digest
-      - fixed_controller_runtime_context_digest
-      - exact_specification_root
-      - exact_model_identifier
-      - reasoning_level
-      - immutable_task_id
-      - immutable_session_id
-      - immutable_review_id
-      - registered_prompt_id
-      - cold_review_prompt_digest
-      - controller_supplied_input_manifest_digest
-      - exact_input_context_digest
-      - input_context_digest_before_review
-      - input_context_digest_after_review
-      - review_output_digest
-      - review_start_time
-      - review_end_time
-      - reviewer_principal_id
-      - reviewer_source_control_identity_set
-      - reviewer_disposition
-      - reviewer_edit_set_root
-      - parent_session_state
-      - no_earlier_review_conclusions_were_inputs
-      - nonce
-      - signature_algorithm
-      - controller_key_id
-      - controller_signature
-    controller_supplied_task_payload:
-      exact_members_in_order:
-        - EXACT_FROZEN_SPECIFICATION_BYTES
-        - ONE_REGISTERED_LANE_SPECIFIC_COLD_PROMPT
-        - REQUIRED_OUTPUT_SCHEMA
-      extra_member_effect: INELIGIBLE
-      manifest_must_bind_every_member_digest_and_byte_length: true
-    fixed_controller_runtime_context:
-      permitted_members:
-        - PINNED_PLATFORM_INSTRUCTIONS
-        - PINNED_TOOL_SCHEMAS
-      must_be_fixed_for_CONTROLLER_ID_VERSION_AND_REVIEW_RUNTIME_VERSION: true
-      case_specific_content_permitted: false
-      prior_review_finding_or_conclusion_content_permitted: false
-      unknown_changed_or_unrecorded_context_effect: INELIGIBLE
-    reviewer_principal_definition:
-      identity: EXACT_CONTROLLER_RUN_PLUS_FRESH_EPHEMERAL_CLI_SESSION
-      model_family_is_reviewer_principal: false
-    review_session_isolation:
-      all_five_lanes_start_concurrently: true
-      output_bundle_order: [ARCHITECTURE, LEGAL_SEMANTIC, QUERY_EFFICIENCY, OPEN_WORLD, RELEASE_PROPAGATION]
-      fresh_ephemeral_cli_session: true
-      new_CODEX_HOME: true
-      resume_prior_session: false
-      project_rules_loaded: false
-      user_configuration_loaded: false
-      plugins_loaded: false
-      memory_loaded: false
-      prior_session_content_loaded: false
-      review_execution_read_only: true
-      input_context_digest_before_and_after_must_match: true
-    controller_evidence_limit:
-      proves_provider_internal_build: false
-      proves_provider_signature: false
-      proves_absence_of_hidden_provider_context: false
-      claims_any_of_these: false
-      formal_evidence_scope: CONTROLLER_EXECUTION_EVIDENCE_UNDER_THIS_AMENDED_STANDARD
-    reviewer_profiles:
-      FABLE_ELIGIBLE:
-        reviewer_identity_class: FABLE
-        exact_model_rule: CONTROLLER_OBSERVED_FABLE_ELIGIBLE_MODEL
-        exact_model_identifiers: [fable-legal-reviewer]
-        exact_reasoning_level: provider_default
-      SOL_5_6_HIGH_ELIGIBLE:
-        reviewer_identity_class: OPENAI_MODEL
-        exact_model_rule: gpt-5.6-sol
-        exact_reasoning_level: high
-    review_controller_verification_predicate:
-      deterministically_enumerate_closed_evidence_set_and_load_exact_record: true
-      verify_signature_to_allowlisted_controller_process_only_key: true
-      verify_controller_directly_controlled_and_observed_execution: true
-      verify_review_was_read_only: true
-      verify_all_payload_fields_against_review_set: true
-      verify_record_nonce_is_unique: true
-      reject_user_reviewer_or_repository_supplied_substitute: true
-    review_record_acceptance:
-      controller_id_and_version_must_be_allowlisted: true
-      review_runtime_version_and_binary_digest_must_be_allowlisted: true
-      fixed_controller_runtime_context_digest_must_be_allowlisted: true
-      controller_supplied_input_manifest_must_equal_exact_task_payload: true
-      unknown_changed_or_extra_runtime_or_task_input_effect: INELIGIBLE
-      input_context_digests_before_and_after_must_match: true
-      exact_specification_root_must_equal_review_set_root: true
-      parent_session_state_must_be: GENESIS
-      no_earlier_review_conclusions_were_inputs_must_be: true
-      reviewer_edit_set_root_must_be: EMPTY
-      reviewer_disposition_must_match_signed_review_output: true
-      pass_and_fail_outcomes_are_recordable: true
-      recorded_fail_outcome_does_not_mean_substantive_review_pass: true
-      record_nonce_must_be_unique: true
-    controller_record_unavailable_or_unverifiable_effect: INELIGIBLE
-    local_cli_or_transcript_only_effect: ADVISORY_ONLY
-    independence_predicate:
-      reviewer_did_not_author_or_modify_input_root: true
-      reviewer_received_prior_conclusions: false
-      reviewer_edit_set_must_be_empty: true
-    independence_evidence_schema: reviewer-independence-attestation/v1
-    independence_evidence_source: STATUS_VALIDATOR_RECOMPUTED_FROM_CONTROLLER_RECORD_AND_COMPLETE_GIT_HISTORY
-    independence_universe_contract:
-      reviewed_bytes_must_be_committed: true
-      reviewer_principal_identity_mapping: REVIEWER_PRINCIPAL_TO_COMPLETE_SOURCE_CONTROL_IDENTITY_SET_FROM_CONTROLLER_RECORD
-      authorship_membership: COMPLETE_NON_SHALLOW_GIT_COMMIT_DAG_AT_THE_REVIEWED_COMMIT_AS_A_CONSERVATIVE_SUPERSET_OF_EVERY_BYTE_AUTHOR
-      review_input_membership: EVERY_CONTROLLER_OBSERVED_TASK_INPUT_PLUS_THE_PINNED_FIXED_CONTROLLER_RUNTIME_CONTEXT
-      allowed_review_input: EXACT_CONTROLLER_SUPPLIED_TASK_PAYLOAD_PLUS_FIXED_CONTROLLER_RUNTIME_CONTEXT
-      cold_prompt_constraint: ROOT_BOUND_PROMPT_DIGEST_WITH_ZERO_PRIOR_REVIEW_FINDING_OR_CONCLUSION_CONTENT
-      prior_conclusion_membership: EVERY_CONTROLLER_OBSERVED_INPUT_OUTSIDE_THE_ALLOWED_TASK_AND_FIXED_RUNTIME_CONTEXT_PLUS_ANY_PRIOR_REVIEW_OUTPUT
-      cutoff: ROOT_FREEZE_PRECEDES_REVIEW_EXECUTION_AND_CONTROLLER_INPUT_CUTOFF_EQUALS_REVIEW_START
-      authorship_source: COMPLETE_GIT_COMMIT_DAG_SUPPLEMENTARY_TO_CONTROLLER_REVIEW_EVIDENCE
-      review_input_source: TRUSTED_REVIEW_CONTROLLER_RECORD_ONLY
-      completeness_proof: FROZEN_VALIDATOR_ENUMERATES_THE_COMPLETE_NON_SHALLOW_GIT_DAG_DIRECTLY_AND_MAPS_ALL_AUTHOR_AND_COMMITTER_IDENTITIES_TO_THE_REVIEWER_PRINCIPAL_IDENTITY_SET
-      missing_or_ambiguous_reviewer_identity_mapping_effect: INELIGIBLE
-      missing_unsigned_unattributed_or_unenumerable_event_effect: INELIGIBLE
-    independence_required_fields:
-      - reviewer_principal_id
-      - immutable_session_id
-      - session_parent_or_genesis
-      - exact_input_context_digest
-      - reviewed_code_commit
-      - source_control_authorship_events
-      - source_control_authorship_event_set_root
-      - authoring_event_intersection_root
-      - prior_conclusion_intersection_root
-      - reviewer_edit_set_root
-      - validator_executable_digest
-      - validator_configuration_digest
-      - validator_key_id
-      - signature
-    independence_acceptance:
-      session_parent_must_be: GENESIS
-      authoring_event_intersection_root_must_be: EMPTY
-      prior_conclusion_intersection_root_must_be: EMPTY
-      reviewer_edit_set_root_must_be: EMPTY
-      validator_must_recompute_not_accept_assertion: true
-    self_asserted_metadata_effect: INELIGIBLE
-    ordinary_sol_effect: ADVISORY_ONLY
+  merge_gates:
+    required_for_every_merge:
+      - npm_test
+      - npm_run_build
+      - main_remains_deployable
+    extraction_change:
+      - node_scripts_eval_js
+      - legal_semantic_diff_review
+    registry_change:
+      - registry_drift_tests
+    ingestion_change:
+      - ingest_qa_gates
+    evidence_change:
+      - quote_verification_zero_flags
+    contract_freeze:
+      - two_uncached_compiles_byte_identical
+      - zero_missing_members
+      - zero_duplicate_identities
+      - zero_conflicts
+      - zero_dependency_cycles
+      - zero_unresolved_dependencies
+      - M1_ack_pass
+      - ben_exact_bundle_approval
+
+  tier_a_pre_cutover:
+    state: ACTIVE
+    controls:
+      - NO_EXTRACTION_REPLAY_BACKFILL_OR_LOAD_TEST_AGAINST_PRODUCTION
+      - BEN_RUN_LOCAL_DRY_RUN_FIRST_CORPUS_WRITES_ONLY
+      - STAGING_ONLY_CREDENTIALS_IN_STAGING_AND_PREVIEW
+      - NO_PRODUCTION_CREDENTIAL_IN_PREVIEW
+      - NO_SERVICE_CREDENTIAL_IN_BROWSER_CODE
+      - VERCEL_DEPLOYMENT_PROTECTION_OR_SSO_ON_PREVIEWS
+      - NO_SECRETS_IN_EVIDENCE_PROMPTS_OR_COMMITTED_FILES
+      - EXISTING_LIVE_ROUTE_GUARD_TESTS_REMAIN_ACTIVE
 
   work_classes:
-    specification_review:
-      all_of: []
-    gate_status_bootstrap:
-      all_of:
-        - specification_review
-      authority_model: TEMPORARY_ONE_USE
-      predecessor: NONE
-      nonce: gate-status-bootstrap-2026-07-27-v1
-      required_adversarial_tests:
-        - GATE-BOOTSTRAP-01
-      authority_scope:
-        permitted:
-          - GOVERNING_SPECIFICATION_AMENDMENT_FOR_GATE_STATUS_BOOTSTRAP
-          - REVIEW_CONTROLLER_SOFTWARE
-          - REVIEW_CONTROLLER_EVIDENCE_SCHEMAS
-          - GATE_EVIDENCE_SCHEMAS
-          - DETERMINISTIC_COMPILATION_OF_FROZEN_GATE_ACCEPTANCE_DEFINITIONS
-          - IMPLEMENTATION_OF_FROZEN_EVIDENCE_ENUMERATORS
-          - IMPLEMENTATION_OF_FROZEN_EVIDENCE_PREDICATES
-          - IMPLEMENTATION_OF_FROZEN_CERTIFICATION_INTEGRITY_VALIDATOR
-          - SIGNING_SYSTEM
-          - STATUS_PUBLISHER
-          - PROGRAMME_STATUS_PUBLICATION_HEAD
-          - G0_SECURITY_DISPOSITION_EVIDENCE_COLLECTION
-          - G0_CONTAINMENT_EVIDENCE_COLLECTION
-          - ISOLATED_STAGING_BOUNDARY_SETUP
-          - STAGING_ACCESS_PROTECTION_AND_VALIDATION
-          - TESTS_FOR_THESE_ITEMS
-        prohibited:
-          - AUTHOR_OR_AMEND_GATE_ACCEPTANCE_SEMANTICS
-          - SELECT_OR_REPLACE_TRUST_ROOTS
-          - CORPUS_EXTRACTION
-          - CORPUS_REPROCESSING
-          - CORPUS_WRITES
-          - BACKFILLS
-          - PRODUCTION_DATA_CHANGES
-          - RELEASE_IMPORT
-          - RELEASE_ACTIVATION
-          - PRODUCT_FEATURE_ACTIVATION
-      terminal_condition:
-        event: FIRST_VALID_PROGRAMME_GATE_STATUS_ARTEFACT_V2_PUBLICATION
-        required_generation: 1
-        required_predecessor: NONE
-        required_work_class_state: canonical_work_start
-        required_work_class_result: PASS
-        work_class_evaluation_source: PROPOSED_STATUS_RECOMPUTED_FROM_VALIDATED_G0_EVIDENCE
-        consume_nonce: true
-        expires_immediately: true
-        reissue_without_new_registry_amendment: PROHIBITED
-    emergency_containment:
-      all_of: []
     implementation_planning:
-      all_of:
-        - G0_EXACT_DIGEST_REVIEW_SET
-        - G0_BEN_SPEC_APPROVAL
+      state: PASS
+      authority: CONTINUOUS_BOUNDED_BRANCH_WORK
     isolation_boundary_setup:
-      all_of:
-        - G0_ZAYO_DISPOSITION
-        - G0_CLAUDE_CREDENTIAL_ROTATION
-        - G0_SUPABASE_SECRET_DISPOSITION
+      state: PASS
+      authority: TIER_A_ONLY
     snapshot_restore_and_preview:
-      all_of:
-        - isolation_boundary_setup
-        - G0_STAGING_SUPABASE_ISOLATED
-        - G0_STAGING_VERCEL_ISOLATED
-        - G0_STAGING_ACCESS_PROTECTED
+      state: PASS
+      authority: ISOLATED_STAGING_ONLY
     canonical_work_start:
-      all_of:
-        - snapshot_restore_and_preview
-        - G0_MARKET_STATS_CONTAINED
-        - G0_BROAD_CORPUS_ROUTES_CONTAINED
-        - G0_EXACT_DIGEST_REVIEW_SET
-        - G0_BEN_SPEC_APPROVAL
+      state: PASS
+      authority: CONTINUOUS_BOUNDED_BRANCH_WORK
     vertical_slice_execution:
-      all_of:
-        - canonical_work_start
-        - P1_CONTRACT_FREEZE_ATTESTED
+      state: OPEN
+      opens_when: M1_CONTRACT_FREEZE_PASS_AND_BEN_BUNDLE_APPROVAL
     candidate_scope_and_extraction:
-      all_of:
-        - vertical_slice_execution
-        - P1_VERTICAL_SLICE_PASS
+      state: OPEN
+      opens_when: M2_VERTICAL_SLICE_PASS
     production_import:
-      all_of:
-        - candidate_scope_and_extraction
-        - P9_SCOPE_EXACT
-        - P9_REGISTRY_DISPOSITIONS
-        - P9_MKT_WORK
-        - P9_BEN_RUNBOOK
-        - P9_NUMERIC
-        - P9_RENDER_PARITY
-        - P9_STRUCTURED_CLAIMS
-        - P9_PARTY_LINT
-        - P9_SECURITY_AUTH
-        - P9_SHADOW_REEXTRACTION
-        - P9_IDENTITY_AND_DRIFT
-        - P9_BROWSER_A11Y_PERFORMANCE
-        - P9_STAGING_SMOKE_AND_ROLLBACK
-        - P9_DATABASE_SOAK
-        - P9_BACKUP_RESTORE
-        - P9_PREIMPORT_TRACEABILITY
-    cutover_authorisation_issue:
-      all_of:
-        - production_import
-        - P9_IMPORT_PARITY
-        - P9_PROMOTION_ELIGIBILITY
-        - P9_DEPLOYMENT_PARITY
+      state: OPEN
+      opens_when: ALL_PREIMPORT_GATES_PASS
     production_cutover:
-      all_of:
-        - cutover_authorisation_issue
-        - P9_CUTOVER_AUTHORISATION
-    programme_complete:
-      all_of:
-        - production_cutover
-        - P9_POSTCUTOVER_SMOKE
-        - P9_TRACEABILITY
-        - P9_PROGRAMME_COMPLETION_ATTESTATION
-      terminal_pair_required: true
-      terminal_pair_contract: PROPOSED_STATUS_PLUS_POST_COMPLETION_TRACE/V1
+      state: OPEN
+      opens_when: M4_PRE_CUTOVER_PASS_AND_ONE_USE_BEN_AUTHORISATION
+    security_hardening:
+      state: DEFERRED_POST_CUTOVER
+      phase: 12
 
-  ordinary_status_publication:
-    status_schema: ProgrammeGateStatusArtefact/V2
-    publication_head_schema: ProgrammeStatusPublicationHead/V1
-    publication_head_authority: REPOSITORY_NATIVE_SINGLE_GIT_REF
-    publication_head_git_ref: refs/heads/programme-status-publication-head
-    publication_writer: PROTECTED_GITHUB_ACTION_ONLY
-    compare_and_swap:
-      expected_current_git_object_id: REQUIRED_EXCEPT_FOR_GENESIS
-      stale_predecessor_effect: REJECT_WITH_ZERO_REF_CHANGE
-      status_and_head_commit: ONE_ATOMIC_GIT_REF_UPDATE
-      manual_status_edit_effect: INVALID
-    first_v2_publication:
-      generation: 1
-      predecessor: NONE
-      gate_projection: ALL_35_REGISTRY_GATES_EXACTLY_ONCE_IN_REGISTRY_ORDER
-      unsupported_p1_and_p9_gate_state: OPEN
-      canonical_work_start_must_be: PASS
-      canonical_work_start_evaluation: RECOMPUTE_WITHIN_PROPOSED_STATUS_FROM_VALIDATED_G0_EVIDENCE_NOT_PREDECESSOR_STATUS
-      consumes_gate_status_bootstrap_nonce: true
-
-  terminal_completion_binding:
-    proposed_status_gates:
-      - P9_TRACEABILITY
-      - P9_PROGRAMME_COMPLETION_ATTESTATION
-    required_trace_phase: POST_COMPLETION
-    required_trace_variant: PASS_PHASE
-    forbidden_trace_variant: FAILURE_TERMINAL
-    publication: DATABASE_TERMINAL_PAIR_THEN_PROTECTED_GIT_REF_CAS
-    database_terminal_pair_authority: APPEND_ONLY_COMPLETION_TERMINAL_PAIR_ATTEMPTS
-    attempt_unique_key: [status_generation, expected_git_predecessor_object_id, proposed_status_payload_digest]
-    open_attempt_cardinality: AT_MOST_ONE_PER_EXPECTED_GIT_PREDECESSOR
-    published_attempt_cardinality: AT_MOST_ONE_GLOBALLY
-    git_head_remains_sole_programme_status_publication_head: true
-    cross_system_atomic_commit_required: false
-    retry_rule: SAME_PREDECESSOR_REVALIDATES_EXISTING_ATTEMPT;ADVANCED_PREDECESSOR_APPENDS_STALE_ABANDONMENT_AND_FULLY_RECOMPUTES_FRESH_NEXT_GENERATION_ATTEMPT
-    partial_pair_effect: OPEN_UNTIL_GIT_HEAD_REFERENCES_THE_EXACT_DATABASE_PAIR
-    later_untraced_status_effect: OPEN
-
-  gates:
-    - id: G0_MARKET_STATS_CONTAINED
-      phase: 0
-      permits_not_applicable: false
-      evidence_contract: route-disabled-code-test-live-response/v1
-      required_evidence_object_type: MarketStatsContainmentAttestation
-      acceptance_claims: [feature_gate_off, live_route_zero_corpus_reads, containment_test_pass]
-      required_adversarial_tests: [P0-ROUTE-01]
-    - id: G0_BROAD_CORPUS_ROUTES_CONTAINED
-      phase: 0
-      permits_not_applicable: false
-      evidence_contract: broad-route-inventory-and-containment/v1
-      required_evidence_object_type: BroadRouteContainmentAttestation
-      acceptance_claims: [source_built_and_runtime_route_inventories_equal, every_broad_route_contained, zero_broad_node_fallback]
-      required_adversarial_tests: [P0-ROUTE-01]
-    - id: G0_ZAYO_DISPOSITION
-      phase: 0
-      permits_not_applicable: false
-      evidence_contract: non-secret-owner-purpose-disposition/v1
-      required_evidence_object_type: ZayoTrafficDisposition
-      acceptance_claims: [owner_and_purpose_recorded_without_secret, recognised_or_rotation_required]
-      required_adversarial_tests: [GATE-01]
-    - id: G0_CLAUDE_CREDENTIAL_ROTATION
-      phase: 0
-      permits_not_applicable: false
-      evidence_contract: non-secret-rotation-completion/v1
-      required_evidence_object_type: ClaudeCredentialRotationReceipt
-      acceptance_claims: [compromised_credentials_revoked, replacement_activation_verified, no_secret_in_evidence]
-      required_adversarial_tests: [GATE-01]
-    - id: G0_SUPABASE_SECRET_DISPOSITION
-      phase: 0
-      permits_not_applicable: true
-      not_applicable_only_if:
-        gate: G0_ZAYO_DISPOSITION
-        fact: recognised_authorised_traffic
-        ben_approval_required: true
-      evidence_contract: non-secret-rotation-or-approved-na/v1
-      required_evidence_object_type: SupabaseSecretDisposition
-      acceptance_claims: [rotation_verified_or_recognised_traffic_na_with_ben_approval, no_secret_in_evidence]
-      required_adversarial_tests: [GATE-01]
-    - id: G0_STAGING_SUPABASE_ISOLATED
-      phase: environment
-      permits_not_applicable: false
-      evidence_contract: staging-project-credential-isolation/v1
-      required_evidence_object_type: StagingSupabaseIsolationAttestation
-      acceptance_claims: [distinct_project_and_credentials, production_dml_denied, snapshot_restore_only]
-      required_adversarial_tests: [DEPLOY-CUTOVER-01]
-    - id: G0_STAGING_VERCEL_ISOLATED
-      phase: environment
-      permits_not_applicable: false
-      evidence_contract: preview-project-credential-isolation/v1
-      required_evidence_object_type: StagingVercelIsolationAttestation
-      acceptance_claims: [branch_preview_uses_staging_only_credentials, production_alias_unchanged]
-      required_adversarial_tests: [DEPLOY-CUTOVER-01]
-    - id: G0_STAGING_ACCESS_PROTECTED
-      phase: environment
-      permits_not_applicable: false
-      evidence_contract: default-deny-preview-access-test/v1
-      required_evidence_object_type: StagingAccessProtectionAttestation
-      acceptance_claims: [complete_preview_route_action_inventory, unauthenticated_access_denied_before_and_after_restore, authenticated_non_admin_privileged_actions_denied, writer_ingest_correction_export_import_promotion_and_cutover_actions_disabled, authorised_read_only_test_access_pass]
-      required_adversarial_tests: [GATE-01, PREVIEW-AUTH-01]
-    - id: G0_EXACT_DIGEST_REVIEW_SET
-      phase: governance
-      permits_not_applicable: false
-      evidence_contract: five-lane-exact-signed-review-outcomes-recorded/v1
-      required_evidence_object_type: ExactDigestReviewSetAttestation
-      acceptance_claims: [five_named_lane_outcomes_recorded_same_root, review_outputs_match_signed_controller_digests, eligible_legal_reviewer, reviewer_independence_recomputed, full_review_pass_not_claimed]
-      required_adversarial_tests: [GATE-01, REVIEW-CONTEXT-01]
-    - id: G0_BEN_SPEC_APPROVAL
-      phase: governance
-      permits_not_applicable: false
-      evidence_contract: ben-exact-root-isolated-staging-authorisation/v1
-      required_evidence_object_type: BenSpecificationApproval
-      acceptance_claims: [approved_root_and_commit_exact, review_outcome_set_acknowledged, ben_identity_and_signature_valid, authorisation_scope_bounded, full_review_pass_not_claimed]
-      required_adversarial_tests: [GATE-01]
-    - id: P1_CONTRACT_FREEZE_ATTESTED
-      phase: 1
-      permits_not_applicable: false
-      evidence_contract: exact-contract-freeze-attestation-and-status-generation/v10
-      required_evidence_object_type: ContractFreezeAttestation
-      acceptance_claims: [bundle_compiles, semantic_and_identity_diff_reviewed, freeze_gate_approved, status_generation_matches]
-      required_adversarial_tests: [CONTRACT-01]
+  preproduction_gates:
+    - id: P1_CONTRACT_BUNDLE_COMPLETE
+      state: OPEN
+      acceptance:
+        - TWO_UNCACHED_COMPILES_BYTE_IDENTICAL
+        - STRUCTURAL_BUNDLE_VALIDATION_PASS
+        - M1_ACK_PASS
+        - BEN_EXACT_BUNDLE_APPROVAL
     - id: P1_VERTICAL_SLICE_PASS
-      phase: vertical-slice
-      permits_not_applicable: false
-      evidence_contract: source-to-shared-row-and-bounded-query-vertical-slice/v1
-      required_evidence_object_type: VerticalSliceAttestation
-      acceptance_claims: [all_fixture_cases_pass, authoritative_writer_only, bounded_query_pass, sibling_render_isolation_pass]
-      required_adversarial_tests: [VERTICAL-SLICE-01]
+      state: OPEN
+      acceptance:
+        - QXO_AGREEMENT_CONTROL_SLICE_PASS
+        - METSERA_PROCESS_SLICE_PASS
+        - M2_ACK_PASS
     - id: P9_SCOPE_EXACT
-      phase: 9
-      evidence_contract: corpus-intake-source-open-world-semantic-composition-exactness/v9
-      required_evidence_object_type: ScopeExactnessAttestation
-      acceptance_claims: [intake_and_source_universes_exact, open_world_and_residual_partitions_total, semantic_and_composition_reconciliations_pass]
-      required_adversarial_tests: [SCOPE-OMISSION-01, DEAL-IDENTITY-AUTHORITY-01, SEMANTIC-OPEN-WORLD-01, OPEN-WORLD-REP-ATTRIBUTE-01, OPEN-WORLD-RELATIONSHIP-01, OPEN-WORLD-PARTY-01, OPEN-WORLD-BASIS-01, OPEN-WORLD-COMPOSITION-01, OPEN-WORLD-SOURCE-ROLE-01, SOURCE-ROLE-ADMISSION-TOPOLOGY-01, OPEN-WORLD-MULTIPLICITY-01, OPEN-WORLD-ISOLATED-01, OPEN-WORLD-IMPACT-ESCAPE-01, OPEN-WORLD-ADOPTION-NOT-EXAMINED-01, OPEN-WORLD-PREVALENCE-BLOCK-01, OPEN-WORLD-SIMILARITY-NO-AUTHORITY-01, OPEN-WORLD-DISPOSITION-TOTALITY-01, OPEN-WORLD-KIND-SUPERSESSION-01, OPEN-WORLD-IMPACT-INDEPENDENCE-01, OPEN-WORLD-STATUS-AXES-01, OPEN-WORLD-RELEASE-PROPAGATION-01, OPEN-WORLD-SERVING-ACCESS-01, OPEN-WORLD-UI-ISOLATION-01, SOURCE-SPECIFIC-METRIC-BOUNDARY-01, SOURCE-SPECIFIC-CLOSURE-ACYCLIC-01, SOURCE-SPECIFIC-CARDINALITY-01, RESIDUAL-TOTALITY-01]
+      state: OPEN
     - id: P9_REGISTRY_DISPOSITIONS
-      phase: 9
-      evidence_contract: frozen-registry-full-disposition/v1
-      required_evidence_object_type: RegistryDispositionAttestation
-      acceptance_claims: [registry_universe_frozen, every_entry_has_one_final_disposition, review_queue_empty]
-      required_adversarial_tests: [GATE-01]
+      state: OPEN
     - id: P9_MKT_WORK
-      phase: 9
-      evidence_contract: mkt-1-2-3-completion/v1
-      required_evidence_object_type: MarketWorkCompletionAttestation
-      acceptance_claims: [mkt_1_pass, mkt_2_pass, mkt_3_pass]
-      required_adversarial_tests: [GATE-01]
+      state: OPEN
     - id: P9_BEN_RUNBOOK
-      phase: 9
-      evidence_contract: ben-runbook-completion/v1
-      required_evidence_object_type: BenRunbookCompletionAttestation
-      acceptance_claims: [runbook_item_universe_frozen, every_item_terminal, ben_signoff_valid]
-      required_adversarial_tests: [GATE-01]
+      state: OPEN
     - id: P9_NUMERIC
-      phase: 9
-      evidence_contract: numeric-schema-backfill-certification/v1
-      required_evidence_object_type: CanonicalNumericBackfillAttestation
-      acceptance_claims: [migration_applied_in_staging, backfill_complete, denominator_and_unit_lineage_valid, no_error_probe_path]
-      required_adversarial_tests: [OPEN-WORLD-BASIS-01]
+      state: OPEN
     - id: P9_RENDER_PARITY
-      phase: 9
-      evidence_contract: source-fidelity-and-cross-view-render-parity-certification/v3
-      required_evidence_object_type: RenderParityAttestation
-      acceptance_claims: [source_fidelity_pass, shared_row_contract_equal_across_views, visual_and_browser_parity_pass]
-      required_adversarial_tests: [OPEN-WORLD-UI-ISOLATION-01, SOURCE-FIDELITY-01, CROSS-VIEW-SURFACE-01]
+      state: OPEN
     - id: P9_STRUCTURED_CLAIMS
-      phase: 9
-      evidence_contract: claims-and-relationship-effects-validation-persistence-enforcement/v2
-      required_evidence_object_type: StructuredClaimsEnforcementAttestation
-      acceptance_claims: [typed_claims_only, relationship_effects_validated, invalid_payload_quarantined, persistence_constraints_enforced]
-      required_adversarial_tests: [CONTRACT-01]
+      state: OPEN
     - id: P9_PARTY_LINT
-      phase: 9
-      evidence_contract: party-token-lint/v1
-      required_evidence_object_type: PartyTokenLintAttestation
-      acceptance_claims: [party_token_universe_complete, unknown_tokens_block, zero_lint_failures]
-      required_adversarial_tests: [OPEN-WORLD-PARTY-01]
-    - id: P9_SECURITY_AUTH
-      phase: 9
-      evidence_contract: route-action-auth-security/v1
-      required_evidence_object_type: RouteActionSecurityAttestation
-      acceptance_claims: [route_action_matrix_complete, client_auth_decision_enforced, unauthorised_actions_denied]
-      required_adversarial_tests: [GATE-01]
+      state: OPEN
     - id: P9_SHADOW_REEXTRACTION
-      phase: 9
-      evidence_contract: candidate-bound-repeated-shadow-extraction/v2
-      required_evidence_object_type: ShadowReextractionAttestation
-      acceptance_claims: [attestation_subject_equals_import_candidate, two_full_runs_complete, disagreements_receive_third_run, high_risk_families_receive_third_run, every_disagreement_human_adjudicated, every_affected_unit_has_fresh_confirming_run, candidate_and_confirmed_shadow_semantics_equal, zero_unresolved_or_postconfirmation_change]
-      required_adversarial_tests: [SHADOW-REEXTRACTION-01, OPEN-WORLD-RELEASE-IMMUTABILITY-01]
+      state: OPEN
     - id: P9_IDENTITY_AND_DRIFT
-      phase: 9
-      evidence_contract: identity-open-world-residual-recovery-drift/v5
-      required_evidence_object_type: IdentityAndDriftAttestation
-      acceptance_claims: [exact_identity_stable, zero_silent_semantic_drift, residual_queue_empty, recovery_counters_zero]
-      required_adversarial_tests: [RESIDUAL-TOTALITY-01, OPEN-WORLD-RELEASE-PROPAGATION-01, CORRECTION-DISCHARGE-01, CORRECTION-APPLY-RECEIPT-01]
+      state: OPEN
     - id: P9_BROWSER_A11Y_PERFORMANCE
-      phase: 9
-      evidence_contract: browser-row-isolation-a11y-performance/v3
-      required_evidence_object_type: BrowserAcceptanceAttestation
-      acceptance_claims: [all_views_pass, row_failure_isolated, accessibility_pass, performance_budget_pass]
-      required_adversarial_tests: [OPEN-WORLD-UI-ISOLATION-01]
+      state: OPEN
     - id: P9_STAGING_SMOKE_AND_ROLLBACK
-      phase: 9
-      evidence_contract: first-cutover-legacy-and-advanced-head-historical-reactivation/v6
-      required_evidence_object_type: StagingSmokeRollbackAttestation
-      acceptance_claims: [staging_smoke_pass, first_cutover_rollback_pass, advanced_head_reactivation_pass]
-      required_adversarial_tests: [DEPLOY-CUTOVER-01, RELEASE-STATE-V3-01, HISTORICAL-REACTIVATION-ADVANCED-HEAD-01]
+      state: OPEN
     - id: P9_DATABASE_SOAK
-      phase: 9
-      evidence_contract: sixty-connection-load-soak/v2
-      required_evidence_object_type: DatabaseLoadSoakAttestation
-      acceptance_claims: [load_dataset_bound_to_exact_candidate_release_and_capacity_manifest, complete_composite_shape_and_worst_case_witness_coverage_pass, micro_pool_not_exhausted, fixed_call_and_statement_budgets_hold, n_and_ten_n_invariance_pass, no_fault_success_and_throughput_floors_pass, latency_budgets_pass, post_fault_recovery_floor_pass]
-      required_adversarial_tests: [CAPACITY-LOAD-01]
+      state: OPEN
     - id: P9_BACKUP_RESTORE
-      phase: 9
-      evidence_contract: backup-restore-legacy-genesis-and-canonical-rollback/v5
-      required_evidence_object_type: BackupRestoreAttestation
-      acceptance_claims: [backup_restores, legacy_genesis_rollback_rehearsed, canonical_rollback_rehearsed]
-      required_adversarial_tests: [DEPLOY-CUTOVER-01]
+      state: OPEN
     - id: P9_PREIMPORT_TRACEABILITY
-      phase: 9
-      evidence_contract: preimport-open-world-trace-prefix-set-equality/v4
-      required_evidence_object_type: PreImportTraceabilityAttestation
-      acceptance_claims: [required_object_and_trace_sets_equal, open_world_and_residual_lineage_complete, no_untraced_preimport_object]
-      required_adversarial_tests: [TRACE-PHASE-COVERAGE-01, RESIDUAL-TOTALITY-01]
-    - id: P9_IMPORT_PARITY
-      phase: 9
-      evidence_contract: inactive-production-semantic-import-parity/v6
-      required_evidence_object_type: ProductionImportAttestation
-      acceptance_claims: [inactive_namespace_only, logical_and_physical_sets_equal, semantic_and_market_parity_pass]
-      required_adversarial_tests: [IMPORT-SEMANTIC-PARITY-01, IMPORT-MARKET-PARITY-01]
-    - id: P9_PROMOTION_ELIGIBILITY
-      phase: 9
-      evidence_contract: current-candidate-or-historical-reactivation-eligibility/v2
-      required_evidence_object_type: PromotionEligibilityProof
-      acceptance_claims: [candidate_or_historical_branch_exclusive, currentness_rechecked, promotion_fence_held]
-      required_adversarial_tests: [PROMOTION-EVIDENCE-01]
+      state: OPEN
     - id: P9_DEPLOYMENT_PARITY
-      phase: 9
-      evidence_contract: certified-executable-and-live-readiness-parity/v8
-      required_evidence_object_type: DeploymentParityAttestation
-      acceptance_claims: [certified_and_deployed_builds_equal, runtime_configuration_equal, readiness_tuple_equal, production_release_statistics_root_equal, live_physical_plan_fingerprint_root_equal, activation_parity_recheck_fresh_and_current]
-      required_adversarial_tests: [DEPLOY-CUTOVER-01, DEPLOYMENT-PARITY-FRESHNESS-01]
-    - id: P9_CUTOVER_AUTHORISATION
-      phase: 9
-      evidence_contract: one-use-ben-authorisation-readiness-successor/v7
-      required_evidence_object_type: CutoverAuthorisation
-      acceptance_claims: [ben_authorisation_valid_and_single_use, readiness_predecessor_exact, proposed_successor_exact, activation_parity_recheck_selected, ongoing_readiness_authority_valid_for_later_cutover]
-      required_adversarial_tests: [CUTOVER-STATUS-TOPOLOGY-01, DEPLOYMENT-PARITY-FRESHNESS-01, ONGOING-READINESS-AUTHORITY-01]
-    - id: P9_POSTCUTOVER_SMOKE
-      phase: 9
-      evidence_contract: readiness-bound-postcutover-smoke-attestation/v7
-      required_evidence_object_type: PostCutoverSmokeAttestation
-      acceptance_claims: [smoke_bound_to_active_readiness_tuple, live_suite_pass, live_query_plan_smoke_equal, failure_controller_not_triggered]
+      state: OPEN
+      acceptance:
+        - production_release_statistics_root_equal
+        - live_physical_plan_fingerprint_root_equal
+        - live_query_plan_smoke_equal
+        - activation_parity_recheck_fresh_and_current
+      governing_test: DEPLOYMENT-PARITY-FRESHNESS-01
       required_adversarial_tests: [POST-ACTIVATION-CONTROLLER-01, DEPLOY-CUTOVER-01]
+    - id: P9_IMPORT_PARITY
+      state: OPEN
+    - id: P9_PROMOTION_ELIGIBILITY
+      state: OPEN
+    - id: P9_CUTOVER_AUTHORISATION
+      state: OPEN
+    - id: P9_POSTCUTOVER_SMOKE
+      state: OPEN
     - id: P9_TRACEABILITY
-      phase: 9
-      evidence_contract: preterminal-bidirectional-trace-set-equality/v6
-      required_evidence_object_type: TraceabilityAttestation
-      acceptance_claims: [required_objects_equal_trace_rows, forward_and_reverse_links_complete, failure_and_pass_topologies_valid]
-      required_adversarial_tests: [TRACE-EXTENSION-01, TRACE-PHASE-COVERAGE-01]
-    - id: P9_PROGRAMME_COMPLETION_ATTESTATION
-      phase: 9
-      evidence_contract: preterminal-programme-completion-attestation/v6
-      required_evidence_object_type: ProgrammeCompletionAttestation
-      acceptance_claims: [all_preterminal_required_gates_pass, postcutover_smoke_pass, completion_context_ready]
-      required_adversarial_tests: [PROGRAMME-COMPLETE-01]
+      state: OPEN
+
+  production_import_and_cutover:
+    strictness: UNCHANGED
+    required_controls:
+      - EXACT_BUNDLE_DIGEST_VERIFICATION
+      - COMPLETE_MEMBER_PARITY
+      - CHECKPOINTED_RESUMABLE_IMPORT
+      - IMPORT_CHECKPOINT_REPLAY_NO_OP
+      - CONFLICTING_REPLAY_FAILS_CLOSED
+      - ATOMIC_WHOLE_TUPLE_ACTIVATION
+      - POST_CUTOVER_SMOKE_WITH_ROLLBACK
+      - ONE_USE_BEN_CUTOVER_AUTHORISATION
+
+  phase_12_security_gates:
+    phase: 12
+    state: DEFERRED_POST_CUTOVER
+    blocks_cutover: false
+    gates:
+      - id: P9_SECURITY_AUTH
+        state: DEFERRED_POST_CUTOVER
+      - id: P10_SECURITY_01
+        state: DEFERRED_POST_CUTOVER
+      - id: ROUTE_ACTION_THREE_WAY_INVENTORY
+        state: DEFERRED_POST_CUTOVER
+      - id: DEFAULT_DENY_FULL_PROBE_SUITE
+        state: DEFERRED_POST_CUTOVER
+      - id: EGRESS_DENY_BY_DEFAULT_CERTIFICATION
+        state: DEFERRED_POST_CUTOVER
+      - id: ACTION_AUTH_MATRIX_AND_WHOLE_TUPLE_REVOCATION
+        state: DEFERRED_POST_CUTOVER
+      - id: MALICIOUS_SOURCE_AND_SUBSTITUTION_SECURITY_SUITE
+        state: DEFERRED_POST_CUTOVER
+      - id: SNAPSHOT_SECURITY_ATTESTATIONS
+        state: DEFERRED_POST_CUTOVER

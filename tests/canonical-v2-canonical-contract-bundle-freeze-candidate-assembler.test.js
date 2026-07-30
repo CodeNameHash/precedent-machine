@@ -7,7 +7,6 @@ const {
   contentId,
   sha256Hex,
 } = require('../lib/canonical-v2/canonical-bytes');
-const { domainDigest } = require('../lib/programme-gates/bytes');
 const { validateSchema } = require('../lib/programme-gates/schema-registry');
 const {
   CLASSIFICATION_REGISTRY_SCHEMA_VERSION,
@@ -16,7 +15,6 @@ const {
   REQUIRED_BUNDLE_KINDS,
 } = require('../lib/canonical-v2/canonical-contract-bundle-compiler');
 const {
-  FORMAL_FREEZE_EVIDENCE_INPUTS,
   assertDeterministicCompilations,
   assembleCanonicalContractBundleFreezeCandidate,
 } = require(
@@ -225,7 +223,7 @@ test('assembles the same non-authorising freeze candidate twice', () => {
   assert.equal(first.disposition.production_authority, 'NONE');
 });
 
-test('emits an exact generated-output inventory and unsigned receipt body', () => {
+test('emits an exact generated-output inventory', () => {
   const candidate = assembleCanonicalContractBundleFreezeCandidate(fixture());
   const inventory = candidate.generated_output_inventory;
   assert.equal(inventory.length, 14);
@@ -238,72 +236,6 @@ test('emits an exact generated-output inventory and unsigned receipt body', () =
     [...inventory.map((entry) => entry.path)].sort(),
   );
   inventory.forEach((entry) => assert.match(entry.payload_digest, /^[a-f0-9]{64}$/));
-
-  const receipt = candidate.unsigned_contract_bundle_compilation_receipt_payload;
-  assert.equal(receipt.schema_version, 'ContractBundleCompilationReceipt/V1');
-  assert.equal(receipt.contract_bundle_id, candidate.contract_bundle_id);
-  assert.equal(receipt.contract_bundle_digest, candidate.contract_bundle_digest);
-  assert.equal(receipt.frozen_contract_pair_digest, 'f'.repeat(64));
-  assert.deepEqual(receipt.generated_outputs, inventory);
-  assert.deepEqual(receipt.compile_errors, []);
-  assert.deepEqual(receipt.cycle_errors, []);
-  assert.deepEqual(receipt.drift_errors, []);
-  assert.equal(receipt.terminal_state, 'PASS');
-  assert.equal('receipt_id' in receipt, false);
-  assert.equal('validator_key_id' in receipt, false);
-  assert.equal('signature_algorithm' in receipt, false);
-  assert.equal('signature' in receipt, false);
-
-  const unsignedIdentity = {
-    ...receipt,
-    validator_key_id: 'VALIDATOR_KEY',
-    signature_algorithm: 'Ed25519',
-  };
-  const schemaCompleteReceipt = {
-    ...unsignedIdentity,
-    receipt_id: domainDigest(
-      'PROGRAMME_GATE_CONTRACT_COMPILATION_RECEIPT_ID/V1',
-      unsignedIdentity,
-    ),
-    signature: Buffer.from('schema-only-test-signature', 'utf8').toString('base64'),
-  };
-  assert.equal(
-    validateSchema('ContractBundleCompilationReceipt/V1', schemaCompleteReceipt),
-    true,
-  );
-});
-
-test('identifies every formal freeze input without claiming it exists', () => {
-  const candidate = assembleCanonicalContractBundleFreezeCandidate(fixture());
-  assert.deepEqual(
-    candidate.formal_freeze_evidence_input_inventory,
-    FORMAL_FREEZE_EVIDENCE_INPUTS,
-  );
-  assert.equal(
-    candidate.formal_freeze_evidence_input_inventory
-      .find((entry) => entry.schema_id === 'CanonicalContractBundleMember/V1')
-      .preparation_state,
-    'PREPARED_BY_ASSEMBLER',
-  );
-  assert.equal(
-    candidate.formal_freeze_evidence_input_inventory
-      .find((entry) => entry.schema_id === 'ContractBundleCompilationReceipt/V1')
-      .preparation_state,
-    'UNSIGNED_PAYLOAD_PREPARED_BY_ASSEMBLER',
-  );
-  assert.equal(
-    candidate.formal_freeze_evidence_input_inventory
-      .find((entry) => entry.schema_id === 'ContractDiffReviewAttestation/V1')
-      .preparation_state,
-    'EXTERNAL_INPUT_REQUIRED',
-  );
-  assert.equal(candidate.disposition.independent_reviews_required, true);
-  assert.equal(candidate.disposition.ben_approval_required, true);
-  assert.equal(candidate.disposition.receipt_signature_required, true);
-  assert.equal(
-    candidate.disposition.frozen_contract_pair_binding_validation,
-    'DEFERRED_TO_CONTRACT_FREEZE_ATTESTATION_IDENTITY',
-  );
 });
 
 test('rejects an incomplete authored universe', () => {

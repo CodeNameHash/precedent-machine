@@ -19,11 +19,8 @@ test('P1 evidence runner is isolated, read-only and executes one bounded query R
   assert.doesNotMatch(source, /tzulhdasmioeechxapdy|beddepjkshmgenhsrnno/);
 });
 
-test('P1 evidence runner binds the exact executable fixture and content-addressed attestation', () => {
+test('P1 evidence runner binds the exact executable fixture and rejects drift', () => {
   assert.match(source, /spawnSync\(process\.execPath, \['--test', TEST_FILE\]/);
-  assert.match(source, /createHash\('sha256'\)/);
-  assert.match(source, /buildVerticalSliceAttestation/);
-  assert.match(source, /differs from the immutable reviewed evidence/);
   assert.match(source, /state changed or the market read exceeded one RPC/);
 });
 

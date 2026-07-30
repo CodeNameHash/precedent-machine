@@ -1,241 +1,119 @@
-# PM execution ledger
+# Canonical Corpus V2 execution ledger
 
-This is the operational control record. It does not amend the architecture.
-The governing PM source is [CODEX-PROGRAM.md](../CODEX-PROGRAM.md), with exact
-contracts in [canonical-contracts.md](canonical-contracts.md). Process-owned
-dependencies follow the approved Process Intelligence execution plan at
-`precedent-machine-process-design/docs/superpowers/plans/2026-07-29-process-intelligence-execution-plan.md`,
-SHA-256 `a255661cd51ee121b2d66b9691bd7e55dd2bda44d22c074efe8856973f1d49b0`.
+This is the human-readable programme status. It is an operational control, not
+an architecture document. The governing architecture is
+[CODEX-PROGRAM.md](../CODEX-PROGRAM.md).
 
-`P1` to `P9` below use the PM phases. `P10` and `P11` use the Process plan's
-operational labels. PM production authority remains governed by
-[PM Phase 9](../CODEX-PROGRAM.md#phase-9-candidate-certification-and-production-release).
+The PM controller owns the integration queue and updates this ledger after each
+main integration.
 
-## Control rules
+## 1. Current state
 
-- The PM controller owns `main`, the integration queue, deployments and signed
-  successor publication.
-- Routine branch work, integration, deployment and signed successor
-  publication do not require Ben.
-- Main stays fixed during a work package. It moves once for the tested batch.
-- Commit tests are focused. Work-package tests cover the affected chain. The
-  complete suite and build run once on the combined candidate.
-- PI handoffs use Stages 1 to 9. Stage 2 uses an exact-bound Spark review when
-  one is supplied or available. Otherwise it uses one read-only Terra-medium
-  review. Stage 3 disposes findings and escalates legal, security, identity,
-  cross-contract or uncertain findings to Sol high or xhigh. Stage 4 is the
-  independent exact-root review and never relies on Stage 2.
-- Production containment stays active. No extraction, replay, backfill or load
-  test runs against production.
-- The PM controller updates this file after every signed generation.
-
-Status meanings: `READY` can start; `ACTIVE` is being built; `BLOCKED` lacks a
-required input; `REVIEW` awaits a required check; `INTEGRATION` is complete on
-a branch and queued; `COMPLETE` has passed its stated completion evidence.
-
-## 1. Current signed state
-
-Checked on 2026-07-30 against the protected ref and a clean detached copy of
-exact `origin/main`.
-
-| Item | Exact state |
+| Item | State |
 | --- | --- |
-| Last signed main | `a3149cfb6434f3166aac2c3bd9631e637d5df8ae` |
-| Current `origin/main` | `286d5050280aff6866e7844353dd4623efd4c221` |
-| Protected publication | `9552de2185b11d80bd1e2b80757f4f07005c58d1` |
-| Generation | `44` |
-| Status artefact ID | `864ec7b5ffbc46be61bcf4547b103d747fdb82bb5ac963beaf61bd3ec7a80de9` |
-| Official verifier | `FAIL_CLOSED`: Generation 44 is stale against current `origin/main` |
-| Work classes `PASS` | `specification_review`, `emergency_containment`, `implementation_planning`, `isolation_boundary_setup`, `snapshot_restore_and_preview`, `canonical_work_start` |
-| Work classes `OPEN` | `gate_status_bootstrap`, `vertical_slice_execution`, `candidate_scope_and_extraction`, `production_import`, `cutover_authorisation_issue`, `production_cutover`, `programme_complete` |
-| Pilot gates | `P1_CONTRACT_FREEZE_ATTESTED: OPEN`; `P1_VERTICAL_SLICE_PASS: OPEN` |
-| Exact-main tests | 4,781 total: 4,774 pass, 0 fail, 7 environment-only skip; build 29/29 pages |
-| Signed successor | Not yet published for current main. Generation 44 remains the protected predecessor. |
-| Production deployment | `dpl_5Yh5y6XNb73tdwmgBL7knkEsrQXe`, exact current main, HTTP 200; market containment remains active |
-| Isolated Preview deployment | `dpl_EV6b1bdkXCkW1Ljynm2tRsHNKZ2Y`, exact current main, READY and SSO protected |
-| Active PM work package | `PILOT_FREEZE_AND_VERTICAL_SLICE` |
-| Fixed blocker-closure basis | Current main `286d5050280aff6866e7844353dd4623efd4c221`; main stays fixed until the batch is complete |
-| PM blocker-closure branch | `codex/p1-pilot-freeze-blocker-closure-v1` at `f146d5f`; main remains fixed |
-| PI Stage 1 branch | `codex/process-exclusivity-predicate-runtime-v2` at `639e1d0c3604273315ee914e7d61374518d9b1f9` |
-| Ready integration receipts | PI Stage 1 `639e1d0` and P7 `b273687` are pushed and mechanically confirmed as already present on main with later fixes. Corrected PM units: residuals `5536ebd`, topology `59c7435`, Query/serving `0f7880b`, legal/F27 `58d3d64`. All are queued on `f146d5f`. |
+| Main basis | `7b6bc64157c49832129fa2ca227399850cd983fc` |
+| Governance balance branch | `claude/codex-attestations-build-balance-z3xm23` |
+| Contract bundle | 169 classified inputs, 94 generated members, 8 aggregates |
+| Contract bundle fingerprint | `99b0d267e4d3712c538d3ba206117d2da1bd305c6be71dc664e465fb27854b27` |
+| Latest complete suite on governance candidate | 4,576 pass, 0 fail, 7 skip |
+| Latest production build on basis | PASS, 29/29 pages |
+| M1 contract freeze | OPEN |
+| M2 vertical slice | OPEN |
+| M3 full-corpus certification | OPEN |
+| M4 pre-cutover | OPEN |
+| Tier A containment | ACTIVE |
+| Tier B attacker-model security | DEFERRED_POST_CUTOVER |
 
-All 24 Phase 9 gates in the signed status remain `OPEN`.
+No signed status artefact or protected publication is required for
+pre-production work. This table is the current state.
 
-The machine-generated active branch set is:
-`codex/process-phrasebook-product-result-set-adapter-contract-v1`,
-`codex/pilot-freeze-milestone-v1`,
-`codex/pilot-freeze-shared-consumer-v2`,
-`codex/pm-integration-window-spark-review-v1`,
-`codex/p7-acquisition-machinery`,
-`codex/p7-candidate-machinery`,
-`codex/p7-generic-machinery-integration`,
-`codex/p7-generic-machinery-ready`,
-`codex/p7-lexical-machinery`,
-`codex/p7-scope-semantic-machinery`,
-`codex/process-bidder-track-event-membership-v1`,
-`codex/process-exclusivity-predicate-runtime-v2`,
-`codex/process-navigation-catalogue-v2`,
-`codex/process-predicate-witness-v2`.
-The exact reserved-path set is machine-generated in
-`.github/pm-integration/current-state.json`.
+## Plain-English stage
 
-## 2. Work underway now
+The programme is in P8. P8 means that one real Agreement provision and one
+real Process provision must travel from source evidence to every required
+product view.
 
-| Unit | Phase | Outcome and owner | Branch and boundary | Class; dependency; evidence | Status; next; Ben |
-| --- | --- | --- | --- | --- | --- |
-| `PM-LEDGER-01` | control | This ledger. PM controller. | `codex/p1-pilot-freeze-blocker-closure-v1`; this file plus its exact allowlist in the integration commit. | `canonical_work_start`; current Git and protected status; path, state and line-count checks. | `ACTIVE`; ship in the blocker-closure batch; no Ben. |
-| `PM-FREEZE-ROOT-01` | P1/P8 | Exact bundle compiler, generated topology, required-kind registry, freeze candidate and pre-review package. PM implementation. | `codex/p1-pilot-freeze-blocker-closure-v1` at `f146d5f`; topology correction `59c7435`; central root `4214b64`. | `canonical_work_start`; 167 authored members, eight categories, no cycle; affected chain 175/175; full Stage 5 and two uncached compiles remain. | `ACTIVE`; run full suite/build, compile twice, then Stage 4; no Ben until exact root approval. |
-| `PM-P1-RESIDUAL-01` | P1 | Governed residual family with admission, consumption, universe, disposition, impact and empty-queue rules. PM implementation. | `codex/p1-governed-residual-contract-family-v2` at `5536ebd`; eight contracts, validator and focused test. | `canonical_work_start`; Stage 2 final PASS and central registration PASS. | `COMPLETE`; 13/13 focused and affected chain PASS; no Ben. |
-| `PM-P1-QUERY-SERVING-01` | P1/P4/P6/P7 | Direct Product IR, shared row, pilot metrics and bounded set-based serving/cache rules. PM implementation. | `codex/p1-product-query-serving-contracts-v2` at `0f7880b`; exact cumulative allowlist. | `canonical_work_start`; Stage 2 final PASS and central registration PASS. | `COMPLETE`; direct Product IR and governed result/metric targets pass; no Ben. |
-| `PI-PILOT-BATCH-01` | P1/P3/P4/P5 | Metsera Process contracts and pure runtime. Process Intelligence. | PI head `639e1d0c3604273315ee914e7d61374518d9b1f9`; patch-equivalent PM commits are already on the milestone candidate. | `canonical_work_start`; Generation 44; affected Process/Product chain passed after PM manifest reconciliation. | `COMPLETE` on the milestone candidate; retain exact Stage 1 handoff; no Ben. |
-| `PI-P7-GENERIC-01` | P7 | Seven generic source, scope, enumeration, graph and validation modules. PI with PM review. | PI head `b27368711157982aadff8a5653e66676002a1119`; patch-equivalent files and accepted corrections are on the milestone candidate through `b8606d8`. | `canonical_work_start`; Stage 2 exact-bound review, Stage 3 disposition and P7 affected chain. | `COMPLETE`; 43/43 P7 mechanical-chain tests pass; no Ben. |
-| `PM-P6-ACCEPTANCE-01` | P6 | Fixture-backed Process research surface and source actions. PM implementation. | `components/process/**`, `pages/query/process/pilot.js`, Process result/filter helpers and focused browser/runtime tests. | `canonical_work_start`; P4/P5; 28 focused/runtime tests and local browser acceptance pass. | `REVIEW`; repeat smoke on exact deployed Preview during Stage 5; no Ben. |
-| `PM-P8-REVIEW-CONTROLLER-01` | P8 | Exact-root review-task controller that fails closed without trusted registration. PM controller. | `contract-freeze-review-tasks.js`, its runner, test and exact allowlist. | `canonical_work_start`; final package bytes; focused hostile tests and Stage 3 review. | `COMPLETE` at `19f4c21`; 11 focused hostile tests pass; no Ben. |
-| `PM-P8-REVIEW-REGISTRATION-01` | P8 | Signed registration validation for the exact package, three reviewers and authenticated result digests. PM implementation. | Closed registration schema/carrier, trusted key domains, review-task integration and focused tests. | `canonical_work_start`; hardened P8 controller; hostile substitution and signature tests. | `COMPLETE` at `7310238`; validation only, it does not execute protected reviews; no Ben. |
-| `PM-P8-PROTECTED-REVIEW-PRODUCER-01` | P8 | Protected runner creates three fresh exact-root sessions, then signs the observed registration and authenticated results. PM implementation/controller. | `wp-p1-protected-contract-freeze-reviews-v1.json`, protected workflow and runner, focused test, plus the smallest two-step task-binding correction. | `canonical_work_start`; final fingerprint and registration contracts; hostile session, result, principal, ancestry and signature tests; no data or production authority. | `ACTIVE`; remove pre-execution session/result self-assertion, then build and review the producer; no Ben. |
-| `PM-METSERA-GOLD-01` | PE1/P8 | Sealed source-only Metsera gold. PM implementation. | Current milestone, commit `9bff4690a67018ecf8bb5f582bc51dc0b5c68336`; `evidence/process-intelligence/metsera-gold/**`. | `canonical_work_start`; independent source evidence; 8/8 focused pass. | `COMPLETE`; keep sealed until Stage 4 comparison; no Ben. |
-| `PM-PREFLIGHT-01` | control | Read-only nine-stage integration preflight. PM controller. | Current milestone through `b095d1e6070cfc1038f2246c85e1d1c5251c654c`; `pilot-integration-preflight.*`. | `canonical_work_start`; 20/20 focused pass; independent exact-bound review pass. | `COMPLETE`; run after combined candidate exists; no Ben. |
+P1-P7 supplied the contracts and pure processing modules. The remaining P8
+work is to connect those modules to real QXO and Metsera inputs, the canonical
+writer, one candidate release and the shared product rows. The governance
+balance unit removes obsolete review machinery. It does not change extracted
+facts or legal meaning.
 
-The first Stage 4 exact-root review found blocking residual, generated-topology,
-legal-semantic, shared-row, Product-IR, pilot-metric and serving-cache gaps.
-The bounded closure batch is active. The first review result is not freeze
-evidence because the reviewed root failed.
+## 2. Work underway
 
-## 3. Ordered queue for the next 48 hours
+| Unit | Phase | Outcome | Owner | Branch and files | Required checks | Status | Next action | Ben |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `PM-GOV-BALANCE-01` | control | Replace pre-production attestation machinery with four milestone reviews and Tier A/Tier B security. | PM controller | `claude/codex-attestations-build-balance-z3xm23-work`; governing docs, generated manifest and apparatus-only tests. | Replacement tests, full `npm test`, `npm run build`. | INTEGRATION | Commit the green candidate. | No |
+| `PM-QXO-F28-LINK-01` | P8 | Connect the real QXO F28 graph to writer, correction head, candidate release and serving reads. | PM implementation | Exact runtime branch and paths to be reserved after governance batch. | Focused F28 chain and isolated staging run. | READY | Implement the missing staging execution link. | No |
+| `PM-QUERY-FIXTURE-LINK-01` | P8 | Execute fixture-scoped Product Query and Review paths without opening the production route. | PM implementation | Exact runtime branch and paths to be reserved. | Query, Review, Compare and Corpus Context parity. | READY | Implement after QXO writer link. | No |
+| `PI-METSERA-RUNTIME-01` | P8 | Connect sealed Metsera sources through acquisition, enumeration, validation and pilot materialisation. | Process Intelligence | PI branch and exact files to be supplied in one batch. | Focused Process chain and sealed-gold comparison. | READY | Build the first real-source runtime link. | No |
 
-1. Finish Stage 2 and Stage 3 disposition for the four bounded blocker units.
-2. Integrate the legal-semantic correction unit when its focused tests pass.
-3. Regenerate the required-kind registry, successor manifest, compiler
-   registrations, exact counts and signer inventory once.
-4. Compile the complete Agreement, shared and Process inputs twice without
-   cache. Require identical canonical bytes and fingerprint.
-5. Run the affected-chain tests. Then run the complete suite and build once.
-6. Run the nine-stage preflight. Close all test and exact-root gaps.
-7. `Stage 4`: run architecture/identity, legal-semantic, and query/release
-   reviews concurrently at high reasoning against the corrected exact root.
-8. Prepare the one Ben bundle approval package while Stage 4 runs.
-9. Ask Ben once. After approval, create freeze evidence and publish the signed
-   successor. Retain production containment.
+## 3. Next 48 hours
 
-## 4. Remaining bounded units through P11
+1. Finish `PM-GOV-BALANCE-01`.
+2. Prove the replacement test conditions:
+   - two uncached compiles produce identical bytes;
+   - malformed bundles fail structurally;
+   - import checkpoint replay is a no-op;
+   - conflicting import replay fails closed.
+3. Run the complete suite and production build.
+4. Merge the governance batch. Do not run another governance review.
+5. Implement `PM-QXO-F28-LINK-01`.
+6. Implement `PM-QUERY-FIXTURE-LINK-01`.
+7. Integrate the PI Metsera runtime batch once its focused chain passes.
+8. Run QXO and Metsera in isolated staging.
 
-### P0 to P7 build closure
+## 4. Bounded units through P11
 
-| Unit | Phase | Outcome and owner | Boundary | Class; dependencies; tests | Status; next action; Ben |
-| --- | --- | --- | --- | --- | --- |
-| `P0-BASELINE-01` | P0 | Fixed product and Storylines baselines. PM implementation. | Existing `scripts/process-intelligence-baseline.mjs`, its test and two baseline inventories. | `canonical_work_start`; content IDs and disposition completeness. | `COMPLETE` on signed main; no Ben. |
-| `P1-PROCESS-SUCCESSOR-02` | P1 | Active Process v2 contracts, witness, relationship, code and navigation. PI. | PI head `639e1d0`; exact Process v2 contracts, validators and 11 allowlists are patch-equivalent on the milestone. | `canonical_work_start`; reconciled manifest and affected contract chain. | `COMPLETE` on the milestone candidate; retain exact Stage 1 evidence; no Ben. |
-| `P1-ROOT-CLOSURE-03` | P1 | One fresh manifest and required-kind registry with no legacy duplicates. PM controller. | `contracts/canonical-v2/successor/manifest.json`, `canonical-bundle-input-required-kind-registry.v1.json`, their generators, compiler and tests. | `canonical_work_start`; integrated PI tree; manifest and compiler input checks. | `COMPLETE` on current candidate; rerun uncached at final head; no Ben. |
-| `P2-SHARED-VERIFY-01` | P2 | One compatible released shared projection for each promised field. PM implementation. | `shared-authority-consumed-contract-manifest.js`, `process-deal-fact-projection.js`, shared contract inputs and tests. | `canonical_work_start`; P1 root; P2 hostile tests. | `REVIEW`; stale required-kind expectations are fixed at `1c667dd`, 30/30 focused pass, rerun the P2 chain; no Ben unless scope is removed. |
-| `P3-PROCESS-SEMANTICS-02` | P3 | Complete mandatory exclusivity semantics and stable identities. PI. | Process predicate v2, witness v2, relationship v2, controlled-code v2, pilot and phrasebook modules/tests. | `canonical_work_start`; P1 v2 inputs; P3 hostile tests and Metsera sidecar fixture. | `COMPLETE` on current candidate; repeat affected chain at Stage 5; no Ben. |
-| `P4-QUERY-NAV-02` | P4 | All 41 predicates have admitted Ask and Browse paths with byte-identical Product Query IR. PI with PM integration. | Process navigation v2 and existing Product field, navigation, Ask, Browse and Query modules/tests. | `canonical_work_start`; P1/P2; acceptance tests 1-25 and 54-64. | `COMPLETE` on current candidate; repeat affected chain at Stage 5; no Ben. |
-| `P5-RESULTS-02` | P5 | Ordered Process results, typed failures, source actions and presentation handoff. PI with PM integration. | `process-phrasebook-product-result-set-bridge.js`, Product result/presentation/source modules and exact tests. | `canonical_work_start`; P3/P4; acceptance tests 26-48, 69, 70 and 74-76. | `COMPLETE` on current candidate; repeat affected chain at Stage 5; no Ben. |
-| `P6-INTERFACE-01` | P6 | Fixture-backed Query, Review, Compare, Corpus Context and source reading. PM implementation. | `components/process/**`, `pages/query/process/pilot.js`, Process research helpers and browser/runtime tests. | `canonical_work_start`; P4/P5; 28 focused/runtime tests and local desktop/mobile browser acceptance pass. | `REVIEW`; run exact deployed-Preview smoke at Stage 5; no Ben. |
-| `P7-GENERIC-MACHINERY-01` | P7 | Generic acquisition, completeness, three enumerators, candidate graph and validator. PI with PM review. | Exact seven `process-{source-acquisition,sec-completeness-oracle,scope-enumerator,semantic-enumerator,lexical-enumerator,candidate-graph,candidate-validator}.js` modules, allowlists and tests. | `canonical_work_start`; P1/P3; Stage 2 bound to `b273687`; synthetic and hostile-source tests only. | `COMPLETE` through `b8606d8`; 43/43 mechanical-chain tests pass; no Ben. |
-
-### P8 freeze and bounded pilots
-
-| Unit | Phase | Outcome and owner | Boundary | Class; dependencies; tests | Status; next action; Ben |
-| --- | --- | --- | --- | --- | --- |
-| `P8-INTEGRATION-01` | P8 | One combined, deployable milestone commit. PM controller. | `codex/pilot-freeze-milestone-v1`; exact union of accepted allowlists in `.github/phase-allowlists/`. | `canonical_work_start`; P1-P7 closure; Stage 2/3 records, full suite, build and preflight. | `ACTIVE`; finish P2 chain and protected review producer, then run Stage 5; no Ben. |
-| `P8-BUNDLE-02` | P8 | Deterministic Agreement, shared and Process root. PM implementation. | `canonical-contract-bundle-{compiler,freeze-candidate-assembler,pre-review-package-assembler}.js`, required-kind registry, manifest and tests. | `canonical_work_start`; P8 candidate; two identical uncached compiles and zero structural defects. | `ACTIVE`; compile at final clean head; no Ben. |
-| `P8-REVIEWS-03` | P8 | Three independent reviews of exact bytes. Independent reviewer. | Protected P1 review workflow and runner, immutable external result files and exact package fingerprint. | `canonical_work_start`; P8 bundle; Stage 4 architecture/identity, legal-semantic and query/release reviews at high. | `ACTIVE`; use the protected producer after the final fingerprint exists; no Ben. |
-| `P8-BEN-FREEZE-04` | P8 | Approval of exact bundle and fingerprint. Ben. | External approval record bound to the pre-review package, review results and exact Git commit. | Reserved Ben decision; P8 reviews all pass. | `BLOCKED`; ask once when package is complete; **Ben required**. |
-| `P8-ATTEST-05` | P8 | `P1_CONTRACT_FREEZE_ATTESTED: PASS` and `vertical_slice_execution: PASS`. PM controller. | `contract-freeze-contracts.js`, gate registry/predicates, `sign-g0-evidence.mjs` and protected publication. | Status publisher authority; exact Ben approval; official verifier. | `BLOCKED`; sign and publish after approval; no further Ben. |
-| `P8-QXO-SLICE-06` | P8 | QXO Agreement control slice through all required staging outputs. PM implementation. | `canonical-v2-staging-qxo-capitalisation-f28.mjs`, QXO F28 fixture/runtime and cross-view tests. | `vertical_slice_execution`; P8 attestation; isolated staging only. | `BLOCKED`; execute after verifier passes; no Ben. |
-| `P8-METSERA-SLICE-07` | P8 | Metsera Process slice through the same staging outputs and failure isolation. PI with PM controller. | `evidence/process-intelligence/metsera-gold/**`, Process pilot/result sidecars, canonical writer, candidate release and Product tests. | `vertical_slice_execution`; QXO control and sealed comparison; isolated staging only. | `BLOCKED`; execute after QXO control; no Ben. |
-| `P8-VERTICAL-PASS-08` | P8 | `P1_VERTICAL_SLICE_PASS`, `PROCESS_VERTICAL_SLICE_PASS` and `candidate_scope_and_extraction: PASS`. PM controller. | Signed evidence and protected status. | Both slices pass; official verifier. | `BLOCKED`; publish exact successor; no Ben unless a material contract changes. |
-
-### P9 certification
-
-| Unit | Phase | Outcome and owner | Boundary | Class; dependencies; tests | Status; next action; Ben |
-| --- | --- | --- | --- | --- | --- |
-| `P9-SCOPE-REGISTRY-01` | P9 | Exact scope and final disposition for all registry, residual and novel-candidate members. PM implementation. | Existing candidate manifest/compiler modules; new staging evidence paths are `NEEDS_MECHANICAL_CHECK` before this phase starts. | `candidate_scope_and_extraction`; P8 pass; `P9_SCOPE_EXACT`, `P9_REGISTRY_DISPOSITIONS`. | `BLOCKED`; reserve exact future allowlist before staged scope; no Ben for reviewed existing codes. |
-| `P9-METSERA-CERT-02` | P9 | One sealed Metsera extraction and product certification. PI. | `evidence/process-intelligence/metsera-gold/**`; future staging receipts are external and content-addressed. | `candidate_scope_and_extraction`; P8 pass; all mandatory predicate/action tests. | `BLOCKED`; compare once to sealed gold; no Ben. |
-| `P9-STRATIFIED-03` | P9 | Pre-registered 25-deal tuning and untouched holdout result. PI with reviewer. | Future staging-only release and certification paths are `NEEDS_MECHANICAL_CHECK`; no production path is allowed. | `candidate_scope_and_extraction`; Metsera pass; no failed-holdout repair or rerun. | `BLOCKED`; reserve exact future allowlist before cohort selection; Ben only for material taxonomy. |
-| `P9-MARKET-NUMERIC-04` | P9 | MKT-1/2/3, canonical numeric backfill and comparable market projection. PM implementation. | Existing normalisers and market projection modules; staging migration path is `NEEDS_MECHANICAL_CHECK`. | `candidate_scope_and_extraction`; certified candidate; `P9_MKT_WORK`, `P9_NUMERIC`. | `BLOCKED`; reserve exact staging-only migration boundary; no Ben. |
-| `P9-SEMANTIC-QUALITY-05` | P9 | Structured claims, party lint, shadow runs, stable identity and zero drift. PM implementation and reviewer. | Future extraction receipts, residual roots and certification matrix are external or `NEEDS_MECHANICAL_CHECK`. | `candidate_scope_and_extraction`; full-corpus staging; four named P9 gates. | `BLOCKED`; reserve exact future evidence paths before execution; no Ben unless taxonomy changes. |
-| `P9-RENDER-ACCEPT-06` | P9 | Render parity and full browser, accessibility and performance acceptance. PM implementation. | Existing shared row consumers, `components/process/**`, Product components and browser suites. | Certified candidate; `P9_RENDER_PARITY`, `P9_BROWSER_A11Y_PERFORMANCE`. | `BLOCKED`; test all five surfaces against one release; no Ben. |
-| `P9-TRACE-RUNBOOK-07` | P9 | Complete traceability and every outstanding Ben runbook item. PM controller. | Traceability output and non-secret runbook evidence paths are `NEEDS_MECHANICAL_CHECK`; signed evidence is external. | All candidate proofs; `P9_BEN_RUNBOOK`, `P9_PREIMPORT_TRACEABILITY`, `P9_TRACEABILITY`. | `BLOCKED`; reserve exact future output paths; Ben only for an expressly reserved runbook act. |
-
-### P10 performance, security and inactive release
-
-| Unit | Phase | Outcome and owner | Boundary | Class; dependencies; tests | Status; next action; Ben |
-| --- | --- | --- | --- | --- | --- |
-| `P10-SECURITY-01` | P10 | Action-level auth, client-auth decision, containment and whole-tuple revocation. PM implementation. | Existing routes, `security-disposition-*`, auth tests and future exact auth-matrix evidence. | `candidate_scope_and_extraction`; P9 candidate; `P9_SECURITY_AUTH`. | `BLOCKED`; reserve exact auth evidence path and test in staging; **Ben only for a material governance decision**. |
-| `P10-LOAD-02` | P10 | Fixed latency/capacity, one admission check, one bounded serving query and no corpus-proportional calls. PM implementation. | Future staging projection/RPC/cache/load harness paths are `NEEDS_MECHANICAL_CHECK`. | Certified projection; `P9_DATABASE_SOAK`; 60-connection Micro soak. | `BLOCKED`; reserve exact staging-only load boundary; no Ben. |
-| `P10-ROLLBACK-03` | P10 | Backup restoration, active-corpus rollback, staging smoke and recovery rehearsals. PM controller. | Existing `candidate-release-import.js` and rollback SQL patterns; rehearsal evidence is external. | P9 candidate; `P9_STAGING_SMOKE_AND_ROLLBACK`, `P9_BACKUP_RESTORE`. | `BLOCKED`; reserve exact staging scripts and receipts; no Ben. |
-| `P10-INACTIVE-RELEASE-04` | P10 | One inactive whole Agreement and Process release with complete parity. PM controller. | `candidate-release.js`, `candidate-release-import.js`, inactive namespace SQL and external deployment manifest. | P9/P10 proofs; three named parity gates. | `BLOCKED`; reserve exact inactive-import boundary and certify tuple; **Ben where the contract requires it**. |
-
-### P11 import and activation
-
-| Unit | Phase | Outcome and owner | Boundary | Class; dependencies; tests | Status; next action; Ben |
-| --- | --- | --- | --- | --- | --- |
-| `P11-IMPORT-01` | P11 | Import exact certified bundle into an inactive production namespace. PM controller. | `candidate-release-import.js`, governed import SQL and external import attestation; final exact paths require the P10 manifest. | `production_import`; P10 inactive release; import parity and resumability tests. | `BLOCKED`; obtain any required approval, then import inactive only; **Ben where required**. |
-| `P11-CUTOVER-AUTH-02` | P11 | Exact one-use cutover authorisation. Ben. | External cutover approval bound to protected status, certified tuple and rollback target. | `cutover_authorisation_issue`; every Phase 9 pre-cutover gate green. | `BLOCKED`; present exact tuple and rollback target; **Ben required**. |
-| `P11-ACTIVATE-03` | P11 | Atomic whole-tuple activation with reversible feature flag. PM controller. | Existing active-release fingerprint runner; final pointer/RPC path is `NEEDS_MECHANICAL_CHECK` from the certified manifest. | `production_cutover`; P11 authorisation; no partial activation. | `BLOCKED`; reserve exact activation boundary, then activate once; no extra Ben. |
-| `P11-SMOKE-04` | P11 | Live production smoke, rollback on mismatch and completion attestation. PM controller and independent reviewer. | Production smoke and rollback receipts are external; exact test paths come from the certified deployment manifest. | Exact active tuple; two named P9 gates; official verifier. | `BLOCKED`; smoke every surface and roll back on mismatch; no Ben unless rollback requires a reserved act. |
+| Unit | Phase | Outcome | Owner | Dependency | Evidence | Status | Next action | Ben |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `P1-CONTRACT-BUNDLE` | P1 | One complete Agreement, shared and Process contract bundle. | PM controller | Governance balance merge. | Two identical uncached compiles; zero missing, duplicate, conflict, cycle or unresolved dependency. | REVIEW | Record M1 acknowledgement and request exact bundle approval. | Yes |
+| `P2-IDENTITY-WRITER` | P2 | Stable identities and one canonical writer. | PM implementation | P1 bundle. | Identity and transactional writer tests. | COMPLETE | Preserve. | No |
+| `P3-SCOPE-EXTRACTION` | P3 | Definitions-first scope and extraction with open-world residuals. | PM and PI | P1 bundle. | Goldens, evals, quote verification and hostile correctness tests. | ACTIVE | Complete real Metsera link. | No |
+| `P4-OBSERVATIONS-QUERY` | P4 | Normalised observations and one Product Query IR. | PM and PI | P3 outputs. | Numeric, unit, field, Ask/Browse and filter tests. | ACTIVE | Connect real release inputs. | No |
+| `P5-CORRECTIONS-RELEASE` | P5 | Corrections survive re-extraction and candidate releases are immutable. | PM implementation | P3 and P4. | Correction-head and release tests. | ACTIVE | Connect QXO and Metsera pilot outputs. | No |
+| `P6-SERVING` | P6 | Bounded set-based serving and release-aware cache. | PM implementation | P5 candidate release. | Call-budget, cache and query tests. | ACTIVE | Execute fixture-scoped runtime path. | No |
+| `P7-SHARED-ROWS` | P7 | Query, Review, Compare and Corpus Context use one row contract. | PM and PI | P6. | Cross-view byte and browser parity. | ACTIVE | Run real pilot rows through each view. | No |
+| `P8-VERTICAL-SLICES` | P8 | QXO and Metsera pass source-to-product staging runs. | PM controller | P1-P7 links. | M2 acknowledgement and complete pilot evidence. | BLOCKED | Finish the three active runtime links. | No |
+| `P9-CORPUS-CERTIFICATION` | P9 | Full corpus passes quality, identity, drift, performance, restore and rollback controls. | PM controller | M2 pass. | M3 acknowledgement and Phase 9 gates. | BLOCKED | Begin after both pilots pass. | No |
+| `P10-PRODUCTION-IMPORT` | P10 | Exact inactive production import with member parity and resumable checkpoints. | PM controller | M3 pass. | Replay no-op, conflicting replay fail-closed, complete parity. | BLOCKED | Run only after staging certification. | Where contract requires |
+| `P11-CUTOVER` | P11 | Atomic whole-tuple activation, smoke and rollback. | PM controller | M4 pass and Ben authorisation. | Cutover receipt, production smoke and rollback. | BLOCKED | Request one-use authorisation at M4. | Yes |
+| `P12-SECURITY-HARDENING` | P12 | Add attacker-model certification for the internal product. | PM implementation | Successful cutover. | Route/action inventories, probes, egress and revocation tests. | BLOCKED | Start after cutover. | No unless governance changes |
 
 ## 5. Critical path
 
-Generation 44 fixed basis → PI Stage 2/3 → one combined integration candidate →
-P1 root closure → P2 stale-test correction → P2-P7 mechanical closure →
-protected P8 review producer → two identical bundle compiles → Stage 4
-exact-root reviews → one Ben bundle approval → freeze attestation and
-`vertical_slice_execution: PASS` → QXO control slice → Metsera Process slice →
-`candidate_scope_and_extraction: PASS` → Metsera and stratified certification →
-full-corpus certification → security, soak and rollback proofs → inactive
-production import → one-use Ben cutover authorisation → atomic activation →
-post-cutover smoke → programme completion.
+`PM-GOV-BALANCE-01` → M1 bundle acknowledgement and Ben approval → QXO runtime
+link → Metsera runtime link → isolated staging pilots → M2 → full-corpus
+certification → M3 → inactive production import → M4 → one-use Ben cutover
+authorisation → atomic activation → production smoke and rollback.
 
-## 6. Exact P1-P7 closure before P8
+P1-P7 close when:
 
-1. **P1:** the complete Process input set, Agreement inputs and shared inputs
-   compile without deal data. Two clean compiles match. Missing, extra,
-   duplicate, reordered or unknown members fail. Frozen V1-V12 fixture
-   fingerprints do not drift.
-2. **P2:** every promised shared field has one compatible released projection
-   or is expressly removed before freeze. Shared roles, structures, legs,
-   control, consideration and professional assignments pass hostile
-   cross-component tests.
-3. **P3:** every mandatory exclusivity question has one complete semantic
-   contract. Identity excludes extracted values. Requests, refusals,
-   counterproposals, conditional responses, grants and endings cannot collapse.
-4. **P4:** one PM-wide field catalogue, navigation catalogue and Product Query
-   IR pass acceptance tests 1-25 and 54-64 against one catalogue digest and
-   approved data version. Ask and Browse are byte-equivalent for the same legal
-   meaning.
-5. **P5:** exact passages, citations, ordering, context, related drafting,
-   failures and coverage pass acceptance tests 26-48, 69, 70, 74, 75 and 76.
-6. **P6:** the live PM entry point and all required desktop/mobile outputs pass
-   acceptance tests 49-53 and 65-73. Query, Review, Compare, Corpus Context and
-   source reading use the same facts and actions.
-7. **P7:** all seven generic acquisition and extraction modules pass synthetic
-   and hostile-source tests. No public-deal extraction runs while
-   `candidate_scope_and_extraction` is `OPEN`.
+- every required contract input has one final identity and dependency;
+- two uncached compiles are byte-identical;
+- the bundle has no missing member, duplicate identity, conflict, cycle or
+  unresolved dependency;
+- the canonical writer, corrections, candidate release, bounded serving and
+  shared row contracts pass;
+- QXO and Metsera have executable real-source links through every required
+  product surface.
 
-P8 cannot start its freeze review until every item above is mechanically green.
+Production import and cutover retain:
 
-## 7. Ben approval points
+- exact bundle digest and member parity;
+- checkpointed resumable import;
+- replay no-op and conflicting replay fail-closed;
+- atomic whole-tuple activation;
+- post-cutover smoke with rollback; and
+- one-use Ben cutover authorisation.
 
-Ben is asked only for:
+## Retired units
 
-1. approval of the exact material contract bundle and its fingerprint;
-2. a material governance, taxonomy or codebook change;
-3. production import or activation where the governing contract requires Ben;
-4. the exact one-use production cutover authorisation.
-
-No routine branch, test, integration, deployment, status refresh or signed
-successor needs Ben.
-
-## 8. Mechanical uncertainty register
-
-| Fact not yet proved | Required exact check | Owner |
-| --- | --- | --- |
-| P6 exact deployed Preview behaviour. | After the final candidate deployment, repeat the desktop/mobile/reflow, filter, source, context and related-drafting smoke on that exact deployment ID. | PM implementation |
-| P2 shared test expectation repair. | Run the four named focused tests and the complete P2 affected chain after `1c667dd`. | PM controller |
-| Final successor member count and kind count. | Regenerate required-kind registry and manifest from the combined tree, then run both generators with `--check`. | PM controller |
-| Final missing, duplicate, conflict, cycle and residual counts. | Run the actual input compiler and bundle compiler twice on the combined tree. Require zero for each count and identical bytes. | PM controller |
-| Protected P8 review producer. | Prove that it creates fresh sessions and signs the exact observed registration and result carriers without caller-asserted session, result or reviewer identity. | PM controller |
-| Combined Stage 5 full-suite and build result. | Run `npm test` and `npm run build` once after all accepted units and manifest repairs are present. | PM controller |
-| Exact final deployment IDs. | Inspect the two Vercel deployments for the final candidate commit before signed publication. | PM controller |
+- `PM-P8-REVIEW-CONTROLLER-01`: RETIRED. Replaced by milestone
+  acknowledgements.
+- `PM-P8-REVIEW-REGISTRATION-01`: RETIRED. No signed reviewer registration is
+  required.
+- `PM-P8-PROTECTED-REVIEW-PRODUCER-01`: RETIRED. No protected review producer is
+  required.
+- `PM-P8-SIGNED-STATUS-PUBLISHER-01`: RETIRED for pre-production work. The
+  ledger is the status source.

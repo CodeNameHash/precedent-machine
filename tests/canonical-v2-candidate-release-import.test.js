@@ -451,3 +451,30 @@ test('staging import is set-based, transactional and withholds completion until 
   assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_activate_candidate_release\(text, jsonb, jsonb\)[\s\S]*TO canonical_v2_writer/);
   assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.canonical_v2_active_release\(text\)[\s\S]*TO canonical_v2_serving/);
 });
+
+test('import checkpoint exact replay is a no-op and conflicting replay fails closed', () => {
+  const sql = fs.readFileSync('supabase/canonical-v2-serving.sql', 'utf8');
+  const functionStart = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_import_candidate_release');
+  const functionEnd = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_market_cohort');
+  const importer = sql.slice(functionStart, functionEnd);
+
+  assert.ok(functionStart >= 0 && functionEnd > functionStart);
+  assert.match(
+    importer,
+    /FROM canonical_v2_staging\.candidate_release_import_receipts receipt[\s\S]*WHERE receipt\.candidate_manifest_id = manifest_id/,
+  );
+  assert.match(
+    importer,
+    /IF existing_plan_id IS NOT NULL THEN[\s\S]*'replayed', true[\s\S]*RETURN jsonb_build_object/,
+  );
+  assert.match(
+    importer,
+    /candidate manifest already imported under different content/,
+  );
+
+  const replayCheck = importer.indexOf('IF existing_plan_id IS NOT NULL THEN');
+  const firstReleaseInsert = importer.indexOf(
+    'INSERT INTO canonical_v2_staging.fixture_corpus_releases',
+  );
+  assert.ok(replayCheck >= 0 && replayCheck < firstReleaseInsert);
+});

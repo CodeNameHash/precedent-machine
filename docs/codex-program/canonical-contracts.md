@@ -722,127 +722,6 @@ This file is the sole authority for detailed identities, state machines, writer 
   and accepts only terminal `PASS`. A missing schema, unregistered predicate,
   request-supplied result, unknown or missing claim, stale subject, untrusted
   validator or unverifiable member leaves the gate `OPEN`.
-- `TrustedReviewControllerRecord/V1` replaces the unavailable provider-record
-  interface as the proof that a cold review occurred. The trusted controller
-  directly controls and observes one read-only review execution. Its only
-  controller-supplied task payload is the exact frozen specification bytes, one
-  registered lane-specific cold prompt and the required output schema. The
-  controller runtime may add only fixed pinned platform instructions and tool
-  schemas. This fixed context is not case-specific and contains no prior review
-  finding or conclusion. The controller records its ID and version, review
-  runtime version and binary digest, fixed controller-context digest, exact
-  model identifier, reasoning level, immutable task, session and review IDs,
-  registered prompt ID and digest, controller-supplied input-manifest digest,
-  exact input-context digest and its before-and-after values, output digest,
-  start and end times, reviewer principal and its complete source-control
-  identity set, disposition, empty reviewer edit-set root, genesis
-  parent-session state, the fact that no earlier review conclusions were inputs,
-  unique nonce, signature algorithm and key ID.
-  The controller signs the immutable record and emits it into the closed
-  evidence set. The validator deterministically enumerates that set, loads the
-  exact record and verifies it against the frozen trusted-key registry. The
-  controller process is the only process permitted to use the signing key. The
-  key is inaccessible to the reviewer, review process, operator input and
-  repository. The private key never enters the review environment, logs or
-  checkout. A transcript, reviewer statement or user-supplied substitute cannot
-  replace the controller record.
-  For generation 1, the registered prompts bind the disposition to G0
-  start-safety only: the ten G0 gates, evidence, work-class projection, one-use
-  bootstrap, protected signer, two-file compare-and-swap publication and the
-  prohibition on production data, release and feature activation. A defect
-  confined to an `OPEN` P1 or P9 requirement cannot block this disposition
-  unless it falsifies G0 evidence, widens G0 authority or bypasses a later gate.
-  This scoped review does not satisfy the full architecture and contract review
-  required within `P1_CONTRACT_FREEZE_ATTESTED`.
-  The signed task manifest enumerates the six specification members in exact
-  one-based order with repository path, raw-byte length, SHA-256 and canonical
-  base64 bytes and carries the canonical base64 output-schema bytes. The
-  validator decodes the supplied bytes, recomputes every member digest and
-  length, derives the specification root from the ordered member records and
-  recomputes the output-schema digest before accepting the controller record.
-  An asserted root or digest that does not derive from those bytes is invalid.
-- The reviewer principal is the exact controller run plus one fresh ephemeral
-  CLI session, not the model family. The controller creates a new `CODEX_HOME`,
-  does not resume a session and does not load project rules, user configuration,
-  plugins, memory or prior-session content. The review is read-only. The
-  input-context digest must be byte-equal before and after execution. A changed
-  or unknown fixed runtime context, case-specific runtime context or extra
-  controller-supplied task input makes the review ineligible.
-- The controller record is the authority for review execution,
-  controller-observed task and fixed runtime inputs, output and timing. Complete
-  Git history is supplementary authorship evidence.
-  The controller record maps the reviewer principal to its complete
-  source-control identity set. The validator requires the reviewed bytes to be
-  committed and uses complete history, blame and copy tracing to find every
-  commit that contributed a byte to the exact root. No contributing author may
-  map to the reviewer principal. Git history alone cannot prove that a review
-  occurred. A missing or ambiguous identity mapping, missing controller record,
-  inaccessible execution facts, mutable review, prior conclusion input,
-  non-empty edit set, ineligible model or reasoning level, untrusted key,
-  invalid signature or incomplete history makes the review ineligible.
-- Controller evidence does not prove a provider-internal build, provider
-  signature or absence of hidden provider context. It makes none of those
-  claims. Formal evidence is the signed controller execution evidence under this
-  amended standard.
-- `GateStatusBootstrapAuthority/V1` is a temporary one-use authority under
-  `specification_review`. Its predecessor is `NONE`. Its identity binds the
-  exact registry amendment, nonce `gate-status-bootstrap-2026-07-27-v1` and the
-  closed permitted and prohibited action lists in the registry. It permits only the governance
-  amendment, review-controller software and evidence schemas, deterministic
-  compilation of the already frozen gate-acceptance source contracts,
-  certification-integrity validator implementation, signing system, status publisher,
-  `ProgrammeStatusPublicationHead`, the eight G0 evidence collections, empty
-  isolated-staging boundary setup, preview access protection and their tests.
-  It cannot choose, amend or approve an acceptance member universe, predicate,
-  measurement, comparison operator, expected value, trust root or test
-  requirement. Those semantics are part of the reviewed specification root
-  before bootstrap begins. Compiled acceptance definitions and validator
-  implementations are non-authoritative derived artefacts and must reproduce
-  the frozen reference-interpreter result byte-for-byte.
-  It cannot authorise a snapshot restore, corpus
-  extraction, reprocessing, writes, backfills, production data changes, release
-  import or activation, or product feature activation. An owner statement
-  cannot create, widen or replace it.
-- The protected publisher consumes the bootstrap nonce only when it publishes
-  the first valid `ProgrammeGateStatusArtefact/V2`. That event must be generation
-  1 from predecessor `NONE`, include all 35 registry gates once in registry
-  order, leave every unsupported P1 and P9 gate `OPEN`, and derive
-  `canonical_work_start: PASS` by recomputing the proposed G0 projection from
-  validated evidence inside the genesis publication. It does not require or
-  consult a predecessor status. The same successful
-  compare-and-swap expires the authority. A failed validation or stale
-  publication does not consume the nonce. Reuse is prohibited. Reissue requires
-  another governing registry amendment.
-- `ProgrammeGateStatusArtefact/V2` is the sole ordinary status projection. It
-  hashes schema, exact specification root, code commit, environment, monotonic
-  predecessor generation, the complete gate registry digest, and the ordered
-  `(gate_id, state, evidence_envelope_id, evidence_payload_digest)` set, plus
-  validator executable and configuration digests, key and signature. `PASS`
-  requires a currently valid envelope under the preceding rule. For
-  `P9_PROGRAMME_COMPLETION_ATTESTATION`, that envelope proves only the preterminal
-  completion facts available before the proposed status exists. It never claims
-  that POST_COMPLETION or atomic publication has already occurred.
-  `NOT_APPLICABLE` is accepted only where the gate's complete registered
-  predicate passes. Missing, duplicated, manually edited or unverifiable rows
-  are `OPEN`. The terminal status-plus-POST_COMPLETION pair remains the sole
-  programme-completion exception described below.
-- `ProgrammeStatusPublicationHead/V1` uses the repository-native
-  `refs/heads/programme-status-publication-head` Git ref as its sole mutable
-  head. Only the protected GitHub Action can publish. It reads the exact current
-  Git object ID, validates the complete successor and updates the ref with one
-  compare-and-swap. The first expected predecessor is `NONE`. Every later
-  publication names the exact predecessor object and generation. A stale
-  predecessor, manual status edit, validation failure or partial output makes
-  no ref change. The status file and head state are committed together, so no
-  second publication head or owner-deemed projection can become authoritative.
-  It is not a database row and is excluded from
-  GlobalMutableAuthorityRegistry and GeneratedLockPlanRegistry.
-- The existing generation-4
-  `docs/certification/programme-gate-status.json` file is a historical V1
-  owner-deemed record. It is not a V2 predecessor, evidence source, publication
-  head or executable authority. The first V2 status is written to
-  `docs/certification/programme-gate-status-v2.json`.
-
 - `ShadowReextractionAttestation` hashes its schema, exact frozen contract pair,
   CandidateInputHead and CandidateBuildHead IDs and payload digests, candidate
   release and CandidateReleaseManifest IDs and payload digests, the candidate's
@@ -868,85 +747,17 @@ This file is the sole authority for detailed identities, state machines, writer 
   `P9_SHADOW_REEXTRACTION` `OPEN`; `PreCutoverCertification` requires the
   attestation subject to equal its exact candidate and frozen pair.
 - A schema-valid bundle is not authorised merely because it compiles. Before
-  any source-specific scope freeze, candidate extraction, reprocess, backfill or
-  release build, one immutable `ContractFreezeAttestation` must approve the
-  exact bundle with disposition `APPROVED`. Its ID hashes the attestation schema and freeze-policy versions,
-  exact bundle fingerprint and root-manifest digest, predecessor attestation or
-  explicit genesis marker, canonical semantic-and-identity diff digest, compiler
-  and generator versions, ordered generated-output digests, compile, cycle and
-  drift report digests, exact ordered governing-specification file entries,
-  byte lengths, SHA-256 values and domain-separated specification-root digest,
-  passing `G0_EXACT_DIGEST_REVIEW_SET` evidence ID and payload digest and
-  `G0_BEN_SPEC_APPROVAL` evidence ID and payload digest over that same root,
-  immutable legal-semantic and identity review disposition
-  IDs, separate independent-semantic-question and
-  independent-composition-catalogue authorship, input-access and review
-  disposition IDs, exact semantic-question-catalogue reconciliation and neutral
-  projection digests, every PRE_FREEZE_CONTRACT SemanticStageOutputSetRoot and
-  SemanticNeutralProjectionSetRoot, exact
-  RelationshipEffectFieldUniverseSetRoot, each
-  independent reviewer's identity and eligibility-evidence digest,
-  the ordered Ben-owned taxonomy and codebook decision IDs, and Ben's immutable
-  bundle-approval-evidence ID. A qualifying legal-semantic review is by Fable or
-  an independent 5.6 Sol reviewer using high reasoning under
-  [the programme governance](../CODEX-PROGRAM.md#governance-non-negotiable-applies-to-every-phase).
-  Run IDs, timestamps and workflow status
-  are provenance outside identity.
-- The bootstrap `ContractFreezeAttestation/V1` is the authoritative executable
-  representation of that approval object. It selects exactly one immutable
-  `ContractFreezeAuthorityManifest/V1` by both content-derived ID and payload
-  digest. The manifest carries the pre-review authority members, while the
-  attestation directly carries the content-derived legal-semantic, identity and
-  Ben approval IDs, avoiding an identity cycle. Together they carry every
-  identity member listed above; the attestation is not a reduced surrogate and
-  no listed member may be omitted, replaced by a boolean or supplied only as
-  caller context. The closed
-  P1 member universe also contains the manifest, signed compilation receipt,
-  signed semantic-and-identity diff review, signed Ben approval and signed
-  programme status. Acceptance recomputes their IDs, roots, cross-bindings and
-  signatures from those immutable members. Any missing member, unknown field,
-  compile, cycle or drift error, blocking review finding, ineligible reviewer,
-  mismatched root or unverifiable signature leaves the gate `OPEN`.
-  `authority_member_inventory` is the closed enumeration source for those
-  additional authority members. It must carry the exact source bytes for every
-  governing-specification member, the actual G0 review-set and Ben-approval
-  records, and one content-addressed typed authority-evidence record for every
-  catalogue authorship, input-access and review disposition, reconciliation,
-  semantic-stage root, neutral-projection root, relationship-field universe,
-  reviewer-eligibility set and Ben taxonomy/codebook decision set. Acceptance
-  recomputes every payload digest and content-derived ID and rejects any
-  missing, extra, duplicate or digest-only substitute.
-  Every semantic catalogue, composition catalogue, semantic-stage output,
-  neutral projection and relationship-effect universe authority contains its
-  complete immutable member bytes. Acceptance recomputes the ordered member
-  roots from those bytes. A signed root summary, count or reviewer statement is
-  never evidence of membership and cannot conceal a missing, substituted or
-  changed member.
-  The semantic-question and composition catalogue
-  SemanticStageOutputSetRoots are distinct authorities and both precede the
-  catalogue THIRD_RECONCILER. Reconciliation binds their actual
-  `output_set_root` values and depends on both stage authorities; only the
-  passing reconciliation may feed the neutral projection and its
-  SemanticNeutralProjectionSetRoot. Every manifest field named as a set root
-  equals the corresponding root inside the typed authority payload, never the
-  digest of the enclosing authority-evidence envelope.
-- `ContractFreezeAttestation` is an approval object outside the closed bundle.
-  It contains no source, deal, candidate revision, snapshot or release reference;
-  generated bundle outputs may embed the bundle fingerprint but never the
-  attestation ID. A changed bundle byte, root manifest, generated output,
-  semantic or identity diff, reviewer or eligibility proof, review disposition,
-  Ben decision or approval evidence requires a new attestation. Conditional,
-  missing, stale, mismatched or unverifiable approval is `OPEN` and blocks
-  `candidate_scope_and_extraction`. It cannot be repaired by a later candidate
-  artefact or a prose assertion.
-- Before review begins, the authority controller creates one immutable
-  `ContractFreezeAttestationIdentity` from the specification root, commit,
-  environment, predecessor, successor bundle fingerprint and a unique approval-
-  epoch nonce. The attestation must consume that exact identity, and the frozen
-  pair hashes both the bundle fingerprint and the resulting attestation ID.
-  Reapproval of unchanged bundle bytes is therefore a new approval epoch with a
-  new identity, attestation ID and frozen pair. The nonce is fixed before any
-  reviewer or Ben approval signs and cannot be chosen from their conclusions.
+  source-specific scope freeze, extraction, reprocess, backfill or release
+  build, two clean uncached compilations must produce byte-identical output.
+  Missing members, duplicate identities, conflicts, cycles and unresolved
+  dependencies must be zero. M1 requires one adversarial diff review
+  acknowledgement and Ben's approval of the exact bundle fingerprint.
+- The M1 record is outside the closed bundle. It contains the reviewed commit
+  range, reviewer, findings, dispositions, result, exact bundle fingerprint and
+  Ben approval reference. A changed bundle byte, generated output, semantic or
+  identity diff, review disposition or Ben decision requires a new M1 record.
+  Conditional, missing or stale approval leaves M1 `OPEN`. No controller,
+  signature, nonce, status generation or protected publication is required.
 - The bundle member universe is the complete immutable
   `CanonicalContractBundleMember` set, not a compilation receipt projection.
   Every selected bundle contains at least one member in each closed family:
@@ -957,20 +768,10 @@ This file is the sole authority for detailed identities, state machines, writer 
   root and requires exact equality among the authority manifest, compilation
   receipt and contract review. The compiler may validate that already captured
   set but may not author, omit or invent its membership.
-- `candidate_scope_and_extraction` authorisation is parameterised by the exact
-  frozen pair, programme-status artefact digest and monotonic status generation
-  in the requested work envelope. A passing status record for a different pair
-  or generation is stale for that request. The dispatcher validates it before
-  source-specific semantic work; every `canonical_write` `DEAL_SCOPE_RUN`,
-  `CORPUS_SCOPE_FREEZE`, `DEAL_EXTRACTION_RUN` and
-  `CANDIDATE_RELEASE_FREEZE` action accepts the same three fields, locks
-  the current mechanically mirrored authorisation generation and revalidates
-  immediately before canonical DML commits. The signed database-row swap is the
-  sole executable-authorisation linearisation point. A writer that acquired its
-  lock first may finish under the old generation; the supersession waits and
-  that output remains bound to the old pair and cannot enter a later candidate.
-  Once the swap commits, no old-generation writer may start or commit. An old
-  same-bundle attestation cannot remain ambiently executable.
+- `candidate_scope_and_extraction` opens only after M2 records passing QXO and
+  Metsera slices against the M1-approved contract fingerprint. Every
+  `canonical_write` action retains its existing exact contract, release and
+  idempotency bindings and revalidates them immediately before DML commits.
   The receipt-first `INTAKE_CAPTURE/RECEIPT`, raw processing attempt and
   mechanically blocking resolution are deliberately outside this
   legal-semantic authorisation because they must durably record arrival and
@@ -979,26 +780,16 @@ This file is the sole authority for detailed identities, state machines, writer 
   create canonical text or assert a semantic fact. Any `PASS`,
   `REPLACED_BY_REACQUISITION`, `REVIEWED_REJECTED` or
   `REVIEWED_OUT_OF_PROGRAMME_SCOPE` resolution binds and writer-revalidates the
-  exact frozen pair, IntakeDispositionPolicy object digest, status digest and
-  generation. A narrow
+  exact frozen contract identity and IntakeDispositionPolicy object digest. A narrow
   emergency authority may append `REVOKED_BLOCKING` because it can only remove
   eligibility. The separate
   `INTAKE_CUTOFF_BUILD/CUTOFF_FREEZE` action does select a build and requires the same
   frozen pair and authorisation recheck as the source-specific writer stages.
-- The database authorisation row is a generated, read-only operational replica,
-  not a second gate authority. It stores the status artefact digest, generation,
-  frozen pair, validator identity and validator signature. Only the status
-  validator role may replace it; writer and dispatcher verify the signature and
-  exact fields against the work envelope. A manually changed, unsigned, missing
-  or lagging replica blocks work and cannot create a pass.
-- Grant and revocation ordering is fail-closed. A new grant becomes executable
-  only after its immutable status artefact exists and the validator activates
-  the matching signed row. A revocation or supersession replaces the row with a
-  higher `REVOKED` or replacement generation before publishing the later status
-  view. The row can serialise execution but cannot originate, upgrade or waive a
-  gate disposition.
+- The execution ledger is the human-readable pre-production status. It is not a
+  database authority. Runtime write and release controls remain fail-closed and
+  cannot originate, upgrade or waive a milestone disposition.
 - Every authorised source-specific build receives the frozen pair
-  `(contract_fingerprint, contract_freeze_attestation_id)`. The exact pair is
+  `(contract_fingerprint, m1_acknowledgement_id)`. The exact pair is
   pinned into each ClaimScopeClosure, ExpectedOccurrenceSlot,
   DealScopeRunManifest, DealScopeRunReceipt, scope slice, CorpusScopeManifest,
   CorpusScopeFreezeAttestation, certified family set,
@@ -1012,14 +803,14 @@ This file is the sole authority for detailed identities, state machines, writer 
   source geometry, semantic occurrence identity and the text-only dependency
   universe, hash only
   their exact source and governing contract-object digests and never the
-  attestation ID. Every cutoff-eligible IntakeResolution,
+  M1 acknowledgement ID. Every cutoff-eligible IntakeResolution,
   IntakeCutoffAttestation, source-specific question dispositions,
   semantic expectations, challenge and composition artefacts and closures do select an authorised
   build and bind the exact pair. QueryDefinitionSetRoot and
   QueryGoldenSuiteManifest instead bind the pre-freeze
   CanonicalBundleInputIdentity and never the frozen pair. A runtime QueryPlan resolves and carries that
   pair as operational execution state but is not a release member or certified
-  trace row. A new attestation for unchanged contract bytes
+  trace row. A new M1 approval for unchanged contract bytes
   therefore preserves source and semantic-occurrence identities but rekeys all
   reviewed dispositions, expectations, closures, selections, releases and
   certification artefacts. The pair is constant release metadata in serving,
@@ -2238,8 +2029,8 @@ This file is the sole authority for detailed identities, state machines, writer 
   contract data. `LegalSemanticReviewPolicy` is a generated
   CanonicalContractBundle member whose ID hashes
   `LEGAL_SEMANTIC_REVIEW_POLICY/V1`, schema, CanonicalBundleInputIdentity,
-  policy key and version, the closed reviewer classes `FABLE_ELIGIBLE` and
-  `SOL_5_6_HIGH_ELIGIBLE`, the exact Sol model and reasoning requirement,
+  policy key and version, the requirement for Fable or an equivalently capable
+  high-reasoning reviewer,
   the closed action set `DISCOVERY_PARTITION`,
   `DIMENSION_MAPPING_STATE`, `OPEN_WORLD_FINAL_DISPOSITION`,
   `SOURCE_SPECIFIC_PUBLICATION_SELECTION` and
@@ -11393,9 +11184,8 @@ addition or a generated topology mismatch blocks ContractFreezeAttestation.
 gate required transitively by the `production_import` work class, candidate
 release, exact CandidateReleaseFreezeAttestation, current
 CandidateInputRecheckAttestation and held CandidatePromotionFence version,
-frozen contract pair, exact G0_EXACT_DIGEST_REVIEW_SET and
-G0_BEN_SPEC_APPROVAL evidence IDs and payload digests over the same governing-
-specification root, OperationalPolicySet, exact current
+frozen contract pair, exact M1 acknowledgement and Ben bundle approval over
+the same governing-specification root, OperationalPolicySet, exact current
 IntakeProcessingPolicyHead tuple and activation and complete allowed activation
 chain, OperationActionRegistry, GlobalMutableAuthorityRegistry,
 GeneratedLockPlanRegistry, ProgrammeStatusPublicationHead schema and transition
@@ -13986,82 +13776,36 @@ attempt. Completion
 locking first may write the pair before a later revocation, which
 then follows the ordinary blocking and exposure-off path.
 
-### 10. Binding cold-review closure amendment
+### 10. Binding milestone-review closure amendment
 
 This subsection is later and more specific than any conflicting earlier
 sentence. It closes the enumerated architecture, query, open-world and release
 authorities below. A compiler, writer or validator that implements the earlier
 ambiguous reading instead of this subsection fails contract freeze.
 
-#### Bootstrap gate acceptance
+#### Milestone review acceptance
 
-For the ten genesis G0 gates and `P1_CONTRACT_FREEZE_ATTESTED`, the
-`bootstrap_compiled_registry_binding` in `programme-gates.yaml` selects
-`bootstrap-acceptance-source.json` as an authoritative, root-independent
-member of the reviewed specification, not an informational implementation
-pointer. Its exact SHA-256 binds the complete evidence and member JSON schemas,
-subject types and identity fields, immutable member universes, enumerator
-source and digests, ordered predicate definitions, exact member types and JSON
-pointers, measurement source, comparison operators and typed expected values.
-Every exact-input list is total for all immutable-member fields read directly or
-through a helper by that claim. A read from an undeclared member path, including
-a signature key, reviewer principal, prompt binding or session-state field,
-invalidates the definition rather than becoming an implicit runtime input.
-Every predicate and enumerator executable digest binds both its entry-function
-digest and one content-addressed transitive source-closure digest. That closure
-contains the byte length, SHA-256 and complete UTF-8 source of every recursively
-resolved local dependency and the ordered validator-executable file inventory.
-Changing a helper therefore rekeys every affected executable binding even when
-the outer function text is unchanged.
-The committed generator proves that those reviewed bytes reproduce exactly
-from the corresponding runtime schemas and sources. The compiler receives only
-that bound source, the exact reviewed specification root and the frozen gate
-descriptor. It emits exactly eleven
-`ProgrammeGateAcceptanceDefinition/V1` instances in the declared order. The
-first ten form the genesis G0 status set; the eleventh is the pre-bundle P1
-definition and is not genesis status evidence. The
-definition ID and digest are the domain-separated hash of every required field,
-including the exact specification root. A missing, extra, duplicate, reordered
-or byte-different source member or output definition leaves every affected gate
-`OPEN`. Runtime input cannot select or alter a schema, member, path, predicate,
-operator or expected value. The source package is executable only if recursive
-static resolution of every local `require`, `import` and `export` reaches a
-carried module with matching bytes. An unresolved, omitted or digest-mismatched
-local dependency leaves all dependent gates `OPEN`; the compiler may not read a
-repository fallback to repair the package.
+Pre-production work does not use a bootstrap gate, signed status generation,
+trusted review controller, review-session nonce or exact-digest review set.
+The four milestones M1 to M4 are the complete milestone set. Each milestone
+uses one adversarial diff review recorded as a plain Markdown acknowledgement
+under `docs/acks/`. The acknowledgement contains the reviewed commit range,
+date, reviewer, findings, dispositions and `PASS` or `FAIL`. A failed review
+creates a bounded fix list. Only the fix diff is re-reviewed.
 
-The same YAML member freezes the eligible controller ID and version, Codex
-runtime version and entrypoint digest, the Sol model and reasoning level, the
-closed `FABLE_ELIGIBLE` model identifier and provider-default reasoning marker
-for Fable or an independent 5.6 Sol reviewer using high reasoning, five
-lane-specific prompt IDs and digests, validator key and configuration, and the
-closed runtime-context derivation. Run-local working, HOME, CODEX_HOME and TMP
-paths vary only under the one controller-created run root and are inputs to the
-signed context digest; all non-path context fields are frozen constants.
-Unknown fields, another path root, another binary, prompt, model, controller or
-validator are ineligible. The `FABLE_ELIGIBLE` branch is eligible only for the
-`LEGAL_SEMANTIC` lane; the current Sol path remains eligible for all five lanes.
-No post-review allowlist choice exists.
+M1 also requires two clean uncached bundle compiles with byte-identical output,
+zero structural defects and Ben's approval of the exact fingerprint. Between
+milestones, ordinary work merges on the mechanical gates in
+`programme-gates.yaml`. A legal-semantic diff still requires its own merge-time
+review. No signature, session metadata, controller identity, source-byte task
+manifest or protected publication is pre-production authority.
 
-The five generation-1 prompts are stage-bound. Their terminal disposition is
-only G0 start-safety: implementation planning, isolated staging setup and
-staging-only canonical engineering behind disabled production flags. They
-cannot certify P1 contract completeness or any P9 corpus, query, serving,
-release, load, cutover or completion design. Those requirements remain `OPEN`.
-`P1_CONTRACT_FREEZE_ATTESTED` must obtain a fresh full-architecture and
-contract review before `vertical_slice_execution`; it cannot reuse the scoped
-G0 disposition as that proof.
-
-Generation 1 has one bounded owner-authorisation path. It records all five
-signed basis-root outcomes, including `FAIL`, in
-`ExactDigestReviewSetAttestation/V2` and sets
-`full_review_pass_claimed=false`. `BenSpecificationApproval/V2` binds the
-review artefact hash and byte size, reviewed commit and root, exact successor
-commit and root, closed governance diff, GitHub actor and run identity, and the
-exact isolated-staging intent. Its permitted and prohibited action sets are
-closed. Findings are acknowledged but not waived, and P1 and P9 remain
-`OPEN`. P1 continues to consume only the strict V1 review and approval
-contracts with five `PASS` outcomes.
+The extraction golden comparison remains the programme's one dual-independent
+reconciliation. Earlier requirements for two cutoff enumerators plus a third
+reconciler, two inventory trees plus an independence validator, or two
+composition projections plus a terminal reconciler are superseded and are not
+pre-production requirements. Each affected stage uses one deterministic
+implementation with its existing focused and hostile correctness tests.
 
 #### Residual and open-world authority
 

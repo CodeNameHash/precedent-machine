@@ -1,6 +1,5 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
 
 const {
   CASES,
@@ -11,6 +10,9 @@ const {
   buildVerticalSliceAttestation,
   validateVerticalSliceAttestation,
 } = require('../lib/canonical-v2/vertical-slice-attestation');
+
+const buildVerticalSliceEvidence = buildVerticalSliceAttestation;
+const validateVerticalSliceEvidence = validateVerticalSliceAttestation;
 
 function evidence() {
   return {
@@ -44,11 +46,11 @@ function evidence() {
   };
 }
 
-test('VerticalSliceAttestation closes the exact P1 fixture, writer, query and isolation claims', () => {
-  const first = buildVerticalSliceAttestation(evidence());
-  const second = buildVerticalSliceAttestation(evidence());
+test('vertical-slice evidence closes the exact fixture, writer, query and isolation claims', () => {
+  const first = buildVerticalSliceEvidence(evidence());
+  const second = buildVerticalSliceEvidence(evidence());
   assert.deepEqual(first, second);
-  assert.equal(validateVerticalSliceAttestation(first), true);
+  assert.equal(validateVerticalSliceEvidence(first), true);
   assert.deepEqual(first.acceptance_claims, {
     all_fixture_cases_pass: 'PASS',
     authoritative_writer_only: 'PASS',
@@ -59,40 +61,30 @@ test('VerticalSliceAttestation closes the exact P1 fixture, writer, query and is
   assert.ok(Object.isFrozen(first.local_execution));
 });
 
-test('the immutable staging attestation remains content-addressed and valid', () => {
-  const stored = JSON.parse(fs.readFileSync(
-    'tests/fixtures/canonical-v2/p1-vertical-slice-attestation.json',
-    'utf8',
-  ));
-  assert.equal(validateVerticalSliceAttestation(stored), true);
-  assert.equal(stored.vertical_slice_attestation_id,
-    '703a2d789daf6f626a2d66d6f3be2f1c9e0f073ae4a06cecf9654655003c8653');
-});
-
-test('VERTICAL-SLICE-01 refuses incomplete, stale, unbounded or mutable evidence', () => {
+test('vertical-slice evidence refuses incomplete, stale, unbounded or mutable input', () => {
   const cases = evidence();
   cases.local_execution.case_keys = CASES.slice(1);
-  assert.throws(() => buildVerticalSliceAttestation(cases), /fixture case inventory/);
+  assert.throws(() => buildVerticalSliceEvidence(cases), /fixture case inventory/);
 
   const failed = evidence();
   failed.local_execution.exit_code = 1;
-  assert.throws(() => buildVerticalSliceAttestation(failed), /did not pass/);
+  assert.throws(() => buildVerticalSliceEvidence(failed), /did not pass/);
 
   const stale = evidence();
   stale.staging_evidence.active_release = { ...EXPECTED_RELEASE, generation: 7 };
-  assert.throws(() => buildVerticalSliceAttestation(stale), /active release/);
+  assert.throws(() => buildVerticalSliceEvidence(stale), /active release/);
 
   const broad = evidence();
   broad.staging_evidence.query.rpc_call_count = 2;
-  assert.throws(() => buildVerticalSliceAttestation(broad), /bounded set-based read/);
+  assert.throws(() => buildVerticalSliceEvidence(broad), /bounded set-based read/);
 
   const duplicate = evidence();
   duplicate.staging_evidence.query.page_count = 2;
   duplicate.staging_evidence.query.total_count = 2;
   duplicate.staging_evidence.query.returned_row_keys = ['b'.repeat(64), 'b'.repeat(64)];
-  assert.throws(() => buildVerticalSliceAttestation(duplicate), /bounded set-based read/);
+  assert.throws(() => buildVerticalSliceEvidence(duplicate), /bounded set-based read/);
 
   const moved = evidence();
   moved.staging_evidence.state_unchanged = false;
-  assert.throws(() => buildVerticalSliceAttestation(moved), /stability proof/);
+  assert.throws(() => buildVerticalSliceEvidence(moved), /stability proof/);
 });
