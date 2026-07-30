@@ -6,8 +6,8 @@ const path = require('node:path');
 const test = require('node:test');
 
 const {
-  requireVerticalSliceExecutionPermission,
-} = require('../lib/programme-gates/vertical-slice-permission');
+  requireM1VerticalSliceExecutionPermission,
+} = require('../lib/programme-gates/m1-milestone-permission');
 
 const RUNNER =
   'scripts/canonical-v2-staging-qxo-capitalisation-f28.mjs';
@@ -59,11 +59,11 @@ test('F28 offline attestation binds all fourteen market metrics', () => {
   }
 });
 
-test('F28 proof is exact-project, signed-permission and rollback-only', () => {
+test('F28 proof is exact-project, M1-approved and rollback-only', () => {
   assert.match(source, /deal-corpus-canonical-v2-staging/);
   assert.match(source, /sjumbznveyyiizhwvixj/);
-  assert.match(source, /verifyFetchedPublication/);
-  assert.match(source, /requireVerticalSliceExecutionPermission/);
+  assert.match(source, /M1-CONTRACT-FREEZE-2026-07-30\.md/);
+  assert.match(source, /requireM1VerticalSliceExecutionPermission/);
   assert.match(source, /ADMITTED_QXO_IMMUTABLE_SOURCE/);
   assert.match(source, /buildAdmittedSemanticSourceContext/);
   assert.match(source, /SET LOCAL lock_timeout='2000ms'/);
@@ -107,27 +107,36 @@ test('one probe insert and one set-based metric read cover all slots', () => {
   assert.match(source, /probe_rolled_back/);
 });
 
-test('production-like execution requires the protected signed gate', () => {
-  const verified = {
-    result: 'PASS',
-    origin_main_commit: 'a'.repeat(40),
-    publication_commit: 'b'.repeat(40),
-    generation: 45,
-    gate_states: {
-      P1_CONTRACT_FREEZE_ATTESTED: 'OPEN',
-    },
-    work_classes: {
-      vertical_slice_execution: 'OPEN',
-    },
+test('production-like execution requires the exact M1 acknowledgement', () => {
+  const acknowledgement = fs.readFileSync(
+    'docs/acks/M1-CONTRACT-FREEZE-2026-07-30.md',
+    'utf8',
+  );
+  const currentBundle = {
+    bundle_id: 'f'.repeat(64),
+    contract_bundle_digest:
+      'b990bf90f98fd83b9dfcf34912ec4b3cd42c37f3e693bee9796b1c63198edc84',
+    canonical_payload_digest:
+      '73a9023d3ef831e7a544664929385a1aa61af1efed58139d1cd54bf5985d3ab8',
+    substantive_member_count: 171,
+    dependency_edge_count: 285,
+    compile_status: 'PASS',
+    cycle_status: 'PASS',
   };
   assert.throws(
-    () => requireVerticalSliceExecutionPermission(verified),
-    (error) => error.code === 'VERTICAL_SLICE_EXECUTION_NOT_AUTHORISED',
+    () => requireM1VerticalSliceExecutionPermission({
+      acknowledgement_markdown: acknowledgement,
+      current_bundle: currentBundle,
+    }),
+    (error) => error.code === 'M1_VERTICAL_SLICE_EXECUTION_NOT_AUTHORISED',
   );
-  verified.gate_states.P1_CONTRACT_FREEZE_ATTESTED = 'PASS';
-  verified.work_classes.vertical_slice_execution = 'PASS';
+  currentBundle.bundle_id =
+    '8c765d52d3f95ebfc21b28b5bd0e71689a095c482e113a4329d33b0140dbe83d';
   assert.equal(
-    requireVerticalSliceExecutionPermission(verified)
+    requireM1VerticalSliceExecutionPermission({
+      acknowledgement_markdown: acknowledgement,
+      current_bundle: currentBundle,
+    })
       .vertical_slice_execution,
     'PASS',
   );
@@ -161,9 +170,9 @@ test('fixture rollback accepts only one exact bounded attestation', () => {
       source_binding: identity.source_binding,
       source_context_id: identity.source_context_id,
       document_hash: identity.document_hash,
-      programme_status_generation: 1,
-      programme_status_main_commit: '0'.repeat(40),
-      programme_status_publication_commit: '1'.repeat(40),
+      m1_acknowledgement_id: '0'.repeat(64),
+      m1_reviewed_commit: '1'.repeat(40),
+      m1_bundle_id: '2'.repeat(64),
       vertical_slice_execution: 'PASS',
       probe_records: 30,
       metric_slots: 14,

@@ -74,8 +74,17 @@ const {
   SECTION_5_2_INTERVAL,
 } = require('../lib/canonical-v2/reviewed-qxo-capitalisation-slice');
 const {
-  requireVerticalSliceExecutionPermission,
-} = require('../lib/programme-gates/vertical-slice-permission');
+  requireM1VerticalSliceExecutionPermission,
+} = require('../lib/programme-gates/m1-milestone-permission');
+const {
+  compileCanonicalContractInput,
+} = require('../lib/canonical-v2/canonical-contract-input-compiler');
+const {
+  compileCanonicalContractBundle,
+} = require('../lib/canonical-v2/canonical-contract-bundle-compiler');
+const {
+  assembleCanonicalContractBundleCurrentRootProposal,
+} = require('../lib/canonical-v2/canonical-contract-bundle-current-root');
 const {
   buildF27Inputs,
   buildWriterAdmittedSourceContext,
@@ -92,6 +101,10 @@ const {
 );
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const M1_ACKNOWLEDGEMENT_PATH = join(
+  ROOT,
+  'docs/acks/M1-CONTRACT-FREEZE-2026-07-30.md',
+);
 const PROJECT = Object.freeze({
   ref: 'sjumbznveyyiizhwvixj',
   name: 'deal-corpus-canonical-v2-staging',
@@ -148,6 +161,41 @@ function guardProject() {
       `Refusing to run outside ${PROJECT.name} (${PROJECT.ref}).`,
     );
   }
+}
+
+function currentM1Permission() {
+  const contractRoot = join(ROOT, 'contracts/canonical-v2/successor');
+  const input = compileCanonicalContractInput({
+    root_directory: contractRoot,
+  });
+  const proposal = assembleCanonicalContractBundleCurrentRootProposal({
+    canonical_contract_input_compilation: input,
+  });
+  const bundle = compileCanonicalContractBundle({
+    canonical_contract_input_compilation: input,
+    classification_registry:
+      proposal.registry_assembly.classification_registry,
+    dependency_registry:
+      proposal.registry_assembly.dependency_registry,
+    governed_registry_bindings:
+      proposal.registry_assembly.governed_registry_bindings,
+  });
+  return requireM1VerticalSliceExecutionPermission({
+    acknowledgement_markdown: readFileSync(
+      M1_ACKNOWLEDGEMENT_PATH,
+      'utf8',
+    ),
+    current_bundle: {
+      bundle_id: bundle.contract_bundle_id,
+      contract_bundle_digest: bundle.contract_bundle_digest,
+      canonical_payload_digest: bundle.canonical_payload_digest,
+      substantive_member_count:
+        bundle.compile_report.non_governance_authored_member_count,
+      dependency_edge_count: bundle.dependency_cycle_report.edge_count,
+      compile_status: bundle.compile_report.status,
+      cycle_status: bundle.dependency_cycle_report.status,
+    },
+  });
 }
 
 function fixtureSupabaseExecutable() {
@@ -550,10 +598,9 @@ SELECT jsonb_build_object(
   'source_context_id',
     ${sqlText(candidate.inputs.sourceContext.admitted_semantic_source_context_id)},
   'document_hash', ${sqlText(candidate.inputs.sourceContext.document_hash)},
-  'programme_status_generation', ${permission.generation},
-  'programme_status_main_commit', ${sqlText(permission.origin_main_commit)},
-  'programme_status_publication_commit',
-    ${sqlText(permission.publication_commit)},
+  'm1_acknowledgement_id', ${sqlText(permission.m1_acknowledgement_id)},
+  'm1_reviewed_commit', ${sqlText(permission.reviewed_commit)},
+  'm1_bundle_id', ${sqlText(permission.bundle_id)},
   'vertical_slice_execution', ${sqlText(permission.vertical_slice_execution)},
   'probe_records', ${MAX_PROBE_RECORDS},
   'metric_slots', 14,
@@ -781,11 +828,10 @@ function runRollbackProof(sql, candidate, permission, executable) {
       !== candidate.inputs.sourceContext.admitted_semantic_source_context_id
     || attestation.document_hash
       !== candidate.inputs.sourceContext.document_hash
-    || attestation.programme_status_generation !== permission.generation
-    || attestation.programme_status_main_commit
-      !== permission.origin_main_commit
-    || attestation.programme_status_publication_commit
-      !== permission.publication_commit
+    || attestation.m1_acknowledgement_id
+      !== permission.m1_acknowledgement_id
+    || attestation.m1_reviewed_commit !== permission.reviewed_commit
+    || attestation.m1_bundle_id !== permission.bundle_id
     || attestation.vertical_slice_execution !== 'PASS'
     || attestation.probe_records !== MAX_PROBE_RECORDS
     || attestation.metric_slots !== 14
@@ -884,22 +930,17 @@ try {
   } else {
     let permission;
     if (args[0] === '--verify') {
-      const {
-        verifyFetchedPublication,
-      } = await import('./verify-programme-status-publication.mjs');
-      permission = requireVerticalSliceExecutionPermission(
-        verifyFetchedPublication({ root: ROOT }),
-      );
+      permission = currentM1Permission();
       guardProject();
     } else {
       permission = Object.freeze({
-        schema_version: 'VERTICAL_SLICE_EXECUTION_PERMISSION_TEST_FIXTURE/V1',
-        generation: 1,
-        origin_main_commit: '0'.repeat(40),
-        publication_commit: '1'.repeat(40),
-        p1_contract_freeze_attested: 'TEST_ONLY',
+        schema_version: 'M1_VERTICAL_SLICE_EXECUTION_PERMISSION_TEST_FIXTURE/V1',
+        m1_acknowledgement_id: '0'.repeat(64),
+        reviewed_commit: '1'.repeat(40),
+        bundle_id: '2'.repeat(64),
         vertical_slice_execution: 'PASS',
         authority_source: 'TEMPORARY_EXECUTABLE_TEST_FIXTURE_ONLY',
+        production_authority: 'NONE',
       });
     }
     const executable = args[0] === '--verify'
