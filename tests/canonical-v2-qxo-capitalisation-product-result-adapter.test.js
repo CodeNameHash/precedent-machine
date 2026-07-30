@@ -22,6 +22,7 @@ const {
 } = require('../lib/canonical-v2/product-query-ir');
 const {
   PRODUCT_DOMAIN_RESULT_VALIDATION_SCHEMA,
+  validateHistoricalQxoCapitalisationF27ProductQueryResult,
   validateProductQueryResult,
 } = require('../lib/canonical-v2/product-citation-share-compiler');
 const {
@@ -43,8 +44,18 @@ const {
   '../lib/canonical-v2/qxo-capitalisation-product-result-adapter',
 );
 const {
+  compileQxoCapitalisationF28ProductResultAdapter,
+} = require(
+  '../lib/canonical-v2/qxo-capitalisation-f28-product-result-adapter',
+);
+const {
   buildF27Inputs,
 } = require('./fixtures/canonical-v2/qxo-capitalisation-f27-inputs');
+const {
+  buildF28ProductInputs,
+} = require(
+  './fixtures/canonical-v2/qxo-capitalisation-f28-product-inputs',
+);
 
 function id(label) {
   return contentId(
@@ -312,152 +323,86 @@ function assertDeepFrozen(value) {
   Object.values(value).forEach(assertDeepFrozen);
 }
 
-test('adapts the exact QXO F27 row into one Product result', () => {
-  const input = fixture();
-  const receipt = compileQxoCapitalisationProductResultAdapter(input);
-  const result = receipt.product_query_result;
-
-  assert.equal(
-    receipt.schema_version,
-    QXO_CAPITALISATION_PRODUCT_RESULT_ADAPTER_RECEIPT_SCHEMA,
+test('rejects direct F27 Product admission and requires F28', () => {
+  assert.throws(
+    () => compileQxoCapitalisationProductResultAdapter(fixture()),
+    { code: 'QXO_CAPITALISATION_F27_RETIRED_NOT_RELEASE_ADMITTED' },
   );
-  assert.equal(
-    result.domain_result_identity,
-    input.qxo_cross_view_release.provision_row.provision_row_id,
-  );
-  assert.deepEqual(
-    result.domain_result_payload,
-    input.qxo_cross_view_release.provision_row,
-  );
-  assert.deepEqual(
-    result.domain_result_payload.subrows.map(
-      (subrow) => subrow.value_slot_key,
+  assert.doesNotThrow(
+    () => compileQxoCapitalisationF28ProductResultAdapter(
+      buildF28ProductInputs(),
     ),
-    REQUIRED_VALUE_SLOTS,
   );
-  assert.equal(validateProductQueryResult(result), true);
+});
+
+test('keeps structural F27 validation historical-only', () => {
+  const result = clone(
+    compileQxoCapitalisationF28ProductResultAdapter(
+      buildF28ProductInputs(),
+    ).product_query_result,
+  );
+  result.domain_result_definition.version = 2;
+  result.domain_result_payload.schema_version =
+    'CAPITALISATION_SHARED_PROVISION_ROW_F27/V1';
+  result.domain_result_payload_digest = sha256Hex(Buffer.from(
+    canonicalJson(result.domain_result_payload),
+    'utf8',
+  ));
+  const validationBody = {
+    validator_stable_id: QXO_DOMAIN_VALIDATOR.stable_id,
+    validator_version: QXO_DOMAIN_VALIDATOR.version,
+    validated_payload_digest: result.domain_result_payload_digest,
+    validation_state: 'EXTERNALLY_VALIDATED',
+  };
+  result.domain_result_validation = {
+    schema_version: PRODUCT_DOMAIN_RESULT_VALIDATION_SCHEMA,
+    ...validationBody,
+    validation_receipt_id: contentId(
+      PRODUCT_DOMAIN_RESULT_VALIDATION_SCHEMA,
+      validationBody,
+    ),
+  };
+  result.product_query_result_identity = contentId(
+    'PRODUCT_QUERY_RESULT/V1',
+    {
+      schema_version: result.schema_version,
+      product_query_definition_id: result.product_query_definition_id,
+      approved_pm_data_version_id: result.approved_pm_data_version_id,
+      candidate_release_manifest_id:
+        result.candidate_release_manifest_id,
+      candidate_release_manifest_payload_digest:
+        result.candidate_release_manifest_payload_digest,
+      domain_key: result.domain_key,
+      domain_result_definition_stable_id:
+        result.domain_result_definition.stable_id,
+      domain_result_definition_version:
+        result.domain_result_definition.version,
+      domain_result_identity: result.domain_result_identity,
+    },
+  );
+  result.exact_citation.citation_target_identity = contentId(
+    'PRODUCT_EXACT_CITATION/V1',
+    {
+      product_query_result_identity:
+        result.product_query_result_identity,
+      candidate_release_manifest_id:
+        result.candidate_release_manifest_id,
+      candidate_release_manifest_payload_digest:
+        result.candidate_release_manifest_payload_digest,
+      source_document_identity:
+        result.exact_citation.source_document_identity,
+      source_evidence_identity:
+        result.exact_citation.source_evidence_identity,
+    },
+  );
   assert.equal(
-    validateQxoCapitalisationProductResultAdapterReceipt(receipt, input),
+    validateHistoricalQxoCapitalisationF27ProductQueryResult(result),
     true,
   );
-  assertDeepFrozen(receipt);
-});
-
-test('preserves the exact row and release across all four views', () => {
-  const input = fixture();
-  const receipt = compileQxoCapitalisationProductResultAdapter(input);
-  assert.deepEqual(
-    Object.keys(receipt.qxo_cross_view_release.surface_bindings),
-    REQUIRED_SURFACES,
-  );
-  for (const surface of REQUIRED_SURFACES) {
-    assert.deepEqual(
-      receipt.qxo_cross_view_release.surface_bindings[surface].provision_row,
-      receipt.product_query_result.domain_result_payload,
-    );
-  }
-});
-
-test('keeps Product query and membership PASS states external', () => {
-  const input = fixture();
-  input.product_admission_receipt =
-    admissionReceipt(
-      input.product_query_ir,
-      domainResult(input.qxo_cross_view_release),
-      input.result_fields,
-      'FAIL',
-    );
   assert.throws(
-    () => compileQxoCapitalisationProductResultAdapter(input),
-    (error) => error.code
-      === 'INVALID_QXO_PRODUCT_RESULT_ADAPTER_PRODUCT_INPUT',
+    () => validateProductQueryResult(result),
+    { code: 'RETIRED_QXO_CAPITALISATION_F27_NOT_RELEASE_ADMITTED' },
   );
-});
-
-test('rejects the legacy article-wide bring-down field for class-specific QXO terms', () => {
-  const input = fixture();
-  input.product_query_ir = productQueryIr(
-    input.qxo_cross_view_release,
-    { useLegacyBringDown: true },
-  );
-  input.product_admission_receipt = admissionReceipt(
-    input.product_query_ir,
-    domainResult(input.qxo_cross_view_release),
-    input.result_fields,
-  );
-  assert.throws(
-    () => compileQxoCapitalisationProductResultAdapter(input),
-    (error) => error.code
-      === 'INVALID_QXO_PRODUCT_RESULT_ADAPTER_PRODUCT_INPUT',
-  );
-});
-
-test('rejects raw scalar substitutions for shared deal and signing fields', () => {
-  for (const [index, raw] of [
-    [0, 'deal:qxo-topbuild'],
-    [1, '2026-04-18'],
-  ]) {
-    const input = fixture();
-    input.result_fields[index].value = raw;
-    assert.throws(
-      () => compileQxoCapitalisationProductResultAdapter(input),
-      (error) => error.code
-        === 'INVALID_QXO_PRODUCT_RESULT_ADAPTER_PRODUCT_INPUT',
-    );
-  }
-});
-
-test('rejects a changed QXO row even when the outer release is rehashed', () => {
-  const input = fixture();
-  const changed = clone(input.qxo_cross_view_release);
-  changed.provision_row.subrows[0].subject.display_value = 'Forged standard';
-  const body = clone(changed);
-  delete body.qxo_capitalisation_cross_view_release_f27_id;
-  delete body.canonical_payload_digest;
-  changed.qxo_capitalisation_cross_view_release_f27_id = contentId(
-    'QXO_CAPITALISATION_CROSS_VIEW_RELEASE_F27/V1',
-    body,
-  );
-  changed.canonical_payload_digest = contentId(
-    'QXO_CAPITALISATION_CROSS_VIEW_RELEASE_F27_PAYLOAD/V1',
-    body,
-  );
-  input.qxo_cross_view_release = changed;
-  assert.throws(
-    () => compileQxoCapitalisationProductResultAdapter(input),
-    (error) => error.code === 'INVALID_QXO_PRODUCT_RESULT_ADAPTER_SOURCE',
-  );
-});
-
-test('keeps structured source composition and Product payload identities separate', () => {
-  const input = fixture();
-  const result =
-    compileQxoCapitalisationProductResultAdapter(input)
-      .product_query_result;
-  assert.notEqual(
-    result.domain_result_payload_digest,
-    result.exact_citation.result_component_evidence_identity,
-  );
-  assert.equal(
-    result.exact_citation.source_document_identity,
-    input.qxo_cross_view_release.provision_row.document_hash,
-  );
-  assert.equal(result.exact_detail_action, SELECTED_SOURCE_ACTION);
-});
-
-test('canonical receipt bytes are deterministic and bind the full release', () => {
-  const input = fixture();
-  const first = compileQxoCapitalisationProductResultAdapter(input);
-  const second = compileQxoCapitalisationProductResultAdapter(clone(input));
-  assert.deepEqual(first, second);
-  assert.equal(
-    canonicalQxoCapitalisationProductResultAdapterReceiptBytes(
-      first,
-      input,
-    ).toString('utf8'),
-    canonicalJson(first),
-  );
-  assert.deepEqual(first.qxo_cross_view_release, input.qxo_cross_view_release);
 });
 
 test('has no I/O, serving, release or activation path', () => {
