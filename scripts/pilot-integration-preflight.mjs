@@ -27,10 +27,31 @@ const signerRequiredPaths = git([
   '--name-only',
   `${reviewBasis}..HEAD`,
 ]).split('\n').filter(Boolean).sort();
-const worktrees = git(['worktree', 'list', '--porcelain']).split('\n\n').filter(Boolean).map((entry) => {
-  const location = entry.split('\n').find((line) => line.startsWith('worktree '))?.slice(9);
-  return { clean: location ? git(['-C', location, 'status', '--porcelain']) === '' : false };
-});
+const registeredWorktrees = new Set(
+  git(['worktree', 'list', '--porcelain'])
+    .split('\n\n')
+    .filter(Boolean)
+    .map((entry) => (
+      entry.split('\n').find((line) => line.startsWith('worktree '))?.slice(9)
+    ))
+    .filter(Boolean)
+    .map((location) => path.resolve(location)),
+);
+const requestedWorktrees = supplied.required_worktree_paths === undefined
+  ? [root]
+  : supplied.required_worktree_paths;
+if (
+  !Array.isArray(requestedWorktrees)
+  || requestedWorktrees.length === 0
+  || requestedWorktrees.some((location) => typeof location !== 'string')
+) {
+  throw new Error('input.required_worktree_paths must be a non-empty path array');
+}
+const worktrees = [...new Set(requestedWorktrees.map((location) => path.resolve(location)))]
+  .map((location) => ({
+    clean: registeredWorktrees.has(location)
+      && git(['-C', location, 'status', '--porcelain']) === '',
+  }));
 const live = {
   ...supplied,
   main: { ...supplied.main, head: git(['rev-parse', 'main']), is_expected_ancestor: (() => { try { git(['merge-base', '--is-ancestor', expected, 'main']); return true; } catch { return false; } })() },
