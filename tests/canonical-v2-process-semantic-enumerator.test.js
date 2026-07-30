@@ -84,6 +84,26 @@ test('preserves exact source intervals and derives candidate identity from exact
   assert.equal(Object.hasOwn(original, 'release_id'), false);
 });
 
+test('binds producer-governed rejected and residual outcomes to the semantic outcome domain', () => {
+  const result = enumerateProcessSemantics(input({
+    source_units: [
+      sourceUnit('rejected', 'REJECTED'),
+      sourceUnit('residual', 'RESIDUAL'),
+    ],
+  }));
+  for (const outcome of [...result.rejections, ...result.residuals]) {
+    const {
+      schema_version: schemaVersion,
+      outcome_key: outcomeKey,
+      ...body
+    } = outcome;
+    assert.equal(schemaVersion, 'PROCESS_SEMANTIC_OUTCOME/V1');
+    assert.equal(outcome.slot_key, null);
+    assert.equal(outcome.semantic_payload, null);
+    assert.equal(outcomeKey, contentId(schemaVersion, body));
+  }
+});
+
 test('fails closed for hostile source, duplicate, unbounded, unknown-slot and malformed evidence input', () => {
   const cases = [
     () => enumerateProcessSemantics(input({ source_units: [sourceUnit('same', 'CANDIDATE'), sourceUnit('same', 'CANDIDATE')] })),

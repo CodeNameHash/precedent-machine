@@ -45,17 +45,26 @@ function candidate(key, payloadKey, label = key) {
 function record(key, label = key) {
   const kind = key.includes('semantic') ? 'SEMANTIC' : 'LEXICAL';
   const payloadKey = kind === 'SEMANTIC' ? 'semantic_payload' : 'lexical_payload';
-  return {
-    schema_version: `PROCESS_${kind}_OUTCOME/V1`,
-    outcome_key: key,
+  const schemaVersion = `PROCESS_${kind}_OUTCOME/V1`;
+  const body = {
     scope_receipt_id: 'scope:one',
     outcome_kind: key.includes('rejection') ? 'REJECTION' : 'RESIDUAL',
-    slot_key: 'EXCLUSIVITY_001',
-    source_unit_id: `source:${label}`,
-    evidence: evidence(label),
     reason_code: 'UNSUPPORTED_SYNTHETIC_INPUT',
-    [payloadKey]: { label },
+    source_unit_id: `source:${label}`,
+    slot_key: kind === 'SEMANTIC' ? null : 'EXCLUSIVITY_001',
+    evidence: evidence(label),
+    [payloadKey]: kind === 'SEMANTIC' ? null : { label },
   };
+  return {
+    schema_version: schemaVersion,
+    outcome_key: contentId(schemaVersion, body),
+    ...body,
+  };
+}
+
+function rehashOutcome(record) {
+  const { schema_version: schemaVersion, outcome_key: ignored, ...body } = record;
+  return contentId(schemaVersion, body);
 }
 
 function limits() {
@@ -115,6 +124,7 @@ test('rejects mismatched frozen scope receipts and unsafe bounds', () => {
     ...scopeMismatch.lexical_enumeration.residuals,
   ]) {
     outcome.scope_receipt_id = 'scope:other';
+    outcome.outcome_key = rehashOutcome(outcome);
   }
   assert.throws(
     () => buildProcessCandidateGraph(scopeMismatch),
@@ -154,6 +164,32 @@ test('rejects duplicate, substituted and hostile source records', () => {
   emptyOutcomeSlot.semantic_enumeration.rejections[0].slot_key = '';
   assert.throws(
     () => buildProcessCandidateGraph(emptyOutcomeSlot),
+    { code: 'INVALID_PROCESS_CANDIDATE_ENUMERATION' },
+  );
+
+  const staleOutcome = input();
+  staleOutcome.lexical_enumeration.residuals[0].lexical_payload.label = 'substituted';
+  assert.throws(
+    () => buildProcessCandidateGraph(staleOutcome),
+    { code: 'INVALID_PROCESS_CANDIDATE_ENUMERATION' },
+  );
+
+  const selfRehashedOutcome = input();
+  const semanticRejection = selfRehashedOutcome.semantic_enumeration.rejections[0];
+  semanticRejection.slot_key = 'EXCLUSIVITY_001';
+  semanticRejection.semantic_payload = { forged: true };
+  semanticRejection.outcome_key = rehashOutcome(semanticRejection);
+  assert.throws(
+    () => buildProcessCandidateGraph(selfRehashedOutcome),
+    { code: 'INVALID_PROCESS_CANDIDATE_ENUMERATION' },
+  );
+
+  const emptyEvidenceOutcome = input();
+  const lexicalResidual = emptyEvidenceOutcome.lexical_enumeration.residuals[0];
+  lexicalResidual.evidence = {};
+  lexicalResidual.outcome_key = rehashOutcome(lexicalResidual);
+  assert.throws(
+    () => buildProcessCandidateGraph(emptyEvidenceOutcome),
     { code: 'INVALID_PROCESS_CANDIDATE_ENUMERATION' },
   );
 });
@@ -244,8 +280,23 @@ test('accepts the actual frozen scope, semantic and lexical pure-runtime chain',
       },
       semantic_payload: null,
       disposition_code: 'UNSUPPORTED_SEMANTIC_MATERIAL',
+    }, {
+      source_unit_id: digest('semantic-residual-unit'),
+      unit_state: 'RESIDUAL',
+      slot_key: null,
+      evidence: {
+        source_document_identity: digest('semantic-residual-document'),
+        source_revision_id: digest('semantic-residual-revision'),
+        document_hash: digest('semantic-residual-hash'),
+        start_utf8_byte: 12,
+        end_utf8_byte: 17,
+        exact_text_digest: sha256Hex('extra'),
+        evidence_role_key: 'AGREEMENT_TEXT',
+      },
+      semantic_payload: null,
+      disposition_code: 'UNRESOLVED_SEMANTIC_MATERIAL',
     }],
-    limits: { max_source_units: 2, max_candidates: 2 },
+    limits: { max_source_units: 3, max_candidates: 2 },
   });
   const text = 'value';
   const lexical = enumerateProcessLexicalCandidates({
@@ -261,6 +312,38 @@ test('accepts the actual frozen scope, semantic and lexical pure-runtime chain',
       lexical_observations: [{
         state: 'CANDIDATE',
         slot_key: 'SLOT_001',
+        evidence_role_key: 'AGREEMENT_TEXT',
+        start_utf8_byte: 0,
+        end_utf8_byte: Buffer.byteLength(text, 'utf8'),
+        lexical_payload: { token: text },
+        reason_code: null,
+      }, {
+        state: 'REJECTED',
+        slot_key: null,
+        evidence_role_key: null,
+        start_utf8_byte: 0,
+        end_utf8_byte: Buffer.byteLength(text, 'utf8'),
+        lexical_payload: { token: text },
+        reason_code: 'NEGATED_MATCH',
+      }, {
+        state: 'AMBIGUOUS',
+        slot_key: null,
+        evidence_role_key: null,
+        start_utf8_byte: 0,
+        end_utf8_byte: Buffer.byteLength(text, 'utf8'),
+        lexical_payload: { token: text },
+        reason_code: 'MULTIPLE_POSSIBLE_SLOTS',
+      }, {
+        state: 'UNSUPPORTED',
+        slot_key: null,
+        evidence_role_key: null,
+        start_utf8_byte: 0,
+        end_utf8_byte: Buffer.byteLength(text, 'utf8'),
+        lexical_payload: { token: text },
+        reason_code: 'UNSUPPORTED_LEXICAL_FORM',
+      }, {
+        state: 'CANDIDATE',
+        slot_key: 'UNKNOWN_SLOT',
         evidence_role_key: 'AGREEMENT_TEXT',
         start_utf8_byte: 0,
         end_utf8_byte: Buffer.byteLength(text, 'utf8'),
@@ -286,13 +369,46 @@ test('accepts the actual frozen scope, semantic and lexical pure-runtime chain',
 
   assert.equal(graph.scope_receipt_id, scope.scope_receipt_id);
   assert.equal(graph.candidate_nodes.length, 2);
-  assert.equal(graph.retained_records.length, 2);
+  assert.equal(graph.retained_records.length, 7);
   assert.deepEqual(
     graph.retained_records.map((record) => record.schema_version).sort(),
-    ['PROCESS_LEXICAL_OUTCOME/V1', 'PROCESS_SEMANTIC_OUTCOME/V1'],
+    [
+      'PROCESS_LEXICAL_OUTCOME/V1',
+      'PROCESS_LEXICAL_OUTCOME/V1',
+      'PROCESS_LEXICAL_OUTCOME/V1',
+      'PROCESS_LEXICAL_OUTCOME/V1',
+      'PROCESS_LEXICAL_OUTCOME/V1',
+      'PROCESS_SEMANTIC_OUTCOME/V1',
+      'PROCESS_SEMANTIC_OUTCOME/V1',
+    ],
   );
   assert.equal(
     graph.retained_records.some((record) => record.outcome_kind === 'SCOPE_RESIDUAL'),
     true,
+  );
+  const semanticOutcomes = graph.retained_records.filter(
+    (record) => record.enumerator_kind === 'SEMANTIC',
+  );
+  assert.deepEqual(semanticOutcomes.map((record) => record.slot_key), [null, null]);
+  assert.ok(semanticOutcomes.every((record) => record.semantic_payload === null));
+  const lexicalUnmapped = graph.retained_records.filter((record) => (
+    record.enumerator_kind === 'LEXICAL' && record.outcome_kind !== 'SCOPE_RESIDUAL'
+  ));
+  assert.equal(lexicalUnmapped.length, 4);
+  assert.ok(lexicalUnmapped.every((record) => Object.hasOwn(record.evidence, 'scope_evidence') === false));
+
+  const forged = JSON.parse(JSON.stringify({
+    schema_version: CANDIDATE_GRAPH_INPUT_SCHEMA,
+    semantic_enumeration: semantic,
+    lexical_enumeration: lexical,
+    limits: limits(),
+  }));
+  forged.lexical_enumeration.rejections[0].evidence.scope_evidence = [];
+  forged.lexical_enumeration.rejections[0].outcome_key = rehashOutcome(
+    forged.lexical_enumeration.rejections[0],
+  );
+  assert.throws(
+    () => buildProcessCandidateGraph(forged),
+    { code: 'INVALID_PROCESS_CANDIDATE_ENUMERATION' },
   );
 });

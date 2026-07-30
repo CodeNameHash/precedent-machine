@@ -1,0 +1,26 @@
+{
+  "phase": "WP-PROCESS-GENERIC-OUTCOME-INTERFACE-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-generic-outcome-interface-v1.json",
+    "lib/canonical-v2/process-semantic-enumerator.js",
+    "lib/canonical-v2/process-lexical-enumerator.js",
+    "lib/canonical-v2/process-candidate-graph.js",
+    "tests/canonical-v2-process-semantic-enumerator.test.js",
+    "tests/canonical-v2-process-lexical-enumerator.test.js",
+    "tests/canonical-v2-process-candidate-graph.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Pure Process generic outcome-interface correction only. It preserves producer-governed rejected and residual outcomes, validates exact outcome identity and evidence grammar in memory, and grants no I/O, extraction, writer, serving, database, release, import, activation or production authority."
+}

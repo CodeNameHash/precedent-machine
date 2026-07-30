@@ -105,7 +105,7 @@ test('retains rejected, ambiguous, unsupported and unmapped lexical records', ()
   const base = sourceUnit();
   base.lexical_observations = [
     {
-      state: 'REJECTED', slot_key: 'EXCLUSIVITY_001', evidence_role_key: 'PRIMARY_TEXT',
+      state: 'REJECTED', slot_key: null, evidence_role_key: null,
       start_utf8_byte: 104, end_utf8_byte: 111,
       lexical_payload: { token: 'Company' }, reason_code: 'NEGATED_MATCH',
     },
@@ -115,7 +115,7 @@ test('retains rejected, ambiguous, unsupported and unmapped lexical records', ()
       lexical_payload: { token: 'Company' }, reason_code: 'MULTIPLE_POSSIBLE_SLOTS',
     },
     {
-      state: 'UNSUPPORTED', slot_key: 'EXCLUSIVITY_001', evidence_role_key: 'PRIMARY_TEXT',
+      state: 'UNSUPPORTED', slot_key: null, evidence_role_key: null,
       start_utf8_byte: 104, end_utf8_byte: 111,
       lexical_payload: { token: 'Company' }, reason_code: 'UNSUPPORTED_LEXICAL_FORM',
     },
@@ -139,6 +139,15 @@ test('retains rejected, ambiguous, unsupported and unmapped lexical records', ()
   assert.ok(result.residuals.filter((item) => item.outcome_kind === 'RESIDUAL').every(
     (item) => item.evidence.exact_text_digest === sha256Hex('Company'),
   ));
+  const unmapped = [
+    ...result.rejections,
+    ...result.residuals.filter((item) => item.outcome_kind === 'RESIDUAL'),
+  ];
+  assert.ok(unmapped.every((item) => Object.hasOwn(item.evidence, 'scope_evidence') === false));
+  assert.equal(Object.hasOwn(result.rejections[0].evidence, 'evidence_role_key'), false);
+  assert.equal(Object.hasOwn(result.residuals.find(
+    (item) => item.reason_code === 'MULTIPLE_POSSIBLE_SLOTS',
+  ).evidence, 'evidence_role_key'), false);
 });
 
 test('fails closed for hostile source records, duplicate candidates and reported limits', () => {
