@@ -13,20 +13,21 @@ main integration.
 | --- | --- |
 | Main basis | `7b6bc64157c49832129fa2ca227399850cd983fc` |
 | Approved M1 review commit | `affa7464ca2cab2b4715ae084e3de6c2d39b673f` |
-| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; candidate code head `86e5bc70`. Later commits update only the execution ledger and its mechanical drift manifest. The batch includes the generic Agreement envelope, bounded PI pipeline connector, sealed Metsera source-to-sidecar run, signed Process result admission, shared Product row, Product result set, answer-first presentation, four-surface Product binding, one-writer candidate persistence, inactive-candidate source-reader proof and real browser acceptance. |
-| Current successor bundle | 174 authored inputs, 173 substantive contracts, 8 categories |
-| Current successor bundle ID | `dfab1f31bf31b7ce405dc8a5fc0215a07139634ff535f84b1266f754cba2797a` |
-| Current successor contract digest | `c8f840e70e8b1c1bac467278665fddc9d837123f9a8c44ae47c0b9630eaec540` |
-| Current successor payload digest | `a6608b04e9140cb024089639a3989ae9d45a12df5cd6587f6d2695ea2ffb872f` |
-| Contract dependency graph | 173 nodes, 302 links, 0 missing, duplicate, conflict, unresolved or cyclic links |
+| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; head `d0fa31c3`. The batch includes the generic Agreement envelope, bounded PI pipeline connector, sealed Metsera source-to-sidecar run, signed Process result admission, shared Product row, Product result set, answer-first presentation, four-surface Product binding, one-writer candidate persistence, inactive-candidate source-reader proof, real browser acceptance and the generic Product result serving-record contract. |
+| Current successor bundle | 175 authored inputs, 174 substantive contracts, 8 categories |
+| Current successor bundle ID | `d1932ff34653a3b2235daed1d435a4f1aad445e0822fca6db9f901b5c99411b6` |
+| Current successor contract digest | `416e6be4987c650efefbf55ae39ad74bbfc0584450f54fd5af61c7b05c62fa07` |
+| Current successor payload digest | `38dfe912a657d8631db7f6f1efa9f925e2dddb2a8dd4bb90d8a591670b5240ae` |
+| Contract dependency graph | 174 nodes, 303 links, 0 missing, duplicate, conflict, unresolved or cyclic links |
 | Clean compile check | PASS, two uncached compiles produced identical canonical bytes |
 | Draft generic-envelope successor | Bundle `b37a20b3e343b93ab8d9d223625ef5431d0786f5720f1869572921ab7049ad30`; digest `158ac280eb3bc2b994e4d37281db8045deb48221af81ba84fb7da8a93205f03a`; 172 substantive contracts and 297 links. Two clean compiles are byte-identical. This draft does not replace the acknowledged M1 bundle until its exact bytes pass review and the reserved contract-freeze approval. |
 | Draft Product-writer successor | Bundle `dfab1f31bf31b7ce405dc8a5fc0215a07139634ff535f84b1266f754cba2797a`; digest `c8f840e70e8b1c1bac467278665fddc9d837123f9a8c44ae47c0b9630eaec540`; canonical payload `a6608b04e9140cb024089639a3989ae9d45a12df5cd6587f6d2695ea2ffb872f`; 173 substantive contracts and 302 links. Two clean compiles are byte-identical. It adds only an inactive staging candidate-result write through the existing canonical writer. Exact-root review and the reserved contract-freeze approval remain required before this draft replaces M1. |
+| Draft Product-serving successor | Bundle `d1932ff34653a3b2235daed1d435a4f1aad445e0822fca6db9f901b5c99411b6`; digest `416e6be4987c650efefbf55ae39ad74bbfc0584450f54fd5af61c7b05c62fa07`; canonical payload `38dfe912a657d8631db7f6f1efa9f925e2dddb2a8dd4bb90d8a591670b5240ae`; 174 substantive contracts and 303 links. Two clean compiles are byte-identical. It adds one generic Product result serving-record contract for Agreement, Process and later admitted domains. Import, query and activation work remains. |
 | Latest complete suite on this branch | PASS on candidate code head `86e5bc70`. Later commits change only this ledger and its mechanical drift manifest. The first run found only stale count and digest assertions. Those exact bindings were corrected. The clean rerun had no failures. |
 | Latest production build on this branch | PASS, 29/29 pages |
 | Protected programme status | Generation 44, publication `9552de2185b11d80bd1e2b80757f4f07005c58d1`, is stale against current main. The official verifier fails closed. Pre-production P8 work does not require a successor publication under the current governance balance, so this does not block the pilots. |
 | M1 contract freeze | PASS. Exact acknowledgement: `docs/acks/M1-CONTRACT-FREEZE-2026-07-30.md` |
-| M2 vertical slice | ACTIVE. QXO F28 passed the real isolated-staging rollback proof. Metsera now passes source acquisition through the typed Process sidecar, signed Process phrasebook-result admission, shared Product Query row, Process-ordered Product result set, answer-first presentation, one exact Query/Review/Compare/Corpus Context binding, rollback-only candidate persistence, an honest inactive-release source-reader refusal and desktop/mobile browser acceptance. Exact-root review and reviewed candidate-release activation remain. |
+| M2 vertical slice | ACTIVE. QXO F28 passed the real isolated-staging rollback proof. Metsera now passes source acquisition through the typed Process sidecar, signed Process phrasebook-result admission, shared Product Query row, Process-ordered Product result set, answer-first presentation, one exact Query/Review/Compare/Corpus Context binding, rollback-only candidate persistence, an honest inactive-release source-reader refusal and desktop/mobile browser acceptance. The existing candidate-release importer does not yet carry Product Query results. A generic Product-result release partition, one set-based active query, exact-root review and reviewed staging activation remain. |
 | Isolated-staging access | PASS. Project `sjumbznveyyiizhwvixj` was re-authorised and verified through the Supabase plugin on 2026-07-30. Production was not queried or changed. |
 | QXO F28 staging proof | PASS. Release `f79d3a9a92567db913da48f84540fa55cdff69d770bf4c9261a72e3428242240`; 14 metric slots; 1 set-based market read; 0 retries; 0 durable writes; active pointer unchanged. |
 | Staging pointer check | PASS. The active staging pointer remains generation 10 at corpus release `c9c19dc1ad92496953ee04f52b4a8dc575ea21ab9502acfd449a9299055817d3`. The F28 test release has zero durable release, market or serving rows and is not active. |
@@ -49,8 +50,9 @@ exact 171-contract bundle and permits the isolated staging pilots. QXO F28 has
 passed its real source-to-product rollback proof. The second Agreement family
 now uses the generic parameterised envelope. Metsera has passed the real
 source-to-product rollback, browser and inactive-source checks. The remaining
-P8 work is the exact 173-contract successor review, one reserved bundle
-approval and reviewed staging activation.
+P8 work is to carry Product Query results through the existing candidate-release
+import and active query path. Then the exact successor root needs one review,
+one reserved bundle approval and reviewed staging activation.
 
 ## 2. Work underway
 
@@ -80,13 +82,15 @@ approval and reviewed staging activation.
 | `PM-METSERA-SOURCE-READER-01` | P8 | Prove that the existing Product source reader refuses an inactive Metsera candidate without changing its result or reading a source. | PM implementation | Active milestone branch; five-file source-reader adapter boundary and existing Product source-reader compiler. | 19 focused and adjacent tests PASS. The real staging run resolved pointer generation 10, returned `RELEASE_NOT_ACTIVE`, preserved Product result `7ff6e4d1ddb2baf6a995f66a911ef4b7031ef96bf52af5f0789a4adfeebea754` and remained `NOT_EXECUTED`. Receipt `2ff7dc4c999ac8e61176b71eb67b21f51ae6f6a27c3e11aaed8f752e2e71cc41`. No durable row or pointer changed. | COMPLETE | Reuse the exact request only after reviewed candidate activation. | No |
 | `PM-METSERA-BROWSER-01` | P8 | Render the real Metsera Product result in Query, Review, Compare and Corpus Context with one compact responsive layout. | PM controller | Active milestone branch; generated 19 KB real-result fixture, one preview component, one guarded design route and focused tests. | 13 focused cross-view tests PASS. Production build PASS, 29/29 pages. Browser acceptance PASS at 1440 and 390 pixels with no horizontal overflow. All four views retained Product result `7ff6e4d1ddb2baf6a995f66a911ef4b7031ef96bf52af5f0789a4adfeebea754`. Compare and Corpus Context showed the typed no-cohort state. Source action returned `RELEASE_NOT_ACTIVE`. | COMPLETE | Run exact-root checks and independent reviews. | No |
 | `PM-P8-MECHANICAL-BINDINGS-01` | P8 | Update exact authored-file counts, the writer rollback snapshot, the governed staging SQL digest and programme drift manifest after the Product writer was added. | PM controller | Active milestone branch; commit `86e5bc70`; tests and generated control bindings only. | Eleven affected control tests PASS. Clean complete-suite rerun PASS. No product or legal meaning changed. | COMPLETE | Preserve this exact candidate through review. | No |
+| `PM-PRODUCT-RELEASE-PARTITION-01` | P8 | Add Product Query results to the existing candidate-release import and active serving path. This must be one generic Product partition for Agreement, Process and later admitted domains. | PM implementation | Active milestone branch. Serving-record contract and pure runtime are commit `d0fa31c3`. The next exact boundary is the existing release importer, staging SQL and active Product query. | 65 focused compiler, root, contract and runtime tests PASS. The root has 174 contracts and 303 links with zero structural defect. Remaining checks must prove complete release-root binding, inactive import, exact replay, conflicting replay failure, atomic pointer activation, one indexed set-based query, keyset pagination, release isolation and no production authority. | ACTIVE | Extend the existing candidate-release importer. Do not create a Metsera-only release engine. | Reserved exact contract freeze only |
 
 ## 3. Next 48 hours
 
-1. Run the exact 173-contract successor-root checks and independent reviews.
-2. Prepare the one reserved exact-bundle approval package.
-3. After approval, activate only the reviewed staging candidate and rerun the exact source-reader request.
-4. Close M2 only after QXO and Metsera use the same source, identities, evidence and release across every required view.
+1. Implement the generic Product-result candidate-release partition and active set-based query.
+2. Run the final successor-root checks and independent reviews.
+3. Prepare the one reserved exact-bundle approval package.
+4. After approval, activate only the reviewed staging candidate and rerun the exact Product and source-reader requests.
+5. Close M2 only after QXO and Metsera use the same source, identities, evidence and release across every required view.
 
 ## 4. Bounded units through P11
 
@@ -99,7 +103,7 @@ approval and reviewed staging activation.
 | `P5-CORRECTIONS-RELEASE` | P5 | Corrections survive re-extraction and candidate releases are immutable. | PM implementation | P3 and P4. | Correction-head and release tests. | ACTIVE | Connect QXO and Metsera pilot outputs. | No |
 | `P6-SERVING` | P6 | Bounded set-based serving and release-aware cache. | PM implementation | P5 candidate release. | Call-budget, cache and query tests. | ACTIVE | Execute fixture-scoped runtime path. | No |
 | `P7-SHARED-ROWS` | P7 | Query, Review, Compare and Corpus Context use one row contract. | PM and PI | P6. | F28 and Metsera cross-view byte and browser parity PASS. | COMPLETE | Preserve the same row identities through reviewed activation. | No |
-| `P8-VERTICAL-SLICES` | P8 | QXO and Metsera pass source-to-product staging runs. | PM controller | P1-P7 links. | QXO F28 real isolated-staging rollback proof PASS. Metsera passes real source through candidate persistence, all four browser views and an honest inactive-release source-reader refusal. Exact-root review and reviewed staging activation remain. | ACTIVE | Run exact-root review and prepare the reserved bundle approval. | Reserved exact contract freeze only |
+| `P8-VERTICAL-SLICES` | P8 | QXO and Metsera pass source-to-product staging runs. | PM controller | P1-P7 links. | QXO F28 real isolated-staging rollback proof PASS. Metsera passes real source through inactive candidate persistence, all four browser views and an honest inactive-release source-reader refusal. Product-result release import, active set-based query, exact-root review and reviewed staging activation remain. | ACTIVE | Complete the generic Product-result release partition. | Reserved exact contract freeze only |
 | `P9-CORPUS-CERTIFICATION` | P9 | Full corpus passes quality, identity, drift, performance, restore and rollback controls. | PM controller | M2 pass. | M3 acknowledgement and Phase 9 gates. | BLOCKED | Begin after both pilots pass. | No |
 | `P10-PRODUCTION-IMPORT` | P10 | Exact inactive production import with member parity and resumable checkpoints. | PM controller | M3 pass. | Replay no-op, conflicting replay fail-closed, complete parity. | BLOCKED | Run only after staging certification. | Where contract requires |
 | `P11-CUTOVER` | P11 | Atomic whole-tuple activation, smoke and rollback. | PM controller | M4 pass and Ben authorisation. | Cutover receipt, production smoke and rollback. | BLOCKED | Request one-use authorisation at M4. | Yes |
@@ -113,7 +117,8 @@ defect. It must not copy the F28 files.
 ## 5. Critical path
 
 `PM-GOV-BALANCE-01` → M1 bundle acknowledgement → QXO isolated-staging PASS →
-generic second-family envelope → Metsera runtime link and isolated-staging run → M2 → full-corpus
+generic second-family envelope → Metsera runtime link and isolated-staging run →
+Product-result release partition and active query → M2 → full-corpus
 certification → M3 → inactive production import → M4 → one-use Ben cutover
 authorisation → atomic activation → production smoke and rollback.
 
