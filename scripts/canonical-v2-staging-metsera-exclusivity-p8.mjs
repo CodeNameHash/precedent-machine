@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { createRequire } from 'node:module';
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
@@ -118,6 +118,83 @@ function activeReleaseResolution(stagingState) {
     resolution_state: body.resolution_state,
     execution_authority_state: body.execution_authority_state,
   };
+}
+
+function writeBrowserFixture({
+  candidateRecord,
+  productPresentation,
+  productResultSet,
+  productSurfaces,
+  sourceReader,
+}) {
+  if (!process.argv.includes('--write-browser-fixture')) return;
+  const result =
+    candidateRecord.complete_write_set.product_row
+      .shared_row_adapter_receipt.product_query_result;
+  const presentation =
+    productPresentation.product_presentation_handoff
+      .product_result_presentation;
+  const fixture = {
+    schema_version:
+      'METSERA_EXCLUSIVITY_BROWSER_ACCEPTANCE_FIXTURE/V1',
+    fixture_kind: 'REAL_SEALED_METSERA_P8_INACTIVE_CANDIDATE',
+    release_state: 'INACTIVE_CANDIDATE',
+    candidate_product_result_id:
+      candidateRecord.candidate_product_result_id,
+    candidate_release_manifest_id:
+      result.candidate_release_manifest_id,
+    candidate_release_manifest_payload_digest:
+      result.candidate_release_manifest_payload_digest,
+    product_query_definition_id:
+      result.product_query_definition_id,
+    product_query_result_identity:
+      result.product_query_result_identity,
+    product_result_set_receipt_id:
+      productResultSet.product_result_set_receipt_id,
+    product_presentation_receipt_id:
+      productPresentation.product_presentation_receipt_id,
+    product_surfaces_receipt_id:
+      productSurfaces.product_surfaces_receipt_id,
+    understood_legal_question:
+      presentation.understood_legal_question,
+    shared_result: result,
+    presentation,
+    surface_bindings: Object.fromEntries(
+      Object.entries(productSurfaces.surface_bindings).map(
+        ([surface, binding]) => [surface, {
+          surface,
+          product_query_definition_id:
+            binding.product_query_definition_id,
+          product_query_result_identity:
+            binding.product_query_result_identity,
+          domain_result_identity:
+            binding.domain_result_identity,
+          market_state: binding.market_state,
+          selected_source_action:
+            binding.selected_source_action,
+        }],
+      ),
+    ),
+    source_reader: {
+      product_source_reader_receipt_id:
+        sourceReader.product_source_reader_receipt_id,
+      disposition:
+        sourceReader.product_source_reader_outcome.disposition,
+      execution_state:
+        sourceReader.product_source_reader_outcome.execution_state,
+      original_result_preserved:
+        sourceReader.product_source_reader_outcome
+          .original_result_preserved,
+    },
+    authority_state: 'NOT_GRANTED',
+  };
+  writeFileSync(
+    resolve(
+      ROOT,
+      '__fixtures__/canonical-v2/metsera-exclusivity-p8.json',
+    ),
+    `${JSON.stringify(fixture, null, 2)}\n`,
+  );
 }
 
 async function fetchSource(document) {
@@ -428,6 +505,13 @@ $candidate_conflict_proof$;`);
       'Inactive Metsera candidate did not fail closed in the Product source reader.',
     );
   }
+  writeBrowserFixture({
+    candidateRecord: candidateCommit.validation.candidateRecord,
+    productPresentation,
+    productResultSet,
+    productSurfaces,
+    sourceReader,
+  });
   process.stdout.write(`${JSON.stringify({
     schema_version: receipt.schema_version,
     selected_passage_id: receipt.selected_passage_id,
