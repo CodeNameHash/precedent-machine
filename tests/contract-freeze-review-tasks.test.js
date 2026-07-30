@@ -227,6 +227,12 @@ test('creates three deterministic tasks from the real source-closed compiler bun
     ),
     REQUIRED_BUNDLE_KINDS,
   );
+  assert.equal(reviewPackage.generated_contract_bundle_members.length > 0, true);
+  assert.equal(
+    reviewPackage.canonical_contract_bundle_projection.length,
+    reviewPackage.canonical_contract_bundle_members.length
+      + reviewPackage.generated_contract_bundle_members.length,
+  );
   assert.equal(
     reviewPackage.contract_bundle_freeze_candidate.schema_version,
     'CANONICAL_CONTRACT_BUNDLE_FREEZE_CANDIDATE/V1',
@@ -378,6 +384,10 @@ test('validates the complete freeze-candidate reports, inventory, roots and rece
       resealCandidate(candidate);
     },
     (candidate) => {
+      candidate.generated_contract_bundle_members.pop();
+      resealCandidate(candidate);
+    },
+    (candidate) => {
       candidate.unsigned_contract_bundle_compilation_receipt_payload
         .canonical_contract_bundle_member_root = DIGEST('wrong-receipt-root');
       resealCandidate(candidate);
@@ -390,6 +400,25 @@ test('validates the complete freeze-candidate reports, inventory, roots and rece
     resealPackage(input, reviewPackage);
     expectCode('INVALID_FREEZE_CANDIDATE', () => createRequest(input));
   }
+});
+
+test('rejects a self-resealed generated-member substitution', async () => {
+  const input = await makeExactReviewInput();
+  const reviewPackage = packageValue(input);
+  const member = reviewPackage.generated_contract_bundle_members[0];
+  const source = JSON.parse(
+    Buffer.from(member.source_bytes_base64, 'base64').toString('utf8'),
+  );
+  source.hostile_substitution = true;
+  const bytes = Buffer.from(canonicalJson(source), 'utf8');
+  member.byte_length = bytes.length;
+  member.payload_digest = sha256Hex(bytes);
+  member.source_bytes_base64 = bytes.toString('base64');
+  resealPackage(input, reviewPackage);
+  expectCode(
+    'INVALID_EXACT_GENERATED_MEMBER_SET',
+    () => createRequest(input),
+  );
 });
 
 test('requires exact distinct reviewer identities and disposition mappings', async () => {

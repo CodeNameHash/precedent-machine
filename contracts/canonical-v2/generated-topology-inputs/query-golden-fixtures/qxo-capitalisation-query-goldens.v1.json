@@ -1,0 +1,72 @@
+{
+  "object_kind": "QUERY_GOLDEN_FIXTURE_SET",
+  "stable_id": "QXO_CAPITALISATION_QUERY_GOLDENS",
+  "schema_version": "QUERY_GOLDEN_FIXTURE_SET/V1",
+  "integration_state": "STAGED_FOR_SUCCESSOR_MANIFEST",
+  "fixtures": [
+    {
+      "test_id": "QXO-CAP-COMPARISON-01",
+      "fixture_kind": "DATABASE_API",
+      "template_id": "QXO_CAPITALISATION_COMPARISON",
+      "canonical_input": {
+        "deal_key": "QXO",
+        "comparison_classes": [
+          "CAPITALISATION_CLAUSE_B_LIMBS_I_III",
+          "CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V"
+        ]
+      },
+      "expected_contract": {
+        "result_definition_stable_id": "TARGET_CAPITALISATION_BRING_DOWN",
+        "typed_result_state": "SUCCESS",
+        "cohort_semantics": "SAME_RELEASE_SAME_RESULT_DEFINITION",
+        "aggregate_semantics": "NONE",
+        "required_index_contract": "RELEASE_RESULT_DEFINITION_DEAL_KEY",
+        "plan_requirement": "INDEXED_SET_BASED"
+      }
+    },
+    {
+      "test_id": "QXO-CAP-DETAIL-01",
+      "fixture_kind": "CLIENT_ONLY_NO_SQL_NO_API",
+      "template_id": "QXO_CAPITALISATION_RESULT_DETAIL",
+      "canonical_input": {
+        "carried_result_adapter": "QXO_CAPITALISATION_PRODUCT_RESULT_ADAPTER",
+        "selected_action": "RESULT_COMPOSITION_EVIDENCE"
+      },
+      "expected_contract": {
+        "destination_state": "PRODUCT_RESULT_DETAIL",
+        "render_tree": [
+          "RESULT",
+          "COMPOSITION",
+          "SOURCE_CITATION"
+        ],
+        "zero_effect_counters": {
+          "admission": 0,
+          "network": 0,
+          "api": 0,
+          "cache": 0,
+          "database": 0
+        }
+      }
+    },
+    {
+      "test_id": "QXO-CAP-REFUSAL-UNADMITTED-01",
+      "fixture_kind": "REFUSAL",
+      "refusal_class": "PREDICATE_NOT_ADMITTED",
+      "canonical_input": {
+        "deal_key": "QXO",
+        "predicate_stable_id": "UNREGISTERED_CAPITALISATION_PREDICATE"
+      },
+      "expected_contract": {
+        "typed_disposition": "PREDICATE_NOT_ADMITTED",
+        "database_calls": 0
+      }
+    }
+  ],
+  "authority_contract": {
+    "runtime_execution_authority": "NONE",
+    "serving_authority": "NONE",
+    "database_authority": "NONE",
+    "release_authority": "NONE",
+    "production_authority": "NONE"
+  }
+}
