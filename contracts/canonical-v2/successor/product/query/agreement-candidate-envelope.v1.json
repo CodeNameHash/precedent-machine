@@ -1,0 +1,114 @@
+{
+  "object_kind": "PRODUCT_QUERY_CONTRACT_INPUT",
+  "stable_id": "AGREEMENT_CANDIDATE_ENVELOPE",
+  "schema_version": "PRODUCT_QUERY_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PRODUCT",
+    "contract_type": "AGREEMENT_CANDIDATE_ENVELOPE",
+    "contract_version": 1,
+    "runtime_contract": {
+      "runtime_schema_version": "AGREEMENT_CANDIDATE_ENVELOPE/V1",
+      "source_projection_schema_version": "AGREEMENT_CANDIDATE_ENVELOPE_SOURCE_PROJECTION/V1",
+      "terminal_schema_version": "AGREEMENT_CANDIDATE_ENVELOPE_TERMINAL/V1",
+      "profile_identity_inputs": [
+        "profile_id",
+        "profile_version",
+        "source_validator_stable_id",
+        "source_validator_version",
+        "source_release_schema_version",
+        "provision_row_schema_version",
+        "ordered_metric_slots",
+        "product_membership"
+      ],
+      "terminal_identity_inputs": [
+        "family_profile_id",
+        "ordinal",
+        "metric_key",
+        "value_slot_key",
+        "subject_terminal_kind",
+        "subject_terminal_id",
+        "subject_terminal_payload_digest"
+      ],
+      "candidate_identity_inputs": [
+        "contract_stable_id",
+        "contract_definition_digest",
+        "family_profile_id",
+        "family_profile_digest",
+        "source_projection_id",
+        "source_projection_payload_digest",
+        "provision_row_id",
+        "provision_row_payload_digest",
+        "ordered_terminal_ids",
+        "product_membership"
+      ],
+      "admitted_family_profiles": [
+        {
+          "profile_id": "CAPITALISATION_BRING_DOWN_V3",
+          "profile_version": 1,
+          "source_validator_stable_id": "QXO_CAPITALISATION_CROSS_VIEW_RELEASE_F28",
+          "source_validator_version": 1,
+          "source_release_schema_version": "QXO_CAPITALISATION_CROSS_VIEW_RELEASE_F28/V1",
+          "provision_row_schema_version": "CAPITALISATION_SHARED_PROVISION_ROW_F28/V1",
+          "ordered_metric_slots": [
+            {"ordinal":0,"metric_key":"REPRESENTATION_ACCURACY_STANDARD","value_slot_key":"CAPITALISATION_CLAUSE_B_LIMBS_I_III","subject_terminal_kind":"MARKET_OBSERVATION"},
+            {"ordinal":1,"metric_key":"REPRESENTATION_ACCURACY_EXCEPTION","value_slot_key":"CAPITALISATION_CLAUSE_B_LIMBS_I_III","subject_terminal_kind":"MARKET_OBSERVATION"},
+            {"ordinal":2,"metric_key":"REPRESENTATION_ACCURACY_EXCEPTION_DENOMINATOR","value_slot_key":"CAPITALISATION_CLAUSE_B_LIMBS_I_III","subject_terminal_kind":"MARKET_OBSERVATION"},
+            {"ordinal":3,"metric_key":"DATED_REPRESENTATION_TREATMENT","value_slot_key":"CAPITALISATION_CLAUSE_B_LIMBS_I_III","subject_terminal_kind":"MARKET_OBSERVATION"},
+            {"ordinal":4,"metric_key":"REPRESENTATION_MATERIALITY_SCRAPE","value_slot_key":"CAPITALISATION_CLAUSE_B_LIMBS_I_III","subject_terminal_kind":"MARKET_OBSERVATION"},
+            {"ordinal":5,"metric_key":"REPRESENTATION_ACCURACY_STANDARD","value_slot_key":"CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V","subject_terminal_kind":"MARKET_OBSERVATION"},
+            {"ordinal":6,"metric_key":"REPRESENTATION_ACCURACY_EXCEPTION","value_slot_key":"CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V","subject_terminal_kind":"MARKET_OBSERVATION"},
+            {"ordinal":7,"metric_key":"REPRESENTATION_ACCURACY_EXCEPTION_DENOMINATOR","value_slot_key":"CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V","subject_terminal_kind":"MARKET_METRIC_SLOT_EXCLUSION"},
+            {"ordinal":8,"metric_key":"DATED_REPRESENTATION_TREATMENT","value_slot_key":"CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V","subject_terminal_kind":"MARKET_OBSERVATION"},
+            {"ordinal":9,"metric_key":"REPRESENTATION_MATERIALITY_SCRAPE","value_slot_key":"CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V","subject_terminal_kind":"MARKET_OBSERVATION"},
+            {"ordinal":10,"metric_key":"REPRESENTATION_MEASUREMENT_DATE_SIGNING_OFFSET","value_slot_key":"CAPITALISATION_MEASUREMENT_DATE","subject_terminal_kind":"MARKET_OBSERVATION"},
+            {"ordinal":11,"metric_key":"KNOWLEDGE_QUALIFIER_STATE","value_slot_key":"GENERAL_KNOWLEDGE_QUALIFIER","subject_terminal_kind":"MARKET_OBSERVATION"},
+            {"ordinal":12,"metric_key":"GENERAL_MATERIALITY_QUALIFIER_STATE","value_slot_key":"GENERAL_MATERIALITY_QUALIFIER","subject_terminal_kind":"MARKET_OBSERVATION"},
+            {"ordinal":13,"metric_key":"RETROSPECTIVE_LOOKBACK_STATE","value_slot_key":"RETROSPECTIVE_LOOKBACK","subject_terminal_kind":"MARKET_OBSERVATION"}
+          ],
+          "product_membership": {
+            "domain_key": "AGREEMENT",
+            "result_definition_stable_id": "TARGET_CAPITALISATION_BRING_DOWN",
+            "result_definition_version": 3,
+            "membership_state": "CANDIDATE_ENVELOPE_ONLY"
+          }
+        },
+        {
+          "profile_id": "IOC_CAPEX_RESTRICTION_V1",
+          "profile_version": 1,
+          "source_validator_stable_id": "REVIEWED_LANDOS_IOC_CAPEX_SLICE",
+          "source_validator_version": 1,
+          "source_release_schema_version": "REVIEWED_CANONICAL_MAPPING/V1",
+          "provision_row_schema_version": "SHARED_SERVING_ROW/V1",
+          "ordered_metric_slots": [
+            {"ordinal":0,"metric_key":"IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE","value_slot_key":"CAPEX_THRESHOLD","subject_terminal_kind":"MARKET_OBSERVATION"}
+          ],
+          "product_membership": {
+            "domain_key": "AGREEMENT",
+            "result_definition_stable_id": "TARGET_CAPEX_RESTRICTION",
+            "result_definition_version": 1,
+            "membership_state": "CANDIDATE_ENVELOPE_ONLY"
+          }
+        }
+      ],
+      "integrity": {
+        "source_validator_must_run_before_projection": true,
+        "source_projection_rehash_cannot_replace_validation": true,
+        "row_payload_is_preserved_exactly": true,
+        "terminal_payloads_are_preserved_exactly": true,
+        "terminal_order_is_profile_governed": true,
+        "unknown_family_profile_fails_closed": true,
+        "profile_semantic_change_requires_contract_successor": true
+      },
+      "authority": {
+        "authority_state": "NONE",
+        "creates_materialisation_authority": false,
+        "creates_import_authority": false,
+        "creates_query_authority": false,
+        "creates_serving_authority": false,
+        "creates_activation_authority": false,
+        "creates_database_authority": false,
+        "creates_writer_authority": false
+      }
+    }
+  }
+}

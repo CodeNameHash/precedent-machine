@@ -666,7 +666,7 @@
       "object_kind": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
       "stable_id": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
       "schema_version": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY/V1",
-      "canonical_bytes_digest": "1d4b9f052daff3ecba1c2b65787176338f26e7220e18e1c3aa6af451b051c6ef"
+      "canonical_bytes_digest": "380901ea058c90b70f863702e6d925241b3b840f457e668d8b740947cf171d55"
     },
     {
       "relative_path": "governance/residuals/governed-residual-disposition.v1.json",
@@ -977,6 +977,13 @@
       "canonical_bytes_digest": "ca494ca2107610fa1aee46db55a3427d1e1b0ea520f37e771f5789df229e97ac"
     },
     {
+      "relative_path": "product/query/agreement-candidate-envelope.v1.json",
+      "object_kind": "PRODUCT_QUERY_CONTRACT_INPUT",
+      "stable_id": "AGREEMENT_CANDIDATE_ENVELOPE",
+      "schema_version": "PRODUCT_QUERY_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "9f35aa9598a9523e7e40b99e669fc1ae4fb929e66cfb31c325965cf23f4ce2a2"
+    },
+    {
       "relative_path": "product/query/process-phrasebook-product-result-adapter.v1.json",
       "object_kind": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT",
       "stable_id": "PROCESS_PHRASEBOOK_PRODUCT_RESULT_ADAPTER",
@@ -1237,7 +1244,7 @@
     "PROCESS_QUERY_CONTRACT_INPUT": 3,
     "PROCESS_RESULT_ACTION_CONTRACT_INPUT": 4,
     "PRODUCT_QUERY_ACTION_CONTRACT_INPUT": 2,
-    "PRODUCT_QUERY_CONTRACT_INPUT": 2,
+    "PRODUCT_QUERY_CONTRACT_INPUT": 3,
     "PRODUCT_QUERY_RESULT_CONTRACT_INPUT": 6,
     "PRODUCT_RESULT_ACTION_CONTRACT_INPUT": 2,
     "PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT": 1,

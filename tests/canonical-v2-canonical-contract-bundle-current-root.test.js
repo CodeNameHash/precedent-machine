@@ -48,7 +48,7 @@ function assertProposalError(code, operation) {
   });
 }
 
-test('assembles the exact current 171-member root into all eight categories', () => {
+test('assembles the exact current 172-member root into all eight categories', () => {
   const inputCompilation = compilation();
   const proposal = assembleCanonicalContractBundleCurrentRootProposal({
     canonical_contract_input_compilation: inputCompilation,
@@ -57,8 +57,25 @@ test('assembles the exact current 171-member root into all eight categories', ()
     compilerInput(proposal, inputCompilation),
   );
 
-  assert.equal(proposal.proposed_dispositions.length, 171);
-  assert.equal(proposal.dependency_edge_count, 285);
+  assert.equal(proposal.proposed_dispositions.length, 172);
+  assert.equal(proposal.dependency_edge_count, 297);
+  const genericEnvelopeDisposition = proposal.proposed_dispositions.find(
+    (entry) => entry.authored_identity.stable_id
+      === 'AGREEMENT_CANDIDATE_ENVELOPE',
+  );
+  assert.deepEqual(
+    genericEnvelopeDisposition.ordered_dependency_identities
+      .map((entry) => entry.stable_id)
+      .filter((stableId) => [
+        'TARGET_CAPITALISATION_BRING_DOWN',
+        'TARGET_CAPEX_RESTRICTION',
+      ].includes(stableId))
+      .sort(),
+    [
+      'TARGET_CAPEX_RESTRICTION',
+      'TARGET_CAPITALISATION_BRING_DOWN',
+    ],
+  );
   const envelopeDisposition = proposal.proposed_dispositions.find(
     (entry) => entry.authored_identity.stable_id
       === 'QXO_CAPITALISATION_F28_CANDIDATE_ENVELOPE',

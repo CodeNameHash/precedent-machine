@@ -1,0 +1,26 @@
+{
+  "branch": "codex/agreement-candidate-envelope-v1",
+  "required_work_class": "canonical_work_start",
+  "allowed_paths": [
+    ".github/phase-allowlists/wp-agreement-candidate-envelope-v1.json",
+    "contracts/canonical-v2/successor/governance/canonical-bundle-input-required-kind-registry.v1.json",
+    "contracts/canonical-v2/successor/product/query/agreement-candidate-envelope.v1.json",
+    "contracts/canonical-v2/successor/manifest.json",
+    "docs/codex-program/EXECUTION-LEDGER.md",
+    "docs/codex-program/specification-manifest.json",
+    "lib/canonical-v2/agreement-candidate-envelope-contract-input-validator.js",
+    "lib/canonical-v2/agreement-candidate-envelope.js",
+    "lib/canonical-v2/product-query-contract-input-validator.js",
+    "tests/canonical-v2-agreement-candidate-envelope-contract-input.test.js",
+    "tests/canonical-v2-agreement-candidate-envelope.test.js",
+    "tests/canonical-v2-canonical-contract-source-tree.test.js",
+    "tests/canonical-v2-canonical-contract-bundle-current-root.test.js",
+    "tests/canonical-v2-process-contract-input.test.js",
+    "tests/canonical-v2-process-event-participant-contract-input.test.js",
+    "tests/canonical-v2-process-exclusivity-completeness-challenge.test.js",
+    "tests/canonical-v2-process-exclusivity-contract-input.test.js",
+    "tests/canonical-v2-process-object-contract-input.test.js",
+    "tests/canonical-v2-process-track-phase-contract-input.test.js",
+    "tests/canonical-v2-product-query-contract-input.test.js"
+  ]
+}

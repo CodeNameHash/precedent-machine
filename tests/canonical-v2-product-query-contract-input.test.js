@@ -40,8 +40,26 @@ function loadCandidateEnvelopeMember() {
   };
 }
 
+function loadAgreementEnvelopeMember() {
+  const canonicalValue = JSON.parse(fs.readFileSync(
+    path.join(
+      ROOT,
+      'product/query/agreement-candidate-envelope.v1.json',
+    ),
+    'utf8',
+  ));
+  return {
+    object_kind: canonicalValue.object_kind,
+    canonical_value: canonicalValue,
+  };
+}
+
 function loadRegisteredMembers() {
-  return [loadMember(), loadCandidateEnvelopeMember()];
+  return [
+    loadAgreementEnvelopeMember(),
+    loadMember(),
+    loadCandidateEnvelopeMember(),
+  ];
 }
 
 function clone(value) {
@@ -159,6 +177,7 @@ test('rejects missing, extra and semantically drifted Product contracts', () => 
   assert.throws(
     () => validateAuthoredProductQueryInputs([
       changed,
+      loadAgreementEnvelopeMember(),
       loadCandidateEnvelopeMember(),
     ]),
     { code: 'INVALID_PRODUCT_QUERY_IR_CONTRACT_INPUT' },
@@ -170,6 +189,7 @@ test('rejects missing, extra and semantically drifted Product contracts', () => 
   assert.throws(
     () => validateAuthoredProductQueryInputs([
       nested,
+      loadAgreementEnvelopeMember(),
       loadCandidateEnvelopeMember(),
     ]),
     { code: 'INVALID_PRODUCT_QUERY_IR_CONTRACT_INPUT' },
@@ -182,7 +202,7 @@ test('compiles as one non-authorising successor input', () => {
     (candidate) => candidate.stable_id === 'PRODUCT_QUERY_IR',
   );
 
-  assert.equal(compiled.authored_members.length, 172);
+  assert.equal(compiled.authored_members.length, 173);
   assert.equal(member.object_kind, 'PRODUCT_QUERY_CONTRACT_INPUT');
   assert.equal(
     Object.values(member.canonical_value.definition.authority_contract)
