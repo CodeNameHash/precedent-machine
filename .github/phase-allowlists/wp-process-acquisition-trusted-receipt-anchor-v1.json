@@ -1,0 +1,22 @@
+{
+  "phase": "WP-PROCESS-ACQUISITION-TRUSTED-RECEIPT-ANCHOR-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-acquisition-trusted-receipt-anchor-v1.json",
+    "lib/canonical-v2/process-source-acquisition.js",
+    "tests/canonical-v2-process-source-acquisition.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Requires a separately trusted expected acquisition-receipt ID before source receipt use. Valid-to-valid self-rehashed intake substitutions fail. This grants no source admission, extraction, writer, database, serving, release, import, activation, production or canonical-write authority."
+}

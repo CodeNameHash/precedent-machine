@@ -89,7 +89,9 @@ test('builds a deterministic frozen-source receipt with evidence and coverage hi
   assert.equal(first.intake_outcomes[1].intake_outcome, 'REVIEWED_NON_RECEIPT');
   assert.deepEqual(first.coverage_limit, input().governed_scope.coverage_limit);
   assert.equal(Object.isFrozen(first), true);
-  assert.doesNotThrow(() => validateProcessSourceAcquisitionReceipt(first));
+  assert.doesNotThrow(
+    () => validateProcessSourceAcquisitionReceipt(first, first.acquisition_receipt_id),
+  );
 });
 
 test('rejects unmanifested, duplicate and unresolved source records', () => {
@@ -126,8 +128,12 @@ test('rejects hostile bytes, evidence and bounded-resource inputs', () => {
     (error) => error.code === 'PROCESS_SOURCE_ACQUISITION_ATTEMPT_LIMIT_EXCEEDED');
 
   const tamperedReceipt = clone(acquireProcessSources(input()));
+  const expectedReceiptId = tamperedReceipt.acquisition_receipt_id;
   tamperedReceipt.intake_outcomes[0].source_identity.document_hash = digest('substituted');
-  assert.throws(() => validateProcessSourceAcquisitionReceipt(tamperedReceipt),
+  assert.throws(() => validateProcessSourceAcquisitionReceipt(
+    tamperedReceipt,
+    expectedReceiptId,
+  ),
     (error) => error.code === 'INVALID_PROCESS_SOURCE_ACQUISITION_RECEIPT');
 });
 
@@ -140,12 +146,31 @@ test('rejects fabricated receipt meaning even when all receipt hashes are recomp
     (receipt) => { receipt.limits.maximum_sources = 0; },
   ];
   for (const mutate of mutations) {
-    const receipt = clone(acquireProcessSources(input()));
+    const trusted = acquireProcessSources(input());
+    const receipt = clone(trusted);
     mutate(receipt);
     rehashReceipt(receipt);
     assert.throws(
-      () => validateProcessSourceAcquisitionReceipt(receipt),
+      () => validateProcessSourceAcquisitionReceipt(
+        receipt,
+        trusted.acquisition_receipt_id,
+      ),
       { name: 'ProcessSourceAcquisitionError' },
     );
   }
+});
+
+test('rejects a valid-to-valid self-rehashed intake outcome substitution', () => {
+  const trusted = acquireProcessSources(input());
+  const substituted = clone(trusted);
+  substituted.intake_outcomes[0].intake_outcome = 'REVIEWED_NON_RECEIPT';
+  rehashReceipt(substituted);
+
+  assert.throws(
+    () => validateProcessSourceAcquisitionReceipt(
+      substituted,
+      trusted.acquisition_receipt_id,
+    ),
+    { code: 'INVALID_PROCESS_SOURCE_ACQUISITION_RECEIPT' },
+  );
 });
