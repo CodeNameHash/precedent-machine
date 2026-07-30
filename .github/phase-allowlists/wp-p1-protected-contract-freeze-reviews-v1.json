@@ -1,0 +1,21 @@
+{
+  "phase": "WP-P1-PROTECTED-CONTRACT-FREEZE-REVIEWS-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p1-protected-contract-freeze-reviews-v1.json",
+    ".github/workflows/programme-gate-p1-contract-freeze-reviews.yml",
+    "lib/programme-gates/contract-freeze-review-tasks.js",
+    "scripts/run-p1-protected-contract-freeze-reviews.mjs",
+    "tests/p1-protected-contract-freeze-reviews.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Protected controller execution only. It creates three fresh read-only P1 review sessions against one exact source-closed package, then binds the observed distinct sessions to the closed request and controller-signed registration and result carriers. It creates no P1 gate PASS, freeze authority, deployment, database, release, import, activation or production authority."
+}
