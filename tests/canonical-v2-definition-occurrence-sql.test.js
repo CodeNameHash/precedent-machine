@@ -46,6 +46,8 @@ test('DEAL_SCOPE_RUN validates each definition occurrence before DML', () => {
     "content_id('DEFINITION_OCCURRENCE/V1'",
     'definition_body_spans',
     'supplied_excerpts',
+    'declaration.excerpt',
+    'evidence.excerpt',
     'canonical_text_byte_length',
   ]) assert.ok(definitionValidation.includes(required), `missing ${required}`);
   assert.match(definitionValidation, /body\.prior_absolute_end IS NOT NULL/);
@@ -65,6 +67,8 @@ test('definition IDs are valid relationship endpoints and retained references', 
   const relationship = dealScopeValidation.slice(definitionCte, relationshipEnd);
   assert.match(relationship, /supplied_definition_occurrences AS/);
   assert.match(relationship, /SELECT definition->>'definition_occurrence_id'/);
+  assert.match(relationship, /supplied_relationship_occurrences AS/);
+  assert.match(relationship, /SELECT relationship_occurrence_id/);
   assert.match(relationship, /resolved_relationship_targets/);
 });
 

@@ -13,18 +13,19 @@ main integration.
 | --- | --- |
 | Main basis | `7b6bc64157c49832129fa2ca227399850cd983fc` |
 | Current reviewed branch commit | `affa7464ca2cab2b4715ae084e3de6c2d39b673f` |
-| Active milestone branch | `codex/qxo-f28-runtime-link-v1` |
+| Active milestone branch | `codex/qxo-f28-runtime-link-v1`, working head `da7a1ba798563a4f74794bb2ed9a9e1b923b369c` |
 | Contract bundle | 172 authored inputs, 171 substantive contracts, 8 categories |
 | Current bundle ID | `8c765d52d3f95ebfc21b28b5bd0e71689a095c482e113a4329d33b0140dbe83d` |
 | Current contract bundle digest | `b990bf90f98fd83b9dfcf34912ec4b3cd42c37f3e693bee9796b1c63198edc84` |
 | Current canonical payload digest | `73a9023d3ef831e7a544664929385a1aa61af1efed58139d1cd54bf5985d3ab8` |
 | Contract dependency graph | 171 nodes, 285 links, 0 missing, duplicate, conflict, unresolved or cyclic links |
 | Clean compile check | PASS, two uncached compiles produced identical canonical bytes |
-| Latest complete suite on this branch | PASS, 4,617 passed, 0 failed, 5 skipped |
+| Latest complete suite on this branch | PASS, 4,621 passed, 0 failed, 5 skipped |
 | Latest production build on this branch | PASS, 29/29 pages |
 | M1 contract freeze | PASS. Exact acknowledgement: `docs/acks/M1-CONTRACT-FREEZE-2026-07-30.md` |
-| M2 vertical slice | ACTIVE. Local F28 preflight passes. Real isolated-staging run is not yet executed. |
-| Isolated-staging access | BLOCKED in this task. Shell DNS cannot reach Vercel or Supabase, and browser access to Supabase is disabled by user policy. |
+| M2 vertical slice | ACTIVE. QXO F28 passed the real isolated-staging rollback proof. Metsera remains. |
+| Isolated-staging access | PASS. Project `sjumbznveyyiizhwvixj` is connected through the Supabase plugin and CLI. Production was not queried or changed. |
+| QXO F28 staging proof | PASS. Release `f79d3a9a92567db913da48f84540fa55cdff69d770bf4c9261a72e3428242240`; 14 metric slots; 1 set-based market read; 0 retries; 0 durable writes; active pointer unchanged. |
 | M3 full-corpus certification | OPEN |
 | M4 pre-cutover | OPEN |
 | Tier A containment | ACTIVE |
@@ -39,12 +40,12 @@ The programme is in P8. P8 means that one real Agreement provision and one
 real Process provision must travel from source evidence to every required
 product view.
 
-P1-P7 supplied the contracts and pure processing modules. M1 now confirms the
-exact 171-contract bundle and permits the isolated staging pilots. The
-remaining P8 work is to run QXO and Metsera against isolated staging, then
-prove every required product view uses the same facts, identities, evidence
-and release. The governance balance unit removes obsolete review machinery.
-It does not change extracted facts or legal meaning.
+P1-P7 supplied the contracts and pure processing modules. M1 confirms the
+exact 171-contract bundle and permits the isolated staging pilots. QXO F28 has
+now passed its real source-to-product rollback proof. The remaining P8 work is
+to parameterise the envelope for a second Agreement family, then run Metsera
+against isolated staging. The governance balance unit removes obsolete review
+machinery. It does not change extracted facts or legal meaning.
 
 ## 2. Work underway
 
@@ -57,21 +58,21 @@ It does not change extracted facts or legal meaning.
 | `PM-QXO-F28-DEFINITION-WRITER-01` | P2/P8 | Persist the nested `DEFINITION_OCCURRENCE/V1` used by the F28 definition relationship. | PM implementation | Same branch; commits `77f4183` and `7be1521`; writer, validator, F28 link, tests and staging SQL. | Identity, source, nested-span, relationship, transaction and replay checks PASS. | COMPLETE | Preserve the typed definition row in the staging run. | No |
 | `PM-QXO-F28-CANDIDATE-01` | P8 | Add one immutable F28 candidate envelope for one row with 14 ordered metric terminals. | PM implementation | Same branch; commits `cec829c`, `a85832d`, `62f2586`, `f053660`, `01b8cd8`, `f8c1dd1` and the active parameterisation correction. | 49 focused envelope, adapter, staging and manifest tests PASS. The contract validates any fully admitted F28 source and derives source-specific identities. | COMPLETE | Preserve the envelope-bound Product result in the real staging run. | No |
 | `PM-QXO-F28-SURFACES-01` | P7/P8 | Give Query, Review, Compare and Corpus Context the same F28 row, citation and source action. | PM implementation | Same branch; Product adapter, surface link and staging runner. | Real admitted-source path constructs the same Product row and four surface bindings. Candidate-wide suite and build PASS. | COMPLETE | Preserve the same identities in isolated staging. | No |
-| `PM-QXO-F28-PREFLIGHT-01` | P8 | Prove one exact admitted source graph reaches the writer, candidate envelope, Product row and all four product surfaces. | PM implementation | Same branch; preflight and isolated-staging runner. | Pure preflight PASS. The staging runner calls the writer inside a rollback savepoint and retains Product and surface identities. Candidate-wide suite and build PASS. Real staging remains `NOT_EXECUTED`; production remains `NOT_TOUCHED`. | ACTIVE | Run against the isolated staging project when an authenticated staging connection is available. | No |
+| `PM-QXO-F28-PREFLIGHT-01` | P8 | Prove one exact admitted source graph reaches the writer, candidate envelope, Product row and all four product surfaces. | PM implementation | Same branch; preflight and isolated-staging runner. | Pure preflight PASS. Real isolated-staging proof PASS. The runner reused 14 exact stored objects, called the writer once inside a savepoint, read 14 metric slots in one set-based call and rolled back. | COMPLETE | Preserve the exact proof while the generic envelope is built. | No |
+| `PM-QXO-F28-STAGING-01` | P8 | Execute the admitted QXO F28 slice without changing the active or candidate corpus. | PM controller | Same branch; staging runner, generic persisted-object resolver and SQL writer parity fixes. | Proof `QXO_CAPITALISATION_STAGING_PROOF_F28/V1` PASS. 43 bounded repository checks, 14 retained references, 30 probe records, 0 retries, 0 durable writes, pointer generation 10 unchanged. Complete suite: 4,621 pass, 0 fail, 5 skip. Production build: 29/29 pages. | COMPLETE | Commit and push this completed slice, then start the generic second-family unit. | No |
 | `PM-QXO-F28-IDENTITY-01` | P8 | Bind Product Query IR to the actual validated release manifest and remove two false value-slot dependency links. | PM implementation | Same branch; adapter contract/runtime/tests and current-root resolver/tests. | Adapter chain 33/33 PASS. Exact-root chain 25/25 PASS. Graph has 285 reviewed links. Architecture, legal-semantic and query/serving/release reviews all PASS on `affa7464`. | COMPLETE | Preserve these exact identities in the real staging result. | No |
 | `PM-QXO-F28-M1-PERMISSION-01` | P8 | Let the isolated F28 runner consume the exact M1 acknowledgement after pre-production signed-status publication was retired. | PM controller | Same branch; M1 acknowledgement, strict permission validator, runner and focused tests. | Exact bundle and approval binding tests PASS. Complete suite: 4,617 pass, 0 fail, 5 skip. Build: 29/29 pages. Production authority is `NONE`. | COMPLETE | Preserve the exact permission in the isolated-staging proof. | No |
-| `PM-GENERIC-ENVELOPE-01` | P8 exit | Prove that the second Agreement family can use one parameterised envelope contract. | PM implementation | New generic files only after F28 passes end to end. No copied F28 contract, validator or runtime. | Second-family identity, terminal, evidence and Product parity tests. | BLOCKED | Start only after F28 passes. If parameterisation fails, report a design defect. | No |
+| `PM-GENERIC-ENVELOPE-01` | P8 exit | Prove that the second Agreement family can use one parameterised envelope contract. | PM implementation | New generic files only. No copied F28 contract, validator or runtime. | Second-family identity, terminal, evidence and Product parity tests. | READY | Identify the second family and parameterise the generic envelope. If this cannot be done, report the design defect. | No |
 | `PM-QUERY-FIXTURE-LINK-01` | P8 | Execute fixture-scoped Product Query and Review paths without opening the production route. | PM implementation | Same branch; `qxo-capitalisation-f28-pilot-preflight.js` and Product surface link. | Query, Review, Compare and Corpus Context use one exact row, citation and source action. | COMPLETE | Preserve this parity in isolated staging. | No |
 | `PI-METSERA-RUNTIME-01` | P8 | Connect sealed Metsera sources through acquisition, enumeration, validation and pilot materialisation. | Process Intelligence | PI branch and exact files to be supplied in one batch. | Focused Process chain and sealed-gold comparison. | READY | Build the first real-source runtime link. | No |
 
 ## 3. Next 48 hours
 
-1. Complete and commit the M1 permission seam.
-2. Obtain an authenticated connection to the isolated staging project.
-3. Run QXO in isolated staging and retain the rollback proof.
-4. Start the generic envelope unit with the second Agreement family. Do not copy F28 files.
-5. Integrate the PI Metsera runtime batch and run Metsera in isolated staging.
-6. Run cross-view browser acceptance and the indexed serving proof.
+1. Commit and push the passed F28 staging proof and SQL writer parity correction.
+2. Start the generic envelope unit with the second Agreement family. Do not copy F28 files.
+3. Integrate the PI Metsera runtime batch and run Metsera in isolated staging.
+4. Run cross-view browser acceptance and the indexed serving proof.
+5. Close M2 only after QXO and Metsera use the same source, identities, evidence and release across every required view.
 
 ## 4. Bounded units through P11
 
@@ -84,7 +85,7 @@ It does not change extracted facts or legal meaning.
 | `P5-CORRECTIONS-RELEASE` | P5 | Corrections survive re-extraction and candidate releases are immutable. | PM implementation | P3 and P4. | Correction-head and release tests. | ACTIVE | Connect QXO and Metsera pilot outputs. | No |
 | `P6-SERVING` | P6 | Bounded set-based serving and release-aware cache. | PM implementation | P5 candidate release. | Call-budget, cache and query tests. | ACTIVE | Execute fixture-scoped runtime path. | No |
 | `P7-SHARED-ROWS` | P7 | Query, Review, Compare and Corpus Context use one row contract. | PM and PI | P6. | Cross-view byte and browser parity. | ACTIVE | F28 fixture parity passes. Add the Metsera row and browser checks. | No |
-| `P8-VERTICAL-SLICES` | P8 | QXO and Metsera pass source-to-product staging runs. | PM controller | P1-P7 links. | QXO pure preflight PASS. Isolated staging, Metsera and browser evidence remain. | ACTIVE | Execute QXO in isolated staging, then integrate and execute Metsera. | No |
+| `P8-VERTICAL-SLICES` | P8 | QXO and Metsera pass source-to-product staging runs. | PM controller | P1-P7 links. | QXO F28 real isolated-staging rollback proof PASS. Metsera, second-family parameterisation and browser evidence remain. | ACTIVE | Complete the generic envelope, then integrate and execute Metsera. | No |
 | `P9-CORPUS-CERTIFICATION` | P9 | Full corpus passes quality, identity, drift, performance, restore and rollback controls. | PM controller | M2 pass. | M3 acknowledgement and Phase 9 gates. | BLOCKED | Begin after both pilots pass. | No |
 | `P10-PRODUCTION-IMPORT` | P10 | Exact inactive production import with member parity and resumable checkpoints. | PM controller | M3 pass. | Replay no-op, conflicting replay fail-closed, complete parity. | BLOCKED | Run only after staging certification. | Where contract requires |
 | `P11-CUTOVER` | P11 | Atomic whole-tuple activation, smoke and rollback. | PM controller | M4 pass and Ben authorisation. | Cutover receipt, production smoke and rollback. | BLOCKED | Request one-use authorisation at M4. | Yes |
@@ -97,7 +98,7 @@ defect. It must not copy the F28 files.
 
 ## 5. Critical path
 
-`PM-GOV-BALANCE-01` → M1 bundle acknowledgement → QXO isolated-staging run →
+`PM-GOV-BALANCE-01` → M1 bundle acknowledgement → QXO isolated-staging PASS →
 generic second-family envelope → Metsera runtime link and isolated-staging run → M2 → full-corpus
 certification → M3 → inactive production import → M4 → one-use Ben cutover
 authorisation → atomic activation → production smoke and rollback.

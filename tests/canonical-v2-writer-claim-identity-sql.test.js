@@ -64,6 +64,11 @@ test('claim validation is closed, set-based and reference-complete', () => {
   assert.match(claimBranch, /evidence\.edge->'absolute_start'\s+IS DISTINCT FROM evidence\.excerpt_absolute_start/);
   assert.match(claimBranch, /evidence\.edge->'absolute_end'\s+IS DISTINCT FROM evidence\.excerpt_absolute_end/);
   assert.match(claimBranch, /source_lineage_ids/);
+  assert.match(
+    claimBranch,
+    /claim\.claim->'denominator' \? 'value'[\s\S]*claim\.claim->'denominator' \? 'currency'/,
+  );
+  assert.match(claimBranch, /NOT BETWEEN 1 AND 4096/);
   assert.match(claimBranch, /DERIVATION_INPUT/);
   assert.match(
     claimBranch,

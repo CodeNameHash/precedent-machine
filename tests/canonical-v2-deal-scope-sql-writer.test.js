@@ -15,7 +15,8 @@ test('DEAL_SCOPE_RUN is a closed reference-only writer operation', () => {
   assert.match(sql, /'PREPARE_SOURCE_ADMISSION',\s*'DEAL_SCOPE_RUN'/);
   for (const key of [
     'source_references', 'deal', 'excerpts', 'validated_semantic_graphs',
-    'provisions', 'components', 'claims', 'relationships', 'open_world_candidates',
+    'provisions', 'components', 'condition_groups', 'claims', 'relationships',
+    'open_world_candidates',
     'open_world_candidate_occurrences', 'open_world_evidence_references',
     'open_world_candidate_dispositions', 'open_world_primitives',
     'semantic_impact_closures', 'reviewed_source_specific_rows',
@@ -119,6 +120,7 @@ test('persisted semantic objects resolve once by indexed identity and remain val
     'validated_semantic_graphs',
     'provision_instances',
     'provision_components',
+    'condition_group_revisions',
     'claim_revisions',
     'relationship_revisions',
     'open_world_candidates',
@@ -133,6 +135,14 @@ test('persisted semantic objects resolve once by indexed identity and remain val
   assert.match(validationBlock, /PERSISTED_CANONICAL_OBJECT_REFERENCE\/V1/);
   assert.match(validationBlock, /stored\.canonical_payload_digest[\s\S]*canonical_payload_digest/);
   assert.match(validationBlock, /stored\.canonical_payload->>'closure_id' = stored\.closure_id/);
+  assert.match(
+    validationBlock,
+    /jsonb_set\(\s*stored\.canonical_payload,\s*'\{closure_id\}',\s*to_jsonb\(persisted\.reference->>'validation_closure_id'\)/,
+  );
+  assert.doesNotMatch(
+    validationBlock,
+    /SELECT stored\.canonical_payload\s+FROM jsonb_array_elements/,
+  );
   assert.match(validationBlock, /persisted references overlap or extend stored closure identity/);
   assert.match(validationBlock, /pg_advisory_xact_lock[\s\S]*ORDER BY locked\.closure_id/);
   assert.match(validationBlock, /cannot reuse a quarantined persisted object/);
@@ -165,4 +175,24 @@ test('receipt counts bind only publishable semantic objects, residuals and quara
 test('the governed schema digest pins the authoritative deal-scope writer', () => {
   const digest = crypto.createHash('sha256').update(sql).digest('hex');
   assert.match(schemaRunner, new RegExp(`'canonical-v2-foundation\\.sql': '${digest}'`));
+});
+
+test('condition groups are first-class immutable SQL writer rows', () => {
+  assert.match(
+    sql,
+    /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.condition_group_revisions/,
+  );
+  assert.match(
+    sql,
+    /ALTER TABLE canonical_v2_staging\.condition_group_revisions ENABLE ROW LEVEL SECURITY/,
+  );
+  assert.match(
+    validationBlock,
+    /'condition_groups'[\s\S]*canonical_v2_staging\.condition_group_revisions/,
+  );
+  assert.match(
+    sql,
+    /ORDER BY ordered_item\.value->>'condition_group_revision_id'[\s\S]*INSERT INTO canonical_v2_staging\.condition_group_revisions[\s\S]*ON CONFLICT \(condition_group_revision_id\) DO NOTHING/,
+  );
+  assert.match(sql, /canonical condition group identity conflict/);
 });

@@ -115,7 +115,7 @@ BEGIN
 END
 $$;
 
--- Governed function SHA-256: 198fdf2f27d12bd9afcaa99e3d88aae7a628877ba7b73f3811b7f08a7fd1cc6e
+-- Governed function SHA-256: a7ea8bfd6faa95758101441932832d49b6fea2bc8beb2ca6740681506b3ab4a6
 CREATE OR REPLACE FUNCTION public.canonical_v2_write(
   p_environment text,
   p_operation text,
@@ -1477,7 +1477,8 @@ BEGIN
     IF jsonb_typeof(p_write_set) IS DISTINCT FROM 'object'
       OR NOT (p_write_set ?& ARRAY[
         'source_references', 'deal', 'excerpts', 'validated_semantic_graphs',
-        'definition_occurrences', 'provisions', 'components', 'claims', 'relationships',
+        'definition_occurrences', 'provisions', 'components', 'condition_groups',
+        'claims', 'relationships',
         'open_world_candidates', 'open_world_candidate_occurrences',
         'open_world_evidence_references', 'open_world_candidate_dispositions',
         'open_world_primitives', 'semantic_impact_closures',
@@ -1485,7 +1486,8 @@ BEGIN
       ])
       OR p_write_set - ARRAY[
         'source_references', 'deal', 'excerpts', 'validated_semantic_graphs',
-        'definition_occurrences', 'provisions', 'components', 'claims', 'relationships',
+        'definition_occurrences', 'provisions', 'components', 'condition_groups',
+        'claims', 'relationships',
         'open_world_candidates', 'open_world_candidate_occurrences',
         'open_world_evidence_references', 'open_world_candidate_dispositions',
         'open_world_primitives', 'semantic_impact_closures',
@@ -1737,6 +1739,14 @@ BEGIN
         ON supplied.reference->>'object_kind' = 'components'
         AND stored.provision_component_id = supplied.reference->>'object_id'
       UNION ALL
+      SELECT supplied.input_ordinal, 'condition_groups',
+        stored.condition_group_revision_id, stored.closure_id,
+        stored.canonical_payload_digest, stored.canonical_payload
+      FROM supplied_persisted_references supplied
+      JOIN canonical_v2_staging.condition_group_revisions stored
+        ON supplied.reference->>'object_kind' = 'condition_groups'
+        AND stored.condition_group_revision_id = supplied.reference->>'object_id'
+      UNION ALL
       SELECT supplied.input_ordinal, 'claims', stored.claim_revision_id,
         stored.closure_id, stored.canonical_payload_digest, stored.canonical_payload
       FROM supplied_persisted_references supplied
@@ -1840,7 +1850,7 @@ BEGIN
         = 'PERSISTED_CANONICAL_OBJECT_REFERENCE/V1'
       AND supplied.reference->>'object_kind' IN (
         'excerpts', 'validated_semantic_graphs', 'definition_occurrences',
-        'provisions', 'components',
+        'provisions', 'components', 'condition_groups',
         'claims', 'relationships', 'open_world_candidates',
         'open_world_candidate_occurrences', 'open_world_evidence_references',
         'open_world_candidate_dispositions', 'open_world_primitives',
@@ -1865,6 +1875,8 @@ BEGIN
           THEN stored.canonical_payload->>'definition_occurrence_id'
         WHEN 'provisions' THEN stored.canonical_payload->>'provision_instance_id'
         WHEN 'components' THEN stored.canonical_payload->>'provision_component_id'
+        WHEN 'condition_groups'
+          THEN stored.canonical_payload->>'condition_group_revision_id'
         WHEN 'claims' THEN stored.canonical_payload->>'claim_revision_id'
         WHEN 'relationships' THEN stored.canonical_payload->>'relationship_revision_id'
         WHEN 'open_world_candidates' THEN stored.canonical_payload->>'candidate_id'
@@ -1964,7 +1976,11 @@ BEGIN
         SELECT excerpt.value AS excerpt
         FROM jsonb_array_elements(p_write_set->'excerpts') excerpt(value)
         UNION ALL
-        SELECT stored.canonical_payload
+        SELECT jsonb_set(
+          stored.canonical_payload,
+          '{closure_id}',
+          to_jsonb(persisted.reference->>'validation_closure_id')
+        )
         FROM jsonb_array_elements(
           coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
         ) persisted(reference)
@@ -2237,7 +2253,11 @@ BEGIN
         SELECT provision.value AS provision
         FROM jsonb_array_elements(p_write_set->'provisions') provision(value)
         UNION ALL
-        SELECT stored.canonical_payload
+        SELECT jsonb_set(
+          stored.canonical_payload,
+          '{closure_id}',
+          to_jsonb(persisted.reference->>'validation_closure_id')
+        )
         FROM jsonb_array_elements(
           coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
         ) persisted(reference)
@@ -2395,7 +2415,11 @@ BEGIN
         SELECT provision.value AS provision
         FROM jsonb_array_elements(p_write_set->'provisions') provision(value)
         UNION ALL
-        SELECT stored.canonical_payload
+        SELECT jsonb_set(
+          stored.canonical_payload,
+          '{closure_id}',
+          to_jsonb(persisted.reference->>'validation_closure_id')
+        )
         FROM jsonb_array_elements(
           coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
         ) persisted(reference)
@@ -2407,7 +2431,11 @@ BEGIN
         SELECT component.value AS component
         FROM jsonb_array_elements(p_write_set->'components') component(value)
         UNION ALL
-        SELECT stored.canonical_payload
+        SELECT jsonb_set(
+          stored.canonical_payload,
+          '{closure_id}',
+          to_jsonb(persisted.reference->>'validation_closure_id')
+        )
         FROM jsonb_array_elements(
           coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
         ) persisted(reference)
@@ -2595,7 +2623,11 @@ BEGIN
         SELECT provision.value AS provision
         FROM jsonb_array_elements(p_write_set->'provisions') provision(value)
         UNION ALL
-        SELECT stored.canonical_payload
+        SELECT jsonb_set(
+          stored.canonical_payload,
+          '{closure_id}',
+          to_jsonb(persisted.reference->>'validation_closure_id')
+        )
         FROM jsonb_array_elements(
           coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
         ) persisted(reference)
@@ -2607,7 +2639,11 @@ BEGIN
         SELECT component.value AS component
         FROM jsonb_array_elements(p_write_set->'components') component(value)
         UNION ALL
-        SELECT stored.canonical_payload
+        SELECT jsonb_set(
+          stored.canonical_payload,
+          '{closure_id}',
+          to_jsonb(persisted.reference->>'validation_closure_id')
+        )
         FROM jsonb_array_elements(
           coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
         ) persisted(reference)
@@ -2626,7 +2662,11 @@ BEGIN
         SELECT excerpt.value AS excerpt
         FROM jsonb_array_elements(p_write_set->'excerpts') excerpt(value)
         UNION ALL
-        SELECT stored.canonical_payload
+        SELECT jsonb_set(
+          stored.canonical_payload,
+          '{closure_id}',
+          to_jsonb(persisted.reference->>'validation_closure_id')
+        )
         FROM jsonb_array_elements(
           coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
         ) persisted(reference)
@@ -2648,7 +2688,11 @@ BEGIN
         SELECT claim.value AS claim
         FROM jsonb_array_elements(p_write_set->'claims') claim(value)
         UNION ALL
-        SELECT stored.canonical_payload
+        SELECT jsonb_set(
+          stored.canonical_payload,
+          '{closure_id}',
+          to_jsonb(persisted.reference->>'validation_closure_id')
+        )
         FROM jsonb_array_elements(
           coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
         ) persisted(reference)
@@ -3206,56 +3250,52 @@ BEGIN
             claim.claim->'denominator' <> 'null'::jsonb
             AND (
               jsonb_typeof(claim.claim->'denominator') <> 'object'
-              OR jsonb_typeof(
-                claim.claim->'denominator'->'source_lineage_ids'
-              ) <> 'array'
-              OR jsonb_array_length(
-                CASE
-                  WHEN jsonb_typeof(
+              OR (
+                (
+                  claim.claim->'denominator' ? 'value'
+                  OR claim.claim->'denominator' ? 'currency'
+                )
+                AND (
+                  jsonb_typeof(
                     claim.claim->'denominator'->'source_lineage_ids'
-                  ) = 'array'
-                  THEN claim.claim->'denominator'->'source_lineage_ids'
-                  ELSE '[]'::jsonb
-                END
-              ) > 4096
-              OR jsonb_array_length(
-                CASE
-                  WHEN jsonb_typeof(
-                    claim.claim->'denominator'->'source_lineage_ids'
-                  ) = 'array'
-                  THEN claim.claim->'denominator'->'source_lineage_ids'
-                  ELSE '[]'::jsonb
-                END
-              ) = 0
-              OR EXISTS (
-                SELECT 1
-                FROM jsonb_array_elements(
-                  CASE
-                    WHEN jsonb_typeof(
-                      claim.claim->'denominator'->'source_lineage_ids'
-                    ) = 'array'
-                    THEN CASE
-                      WHEN jsonb_array_length(
+                  ) <> 'array'
+                  OR jsonb_array_length(
+                    CASE
+                      WHEN jsonb_typeof(
                         claim.claim->'denominator'->'source_lineage_ids'
-                      ) <= 4096
+                      ) = 'array'
                       THEN claim.claim->'denominator'->'source_lineage_ids'
                       ELSE '[]'::jsonb
                     END
-                    ELSE '[]'::jsonb
-                  END
-                ) lineage(value)
-                WHERE jsonb_typeof(lineage.value) <> 'string'
-                  OR lineage.value #>> '{}' !~ '^[0-9a-f]{64}$'
-                  OR NOT EXISTS (
+                  ) NOT BETWEEN 1 AND 4096
+                  OR EXISTS (
                     SELECT 1
-                    FROM resolved_claim_evidence evidence
-                    WHERE evidence.claim_input_ordinal
-                      = claim.claim_input_ordinal
-                      AND evidence.edge->>'evidence_role'
-                        = 'DERIVATION_INPUT'
-                      AND evidence.edge->>'excerpt_id'
-                        = lineage.value #>> '{}'
+                    FROM jsonb_array_elements(
+                      CASE
+                        WHEN jsonb_typeof(
+                          claim.claim->'denominator'->'source_lineage_ids'
+                        ) = 'array'
+                        AND jsonb_array_length(
+                          claim.claim->'denominator'->'source_lineage_ids'
+                        ) <= 4096
+                        THEN claim.claim->'denominator'->'source_lineage_ids'
+                        ELSE '[]'::jsonb
+                      END
+                    ) lineage(value)
+                    WHERE jsonb_typeof(lineage.value) <> 'string'
+                      OR lineage.value #>> '{}' !~ '^[0-9a-f]{64}$'
+                      OR NOT EXISTS (
+                        SELECT 1
+                        FROM resolved_claim_evidence evidence
+                        WHERE evidence.claim_input_ordinal
+                          = claim.claim_input_ordinal
+                          AND evidence.edge->>'evidence_role'
+                            = 'DERIVATION_INPUT'
+                          AND evidence.edge->>'excerpt_id'
+                            = lineage.value #>> '{}'
+                      )
                   )
+                )
               )
             )
           )
@@ -3310,7 +3350,11 @@ BEGIN
         SELECT provision.value AS provision
         FROM jsonb_array_elements(p_write_set->'provisions') provision(value)
         UNION ALL
-        SELECT stored.canonical_payload
+        SELECT jsonb_set(
+          stored.canonical_payload,
+          '{closure_id}',
+          to_jsonb(persisted.reference->>'validation_closure_id')
+        )
         FROM jsonb_array_elements(
           coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
         ) persisted(reference)
@@ -3322,7 +3366,11 @@ BEGIN
         SELECT component.value AS component
         FROM jsonb_array_elements(p_write_set->'components') component(value)
         UNION ALL
-        SELECT stored.canonical_payload
+        SELECT jsonb_set(
+          stored.canonical_payload,
+          '{closure_id}',
+          to_jsonb(persisted.reference->>'validation_closure_id')
+        )
         FROM jsonb_array_elements(
           coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
         ) persisted(reference)
@@ -3334,13 +3382,33 @@ BEGIN
         SELECT definition.value AS definition
         FROM jsonb_array_elements(p_write_set->'definition_occurrences') definition(value)
         UNION ALL
-        SELECT stored.canonical_payload
+        SELECT jsonb_set(
+          stored.canonical_payload,
+          '{closure_id}',
+          to_jsonb(persisted.reference->>'validation_closure_id')
+        )
         FROM jsonb_array_elements(
           coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
         ) persisted(reference)
         JOIN canonical_v2_staging.definition_occurrences stored
           ON persisted.reference->>'object_kind' = 'definition_occurrences'
           AND stored.definition_occurrence_id = persisted.reference->>'object_id'
+      ),
+      supplied_relationship_occurrences AS (
+        SELECT
+          relationship.value->>'relationship_occurrence_id'
+            AS relationship_occurrence_id
+        FROM jsonb_array_elements(p_write_set->'relationships')
+          relationship(value)
+        UNION ALL
+        SELECT stored.canonical_payload->>'relationship_occurrence_id'
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        JOIN canonical_v2_staging.relationship_revisions stored
+          ON persisted.reference->>'object_kind' = 'relationships'
+          AND stored.relationship_revision_id
+            = persisted.reference->>'object_id'
       ),
       available_occurrences AS (
         SELECT provision->>'provision_instance_id' AS occurrence_id
@@ -3351,12 +3419,19 @@ BEGIN
         UNION
         SELECT definition->>'definition_occurrence_id'
         FROM supplied_definition_occurrences
+        UNION
+        SELECT relationship_occurrence_id
+        FROM supplied_relationship_occurrences
       ),
       supplied_excerpts AS (
         SELECT excerpt.value AS excerpt
         FROM jsonb_array_elements(p_write_set->'excerpts') excerpt(value)
         UNION ALL
-        SELECT stored.canonical_payload
+        SELECT jsonb_set(
+          stored.canonical_payload,
+          '{closure_id}',
+          to_jsonb(persisted.reference->>'validation_closure_id')
+        )
         FROM jsonb_array_elements(
           coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
         ) persisted(reference)
@@ -3379,7 +3454,11 @@ BEGIN
         FROM jsonb_array_elements(p_write_set->'relationships')
           relationship(value)
         UNION ALL
-        SELECT stored.canonical_payload
+        SELECT jsonb_set(
+          stored.canonical_payload,
+          '{closure_id}',
+          to_jsonb(persisted.reference->>'validation_closure_id')
+        )
         FROM jsonb_array_elements(
           coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
         ) persisted(reference)
@@ -4109,7 +4188,11 @@ BEGIN
         SELECT excerpt.value AS excerpt
         FROM jsonb_array_elements(p_write_set->'excerpts') excerpt(value)
         UNION ALL
-        SELECT stored.canonical_payload
+        SELECT jsonb_set(
+          stored.canonical_payload,
+          '{closure_id}',
+          to_jsonb(persisted.reference->>'validation_closure_id')
+        )
         FROM jsonb_array_elements(
           coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
         ) persisted(reference)
@@ -4205,12 +4288,18 @@ BEGIN
           ))
         OR NOT EXISTS (
           SELECT 1 FROM supplied_excerpts declaration
-          WHERE declaration->>'excerpt_id' = supplied.definition->>'declaration_evidence_excerpt_id'
-            AND declaration->>'closure_id' = supplied.definition->>'closure_id'
-            AND declaration->>'document_hash' = supplied.definition->>'document_hash'
-            AND declaration->'canonical_text_id' = supplied.definition->'exact_declaration_span'->'canonical_text_id'
-            AND declaration->'absolute_start' = supplied.definition->'exact_declaration_span'->'absolute_start'
-            AND declaration->'absolute_end' = supplied.definition->'exact_declaration_span'->'absolute_end'
+          WHERE declaration.excerpt->>'excerpt_id'
+              = supplied.definition->>'declaration_evidence_excerpt_id'
+            AND declaration.excerpt->>'closure_id'
+              = supplied.definition->>'closure_id'
+            AND declaration.excerpt->>'document_hash'
+              = supplied.definition->>'document_hash'
+            AND declaration.excerpt->'canonical_text_id'
+              = supplied.definition->'exact_declaration_span'->'canonical_text_id'
+            AND declaration.excerpt->'absolute_start'
+              = supplied.definition->'exact_declaration_span'->'absolute_start'
+            AND declaration.excerpt->'absolute_end'
+              = supplied.definition->'exact_declaration_span'->'absolute_end'
         )
         OR EXISTS (
           SELECT 1 FROM definition_body_spans body
@@ -4232,12 +4321,17 @@ BEGIN
               OR body.evidence_excerpt_id !~ '^[0-9a-f]{64}$'
               OR NOT EXISTS (
                 SELECT 1 FROM supplied_excerpts evidence
-                WHERE evidence->>'excerpt_id' = body.evidence_excerpt_id
-                  AND evidence->>'closure_id' = supplied.definition->>'closure_id'
-                  AND evidence->>'document_hash' = supplied.definition->>'document_hash'
-                  AND evidence->'canonical_text_id' = body.span->'canonical_text_id'
-                  AND evidence->'absolute_start' = body.span->'absolute_start'
-                  AND evidence->'absolute_end' = body.span->'absolute_end'
+                WHERE evidence.excerpt->>'excerpt_id' = body.evidence_excerpt_id
+                  AND evidence.excerpt->>'closure_id'
+                    = supplied.definition->>'closure_id'
+                  AND evidence.excerpt->>'document_hash'
+                    = supplied.definition->>'document_hash'
+                  AND evidence.excerpt->'canonical_text_id'
+                    = body.span->'canonical_text_id'
+                  AND evidence.excerpt->'absolute_start'
+                    = body.span->'absolute_start'
+                  AND evidence.excerpt->'absolute_end'
+                    = body.span->'absolute_end'
               )
             )
         )
@@ -4256,7 +4350,11 @@ BEGIN
         SELECT provision.value AS provision
         FROM jsonb_array_elements(p_write_set->'provisions') provision(value)
         UNION ALL
-        SELECT stored.canonical_payload
+        SELECT jsonb_set(
+          stored.canonical_payload,
+          '{closure_id}',
+          to_jsonb(persisted.reference->>'validation_closure_id')
+        )
         FROM jsonb_array_elements(
           coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
         ) persisted(reference)
@@ -4268,7 +4366,11 @@ BEGIN
         SELECT component.value AS component
         FROM jsonb_array_elements(p_write_set->'components') component(value)
         UNION ALL
-        SELECT stored.canonical_payload
+        SELECT jsonb_set(
+          stored.canonical_payload,
+          '{closure_id}',
+          to_jsonb(persisted.reference->>'validation_closure_id')
+        )
         FROM jsonb_array_elements(
           coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
         ) persisted(reference)
@@ -4280,7 +4382,11 @@ BEGIN
         SELECT claim.value AS claim
         FROM jsonb_array_elements(p_write_set->'claims') claim(value)
         UNION ALL
-        SELECT stored.canonical_payload
+        SELECT jsonb_set(
+          stored.canonical_payload,
+          '{closure_id}',
+          to_jsonb(persisted.reference->>'validation_closure_id')
+        )
         FROM jsonb_array_elements(
           coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
         ) persisted(reference)
@@ -4292,7 +4398,11 @@ BEGIN
         SELECT excerpt.value AS excerpt
         FROM jsonb_array_elements(p_write_set->'excerpts') excerpt(value)
         UNION ALL
-        SELECT stored.canonical_payload
+        SELECT jsonb_set(
+          stored.canonical_payload,
+          '{closure_id}',
+          to_jsonb(persisted.reference->>'validation_closure_id')
+        )
         FROM jsonb_array_elements(
           coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
         ) persisted(reference)
@@ -5524,6 +5634,8 @@ BEGIN
             THEN object.value->>'definition_occurrence_id'
           WHEN 'provisions' THEN object.value->>'provision_instance_id'
           WHEN 'components' THEN object.value->>'provision_component_id'
+          WHEN 'condition_groups'
+            THEN object.value->>'condition_group_revision_id'
           WHEN 'claims' THEN object.value->>'claim_revision_id'
           WHEN 'relationships' THEN object.value->>'relationship_revision_id'
           WHEN 'open_world_candidates' THEN object.value->>'candidate_id'
@@ -5622,6 +5734,8 @@ BEGIN
             WHEN 'definition_occurrences' THEN object.value->>'definition_occurrence_id'
             WHEN 'provisions' THEN object.value->>'provision_instance_id'
             WHEN 'components' THEN object.value->>'provision_component_id'
+            WHEN 'condition_groups'
+              THEN object.value->>'condition_group_revision_id'
             WHEN 'claims' THEN object.value->>'claim_revision_id'
             WHEN 'relationships' THEN object.value->>'relationship_revision_id'
             WHEN 'open_world_candidates' THEN object.value->>'candidate_id'
@@ -5655,6 +5769,8 @@ BEGIN
         WHEN 'definition_occurrences' THEN object.value->>'definition_occurrence_id'
         WHEN 'provisions' THEN object.value->>'provision_instance_id'
         WHEN 'components' THEN object.value->>'provision_component_id'
+        WHEN 'condition_groups'
+          THEN object.value->>'condition_group_revision_id'
         WHEN 'claims' THEN object.value->>'claim_revision_id'
         WHEN 'relationships' THEN object.value->>'relationship_revision_id'
         WHEN 'open_world_candidates' THEN object.value->>'candidate_id'
@@ -6397,6 +6513,7 @@ BEGIN
       || coalesce(p_write_set->'definition_occurrences', '[]'::jsonb)
       || coalesce(p_write_set->'provisions', '[]'::jsonb)
       || coalesce(p_write_set->'components', '[]'::jsonb)
+      || coalesce(p_write_set->'condition_groups', '[]'::jsonb)
       || coalesce(p_write_set->'claims', '[]'::jsonb)
       || coalesce(p_write_set->'relationships', '[]'::jsonb)
       || coalesce(p_write_set->'open_world_candidates', '[]'::jsonb)
@@ -6624,6 +6741,34 @@ BEGIN
     FROM canonical_v2_staging.provision_components WHERE provision_component_id = item_id;
     IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
       RAISE EXCEPTION 'canonical component identity conflict' USING ERRCODE = '23505';
+    END IF;
+  END LOOP;
+
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(coalesce(p_write_set->'condition_groups', '[]'::jsonb))
+      AS ordered_item(value)
+    ORDER BY ordered_item.value->>'condition_group_revision_id'
+  LOOP
+    item_id := item->>'condition_group_revision_id';
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.condition_group_revisions
+    WHERE condition_group_revision_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'canonical condition group identity conflict'
+        USING ERRCODE = '23505';
+    END IF;
+    INSERT INTO canonical_v2_staging.condition_group_revisions(
+      condition_group_revision_id, closure_id, canonical_payload
+    ) VALUES (
+      item_id, item->>'closure_id', item
+    ) ON CONFLICT (condition_group_revision_id) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.condition_group_revisions
+    WHERE condition_group_revision_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'canonical condition group identity conflict'
+        USING ERRCODE = '23505';
     END IF;
   END LOOP;
 

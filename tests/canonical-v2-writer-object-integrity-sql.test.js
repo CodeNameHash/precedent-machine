@@ -31,6 +31,7 @@ test('multi-row immutable inserts use deterministic primary-identity order', () 
     'excerpt_id',
     'provision_instance_id',
     'provision_component_id',
+    'condition_group_revision_id',
     'claim_revision_id',
     'relationship_revision_id',
     'candidate_id',

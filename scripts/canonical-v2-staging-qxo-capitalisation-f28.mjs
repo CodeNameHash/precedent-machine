@@ -33,6 +33,19 @@ const {
   buildCanonicalWriteReceipt,
 } = require('../lib/canonical-v2/canonical-writer');
 const {
+  buildCanonicalWriteInputDigest,
+} = require('../lib/canonical-v2/canonical-write-envelope');
+const {
+  PERSISTED_CANONICAL_OBJECT_ID_FIELDS,
+  buildPersistedCanonicalObjectRequests,
+  resolvePersistedCanonicalWriteSet,
+} = require(
+  '../lib/canonical-v2/persisted-canonical-object-resolution',
+);
+const {
+  validateResolvedCanonicalWriteSet,
+} = require('../lib/canonical-v2/validate-write-set');
+const {
   compileFixtureContractV13,
 } = require('../lib/canonical-v2/contract-bundle');
 const {
@@ -125,6 +138,24 @@ const ADMITTED_SOURCE = Object.freeze({
 const MAX_PROBE_RECORDS = 30;
 const MAX_PROBE_PAYLOAD_BYTES = 1024 * 1024;
 const MAX_RESULT_BYTES = 128 * 1024;
+const PERSISTED_OBJECT_TABLES = Object.freeze({
+  excerpts: 'excerpts',
+  validated_semantic_graphs: 'validated_semantic_graphs',
+  definition_occurrences: 'definition_occurrences',
+  provisions: 'provision_instances',
+  components: 'provision_components',
+  condition_groups: 'condition_group_revisions',
+  claims: 'claim_revisions',
+  relationships: 'relationship_revisions',
+  open_world_candidates: 'open_world_candidates',
+  open_world_candidate_occurrences: 'open_world_candidate_occurrences',
+  open_world_evidence_references: 'open_world_evidence_references',
+  open_world_candidate_dispositions: 'open_world_candidate_dispositions',
+  open_world_primitives: 'open_world_primitives',
+  semantic_impact_closures: 'semantic_impact_closures',
+  reviewed_source_specific_rows: 'reviewed_source_specific_rows',
+  incomplete_canonical_result_rows: 'incomplete_canonical_result_rows',
+});
 
 function fail(message) {
   process.stderr.write(`${message}\n`);
@@ -411,6 +442,109 @@ function sqlText(value) {
   return `'${String(value).replaceAll("'", "''")}'`;
 }
 
+function readPersistedCandidateObjects(writeSet) {
+  const requests = buildPersistedCanonicalObjectRequests(writeSet);
+  const storedArms = Object.entries(PERSISTED_OBJECT_TABLES).map(
+    ([objectKind, table]) => {
+      const identityField =
+        PERSISTED_CANONICAL_OBJECT_ID_FIELDS[objectKind];
+      return `SELECT requested.input_ordinal, requested.object_kind,
+        requested.object_id, stored.closure_id,
+        stored.canonical_payload_digest, stored.canonical_payload
+      FROM requested
+      JOIN canonical_v2_staging.${table} stored
+        ON requested.object_kind=${sqlText(objectKind)}
+        AND stored.${identityField}=requested.object_id`;
+    },
+  );
+  const storedRows = runLinkedSql(`BEGIN TRANSACTION READ ONLY;
+SET LOCAL lock_timeout='2000ms';
+SET LOCAL statement_timeout='15000ms';
+WITH requested AS (
+  SELECT *
+  FROM jsonb_to_recordset(${sqlJson(requests)})
+    AS item(input_ordinal integer, object_kind text, object_id text)
+),
+stored AS (
+  ${storedArms.join('\n  UNION ALL\n  ')}
+)
+SELECT requested.input_ordinal, requested.object_kind,
+  requested.object_id, stored.closure_id,
+  stored.canonical_payload_digest, stored.canonical_payload
+FROM requested
+LEFT JOIN stored USING (input_ordinal, object_kind, object_id)
+ORDER BY requested.input_ordinal;
+ROLLBACK;
+`, {
+    fileName: 'read-persisted-canonical-objects.sql',
+    maxBuffer: 4 * 1024 * 1024,
+  });
+  return { requests, storedRows };
+}
+
+function resolveCandidateExecution(candidate) {
+  const original = candidate.preflight.writer_link;
+  const originalInput = original.deal_scope_run_input;
+  const { requests, storedRows } = readPersistedCandidateObjects(
+    originalInput.writeSet,
+  );
+  const resolved = resolvePersistedCanonicalWriteSet({
+    writeSet: originalInput.writeSet,
+    requests,
+    storedRows,
+  });
+  const validation = validateResolvedCanonicalWriteSet({
+    writeSet: resolved.writeSet,
+    contractBundle: candidate.inputs.contractBundle,
+    admittedSourceContexts: [candidate.inputs.sourceContext],
+    retainedCanonicalObjects: resolved.retainedCanonicalObjects,
+  });
+  if (
+    validation.residuals.length !== 0
+    || validation.quarantines.length !== 0
+  ) {
+    throw new Error(
+      'The repository-resolved F28 write contains residuals or quarantines.',
+    );
+  }
+  const executionInput = Object.freeze({
+    operation: originalInput.operation,
+    idempotencyKey: originalInput.idempotencyKey,
+    writeSet: validation.publishableWriteSet,
+  });
+  const inputDigest = buildCanonicalWriteInputDigest({
+    ...executionInput,
+    residuals: validation.residuals,
+    quarantines: validation.quarantines,
+  });
+  return {
+    ...candidate,
+    executionWriter: Object.freeze({
+      input: executionInput,
+      inputDigest,
+      validationCounts: validation.counts,
+      repositoryResolutionReads: 1,
+      repositoryResolutionRequests: requests.length,
+      persistedObjectReferences: resolved.retainedObjectCount,
+    }),
+  };
+}
+
+function fixtureCandidateExecution(candidate) {
+  const writerLink = candidate.preflight.writer_link;
+  return {
+    ...candidate,
+    executionWriter: Object.freeze({
+      input: writerLink.deal_scope_run_input,
+      inputDigest: writerLink.receipt.input_digest,
+      validationCounts: writerLink.receipt.validation_counts,
+      repositoryResolutionReads: 0,
+      repositoryResolutionRequests: 0,
+      persistedObjectReferences: 0,
+    }),
+  };
+}
+
 function expectedMetricRead(release) {
   const terminalByAdmission = new Map([
     ...release.observations,
@@ -439,14 +573,14 @@ function expectedMetricRead(release) {
 function buildRollbackProofSql(candidate, permission) {
   const { release } = candidate;
   const { records } = buildProbeRecords(release);
-  const writerLink = candidate.preflight.writer_link;
-  const writerInput = writerLink.deal_scope_run_input;
+  const writerExecution = candidate.executionWriter;
+  const writerInput = writerExecution.input;
   const writerReceipt = buildCanonicalWriteReceipt({
     operation: writerInput.operation,
     idempotencyKey: writerInput.idempotencyKey,
-    inputDigest: writerLink.receipt.input_digest,
+    inputDigest: writerExecution.inputDigest,
     validation: {
-      counts: writerLink.receipt.validation_counts,
+      counts: writerExecution.validationCounts,
     },
   });
   return `BEGIN;
@@ -471,7 +605,7 @@ SELECT public.canonical_v2_write(
   'staging',
   ${sqlText(writerInput.operation)},
   ${sqlText(writerInput.idempotencyKey)},
-  ${sqlText(writerLink.receipt.input_digest)},
+  ${sqlText(writerExecution.inputDigest)},
   ${sqlJson(writerInput.writeSet)},
   '[]'::jsonb,
   '[]'::jsonb,
@@ -605,6 +739,12 @@ SELECT jsonb_build_object(
   'probe_records', ${MAX_PROBE_RECORDS},
   'metric_slots', 14,
   'writer_calls', 1,
+  'repository_resolution_reads',
+    ${writerExecution.repositoryResolutionReads},
+  'repository_resolution_requests',
+    ${writerExecution.repositoryResolutionRequests},
+  'persisted_object_references',
+    ${writerExecution.persistedObjectReferences},
   'probe_insert_statements', 1,
   'set_based_metric_reads', 1,
   'subject_exclusion_verified', true,
@@ -703,6 +843,7 @@ function readAdmittedF28Inputs() {
 SET LOCAL lock_timeout='2000ms';
 SET LOCAL statement_timeout='15000ms';
 SELECT jsonb_build_object(
+  'deal', deal.canonical_payload,
   'immutable_source_document', immutable.canonical_payload,
   'source_admission_manifest', admission.canonical_payload,
   'semantic_extraction_input_envelope', envelope.canonical_payload,
@@ -718,6 +859,10 @@ JOIN canonical_v2_staging.semantic_extraction_input_envelopes envelope
 JOIN canonical_v2_staging.canonical_text_conversions conversion
   ON conversion.canonical_text_id =
     admission.canonical_payload->>'canonical_text_id'
+JOIN canonical_v2_staging.deals deal
+  ON deal.deal_key=${sqlText(DEAL_KEY)}
+  AND deal.canonical_payload->>'document_hash' =
+    immutable.canonical_payload->>'response_bytes_sha256'
 WHERE admission.source_admission_manifest_id =
   ${sqlText(ADMITTED_SOURCE.source_admission_manifest_id)}
   AND immutable.immutable_source_document_id =
@@ -737,12 +882,14 @@ ROLLBACK;
   }
   const graph = rows[0].source_graph;
   const contractBundle = compileFixtureContractV13();
-  const dealAdmissionId = contentId('DEAL_ADMISSION/V2', {
-    governed_deal_key: DEAL_KEY,
-    source_admission_manifest_id:
-      ADMITTED_SOURCE.source_admission_manifest_id,
-    contract_fingerprint: contractBundle.fingerprint,
-  });
+  const dealAdmissionId = graph.deal?.deal_admission_id;
+  if (
+    graph.deal?.deal_key !== DEAL_KEY
+    || graph.deal?.document_hash !== ADMITTED_SOURCE.document_hash
+    || !/^[a-f0-9]{64}$/.test(dealAdmissionId || '')
+  ) {
+    throw new Error('The exact stored QXO deal admission is unavailable.');
+  }
   const sourceContext = buildAdmittedSemanticSourceContext({
     ...graph,
     governed_deal_key: DEAL_KEY,
@@ -804,14 +951,12 @@ function runRollbackProof(sql, candidate, permission, executable) {
     || attestation.writer_receipt_id
       !== buildCanonicalWriteReceipt({
         operation:
-          candidate.preflight.writer_link.deal_scope_run_input.operation,
+          candidate.executionWriter.input.operation,
         idempotencyKey:
-          candidate.preflight.writer_link.deal_scope_run_input.idempotencyKey,
-        inputDigest:
-          candidate.preflight.writer_link.receipt.input_digest,
+          candidate.executionWriter.input.idempotencyKey,
+        inputDigest: candidate.executionWriter.inputDigest,
         validation: {
-          counts:
-            candidate.preflight.writer_link.receipt.validation_counts,
+          counts: candidate.executionWriter.validationCounts,
         },
       }).receiptId
     || attestation.product_adapter_receipt_id
@@ -836,6 +981,12 @@ function runRollbackProof(sql, candidate, permission, executable) {
     || attestation.probe_records !== MAX_PROBE_RECORDS
     || attestation.metric_slots !== 14
     || attestation.writer_calls !== 1
+    || attestation.repository_resolution_reads
+      !== candidate.executionWriter.repositoryResolutionReads
+    || attestation.repository_resolution_requests
+      !== candidate.executionWriter.repositoryResolutionRequests
+    || attestation.persisted_object_references
+      !== candidate.executionWriter.persistedObjectReferences
     || attestation.probe_insert_statements !== 1
     || attestation.set_based_metric_reads !== 1
     || attestation.subject_exclusion_verified !== true
@@ -952,7 +1103,10 @@ try {
         ...buildF27Inputs(),
         sourceContext: buildWriterAdmittedSourceContext(),
       };
-    const candidate = buildCandidate(inputs);
+    const builtCandidate = buildCandidate(inputs);
+    const candidate = args[0] === '--verify'
+      ? resolveCandidateExecution(builtCandidate)
+      : fixtureCandidateExecution(builtCandidate);
     const sql = buildRollbackProofSql(candidate, permission);
     const attestation = runRollbackProof(
       sql,

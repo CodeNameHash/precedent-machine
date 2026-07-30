@@ -19,7 +19,7 @@ const EXPECTED_PROJECT = Object.freeze({
 });
 const F5_CONTRACT_FINGERPRINT = 'f80a77651d1b6a6a9eec8ac67526a8704f498761cbb22a67e6ceb4716abb5478';
 const EXPECTED_DIGESTS = Object.freeze({
-  'canonical-v2-foundation.sql': 'ec37fd51e79e2fc4c31b682fe680b51f11db82e9cace708112f5a131a3329e8e',
+  'canonical-v2-foundation.sql': '7188a51dfd3948b943b5a6d40bec12c196dae37fe16174c0db87a2cabb097247',
   // Active serving resolves the release-declared contract, exact detail is
   // active-release bound, and the rejected F3 fingerprint is denied at
   // every granted serving boundary.
@@ -260,6 +260,8 @@ function verifyAppliedSchema(workdir) {
           and table_name = 'active_corpus_release_pointers'
           and column_name = 'correction_input_root'
       ) as active_pointer_correction_root_exists,
+      to_regclass('canonical_v2_staging.condition_group_revisions') is not null
+        as condition_group_storage_exists,
       to_regprocedure('public.canonical_v2_write(text,text,text,text,jsonb,jsonb,jsonb,jsonb)') is not null as writer_exists,
       canonical_v2_staging.canonical_json(
         '{"b":[true,null,"unicodeé"],"a":1.0,"nested":{"z":"2.75","y":false}}'::jsonb

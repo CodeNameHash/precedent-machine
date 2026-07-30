@@ -92,11 +92,14 @@ test('one probe insert and one set-based metric read cover all slots', () => {
     ).length,
     1,
   );
-  assert.equal((source.match(/jsonb_to_recordset\(/g) || []).length, 1);
+  assert.equal((source.match(/jsonb_to_recordset\(/g) || []).length, 2);
   assert.match(
     source,
     /SELECT jsonb_agg\(to_jsonb\(metric_counts\) ORDER BY display_ordinal\)/,
   );
+  assert.match(source, /readPersistedCandidateObjects/);
+  assert.match(source, /resolvePersistedCanonicalWriteSet/);
+  assert.match(source, /repository_resolution_reads/);
   assert.match(source, /subject_market_observations/);
   assert.match(source, /subject_slot_exclusions/);
   assert.match(source, /independent_market_observations/);
@@ -177,6 +180,9 @@ test('fixture rollback accepts only one exact bounded attestation', () => {
       probe_records: 30,
       metric_slots: 14,
       writer_calls: 1,
+      repository_resolution_reads: 0,
+      repository_resolution_requests: 0,
+      persisted_object_references: 0,
       probe_insert_statements: 1,
       set_based_metric_reads: 1,
       subject_exclusion_verified: true,

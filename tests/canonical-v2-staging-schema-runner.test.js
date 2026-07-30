@@ -65,6 +65,7 @@ test('staging schema verification checks writer, serving RPCs and denied broad r
   assert.match(source, /checked_privilege\.grantee = 0/);
   assert.match(source, /if \(result\.stdout\) process\.stderr\.write\(result\.stdout\)/);
   assert.match(source, /canonical_v2_staging\.validated_semantic_graphs/);
+  assert.match(source, /canonical_v2_staging\.condition_group_revisions/);
   assert.match(source, /canonical_v2_staging\.candidate_release_semantic_graphs/);
   assert.match(source, /canonical_v2_staging\.candidate_release_correction_input_seals/);
   assert.match(source, /canonical_v2_staging\.candidate_release_correction_discharges/);
