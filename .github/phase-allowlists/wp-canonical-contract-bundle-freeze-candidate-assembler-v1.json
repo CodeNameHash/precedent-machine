@@ -1,0 +1,21 @@
+{
+  "phase": "WP-CANONICAL-CONTRACT-BUNDLE-FREEZE-CANDIDATE-ASSEMBLER-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-contract-bundle-freeze-candidate-assembler-v1.json",
+    "lib/canonical-v2/canonical-contract-bundle-freeze-candidate-assembler.js",
+    "tests/canonical-v2-canonical-contract-bundle-freeze-candidate-assembler.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Pure deterministic assembler for an unsigned canonical contract-bundle freeze candidate. It emits no review, approval, signature, status, writer, serving, database, release, activation or production authority."
+}
