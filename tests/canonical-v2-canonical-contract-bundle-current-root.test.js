@@ -15,7 +15,9 @@ const {
   '../lib/canonical-v2/canonical-contract-bundle-freeze-candidate-assembler'
 );
 const {
+  NON_DEPENDENCY_REFERENCE_RULES,
   assembleCanonicalContractBundleCurrentRootProposal,
+  classifyCanonicalContractMemberReferences,
 } = require('../lib/canonical-v2/canonical-contract-bundle-current-root');
 const {
   canonicalJson,
@@ -57,6 +59,21 @@ test('assembles the exact current 152-member root into all eight categories', ()
 
   assert.equal(proposal.proposed_dispositions.length, 152);
   assert.equal(proposal.dependency_edge_count, 239);
+  assert.equal(proposal.non_dependency_reference_dispositions.length, 14);
+  assert.deepEqual(
+    [...new Set(proposal.non_dependency_reference_dispositions.map(
+      (entry) => entry.rule_id,
+    ))].sort(),
+    NON_DEPENDENCY_REFERENCE_RULES.map((rule) => rule.rule_id).sort(),
+  );
+  assert.equal(
+    proposal.non_dependency_reference_dispositions.every((entry) => (
+      entry.direction === 'TARGET_DEPENDS_ON_SOURCE'
+      && entry.reference_paths.length > 0
+      && entry.reverse_reference_paths.length > 0
+    )),
+    true,
+  );
   assert.deepEqual(
     Object.keys(proposal.classification_counts),
     [...REQUIRED_BUNDLE_KINDS].sort(),
@@ -129,5 +146,47 @@ test('blocks an ambiguous stable-ID dependency instead of choosing a near contra
     () => assembleCanonicalContractBundleCurrentRootProposal({
       canonical_contract_input_compilation: inputCompilation,
     }),
+  );
+});
+
+test('blocks a declared reverse link if the target dependency binding is absent', () => {
+  const inputCompilation = structuredClone(compilation());
+  const event = inputCompilation.authored_members.find(
+    (member) => member.relative_path ===
+      'process/events/process-event.v1.json',
+  );
+  event.canonical_value.definition.composition_contract
+    .event_slot_binding_definition_stable_id = 'MISSING_SLOT_BINDING';
+  assertProposalError(
+    'INVALID_NON_DEPENDENCY_REFERENCE_DIRECTION',
+    () => assembleCanonicalContractBundleCurrentRootProposal({
+      canonical_contract_input_compilation: inputCompilation,
+    }),
+  );
+});
+
+test('does not suppress an unlisted reference between a declared reverse-link pair', () => {
+  const inputCompilation = structuredClone(compilation());
+  const slot = inputCompilation.authored_members.find(
+    (member) => member.relative_path ===
+      'process/occurrence-slots/process-event.v1.json',
+  );
+  slot.canonical_value.definition.unreviewed_dependency = 'PROCESS_EVENT';
+  const membersByStableId = new Map();
+  for (const member of inputCompilation.authored_members) {
+    const members = membersByStableId.get(member.stable_id) || [];
+    members.push(member);
+    membersByStableId.set(member.stable_id, members);
+  }
+  const references = classifyCanonicalContractMemberReferences(
+    slot,
+    membersByStableId,
+  );
+  assert.equal(
+    references.dependencies.some(
+      (identity) => identity.relative_path ===
+        'process/events/process-event.v1.json',
+    ),
+    true,
   );
 });
