@@ -1,0 +1,21 @@
+{
+  "phase": "WP-CANONICAL-CONTRACT-BUNDLE-CURRENT-ROOT-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-contract-bundle-current-root-v1.json",
+    "lib/canonical-v2/canonical-contract-bundle-current-root.js",
+    "tests/canonical-v2-canonical-contract-bundle-current-root.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/sign-g0-evidence.mjs",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Builds a non-authorising, exact current-root classification and dependency proposal for formal review. It cannot satisfy Stage 4, freeze, writer, serving, release, activation, or production authority."
+}
