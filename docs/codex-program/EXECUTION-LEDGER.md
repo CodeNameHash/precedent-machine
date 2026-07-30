@@ -24,6 +24,7 @@ main integration.
 | Latest production build on this branch | PASS, 29/29 pages |
 | M1 contract freeze | PASS. Exact acknowledgement: `docs/acks/M1-CONTRACT-FREEZE-2026-07-30.md` |
 | M2 vertical slice | ACTIVE. Local F28 preflight passes. Real isolated-staging run is not yet executed. |
+| Isolated-staging access | BLOCKED in this task. Shell DNS cannot reach Vercel or Supabase, and browser access to Supabase is disabled by user policy. |
 | M3 full-corpus certification | OPEN |
 | M4 pre-cutover | OPEN |
 | Tier A containment | ACTIVE |
