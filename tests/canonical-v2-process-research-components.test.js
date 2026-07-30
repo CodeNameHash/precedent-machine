@@ -39,6 +39,8 @@ test('component source has declared accessible controls and full-screen mobile r
   assert.match(source('ProcessSourceReader.jsx'), /priorFocusRef\.current = document\.activeElement/);
   assert.match(source('ProcessSourceReader.jsx'), /dialogRef\.current\?\.focus\(\)/);
   assert.match(source('ProcessSourceReader.jsx'), /priorFocusRef\.current\?\.focus\?\.\(\)/);
+  assert.match(source('ProcessSourceReader.jsx'), /hidden lg:sticky lg:top-4 lg:flex/);
+  assert.match(source('ProcessSourceReader.jsx'), /fixed inset-0 z-50 bg-black\/30 lg:hidden/);
 });
 
 test('renderer units remain isolated from network, source reads and compilers', () => {
@@ -71,4 +73,14 @@ test('editing the second filter retains that exact segment and its value', () =>
   assert.equal(view.editorSelection(segments[1])[0].value, 'BIOPHARMA');
   assert.deepEqual(view.editorSelection(null), []);
   assert.match(source('ProcessResearchSurface.jsx'), /setEditingSegment\(segment\)/);
+});
+
+test('save and rerun use the immutable presentation, while correction keeps the validated slot', () => {
+  const surface = source('ProcessResearchSurface.jsx');
+  const card = source('ProcessPassageCard.jsx');
+  assert.match(surface, /onSave\(presentation\)/);
+  assert.match(surface, /onRerun\(presentation\)/);
+  assert.match(surface, /lg:grid lg:grid-cols/);
+  assert.match(card, /onCorrection\(slot\)/);
+  assert.doesNotMatch(card, /on(?:Save|Rerun|Correction)\(actionInput\(slot, 'OPEN_EXACT_DETAIL'\)\)/);
 });
