@@ -1,0 +1,22 @@
+{
+  "phase": "WP-PROCESS-SCOPE-ENUMERATOR-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-scope-enumerator-v1.json",
+    "lib/canonical-v2/process-scope-enumerator.js",
+    "tests/canonical-v2-process-scope-enumerator.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Pure bounded Process scope enumeration. It freezes expected occurrence slots and retains residual source evidence. It grants no source acquisition, extraction, canonical-write, writer, database, serving, release, import, activation or production authority."
+}
