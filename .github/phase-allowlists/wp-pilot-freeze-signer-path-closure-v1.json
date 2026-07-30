@@ -1,0 +1,22 @@
+{
+  "phase": "WP-PILOT-FREEZE-SIGNER-PATH-CLOSURE-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-pilot-freeze-signer-path-closure-v1.json",
+    "docs/codex-program/bootstrap-acceptance-source.json",
+    "scripts/sign-g0-evidence.mjs"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "evidence/**",
+    "lib/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Adds only the exact machine-derived milestone paths to the existing closed owner-authority signer inventory. It does not change the review basis, signer logic, gate rules, approvals, or production authority."
+}
