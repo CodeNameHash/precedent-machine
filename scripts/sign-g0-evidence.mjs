@@ -780,6 +780,7 @@ const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
   'tests/query-containment.test.js',
   '.github/phase-allowlists/wp-p1-generated-bundle-topology-v1.json',
   '.github/phase-allowlists/wp-p1-generated-bundle-topology-v2.json',
+  '.github/phase-allowlists/wp-p1-generated-schema-registry-integration-v1.json',
   '.github/phase-allowlists/wp-p1-governed-residual-contract-family-v1.json',
   '.github/phase-allowlists/wp-p1-governed-residual-contract-family-v2.json',
   '.github/phase-allowlists/wp-p1-legal-semantic-freeze-corrections-v1.json',
