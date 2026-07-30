@@ -405,6 +405,18 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.excerpts (
   canonical_payload_digest text GENERATED ALWAYS AS (canonical_v2_staging.payload_digest(canonical_payload)) STORED
 );
 
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.definition_occurrences (
+  definition_occurrence_id text PRIMARY KEY
+    CHECK (definition_occurrence_id ~ '^[0-9a-f]{64}$'),
+  closure_id text NOT NULL CHECK (closure_id ~ '^[0-9a-f]{64}$'),
+  canonical_text_id text NOT NULL CHECK (canonical_text_id ~ '^[0-9a-f]{64}$'),
+  document_hash text NOT NULL CHECK (document_hash ~ '^[0-9a-f]{64}$'),
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text GENERATED ALWAYS AS (
+    canonical_v2_staging.payload_digest(canonical_payload)
+  ) STORED
+);
+
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.provision_instances (
   provision_instance_id text PRIMARY KEY,
   closure_id text NOT NULL,
@@ -679,6 +691,10 @@ ALTER TABLE canonical_v2_staging.write_receipts
 
 CREATE INDEX IF NOT EXISTS canonical_v2_excerpts_closure_idx
   ON canonical_v2_staging.excerpts(closure_id);
+CREATE INDEX IF NOT EXISTS canonical_v2_definition_occurrences_closure_idx
+  ON canonical_v2_staging.definition_occurrences(closure_id);
+CREATE INDEX IF NOT EXISTS canonical_v2_definition_occurrences_source_idx
+  ON canonical_v2_staging.definition_occurrences(canonical_text_id, document_hash);
 CREATE INDEX IF NOT EXISTS canonical_v2_validated_semantic_graphs_closure_idx
   ON canonical_v2_staging.validated_semantic_graphs(closure_id);
 CREATE INDEX IF NOT EXISTS canonical_v2_provisions_closure_idx
@@ -725,6 +741,7 @@ ALTER TABLE canonical_v2_staging.source_admission_preparation_receipts ENABLE RO
 ALTER TABLE canonical_v2_staging.semantic_extraction_input_envelopes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.validated_semantic_graphs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.excerpts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.definition_occurrences ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.provision_instances ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.provision_components ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.claim_revisions ENABLE ROW LEVEL SECURITY;
@@ -2108,7 +2125,7 @@ BEGIN
     IF jsonb_typeof(p_write_set) IS DISTINCT FROM 'object'
       OR NOT (p_write_set ?& ARRAY[
         'source_references', 'deal', 'excerpts', 'validated_semantic_graphs',
-        'provisions', 'components', 'claims', 'relationships',
+        'definition_occurrences', 'provisions', 'components', 'claims', 'relationships',
         'open_world_candidates', 'open_world_candidate_occurrences',
         'open_world_evidence_references', 'open_world_candidate_dispositions',
         'open_world_primitives', 'semantic_impact_closures',
@@ -2116,7 +2133,7 @@ BEGIN
       ])
       OR p_write_set - ARRAY[
         'source_references', 'deal', 'excerpts', 'validated_semantic_graphs',
-        'provisions', 'components', 'claims', 'relationships',
+        'definition_occurrences', 'provisions', 'components', 'claims', 'relationships',
         'open_world_candidates', 'open_world_candidate_occurrences',
         'open_world_evidence_references', 'open_world_candidate_dispositions',
         'open_world_primitives', 'semantic_impact_closures',
@@ -2346,6 +2363,14 @@ BEGIN
         ON supplied.reference->>'object_kind' = 'validated_semantic_graphs'
         AND stored.validated_semantic_graph_id = supplied.reference->>'object_id'
       UNION ALL
+      SELECT supplied.input_ordinal, 'definition_occurrences',
+        stored.definition_occurrence_id, stored.closure_id,
+        stored.canonical_payload_digest, stored.canonical_payload
+      FROM supplied_persisted_references supplied
+      JOIN canonical_v2_staging.definition_occurrences stored
+        ON supplied.reference->>'object_kind' = 'definition_occurrences'
+        AND stored.definition_occurrence_id = supplied.reference->>'object_id'
+      UNION ALL
       SELECT supplied.input_ordinal, 'provisions', stored.provision_instance_id,
         stored.closure_id, stored.canonical_payload_digest, stored.canonical_payload
       FROM supplied_persisted_references supplied
@@ -2462,7 +2487,8 @@ BEGIN
       AND supplied.reference->>'schema_version'
         = 'PERSISTED_CANONICAL_OBJECT_REFERENCE/V1'
       AND supplied.reference->>'object_kind' IN (
-        'excerpts', 'validated_semantic_graphs', 'provisions', 'components',
+        'excerpts', 'validated_semantic_graphs', 'definition_occurrences',
+        'provisions', 'components',
         'claims', 'relationships', 'open_world_candidates',
         'open_world_candidate_occurrences', 'open_world_evidence_references',
         'open_world_candidate_dispositions', 'open_world_primitives',
@@ -2483,6 +2509,8 @@ BEGIN
         WHEN 'excerpts' THEN stored.canonical_payload->>'excerpt_id'
         WHEN 'validated_semantic_graphs'
           THEN stored.canonical_payload->>'validated_semantic_graph_id'
+        WHEN 'definition_occurrences'
+          THEN stored.canonical_payload->>'definition_occurrence_id'
         WHEN 'provisions' THEN stored.canonical_payload->>'provision_instance_id'
         WHEN 'components' THEN stored.canonical_payload->>'provision_component_id'
         WHEN 'claims' THEN stored.canonical_payload->>'claim_revision_id'
@@ -3950,12 +3978,27 @@ BEGIN
           ON persisted.reference->>'object_kind' = 'components'
           AND stored.provision_component_id = persisted.reference->>'object_id'
       ),
+      supplied_definition_occurrences AS (
+        SELECT definition.value AS definition
+        FROM jsonb_array_elements(p_write_set->'definition_occurrences') definition(value)
+        UNION ALL
+        SELECT stored.canonical_payload
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        JOIN canonical_v2_staging.definition_occurrences stored
+          ON persisted.reference->>'object_kind' = 'definition_occurrences'
+          AND stored.definition_occurrence_id = persisted.reference->>'object_id'
+      ),
       available_occurrences AS (
         SELECT provision->>'provision_instance_id' AS occurrence_id
         FROM supplied_provisions
         UNION
         SELECT component->>'provision_component_id'
         FROM supplied_components
+        UNION
+        SELECT definition->>'definition_occurrence_id'
+        FROM supplied_definition_occurrences
       ),
       supplied_excerpts AS (
         SELECT excerpt.value AS excerpt
@@ -4694,6 +4737,165 @@ BEGIN
       END
     ) THEN
       RAISE EXCEPTION 'DEAL_SCOPE_RUN relationship identity, endpoints, state or evidence lineage is invalid'
+        USING ERRCODE = '23514';
+    END IF;
+
+    IF EXISTS (
+      WITH admitted_sources AS (
+        SELECT
+          reference.value->>'canonical_text_id' AS canonical_text_id,
+          immutable_source.canonical_payload->>'response_bytes_sha256' AS document_hash,
+          conversion.canonical_text_byte_length
+        FROM jsonb_array_elements(p_write_set->'source_references') reference(value)
+        JOIN canonical_v2_staging.immutable_source_documents immutable_source
+          ON immutable_source.immutable_source_document_id
+            = reference.value->>'immutable_source_document_id'
+        JOIN canonical_v2_staging.canonical_text_conversions conversion
+          ON conversion.canonical_text_id = reference.value->>'canonical_text_id'
+      ),
+      supplied_excerpts AS (
+        SELECT excerpt.value AS excerpt
+        FROM jsonb_array_elements(p_write_set->'excerpts') excerpt(value)
+        UNION ALL
+        SELECT stored.canonical_payload
+        FROM jsonb_array_elements(
+          coalesce(p_write_set->'persisted_object_references', '[]'::jsonb)
+        ) persisted(reference)
+        JOIN canonical_v2_staging.excerpts stored
+          ON persisted.reference->>'object_kind' = 'excerpts'
+          AND stored.excerpt_id = persisted.reference->>'object_id'
+      ),
+      supplied_definitions AS (
+        SELECT definition.value AS definition, definition.ordinality AS input_ordinal
+        FROM jsonb_array_elements(p_write_set->'definition_occurrences')
+          WITH ORDINALITY definition(value, ordinality)
+      ),
+      definition_body_spans AS (
+        SELECT
+          definition.input_ordinal,
+          span.value AS span,
+          evidence.value #>> '{}' AS evidence_excerpt_id,
+          span.ordinality AS body_ordinal,
+          lag((span.value->>'absolute_end')::bigint) OVER (
+            PARTITION BY definition.input_ordinal ORDER BY span.ordinality
+          ) AS prior_absolute_end
+        FROM supplied_definitions definition
+        CROSS JOIN LATERAL jsonb_array_elements(
+          CASE WHEN jsonb_typeof(definition.definition->'ordered_body_spans') = 'array'
+            THEN definition.definition->'ordered_body_spans' ELSE '[]'::jsonb END
+        ) WITH ORDINALITY span(value, ordinality)
+        LEFT JOIN LATERAL jsonb_array_elements(
+          CASE WHEN jsonb_typeof(definition.definition->'body_evidence_excerpt_ids') = 'array'
+            THEN definition.definition->'body_evidence_excerpt_ids' ELSE '[]'::jsonb END
+        ) WITH ORDINALITY evidence(value, ordinality)
+          ON evidence.ordinality = span.ordinality
+      )
+      SELECT 1
+      FROM supplied_definitions supplied
+      LEFT JOIN admitted_sources source
+        ON source.canonical_text_id = supplied.definition->>'canonical_text_id'
+        AND source.document_hash = supplied.definition->>'document_hash'
+      WHERE jsonb_typeof(supplied.definition) IS DISTINCT FROM 'object'
+        OR NOT (supplied.definition ?& ARRAY[
+          'schema_version', 'definition_occurrence_id', 'document_hash',
+          'canonical_text_id', 'exact_declaration_span', 'ordered_body_spans',
+          'neutral_definition_key', 'governed_ordinal',
+          'declaration_evidence_excerpt_id', 'body_evidence_excerpt_ids', 'closure_id'
+        ])
+        OR supplied.definition - ARRAY[
+          'schema_version', 'definition_occurrence_id', 'document_hash',
+          'canonical_text_id', 'exact_declaration_span', 'ordered_body_spans',
+          'neutral_definition_key', 'governed_ordinal',
+          'declaration_evidence_excerpt_id', 'body_evidence_excerpt_ids', 'closure_id'
+        ]::text[] <> '{}'::jsonb
+        OR supplied.definition->>'schema_version' IS DISTINCT FROM 'DEFINITION_OCCURRENCE/V1'
+        OR supplied.definition->>'definition_occurrence_id' !~ '^[0-9a-f]{64}$'
+        OR supplied.definition->>'document_hash' !~ '^[0-9a-f]{64}$'
+        OR supplied.definition->>'canonical_text_id' !~ '^[0-9a-f]{64}$'
+        OR supplied.definition->>'closure_id' !~ '^[0-9a-f]{64}$'
+        OR supplied.definition->>'declaration_evidence_excerpt_id' !~ '^[0-9a-f]{64}$'
+        OR jsonb_typeof(supplied.definition->'neutral_definition_key') IS DISTINCT FROM 'string'
+        OR coalesce(length(supplied.definition->>'neutral_definition_key'), 0) = 0
+        OR jsonb_typeof(supplied.definition->'governed_ordinal') IS DISTINCT FROM 'number'
+        OR supplied.definition->>'governed_ordinal' !~ '^(0|[1-9][0-9]{0,15})$'
+        OR jsonb_typeof(supplied.definition->'exact_declaration_span') IS DISTINCT FROM 'object'
+        OR jsonb_typeof(supplied.definition->'ordered_body_spans') IS DISTINCT FROM 'array'
+        OR jsonb_array_length(CASE WHEN jsonb_typeof(supplied.definition->'ordered_body_spans') = 'array'
+          THEN supplied.definition->'ordered_body_spans' ELSE '[]'::jsonb END) NOT BETWEEN 1 AND 4096
+        OR jsonb_typeof(supplied.definition->'body_evidence_excerpt_ids') IS DISTINCT FROM 'array'
+        OR jsonb_array_length(CASE WHEN jsonb_typeof(supplied.definition->'body_evidence_excerpt_ids') = 'array'
+          THEN supplied.definition->'body_evidence_excerpt_ids' ELSE '[]'::jsonb END)
+          IS DISTINCT FROM jsonb_array_length(CASE WHEN jsonb_typeof(supplied.definition->'ordered_body_spans') = 'array'
+            THEN supplied.definition->'ordered_body_spans' ELSE '[]'::jsonb END)
+        OR source.canonical_text_id IS NULL
+        OR supplied.definition->'exact_declaration_span' IS DISTINCT FROM jsonb_build_object(
+          'canonical_text_id', supplied.definition->'canonical_text_id',
+          'absolute_start', supplied.definition->'exact_declaration_span'->'absolute_start',
+          'absolute_end', supplied.definition->'exact_declaration_span'->'absolute_end'
+        )
+        OR supplied.definition->'exact_declaration_span'->>'canonical_text_id'
+          IS DISTINCT FROM supplied.definition->>'canonical_text_id'
+        OR supplied.definition->'exact_declaration_span'->>'absolute_start'
+          !~ '^(0|[1-9][0-9]{0,15})$'
+        OR supplied.definition->'exact_declaration_span'->>'absolute_end'
+          !~ '^[1-9][0-9]{0,15}$'
+        OR (supplied.definition->'exact_declaration_span'->>'absolute_end')::bigint
+          <= (supplied.definition->'exact_declaration_span'->>'absolute_start')::bigint
+        OR (supplied.definition->'exact_declaration_span'->>'absolute_end')::bigint
+          > source.canonical_text_byte_length
+        OR supplied.definition->>'definition_occurrence_id' IS DISTINCT FROM
+          canonical_v2_staging.content_id('DEFINITION_OCCURRENCE/V1', jsonb_build_object(
+            'document_hash', supplied.definition->'document_hash',
+            'exact_declaration_span', supplied.definition->'exact_declaration_span',
+            'ordered_body_spans', supplied.definition->'ordered_body_spans',
+            'neutral_definition_key', supplied.definition->'neutral_definition_key',
+            'governed_ordinal', supplied.definition->'governed_ordinal'
+          ))
+        OR NOT EXISTS (
+          SELECT 1 FROM supplied_excerpts declaration
+          WHERE declaration->>'excerpt_id' = supplied.definition->>'declaration_evidence_excerpt_id'
+            AND declaration->>'closure_id' = supplied.definition->>'closure_id'
+            AND declaration->>'document_hash' = supplied.definition->>'document_hash'
+            AND declaration->'canonical_text_id' = supplied.definition->'exact_declaration_span'->'canonical_text_id'
+            AND declaration->'absolute_start' = supplied.definition->'exact_declaration_span'->'absolute_start'
+            AND declaration->'absolute_end' = supplied.definition->'exact_declaration_span'->'absolute_end'
+        )
+        OR EXISTS (
+          SELECT 1 FROM definition_body_spans body
+          WHERE body.input_ordinal = supplied.input_ordinal
+            AND (
+              jsonb_typeof(body.span) IS DISTINCT FROM 'object'
+              OR body.span IS DISTINCT FROM jsonb_build_object(
+                'canonical_text_id', body.span->'canonical_text_id',
+                'absolute_start', body.span->'absolute_start',
+                'absolute_end', body.span->'absolute_end'
+              )
+              OR body.span->>'canonical_text_id' IS DISTINCT FROM supplied.definition->>'canonical_text_id'
+              OR body.span->>'absolute_start' !~ '^(0|[1-9][0-9]{0,15})$'
+              OR body.span->>'absolute_end' !~ '^[1-9][0-9]{0,15}$'
+              OR (body.span->>'absolute_end')::bigint <= (body.span->>'absolute_start')::bigint
+              OR (body.span->>'absolute_end')::bigint > source.canonical_text_byte_length
+              OR body.prior_absolute_end IS NOT NULL
+                AND (body.span->>'absolute_start')::bigint < body.prior_absolute_end
+              OR body.evidence_excerpt_id !~ '^[0-9a-f]{64}$'
+              OR NOT EXISTS (
+                SELECT 1 FROM supplied_excerpts evidence
+                WHERE evidence->>'excerpt_id' = body.evidence_excerpt_id
+                  AND evidence->>'closure_id' = supplied.definition->>'closure_id'
+                  AND evidence->>'document_hash' = supplied.definition->>'document_hash'
+                  AND evidence->'canonical_text_id' = body.span->'canonical_text_id'
+                  AND evidence->'absolute_start' = body.span->'absolute_start'
+                  AND evidence->'absolute_end' = body.span->'absolute_end'
+              )
+            )
+        )
+        OR EXISTS (
+          SELECT 1 FROM jsonb_array_elements(supplied.definition->'body_evidence_excerpt_ids') evidence(value)
+          GROUP BY evidence.value #>> '{}'
+          HAVING count(*) > 1
+        )
+    ) THEN
+      RAISE EXCEPTION 'DEAL_SCOPE_RUN definition occurrence identity, source evidence or closure is invalid'
         USING ERRCODE = '23514';
     END IF;
 
@@ -5966,6 +6168,8 @@ BEGIN
           WHEN 'excerpts' THEN object.value->>'excerpt_id'
           WHEN 'validated_semantic_graphs'
             THEN object.value->>'validated_semantic_graph_id'
+          WHEN 'definition_occurrences'
+            THEN object.value->>'definition_occurrence_id'
           WHEN 'provisions' THEN object.value->>'provision_instance_id'
           WHEN 'components' THEN object.value->>'provision_component_id'
           WHEN 'claims' THEN object.value->>'claim_revision_id'
@@ -6063,6 +6267,7 @@ BEGIN
           OR (CASE collection.key
             WHEN 'excerpts' THEN object.value->>'excerpt_id'
             WHEN 'validated_semantic_graphs' THEN object.value->>'validated_semantic_graph_id'
+            WHEN 'definition_occurrences' THEN object.value->>'definition_occurrence_id'
             WHEN 'provisions' THEN object.value->>'provision_instance_id'
             WHEN 'components' THEN object.value->>'provision_component_id'
             WHEN 'claims' THEN object.value->>'claim_revision_id'
@@ -6095,6 +6300,7 @@ BEGIN
       GROUP BY collection.key, CASE collection.key
         WHEN 'excerpts' THEN object.value->>'excerpt_id'
         WHEN 'validated_semantic_graphs' THEN object.value->>'validated_semantic_graph_id'
+        WHEN 'definition_occurrences' THEN object.value->>'definition_occurrence_id'
         WHEN 'provisions' THEN object.value->>'provision_instance_id'
         WHEN 'components' THEN object.value->>'provision_component_id'
         WHEN 'claims' THEN object.value->>'claim_revision_id'
@@ -6836,6 +7042,7 @@ BEGIN
     FROM jsonb_array_elements(
       coalesce(p_write_set->'excerpts', '[]'::jsonb)
       || coalesce(p_write_set->'validated_semantic_graphs', '[]'::jsonb)
+      || coalesce(p_write_set->'definition_occurrences', '[]'::jsonb)
       || coalesce(p_write_set->'provisions', '[]'::jsonb)
       || coalesce(p_write_set->'components', '[]'::jsonb)
       || coalesce(p_write_set->'claims', '[]'::jsonb)
@@ -7002,6 +7209,33 @@ BEGIN
     FROM canonical_v2_staging.excerpts WHERE excerpt_id = item_id;
     IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
       RAISE EXCEPTION 'canonical excerpt identity conflict' USING ERRCODE = '23505';
+    END IF;
+  END LOOP;
+
+  FOR item IN
+    SELECT ordered_item.value
+    FROM jsonb_array_elements(
+      coalesce(p_write_set->'definition_occurrences', '[]'::jsonb)
+    ) AS ordered_item(value)
+    ORDER BY ordered_item.value->>'definition_occurrence_id'
+  LOOP
+    item_id := item->>'definition_occurrence_id';
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.definition_occurrences
+    WHERE definition_occurrence_id = item_id;
+    IF FOUND AND existing_digest <> canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'canonical definition occurrence identity conflict' USING ERRCODE = '23505';
+    END IF;
+    INSERT INTO canonical_v2_staging.definition_occurrences(
+      definition_occurrence_id, closure_id, canonical_text_id, document_hash, canonical_payload
+    ) VALUES (
+      item_id, item->>'closure_id', item->>'canonical_text_id', item->>'document_hash', item
+    ) ON CONFLICT (definition_occurrence_id) DO NOTHING;
+    SELECT canonical_payload_digest INTO existing_digest
+    FROM canonical_v2_staging.definition_occurrences
+    WHERE definition_occurrence_id = item_id;
+    IF existing_digest IS DISTINCT FROM canonical_v2_staging.payload_digest(item) THEN
+      RAISE EXCEPTION 'canonical definition occurrence identity conflict' USING ERRCODE = '23505';
     END IF;
   END LOOP;
 
