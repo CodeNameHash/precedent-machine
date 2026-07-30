@@ -5,7 +5,13 @@
   "definition": {
     "domain_key": "PROCESS",
     "logical_type": "ProcessPredicateWitness",
-    "logical_type_version": 1,
+    "logical_type_version": 2,
+    "predecessor_contract": {
+      "stable_id": "PROCESS_PREDICATE_WITNESS",
+      "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
+      "logical_type_version": 1,
+      "definition_digest": "5316afe5e83e8b4ecadf427d598dae0c395bc80115aacacab353fa0da597f2f7"
+    },
     "witness_identity": {
       "stable_id_domain": "PROCESS_PREDICATE_WITNESS/V1",
       "stable_id_inputs": [
@@ -38,6 +44,9 @@
     "predicate_contract": {
       "catalogue_stable_id": "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
       "catalogue_schema_version": "PROCESS_PREDICATE_CONTRACT_INPUT/V1",
+      "catalogue_version": 2,
+      "all_41_mandatory_predicate_keys_and_versions_consumed": true,
+      "all_18_successor_machine_rules_consumed": true,
       "predicate_key_and_version_required": true,
       "unknown_predicate_has_runtime_path": false,
       "predicate_state_is_revision_value_not_identity": true,
@@ -65,16 +74,41 @@
       ],
       "each_link_requires_typed_revision_and_own_evidence": true,
       "unresolved_link_is_preserved_not_inferred": true,
+      "successor_required_and_optional_typed_link_cardinality_machine_enforced": true,
+      "successor_unlisted_typed_link_families_forbidden": true,
+      "successor_primary_value_carrier_terminal_type_machine_enforced": true,
       "subject_role_temporal_track_relationship_and_drafting_are_separable": true,
       "actual_drafting_requires_process_passage_revision": true,
       "summary_can_satisfy_actual_drafting": false
     },
+    "response_union_contract": {
+      "generic_union_predicate_key": "EXCLUSIVITY_RESPONSE_ANY",
+      "atomic_response_predicate_keys": [
+        "EXCLUSIVITY_EXPRESS_REFUSAL",
+        "EXCLUSIVITY_COUNTERPROPOSAL",
+        "EXCLUSIVITY_CONDITIONAL_ACCEPTANCE",
+        "EXCLUSIVITY_GRANTED"
+      ],
+      "present_union_requires_exactly_one_admitted_atomic_witness": true,
+      "constituent_predicate_key_subject_state_typed_links_and_evidence_preserved": true,
+      "request_can_satisfy_grant": false,
+      "silence_can_become_express_refusal": false,
+      "shortened_term_can_become_express_refusal": false,
+      "no_recorded_grant_can_become_express_refusal": false
+    },
     "revision_identity": {
       "revision_type": "PredicateWitnessRevision",
-      "revision_id_domain": "PREDICATE_WITNESS_REVISION/V1",
+      "revision_id_domain": "PREDICATE_WITNESS_REVISION/V2",
       "immutable_inputs": [
+        "applicability_evidence_edges",
+        "atomic_response_predicate_key",
+        "atomic_response_predicate_witness_revision_id",
         "bidder_track_revision_id",
+        "complete_scope_evidence_edges",
+        "complete_scope_identity",
+        "dimension_revision_bindings",
         "evidence_edges",
+        "failure_detail",
         "predicate_key",
         "predicate_state",
         "process_agreement_revision_ids",
@@ -84,6 +118,7 @@
         "process_position_revision_ids",
         "process_predicate_witness_id",
         "process_relationship_revision_ids",
+        "source_semantic_kind",
         "subject_code",
         "temporal_expression_revision_ids"
       ]
@@ -108,7 +143,14 @@
       "exact_evidence_required": true,
       "coordinate_space": "ADMITTED_SOURCE_UTF8_BYTES",
       "predicate_and_each_dimension_evidence_separable": true,
+      "present_requires_direct_assertion_evidence": true,
+      "present_source_semantic_kind_must_match_governed_predicate": true,
       "complete_scope_required_for_absent": true,
+      "absent_requires_one_complete_scope_identity": true,
+      "absent_complete_scope_evidence_is_separate_from_assertion_evidence": true,
+      "not_applicable_requires_separate_applicability_evidence": true,
+      "not_examined_retains_no_finding": true,
+      "failed_requires_bounded_failure_detail": true,
       "silence_can_support_express_refusal": false
     },
     "physical_carrier": {
@@ -118,7 +160,7 @@
     },
     "writer_action": {
       "action_key": "ADMIT_PROCESS_PREDICATE_WITNESS",
-      "action_version": 1,
+      "action_version": 2,
       "candidate_only": true,
       "current_release_writer_path": false,
       "definition_grants_execution_authority": false

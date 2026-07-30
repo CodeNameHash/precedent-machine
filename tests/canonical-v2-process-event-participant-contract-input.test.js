@@ -38,12 +38,14 @@ function members() {
     member('process/domain/process-domain-registry.v1.json'),
     member('process/events/process-event.v1.json'),
     member('process/narration/process-narration-occurrence.v1.json'),
+    member('process/occurrence-slots/process-event.v1.json'),
     member('process/occurrence-slots/process-narration.v1.json'),
     member('process/participants/process-participant.v1.json'),
     member('process/passages/process-passage.v1.json'),
     member('process/phases/process-phase.v1.json'),
     member('process/positions/process-position.v1.json'),
-    member('process/predicates/process-predicate-witness.v1.json'),
+    member('process/predicates/process-predicate-witness.v2.json'),
+    member('process/registries/process-controlled-code-registry.v1.json'),
     member('process/relationships/process-relationship.v1.json'),
   ];
 }
