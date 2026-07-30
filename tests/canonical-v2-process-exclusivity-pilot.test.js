@@ -593,6 +593,69 @@ function addResponseUnion(input, narrationOrdinal = 0) {
   return { atomic, union };
 }
 
+function addUnlinkedEvent(input) {
+  const processEventSlotKey = 'UNLINKED_PROCESS_EVENT';
+  const processParticipantSlotKey = 'UNLINKED_EVENT_PARTICIPANT';
+  const narrationInterval = input.frozen_scope.passage_slots[1]
+    .canonical_source_intervals[0];
+  input.frozen_scope.narration_slots.push({
+    canonical_source_intervals: [narrationInterval],
+  });
+  const narrationValue = clone(input.typed_values.narrations[0]);
+  narrationValue.narration_ordinal = 1;
+  narrationValue.evidence = evidence(
+    'PROCESS_NARRATION',
+    narrationInterval,
+  );
+  input.typed_values.narrations.push(narrationValue);
+
+  const eventSlot = clone(input.frozen_scope.event_slots[0]);
+  eventSlot.process_event_slot_key = processEventSlotKey;
+  eventSlot.narration_ordinals = [1];
+  eventSlot.event_grouping_evidence = evidence(
+    'EVENT_GROUPING',
+    narrationInterval,
+  );
+  eventSlot.expected_result_slot_key = 'UNLINKED_PROCESS_EVENT_RESULT';
+  input.frozen_scope.event_slots.push(eventSlot);
+
+  const participantSlot = clone(input.frozen_scope.participant_slots[0]);
+  participantSlot.process_event_slot_key = processEventSlotKey;
+  participantSlot.process_participant_slot_key =
+    processParticipantSlotKey;
+  participantSlot.governed_ordinal = 2;
+  input.frozen_scope.participant_slots.push(participantSlot);
+
+  const eventValue = clone(input.typed_values.events[0]);
+  eventValue.process_event_slot_key = processEventSlotKey;
+  eventValue.temporal_slot_key = null;
+  eventValue.participant_slot_keys = [processParticipantSlotKey];
+  eventValue.evidence = evidence('PROCESS_EVENT', narrationInterval);
+  input.typed_values.events.push(eventValue);
+
+  const participantValue = clone(input.typed_values.participants[0]);
+  participantValue.process_participant_slot_key =
+    processParticipantSlotKey;
+  participantValue.bidder_track_slot_key = null;
+  input.typed_values.participants.push(participantValue);
+
+  return processEventSlotKey;
+}
+
+function addUnlinkedBidderTrack(input) {
+  const bidderTrackSlotKey = 'UNLINKED_BIDDER_TRACK';
+  const slot = clone(input.frozen_scope.bidder_track_slots[0]);
+  slot.bidder_track_slot_key = bidderTrackSlotKey;
+  slot.governed_ordinal = 1;
+  input.frozen_scope.bidder_track_slots.push(slot);
+
+  const value = clone(input.typed_values.bidder_tracks[0]);
+  value.bidder_track_slot_key = bidderTrackSlotKey;
+  value.entity_subject_id = digest('unlinked-bidder-track-subject');
+  input.typed_values.bidder_tracks.push(value);
+  return bidderTrackSlotKey;
+}
+
 test('materialises the complete typed Metsera exclusivity sidecar deterministically', () => {
   const input = metseraFixture();
   const first = compileProcessExclusivityPilotMaterialisation(input);
@@ -678,6 +741,43 @@ test('retains one acyclic membership revision in both stable endpoints', () => {
     [membership.process_relationship_revision_id],
   );
   assert.equal(crossReference.relationship_type_code, 'CROSS_REFERENCE');
+});
+
+test('keeps an undeclared event unlinked without leaking membership', () => {
+  const input = metseraFixture();
+  addUnlinkedEvent(input);
+  const result = compileProcessExclusivityPilotMaterialisation(input);
+  const membership = result.revisions.relationship_revisions[0];
+  const [linkedEvent, unlinkedEvent] = result.revisions.event_revisions;
+  const track = result.revisions.bidder_track_revisions[0];
+  const membershipRevisionId =
+    membership.process_relationship_revision_id;
+
+  assert.deepEqual(
+    linkedEvent.process_relationship_revision_ids,
+    [membershipRevisionId],
+  );
+  assert.deepEqual(
+    track.ordered_process_event_relationship_revision_ids,
+    [membershipRevisionId],
+  );
+  assert.deepEqual(unlinkedEvent.process_relationship_revision_ids, []);
+  assert.equal(
+    JSON.stringify(unlinkedEvent).includes(membershipRevisionId),
+    false,
+  );
+  assert.doesNotThrow(
+    () => validateProcessExclusivityPilotMaterialisation(result, input),
+  );
+});
+
+test('still rejects a present bidder track without event membership', () => {
+  const input = metseraFixture();
+  addUnlinkedBidderTrack(input);
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(input),
+    { code: 'PROCESS_PILOT_BIDDER_TRACK_MEMBERSHIP_UNRESOLVED' },
+  );
 });
 
 test('rejects missing, reversed, unknown and duplicate memberships', () => {
