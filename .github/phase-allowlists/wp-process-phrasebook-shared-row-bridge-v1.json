@@ -1,0 +1,21 @@
+{
+  "phase": "WP-PROCESS-PHRASEBOOK-SHARED-ROW-BRIDGE-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-phrasebook-shared-row-bridge-v1.json",
+    "lib/canonical-v2/process-phrasebook-shared-row-bridge.js",
+    "tests/canonical-v2-process-phrasebook-shared-row-bridge.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Pure Process-to-Product result bridge. It consumes one complete Process phrasebook-result admission input and receipt plus an external checked Product Query IR, requested-field projection and Product admission receipt. It maps the exact verbatim passage into the existing Product result and emits a non-serving adapter sidecar that retains the complete Process receipt and complete Product row. It grants no query, source-read, extraction, materialisation, ranking, context execution, UI, network, database, serving, write, import, release, activation, production or contract-freeze authority."
+}
