@@ -269,7 +269,7 @@ test('rejects any semantic weakening of the three governed definitions', () => {
 
 test('compiles without freeze, extraction, writer, serving or release authority', () => {
   const compiled = compileCanonicalContractInput({ root_directory: ROOT });
-  assert.equal(compiled.authored_members.length, 153);
+  assert.equal(compiled.authored_members.length, 168);
   assert.equal(
     compiled.authored_universe_assessment.status,
     'COMPLETE_AGAINST_GOVERNED_REQUIRED_KIND_REGISTRY',

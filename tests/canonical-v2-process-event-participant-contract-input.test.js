@@ -212,7 +212,7 @@ test('extends a mechanically complete authored universe without freeze authority
   const second = compileCanonicalContractInput({ root_directory: ROOT });
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 153);
+  assert.equal(first.authored_members.length, 168);
   assert.equal(
     first.disposition.status,
     'AUTHORED_UNIVERSE_MECHANICALLY_COMPLETE',

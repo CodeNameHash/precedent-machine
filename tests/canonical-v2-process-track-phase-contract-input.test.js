@@ -321,7 +321,7 @@ test('rejects identity inference and event-slot semantic drift', () => {
 test('extends a mechanically complete authored universe without freeze authority', () => {
   const compiled = compileCanonicalContractInput({ root_directory: ROOT });
 
-  assert.equal(compiled.authored_members.length, 153);
+  assert.equal(compiled.authored_members.length, 168);
   assert.equal(
     compiled.disposition.status,
     'AUTHORED_UNIVERSE_MECHANICALLY_COMPLETE',

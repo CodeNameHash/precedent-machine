@@ -4,7 +4,14 @@
   "allowed": [
     ".github/phase-allowlists/wp-p1-pilot-freeze-test-reconciliation-v2.json",
     "tests/canonical-v2-canonical-contract-bundle-freeze-candidate-assembler.test.js",
-    "tests/canonical-v2-canonical-contract-source-tree.test.js"
+    "tests/canonical-v2-canonical-contract-source-tree.test.js",
+    "tests/canonical-v2-process-contract-input.test.js",
+    "tests/canonical-v2-process-event-participant-contract-input.test.js",
+    "tests/canonical-v2-process-exclusivity-completeness-challenge.test.js",
+    "tests/canonical-v2-process-exclusivity-contract-input.test.js",
+    "tests/canonical-v2-process-object-contract-input.test.js",
+    "tests/canonical-v2-process-track-phase-contract-input.test.js",
+    "tests/canonical-v2-product-query-contract-input.test.js"
   ],
   "denied": [
     ".env*",
@@ -14,5 +21,5 @@
     "sql/**",
     "supabase/**"
   ],
-  "note": "Mechanical count-independent hostile test reconciliation for the integrated 167-member pilot freeze root. No contract, runtime, writer, serving, database, release, activation, production, signing, status-publication, or freeze authority."
+  "note": "Mechanical hostile test reconciliation for the 168-file successor source tree and integrated 167-member pilot freeze root. No contract, runtime, writer, serving, database, release, activation, production, signing, status-publication, or freeze authority."
 }
