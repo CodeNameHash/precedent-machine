@@ -1,5 +1,6 @@
 const assert = require('node:assert/strict');
 const { execFileSync } = require('node:child_process');
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
@@ -105,6 +106,33 @@ test('sealed pre-execution templates finalise only from observed fresh sessions'
   assert.equal(new Set(finalised.request.tasks.map(
     (task) => task.reviewer_binding.reviewer_principal_id,
   )).size, 3);
+  const { signedCarriers } = await import(
+    `${pathToFileUrl(SCRIPT)}?signed=${Date.now()}`,
+  );
+  const { privateKey } = crypto.generateKeyPairSync('ed25519');
+  const carriers = signedCarriers(
+    finalised.request,
+    finalised.results,
+    privateKey,
+  );
+  assert.equal(
+    carriers.registration.gate_id,
+    'P1_CONTRACT_FREEZE_ATTESTED',
+  );
+  assert.throws(
+    () => signedCarriers(
+      { ...finalised.request, gate_id: 'P1_VERTICAL_SLICE_PASS' },
+      finalised.results,
+      privateKey,
+    ),
+    /exact governed P1 gate ID/,
+  );
+  const missingGate = { ...finalised.request };
+  delete missingGate.gate_id;
+  assert.throws(
+    () => signedCarriers(missingGate, finalised.results, privateKey),
+    /exact governed P1 gate ID/,
+  );
   const duplicate = observedReviews.map((review) => ({ ...review }));
   duplicate[1].immutable_session_id = duplicate[0].immutable_session_id;
   assert.throws(() => finaliseP1ContractFreezeReviewExecution({

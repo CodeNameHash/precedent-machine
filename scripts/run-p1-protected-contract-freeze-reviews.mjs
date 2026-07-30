@@ -18,6 +18,7 @@ const {
   RESULT_PAYLOAD_DOMAIN,
 } = require('../lib/programme-gates/contract-freeze-review-registration');
 const {
+  P1_CONTRACT_FREEZE_REVIEW_GATE_ID,
   P1_CONTRACT_FREEZE_REVIEW_LANES,
   createP1ContractFreezeReviewExecutionPlan,
   finaliseP1ContractFreezeReviewExecution,
@@ -149,6 +150,16 @@ function sign(privateKey, domain, payload) {
 }
 
 function signedCarriers(request, results, privateKey) {
+  if (
+    request?.gate_id !== P1_CONTRACT_FREEZE_REVIEW_GATE_ID
+    || !Array.isArray(results)
+    || results.length !== P1_CONTRACT_FREEZE_REVIEW_LANES.length
+    || results.some((result) => (
+      result?.gate_id !== P1_CONTRACT_FREEZE_REVIEW_GATE_ID
+    ))
+  ) {
+    fail('signed P1 review carriers require the exact governed P1 gate ID');
+  }
   const unsignedCarriers = results.map((result, index) => {
     const task = request.tasks[index];
     const result_payload_digest = domainDigest(RESULT_PAYLOAD_DOMAIN, result);
@@ -171,7 +182,7 @@ function signedCarriers(request, results, privateKey) {
   const registration = {
     schema_version: 'P1ContractFreezeReviewRegistration/V1',
     registration_id: '',
-    gate_id: GATE_ID,
+    gate_id: P1_CONTRACT_FREEZE_REVIEW_GATE_ID,
     exact_review_package_fingerprint: request.request_input.exact_review_package_fingerprint,
     exact_review_package_payload_digest: request.tasks[0].exact_review_input.exact_review_package_payload_digest,
     code_commit: request.request_input.code_commit,
