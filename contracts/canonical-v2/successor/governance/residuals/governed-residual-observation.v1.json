@@ -1,0 +1,67 @@
+{
+  "object_kind": "GOVERNED_RESIDUAL_CONTRACT_INPUT",
+  "stable_id": "GOVERNED_RESIDUAL_OBSERVATION",
+  "schema_version": "GOVERNED_RESIDUAL_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "GOVERNANCE",
+    "contract_type": "GOVERNED_RESIDUAL_OBSERVATION_DEFINITION",
+    "contract_version": 1,
+    "observation_contract": {
+      "schema_id": "GOVERNED_RESIDUAL_OBSERVATION/V1",
+      "required_payload_fields": [
+        "governing_contract_bundle_id",
+        "producer_kind",
+        "producer_version",
+        "governed_subject_identity",
+        "source_reference",
+        "ordered_evidence_spans_or_explicit_no_span",
+        "neutral_residual_kind",
+        "raw_value_or_bytes",
+        "validation_details",
+        "governed_ordinal"
+      ],
+      "raw_value_or_bytes_must_be_retained": true,
+      "source_backed_evidence_required": true,
+      "string_only_warning_permitted": false,
+      "silent_drop_permitted": false
+    },
+    "identity_contract": {
+      "identity_domain": "GOVERNED_RESIDUAL_OBSERVATION/V1",
+      "required_identity_inputs": [
+        "governing_contract_bundle_id",
+        "producer_kind",
+        "producer_version",
+        "governed_subject_identity",
+        "source_reference",
+        "ordered_evidence_span_identities_or_explicit_no_span",
+        "neutral_residual_kind",
+        "raw_value_or_bytes_digest",
+        "governed_ordinal"
+      ],
+      "prohibited_identity_inputs": [
+        "contract_freeze_attestation_id",
+        "database_row_id",
+        "disposition_id",
+        "impact_closure_id",
+        "model_run_id",
+        "reviewer_id",
+        "timestamp"
+      ],
+      "same_source_semantics_reproduce_identity": true,
+      "changed_raw_bytes_rekey_observation": true
+    },
+    "authority_contract": {
+      "definition_only": true,
+      "creates_runtime_authority": false,
+      "creates_extraction_authority": false,
+      "creates_database_authority": false,
+      "creates_writer_execution_authority": false,
+      "creates_serving_authority": false,
+      "creates_release_authority": false,
+      "creates_import_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}
