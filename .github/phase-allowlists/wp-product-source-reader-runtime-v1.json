@@ -1,0 +1,21 @@
+{
+  "phase": "WP-PRODUCT-SOURCE-READER-RUNTIME-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-product-source-reader-runtime-v1.json",
+    "lib/canonical-v2/product-source-reader-compiler.js",
+    "tests/canonical-v2-product-source-reader-compiler.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Pure Product source-reader action compiler. It binds an exact validated Product result to one release-admitted domain source action but performs no source read, query, network, database, UI, rendering, serving, extraction, write, import, activation, production or contract-freeze operation."
+}
