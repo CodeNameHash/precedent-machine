@@ -78,8 +78,8 @@ programme_gate_registry:
       missing_or_post_review_selected_member_effect: OPEN
     bootstrap_compiled_registry_binding:
       source_path: docs/codex-program/bootstrap-acceptance-source.json
-      source_sha256: e2f49b3bacdd962f8ea8b21e76847c3479bdae35236d0b526c87e9e8982f591d
-      closed_validator_executable_set_digest: a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d
+      source_sha256: 5f57b1a9264b4f86e44e6abbe8aa8e070888116c7a1e3f5095123e6379f0acef
+      closed_validator_executable_set_digest: f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec
       authority: ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE
       exact_active_definition_count: 11
       exact_genesis_gate_count: 10
@@ -214,7 +214,7 @@ programme_gate_registry:
       missing_extra_or_digest_mismatched_prompt_effect: INELIGIBLE
     frozen_independence_validator_allowlist:
       validator_key_id: PROGRAMME_GATE_VALIDATOR_2026_07
-      validator_executable_digest: a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d
+      validator_executable_digest: f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec
       validator_configuration_digest: 44c470631cc0d9cd7b48796f25c12addd3a735ca650f5622dd55db5ed8d30d21
     frozen_trust_root_set:
       registry_schema: programme-gate-trusted-public-keys/v1

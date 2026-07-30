@@ -266,8 +266,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "44f65b934f10c53833b67733662c32d5056c252e26f4385ebae73c348b920caf",
-        "enumerator_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d"
+        "enumerator_executable_digest": "25aae6b4e83a3af0a64cfbbfb9b1aa6ad1208d7edade075005fbdf59ea915a99",
+        "enumerator_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec"
       },
       "member_schemas": [
         {
@@ -459,8 +459,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function featureGateOff(evidence) {\n  return evidence.route_feature_enabled === false;\n}",
-          "measurement_executable_digest": "39beaa64c49ffe8ababbf31d421c7f7dbfd63b03f686feb5b13383d4b2ede328",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "2534661797eef53ba1539d5846f1b1d5c7cff98f059e95b07e64cd5597fc3c1e",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -479,8 +479,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function liveRouteZeroCorpusReads(evidence, context) {\n  return sameClosedStringSet(\n    evidence.method_probes.map((probe) => probe.method),\n    MARKET_STATS_METHODS,\n  ) && evidence.method_probes.every((probe) => (\n    probe.member_id === `${probe.method} /api/market-stats`\n    && probe.route_id === '/api/market-stats'\n    && probe.status === 503\n    && probe.error_code === 'MARKET_STATS_DISABLED'\n    && /private/i.test(probe.cache_control)\n    && /no-store/i.test(probe.cache_control)\n    && probe.database_calls === 0\n    && probe.corpus_reads === 0\n    && probe.retry_after === null\n    && probe.code_commit === context.codeCommit\n    && probe.runtime_deployment_id === evidence.runtime_deployment_id\n    && probe.environment === context.environment\n    && probe.observed_at === context.observed_at\n  ));\n}",
-          "measurement_executable_digest": "d2c778a6e3d3a57572f880e3791e1b0d53eb7036ec04fbd6a622d6b6be40cac8",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "1c5219b2010903b163f6d656a292b93a4a5068c1d51753827fbf5a2f0d4c0c75",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -495,8 +495,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function containmentTestPass(evidence, context) {\n  return sameClosedStringSet(\n    evidence.tests.map((entry) => entry.test_id),\n    REQUIRED_CONTAINMENT_TEST_IDS,\n  ) && evidence.tests.every((entry) => (\n    entry.exit_code === 0\n    && entry.code_commit === context.codeCommit\n    && entry.environment === context.environment\n    && Date.parse(entry.completed_at) <= Date.parse(context.observed_at)\n  ));\n}",
-          "measurement_executable_digest": "da23b70565f07b88e3ea1a908e69aa6c5342160397025009b9e8880d52dc1a5d",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "a43382fdbf5790d80786aeeea2db7692a4b4a994cd3b0cd8581e5a220378177d",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -793,8 +793,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "44f65b934f10c53833b67733662c32d5056c252e26f4385ebae73c348b920caf",
-        "enumerator_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d"
+        "enumerator_executable_digest": "25aae6b4e83a3af0a64cfbbfb9b1aa6ad1208d7edade075005fbdf59ea915a99",
+        "enumerator_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec"
       },
       "member_schemas": [
         {
@@ -1013,8 +1013,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function sourceBuiltAndRuntimeRouteInventoriesEqual(evidence) {\n  return sameClosedStringSet(evidence.source_route_ids, evidence.built_route_ids)\n    && sameClosedStringSet(evidence.source_route_ids, evidence.runtime_route_ids);\n}",
-          "measurement_executable_digest": "f8ae816cb7819576e1d04fd9dcb03494067122f50846e67113fba3d1c49f50e2",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "70afe25281827136e7b674b1581ae6064cdfb02da71c7aa5649e7da8a9fe26e0",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -1029,8 +1029,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function everyBroadRouteContained(evidence, context) {\n  return sameClosedStringSet(\n    evidence.source_route_ids,\n    evidence.routes.map((route) => route.member_id),\n  )\n    && evidence.routes.every((route) => (\n      route.source_contained === true\n      && route.built_contained === true\n      && route.runtime_contained === true\n      && route.runtime_status === 503\n      && (\n        route.runtime_error_code === 'ROUTE_CONTAINED'\n        || (route.method === 'HEAD' && route.runtime_error_code === null)\n      )\n      && route.database_calls === 0\n      && route.corpus_reads === 0\n      && route.code_commit === context.codeCommit\n      && route.runtime_deployment_id === evidence.runtime_deployment_id\n      && route.environment === context.environment\n      && route.observed_at === context.observed_at\n    ))\n    && containmentTestPass(evidence, context);\n}",
-          "measurement_executable_digest": "6064e6d30031dfad8bd78b1ac90ff953b53b85cf762294cdbdd9f201bee03312",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "4eb8636bf6af96b15e748ff63cc818bde27dd85b8c6f18ca61f9f9a4d094813c",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -1045,8 +1045,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function zeroBroadNodeFallback(evidence) {\n  return evidence.routes.every((route) => (\n    route.node_corpus_reads === 0\n    && route.legacy_fallback_used === false\n  ));\n}",
-          "measurement_executable_digest": "9e7ec9568f7ad1fde328f55dad150eadb3e98b2fbbaca64e0aa276531b65343c",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "1f56948636518905aef2b46da1292080e1f50629d04c23aafc1c502bc1380f95",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -1153,8 +1153,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "6bd7d0b80cc82cd135ee00c53623940713829800b416dd9f387f04fd469f2cc5",
-        "enumerator_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d"
+        "enumerator_executable_digest": "5a34ee31f56a8aad014c6d8428d803be1c05be77cf7e20fef75903749c55ab01",
+        "enumerator_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec"
       },
       "member_schemas": [
         {
@@ -1259,8 +1259,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function ownerAndPurposeRecordedWithoutSecret(evidence) {\n  return isNonEmptyString(evidence.process_identity_digest)\n    && isNonEmptyString(evidence.owner)\n    && isNonEmptyString(evidence.purpose)\n    && evidence.secret_field_count === 0;\n}",
-          "measurement_executable_digest": "bbb88bcf789b60a01c6ab65192022698db82ecff49d8e855310d318408f3db8e",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "3d460cb96b3ab1fc04be10408cfded818c81583c4b93b4535d47abfa38ee3fdc",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -1283,8 +1283,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function recognisedOrRotationRequired(evidence) {\n  return (\n    evidence.recognition_status === 'RECOGNISED'\n    && evidence.rotation_required === false\n  ) || (\n    evidence.recognition_status === 'UNRECOGNISED'\n    && evidence.rotation_required === true\n    && evidence.rotation_completed === true\n  );\n}",
-          "measurement_executable_digest": "9b41bdf89c58dd5a1f2248e0503d4f536639847f9f0fd06fca32e8098e523789",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "b617942833b74826a84e46d3a30f27234a0805681dc8bf5c7777950f90988aa5",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -1387,8 +1387,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "6bd7d0b80cc82cd135ee00c53623940713829800b416dd9f387f04fd469f2cc5",
-        "enumerator_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d"
+        "enumerator_executable_digest": "5a34ee31f56a8aad014c6d8428d803be1c05be77cf7e20fef75903749c55ab01",
+        "enumerator_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec"
       },
       "member_schemas": [
         {
@@ -1480,8 +1480,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function compromisedCredentialsRevoked(evidence) {\n  return sameClosedStringSet(evidence.compromised_credential_ids, evidence.revoked_ids);\n}",
-          "measurement_executable_digest": "8e1a89a4304d3b47b9854cf62144fb0ed395f321d976b19f3a87fed0508c823b",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "4f78310e6f23571c66e0fcfed7bb248633130b17548cd776ce4feba19a79424b",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -1496,8 +1496,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function replacementActivationVerified(evidence) {\n  return isTimestamp(evidence.replacement_activation_verified_at);\n}",
-          "measurement_executable_digest": "2079e92966a37ddae8e26cdabbb228377dc4443ce889664433075a743560554d",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "bc820456fe140f59dce0cde12c5d68c079f7c045e53767034f35812e12404d55",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -1512,8 +1512,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function noSecretInEvidence(evidence) {\n  return evidence.secret_field_count === 0;\n}",
-          "measurement_executable_digest": "c804a24ef6383283d9068dc8ebc0f032a20891080d11061233ff8d1c803f9423",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "84d70344834b264d55738cba8096817acae228b61d4c4864cb1b84aa2365abe6",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -1633,8 +1633,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "6bd7d0b80cc82cd135ee00c53623940713829800b416dd9f387f04fd469f2cc5",
-        "enumerator_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d"
+        "enumerator_executable_digest": "5a34ee31f56a8aad014c6d8428d803be1c05be77cf7e20fef75903749c55ab01",
+        "enumerator_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec"
       },
       "member_schemas": [
         {
@@ -1894,8 +1894,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function rotationVerifiedOrRecognisedTrafficNaWithBenApproval(evidence, context) {\n  if (\n    evidence.disposition === 'ROTATED'\n    && isTimestamp(evidence.rotation_verified_at)\n    && evidence.zayo_disposition_id === null\n    && evidence.ben_approval_id === null\n  ) return true;\n  if (evidence.disposition !== 'RECOGNISED_TRAFFIC_APPROVED_NA'\n    || evidence.rotation_verified_at !== null\n    || !isDigest(evidence.zayo_disposition_id)\n    || !isDigest(evidence.ben_approval_id)) return false;\n  const zayo = memberFor(\n    context,\n    `zayo:${evidence.zayo_disposition_id}`,\n    'ZayoTrafficDisposition',\n  );\n  const approval = memberFor(\n    context,\n    `approval:${evidence.ben_approval_id}`,\n    'SupabaseSecretNaApproval',\n  );\n  const {\n    approval_id: approvalId,\n    signature: approvalSignature,\n    ...approvalIdentityPayload\n  } = approval || {};\n  void approvalSignature;\n  if (!zayo\n    || !approval\n    || zayo.gate_id !== 'G0_ZAYO_DISPOSITION'\n    || zayo.attestation_source_digest !== evidence.attestation_source_digest\n    || zayo.recognition_status !== 'RECOGNISED'\n    || zayo.rotation_required !== false\n    || zayo.purpose !== 'AUTHORISED_DATABASE_TRAFFIC'\n    || context.domainDigest(\n      'PROGRAMME_GATE_ZAYO_DISPOSITION_ID/V1',\n      zayo,\n    ) !== evidence.zayo_disposition_id\n    || approval.approval_id !== evidence.ben_approval_id\n    || approval.supabase_attestation_source_digest !== evidence.attestation_source_digest\n    || approval.zayo_process_identity_digest !== zayo.process_identity_digest\n    || approval.approved_disposition !== evidence.disposition\n    || approval.approver_identity !== 'BEN_GOODCHILD'\n    || approval.conditions.length !== 0\n    || context.domainDigest(\n      'PROGRAMME_GATE_SUPABASE_SECRET_NA_APPROVAL_ID/V1',\n      approvalIdentityPayload,\n    ) !== approvalId) return false;\n  return signatureIsValid(context, {\n    record: approval,\n    signatureField: 'signature',\n    keyId: approval.approver_key_id,\n    role: 'BEN_APPROVER',\n    domain: 'PROGRAMME_GATE_SUPABASE_SECRET_NA_APPROVAL/V1',\n  });\n}",
-          "measurement_executable_digest": "621c69ffe931f1ba5132037c0c530a8cb5155dd80f5e2dd5c51a1048adecc212",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "e9f1316d3263873a0357f2d5dbf4b3e8504e9ed460748235b815c2edbe74277e",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -1910,8 +1910,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function noSecretInEvidence(evidence) {\n  return evidence.secret_field_count === 0;\n}",
-          "measurement_executable_digest": "ae8ba3bf3adf4e95bde19972e7954dfc61acdbdb6d303cb3183fb1bb05ea219c",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "59eb62e2a2eb93b008d00e5c9b6847223416fcc4875ab9d09ae4084776d12e6d",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -1983,8 +1983,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "4b008d4a4bf1c34ec72984c6847004797deab9d2f09f90370b07ea3bc9d03159",
-        "enumerator_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d"
+        "enumerator_executable_digest": "f68f4d33aaaa5fbe390eef28d3f2fa1f80444170bd9df8a5a9d2ffc47ad66496",
+        "enumerator_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec"
       },
       "member_schemas": [
         {
@@ -2053,8 +2053,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function distinctProjectAndCredentials(evidence) {\n  return evidence.production_project_identity_digest !== evidence.staging_project_identity_digest\n    && evidence.production_credential_identity_digest !== evidence.staging_credential_identity_digest;\n}",
-          "measurement_executable_digest": "d725af79e21002b71d65b1f44fbb070fead070f6c42a5b3b1e3c76955085e25a",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "130f91169f2c8c0b5c5bbe8d215fcf166fed1978e5e5f97843a6f08041053f63",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2069,8 +2069,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function productionDmlDenied(evidence) {\n  return evidence.production_dml_probe === 'DENIED';\n}",
-          "measurement_executable_digest": "a45492bbed3f10003f06d0d9b4c4ef86495a3ff277099b35d8414bc3fa228db5",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "9e16aeb562feef5b439eb9a8761d9a5890f967beded3dba09313afd8810cf1b8",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2085,8 +2085,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function snapshotRestoreOnly(evidence) {\n  return evidence.restore_mode === 'PRODUCTION_SNAPSHOT_ONLY';\n}",
-          "measurement_executable_digest": "5ddcf8af2372aa23328911b3212b4d7e4d83a524bc86f56c43586c3857f780e4",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "3ab1ffb41064cc1fc6498e5384fe8707209b6e7d168ab56fbec695f07e2c7c6d",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -2148,8 +2148,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "4b008d4a4bf1c34ec72984c6847004797deab9d2f09f90370b07ea3bc9d03159",
-        "enumerator_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d"
+        "enumerator_executable_digest": "f68f4d33aaaa5fbe390eef28d3f2fa1f80444170bd9df8a5a9d2ffc47ad66496",
+        "enumerator_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec"
       },
       "member_schemas": [
         {
@@ -2201,8 +2201,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function branchPreviewUsesStagingOnlyCredentials(evidence) {\n  return isNonEmptyString(evidence.preview_deployment_id)\n    && evidence.preview_credential_scope === 'STAGING_ONLY';\n}",
-          "measurement_executable_digest": "ecce641d31bb88cc299697344afd36e902b87065b837dea549ec59f1bcb41327",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "a8693dd90a1cdac89f60a7883282a33ffd62959eac31aeca1db5a6c53daf6d41",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2221,8 +2221,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function productionAliasUnchanged(evidence) {\n  return evidence.production_alias_before === evidence.production_alias_after;\n}",
-          "measurement_executable_digest": "130fa43b25a4e0a42265f035eb887ad6428f51856e2004ff7262cd1c5110d426",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "39bad23848d9500704a3cc340fa742e97c96f6343107fa6f4d081713dc7dab02",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -2451,8 +2451,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "4b008d4a4bf1c34ec72984c6847004797deab9d2f09f90370b07ea3bc9d03159",
-        "enumerator_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d"
+        "enumerator_executable_digest": "f68f4d33aaaa5fbe390eef28d3f2fa1f80444170bd9df8a5a9d2ffc47ad66496",
+        "enumerator_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec"
       },
       "member_schemas": [
         {
@@ -2687,8 +2687,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function completePreviewRouteActionInventory(evidence) {\n  const actions = evidence.preview_route_actions;\n  const source = evidence.source_route_action_inventory;\n  const built = evidence.built_route_action_inventory;\n  const runtime = evidence.runtime_route_action_inventory;\n  const identity = (entry) => `${entry.action_id}\\0${entry.action_class}`;\n  const closedInventory = (inventory) => (\n    Array.isArray(inventory)\n    && inventory.length >= PREVIEW_ACTION_CLASSES.length\n    && new Set(inventory.map((entry) => entry.action_id)).size === inventory.length\n    && inventory.every((entry) => PREVIEW_ACTION_CLASSES.includes(entry.action_class))\n    && PREVIEW_ACTION_CLASSES.every(\n      (actionClass) => inventory.some((entry) => entry.action_class === actionClass),\n    )\n  );\n  return Array.isArray(actions)\n    && new Set(actions.map((entry) => entry.action_id)).size === actions.length\n    && closedInventory(source)\n    && closedInventory(built)\n    && closedInventory(runtime)\n    && exactStringSet(source.map(identity), built.map(identity))\n    && exactStringSet(source.map(identity), runtime.map(identity))\n    && exactStringSet(source.map(identity), actions.map(identity))\n    && evidence.source_route_action_inventory_root === contextlessDomainDigest(\n      'PROGRAMME_GATE_PREVIEW_ROUTE_ACTION_INVENTORY/V1',\n      source,\n    )\n    && evidence.built_route_action_inventory_root === contextlessDomainDigest(\n      'PROGRAMME_GATE_PREVIEW_ROUTE_ACTION_INVENTORY/V1',\n      built,\n    )\n    && evidence.runtime_route_action_inventory_root === contextlessDomainDigest(\n      'PROGRAMME_GATE_PREVIEW_ROUTE_ACTION_INVENTORY/V1',\n      runtime,\n    );\n}",
-          "measurement_executable_digest": "e658f6255563501bd97dc81577a8a907a8d11c69efd3f5df585040a8aa07534e",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "dec8415f656a80aadebf0050c1b22f9b3f021cc673cb5102296e22c1a675db92",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2727,8 +2727,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function unauthenticatedAccessDeniedBeforeAndAfterRestore(evidence) {\n  return completePreviewRouteActionInventory(evidence)\n    && evidence.preview_route_actions.every((entry) => (\n      accessDenied(entry.unauthenticated_before_restore_status)\n      && accessDenied(entry.unauthenticated_after_restore_status)\n    ));\n}",
-          "measurement_executable_digest": "fcf390ac8b6e7b76953a85933d3d3953affc2692782b6e57c9ad4b3c59b8cced",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "6f48e5f25d58e46d870dac7c7039ea7353682dc017af4c740fc08a72f143df6d",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2767,8 +2767,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function authenticatedNonAdminPrivilegedActionsDenied(evidence) {\n  return completePreviewRouteActionInventory(evidence)\n    && evidence.preview_route_actions\n      .filter((entry) => entry.action_class !== 'READ_ONLY_TEST')\n      .every((entry) => accessDenied(entry.authenticated_non_admin_status));\n}",
-          "measurement_executable_digest": "e1988ed15a2e1b19975e366f8afab761c097b4182e9f21f38f5da075a034a4d8",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "e987012ebfafa17198ad123db1d6df7c62001690e25bab9a3ade6de8cf08d7d3",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2807,8 +2807,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function privilegedPreviewActionsDisabled(evidence) {\n  return completePreviewRouteActionInventory(evidence)\n    && evidence.preview_route_actions\n      .filter((entry) => DISABLED_PREVIEW_ACTION_CLASSES.includes(entry.action_class))\n      .every((entry) => (\n        entry.feature_enabled === false\n        && entry.authorised_test_status === null\n      ));\n}",
-          "measurement_executable_digest": "5eae114fab1e1c2a298cb89c84d6ebfe2aeeaf876d4bf0a8007a5f51785fbd1c",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "507141da589a708a6366367d6971db9728359ced5bca8866c45dfbc7f0288bea",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -2847,8 +2847,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function authorisedReadOnlyTestAccessPass(evidence) {\n  return completePreviewRouteActionInventory(evidence)\n    && evidence.preview_route_actions\n      .filter((entry) => entry.action_class === 'READ_ONLY_TEST')\n      .every((entry) => (\n        entry.feature_enabled === true\n        && entry.authorised_test_status >= 200\n        && entry.authorised_test_status < 300\n      ));\n}",
-          "measurement_executable_digest": "5d5217eb9982c548d4a509671bca5b0eebae77104ae59663f3f5386d93e1ebb7",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "d53a2d3bead27844f847352f79a655600560b6186c4ad3d6684bd196fa13ea83",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -2967,8 +2967,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "ad8942fe496b1fda2641a0a69f31de493275ea984b1fb397da1963208c58fcf3",
-        "enumerator_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d"
+        "enumerator_executable_digest": "616e10e9fbcdbb1e922743ba187bf7e311e929c4301386fdec8e07b2125c6336",
+        "enumerator_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec"
       },
       "member_schemas": [
         {
@@ -3796,8 +3796,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function fiveNamedLaneOutcomesRecordedSameRoot(evidence, context) {\n  return reviewSetFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "f8cd24d2522dd5799b3835c84cdb25dcea2850c88ed309c346f988d2bf555b54",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "1b71c6f92cdbc47a7da81cfea8f484bae21406c8daa52ee3e5b8681c4a35469d",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -4016,8 +4016,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function reviewOutputsMatchSignedControllerDigests(evidence, context) {\n  return reviewSetFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "37915166182eac0af9c2941f7a0b34c835392cc67bb767e2c169a99d2dab3c59",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "50e982086145a755961f584d8d0458e5d20d57935d745f5a9f81c594404b9bfb",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -4244,8 +4244,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function eligibleLegalReviewer(evidence, context) {\n  return reviewSetFacts(evidence, context)?.legalReviewerEligible === true;\n}",
-          "measurement_executable_digest": "5f244fa19f941545c5fa73e4438b364ecfbe2b8fec1f05406ec5d872864b1723",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "c3bbd7d4a2b706d0d19e785d8f41041fda8b59adef745d6cc05e7ed1b0c1ed49",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -4464,8 +4464,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function reviewerIndependenceRecomputed(evidence, context) {\n  return reviewSetFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "714cfde16856517705f18231ad146d7648f4ef034c2960e10bd2a8dacea32f7b",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "043d662ae60ca78307ec0c9dd0a3b6348b27db566ef4018817774f57290b9367",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -4684,8 +4684,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function fullReviewPassNotClaimed(evidence, context) {\n  if (evidence?.full_review_pass_claimed !== false) return false;\n  if (evidence?.approval_evidence_id) return benApprovalFacts(evidence, context) !== null;\n  return reviewSetFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "0e34ec3f30d2b11b1bd7cefc83479c13b151cbd92b42b6fafe1ae8301c49aab3",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "f5f94a11473a68f2d784984e342716f9b417879b4a8ff1a244469cccc30b4775",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -4838,8 +4838,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "ad8942fe496b1fda2641a0a69f31de493275ea984b1fb397da1963208c58fcf3",
-        "enumerator_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d"
+        "enumerator_executable_digest": "616e10e9fbcdbb1e922743ba187bf7e311e929c4301386fdec8e07b2125c6336",
+        "enumerator_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec"
       },
       "member_schemas": [
         {
@@ -5140,8 +5140,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function approvedRootAndCommitExact(evidence, context) {\n  return benApprovalFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "b1c4b5bbd097f56c73eeef7c0c7ab32ca756865954b718a9b4f7173f801cf6fb",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "a8022e5535994ace443cab334abb3f3c9e42a729ac1bcdd1e1b4d00517caabd5",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -5216,8 +5216,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function reviewOutcomeSetAcknowledged(evidence, context) {\n  return benApprovalFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "54d764c0cb989cb725dd7bc019780f3d6a38597d7a4b88f63a0d01f9d3cfb183",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "da1277abb1cb75738de784b818e75383870f513f83344d247c7c258b7fab4356",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -5256,8 +5256,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function benIdentityAndSignatureValid(evidence, context) {\n  return benApprovalFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "5fc07189b1d63d225d7aa1bf288b5300c0a6af061c476386be6d5a7f1a8838ff",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "5bb994a2c7466662764d33fb8697867018d526e67f2fcdef9b283b6bd7e68571",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -5324,8 +5324,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function authorisationScopeBounded(evidence, context) {\n  return benApprovalFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "2aac1ed68913eb8ed800626e4dd6aa0d979a9c2265032a2b9c64280b43484adb",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "8826528309a60ffcb11bbe8b43fa6d46e9f78cdb3a00224a19e9407900277db9",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -5352,8 +5352,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function fullReviewPassNotClaimed(evidence, context) {\n  if (evidence?.full_review_pass_claimed !== false) return false;\n  if (evidence?.approval_evidence_id) return benApprovalFacts(evidence, context) !== null;\n  return reviewSetFacts(evidence, context) !== null;\n}",
-          "measurement_executable_digest": "57da502ab505f0494cd69aab9b8519d97e79b4eb40e006340c023d73cd036335",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "8800bfaab2da49cb694a669d0dfde3c2c853b20f59ec3b24cf2aac7b47e6de5a",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
@@ -5525,8 +5525,8 @@
         "ordering_rule": "UTF8_MEMBER_TYPE_THEN_ID",
         "duplicate_effect": "OPEN",
         "missing_or_extra_effect": "OPEN",
-        "enumerator_executable_digest": "cbccdfa0f2a0a623e78b3e448cc7687a5e974e82f59f4e77c95cbd0d491ca1b6",
-        "enumerator_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d"
+        "enumerator_executable_digest": "c7dbd5b1a0b6004bf85d08c8fe6dbfdf167f628bc28b583289c3ae83c0b047c4",
+        "enumerator_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec"
       },
       "member_schemas": [
         {
@@ -9317,8 +9317,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function bundleCompiles(evidence, context) {\n  const members = contractFreezeMembers(evidence, context);\n  const bundle = canonicalContractBundleFacts(context);\n  return Boolean(members)\n    && Boolean(bundle)\n    && contractFreezeAttestationIdentityIsValid(\n      evidence,\n      context,\n      members.attestationIdentity,\n      members.review,\n    )\n    && evidence.specification_root === context.expectedSpecificationRoot\n    && contractAuthorityManifestMatches(evidence, context, members.authorityManifest)\n    && members.compilation.receipt_id === evidence.compilation_receipt_id\n    && members.compilation.contract_bundle_id === evidence.contract_bundle_id\n    && members.compilation.contract_bundle_digest === evidence.contract_bundle_digest\n    && members.compilation.frozen_contract_pair_digest === evidence.frozen_contract_pair_digest\n    && members.compilation.canonical_contract_bundle_member_root === bundle.memberRoot\n    && members.compilation.canonical_contract_bundle_member_count === bundle.records.length\n    && members.compilation.canonical_contract_bundle_required_kind_set_root\n      === bundle.requiredKindSetRoot\n    && members.authorityManifest.canonical_contract_bundle_member_root === bundle.memberRoot\n    && members.authorityManifest.canonical_contract_bundle_member_count\n      === bundle.records.length\n    && members.authorityManifest.canonical_contract_bundle_required_kind_set_root\n      === bundle.requiredKindSetRoot\n    && JSON.stringify(members.review.contract_bundle_members)\n      === JSON.stringify(bundle.projection)\n    && members.compilation.compiler_version === members.authorityManifest.compiler_version\n    && members.compilation.generator_version === members.authorityManifest.generator_version\n    && members.compilation.compile_report_digest\n      === members.authorityManifest.compile_report_digest\n    && members.compilation.cycle_report_digest\n      === members.authorityManifest.cycle_report_digest\n    && members.compilation.drift_report_digest\n      === members.authorityManifest.drift_report_digest\n    && context.domainDigest(\n      'PROGRAMME_GATE_CONTRACT_GENERATED_OUTPUT_SET/V1',\n      members.compilation.generated_outputs,\n    ) === context.domainDigest(\n      'PROGRAMME_GATE_CONTRACT_GENERATED_OUTPUT_SET/V1',\n      members.authorityManifest.generated_outputs,\n    )\n    && members.compilation.compile_errors.length === 0\n    && members.compilation.cycle_errors.length === 0\n    && members.compilation.drift_errors.length === 0\n    && members.compilation.terminal_state === 'PASS'\n    && context.domainDigest(\n      'PROGRAMME_GATE_CONTRACT_COMPILATION_RECEIPT_ID/V1',\n      recordIdentityPayload(members.compilation, 'receipt_id', 'signature'),\n    ) === members.compilation.receipt_id\n    && signatureIsValid(context, {\n      record: members.compilation,\n      signatureField: 'signature',\n      keyId: members.compilation.validator_key_id,\n      role: 'VALIDATOR',\n      domain: 'PROGRAMME_GATE_CONTRACT_COMPILATION_RECEIPT/V1',\n    });\n}",
-          "measurement_executable_digest": "eeab72a0de5cdbbf8c6252f7138f6d3278b171ccde2c159b4aac1a242c85381d",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "3a2868bf707177eb1317de9f82d4403428f29066f89c77c35aef422bb0cc79aa",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -9577,8 +9577,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function semanticAndIdentityDiffReviewed(evidence, context) {\n  const members = contractFreezeMembers(evidence, context);\n  return Boolean(members)\n    && contractFreezeAttestationIdentityIsValid(\n      evidence,\n      context,\n      members.attestationIdentity,\n      members.review,\n    )\n    && contractAuthorityManifestMatches(evidence, context, members.authorityManifest)\n    && members.review.review_id === evidence.semantic_identity_review_id\n    && members.review.contract_bundle_id === evidence.contract_bundle_id\n    && members.review.contract_bundle_digest === evidence.contract_bundle_digest\n    && members.review.frozen_contract_pair_digest === evidence.frozen_contract_pair_digest\n    && members.review.semantic_identity_diff_digest\n      === members.authorityManifest.semantic_identity_diff_digest\n    && contractDiffReviewIsMechanicallyBound(members.review, evidence, context)\n    && members.review.review_scope === 'SEMANTIC_AND_IDENTITY_DIFF'\n    && members.review.review_disposition === 'PASS'\n    && members.review.blocking_finding_count === 0\n    && members.review.blocking_finding_ids.length === 0\n    && (\n      (\n        members.review.reviewer_model_identifier\n          === REVIEW_CONTROLLER_POLICY.exact_model_identifier\n        && members.review.reasoning_level === REVIEW_CONTROLLER_POLICY.reasoning_level\n      )\n      || (\n        REVIEW_CONTROLLER_POLICY.fable_model_identifiers\n          .includes(members.review.reviewer_model_identifier)\n        && members.review.reasoning_level\n          === REVIEW_CONTROLLER_POLICY.fable_reasoning_level\n      )\n    )\n    && members.review.reviewer_eligibility_digest\n      === members.authorityManifest.reviewer_eligibility_set_root\n    && contractReviewerEligibilityIsBound(members.review, context)\n    && contractReviewIndependenceIsValid(members.review, evidence, context)\n    && members.authorityManifest.independent_reviewer_bindings.some((binding) => (\n      binding.reviewer_identity === members.review.reviewer_identity\n      && binding.eligibility_evidence_digest === members.review.reviewer_eligibility_digest\n      && binding.review_disposition_id === members.review.review_id\n    ))\n    && members.review.review_set_root === evidence.specification_root\n    && evidence.legal_semantic_review_disposition_id === members.review.review_id\n    && evidence.identity_review_disposition_id === members.review.review_id\n    && context.domainDigest(\n      'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW_ID/V1',\n      recordIdentityPayload(members.review, 'review_id', 'signature'),\n    ) === members.review.review_id\n    && signatureIsValid(context, {\n      record: members.review,\n      signatureField: 'signature',\n      keyId: members.review.controller_key_id,\n      role: 'REVIEW_CONTROLLER',\n      domain: 'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW/V1',\n    });\n}",
-          "measurement_executable_digest": "b4fab5f63e4e0c6829690b0a5b9e25955b23c3f36a9dc0f352a7db568422ed2f",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "1f344cbcbd92160cdf9636e75b9bb05e7e51ccfaf5dff6b482a7c231caa2ba21",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -9617,8 +9617,8 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function freezeGateApproved(evidence, context) {\n  const members = contractFreezeMembers(evidence, context);\n  return Boolean(members)\n    && contractAuthorityManifestMatches(evidence, context, members.authorityManifest)\n    && members.approval.approval_id === evidence.freeze_gate_approval_id\n    && members.approval.authority_manifest_id\n      === evidence.contract_authority_manifest_id\n    && members.approval.frozen_contract_pair_digest === evidence.frozen_contract_pair_digest\n    && evidence.ben_bundle_approval_evidence_id === members.approval.approval_id\n    && members.approval.approver_identity === 'BEN_GOODCHILD'\n    && members.approval.conditions.length === 0\n    && signatureIsValid(context, {\n      record: members.approval,\n      signatureField: 'signature',\n      keyId: members.approval.approver_key_id,\n      role: 'BEN_APPROVER',\n      domain: 'PROGRAMME_GATE_CONTRACT_FREEZE_APPROVAL/V1',\n    });\n}",
-          "measurement_executable_digest": "abebab0226b7e363bf986d3aeb9bb17b1bdc5855ca2e9d647fb6e66c64ac90a3",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "bec537ac20fc7fc5409e2d7d7a848b1bae7bca50a39a734d145037952a644b57",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         },
@@ -9653,15 +9653,15 @@
           ],
           "measurement_language": "ECMASCRIPT_FUNCTION_SOURCE_V1",
           "measurement_source": "function statusGenerationMatches(evidence, context) {\n  const members = contractFreezeMembers(evidence, context);\n  return Boolean(members)\n    && members.status.specification_root === evidence.specification_root\n    && members.status.code_commit === evidence.code_commit\n    && members.status.environment === evidence.environment\n    && members.status.generation === evidence.status_generation\n    && signatureIsValid(context, {\n      record: members.status,\n      signatureField: 'signature',\n      keyId: members.status.validator_key_id,\n      role: 'STATUS_PUBLISHER',\n      domain: 'PROGRAMME_GATE_STATUS/V2',\n    })\n    && context.domainDigest(\n      'PROGRAMME_GATE_STATUS_ARTEFACT_PAYLOAD/V2',\n      members.status,\n    ) === evidence.status_payload_digest;\n}",
-          "measurement_executable_digest": "f22c6deda920728b222b4e6be88b4f07119555611feca511a67717059429d341",
-          "measurement_transitive_source_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+          "measurement_executable_digest": "15982f861c22f4d822ea2637b90cc2cd346021fa00c229adc0bddc6794173e74",
+          "measurement_transitive_source_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
           "comparison_operator": "EQUALS",
           "expected_typed_value": true
         }
       ]
     }
   ],
-  "acceptance_executable_closure_digest": "a5f090180cfe0d267eaefbd82414ba8581bfcffdff7a38877086c55c034b9a3d",
+  "acceptance_executable_closure_digest": "f690fd3f05dd802e9abb823d8b861b905a7b2c0a91df00d3748cb4fe51afe2ec",
   "validator_executable_files": [
     "lib/broad-corpus-containment.js",
     "lib/canonical-v2/canonical-bytes.js",
@@ -9709,7 +9709,7 @@
     "lib/query-containment.js",
     "lib/service-client-route-actions.js"
   ],
-  "runtime_source_set_digest": "4e3e6770bf542d3970266a3f4ec6e779ab09c7f8d3617b236dcdccf0aea94339",
+  "runtime_source_set_digest": "9a115d167b1705f1e1c45339460055093a97afb387b6b8d1653d448098f414d2",
   "local_dependency_closure": {
     "resolver": "STATIC_RELATIVE_REQUIRE_IMPORT_EXPORT/V1",
     "seed_paths": [
@@ -10035,9 +10035,9 @@
     },
     {
       "path": "lib/programme-gates/test-executable-registry.js",
-      "byte_length": 5055,
-      "sha256": "5a4bc559c274683d111307868ddd94b7f946a532fbfb9e57ed17d29d8337f74e",
-      "utf8_source": "const crypto = require('node:crypto');\nconst fs = require('node:fs');\nconst path = require('node:path');\n\nconst TEST_EXECUTABLE_SET_DOMAIN = 'PROGRAMME_GATE_TEST_EXECUTABLE_SET/V1';\nconst ADVERSARIAL_SOURCE_PATH = path.resolve(\n  __dirname,\n  '../../docs/codex-program/adversarial-tests.md',\n);\nconst UNIMPLEMENTED_EXECUTABLE_FILES = Object.freeze([\n  'scripts/run-unimplemented-adversarial-test.mjs',\n]);\nconst UNIMPLEMENTED_EXECUTABLE_DIGEST =\n  'f1d8e5796856f8db729ae5a6f65d5cac5538175dd6b88ec1559d92f200ae7572';\nconst MANDATORY_ADVERSARIAL_TEST_IDS = Object.freeze(\n  [...fs.readFileSync(ADVERSARIAL_SOURCE_PATH, 'utf8').matchAll(/^- `([^`]+)`/gm)]\n    .map((match) => match[1]),\n);\nif (MANDATORY_ADVERSARIAL_TEST_IDS.length !== 289\n  || new Set(MANDATORY_ADVERSARIAL_TEST_IDS).size !== 289\n  || crypto.createHash('sha256')\n    .update(`${MANDATORY_ADVERSARIAL_TEST_IDS.join('\\n')}\\n`)\n    .digest('hex') !== 'a03e2ac797ce941f1b04f82b30be78eb183ab5f26bf24c46b34046eef62b16a8') {\n  throw new Error('mandatory adversarial test identifier universe changed');\n}\n\nconst IMPLEMENTED_TEST_EXECUTABLE_FILES = Object.freeze({\n  'P0-ROUTE-01': Object.freeze([\n    'tests/query-containment.test.js',\n    'tests/broad-corpus-containment.test.js',\n    'tests/service-client-route-actions.test.js',\n  ]),\n  'GATE-01': Object.freeze([\n    'tests/programme-gates-schema-registry.test.js',\n    'tests/programme-gates/g0-signer-workflow.spec.js',\n    'tests/programme-gates/isolation-evidence.spec.js',\n    'tests/programme-gates/predicates.spec.js',\n    'tests/programme-gates/publication-executor.spec.js',\n    'tests/programme-gates/publication.spec.js',\n    'tests/programme-gates/security-disposition-signing.spec.js',\n    'tests/programme-gates/security-dispositions.spec.js',\n    'tests/programme-gates/validator-executable.spec.js',\n    'tests/programme-gates/validator.spec.js',\n  ]),\n  'GATE-BOOTSTRAP-01': Object.freeze([\n    'tests/programme-gates/bootstrap-acceptance-source.spec.js',\n  ]),\n  'DEPLOY-CUTOVER-01': Object.freeze([\n    'tests/programme-gates/isolation-evidence.spec.js',\n    'tests/canonical-v2-staging-preview-access.test.js',\n    'tests/canonical-v2-staging-runtime.test.js',\n  ]),\n  'PREVIEW-AUTH-01': Object.freeze([\n    'tests/canonical-v2-staging-preview-access.test.js',\n  ]),\n  'REVIEW-CONTEXT-01': Object.freeze([\n    'tests/programme-gates/review-artifact.spec.js',\n    'tests/programme-gates/review-evidence.spec.js',\n    'tests/programme-gates/review-readiness-signing.spec.js',\n    'tests/programme-gates/g0-status-readiness.spec.js',\n  ]),\n  'CONTRACT-01': Object.freeze([\n    'tests/programme-gates/contract-freeze-predicates.spec.js',\n    'tests/programme-gates/predicates.spec.js',\n    'tests/programme-gates/validator.spec.js',\n  ]),\n  'VERTICAL-SLICE-01': Object.freeze([\n    'tests/programme-gates/process-vertical-slice-registration.spec.js',\n    'tests/programme-gates-schema-registry.test.js',\n  ]),\n});\n\nconst IMPLEMENTED_TEST_EXECUTABLE_DIGESTS = Object.freeze({\n  'P0-ROUTE-01': '73e7b2f1031fc7a9a389a452c4ac73fee81c11c3ecafdf9885595689f393a7b2',\n  'GATE-01': 'ab715a676a6bd2f7cb72ccb24e6fe320680bb4ed73c99a8be8e8c85befbeede0',\n  'GATE-BOOTSTRAP-01': '9d9ffaaa48978955374fbdeac4d5eb495d269cc10606607535b21deb6b302ac7',\n  'DEPLOY-CUTOVER-01': '53be6cb521df070c63974ddc1a75befed4ba7619975a3ce6d7b8cc228caf17ed',\n  'PREVIEW-AUTH-01': '727809074a09e2617f67abf710a8b171873fce9c821556fa20311de97762037f',\n  'REVIEW-CONTEXT-01': 'd077e51de06d60dbb45713e86205c747c9d3f567b5f62dfffe165dff4421eb0b',\n  'CONTRACT-01': '4f1665712337cd65af0db84dbb64585bb422be64a5554b4b190be57303dbd0d2',\n  'VERTICAL-SLICE-01': 'a1fe8b73342ddae48de6dfde2c5f79e6d3fc4210c35f3d881f63042b14d6814b',\n});\n\nconst TEST_EXECUTABLE_FILES = Object.freeze(Object.fromEntries(\n  MANDATORY_ADVERSARIAL_TEST_IDS.map((testId) => [\n    testId,\n    IMPLEMENTED_TEST_EXECUTABLE_FILES[testId] || UNIMPLEMENTED_EXECUTABLE_FILES,\n  ]),\n));\n\nconst TEST_EXECUTABLE_DIGESTS = Object.freeze(Object.fromEntries(\n  MANDATORY_ADVERSARIAL_TEST_IDS.map((testId) => [\n    testId,\n    IMPLEMENTED_TEST_EXECUTABLE_DIGESTS[testId] || UNIMPLEMENTED_EXECUTABLE_DIGEST,\n  ]),\n));\n\nfunction testExecutableState(testId) {\n  if (!Object.hasOwn(TEST_EXECUTABLE_FILES, testId)) {\n    throw new Error(`unregistered programme-gate test ID: ${testId}`);\n  }\n  return Object.hasOwn(IMPLEMENTED_TEST_EXECUTABLE_FILES, testId)\n    ? 'IMPLEMENTED'\n    : 'BOUND_FAIL_CLOSED_UNIMPLEMENTED';\n}\n\nfunction testExecutableFiles(testId) {\n  const files = TEST_EXECUTABLE_FILES[testId];\n  if (!files) throw new Error(`unregistered programme-gate test ID: ${testId}`);\n  return files;\n}\n\nfunction expectedTestExecutableDigest(testId) {\n  const digest = TEST_EXECUTABLE_DIGESTS[testId];\n  if (!digest) throw new Error(`unregistered programme-gate test ID: ${testId}`);\n  return digest;\n}\n\nmodule.exports = {\n  TEST_EXECUTABLE_DIGESTS,\n  TEST_EXECUTABLE_FILES,\n  TEST_EXECUTABLE_SET_DOMAIN,\n  MANDATORY_ADVERSARIAL_TEST_IDS,\n  expectedTestExecutableDigest,\n  testExecutableState,\n  testExecutableFiles,\n};\n"
+      "byte_length": 5115,
+      "sha256": "21388896ee27e3af386b3953a5cd6e9a2f5b5efcae7113599e30a200035fe871",
+      "utf8_source": "const crypto = require('node:crypto');\nconst fs = require('node:fs');\nconst path = require('node:path');\n\nconst TEST_EXECUTABLE_SET_DOMAIN = 'PROGRAMME_GATE_TEST_EXECUTABLE_SET/V1';\nconst ADVERSARIAL_SOURCE_PATH = path.resolve(\n  __dirname,\n  '../../docs/codex-program/adversarial-tests.md',\n);\nconst UNIMPLEMENTED_EXECUTABLE_FILES = Object.freeze([\n  'scripts/run-unimplemented-adversarial-test.mjs',\n]);\nconst UNIMPLEMENTED_EXECUTABLE_DIGEST =\n  'f1d8e5796856f8db729ae5a6f65d5cac5538175dd6b88ec1559d92f200ae7572';\nconst MANDATORY_ADVERSARIAL_TEST_IDS = Object.freeze(\n  [...fs.readFileSync(ADVERSARIAL_SOURCE_PATH, 'utf8').matchAll(/^- `([^`]+)`/gm)]\n    .map((match) => match[1]),\n);\nif (MANDATORY_ADVERSARIAL_TEST_IDS.length !== 289\n  || new Set(MANDATORY_ADVERSARIAL_TEST_IDS).size !== 289\n  || crypto.createHash('sha256')\n    .update(`${MANDATORY_ADVERSARIAL_TEST_IDS.join('\\n')}\\n`)\n    .digest('hex') !== 'a03e2ac797ce941f1b04f82b30be78eb183ab5f26bf24c46b34046eef62b16a8') {\n  throw new Error('mandatory adversarial test identifier universe changed');\n}\n\nconst IMPLEMENTED_TEST_EXECUTABLE_FILES = Object.freeze({\n  'P0-ROUTE-01': Object.freeze([\n    'tests/query-containment.test.js',\n    'tests/broad-corpus-containment.test.js',\n    'tests/service-client-route-actions.test.js',\n  ]),\n  'GATE-01': Object.freeze([\n    'tests/programme-gates-schema-registry.test.js',\n    'tests/programme-gates/g0-signer-workflow.spec.js',\n    'tests/programme-gates/isolation-evidence.spec.js',\n    'tests/programme-gates/predicates.spec.js',\n    'tests/programme-gates/publication-executor.spec.js',\n    'tests/programme-gates/publication.spec.js',\n    'tests/programme-gates/security-disposition-signing.spec.js',\n    'tests/programme-gates/security-dispositions.spec.js',\n    'tests/programme-gates/validator-executable.spec.js',\n    'tests/programme-gates/validator.spec.js',\n  ]),\n  'GATE-BOOTSTRAP-01': Object.freeze([\n    'tests/programme-gates/bootstrap-acceptance-source.spec.js',\n  ]),\n  'DEPLOY-CUTOVER-01': Object.freeze([\n    'tests/programme-gates/isolation-evidence.spec.js',\n    'tests/canonical-v2-staging-preview-access.test.js',\n    'tests/canonical-v2-staging-runtime.test.js',\n  ]),\n  'PREVIEW-AUTH-01': Object.freeze([\n    'tests/canonical-v2-staging-preview-access.test.js',\n  ]),\n  'REVIEW-CONTEXT-01': Object.freeze([\n    'tests/programme-gates/review-artifact.spec.js',\n    'tests/programme-gates/review-evidence.spec.js',\n    'tests/programme-gates/review-readiness-signing.spec.js',\n    'tests/programme-gates/g0-status-readiness.spec.js',\n  ]),\n  'CONTRACT-01': Object.freeze([\n    'tests/p1-contract-freeze-review-registration.test.js',\n    'tests/programme-gates/contract-freeze-predicates.spec.js',\n    'tests/programme-gates/predicates.spec.js',\n    'tests/programme-gates/validator.spec.js',\n  ]),\n  'VERTICAL-SLICE-01': Object.freeze([\n    'tests/programme-gates/process-vertical-slice-registration.spec.js',\n    'tests/programme-gates-schema-registry.test.js',\n  ]),\n});\n\nconst IMPLEMENTED_TEST_EXECUTABLE_DIGESTS = Object.freeze({\n  'P0-ROUTE-01': '73e7b2f1031fc7a9a389a452c4ac73fee81c11c3ecafdf9885595689f393a7b2',\n  'GATE-01': 'ab715a676a6bd2f7cb72ccb24e6fe320680bb4ed73c99a8be8e8c85befbeede0',\n  'GATE-BOOTSTRAP-01': '9d9ffaaa48978955374fbdeac4d5eb495d269cc10606607535b21deb6b302ac7',\n  'DEPLOY-CUTOVER-01': '53be6cb521df070c63974ddc1a75befed4ba7619975a3ce6d7b8cc228caf17ed',\n  'PREVIEW-AUTH-01': '727809074a09e2617f67abf710a8b171873fce9c821556fa20311de97762037f',\n  'REVIEW-CONTEXT-01': 'd077e51de06d60dbb45713e86205c747c9d3f567b5f62dfffe165dff4421eb0b',\n  'CONTRACT-01': '91a2be749fee09d5b3dbbdf22cc09cefd0635d3eb15a0763d688db00788b59f5',\n  'VERTICAL-SLICE-01': 'a1fe8b73342ddae48de6dfde2c5f79e6d3fc4210c35f3d881f63042b14d6814b',\n});\n\nconst TEST_EXECUTABLE_FILES = Object.freeze(Object.fromEntries(\n  MANDATORY_ADVERSARIAL_TEST_IDS.map((testId) => [\n    testId,\n    IMPLEMENTED_TEST_EXECUTABLE_FILES[testId] || UNIMPLEMENTED_EXECUTABLE_FILES,\n  ]),\n));\n\nconst TEST_EXECUTABLE_DIGESTS = Object.freeze(Object.fromEntries(\n  MANDATORY_ADVERSARIAL_TEST_IDS.map((testId) => [\n    testId,\n    IMPLEMENTED_TEST_EXECUTABLE_DIGESTS[testId] || UNIMPLEMENTED_EXECUTABLE_DIGEST,\n  ]),\n));\n\nfunction testExecutableState(testId) {\n  if (!Object.hasOwn(TEST_EXECUTABLE_FILES, testId)) {\n    throw new Error(`unregistered programme-gate test ID: ${testId}`);\n  }\n  return Object.hasOwn(IMPLEMENTED_TEST_EXECUTABLE_FILES, testId)\n    ? 'IMPLEMENTED'\n    : 'BOUND_FAIL_CLOSED_UNIMPLEMENTED';\n}\n\nfunction testExecutableFiles(testId) {\n  const files = TEST_EXECUTABLE_FILES[testId];\n  if (!files) throw new Error(`unregistered programme-gate test ID: ${testId}`);\n  return files;\n}\n\nfunction expectedTestExecutableDigest(testId) {\n  const digest = TEST_EXECUTABLE_DIGESTS[testId];\n  if (!digest) throw new Error(`unregistered programme-gate test ID: ${testId}`);\n  return digest;\n}\n\nmodule.exports = {\n  TEST_EXECUTABLE_DIGESTS,\n  TEST_EXECUTABLE_FILES,\n  TEST_EXECUTABLE_SET_DOMAIN,\n  MANDATORY_ADVERSARIAL_TEST_IDS,\n  expectedTestExecutableDigest,\n  testExecutableState,\n  testExecutableFiles,\n};\n"
     },
     {
       "path": "lib/programme-gates/test-execution-attestation.js",
