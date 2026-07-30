@@ -1,0 +1,22 @@
+{
+  "phase": "WP-PRODUCT-RESULT-ACTION-COMPILERS-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-product-result-action-compilers-v1.json",
+    "lib/canonical-v2/product-citation-share-compiler.js",
+    "lib/canonical-v2/product-selected-result-export-compiler.js",
+    "tests/canonical-v2-product-result-action-compilers.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Pure Product citation, copy, share-reference and selected-result export compilers. They bind exact validated Product results and releases but perform no source read, query, network, database, UI, rendering, serving, export delivery, write, import, activation, production or contract-freeze operation."
+}
