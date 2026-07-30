@@ -42,6 +42,7 @@ export default function QueryLaunchBox({
   onDealFilterValuesChange,
   onRequestDealPick,
   pickSelection = [],
+  processPilotUiEnabled = false,
 }) {
   const router = useRouter();
   const [deals, setDeals] = useState(dealsProp || null);
@@ -237,6 +238,10 @@ export default function QueryLaunchBox({
           ))}
         </div>
 
+        {processPilotUiEnabled && (
+          <p className="qlbPilotLink"><a href="/query/process/pilot">Open the Process research preview fixture</a></p>
+        )}
+
         <div className="qlbFeedback" aria-live="polite">
           {interpretation?.status === 'needs_clarification' && (
             <div className="qlbClarify">
@@ -359,6 +364,8 @@ export default function QueryLaunchBox({
         .qlbExamples > span { font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: 9px; }
         .qlbExamples button { border: 0; border-bottom: 1px solid #CFCFCF; background: transparent; padding: 2px 0; color: var(--ink-light, #6B6B6B); font-family: var(--mtx-sans); font-size: 11px; cursor: pointer; text-align: left; }
         .qlbExamples button:hover { color: var(--ink, #1F1F1F); border-color: var(--accent, #9A3D57); }
+        .qlbPilotLink { margin: 12px 0 0; font-size: 12px; }
+        .qlbPilotLink a { color: var(--ink, #1F1F1F); font-weight: 650; }
         .qlbFeedback:empty { display: none; }
         .qlbClarify { margin-top: 16px; border-left: 3px solid var(--accent, #9A3D57); background: var(--paper-2, #F6F6F6); padding: 13px 14px; }
         .qlbClarify b { font-size: 13px; color: var(--ink, #1F1F1F); }

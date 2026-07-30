@@ -13,9 +13,17 @@ import {
   validateHomeSearchSnapshot,
 } from '../lib/home-search';
 const { getHomeStaticProps } = require('../lib/home-static-props');
+const { isCanonicalV2ProcessPilotUiEnabled } = require('../lib/canonical-v2/feature-flags');
 
 export async function getStaticProps() {
-  return getHomeStaticProps();
+  const result = await getHomeStaticProps();
+  return {
+    ...result,
+    props: {
+      ...result.props,
+      processPilotUiEnabled: isCanonicalV2ProcessPilotUiEnabled(),
+    },
+  };
 }
 
 HomePage.noLayout = true;
@@ -158,7 +166,7 @@ function ColumnHeaderPopover({ col, sort, onSort, activeFilters, options, onTogg
   );
 }
 
-export default function HomePage({ initialData }) {
+export default function HomePage({ initialData, processPilotUiEnabled = false }) {
   const router = useRouter();
   // F3: seed from the ISR snapshot (getStaticProps) so first paint already
   // has the deal table, instead of starting blank and waiting on the
@@ -447,6 +455,7 @@ export default function HomePage({ initialData }) {
                     onDealFilterValuesChange={setDealFilterValues}
                     onRequestDealPick={handleRequestDealPick}
                     pickSelection={pickSelection}
+                    processPilotUiEnabled={processPilotUiEnabled}
                   />
                   {pickMode && (
                     <div className="pickBanner" onClick={(e) => e.stopPropagation()}>
@@ -458,6 +467,13 @@ export default function HomePage({ initialData }) {
                     </div>
                   )}
                 </div>}
+
+                {processPilotUiEnabled && (
+                  <aside className="pilotLaunch" aria-label="Process research preview">
+                    <span>Preview fixture</span>
+                    <Link href="/query/process/pilot">Open Process research pilot</Link>
+                  </aside>
+                )}
 
                 {/* Deal list — its own surface with its own header band, in
                     the same voice as the review page's grey title bars. */}
@@ -595,6 +611,9 @@ export default function HomePage({ initialData }) {
            title band, with clear air between them (Ben: "need a better
            visual separation into the deal list"). */
         .querySurface { border: 1px solid var(--line); background: #fff; }
+        .pilotLaunch { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; border: 1px solid var(--line); background: var(--paper-2); padding: 10px 14px; font-size: 12px; }
+        .pilotLaunch span { color: var(--ink-light); font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+        .pilotLaunch :global(a) { color: var(--ink); font-weight: 650; text-decoration: underline; }
         .listSurface { border: 1px solid var(--line); background: #fff; margin-top: 26px; }
         .listTitleBar { display: flex; align-items: baseline; gap: 10px; padding: 7px 14px; border-bottom: 1px solid var(--line); background: var(--paper-2, #F6F6F6); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink); font-family: var(--mtx-sans); }
         .listTitleMain { flex: 0 0 auto; }

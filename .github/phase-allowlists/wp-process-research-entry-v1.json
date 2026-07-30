@@ -1,0 +1,25 @@
+{
+  "phase": "WP-PROCESS-RESEARCH-ENTRY-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-research-entry-v1.json",
+    "lib/canonical-v2/feature-flags.js",
+    "__fixtures__/canonical-v2/process-research-pilot.js",
+    "pages/query/process/pilot.js",
+    "pages/index.js",
+    "components/query/QueryLaunchBox.jsx",
+    "tests/canonical-v2-process-research-entry.test.js",
+    "tests/query-containment.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Preview-only Process research fixture entry. It can render one immutable synthetic Product-shaped payload behind an explicit preview flag. It does not execute a query, read a source, extract data, access a database, serve corpus data, write data, or grant authority."
+}

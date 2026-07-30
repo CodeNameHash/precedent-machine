@@ -94,10 +94,24 @@ test('Query launch controls and saved-query links are unreachable', () => {
   assert.match(home, /const QUERY_UI_CONTAINED = true/);
   assert.match(home, /!QUERY_UI_CONTAINED && <div className="querySurface">/);
   assert.match(home, /QUERY_UI_CONTAINED \? null : matchFeatureVocab/);
+  assert.match(home, /processPilotUiEnabled && \(/);
+  assert.match(home, /href="\/query\/process\/pilot"/);
   assert.match(library, /const QUERY_UI_CONTAINED = true/);
   assert.match(library, /Saved queries are unavailable while Query is contained/);
   assert.match(bridge, /const QUERY_UI_CONTAINED = true/);
   assert.match(bridge, /QUERY_UI_CONTAINED \|\| !mounted/);
+});
+
+test('the bounded Process pilot is not a legacy Query route and production cannot expose it', () => {
+  assert.equal(QUERY_CONTAINED_ROUTES.includes('/query/process/pilot'), false);
+  const pilot = source('pages/query/process/pilot.js');
+  const flags = source('lib/canonical-v2/feature-flags.js');
+  assert.match(pilot, /export function getServerSideProps\(\)/);
+  assert.match(pilot, /if \(!isCanonicalV2ProcessPilotUiEnabled\(\)\)/);
+  assert.match(pilot, /destination: '\/'/);
+  assert.match(flags, /CANONICAL_V2_PROCESS_PILOT_UI_ENABLED/);
+  assert.match(flags, /env\.VERCEL_ENV === 'preview'/);
+  assert.doesNotMatch(pilot, /\/api\/query\/run|\/api\/canonical-v2\/query|\bfetch\s*\(/);
 });
 
 test('every Query page redirects before its launch UI can render', () => {
