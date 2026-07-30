@@ -155,6 +155,28 @@ function fixture(mutator = () => {}) {
   return root;
 }
 
+function agreementNavigationCompilerFixture(mutator) {
+  const sourceRoot = path.join(
+    __dirname,
+    '../contracts/canonical-v2/successor',
+  );
+  const sourcePaths = [
+    'agreement/navigation/qxo-capitalisation-navigation-definition-catalogue.v1.json',
+    'agreement/predicates/qxo-capitalisation-representation-predicate-catalogue.v1.json',
+    'agreement/result-definitions/target-capitalisation-bring-down.v3.json',
+    'agreement/serving-exact-detail-action-definitions/result-composition-evidence.v1.json',
+  ];
+  return fixture((state) => {
+    for (const relativePath of sourcePaths) {
+      state.valuesByPath[relativePath] = JSON.parse(
+        fs.readFileSync(path.join(sourceRoot, relativePath), 'utf8'),
+      );
+    }
+    mutator(state.valuesByPath);
+    refreshManifest(state);
+  });
+}
+
 function noShopSchemaFixture(mutator = () => {}) {
   return fixture((state) => {
     const value = member(
@@ -289,6 +311,34 @@ test('compiles a closed authored JSON set twice to byte-identical input identity
   assert.equal(Object.hasOwn(first, 'canonical_contract_bundle'), false);
   assert.equal(Object.isFrozen(first), true);
   assert.equal(Object.isFrozen(first.authored_members[0].canonical_value), true);
+});
+
+test('root compiler rejects Agreement predicate semantic drift', (t) => {
+  const root = agreementNavigationCompilerFixture((valuesByPath) => {
+    valuesByPath[
+      'agreement/predicates/qxo-capitalisation-representation-predicate-catalogue.v1.json'
+    ].definition.invented_authority = true;
+  });
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+
+  assert.throws(
+    () => compileCanonicalContractInput({ root_directory: root }),
+    expectCode('INVALID_AGREEMENT_REPRESENTATION_PREDICATE_INPUT'),
+  );
+});
+
+test('root compiler rejects Agreement navigation semantic drift', (t) => {
+  const root = agreementNavigationCompilerFixture((valuesByPath) => {
+    valuesByPath[
+      'agreement/navigation/qxo-capitalisation-navigation-definition-catalogue.v1.json'
+    ].definition.invented_authority = true;
+  });
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+
+  assert.throws(
+    () => compileCanonicalContractInput({ root_directory: root }),
+    expectCode('INVALID_AGREEMENT_NAVIGATION_CATALOGUE_INPUT'),
+  );
 });
 
 test('accepts a valid no-shop semantic schema input envelope', (t) => {
