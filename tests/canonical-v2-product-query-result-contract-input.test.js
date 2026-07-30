@@ -25,6 +25,10 @@ const PROCESS_RESULT_SET_ADAPTER_PATH = path.join(
   ROOT,
   'product/query/process-phrasebook-product-result-set-adapter.v1.json',
 );
+const QXO_ADAPTER_PATH = path.join(
+  ROOT,
+  'product/query/qxo-capitalisation-product-result-adapter.v1.json',
+);
 const QXO_F28_ADAPTER_PATH = path.join(
   ROOT,
   'product/query/qxo-capitalisation-f28-product-result-adapter.v1.json',
@@ -50,6 +54,10 @@ function loadProcessResultSetAdapter() {
   return loadPath(PROCESS_RESULT_SET_ADAPTER_PATH);
 }
 
+function loadQxoAdapter() {
+  return loadPath(QXO_ADAPTER_PATH);
+}
+
 function loadQxoF28Adapter() {
   return loadPath(QXO_F28_ADAPTER_PATH);
 }
@@ -59,6 +67,7 @@ function loadMembers() {
     loadProcessAdapter(),
     loadMember(),
     loadProcessResultSetAdapter(),
+    loadQxoAdapter(),
     loadQxoF28Adapter(),
   ];
 }
@@ -777,6 +786,7 @@ test('grants no runtime, data, write, serving or production authority', () => {
     CONTRACT_PATH,
     PROCESS_ADAPTER_PATH,
     PROCESS_RESULT_SET_ADAPTER_PATH,
+    QXO_ADAPTER_PATH,
     QXO_F28_ADAPTER_PATH,
     path.join(
       __dirname,
