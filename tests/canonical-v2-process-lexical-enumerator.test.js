@@ -162,6 +162,13 @@ test('fails closed for hostile source records, duplicate candidates and reported
     })),
     { code: 'INVALID_PROCESS_LEXICAL_ENUMERATION_LIMITS' },
   );
+
+  assert.throws(
+    () => enumerateProcessLexicalCandidates(input({
+      source_units: [sourceUnit({ lexical_observations: [] })],
+    })),
+    { code: 'INVALID_PROCESS_LEXICAL_SOURCE_UNIT' },
+  );
 });
 
 test('rejects duplicate scope residual record keys', () => {

@@ -64,6 +64,7 @@ test('enumerates deterministic semantic candidates from caller-provided frozen s
   );
   assert.equal(first.candidates[0].schema_version, 'PROCESS_SEMANTIC_CANDIDATE/V1');
   assert.equal(first.candidates[0].scope_receipt_id, digest('scope-receipt'));
+  assert.equal(first.rejections[0].schema_version, 'PROCESS_SEMANTIC_OUTCOME/V1');
   assert.equal(first.rejections[0].reason_code, 'UNSUPPORTED_SEMANTIC_MATERIAL');
   assert.equal(first.rejections[0].outcome_kind, 'REJECTION');
   assert.equal(Object.isFrozen(first), true);

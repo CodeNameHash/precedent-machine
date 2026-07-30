@@ -149,6 +149,13 @@ test('rejects duplicate, substituted and hostile source records', () => {
     () => buildProcessCandidateGraph(substituted),
     { code: 'INVALID_PROCESS_CANDIDATE_ENUMERATION' },
   );
+
+  const emptyOutcomeSlot = input();
+  emptyOutcomeSlot.semantic_enumeration.rejections[0].slot_key = '';
+  assert.throws(
+    () => buildProcessCandidateGraph(emptyOutcomeSlot),
+    { code: 'INVALID_PROCESS_CANDIDATE_ENUMERATION' },
+  );
 });
 
 test('retains a same-key cross-enumerator source conflict as disagreement', () => {
@@ -222,6 +229,21 @@ test('accepts the actual frozen scope, semantic and lexical pure-runtime chain',
       },
       semantic_payload: { predicate_key: 'RESTRICTED_ACTION', polarity: 'PRESENT' },
       disposition_code: null,
+    }, {
+      source_unit_id: digest('semantic-rejected-unit'),
+      unit_state: 'REJECTED',
+      slot_key: null,
+      evidence: {
+        source_document_identity: digest('semantic-rejected-document'),
+        source_revision_id: digest('semantic-rejected-revision'),
+        document_hash: digest('semantic-rejected-hash'),
+        start_utf8_byte: 6,
+        end_utf8_byte: 11,
+        exact_text_digest: sha256Hex('other'),
+        evidence_role_key: 'AGREEMENT_TEXT',
+      },
+      semantic_payload: null,
+      disposition_code: 'UNSUPPORTED_SEMANTIC_MATERIAL',
     }],
     limits: { max_source_units: 2, max_candidates: 2 },
   });
@@ -264,6 +286,13 @@ test('accepts the actual frozen scope, semantic and lexical pure-runtime chain',
 
   assert.equal(graph.scope_receipt_id, scope.scope_receipt_id);
   assert.equal(graph.candidate_nodes.length, 2);
-  assert.equal(graph.retained_records.length, 1);
-  assert.equal(graph.retained_records[0].outcome_kind, 'SCOPE_RESIDUAL');
+  assert.equal(graph.retained_records.length, 2);
+  assert.deepEqual(
+    graph.retained_records.map((record) => record.schema_version).sort(),
+    ['PROCESS_LEXICAL_OUTCOME/V1', 'PROCESS_SEMANTIC_OUTCOME/V1'],
+  );
+  assert.equal(
+    graph.retained_records.some((record) => record.outcome_kind === 'SCOPE_RESIDUAL'),
+    true,
+  );
 });
