@@ -1,0 +1,21 @@
+{
+  "phase": "WP-PROCESS-LEXICAL-ENUMERATOR-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-lexical-enumerator-v1.json",
+    "lib/canonical-v2/process-lexical-enumerator.js",
+    "tests/canonical-v2-process-lexical-enumerator.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Creates only a pure lexical candidate enumerator for caller-provided synthetic source units and frozen expected occurrence slots. It preserves source identities, exact UTF-8 byte intervals and lexical evidence. It retains ambiguous and unsupported records as residuals. It grants no source acquisition, semantic enumeration, canonical write, admission, writer, serving, release, import, activation, database or production authority."
+}
