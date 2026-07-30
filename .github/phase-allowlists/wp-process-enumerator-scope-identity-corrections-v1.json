@@ -1,0 +1,25 @@
+{
+  "phase": "WP-PROCESS-ENUMERATOR-SCOPE-IDENTITY-CORRECTIONS-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-enumerator-scope-identity-corrections-v1.json",
+    "lib/canonical-v2/process-lexical-enumerator.js",
+    "lib/canonical-v2/process-semantic-enumerator.js",
+    "tests/canonical-v2-process-candidate-graph.test.js",
+    "tests/canonical-v2-process-lexical-enumerator.test.js",
+    "tests/canonical-v2-process-semantic-enumerator.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Fail-closed Process scope-receipt identity and byte-zero evidence corrections only. The lexical and semantic enumerators rederive the complete validated scope identity before use. This grants no extraction, writer, database, serving, release, import, activation, production or canonical-write authority."
+}

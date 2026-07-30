@@ -24,6 +24,22 @@ function frozenSlot(key) {
     scope_evidence: [Object.fromEntries(Object.entries(evidence(`${key}:scope`)).filter(([field]) => field !== 'evidence_role_key'))],
   };
 }
+function scopeReceipt() {
+  const expectedOccurrenceSlots = [frozenSlot('SLOT_A')];
+  const body = {
+    governed_deal_admission_id: digest('deal'),
+    expected_occurrence_slots: expectedOccurrenceSlots,
+    residuals: [],
+    limits: { max_scope_records: 8, max_slots: 4 },
+  };
+  return {
+    schema_version: 'PROCESS_SCOPE_ENUMERATION/V1',
+    scope_receipt_id: contentId('PROCESS_SCOPE_ENUMERATION_RECEIPT/V1', body),
+    expected_occurrence_slots: expectedOccurrenceSlots,
+    residuals: body.residuals,
+    limits: body.limits,
+  };
+}
 function sourceUnit(label, state, overrides = {}) {
   const candidate = state === 'CANDIDATE';
   return {
@@ -39,8 +55,7 @@ function sourceUnit(label, state, overrides = {}) {
 function input(overrides = {}) {
   return {
     schema_version: INPUT_SCHEMA,
-    scope_receipt_id: digest('scope-receipt'),
-    frozen_slots: [frozenSlot('SLOT_A')],
+    scope_receipt: scopeReceipt(),
     source_units: [sourceUnit('late', 'CANDIDATE'), sourceUnit('rejected', 'REJECTED'), sourceUnit('early', 'CANDIDATE')],
     limits: { max_source_units: 8, max_candidates: 4 },
     ...overrides,
@@ -63,7 +78,7 @@ test('enumerates deterministic semantic candidates from caller-provided frozen s
     true,
   );
   assert.equal(first.candidates[0].schema_version, 'PROCESS_SEMANTIC_CANDIDATE/V1');
-  assert.equal(first.candidates[0].scope_receipt_id, digest('scope-receipt'));
+  assert.equal(first.candidates[0].scope_receipt_id, scopeReceipt().scope_receipt_id);
   assert.equal(first.rejections[0].schema_version, 'PROCESS_SEMANTIC_OUTCOME/V1');
   assert.equal(first.rejections[0].reason_code, 'UNSUPPORTED_SEMANTIC_MATERIAL');
   assert.equal(first.rejections[0].outcome_kind, 'REJECTION');
@@ -113,4 +128,21 @@ test('fails closed for hostile source, duplicate, unbounded, unknown-slot and ma
     () => enumerateProcessSemantics({ ...input(), lexical_enumerator: 'IMPORTED' }),
   ];
   cases.forEach((run) => assert.throws(run, { name: 'ProcessSemanticEnumeratorError' }));
+});
+
+test('rejects mismatched frozen slots and scope receipt identity', () => {
+  const changedSlot = clone(input());
+  changedSlot.scope_receipt.expected_occurrence_slots[0].occurrence_kind =
+    'SUBSTITUTED_EVENT';
+  assert.throws(
+    () => enumerateProcessSemantics(changedSlot),
+    { code: 'INVALID_PROCESS_SEMANTIC_SCOPE_RECEIPT' },
+  );
+
+  const changedId = clone(input());
+  changedId.scope_receipt.scope_receipt_id = digest('substituted-scope-receipt');
+  assert.throws(
+    () => enumerateProcessSemantics(changedId),
+    { code: 'INVALID_PROCESS_SEMANTIC_SCOPE_RECEIPT' },
+  );
 });

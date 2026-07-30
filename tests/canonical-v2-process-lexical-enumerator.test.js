@@ -20,9 +20,8 @@ function scopeReceipt() {
     end_utf8_byte: 20,
     exact_text_digest: digest('scope-exact-text'),
   }];
-  return {
-    schema_version: 'PROCESS_SCOPE_ENUMERATION/V1',
-    scope_receipt_id: digest('scope-receipt'),
+  const body = {
+    governed_deal_admission_id: digest('deal'),
     expected_occurrence_slots: [{
       slot_key: 'EXCLUSIVITY_001',
       deal_id: digest('deal'),
@@ -37,6 +36,13 @@ function scopeReceipt() {
       scope_evidence: scopeEvidence,
     }],
     limits: { max_scope_records: 8, max_slots: 4 },
+  };
+  return {
+    schema_version: 'PROCESS_SCOPE_ENUMERATION/V1',
+    scope_receipt_id: contentId('PROCESS_SCOPE_ENUMERATION_RECEIPT/V1', body),
+    expected_occurrence_slots: body.expected_occurrence_slots,
+    residuals: body.residuals,
+    limits: body.limits,
   };
 }
 
@@ -77,6 +83,10 @@ function input(overrides = {}) {
     reported_usage: { duration_ms: 12, memory_bytes: 512 },
     ...overrides,
   };
+}
+
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
 }
 
 test('enumerates deterministic lexical candidates with exact source evidence', () => {
@@ -199,6 +209,52 @@ test('rejects scope residual record keys outside canonical UTF-8 order', () => {
     () => enumerateProcessLexicalCandidates(input({ scope_receipt: reorderedReceipt })),
     { code: 'INVALID_PROCESS_LEXICAL_SCOPE_RECEIPT' },
   );
+});
+
+test('accepts byte-zero source evidence and rejects negative or empty intervals', () => {
+  const zero = sourceUnit({
+    start_utf8_byte: 0,
+    end_utf8_byte: 5,
+    exact_text: 'value',
+    lexical_observations: [{
+      state: 'CANDIDATE',
+      slot_key: 'EXCLUSIVITY_001',
+      evidence_role_key: 'PRIMARY_TEXT',
+      start_utf8_byte: 0,
+      end_utf8_byte: 5,
+      lexical_payload: { token: 'value' },
+      reason_code: null,
+    }],
+  });
+  const result = enumerateProcessLexicalCandidates(input({ source_units: [zero] }));
+  assert.equal(result.candidates[0].evidence.start_utf8_byte, 0);
+
+  for (const [start, end] of [[-1, 5], [0, 0]]) {
+    const hostile = clone(zero);
+    hostile.lexical_observations[0].start_utf8_byte = start;
+    hostile.lexical_observations[0].end_utf8_byte = end;
+    assert.throws(
+      () => enumerateProcessLexicalCandidates(input({ source_units: [hostile] })),
+      { name: 'ProcessLexicalEnumeratorError' },
+    );
+  }
+});
+
+test('rejects substituted scope slots, residuals, limits and receipt ID', () => {
+  const mutations = [
+    (value) => { value.expected_occurrence_slots[0].occurrence_kind = 'SUBSTITUTED'; },
+    (value) => { value.residuals[0].residual_code = 'SUBSTITUTED'; },
+    (value) => { value.limits.max_slots = 3; },
+    (value) => { value.scope_receipt_id = digest('substituted-receipt'); },
+  ];
+  for (const mutate of mutations) {
+    const receipt = clone(scopeReceipt());
+    mutate(receipt);
+    assert.throws(
+      () => enumerateProcessLexicalCandidates(input({ scope_receipt: receipt })),
+      { code: 'INVALID_PROCESS_LEXICAL_SCOPE_RECEIPT' },
+    );
+  }
 });
 
 test('has no source acquisition, semantic enumeration or authority imports', () => {

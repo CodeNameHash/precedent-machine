@@ -248,8 +248,7 @@ test('accepts the actual frozen scope, semantic and lexical pure-runtime chain',
   });
   const semantic = enumerateProcessSemantics({
     schema_version: SEMANTIC_INPUT_SCHEMA,
-    scope_receipt_id: scope.scope_receipt_id,
-    frozen_slots: scope.expected_occurrence_slots,
+    scope_receipt: scope,
     source_units: [{
       source_unit_id: digest('semantic-unit'),
       unit_state: 'CANDIDATE',
