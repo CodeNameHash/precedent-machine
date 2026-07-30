@@ -1,0 +1,23 @@
+{
+  "phase": "WP-P1-GENERATED-BUNDLE-TOPOLOGY-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p1-generated-bundle-topology-v1.json",
+    "lib/canonical-v2/canonical-contract-bundle-freeze-candidate-assembler.js",
+    "lib/canonical-v2/canonical-contract-bundle-generated-topology.js",
+    "lib/canonical-v2/canonical-contract-bundle-pre-review-package-assembler.js",
+    "tests/canonical-v2-canonical-contract-bundle-freeze-candidate-assembler.test.js",
+    "tests/canonical-v2-canonical-contract-bundle-generated-topology.test.js",
+    "tests/canonical-v2-canonical-contract-bundle-pre-review-package-assembler.test.js",
+    "tests/canonical-v2-canonical-contract-bundle-pre-review-source-closure.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Generated pre-freeze topology and final V3 fingerprint only. No runtime, writer, serving, database, release, activation, production, or freeze authority."
+}
