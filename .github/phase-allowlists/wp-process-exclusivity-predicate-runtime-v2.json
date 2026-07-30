@@ -1,0 +1,30 @@
+{
+  "phase": "WP-PROCESS-EXCLUSIVITY-PREDICATE-RUNTIME-V2",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-exclusivity-predicate-runtime-v2.json",
+    "contracts/canonical-v2/successor/process/predicates/exclusivity-predicate-catalogue.v1.json",
+    "lib/canonical-v2/process-exclusivity-contract.js",
+    "lib/canonical-v2/process-exclusivity-pilot.js",
+    "lib/canonical-v2/process-phrasebook-result-admission.js",
+    "tests/canonical-v2-process-exclusivity-completeness-challenge.test.js",
+    "tests/canonical-v2-process-exclusivity-contract.test.js",
+    "tests/canonical-v2-process-exclusivity-contract-input.test.js",
+    "tests/canonical-v2-process-exclusivity-pilot.test.js",
+    "tests/canonical-v2-process-field-navigation-contract-input.test.js",
+    "tests/canonical-v2-process-phrasebook-result-admission.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Pure runtime selection of the single version-2 Process exclusivity predicate catalogue. It preserves all response, subject, absence, evidence and result-admission rules. It grants no external I/O, extraction, writer, serving, database, release, import, activation, production, freeze or canonical-write authority."
+}

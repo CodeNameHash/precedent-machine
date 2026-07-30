@@ -10,7 +10,7 @@ const {
   validateProcessExclusivitySemanticCheck,
 } = require('../lib/canonical-v2/process-exclusivity-contract');
 const catalogueContract = require(
-  '../contracts/canonical-v2/successor/process/predicates/exclusivity-predicate-catalogue.v1.json',
+  '../contracts/canonical-v2/successor/process/predicates/exclusivity-predicate-catalogue.v2.json',
 );
 
 function syntheticId(label) {
@@ -37,13 +37,35 @@ function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
-test('binds exactly the 23 governed exclusivity predicate semantics', () => {
+test('binds exactly the 41 governed exclusivity predicate semantics', () => {
   assert.deepEqual(
     Object.keys(PREDICATE_SEMANTIC_KINDS),
     catalogueContract.definition
       .ordinary_question_contract.mandatory_predicate_keys,
   );
-  assert.equal(Object.keys(PREDICATE_SEMANTIC_KINDS).length, 23);
+  assert.equal(Object.keys(PREDICATE_SEMANTIC_KINDS).length, 41);
+});
+
+test('checks each successor predicate under its exact semantic kind', () => {
+  const definitions = catalogueContract.definition
+    .successor_predicate_definition_contract.definitions;
+  assert.equal(definitions.length, 18);
+  for (const definition of definitions) {
+    const semanticKind =
+      PREDICATE_SEMANTIC_KINDS[definition.predicate_key];
+    assert.equal(
+      semanticKind,
+      definition.machine_rule.semantic_kind,
+    );
+    const result = buildProcessExclusivitySemanticCheck(input({
+      predicate_key: definition.predicate_key,
+      source_semantic_kind: semanticKind,
+      value_carrier_ids: [syntheticId(definition.predicate_key)],
+    }));
+    assert.equal(result.predicate_key, definition.predicate_key);
+    assert.equal(result.source_semantic_kind, semanticKind);
+    assert.equal(result.catalogue_binding.catalogue_version, 2);
+  }
 });
 
 test('builds a deterministic frozen checked candidate with no authority', () => {
@@ -328,7 +350,7 @@ test('the catalogue binding is content-addressed and cannot be substituted', () 
   );
 
   const substituted = clone(result);
-  substituted.catalogue_binding.catalogue_version = 2;
+  substituted.catalogue_binding.catalogue_version = 1;
   assert.throws(
     () => validateProcessExclusivitySemanticCheck(substituted),
     (error) => error.code === 'INVALID_PROCESS_EXCLUSIVITY_SEMANTIC_CHECK',
