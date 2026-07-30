@@ -628,9 +628,20 @@ test('makes Ask and Browse byte-identical for the same legal meaning', () => {
     state,
     'Did the target grant exclusivity?',
   ));
+  const processBrowse = compileProductBrowseQuery(browseInput(state, {
+    domain_key: 'PROCESS',
+    topic_key: 'EXCLUSIVITY',
+    pattern_key: 'EXCLUSIVITY_GRANTED',
+  }));
+  assert.equal(processAsk.outcome, 'COMPILED');
   assert.equal(
     processAsk.query_ir.semantic_contract.domain_key,
     'PROCESS',
+  );
+  assert.deepEqual(processAsk.query_ir, processBrowse.query_ir);
+  assert.equal(
+    canonicalProductQueryIrBytes(processAsk.query_ir).toString('utf8'),
+    canonicalProductQueryIrBytes(processBrowse.query_ir).toString('utf8'),
   );
 });
 

@@ -130,7 +130,7 @@ function agreementSourceCatalogue() {
 
 function processSourceCatalogue() {
   return loadJson(
-    'process/navigation/process-navigation-definition-catalogue.v1.json',
+    'process/navigation/process-navigation-definition-catalogue.v2.json',
   );
 }
 
@@ -549,12 +549,12 @@ test('builds one deterministic Agreement and Process Ask registry', () => {
     first.canonical_payload_digest,
     second.canonical_payload_digest,
   );
-  assert.equal(first.counts.navigation_pattern_count, 13);
-  assert.equal(first.counts.covered_pattern_count, 13);
+  assert.equal(first.counts.navigation_pattern_count, 43);
+  assert.equal(first.counts.covered_pattern_count, 43);
   assert.equal(first.counts.excluded_pattern_count, 0);
-  assert.equal(first.counts.compiled_mapping_count, 28);
+  assert.equal(first.counts.compiled_mapping_count, 88);
   assert.equal(first.counts.boundary_mapping_count, 3);
-  assert.equal(first.difference.added_mapping_keys.length, 31);
+  assert.equal(first.difference.added_mapping_keys.length, 91);
   assert.deepEqual(
     [...new Set(first.pattern_coverage.map(
       (entry) => entry.domain_key,
@@ -562,6 +562,35 @@ test('builds one deterministic Agreement and Process Ask registry', () => {
     ['AGREEMENT', 'PROCESS'],
   );
   assertDeepFrozen(first);
+});
+
+test('gives every one of the 41 Process Browse Patterns checked Ask phrases', () => {
+  const buildInputs = inputs();
+  const manifest = buildProductAskMappingRegistryManifest(buildInputs);
+  const processCoverage = manifest.pattern_coverage.filter(
+    (entry) => entry.domain_key === 'PROCESS',
+  );
+  const entryByKey = new Map(manifest.entries.map((entry) => [
+    entry.mapping_key,
+    entry,
+  ]));
+
+  assert.equal(processCoverage.length, 41);
+  assert.equal(
+    manifest.pattern_exclusions.some(
+      (entry) => entry.domain_key === 'PROCESS',
+    ),
+    false,
+  );
+  for (const coverage of processCoverage) {
+    assert.ok(coverage.mapping_keys.length >= 1);
+    for (const mappingKey of coverage.mapping_keys) {
+      const mapping = entryByKey.get(mappingKey);
+      assert.equal(mapping.outcome, 'COMPILED');
+      assert.equal(mapping.pattern_key, coverage.pattern_key);
+      assert.equal(mapping.predicate_key, coverage.predicate_key);
+    }
+  }
 });
 
 test('produces a bounded admission for one later PM-wide Ask compiler', () => {
@@ -615,8 +644,8 @@ test('records an explicit Ask exclusion without removing the Browse Pattern', ()
     identity('ASK_LANGUAGE_SCOPE_DECISION');
 
   const manifest = buildProductAskMappingRegistryManifest(buildInputs);
-  assert.equal(manifest.counts.navigation_pattern_count, 13);
-  assert.equal(manifest.counts.covered_pattern_count, 12);
+  assert.equal(manifest.counts.navigation_pattern_count, 43);
+  assert.equal(manifest.counts.covered_pattern_count, 42);
   assert.equal(manifest.counts.excluded_pattern_count, 1);
   assert.equal(manifest.pattern_exclusions[0].pattern_key, disposition.pattern_key);
 });
@@ -702,8 +731,8 @@ test('adds a future CVR domain without registry compiler change', () => {
     release_admission: askReleaseAdmission(navigation),
   };
   const manifest = buildProductAskMappingRegistryManifest(buildInputs);
-  assert.equal(manifest.counts.navigation_pattern_count, 14);
-  assert.equal(manifest.counts.covered_pattern_count, 14);
+  assert.equal(manifest.counts.navigation_pattern_count, 44);
+  assert.equal(manifest.counts.covered_pattern_count, 44);
   assert.ok(manifest.pattern_coverage.some(
     (entry) => entry.domain_key === 'CVR',
   ));
@@ -802,7 +831,7 @@ test('records an exact successor difference after a versioned phrase change', ()
   );
   assert.equal(successor.difference.added_mapping_keys.length, 0);
   assert.equal(successor.difference.removed_mapping_keys.length, 0);
-  assert.equal(successor.difference.unchanged_mapping_keys.length, 30);
+  assert.equal(successor.difference.unchanged_mapping_keys.length, 90);
 });
 
 test('rejects changed or correctly rehashed registry content', () => {
