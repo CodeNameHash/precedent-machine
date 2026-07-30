@@ -38,14 +38,26 @@ function members() {
 
 function processMembers() {
   const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, 'manifest.json'), 'utf8'));
+  const activeOverrides = [
+    loadMember('process/occurrence-slots/process-event.v1.json'),
+    loadMember('process/predicates/exclusivity-completeness-challenge-catalogue.v1.json'),
+    loadMember('process/predicates/exclusivity-predicate-catalogue.v2.json'),
+    loadMember('process/predicates/process-predicate-witness.v2.json'),
+    loadMember('process/registries/process-controlled-code-registry.v2.json'),
+    loadMember('process/relationships/process-relationship.v2.json'),
+  ];
+  const overrideKeys = new Set(activeOverrides.map(
+    (member) => `${member.object_kind}\0${member.canonical_value.stable_id}`,
+  ));
   return [
     ...manifest.members
       .filter((entry) => fs.existsSync(path.join(ROOT, entry.relative_path)))
       .map((entry) => loadMember(entry.relative_path))
-      .filter((member) => member.object_kind.startsWith('PROCESS_')),
-    loadMember('process/occurrence-slots/process-event.v1.json'),
-    loadMember('process/predicates/exclusivity-completeness-challenge-catalogue.v1.json'),
-    loadMember('process/registries/process-controlled-code-registry.v2.json'),
+      .filter((member) => member.object_kind.startsWith('PROCESS_'))
+      .filter((member) => !overrideKeys.has(
+        `${member.object_kind}\0${member.canonical_value.stable_id}`,
+      )),
+    ...activeOverrides,
   ];
 }
 
