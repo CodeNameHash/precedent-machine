@@ -236,6 +236,26 @@ test('assembles a deterministic review package with full predecessor bytes', () 
   );
   assert.deepEqual(review.predecessor_source_kinds, ['LEGACY_F1']);
   assert.equal(
+    validateSchema(
+      'ContractFreezeAttestationIdentity/V1',
+      review.contract_freeze_attestation_identity,
+    ),
+    true,
+  );
+  assert.equal(
+    review.contract_freeze_attestation_identity
+      .predecessor_canonical_contract_bundle_member_root,
+    domainDigest(
+      'PROGRAMME_GATE_CANONICAL_CONTRACT_BUNDLE_MEMBER_ROOT/V1',
+      review.predecessor_canonical_contract_bundle_members,
+    ),
+  );
+  assert.equal(
+    review.contract_freeze_attestation_identity
+      .predecessor_canonical_contract_bundle_member_count,
+    review.predecessor_canonical_contract_bundle_members.length,
+  );
+  assert.equal(
     review.reviewed_contract_source_set_digest,
     domainDigest(
       'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW_SOURCE_SET/V1',

@@ -276,7 +276,7 @@ test('assembles one deterministic immutable pre-review package', () => {
     review.contract_bundle_freeze_candidate
       .unsigned_contract_bundle_compilation_receipt_payload
       .frozen_contract_pair_digest,
-    review.frozen_contract_pair_digest,
+    review.pre_review_frozen_contract_pair_digest,
   );
   assert.equal(first.disposition.state, 'PRE_REVIEW_INPUTS_ASSEMBLED_NOT_REVIEWED');
   assert.equal(first.disposition.architecture_review_conclusion, 'NOT_SUPPLIED');
@@ -285,12 +285,12 @@ test('assembles one deterministic immutable pre-review package', () => {
   assert.equal(first.disposition.freeze_authority, 'NONE');
 });
 
-test('derives the existing freeze identity, pair and exact review context', () => {
+test('marks its projection-only identity, pair and context as pre-review-only', () => {
   const result = assembleCanonicalContractBundlePreReviewPackage(fixture());
   const review = result.exact_review_package;
-  const identity = review.contract_freeze_attestation_identity;
+  const identity = review.pre_review_contract_freeze_attestation_identity;
 
-  assert.equal(validateSchema('ContractFreezeAttestationIdentity/V1', identity), true);
+  assert.throws(() => validateSchema('ContractFreezeAttestationIdentity/V1', identity));
   const { contract_freeze_attestation_id: ignored, ...unsignedIdentity } = identity;
   assert.equal(
     identity.contract_freeze_attestation_id,
@@ -300,7 +300,7 @@ test('derives the existing freeze identity, pair and exact review context', () =
     ),
   );
   assert.equal(
-    review.frozen_contract_pair_digest,
+    review.pre_review_frozen_contract_pair_digest,
     domainDigest(
       'PROGRAMME_GATE_FROZEN_CONTRACT_PAIR/V1',
       {
@@ -316,7 +316,7 @@ test('derives the existing freeze identity, pair and exact review context', () =
     ),
   );
   assert.equal(
-    review.exact_review_input_context_digest,
+    review.pre_review_exact_input_context_digest,
     domainDigest(
       'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW_EXACT_INPUT_CONTEXT/V1',
       {
@@ -328,7 +328,7 @@ test('derives the existing freeze identity, pair and exact review context', () =
           review.predecessor_contract_bundle_digest,
         contract_bundle_id: review.contract_bundle_id,
         contract_bundle_digest: review.contract_bundle_digest,
-        frozen_contract_pair_digest: review.frozen_contract_pair_digest,
+        frozen_contract_pair_digest: review.pre_review_frozen_contract_pair_digest,
         semantic_identity_diff_digest:
           review.semantic_identity_diff_digest,
       },

@@ -255,6 +255,12 @@ function fixture({ includePrivateKeys = false } = {}) {
     environment: 'STAGING',
     predecessor_contract_bundle_id: predecessorContractBundleId,
     predecessor_contract_bundle_digest: predecessorContractBundleDigest,
+    predecessor_canonical_contract_bundle_member_root: domainDigest(
+      'PROGRAMME_GATE_CANONICAL_CONTRACT_BUNDLE_MEMBER_ROOT/V1',
+      predecessorCanonicalContractBundleMembers,
+    ),
+    predecessor_canonical_contract_bundle_member_count:
+      predecessorCanonicalContractBundleMembers.length,
     contract_bundle_id: contractBundleId,
     contract_bundle_digest: contractBundleDigest,
     approval_epoch_nonce: 'freeze-approval-epoch-1',
@@ -1767,6 +1773,65 @@ test('a controller-signed projection cannot hide substituted successor source by
       sample.evidence,
       context(sample),
     ),
+    false,
+  );
+});
+
+test('a controller cannot replace predecessor bytes after recomputing every review digest', () => {
+  const sample = fixture({ includePrivateKeys: true });
+  const review = sample.immutableMembers.find(
+    (member) => member.member_type === 'ContractDiffReviewAttestation',
+  ).payload;
+  review.predecessor_canonical_contract_bundle_members = structuredClone(
+    review.predecessor_canonical_contract_bundle_members,
+  );
+  const substituted = Buffer.from('substituted-predecessor-source', 'utf8');
+  review.predecessor_canonical_contract_bundle_members[0].byte_length = substituted.length;
+  review.predecessor_canonical_contract_bundle_members[0].payload_digest =
+    crypto.createHash('sha256').update(substituted).digest('hex');
+  review.predecessor_canonical_contract_bundle_members[0].source_bytes_base64 =
+    substituted.toString('base64');
+  review.reviewed_contract_source_set_digest = domainDigest(
+    'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW_SOURCE_SET/V1',
+    {
+      exact_review_input_schema_version: review.exact_review_input_schema_version,
+      predecessor_canonical_contract_bundle_members:
+        review.predecessor_canonical_contract_bundle_members,
+      canonical_contract_bundle_members: review.canonical_contract_bundle_members,
+    },
+  );
+  review.exact_input_context_digest = domainDigest(
+    'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW_EXACT_INPUT_CONTEXT/V1',
+    {
+      specification_root: sample.evidence.specification_root,
+      code_commit: sample.evidence.code_commit,
+      predecessor_contract_bundle_id: review.predecessor_contract_bundle_id,
+      predecessor_contract_bundle_digest:
+        review.predecessor_contract_bundle_digest,
+      contract_bundle_id: review.contract_bundle_id,
+      contract_bundle_digest: review.contract_bundle_digest,
+      frozen_contract_pair_digest: review.frozen_contract_pair_digest,
+      semantic_identity_diff_digest: review.semantic_identity_diff_digest,
+      reviewed_contract_source_set_digest:
+        review.reviewed_contract_source_set_digest,
+    },
+  );
+  resealReview(sample, review);
+  assert.equal(
+    contractDiffReviewIsMechanicallyBound(
+      review,
+      sample.evidence,
+      context(sample),
+    ),
+    true,
+  );
+  const claims = evaluateAcceptanceClaims({
+    gate_id: 'P1_CONTRACT_FREEZE_ATTESTED',
+    evidence: sample.evidence,
+    context: context(sample),
+  });
+  assert.equal(
+    claims.find((claim) => claim.claim_key === 'bundle_compiles').typed_value,
     false,
   );
 });

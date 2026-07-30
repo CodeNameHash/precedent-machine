@@ -373,7 +373,7 @@ function validateGateRegistry() {
     PROGRAMME_GATE_BEN_APPROVER_2026_07: '2baac1c454dfb918097f2816fc9a230eb93139f735db35b9ed64d0e6846b4c17',
   };
   if (reviewer.review_controller_trust_root_set !== 'trusted-review-controller-keys/2026-07-frozen-v1'
-    || frozenTrust?.registry_source_sha256 !== '17bdf7a1bc33c5b3942cd30b288bd661d32bb1ad88862364e6348c4f55ba7ace'
+    || frozenTrust?.registry_source_sha256 !== '3c2470be638d49165e6ae427e047a9c36d30a9e0155a05ffafd5293615c6e3ce'
     || sha256(read('lib/programme-gates/registry.js')) !== frozenTrust?.registry_source_sha256
     || JSON.stringify(frozenTrust?.keys) !== JSON.stringify(expectedTrustKeys)
     || frozenTrust?.unknown_replacement_or_post_review_key_effect !== 'OPEN') {

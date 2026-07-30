@@ -66,7 +66,7 @@ programme_gate_registry:
       missing_or_post_review_selected_member_effect: OPEN
     bootstrap_compiled_registry_binding:
       source_path: docs/codex-program/bootstrap-acceptance-source.json
-      source_sha256: 0060cf453835a928ce305ba74b694c3126a0ba80d1dead87c85323a15d06ea29
+      source_sha256: dc5b3fc4291c3cb9e2c08b844af20f9e904ecb54f9f6c7d343edb1c15c2c9b12
       closed_validator_executable_set_digest: 78267f05a6e34697220fdff4c46b7e6ea34e50468b6029bdeaea984f9e50d772
       authority: ROOT_INDEPENDENT_REVIEWED_BOOTSTRAP_ACCEPTANCE_SOURCE
       exact_active_definition_count: 11
@@ -206,7 +206,7 @@ programme_gate_registry:
       validator_configuration_digest: 44c470631cc0d9cd7b48796f25c12addd3a735ca650f5622dd55db5ed8d30d21
     frozen_trust_root_set:
       registry_schema: programme-gate-trusted-public-keys/v1
-      registry_source_sha256: 17bdf7a1bc33c5b3942cd30b288bd661d32bb1ad88862364e6348c4f55ba7ace
+      registry_source_sha256: 3c2470be638d49165e6ae427e047a9c36d30a9e0155a05ffafd5293615c6e3ce
       keys:
         PROGRAMME_GATE_VALIDATOR_2026_07: 5b028d01aaa4f077c6f2f28ef8075195330eff00c2f81061fad8622b761de566
         PROGRAMME_STATUS_PUBLISHER_2026_07: d7f562af345fcb04a78f26c87b3e3f19b1cad6c8627ccc612396a4217d8a02c1
@@ -605,7 +605,7 @@ programme_gate_registry:
     - id: P1_CONTRACT_FREEZE_ATTESTED
       phase: 1
       permits_not_applicable: false
-      evidence_contract: exact-contract-freeze-attestation-and-status-generation/v8
+      evidence_contract: exact-contract-freeze-attestation-and-status-generation/v9
       required_evidence_object_type: ContractFreezeAttestation
       acceptance_claims: [bundle_compiles, semantic_and_identity_diff_reviewed, freeze_gate_approved, status_generation_matches]
       required_adversarial_tests: [CONTRACT-01]

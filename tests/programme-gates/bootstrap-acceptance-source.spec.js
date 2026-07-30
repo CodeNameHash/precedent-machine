@@ -105,7 +105,7 @@ test('P1 compiles from the bootstrap source contract and enumerates its closed w
   const bundle = createContractFreezeContractBundle({ specificationRoot: ROOT });
   assert.equal(bundle.definitions.length, 1);
   const [definition] = bundle.definitions;
-  assert.equal(definition.evidence_contract, 'exact-contract-freeze-attestation-and-status-generation/v8');
+  assert.equal(definition.evidence_contract, 'exact-contract-freeze-attestation-and-status-generation/v9');
   assert.equal(definition.specification_root, ROOT);
   assert.equal(validateSchema('ProgrammeGateAcceptanceDefinition/V1', definition), true);
 
