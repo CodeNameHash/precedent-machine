@@ -158,15 +158,18 @@ test('compiles as one non-authorising successor input', () => {
     (candidate) => candidate.stable_id === 'PRODUCT_QUERY_IR',
   );
 
-  assert.equal(compiled.authored_members.length, 130);
+  assert.equal(compiled.authored_members.length, 153);
   assert.equal(member.object_kind, 'PRODUCT_QUERY_CONTRACT_INPUT');
   assert.equal(
     Object.values(member.canonical_value.definition.authority_contract)
       .every((value) => value === false),
     true,
   );
-  assert.equal(compiled.authored_universe_assessment.status, 'NOT_ASSESSED');
-  assert.equal(compiled.disposition.status, 'INCOMPLETE_UNIVERSE');
+  assert.equal(
+    compiled.authored_universe_assessment.status,
+    'COMPLETE_AGAINST_GOVERNED_REQUIRED_KIND_REGISTRY',
+  );
+  assert.equal(compiled.disposition.status, 'AUTHORED_UNIVERSE_MECHANICALLY_COMPLETE');
   assert.equal(compiled.disposition.freeze_eligible, false);
   assert.equal(compiled.disposition.canonical_contract_bundle_authority, 'NONE');
 });

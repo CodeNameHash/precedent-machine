@@ -1,0 +1,25 @@
+{
+  "phase": "WP-P1-COMPLETE-UNIVERSE-TEST-RECONCILIATION-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p1-complete-universe-test-reconciliation-v1.json",
+    "lib/canonical-v2/canonical-contract-technical-relationship-validator.js",
+    "tests/canonical-v2-canonical-contract-excepted-by-effect.test.js",
+    "tests/canonical-v2-canonical-contract-source-tree.test.js",
+    "tests/canonical-v2-canonical-contract-technical-relationship-effects.test.js",
+    "tests/canonical-v2-product-query-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Reconciles stale tests with the governed 153-member authored universe and makes the technical relationship validator reject semantic drift in the active BRINGS_DOWN V2 schema. It grants no freeze, extraction, database, writer, serving, release, import, activation, production or cutover authority."
+}

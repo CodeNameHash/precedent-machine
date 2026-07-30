@@ -222,10 +222,10 @@ test('authored dependencies and comparison isolation fail closed under drift', (
   }
 });
 
-test('the completed relationship universe remains non-authoritative until registry freeze', () => {
+test('the mechanically complete relationship universe remains non-authoritative until registry freeze', () => {
   const output = compiled();
-  assert.equal(output.authored_members.length, 130);
-  assert.equal(output.disposition.status, 'INCOMPLETE_UNIVERSE');
+  assert.equal(output.authored_members.length, 153);
+  assert.equal(output.disposition.status, 'AUTHORED_UNIVERSE_MECHANICALLY_COMPLETE');
   assert.equal(output.disposition.freeze_eligible, false);
   assert.equal(output.disposition.canonical_contract_bundle_authority, 'NONE');
   assert.equal(output.disposition.p1_gate_status, 'NOT_EVALUATED');

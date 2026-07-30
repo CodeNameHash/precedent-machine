@@ -13,6 +13,7 @@ const {
 } = require('../lib/canonical-v2/canonical-contract-input-compiler');
 const {
   FIXTURE_CONTRACT_INPUT_V12,
+  USES_DEFINITION_EFFECT_SCHEMA_V3,
 } = require('../lib/canonical-v2/contract-bundle');
 
 const sourceRoot = path.join(
@@ -70,30 +71,41 @@ function authoredPolicyPayload(compiled, objectKind, stableId, schemaVersion) {
   return payload;
 }
 
-test('the single successor source compiles twice byte-identically without claiming completeness', () => {
+test('the single successor source compiles twice byte-identically as a complete authored universe without freeze authority', () => {
   const first = compileCanonicalContractInput({ root_directory: sourceRoot });
   const second = compileCanonicalContractInput({ root_directory: sourceRoot });
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 130);
+  assert.equal(first.authored_members.length, 153);
   assert.equal(
     first.authored_members.some(
       (member) => member.object_kind === 'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY',
     ),
-    false,
+    true,
   );
-  assert.equal(first.authored_universe_assessment.status, 'NOT_ASSESSED');
-  assert.equal(first.authored_universe_assessment.required_kind_registry_binding, null);
-  assert.deepEqual(first.authored_universe_assessment.ordered_kind_results, []);
-  assert.equal(first.disposition.status, 'INCOMPLETE_UNIVERSE');
-  assert.equal(first.disposition.reason_code, 'GOVERNED_REQUIRED_KIND_REGISTRY_NOT_SUPPLIED');
+  assert.equal(
+    first.authored_universe_assessment.status,
+    'COMPLETE_AGAINST_GOVERNED_REQUIRED_KIND_REGISTRY',
+  );
+  assert.equal(
+    first.authored_universe_assessment.required_kind_registry_binding.stable_id,
+    'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY',
+  );
+  assert.equal(
+    first.authored_universe_assessment.ordered_kind_results.every(
+      (entry) => entry.status === 'PASS',
+    ),
+    true,
+  );
+  assert.equal(first.disposition.status, 'AUTHORED_UNIVERSE_MECHANICALLY_COMPLETE');
+  assert.equal(first.disposition.reason_code, 'BUNDLE_GENERATION_AND_FREEZE_NOT_EVALUATED');
   assert.equal(first.disposition.freeze_eligible, false);
   assert.equal(first.disposition.canonical_contract_bundle_authority, 'NONE');
   assert.equal(first.disposition.p1_gate_status, 'NOT_EVALUATED');
   assert.equal(Object.hasOwn(first, 'canonical_contract_bundle'), false);
 });
 
-test('every authored claim is the exact existing V12 payload under the required envelope', () => {
+test('the authored claims preserve every exact V12 payload and add only the three governed successors', () => {
   const compiled = compileCanonicalContractInput({ root_directory: sourceRoot });
   const actual = authoredPayloads(
     compiled,
@@ -104,8 +116,23 @@ test('every authored claim is the exact existing V12 payload under the required 
   const expected = [...FIXTURE_CONTRACT_INPUT_V12.claim_definitions]
     .sort((left, right) => left.claim_definition_key.localeCompare(right.claim_definition_key));
 
-  assert.equal(actual.length, 13);
-  assert.equal(canonicalJson(actual), canonicalJson(expected));
+  assert.equal(actual.length, 16);
+  assert.equal(
+    canonicalJson(actual.filter((entry) => expected.some(
+      (candidate) => candidate.claim_definition_key === entry.claim_definition_key,
+    ))),
+    canonicalJson(expected),
+  );
+  assert.deepEqual(
+    actual.filter((entry) => !expected.some(
+      (candidate) => candidate.claim_definition_key === entry.claim_definition_key,
+    )).map((entry) => entry.claim_definition_key),
+    [
+      'GENERAL_MATERIALITY_QUALIFIER',
+      'REPRESENTATION_MEASUREMENT_DATE',
+      'RETROSPECTIVE_LOOKBACK',
+    ],
+  );
 });
 
 test('every authored component is the exact existing V12 payload under the required envelope', () => {
@@ -153,11 +180,11 @@ test('the authored relationships preserve USES_DEFINITION and add four successor
     entry.version,
     entry.effect_schema,
   ]), [
-    ['BRINGS_DOWN', 'TYPED_LEGAL_EFFECT', 2, 'BRINGS_DOWN_EFFECT/V1'],
+    ['BRINGS_DOWN', 'TYPED_LEGAL_EFFECT', 3, 'BRINGS_DOWN_EFFECT/V2'],
     ['CONTAINED_IN', 'NON_SEMANTIC', 2, 'CONTAINED_IN_EFFECT/V1'],
     ['EXCEPTED_BY', 'TYPED_LEGAL_EFFECT', 3, 'EXCEPTED_BY_EFFECT/V1'],
     ['TRIGGERED_BY', 'TYPED_LEGAL_EFFECT', 2, 'TERMINATION_FEE_TRIGGER_EFFECT/V2'],
-    ['USES_DEFINITION', 'TYPED_LEGAL_EFFECT', 3, 'USES_DEFINITION_EFFECT/V2'],
+    ['USES_DEFINITION', 'TYPED_LEGAL_EFFECT', 4, 'USES_DEFINITION_EFFECT/V3'],
   ]);
   assert.deepEqual(
     FIXTURE_CONTRACT_INPUT_V12.relationship_definitions
@@ -184,14 +211,14 @@ test('the authored relationship effect schemas select one closed schema each', (
   assert.equal(member.stable_id, 'USES_DEFINITION_EFFECT');
   assert.equal(member.schema_version, 'RELATIONSHIP_EFFECT_SCHEMA/V1');
   assert.equal(member.effect_schema_key, 'USES_DEFINITION_EFFECT');
-  assert.equal(member.effect_schema_version, 2);
+  assert.equal(member.effect_schema_version, 3);
   assert.equal(
     `${member.effect_schema_key}/V${member.effect_schema_version}`,
-    'USES_DEFINITION_EFFECT/V2',
+    'USES_DEFINITION_EFFECT/V3',
   );
   assert.equal(
     canonicalJson(member.definition),
-    canonicalJson(FIXTURE_CONTRACT_INPUT_V12.definition_use_effect_schema),
+    canonicalJson(USES_DEFINITION_EFFECT_SCHEMA_V3),
   );
   assert.deepEqual(
     members.map((entry) => [
@@ -199,11 +226,11 @@ test('the authored relationship effect schemas select one closed schema each', (
       entry.canonical_value.effect_schema_version,
     ]).sort((left, right) => left[0].localeCompare(right[0])),
     [
-      ['BRINGS_DOWN_EFFECT', 1],
+      ['BRINGS_DOWN_EFFECT', 2],
       ['CONTAINED_IN_EFFECT', 1],
       ['EXCEPTED_BY_EFFECT', 1],
       ['TERMINATION_FEE_TRIGGER_EFFECT', 2],
-      ['USES_DEFINITION_EFFECT', 2],
+      ['USES_DEFINITION_EFFECT', 3],
     ],
   );
 });
@@ -213,12 +240,12 @@ test('the compiler refuses the authored relationship when its effect schema is a
   fs.cpSync(sourceRoot, root, { recursive: true });
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
 
-  const effectPath = 'agreement/relationship-effect-schemas/uses-definition-effect.v2.json';
+  const effectPath = 'agreement/relationship-effect-schemas/uses-definition-effect.v3.json';
   fs.rmSync(path.join(root, ...effectPath.split('/')));
   const manifestPath = path.join(root, 'manifest.json');
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
   manifest.members = manifest.members.filter((member) => member.relative_path !== effectPath);
-  manifest.per_kind_counts.RELATIONSHIP_EFFECT_SCHEMA = 3;
+  manifest.per_kind_counts.RELATIONSHIP_EFFECT_SCHEMA = 4;
   fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
 
   assert.throws(
@@ -465,143 +492,57 @@ test('the authored claim interpretation policy is the exact existing V12 policy'
   );
 });
 
-test('the manifest exactly closes the 130-file Agreement, shared, Process and Product source tree', () => {
+test('the manifest exactly closes the 153-file Agreement, shared, Process, Product and governance source tree', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
   const actualMembers = jsonMembers(sourceRoot);
   const declaredMembers = manifest.members.map((member) => member.relative_path);
 
   assert.deepEqual(actualMembers, declaredMembers);
-  assert.equal(manifest.members.length, 130);
+  assert.equal(manifest.members.length, 153);
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('agreement/')).length,
-    71,
+    87,
   );
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('shared/')).length,
-    16,
+    17,
   );
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('process/')).length,
-    33,
+    36,
   );
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('product/')).length,
-    10,
+    12,
+  );
+  assert.equal(
+    manifest.members.filter((member) => member.relative_path.startsWith('governance/')).length,
+    1,
   );
   assert.equal(
     fs.existsSync(path.join(__dirname, '../lib/schema/canonical/contract-v2')),
     false,
   );
-  assert.deepEqual(manifest.per_kind_counts, {
-    AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT: 1,
-    CLAIM_DEFINITION: 13,
-    CLAIM_INTERPRETATION_POLICY: 1,
-    CLAIM_STATE_CODEBOOK_MIGRATION_INPUT: 1,
-    COMPONENT_DEFINITION: 9,
-    MONEY_DENOMINATOR_PRECISION_POLICY: 1,
-    NO_SHOP_SEMANTIC_SCHEMA_INPUT: 5,
-    PARSER_PROPOSAL_BOUNDARY_DEFINITION: 1,
-    PARTY_TUPLE_SHAPE_MIGRATION_INPUT: 1,
-    PROCESS_DOMAIN_REGISTRY_INPUT: 1,
-    PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT: 1,
-    PROCESS_FIELD_CATALOGUE_INPUT: 1,
-    PROCESS_GATE_CONTRACT_INPUT: 1,
-    PROCESS_INTEGRITY_CONTRACT_INPUT: 2,
-    PROCESS_LOGICAL_TYPE_INPUT: 10,
-    PROCESS_NAVIGATION_CATALOGUE_INPUT: 1,
-    PROCESS_PREDICATE_CONTRACT_INPUT: 2,
-    PROCESS_QUERY_CONTRACT_INPUT: 3,
-    PROCESS_RESULT_ACTION_CONTRACT_INPUT: 4,
-    PRODUCT_QUERY_ACTION_CONTRACT_INPUT: 2,
-    PRODUCT_QUERY_CONTRACT_INPUT: 1,
-    PRODUCT_QUERY_RESULT_CONTRACT_INPUT: 3,
-    PRODUCT_RESULT_ACTION_CONTRACT_INPUT: 2,
-    PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT: 1,
-    PRODUCT_SOURCE_READER_CONTRACT_INPUT: 1,
-    PROVISION_CONCEPT: 19,
-    RELATIONSHIP_DEFINITION: 5,
-    RELATIONSHIP_EFFECT_SCHEMA: 5,
-    RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT: 1,
-    SERVING_EXACT_DETAIL_ACTION_DEFINITION: 5,
-    SERVING_METRIC_OPERATION_BINDING_INPUT: 2,
-    SERVING_PROCESS_CONTRACT_INPUT: 5,
-    SERVING_TRIGGER_PATH_SCHEMA_INPUT: 1,
-    SHARED_AUTHORITY_FIELD_CATALOGUE_INPUT: 1,
-    SHARED_AUTHORITY_LOGICAL_TYPE_INPUT: 15,
-    SOURCE_ACQUISITION_CONTRACT_INPUT: 2,
-  });
-  assert.deepEqual(manifest.per_kind_schema_versions, {
-    AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT: [
-      'AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT/V1',
-    ],
-    CLAIM_DEFINITION: ['CLAIM_DEFINITION/V1'],
-    CLAIM_INTERPRETATION_POLICY: ['CLAIM_INTERPRETATION_POLICY/V2'],
-    CLAIM_STATE_CODEBOOK_MIGRATION_INPUT: [
-      'CLAIM_STATE_CODEBOOK_MIGRATION_INPUT/V1',
-    ],
-    COMPONENT_DEFINITION: ['COMPONENT_DEFINITION/V1'],
-    MONEY_DENOMINATOR_PRECISION_POLICY: ['MONEY_DENOMINATOR_PRECISION_POLICY/V1'],
-    NO_SHOP_SEMANTIC_SCHEMA_INPUT: ['NO_SHOP_SEMANTIC_SCHEMA_INPUT/V1'],
-    PARSER_PROPOSAL_BOUNDARY_DEFINITION: ['PARSER_PROPOSAL_BOUNDARY_DEFINITION/V1'],
-    PARTY_TUPLE_SHAPE_MIGRATION_INPUT: ['PARTY_TUPLE_SHAPE_MIGRATION_INPUT/V1'],
-    PROCESS_DOMAIN_REGISTRY_INPUT: ['PROCESS_DOMAIN_REGISTRY_INPUT/V1'],
-    PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT: [
-      'PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT/V1',
-    ],
-    PROCESS_FIELD_CATALOGUE_INPUT: ['PROCESS_FIELD_CATALOGUE_INPUT/V1'],
-    PROCESS_GATE_CONTRACT_INPUT: ['PROCESS_GATE_CONTRACT_INPUT/V1'],
-    PROCESS_INTEGRITY_CONTRACT_INPUT: [
-      'PROCESS_INTEGRITY_CONTRACT_INPUT/V1',
-    ],
-    PROCESS_LOGICAL_TYPE_INPUT: ['PROCESS_LOGICAL_TYPE_INPUT/V1'],
-    PROCESS_NAVIGATION_CATALOGUE_INPUT: [
-      'PROCESS_NAVIGATION_CATALOGUE_INPUT/V1',
-    ],
-    PROCESS_PREDICATE_CONTRACT_INPUT: ['PROCESS_PREDICATE_CONTRACT_INPUT/V1'],
-    PROCESS_QUERY_CONTRACT_INPUT: ['PROCESS_QUERY_CONTRACT_INPUT/V1'],
-    PROCESS_RESULT_ACTION_CONTRACT_INPUT: [
-      'PROCESS_RESULT_ACTION_CONTRACT_INPUT/V1',
-    ],
-    PRODUCT_QUERY_ACTION_CONTRACT_INPUT: [
-      'PRODUCT_QUERY_ACTION_CONTRACT_INPUT/V1',
-    ],
-    PRODUCT_QUERY_CONTRACT_INPUT: ['PRODUCT_QUERY_CONTRACT_INPUT/V1'],
-    PRODUCT_QUERY_RESULT_CONTRACT_INPUT: [
-      'PRODUCT_QUERY_RESULT_CONTRACT_INPUT/V1',
-    ],
-    PRODUCT_RESULT_ACTION_CONTRACT_INPUT: [
-      'PRODUCT_RESULT_ACTION_CONTRACT_INPUT/V1',
-    ],
-    PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT: [
-      'PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT/V1',
-    ],
-    PRODUCT_SOURCE_READER_CONTRACT_INPUT: [
-      'PRODUCT_SOURCE_READER_CONTRACT_INPUT/V1',
-    ],
-    PROVISION_CONCEPT: ['PROVISION_CONCEPT/V1'],
-    RELATIONSHIP_DEFINITION: ['RELATIONSHIP_DEFINITION/V1'],
-    RELATIONSHIP_EFFECT_SCHEMA: ['RELATIONSHIP_EFFECT_SCHEMA/V1'],
-    RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT: [
-      'RESIDUAL_REASON_CODEBOOK_MIGRATION_INPUT/V1',
-    ],
-    SERVING_EXACT_DETAIL_ACTION_DEFINITION: [
-      'SERVING_EXACT_DETAIL_ACTION_DEFINITION/V1',
-    ],
-    SERVING_METRIC_OPERATION_BINDING_INPUT: [
-      'SERVING_METRIC_OPERATION_BINDING_INPUT/V1',
-    ],
-    SERVING_PROCESS_CONTRACT_INPUT: ['SERVING_PROCESS_CONTRACT_INPUT/V1'],
-    SERVING_TRIGGER_PATH_SCHEMA_INPUT: ['SERVING_TRIGGER_PATH_SCHEMA_INPUT/V1'],
-    SHARED_AUTHORITY_FIELD_CATALOGUE_INPUT: [
-      'SHARED_AUTHORITY_FIELD_CATALOGUE_INPUT/V1',
-    ],
-    SHARED_AUTHORITY_LOGICAL_TYPE_INPUT: [
-      'SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1',
-    ],
-    SOURCE_ACQUISITION_CONTRACT_INPUT: [
-      'SOURCE_ACQUISITION_CONTRACT_INPUT/V1',
-    ],
-  });
+  const perKindCounts = {};
+  const perKindSchemaVersions = {};
+  for (const declaredMember of manifest.members) {
+    const canonicalMember = JSON.parse(
+      fs.readFileSync(
+        path.join(sourceRoot, ...declaredMember.relative_path.split('/')),
+        'utf8',
+      ),
+    );
+    perKindCounts[canonicalMember.object_kind] =
+      (perKindCounts[canonicalMember.object_kind] || 0) + 1;
+    perKindSchemaVersions[canonicalMember.object_kind] = [
+      ...new Set([
+        ...(perKindSchemaVersions[canonicalMember.object_kind] || []),
+        canonicalMember.schema_version,
+      ]),
+    ].sort();
+  }
+  assert.deepEqual(manifest.per_kind_counts, perKindCounts);
+  assert.deepEqual(manifest.per_kind_schema_versions, perKindSchemaVersions);
   for (const declaredMember of manifest.members) {
     const canonicalMember = JSON.parse(
       fs.readFileSync(

@@ -11,10 +11,10 @@ const {
 } = require('../lib/canonical-v2/canonical-contract-input-compiler');
 const {
   validateAuthoredTechnicalRelationshipInputs,
-  validateBringsDownEffect,
   validateContainedInEffect,
 } = require('../lib/canonical-v2/canonical-contract-technical-relationship-validator');
 const {
+  BRINGS_DOWN_EFFECT_SCHEMA_V1,
   compileFixtureContractV4,
   FIXTURE_CONTRACT_FINGERPRINT_V12,
   FIXTURE_CONTRACT_INPUT_V12,
@@ -26,9 +26,6 @@ const {
 const {
   validateTerminationFeeTriggerEffect,
 } = require('../lib/canonical-v2/termination-fee-trigger-path');
-const {
-  buildQxoCapitalisationServingFixture,
-} = require('./helpers/qxo-capitalisation-serving-fixture');
 
 const sourceRoot = path.join(
   __dirname,
@@ -56,10 +53,10 @@ function effectDefinition(output, key) {
 test('the six technical relationship members have pinned canonical identities', () => {
   const output = compiled();
   const expected = new Map([
-    ['BRINGS_DOWN', [233, '9c104bacfe90fdba9d88c7e699fcd99f3ba1551f3c96297c329f362ccb48e4dc']],
+    ['BRINGS_DOWN', [233, '3bb724af82dd1b0ccf2a17142d6793f2e06630741b96123fae8a10a2b4598241']],
     ['CONTAINED_IN', [230, '2f4e2e6bb7d1fc4845cebcfe1ef7a7c1bf8dbb1b47632e2f1622bf44ae2d8d28']],
     ['TRIGGERED_BY', [247, '9877dc202e03d76fbb1eb787d3bb4aaa4d7d0ae0c5ef6e932ba2e21c7e142e0e']],
-    ['BRINGS_DOWN_EFFECT', [2236, 'a4f7e50f3c057fcbc3cfc47489d6e6a037bee1da034955017800054bff8ca20f']],
+    ['BRINGS_DOWN_EFFECT', [2644, '6c9c973bba8e65728502bf665c6616f877142b6891ed524c9f23ba5f22b07b81']],
     ['CONTAINED_IN_EFFECT', [975, '2e006ecf116701fb027ca0c85920e0f7c063c99c8050399198b76c6af5d8d9b7']],
     ['TERMINATION_FEE_TRIGGER_EFFECT', [1885, '73f82545c20c1e039b7c8383843007d94c3ecea943e04b7464f2407d106a1e55']],
   ]);
@@ -99,56 +96,21 @@ test('legacy V12 remains byte-frozen while every relationship has a successor sc
       .filter((key) => !authored.has(key)),
     [],
   );
-  assert.equal(output.disposition.status, 'INCOMPLETE_UNIVERSE');
+  assert.equal(output.disposition.status, 'AUTHORED_UNIVERSE_MECHANICALLY_COMPLETE');
   assert.equal(output.disposition.freeze_eligible, false);
   assert.equal(output.disposition.canonical_contract_bundle_authority, 'NONE');
   assert.equal(output.disposition.p1_gate_status, 'NOT_EVALUATED');
   assert.equal(Object.hasOwn(output, 'canonical_contract_bundle'), false);
 });
 
-test('reviewed QXO Tier B and Tier C effects satisfy BRINGS_DOWN_EFFECT V1', () => {
+test('the active BRINGS_DOWN effect is the exact reviewed V2 successor of frozen V1', () => {
   const output = compiled();
   const definition = effectDefinition(output, 'BRINGS_DOWN_EFFECT');
-  const fixture = buildQxoCapitalisationServingFixture();
-  assert.equal(fixture.slice.relationships.length, 2);
-  for (const relationship of fixture.slice.relationships) {
-    assert.equal(validateBringsDownEffect(relationship.effect, definition), true);
-  }
-
-  const tierA = {
-    effect_mode: 'TYPED_LEGAL_EFFECT',
-    legal_operation: 'TEST_ACCURACY_AT_SIGNING_AND_CLOSING',
-    accuracy_standard: 'MAT_ALL_RESPECTS',
-    exception: null,
-    time_points: ['SIGNING', 'CLOSING', 'EXPRESS_EARLIER_DATE_IF_APPLICABLE'],
-  };
-  const tierD = {
-    ...tierA,
-    accuracy_standard: 'MAT_MAE_QUALIFIED',
-    materiality_scrape: {
-      applied: true,
-      disregarded_qualifiers: [
-        'MATERIAL',
-        'MATERIALITY',
-        'COMPANY_MATERIAL_ADVERSE_EFFECT',
-      ],
-    },
-  };
-  assert.equal(validateBringsDownEffect(tierA, definition), true);
-  assert.equal(validateBringsDownEffect(tierD, definition), true);
-
-  const wrongException = clone(fixture.slice.relationships[0].effect);
-  wrongException.exception = null;
-  assert.throws(
-    () => validateBringsDownEffect(wrongException, definition),
-    (error) => error?.code === 'INVALID_BRINGS_DOWN_EFFECT',
-  );
-  const wrongScrape = clone(fixture.slice.relationships[1].effect);
-  wrongScrape.materiality_scrape.disregarded_qualifiers.pop();
-  assert.throws(
-    () => validateBringsDownEffect(wrongScrape, definition),
-    (error) => error?.code === 'INVALID_BRINGS_DOWN_EFFECT',
-  );
+  assert.deepEqual(definition, {
+    ...BRINGS_DOWN_EFFECT_SCHEMA_V1,
+    schema_version: 'BRINGS_DOWN_EFFECT/V2',
+    relationship_definition_version: 3,
+  });
 });
 
 test('CONTAINED_IN remains exactly geometric and cannot carry semantic fields', () => {
@@ -216,10 +178,8 @@ test('technical effect dependencies fail closed under drift', () => {
       (member) => member.object_kind === 'SERVING_TRIGGER_PATH_SCHEMA_INPUT',
     ), 1),
     (members) => {
-      const claim = members.find(
-        (member) => member.stable_id === 'REPRESENTATION_ACCURACY_STANDARD',
-      );
-      claim.canonical_value.allowed_canonical_values.pop();
+      const effect = members.find((member) => member.stable_id === 'BRINGS_DOWN_EFFECT');
+      effect.canonical_value.definition.allowed_accuracy_standard_codes.pop();
     },
     (members) => {
       const effect = members.find((member) => member.stable_id === 'CONTAINED_IN_EFFECT');
