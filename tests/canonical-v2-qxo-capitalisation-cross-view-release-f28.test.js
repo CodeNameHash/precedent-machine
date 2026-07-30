@@ -260,6 +260,51 @@ test('F28 validates typed empty, ready and isolated failed slots', () => {
   ));
 });
 
+test('F28 validates a non-empty signed-duration market slot', () => {
+  const { release } = fixture();
+  const request = compileQxoCapitalisationF28MarketRequest({ release });
+  const result = clone(buildTypedEmptyF28MarketResult(request));
+  const durationIndex = request.metric_bindings.findIndex(
+    (binding) => binding.metric_key
+      === 'REPRESENTATION_MEASUREMENT_DATE_SIGNING_OFFSET',
+  );
+  assert.ok(durationIndex >= 0);
+  Object.assign(result.slot_results[durationIndex], {
+    result_state: 'READY',
+    counts: {
+      eligible_deals: 3,
+      comparable_deals: 2,
+      excluded_deals: 1,
+    },
+    state_groups: [{
+      state: 'PRESENT',
+      deal_count: 2,
+      percentage: '100',
+    }],
+    value_groups: [{
+      state: 'PRESENT',
+      canonical_value: -1,
+      deal_count: 2,
+      percentage: '100',
+    }],
+    numeric_summary: {
+      count: 2,
+      min: -1,
+      max: -1,
+      median: -1,
+      mean: '-1',
+    },
+    empty_cohort_reason_code: null,
+  });
+  assert.equal(
+    validateQxoCapitalisationF28MarketResult(
+      sealResult(result),
+      request,
+    ),
+    true,
+  );
+});
+
 test('F28 refuses slot reordering, subject leakage and rehashed drift', () => {
   const { release } = fixture();
   const request = compileQxoCapitalisationF28MarketRequest({ release });

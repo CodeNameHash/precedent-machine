@@ -1,0 +1,21 @@
+{
+  "phase": "WP-QXO-CAPITALISATION-F28-SIGNED-DURATION-FIX-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-qxo-capitalisation-f28-signed-duration-fix-v1.json",
+    "lib/canonical-v2/qxo-capitalisation-cross-view-release-f28.js",
+    "tests/canonical-v2-qxo-capitalisation-cross-view-release-f28.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Fixes the pure F28 signed-duration market validator and adds one non-empty signing-offset regression test. It grants no extraction, active query, database, serving, corpus write, release, activation, production or contract-freeze authority."
+}
