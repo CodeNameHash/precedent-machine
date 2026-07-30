@@ -77,7 +77,7 @@ test('accepts only the complete governed-residual contract family', () => {
   );
 });
 
-test('rejects missing producers, carriers and boundary ownership collisions', () => {
+test('rejects missing, duplicate and wrong producer-boundary entries', () => {
   expectCode('GOVERNED_RESIDUAL_PRODUCER_TOTALITY_MISMATCH', (values) => {
     definition(
       values,
@@ -85,18 +85,18 @@ test('rejects missing producers, carriers and boundary ownership collisions', ()
     ).producer_registry_contract.closed_producer_entries.shift();
   });
   expectCode('GOVERNED_RESIDUAL_PRODUCER_TOTALITY_MISMATCH', (values) => {
-    definition(
+    const entries = definition(
       values,
       'GOVERNED_RESIDUAL_PRODUCER_REGISTRY',
-    ).producer_registry_contract.closed_producer_entries[1]
-      .residual_capable_boundaries[0] = 'INTAKE_REJECTION';
+    ).producer_registry_contract.closed_producer_entries;
+    entries.push(clone(entries[0]));
   });
   expectCode('GOVERNED_RESIDUAL_PRODUCER_TOTALITY_MISMATCH', (values) => {
     definition(
       values,
       'GOVERNED_RESIDUAL_PRODUCER_REGISTRY',
-    ).producer_registry_contract.closed_producer_entries[0]
-      .residual_carrier_schema_id = null;
+    ).producer_registry_contract.closed_producer_entries[1]
+      .residual_capable_boundaries[0] = 'WRONG_CONVERSION_BOUNDARY';
   });
 });
 
@@ -189,6 +189,28 @@ test('rejects incomplete universe heads, prefixes and root payload bindings', ()
       'GOVERNED_RESIDUAL_UNIVERSE',
     ).manifest_contract.required_bindings;
     bindings.splice(bindings.indexOf('terminal_consumption_root_set_payload_digest'), 1);
+  });
+});
+
+test('rejects omitted, substituted and stale terminal residual universe joins', () => {
+  expectCode('GOVERNED_RESIDUAL_UNIVERSE_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_UNIVERSE',
+    ).terminal_residual_join_contract.required_join_bindings.pop();
+  });
+  expectCode('GOVERNED_RESIDUAL_UNIVERSE_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_UNIVERSE',
+    ).terminal_residual_join_contract.required_terminal_kind =
+      'OPEN_WORLD_CANDIDATE';
+  });
+  expectCode('GOVERNED_RESIDUAL_UNIVERSE_CONTRACT_MISMATCH', (values) => {
+    definition(
+      values,
+      'GOVERNED_RESIDUAL_UNIVERSE',
+    ).terminal_residual_join_contract.stale_terminal_payload_permitted = true;
   });
 });
 
