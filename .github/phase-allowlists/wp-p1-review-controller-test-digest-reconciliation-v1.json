@@ -17,5 +17,5 @@
     "supabase/**",
     "tests/**"
   ],
-  "note": "Reconciles the exact executable digests after the closed trust-registry assertion changes. It changes no test membership and grants no gate PASS, deployment, database, writer, serving, release, import, activation or production authority."
+  "note": "Reconciles the exact executable digests and adds the hostile P1 review-registration test to CONTRACT-01. It grants no gate PASS, deployment, database, writer, serving, release, import, activation or production authority."
 }
