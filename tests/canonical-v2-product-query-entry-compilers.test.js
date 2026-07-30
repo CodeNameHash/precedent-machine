@@ -16,16 +16,28 @@ const {
   listProductBrowseOptions,
 } = require('../lib/canonical-v2/product-browse-compiler');
 const {
+  buildProductAskMappingRegistryManifest,
   PRODUCT_ASK_MAPPING_REGISTRY_MANIFEST_SCHEMA,
   normalizeProductAskPhrase,
+  productAskMappingRegistryAdmission,
   productAskMappingRegistryPayloadDigest,
 } = require('../lib/canonical-v2/product-ask-mapping-registry');
+const {
+  buildProductNavigationCatalogueManifest,
+  navigationDefinitionPayloadDigest,
+  productNavigationQueryAdmission,
+  sourceNavigationCataloguePayloadDigest,
+} = require('../lib/canonical-v2/product-navigation-catalogue');
 const {
   PRODUCT_QUERY_ADMISSION_CONTEXT_SCHEMA,
   PRODUCT_QUERY_IR_SCHEMA,
   canonicalProductQueryIrBytes,
 } = require('../lib/canonical-v2/product-query-ir');
 
+const ROOT = path.join(
+  __dirname,
+  '../contracts/canonical-v2/successor',
+);
 const AGREEMENT_RESULT = Object.freeze({
   stable_id: 'AGREEMENT_PHRASEBOOK_PASSAGE_RESULT',
   version: 1,
@@ -38,6 +50,16 @@ const CVR_RESULT = Object.freeze({
   stable_id: 'CVR_MILESTONE_PASSAGE_RESULT',
   version: 1,
 });
+const PRE_V2_PRODUCT_NAVIGATION_ID =
+  'b30038c5806fccbc3bf4e9e79feffb84220aff984bad361e61f8e31fc228b21d';
+const PRE_V2_PRODUCT_NAVIGATION_PAYLOAD_DIGEST =
+  '5a60e9b870cb5c3032f5d1df2166381c4a651c14dbee7d626395b5ed982f7179';
+const V2_PRODUCT_NAVIGATION_ID =
+  '716b65d47b91447857b119588cbe15e18917b90565b4fdc5f22b57bcebee1961';
+const V2_PRODUCT_NAVIGATION_PAYLOAD_DIGEST =
+  '7a2258ab2169a472c03cbb420596cb3a637014afe9533c5f2430b313c90f7eca';
+const METSERA_GRANTED_V2_PRODUCT_QUERY_IR_BYTES = '{"cohort_contract":{"cohort_definition_id":"e6bcbdbe316c7391ab11e39d8fa2dbc6dd0b80e5352d12f165711bc984b9769f","cohort_definition_payload_digest":"b4827996ea5eae663805d7ebecf6c4542632c862524871f91ef4f6c9f25af159"},"coverage_contract":{"coverage_identity":"5bfa89491ff10fc6fe3021542ac40ab5f16b51cb8497c11678649ce423654f59","coverage_payload_digest":"8a20e84e7863ae92abe696ccf947b3e053c55a3cd07f5f4d622de24642c91f3e","covered_set_identity":"9859b566397cb515e7d419d3e4840d521f407af0158219814379f39bff295311","exclusions_identity":"bd5dcbcdf99538c2482e69b121ce52a8957575cffd96457017f8e83cbcbaf57f"},"detail_action_contract":{"actions":["PARENT_BOUND_PARAGRAPH_CONTEXT"]},"filter_contract":{"clauses":[{"completeness_semantics":"UNKNOWN_IF_NOT_ADMITTED","field_key":"process_phase","field_scope":"SAME_DEAL","field_version":1,"multiplicity":"ZERO_OR_ONE","operator":"EQ","value":"ADMITTED_VALUE"}]},"pagination_contract":{"cursor":null,"page_size":25},"presentation_contract":{"diversity":{"definition_id":"89153eff87621c98f3e362570d8217e95600c8ef3d3694ad113b8f6b4406a6a8","payload_digest":"da4b4e651931424d422359ed6ef1d7c74c5241c6f3c38ad3f9aef73abd562f4e"},"requested_columns":[{"field_key":"process_phase","field_version":1}],"sort":[{"direction":"ASC","field_key":"process_phase","field_version":1}]},"query_definition_id":"f8368787b985334f9121bcb0ee48fbb3ab8b5569f883935aa5c03b8edf4be759","release_contract":{"approved_pm_data_version_id":"e1ea0f882c9fc12f0d4fdce6bf352d58ac10afc34d41e7fe47d18ef72c2a0208","candidate_release_manifest_id":"6d04f28cfd9932f8bf794069059705bbfcc41c49145a62803ae988af2e44ecf9","candidate_release_manifest_payload_digest":"398169dab7ca863dc8854f6c063898ec288a23a85f81ba72032223d7a06d00cf","canonical_contract_identity":{"payload_digest":"96a2b75621fb83e51c55c7b908fd5c3d39c733c6674643f3f278e003bdca4356","stable_id":"CANONICAL_CONTRACT_BUNDLE","version":1},"navigation_catalogue_id":"716b65d47b91447857b119588cbe15e18917b90565b4fdc5f22b57bcebee1961","navigation_catalogue_payload_digest":"7a2258ab2169a472c03cbb420596cb3a637014afe9533c5f2430b313c90f7eca","product_field_catalogue_manifest_id":"72c0a4c5aee554fb7364c6dd68e62d4f2cc0ef9bdfe233bcaa38fc87ed725c0b","product_field_catalogue_payload_digest":"1f09f92223d2a9abb0bb02e779ba8f3a2790caade384d781f6200d7fec858d81"},"schema_version":"PRODUCT_QUERY_IR/V1","semantic_contract":{"domain_key":"PROCESS","evidence_requirement_ids":["EXACT_PASSAGE","EXACT_SOURCE_CITATION"],"predicate_admission_id":"f572c41a8c5e8cf9688a6dd564f830f395b40360090530d0fad6b2bb0408f64a","predicate_key":"EXCLUSIVITY_GRANTED","predicate_version":1,"result_definition":{"stable_id":"PROCESS_PHRASEBOOK_PASSAGE_RESULT","version":1}}}';
+const METSERA_GRANTED_PRE_V2_SEMANTIC_QUERY_BODY = '{"cohort_contract":{"cohort_definition_id":"e6bcbdbe316c7391ab11e39d8fa2dbc6dd0b80e5352d12f165711bc984b9769f","cohort_definition_payload_digest":"b4827996ea5eae663805d7ebecf6c4542632c862524871f91ef4f6c9f25af159"},"coverage_contract":{"coverage_identity":"5bfa89491ff10fc6fe3021542ac40ab5f16b51cb8497c11678649ce423654f59","coverage_payload_digest":"8a20e84e7863ae92abe696ccf947b3e053c55a3cd07f5f4d622de24642c91f3e","covered_set_identity":"9859b566397cb515e7d419d3e4840d521f407af0158219814379f39bff295311","exclusions_identity":"bd5dcbcdf99538c2482e69b121ce52a8957575cffd96457017f8e83cbcbaf57f"},"detail_action_contract":{"actions":["PARENT_BOUND_PARAGRAPH_CONTEXT"]},"filter_contract":{"clauses":[{"completeness_semantics":"UNKNOWN_IF_NOT_ADMITTED","field_key":"process_phase","field_scope":"SAME_DEAL","field_version":1,"multiplicity":"ZERO_OR_ONE","operator":"EQ","value":"ADMITTED_VALUE"}]},"pagination_contract":{"cursor":null,"page_size":25},"presentation_contract":{"diversity":{"definition_id":"89153eff87621c98f3e362570d8217e95600c8ef3d3694ad113b8f6b4406a6a8","payload_digest":"da4b4e651931424d422359ed6ef1d7c74c5241c6f3c38ad3f9aef73abd562f4e"},"requested_columns":[{"field_key":"process_phase","field_version":1}],"sort":[{"direction":"ASC","field_key":"process_phase","field_version":1}]},"release_contract":{"approved_pm_data_version_id":"e1ea0f882c9fc12f0d4fdce6bf352d58ac10afc34d41e7fe47d18ef72c2a0208","candidate_release_manifest_id":"6d04f28cfd9932f8bf794069059705bbfcc41c49145a62803ae988af2e44ecf9","candidate_release_manifest_payload_digest":"398169dab7ca863dc8854f6c063898ec288a23a85f81ba72032223d7a06d00cf","canonical_contract_identity":{"payload_digest":"96a2b75621fb83e51c55c7b908fd5c3d39c733c6674643f3f278e003bdca4356","stable_id":"CANONICAL_CONTRACT_BUNDLE","version":1},"navigation_catalogue_id":"b30038c5806fccbc3bf4e9e79feffb84220aff984bad361e61f8e31fc228b21d","navigation_catalogue_payload_digest":"5a60e9b870cb5c3032f5d1df2166381c4a651c14dbee7d626395b5ed982f7179","product_field_catalogue_manifest_id":"72c0a4c5aee554fb7364c6dd68e62d4f2cc0ef9bdfe233bcaa38fc87ed725c0b","product_field_catalogue_payload_digest":"1f09f92223d2a9abb0bb02e779ba8f3a2790caade384d781f6200d7fec858d81"},"schema_version":"PRODUCT_QUERY_IR/V1","semantic_contract":{"domain_key":"PROCESS","evidence_requirement_ids":["EXACT_PASSAGE","EXACT_SOURCE_CITATION"],"predicate_admission_id":"f572c41a8c5e8cf9688a6dd564f830f395b40360090530d0fad6b2bb0408f64a","predicate_key":"EXCLUSIVITY_GRANTED","predicate_version":1,"result_definition":{"stable_id":"PROCESS_PHRASEBOOK_PASSAGE_RESULT","version":1}}}';
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
@@ -55,6 +77,18 @@ function identity(label) {
   };
 }
 
+function versionedIdentity(stableId) {
+  return {
+    stable_id: stableId,
+    version: 1,
+    payload_digest: digest(`${stableId}:1`),
+  };
+}
+
+function compareText(left, right) {
+  return left < right ? -1 : left > right ? 1 : 0;
+}
+
 function pattern(patternKey, label, predicateKey = patternKey) {
   return {
     pattern_key: patternKey,
@@ -63,6 +97,189 @@ function pattern(patternKey, label, predicateKey = patternKey) {
     predicate_version: 1,
     predicate_shape: 'ATOMIC',
   };
+}
+
+function productPatternIdentity(value) {
+  return [
+    value.domain_key,
+    value.topic_key,
+    value.pattern_key,
+  ].join('\0');
+}
+
+function sourceNavigationIdentity(value) {
+  return `${value.stable_id}\0${value.schema_version}`;
+}
+
+function sourceNavigationPatterns(source) {
+  return source.definition.domains.flatMap((domain) => (
+    domain.topics.flatMap((topic) => topic.patterns.map((entry) => ({
+      source_stable_id: source.stable_id,
+      domain_key: domain.domain_key,
+      topic_key: topic.topic_key,
+      pattern_key: entry.pattern_key,
+      predicate_key: entry.predicate_key,
+      predicate_version: entry.predicate_version,
+    })))
+  ));
+}
+
+function sourceNavigationCounts(source) {
+  const domains = source.definition.domains;
+  return {
+    domains: domains.length,
+    topics: domains.reduce(
+      (total, domain) => total + domain.topics.length,
+      0,
+    ),
+    patterns: domains.reduce(
+      (domainTotal, domain) => domainTotal + domain.topics.reduce(
+        (topicTotal, topic) => topicTotal + topic.patterns.length,
+        0,
+      ),
+      0,
+    ),
+  };
+}
+
+function sourceNavigationAdmission(source) {
+  const counts = sourceNavigationCounts(source);
+  return {
+    source_stable_id: source.stable_id,
+    source_schema_version: source.schema_version,
+    source_catalogue_version: source.definition.catalogue_version,
+    source_payload_digest: sourceNavigationCataloguePayloadDigest(source),
+    source_domain_count: counts.domains,
+    source_topic_count: counts.topics,
+    source_pattern_count: counts.patterns,
+  };
+}
+
+function realAgreementNavigationSource() {
+  return {
+    object_kind: 'AGREEMENT_NAVIGATION_CATALOGUE_INPUT',
+    stable_id: 'AGREEMENT_NAVIGATION_DEFINITION_CATALOGUE',
+    schema_version: 'AGREEMENT_NAVIGATION_CATALOGUE_INPUT/V1',
+    definition: {
+      catalogue_version: 1,
+      pm_wide_catalogue_binding: {
+        combined_catalogue_stable_id: 'PRODUCT_NAVIGATION_CATALOGUE',
+        agreement_domain_registry_stable_id: 'AGREEMENT',
+        predicate_catalogue_stable_id:
+          'AGREEMENT_DEAL_PROTECTION_PREDICATE_CATALOGUE',
+        second_product_navigation_catalogue_permitted: false,
+        agreement_contribution_is_additive_only: true,
+      },
+      hierarchy_contract: {
+        levels: ['DOMAIN', 'TOPIC', 'PATTERN'],
+        maximum_depth: 3,
+        selected_topic_controls_pattern_membership: true,
+        all_is_catalogue_navigation_not_union_query: true,
+        remaining_distinctions_are_fields_or_predicates: true,
+        display_only_entry_permitted: false,
+      },
+      domains: [{
+        domain_key: 'AGREEMENT',
+        label: 'Agreement',
+        domain_registry_stable_id: 'AGREEMENT',
+        topics: [{
+          topic_key: 'DEAL_PROTECTIONS',
+          label: 'Deal protections',
+          predicate_catalogue_stable_id:
+            'AGREEMENT_DEAL_PROTECTION_PREDICATE_CATALOGUE',
+          patterns: [
+            pattern('FIDUCIARY_OUT', 'Fiduciary out'),
+            pattern('NO_SHOP', 'No-shop'),
+          ],
+        }],
+      }],
+      admission_contract: {
+        domain_topic_and_pattern_compile_to_one_query_ir: true,
+        pattern_requires_exact_predicate_admission: true,
+        unknown_domain_topic_pattern_or_predicate_has_runtime_path: false,
+        failed_predicate_cannot_enter_through_passing_sibling: true,
+        cross_domain_boolean_query_permitted_without_composite_contract: false,
+        ask_and_browse_byte_equivalence_required: true,
+      },
+      authority_contract: {
+        creates_runtime_navigation: false,
+        creates_query_authority: false,
+        creates_extraction_authority: false,
+        creates_writer_authority: false,
+        creates_serving_authority: false,
+        creates_release_authority: false,
+        creates_contract_freeze_authority: false,
+      },
+    },
+  };
+}
+
+function realProcessV2NavigationSource() {
+  return JSON.parse(fs.readFileSync(
+    path.join(
+      ROOT,
+      'process/navigation/process-navigation-definition-catalogue.v2.json',
+    ),
+    'utf8',
+  ));
+}
+
+function realV2ProductNavigationManifest() {
+  const sources = [
+    realAgreementNavigationSource(),
+    realProcessV2NavigationSource(),
+  ].sort((left, right) => compareText(
+    sourceNavigationIdentity(left),
+    sourceNavigationIdentity(right),
+  ));
+  const dispositions = sources
+    .flatMap(sourceNavigationPatterns)
+    .map((entry) => ({
+      ...entry,
+      decision: 'INCLUDE',
+      certification_identity: versionedIdentity(
+        [
+          entry.domain_key,
+          entry.predicate_key,
+          entry.predicate_version,
+          'NAVIGATION_CERTIFICATION',
+        ].join('_'),
+      ),
+      exclusion_reason_code: null,
+      exclusion_evidence_identity: null,
+    }))
+    .sort((left, right) => compareText(
+      `${left.source_stable_id}\0${productPatternIdentity(left)}`,
+      `${right.source_stable_id}\0${productPatternIdentity(right)}`,
+    ));
+  return buildProductNavigationCatalogueManifest({
+    source_catalogues: sources,
+    release_admission: {
+      schema_version: 'PRODUCT_NAVIGATION_RELEASE_ADMISSION/V1',
+      approved_pm_data_version_id: digest('approved-pm-data-version'),
+      candidate_release_manifest_id: digest('candidate-release-manifest'),
+      candidate_release_manifest_payload_digest:
+        digest('candidate-release-manifest-payload'),
+      catalogue_generator_identity:
+        versionedIdentity('PRODUCT_NAVIGATION_CATALOGUE_GENERATOR'),
+      source_catalogue_admissions: sources
+        .map(sourceNavigationAdmission)
+        .sort((left, right) => compareText(
+          `${left.source_stable_id}\0${left.source_schema_version}`,
+          `${right.source_stable_id}\0${right.source_schema_version}`,
+        )),
+      pattern_dispositions: dispositions,
+      required_initial_domain_keys: ['AGREEMENT', 'PROCESS'],
+      domain_order: ['AGREEMENT', 'PROCESS'],
+      enumeration_certification: {
+        independent_source_enumeration_identity:
+          versionedIdentity('NAVIGATION_INDEPENDENT_SOURCE_ENUMERATION'),
+        inclusion_exclusion_reconciliation_identity:
+          versionedIdentity('NAVIGATION_INCLUSION_EXCLUSION_RECONCILIATION'),
+      },
+      previous_catalogue_identity: null,
+    },
+  });
 }
 
 function navigationDefinition({ includeCvr = false } = {}) {
@@ -347,6 +564,213 @@ const CVR_CONCEPT = Object.freeze(concept({
   label: 'Regulatory milestone',
 }));
 
+function productNavigationPatterns(manifest) {
+  return manifest.navigation_definition.domains.flatMap((domain) => (
+    domain.topics.flatMap((topic) => topic.patterns.map((entry) => ({
+      domain_key: domain.domain_key,
+      topic_key: topic.topic_key,
+      pattern_key: entry.pattern_key,
+      predicate_key: entry.predicate_key,
+      predicate_version: entry.predicate_version,
+      label: entry.label,
+    })))
+  ));
+}
+
+function releaseCompiledMapping({
+  key,
+  phrase,
+  phraseClass,
+  target,
+}) {
+  return {
+    mapping_key: key,
+    phrase,
+    normalized_phrase: normalizeProductAskPhrase(phrase),
+    phrase_class: phraseClass,
+    outcome: 'COMPILED',
+    domain_key: target.domain_key,
+    topic_key: target.topic_key,
+    pattern_key: target.pattern_key,
+    predicate_key: target.predicate_key,
+    predicate_version: target.predicate_version,
+    concept_label: target.label,
+    choices: [],
+    nearest_supported_concepts: [],
+  };
+}
+
+function releaseBoundaryMapping({
+  key,
+  phrase,
+  phraseClass,
+  outcome,
+  choices = [],
+  nearest = [],
+}) {
+  return {
+    mapping_key: key,
+    phrase,
+    normalized_phrase: normalizeProductAskPhrase(phrase),
+    phrase_class: phraseClass,
+    outcome,
+    domain_key: null,
+    topic_key: null,
+    pattern_key: null,
+    predicate_key: null,
+    predicate_version: null,
+    concept_label: null,
+    choices: choices.map(clone).sort((left, right) => compareText(
+      productPatternIdentity(left),
+      productPatternIdentity(right),
+    )),
+    nearest_supported_concepts: nearest.map(clone).sort(
+      (left, right) => compareText(
+        productPatternIdentity(left),
+        productPatternIdentity(right),
+      ),
+    ),
+  };
+}
+
+function realV2ProductAskInputs(
+  navigationManifest,
+  metseraPhrasePredicateKey,
+) {
+  const patterns = productNavigationPatterns(navigationManifest);
+  const patternByPredicate = new Map(patterns.map((entry) => [
+    entry.predicate_key,
+    entry,
+  ]));
+  const noShop = patternByPredicate.get('NO_SHOP');
+  const granted = patternByPredicate.get('EXCLUSIVITY_GRANTED');
+  const metseraTarget = patternByPredicate.get(metseraPhrasePredicateKey);
+  const entries = patterns.flatMap((entry, index) => {
+    const serial = String(index + 1).padStart(4, '0');
+    return [
+      releaseCompiledMapping({
+        key: `map-${serial}-practitioner`,
+        phrase: `Show ${entry.domain_key} ${entry.pattern_key} precedents`,
+        phraseClass: 'PRACTITIONER_PHRASE',
+        target: entry,
+      }),
+      releaseCompiledMapping({
+        key: `map-${serial}-synonym`,
+        phrase: `Find drafting for ${entry.domain_key} ${entry.pattern_key}`,
+        phraseClass: 'DRAFTING_SYNONYM',
+        target: entry,
+      }),
+    ];
+  });
+  entries.push(
+    releaseCompiledMapping({
+      key: 'map-9000-metsera',
+      phrase: 'Did the target grant exclusivity?',
+      phraseClass: 'PRACTITIONER_PHRASE',
+      target: metseraTarget,
+    }),
+    releaseCompiledMapping({
+      key: 'map-9001-abbreviation',
+      phrase: 'Show agr no shop',
+      phraseClass: 'ABBREVIATION',
+      target: noShop,
+    }),
+    releaseCompiledMapping({
+      key: 'map-9002-misspelling',
+      phrase: 'Did the target grant excluisvity?',
+      phraseClass: 'ORDINARY_MISSPELLING',
+      target: granted,
+    }),
+    releaseBoundaryMapping({
+      key: 'map-9901-adjacent',
+      phrase: 'Show confidentiality restrictions',
+      phraseClass: 'LEGALLY_ADJACENT_NEGATIVE',
+      outcome: 'TYPED_UNSUPPORTED',
+      nearest: [noShop],
+    }),
+    releaseBoundaryMapping({
+      key: 'map-9902-ambiguous',
+      phrase: 'Show exclusivity',
+      phraseClass: 'AMBIGUOUS_LEGAL_PHRASE',
+      outcome: 'AMBIGUOUS_REQUIRES_LEGAL_CHOICE',
+      choices: [noShop, granted],
+    }),
+    releaseBoundaryMapping({
+      key: 'map-9903-unsupported',
+      phrase: 'Show reverse termination fees',
+      phraseClass: 'UNSUPPORTED_PHRASE',
+      outcome: 'TYPED_UNSUPPORTED',
+      nearest: [granted],
+    }),
+  );
+  entries.sort((left, right) => compareText(
+    left.mapping_key,
+    right.mapping_key,
+  ));
+  const patternDispositions = patterns.map((entry) => ({
+    domain_key: entry.domain_key,
+    topic_key: entry.topic_key,
+    pattern_key: entry.pattern_key,
+    predicate_key: entry.predicate_key,
+    predicate_version: entry.predicate_version,
+    decision: 'INCLUDE',
+    mapping_keys: entries
+      .filter((mappingEntry) => (
+        mappingEntry.outcome === 'COMPILED'
+        && productPatternIdentity(mappingEntry)
+          === productPatternIdentity(entry)
+      ))
+      .map((mappingEntry) => mappingEntry.mapping_key)
+      .sort(compareText),
+    certification_identity: versionedIdentity(
+      [
+        entry.domain_key,
+        entry.predicate_key,
+        entry.predicate_version,
+        'ASK_CERTIFICATION',
+      ].join('_'),
+    ),
+    exclusion_reason_code: null,
+    exclusion_evidence_identity: null,
+  })).sort((left, right) => compareText(
+    productPatternIdentity(left),
+    productPatternIdentity(right),
+  ));
+  return {
+    navigation_catalogue_manifest: navigationManifest,
+    release_admission: {
+      schema_version: 'PRODUCT_ASK_MAPPING_RELEASE_ADMISSION/V1',
+      registry_version: 1,
+      approved_pm_data_version_id:
+        navigationManifest.approved_pm_data_version_id,
+      candidate_release_manifest_id:
+        navigationManifest.candidate_release_manifest_id,
+      candidate_release_manifest_payload_digest:
+        navigationManifest.candidate_release_manifest_payload_digest,
+      navigation_catalogue_identity: {
+        manifest_id: navigationManifest.manifest_id,
+        payload_digest: navigationDefinitionPayloadDigest(
+          navigationManifest.navigation_definition,
+        ),
+      },
+      registry_compiler_identity:
+        versionedIdentity('PRODUCT_ASK_MAPPING_REGISTRY_COMPILER'),
+      entries,
+      pattern_dispositions: patternDispositions,
+      certification: {
+        independent_enumeration_identity:
+          versionedIdentity('ASK_INDEPENDENT_ENUMERATION'),
+        mapping_reconciliation_identity:
+          versionedIdentity('ASK_MAPPING_RECONCILIATION'),
+        query_goldens_identity: versionedIdentity('ASK_QUERY_GOLDENS'),
+        utterance_suite_identity: versionedIdentity('ASK_UTTERANCE_SUITE'),
+      },
+      previous_registry_identity: null,
+    },
+    previous_manifest: null,
+  };
+}
+
 function mapping({
   key,
   phrase,
@@ -539,6 +963,57 @@ function fixture({ includeCvr = false } = {}) {
   };
 }
 
+function realV2ProductFixture({
+  metseraPhrasePredicateKey = 'EXCLUSIVITY_GRANTED',
+} = {}) {
+  const navigationManifest = realV2ProductNavigationManifest();
+  const askInputs = realV2ProductAskInputs(
+    navigationManifest,
+    metseraPhrasePredicateKey,
+  );
+  const registry = buildProductAskMappingRegistryManifest(askInputs);
+  const navigation = navigationManifest.navigation_definition;
+  const admission = queryAdmission(navigation);
+  admission.approved_pm_data_version_id =
+    navigationManifest.approved_pm_data_version_id;
+  admission.candidate_release_manifest_id =
+    navigationManifest.candidate_release_manifest_id;
+  admission.candidate_release_manifest_payload_digest =
+    navigationManifest.candidate_release_manifest_payload_digest;
+  admission.navigation_catalogue =
+    productNavigationQueryAdmission(navigationManifest);
+  admission.predicate_admissions.push(predicateAdmission({
+    domain: 'PROCESS',
+    predicate: 'EXCLUSIVITY_REQUESTED',
+    result: PROCESS_RESULT,
+    evidence: ['EXACT_PASSAGE', 'EXACT_SOURCE_CITATION'],
+  }));
+  return {
+    navigation,
+    navigationManifest,
+    admission,
+    templates: queryTemplates(),
+    registry,
+    registryAdmission:
+      productAskMappingRegistryAdmission(registry, askInputs),
+  };
+}
+
+function semanticQueryBodyWithoutDerivedIdentity(queryIr) {
+  const body = clone(queryIr);
+  delete body.query_definition_id;
+  return body;
+}
+
+function normalisePreV2NavigationBinding(queryBody) {
+  const body = clone(queryBody);
+  body.release_contract.navigation_catalogue_id =
+    PRE_V2_PRODUCT_NAVIGATION_ID;
+  body.release_contract.navigation_catalogue_payload_digest =
+    PRE_V2_PRODUCT_NAVIGATION_PAYLOAD_DIGEST;
+  return body;
+}
+
 function askInput(state, question) {
   return {
     question,
@@ -642,6 +1117,101 @@ test('makes Ask and Browse byte-identical for the same legal meaning', () => {
   assert.equal(
     canonicalProductQueryIrBytes(processAsk.query_ir).toString('utf8'),
     canonicalProductQueryIrBytes(processBrowse.query_ir).toString('utf8'),
+  );
+});
+
+test('locks the real v2 Metsera Ask and Browse paths to one fixed Query IR', () => {
+  const state = realV2ProductFixture();
+  const expectedV2QueryIr = JSON.parse(
+    METSERA_GRANTED_V2_PRODUCT_QUERY_IR_BYTES,
+  );
+  const ask = compileProductAskQuery(askInput(
+    state,
+    'Did the target grant exclusivity?',
+  ));
+  const browse = compileProductBrowseQuery(browseInput(state, {
+    domain_key: 'PROCESS',
+    topic_key: 'EXCLUSIVITY',
+    pattern_key: 'EXCLUSIVITY_GRANTED',
+  }));
+
+  assert.equal(
+    state.navigationManifest.manifest_id,
+    V2_PRODUCT_NAVIGATION_ID,
+  );
+  assert.equal(
+    navigationDefinitionPayloadDigest(state.navigation),
+    V2_PRODUCT_NAVIGATION_PAYLOAD_DIGEST,
+  );
+  assert.equal(
+    expectedV2QueryIr.release_contract.navigation_catalogue_id,
+    V2_PRODUCT_NAVIGATION_ID,
+  );
+  assert.equal(
+    expectedV2QueryIr.release_contract
+      .navigation_catalogue_payload_digest,
+    V2_PRODUCT_NAVIGATION_PAYLOAD_DIGEST,
+  );
+  assert.equal(
+    canonicalProductQueryIrBytes(expectedV2QueryIr).toString('utf8'),
+    METSERA_GRANTED_V2_PRODUCT_QUERY_IR_BYTES,
+  );
+  assert.equal(
+    canonicalProductQueryIrBytes(ask.query_ir).toString('utf8'),
+    METSERA_GRANTED_V2_PRODUCT_QUERY_IR_BYTES,
+  );
+  assert.equal(
+    canonicalProductQueryIrBytes(browse.query_ir).toString('utf8'),
+    METSERA_GRANTED_V2_PRODUCT_QUERY_IR_BYTES,
+  );
+  assert.equal(
+    ask.query_ir.semantic_contract.predicate_key,
+    'EXCLUSIVITY_GRANTED',
+  );
+  assert.equal(ask.query_ir.semantic_contract.predicate_version, 1);
+  assert.equal(
+    browse.query_ir.semantic_contract.predicate_key,
+    'EXCLUSIVITY_GRANTED',
+  );
+  assert.equal(browse.query_ir.semantic_contract.predicate_version, 1);
+
+  const expectedPreV2Body = normalisePreV2NavigationBinding(
+    semanticQueryBodyWithoutDerivedIdentity(expectedV2QueryIr),
+  );
+  assert.equal(
+    canonicalJson(expectedPreV2Body),
+    METSERA_GRANTED_PRE_V2_SEMANTIC_QUERY_BODY,
+  );
+  assert.equal(
+    canonicalJson(normalisePreV2NavigationBinding(
+      semanticQueryBodyWithoutDerivedIdentity(ask.query_ir),
+    )),
+    METSERA_GRANTED_PRE_V2_SEMANTIC_QUERY_BODY,
+  );
+  assert.equal(
+    canonicalJson(normalisePreV2NavigationBinding(
+      semanticQueryBodyWithoutDerivedIdentity(browse.query_ir),
+    )),
+    METSERA_GRANTED_PRE_V2_SEMANTIC_QUERY_BODY,
+  );
+
+  const hostile = realV2ProductFixture({
+    metseraPhrasePredicateKey: 'EXCLUSIVITY_REQUESTED',
+  });
+  const hostileAsk = compileProductAskQuery(askInput(
+    hostile,
+    'Did the target grant exclusivity?',
+  ));
+  assert.equal(
+    hostileAsk.query_ir.semantic_contract.predicate_key,
+    'EXCLUSIVITY_REQUESTED',
+  );
+  assert.throws(
+    () => assert.equal(
+      canonicalProductQueryIrBytes(hostileAsk.query_ir).toString('utf8'),
+      METSERA_GRANTED_V2_PRODUCT_QUERY_IR_BYTES,
+    ),
+    { code: 'ERR_ASSERTION' },
   );
 });
 
