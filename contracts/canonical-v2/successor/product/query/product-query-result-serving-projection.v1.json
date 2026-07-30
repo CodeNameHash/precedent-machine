@@ -31,8 +31,11 @@
       "unknown_fields_permitted": false
     },
     "release_contract": {
-      "record_root_in_candidate_release_manifest_required": true,
-      "complete_record_count_in_candidate_release_manifest_required": true,
+      "record_root_in_product_release_partition_manifest_required": true,
+      "complete_record_count_in_product_release_partition_manifest_required": true,
+      "product_release_partition_manifest_binds_base_candidate_release_manifest": true,
+      "candidate_release_import_plan_binds_partition_manifest": true,
+      "active_pointer_import_plan_join_required": true,
       "inactive_import_required_before_activation": true,
       "missing_extra_duplicate_or_conflicting_record_blocks_import": true,
       "active_pointer_join_required_for_serving": true,

@@ -76,7 +76,17 @@ test('requires one generic release-bound Product result projection', () => {
     true,
   );
   assert.equal(
-    projection.release_contract.record_root_in_candidate_release_manifest_required,
+    projection.release_contract
+      .record_root_in_product_release_partition_manifest_required,
+    true,
+  );
+  assert.equal(
+    projection.release_contract
+      .product_release_partition_manifest_binds_base_candidate_release_manifest,
+    true,
+  );
+  assert.equal(
+    projection.release_contract.active_pointer_import_plan_join_required,
     true,
   );
   assert.equal(
