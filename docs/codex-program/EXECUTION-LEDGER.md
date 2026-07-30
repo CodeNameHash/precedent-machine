@@ -53,9 +53,9 @@ exact `origin/main`.
 | Isolated Preview deployment | `dpl_2xUyH1Bzx1oX4iPvNNCtWV6KZTze`, accepted by Generation 44 isolation check |
 | Active PM work package | `PILOT_FREEZE_AND_VERTICAL_SLICE` |
 | Fixed integration basis | Generation 44 tuple above |
-| PM milestone branch | `codex/pilot-freeze-milestone-v1` at `5b6cfa20b3c7697b3c37a29e25c3f382da9384d8` before this ledger update |
+| PM milestone branch | `codex/pilot-freeze-milestone-v1` at `7310238` before this ledger update |
 | PI Stage 1 branch | `codex/process-exclusivity-predicate-runtime-v2` at `639e1d0c3604273315ee914e7d61374518d9b1f9` |
-| Ready integration receipts | PI Stage 1 and P7 are patch-equivalent on the milestone candidate. P7 Stage 2 is bound to PI head `b27368711157982aadff8a5653e66676002a1119`; its Stage 3 findings are closed by `ba96ac6` and `08e3158`. |
+| Ready integration receipts | PI Stage 1 and P7 are patch-equivalent on the milestone candidate. P7 Stage 2 is bound to PI head `b27368711157982aadff8a5653e66676002a1119`; all Stage 3 findings are closed through `b8606d8`. |
 
 All 24 Phase 9 gates in the signed status remain `OPEN`.
 
@@ -78,9 +78,10 @@ The exact reserved-path set is machine-generated in
 | `PM-LEDGER-01` | control | This ledger. PM controller. | `codex/pilot-freeze-milestone-v1`; this file plus `wp-pm-execution-ledger-v1.json`. | `canonical_work_start`; Generation 44; path, state and line-count checks. | `ACTIVE`; commit to current milestone; no Ben. |
 | `PM-FREEZE-ROOT-01` | P1/P8 | Exact bundle compiler, required-kind registry, freeze candidate and pre-review package. PM implementation. | `codex/pilot-freeze-milestone-v1`; exact `canonical-contract-bundle-*` modules, `contracts/canonical-v2/successor/manifest.json`, required-kind registry and focused tests. | `canonical_work_start`; final candidate bytes; two uncached compiles and focused bundle/gate tests. | `ACTIVE`; finish P7 dispositions and P8 controller hardening, then compile twice; no Ben until exact root approval. |
 | `PI-PILOT-BATCH-01` | P1/P3/P4/P5 | Metsera Process contracts and pure runtime. Process Intelligence. | PI head `639e1d0c3604273315ee914e7d61374518d9b1f9`; patch-equivalent PM commits are already on the milestone candidate. | `canonical_work_start`; Generation 44; affected Process/Product chain passed after PM manifest reconciliation. | `COMPLETE` on the milestone candidate; retain exact Stage 1 handoff; no Ben. |
-| `PI-P7-GENERIC-01` | P7 | Seven generic source, scope, enumeration, graph and validation modules. PI with PM review. | PI head `b27368711157982aadff8a5653e66676002a1119`; patch-equivalent files and accepted corrections are on the milestone candidate through `08e3158`. | `canonical_work_start`; Stage 2 exact-bound review, Stage 3 correction reviews and P7 affected chain. | `COMPLETE` on the milestone candidate; no Ben. |
+| `PI-P7-GENERIC-01` | P7 | Seven generic source, scope, enumeration, graph and validation modules. PI with PM review. | PI head `b27368711157982aadff8a5653e66676002a1119`; patch-equivalent files and accepted corrections are on the milestone candidate through `b8606d8`. | `canonical_work_start`; Stage 2 exact-bound review, Stage 3 disposition and P7 affected chain. | `COMPLETE`; 18/18 combined outcome-interface tests pass; no Ben. |
 | `PM-P6-ACCEPTANCE-01` | P6 | Fixture-backed Process research surface and source actions. PM implementation. | `components/process/**`, `pages/query/process/pilot.js`, Process result/filter helpers and focused browser/runtime tests. | `canonical_work_start`; P4/P5; 28 focused/runtime tests and local browser acceptance pass. | `REVIEW`; repeat smoke on exact deployed Preview during Stage 5; no Ben. |
 | `PM-P8-REVIEW-CONTROLLER-01` | P8 | Exact-root review-task controller that fails closed without trusted registration. PM controller. | `contract-freeze-review-tasks.js`, its runner, test and exact allowlist. | `canonical_work_start`; final package bytes; focused hostile tests and Stage 3 review. | `COMPLETE` at `19f4c21`; 11 focused hostile tests pass; no Ben. |
+| `PM-P8-REVIEW-REGISTRATION-01` | P8 | Protected signed registration for the exact package, three reviewers and authenticated result digests. PM implementation. | Closed registration schema/carrier, trusted key domains, review-task integration and focused tests. | `canonical_work_start`; hardened P8 controller; hostile substitution and signature tests. | `COMPLETE` at `7310238`; 18/18 focused tests pass; no Ben. |
 | `PM-METSERA-GOLD-01` | PE1/P8 | Sealed source-only Metsera gold. PM implementation. | Current milestone, commit `9bff4690a67018ecf8bb5f582bc51dc0b5c68336`; `evidence/process-intelligence/metsera-gold/**`. | `canonical_work_start`; independent source evidence; 8/8 focused pass. | `COMPLETE`; keep sealed until Stage 4 comparison; no Ben. |
 | `PM-PREFLIGHT-01` | control | Read-only nine-stage integration preflight. PM controller. | Current milestone through `b095d1e6070cfc1038f2246c85e1d1c5251c654c`; `pilot-integration-preflight.*`. | `canonical_work_start`; 20/20 focused pass; independent exact-bound review pass. | `COMPLETE`; run after combined candidate exists; no Ben. |
 
@@ -224,7 +225,7 @@ successor needs Ben.
 | Fact not yet proved | Required exact check | Owner |
 | --- | --- | --- |
 | P6 exact deployed Preview behaviour. | After the final candidate deployment, repeat the desktop/mobile/reflow, filter, source, context and related-drafting smoke on that exact deployment ID. | PM implementation |
-| P7 rejection and residual interfaces. | `08e3158` closes the interfaces; retain the 17/17 affected-chain receipt for final Stage 5 evidence. | PM controller |
+| P7 rejection and residual interfaces. | `b8606d8` closes the interfaces; retain the 18/18 affected-chain receipt for final Stage 5 evidence. | PM controller |
 | Final successor member count and kind count. | Regenerate required-kind registry and manifest from the combined tree, then run both generators with `--check`. | PM controller |
 | Final missing, duplicate, conflict, cycle and residual counts. | Run the actual input compiler and bundle compiler twice on the combined tree. Require zero for each count and identical bytes. | PM controller |
 | Final P8 protected review registration. | Validate one signed registration and three signed controller/result records against the exact package, reviewers, sessions, ancestry and result digests. | PM controller |
