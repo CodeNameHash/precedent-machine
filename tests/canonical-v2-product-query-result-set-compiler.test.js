@@ -13,6 +13,12 @@ const {
   compileProductQueryIr,
 } = require('../lib/canonical-v2/product-query-ir');
 const {
+  CURRENT_PM_BASELINE_FIELD_KEYS,
+  buildProductFieldCatalogueManifest,
+  productFieldCatalogueQueryAdmission,
+  sourceRegistryPayloadDigest,
+} = require('../lib/canonical-v2/product-field-catalogue');
+const {
   PRODUCT_DOMAIN_RESULT_VALIDATION_SCHEMA,
   PRODUCT_EXACT_CITATION_SCHEMA,
   PRODUCT_QUERY_RESULT_SCHEMA,
@@ -39,10 +45,18 @@ const {
   compileProcessPassageOrder,
 } = require('../lib/canonical-v2/process-passage-order');
 const {
-  PROCESS_ORDERING_VALIDATOR_STABLE_ID,
-  PROCESS_ORDERING_VALIDATOR_VERSION,
+  AGREEMENT_COMPARABLE_RESULT_ORDERING_FACT_SCHEMA,
+  AGREEMENT_COMPARABLE_RESULT_ORDERING_FAILURE_SCHEMA,
+  AGREEMENT_ORDERING_VALIDATOR_STABLE_ID,
+  AGREEMENT_ORDERING_VALIDATOR_VERSION,
+  AGREEMENT_COMPARABLE_RESULT_ORDERING_PROJECTION_SCHEMA,
+  compileAgreementComparableResultOrder,
+} = require('../lib/canonical-v2/agreement-comparable-result-order');
+const {
   PRODUCT_QUERY_RESULT_ORDERING_RECEIPT_SCHEMA,
   PRODUCT_QUERY_RESULT_ORDERING_RECEIPT_STATE,
+  PROCESS_ORDERING_VALIDATOR_STABLE_ID,
+  PROCESS_ORDERING_VALIDATOR_VERSION,
   compileProductQueryResultSet,
   compileProductResultSlotFailure,
   validateProductResultSlotFailure,
@@ -51,6 +65,19 @@ const {
 );
 
 const CONTRACT_PAIR = 'a'.repeat(64);
+const CONTRACT_ROOT = path.join(
+  __dirname,
+  '../contracts/canonical-v2/successor',
+);
+const FIELD_GROUP_LABELS = Object.freeze({
+  DEAL_IDENTITY: 'Deal identity',
+  CHRONOLOGY: 'Deal and date',
+  PARTIES: 'Parties',
+  ECONOMICS: 'Consideration and value',
+  TRANSACTION_STRUCTURE: 'Transaction structure',
+  CLASSIFICATIONS: 'Sector and classifications',
+  PROFESSIONALS: 'Law firms, lawyers and advisers',
+});
 const DOMAINS = Object.freeze({
   AGREEMENT: Object.freeze({
     predicate_key: 'SELLER_TERMINATION_FEE',
@@ -107,11 +134,164 @@ function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
+function payloadDigest(value) {
+  return sha256Hex(Buffer.from(canonicalJson(value), 'utf8'));
+}
+
+function identity(stableId, version = 1) {
+  return {
+    stable_id: stableId,
+    version,
+    payload_digest: digest(`${stableId}:${version}`),
+  };
+}
+
+function loadContract(relativePath) {
+  return JSON.parse(fs.readFileSync(
+    path.join(CONTRACT_ROOT, relativePath),
+    'utf8',
+  ));
+}
+
 function assertDeepFrozen(value) {
   if (!value || typeof value !== 'object') return;
   assert.equal(Object.isFrozen(value), true);
   Object.values(value).forEach(assertDeepFrozen);
 }
+
+function sharedCompleteness(field) {
+  if (field.multiplicity === 'MANY') {
+    return 'NON_VACUOUS_ALL_AND_UNKNOWN_IF_COLLECTION_INCOMPLETE';
+  }
+  return field.missing_state_behaviour;
+}
+
+function sourceField(field, sourceCatalogue) {
+  return {
+    field_key: field.field_key,
+    field_version: field.field_version,
+    label: field.label,
+    field_group: field.field_group,
+    value_type: field.value_type,
+    control_type: field.control_type,
+    supported_domains: [...field.permitted_domains].sort(),
+    source_permitted_result_definitions: [],
+    capabilities: {
+      display: field.capabilities.display,
+      filter: field.capabilities.filter,
+      sort: field.capabilities.sort,
+      group: field.capabilities.group,
+      export: true,
+    },
+    permitted_operators: [...field.permitted_operators].sort(),
+    filter_scope: field.filter_scope,
+    multiplicity: field.multiplicity,
+    completeness_semantics: sharedCompleteness(field),
+    source_requirement: field.source_detail_action,
+    derivation_requirement: 'CANONICAL_SHARED_FACT_PROJECTION_ONLY',
+    unavailable_reason: field.unavailable_request_result,
+    value_vocabulary_required: field.value_type === 'ENUM',
+    source_binding: {
+      source_stable_id: sourceCatalogue.stable_id,
+      source_schema_version: sourceCatalogue.schema_version,
+      source_field_key: field.field_key,
+      source_field_version: field.field_version,
+    },
+  };
+}
+
+function agreementSourceRegistry() {
+  const shared = loadContract(
+    'shared/field-definitions/shared-deal-field-catalogue.v1.json',
+  );
+  const fields = shared.field_definitions
+    .map((field) => sourceField(field, shared))
+    .sort((left, right) => (
+      left.field_key < right.field_key ? -1 : 1
+    ));
+  const registry = {
+    schema_version: 'PRODUCT_FIELD_SOURCE_REGISTRY/V1',
+    stable_id: 'PRODUCT_FIELD_SOURCE_REGISTRY',
+    registry_version: 1,
+    approved_pm_data_version_id: digest('agreement-pm-data-version'),
+    source_bindings: [{
+      source_stable_id: shared.stable_id,
+      source_schema_version: shared.schema_version,
+      source_payload_digest: payloadDigest(shared),
+      source_field_count: shared.field_definitions.length,
+    }],
+    field_groups: shared.field_groups.map((fieldGroupKey, index) => ({
+      field_group_key: fieldGroupKey,
+      label: FIELD_GROUP_LABELS[fieldGroupKey],
+      sort_ordinal: index + 1,
+    })),
+    field_definitions: fields,
+    source_exclusions: [],
+    current_pm_baseline_field_keys: [...CURRENT_PM_BASELINE_FIELD_KEYS],
+    enumeration_certification: {
+      independent_enumeration_id:
+        digest('agreement-field-enumeration'),
+      inclusion_exclusion_reconciliation_id:
+        digest('agreement-field-reconciliation'),
+    },
+    canonical_payload_digest: null,
+  };
+  registry.canonical_payload_digest =
+    sourceRegistryPayloadDigest(registry);
+  return registry;
+}
+
+function agreementFieldAdmission(field) {
+  return {
+    field_key: field.field_key,
+    field_version: field.field_version,
+    supported_domains: [...field.supported_domains],
+    permitted_result_definitions: ['AGREEMENT_COMPARABLE_RESULT'],
+    capabilities: clone(field.capabilities),
+    permitted_operators: [...field.permitted_operators],
+    value_vocabulary: field.value_vocabulary_required
+      ? identity(`${field.field_key.toUpperCase()}_VALUE_REGISTRY`)
+      : null,
+    certification_identity:
+      identity(`${field.field_key.toUpperCase()}_FIELD_CERTIFICATION`),
+  };
+}
+
+function agreementFieldCatalogue() {
+  const registry = agreementSourceRegistry();
+  return buildProductFieldCatalogueManifest({
+    source_registry: registry,
+    release_admission: {
+      schema_version: 'PRODUCT_FIELD_RELEASE_ADMISSION/V1',
+      approved_pm_data_version_id: registry.approved_pm_data_version_id,
+      candidate_release_manifest_id:
+        digest('agreement-candidate-release'),
+      candidate_release_manifest_payload_digest:
+        digest('agreement-candidate-release-payload'),
+      source_registry_admission: {
+        stable_id: registry.stable_id,
+        registry_version: registry.registry_version,
+        approved_pm_data_version_id:
+          registry.approved_pm_data_version_id,
+        canonical_payload_digest: registry.canonical_payload_digest,
+        enumeration_certification:
+          clone(registry.enumeration_certification),
+      },
+      catalogue_generator_identity:
+        identity('PRODUCT_FIELD_CATALOGUE_GENERATOR'),
+      shared_deal_fact_specification_identity:
+        identity('SHARED_DEAL_FACT_SPECIFICATION'),
+      process_specification_identity:
+        identity('PROCESS_INTELLIGENCE_SPECIFICATION'),
+      field_admissions:
+        registry.field_definitions.map(agreementFieldAdmission),
+      field_exclusions: [],
+      previous_catalogue_identity: null,
+    },
+  });
+}
+
+const AGREEMENT_FIELD_CATALOGUE = agreementFieldCatalogue();
 
 function fieldDefinition({
   fieldKey,
@@ -252,6 +432,103 @@ function queryIr(domain = 'PROCESS') {
           digest(`coverage-payload:${domain}`),
         covered_set_identity: digest(`covered-set:${domain}`),
         exclusions_identity: digest(`exclusions:${domain}`),
+      },
+    },
+  });
+}
+
+function agreementQueryAdmission() {
+  return {
+    schema_version: PRODUCT_QUERY_ADMISSION_CONTEXT_SCHEMA,
+    approved_pm_data_version_id:
+      AGREEMENT_FIELD_CATALOGUE.approved_pm_data_version_id,
+    candidate_release_manifest_id:
+      AGREEMENT_FIELD_CATALOGUE.candidate_release_manifest_id,
+    candidate_release_manifest_payload_digest:
+      AGREEMENT_FIELD_CATALOGUE
+        .candidate_release_manifest_payload_digest,
+    canonical_contract_identity:
+      identity('CANONICAL_CONTRACT_BUNDLE'),
+    product_field_catalogue:
+      productFieldCatalogueQueryAdmission(AGREEMENT_FIELD_CATALOGUE),
+    navigation_catalogue: {
+      stable_id: 'PRODUCT_NAVIGATION_CATALOGUE',
+      catalogue_id: digest('agreement-navigation-catalogue'),
+      payload_digest: digest('agreement-navigation-payload'),
+    },
+    predicate_admissions: [{
+      domain_key: 'AGREEMENT',
+      predicate_key: 'TRANSACTION_STRUCTURE',
+      predicate_version: 1,
+      admission_id: digest('agreement-predicate-admission'),
+      result_definitions: [{
+        stable_id: 'AGREEMENT_COMPARABLE_RESULT',
+        version: 1,
+      }],
+      evidence_requirement_ids: [
+        'EXACT_CLAIM',
+        'EXACT_SOURCE_CITATION',
+      ],
+    }],
+    exact_detail_actions: ['RESULT_COMPONENT_CLAIM_EVIDENCE'],
+    coverage_identities: [digest('agreement-coverage')],
+    route_budget: {
+      maximum_page_size: 50,
+    },
+  };
+}
+
+function agreementQueryIr(pageSize = 8) {
+  return compileProductQueryIr({
+    admission: agreementQueryAdmission(),
+    query: {
+      domain_key: 'AGREEMENT',
+      predicate_key: 'TRANSACTION_STRUCTURE',
+      predicate_version: 1,
+      result_definition: {
+        stable_id: 'AGREEMENT_COMPARABLE_RESULT',
+        version: 1,
+      },
+      evidence_requirement_ids: [
+        'EXACT_CLAIM',
+        'EXACT_SOURCE_CITATION',
+      ],
+      cohort: {
+        cohort_definition_id: digest('agreement-cohort'),
+        cohort_definition_payload_digest:
+          digest('agreement-cohort-payload'),
+      },
+      filters: [{
+        field_key: 'structure',
+        field_version: 1,
+        operator: 'EQ',
+        value: 'MERGER',
+      }],
+      sort: [{
+        field_key: 'signed',
+        field_version: 1,
+        direction: 'DESC',
+      }],
+      diversity: {
+        definition_id: digest('agreement-diversity'),
+        payload_digest: digest('agreement-diversity-payload'),
+      },
+      requested_columns: [
+        { field_key: 'deal', field_version: 1 },
+        { field_key: 'signed', field_version: 1 },
+        { field_key: 'structure', field_version: 1 },
+      ],
+      pagination: {
+        page_size: pageSize,
+        cursor: null,
+      },
+      detail_actions: ['RESULT_COMPONENT_CLAIM_EVIDENCE'],
+      coverage: {
+        coverage_identity: digest('agreement-coverage'),
+        coverage_payload_digest:
+          digest('agreement-coverage-payload'),
+        covered_set_identity: digest('agreement-covered-set'),
+        exclusions_identity: digest('agreement-exclusions'),
       },
     },
   });
@@ -510,6 +787,179 @@ function productResult(ir, fact, ordinal) {
   });
 }
 
+function agreementDomainResult(ordinal) {
+  const payload = {
+    deal_name: `Agreement precedent ${ordinal}`,
+    signed_date: `2025-0${ordinal}-15`,
+    structure: 'MERGER',
+  };
+  const resultPayloadDigest = payloadDigest(payload);
+  const validationBody = {
+    validator_stable_id: 'AGREEMENT_RESULT_VALIDATOR',
+    validator_version: 1,
+    validated_payload_digest: resultPayloadDigest,
+    validation_state: 'EXTERNALLY_VALIDATED',
+  };
+  return {
+    domain_key: 'AGREEMENT',
+    domain_result_definition: {
+      stable_id: 'AGREEMENT_COMPARABLE_RESULT',
+      version: 1,
+    },
+    domain_result_identity: digest(`agreement-result:${ordinal}`),
+    domain_result_payload: payload,
+    domain_result_payload_digest: resultPayloadDigest,
+    domain_result_validation: {
+      schema_version: PRODUCT_DOMAIN_RESULT_VALIDATION_SCHEMA,
+      validator_stable_id: validationBody.validator_stable_id,
+      validator_version: validationBody.validator_version,
+      validation_receipt_id: contentId(
+        PRODUCT_DOMAIN_RESULT_VALIDATION_SCHEMA,
+        validationBody,
+      ),
+      validated_payload_digest: resultPayloadDigest,
+      validation_state: validationBody.validation_state,
+    },
+    domain_result_source_representation_kind: 'STRUCTURED_RESULT',
+  };
+}
+
+function agreementResultFields(ordinal) {
+  return [
+    {
+      field_reference: { field_key: 'deal', field_version: 1 },
+      value: {
+        governed_deal_id: digest(`agreement-deal:${ordinal}`),
+      },
+    },
+    {
+      field_reference: { field_key: 'signed', field_version: 1 },
+      value: {
+        iso_8601_calendar_date: `2025-0${ordinal}-15`,
+      },
+    },
+    {
+      field_reference: { field_key: 'structure', field_version: 1 },
+      value: {
+        ordered_governed_enum_codes: ['MERGER'],
+      },
+    },
+  ];
+}
+
+function agreementExactCitation(ir, result, ordinal) {
+  const productResultIdentity =
+    expectedProductResultIdentity(ir, result);
+  const sourceDocumentIdentity =
+    digest(`agreement-source-document:${ordinal}`);
+  const sourceEvidenceIdentity =
+    digest(`agreement-source-evidence:${ordinal}`);
+  return {
+    schema_version: PRODUCT_EXACT_CITATION_SCHEMA,
+    source_document_identity: sourceDocumentIdentity,
+    source_evidence_identity: sourceEvidenceIdentity,
+    source_representation_kind: 'STRUCTURED_RESULT',
+    source_interval: null,
+    result_component_evidence_identity:
+      digest(`agreement-component-evidence:${ordinal}`),
+    source_accession_or_equivalent_identity:
+      `AGREEMENT-DEFM14A-${ordinal}`,
+    source_filing_type: 'DEFM14A',
+    source_filing_date: '2025-09-22',
+    source_location_label: `Agreement section ${ordinal}`,
+    human_readable_source_label:
+      `Agreement proxy, section ${ordinal}`,
+    citation_target_identity: contentId(
+      PRODUCT_EXACT_CITATION_SCHEMA,
+      {
+        product_query_result_identity: productResultIdentity,
+        candidate_release_manifest_id:
+          ir.release_contract.candidate_release_manifest_id,
+        candidate_release_manifest_payload_digest:
+          ir.release_contract
+            .candidate_release_manifest_payload_digest,
+        source_document_identity: sourceDocumentIdentity,
+        source_evidence_identity: sourceEvidenceIdentity,
+      },
+    ),
+  };
+}
+
+function agreementProductResult(ir, ordinal) {
+  const result = agreementDomainResult(ordinal);
+  const fields = agreementResultFields(ordinal);
+  return compileProductQueryResult({
+    product_query_ir: ir,
+    domain_result: result,
+    result_fields: fields,
+    exact_citation: agreementExactCitation(ir, result, ordinal),
+    exact_detail_action: 'RESULT_COMPONENT_CLAIM_EVIDENCE',
+    admission_receipt: admissionReceipt(ir, result, fields),
+  });
+}
+
+function agreementOrderingFact(
+  ir,
+  result,
+  ordinal,
+  { unavailable = false } = {},
+) {
+  const orderingFailureBody = {
+    schema_version:
+      AGREEMENT_COMPARABLE_RESULT_ORDERING_FAILURE_SCHEMA,
+    disposition: 'FIELD_PROJECTION_INVALID',
+  };
+  const body = {
+    schema_version:
+      AGREEMENT_COMPARABLE_RESULT_ORDERING_FACT_SCHEMA,
+    fact_state: unavailable
+      ? 'ORDERING_UNAVAILABLE'
+      : 'VALIDATED_SORT_PROJECTION',
+    product_query_result_identity:
+      result.product_query_result_identity,
+    agreement_comparable_result_identity:
+      result.domain_result_identity,
+    governed_deal_admission_id:
+      digest(`agreement-deal:${ordinal}`),
+    sort_projections: unavailable
+      ? []
+      : [{
+        field_reference: {
+          field_key: 'signed',
+          field_version: 1,
+        },
+        value_type: 'DATE',
+        value_state: 'COMPARABLE_VALUE',
+        value: {
+          iso_8601_calendar_date: `2025-0${ordinal}-15`,
+        },
+      }],
+    external_field_projection_validation_receipt_id:
+      digest(`agreement-field-validation:${ordinal}`),
+    external_candidate_membership_validation_receipt_id:
+      digest(`agreement-candidate-membership:${ordinal}`),
+    ordering_failure: unavailable
+      ? {
+        schema_version: orderingFailureBody.schema_version,
+        failure_identity: contentId(
+          AGREEMENT_COMPARABLE_RESULT_ORDERING_FAILURE_SCHEMA,
+          orderingFailureBody,
+        ),
+        disposition: orderingFailureBody.disposition,
+      }
+      : null,
+    authority_state: 'NOT_GRANTED',
+  };
+  return {
+    schema_version: body.schema_version,
+    ordering_fact_id: contentId(
+      AGREEMENT_COMPARABLE_RESULT_ORDERING_FACT_SCHEMA,
+      body,
+    ),
+    ...body,
+  };
+}
+
 function validSlot(result) {
   return {
     slot_identity: result.product_query_result_identity,
@@ -610,6 +1060,88 @@ function orderingReceipt(ir, projection, candidates) {
       body,
     ),
     ...body,
+  };
+}
+
+function agreementOrderingReceipt(ir, projection, candidates) {
+  const byDomainResult = new Map(candidates.map((candidate) => [
+    candidate.product_query_result.domain_result_identity,
+    candidate.slot_identity,
+  ]));
+  const projectedSlots =
+    projection.ordered_agreement_result_identities.map(
+      (identity) => byDomainResult.get(identity),
+    );
+  const emittedCount =
+    projection.first_page_agreement_result_identities.length;
+  const body = {
+    schema_version: PRODUCT_QUERY_RESULT_ORDERING_RECEIPT_SCHEMA,
+    product_query_definition_id: ir.query_definition_id,
+    approved_pm_data_version_id:
+      ir.release_contract.approved_pm_data_version_id,
+    candidate_release_manifest_id:
+      ir.release_contract.candidate_release_manifest_id,
+    candidate_release_manifest_payload_digest:
+      ir.release_contract.candidate_release_manifest_payload_digest,
+    domain_key: 'AGREEMENT',
+    complete_candidate_slot_identities:
+      candidates.map((candidate) => candidate.slot_identity).sort(),
+    ordered_slot_identities:
+      projectedSlots.slice(0, emittedCount),
+    excluded_slot_identities:
+      projectedSlots.slice(emittedCount),
+    ordering_validator_stable_id:
+      AGREEMENT_ORDERING_VALIDATOR_STABLE_ID,
+    ordering_validator_version:
+      AGREEMENT_ORDERING_VALIDATOR_VERSION,
+    domain_ordering_projection_schema_version:
+      AGREEMENT_COMPARABLE_RESULT_ORDERING_PROJECTION_SCHEMA,
+    domain_ordering_projection_identity:
+      projection.ordering_projection_id,
+    domain_ordering_projection_payload_digest:
+      projection.canonical_payload_digest,
+    external_validation_receipt_id:
+      digest('agreement-ordering-external-validation'),
+    validation_state:
+      PRODUCT_QUERY_RESULT_ORDERING_RECEIPT_STATE,
+    authority_state: 'NOT_GRANTED',
+  };
+  return {
+    schema_version: body.schema_version,
+    ordering_receipt_id: contentId(
+      PRODUCT_QUERY_RESULT_ORDERING_RECEIPT_SCHEMA,
+      body,
+    ),
+    ...body,
+  };
+}
+
+function agreementFixture({
+  count = 9,
+  unavailableOrdinal = null,
+} = {}) {
+  const ir = agreementQueryIr();
+  const results = Array.from({ length: count }, (_, index) => index + 1).map(
+    (ordinal) => agreementProductResult(ir, ordinal),
+  );
+  const slots = results.map(validSlot);
+  const facts = results.map(
+    (result, index) => agreementOrderingFact(ir, result, index + 1, {
+      unavailable: index + 1 === unavailableOrdinal,
+    }),
+  );
+  const projection = compileAgreementComparableResultOrder({
+    product_query_ir: ir,
+    product_field_catalogue_manifest: AGREEMENT_FIELD_CATALOGUE,
+    ordering_facts: [...facts].reverse(),
+  });
+  return {
+    product_query_ir: ir,
+    candidate_slots: [...slots].reverse(),
+    domain_ordering_projection: projection,
+    ordering_receipt:
+      agreementOrderingReceipt(ir, projection, slots),
+    coverage_certification: coverageCertification(ir),
   };
 }
 
@@ -923,24 +1455,77 @@ test('rejects a rehashed failure that points to another result', () => {
   );
 });
 
-test('fails closed for Agreement and future CVR ordering', () => {
-  for (const domain of ['AGREEMENT', 'CVR']) {
-    const ir = queryIr(domain);
-    assert.throws(
-      () => compileProductQueryResultSet({
-        product_query_ir: ir,
-        candidate_slots: [],
-        domain_ordering_projection: {},
-        ordering_receipt: {},
-        coverage_certification:
-          coverageCertification(ir),
-      }),
-      (error) => (
-        error.code === 'PRODUCT_ORDERING_VALIDATOR_NOT_ADMITTED'
-        && error.details.domain_key === domain
-      ),
-    );
-  }
+test('admits Agreement ordering and preserves its validated first page', () => {
+  const input = agreementFixture();
+  const output = compileProductQueryResultSet(input);
+
+  assert.deepEqual(
+    output.ordered_result_slots.map(
+      (slot) => slot.product_query_result.domain_result_identity,
+    ),
+    input.domain_ordering_projection
+      .first_page_agreement_result_identities,
+  );
+  assert.equal(output.ordered_result_slots.length, 8);
+  assert.equal(output.query_execution_summary.valid_result_count, 8);
+  assert.equal(output.query_execution_summary.failed_result_count, 0);
+  assert.equal(output.query_execution_summary.excluded_result_count, 1);
+  assert.equal(output.query_execution_summary.total_result_count, 9);
+});
+
+test('retains an Agreement ordering-unavailable result after orderable results', () => {
+  const input = agreementFixture({
+    count: 3,
+    unavailableOrdinal: 2,
+  });
+  const output = compileProductQueryResultSet(input);
+
+  assert.equal(output.ordered_result_slots.length, 3);
+  assert.equal(
+    output.ordered_result_slots[2].product_query_result
+      .domain_result_identity,
+    digest('agreement-result:2'),
+  );
+  assert.deepEqual(
+    input.domain_ordering_projection
+      .ordered_failed_agreement_result_identities,
+    [digest('agreement-result:2')],
+  );
+});
+
+test('rejects changed Agreement candidate and receipt bindings', () => {
+  const substituted = clone(agreementFixture());
+  substituted.candidate_slots[0].product_query_result
+    .domain_result_identity = digest('substituted-agreement-result');
+  assert.throws(
+    () => compileProductQueryResultSet(substituted),
+    { code: 'INVALID_PRODUCT_QUERY_RESULT_SET_INPUT' },
+  );
+
+  const changedReceipt = clone(agreementFixture());
+  changedReceipt.ordering_receipt.ordered_slot_identities.reverse();
+  rehashOrderingReceipt(changedReceipt.ordering_receipt);
+  assert.throws(
+    () => compileProductQueryResultSet(changedReceipt),
+    { code: 'INVALID_PRODUCT_QUERY_RESULT_SET_INPUT' },
+  );
+});
+
+test('keeps future CVR ordering fail-closed', () => {
+  const ir = queryIr('CVR');
+  assert.throws(
+    () => compileProductQueryResultSet({
+      product_query_ir: ir,
+      candidate_slots: [],
+      domain_ordering_projection: {},
+      ordering_receipt: {},
+      coverage_certification: coverageCertification(ir),
+    }),
+    (error) => (
+      error.code === 'PRODUCT_ORDERING_VALIDATOR_NOT_ADMITTED'
+      && error.details.domain_key === 'CVR'
+    ),
+  );
 });
 
 test('builds deterministic typed failures and rejects null mapping use', () => {
@@ -995,19 +1580,22 @@ test('contains no query, rank, source, model, network or database operation', ()
 });
 
 test('uses an exact three-file canonical-work-start allowlist', () => {
-  const allowlist = JSON.parse(fs.readFileSync(
-    path.join(
-      __dirname,
-      '../.github/phase-allowlists/'
-        + 'wp-product-query-result-set-compiler-v1.json',
-    ),
-    'utf8',
-  ));
-  assert.equal(allowlist.required_work_class, 'canonical_work_start');
-  assert.deepEqual(allowlist.allowed, [
-    '.github/phase-allowlists/'
-      + 'wp-product-query-result-set-compiler-v1.json',
-    'lib/canonical-v2/product-query-result-set-compiler.js',
-    'tests/canonical-v2-product-query-result-set-compiler.test.js',
-  ]);
+  for (const phase of [
+    'wp-product-query-result-set-compiler-v1.json',
+    'wp-product-query-result-set-agreement-v2.json',
+  ]) {
+    const allowlist = JSON.parse(fs.readFileSync(
+      path.join(
+        __dirname,
+        `../.github/phase-allowlists/${phase}`,
+      ),
+      'utf8',
+    ));
+    assert.equal(allowlist.required_work_class, 'canonical_work_start');
+    assert.deepEqual(allowlist.allowed, [
+      `.github/phase-allowlists/${phase}`,
+      'lib/canonical-v2/product-query-result-set-compiler.js',
+      'tests/canonical-v2-product-query-result-set-compiler.test.js',
+    ]);
+  }
 });
