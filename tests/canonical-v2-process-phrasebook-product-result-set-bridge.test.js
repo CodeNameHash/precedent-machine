@@ -580,9 +580,37 @@ function witnessRevision(result, edge, ordinal, release) {
   };
   const bidderTrack = id(`bidder-track-revision:${ordinal}`);
   const passage = id(`process-passage-revision:${ordinal}`);
+  const dimensionRevisionBindings = [
+    {
+      terminal_type: 'BIDDER_TRACK_REVISION',
+      revision_id: bidderTrack,
+      evidence_edge_ids: [edge.evidence_edge_id],
+      external_validation_receipt_id:
+        id(`track-validation:${ordinal}`),
+      validation_state: 'EXTERNALLY_VALIDATED',
+      authority_state: 'NOT_GRANTED',
+    },
+    {
+      terminal_type: 'PROCESS_PASSAGE_REVISION',
+      revision_id: passage,
+      evidence_edge_ids: [edge.evidence_edge_id],
+      external_validation_receipt_id:
+        id(`passage-validation:${ordinal}`),
+      validation_state: 'EXTERNALLY_VALIDATED',
+      authority_state: 'NOT_GRANTED',
+    },
+  ];
   const revisionIdentity = {
+    applicability_evidence_edges: [],
+    atomic_response_predicate_key: null,
+    atomic_response_predicate_witness_revision_id: null,
     bidder_track_revision_id: bidderTrack,
+    complete_scope_evidence_edges: [],
+    complete_scope_identity: null,
+    complete_scope_payload: null,
+    dimension_revision_bindings: dimensionRevisionBindings,
     evidence_edges: [edge],
+    failure_detail: null,
     predicate_key: 'EXCLUSIVITY_ACTUAL_DRAFTING',
     predicate_state: 'PRESENT',
     process_agreement_revision_ids: [],
@@ -592,6 +620,7 @@ function witnessRevision(result, edge, ordinal, release) {
     process_position_revision_ids: [],
     process_predicate_witness_id: witness.process_predicate_witness_id,
     process_relationship_revision_ids: [],
+    source_semantic_kind: 'ACTUAL_DRAFTING',
     subject_code: 'NEGOTIATION_EXCLUSIVITY',
     temporal_expression_revision_ids: [],
   };
@@ -602,8 +631,19 @@ function witnessRevision(result, edge, ordinal, release) {
       revisionIdentity,
     ),
     process_predicate_witness_identity: witness,
+    applicability_evidence_edges:
+      revisionIdentity.applicability_evidence_edges,
+    atomic_response_predicate_key:
+      revisionIdentity.atomic_response_predicate_key,
+    atomic_response_predicate_witness_revision_id:
+      revisionIdentity.atomic_response_predicate_witness_revision_id,
     bidder_track_revision_id: revisionIdentity.bidder_track_revision_id,
+    complete_scope_evidence_edges:
+      revisionIdentity.complete_scope_evidence_edges,
+    complete_scope_identity: revisionIdentity.complete_scope_identity,
+    complete_scope_payload: revisionIdentity.complete_scope_payload,
     evidence_edges: revisionIdentity.evidence_edges,
+    failure_detail: revisionIdentity.failure_detail,
     predicate_key: revisionIdentity.predicate_key,
     predicate_state: revisionIdentity.predicate_state,
     process_agreement_revision_ids: [],
@@ -613,28 +653,11 @@ function witnessRevision(result, edge, ordinal, release) {
       revisionIdentity.process_passage_revision_ids,
     process_position_revision_ids: [],
     process_relationship_revision_ids: [],
+    source_semantic_kind: revisionIdentity.source_semantic_kind,
     subject_code: revisionIdentity.subject_code,
     temporal_expression_revision_ids: [],
-    dimension_revision_bindings: [
-      {
-        terminal_type: 'BIDDER_TRACK_REVISION',
-        revision_id: bidderTrack,
-        evidence_edge_ids: [edge.evidence_edge_id],
-        external_validation_receipt_id:
-          id(`track-validation:${ordinal}`),
-        validation_state: 'EXTERNALLY_VALIDATED',
-        authority_state: 'NOT_GRANTED',
-      },
-      {
-        terminal_type: 'PROCESS_PASSAGE_REVISION',
-        revision_id: passage,
-        evidence_edge_ids: [edge.evidence_edge_id],
-        external_validation_receipt_id:
-          id(`passage-validation:${ordinal}`),
-        validation_state: 'EXTERNALLY_VALIDATED',
-        authority_state: 'NOT_GRANTED',
-      },
-    ],
+    dimension_revision_bindings:
+      revisionIdentity.dimension_revision_bindings,
     ...release,
     revision_validation_receipt_id:
       id(`witness-validation:${ordinal}`),
@@ -872,6 +895,7 @@ function processAdmission(core, ordering, release) {
     result_identity: core.result,
     narration_revision: core.narration,
     predicate_witness_revision: core.witness,
+    atomic_response_predicate_witness_revision: null,
     result_input_lineage: core.lineage,
     matched_passage_preview: core.matchedPreview,
     passage_order_projection: ordering,
