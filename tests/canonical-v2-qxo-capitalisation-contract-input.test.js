@@ -33,8 +33,16 @@ const PATHS = [
   'agreement/relationship-effect-schemas/brings-down-effect.v2.json',
   'agreement/relationship-effect-schemas/uses-definition-effect.v3.json',
   'agreement/capitalisation-semantic-schema-inputs/capitalisation-representation.v1.json',
-  'agreement/result-definitions/target-capitalisation-bring-down.v2.json',
-  'agreement/market-metric-definitions/representation-accuracy-standard.v2.json',
+  'agreement/result-definitions/target-capitalisation-bring-down.v3.json',
+  'agreement/market-metric-definitions/representation-accuracy-standard.v3.json',
+  'agreement/market-metric-definitions/representation-accuracy-exception.v1.json',
+  'agreement/market-metric-definitions/representation-accuracy-exception-denominator.v1.json',
+  'agreement/market-metric-definitions/dated-representation-treatment.v1.json',
+  'agreement/market-metric-definitions/representation-materiality-scrape.v1.json',
+  'agreement/market-metric-definitions/representation-measurement-date-signing-offset.v1.json',
+  'agreement/market-metric-definitions/knowledge-qualifier-state.v1.json',
+  'agreement/market-metric-definitions/general-materiality-qualifier-state.v1.json',
+  'agreement/market-metric-definitions/retrospective-lookback-state.v1.json',
 ];
 
 function members() {
@@ -174,4 +182,118 @@ test('rejects removal of the QXO definition denominator selection rule', () => {
     () => validateAuthoredQxoCapitalisationInputs(authored),
     (error) => error.code === 'QXO_CAPITALISATION_EFFECT_SCHEMA_DRIFT',
   );
+});
+
+test('governs fourteen atomic market slots without cross-class aggregation', () => {
+  const authored = members();
+  const result = member(
+    authored,
+    'TARGET_CAPITALISATION_BRING_DOWN',
+  ).canonical_value.authored_definition;
+  assert.equal(result.result_version, 3);
+  assert.equal(result.market_metric_slot_count, 14);
+  assert.deepEqual(
+    result.market_metric_slots.map((entry) => ({
+      value_slot_key: entry.value_slot_key,
+      comparison_class_key: entry.comparison_class_key,
+      metric_count: entry.metric_keys.length,
+    })),
+    [
+      {
+        value_slot_key: 'CAPITALISATION_CLAUSE_B_LIMBS_I_III',
+        comparison_class_key: 'CAPITALISATION_CLAUSE_B_LIMBS_I_III',
+        metric_count: 5,
+      },
+      {
+        value_slot_key: 'CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V',
+        comparison_class_key: 'CAPITALISATION_CLAUSE_C_LIMBS_II_IV_V',
+        metric_count: 5,
+      },
+      {
+        value_slot_key: 'CAPITALISATION_MEASUREMENT_DATE',
+        comparison_class_key: null,
+        metric_count: 1,
+      },
+      {
+        value_slot_key: 'GENERAL_KNOWLEDGE_QUALIFIER',
+        comparison_class_key: null,
+        metric_count: 1,
+      },
+      {
+        value_slot_key: 'GENERAL_MATERIALITY_QUALIFIER',
+        comparison_class_key: null,
+        metric_count: 1,
+      },
+      {
+        value_slot_key: 'RETROSPECTIVE_LOOKBACK',
+        comparison_class_key: null,
+        metric_count: 1,
+      },
+    ],
+  );
+  assert.equal(result.market_request_contract.database_call_budget, 1);
+  assert.equal(result.market_request_contract.immediate_retries, 0);
+  assert.equal(result.market_request_contract.failure_isolation, 'PER_METRIC_SLOT');
+});
+
+test('rejects an omitted or duplicated metric definition', () => {
+  const omitted = clone(members()).filter(
+    (entry) => entry.stable_id !== 'DATED_REPRESENTATION_TREATMENT',
+  );
+  assert.throws(
+    () => validateAuthoredQxoCapitalisationInputs(omitted),
+    (error) => error.code === 'QXO_CAPITALISATION_METRIC_INVENTORY_DRIFT',
+  );
+  const duplicated = clone(members());
+  duplicated.push(clone(member(
+    duplicated,
+    'DATED_REPRESENTATION_TREATMENT',
+  )));
+  assert.throws(
+    () => validateAuthoredQxoCapitalisationInputs(duplicated),
+    (error) => error.code === 'QXO_CAPITALISATION_METRIC_INVENTORY_DRIFT',
+  );
+});
+
+test('rejects denominator party drift and absence-state laundering', () => {
+  const denominator = clone(members());
+  member(
+    denominator,
+    'REPRESENTATION_ACCURACY_EXCEPTION_DENOMINATOR',
+  ).canonical_value.authored_definition.allowed_denominator_party_values = [
+    'PARENT',
+  ];
+  assert.throws(
+    () => validateAuthoredQxoCapitalisationInputs(denominator),
+    (error) => error.code === 'QXO_CAPITALISATION_METRIC_DRIFT',
+  );
+
+  const knowledge = clone(members());
+  member(
+    knowledge,
+    'KNOWLEDGE_QUALIFIER_STATE',
+  ).canonical_value.authored_definition.complete_scope_required_for_absent =
+    false;
+  assert.throws(
+    () => validateAuthoredQxoCapitalisationInputs(knowledge),
+    (error) => error.code === 'QXO_CAPITALISATION_METRIC_DRIFT',
+  );
+});
+
+test('keeps measurement-date and lookback metrics legally separate', () => {
+  const authored = members();
+  const measurement = member(
+    authored,
+    'REPRESENTATION_MEASUREMENT_DATE_SIGNING_OFFSET',
+  ).canonical_value.authored_definition;
+  const lookback = member(
+    authored,
+    'RETROSPECTIVE_LOOKBACK_STATE',
+  ).canonical_value.authored_definition;
+  assert.equal(
+    measurement.canonical_unit,
+    'CALENDAR_DAYS_RELATIVE_TO_SIGNING',
+  );
+  assert.equal(measurement.raw_absolute_date_is_not_cohort_key, true);
+  assert.equal(lookback.measurement_date_is_not_retrospective_lookback, true);
 });

@@ -1,0 +1,40 @@
+{
+  "authored_definition": {
+    "allowed_basis_codes": [
+      "FULLY_DILUTED_EQUITY_CAPITALISATION"
+    ],
+    "allowed_denominator_party_values": [
+      "COMPANY"
+    ],
+    "allowed_observation_states": [
+      "PRESENT"
+    ],
+    "allowed_slot_exclusion_states": [
+      "NOT_APPLICABLE",
+      "NOT_EXAMINED",
+      "FAILED"
+    ],
+    "canonical_unit": "DENOMINATOR_BASIS_AND_PARTY",
+    "canonical_value_type": "BASIS_AND_PARTY_TUPLE",
+    "cohort_identity_requires_comparison_class": true,
+    "concept_key": "COND-B-REP",
+    "cross_class_aggregation_forbidden": true,
+    "metric_key": "REPRESENTATION_ACCURACY_EXCEPTION_DENOMINATOR",
+    "metric_version": 1,
+    "not_applicable_when_accuracy_exception_absent": true,
+    "owner_lineage_mode": "RESULT_RELATIONSHIP",
+    "per_deal_rollup": "DISTINCT_VALUE_SET_WITHIN_APPLICABLE_COMPARISON_CLASS",
+    "raw_value_required_when_present": true,
+    "required_claim_definition_key": "REPRESENTATION_ACCURACY_EXCEPTION",
+    "required_relationship_key": "USES_DEFINITION",
+    "required_relationship_version": 4,
+    "required_result_key": "TARGET_CAPITALISATION_BRING_DOWN",
+    "required_result_version": 3,
+    "source_lineage_required": true,
+    "value_dimension": "STATE_AND_STRUCTURED_CATEGORICAL",
+    "weighting": "DEAL"
+  },
+  "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+  "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+  "stable_id": "REPRESENTATION_ACCURACY_EXCEPTION_DENOMINATOR"
+}

@@ -1,0 +1,33 @@
+{
+  "authored_definition": {
+    "allowed_canonical_values": [
+      "APPLIED",
+      "NOT_APPLIED"
+    ],
+    "allowed_observation_states": [
+      "PRESENT"
+    ],
+    "canonical_unit": "MATERIALITY_SCRAPE_STATE",
+    "canonical_value_type": "CLOSED_CODE",
+    "cohort_identity_requires_comparison_class": true,
+    "concept_key": "COND-B-REP",
+    "cross_class_aggregation_forbidden": true,
+    "metric_key": "REPRESENTATION_MATERIALITY_SCRAPE",
+    "metric_version": 1,
+    "owner_lineage_mode": "RESULT_RELATIONSHIP",
+    "per_deal_rollup": "DISTINCT_VALUE_SET_WITHIN_COMPARISON_CLASS",
+    "raw_value_required": true,
+    "required_effect_field_path": "materiality_scrape.state",
+    "required_qualifier_code_lineage_when_applied": true,
+    "required_relationship_key": "BRINGS_DOWN",
+    "required_relationship_version": 3,
+    "required_result_key": "TARGET_CAPITALISATION_BRING_DOWN",
+    "required_result_version": 3,
+    "source_lineage_required": true,
+    "value_dimension": "CATEGORICAL",
+    "weighting": "DEAL"
+  },
+  "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+  "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+  "stable_id": "REPRESENTATION_MATERIALITY_SCRAPE"
+}

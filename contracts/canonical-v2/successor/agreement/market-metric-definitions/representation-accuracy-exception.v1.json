@@ -1,0 +1,35 @@
+{
+  "authored_definition": {
+    "allowed_canonical_values": [
+      "DE_MINIMIS_INACCURACIES"
+    ],
+    "allowed_observation_states": [
+      "PRESENT",
+      "ABSENT"
+    ],
+    "canonical_unit": "ACCURACY_EXCEPTION_CODE",
+    "canonical_value_required_states": [
+      "PRESENT"
+    ],
+    "canonical_value_type": "CLOSED_CODE_OR_NULL",
+    "cohort_identity_requires_comparison_class": true,
+    "concept_key": "COND-B-REP",
+    "cross_class_aggregation_forbidden": true,
+    "metric_key": "REPRESENTATION_ACCURACY_EXCEPTION",
+    "metric_version": 1,
+    "owner_lineage_mode": "RESULT_RELATIONSHIP",
+    "per_deal_rollup": "ONE_STATE_AND_DISTINCT_PRESENT_VALUE_SET_WITHIN_COMPARISON_CLASS",
+    "raw_value_required_when_present": true,
+    "required_claim_definition_key": "REPRESENTATION_ACCURACY_EXCEPTION",
+    "required_relationship_key": "BRINGS_DOWN",
+    "required_relationship_version": 3,
+    "required_result_key": "TARGET_CAPITALISATION_BRING_DOWN",
+    "required_result_version": 3,
+    "source_lineage_required": true,
+    "value_dimension": "STATE_AND_CATEGORICAL",
+    "weighting": "DEAL"
+  },
+  "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+  "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+  "stable_id": "REPRESENTATION_ACCURACY_EXCEPTION"
+}

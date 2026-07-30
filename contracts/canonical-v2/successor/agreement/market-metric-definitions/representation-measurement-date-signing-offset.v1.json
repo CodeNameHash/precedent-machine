@@ -1,0 +1,40 @@
+{
+  "authored_definition": {
+    "allowed_day_bases": [
+      "CALENDAR_DAY"
+    ],
+    "allowed_observation_states": [
+      "PRESENT",
+      "ABSENT"
+    ],
+    "canonical_unit": "CALENDAR_DAYS_RELATIVE_TO_SIGNING",
+    "canonical_value_required_states": [
+      "PRESENT"
+    ],
+    "canonical_value_type": "SIGNED_SAFE_INTEGER",
+    "concept_key": "COND-B-REP",
+    "metric_key": "REPRESENTATION_MEASUREMENT_DATE_SIGNING_OFFSET",
+    "metric_version": 1,
+    "numeric_aggregate_contract": [
+      "MIN",
+      "MAX",
+      "MEDIAN",
+      "MEAN"
+    ],
+    "owner_lineage_mode": "RESULT_RELATIONSHIP",
+    "per_deal_rollup": "ONE_SIGNING_RELATIVE_OFFSET",
+    "raw_absolute_date_is_not_cohort_key": true,
+    "raw_value_required_when_present": true,
+    "required_claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
+    "required_result_key": "TARGET_CAPITALISATION_BRING_DOWN",
+    "required_result_version": 3,
+    "required_value_slot_key": "CAPITALISATION_MEASUREMENT_DATE",
+    "source_lineage_required": true,
+    "unresolved_signing_anchor_state": "NOT_EXAMINED",
+    "value_dimension": "SIGNED_DURATION",
+    "weighting": "DEAL"
+  },
+  "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+  "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+  "stable_id": "REPRESENTATION_MEASUREMENT_DATE_SIGNING_OFFSET"
+}

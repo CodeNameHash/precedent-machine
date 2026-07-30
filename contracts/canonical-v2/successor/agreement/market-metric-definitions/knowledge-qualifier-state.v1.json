@@ -1,0 +1,29 @@
+{
+  "authored_definition": {
+    "allowed_observation_states": [
+      "PRESENT",
+      "ABSENT"
+    ],
+    "canonical_unit": "CLAIM_STATE",
+    "canonical_value_required_states": [
+      "PRESENT"
+    ],
+    "canonical_value_type": "BOOLEAN_OR_NULL",
+    "complete_scope_required_for_absent": true,
+    "concept_key": "COND-B-REP",
+    "metric_key": "KNOWLEDGE_QUALIFIER_STATE",
+    "metric_version": 1,
+    "owner_lineage_mode": "RESULT_RELATIONSHIP",
+    "per_deal_rollup": "ONE_CLOSED_CLAIM_STATE",
+    "required_claim_definition_key": "KNOWLEDGE_QUALIFIER",
+    "required_result_key": "TARGET_CAPITALISATION_BRING_DOWN",
+    "required_result_version": 3,
+    "required_value_slot_key": "GENERAL_KNOWLEDGE_QUALIFIER",
+    "source_lineage_required": true,
+    "value_dimension": "CLAIM_STATE",
+    "weighting": "DEAL"
+  },
+  "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+  "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+  "stable_id": "KNOWLEDGE_QUALIFIER_STATE"
+}

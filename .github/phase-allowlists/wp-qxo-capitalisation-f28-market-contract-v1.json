@@ -1,0 +1,31 @@
+{
+  "phase": "WP-QXO-CAPITALISATION-F28-MARKET-CONTRACT-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-qxo-capitalisation-f28-market-contract-v1.json",
+    "contracts/canonical-v2/successor/agreement/market-metric-definitions/dated-representation-treatment.v1.json",
+    "contracts/canonical-v2/successor/agreement/market-metric-definitions/general-materiality-qualifier-state.v1.json",
+    "contracts/canonical-v2/successor/agreement/market-metric-definitions/knowledge-qualifier-state.v1.json",
+    "contracts/canonical-v2/successor/agreement/market-metric-definitions/representation-accuracy-exception-denominator.v1.json",
+    "contracts/canonical-v2/successor/agreement/market-metric-definitions/representation-accuracy-exception.v1.json",
+    "contracts/canonical-v2/successor/agreement/market-metric-definitions/representation-accuracy-standard.v2.json",
+    "contracts/canonical-v2/successor/agreement/market-metric-definitions/representation-accuracy-standard.v3.json",
+    "contracts/canonical-v2/successor/agreement/market-metric-definitions/representation-materiality-scrape.v1.json",
+    "contracts/canonical-v2/successor/agreement/market-metric-definitions/representation-measurement-date-signing-offset.v1.json",
+    "contracts/canonical-v2/successor/agreement/market-metric-definitions/retrospective-lookback-state.v1.json",
+    "contracts/canonical-v2/successor/agreement/result-definitions/target-capitalisation-bring-down.v2.json",
+    "contracts/canonical-v2/successor/agreement/result-definitions/target-capitalisation-bring-down.v3.json",
+    "lib/canonical-v2/qxo-capitalisation-contract-input-validator.js",
+    "tests/canonical-v2-qxo-capitalisation-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Closes the exact fourteen-slot QXO capitalisation market contract. It grants no extraction, materialisation, query execution, writer, serving, database, release, activation, production or contract-freeze authority."
+}

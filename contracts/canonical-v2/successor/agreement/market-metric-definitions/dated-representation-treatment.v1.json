@@ -1,0 +1,31 @@
+{
+  "authored_definition": {
+    "allowed_canonical_values": [
+      "EXPRESS_DATE_OR_PERIOD_ONLY"
+    ],
+    "allowed_observation_states": [
+      "PRESENT"
+    ],
+    "canonical_unit": "DATED_REPRESENTATION_TREATMENT_CODE",
+    "canonical_value_type": "CLOSED_CODE",
+    "cohort_identity_requires_comparison_class": true,
+    "concept_key": "COND-B-REP",
+    "cross_class_aggregation_forbidden": true,
+    "metric_key": "DATED_REPRESENTATION_TREATMENT",
+    "metric_version": 1,
+    "owner_lineage_mode": "RESULT_RELATIONSHIP",
+    "per_deal_rollup": "DISTINCT_VALUE_SET_WITHIN_COMPARISON_CLASS",
+    "raw_value_required": true,
+    "required_effect_field_path": "dated_representation_proviso.application",
+    "required_relationship_key": "BRINGS_DOWN",
+    "required_relationship_version": 3,
+    "required_result_key": "TARGET_CAPITALISATION_BRING_DOWN",
+    "required_result_version": 3,
+    "source_lineage_required": true,
+    "value_dimension": "CATEGORICAL",
+    "weighting": "DEAL"
+  },
+  "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+  "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+  "stable_id": "DATED_REPRESENTATION_TREATMENT"
+}
