@@ -332,6 +332,10 @@ test('rejects authority escalation and unreviewed definition drift', () => {
   });
 });
 
+test('does not require the residual family in an unrelated compiler fixture', () => {
+  assert.equal(validateAuthoredGovernedResidualInputs([]), true);
+});
+
 test('uses one exact successor phase allowlist', () => {
   const allowlist = JSON.parse(fs.readFileSync(ALLOWLIST, 'utf8'));
   assert.equal(
