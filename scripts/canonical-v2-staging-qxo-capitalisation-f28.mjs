@@ -30,6 +30,9 @@ const {
   buildAdmittedSemanticSourceContext,
 } = require('../lib/canonical-v2/admitted-semantic-source');
 const {
+  buildCanonicalWriteReceipt,
+} = require('../lib/canonical-v2/canonical-writer');
+const {
   compileFixtureContractV13,
 } = require('../lib/canonical-v2/contract-bundle');
 const {
@@ -54,6 +57,19 @@ const {
   '../lib/canonical-v2/qxo-capitalisation-f28-candidate-envelope',
 );
 const {
+  QXO_F28_DOMAIN_VALIDATOR_V2,
+} = require(
+  '../lib/canonical-v2/qxo-capitalisation-f28-product-result-adapter',
+);
+const {
+  buildQxoCapitalisationF28PilotPreflight,
+} = require(
+  '../lib/canonical-v2/qxo-capitalisation-f28-pilot-preflight',
+);
+const {
+  PRODUCT_DOMAIN_RESULT_VALIDATION_SCHEMA,
+} = require('../lib/canonical-v2/product-citation-share-compiler');
+const {
   CAPITAL_STRUCTURE_INTERVAL,
   SECTION_5_2_INTERVAL,
 } = require('../lib/canonical-v2/reviewed-qxo-capitalisation-slice');
@@ -62,8 +78,17 @@ const {
 } = require('../lib/programme-gates/vertical-slice-permission');
 const {
   buildF27Inputs,
+  buildWriterAdmittedSourceContext,
 } = require(
   '../tests/fixtures/canonical-v2/qxo-capitalisation-f27-inputs',
+);
+const {
+  admissionReceipt,
+  buildProductQueryIr,
+  domainResult,
+  resultFields,
+} = require(
+  '../tests/fixtures/canonical-v2/qxo-capitalisation-f28-product-inputs',
 );
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -177,6 +202,45 @@ function buildCandidate(inputs) {
     candidateEnvelope,
     envelopeInput,
   );
+  const productQueryIr = buildProductQueryIr(release);
+  const fields = resultFields();
+  const domain = domainResult(release);
+  const validationBody = {
+    validator_stable_id: QXO_F28_DOMAIN_VALIDATOR_V2.stable_id,
+    validator_version: QXO_F28_DOMAIN_VALIDATOR_V2.version,
+    validated_payload_digest: domain.domain_result_payload_digest,
+    validation_state: 'EXTERNALLY_VALIDATED',
+  };
+  domain.domain_result_validation = {
+    schema_version: PRODUCT_DOMAIN_RESULT_VALIDATION_SCHEMA,
+    ...validationBody,
+    validation_receipt_id: contentId(
+      PRODUCT_DOMAIN_RESULT_VALIDATION_SCHEMA,
+      validationBody,
+    ),
+  };
+  const productAdapterInput = {
+    candidate_envelope: candidateEnvelope,
+    qxo_cross_view_release: release,
+    reviewed_graph: reviewedGraph,
+    source_context: inputs.sourceContext,
+    parser_source_closure: inputs.parserSourceClosure,
+    contract_bundle: inputs.contractBundle,
+    product_query_ir: productQueryIr,
+    result_fields: fields,
+    product_admission_receipt:
+      admissionReceipt(productQueryIr, domain, fields),
+  };
+  const preflight = buildQxoCapitalisationF28PilotPreflight({
+    writer_link_input: {
+      reviewed_graph: reviewedGraph,
+      source_context: inputs.sourceContext,
+      parser_source_closure: inputs.parserSourceClosure,
+      contract_bundle: inputs.contractBundle,
+      idempotency_key: 'QXO_CAPITALISATION_F28_PILOT_ROLLBACK_V1',
+    },
+    product_adapter_v2_input: productAdapterInput,
+  });
   if (
     release.admissions.length !== 14
     || release.observations.length !== 13
@@ -210,6 +274,7 @@ function buildCandidate(inputs) {
     release,
     request,
     candidateEnvelope,
+    preflight,
     sourceBinding,
   };
 }
@@ -326,6 +391,16 @@ function expectedMetricRead(release) {
 function buildRollbackProofSql(candidate, permission) {
   const { release } = candidate;
   const { records } = buildProbeRecords(release);
+  const writerLink = candidate.preflight.writer_link;
+  const writerInput = writerLink.deal_scope_run_input;
+  const writerReceipt = buildCanonicalWriteReceipt({
+    operation: writerInput.operation,
+    idempotencyKey: writerInput.idempotencyKey,
+    inputDigest: writerLink.receipt.input_digest,
+    validation: {
+      counts: writerLink.receipt.validation_counts,
+    },
+  });
   return `BEGIN;
 SET LOCAL lock_timeout='2000ms';
 SET LOCAL statement_timeout='15000ms';
@@ -344,6 +419,16 @@ SELECT
     FROM canonical_v2_staging.shared_serving_rows
     WHERE corpus_release_id=${sqlText(release.release_id)}) AS serving_rows;
 SAVEPOINT qxo_capitalisation_f28_probe_start;
+SELECT public.canonical_v2_write(
+  'staging',
+  ${sqlText(writerInput.operation)},
+  ${sqlText(writerInput.idempotencyKey)},
+  ${sqlText(writerLink.receipt.input_digest)},
+  ${sqlJson(writerInput.writeSet)},
+  '[]'::jsonb,
+  '[]'::jsonb,
+  ${sqlJson(writerReceipt)}
+);
 CREATE TEMP TABLE qxo_capitalisation_f28_probe (
   record_kind text NOT NULL,
   record_id text NOT NULL CHECK (record_id ~ '^[a-f0-9]{64}$'),
@@ -451,6 +536,14 @@ SELECT jsonb_build_object(
   'provision_row_id', ${sqlText(release.provision_row.provision_row_id)},
   'candidate_envelope_id',
     ${sqlText(candidate.candidateEnvelope.qxo_capitalisation_f28_candidate_envelope_id)},
+  'writer_receipt_id',
+    ${sqlText(writerReceipt.receiptId)},
+  'product_adapter_receipt_id',
+    ${sqlText(candidate.preflight.product_adapter_receipt.adapter_receipt_id)},
+  'product_surfaces_id',
+    ${sqlText(candidate.preflight.product_surfaces.qxo_capitalisation_f28_product_surfaces_id)},
+  'product_query_result_identity',
+    ${sqlText(candidate.preflight.product_query_result_identity)},
   'reviewed_graph_payload_digest',
     ${sqlText(release.manifest.reviewed_graph_payload_digest)},
   'source_binding', ${sqlText(candidate.sourceBinding)},
@@ -464,7 +557,8 @@ SELECT jsonb_build_object(
   'vertical_slice_execution', ${sqlText(permission.vertical_slice_execution)},
   'probe_records', ${MAX_PROBE_RECORDS},
   'metric_slots', 14,
-  'set_based_insert_statements', 1,
+  'writer_calls', 1,
+  'probe_insert_statements', 1,
   'set_based_metric_reads', 1,
   'subject_exclusion_verified', true,
   'active_pointer_unchanged',
@@ -660,6 +754,26 @@ function runRollbackProof(sql, candidate, permission, executable) {
     || attestation.candidate_envelope_id
       !== candidate.candidateEnvelope
         .qxo_capitalisation_f28_candidate_envelope_id
+    || attestation.writer_receipt_id
+      !== buildCanonicalWriteReceipt({
+        operation:
+          candidate.preflight.writer_link.deal_scope_run_input.operation,
+        idempotencyKey:
+          candidate.preflight.writer_link.deal_scope_run_input.idempotencyKey,
+        inputDigest:
+          candidate.preflight.writer_link.receipt.input_digest,
+        validation: {
+          counts:
+            candidate.preflight.writer_link.receipt.validation_counts,
+        },
+      }).receiptId
+    || attestation.product_adapter_receipt_id
+      !== candidate.preflight.product_adapter_receipt.adapter_receipt_id
+    || attestation.product_surfaces_id
+      !== candidate.preflight.product_surfaces
+        .qxo_capitalisation_f28_product_surfaces_id
+    || attestation.product_query_result_identity
+      !== candidate.preflight.product_query_result_identity
     || attestation.reviewed_graph_payload_digest
       !== candidate.release.manifest.reviewed_graph_payload_digest
     || attestation.source_binding !== candidate.sourceBinding
@@ -675,7 +789,8 @@ function runRollbackProof(sql, candidate, permission, executable) {
     || attestation.vertical_slice_execution !== 'PASS'
     || attestation.probe_records !== MAX_PROBE_RECORDS
     || attestation.metric_slots !== 14
-    || attestation.set_based_insert_statements !== 1
+    || attestation.writer_calls !== 1
+    || attestation.probe_insert_statements !== 1
     || attestation.set_based_metric_reads !== 1
     || attestation.subject_exclusion_verified !== true
     || attestation.active_pointer_unchanged !== true
@@ -694,6 +809,16 @@ function runRollbackProof(sql, candidate, permission, executable) {
 function offlineAttestation(candidate) {
   const { release, request } = candidate;
   const { records, payloadBytes } = buildProbeRecords(release);
+  const writerInput = candidate.preflight.writer_link.deal_scope_run_input;
+  const writerReceipt = buildCanonicalWriteReceipt({
+    operation: writerInput.operation,
+    idempotencyKey: writerInput.idempotencyKey,
+    inputDigest: candidate.preflight.writer_link.receipt.input_digest,
+    validation: {
+      counts:
+        candidate.preflight.writer_link.receipt.validation_counts,
+    },
+  });
   return {
     schema_version: 'QXO_CAPITALISATION_OFFLINE_ATTESTATION_F28/V1',
     execution_state: 'NOT_EXECUTED_OFFLINE_ONLY',
@@ -708,6 +833,17 @@ function offlineAttestation(candidate) {
     candidate_envelope_id:
       candidate.candidateEnvelope
         .qxo_capitalisation_f28_candidate_envelope_id,
+    writer_link_receipt_id:
+      candidate.preflight.writer_receipt
+        .qxo_capitalisation_f28_writer_receipt_id,
+    canonical_writer_receipt_id: writerReceipt.receiptId,
+    product_adapter_receipt_id:
+      candidate.preflight.product_adapter_receipt.adapter_receipt_id,
+    product_surfaces_id:
+      candidate.preflight.product_surfaces
+        .qxo_capitalisation_f28_product_surfaces_id,
+    product_query_result_identity:
+      candidate.preflight.product_query_result_identity,
     reviewed_graph_payload_digest:
       release.manifest.reviewed_graph_payload_digest,
     probe_records: records.length,
@@ -740,7 +876,10 @@ if (
 
 try {
   if (args[0] === '--attest') {
-    const candidate = buildCandidate(buildF27Inputs());
+    const candidate = buildCandidate({
+      ...buildF27Inputs(),
+      sourceContext: buildWriterAdmittedSourceContext(),
+    });
     process.stdout.write(`${JSON.stringify(offlineAttestation(candidate))}\n`);
   } else {
     let permission;
@@ -768,7 +907,10 @@ try {
       : fixtureSupabaseExecutable();
     const inputs = args[0] === '--verify'
       ? readAdmittedF28Inputs()
-      : buildF27Inputs();
+      : {
+        ...buildF27Inputs(),
+        sourceContext: buildWriterAdmittedSourceContext(),
+      };
     const candidate = buildCandidate(inputs);
     const sql = buildRollbackProofSql(candidate, permission);
     const attestation = runRollbackProof(

@@ -121,8 +121,10 @@ function semanticWriteSet(context) {
     },
     excerpts: [{ ...excerpt, closure_id: closureId }],
     validated_semantic_graphs: [],
+    definition_occurrences: [],
     provisions: [{ ...provision, closure_id: closureId }],
     components: [],
+    condition_groups: [],
     claims: [{ ...claim, closure_id: closureId }],
     relationships: [],
     open_world_candidates: [],
@@ -176,6 +178,7 @@ test('DEAL_SCOPE_RUN dry-run resolves stored admission and accepts reference-onl
   assert.deepEqual(repository.snapshot(), before);
   assert.deepEqual(Object.keys(writeSet).sort(), [
     'claims', 'components', 'deal', 'excerpts', 'open_world_candidate_dispositions',
+    'condition_groups', 'definition_occurrences',
     'open_world_candidate_occurrences', 'open_world_candidates',
     'open_world_evidence_references', 'open_world_primitives', 'provisions',
     'relationships', 'reviewed_source_specific_rows', 'incomplete_canonical_result_rows', 'semantic_impact_closures',

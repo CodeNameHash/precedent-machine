@@ -44,12 +44,7 @@ function productInput() {
     parser_source_closure: base.parser_source_closure,
     contract_bundle: base.contract_bundle,
   });
-  const releaseBinding = clone(base.qxo_cross_view_release);
-  releaseBinding.manifest.release_manifest_id =
-    envelope.source_cross_view_release_id;
-  releaseBinding.manifest.canonical_payload_digest =
-    envelope.source_cross_view_release_payload_digest;
-  const productQueryIr = buildProductQueryIr(releaseBinding);
+  const productQueryIr = buildProductQueryIr(base.qxo_cross_view_release);
   const domain = domainResult(base.qxo_cross_view_release);
   const validationBody = {
     validator_stable_id: QXO_F28_DOMAIN_VALIDATOR_V2.stable_id,
@@ -99,7 +94,7 @@ test('uses one exact F28 row on all four fixture surfaces', () => {
     rows[0],
     canonicalJson(receipt.candidate_envelope.provision_row),
   );
-  assert.equal(value.surface_state, 'FIXTURE_VALIDATED_NOT_SERVED');
+  assert.equal(value.surface_state, 'VALIDATED_NOT_SERVED');
   assert.equal(value.authority_state, 'NONE');
   assert.equal(Object.isFrozen(value), true);
 });

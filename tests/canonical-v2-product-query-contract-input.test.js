@@ -26,6 +26,24 @@ function loadMember() {
   };
 }
 
+function loadCandidateEnvelopeMember() {
+  const canonicalValue = JSON.parse(fs.readFileSync(
+    path.join(
+      ROOT,
+      'product/query/qxo-capitalisation-f28-candidate-envelope.v1.json',
+    ),
+    'utf8',
+  ));
+  return {
+    object_kind: canonicalValue.object_kind,
+    canonical_value: canonicalValue,
+  };
+}
+
+function loadRegisteredMembers() {
+  return [loadMember(), loadCandidateEnvelopeMember()];
+}
+
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
@@ -33,7 +51,7 @@ function clone(value) {
 test('registers one PM-wide Product Query IR successor contract', () => {
   const member = loadMember();
   assert.doesNotThrow(
-    () => validateAuthoredProductQueryInputs([member]),
+    () => validateAuthoredProductQueryInputs(loadRegisteredMembers()),
   );
   assert.equal(member.canonical_value.stable_id, 'PRODUCT_QUERY_IR');
   assert.equal(
@@ -139,7 +157,10 @@ test('rejects missing, extra and semantically drifted Product contracts', () => 
   changed.canonical_value.definition.domain_contract
     .cross_domain_boolean_query_permitted = true;
   assert.throws(
-    () => validateAuthoredProductQueryInputs([changed]),
+    () => validateAuthoredProductQueryInputs([
+      changed,
+      loadCandidateEnvelopeMember(),
+    ]),
     { code: 'INVALID_PRODUCT_QUERY_IR_CONTRACT_INPUT' },
   );
 
@@ -147,7 +168,10 @@ test('rejects missing, extra and semantically drifted Product contracts', () => 
   nested.canonical_value.definition.required_sections
     .invented_authority = true;
   assert.throws(
-    () => validateAuthoredProductQueryInputs([nested]),
+    () => validateAuthoredProductQueryInputs([
+      nested,
+      loadCandidateEnvelopeMember(),
+    ]),
     { code: 'INVALID_PRODUCT_QUERY_IR_CONTRACT_INPUT' },
   );
 });
@@ -158,7 +182,7 @@ test('compiles as one non-authorising successor input', () => {
     (candidate) => candidate.stable_id === 'PRODUCT_QUERY_IR',
   );
 
-  assert.equal(compiled.authored_members.length, 170);
+  assert.equal(compiled.authored_members.length, 172);
   assert.equal(member.object_kind, 'PRODUCT_QUERY_CONTRACT_INPUT');
   assert.equal(
     Object.values(member.canonical_value.definition.authority_contract)

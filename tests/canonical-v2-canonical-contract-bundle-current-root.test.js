@@ -58,7 +58,29 @@ test('assembles the exact current 171-member root into all eight categories', ()
   );
 
   assert.equal(proposal.proposed_dispositions.length, 171);
-  assert.equal(proposal.dependency_edge_count, 276);
+  assert.equal(proposal.dependency_edge_count, 285);
+  const envelopeDisposition = proposal.proposed_dispositions.find(
+    (entry) => entry.authored_identity.stable_id
+      === 'QXO_CAPITALISATION_F28_CANDIDATE_ENVELOPE',
+  );
+  const envelopeDependencies = envelopeDisposition
+    .ordered_dependency_identities.map((entry) => entry.stable_id);
+  assert.equal(
+    envelopeDependencies.includes('GENERAL_MATERIALITY_QUALIFIER'),
+    false,
+  );
+  assert.equal(
+    envelopeDependencies.includes('RETROSPECTIVE_LOOKBACK'),
+    false,
+  );
+  assert.equal(
+    envelopeDependencies.includes('GENERAL_MATERIALITY_QUALIFIER_STATE'),
+    true,
+  );
+  assert.equal(
+    envelopeDependencies.includes('RETROSPECTIVE_LOOKBACK_STATE'),
+    true,
+  );
   assert.equal(proposal.non_dependency_reference_dispositions.length, 18);
   assert.deepEqual(
     [...new Set(proposal.non_dependency_reference_dispositions.map(

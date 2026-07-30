@@ -66,12 +66,7 @@ function input() {
   const envelope = buildQxoCapitalisationF28CandidateEnvelope(
     candidateInput(base),
   );
-  const releaseBinding = clone(base.qxo_cross_view_release);
-  releaseBinding.manifest.release_manifest_id =
-    envelope.source_cross_view_release_id;
-  releaseBinding.manifest.canonical_payload_digest =
-    envelope.source_cross_view_release_payload_digest;
-  const productQueryIr = buildProductQueryIr(releaseBinding);
+  const productQueryIr = buildProductQueryIr(base.qxo_cross_view_release);
   const domain = v2DomainResult(base.qxo_cross_view_release);
   return {
     candidate_envelope: envelope,
@@ -119,17 +114,17 @@ test('adapts the exact F28 candidate envelope into one Product result', () => {
   assert.equal(Object.isFrozen(receipt), true);
 });
 
-test('binds Product Query IR to the envelope source release', () => {
+test('binds Product Query IR to the exact validated release manifest', () => {
   const source = input();
   const receipt =
     compileQxoCapitalisationF28ProductResultAdapterV2(source);
   assert.equal(
     receipt.product_query_result.candidate_release_manifest_id,
-    source.candidate_envelope.source_cross_view_release_id,
+    source.qxo_cross_view_release.manifest.release_manifest_id,
   );
   assert.equal(
     receipt.product_query_result.candidate_release_manifest_payload_digest,
-    source.candidate_envelope.source_cross_view_release_payload_digest,
+    source.qxo_cross_view_release.manifest.canonical_payload_digest,
   );
 });
 

@@ -44,12 +44,7 @@ function input() {
   };
   const envelope =
     buildQxoCapitalisationF28CandidateEnvelope(candidateInput);
-  const releaseBinding = clone(release);
-  releaseBinding.manifest.release_manifest_id =
-    envelope.source_cross_view_release_id;
-  releaseBinding.manifest.canonical_payload_digest =
-    envelope.source_cross_view_release_payload_digest;
-  const productQueryIr = buildProductQueryIr(releaseBinding);
+  const productQueryIr = buildProductQueryIr(release);
   const domain = domainResult(release);
   const validationBody = {
     validator_stable_id: QXO_F28_DOMAIN_VALIDATOR_V2.stable_id,

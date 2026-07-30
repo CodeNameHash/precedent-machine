@@ -24,11 +24,11 @@
     },
     "product_query_ir_binding_contract": {
       "product_query_ir_schema_version": "PRODUCT_QUERY_IR/V1",
-      "candidate_release_manifest_id_source": "CANDIDATE_ENVELOPE_SOURCE_CROSS_VIEW_RELEASE_ID",
-      "candidate_release_manifest_payload_digest_source": "CANDIDATE_ENVELOPE_SOURCE_CROSS_VIEW_RELEASE_PAYLOAD_DIGEST",
-      "candidate_release_manifest_id_must_equal_envelope_source_release_id": true,
-      "candidate_release_manifest_payload_digest_must_equal_envelope_source_release_payload_digest": true,
-      "old_cross_view_manifest_binding_permitted": false,
+      "candidate_release_manifest_id_source": "VALIDATED_CROSS_VIEW_RELEASE_MANIFEST_ID",
+      "candidate_release_manifest_payload_digest_source": "VALIDATED_CROSS_VIEW_RELEASE_MANIFEST_PAYLOAD_DIGEST",
+      "candidate_release_manifest_id_must_equal_validated_release_manifest_id": true,
+      "candidate_release_manifest_payload_digest_must_equal_validated_release_manifest_payload_digest": true,
+      "cross_view_release_identity_substitution_permitted": false,
       "query_ir_can_substitute_or_rehash_candidate_manifest": false
     },
     "exact_row_preservation_contract": {
