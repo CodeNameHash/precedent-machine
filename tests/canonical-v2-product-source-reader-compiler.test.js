@@ -17,6 +17,18 @@ const {
   PRODUCT_ACTIVE_RELEASE_RESOLUTION_SCHEMA,
 } = require('../lib/canonical-v2/product-rerun-compiler');
 const {
+  buildProcessPhrasebookResultIdentity,
+} = require('../lib/canonical-v2/process-phrasebook-result');
+const {
+  ACTION_KEY: PROCESS_RELATED_PASSAGES_ACTION_KEY,
+  PROCESS_RELATED_PASSAGE_CANDIDATE_SCHEMA,
+  PROCESS_RELATED_PASSAGE_PARENT_BINDING_SCHEMA,
+  PROCESS_RELATED_PASSAGE_PREVIEW_SCHEMA,
+  PROCESS_RELATED_PASSAGE_RELATIONSHIP_BINDING_SCHEMA,
+  PROCESS_RELATED_PASSAGE_RELEASE_PROJECTION_SCHEMA,
+  compileProcessRelatedPassages,
+} = require('../lib/canonical-v2/process-related-passages');
+const {
   PRODUCT_DOMAIN_SOURCE_ACTION_ADMISSION_SCHEMA,
   PRODUCT_EXACT_DETAIL_REFERENCE_SCHEMA,
   PRODUCT_PARENT_BOUND_CURSOR_SCHEMA,
@@ -24,6 +36,7 @@ const {
   PRODUCT_SOURCE_READER_ACTION_SCHEMA,
   PRODUCT_SOURCE_READER_OWNER_BINDING_SCHEMA,
   PRODUCT_SOURCE_READER_REFUSAL_SCHEMA,
+  adaptProcessRelatedPassagesResponse,
   canonicalProductSourceReaderOutcomeBytes,
   compileProductSourceReaderAction,
   validateProductSourceReaderOutcome,
@@ -71,6 +84,181 @@ function assertDeepFrozen(value) {
   if (!value || typeof value !== 'object') return;
   assert.equal(Object.isFrozen(value), true);
   Object.values(value).forEach(assertDeepFrozen);
+}
+
+function withIdentity(schema, idKey, body) {
+  return {
+    schema_version: body.schema_version,
+    [idKey]: contentId(schema, body),
+    ...body,
+  };
+}
+
+function processPassageIdentity(label, governedOrdinal) {
+  return buildProcessPhrasebookResultIdentity({
+    frozen_contract_pair_digest: digest('process-contract-pair'),
+    governed_deal_admission_id: digest('process-deal'),
+    precomputed_process_narration_occurrence_id:
+      digest(`${label}:narration`),
+    exact_evidence_role_slot_key: 'DIRECT_PREDICATE_WITNESS',
+    governed_ordinal: governedOrdinal,
+  });
+}
+
+function processRelatedPassagesFixture(result) {
+  const parentIdentity = processPassageIdentity('parent', 50);
+  const parentBody = {
+    schema_version: PROCESS_RELATED_PASSAGE_PARENT_BINDING_SCHEMA,
+    parent_product_result_identity:
+      result.product_query_result_identity,
+    parent_result_identity: parentIdentity,
+    candidate_release_manifest_id:
+      result.candidate_release_manifest_id,
+    candidate_release_manifest_payload_digest:
+      result.candidate_release_manifest_payload_digest,
+    source_document_identity:
+      result.exact_citation.source_document_identity,
+    binding_validation_receipt_id:
+      digest('process-parent-binding-receipt'),
+    validation_state: 'EXTERNALLY_VALIDATED',
+    authority_state: 'NOT_GRANTED',
+  };
+  const parent = withIdentity(
+    PROCESS_RELATED_PASSAGE_PARENT_BINDING_SCHEMA,
+    'parent_binding_id',
+    parentBody,
+  );
+  const candidateChildren = [
+    ['first', 1, 'SAME_BIDDER_TRACK', 'Same bidder track'],
+    ['second', 2, 'SAME_PROCESS_PHASE', 'Same process phase'],
+  ].map(([label, ordinal, relationshipKey, relationshipLabel]) => {
+    const childIdentity = processPassageIdentity(label, ordinal);
+    const childId =
+      childIdentity.process_phrasebook_passage_result_id;
+    const relationshipBody = {
+      schema_version:
+        PROCESS_RELATED_PASSAGE_RELATIONSHIP_BINDING_SCHEMA,
+      parent_result_id:
+        parentIdentity.process_phrasebook_passage_result_id,
+      related_result_id: childId,
+      relationship_definition_key_and_version: {
+        key: relationshipKey,
+        version: 1,
+      },
+      relationship_label: relationshipLabel,
+      relationship_validation_receipt_id:
+        digest(`process-relationship:${childId}`),
+      resolution_state: 'RESOLVED',
+      validation_state: 'EXTERNALLY_VALIDATED',
+      authority_state: 'NOT_GRANTED',
+    };
+    const relationship = withIdentity(
+      PROCESS_RELATED_PASSAGE_RELATIONSHIP_BINDING_SCHEMA,
+      'relationship_binding_id',
+      relationshipBody,
+    );
+    const text = `Exact related drafting ${ordinal}.`;
+    const previewBody = {
+      schema_version: PROCESS_RELATED_PASSAGE_PREVIEW_SCHEMA,
+      candidate_release_manifest_id:
+        result.candidate_release_manifest_id,
+      candidate_release_manifest_payload_digest:
+        result.candidate_release_manifest_payload_digest,
+      source_document_identity:
+        result.exact_citation.source_document_identity,
+      source_revision_id: digest('process-source-revision'),
+      canonical_text_digest: digest('process-canonical-text'),
+      exact_source_interval: {
+        start_utf8_byte: ordinal * 100,
+        end_utf8_byte:
+          (ordinal * 100) + Buffer.byteLength(text, 'utf8'),
+        exact_text_digest: sha256Hex(Buffer.from(text, 'utf8')),
+      },
+      evidence_role_key:
+        childIdentity.exact_evidence_role_slot_key,
+      source_local_narration_id:
+        childIdentity.precomputed_process_narration_occurrence_id,
+      segmentation_projection_id:
+        digest('process-segmentation-projection'),
+      verbatim_text: text,
+      verbatim_text_digest: sha256Hex(Buffer.from(text, 'utf8')),
+      truncation_state: 'COMPLETE',
+      preview_validation_receipt_id:
+        digest(`process-preview:${childId}`),
+      validation_state: 'EXTERNALLY_VALIDATED',
+      authority_state: 'NOT_GRANTED',
+    };
+    const preview = withIdentity(
+      PROCESS_RELATED_PASSAGE_PREVIEW_SCHEMA,
+      'preview_id',
+      previewBody,
+    );
+    const candidateBody = {
+      schema_version: PROCESS_RELATED_PASSAGE_CANDIDATE_SCHEMA,
+      related_result_identity: childIdentity,
+      candidate_release_manifest_id:
+        result.candidate_release_manifest_id,
+      candidate_release_manifest_payload_digest:
+        result.candidate_release_manifest_payload_digest,
+      source_document_identity:
+        result.exact_citation.source_document_identity,
+      relationship_binding: relationship,
+      verbatim_passage_preview: preview,
+      exact_detail_reference: exactDetailReference(
+        result,
+        'RELATED_CHILD_RESULT',
+        childId,
+        ordinal,
+      ),
+      candidate_validation_receipt_id:
+        digest(`process-candidate:${childId}`),
+      validation_state: 'EXTERNALLY_VALIDATED',
+      authority_state: 'NOT_GRANTED',
+    };
+    return withIdentity(
+      PROCESS_RELATED_PASSAGE_CANDIDATE_SCHEMA,
+      'candidate_id',
+      candidateBody,
+    );
+  });
+  const projectionBody = {
+    schema_version: PROCESS_RELATED_PASSAGE_RELEASE_PROJECTION_SCHEMA,
+    parent_binding_id: parent.parent_binding_id,
+    candidate_release_manifest_id:
+      result.candidate_release_manifest_id,
+    candidate_release_manifest_payload_digest:
+      result.candidate_release_manifest_payload_digest,
+    source_document_identity:
+      result.exact_citation.source_document_identity,
+    candidate_children: candidateChildren,
+    projection_validation_receipt_id:
+      digest('process-related-projection-receipt'),
+    validation_state: 'EXTERNALLY_VALIDATED',
+    authority_state: 'NOT_GRANTED',
+  };
+  const projection = withIdentity(
+    PROCESS_RELATED_PASSAGE_RELEASE_PROJECTION_SCHEMA,
+    'projection_id',
+    projectionBody,
+  );
+  const callerInput = {
+    action_key: PROCESS_RELATED_PASSAGES_ACTION_KEY,
+    parent_result_id:
+      parentIdentity.process_phrasebook_passage_result_id,
+  };
+  const response = compileProcessRelatedPassages({
+    caller_input: callerInput,
+    parent_binding: parent,
+    release_projection: projection,
+  });
+  return {
+    response,
+    validationContext: {
+      caller_input: callerInput,
+      parent_binding: parent,
+      release_projection: projection,
+    },
+  };
 }
 
 function activeRelease(release = 'ONE') {
@@ -613,6 +801,118 @@ test('compiles list and exact-child Process related actions', () => {
   assert.equal(list.schema_version, PRODUCT_SOURCE_READER_ACTION_SCHEMA);
   assert.equal(open.schema_version, PRODUCT_SOURCE_READER_ACTION_SCHEMA);
   assert.equal(open.action_type, 'OPEN_RELATED_SOURCE');
+});
+
+test('adapts the checked Process response into the Product collection', () => {
+  const result = productResult('PROCESS');
+  const fixture = processRelatedPassagesFixture(result);
+  const collection = adaptProcessRelatedPassagesResponse({
+    product_result: result,
+    process_response: fixture.response,
+    process_response_validation_context: fixture.validationContext,
+  });
+
+  assert.equal(
+    collection.schema_version,
+    PRODUCT_RELATED_PASSAGE_COLLECTION_SCHEMA,
+  );
+  assert.equal(
+    collection.parent_product_result_identity,
+    result.product_query_result_identity,
+  );
+  assert.equal(
+    collection.projection_validation_receipt_id,
+    fixture.response.projection_validation_receipt_id,
+  );
+  assert.deepEqual(
+    collection.children.map((child) => ({
+      result: child.related_child_result_identity,
+      relationship: child.relationship_definition,
+      label: child.relationship_label,
+      preview: child.verbatim_preview,
+      reference: child.child_exact_detail_reference,
+    })),
+    fixture.response.children.map((child) => ({
+      result: child.related_result_id,
+      relationship:
+        child.relationship_definition_key_and_version,
+      label: child.relationship_label,
+      preview: {
+        verbatim_text:
+          child.verbatim_passage_preview.verbatim_text,
+        verbatim_text_digest:
+          child.verbatim_passage_preview.verbatim_text_digest,
+        truncation_state:
+          child.verbatim_passage_preview.truncation_state,
+      },
+      reference: child.exact_detail_reference,
+    })),
+  );
+  assert.equal(
+    Object.hasOwn(collection.children[0].verbatim_preview, 'preview_id'),
+    false,
+  );
+  assertDeepFrozen(collection);
+
+  const child = collection.children[0];
+  const outcome = compileProductSourceReaderAction({
+    product_result: result,
+    active_release_resolution: activeRelease(),
+    domain_source_action_admission: sourceActionAdmission(
+      result,
+      'RELATED_PASSAGE_CHILD_COLLECTION',
+      ['OPEN_RELATED_SOURCE'],
+    ),
+    object_authorisation_binding: ownerBinding('adapted-child'),
+    action_type: 'OPEN_RELATED_SOURCE',
+    action_input: {
+      parent_collection_binding: collection,
+      related_child_result_identity:
+        child.related_child_result_identity,
+      child_exact_detail_reference:
+        child.child_exact_detail_reference,
+    },
+  });
+  assert.equal(outcome.action_type, 'OPEN_RELATED_SOURCE');
+});
+
+test('rejects a Process response bound to another Product parent', () => {
+  const result = productResult('PROCESS');
+  const fixture = processRelatedPassagesFixture(result);
+
+  assert.throws(
+    () => adaptProcessRelatedPassagesResponse({
+      product_result: productResult('PROCESS', 'ONE', 2),
+      process_response: fixture.response,
+      process_response_validation_context: fixture.validationContext,
+    }),
+    (error) => (
+      error.code === 'INVALID_PRODUCT_PROCESS_RELATED_PASSAGES_RESPONSE'
+      && /exact Product parent/.test(error.message)
+    ),
+  );
+});
+
+test('rejects a correctly rehashed forged Process response', () => {
+  const result = productResult('PROCESS');
+  const fixture = processRelatedPassagesFixture(result);
+  const forged = clone(fixture.response);
+  forged.children[0].relationship_label = 'Invented relationship';
+  const body = clone(forged);
+  delete body.response_id;
+  forged.response_id = contentId(forged.schema_version, body);
+
+  assert.throws(
+    () => adaptProcessRelatedPassagesResponse({
+      product_result: result,
+      process_response: forged,
+      process_response_validation_context: fixture.validationContext,
+    }),
+    (error) => (
+      error.code === 'INVALID_PRODUCT_PROCESS_RELATED_PASSAGES_RESPONSE'
+      && /not valid/.test(error.message)
+    ),
+  );
 });
 
 test('admits a later CVR selected-source action through registry data', () => {
