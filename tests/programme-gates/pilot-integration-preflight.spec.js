@@ -1,4 +1,8 @@
 const assert = require('node:assert/strict');
+const { execFileSync } = require('node:child_process');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
 const test = require('node:test');
 const {
   deriveSignerCoverage,
@@ -8,13 +12,22 @@ const {
 
 const commit = 'a'.repeat(40);
 const candidateCommit = 'c'.repeat(40);
-function input() { return { main: { head: commit, expected_commit: commit, is_expected_ancestor: true }, candidate: { head: candidateCommit }, worktrees: [{ clean: true }], changed_paths: ['a'], allowed_paths: ['a'], manifest: { registered: true }, contracts: { actual_count: 3, expected_count: 3 }, compiler: { development_compiles: 2, success: true }, signer: { inventory_paths: ['a'], required_paths: ['a'] }, author: { email: 'bengoodchild@gmail.com', verified_aliases: [] }, deployment: { present: true, code_commit: candidateCommit, specification_root: 'root', expected_specification_root: 'root' }, publication: { commit, expected_predecessor_commit: commit, generation: 44, expected_generation: 44 }, test_receipts: ['unit'], required_test_receipts: ['unit'] }; }
-function code(result) { return result.stages.find((stage) => stage.state === 'BLOCKED')?.blocker.code; }
+const root = 'd'.repeat(64);
+function input() { return { main: { head: commit, expected_commit: commit, is_expected_ancestor: true }, candidate: { head: candidateCommit }, worktrees: [{ clean: true }], changed_paths: ['a'], allowed_paths: ['a'], signer: { inventory_paths: ['a'], required_paths: ['a'] }, author: { email: 'bengoodchild@gmail.com', verified_aliases: [] }, publication: { commit, generation: 44 }, specification_root: root, evidence: { manifest: { schema_version: 'PilotIntegrationManifestReceipt/V1', candidate_commit: candidateCommit, specification_root: root, registered: true, actual_count: 3, expected_count: 3 }, development_compiles: { schema_version: 'PilotIntegrationCompileReceipt/V1', candidate_commit: candidateCommit, specification_root: root, compile_count: 2, success: true }, deployment: { schema_version: 'PilotIntegrationDeploymentReceipt/V1', candidate_commit: candidateCommit, specification_root: root, present: true }, test_receipts: { schema_version: 'PilotIntegrationTestReceipt/V1', candidate_commit: candidateCommit, specification_root: root, required_receipts: ['unit'], receipts: ['unit'] } } }; }
+function hasCode(result, expected) { return result.stages.some((stage) => stage.blocker?.code === expected); }
 test('preflight accepts exact supplied local integration basis without mutation', () => { const before = JSON.stringify(input()); const result = runPilotIntegrationPreflight(input()); assert.equal(result.state, 'READY_FOR_INTEGRATION'); assert.deepEqual(result.mutations, []); assert.equal(JSON.stringify(input()), before); });
 for (const [name, alter, expected] of [
-  ['stale main/publication', (x) => { x.main.head = 'b'.repeat(40); }, 'STALE_MAIN'], ['dirty worktree', (x) => { x.worktrees[0].clean = false; }, 'DIRTY_WORKTREE'], ['path violation', (x) => { x.changed_paths = ['b']; }, 'PATH_VIOLATION'], ['stale manifest/count', (x) => { x.contracts.actual_count = 2; }, 'STALE_MANIFEST_OR_COUNT'], ['bundle compile failure', (x) => { x.compiler.success = false; }, 'BUNDLE_COMPILE_FAILURE'], ['signer omission', (x) => { x.signer.inventory_paths = []; }, 'SIGNER_PATH_OMISSION'], ['bad author email', (x) => { x.author.email = 'bad@example.com'; }, 'BAD_AUTHOR_EMAIL'], ['old-main deployment metadata', (x) => { x.deployment.code_commit = commit; }, 'DEPLOYMENT_METADATA_MISMATCH'], ['stale predecessor', (x) => { x.publication.generation = 43; }, 'STALE_PREDECESSOR_OR_MISSING_RECEIPT'], ['missing test receipt', (x) => { x.test_receipts = []; }, 'STALE_PREDECESSOR_OR_MISSING_RECEIPT'],
-]) test(name, () => { const value = input(); alter(value); assert.equal(code(runPilotIntegrationPreflight(value)), expected); });
-test('cache hit requires unchanged exact compiler input fingerprint', () => { const cache = new Map(); const first = runPilotIntegrationPreflight(input(), cache); const second = runPilotIntegrationPreflight(input(), cache); const changed = input(); changed.contracts.actual_count = 4; const third = runPilotIntegrationPreflight(changed, cache); assert.equal(first.stages[4].cache_hit, false); assert.equal(second.stages[4].cache_hit, true); assert.equal(third.stages[4].cache_hit, false); assert.notEqual(second.input_fingerprint, third.input_fingerprint); });
+  ['stale main', (x) => { x.main.head = 'b'.repeat(40); }, 'STALE_MAIN'], ['dirty worktree', (x) => { x.worktrees[0].clean = false; }, 'DIRTY_WORKTREE'], ['invented allowlist', (x) => { x.allowed_paths = ['b']; }, 'PATH_VIOLATION'], ['stale manifest/count', (x) => { x.evidence.manifest.actual_count = 2; }, 'STALE_MANIFEST_OR_COUNT'], ['fabricated compile assertion', (x) => { x.evidence.development_compiles.success = false; }, 'FORMAL_FREEZE_PACKAGE_REQUIRED'], ['signer omission', (x) => { x.signer.inventory_paths = []; }, 'SIGNER_PATH_OMISSION'], ['bad author email', (x) => { x.author.email = 'bad@example.com'; }, 'BAD_AUTHOR_EMAIL'], ['stale deployment commit', (x) => { x.evidence.deployment.candidate_commit = commit; }, 'DEPLOYMENT_METADATA_REQUIRED'], ['stale deployment root', (x) => { x.evidence.deployment.specification_root = 'e'.repeat(64); }, 'DEPLOYMENT_METADATA_REQUIRED'], ['stale test receipt', (x) => { x.evidence.test_receipts.candidate_commit = commit; }, 'STALE_PREDECESSOR_OR_MISSING_RECEIPT'], ['missing test receipt', (x) => { x.evidence.test_receipts.receipts = []; }, 'STALE_PREDECESSOR_OR_MISSING_RECEIPT'],
+]) test(name, () => { const value = input(); alter(value); assert.equal(hasCode(runPilotIntegrationPreflight(value), expected), true); });
+test('cache hit requires unchanged exact compiler input fingerprint', () => { const cache = new Map(); const first = runPilotIntegrationPreflight(input(), cache); const second = runPilotIntegrationPreflight(input(), cache); const changed = input(); changed.evidence.manifest.actual_count = 4; const third = runPilotIntegrationPreflight(changed, cache); assert.equal(first.stages[4].cache_hit, false); assert.equal(second.stages[4].cache_hit, true); assert.equal(third.stages[4].cache_hit, undefined); assert.notEqual(second.input_fingerprint, third.input_fingerprint); });
+test('rejects a caller-supplied forged predecessor pair before evidence is read', () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'pilot-preflight-'));
+  try {
+    const inputPath = path.join(directory, 'input.json');
+    fs.writeFileSync(inputPath, JSON.stringify({ additional_worktree_paths: [], evidence_paths: {}, publication: { commit: 'b'.repeat(40), generation: 1 } }));
+    assert.throws(() => execFileSync(process.execPath, [path.resolve(__dirname, '../../scripts/pilot-integration-preflight.mjs'), '--input', inputPath], { cwd: path.resolve(__dirname, '../..'), stdio: 'pipe' }), /input must contain only/);
+  } finally { fs.rmSync(directory, { recursive: true, force: true }); }
+});
 test('derives signer coverage from the closed signer policy instead of caller claims', () => {
   const source = `
 const REVIEW_BASIS_COMMIT = '${'b'.repeat(40)}';
