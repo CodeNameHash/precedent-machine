@@ -2,8 +2,13 @@
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
+const require = createRequire(import.meta.url);
+const {
+  deriveSignerCoverage,
+} = require('../lib/programme-gates/pilot-integration-preflight');
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const target = path.join(root, '.github/pm-integration/current-state.json');
 const args = new Set(process.argv.slice(2));
@@ -156,6 +161,23 @@ if (!fs.existsSync(path.join(root, '.github/pm-integration/deployment-metadata.j
 }
 if (!fs.existsSync(testReceiptPath)) {
   blockers.push('TEST_RECEIPTS_REQUIRED');
+}
+const signerSource = fs.readFileSync(
+  path.join(root, 'scripts/sign-g0-evidence.mjs'),
+  'utf8',
+);
+const signerBasis = deriveSignerCoverage(signerSource, []).review_basis_commit;
+const signerRequiredPaths = git([
+  'diff',
+  '--name-only',
+  `${signerBasis}..${currentHead}`,
+]).split('\n').filter(Boolean);
+const signerCoverage = deriveSignerCoverage(signerSource, signerRequiredPaths);
+if (
+  signerCoverage.inventory_paths.length
+  !== signerCoverage.required_paths.length
+) {
+  blockers.push('SIGNER_PATH_COVERAGE_REQUIRED');
 }
 const record = {
   schema_version: 'ProgrammeCurrentState/V1', main_commit: main,
