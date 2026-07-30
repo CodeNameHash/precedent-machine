@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { createRequire } from 'node:module';
+import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
@@ -49,11 +50,75 @@ const {
   PRODUCT_CANDIDATE_RESULT_WRITE_SET_SCHEMA,
 } = require('../lib/canonical-v2/product-candidate-result-write');
 const {
+  compileMetseraExclusivityProductSourceReader,
+} = require(
+  '../lib/canonical-v2/metsera-exclusivity-product-source-reader',
+);
+const {
+  PRODUCT_ACTIVE_RELEASE_RESOLUTION_SCHEMA,
+} = require('../lib/canonical-v2/product-rerun-compiler');
+const {
+  requireM1VerticalSliceExecutionPermission,
+} = require('../lib/programme-gates/m1-milestone-permission');
+const {
   loadSealedMetseraGoldEvidence,
 } = require('../lib/canonical-v2/metsera-gold-evidence');
 
 const USER_AGENT =
   'Deal Corpus canonical staging bengoodchild@gmail.com';
+const M1_ACKNOWLEDGEMENT_PATH = resolve(
+  ROOT,
+  'docs/acks/M1-CONTRACT-FREEZE-2026-07-30.md',
+);
+const M1_BUNDLE = Object.freeze({
+  bundle_id:
+    '8c765d52d3f95ebfc21b28b5bd0e71689a095c482e113a4329d33b0140dbe83d',
+  contract_bundle_digest:
+    'b990bf90f98fd83b9dfcf34912ec4b3cd42c37f3e693bee9796b1c63198edc84',
+  canonical_payload_digest:
+    '73a9023d3ef831e7a544664929385a1aa61af1efed58139d1cd54bf5985d3ab8',
+  substantive_member_count: 171,
+  dependency_edge_count: 285,
+  compile_status: 'PASS',
+  cycle_status: 'PASS',
+});
+
+function currentM1Permission() {
+  return requireM1VerticalSliceExecutionPermission({
+    acknowledgement_markdown: readFileSync(
+      M1_ACKNOWLEDGEMENT_PATH,
+      'utf8',
+    ),
+    current_bundle: M1_BUNDLE,
+  });
+}
+
+function activeReleaseResolution(stagingState) {
+  const body = {
+    schema_version: PRODUCT_ACTIVE_RELEASE_RESOLUTION_SCHEMA,
+    active_fence_identity: stagingState.active_pointer_id,
+    candidate_release_manifest_id:
+      stagingState.active_candidate_manifest_id,
+    candidate_release_manifest_payload_digest:
+      stagingState.active_candidate_manifest_payload_digest,
+    resolution_state: 'FRESH_EXTERNAL_RESOLUTION',
+    execution_authority_state: 'NOT_GRANTED',
+  };
+  return {
+    schema_version: body.schema_version,
+    resolution_id: contentId(
+      PRODUCT_ACTIVE_RELEASE_RESOLUTION_SCHEMA,
+      body,
+    ),
+    active_fence_identity: body.active_fence_identity,
+    candidate_release_manifest_id:
+      body.candidate_release_manifest_id,
+    candidate_release_manifest_payload_digest:
+      body.candidate_release_manifest_payload_digest,
+    resolution_state: body.resolution_state,
+    execution_authority_state: body.execution_authority_state,
+  };
+}
 
 async function fetchSource(document) {
   const response = await fetch(document.officialUrl, {
@@ -198,8 +263,13 @@ SELECT
     AS candidate_write_receipt_count,
   pointer.generation::integer AS active_pointer_generation,
   pointer.pointer_id AS active_pointer_id,
-  pointer.corpus_release_id AS active_corpus_release_id
+  pointer.corpus_release_id AS active_corpus_release_id,
+  release.candidate_manifest_id AS active_candidate_manifest_id,
+  release.canonical_payload_digest
+    AS active_candidate_manifest_payload_digest
 FROM canonical_v2_staging.active_corpus_release_pointers pointer
+JOIN canonical_v2_staging.fixture_corpus_releases release
+  ON release.corpus_release_id = pointer.corpus_release_id
 WHERE pointer.environment = 'staging';`;
   const stagingBefore = stagingRuntime.runSql(
     stagingStateSql,
@@ -339,6 +409,25 @@ $candidate_conflict_proof$;`);
       'Metsera conflict proof changed durable staging state.',
     );
   }
+  const sourceReader =
+    compileMetseraExclusivityProductSourceReader(
+      candidateCommit.validation.candidateRecord,
+      activeReleaseResolution(stagingAfterConflictProof),
+      currentM1Permission(),
+    );
+  if (
+    sourceReader.source_reader_state !== 'TYPED_REFUSAL'
+    || sourceReader.product_source_reader_outcome.disposition
+      !== 'RELEASE_NOT_ACTIVE'
+    || sourceReader.product_source_reader_outcome
+      .original_result_preserved !== true
+    || sourceReader.product_source_reader_outcome.execution_state
+      !== 'NOT_EXECUTED'
+  ) {
+    throw new Error(
+      'Inactive Metsera candidate did not fail closed in the Product source reader.',
+    );
+  }
   process.stdout.write(`${JSON.stringify({
     schema_version: receipt.schema_version,
     selected_passage_id: receipt.selected_passage_id,
@@ -407,6 +496,15 @@ $candidate_conflict_proof$;`);
       stagingAfter.active_pointer_id,
     staging_active_corpus_release_id:
       stagingAfter.active_corpus_release_id,
+    product_source_reader_receipt_id:
+      sourceReader.product_source_reader_receipt_id,
+    product_source_reader_disposition:
+      sourceReader.product_source_reader_outcome.disposition,
+    product_source_reader_execution_state:
+      sourceReader.product_source_reader_outcome.execution_state,
+    product_source_reader_original_result_preserved:
+      sourceReader.product_source_reader_outcome
+        .original_result_preserved,
     authority_limits: receipt.authority_limits,
   }, null, 2)}\n`);
 }
