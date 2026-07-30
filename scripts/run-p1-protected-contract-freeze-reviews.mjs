@@ -10,7 +10,6 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const { canonicalJson, sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const { domainDigest, signatureBytes } = require('../lib/programme-gates/bytes');
-const { enumerateCompleteGitAuthorshipUniverse } = require('../lib/programme-gates/git-authorship');
 const {
   AUTHENTICATED_RESULT_DOMAIN,
   AUTHENTICATED_RESULT_ID_DOMAIN,
@@ -20,8 +19,8 @@ const {
 } = require('../lib/programme-gates/contract-freeze-review-registration');
 const {
   P1_CONTRACT_FREEZE_REVIEW_LANES,
-  createP1ContractFreezeReviewPrompt,
-  createP1ContractFreezeReviewRequest,
+  createP1ContractFreezeReviewExecutionPlan,
+  finaliseP1ContractFreezeReviewExecution,
   validateP1ContractFreezeReviewResults,
 } = require('../lib/programme-gates/contract-freeze-review-tasks');
 const { TRUSTED_PUBLIC_KEY_REGISTRY } = require('../lib/programme-gates/registry');
@@ -29,8 +28,6 @@ const { TRUSTED_PUBLIC_KEY_REGISTRY } = require('../lib/programme-gates/registry
 const ROOT = path.resolve(import.meta.dirname, '..');
 const CODEX_PATH = '/opt/homebrew/bin/codex';
 const CONTROLLER_KEY_ID = 'PROGRAMME_GATE_REVIEW_CONTROLLER_2026_07';
-const GATE_ID = 'P1_CONTRACT_FREEZE_ATTESTED';
-const RESULT_VERSION = 'P1ContractFreezeReviewResult/V1';
 const FINDING_OUTPUT_SCHEMA = Object.freeze({
   type: 'object',
   additionalProperties: false,
@@ -147,66 +144,6 @@ async function sourceClosure(commit, nonce) {
 
 function sourceDigest(bytes) { return sha256Hex(bytes); }
 
-function reviewerBinding(lane, index, observed, commit, authorship) {
-  const identity = `p1-controller/${observed.sessionId}`;
-  const dispositionId = domainDigest('PROGRAMME_GATE_P1_REVIEW_DISPOSITION/V1', {
-    lane_id: lane.lane_id,
-    immutable_session_id: observed.sessionId,
-    finding_output: observed.output,
-  });
-  return {
-    lane_id: lane.lane_id,
-    reviewer_role: lane.reviewer_role,
-    reviewer_principal_id: `P1_REVIEWER_PRINCIPAL/${observed.sessionId}`,
-    reviewer_identity: identity,
-    reviewer_model_identifier: 'gpt-5.6-sol',
-    reasoning_level: 'high',
-    reviewer_source_control_identity_set: [identity],
-    reviewer_eligibility_digest: domainDigest('PROGRAMME_GATE_P1_REVIEWER_ELIGIBILITY/V1', {
-      lane_id: lane.lane_id,
-      observed_session_id: observed.sessionId,
-      model: 'gpt-5.6-sol',
-      reasoning_level: 'high',
-      run_lane_index: index + 1,
-    }),
-    review_disposition_id: dispositionId,
-    independence_binding: {
-      immutable_session_id: observed.sessionId,
-      session_parent_or_genesis: 'GENESIS',
-      source_control_history_scope: 'REVIEWED_COMMIT_ANCESTRY_FROM_REPOSITORY_GENESIS',
-      reviewed_code_commit: commit,
-      source_control_authorship_events: authorship.events,
-      source_control_authorship_event_set_root: authorship.root,
-      prior_conclusion_input_set: [],
-      reviewer_edit_set: [],
-    },
-  };
-}
-
-function reviewResult(task, output) {
-  return {
-    schema_version: RESULT_VERSION,
-    gate_id: GATE_ID,
-    lane_id: task.lane_id,
-    task_id: task.task_id,
-    exact_review_package_fingerprint: task.exact_review_input.exact_review_package_fingerprint,
-    exact_review_package_payload_digest: task.exact_review_input.exact_review_package_payload_digest,
-    code_commit: task.exact_review_input.code_commit,
-    frozen_contract_pair_digest: task.exact_review_input.frozen_contract_pair_digest,
-    contract_freeze_attestation_id: task.exact_review_input.contract_freeze_attestation_id,
-    review_disposition_id: task.reviewer_binding.review_disposition_id,
-    reviewer_principal_id: task.reviewer_binding.reviewer_principal_id,
-    reviewer_identity: task.reviewer_binding.reviewer_identity,
-    reviewer_role: task.reviewer_binding.reviewer_role,
-    reviewer_model_identifier: task.reviewer_binding.reviewer_model_identifier,
-    reasoning_level: task.reviewer_binding.reasoning_level,
-    immutable_session_id: task.reviewer_binding.independence_binding.immutable_session_id,
-    independence_binding_digest: domainDigest('PROGRAMME_GATE_P1_REVIEW_INDEPENDENCE_BINDING/V1', task.reviewer_binding.independence_binding),
-    disposition: output.disposition,
-    findings: output.findings,
-  };
-}
-
 function sign(privateKey, domain, payload) {
   return crypto.sign(null, signatureBytes({ domain, role: 'REVIEW_CONTROLLER', payload }), privateKey).toString('base64');
 }
@@ -275,7 +212,7 @@ function signedCarriers(request, results, privateKey) {
   return { registration, authenticated_results };
 }
 
-async function runLane({ lane, packageBytes, runRoot }) {
+async function runLane({ lane, taskTemplate, packageBytes, runRoot }) {
   const laneRoot = fs.mkdtempSync(path.join(runRoot, `${lane.lane_id.toLowerCase()}-`));
   const working = path.join(laneRoot, 'review');
   const home = path.join(laneRoot, 'home');
@@ -305,7 +242,7 @@ async function runLane({ lane, packageBytes, runRoot }) {
     '-m', 'gpt-5.6-sol', '-c', 'model_reasoning_effort="high"',
     '--disable', 'multi_agent', '--disable', 'multi_agent_v2', '--json',
     '--output-schema', path.join(working, 'output-schema.json'), '-',
-  ], { cwd: working, input: createP1ContractFreezeReviewPrompt(lane.lane_id), env: {} });
+  ], { cwd: working, input: taskTemplate.prompt, env: {} });
   const ended_at = new Date().toISOString();
   if (sourceDigest(fs.readFileSync(path.join(working, 'exact-review-package.json'))) !== before) {
     fail('review changed exact package bytes');
@@ -320,26 +257,36 @@ async function runProtectedP1Reviews({ commit, nonce, outputPath }) {
   }
   const closure = await sourceClosure(commit, nonce);
   const packageBytes = Buffer.from(canonicalJson(closure.exact_review_package), 'utf8');
+  const executionPlan = createP1ContractFreezeReviewExecutionPlan({
+    schema_version: 'P1ContractFreezeReviewExecutionPlanInput/V1',
+    exact_review_package_fingerprint: closure.exact_review_package_fingerprint,
+    exact_review_package_bytes_base64: packageBytes.toString('base64'),
+    code_commit: commit,
+    frozen_contract_pair_digest: closure.exact_review_package.frozen_contract_pair_digest,
+    source_closure_identity: closure.exact_review_package.contract_freeze_attestation_identity,
+  });
   const runRoot = fs.mkdtempSync(path.join(process.env.RUNNER_TEMP, 'p1-contract-freeze-review-'));
   try {
-    const observed = await Promise.all(P1_CONTRACT_FREEZE_REVIEW_LANES.map((lane) => runLane({ lane, packageBytes, runRoot })));
+    const observed = await Promise.all(P1_CONTRACT_FREEZE_REVIEW_LANES.map((lane, index) => runLane({
+      lane,
+      taskTemplate: executionPlan.task_templates[index],
+      packageBytes,
+      runRoot,
+    })));
     const sessions = observed.map((lane) => lane.sessionId);
     if (new Set(sessions).size !== P1_CONTRACT_FREEZE_REVIEW_LANES.length) fail('P1 reviews did not use three distinct fresh sessions');
-    const authorshipEvents = enumerateCompleteGitAuthorshipUniverse({ repositoryRoot: ROOT, expectedCommit: commit });
-    const authorship = {
-      events: authorshipEvents,
-      root: domainDigest('PROGRAMME_GATE_SOURCE_CONTROL_AUTHORSHIP_EVENT_SET_ROOT/V1', authorshipEvents),
-    };
-    const request = createP1ContractFreezeReviewRequest({
-      schema_version: 'P1ContractFreezeReviewRequestInput/V1',
-      exact_review_package_fingerprint: closure.exact_review_package_fingerprint,
-      exact_review_package_bytes_base64: packageBytes.toString('base64'),
-      code_commit: commit,
-      frozen_contract_pair_digest: closure.exact_review_package.frozen_contract_pair_digest,
-      source_closure_identity: closure.exact_review_package.contract_freeze_attestation_identity,
-      reviewer_bindings: P1_CONTRACT_FREEZE_REVIEW_LANES.map((lane, index) => reviewerBinding(lane, index, observed[index], commit, authorship)),
-    }, { gitRuntime: { repositoryRoot: ROOT } });
-    const results = request.tasks.map((task, index) => reviewResult(task, observed[index].output));
+    const finalised = finaliseP1ContractFreezeReviewExecution({
+      executionPlan,
+      observedReviews: observed.map((review, index) => ({
+        lane_id: P1_CONTRACT_FREEZE_REVIEW_LANES[index].lane_id,
+        immutable_session_id: review.sessionId,
+        reviewer_model_identifier: 'gpt-5.6-sol',
+        reasoning_level: 'high',
+        finding_output: review.output,
+      })),
+      gitRuntime: { repositoryRoot: ROOT },
+    });
+    const { request, results } = finalised;
     const carriers = signedCarriers(request, results, protectedKey());
     const validation = validateP1ContractFreezeReviewResults({
       request,
@@ -354,6 +301,7 @@ async function runProtectedP1Reviews({ commit, nonce, outputPath }) {
       code_commit: commit,
       exact_review_package_fingerprint: closure.exact_review_package_fingerprint,
       exact_review_package_payload_digest: sha256Hex(packageBytes),
+      execution_plan: finalised.execution_plan,
       request,
       results,
       registration: carriers.registration,
