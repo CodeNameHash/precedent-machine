@@ -1,0 +1,21 @@
+{
+  "phase": "WP-METSERA-EXCLUSIVITY-PRODUCT-ROW-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-metsera-exclusivity-product-row-v1.json",
+    "lib/canonical-v2/metsera-exclusivity-product-row.js",
+    "scripts/canonical-v2-staging-metsera-exclusivity-p8.mjs",
+    "tests/canonical-v2-metsera-exclusivity-product-row.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/migrations/**"
+  ],
+  "note": "Compiles the admitted Metsera grant into the existing Product Query IR and Product result row. It proves the predicate, membership, cohort and requested field from the retained admission input. It grants no query execution, serving, write, release, import, activation or production authority."
+}

@@ -10,6 +10,9 @@ const {
   compileMetseraExclusivityProductAdmission,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-admission');
 const {
+  compileMetseraExclusivityProductRow,
+} = require('../lib/canonical-v2/metsera-exclusivity-product-row');
+const {
   contentId,
 } = require('../lib/canonical-v2/canonical-bytes');
 const {
@@ -85,6 +88,9 @@ async function main() {
       receipt,
       candidateReleaseBinding,
     );
+  const productRow = compileMetseraExclusivityProductRow(
+    productAdmission,
+  );
   process.stdout.write(`${JSON.stringify({
     schema_version: receipt.schema_version,
     selected_passage_id: receipt.selected_passage_id,
@@ -108,6 +114,13 @@ async function main() {
     process_phrasebook_result_id:
       productAdmission.admission_receipt
         .process_phrasebook_passage_result_id,
+    product_row_receipt_id:
+      productRow.product_row_receipt_id,
+    product_query_definition_id:
+      productRow.product_query_ir.query_definition_id,
+    product_query_result_identity:
+      productRow.shared_row_adapter_receipt
+        .product_query_result.product_query_result_identity,
     authority_limits: receipt.authority_limits,
   }, null, 2)}\n`);
 }
