@@ -13,8 +13,10 @@ main integration.
 | --- | --- |
 | Main basis | `7b6bc64157c49832129fa2ca227399850cd983fc` |
 | Governance balance branch | `claude/codex-attestations-build-balance-z3xm23` |
-| Contract bundle | 169 classified inputs, 94 generated members, 8 aggregates |
+| Contract bundle | 170 authored inputs, 169 substantive contracts, 8 categories |
 | Contract bundle fingerprint | `99b0d267e4d3712c538d3ba206117d2da1bd305c6be71dc664e465fb27854b27` |
+| Contract dependency graph | 169 nodes, 273 links, 0 missing, duplicate, conflict, unresolved or cyclic links |
+| Clean compile check | PASS, two uncached compiles produced identical canonical bytes |
 | Latest complete suite on governance candidate | 4,576 pass, 0 fail, 7 skip |
 | Latest production build on basis | PASS, 29/29 pages |
 | M1 contract freeze | OPEN |
@@ -62,7 +64,7 @@ facts or legal meaning.
 
 | Unit | Phase | Outcome | Owner | Dependency | Evidence | Status | Next action | Ben |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `P1-CONTRACT-BUNDLE` | P1 | One complete Agreement, shared and Process contract bundle. | PM controller | Governance balance merge. | Two identical uncached compiles; zero missing, duplicate, conflict, cycle or unresolved dependency. | REVIEW | Record M1 acknowledgement and request exact bundle approval. | Yes |
+| `P1-CONTRACT-BUNDLE` | P1 | One complete Agreement, shared and Process contract bundle. | PM controller | Governance balance merge. | Mechanical bundle checks PASS. Independent exact-byte reviews and M1 acknowledgement remain. | REVIEW | Run the three M1 reviews in parallel, then request exact bundle approval once. | Yes |
 | `P2-IDENTITY-WRITER` | P2 | Stable identities and one canonical writer. | PM implementation | P1 bundle. | Identity and transactional writer tests. | COMPLETE | Preserve. | No |
 | `P3-SCOPE-EXTRACTION` | P3 | Definitions-first scope and extraction with open-world residuals. | PM and PI | P1 bundle. | Goldens, evals, quote verification and hostile correctness tests. | ACTIVE | Complete real Metsera link. | No |
 | `P4-OBSERVATIONS-QUERY` | P4 | Normalised observations and one Product Query IR. | PM and PI | P3 outputs. | Numeric, unit, field, Ask/Browse and filter tests. | ACTIVE | Connect real release inputs. | No |
