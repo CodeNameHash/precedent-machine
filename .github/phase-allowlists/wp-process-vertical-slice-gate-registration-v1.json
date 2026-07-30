@@ -1,0 +1,23 @@
+{
+  "phase": "WP-PROCESS-VERTICAL-SLICE-GATE-REGISTRATION-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-vertical-slice-gate-registration-v1.json",
+    "docs/codex-program/programme-gates.yaml",
+    "lib/programme-gates/registry.js",
+    "lib/programme-gates/schema-registry.js",
+    "lib/programme-gates/predicates.js",
+    "lib/programme-gates/test-executable-registry.js",
+    "tests/programme-gates/process-vertical-slice-registration.spec.js",
+    "tests/programme-gates-schema-registry.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Registers the deferred Process vertical-slice evidence contract only. It grants no PASS, extraction, canonical write, writer, serving, database, import, release, activation, UI or production authority. Evidence execution remains blocked until the P8 exact-root amendment registers the governing gate entry."
+}

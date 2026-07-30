@@ -24,6 +24,18 @@ programme_gate_registry:
   allowed_states: [OPEN, PASS, FAIL, NOT_APPLICABLE]
   normally_satisfying_states: [PASS]
   work_class_references: TRANSITIVE_ALL_OF
+  deferred_successor_gate_registrations:
+    PROCESS_VERTICAL_SLICE_PASS:
+      evidence_contract: process-vertical-slice-pass/v1
+      evidence_schema_id: PROCESS_VERTICAL_SLICE_ATTESTATION/V1
+      canonical_predecessor_gate_id: P1_VERTICAL_SLICE_PASS
+      canonical_predecessor_is_substitutable: false
+      governing_gate_activation_state: DEFERRED_UNTIL_P8_EXACT_ROOT_AMENDMENT
+      governing_gate_entry_required_before_evidence_execution: true
+      evidence_execution_state: BLOCKED
+      successor_candidate_scope_dependency_required: true
+      required_adversarial_tests: [VERTICAL-SLICE-01]
+      authority: NONE
 
   gate_evidence_validation:
     schema: programme-gate-evidence-envelope/v2
