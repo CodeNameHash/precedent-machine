@@ -43,25 +43,20 @@ facts or legal meaning.
 
 | Unit | Phase | Outcome | Owner | Branch and files | Required checks | Status | Next action | Ben |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `PM-GOV-BALANCE-01` | control | Replace pre-production attestation machinery with four milestone reviews and Tier A/Tier B security. | PM controller | `claude/codex-attestations-build-balance-z3xm23-work`; governing docs, generated manifest and apparatus-only tests. | Replacement tests, full `npm test`, `npm run build`. | INTEGRATION | Commit the green candidate. | No |
-| `PM-QXO-F28-LINK-01` | P8 | Connect the real QXO F28 graph to writer, correction head, candidate release and serving reads. | PM implementation | Exact runtime branch and paths to be reserved after governance batch. | Focused F28 chain and isolated staging run. | READY | Implement the missing staging execution link. | No |
+| `PM-GOV-BALANCE-01` | control | Replace pre-production attestation machinery with four milestone reviews and Tier A/Tier B security. | PM controller | `codex/governance-balance-v2`; governing docs, generated manifest and apparatus-only tests; commit `afbf1a4`. | 4,576 pass, 0 fail, 7 skip; production build PASS. | INTEGRATION | Include the committed unit in the next controlled main movement. | No |
+| `PM-QXO-F28-LINK-01` | P8 | Connect the real QXO F28 graph to writer, correction head, candidate release and serving reads. | PM implementation | `codex/qxo-f28-runtime-link-v1`; `lib/canonical-v2/qxo-capitalisation-f28-runtime-link.js`; focused test and fixture only. | Focused F28 runtime-plan chain, then isolated staging run after M1. | ACTIVE | Build the closed in-memory execution plan without granting database or activation authority. | No |
 | `PM-QUERY-FIXTURE-LINK-01` | P8 | Execute fixture-scoped Product Query and Review paths without opening the production route. | PM implementation | Exact runtime branch and paths to be reserved. | Query, Review, Compare and Corpus Context parity. | READY | Implement after QXO writer link. | No |
 | `PI-METSERA-RUNTIME-01` | P8 | Connect sealed Metsera sources through acquisition, enumeration, validation and pilot materialisation. | Process Intelligence | PI branch and exact files to be supplied in one batch. | Focused Process chain and sealed-gold comparison. | READY | Build the first real-source runtime link. | No |
 
 ## 3. Next 48 hours
 
-1. Finish `PM-GOV-BALANCE-01`.
-2. Prove the replacement test conditions:
-   - two uncached compiles produce identical bytes;
-   - malformed bundles fail structurally;
-   - import checkpoint replay is a no-op;
-   - conflicting import replay fails closed.
-3. Run the complete suite and production build.
-4. Merge the governance batch. Do not run another governance review.
-5. Implement `PM-QXO-F28-LINK-01`.
-6. Implement `PM-QUERY-FIXTURE-LINK-01`.
-7. Integrate the PI Metsera runtime batch once its focused chain passes.
-8. Run QXO and Metsera in isolated staging.
+1. Complete `PM-QXO-F28-LINK-01`.
+2. Implement `PM-QUERY-FIXTURE-LINK-01`.
+3. Integrate the PI Metsera runtime batch once its focused chain passes.
+4. Compile and review the exact M1 bundle.
+5. Ask Ben once to approve that exact bundle fingerprint.
+6. Move the combined milestone batch to main.
+7. Run QXO and Metsera in isolated staging.
 
 ## 4. Bounded units through P11
 
