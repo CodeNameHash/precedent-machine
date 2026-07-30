@@ -23,23 +23,68 @@
     "variant_contract": {
       "CANONICAL_RESULT": {
         "required_payload": "canonical_result",
+        "runtime_schema_version": "SHARED_SERVING_ROW/V1",
+        "runtime_validator_module": "lib/canonical-v2/shared-serving-row.js",
+        "runtime_validator_export": "validateSharedServingRow",
         "result_completeness": "COMPLETE",
         "market_observation_requires_comparable_state": true,
         "source_lineage_required": true,
+        "required_source_lineage_fields": [
+          "CORPUS_RELEASE_ID",
+          "DEAL_ADMISSION_ID",
+          "ROW_SERVING_KEY",
+          "CANONICAL_PAYLOAD_DIGEST",
+          "CONTRACT_FINGERPRINT",
+          "METRIC_OBSERVATION_OCCURRENCE_ID",
+          "MARKET_OBSERVATION_SERVING_KEY",
+          "METRIC_SLOT_KEY",
+          "OWNER_OCCURRENCE_ID",
+          "OWNER_REVISION_ID"
+        ],
         "canonical_result_fields_forbidden": false
       },
       "INCOMPLETE_CANONICAL_RESULT": {
         "required_payload": "incomplete_canonical_result",
+        "runtime_schema_version": "SHARED_SERVING_ROW/V1",
+        "runtime_validator_module": "lib/canonical-v2/shared-serving-row.js",
+        "runtime_validator_export": "validateSharedServingRow",
         "result_completeness": "INCOMPLETE_NOVEL_SEMANTIC",
         "market_comparability": "NOT_CERTIFIED",
         "market_observation_forbidden": true,
+        "required_source_lineage_fields": [
+          "CORPUS_RELEASE_ID",
+          "DEAL_ADMISSION_ID",
+          "ROW_SERVING_KEY",
+          "CANONICAL_PAYLOAD_DIGEST",
+          "CONTRACT_FINGERPRINT",
+          "METRIC_SLOT_KEY",
+          "EXCLUSION_SERVING_KEY",
+          "OWNER_OCCURRENCE_ID",
+          "OWNER_REVISION_ID",
+          "CLAIM_REVISION_ID",
+          "INTERSECTING_CANDIDATE_SET_DIGEST"
+        ],
         "exact_incomplete_lineage_required": true
       },
       "REVIEWED_SOURCE_SPECIFIC": {
         "required_payload": "reviewed_source_specific",
+        "runtime_schema_version": "SHARED_SERVING_ROW/V1",
+        "runtime_validator_module": "lib/canonical-v2/shared-serving-row.js",
+        "runtime_validator_export": "validateSharedServingRow",
         "market_comparability": "REVIEWED_SOURCE_SPECIFIC",
         "canonical_result_fields_forbidden": true,
         "metric_and_cohort_fields_forbidden": true,
+        "required_source_lineage_fields": [
+          "CORPUS_RELEASE_ID",
+          "DEAL_ADMISSION_ID",
+          "ROW_SERVING_KEY",
+          "CANONICAL_PAYLOAD_DIGEST",
+          "CONTRACT_FINGERPRINT",
+          "OPEN_WORLD_CANDIDATE_OCCURRENCE_ID",
+          "FINAL_DISPOSITION_ID",
+          "PRIMITIVE_COLLECTION_ROOT_ID",
+          "SEMANTIC_IMPACT_CLOSURE_ID"
+        ],
         "exact_review_and_evidence_lineage_required": true
       }
     },

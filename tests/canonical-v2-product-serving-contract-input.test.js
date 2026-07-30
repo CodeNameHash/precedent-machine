@@ -8,6 +8,8 @@ const {
 } = require(
   '../lib/canonical-v2/product-serving-contract-input-validator',
 );
+const productQueryIr = require('../lib/canonical-v2/product-query-ir');
+const sharedServingRow = require('../lib/canonical-v2/shared-serving-row');
 
 const ROOT = path.join(
   __dirname,
@@ -80,6 +82,14 @@ test('closes SharedServingRow to three exact variants', () => {
       .canonical_result_fields_forbidden,
     true,
   );
+  for (const rowKind of row.row_contract.closed_variants) {
+    const variant = row.variant_contract[rowKind];
+    assert.equal(variant.runtime_schema_version, 'SHARED_SERVING_ROW/V1');
+    assert.equal(variant.runtime_validator_module, 'lib/canonical-v2/shared-serving-row.js');
+    assert.equal(variant.runtime_validator_export, 'validateSharedServingRow');
+    assert.equal(variant.required_source_lineage_fields.includes('CORPUS_RELEASE_ID'), true);
+    assert.equal(variant.required_source_lineage_fields.includes('CANONICAL_PAYLOAD_DIGEST'), true);
+  }
 });
 
 test('requires Product-wide indexed set-based serving and bounded caching', () => {
@@ -125,6 +135,76 @@ test('requires Product-wide indexed set-based serving and bounded caching', () =
     serving.cache_contract.unset_cache_limit_disposition,
     'FAIL_CLOSED',
   );
+  assert.deepEqual(serving.product_query_ir_runtime_binding, {
+    definition_stable_id: 'PRODUCT_QUERY_IR',
+    schema_version: 'PRODUCT_QUERY_IR/V1',
+    runtime_module: 'lib/canonical-v2/product-query-ir.js',
+    construction_export: 'compileProductQueryIr',
+    closed_validation_export: 'canonicalProductQueryIrBytes',
+    process_query_ir_is_product_query_ir: false,
+    process_query_ir_relabelling_permitted: false,
+    product_ir_construction_and_validation_required_before_serving: true,
+  });
+  assert.equal(
+    typeof productQueryIr[
+      serving.product_query_ir_runtime_binding.construction_export
+    ],
+    'function',
+  );
+  assert.equal(
+    typeof productQueryIr[
+      serving.product_query_ir_runtime_binding.closed_validation_export
+    ],
+    'function',
+  );
+  assert.deepEqual(serving.governed_budget_reference_contract, {
+    capacity_manifest: {
+      stable_id: 'CAPACITY_MANIFEST',
+      schema_version: 'CAPACITY_MANIFEST/V1',
+      route_class: 'PRODUCT_QUERY_SERVING',
+      exact_numeric_limit_bindings: {
+        maximum_admission_database_calls: 1,
+        maximum_route_serving_database_calls: 1,
+        maximum_immediate_retries: 0,
+      },
+    },
+    route_budget_manifest: {
+      stable_id: 'ROUTE_BUDGET_MANIFEST',
+      schema_version: 'ROUTE_BUDGET_MANIFEST/V1',
+      route_class: 'PRODUCT_QUERY_SERVING',
+      exact_numeric_limit_bindings: {
+        maximum_request_bytes: 32768,
+        maximum_page_size: 50,
+        maximum_initial_response_bytes: 1048576,
+        maximum_database_rows_per_request: 51,
+        maximum_http_rows_per_response: 50,
+      },
+    },
+    cache_budget_manifest: {
+      stable_id: 'CACHE_BUDGET_MANIFEST',
+      schema_version: 'CACHE_BUDGET_MANIFEST/V1',
+      cache_class: 'PRODUCT_QUERY_SERVING',
+      exact_numeric_limit_bindings: {
+        maximum_value_ttl_seconds: 3600,
+        maximum_cached_value_bytes: 1048576,
+      },
+    },
+    exact_manifest_identity_and_payload_digest_required_before_serving: true,
+    manifest_limit_mismatch_disposition: 'FAIL_CLOSED',
+    manifest_reference_grants_runtime_or_serving_authority: false,
+  });
+});
+
+test('uses the existing closed shared-row validator for every permitted row variant', () => {
+  const row = byId('PRODUCT_SHARED_SERVING_ROW');
+  for (const rowKind of row.row_contract.closed_variants) {
+    assert.equal(
+      typeof sharedServingRow[
+        row.variant_contract[rowKind].runtime_validator_export
+      ],
+      'function',
+    );
+  }
 });
 
 test('isolates invalid rows and grants no execution or production authority', () => {
@@ -160,6 +240,31 @@ test('rejects incomplete, expanded or weakened Product serving contracts', () =>
     .execution_contract.corpus_proportional_database_calls_permitted = true;
   assert.throws(
     () => validateAuthoredProductServingInputs(weakened),
+    { code: 'INVALID_PRODUCT_QUERY_SERVING_EXECUTION_INPUT' },
+  );
+
+  const relabelledProcess = clone(members());
+  byDefinition(relabelledProcess, 'PRODUCT_QUERY_SERVING_EXECUTION')
+    .product_query_ir_runtime_binding.process_query_ir_relabelling_permitted = true;
+  assert.throws(
+    () => validateAuthoredProductServingInputs(relabelledProcess),
+    { code: 'INVALID_PRODUCT_QUERY_SERVING_EXECUTION_INPUT' },
+  );
+
+  const unboundVariant = clone(members());
+  delete byDefinition(unboundVariant, 'PRODUCT_SHARED_SERVING_ROW')
+    .variant_contract.CANONICAL_RESULT.runtime_validator_export;
+  assert.throws(
+    () => validateAuthoredProductServingInputs(unboundVariant),
+    { code: 'INVALID_PRODUCT_SHARED_SERVING_ROW_INPUT' },
+  );
+
+  const weakenedBudget = clone(members());
+  byDefinition(weakenedBudget, 'PRODUCT_QUERY_SERVING_EXECUTION')
+    .governed_budget_reference_contract.cache_budget_manifest
+    .exact_numeric_limit_bindings.maximum_value_ttl_seconds = 0;
+  assert.throws(
+    () => validateAuthoredProductServingInputs(weakenedBudget),
     { code: 'INVALID_PRODUCT_QUERY_SERVING_EXECUTION_INPUT' },
   );
 });
