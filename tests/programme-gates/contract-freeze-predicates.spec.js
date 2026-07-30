@@ -10,8 +10,14 @@ const {
 } = require('../../lib/canonical-v2/canonical-bytes');
 const {
   AGGREGATE_SOURCE_SCHEMA_VERSION,
-  FIXED_MEMBER_DEFINITIONS,
+  REQUIRED_BUNDLE_KINDS,
+  compileCanonicalContractBundle,
 } = require('../../lib/canonical-v2/canonical-contract-bundle-compiler');
+const {
+  assembleCanonicalContractBundleReviewedRegistries,
+} = require(
+  '../../lib/canonical-v2/canonical-contract-bundle-reviewed-registry-assembler'
+);
 const { domainDigest, signatureBytes } = require('../../lib/programme-gates/bytes');
 const {
   CONTRACT_FREEZE_MEMBER_SCHEMA_SET,
@@ -109,52 +115,98 @@ function compareMembers(left, right) {
   );
 }
 
-function predecessorAggregateMember(memberKind, index) {
-  const definition = FIXED_MEMBER_DEFINITIONS[memberKind];
-  const authoredIdentity = {
-    relative_path: `contracts/predecessor-${String(index).padStart(2, '0')}.json`,
-    object_kind: `PREDECESSOR_${memberKind}`,
-    stable_id: `PREDECESSOR_${memberKind}`,
-    schema_version: `PREDECESSOR_${memberKind}/V1`,
-    canonical_bytes_digest: domainDigest(
-      'TEST_PREDECESSOR_AUTHORED_BYTES/V1',
-      { member_kind: memberKind },
-    ),
+function predecessorAuthoredMember(index, objectKind, stableId) {
+  const canonicalValue = {
+    object_kind: objectKind,
+    stable_id: stableId,
+    schema_version: `${objectKind}/V1`,
+    legal_meaning: `PREDECESSOR_MEANING_${index}`,
   };
-  const source = {
-    schema_version: AGGREGATE_SOURCE_SCHEMA_VERSION,
-    member_kind: memberKind,
-    ordered_authored_members: [{
-      authored_identity: authoredIdentity,
-      ordered_dependency_identities: [],
-    }],
-  };
-  const identityPayload = {
-    member_kind: memberKind,
-    ordered_authored_members: source.ordered_authored_members.map((entry) => ({
-      authored_identity: entry.authored_identity,
-      ordered_dependency_identities: entry.ordered_dependency_identities,
-    })),
-  };
-  const sourceBytes = Buffer.from(canonicalJson(source), 'utf8');
+  const canonicalValueBytes = Buffer.from(canonicalJson(canonicalValue), 'utf8');
   return {
-    schema_version: 'CanonicalContractBundleMember/V1',
-    member_key: definition.member_key,
-    member_kind: memberKind,
-    logical_type: definition.logical_type,
-    member_schema_version: AGGREGATE_SOURCE_SCHEMA_VERSION,
-    byte_length: sourceBytes.length,
-    payload_digest: crypto.createHash('sha256').update(sourceBytes).digest('hex'),
-    source_bytes_base64: sourceBytes.toString('base64'),
-    semantic_digest: contentId(
-      'CANONICAL_CONTRACT_BUNDLE_AGGREGATE_SEMANTIC/V1',
-      source,
-    ),
-    identity_digest: contentId(
-      'CANONICAL_CONTRACT_BUNDLE_AGGREGATE_IDENTITY/V1',
-      identityPayload,
-    ),
+    relative_path: `contracts/predecessor-${String(index).padStart(2, '0')}.json`,
+    object_kind: objectKind,
+    stable_id: stableId,
+    schema_version: canonicalValue.schema_version,
+    canonical_bytes_digest:
+      crypto.createHash('sha256').update(canonicalValueBytes).digest('hex'),
+    canonical_byte_length: canonicalValueBytes.length,
+    contract_ordinal: index,
+    canonical_value: canonicalValue,
   };
+}
+
+function predecessorAuthoredIdentity(member) {
+  return {
+    relative_path: member.relative_path,
+    object_kind: member.object_kind,
+    stable_id: member.stable_id,
+    schema_version: member.schema_version,
+    canonical_bytes_digest: member.canonical_bytes_digest,
+  };
+}
+
+function compilePredecessorCanonicalContractBundleMembers() {
+  const governanceKind = 'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY';
+  const governance = predecessorAuthoredMember(0, governanceKind, governanceKind);
+  const domainMembers = REQUIRED_BUNDLE_KINDS.map((memberKind, index) => (
+    predecessorAuthoredMember(
+      index + 1,
+      `PREDECESSOR_${memberKind}`,
+      `PREDECESSOR_${memberKind}`,
+    )
+  ));
+  const authoredMembers = [governance, ...domainMembers];
+  const identities = domainMembers.map(predecessorAuthoredIdentity).sort(
+    (left, right) => canonicalJson(left).localeCompare(canonicalJson(right)),
+  );
+  const kindByStableId = new Map(REQUIRED_BUNDLE_KINDS.map(
+    (memberKind) => [`PREDECESSOR_${memberKind}`, memberKind],
+  ));
+  const canonicalContractInputCompilation = {
+    schema_version: 'CANONICAL_BUNDLE_INPUT_COMPILATION/V1',
+    canonical_bundle_input_identity: {
+      canonical_bundle_input_identity_id: contentId(
+        'TEST_PREDECESSOR_CANONICAL_BUNDLE_INPUT_IDENTITY/V1',
+        authoredMembers.map(predecessorAuthoredIdentity),
+      ),
+    },
+    authored_members: authoredMembers,
+    authored_universe_assessment: {
+      status: 'COMPLETE_AGAINST_GOVERNED_REQUIRED_KIND_REGISTRY',
+      required_kind_registry_binding: {
+        relative_path: governance.relative_path,
+        stable_id: governance.stable_id,
+        schema_version: governance.schema_version,
+        canonical_bytes_digest: governance.canonical_bytes_digest,
+      },
+    },
+    disposition: {
+      status: 'AUTHORED_UNIVERSE_MECHANICALLY_COMPLETE',
+      reason_code: 'BUNDLE_GENERATION_AND_FREEZE_NOT_EVALUATED',
+      freeze_eligible: false,
+      canonical_contract_bundle_authority: 'NONE',
+      p1_gate_status: 'NOT_EVALUATED',
+    },
+  };
+  const registryAssembly = assembleCanonicalContractBundleReviewedRegistries({
+    canonical_contract_input_compilation: canonicalContractInputCompilation,
+    reviewed_dispositions: identities.map((authoredIdentity, index) => ({
+      authored_identity: authoredIdentity,
+      member_kind: kindByStableId.get(authoredIdentity.stable_id),
+      ordered_dependency_identities:
+        index === 0 ? [] : [identities[index - 1]],
+    })),
+    registry_version: 1,
+    predecessor_classification_registry: null,
+    predecessor_dependency_registry: null,
+  });
+  return structuredClone(compileCanonicalContractBundle({
+    canonical_contract_input_compilation: canonicalContractInputCompilation,
+    classification_registry: registryAssembly.classification_registry,
+    dependency_registry: registryAssembly.dependency_registry,
+    governed_registry_bindings: registryAssembly.governed_registry_bindings,
+  }).canonical_contract_bundle_members);
 }
 
 function g0Envelope({
@@ -228,10 +280,8 @@ function fixture({ includePrivateKeys = false } = {}) {
   const publisher = crypto.generateKeyPairSync('ed25519');
   const validator = crypto.generateKeyPairSync('ed25519');
   const controller = crypto.generateKeyPairSync('ed25519');
-  const predecessorCanonicalContractBundleMembers = [
-    predecessorAggregateMember('CORE_CANONICAL_CONTRACT', 1),
-    predecessorAggregateMember('SEMANTIC_CATALOGUE', 2),
-  ];
+  const predecessorCanonicalContractBundleMembers =
+    compilePredecessorCanonicalContractBundleMembers();
   const predecessorContractMembers =
     predecessorCanonicalContractBundleMembers.map((member) => ({
       member_key: member.member_key,
@@ -1821,7 +1871,7 @@ test('a controller-signed projection cannot hide substituted successor source by
   );
 });
 
-test('unrecognised predecessor semantics fail after every affected identity and signature is rederived', () => {
+test('a recognised non-compiler aggregate fails after every affected identity and signature is rederived', () => {
   const sample = fixture({ includePrivateKeys: true });
   const identityMember = sample.immutableMembers.find(
     (member) => member.member_type === 'ContractFreezeAttestationIdentity',
@@ -1854,18 +1904,67 @@ test('unrecognised predecessor semantics fail after every affected identity and 
   review.predecessor_canonical_contract_bundle_members = structuredClone(
     review.predecessor_canonical_contract_bundle_members,
   );
-  const substituted = Buffer.from(canonicalJson({
-    schema_version: 'UNRECOGNISED_PREDECESSOR_SOURCE/V1',
-    member_kind:
-      review.predecessor_canonical_contract_bundle_members[0].member_kind,
-    ordered_authored_members: [],
-  }), 'utf8');
-  review.predecessor_canonical_contract_bundle_members[0].byte_length = substituted.length;
-  review.predecessor_canonical_contract_bundle_members[0].payload_digest =
+  const substitutedMember =
+    review.predecessor_canonical_contract_bundle_members[0];
+  const originalSource = JSON.parse(
+    Buffer.from(substitutedMember.source_bytes_base64, 'base64').toString('utf8'),
+  );
+  const substitutedSource = {
+    schema_version: AGGREGATE_SOURCE_SCHEMA_VERSION,
+    member_kind: substitutedMember.member_kind,
+    ordered_authored_members: originalSource.ordered_authored_members.map(
+      (entry) => ({
+        authored_identity: entry.authored_identity,
+        ordered_dependency_identities: entry.ordered_dependency_identities,
+      }),
+    ),
+  };
+  const substituted = Buffer.from(canonicalJson(substitutedSource), 'utf8');
+  substitutedMember.byte_length = substituted.length;
+  substitutedMember.payload_digest =
     crypto.createHash('sha256').update(substituted).digest('hex');
-  review.predecessor_canonical_contract_bundle_members[0].source_bytes_base64 =
-    substituted.toString('base64');
+  substitutedMember.source_bytes_base64 = substituted.toString('base64');
+  substitutedMember.semantic_digest = contentId(
+    'CANONICAL_CONTRACT_BUNDLE_AGGREGATE_SEMANTIC/V1',
+    substitutedSource,
+  );
+  substitutedMember.identity_digest = contentId(
+    'CANONICAL_CONTRACT_BUNDLE_AGGREGATE_IDENTITY/V1',
+    {
+      member_kind: substitutedSource.member_kind,
+      ordered_authored_members:
+        substitutedSource.ordered_authored_members.map((entry) => ({
+          authored_identity: entry.authored_identity,
+          ordered_dependency_identities: entry.ordered_dependency_identities,
+        })),
+    },
+  );
+  review.predecessor_contract_members =
+    review.predecessor_canonical_contract_bundle_members.map((member) => ({
+      member_key: member.member_key,
+      semantic_digest: member.semantic_digest,
+      identity_digest: member.identity_digest,
+    }));
+  review.predecessor_contract_bundle_digest = domainDigest(
+    'PROGRAMME_GATE_CONTRACT_BUNDLE_SNAPSHOT/V1',
+    review.predecessor_contract_members,
+  );
+  review.predecessor_contract_bundle_id = domainDigest(
+    'PROGRAMME_GATE_CONTRACT_BUNDLE_ID/V1',
+    { contract_bundle_digest: review.predecessor_contract_bundle_digest },
+  );
+  review.semantic_identity_diff.predecessor_contract_bundle_id =
+    review.predecessor_contract_bundle_id;
+  review.semantic_identity_diff_digest = domainDigest(
+    'PROGRAMME_GATE_CONTRACT_SEMANTIC_IDENTITY_DIFF/V1',
+    review.semantic_identity_diff,
+  );
+  manifest.semantic_identity_diff_digest = review.semantic_identity_diff_digest;
 
+  identity.predecessor_contract_bundle_id =
+    review.predecessor_contract_bundle_id;
+  identity.predecessor_contract_bundle_digest =
+    review.predecessor_contract_bundle_digest;
   identity.predecessor_canonical_contract_bundle_member_root = domainDigest(
     'PROGRAMME_GATE_CANONICAL_CONTRACT_BUNDLE_MEMBER_ROOT/V1',
     review.predecessor_canonical_contract_bundle_members,

@@ -10,6 +10,7 @@ const { domainDigest } = require('../lib/programme-gates/bytes');
 const { validateSchema } = require('../lib/programme-gates/schema-registry');
 const {
   REQUIRED_BUNDLE_KINDS,
+  compileCanonicalContractBundle,
 } = require('../lib/canonical-v2/canonical-contract-bundle-compiler');
 const {
   assembleCanonicalContractBundleReviewedRegistries,
@@ -184,6 +185,44 @@ function assertSourceClosureError(code, operation) {
   });
 }
 
+function compiledAggregatePredecessorMembers() {
+  const input = fixture();
+  return compileCanonicalContractBundle({
+    canonical_contract_input_compilation:
+      input.canonical_contract_input_compilation,
+    classification_registry: input.classification_registry,
+    dependency_registry: input.dependency_registry,
+    governed_registry_bindings: input.governed_registry_bindings,
+  }).canonical_contract_bundle_members;
+}
+
+function aggregateSource(member) {
+  return JSON.parse(
+    Buffer.from(member.source_bytes_base64, 'base64').toString('utf8'),
+  );
+}
+
+function resealAggregateSource(member, source) {
+  const sourceBytes = Buffer.from(canonicalJson(source), 'utf8');
+  member.byte_length = sourceBytes.length;
+  member.payload_digest = sha256Hex(sourceBytes);
+  member.source_bytes_base64 = sourceBytes.toString('base64');
+  member.semantic_digest = contentId(
+    'CANONICAL_CONTRACT_BUNDLE_AGGREGATE_SEMANTIC/V1',
+    source,
+  );
+  member.identity_digest = contentId(
+    'CANONICAL_CONTRACT_BUNDLE_AGGREGATE_IDENTITY/V1',
+    {
+      member_kind: source.member_kind,
+      ordered_authored_members: source.ordered_authored_members.map((entry) => ({
+        authored_identity: entry.authored_identity,
+        ordered_dependency_identities: entry.ordered_dependency_identities,
+      })),
+    },
+  );
+}
+
 test('wraps only the exact F1 fixture bundle as an immutable predecessor', () => {
   const member = compileLegacyF1CanonicalContractBundleMember();
   assert.equal(validateSchema('CanonicalContractBundleMember/V1', member), true);
@@ -198,6 +237,99 @@ test('wraps only the exact F1 fixture bundle as an immutable predecessor', () =>
     sha256Hex(Buffer.from(member.source_bytes_base64, 'base64')),
     member.payload_digest,
   );
+});
+
+test('accepts the exact compiler aggregate set as a predecessor', () => {
+  const members = compiledAggregatePredecessorMembers();
+  const validated = validateCanonicalPredecessorBundleMembers(members);
+  assert.equal(validated.members.length, REQUIRED_BUNDLE_KINDS.length);
+  assert.deepEqual(
+    validated.source_kinds,
+    REQUIRED_BUNDLE_KINDS.map(() => 'CANONICAL_AGGREGATE'),
+  );
+  assert.equal(canonicalJson(validated.members), canonicalJson(members));
+});
+
+test('rejects a recognised aggregate that is not exact compiler output', () => {
+  const members = clone(compiledAggregatePredecessorMembers());
+  const member = members[0];
+  const source = JSON.parse(
+    Buffer.from(member.source_bytes_base64, 'base64').toString('utf8'),
+  );
+  source.ordered_authored_members = source.ordered_authored_members.map(
+    (entry) => ({
+      authored_identity: entry.authored_identity,
+      ordered_dependency_identities: entry.ordered_dependency_identities,
+    }),
+  );
+  resealAggregateSource(member, source);
+  assertSourceClosureError(
+    'INVALID_PREDECESSOR_CANONICAL_CONTRACT_BUNDLE_AGGREGATE_SET',
+    () => validateCanonicalPredecessorBundleMembers(members),
+  );
+});
+
+test('rejects aggregate value, identity, dependency order, closure and cycle drift', () => {
+  const cases = [
+    (members) => {
+      const source = aggregateSource(members[0]);
+      source.ordered_authored_members[0].canonical_value.legal_meaning =
+        'DRIFTED_MEANING';
+      resealAggregateSource(members[0], source);
+    },
+    (members) => {
+      const source = aggregateSource(members[0]);
+      source.ordered_authored_members.push(
+        clone(source.ordered_authored_members[0]),
+      );
+      resealAggregateSource(members[0], source);
+    },
+    (members) => {
+      const source = aggregateSource(members[0]);
+      const dependencies = [
+        aggregateSource(members[1]).ordered_authored_members[0].authored_identity,
+        aggregateSource(members[2]).ordered_authored_members[0].authored_identity,
+      ].sort((left, right) => canonicalJson(right).localeCompare(canonicalJson(left)));
+      source.ordered_authored_members[0].ordered_dependency_identities =
+        dependencies;
+      resealAggregateSource(members[0], source);
+    },
+    (members) => {
+      const source = aggregateSource(members[0]);
+      const unresolved = clone(
+        source.ordered_authored_members[0].authored_identity,
+      );
+      unresolved.stable_id = 'UNRESOLVED_PREDECESSOR_IDENTITY';
+      source.ordered_authored_members[0].ordered_dependency_identities = [
+        unresolved,
+      ];
+      resealAggregateSource(members[0], source);
+    },
+    (members) => {
+      const firstSource = aggregateSource(members[0]);
+      const secondSource = aggregateSource(members[1]);
+      const firstIdentity =
+        firstSource.ordered_authored_members[0].authored_identity;
+      const secondIdentity =
+        secondSource.ordered_authored_members[0].authored_identity;
+      firstSource.ordered_authored_members[0].ordered_dependency_identities = [
+        secondIdentity,
+      ];
+      secondSource.ordered_authored_members[0].ordered_dependency_identities = [
+        firstIdentity,
+      ];
+      resealAggregateSource(members[0], firstSource);
+      resealAggregateSource(members[1], secondSource);
+    },
+  ];
+  for (const mutate of cases) {
+    const members = clone(compiledAggregatePredecessorMembers());
+    mutate(members);
+    assertSourceClosureError(
+      'INVALID_PREDECESSOR_CANONICAL_CONTRACT_BUNDLE_AGGREGATE_SET',
+      () => validateCanonicalPredecessorBundleMembers(members),
+    );
+  }
 });
 
 test('assembles a deterministic review package with full predecessor bytes', () => {
