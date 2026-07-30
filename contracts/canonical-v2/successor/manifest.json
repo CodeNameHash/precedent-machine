@@ -186,6 +186,13 @@
       "canonical_bytes_digest": "fff4cdca25f715e7e8142419c850fdb2db36f743b30a65b4f44377cbdccc9527"
     },
     {
+      "relative_path": "agreement/market-metric-definitions/buyer-termination-fee-percent-of-deal-value.v1.json",
+      "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+      "stable_id": "BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE",
+      "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+      "canonical_bytes_digest": "45ec34c8f6c7dad609d4ee81639aee1779ebd66789c08f7261833c004c57959f"
+    },
+    {
       "relative_path": "agreement/market-metric-definitions/dated-representation-treatment.v1.json",
       "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
       "stable_id": "DATED_REPRESENTATION_TREATMENT",
@@ -268,6 +275,13 @@
       "stable_id": "RETROSPECTIVE_LOOKBACK_STATE",
       "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
       "canonical_bytes_digest": "7b655250ac84de087fddbc3ef05ad527a69d237322a17312b97e50765130b5ac"
+    },
+    {
+      "relative_path": "agreement/market-metric-definitions/seller-termination-fee-percent-of-deal-value.v1.json",
+      "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+      "stable_id": "SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE",
+      "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+      "canonical_bytes_digest": "466ced85768d43ed66b1c05395b0c46b7c872e03a016ce754577ccea2fe9a588"
     },
     {
       "relative_path": "agreement/migration-inputs/claim-state-codebook.v1.json",
@@ -631,14 +645,14 @@
       "object_kind": "SERVING_METRIC_OPERATION_BINDING_INPUT",
       "stable_id": "BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V2",
       "schema_version": "SERVING_METRIC_OPERATION_BINDING_INPUT/V1",
-      "canonical_bytes_digest": "67cdee54690770d1ae46e2465e960e94c5aeb4d5bd1526fd0db8f41fd9ce9a7f"
+      "canonical_bytes_digest": "fe7248ab6fd9027601a9b24e1ef6f54c4a29e5f7e3942270372d5a7bbdd68905"
     },
     {
       "relative_path": "agreement/serving-metric-operation-binding-inputs/seller-termination-fee-percent-of-deal-value.v2.json",
       "object_kind": "SERVING_METRIC_OPERATION_BINDING_INPUT",
       "stable_id": "SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V2",
       "schema_version": "SERVING_METRIC_OPERATION_BINDING_INPUT/V1",
-      "canonical_bytes_digest": "8162d98742dfd4105386c73c8c559f18f0801ff4d784fdf19948420a17a6f36c"
+      "canonical_bytes_digest": "3f5b38ff53db417bc7b9a774f29abe66a3d290bc9d11b4d12b046224429426bb"
     },
     {
       "relative_path": "agreement/serving-trigger-path-schema-inputs/termination-fee-trigger-path.v2.json",
@@ -652,7 +666,7 @@
       "object_kind": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
       "stable_id": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
       "schema_version": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY/V1",
-      "canonical_bytes_digest": "68c2db88aa054ca2b0c7332d2ac7c78e51ab422c02cd7053b12633ed311c879c"
+      "canonical_bytes_digest": "3765e5b1d4f2dedf8f9d792da5fe6070b567e45209c1e696779ea71ee4c5b4e9"
     },
     {
       "relative_path": "governance/residuals/governed-residual-disposition.v1.json",
@@ -1191,7 +1205,7 @@
     "CLAIM_STATE_CODEBOOK_MIGRATION_INPUT": 1,
     "COMPONENT_DEFINITION": 9,
     "GOVERNED_RESIDUAL_CONTRACT_INPUT": 8,
-    "MARKET_METRIC_DEFINITION_INPUT": 12,
+    "MARKET_METRIC_DEFINITION_INPUT": 14,
     "MONEY_DENOMINATOR_PRECISION_POLICY": 1,
     "NO_SHOP_SEMANTIC_SCHEMA_INPUT": 5,
     "PARSER_PROPOSAL_BOUNDARY_DEFINITION": 1,

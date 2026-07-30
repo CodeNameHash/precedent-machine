@@ -1,1 +1,33 @@
-{"authored_binding":{"binding_key":"BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V2","concept_key":"TERMF-REVERSE","fee_side":"BUYER","legal_operation":"CREATES_BUYER_TERMINATION_FEE_PAYMENT_TRIGGER","metric_key":"BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE","metric_version":1,"payee":{"capacity":"TARGET","role":"FEE_PAYEE","value":"COMPANY"},"payer":{"capacity":"BUYER","role":"FEE_PAYER","value":"PARENT"},"relationship_key":"TRIGGERED_BY","required_claim_definition_key":"BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE","trigger_path_schema_key":"TERMINATION_FEE_TRIGGER_PATH","trigger_path_schema_version":2},"object_kind":"SERVING_METRIC_OPERATION_BINDING_INPUT","schema_version":"SERVING_METRIC_OPERATION_BINDING_INPUT/V1","stable_id":"BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V2"}
+{
+  "authored_binding": {
+    "binding_key": "BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V2",
+    "concept_key": "TERMF-REVERSE",
+    "fee_side": "BUYER",
+    "legal_operation": "CREATES_BUYER_TERMINATION_FEE_PAYMENT_TRIGGER",
+    "metric_definition_identity": {
+      "metric_version": 1,
+      "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+      "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+      "stable_id": "BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE"
+    },
+    "metric_key": "BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE",
+    "metric_version": 1,
+    "payee": {
+      "capacity": "TARGET",
+      "role": "FEE_PAYEE",
+      "value": "COMPANY"
+    },
+    "payer": {
+      "capacity": "BUYER",
+      "role": "FEE_PAYER",
+      "value": "PARENT"
+    },
+    "relationship_key": "TRIGGERED_BY",
+    "required_claim_definition_key": "BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE",
+    "trigger_path_schema_key": "TERMINATION_FEE_TRIGGER_PATH",
+    "trigger_path_schema_version": 2
+  },
+  "object_kind": "SERVING_METRIC_OPERATION_BINDING_INPUT",
+  "schema_version": "SERVING_METRIC_OPERATION_BINDING_INPUT/V1",
+  "stable_id": "BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V2"
+}

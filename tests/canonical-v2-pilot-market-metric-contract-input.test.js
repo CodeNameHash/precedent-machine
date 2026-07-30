@@ -13,14 +13,25 @@ const {
 } = require(
   '../lib/canonical-v2/shared-authority-contract-input-validator',
 );
+const {
+  validateAuthoredRemainingMigrationInputs,
+} = require(
+  '../lib/canonical-v2/canonical-contract-remaining-migration-input-validator',
+);
 
 const ROOT = path.join(
   __dirname,
   '../contracts/canonical-v2/successor',
 );
 const METRIC_PATHS = [
+  'agreement/market-metric-definitions/buyer-termination-fee-percent-of-deal-value.v1.json',
   'agreement/market-metric-definitions/ioc-capex-threshold-percent-of-deal-value.v1.json',
   'agreement/market-metric-definitions/no-shop-initial-match-period-days.v1.json',
+  'agreement/market-metric-definitions/seller-termination-fee-percent-of-deal-value.v1.json',
+];
+const TERMINATION_FEE_BINDING_PATHS = [
+  'agreement/serving-metric-operation-binding-inputs/buyer-termination-fee-percent-of-deal-value.v2.json',
+  'agreement/serving-metric-operation-binding-inputs/seller-termination-fee-percent-of-deal-value.v2.json',
 ];
 
 function loadMember(relativePath) {
@@ -43,21 +54,188 @@ function metric(stableId) {
   ).canonical_value.authored_definition;
 }
 
+function terminationFeeContractMembers() {
+  return [
+    ...metricMembers(),
+    ...TERMINATION_FEE_BINDING_PATHS.map(loadMember),
+  ];
+}
+
+function memberByStableId(members, stableId) {
+  return members.find(
+    (member) => member.canonical_value.stable_id === stableId,
+  );
+}
+
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
-test('validates the exact pilot money and duration MetricDefinitions', () => {
+test('validates the exact pilot and termination-fee MetricDefinitions', () => {
   assert.doesNotThrow(
     () => validateAuthoredPilotMarketMetricInputs(metricMembers()),
   );
   assert.deepEqual(
     metricMembers().map((member) => member.canonical_value.stable_id),
     [
+      'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
       'IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE',
       'NO_SHOP_INITIAL_MATCH_PERIOD_DAYS',
+      'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
     ],
   );
+});
+
+test('binds each termination-fee percentage to exact raw money, denominator, roll-up, parties and trigger semantics', () => {
+  const expectedByMetric = {
+    BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE: {
+      concept_key: 'TERMF-REVERSE',
+      fee_side: 'BUYER',
+      payee: {
+        capacity: 'TARGET',
+        role: 'FEE_PAYEE',
+        value: 'COMPANY',
+      },
+      payer: {
+        capacity: 'BUYER',
+        role: 'FEE_PAYER',
+        value: 'PARENT',
+      },
+    },
+    SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE: {
+      concept_key: 'TERMF-TARGET',
+      fee_side: 'SELLER',
+      payee: {
+        capacity: 'BUYER',
+        role: 'FEE_PAYEE',
+        value: 'PARENT',
+      },
+      payer: {
+        capacity: 'TARGET',
+        role: 'FEE_PAYER',
+        value: 'COMPANY',
+      },
+    },
+  };
+
+  for (const [metricKey, expected] of Object.entries(expectedByMetric)) {
+    const definition = metric(metricKey);
+    assert.equal(definition.metric_key, metricKey);
+    assert.equal(definition.metric_version, 1);
+    assert.equal(definition.value_dimension, 'MONEY_RELATIVE_TO_DEAL_VALUE');
+    assert.equal(definition.canonical_unit, 'PERCENT_OF_DEAL_VALUE');
+    assert.equal(definition.canonical_value_type, 'NON_NEGATIVE_DECIMAL_STRING');
+    assert.equal(definition.denominator_basis, 'HEADLINE_TRANSACTION_VALUE');
+    assert.equal(definition.denominator_lineage_required, true);
+    assert.equal(
+      definition.denominator_source_binding.source_contract_version,
+      1,
+    );
+    assert.equal(
+      definition.conversion_contract.derivation_version,
+      'TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V1',
+    );
+    assert.equal(
+      definition.conversion_contract.raw_fee_and_denominator_currency_must_match,
+      true,
+    );
+    assert.equal(definition.numeric_representation, 'EXACT_DECIMAL_STRING_OR_RATIONAL_INTERMEDIATE');
+    assert.equal(
+      definition.per_deal_rollup,
+      'SINGLE_CANONICAL_VALUE_PER_DEAL_FEE_SIDE_PAYER_PAYEE',
+    );
+    assert.equal(
+      definition.rollup_conflict_rule,
+      'EXCLUDE_DEAL_WITH_TYPED_CONFLICT',
+    );
+    assert.equal(definition.weighting, 'DEAL');
+    assert.equal(definition.aggregate_algorithm.census_only, true);
+    assert.deepEqual(definition.aggregate_algorithm.operations, [
+      'MIN',
+      'MAX',
+      'MEDIAN',
+      'MEAN',
+    ]);
+    assert.equal(definition.required_relationship_key, 'TRIGGERED_BY');
+    assert.equal(definition.required_relationship_version, 2);
+    assert.equal(
+      definition.required_trigger_effect_schema,
+      'TERMINATION_FEE_TRIGGER_EFFECT/V2',
+    );
+    assert.equal(definition.trigger_semantics.every_trigger_path_required, true);
+    assert.equal(definition.concept_key, expected.concept_key);
+    assert.equal(definition.fee_side, expected.fee_side);
+    assert.deepEqual(definition.payer, expected.payer);
+    assert.deepEqual(definition.payee, expected.payee);
+  }
+
+  assert.doesNotThrow(
+    () => validateAuthoredRemainingMigrationInputs(
+      terminationFeeContractMembers(),
+    ),
+  );
+});
+
+test('rejects termination-fee identity, party, denominator, roll-up, weighting and trigger drift', () => {
+  const mutations = [
+    (members) => {
+      memberByStableId(
+        members,
+        'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V2',
+      ).canonical_value.authored_binding.metric_definition_identity.stable_id =
+        'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE';
+    },
+    (members) => {
+      memberByStableId(
+        members,
+        'BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V2',
+      ).canonical_value.authored_binding.payer.capacity = 'TARGET';
+    },
+    (members) => {
+      memberByStableId(
+        members,
+        'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+      ).canonical_value.authored_definition.denominator_basis =
+        'ENTERPRISE_VALUE';
+    },
+    (members) => {
+      memberByStableId(
+        members,
+        'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+      ).canonical_value.authored_definition.per_deal_rollup =
+        'EVERY_TRIGGER_ROW';
+    },
+    (members) => {
+      memberByStableId(
+        members,
+        'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+      ).canonical_value.authored_definition.weighting = 'SUBJECT';
+    },
+    (members) => {
+      memberByStableId(
+        members,
+        'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE',
+      ).canonical_value.authored_definition.required_relationship_key =
+        'CONTAINED_IN';
+    },
+  ];
+
+  for (const mutate of mutations) {
+    const members = clone(terminationFeeContractMembers());
+    mutate(members);
+    assert.throws(
+      () => {
+        validateAuthoredPilotMarketMetricInputs(members);
+        validateAuthoredRemainingMigrationInputs(members);
+      },
+      (error) => (
+        error?.code === 'INVALID_BUYER_TERMINATION_FEE_MARKET_METRIC_INPUT'
+        || error?.code === 'INVALID_SELLER_TERMINATION_FEE_MARKET_METRIC_INPUT'
+        || error?.code
+          === 'INVALID_CANONICAL_BUNDLE_SERVING_METRIC_OPERATION_BINDING_INPUT'
+      ),
+    );
+  }
 });
 
 test('binds IOC money to its denominator, relationship and source lineage', () => {
@@ -172,7 +350,10 @@ test('rejects missing and semantically weakened pilot MetricDefinitions', () => 
   );
 
   const money = clone(metricMembers());
-  money[0].canonical_value.authored_definition
+  memberByStableId(
+    money,
+    'IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE',
+  ).canonical_value.authored_definition
     .denominator_lineage_required = false;
   assert.throws(
     () => validateAuthoredPilotMarketMetricInputs(money),
@@ -180,7 +361,10 @@ test('rejects missing and semantically weakened pilot MetricDefinitions', () => 
   );
 
   const wrongSourceRevision = clone(metricMembers());
-  wrongSourceRevision[0].canonical_value.authored_definition
+  memberByStableId(
+    wrongSourceRevision,
+    'IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE',
+  ).canonical_value.authored_definition
     .denominator_source_binding.source_revision_id_domain = 'CLAIM_REVISION/V1';
   assert.throws(
     () => validateAuthoredPilotMarketMetricInputs(wrongSourceRevision),
@@ -188,7 +372,10 @@ test('rejects missing and semantically weakened pilot MetricDefinitions', () => 
   );
 
   const mandatoryException = clone(metricMembers());
-  mandatoryException[0].canonical_value.authored_definition
+  memberByStableId(
+    mandatoryException,
+    'IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE',
+  ).canonical_value.authored_definition
     .required_relationship_key = 'EXCEPTED_BY';
   assert.throws(
     () => validateAuthoredPilotMarketMetricInputs(mandatoryException),
@@ -196,7 +383,10 @@ test('rejects missing and semantically weakened pilot MetricDefinitions', () => 
   );
 
   const duration = clone(metricMembers());
-  duration[1].canonical_value.authored_definition
+  memberByStableId(
+    duration,
+    'NO_SHOP_INITIAL_MATCH_PERIOD_DAYS',
+  ).canonical_value.authored_definition
     .duration_lineage_required = [];
   assert.throws(
     () => validateAuthoredPilotMarketMetricInputs(duration),

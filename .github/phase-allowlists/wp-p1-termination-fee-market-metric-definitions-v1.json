@@ -1,0 +1,27 @@
+{
+  "phase": "WP-P1-TERMINATION-FEE-MARKET-METRIC-DEFINITIONS-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p1-termination-fee-market-metric-definitions-v1.json",
+    "contracts/canonical-v2/successor/agreement/market-metric-definitions/buyer-termination-fee-percent-of-deal-value.v1.json",
+    "contracts/canonical-v2/successor/agreement/market-metric-definitions/seller-termination-fee-percent-of-deal-value.v1.json",
+    "contracts/canonical-v2/successor/agreement/serving-metric-operation-binding-inputs/buyer-termination-fee-percent-of-deal-value.v2.json",
+    "contracts/canonical-v2/successor/agreement/serving-metric-operation-binding-inputs/seller-termination-fee-percent-of-deal-value.v2.json",
+    "contracts/canonical-v2/successor/governance/canonical-bundle-input-required-kind-registry.v1.json",
+    "contracts/canonical-v2/successor/manifest.json",
+    "lib/canonical-v2/canonical-contract-remaining-migration-input-validator.js",
+    "lib/canonical-v2/pilot-market-metric-contract-input-validator.js",
+    "tests/canonical-v2-canonical-contract-bundle-current-root.test.js",
+    "tests/canonical-v2-canonical-contract-source-tree.test.js",
+    "tests/canonical-v2-pilot-market-metric-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Adds the two exact termination-fee MetricDefinitions, binds the active V2 buyer and seller serving operations to those identities, and governs percentage basis, raw money, exact denominator lineage and version, fee-side party semantics, complete trigger paths, one-deal weighting, roll-up, exclusions and exact aggregation. It grants no extraction, serving activation, database, writer, import, release, activation or production authority."
+}

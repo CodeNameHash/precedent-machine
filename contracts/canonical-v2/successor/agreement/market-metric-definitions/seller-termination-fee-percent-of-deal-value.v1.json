@@ -1,0 +1,145 @@
+{
+  "authored_definition": {
+    "aggregate_algorithm": {
+      "aggregate_input": "EXACT_CANONICAL_PERCENT_DECIMAL",
+      "census_only": true,
+      "distinct_deal_count_required": true,
+      "mean": "EXACT_RATIONAL_SUM_DIVIDED_BY_DISTINCT_DEAL_COUNT",
+      "median": "EXACT_ORDERED_CANONICAL_DECIMAL_MIDDLE_OR_RATIONAL_MIDPOINT",
+      "operations": [
+        "MIN",
+        "MAX",
+        "MEDIAN",
+        "MEAN"
+      ],
+      "subject_count_required": true
+    },
+    "allowed_observation_states": [
+      "PRESENT",
+      "ABSENT",
+      "NOT_APPLICABLE",
+      "NOT_EXAMINED",
+      "FAILED"
+    ],
+    "basis_key": "PERCENT_OF_DEAL_VALUE:HEADLINE_TRANSACTION_VALUE:SAME_CURRENCY",
+    "canonical_unit": "PERCENT_OF_DEAL_VALUE",
+    "canonical_value_required_states": [
+      "PRESENT"
+    ],
+    "canonical_value_type": "NON_NEGATIVE_DECIMAL_STRING",
+    "cohort_strata": [
+      "METRIC_KEY_AND_VERSION",
+      "FEE_SIDE",
+      "PAYER_CAPACITY",
+      "PAYEE_CAPACITY",
+      "DENOMINATOR_BASIS",
+      "DENOMINATOR_DERIVATION_VERSION"
+    ],
+    "concept_key": "TERMF-TARGET",
+    "conversion_contract": {
+      "currency_conversion": "FORBIDDEN_IN_V1",
+      "derivation_version": "TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V1",
+      "formula": "RAW_FEE_AMOUNT_DIVIDED_BY_GOVERNED_DENOMINATOR_TIMES_100",
+      "raw_fee_and_denominator_currency_must_match": true
+    },
+    "denominator_basis": "HEADLINE_TRANSACTION_VALUE",
+    "denominator_lineage_required": true,
+    "denominator_source_binding": {
+      "exact_deal_release_occurrence_revision_and_evidence_required": true,
+      "required_canonical_value_type": "HEADLINE_TRANSACTION_VALUE",
+      "required_fact_family": "STATED_TRANSACTION_VALUE",
+      "required_identity_fields": [
+        "CORPUS_RELEASE_ID",
+        "DEAL_ADMISSION_ID",
+        "SOURCE_DEAL_FACT_OCCURRENCE_ID",
+        "SOURCE_DEAL_FACT_REVISION_ID",
+        "EVIDENCE_EDGE_IDS"
+      ],
+      "source_contract_version": 1,
+      "source_logical_type": "SourceDealFactRevision",
+      "source_revision_id_domain": "SOURCE_DEAL_FACT_REVISION/V1"
+    },
+    "display_rounding": {
+      "input_to_identity_filtering_and_aggregation": false,
+      "maximum_fraction_digits": 2,
+      "mode": "HALF_EVEN"
+    },
+    "eligibility_contract": {
+      "complete_claim_scope_required": true,
+      "complete_denominator_source_lineage_required": true,
+      "complete_trigger_relationship_set_required": true,
+      "fee_side_party_and_trigger_semantics_required": true,
+      "market_comparability_state": "COMPARABLE",
+      "required_claim_state": "PRESENT"
+    },
+    "exclusion_taxonomy": [
+      "MISSING_RAW_FEE_AMOUNT",
+      "INVALID_RAW_FEE_AMOUNT",
+      "MISSING_RAW_FEE_CURRENCY",
+      "MISSING_DENOMINATOR",
+      "CONFLICTING_DENOMINATOR",
+      "NON_POSITIVE_DENOMINATOR",
+      "MISSING_DENOMINATOR_CURRENCY",
+      "CURRENCY_MISMATCH",
+      "MISSING_DENOMINATOR_SOURCE_LINEAGE",
+      "INCOMPLETE_TRIGGER_RELATIONSHIP_SET",
+      "CONFLICTING_PER_DEAL_FEE_VALUE",
+      "INCOMPLETE_CANONICAL_BASIS",
+      "NOT_CERTIFIED_FOR_ACTIVE_RELEASE"
+    ],
+    "fee_side": "SELLER",
+    "metric_key": "SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE",
+    "metric_version": 1,
+    "numeric_representation": "EXACT_DECIMAL_STRING_OR_RATIONAL_INTERMEDIATE",
+    "observation_unit": "DEAL_FEE_SIDE_PAYER_PAYEE",
+    "owner_lineage_mode": "CLAIM_WITH_TRIGGER_RELATIONSHIPS",
+    "payee": {
+      "capacity": "BUYER",
+      "role": "FEE_PAYEE",
+      "value": "PARENT"
+    },
+    "payer": {
+      "capacity": "TARGET",
+      "role": "FEE_PAYER",
+      "value": "COMPANY"
+    },
+    "per_deal_rollup": "SINGLE_CANONICAL_VALUE_PER_DEAL_FEE_SIDE_PAYER_PAYEE",
+    "permitted_multiplicity": "ONE_OBSERVATION_AFTER_PER_DEAL_ROLLUP",
+    "raw_value_schema": {
+      "amount_type": "NON_NEGATIVE_DECIMAL_STRING",
+      "currency_type": "ISO_4217_CODE",
+      "exact_source_amount_and_currency_required": true
+    },
+    "required_claim_definition_key": "SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE",
+    "required_lineage_fields": [
+      "CORPUS_RELEASE_ID",
+      "DEAL_ADMISSION_ID",
+      "CLAIM_OCCURRENCE_ID",
+      "CLAIM_REVISION_ID",
+      "CLAIM_SCOPE_CLOSURE_ID",
+      "RELATIONSHIP_REVISION_IDS",
+      "TRIGGER_PATH_IDS",
+      "EVIDENCE_EDGE_IDS",
+      "CANONICAL_TEXT_ID",
+      "SOURCE_INTERVALS",
+      "DENOMINATOR_SOURCE_LINEAGE_IDS",
+      "NORMALISATION_DERIVATION_VERSION"
+    ],
+    "required_relationship_key": "TRIGGERED_BY",
+    "required_relationship_version": 2,
+    "required_trigger_effect_schema": "TERMINATION_FEE_TRIGGER_EFFECT/V2",
+    "rollup_conflict_rule": "EXCLUDE_DEAL_WITH_TYPED_CONFLICT",
+    "source_lineage_required": true,
+    "trigger_semantics": {
+      "condition_expression_required": true,
+      "every_trigger_path_required": true,
+      "fee_obligation_and_termination_right_endpoints_required": true,
+      "tail_signing_and_competing_proposal_conditions_preserved": true
+    },
+    "value_dimension": "MONEY_RELATIVE_TO_DEAL_VALUE",
+    "weighting": "DEAL"
+  },
+  "object_kind": "MARKET_METRIC_DEFINITION_INPUT",
+  "schema_version": "MARKET_METRIC_DEFINITION_INPUT/V1",
+  "stable_id": "SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE"
+}

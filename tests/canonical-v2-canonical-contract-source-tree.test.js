@@ -76,7 +76,7 @@ test('the single successor source compiles twice byte-identically as a complete 
   const second = compileCanonicalContractInput({ root_directory: sourceRoot });
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 168);
+  assert.equal(first.authored_members.length, 170);
   assert.equal(
     first.authored_members.some(
       (member) => member.object_kind === 'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY',
@@ -308,7 +308,7 @@ test('no-shop semantic inputs preserve V12 except governed successors', () => {
   );
 });
 
-test('every serving metric-operation binding input preserves the exact nested V12 source', () => {
+test('every serving metric-operation binding preserves V12 legal semantics and selects one exact MetricDefinition', () => {
   const compiled = compileCanonicalContractInput({ root_directory: sourceRoot });
   const members = compiled.authored_members.filter(
     (member) => member.object_kind === 'SERVING_METRIC_OPERATION_BINDING_INPUT',
@@ -333,21 +333,39 @@ test('every serving metric-operation binding input preserves the exact nested V1
       Object.hasOwn(value, 'metric_operation_binding_definition_payload_digest'),
       false,
     );
-    return value.authored_binding;
-  }).sort((left, right) => left.binding_key.localeCompare(right.binding_key));
+    assert.deepEqual(value.authored_binding.metric_definition_identity, {
+      metric_version: 1,
+      object_kind: 'MARKET_METRIC_DEFINITION_INPUT',
+      schema_version: 'MARKET_METRIC_DEFINITION_INPUT/V1',
+      stable_id: value.authored_binding.metric_key,
+    });
+    const {
+      metric_definition_identity: _metricDefinitionIdentity,
+      ...v12LegalSemantics
+    } = value.authored_binding;
+    return {
+      active_binding: value.authored_binding,
+      v12_legal_semantics: v12LegalSemantics,
+    };
+  }).sort((left, right) => left.active_binding.binding_key.localeCompare(
+    right.active_binding.binding_key,
+  ));
 
   assert.deepEqual(
     actual.map((entry) => [
-      entry.binding_key,
-      entry.metric_version,
-      entry.trigger_path_schema_version,
+      entry.active_binding.binding_key,
+      entry.active_binding.metric_version,
+      entry.active_binding.trigger_path_schema_version,
     ]),
     [
       ['BUYER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V2', 1, 2],
       ['SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE/V2', 1, 2],
     ],
   );
-  assert.equal(canonicalJson(actual), canonicalJson(expected));
+  assert.equal(
+    canonicalJson(actual.map((entry) => entry.v12_legal_semantics)),
+    canonicalJson(expected),
+  );
 });
 
 test('the serving trigger-path schema input preserves the exact nested V12 source', () => {
@@ -503,16 +521,16 @@ test('the authored claim interpretation policy is the exact existing V12 policy'
   );
 });
 
-test('the manifest exactly closes the 168-file Agreement, shared, Process, Product and governance source tree', () => {
+test('the manifest exactly closes the 170-file Agreement, shared, Process, Product and governance source tree', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
   const actualMembers = jsonMembers(sourceRoot);
   const declaredMembers = manifest.members.map((member) => member.relative_path);
 
   assert.deepEqual(actualMembers, declaredMembers);
-  assert.equal(manifest.members.length, 168);
+  assert.equal(manifest.members.length, 170);
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('agreement/')).length,
-    92,
+    94,
   );
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('shared/')).length,
