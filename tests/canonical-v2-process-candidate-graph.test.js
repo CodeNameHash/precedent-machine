@@ -249,7 +249,6 @@ test('accepts the actual frozen scope, semantic and lexical pure-runtime chain',
   const semantic = enumerateProcessSemantics({
     schema_version: SEMANTIC_INPUT_SCHEMA,
     scope_receipt: scope,
-    expected_scope_receipt_id: scope.scope_receipt_id,
     source_units: [{
       source_unit_id: digest('semantic-unit'),
       unit_state: 'CANDIDATE',
@@ -297,11 +296,10 @@ test('accepts the actual frozen scope, semantic and lexical pure-runtime chain',
       disposition_code: 'UNRESOLVED_SEMANTIC_MATERIAL',
     }],
     limits: { max_source_units: 3, max_candidates: 2 },
-  });
+  }, scope.scope_receipt_id);
   const text = 'value';
   const lexical = enumerateProcessLexicalCandidates({
     scope_receipt: scope,
-    expected_scope_receipt_id: scope.scope_receipt_id,
     source_units: [{
       source_unit_id: digest('lexical-unit'),
       source_document_identity: digest('lexical-document'),
@@ -360,7 +358,7 @@ test('accepts the actual frozen scope, semantic and lexical pure-runtime chain',
       max_memory_bytes: 1024,
     },
     reported_usage: { duration_ms: 1, memory_bytes: 128 },
-  });
+  }, scope.scope_receipt_id);
   const graph = buildProcessCandidateGraph({
     schema_version: CANDIDATE_GRAPH_INPUT_SCHEMA,
     semantic_enumeration: semantic,

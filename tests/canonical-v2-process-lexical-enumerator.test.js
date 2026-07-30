@@ -77,7 +77,6 @@ function input(overrides = {}) {
   const scope = scopeReceipt();
   return {
     scope_receipt: scope,
-    expected_scope_receipt_id: scope.scope_receipt_id,
     source_units: [sourceUnit()],
     limits: {
       max_source_count: 4,
@@ -96,8 +95,9 @@ function clone(value) {
 }
 
 test('enumerates deterministic lexical candidates with exact source evidence', () => {
-  const first = enumerateProcessLexicalCandidates(input());
-  const second = enumerateProcessLexicalCandidates(input());
+  const expectedScopeReceiptId = scopeReceipt().scope_receipt_id;
+  const first = enumerateProcessLexicalCandidates(input(), expectedScopeReceiptId);
+  const second = enumerateProcessLexicalCandidates(input(), expectedScopeReceiptId);
 
   assert.deepEqual(first, second);
   assert.equal(first.schema_version, PROCESS_LEXICAL_ENUMERATION_SCHEMA);
@@ -141,7 +141,10 @@ test('retains rejected, ambiguous, unsupported and unmapped lexical records', ()
       lexical_payload: { token: 'Company' }, reason_code: null,
     },
   ];
-  const result = enumerateProcessLexicalCandidates(input({ source_units: [base] }));
+  const result = enumerateProcessLexicalCandidates(
+    input({ source_units: [base] }),
+    scopeReceipt().scope_receipt_id,
+  );
 
   assert.equal(result.candidates.length, 0);
   assert.equal(result.rejections.length, 1);
@@ -170,21 +173,30 @@ test('fails closed for hostile source records, duplicate candidates and reported
   const malformedInterval = sourceUnit();
   malformedInterval.lexical_observations[0].start_utf8_byte = 99;
   assert.throws(
-    () => enumerateProcessLexicalCandidates(input({ source_units: [malformedInterval] })),
+    () => enumerateProcessLexicalCandidates(
+      input({ source_units: [malformedInterval] }),
+      scopeReceipt().scope_receipt_id,
+    ),
     { code: 'INVALID_PROCESS_LEXICAL_OBSERVATION' },
   );
 
   const duplicate = sourceUnit();
   duplicate.lexical_observations.push({ ...duplicate.lexical_observations[0] });
   assert.throws(
-    () => enumerateProcessLexicalCandidates(input({ source_units: [duplicate] })),
+    () => enumerateProcessLexicalCandidates(
+      input({ source_units: [duplicate] }),
+      scopeReceipt().scope_receipt_id,
+    ),
     { code: 'DUPLICATE_PROCESS_LEXICAL_CANDIDATE' },
   );
 
   assert.throws(
-    () => enumerateProcessLexicalCandidates(input({
-      reported_usage: { duration_ms: 1001, memory_bytes: 512 },
-    })),
+    () => enumerateProcessLexicalCandidates(
+      input({
+        reported_usage: { duration_ms: 1001, memory_bytes: 512 },
+      }),
+      scopeReceipt().scope_receipt_id,
+    ),
     { code: 'INVALID_PROCESS_LEXICAL_ENUMERATION_LIMITS' },
   );
 
@@ -232,7 +244,10 @@ test('accepts byte-zero source evidence and rejects negative or empty intervals'
       reason_code: null,
     }],
   });
-  const result = enumerateProcessLexicalCandidates(input({ source_units: [zero] }));
+  const result = enumerateProcessLexicalCandidates(
+    input({ source_units: [zero] }),
+    scopeReceipt().scope_receipt_id,
+  );
   assert.equal(result.candidates[0].evidence.start_utf8_byte, 0);
 
   for (const [start, end] of [[-1, 5], [0, 0]]) {
@@ -240,7 +255,10 @@ test('accepts byte-zero source evidence and rejects negative or empty intervals'
     hostile.lexical_observations[0].start_utf8_byte = start;
     hostile.lexical_observations[0].end_utf8_byte = end;
     assert.throws(
-      () => enumerateProcessLexicalCandidates(input({ source_units: [hostile] })),
+      () => enumerateProcessLexicalCandidates(
+        input({ source_units: [hostile] }),
+        scopeReceipt().scope_receipt_id,
+      ),
       { name: 'ProcessLexicalEnumeratorError' },
     );
   }
@@ -257,13 +275,16 @@ test('rejects substituted scope slots, residuals, limits and receipt ID', () => 
     const receipt = clone(scopeReceipt());
     mutate(receipt);
     assert.throws(
-      () => enumerateProcessLexicalCandidates(input({ scope_receipt: receipt })),
+      () => enumerateProcessLexicalCandidates(
+        input({ scope_receipt: receipt }),
+        scopeReceipt().scope_receipt_id,
+      ),
       { code: 'INVALID_PROCESS_LEXICAL_SCOPE_RECEIPT' },
     );
   }
 });
 
-test('rejects a valid-to-valid self-rehashed scope substitution', () => {
+test('rejects replacement of a self-rehashed scope receipt and its input-contained expected ID', () => {
   const trusted = scopeReceipt();
   const substituted = clone(trusted);
   substituted.expected_occurrence_slots[0].occurrence_kind =
@@ -278,11 +299,21 @@ test('rejects a valid-to-valid self-rehashed scope substitution', () => {
       limits: substituted.limits,
     },
   );
+  const hostileInput = input({ scope_receipt: substituted });
+  hostileInput.expected_scope_receipt_id = substituted.scope_receipt_id;
   assert.throws(
-    () => enumerateProcessLexicalCandidates(input({
-      scope_receipt: substituted,
-      expected_scope_receipt_id: trusted.scope_receipt_id,
-    })),
+    () => enumerateProcessLexicalCandidates(
+      hostileInput,
+      trusted.scope_receipt_id,
+    ),
+    { code: 'INVALID_PROCESS_LEXICAL_ENUMERATION_INPUT' },
+  );
+  delete hostileInput.expected_scope_receipt_id;
+  assert.throws(
+    () => enumerateProcessLexicalCandidates(
+      hostileInput,
+      trusted.scope_receipt_id,
+    ),
     { code: 'INVALID_PROCESS_LEXICAL_SCOPE_RECEIPT' },
   );
 });
@@ -304,11 +335,13 @@ test('consumes a producer-valid zero-slot residual scope', () => {
     }],
     limits: { max_scope_records: 4, max_slots: 4 },
   });
-  const result = enumerateProcessLexicalCandidates(input({
-    scope_receipt: scope,
-    expected_scope_receipt_id: scope.scope_receipt_id,
-    source_units: [],
-  }));
+  const result = enumerateProcessLexicalCandidates(
+    input({
+      scope_receipt: scope,
+      source_units: [],
+    }),
+    scope.scope_receipt_id,
+  );
 
   assert.equal(result.candidates.length, 0);
   assert.equal(result.residuals.length, 1);

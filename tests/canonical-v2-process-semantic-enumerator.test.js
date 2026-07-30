@@ -61,7 +61,6 @@ function input(overrides = {}) {
   return {
     schema_version: INPUT_SCHEMA,
     scope_receipt: scope,
-    expected_scope_receipt_id: scope.scope_receipt_id,
     source_units: [sourceUnit('late', 'CANDIDATE'), sourceUnit('rejected', 'REJECTED'), sourceUnit('early', 'CANDIDATE')],
     limits: { max_source_units: 8, max_candidates: 4 },
     ...overrides,
@@ -70,12 +69,13 @@ function input(overrides = {}) {
 function clone(value) { return JSON.parse(JSON.stringify(value)); }
 
 test('enumerates deterministic semantic candidates from caller-provided frozen slots', () => {
-  const first = enumerateProcessSemantics(input());
-  const second = enumerateProcessSemantics(input());
+  const expectedScopeReceiptId = scopeReceipt().scope_receipt_id;
+  const first = enumerateProcessSemantics(input(), expectedScopeReceiptId);
+  const second = enumerateProcessSemantics(input(), expectedScopeReceiptId);
   const reordered = input();
   reordered.source_units.reverse();
   assert.deepEqual(first, second);
-  assert.deepEqual(first, enumerateProcessSemantics(reordered));
+  assert.deepEqual(first, enumerateProcessSemantics(reordered, expectedScopeReceiptId));
   assert.equal(first.schema_version, 'PROCESS_SEMANTIC_ENUMERATION/V1');
   assert.equal(first.candidates.length, 2);
   assert.deepEqual(first.candidates.map((candidate) => candidate.slot_key), ['SLOT_A', 'SLOT_A']);
@@ -92,12 +92,13 @@ test('enumerates deterministic semantic candidates from caller-provided frozen s
 });
 
 test('preserves exact source intervals and derives candidate identity from exact evidence and payload', () => {
-  const original = enumerateProcessSemantics(input()).candidates.find(
+  const expectedScopeReceiptId = scopeReceipt().scope_receipt_id;
+  const original = enumerateProcessSemantics(input(), expectedScopeReceiptId).candidates.find(
     (candidate) => candidate.evidence.start_utf8_byte === 0,
   );
   const changed = clone(input());
   changed.source_units[2].semantic_payload.polarity = 'ABSENT';
-  const changedCandidate = enumerateProcessSemantics(changed).candidates.find(
+  const changedCandidate = enumerateProcessSemantics(changed, expectedScopeReceiptId).candidates.find(
     (candidate) => candidate.evidence.start_utf8_byte === 0,
   );
   assert.notEqual(original.candidate_key, changedCandidate.candidate_key);
@@ -127,11 +128,27 @@ test('binds producer-governed rejected and residual outcomes to the semantic out
 
 test('fails closed for hostile source, duplicate, unbounded, unknown-slot and malformed evidence input', () => {
   const cases = [
-    () => enumerateProcessSemantics(input({ source_units: [sourceUnit('same', 'CANDIDATE'), sourceUnit('same', 'CANDIDATE')] })),
-    () => enumerateProcessSemantics(input({ limits: { max_source_units: 1, max_candidates: 1 } })),
-    () => enumerateProcessSemantics(input({ source_units: [sourceUnit('unknown', 'CANDIDATE', { slot_key: 'SLOT_UNKNOWN' })] })),
-    () => { const changed = clone(input()); changed.source_units[0].evidence.end_utf8_byte = 0; return enumerateProcessSemantics(changed); },
-    () => enumerateProcessSemantics({ ...input(), lexical_enumerator: 'IMPORTED' }),
+    () => enumerateProcessSemantics(
+      input({ source_units: [sourceUnit('same', 'CANDIDATE'), sourceUnit('same', 'CANDIDATE')] }),
+      scopeReceipt().scope_receipt_id,
+    ),
+    () => enumerateProcessSemantics(
+      input({ limits: { max_source_units: 1, max_candidates: 1 } }),
+      scopeReceipt().scope_receipt_id,
+    ),
+    () => enumerateProcessSemantics(
+      input({ source_units: [sourceUnit('unknown', 'CANDIDATE', { slot_key: 'SLOT_UNKNOWN' })] }),
+      scopeReceipt().scope_receipt_id,
+    ),
+    () => {
+      const changed = clone(input());
+      changed.source_units[0].evidence.end_utf8_byte = 0;
+      return enumerateProcessSemantics(changed, scopeReceipt().scope_receipt_id);
+    },
+    () => enumerateProcessSemantics(
+      { ...input(), lexical_enumerator: 'IMPORTED' },
+      scopeReceipt().scope_receipt_id,
+    ),
   ];
   cases.forEach((run) => assert.throws(run, { name: 'ProcessSemanticEnumeratorError' }));
 });
@@ -141,19 +158,19 @@ test('rejects mismatched frozen slots and scope receipt identity', () => {
   changedSlot.scope_receipt.expected_occurrence_slots[0].occurrence_kind =
     'SUBSTITUTED_EVENT';
   assert.throws(
-    () => enumerateProcessSemantics(changedSlot),
+    () => enumerateProcessSemantics(changedSlot, scopeReceipt().scope_receipt_id),
     { code: 'INVALID_PROCESS_SEMANTIC_SCOPE_RECEIPT' },
   );
 
   const changedId = clone(input());
   changedId.scope_receipt.scope_receipt_id = digest('substituted-scope-receipt');
   assert.throws(
-    () => enumerateProcessSemantics(changedId),
+    () => enumerateProcessSemantics(changedId, scopeReceipt().scope_receipt_id),
     { code: 'INVALID_PROCESS_SEMANTIC_SCOPE_RECEIPT' },
   );
 });
 
-test('rejects a valid-to-valid self-rehashed scope substitution', () => {
+test('rejects replacement of a self-rehashed scope receipt and its input-contained expected ID', () => {
   const trusted = scopeReceipt();
   const substituted = clone(trusted);
   substituted.expected_occurrence_slots[0].occurrence_kind =
@@ -168,11 +185,21 @@ test('rejects a valid-to-valid self-rehashed scope substitution', () => {
       limits: substituted.limits,
     },
   );
+  const hostileInput = input({ scope_receipt: substituted });
+  hostileInput.expected_scope_receipt_id = substituted.scope_receipt_id;
   assert.throws(
-    () => enumerateProcessSemantics(input({
-      scope_receipt: substituted,
-      expected_scope_receipt_id: trusted.scope_receipt_id,
-    })),
+    () => enumerateProcessSemantics(
+      hostileInput,
+      trusted.scope_receipt_id,
+    ),
+    { code: 'INVALID_PROCESS_SEMANTIC_ENUMERATOR_INPUT' },
+  );
+  delete hostileInput.expected_scope_receipt_id;
+  assert.throws(
+    () => enumerateProcessSemantics(
+      hostileInput,
+      trusted.scope_receipt_id,
+    ),
     { code: 'INVALID_PROCESS_SEMANTIC_SCOPE_RECEIPT' },
   );
 });
@@ -194,11 +221,13 @@ test('consumes a producer-valid zero-slot residual scope', () => {
     }],
     limits: { max_scope_records: 4, max_slots: 4 },
   });
-  const result = enumerateProcessSemantics(input({
-    scope_receipt: scope,
-    expected_scope_receipt_id: scope.scope_receipt_id,
-    source_units: [],
-  }));
+  const result = enumerateProcessSemantics(
+    input({
+      scope_receipt: scope,
+      source_units: [],
+    }),
+    scope.scope_receipt_id,
+  );
 
   assert.equal(result.scope_receipt_id, scope.scope_receipt_id);
   assert.equal(result.candidates.length, 0);
