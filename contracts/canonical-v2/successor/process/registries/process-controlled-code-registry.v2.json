@@ -6,6 +6,12 @@
     "domain_key": "PROCESS",
     "registry_version": 2,
     "registry_state": "CLOSED",
+    "predecessor_contract": {
+      "stable_id": "PROCESS_CONTROLLED_CODE_REGISTRY",
+      "schema_version": "PROCESS_CONTROLLED_CODE_REGISTRY_INPUT/V1",
+      "registry_version": 1,
+      "definition_digest": "f233154485889cc2b9f87630c086d84119c336feb070bbef288079963333dd51"
+    },
     "process_owned_registries": [
       {
         "registry_stable_id": "PROCESS_AGREEMENT_TYPE_REGISTRY",

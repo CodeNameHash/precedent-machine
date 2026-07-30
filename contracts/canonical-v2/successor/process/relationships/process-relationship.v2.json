@@ -6,6 +6,12 @@
     "domain_key": "PROCESS",
     "logical_type": "ProcessRelationship",
     "logical_type_version": 2,
+    "predecessor_contract": {
+      "stable_id": "PROCESS_RELATIONSHIP",
+      "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
+      "logical_type_version": 1,
+      "definition_digest": "1000d5595c5daa0af96d502fe1469063350494672f1c007c9eb9723bd15d3fdd"
+    },
     "relationship_identity": {
       "stable_id_domain": "PROCESS_RELATIONSHIP/V1",
       "stable_id_inputs": [
