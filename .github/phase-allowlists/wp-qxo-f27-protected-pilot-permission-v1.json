@@ -1,0 +1,19 @@
+{
+  "phase": "WP-QXO-F27-PROTECTED-PILOT-PERMISSION-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-qxo-f27-protected-pilot-permission-v1.json",
+    "lib/programme-gates/vertical-slice-permission.js",
+    "scripts/canonical-v2-staging-qxo-capitalisation-f27.mjs",
+    "tests/canonical-v2-staging-qxo-capitalisation-f27.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Replaces caller-set QXO pilot approval with the officially verified protected programme status. The fixture path can execute only a temporary non-linked test executable. It grants no production, writer, serving, release, import, activation or contract-freeze authority."
+}
