@@ -20,6 +20,7 @@ const PATHS = [
   'process-phrasebook-product-result-adapter.v1.json',
   'process-phrasebook-product-result-set-adapter.v1.json',
   'product-query-result-definition.v1.json',
+  'qxo-capitalisation-f28-product-result-adapter.v1.json',
   'qxo-capitalisation-product-result-adapter.v1.json',
 ];
 
