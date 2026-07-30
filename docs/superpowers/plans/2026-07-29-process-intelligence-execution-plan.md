@@ -1,5 +1,13 @@
 # Process Intelligence execution plan
 
+## Source of record
+
+This plan and its companion design are source records. Commit each amendment to
+the Deal Storylines repository under `docs/superpowers/plans/` or
+`docs/superpowers/specs/`. After each committed amendment, update the SHA-256
+reference in Precedent Machine's `docs/codex-program/EXECUTION-LEDGER.md` to
+name that committed copy.
+
 ## Objective
 
 Convert the approved Process Intelligence product and legal design into
@@ -22,7 +30,7 @@ It does not give a narrative language-model answer.
 - PM `origin/main`:
   `c920ce6e3b037cf2352d77f7d3534d5bc363819a`
 - Process design SHA-256:
-  `1acbcafd211c1f90492164db655d1bda02faa0470ca29f3bd5f75bc8cf4cca15`
+  `1bbdd0cf86ffb927d1024878d6a062009f1f87ed7d320e45febbf63fb7213f18`
 - Shared authority design SHA-256:
   `7dd9552c2634e4f64f0fc662f40002879fd6fca595a2394d8e3eb27baf35dbbe`
 - Product acceptance design SHA-256:
@@ -86,6 +94,25 @@ Before a code unit starts:
 Each unit changes one contract family or one implementation seam and its
 focused tests. Do not combine authored contracts, deal evidence, extraction,
 user-interface code and release changes in one unit.
+
+## Review and handoff protocol
+
+Each handoff runs focused tests, the affected-chain suite and one cheap Stage 2
+review. Stage 2 checks conformance with the stated files, contracts and tests.
+It is not an independent adversarial review. Stage 3 escalation occurs only
+for a finding about legal semantics or identity.
+
+There are at most three independent adversarial review events for this
+programme:
+
+1. WP3A pre-freeze;
+2. vertical-slice completion, only if WP3A did not already cover that work;
+   and
+3. pre-activation.
+
+Each review examines the diff since the last reviewed state and regresses prior
+finding dispositions. It does not re-review the complete root byte-for-byte.
+No handoff, integration or other event can become a review milestone.
 
 ## P-1: add a permanent read-only gate check
 
@@ -456,10 +483,10 @@ Synthetic tests pass. No public-deal extraction has run while
 
 ## PE1: run the independent Metsera evidence lane
 
-This evidence lane can start under the current
-`canonical_work_start: PASS`. It runs in parallel with generic contract and
-fixture code. It does not use extractor output and does not write a candidate
-graph.
+This evidence lane starts now and is independent of PM programme-status
+health. It runs in parallel with generic contract and fixture code. Its outputs
+are inert, content-addressed artefacts. It does not use extractor output and
+does not write a candidate graph.
 
 ### Files
 
@@ -480,11 +507,21 @@ graph.
 7. Keep the evidence readers separate from extractor and candidate roles.
 8. Keep case-level answers unavailable to extractor tasks until the planned
    comparison point.
+9. Export the content-addressed Storylines ledger snapshot.
+10. Pre-register the certification sampling frames.
+
+Gold construction is the critical path. Start it now. Keep dual enumeration,
+the sealed-before-extractor ordering, the owner-hours budget and delegation
+rules. Extraction or certification may consume only a sealed gold artefact.
+
+O5 disposition superseded: the PM gate apparatus was retired on 30 July 2026.
+Gold construction is inert evidence work. The consumption gate remains.
 
 ### Gate
 
 The Metsera gold package is independent, source-exact and sealed. It grants no
-writer, extraction or release authority.
+writer, extraction or release authority. An unsealed package cannot enter an
+extractor or certification input.
 
 ## P8: freeze, review and run bounded same-pair slices
 
@@ -494,7 +531,9 @@ writer, extraction or release authority.
 2. Complete the shared authority scope decision.
 3. Compile one Agreement-plus-shared-authority-plus-Process root.
 4. Run delta review with regression of every prior disposition.
-5. Run the required exact-root cold reviews.
+5. Run the WP3A pre-freeze independent adversarial review. It covers the diff
+   and prior dispositions. Do not add another review event unless the
+   vertical-slice completion review is not already covered.
 6. Obtain Ben approval for that exact root.
 7. Issue the full-bundle `ContractFreezeAttestation`.
 8. Wait for `vertical_slice_execution: PASS`.
@@ -528,7 +567,7 @@ This package starts only after `candidate_scope_and_extraction: PASS`.
 
 Every released mandatory predicate and product action passes certification.
 
-## P10: performance, security and inactive release
+## P10: performance, Tier A containment and inactive release
 
 ### Tasks
 
@@ -536,8 +575,10 @@ Every released mandatory predicate and product action passes certification.
 2. Prove one admission check and at most one bounded serving query.
 3. Prove no broad Node or browser filtering.
 4. Prove stable cursors and cache isolation.
-5. Prove route and action authorisation.
-6. Exercise Process-wide containment and whole-tuple revocation.
+5. Keep staging and production credentials separate. Do not place service
+   credentials in a client or an evidence artefact.
+6. Keep the Process route-off flag. Do not run extraction or writes against
+   production outside the governed importer.
 7. Build one inactive whole successor candidate release.
 8. Prove logical, physical, query, render, export and trace parity.
 9. Keep Storylines read-only until PM replacement acceptance passes.
@@ -552,16 +593,38 @@ No import occurs until `production_import: PASS`.
 
 1. Import only into an inactive production namespace.
 2. Complete every Phase 9 proof.
-3. Obtain the exact one-use cutover authorisation.
-4. Activate the whole Agreement and Process tuple.
-5. Run post-cutover smoke checks.
-6. Roll back the whole tuple on an identity, source, evidence or semantic
+3. Run the pre-activation independent adversarial review. It covers the diff
+   and prior dispositions.
+4. Obtain the exact one-use cutover authorisation.
+5. Activate the whole Agreement and Process tuple.
+6. Run post-cutover smoke checks.
+7. Roll back the whole tuple on an identity, source, evidence or semantic
    mismatch.
 
 ### Gate
 
 Activation completes only when the protected status and active release record
 the exact certified tuple.
+
+## P12: post-cutover attacker-model security hardening
+
+This phase starts after cutover. It is not a pre-activation gate for this
+internal single-user product. Pre-cutover risk is accidental corruption or
+leakage. P10 Tier A controls address that risk.
+
+P12 retains, without weakening, these deferred requirements:
+
+1. whole-tuple revocation service-level agreements and serving-fence machinery
+   beyond the route-off flag;
+2. authorisation-matrix attestations;
+3. route and action inventory proofs;
+4. default-deny probe suites;
+5. egress certification; and
+6. signed attestations of access controls.
+
+Data-integrity controls remain pre-activation requirements. They include
+fail-closed serving, release parity, drift detection, sampling audits and
+recertification triggers.
 
 ## Product acceptance trace
 

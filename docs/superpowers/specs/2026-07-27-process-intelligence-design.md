@@ -198,18 +198,21 @@ dependencies:
 
 - implementation planning requires `implementation_planning`;
 - canonical implementation or data work requires `canonical_work_start`;
-- source reading, source inventories, gold sealing and Storylines evidence
-  export are data work for the current programme and therefore also wait for
-  `canonical_work_start`; any earlier inert-evidence work class requires a
-  separately approved Canonical V2 change rather than a Process exception;
+- the evidence lane may read frozen public filings, create source inventories,
+  run dual gold enumeration and reconciliation, seal golds, export a
+  content-addressed Storylines snapshot and pre-register sampling frames
+  independently of programme-status health. These outputs are inert
+  content-addressed artefacts. Extraction and certification may consume only a
+  sealed gold artefact;
 - before review or freeze, the specification root must already contain the
   complete Agreement-plus-Process bundle, `PROCESS_VERTICAL_SLICE_PASS` gate
   entry, acceptance definition, evidence schema, adversarial test, verifier
   changes, successor `candidate_scope_and_extraction` dependencies,
   acquisition contracts, semantic-integrity revocation action, Process
   containment policy and stale-link rerun action;
-- that complete root must then compile and receive exact-root review, Ben
-  approval and its own full-bundle `ContractFreezeAttestation`;
+- that complete root must then compile and, at the WP3A pre-freeze milestone,
+  receive the independent adversarial review of the relevant diff, Ben approval
+  and its own full-bundle `ContractFreezeAttestation`;
 - the exact frozen pair must receive fresh Agreement and Process
   vertical-slice attestations under `vertical_slice_execution`; prior
   Agreement-only evidence cannot carry forward to the successor fingerprint;
@@ -226,8 +229,16 @@ infer a passing gate.
 
 Planning-draft review does not itself freeze a canonical bundle or require a
 vertical-slice rerun. Before the first freeze, each amendment receives a delta
-review plus regression of all prior dispositions. A full exact-root cold review
-is required at the WP3A pre-freeze milestone and again before activation.
+review plus regression of all prior dispositions. A cheap handoff review checks
+specification conformance only. Escalate it only for a legal-semantic or
+identity finding.
+
+An independent adversarial review is required only at WP3A pre-freeze,
+vertical-slice completion if WP3A did not already cover that work, and
+pre-activation. These are the only review milestones. No other handoff,
+integration or event can become one. Each milestone review covers the diff
+since the last reviewed state and regresses prior dispositions. It does not
+re-review the complete root byte-for-byte.
 
 Every finding is classified as either:
 
@@ -240,8 +251,9 @@ Every finding is classified as either:
 Each milestone targets convergence within two review rounds. A third unresolved
 round is escalated to Ben with the exact remaining findings, classifications,
 cost and recommendation. Once a bundle is frozen, any changed contract byte
-still requires a new exact-root review, freeze and fresh same-pair Agreement and
-Process slices. The convergence rule cannot waive that requirement.
+still requires a new milestone review of the diff, freeze and fresh same-pair
+Agreement and Process slices. The convergence rule cannot waive that
+requirement.
 
 ## Shared deal facts and entity authority
 
@@ -687,6 +699,17 @@ Every mandatory first-release predicate must pass.
 
 ### Gold and pilot sets
 
+Gold construction is the programme critical path and starts immediately. Gold
+readers use frozen public filings, two independent enumerations and
+reconciliation. They seal each gold and export the content-addressed
+Storylines snapshot before any extractor or certification task can consume it.
+They also pre-register the sampling frame. Gold construction retains the
+approved owner-hours budget and delegation rules. It grants no extraction,
+writer, release or production authority.
+
+O5 disposition superseded: PM gate apparatus retired on 30 July 2026. Gold
+construction is inert evidence work. The sealed-gold consumption gate remains.
+
 Metsera is the anchor gold deal because it stresses:
 
 - competing Pfizer and Novo tracks;
@@ -1001,15 +1024,11 @@ immediate containment. Before review and freeze, the successor root adds
 served row, source, defect class, severity, discovery authority and exact
 active-before and exposure-off tuples.
 
-A validated material trigger automatically raises the Process-wide serving
-fence within the maximum acknowledgement time frozen in the
-`OperationalPolicySet`. It does not alter canonical release state or count as
-revocation. Process exposure cannot resume while the defect remains unresolved.
-If the defect invalidates the certified active tuple, the registered action
-deliberately revokes or rolls back the whole release tuple within the
-policy-bound canonical-disposition deadline and rehearsed incident procedure.
-The domain design does not invent a shorter deadline that pressures an
-Agreement-affecting transaction. There is no partial Process canonical release
+A validated material trigger turns the Process route-off flag on. The flag does
+not alter canonical release state or count as revocation. Process exposure
+cannot resume while the defect remains unresolved. Whole-tuple revocation
+deadlines and serving-fence machinery beyond this route flag are deferred to
+the post-cutover hardening phase. There is no partial Process canonical release
 transition. Preparing a successor is not containment.
 
 ## Failure and trust behaviour
@@ -1142,6 +1161,17 @@ query engine, field registry or UI shell.
 
 ## Security and release controls
 
+### Tier A: active before cutover
+
+Tier A protects this internal single-user product against accidental corruption
+or leakage before cutover.
+
+- Keep staging and production credentials separate.
+- Do not place service credentials in a client.
+- Do not place secrets in evidence artefacts.
+- Keep the Process route-off flag available for containment.
+- Do not run extraction or writes against production outside the governed
+  importer.
 - Extraction and review roles have no production serving authority.
 - Serving roles read generated projections and bounded exact-detail actions
   only.
@@ -1152,14 +1182,30 @@ query engine, field registry or UI shell.
 - Feature flags and the active-release pointer remain separate controls.
 - Candidate releases are staging-only until explicit activation.
 - Rollback restores the prior release and invalidates incompatible caches.
-- Process actions are generated into PM's action-authorisation matrix with
-  default-deny service identities, object-level predicates, CSRF and origin
-  rules.
 - Filing and archive intake is sandboxed and tested for path traversal,
   decompression bombs, hostile markup and prompt injection.
 - Data-bearing previews use isolated project identities and protected access.
-- Export, share and correction actions have separate generated authorisation
-  and rate contracts.
+
+Data integrity is not deferred. Fail-closed serving, release parity, drift
+detection, sampling audits and recertification triggers remain active.
+
+### Tier B: post-cutover attacker-model hardening
+
+Tier B is deferred to the named post-cutover hardening phase. It is not a
+pre-activation gate.
+
+- Whole-tuple revocation service-level agreements and serving-fence machinery
+  beyond the route-off flag.
+- Authorisation-matrix attestations.
+- Route and action inventory proofs.
+- Default-deny probe suites.
+- Egress certification.
+- Signed attestations of access controls.
+- Process actions in PM's generated action-authorisation matrix, including
+  default-deny service identities, object-level predicates, CSRF and origin
+  rules.
+- Separate generated authorisation and rate contracts for export, share and
+  correction actions.
 
 ## Post-activation assurance
 
@@ -1200,7 +1246,7 @@ Process Intelligence is ready for an activation decision only when:
 - Agreement content and semantics pass parity, excluding documented
   release-bound identity fields;
 - feature flags remain closed until the explicit activation decision; and
-- independent architecture and legal-semantic reviews pass.
+- the applicable independent adversarial review milestone passes.
 
 ## External adversarial review disposition
 
@@ -1230,8 +1276,9 @@ accepted with the recorded narrowing:
   retains whole-release containment under a rehearsed policy rather than an
   arbitrary 60-minute domain deadline;
 - review rounds receive a convergence contract before the first freeze;
-- current programme gates continue to govern gold work, with the ambiguity
-  surfaced for a future Canonical V2 decision rather than overridden here;
+- O5 disposition superseded: gold construction proceeds as inert evidence work
+  after the PM gate apparatus was retired on 30 July 2026. The sealed-gold
+  consumption gate remains;
 - holdout failure removes the generalisation claim, not an independently
   certified exact-corpus release;
 - entity mastering moves to a separately planned reusable PM workstream;
