@@ -1,0 +1,184 @@
+{
+  "object_kind": "PROCESS_EXCLUSIVITY_CHALLENGE_BLIND_INPUT_MANIFEST",
+  "stable_id": "PROCESS_EXCLUSIVITY_CHALLENGE_BLIND_INPUT_MANIFEST/V1",
+  "schema_version": "PROCESS_EXCLUSIVITY_CHALLENGE_BLIND_INPUT_MANIFEST/V1",
+  "freeze_status": "SEALED_BEFORE_CHALLENGE_AUTHORING",
+  "authoring_task": {
+    "task_identity": "codex/process-exclusivity-independent-challenge-v1",
+    "worktree": "/Users/bengoodchild/Documents/Claude/precedent-machine-process-exclusivity-independent-challenge-v1",
+    "branch": "codex/process-exclusivity-independent-challenge-v1",
+    "base_commit": "a3149cfb6434f3166aac2c3bd9631e637d5df8ae",
+    "authoring_method_class": "INDEPENDENT_PUBLIC_PRECEDENT_SOURCE_ONLY_CLAUSE_REVIEW"
+  },
+  "integrity_scheme": {
+    "document_digest_algorithm": "SHA-256",
+    "document_digest_input": "UTF-8 bytes of recursively key-sorted JSON, with sealed_manifest_digest omitted",
+    "source_content_digest_input": "Raw retrieved HTTP response bytes",
+    "digest_prefix": "sha256:"
+  },
+  "permitted_inputs": [
+    {
+      "input_id": "APPROVED_PRODUCT_OUTCOME",
+      "input_class": "APPROVED_USER_PRODUCT_REQUIREMENTS",
+      "exact_text": "The system must answer every legally material M&A exclusivity request, response, grant, refusal, counterproposal, condition, amendment, waiver, expiry, beneficiary, party, timing, track, relationship, rationale and drafting question.",
+      "content_digest": "sha256:de9c1bc3267dba39b44d63d67a4db83d466ae8e46d17312a4d16da9158a3f4a7"
+    },
+    {
+      "input_id": "EXCLUSIVITY_TOPIC_SCOPE",
+      "input_class": "EXCLUSIVITY_TOPIC_SCOPE",
+      "exact_text": "EXCLUSIVITY",
+      "content_digest": "sha256:3651d731c0a0d8227795620bca72f258d702c866c5e2a6adbd8fd04d26028b19"
+    },
+    {
+      "input_id": "GOVERNING_CHALLENGE_PROTOCOL",
+      "input_class": "GOVERNING_PROTOCOL",
+      "repository_path": "contracts/canonical-v2/successor/process/predicates/exclusivity-completeness-challenge-protocol.v1.json",
+      "content_digest": "sha256:026893ef6873fbd53b35a53f52554a093edd45a2aeca9f9eba2b49836f5a7827"
+    }
+  ],
+  "public_precedent_sample": [
+    {
+      "source_id": "SEC-ACTIVISION-BLIZZARD-2022-01-18-EX-2.1",
+      "input_class": "INDEPENDENTLY_SELECTED_PUBLIC_PRECEDENT_SAMPLE",
+      "issuer": "Activision Blizzard, Inc.",
+      "agreement_title": "Agreement and Plan of Merger",
+      "agreement_date": "2022-01-18",
+      "sec_filing": {
+        "form": "8-K",
+        "cik": "0000718877",
+        "accession_number": "000110465922005154",
+        "exhibit": "2.1",
+        "url": "https://www.sec.gov/Archives/edgar/data/718877/000110465922005154/tm223212d3_ex2-1.htm"
+      },
+      "retrieved_at_utc": "2026-07-30T09:14:01Z",
+      "retrieval_fact": {
+        "http_response": "200 OK",
+        "byte_count": 648400,
+        "content_digest": "sha256:ad67feb8b15204ef6c21a24c569d01f237ca5e34ad4f53671fbb4b7f6db98981"
+      },
+      "review_focus": [
+        "no-shop restrictions",
+        "inbound proposal response conditions",
+        "recommendation-change and termination process",
+        "notice and matching process"
+      ]
+    },
+    {
+      "source_id": "SEC-ROVER-GROUP-2023-11-29-EX-2.1",
+      "input_class": "INDEPENDENTLY_SELECTED_PUBLIC_PRECEDENT_SAMPLE",
+      "issuer": "Rover Group, Inc.",
+      "agreement_title": "Agreement and Plan of Merger",
+      "agreement_date": "2023-11-29",
+      "sec_filing": {
+        "form": "8-K",
+        "cik": "0001826018",
+        "accession_number": "000182601823000064",
+        "exhibit": "2.1",
+        "url": "https://www.sec.gov/Archives/edgar/data/1826018/000182601823000064/ex21_11292023.htm"
+      },
+      "retrieved_at_utc": "2026-07-30T09:14:01Z",
+      "retrieval_fact": {
+        "http_response": "200 OK",
+        "byte_count": 982915,
+        "content_digest": "sha256:b3bbc4dcf01ca0fcc01cc62e337a60c693f7710e325ae38f23dd913e03b8a915"
+      },
+      "review_focus": [
+        "no-shop restrictions",
+        "information and discussion permissions",
+        "fiduciary-out conditions",
+        "deal-protection process"
+      ]
+    },
+    {
+      "source_id": "SEC-CHUYS-2024-07-17-EX-2.1",
+      "input_class": "INDEPENDENTLY_SELECTED_PUBLIC_PRECEDENT_SAMPLE",
+      "issuer": "Chuy's Holdings, Inc.",
+      "agreement_title": "Agreement and Plan of Merger",
+      "agreement_date": "2024-07-17",
+      "sec_filing": {
+        "form": "8-K",
+        "cik": "0000940944",
+        "accession_number": "000119312524180432",
+        "exhibit": "2.1",
+        "url": "https://www.sec.gov/Archives/edgar/data/940944/000119312524180432/d765539dex21.htm"
+      },
+      "retrieved_at_utc": "2026-07-30T09:14:01Z",
+      "retrieval_fact": {
+        "http_response": "200 OK",
+        "byte_count": 451238,
+        "content_digest": "sha256:ed50e5c888ba2d2fcf4208d83433437921fa1ec529d307e839bbbbc163399e08"
+      },
+      "review_focus": [
+        "go-shop and no-shop tracks",
+        "excluded-party status and expiry",
+        "confidentiality and standstill treatment",
+        "fees and acceptance process"
+      ]
+    },
+    {
+      "source_id": "SEC-CHICOS-FAS-2023-09-27-EX-2.1",
+      "input_class": "INDEPENDENTLY_SELECTED_PUBLIC_PRECEDENT_SAMPLE",
+      "issuer": "Chico's FAS, Inc.",
+      "agreement_title": "Agreement and Plan of Merger",
+      "agreement_date": "2023-09-27",
+      "sec_filing": {
+        "form": "8-K",
+        "cik": "0000897429",
+        "accession_number": "000095014223002486",
+        "exhibit": "2.1",
+        "url": "https://www.sec.gov/Archives/edgar/data/897429/000095014223002486/eh230405266_ex0201.htm"
+      },
+      "retrieved_at_utc": "2026-07-30T09:14:01Z",
+      "retrieval_fact": {
+        "http_response": "200 OK",
+        "byte_count": 610959,
+        "content_digest": "sha256:40d38b2ac25e7f9e11ea67fc7a419a55f26cde81524d0cafc4cb575b1619aa88"
+      },
+      "review_focus": [
+        "go-shop and no-shop tracks",
+        "post-track shut-down duties",
+        "superior-proposal exception",
+        "board recommendation process"
+      ]
+    },
+    {
+      "source_id": "SEC-GMS-2025-06-29-EX-2.1",
+      "input_class": "INDEPENDENTLY_SELECTED_PUBLIC_PRECEDENT_SAMPLE",
+      "issuer": "GMS Inc.",
+      "agreement_title": "Agreement and Plan of Merger",
+      "agreement_date": "2025-06-29",
+      "sec_filing": {
+        "form": "8-K",
+        "cik": "0001600438",
+        "accession_number": "000110465925063833",
+        "exhibit": "2.1",
+        "url": "https://www.sec.gov/Archives/edgar/data/1600438/000110465925063833/tm2519400d1_ex2-1.htm"
+      },
+      "retrieved_at_utc": "2026-07-30T09:14:01Z",
+      "retrieval_fact": {
+        "http_response": "200 OK",
+        "byte_count": 538971,
+        "content_digest": "sha256:d9a8d65ed8659b150a20662dfff75ab6963e57441ee36b3f94a1084a7e340d6c"
+      },
+      "review_focus": [
+        "tender-offer no-shop period",
+        "notice timing",
+        "superior-proposal response conditions",
+        "board-action and matching process"
+      ]
+    }
+  ],
+  "input_exclusion_evidence": {
+    "repository_read_allowlist": [
+      "contracts/canonical-v2/successor/process/predicates/exclusivity-completeness-challenge-protocol.v1.json"
+    ],
+    "catalogue_authoring_inputs": [
+      "permitted_inputs",
+      "public_precedent_sample"
+    ],
+    "prohibited_input_classes_observed": [],
+    "disclosure_status_at_seal": "No catalogue-comparison material was available to this author before this manifest was sealed.",
+    "source_provenance_check": "Each precedent is pinned by direct SEC exhibit URL, raw-byte SHA-256 digest, byte count, accession number and exhibit number."
+  },
+  "sealed_manifest_digest": "sha256:78986bc77587b6c2d1dcce97837ee5c0157f71af11f2bdb5404ed756cf8376b1"
+}
