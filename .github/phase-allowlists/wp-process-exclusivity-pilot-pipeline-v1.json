@@ -1,0 +1,22 @@
+{
+  "phase": "WP-PROCESS-EXCLUSIVITY-PILOT-PIPELINE-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-exclusivity-pilot-pipeline-v1.json",
+    "lib/canonical-v2/process-exclusivity-pilot-pipeline.js",
+    "tests/canonical-v2-process-exclusivity-pilot-pipeline.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Connects the existing pure Process acquisition, completeness, scope, enumeration, graph, validation and exclusivity-pilot modules for synthetic sibling-isolated verification. It retains all receipts, residuals, disagreements and typed failures. It grants no external operation or authority."
+}
