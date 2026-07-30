@@ -5,6 +5,7 @@ const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
 const {
+  authorisedPaths,
   deriveSignerCoverage,
   runPilotIntegrationPreflight,
   validateSignerPolicyEvolution,
@@ -27,6 +28,14 @@ test('rejects a caller-supplied forged predecessor pair before evidence is read'
     fs.writeFileSync(inputPath, JSON.stringify({ additional_worktree_paths: [], evidence_paths: {}, publication: { commit: 'b'.repeat(40), generation: 1 } }));
     assert.throws(() => execFileSync(process.execPath, [path.resolve(__dirname, '../../scripts/pilot-integration-preflight.mjs'), '--input', inputPath], { cwd: path.resolve(__dirname, '../..'), stdio: 'pipe' }), /input must contain only/);
   } finally { fs.rmSync(directory, { recursive: true, force: true }); }
+});
+test('accepts legacy allowedWrites as the exact phase permission set', () => {
+  assert.deepEqual(authorisedPaths({ allowedWrites: ['lib/a.js', 'tests/a.test.js'] }), ['lib/a.js', 'tests/a.test.js']);
+});
+test('rejects an unknown allowlist shape as a path violation', () => {
+  const value = input();
+  value.allowlist_valid = false;
+  assert.equal(hasCode(runPilotIntegrationPreflight(value), 'PATH_VIOLATION'), true);
 });
 test('derives signer coverage from the closed signer policy instead of caller claims', () => {
   const source = `

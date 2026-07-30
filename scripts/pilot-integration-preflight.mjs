@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const { deriveSignerCoverage, runPilotIntegrationPreflight, validateSignerPolicyEvolution } = require('../lib/programme-gates/pilot-integration-preflight');
+const { authorisedPaths, deriveSignerCoverage, runPilotIntegrationPreflight, validateSignerPolicyEvolution } = require('../lib/programme-gates/pilot-integration-preflight');
 const args = process.argv.slice(2);
 if (args.length !== 2 || args[0] !== '--input') throw new Error('usage: pilot-integration-preflight.mjs --input <json>');
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -42,11 +42,15 @@ const manifestCount = Array.isArray(successorManifest.members) ? successorManife
 const changedPaths = git(['diff', '--name-only', `${expected}..${candidate}`]).split('\n').filter(Boolean).sort();
 const allowlistPaths = git(['diff', '--name-only', `${expected}..${candidate}`, '--', '.github/phase-allowlists'])
   .split('\n').filter(Boolean).sort();
-const allowedPaths = [...new Set(allowlistPaths.flatMap((allowlistPath) => {
-  const source = JSON.parse(fs.readFileSync(path.join(root, allowlistPath), 'utf8'));
-  if (!Array.isArray(source.allowed)) throw new Error(`invalid phase allowlist: ${allowlistPath}`);
-  return source.allowed;
-}))].sort();
+let allowedPaths = [];
+let allowlistValid = true;
+try {
+  allowedPaths = [...new Set(allowlistPaths.flatMap((allowlistPath) => authorisedPaths(
+    JSON.parse(fs.readFileSync(path.join(root, allowlistPath), 'utf8')),
+  )))].sort();
+} catch {
+  allowlistValid = false;
+}
 const candidateSignerSource = fs.readFileSync(path.join(root, 'scripts/sign-g0-evidence.mjs'), 'utf8');
 const trustedSignerSource = gitRaw(['show', `${expected}:scripts/sign-g0-evidence.mjs`]);
 const signerBasis = deriveSignerCoverage(trustedSignerSource, []).review_basis_commit;
@@ -60,7 +64,7 @@ const worktrees = [...new Set(requestedWorktrees)].map((location) => ({
 }));
 const live = {
   main: { expected_commit: expected, head: git(['rev-parse', 'main']), is_expected_ancestor: (() => { try { git(['merge-base', '--is-ancestor', expected, 'main']); return true; } catch { return false; } })() },
-  candidate: { head: candidate }, worktrees, changed_paths: changedPaths, allowed_paths: allowedPaths,
+  candidate: { head: candidate }, worktrees, changed_paths: changedPaths, allowed_paths: allowedPaths, allowlist_valid: allowlistValid,
   signer: validateSignerPolicyEvolution(trustedSignerSource, candidateSignerSource, signerRequiredPaths),
   author: { email: git(['config', 'user.email']), verified_aliases: [] },
   publication: { commit: protectedPublication, generation: signedStatus.generation },
