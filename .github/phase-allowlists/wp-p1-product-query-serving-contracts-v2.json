@@ -14,10 +14,12 @@
     "lib/canonical-v2/pilot-market-metric-contract-input-validator.js",
     "lib/canonical-v2/pilot-result-definition-input-validator.js",
     "lib/canonical-v2/process-query-contract-input-validator.js",
+    "lib/canonical-v2/product-query-ir.js",
     "lib/canonical-v2/product-serving-contract-input-validator.js",
     "tests/canonical-v2-pilot-market-metric-contract-input.test.js",
     "tests/canonical-v2-pilot-result-definition-input.test.js",
     "tests/canonical-v2-process-query-contract-input.test.js",
+    "tests/canonical-v2-product-query-ir.test.js",
     "tests/canonical-v2-product-serving-contract-input.test.js"
   ],
   "denied": [
@@ -31,5 +33,5 @@
     "contracts/canonical-v2/successor/manifest.json",
     "lib/canonical-v2/canonical-contract-input-compiler.js"
   ],
-  "note": "Closes the bounded Stage 2 Product Query-serving contract findings. It defines the two governed result targets and slots, preserves IOC optional EXCEPTED_BY/V3 ownership and no-shop claim ownership, binds the capex denominator to exact source-deal-fact lineage, binds Product IR and all three shared-row variants to their existing runtime contracts, and fixes explicit governed budget references. It grants no integration, compiler, manifest, signer, deployment, runtime I/O, database, writer, import, activation or production authority."
+  "note": "Closes the bounded Stage 2 Product Query-serving contract findings and Stage 3 Product IR construction correction. It defines the two governed result targets and slots, preserves IOC optional EXCEPTED_BY/V3 ownership and no-shop claim ownership, binds the capex denominator to exact source-deal-fact lineage, constructs and validates PRODUCT_QUERY_IR/V1 directly without Process relabelling, binds all three shared-row variants to their existing runtime contracts, and fixes explicit governed budget references. It grants no integration, manifest, signer, deployment, runtime I/O, database, writer, import, activation or production authority."
 }

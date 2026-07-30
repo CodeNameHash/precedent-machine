@@ -309,6 +309,33 @@ test('emits Process plans under the distinct Product successor schema', () => {
   );
 });
 
+test('constructs and validates Agreement and Process plans directly as Product IR', () => {
+  for (const [domain, predicate, queryTemplate] of [
+    ['AGREEMENT', 'SELLER_TERMINATION_FEE', agreementTemplate()],
+    ['PROCESS', 'EXCLUSIVITY_GRANTED', processTemplate()],
+  ]) {
+    const product = compileProductQueryIr({
+      admission: admission(),
+      query: fullQuery(domain, predicate, queryTemplate),
+    });
+    const {
+      query_definition_id: queryDefinitionId,
+      ...identityPayload
+    } = product;
+
+    assert.equal(product.schema_version, PRODUCT_QUERY_IR_SCHEMA);
+    assert.equal(product.semantic_contract.domain_key, domain);
+    assert.equal(
+      queryDefinitionId,
+      contentId(PRODUCT_QUERY_IR_SCHEMA, identityPayload),
+    );
+    assert.deepEqual(
+      JSON.parse(canonicalProductQueryIrBytes(product).toString('utf8')),
+      product,
+    );
+  }
+});
+
 test('keeps identical predicate keys separate by admitted domain', () => {
   const agreement = compileProductQueryIr({
     admission: admission(),
@@ -601,6 +628,46 @@ test('rejects the historical Process admission at the Product boundary', () => {
     }),
     { code: 'INVALID_PRODUCT_QUERY_ADMISSION' },
   );
+});
+
+test('rejects relabelled Process IR even when its Process identity is correct', () => {
+  const product = clone(compileProductQueryIr({
+    admission: admission(),
+    query: fullQuery(
+      'PROCESS',
+      'EXCLUSIVITY_GRANTED',
+      processTemplate(),
+    ),
+  }));
+  product.schema_version = 'PROCESS_QUERY_IR/V1';
+  const { query_definition_id: ignoredIdentity, ...processIdentityPayload } =
+    product;
+  product.query_definition_id = contentId(
+    'PROCESS_QUERY_IR/V1',
+    processIdentityPayload,
+  );
+
+  assert.throws(
+    () => canonicalProductQueryIrBytes(product),
+    { code: 'INVALID_PRODUCT_QUERY_IR' },
+  );
+});
+
+test('contains no Process compiler, schema alias or domain rewrite path', () => {
+  const source = fs.readFileSync(
+    path.join(__dirname, '../lib/canonical-v2/product-query-ir.js'),
+    'utf8',
+  );
+  for (const prohibited of [
+    "require('./process-query-ir')",
+    'compileProcessQueryIr',
+    'PROCESS_QUERY_ADMISSION_CONTEXT_SCHEMA',
+    'domainAliasMap',
+    'translatedAdmission',
+    'translatedQuery',
+  ]) {
+    assert.equal(source.includes(prohibited), false, prohibited);
+  }
 });
 
 test('fails closed on any governed Product Query contract drift', () => {
