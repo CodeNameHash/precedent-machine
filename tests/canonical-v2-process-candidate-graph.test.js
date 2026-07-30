@@ -20,7 +20,9 @@ function evidence(label, start = 0) {
 
 function candidate(key, payloadKey, label = key) {
   return {
+    schema_version: `PROCESS_${payloadKey === 'semantic_payload' ? 'SEMANTIC' : 'LEXICAL'}_CANDIDATE/V1`,
     candidate_key: key,
+    scope_receipt_id: 'scope:one',
     slot_key: 'EXCLUSIVITY_001',
     source_unit_id: `source:${label}`,
     evidence: evidence(label),
@@ -29,13 +31,18 @@ function candidate(key, payloadKey, label = key) {
 }
 
 function record(key, label = key) {
+  const kind = key.includes('semantic') ? 'SEMANTIC' : 'LEXICAL';
+  const payloadKey = kind === 'SEMANTIC' ? 'semantic_payload' : 'lexical_payload';
   return {
-    record_key: key,
+    schema_version: `PROCESS_${kind}_OUTCOME/V1`,
+    outcome_key: key,
+    scope_receipt_id: 'scope:one',
+    outcome_kind: key.includes('rejection') ? 'REJECTION' : 'RESIDUAL',
     slot_key: 'EXCLUSIVITY_001',
     source_unit_id: `source:${label}`,
     evidence: evidence(label),
     reason_code: 'UNSUPPORTED_SYNTHETIC_INPUT',
-    detail: { label },
+    [payloadKey]: { label },
   };
 }
 
@@ -88,6 +95,15 @@ test('builds a deterministic graph and retains both enumerators', () => {
 test('rejects mismatched frozen scope receipts and unsafe bounds', () => {
   const scopeMismatch = input();
   scopeMismatch.lexical_enumeration.scope_receipt_id = 'scope:other';
+  for (const candidate of scopeMismatch.lexical_enumeration.candidates) {
+    candidate.scope_receipt_id = 'scope:other';
+  }
+  for (const outcome of [
+    ...scopeMismatch.lexical_enumeration.rejections,
+    ...scopeMismatch.lexical_enumeration.residuals,
+  ]) {
+    outcome.scope_receipt_id = 'scope:other';
+  }
   assert.throws(
     () => buildProcessCandidateGraph(scopeMismatch),
     { code: 'INVALID_PROCESS_CANDIDATE_GRAPH_INPUT' },
