@@ -753,6 +753,13 @@
       "canonical_bytes_digest": "cac09a407b0f0c1ab8e9f9615b7e4098fd1e55826623fc05f1944395ec02edea"
     },
     {
+      "relative_path": "product/query/product-result-presentation-definition.v1.json",
+      "object_kind": "PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT",
+      "stable_id": "PRODUCT_RESULT_PRESENTATION_DEFINITION",
+      "schema_version": "PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "7a7cc1149f428a1a4c1056a8879a650e1c446aebbd2014760d5420c3ace34dff"
+    },
+    {
       "relative_path": "product/query/product-saved-query-definition.v1.json",
       "object_kind": "PRODUCT_QUERY_ACTION_CONTRACT_INPUT",
       "stable_id": "PRODUCT_SAVED_QUERY_DEFINITION",
@@ -765,6 +772,13 @@
       "stable_id": "PRODUCT_SELECTED_RESULT_EXPORT",
       "schema_version": "PRODUCT_RESULT_ACTION_CONTRACT_INPUT/V1",
       "canonical_bytes_digest": "2faa9f2d7ef8ecf89db498445b239e38f95220ecf87eb71f9bd399624006e2f9"
+    },
+    {
+      "relative_path": "product/query/product-source-reader-definition.v1.json",
+      "object_kind": "PRODUCT_SOURCE_READER_CONTRACT_INPUT",
+      "stable_id": "PRODUCT_SOURCE_READER_DEFINITION",
+      "schema_version": "PRODUCT_SOURCE_READER_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "22a40fa26888d776335ee4fe110f41bbf34f50ae6e6d62c41c6143922dd3d7af"
     },
     {
       "relative_path": "shared/deal-facts/deal-fact-resolution-occurrence.v1.json",
@@ -902,6 +916,8 @@
     "PRODUCT_QUERY_CONTRACT_INPUT": 1,
     "PRODUCT_QUERY_RESULT_CONTRACT_INPUT": 1,
     "PRODUCT_RESULT_ACTION_CONTRACT_INPUT": 2,
+    "PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT": 1,
+    "PRODUCT_SOURCE_READER_CONTRACT_INPUT": 1,
     "PROVISION_CONCEPT": 19,
     "RELATIONSHIP_DEFINITION": 5,
     "RELATIONSHIP_EFFECT_SCHEMA": 5,
@@ -980,6 +996,12 @@
     ],
     "PRODUCT_RESULT_ACTION_CONTRACT_INPUT": [
       "PRODUCT_RESULT_ACTION_CONTRACT_INPUT/V1"
+    ],
+    "PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT": [
+      "PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT/V1"
+    ],
+    "PRODUCT_SOURCE_READER_CONTRACT_INPUT": [
+      "PRODUCT_SOURCE_READER_CONTRACT_INPUT/V1"
     ],
     "PROVISION_CONCEPT": [
       "PROVISION_CONCEPT/V1"

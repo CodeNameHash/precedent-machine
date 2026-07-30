@@ -319,7 +319,7 @@ test('rejects identity inference and event-slot semantic drift', () => {
 test('extends authored inputs but remains incomplete and non-freezable', () => {
   const compiled = compileCanonicalContractInput({ root_directory: ROOT });
 
-  assert.equal(compiled.authored_members.length, 125);
+  assert.equal(compiled.authored_members.length, 127);
   assert.equal(compiled.disposition.status, 'INCOMPLETE_UNIVERSE');
   assert.equal(compiled.disposition.freeze_eligible, false);
   assert.equal(compiled.disposition.canonical_contract_bundle_authority, 'NONE');

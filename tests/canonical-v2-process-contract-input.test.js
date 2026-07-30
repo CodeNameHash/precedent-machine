@@ -57,7 +57,7 @@ test('compiles the bounded Process core contracts deterministically without free
   );
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 125);
+  assert.equal(first.authored_members.length, 127);
   assert.deepEqual(
     processEntries.map((member) => [member.object_kind, member.stable_id]),
     [
