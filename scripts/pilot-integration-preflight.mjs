@@ -34,6 +34,7 @@ const worktrees = git(['worktree', 'list', '--porcelain']).split('\n\n').filter(
 const live = {
   ...supplied,
   main: { ...supplied.main, head: git(['rev-parse', 'main']), is_expected_ancestor: (() => { try { git(['merge-base', '--is-ancestor', expected, 'main']); return true; } catch { return false; } })() },
+  candidate: { head: git(['rev-parse', 'HEAD']) },
   worktrees,
   changed_paths: git(['diff', '--name-only', `${expected}..HEAD`]).split('\n').filter(Boolean).sort(),
   signer: deriveSignerCoverage(signerSource, signerRequiredPaths),
