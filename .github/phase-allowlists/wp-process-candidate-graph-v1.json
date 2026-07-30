@@ -1,0 +1,22 @@
+{
+  "phase": "WP-PROCESS-CANDIDATE-GRAPH-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-candidate-graph-v1.json",
+    "lib/canonical-v2/process-candidate-graph.js",
+    "tests/canonical-v2-process-candidate-graph.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Pure Process candidate-graph construction only. It retains separate semantic and lexical candidates, rejections, residuals and disagreement from caller-provided synthetic enumeration outputs. It performs no source acquisition, extraction, admission, writer, database, serving, release, import, activation, production or canonical-write action."
+}
