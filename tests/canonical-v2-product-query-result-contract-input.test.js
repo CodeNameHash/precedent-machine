@@ -33,6 +33,10 @@ const QXO_F28_ADAPTER_PATH = path.join(
   ROOT,
   'product/query/qxo-capitalisation-f28-product-result-adapter.v1.json',
 );
+const QXO_F28_ADAPTER_V2_PATH = path.join(
+  ROOT,
+  'product/query/qxo-capitalisation-f28-product-result-adapter.v2.json',
+);
 
 function loadPath(filePath) {
   const canonicalValue = JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -62,6 +66,10 @@ function loadQxoF28Adapter() {
   return loadPath(QXO_F28_ADAPTER_PATH);
 }
 
+function loadQxoF28AdapterV2() {
+  return loadPath(QXO_F28_ADAPTER_V2_PATH);
+}
+
 function loadMembers() {
   return [
     loadProcessAdapter(),
@@ -69,6 +77,7 @@ function loadMembers() {
     loadProcessResultSetAdapter(),
     loadQxoAdapter(),
     loadQxoF28Adapter(),
+    loadQxoF28AdapterV2(),
   ];
 }
 
@@ -116,6 +125,25 @@ test('governs the QXO F28 fourteen-metric Product adapter', () => {
   assert.equal(
     definition.payload_mapping.all_fourteen_metric_contexts_preserved,
     true,
+  );
+});
+
+test('requires the additive QXO F28 envelope adapter without granting authority', () => {
+  const definition = loadQxoF28AdapterV2().canonical_value.definition;
+  assert.equal(definition.contract_version, 2);
+  assert.equal(
+    definition.candidate_envelope_dependency.stable_id,
+    'QXO_CAPITALISATION_F28_CANDIDATE_ENVELOPE',
+  );
+  assert.equal(
+    definition.lifecycle_contract
+      .historical_v1_adapter_may_authorise_envelope_materialisation,
+    false,
+  );
+  assert.equal(definition.authority_contract.authority_state, 'NONE');
+  assert.equal(
+    definition.authority_contract.creates_materialisation_authority,
+    false,
   );
 });
 

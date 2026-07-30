@@ -48,7 +48,7 @@ function assertProposalError(code, operation) {
   });
 }
 
-test('assembles the exact current 170-member root into all eight categories', () => {
+test('assembles the exact current 171-member root into all eight categories', () => {
   const inputCompilation = compilation();
   const proposal = assembleCanonicalContractBundleCurrentRootProposal({
     canonical_contract_input_compilation: inputCompilation,
@@ -57,9 +57,9 @@ test('assembles the exact current 170-member root into all eight categories', ()
     compilerInput(proposal, inputCompilation),
   );
 
-  assert.equal(proposal.proposed_dispositions.length, 170);
-  assert.equal(proposal.dependency_edge_count, 274);
-  assert.equal(proposal.non_dependency_reference_dispositions.length, 17);
+  assert.equal(proposal.proposed_dispositions.length, 171);
+  assert.equal(proposal.dependency_edge_count, 276);
+  assert.equal(proposal.non_dependency_reference_dispositions.length, 18);
   assert.deepEqual(
     [...new Set(proposal.non_dependency_reference_dispositions.map(
       (entry) => entry.rule_id,
