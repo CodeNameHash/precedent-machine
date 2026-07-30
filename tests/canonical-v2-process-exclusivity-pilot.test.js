@@ -68,6 +68,22 @@ function evidence(evidenceRoleKey, ...intervals) {
   };
 }
 
+function typedLinkEvidence(
+  predicateKey,
+  terminalType,
+  slotKey,
+  ...intervals
+) {
+  return {
+    terminal_type: terminalType,
+    slot_key: slotKey,
+    evidence: evidence(
+      `${predicateKey}_${terminalType}`,
+      ...intervals,
+    ),
+  };
+}
+
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
@@ -307,6 +323,9 @@ function metseraFixture() {
         predicate_witness_slot_key: 'METSERA_EXCLUSIVITY_GRANTED_WITNESS',
         predicate_key: 'EXCLUSIVITY_GRANTED',
         predicate_state: 'PRESENT',
+        atomic_response_predicate_key: null,
+        atomic_response_predicate_witness_slot_key: null,
+        source_semantic_kind: 'GRANT',
         subject_code: 'NEGOTIATION_EXCLUSIVITY',
         bidder_track_slot_key: 'PFIZER_BIDDER_TRACK',
         process_event_slot_key: 'METSERA_EXCLUSIVITY_GRANT_EVENT',
@@ -329,6 +348,72 @@ function metseraFixture() {
         ],
         temporal_slot_keys: ['METSERA_EXCLUSIVITY_END_TIME'],
         evidence: evidence('EXCLUSIVITY_GRANTED', narrationInterval),
+        typed_link_evidence: [
+          typedLinkEvidence(
+            'EXCLUSIVITY_GRANTED',
+            'BIDDER_TRACK_REVISION',
+            'PFIZER_BIDDER_TRACK',
+            pfizerInterval,
+          ),
+          typedLinkEvidence(
+            'EXCLUSIVITY_GRANTED',
+            'PROCESS_AGREEMENT_REVISION',
+            'METSERA_EXCLUSIVITY_AGREEMENT',
+            draftingInterval,
+          ),
+          typedLinkEvidence(
+            'EXCLUSIVITY_GRANTED',
+            'PROCESS_EVENT_REVISION',
+            'METSERA_EXCLUSIVITY_GRANT_EVENT',
+            narrationInterval,
+          ),
+          typedLinkEvidence(
+            'EXCLUSIVITY_GRANTED',
+            'PROCESS_PARTICIPANT_REVISION',
+            'METSERA_GRANTOR',
+            metseraInterval,
+          ),
+          typedLinkEvidence(
+            'EXCLUSIVITY_GRANTED',
+            'PROCESS_PARTICIPANT_REVISION',
+            'PFIZER_BENEFICIARY',
+            pfizerInterval,
+          ),
+          typedLinkEvidence(
+            'EXCLUSIVITY_GRANTED',
+            'PROCESS_PASSAGE_REVISION',
+            'METSERA_ACTUAL_DRAFTING_PASSAGE',
+            draftingInterval,
+          ),
+          typedLinkEvidence(
+            'EXCLUSIVITY_GRANTED',
+            'PROCESS_PASSAGE_REVISION',
+            'METSERA_PROXY_NARRATION_PASSAGE',
+            narrationInterval,
+          ),
+          typedLinkEvidence(
+            'EXCLUSIVITY_GRANTED',
+            'PROCESS_POSITION_REVISION',
+            'METSERA_EXCLUSIVITY_GRANT_POSITION',
+            positionInterval,
+          ),
+          typedLinkEvidence(
+            'EXCLUSIVITY_GRANTED',
+            'PROCESS_RELATIONSHIP_REVISION',
+            'GRANT_POSITION_TO_AGREEMENT',
+            draftingInterval,
+          ),
+          typedLinkEvidence(
+            'EXCLUSIVITY_GRANTED',
+            'TEMPORAL_EXPRESSION_REVISION',
+            'METSERA_EXCLUSIVITY_END_TIME',
+            temporalInterval,
+          ),
+        ],
+        complete_scope_identity: null,
+        complete_scope_evidence: null,
+        applicability_evidence: null,
+        failure_detail: null,
       }],
       passages: [
         {
@@ -346,6 +431,104 @@ function metseraFixture() {
       ],
     },
   };
+}
+
+function setPredicateDimensions(value, bindings) {
+  const slots = Object.fromEntries(bindings.map(
+    (binding) => [binding.terminal_type, binding.slot_key],
+  ));
+  value.bidder_track_slot_key =
+    slots.BIDDER_TRACK_REVISION || null;
+  value.process_event_slot_key =
+    slots.PROCESS_EVENT_REVISION || null;
+  value.process_agreement_slot_keys = bindings
+    .filter((binding) => (
+      binding.terminal_type === 'PROCESS_AGREEMENT_REVISION'
+    ))
+    .map((binding) => binding.slot_key).sort();
+  value.process_participant_slot_keys = bindings
+    .filter((binding) => (
+      binding.terminal_type === 'PROCESS_PARTICIPANT_REVISION'
+    ))
+    .map((binding) => binding.slot_key).sort();
+  value.process_passage_slot_keys = bindings
+    .filter((binding) => (
+      binding.terminal_type === 'PROCESS_PASSAGE_REVISION'
+    ))
+    .map((binding) => binding.slot_key).sort();
+  value.process_position_slot_keys = bindings
+    .filter((binding) => (
+      binding.terminal_type === 'PROCESS_POSITION_REVISION'
+    ))
+    .map((binding) => binding.slot_key).sort();
+  value.process_relationship_slot_keys = bindings
+    .filter((binding) => (
+      binding.terminal_type === 'PROCESS_RELATIONSHIP_REVISION'
+    ))
+    .map((binding) => binding.slot_key).sort();
+  value.temporal_slot_keys = bindings
+    .filter((binding) => (
+      binding.terminal_type === 'TEMPORAL_EXPRESSION_REVISION'
+    ))
+    .map((binding) => binding.slot_key).sort();
+  value.typed_link_evidence = bindings;
+}
+
+function configureSuccessorPredicate(input, definition) {
+  const witness = input.typed_values.predicate_witnesses[0];
+  const slot = input.frozen_scope.predicate_witness_slots[0];
+  const originalBindings = witness.typed_link_evidence;
+  const selected = definition.machine_rule.required_typed_link_families.map(
+    (family) => {
+      const binding = originalBindings.find(
+        (candidate) => candidate.terminal_type === family.terminal_type,
+      );
+      if (!binding) {
+        throw new Error(`Fixture lacks ${family.terminal_type}`);
+      }
+      const result = clone(binding);
+      result.evidence.evidence_role_key =
+        `${definition.predicate_key}_${family.terminal_type}`;
+      return result;
+    },
+  );
+  slot.predicate_definition_key_and_version.key =
+    definition.predicate_key;
+  witness.predicate_key = definition.predicate_key;
+  witness.source_semantic_kind = definition.machine_rule.semantic_kind;
+  witness.evidence.evidence_role_key = definition.predicate_key;
+  setPredicateDimensions(witness, selected);
+}
+
+function configureNonPresentPredicate(input, state) {
+  const witness = input.typed_values.predicate_witnesses[0];
+  witness.predicate_state = state;
+  witness.source_semantic_kind = null;
+  witness.atomic_response_predicate_key = null;
+  witness.atomic_response_predicate_witness_slot_key = null;
+  witness.evidence = null;
+  setPredicateDimensions(witness, []);
+  witness.complete_scope_identity = state === 'ABSENT'
+    ? digest('complete-scope')
+    : null;
+  witness.complete_scope_evidence = state === 'ABSENT'
+    ? evidence(
+      'EXCLUSIVITY_GRANTED_COMPLETE_SCOPE',
+      input.frozen_scope.narration_slots[0].canonical_source_intervals[0],
+    )
+    : null;
+  witness.applicability_evidence = state === 'NOT_APPLICABLE'
+    ? evidence(
+      'EXCLUSIVITY_GRANTED_APPLICABILITY',
+      input.frozen_scope.narration_slots[0].canonical_source_intervals[0],
+    )
+    : null;
+  witness.failure_detail = state === 'FAILED'
+    ? {
+      failure_code: 'SYNTHETIC_VALIDATION_FAILURE',
+      failure_message: 'The synthetic witness could not be validated.',
+    }
+    : null;
 }
 
 test('materialises the complete typed Metsera exclusivity sidecar deterministically', () => {
@@ -385,21 +568,28 @@ test('materialises the complete typed Metsera exclusivity sidecar deterministica
   );
 });
 
-test('blocks successor predicates until witness version two exists', () => {
-  const input = metseraFixture();
-  input.frozen_scope.predicate_witness_slots[0]
-    .predicate_definition_key_and_version.key =
-      'EXCLUSIVITY_NOTICE_REQUIREMENT';
-  input.typed_values.predicate_witnesses[0].predicate_key =
-    'EXCLUSIVITY_NOTICE_REQUIREMENT';
-
-  assert.throws(
-    () => compileProcessExclusivityPilotMaterialisation(input),
-    { code: 'PROCESS_PILOT_SUCCESSOR_PREDICATE_UNSUPPORTED' },
-  );
+test('consumes all 18 successor predicate machine rules exactly', () => {
+  const definitions = predicateCatalogueContract.definition
+    .successor_predicate_definition_contract.definitions;
+  assert.equal(definitions.length, 18);
+  for (const definition of definitions) {
+    const input = metseraFixture();
+    configureSuccessorPredicate(input, definition);
+    const result = compileProcessExclusivityPilotMaterialisation(input);
+    const revision = result.revisions.predicate_witness_revisions[0];
+    assert.equal(revision.predicate_key, definition.predicate_key);
+    assert.equal(
+      revision.source_semantic_kind,
+      definition.machine_rule.semantic_kind,
+    );
+    assert.equal(
+      revision.dimension_revision_bindings.length,
+      definition.machine_rule.required_typed_link_families.length,
+    );
+  }
 });
 
-test('blocks non-present predicate states until witness version two exists', () => {
+test('retains every non-present state without inventing a value', () => {
   for (const predicateState of [
     'ABSENT',
     'NOT_APPLICABLE',
@@ -407,26 +597,74 @@ test('blocks non-present predicate states until witness version two exists', () 
     'FAILED',
   ]) {
     const input = metseraFixture();
-    input.typed_values.predicate_witnesses[0].predicate_state =
-      predicateState;
-    assert.throws(
-      () => compileProcessExclusivityPilotMaterialisation(input),
-      { code: 'PROCESS_PILOT_NON_PRESENT_PREDICATE_UNSUPPORTED' },
+    configureNonPresentPredicate(input, predicateState);
+    const revision = compileProcessExclusivityPilotMaterialisation(input)
+      .revisions.predicate_witness_revisions[0];
+    assert.equal(revision.predicate_state, predicateState);
+    assert.equal(revision.source_semantic_kind, null);
+    assert.equal(revision.evidence_edges.length, 0);
+    assert.equal(revision.dimension_revision_bindings.length, 0);
+    assert.equal(
+      revision.complete_scope_identity !== null,
+      predicateState === 'ABSENT',
+    );
+    assert.equal(
+      revision.applicability_evidence_edges.length > 0,
+      predicateState === 'NOT_APPLICABLE',
+    );
+    assert.equal(
+      revision.failure_detail !== null,
+      predicateState === 'FAILED',
     );
   }
 });
 
-test('blocks the response union until witness version two exists', () => {
+test('binds a response union to one admitted atomic witness without widening', () => {
   const input = metseraFixture();
-  input.frozen_scope.predicate_witness_slots[0]
-    .predicate_definition_key_and_version.key =
-      'EXCLUSIVITY_RESPONSE_ANY';
-  input.typed_values.predicate_witnesses[0].predicate_key =
-    'EXCLUSIVITY_RESPONSE_ANY';
+  const atomic = input.typed_values.predicate_witnesses[0];
+  const union = clone(atomic);
+  union.predicate_witness_slot_key =
+    'METSERA_EXCLUSIVITY_RESPONSE_ANY_WITNESS';
+  union.predicate_key = 'EXCLUSIVITY_RESPONSE_ANY';
+  union.atomic_response_predicate_key = 'EXCLUSIVITY_GRANTED';
+  union.atomic_response_predicate_witness_slot_key =
+    atomic.predicate_witness_slot_key;
+  input.typed_values.predicate_witnesses.push(union);
+  input.frozen_scope.predicate_witness_slots.push({
+    predicate_witness_slot_key:
+      'METSERA_EXCLUSIVITY_RESPONSE_ANY_WITNESS',
+    narration_ordinal: 0,
+    predicate_definition_key_and_version: {
+      key: 'EXCLUSIVITY_RESPONSE_ANY',
+      version: 1,
+    },
+    predicate_evidence_role_slot_key:
+      'METSERA_EXCLUSIVITY_RESPONSE_ANY_EVIDENCE',
+    governed_ordinal: 1,
+  });
 
+  const revisions = compileProcessExclusivityPilotMaterialisation(input)
+    .revisions.predicate_witness_revisions;
+  const atomicRevision = revisions.find(
+    (revision) => revision.predicate_key === 'EXCLUSIVITY_GRANTED',
+  );
+  const unionRevision = revisions.find(
+    (revision) => revision.predicate_key === 'EXCLUSIVITY_RESPONSE_ANY',
+  );
+  assert.equal(
+    unionRevision.atomic_response_predicate_witness_revision_id,
+    atomicRevision.predicate_witness_revision_id,
+  );
+  assert.deepEqual(
+    unionRevision.dimension_revision_bindings,
+    atomicRevision.dimension_revision_bindings,
+  );
+  assert.deepEqual(unionRevision.evidence_edges, atomicRevision.evidence_edges);
+
+  union.subject_code = 'EXCLUSIVE_DATA_ACCESS';
   assert.throws(
     () => compileProcessExclusivityPilotMaterialisation(input),
-    { code: 'PROCESS_PILOT_RESPONSE_UNION_UNSUPPORTED' },
+    { code: 'INVALID_PROCESS_PILOT_RESPONSE_UNION' },
   );
 });
 
@@ -444,6 +682,54 @@ test('fails closed when a successor machine rule changes', () => {
     );
   } finally {
     rule.semantic_kind = original;
+  }
+});
+
+test('rejects near predicate keys, relabelled grant evidence and refusal invention', () => {
+  const nearKey = metseraFixture();
+  nearKey.frozen_scope.predicate_witness_slots[0]
+    .predicate_definition_key_and_version.key =
+      'EXCLUSIVITY_GRANT';
+  nearKey.typed_values.predicate_witnesses[0].predicate_key =
+    'EXCLUSIVITY_GRANT';
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(nearKey),
+    { code: 'INVALID_PROCESS_PILOT_FROZEN_SCOPE' },
+  );
+
+  const relabelledGrant = metseraFixture();
+  relabelledGrant.typed_values.predicate_witnesses[0]
+    .evidence.evidence_role_key = 'EXCLUSIVITY_REQUESTED';
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(
+      relabelledGrant,
+    ),
+    { code: 'PROCESS_PILOT_PREDICATE_EVIDENCE_ROLE_MISMATCH' },
+  );
+
+  for (const semanticKind of [
+    'SILENCE',
+    'REQUEST',
+    'SHORTENED_TERM',
+    'NO_RECORDED_GRANT',
+  ]) {
+    const refusal = metseraFixture();
+    const slot = refusal.frozen_scope.predicate_witness_slots[0];
+    const witness = refusal.typed_values.predicate_witnesses[0];
+    slot.predicate_definition_key_and_version.key =
+      'EXCLUSIVITY_EXPRESS_REFUSAL';
+    witness.predicate_key = 'EXCLUSIVITY_EXPRESS_REFUSAL';
+    witness.source_semantic_kind = semanticKind;
+    witness.evidence.evidence_role_key =
+      'EXCLUSIVITY_EXPRESS_REFUSAL';
+    witness.typed_link_evidence.forEach((binding) => {
+      binding.evidence.evidence_role_key =
+        `EXCLUSIVITY_EXPRESS_REFUSAL_${binding.terminal_type}`;
+    });
+    assert.throws(
+      () => compileProcessExclusivityPilotMaterialisation(refusal),
+      { code: 'INVALID_PROCESS_PILOT_TYPED_VALUE' },
+    );
   }
 });
 

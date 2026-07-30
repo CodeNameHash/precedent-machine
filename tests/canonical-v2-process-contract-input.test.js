@@ -39,12 +39,14 @@ function processMembers() {
     loadMember('process/domain/process-domain-registry.v1.json'),
     loadMember('process/events/process-event.v1.json'),
     loadMember('process/narration/process-narration-occurrence.v1.json'),
+    loadMember('process/occurrence-slots/process-event.v1.json'),
     loadMember('process/occurrence-slots/process-narration.v1.json'),
     loadMember('process/participants/process-participant.v1.json'),
     loadMember('process/passages/process-passage.v1.json'),
     loadMember('process/phases/process-phase.v1.json'),
     loadMember('process/positions/process-position.v1.json'),
-    loadMember('process/predicates/process-predicate-witness.v1.json'),
+    loadMember('process/predicates/process-predicate-witness.v2.json'),
+    loadMember('process/registries/process-controlled-code-registry.v1.json'),
     loadMember('process/relationships/process-relationship.v1.json'),
   ];
 }
@@ -127,7 +129,7 @@ test('binds narration identity to exact source intervals before candidate values
     (member) => member.canonical_value.stable_id === 'PROCESS_NARRATION_OCCURRENCE',
   ).canonical_value.definition;
   const slot = members.find(
-    (member) => member.object_kind === 'PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT',
+    (member) => member.canonical_value.stable_id === 'PROCESS_NARRATION',
   ).canonical_value.definition;
 
   assert.deepEqual(
@@ -150,7 +152,7 @@ test('grants no current writer, serving or release authority', () => {
     (member) => member.canonical_value.stable_id === 'PROCESS_NARRATION_OCCURRENCE',
   ).canonical_value.definition;
   const slot = members.find(
-    (member) => member.object_kind === 'PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT',
+    (member) => member.canonical_value.stable_id === 'PROCESS_NARRATION',
   ).canonical_value.definition;
 
   assert.equal(registry.registry_contract.definitions_create_writer_authority, false);
@@ -234,7 +236,7 @@ test('rejects an incomplete base set, an unknown Process kind and extra fields',
 
   const extraField = clone(processMembers());
   extraField.find(
-    (member) => member.object_kind === 'PROCESS_EXPECTED_OCCURRENCE_SLOT_INPUT',
+    (member) => member.canonical_value.stable_id === 'PROCESS_NARRATION',
   ).canonical_value.definition.unregistered_rule = true;
   assert.throws(
     () => validateAuthoredProcessInputs(extraField),

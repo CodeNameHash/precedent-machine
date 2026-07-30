@@ -208,41 +208,93 @@ function predicateWitnessRevision(
   predicateKey = 'EXCLUSIVITY_ACTUAL_DRAFTING',
 ) {
   const witnessIdentity = predicateWitnessIdentity(result, predicateKey);
-  const bidderTrack = id('bidder-track-revision');
-  const passage = id('process-passage-revision');
-  const dimensionRevisionBindings = [
-    {
-      terminal_type: 'BIDDER_TRACK_REVISION',
-      revision_id: bidderTrack,
-      evidence_edge_ids: [edge.evidence_edge_id],
-      external_validation_receipt_id: id('track-validation'),
-      validation_state: 'EXTERNALLY_VALIDATED',
-      authority_state: 'NOT_GRANTED',
-    },
-    {
-      terminal_type: 'PROCESS_PASSAGE_REVISION',
-      revision_id: passage,
-      evidence_edge_ids: [edge.evidence_edge_id],
-      external_validation_receipt_id: id('passage-validation'),
-      validation_state: 'EXTERNALLY_VALIDATED',
-      authority_state: 'NOT_GRANTED',
-    },
-  ];
-  const revisionIdentity = {
-    bidder_track_revision_id: bidderTrack,
-    evidence_edges: [edge],
-    predicate_key: predicateKey,
-    predicate_state: 'PRESENT',
+  const successorDefinition = predicateCatalogueContract.definition
+    .successor_predicate_definition_contract.definitions.find(
+      (definition) => definition.predicate_key === predicateKey,
+    );
+  const dimensionValues = {
+    bidder_track_revision_id: null,
     process_agreement_revision_ids: [],
     process_event_revision_id: null,
     process_participant_revision_ids: [],
-    process_passage_revision_ids: [passage],
+    process_passage_revision_ids: [],
     process_position_revision_ids: [],
+    process_relationship_revision_ids: [],
+    temporal_expression_revision_ids: [],
+  };
+  const dimensionRevisionBindings = [];
+  const addDimension = (terminalType) => {
+    const revisionId = id(`${terminalType}:revision`);
+    const field = {
+      BIDDER_TRACK_REVISION: 'bidder_track_revision_id',
+      PROCESS_AGREEMENT_REVISION: 'process_agreement_revision_ids',
+      PROCESS_EVENT_REVISION: 'process_event_revision_id',
+      PROCESS_PARTICIPANT_REVISION: 'process_participant_revision_ids',
+      PROCESS_PASSAGE_REVISION: 'process_passage_revision_ids',
+      PROCESS_POSITION_REVISION: 'process_position_revision_ids',
+      PROCESS_RELATIONSHIP_REVISION: 'process_relationship_revision_ids',
+      TEMPORAL_EXPRESSION_REVISION: 'temporal_expression_revision_ids',
+    }[terminalType];
+    if (field.endsWith('_ids')) {
+      dimensionValues[field].push(revisionId);
+    } else {
+      dimensionValues[field] = revisionId;
+    }
+    dimensionRevisionBindings.push({
+      terminal_type: terminalType,
+      revision_id: revisionId,
+      evidence_edge_ids: [edge.evidence_edge_id],
+      external_validation_receipt_id: id(`${terminalType}:validation`),
+      validation_state: 'EXTERNALLY_VALIDATED',
+      authority_state: 'NOT_GRANTED',
+    });
+  };
+  const requiredFamilies = successorDefinition
+    ? successorDefinition.machine_rule.required_typed_link_families
+    : [
+      { terminal_type: 'BIDDER_TRACK_REVISION' },
+      { terminal_type: 'PROCESS_PASSAGE_REVISION' },
+    ];
+  requiredFamilies.forEach(
+    (family) => addDimension(family.terminal_type),
+  );
+  dimensionRevisionBindings.sort((left, right) => (
+    left.terminal_type.localeCompare(right.terminal_type)
+    || left.revision_id.localeCompare(right.revision_id)
+  ));
+  const revisionIdentity = {
+    applicability_evidence_edges: [],
+    atomic_response_predicate_key: null,
+    atomic_response_predicate_witness_revision_id: null,
+    bidder_track_revision_id:
+      dimensionValues.bidder_track_revision_id,
+    complete_scope_evidence_edges: [],
+    complete_scope_identity: null,
+    dimension_revision_bindings: dimensionRevisionBindings,
+    evidence_edges: [edge],
+    failure_detail: null,
+    predicate_key: predicateKey,
+    predicate_state: 'PRESENT',
+    process_agreement_revision_ids:
+      dimensionValues.process_agreement_revision_ids,
+    process_event_revision_id:
+      dimensionValues.process_event_revision_id,
+    process_participant_revision_ids:
+      dimensionValues.process_participant_revision_ids,
+    process_passage_revision_ids:
+      dimensionValues.process_passage_revision_ids,
+    process_position_revision_ids:
+      dimensionValues.process_position_revision_ids,
     process_predicate_witness_id:
       witnessIdentity.process_predicate_witness_id,
-    process_relationship_revision_ids: [],
+    process_relationship_revision_ids:
+      dimensionValues.process_relationship_revision_ids,
+    source_semantic_kind:
+      successorDefinition?.machine_rule.semantic_kind
+      || 'ACTUAL_DRAFTING',
     subject_code: 'NEGOTIATION_EXCLUSIVITY',
-    temporal_expression_revision_ids: [],
+    temporal_expression_revision_ids:
+      dimensionValues.temporal_expression_revision_ids,
   };
   return {
     schema_version: PROCESS_PREDICATE_WITNESS_REVISION_SCHEMA,
@@ -251,8 +303,18 @@ function predicateWitnessRevision(
       revisionIdentity,
     ),
     process_predicate_witness_identity: witnessIdentity,
+    applicability_evidence_edges:
+      revisionIdentity.applicability_evidence_edges,
+    atomic_response_predicate_key:
+      revisionIdentity.atomic_response_predicate_key,
+    atomic_response_predicate_witness_revision_id:
+      revisionIdentity.atomic_response_predicate_witness_revision_id,
     bidder_track_revision_id: revisionIdentity.bidder_track_revision_id,
+    complete_scope_evidence_edges:
+      revisionIdentity.complete_scope_evidence_edges,
+    complete_scope_identity: revisionIdentity.complete_scope_identity,
     evidence_edges: revisionIdentity.evidence_edges,
+    failure_detail: revisionIdentity.failure_detail,
     predicate_key: revisionIdentity.predicate_key,
     predicate_state: revisionIdentity.predicate_state,
     process_agreement_revision_ids:
@@ -267,6 +329,7 @@ function predicateWitnessRevision(
       revisionIdentity.process_position_revision_ids,
     process_relationship_revision_ids:
       revisionIdentity.process_relationship_revision_ids,
+    source_semantic_kind: revisionIdentity.source_semantic_kind,
     subject_code: revisionIdentity.subject_code,
     temporal_expression_revision_ids:
       revisionIdentity.temporal_expression_revision_ids,
@@ -508,6 +571,46 @@ function fixture({
   };
 }
 
+function rehashPredicateWitnessRevision(witness) {
+  const identity = {
+    applicability_evidence_edges: witness.applicability_evidence_edges,
+    atomic_response_predicate_key:
+      witness.atomic_response_predicate_key,
+    atomic_response_predicate_witness_revision_id:
+      witness.atomic_response_predicate_witness_revision_id,
+    bidder_track_revision_id: witness.bidder_track_revision_id,
+    complete_scope_evidence_edges:
+      witness.complete_scope_evidence_edges,
+    complete_scope_identity: witness.complete_scope_identity,
+    dimension_revision_bindings: witness.dimension_revision_bindings,
+    evidence_edges: witness.evidence_edges,
+    failure_detail: witness.failure_detail,
+    predicate_key: witness.predicate_key,
+    predicate_state: witness.predicate_state,
+    process_agreement_revision_ids:
+      witness.process_agreement_revision_ids,
+    process_event_revision_id: witness.process_event_revision_id,
+    process_participant_revision_ids:
+      witness.process_participant_revision_ids,
+    process_passage_revision_ids: witness.process_passage_revision_ids,
+    process_position_revision_ids:
+      witness.process_position_revision_ids,
+    process_predicate_witness_id:
+      witness.process_predicate_witness_identity
+        .process_predicate_witness_id,
+    process_relationship_revision_ids:
+      witness.process_relationship_revision_ids,
+    source_semantic_kind: witness.source_semantic_kind,
+    subject_code: witness.subject_code,
+    temporal_expression_revision_ids:
+      witness.temporal_expression_revision_ids,
+  };
+  witness.predicate_witness_revision_id = contentId(
+    PROCESS_PREDICATE_WITNESS_REVISION_SCHEMA,
+    identity,
+  );
+}
+
 function assertDeepFrozen(value) {
   assert.equal(Object.isFrozen(value), true);
   if (!value || typeof value !== 'object') return;
@@ -550,18 +653,19 @@ test('admits one exact result without materialising or serving it', () => {
   );
 });
 
-test('blocks successor predicates until witness version two exists', () => {
+test('admits successor predicates under their exact machine rule', () => {
   const input = fixture({
     predicateKey: 'EXCLUSIVITY_NOTICE_REQUIREMENT',
   });
 
-  assert.throws(
-    () => compileProcessPhrasebookResultAdmission(input),
-    { code: 'INVALID_PROCESS_PREDICATE_WITNESS_REVISION' },
+  const receipt = compileProcessPhrasebookResultAdmission(input);
+  assert.equal(
+    receipt.predicate_witness_revision_id,
+    input.predicate_witness_revision.predicate_witness_revision_id,
   );
 });
 
-test('rejects non-present predicate states until witness version two exists', () => {
+test('rejects non-present witnesses from a passage-result admission', () => {
   for (const predicateState of [
     'ABSENT',
     'NOT_APPLICABLE',
@@ -577,11 +681,36 @@ test('rejects non-present predicate states until witness version two exists', ()
   }
 });
 
-test('rejects the response union until witness version two exists', () => {
+test('admits only a response union that retains an atomic response binding', () => {
   const input = fixture({
     predicateKey: 'EXCLUSIVITY_RESPONSE_ANY',
   });
+  const witness = input.predicate_witness_revision;
+  witness.atomic_response_predicate_key = 'EXCLUSIVITY_GRANTED';
+  witness.atomic_response_predicate_witness_revision_id =
+    id('admitted-atomic-grant-witness-revision');
+  witness.source_semantic_kind = 'GRANT';
+  rehashPredicateWitnessRevision(witness);
+  input.result_input_lineage = resultInputLineage(
+    input.result_identity,
+    input.narration_revision,
+    witness,
+  );
+  input.candidate_release_membership = releaseMembership(
+    input.result_identity,
+    input.narration_revision,
+    witness,
+    input.result_input_lineage,
+    input.matched_passage_preview,
+    input.passage_order_projection,
+    input.exact_detail_reference,
+  );
 
+  assert.doesNotThrow(
+    () => compileProcessPhrasebookResultAdmission(input),
+  );
+  witness.source_semantic_kind = 'EXPRESS_REFUSAL';
+  rehashPredicateWitnessRevision(witness);
   assert.throws(
     () => compileProcessPhrasebookResultAdmission(input),
     { code: 'INVALID_PROCESS_PREDICATE_WITNESS_REVISION' },
@@ -719,7 +848,7 @@ test('rejects evidence-role laundering into a direct witness', () => {
 
   assert.throws(
     () => compileProcessPhrasebookResultAdmission(input),
-    { code: 'INVALID_PROCESS_PHRASEBOOK_INLINE_PASSAGE_PREVIEW' },
+    { code: 'INVALID_PROCESS_PREDICATE_WITNESS_REVISION' },
   );
 });
 

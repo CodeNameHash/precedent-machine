@@ -39,12 +39,14 @@ function logicalMembers() {
     loadMember('process/domain/process-domain-registry.v1.json'),
     loadMember('process/events/process-event.v1.json'),
     loadMember('process/narration/process-narration-occurrence.v1.json'),
+    loadMember('process/occurrence-slots/process-event.v1.json'),
     loadMember('process/occurrence-slots/process-narration.v1.json'),
     loadMember('process/participants/process-participant.v1.json'),
     loadMember('process/passages/process-passage.v1.json'),
     loadMember('process/phases/process-phase.v1.json'),
     loadMember('process/positions/process-position.v1.json'),
-    loadMember('process/predicates/process-predicate-witness.v1.json'),
+    loadMember('process/predicates/process-predicate-witness.v2.json'),
+    loadMember('process/registries/process-controlled-code-registry.v1.json'),
     loadMember('process/relationships/process-relationship.v1.json'),
   ];
 }

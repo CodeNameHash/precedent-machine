@@ -1,0 +1,35 @@
+{
+  "phase": "WP-PROCESS-PREDICATE-WITNESS-V2",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-process-predicate-witness-v2.json",
+    "contracts/canonical-v2/successor/process/predicates/process-predicate-witness.v1.json",
+    "contracts/canonical-v2/successor/process/predicates/process-predicate-witness.v2.json",
+    "lib/canonical-v2/process-contract-input-validator.js",
+    "lib/canonical-v2/process-exclusivity-pilot.js",
+    "lib/canonical-v2/process-phrasebook-result-admission.js",
+    "tests/canonical-v2-process-contract-input.test.js",
+    "tests/canonical-v2-process-controlled-code-registry-contract-input.test.js",
+    "tests/canonical-v2-process-event-participant-contract-input.test.js",
+    "tests/canonical-v2-process-event-slot-binding-contract-input.test.js",
+    "tests/canonical-v2-process-exclusivity-contract-input.test.js",
+    "tests/canonical-v2-process-exclusivity-pilot.test.js",
+    "tests/canonical-v2-process-object-contract-input.test.js",
+    "tests/canonical-v2-process-phrasebook-result-admission.test.js",
+    "tests/canonical-v2-process-phrasebook-shared-row-bridge.test.js",
+    "tests/canonical-v2-process-predicate-witness-v2-contract-input.test.js",
+    "tests/canonical-v2-process-track-phase-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Makes ProcessPredicateWitness version 2 the sole active logical contract while preserving the PROCESS_PREDICATE_WITNESS/V1 stable identity. It validates synthetic full-pilot state, typed-link, exact-evidence and response-union semantics against the signed version-2 exclusivity catalogue. It grants no extraction, I/O, database, writer, serving, release, import, activation, freeze, canonical-write or production authority."
+}
