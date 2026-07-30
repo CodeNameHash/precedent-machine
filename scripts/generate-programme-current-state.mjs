@@ -22,6 +22,17 @@ const worktreeGit = (worktree, args) => execFileSync(
   ['-C', worktree, ...args],
   { encoding: 'utf8' },
 ).trim();
+const commandSucceeds = (command, commandArgs) => {
+  try {
+    execFileSync(command, commandArgs, {
+      cwd: root,
+      stdio: 'ignore',
+    });
+    return true;
+  } catch {
+    return false;
+  }
+};
 const main = git(['rev-parse', 'origin/main']);
 const publication = git(['rev-parse', 'origin/programme-status-publication-head']);
 const currentBranch = git(['branch', '--show-current']);
@@ -126,6 +137,19 @@ const receiptedCommits = fs.existsSync(testReceiptPath)
   : new Set();
 if (openGates.includes('P1_CONTRACT_FREEZE_ATTESTED')) {
   blockers.push('FORMAL_FREEZE_COMPILATION_REQUIRED');
+}
+if (!commandSucceeds(process.execPath, [
+  path.join(root, 'scripts/generate-canonical-v2-successor-manifest.mjs'),
+  '--check',
+])) {
+  blockers.push('SUCCESSOR_MANIFEST_STALE');
+}
+if (!fs.existsSync(path.join(
+  root,
+  'contracts/canonical-v2/successor/governance/'
+    + 'canonical-bundle-input-required-kind-registry.v1.json',
+))) {
+  blockers.push('REQUIRED_KIND_REGISTRY_REQUIRED');
 }
 if (!fs.existsSync(path.join(root, '.github/pm-integration/deployment-metadata.json'))) {
   blockers.push('DEPLOYMENT_METADATA_REQUIRED');

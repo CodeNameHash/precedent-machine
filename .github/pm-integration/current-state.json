@@ -75,6 +75,7 @@
     ".github/phase-allowlists/wp-process-phrasebook-product-result-set-bridge-v1.json",
     ".github/phase-allowlists/wp-process-predicate-witness-v2.json",
     ".github/phase-allowlists/wp-programme-current-state-active-units-v1.json",
+    ".github/phase-allowlists/wp-programme-current-state-freeze-blockers-v1.json",
     ".github/phase-allowlists/wp-qxo-capitalisation-agreement-navigation-v1.json",
     ".github/phase-allowlists/wp-qxo-capitalisation-agreement-predicate-one-way-v1.json",
     ".github/phase-allowlists/wp-qxo-capitalisation-agreement-predicate-v1.json",
@@ -236,6 +237,8 @@
   "machine_derived_blockers": [
     "DEPLOYMENT_METADATA_REQUIRED",
     "FORMAL_FREEZE_COMPILATION_REQUIRED",
+    "REQUIRED_KIND_REGISTRY_REQUIRED",
+    "SUCCESSOR_MANIFEST_STALE",
     "TEST_RECEIPTS_REQUIRED"
   ]
 }
