@@ -14,6 +14,9 @@ const {
   compileProcessExclusivityPilotMaterialisation,
   validateProcessExclusivityPilotMaterialisation,
 } = require('../lib/canonical-v2/process-exclusivity-pilot');
+const predicateCatalogueContract = require(
+  '../contracts/canonical-v2/successor/process/predicates/exclusivity-predicate-catalogue.v2.json',
+);
 
 function digest(label) {
   return contentId('SYNTHETIC_METSERA_PROCESS_PILOT_TEST/V1', { label });
@@ -382,6 +385,68 @@ test('materialises the complete typed Metsera exclusivity sidecar deterministica
   );
 });
 
+test('blocks successor predicates until witness version two exists', () => {
+  const input = metseraFixture();
+  input.frozen_scope.predicate_witness_slots[0]
+    .predicate_definition_key_and_version.key =
+      'EXCLUSIVITY_NOTICE_REQUIREMENT';
+  input.typed_values.predicate_witnesses[0].predicate_key =
+    'EXCLUSIVITY_NOTICE_REQUIREMENT';
+
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(input),
+    { code: 'PROCESS_PILOT_SUCCESSOR_PREDICATE_UNSUPPORTED' },
+  );
+});
+
+test('blocks non-present predicate states until witness version two exists', () => {
+  for (const predicateState of [
+    'ABSENT',
+    'NOT_APPLICABLE',
+    'NOT_EXAMINED',
+    'FAILED',
+  ]) {
+    const input = metseraFixture();
+    input.typed_values.predicate_witnesses[0].predicate_state =
+      predicateState;
+    assert.throws(
+      () => compileProcessExclusivityPilotMaterialisation(input),
+      { code: 'PROCESS_PILOT_NON_PRESENT_PREDICATE_UNSUPPORTED' },
+    );
+  }
+});
+
+test('blocks the response union until witness version two exists', () => {
+  const input = metseraFixture();
+  input.frozen_scope.predicate_witness_slots[0]
+    .predicate_definition_key_and_version.key =
+      'EXCLUSIVITY_RESPONSE_ANY';
+  input.typed_values.predicate_witnesses[0].predicate_key =
+    'EXCLUSIVITY_RESPONSE_ANY';
+
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(input),
+    { code: 'PROCESS_PILOT_RESPONSE_UNION_UNSUPPORTED' },
+  );
+});
+
+test('fails closed when a successor machine rule changes', () => {
+  const rule = predicateCatalogueContract.definition
+    .successor_predicate_definition_contract.definitions[0].machine_rule;
+  const original = rule.semantic_kind;
+  rule.semantic_kind = 'NOTICE_REQUIREMENT';
+  try {
+    assert.throws(
+      () => compileProcessExclusivityPilotMaterialisation(
+        metseraFixture(),
+      ),
+      { code: 'INVALID_PROCESS_PILOT_CONTRACT_BINDING' },
+    );
+  } finally {
+    rule.semantic_kind = original;
+  }
+});
+
 test('preserves exact proxy narration, timing and actual drafting bytes', () => {
   const input = metseraFixture();
   const result = compileProcessExclusivityPilotMaterialisation(input);
@@ -509,6 +574,54 @@ test('blocks clipped UTF-8 intervals and changed source wording', () => {
   assert.throws(
     () => compileProcessExclusivityPilotMaterialisation(changedTemporal),
     { code: 'PROCESS_PILOT_TEMPORAL_SOURCE_MISMATCH' },
+  );
+});
+
+test('blocks narration evidence with the same text at different coordinates', () => {
+  const input = metseraFixture();
+  const proxy = input.source_documents[0];
+  const narrationInterval = input.frozen_scope.narration_slots[0]
+    .canonical_source_intervals[0];
+  const narrationText = Buffer.from(proxy.source_text, 'utf8').subarray(
+    narrationInterval.absolute_start,
+    narrationInterval.absolute_end,
+  ).toString('utf8');
+  proxy.source_text += ` Duplicate: ${narrationText}`;
+  proxy.source_text_digest = sha256Hex(
+    Buffer.from(proxy.source_text, 'utf8'),
+  );
+  input.typed_values.narrations[0].evidence = evidence(
+    'PROCESS_NARRATION',
+    byteInterval(proxy, narrationText, 1),
+  );
+
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(input),
+    { code: 'PROCESS_PILOT_NARRATION_EVIDENCE_MISMATCH' },
+  );
+});
+
+test('blocks passage evidence with the same text at different coordinates', () => {
+  const input = metseraFixture();
+  const agreement = input.source_documents[1];
+  const passageInterval = input.frozen_scope.passage_slots[1]
+    .canonical_source_intervals[0];
+  const draftingText = Buffer.from(agreement.source_text, 'utf8').subarray(
+    passageInterval.absolute_start,
+    passageInterval.absolute_end,
+  ).toString('utf8');
+  agreement.source_text += ` Duplicate: ${draftingText}`;
+  agreement.source_text_digest = sha256Hex(
+    Buffer.from(agreement.source_text, 'utf8'),
+  );
+  input.typed_values.passages[1].evidence = evidence(
+    'PROCESS_PASSAGE',
+    byteInterval(agreement, draftingText, 1),
+  );
+
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(input),
+    { code: 'PROCESS_PILOT_PASSAGE_EVIDENCE_MISMATCH' },
   );
 });
 

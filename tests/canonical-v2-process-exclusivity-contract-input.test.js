@@ -54,7 +54,7 @@ function predicateMembers() {
     loadMember(
       'process/predicates/exclusivity-completeness-challenge-protocol.v1.json',
     ),
-    loadMember('process/predicates/exclusivity-predicate-catalogue.v1.json'),
+    loadMember('process/predicates/exclusivity-predicate-catalogue.v2.json'),
   ];
 }
 
@@ -84,11 +84,11 @@ test('registers the closed ordinary exclusivity predicate catalogue', () => {
   );
   assert.equal(
     catalogue.ordinary_question_contract.mandatory_predicate_keys.length,
-    23,
+    41,
   );
   assert.equal(
     new Set(catalogue.ordinary_question_contract.mandatory_predicate_keys).size,
-    23,
+    41,
   );
   assert.equal(
     catalogue.ordinary_question_contract.natural_language_maps_only_to_governed_predicates,

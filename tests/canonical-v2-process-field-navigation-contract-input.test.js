@@ -35,7 +35,7 @@ function fieldNavigationMembers() {
       'process/navigation/process-navigation-definition-catalogue.v1.json',
     ),
     loadMember(
-      'process/predicates/exclusivity-predicate-catalogue.v1.json',
+      'process/predicates/exclusivity-predicate-catalogue.v2.json',
     ),
     loadMember(
       'shared/field-definitions/shared-deal-field-catalogue.v1.json',

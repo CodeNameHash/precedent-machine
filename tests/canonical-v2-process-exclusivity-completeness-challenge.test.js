@@ -27,7 +27,7 @@ function members() {
     loadMember(
       'process/predicates/exclusivity-completeness-challenge-protocol.v1.json',
     ),
-    loadMember('process/predicates/exclusivity-predicate-catalogue.v1.json'),
+    loadMember('process/predicates/exclusivity-predicate-catalogue.v2.json'),
   ];
 }
 

@@ -37,6 +37,9 @@ const {
 const resultContract = require(
   '../contracts/canonical-v2/successor/process/results/process-phrasebook-passage-result.v1.json',
 );
+const predicateCatalogueContract = require(
+  '../contracts/canonical-v2/successor/process/predicates/exclusivity-predicate-catalogue.v2.json',
+);
 
 const TEXT =
   'On April 24, 2025, Metsera declined to grant exclusivity.';
@@ -173,14 +176,17 @@ function narrationRevision(occurrence, edge, relationships = []) {
   };
 }
 
-function predicateWitnessIdentity(result) {
+function predicateWitnessIdentity(
+  result,
+  predicateKey = 'EXCLUSIVITY_ACTUAL_DRAFTING',
+) {
   const identity = {
     frozen_contract_pair_digest: CONTRACT_PAIR,
     governed_deal_admission_id: DEAL,
     process_narration_occurrence_id:
       result.precomputed_process_narration_occurrence_id,
     predicate_definition_key_and_version: {
-      key: 'EXCLUSIVITY_ACTUAL_DRAFTING',
+      key: predicateKey,
       version: 1,
     },
     predicate_evidence_role_slot_key:
@@ -196,8 +202,12 @@ function predicateWitnessIdentity(result) {
   };
 }
 
-function predicateWitnessRevision(result, edge) {
-  const witnessIdentity = predicateWitnessIdentity(result);
+function predicateWitnessRevision(
+  result,
+  edge,
+  predicateKey = 'EXCLUSIVITY_ACTUAL_DRAFTING',
+) {
+  const witnessIdentity = predicateWitnessIdentity(result, predicateKey);
   const bidderTrack = id('bidder-track-revision');
   const passage = id('process-passage-revision');
   const dimensionRevisionBindings = [
@@ -221,7 +231,7 @@ function predicateWitnessRevision(result, edge) {
   const revisionIdentity = {
     bidder_track_revision_id: bidderTrack,
     evidence_edges: [edge],
-    predicate_key: 'EXCLUSIVITY_ACTUAL_DRAFTING',
+    predicate_key: predicateKey,
     predicate_state: 'PRESENT',
     process_agreement_revision_ids: [],
     process_event_revision_id: null,
@@ -457,12 +467,13 @@ function fixture({
   relationships = [],
   narrationTreatment = 'SOURCE_LOCAL_PRIMARY_NARRATION',
   evidenceRole = 'DIRECT_PREDICATE_WITNESS',
+  predicateKey = 'EXCLUSIVITY_ACTUAL_DRAFTING',
 } = {}) {
   const occurrence = narrationOccurrence();
   const result = resultIdentity(occurrence);
   const edge = evidenceEdge(evidenceRole);
   const narration = narrationRevision(occurrence, edge, relationships);
-  const witness = predicateWitnessRevision(result, edge);
+  const witness = predicateWitnessRevision(result, edge, predicateKey);
   const lineage = resultInputLineage(result, narration, witness);
   const exactDetail = exactDetailReference(result, narration, edge);
   const preview = matchedPassagePreview(
@@ -537,6 +548,62 @@ test('admits one exact result without materialising or serving it', () => {
     canonicalProcessPhrasebookResultAdmissionReceiptBytes(first, input),
     Buffer.from(canonicalJson(first), 'utf8'),
   );
+});
+
+test('blocks successor predicates until witness version two exists', () => {
+  const input = fixture({
+    predicateKey: 'EXCLUSIVITY_NOTICE_REQUIREMENT',
+  });
+
+  assert.throws(
+    () => compileProcessPhrasebookResultAdmission(input),
+    { code: 'INVALID_PROCESS_PREDICATE_WITNESS_REVISION' },
+  );
+});
+
+test('rejects non-present predicate states until witness version two exists', () => {
+  for (const predicateState of [
+    'ABSENT',
+    'NOT_APPLICABLE',
+    'NOT_EXAMINED',
+    'FAILED',
+  ]) {
+    const input = fixture();
+    input.predicate_witness_revision.predicate_state = predicateState;
+    assert.throws(
+      () => compileProcessPhrasebookResultAdmission(input),
+      { code: 'INVALID_PROCESS_PREDICATE_WITNESS_REVISION' },
+    );
+  }
+});
+
+test('rejects the response union until witness version two exists', () => {
+  const input = fixture({
+    predicateKey: 'EXCLUSIVITY_RESPONSE_ANY',
+  });
+
+  assert.throws(
+    () => compileProcessPhrasebookResultAdmission(input),
+    { code: 'INVALID_PROCESS_PREDICATE_WITNESS_REVISION' },
+  );
+});
+
+test('fails closed when a successor machine rule changes', () => {
+  const rule = predicateCatalogueContract.definition
+    .successor_predicate_definition_contract.definitions[0].machine_rule;
+  const original = rule.semantic_kind;
+  rule.semantic_kind = 'NOTICE_REQUIREMENT';
+  try {
+    assert.throws(
+      () => compileProcessPhrasebookResultAdmission(fixture()),
+      {
+        code:
+          'INVALID_PROCESS_PHRASEBOOK_RESULT_ADMISSION_CONTRACT_BINDING',
+      },
+    );
+  } finally {
+    rule.semantic_kind = original;
+  }
 });
 
 test('rejects narration revision and exact source-interval drift', () => {
