@@ -75,7 +75,7 @@ test('the single successor source compiles twice byte-identically without claimi
   const second = compileCanonicalContractInput({ root_directory: sourceRoot });
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 127);
+  assert.equal(first.authored_members.length, 128);
   assert.equal(
     first.authored_members.some(
       (member) => member.object_kind === 'CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY',
@@ -465,16 +465,16 @@ test('the authored claim interpretation policy is the exact existing V12 policy'
   );
 });
 
-test('the manifest exactly closes the 127-file Agreement, shared, Process and Product source tree', () => {
+test('the manifest exactly closes the 128-file Agreement, shared, Process and Product source tree', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, 'manifest.json'), 'utf8'));
   const actualMembers = jsonMembers(sourceRoot);
   const declaredMembers = manifest.members.map((member) => member.relative_path);
 
   assert.deepEqual(actualMembers, declaredMembers);
-  assert.equal(manifest.members.length, 127);
+  assert.equal(manifest.members.length, 128);
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('agreement/')).length,
-    70,
+    71,
   );
   assert.equal(
     manifest.members.filter((member) => member.relative_path.startsWith('shared/')).length,
@@ -493,6 +493,7 @@ test('the manifest exactly closes the 127-file Agreement, shared, Process and Pr
     false,
   );
   assert.deepEqual(manifest.per_kind_counts, {
+    AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT: 1,
     CLAIM_DEFINITION: 13,
     CLAIM_INTERPRETATION_POLICY: 1,
     CLAIM_STATE_CODEBOOK_MIGRATION_INPUT: 1,
@@ -530,6 +531,9 @@ test('the manifest exactly closes the 127-file Agreement, shared, Process and Pr
     SOURCE_ACQUISITION_CONTRACT_INPUT: 2,
   });
   assert.deepEqual(manifest.per_kind_schema_versions, {
+    AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT: [
+      'AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT/V1',
+    ],
     CLAIM_DEFINITION: ['CLAIM_DEFINITION/V1'],
     CLAIM_INTERPRETATION_POLICY: ['CLAIM_INTERPRETATION_POLICY/V2'],
     CLAIM_STATE_CODEBOOK_MIGRATION_INPUT: [

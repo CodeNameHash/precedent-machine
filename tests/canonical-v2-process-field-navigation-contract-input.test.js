@@ -56,7 +56,7 @@ test('compiles one additive Process field and navigation contribution', () => {
     ].includes(member.object_kind),
   );
 
-  assert.equal(compiled.authored_members.length, 127);
+  assert.equal(compiled.authored_members.length, 128);
   assert.deepEqual(
     processCatalogueMembers.map((member) => [
       member.object_kind,

@@ -368,6 +368,13 @@
       "canonical_bytes_digest": "1a77924503fe034eac15e3da2a5c7e569cff9160e337ee1ef241ce162f90d0ff"
     },
     {
+      "relative_path": "agreement/query/agreement-comparable-result-ordering.v1.json",
+      "object_kind": "AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT",
+      "stable_id": "AGREEMENT_COMPARABLE_RESULT_ORDERING_PROJECTION",
+      "schema_version": "AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "20a2deab111035f69468da9f10249473db0842976b0b277c0f83ebb6cd28d76c"
+    },
+    {
       "relative_path": "agreement/relationship-definitions/brings-down.v2.json",
       "object_kind": "RELATIONSHIP_DEFINITION",
       "stable_id": "BRINGS_DOWN",
@@ -894,6 +901,7 @@
     }
   ],
   "per_kind_counts": {
+    "AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT": 1,
     "CLAIM_DEFINITION": 13,
     "CLAIM_INTERPRETATION_POLICY": 1,
     "CLAIM_STATE_CODEBOOK_MIGRATION_INPUT": 1,
@@ -931,6 +939,9 @@
     "SOURCE_ACQUISITION_CONTRACT_INPUT": 2
   },
   "per_kind_schema_versions": {
+    "AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT": [
+      "AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT/V1"
+    ],
     "CLAIM_DEFINITION": [
       "CLAIM_DEFINITION/V1"
     ],

@@ -208,7 +208,7 @@ test('rejects semantic drift in each complete governed definition', () => {
 test('remains incomplete and grants no contract-freeze authority', () => {
   const compiled = compileCanonicalContractInput({ root_directory: ROOT });
 
-  assert.equal(compiled.authored_members.length, 127);
+  assert.equal(compiled.authored_members.length, 128);
   assert.equal(compiled.disposition.status, 'INCOMPLETE_UNIVERSE');
   assert.equal(compiled.disposition.freeze_eligible, false);
   assert.equal(compiled.disposition.canonical_contract_bundle_authority, 'NONE');
