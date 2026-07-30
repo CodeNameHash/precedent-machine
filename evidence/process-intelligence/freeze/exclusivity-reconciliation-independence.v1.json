@@ -1,0 +1,154 @@
+{
+  "object_kind": "PROCESS_EXCLUSIVITY_RECONCILIATION_INDEPENDENCE_EVIDENCE",
+  "stable_id": "PROCESS_EXCLUSIVITY_RECONCILIATION_INDEPENDENCE_EVIDENCE/V1",
+  "schema_version": "PROCESS_EXCLUSIVITY_RECONCILIATION_INDEPENDENCE_EVIDENCE/V1",
+  "evidence_status": "COMPLETE",
+  "reconciliation_binding": {
+    "repository_path": "evidence/process-intelligence/freeze/exclusivity-question-reconciliation.v1.json",
+    "stable_id": "PROCESS_EXCLUSIVITY_QUESTION_RECONCILIATION/V1",
+    "schema_version": "PROCESS_EXCLUSIVITY_QUESTION_RECONCILIATION/V1",
+    "deterministic_content_digest": "sha256:a038cc96cdd1db83a0b33ca1de165969c132f1f90261d12a6f927386316686af"
+  },
+  "task_separation": {
+    "ordinary_catalogue_authoring": {
+      "task_identity": "wp/process-exclusivity-contracts-v1",
+      "branch": "wp/process-exclusivity-contracts-v1",
+      "worktree": "/Users/bengoodchild/Documents/Claude/precedent-machine-process-exclusivity-contracts-v1",
+      "authoring_commit": "974c91ba86c7d066c3d17e27742501055ff806df",
+      "authoring_commit_parent": "2f82ce21e7c814a31251ebe31686b62e560587c2",
+      "fixed_main_integration_commit": "1e5185da1ade48cac155fc2c78beec04c3acfc82",
+      "artefact_git_blob_oid": "8a39c5baebab59aac520b82e23981fc9e3509569",
+      "artefact_exact_raw_file_content_digest": "sha256:0c269fb1d6b58349fd5f8ff3e9fb9cbe0fdef26f727b6c2958bdb0f8b497255c",
+      "method_class": "GOVERNED_PREDICATE_CONTRACT_AUTHORING",
+      "method_class_basis": "The task branch and commit create the governed ordinary predicate contract."
+    },
+    "challenge_catalogue_authoring": {
+      "task_identity": "codex/process-exclusivity-independent-challenge-v1",
+      "branch": "codex/process-exclusivity-independent-challenge-v1",
+      "worktree": "/Users/bengoodchild/Documents/Claude/precedent-machine-process-exclusivity-independent-challenge-v1",
+      "base_commit": "a3149cfb6434f3166aac2c3bd9631e637d5df8ae",
+      "sealed_commit": "b93d71a35305815f0257efed9e94173d8646f184",
+      "artefact_git_blob_oid": "680a8a005b1f833965f234b395f270dd6a6345bf",
+      "artefact_exact_raw_file_content_digest": "sha256:0eb8776815ecce587f31e382d52152448e941335a06e7ba36180c497e4ade653",
+      "sealed_catalogue_digest": "sha256:6f2fa9e584f09dbe644d7e45f6ce7225d8b8ef811b530daf2cc35821ded69d46",
+      "sealed_manifest_digest": "sha256:78986bc77587b6c2d1dcce97837ee5c0157f71af11f2bdb5404ed756cf8376b1",
+      "method_class": "INDEPENDENT_PUBLIC_PRECEDENT_SOURCE_ONLY_CLAUSE_REVIEW",
+      "prohibited_input_classes_observed": [],
+      "repository_read_allowlist": [
+        "contracts/canonical-v2/successor/process/predicates/exclusivity-completeness-challenge-protocol.v1.json"
+      ]
+    },
+    "reconciliation": {
+      "task_identity": "codex/process-exclusivity-reconciliation-v1",
+      "branch": "codex/process-exclusivity-reconciliation-v1",
+      "worktree": "/Users/bengoodchild/Documents/Claude/precedent-machine-process-exclusivity-reconciliation-v1",
+      "base_commit": "a3149cfb6434f3166aac2c3bd9631e637d5df8ae",
+      "method_class": "POST_SEAL_SLOT_BY_SLOT_SEMANTIC_RECONCILIATION",
+      "ordinary_catalogue_first_read_from_commit": "a3149cfb6434f3166aac2c3bd9631e637d5df8ae",
+      "challenge_catalogue_first_read_from_commit": "b93d71a35305815f0257efed9e94173d8646f184",
+      "challenge_content_read_only_after_both_seals_recalculated": true
+    },
+    "distinct_task_identities": true,
+    "distinct_branches": true,
+    "reconciliation_separate_from_both_authorship_tasks": true,
+    "challenge_method_differs_from_ordinary_authoring_method": true,
+    "reconciliation_method_differs_from_both_authoring_methods": true,
+    "git_commit_author_metadata_is_repository_commit_identity_not_task_author_identity": true
+  },
+  "seal_verification": {
+    "verification_order": [
+      "Read digest fields and integrity schemes without reading substantive challenge content.",
+      "Recalculate the blind input manifest seal from commit b93d71a35305815f0257efed9e94173d8646f184.",
+      "Recalculate the challenge catalogue seal from commit b93d71a35305815f0257efed9e94173d8646f184.",
+      "Confirm both declared digests match before reading substantive challenge content."
+    ],
+    "blind_input_manifest": {
+      "declared_digest": "sha256:78986bc77587b6c2d1dcce97837ee5c0157f71af11f2bdb5404ed756cf8376b1",
+      "recalculated_digest": "sha256:78986bc77587b6c2d1dcce97837ee5c0157f71af11f2bdb5404ed756cf8376b1",
+      "match": true
+    },
+    "challenge_catalogue": {
+      "declared_digest": "sha256:6f2fa9e584f09dbe644d7e45f6ce7225d8b8ef811b530daf2cc35821ded69d46",
+      "recalculated_digest": "sha256:6f2fa9e584f09dbe644d7e45f6ce7225d8b8ef811b530daf2cc35821ded69d46",
+      "match": true
+    },
+    "catalogue_manifest_binding": {
+      "catalogue_blind_input_manifest_digest": "sha256:78986bc77587b6c2d1dcce97837ee5c0157f71af11f2bdb5404ed756cf8376b1",
+      "manifest_sealed_digest": "sha256:78986bc77587b6c2d1dcce97837ee5c0157f71af11f2bdb5404ed756cf8376b1",
+      "match": true
+    }
+  },
+  "identifier_and_source_validation": {
+    "challenge_question_count": 48,
+    "verified_challenge_question_id_count": 48,
+    "duplicate_challenge_question_id_count": 0,
+    "challenge_answer_slot_count": 190,
+    "verified_challenge_answer_slot_id_count": 190,
+    "duplicate_challenge_answer_slot_id_count": 0,
+    "blind_manifest_source_ids": [
+      "SEC-ACTIVISION-BLIZZARD-2022-01-18-EX-2.1",
+      "SEC-ROVER-GROUP-2023-11-29-EX-2.1",
+      "SEC-CHUYS-2024-07-17-EX-2.1",
+      "SEC-CHICOS-FAS-2023-09-27-EX-2.1",
+      "SEC-GMS-2025-06-29-EX-2.1"
+    ],
+    "blind_manifest_source_id_count": 5,
+    "challenge_referenced_source_ids": [
+      "SEC-ACTIVISION-BLIZZARD-2022-01-18-EX-2.1",
+      "SEC-ROVER-GROUP-2023-11-29-EX-2.1",
+      "SEC-CHUYS-2024-07-17-EX-2.1",
+      "SEC-CHICOS-FAS-2023-09-27-EX-2.1",
+      "SEC-GMS-2025-06-29-EX-2.1"
+    ],
+    "challenge_referenced_source_id_count": 5,
+    "total_question_source_references": 240,
+    "unknown_challenge_source_id_count": 0,
+    "unreferenced_blind_manifest_source_id_count": 0,
+    "question_source_set_mismatch_count": 0,
+    "validation_result": "PASS"
+  },
+  "reconciliation_validation": {
+    "ordinary_predicate_count_expected": 23,
+    "ordinary_predicate_count_reconciled": 23,
+    "challenge_question_count_expected": 48,
+    "challenge_question_count_reconciled": 48,
+    "challenge_answer_slot_count_expected": 190,
+    "challenge_answer_slot_count_reconciled": 190,
+    "challenge_answer_slot_disposition_counts": {
+      "MATCHED_TO_ORDINARY_PREDICATE": 104,
+      "NEW_ORDINARY_PREDICATE_REQUIRED": 86,
+      "OUT_OF_SCOPE_WITH_GOVERNED_REASON": 0,
+      "DUPLICATE_WITH_GOVERNED_REASON": 0,
+      "UNSOUND_WITH_GOVERNED_REASON": 0
+    },
+    "proposed_ordinary_predicate_count": 18,
+    "exact_closed_disposition_domain_used": true,
+    "missing_ordinary_predicate_count": 0,
+    "missing_challenge_answer_slot_count": 0,
+    "duplicate_reconciliation_member_count": 0,
+    "one_challenge_slot_mapped_to_many_ordinary_predicates": false,
+    "silent_drop_or_merge_count": 0,
+    "governed_reason_disposition_count": 0,
+    "governed_reason_independent_reviews": [],
+    "validation_result": "PASS_WITH_CONTRACT_FREEZE_BLOCKED_BY_NEW_ORDINARY_PREDICATES"
+  },
+  "admission_review": {
+    "challenge_catalogue_admission": "ADMITTED_FOR_RECONCILIATION",
+    "ordinary_catalogue_sealed_at_fixed_main_commit": true,
+    "challenge_catalogue_sealed_at_exact_source_commit": true,
+    "blind_manifest_sealed_before_challenge_authoring": true,
+    "shared_candidate_list_observed": false,
+    "shared_draft_or_mapping_observed": false,
+    "shared_model_transcript_observed": false,
+    "post_disclosure_challenge_edit_observed": false,
+    "input_provenance_review_result": "PASS",
+    "reconciliation_result": "COMPLETE",
+    "contract_freeze_result": "BLOCKED_BY_18_NEW_ORDINARY_PREDICATE_REQUIREMENTS"
+  },
+  "integrity_scheme": {
+    "algorithm": "SHA-256",
+    "deterministic_content_digest_input": "UTF-8 bytes of recursively key-sorted JSON with deterministic_content_digest omitted",
+    "digest_prefix": "sha256:"
+  },
+  "deterministic_content_digest": "sha256:d423487adb7d481539aa22c5682727e42a198b2531d4f8801147982a9129d8ec"
+}
