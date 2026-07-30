@@ -259,6 +259,8 @@ test('trust configuration contains only the four approved public signing keys', 
       [
         'PROGRAMME_GATE_REVIEW_CONTROLLER_RECORD/V1',
         'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW/V1',
+        'PROGRAMME_GATE_P1_CONTRACT_FREEZE_REVIEW_REGISTRATION/V1',
+        'PROGRAMME_GATE_P1_CONTRACT_FREEZE_AUTHENTICATED_RESULT/V1',
       ],
       [
         'PROGRAMME_GATE_BEN_APPROVAL/V1',

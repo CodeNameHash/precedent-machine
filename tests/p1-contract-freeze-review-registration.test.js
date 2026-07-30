@@ -175,11 +175,24 @@ function expectCode(code, operation) {
   });
 }
 
-test('rejects self-authored authority and blocks until the protected signer inventory permits P1 domains', () => {
+test('rejects self-authored authority and uses only the protected P1 signer domains', () => {
   const sample = makeSignedSet();
   expectCode('P1_UNTRUSTED_REVIEW_REGISTRATION_AUTHORITY', () => (
     verifyP1ContractFreezeReviewRegistration(sample)
   ));
+
+  const reviewControllerKey = TRUSTED_PUBLIC_KEY_REGISTRY.keys.find(
+    (key) => key.key_id === 'PROGRAMME_GATE_REVIEW_CONTROLLER_2026_07',
+  );
+  assert.deepEqual(
+    reviewControllerKey.permitted_domains,
+    [
+      'PROGRAMME_GATE_REVIEW_CONTROLLER_RECORD/V1',
+      'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW/V1',
+      REGISTRATION_DOMAIN,
+      AUTHENTICATED_RESULT_DOMAIN,
+    ],
+  );
 
   const protectedInventory = clone(sample);
   protectedInventory.authority.keyRegistry = clone(TRUSTED_PUBLIC_KEY_REGISTRY);
@@ -196,7 +209,7 @@ test('rejects self-authored authority and blocks until the protected signer inve
     REGISTRATION_ID_DOMAIN,
     identity,
   );
-  expectCode('P1_SIGNED_REVIEW_REGISTRATION_UNAUTHORISED_DOMAIN', () => (
+  expectCode('P1_SIGNED_REVIEW_REGISTRATION_SIGNATURE_INVALID', () => (
     verifyP1ContractFreezeReviewRegistration(protectedInventory)
   ));
 });
