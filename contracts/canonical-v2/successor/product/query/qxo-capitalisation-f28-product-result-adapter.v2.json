@@ -1,0 +1,89 @@
+{
+  "object_kind": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT",
+  "stable_id": "QXO_CAPITALISATION_F28_PRODUCT_RESULT_ADAPTER_V2",
+  "schema_version": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PRODUCT",
+    "contract_type": "AGREEMENT_DOMAIN_RESULT_ADAPTER",
+    "contract_version": 2,
+    "lifecycle_contract": {
+      "lifecycle_state": "ADDITIVE_SUCCESSOR_REQUIRED_FOR_ENVELOPE_MATERIALISATION",
+      "historical_v1_adapter_stable_id": "QXO_CAPITALISATION_F28_PRODUCT_RESULT_ADAPTER",
+      "historical_v1_adapter_contract_version": 1,
+      "historical_v1_adapter_may_authorise_envelope_materialisation": false,
+      "product_materialisation_requires_this_successor": true,
+      "this_contract_is_not_a_materialisation_authority": true
+    },
+    "candidate_envelope_dependency": {
+      "stable_id": "QXO_CAPITALISATION_F28_CANDIDATE_ENVELOPE",
+      "schema_version": "PRODUCT_QUERY_CONTRACT_INPUT/V1",
+      "definition_digest": "05217faf3bdae80fa666929d3e48f419bfe5299abc9ea296fe705678a1011cc2",
+      "candidate_membership_state": "CANDIDATE_ENVELOPE_ONLY",
+      "full_definition_digest_required": true,
+      "envelope_substitution_or_semantic_rehash_permitted": false
+    },
+    "product_query_ir_binding_contract": {
+      "product_query_ir_schema_version": "PRODUCT_QUERY_IR/V1",
+      "candidate_release_manifest_id_source": "CANDIDATE_ENVELOPE_SOURCE_CROSS_VIEW_RELEASE_ID",
+      "candidate_release_manifest_payload_digest_source": "CANDIDATE_ENVELOPE_SOURCE_CROSS_VIEW_RELEASE_PAYLOAD_DIGEST",
+      "candidate_release_manifest_id_must_equal_envelope_source_release_id": true,
+      "candidate_release_manifest_payload_digest_must_equal_envelope_source_release_payload_digest": true,
+      "old_cross_view_manifest_binding_permitted": false,
+      "query_ir_can_substitute_or_rehash_candidate_manifest": false
+    },
+    "exact_row_preservation_contract": {
+      "domain_result_identity_source": "CANDIDATE_ENVELOPE_PROVISION_ROW_ID",
+      "domain_result_payload_digest_source": "CANDIDATE_ENVELOPE_PROVISION_ROW_PAYLOAD_DIGEST",
+      "domain_result_identity_must_equal_envelope_provision_row_id": true,
+      "domain_result_payload_must_equal_exact_envelope_row": true,
+      "domain_result_payload_digest_must_equal_envelope_row_payload_digest": true,
+      "exact_row_count": 1,
+      "ordered_terminal_count": 14,
+      "market_observation_count": 13,
+      "typed_exclusion_count": 1,
+      "terminal_order_is_immutable": true,
+      "terminal_rehash_or_substitution_permitted": false
+    },
+    "surface_and_evidence_preservation_contract": {
+      "required_surfaces": [
+        "COMPARE",
+        "CORPUS_CONTEXT",
+        "QUERY",
+        "REVIEW"
+      ],
+      "all_surfaces_use_exact_same_row": true,
+      "required_subrow_count": 6,
+      "all_six_subrows_preserved": true,
+      "all_subrow_evidence_preserved": true,
+      "all_exact_detail_preserved": true,
+      "all_metric_contexts_preserved": true,
+      "required_metric_context_count": 14,
+      "source_lineage_preserved": true,
+      "summary_or_tier_label_substitution_permitted": false
+    },
+    "prohibited_state_contract": {
+      "adapter_can_manufacture_query_pass": false,
+      "adapter_can_manufacture_cohort_pass": false,
+      "adapter_can_manufacture_filter_pass": false,
+      "adapter_can_manufacture_field_pass": false,
+      "adapter_can_manufacture_membership_pass": false,
+      "adapter_can_upgrade_candidate_envelope_to_materialised": false,
+      "adapter_can_upgrade_inactive_candidate_to_active": false
+    },
+    "authority_contract": {
+      "authority_state": "NONE",
+      "creates_runtime_result": false,
+      "creates_execution_authority": false,
+      "creates_import_authority": false,
+      "creates_query_authority": false,
+      "creates_serving_authority": false,
+      "creates_writer_authority": false,
+      "creates_database_authority": false,
+      "creates_activation_authority": false,
+      "creates_materialisation_authority": false,
+      "creates_release_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}
