@@ -235,6 +235,41 @@ test('assembles a deterministic review package with full predecessor bytes', () 
     ),
   );
   assert.deepEqual(review.predecessor_source_kinds, ['LEGACY_F1']);
+  assert.equal(
+    review.reviewed_contract_source_set_digest,
+    domainDigest(
+      'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW_SOURCE_SET/V1',
+      {
+        exact_review_input_schema_version:
+          'CANONICAL_CONTRACT_BUNDLE_EXACT_REVIEW_INPUT/V2',
+        predecessor_canonical_contract_bundle_members:
+          review.predecessor_canonical_contract_bundle_members,
+        canonical_contract_bundle_members:
+          review.canonical_contract_bundle_members,
+      },
+    ),
+  );
+  assert.equal(
+    review.exact_review_input_context_digest,
+    domainDigest(
+      'PROGRAMME_GATE_CONTRACT_DIFF_REVIEW_EXACT_INPUT_CONTEXT/V1',
+      {
+        specification_root: review.specification_root,
+        code_commit: review.code_commit,
+        predecessor_contract_bundle_id:
+          review.predecessor_contract_bundle_id,
+        predecessor_contract_bundle_digest:
+          review.predecessor_contract_bundle_digest,
+        contract_bundle_id: review.contract_bundle_id,
+        contract_bundle_digest: review.contract_bundle_digest,
+        frozen_contract_pair_digest: review.frozen_contract_pair_digest,
+        semantic_identity_diff_digest:
+          review.semantic_identity_diff_digest,
+        reviewed_contract_source_set_digest:
+          review.reviewed_contract_source_set_digest,
+      },
+    ),
+  );
   assert.equal(first.disposition.state, 'PRE_REVIEW_SOURCE_CLOSED_NOT_REVIEWED');
   assert.equal(first.disposition.ben_approval, 'NOT_SUPPLIED');
   assert.equal(first.disposition.freeze_authority, 'NONE');
