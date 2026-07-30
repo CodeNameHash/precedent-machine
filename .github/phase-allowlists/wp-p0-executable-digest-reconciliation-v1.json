@@ -1,0 +1,22 @@
+{
+  "phase": "WP-P0-EXECUTABLE-DIGEST-RECONCILIATION-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p0-executable-digest-reconciliation-v1.json",
+    "lib/programme-gates/test-executable-registry.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**",
+    "tests/**"
+  ],
+  "note": "Reconciles only the P0-ROUTE-01 executable-set digest after the contained Process Preview test joined the exact containment executable set. It grants no gate PASS, deployment, database, extraction, writer, serving, import, release, activation or production authority."
+}
