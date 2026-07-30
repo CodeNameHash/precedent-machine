@@ -1,0 +1,84 @@
+{
+  "schema": "canonical-v2/phase-allowlist/v1",
+  "workPackage": "PILOT_FREEZE_AND_VERTICAL_SLICE",
+  "caseId": "metsera",
+  "mode": "sealed-stage-1-evidence-only",
+  "allowedReadAuthority": "official-sec-edgar-primary-document",
+  "allowedInputs": [
+    {
+      "accession": "0000078003-25-000159",
+      "officialUrl": "https://www.sec.gov/Archives/edgar/data/78003/000007800325000159/pfe-20251113.htm",
+      "sha256": "7c006c40f40cafebc70a0b397d2da2603a1cb3fb5fe2a31a27fb0eca96296f2e",
+      "byteLength": 35534
+    },
+    {
+      "accession": "0001193125-25-210030",
+      "officialUrl": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525210030/d921605d8k.htm",
+      "sha256": "2670b727ea52ac886c6d5731251bd85e4bb202ed9a2abe2130814b22246892a9",
+      "byteLength": 60506
+    },
+    {
+      "accession": "0001193125-25-242494",
+      "officialUrl": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525242494/d53787ddefm14a.htm",
+      "sha256": "55c9aff7d3dcedd17f8e2871409d4ef9bc9d9d1da669fe899d2c7c6e370af5a8",
+      "byteLength": 4762065
+    },
+    {
+      "accession": "0001193125-25-257435",
+      "officialUrl": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525257435/d54035d8k.htm",
+      "sha256": "3e3c38edb003147775dacfb5f0f8b8144bb1d9f32bff2afdb688d42a9da3b75d",
+      "byteLength": 53219
+    },
+    {
+      "accession": "0001193125-25-263828",
+      "officialUrl": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525263828/d60790d8k.htm",
+      "sha256": "4edf691b32636b08f59c32e3832186b46e9e4072c7f53e3a9c31db93faf13029",
+      "byteLength": 53700
+    },
+    {
+      "accession": "0001193125-25-263933",
+      "officialUrl": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525263933/d60790ddefa14a.htm",
+      "sha256": "04469de799063c8ff5c60f3a44585aa39bd6df802a09a743de2f12b9a300928e",
+      "byteLength": 86098
+    },
+    {
+      "accession": "0001193125-25-273292",
+      "officialUrl": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525273292/d50740d8k.htm",
+      "sha256": "3f066e83a4d21a4bb49342fab00cb92569179e3d70bce544727c67ae951afce8",
+      "byteLength": 47249
+    },
+    {
+      "accession": "0001193125-25-273435",
+      "officialUrl": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525273435/d94128ddefa14a.htm",
+      "sha256": "ee76aa1de5bbc1519ed266249a0a90f151e531312bcec28ed60911503bdbd91d",
+      "byteLength": 589541
+    },
+    {
+      "accession": "0001193125-25-280387",
+      "officialUrl": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525280387/d161976d8k.htm",
+      "sha256": "1c0a63b4684bc2f4850fe717df156a6d5c35edb94cfaaee1eda5a76b77b59780",
+      "byteLength": 59374
+    }
+  ],
+  "allowedWrites": [
+    ".github/phase-allowlists/wp-metsera-gold-evidence-v1.json",
+    "evidence/process-intelligence/metsera-gold/source-universe.v1.json",
+    "evidence/process-intelligence/metsera-gold/exclusivity-gold.v1.json",
+    "lib/canonical-v2/metsera-gold-evidence.js",
+    "tests/canonical-v2-metsera-gold-evidence.test.js"
+  ],
+  "deniedAuthorities": [
+    "extraction",
+    "materialisation",
+    "writer",
+    "serving",
+    "database",
+    "query-execution",
+    "release",
+    "import",
+    "activation",
+    "production",
+    "staging-write",
+    "contract-freeze"
+  ]
+}

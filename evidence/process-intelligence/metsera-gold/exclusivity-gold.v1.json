@@ -1,0 +1,432 @@
+{
+  "schema": "canonical-v2/metsera-gold/exclusivity-gold/v1",
+  "caseId": "metsera",
+  "sealed": true,
+  "sourceAuthority": "official-sec-edgar-primary-document",
+  "cutoff": {
+    "inclusiveDate": "2025-11-13",
+    "timezone": "America/New_York",
+    "rule": "A source filing must have filedOn on or before the inclusive cutoff date."
+  },
+  "partyRegistry": [
+    {
+      "id": "metsera",
+      "name": "Metsera, Inc.",
+      "role": "target",
+      "tracks": [
+        "party-2",
+        "pfizer-merger",
+        "novo"
+      ]
+    },
+    {
+      "id": "pfizer",
+      "name": "Pfizer Inc.",
+      "role": "parent-and-acquiror",
+      "tracks": [
+        "pfizer-merger",
+        "novo"
+      ]
+    },
+    {
+      "id": "mayfair-merger-sub",
+      "name": "Mayfair Merger Sub, Inc.",
+      "role": "merger-sub",
+      "tracks": [
+        "pfizer-merger",
+        "novo"
+      ]
+    },
+    {
+      "id": "party-1",
+      "name": "Party 1",
+      "role": "anonymised-bidder-label",
+      "tracks": [
+        "party-2"
+      ]
+    },
+    {
+      "id": "party-2",
+      "name": "Party 2",
+      "role": "anonymised-bidder-label",
+      "tracks": [
+        "party-2"
+      ]
+    },
+    {
+      "id": "novo-nordisk",
+      "name": "Novo Nordisk A/S",
+      "role": "unsolicited-proposal-maker",
+      "tracks": [
+        "novo"
+      ]
+    }
+  ],
+  "bidderTracks": [
+    {
+      "id": "party-2",
+      "label": "Party 2",
+      "state": "anonymised",
+      "allowedPartyIds": [
+        "metsera",
+        "party-1",
+        "party-2"
+      ]
+    },
+    {
+      "id": "pfizer-merger",
+      "label": "Pfizer merger agreement",
+      "state": "identified",
+      "allowedPartyIds": [
+        "metsera",
+        "pfizer",
+        "mayfair-merger-sub"
+      ]
+    },
+    {
+      "id": "novo",
+      "label": "Novo Nordisk proposal",
+      "state": "identified",
+      "allowedPartyIds": [
+        "metsera",
+        "pfizer",
+        "mayfair-merger-sub",
+        "novo-nordisk"
+      ]
+    }
+  ],
+  "passages": [
+    {
+      "id": "pfizer-merger-party-roles",
+      "kind": "party-role",
+      "source": {
+        "accession": "0001193125-25-210030",
+        "officialUrl": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525210030/d921605d8k.htm",
+        "documentSha256": "2670b727ea52ac886c6d5731251bd85e4bb202ed9a2abe2130814b22246892a9",
+        "documentByteLength": 60506
+      },
+      "interval": {
+        "encoding": "utf-8",
+        "byteStart": 19125,
+        "byteEnd": 20005,
+        "byteLength": 880
+      },
+      "verbatimUtf8": "<p style=\"margin-top:6pt; margin-bottom:0pt; font-size:10pt; font-family:Times New Roman\">On September&#160;21, 2025, Metsera, Inc., a Delaware corporation (the &#8220;Company&#8221;), entered into an Agreement and Plan of Merger (the &#8220;Merger Agreement&#8221;) with Pfizer Inc., a Delaware corporation (&#8220;Parent&#8221;), and Mayfair Merger Sub, Inc., a Delaware corporation and wholly owned subsidiary of Parent (&#8220;Merger Sub&#8221;). Pursuant to the Merger Agreement, and upon the terms and subject to the conditions described therein, Merger Sub will merge with and into the Company, with the Company surviving the merger as a wholly owned subsidiary of Parent (the &#8220;Merger&#8221;). The Board of Directors of the Company has unanimously approved the Merger Agreement and has recommended that the stockholders of the Company adopt the Merger Agreement. </p>",
+      "verbatimSha256": "e4f072cbe9a452705d4cd2d562993d2a6e42a5b07721bd580c60acc7df73fa49",
+      "evidenceIdentity": "sha256:0dfa1912a76ff9f4f0fcc38bf0c9dfc3210b7485601a4c8447e799c8ac12f845",
+      "contextUnit": {
+        "type": "one-source-paragraph",
+        "passageId": "pfizer-merger-party-roles",
+        "paragraphCount": 1
+      },
+      "trackId": "pfizer-merger",
+      "partyIds": [
+        "metsera",
+        "pfizer",
+        "mayfair-merger-sub"
+      ],
+      "date": "2025-09-21",
+      "state": "executed",
+      "relationship": "source-backed",
+      "relatedDiscussionIds": []
+    },
+    {
+      "id": "party-2-august-11-proposed-exclusivity",
+      "kind": "exclusivity-proposal",
+      "source": {
+        "accession": "0001193125-25-242494",
+        "officialUrl": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525242494/d53787ddefm14a.htm",
+        "documentSha256": "55c9aff7d3dcedd17f8e2871409d4ef9bc9d9d1da669fe899d2c7c6e370af5a8",
+        "documentByteLength": 4762065
+      },
+      "interval": {
+        "encoding": "utf-8",
+        "byteStart": 318834,
+        "byteEnd": 320337,
+        "byteLength": 1503
+      },
+      "verbatimUtf8": "<P ALIGN=\"left\" STYLE=\" margin-top:0pt ; margin-bottom:0pt; font-family:Times New Roman; font-size:10pt\">Party 2 proposed (the &#8220;August 11 Party 2 Proposal,&#8221; and together with the August&nbsp;11 Pfizer\nProposal, the &#8220;August 11 Proposals&#8221;) to acquire Metsera for up to $90.00 per share of Metsera common stock, consisting of (i) $45.00 in an unspecified mix of Party 2 stock and cash, plus (ii)&nbsp;one\n<FONT STYLE=\"white-space:nowrap\">non-tradeable</FONT> CVR representing the right to receive up to $45.00 in an unspecified mix of Party 2 stock and cash payable upon the achievement of certain clinical development milestones with no specific\ndeadlines. The August 11 Party 2 Proposal also (a)&nbsp;included a draft exclusivity agreement that provided for exclusivity through 9:00 a.m. Eastern Time on September&nbsp;15, 2025, and (b)&nbsp;specified various legal and other terms, including\nthat Metsera would remain a free-standing business unit within Party 2 post-closing. In conversations between representatives of Metsera and Party 2 in connection with the submission of the August&nbsp;11 Party 2 Proposal, the representatives of\nParty 2 expressed that its proposal was intended to <FONT STYLE=\"white-space:nowrap\">&#8220;pre-empt&#8221;</FONT> any other potential proposals, Party 2 did not expect to meaningfully improve the terms of its proposal and was only willing to engage\nwith Metsera if Metsera was willing to execute a transaction within a short timeframe. </P>",
+      "verbatimSha256": "030c3582bb5d515217e6849ffa2f736db2fa7f54c521138f720a7014789ea1a1",
+      "evidenceIdentity": "sha256:3efe0437c87f0aa90a5d97f20273c3cfa302c56d670688205456af56f65612ef",
+      "contextUnit": {
+        "type": "one-source-paragraph",
+        "passageId": "party-2-august-11-proposed-exclusivity",
+        "paragraphCount": 1
+      },
+      "trackId": "party-2",
+      "partyIds": [
+        "metsera",
+        "party-2"
+      ],
+      "date": "2025-08-11",
+      "state": "proposed",
+      "relationship": "source-backed",
+      "relatedDiscussionIds": [
+        "party-2-august-16-board-exclusivity-analysis",
+        "party-2-august-17-executed-exclusivity"
+      ]
+    },
+    {
+      "id": "party-2-august-16-board-exclusivity-analysis",
+      "kind": "exclusivity-board-analysis",
+      "source": {
+        "accession": "0001193125-25-242494",
+        "officialUrl": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525242494/d53787ddefm14a.htm",
+        "documentSha256": "55c9aff7d3dcedd17f8e2871409d4ef9bc9d9d1da669fe899d2c7c6e370af5a8",
+        "documentByteLength": 4762065
+      },
+      "interval": {
+        "encoding": "utf-8",
+        "byteStart": 332535,
+        "byteEnd": 334515,
+        "byteLength": 1980
+      },
+      "verbatimUtf8": "<P STYLE=\"margin-top:12pt; margin-bottom:0pt; font-size:10pt; font-family:Times New Roman\">The Board engaged in discussion regarding, among other things, (i)&nbsp;the value of the August&nbsp;16 Party 2 Proposal, which was significantly higher than\nany other proposal to acquire Metsera and the upfront consideration and total nominal value of which represented a 53% and 205% premium, respectively, to the closing price of shares of Metsera common stock on August 15, 2025, the last trading day\nprior to the August 16 Party 2 Proposal, (ii) Party 2&#8217;s statements that it was only willing to engage with Metsera if Metsera was willing to enter into exclusivity to allow Party 2 to negotiate and execute a transaction within a short\ntimeframe on a bilateral basis, (iii)&nbsp;the risk that if Metsera did not grant Party 2 exclusivity then Party 2&nbsp;may terminate its engagement with Metsera, (iv)&nbsp;the fact that even if Metsera executed a transaction with Party 2, Metsera\nwould be able to respond to unsolicited proposals prior to obtaining stockholder approval, which would present sufficient opportunity for a competing bidder to emerge, (v)&nbsp;the advanced stage of negotiations with significant alignment on\ntransaction terms with Party 2 particularly as compared to the early stage of Party 1&#8217;s potential proposal, which lacked specificity, and the nascent stages of discussions with other potential counterparties, (vi)&nbsp;the current bullish\nmarket for product candidates in the indications targeted by Metsera&#8217;s product candidates that may not continue, and that, given the pace of acquisition activity for such product candidates, there may be a narrow window of time in which\npotential acquirers would be interested in acquiring Metsera and (vii)&nbsp;the regulatory risks associated with a transaction with Party 1 for which Metsera would need to be significantly compensated, if it could agree to a transaction with such\nrisks at all. </P>",
+      "verbatimSha256": "1586dcf7e66af69e82bec22275006625427a8b06a7e9ecfec2ba21a4327504c9",
+      "evidenceIdentity": "sha256:90f8304b5a086beb4c86ec0b923a5868a5c69fc14031f1bfc9e80180ca48f68f",
+      "contextUnit": {
+        "type": "one-source-paragraph",
+        "passageId": "party-2-august-16-board-exclusivity-analysis",
+        "paragraphCount": 1
+      },
+      "trackId": "party-2",
+      "partyIds": [
+        "metsera",
+        "party-2",
+        "party-1"
+      ],
+      "date": "2025-08-16",
+      "state": "board-authorised",
+      "relationship": "source-backed",
+      "relatedDiscussionIds": [
+        "party-2-august-11-proposed-exclusivity",
+        "party-2-august-17-executed-exclusivity"
+      ]
+    },
+    {
+      "id": "party-2-august-17-executed-exclusivity",
+      "kind": "exclusivity-agreement",
+      "source": {
+        "accession": "0001193125-25-242494",
+        "officialUrl": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525242494/d53787ddefm14a.htm",
+        "documentSha256": "55c9aff7d3dcedd17f8e2871409d4ef9bc9d9d1da669fe899d2c7c6e370af5a8",
+        "documentByteLength": 4762065
+      },
+      "interval": {
+        "encoding": "utf-8",
+        "byteStart": 337991,
+        "byteEnd": 338415,
+        "byteLength": 424
+      },
+      "verbatimUtf8": "<P STYLE=\"margin-top:12pt; margin-bottom:0pt; font-size:10pt; font-family:Times New Roman\">Later on August&nbsp;17, 2025, given the developments of that day and the\nBoard&#8217;s prior direction on the terms of a Party 1 proposal, Metsera and Party 2 entered into an exclusivity agreement, pursuant to which the parties agreed to negotiate on an exclusive basis through 9:00 a.m. Eastern Time on September&nbsp;8,\n2025. </P>",
+      "verbatimSha256": "e0f0eeeca5f324c424a1d4c527a25473b5fb7d9ea0a24b4c7f418b36d954299e",
+      "evidenceIdentity": "sha256:7a4dbe5347a889d5ebcdddfd9cbdf724eeaecfb3b87d7853f6c67cacb268b133",
+      "contextUnit": {
+        "type": "one-source-paragraph",
+        "passageId": "party-2-august-17-executed-exclusivity",
+        "paragraphCount": 1
+      },
+      "trackId": "party-2",
+      "partyIds": [
+        "metsera",
+        "party-2"
+      ],
+      "date": "2025-08-17",
+      "state": "executed",
+      "relationship": "source-backed",
+      "relatedDiscussionIds": [
+        "party-2-august-11-proposed-exclusivity",
+        "party-2-august-16-board-exclusivity-analysis"
+      ]
+    },
+    {
+      "id": "pfizer-no-solicitation",
+      "kind": "no-solicitation",
+      "source": {
+        "accession": "0001193125-25-242494",
+        "officialUrl": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525242494/d53787ddefm14a.htm",
+        "documentSha256": "55c9aff7d3dcedd17f8e2871409d4ef9bc9d9d1da669fe899d2c7c6e370af5a8",
+        "documentByteLength": 4762065
+      },
+      "interval": {
+        "encoding": "utf-8",
+        "byteStart": 1332694,
+        "byteEnd": 1334495,
+        "byteLength": 1801
+      },
+      "verbatimUtf8": "<P STYLE=\"margin-top:12pt; margin-bottom:0pt; text-indent:4%; font-size:10pt; font-family:Times New Roman\">SECTION&nbsp;5.02. <U>No Solicitation</U>. (a) <U></U>The Company shall not, and shall cause the Company Subsidiaries and its and their\nrespective directors and officers not to, and shall use reasonable best efforts to cause its and their respective other Representatives not to, (<U>i</U>)&nbsp;directly or indirectly solicit, initiate or knowingly encourage or knowingly facilitate\nthe making of any inquiry, offer or proposal which constitutes or is reasonably likely to lead to any Company Takeover Proposal or (ii)&nbsp;directly or indirectly participate in any discussions or negotiations regarding, furnish to any Person any\ninformation with respect to, or take any other action to assist, knowingly facilitate or knowingly encourage any effort by any Person, in each case in connection with or in response to any inquiry, offer or proposal that constitutes, or could\nreasonably be expected to lead to, any Company Takeover Proposal, or<U> </U>grant any waiver or release under any restriction from making a Company Takeover Proposal; <U>provided</U>, that notwithstanding the foregoing, the Company and its\nRepresentatives may inform a Person that has made a Company Takeover Proposal of the terms of this <U>Section</U><U></U><U>&nbsp;5.02</U>. It is agreed that any violation of the restrictions on the Company or the Company Board or any committee\nthereof set forth in this <U>Section</U><U></U><U>&nbsp;5.02</U> by any Representative of the Company or any of the Company Subsidiaries, in each case, acting in its authorized capacity on behalf of the Company or any of the Company Subsidiaries,\nshall be a breach of this <U>Section</U><U></U><U>&nbsp;5.02(a)</U> by the Company. </P>",
+      "verbatimSha256": "377b3b88e3c7c9c273fdea2f759a103c2502eede874f49f9e20721993653fc82",
+      "evidenceIdentity": "sha256:b31f6f7983440b5b8b9762d674127459f12142228b7cd6c2228e95fb0562b9cc",
+      "contextUnit": {
+        "type": "one-source-paragraph",
+        "passageId": "pfizer-no-solicitation",
+        "paragraphCount": 1
+      },
+      "trackId": "pfizer-merger",
+      "partyIds": [
+        "metsera",
+        "pfizer",
+        "mayfair-merger-sub"
+      ],
+      "date": "2025-09-21",
+      "state": "executed",
+      "relationship": "source-backed",
+      "relatedDiscussionIds": [
+        "pfizer-qualifying-proposal-exception",
+        "novo-unsolicited-superior-proposal"
+      ]
+    },
+    {
+      "id": "pfizer-qualifying-proposal-exception",
+      "kind": "no-solicitation-exception",
+      "source": {
+        "accession": "0001193125-25-242494",
+        "officialUrl": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525242494/d53787ddefm14a.htm",
+        "documentSha256": "55c9aff7d3dcedd17f8e2871409d4ef9bc9d9d1da669fe899d2c7c6e370af5a8",
+        "documentByteLength": 4762065
+      },
+      "interval": {
+        "encoding": "utf-8",
+        "byteStart": 834845,
+        "byteEnd": 835644,
+        "byteLength": 799
+      },
+      "verbatimUtf8": "<P ALIGN=\"left\" STYLE=\" margin-top:0pt ; margin-bottom:0pt; font-family:Times New Roman; font-size:10pt\">in response to a bona fide written Company Takeover Proposal that did not result from a material breach of\nSection&nbsp;5.02(a) of the Merger Agreement and that the Board or a committee thereof acting with the full authority of the Board thereof reasonably determines, in good faith, after consultation with its outside counsel and financial advisor,\nconstitutes or could reasonably be expected to lead to a Superior Company Proposal (as defined below) and in respect of which the failure to take such action would be, or would reasonably likely to be, inconsistent with its fiduciary duties under\nany applicable law (a &#8220;Qualifying Company Takeover Proposal&#8221;), the Company may: </P>",
+      "verbatimSha256": "8ce3f4c78b011a40895eebe532b2168650f24460de4c9aa0e50a86aec1248d8e",
+      "evidenceIdentity": "sha256:376fb11f0bf252f74cfcd5fffcc02193650a8d3e2e51dd9fd00a5d60264ccb6e",
+      "contextUnit": {
+        "type": "one-source-paragraph",
+        "passageId": "pfizer-qualifying-proposal-exception",
+        "paragraphCount": 1
+      },
+      "trackId": "pfizer-merger",
+      "partyIds": [
+        "metsera",
+        "pfizer"
+      ],
+      "date": "2025-09-21",
+      "state": "executed",
+      "relationship": "source-backed",
+      "relatedDiscussionIds": [
+        "pfizer-no-solicitation",
+        "novo-unsolicited-superior-proposal"
+      ]
+    },
+    {
+      "id": "novo-unsolicited-superior-proposal",
+      "kind": "related-exclusivity-discussion",
+      "source": {
+        "accession": "0001193125-25-257435",
+        "officialUrl": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525257435/d54035d8k.htm",
+        "documentSha256": "3e3c38edb003147775dacfb5f0f8b8144bb1d9f32bff2afdb688d42a9da3b75d",
+        "documentByteLength": 53219
+      },
+      "interval": {
+        "encoding": "utf-8",
+        "byteStart": 18884,
+        "byteEnd": 19892,
+        "byteLength": 1008
+      },
+      "verbatimUtf8": "<p style=\"margin-top:6pt; margin-bottom:0pt; text-indent:4%; font-size:10pt; font-family:Times New Roman\">On October 30, 2025, Metsera, Inc., a Delaware corporation (the &#8220;Company&#8221; or &#8220;Metsera&#8221;), issued a press release announcing that on October&#160;29, 2025 the Metsera Board of Directors determined, after consultation with its outside counsel and financial advisors, that an unsolicited proposal that Metsera received from Novo Nordisk A/S, a Danish <span style=\"font-style:italic\">aktieselskab </span>(&#8220;Novo Nordisk&#8221;), to acquire Metsera (the &#8220;Novo Nordisk Proposal&#8221;) constitutes a &#8220;Superior Company Proposal&#8221; as defined in the Merger Agreement by and among Pfizer Inc. (&#8220;Pfizer&#8221;), a Delaware corporation, Mayfair Merger Sub, Inc. a Delaware corporation, and the Company (the &#8220;Pfizer Merger Agreement&#8221;). A copy of the press release is attached as Exhibit 99.1 to this report and is incorporated herein by reference. </p>",
+      "verbatimSha256": "df8acb7a725891ec3a26b43a1c2edbeac888cbaed3d04748c566c573031791f2",
+      "evidenceIdentity": "sha256:ff482d4ba7e073e4432327bdef4c1a0586326f10e7afde42aaac367c1a14919d",
+      "contextUnit": {
+        "type": "one-source-paragraph",
+        "passageId": "novo-unsolicited-superior-proposal",
+        "paragraphCount": 1
+      },
+      "trackId": "novo",
+      "partyIds": [
+        "metsera",
+        "novo-nordisk",
+        "pfizer",
+        "mayfair-merger-sub"
+      ],
+      "date": "2025-10-29",
+      "state": "board-determined",
+      "relationship": "source-backed",
+      "relatedDiscussionIds": [
+        "pfizer-no-solicitation",
+        "pfizer-qualifying-proposal-exception"
+      ]
+    },
+    {
+      "id": "party-1-novo-identity",
+      "kind": "bidder-identity",
+      "source": {
+        "accession": "0001193125-25-273435",
+        "officialUrl": "https://www.sec.gov/Archives/edgar/data/2040807/000119312525273435/d94128ddefa14a.htm",
+        "documentSha256": "ee76aa1de5bbc1519ed266249a0a90f151e531312bcec28ed60911503bdbd91d",
+        "documentByteLength": 589541
+      },
+      "interval": {
+        "encoding": "utf-8",
+        "byteStart": 123583,
+        "byteEnd": 124259,
+        "byteLength": 676
+      },
+      "verbatimUtf8": "<P STYLE=\"margin-top:6pt; margin-bottom:0pt; text-indent:4%; font-size:10pt; font-family:Times New Roman\">The section entitled &#8220;<I>Proposal 1: Adoption of the Merger Agreement&#8212;Background of the Merger</I>&#8221; beginning on page 34 of\nthe definitive proxy statement (which we refer to as the &#8220;Background Section&#8221;) describes the background of the merger up to and including October&nbsp;17, 2025. This section describes the process undertaken on and after October 18, 2025\nthrough to November&nbsp;9, 2025. References to Party 1 in the definitive proxy statement, including the Background Section, shall be deemed to be references to Novo Nordisk. </P>",
+      "verbatimSha256": "37e4a8c8c95c3e499bdb3e0e315fe385c8748b3b9ee42d2a39e40a1753568ca0",
+      "evidenceIdentity": "sha256:8b150225fb8b8dc097efd93fdbbbbb3025e2bc2eaeb4dbe5451d1b5819022914",
+      "contextUnit": {
+        "type": "one-source-paragraph",
+        "passageId": "party-1-novo-identity",
+        "paragraphCount": 1
+      },
+      "trackId": "novo",
+      "partyIds": [
+        "novo-nordisk"
+      ],
+      "date": "2025-11-07",
+      "state": "disclosed",
+      "relationship": "source-backed",
+      "relatedDiscussionIds": []
+    }
+  ],
+  "falseMatchTraps": [
+    {
+      "id": "patent-license-exclusivity-not-process",
+      "classification": "not-transaction-exclusivity",
+      "reason": "This use concerns intellectual-property licensing, not bidder-process exclusivity.",
+      "source": {
+        "accession": "0001193125-25-242494",
+        "documentSha256": "55c9aff7d3dcedd17f8e2871409d4ef9bc9d9d1da669fe899d2c7c6e370af5a8"
+      },
+      "interval": {
+        "encoding": "utf-8",
+        "byteStart": 2619526,
+        "byteEnd": 2620166,
+        "byteLength": 640
+      },
+      "verbatimUtf8": "<P STYLE=\"margin-top:12pt; margin-bottom:0pt; text-indent:4%; font-size:10pt; font-family:Times New Roman\">Further development of our proprietary technology and product candidates may require us to enter into additional license or collaboration\nagreements. Our future licenses may not provide us with exclusive rights to use the licensed intellectual property and technology, or may not provide us with exclusive rights to use such intellectual property and technology in all relevant fields of\nuse and in all territories in which we may wish to develop or commercialize our product candidates and proprietary technology in the future. </P>",
+      "verbatimSha256": "a601da2183b36be45af9519a2b162fd04425bd502dbcf267ba3db5166d5cc09e"
+    },
+    {
+      "id": "exclusive-forum-not-process",
+      "classification": "not-transaction-exclusivity",
+      "reason": "This use concerns a litigation forum provision, not bidder-process exclusivity.",
+      "source": {
+        "accession": "0001193125-25-242494",
+        "documentSha256": "55c9aff7d3dcedd17f8e2871409d4ef9bc9d9d1da669fe899d2c7c6e370af5a8"
+      },
+      "interval": {
+        "encoding": "utf-8",
+        "byteStart": 2736786,
+        "byteEnd": 2737777,
+        "byteLength": 991
+      },
+      "verbatimUtf8": "<P STYLE=\"margin-top:6pt; margin-bottom:0pt; text-indent:4%; font-size:10pt; font-family:Times New Roman\">Our amended and restated certificate of incorporation provides that the Court of Chancery of the State of Delaware is the exclusive forum for\nany derivative action or proceeding brought on our behalf, any action asserting a breach of fiduciary duty, any action asserting a claim against us arising pursuant to the Delaware General Corporation Law, our amended and restated certificate of\nincorporation or our amended and restated bylaws, or any action asserting a claim against us that is governed by the internal affairs doctrine; provided, that, this provision does not apply to suits brought to enforce a duty or liability created by\nthe Exchange Act or any other claim for which the federal courts have exclusive jurisdiction. Furthermore, our amended and restated certificate of incorporation also provides that unless we consent in writing to the selection of an alternative\n</P>",
+      "verbatimSha256": "d90b07667b8ca2e69fdf6b1fa584578e12bf1e6fa33351e6c479b58bd26da6f9"
+    }
+  ],
+  "limitations": [
+    "Party 2 is not identified in the admitted passages and remains an anonymised label.",
+    "The package records evidence only. It does not expose a case answer, extractor result, serving projection, or release authority."
+  ],
+  "integrationOrder": [
+    "Stage 1 sealed evidence validation",
+    "Stage 2 independent comparison",
+    "Stage 3 adjudication",
+    "Stage 4 authorised answer comparison"
+  ]
+}
