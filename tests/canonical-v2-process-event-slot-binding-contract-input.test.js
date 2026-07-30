@@ -43,8 +43,8 @@ function processMembers() {
     loadMember('process/phases/process-phase.v1.json'),
     loadMember('process/positions/process-position.v1.json'),
     loadMember('process/predicates/process-predicate-witness.v2.json'),
-    loadMember('process/registries/process-controlled-code-registry.v1.json'),
-    loadMember('process/relationships/process-relationship.v1.json'),
+    loadMember('process/registries/process-controlled-code-registry.v2.json'),
+    loadMember('process/relationships/process-relationship.v2.json'),
   ];
 }
 

@@ -164,18 +164,41 @@ function metseraFixture() {
         process_agreement_slot_key: 'METSERA_EXCLUSIVITY_AGREEMENT',
         governed_ordinal: 0,
       }],
-      relationship_slots: [{
-        process_relationship_slot_key: 'GRANT_POSITION_TO_AGREEMENT',
-        source_endpoint: {
-          logical_type: 'ProcessPosition',
-          slot_key: 'METSERA_EXCLUSIVITY_GRANT_POSITION',
+      relationship_slots: [
+        {
+          process_relationship_slot_key:
+            'PFIZER_TRACK_TO_EXCLUSIVITY_GRANT_EVENT',
+          source_endpoint: {
+            logical_type: 'BidderTrack',
+            slot_key: 'PFIZER_BIDDER_TRACK',
+          },
+          target_endpoint: {
+            logical_type: 'ProcessEvent',
+            slot_key: 'METSERA_EXCLUSIVITY_GRANT_EVENT',
+          },
+          governed_ordinal: 0,
+          relationship_evidence: evidence(
+            'BIDDER_TRACK_EVENT_MEMBERSHIP',
+            narrationInterval,
+          ),
         },
-        target_endpoint: {
-          logical_type: 'ProcessAgreement',
-          slot_key: 'METSERA_EXCLUSIVITY_AGREEMENT',
+        {
+          process_relationship_slot_key: 'GRANT_POSITION_TO_AGREEMENT',
+          source_endpoint: {
+            logical_type: 'ProcessPosition',
+            slot_key: 'METSERA_EXCLUSIVITY_GRANT_POSITION',
+          },
+          target_endpoint: {
+            logical_type: 'ProcessAgreement',
+            slot_key: 'METSERA_EXCLUSIVITY_AGREEMENT',
+          },
+          governed_ordinal: 0,
+          relationship_evidence: evidence(
+            'PROCESS_RELATIONSHIP',
+            draftingInterval,
+          ),
         },
-        governed_ordinal: 0,
-      }],
+      ],
       temporal_slots: [{
         expected_temporal_slot_key: 'METSERA_EXCLUSIVITY_END_TIME',
         governed_ordinal: 0,
@@ -304,16 +327,32 @@ function metseraFixture() {
         ],
         evidence: evidence('PROCESS_AGREEMENT', draftingInterval),
       }],
-      relationships: [{
-        process_relationship_slot_key: 'GRANT_POSITION_TO_AGREEMENT',
-        relationship_type_code: 'CROSS_REFERENCE',
-        relationship_effect: {
-          effect_code: 'POSITION_EVIDENCES_EXCLUSIVITY_AGREEMENT',
+      relationships: [
+        {
+          process_relationship_slot_key:
+            'PFIZER_TRACK_TO_EXCLUSIVITY_GRANT_EVENT',
+          relationship_type_code: 'BIDDER_TRACK_EVENT_MEMBERSHIP',
+          relationship_effect: {
+            effect_code: 'EVENT_MEMBER_OF_BIDDER_TRACK',
+          },
+          relationship_state: 'PRESENT',
+          temporal_slot_key: null,
+          evidence: evidence(
+            'BIDDER_TRACK_EVENT_MEMBERSHIP',
+            narrationInterval,
+          ),
         },
-        relationship_state: 'PRESENT',
-        temporal_slot_key: null,
-        evidence: evidence('PROCESS_RELATIONSHIP', draftingInterval),
-      }],
+        {
+          process_relationship_slot_key: 'GRANT_POSITION_TO_AGREEMENT',
+          relationship_type_code: 'CROSS_REFERENCE',
+          relationship_effect: {
+            effect_code: 'POSITION_EVIDENCES_EXCLUSIVITY_AGREEMENT',
+          },
+          relationship_state: 'PRESENT',
+          temporal_slot_key: null,
+          evidence: evidence('PROCESS_RELATIONSHIP', draftingInterval),
+        },
+      ],
       temporal_expressions: [{
         expected_temporal_slot_key: 'METSERA_EXCLUSIVITY_END_TIME',
         coarse_temporal_state: 'EXPLICIT_DATE',
@@ -578,7 +617,7 @@ test('materialises the complete typed Metsera exclusivity sidecar deterministica
     phase_revisions: 1,
     position_revisions: 1,
     agreement_revisions: 1,
-    relationship_revisions: 1,
+    relationship_revisions: 2,
     temporal_expression_revisions: 1,
     predicate_witness_revisions: 1,
     passage_revisions: 2,
@@ -589,6 +628,208 @@ test('materialises the complete typed Metsera exclusivity sidecar deterministica
     )),
     expectedCounts,
   );
+});
+
+test('retains one acyclic membership revision in both stable endpoints', () => {
+  const result = compileProcessExclusivityPilotMaterialisation(
+    metseraFixture(),
+  );
+  const [membership, crossReference] =
+    result.revisions.relationship_revisions;
+  const membershipIdentity = result.identities.relationships.find(
+    (identity) => identity.process_relationship_id
+      === membership.process_relationship_id,
+  );
+  const track = result.revisions.bidder_track_revisions[0];
+  const event = result.revisions.event_revisions[0];
+
+  assert.equal(
+    membership.relationship_type_code,
+    'BIDDER_TRACK_EVENT_MEMBERSHIP',
+  );
+  assert.deepEqual(membership.relationship_effect, {
+    effect_code: 'EVENT_MEMBER_OF_BIDDER_TRACK',
+  });
+  assert.equal(membership.relationship_state, 'PRESENT');
+  assert.equal(membership.temporal_expression_revision_id, null);
+  assert.deepEqual(
+    membership.source_process_object_kind_and_id,
+    membershipIdentity.source_process_object_kind_and_id,
+  );
+  assert.deepEqual(
+    membership.target_process_object_kind_and_id,
+    membershipIdentity.target_process_object_kind_and_id,
+  );
+  assert.equal(Object.hasOwn(membership, 'source_revision_id'), false);
+  assert.equal(Object.hasOwn(membership, 'target_revision_id'), false);
+  assert.equal(
+    Object.keys(membership).some((key) => (
+      key === 'bidder_track_revision_id'
+      || key === 'process_event_revision_id'
+    )),
+    false,
+  );
+  assert.deepEqual(
+    track.ordered_process_event_relationship_revision_ids,
+    [membership.process_relationship_revision_id],
+  );
+  assert.deepEqual(
+    event.process_relationship_revision_ids,
+    [membership.process_relationship_revision_id],
+  );
+  assert.equal(crossReference.relationship_type_code, 'CROSS_REFERENCE');
+});
+
+test('rejects missing, reversed, unknown and duplicate memberships', () => {
+  const missing = metseraFixture();
+  missing.frozen_scope.relationship_slots.shift();
+  missing.typed_values.relationships.shift();
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(missing),
+    { code: 'MISSING_PROCESS_BIDDER_TRACK_EVENT_MEMBERSHIP' },
+  );
+
+  const reversed = metseraFixture();
+  const reversedSlot = reversed.frozen_scope.relationship_slots[0];
+  [
+    reversedSlot.source_endpoint,
+    reversedSlot.target_endpoint,
+  ] = [
+    reversedSlot.target_endpoint,
+    reversedSlot.source_endpoint,
+  ];
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(reversed),
+    { code: 'PROCESS_BIDDER_TRACK_EVENT_MEMBERSHIP_ENDPOINT_MISMATCH' },
+  );
+
+  const unknownType = metseraFixture();
+  unknownType.typed_values.relationships[0].relationship_type_code =
+    'BIDDER_TRACK_EVENT_MEMBER';
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(unknownType),
+    { code: 'UNRESOLVED_PROCESS_CONTROLLED_CODE' },
+  );
+
+  const substitutedType = metseraFixture();
+  substitutedType.typed_values.relationships[0].relationship_type_code =
+    'CROSS_REFERENCE';
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(substitutedType),
+    { code: 'MISSING_PROCESS_BIDDER_TRACK_EVENT_MEMBERSHIP' },
+  );
+
+  const duplicate = metseraFixture();
+  const duplicateSlot = clone(duplicate.frozen_scope.relationship_slots[0]);
+  duplicateSlot.process_relationship_slot_key =
+    'DUPLICATE_TRACK_TO_EXCLUSIVITY_GRANT_EVENT';
+  duplicateSlot.governed_ordinal = 1;
+  duplicate.frozen_scope.relationship_slots.push(duplicateSlot);
+  const duplicateValue = clone(duplicate.typed_values.relationships[0]);
+  duplicateValue.process_relationship_slot_key =
+    duplicateSlot.process_relationship_slot_key;
+  duplicate.typed_values.relationships.push(duplicateValue);
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(duplicate),
+    { code: 'DUPLICATE_PROCESS_BIDDER_TRACK_EVENT_MEMBERSHIP' },
+  );
+});
+
+test('rejects unresolved, revision-ID and scope-substituted endpoints', () => {
+  const unresolved = metseraFixture();
+  unresolved.frozen_scope.relationship_slots[0]
+    .target_endpoint.slot_key = 'UNKNOWN_PROCESS_EVENT';
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(unresolved),
+    { code: 'INVALID_PROCESS_PILOT_RELATIONSHIP_ENDPOINT' },
+  );
+
+  const revisionEndpoint = metseraFixture();
+  revisionEndpoint.frozen_scope.relationship_slots[0]
+    .source_endpoint.source_revision_id = digest('source-revision');
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(revisionEndpoint),
+    { code: 'INVALID_PROCESS_PILOT_RELATIONSHIP_ENDPOINT' },
+  );
+
+  for (const key of [
+    'governed_deal_admission_id',
+    'frozen_contract_pair_digest',
+  ]) {
+    const changedScope = metseraFixture();
+    changedScope.frozen_scope.relationship_slots[0]
+      .source_endpoint[key] = digest(`other-${key}`);
+    assert.throws(
+      () => compileProcessExclusivityPilotMaterialisation(changedScope),
+      { code: 'INVALID_PROCESS_PILOT_RELATIONSHIP_ENDPOINT' },
+    );
+  }
+});
+
+test('rejects membership effect, state, evidence and inference substitution', () => {
+  const changedEffect = metseraFixture();
+  changedEffect.typed_values.relationships[0].relationship_effect = {
+    effect_code: 'FOLLOWS_PROCESS_EVENT',
+  };
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(changedEffect),
+    { code: 'INVALID_PROCESS_BIDDER_TRACK_EVENT_MEMBERSHIP_EFFECT' },
+  );
+
+  const changedState = metseraFixture();
+  changedState.typed_values.relationships[0].relationship_state = 'ABSENT';
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(changedState),
+    { code: 'INVALID_PROCESS_BIDDER_TRACK_EVENT_MEMBERSHIP_STATE' },
+  );
+
+  const changedTemporal = metseraFixture();
+  changedTemporal.typed_values.relationships[0].temporal_slot_key =
+    'METSERA_EXCLUSIVITY_END_TIME';
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(changedTemporal),
+    { code: 'INVALID_PROCESS_BIDDER_TRACK_EVENT_MEMBERSHIP_TEMPORAL' },
+  );
+
+  const changedEvidence = metseraFixture();
+  changedEvidence.typed_values.relationships[0].evidence = evidence(
+    'BIDDER_TRACK_EVENT_MEMBERSHIP',
+    changedEvidence.typed_values.temporal_expressions[0]
+      .evidence.intervals[0],
+  );
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(changedEvidence),
+    { code: 'PROCESS_PILOT_RELATIONSHIP_EVIDENCE_SUBSTITUTION' },
+  );
+
+  const relabelledEvidence = metseraFixture();
+  relabelledEvidence.frozen_scope.relationship_slots[0]
+    .relationship_evidence.evidence_role_key = 'PROCESS_CHRONOLOGY';
+  relabelledEvidence.typed_values.relationships[0]
+    .evidence.evidence_role_key = 'PROCESS_CHRONOLOGY';
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(
+      relabelledEvidence,
+    ),
+    {
+      code:
+        'INVALID_PROCESS_PILOT_BIDDER_TRACK_EVENT_MEMBERSHIP_EVIDENCE',
+    },
+  );
+
+  for (const [key, value] of [
+    ['event_date', '2025-09-04'],
+    ['matching_economics', true],
+    ['display_name', 'Pfizer'],
+    ['source_local_label', 'Bidder A'],
+  ]) {
+    const inferred = metseraFixture();
+    inferred.typed_values.relationships[0][key] = value;
+    assert.throws(
+      () => compileProcessExclusivityPilotMaterialisation(inferred),
+      { code: 'INVALID_PROCESS_PILOT_TYPED_VALUE' },
+    );
+  }
 });
 
 test('consumes all 18 successor predicate machine rules exactly', () => {
