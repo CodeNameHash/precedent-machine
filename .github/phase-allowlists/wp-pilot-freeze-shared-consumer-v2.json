@@ -1,0 +1,23 @@
+{
+  "phase": "WP-PILOT-FREEZE-SHARED-CONSUMER-V2",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-pilot-freeze-shared-consumer-v2.json",
+    "lib/canonical-v2/process-deal-fact-projection.js",
+    "lib/canonical-v2/shared-authority-consumed-contract-manifest.js",
+    "tests/canonical-v2-process-shared-authority-integration.test.js",
+    "tests/canonical-v2-shared-authority-consumed-contract.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Binds Process to the exact 17-member Shared Authority input set and rejects ungoverned buyer projection. It grants no extraction, write, serving, database, release, import, activation, production, or contract-freeze authority."
+}

@@ -1,4 +1,5 @@
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 
@@ -7,9 +8,6 @@ const {
   contentId,
   sha256Hex,
 } = require('../lib/canonical-v2/canonical-bytes');
-const {
-  compileCanonicalContractInput,
-} = require('../lib/canonical-v2/canonical-contract-input-compiler');
 const {
   APPROVED_SHARED_DESIGN_SHA256,
   REQUIRED_FIELD_KEYS,
@@ -31,10 +29,37 @@ function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
+function compiledSharedInput() {
+  return {
+    canonical_bundle_input_identity: {
+      compiler_input_schema_version: 'CANONICAL_BUNDLE_INPUT_COMPILER/V1',
+      generator_input_schema_version: 'CANONICAL_BUNDLE_GENERATOR_INPUT/V1',
+    },
+    authored_members: REQUIRED_SHARED_MEMBER_BINDINGS.map((binding, ordinal) => {
+      const canonicalValue = JSON.parse(
+        fs.readFileSync(path.join(ROOT, binding.relative_path), 'utf8'),
+      );
+      assert.equal(
+        sha256Hex(canonicalJson(canonicalValue)),
+        binding.canonical_bytes_digest,
+      );
+      return {
+        ...binding,
+        canonical_byte_length: Buffer.byteLength(
+          canonicalJson(canonicalValue),
+          'utf8',
+        ),
+        contract_ordinal: ordinal,
+        canonical_value: canonicalValue,
+      };
+    }),
+  };
+}
+
 function build() {
-  return buildSharedAuthorityConsumedContractManifest({
-    root_directory: ROOT,
-  });
+  return buildSharedAuthorityConsumedContractManifestFromCompiled(
+    compiledSharedInput(),
+  );
 }
 
 function resignManifest(manifest) {
@@ -67,14 +92,27 @@ test('builds one deterministic Process binding to the exact shared input set', (
     first.shared_authority_input_set.ordered_shared_members,
     REQUIRED_SHARED_MEMBER_BINDINGS,
   );
-  assert.equal(first.shared_authority_input_set.ordered_shared_members.length, 16);
+  assert.equal(first.shared_authority_input_set.ordered_shared_members.length, 17);
+  assert.deepEqual(
+    first.shared_authority_input_set.ordered_shared_members.find(
+      (member) => member.stable_id === 'CONSIDERATION_PACKAGE',
+    ),
+    {
+      relative_path: 'shared/transactions/consideration-package.v1.json',
+      object_kind: 'SHARED_AUTHORITY_LOGICAL_TYPE_INPUT',
+      stable_id: 'CONSIDERATION_PACKAGE',
+      schema_version: 'SHARED_AUTHORITY_LOGICAL_TYPE_INPUT/V1',
+      canonical_bytes_digest:
+        '9d0e79ae22df6f1eba849d7a83e70baa654b38496ec4ce60c23136bd9fe361b6',
+    },
+  );
   assert.equal(Object.isFrozen(first), true);
   assert.equal(Object.isFrozen(first.shared_authority_input_set), true);
   assert.doesNotThrow(() => validateSharedAuthorityConsumedContractManifest(first));
 });
 
 test('keeps the shared input identity independent of unrelated Process additions', () => {
-  const compiled = compileCanonicalContractInput({ root_directory: ROOT });
+  const compiled = compiledSharedInput();
   const before = buildSharedAuthorityConsumedContractManifestFromCompiled(compiled);
   const extended = {
     ...compiled,
@@ -198,7 +236,7 @@ test('grants no runtime, write, release or legacy-fallback authority before free
 });
 
 test('fails closed on a missing, extra, changed or internally inconsistent shared member', () => {
-  const compiled = compileCanonicalContractInput({ root_directory: ROOT });
+  const compiled = compiledSharedInput();
   const firstSharedIndex = compiled.authored_members.findIndex(
     (member) => member.relative_path.startsWith('shared/'),
   );

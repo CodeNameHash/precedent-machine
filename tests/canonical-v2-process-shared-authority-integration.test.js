@@ -1,4 +1,5 @@
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 
@@ -8,8 +9,9 @@ const {
   sha256Hex,
 } = require('../lib/canonical-v2/canonical-bytes');
 const {
+  REQUIRED_SHARED_MEMBER_BINDINGS,
   bindSharedAuthorityConsumerRelease,
-  buildSharedAuthorityConsumedContractManifest,
+  buildSharedAuthorityConsumedContractManifestFromCompiled,
 } = require('../lib/canonical-v2/shared-authority-consumed-contract-manifest');
 const {
   buildProcessDealFactProjection,
@@ -20,6 +22,9 @@ const ROOT = path.join(__dirname, '../contracts/canonical-v2/successor');
 const CONTRACT_FINGERPRINT = 'a'.repeat(64);
 const SERVING_NAMESPACE_ID = 'b'.repeat(64);
 const CORPUS_RELEASE_ID = 'c'.repeat(64);
+const QXO_CAPITALISATION_RESULT = require(
+  '../contracts/canonical-v2/successor/agreement/result-definitions/target-capitalisation-bring-down.v3.json',
+);
 
 const TERMINAL_BY_FIELD = Object.freeze({
   deal: 'ENTITY_REVISION',
@@ -67,10 +72,37 @@ function syntheticId(label) {
   return contentId('SYNTHETIC_PROCESS_SHARED_AUTHORITY_TEST_ID/V1', { label });
 }
 
+function compiledSharedInput() {
+  return {
+    canonical_bundle_input_identity: {
+      compiler_input_schema_version: 'CANONICAL_BUNDLE_INPUT_COMPILER/V1',
+      generator_input_schema_version: 'CANONICAL_BUNDLE_GENERATOR_INPUT/V1',
+    },
+    authored_members: REQUIRED_SHARED_MEMBER_BINDINGS.map((binding, ordinal) => {
+      const canonicalValue = JSON.parse(
+        fs.readFileSync(path.join(ROOT, binding.relative_path), 'utf8'),
+      );
+      assert.equal(
+        sha256Hex(canonicalJson(canonicalValue)),
+        binding.canonical_bytes_digest,
+      );
+      return {
+        ...binding,
+        canonical_byte_length: Buffer.byteLength(
+          canonicalJson(canonicalValue),
+          'utf8',
+        ),
+        contract_ordinal: ordinal,
+        canonical_value: canonicalValue,
+      };
+    }),
+  };
+}
+
 function manifest() {
-  return buildSharedAuthorityConsumedContractManifest({
-    root_directory: ROOT,
-  });
+  return buildSharedAuthorityConsumedContractManifestFromCompiled(
+    compiledSharedInput(),
+  );
 }
 
 function releaseBinding(sharedManifest = manifest()) {
@@ -245,6 +277,37 @@ function canonicalProjectionRevision(sharedManifest = manifest()) {
   };
 }
 
+function resignCanonicalProjectionRevision(revision) {
+  revision.projection_payload_digest = sha256Hex(
+    canonicalJson(revision.field_entries),
+  );
+  revision.canonical_deal_fact_projection_revision_id = contentId(
+    'CANONICAL_DEAL_FACT_PROJECTION_REVISION/V1',
+    {
+      canonical_deal_fact_projection_id:
+        revision.canonical_deal_fact_projection_id,
+      field_entries: revision.field_entries,
+      projection_payload_digest: revision.projection_payload_digest,
+      release_identity: revision.release_identity,
+      revision_status: revision.revision_status,
+    },
+  );
+  return revision;
+}
+
+function setPresentBuyerAuthority(revision, overrides = {}) {
+  const buyer = revision.field_entries.find(
+    (entry) => entry.field_key === 'buyer',
+  );
+  buyer.typed_state = 'PRESENT';
+  buyer.display_label = 'Canonical buyer';
+  buyer.canonical_value = {
+    governed_entity_id: syntheticId('buyer:entity-subject'),
+    ...overrides,
+  };
+  return resignCanonicalProjectionRevision(revision);
+}
+
 function build() {
   const sharedManifest = manifest();
   const binding = releaseBinding(sharedManifest);
@@ -319,6 +382,79 @@ test('preserves merger-of-equals, reverse-merger, RMT and share-purchase structu
   assert.equal(
     structure.canonical_value.share_purchase_interest_components[0].interest_type,
     'SHARE_CLASS',
+  );
+});
+
+test('accepts a buyer only with exact participant and entity authority', () => {
+  const sharedManifest = manifest();
+  const binding = releaseBinding(sharedManifest);
+  const revision = setPresentBuyerAuthority(
+    canonicalProjectionRevision(sharedManifest),
+  );
+
+  assert.doesNotThrow(() => buildProcessDealFactProjection({
+    manifest: sharedManifest,
+    binding,
+    canonical_projection_revision: revision,
+  }));
+});
+
+test('rejects Agreement BUYER_GROUP as a Shared buyer without exact authority', () => {
+  const sharedManifest = manifest();
+  const binding = releaseBinding(sharedManifest);
+  const agreementBuyerGroup =
+    QXO_CAPITALISATION_RESULT.authored_definition.party.value;
+  assert.equal(agreementBuyerGroup, 'BUYER_GROUP');
+
+  const directAgreementParty = canonicalProjectionRevision(sharedManifest);
+  const directBuyer = directAgreementParty.field_entries.find(
+    (entry) => entry.field_key === 'buyer',
+  );
+  directBuyer.typed_state = 'PRESENT';
+  directBuyer.display_label = agreementBuyerGroup;
+  directBuyer.canonical_value = {
+    agreement_party_value: agreementBuyerGroup,
+  };
+  resignCanonicalProjectionRevision(directAgreementParty);
+  assert.throws(
+    () => buildProcessDealFactProjection({
+      manifest: sharedManifest,
+      binding,
+      canonical_projection_revision: directAgreementParty,
+    }),
+    (error) => error.code === 'SHARED_BUYER_AUTHORITY_MISMATCH',
+  );
+
+  const entityWithoutBuyerRelationship = setPresentBuyerAuthority(
+    canonicalProjectionRevision(sharedManifest),
+  );
+  const entityOnlyBuyer = entityWithoutBuyerRelationship.field_entries.find(
+    (entry) => entry.field_key === 'buyer',
+  );
+  entityOnlyBuyer.typed_lineage.terminal_type = 'ENTITY_REVISION';
+  entityOnlyBuyer.typed_lineage.exact_detail_action = 'ENTITY_SUBJECT_EVIDENCE';
+  entityOnlyBuyer.exact_detail_action = 'ENTITY_SUBJECT_EVIDENCE';
+  resignCanonicalProjectionRevision(entityWithoutBuyerRelationship);
+  assert.throws(
+    () => buildProcessDealFactProjection({
+      manifest: sharedManifest,
+      binding,
+      canonical_projection_revision: entityWithoutBuyerRelationship,
+    }),
+    (error) => error.code === 'SHARED_BUYER_AUTHORITY_MISMATCH',
+  );
+
+  const malformedEntity = setPresentBuyerAuthority(
+    canonicalProjectionRevision(sharedManifest),
+    { governed_entity_id: agreementBuyerGroup },
+  );
+  assert.throws(
+    () => buildProcessDealFactProjection({
+      manifest: sharedManifest,
+      binding,
+      canonical_projection_revision: malformedEntity,
+    }),
+    (error) => error.code === 'SHARED_BUYER_AUTHORITY_MISMATCH',
   );
 });
 
