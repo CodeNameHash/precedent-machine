@@ -194,6 +194,7 @@ function metseraFixture() {
         predicate_evidence_role_slot_key:
           'METSERA_EXCLUSIVITY_GRANTED_EVIDENCE',
         governed_ordinal: 0,
+        governed_subject_code: 'NEGOTIATION_EXCLUSIVITY',
       }],
       passage_slots: [
         {
@@ -410,7 +411,6 @@ function metseraFixture() {
             temporalInterval,
           ),
         ],
-        complete_scope_identity: null,
         complete_scope_evidence: null,
         applicability_evidence: null,
         failure_detail: null,
@@ -508,9 +508,6 @@ function configureNonPresentPredicate(input, state) {
   witness.atomic_response_predicate_witness_slot_key = null;
   witness.evidence = null;
   setPredicateDimensions(witness, []);
-  witness.complete_scope_identity = state === 'ABSENT'
-    ? digest('complete-scope')
-    : null;
   witness.complete_scope_evidence = state === 'ABSENT'
     ? evidence(
       'EXCLUSIVITY_GRANTED_COMPLETE_SCOPE',
@@ -529,6 +526,32 @@ function configureNonPresentPredicate(input, state) {
       failure_message: 'The synthetic witness could not be validated.',
     }
     : null;
+}
+
+function addResponseUnion(input, narrationOrdinal = 0) {
+  const atomic = input.typed_values.predicate_witnesses[0];
+  const union = clone(atomic);
+  union.predicate_witness_slot_key =
+    'METSERA_EXCLUSIVITY_RESPONSE_ANY_WITNESS';
+  union.predicate_key = 'EXCLUSIVITY_RESPONSE_ANY';
+  union.atomic_response_predicate_key = 'EXCLUSIVITY_GRANTED';
+  union.atomic_response_predicate_witness_slot_key =
+    atomic.predicate_witness_slot_key;
+  input.typed_values.predicate_witnesses.push(union);
+  input.frozen_scope.predicate_witness_slots.push({
+    predicate_witness_slot_key:
+      'METSERA_EXCLUSIVITY_RESPONSE_ANY_WITNESS',
+    narration_ordinal: narrationOrdinal,
+    predicate_definition_key_and_version: {
+      key: 'EXCLUSIVITY_RESPONSE_ANY',
+      version: 1,
+    },
+    predicate_evidence_role_slot_key:
+      'METSERA_EXCLUSIVITY_RESPONSE_ANY_EVIDENCE',
+    governed_ordinal: 1,
+    governed_subject_code: 'NEGOTIATION_EXCLUSIVITY',
+  });
+  return { atomic, union };
 }
 
 test('materialises the complete typed Metsera exclusivity sidecar deterministically', () => {
@@ -621,27 +644,7 @@ test('retains every non-present state without inventing a value', () => {
 
 test('binds a response union to one admitted atomic witness without widening', () => {
   const input = metseraFixture();
-  const atomic = input.typed_values.predicate_witnesses[0];
-  const union = clone(atomic);
-  union.predicate_witness_slot_key =
-    'METSERA_EXCLUSIVITY_RESPONSE_ANY_WITNESS';
-  union.predicate_key = 'EXCLUSIVITY_RESPONSE_ANY';
-  union.atomic_response_predicate_key = 'EXCLUSIVITY_GRANTED';
-  union.atomic_response_predicate_witness_slot_key =
-    atomic.predicate_witness_slot_key;
-  input.typed_values.predicate_witnesses.push(union);
-  input.frozen_scope.predicate_witness_slots.push({
-    predicate_witness_slot_key:
-      'METSERA_EXCLUSIVITY_RESPONSE_ANY_WITNESS',
-    narration_ordinal: 0,
-    predicate_definition_key_and_version: {
-      key: 'EXCLUSIVITY_RESPONSE_ANY',
-      version: 1,
-    },
-    predicate_evidence_role_slot_key:
-      'METSERA_EXCLUSIVITY_RESPONSE_ANY_EVIDENCE',
-    governed_ordinal: 1,
-  });
+  const { union } = addResponseUnion(input);
 
   const revisions = compileProcessExclusivityPilotMaterialisation(input)
     .revisions.predicate_witness_revisions;
@@ -664,8 +667,155 @@ test('binds a response union to one admitted atomic witness without widening', (
   union.subject_code = 'EXCLUSIVE_DATA_ACCESS';
   assert.throws(
     () => compileProcessExclusivityPilotMaterialisation(input),
+    { code: 'INVALID_PROCESS_PILOT_TYPED_VALUE' },
+  );
+});
+
+test('rejects cross-narration, self and chained response unions', () => {
+  const crossNarration = metseraFixture();
+  const secondNarrationInterval = crossNarration.frozen_scope
+    .passage_slots[1].canonical_source_intervals[0];
+  crossNarration.frozen_scope.narration_slots.push({
+    canonical_source_intervals: [secondNarrationInterval],
+  });
+  const secondNarration = clone(
+    crossNarration.typed_values.narrations[0],
+  );
+  secondNarration.narration_ordinal = 1;
+  secondNarration.evidence = evidence(
+    'PROCESS_NARRATION',
+    secondNarrationInterval,
+  );
+  crossNarration.typed_values.narrations.push(secondNarration);
+  crossNarration.frozen_scope.event_slots[0]
+    .narration_ordinals.push(1);
+  addResponseUnion(crossNarration, 1);
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(crossNarration),
     { code: 'INVALID_PROCESS_PILOT_RESPONSE_UNION' },
   );
+
+  const self = metseraFixture();
+  const selfUnion = addResponseUnion(self).union;
+  selfUnion.atomic_response_predicate_witness_slot_key =
+    selfUnion.predicate_witness_slot_key;
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(self),
+    { code: 'INVALID_PROCESS_PILOT_RESPONSE_UNION' },
+  );
+
+  const chained = metseraFixture();
+  addResponseUnion(chained);
+  chained.typed_values.predicate_witnesses[0]
+    .atomic_response_predicate_key = 'EXCLUSIVITY_GRANTED';
+  chained.typed_values.predicate_witnesses[0]
+    .atomic_response_predicate_witness_slot_key =
+      chained.typed_values.predicate_witnesses[0]
+        .predicate_witness_slot_key;
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(chained),
+    { code: 'INVALID_PROCESS_PILOT_TYPED_VALUE' },
+  );
+});
+
+test('derives ABSENT scope identity and rejects caller or evidence substitution', () => {
+  const valid = metseraFixture();
+  configureNonPresentPredicate(valid, 'ABSENT');
+  const revision = compileProcessExclusivityPilotMaterialisation(valid)
+    .revisions.predicate_witness_revisions[0];
+  assert.equal(
+    revision.complete_scope_identity,
+    contentId(
+      'PROCESS_PREDICATE_COMPLETE_SCOPE/V1',
+      revision.complete_scope_payload,
+    ),
+  );
+  assert.equal(
+    revision.complete_scope_payload.scoped_witness_members.length,
+    1,
+  );
+  assert.equal(
+    revision.complete_scope_payload.governed_subject_code,
+    'NEGOTIATION_EXCLUSIVITY',
+  );
+
+  const callerDigest = metseraFixture();
+  configureNonPresentPredicate(callerDigest, 'ABSENT');
+  callerDigest.typed_values.predicate_witnesses[0]
+    .complete_scope_identity = digest('caller-scope');
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(callerDigest),
+    { code: 'INVALID_PROCESS_PILOT_TYPED_VALUE' },
+  );
+
+  const callerPayload = metseraFixture();
+  configureNonPresentPredicate(callerPayload, 'ABSENT');
+  callerPayload.typed_values.predicate_witnesses[0]
+    .complete_scope_payload = {
+      scoped_witness_members: [],
+    };
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(callerPayload),
+    { code: 'INVALID_PROCESS_PILOT_TYPED_VALUE' },
+  );
+
+  const duplicateUniverse = metseraFixture();
+  const duplicateSlot = clone(
+    duplicateUniverse.frozen_scope.predicate_witness_slots[0],
+  );
+  duplicateSlot.predicate_witness_slot_key =
+    'DUPLICATE_EXCLUSIVITY_GRANTED_WITNESS';
+  duplicateUniverse.frozen_scope.predicate_witness_slots.push(
+    duplicateSlot,
+  );
+  const duplicateValue = clone(
+    duplicateUniverse.typed_values.predicate_witnesses[0],
+  );
+  duplicateValue.predicate_witness_slot_key =
+    duplicateSlot.predicate_witness_slot_key;
+  duplicateUniverse.typed_values.predicate_witnesses.push(
+    duplicateValue,
+  );
+  assert.throws(
+    () => compileProcessExclusivityPilotMaterialisation(
+      duplicateUniverse,
+    ),
+    { code: 'INVALID_PROCESS_PILOT_COMPLETE_SCOPE' },
+  );
+
+  for (const alteredIntervals of [
+    [valid.frozen_scope.passage_slots[1].canonical_source_intervals[0]],
+    [{
+      ...valid.frozen_scope.narration_slots[0].canonical_source_intervals[0],
+      absolute_end:
+        valid.frozen_scope.narration_slots[0]
+          .canonical_source_intervals[0].absolute_end - 1,
+    }],
+    [{
+      source_document_identity:
+        valid.source_documents[0].source_document_identity,
+      absolute_start: 0,
+      absolute_end: Buffer.byteLength(
+        valid.source_documents[0].source_text,
+        'utf8',
+      ),
+    }],
+    [
+      valid.frozen_scope.narration_slots[0].canonical_source_intervals[0],
+      valid.frozen_scope.narration_slots[0].canonical_source_intervals[0],
+    ],
+  ]) {
+    const hostile = metseraFixture();
+    configureNonPresentPredicate(hostile, 'ABSENT');
+    hostile.typed_values.predicate_witnesses[0]
+      .complete_scope_evidence = evidence(
+        'EXCLUSIVITY_GRANTED_COMPLETE_SCOPE',
+        ...alteredIntervals,
+      );
+    assert.throws(
+      () => compileProcessExclusivityPilotMaterialisation(hostile),
+    );
+  }
 });
 
 test('fails closed when a successor machine rule changes', () => {

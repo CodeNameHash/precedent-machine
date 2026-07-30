@@ -246,6 +246,7 @@ function witnessRevision(result, edge) {
     bidder_track_revision_id: bidderTrack,
     complete_scope_evidence_edges: [],
     complete_scope_identity: null,
+    complete_scope_payload: null,
     dimension_revision_bindings: dimensionRevisionBindings,
     evidence_edges: [edge],
     failure_detail: null,
@@ -280,6 +281,7 @@ function witnessRevision(result, edge) {
     complete_scope_evidence_edges:
       revisionIdentity.complete_scope_evidence_edges,
     complete_scope_identity: revisionIdentity.complete_scope_identity,
+    complete_scope_payload: revisionIdentity.complete_scope_payload,
     evidence_edges: revisionIdentity.evidence_edges,
     failure_detail: revisionIdentity.failure_detail,
     predicate_key: revisionIdentity.predicate_key,
@@ -501,6 +503,7 @@ function processFixture(relationships = []) {
     result_identity: result,
     narration_revision: narration,
     predicate_witness_revision: witness,
+    atomic_response_predicate_witness_revision: null,
     result_input_lineage: lineage,
     matched_passage_preview: matchedPreview,
     passage_order_projection: ordering,

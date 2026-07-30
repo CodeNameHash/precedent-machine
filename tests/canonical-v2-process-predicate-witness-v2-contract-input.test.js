@@ -17,7 +17,7 @@ const V2_PATH =
 const PREDECESSOR_DEFINITION_DIGEST =
   '5316afe5e83e8b4ecadf427d598dae0c395bc80115aacacab353fa0da597f2f7';
 const V2_DEFINITION_DIGEST =
-  'd0fdcc4377707dad040945adcdeec9e25a60487e17e628ab70a2f576c1f24266';
+  'f3369a32c298af91b3762bbfc817f94b734cf15b98905738ed58d0586ef74a53';
 
 function member(relativePath) {
   const canonicalValue = JSON.parse(fs.readFileSync(
@@ -107,6 +107,7 @@ test('preserves the stable witness identity and moves only revision identity to 
     'bidder_track_revision_id',
     'complete_scope_evidence_edges',
     'complete_scope_identity',
+    'complete_scope_payload',
     'dimension_revision_bindings',
     'evidence_edges',
     'failure_detail',
