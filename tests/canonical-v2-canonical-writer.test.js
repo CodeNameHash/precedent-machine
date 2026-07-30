@@ -556,7 +556,8 @@ test('an injected failure rolls back every staged object and receipt', async () 
     provisions: [], components: [], condition_groups: [], claims: [], relationships: [],
     open_world_candidates: [], open_world_candidate_occurrences: [], open_world_evidence_references: [],
     open_world_candidate_dispositions: [], open_world_primitives: [], semantic_impact_closures: [],
-    reviewed_source_specific_rows: [], incomplete_canonical_result_rows: [], residuals: [], quarantines: [], receipts: [],
+    reviewed_source_specific_rows: [], incomplete_canonical_result_rows: [],
+    productCandidateResults: [], residuals: [], quarantines: [], receipts: [],
   });
   assert.equal(repository.transactionCount, 1);
 });
