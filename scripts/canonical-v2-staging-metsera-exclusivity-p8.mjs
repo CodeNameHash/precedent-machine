@@ -19,6 +19,11 @@ const {
   '../lib/canonical-v2/metsera-exclusivity-product-result-set',
 );
 const {
+  compileMetseraExclusivityProductPresentation,
+} = require(
+  '../lib/canonical-v2/metsera-exclusivity-product-presentation',
+);
+const {
   contentId,
 } = require('../lib/canonical-v2/canonical-bytes');
 const {
@@ -109,6 +114,11 @@ async function main() {
       productAdmission,
       productRow,
     );
+  const productPresentation =
+    compileMetseraExclusivityProductPresentation(
+      productRow,
+      productResultSet,
+    );
   process.stdout.write(`${JSON.stringify({
     schema_version: receipt.schema_version,
     selected_passage_id: receipt.selected_passage_id,
@@ -144,6 +154,11 @@ async function main() {
     ordered_product_result_count:
       productResultSet.result_set_adapter_receipt
         .product_result_set.ordered_result_slots.length,
+    product_presentation_receipt_id:
+      productPresentation.product_presentation_receipt_id,
+    product_field_count:
+      productPresentation.product_field_catalogue_manifest
+        .field_definitions.length,
     authority_limits: receipt.authority_limits,
   }, null, 2)}\n`);
 }
