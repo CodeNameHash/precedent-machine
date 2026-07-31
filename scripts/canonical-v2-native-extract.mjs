@@ -207,7 +207,7 @@ async function main() {
     prompt_id: capturedProviderOutput ? capturedProviderOutput.prompt_id : null,
     prompt_version: capturedProviderOutput ? capturedProviderOutput.prompt_version : null,
     attempts: capturedProviderOutput ? capturedProviderOutput.attempts : null,
-    dropped_quote_mismatches: capturedProviderOutput ? capturedProviderOutput.dropped_quote_mismatches : [],
+    evidence_residuals: capturedProviderOutput ? capturedProviderOutput.evidence_residuals : [],
     proposals,
     producer_receipt: producerReceipt,
   }, null, 2)}\n`);

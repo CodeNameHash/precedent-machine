@@ -242,3 +242,49 @@ test('with no injected client, no apiKey and no ANTHROPIC_API_KEY, the provider 
 // Every test above injects a `client` (or, for the MISSING_API_KEY test,
 // fails before a client would ever be constructed) -- this file performs no
 // network I/O anywhere, by construction, not just by assertion.
+
+test('unverifiable evidence becomes a typed residual bound into the receipt, never a silent drop', async () => {
+  const { produceCandidateProposals } = require('../lib/canonical-v2/native-producer/provider-interface');
+
+  // A provider run that could not verify one quote.
+  const withResidual = await produceCandidateProposals({
+    governed_scope: { source_text: 'x', intervals: [] },
+    definitions: {},
+    contract_bundle: { id: 'b' },
+    provider: async () => ({
+      provider_id: 'STUB',
+      model_id: 'stub-model',
+      prompt_digest: 'a'.repeat(64),
+      proposals: [],
+      evidence_residuals: [
+        { reason: 'LIMB_ASSERTION_QUOTE_UNVERIFIED', quote_preview: 'text the model asserted' },
+      ],
+    }),
+  });
+
+  // The same run, if the residual had been silently dropped.
+  const withoutResidual = await produceCandidateProposals({
+    governed_scope: { source_text: 'x', intervals: [] },
+    definitions: {},
+    contract_bundle: { id: 'b' },
+    provider: async () => ({
+      provider_id: 'STUB',
+      model_id: 'stub-model',
+      prompt_digest: 'a'.repeat(64),
+      proposals: [],
+      evidence_residuals: [],
+    }),
+  });
+
+  assert.equal(withResidual.evidence_residuals.length, 1);
+  assert.equal(withResidual.evidence_residuals[0].reason, 'LIMB_ASSERTION_QUOTE_UNVERIFIED');
+  assert.equal(withResidual.producer_receipt.evidence_residual_count, 1);
+  assert.equal(withoutResidual.producer_receipt.evidence_residual_count, 0);
+
+  // The receipt id itself must differ: a run that lost evidence can never be
+  // presented as byte-identical to a clean run.
+  assert.notEqual(
+    withResidual.producer_receipt.producer_receipt_id,
+    withoutResidual.producer_receipt.producer_receipt_id,
+  );
+});
