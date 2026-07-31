@@ -263,6 +263,66 @@ test('release-wide computation preserves a matching typed subject exclusion and 
   );
 });
 
+test('release-wide computation materialises inclusion when the incoming row has no receipt', () => {
+  const row = clone(fixture.release.shared_rows.find((item) => (
+    item.row_kind === 'CANONICAL_RESULT'
+      && item.canonical_result.market_context.metric_key === 'IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE'
+  )));
+  delete row.canonical_result.market_context.subject_cohort_membership;
+  const market = releaseWideMarketContext({
+    row,
+    servingNamespaceId: fixture.servingNamespaceId,
+    observations: fixture.release.market_observations,
+    exclusions: fixture.release.market_exclusions,
+  });
+  assert.equal(market.subject_cohort_membership.status, 'INCLUDED');
+  assert.equal(market.subject_cohort_membership.exclusion_reason, null);
+  assert.equal(
+    market.subject_cohort_membership.cohort_digest,
+    market.cohort.cohort_digest,
+  );
+  assert.equal(market.cohort.counts.comparable_deals, 1);
+});
+
+test('release-wide computation rejects forged, invalid and unselected subject exclusion receipts', () => {
+  const source = fixture.release.shared_rows.find((item) => (
+    item.row_kind === 'CANONICAL_RESULT'
+      && item.canonical_result.market_context.metric_key === 'IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE'
+  ));
+  const releaseWide = (row) => releaseWideMarketContext({
+    row,
+    servingNamespaceId: fixture.servingNamespaceId,
+    observations: fixture.release.market_observations,
+    exclusions: fixture.release.market_exclusions,
+  });
+  const excludedRow = (reason) => {
+    const row = clone(source);
+    const membership = row.canonical_result.market_context.subject_cohort_membership;
+    membership.status = 'EXCLUDED';
+    membership.exclusion_reason = reason;
+    const { membership_receipt_id: _receiptId, ...receiptBody } = membership;
+    membership.membership_receipt_id = contentId(
+      'SUBJECT_COHORT_MEMBERSHIP_RECEIPT/V1',
+      receiptBody,
+    );
+    return row;
+  };
+
+  const forged = excludedRow('NOT_COMPARABLE_UNDER_COHORT_RULE');
+  forged.canonical_result.market_context.subject_cohort_membership
+    .membership_receipt_id = 'f'.repeat(64);
+  assert.throws(() => releaseWide(forged), /receipt identity mismatch/);
+
+  assert.throws(
+    () => releaseWide(excludedRow('INVENTED_EXCLUSION_REASON')),
+    /reason is invalid/,
+  );
+  assert.throws(
+    () => releaseWide(excludedRow('FILTER_SECTOR_MISMATCH')),
+    /no selected narrower filter/,
+  );
+});
+
 test('uses the exact release-wide subject-cohort inclusion boundary', () => {
   const allowlistPath =
     '.github/phase-allowlists/wp-p8-stage4-release-wide-subject-cohort-inclusion-v1.json';
