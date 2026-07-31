@@ -222,9 +222,9 @@ BEGIN
     OR b->>'corpus_release_id' IS DISTINCT FROM '81afb231fdd2884e4f643ec90f9f71efb6e201c9b4d350e8394f4a020bb235ed'
     OR q-ARRAY['schema_version','query_definition_id','release_contract','semantic_contract','cohort_contract','filter_contract','presentation_contract','pagination_contract','detail_action_contract','coverage_contract']::text[] <> '{}'::jsonb
     OR q->>'query_definition_id' IS DISTINCT FROM canonical_v2_staging.content_id('PRODUCT_QUERY_IR/V1',q-'query_definition_id')
-    OR q->'release_contract'->>'approved_pm_data_version_id' IS DISTINCT FROM '750d74d401f174d5c9437d7f5fb7e6ac908dab8ae1366ca73c1e34c0d7e873fd'
-    OR q->'release_contract'->>'candidate_release_manifest_id' IS DISTINCT FROM 'b679a9a1c405fc523f0b4ae8b15e610fe4ec35902f39b7e0ce836ed5c531a1c0'
-    OR q->'release_contract'->>'candidate_release_manifest_payload_digest' IS DISTINCT FROM '0ee4bf75370604e40614fc1a2a49278a8d37f0f0b9b397631e1cb66aa1eb3be2'
+    OR q->'release_contract'->>'approved_pm_data_version_id' IS DISTINCT FROM '7d641abbf52680340d315f521cf883baa1eba3bb8c8d70b8d870e21063c39abf'
+    OR q->'release_contract'->>'candidate_release_manifest_id' IS DISTINCT FROM 'd6e9817e1515c3946eab3810cf8d88c748183704eb9b2aedbc6833f910afddcb'
+    OR q->'release_contract'->>'candidate_release_manifest_payload_digest' IS DISTINCT FROM '396e895cf2a8ef219a6c10b3cc7f964a7e14f48a01aea101ddb624fa476c2d60'
     OR q->'semantic_contract'->>'domain_key' IS DISTINCT FROM 'AGREEMENT'
     OR q->'semantic_contract'->>'predicate_key' IS DISTINCT FROM result_id
     OR q->'semantic_contract'->'result_definition'->>'stable_id' IS DISTINCT FROM result_id
@@ -281,8 +281,8 @@ BEGIN
     OR o->>'approved_pm_data_version_id' IS DISTINCT FROM q->'release_contract'->>'approved_pm_data_version_id'
     OR o->>'candidate_release_manifest_id' IS DISTINCT FROM q->'release_contract'->>'candidate_release_manifest_id'
     OR o->>'candidate_release_manifest_payload_digest' IS DISTINCT FROM q->'release_contract'->>'candidate_release_manifest_payload_digest'
-    OR o->>'product_field_catalogue_id' IS DISTINCT FROM '2382d059a4d874915ce98d0ea287d81be3d39d1e76fe7284c8f50b7ffe93d978'
-    OR o->>'product_field_catalogue_payload_digest' IS DISTINCT FROM 'e57fd99e6601c7be25d88f336441b740ef14cf4129862e60eabaa754a7f5d195'
+    OR o->>'product_field_catalogue_id' IS DISTINCT FROM '76d96b836a5baba7f28875686673b6ad1afac9bffc2abd81fc040e7cadfb742f'
+    OR o->>'product_field_catalogue_payload_digest' IS DISTINCT FROM '167857e513a7adc5bb986d47c6cfea6517343fd69589ebb1f60c8b4d633d4695'
     OR o->'product_field_catalogue_manifest'->>'manifest_id' IS DISTINCT FROM o->>'product_field_catalogue_id'
     OR o->'product_field_catalogue_manifest'->>'canonical_payload_digest' IS DISTINCT FROM o->>'product_field_catalogue_payload_digest'
     OR o->'product_field_catalogue_manifest'->>'manifest_id' IS DISTINCT FROM canonical_v2_staging.content_id('PRODUCT_FIELD_CATALOGUE_MANIFEST/V1',(o->'product_field_catalogue_manifest')-ARRAY['manifest_id','canonical_payload_digest']::text[])

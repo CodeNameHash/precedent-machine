@@ -13,6 +13,13 @@ const {
   buildLandosCandidateReleaseFixture,
 } = require('../../../__fixtures__/canonical-v2/landos-candidate-release');
 const {
+  buildFixtureCandidateRelease,
+} = require('../../../lib/canonical-v2/candidate-release');
+const {
+  QUERY_PROJECTION_CONTRACT_DIGEST_V2,
+  SERVING_PROJECTION_VERSION_V2,
+} = require('../../../lib/canonical-v2/serving-projection-contract');
+const {
   compilePilotProductAuthorityContext,
 } = require('../../../lib/canonical-v2/pilot-product-authority-context');
 const {
@@ -73,22 +80,21 @@ function authority() {
     dependency_registry: proposal.registry_assembly.dependency_registry,
     governed_registry_bindings: proposal.registry_assembly.governed_registry_bindings,
   });
-  const candidateReleaseManifest = clone(
-    buildLandosCandidateReleaseFixture().release.manifest,
-  );
-  candidateReleaseManifest.contract_fingerprint =
-    compiledContractBundle.contract_bundle_digest;
-  const {
-    candidate_release_manifest_id: ignoredId,
-    canonical_payload_digest: ignoredDigest,
-    ...candidateReleaseBody
-  } = candidateReleaseManifest;
-  candidateReleaseManifest.candidate_release_manifest_id = contentId(
-    'FIXTURE_CANDIDATE_RELEASE_MANIFEST/V1', candidateReleaseBody,
-  );
-  candidateReleaseManifest.canonical_payload_digest = contentId(
-    'FIXTURE_CANDIDATE_RELEASE_MANIFEST_PAYLOAD/V1', candidateReleaseBody,
-  );
+  const releaseFixture = buildLandosCandidateReleaseFixture();
+  const candidateReleaseManifest = buildFixtureCandidateRelease({
+    contract_bundle: releaseFixture.contract,
+    serving_namespace_id: releaseFixture.servingNamespaceId,
+    corpus_release_id: releaseFixture.corpusReleaseId,
+    serving_projection_binding: {
+      serving_projection_version: SERVING_PROJECTION_VERSION_V2,
+      query_projection_contract_digest: QUERY_PROJECTION_CONTRACT_DIGEST_V2,
+    },
+    members: releaseFixture.members,
+    source_specific_members: releaseFixture.sourceSpecificMembers,
+    validated_semantic_graphs: releaseFixture.validatedSemanticGraphs,
+    correction_authority_selection: releaseFixture.correctionAuthoritySelection,
+    deal_directory_entries: releaseFixture.dealDirectoryEntries,
+  }).manifest;
   const input = {
     canonical_contract_input_compilation: canonicalContractInputCompilation,
     compiled_contract_bundle: compiledContractBundle,

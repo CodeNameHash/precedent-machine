@@ -19,11 +19,11 @@ const EXPECTED_PROJECT = Object.freeze({
 });
 const F5_CONTRACT_FINGERPRINT = 'f80a77651d1b6a6a9eec8ac67526a8704f498761cbb22a67e6ceb4716abb5478';
 const EXPECTED_DIGESTS = Object.freeze({
-  'canonical-v2-foundation.sql': '86739cef973d8e746d7efe89c9545a51752a0e832966c8c6d17666f3fa6c8826',
+  'canonical-v2-foundation.sql': 'bfa2c49438b08cf3986c9cdc01452e6488508153895f0d56525b8bb84c8ed53b',
   // Active serving resolves the release-declared contract, exact detail is
   // active-release bound, and the rejected F3 fingerprint is denied at
   // every granted serving boundary.
-  'canonical-v2-serving.sql': '3ba1fced938cba7f2f9835a650358b8a03edb7fe3133a4754b1602e08e3abcf8',
+  'canonical-v2-serving.sql': '5937e683df213168d76377a1375bcf3c49c8e263e3a386a6db89e79f784ba60e',
 });
 const SCRIPT_ROOT = dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = resolve(SCRIPT_ROOT, '..');
