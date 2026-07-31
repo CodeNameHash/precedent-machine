@@ -47,7 +47,7 @@ const ACTIVE_VALIDATOR_SNAPSHOTS = Object.freeze({
   'lib/canonical-v2/market-cohort-query.js':
     '5a4f29bada0792b784441cb38ac47e08d80ba16bf9add853644a2f152e848b9c',
   'lib/canonical-v2/shared-serving-row.js':
-    '9932470f033914cc861b7134987b8afbc625301b48c3c2c82e830140136014ad',
+    'f46f3e9610b54a9b0d08a29e4768ac5de52a4722abc89a152cb11931961b7e69',
 });
 
 function clone(value) {
@@ -127,11 +127,11 @@ test('F22 identities cover the complete admission and registry payloads', () => 
   );
   assert.equal(
     admissionId,
-    '42ad01dd797587df2fd85a66e9a6bf453f083e7a51c7e641ce0fa9f43c0253d5',
+    '374bdce70c2e9425c66c20cb929daafa68a10b79b5da8a382437945d474366d7',
   );
   assert.equal(
     registryId,
-    '914e3fb39cb51012fc52844bfcea1495e9b6f02716828f92cbfac0580f04eb7f',
+    'd826967dfe53ae68c1513dd555d60be0ac0153e8a68dd3488cb4e14bec294b1d',
   );
 });
 

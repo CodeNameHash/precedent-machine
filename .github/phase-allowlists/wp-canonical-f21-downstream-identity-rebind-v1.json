@@ -1,0 +1,26 @@
+{
+  "phase": "WP-CANONICAL-F21-DOWNSTREAM-IDENTITY-REBIND-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-canonical-f21-downstream-identity-rebind-v1.json",
+    "lib/canonical-v2/metric-serving-admission.js",
+    "lib/canonical-v2/no-shop-timing-certification-f24.js",
+    "tests/canonical-v2-copy-delivery-release-f23.test.js",
+    "tests/canonical-v2-metric-serving-admission-f22.test.js",
+    "tests/canonical-v2-no-shop-timing-certification-f24.test.js",
+    "tests/fixtures/canonical-v2/metric-serving-admission-f22.json",
+    "tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-release-f23-staging-attestation.json",
+    "tests/fixtures/canonical-v2/qxo-no-shop-timing-f24-staging-attestation.json"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "EXECUTION-LEDGER.md",
+    "lib/canonical-v2/contract-bundle.js",
+    "lib/canonical-v2/market-cohort-query.js",
+    "lib/canonical-v2/shared-serving-row.js",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Rebinds only the directly downstream F22, F23 and F24 frozen identities to the committed F21 shared-serving-row source snapshot. It changes no legal meaning, contract, serving policy, staging proof authority, production authority or activation authority."
+}

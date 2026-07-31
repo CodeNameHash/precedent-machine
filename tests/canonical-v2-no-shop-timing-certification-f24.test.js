@@ -28,15 +28,15 @@ const RUNNER =
   'scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs';
 const HISTORICAL_SNAPSHOTS = Object.freeze({
   'tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-release-f23-staging-attestation.json':
-    'deeca62869510c26b8881b38ba8776b731ad31001a6a02a90e00dbf7a76446f2',
+    '3b0fb494b0ff9386b2e7a4a9b96583e1077c7cdb06593066851b61527f65ef81',
   'lib/canonical-v2/metric-scoped-candidate-release-f23.js':
     '41a7cb83d356bc5be43ebb4823e10672dd690ba672c413529772729576aa8951',
   'lib/canonical-v2/metric-serving-admission.js':
-    'efc0382a43aa06f5dd338a5fe0bff8f9016d68c9711fd0d5111b5aa858e6e33e',
+    'c771279c8ff9dded8f676cd51e514f3cd90808558dccdd00db5e1bd9603088c9',
   'lib/canonical-v2/market-cohort-query.js':
     '01f42bd1afb7764d1b43278b3f64f8a01f1adf29a9ea3b76ee28e2391d0a6ae9',
   'lib/canonical-v2/shared-serving-row.js':
-    '744ca3a7899dfeae908c038783c690ebee7cfbc4df2385b5b6a4a2a71fc803d4',
+    'd7ae7d8caefa524f2089b1c881fbf254d1823a2a98b4460691df0cd6ad62eef1',
 });
 
 function fixture() {
@@ -167,11 +167,11 @@ test('F24 attestation, bundle, manifest and registry identities are exact', () =
   );
   assert.equal(
     id,
-    '110b07b8a88fe0bdc498692ff27fa70812e8f6b4e4acd777aa46298fa7b73f49',
+    'b785b0c04f51037155b9629c6064e92525945d49d097e75e84cf46af82da8bb3',
   );
   assert.equal(
     digest,
-    'bd337f38fcd9b272f0e9ac7f1b7eb48a8398920a38698240ed4dc622595a6d6f',
+    '1d53e6ea819208dce825e5d6ac09e60a1dbd1868d215af5b281dc03046e02fd4',
   );
   assert.equal(
     value.timing_certification_bundle

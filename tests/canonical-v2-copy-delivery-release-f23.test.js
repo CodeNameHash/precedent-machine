@@ -36,7 +36,7 @@ const ACTIVE_VALIDATOR_SNAPSHOTS = Object.freeze({
   'lib/canonical-v2/market-cohort-query.js':
     '5a4f29bada0792b784441cb38ac47e08d80ba16bf9add853644a2f152e848b9c',
   'lib/canonical-v2/shared-serving-row.js':
-    '9932470f033914cc861b7134987b8afbc625301b48c3c2c82e830140136014ad',
+    'f46f3e9610b54a9b0d08a29e4768ac5de52a4722abc89a152cb11931961b7e69',
 });
 
 function clone(value) {
@@ -138,21 +138,21 @@ test('F23 attestation and release identities are deterministic', () => {
   );
   assert.equal(
     id,
-    '8c4b13f85feaedd0a88d67ff8d3839b01a3f0e2ac641152135ea39d25ca6b9c5',
+    '92861af61ef69e3f527ee665570f3f733dded29c6fb33721fae2d5502d8e288e',
   );
   assert.equal(
     digest,
-    '691fd9442e3622656245e3471a6c6c4c4b01bdc8eb5cffb1c64aa22c1584682b',
+    '20671b3e3a84e0adb05feace16a74ab6140c7d6124c5cfbcbd7237da6a8cbe8e',
   );
   assert.equal(
     value.candidate_release_bundle
       .metric_scoped_candidate_release_bundle_id,
-    '17964307fe57cf7292bb036e66e2d031feffc15ebcc7098249d1edb5510cc27c',
+    '0f1f8e74238900979557f451926716511935b7562d005540a9ea1cdc83881ff9',
   );
   assert.equal(
     value.candidate_release_bundle.manifest
       .candidate_release_manifest_id,
-    '04559b6ef3b73eb2f7d2597f59f36301b453248d17e2974c53d49f3f524c4e73',
+    'a0f46126193f45787ad393fc0400bd82617d2682d267257b6d9dc1705e929c75',
   );
   assert.equal(
     validateMetricScopedCandidateReleaseF23(
@@ -180,19 +180,19 @@ test('one exact admission binds the manifest and all five carriers', () => {
   assert.deepEqual(carrierAdmissions, Array(5).fill(admission));
   assert.equal(
     value.shared_rows[0].canonical_payload_digest,
-    '683fdfe4f924f87e62177f14644d4f47dcfbb232090c344f4aa53670d63f4dcf',
+    '5728a300d9ee4da77b37b9fe045624e4dd0bafa81823c1ce7d2a76679c02a809',
   );
   assert.equal(
     value.cohort_requests[0].cohort_digest,
-    '50b1c8f2e74c5935e92e251342d308c31925aac7ac3910ab15c816fbd634881f',
+    '7db6415234663a325db4ccb9cbb3acc9b9523e175df4f4df63f0822cf2ca73e5',
   );
   assert.equal(
     value.cohort_requests[0].cache_key,
-    '2dbe6a868275864d4a29aa4a489610d22c0840eaa8f02955cd423a6e520a124e',
+    '0e1ef2a348a89054be41bf787a2be8f529c9078029ec3ec610a057ef88acf79a',
   );
   assert.equal(
     value.query_records[0].canonical_payload_digest,
-    '9b14bfc6d138c3c22fbed5ba5bb5efd05c329ef0dc6baad4b1d59fd4bfe9eedb',
+    '76f168840385f2792307b002029162a148c9be3d9bbcf79fe3038b697da5395d',
   );
 });
 
@@ -501,12 +501,12 @@ test('F19 through F22 identities and frozen live validators remain unchanged', (
     [
       'tests/fixtures/canonical-v2/v12-serving-admission-readiness-f21.json',
       'v12_serving_admission_readiness_f21_id',
-      '5c01b73dccef292d23591d0e351ed51b68bad1cb24fe710a503cf120b5ae2825',
+      'bdc62dc415b92024c5e6604c46f12041974c9ec63798d9d61206054ff35ccdca',
     ],
     [
       'tests/fixtures/canonical-v2/metric-serving-admission-f22.json',
       'metric_serving_admission_registry_id',
-      '914e3fb39cb51012fc52844bfcea1495e9b6f02716828f92cbfac0580f04eb7f',
+      'd826967dfe53ae68c1513dd555d60be0ac0153e8a68dd3488cb4e14bec294b1d',
     ],
   ];
   identities.forEach(([path, key, expected]) => {
