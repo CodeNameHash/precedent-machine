@@ -7,7 +7,7 @@ const test = require('node:test');
 const {
   AUTHORITY_LIMITS,
   METSERA_PROCESS_PHRASEBOOK_ADMISSION_SCHEMA,
-  compileMetseraExclusivityProcessPhrasebookAdmission,
+  compileMetseraExclusivityProcessPhrasebookAdmission: compileAdmission,
 } = require(
   '../lib/canonical-v2/metsera-exclusivity-process-phrasebook-admission',
 );
@@ -17,8 +17,18 @@ const {
 } = require('../lib/canonical-v2/canonical-bytes');
 const {
   MATERIALISATION_RECEIPT_SCHEMA,
-  compileProcessExclusivityPilotMaterialisation,
+  compileProcessExclusivityPilotMaterialisation: compileMaterialisation,
 } = require('../lib/canonical-v2/process-exclusivity-pilot');
+
+let activeSourceBytesByIdentity;
+
+function compileProcessExclusivityPilotMaterialisation(input) {
+  return compileMaterialisation(input, activeSourceBytesByIdentity);
+}
+
+function compileMetseraExclusivityProcessPhrasebookAdmission(input) {
+  return compileAdmission(input, activeSourceBytesByIdentity);
+}
 
 function clone(value) {
   return JSON.parse(canonicalJson(value));
@@ -35,10 +45,13 @@ function materialisationInputFixture() {
   fixtureModule.filename = fixturePath;
   fixtureModule.paths = Module._nodeModulePaths(__dirname);
   fixtureModule._compile(
-    `${source.slice(0, end)}\nmodule.exports = { metseraFixture };`,
+    `${source.slice(0, end)}\nmodule.exports = { metseraFixture, sourceBytesForInput };`,
     fixturePath,
   );
-  return fixtureModule.exports.metseraFixture();
+  const input = fixtureModule.exports.metseraFixture();
+  activeSourceBytesByIdentity =
+    fixtureModule.exports.sourceBytesForInput(input);
+  return input;
 }
 
 test('fails closed without a full real materialisation receipt', () => {

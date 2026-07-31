@@ -19,7 +19,7 @@ const {
 const {
   AUTHORITY_LIMITS: PRODUCT_ADMISSION_AUTHORITY_LIMITS,
   METSERA_PRODUCT_ADMISSION_SCHEMA,
-  compileMetseraExclusivityProductAdmission,
+  compileMetseraExclusivityProductAdmission: compileProductAdmission,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-admission');
 const {
   PILOT_PRODUCT_AUTHORITY_CONTEXT_SCHEMA,
@@ -29,11 +29,11 @@ const {
   AUTHORITY_LIMITS,
   METSERA_PRODUCT_ROW_SCHEMA,
   compileMetseraExclusivityProductQueryFromCheckedProcessEvidence,
-  compileMetseraExclusivityProductQuery,
-  compileMetseraExclusivityProductRow,
+  compileMetseraExclusivityProductQuery: compileProductQuery,
+  compileMetseraExclusivityProductRow: compileProductRow,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-row');
 const {
-  compileMetseraExclusivityProductResultSet,
+  compileMetseraExclusivityProductResultSet: compileProductResultSet,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-result-set');
 const {
   buildMetseraAuthorityBoundProcessAdmission,
@@ -43,6 +43,52 @@ const {
 } = require('./fixtures/canonical-v2/metsera-real-process-admission');
 
 const ROOT = path.resolve(__dirname, '../contracts/canonical-v2/successor');
+let activeSourceBytesByIdentity;
+
+function compileMetseraExclusivityProductAdmission(input) {
+  return compileProductAdmission(input, activeSourceBytesByIdentity);
+}
+
+function compileMetseraExclusivityProductQuery(
+  admission,
+  authorityContext,
+  authorityInput,
+) {
+  return compileProductQuery(
+    admission,
+    authorityContext,
+    authorityInput,
+    activeSourceBytesByIdentity,
+  );
+}
+
+function compileMetseraExclusivityProductRow(
+  admission,
+  authorityContext,
+  authorityInput,
+) {
+  return compileProductRow(
+    admission,
+    authorityContext,
+    authorityInput,
+    activeSourceBytesByIdentity,
+  );
+}
+
+function compileMetseraExclusivityProductResultSet(
+  admission,
+  row,
+  authorityContext,
+  authorityInput,
+) {
+  return compileProductResultSet(
+    admission,
+    row,
+    authorityContext,
+    authorityInput,
+    activeSourceBytesByIdentity,
+  );
+}
 
 function clone(value) {
   return JSON.parse(canonicalJson(value));
@@ -89,10 +135,12 @@ function authorityInput() {
 function fixture() {
   const input = authorityInput();
   const context = compilePilotProductAuthorityContext(input);
-  const processAdmission = buildMetseraRealProcessAdmission({
+  const built = buildMetseraRealProcessAdmission({
     authority_context: context,
     authority_input: input,
   });
+  const processAdmission = built.processAdmission;
+  activeSourceBytesByIdentity = built.sourceBytesByIdentity;
   const productAdmission = compileMetseraExclusivityProductAdmission({
     process_phrasebook_admission: processAdmission,
   });

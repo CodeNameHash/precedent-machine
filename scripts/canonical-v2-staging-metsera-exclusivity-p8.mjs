@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import { createRequire } from 'node:module';
-import { readFileSync, writeFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   createCanonicalV2StagingRuntime,
@@ -419,6 +419,22 @@ function readRealMaterialisationInput() {
   return value;
 }
 
+function readSourceBytesByIdentity(materialisationInput) {
+  const index = process.argv.indexOf('--source-dir');
+  const directory = index < 0 ? null : process.argv[index + 1];
+  if (!directory || directory.startsWith('--')) {
+    throw new Error('Metsera P8 requires --source-dir <sealed-source-directory>.');
+  }
+  return new Map(materialisationInput.source_documents.map((source) => {
+    const accession = source.citation_identity?.accession_number;
+    const sourcePath = join(resolve(directory), `${accession}.htm`);
+    if (!accession || !existsSync(sourcePath)) {
+      throw new Error(`Metsera P8 source bytes are missing at ${sourcePath}.`);
+    }
+    return [source.source_document_identity, readFileSync(sourcePath)];
+  }));
+}
+
 function readExternalCohortValue(flag, label) {
   const value = readRealMaterialisationValue(flag, label);
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -433,6 +449,9 @@ async function main() {
   const m1Permission = currentM1Permission();
   const materialisationInput = readRealMaterialisationInput();
   const materialisationReceipt = readRealMaterialisationReceipt();
+  const sourceBytesByIdentity = readSourceBytesByIdentity(
+    materialisationInput,
+  );
   const externalCohortRequest = readExternalCohortValue(
     '--cohort-request',
     'cohort-request',
@@ -469,11 +488,11 @@ async function main() {
       },
       pilot_product_authority_context: productAuthority.context,
       pilot_product_authority_input: productAuthority.input,
-    });
+    }, sourceBytesByIdentity);
   const productAdmission =
     compileMetseraExclusivityProductAdmission({
       process_phrasebook_admission: realProcessAdmission,
-    });
+    }, sourceBytesByIdentity);
   if (
     productAdmission.candidate_release_manifest_id
       !== candidateReleaseBinding.candidate_release_manifest_id
@@ -488,6 +507,7 @@ async function main() {
     productAdmission,
     productAuthority.context,
     productAuthority.input,
+    sourceBytesByIdentity,
   );
   candidateReleaseBinding.product_query_definition_id =
     productRow.product_query_ir.query_definition_id;
@@ -497,6 +517,7 @@ async function main() {
       productRow,
       productAuthority.context,
       productAuthority.input,
+      sourceBytesByIdentity,
     );
   const productPresentation =
     compileMetseraExclusivityProductPresentation(
@@ -519,6 +540,7 @@ async function main() {
       productAuthority.context,
       productAuthority.input,
       cohortEvidence,
+      sourceBytesByIdentity,
     );
   const candidateProductWriteSet = {
     schema_version: PRODUCT_CANDIDATE_RESULT_WRITE_SET_SCHEMA,
@@ -549,6 +571,7 @@ async function main() {
     writeSet: candidateWriteSet,
     processAuthorityContext: productAuthority.context,
     processAuthorityInput: productAuthority.input,
+    sourceBytesByIdentity,
   });
   const candidateCommit = await canonicalWriter.write({
     operation: 'PRODUCT_RESULT_CANDIDATE_RUN',
@@ -556,6 +579,7 @@ async function main() {
     writeSet: candidateWriteSet,
     processAuthorityContext: productAuthority.context,
     processAuthorityInput: productAuthority.input,
+    sourceBytesByIdentity,
   });
   const candidateReplay = await canonicalWriter.write({
     operation: 'PRODUCT_RESULT_CANDIDATE_RUN',
@@ -563,6 +587,7 @@ async function main() {
     writeSet: candidateWriteSet,
     processAuthorityContext: productAuthority.context,
     processAuthorityInput: productAuthority.input,
+    sourceBytesByIdentity,
   });
   const shimFlagIndex = process.argv.indexOf('--supabase-shim');
   const dbUrlFlagIndex = process.argv.indexOf('--db-url');
@@ -1090,6 +1115,7 @@ SELECT * FROM metsera_product_release_proof;
       m1Permission,
       productAuthority.context,
       productAuthority.input,
+      sourceBytesByIdentity,
     );
   if (
     sourceReader.source_reader_state !== 'TYPED_REFUSAL'

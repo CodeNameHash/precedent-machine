@@ -4,7 +4,7 @@ const test = require('node:test');
 const { contentId, sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const {
   PROCESS_SOURCE_ACQUISITION_INPUT_SCHEMA,
-  acquireProcessSources,
+  acquireProcessSources: acquireSources,
   validateProcessSourceAcquisitionReceipt,
 } = require('../lib/canonical-v2/process-source-acquisition');
 
@@ -18,7 +18,6 @@ function source(sourceId, overrides = {}) {
     source_id: sourceId,
     source_class: 'FILING',
     frozen_snapshot_id: digest(`${sourceId}:snapshot`),
-    source_text: sourceText,
     source_text_digest: sha256Hex(Buffer.from(sourceText, 'utf8')),
     source_identity: {
       source_document_identity: digest(`${sourceId}:document`),
@@ -33,6 +32,17 @@ function source(sourceId, overrides = {}) {
     attempts_used: 1,
     ...overrides,
   };
+}
+
+function sourceBytesForInput(value) {
+  return new Map(value.frozen_sources.map((frozenSource) => [
+    frozenSource.source_identity.source_document_identity,
+    Buffer.from(`Synthetic source ${frozenSource.source_id}.`, 'utf8'),
+  ]));
+}
+
+function acquireProcessSources(value, sourceBytesByIdentity = sourceBytesForInput(value)) {
+  return acquireSources(value, sourceBytesByIdentity);
 }
 
 function input(overrides = {}) {
@@ -87,10 +97,33 @@ test('builds a deterministic frozen-source receipt with evidence and coverage hi
   assert.equal(first.authority_state, 'NOT_GRANTED');
   assert.equal(first.intake_outcomes.length, 2);
   assert.equal(first.intake_outcomes[1].intake_outcome, 'REVIEWED_NON_RECEIPT');
+  assert.equal(
+    input().frozen_sources.every(
+      (frozenSource) => !Object.hasOwn(frozenSource, 'source_text'),
+    ),
+    true,
+  );
   assert.deepEqual(first.coverage_limit, input().governed_scope.coverage_limit);
   assert.equal(Object.isFrozen(first), true);
   assert.doesNotThrow(
     () => validateProcessSourceAcquisitionReceipt(first, first.acquisition_receipt_id),
+  );
+});
+
+test('fails closed when the source-byte side channel is missing or changed', () => {
+  const value = input();
+  assert.throws(
+    () => acquireSources(value, new Map()),
+    { code: 'INVALID_PROCESS_FROZEN_SOURCE' },
+  );
+  const mismatched = sourceBytesForInput(value);
+  mismatched.set(
+    value.frozen_sources[0].source_identity.source_document_identity,
+    Buffer.from('substituted source bytes', 'utf8'),
+  );
+  assert.throws(
+    () => acquireSources(value, mismatched),
+    { code: 'INVALID_PROCESS_FROZEN_SOURCE' },
   );
 });
 

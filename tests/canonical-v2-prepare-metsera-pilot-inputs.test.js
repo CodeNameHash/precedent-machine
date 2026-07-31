@@ -145,6 +145,21 @@ test('prepares byte-identical Metsera P8 input files across two runs and passes 
   const materialisationInput = JSON.parse(
     fs.readFileSync(path.join(outDirA, 'materialisation-input.json'), 'utf8'),
   );
+  const sourceBytesByIdentity = new Map(
+    materialisationInput.source_documents.map((source) => [
+      source.source_document_identity,
+      fs.readFileSync(path.join(
+        sourceDir,
+        `${source.citation_identity.accession_number}.htm`,
+      )),
+    ]),
+  );
+  assert.equal(
+    materialisationInput.source_documents.some(
+      (source) => Object.hasOwn(source, 'source_text'),
+    ),
+    false,
+  );
   const cohortRequest = JSON.parse(
     fs.readFileSync(path.join(outDirA, 'cohort-request.json'), 'utf8'),
   );
@@ -174,14 +189,15 @@ test('prepares byte-identical Metsera P8 input files across two runs and passes 
     candidate_release_binding: candidateReleaseBinding,
     pilot_product_authority_context: productAuthority.context,
     pilot_product_authority_input: productAuthority.input,
-  });
+  }, sourceBytesByIdentity);
   const productAdmission = compileMetseraExclusivityProductAdmission({
     process_phrasebook_admission: realProcessAdmission,
-  });
+  }, sourceBytesByIdentity);
   const productRow = compileMetseraExclusivityProductRow(
     productAdmission,
     productAuthority.context,
     productAuthority.input,
+    sourceBytesByIdentity,
   );
   assert.equal(
     summaryA.subject_deal_key,

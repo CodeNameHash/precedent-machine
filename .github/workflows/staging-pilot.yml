@@ -62,6 +62,7 @@ jobs:
               ;;
           esac
           node scripts/canonical-v2-staging-metsera-exclusivity-p8.mjs \
+            --source-dir /tmp/metsera-sources \
             --materialisation-input /tmp/metsera-pilot-inputs/materialisation-input.json \
             --materialisation-receipt /tmp/metsera-pilot-inputs/materialisation-receipt.json \
             --cohort-request /tmp/metsera-pilot-inputs/cohort-request.json \

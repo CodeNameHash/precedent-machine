@@ -11,8 +11,8 @@ const {
   AUTHORITY_LIMITS,
   MATERIALISATION_INPUT_SCHEMA,
   MATERIALISATION_RECEIPT_SCHEMA,
-  compileProcessExclusivityPilotMaterialisation,
-  validateProcessExclusivityPilotMaterialisation,
+  compileProcessExclusivityPilotMaterialisation: compileMaterialisation,
+  validateProcessExclusivityPilotMaterialisation: validateMaterialisation,
 } = require('../lib/canonical-v2/process-exclusivity-pilot');
 const predicateCatalogueContract = require(
   '../contracts/canonical-v2/successor/process/predicates/exclusivity-predicate-catalogue.v2.json',
@@ -22,14 +22,15 @@ function digest(label) {
   return contentId('SYNTHETIC_METSERA_PROCESS_PILOT_TEST/V1', { label });
 }
 
+const sourceTextByIdentity = new Map();
+
 function sourceDocument(label, sourceText, documentOrdinal) {
-  return {
+  const document = {
     admitted_source_occurrence_id: digest(`${label}:source-occurrence`),
     source_document_identity: digest(`${label}:source-document`),
     source_revision_id: digest(`${label}:source-revision`),
     document_hash: digest(`${label}:document-hash`),
     document_ordinal: documentOrdinal,
-    source_text: sourceText,
     source_text_digest: sha256Hex(Buffer.from(sourceText, 'utf8')),
     citation_identity: {
       citation_key: `METSERA_SYNTHETIC_${label.toUpperCase()}`,
@@ -38,20 +39,57 @@ function sourceDocument(label, sourceText, documentOrdinal) {
     evidence_validation_receipt_id:
       digest(`${label}:source-validation-receipt`),
   };
+  sourceTextByIdentity.set(
+    document.source_document_identity,
+    Buffer.from(sourceText, 'utf8'),
+  );
+  return document;
+}
+
+function sourceBytesForInput(input) {
+  return new Map((input.source_documents || []).map((document) => [
+    document.source_document_identity,
+    sourceTextByIdentity.get(document.source_document_identity),
+  ]));
+}
+
+function sourceText(document) {
+  return sourceTextByIdentity.get(document.source_document_identity).toString('utf8');
+}
+
+function setSourceText(document, text) {
+  const bytes = Buffer.from(text, 'utf8');
+  sourceTextByIdentity.set(document.source_document_identity, bytes);
+  document.source_text_digest = sha256Hex(bytes);
+}
+
+function compileProcessExclusivityPilotMaterialisation(
+  input,
+  sourceBytesByIdentity = sourceBytesForInput(input),
+) {
+  return compileMaterialisation(input, sourceBytesByIdentity);
+}
+
+function validateProcessExclusivityPilotMaterialisation(
+  value,
+  input,
+  sourceBytesByIdentity = sourceBytesForInput(input),
+) {
+  return validateMaterialisation(value, input, sourceBytesByIdentity);
 }
 
 function byteInterval(document, exactText, occurrence = 0) {
   let characterStart = -1;
   let fromIndex = 0;
   for (let index = 0; index <= occurrence; index += 1) {
-    characterStart = document.source_text.indexOf(exactText, fromIndex);
+    characterStart = sourceText(document).indexOf(exactText, fromIndex);
     if (characterStart < 0) {
       throw new Error(`Fixture text not found: ${exactText}`);
     }
     fromIndex = characterStart + exactText.length;
   }
   const absoluteStart = Buffer.byteLength(
-    document.source_text.slice(0, characterStart),
+    sourceText(document).slice(0, characterStart),
     'utf8',
   );
   return {
@@ -668,6 +706,13 @@ test('materialises the complete typed Metsera exclusivity sidecar deterministica
   assert.equal(first.authority_state, 'NOT_GRANTED');
   assert.equal(Object.isFrozen(first), true);
   assert.equal(Object.isFrozen(first.revisions), true);
+  assert.equal(
+    input.source_documents.every(
+      (source) => !Object.hasOwn(source, 'source_text'),
+    ),
+    true,
+  );
+  assert.doesNotMatch(JSON.stringify(first), /"source_text":/);
   assert.doesNotThrow(() => (
     validateProcessExclusivityPilotMaterialisation(first, input)
   ));
@@ -690,6 +735,23 @@ test('materialises the complete typed Metsera exclusivity sidecar deterministica
       ([key, values]) => [key, values.length],
     )),
     expectedCounts,
+  );
+});
+
+test('fails closed when source bytes are missing or do not match the digest', () => {
+  const input = metseraFixture();
+  assert.throws(
+    () => compileMaterialisation(input, new Map()),
+    { code: 'INVALID_PROCESS_PILOT_SOURCE_INTERVAL' },
+  );
+  const mismatched = sourceBytesForInput(input);
+  mismatched.set(
+    input.source_documents[0].source_document_identity,
+    Buffer.from('substituted source bytes', 'utf8'),
+  );
+  assert.throws(
+    () => compileMaterialisation(input, mismatched),
+    { code: 'INVALID_PROCESS_PILOT_SOURCE_INTERVAL' },
   );
 });
 
@@ -1137,7 +1199,7 @@ test('derives ABSENT scope identity and rejects caller or evidence substitution'
         valid.source_documents[0].source_document_identity,
       absolute_start: 0,
       absolute_end: Buffer.byteLength(
-        valid.source_documents[0].source_text,
+        sourceText(valid.source_documents[0]),
         'utf8',
       ),
     }],
@@ -1330,9 +1392,9 @@ test('blocks unknown and near Process codes without mapping them', () => {
 test('blocks clipped UTF-8 intervals and changed source wording', () => {
   const clipped = metseraFixture();
   const proxy = clipped.source_documents[0];
-  const emojiCharacterIndex = proxy.source_text.indexOf('🧭');
+  const emojiCharacterIndex = sourceText(proxy).indexOf('🧭');
   const emojiByteStart = Buffer.byteLength(
-    proxy.source_text.slice(0, emojiCharacterIndex),
+    sourceText(proxy).slice(0, emojiCharacterIndex),
     'utf8',
   );
   clipped.frozen_scope.narration_slots[0].canonical_source_intervals[0] = {
@@ -1359,13 +1421,13 @@ test('blocks narration evidence with the same text at different coordinates', ()
   const proxy = input.source_documents[0];
   const narrationInterval = input.frozen_scope.narration_slots[0]
     .canonical_source_intervals[0];
-  const narrationText = Buffer.from(proxy.source_text, 'utf8').subarray(
+  const narrationText = sourceTextByIdentity.get(proxy.source_document_identity).subarray(
     narrationInterval.absolute_start,
     narrationInterval.absolute_end,
   ).toString('utf8');
-  proxy.source_text += ` Duplicate: ${narrationText}`;
-  proxy.source_text_digest = sha256Hex(
-    Buffer.from(proxy.source_text, 'utf8'),
+  setSourceText(
+    proxy,
+    `${sourceText(proxy)} Duplicate: ${narrationText}`,
   );
   input.typed_values.narrations[0].evidence = evidence(
     'PROCESS_NARRATION',
@@ -1383,13 +1445,13 @@ test('blocks passage evidence with the same text at different coordinates', () =
   const agreement = input.source_documents[1];
   const passageInterval = input.frozen_scope.passage_slots[1]
     .canonical_source_intervals[0];
-  const draftingText = Buffer.from(agreement.source_text, 'utf8').subarray(
+  const draftingText = sourceTextByIdentity.get(agreement.source_document_identity).subarray(
     passageInterval.absolute_start,
     passageInterval.absolute_end,
   ).toString('utf8');
-  agreement.source_text += ` Duplicate: ${draftingText}`;
-  agreement.source_text_digest = sha256Hex(
-    Buffer.from(agreement.source_text, 'utf8'),
+  setSourceText(
+    agreement,
+    `${sourceText(agreement)} Duplicate: ${draftingText}`,
   );
   input.typed_values.passages[1].evidence = evidence(
     'PROCESS_PASSAGE',

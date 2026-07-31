@@ -7,7 +7,7 @@ const {
   AUTHORITY_LIMITS,
   METSERA_PRODUCT_SOURCE_READER_SCHEMA,
   SELECTED_SOURCE_ACTION,
-  compileMetseraExclusivityProductSourceReader,
+  compileMetseraExclusivityProductSourceReader: compileSourceReader,
 } = require(
   '../lib/canonical-v2/metsera-exclusivity-product-source-reader',
 );
@@ -18,23 +18,23 @@ const {
   PRODUCT_CANDIDATE_RESULT_WRITE_SET_SCHEMA,
   buildProcessPhrasebookProductChain,
   buildProductCandidateResultWriteEnvelope,
-  validateProductCandidateResultWriteSet,
+  validateProductCandidateResultWriteSet: validateWriteSet,
 } = require('../lib/canonical-v2/product-candidate-result-write');
 const {
-  compileMetseraExclusivityProductAdmission,
+  compileMetseraExclusivityProductAdmission: compileProductAdmission,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-admission');
 const {
-  compileMetseraExclusivityProductQuery,
-  compileMetseraExclusivityProductRow,
+  compileMetseraExclusivityProductQuery: compileProductQuery,
+  compileMetseraExclusivityProductRow: compileProductRow,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-row');
 const {
-  compileMetseraExclusivityProductResultSet,
+  compileMetseraExclusivityProductResultSet: compileProductResultSet,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-result-set');
 const {
   compileMetseraExclusivityProductPresentation,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-presentation');
 const {
-  compileMetseraExclusivityProductSurfaces,
+  compileMetseraExclusivityProductSurfaces: compileProductSurfaces,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-surfaces');
 const {
   buildMetseraRealProcessAdmission,
@@ -44,6 +44,104 @@ const {
 } = require(
   './fixtures/canonical-v2/metsera-external-cohort-execution',
 );
+
+let activeSourceBytesByIdentity;
+
+function compileMetseraExclusivityProductAdmission(input) {
+  return compileProductAdmission(input, activeSourceBytesByIdentity);
+}
+
+function compileMetseraExclusivityProductQuery(
+  admission,
+  authorityContext,
+  authorityInput,
+) {
+  return compileProductQuery(
+    admission,
+    authorityContext,
+    authorityInput,
+    activeSourceBytesByIdentity,
+  );
+}
+
+function compileMetseraExclusivityProductRow(
+  admission,
+  authorityContext,
+  authorityInput,
+) {
+  return compileProductRow(
+    admission,
+    authorityContext,
+    authorityInput,
+    activeSourceBytesByIdentity,
+  );
+}
+
+function compileMetseraExclusivityProductResultSet(
+  admission,
+  row,
+  authorityContext,
+  authorityInput,
+) {
+  return compileProductResultSet(
+    admission,
+    row,
+    authorityContext,
+    authorityInput,
+    activeSourceBytesByIdentity,
+  );
+}
+
+function compileMetseraExclusivityProductSurfaces(
+  admission,
+  row,
+  resultSet,
+  presentation,
+  authorityContext,
+  authorityInput,
+  cohortEvidence,
+) {
+  return compileProductSurfaces(
+    admission,
+    row,
+    resultSet,
+    presentation,
+    authorityContext,
+    authorityInput,
+    cohortEvidence,
+    activeSourceBytesByIdentity,
+  );
+}
+
+function validateProductCandidateResultWriteSet(
+  writeSet,
+  authorityContext,
+  authorityInput,
+) {
+  return validateWriteSet(
+    writeSet,
+    authorityContext,
+    authorityInput,
+    activeSourceBytesByIdentity,
+  );
+}
+
+function compileMetseraExclusivityProductSourceReader(
+  candidateRecord,
+  activeReleaseResolution,
+  m1Permission,
+  authorityContext,
+  authorityInput,
+) {
+  return compileSourceReader(
+    candidateRecord,
+    activeReleaseResolution,
+    m1Permission,
+    authorityContext,
+    authorityInput,
+    activeSourceBytesByIdentity,
+  );
+}
 const {
   authority,
 } = require(
@@ -58,10 +156,12 @@ function validCandidate() {
     input: authorityInput,
     context: authorityContext,
   } = authority();
-  const processAdmission = buildMetseraRealProcessAdmission({
+  const built = buildMetseraRealProcessAdmission({
     authority_context: authorityContext,
     authority_input: authorityInput,
   });
+  const processAdmission = built.processAdmission;
+  activeSourceBytesByIdentity = built.sourceBytesByIdentity;
   const productAdmission = compileMetseraExclusivityProductAdmission({
     process_phrasebook_admission: processAdmission,
   });

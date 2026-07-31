@@ -232,6 +232,39 @@ artefact from day one because three protocol branches depend on it; per-group
 minimums dominate the sample size, so expect 300-500 blind reads rather than
 the ~260 a flat 2% implies.
 
+### M3 extraction semantics (2026-07-31, Ben agreed)
+
+**1. The producer never asserts a negative.** The model emits only
+evidence-backed positives or open-world candidates. It never emits `ABSENT`
+or `NOT_APPLICABLE`. `ABSENT` is DERIVED deterministically: the scope-closure
+machinery proves the complete governed scope was examined and no positive
+candidate was found within it. Where scope completeness is not proven, the
+state is `NOT_EXAMINED`. Rationale: `ABSENT` is a positive legal assertion
+that enters market-statistic denominators, so a wrong one is invisible and
+authoritative-looking; `PRESENT` is self-policing because its quote must
+reproduce byte-identically from stored offsets. This removes any need to
+calibrate a model-confidence threshold for the dangerous case.
+
+**2. Lexical disagreement vetoes negatives, never creates positives.** When
+the lexical net finds a signal the semantic producer missed, that scope
+cannot be concluded `ABSENT` — it drops to `NOT_EXAMINED` and enters the
+review queue. A lexical hit NEVER becomes a `PRESENT` claim on its own,
+because a regex match can sit in a recital or govern something else. Vetoing
+only ever moves toward "we do not know"; creating could manufacture a
+provision. Most disagreements therefore resolve mechanically.
+
+**3. Taxonomy is the starting vocabulary, not a closed set.** Novel
+propositions are preserved as open-world candidates and never forced to the
+nearest known concept. Across the corpus an OPEN-WORLD COMMONALITY REPORT
+clusters unmapped candidates by similarity and presents grouped patterns
+("these 14 deals contain this thing we have no code for") for Ben's
+adjudication at the end. The clustering proposes groupings only — it never
+silently merges distinct concepts, and nothing is promoted into the taxonomy
+without Ben's decision. Note: the lexical net can only match existing codes,
+so it is structurally blind to novelty; the open-world path is the only
+mechanism that catches genuinely new propositions and is therefore
+load-bearing, not a side feature.
+
 ### P9 registry correction (2026-07-31, mechanically verified)
 
 `docs/codex-program/programme-gates.yaml` contains 22 P9 gates, not 25.

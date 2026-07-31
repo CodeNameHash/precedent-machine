@@ -33,7 +33,7 @@ function materialisationInputFixture() {
   fixtureModule.filename = fixturePath;
   fixtureModule.paths = Module._nodeModulePaths(path.dirname(fixturePath));
   fixtureModule._compile(
-    `${fixtureSource}\nmodule.exports = { metseraFixture };`,
+    `${fixtureSource}\nmodule.exports = { metseraFixture, sourceBytesForInput };`,
     fixturePath,
   );
   const input = fixtureModule.exports.metseraFixture();
@@ -43,17 +43,24 @@ function materialisationInputFixture() {
     issuer_name: 'Metsera',
     source_location_label: 'Background of the Merger',
   };
-  return input;
+  return {
+    materialisationInput: input,
+    sourceBytesByIdentity: fixtureModule.exports.sourceBytesForInput(input),
+  };
 }
 
 function buildMetseraRealProcessAdmission({
   authority_context: authorityContext,
   authority_input: authorityInput,
 }) {
-  const materialisationInput = materialisationInputFixture();
+  const { materialisationInput, sourceBytesByIdentity } =
+    materialisationInputFixture();
   const materialisationReceipt =
-    compileProcessExclusivityPilotMaterialisation(materialisationInput);
-  return compileMetseraExclusivityProcessPhrasebookAdmission({
+    compileProcessExclusivityPilotMaterialisation(
+      materialisationInput,
+      sourceBytesByIdentity,
+    );
+  const processAdmission = compileMetseraExclusivityProcessPhrasebookAdmission({
     materialisation_input: materialisationInput,
     materialisation_receipt: materialisationReceipt,
     candidate_release_binding: {
@@ -68,7 +75,8 @@ function buildMetseraRealProcessAdmission({
     },
     pilot_product_authority_context: authorityContext,
     pilot_product_authority_input: authorityInput,
-  });
+  }, sourceBytesByIdentity);
+  return { processAdmission, sourceBytesByIdentity };
 }
 
 module.exports = {

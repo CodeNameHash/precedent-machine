@@ -9,7 +9,7 @@ const {
   sha256Hex,
 } = require('../lib/canonical-v2/canonical-bytes');
 const {
-  acquireProcessSources,
+  acquireProcessSources: acquireSources,
 } = require('../lib/canonical-v2/process-source-acquisition');
 const {
   enumerateProcessScope,
@@ -17,8 +17,18 @@ const {
 const {
   PIPELINE_INPUT_SCHEMA,
   PIPELINE_RECEIPT_SCHEMA,
-  compileProcessExclusivityPilotPipeline,
+  compileProcessExclusivityPilotPipeline: compilePipeline,
 } = require('../lib/canonical-v2/process-exclusivity-pilot-pipeline');
+
+let activeSourceBytesByIdentity;
+
+function acquireProcessSources(input) {
+  return acquireSources(input, activeSourceBytesByIdentity);
+}
+
+function compileProcessExclusivityPilotPipeline(input, trusted) {
+  return compilePipeline(input, trusted, activeSourceBytesByIdentity);
+}
 
 function digest(label) {
   return contentId('SYNTHETIC_PROCESS_PILOT_PIPELINE_TEST/V1', { label });
@@ -42,17 +52,22 @@ function loadPilotFixture() {
     'require',
     '__dirname',
     '__filename',
-    `${fixtureSource}\nreturn metseraFixture;`,
+    `${fixtureSource}\nreturn { metseraFixture, sourceBytesForInput };`,
   );
-  return load(
+  const loaded = load(
     noTestRegistration,
     path.dirname(fixturePath),
     fixturePath,
-  )();
+  );
+  const pilot = loaded.metseraFixture();
+  activeSourceBytesByIdentity = loaded.sourceBytesForInput(pilot);
+  return pilot;
 }
 
 function sourceEvidence(document, start = 0, length = 7) {
-  const bytes = Buffer.from(document.source_text, 'utf8');
+  const bytes = activeSourceBytesByIdentity.get(
+    document.source_document_identity,
+  );
   const end = Math.min(start + length, bytes.length);
   return {
     source_document_identity: document.source_document_identity,
@@ -84,7 +99,6 @@ function sourceAcquisitionInput(pilot) {
       source_id: expectedSourceIds[index],
       source_class: 'FILING',
       frozen_snapshot_id: digest(`source-${index}-snapshot`),
-      source_text: source.source_text,
       source_text_digest: source.source_text_digest,
       source_identity: {
         source_document_identity: source.source_document_identity,
@@ -197,14 +211,17 @@ function semanticSourceUnit(pilot) {
 function lexicalSourceUnit(pilot) {
   const source = pilot.source_documents[0];
   const evidence = sourceEvidence(source);
+  const bytes = activeSourceBytesByIdentity.get(
+    source.source_document_identity,
+  );
   return {
     source_unit_id: digest('lexical-source-unit'),
     source_document_identity: source.source_document_identity,
     source_revision_id: source.source_revision_id,
     document_hash: source.document_hash,
     start_utf8_byte: 0,
-    end_utf8_byte: Buffer.byteLength(source.source_text, 'utf8'),
-    exact_text: source.source_text,
+    end_utf8_byte: bytes.length,
+    exact_text: bytes.toString('utf8'),
     lexical_observations: [{
       state: 'CANDIDATE',
       slot_key: slotKey(pilot),
@@ -306,6 +323,12 @@ test('runs one deterministic synthetic chain and retains every receipt and disag
   assert.equal(first.authority_state, 'NOT_GRANTED');
   assert.equal(first.external_operation_state, 'NOT_PERFORMED');
   assert.equal(first.source_acquisition_receipt.authority_state, 'NOT_GRANTED');
+  assert.equal(
+    value.source_acquisition_input.frozen_sources.every(
+      (source) => !Object.hasOwn(source, 'source_text'),
+    ),
+    true,
+  );
   assert.equal(first.sec_completeness_receipt.authority_state, 'NOT_GRANTED');
   assert.equal(branch.failure, null);
   assert.equal(branch.scope_receipt.scope_receipt_id,

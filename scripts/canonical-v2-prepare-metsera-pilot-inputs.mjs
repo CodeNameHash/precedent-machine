@@ -137,7 +137,6 @@ function buildSourceDocuments(sourceUniverse, sourceBytesByAccession) {
         digest(`${document.accession}:admitted-source-occurrence`),
       ...identity,
       document_ordinal: documentOrdinal,
-      source_text: bytes.toString('utf8'),
       source_text_digest: document.sha256,
       citation_identity: {
         accession_number: document.accession,
@@ -613,6 +612,12 @@ function main() {
     validatePassageAgainstBytes(passage, sourceBytesByAccession.get(passage.source.accession));
   }
   const sourceDocuments = buildSourceDocuments(sourceUniverse, sourceBytesByAccession);
+  const sourceBytesByIdentity = new Map(
+    sourceUniverse.documents.map((document) => [
+      sourceIdentity(document).source_document_identity,
+      sourceBytesByAccession.get(document.accession),
+    ]),
+  );
   const materialisationInput = reconstructMaterialisationInput({
     sourceDocuments,
     sourceUniverse,
@@ -670,8 +675,15 @@ function main() {
   // input above, and immediately proven exact against that input via the
   // library's own validator.
   const materialisationReceipt =
-    compileProcessExclusivityPilotMaterialisation(materialisationInput);
-  validateProcessExclusivityPilotMaterialisation(materialisationReceipt, materialisationInput);
+    compileProcessExclusivityPilotMaterialisation(
+      materialisationInput,
+      sourceBytesByIdentity,
+    );
+  validateProcessExclusivityPilotMaterialisation(
+    materialisationReceipt,
+    materialisationInput,
+    sourceBytesByIdentity,
+  );
 
   // Real candidate release + product authority context, exactly as the
   // staging runner builds them.
@@ -689,14 +701,15 @@ function main() {
     candidate_release_binding: candidateReleaseBinding,
     pilot_product_authority_context: productAuthority.context,
     pilot_product_authority_input: productAuthority.input,
-  });
+  }, sourceBytesByIdentity);
   const productAdmission = compileMetseraExclusivityProductAdmission({
     process_phrasebook_admission: realProcessAdmission,
-  });
+  }, sourceBytesByIdentity);
   const productRow = compileMetseraExclusivityProductRow(
     productAdmission,
     productAuthority.context,
     productAuthority.input,
+    sourceBytesByIdentity,
   );
 
   const { cohortRequest, cohortExecutionInput } = buildCohortFiles(productAdmission, productRow);
