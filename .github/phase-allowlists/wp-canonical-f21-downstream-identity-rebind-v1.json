@@ -4,12 +4,17 @@
     ".github/phase-allowlists/wp-canonical-f21-downstream-identity-rebind-v1.json",
     "lib/canonical-v2/metric-serving-admission.js",
     "lib/canonical-v2/no-shop-timing-certification-f24.js",
+    "lib/canonical-v2/no-shop-actions-certification-f25.js",
+    "lib/canonical-v2/no-shop-cross-view-release-f26.js",
     "tests/canonical-v2-copy-delivery-release-f23.test.js",
     "tests/canonical-v2-metric-serving-admission-f22.test.js",
     "tests/canonical-v2-no-shop-timing-certification-f24.test.js",
+    "tests/canonical-v2-no-shop-actions-certification-f25.test.js",
+    "__fixtures__/canonical-v2/qxo-no-shop-cross-view-f26.json",
     "tests/fixtures/canonical-v2/metric-serving-admission-f22.json",
     "tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-release-f23-staging-attestation.json",
     "tests/fixtures/canonical-v2/qxo-no-shop-timing-f24-staging-attestation.json"
+    ,"tests/fixtures/canonical-v2/qxo-no-shop-actions-f25-staging-attestation.json"
   ],
   "denied": [
     ".env*",
