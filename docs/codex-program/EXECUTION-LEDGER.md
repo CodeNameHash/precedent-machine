@@ -7,27 +7,34 @@ an architecture document. The governing architecture is
 The PM controller owns the integration queue and updates this ledger after each
 main integration.
 
+Independent bounded work uses separate agents when their files and decisions
+do not overlap. Each agent receives a compact task packet: signed basis,
+objective, exact files, inputs, output, tests, prohibited authority and
+completion condition. The PM controller keeps shared integration, deployment
+and signed publication work. Mechanical work uses lower-cost agents. Legal,
+identity, security and exact-root review uses the stronger governed review
+model. Agents do not move main or publish programme status.
+
 ## 1. Current state
 
 | Item | State |
 | --- | --- |
 | Main basis | `7b6bc64157c49832129fa2ca227399850cd983fc` |
-| Approved M1 review commit | `affa7464ca2cab2b4715ae084e3de6c2d39b673f` |
-| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; tested candidate head `b0d8160e`, followed only by this final ledger evidence update. The P8 affected-chain tests, corrected isolated-staging proofs, complete suite, build and two clean compiles pass. Main remains fixed. |
-| Current working-tree successor bundle | 178 authored inputs, 177 substantive contracts, 8 categories. This is a draft, not the freeze candidate. |
+| Approved M1 review commit | `6cd3c2c739ba2d281cee2c99eea908e371edf765` |
+| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; current code head `604afbb7`, followed only by this ledger update. The exact contract bundle remains unchanged after the subject-cohort correction. Main remains fixed. |
+| Approved contract bundle | 178 authored inputs, 177 substantive contracts, 8 categories. |
 | Current working-tree bundle ID | `d222eba830fefad4772e358041e36f8818dbf227e4c7e13c77f4228514a37d8e` |
 | Current working-tree contract digest | `a953a215f9ff4cf94a204580b3b9a2b559fa531d1f3be16a3e787032257e87b3` |
 | Current working-tree payload digest | `36762abe8f4dd666df0d9aa66760d8c4e41971fab633764108ee54f73d5c8d73` |
 | Contract dependency graph | 177 nodes, 315 links, 0 unresolved dependencies, and 0 cycles |
-| Clean compile check | PASS twice in separate Node processes on `b0d8160e`. Both produced 1,083,136 canonical bytes with SHA-256 `3a6021f20ebb6587aaa978c2bbdaa025cabdb84f961e514297f2e80fd90ca795`. |
-| Draft generic-envelope successor | Bundle `b37a20b3e343b93ab8d9d223625ef5431d0786f5720f1869572921ab7049ad30`; digest `158ac280eb3bc2b994e4d37281db8045deb48221af81ba84fb7da8a93205f03a`; 172 substantive contracts and 297 links. Two clean compiles are byte-identical. This draft does not replace the acknowledged M1 bundle until its exact bytes pass review and the reserved contract-freeze approval. |
-| Draft Product-writer successor | Bundle `dfab1f31bf31b7ce405dc8a5fc0215a07139634ff535f84b1266f754cba2797a`; digest `c8f840e70e8b1c1bac467278665fddc9d837123f9a8c44ae47c0b9630eaec540`; canonical payload `a6608b04e9140cb024089639a3989ae9d45a12df5cd6587f6d2695ea2ffb872f`; 173 substantive contracts and 302 links. Two clean compiles are byte-identical. It adds only an inactive staging candidate-result write through the existing canonical writer. Exact-root review and the reserved contract-freeze approval remain required before this draft replaces M1. |
-| Draft Product-serving successor | Bundle `17de909336a20e581ad9c35c107ce821b7a22379970c8923c01c1fa67d615611`; digest `21343532a94fe360c5c016feeb3e076dab7cde3ef1ca15b7f8dfe08e522a8ab3`; canonical payload `9c42b003c74234c33b00d0d991fa7990f65da38f49e63c343bda773d1c8eb94e`; 174 substantive contracts and 303 links. Two clean compiles are byte-identical. It adds one generic Product result serving-record contract for Agreement, Process and later admitted domains. The V7 importer and active query now implement that contract in isolated staging. Exact-root review and reviewed activation remain. |
+| Clean compile check | PASS twice in separate Node processes after the cohort correction and approval wiring. Both produced 1,083,136 canonical bytes with SHA-256 `3a6021f20ebb6587aaa978c2bbdaa025cabdb84f961e514297f2e80fd90ca795`. |
 | Latest complete suite on this branch | PASS on exact code candidate `b0d8160e`: 5,132 pass, 0 fail, 1 staging-only skip. |
 | Latest production build on this branch | PASS on exact code candidate `b0d8160e`, 29/29 pages. Existing warnings remain: ESLint is absent, offline Supabase variables are absent, and two admin pages exceed the page-data warning threshold. |
 | Protected programme status | Generation 44, publication `9552de2185b11d80bd1e2b80757f4f07005c58d1`, binds code commit `a3149cfb6434f3166aac2c3bd9631e637d5df8ae`. Current GitHub main is `7b6bc64157c49832129fa2ca227399850cd983fc`. The official verifier fails closed because the signed status is stale. Its last signed projection had `canonical_work_start: PASS` and `vertical_slice_execution: OPEN`. |
-| M1 contract freeze | The prior milestone acknowledgement remains at `docs/acks/M1-CONTRACT-FREEZE-2026-07-30.md`. It cannot authorise the changed P8 bundle. The formal `P1_CONTRACT_FREEZE_ATTESTED` gate remains OPEN. |
-| M2 vertical slice | ACTIVE but not complete. QXO F28 has a prior isolated-staging rollback proof. F28 and IOC now pass the same real writer proof. Metsera authority propagation is corrected and locally tested, but the current staging runner correctly refuses to execute until the final exact M1 bundle acknowledgement exists. |
+| M1 contract freeze | APPROVED. `docs/acks/M1-CONTRACT-FREEZE-2026-07-31.md` binds Ben's approval to the exact 177-contract bundle and three Stage 4 PASS reviews. It grants isolated-staging QXO and Metsera pilot permission only. The protected `P1_CONTRACT_FREEZE_ATTESTED` gate remains OPEN until the combined main commit is deployed and the matching signed successor is published. |
+| Stage 4 independent reviews | PASS on exact bundle ID `d222eba830fefad4772e358041e36f8818dbf227e4c7e13c77f4228514a37d8e`. Architecture and identity, legal semantics, and query, serving and release efficiency each returned PASS. Ben approved the exact bundle on 2026-07-31. |
+| Subject-deal cohort rule | APPROVED and implemented in `7c64b8ab`. A reviewed deal is included when it satisfies the selected cohort and comparability rules. Exclusion requires a typed narrower-filter or comparability reason. Review, Compare, Corpus Context and Query receive the same included or excluded state and reason. The Landos IOC pilot is included with one matching distribution member. |
+| M2 vertical slice | ACTIVE. The exact M1 acknowledgement now permits the isolated-staging QXO and Metsera pilot runs. The next step is the combined integration check, one main movement, deployment and matching signed checkpoint, followed by both real staging pilots. |
 | Isolated-staging access | PASS. Project `sjumbznveyyiizhwvixj` was re-authorised and verified through the Supabase plugin on 2026-07-30. Production was not queried or changed. |
 | Generic Agreement writer staging proof | PASS through exact commit `8a07ca30`. F28 and IOC reached the same SQL-native writer. The Agreement authority now uses one coherent version-3 candidate release manifest instead of a re-keyed version-1 shell. Valid inserts passed inside rollback transactions. Exact replay was a no-op. Conflicting replay failed closed. Twenty-eight coherently rehashed hostile requests failed before DML. Durable candidate rows and receipts remain zero. Production was not accessed. |
 | Product query cache staging proof | PASS on exact commit `976de8f6`. One real IOC Product result was written, imported and transaction-locally activated. The first active query returned the result with action `RESULT_COMPONENT_CLAIM_EVIDENCE`. The exact repeat was a cache hit. Two transaction-local cache rows covered the empty and non-empty pages. Forced rollback left zero candidate, partition, serving and cache rows. The active pointer remained generation 10. Production was not accessed. |
@@ -44,10 +51,11 @@ completed milestone moves main.
 
 ## Plain-English stage
 
-The programme is in P8 Stage 4. P8 means that one real Agreement provision
+The programme is in P8 Stage 5. P8 means that one real Agreement provision
 and one real Process provision must travel from source evidence to every
-required product view. Stage 4 is the final exact-bundle review before the
-single reserved contract-freeze approval.
+required product view. Stage 5 combines the approved work, moves main once,
+deploys the exact commit, publishes the matching signed checkpoint and runs
+both isolated-staging pilots.
 
 P1-P7 supplied the contracts and pure processing modules. QXO F28 has a prior
 real source-to-product rollback proof. The current P8 correction adds the
@@ -72,10 +80,12 @@ imports the common Product candidate record, activates only inside the test
 transaction, returns the result with the exact claim-evidence action, and
 returns the same page from cache. Rollback leaves zero candidate, partition,
 serving or cache rows. The active staging pointer remains generation 10.
-The exact candidate passes 124 affected tests. The complete suite passes
-5,132 tests with no failure. The build produces all 29 pages. Two clean
-compiles produce identical bytes. The current task is the three Stage 4
-reviews against the same exact bundle. One reserved bundle approval follows.
+The exact reviewed candidate passes 124 affected tests. The complete suite
+passes 5,132 tests with no failure. The build produces all 29 pages. Two clean
+compiles produce identical bytes. All three Stage 4 reviews passed. Ben
+approved the exact bundle. The post-review subject-cohort correction changes
+no contract byte. Its focused tests and build pass. The current task is the
+single combined integration check and pilot execution.
 
 ## 2. Work underway
 
@@ -90,6 +100,9 @@ reviews against the same exact bundle. One reserved bundle approval follows.
 | `PM-P8-GENERIC-WRITER-02` | P8 Stage 4 | Make F28 and IOC reach one immutable candidate-result insert through the existing canonical writer. | PM implementation | Active branch; commit `a603c9e9`; candidate writer, governed SQL extracts and focused tests. | The SQL path closes copied provision rows and membership objects. Each governed function comment matches its exact bytes. Three Stage 2 reviews, 131 correction checks and the complete suite pass. | REVIEW | Preserve the validated SQL and 26-call staging proof in the exact-root review candidate. | No |
 | `PM-P8-AGREEMENT-WRITER-STAGING-03` | P8 Stage 4 | Prove the generic writer against isolated staging for both Agreement families after the IOC evidence correction. | PM controller | Active branch; exact commit `ea89c591`; bounded rollback runner, focused test and exact allowlist. | PASS. Two valid families, exact replay no-op, conflicting replay rejected, 28 hostile requests rejected before DML, zero durable rows or receipts, active pointer unchanged. | COMPLETE | Preserve the proof receipt for the final approval package. | No |
 | `PM-P8-PRODUCT-CACHE-STAGING-01` | P8 Stage 4 | Prove that one active Product query serves and caches a real Agreement result without durable staging change. | PM controller | Active branch; exact commit `976de8f6`; rollback-only writer, importer, active query, cache runner and focused tests. | PASS. The real IOC result preserved `RESULT_COMPONENT_CLAIM_EVIDENCE`; repeat query was a cache hit; 124 affected tests pass; rollback left zero candidate, partition, serving and cache rows; pointer generation 10 unchanged. | COMPLETE | Preserve the proof receipt for the final approval package. | No |
+| `PM-P8-SUBJECT-COHORT-01` | P8 Stage 5 | Include the reviewed deal in its market cohort when it satisfies the selected rules and show its exact inclusion state in every view. | PM implementation | Active branch; commits `7c64b8ab` and `1ef23a45`; shared row, shared adapter, reviewed IOC slice and hostile tests. | 27 focused tests, combined affected chain 37/37 and production build PASS. The Stage 2 review found one cross-cohort receipt seam; the follow-up bound the receipt to the stored cohort and the correction review passed. Contract bytes are unchanged. | COMPLETE | Preserve the correction in the combined candidate. | No |
+| `PM-P8-BUNDLE-APPROVAL-01` | P8 Stage 5 | Bind Ben's approval to the exact reviewed bundle and open only isolated-staging pilot execution. | PM controller | Active branch; commit `bce77346`; `docs/acks/M1-CONTRACT-FREEZE-2026-07-31.md`, runner references and strict permission tests. | 10 focused tests PASS. Direct root compile and permission validation return `vertical_slice_execution: PASS` and `production_authority: NONE`. | COMPLETE | Use the exact permission in both isolated-staging pilots. | No |
+| `PM-P8-SIGNER-CLOSURE-01` | P8 Stage 5 | Close the protected successor publisher's exact path inventory before main moves. | PM controller | Active branch; commit `604afbb7`; static signer inventory, exact allowlist and focused preflight test. | Fixed review-basis diff had 865 paths. Missing signer paths fell from 183 to 0. The focused test rejects an invented extra path. | COMPLETE | Run the final local integration preflight on the exact candidate. | No |
 | `PM-GOV-BALANCE-01` | control | Replace pre-production attestation machinery with four milestone reviews and Tier A/Tier B security. | PM controller | `codex/governance-balance-v2`; governing docs, generated manifest and apparatus-only tests; commit `afbf1a4`. | 4,576 pass, 0 fail, 7 skip; production build PASS. | INTEGRATION | Include the committed unit in the next controlled main movement. | No |
 | `PM-QXO-F28-LINK-01` | P8 | Bind the F28 graph, all 14 metric slots, correction head and Product result without hiding missing runtime links. | PM implementation | `codex/qxo-f28-runtime-link-v1`; commit `d582705`. | 4 focused tests PASS. | COMPLETE | Preserve the fail-closed runtime plan. | No |
 | `PM-QXO-F28-WRITER-01` | P8 | Convert the exact F28 graph into the canonical writer's closed `DEAL_SCOPE_RUN` input. | PM implementation | Same branch; commits `32af4b2`, `53868ba`, `77f4183` and `7be1521`. | 28 writer tests PASS. The F28 write set has zero residuals. | COMPLETE | Execute the exact input against isolated staging. | No |
@@ -119,10 +132,11 @@ reviews against the same exact bundle. One reserved bundle approval follows.
 
 ## 3. Next 48 hours
 
-1. Run the final complete suite, build and two uncached bundle compiles on the exact candidate.
-2. Run the three Stage 4 reviews against the same exact bytes.
-3. Prepare the one reserved exact-bundle approval package.
-4. After approval, publish the matching signed permission and run the reviewed staging pilots.
+1. Close the subject-cohort Stage 2 review and run the combined affected chain.
+2. Update the exact signer path inventory and run the local integration preflight.
+3. Run the complete suite, production build and two uncached bundle compiles once on the combined candidate.
+4. Move main once, deploy the exact commit to production and the isolated Preview, then publish and verify the matching signed successor.
+5. Run the approved QXO and Metsera slices in isolated staging and record their exact cross-view results.
 
 ## 4. Bounded units through P11
 
@@ -135,7 +149,7 @@ reviews against the same exact bundle. One reserved bundle approval follows.
 | `P5-CORRECTIONS-RELEASE` | P5 | Corrections survive re-extraction and candidate releases are immutable. | PM implementation | P3 and P4. | Correction-head and release tests. | ACTIVE | Connect QXO and Metsera pilot outputs. | No |
 | `P6-SERVING` | P6 | Bounded set-based serving and release-aware cache. | PM implementation | P5 candidate release. | Call-budget, cache and query tests. | ACTIVE | Execute fixture-scoped runtime path. | No |
 | `P7-SHARED-ROWS` | P7 | Query, Review, Compare and Corpus Context use one row contract. | PM and PI | P6. | F28 and Metsera cross-view byte and browser parity PASS. | COMPLETE | Preserve the same row identities through reviewed activation. | No |
-| `P8-VERTICAL-SLICES` | P8 | QXO and Metsera pass source-to-product staging runs. | PM controller | P1-P7 links. | QXO F28 real isolated-staging rollback proof PASS. Metsera passes real source through inactive candidate persistence, all four browser views, an honest inactive-release source-reader refusal and exact generic V7 candidate-release import. | ACTIVE | Review the exact root and request the reserved bundle approval. | Reserved exact contract freeze only |
+| `P8-VERTICAL-SLICES` | P8 | QXO and Metsera pass source-to-product staging runs. | PM controller | P1-P7 links. | QXO F28 real isolated-staging rollback proof PASS. Metsera passes real source through inactive candidate persistence, all four browser views, an honest inactive-release source-reader refusal and exact generic V7 candidate-release import. The exact bundle is approved for isolated-staging execution. | ACTIVE | Integrate once, publish the signed permission and run both approved pilots. | Approval complete |
 | `P9-CORPUS-CERTIFICATION` | P9 | Full corpus passes quality, identity, drift, performance, restore and rollback controls. | PM controller | M2 pass. | M3 acknowledgement and Phase 9 gates. | BLOCKED | Begin after both pilots pass. | No |
 | `P10-PRODUCTION-IMPORT` | P10 | Exact inactive production import with member parity and resumable checkpoints. | PM controller | M3 pass. | Replay no-op, conflicting replay fail-closed, complete parity. | BLOCKED | Run only after staging certification. | Where contract requires |
 | `P11-CUTOVER` | P11 | Atomic whole-tuple activation, smoke and rollback. | PM controller | M4 pass and Ben authorisation. | Cutover receipt, production smoke and rollback. | BLOCKED | Request one-use authorisation at M4. | Yes |
@@ -148,8 +162,8 @@ defect. It must not copy the F28 files.
 
 ## 5. Critical path
 
-`PM-GOV-BALANCE-01` → M1 bundle acknowledgement → QXO isolated-staging PASS →
-generic second-family envelope → Metsera runtime link and isolated-staging run →
+M1 bundle approval → combined main integration and signed permission → QXO
+isolated-staging PASS → generic second-family envelope → Metsera runtime link and isolated-staging run →
 Product-result release partition and active query → M2 → full-corpus
 certification → M3 → inactive production import → M4 → one-use Ben cutover
 authorisation → atomic activation → production smoke and rollback.
