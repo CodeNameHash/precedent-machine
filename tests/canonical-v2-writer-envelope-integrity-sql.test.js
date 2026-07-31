@@ -206,7 +206,7 @@ test('writer exposes only the seven governed operations and no private helper', 
   );
 });
 
-test('the Product writer keeps Process carrier checks and closes the Agreement path', () => {
+test('the Product writer keeps Process carrier checks and invokes native Agreement validation', () => {
   const productStart = sql.indexOf("IF p_operation = 'PRODUCT_RESULT_CANDIDATE_RUN'");
   const productEnd = sql.indexOf("IF p_operation = 'INTAKE_CAPTURE'", productStart);
   const product = sql.slice(productStart, productEnd);
@@ -216,13 +216,10 @@ test('the Product writer keeps Process carrier checks and closes the Agreement p
   assert.match(product, /unknown Product candidate-result adapter/);
   assert.match(product, /process_phrasebook_product_chain_id[\s\S]*content_id\([\s\S]*PROCESS_PHRASEBOOK_PRODUCT_CHAIN\/V1/);
   assert.match(product, /process_phrasebook_product_chain_payload_digest[\s\S]*payload_digest/);
-  assert.match(
-    product,
-    /Agreement candidate Product materialisation requires a SQL-native validator/,
-  );
+  assert.match(product, /validate_agreement_candidate_product_carrier/);
 });
 
-test('every SQL writer form fails closed for hostile Agreement carriers before DML', () => {
+test('every SQL writer form invokes the native Agreement validator before DML', () => {
   const sources = [
     'sql/optionA/step0b-canonical-writer-by-contract.sql',
     'supabase/canonical-v2-foundation.sql',
@@ -231,8 +228,8 @@ test('every SQL writer form fails closed for hostile Agreement carriers before D
   for (const source of sources) {
     const agreement = source.indexOf("AGREEMENT_CANDIDATE_ENVELOPE' THEN");
     const branchStart = source.indexOf('THEN', agreement) + 'THEN'.length;
-    const reject = source.indexOf(
-      'Agreement candidate Product materialisation requires a SQL-native validator',
+    const validate = source.indexOf(
+      'validate_agreement_candidate_product_carrier',
       branchStart,
     );
     const nestedValidation = source.indexOf('\n      IF ', branchStart);
@@ -241,16 +238,16 @@ test('every SQL writer form fails closed for hostile Agreement carriers before D
     );
     assert.ok(
       agreement !== -1
-        && reject !== -1
+        && validate !== -1
         && nestedValidation !== -1
         && dml !== -1
-        && reject < nestedValidation
-        && reject < dml,
+        && validate < nestedValidation
+        && validate < dml,
     );
     const branch = source.slice(agreement, dml);
     assert.match(
       branch,
-      /RAISE EXCEPTION 'Agreement candidate Product materialisation requires a SQL-native validator'[\s\S]*USING ERRCODE = '23514';/,
+      /PERFORM canonical_v2_staging\.validate_agreement_candidate_product_carrier/,
     );
     assert.match(
       branch,

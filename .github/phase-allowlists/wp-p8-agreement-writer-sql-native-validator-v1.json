@@ -1,0 +1,18 @@
+{
+  "phase": "WP-P8-AGREEMENT-WRITER-SQL-NATIVE-VALIDATOR-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-p8-agreement-writer-sql-native-validator-v1.json",
+    "sql/optionA/step0b-canonical-writer-by-contract.sql",
+    "supabase/canonical-v2-foundation.sql",
+    "supabase/canonical-v2-product-candidate-result-writer.sql",
+    "tests/canonical-v2-agreement-writer-sql-native-validator.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "docs/**",
+    "pages/**",
+    "components/**",
+    "supabase/canonical-v2-serving.sql"
+  ],
+  "note": "Installs one identical staging-only SQL validator for the two admitted Agreement candidate profiles before public canonical_v2_write can persist a Product candidate result."
+}

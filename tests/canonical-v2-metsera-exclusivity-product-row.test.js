@@ -30,6 +30,9 @@ const {
   compileMetseraExclusivityProductRow,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-row');
 const {
+  compileMetseraExclusivityProductResultSet,
+} = require('../lib/canonical-v2/metsera-exclusivity-product-result-set');
+const {
   buildMetseraAuthorityBoundProcessAdmission,
 } = require('./fixtures/canonical-v2/metsera-authority-bound-process-admission');
 
@@ -191,6 +194,42 @@ test('rejects a correctly rehashed authority-context substitution', () => {
     ),
     /Pilot Product authority context is invalid/,
   );
+});
+
+test('requires the exact authority context and input during downstream row revalidation', () => {
+  const { input, context, productAdmission } = fixture();
+  const row = compileMetseraExclusivityProductRow(
+    productAdmission,
+    context,
+    input,
+  );
+  assert.throws(
+    () => compileMetseraExclusivityProductResultSet(
+      productAdmission,
+      row,
+      undefined,
+      input,
+    ),
+    /authority context and input are required/,
+  );
+  const substituted = clone(context);
+  substituted.candidate_release_manifest.corpus_release_id = 'f'.repeat(64);
+  rehashContext(substituted);
+  assert.throws(
+    () => compileMetseraExclusivityProductResultSet(
+      productAdmission,
+      row,
+      substituted,
+      input,
+    ),
+    /Pilot Product authority context is invalid/,
+  );
+  assert.doesNotThrow(() => compileMetseraExclusivityProductResultSet(
+    productAdmission,
+    row,
+    context,
+    input,
+  ));
 });
 
 test('rejects a correctly rehashed hidden Product-field substitution', () => {

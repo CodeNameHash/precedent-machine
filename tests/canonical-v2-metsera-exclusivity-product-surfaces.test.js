@@ -15,7 +15,7 @@ const {
 test('fails closed without the exact Product chain', () => {
   assert.throws(
     () => compileMetseraExclusivityProductSurfaces({}, {}, {}, {}),
-    /Metsera|invalid|changed|fields/i,
+    /Metsera|invalid|changed|fields|authority context and input are required/i,
   );
   assert.equal(
     METSERA_PRODUCT_SURFACES_SCHEMA,
@@ -32,6 +32,7 @@ test('uses one exact result and retains a typed no-cohort state', () => {
   );
   assert.match(source, /validateMetseraExclusivityProductPresentation/);
   assert.match(source, /SINGLE_PILOT_RESULT_NO_MARKET_COHORT/);
+  assert.match(source, /validateMetseraExclusivityProductRow\([\s\S]*authorityContext[\s\S]*authorityInput/);
   assert.doesNotMatch(
     source,
     /service[_-]?role|supabase|canonical-writer|production.*write/i,

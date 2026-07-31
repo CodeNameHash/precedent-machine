@@ -1,0 +1,28 @@
+{
+  "phase": "WP-P8-METSERA-AUTHORITY-CONTEXT-PROPAGATION-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p8-metsera-authority-context-propagation-v1.json",
+    "lib/canonical-v2/canonical-writer.js",
+    "lib/canonical-v2/metsera-exclusivity-product-result-set.js",
+    "lib/canonical-v2/metsera-exclusivity-product-surfaces.js",
+    "lib/canonical-v2/product-candidate-result-write.js",
+    "scripts/canonical-v2-staging-metsera-exclusivity-p8.mjs",
+    "tests/canonical-v2-metsera-exclusivity-product-row.test.js",
+    "tests/canonical-v2-metsera-exclusivity-product-result-set.test.js",
+    "tests/canonical-v2-metsera-exclusivity-product-surfaces.test.js",
+    "tests/canonical-v2-product-candidate-result-writer.test.js",
+    "tests/canonical-v2-canonical-writer.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/migrations/**"
+  ],
+  "note": "Passes the already validated Pilot Product authority context and input to each Metsera downstream row revalidation. The values remain explicit runtime inputs, are not retained in the Product row and grant no query execution, source read, write, serving, release, import, activation or production authority."
+}

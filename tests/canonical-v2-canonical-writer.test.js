@@ -226,6 +226,20 @@ function setup(contract = contractBundle) {
   return { repository, writer };
 }
 
+test('passes only caller-supplied Process authority inputs to Product candidate validation', () => {
+  const source = fs.readFileSync(
+    require.resolve('../lib/canonical-v2/canonical-writer'),
+    'utf8',
+  );
+  assert.match(source, /processAuthorityContext/);
+  assert.match(source, /processAuthorityInput/);
+  assert.match(
+    source,
+    /validateProductCandidateResultWriteSet\([\s\S]*processAuthorityContext[\s\S]*processAuthorityInput/,
+  );
+  assert.doesNotMatch(source, /compilePilotProductAuthorityContext|buildPilotProductAuthorityContext/);
+});
+
 test('dry run validates and partitions without opening a transaction', async () => {
   const { repository, writer } = setup();
   const result = await writer.write({

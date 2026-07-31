@@ -1,0 +1,18 @@
+{
+  "phase": "WP-P8-AGREEMENT-PRODUCT-WRITER-HOSTILE-STAGING-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-p8-agreement-product-writer-hostile-staging-v1.json",
+    "scripts/canonical-v2-staging-agreement-product-writer-p8.mjs",
+    "tests/canonical-v2-staging-agreement-product-writer-p8.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "contracts/**",
+    "docs/**",
+    "lib/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Runs valid F28 and IOC Agreement Product writer calls, exact replays and conflicts in linked isolated staging. It then makes coherently rehashed hostile semantic mutations and requires every public writer call to fail before DML. The proof runs in a forced rollback transaction, preserves candidate rows, receipts and the active pointer. Production is not queried or modified."
+}

@@ -98,12 +98,12 @@ test('Product candidate replay is a no-op, conflicts fail, and the SQL function 
   assert.doesNotMatch(product, /\b(?:COMMIT|ROLLBACK)\b/);
 });
 
-test('the public SQL writer cannot use Agreement receipts as authority', () => {
+test('the public SQL writer invokes Agreement validation before nested receipts or DML', () => {
   const productStart = writer.indexOf("IF p_operation = 'PRODUCT_RESULT_CANDIDATE_RUN'");
   const agreement = writer.indexOf("AGREEMENT_CANDIDATE_ENVELOPE' THEN", productStart);
   const branchStart = writer.indexOf('THEN', agreement) + 'THEN'.length;
   const guard = writer.indexOf(
-    'Agreement candidate Product materialisation requires a SQL-native validator',
+    'validate_agreement_candidate_product_carrier',
     branchStart,
   );
   const firstNestedValidation = writer.indexOf('\n      IF ', branchStart);
@@ -120,6 +120,6 @@ test('the public SQL writer cannot use Agreement receipts as authority', () => {
   );
   assert.match(
     writer.slice(branchStart, firstNestedValidation),
-    /RAISE EXCEPTION[\s\S]*USING ERRCODE = '23514';/,
+    /PERFORM canonical_v2_staging\.validate_agreement_candidate_product_carrier/,
   );
 });

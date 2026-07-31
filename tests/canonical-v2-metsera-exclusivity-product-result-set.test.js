@@ -14,7 +14,7 @@ const {
 test('fails closed without the exact Product row and Process admission', () => {
   assert.throws(
     () => compileMetseraExclusivityProductResultSet({}, {}),
-    /Product row binding is invalid/,
+    /Product row binding is invalid|authority context and input are required/,
   );
   assert.equal(
     METSERA_PRODUCT_RESULT_SET_SCHEMA,
@@ -54,4 +54,12 @@ test('uses the exact six-file phase boundary', () => {
     'tests/canonical-v2-metsera-exclusivity-product-row.test.js',
     'tests/canonical-v2-metsera-exclusivity-product-result-set.test.js',
   ]);
+});
+
+test('requires explicit authority-context propagation', () => {
+  const source = fs.readFileSync(
+    require.resolve('../lib/canonical-v2/metsera-exclusivity-product-result-set'),
+    'utf8',
+  );
+  assert.match(source, /validateMetseraExclusivityProductRow\([\s\S]*authorityContext[\s\S]*authorityInput/);
 });

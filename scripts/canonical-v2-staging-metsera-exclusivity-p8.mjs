@@ -87,6 +87,9 @@ const {
 const {
   compileCanonicalContractBundle,
 } = require('../lib/canonical-v2/canonical-contract-bundle-compiler');
+const {
+  compilePilotProductAuthorityContext,
+} = require('../lib/canonical-v2/pilot-product-authority-context');
 
 const M1_ACKNOWLEDGEMENT_PATH = resolve(
   ROOT,
@@ -130,6 +133,28 @@ function currentM1Permission() {
       cycle_status: bundle.dependency_cycle_report.status,
     },
   });
+}
+
+function currentProductAuthority(candidateReleaseManifest) {
+  const contractRoot = resolve(ROOT, 'contracts/canonical-v2/successor');
+  const canonicalContractInputCompilation = compileCanonicalContractInput({
+    root_directory: contractRoot,
+  });
+  const proposal = assembleCanonicalContractBundleCurrentRootProposal({
+    canonical_contract_input_compilation: canonicalContractInputCompilation,
+  });
+  const compiledContractBundle = compileCanonicalContractBundle({
+    canonical_contract_input_compilation: canonicalContractInputCompilation,
+    classification_registry: proposal.registry_assembly.classification_registry,
+    dependency_registry: proposal.registry_assembly.dependency_registry,
+    governed_registry_bindings: proposal.registry_assembly.governed_registry_bindings,
+  });
+  const input = {
+    canonical_contract_input_compilation: canonicalContractInputCompilation,
+    compiled_contract_bundle: compiledContractBundle,
+    candidate_release_manifest: candidateReleaseManifest,
+  };
+  return { input, context: compilePilotProductAuthorityContext(input) };
 }
 
 function buildCombinedPilotBaseRelease() {
@@ -287,6 +312,9 @@ async function main() {
   const m1Permission = currentM1Permission();
   const checkedProcessAdmission = readCheckedProcessAdmission();
   const combinedPilotBaseRelease = buildCombinedPilotBaseRelease();
+  const productAuthority = currentProductAuthority(
+    combinedPilotBaseRelease.manifest,
+  );
   const candidateReleaseBinding = {
     candidate_release_manifest_id:
       combinedPilotBaseRelease.manifest
@@ -299,18 +327,12 @@ async function main() {
     release_state: 'CANDIDATE_NOT_ACTIVE',
     authority_state: 'NOT_GRANTED',
   };
-  const productQuery = compileMetseraExclusivityProductQuery({
-    process_phrasebook_result_id:
-      checkedProcessAdmission.process_admission_input?.result_identity
-        ?.process_phrasebook_passage_result_id,
-    candidate_release_manifest_id:
-      candidateReleaseBinding.candidate_release_manifest_id,
-    candidate_release_manifest_payload_digest:
-      candidateReleaseBinding
-        .candidate_release_manifest_payload_digest,
-  });
   candidateReleaseBinding.product_query_definition_id =
-    productQuery.query_definition_id;
+    compileMetseraExclusivityProductQuery(
+      compileMetseraExclusivityProductAdmission(checkedProcessAdmission),
+      productAuthority.context,
+      productAuthority.input,
+    ).query_definition_id;
   const productAdmission =
     compileMetseraExclusivityProductAdmission(checkedProcessAdmission);
   if (
@@ -325,11 +347,15 @@ async function main() {
   }
   const productRow = compileMetseraExclusivityProductRow(
     productAdmission,
+    productAuthority.context,
+    productAuthority.input,
   );
   const productResultSet =
     compileMetseraExclusivityProductResultSet(
       productAdmission,
       productRow,
+      productAuthority.context,
+      productAuthority.input,
     );
   const productPresentation =
     compileMetseraExclusivityProductPresentation(
@@ -342,6 +368,8 @@ async function main() {
       productRow,
       productResultSet,
       productPresentation,
+      productAuthority.context,
+      productAuthority.input,
     );
   const candidateWriteSet = {
     schema_version: PRODUCT_CANDIDATE_RESULT_WRITE_SET_SCHEMA,
@@ -362,16 +390,22 @@ async function main() {
     idempotencyKey: 'METSERA_EXCLUSIVITY_PRODUCT_RESULT_P8_V1',
     dryRun: true,
     writeSet: candidateWriteSet,
+    processAuthorityContext: productAuthority.context,
+    processAuthorityInput: productAuthority.input,
   });
   const candidateCommit = await canonicalWriter.write({
     operation: 'PRODUCT_RESULT_CANDIDATE_RUN',
     idempotencyKey: 'METSERA_EXCLUSIVITY_PRODUCT_RESULT_P8_V1',
     writeSet: candidateWriteSet,
+    processAuthorityContext: productAuthority.context,
+    processAuthorityInput: productAuthority.input,
   });
   const candidateReplay = await canonicalWriter.write({
     operation: 'PRODUCT_RESULT_CANDIDATE_RUN',
     idempotencyKey: 'METSERA_EXCLUSIVITY_PRODUCT_RESULT_P8_V1',
     writeSet: candidateWriteSet,
+    processAuthorityContext: productAuthority.context,
+    processAuthorityInput: productAuthority.input,
   });
   const stagingRuntime = createCanonicalV2StagingRuntime({
     root: ROOT,
