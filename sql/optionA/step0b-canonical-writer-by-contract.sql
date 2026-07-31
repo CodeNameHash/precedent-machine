@@ -472,7 +472,7 @@ BEGIN
 END
 $$;
 
--- Governed function SHA-256: 074991a5bff80d513929cb632dc1d830c2048089aac265939e0af2e577a041bd
+-- Governed function SHA-256: 4f1298f5439fd9bf56a2b1bcc8f1e9581a3109f186314f007a3aa62f9492bb92
 CREATE OR REPLACE FUNCTION public.canonical_v2_write(
   p_environment text,
   p_operation text,
@@ -969,7 +969,7 @@ BEGIN
       OR p_write_set->'candidate_release_binding'->>'authority_state'
         IS DISTINCT FROM 'NOT_GRANTED'
       OR p_write_set->'product_admission'->>'adapter_state'
-        IS DISTINCT FROM 'VALIDATED_NOT_SERVED'
+        IS DISTINCT FROM 'VALIDATED_NOT_RELEASE_BOUND'
       OR p_write_set->'product_row'->>'row_state'
         IS DISTINCT FROM 'VALIDATED_NOT_SERVED'
       OR p_write_set->'product_result_set'->>'result_set_state'
@@ -1006,9 +1006,8 @@ BEGIN
           ->>'candidate_release_manifest_id'
         IS DISTINCT FROM p_write_set->'candidate_release_binding'
           ->>'candidate_release_manifest_id'
-      OR p_write_set->'product_admission'->>'corpus_release_id'
-        IS DISTINCT FROM p_write_set->'candidate_release_binding'
-          ->>'corpus_release_id'
+      OR p_write_set->'product_admission'->'corpus_release_id'
+        IS DISTINCT FROM 'null'::jsonb
       OR p_write_set->'product_row'
           ->>'product_admission_adapter_receipt_id'
         IS DISTINCT FROM p_write_set->'product_admission'
