@@ -230,16 +230,24 @@ function locateInGovernedScope(governedScope, quote) {
 function parsedResponse({ includeUnresolvedParty = false } = {}) {
   const qualifiers = [{
     kind: 'ACCURACY',
-    attachment: 'LIMB',
     code: 'MAT_ALL_RESPECTS_DE_MINIMIS',
     quote: QUALIFIER_QUOTE,
+    attachment: {
+      position: 'ITEM',
+      governs_path: ['(i)'],
+      ambiguity_signals: { items_grammatically_parallel: true },
+    },
   }];
   if (includeUnresolvedParty) {
     qualifiers.push({
       kind: 'ACCURACY',
-      attachment: 'LIMB',
       code: 'MAT_ALL_RESPECTS_DE_MINIMIS',
       quote: UNRESOLVED_PARTY_QUOTE,
+      attachment: {
+        position: 'ITEM',
+        governs_path: ['(i)'],
+        ambiguity_signals: { items_grammatically_parallel: true },
+      },
     });
   }
   return {
@@ -248,11 +256,11 @@ function parsedResponse({ includeUnresolvedParty = false } = {}) {
       party_making: includeUnresolvedParty ? 'Acme Holdco III' : 'the Company',
       chapeau_quote: 'Capital Structure.',
       limbs: [{
-        limb_reference: '(i)',
+        limb_path: ['(i)'],
         assertion_quote: LIMB_I_QUOTE,
         subject: 'capital stock',
-        qualifiers,
       }],
+      qualifiers,
       definition_uses: [],
       cross_references: [],
     }],
@@ -362,6 +370,106 @@ test('a proposal with an unmappable concept lands in open_world, never forced to
     !resolution.resolved.some((entry) => entry.generic_claim_key === LIMB_ASSERTION_CLAIM_KEY),
     'an open-world proposal never also appears as resolved',
   );
+});
+
+// ─── Defect 4: the mapping table keys on (generic_claim_key,
+// qualifier_kind), so a TEMPORAL or THRESHOLD qualifier -- which correctly
+// carries canonical_value: null, since no ACCURACY_STANDARD code fits --
+// resolves as open-world instead of being force-mapped onto
+// REPRESENTATION_ACCURACY_STANDARD and quarantined for a canonical_value it
+// was never supposed to have. ───
+
+function temporalQualifierResponse() {
+  return {
+    representation_instances: [{
+      section_reference: '3.1(b)',
+      party_making: 'the Company',
+      chapeau_quote: 'Capital Structure.',
+      limbs: [{
+        limb_path: ['(i)'],
+        assertion_quote: LIMB_I_QUOTE,
+        subject: 'capital stock',
+      }],
+      qualifiers: [{
+        kind: 'TEMPORAL',
+        code: null,
+        quote: 'as of the close of business on April 17, 2026',
+        attachment: {
+          position: 'ITEM',
+          governs_path: ['(i)'],
+          ambiguity_signals: { items_grammatically_parallel: true },
+        },
+      }],
+      definition_uses: [],
+      cross_references: [],
+    }],
+    bring_down_conditions: [],
+    open_world_candidates: [],
+  };
+}
+
+test('a TEMPORAL qualifier (canonical_value: null, no registered claim definition) resolves open-world, never quarantines as an accuracy claim', async () => {
+  const source = [
+    'This AGREEMENT AND PLAN OF MERGER, dated as of April 18, 2026, by and among ',
+    'QXO, Inc., Titanium Merger Sub and Forward Merger Sub.\n\n',
+    'ARTICLE III\n\nREPRESENTATIONS AND WARRANTIES OF THE COMPANY\n\n',
+    'Except as set forth in the Company Disclosure Letter, the Company represents ',
+    'and warrants to Parent as follows:\n\n',
+    'Section 3.1 Representations Concerning the Company.\n\n',
+    '(a)Organization; Standing. The Company is a corporation duly organized, ',
+    'validly existing and in good standing under the Laws of the State of Delaware.\n\n',
+    capitalStructureText,
+    '\n',
+  ].join('');
+  const documentHash = sha256Hex(Buffer.from(source, 'utf8'));
+
+  const receipt = await runNativeExtraction({
+    source_text: source,
+    document_hash: documentHash,
+    section_references: ['3.1(b)'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: async ({ governed_scope: governedScope }) => {
+      const { proposals, evidence_residuals: evidenceResiduals } = shapeProposals(
+        temporalQualifierResponse(),
+        governedScope.source_text,
+      );
+      return {
+        provider_id: 'candidate-resolution-test-temporal/v1',
+        model_id: 'stub-model',
+        prompt: 'candidate-resolution-test-temporal-prompt/v1',
+        proposals,
+        evidence_residuals: evidenceResiduals,
+      };
+    },
+  });
+
+  const admittedSourceContext = buildIdentityAdmittedSourceContext(source, {
+    dealKey: 'deal:qxo-temporal-qualifier',
+    dealAdmissionId: sha256Hex('deal-admission:qxo-temporal-qualifier'),
+    sourceOrdinal: 0,
+  });
+
+  const resolution = resolveCandidates({
+    run_receipt: receipt,
+    contract_vocabulary: CONTRACT_BUNDLE,
+    admitted_source_context: admittedSourceContext,
+  });
+
+  assert.equal(
+    resolution.resolved.some((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY),
+    false,
+    'the TEMPORAL qualifier never resolves to a REPRESENTATION_ACCURACY_STANDARD claim',
+  );
+  assert.equal(
+    resolution.review_queue.some((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY),
+    false,
+    'it never reaches review_queue as an INVALID_CANONICAL_VALUE/UNREGISTERED_CANONICAL_VALUE claim either',
+  );
+  const openWorldEntry = resolution.open_world.find((entry) => entry.claim_definition_key === QUALIFIER_CLAIM_KEY);
+  assert.ok(openWorldEntry, 'the TEMPORAL qualifier lands in open_world instead');
+  assert.equal(openWorldEntry.reason, 'UNMAPPED_GENERIC_CLAIM_KEY');
+  assert.equal(openWorldEntry.raw_value, 'as of the close of business on April 17, 2026');
 });
 
 test('a proposal with an unresolvable party lands in review_queue with PARTY_UNRESOLVED, never a guessed party', async () => {
@@ -515,8 +623,8 @@ function manualQualifierProposal({
       state: 'PRESENT',
       raw_value: evidenceSpecs[0].quote,
       canonical_value: canonicalValue,
-      attributes: { party_making: partyValue },
-      allowed_attributes: ['party_making'],
+      attributes: { party_making: partyValue, qualifier_kind: 'ACCURACY' },
+      allowed_attributes: ['party_making', 'qualifier_kind'],
       taxonomy_codes: {},
       codebooks: {},
       evidence,
