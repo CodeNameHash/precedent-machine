@@ -14,15 +14,42 @@
       "production_permitted": false
     },
     "write_set_contract": {
-      "schema_version": "PRODUCT_CANDIDATE_RESULT_WRITE_SET/V1",
-      "required_complete_members": [
-        "candidate_release_binding",
-        "process_pilot_materialisation_receipt",
-        "product_admission",
-        "product_row",
-        "product_result_set",
-        "product_presentation",
-        "product_surfaces"
+      "schema_version": "PRODUCT_CANDIDATE_RESULT_WRITE_ENVELOPE/V1",
+      "closed_adapter_identifiers": [
+        "PROCESS_PHRASEBOOK_PRODUCT_CHAIN",
+        "AGREEMENT_CANDIDATE_ENVELOPE"
+      ],
+      "admitted_domain_carriers": [
+        "PROCESS_PHRASEBOOK_PRODUCT_CHAIN/V1",
+        "AGREEMENT_CANDIDATE_ENVELOPE_CARRIER/V1"
+      ],
+      "caller_validation_receipt_is_authoritative": false,
+      "sql_rehashes_available_identity_and_payload_fields": true,
+      "adapter_contracts": [
+        {
+          "adapter_identifier": "PROCESS_PHRASEBOOK_PRODUCT_CHAIN",
+          "carrier_schema_version": "PROCESS_PHRASEBOOK_PRODUCT_CHAIN/V1",
+          "required_complete_members": [
+            "candidate_release_binding",
+            "process_pilot_materialisation_receipt",
+            "product_admission",
+            "product_row",
+            "product_result_set",
+            "product_presentation",
+            "product_surfaces"
+          ],
+          "complete_process_lineage_required": true
+        },
+        {
+          "adapter_identifier": "AGREEMENT_CANDIDATE_ENVELOPE",
+          "carrier_schema_version": "AGREEMENT_CANDIDATE_ENVELOPE_CARRIER/V1",
+          "required_complete_members": [
+            "agreement_candidate_envelope",
+            "product_materialisation"
+          ],
+          "materialisation_schema_version": "AGREEMENT_CANDIDATE_PRODUCT_MATERIALISATION/V1",
+          "exact_profile_query_result_ordering_presentation_surface_evidence_and_release_revalidation_required": true
+        }
       ],
       "partial_member_persistence_permitted": false,
       "unknown_members_permitted": false,
@@ -30,7 +57,6 @@
       "one_product_query_required": true,
       "one_candidate_release_required": true,
       "one_domain_result_required": true,
-      "complete_process_lineage_required": true,
       "complete_source_evidence_required": true
     },
     "record_contract": {
@@ -47,6 +73,8 @@
       "product_result_definition_stable_id": "PRODUCT_QUERY_RESULT_DEFINITION",
       "process_result_adapter_stable_id": "PROCESS_PHRASEBOOK_PRODUCT_RESULT_ADAPTER",
       "process_result_set_adapter_stable_id": "PROCESS_PHRASEBOOK_PRODUCT_RESULT_SET_ADAPTER",
+      "agreement_candidate_envelope_stable_id": "AGREEMENT_CANDIDATE_ENVELOPE",
+      "agreement_candidate_materialisation_stable_id": "AGREEMENT_CANDIDATE_PRODUCT_MATERIALISATION",
       "product_presentation_definition_stable_id": "PRODUCT_RESULT_PRESENTATION_DEFINITION",
       "shared_row_definition_stable_id": "PRODUCT_SHARED_SERVING_ROW",
       "all_dependency_versions_must_match_the_compiled_bundle": true

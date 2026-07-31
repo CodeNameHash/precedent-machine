@@ -178,6 +178,8 @@ DECLARE
   canonical_v1_input_digest text;
   canonical_v2_input_digest text;
   input_envelope_version text;
+  domain_carrier jsonb;
+  adapter_identifier text;
 BEGIN
   IF p_environment IS DISTINCT FROM 'staging' THEN
     RAISE EXCEPTION 'canonical_v2_write is staging-only' USING ERRCODE = '42501';
@@ -313,6 +315,262 @@ BEGIN
 
   IF p_operation = 'PRODUCT_RESULT_CANDIDATE_RUN' THEN
     IF p_write_set - ARRAY[
+        'schema_version', 'adapter_identifier', 'domain_carrier'
+      ]::text[] <> '{}'::jsonb
+      OR NOT p_write_set ?& ARRAY[
+        'schema_version', 'adapter_identifier', 'domain_carrier'
+      ]
+      OR p_write_set->>'schema_version'
+        IS DISTINCT FROM 'PRODUCT_CANDIDATE_RESULT_WRITE_ENVELOPE/V1'
+    THEN
+      RAISE EXCEPTION 'invalid Product candidate-result write envelope'
+        USING ERRCODE = '23514';
+    END IF;
+    adapter_identifier := p_write_set->>'adapter_identifier';
+    domain_carrier := p_write_set->'domain_carrier';
+    IF adapter_identifier = 'PROCESS_PHRASEBOOK_PRODUCT_CHAIN' THEN
+      IF domain_carrier - ARRAY[
+          'schema_version', 'process_phrasebook_product_chain_id',
+          'process_phrasebook_product_chain_payload_digest', 'complete_write_set'
+        ]::text[] <> '{}'::jsonb
+        OR NOT domain_carrier ?& ARRAY[
+          'schema_version', 'process_phrasebook_product_chain_id',
+          'process_phrasebook_product_chain_payload_digest', 'complete_write_set'
+        ]
+        OR domain_carrier->>'schema_version'
+          IS DISTINCT FROM 'PROCESS_PHRASEBOOK_PRODUCT_CHAIN/V1'
+        OR domain_carrier->>'process_phrasebook_product_chain_id'
+          IS DISTINCT FROM canonical_v2_staging.content_id(
+            'PROCESS_PHRASEBOOK_PRODUCT_CHAIN/V1',
+            domain_carrier - ARRAY[
+              'process_phrasebook_product_chain_id',
+              'process_phrasebook_product_chain_payload_digest'
+            ]::text[]
+          )
+        OR domain_carrier->>'process_phrasebook_product_chain_payload_digest'
+          IS DISTINCT FROM pg_catalog.encode(
+            extensions.digest(
+              pg_catalog.convert_to(
+                canonical_v2_staging.canonical_json(
+                  domain_carrier - ARRAY[
+                    'process_phrasebook_product_chain_id',
+                    'process_phrasebook_product_chain_payload_digest'
+                  ]::text[]
+                ),
+                'UTF8'
+              ),
+              'sha256'::text
+            ),
+            'hex'
+          )
+      THEN
+        RAISE EXCEPTION 'invalid Process Phrasebook Product chain carrier'
+          USING ERRCODE = '23514';
+      END IF;
+      p_write_set := domain_carrier->'complete_write_set';
+    ELSIF adapter_identifier = 'AGREEMENT_CANDIDATE_ENVELOPE' THEN
+      IF domain_carrier - ARRAY[
+          'schema_version', 'agreement_candidate_envelope_id',
+          'agreement_candidate_envelope_carrier_id',
+          'agreement_candidate_envelope_carrier_payload_digest',
+          'agreement_candidate_envelope_payload_digest',
+          'agreement_candidate_envelope', 'product_materialisation'
+        ]::text[] <> '{}'::jsonb
+        OR NOT domain_carrier ?& ARRAY[
+          'schema_version', 'agreement_candidate_envelope_id',
+          'agreement_candidate_envelope_carrier_id',
+          'agreement_candidate_envelope_carrier_payload_digest',
+          'agreement_candidate_envelope_payload_digest',
+          'agreement_candidate_envelope', 'product_materialisation'
+        ]
+        OR domain_carrier->>'schema_version'
+          IS DISTINCT FROM 'AGREEMENT_CANDIDATE_ENVELOPE_CARRIER/V1'
+        OR domain_carrier->>'agreement_candidate_envelope_carrier_id'
+          IS DISTINCT FROM canonical_v2_staging.content_id(
+            'AGREEMENT_CANDIDATE_ENVELOPE_CARRIER/V1',
+            domain_carrier - ARRAY[
+              'agreement_candidate_envelope_carrier_id',
+              'agreement_candidate_envelope_carrier_payload_digest'
+            ]::text[]
+          )
+        OR domain_carrier->>'agreement_candidate_envelope_carrier_payload_digest'
+          IS DISTINCT FROM pg_catalog.encode(
+            extensions.digest(
+              pg_catalog.convert_to(
+                canonical_v2_staging.canonical_json(
+                  domain_carrier - ARRAY[
+                    'agreement_candidate_envelope_carrier_id',
+                    'agreement_candidate_envelope_carrier_payload_digest'
+                  ]::text[]
+                ),
+                'UTF8'
+              ),
+              'sha256'::text
+            ),
+            'hex'
+          )
+        OR domain_carrier->>'agreement_candidate_envelope_id'
+          IS DISTINCT FROM domain_carrier->'agreement_candidate_envelope'
+            ->>'agreement_candidate_envelope_id'
+        OR domain_carrier->>'agreement_candidate_envelope_payload_digest'
+          IS DISTINCT FROM pg_catalog.encode(
+            extensions.digest(
+              pg_catalog.convert_to(
+                canonical_v2_staging.canonical_json(
+                  domain_carrier->'agreement_candidate_envelope'
+                ),
+                'UTF8'
+              ),
+              'sha256'::text
+            ),
+            'hex'
+          )
+        OR domain_carrier->'agreement_candidate_envelope'
+            ->>'agreement_candidate_envelope_id'
+          IS DISTINCT FROM canonical_v2_staging.content_id(
+            'AGREEMENT_CANDIDATE_ENVELOPE/V1',
+            (domain_carrier->'agreement_candidate_envelope')
+              - ARRAY['agreement_candidate_envelope_id', 'schema_version']::text[]
+          )
+      THEN
+        RAISE EXCEPTION 'invalid Agreement candidate envelope carrier'
+          USING ERRCODE = '23514';
+      END IF;
+      IF (domain_carrier->'product_materialisation') - ARRAY[
+          'agreement_candidate_envelope_id',
+          'agreement_candidate_product_materialisation_id',
+          'agreement_ordering_projection', 'authority_state',
+          'candidate_release_binding', 'evidence_sidecar',
+          'materialisation_state', 'product_evaluation_evidence', 'product_query_ir',
+          'product_query_result', 'product_result_presentation', 'product_result_set',
+          'product_result_surfaces', 'schema_version'
+        ]::text[] <> '{}'::jsonb
+        OR NOT (domain_carrier->'product_materialisation') ?& ARRAY[
+          'agreement_candidate_envelope_id',
+          'agreement_candidate_product_materialisation_id',
+          'agreement_ordering_projection', 'authority_state',
+          'candidate_release_binding', 'evidence_sidecar',
+          'materialisation_state', 'product_evaluation_evidence', 'product_query_ir',
+          'product_query_result', 'product_result_presentation', 'product_result_set',
+          'product_result_surfaces', 'schema_version'
+        ]
+        OR domain_carrier->'product_materialisation'->>'schema_version'
+          IS DISTINCT FROM 'AGREEMENT_CANDIDATE_PRODUCT_MATERIALISATION/V1'
+        OR domain_carrier->'product_materialisation'
+            ->>'agreement_candidate_envelope_id'
+          IS DISTINCT FROM domain_carrier->>'agreement_candidate_envelope_id'
+        OR domain_carrier->'product_materialisation'->>'materialisation_state'
+          IS DISTINCT FROM 'VALIDATED_NOT_PERSISTED'
+        OR domain_carrier->'product_materialisation'->>'authority_state'
+          IS DISTINCT FROM 'NOT_GRANTED'
+        OR (domain_carrier->'product_materialisation'->'candidate_release_binding')
+            - ARRAY[
+              'approved_pm_data_version_id', 'candidate_release_manifest_id',
+              'candidate_release_manifest_payload_digest', 'corpus_release_id',
+              'product_query_definition_id', 'release_state', 'authority_state'
+            ]::text[] <> '{}'::jsonb
+        OR NOT (domain_carrier->'product_materialisation'->'candidate_release_binding') ?& ARRAY[
+          'approved_pm_data_version_id', 'candidate_release_manifest_id',
+          'candidate_release_manifest_payload_digest', 'corpus_release_id',
+          'product_query_definition_id', 'release_state', 'authority_state'
+        ]
+        OR domain_carrier->'product_materialisation'
+            ->>'agreement_candidate_product_materialisation_id'
+          IS DISTINCT FROM canonical_v2_staging.content_id(
+            'AGREEMENT_CANDIDATE_PRODUCT_MATERIALISATION/V1',
+            (domain_carrier->'product_materialisation') - ARRAY[
+              'agreement_candidate_product_materialisation_id', 'schema_version'
+            ]::text[]
+          )
+        OR domain_carrier->'product_materialisation'->'product_query_ir'
+            ->'semantic_contract'->>'domain_key'
+          IS DISTINCT FROM 'AGREEMENT'
+        OR domain_carrier->'product_materialisation'->'candidate_release_binding'
+            ->>'approved_pm_data_version_id'
+          IS DISTINCT FROM domain_carrier->'product_materialisation'
+            ->'product_query_ir'->'release_contract'->>'approved_pm_data_version_id'
+        OR domain_carrier->'product_materialisation'->'candidate_release_binding'
+            ->>'candidate_release_manifest_id'
+          IS DISTINCT FROM domain_carrier->'product_materialisation'
+            ->'product_query_ir'->'release_contract'->>'candidate_release_manifest_id'
+        OR domain_carrier->'product_materialisation'->'candidate_release_binding'
+            ->>'candidate_release_manifest_payload_digest'
+          IS DISTINCT FROM domain_carrier->'product_materialisation'
+            ->'product_query_ir'->'release_contract'
+              ->>'candidate_release_manifest_payload_digest'
+        OR domain_carrier->'product_materialisation'->'candidate_release_binding'
+            ->>'product_query_definition_id'
+          IS DISTINCT FROM domain_carrier->'product_materialisation'
+            ->'product_query_ir'->>'query_definition_id'
+        OR domain_carrier->'product_materialisation'->'candidate_release_binding'
+            ->>'release_state'
+          IS DISTINCT FROM 'CANDIDATE_NOT_ACTIVE'
+        OR domain_carrier->'product_materialisation'->'candidate_release_binding'
+            ->>'authority_state'
+          IS DISTINCT FROM 'NOT_GRANTED'
+        OR domain_carrier->'product_materialisation'->'candidate_release_binding'
+            ->>'corpus_release_id' !~ '^[0-9a-f]{64}$'
+        OR domain_carrier->'product_materialisation'->'product_query_result'
+            ->>'product_query_definition_id'
+          IS DISTINCT FROM domain_carrier->'product_materialisation'
+            ->'product_query_ir'->>'query_definition_id'
+        OR domain_carrier->'product_materialisation'->'product_query_result'
+            ->>'domain_result_identity'
+          IS DISTINCT FROM domain_carrier->'agreement_candidate_envelope'
+            ->'product_membership'->>'domain_result_identity'
+        OR domain_carrier->'product_materialisation'->'product_query_result'
+            ->>'domain_result_payload_digest'
+          IS DISTINCT FROM domain_carrier->'agreement_candidate_envelope'
+            ->'product_membership'->>'domain_result_payload_digest'
+        OR domain_carrier->'product_materialisation'->'product_query_ir'
+            ->'semantic_contract'->'result_definition'->>'stable_id'
+          IS DISTINCT FROM domain_carrier->'agreement_candidate_envelope'
+            ->'product_membership'->>'result_definition_stable_id'
+        OR domain_carrier->'product_materialisation'->'product_query_ir'
+            ->'semantic_contract'->'result_definition'->>'version'
+          IS DISTINCT FROM domain_carrier->'agreement_candidate_envelope'
+            ->'product_membership'->>'result_definition_version'
+        OR p_residuals IS DISTINCT FROM '[]'::jsonb
+        OR p_quarantines IS DISTINCT FROM '[]'::jsonb
+        OR (p_receipt->>'publishableObjectCount')::integer <> 1
+        OR (p_receipt->>'residualCount')::integer <> 0
+        OR (p_receipt->>'quarantinedClosureCount')::integer <> 0
+      THEN
+        RAISE EXCEPTION 'invalid Agreement candidate Product materialisation'
+          USING ERRCODE = '23514';
+      END IF;
+      p_write_set := jsonb_build_object(
+        'schema_version', 'PRODUCT_CANDIDATE_RESULT_RECORD/V1',
+        'candidate_product_result_id', canonical_v2_staging.content_id(
+          'PRODUCT_CANDIDATE_RESULT_RECORD/V1', domain_carrier
+        ),
+        'writer_contract_stable_id', 'PRODUCT_CANDIDATE_RESULT_WRITER',
+        'writer_contract_version', 1,
+        'operation', 'PRODUCT_RESULT_CANDIDATE_RUN',
+        'candidate_release_manifest_id', domain_carrier->'product_materialisation'
+          ->'product_query_ir'->'release_contract'->>'candidate_release_manifest_id',
+        'candidate_release_manifest_payload_digest', domain_carrier
+          ->'product_materialisation'->'product_query_ir'->'release_contract'
+            ->>'candidate_release_manifest_payload_digest',
+        'corpus_release_id', domain_carrier->'product_materialisation'
+          ->'candidate_release_binding'->>'corpus_release_id',
+        'product_query_definition_id', domain_carrier->'product_materialisation'
+          ->'product_query_ir'->>'query_definition_id',
+        'product_query_result_identity', domain_carrier->'product_materialisation'
+          ->'product_query_result'->>'product_query_result_identity',
+        'domain_result_identity', domain_carrier->'product_materialisation'
+          ->'product_query_result'->>'domain_result_identity',
+        'process_phrasebook_result_identity', NULL,
+        'candidate_state', 'CANDIDATE_NOT_ACTIVE',
+        'authority_state', 'NOT_GRANTED',
+        'complete_write_set', domain_carrier
+      );
+    ELSE
+      RAISE EXCEPTION 'unknown Product candidate-result adapter'
+        USING ERRCODE = '23514';
+    END IF;
+    IF adapter_identifier = 'PROCESS_PHRASEBOOK_PRODUCT_CHAIN' AND (
+      p_write_set - ARRAY[
         'schema_version',
         'candidate_release_binding',
         'process_pilot_materialisation_receipt',
@@ -353,12 +611,13 @@ BEGIN
         IS DISTINCT FROM 'VALIDATED_NOT_RENDERED'
       OR p_write_set->'product_surfaces'->>'surface_state'
         IS DISTINCT FROM 'VALIDATED_NOT_SERVED'
-    THEN
+    ) THEN
       RAISE EXCEPTION 'invalid Product candidate-result write set'
         USING ERRCODE = '23514';
     END IF;
 
-    IF p_write_set->'candidate_release_binding'->>'candidate_release_manifest_id'
+    IF adapter_identifier = 'PROCESS_PHRASEBOOK_PRODUCT_CHAIN' AND (
+      p_write_set->'candidate_release_binding'->>'candidate_release_manifest_id'
           !~ '^[0-9a-f]{64}$'
       OR p_write_set->'candidate_release_binding'
           ->>'candidate_release_manifest_payload_digest' !~ '^[0-9a-f]{64}$'
@@ -398,15 +657,45 @@ BEGIN
           ->>'product_presentation_receipt_id'
         IS DISTINCT FROM p_write_set->'product_presentation'
           ->>'product_presentation_receipt_id'
-    THEN
+      OR p_write_set->'product_admission'
+          ->>'product_admission_adapter_receipt_id'
+        IS DISTINCT FROM canonical_v2_staging.content_id(
+          'METSERA_EXCLUSIVITY_PRODUCT_ADMISSION/V1',
+          (p_write_set->'product_admission') - 'product_admission_adapter_receipt_id'
+        )
+      OR p_write_set->'product_row'->>'product_row_receipt_id'
+        IS DISTINCT FROM canonical_v2_staging.content_id(
+          'METSERA_EXCLUSIVITY_PRODUCT_ROW/V1',
+          (p_write_set->'product_row') - 'product_row_receipt_id'
+        )
+      OR p_write_set->'product_result_set'->>'product_result_set_receipt_id'
+        IS DISTINCT FROM canonical_v2_staging.content_id(
+          'METSERA_EXCLUSIVITY_PRODUCT_RESULT_SET/V1',
+          (p_write_set->'product_result_set') - 'product_result_set_receipt_id'
+        )
+      OR p_write_set->'product_presentation'
+          ->>'product_presentation_receipt_id'
+        IS DISTINCT FROM canonical_v2_staging.content_id(
+          'METSERA_EXCLUSIVITY_PRODUCT_PRESENTATION/V1',
+          (p_write_set->'product_presentation') - 'product_presentation_receipt_id'
+        )
+      OR p_write_set->'product_surfaces'->>'product_surfaces_receipt_id'
+        IS DISTINCT FROM canonical_v2_staging.content_id(
+          'METSERA_EXCLUSIVITY_PRODUCT_SURFACES/V1',
+          (p_write_set->'product_surfaces') - 'product_surfaces_receipt_id'
+        )
+    ) THEN
       RAISE EXCEPTION 'Product candidate-result release or lineage mismatch'
         USING ERRCODE = '23514';
     END IF;
 
-    item_id := canonical_v2_staging.content_id(
-      'PRODUCT_CANDIDATE_RESULT_RECORD/V1',
-      p_write_set
-    );
+    item_id := CASE
+      WHEN adapter_identifier = 'AGREEMENT_CANDIDATE_ENVELOPE'
+        THEN p_write_set->>'candidate_product_result_id'
+      ELSE canonical_v2_staging.content_id(
+        'PRODUCT_CANDIDATE_RESULT_RECORD/V1', p_write_set
+      )
+    END;
     SELECT canonical_payload_digest INTO existing_digest
     FROM canonical_v2_staging.product_candidate_results
     WHERE candidate_product_result_id = item_id;
@@ -426,13 +715,16 @@ BEGIN
       canonical_payload
     ) VALUES (
       item_id,
-      p_write_set->'candidate_release_binding'
-        ->>'candidate_release_manifest_id',
-      p_write_set->'candidate_release_binding'->>'corpus_release_id',
-      p_write_set->'product_row'->'shared_row_adapter_receipt'
+      COALESCE(p_write_set->'candidate_release_binding'
+        ->>'candidate_release_manifest_id', p_write_set->>'candidate_release_manifest_id'),
+      COALESCE(p_write_set->'candidate_release_binding'->>'corpus_release_id',
+        p_write_set->>'corpus_release_id'),
+      COALESCE(p_write_set->'product_row'->'shared_row_adapter_receipt'
         ->'product_query_result'->>'product_query_result_identity',
-      p_write_set->'product_row'->'shared_row_adapter_receipt'
+        p_write_set->>'product_query_result_identity'),
+      COALESCE(p_write_set->'product_row'->'shared_row_adapter_receipt'
         ->'product_query_result'->>'domain_result_identity',
+        p_write_set->>'domain_result_identity'),
       'CANDIDATE_NOT_ACTIVE',
       p_write_set
     ) ON CONFLICT (candidate_product_result_id) DO NOTHING;

@@ -15,6 +15,11 @@ const {
   validateAgreementCandidateEnvelope,
 } = require('../lib/canonical-v2/agreement-candidate-envelope');
 const {
+  buildAgreementCandidateEnvelopeCarrier,
+  buildProductCandidateResultWriteEnvelope,
+  validateProductCandidateResultWriteSet,
+} = require('../lib/canonical-v2/product-candidate-result-write');
+const {
   buildF28ProductInputs,
 } = require('./fixtures/canonical-v2/qxo-capitalisation-f28-product-inputs');
 const {
@@ -191,4 +196,19 @@ test('the generic envelope contains no family-specific authority grant', () => {
     assert.equal(value.authority_state, 'NONE');
     assert.doesNotMatch(canonicalJson(value), /GRANTED|ACTIVE_POINTER/);
   }
+});
+
+test('the admitted Agreement carrier cannot manufacture the missing Product result', () => {
+  const carrier = buildAgreementCandidateEnvelopeCarrier(
+    buildAgreementCandidateEnvelope(iocInput()),
+  );
+  assert.throws(
+    () => validateProductCandidateResultWriteSet(
+      buildProductCandidateResultWriteEnvelope({
+        adapter_identifier: 'AGREEMENT_CANDIDATE_ENVELOPE',
+        domain_carrier: carrier,
+      }),
+    ),
+    (error) => error.code === 'INVALID_AGREEMENT_CANDIDATE_ENVELOPE_CARRIER',
+  );
 });

@@ -205,3 +205,60 @@ test('writer exposes only the seven governed operations and no private helper', 
     /GRANT EXECUTE ON FUNCTION canonical_v2_staging\.(?:canonical_json|content_id)/,
   );
 });
+
+test('the Product writer rejects forged adapters and validates carrier identities itself', () => {
+  const productStart = sql.indexOf("IF p_operation = 'PRODUCT_RESULT_CANDIDATE_RUN'");
+  const productEnd = sql.indexOf("IF p_operation = 'INTAKE_CAPTURE'", productStart);
+  const product = sql.slice(productStart, productEnd);
+  assert.match(product, /PRODUCT_CANDIDATE_RESULT_WRITE_ENVELOPE\/V1/);
+  assert.match(product, /PROCESS_PHRASEBOOK_PRODUCT_CHAIN/);
+  assert.match(product, /AGREEMENT_CANDIDATE_ENVELOPE/);
+  assert.match(product, /unknown Product candidate-result adapter/);
+  assert.match(product, /process_phrasebook_product_chain_id[\s\S]*content_id\([\s\S]*PROCESS_PHRASEBOOK_PRODUCT_CHAIN\/V1/);
+  assert.match(product, /process_phrasebook_product_chain_payload_digest[\s\S]*payload_digest/);
+  assert.match(product, /agreement_candidate_envelope_carrier_id[\s\S]*AGREEMENT_CANDIDATE_ENVELOPE_CARRIER\/V1/);
+  assert.match(product, /AGREEMENT_CANDIDATE_PRODUCT_MATERIALISATION\/V1/);
+  assert.match(product, /invalid Agreement candidate Product materialisation/);
+});
+
+test('every SQL writer form rejects malformed, cross-family and rehashed Agreement materialisations before DML', () => {
+  const sources = [
+    'sql/optionA/step0b-canonical-writer-by-contract.sql',
+    'supabase/canonical-v2-foundation.sql',
+    'supabase/canonical-v2-product-candidate-result-writer.sql',
+  ].map((file) => fs.readFileSync(file, 'utf8'));
+  for (const source of sources) {
+    const agreement = source.indexOf("AGREEMENT_CANDIDATE_ENVELOPE' THEN");
+    const reject = source.indexOf(
+      'invalid Agreement candidate Product materialisation', agreement,
+    );
+    const dml = source.indexOf(
+      'INSERT INTO canonical_v2_staging.product_candidate_results', agreement,
+    );
+    assert.ok(agreement !== -1 && reject !== -1 && dml !== -1 && reject < dml);
+    const branch = source.slice(agreement, dml);
+    assert.match(
+      branch,
+      /product_materialisation'\) - ARRAY\[[\s\S]*agreement_candidate_product_materialisation_id/,
+    );
+    assert.match(branch, /AGREEMENT_CANDIDATE_PRODUCT_MATERIALISATION\/V1/);
+    assert.match(branch, /content_id\([\s\S]*agreement_candidate_product_materialisation_id[\s\S]*schema_version/);
+    assert.match(branch, /semantic_contract'->>'domain_key'[\s\S]*IS DISTINCT FROM 'AGREEMENT'/);
+    assert.match(branch, /candidate_release_binding'[\s\S]*approved_pm_data_version_id/);
+    assert.match(branch, /candidate_release_manifest_id[\s\S]*release_contract/);
+    assert.match(branch, /corpus_release_id[\s\S]*\^\[0-9a-f\]\{64\}\$/);
+    assert.match(branch, /domain_result_identity[\s\S]*product_membership[\s\S]*domain_result_identity/);
+    assert.match(branch, /result_definition[\s\S]*result_definition_stable_id/);
+    assert.match(branch, /PRODUCT_CANDIDATE_RESULT_RECORD\/V1/);
+    assert.doesNotMatch(
+      branch,
+      /(?:domain_carrier->'[^']+'(?:->'[^']+')*|p_write_set->'domain_carrier'(?:->'[^']+')*)\s+- ARRAY\[/,
+      'nested JSON values must be parenthesised before the jsonb subtraction operator',
+    );
+    assert.doesNotMatch(
+      branch,
+      /p_write_set->'[^']+'\s+-\s+'[^']+'/,
+      'nested JSON values must be parenthesised before single-key subtraction',
+    );
+  }
+});
