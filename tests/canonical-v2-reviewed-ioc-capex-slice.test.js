@@ -266,6 +266,21 @@ test('rejects a self-rehashed inclusion receipt not bound to the subject observa
   );
 });
 
+test('rejects a self-rehashed row with a cohort digest different from its receipt', () => {
+  const slice = build();
+  const row = structuredClone(
+    buildReviewedIocCapexServingRow({ slice, contractBundle }),
+  );
+  row.canonical_result.market_context.cohort.cohort_digest = contentId(
+    'MARKET_COHORT/V1',
+    'forged-stored-cohort',
+  );
+  assert.throws(
+    () => validateReviewedIocCapexServingRow(resealRow(row)),
+    /does not match the stored cohort/,
+  );
+});
+
 test('represents an explicit narrower-filter exclusion with its typed reason', () => {
   const slice = build();
   const observation = slice.projection.observation;
