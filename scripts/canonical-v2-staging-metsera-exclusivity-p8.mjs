@@ -1030,6 +1030,8 @@ SELECT * FROM metsera_product_release_proof;
       candidateCommit.validation.candidateRecord,
       activeReleaseResolution(stagingAfterReleaseProof),
       m1Permission,
+      productAuthority.context,
+      productAuthority.input,
     );
   if (
     sourceReader.source_reader_state !== 'TYPED_REFUSAL'
