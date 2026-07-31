@@ -51,6 +51,16 @@ jobs:
             echo "::error::The STAGING_DB_URL repository secret is missing or empty. Add it under Settings > Secrets and variables > Actions > Repository secrets."
             exit 1
           fi
+          # GitHub runners have no IPv6; the direct db.<ref> host is IPv6-only.
+          # Rewrite to the IPv4 session pooler, preserving the credential.
+          case "$STAGING_DB_URL" in
+            *db.sjumbznveyyiizhwvixj.supabase.co*)
+              STAGING_DB_URL=$(printf '%s' "$STAGING_DB_URL" \
+                | sed -e 's#postgresql://postgres:#postgresql://postgres.sjumbznveyyiizhwvixj:#' \
+                      -e 's#db\.sjumbznveyyiizhwvixj\.supabase\.co#aws-0-us-west-2.pooler.supabase.com#')
+              echo "Rewrote staging db url to the IPv4 session pooler."
+              ;;
+          esac
           node scripts/canonical-v2-staging-metsera-exclusivity-p8.mjs \
             --materialisation-input /tmp/metsera-pilot-inputs/materialisation-input.json \
             --materialisation-receipt /tmp/metsera-pilot-inputs/materialisation-receipt.json \
