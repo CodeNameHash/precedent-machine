@@ -355,6 +355,7 @@ function MetricResult({ spec, result, displayLabel = null }) {
         <p className="text-[10px] leading-4 text-[#8A642E]">
           Not comparable: {result.comparability?.message || 'the selected-deal result is not certified for a market cohort.'}
         </p>
+        <CohortMembershipNote membership={result.subject?.cohortMembership} />
         <SubjectLegalTerms result={result} />
       </div>
     );
@@ -366,11 +367,26 @@ function MetricResult({ spec, result, displayLabel = null }) {
     <div>
       {displayLabel ? <p className="text-[9px] font-bold text-[#6B6B6B] mb-0.5">{displayLabel}</p> : null}
       {subject ? <p className="text-[9.5px] text-[#2F6DB5] mb-0.5">{subject}</p> : null}
+      <CohortMembershipNote membership={result.subject?.cohortMembership} />
       {kind === 'presence' ? <PresenceResult result={result} /> : <ValuesResult result={result} kind={kind} />}
       {kind !== 'presence' ? <SubjectLegalTerms result={result} /> : null}
       {kind !== 'presence' && coverageNote(result) ? <p className="mt-1 text-[9px] text-[#8A8782]">{coverageNote(result)}</p> : null}
     </div>
   );
+}
+
+function CohortMembershipNote({ membership }) {
+  if (membership?.status === 'included') {
+    return <p className="text-[9px] text-[#2F6DB5]">Included in market cohort.</p>;
+  }
+  if (membership?.status === 'excluded') {
+    return (
+      <p className="text-[9px] text-[#8A642E]">
+        Excluded from market cohort: {membership.exclusionReason || 'typed exclusion reason unavailable'}.
+      </p>
+    );
+  }
+  return null;
 }
 
 function isPrevalenceSpec(spec) {

@@ -87,6 +87,10 @@ test('all four surfaces render the reviewed proposition as selected-deal context
   assert.equal(adapted.resolution.marketCohortEligible, false);
   assert.deepEqual(adapted.resolution.metrics, []);
   assert.equal(adapted.data.byRow[fixture.row.row_serving_key].sourceSpecific.state, 'reviewed_source_specific');
+  assert.deepEqual(
+    adapted.data.byRow[fixture.row.row_serving_key].sourceSpecific.cohortMembership,
+    { status: 'excluded', exclusionReason: 'REVIEWED_SOURCE_SPECIFIC' },
+  );
   for (const surface of SURFACES) {
     assert.equal(adapted.surface_bindings[surface].market_cohort_eligible, false);
   }

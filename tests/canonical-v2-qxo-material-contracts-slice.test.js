@@ -229,6 +229,10 @@ test('QXO incomplete row binds the attribute candidate and remains useful in Rev
     .MATERIAL_CONTRACT_CASH_FLOW_THRESHOLD_PERCENT_OF_DEAL_VALUE;
   assert.equal(adapted.resolution.marketCohortEligible, false);
   assert.equal(metric.state, 'not_certified');
+  assert.deepEqual(metric.subject.cohortMembership, {
+    status: 'excluded',
+    exclusionReason: 'RESULT_INCOMPLETE',
+  });
   assert.equal(metric.subject.percentOfDealValue, 0.05882353);
   assert.equal(metric.subject.denominatorPrecision, 'NOT_CAPTURED');
   assert.equal(

@@ -395,6 +395,9 @@ function SourceSpecificRow({ item, sourceExcerpts }) {
                   <div>
                     <div className="text-xs font-bold text-[#1F1F1F]">{sourceSpecific.displayLabel}</div>
                     <div className="mt-2 text-[10px] leading-4 text-[#66625C]">{sourceSpecific.nonComparableReason}</div>
+                    <div className="mt-2 text-[9px] font-semibold text-[#8A642E]">
+                      Excluded from market cohort: {sourceSpecific.cohortMembership.exclusionReason}
+                    </div>
                     <div className="mt-3 text-[9px] font-bold uppercase tracking-[0.1em] text-[#77736C]">
                       Observed party: {sourceSpecific.observedPartyTokens.join(', ')}
                     </div>
