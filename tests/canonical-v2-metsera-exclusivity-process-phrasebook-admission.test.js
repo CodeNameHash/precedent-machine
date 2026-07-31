@@ -28,9 +28,24 @@ test('fails closed without a full real materialisation receipt', () => {
         candidate_release_manifest_payload_digest: '1'.repeat(64),
         corpus_release_id: '2'.repeat(64),
       },
-      product_query_definition_id: '0'.repeat(64),
+      pilot_product_authority_context: {},
+      pilot_product_authority_input: {},
     }),
     /Materialisation receipt/,
+  );
+  assert.throws(
+    () => compileMetseraExclusivityProcessPhrasebookAdmission({
+      materialisation_receipt: null,
+      candidate_release_binding: {
+        candidate_release_manifest_id: '0'.repeat(64),
+        candidate_release_manifest_payload_digest: '1'.repeat(64),
+        corpus_release_id: '2'.repeat(64),
+      },
+      pilot_product_authority_context: {},
+      pilot_product_authority_input: {},
+      product_query_definition_id: '0'.repeat(64),
+    }),
+    /exact required fields/,
   );
 });
 
@@ -43,9 +58,32 @@ test('derives admission-only state from the materialisation receipt', () => {
   assert.match(source, /exact_source_slices/);
   assert.match(source, /materialisation_receipt_id/);
   assert.match(source, /NOT_RELEASE_BOUND/);
+  assert.match(source, /eventDateFromReceipt/);
+  assert.doesNotMatch(source, /metsera-gold-evidence|loadSealedMetseraGoldEvidence|exclusivityGold/);
   assert.doesNotMatch(source, /buildMetseraAuthorityBoundProcessAdmission/);
   assert.doesNotMatch(source, /buildFixtureCandidateRelease/);
   assert.doesNotMatch(source, /canonical-writer|supabase|production.*write/i);
+  const stagingSource = fs.readFileSync(path.join(
+    __dirname,
+    '../scripts/canonical-v2-staging-metsera-exclusivity-p8.mjs',
+  ), 'utf8');
+  assert.doesNotMatch(stagingSource, /--product-query-definition-id/);
+  assert.match(stagingSource, /pilot_product_authority_context/);
+});
+
+test('uses the query-cycle correction phase boundary', () => {
+  const allowlist = JSON.parse(fs.readFileSync(path.join(
+    __dirname,
+    '../.github/phase-allowlists/wp-p8-metsera-query-cycle-fix-v1.json',
+  ), 'utf8'));
+  assert.deepEqual(allowlist.allowed, [
+    '.github/phase-allowlists/wp-p8-metsera-query-cycle-fix-v1.json',
+    'lib/canonical-v2/metsera-exclusivity-process-phrasebook-admission.js',
+    'lib/canonical-v2/metsera-exclusivity-product-row.js',
+    'scripts/canonical-v2-staging-metsera-exclusivity-p8.mjs',
+    'tests/canonical-v2-metsera-exclusivity-process-phrasebook-admission.test.js',
+    'tests/canonical-v2-metsera-exclusivity-product-row.test.js',
+  ]);
 });
 
 test('uses the P8 real-source bridge phase boundary', () => {

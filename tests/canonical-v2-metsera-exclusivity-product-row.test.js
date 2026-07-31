@@ -26,6 +26,7 @@ const {
 const {
   AUTHORITY_LIMITS,
   METSERA_PRODUCT_ROW_SCHEMA,
+  compileMetseraExclusivityProductQueryFromCheckedProcessEvidence,
   compileMetseraExclusivityProductQuery,
   compileMetseraExclusivityProductRow,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-row');
@@ -127,6 +128,29 @@ test('fails closed without one exact admitted Metsera result', () => {
 
 test('derives the Product query from the sealed authority context and checked Process evidence', () => {
   const { input, context, productAdmission, query } = fixture();
+  const bridgeQuery = compileMetseraExclusivityProductQueryFromCheckedProcessEvidence({
+    checked_process_admission_evidence: {
+      result_identity: productAdmission.admission_input.result_identity,
+      narration_revision: productAdmission.admission_input.narration_revision,
+      predicate_witness_revision:
+        productAdmission.admission_input.predicate_witness_revision,
+      atomic_response_predicate_witness_revision:
+        productAdmission.admission_input.atomic_response_predicate_witness_revision,
+      result_input_lineage: productAdmission.admission_input.result_input_lineage,
+      matched_passage_preview: productAdmission.admission_input.matched_passage_preview,
+      exact_detail_reference: productAdmission.admission_input.exact_detail_reference,
+    },
+    candidate_release_binding: {
+      candidate_release_manifest_id:
+        productAdmission.candidate_release_manifest_id,
+      candidate_release_manifest_payload_digest:
+        productAdmission.candidate_release_manifest_payload_digest,
+      corpus_release_id: context.candidate_release_manifest.corpus_release_id,
+    },
+    pilot_product_authority_context: context,
+    pilot_product_authority_input: input,
+  });
+  assert.deepEqual(bridgeQuery, query);
   const rebuilt = compileMetseraExclusivityProductQuery(
     productAdmission,
     context,
@@ -187,11 +211,59 @@ test('rejects a correctly rehashed authority-context substitution', () => {
   substituted.candidate_release_manifest.corpus_release_id = 'f'.repeat(64);
   rehashContext(substituted);
   assert.throws(
-    () => compileMetseraExclusivityProductQuery(
-      productAdmission,
-      substituted,
-      input,
-    ),
+    () => compileMetseraExclusivityProductQueryFromCheckedProcessEvidence({
+      checked_process_admission_evidence: {
+        result_identity: productAdmission.admission_input.result_identity,
+        narration_revision: productAdmission.admission_input.narration_revision,
+        predicate_witness_revision:
+          productAdmission.admission_input.predicate_witness_revision,
+        atomic_response_predicate_witness_revision:
+          productAdmission.admission_input.atomic_response_predicate_witness_revision,
+        result_input_lineage: productAdmission.admission_input.result_input_lineage,
+        matched_passage_preview: productAdmission.admission_input.matched_passage_preview,
+        exact_detail_reference: productAdmission.admission_input.exact_detail_reference,
+      },
+      candidate_release_binding: {
+        candidate_release_manifest_id:
+          productAdmission.candidate_release_manifest_id,
+        candidate_release_manifest_payload_digest:
+          productAdmission.candidate_release_manifest_payload_digest,
+        corpus_release_id: context.candidate_release_manifest.corpus_release_id,
+      },
+      pilot_product_authority_context: substituted,
+      pilot_product_authority_input: input,
+    }),
+    /Pilot Product authority context is invalid/,
+  );
+});
+
+test('rejects an authority-input substitution in the bridge query derivation', () => {
+  const { input, context, productAdmission } = fixture();
+  const substitutedInput = clone(input);
+  substitutedInput.candidate_release_manifest.corpus_release_id = 'f'.repeat(64);
+  assert.throws(
+    () => compileMetseraExclusivityProductQueryFromCheckedProcessEvidence({
+      checked_process_admission_evidence: {
+        result_identity: productAdmission.admission_input.result_identity,
+        narration_revision: productAdmission.admission_input.narration_revision,
+        predicate_witness_revision:
+          productAdmission.admission_input.predicate_witness_revision,
+        atomic_response_predicate_witness_revision:
+          productAdmission.admission_input.atomic_response_predicate_witness_revision,
+        result_input_lineage: productAdmission.admission_input.result_input_lineage,
+        matched_passage_preview: productAdmission.admission_input.matched_passage_preview,
+        exact_detail_reference: productAdmission.admission_input.exact_detail_reference,
+      },
+      candidate_release_binding: {
+        candidate_release_manifest_id:
+          productAdmission.candidate_release_manifest_id,
+        candidate_release_manifest_payload_digest:
+          productAdmission.candidate_release_manifest_payload_digest,
+        corpus_release_id: context.candidate_release_manifest.corpus_release_id,
+      },
+      pilot_product_authority_context: context,
+      pilot_product_authority_input: substitutedInput,
+    }),
     /Pilot Product authority context is invalid/,
   );
 });

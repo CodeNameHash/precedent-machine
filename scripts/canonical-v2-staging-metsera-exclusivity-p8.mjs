@@ -393,22 +393,9 @@ function readRealMaterialisationReceipt() {
   return value;
 }
 
-function readProductQueryDefinitionId() {
-  const flag = '--product-query-definition-id';
-  const index = process.argv.indexOf(flag);
-  const value = index < 0 ? null : process.argv[index + 1];
-  if (!/^[a-f0-9]{64}$/.test(value || '')) {
-    throw new Error(
-      'Metsera P8 requires --product-query-definition-id <sha256>.',
-    );
-  }
-  return value;
-}
-
 async function main() {
   const m1Permission = currentM1Permission();
   const materialisationReceipt = readRealMaterialisationReceipt();
-  const productQueryDefinitionId = readProductQueryDefinitionId();
   const combinedPilotBaseRelease = buildCombinedPilotBaseRelease();
   const productAuthority = currentProductAuthority(
     combinedPilotBaseRelease.manifest,
@@ -421,11 +408,9 @@ async function main() {
       combinedPilotBaseRelease.manifest.canonical_payload_digest,
     corpus_release_id:
       combinedPilotBaseRelease.manifest.corpus_release_id,
-    product_query_definition_id: null,
     release_state: 'CANDIDATE_NOT_ACTIVE',
     authority_state: 'NOT_GRANTED',
   };
-  candidateReleaseBinding.product_query_definition_id = productQueryDefinitionId;
   const realProcessAdmission =
     compileMetseraExclusivityProcessPhrasebookAdmission({
       materialisation_receipt: materialisationReceipt,
@@ -436,7 +421,8 @@ async function main() {
           candidateReleaseBinding.candidate_release_manifest_payload_digest,
         corpus_release_id: candidateReleaseBinding.corpus_release_id,
       },
-      product_query_definition_id: productQueryDefinitionId,
+      pilot_product_authority_context: productAuthority.context,
+      pilot_product_authority_input: productAuthority.input,
     });
   const productAdmission =
     compileMetseraExclusivityProductAdmission({
