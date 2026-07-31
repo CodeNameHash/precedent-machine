@@ -6,6 +6,10 @@ const path = require('node:path');
 const { buildSecEdgarIntakeCapture } = require('../lib/canonical-v2/sec-edgar-intake-capture');
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const {
+  normaliseForMatching,
+  indexOfIgnoringZeroWidth,
+} = require('../lib/canonical-v2/zero-width-normalise');
+const {
   CONFIG_DIGEST,
   CONVERTER_DIGEST,
   SOURCE_MAP_ENCODING,
@@ -177,7 +181,7 @@ test('converts repeated SEC-style regions without per-region full-document scans
   assert.ok(elapsed < 3000, `repeated-region conversion took ${elapsed}ms`);
 });
 
-test('decodes zero-width/bidi entities to nothing and named/numeric whitespace entities to a real space, so cross-references survive intact', () => {
+test('keeps zero-width/bidi marks in canonical text (faithful) while matching ignores them (tolerant)', () => {
   // Real QXO/TopBuild EDGAR markup (tm2612209d1_ex2-1.htm, accession
   // 0001104659-26-045111): a cross-reference reading
   // "Section&nbsp;<B><I>&lrm;</I></B>3.1(b)(i)" in the raw HTML. Before this
@@ -189,8 +193,25 @@ test('decodes zero-width/bidi entities to nothing and named/numeric whitespace e
   // citation" conclusion, which this fix corrects at the root.
   const html = '<p>Section&nbsp;<B><I>&lrm;</I></B>3.1(b)(i) and Section&nbsp;<B><I>&rlm;</I></B>3.1(b)(ii)</p>';
   const result = convertSecHtmlToCanonicalText(capture(html));
-  assert.equal(result.canonical_text, 'Section 3.1(b)(i) and Section 3.1(b)(ii)');
+
+  // LAYER 1 -- canonical text is FAITHFUL. The marks are real characters in
+  // the document, so they are decoded to their codepoints and KEPT. Deleting
+  // them would make our text a lie about the source: quotes would stop
+  // reproducing it honestly and every later byte offset would shift. Reviewed
+  // slices already depend on these marks being present (see
+  // reviewed-qxo-admitted-no-shop-actions-slice.js, whose anchor carries a
+  // literal U+200E between "Article" and "VI").
+  assert.equal(result.canonical_text, 'Section \u200e3.1(b)(i) and Section \u200f3.1(b)(ii)');
+  assert.ok(!result.canonical_text.includes('&lrm;'), 'the literal entity must not survive');
   assertCoverage(result, Buffer.byteLength(html));
+
+  // LAYER 2 -- matching is TOLERANT. Finding "Section 3.1" must not fail
+  // because an invisible mark sits between the word and the number.
+  assert.equal(
+    normaliseForMatching(result.canonical_text),
+    'Section 3.1(b)(i) and Section 3.1(b)(ii)',
+  );
+  assert.equal(indexOfIgnoringZeroWidth(result.canonical_text, 'Section 3.1(b)(i)'), 0);
 
   // A real QXO/TopBuild section-heading fragment: the number is followed by
   // a <FONT> tag then a narrow no-break space numeric reference (&#8239;)
@@ -206,7 +227,7 @@ test('decodes zero-width/bidi entities to nothing and named/numeric whitespace e
   // range (U+200B-U+200F) alongside the named zwj/zwnj marks.
   const extra = '<p>&sect;1&para;2 A&ensp;B&emsp;C&thinsp;D&#8203;E&#8204;F&#8205;G&#8206;H&#8207;I&zwj;J&zwnj;K</p>';
   const extraResult = convertSecHtmlToCanonicalText(capture(extra));
-  assert.equal(extraResult.canonical_text, '§1¶2 A B C DEFGHIJK');
+  assert.equal(extraResult.canonical_text, '§1¶2 A B C D​E‌F‍G‎H‏I‍J‌K');
   assertCoverage(extraResult, Buffer.byteLength(extra));
 });
 
@@ -228,4 +249,19 @@ test('bounded source-map decoder rejects payload, hash, count and digest tamperi
     ...result,
     source_map_uncompressed_byte_length: 64 * 1024 * 1024 + 1,
   }), (error) => error.code === 'SOURCE_MAP_LIMIT_EXCEEDED');
+});
+
+test('the zero-width sweep is findable once matching normalises the marks away', () => {
+  // Companion to the faithfulness assertion above: the marks stay in the
+  // text, but a search must still succeed. This pair is the whole design --
+  // faithful storage, tolerant matching -- and neither half is sufficient
+  // alone. Deleting marks at decode time (the earlier, wrong fix) made
+  // matching work by corrupting the record; keeping them without a tolerant
+  // matcher makes the record honest but unsearchable.
+  const html = '<p>Section&nbsp;<B><I>&lrm;</I></B>3.1(b)(i)</p>';
+  const result = convertSecHtmlToCanonicalText(capture(html));
+  assert.ok(result.canonical_text.includes('‎'), 'the mark is retained');
+  assert.equal(normaliseForMatching(result.canonical_text), 'Section 3.1(b)(i)');
+  const at = indexOfIgnoringZeroWidth(result.canonical_text, 'Section 3.1(b)(i)');
+  assert.equal(at, 0, 'offset is returned against the ORIGINAL text, not the normalised copy');
 });
