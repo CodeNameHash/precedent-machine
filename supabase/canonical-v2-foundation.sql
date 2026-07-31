@@ -1772,7 +1772,7 @@ BEGIN
           ->'shared_row_adapter_receipt'->'product_query_result'
             ->>'domain_result_identity',
         'process_phrasebook_result_identity', p_write_set
-          ->'process_pilot_materialisation_receipt'
+          ->'product_admission'->'admission_receipt'
             ->>'process_phrasebook_passage_result_id',
         'candidate_state', 'CANDIDATE_NOT_ACTIVE',
         'authority_state', 'NOT_GRANTED',

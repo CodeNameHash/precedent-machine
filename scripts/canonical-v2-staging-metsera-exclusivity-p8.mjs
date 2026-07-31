@@ -584,7 +584,7 @@ async function main() {
   });
   const candidatePayloadDigest = stagingRuntime.runSql(`
 SELECT canonical_v2_staging.payload_digest(
-  ${stagingRuntime.sqlJson(candidateWriteSet)}
+  ${stagingRuntime.sqlJson(candidateCommit.validation.candidateRecord)}
 ) AS candidate_payload_digest;`, { readOnly: true })[0]
     ?.candidate_payload_digest;
   if (!/^[a-f0-9]{64}$/.test(candidatePayloadDigest || '')) {

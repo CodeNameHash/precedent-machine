@@ -472,7 +472,7 @@ BEGIN
 END
 $$;
 
--- Governed function SHA-256: 4f1298f5439fd9bf56a2b1bcc8f1e9581a3109f186314f007a3aa62f9492bb92
+-- Governed function SHA-256: 22421fa8be103e97ec60dde72fb102e00938a0db5771d23f71dc68bd91883950
 CREATE OR REPLACE FUNCTION public.canonical_v2_write(
   p_environment text,
   p_operation text,
@@ -1081,7 +1081,7 @@ BEGIN
           ->'shared_row_adapter_receipt'->'product_query_result'
             ->>'domain_result_identity',
         'process_phrasebook_result_identity', p_write_set
-          ->'process_pilot_materialisation_receipt'
+          ->'product_admission'->'admission_receipt'
             ->>'process_phrasebook_passage_result_id',
         'candidate_state', 'CANDIDATE_NOT_ACTIVE',
         'authority_state', 'NOT_GRANTED',
