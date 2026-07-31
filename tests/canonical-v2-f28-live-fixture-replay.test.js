@@ -56,16 +56,57 @@
  *    byte-exact evidence gate... a class of hallucination the current
  *    architecture has no mechanism to detect at all"). One of the 18 limb
  *    assertions the run doc counted separately fails BYTE-EXACT evidence
- *    verification first (a pre-existing, unrelated &lrm;-entity fidelity
- *    gap between this reconstructed plain-text fixture and the model's
- *    literal quote -- see F28-FIRST-LIVE-RUN.md's "Converter fidelity
- *    notes"), so only 17 of the 18 reach the citation check at all; all 17
- *    that do are CITATION_NOT_CONSTRUCTIBLE.
+ *    verification first (see the "entity-decoding note" below), so only 17
+ *    of the 18 reach the citation check at all; all 17 that do are
+ *    CITATION_NOT_CONSTRUCTIBLE.
  *  - Defect 4 (kind-aware mapping table): moot on THIS replay, because
  *    every qualifier that would have exercised it is already invisible per
  *    (1) above -- see canonical-v2-candidate-resolution.test.js's
  *    dedicated TEMPORAL-qualifier test for defect 4 exercised on a
  *    conforming, PROMPT_VERSION-2-shaped response instead.
+ *
+ * ENTITY-DECODING NOTE (do not confuse this with defect 3 above). The run
+ * doc's own Step 5 finding 3 (`"Hallucinated section numbering"`) is WRONG
+ * on ITS OWN TERMS, for a reason that has nothing to do with citation
+ * constructibility: `sec-html-canonical-text.js`'s HTML-entity decoding was
+ * incomplete (`&lrm;`, the LEFT-TO-RIGHT MARK entity SEC filings use before
+ * cross-reference numbers, was not in `NAMED_ENTITIES` and so survived into
+ * canonical text as the literal 5-character string "&lrm;"), which is why
+ * the recorded model response's own quotes read "Section &lrm;3.1(b)(i)"
+ * verbatim -- the model was quoting real document bytes correctly; the
+ * CONVERTER, not the model, produced the corrupted "Section 3." string that
+ * the run doc searched for and found zero occurrences of. That converter
+ * defect is now fixed (`lib/canonical-v2/sec-html-canonical-text.js` and its
+ * independent verifier both decode `&lrm;`/`&rlm;`/`&zwj;`/`&zwnj;` and
+ * their numeric equivalents to nothing, and whitespace-width entities to a
+ * real space -- see `tests/canonical-v2-sec-html-canonical-text.test.js`'s
+ * "decodes zero-width/bidi entities..." test for the proof, and this
+ * commit's docs for a real-filing before/after). Re-fetching and
+ * re-converting the actual QXO/TopBuild filing with the fix confirms
+ * "Section 3.1" now appears as contiguous canonical text 29 times (was 0),
+ * with zero residual literal entity artifacts.
+ *
+ * THAT FIX DOES NOT CHANGE THIS TEST'S CITATION_NOT_CONSTRUCTIBLE
+ * ASSERTIONS, and they were never "wrong" in the way defect 3's fix
+ * description above might suggest at a skim: constructibility depends on
+ * whether the SECTIONIZER discovers a "3.1" *heading* node, which depends on
+ * `lib/parser-v2/structural.js`'s heading detection, not on entity decoding.
+ * Independently re-running the fixed sectionizer against the real,
+ * fully-decoded QXO/TopBuild filing confirms the document has no numbered
+ * "Section 3.1" HEADING anywhere -- every one of the 29 "Section 3.1"
+ * occurrences is a mid-sentence cross-reference inside a representation's
+ * body text (e.g. "...set forth in Section 3.1(d)(ii)..."), never a heading
+ * line, exactly matching this filing's real drafting convention (bare
+ * lettered sub-items directly under each ARTICLE, no decimal section
+ * numbers -- see F28-FIRST-LIVE-RUN.md's "Structural degeneracy" note,
+ * which was correct and remains correct after the entity fix). So
+ * CITATION_NOT_CONSTRUCTIBLE is the true, correct verdict for these
+ * citations on THIS filing, for a reason unrelated to the entity bug, and
+ * this test's fixture (a hand-authored, already-decoded plain-text excerpt
+ * routed through an identity admission chain, never through the real HTML
+ * converter -- see `buildIdentityAdmittedSourceContext` below) was never
+ * exercising the entity-decoding path in the first place, so there is
+ * nothing here for that fix to change.
  */
 
 const test = require('node:test');
@@ -310,16 +351,25 @@ test('replaying the F28 recorded raw response through the fixed pipeline: defect
   assert.equal(receipt.evidence_residuals.filter((r) => r.reason.startsWith('QUALIFIER_')).length, 0);
 
   // One of the 18 limb assertions the run doc counted fails byte-exact
-  // evidence verification first -- a pre-existing &lrm;-entity fidelity gap
-  // between this reconstructed fixture and the model's literal quote,
-  // unrelated to any of the four defects (see the file header).
+  // evidence verification first: its assertion_quote reads "Section
+  // &lrm;3.1(b)(ii) of the Company Disclosure Letter..." -- the model
+  // quoting the OLD, entity-decoding-bugged canonical text verbatim (see the
+  // ENTITY-DECODING NOTE in the file header) -- against THIS fixture's
+  // hand-authored, already-decoded plain text, which never contained the
+  // literal "&lrm;" artifact to begin with. This is an expected consequence
+  // of replaying a response recorded under the (now-fixed) entity bug
+  // against a clean fixture, unrelated to any of the four architectural
+  // defects (see the file header).
   assert.equal(receipt.evidence_residual_count, 1);
   assert.equal(receipt.evidence_residuals[0].reason, 'LIMB_ASSERTION_QUOTE_UNVERIFIED');
 
   // Defect 3: every one of the remaining 17 limb assertions' inherited
   // section_reference ("3.1(b)(i)" etc.) fails to construct against this
   // document's real tree, whose governing node is discovered as
-  // "III-INTRO(b)" -- exactly the live run's own finding 3.
+  // "III-INTRO(b)" -- exactly the live run's own finding 3, and STILL true
+  // after the entity-decoding fix (see the ENTITY-DECODING NOTE in the file
+  // header): this document genuinely has no numbered "Section 3.1" heading,
+  // independent of entity decoding.
   assert.equal(receipt.citation_residuals.length, 17);
   assert.ok(receipt.citation_residuals.every((r) => r.reason === 'CITATION_NOT_CONSTRUCTIBLE'));
   assert.ok(receipt.citation_residuals.every((r) => r.derived_citation === 'III-INTRO(b)'));

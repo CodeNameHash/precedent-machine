@@ -177,6 +177,39 @@ test('converts repeated SEC-style regions without per-region full-document scans
   assert.ok(elapsed < 3000, `repeated-region conversion took ${elapsed}ms`);
 });
 
+test('decodes zero-width/bidi entities to nothing and named/numeric whitespace entities to a real space, so cross-references survive intact', () => {
+  // Real QXO/TopBuild EDGAR markup (tm2612209d1_ex2-1.htm, accession
+  // 0001104659-26-045111): a cross-reference reading
+  // "Section&nbsp;<B><I>&lrm;</I></B>3.1(b)(i)" in the raw HTML. Before this
+  // fix, &lrm; (U+200E LEFT-TO-RIGHT MARK) was absent from NAMED_ENTITIES, so
+  // decodeEntity returned null and the literal 5-character string "&lrm;"
+  // survived into canonical text verbatim, breaking "Section 3.1(b)(i)" into
+  // the unsearchable "Section &lrm;3.1(b)(i)" -- see
+  // docs/handoffs/F28-FIRST-LIVE-RUN.md's (incorrect) "hallucinated
+  // citation" conclusion, which this fix corrects at the root.
+  const html = '<p>Section&nbsp;<B><I>&lrm;</I></B>3.1(b)(i) and Section&nbsp;<B><I>&rlm;</I></B>3.1(b)(ii)</p>';
+  const result = convertSecHtmlToCanonicalText(capture(html));
+  assert.equal(result.canonical_text, 'Section 3.1(b)(i) and Section 3.1(b)(ii)');
+  assertCoverage(result, Buffer.byteLength(html));
+
+  // A real QXO/TopBuild section-heading fragment: the number is followed by
+  // a <FONT> tag then a narrow no-break space numeric reference (&#8239;)
+  // before the heading title continues.
+  const heading = '<p>3.1<FONT STYLE="font-size: 10pt">&#8239;</FONT>Capital Structure.</p>';
+  const headingResult = convertSecHtmlToCanonicalText(capture(heading));
+  assert.equal(headingResult.canonical_text, '3.1 Capital Structure.');
+  assertCoverage(headingResult, Buffer.byteLength(heading));
+
+  // Additional named/numeric entities the fix extends: sect/para (pinned
+  // named symbols), ensp/emsp/thinsp (named whitespace-width entities that
+  // collapse the same way &nbsp; already did), and the numeric zero-width
+  // range (U+200B-U+200F) alongside the named zwj/zwnj marks.
+  const extra = '<p>&sect;1&para;2 A&ensp;B&emsp;C&thinsp;D&#8203;E&#8204;F&#8205;G&#8206;H&#8207;I&zwj;J&zwnj;K</p>';
+  const extraResult = convertSecHtmlToCanonicalText(capture(extra));
+  assert.equal(extraResult.canonical_text, '§1¶2 A B C DEFGHIJK');
+  assertCoverage(extraResult, Buffer.byteLength(extra));
+});
+
 test('bounded source-map decoder rejects payload, hash, count and digest tampering', () => {
   const result = convertSecHtmlToCanonicalText(capture('<p>Mapped.</p>'));
   assert.throws(() => decodeSecHtmlCanonicalTextSourceMap({

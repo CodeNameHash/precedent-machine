@@ -98,6 +98,14 @@ test('independently verifies every input region, transformation and content iden
   );
 });
 
+test('independently PASSes the real QXO/TopBuild &lrm;/&nbsp; cross-reference shape (see sec-html-canonical-text.test.js for the converter-side proof)', () => {
+  const intake = capture('<p>Section&nbsp;<B><I>&lrm;</I></B>3.1(b)(i) of the Company Disclosure Letter.</p>');
+  const conversion = convertSecHtmlToCanonicalText(intake);
+  assert.equal(conversion.canonical_text, 'Section 3.1(b)(i) of the Company Disclosure Letter.');
+  const manifest = verifySecHtmlCanonicalText({ capture: intake, conversion });
+  assert.equal(manifest.verification_status, 'PASS');
+});
+
 test('fails closed on missing, extra, gapped and overlapping input regions', () => {
   const intake = capture('<body><p>Alpha.</p><p>Beta.</p></body>');
   const valid = convertSecHtmlToCanonicalText(intake);
