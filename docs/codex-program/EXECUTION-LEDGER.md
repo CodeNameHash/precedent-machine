@@ -13,7 +13,7 @@ main integration.
 | --- | --- |
 | Main basis | `7b6bc64157c49832129fa2ca227399850cd983fc` |
 | Approved M1 review commit | `affa7464ca2cab2b4715ae084e3de6c2d39b673f` |
-| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; latest committed head `526582cf`. All Stage 2 reviews and the complete suite pass. Stage 4 exact-root review is next. Main remains fixed. |
+| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; latest code head `526582cf`, followed only by ledger binding. All Stage 2 reviews and the complete suite pass. Stage 4 exact-root review is next. Main remains fixed. |
 | Current working-tree successor bundle | 178 authored inputs, 177 substantive contracts, 8 categories. This is a draft, not the freeze candidate. |
 | Current working-tree bundle ID | `d222eba830fefad4772e358041e36f8818dbf227e4c7e13c77f4228514a37d8e` |
 | Current working-tree contract digest | `a953a215f9ff4cf94a204580b3b9a2b559fa531d1f3be16a3e787032257e87b3` |
