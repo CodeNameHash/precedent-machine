@@ -39,6 +39,27 @@ const {
   contentId,
 } = require('../lib/canonical-v2/canonical-bytes');
 const {
+  buildLandosCandidateReleaseFixture,
+} = require('../__fixtures__/canonical-v2/landos-candidate-release');
+const {
+  buildFixtureCandidateRelease,
+} = require('../lib/canonical-v2/candidate-release');
+const {
+  buildCandidateReleaseImportPlan,
+} = require('../lib/canonical-v2/candidate-release-import');
+const {
+  buildProductQueryResultReleasePartition,
+} = require(
+  '../lib/canonical-v2/product-query-result-release-partition',
+);
+const {
+  buildProductQueryResultServingRecord,
+} = require('../lib/canonical-v2/product-query-result-serving-record');
+const {
+  QUERY_PROJECTION_CONTRACT_DIGEST_V2,
+  SERVING_PROJECTION_VERSION_V2,
+} = require('../lib/canonical-v2/serving-projection-contract');
+const {
   buildCanonicalWriteReceipt,
   InMemoryCanonicalRepository,
   createCanonicalWriter,
@@ -90,6 +111,26 @@ function currentM1Permission() {
       'utf8',
     ),
     current_bundle: M1_BUNDLE,
+  });
+}
+
+function buildCombinedPilotBaseRelease() {
+  const fixture = buildLandosCandidateReleaseFixture();
+  return buildFixtureCandidateRelease({
+    contract_bundle: fixture.contract,
+    serving_namespace_id: fixture.servingNamespaceId,
+    corpus_release_id: fixture.corpusReleaseId,
+    serving_projection_binding: {
+      serving_projection_version: SERVING_PROJECTION_VERSION_V2,
+      query_projection_contract_digest:
+        QUERY_PROJECTION_CONTRACT_DIGEST_V2,
+    },
+    members: fixture.members,
+    source_specific_members: fixture.sourceSpecificMembers,
+    validated_semantic_graphs: fixture.validatedSemanticGraphs,
+    correction_authority_selection:
+      fixture.correctionAuthoritySelection,
+    deal_directory_entries: fixture.dealDirectoryEntries,
   });
 }
 
@@ -225,23 +266,15 @@ async function main() {
   const receipt = compileMetseraExclusivityStagingPilot(
     sourceBytesByAccession,
   );
-  const releaseSeed = {
-    materialisation_receipt_id: receipt.materialisation_receipt_id,
-    staging_only: true,
-  };
+  const combinedPilotBaseRelease = buildCombinedPilotBaseRelease();
   const candidateReleaseBinding = {
-    candidate_release_manifest_id: contentId(
-      'METSERA_EXCLUSIVITY_CANDIDATE_RELEASE_MANIFEST/V1',
-      releaseSeed,
-    ),
-    candidate_release_manifest_payload_digest: contentId(
-      'METSERA_EXCLUSIVITY_CANDIDATE_RELEASE_PAYLOAD/V1',
-      releaseSeed,
-    ),
-    corpus_release_id: contentId(
-      'METSERA_EXCLUSIVITY_CANDIDATE_CORPUS_RELEASE/V1',
-      releaseSeed,
-    ),
+    candidate_release_manifest_id:
+      combinedPilotBaseRelease.manifest
+        .candidate_release_manifest_id,
+    candidate_release_manifest_payload_digest:
+      combinedPilotBaseRelease.manifest.canonical_payload_digest,
+    corpus_release_id:
+      combinedPilotBaseRelease.manifest.corpus_release_id,
     product_query_definition_id: null,
     validation_receipt_ids: {
       narration_revision: receipt.materialisation_receipt_id,
@@ -329,6 +362,45 @@ async function main() {
       maxResponseBytes: 6 * 1024 * 1024,
     },
   });
+  const candidatePayloadDigest = stagingRuntime.runSql(`
+SELECT canonical_v2_staging.payload_digest(
+  ${stagingRuntime.sqlJson(candidateWriteSet)}
+) AS candidate_payload_digest;`, { readOnly: true })[0]
+    ?.candidate_payload_digest;
+  if (!/^[a-f0-9]{64}$/.test(candidatePayloadDigest || '')) {
+    throw new Error(
+      'Staging did not produce the Product candidate payload digest.',
+    );
+  }
+  const productResult =
+    productRow.shared_row_adapter_receipt.product_query_result;
+  const productServingRecord =
+    buildProductQueryResultServingRecord({
+      serving_namespace_id:
+        combinedPilotBaseRelease.manifest.serving_namespace_id,
+      corpus_release_id:
+        combinedPilotBaseRelease.manifest.corpus_release_id,
+      candidate_product_result_id:
+        candidateCommit.validation.candidateRecord
+          .candidate_product_result_id,
+      candidate_product_result_payload_digest:
+        candidatePayloadDigest,
+      product_query_result: productResult,
+    });
+  const productReleasePartition =
+    buildProductQueryResultReleasePartition({
+      candidate_release_manifest:
+        combinedPilotBaseRelease.manifest,
+      product_query_result_serving_records: [
+        productServingRecord,
+      ],
+    });
+  const candidateReleaseImportPlan =
+    buildCandidateReleaseImportPlan({
+      release: combinedPilotBaseRelease,
+      product_result_release_partition:
+        productReleasePartition,
+    });
   const stagingStateSql = `
 SELECT
   (SELECT count(*)::integer
@@ -338,6 +410,34 @@ SELECT
    FROM canonical_v2_staging.write_receipts
    WHERE operation = 'PRODUCT_RESULT_CANDIDATE_RUN')
     AS candidate_write_receipt_count,
+  (SELECT count(*)::integer
+   FROM canonical_v2_staging.fixture_corpus_releases
+   WHERE candidate_manifest_id = ${
+      stagingRuntime.sqlText(
+        combinedPilotBaseRelease.manifest
+          .candidate_release_manifest_id,
+      )
+    })
+    AS combined_release_count,
+  (SELECT count(*)::integer
+   FROM canonical_v2_staging.product_query_result_release_partitions
+   WHERE product_query_result_release_partition_manifest_id = ${
+      stagingRuntime.sqlText(
+        productReleasePartition
+          .product_query_result_release_partition_manifest
+          .product_query_result_release_partition_manifest_id,
+      )
+    })
+    AS product_partition_count,
+  (SELECT count(*)::integer
+   FROM canonical_v2_staging.product_query_result_serving_records
+   WHERE product_query_result_serving_record_id = ${
+      stagingRuntime.sqlText(
+        productServingRecord
+          .product_query_result_serving_record_id,
+      )
+    })
+    AS product_serving_record_count,
   pointer.generation::integer AS active_pointer_generation,
   pointer.pointer_id AS active_pointer_id,
   pointer.corpus_release_id AS active_corpus_release_id,
@@ -486,10 +586,134 @@ $candidate_conflict_proof$;`);
       'Metsera conflict proof changed durable staging state.',
     );
   }
+  const releaseProof = stagingRuntime.runSql(`
+CREATE TEMP TABLE metsera_product_release_proof(
+  writer_receipt jsonb NOT NULL,
+  import_receipt jsonb NOT NULL,
+  inactive_query_is_null boolean NOT NULL,
+  product_partition_count integer NOT NULL,
+  product_serving_record_count integer NOT NULL
+) ON COMMIT DROP;
+
+DO $metsera_product_release_proof$
+DECLARE
+  writer_result jsonb;
+  import_result jsonb;
+  inactive_page jsonb;
+BEGIN
+  writer_result := public.canonical_v2_write(
+    'staging',
+    'PRODUCT_RESULT_CANDIDATE_RUN',
+    'METSERA_EXCLUSIVITY_PRODUCT_RESULT_P8_V1',
+    ${stagingRuntime.sqlText(candidateDryRun.inputDigest)},
+    ${stagingRuntime.sqlJson(candidateWriteSet)},
+    '[]'::jsonb,
+    '[]'::jsonb,
+    ${stagingRuntime.sqlJson(candidateCommit.receipt)}
+  );
+  import_result := public.canonical_v2_import_candidate_release(
+    'staging',
+    ${stagingRuntime.sqlJson(candidateReleaseImportPlan)}
+  );
+  inactive_page := public.canonical_v2_active_product_query_results(
+    'staging',
+    ${stagingRuntime.sqlText(
+      combinedPilotBaseRelease.manifest.serving_namespace_id,
+    )},
+    ${stagingRuntime.sqlText(
+      combinedPilotBaseRelease.manifest.corpus_release_id,
+    )},
+    ${stagingRuntime.sqlText(
+      productResult.product_query_definition_id,
+    )},
+    NULL,
+    20
+  );
+  IF writer_result->>'replayed' IS DISTINCT FROM 'false'
+    OR import_result->>'schema_version'
+      IS DISTINCT FROM 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V7'
+    OR import_result->>'import_state'
+      IS DISTINCT FROM 'IMPORTED_COMPLETE'
+    OR inactive_page IS NOT NULL
+    OR (
+      SELECT count(*)
+      FROM canonical_v2_staging.product_query_result_release_partitions
+      WHERE product_query_result_release_partition_manifest_id = ${
+        stagingRuntime.sqlText(
+          productReleasePartition
+            .product_query_result_release_partition_manifest
+            .product_query_result_release_partition_manifest_id,
+        )
+      }
+    ) <> 1
+    OR (
+      SELECT count(*)
+      FROM canonical_v2_staging.product_query_result_serving_records
+      WHERE product_query_result_serving_record_id = ${
+        stagingRuntime.sqlText(
+          productServingRecord
+            .product_query_result_serving_record_id,
+        )
+      }
+    ) <> 1
+  THEN
+    RAISE EXCEPTION 'Metsera Product release proof failed closed';
+  END IF;
+  INSERT INTO metsera_product_release_proof
+  SELECT
+    writer_result,
+    import_result,
+    inactive_page IS NULL,
+    (
+      SELECT count(*)::integer
+      FROM canonical_v2_staging.product_query_result_release_partitions
+      WHERE product_query_result_release_partition_manifest_id = ${
+        stagingRuntime.sqlText(
+          productReleasePartition
+            .product_query_result_release_partition_manifest
+            .product_query_result_release_partition_manifest_id,
+        )
+      }
+    ),
+    (
+      SELECT count(*)::integer
+      FROM canonical_v2_staging.product_query_result_serving_records
+      WHERE product_query_result_serving_record_id = ${
+        stagingRuntime.sqlText(
+          productServingRecord
+            .product_query_result_serving_record_id,
+        )
+      }
+    );
+END
+$metsera_product_release_proof$;
+
+SELECT * FROM metsera_product_release_proof;
+`)[0];
+  const stagingAfterReleaseProof = stagingRuntime.runSql(
+    stagingStateSql,
+    { readOnly: true },
+  )[0];
+  if (
+    JSON.stringify(stagingAfterReleaseProof)
+      !== JSON.stringify(stagingBefore)
+    || releaseProof.writer_receipt?.replayed !== false
+    || releaseProof.import_receipt?.schema_version
+      !== 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V7'
+    || releaseProof.import_receipt?.import_state
+      !== 'IMPORTED_COMPLETE'
+    || releaseProof.inactive_query_is_null !== true
+    || releaseProof.product_partition_count !== 1
+    || releaseProof.product_serving_record_count !== 1
+  ) {
+    throw new Error(
+      'Metsera Product release proof changed durable staging state.',
+    );
+  }
   const sourceReader =
     compileMetseraExclusivityProductSourceReader(
       candidateCommit.validation.candidateRecord,
-      activeReleaseResolution(stagingAfterConflictProof),
+      activeReleaseResolution(stagingAfterReleaseProof),
       currentM1Permission(),
     );
   if (
@@ -570,6 +794,23 @@ $candidate_conflict_proof$;`);
     staging_candidate_write_rolled_back: true,
     staging_exact_replay_no_op: true,
     staging_conflicting_replay_rejected: true,
+    candidate_release_import_plan_id:
+      candidateReleaseImportPlan.candidate_release_import_plan_id,
+    product_query_result_release_partition_manifest_id:
+      productReleasePartition
+        .product_query_result_release_partition_manifest
+        .product_query_result_release_partition_manifest_id,
+    product_query_result_serving_record_id:
+      productServingRecord.product_query_result_serving_record_id,
+    product_release_import_receipt_schema:
+      releaseProof.import_receipt.schema_version,
+    product_release_import_state:
+      releaseProof.import_receipt.import_state,
+    product_active_query_before_activation:
+      releaseProof.inactive_query_is_null
+        ? 'INACTIVE_FAIL_CLOSED'
+        : 'INVALIDLY_AVAILABLE',
+    product_release_proof_rolled_back: true,
     staging_candidate_result_count_before:
       stagingBefore.candidate_result_count,
     staging_candidate_result_count_after:
