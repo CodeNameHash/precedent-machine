@@ -16,7 +16,7 @@ const FUNCTIONS = Object.freeze([
     output: 'step0b-canonical-writer-by-contract.sql',
     source: 'supabase/canonical-v2-foundation.sql',
     marker: 'CREATE OR REPLACE FUNCTION public.canonical_v2_write(',
-    digest: 'a10e85b3eb596bfafd3d43d9e0198deaa973a5918377359fa2b512564371dd90',
+    digest: 'c248c7c14df38f1a8bfcbac507f553599a9284c31820d18c2d01df5c8a736f2c',
     dependencies: Object.freeze([
       Object.freeze({
         source: 'supabase/canonical-v2-foundation.sql',
@@ -36,7 +36,7 @@ const FUNCTIONS = Object.freeze([
       Object.freeze({
         source: 'supabase/canonical-v2-foundation.sql',
         marker: 'CREATE OR REPLACE FUNCTION canonical_v2_staging.validate_agreement_candidate_product_carrier(',
-        digest: '2eb76fd15f1116b7f7ee1212e1ea54ae37046f0afb05fcf8f9598f14cec9deb1',
+        digest: 'a9a5bb27f403d3a566a9f608ed8a0df74fda5c35416d89657e62db2518b45e9a',
       }),
     ]),
     suffix: `REVOKE ALL ON FUNCTION canonical_v2_staging.canonical_json(jsonb)
@@ -52,7 +52,7 @@ REVOKE ALL ON FUNCTION canonical_v2_staging.validate_agreement_candidate_product
     output: 'step0c-candidate-import-by-contract.sql',
     source: 'supabase/canonical-v2-serving.sql',
     marker: 'CREATE OR REPLACE FUNCTION public.canonical_v2_import_candidate_release(',
-    digest: 'fafcd327938eb00ec41b212d2863878932b0ff2a627c95b5fa8c01c2ae853f1a',
+    digest: '5a41c1aa8555d297f1bb2c96bc80b04e538536b7771d6c15617bdd7a259a7a5d',
   },
   {
     output: 'step0d-candidate-activation-by-contract.sql',

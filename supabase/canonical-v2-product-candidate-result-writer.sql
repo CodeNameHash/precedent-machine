@@ -348,7 +348,40 @@ BEGIN
     OR u->>'authority_state' IS DISTINCT FROM 'NOT_GRANTED'
     OR (u->'surface_bindings')-ARRAY['COMPARE','CORPUS_CONTEXT','QUERY','REVIEW']::text[] <> '{}'::jsonb
     OR NOT u->'surface_bindings' ?& ARRAY['COMPARE','CORPUS_CONTEXT','QUERY','REVIEW']
-    OR EXISTS (SELECT 1 FROM jsonb_each(u->'surface_bindings') AS h(name,value) WHERE value->>'surface' IS DISTINCT FROM name OR value->>'product_query_result_identity' IS DISTINCT FROM r->>'product_query_result_identity' OR value->>'product_result_presentation_id' IS DISTINCT FROM p->>'product_result_presentation_id' OR value->>'exact_detail_action' IS DISTINCT FROM action OR value->>'authority_state' IS DISTINCT FROM 'NOT_GRANTED')
+    OR EXISTS (
+      SELECT 1
+      FROM jsonb_each(u->'surface_bindings') AS h(name,value)
+      WHERE jsonb_typeof(value) IS DISTINCT FROM 'object'
+        OR value - ARRAY[
+          'surface','product_query_definition_id','product_query_result_identity',
+          'domain_result_identity','product_result_presentation_id',
+          'candidate_release_manifest_id','candidate_release_manifest_payload_digest',
+          'exact_citation_target_identity','exact_detail_action',
+          'renderer_neutral_content_identity','source_document_identity',
+          'source_evidence_identity','authority_state'
+        ]::text[] <> '{}'::jsonb
+        OR NOT value ?& ARRAY[
+          'surface','product_query_definition_id','product_query_result_identity',
+          'domain_result_identity','product_result_presentation_id',
+          'candidate_release_manifest_id','candidate_release_manifest_payload_digest',
+          'exact_citation_target_identity','exact_detail_action',
+          'renderer_neutral_content_identity','source_document_identity',
+          'source_evidence_identity','authority_state'
+        ]
+        OR value->>'surface' IS DISTINCT FROM name
+        OR value->>'product_query_definition_id' IS DISTINCT FROM q->>'query_definition_id'
+        OR value->>'product_query_result_identity' IS DISTINCT FROM r->>'product_query_result_identity'
+        OR value->>'domain_result_identity' IS DISTINCT FROM r->>'domain_result_identity'
+        OR value->>'product_result_presentation_id' IS DISTINCT FROM p->>'product_result_presentation_id'
+        OR value->>'candidate_release_manifest_id' IS DISTINCT FROM r->>'candidate_release_manifest_id'
+        OR value->>'candidate_release_manifest_payload_digest' IS DISTINCT FROM r->>'candidate_release_manifest_payload_digest'
+        OR value->>'exact_citation_target_identity' IS DISTINCT FROM r->'exact_citation'->>'citation_target_identity'
+        OR value->>'exact_detail_action' IS DISTINCT FROM action
+        OR value->>'renderer_neutral_content_identity' IS DISTINCT FROM u->>'renderer_neutral_content_identity'
+        OR value->>'source_document_identity' IS DISTINCT FROM r->'exact_citation'->>'source_document_identity'
+        OR value->>'source_evidence_identity' IS DISTINCT FROM r->'exact_citation'->>'source_evidence_identity'
+        OR value->>'authority_state' IS DISTINCT FROM 'NOT_GRANTED'
+    )
   THEN RAISE EXCEPTION 'invalid SQL-native Agreement candidate Product materialisation' USING ERRCODE = '23514'; END IF;
 
   IF v->>'schema_version' IS DISTINCT FROM 'AGREEMENT_CANDIDATE_PRODUCT_EVALUATION_EVIDENCE/V1'

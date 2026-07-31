@@ -4,7 +4,7 @@ const test = require('node:test');
 
 const RUNNER = 'scripts/canonical-v2-staging-agreement-product-writer-p8.mjs';
 const ALLOWLIST =
-  '.github/phase-allowlists/wp-p8-agreement-product-writer-hostile-staging-v1.json';
+  '.github/phase-allowlists/wp-p8-stage4-agreement-surface-sql-parity-v1.json';
 const source = fs.readFileSync(RUNNER, 'utf8');
 
 test('P8 hostile writer proof is linked only to isolated staging', () => {
@@ -39,6 +39,20 @@ test('P8 hostile calls recompute identities then reject every semantic and termi
     'ORDERING',
     'PRESENTATION',
     'SURFACES',
+    'SURFACE_QUERY_DEFINITION_ID',
+    'SURFACE_RESULT_IDENTITY',
+    'SURFACE_DOMAIN_IDENTITY',
+    'SURFACE_PRESENTATION_ID',
+    'SURFACE_RELEASE_ID',
+    'SURFACE_RELEASE_DIGEST',
+    'SURFACE_CITATION_TARGET',
+    'SURFACE_DETAIL_ACTION',
+    'SURFACE_RENDERER_IDENTITY',
+    'SURFACE_SOURCE_DOCUMENT',
+    'SURFACE_SOURCE_EVIDENCE',
+    'SURFACE_AUTHORITY',
+    'SURFACE_EXTRA_FIELD',
+    'SURFACE_MISSING_FIELD',
     'EVIDENCE_RELEASE',
     'TERMINAL_BODY',
     'TERMINAL_SUBJECT',
@@ -56,6 +70,7 @@ test('P8 hostile calls recompute identities then reject every semantic and termi
     'recomputeOrdering',
     'recomputePresentation',
     'recomputeSurfaces',
+    'recomputeSurfaceRecordId',
     'recomputeCarrier',
     'buildCanonicalWriteInputDigest',
     'buildCanonicalWriteReceipt',
@@ -81,10 +96,20 @@ test('P8 hostile phase boundary owns only its staging proof, test and allowlist'
   const allowlist = JSON.parse(fs.readFileSync(ALLOWLIST, 'utf8'));
   assert.equal(
     allowlist.phase,
-    'WP-P8-AGREEMENT-PRODUCT-WRITER-HOSTILE-STAGING-V1',
+    'WP-P8-STAGE4-AGREEMENT-SURFACE-SQL-PARITY-V1',
   );
-  assert.deepEqual(allowlist.allowed, [ALLOWLIST, RUNNER,
-    'tests/canonical-v2-staging-agreement-product-writer-p8.test.js']);
+  assert.deepEqual(allowlist.allowed, [
+    ALLOWLIST,
+    'scripts/canonical-v2-optiona-authority-partition.mjs',
+    'scripts/canonical-v2-staging-agreement-product-writer-p8.mjs',
+    'scripts/canonical-v2-staging-schema.mjs',
+    'sql/optionA/step0b-canonical-writer-by-contract.sql',
+    'supabase/canonical-v2-foundation.sql',
+    'supabase/canonical-v2-product-candidate-result-writer.sql',
+    'tests/canonical-v2-agreement-writer-sql-native-validator.test.js',
+    'tests/canonical-v2-product-candidate-result-writer.test.js',
+    'tests/canonical-v2-staging-agreement-product-writer-p8.test.js',
+  ]);
   assert.match(allowlist.note, /rollback transaction/i);
   assert.match(allowlist.note, /Production is not queried or modified/);
 });

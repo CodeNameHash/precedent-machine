@@ -1,0 +1,27 @@
+{
+  "phase": "WP-P8-STAGE4-AGREEMENT-SURFACE-SQL-PARITY-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p8-stage4-agreement-surface-sql-parity-v1.json",
+    "scripts/canonical-v2-optiona-authority-partition.mjs",
+    "scripts/canonical-v2-staging-agreement-product-writer-p8.mjs",
+    "scripts/canonical-v2-staging-schema.mjs",
+    "sql/optionA/step0b-canonical-writer-by-contract.sql",
+    "supabase/canonical-v2-foundation.sql",
+    "supabase/canonical-v2-product-candidate-result-writer.sql",
+    "tests/canonical-v2-agreement-writer-sql-native-validator.test.js",
+    "tests/canonical-v2-product-candidate-result-writer.test.js",
+    "tests/canonical-v2-staging-agreement-product-writer-p8.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "pages/**",
+    "public/**",
+    "supabase/migrations/**",
+    "supabase/canonical-v2-serving.sql"
+  ],
+  "note": "Closes the Stage 4 Agreement result-surface SQL parity defect. Each rollback transaction rejects a changed or extra surface leaf before DML. Production is not queried or modified."
+}

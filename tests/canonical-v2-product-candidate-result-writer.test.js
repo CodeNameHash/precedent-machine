@@ -487,6 +487,28 @@ test('keeps SQL staging-only and invokes Agreement validation', () => {
   );
 });
 
+test('normalises the validated Process carrier into the signed candidate record', () => {
+  const foundation = fs.readFileSync(
+    path.join(ROOT, 'supabase/canonical-v2-foundation.sql'),
+    'utf8',
+  );
+  const processStart = foundation.indexOf(
+    "IF adapter_identifier = 'PROCESS_PHRASEBOOK_PRODUCT_CHAIN' THEN",
+  );
+  const normalisation = foundation.indexOf(
+    "'schema_version', 'PRODUCT_CANDIDATE_RESULT_RECORD/V1'",
+    processStart,
+  );
+  const insert = foundation.indexOf(
+    'INSERT INTO canonical_v2_staging.product_candidate_results', normalisation,
+  );
+  assert.ok(processStart !== -1 && normalisation > processStart && insert > normalisation);
+  const record = foundation.slice(normalisation, insert);
+  assert.match(record, /'complete_write_set', p_write_set/);
+  assert.match(record, /'process_phrasebook_result_identity'/);
+  assert.match(record, /content_id\(\s*'PRODUCT_CANDIDATE_RESULT_RECORD\/V1', p_write_set/);
+});
+
 test('uses the exact bounded phase allowlist', () => {
   const allowlist = JSON.parse(fs.readFileSync(
     path.join(

@@ -1115,7 +1115,40 @@ BEGIN
     OR u->>'authority_state' IS DISTINCT FROM 'NOT_GRANTED'
     OR (u->'surface_bindings')-ARRAY['COMPARE','CORPUS_CONTEXT','QUERY','REVIEW']::text[] <> '{}'::jsonb
     OR NOT u->'surface_bindings' ?& ARRAY['COMPARE','CORPUS_CONTEXT','QUERY','REVIEW']
-    OR EXISTS (SELECT 1 FROM jsonb_each(u->'surface_bindings') AS h(name,value) WHERE value->>'surface' IS DISTINCT FROM name OR value->>'product_query_result_identity' IS DISTINCT FROM r->>'product_query_result_identity' OR value->>'product_result_presentation_id' IS DISTINCT FROM p->>'product_result_presentation_id' OR value->>'exact_detail_action' IS DISTINCT FROM action OR value->>'authority_state' IS DISTINCT FROM 'NOT_GRANTED')
+    OR EXISTS (
+      SELECT 1
+      FROM jsonb_each(u->'surface_bindings') AS h(name,value)
+      WHERE jsonb_typeof(value) IS DISTINCT FROM 'object'
+        OR value - ARRAY[
+          'surface','product_query_definition_id','product_query_result_identity',
+          'domain_result_identity','product_result_presentation_id',
+          'candidate_release_manifest_id','candidate_release_manifest_payload_digest',
+          'exact_citation_target_identity','exact_detail_action',
+          'renderer_neutral_content_identity','source_document_identity',
+          'source_evidence_identity','authority_state'
+        ]::text[] <> '{}'::jsonb
+        OR NOT value ?& ARRAY[
+          'surface','product_query_definition_id','product_query_result_identity',
+          'domain_result_identity','product_result_presentation_id',
+          'candidate_release_manifest_id','candidate_release_manifest_payload_digest',
+          'exact_citation_target_identity','exact_detail_action',
+          'renderer_neutral_content_identity','source_document_identity',
+          'source_evidence_identity','authority_state'
+        ]
+        OR value->>'surface' IS DISTINCT FROM name
+        OR value->>'product_query_definition_id' IS DISTINCT FROM q->>'query_definition_id'
+        OR value->>'product_query_result_identity' IS DISTINCT FROM r->>'product_query_result_identity'
+        OR value->>'domain_result_identity' IS DISTINCT FROM r->>'domain_result_identity'
+        OR value->>'product_result_presentation_id' IS DISTINCT FROM p->>'product_result_presentation_id'
+        OR value->>'candidate_release_manifest_id' IS DISTINCT FROM r->>'candidate_release_manifest_id'
+        OR value->>'candidate_release_manifest_payload_digest' IS DISTINCT FROM r->>'candidate_release_manifest_payload_digest'
+        OR value->>'exact_citation_target_identity' IS DISTINCT FROM r->'exact_citation'->>'citation_target_identity'
+        OR value->>'exact_detail_action' IS DISTINCT FROM action
+        OR value->>'renderer_neutral_content_identity' IS DISTINCT FROM u->>'renderer_neutral_content_identity'
+        OR value->>'source_document_identity' IS DISTINCT FROM r->'exact_citation'->>'source_document_identity'
+        OR value->>'source_evidence_identity' IS DISTINCT FROM r->'exact_citation'->>'source_evidence_identity'
+        OR value->>'authority_state' IS DISTINCT FROM 'NOT_GRANTED'
+    )
   THEN RAISE EXCEPTION 'invalid SQL-native Agreement candidate Product materialisation' USING ERRCODE = '23514'; END IF;
 
   IF v->>'schema_version' IS DISTINCT FROM 'AGREEMENT_CANDIDATE_PRODUCT_EVALUATION_EVIDENCE/V1'
@@ -1716,13 +1749,38 @@ BEGIN
         USING ERRCODE = '23514';
     END IF;
 
-    item_id := CASE
-      WHEN adapter_identifier = 'AGREEMENT_CANDIDATE_ENVELOPE'
-        THEN p_write_set->>'candidate_product_result_id'
-      ELSE canonical_v2_staging.content_id(
-        'PRODUCT_CANDIDATE_RESULT_RECORD/V1', p_write_set
-      )
-    END;
+    IF adapter_identifier = 'PROCESS_PHRASEBOOK_PRODUCT_CHAIN' THEN
+      p_write_set := jsonb_build_object(
+        'schema_version', 'PRODUCT_CANDIDATE_RESULT_RECORD/V1',
+        'candidate_product_result_id', canonical_v2_staging.content_id(
+          'PRODUCT_CANDIDATE_RESULT_RECORD/V1', p_write_set
+        ),
+        'writer_contract_stable_id', 'PRODUCT_CANDIDATE_RESULT_WRITER',
+        'writer_contract_version', 1,
+        'operation', 'PRODUCT_RESULT_CANDIDATE_RUN',
+        'candidate_release_manifest_id', p_write_set->'candidate_release_binding'
+          ->>'candidate_release_manifest_id',
+        'candidate_release_manifest_payload_digest', p_write_set
+          ->'candidate_release_binding'->>'candidate_release_manifest_payload_digest',
+        'corpus_release_id', p_write_set->'candidate_release_binding'
+          ->>'corpus_release_id',
+        'product_query_definition_id', p_write_set->'product_row'
+          ->'product_query_ir'->>'query_definition_id',
+        'product_query_result_identity', p_write_set->'product_row'
+          ->'shared_row_adapter_receipt'->'product_query_result'
+            ->>'product_query_result_identity',
+        'domain_result_identity', p_write_set->'product_row'
+          ->'shared_row_adapter_receipt'->'product_query_result'
+            ->>'domain_result_identity',
+        'process_phrasebook_result_identity', p_write_set
+          ->'process_pilot_materialisation_receipt'
+            ->>'process_phrasebook_passage_result_id',
+        'candidate_state', 'CANDIDATE_NOT_ACTIVE',
+        'authority_state', 'NOT_GRANTED',
+        'complete_write_set', p_write_set
+      );
+    END IF;
+    item_id := p_write_set->>'candidate_product_result_id';
     SELECT canonical_payload_digest INTO existing_digest
     FROM canonical_v2_staging.product_candidate_results
     WHERE candidate_product_result_id = item_id;

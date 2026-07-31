@@ -54,6 +54,10 @@ test('the validator covers each hostile Agreement drift boundary', () => {
   assert.match(implementation, /PRODUCT_FIELD_CATALOGUE_MANIFEST_PAYLOAD\/V1/);
   assert.match(implementation, /filter_sentence' IS DISTINCT FROM jsonb_build_object/);
   assert.match(implementation, /surface_state' IS DISTINCT FROM 'VALIDATED_NOT_SERVED'/);
+  assert.match(implementation, /value->>'source_document_identity' IS DISTINCT FROM r->'exact_citation'/);
+  assert.match(implementation, /value->>'source_evidence_identity' IS DISTINCT FROM r->'exact_citation'/);
+  assert.match(implementation, /value - ARRAY\[/);
+  assert.match(implementation, /renderer_neutral_content_identity' IS DISTINCT FROM u/);
   assert.match(implementation, /terminal_payload_digest/);
   assert.match(implementation, /subject_terminal_payload_digest/);
   assert.match(implementation, /invalid SQL-native Agreement candidate Product materialisation/);

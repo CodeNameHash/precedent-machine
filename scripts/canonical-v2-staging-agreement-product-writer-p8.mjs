@@ -241,6 +241,15 @@ function recomputeSurfaces(surfaces) {
   );
 }
 
+function recomputeSurfaceRecordId(surfaces) {
+  const body = clone(surfaces);
+  delete body.schema_version;
+  delete body.product_result_surface_binding_id;
+  surfaces.product_result_surface_binding_id = contentId(
+    'PRODUCT_RESULT_SURFACE_BINDING/V1', body,
+  );
+}
+
 function recomputeCarrier(writeSet, { preserveTerminalShape = false } = {}) {
   const carrier = writeSet.domain_carrier;
   const envelope = carrier.agreement_candidate_envelope;
@@ -384,6 +393,21 @@ function hostileWriteSet(fixture, mutation) {
       materialisation.product_result_surfaces.surface_state =
         'HOSTILE_SERVED';
       break;
+    case 'SURFACE_QUERY_DEFINITION_ID':
+    case 'SURFACE_RESULT_IDENTITY':
+    case 'SURFACE_DOMAIN_IDENTITY':
+    case 'SURFACE_PRESENTATION_ID':
+    case 'SURFACE_RELEASE_ID':
+    case 'SURFACE_RELEASE_DIGEST':
+    case 'SURFACE_CITATION_TARGET':
+    case 'SURFACE_DETAIL_ACTION':
+    case 'SURFACE_RENDERER_IDENTITY':
+    case 'SURFACE_SOURCE_DOCUMENT':
+    case 'SURFACE_SOURCE_EVIDENCE':
+    case 'SURFACE_AUTHORITY':
+    case 'SURFACE_EXTRA_FIELD':
+    case 'SURFACE_MISSING_FIELD':
+      break;
     case 'EVIDENCE_RELEASE':
       materialisation.candidate_release_binding.release_state = 'ACTIVE';
       break;
@@ -443,6 +467,40 @@ function hostileWriteSet(fixture, mutation) {
   }
   recomputePresentation(refreshed.product_result_presentation);
   recomputeSurfaces(refreshed.product_result_surfaces);
+  const compare = refreshed.product_result_surfaces.surface_bindings.COMPARE;
+  switch (mutation) {
+    case 'SURFACE_QUERY_DEFINITION_ID':
+      compare.product_query_definition_id = '0'.repeat(64); break;
+    case 'SURFACE_RESULT_IDENTITY':
+      compare.product_query_result_identity = '0'.repeat(64); break;
+    case 'SURFACE_DOMAIN_IDENTITY':
+      compare.domain_result_identity = '0'.repeat(64); break;
+    case 'SURFACE_PRESENTATION_ID':
+      compare.product_result_presentation_id = '0'.repeat(64); break;
+    case 'SURFACE_RELEASE_ID':
+      compare.candidate_release_manifest_id = '0'.repeat(64); break;
+    case 'SURFACE_RELEASE_DIGEST':
+      compare.candidate_release_manifest_payload_digest = '0'.repeat(64); break;
+    case 'SURFACE_CITATION_TARGET':
+      compare.exact_citation_target_identity = '0'.repeat(64); break;
+    case 'SURFACE_DETAIL_ACTION':
+      compare.exact_detail_action = 'HOSTILE_DETAIL_ACTION'; break;
+    case 'SURFACE_RENDERER_IDENTITY':
+      compare.renderer_neutral_content_identity = '0'.repeat(64); break;
+    case 'SURFACE_SOURCE_DOCUMENT':
+      compare.source_document_identity = '0'.repeat(64); break;
+    case 'SURFACE_SOURCE_EVIDENCE':
+      compare.source_evidence_identity = '0'.repeat(64); break;
+    case 'SURFACE_AUTHORITY':
+      compare.authority_state = 'HOSTILE_GRANTED'; break;
+    case 'SURFACE_EXTRA_FIELD':
+      compare.hostile_extra = true; break;
+    case 'SURFACE_MISSING_FIELD':
+      delete compare.source_evidence_identity; break;
+    default:
+      break;
+  }
+  recomputeSurfaceRecordId(refreshed.product_result_surfaces);
   const materialisationBody = clone(refreshed);
   delete materialisationBody.schema_version;
   delete materialisationBody.agreement_candidate_product_materialisation_id;
@@ -657,6 +715,20 @@ async function main() {
     'ORDERING',
     'PRESENTATION',
     'SURFACES',
+    'SURFACE_QUERY_DEFINITION_ID',
+    'SURFACE_RESULT_IDENTITY',
+    'SURFACE_DOMAIN_IDENTITY',
+    'SURFACE_PRESENTATION_ID',
+    'SURFACE_RELEASE_ID',
+    'SURFACE_RELEASE_DIGEST',
+    'SURFACE_CITATION_TARGET',
+    'SURFACE_DETAIL_ACTION',
+    'SURFACE_RENDERER_IDENTITY',
+    'SURFACE_SOURCE_DOCUMENT',
+    'SURFACE_SOURCE_EVIDENCE',
+    'SURFACE_AUTHORITY',
+    'SURFACE_EXTRA_FIELD',
+    'SURFACE_MISSING_FIELD',
     'EVIDENCE_RELEASE',
     'TERMINAL_BODY',
     'TERMINAL_SUBJECT',
