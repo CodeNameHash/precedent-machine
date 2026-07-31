@@ -489,6 +489,8 @@ async function main() {
     productAuthority.context,
     productAuthority.input,
   );
+  candidateReleaseBinding.product_query_definition_id =
+    productRow.product_query_ir.query_definition_id;
   const productResultSet =
     compileMetseraExclusivityProductResultSet(
       productAdmission,

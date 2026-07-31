@@ -78,12 +78,12 @@ BEGIN
 
   IF i - ARRAY['canonical_contract_input_compilation','compiled_contract_bundle','candidate_release_manifest']::text[] <> '{}'::jsonb
     OR NOT i ?& ARRAY['canonical_contract_input_compilation','compiled_contract_bundle','candidate_release_manifest']
-    OR i->'canonical_contract_input_compilation'->'canonical_bundle_input_identity'->>'root_input_manifest_id' IS DISTINCT FROM '0d74f2f40600863ae474efdaa876215fb752c44463fc5aa0ec8114db61477416'
-    OR i->'canonical_contract_input_compilation'->'canonical_bundle_input_identity'->>'root_input_manifest_payload_digest' IS DISTINCT FROM '4dd9971ff5954b879b5b079e4a154a1175f8c61f3882ef68d02d9e2174df8343'
+    OR i->'canonical_contract_input_compilation'->'canonical_bundle_input_identity'->>'root_input_manifest_id' IS DISTINCT FROM 'adb9f4f0945fb525a79c1be9cdec6be578e28c34688e89991700e686bc4ee07f'
+    OR i->'canonical_contract_input_compilation'->'canonical_bundle_input_identity'->>'root_input_manifest_payload_digest' IS DISTINCT FROM '27adc0c72381db5b2a48679a28625a56fd1dd6ab5659fc32d4c29d89a32f4702'
     OR b->>'schema_version' IS DISTINCT FROM 'CANONICAL_CONTRACT_BUNDLE_COMPILATION/V1'
-    OR b->>'contract_bundle_id' IS DISTINCT FROM 'd222eba830fefad4772e358041e36f8818dbf227e4c7e13c77f4228514a37d8e'
-    OR b->>'contract_bundle_digest' IS DISTINCT FROM 'a953a215f9ff4cf94a204580b3b9a2b559fa531d1f3be16a3e787032257e87b3'
-    OR b->>'canonical_payload_digest' IS DISTINCT FROM '36762abe8f4dd666df0d9aa66760d8c4e41971fab633764108ee54f73d5c8d73'
+    OR b->>'contract_bundle_id' IS DISTINCT FROM '901d45871b90d0677dd3fdfa6b718cba1795c5393cbbe91412e05e9ea3f7bd76'
+    OR b->>'contract_bundle_digest' IS DISTINCT FROM '3b24070932af4ed946eb72b41fbaf9d9e77dd0eaa191af4dedbaeb7fe3f8f632'
+    OR b->>'canonical_payload_digest' IS DISTINCT FROM 'b8c1d79b6f8e9e7d403246804d52f10c5b6976a8928ce7bb95ae6a3687045a9d'
     OR b->>'canonical_payload_digest' IS DISTINCT FROM canonical_v2_staging.content_id('CANONICAL_CONTRACT_BUNDLE_COMPILATION_PAYLOAD/V1',b-ARRAY['schema_version','canonical_payload_digest','disposition']::text[])
     OR b->'compile_report'->>'status' IS DISTINCT FROM 'PASS'
     OR b->'dependency_cycle_report'->>'status' IS DISTINCT FROM 'PASS'
