@@ -19,14 +19,7 @@ const {
 const { TRUSTED_PUBLIC_KEY_REGISTRY } = require('../lib/programme-gates/registry');
 
 const ROOT = path.resolve(import.meta.dirname, '..');
-const SPEC_PATHS = Object.freeze([
-  'docs/codex-program/specification-manifest.json',
-  'docs/CODEX-PROGRAM.md',
-  'docs/codex-program/programme-gates.yaml',
-  'docs/codex-program/bootstrap-acceptance-source.json',
-  'docs/codex-program/canonical-contracts.md',
-  'docs/codex-program/adversarial-tests.md',
-]);
+const SPECIFICATION_MANIFEST_PATH = 'docs/codex-program/specification-manifest.json';
 const CONTROLLER_KEY_ID = 'PROGRAMME_GATE_REVIEW_CONTROLLER_2026_07';
 const CODEX_PATH = '/opt/homebrew/bin/codex';
 
@@ -97,8 +90,13 @@ function specificationRoot() {
   return match[1];
 }
 
+function specificationPaths() {
+  const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, SPECIFICATION_MANIFEST_PATH), 'utf8'));
+  return [SPECIFICATION_MANIFEST_PATH, ...manifest.files.map(({ path: file }) => file)];
+}
+
 function sourceDigest(directory) {
-  return domainDigest('PROGRAMME_GATE_COLD_REVIEW_SOURCE_SET/V1', SPEC_PATHS.map((file) => ({
+  return domainDigest('PROGRAMME_GATE_COLD_REVIEW_SOURCE_SET/V1', specificationPaths().map((file) => ({
     path: file,
     sha256: sha256(fs.readFileSync(path.join(directory, file))),
   })));
@@ -135,7 +133,7 @@ function protectedKey() {
 }
 
 function copySpecification(target) {
-  for (const relative of SPEC_PATHS) {
+  for (const relative of specificationPaths()) {
     const destination = path.join(target, relative);
     fs.mkdirSync(path.dirname(destination), { recursive: true });
     fs.copyFileSync(path.join(ROOT, relative), destination);
@@ -182,8 +180,8 @@ async function runLane({ lane, runRoot, exactSpecificationRoot, privateKey, comm
     lc_all: 'en_US.UTF-8',
     term: 'dumb',
   };
-  const manifestBytes = fs.readFileSync(path.join(ROOT, SPEC_PATHS[0]));
-  const orderedSpecificationMembers = SPEC_PATHS.map((relativePath, index) => {
+  const manifestBytes = fs.readFileSync(path.join(ROOT, SPECIFICATION_MANIFEST_PATH));
+  const orderedSpecificationMembers = specificationPaths().map((relativePath, index) => {
     const bytes = fs.readFileSync(path.join(ROOT, relativePath));
     return {
       order: index + 1,

@@ -1,7 +1,10 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
+import { createRequire } from 'node:module';
 import YAML from 'yaml';
 
+const require = createRequire(import.meta.url);
+const { specificationRootFromMembers } = require('../lib/programme-gates/review-controller');
 const manifestPath = 'docs/codex-program/specification-manifest.json';
 const files = [
   'docs/CODEX-PROGRAM.md',
@@ -55,6 +58,20 @@ function same(left, right) {
   return JSON.stringify(left) === JSON.stringify(right);
 }
 
+function specificationMembers(committed) {
+  const paths = [manifestPath, ...committed.files.map(({ path: file }) => file)];
+  return paths.map((file, index) => {
+    const bytes = fs.readFileSync(file);
+    return {
+      order: index + 1,
+      path: file,
+      byte_length: bytes.length,
+      payload_digest: sha256(bytes),
+      source_bytes_base64: bytes.toString('base64'),
+    };
+  });
+}
+
 const parsed = strictYaml('docs/codex-program/programme-gates.yaml');
 const registry = parsed.programme_gate_registry;
 if (registry?.schema !== 'canonical-programme-gates/v2') {
@@ -104,5 +121,7 @@ if (process.argv.includes('--write')) {
 } else {
   const committed = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
   if (!same(committed, generated)) fail('Specification drift manifest is stale');
-  console.log(`CODEX programme specification PASS ${sha256(JSON.stringify(generated))}`);
+  console.log(`CODEX programme specification PASS ${specificationRootFromMembers(
+    specificationMembers(committed),
+  )}`);
 }
