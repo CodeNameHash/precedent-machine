@@ -17,6 +17,8 @@ const {
   buildLandosCandidateReleaseFixture,
 } = require('../__fixtures__/canonical-v2/landos-candidate-release');
 const {
+  AUTHORITY_LIMITS: PRODUCT_ADMISSION_AUTHORITY_LIMITS,
+  METSERA_PRODUCT_ADMISSION_SCHEMA,
   compileMetseraExclusivityProductAdmission,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-admission');
 const {
@@ -111,10 +113,72 @@ function rehashContext(value) {
   return value;
 }
 
+function syntheticProductAdmission(input, context) {
+  const provisionalProcess = buildMetseraAuthorityBoundProcessAdmission({
+    authority_context: context,
+    product_query_definition_id: '0'.repeat(64),
+  });
+  const checkedProcessEvidence = {
+    result_identity: provisionalProcess.process_admission_input.result_identity,
+    narration_revision:
+      provisionalProcess.process_admission_input.narration_revision,
+    predicate_witness_revision:
+      provisionalProcess.process_admission_input.predicate_witness_revision,
+    atomic_response_predicate_witness_revision:
+      provisionalProcess.process_admission_input
+        .atomic_response_predicate_witness_revision,
+    result_input_lineage:
+      provisionalProcess.process_admission_input.result_input_lineage,
+    matched_passage_preview:
+      provisionalProcess.process_admission_input.matched_passage_preview,
+    exact_detail_reference:
+      provisionalProcess.process_admission_input.exact_detail_reference,
+  };
+  const query = compileMetseraExclusivityProductQueryFromCheckedProcessEvidence({
+    checked_process_admission_evidence: checkedProcessEvidence,
+    candidate_release_binding: {
+      candidate_release_manifest_id:
+        context.candidate_release_manifest.candidate_release_manifest_id,
+      candidate_release_manifest_payload_digest:
+        context.candidate_release_manifest.canonical_payload_digest,
+      corpus_release_id: context.candidate_release_manifest.corpus_release_id,
+    },
+    pilot_product_authority_context: context,
+    pilot_product_authority_input: input,
+  });
+  const syntheticProcess = buildMetseraAuthorityBoundProcessAdmission({
+    authority_context: context,
+    product_query_definition_id: query.query_definition_id,
+  });
+  const body = {
+    schema_version: METSERA_PRODUCT_ADMISSION_SCHEMA,
+    materialisation_receipt_id: 'f'.repeat(64),
+    candidate_release_manifest_id:
+      context.candidate_release_manifest.candidate_release_manifest_id,
+    candidate_release_manifest_payload_digest:
+      context.candidate_release_manifest.canonical_payload_digest,
+    corpus_release_id: null,
+    admission_input: syntheticProcess.process_admission_input,
+    admission_receipt: syntheticProcess.process_admission_receipt,
+    process_phrasebook_admission: null,
+    source_treatment: 'PROCESS_NARRATION_NOT_ACTUAL_DRAFTING',
+    adapter_state: 'VALIDATED_NOT_RELEASE_BOUND',
+    authority_limits: PRODUCT_ADMISSION_AUTHORITY_LIMITS,
+  };
+  return {
+    schema_version: body.schema_version,
+    product_admission_adapter_receipt_id: contentId(
+      METSERA_PRODUCT_ADMISSION_SCHEMA,
+      body,
+    ),
+    ...body,
+  };
+}
+
 test('fails closed without one exact admitted Metsera result', () => {
   assert.throws(
     () => compileMetseraExclusivityProductRow({}),
-    /Process admission state is invalid/,
+    /full materialisation-backed Product admission is invalid/,
   );
   assert.equal(METSERA_PRODUCT_ROW_SCHEMA, 'METSERA_EXCLUSIVITY_PRODUCT_ROW/V1');
 });
@@ -193,6 +257,22 @@ test('rejects a synthetic Process admission that self-asserts a query ID', () =>
     () => compileMetseraExclusivityProductAdmission(syntheticProcess),
     /exact required fields/,
   );
+});
+
+test('direct Product query and row compilers reject a self-consistent synthetic admission', () => {
+  const input = authorityInput();
+  const context = compilePilotProductAuthorityContext(input);
+  const syntheticAdmission = syntheticProductAdmission(input, context);
+
+  for (const compile of [
+    compileMetseraExclusivityProductQuery,
+    compileMetseraExclusivityProductRow,
+  ]) {
+    assert.throws(
+      () => compile(syntheticAdmission, context, input),
+      /real Process materialisation bridge is required/,
+    );
+  }
 });
 
 test('rejects a correctly rehashed authority-context substitution', () => {
