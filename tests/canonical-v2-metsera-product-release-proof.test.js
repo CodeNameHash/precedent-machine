@@ -20,7 +20,9 @@ test('binds the real Metsera Product row to one candidate release', () => {
     source,
     /METSERA_EXCLUSIVITY_CANDIDATE_RELEASE_MANIFEST\/V1/,
   );
-  assert.match(source, /--process-admission/);
+  assert.match(source, /--materialisation-input/);
+  assert.match(source, /--materialisation-receipt/);
+  assert.doesNotMatch(source, /--process-admission/);
   assert.doesNotMatch(source, /validation_receipt_ids/);
   assert.doesNotMatch(source, /compileMetseraExclusivityStagingPilot/);
 });
