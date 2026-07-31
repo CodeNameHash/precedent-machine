@@ -368,6 +368,67 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.candidate_release_correction_dis
   UNIQUE (serving_namespace_id, corpus_release_id, correction_discharge_id)
 );
 
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.product_query_result_release_partitions (
+  product_query_result_release_partition_manifest_id text PRIMARY KEY
+    CHECK (product_query_result_release_partition_manifest_id ~ '^[a-f0-9]{64}$'),
+  candidate_manifest_id text NOT NULL UNIQUE
+    CHECK (candidate_manifest_id ~ '^[a-f0-9]{64}$'),
+  corpus_release_id text NOT NULL UNIQUE
+    REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id),
+  serving_namespace_id text NOT NULL
+    CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
+  candidate_release_import_plan_id text NOT NULL
+    CHECK (candidate_release_import_plan_id ~ '^[a-f0-9]{64}$'),
+  product_query_result_record_count integer NOT NULL
+    CHECK (product_query_result_record_count > 0),
+  product_query_result_record_root text NOT NULL
+    CHECK (product_query_result_record_root ~ '^[a-f0-9]{64}$'),
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text NOT NULL
+    CHECK (canonical_payload_digest ~ '^[a-f0-9]{64}$')
+);
+
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.product_query_result_serving_records (
+  serving_namespace_id text NOT NULL
+    CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
+  corpus_release_id text NOT NULL
+    REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id),
+  candidate_manifest_id text NOT NULL
+    CHECK (candidate_manifest_id ~ '^[a-f0-9]{64}$'),
+  product_query_result_release_partition_manifest_id text NOT NULL
+    REFERENCES canonical_v2_staging.product_query_result_release_partitions(
+      product_query_result_release_partition_manifest_id
+    ),
+  candidate_release_import_plan_id text NOT NULL
+    CHECK (candidate_release_import_plan_id ~ '^[a-f0-9]{64}$'),
+  product_query_result_serving_record_id text NOT NULL
+    CHECK (product_query_result_serving_record_id ~ '^[a-f0-9]{64}$'),
+  product_query_definition_id text NOT NULL
+    CHECK (product_query_definition_id ~ '^[a-f0-9]{64}$'),
+  product_query_result_identity text NOT NULL
+    CHECK (product_query_result_identity ~ '^[a-f0-9]{64}$'),
+  domain_key text NOT NULL,
+  domain_result_identity text NOT NULL
+    CHECK (domain_result_identity ~ '^[a-f0-9]{64}$'),
+  candidate_product_result_id text NOT NULL
+    CHECK (candidate_product_result_id ~ '^[a-f0-9]{64}$'),
+  candidate_product_result_payload_digest text NOT NULL
+    CHECK (candidate_product_result_payload_digest ~ '^[a-f0-9]{64}$'),
+  canonical_payload jsonb NOT NULL,
+  canonical_payload_digest text NOT NULL
+    CHECK (canonical_payload_digest ~ '^[a-f0-9]{64}$'),
+  PRIMARY KEY (
+    serving_namespace_id,
+    corpus_release_id,
+    product_query_result_identity
+  ),
+  UNIQUE (
+    serving_namespace_id,
+    corpus_release_id,
+    product_query_result_serving_record_id
+  )
+);
+
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.candidate_release_import_receipts (
   candidate_manifest_id text PRIMARY KEY CHECK (candidate_manifest_id ~ '^[a-f0-9]{64}$'),
   corpus_release_id text NOT NULL UNIQUE REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id),
@@ -586,6 +647,14 @@ CREATE INDEX IF NOT EXISTS canonical_v2_candidate_release_semantic_graph_lineage
     document_hash,
     canonical_text_id
   );
+CREATE INDEX IF NOT EXISTS canonical_v2_product_query_result_active_page_idx
+  ON canonical_v2_staging.product_query_result_serving_records (
+    serving_namespace_id,
+    corpus_release_id,
+    candidate_release_import_plan_id,
+    product_query_definition_id,
+    product_query_result_identity
+  );
 
 CREATE OR REPLACE FUNCTION canonical_v2_staging.enforce_market_metric_slot_partition()
 RETURNS trigger
@@ -644,6 +713,8 @@ ALTER TABLE canonical_v2_staging.exact_detail_serving_packages ENABLE ROW LEVEL 
 ALTER TABLE canonical_v2_staging.candidate_release_semantic_graphs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.candidate_release_correction_input_seals ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.candidate_release_correction_discharges ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.product_query_result_release_partitions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.product_query_result_serving_records ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.candidate_release_import_receipts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.active_corpus_release_pointer_history ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.active_corpus_release_pointers ENABLE ROW LEVEL SECURITY;
@@ -678,11 +749,22 @@ DECLARE
   import_plan_id text := p_import_plan->>'candidate_release_import_plan_id';
   is_v5 boolean := p_import_plan->>'schema_version' = 'CANDIDATE_RELEASE_IMPORT_PLAN/V5';
   is_v6 boolean := p_import_plan->>'schema_version' = 'CANDIDATE_RELEASE_IMPORT_PLAN/V6';
+  is_v7 boolean := p_import_plan->>'schema_version' = 'CANDIDATE_RELEASE_IMPORT_PLAN/V7';
+  carries_product_partition boolean :=
+    p_import_plan->>'schema_version' = 'CANDIDATE_RELEASE_IMPORT_PLAN/V7';
   carries_incomplete_partition boolean := p_import_plan->>'schema_version' IN (
     'CANDIDATE_RELEASE_IMPORT_PLAN/V5',
-    'CANDIDATE_RELEASE_IMPORT_PLAN/V6'
+    'CANDIDATE_RELEASE_IMPORT_PLAN/V6',
+    'CANDIDATE_RELEASE_IMPORT_PLAN/V7'
   );
+  product_partition jsonb :=
+    p_import_plan->'product_query_result_release_partition_manifest';
+  product_partition_id text :=
+    p_import_plan->'product_query_result_release_partition_manifest'
+      ->>'product_query_result_release_partition_manifest_id';
   receipt_schema text := CASE
+    WHEN p_import_plan->>'schema_version' = 'CANDIDATE_RELEASE_IMPORT_PLAN/V7'
+      THEN 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V7'
     WHEN p_import_plan->>'schema_version' = 'CANDIDATE_RELEASE_IMPORT_PLAN/V6'
       THEN 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V6'
     WHEN p_import_plan->>'schema_version' = 'CANDIDATE_RELEASE_IMPORT_PLAN/V5'
@@ -714,7 +796,8 @@ BEGIN
   IF p_import_plan->>'schema_version' NOT IN (
       'CANDIDATE_RELEASE_IMPORT_PLAN/V4',
       'CANDIDATE_RELEASE_IMPORT_PLAN/V5',
-      'CANDIDATE_RELEASE_IMPORT_PLAN/V6'
+      'CANDIDATE_RELEASE_IMPORT_PLAN/V6',
+      'CANDIDATE_RELEASE_IMPORT_PLAN/V7'
     )
     OR jsonb_typeof(release_record) IS DISTINCT FROM 'object'
     OR jsonb_typeof(expected) IS DISTINCT FROM 'object'
@@ -745,6 +828,21 @@ BEGIN
     OR discharge_map_id !~ '^[a-f0-9]{64}$'
     OR discharge_map_payload_digest !~ '^[a-f0-9]{64}$'
     OR import_plan_id !~ '^[a-f0-9]{64}$'
+    OR (
+      carries_product_partition
+      AND (
+        product_partition_id !~ '^[a-f0-9]{64}$'
+        OR release_record
+          ->>'product_query_result_release_partition_manifest_id'
+          IS DISTINCT FROM product_partition_id
+        OR release_record
+          ->>'product_query_result_release_partition_manifest_payload_digest'
+          !~ '^[a-f0-9]{64}$'
+        OR release_record->>'product_query_result_record_root'
+          !~ '^[a-f0-9]{64}$'
+        OR (release_record->>'product_query_result_record_count')::integer < 1
+      )
+    )
     OR (
       manifest_schema IN ('FIXTURE_CANDIDATE_RELEASE_MANIFEST/V1', 'FIXTURE_CANDIDATE_RELEASE_MANIFEST/V2')
       AND (
@@ -889,6 +987,23 @@ BEGIN
     OR jsonb_typeof(p_import_plan->'source_specific_records') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'exact_detail_packages') IS DISTINCT FROM 'array'
     OR jsonb_typeof(p_import_plan->'validated_semantic_graph_records') IS DISTINCT FROM 'array'
+    OR (
+      carries_product_partition
+      AND (
+        jsonb_typeof(product_partition) IS DISTINCT FROM 'object'
+        OR jsonb_typeof(p_import_plan->'product_query_result_serving_records')
+          IS DISTINCT FROM 'array'
+      )
+    )
+    OR (
+      NOT carries_product_partition
+      AND (
+        p_import_plan ? 'product_query_result_release_partition_manifest'
+        OR p_import_plan ? 'product_query_result_serving_records'
+        OR expected ? 'product_query_result_release_partition_manifests'
+        OR expected ? 'product_query_result_serving_records'
+      )
+    )
     OR (expected->>'correction_input_seal_records')::integer IS DISTINCT FROM 1
     OR jsonb_array_length(p_import_plan->'correction_discharge_records')
       IS DISTINCT FROM (expected->>'correction_discharge_records')::integer
@@ -927,7 +1042,7 @@ BEGIN
       IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'incomplete_canonical_rows')::integer)
     OR (is_v5 AND release_record->'canonical_payload'->>'schema_version'
       IS DISTINCT FROM 'FIXTURE_CANDIDATE_RELEASE_MANIFEST/V2')
-    OR (is_v6 AND release_record->'canonical_payload'->>'schema_version'
+    OR ((is_v6 OR is_v7) AND release_record->'canonical_payload'->>'schema_version'
       IS DISTINCT FROM 'FIXTURE_CANDIDATE_RELEASE_MANIFEST/V3')
     OR (NOT carries_incomplete_partition AND release_record->'canonical_payload'->>'schema_version'
       IS DISTINCT FROM 'FIXTURE_CANDIDATE_RELEASE_MANIFEST/V1')
@@ -938,6 +1053,150 @@ BEGIN
     OR (expected->>'validated_semantic_graph_records')::integer
       IS DISTINCT FROM (release_record->'canonical_payload'->'counts'->>'validated_semantic_graphs')::integer THEN
     RAISE EXCEPTION 'candidate release import counts do not match the certified manifest' USING ERRCODE = '22023';
+  END IF;
+
+  IF carries_product_partition AND (
+    (expected->>'product_query_result_serving_records')::integer
+      IS DISTINCT FROM jsonb_array_length(
+        p_import_plan->'product_query_result_serving_records'
+      )
+    OR product_partition->>'schema_version'
+      IS DISTINCT FROM 'PRODUCT_QUERY_RESULT_RELEASE_PARTITION_MANIFEST/V1'
+    OR product_partition->>'release_state' IS DISTINCT FROM 'CANDIDATE_NOT_ACTIVE'
+    OR product_partition->>'authority_state' IS DISTINCT FROM 'NOT_GRANTED'
+    OR product_partition->>'serving_namespace_id' IS DISTINCT FROM namespace_id
+    OR product_partition->>'corpus_release_id' IS DISTINCT FROM release_id
+    OR product_partition->>'candidate_release_manifest_id'
+      IS DISTINCT FROM manifest_id
+    OR product_partition->>'candidate_release_manifest_payload_digest'
+      IS DISTINCT FROM release_record->>'canonical_payload_digest'
+    OR product_partition->>'canonical_payload_digest'
+      IS DISTINCT FROM release_record
+        ->>'product_query_result_release_partition_manifest_payload_digest'
+    OR product_partition->>'product_query_result_record_root'
+      IS DISTINCT FROM release_record->>'product_query_result_record_root'
+    OR (product_partition->>'product_query_result_record_count')::integer
+      IS DISTINCT FROM (release_record->>'product_query_result_record_count')::integer
+    OR (product_partition->>'product_query_result_record_count')::integer
+      IS DISTINCT FROM (expected->>'product_query_result_serving_records')::integer
+    OR (expected->>'product_query_result_release_partition_manifests')::integer
+      IS DISTINCT FROM 1
+    OR product_partition_id IS DISTINCT FROM canonical_v2_staging.content_id(
+      'PRODUCT_QUERY_RESULT_RELEASE_PARTITION_MANIFEST/V1',
+      product_partition - ARRAY[
+        'product_query_result_release_partition_manifest_id',
+        'canonical_payload_digest'
+      ]::text[]
+    )
+    OR product_partition->>'canonical_payload_digest'
+      IS DISTINCT FROM canonical_v2_staging.content_id(
+        'PRODUCT_QUERY_RESULT_RELEASE_PARTITION_MANIFEST_PAYLOAD/V1',
+        product_partition - ARRAY[
+          'product_query_result_release_partition_manifest_id',
+          'canonical_payload_digest'
+        ]::text[]
+      )
+    OR product_partition->>'product_query_result_record_root'
+      IS DISTINCT FROM canonical_v2_staging.content_id(
+        'PRODUCT_QUERY_RESULT_SERVING_RECORD_SET/V1',
+        product_partition->'ordered_record_entries'
+      )
+  ) THEN
+    RAISE EXCEPTION 'Product result release partition does not bind the candidate release'
+      USING ERRCODE = '23514';
+  END IF;
+
+  IF carries_product_partition AND EXISTS (
+      SELECT 1
+      FROM jsonb_array_elements(
+        p_import_plan->'product_query_result_serving_records'
+      ) item
+      WHERE item->>'schema_version'
+          IS DISTINCT FROM 'PRODUCT_QUERY_RESULT_SERVING_RECORD/V1'
+        OR item->>'serving_state' IS DISTINCT FROM 'CANDIDATE_NOT_ACTIVE'
+        OR item->>'authority_state' IS DISTINCT FROM 'NOT_GRANTED'
+        OR item->>'serving_namespace_id' IS DISTINCT FROM namespace_id
+        OR item->>'corpus_release_id' IS DISTINCT FROM release_id
+        OR item->>'candidate_release_manifest_id' IS DISTINCT FROM manifest_id
+        OR item->>'candidate_release_manifest_payload_digest'
+          IS DISTINCT FROM release_record->>'canonical_payload_digest'
+        OR item->>'candidate_product_result_schema_version'
+          IS DISTINCT FROM 'PRODUCT_CANDIDATE_RESULT_RECORD/V1'
+        OR item->>'product_query_definition_id'
+          IS DISTINCT FROM item->'canonical_payload'->>'product_query_definition_id'
+        OR item->>'product_query_result_identity'
+          IS DISTINCT FROM item->'canonical_payload'->>'product_query_result_identity'
+        OR item->>'domain_key'
+          IS DISTINCT FROM item->'canonical_payload'->>'domain_key'
+        OR item->>'domain_result_identity'
+          IS DISTINCT FROM item->'canonical_payload'->>'domain_result_identity'
+        OR item->>'canonical_payload_digest'
+          IS DISTINCT FROM pg_catalog.encode(
+            extensions.digest(
+              pg_catalog.convert_to(
+                canonical_v2_staging.canonical_json(
+                  item->'canonical_payload'
+                ),
+                'UTF8'
+              ),
+              'sha256'::text
+            ),
+            'hex'
+          )
+        OR NOT EXISTS (
+          SELECT 1
+          FROM canonical_v2_staging.product_candidate_results candidate
+          WHERE candidate.candidate_product_result_id
+              = item->>'candidate_product_result_id'
+            AND candidate.candidate_release_manifest_id = manifest_id
+            AND candidate.corpus_release_id = release_id
+            AND candidate.product_query_result_identity
+              = item->>'product_query_result_identity'
+            AND candidate.domain_result_identity
+              = item->>'domain_result_identity'
+            AND candidate.candidate_state = 'CANDIDATE_NOT_ACTIVE'
+            AND candidate.canonical_payload_digest
+              = item->>'candidate_product_result_payload_digest'
+            AND candidate.canonical_payload
+              ->'product_row'
+              ->'shared_row_adapter_receipt'
+              ->'product_query_result'
+              = item->'canonical_payload'
+        )
+    ) THEN
+    RAISE EXCEPTION 'Product result records do not equal the candidate writer evidence'
+      USING ERRCODE = '23514';
+  END IF;
+
+  IF carries_product_partition AND (
+      SELECT coalesce(
+        jsonb_agg(
+          jsonb_build_object(
+            'product_query_result_serving_record_id',
+              item->>'product_query_result_serving_record_id',
+            'product_query_definition_id',
+              item->>'product_query_definition_id',
+            'product_query_result_identity',
+              item->>'product_query_result_identity',
+            'domain_key',
+              item->>'domain_key',
+            'candidate_product_result_id',
+              item->>'candidate_product_result_id',
+            'candidate_product_result_payload_digest',
+              item->>'candidate_product_result_payload_digest',
+            'canonical_payload_digest',
+              item->>'canonical_payload_digest'
+          )
+          ORDER BY item->>'product_query_result_identity'
+        ),
+        '[]'::jsonb
+      )
+      FROM jsonb_array_elements(
+        p_import_plan->'product_query_result_serving_records'
+      ) item
+    ) IS DISTINCT FROM product_partition->'ordered_record_entries' THEN
+    RAISE EXCEPTION 'Product result records do not equal the partition manifest'
+      USING ERRCODE = '23514';
   END IF;
 
   IF p_import_plan->'correction_input_seal_record'->>'serving_namespace_id' IS DISTINCT FROM namespace_id
@@ -1149,7 +1408,37 @@ BEGIN
     OR (SELECT count(DISTINCT item->>'row_serving_key') FROM jsonb_array_elements(p_import_plan->'exact_detail_packages') item)
       IS DISTINCT FROM (expected->>'exact_detail_packages')::integer
     OR (SELECT count(DISTINCT item->>'validated_semantic_graph_id') FROM jsonb_array_elements(p_import_plan->'validated_semantic_graph_records') item)
-      IS DISTINCT FROM (expected->>'validated_semantic_graph_records')::integer THEN
+      IS DISTINCT FROM (expected->>'validated_semantic_graph_records')::integer
+    OR (
+      carries_product_partition
+      AND (
+        SELECT count(DISTINCT item->>'product_query_result_serving_record_id')
+        FROM jsonb_array_elements(
+          p_import_plan->'product_query_result_serving_records'
+        ) item
+      ) IS DISTINCT FROM
+        (expected->>'product_query_result_serving_records')::integer
+    )
+    OR (
+      carries_product_partition
+      AND (
+        SELECT count(DISTINCT item->>'product_query_result_identity')
+        FROM jsonb_array_elements(
+          p_import_plan->'product_query_result_serving_records'
+        ) item
+      ) IS DISTINCT FROM
+        (expected->>'product_query_result_serving_records')::integer
+    )
+    OR (
+      carries_product_partition
+      AND (
+        SELECT count(DISTINCT item->>'candidate_product_result_id')
+        FROM jsonb_array_elements(
+          p_import_plan->'product_query_result_serving_records'
+        ) item
+      ) IS DISTINCT FROM
+        (expected->>'product_query_result_serving_records')::integer
+    ) THEN
     RAISE EXCEPTION 'candidate release import contains duplicate identities' USING ERRCODE = '23505';
   END IF;
   IF EXISTS (
@@ -1259,6 +1548,46 @@ BEGIN
       AND existing.corpus_release_id = release_id
       AND existing.validated_semantic_graph_id = item->>'validated_semantic_graph_id'
     WHERE existing.canonical_payload_digest IS DISTINCT FROM item->>'canonical_payload_digest'
+  ) OR (
+    carries_product_partition
+    AND EXISTS (
+      SELECT 1
+      FROM canonical_v2_staging.product_query_result_release_partitions existing
+      WHERE existing.product_query_result_release_partition_manifest_id
+          = product_partition_id
+        AND (
+          existing.candidate_manifest_id IS DISTINCT FROM manifest_id
+          OR existing.corpus_release_id IS DISTINCT FROM release_id
+          OR existing.serving_namespace_id IS DISTINCT FROM namespace_id
+          OR existing.candidate_release_import_plan_id
+            IS DISTINCT FROM import_plan_id
+          OR existing.product_query_result_record_count
+            IS DISTINCT FROM
+              (expected->>'product_query_result_serving_records')::integer
+          OR existing.product_query_result_record_root
+            IS DISTINCT FROM
+              product_partition->>'product_query_result_record_root'
+          OR existing.canonical_payload_digest
+            IS DISTINCT FROM product_partition->>'canonical_payload_digest'
+        )
+    )
+  ) OR (
+    carries_product_partition
+    AND EXISTS (
+      SELECT 1
+      FROM jsonb_array_elements(
+        p_import_plan->'product_query_result_serving_records'
+      ) item
+      JOIN canonical_v2_staging.product_query_result_serving_records existing
+        ON existing.serving_namespace_id = namespace_id
+        AND existing.corpus_release_id = release_id
+        AND existing.product_query_result_identity
+          = item->>'product_query_result_identity'
+      WHERE existing.product_query_result_serving_record_id
+          IS DISTINCT FROM item->>'product_query_result_serving_record_id'
+        OR existing.canonical_payload_digest
+          IS DISTINCT FROM item->>'canonical_payload_digest'
+    )
   ) THEN
     RAISE EXCEPTION 'candidate release import identity conflicts with different content' USING ERRCODE = '23505';
   END IF;
@@ -1266,6 +1595,71 @@ BEGIN
   INSERT INTO canonical_v2_staging.fixture_corpus_releases
   SELECT * FROM jsonb_populate_record(NULL::canonical_v2_staging.fixture_corpus_releases, release_record)
   ON CONFLICT (corpus_release_id) DO NOTHING;
+  IF carries_product_partition THEN
+    INSERT INTO canonical_v2_staging.product_query_result_release_partitions(
+      product_query_result_release_partition_manifest_id,
+      candidate_manifest_id,
+      corpus_release_id,
+      serving_namespace_id,
+      candidate_release_import_plan_id,
+      product_query_result_record_count,
+      product_query_result_record_root,
+      canonical_payload,
+      canonical_payload_digest
+    ) VALUES (
+      product_partition_id,
+      manifest_id,
+      release_id,
+      namespace_id,
+      import_plan_id,
+      (product_partition->>'product_query_result_record_count')::integer,
+      product_partition->>'product_query_result_record_root',
+      product_partition,
+      product_partition->>'canonical_payload_digest'
+    ) ON CONFLICT (
+      product_query_result_release_partition_manifest_id
+    ) DO NOTHING;
+
+    INSERT INTO canonical_v2_staging.product_query_result_serving_records(
+      serving_namespace_id,
+      corpus_release_id,
+      candidate_manifest_id,
+      product_query_result_release_partition_manifest_id,
+      candidate_release_import_plan_id,
+      product_query_result_serving_record_id,
+      product_query_definition_id,
+      product_query_result_identity,
+      domain_key,
+      domain_result_identity,
+      candidate_product_result_id,
+      candidate_product_result_payload_digest,
+      canonical_payload,
+      canonical_payload_digest
+    )
+    SELECT
+      namespace_id,
+      release_id,
+      manifest_id,
+      product_partition_id,
+      import_plan_id,
+      item->>'product_query_result_serving_record_id',
+      item->>'product_query_definition_id',
+      item->>'product_query_result_identity',
+      item->>'domain_key',
+      item->>'domain_result_identity',
+      item->>'candidate_product_result_id',
+      item->>'candidate_product_result_payload_digest',
+      item->'canonical_payload',
+      item->>'canonical_payload_digest'
+    FROM jsonb_array_elements(
+      p_import_plan->'product_query_result_serving_records'
+    ) item
+    ON CONFLICT (
+      serving_namespace_id,
+      corpus_release_id,
+      product_query_result_identity
+    ) DO NOTHING;
+  END IF;
   INSERT INTO canonical_v2_staging.candidate_release_correction_input_seals
   SELECT * FROM jsonb_populate_record(
     NULL::canonical_v2_staging.candidate_release_correction_input_seals,
@@ -1409,7 +1803,28 @@ BEGIN
       IS DISTINCT FROM (expected->>'exact_detail_packages')::integer
     OR (SELECT count(*) FROM canonical_v2_staging.candidate_release_semantic_graphs row
       WHERE row.serving_namespace_id = namespace_id AND row.corpus_release_id = release_id)
-      IS DISTINCT FROM (expected->>'validated_semantic_graph_records')::integer THEN
+      IS DISTINCT FROM (expected->>'validated_semantic_graph_records')::integer
+    OR (
+      carries_product_partition
+      AND (
+        SELECT count(*)
+        FROM canonical_v2_staging.product_query_result_release_partitions row
+        WHERE row.product_query_result_release_partition_manifest_id
+            = product_partition_id
+          AND row.candidate_release_import_plan_id = import_plan_id
+      ) IS DISTINCT FROM 1
+    )
+    OR (
+      carries_product_partition
+      AND (
+        SELECT count(*)
+        FROM canonical_v2_staging.product_query_result_serving_records row
+        WHERE row.serving_namespace_id = namespace_id
+          AND row.corpus_release_id = release_id
+          AND row.candidate_release_import_plan_id = import_plan_id
+      ) IS DISTINCT FROM
+        (expected->>'product_query_result_serving_records')::integer
+    ) THEN
     RAISE EXCEPTION 'candidate release import did not close over every certified serving object' USING ERRCODE = '23514';
   END IF;
 
@@ -1545,6 +1960,39 @@ BEGIN
     RAISE EXCEPTION 'active staging release pointer is unavailable' USING ERRCODE = '02000';
   END IF;
 
+  DELETE FROM canonical_v2_staging.product_query_result_serving_records row
+  WHERE row.serving_namespace_id = p_serving_namespace_id
+    AND row.corpus_release_id = p_corpus_release_id
+    AND row.candidate_release_import_plan_id
+      = p_candidate_release_import_plan_id;
+  GET DIAGNOSTICS deleted_count = ROW_COUNT;
+  IF expected ? 'product_query_result_serving_records' THEN
+    deleted_counts := deleted_counts || jsonb_build_object(
+      'product_query_result_serving_records',
+      deleted_count
+    );
+  ELSIF deleted_count <> 0 THEN
+    RAISE EXCEPTION 'legacy candidate rollback found Product result records'
+      USING ERRCODE = '23514';
+  END IF;
+
+  DELETE FROM canonical_v2_staging.product_query_result_release_partitions row
+  WHERE row.candidate_manifest_id = p_candidate_manifest_id
+    AND row.corpus_release_id = p_corpus_release_id
+    AND row.serving_namespace_id = p_serving_namespace_id
+    AND row.candidate_release_import_plan_id
+      = p_candidate_release_import_plan_id;
+  GET DIAGNOSTICS deleted_count = ROW_COUNT;
+  IF expected ? 'product_query_result_release_partition_manifests' THEN
+    deleted_counts := deleted_counts || jsonb_build_object(
+      'product_query_result_release_partition_manifests',
+      deleted_count
+    );
+  ELSIF deleted_count <> 0 THEN
+    RAISE EXCEPTION 'legacy candidate rollback found a Product result partition'
+      USING ERRCODE = '23514';
+  END IF;
+
   DELETE FROM canonical_v2_staging.candidate_release_correction_discharges row
   WHERE row.serving_namespace_id = p_serving_namespace_id
     AND row.corpus_release_id = p_corpus_release_id;
@@ -1654,6 +2102,22 @@ BEGIN
       IS DISTINCT FROM (expected->>'exact_detail_packages')::integer
     OR (deleted_counts->>'validated_semantic_graph_records')::integer
       IS DISTINCT FROM (expected->>'validated_semantic_graph_records')::integer
+    OR (
+      expected ? 'product_query_result_serving_records'
+      AND (deleted_counts->>'product_query_result_serving_records')::integer
+        IS DISTINCT FROM
+          (expected->>'product_query_result_serving_records')::integer
+    )
+    OR (
+      expected ? 'product_query_result_release_partition_manifests'
+      AND (
+        deleted_counts
+          ->>'product_query_result_release_partition_manifests'
+      )::integer IS DISTINCT FROM (
+        expected
+          ->>'product_query_result_release_partition_manifests'
+      )::integer
+    )
     OR (deleted_counts->>'import_receipts')::integer IS DISTINCT FROM 1
     OR (deleted_counts->>'release_records')::integer IS DISTINCT FROM 1 THEN
     RAISE EXCEPTION 'inactive candidate rollback did not remove the exact certified partition'
@@ -3066,6 +3530,125 @@ AS $$
   );
 $$;
 
+CREATE OR REPLACE FUNCTION public.canonical_v2_active_product_query_results(
+  p_environment text,
+  p_serving_namespace_id text,
+  p_corpus_release_id text,
+  p_product_query_definition_id text,
+  p_after_product_query_result_identity text DEFAULT NULL,
+  p_page_size integer DEFAULT 20
+)
+RETURNS jsonb
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, canonical_v2_staging
+SET statement_timeout = '2500ms'
+AS $$
+  WITH validated AS MATERIALIZED (
+    SELECT pointer.*
+    FROM canonical_v2_staging.active_corpus_release_pointers pointer
+    JOIN canonical_v2_staging.product_query_result_release_partitions partition
+      ON partition.serving_namespace_id = pointer.serving_namespace_id
+      AND partition.corpus_release_id = pointer.corpus_release_id
+      AND partition.candidate_manifest_id = pointer.candidate_manifest_id
+      AND partition.candidate_release_import_plan_id
+        = pointer.candidate_release_import_plan_id
+    WHERE p_environment = 'staging'
+      AND p_serving_namespace_id ~ '^[a-f0-9]{64}$'
+      AND p_corpus_release_id ~ '^[a-f0-9]{64}$'
+      AND p_product_query_definition_id ~ '^[a-f0-9]{64}$'
+      AND (
+        p_after_product_query_result_identity IS NULL
+        OR p_after_product_query_result_identity ~ '^[a-f0-9]{64}$'
+      )
+      AND p_page_size BETWEEN 1 AND 50
+      AND pointer.environment = p_environment
+      AND pointer.serving_namespace_id = p_serving_namespace_id
+      AND pointer.corpus_release_id = p_corpus_release_id
+  ), candidates AS MATERIALIZED (
+    SELECT
+      record.product_query_result_serving_record_id,
+      record.product_query_result_identity,
+      record.candidate_product_result_id,
+      record.canonical_payload
+    FROM validated pointer
+    JOIN canonical_v2_staging.product_query_result_release_partitions partition
+      ON partition.serving_namespace_id = pointer.serving_namespace_id
+      AND partition.corpus_release_id = pointer.corpus_release_id
+      AND partition.candidate_manifest_id = pointer.candidate_manifest_id
+      AND partition.candidate_release_import_plan_id
+        = pointer.candidate_release_import_plan_id
+    JOIN canonical_v2_staging.product_query_result_serving_records record
+      ON record.serving_namespace_id = pointer.serving_namespace_id
+      AND record.corpus_release_id = pointer.corpus_release_id
+      AND record.candidate_manifest_id = pointer.candidate_manifest_id
+      AND record.product_query_result_release_partition_manifest_id
+        = partition.product_query_result_release_partition_manifest_id
+      AND record.candidate_release_import_plan_id
+        = pointer.candidate_release_import_plan_id
+    WHERE record.product_query_definition_id
+        = p_product_query_definition_id
+      AND (
+        p_after_product_query_result_identity IS NULL
+        OR record.product_query_result_identity
+          > p_after_product_query_result_identity
+      )
+    ORDER BY record.product_query_result_identity
+    LIMIT p_page_size + 1
+  ), visible AS MATERIALIZED (
+    SELECT candidate.*
+    FROM candidates candidate
+    ORDER BY candidate.product_query_result_identity
+    LIMIT p_page_size
+  ), page_payload AS (
+    SELECT
+      count(*)::integer AS page_count,
+      coalesce(
+        jsonb_agg(
+          jsonb_build_object(
+            'product_query_result_serving_record_id',
+              candidate.product_query_result_serving_record_id,
+            'product_query_result_identity',
+              candidate.product_query_result_identity,
+            'candidate_product_result_id',
+              candidate.candidate_product_result_id,
+            'canonical_payload',
+              candidate.canonical_payload
+          )
+          ORDER BY candidate.product_query_result_identity
+        ),
+        '[]'::jsonb
+      ) AS rows
+    FROM visible candidate
+  )
+  SELECT jsonb_build_object(
+    'schema_version', 'PRODUCT_QUERY_RESULT_ACTIVE_PAGE/V1',
+    'serving_namespace_id', pointer.serving_namespace_id,
+    'corpus_release_id', pointer.corpus_release_id,
+    'candidate_release_import_plan_id',
+      pointer.candidate_release_import_plan_id,
+    'candidate_manifest_id', pointer.candidate_manifest_id,
+    'product_query_definition_id', p_product_query_definition_id,
+    'page_count', page_payload.page_count,
+    'rows', page_payload.rows,
+    'has_more', (SELECT count(*) FROM candidates) > p_page_size,
+    'next_after_product_query_result_identity', CASE
+      WHEN (SELECT count(*) FROM candidates) > p_page_size
+      THEN (
+        SELECT candidate.product_query_result_identity
+        FROM visible candidate
+        ORDER BY candidate.product_query_result_identity DESC
+        LIMIT 1
+      )
+      ELSE NULL
+    END
+  )
+  FROM validated pointer
+  CROSS JOIN page_payload
+  WHERE page_payload.page_count > 0
+$$;
+
 CREATE OR REPLACE FUNCTION public.canonical_v2_active_review_context(
   p_environment text,
   p_contract_fingerprint text,
@@ -3488,6 +4071,10 @@ REVOKE ALL ON TABLE canonical_v2_staging.candidate_release_correction_input_seal
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON TABLE canonical_v2_staging.candidate_release_correction_discharges
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
+REVOKE ALL ON TABLE canonical_v2_staging.product_query_result_release_partitions
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
+REVOKE ALL ON TABLE canonical_v2_staging.product_query_result_serving_records
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON TABLE canonical_v2_staging.candidate_release_import_receipts
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON TABLE canonical_v2_staging.active_corpus_release_pointer_history
@@ -3556,6 +4143,12 @@ GRANT EXECUTE ON FUNCTION public.canonical_v2_active_query_page_v2(
   text, text, text, text, integer, text, text, text, text, text,
   text, text, text, text, text, integer, integer, numeric, numeric, numeric, numeric,
   text, text, text, text, text, text, text, text, text, text, text, integer, text, text
+) TO canonical_v2_serving;
+REVOKE ALL ON FUNCTION public.canonical_v2_active_product_query_results(
+  text, text, text, text, text, integer
+) FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;
+GRANT EXECUTE ON FUNCTION public.canonical_v2_active_product_query_results(
+  text, text, text, text, text, integer
 ) TO canonical_v2_serving;
 REVOKE ALL ON FUNCTION public.canonical_v2_active_review_context(
   text, text, text, uuid, integer, text

@@ -8,6 +8,9 @@ const {
   buildInitialActiveReleasePointer,
 } = require('../lib/canonical-v2/candidate-release');
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
+const metseraFixture = require(
+  '../__fixtures__/canonical-v2/metsera-exclusivity-p8.json',
+);
 const {
   activateCandidateRelease,
   buildCandidateReleaseImportPlan,
@@ -15,6 +18,14 @@ const {
   rollbackInactiveCandidateRelease,
   validateCandidateReleaseImportPlan,
 } = require('../lib/canonical-v2/candidate-release-import');
+const {
+  buildProductQueryResultServingRecord,
+} = require('../lib/canonical-v2/product-query-result-serving-record');
+const {
+  buildProductQueryResultReleasePartition,
+} = require(
+  '../lib/canonical-v2/product-query-result-release-partition',
+);
 const {
   QUERY_PROJECTION_CONTRACT_DIGEST_V2,
   SERVING_PROJECTION_VERSION_V2,
@@ -25,8 +36,9 @@ function clone(value) {
 }
 
 function receiptFor(plan, replayed = false) {
+  const version = plan.schema_version.split('/V')[1];
   return {
-    schema_version: 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V4',
+    schema_version: `CANDIDATE_RELEASE_IMPORT_RECEIPT/V${version}`,
     import_state: 'IMPORTED_COMPLETE',
     replayed,
     candidate_manifest_id: plan.release_record.candidate_manifest_id,
@@ -39,6 +51,65 @@ function receiptFor(plan, replayed = false) {
     expected_counts: plan.expected_counts,
     imported_at: '2026-07-21T12:00:00.000Z',
   };
+}
+
+function productResultFor(release) {
+  const result = clone(metseraFixture.shared_result);
+  result.candidate_release_manifest_id =
+    release.manifest.candidate_release_manifest_id;
+  result.candidate_release_manifest_payload_digest =
+    release.manifest.canonical_payload_digest;
+  result.product_query_result_identity = contentId(
+    'PRODUCT_QUERY_RESULT/V1',
+    {
+      schema_version: 'PRODUCT_QUERY_RESULT/V1',
+      product_query_definition_id:
+        result.product_query_definition_id,
+      approved_pm_data_version_id:
+        result.approved_pm_data_version_id,
+      candidate_release_manifest_id:
+        result.candidate_release_manifest_id,
+      candidate_release_manifest_payload_digest:
+        result.candidate_release_manifest_payload_digest,
+      domain_key: result.domain_key,
+      domain_result_definition_stable_id:
+        result.domain_result_definition.stable_id,
+      domain_result_definition_version:
+        result.domain_result_definition.version,
+      domain_result_identity: result.domain_result_identity,
+    },
+  );
+  result.exact_citation.citation_target_identity = contentId(
+    result.exact_citation.schema_version,
+    {
+      product_query_result_identity:
+        result.product_query_result_identity,
+      candidate_release_manifest_id:
+        result.candidate_release_manifest_id,
+      candidate_release_manifest_payload_digest:
+        result.candidate_release_manifest_payload_digest,
+      source_document_identity:
+        result.exact_citation.source_document_identity,
+      source_evidence_identity:
+        result.exact_citation.source_evidence_identity,
+    },
+  );
+  return result;
+}
+
+function productPartitionFor(release) {
+  const record = buildProductQueryResultServingRecord({
+    serving_namespace_id: release.manifest.serving_namespace_id,
+    corpus_release_id: release.manifest.corpus_release_id,
+    candidate_product_result_id:
+      metseraFixture.candidate_product_result_id,
+    candidate_product_result_payload_digest: 'f'.repeat(64),
+    product_query_result: productResultFor(release),
+  });
+  return buildProductQueryResultReleasePartition({
+    candidate_release_manifest: release.manifest,
+    product_query_result_serving_records: [record],
+  });
 }
 
 function rekeyPlan(plan) {
@@ -156,6 +227,62 @@ test('projection-bound manifests exclusively determine the v2 import and exact q
   assert.throws(
     () => buildCandidateReleaseImportPlan({ release: tampered }),
     /frozen v2|complete certified release/,
+  );
+});
+
+test('one V7 import plan binds the existing release and Product result partition', async () => {
+  const release = buildProjectionBoundRelease();
+  const partition = productPartitionFor(release);
+  const plan = buildCandidateReleaseImportPlan({
+    release,
+    product_result_release_partition: partition,
+  });
+
+  assert.equal(plan.schema_version, 'CANDIDATE_RELEASE_IMPORT_PLAN/V7');
+  assert.equal(
+    plan.expected_counts.product_query_result_release_partition_manifests,
+    1,
+  );
+  assert.equal(plan.expected_counts.product_query_result_serving_records, 1);
+  assert.equal(
+    plan.release_record
+      .product_query_result_release_partition_manifest_id,
+    partition.product_query_result_release_partition_manifest
+      .product_query_result_release_partition_manifest_id,
+  );
+  assert.equal(
+    plan.product_query_result_serving_records[0]
+      .candidate_release_manifest_id,
+    release.manifest.candidate_release_manifest_id,
+  );
+  assert.equal(validateCandidateReleaseImportPlan(plan), true);
+
+  const calls = [];
+  const imported = await importCandidateRelease({
+    client: {
+      rpc(name, params) {
+        calls.push({ name, params });
+        return Promise.resolve({
+          data: receiptFor(params.p_import_plan),
+          error: null,
+        });
+      },
+    },
+    release,
+    productResultReleasePartition: partition,
+  });
+  assert.equal(calls.length, 1);
+  assert.equal(imported.receipt.schema_version, 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V7');
+
+  const drifted = clone(partition);
+  drifted.base_candidate_release_manifest.corpus_release_id =
+    '0'.repeat(64);
+  assert.throws(
+    () => buildCandidateReleaseImportPlan({
+      release,
+      product_result_release_partition: drifted,
+    }),
+    /manifest|release|identity/i,
   );
 });
 

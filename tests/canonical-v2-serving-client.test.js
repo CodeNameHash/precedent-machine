@@ -57,6 +57,35 @@ test('one Review request executes one typed SQL function call through a one-conn
   assert.deepEqual(pool.calls[0].values, Object.values(params));
 });
 
+test('one Product request executes one typed active-release SQL call', async () => {
+  FakePool.instances.length = 0;
+  const client = createPostgresServingClient({
+    connectionString: CONNECTION,
+    PoolClass: FakePool,
+  });
+  const params = {
+    p_environment: 'staging',
+    p_serving_namespace_id: 'a'.repeat(64),
+    p_corpus_release_id: 'b'.repeat(64),
+    p_product_query_definition_id: 'c'.repeat(64),
+    p_after_product_query_result_identity: null,
+    p_page_size: 20,
+  };
+  const response = await client.rpc(
+    'canonical_v2_active_product_query_results',
+    params,
+  );
+  const pool = FakePool.instances[0];
+
+  assert.equal(response.error, null);
+  assert.equal(pool.calls.length, 1);
+  assert.match(
+    pool.calls[0].text,
+    /^SELECT public\.canonical_v2_active_product_query_results\(/,
+  );
+  assert.deepEqual(pool.calls[0].values, Object.values(params));
+});
+
 test('Review RPC work remains one set-based call when corpus metadata grows', async () => {
   const params = {
     p_environment: 'staging',
