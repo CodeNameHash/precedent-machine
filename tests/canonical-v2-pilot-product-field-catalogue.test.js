@@ -33,6 +33,17 @@ test('builds one checked pilot catalogue with all shared and Process fields', ()
   assert.equal(keys.has('process_outcome'), true);
   assert.equal(keys.has('process_phase'), true);
   assert.equal(keys.has('bidder_track'), true);
+  for (const resultDefinition of [
+    'TARGET_CAPEX_RESTRICTION',
+    'TARGET_CAPITALISATION_BRING_DOWN',
+  ]) {
+    assert.equal(
+      manifest.field_definitions.find((field) => field.field_key === 'deal')
+        .permitted_result_definitions.includes(resultDefinition),
+      true,
+      resultDefinition,
+    );
+  }
   assert.equal(manifest.source_exclusions.length, 0);
   assert.equal(manifest.release_exclusions.length, 0);
 });
