@@ -13,7 +13,7 @@ main integration.
 | --- | --- |
 | Main basis | `7b6bc64157c49832129fa2ca227399850cd983fc` |
 | Approved M1 review commit | `affa7464ca2cab2b4715ae084e3de6c2d39b673f` |
-| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; latest code head `526582cf`, followed only by ledger binding. All Stage 2 reviews and the complete suite pass. Stage 4 exact-root review is next. Main remains fixed. |
+| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; correction head `7c47f1d7`, followed only by controller ledger and signer registration. Stage 4 found four blocking implementation defects. Three bounded corrections and their Stage 2 reviews now pass. Main remains fixed. |
 | Current working-tree successor bundle | 178 authored inputs, 177 substantive contracts, 8 categories. This is a draft, not the freeze candidate. |
 | Current working-tree bundle ID | `d222eba830fefad4772e358041e36f8818dbf227e4c7e13c77f4228514a37d8e` |
 | Current working-tree contract digest | `a953a215f9ff4cf94a204580b3b9a2b559fa531d1f3be16a3e787032257e87b3` |
@@ -57,11 +57,14 @@ copied-row drift, membership drift, stale SQL function digests and the Process
 SQL authority bypass. Three exact-bound Stage 2 correction reviews now pass.
 The corrected Agreement proof passes in isolated staging with 26 hostile
 calls. The Metsera runner carries the full transient authority pair, but its
-staging run still stops at the required M1 acknowledgement check. Stage 5 now
-passes with 4,763 tests and a 29-page production build. The current task is
-Stage 4: compile the final clean root twice, then run the architecture,
-legal-semantic, and query, serving and release reviews against the same exact
-bytes. One reserved bundle approval follows.
+staging run still stops at the required M1 acknowledgement check. The first
+Stage 4 review round found four real defects: stale SQL root pins, no governed
+Product query cache, mismatched IOC citation evidence, and lost
+`APPROXIMATE` denominator precision. Commits `4207bee0`, `dd119359` and
+`7c47f1d7` close those defects. Their focused tests and exact-bound Stage 2
+reviews pass. The current task is the P8 work-package check. The affected
+chain, complete suite, build, two clean compiles and all three Stage 4 reviews
+must pass against the same exact bytes. One reserved bundle approval follows.
 
 ## 2. Work underway
 
@@ -104,13 +107,12 @@ bytes. One reserved bundle approval follows.
 
 ## 3. Next 48 hours
 
-1. Complete and commit the Stage 3 writer corrections without moving main.
-2. Run Stage 2 correction reviews for the exact changed files and record every finding.
-3. Run the affected P8 chain, then the complete suite and production build once on the combined candidate.
-4. Compile the final clean root twice without a cache and require identical bytes.
-5. Run the Stage 4 architecture and identity, legal-semantic, and query, serving and release reviews against the same exact bytes.
-6. Prepare the one reserved exact-bundle approval package.
-7. After approval, publish the matching signed permission and run the reviewed staging pilots.
+1. Run the affected P8 chain for the three reviewed corrections.
+2. Run the complete suite and production build once on the corrected candidate.
+3. Compile the final clean root twice without a cache and require identical bytes.
+4. Repeat the three Stage 4 reviews against the same exact corrected bytes.
+5. Prepare the one reserved exact-bundle approval package.
+6. After approval, publish the matching signed permission and run the reviewed staging pilots.
 
 ## 4. Bounded units through P11
 
