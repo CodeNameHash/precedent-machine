@@ -242,22 +242,40 @@ ${commit ? 'COMMIT;' : 'ROLLBACK;'}
     try {
       const supabaseCommand = governedSupabaseCommand(supabaseShim);
       const governedDbUrl = governedStagingDbUrl(dbUrl);
-      const result = spawnSync(
-        supabaseCommand.command,
-        [
+      let command;
+      let commandArgs;
+      if (governedDbUrl === null) {
+        command = supabaseCommand.command;
+        commandArgs = [
           ...supabaseCommand.prefixArgs,
           '--workdir',
           repositoryRoot,
           'db',
           'query',
-          ...(governedDbUrl === null
-            ? ['--linked']
-            : ['--db-url', governedDbUrl]),
+          '--linked',
           '--file',
           file,
           '--output',
           'json',
-        ],
+        ];
+      } else {
+        // The linked Management API path caps request bodies below the
+        // largest governed write sets, and the CLI's --db-url path cannot
+        // carry multi-command transactions. Route through the direct
+        // simple-protocol executor instead; the URL file keeps the
+        // credential out of argv.
+        const urlFile = join(directory, 'db-url');
+        writeFileSync(urlFile, governedDbUrl, { mode: 0o600 });
+        command = process.execPath;
+        commandArgs = [
+          join(repositoryRoot, 'scripts', 'lib', 'canonical-v2-staging-pg-exec.cjs'),
+          file,
+          urlFile,
+        ];
+      }
+      const result = spawnSync(
+        command,
+        commandArgs,
         {
           cwd: repositoryRoot,
           encoding: 'utf8',
