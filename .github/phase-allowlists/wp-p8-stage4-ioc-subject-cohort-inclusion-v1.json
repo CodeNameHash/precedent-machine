@@ -1,0 +1,23 @@
+{
+  "phase": "WP-P8-STAGE4-IOC-SUBJECT-COHORT-INCLUSION-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p8-stage4-ioc-subject-cohort-inclusion-v1.json",
+    "lib/canonical-v2/reviewed-ioc-capex-slice.js",
+    "lib/canonical-v2/shared-row-adapter.js",
+    "lib/canonical-v2/shared-serving-row.js",
+    "tests/canonical-v2-reviewed-ioc-capex-slice.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "A reviewed subject is included when its governed cohort receipt binds it to the selected cohort and its comparable counts. An exclusion requires a typed exclusion reason for an explicit narrower filter or comparability rule. The shared Product projection exposes included or excluded status and the exact typed exclusion reason on every surface. It creates no legal meaning, authority, serving, database, release, activation or production change."
+}

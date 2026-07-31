@@ -20,8 +20,13 @@ const {
   buildReviewedIocCapexSlice,
   validateReviewedIocCapexServingRow,
 } = require('../lib/canonical-v2/reviewed-ioc-capex-slice');
+const { compileMarketCohortRequest } = require('../lib/canonical-v2/market-cohort-query');
 const { adaptSharedServingRow, SURFACES } = require('../lib/canonical-v2/shared-row-adapter');
-const { validateSharedServingRow } = require('../lib/canonical-v2/shared-serving-row');
+const {
+  buildCanonicalResultServingRow,
+  buildSubjectCohortMembershipReceipt,
+  validateSharedServingRow,
+} = require('../lib/canonical-v2/shared-serving-row');
 
 const agreementText = fs.readFileSync('__fixtures__/demo-deal/landos-abbvie-agreement.txt', 'utf8');
 const dealValueSourceText = fs.readFileSync('__fixtures__/canonical-v2/landos-deal-value-sec-excerpt.txt', 'utf8');
@@ -170,19 +175,24 @@ test('the percentage, raw dollars, denominator and legal terms reach every share
     'Consent standard',
   ]);
   assert.equal(metric.distribution.normalised.cohorts[0].basis, 'headline_transaction_value');
-  assert.equal(metric.distribution.normalised.cohorts[0].percent.stats.n, 0);
+  assert.equal(metric.distribution.normalised.cohorts[0].percent.stats.n, 1);
   assert.deepEqual(metric.distribution.normalised.cohorts[0].dealIds, []);
-  assert.deepEqual(metric.exclusions, [{
-    reasonCode: 'NO_INDEPENDENT_COMPARABLE_DEALS',
-    slotCount: 0,
-    dealCount: 0,
-  }]);
+  assert.deepEqual(metric.exclusions, []);
+  assert.deepEqual(metric.subject.cohortMembership, {
+    status: 'included',
+    exclusionReason: null,
+  });
   for (const surface of SURFACES) {
     assert.equal(adapted.surface_bindings[surface].typed_market, adapted.typed_market);
+    assert.deepEqual(
+      adapted.surface_bindings[surface].typed_market.data.byRow[adapted.row_key]
+        .metrics.IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE.subject.cohortMembership,
+      { status: 'included', exclusionReason: null },
+    );
   }
 });
 
-test('the Landos Review subject remains source-backed but is not its own market cohort', () => {
+test('the Landos Review subject remains source-backed and is included in its market cohort', () => {
   const slice = build();
   const row = buildReviewedIocCapexServingRow({ slice, contractBundle });
   const market = row.canonical_result.market_context;
@@ -194,74 +204,127 @@ test('the Landos Review subject remains source-backed but is not its own market 
     market.subject_observation.canonical_value,
     slice.thresholdClaim.canonical_value,
   );
-  assert.ok(Object.values(market.cohort.counts).every((count) => count === 0));
-  assert.deepEqual(market.cohort.distribution, []);
-  assert.deepEqual(market.cohort.exclusions, [{
-    reason_code: 'NO_INDEPENDENT_COMPARABLE_DEALS',
-    slot_count: 0,
-    deal_count: 0,
+  assert.equal(market.subject_cohort_membership.status, 'INCLUDED');
+  assert.equal(market.subject_cohort_membership.exclusion_reason, null);
+  assert.deepEqual(market.cohort.counts, {
+    eligible_deals: 1,
+    applicable_deals: 1,
+    examined_deals: 1,
+    present_deals: 1,
+    comparable_deals: 1,
+    distribution_deals: 1,
+    excluded_deals: 0,
+    observation_slots: 1,
+    excluded_slots: 0,
+  });
+  assert.deepEqual(market.cohort.distribution, [{
+    canonical_value: slice.thresholdClaim.canonical_value,
+    subject_count: 1,
+    deal_count: 1,
   }]);
+  assert.deepEqual(market.cohort.exclusions, []);
   assert.equal(validateReviewedIocCapexServingRow(row), true);
 });
 
-test('rejects a re-signed Landos self-comparison', () => {
+test('rejects a re-signed false subject exclusion', () => {
   const slice = build();
   const row = structuredClone(
     buildReviewedIocCapexServingRow({ slice, contractBundle }),
   );
-  row.canonical_result.market_context.cohort.counts = {
-    eligible_deals: 1,
-    applicable_deals: 1,
-    examined_deals: 1,
-    present_deals: 1,
-    comparable_deals: 1,
-    distribution_deals: 1,
-    excluded_deals: 0,
-    observation_slots: 1,
-    excluded_slots: 0,
-  };
-  row.canonical_result.market_context.cohort.distribution = [{
-    canonical_value: row.canonical_result.market_context.subject_observation
-      .canonical_value,
-    subject_count: 1,
-    deal_count: 1,
-  }];
-  row.canonical_result.market_context.cohort.exclusions = [];
-  row.canonical_result.market_context.denominators.prevalence.deal_count = 1;
-  row.canonical_result.market_context.denominators.distribution.deal_count = 1;
+  const membership = row.canonical_result.market_context.subject_cohort_membership;
+  membership.status = 'EXCLUDED';
+  membership.exclusion_reason = 'NOT_COMPARABLE_UNDER_COHORT_RULE';
+  const { membership_receipt_id: _receiptId, ...receiptBody } = membership;
+  membership.membership_receipt_id = contentId(
+    'SUBJECT_COHORT_MEMBERSHIP_RECEIPT/V1',
+    receiptBody,
+  );
   assert.throws(
     () => validateReviewedIocCapexServingRow(resealRow(row)),
-    /must exclude its subject deal/,
+    /must include its subject deal/,
   );
 });
 
-test('rejects a re-signed invented one-deal distribution', () => {
+test('rejects a self-rehashed inclusion receipt not bound to the subject observation', () => {
   const slice = build();
   const row = structuredClone(
     buildReviewedIocCapexServingRow({ slice, contractBundle }),
   );
-  row.canonical_result.market_context.cohort.counts = {
-    eligible_deals: 1,
-    applicable_deals: 1,
-    examined_deals: 1,
-    present_deals: 1,
-    comparable_deals: 1,
-    distribution_deals: 1,
-    excluded_deals: 0,
-    observation_slots: 1,
-    excluded_slots: 0,
-  };
-  row.canonical_result.market_context.cohort.distribution = [{
-    canonical_value: '99.99999999',
-    subject_count: 1,
-    deal_count: 1,
-  }];
-  row.canonical_result.market_context.cohort.exclusions = [];
-  row.canonical_result.market_context.denominators.prevalence.deal_count = 1;
-  row.canonical_result.market_context.denominators.distribution.deal_count = 1;
+  const membership = row.canonical_result.market_context.subject_cohort_membership;
+  membership.market_observation_serving_key = contentId(
+    'MARKET_OBSERVATION/V1',
+    'forged-subject-observation',
+  );
+  const { membership_receipt_id: _receiptId, ...receiptBody } = membership;
+  membership.membership_receipt_id = contentId(
+    'SUBJECT_COHORT_MEMBERSHIP_RECEIPT/V1',
+    receiptBody,
+  );
   assert.throws(
     () => validateReviewedIocCapexServingRow(resealRow(row)),
-    /must exclude its subject deal/,
+    /does not bind the selected observation/,
+  );
+});
+
+test('represents an explicit narrower-filter exclusion with its typed reason', () => {
+  const slice = build();
+  const observation = slice.projection.observation;
+  const request = {
+    serving_namespace_id: contentId('SERVING_NAMESPACE/V1', 'landos-reviewed-fixture'),
+    corpus_release_id: observation.corpus_release_id,
+    contract_fingerprint: contractBundle.fingerprint,
+    metric_key: observation.metric_key,
+    metric_version: observation.metric_version,
+    concept_key: observation.concept_key,
+    party: observation.party,
+    subject_deal_key: observation.deal_key,
+    filters: { min_value_usd: '137500001' },
+  };
+  const compiled = compileMarketCohortRequest(request);
+  const row = buildCanonicalResultServingRow({
+    contract_bundle: contractBundle,
+    frozen_pair_id: contentId('FROZEN_PAIR/V1', {
+      reviewed_mapping_id: slice.reviewed_mapping.reviewed_mapping_id,
+      contract_fingerprint: contractBundle.fingerprint,
+    }),
+    projection_output: slice.projection,
+    cohort_request: request,
+    cohort_result: {
+      schema_version: 'MARKET_COHORT_RESULT/V1',
+      serving_namespace_id: compiled.serving_namespace_id,
+      corpus_release_id: compiled.corpus_release_id,
+      contract_fingerprint: compiled.contract_fingerprint,
+      cohort_digest: compiled.cohort_digest,
+      metric_key: compiled.metric_key,
+      metric_version: compiled.metric_version,
+      concept_key: compiled.concept_key,
+      subject_deal_key: compiled.subject_deal_key,
+      counts: {
+        eligible_deals: 0,
+        applicable_deals: 0,
+        examined_deals: 0,
+        present_deals: 0,
+        comparable_deals: 0,
+        distribution_deals: 0,
+        excluded_deals: 0,
+        observation_slots: 0,
+        excluded_slots: 0,
+      },
+      distribution: [],
+      exclusions: [],
+    },
+    subject_cohort_membership: buildSubjectCohortMembershipReceipt({
+      cohort_request: request,
+      observation,
+      status: 'EXCLUDED',
+      exclusion_reason: 'FILTER_DEAL_VALUE_OUT_OF_RANGE',
+    }),
+    result_ordinal: 0,
+  });
+  assert.deepEqual(
+    adaptSharedServingRow(row).data.byRow[row.row_serving_key]
+      .metrics.IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE.subject.cohortMembership,
+    { status: 'excluded', exclusionReason: 'FILTER_DEAL_VALUE_OUT_OF_RANGE' },
   );
 });
 
@@ -318,19 +381,21 @@ test('either exact source drifting blocks the reviewed mapping', () => {
   }), /deal-value source hash mismatch/);
 });
 
-test('uses the exact IOC subject-cohort exclusion boundary', () => {
+test('uses the exact IOC subject-cohort inclusion boundary', () => {
   const allowlistPath =
-    '.github/phase-allowlists/wp-p8-stage4-ioc-subject-cohort-exclusion-v1.json';
+    '.github/phase-allowlists/wp-p8-stage4-ioc-subject-cohort-inclusion-v1.json';
   const allowlist = JSON.parse(fs.readFileSync(allowlistPath, 'utf8'));
   assert.equal(
     allowlist.phase,
-    'WP-P8-STAGE4-IOC-SUBJECT-COHORT-EXCLUSION-V1',
+    'WP-P8-STAGE4-IOC-SUBJECT-COHORT-INCLUSION-V1',
   );
   assert.deepEqual(allowlist.allowed, [
     allowlistPath,
     'lib/canonical-v2/reviewed-ioc-capex-slice.js',
+    'lib/canonical-v2/shared-row-adapter.js',
+    'lib/canonical-v2/shared-serving-row.js',
     'tests/canonical-v2-reviewed-ioc-capex-slice.test.js',
   ]);
-  assert.match(allowlist.note, /NO_INDEPENDENT_COMPARABLE_DEALS/);
-  assert.match(allowlist.note, /subject observation and exact source remain/i);
+  assert.match(allowlist.note, /included/i);
+  assert.match(allowlist.note, /typed exclusion reason/i);
 });
