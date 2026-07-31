@@ -13,18 +13,18 @@ main integration.
 | --- | --- |
 | Main basis | `7b6bc64157c49832129fa2ca227399850cd983fc` |
 | Approved M1 review commit | `affa7464ca2cab2b4715ae084e3de6c2d39b673f` |
-| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; corrected candidate head `976de8f6`, followed only by ledger and signer-inventory evidence updates. The P8 affected-chain tests and corrected isolated-staging proofs pass. The final complete suite, build and two clean compiles are now being rerun on this exact candidate. Main remains fixed. |
+| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; tested candidate head `b0d8160e`, followed only by this final ledger evidence update. The P8 affected-chain tests, corrected isolated-staging proofs, complete suite, build and two clean compiles pass. Main remains fixed. |
 | Current working-tree successor bundle | 178 authored inputs, 177 substantive contracts, 8 categories. This is a draft, not the freeze candidate. |
 | Current working-tree bundle ID | `d222eba830fefad4772e358041e36f8818dbf227e4c7e13c77f4228514a37d8e` |
 | Current working-tree contract digest | `a953a215f9ff4cf94a204580b3b9a2b559fa531d1f3be16a3e787032257e87b3` |
 | Current working-tree payload digest | `36762abe8f4dd666df0d9aa66760d8c4e41971fab633764108ee54f73d5c8d73` |
 | Contract dependency graph | 177 nodes, 315 links, 0 unresolved dependencies, and 0 cycles |
-| Clean compile check | PASS on the current working tree. Two uncached compiles produced identical canonical bytes. Run this again on the final clean candidate. |
+| Clean compile check | PASS twice in separate Node processes on `b0d8160e`. Both produced 1,083,136 canonical bytes with SHA-256 `3a6021f20ebb6587aaa978c2bbdaa025cabdb84f961e514297f2e80fd90ca795`. |
 | Draft generic-envelope successor | Bundle `b37a20b3e343b93ab8d9d223625ef5431d0786f5720f1869572921ab7049ad30`; digest `158ac280eb3bc2b994e4d37281db8045deb48221af81ba84fb7da8a93205f03a`; 172 substantive contracts and 297 links. Two clean compiles are byte-identical. This draft does not replace the acknowledged M1 bundle until its exact bytes pass review and the reserved contract-freeze approval. |
 | Draft Product-writer successor | Bundle `dfab1f31bf31b7ce405dc8a5fc0215a07139634ff535f84b1266f754cba2797a`; digest `c8f840e70e8b1c1bac467278665fddc9d837123f9a8c44ae47c0b9630eaec540`; canonical payload `a6608b04e9140cb024089639a3989ae9d45a12df5cd6587f6d2695ea2ffb872f`; 173 substantive contracts and 302 links. Two clean compiles are byte-identical. It adds only an inactive staging candidate-result write through the existing canonical writer. Exact-root review and the reserved contract-freeze approval remain required before this draft replaces M1. |
 | Draft Product-serving successor | Bundle `17de909336a20e581ad9c35c107ce821b7a22379970c8923c01c1fa67d615611`; digest `21343532a94fe360c5c016feeb3e076dab7cde3ef1ca15b7f8dfe08e522a8ab3`; canonical payload `9c42b003c74234c33b00d0d991fa7990f65da38f49e63c343bda773d1c8eb94e`; 174 substantive contracts and 303 links. Two clean compiles are byte-identical. It adds one generic Product result serving-record contract for Agreement, Process and later admitted domains. The V7 importer and active query now implement that contract in isolated staging. Exact-root review and reviewed activation remain. |
-| Latest complete suite on this branch | The prior corrected candidate passed 4,772 tests with 0 failures and 5 environment-only skips. The exact `976de8f6` candidate now requires its one final complete-suite run. |
-| Latest production build on this branch | PASS on the combined candidate, 29/29 pages. Existing warnings remain: ESLint is absent, offline Supabase variables are absent, and two admin pages exceed the page-data warning threshold. |
+| Latest complete suite on this branch | PASS on exact code candidate `b0d8160e`: 5,132 pass, 0 fail, 1 staging-only skip. |
+| Latest production build on this branch | PASS on exact code candidate `b0d8160e`, 29/29 pages. Existing warnings remain: ESLint is absent, offline Supabase variables are absent, and two admin pages exceed the page-data warning threshold. |
 | Protected programme status | Generation 44, publication `9552de2185b11d80bd1e2b80757f4f07005c58d1`, binds code commit `a3149cfb6434f3166aac2c3bd9631e637d5df8ae`. Current GitHub main is `7b6bc64157c49832129fa2ca227399850cd983fc`. The official verifier fails closed because the signed status is stale. Its last signed projection had `canonical_work_start: PASS` and `vertical_slice_execution: OPEN`. |
 | M1 contract freeze | The prior milestone acknowledgement remains at `docs/acks/M1-CONTRACT-FREEZE-2026-07-30.md`. It cannot authorise the changed P8 bundle. The formal `P1_CONTRACT_FREEZE_ATTESTED` gate remains OPEN. |
 | M2 vertical slice | ACTIVE but not complete. QXO F28 has a prior isolated-staging rollback proof. F28 and IOC now pass the same real writer proof. Metsera authority propagation is corrected and locally tested, but the current staging runner correctly refuses to execute until the final exact M1 bundle acknowledgement exists. |
@@ -72,10 +72,10 @@ imports the common Product candidate record, activates only inside the test
 transaction, returns the result with the exact claim-evidence action, and
 returns the same page from cache. Rollback leaves zero candidate, partition,
 serving or cache rows. The active staging pointer remains generation 10.
-The exact candidate passes 124 affected tests. The current task is the one
-final complete suite, build and two clean compiles on this exact candidate,
-followed by the three Stage 4 reviews against the same bytes. One reserved
-bundle approval follows.
+The exact candidate passes 124 affected tests. The complete suite passes
+5,132 tests with no failure. The build produces all 29 pages. Two clean
+compiles produce identical bytes. The current task is the three Stage 4
+reviews against the same exact bundle. One reserved bundle approval follows.
 
 ## 2. Work underway
 
