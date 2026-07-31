@@ -19,22 +19,23 @@ model. Agents do not move main or publish programme status.
 
 | Item | State |
 | --- | --- |
-| Main basis | `7b6bc64157c49832129fa2ca227399850cd983fc` |
+| Main basis | `8bf79ff06b95126f585311b2801d31f341c83958` |
 | Approved M1 review commit | `6cd3c2c739ba2d281cee2c99eea908e371edf765` |
-| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; current code head `f6e9867005a8a16ca4dbf74b6820abe4597b9765`, followed only by this ledger update. The exact contract bundle is approved. Main remains fixed. |
+| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; current code head and GitHub main are `8bf79ff06b95126f585311b2801d31f341c83958`. The exact 177-member bundle was approved. Main remains fixed while the two post-approval blockers are corrected. |
 | Approved contract bundle | 177 contracts and 315 dependency links. |
 | Current working-tree bundle ID | `d222eba830fefad4772e358041e36f8818dbf227e4c7e13c77f4228514a37d8e` |
 | Current working-tree contract digest | `a953a215f9ff4cf94a204580b3b9a2b559fa531d1f3be16a3e787032257e87b3` |
 | Current working-tree payload digest | `36762abe8f4dd666df0d9aa66760d8c4e41971fab633764108ee54f73d5c8d73` |
 | Contract dependency graph | 177 nodes, 315 links, 0 unresolved dependencies, and 0 cycles |
 | Bundle compile reference | The approved bundle compiles to 1,083,136 canonical bytes with SHA-256 `3a6021f20ebb6587aaa978c2bbdaa025cabdb84f961e514297f2e80fd90ca795`. Two clean compiles are required on the final candidate before main moves. |
-| Latest complete suite on this branch | PASS on exact code candidate `f6e98670`: 4,786 pass, 0 fail, 5 skip. |
-| Latest production build on this branch | PASS on exact code candidate `f6e98670`, 29/29 pages. Existing warnings remain: ESLint is absent, offline Supabase variables are absent, and two admin pages exceed the page-data warning threshold. |
-| Protected programme status | Generation 44, publication `9552de2185b11d80bd1e2b80757f4f07005c58d1`, binds code commit `a3149cfb6434f3166aac2c3bd9631e637d5df8ae`. Current GitHub main is `7b6bc64157c49832129fa2ca227399850cd983fc`. The official verifier fails closed because the signed status is stale. Its last signed projection had `canonical_work_start: PASS` and `vertical_slice_execution: OPEN`. |
+| Latest complete suite on this branch | PASS on exact GitHub main `8bf79ff0`: 4,786 pass, 0 fail, 5 skip. GitHub CI run `30612191260` is green. |
+| Latest production build on this branch | PASS on exact GitHub main `8bf79ff0`, 29/29 pages. Existing warnings remain: ESLint is absent, offline Supabase variables are absent, and two admin pages exceed the page-data warning threshold. |
+| Latest deployments | Production `dpl_CjfE5z7BvSRGzYFnb2vEG2zaPK45` and isolated Preview `dpl_BUDvLVmeZxu1jN9Qw7W5TZB1TZxW` are READY and bind exact commit `8bf79ff0`. Production root returns HTTP 200. |
+| Protected programme status | Generation 44, publication `9552de2185b11d80bd1e2b80757f4f07005c58d1`, binds code commit `a3149cfb6434f3166aac2c3bd9631e637d5df8ae`. Current GitHub main is `8bf79ff06b95126f585311b2801d31f341c83958`. The official verifier fails closed because the signed status is stale. Its last signed projection had `canonical_work_start: PASS` and `vertical_slice_execution: OPEN`. |
 | M1 contract freeze | APPROVED. `docs/acks/M1-CONTRACT-FREEZE-2026-07-31.md` binds Ben's approval to the exact 177-contract bundle and three Stage 4 PASS reviews. It grants isolated-staging QXO and Metsera pilot permission only. The protected `P1_CONTRACT_FREEZE_ATTESTED` gate remains OPEN until the combined main commit is deployed and the matching signed successor is published. |
 | Stage 4 independent reviews | PASS on exact bundle ID `d222eba830fefad4772e358041e36f8818dbf227e4c7e13c77f4228514a37d8e`. Architecture and identity, legal semantics, and query, serving and release efficiency each returned PASS. Ben approved the exact bundle. |
 | Reviewed-deal cohort rule | IMPLEMENTED in `bacad7b5`, `e0e2c233` and `c3245dd3`. If the reviewed deal is in the corpus and meets the selected cohort and comparability rules, include it. Exclude it only for an explicit narrower or non-comparable reason. The shared UI row carries `INCLUDED` or `EXCLUDED` and the reason. |
-| M2 vertical slice | ACTIVE. The M1 acknowledgement permits isolated-staging QXO and Metsera pilots. Next: two clean bundle compiles, ledger check, one main movement, production and isolated Preview deploys, a matching signed successor with `P1_CONTRACT_FREEZE_ATTESTED: PASS` and `vertical_slice_execution: PASS`, then both pilots. |
+| M2 vertical slice | ACTIVE. The approved bundle is on GitHub main and deployed. Protected cold review run `30612470873` failed before model execution because the review runner and programme verifier used different specification-root membership. A second audit found that the Metsera staging script still accepted a synthetic phrasebook admission instead of deriving it from the real materialisation receipt. Both fail-closed corrections are active. They require a new exact bundle fingerprint and the reserved bundle-approval check before a signed successor can open the pilots. |
 | Isolated-staging access | PASS. Project `sjumbznveyyiizhwvixj` was re-authorised and verified through the Supabase plugin on 2026-07-30. Production was not queried or changed. |
 | Generic Agreement writer staging proof | PASS through exact commit `8a07ca30`. F28 and IOC reached the same SQL-native writer. The Agreement authority now uses one coherent version-3 candidate release manifest instead of a re-keyed version-1 shell. Valid inserts passed inside rollback transactions. Exact replay was a no-op. Conflicting replay failed closed. Twenty-eight coherently rehashed hostile requests failed before DML. Durable candidate rows and receipts remain zero. Production was not accessed. |
 | Product query cache staging proof | PASS on exact commit `976de8f6`. One real IOC Product result was written, imported and transaction-locally activated. The first active query returned the result with action `RESULT_COMPONENT_CLAIM_EVIDENCE`. The exact repeat was a cache hit. Two transaction-local cache rows covered the empty and non-empty pages. Forced rollback left zero candidate, partition, serving and cache rows. The active pointer remained generation 10. Production was not accessed. |
@@ -53,10 +54,16 @@ completed milestone moves main.
 
 The programme is in P8 Stage 5. P8 means that one real Agreement provision
 and one real Process provision must travel from source evidence to every
-required product view. The bundle is approved and all Stage 4 reviews pass.
-Stage 5 now needs two clean bundle compiles, the ledger check, one main move,
-production and isolated Preview deploys, a matching signed checkpoint, and
-the QXO and Metsera isolated-staging pilots.
+required product view. The approved bundle is on GitHub main and both exact
+deployments are ready. Stage 5 found two fail-closed defects before pilot
+permission opened. The protected review runner used the wrong six-file
+programme fingerprint. The Metsera staging script accepted a synthetic
+phrasebook admission instead of deriving it from the real source-backed
+materialisation receipt. Both corrections are active on separate branches.
+After they merge, the controller must compile the amended bundle twice, run
+the three exact-byte reviews, obtain the reserved approval for the amended
+fingerprint, deploy once, publish the matching signed checkpoint, and run the
+QXO and Metsera isolated-staging pilots.
 
 P1-P7 supplied the contracts and pure processing modules. QXO F28 has a prior
 real source-to-product rollback proof. The current P8 correction adds the
@@ -84,12 +91,15 @@ serving or cache rows. The active staging pointer remains generation 10.
 The exact reviewed bundle has 177 contracts and 315 links. Its compiled form
 is 1,083,136 bytes with SHA-256
 `3a6021f20ebb6587aaa978c2bbdaa025cabdb84f961e514297f2e80fd90ca795`.
-The clean suite at `f6e98670` has 4,786 pass, 0 fail and 5 skip. The production
-build passes all 29 pages. The reviewed-deal cohort correction is in
+The clean suite at GitHub main `8bf79ff0` has 4,786 pass, 0 fail and 5 skip.
+The production build passes all 29 pages. GitHub CI run `30612191260` is
+green. The production and isolated Preview deployments are READY. The
+reviewed-deal cohort correction is in
 `bacad7b5`, `e0e2c233` and `c3245dd3`. The release identity cascade is in
 `535e5dbc`, `b1f0355f`, `9ede3c5d` and compact fixture `7f424a43`. Signer
-closure is in `de66bf25` and `f6e98670`. The current task is the final
-integration sequence and then the two pilots.
+closure is in `de66bf25` and `f6e98670`. The current task is the two bounded
+fail-closed corrections, one amended exact-root review and approval, then the
+two pilots.
 
 ## 2. Work underway
 
@@ -107,6 +117,7 @@ integration sequence and then the two pilots.
 | `PM-P8-SUBJECT-COHORT-01` | P8 Stage 5 | Include the reviewed deal when it meets the selected cohort and comparability rules. Show its exact inclusion state in every view. | PM implementation | Active branch; commits `bacad7b5`, `e0e2c233` and `c3245dd3`; shared row, shared adapter, release-wide receipt validation and tests. | PASS. A shared row carries `INCLUDED` or `EXCLUDED` and the reason. Exclusion needs an explicit narrower or non-comparable reason. Contract bytes are unchanged. | COMPLETE | Preserve the correction in the final candidate. | No |
 | `PM-P8-BUNDLE-APPROVAL-01` | P8 Stage 5 | Bind Ben's approval to the exact reviewed bundle and open only isolated-staging pilot execution. | PM controller | Active branch; commit `bce77346`; `docs/acks/M1-CONTRACT-FREEZE-2026-07-31.md`, runner references and strict permission tests. | 10 focused tests PASS. Direct root compile and permission validation return `vertical_slice_execution: PASS` and `production_authority: NONE`. | COMPLETE | Use the exact permission in both isolated-staging pilots. | No |
 | `PM-P8-SIGNER-CLOSURE-01` | P8 Stage 5 | Close the protected successor publisher's exact path inventory before main moves. | PM controller | Active branch; commits `de66bf25` and `f6e98670`; static signer inventory, exact allowlist and focused preflight test. | PASS. The focused test rejects an invented extra path. | COMPLETE | Run the final local integration preflight on the exact candidate. | No |
+| `PM-P8-COLD-REVIEW-ROOT-02` | P8 Stage 5 | Make the programme verifier and protected cold-review runner calculate the same exact six-file programme fingerprint. | PM implementation | `codex/cold-review-root-contract-fix-v1`; programme verifier, cold-review runner, exact allowlist and hostile focused tests. | Run `30612470873` failed before model execution because the runner included bootstrap while the committed manifest includes this ledger, and the verifier used a different hash function. | ACTIVE | Keep the review controller strict. Derive one membership and one domain-separated root, then rerun the protected review. | No |
 | `PM-GOV-BALANCE-01` | control | Replace pre-production attestation machinery with four milestone reviews and Tier A/Tier B security. | PM controller | `codex/governance-balance-v2`; governing docs, generated manifest and apparatus-only tests; commit `afbf1a4`. | 4,576 pass, 0 fail, 7 skip; production build PASS. | INTEGRATION | Include the committed unit in the next controlled main movement. | No |
 | `PM-QXO-F28-LINK-01` | P8 | Bind the F28 graph, all 14 metric slots, correction head and Product result without hiding missing runtime links. | PM implementation | `codex/qxo-f28-runtime-link-v1`; commit `d582705`. | 4 focused tests PASS. | COMPLETE | Preserve the fail-closed runtime plan. | No |
 | `PM-QXO-F28-WRITER-01` | P8 | Convert the exact F28 graph into the canonical writer's closed `DEAL_SCOPE_RUN` input. | PM implementation | Same branch; commits `32af4b2`, `53868ba`, `77f4183` and `7be1521`. | 28 writer tests PASS. The F28 write set has zero residuals. | COMPLETE | Execute the exact input against isolated staging. | No |
@@ -123,6 +134,7 @@ integration sequence and then the two pilots.
 | `PI-METSERA-RUNTIME-01` | P8 | Connect sealed Metsera sources through acquisition, enumeration, graph validation and pilot materialisation. | Process Intelligence and PM controller | PI connector commits integrated on `codex/p8-combined-pilot-integration-v1`; pure runtime and focused tests only. | 68 focused acquisition, scope, semantic, lexical, graph, validation and pilot tests PASS. All trusted receipt and typed failure checks remain active. | COMPLETE | Preserve the connector while Product wiring is added. | No |
 | `PM-METSERA-SOURCE-SIDECAR-01` | P8 | Run one real Metsera exclusivity-grant passage from the sealed SEC source universe into the typed Process sidecar. | PM controller | Same branch; commit `627093a3`; four-file staging-pilot boundary. | PASS twice with identical IDs. Nine source documents and eight reviewed passages match exact bytes and hashes. One result materialised. Seven out-of-slice passages remain typed residuals. Current materialisation receipt `67da27a5a1b37256d877fccdb0e99de1f8eb6994fa39f0fe0dc8145836680c97`. Focused chain 79/79 PASS. Staging pointer remains generation 10. | COMPLETE | Preserve the exact sidecar through all Product links. | No |
 | `PM-METSERA-PROCESS-ADMISSION-01` | P8 | Admit the exact Metsera grant sidecar under the signed Process phrasebook-result contract. | PM implementation | Same branch; commit `7a7c7263`; Product-admission adapter, staging runner and focused tests. | PASS twice with byte-identical output. Process result `ce2df4541a9137afb85916aaf08befe361186213eec2b913338c0bc63828bf65`; admission receipt `517d3b3c4f02f2b2df2bdf85f5d32af02ebc6fefe37aa649c319d8ae7dac319d`; 36 focused tests PASS. Source remains Process narration and is not relabelled as actual drafting. | COMPLETE | Preserve the complete admission input and receipt in every Product sidecar. | No |
+| `PM-METSERA-REAL-ADMISSION-02` | P8 Stage 5 | Derive the phrasebook admission from the real Metsera materialisation receipt and preserve that receipt through Product persistence. | PM implementation | `codex/metsera-real-admission-bridge`; new dedicated adapter plus narrow Product admission, staging runner, successor contract and focused test paths. | Audit found that the current staging script accepts a synthetic two-field admission and that the Product adapter sets `materialisation_receipt_id` to null. This is an identity and evidence blocker. | ACTIVE | Validate the full source-backed receipt, derive the nine admission inputs, retain the real receipt in the write set, then rebuild and review the exact bundle. | Reserved amended bundle fingerprint only |
 | `PM-METSERA-PRODUCT-ROW-01` | P8 | Compile the admitted Metsera grant through the existing Product Query IR and shared Product result row. | PM implementation | Same branch; commits `2ddf8002`, `7cecbe7e` and `79ae3bdf`; one bounded row adapter plus the existing signed Product compilers. | 50 focused Product and bridge tests PASS. Current real run: query `063ea4a98fc4ae3db1088eba4931b231978e7c0cc4cc6b2a2e5a5e8505baa864`; Product result `7ff6e4d1ddb2baf6a995f66a911ef4b7031ef96bf52af5f0789a4adfeebea754`; exact outcome field `EXCLUSIVITY_GRANTED`; full catalogue has all 27 shared and Process fields. | COMPLETE | Preserve the exact row and Process ordering projection. | No |
 | `PM-METSERA-RESULT-SET-01` | P8 | Revalidate the Metsera Product row and preserve the Process-owned order in the existing Product result-set compiler. | PM implementation | Same branch; commit `7cecbe7e`; one bounded result-set adapter. | 33 focused result-set tests PASS. Current receipt `ee7c3a4e2970c936e506b43604bdad48bf2ef4065e7637fd31725d4a233da9db` contains one ordered valid result, zero typed failures and zero exclusions. Product Query is compiled before Process ordering, so both bind the same exact Query ID. | COMPLETE | Preserve the exact slots and execution summary in presentation and source reading. | No |
 | `PM-METSERA-PRESENTATION-01` | P8 | Compile the exact Metsera result set into the existing answer-first Product presentation. | PM implementation | Same branch; commit `79ae3bdf`; one checked 27-field catalogue and one narrow presentation handoff. | 26 focused and adjacent tests PASS. The nine-source run passed twice with byte-identical output. Presentation receipt `c0b0c7bec890d4b623b4d28db304e1d7ae183f996717461c53101cf8d088a856`. It retains the same Query, result, order, citation and Process sidecar. | COMPLETE | Feed the same result and source action to the existing source-reader compiler. | No |
@@ -136,11 +148,20 @@ integration sequence and then the two pilots.
 
 ## 3. Next 48 hours
 
-1. Run two clean bundle compiles and check this ledger on the final candidate.
-2. Move main once.
-3. Deploy the exact main commit to production and isolated Preview.
-4. Publish and verify the matching signed successor. It must report `P1_CONTRACT_FREEZE_ATTESTED: PASS` and `vertical_slice_execution: PASS`.
-5. Run the approved QXO and Metsera staging pilots and record their exact cross-view results.
+1. Merge the cold-review root correction and the real Metsera admission bridge
+   into one corrective candidate.
+2. Register the successor contract, refresh exact counts and signer scope, and
+   run focused and affected-chain tests.
+3. Compile the amended bundle twice and require identical bytes.
+4. Run architecture, legal-semantic, and query, serving and release reviews
+   concurrently against the same exact amended bytes.
+5. Present the amended fingerprint for the reserved bundle approval.
+6. Run the complete suite and build, move main once, and deploy the exact
+   corrective commit to production and isolated Preview.
+7. Publish and verify the matching signed successor. It must report
+   `P1_CONTRACT_FREEZE_ATTESTED: PASS` and `vertical_slice_execution: PASS`.
+8. Run the approved QXO and Metsera staging pilots and record their exact
+   cross-view results.
 
 ## 4. Bounded units through P11
 
