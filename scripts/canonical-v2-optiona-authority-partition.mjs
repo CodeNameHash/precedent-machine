@@ -16,7 +16,7 @@ const FUNCTIONS = Object.freeze([
     output: 'step0b-canonical-writer-by-contract.sql',
     source: 'supabase/canonical-v2-foundation.sql',
     marker: 'CREATE OR REPLACE FUNCTION public.canonical_v2_write(',
-    digest: '2d4e8cd16f4f4e8d40c958d468443ed8355fdc9970948e0a6b0bea503adba6c5',
+    digest: 'a10e85b3eb596bfafd3d43d9e0198deaa973a5918377359fa2b512564371dd90',
     dependencies: Object.freeze([
       Object.freeze({
         source: 'supabase/canonical-v2-foundation.sql',
@@ -28,10 +28,24 @@ const FUNCTIONS = Object.freeze([
         marker: 'CREATE OR REPLACE FUNCTION canonical_v2_staging.content_id(',
         digest: '04da1eab5614a2ff3bd9057cfd1f20a19c5a816def10676b4736a1e13e826a91',
       }),
+      Object.freeze({
+        source: 'supabase/canonical-v2-foundation.sql',
+        marker: 'CREATE OR REPLACE FUNCTION canonical_v2_staging.validate_process_phrasebook_product_carrier(',
+        digest: 'd7b82ecdbd7b724a0a1896e246a26bd0714015f063ceb38e78a5cbbf945c53d2',
+      }),
+      Object.freeze({
+        source: 'supabase/canonical-v2-foundation.sql',
+        marker: 'CREATE OR REPLACE FUNCTION canonical_v2_staging.validate_agreement_candidate_product_carrier(',
+        digest: 'aba0520b19e1361d113fa397a33275ec84ba8545181c5a15360a2d24399d13e1',
+      }),
     ]),
     suffix: `REVOKE ALL ON FUNCTION canonical_v2_staging.canonical_json(jsonb)
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;
 REVOKE ALL ON FUNCTION canonical_v2_staging.content_id(text, jsonb)
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;
+REVOKE ALL ON FUNCTION canonical_v2_staging.validate_process_phrasebook_product_carrier(jsonb)
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;
+REVOKE ALL ON FUNCTION canonical_v2_staging.validate_agreement_candidate_product_carrier(jsonb)
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;`,
   },
   {

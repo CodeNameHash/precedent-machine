@@ -115,7 +115,81 @@ BEGIN
 END
 $$;
 
--- Governed function SHA-256: 2d4e8cd16f4f4e8d40c958d468443ed8355fdc9970948e0a6b0bea503adba6c5
+-- Governed function SHA-256: d7b82ecdbd7b724a0a1896e246a26bd0714015f063ceb38e78a5cbbf945c53d2
+CREATE OR REPLACE FUNCTION canonical_v2_staging.validate_process_phrasebook_product_carrier(
+  p_carrier jsonb
+)
+RETURNS void
+LANGUAGE plpgsql
+SET search_path = pg_catalog, canonical_v2_staging
+AS $$
+DECLARE
+  c jsonb := p_carrier->'pilot_product_authority_context';
+  i jsonb := p_carrier->'pilot_product_authority_context_input';
+  b jsonb := p_carrier->'pilot_product_authority_context_input'->'compiled_contract_bundle';
+  m jsonb := p_carrier->'pilot_product_authority_context_input'->'candidate_release_manifest';
+  w jsonb := p_carrier->'complete_write_set';
+BEGIN
+  IF jsonb_typeof(p_carrier) IS DISTINCT FROM 'object'
+    OR p_carrier - ARRAY['schema_version','process_phrasebook_product_chain_id','process_phrasebook_product_chain_payload_digest','complete_write_set','pilot_product_authority_context','pilot_product_authority_context_input']::text[] <> '{}'::jsonb
+    OR NOT p_carrier ?& ARRAY['schema_version','process_phrasebook_product_chain_id','process_phrasebook_product_chain_payload_digest','complete_write_set','pilot_product_authority_context','pilot_product_authority_context_input']
+    OR p_carrier->>'schema_version' IS DISTINCT FROM 'PROCESS_PHRASEBOOK_PRODUCT_CHAIN/V1'
+    OR jsonb_typeof(c) IS DISTINCT FROM 'object'
+    OR jsonb_typeof(i) IS DISTINCT FROM 'object'
+    OR jsonb_typeof(b) IS DISTINCT FROM 'object'
+    OR jsonb_typeof(m) IS DISTINCT FROM 'object'
+    OR jsonb_typeof(w) IS DISTINCT FROM 'object'
+  THEN RAISE EXCEPTION 'invalid SQL-native Process Product authority carrier' USING ERRCODE = '23514'; END IF;
+
+  IF c - ARRAY['schema_version','authority_context_id','approved_pm_data_version_id','canonical_contract_bundle','candidate_release_manifest','product_field_catalogue_manifest','product_field_catalogue_query_admission','product_navigation_catalogue_manifest','product_navigation_catalogue_query_admission','predicate_catalogue_bindings','predicate_admissions','product_query_admission_context','certification_identities','authority_limits']::text[] <> '{}'::jsonb
+    OR NOT c ?& ARRAY['schema_version','authority_context_id','approved_pm_data_version_id','canonical_contract_bundle','candidate_release_manifest','product_field_catalogue_manifest','product_field_catalogue_query_admission','product_navigation_catalogue_manifest','product_navigation_catalogue_query_admission','predicate_catalogue_bindings','predicate_admissions','product_query_admission_context','certification_identities','authority_limits']
+    OR c->>'schema_version' IS DISTINCT FROM 'PILOT_PRODUCT_AUTHORITY_CONTEXT/V1'
+    OR c->>'authority_context_id' IS DISTINCT FROM '49bc88d832e84219c5c9266e0e07595b0fc292b1ec42be040cd84315bf61b6dc'
+    OR c->>'authority_context_id' IS DISTINCT FROM canonical_v2_staging.content_id('PILOT_PRODUCT_AUTHORITY_CONTEXT/V1',c-'authority_context_id')
+    OR c->>'approved_pm_data_version_id' IS DISTINCT FROM '0f5b8490a824d9c044fb1f0eefc2e2cec229f0f424d7247e65b0bd1f9fc93556'
+    OR c->'authority_limits' IS DISTINCT FROM '{"activation":"NONE","database_write":"NONE","extraction":"NONE","import":"NONE","materialisation":"NONE","production":"NONE","query_execution":"NONE","release":"NONE","serving":"NONE","source_read":"NONE","writer":"NONE"}'::jsonb
+  THEN RAISE EXCEPTION 'invalid SQL-native Process Product authority carrier' USING ERRCODE = '23514'; END IF;
+
+  IF i - ARRAY['canonical_contract_input_compilation','compiled_contract_bundle','candidate_release_manifest']::text[] <> '{}'::jsonb
+    OR NOT i ?& ARRAY['canonical_contract_input_compilation','compiled_contract_bundle','candidate_release_manifest']
+    OR i->'canonical_contract_input_compilation'->'canonical_bundle_input_identity'->>'root_input_manifest_id' IS DISTINCT FROM '47131fd24cb9a4cf9f342c00acb50feab67b9ed96371224f1c778d9b6d7766ea'
+    OR i->'canonical_contract_input_compilation'->'canonical_bundle_input_identity'->>'root_input_manifest_payload_digest' IS DISTINCT FROM 'f777edf82da8ff9e08d9efab93b309fd2a3ecc1877e2a23fdc6cb32ae5ebdb75'
+    OR b->>'schema_version' IS DISTINCT FROM 'CANONICAL_CONTRACT_BUNDLE_COMPILATION/V1'
+    OR b->>'contract_bundle_id' IS DISTINCT FROM 'dfc22fe07d54053db1e7ec92247d6428406f97aac7df351230b37ce7aafeb1d1'
+    OR b->>'contract_bundle_digest' IS DISTINCT FROM 'ee81cf33b874850132acb880f88fb35f7cb90b0d20847d2e8167977a6b590409'
+    OR b->>'canonical_payload_digest' IS DISTINCT FROM '934da806a678bb75819bf9013fc6cd2154681375d841328af1e2d4af6096ca49'
+    OR b->>'canonical_payload_digest' IS DISTINCT FROM canonical_v2_staging.content_id('CANONICAL_CONTRACT_BUNDLE_COMPILATION_PAYLOAD/V1',b-ARRAY['schema_version','canonical_payload_digest','disposition']::text[])
+    OR b->'compile_report'->>'status' IS DISTINCT FROM 'PASS'
+    OR b->'dependency_cycle_report'->>'status' IS DISTINCT FROM 'PASS'
+    OR (b->'compile_report'->>'missing_member_count')::integer IS DISTINCT FROM 0
+    OR (b->'compile_report'->>'extra_member_count')::integer IS DISTINCT FROM 0
+    OR (b->'compile_report'->>'duplicate_identity_count')::integer IS DISTINCT FROM 0
+    OR (b->'compile_report'->>'conflict_count')::integer IS DISTINCT FROM 0
+    OR (b->'dependency_cycle_report'->>'unresolved_dependency_count')::integer IS DISTINCT FROM 0
+    OR (b->'dependency_cycle_report'->>'cycle_count')::integer IS DISTINCT FROM 0
+    OR b->'disposition' IS DISTINCT FROM '{"activation_authority":"NONE","database_authority":"NONE","freeze_authority":"NONE","production_authority":"NONE","release_authority":"NONE","schema_version":"CANONICAL_CONTRACT_BUNDLE_COMPILATION_DISPOSITION/V1","serving_authority":"NONE","signing_authority":"NONE","status":"COMPILED_NOT_FROZEN","writer_authority":"NONE"}'::jsonb
+    OR c->'canonical_contract_bundle' IS DISTINCT FROM jsonb_build_object('contract_bundle_id',b->>'contract_bundle_id','contract_bundle_digest',b->>'contract_bundle_digest','canonical_payload_digest',b->>'canonical_payload_digest')
+  THEN RAISE EXCEPTION 'invalid SQL-native Process Product authority carrier' USING ERRCODE = '23514'; END IF;
+
+  IF m->>'schema_version' IS DISTINCT FROM 'FIXTURE_CANDIDATE_RELEASE_MANIFEST/V3'
+    OR m->>'candidate_release_manifest_id' IS DISTINCT FROM canonical_v2_staging.content_id('FIXTURE_CANDIDATE_RELEASE_MANIFEST/V3',m-ARRAY['candidate_release_manifest_id','canonical_payload_digest']::text[])
+    OR m->>'canonical_payload_digest' IS DISTINCT FROM canonical_v2_staging.content_id('FIXTURE_CANDIDATE_RELEASE_MANIFEST_PAYLOAD/V3',m-ARRAY['candidate_release_manifest_id','canonical_payload_digest']::text[])
+    OR c->'candidate_release_manifest' IS DISTINCT FROM jsonb_build_object('candidate_release_manifest_id',m->>'candidate_release_manifest_id','canonical_payload_digest',m->>'canonical_payload_digest','corpus_release_id',m->>'corpus_release_id')
+    OR c->'product_query_admission_context'->>'approved_pm_data_version_id' IS DISTINCT FROM c->>'approved_pm_data_version_id'
+    OR c->'product_query_admission_context'->>'candidate_release_manifest_id' IS DISTINCT FROM m->>'candidate_release_manifest_id'
+    OR c->'product_query_admission_context'->>'candidate_release_manifest_payload_digest' IS DISTINCT FROM m->>'canonical_payload_digest'
+    OR c->'product_query_admission_context'->'canonical_contract_identity'->>'payload_digest' IS DISTINCT FROM b->>'canonical_payload_digest'
+    OR w->'candidate_release_binding'->>'candidate_release_manifest_id' IS DISTINCT FROM m->>'candidate_release_manifest_id'
+    OR w->'candidate_release_binding'->>'candidate_release_manifest_payload_digest' IS DISTINCT FROM m->>'canonical_payload_digest'
+    OR w->'candidate_release_binding'->>'corpus_release_id' IS DISTINCT FROM m->>'corpus_release_id'
+    OR w->'product_row'->'product_query_ir'->'release_contract'->>'approved_pm_data_version_id' IS DISTINCT FROM c->>'approved_pm_data_version_id'
+    OR w->'product_row'->'product_query_ir'->'release_contract'->>'candidate_release_manifest_id' IS DISTINCT FROM m->>'candidate_release_manifest_id'
+    OR w->'product_row'->'product_query_ir'->'release_contract'->>'candidate_release_manifest_payload_digest' IS DISTINCT FROM m->>'canonical_payload_digest'
+  THEN RAISE EXCEPTION 'invalid SQL-native Process Product authority carrier' USING ERRCODE = '23514'; END IF;
+END
+$$;
+
+-- Governed function SHA-256: aba0520b19e1361d113fa397a33275ec84ba8545181c5a15360a2d24399d13e1
 CREATE OR REPLACE FUNCTION canonical_v2_staging.validate_agreement_candidate_product_carrier(
   p_carrier jsonb
 )
@@ -169,7 +243,13 @@ BEGIN
   ELSE RAISE EXCEPTION 'invalid SQL-native Agreement candidate Product materialisation' USING ERRCODE = '23514'; END IF;
 
   IF e->>'family_profile_digest' IS DISTINCT FROM profile_digest
+    OR jsonb_typeof(e->'provision_row') IS DISTINCT FROM 'object'
+    OR e->'provision_row' IS DISTINCT FROM e->'source_projection'->'provision_row'->'payload'
+    OR jsonb_typeof(e->'product_membership') IS DISTINCT FROM 'object'
+    OR (e->'product_membership') - ARRAY['domain_key','membership_state','result_definition_stable_id','result_definition_version','domain_result_identity','domain_result_payload_digest']::text[] <> '{}'::jsonb
+    OR NOT (e->'product_membership') ?& ARRAY['domain_key','membership_state','result_definition_stable_id','result_definition_version','domain_result_identity','domain_result_payload_digest']
     OR e->'product_membership'->>'domain_key' IS DISTINCT FROM 'AGREEMENT'
+    OR e->'product_membership'->>'membership_state' IS DISTINCT FROM 'CANDIDATE_ENVELOPE_ONLY'
     OR e->'product_membership'->>'result_definition_stable_id' IS DISTINCT FROM result_id
     OR (e->'product_membership'->>'result_definition_version')::integer IS DISTINCT FROM result_version
     OR e->>'agreement_candidate_envelope_id' IS DISTINCT FROM canonical_v2_staging.content_id('AGREEMENT_CANDIDATE_ENVELOPE/V1',e-ARRAY['schema_version','agreement_candidate_envelope_id']::text[])
@@ -217,9 +297,9 @@ BEGIN
     OR b->>'corpus_release_id' IS DISTINCT FROM '81afb231fdd2884e4f643ec90f9f71efb6e201c9b4d350e8394f4a020bb235ed'
     OR q-ARRAY['schema_version','query_definition_id','release_contract','semantic_contract','cohort_contract','filter_contract','presentation_contract','pagination_contract','detail_action_contract','coverage_contract']::text[] <> '{}'::jsonb
     OR q->>'query_definition_id' IS DISTINCT FROM canonical_v2_staging.content_id('PRODUCT_QUERY_IR/V1',q-'query_definition_id')
-    OR q->'release_contract'->>'approved_pm_data_version_id' IS DISTINCT FROM 'dcb42a4a0a54ac6fa4737fb78c6ad3130f4db95338c3a7ba4a64e5db44ad8bee'
-    OR q->'release_contract'->>'candidate_release_manifest_id' IS DISTINCT FROM 'baa3437862c0f89060a89bb4f43462f2179af5790124a64f60ce1038098ab94e'
-    OR q->'release_contract'->>'candidate_release_manifest_payload_digest' IS DISTINCT FROM 'c99873f0e2a5c390693f37c081fa38bce72ade3045156838c61d8fb52bd370a7'
+    OR q->'release_contract'->>'approved_pm_data_version_id' IS DISTINCT FROM '34f6a3c0471f8265b021c46251b0cc5da554e58da0c8f953aa3baaeea3fc6435'
+    OR q->'release_contract'->>'candidate_release_manifest_id' IS DISTINCT FROM 'e88a71afe109f789b26dafe25200c8994fe92db02ae71c76107c00da3c0a6944'
+    OR q->'release_contract'->>'candidate_release_manifest_payload_digest' IS DISTINCT FROM '5db5d788480c9c2202650f9efc854e57e42c0f8e4c3a8c19b346847537406da0'
     OR q->'semantic_contract'->>'domain_key' IS DISTINCT FROM 'AGREEMENT'
     OR q->'semantic_contract'->>'predicate_key' IS DISTINCT FROM result_id
     OR q->'semantic_contract'->'result_definition'->>'stable_id' IS DISTINCT FROM result_id
@@ -252,8 +332,8 @@ BEGIN
     OR o->>'approved_pm_data_version_id' IS DISTINCT FROM q->'release_contract'->>'approved_pm_data_version_id'
     OR o->>'candidate_release_manifest_id' IS DISTINCT FROM q->'release_contract'->>'candidate_release_manifest_id'
     OR o->>'candidate_release_manifest_payload_digest' IS DISTINCT FROM q->'release_contract'->>'candidate_release_manifest_payload_digest'
-    OR o->>'product_field_catalogue_id' IS DISTINCT FROM '82f4377f4581adea56b147a6c6efb72c697a0fde75d6169d403420c03469d0a4'
-    OR o->>'product_field_catalogue_payload_digest' IS DISTINCT FROM 'c1f1e240474dbbd38a6faf5625ed11bc245e9176c0d91fd107df44a27d90fcc8'
+    OR o->>'product_field_catalogue_id' IS DISTINCT FROM '0248b28f36f69ba2cf08a6e4d648cfda5a1caed4a87a4f94ad134a4bab8093ee'
+    OR o->>'product_field_catalogue_payload_digest' IS DISTINCT FROM 'e399949c1758b003a0f9155fe97dc8cea4d10941c3d665b7a42551f526246d52'
     OR o->'product_field_catalogue_manifest'->>'manifest_id' IS DISTINCT FROM o->>'product_field_catalogue_id'
     OR o->'product_field_catalogue_manifest'->>'canonical_payload_digest' IS DISTINCT FROM o->>'product_field_catalogue_payload_digest'
     OR o->'product_field_catalogue_manifest'->>'manifest_id' IS DISTINCT FROM canonical_v2_staging.content_id('PRODUCT_FIELD_CATALOGUE_MANIFEST/V1',(o->'product_field_catalogue_manifest')-ARRAY['manifest_id','canonical_payload_digest']::text[])
@@ -335,6 +415,7 @@ BEGIN
 END
 $$;
 
+-- Governed function SHA-256: a10e85b3eb596bfafd3d43d9e0198deaa973a5918377359fa2b512564371dd90
 CREATE OR REPLACE FUNCTION public.canonical_v2_write(
   p_environment text,
   p_operation text,
@@ -548,13 +629,20 @@ BEGIN
     adapter_identifier := p_write_set->>'adapter_identifier';
     domain_carrier := p_write_set->'domain_carrier';
     IF adapter_identifier = 'PROCESS_PHRASEBOOK_PRODUCT_CHAIN' THEN
+      PERFORM canonical_v2_staging.validate_process_phrasebook_product_carrier(
+        domain_carrier
+      );
       IF domain_carrier - ARRAY[
           'schema_version', 'process_phrasebook_product_chain_id',
-          'process_phrasebook_product_chain_payload_digest', 'complete_write_set'
+          'process_phrasebook_product_chain_payload_digest', 'complete_write_set',
+          'pilot_product_authority_context',
+          'pilot_product_authority_context_input'
         ]::text[] <> '{}'::jsonb
         OR NOT domain_carrier ?& ARRAY[
           'schema_version', 'process_phrasebook_product_chain_id',
-          'process_phrasebook_product_chain_payload_digest', 'complete_write_set'
+          'process_phrasebook_product_chain_payload_digest', 'complete_write_set',
+          'pilot_product_authority_context',
+          'pilot_product_authority_context_input'
         ]
         OR domain_carrier->>'schema_version'
           IS DISTINCT FROM 'PROCESS_PHRASEBOOK_PRODUCT_CHAIN/V1'
@@ -592,14 +680,14 @@ BEGIN
         domain_carrier
       );
       IF domain_carrier - ARRAY[
-          'schema_version', 'agreement_candidate_envelope_id',
+        'schema_version', 'agreement_candidate_envelope_id',
           'agreement_candidate_envelope_carrier_id',
           'agreement_candidate_envelope_carrier_payload_digest',
           'agreement_candidate_envelope_payload_digest',
           'agreement_candidate_envelope', 'product_materialisation'
         ]::text[] <> '{}'::jsonb
         OR NOT domain_carrier ?& ARRAY[
-          'schema_version', 'agreement_candidate_envelope_id',
+        'schema_version', 'agreement_candidate_envelope_id',
           'agreement_candidate_envelope_carrier_id',
           'agreement_candidate_envelope_carrier_payload_digest',
           'agreement_candidate_envelope_payload_digest',
@@ -883,7 +971,8 @@ BEGIN
           ->>'product_admission_adapter_receipt_id'
         IS DISTINCT FROM canonical_v2_staging.content_id(
           'METSERA_EXCLUSIVITY_PRODUCT_ADMISSION/V1',
-          (p_write_set->'product_admission') - 'product_admission_adapter_receipt_id'
+          (p_write_set->'product_admission')
+            - 'product_admission_adapter_receipt_id'
         )
       OR p_write_set->'product_row'->>'product_row_receipt_id'
         IS DISTINCT FROM canonical_v2_staging.content_id(
@@ -899,7 +988,8 @@ BEGIN
           ->>'product_presentation_receipt_id'
         IS DISTINCT FROM canonical_v2_staging.content_id(
           'METSERA_EXCLUSIVITY_PRODUCT_PRESENTATION/V1',
-          (p_write_set->'product_presentation') - 'product_presentation_receipt_id'
+          (p_write_set->'product_presentation')
+            - 'product_presentation_receipt_id'
         )
       OR p_write_set->'product_surfaces'->>'product_surfaces_receipt_id'
         IS DISTINCT FROM canonical_v2_staging.content_id(
@@ -7670,6 +7760,8 @@ $$;
 REVOKE ALL ON FUNCTION canonical_v2_staging.canonical_json(jsonb)
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;
 REVOKE ALL ON FUNCTION canonical_v2_staging.content_id(text, jsonb)
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;
+REVOKE ALL ON FUNCTION canonical_v2_staging.validate_process_phrasebook_product_carrier(jsonb)
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;
 REVOKE ALL ON FUNCTION canonical_v2_staging.validate_agreement_candidate_product_carrier(jsonb)
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_writer;

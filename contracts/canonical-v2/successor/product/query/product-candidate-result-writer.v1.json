@@ -38,6 +38,12 @@
             "product_presentation",
             "product_surfaces"
           ],
+          "required_transient_authority_members": [
+            "pilot_product_authority_context",
+            "pilot_product_authority_context_input"
+          ],
+          "authority_pair_must_rebuild_exact_current_root": true,
+          "authority_pair_persisted_in_product_record": false,
           "complete_process_lineage_required": true
         },
         {

@@ -51,6 +51,22 @@ test('proves V7 import replay identity and Product serving-record identity fail 
   assert.match(source, /tampered_serving_record_id_rejected IS NOT TRUE/);
 });
 
+test('rejects omitted or substituted Process authority before staging DML', () => {
+  const source = fs.readFileSync(scriptPath, 'utf8');
+
+  assert.match(source, /buildProcessPhrasebookProductChain/);
+  assert.match(source, /pilot_product_authority_context_input/);
+  assert.match(source, /MISSING_AUTHORITY_INPUT/);
+  assert.match(source, /SUBSTITUTED_AUTHORITY_CONTEXT/);
+  assert.match(source, /SUBSTITUTED_AUTHORITY_INPUT/);
+  assert.match(
+    source,
+    /invalid SQL-native Process Product authority carrier/,
+  );
+  assert.match(source, /hostile Process authority carrier reached DML/);
+  assert.match(source, /authority_hostile_rejected_before_dml:\s*true/);
+});
+
 test('requires no durable staging change and preserves the inactive source-reader boundary', () => {
   const source = fs.readFileSync(scriptPath, 'utf8');
 

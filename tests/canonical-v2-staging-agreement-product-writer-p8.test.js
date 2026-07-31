@@ -42,6 +42,9 @@ test('P8 hostile calls recompute identities then reject every semantic and termi
     'TERMINAL_SUBJECT',
     'TERMINAL_ID',
     'TERMINAL_SHAPE',
+    'PROVISION_ROW',
+    'PRODUCT_MEMBERSHIP',
+    'PRODUCT_MEMBERSHIP_EXTRA',
   ]) assert.match(source, new RegExp(mutation));
   for (const helper of [
     'recomputeTerminal',

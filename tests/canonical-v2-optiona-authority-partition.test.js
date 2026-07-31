@@ -1,6 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const crypto = require('node:crypto');
 const { spawnSync } = require('node:child_process');
 
 test('Option A authority partition files are deterministic governed extracts', () => {
@@ -46,6 +47,19 @@ test('Option A authority partition files are deterministic governed extracts', (
     writer,
     /REVOKE ALL ON FUNCTION canonical_v2_staging\.content_id\(text, jsonb\)/,
   );
+  const governed = [...writer.matchAll(
+    /-- Governed function SHA-256: ([a-f0-9]{64})\n(CREATE OR REPLACE FUNCTION [\s\S]*?\n\$\$;)/g,
+  )];
+  assert.equal(governed.length, 5);
+  for (const [, expected, statement] of governed) {
+    const actual = crypto.createHash('sha256').update(statement).digest('hex');
+    assert.equal(actual, expected);
+    const changed = `${statement.slice(0, -1)} `;
+    assert.notEqual(
+      crypto.createHash('sha256').update(changed).digest('hex'),
+      expected,
+    );
+  }
 });
 
 test('Option A blocks fail closed and keep activation outside the packet', () => {

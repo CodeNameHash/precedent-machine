@@ -383,6 +383,24 @@ function hostileWriteSet(fixture, mutation) {
     case 'TERMINAL_SHAPE':
       delete envelope.ordered_terminals[0].subject_terminal_payload_digest;
       break;
+    case 'PROVISION_ROW':
+      envelope.provision_row = {
+        ...envelope.provision_row,
+        provision_row_id: '0'.repeat(64),
+      };
+      break;
+    case 'PRODUCT_MEMBERSHIP':
+      envelope.product_membership = {
+        ...envelope.product_membership,
+        membership_state: 'HOSTILE_MATERIALISED',
+      };
+      break;
+    case 'PRODUCT_MEMBERSHIP_EXTRA':
+      envelope.product_membership = {
+        ...envelope.product_membership,
+        hostile_authority: true,
+      };
+      break;
     default:
       throw new Error(`Unknown Agreement Product hostile mutation: ${mutation}`);
   }
@@ -625,6 +643,9 @@ async function main() {
     'TERMINAL_SUBJECT',
     'TERMINAL_ID',
     'TERMINAL_SHAPE',
+    'PROVISION_ROW',
+    'PRODUCT_MEMBERSHIP',
+    'PRODUCT_MEMBERSHIP_EXTRA',
   ].map((mutation) => hostileRequest(fixture, mutation)));
   proveHostileStagingWriter(hostile, before);
   const hostile_call_count = hostile.length;

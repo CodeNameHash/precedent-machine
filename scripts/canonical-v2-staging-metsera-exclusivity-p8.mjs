@@ -33,7 +33,9 @@ const {
   '../lib/canonical-v2/metsera-exclusivity-product-surfaces',
 );
 const {
+  canonicalJson,
   contentId,
+  sha256Hex,
 } = require('../lib/canonical-v2/canonical-bytes');
 const {
   buildLandosCandidateReleaseFixture,
@@ -65,6 +67,8 @@ const {
   buildCanonicalWriteInputDigest,
 } = require('../lib/canonical-v2/canonical-write-envelope');
 const {
+  buildProcessPhrasebookProductChain,
+  buildProductCandidateResultWriteEnvelope,
   PRODUCT_CANDIDATE_RESULT_WRITE_SET_SCHEMA,
 } = require('../lib/canonical-v2/product-candidate-result-write');
 const {
@@ -202,6 +206,67 @@ function activeReleaseResolution(stagingState) {
     resolution_state: body.resolution_state,
     execution_authority_state: body.execution_authority_state,
   };
+}
+
+function clone(value) {
+  return JSON.parse(canonicalJson(value));
+}
+
+function rehashProcessCarrierEnvelope(value) {
+  const carrier = value.domain_carrier;
+  const body = clone(carrier);
+  delete body.process_phrasebook_product_chain_id;
+  delete body.process_phrasebook_product_chain_payload_digest;
+  carrier.process_phrasebook_product_chain_id = contentId(
+    carrier.schema_version,
+    body,
+  );
+  carrier.process_phrasebook_product_chain_payload_digest = sha256Hex(
+    Buffer.from(canonicalJson(body), 'utf8'),
+  );
+  return value;
+}
+
+function hostileProcessAuthorityCarriers(writeSet) {
+  const missing = clone(writeSet);
+  delete missing.domain_carrier.pilot_product_authority_context_input;
+  rehashProcessCarrierEnvelope(missing);
+
+  const substitutedContext = clone(writeSet);
+  const context =
+    substitutedContext.domain_carrier.pilot_product_authority_context;
+  context.authority_limits.writer = 'HOSTILE_SUBSTITUTION';
+  const contextBody = clone(context);
+  delete contextBody.authority_context_id;
+  context.authority_context_id = contentId(
+    context.schema_version,
+    contextBody,
+  );
+  rehashProcessCarrierEnvelope(substitutedContext);
+
+  const substitutedInput = clone(writeSet);
+  const bundle = substitutedInput.domain_carrier
+    .pilot_product_authority_context_input.compiled_contract_bundle;
+  bundle.contract_bundle_digest = 'f'.repeat(64);
+  bundle.contract_bundle_id = contentId(
+    'PROGRAMME_GATE_CONTRACT_BUNDLE_ID/V1',
+    { contract_bundle_digest: bundle.contract_bundle_digest },
+  );
+  const bundleBody = clone(bundle);
+  delete bundleBody.schema_version;
+  delete bundleBody.canonical_payload_digest;
+  delete bundleBody.disposition;
+  bundle.canonical_payload_digest = contentId(
+    'CANONICAL_CONTRACT_BUNDLE_COMPILATION_PAYLOAD/V1',
+    bundleBody,
+  );
+  rehashProcessCarrierEnvelope(substitutedInput);
+
+  return [
+    ['MISSING_AUTHORITY_INPUT', missing],
+    ['SUBSTITUTED_AUTHORITY_CONTEXT', substitutedContext],
+    ['SUBSTITUTED_AUTHORITY_INPUT', substitutedInput],
+  ];
 }
 
 function writeBrowserFixture({
@@ -371,7 +436,7 @@ async function main() {
       productAuthority.context,
       productAuthority.input,
     );
-  const candidateWriteSet = {
+  const candidateProductWriteSet = {
     schema_version: PRODUCT_CANDIDATE_RESULT_WRITE_SET_SCHEMA,
     candidate_release_binding: candidateReleaseBinding,
     process_pilot_materialisation_receipt:
@@ -382,6 +447,14 @@ async function main() {
     product_presentation: productPresentation,
     product_surfaces: productSurfaces,
   };
+  const candidateWriteSet = buildProductCandidateResultWriteEnvelope({
+    adapter_identifier: 'PROCESS_PHRASEBOOK_PRODUCT_CHAIN',
+    domain_carrier: buildProcessPhrasebookProductChain(
+      candidateProductWriteSet,
+      productAuthority.context,
+      productAuthority.input,
+    ),
+  });
   const canonicalWriter = createCanonicalWriter({
     repository: new InMemoryCanonicalRepository(),
   });
@@ -535,10 +608,18 @@ WHERE pointer.environment = 'staging';`;
       'Metsera candidate rollback changed durable staging state.',
     );
   }
-  const conflictingWriteSet =
-    JSON.parse(JSON.stringify(candidateWriteSet));
-  conflictingWriteSet.candidate_release_binding
+  const conflictingProductWriteSet =
+    JSON.parse(JSON.stringify(candidateProductWriteSet));
+  conflictingProductWriteSet.candidate_release_binding
     .candidate_release_manifest_id = 'f'.repeat(64);
+  const conflictingWriteSet = buildProductCandidateResultWriteEnvelope({
+    adapter_identifier: 'PROCESS_PHRASEBOOK_PRODUCT_CHAIN',
+    domain_carrier: buildProcessPhrasebookProductChain(
+      conflictingProductWriteSet,
+      productAuthority.context,
+      productAuthority.input,
+    ),
+  });
   const conflictingInputDigest = buildCanonicalWriteInputDigest({
     operation: 'PRODUCT_RESULT_CANDIDATE_RUN',
     idempotencyKey:
@@ -580,6 +661,67 @@ public.canonical_v2_write(
   '[]'::jsonb,
   ${stagingRuntime.sqlJson(writeReceipt)}
 )`;
+  const authorityHostile = hostileProcessAuthorityCarriers(candidateWriteSet);
+  for (const [label, hostileWriteSet] of authorityHostile) {
+    const hostileKey = `METSERA_EXCLUSIVITY_${label}_P8_V1`;
+    const hostileDigest = buildCanonicalWriteInputDigest({
+      operation: 'PRODUCT_RESULT_CANDIDATE_RUN',
+      idempotencyKey: hostileKey,
+      writeSet: hostileWriteSet,
+      residuals: [],
+      quarantines: [],
+    });
+    const hostileReceipt = buildCanonicalWriteReceipt({
+      operation: 'PRODUCT_RESULT_CANDIDATE_RUN',
+      idempotencyKey: hostileKey,
+      inputDigest: hostileDigest,
+      validation: candidateCommit.validation,
+    });
+    stagingRuntime.runSql(`
+DO $metsera_authority_hostile_p8$
+DECLARE
+  candidate_count_before integer;
+  receipt_count_before integer;
+  rejected boolean := false;
+BEGIN
+  SELECT count(*)::integer INTO candidate_count_before
+  FROM canonical_v2_staging.product_candidate_results;
+  SELECT count(*)::integer INTO receipt_count_before
+  FROM canonical_v2_staging.write_receipts
+  WHERE operation = 'PRODUCT_RESULT_CANDIDATE_RUN';
+  BEGIN
+    PERFORM public.canonical_v2_write(
+      'staging',
+      'PRODUCT_RESULT_CANDIDATE_RUN',
+      ${stagingRuntime.sqlText(hostileKey)},
+      ${stagingRuntime.sqlText(hostileDigest)},
+      ${stagingRuntime.sqlJson(hostileWriteSet)},
+      '[]'::jsonb,
+      '[]'::jsonb,
+      ${stagingRuntime.sqlJson(hostileReceipt)}
+    );
+  EXCEPTION WHEN check_violation THEN
+    IF SQLERRM IS DISTINCT FROM
+      'invalid SQL-native Process Product authority carrier'
+    THEN
+      RAISE;
+    END IF;
+    rejected := true;
+  END;
+  IF rejected IS NOT TRUE THEN
+    RAISE EXCEPTION 'hostile Process authority carrier was accepted';
+  END IF;
+  IF (SELECT count(*) FROM canonical_v2_staging.product_candidate_results)
+      <> candidate_count_before
+    OR (SELECT count(*) FROM canonical_v2_staging.write_receipts
+        WHERE operation = 'PRODUCT_RESULT_CANDIDATE_RUN')
+      <> receipt_count_before
+  THEN
+    RAISE EXCEPTION 'hostile Process authority carrier reached DML';
+  END IF;
+END;
+$metsera_authority_hostile_p8$;`);
+  }
   stagingRuntime.runSql(`
 DO $candidate_conflict_proof$
 DECLARE
@@ -929,6 +1071,8 @@ SELECT * FROM metsera_product_release_proof;
         ? 'INACTIVE_FAIL_CLOSED'
         : 'INVALIDLY_AVAILABLE',
     product_release_proof_rolled_back: true,
+    authority_hostile_call_count: authorityHostile.length,
+    authority_hostile_rejected_before_dml: true,
     staging_candidate_result_count_before:
       stagingBefore.candidate_result_count,
     staging_candidate_result_count_after:

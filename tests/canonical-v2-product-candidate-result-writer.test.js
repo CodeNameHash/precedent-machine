@@ -45,7 +45,11 @@ const {
 const {
   compileAgreementCandidateProductMaterialisation,
 } = require('../lib/canonical-v2/agreement-candidate-product-materialisation');
-const { contentId } = require('../lib/canonical-v2/canonical-bytes');
+const {
+  canonicalJson,
+  contentId,
+  sha256Hex,
+} = require('../lib/canonical-v2/canonical-bytes');
 const {
   authority,
   evaluationEvidence,
@@ -166,7 +170,11 @@ function metseraProcessWriteFixture() {
     authorityContext,
     writeSet: buildProductCandidateResultWriteEnvelope({
       adapter_identifier: 'PROCESS_PHRASEBOOK_PRODUCT_CHAIN',
-      domain_carrier: buildProcessPhrasebookProductChain(processWriteSet),
+      domain_carrier: buildProcessPhrasebookProductChain(
+        processWriteSet,
+        authorityContext,
+        authorityInput,
+      ),
     }),
   };
 }
@@ -178,6 +186,21 @@ function rehashAuthorityContext(value) {
     body,
   );
   return value;
+}
+
+function rehashProcessCarrier(writeSet) {
+  const carrier = writeSet.domain_carrier;
+  const body = clone(carrier);
+  delete body.process_phrasebook_product_chain_id;
+  delete body.process_phrasebook_product_chain_payload_digest;
+  carrier.process_phrasebook_product_chain_id = contentId(
+    carrier.schema_version,
+    body,
+  );
+  carrier.process_phrasebook_product_chain_payload_digest = sha256Hex(
+    Buffer.from(canonicalJson(body), 'utf8'),
+  );
+  return writeSet;
 }
 
 test('registers one staging-only candidate-result writer contract', () => {
@@ -238,44 +261,45 @@ test('rejects unknown adapters and carrier substitution before Product persisten
   );
 });
 
-test('the Process Product candidate writer requires the exact authority inputs', async () => {
+test('the Process Product candidate writer requires the exact authority pair in its carrier', async () => {
   const fixture = metseraProcessWriteFixture();
   const repository = new InMemoryCanonicalRepository();
   const writer = createCanonicalWriter({ repository });
+  const missing = clone(fixture.writeSet);
+  delete missing.domain_carrier.pilot_product_authority_context_input;
+  rehashProcessCarrier(missing);
   await assert.rejects(
     writer.write({
       operation: 'PRODUCT_RESULT_CANDIDATE_RUN',
       idempotencyKey: 'metsera:missing-authority',
-      writeSet: fixture.writeSet,
+      writeSet: missing,
     }),
-    (error) => error.code === 'INVALID_PRODUCT_CANDIDATE_RESULT_LINEAGE',
+    (error) => error.code === 'INVALID_PROCESS_PHRASEBOOK_PRODUCT_CHAIN',
   );
-  const substituted = rehashAuthorityContext(clone(fixture.authorityContext));
-  substituted.candidate_release_manifest.corpus_release_id = 'f'.repeat(64);
-  rehashAuthorityContext(substituted);
+  const substituted = clone(fixture.writeSet);
+  substituted.domain_carrier.pilot_product_authority_context
+    .candidate_release_manifest.corpus_release_id = 'f'.repeat(64);
+  rehashAuthorityContext(
+    substituted.domain_carrier.pilot_product_authority_context,
+  );
+  rehashProcessCarrier(substituted);
   await assert.rejects(
     writer.write({
       operation: 'PRODUCT_RESULT_CANDIDATE_RUN',
       idempotencyKey: 'metsera:substituted-authority',
-      writeSet: fixture.writeSet,
-      processAuthorityContext: substituted,
-      processAuthorityInput: fixture.authorityInput,
+      writeSet: substituted,
     }),
-    (error) => error.code === 'INVALID_PRODUCT_CANDIDATE_RESULT_LINEAGE',
+    (error) => error.code === 'INVALID_PROCESS_PHRASEBOOK_PRODUCT_CHAIN',
   );
   const first = await writer.write({
     operation: 'PRODUCT_RESULT_CANDIDATE_RUN',
     idempotencyKey: 'metsera:exact-authority',
     writeSet: fixture.writeSet,
-    processAuthorityContext: fixture.authorityContext,
-    processAuthorityInput: fixture.authorityInput,
   });
   const replay = await writer.write({
     operation: 'PRODUCT_RESULT_CANDIDATE_RUN',
     idempotencyKey: 'metsera:exact-authority',
     writeSet: fixture.writeSet,
-    processAuthorityContext: fixture.authorityContext,
-    processAuthorityInput: fixture.authorityInput,
   });
   assert.equal(first.replayed, false);
   assert.equal(replay.replayed, true);

@@ -1,0 +1,33 @@
+{
+  "phase": "WP-P8-STAGE3-WRITER-AUTHORITY-CORRECTIONS-V2",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p8-stage3-writer-authority-corrections-v2.json",
+    "contracts/canonical-v2/successor/manifest.json",
+    "contracts/canonical-v2/successor/product/query/product-candidate-result-writer.v1.json",
+    "docs/codex-program/EXECUTION-LEDGER.md",
+    "lib/canonical-v2/product-candidate-result-write.js",
+    "lib/canonical-v2/product-candidate-write-contract-input-validator.js",
+    "scripts/canonical-v2-optiona-authority-partition.mjs",
+    "scripts/sign-g0-evidence.mjs",
+    "scripts/canonical-v2-staging-agreement-product-writer-p8.mjs",
+    "scripts/canonical-v2-staging-metsera-exclusivity-p8.mjs",
+    "sql/optionA/step0b-canonical-writer-by-contract.sql",
+    "supabase/canonical-v2-foundation.sql",
+    "supabase/canonical-v2-product-candidate-result-writer.sql",
+    "tests/canonical-v2-metsera-product-release-proof.test.js",
+    "tests/canonical-v2-optiona-authority-partition.test.js",
+    "tests/canonical-v2-product-candidate-result-writer.test.js",
+    "tests/canonical-v2-staging-agreement-product-writer-p8.test.js",
+    "tests/canonical-v2-writer-envelope-integrity-sql.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "supabase/migrations/**"
+  ],
+  "note": "Closes the exact P8 Stage 3 re-review findings. It binds Process Product writes to the transient exact authority pair, closes Agreement copied-row and membership drift, and governs every extracted SQL function digest. Staging calls roll back. It grants no release, import, activation or production authority."
+}

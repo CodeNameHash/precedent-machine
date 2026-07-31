@@ -216,7 +216,51 @@ test('the Product writer keeps Process carrier checks and invokes native Agreeme
   assert.match(product, /unknown Product candidate-result adapter/);
   assert.match(product, /process_phrasebook_product_chain_id[\s\S]*content_id\([\s\S]*PROCESS_PHRASEBOOK_PRODUCT_CHAIN\/V1/);
   assert.match(product, /process_phrasebook_product_chain_payload_digest[\s\S]*payload_digest/);
+  assert.match(product, /pilot_product_authority_context/);
+  assert.match(product, /pilot_product_authority_context_input/);
+  assert.match(product, /validate_process_phrasebook_product_carrier/);
   assert.match(product, /validate_agreement_candidate_product_carrier/);
+});
+
+test('every SQL writer form validates the exact Process authority pair before DML', () => {
+  const sources = [
+    'sql/optionA/step0b-canonical-writer-by-contract.sql',
+    'supabase/canonical-v2-foundation.sql',
+    'supabase/canonical-v2-product-candidate-result-writer.sql',
+  ].map((file) => fs.readFileSync(file, 'utf8'));
+  for (const source of sources) {
+    const process = source.indexOf("PROCESS_PHRASEBOOK_PRODUCT_CHAIN' THEN");
+    const validate = source.indexOf(
+      'validate_process_phrasebook_product_carrier',
+      process,
+    );
+    const unwrap = source.indexOf(
+      "complete_write_set'",
+      validate,
+    );
+    const dml = source.indexOf(
+      'INSERT INTO canonical_v2_staging.product_candidate_results',
+      process,
+    );
+    assert.ok(
+      process !== -1
+        && validate !== -1
+        && unwrap !== -1
+        && dml !== -1
+        && validate < unwrap
+        && validate < dml,
+    );
+    const helper = source.slice(
+      source.indexOf(
+        'CREATE OR REPLACE FUNCTION canonical_v2_staging.validate_process_phrasebook_product_carrier',
+      ),
+      process,
+    );
+    assert.match(helper, /PILOT_PRODUCT_AUTHORITY_CONTEXT\/V1/);
+    assert.match(helper, /CANONICAL_CONTRACT_BUNDLE_COMPILATION_PAYLOAD\/V1/);
+    assert.match(helper, /FIXTURE_CANDIDATE_RELEASE_MANIFEST\/V3/);
+    assert.match(helper, /invalid SQL-native Process Product authority carrier/);
+  }
 });
 
 test('every SQL writer form invokes the native Agreement validator before DML', () => {
