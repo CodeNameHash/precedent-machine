@@ -19,9 +19,9 @@ model. Agents do not move main.
 
 | Item | State |
 | --- | --- |
-| Main basis | `8bf79ff06b95126f585311b2801d31f341c83958` |
+| Main basis | `484c40a9515366d8efbfdcc72b71aaaa3aafe6e0` |
 | Approved M1 review commit | `9cef64ec626a50a78710ee90b08cdc0466b42374` |
-| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; current acknowledgement head is `b2c7ea31`. GitHub main remains fixed at `8bf79ff06b95126f585311b2801d31f341c83958`. |
+| Controller | Claude (Fable) took over as PM controller for M2 onward on 2026-07-31. Working branch `claude/codex-attestations-build-balance-z3xm23`. |
 | Prior approved contract bundle | 177 contracts and 315 dependency links. It is immutable. |
 | Current amended bundle ID | `901d45871b90d0677dd3fdfa6b718cba1795c5393cbbe91412e05e9ea3f7bd76` |
 | Current amended contract digest | `3b24070932af4ed946eb72b41fbaf9d9e77dd0eaa191af4dedbaeb7fe3f8f632` |
@@ -30,7 +30,7 @@ model. Agents do not move main.
 | Bundle compile reference | Two clean compiles produced identical 1,096,276-byte output with SHA-256 `6cc2247acbcc63f9e0a0c81afc536ba65ab2ddc417abf3cb569c73629125152c`. |
 | Latest complete suite on this branch | PASS on exact GitHub main `8bf79ff0`: 4,786 pass, 0 fail, 5 skip. GitHub CI run `30612191260` is green. |
 | Latest production build on this branch | PASS on exact GitHub main `8bf79ff0`, 29/29 pages. Existing warnings remain: ESLint is absent, offline Supabase variables are absent, and two admin pages exceed the page-data warning threshold. |
-| Latest deployments | Production `dpl_CjfE5z7BvSRGzYFnb2vEG2zaPK45` and isolated Preview `dpl_BUDvLVmeZxu1jN9Qw7W5TZB1TZxW` are READY and bind exact commit `8bf79ff0`. Production root returns HTTP 200. |
+| Latest deployments | Production `dpl_9qwje4q6Tgu9c9gqMJj925yzDRrK` and isolated Preview `dpl_BZfeBxY2zHUXCEeqVHqrnk4VyxGF` are READY and bind exact commit `484c40a9`. Production root returns HTTP 200; Preview is protected. Verified by Ben 2026-07-31. |
 | Pre-production approval | The M1 Markdown acknowledgement is the only approval artefact. Signed status publication, signer inventory and protected review workflows are retired. |
 | M1 contract freeze | PASS for the exact amended 178-contract bundle. Ben approved it subject to the reviewed-deal cohort condition. `docs/acks/M1-CONTRACT-FREEZE-2026-07-31-AMENDED.md` binds the exact fingerprint and permits isolated-staging pilots only. |
 | M1 independent review | PASS. The milestone architecture, legal and query reviews completed. The one high-reasoning fix-diff review passed at `9cef64ec`. No further M1 review is required. |
@@ -136,17 +136,18 @@ staging pilots.
 
 ## 3. Next 48 hours
 
-1. Run the complete suite and production build once on the final code tree.
-2. Move main once.
-3. Deploy the exact main commit once to production and once to isolated
-   Preview.
-4. Verify both deployed commit bindings and production containment.
-5. Run the QXO Agreement control in isolated staging.
-6. Prepare and run the external Metsera cohort input and source-only Process
+1. DONE 2026-07-31: complete suite and build passed, main moved once to
+   `484c40a9`, production and isolated Preview deployed and verified.
+2. Run the QXO Agreement control in isolated staging.
+3. Prepare and run the external Metsera cohort input and source-only Process
    slice in isolated staging.
-7. Verify writer, candidate release, Query, Review, Compare, Corpus Context,
+4. Verify writer, candidate release, Query, Review, Compare, Corpus Context,
    source reading, corrections and failure isolation.
-8. If both pass, record M2 and open wider candidate extraction.
+5. If both pass, record M2 as a markdown acknowledgement and open wider
+   candidate extraction (M3 work).
+6. Land the release-identity-chain regeneration tool (approved mitigation for
+   the F21-F26 fixture-rebind cascade) and delete the two retired
+   programme-gate workflow files.
 
 ## 4. Bounded units through P11
 
