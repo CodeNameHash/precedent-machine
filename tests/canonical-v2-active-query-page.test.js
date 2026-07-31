@@ -172,7 +172,9 @@ test('active Query rejects mismatched pointer and release response identity', as
 test('active Query SQL resolves one active pointer and invokes the bounded indexed page within the same function call', () => {
   const sql = fs.readFileSync('supabase/canonical-v2-serving.sql', 'utf8');
   const start = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page_v2');
-  const end = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_review_context');
+  const end = sql.indexOf(
+    'CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page(',
+  );
   const activeFunction = sql.slice(start, end);
 
   assert.ok(start >= 0 && end > start);
@@ -188,7 +190,9 @@ test('active Query SQL resolves one active pointer and invokes the bounded index
 test('active Query SQL resolves and filters against the release-declared fingerprint, not the caller-supplied one', () => {
   const sql = fs.readFileSync('supabase/canonical-v2-serving.sql', 'utf8');
   const start = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page_v2');
-  const end = sql.indexOf('CREATE OR REPLACE FUNCTION public.canonical_v2_active_review_context');
+  const end = sql.indexOf(
+    'CREATE OR REPLACE FUNCTION public.canonical_v2_active_query_page(',
+  );
   const activeFunction = sql.slice(start, end);
 
   assert.match(activeFunction, /release_contract_fingerprint text/);
