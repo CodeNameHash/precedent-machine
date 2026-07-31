@@ -57,7 +57,7 @@ jobs:
             *db.sjumbznveyyiizhwvixj.supabase.co*)
               STAGING_DB_URL=$(printf '%s' "$STAGING_DB_URL" \
                 | sed -e 's#postgresql://postgres:#postgresql://postgres.sjumbznveyyiizhwvixj:#' \
-                      -e 's#db\.sjumbznveyyiizhwvixj\.supabase\.co#aws-0-us-west-2.pooler.supabase.com#')
+                      -e 's#db\.sjumbznveyyiizhwvixj\.supabase\.co#aws-1-us-west-2.pooler.supabase.com#')
               echo "Rewrote staging db url to the IPv4 session pooler."
               ;;
           esac
