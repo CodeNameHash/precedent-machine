@@ -1,0 +1,21 @@
+{
+  "phase": "WP-P8-METSERA-PRODUCT-QUERY-CONTEXT-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p8-metsera-product-query-context-v1.json",
+    "lib/canonical-v2/metsera-exclusivity-product-row.js",
+    "tests/canonical-v2-metsera-exclusivity-product-row.test.js",
+    "tests/fixtures/canonical-v2/metsera-authority-bound-process-admission.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/migrations/**"
+  ],
+  "note": "Binds the Metsera Product row to one validated Pilot Product authority context. It grants no query execution, source read, serving, write, release, import, activation or production authority."
+}
