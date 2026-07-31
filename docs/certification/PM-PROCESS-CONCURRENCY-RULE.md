@@ -7,17 +7,15 @@ own branch and worktree.
 
 ## Authority for a work unit
 
-A work unit starts from one verified tuple:
+A work unit starts from one main basis:
 
 - exact main commit;
-- exact protected publication commit;
-- exact signed status ID;
 - required work-class state;
 - exact work-unit allowlist digest.
 
-A later main change does not stop a work unit that already has this tuple. The
-agent must not rebase the unit or start a new unit until the next status is
-verified.
+A later main change does not stop a work unit that already has this basis. Each
+routine unit uses its own branch and worktree. The agent does not rebase the
+unit unless the PM agent makes a new main basis for a later batch.
 
 ## PM integration queue
 
@@ -26,47 +24,29 @@ range. The queue keeps the source commit order and the source author identity.
 
 The PM agent opens one integration window. The agent:
 
-1. Builds one integration branch from the verified main commit.
+1. Builds one integration branch from the main basis.
 2. Integrates all ready PM and Process units where practical.
 3. Validates each unit against its own allowlist.
 4. Runs the declared unit tests and the full required test set.
 5. Moves main once.
 6. Deploys and verifies that exact main commit.
-7. Revalidates all evidence for that commit.
-8. Publishes one signed successor by compare-and-swap.
-9. Runs `node scripts/verify-programme-status-publication.mjs`.
+7. Records the applicable milestone Markdown acknowledgement.
 
-The window closes only when the verifier returns `PASS`. A publication failure
-sets the window to `RECOVERY_REQUIRED`. No second main move is permitted. The
-only permitted next action is an exact fix-forward publication, or an exact
-revert followed by a new signed publication.
+The batch closes after the exact main deployment is verified and any applicable
+milestone acknowledgement is recorded. No protected publication, signed status,
+signer workflow or status verifier is required.
+
+Before a milestone, each legal-semantic change receives one high-reasoning diff
+review. A fix receives one bounded fix-diff re-review only. The three-lane
+architecture, legal and query review occurs only at M1 to M4. Passing test
+evidence binds the code tree. A documentation, acknowledgement,
+execution-ledger or specification-manifest-only commit does not invalidate that
+evidence or require a rerun.
 
 ## Ben approval
 
-The current signed contract binds Ben's approval to an exact specification root
-and code commit. A routine successor cannot preserve `canonical_work_start`
-without a new Ben signature.
-
-For this contract version, the PM agent keeps main fixed while branch work
-continues. The agent batches ready units until the next approval point that the
-contract reserves for Ben. The protected successor workflow obtains the exact
-signature and publishes the successor during that integration window.
-
-Ben must approve a material contract freeze, production activation, cutover, or
-material governance change. The controller must not treat an earlier approval
-or an earlier `PASS` as evidence for a later commit.
-
-## Protected publication
-
-`.github/workflows/programme-gate-sign-successor.yml` is the successor
-publisher. It requires:
-
-- the exact current main commit;
-- the exact current protected publication commit;
-- the exact cold-review basis;
-- fresh evidence for all supported gates;
-- both protected signatures;
-- the exact two-file publication tree;
-- one compare-and-swap update.
-
-The genesis nonce is not valid for a successor.
+The M1 Markdown acknowledgement is the only pre-production approval artefact.
+It records Ben's exact-bundle approval. Ben approval remains required for a
+material contract freeze, production activation, cutover, or material
+governance change. A routine branch or batch does not require a separate signed
+approval or status publication.
