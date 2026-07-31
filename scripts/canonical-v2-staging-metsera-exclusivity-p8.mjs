@@ -11,9 +11,6 @@ import {
 const require = createRequire(import.meta.url);
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const {
-  compileMetseraExclusivityStagingPilot,
-} = require('../lib/canonical-v2/metsera-exclusivity-staging-pilot');
-const {
   compileMetseraExclusivityProductAdmission,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-admission');
 const {
@@ -82,35 +79,56 @@ const {
   requireM1VerticalSliceExecutionPermission,
 } = require('../lib/programme-gates/m1-milestone-permission');
 const {
-  loadSealedMetseraGoldEvidence,
-} = require('../lib/canonical-v2/metsera-gold-evidence');
+  compileCanonicalContractInput,
+} = require('../lib/canonical-v2/canonical-contract-input-compiler');
+const {
+  assembleCanonicalContractBundleCurrentRootProposal,
+} = require('../lib/canonical-v2/canonical-contract-bundle-current-root');
+const {
+  compileCanonicalContractBundle,
+} = require('../lib/canonical-v2/canonical-contract-bundle-compiler');
 
-const USER_AGENT =
-  'Deal Corpus canonical staging bengoodchild@gmail.com';
 const M1_ACKNOWLEDGEMENT_PATH = resolve(
   ROOT,
   'docs/acks/M1-CONTRACT-FREEZE-2026-07-30.md',
 );
-const M1_BUNDLE = Object.freeze({
-  bundle_id:
-    '8c765d52d3f95ebfc21b28b5bd0e71689a095c482e113a4329d33b0140dbe83d',
-  contract_bundle_digest:
-    'b990bf90f98fd83b9dfcf34912ec4b3cd42c37f3e693bee9796b1c63198edc84',
-  canonical_payload_digest:
-    '73a9023d3ef831e7a544664929385a1aa61af1efed58139d1cd54bf5985d3ab8',
-  substantive_member_count: 171,
-  dependency_edge_count: 285,
-  compile_status: 'PASS',
-  cycle_status: 'PASS',
-});
 
 function currentM1Permission() {
+  const contractRoot = resolve(
+    ROOT,
+    'contracts/canonical-v2/successor',
+  );
+  const input = compileCanonicalContractInput({
+    root_directory: contractRoot,
+  });
+  const proposal = assembleCanonicalContractBundleCurrentRootProposal({
+    canonical_contract_input_compilation: input,
+  });
+  const bundle = compileCanonicalContractBundle({
+    canonical_contract_input_compilation: input,
+    classification_registry:
+      proposal.registry_assembly.classification_registry,
+    dependency_registry:
+      proposal.registry_assembly.dependency_registry,
+    governed_registry_bindings:
+      proposal.registry_assembly.governed_registry_bindings,
+  });
   return requireM1VerticalSliceExecutionPermission({
     acknowledgement_markdown: readFileSync(
       M1_ACKNOWLEDGEMENT_PATH,
       'utf8',
     ),
-    current_bundle: M1_BUNDLE,
+    current_bundle: {
+      bundle_id: bundle.contract_bundle_id,
+      contract_bundle_digest: bundle.contract_bundle_digest,
+      canonical_payload_digest: bundle.canonical_payload_digest,
+      substantive_member_count:
+        bundle.compile_report.non_governance_authored_member_count,
+      dependency_edge_count:
+        bundle.dependency_cycle_report.edge_count,
+      compile_status: bundle.compile_report.status,
+      cycle_status: bundle.dependency_cycle_report.status,
+    },
   });
 }
 
@@ -238,34 +256,36 @@ function writeBrowserFixture({
   );
 }
 
-async function fetchSource(document) {
-  const response = await fetch(document.officialUrl, {
-    headers: {
-      'User-Agent': USER_AGENT,
-      Accept: 'text/html,application/xhtml+xml',
-    },
-    redirect: 'follow',
-  });
-  if (!response.ok) {
+function readCheckedProcessAdmission() {
+  const flag = '--process-admission';
+  const index = process.argv.indexOf(flag);
+  const filePath = index < 0 ? null : process.argv[index + 1];
+  if (!filePath || filePath.startsWith('--')) {
     throw new Error(
-      `SEC source ${document.accession} returned ${response.status}.`,
+      'Metsera P8 requires --process-admission <checked-admission.json>.',
     );
   }
-  return Buffer.from(await response.arrayBuffer());
+  const value = JSON.parse(readFileSync(resolve(filePath), 'utf8'));
+  if (
+    !value
+    || typeof value !== 'object'
+    || Array.isArray(value)
+    || JSON.stringify(Object.keys(value).sort())
+      !== JSON.stringify([
+        'process_admission_input',
+        'process_admission_receipt',
+      ])
+  ) {
+    throw new Error(
+      'The checked Process admission file must contain only input and receipt.',
+    );
+  }
+  return value;
 }
 
 async function main() {
-  const { sourceUniverse } = loadSealedMetseraGoldEvidence();
-  const sourceBytesByAccession = new Map();
-  for (const document of sourceUniverse.documents) {
-    sourceBytesByAccession.set(
-      document.accession,
-      await fetchSource(document),
-    );
-  }
-  const receipt = compileMetseraExclusivityStagingPilot(
-    sourceBytesByAccession,
-  );
+  const m1Permission = currentM1Permission();
+  const checkedProcessAdmission = readCheckedProcessAdmission();
   const combinedPilotBaseRelease = buildCombinedPilotBaseRelease();
   const candidateReleaseBinding = {
     candidate_release_manifest_id:
@@ -276,20 +296,13 @@ async function main() {
     corpus_release_id:
       combinedPilotBaseRelease.manifest.corpus_release_id,
     product_query_definition_id: null,
-    validation_receipt_ids: {
-      narration_revision: receipt.materialisation_receipt_id,
-      predicate_witness_revision: receipt.materialisation_receipt_id,
-      result_input_lineage: receipt.materialisation_receipt_id,
-      preview: receipt.candidate_validation_receipt_id,
-      ordering_fact: receipt.candidate_validation_receipt_id,
-      release_membership: receipt.candidate_validation_receipt_id,
-      exact_detail: receipt.materialisation_receipt_id,
-    },
     release_state: 'CANDIDATE_NOT_ACTIVE',
     authority_state: 'NOT_GRANTED',
   };
   const productQuery = compileMetseraExclusivityProductQuery({
-    materialisation_receipt_id: receipt.materialisation_receipt_id,
+    process_phrasebook_result_id:
+      checkedProcessAdmission.process_admission_input?.result_identity
+        ?.process_phrasebook_passage_result_id,
     candidate_release_manifest_id:
       candidateReleaseBinding.candidate_release_manifest_id,
     candidate_release_manifest_payload_digest:
@@ -299,10 +312,17 @@ async function main() {
   candidateReleaseBinding.product_query_definition_id =
     productQuery.query_definition_id;
   const productAdmission =
-    compileMetseraExclusivityProductAdmission(
-      receipt,
-      candidateReleaseBinding,
+    compileMetseraExclusivityProductAdmission(checkedProcessAdmission);
+  if (
+    productAdmission.candidate_release_manifest_id
+      !== candidateReleaseBinding.candidate_release_manifest_id
+    || productAdmission.candidate_release_manifest_payload_digest
+      !== candidateReleaseBinding.candidate_release_manifest_payload_digest
+  ) {
+    throw new Error(
+      'The checked Process admission is not intended for this inactive candidate release.',
     );
+  }
   const productRow = compileMetseraExclusivityProductRow(
     productAdmission,
   );
@@ -326,7 +346,8 @@ async function main() {
   const candidateWriteSet = {
     schema_version: PRODUCT_CANDIDATE_RESULT_WRITE_SET_SCHEMA,
     candidate_release_binding: candidateReleaseBinding,
-    process_pilot_materialisation_receipt: receipt,
+    process_pilot_materialisation_receipt:
+      checkedProcessAdmission.process_admission_receipt,
     product_admission: productAdmission,
     product_row: productRow,
     product_result_set: productResultSet,
@@ -785,7 +806,7 @@ SELECT * FROM metsera_product_release_proof;
     compileMetseraExclusivityProductSourceReader(
       candidateCommit.validation.candidateRecord,
       activeReleaseResolution(stagingAfterReleaseProof),
-      currentM1Permission(),
+      m1Permission,
     );
   if (
     sourceReader.source_reader_state !== 'TYPED_REFUSAL'
@@ -808,21 +829,7 @@ SELECT * FROM metsera_product_release_proof;
     sourceReader,
   });
   process.stdout.write(`${JSON.stringify({
-    schema_version: receipt.schema_version,
-    selected_passage_id: receipt.selected_passage_id,
-    sealed_source_count: receipt.sealed_source_count,
-    sealed_passage_count: receipt.sealed_passage_count,
-    retained_scope_residual_count:
-      receipt.retained_scope_residual_count,
-    acquisition_receipt_id: receipt.acquisition_receipt_id,
-    sec_completeness_receipt_id:
-      receipt.sec_completeness_receipt_id,
-    scope_receipt_id: receipt.scope_receipt_id,
-    candidate_graph_id: receipt.candidate_graph_id,
-    candidate_validation_receipt_id:
-      receipt.candidate_validation_receipt_id,
-    materialisation_receipt_id:
-      receipt.materialisation_receipt_id,
+    schema_version: 'METSERA_EXCLUSIVITY_P8_CANDIDATE_PROOF/V2',
     product_admission_adapter_receipt_id:
       productAdmission.product_admission_adapter_receipt_id,
     process_phrasebook_admission_receipt_id:
@@ -907,7 +914,7 @@ SELECT * FROM metsera_product_release_proof;
     product_source_reader_original_result_preserved:
       sourceReader.product_source_reader_outcome
         .original_result_preserved,
-    authority_limits: receipt.authority_limits,
+    authority_limits: productAdmission.authority_limits,
   }, null, 2)}\n`);
 }
 

@@ -56,3 +56,49 @@ test('M1 permission fails closed on review, approval, bundle or graph drift', ()
     { code: 'M1_VERTICAL_SLICE_EXECUTION_NOT_AUTHORISED' },
   );
 });
+
+test('a predecessor acknowledgement cannot authorise a successor bundle', () => {
+  for (const currentBundle of [
+    {
+      ...BUNDLE,
+      bundle_id: '1'.repeat(64),
+      substantive_member_count: BUNDLE.substantive_member_count + 3,
+      dependency_edge_count: BUNDLE.dependency_edge_count + 18,
+    },
+    {
+      ...BUNDLE,
+      contract_bundle_digest: '2'.repeat(64),
+      substantive_member_count: BUNDLE.substantive_member_count + 3,
+      dependency_edge_count: BUNDLE.dependency_edge_count + 18,
+    },
+    {
+      ...BUNDLE,
+      canonical_payload_digest: '3'.repeat(64),
+      substantive_member_count: BUNDLE.substantive_member_count + 3,
+      dependency_edge_count: BUNDLE.dependency_edge_count + 18,
+    },
+  ]) {
+    assert.throws(
+      () => requireM1VerticalSliceExecutionPermission({
+        acknowledgement_markdown: ACKNOWLEDGEMENT,
+        current_bundle: currentBundle,
+      }),
+      { code: 'M1_VERTICAL_SLICE_EXECUTION_NOT_AUTHORISED' },
+    );
+  }
+});
+
+test('the Metsera staging runner compiles the current root before staging', () => {
+  const source = fs.readFileSync(
+    'scripts/canonical-v2-staging-metsera-exclusivity-p8.mjs',
+    'utf8',
+  );
+  assert.match(source, /compileCanonicalContractInput/);
+  assert.match(source, /assembleCanonicalContractBundleCurrentRootProposal/);
+  assert.match(source, /compileCanonicalContractBundle/);
+  assert.doesNotMatch(source, /const M1_BUNDLE/);
+  assert.ok(
+    source.indexOf('const m1Permission = currentM1Permission();')
+      < source.indexOf('createCanonicalV2StagingRuntime({'),
+  );
+});

@@ -6,6 +6,9 @@ const test = require('node:test');
 const fixture = require(
   '../__fixtures__/canonical-v2/metsera-exclusivity-p8.json',
 );
+const citationMetadata = require(
+  '../__fixtures__/canonical-v2/metsera-exclusivity-citation-metadata.json',
+);
 
 test('binds one real Metsera result to all four product views', () => {
   const resultId = fixture.product_query_result_identity;
@@ -47,6 +50,19 @@ test('does not manufacture market data for one pilot result', () => {
     'SINGLE_PILOT_RESULT_NO_MARKET_COHORT',
   );
   assert.doesNotMatch(JSON.stringify(fixture), /No market data/);
+});
+
+test('renders admitted filing metadata without confusing it for the event date', () => {
+  const citation = fixture.shared_result.exact_citation;
+  assert.equal(citation.source_document_identity, citationMetadata.source_document_identity);
+  assert.equal(citation.source_accession_or_equivalent_identity, citationMetadata.source_revision_id);
+  assert.equal(citation.source_filing_type, citationMetadata.form_type);
+  assert.equal(citation.source_filing_date, citationMetadata.filed_on);
+  assert.equal(
+    citation.human_readable_source_label,
+    'Metsera DEFM14A, filed 2025-10-09, Background of the Merger, event 2025-08-17',
+  );
+  assert.notEqual(citationMetadata.event_date, citationMetadata.filed_on);
 });
 
 test('uses the compact three-column browser layout and inactive source action', () => {

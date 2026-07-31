@@ -65,7 +65,10 @@
       "application_memory_can_recreate_ranking_authority": false
     },
     "release_treatment": {
-      "candidate_membership_required": true,
+      "prewrite_admission_release_state": "NOT_RELEASE_BOUND",
+      "candidate_membership_established_by": "PRODUCT_QUERY_RESULT_RELEASE_PARTITION/V1",
+      "candidate_membership_required_before_product_candidate_write": false,
+      "candidate_membership_required_before_product_release": true,
       "release_pinned": true,
       "immutable_after_release": true,
       "exact_release_citation_redirect": false

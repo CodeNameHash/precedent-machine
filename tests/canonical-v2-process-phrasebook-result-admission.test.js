@@ -1110,6 +1110,22 @@ test('rejects stale or incomplete candidate-release membership', () => {
   );
 });
 
+test('marks a pre-write Process admission as not release-bound', () => {
+  const input = fixture();
+  input.candidate_release_membership.membership_state =
+    'NOT_RELEASE_BOUND';
+  rehashFullRecord(
+    input.candidate_release_membership,
+    'release_membership_id',
+    PROCESS_PHRASEBOOK_RESULT_RELEASE_MEMBERSHIP_SCHEMA,
+  );
+
+  const receipt = compileProcessPhrasebookResultAdmission(input);
+  assert.equal(receipt.release_membership_state, 'NOT_RELEASE_BOUND');
+  assert.equal(receipt.admission_state, 'VALIDATED_NOT_RELEASE_BOUND');
+  assert.equal(receipt.serving_state, 'NOT_SERVED');
+});
+
 test('rejects a correctly rehashed receipt forgery', () => {
   const input = fixture();
   const receipt = clone(compileProcessPhrasebookResultAdmission(input));

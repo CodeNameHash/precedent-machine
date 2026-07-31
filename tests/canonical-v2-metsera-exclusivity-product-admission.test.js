@@ -13,8 +13,8 @@ const {
 
 test('fails closed without the exact sealed staging receipt', () => {
   assert.throws(
-    () => compileMetseraExclusivityProductAdmission({}, {}),
-    /does not have the exact required fields/,
+    () => compileMetseraExclusivityProductAdmission({}),
+    /exact required fields/,
   );
   assert.equal(
     METSERA_PRODUCT_ADMISSION_SCHEMA,
@@ -30,28 +30,56 @@ test('grants no Product, release or operational authority', () => {
     ),
     'utf8',
   );
-  assert.match(source, /compileProcessPhrasebookResultAdmission/);
+  assert.match(source, /validateProcessPhrasebookResultAdmissionReceipt/);
+  assert.match(source, /NOT_RELEASE_BOUND/);
   assert.match(source, /PROCESS_NARRATION_NOT_ACTUAL_DRAFTING/);
+  assert.doesNotMatch(source, /validation_receipt_ids/);
+  assert.doesNotMatch(source, /buildMembership/);
   assert.doesNotMatch(
     source,
     /service[_-]?role|supabase|canonical-writer|production.*write/i,
   );
 });
 
-test('uses the exact six-file phase boundary', () => {
+test('accepts only one checked Process admission envelope', () => {
+  const source = fs.readFileSync(
+    require.resolve(
+      '../lib/canonical-v2/metsera-exclusivity-product-admission',
+    ),
+    'utf8',
+  );
+  assert.match(source, /process_admission_input/);
+  assert.match(source, /process_admission_receipt/);
+  assert.doesNotMatch(source, /candidateReleaseBinding/);
+  assert.doesNotMatch(source, /compileMetseraExclusivityStagingPilot/);
+  assert.throws(
+    () => compileMetseraExclusivityProductAdmission({
+      process_admission_input: {},
+      process_admission_receipt: {},
+      invented_authority: true,
+    }),
+    /exact required fields/,
+  );
+});
+
+test('uses the active P8 phase boundary', () => {
   const allowlist = JSON.parse(fs.readFileSync(
     path.join(
       __dirname,
-      '../.github/phase-allowlists/wp-metsera-exclusivity-product-admission-v1.json',
+      '../.github/phase-allowlists/wp-p8-process-admission-validation-membership-v1.json',
     ),
     'utf8',
   ));
-  assert.deepEqual(allowlist.allowed, [
-    '.github/phase-allowlists/wp-metsera-exclusivity-product-admission-v1.json',
-    'lib/canonical-v2/metsera-exclusivity-product-admission.js',
-    'lib/canonical-v2/metsera-exclusivity-staging-pilot.js',
-    'scripts/canonical-v2-staging-metsera-exclusivity-p8.mjs',
-    'tests/canonical-v2-metsera-exclusivity-product-admission.test.js',
-    'tests/canonical-v2-metsera-exclusivity-staging-pilot.test.js',
-  ]);
+  assert.equal(
+    allowlist.allowed.includes(
+      'lib/canonical-v2/metsera-exclusivity-product-admission.js',
+    ),
+    true,
+  );
+  assert.equal(
+    allowlist.allowed.includes(
+      'scripts/canonical-v2-staging-metsera-exclusivity-p8.mjs',
+    ),
+    true,
+  );
 });

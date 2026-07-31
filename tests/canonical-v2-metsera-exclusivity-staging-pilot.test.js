@@ -5,9 +5,14 @@ const test = require('node:test');
 
 const {
   AUTHORITY_LIMITS,
+  DIRECT_BENEFICIARY_TEXT,
+  DIRECT_GRANTOR_TEXT,
+  EXCLUSIVITY_EXPIRY_TEXT,
+  GRANT_EFFECTIVE_TEXT,
   METSERA_STAGING_PILOT_SCHEMA,
   SELECTED_PASSAGE_ID,
   compileMetseraExclusivityStagingPilot,
+  validateSealedGrantEvidence,
 } = require('../lib/canonical-v2/metsera-exclusivity-staging-pilot');
 
 test('keeps the Metsera staging pilot fail-closed until every sealed source is supplied', () => {
@@ -23,6 +28,37 @@ test('keeps the Metsera staging pilot fail-closed until every sealed source is s
     SELECTED_PASSAGE_ID,
     'party-2-august-17-executed-exclusivity',
   );
+});
+
+test('requires direct party-and-role evidence and separates the grant date from expiry', () => {
+  assert.equal(
+    DIRECT_GRANTOR_TEXT,
+    'Metsera did not grant Party 2 exclusivity',
+  );
+  assert.equal(DIRECT_BENEFICIARY_TEXT, 'grant Party 2 exclusivity');
+  assert.equal(GRANT_EFFECTIVE_TEXT, 'Later on August&nbsp;17, 2025');
+  assert.equal(
+    EXCLUSIVITY_EXPIRY_TEXT,
+    'through 9:00 a.m. Eastern Time on September&nbsp;8,\n2025',
+  );
+  assert.doesNotThrow(() => validateSealedGrantEvidence({
+    grantorEvidenceText: DIRECT_GRANTOR_TEXT,
+    beneficiaryEvidenceText: DIRECT_BENEFICIARY_TEXT,
+    grantEffectiveText: GRANT_EFFECTIVE_TEXT,
+    expiryText: EXCLUSIVITY_EXPIRY_TEXT,
+  }));
+  assert.throws(() => validateSealedGrantEvidence({
+    grantorEvidenceText: 'Metsera',
+    beneficiaryEvidenceText: 'Party 2',
+    grantEffectiveText: GRANT_EFFECTIVE_TEXT,
+    expiryText: EXCLUSIVITY_EXPIRY_TEXT,
+  }), /directly bind both entities to the grant/);
+  assert.throws(() => validateSealedGrantEvidence({
+    grantorEvidenceText: DIRECT_GRANTOR_TEXT,
+    beneficiaryEvidenceText: DIRECT_BENEFICIARY_TEXT,
+    grantEffectiveText: EXCLUSIVITY_EXPIRY_TEXT,
+    expiryText: GRANT_EFFECTIVE_TEXT,
+  }), /must remain distinct exact expressions/);
 });
 
 test('grants no operational authority and does not label narration as actual drafting', () => {

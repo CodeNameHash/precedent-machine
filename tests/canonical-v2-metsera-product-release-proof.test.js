@@ -20,6 +20,9 @@ test('binds the real Metsera Product row to one candidate release', () => {
     source,
     /METSERA_EXCLUSIVITY_CANDIDATE_RELEASE_MANIFEST\/V1/,
   );
+  assert.match(source, /--process-admission/);
+  assert.doesNotMatch(source, /validation_receipt_ids/);
+  assert.doesNotMatch(source, /compileMetseraExclusivityStagingPilot/);
 });
 
 test('proves writer, import and inactive serving in one rollback transaction', () => {
