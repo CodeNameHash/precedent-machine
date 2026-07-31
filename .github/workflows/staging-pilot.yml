@@ -11,6 +11,11 @@ on:
           - metsera
           - qxo
           - both
+  push:
+    branches:
+      - 'run/staging-pilot-metsera'
+      - 'run/staging-pilot-qxo'
+      - 'run/staging-pilot-both'
 
 permissions:
   contents: read
@@ -23,6 +28,8 @@ jobs:
   pilot:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      PILOT: ${{ inputs.pilot || (github.ref == 'refs/heads/run/staging-pilot-qxo' && 'qxo') || (github.ref == 'refs/heads/run/staging-pilot-both' && 'both') || 'metsera' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -30,13 +37,13 @@ jobs:
           node-version: 22
       - run: npm ci --no-audit --no-fund
       - name: Fetch sealed Metsera sources
-        if: inputs.pilot != 'qxo'
+        if: env.PILOT != 'qxo'
         run: node scripts/fetch-metsera-sealed-sources.mjs --out-dir /tmp/metsera-sources
       - name: Prepare Metsera pilot inputs
-        if: inputs.pilot != 'qxo'
+        if: env.PILOT != 'qxo'
         run: node scripts/canonical-v2-prepare-metsera-pilot-inputs.mjs --source-dir /tmp/metsera-sources --out-dir /tmp/metsera-pilot-inputs
       - name: Run Metsera staging pilot (rollback-only)
-        if: inputs.pilot != 'qxo'
+        if: env.PILOT != 'qxo'
         env:
           STAGING_DB_URL: ${{ secrets.STAGING_DB_URL }}
         run: |
@@ -47,7 +54,7 @@ jobs:
             --cohort-execution-input /tmp/metsera-pilot-inputs/cohort-execution-input.json \
             --db-url "$STAGING_DB_URL"
       - name: Run QXO staging pilot (rollback-only)
-        if: inputs.pilot != 'metsera'
+        if: env.PILOT != 'metsera'
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
