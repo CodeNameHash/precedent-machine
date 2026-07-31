@@ -1258,8 +1258,8 @@ BEGIN
   IF pg_catalog.pg_column_size(p_write_set)
       + pg_catalog.pg_column_size(p_residuals)
       + pg_catalog.pg_column_size(p_quarantines)
-      + pg_catalog.pg_column_size(p_receipt) > 4194304 THEN
-    RAISE EXCEPTION 'canonical writer persistence envelope exceeds 4 MiB'
+      + pg_catalog.pg_column_size(p_receipt) > 16777216 THEN
+    RAISE EXCEPTION 'canonical writer persistence envelope exceeds 16 MiB'
       USING ERRCODE = '54000';
   END IF;
   canonical_v2_input_digest := canonical_v2_staging.content_id(

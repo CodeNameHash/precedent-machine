@@ -125,7 +125,7 @@ test('writer authenticates input and receipt envelopes before lock, lookup or DM
   );
   assert.match(
     envelopeValidation,
-    /pg_column_size\(p_write_set\)[\s\S]*pg_column_size\(p_residuals\)[\s\S]*pg_column_size\(p_quarantines\)[\s\S]*pg_column_size\(p_receipt\) > 4194304/,
+    /pg_column_size\(p_write_set\)[\s\S]*pg_column_size\(p_residuals\)[\s\S]*pg_column_size\(p_quarantines\)[\s\S]*pg_column_size\(p_receipt\) > 16777216/,
   );
   assert.match(
     envelopeValidation,
