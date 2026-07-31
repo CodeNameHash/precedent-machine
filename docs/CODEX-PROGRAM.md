@@ -150,8 +150,13 @@ CORRECTED (the plan below rests on these, not the review's wording):
   Preview. No service credential may enter browser-visible code. Vercel
   Deployment Protection or SSO remains active on Previews. Secrets never enter
   evidence, prompts or committed files.
-- Legal-semantic diffs still require one per-diff review by Fable or an
-  equivalently capable high-reasoning reviewer before merge.
+- Before a milestone, each legal-semantic change requires exactly one
+  high-reasoning diff review by Fable or an equivalently capable reviewer before
+  merge. A review fix receives exactly one bounded fix-diff re-review. The
+  three-lane architecture, legal and query review is reserved for M1 to M4.
+- Passing test evidence binds the code tree. A later documentation,
+  acknowledgement, execution-ledger or specification-manifest-only commit does
+  not invalidate that evidence or require its tests to run again.
 
 ## Milestone review model
 
@@ -163,11 +168,12 @@ Exactly four review milestones remain:
 3. `M3_FULL_CORPUS_CERTIFICATION`: Phase 9 quality work is complete.
 4. `M4_PRE_CUTOVER`: production import and activation are ready.
 
-Each milestone receives one adversarial review by Fable or an equivalently
-capable high-reasoning reviewer. The reviewer receives the diff since the prior
-reviewed state, the relevant contracts and no prior conclusions. The result is
-one plain Markdown acknowledgement under `docs/acks/`. It records the reviewed
-commit range, date, reviewer, findings, dispositions and `PASS` or `FAIL`.
+Each milestone receives one three-lane adversarial review by Fable or an
+equivalently capable high-reasoning reviewer. The architecture, legal and query
+lanes receive the diff since the prior reviewed state, the relevant contracts
+and no prior conclusions. The result is one plain Markdown acknowledgement
+under `docs/acks/`. It records the reviewed commit range, date, reviewer,
+findings, dispositions and `PASS` or `FAIL`.
 
 A failed review creates one bounded fix list. Only the fix diff is re-reviewed.
 No other event becomes a milestone. A normal legal-semantic diff review is not a
@@ -179,6 +185,10 @@ Ben approval remains required only for:
 - material taxonomy or codebook changes;
 - production import where the governing import contract requires it; and
 - the one-use production cutover authorisation.
+
+The M1 Markdown acknowledgement is the only pre-production approval artefact.
+It records Ben's exact-bundle approval. No signed status, signer record,
+publication record or separate approval carrier is pre-production authority.
 
 ## Security tiers
 

@@ -2164,8 +2164,9 @@ The following adversarial closure tests are mandatory traceability entries:
   resolves once to the CanonicalContractBundle. Contract freeze is a registered
   canonical-writer operation with exactly one
   `INITIALISE_CANDIDATE_PROMOTION_FENCE` action. Its acceptance predicates
-  recompute the compilation receipt, legal-semantic and identity review, signed
-  Ben approval and signed status generation directly from immutable members.
+  recompute the compilation receipt, legal-semantic and identity review, and
+  the M1 Markdown acknowledgement that records Ben's exact-bundle approval
+  directly from immutable members. No signed status generation is required.
   Caller-supplied summaries, booleans, expected generations or verification
   objects have no authority. A contract-impacting novel candidate blocks the
   predecessor release. Before final disposition it may create only a

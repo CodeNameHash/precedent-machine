@@ -8,9 +8,6 @@ const test = require('node:test');
 const RUNNER =
   'scripts/canonical-v2-staging-qxo-capitalisation-f27.mjs';
 const source = fs.readFileSync(RUNNER, 'utf8');
-const {
-  requireVerticalSliceExecutionPermission,
-} = require('../lib/programme-gates/vertical-slice-permission');
 
 test('F27 offline attestation validates exact identities without database access', () => {
   const result = spawnSync(process.execPath, [RUNNER, '--attest'], {
@@ -50,8 +47,8 @@ test('F27 offline attestation validates exact identities without database access
 test('F27 staging proof is exact-project, bounded and rollback-only', () => {
   assert.match(source, /deal-corpus-canonical-v2-staging/);
   assert.match(source, /sjumbznveyyiizhwvixj/);
-  assert.match(source, /verifyFetchedPublication/);
-  assert.match(source, /requireVerticalSliceExecutionPermission/);
+  assert.doesNotMatch(source, /verify-programme-status-publication/);
+  assert.doesNotMatch(source, /requireVerticalSliceExecutionPermission/);
   assert.match(source, /ADMITTED_QXO_IMMUTABLE_SOURCE/);
   assert.match(
     source,
@@ -110,36 +107,6 @@ test('one set-based probe insert and one class read preserve both legal classes'
   assert.match(source, /probe_rolled_back/);
 });
 
-test('database execution requires the exact protected signed work class', () => {
-  const verified = {
-    result: 'PASS',
-    origin_main_commit: 'a'.repeat(40),
-    publication_commit: 'b'.repeat(40),
-    generation: 44,
-    gate_states: { P1_CONTRACT_FREEZE_ATTESTED: 'OPEN' },
-    work_classes: { vertical_slice_execution: 'OPEN' },
-  };
-  assert.throws(
-    () => requireVerticalSliceExecutionPermission(verified),
-    (error) => error.code === 'VERTICAL_SLICE_EXECUTION_NOT_AUTHORISED',
-  );
-  verified.gate_states.P1_CONTRACT_FREEZE_ATTESTED = 'PASS';
-  verified.work_classes.vertical_slice_execution = 'PASS';
-  assert.deepEqual(
-    requireVerticalSliceExecutionPermission(verified),
-    {
-      schema_version: 'VERTICAL_SLICE_EXECUTION_PERMISSION/V1',
-      generation: 44,
-      origin_main_commit: 'a'.repeat(40),
-      publication_commit: 'b'.repeat(40),
-      p1_contract_freeze_attested: 'PASS',
-      vertical_slice_execution: 'PASS',
-      authority_source: 'PROTECTED_PROGRAMME_STATUS_PUBLICATION',
-    },
-  );
-  assert.doesNotMatch(source, /CANONICAL_V2_VERTICAL_SLICE_EXECUTION/);
-});
-
 test('staging verification accepts the pinned agent envelope and exact array shape', () => {
   const offline = spawnSync(process.execPath, [RUNNER, '--attest'], {
     cwd: process.cwd(),
@@ -162,10 +129,6 @@ test('staging verification accepts the pinned agent envelope and exact array sha
       source_binding: identity.source_binding,
       source_context_id: identity.source_context_id,
       document_hash: identity.document_hash,
-      programme_status_generation: 1,
-      programme_status_main_commit: '0'.repeat(40),
-      programme_status_publication_commit: '1'.repeat(40),
-      vertical_slice_execution: 'PASS',
       probe_records: 6,
       comparison_classes: 2,
       set_based_insert_statements: 1,

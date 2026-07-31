@@ -37,8 +37,19 @@ programme_gate_registry:
     failed_review_action: BOUNDED_FIX_LIST_AND_FIX_DIFF_REVIEW_ONLY
     additional_milestones_permitted: false
     legal_semantic_diff_review:
-      remains_required_at_merge: true
+      applies_before_milestones: true
+      reviews_per_change: 1
+      fix_diff_rereviews_per_failed_review: 1
       milestone_event: false
+    milestone_three_lane_review:
+      applies_only_at: [M1_CONTRACT_FREEZE, M2_VERTICAL_SLICE, M3_FULL_CORPUS_CERTIFICATION, M4_PRE_CUTOVER]
+      lanes: [ARCHITECTURE, LEGAL, QUERY]
+    evidence_binding:
+      passing_test_evidence_binds_code_tree: true
+      documentation_acknowledgement_execution_ledger_or_specification_manifest_only_commit_does_not_invalidate_or_rerun: true
+    preproduction_approval:
+      only_artefact: M1_MARKDOWN_ACKNOWLEDGEMENT
+      signed_status_or_publication_authority: false
 
   ben_approval_points:
     - MATERIAL_CONTRACT_BUNDLE_FREEZE

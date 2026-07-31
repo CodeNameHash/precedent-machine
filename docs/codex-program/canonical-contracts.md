@@ -13787,18 +13787,25 @@ ambiguous reading instead of this subsection fails contract freeze.
 
 Pre-production work does not use a bootstrap gate, signed status generation,
 trusted review controller, review-session nonce or exact-digest review set.
-The four milestones M1 to M4 are the complete milestone set. Each milestone
-uses one adversarial diff review recorded as a plain Markdown acknowledgement
-under `docs/acks/`. The acknowledgement contains the reviewed commit range,
-date, reviewer, findings, dispositions and `PASS` or `FAIL`. A failed review
-creates a bounded fix list. Only the fix diff is re-reviewed.
+Before a milestone, each legal-semantic change receives exactly one
+high-reasoning diff review. A failed review creates one bounded fix list, and
+only that fix diff receives one re-review. The four milestones M1 to M4 are the
+complete milestone set. Only those milestones use the three-lane architecture,
+legal and query adversarial review. Each milestone records one plain Markdown
+acknowledgement under `docs/acks/`. The acknowledgement contains the reviewed
+commit range, date, reviewer, findings, dispositions and `PASS` or `FAIL`.
 
 M1 also requires two clean uncached bundle compiles with byte-identical output,
 zero structural defects and Ben's approval of the exact fingerprint. Between
 milestones, ordinary work merges on the mechanical gates in
 `programme-gates.yaml`. A legal-semantic diff still requires its own merge-time
-review. No signature, session metadata, controller identity, source-byte task
-manifest or protected publication is pre-production authority.
+review. Passing test evidence binds the code tree. A later documentation,
+acknowledgement, execution-ledger or specification-manifest-only commit neither
+invalidates that evidence nor requires a rerun. The M1 Markdown
+acknowledgement, which records Ben's exact-bundle approval, is the only
+pre-production approval artefact. No signature, session metadata, controller
+identity, source-byte task manifest or protected publication is
+pre-production authority.
 
 The extraction golden comparison remains the programme's one dual-independent
 reconciliation. Earlier requirements for two cutoff enumerators plus a third

@@ -50,9 +50,6 @@ const {
   SECTION_5_2_INTERVAL,
 } = require('../lib/canonical-v2/reviewed-qxo-capitalisation-slice');
 const {
-  requireVerticalSliceExecutionPermission,
-} = require('../lib/programme-gates/vertical-slice-permission');
-const {
   buildF27Inputs,
 } = require('../tests/fixtures/canonical-v2/qxo-capitalisation-f27-inputs');
 
@@ -259,7 +256,7 @@ function sqlText(value) {
   return `'${String(value).replaceAll("'", "''")}'`;
 }
 
-function buildRollbackProofSql(candidate, permission) {
+function buildRollbackProofSql(candidate) {
   const { release } = candidate;
   const { records } = buildProbeRecords(release);
   const classSummary = CLASS_KEYS.map((comparisonClassKey) => ({
@@ -379,11 +376,6 @@ SELECT jsonb_build_object(
   'source_context_id',
     ${sqlText(candidate.inputs.sourceContext.admitted_semantic_source_context_id)},
   'document_hash', ${sqlText(candidate.inputs.sourceContext.document_hash)},
-  'programme_status_generation', ${permission.generation},
-  'programme_status_main_commit', ${sqlText(permission.origin_main_commit)},
-  'programme_status_publication_commit',
-    ${sqlText(permission.publication_commit)},
-  'vertical_slice_execution', ${sqlText(permission.vertical_slice_execution)},
   'probe_records', ${MAX_PROBE_RECORDS},
   'comparison_classes', ${CLASS_KEYS.length},
   'set_based_insert_statements', 1,
@@ -549,12 +541,7 @@ ROLLBACK;
   return { sourceContext, parserSourceClosure, contractBundle };
 }
 
-function runRollbackProof(
-  sql,
-  candidate,
-  permission,
-  { executable = 'supabase' } = {},
-) {
+function runRollbackProof(sql, candidate, { executable = 'supabase' } = {}) {
   const rows = runLinkedSql(sql, {
     executable,
     fileName: 'rollback-proof.sql',
@@ -581,12 +568,6 @@ function runRollbackProof(
         !== candidate.inputs.sourceContext.admitted_semantic_source_context_id
       || attestation.document_hash
         !== candidate.inputs.sourceContext.document_hash
-      || attestation.programme_status_generation !== permission.generation
-      || attestation.programme_status_main_commit
-        !== permission.origin_main_commit
-      || attestation.programme_status_publication_commit
-        !== permission.publication_commit
-      || attestation.vertical_slice_execution !== 'PASS'
       || attestation.probe_records !== MAX_PROBE_RECORDS
       || attestation.comparison_classes !== CLASS_KEYS.length
       || attestation.set_based_insert_statements !== 1
@@ -645,25 +626,6 @@ try {
     const candidate = buildCandidate(buildF27Inputs());
     process.stdout.write(`${JSON.stringify(offlineAttestation(candidate))}\n`);
   } else {
-    let permission;
-    if (args[0] === '--verify') {
-      const {
-        verifyFetchedPublication,
-      } = await import('./verify-programme-status-publication.mjs');
-      permission = requireVerticalSliceExecutionPermission(
-        verifyFetchedPublication({ root: ROOT }),
-      );
-    } else {
-      permission = Object.freeze({
-        schema_version: 'VERTICAL_SLICE_EXECUTION_PERMISSION_TEST_FIXTURE/V1',
-        generation: 1,
-        origin_main_commit: '0'.repeat(40),
-        publication_commit: '1'.repeat(40),
-        p1_contract_freeze_attested: 'TEST_ONLY',
-        vertical_slice_execution: 'PASS',
-        authority_source: 'TEMPORARY_EXECUTABLE_TEST_FIXTURE_ONLY',
-      });
-    }
     const fixtureExecutable = args[0] === '--verify'
       ? null
       : fixtureSupabaseExecutable();
@@ -672,8 +634,8 @@ try {
       ? readAdmittedF27Inputs()
       : buildF27Inputs();
     const candidate = buildCandidate(inputs);
-    const sql = buildRollbackProofSql(candidate, permission);
-    const attestation = runRollbackProof(sql, candidate, permission, {
+    const sql = buildRollbackProofSql(candidate);
+    const attestation = runRollbackProof(sql, candidate, {
       executable: fixtureExecutable || 'supabase',
     });
     process.stdout.write(`${JSON.stringify(attestation)}\n`);
