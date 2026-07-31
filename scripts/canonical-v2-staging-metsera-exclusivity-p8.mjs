@@ -323,6 +323,10 @@ function writeBrowserFixture({
           domain_result_identity:
             binding.domain_result_identity,
           market_state: binding.market_state,
+          subject_cohort_membership:
+            binding.subject_cohort_membership,
+          independent_peer_count:
+            binding.independent_peer_count,
           selected_source_action:
             binding.selected_source_action,
         }],

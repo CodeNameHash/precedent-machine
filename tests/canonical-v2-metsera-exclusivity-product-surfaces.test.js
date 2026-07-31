@@ -23,7 +23,7 @@ test('fails closed without the exact Product chain', () => {
   );
 });
 
-test('uses one exact result and retains a typed no-cohort state', () => {
+test('uses one exact result and includes the subject with zero independent peers', () => {
   const source = fs.readFileSync(
     require.resolve(
       '../lib/canonical-v2/metsera-exclusivity-product-surfaces',
@@ -31,7 +31,9 @@ test('uses one exact result and retains a typed no-cohort state', () => {
     'utf8',
   );
   assert.match(source, /validateMetseraExclusivityProductPresentation/);
-  assert.match(source, /SINGLE_PILOT_RESULT_NO_MARKET_COHORT/);
+  assert.match(source, /SUBJECT_INCLUDED_NO_INDEPENDENT_PEERS/);
+  assert.match(source, /status: 'INCLUDED'/);
+  assert.match(source, /independent_peer_count: 0/);
   assert.match(source, /validateMetseraExclusivityProductRow\([\s\S]*authorityContext[\s\S]*authorityInput/);
   assert.doesNotMatch(
     source,

@@ -147,10 +147,17 @@
     "market_metric_slot_count": 14,
     "market_request_contract": {
       "database_call_budget": 1,
-      "empty_cohort_state": "EMPTY_COHORT",
+      "no_independent_peer_state": "SUBJECT_INCLUDED_NO_INDEPENDENT_PEERS",
       "failure_isolation": "PER_METRIC_SLOT",
       "immediate_retries": 0,
-      "subject_exclusion_required": true
+      "subject_membership_required": true,
+      "subject_inclusion_rule": "INCLUDE_IF_ELIGIBLE_COMPARABLE_AND_IN_CORPUS",
+      "selected_cohort_statistics_include_subject": true,
+      "independent_peer_count_required": true,
+      "allowed_subject_exclusion_reason_types": [
+        "SELECTED_NARROWER_COHORT",
+        "TYPED_NON_COMPARABILITY"
+      ]
     },
     "party": {
       "capacity": "ACQUIRER",

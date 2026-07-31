@@ -185,7 +185,7 @@ test('fixture rollback accepts only one exact bounded attestation', () => {
       persisted_object_references: 0,
       probe_insert_statements: 1,
       set_based_metric_reads: 1,
-      subject_exclusion_verified: true,
+      subject_membership_verified: true,
       active_pointer_unchanged: true,
       candidate_counts_unchanged: true,
       probe_rolled_back: true,

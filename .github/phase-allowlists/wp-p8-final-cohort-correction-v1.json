@@ -1,0 +1,29 @@
+{
+  "phase": "WP-P8-FINAL-COHORT-CORRECTION-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-p8-final-cohort-correction-v1.json",
+    "__fixtures__/canonical-v2/metsera-exclusivity-p8.json",
+    "components/process/MetseraExclusivityCrossView.jsx",
+    "contracts/canonical-v2/successor/agreement/result-definitions/target-capitalisation-bring-down.v3.json",
+    "contracts/canonical-v2/successor/manifest.json",
+    "lib/canonical-v2/metsera-exclusivity-product-surfaces.js",
+    "lib/canonical-v2/qxo-capitalisation-cross-view-release-f28.js",
+    "scripts/canonical-v2-staging-metsera-exclusivity-p8.mjs",
+    "scripts/canonical-v2-staging-qxo-capitalisation-f28.mjs",
+    "tests/canonical-v2-metsera-exclusivity-browser-acceptance.test.js",
+    "tests/canonical-v2-metsera-exclusivity-product-surfaces.test.js",
+    "tests/canonical-v2-product-candidate-result-writer.test.js",
+    "tests/canonical-v2-qxo-capitalisation-contract-input.test.js",
+    "tests/canonical-v2-qxo-capitalisation-cross-view-release-f28.test.js",
+    "tests/canonical-v2-staging-qxo-capitalisation-f28.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "data/**",
+    "docs/**",
+    "pages/api/**",
+    "sql/**",
+    "supabase/**"
+  ]
+}

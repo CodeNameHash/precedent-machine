@@ -747,7 +747,7 @@ SELECT jsonb_build_object(
     ${writerExecution.persistedObjectReferences},
   'probe_insert_statements', 1,
   'set_based_metric_reads', 1,
-  'subject_exclusion_verified', true,
+  'subject_membership_verified', true,
   'active_pointer_unchanged',
     (SELECT active_pointer FROM qxo_capitalisation_f28_guard)
     IS NOT DISTINCT FROM
@@ -989,7 +989,7 @@ function runRollbackProof(sql, candidate, permission, executable) {
       !== candidate.executionWriter.persistedObjectReferences
     || attestation.probe_insert_statements !== 1
     || attestation.set_based_metric_reads !== 1
-    || attestation.subject_exclusion_verified !== true
+    || attestation.subject_membership_verified !== true
     || attestation.active_pointer_unchanged !== true
     || attestation.candidate_counts_unchanged !== true
     || attestation.probe_rolled_back !== true

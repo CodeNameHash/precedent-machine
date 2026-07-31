@@ -192,6 +192,22 @@ test('governs fourteen atomic market slots without cross-class aggregation', () 
   ).canonical_value.authored_definition;
   assert.equal(result.result_version, 3);
   assert.equal(result.market_metric_slot_count, 14);
+  assert.deepEqual(result.market_request_contract, {
+    database_call_budget: 1,
+    no_independent_peer_state:
+      'SUBJECT_INCLUDED_NO_INDEPENDENT_PEERS',
+    failure_isolation: 'PER_METRIC_SLOT',
+    immediate_retries: 0,
+    subject_membership_required: true,
+    subject_inclusion_rule:
+      'INCLUDE_IF_ELIGIBLE_COMPARABLE_AND_IN_CORPUS',
+    selected_cohort_statistics_include_subject: true,
+    independent_peer_count_required: true,
+    allowed_subject_exclusion_reason_types: [
+      'SELECTED_NARROWER_COHORT',
+      'TYPED_NON_COMPARABILITY',
+    ],
+  });
   assert.deepEqual(
     result.market_metric_slots.map((entry) => ({
       value_slot_key: entry.value_slot_key,

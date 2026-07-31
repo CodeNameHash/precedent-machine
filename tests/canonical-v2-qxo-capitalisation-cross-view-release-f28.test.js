@@ -11,7 +11,7 @@ const {
 const {
   SURFACES,
   buildQxoCapitalisationCrossViewReleaseF28,
-  buildTypedEmptyF28MarketResult,
+  buildSubjectOnlyF28MarketResult,
   compileQxoCapitalisationF28MarketRequest,
   executeQxoCapitalisationF28MarketRequest,
   validateQxoCapitalisationCrossViewReleaseF28,
@@ -74,6 +74,28 @@ test('F28 publishes six shared rows and fourteen typed market metrics', () => {
     ),
     [5, 5, 1, 1, 1, 1],
   );
+  const metricResults = release.provision_row.subrows.flatMap(
+    (entry) => entry.market_context.metric_results,
+  );
+  assert.ok(metricResults.filter(
+    (entry) => entry.subject_cohort_membership.status === 'INCLUDED',
+  ).every(
+    (entry) => entry.counts.eligible_deals === 1
+      && entry.counts.comparable_deals === 1
+      && entry.counts.excluded_deals === 0
+      && entry.counts.independent_peer_count === 0
+      && entry.state_groups.length === 1
+      && entry.state_groups[0].deal_count === 1
+      && entry.state_groups[0].percentage === '100',
+  ));
+  assert.ok(metricResults.filter(
+    (entry) => entry.subject_cohort_membership.status === 'EXCLUDED',
+  ).every(
+    (entry) => entry.counts.eligible_deals === 1
+      && entry.counts.comparable_deals === 0
+      && entry.counts.excluded_deals === 1
+      && entry.counts.independent_peer_count === 0,
+  ));
   assert.equal(release.admissions.length, 14);
   assert.equal(release.observations.length, 13);
   assert.equal(release.exclusions.length, 1);
@@ -96,10 +118,33 @@ test('F28 publishes six shared rows and fourteen typed market metrics', () => {
     'FORBIDDEN',
   );
   assert.ok(release.provision_row.subrows.every(
-    (entry) => entry.market_context.state === 'EMPTY_COHORT'
+    (entry) => entry.market_context.subject_deal_included === true
+      && entry.market_context.subject_cohort_membership.status === 'INCLUDED'
+      && entry.market_context.subject_cohort_membership.exclusion_reason === null
+      && entry.market_context.counts.comparable_deals === 1
+      && entry.market_context.counts.independent_peer_count === 0
+      && entry.market_context.state
+        === 'SUBJECT_INCLUDED_NO_INDEPENDENT_PEERS'
       && entry.market_context.reason_code
-        === 'NO_INDEPENDENT_COMPARABLE_DEALS',
+        === 'ZERO_INDEPENDENT_COMPARABLE_DEALS',
   ));
+  const metricMemberships = release.provision_row.subrows.flatMap(
+    (entry) => entry.market_context.metric_results.map(
+      (metric) => metric.subject_cohort_membership,
+    ),
+  );
+  assert.equal(
+    metricMemberships.filter((entry) => entry.status === 'INCLUDED').length,
+    13,
+  );
+  assert.deepEqual(
+    metricMemberships.filter((entry) => entry.status === 'EXCLUDED'),
+    [{
+      status: 'EXCLUDED',
+      exclusion_reason:
+        'TYPED_NON_COMPARABILITY:ACCURACY_EXCEPTION_ABSENT',
+    }],
+  );
 });
 
 test('F28 keeps exact legal terms, class boundaries and source lineage', () => {
@@ -180,8 +225,18 @@ test('F28 compiles one bounded request for all fourteen metrics', () => {
   assert.equal(request.immediate_retries, 0);
   assert.equal(request.metric_bindings.length, 14);
   assert.equal(
-    request.subject_exclusion_predicate,
+    request.subject_membership_policy,
+    'INCLUDE_IF_ELIGIBLE_COMPARABLE_AND_IN_CORPUS',
+  );
+  assert.equal(
+    request.independent_peer_count_predicate,
     'GOVERNED_DEAL_KEY_NOT_EQUAL_SUBJECT_DEAL_KEY',
+  );
+  assert.equal(
+    request.metric_bindings.filter(
+      (entry) => entry.subject_cohort_membership.status === 'INCLUDED',
+    ).length,
+    13,
   );
   assert.equal(request.filters.buyer, 'Acquirer');
   assert.throws(
@@ -200,35 +255,50 @@ test('F28 compiles one bounded request for all fourteen metrics', () => {
   );
 });
 
-test('F28 validates typed empty, ready and isolated failed slots', () => {
+test('F28 validates subject-only, peer and isolated failed slots', () => {
   const { release } = fixture();
   const request = compileQxoCapitalisationF28MarketRequest({ release });
-  const empty = buildTypedEmptyF28MarketResult(request);
+  const subjectOnly = buildSubjectOnlyF28MarketResult(request);
   assert.equal(
-    validateQxoCapitalisationF28MarketResult(empty, request),
+    validateQxoCapitalisationF28MarketResult(subjectOnly, request),
     true,
   );
+  assert.equal(
+    subjectOnly.slot_results.filter(
+      (entry) => entry.result_state
+        === 'SUBJECT_INCLUDED_NO_INDEPENDENT_PEERS',
+    ).length,
+    13,
+  );
+  assert.equal(
+    subjectOnly.slot_results.filter(
+      (entry) => entry.result_state
+        === 'SUBJECT_EXCLUDED_TYPED_NON_COMPARABILITY',
+    ).length,
+    1,
+  );
 
-  const ready = clone(empty);
+  const ready = clone(subjectOnly);
   Object.assign(ready.slot_results[0], {
     result_state: 'READY',
     counts: {
       eligible_deals: 2,
-      comparable_deals: 1,
-      excluded_deals: 1,
+      comparable_deals: 2,
+      excluded_deals: 0,
+      independent_peer_count: 1,
     },
     state_groups: [{
       state: 'PRESENT',
-      deal_count: 1,
+      deal_count: 2,
       percentage: '100',
     }],
     value_groups: [{
       state: 'PRESENT',
       canonical_value: 'MAT_ALL_RESPECTS_DE_MINIMIS',
-      deal_count: 1,
+      deal_count: 2,
       percentage: '100',
     }],
-    empty_cohort_reason_code: null,
+    cohort_reason_code: null,
   });
   assert.equal(
     validateQxoCapitalisationF28MarketResult(
@@ -238,10 +308,13 @@ test('F28 validates typed empty, ready and isolated failed slots', () => {
     true,
   );
 
-  const failed = clone(empty);
+  const failed = clone(subjectOnly);
   Object.assign(failed.slot_results[3], {
     result_state: 'FAILED',
-    empty_cohort_reason_code: null,
+    state_groups: [],
+    value_groups: [],
+    numeric_summary: null,
+    cohort_reason_code: null,
     failure_reason_code: 'METRIC_VALUE_VALIDATION_FAILED',
   });
   assert.equal(
@@ -253,17 +326,21 @@ test('F28 validates typed empty, ready and isolated failed slots', () => {
   );
   assert.equal(failed.slot_results.length, 14);
   assert.ok(failed.slot_results.slice(0, 3).every(
-    (entry) => entry.result_state === 'EMPTY_COHORT',
+    (entry) => entry.result_state
+      === 'SUBJECT_INCLUDED_NO_INDEPENDENT_PEERS',
   ));
   assert.ok(failed.slot_results.slice(4).every(
-    (entry) => entry.result_state === 'EMPTY_COHORT',
+    (entry) => [
+      'SUBJECT_INCLUDED_NO_INDEPENDENT_PEERS',
+      'SUBJECT_EXCLUDED_TYPED_NON_COMPARABILITY',
+    ].includes(entry.result_state),
   ));
 });
 
 test('F28 validates a non-empty signed-duration market slot', () => {
   const { release } = fixture();
   const request = compileQxoCapitalisationF28MarketRequest({ release });
-  const result = clone(buildTypedEmptyF28MarketResult(request));
+  const result = clone(buildSubjectOnlyF28MarketResult(request));
   const durationIndex = request.metric_bindings.findIndex(
     (binding) => binding.metric_key
       === 'REPRESENTATION_MEASUREMENT_DATE_SIGNING_OFFSET',
@@ -273,28 +350,29 @@ test('F28 validates a non-empty signed-duration market slot', () => {
     result_state: 'READY',
     counts: {
       eligible_deals: 3,
-      comparable_deals: 2,
-      excluded_deals: 1,
+      comparable_deals: 3,
+      excluded_deals: 0,
+      independent_peer_count: 2,
     },
     state_groups: [{
       state: 'PRESENT',
-      deal_count: 2,
+      deal_count: 3,
       percentage: '100',
     }],
     value_groups: [{
       state: 'PRESENT',
       canonical_value: -1,
-      deal_count: 2,
+      deal_count: 3,
       percentage: '100',
     }],
     numeric_summary: {
-      count: 2,
+      count: 3,
       min: -1,
       max: -1,
       median: -1,
       mean: '-1',
     },
-    empty_cohort_reason_code: null,
+    cohort_reason_code: null,
   });
   assert.equal(
     validateQxoCapitalisationF28MarketResult(
@@ -305,12 +383,12 @@ test('F28 validates a non-empty signed-duration market slot', () => {
   );
 });
 
-test('F28 refuses slot reordering, subject leakage and rehashed drift', () => {
+test('F28 refuses slot reordering, peer leakage, untyped subject exclusion and rehashed drift', () => {
   const { release } = fixture();
   const request = compileQxoCapitalisationF28MarketRequest({ release });
-  const empty = buildTypedEmptyF28MarketResult(request);
+  const subjectOnly = buildSubjectOnlyF28MarketResult(request);
 
-  const reordered = clone(empty);
+  const reordered = clone(subjectOnly);
   [
     reordered.slot_results[0],
     reordered.slot_results[1],
@@ -326,11 +404,25 @@ test('F28 refuses slot reordering, subject leakage and rehashed drift', () => {
     /invalid or reordered/,
   );
 
-  const leaked = clone(empty);
-  leaked.slot_results[0].subject_exclusion.residual_subject_deals = 1;
+  const leaked = clone(subjectOnly);
+  leaked.slot_results[0]
+    .subject_membership_verification.selected_cohort_subject_deals = 0;
   assert.throws(
     () => validateQxoCapitalisationF28MarketResult(
       sealResult(leaked),
+      request,
+    ),
+    /invalid or reordered/,
+  );
+
+  const untypedExclusion = clone(subjectOnly);
+  untypedExclusion.slot_results[0].subject_cohort_membership = {
+    status: 'EXCLUDED',
+    exclusion_reason: 'NO_INDEPENDENT_COMPARABLE_DEALS',
+  };
+  assert.throws(
+    () => validateQxoCapitalisationF28MarketResult(
+      sealResult(untypedExclusion),
       request,
     ),
     /invalid or reordered/,
@@ -367,7 +459,7 @@ test('F28 execution uses one RPC, release-aware cache and single flight', async 
   const rpc = async (request) => {
     calls += 1;
     await new Promise((resolve) => setImmediate(resolve));
-    return buildTypedEmptyF28MarketResult(request);
+    return buildSubjectOnlyF28MarketResult(request);
   };
   const [first, second] = await Promise.all([
     executeQxoCapitalisationF28MarketRequest({

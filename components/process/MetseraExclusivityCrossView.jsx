@@ -34,14 +34,33 @@ function displaySourceText(value) {
     .trim();
 }
 
+function marketCohortMessage(binding) {
+  const membership = binding.subject_cohort_membership;
+  if (
+    membership?.status === 'INCLUDED'
+    && membership.exclusion_reason === null
+    && binding.independent_peer_count === 0
+  ) {
+    return 'Included in market cohort. Zero independent peers, so no market percentage is shown.';
+  }
+  if (
+    membership?.status === 'EXCLUDED'
+    && (
+      membership.exclusion_reason?.startsWith('SELECTED_NARROWER_COHORT:')
+      || membership.exclusion_reason?.startsWith('TYPED_NON_COMPARABILITY:')
+    )
+  ) {
+    return `Excluded from market cohort: ${membership.exclusion_reason}.`;
+  }
+  return 'Market cohort membership unavailable.';
+}
+
 export default function MetseraExclusivityCrossView({ fixture }) {
   const [surface, setSurface] = useState('QUERY');
   const [sourceState, setSourceState] = useState(null);
   const result = fixture.shared_result;
   const binding = fixture.surface_bindings[surface];
   const citation = result.exact_citation;
-  const hasMarketCohort =
-    binding.market_state !== 'SINGLE_PILOT_RESULT_NO_MARKET_COHORT';
 
   return (
     <section
@@ -135,9 +154,7 @@ export default function MetseraExclusivityCrossView({ fixture }) {
               className="mt-5 border-l-2 border-[#BDB9B0] bg-[#F7F5F0] px-3 py-2 text-[9px] leading-4 text-[#66625C]"
               data-market-state={binding.market_state}
             >
-              {hasMarketCohort
-                ? 'Market cohort available.'
-                : 'One certified pilot result. No independent market cohort is admitted, so no market percentage is shown.'}
+              {marketCohortMessage(binding)}
             </div>
           ) : null}
         </article>

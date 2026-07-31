@@ -319,6 +319,30 @@ test('rejects a correctly rehashed persisted materialisation receipt substitutio
   );
 });
 
+test('rejects a correctly rehashed untyped Metsera subject exclusion', () => {
+  const fixture = metseraProcessWriteFixture();
+  const substituted = clone(fixture.writeSet);
+  const surfaces = substituted.domain_carrier.complete_write_set
+    .product_surfaces;
+  surfaces.surface_bindings.COMPARE.subject_cohort_membership = {
+    status: 'EXCLUDED',
+    exclusion_reason: 'NO_INDEPENDENT_PEERS',
+  };
+  const surfaceBody = clone(surfaces);
+  delete surfaceBody.schema_version;
+  delete surfaceBody.product_surfaces_receipt_id;
+  surfaces.product_surfaces_receipt_id = contentId(
+    surfaces.schema_version,
+    surfaceBody,
+  );
+  rehashProcessCarrier(substituted);
+  assert.throws(
+    () => validateProductCandidateResultWriteSet(substituted),
+    (error) => error.code === 'INVALID_PRODUCT_CANDIDATE_RESULT_LINEAGE'
+      && /surface receipt was changed/.test(error.details.cause),
+  );
+});
+
 for (const profile of [
   'CAPITALISATION_BRING_DOWN_V3',
   'IOC_CAPEX_RESTRICTION_V1',

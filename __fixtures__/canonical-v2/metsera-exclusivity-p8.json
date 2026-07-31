@@ -342,7 +342,12 @@
       "product_query_definition_id": "063ea4a98fc4ae3db1088eba4931b231978e7c0cc4cc6b2a2e5a5e8505baa864",
       "product_query_result_identity": "7ff6e4d1ddb2baf6a995f66a911ef4b7031ef96bf52af5f0789a4adfeebea754",
       "domain_result_identity": "ce2df4541a9137afb85916aaf08befe361186213eec2b913338c0bc63828bf65",
-      "market_state": "SINGLE_PILOT_RESULT_NO_MARKET_COHORT",
+      "market_state": "SUBJECT_INCLUDED_NO_INDEPENDENT_PEERS",
+      "subject_cohort_membership": {
+        "status": "INCLUDED",
+        "exclusion_reason": null
+      },
+      "independent_peer_count": 0,
       "selected_source_action": "PROCESS_NARRATION_EVIDENCE"
     },
     "CORPUS_CONTEXT": {
@@ -350,7 +355,12 @@
       "product_query_definition_id": "063ea4a98fc4ae3db1088eba4931b231978e7c0cc4cc6b2a2e5a5e8505baa864",
       "product_query_result_identity": "7ff6e4d1ddb2baf6a995f66a911ef4b7031ef96bf52af5f0789a4adfeebea754",
       "domain_result_identity": "ce2df4541a9137afb85916aaf08befe361186213eec2b913338c0bc63828bf65",
-      "market_state": "SINGLE_PILOT_RESULT_NO_MARKET_COHORT",
+      "market_state": "SUBJECT_INCLUDED_NO_INDEPENDENT_PEERS",
+      "subject_cohort_membership": {
+        "status": "INCLUDED",
+        "exclusion_reason": null
+      },
+      "independent_peer_count": 0,
       "selected_source_action": "PROCESS_NARRATION_EVIDENCE"
     },
     "QUERY": {
@@ -359,6 +369,8 @@
       "product_query_result_identity": "7ff6e4d1ddb2baf6a995f66a911ef4b7031ef96bf52af5f0789a4adfeebea754",
       "domain_result_identity": "ce2df4541a9137afb85916aaf08befe361186213eec2b913338c0bc63828bf65",
       "market_state": "NOT_APPLICABLE",
+      "subject_cohort_membership": null,
+      "independent_peer_count": null,
       "selected_source_action": "PROCESS_NARRATION_EVIDENCE"
     },
     "REVIEW": {
@@ -367,6 +379,8 @@
       "product_query_result_identity": "7ff6e4d1ddb2baf6a995f66a911ef4b7031ef96bf52af5f0789a4adfeebea754",
       "domain_result_identity": "ce2df4541a9137afb85916aaf08befe361186213eec2b913338c0bc63828bf65",
       "market_state": "NOT_APPLICABLE",
+      "subject_cohort_membership": null,
+      "independent_peer_count": null,
       "selected_source_action": "PROCESS_NARRATION_EVIDENCE"
     }
   },

@@ -40,15 +40,19 @@ test('binds one real Metsera result to all four product views', () => {
   assert.equal(fixture.source_reader.original_result_preserved, true);
 });
 
-test('does not manufacture market data for one pilot result', () => {
-  assert.equal(
-    fixture.surface_bindings.COMPARE.market_state,
-    'SINGLE_PILOT_RESULT_NO_MARKET_COHORT',
-  );
-  assert.equal(
-    fixture.surface_bindings.CORPUS_CONTEXT.market_state,
-    'SINGLE_PILOT_RESULT_NO_MARKET_COHORT',
-  );
+test('includes the subject and separately reports zero independent peers', () => {
+  for (const surface of ['COMPARE', 'CORPUS_CONTEXT']) {
+    const binding = fixture.surface_bindings[surface];
+    assert.equal(
+      binding.market_state,
+      'SUBJECT_INCLUDED_NO_INDEPENDENT_PEERS',
+    );
+    assert.deepEqual(binding.subject_cohort_membership, {
+      status: 'INCLUDED',
+      exclusion_reason: null,
+    });
+    assert.equal(binding.independent_peer_count, 0);
+  }
   assert.doesNotMatch(JSON.stringify(fixture), /No market data/);
 });
 
@@ -88,6 +92,10 @@ test('uses the compact three-column browser layout and inactive source action', 
   assert.match(component, /Review/);
   assert.match(component, /Compare/);
   assert.match(component, /Corpus Context/);
+  assert.match(component, /Included in market cohort/);
+  assert.match(component, /Zero independent peers/);
+  assert.match(component, /SELECTED_NARROWER_COHORT:/);
+  assert.match(component, /TYPED_NON_COMPARABILITY:/);
   assert.match(component, /RELEASE_NOT_ACTIVE|release is not active/i);
   assert.match(page, /designPreviewServerSideProps/);
   assert.doesNotMatch(page, /fetch\s*\(/);
