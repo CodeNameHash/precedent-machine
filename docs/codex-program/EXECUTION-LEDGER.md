@@ -21,20 +21,20 @@ model. Agents do not move main or publish programme status.
 | --- | --- |
 | Main basis | `7b6bc64157c49832129fa2ca227399850cd983fc` |
 | Approved M1 review commit | `6cd3c2c739ba2d281cee2c99eea908e371edf765` |
-| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; current code head `604afbb7`, followed only by this ledger update. The exact contract bundle remains unchanged after the subject-cohort correction. Main remains fixed. |
-| Approved contract bundle | 178 authored inputs, 177 substantive contracts, 8 categories. |
+| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; current code head `f6e9867005a8a16ca4dbf74b6820abe4597b9765`, followed only by this ledger update. The exact contract bundle is approved. Main remains fixed. |
+| Approved contract bundle | 177 contracts and 315 dependency links. |
 | Current working-tree bundle ID | `d222eba830fefad4772e358041e36f8818dbf227e4c7e13c77f4228514a37d8e` |
 | Current working-tree contract digest | `a953a215f9ff4cf94a204580b3b9a2b559fa531d1f3be16a3e787032257e87b3` |
 | Current working-tree payload digest | `36762abe8f4dd666df0d9aa66760d8c4e41971fab633764108ee54f73d5c8d73` |
 | Contract dependency graph | 177 nodes, 315 links, 0 unresolved dependencies, and 0 cycles |
-| Clean compile check | PASS twice in separate Node processes after the cohort correction and approval wiring. Both produced 1,083,136 canonical bytes with SHA-256 `3a6021f20ebb6587aaa978c2bbdaa025cabdb84f961e514297f2e80fd90ca795`. |
-| Latest complete suite on this branch | PASS on exact code candidate `b0d8160e`: 5,132 pass, 0 fail, 1 staging-only skip. |
-| Latest production build on this branch | PASS on exact code candidate `b0d8160e`, 29/29 pages. Existing warnings remain: ESLint is absent, offline Supabase variables are absent, and two admin pages exceed the page-data warning threshold. |
+| Bundle compile reference | The approved bundle compiles to 1,083,136 canonical bytes with SHA-256 `3a6021f20ebb6587aaa978c2bbdaa025cabdb84f961e514297f2e80fd90ca795`. Two clean compiles are required on the final candidate before main moves. |
+| Latest complete suite on this branch | PASS on exact code candidate `f6e98670`: 4,786 pass, 0 fail, 5 skip. |
+| Latest production build on this branch | PASS on exact code candidate `f6e98670`, 29/29 pages. Existing warnings remain: ESLint is absent, offline Supabase variables are absent, and two admin pages exceed the page-data warning threshold. |
 | Protected programme status | Generation 44, publication `9552de2185b11d80bd1e2b80757f4f07005c58d1`, binds code commit `a3149cfb6434f3166aac2c3bd9631e637d5df8ae`. Current GitHub main is `7b6bc64157c49832129fa2ca227399850cd983fc`. The official verifier fails closed because the signed status is stale. Its last signed projection had `canonical_work_start: PASS` and `vertical_slice_execution: OPEN`. |
 | M1 contract freeze | APPROVED. `docs/acks/M1-CONTRACT-FREEZE-2026-07-31.md` binds Ben's approval to the exact 177-contract bundle and three Stage 4 PASS reviews. It grants isolated-staging QXO and Metsera pilot permission only. The protected `P1_CONTRACT_FREEZE_ATTESTED` gate remains OPEN until the combined main commit is deployed and the matching signed successor is published. |
-| Stage 4 independent reviews | PASS on exact bundle ID `d222eba830fefad4772e358041e36f8818dbf227e4c7e13c77f4228514a37d8e`. Architecture and identity, legal semantics, and query, serving and release efficiency each returned PASS. Ben approved the exact bundle on 2026-07-31. |
-| Subject-deal cohort rule | APPROVED and implemented in `7c64b8ab`. A reviewed deal is included when it satisfies the selected cohort and comparability rules. Exclusion requires a typed narrower-filter or comparability reason. Review, Compare, Corpus Context and Query receive the same included or excluded state and reason. The Landos IOC pilot is included with one matching distribution member. |
-| M2 vertical slice | ACTIVE. The exact M1 acknowledgement now permits the isolated-staging QXO and Metsera pilot runs. The next step is the combined integration check, one main movement, deployment and matching signed checkpoint, followed by both real staging pilots. |
+| Stage 4 independent reviews | PASS on exact bundle ID `d222eba830fefad4772e358041e36f8818dbf227e4c7e13c77f4228514a37d8e`. Architecture and identity, legal semantics, and query, serving and release efficiency each returned PASS. Ben approved the exact bundle. |
+| Reviewed-deal cohort rule | IMPLEMENTED in `bacad7b5`, `e0e2c233` and `c3245dd3`. If the reviewed deal is in the corpus and meets the selected cohort and comparability rules, include it. Exclude it only for an explicit narrower or non-comparable reason. The shared UI row carries `INCLUDED` or `EXCLUDED` and the reason. |
+| M2 vertical slice | ACTIVE. The M1 acknowledgement permits isolated-staging QXO and Metsera pilots. Next: two clean bundle compiles, ledger check, one main movement, production and isolated Preview deploys, a matching signed successor with `P1_CONTRACT_FREEZE_ATTESTED: PASS` and `vertical_slice_execution: PASS`, then both pilots. |
 | Isolated-staging access | PASS. Project `sjumbznveyyiizhwvixj` was re-authorised and verified through the Supabase plugin on 2026-07-30. Production was not queried or changed. |
 | Generic Agreement writer staging proof | PASS through exact commit `8a07ca30`. F28 and IOC reached the same SQL-native writer. The Agreement authority now uses one coherent version-3 candidate release manifest instead of a re-keyed version-1 shell. Valid inserts passed inside rollback transactions. Exact replay was a no-op. Conflicting replay failed closed. Twenty-eight coherently rehashed hostile requests failed before DML. Durable candidate rows and receipts remain zero. Production was not accessed. |
 | Product query cache staging proof | PASS on exact commit `976de8f6`. One real IOC Product result was written, imported and transaction-locally activated. The first active query returned the result with action `RESULT_COMPONENT_CLAIM_EVIDENCE`. The exact repeat was a cache hit. Two transaction-local cache rows covered the empty and non-empty pages. Forced rollback left zero candidate, partition, serving and cache rows. The active pointer remained generation 10. Production was not accessed. |
@@ -53,9 +53,10 @@ completed milestone moves main.
 
 The programme is in P8 Stage 5. P8 means that one real Agreement provision
 and one real Process provision must travel from source evidence to every
-required product view. Stage 5 combines the approved work, moves main once,
-deploys the exact commit, publishes the matching signed checkpoint and runs
-both isolated-staging pilots.
+required product view. The bundle is approved and all Stage 4 reviews pass.
+Stage 5 now needs two clean bundle compiles, the ledger check, one main move,
+production and isolated Preview deploys, a matching signed checkpoint, and
+the QXO and Metsera isolated-staging pilots.
 
 P1-P7 supplied the contracts and pure processing modules. QXO F28 has a prior
 real source-to-product rollback proof. The current P8 correction adds the
@@ -80,12 +81,15 @@ imports the common Product candidate record, activates only inside the test
 transaction, returns the result with the exact claim-evidence action, and
 returns the same page from cache. Rollback leaves zero candidate, partition,
 serving or cache rows. The active staging pointer remains generation 10.
-The exact reviewed candidate passes 124 affected tests. The complete suite
-passes 5,132 tests with no failure. The build produces all 29 pages. Two clean
-compiles produce identical bytes. All three Stage 4 reviews passed. Ben
-approved the exact bundle. The post-review subject-cohort correction changes
-no contract byte. Its focused tests and build pass. The current task is the
-single combined integration check and pilot execution.
+The exact reviewed bundle has 177 contracts and 315 links. Its compiled form
+is 1,083,136 bytes with SHA-256
+`3a6021f20ebb6587aaa978c2bbdaa025cabdb84f961e514297f2e80fd90ca795`.
+The clean suite at `f6e98670` has 4,786 pass, 0 fail and 5 skip. The production
+build passes all 29 pages. The reviewed-deal cohort correction is in
+`bacad7b5`, `e0e2c233` and `c3245dd3`. The release identity cascade is in
+`535e5dbc`, `b1f0355f`, `9ede3c5d` and compact fixture `7f424a43`. Signer
+closure is in `de66bf25` and `f6e98670`. The current task is the final
+integration sequence and then the two pilots.
 
 ## 2. Work underway
 
@@ -100,9 +104,9 @@ single combined integration check and pilot execution.
 | `PM-P8-GENERIC-WRITER-02` | P8 Stage 4 | Make F28 and IOC reach one immutable candidate-result insert through the existing canonical writer. | PM implementation | Active branch; commit `a603c9e9`; candidate writer, governed SQL extracts and focused tests. | The SQL path closes copied provision rows and membership objects. Each governed function comment matches its exact bytes. Three Stage 2 reviews, 131 correction checks and the complete suite pass. | REVIEW | Preserve the validated SQL and 26-call staging proof in the exact-root review candidate. | No |
 | `PM-P8-AGREEMENT-WRITER-STAGING-03` | P8 Stage 4 | Prove the generic writer against isolated staging for both Agreement families after the IOC evidence correction. | PM controller | Active branch; exact commit `ea89c591`; bounded rollback runner, focused test and exact allowlist. | PASS. Two valid families, exact replay no-op, conflicting replay rejected, 28 hostile requests rejected before DML, zero durable rows or receipts, active pointer unchanged. | COMPLETE | Preserve the proof receipt for the final approval package. | No |
 | `PM-P8-PRODUCT-CACHE-STAGING-01` | P8 Stage 4 | Prove that one active Product query serves and caches a real Agreement result without durable staging change. | PM controller | Active branch; exact commit `976de8f6`; rollback-only writer, importer, active query, cache runner and focused tests. | PASS. The real IOC result preserved `RESULT_COMPONENT_CLAIM_EVIDENCE`; repeat query was a cache hit; 124 affected tests pass; rollback left zero candidate, partition, serving and cache rows; pointer generation 10 unchanged. | COMPLETE | Preserve the proof receipt for the final approval package. | No |
-| `PM-P8-SUBJECT-COHORT-01` | P8 Stage 5 | Include the reviewed deal in its market cohort when it satisfies the selected rules and show its exact inclusion state in every view. | PM implementation | Active branch; commits `7c64b8ab` and `1ef23a45`; shared row, shared adapter, reviewed IOC slice and hostile tests. | 27 focused tests, combined affected chain 37/37 and production build PASS. The Stage 2 review found one cross-cohort receipt seam; the follow-up bound the receipt to the stored cohort and the correction review passed. Contract bytes are unchanged. | COMPLETE | Preserve the correction in the combined candidate. | No |
+| `PM-P8-SUBJECT-COHORT-01` | P8 Stage 5 | Include the reviewed deal when it meets the selected cohort and comparability rules. Show its exact inclusion state in every view. | PM implementation | Active branch; commits `bacad7b5`, `e0e2c233` and `c3245dd3`; shared row, shared adapter, release-wide receipt validation and tests. | PASS. A shared row carries `INCLUDED` or `EXCLUDED` and the reason. Exclusion needs an explicit narrower or non-comparable reason. Contract bytes are unchanged. | COMPLETE | Preserve the correction in the final candidate. | No |
 | `PM-P8-BUNDLE-APPROVAL-01` | P8 Stage 5 | Bind Ben's approval to the exact reviewed bundle and open only isolated-staging pilot execution. | PM controller | Active branch; commit `bce77346`; `docs/acks/M1-CONTRACT-FREEZE-2026-07-31.md`, runner references and strict permission tests. | 10 focused tests PASS. Direct root compile and permission validation return `vertical_slice_execution: PASS` and `production_authority: NONE`. | COMPLETE | Use the exact permission in both isolated-staging pilots. | No |
-| `PM-P8-SIGNER-CLOSURE-01` | P8 Stage 5 | Close the protected successor publisher's exact path inventory before main moves. | PM controller | Active branch; commit `604afbb7`; static signer inventory, exact allowlist and focused preflight test. | Fixed review-basis diff had 865 paths. Missing signer paths fell from 183 to 0. The focused test rejects an invented extra path. | COMPLETE | Run the final local integration preflight on the exact candidate. | No |
+| `PM-P8-SIGNER-CLOSURE-01` | P8 Stage 5 | Close the protected successor publisher's exact path inventory before main moves. | PM controller | Active branch; commits `de66bf25` and `f6e98670`; static signer inventory, exact allowlist and focused preflight test. | PASS. The focused test rejects an invented extra path. | COMPLETE | Run the final local integration preflight on the exact candidate. | No |
 | `PM-GOV-BALANCE-01` | control | Replace pre-production attestation machinery with four milestone reviews and Tier A/Tier B security. | PM controller | `codex/governance-balance-v2`; governing docs, generated manifest and apparatus-only tests; commit `afbf1a4`. | 4,576 pass, 0 fail, 7 skip; production build PASS. | INTEGRATION | Include the committed unit in the next controlled main movement. | No |
 | `PM-QXO-F28-LINK-01` | P8 | Bind the F28 graph, all 14 metric slots, correction head and Product result without hiding missing runtime links. | PM implementation | `codex/qxo-f28-runtime-link-v1`; commit `d582705`. | 4 focused tests PASS. | COMPLETE | Preserve the fail-closed runtime plan. | No |
 | `PM-QXO-F28-WRITER-01` | P8 | Convert the exact F28 graph into the canonical writer's closed `DEAL_SCOPE_RUN` input. | PM implementation | Same branch; commits `32af4b2`, `53868ba`, `77f4183` and `7be1521`. | 28 writer tests PASS. The F28 write set has zero residuals. | COMPLETE | Execute the exact input against isolated staging. | No |
@@ -132,11 +136,11 @@ single combined integration check and pilot execution.
 
 ## 3. Next 48 hours
 
-1. Close the subject-cohort Stage 2 review and run the combined affected chain.
-2. Update the exact signer path inventory and run the local integration preflight.
-3. Run the complete suite, production build and two uncached bundle compiles once on the combined candidate.
-4. Move main once, deploy the exact commit to production and the isolated Preview, then publish and verify the matching signed successor.
-5. Run the approved QXO and Metsera slices in isolated staging and record their exact cross-view results.
+1. Run two clean bundle compiles and check this ledger on the final candidate.
+2. Move main once.
+3. Deploy the exact main commit to production and isolated Preview.
+4. Publish and verify the matching signed successor. It must report `P1_CONTRACT_FREEZE_ATTESTED: PASS` and `vertical_slice_execution: PASS`.
+5. Run the approved QXO and Metsera staging pilots and record their exact cross-view results.
 
 ## 4. Bounded units through P11
 
