@@ -1,0 +1,55 @@
+name: Isolated staging pilots
+
+on:
+  workflow_dispatch:
+    inputs:
+      pilot:
+        description: Which pilot to run
+        required: true
+        type: choice
+        options:
+          - metsera
+          - qxo
+          - both
+
+permissions:
+  contents: read
+
+concurrency:
+  group: staging-pilot
+  cancel-in-progress: false
+
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - name: Fetch sealed Metsera sources
+        if: inputs.pilot != 'qxo'
+        run: node scripts/fetch-metsera-sealed-sources.mjs --out-dir /tmp/metsera-sources
+      - name: Prepare Metsera pilot inputs
+        if: inputs.pilot != 'qxo'
+        run: node scripts/canonical-v2-prepare-metsera-pilot-inputs.mjs --source-dir /tmp/metsera-sources --out-dir /tmp/metsera-pilot-inputs
+      - name: Run Metsera staging pilot (rollback-only)
+        if: inputs.pilot != 'qxo'
+        env:
+          STAGING_DB_URL: ${{ secrets.STAGING_DB_URL }}
+        run: |
+          node scripts/canonical-v2-staging-metsera-exclusivity-p8.mjs \
+            --materialisation-input /tmp/metsera-pilot-inputs/materialisation-input.json \
+            --materialisation-receipt /tmp/metsera-pilot-inputs/materialisation-receipt.json \
+            --cohort-request /tmp/metsera-pilot-inputs/cohort-request.json \
+            --cohort-execution-input /tmp/metsera-pilot-inputs/cohort-execution-input.json \
+            --db-url "$STAGING_DB_URL"
+      - name: Run QXO staging pilot (rollback-only)
+        if: inputs.pilot != 'metsera'
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          npx supabase link --project-ref sjumbznveyyiizhwvixj --workdir .
+          node scripts/canonical-v2-staging-qxo-capitalisation-f28.mjs --verify
