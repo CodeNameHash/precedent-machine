@@ -350,16 +350,22 @@ function writeBrowserFixture({
   );
 }
 
-function readRealMaterialisationReceipt() {
-  const flag = '--materialisation-receipt';
+function readRealMaterialisationValue(flag, label) {
   const index = process.argv.indexOf(flag);
   const filePath = index < 0 ? null : process.argv[index + 1];
   if (!filePath || filePath.startsWith('--')) {
     throw new Error(
-      'Metsera P8 requires --materialisation-receipt <real-receipt.json>.',
+      `Metsera P8 requires ${flag} <real-${label}.json>.`,
     );
   }
-  const value = JSON.parse(readFileSync(resolve(filePath), 'utf8'));
+  return JSON.parse(readFileSync(resolve(filePath), 'utf8'));
+}
+
+function readRealMaterialisationReceipt() {
+  const value = readRealMaterialisationValue(
+    '--materialisation-receipt',
+    'receipt',
+  );
   if (
     !value
     || typeof value !== 'object'
@@ -393,8 +399,20 @@ function readRealMaterialisationReceipt() {
   return value;
 }
 
+function readRealMaterialisationInput() {
+  const value = readRealMaterialisationValue(
+    '--materialisation-input',
+    'input',
+  );
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    throw new Error('The Materialisation input file must contain the exact real input.');
+  }
+  return value;
+}
+
 async function main() {
   const m1Permission = currentM1Permission();
+  const materialisationInput = readRealMaterialisationInput();
   const materialisationReceipt = readRealMaterialisationReceipt();
   const combinedPilotBaseRelease = buildCombinedPilotBaseRelease();
   const productAuthority = currentProductAuthority(
@@ -413,6 +431,7 @@ async function main() {
   };
   const realProcessAdmission =
     compileMetseraExclusivityProcessPhrasebookAdmission({
+      materialisation_input: materialisationInput,
       materialisation_receipt: materialisationReceipt,
       candidate_release_binding: {
         candidate_release_manifest_id:
