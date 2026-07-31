@@ -1047,6 +1047,7 @@ const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
   'tests/fixtures/canonical-v2/qxo-no-shop-actions-f25-staging-attestation.json',
   'tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-release-f23-staging-attestation.json',
   'tests/fixtures/canonical-v2/qxo-no-shop-timing-f24-staging-attestation.json',
+  '.github/phase-allowlists/wp-p8-final-signer-inventory-v1.json',
 ]);
 
 function requireCommit(value, label) {
