@@ -141,6 +141,11 @@ export function createCanonicalV2StagingRuntime({
   const bounds = normaliseBounds(boundOverrides);
 
   function guardProject() {
+    if (governedStagingDbUrl(dbUrl) !== null) {
+      // A governed direct URL already pins the isolated staging project ref;
+      // the CLI link files do not exist on ephemeral runners.
+      return CANONICAL_V2_STAGING_PROJECT;
+    }
     const ref = readFileSync(
       join(repositoryRoot, 'supabase', '.temp', 'project-ref'),
       'utf8',
