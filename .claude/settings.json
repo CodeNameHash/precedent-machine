@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node /tmp/claude-0/*/*/scratchpad/staging-mgmt-api-transport.cjs *)",
+      "Bash(node scripts/canonical-v2-staging-*)",
+      "Bash(node scripts/canonical-v2-prepare-metsera-pilot-inputs.mjs *)",
+      "Bash(node scripts/fetch-metsera-sealed-sources.mjs *)",
+      "Bash(node --test *)"
+    ]
+  }
+}
