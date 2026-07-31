@@ -222,9 +222,9 @@ BEGIN
     OR b->>'corpus_release_id' IS DISTINCT FROM '81afb231fdd2884e4f643ec90f9f71efb6e201c9b4d350e8394f4a020bb235ed'
     OR q-ARRAY['schema_version','query_definition_id','release_contract','semantic_contract','cohort_contract','filter_contract','presentation_contract','pagination_contract','detail_action_contract','coverage_contract']::text[] <> '{}'::jsonb
     OR q->>'query_definition_id' IS DISTINCT FROM canonical_v2_staging.content_id('PRODUCT_QUERY_IR/V1',q-'query_definition_id')
-    OR q->'release_contract'->>'approved_pm_data_version_id' IS DISTINCT FROM '34f6a3c0471f8265b021c46251b0cc5da554e58da0c8f953aa3baaeea3fc6435'
-    OR q->'release_contract'->>'candidate_release_manifest_id' IS DISTINCT FROM 'e88a71afe109f789b26dafe25200c8994fe92db02ae71c76107c00da3c0a6944'
-    OR q->'release_contract'->>'candidate_release_manifest_payload_digest' IS DISTINCT FROM '5db5d788480c9c2202650f9efc854e57e42c0f8e4c3a8c19b346847537406da0'
+    OR q->'release_contract'->>'approved_pm_data_version_id' IS DISTINCT FROM '750d74d401f174d5c9437d7f5fb7e6ac908dab8ae1366ca73c1e34c0d7e873fd'
+    OR q->'release_contract'->>'candidate_release_manifest_id' IS DISTINCT FROM 'b679a9a1c405fc523f0b4ae8b15e610fe4ec35902f39b7e0ce836ed5c531a1c0'
+    OR q->'release_contract'->>'candidate_release_manifest_payload_digest' IS DISTINCT FROM '0ee4bf75370604e40614fc1a2a49278a8d37f0f0b9b397631e1cb66aa1eb3be2'
     OR q->'semantic_contract'->>'domain_key' IS DISTINCT FROM 'AGREEMENT'
     OR q->'semantic_contract'->>'predicate_key' IS DISTINCT FROM result_id
     OR q->'semantic_contract'->'result_definition'->>'stable_id' IS DISTINCT FROM result_id
@@ -246,6 +246,30 @@ BEGIN
     OR r->'exact_citation'->>'citation_target_identity' IS DISTINCT FROM canonical_v2_staging.content_id('PRODUCT_EXACT_CITATION/V1',jsonb_build_object('product_query_result_identity',r->>'product_query_result_identity','candidate_release_manifest_id',r->>'candidate_release_manifest_id','candidate_release_manifest_payload_digest',r->>'candidate_release_manifest_payload_digest','source_document_identity',r->'exact_citation'->>'source_document_identity','source_evidence_identity',r->'exact_citation'->>'source_evidence_identity'))
     OR r->'exact_citation'->'source_interval' IS DISTINCT FROM 'null'::jsonb
     OR x->'exact_citation' IS DISTINCT FROM r->'exact_citation'
+    OR (e->>'family_profile_id' = 'IOC_CAPEX_RESTRICTION_V1' AND (
+      (r->'exact_citation') - ARRAY['schema_version','citation_target_identity','human_readable_source_label','result_component_evidence_identity','source_accession_or_equivalent_identity','source_document_identity','source_evidence_identity','source_filing_date','source_filing_type','source_interval','source_location_label','source_representation_kind']::text[] <> '{}'::jsonb
+      OR NOT (r->'exact_citation') ?& ARRAY['schema_version','citation_target_identity','human_readable_source_label','result_component_evidence_identity','source_accession_or_equivalent_identity','source_document_identity','source_evidence_identity','source_filing_date','source_filing_type','source_interval','source_location_label','source_representation_kind']
+      OR jsonb_array_length(x->'exact_detail_package'->'references') <> 1
+      OR jsonb_array_length(x->'exact_detail_package'->'detail_payloads') <> 1
+      OR x->'exact_detail_package'->'references'->0->>'action_slot_key' IS DISTINCT FROM action
+      OR x->'exact_detail_package'->'references'->0->>'source_detail_payload_id' IS DISTINCT FROM x->'exact_detail_package'->'detail_payloads'->0->>'source_detail_payload_id'
+      OR x->'exact_detail_package'->'references'->0->>'contextual_use_key' IS DISTINCT FROM x->'exact_detail_package'->'detail_payloads'->0->>'contextual_use_key'
+      OR x->'exact_detail_package'->'detail_payloads'->0->>'detail_kind' IS DISTINCT FROM 'CLAIM_EVIDENCE'
+      OR x->'exact_detail_package'->'detail_payloads'->0->>'terminal_object_type' IS DISTINCT FROM 'CLAIM_EVIDENCE'
+      OR x->'exact_detail_package'->'references'->0->'ordered_path'->1->>'object_type' IS DISTINCT FROM 'ClaimEvidence'
+      OR x->'exact_detail_package'->'references'->0->'ordered_path'->2->>'object_type' IS DISTINCT FROM 'Excerpt'
+      OR r->'exact_citation'->>'result_component_evidence_identity' IS DISTINCT FROM x->'exact_detail_package'->'detail_payloads'->0->>'terminal_object_id'
+      OR r->'exact_citation'->>'result_component_evidence_identity' IS DISTINCT FROM x->'exact_detail_package'->'detail_payloads'->0->'response_body'->>'claim_evidence_id'
+      OR r->'exact_citation'->>'result_component_evidence_identity' IS DISTINCT FROM x->'exact_detail_package'->'references'->0->'ordered_path'->1->>'object_id'
+      OR r->'exact_citation'->>'source_evidence_identity' IS DISTINCT FROM x->'exact_detail_package'->'detail_payloads'->0->'response_body'->'excerpt'->>'excerpt_id'
+      OR r->'exact_citation'->>'source_evidence_identity' IS DISTINCT FROM x->'exact_detail_package'->'references'->0->'ordered_path'->2->>'object_id'
+      OR r->'exact_citation'->>'source_document_identity' IS DISTINCT FROM x->'exact_detail_package'->'detail_payloads'->0->'response_body'->'source_lineage'->>'document_hash'
+      OR r->'domain_result_payload'->'canonical_result'->'components'->0->'denominator'->>'precision' IS DISTINCT FROM 'APPROXIMATE'
+      OR r->'domain_result_payload'->'canonical_result'->'components'->0->'claim_attributes'->>'denominator_precision' IS DISTINCT FROM 'APPROXIMATE'
+      OR r->'domain_result_payload'->'canonical_result'->'market_context'->'subject_observation'->'denominator'->>'precision' IS DISTINCT FROM 'APPROXIMATE'
+      OR e->'ordered_terminals'->0->'subject_terminal'->'denominator'->>'precision' IS DISTINCT FROM 'APPROXIMATE'
+      OR e->'ordered_terminals'->0->'subject_terminal'->'claim_attributes'->>'denominator_precision' IS DISTINCT FROM 'APPROXIMATE'
+    ))
   THEN RAISE EXCEPTION 'invalid SQL-native Agreement candidate Product materialisation' USING ERRCODE = '23514'; END IF;
 
   summary := jsonb_build_object('schema_version','PRODUCT_QUERY_EXECUTION_SUMMARY/V1','product_query_definition_id',q->>'query_definition_id','query_coverage_identity',q->'coverage_contract'->>'coverage_identity','coverage_certification_state',v->'coverage_certification'->>'coverage_certification_state','coverage_certification_identity',v->'coverage_certification'->>'coverage_certification_identity','covered_deal_count',(v->'coverage_certification'->>'covered_deal_count')::integer,'excluded_deal_count',(v->'coverage_certification'->>'excluded_deal_count')::integer,'valid_result_count',1,'failed_result_count',0,'excluded_result_count',0,'total_result_count',1,'operational_state','COMPLETE');
@@ -257,8 +281,8 @@ BEGIN
     OR o->>'approved_pm_data_version_id' IS DISTINCT FROM q->'release_contract'->>'approved_pm_data_version_id'
     OR o->>'candidate_release_manifest_id' IS DISTINCT FROM q->'release_contract'->>'candidate_release_manifest_id'
     OR o->>'candidate_release_manifest_payload_digest' IS DISTINCT FROM q->'release_contract'->>'candidate_release_manifest_payload_digest'
-    OR o->>'product_field_catalogue_id' IS DISTINCT FROM '0248b28f36f69ba2cf08a6e4d648cfda5a1caed4a87a4f94ad134a4bab8093ee'
-    OR o->>'product_field_catalogue_payload_digest' IS DISTINCT FROM 'e399949c1758b003a0f9155fe97dc8cea4d10941c3d665b7a42551f526246d52'
+    OR o->>'product_field_catalogue_id' IS DISTINCT FROM '2382d059a4d874915ce98d0ea287d81be3d39d1e76fe7284c8f50b7ffe93d978'
+    OR o->>'product_field_catalogue_payload_digest' IS DISTINCT FROM 'e57fd99e6601c7be25d88f336441b740ef14cf4129862e60eabaa754a7f5d195'
     OR o->'product_field_catalogue_manifest'->>'manifest_id' IS DISTINCT FROM o->>'product_field_catalogue_id'
     OR o->'product_field_catalogue_manifest'->>'canonical_payload_digest' IS DISTINCT FROM o->>'product_field_catalogue_payload_digest'
     OR o->'product_field_catalogue_manifest'->>'manifest_id' IS DISTINCT FROM canonical_v2_staging.content_id('PRODUCT_FIELD_CATALOGUE_MANIFEST/V1',(o->'product_field_catalogue_manifest')-ARRAY['manifest_id','canonical_payload_digest']::text[])

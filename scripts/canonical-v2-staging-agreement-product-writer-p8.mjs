@@ -353,6 +353,25 @@ function hostileWriteSet(fixture, mutation) {
       materialisation.product_query_result.exact_citation.human_readable_source_label =
         'Hostile substituted citation';
       break;
+    case 'IOC_OLD_CAPEX_CITATION':
+      materialisation.product_query_result.exact_citation
+        .result_component_evidence_identity = materialisation.product_query_result
+          .exact_citation.source_evidence_identity;
+      break;
+    case 'IOC_LOST_PRECISION':
+      materialisation.product_query_result.domain_result_payload
+        .canonical_result.components[0].denominator.precision = 'NOT_CAPTURED';
+      materialisation.product_query_result.domain_result_payload
+        .canonical_result.components[0].claim_attributes.denominator_precision =
+          'NOT_CAPTURED';
+      materialisation.product_query_result.domain_result_payload
+        .canonical_result.market_context.subject_observation.denominator.precision =
+          'NOT_CAPTURED';
+      envelope.ordered_terminals[0].subject_terminal.denominator.precision =
+        'NOT_CAPTURED';
+      envelope.ordered_terminals[0].subject_terminal.claim_attributes
+        .denominator_precision = 'NOT_CAPTURED';
+      break;
     case 'ORDERING':
       materialisation.agreement_ordering_projection.comparator_state =
         'HOSTILE_UNGOVERNED_ORDER';
@@ -646,6 +665,10 @@ async function main() {
     'PROVISION_ROW',
     'PRODUCT_MEMBERSHIP',
     'PRODUCT_MEMBERSHIP_EXTRA',
+    ...(fixture.profile === 'IOC_CAPEX_RESTRICTION_V1' ? [
+      'IOC_OLD_CAPEX_CITATION',
+      'IOC_LOST_PRECISION',
+    ] : []),
   ].map((mutation) => hostileRequest(fixture, mutation)));
   proveHostileStagingWriter(hostile, before);
   const hostile_call_count = hostile.length;

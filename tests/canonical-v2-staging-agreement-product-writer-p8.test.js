@@ -34,6 +34,8 @@ test('P8 hostile calls recompute identities then reject every semantic and termi
   for (const mutation of [
     'QUERY_PROFILE',
     'RESULT_ACTION_CITATION',
+    'IOC_OLD_CAPEX_CITATION',
+    'IOC_LOST_PRECISION',
     'ORDERING',
     'PRESENTATION',
     'SURFACES',
