@@ -1,0 +1,72 @@
+{
+  "object_kind": "PRODUCT_QUERY_CONTRACT_INPUT",
+  "stable_id": "PRODUCT_RESULT_SURFACE_BINDING",
+  "schema_version": "PRODUCT_QUERY_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PRODUCT",
+    "contract_type": "RESULT_SURFACE_BINDING",
+    "contract_version": 1,
+    "binding_contract": {
+      "logical_type": "ProductResultSurfaceBinding",
+      "schema_version": "PRODUCT_RESULT_SURFACE_BINDING/V1",
+      "required_surfaces": [
+        "COMPARE",
+        "CORPUS_CONTEXT",
+        "QUERY",
+        "REVIEW"
+      ],
+      "all_surfaces_use_one_renderer_neutral_content_identity": true,
+      "all_surfaces_use_exact_same_product_query_result_identity": true,
+      "all_surfaces_use_exact_same_domain_result_identity": true,
+      "all_surfaces_use_exact_same_product_presentation_identity": true,
+      "all_surfaces_use_exact_same_candidate_release_identity": true,
+      "all_surfaces_use_exact_same_evidence_and_detail_action": true,
+      "surface_can_query_or_read_source": false,
+      "surface_can_create_or_replace_result_identity": false
+    },
+    "input_contract": {
+      "product_query_ir_schema_version": "PRODUCT_QUERY_IR/V1",
+      "product_query_result_schema_version": "PRODUCT_QUERY_RESULT/V1",
+      "product_result_presentation_schema_version": "PRODUCT_RESULT_PRESENTATION/V1",
+      "exact_candidate_release_manifest_id_and_payload_digest_required": true,
+      "exact_source_document_and_evidence_identity_required": true,
+      "exact_detail_action_required": true,
+      "full_checked_inputs_required_when_runtime_validators_require_them": true,
+      "correctly_rehashed_nested_substitution_permitted": false
+    },
+    "market_state_contract": {
+      "typed_non_comparability_or_no_market_data_requires_exact_product_result_state": true,
+      "generic_no_market_data_fallback_permitted": false,
+      "not_comparable_cannot_render_as_absent": true,
+      "operational_failure_cannot_render_as_no_market_data": true
+    },
+    "identity_contract": {
+      "stable_id_domain": "PRODUCT_RESULT_SURFACE_BINDING/V1",
+      "required_identity_inputs": [
+        "product_query_definition_id",
+        "product_query_result_identity",
+        "domain_result_identity",
+        "product_result_presentation_id",
+        "candidate_release_manifest_id",
+        "candidate_release_manifest_payload_digest",
+        "exact_citation_target_identity",
+        "exact_detail_action"
+      ],
+      "surface_display_label_or_selected_view_can_change_identity": false
+    },
+    "authority_contract": {
+      "creates_runtime_result": false,
+      "creates_query_execution_authority": false,
+      "creates_source_read_authority": false,
+      "creates_canonical_write_authority": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_database_authority": false,
+      "creates_release_authority": false,
+      "creates_import_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false
+    }
+  }
+}
