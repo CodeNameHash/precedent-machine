@@ -333,7 +333,12 @@ test('a clean proposal with verified evidence, registered concept and resolved p
   assert.equal(qualifier.resolved_claim_definition_key, 'REPRESENTATION_ACCURACY_STANDARD');
   assert.equal(qualifier.concept_key, 'REP-T-CAP');
   assert.deepEqual(qualifier.party, { role: 'REPRESENTATION_MAKER', value: 'the Company', capacity: 'TARGET' });
-  assert.equal(qualifier.triage.auto_pass, true);
+  assert.equal(qualifier.triage.deterministic_gates_passed, true);
+  // auto_pass stays FALSE until the v1/v2 comparator and the lexical net
+  // exist: a check that never ran must not look like a check that passed.
+  assert.equal(qualifier.triage.auto_pass, false);
+  assert.deepEqual([...qualifier.triage.unevaluated_conditions].sort(),
+    ['LEXICAL_DISAGREEMENT_NET_ABSENT', 'V1_V2_COMPARATOR_ABSENT']);
   assert.deepEqual(qualifier.triage.reasons, []);
 
   const tier = findResolved(resolution, BRING_DOWN_TIER_CLAIM_KEY);
@@ -341,12 +346,18 @@ test('a clean proposal with verified evidence, registered concept and resolved p
   assert.equal(tier.resolved_claim_definition_key, 'REPRESENTATION_ACCURACY_STANDARD');
   assert.equal(tier.concept_key, 'COND-B-REP');
   assert.deepEqual(tier.party, { role: 'CONDITION_OBLIGOR', value: 'Parent', capacity: 'BUYER' });
-  assert.equal(tier.triage.auto_pass, true);
+  assert.equal(tier.triage.deterministic_gates_passed, true);
+  assert.equal(tier.triage.auto_pass, false);
 
   // Distinct concepts -> distinct provisions, even though minted in the same run.
   assert.notEqual(qualifier.provision_instance.provision_instance_id, tier.provision_instance.provision_instance_id);
 
-  assert.equal(resolution.review_queue.length, 0);
+  // Both candidates clear every deterministic gate, so neither carries a
+  // triage reason -- but both still route to review while auto-pass is
+  // blocked on the two absent nets. Nothing is published on an unrun check.
+  assert.equal(resolution.review_queue.length, 2);
+  assert.ok(resolution.review_queue.every((item) => item.reasons.length === 0
+    || item.reasons.every((r) => r === 'AUTO_PASS_BLOCKED_PENDING_NETS')));
 });
 
 test('a proposal with an unmappable concept lands in open_world, never forced to a near neighbour', async () => {
@@ -512,7 +523,7 @@ test('a proposal matching a known_defect_registry entry is excluded from auto-pa
     admitted_source_context: ADMITTED_SOURCE_CONTEXT,
   });
   const cleanQualifier = findResolved(withoutRegistry, QUALIFIER_CLAIM_KEY);
-  assert.equal(cleanQualifier.triage.auto_pass, true, 'sanity: this candidate auto-passes without the registry');
+  assert.equal(cleanQualifier.triage.deterministic_gates_passed, true, 'sanity: clears every deterministic gate without the registry');
 
   const withRegistry = resolveCandidates({
     run_receipt: receipt,
@@ -521,14 +532,15 @@ test('a proposal matching a known_defect_registry entry is excluded from auto-pa
     known_defect_registry: registry,
   });
   const defectedQualifier = findResolved(withRegistry, QUALIFIER_CLAIM_KEY);
-  assert.equal(defectedQualifier.triage.auto_pass, false);
+  assert.equal(defectedQualifier.triage.deterministic_gates_passed, false);
+  assert.ok(defectedQualifier.triage.reasons.includes('KNOWN_DEFECT_MATCH'));
   assert.ok(defectedQualifier.triage.reasons.includes('KNOWN_DEFECT_MATCH'));
   assert.ok(defectedQualifier.triage.known_defect);
 
   // The bring-down tier is a DIFFERENT family (COND-B-REP) -- the registry
   // entry must not bleed into a family it does not name.
   const unaffectedTier = findResolved(withRegistry, BRING_DOWN_TIER_CLAIM_KEY);
-  assert.equal(unaffectedTier.triage.auto_pass, true);
+  assert.equal(unaffectedTier.triage.deterministic_gates_passed, true);
 });
 
 // ─── Producer contract violation: ABSENT is a typed failure, not a resolution. ───
@@ -685,7 +697,7 @@ test('multi-span/composed and nested-definition proposals resolve but never auto
   assert.equal(resolution.resolved.length, 2);
   const multiSpanResolved = resolution.resolved.find((entry) => entry.claim.evidence.length > 1);
   assert.ok(multiSpanResolved, 'the multi-span candidate resolved');
-  assert.equal(multiSpanResolved.triage.auto_pass, false);
+  assert.equal(multiSpanResolved.triage.deterministic_gates_passed, false);
   assert.ok(multiSpanResolved.triage.reasons.includes('MULTI_SPAN_COMPOSED'));
 
   const nestedResolved = resolution.resolved.find(
@@ -808,7 +820,11 @@ test('resolved output feeds buildNativeWriteSet and passes the real validate-wri
     admitted_source_context: ADMITTED_SOURCE_CONTEXT,
   });
   assert.ok(resolution.resolved.length >= 2);
-  assert.ok(resolution.resolved.every((entry) => entry.triage.auto_pass));
+  // What reaches the writer is gated on the DETERMINISTIC checks this stage
+  // can actually run. auto_pass additionally requires the v1/v2 comparator
+  // and lexical net, which do not exist yet -- see triage.unevaluated_conditions.
+  assert.ok(resolution.resolved.every((entry) => entry.triage.deterministic_gates_passed));
+  assert.ok(resolution.resolved.every((entry) => entry.triage.auto_pass === false));
 
   const resolvedRunReceipt = {
     ...receipt,
