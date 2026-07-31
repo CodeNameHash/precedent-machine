@@ -1023,6 +1023,13 @@ const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
   'tests/programme-gates/security-dispositions.spec.js',
   'tests/programme-gates/status.spec.js',
   'tests/programme-gates/validator-executable.spec.js',
+  '.github/phase-allowlists/wp-canonical-v12-serving-admission-readiness-f21-source-digest-rebind-v1.json',
+  '.github/phase-allowlists/wp-p8-stage4-release-wide-subject-cohort-inclusion-v1.json',
+  'lib/canonical-v2/candidate-release.js',
+  'lib/canonical-v2/v12-serving-admission-readiness-f21.js',
+  'tests/canonical-v2-multi-deal-candidate-release.test.js',
+  'tests/canonical-v2-v12-serving-admission-readiness-f21.test.js',
+  'tests/fixtures/canonical-v2/v12-serving-admission-readiness-f21.json',
 ]);
 
 function requireCommit(value, label) {
