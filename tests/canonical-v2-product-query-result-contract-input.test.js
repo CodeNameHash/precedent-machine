@@ -404,7 +404,7 @@ test('maps one admitted Process phrasebook passage into the existing Product res
   );
 });
 
-test('retains the exact Process receipt as the authoritative lineage and release proof', () => {
+test('retains the Process receipt as lineage and preserves its exact pre-write state', () => {
   const carrier =
     loadProcessAdapter().canonical_value.definition.validation_carrier_contract;
 
@@ -443,9 +443,24 @@ test('retains the exact Process receipt as the authoritative lineage and release
     false,
   );
   assert.equal(
-    carrier.process_receipt_remains_authoritative_for_lineage_and_release_validation,
+    carrier.process_receipt_remains_authoritative_for_lineage_and_prewrite_state,
     true,
   );
+  assert.equal(carrier.process_receipt_candidate_membership_authority, false);
+  assert.equal(
+    carrier.product_result_admission_receipt_owns_candidate_membership,
+    true,
+  );
+  assert.deepEqual(carrier.allowed_process_admission_state_bindings, [
+    {
+      process_admission_state: 'VALIDATED_NOT_MATERIALISED',
+      process_release_membership_state: 'BOUND_CANDIDATE_MEMBER',
+    },
+    {
+      process_admission_state: 'VALIDATED_NOT_RELEASE_BOUND',
+      process_release_membership_state: 'NOT_RELEASE_BOUND',
+    },
+  ]);
   assert.equal(carrier.adapter_state, 'VALIDATED_NOT_MATERIALISED');
   assert.equal(carrier.authority_state, 'NOT_GRANTED');
   assert.equal(carrier.carrier_is_product_result, false);
@@ -473,7 +488,19 @@ test('maps exact source evidence and keeps selected-source and context actions d
   assert.equal(citation.multi_interval_flattening_permitted, false);
   assert.equal(
     citation.human_readable_source_label_source,
-    'process_admission_input.exact_detail_reference.human_readable_source_label',
+    'adapter_input.admitted_source_citation, derived as issuer name + form type + filing date + source location + event date, and equal to process_admission_input.exact_detail_reference.human_readable_source_label',
+  );
+  assert.equal(
+    citation.source_filing_type_source,
+    'adapter_input.admitted_source_citation.form_type when admitted metadata is supplied, otherwise null',
+  );
+  assert.equal(
+    citation.source_filing_date_source,
+    'adapter_input.admitted_source_citation.filed_on when admitted metadata is supplied, otherwise null',
+  );
+  assert.equal(
+    citation.event_date_must_remain_distinct_from_filing_date,
+    true,
   );
   assert.equal(
     citation.exact_source_document_evidence_interval_digest_and_label_required,

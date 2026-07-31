@@ -352,7 +352,23 @@ function resultLineage(result, narration, witness) {
   );
 }
 
-function exactDetail(result, narration, edge) {
+function admittedSourceCitation() {
+  return {
+    source_document_identity: id('source-document'),
+    source_revision_id: id('source-revision'),
+    form_type: 'DEFM14A',
+    filed_on: '2025-10-09',
+    issuer_name: 'Metsera',
+    source_location_label: 'Background of the Merger',
+    event_date: '2025-08-17',
+  };
+}
+
+function admittedSourceLabel(citation) {
+  return `${citation.issuer_name} ${citation.form_type}, filed ${citation.filed_on}, ${citation.source_location_label}, event ${citation.event_date}`;
+}
+
+function exactDetail(result, narration, edge, citation) {
   const body = {
     schema_version:
       PROCESS_PHRASEBOOK_RESULT_EXACT_DETAIL_REFERENCE_SCHEMA,
@@ -365,7 +381,9 @@ function exactDetail(result, narration, edge) {
     source_local_narration_id:
       narration.process_narration_occurrence
         .process_narration_occurrence_id,
-    human_readable_source_label: 'Metsera proxy, Background',
+    human_readable_source_label: citation
+      ? admittedSourceLabel(citation)
+      : 'Metsera proxy, Background',
     exact_detail_action: {
       stable_id: SELECTED_SOURCE_ACTION,
       version: 1,
@@ -480,14 +498,14 @@ function releaseMembership(
   );
 }
 
-function processFixture(relationships = []) {
+function processFixture(relationships = [], citation) {
   const occurrence = narrationOccurrence();
   const result = resultIdentity(occurrence);
   const edge = evidenceEdge();
   const narration = narrationRevision(occurrence, edge, relationships);
   const witness = witnessRevision(result, edge);
   const lineage = resultLineage(result, narration, witness);
-  const detail = exactDetail(result, narration, edge);
+  const detail = exactDetail(result, narration, edge, citation);
   const matchedPreview = preview(result, narration, edge, detail);
   const ordering = orderingProjection(result, occurrence);
   const membership = releaseMembership(
@@ -737,12 +755,13 @@ function bridgeFixture({
   relationships = [],
   actions,
   states,
+  citation,
 } = {}) {
-  const process = processFixture(relationships);
+  const process = processFixture(relationships, citation);
   const ir = productQueryIr(actions);
   const fields = resultFields();
   const domainResult = domainResultForAdmission(process.input);
-  return {
+  const result = {
     process_admission_input: process.input,
     process_admission_receipt: process.receipt,
     product_query_ir: ir,
@@ -750,6 +769,8 @@ function bridgeFixture({
     product_admission_receipt:
       productAdmissionReceipt(ir, domainResult, fields, states),
   };
+  if (citation) result.admitted_source_citation = citation;
+  return result;
 }
 
 function assertDeepFrozen(value) {
@@ -839,6 +860,40 @@ test('retains separate raw UTF-8 and Product canonical JSON digests', () => {
     rawDigest,
   );
   assert.equal(product.domain_result_payload_digest, productDigest);
+});
+
+test('carries admitted filing metadata into the exact Product citation', () => {
+  const citation = admittedSourceCitation();
+  const input = bridgeFixture({ citation });
+  const product = compileProcessPhrasebookSharedRowBridge(input)
+    .product_query_result;
+
+  assert.equal(product.exact_citation.source_filing_type, 'DEFM14A');
+  assert.equal(product.exact_citation.source_filing_date, '2025-10-09');
+  assert.equal(
+    product.exact_citation.human_readable_source_label,
+    'Metsera DEFM14A, filed 2025-10-09, Background of the Merger, event 2025-08-17',
+  );
+});
+
+test('rejects a party-name-only citation substitution and event-date collapse', () => {
+  const wrongSource = admittedSourceCitation();
+  wrongSource.source_document_identity = id('other-source-document');
+  assert.throws(
+    () => compileProcessPhrasebookSharedRowBridge(
+      bridgeFixture({ citation: wrongSource }),
+    ),
+    { code: 'INVALID_PROCESS_PHRASEBOOK_SHARED_ROW_SOURCE_CITATION' },
+  );
+
+  const collapsedDate = admittedSourceCitation();
+  collapsedDate.event_date = collapsedDate.filed_on;
+  assert.throws(
+    () => compileProcessPhrasebookSharedRowBridge(
+      bridgeFixture({ citation: collapsedDate }),
+    ),
+    { code: 'INVALID_PROCESS_PHRASEBOOK_SHARED_ROW_SOURCE_CITATION' },
+  );
 });
 
 test('does not mutate any external checked input', () => {

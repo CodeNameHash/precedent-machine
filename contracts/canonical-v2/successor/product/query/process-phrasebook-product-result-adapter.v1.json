@@ -57,7 +57,19 @@
       "product_domain_validation_binding_required": true,
       "product_domain_validation_must_bind_exact_process_receipt": true,
       "digest_only_substitution_that_loses_process_lineage_permitted": false,
-      "process_receipt_remains_authoritative_for_lineage_and_release_validation": true,
+      "allowed_process_admission_state_bindings": [
+        {
+          "process_admission_state": "VALIDATED_NOT_MATERIALISED",
+          "process_release_membership_state": "BOUND_CANDIDATE_MEMBER"
+        },
+        {
+          "process_admission_state": "VALIDATED_NOT_RELEASE_BOUND",
+          "process_release_membership_state": "NOT_RELEASE_BOUND"
+        }
+      ],
+      "process_receipt_remains_authoritative_for_lineage_and_prewrite_state": true,
+      "process_receipt_candidate_membership_authority": false,
+      "product_result_admission_receipt_owns_candidate_membership": true,
       "adapter_state": "VALIDATED_NOT_MATERIALISED",
       "authority_state": "NOT_GRANTED",
       "carrier_is_product_result": false,
@@ -71,13 +83,16 @@
       "source_interval_order_preserved": true,
       "multi_interval_flattening_permitted": false,
       "exact_text_digest_source": "process_admission_input.matched_passage_preview.verbatim_text_digest",
-      "human_readable_source_label_source": "process_admission_input.exact_detail_reference.human_readable_source_label",
+      "admitted_source_metadata_source": "adapter_input.admitted_source_citation",
+      "human_readable_source_label_source": "adapter_input.admitted_source_citation, derived as issuer name + form type + filing date + source location + event date, and equal to process_admission_input.exact_detail_reference.human_readable_source_label",
       "source_accession_or_equivalent_identity_source": "process_admission_input.matched_passage_preview.source_revision_id",
-      "source_filing_type": null,
-      "source_filing_date": null,
-      "source_location_label_source": "process_admission_input.exact_detail_reference.human_readable_source_label",
+      "source_filing_type_source": "adapter_input.admitted_source_citation.form_type when admitted metadata is supplied, otherwise null",
+      "source_filing_date_source": "adapter_input.admitted_source_citation.filed_on when admitted metadata is supplied, otherwise null",
+      "source_location_label_source": "derived human-readable source label",
       "target_schema_version": "PRODUCT_EXACT_CITATION/V1",
       "exact_source_document_evidence_interval_digest_and_label_required": true,
+      "admitted_source_metadata_must_bind_exact_process_source": true,
+      "event_date_must_remain_distinct_from_filing_date": true,
       "adapter_can_invent_or_rewrite_citation_fact": false
     },
     "action_mapping": {
@@ -116,6 +131,7 @@
       "adapter_can_manufacture_filter_pass": false,
       "adapter_can_manufacture_field_pass": false,
       "adapter_can_manufacture_membership_pass": false,
+      "adapter_can_upgrade_process_release_membership": false,
       "adapter_can_upgrade_validated_not_materialised_to_materialised": false,
       "adapter_can_upgrade_not_served_to_served": false
     },
