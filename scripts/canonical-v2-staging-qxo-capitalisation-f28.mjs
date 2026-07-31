@@ -116,7 +116,7 @@ const {
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const M1_ACKNOWLEDGEMENT_PATH = join(
   ROOT,
-  'docs/acks/M1-CONTRACT-FREEZE-2026-07-31.md',
+  'docs/acks/M1-CONTRACT-FREEZE-2026-07-31-AMENDED.md',
 );
 const PROJECT = Object.freeze({
   ref: 'sjumbznveyyiizhwvixj',

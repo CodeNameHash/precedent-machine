@@ -7,21 +7,21 @@ const {
 } = require('../../lib/programme-gates/m1-milestone-permission');
 
 const ACKNOWLEDGEMENT = fs.readFileSync(
-  'docs/acks/M1-CONTRACT-FREEZE-2026-07-31.md',
+  'docs/acks/M1-CONTRACT-FREEZE-2026-07-31-AMENDED.md',
   'utf8',
 );
 const PREDECESSOR_ACKNOWLEDGEMENT = fs.readFileSync(
-  'docs/acks/M1-CONTRACT-FREEZE-2026-07-30.md',
+  'docs/acks/M1-CONTRACT-FREEZE-2026-07-31.md',
   'utf8',
 );
 const BUNDLE = Object.freeze({
-  bundle_id: 'd222eba830fefad4772e358041e36f8818dbf227e4c7e13c77f4228514a37d8e',
+  bundle_id: '901d45871b90d0677dd3fdfa6b718cba1795c5393cbbe91412e05e9ea3f7bd76',
   contract_bundle_digest:
-    'a953a215f9ff4cf94a204580b3b9a2b559fa531d1f3be16a3e787032257e87b3',
+    '3b24070932af4ed946eb72b41fbaf9d9e77dd0eaa191af4dedbaeb7fe3f8f632',
   canonical_payload_digest:
-    '36762abe8f4dd666df0d9aa66760d8c4e41971fab633764108ee54f73d5c8d73',
-  substantive_member_count: 177,
-  dependency_edge_count: 315,
+    'b8c1d79b6f8e9e7d403246804d52f10c5b6976a8928ce7bb95ae6a3687045a9d',
+  substantive_member_count: 178,
+  dependency_edge_count: 324,
   compile_status: 'PASS',
   cycle_status: 'PASS',
 });
@@ -42,7 +42,7 @@ test('M1 permission fails closed on review, approval, bundle or graph drift', ()
     ['- result: `PASS`', '- result: `FAIL`'],
     ['- ben_approval_result: `APPROVED`', '- ben_approval_result: `OPEN`'],
     [BUNDLE.bundle_id, 'f'.repeat(64)],
-    ['- dependency_edge_count: `315`', '- dependency_edge_count: `314`'],
+    ['- dependency_edge_count: `324`', '- dependency_edge_count: `323`'],
   ]) {
     assert.throws(
       () => requireM1VerticalSliceExecutionPermission({

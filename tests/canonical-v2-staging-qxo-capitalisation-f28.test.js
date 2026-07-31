@@ -62,7 +62,10 @@ test('F28 offline attestation binds all fourteen market metrics', () => {
 test('F28 proof is exact-project, M1-approved and rollback-only', () => {
   assert.match(source, /deal-corpus-canonical-v2-staging/);
   assert.match(source, /sjumbznveyyiizhwvixj/);
-  assert.match(source, /M1-CONTRACT-FREEZE-2026-07-31\.md/);
+  assert.match(
+    source,
+    /M1-CONTRACT-FREEZE-2026-07-31-AMENDED\.md/,
+  );
   assert.match(source, /requireM1VerticalSliceExecutionPermission/);
   assert.match(source, /ADMITTED_QXO_IMMUTABLE_SOURCE/);
   assert.match(source, /buildAdmittedSemanticSourceContext/);
