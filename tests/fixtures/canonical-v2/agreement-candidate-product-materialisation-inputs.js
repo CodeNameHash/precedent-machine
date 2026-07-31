@@ -38,7 +38,9 @@ const {
   PRODUCT_QUERY_RESULT_ORDERING_RECEIPT_SCHEMA,
   PRODUCT_QUERY_RESULT_ORDERING_RECEIPT_STATE,
 } = require('../../../lib/canonical-v2/product-query-result-set-compiler');
-const { compileFixtureContract } = require('../../../lib/canonical-v2/contract-bundle');
+const {
+  compileFixtureContractV5,
+} = require('../../../lib/canonical-v2/contract-bundle');
 const {
   buildF28ProductInputs,
 } = require('./qxo-capitalisation-f28-product-inputs');
@@ -117,7 +119,7 @@ function familyInput(profile) {
     deal_value_source_text: fs.readFileSync(
       '__fixtures__/canonical-v2/landos-deal-value-sec-excerpt.txt', 'utf8',
     ),
-    contract_bundle: compileFixtureContract(),
+    contract_bundle: compileFixtureContractV5(),
   };
 }
 

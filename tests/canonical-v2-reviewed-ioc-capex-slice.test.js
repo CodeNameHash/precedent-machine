@@ -3,7 +3,9 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
 const { canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
+const {
+  compileFixtureContractV5,
+} = require('../lib/canonical-v2/contract-bundle');
 const { InMemoryCanonicalRepository, createCanonicalWriter } = require('../lib/canonical-v2/canonical-writer');
 const {
   buildFixtureClaimEvidenceDetailPackage,
@@ -19,7 +21,7 @@ const { validateSharedServingRow } = require('../lib/canonical-v2/shared-serving
 
 const agreementText = fs.readFileSync('__fixtures__/demo-deal/landos-abbvie-agreement.txt', 'utf8');
 const dealValueSourceText = fs.readFileSync('__fixtures__/canonical-v2/landos-deal-value-sec-excerpt.txt', 'utf8');
-const contractBundle = compileFixtureContract();
+const contractBundle = compileFixtureContractV5();
 
 function build() {
   return buildReviewedIocCapexSlice({ agreementText, dealValueSourceText, contractBundle });
@@ -40,7 +42,12 @@ test('the real Landos capex restriction becomes one deterministic source-backed 
     currency: 'USD',
     basis: 'HEADLINE_TRANSACTION_VALUE',
     source_lineage_ids: [first.excerpts.deal_value.excerpt_id],
+    precision: 'APPROXIMATE',
   });
+  assert.equal(
+    first.thresholdClaim.attributes.denominator_precision,
+    'APPROXIMATE',
+  );
   assert.deepEqual(first.thresholdClaim.evidence.map((row) => row.document_ordinal), [0, 1]);
 });
 
@@ -138,10 +145,10 @@ test('the percentage, raw dollars, denominator and legal terms reach every share
   const metric = adapted.data.byRow[adapted.row_key].metrics.IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE;
   assert.equal(metric.subject.percentOfDealValue, 0.07272727);
   assert.equal(metric.subject.rawAmount, '$100,000');
-  assert.equal(metric.subject.denominatorPrecision, 'NOT_CAPTURED');
+  assert.equal(metric.subject.denominatorPrecision, 'APPROXIMATE');
   assert.equal(
     metric.subject.label,
-    '0.07% of headline deal value (denominator precision not captured)',
+    'Approximately 0.07% of headline deal value',
   );
   assert.deepEqual(metric.subject.legalTerms.map((term) => term.label), [
     'Capex threshold',

@@ -11,13 +11,17 @@ const {
   EVALUATION_EVIDENCE_SCHEMA,
   buildIocDetailPackage,
   compileAgreementCandidateProductMaterialisation,
+  validateIocCitationDetailBinding,
 } = require(
   '../lib/canonical-v2/agreement-candidate-product-materialisation',
 );
 const {
   validateAuthoredProductQueryInputs,
 } = require('../lib/canonical-v2/product-query-contract-input-validator');
-const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
+const {
+  compileFixtureContract,
+  compileFixtureContractV5,
+} = require('../lib/canonical-v2/contract-bundle');
 const { buildReviewedIocCapexSlice } = require('../lib/canonical-v2/reviewed-ioc-capex-slice');
 const {
   authority,
@@ -84,7 +88,7 @@ test('uses the governed compilers and does not accept dummy or operational autho
 });
 
 test('rebuilds the IOC claim-evidence package with its complete source inputs', () => {
-  const contractBundle = compileFixtureContract();
+  const contractBundle = compileFixtureContractV5();
   const slice = buildReviewedIocCapexSlice({
     agreementText: fs.readFileSync('__fixtures__/demo-deal/landos-abbvie-agreement.txt', 'utf8'),
     dealValueSourceText: fs.readFileSync('__fixtures__/canonical-v2/landos-deal-value-sec-excerpt.txt', 'utf8'),
@@ -146,8 +150,118 @@ for (const profile of [
       ? output.evidence_sidecar.exact_detail_package.row.source_actions[0].action_slot_key
       : output.evidence_sidecar.exact_detail_package.exact_detail_action;
     assert.equal(exactDetailAction, profileDetailAction(profile));
+    if (profile === 'IOC_CAPEX_RESTRICTION_V1') {
+      const detail = output.evidence_sidecar.exact_detail_package;
+      const reference = detail.references[0];
+      const payload = detail.detail_payloads[0];
+      const claimEvidencePath = reference.ordered_path.find(
+        (entry) => entry.object_type === 'ClaimEvidence',
+      );
+      const excerptPath = reference.ordered_path.find(
+        (entry) => entry.object_type === 'Excerpt',
+      );
+      assert.equal(
+        output.product_query_result.exact_citation.source_evidence_identity,
+        excerptPath.object_id,
+      );
+      assert.equal(
+        output.product_query_result.exact_citation
+          .result_component_evidence_identity,
+        claimEvidencePath.object_id,
+      );
+      assert.equal(claimEvidencePath.object_id, payload.terminal_object_id);
+      assert.equal(
+        claimEvidencePath.object_id,
+        payload.response_body.claim_evidence_id,
+      );
+      assert.equal(
+        excerptPath.object_id,
+        payload.response_body.excerpt.excerpt_id,
+      );
+      assert.equal(
+        validateIocCitationDetailBinding(
+          output.product_query_result.exact_citation,
+          detail,
+        ),
+        true,
+      );
+    }
   });
 }
+
+test('rejects IOC Product materialisation without governed approximate precision', () => {
+  const { input: authorityInput, context: authorityContext } = authority();
+  const family = {
+    agreement_text: fs.readFileSync(
+      '__fixtures__/demo-deal/landos-abbvie-agreement.txt',
+      'utf8',
+    ),
+    deal_value_source_text: fs.readFileSync(
+      '__fixtures__/canonical-v2/landos-deal-value-sec-excerpt.txt',
+      'utf8',
+    ),
+    contract_bundle: compileFixtureContract(),
+  };
+  const envelopeInput = {
+    family_profile_id: 'IOC_CAPEX_RESTRICTION_V1',
+    family_input: family,
+  };
+  const prepared = evaluationEvidence({
+    envelopeInput,
+    authorityInput,
+    authorityContext,
+  });
+  assert.throws(
+    () => compileAgreementCandidateProductMaterialisation({
+      agreement_candidate_envelope: prepared.envelopeValue,
+      family_input: family,
+      pilot_product_authority_context: authorityContext,
+      pilot_product_authority_context_input: authorityInput,
+      product_evaluation_evidence: prepared.product_evaluation_evidence,
+    }),
+    { code: 'INVALID_AGREEMENT_IOC_PRODUCT_SOURCE' },
+  );
+});
+
+test('rejects IOC citation drift from its claim-evidence reference and payload', () => {
+  const { input: authorityInput, context: authorityContext } = authority();
+  const envelopeInput = {
+    family_profile_id: 'IOC_CAPEX_RESTRICTION_V1',
+    family_input: familyInput('IOC_CAPEX_RESTRICTION_V1'),
+  };
+  const prepared = evaluationEvidence({
+    envelopeInput,
+    authorityInput,
+    authorityContext,
+  });
+  const output = compileAgreementCandidateProductMaterialisation({
+    agreement_candidate_envelope: prepared.envelopeValue,
+    family_input: envelopeInput.family_input,
+    pilot_product_authority_context: authorityContext,
+    pilot_product_authority_context_input: authorityInput,
+    product_evaluation_evidence: prepared.product_evaluation_evidence,
+  });
+  const citation = structuredClone(output.product_query_result.exact_citation);
+  citation.result_component_evidence_identity = 'f'.repeat(64);
+  assert.throws(
+    () => validateIocCitationDetailBinding(
+      citation,
+      output.evidence_sidecar.exact_detail_package,
+    ),
+    { code: 'INVALID_AGREEMENT_IOC_PRODUCT_EVIDENCE_BINDING' },
+  );
+  const detail = structuredClone(output.evidence_sidecar.exact_detail_package);
+  detail.references[0].ordered_path.find(
+    (entry) => entry.object_type === 'ClaimEvidence',
+  ).object_id = 'e'.repeat(64);
+  assert.throws(
+    () => validateIocCitationDetailBinding(
+      output.product_query_result.exact_citation,
+      detail,
+    ),
+    { code: 'INVALID_AGREEMENT_IOC_PRODUCT_EVIDENCE_BINDING' },
+  );
+});
 
 for (const [name, rawProductQueryPatch] of [
   ['an extra signed requested column without a sort', {
@@ -232,6 +346,21 @@ test('uses the exact four-file Stage 3 IOC correction boundary', () => {
     '.github/phase-allowlists/wp-p8-agreement-materialisation-stage3-correction-v1.json',
     'lib/canonical-v2/agreement-candidate-product-materialisation.js',
     'tests/canonical-v2-agreement-candidate-product-materialisation.test.js',
+    'tests/fixtures/canonical-v2/agreement-candidate-product-materialisation-inputs.js',
+  ]);
+});
+
+test('uses the exact Stage 4 IOC legal-correction boundary', () => {
+  const allowlist = JSON.parse(fs.readFileSync(path.join(
+    __dirname,
+    '../.github/phase-allowlists/wp-p8-stage4-ioc-legal-corrections-v1.json',
+  ), 'utf8'));
+  assert.deepEqual(allowlist.allowed, [
+    '.github/phase-allowlists/wp-p8-stage4-ioc-legal-corrections-v1.json',
+    'lib/canonical-v2/agreement-candidate-product-materialisation.js',
+    'lib/canonical-v2/reviewed-ioc-capex-slice.js',
+    'tests/canonical-v2-agreement-candidate-product-materialisation.test.js',
+    'tests/canonical-v2-reviewed-ioc-capex-slice.test.js',
     'tests/fixtures/canonical-v2/agreement-candidate-product-materialisation-inputs.js',
   ]);
 });
