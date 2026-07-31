@@ -45,6 +45,23 @@ function sealResult(value) {
   return value;
 }
 
+function resealSlotMembership(value, index) {
+  const slot = value.slot_results[index];
+  slot.subject_cohort_membership.counts_digest = contentId(
+    'SUBJECT_COHORT_COUNTS/V1',
+    slot.counts,
+  );
+  const membershipBody = clone(slot.subject_cohort_membership);
+  delete membershipBody.membership_receipt_id;
+  slot.subject_cohort_membership.membership_receipt_id = contentId(
+    'SUBJECT_COHORT_MEMBERSHIP_RECEIPT/V1',
+    membershipBody,
+  );
+  slot.subject_membership_verification.membership_receipt_id =
+    slot.subject_cohort_membership.membership_receipt_id;
+  return value;
+}
+
 function sealRelease(value) {
   const body = clone(value);
   delete body.qxo_capitalisation_cross_view_release_f28_id;
@@ -137,14 +154,15 @@ test('F28 publishes six shared rows and fourteen typed market metrics', () => {
     metricMemberships.filter((entry) => entry.status === 'INCLUDED').length,
     13,
   );
-  assert.deepEqual(
-    metricMemberships.filter((entry) => entry.status === 'EXCLUDED'),
-    [{
-      status: 'EXCLUDED',
-      exclusion_reason:
-        'TYPED_NON_COMPARABILITY:ACCURACY_EXCEPTION_ABSENT',
-    }],
+  const excludedMemberships = metricMemberships.filter(
+    (entry) => entry.status === 'EXCLUDED',
   );
+  assert.equal(excludedMemberships.length, 1);
+  assert.equal(
+    excludedMemberships[0].exclusion_reason,
+    'TYPED_NON_COMPARABILITY:ACCURACY_EXCEPTION_ABSENT',
+  );
+  assert.match(excludedMemberships[0].membership_receipt_id, /^[a-f0-9]{64}$/);
 });
 
 test('F28 keeps exact legal terms, class boundaries and source lineage', () => {
@@ -234,7 +252,7 @@ test('F28 compiles one bounded request for all fourteen metrics', () => {
   );
   assert.equal(
     request.metric_bindings.filter(
-      (entry) => entry.subject_cohort_membership.status === 'INCLUDED',
+      (entry) => entry.subject_comparability.status === 'COMPARABLE',
     ).length,
     13,
   );
@@ -302,7 +320,7 @@ test('F28 validates subject-only, peer and isolated failed slots', () => {
   });
   assert.equal(
     validateQxoCapitalisationF28MarketResult(
-      sealResult(ready),
+      sealResult(resealSlotMembership(ready, 0)),
       request,
     ),
     true,
@@ -376,7 +394,7 @@ test('F28 validates a non-empty signed-duration market slot', () => {
   });
   assert.equal(
     validateQxoCapitalisationF28MarketResult(
-      sealResult(result),
+      sealResult(resealSlotMembership(result, durationIndex)),
       request,
     ),
     true,
@@ -458,6 +476,35 @@ test('F28 refuses slot reordering, peer leakage, untyped subject exclusion and r
     /invalid or reordered/,
   );
 
+  const substitutedReceipt = clone(subjectOnly);
+  substitutedReceipt.slot_results[0]
+    .subject_cohort_membership.subject_metric_output_id = 'f'.repeat(64);
+  resealSlotMembership(substitutedReceipt, 0);
+  assert.throws(
+    () => validateQxoCapitalisationF28MarketResult(
+      sealResult(substitutedReceipt),
+      request,
+    ),
+    /invalid or reordered/,
+  );
+
+  const unknownFailure = clone(subjectOnly);
+  Object.assign(unknownFailure.slot_results[0], {
+    result_state: 'FAILED',
+    state_groups: [],
+    value_groups: [],
+    numeric_summary: null,
+    cohort_reason_code: null,
+    failure_reason_code: 'INVENTED_FAILURE',
+  });
+  assert.throws(
+    () => validateQxoCapitalisationF28MarketResult(
+      sealResult(unknownFailure),
+      request,
+    ),
+    /failed metric slot is invalid/,
+  );
+
   const forged = clone(release);
   forged.admissions[0].canonical_unit = 'INVENTED_UNIT';
   const admissionBody = clone(forged.admissions[0]);
@@ -472,6 +519,61 @@ test('F28 refuses slot reordering, peer leakage, untyped subject exclusion and r
     }),
     /admission 0 has drifted/,
   );
+});
+
+test('F28 derives narrower-filter exclusion from the selected cohort and permits peer-only READY', () => {
+  const { release } = fixture();
+  for (const buyer of [
+    'MUTUALLY_EXCLUSIVE_BUYER_A',
+    'MUTUALLY_EXCLUSIVE_BUYER_B',
+  ]) {
+    const request = compileQxoCapitalisationF28MarketRequest({
+      release,
+      filters: { buyer },
+    });
+    const result = clone(buildSubjectOnlyF28MarketResult(request));
+    assert.equal(
+      result.slot_results[0].subject_cohort_membership.status,
+      'EXCLUDED',
+    );
+    assert.equal(
+      result.slot_results[0].subject_cohort_membership.exclusion_reason,
+      'SELECTED_NARROWER_COHORT:BUYER_MISMATCH',
+    );
+    assert.equal(
+      validateQxoCapitalisationF28MarketResult(result, request),
+      true,
+    );
+
+    Object.assign(result.slot_results[0], {
+      result_state: 'READY',
+      counts: {
+        eligible_deals: 2,
+        comparable_deals: 1,
+        excluded_deals: 1,
+        independent_peer_count: 1,
+      },
+      state_groups: [{
+        state: 'PRESENT',
+        deal_count: 1,
+        percentage: '100',
+      }],
+      value_groups: [{
+        state: 'PRESENT',
+        canonical_value: 'MAT_ALL_RESPECTS_DE_MINIMIS',
+        deal_count: 1,
+        percentage: '100',
+      }],
+      cohort_reason_code: null,
+    });
+    assert.equal(
+      validateQxoCapitalisationF28MarketResult(
+        sealResult(resealSlotMembership(result, 0)),
+        request,
+      ),
+      true,
+    );
+  }
 });
 
 test('F28 execution uses one RPC, release-aware cache and single flight', async () => {

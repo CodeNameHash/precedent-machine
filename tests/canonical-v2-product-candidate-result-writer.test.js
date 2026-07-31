@@ -34,6 +34,7 @@ const {
   compileMetseraExclusivityProductPresentation,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-presentation');
 const {
+  buildMetseraExclusivityExecutedCohortEvidence,
   compileMetseraExclusivityProductSurfaces,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-surfaces');
 const {
@@ -130,6 +131,17 @@ function metseraProcessWriteFixture() {
     authorityInput,
   );
   const presentation = compileMetseraExclusivityProductPresentation(row, resultSet);
+  const cohortEvidence =
+    buildMetseraExclusivityExecutedCohortEvidence(
+      productAdmission,
+      row,
+      {
+        execution_receipt_id: contentId(
+          'METSERA_TEST_COHORT_EXECUTION/V1',
+          row.product_row_receipt_id,
+        ),
+      },
+    );
   const surfaces = compileMetseraExclusivityProductSurfaces(
     productAdmission,
     row,
@@ -137,6 +149,7 @@ function metseraProcessWriteFixture() {
     presentation,
     authorityContext,
     authorityInput,
+    cohortEvidence,
   );
   const processWriteSet = {
     schema_version: PRODUCT_CANDIDATE_RESULT_WRITE_SET_SCHEMA,
@@ -319,6 +332,23 @@ test('rejects a correctly rehashed persisted materialisation receipt substitutio
   );
 });
 
+test('Metsera surfaces fail closed without executed cohort evidence', () => {
+  const fixture = metseraProcessWriteFixture();
+  const writeSet =
+    fixture.writeSet.domain_carrier.complete_write_set;
+  assert.throws(
+    () => compileMetseraExclusivityProductSurfaces(
+      writeSet.product_admission,
+      writeSet.product_row,
+      writeSet.product_result_set,
+      writeSet.product_presentation,
+      fixture.authorityContext,
+      fixture.authorityInput,
+    ),
+    /executed cohort evidence is required/,
+  );
+});
+
 test('rejects a correctly rehashed untyped Metsera subject exclusion', () => {
   const fixture = metseraProcessWriteFixture();
   const substituted = clone(fixture.writeSet);
@@ -339,7 +369,36 @@ test('rejects a correctly rehashed untyped Metsera subject exclusion', () => {
   assert.throws(
     () => validateProductCandidateResultWriteSet(substituted),
     (error) => error.code === 'INVALID_PRODUCT_CANDIDATE_RESULT_LINEAGE'
-      && /surface receipt was changed/.test(error.details.cause),
+      && /cohort|surface receipt/.test(error.details.cause),
+  );
+});
+
+test('rejects a re-signed Metsera cohort receipt substitution', () => {
+  const fixture = metseraProcessWriteFixture();
+  const substituted = clone(fixture.writeSet);
+  const surfaces = substituted.domain_carrier.complete_write_set
+    .product_surfaces;
+  const membership =
+    surfaces.surface_bindings.COMPARE.subject_cohort_membership;
+  membership.counts_digest = 'f'.repeat(64);
+  const membershipBody = clone(membership);
+  delete membershipBody.membership_receipt_id;
+  membership.membership_receipt_id = contentId(
+    'SUBJECT_COHORT_MEMBERSHIP_RECEIPT/V1',
+    membershipBody,
+  );
+  const surfaceBody = clone(surfaces);
+  delete surfaceBody.schema_version;
+  delete surfaceBody.product_surfaces_receipt_id;
+  surfaces.product_surfaces_receipt_id = contentId(
+    surfaces.schema_version,
+    surfaceBody,
+  );
+  rehashProcessCarrier(substituted);
+  assert.throws(
+    () => validateProductCandidateResultWriteSet(substituted),
+    (error) => error.code === 'INVALID_PRODUCT_CANDIDATE_RESULT_LINEAGE'
+      && /membership receipt|surface receipt/.test(error.details.cause),
   );
 });
 

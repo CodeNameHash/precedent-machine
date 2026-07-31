@@ -32,6 +32,7 @@ const {
   '../lib/canonical-v2/metsera-exclusivity-product-presentation',
 );
 const {
+  buildMetseraExclusivityExecutedCohortEvidence,
   compileMetseraExclusivityProductSurfaces,
 } = require(
   '../lib/canonical-v2/metsera-exclusivity-product-surfaces',
@@ -478,6 +479,22 @@ async function main() {
       productRow,
       productResultSet,
     );
+  const cohortEvidence =
+    buildMetseraExclusivityExecutedCohortEvidence(
+      productAdmission,
+      productRow,
+      {
+        execution_receipt_id: contentId(
+          'METSERA_P8_BOUNDED_COHORT_EXECUTION/V1',
+          {
+            materialisation_receipt_id:
+              realProcessAdmission.materialisation_receipt_id,
+            product_row_receipt_id:
+              productRow.product_row_receipt_id,
+          },
+        ),
+      },
+    );
   const productSurfaces =
     compileMetseraExclusivityProductSurfaces(
       productAdmission,
@@ -486,6 +503,7 @@ async function main() {
       productPresentation,
       productAuthority.context,
       productAuthority.input,
+      cohortEvidence,
     );
   const candidateProductWriteSet = {
     schema_version: PRODUCT_CANDIDATE_RESULT_WRITE_SET_SCHEMA,

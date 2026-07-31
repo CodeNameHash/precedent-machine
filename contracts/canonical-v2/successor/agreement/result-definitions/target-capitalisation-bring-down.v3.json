@@ -154,6 +154,18 @@
       "subject_inclusion_rule": "INCLUDE_IF_ELIGIBLE_COMPARABLE_AND_IN_CORPUS",
       "selected_cohort_statistics_include_subject": true,
       "independent_peer_count_required": true,
+      "subject_membership_receipt_required": true,
+      "subject_membership_receipt_identity_inputs": [
+        "status",
+        "exclusion_reason",
+        "cohort_digest",
+        "subject_deal_key",
+        "subject_metric_output_id",
+        "counts_digest"
+      ],
+      "allowed_market_metric_failure_reason_codes": [
+        "METRIC_VALUE_VALIDATION_FAILED"
+      ],
       "allowed_subject_exclusion_reason_types": [
         "SELECTED_NARROWER_COHORT",
         "TYPED_NON_COMPARABILITY"

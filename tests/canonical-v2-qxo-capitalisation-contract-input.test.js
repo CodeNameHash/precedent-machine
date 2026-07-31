@@ -203,6 +203,18 @@ test('governs fourteen atomic market slots without cross-class aggregation', () 
       'INCLUDE_IF_ELIGIBLE_COMPARABLE_AND_IN_CORPUS',
     selected_cohort_statistics_include_subject: true,
     independent_peer_count_required: true,
+    subject_membership_receipt_required: true,
+    subject_membership_receipt_identity_inputs: [
+      'status',
+      'exclusion_reason',
+      'cohort_digest',
+      'subject_deal_key',
+      'subject_metric_output_id',
+      'counts_digest',
+    ],
+    allowed_market_metric_failure_reason_codes: [
+      'METRIC_VALUE_VALIDATION_FAILED',
+    ],
     allowed_subject_exclusion_reason_types: [
       'SELECTED_NARROWER_COHORT',
       'TYPED_NON_COMPARABILITY',
@@ -250,6 +262,22 @@ test('governs fourteen atomic market slots without cross-class aggregation', () 
   assert.equal(result.market_request_contract.database_call_budget, 1);
   assert.equal(result.market_request_contract.immediate_retries, 0);
   assert.equal(result.market_request_contract.failure_isolation, 'PER_METRIC_SLOT');
+});
+
+test('rejects drift in the closed cohort receipt and failure-code contract', () => {
+  const authored = members();
+  const result = member(
+    authored,
+    'TARGET_CAPITALISATION_BRING_DOWN',
+  ).canonical_value.authored_definition.market_request_contract;
+  result.allowed_market_metric_failure_reason_codes.push(
+    'INVENTED_FAILURE',
+  );
+  assert.throws(
+    () => validateAuthoredQxoCapitalisationInputs(authored),
+    (error) => error.code
+      === 'QXO_CAPITALISATION_MARKET_RESULT_CONTRACT_DRIFT',
+  );
 });
 
 test('rejects an omitted or duplicated metric definition', () => {
