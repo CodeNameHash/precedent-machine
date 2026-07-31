@@ -20,6 +20,7 @@ import {
 } from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { governedSupabaseCommand } from './lib/canonical-v2-staging-runtime.mjs';
 
 const require = createRequire(import.meta.url);
 const {
@@ -795,10 +796,14 @@ function runLinkedSql(
   ));
   const file = join(directory, fileName);
   writeFileSync(file, sql, { mode: 0o600 });
+  const spawnPlan = executable === 'supabase'
+    ? governedSupabaseCommand()
+    : { command: executable, prefixArgs: [] };
   try {
     const result = spawnSync(
-      executable,
+      spawnPlan.command,
       [
+        ...spawnPlan.prefixArgs,
         'db',
         'query',
         '--linked',

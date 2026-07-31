@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import {
+  existsSync,
   mkdtempSync,
   readFileSync,
   realpathSync,
@@ -82,6 +83,19 @@ function redactDiagnostic(output, fallback, maxChars) {
       '$1[redacted]',
     )
     .slice(0, maxChars);
+}
+
+export function governedSupabaseCommand() {
+  const shim = process.env.CANONICAL_V2_STAGING_SUPABASE_SHIM;
+  if (shim == null || shim === '') {
+    return { command: 'supabase', prefixArgs: [] };
+  }
+  if (!/\.(?:mjs|js|cjs)$/.test(shim) || !existsSync(shim)) {
+    throw new Error(
+      'CANONICAL_V2_STAGING_SUPABASE_SHIM must point at an existing JavaScript shim file.',
+    );
+  }
+  return { command: process.execPath, prefixArgs: [shim] };
 }
 
 function parseRows(stdout, operationLabel) {
@@ -211,9 +225,11 @@ ${sql}
 ${commit ? 'COMMIT;' : 'ROLLBACK;'}
 `, { mode: 0o600 });
     try {
+      const supabaseCommand = governedSupabaseCommand();
       const result = spawnSync(
-        'supabase',
+        supabaseCommand.command,
         [
+          ...supabaseCommand.prefixArgs,
           '--workdir',
           repositoryRoot,
           'db',
