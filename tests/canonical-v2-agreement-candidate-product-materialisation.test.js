@@ -121,6 +121,21 @@ for (const profile of [
     assert.equal(output.authority_state, 'NOT_GRANTED');
     assert.equal(output.materialisation_state, 'VALIDATED_NOT_PERSISTED');
     assert.equal(output.product_query_result.domain_key, 'AGREEMENT');
+    assert.deepEqual(
+      output.product_query_ir.presentation_contract.requested_columns,
+      profile === 'IOC_CAPEX_RESTRICTION_V1'
+        ? [{ field_key: 'deal', field_version: 1 }]
+        : [
+          { field_key: 'deal', field_version: 1 },
+          { field_key: 'signed', field_version: 1 },
+        ],
+    );
+    assert.deepEqual(
+      output.product_query_ir.presentation_contract.sort,
+      profile === 'IOC_CAPEX_RESTRICTION_V1'
+        ? []
+        : [{ field_key: 'signed', field_version: 1, direction: 'DESC' }],
+    );
     assert.equal(output.product_result_set.ordered_result_slots.length, 1);
     assert.equal(output.product_result_presentation.result_slots.length, 1);
     assert.deepEqual(
@@ -131,6 +146,41 @@ for (const profile of [
       ? output.evidence_sidecar.exact_detail_package.row.source_actions[0].action_slot_key
       : output.evidence_sidecar.exact_detail_package.exact_detail_action;
     assert.equal(exactDetailAction, profileDetailAction(profile));
+  });
+}
+
+for (const [name, rawProductQueryPatch] of [
+  ['an extra signed requested column without a sort', {
+    requested_columns: [
+      { field_key: 'deal', field_version: 1 },
+      { field_key: 'signed', field_version: 1 },
+    ],
+    sort: [],
+  }],
+  ['a signed descending sort', {
+    requested_columns: [{ field_key: 'deal', field_version: 1 }],
+    sort: [{ field_key: 'signed', field_version: 1, direction: 'DESC' }],
+  }],
+]) {
+  test(`rejects a coherent IOC query with ${name}`, () => {
+    const { input: authorityInput, context: authorityContext } = authority();
+    const envelopeInput = {
+      family_profile_id: 'IOC_CAPEX_RESTRICTION_V1',
+      family_input: familyInput('IOC_CAPEX_RESTRICTION_V1'),
+    };
+    const prepared = evaluationEvidence({
+      envelopeInput,
+      authorityInput,
+      authorityContext,
+      rawProductQueryPatch,
+    });
+    assert.throws(() => compileAgreementCandidateProductMaterialisation({
+      agreement_candidate_envelope: prepared.envelopeValue,
+      family_input: envelopeInput.family_input,
+      pilot_product_authority_context: authorityContext,
+      pilot_product_authority_context_input: authorityInput,
+      product_evaluation_evidence: prepared.product_evaluation_evidence,
+    }), { code: 'INVALID_AGREEMENT_CANDIDATE_PRODUCT_MATERIALISATION_INPUT' });
   });
 }
 
@@ -171,4 +221,17 @@ test('uses the exact seven-file phase boundary', () => {
   assert.equal(allowlist.allowed.includes(
     'lib/canonical-v2/agreement-candidate-product-materialisation.js',
   ), true);
+});
+
+test('uses the exact four-file Stage 3 IOC correction boundary', () => {
+  const allowlist = JSON.parse(fs.readFileSync(path.join(
+    __dirname,
+    '../.github/phase-allowlists/wp-p8-agreement-materialisation-stage3-correction-v1.json',
+  ), 'utf8'));
+  assert.deepEqual(allowlist.allowed, [
+    '.github/phase-allowlists/wp-p8-agreement-materialisation-stage3-correction-v1.json',
+    'lib/canonical-v2/agreement-candidate-product-materialisation.js',
+    'tests/canonical-v2-agreement-candidate-product-materialisation.test.js',
+    'tests/fixtures/canonical-v2/agreement-candidate-product-materialisation-inputs.js',
+  ]);
 });

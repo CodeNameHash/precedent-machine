@@ -133,8 +133,14 @@ function profilePredicate(profile) {
     : 'TARGET_CAPEX_RESTRICTION';
 }
 
-function evaluationEvidence({ envelopeInput, authorityInput, authorityContext }) {
+function evaluationEvidence({
+  envelopeInput,
+  authorityInput,
+  authorityContext,
+  rawProductQueryPatch = {},
+}) {
   const envelopeValue = buildAgreementCandidateEnvelope(envelopeInput);
+  const isIoc = envelopeInput.family_profile_id === 'IOC_CAPEX_RESTRICTION_V1';
   const action = profileDetailAction(envelopeInput.family_profile_id);
   const admission = authorityContext.product_query_admission_context;
   const predicateAdmission = admission.predicate_admissions.find((entry) => (
@@ -157,15 +163,17 @@ function evaluationEvidence({ envelopeInput, authorityInput, authorityContext })
       cohort_definition_payload_digest: digest(`cohort-payload:${envelopeInput.family_profile_id}`),
     },
     filters: [],
-    sort: [{ field_key: 'signed', field_version: 1, direction: 'DESC' }],
+    sort: isIoc ? [] : [{ field_key: 'signed', field_version: 1, direction: 'DESC' }],
     diversity: {
       definition_id: digest(`diversity:${envelopeInput.family_profile_id}`),
       payload_digest: digest(`diversity-payload:${envelopeInput.family_profile_id}`),
     },
-    requested_columns: [
-      { field_key: 'deal', field_version: 1 },
-      { field_key: 'signed', field_version: 1 },
-    ],
+    requested_columns: isIoc
+      ? [{ field_key: 'deal', field_version: 1 }]
+      : [
+        { field_key: 'deal', field_version: 1 },
+        { field_key: 'signed', field_version: 1 },
+      ],
     pagination: { page_size: 12, cursor: null },
     detail_actions: [action],
     coverage: {
@@ -174,6 +182,7 @@ function evaluationEvidence({ envelopeInput, authorityInput, authorityContext })
       covered_set_identity: digest(`covered-set:${envelopeInput.family_profile_id}`),
       exclusions_identity: digest(`exclusions:${envelopeInput.family_profile_id}`),
     },
+    ...rawProductQueryPatch,
   };
   const query = compileProductQueryIr({ admission, query: rawProductQuery });
   const domainResult = buildAgreementCandidateDomainResult({
@@ -182,16 +191,12 @@ function evaluationEvidence({ envelopeInput, authorityInput, authorityContext })
     pilot_product_authority_context: authorityContext,
     pilot_product_authority_context_input: authorityInput,
   });
-  const orderedResultFields = [
-    {
-      field_reference: { field_key: 'deal', field_version: 1 },
-      value: { governed_deal_id: digest(`deal:${envelopeInput.family_profile_id}`) },
-    },
-    {
-      field_reference: { field_key: 'signed', field_version: 1 },
-      value: { iso_8601_calendar_date: '2026-04-18' },
-    },
-  ];
+  const orderedResultFields = rawProductQuery.requested_columns.map((field) => ({
+    field_reference: clone(field),
+    value: field.field_key === 'deal'
+      ? { governed_deal_id: digest(`deal:${envelopeInput.family_profile_id}`) }
+      : { iso_8601_calendar_date: '2026-04-18' },
+  }));
   const projectionIdentity = requestedFieldProjectionIdentity({
     queryIr: query,
     domainResult,
@@ -245,12 +250,15 @@ function evaluationEvidence({ envelopeInput, authorityInput, authorityContext })
     product_query_result_identity: productResultIdentity,
     agreement_comparable_result_identity: domainResult.domain_result_identity,
     governed_deal_admission_id: digest(`ordering-deal:${envelopeInput.family_profile_id}`),
-    sort_projections: [{
-      field_reference: { field_key: 'signed', field_version: 1 },
+    sort_projections: rawProductQuery.sort.map((field) => ({
+      field_reference: {
+        field_key: field.field_key,
+        field_version: field.field_version,
+      },
       value_type: 'DATE',
       value_state: 'COMPARABLE_VALUE',
       value: { iso_8601_calendar_date: '2026-04-18' },
-    }],
+    })),
     external_field_projection_validation_receipt_id: digest(`field-check:${envelopeInput.family_profile_id}`),
     external_candidate_membership_validation_receipt_id: digest(`membership-check:${envelopeInput.family_profile_id}`),
     ordering_failure: null,
