@@ -113,9 +113,6 @@ export default function MetseraExclusivityCrossView({ fixture }) {
           <div className="mt-2 text-[10px] font-bold text-[#174B84]">
             Exclusivity
           </div>
-          <div className="mt-1 text-[9px] leading-4 text-[#66625C]">
-            Granted to Party 2
-          </div>
           <div className="mt-4 text-[8px] font-bold uppercase tracking-[0.12em] text-[#77736C]">
             Current view
           </div>

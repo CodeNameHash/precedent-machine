@@ -97,6 +97,7 @@ test('uses the compact three-column browser layout and inactive source action', 
   assert.match(component, /SELECTED_NARROWER_COHORT:/);
   assert.match(component, /TYPED_NON_COMPARABILITY:/);
   assert.match(component, /RELEASE_NOT_ACTIVE|release is not active/i);
+  assert.doesNotMatch(component, /Granted to Party 2/);
   assert.match(page, /designPreviewServerSideProps/);
   assert.doesNotMatch(page, /fetch\s*\(/);
   assert.doesNotMatch(page, /\/api\//);
