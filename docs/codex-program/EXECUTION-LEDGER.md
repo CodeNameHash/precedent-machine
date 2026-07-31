@@ -265,6 +265,34 @@ so it is structurally blind to novelty; the open-world path is the only
 mechanism that catches genuinely new propositions and is therefore
 load-bearing, not a side feature.
 
+### Native extractor build state (2026-07-31)
+
+Merged to main and green (4,866 pass / 0 fail / build OK):
+
+| Piece | File | Property proven |
+| --- | --- | --- |
+| Provider seam | `native-producer/provider-interface.js` | Injected provider; recorded fixture and live call interchangeable; content-addressed receipt binds proposal AND evidence-residual counts, so a run that lost evidence cannot present as a clean run |
+| Compiler | `native-producer/candidate-proposal-compiler.js` | Per-candidate `closure_id` so quarantine cannot take valid siblings; rejects ABSENT/NOT_APPLICABLE and non-provider-minted receipts |
+| Prompt | `native-producer/capitalisation-producer-prompt.js` | Never asks for a negative; qualifiers attach where they operate; verbatim quotes byte-verified; novelty preserved as open-world |
+| Sectionizer | `native-producer/deterministic-sectionizer.js` | Automatic section discovery reproduces the hand-picked QXO content exactly (`text_sha256` equals `CAPITAL_STRUCTURE_SHA256`; limb starts 22/777/2478/3656/4435 byte-for-byte). 385 nodes round-tripped on a real 394KB agreement |
+| Backend | `native-producer/anthropic-provider.js` | Bounded retries; malformed response is a typed failure, never an empty success |
+| Run | `native-producer/native-extraction-run.js` | Unresolvable section reference fails closed with zero provider calls; evidence outside governed scope rejected before compilation |
+
+Finding of record: the hardcoded QXO intervals (`CAPITAL_STRUCTURE_INTERVAL`,
+`SECTION_5_2_INTERVAL`) are FIXTURE ARTEFACTS, not offsets into a real SEC
+filing. No full merger agreement text is committed to this repo. Equivalence
+was therefore proven by content digest, not by position.
+
+OPEN INTEGRATION HAZARD — close before wiring the producer to the canonical
+writer: evidence `absolute_start`/`absolute_end` on compiled candidates are
+SECTION-LOCAL, because the provider is licensed to see only the section slice.
+The run receipt carries the document-absolute offsets of each resolved
+section, so true position is recoverable as `section.start + evidence.start` —
+but any downstream stage that treats evidence offsets as document-absolute
+will silently cite the wrong text. The writer integration must either shift
+offsets to document-absolute (re-deriving `excerpt_id`) or assert the
+coordinate frame explicitly. A test must pin whichever is chosen.
+
 ### P9 registry correction (2026-07-31, mechanically verified)
 
 `docs/codex-program/programme-gates.yaml` contains 22 P9 gates, not 25.
