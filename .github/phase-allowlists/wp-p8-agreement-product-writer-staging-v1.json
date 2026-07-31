@@ -1,0 +1,18 @@
+{
+  "phase": "WP-P8-AGREEMENT-PRODUCT-WRITER-STAGING-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-p8-agreement-product-writer-staging-v1.json",
+    "scripts/canonical-v2-staging-agreement-product-writer-p8.mjs",
+    "tests/canonical-v2-staging-agreement-product-writer-p8.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "contracts/**",
+    "docs/**",
+    "lib/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Builds both admitted Agreement Product candidate envelopes and proves the existing generic writer in linked isolated staging. Local writer dry-run, commit, exact replay and conflicting replay are checked first. The public writer runs only in a rollback transaction. Candidate rows, writer receipts and the active pointer are unchanged after the proof. Production is not queried or modified."
+}
