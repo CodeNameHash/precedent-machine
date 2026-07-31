@@ -81,11 +81,11 @@ test('F21 identities cover the complete readiness payload', () => {
   );
   assert.equal(
     readinessId,
-    '5c01b73dccef292d23591d0e351ed51b68bad1cb24fe710a503cf120b5ae2825',
+    'bdc62dc415b92024c5e6604c46f12041974c9ec63798d9d61206054ff35ccdca',
   );
   assert.equal(
     payloadDigest,
-    '33a7611cbe6277cae2fed77a9269f8e03cc90366590417b9cd02a49530064f8e',
+    '0d0bcbcc14ed9dafeebd1952ef30f3d0253f3a6a82d20beb4a0799745e6f2456',
   );
 });
 
@@ -199,7 +199,7 @@ test('F21 binds exact F20 evidence while V12 remains outside active serving', ()
   assert.equal(
     value.serving_policy.current_admission_policy_evidence
       .serving_policy_snapshot_id,
-    '193bc712759172cb9e756fe28183463f76b94077f4cd1566ef0e02dcf5632701',
+    'ecbf45b63fd58432aff3a33e9830c6e713965745290ee0457da698cd12cbd275',
   );
   assert.equal(
     value.serving_policy.current_admission_policy_evidence
