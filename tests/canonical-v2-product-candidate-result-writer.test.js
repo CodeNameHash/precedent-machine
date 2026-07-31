@@ -37,8 +37,8 @@ const {
   compileMetseraExclusivityProductSurfaces,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-surfaces');
 const {
-  buildMetseraAuthorityBoundProcessAdmission,
-} = require('./fixtures/canonical-v2/metsera-authority-bound-process-admission');
+  buildMetseraRealProcessAdmission,
+} = require('./fixtures/canonical-v2/metsera-real-process-admission');
 const {
   PILOT_PRODUCT_AUTHORITY_CONTEXT_SCHEMA,
 } = require('../lib/canonical-v2/pilot-product-authority-context');
@@ -106,25 +106,17 @@ function clone(value) {
 
 function metseraProcessWriteFixture() {
   const { input: authorityInput, context: authorityContext } = authority();
-  const provisional = compileMetseraExclusivityProductAdmission(
-    buildMetseraAuthorityBoundProcessAdmission({
-      authority_context: authorityContext,
-      product_query_definition_id: contentId(
-        'METSERA_PRODUCT_CANDIDATE_WRITER_PROVISIONAL_QUERY/V1',
-        { authority_context_id: authorityContext.authority_context_id },
-      ),
-    }),
-  );
+  const processAdmission = buildMetseraRealProcessAdmission({
+    authority_context: authorityContext,
+    authority_input: authorityInput,
+  });
+  const productAdmission = compileMetseraExclusivityProductAdmission({
+    process_phrasebook_admission: processAdmission,
+  });
   const query = compileMetseraExclusivityProductQuery(
-    provisional,
+    productAdmission,
     authorityContext,
     authorityInput,
-  );
-  const productAdmission = compileMetseraExclusivityProductAdmission(
-    buildMetseraAuthorityBoundProcessAdmission({
-      authority_context: authorityContext,
-      product_query_definition_id: query.query_definition_id,
-    }),
   );
   const row = compileMetseraExclusivityProductRow(
     productAdmission,
@@ -158,7 +150,8 @@ function metseraProcessWriteFixture() {
       release_state: 'CANDIDATE_NOT_ACTIVE',
       authority_state: 'NOT_GRANTED',
     },
-    process_pilot_materialisation_receipt: productAdmission.admission_receipt,
+    process_pilot_materialisation_receipt:
+      processAdmission.materialisation_receipt,
     product_admission: productAdmission,
     product_row: row,
     product_result_set: resultSet,
@@ -304,6 +297,26 @@ test('the Process Product candidate writer requires the exact authority pair in 
   assert.equal(first.replayed, false);
   assert.equal(replay.replayed, true);
   assert.equal(repository.snapshot().productCandidateResults.length, 1);
+});
+
+test('rejects a correctly rehashed persisted materialisation receipt substitution', () => {
+  const fixture = metseraProcessWriteFixture();
+  const substituted = clone(fixture.writeSet);
+  const receipt = substituted.domain_carrier.complete_write_set
+    .process_pilot_materialisation_receipt;
+  receipt.source_interval_state = 'SUBSTITUTED';
+  const receiptBody = clone(receipt);
+  delete receiptBody.materialisation_receipt_id;
+  receipt.materialisation_receipt_id = contentId(
+    receipt.schema_version,
+    receiptBody,
+  );
+  rehashProcessCarrier(substituted);
+  assert.throws(
+    () => validateProductCandidateResultWriteSet(substituted),
+    (error) => error.code === 'INVALID_PRODUCT_CANDIDATE_RESULT_LINEAGE'
+      && /does not equal the bridge-bound receipt/.test(error.message),
+  );
 });
 
 for (const profile of [

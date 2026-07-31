@@ -41,24 +41,27 @@ test('grants no Product, release or operational authority', () => {
   );
 });
 
-test('accepts only one checked Process admission envelope', () => {
+test('rejects the synthetic two-field Process admission path', () => {
   const source = fs.readFileSync(
     require.resolve(
       '../lib/canonical-v2/metsera-exclusivity-product-admission',
     ),
     'utf8',
   );
-  assert.match(source, /process_admission_input/);
-  assert.match(source, /process_admission_receipt/);
   assert.doesNotMatch(source, /candidateReleaseBinding/);
   assert.doesNotMatch(source, /compileMetseraExclusivityStagingPilot/);
   assert.throws(
     () => compileMetseraExclusivityProductAdmission({
       process_admission_input: {},
       process_admission_receipt: {},
-      invented_authority: true,
     }),
     /exact required fields/,
+  );
+  assert.throws(
+    () => compileMetseraExclusivityProductAdmission({
+      process_phrasebook_admission: null,
+    }),
+    /real Process materialisation bridge is required/,
   );
 });
 

@@ -36,6 +36,9 @@ const {
 const {
   buildMetseraAuthorityBoundProcessAdmission,
 } = require('./fixtures/canonical-v2/metsera-authority-bound-process-admission');
+const {
+  buildMetseraRealProcessAdmission,
+} = require('./fixtures/canonical-v2/metsera-real-process-admission');
 
 const ROOT = path.resolve(__dirname, '../contracts/canonical-v2/successor');
 
@@ -84,27 +87,17 @@ function authorityInput() {
 function fixture() {
   const input = authorityInput();
   const context = compilePilotProductAuthorityContext(input);
-  const provisionalProcess = buildMetseraAuthorityBoundProcessAdmission({
+  const processAdmission = buildMetseraRealProcessAdmission({
     authority_context: context,
-    product_query_definition_id: contentId(
-      'METSERA_PRODUCT_QUERY_CONTEXT_TEST_PROVISIONAL_QUERY/V1',
-      { authority_context_id: context.authority_context_id },
-    ),
+    authority_input: input,
   });
-  const provisionalAdmission = compileMetseraExclusivityProductAdmission(
-    provisionalProcess,
-  );
+  const productAdmission = compileMetseraExclusivityProductAdmission({
+    process_phrasebook_admission: processAdmission,
+  });
   const query = compileMetseraExclusivityProductQuery(
-    provisionalAdmission,
+    productAdmission,
     context,
     input,
-  );
-  const checkedProcess = buildMetseraAuthorityBoundProcessAdmission({
-    authority_context: context,
-    product_query_definition_id: query.query_definition_id,
-  });
-  const productAdmission = compileMetseraExclusivityProductAdmission(
-    checkedProcess,
   );
   return { input, context, productAdmission, query };
 }
@@ -187,21 +180,18 @@ test('derives the Product query from the sealed authority context and checked Pr
   );
 });
 
-test('rejects an external Process admission that binds a different query ID', () => {
-  const { input, context } = fixture();
-  const checkedProcess = buildMetseraAuthorityBoundProcessAdmission({
+test('rejects a synthetic Process admission that self-asserts a query ID', () => {
+  const { context } = fixture();
+  const syntheticProcess = buildMetseraAuthorityBoundProcessAdmission({
     authority_context: context,
     product_query_definition_id: contentId(
       'METSERA_PRODUCT_QUERY_CONTEXT_TEST_SUBSTITUTED_QUERY/V1',
       { authority_context_id: context.authority_context_id },
     ),
   });
-  const productAdmission = compileMetseraExclusivityProductAdmission(
-    checkedProcess,
-  );
   assert.throws(
-    () => compileMetseraExclusivityProductRow(productAdmission, context, input),
-    /does not bind the exact Product Query IR/,
+    () => compileMetseraExclusivityProductAdmission(syntheticProcess),
+    /exact required fields/,
   );
 });
 
