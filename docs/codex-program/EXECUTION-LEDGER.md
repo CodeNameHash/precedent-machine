@@ -13,22 +13,23 @@ main integration.
 | --- | --- |
 | Main basis | `7b6bc64157c49832129fa2ca227399850cd983fc` |
 | Approved M1 review commit | `affa7464ca2cab2b4715ae084e3de6c2d39b673f` |
-| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; pushed head `871c2ed2`. P8 Stage 3 is active. The saved units add the IOC Agreement predicate, one exact Product authority context, one profile-driven Agreement domain-result adapter, and one shared Review, Query, Compare and Corpus Context binding. Main remains fixed. |
-| Current working-tree successor bundle | 177 authored inputs, 176 substantive contracts, 8 categories. This is a draft, not the freeze candidate. |
-| Current working-tree bundle ID | `c4ea8992ffd2805e275e1f56b6dbe6d233970175f4e4bfbd855de0080dc4135c` |
-| Current working-tree contract digest | `f9bda40776497fab36929f9c7220f15ff6bea1b2c1432fd5d264771dde30acd5` |
-| Current working-tree payload digest | `c49884099bec2561d9663122c4eab686628b0715a271e716e16230a60f1aa3bd` |
-| Contract dependency graph | 176 nodes, 308 links, 0 missing or extra members, and 0 cycles |
+| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; candidate code head `b788b633`. P8 Stage 3 is active. F28 and IOC now use one generic Agreement Product materialisation and writer path. The isolated-staging rollback proof passes. Main remains fixed. |
+| Current working-tree successor bundle | 178 authored inputs, 177 substantive contracts, 8 categories. This is a draft, not the freeze candidate. |
+| Current working-tree bundle ID | `214d05cc74f9c2e91178e25f75a53fb4f6a4603f9d0548c1bf59599cfa6b37c0` |
+| Current working-tree contract digest | `935e341ff8e77291c6ead2e49bbfd728ce4fc6ccad2f17cdd6a87c6c9ceb6570` |
+| Current working-tree payload digest | `2cbd784550073ac1cd49e727005c9ee9fdba7b456a9be67542678e1ef956fa6c` |
+| Contract dependency graph | 177 nodes, 315 links, 0 unresolved dependencies, and 0 cycles |
 | Clean compile check | PASS on the current working tree. Two uncached compiles produced identical canonical bytes. Run this again on the final clean candidate. |
 | Draft generic-envelope successor | Bundle `b37a20b3e343b93ab8d9d223625ef5431d0786f5720f1869572921ab7049ad30`; digest `158ac280eb3bc2b994e4d37281db8045deb48221af81ba84fb7da8a93205f03a`; 172 substantive contracts and 297 links. Two clean compiles are byte-identical. This draft does not replace the acknowledged M1 bundle until its exact bytes pass review and the reserved contract-freeze approval. |
 | Draft Product-writer successor | Bundle `dfab1f31bf31b7ce405dc8a5fc0215a07139634ff535f84b1266f754cba2797a`; digest `c8f840e70e8b1c1bac467278665fddc9d837123f9a8c44ae47c0b9630eaec540`; canonical payload `a6608b04e9140cb024089639a3989ae9d45a12df5cd6587f6d2695ea2ffb872f`; 173 substantive contracts and 302 links. Two clean compiles are byte-identical. It adds only an inactive staging candidate-result write through the existing canonical writer. Exact-root review and the reserved contract-freeze approval remain required before this draft replaces M1. |
 | Draft Product-serving successor | Bundle `17de909336a20e581ad9c35c107ce821b7a22379970c8923c01c1fa67d615611`; digest `21343532a94fe360c5c016feeb3e076dab7cde3ef1ca15b7f8dfe08e522a8ab3`; canonical payload `9c42b003c74234c33b00d0d991fa7990f65da38f49e63c343bda773d1c8eb94e`; 174 substantive contracts and 303 links. Two clean compiles are byte-identical. It adds one generic Product result serving-record contract for Agreement, Process and later admitted domains. The V7 importer and active query now implement that contract in isolated staging. Exact-root review and reviewed activation remain. |
-| Latest complete suite on this branch | PASS on candidate code head `86e5bc70`. Later commits change only this ledger and its mechanical drift manifest. The first run found only stale count and digest assertions. Those exact bindings were corrected. The clean rerun had no failures. |
-| Latest production build on this branch | PASS, 29/29 pages |
+| Latest complete suite on this branch | PASS on prior candidate code head `86e5bc70`. The new generic Agreement materialisation and writer batch has 94/94 affected checks PASS. One complete suite remains due on the final combined candidate. |
+| Latest production build on this branch | PASS on prior candidate code head `86e5bc70`, 29/29 pages. One production build remains due on the final combined candidate. |
 | Protected programme status | Generation 44, publication `9552de2185b11d80bd1e2b80757f4f07005c58d1`, binds code commit `a3149cfb6434f3166aac2c3bd9631e637d5df8ae`. Current GitHub main is `7b6bc64157c49832129fa2ca227399850cd983fc`. The official verifier fails closed because the signed status is stale. Its last signed projection had `canonical_work_start: PASS` and `vertical_slice_execution: OPEN`. |
 | M1 contract freeze | The prior milestone acknowledgement remains at `docs/acks/M1-CONTRACT-FREEZE-2026-07-30.md`. It cannot authorise the changed P8 bundle. The formal `P1_CONTRACT_FREEZE_ATTESTED` gate remains OPEN. |
 | M2 vertical slice | ACTIVE but not complete. QXO F28 has a prior isolated-staging rollback proof. Metsera has a prior source-to-Product proof. The current correction batch must replace synthetic Product authority, preserve the pre-write Process boundary, and make F28 and IOC reach one real shared writer path. Exact-root review and one exact-bundle approval follow only after those checks pass. |
 | Isolated-staging access | PASS. Project `sjumbznveyyiizhwvixj` was re-authorised and verified through the Supabase plugin on 2026-07-30. Production was not queried or changed. |
+| Generic Agreement writer staging proof | PASS. F28 candidate result `6a9fe39a6b049554f27c20d7fe76e125d1b0e8fd621202a345152aed09943306` and IOC candidate result `031feb07b93587b3b2caa07113cddcb4e156c8d337a20ba34c0527416a0d05d3` used the same writer. Each inserted once. Exact replay was a no-op. A conflicting cross-family replay failed closed. Forced rollback left zero durable candidate rows and receipts. Active pointer generation 10 was unchanged. Staging advisers found no blocking issue. |
 | QXO F28 staging proof | PASS. Release `f79d3a9a92567db913da48f84540fa55cdff69d770bf4c9261a72e3428242240`; 14 metric slots; 1 set-based market read; 0 retries; 0 durable writes; active pointer unchanged. |
 | Staging pointer check | PASS. The active staging pointer remains generation 10 at corpus release `c9c19dc1ad92496953ee04f52b4a8dc575ea21ab9502acfd449a9299055817d3`. The F28 test release has zero durable release, market or serving rows and is not active. |
 | M3 full-corpus certification | OPEN |
@@ -50,9 +51,10 @@ P1-P7 supplied the contracts and pure processing modules. QXO F28 has a prior
 real source-to-product rollback proof. The current P8 correction adds the
 second Agreement family through a parameterised envelope and a shared Product
 domain-result adapter. It also removes synthetic Product authority from the
-Metsera path. The next blocking result is one real writer path for both F28
-and IOC. The exact successor root then needs independent reviews and one
-reserved bundle approval before the formal vertical-slice permission can open.
+Metsera path. The shared writer now passes for F28 and IOC in isolated staging.
+The next blocking result is the final exact contract root, its independent
+reviews and one reserved bundle approval. That approval can open the formal
+vertical-slice permission.
 
 ## 2. Work underway
 
@@ -63,7 +65,9 @@ reserved bundle approval before the formal vertical-slice permission can open.
 | `PM-P8-AGREEMENT-DOMAIN-RESULT-02` | P8 Stage 3 | Convert F28 and IOC envelopes through one profile-driven Product domain-result adapter. | PM implementation | Active branch; commit `512b9fae`; one adapter and focused tests. | 4 focused tests PASS. | COMPLETE | Feed the output to the real Product query-result compiler. | No |
 | `PM-P8-SURFACE-BINDING-02` | P8 Stage 3 | Bind Review, Query, Compare and Corpus Context to one Product result and source action. | PM implementation | Active branch; commit `871c2ed2`; one contract, runtime and focused tests. | 7 focused tests PASS. | COMPLETE | Register in the final manifest and use it after presentation. | No |
 | `PM-P8-METSERA-AUTHORITY-02` | P8 Stage 3 | Remove generated authority IDs from the Metsera Product row. | PM implementation | Active branch; Metsera row, checked Process fixture and focused tests. | 6 focused tests PASS. A contract-state mismatch now fails closed. | ACTIVE | Add the narrow pre-write Process-to-Product bridge rule. Do not weaken release membership. | No |
-| `PM-P8-GENERIC-WRITER-02` | P8 Stage 3 | Make F28 and IOC use the real Product compilers and reach one insert. | PM implementation | Active branch; Agreement Product adapter, candidate writer, canonical writer, three SQL copies and tests. | Stage 2 found dummy Product objects, shallow authority checks and no Agreement insert. | BLOCKED | Replace the draft with the real Product query, result-set, presentation, surface and writer chain. Add rollback, replay and conflict tests for both families. | No |
+| `PM-P8-AGREEMENT-MATERIALISATION-03` | P8 Stage 3 | Compile F28 and IOC through one generic Agreement envelope, Product Query IR, result, ordering, result set, presentation and four shared surfaces. | PM implementation | Active branch; generic materialisation contract/runtime, profile action bindings, reusable fixtures and focused tests. | 17 focused profile, navigation and domain-result tests PASS. Both families reach all four surfaces. A correctly rehashed cross-family query fails closed. | COMPLETE | Preserve this exact output as the only Agreement input to the candidate writer. | No |
+| `PM-P8-GENERIC-WRITER-02` | P8 Stage 3 | Make F28 and IOC reach one immutable candidate-result insert through the existing canonical writer. | PM implementation | Active branch; candidate writer, canonical writer, three SQL copies and focused tests. | The shared JavaScript and SQL path rebuilds and validates each exact Agreement Product chain. The affected P8 chain passes 94/94. Replay, conflict and rollback tests pass. | COMPLETE | Preserve this one generic path in the final exact-root candidate. | No |
+| `PM-P8-AGREEMENT-WRITER-STAGING-03` | P8 Stage 3 | Prove the generic writer against isolated staging for both Agreement families. | PM controller | Active branch; `scripts/canonical-v2-staging-agreement-product-writer-p8.mjs`, its focused test and exact allowlist. | Focused test 6/6 PASS. F28 and IOC each inserted once. Replay was a no-op. Cross-family conflict failed closed. Forced rollback left zero durable rows and receipts and left pointer generation 10 unchanged. Production was not accessed. | COMPLETE | Commit the bounded units and run the Stage 2 exact-bound reviews. | No |
 | `PM-GOV-BALANCE-01` | control | Replace pre-production attestation machinery with four milestone reviews and Tier A/Tier B security. | PM controller | `codex/governance-balance-v2`; governing docs, generated manifest and apparatus-only tests; commit `afbf1a4`. | 4,576 pass, 0 fail, 7 skip; production build PASS. | INTEGRATION | Include the committed unit in the next controlled main movement. | No |
 | `PM-QXO-F28-LINK-01` | P8 | Bind the F28 graph, all 14 metric slots, correction head and Product result without hiding missing runtime links. | PM implementation | `codex/qxo-f28-runtime-link-v1`; commit `d582705`. | 4 focused tests PASS. | COMPLETE | Preserve the fail-closed runtime plan. | No |
 | `PM-QXO-F28-WRITER-01` | P8 | Convert the exact F28 graph into the canonical writer's closed `DEAL_SCOPE_RUN` input. | PM implementation | Same branch; commits `32af4b2`, `53868ba`, `77f4183` and `7be1521`. | 28 writer tests PASS. The F28 write set has zero residuals. | COMPLETE | Execute the exact input against isolated staging. | No |
@@ -93,11 +97,11 @@ reserved bundle approval before the formal vertical-slice permission can open.
 
 ## 3. Next 48 hours
 
-1. Close the Metsera pre-write Process-to-Product state bridge.
-2. Replace the draft Agreement writer with one real F28 and IOC Product path.
-3. Run F28 and IOC staging rollback, replay and conflict proofs through one insert.
-4. Regenerate the manifest, update the signer inventory and compile twice.
-5. Run architecture and identity, legal-semantic, and query, serving and release reviews against the same exact bytes.
+1. Commit and push the bounded profile, materialisation, writer, staging-proof and central-integration units without moving main.
+2. Run Stage 2 exact-bound reviews and record the disposition of every finding.
+3. Run the affected P8 chain, then the complete suite and production build once on the combined candidate.
+4. Compile the final clean root twice without a cache and require identical bytes.
+5. Run the Stage 4 architecture and identity, legal-semantic, and query, serving and release reviews against the same exact bytes.
 6. Prepare the one reserved exact-bundle approval package.
 7. After approval, publish the matching signed permission and run the reviewed staging pilots.
 
