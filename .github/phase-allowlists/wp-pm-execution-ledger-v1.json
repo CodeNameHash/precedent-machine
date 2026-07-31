@@ -3,7 +3,8 @@
   "required_work_class": "canonical_work_start",
   "allowed": [
     ".github/phase-allowlists/wp-pm-execution-ledger-v1.json",
-    "docs/codex-program/EXECUTION-LEDGER.md"
+    "docs/codex-program/EXECUTION-LEDGER.md",
+    "docs/codex-program/specification-manifest.json"
   ],
   "denied": [
     ".env*",
