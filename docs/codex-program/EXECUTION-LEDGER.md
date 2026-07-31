@@ -13,11 +13,11 @@ main integration.
 | --- | --- |
 | Main basis | `7b6bc64157c49832129fa2ca227399850cd983fc` |
 | Approved M1 review commit | `affa7464ca2cab2b4715ae084e3de6c2d39b673f` |
-| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; latest committed head `3b07369c` plus the bounded Stage 5 reconciliation. All Stage 2 reviews and the complete suite pass. Stage 4 exact-root review is next. Main remains fixed. |
+| Active milestone branch | `codex/p8-combined-pilot-integration-v1`; latest committed head `526582cf`. All Stage 2 reviews and the complete suite pass. Stage 4 exact-root review is next. Main remains fixed. |
 | Current working-tree successor bundle | 178 authored inputs, 177 substantive contracts, 8 categories. This is a draft, not the freeze candidate. |
-| Current working-tree bundle ID | `dfc22fe07d54053db1e7ec92247d6428406f97aac7df351230b37ce7aafeb1d1` |
-| Current working-tree contract digest | `ee81cf33b874850132acb880f88fb35f7cb90b0d20847d2e8167977a6b590409` |
-| Current working-tree payload digest | `934da806a678bb75819bf9013fc6cd2154681375d841328af1e2d4af6096ca49` |
+| Current working-tree bundle ID | `d222eba830fefad4772e358041e36f8818dbf227e4c7e13c77f4228514a37d8e` |
+| Current working-tree contract digest | `a953a215f9ff4cf94a204580b3b9a2b559fa531d1f3be16a3e787032257e87b3` |
+| Current working-tree payload digest | `36762abe8f4dd666df0d9aa66760d8c4e41971fab633764108ee54f73d5c8d73` |
 | Contract dependency graph | 177 nodes, 315 links, 0 unresolved dependencies, and 0 cycles |
 | Clean compile check | PASS on the current working tree. Two uncached compiles produced identical canonical bytes. Run this again on the final clean candidate. |
 | Draft generic-envelope successor | Bundle `b37a20b3e343b93ab8d9d223625ef5431d0786f5720f1869572921ab7049ad30`; digest `158ac280eb3bc2b994e4d37281db8045deb48221af81ba84fb7da8a93205f03a`; 172 substantive contracts and 297 links. Two clean compiles are byte-identical. This draft does not replace the acknowledged M1 bundle until its exact bytes pass review and the reserved contract-freeze approval. |
