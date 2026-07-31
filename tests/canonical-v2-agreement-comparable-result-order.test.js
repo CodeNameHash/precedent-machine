@@ -26,6 +26,7 @@ const {
   AGREEMENT_ORDERING_CONTRACT_DEFINITION_DIGEST,
   AGREEMENT_ORDERING_VALIDATOR_STABLE_ID,
   AGREEMENT_ORDERING_VALIDATOR_VERSION,
+  ADMITTED_AGREEMENT_RESULT_DEFINITIONS,
   AUTHORITY_LIMITS,
   MISSING_STATES,
   compileAgreementComparableResultOrder,
@@ -982,6 +983,19 @@ test('fails closed when the signed ordering contract changes', () => {
     orderingContract.definition.query_release_binding_contract
       .candidate_can_move_between_query_or_release = original;
   }
+});
+
+test('admits the closed generic Agreement result-definition set', () => {
+  assert.deepEqual(ADMITTED_AGREEMENT_RESULT_DEFINITIONS, [
+    { stable_id: 'AGREEMENT_COMPARABLE_RESULT', version: 1 },
+    { stable_id: 'TARGET_CAPEX_RESTRICTION', version: 1 },
+    { stable_id: 'TARGET_CAPITALISATION_BRING_DOWN', version: 3 },
+  ]);
+  assert.deepEqual(
+    orderingContract.definition.projection_contract
+      .admitted_agreement_result_definitions,
+    ADMITTED_AGREEMENT_RESULT_DEFINITIONS,
+  );
 });
 
 test('contains no query, source-read, database, serving or UI path', () => {

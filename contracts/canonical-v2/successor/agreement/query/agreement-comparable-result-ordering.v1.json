@@ -14,8 +14,11 @@
       "parent_query_schema_version": "PRODUCT_QUERY_IR/V1",
       "product_result_definition_stable_id": "PRODUCT_QUERY_RESULT_DEFINITION",
       "product_result_schema_version": "PRODUCT_QUERY_RESULT/V1",
-      "agreement_result_definition_stable_id": "AGREEMENT_COMPARABLE_RESULT",
-      "agreement_result_definition_version": 1,
+      "admitted_agreement_result_definitions": [
+        { "stable_id": "AGREEMENT_COMPARABLE_RESULT", "version": 1 },
+        { "stable_id": "TARGET_CAPEX_RESTRICTION", "version": 1 },
+        { "stable_id": "TARGET_CAPITALISATION_BRING_DOWN", "version": 3 }
+      ],
       "maximum_candidates": 512,
       "minimum_page_size": 8,
       "maximum_page_size": 12

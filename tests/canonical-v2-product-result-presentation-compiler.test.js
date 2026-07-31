@@ -1194,4 +1194,12 @@ test('contains no query, source, model, network or database operation', () => {
   ]) {
     assert.equal(source.includes(prohibited), false, prohibited);
   }
+  assert.equal(
+    source.includes('canonicalProductQueryIrBytes'),
+    true,
+  );
+  assert.equal(
+    source.includes('validateCurrentQxoCapitalisationQueryIr'),
+    false,
+  );
 });
