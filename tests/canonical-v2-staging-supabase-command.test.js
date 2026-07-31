@@ -59,6 +59,26 @@ test('a valid JavaScript shim runs through the node executable', async () => {
   }
 });
 
+test('a staging db url must target the isolated staging project', async () => {
+  const mod = await import('../scripts/lib/canonical-v2-staging-runtime.mjs');
+  const { governedStagingDbUrl } = mod;
+  assert.strictEqual(governedStagingDbUrl(), null);
+  assert.strictEqual(governedStagingDbUrl(null), null);
+  assert.strictEqual(governedStagingDbUrl(''), null);
+  const staging = 'postgresql://postgres:secret@db.sjumbznveyyiizhwvixj.supabase.co:5432/postgres';
+  assert.strictEqual(governedStagingDbUrl(staging), staging);
+  for (const bad of [
+    'postgresql://postgres:secret@db.otherprojectref.supabase.co:5432/postgres',
+    'https://sjumbznveyyiizhwvixj.supabase.co',
+    42,
+  ]) {
+    assert.throws(
+      () => governedStagingDbUrl(bad),
+      /isolated staging project/,
+    );
+  }
+});
+
 test('the staging runtime source reads no environment variables', async () => {
   const { readFileSync } = require('node:fs');
   const source = readFileSync(

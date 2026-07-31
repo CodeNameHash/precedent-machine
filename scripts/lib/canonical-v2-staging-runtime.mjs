@@ -112,12 +112,25 @@ function parseRows(stdout, operationLabel) {
   return payload.rows;
 }
 
+export function governedStagingDbUrl(dbUrl = null) {
+  if (dbUrl == null || dbUrl === '') return null;
+  if (typeof dbUrl !== 'string'
+    || !dbUrl.startsWith('postgresql://')
+    || !dbUrl.includes(CANONICAL_V2_STAGING_PROJECT.ref)) {
+    throw new Error(
+      'A staging database URL must be a postgresql:// URL for the isolated staging project.',
+    );
+  }
+  return dbUrl;
+}
+
 export function createCanonicalV2StagingRuntime({
   root,
   tempPrefix = 'canonical-v2-staging-runtime-',
   operationLabel = 'Canonical v2 staging operation',
   bounds: boundOverrides = {},
   supabaseShim = null,
+  dbUrl = null,
 } = {}) {
   if (typeof root !== 'string' || !root) {
     throw new TypeError('Canonical staging runtime root is required.');
@@ -228,6 +241,7 @@ ${commit ? 'COMMIT;' : 'ROLLBACK;'}
 `, { mode: 0o600 });
     try {
       const supabaseCommand = governedSupabaseCommand(supabaseShim);
+      const governedDbUrl = governedStagingDbUrl(dbUrl);
       const result = spawnSync(
         supabaseCommand.command,
         [
@@ -236,7 +250,9 @@ ${commit ? 'COMMIT;' : 'ROLLBACK;'}
           repositoryRoot,
           'db',
           'query',
-          '--linked',
+          ...(governedDbUrl === null
+            ? ['--linked']
+            : ['--db-url', governedDbUrl]),
           '--file',
           file,
           '--output',

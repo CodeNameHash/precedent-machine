@@ -565,11 +565,13 @@ async function main() {
     processAuthorityInput: productAuthority.input,
   });
   const shimFlagIndex = process.argv.indexOf('--supabase-shim');
+  const dbUrlFlagIndex = process.argv.indexOf('--db-url');
   const stagingRuntime = createCanonicalV2StagingRuntime({
     root: ROOT,
     tempPrefix: 'canonical-v2-metsera-p8-',
     operationLabel: 'Metsera P8 candidate write',
     supabaseShim: shimFlagIndex === -1 ? null : process.argv[shimFlagIndex + 1],
+    dbUrl: dbUrlFlagIndex === -1 ? null : process.argv[dbUrlFlagIndex + 1],
     bounds: {
       // The complete real materialisation input embeds the nine sealed
       // source documents (~5.8 MiB); the candidate write revalidates it in
