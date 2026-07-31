@@ -206,7 +206,7 @@ test('writer exposes only the seven governed operations and no private helper', 
   );
 });
 
-test('the Product writer rejects forged adapters and validates carrier identities itself', () => {
+test('the Product writer keeps Process carrier checks and closes the Agreement path', () => {
   const productStart = sql.indexOf("IF p_operation = 'PRODUCT_RESULT_CANDIDATE_RUN'");
   const productEnd = sql.indexOf("IF p_operation = 'INTAKE_CAPTURE'", productStart);
   const product = sql.slice(productStart, productEnd);
@@ -216,12 +216,13 @@ test('the Product writer rejects forged adapters and validates carrier identitie
   assert.match(product, /unknown Product candidate-result adapter/);
   assert.match(product, /process_phrasebook_product_chain_id[\s\S]*content_id\([\s\S]*PROCESS_PHRASEBOOK_PRODUCT_CHAIN\/V1/);
   assert.match(product, /process_phrasebook_product_chain_payload_digest[\s\S]*payload_digest/);
-  assert.match(product, /agreement_candidate_envelope_carrier_id[\s\S]*AGREEMENT_CANDIDATE_ENVELOPE_CARRIER\/V1/);
-  assert.match(product, /AGREEMENT_CANDIDATE_PRODUCT_MATERIALISATION\/V1/);
-  assert.match(product, /invalid Agreement candidate Product materialisation/);
+  assert.match(
+    product,
+    /Agreement candidate Product materialisation requires a SQL-native validator/,
+  );
 });
 
-test('every SQL writer form rejects malformed, cross-family and rehashed Agreement materialisations before DML', () => {
+test('every SQL writer form fails closed for hostile Agreement carriers before DML', () => {
   const sources = [
     'sql/optionA/step0b-canonical-writer-by-contract.sql',
     'supabase/canonical-v2-foundation.sql',
@@ -229,14 +230,28 @@ test('every SQL writer form rejects malformed, cross-family and rehashed Agreeme
   ].map((file) => fs.readFileSync(file, 'utf8'));
   for (const source of sources) {
     const agreement = source.indexOf("AGREEMENT_CANDIDATE_ENVELOPE' THEN");
+    const branchStart = source.indexOf('THEN', agreement) + 'THEN'.length;
     const reject = source.indexOf(
-      'invalid Agreement candidate Product materialisation', agreement,
+      'Agreement candidate Product materialisation requires a SQL-native validator',
+      branchStart,
     );
+    const nestedValidation = source.indexOf('\n      IF ', branchStart);
     const dml = source.indexOf(
       'INSERT INTO canonical_v2_staging.product_candidate_results', agreement,
     );
-    assert.ok(agreement !== -1 && reject !== -1 && dml !== -1 && reject < dml);
+    assert.ok(
+      agreement !== -1
+        && reject !== -1
+        && nestedValidation !== -1
+        && dml !== -1
+        && reject < nestedValidation
+        && reject < dml,
+    );
     const branch = source.slice(agreement, dml);
+    assert.match(
+      branch,
+      /RAISE EXCEPTION 'Agreement candidate Product materialisation requires a SQL-native validator'[\s\S]*USING ERRCODE = '23514';/,
+    );
     assert.match(
       branch,
       /product_materialisation'\) - ARRAY\[[\s\S]*agreement_candidate_product_materialisation_id/,

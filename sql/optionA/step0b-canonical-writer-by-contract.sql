@@ -369,6 +369,8 @@ BEGIN
       END IF;
       p_write_set := domain_carrier->'complete_write_set';
     ELSIF adapter_identifier = 'AGREEMENT_CANDIDATE_ENVELOPE' THEN
+      RAISE EXCEPTION 'Agreement candidate Product materialisation requires a SQL-native validator'
+        USING ERRCODE = '23514';
       IF domain_carrier - ARRAY[
           'schema_version', 'agreement_candidate_envelope_id',
           'agreement_candidate_envelope_carrier_id',

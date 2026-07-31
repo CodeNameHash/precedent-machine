@@ -277,7 +277,7 @@ test('keeps Product candidate records inside the one canonical repository', asyn
   );
 });
 
-test('gives SQL the same staging-only operation and immutable table', () => {
+test('keeps SQL staging-only and fails closed for Agreement materialisations', () => {
   const writerSql = fs.readFileSync(
     path.join(
       ROOT,
@@ -299,6 +299,10 @@ test('gives SQL the same staging-only operation and immutable table', () => {
     assert.match(source, /AGREEMENT_CANDIDATE_PRODUCT_MATERIALISATION\/V1/);
     assert.match(source, /PRODUCT_CANDIDATE_RESULT_RECORD\/V1/);
     assert.match(source, /invalid Agreement candidate Product materialisation/);
+    assert.match(
+      source,
+      /Agreement candidate Product materialisation requires a SQL-native validator/,
+    );
   }
   assert.match(
     writerSql,
@@ -324,4 +328,27 @@ test('uses the exact bounded phase allowlist', () => {
     'WP-P8-GENERIC-WRITER-CORRECTION',
   );
   assert.equal(allowlist.allowed.length, 13);
+});
+
+test('records the Stage 3 SQL correction boundary', () => {
+  const allowlist = JSON.parse(fs.readFileSync(
+    path.join(
+      ROOT,
+      '.github/phase-allowlists/wp-p8-agreement-writer-sql-stage3-correction-v1.json',
+    ),
+    'utf8',
+  ));
+  assert.equal(
+    allowlist.phase,
+    'WP-P8-AGREEMENT-WRITER-SQL-STAGE3-CORRECTION-V1',
+  );
+  assert.deepEqual(allowlist.allowed, [
+    '.github/phase-allowlists/wp-p8-agreement-writer-sql-stage3-correction-v1.json',
+    'sql/optionA/step0b-canonical-writer-by-contract.sql',
+    'supabase/canonical-v2-foundation.sql',
+    'supabase/canonical-v2-product-candidate-result-writer.sql',
+    'tests/canonical-v2-writer-envelope-integrity-sql.test.js',
+    'tests/canonical-v2-writer-object-integrity-sql.test.js',
+    'tests/canonical-v2-product-candidate-result-writer.test.js',
+  ]);
 });

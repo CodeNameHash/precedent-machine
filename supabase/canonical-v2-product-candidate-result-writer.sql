@@ -116,6 +116,8 @@ $branch$  IF p_operation = 'PRODUCT_RESULT_CANDIDATE_RUN' THEN
       p_write_set := p_write_set->'domain_carrier'->'complete_write_set';
     ELSIF p_write_set->>'adapter_identifier'
         = 'AGREEMENT_CANDIDATE_ENVELOPE' THEN
+      RAISE EXCEPTION 'Agreement candidate Product materialisation requires a SQL-native validator'
+        USING ERRCODE = '23514';
       IF p_write_set->'domain_carrier'->>'schema_version'
           IS DISTINCT FROM 'AGREEMENT_CANDIDATE_ENVELOPE_CARRIER/V1'
         OR p_write_set->'domain_carrier'
