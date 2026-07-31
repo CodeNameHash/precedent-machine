@@ -1030,6 +1030,23 @@ const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
   'tests/canonical-v2-multi-deal-candidate-release.test.js',
   'tests/canonical-v2-v12-serving-admission-readiness-f21.test.js',
   'tests/fixtures/canonical-v2/v12-serving-admission-readiness-f21.json',
+  '.github/phase-allowlists/wp-canonical-f21-downstream-identity-rebind-v1.json',
+  '.github/phase-allowlists/wp-p8-stage4-legacy-cohort-expectations-v1.json',
+  '__fixtures__/canonical-v2/qxo-no-shop-cross-view-f26.json',
+  'lib/canonical-v2/metric-serving-admission.js',
+  'lib/canonical-v2/no-shop-actions-certification-f25.js',
+  'lib/canonical-v2/no-shop-cross-view-release-f26.js',
+  'lib/canonical-v2/no-shop-timing-certification-f24.js',
+  'tests/canonical-v2-copy-delivery-release-f23.test.js',
+  'tests/canonical-v2-corrected-no-shop-vertical-slice.test.js',
+  'tests/canonical-v2-metric-serving-admission-f22.test.js',
+  'tests/canonical-v2-no-shop-actions-certification-f25.test.js',
+  'tests/canonical-v2-no-shop-timing-certification-f24.test.js',
+  'tests/canonical-v2-p1-vertical-slice.test.js',
+  'tests/fixtures/canonical-v2/metric-serving-admission-f22.json',
+  'tests/fixtures/canonical-v2/qxo-no-shop-actions-f25-staging-attestation.json',
+  'tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-release-f23-staging-attestation.json',
+  'tests/fixtures/canonical-v2/qxo-no-shop-timing-f24-staging-attestation.json',
 ]);
 
 function requireCommit(value, label) {
