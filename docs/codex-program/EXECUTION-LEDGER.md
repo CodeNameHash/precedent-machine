@@ -48,8 +48,11 @@ model. Agents do not move main.
 | Tier B attacker-model security | DEFERRED_POST_CUTOVER |
 
 Routine branch work, integration, deployment and ledger updates do not require
-Ben. The next Ben decision is the approval point expressly reserved by the
-governing contract.
+Ben. Per Ben's 2026-07-31 grant, the controller may push main, execute SQL
+against isolated staging, and take any operational action without asking.
+Ben is asked only for legal-semantic decisions (taxonomy, codebook, rubric,
+extraction meaning), milestone approvals (M2-M4), and production
+import/cutover authorisation.
 
 ## Plain-English stage
 
