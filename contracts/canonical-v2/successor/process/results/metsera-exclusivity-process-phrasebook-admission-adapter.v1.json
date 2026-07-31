@@ -7,11 +7,16 @@
     "contract_type": "METSERA_EXCLUSIVITY_PROCESS_PHRASEBOOK_ADMISSION_ADAPTER",
     "contract_version": 1,
     "source_receipt_contract": {
+      "materialisation_input_schema_version": "PROCESS_EXCLUSIVITY_PILOT_MATERIALISATION_INPUT/V1",
       "schema_version": "PROCESS_EXCLUSIVITY_PILOT_MATERIALISATION_RECEIPT/V1",
+      "source_materialisation_validator": "validateProcessExclusivityPilotMaterialisation(receipt,input)",
       "receipt_id_field": "materialisation_receipt_id",
+      "full_materialisation_input_required": true,
       "full_source_receipt_required": true,
-      "source_receipt_id_and_canonical_bytes_required": true,
+      "source_input_and_receipt_id_and_canonical_bytes_required": true,
+      "source_materialisation_input_canonical_bytes_participate_in_adapter_identity": true,
       "source_receipt_canonical_bytes_participate_in_adapter_identity": true,
+      "correctly_rehashed_receipt_substitution_without_exact_materialisation_input_permitted": false,
       "required_source_states": {
         "source_interval_state": "EXACT_UTF8_INTERVALS_VALIDATED",
         "controlled_code_state": "CLOSED_AND_RECONCILED",
@@ -34,6 +39,8 @@
       "adapter_output_schema_version": "METSERA_EXCLUSIVITY_PROCESS_PHRASEBOOK_ADMISSION/V1",
       "admission_input_schema_version": "PROCESS_PHRASEBOOK_RESULT_ADMISSION_INPUT/V1",
       "admission_receipt_schema_version": "PROCESS_PHRASEBOOK_RESULT_ADMISSION_RECEIPT/V1",
+      "target_compiler": "compileProcessPhrasebookResultAdmission",
+      "target_receipt_validator": "validateProcessPhrasebookResultAdmissionReceipt",
       "full_admission_input_required": true,
       "full_admission_receipt_required": true,
       "admission_input_and_receipt_canonical_bytes_required": true,
@@ -44,6 +51,72 @@
         "admission_receipt_state": "VALIDATED_NOT_RELEASE_BOUND",
         "authority_state": "NOT_GRANTED"
       }
+    },
+    "adapter_receipt_contract": {
+      "schema_version": "METSERA_EXCLUSIVITY_PROCESS_PHRASEBOOK_ADMISSION/V1",
+      "required_fields": [
+        "schema_version",
+        "process_phrasebook_admission_id",
+        "materialisation_input",
+        "materialisation_receipt",
+        "materialisation_receipt_id",
+        "process_admission_input",
+        "process_admission_receipt",
+        "candidate_release_binding",
+        "product_query_definition_id",
+        "adapter_state",
+        "authority_state",
+        "authority_limits"
+      ],
+      "identity_inputs": [
+        "materialisation_input",
+        "materialisation_receipt",
+        "materialisation_receipt_id",
+        "process_admission_input",
+        "process_admission_receipt",
+        "candidate_release_binding",
+        "product_query_definition_id",
+        "adapter_state",
+        "authority_state",
+        "authority_limits"
+      ],
+      "full_materialisation_input_required": true,
+      "full_materialisation_receipt_required": true,
+      "full_process_admission_input_required": true,
+      "full_process_admission_receipt_required": true,
+      "complete_candidate_release_binding_required": true,
+      "candidate_release_binding_required_fields": [
+        "candidate_release_manifest_id",
+        "candidate_release_manifest_payload_digest",
+        "corpus_release_id"
+      ],
+      "product_query_definition_id_derivation": "DERIVED_FROM_COMPLETE_CANDIDATE_RELEASE_BOUND_ADMISSION_INPUT",
+      "all_identity_inputs_canonical_bytes_required": true,
+      "authority_state": "NOT_GRANTED",
+      "authority_limits": {
+        "query": "NONE",
+        "source_read": "NONE",
+        "extraction": "NONE",
+        "materialisation": "NONE",
+        "writer": "NONE",
+        "serving": "NONE",
+        "release": "NONE",
+        "canonical_write": "NONE",
+        "database_write": "NONE",
+        "import": "NONE",
+        "activation": "NONE",
+        "production": "NONE"
+      }
+    },
+    "dependency_contract": {
+      "process_phrasebook_result_definition_stable_id": "PROCESS_PHRASEBOOK_PASSAGE_RESULT",
+      "process_narration_definition_stable_id": "PROCESS_NARRATION_OCCURRENCE",
+      "process_predicate_witness_definition_stable_id": "PROCESS_PREDICATE_WITNESS",
+      "process_passage_definition_stable_id": "PROCESS_PASSAGE",
+      "process_exclusivity_predicate_catalogue_stable_id": "PROCESS_EXCLUSIVITY_PREDICATE_CATALOGUE",
+      "process_controlled_code_registry_stable_id": "PROCESS_CONTROLLED_CODE_REGISTRY",
+      "bounded_inline_passage_preview_stable_id": "BOUNDED_INLINE_PASSAGE_PREVIEW",
+      "product_query_ir_stable_id": "PRODUCT_QUERY_IR"
     },
     "lineage_preservation_contract": {
       "exact_utf8_bytes_preserved": true,

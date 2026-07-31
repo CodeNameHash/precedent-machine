@@ -58,7 +58,7 @@ test('assembles the exact current 178-member root into all eight categories', ()
   );
 
   assert.equal(proposal.proposed_dispositions.length, 178);
-  assert.equal(proposal.dependency_edge_count, 316);
+  assert.equal(proposal.dependency_edge_count, 324);
   const genericEnvelopeDisposition = proposal.proposed_dispositions.find(
     (entry) => entry.authored_identity.stable_id
       === 'AGREEMENT_CANDIDATE_ENVELOPE',
