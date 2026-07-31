@@ -1,0 +1,21 @@
+{
+  "phase": "WP-P8-STAGE4-IOC-SUBJECT-COHORT-EXCLUSION-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p8-stage4-ioc-subject-cohort-exclusion-v1.json",
+    "lib/canonical-v2/reviewed-ioc-capex-slice.js",
+    "tests/canonical-v2-reviewed-ioc-capex-slice.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Excludes the Landos subject deal from its reviewed IOC market cohort. With no independently admitted comparable deal, it emits zero cohort counts, an empty distribution and the typed NO_INDEPENDENT_COMPARABLE_DEALS reason. The subject observation and exact source remain available for Review. It creates no legal meaning, authority, serving, database, release, activation or production change."
+}

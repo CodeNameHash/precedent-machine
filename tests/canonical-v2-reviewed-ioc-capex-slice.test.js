@@ -2,7 +2,10 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
-const { canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
+const {
+  canonicalJson,
+  contentId,
+} = require('../lib/canonical-v2/canonical-bytes');
 const {
   compileFixtureContractV5,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -15,6 +18,7 @@ const {
 const {
   buildReviewedIocCapexServingRow,
   buildReviewedIocCapexSlice,
+  validateReviewedIocCapexServingRow,
 } = require('../lib/canonical-v2/reviewed-ioc-capex-slice');
 const { adaptSharedServingRow, SURFACES } = require('../lib/canonical-v2/shared-row-adapter');
 const { validateSharedServingRow } = require('../lib/canonical-v2/shared-serving-row');
@@ -25,6 +29,15 @@ const contractBundle = compileFixtureContractV5();
 
 function build() {
   return buildReviewedIocCapexSlice({ agreementText, dealValueSourceText, contractBundle });
+}
+
+function resealRow(row) {
+  delete row.canonical_payload_digest;
+  row.canonical_payload_digest = contentId(
+    'SHARED_SERVING_ROW_PAYLOAD/V1',
+    row,
+  );
+  return row;
 }
 
 test('the real Landos capex restriction becomes one deterministic source-backed percentage', () => {
@@ -157,9 +170,99 @@ test('the percentage, raw dollars, denominator and legal terms reach every share
     'Consent standard',
   ]);
   assert.equal(metric.distribution.normalised.cohorts[0].basis, 'headline_transaction_value');
+  assert.equal(metric.distribution.normalised.cohorts[0].percent.stats.n, 0);
+  assert.deepEqual(metric.distribution.normalised.cohorts[0].dealIds, []);
+  assert.deepEqual(metric.exclusions, [{
+    reasonCode: 'NO_INDEPENDENT_COMPARABLE_DEALS',
+    slotCount: 0,
+    dealCount: 0,
+  }]);
   for (const surface of SURFACES) {
     assert.equal(adapted.surface_bindings[surface].typed_market, adapted.typed_market);
   }
+});
+
+test('the Landos Review subject remains source-backed but is not its own market cohort', () => {
+  const slice = build();
+  const row = buildReviewedIocCapexServingRow({ slice, contractBundle });
+  const market = row.canonical_result.market_context;
+  assert.equal(
+    market.subject_observation.market_observation_serving_key,
+    slice.projection.observation.market_observation_serving_key,
+  );
+  assert.equal(
+    market.subject_observation.canonical_value,
+    slice.thresholdClaim.canonical_value,
+  );
+  assert.ok(Object.values(market.cohort.counts).every((count) => count === 0));
+  assert.deepEqual(market.cohort.distribution, []);
+  assert.deepEqual(market.cohort.exclusions, [{
+    reason_code: 'NO_INDEPENDENT_COMPARABLE_DEALS',
+    slot_count: 0,
+    deal_count: 0,
+  }]);
+  assert.equal(validateReviewedIocCapexServingRow(row), true);
+});
+
+test('rejects a re-signed Landos self-comparison', () => {
+  const slice = build();
+  const row = structuredClone(
+    buildReviewedIocCapexServingRow({ slice, contractBundle }),
+  );
+  row.canonical_result.market_context.cohort.counts = {
+    eligible_deals: 1,
+    applicable_deals: 1,
+    examined_deals: 1,
+    present_deals: 1,
+    comparable_deals: 1,
+    distribution_deals: 1,
+    excluded_deals: 0,
+    observation_slots: 1,
+    excluded_slots: 0,
+  };
+  row.canonical_result.market_context.cohort.distribution = [{
+    canonical_value: row.canonical_result.market_context.subject_observation
+      .canonical_value,
+    subject_count: 1,
+    deal_count: 1,
+  }];
+  row.canonical_result.market_context.cohort.exclusions = [];
+  row.canonical_result.market_context.denominators.prevalence.deal_count = 1;
+  row.canonical_result.market_context.denominators.distribution.deal_count = 1;
+  assert.throws(
+    () => validateReviewedIocCapexServingRow(resealRow(row)),
+    /must exclude its subject deal/,
+  );
+});
+
+test('rejects a re-signed invented one-deal distribution', () => {
+  const slice = build();
+  const row = structuredClone(
+    buildReviewedIocCapexServingRow({ slice, contractBundle }),
+  );
+  row.canonical_result.market_context.cohort.counts = {
+    eligible_deals: 1,
+    applicable_deals: 1,
+    examined_deals: 1,
+    present_deals: 1,
+    comparable_deals: 1,
+    distribution_deals: 1,
+    excluded_deals: 0,
+    observation_slots: 1,
+    excluded_slots: 0,
+  };
+  row.canonical_result.market_context.cohort.distribution = [{
+    canonical_value: '99.99999999',
+    subject_count: 1,
+    deal_count: 1,
+  }];
+  row.canonical_result.market_context.cohort.exclusions = [];
+  row.canonical_result.market_context.denominators.prevalence.deal_count = 1;
+  row.canonical_result.market_context.denominators.distribution.deal_count = 1;
+  assert.throws(
+    () => validateReviewedIocCapexServingRow(resealRow(row)),
+    /must exclude its subject deal/,
+  );
 });
 
 test('the generic row action resolves either exact evidence source without broad document access', () => {
@@ -213,4 +316,21 @@ test('either exact source drifting blocks the reviewed mapping', () => {
     dealValueSourceText: `${dealValueSourceText} `,
     contractBundle,
   }), /deal-value source hash mismatch/);
+});
+
+test('uses the exact IOC subject-cohort exclusion boundary', () => {
+  const allowlistPath =
+    '.github/phase-allowlists/wp-p8-stage4-ioc-subject-cohort-exclusion-v1.json';
+  const allowlist = JSON.parse(fs.readFileSync(allowlistPath, 'utf8'));
+  assert.equal(
+    allowlist.phase,
+    'WP-P8-STAGE4-IOC-SUBJECT-COHORT-EXCLUSION-V1',
+  );
+  assert.deepEqual(allowlist.allowed, [
+    allowlistPath,
+    'lib/canonical-v2/reviewed-ioc-capex-slice.js',
+    'tests/canonical-v2-reviewed-ioc-capex-slice.test.js',
+  ]);
+  assert.match(allowlist.note, /NO_INDEPENDENT_COMPARABLE_DEALS/);
+  assert.match(allowlist.note, /subject observation and exact source remain/i);
 });
