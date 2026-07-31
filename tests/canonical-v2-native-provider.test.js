@@ -10,6 +10,9 @@ const { compileCandidateProposals } = require('../lib/canonical-v2/native-produc
 const {
   createAnthropicProvider,
   NativeProducerAnthropicError,
+  shapeProposals,
+  QUALIFIER_CLAIM_KEY,
+  LIMB_ASSERTION_CLAIM_KEY,
 } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 
 // ---------------------------------------------------------------------------
@@ -40,17 +43,21 @@ function wellFormedResponse() {
         chapeau_quote: 'SECTION 3.1. Capitalization.',
         limbs: [
           {
-            limb_reference: '(a)',
+            limb_path: ['(a)'],
             assertion_quote: 'The authorized capital stock of the Company consists of 100,000,000 shares.',
             subject: 'authorized capital stock',
-            qualifiers: [
-              {
-                kind: 'ACCURACY',
-                attachment: 'LIMB',
-                code: 'MAT_ALL_RESPECTS',
-                quote: 'consists of 100,000,000 shares.',
-              },
-            ],
+          },
+        ],
+        qualifiers: [
+          {
+            kind: 'ACCURACY',
+            code: 'MAT_ALL_RESPECTS',
+            quote: 'consists of 100,000,000 shares.',
+            attachment: {
+              position: 'ITEM',
+              governs_path: ['(a)'],
+              ambiguity_signals: { items_grammatically_parallel: true },
+            },
           },
         ],
         definition_uses: [],
@@ -287,4 +294,153 @@ test('unverifiable evidence becomes a typed residual bound into the receipt, nev
     withResidual.producer_receipt.producer_receipt_id,
     withoutResidual.producer_receipt.producer_receipt_id,
   );
+});
+
+// ---------------------------------------------------------------------------
+// limb_path (docs/handoffs/F28-FIRST-LIVE-RUN.md defect 1): nested limbs
+// stay inside ONE representation_instance, and a shared trailing label under
+// two different parents produces two DISTINCT limb_path values.
+// ---------------------------------------------------------------------------
+
+const NESTED_SOURCE_TEXT = 'SECTION 9. Capitalization. (A) Common stock details apply. '
+  + '(i) foo common detail here. (B) Preferred stock details apply. (i) foo preferred detail here.';
+
+function nestedLimbResponse() {
+  return {
+    representation_instances: [{
+      section_reference: '9',
+      party_making: 'the Company',
+      chapeau_quote: 'SECTION 9. Capitalization.',
+      limbs: [
+        { limb_path: ['(A)'], assertion_quote: 'Common stock details apply.', subject: 'common stock' },
+        { limb_path: ['(A)', '(i)'], assertion_quote: 'foo common detail here.', subject: 'common stock detail' },
+        { limb_path: ['(B)'], assertion_quote: 'Preferred stock details apply.', subject: 'preferred stock' },
+        { limb_path: ['(B)', '(i)'], assertion_quote: 'foo preferred detail here.', subject: 'preferred stock detail' },
+      ],
+      qualifiers: [],
+      definition_uses: [],
+      cross_references: [],
+    }],
+    bring_down_conditions: [],
+    open_world_candidates: [],
+  };
+}
+
+test('limb_path round-trips through shaping, and a shared trailing label under two different parents stays distinct', () => {
+  const { proposals } = shapeProposals(nestedLimbResponse(), NESTED_SOURCE_TEXT);
+  const limbAssertions = proposals.filter((p) => p.claim_definition_key === LIMB_ASSERTION_CLAIM_KEY);
+  assert.equal(limbAssertions.length, 4, 'all four limbs (two top-level, two nested) produced one proposal each');
+
+  const byQuote = Object.fromEntries(limbAssertions.map((p) => [p.raw_value, p.attributes.limb_path]));
+  assert.deepEqual(byQuote['Common stock details apply.'], ['(A)']);
+  assert.deepEqual(byQuote['Preferred stock details apply.'], ['(B)']);
+  assert.deepEqual(byQuote['foo common detail here.'], ['(A)', '(i)']);
+  assert.deepEqual(byQuote['foo preferred detail here.'], ['(B)', '(i)']);
+
+  // The load-bearing assertion: both nested limbs end in the SAME bare
+  // label "(i)", but their full paths are NOT equal -- this is exactly the
+  // ambiguity a flat limb_reference could not express (see the F28 live run,
+  // where the model reused "(i)" across three unrelated fragments).
+  assert.notDeepEqual(byQuote['foo common detail here.'], byQuote['foo preferred detail here.']);
+
+  // All four proposals share ONE subject_occurrence_id: one representation,
+  // per defect 1's "exactly one representation_instance per governing
+  // section" rule -- nesting lives in limb_path, never in new instances.
+  const subjectIds = new Set(limbAssertions.map((p) => p.subject_occurrence_id));
+  assert.equal(subjectIds.size, 1);
+});
+
+test('a limb with no usable limb_path (e.g. a stale pre-PROMPT_VERSION-2 recording) still shapes, with a null path rather than a guess', () => {
+  const staleResponse = {
+    representation_instances: [{
+      section_reference: '9',
+      party_making: 'the Company',
+      chapeau_quote: 'SECTION 9. Capitalization.',
+      limbs: [{ limb_reference: '(A)', assertion_quote: 'Common stock details apply.', subject: 'common stock' }],
+      qualifiers: [],
+      definition_uses: [],
+      cross_references: [],
+    }],
+    bring_down_conditions: [],
+    open_world_candidates: [],
+  };
+  const { proposals } = shapeProposals(staleResponse, NESTED_SOURCE_TEXT);
+  const [limbAssertion] = proposals.filter((p) => p.claim_definition_key === LIMB_ASSERTION_CLAIM_KEY);
+  assert.ok(limbAssertion, 'the assertion quote still verifies and shapes even without a usable limb_path');
+  assert.equal(limbAssertion.attributes.limb_path, null);
+});
+
+// ---------------------------------------------------------------------------
+// Qualifier attachment (docs/handoffs/F28-FIRST-LIVE-RUN.md defect 2): the
+// model cannot express a resolved TRAILING reading through the schema --
+// scope_reading is always computed here, never taken from the response.
+// ---------------------------------------------------------------------------
+
+const TRAILING_SOURCE_TEXT = 'SECTION 9. Capitalization. (i) Common stock exists. (ii) Preferred stock exists. '
+  + 'with a fair market value that is material to the Company and its Subsidiaries, taken as a whole.';
+
+function trailingQualifierResponse(extraAttachmentFields = {}) {
+  return {
+    representation_instances: [{
+      section_reference: '9',
+      party_making: 'the Company',
+      chapeau_quote: 'SECTION 9. Capitalization.',
+      limbs: [
+        { limb_path: ['(i)'], assertion_quote: 'Common stock exists.', subject: 'common stock' },
+        { limb_path: ['(ii)'], assertion_quote: 'Preferred stock exists.', subject: 'preferred stock' },
+      ],
+      qualifiers: [{
+        kind: 'THRESHOLD',
+        code: null,
+        quote: 'with a fair market value that is material to the Company and its Subsidiaries, taken as a whole.',
+        attachment: {
+          position: 'TRAILING',
+          governs_path: ['(ii)'],
+          // A non-conforming model response smuggling in a resolved
+          // reading -- the schema has no such field, and even if a
+          // malformed provider tried, it must be discarded.
+          scope_reading: 'ALL_ITEMS',
+          ...extraAttachmentFields,
+          ambiguity_signals: { items_grammatically_parallel: true, ...(extraAttachmentFields.ambiguity_signals || {}) },
+        },
+      }],
+      definition_uses: [],
+      cross_references: [],
+    }],
+    bring_down_conditions: [],
+    open_world_candidates: [],
+  };
+}
+
+test('a bare TRAILING qualifier is AMBIGUOUS end to end, even if the raw response smuggles in a resolved scope_reading', () => {
+  const { proposals } = shapeProposals(trailingQualifierResponse(), TRAILING_SOURCE_TEXT);
+  const [qualifier] = proposals.filter((p) => p.claim_definition_key === QUALIFIER_CLAIM_KEY);
+  assert.ok(qualifier);
+  assert.equal(qualifier.attributes.attachment.scope_reading, 'AMBIGUOUS',
+    'the smuggled scope_reading: ALL_ITEMS must never survive -- only the deterministic marker test decides');
+  assert.ok(Array.isArray(qualifier.attributes.attachment.readings));
+  const series = qualifier.attributes.attachment.readings.find((r) => r.reading === 'SERIES');
+  assert.deepEqual(series.governs_paths, [['(i)'], ['(ii)']]);
+});
+
+test('a TRAILING qualifier with an explicit series marker resolves ALL_ITEMS through the full shaping path', () => {
+  const response = trailingQualifierResponse();
+  response.representation_instances[0].qualifiers[0].quote =
+    'in each case, with a fair market value that is material to the Company and its Subsidiaries, taken as a whole.';
+  const source = TRAILING_SOURCE_TEXT.replace(
+    'with a fair market value',
+    'in each case, with a fair market value',
+  );
+  const { proposals } = shapeProposals(response, source);
+  const [qualifier] = proposals.filter((p) => p.claim_definition_key === QUALIFIER_CLAIM_KEY);
+  assert.equal(qualifier.attributes.attachment.scope_reading, 'ALL_ITEMS');
+  assert.equal(qualifier.attributes.attachment.readings, null);
+});
+
+test('a qualifier with a malformed (pre-PROMPT_VERSION-2) attachment is dropped as a typed residual, never guessed at', () => {
+  const staleResponse = trailingQualifierResponse();
+  staleResponse.representation_instances[0].qualifiers[0].attachment = 'LIMB'; // old flat-string shape
+  const { proposals, evidence_residuals: residuals } = shapeProposals(staleResponse, TRAILING_SOURCE_TEXT);
+  assert.equal(proposals.filter((p) => p.claim_definition_key === QUALIFIER_CLAIM_KEY).length, 0);
+  assert.ok(residuals.some((r) => r.reason === 'QUALIFIER_ATTACHMENT_MALFORMED'));
 });

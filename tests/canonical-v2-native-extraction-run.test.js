@@ -53,6 +53,8 @@ function makeClaimProposal({
   absoluteStart,
   absoluteEnd,
   claimDefinitionKey = 'NATIVE_EXTRACTION_RUN_TEST_CLAIM_CANDIDATE',
+  attributes = {},
+  allowedAttributes = [],
 }) {
   const subjectOccurrenceId = contentId('NATIVE_EXTRACTION_RUN_TEST_SUBJECT/V1', subjectSeed);
   const excerptId = contentId('NATIVE_EXTRACTION_RUN_TEST_EXCERPT/V1', {
@@ -68,8 +70,8 @@ function makeClaimProposal({
     state: 'PRESENT',
     raw_value: quote,
     canonical_value: null,
-    attributes: {},
-    allowed_attributes: [],
+    attributes,
+    allowed_attributes: allowedAttributes,
     taxonomy_codes: {},
     codebooks: {},
     evidence: [{
@@ -329,6 +331,90 @@ test('scope integrity: a candidate citing text outside its licensed scope is rej
       assert.ok(edge.absolute_end <= sectionByteLength);
     }
   }
+});
+
+// ─── Citation constructibility (docs/handoffs/F28-FIRST-LIVE-RUN.md defect
+// 3): a section_reference that does not resolve against the sectionizer's
+// discovered tree is excluded from compiled_candidates and recorded as a
+// typed citation_residuals entry, never silently accepted. ───
+
+test('a section_reference that cannot be constructed from the discovered tree is a CITATION_NOT_CONSTRUCTIBLE residual, and the proposal is excluded', async () => {
+  const provider = async ({ governed_scope: governedScope }) => {
+    const { start, end } = locateInGovernedScope(governedScope, LIMB_I_QUOTE);
+    const proposal = makeClaimProposal({
+      subjectSeed: { kind: 'bad-citation' },
+      ordinal: 0,
+      quote: LIMB_I_QUOTE,
+      absoluteStart: start,
+      absoluteEnd: end,
+      // This is a real-shaped citation ("3.1(b)(i)") but this test's
+      // governing section is requested and resolved as "3.1(b)" -- a
+      // sibling limb citation the sectionizer never discovered as its own
+      // node under THIS request is exactly the F28 live-run failure mode
+      // (there the whole document had no "3.1" numbering at all; here the
+      // citation just names a node this call's tree lookup cannot produce
+      // from the governing node's own span).
+      attributes: { section_reference: 'NOT-A-REAL-CITATION(z)(z)' },
+      allowedAttributes: ['section_reference'],
+    });
+    return {
+      provider_id: 'native-extraction-run-test-stub/v1',
+      model_id: 'stub-model',
+      prompt: 'native-extraction-run-test-stub-prompt-v1',
+      proposals: [proposal],
+      evidence_residuals: [],
+    };
+  };
+
+  const receipt = await runNativeExtraction({
+    source_text: qxoRealisticFullText,
+    document_hash: DOCUMENT_HASH,
+    section_references: ['3.1(b)'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider,
+  });
+
+  assert.equal(receipt.compiled_candidates.length, 0, 'the bad-citation proposal never reaches the compiler');
+  assert.equal(receipt.compiled_candidate_count, 0);
+  assert.equal(receipt.citation_residual_count, 1);
+  assert.equal(receipt.citation_residuals.length, 1);
+  const [residual] = receipt.citation_residuals;
+  assert.equal(residual.reason, 'CITATION_NOT_CONSTRUCTIBLE');
+  assert.equal(residual.model_citation, 'NOT-A-REAL-CITATION(z)(z)');
+  assert.equal(residual.derived_citation, '3.1(b)');
+  assert.equal(residual.section_reference, '3.1(b)');
+});
+
+test('a section_reference matching the governing section\'s own discovered reference is accepted with no citation residual', async () => {
+  const receipt = await runNativeExtraction({
+    source_text: qxoRealisticFullText,
+    document_hash: DOCUMENT_HASH,
+    section_references: ['3.1(b)'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: async ({ governed_scope: governedScope }) => {
+      const { start, end } = locateInGovernedScope(governedScope, LIMB_I_QUOTE);
+      return {
+        provider_id: 'native-extraction-run-test-stub/v1',
+        model_id: 'stub-model',
+        prompt: 'native-extraction-run-test-stub-prompt-v1',
+        proposals: [makeClaimProposal({
+          subjectSeed: { kind: 'good-citation' },
+          ordinal: 0,
+          quote: LIMB_I_QUOTE,
+          absoluteStart: start,
+          absoluteEnd: end,
+          attributes: { section_reference: '3.1(b)' },
+          allowedAttributes: ['section_reference'],
+        })],
+        evidence_residuals: [],
+      };
+    },
+  });
+
+  assert.equal(receipt.citation_residual_count, 0);
+  assert.equal(receipt.compiled_candidate_count, 1);
 });
 
 // ─── Input validation ───
