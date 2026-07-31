@@ -162,7 +162,9 @@ function agreementNavigationCompilerFixture(mutator) {
   );
   const sourcePaths = [
     'agreement/navigation/qxo-capitalisation-navigation-definition-catalogue.v1.json',
+    'agreement/predicates/qxo-capex-restriction-predicate-catalogue.v1.json',
     'agreement/predicates/qxo-capitalisation-representation-predicate-catalogue.v1.json',
+    'agreement/result-definitions/target-capex-restriction.v1.json',
     'agreement/result-definitions/target-capitalisation-bring-down.v3.json',
     'agreement/serving-exact-detail-action-definitions/result-composition-evidence.v1.json',
   ];

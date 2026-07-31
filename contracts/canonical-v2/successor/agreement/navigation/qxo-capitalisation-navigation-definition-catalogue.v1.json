@@ -7,7 +7,6 @@
     "pm_wide_catalogue_binding": {
       "combined_catalogue_stable_id": "PRODUCT_NAVIGATION_CATALOGUE",
       "agreement_domain_registry_stable_id": "AGREEMENT",
-      "predicate_catalogue_stable_id": "AGREEMENT_REPRESENTATION_PREDICATE_CATALOGUE",
       "second_product_navigation_catalogue_permitted": false,
       "agreement_contribution_is_additive_only": true
     },
@@ -42,6 +41,20 @@
                 "predicate_shape": "ATOMIC"
               }
             ]
+          },
+          {
+            "topic_key": "INTERIM_OPERATING_COVENANTS",
+            "label": "Interim operating covenants",
+            "predicate_catalogue_stable_id": "AGREEMENT_INTERIM_OPERATING_COVENANT_PREDICATE_CATALOGUE",
+            "patterns": [
+              {
+                "pattern_key": "TARGET_CAPEX_RESTRICTION",
+                "label": "Target capex restriction",
+                "predicate_key": "TARGET_CAPEX_RESTRICTION",
+                "predicate_version": 1,
+                "predicate_shape": "ATOMIC"
+              }
+            ]
           }
         ]
       }
@@ -55,7 +68,9 @@
       "ask_and_browse_byte_equivalence_required": true,
       "predicate_admission_must_bind_result_and_detail_action": true,
       "target_capitalisation_pattern_requires_result_definition_v3": true,
-      "target_capitalisation_pattern_requires_result_composition_evidence_v1": true
+      "target_capitalisation_pattern_requires_result_composition_evidence_v1": true,
+      "target_capex_pattern_requires_result_definition_v1": true,
+      "target_capex_pattern_requires_result_composition_evidence_v1": true
     },
     "authority_contract": {
       "creates_runtime_navigation": false,

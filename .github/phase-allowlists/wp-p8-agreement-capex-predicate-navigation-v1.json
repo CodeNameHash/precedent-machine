@@ -1,0 +1,23 @@
+{
+  "phase": "WP-P8-AGREEMENT-CAPEX-PREDICATE-NAVIGATION-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p8-agreement-capex-predicate-navigation-v1.json",
+    "contracts/canonical-v2/successor/agreement/navigation/qxo-capitalisation-navigation-definition-catalogue.v1.json",
+    "contracts/canonical-v2/successor/agreement/predicates/qxo-capex-restriction-predicate-catalogue.v1.json",
+    "lib/canonical-v2/agreement-navigation-contract-input-validator.js",
+    "lib/canonical-v2/agreement-representation-predicate-contract-input-validator.js",
+    "tests/canonical-v2-canonical-contract-input-compiler.test.js",
+    "tests/canonical-v2-agreement-navigation-contract-input.test.js",
+    "tests/canonical-v2-agreement-representation-predicate-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Separates the target capex restriction from representations. Each Agreement topic binds one closed predicate catalogue, exact result definition and result-composition evidence action. It grants no runtime, query, extraction, writer, serving, release, activation, production or freeze authority."
+}
