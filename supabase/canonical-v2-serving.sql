@@ -1253,11 +1253,128 @@ BEGIN
             AND candidate.candidate_state = 'CANDIDATE_NOT_ACTIVE'
             AND candidate.canonical_payload_digest
               = item->>'candidate_product_result_payload_digest'
+            AND jsonb_typeof(candidate.canonical_payload) = 'object'
+            AND candidate.canonical_payload ?& ARRAY[
+              'schema_version',
+              'candidate_product_result_id',
+              'writer_contract_stable_id',
+              'writer_contract_version',
+              'operation',
+              'candidate_release_manifest_id',
+              'candidate_release_manifest_payload_digest',
+              'corpus_release_id',
+              'product_query_definition_id',
+              'product_query_result_identity',
+              'domain_result_identity',
+              'process_phrasebook_result_identity',
+              'candidate_state',
+              'authority_state',
+              'complete_write_set'
+            ]
+            AND candidate.canonical_payload - ARRAY[
+              'schema_version',
+              'candidate_product_result_id',
+              'writer_contract_stable_id',
+              'writer_contract_version',
+              'operation',
+              'candidate_release_manifest_id',
+              'candidate_release_manifest_payload_digest',
+              'corpus_release_id',
+              'product_query_definition_id',
+              'product_query_result_identity',
+              'domain_result_identity',
+              'process_phrasebook_result_identity',
+              'candidate_state',
+              'authority_state',
+              'complete_write_set'
+            ]::text[] = '{}'::jsonb
+            AND candidate.canonical_payload->>'schema_version'
+              = 'PRODUCT_CANDIDATE_RESULT_RECORD/V1'
+            AND candidate.canonical_payload->>'candidate_product_result_id'
+              = candidate.candidate_product_result_id
+            AND candidate.canonical_payload->>'writer_contract_stable_id'
+              = 'PRODUCT_CANDIDATE_RESULT_WRITER'
+            AND (candidate.canonical_payload->>'writer_contract_version')::integer = 1
+            AND candidate.canonical_payload->>'operation'
+              = 'PRODUCT_RESULT_CANDIDATE_RUN'
+            AND candidate.canonical_payload->>'candidate_release_manifest_id'
+              = candidate.candidate_release_manifest_id
             AND candidate.canonical_payload
-              ->'product_row'
-              ->'shared_row_adapter_receipt'
-              ->'product_query_result'
-              = item->'canonical_payload'
+              ->>'candidate_release_manifest_payload_digest'
+                = item->>'candidate_release_manifest_payload_digest'
+            AND candidate.canonical_payload->>'corpus_release_id'
+              = candidate.corpus_release_id
+            AND candidate.canonical_payload->>'product_query_definition_id'
+              = item->>'product_query_definition_id'
+            AND candidate.canonical_payload->>'product_query_result_identity'
+              = candidate.product_query_result_identity
+            AND candidate.canonical_payload->>'domain_result_identity'
+              = candidate.domain_result_identity
+            AND candidate.canonical_payload->>'candidate_state'
+              = 'CANDIDATE_NOT_ACTIVE'
+            AND candidate.canonical_payload->>'authority_state'
+              = 'NOT_GRANTED'
+            AND (
+              (
+                candidate.canonical_payload->'process_phrasebook_result_identity'
+                  = 'null'::jsonb
+                AND candidate.canonical_payload->'complete_write_set'
+                  ->>'schema_version'
+                    = 'AGREEMENT_CANDIDATE_ENVELOPE_CARRIER/V1'
+                AND candidate.canonical_payload->'complete_write_set' ?& ARRAY[
+                  'schema_version',
+                  'agreement_candidate_envelope_carrier_id',
+                  'agreement_candidate_envelope_carrier_payload_digest',
+                  'agreement_candidate_envelope_id',
+                  'agreement_candidate_envelope_payload_digest',
+                  'agreement_candidate_envelope',
+                  'product_materialisation'
+                ]
+                AND (candidate.canonical_payload->'complete_write_set') - ARRAY[
+                  'schema_version',
+                  'agreement_candidate_envelope_carrier_id',
+                  'agreement_candidate_envelope_carrier_payload_digest',
+                  'agreement_candidate_envelope_id',
+                  'agreement_candidate_envelope_payload_digest',
+                  'agreement_candidate_envelope',
+                  'product_materialisation'
+                ]::text[] = '{}'::jsonb
+                AND candidate.canonical_payload->'complete_write_set'
+                  ->'product_materialisation'
+                  ->'product_query_result' = item->'canonical_payload'
+              )
+              OR (
+                candidate.canonical_payload
+                  ->>'process_phrasebook_result_identity' ~ '^[a-f0-9]{64}$'
+                AND candidate.canonical_payload->'complete_write_set'
+                  ->>'schema_version'
+                    = 'PRODUCT_CANDIDATE_RESULT_WRITE_SET/V1'
+                AND candidate.canonical_payload->'complete_write_set' ?& ARRAY[
+                  'schema_version',
+                  'candidate_release_binding',
+                  'process_pilot_materialisation_receipt',
+                  'product_admission',
+                  'product_row',
+                  'product_result_set',
+                  'product_presentation',
+                  'product_surfaces'
+                ]
+                AND (candidate.canonical_payload->'complete_write_set') - ARRAY[
+                  'schema_version',
+                  'candidate_release_binding',
+                  'process_pilot_materialisation_receipt',
+                  'product_admission',
+                  'product_row',
+                  'product_result_set',
+                  'product_presentation',
+                  'product_surfaces'
+                ]::text[] = '{}'::jsonb
+                AND candidate.canonical_payload->'complete_write_set'
+                  ->'product_row'
+                  ->'shared_row_adapter_receipt'
+                  ->'product_query_result' = item->'canonical_payload'
+              )
+            )
         )
     ) THEN
     RAISE EXCEPTION 'Product result records do not equal the candidate writer evidence'
@@ -3818,7 +3935,11 @@ BEGIN
       OR candidate.canonical_payload->>'domain_result_payload_digest' !~ '^[a-f0-9]{64}$'
       OR jsonb_typeof(candidate.canonical_payload->'domain_result_definition') IS DISTINCT FROM 'object'
       OR jsonb_typeof(candidate.canonical_payload->'exact_citation') IS DISTINCT FROM 'object'
-      OR jsonb_typeof(candidate.canonical_payload->'exact_detail_action') IS DISTINCT FROM 'object'
+      OR jsonb_typeof(candidate.canonical_payload->'exact_detail_action') IS DISTINCT FROM 'string'
+      OR candidate.canonical_payload->>'exact_detail_action' = ''
+      OR btrim(candidate.canonical_payload->>'exact_detail_action')
+        IS DISTINCT FROM candidate.canonical_payload->>'exact_detail_action'
+      OR octet_length(candidate.canonical_payload->>'exact_detail_action') > 512
       OR jsonb_typeof(candidate.canonical_payload->'query_provenance') IS DISTINCT FROM 'object'
       OR jsonb_typeof(candidate.canonical_payload->'result_fields') IS DISTINCT FROM 'array'
   ), page_payload AS (

@@ -52,7 +52,7 @@ REVOKE ALL ON FUNCTION canonical_v2_staging.validate_agreement_candidate_product
     output: 'step0c-candidate-import-by-contract.sql',
     source: 'supabase/canonical-v2-serving.sql',
     marker: 'CREATE OR REPLACE FUNCTION public.canonical_v2_import_candidate_release(',
-    digest: '5a41c1aa8555d297f1bb2c96bc80b04e538536b7771d6c15617bdd7a259a7a5d',
+    digest: '8ebc84e11cd5b0354aeb4ca315c8c438e9b9389c3dc337c8359a8487caba2ba6',
   },
   {
     output: 'step0d-candidate-activation-by-contract.sql',

@@ -23,7 +23,7 @@ const EXPECTED_DIGESTS = Object.freeze({
   // Active serving resolves the release-declared contract, exact detail is
   // active-release bound, and the rejected F3 fingerprint is denied at
   // every granted serving boundary.
-  'canonical-v2-serving.sql': '5937e683df213168d76377a1375bcf3c49c8e263e3a386a6db89e79f784ba60e',
+  'canonical-v2-serving.sql': 'd20be2640533348e6b4c2872ef147cc882f3d51fe1c005c7a20ec4fbda4b3698',
 });
 const SCRIPT_ROOT = dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = resolve(SCRIPT_ROOT, '..');

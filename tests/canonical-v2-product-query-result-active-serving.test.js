@@ -188,6 +188,17 @@ test('staging SQL serves Product rows through one active release-pinned set quer
   assert.match(activeQuery, /PRODUCT_QUERY_RESULT\/V1/);
   assert.match(
     activeQuery,
+    /jsonb_typeof\(candidate\.canonical_payload->'exact_detail_action'\) IS DISTINCT FROM 'string'/,
+  );
+  assert.match(activeQuery, /candidate\.canonical_payload->>'exact_detail_action' = ''/);
+  assert.match(activeQuery, /btrim\(candidate\.canonical_payload->>'exact_detail_action'\)/);
+  assert.match(activeQuery, /octet_length\(candidate\.canonical_payload->>'exact_detail_action'\) > 512/);
+  assert.doesNotMatch(
+    activeQuery,
+    /jsonb_typeof\(candidate\.canonical_payload->'exact_detail_action'\) IS DISTINCT FROM 'object'/,
+  );
+  assert.match(
+    activeQuery,
     /SELECT pointer\.\* INTO active_pointer[\s\S]*product_query_result_release_partitions/,
   );
   assert.match(activeQuery, /candidate_release_import_plan_id[\s\S]*candidate_release_import_plan_id/);
@@ -198,7 +209,18 @@ test('staging SQL serves Product rows through one active release-pinned set quer
   assert.match(importer, /CANDIDATE_RELEASE_IMPORT_PLAN\/V7/);
   assert.match(importer, /CANDIDATE_RELEASE_IMPORT_RECEIPT\/V7/);
   assert.match(importer, /product_candidate_results candidate/);
-  assert.match(importer, /shared_row_adapter_receipt[\s\S]*product_query_result/);
+  assert.match(
+    importer,
+    /PRODUCT_CANDIDATE_RESULT_RECORD\/V1[\s\S]*complete_write_set[\s\S]*AGREEMENT_CANDIDATE_ENVELOPE_CARRIER\/V1[\s\S]*product_materialisation[\s\S]*product_query_result/,
+  );
+  assert.match(
+    importer,
+    /PRODUCT_CANDIDATE_RESULT_WRITE_SET\/V1[\s\S]*shared_row_adapter_receipt[\s\S]*product_query_result/,
+  );
+  assert.doesNotMatch(
+    importer,
+    /candidate\.canonical_payload\s*->'product_row'/,
+  );
   assert.match(
     importer,
     /product_query_result_serving_record_id'[\s\S]*canonical_v2_staging\.content_id\([\s\S]*'PRODUCT_QUERY_RESULT_SERVING_RECORD\/V1'/,
