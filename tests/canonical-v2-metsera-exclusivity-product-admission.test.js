@@ -62,6 +62,16 @@ test('accepts only one checked Process admission envelope', () => {
   );
 });
 
+test('recognises the real materialisation-backed Process bridge', () => {
+  const source = fs.readFileSync(
+    require.resolve('../lib/canonical-v2/metsera-exclusivity-product-admission'),
+    'utf8',
+  );
+  assert.match(source, /process_phrasebook_admission/);
+  assert.match(source, /materialisation_receipt_id/);
+  assert.match(source, /validateMetseraExclusivityProcessPhrasebookAdmission/);
+});
+
 test('uses the active P8 phase boundary', () => {
   const allowlist = JSON.parse(fs.readFileSync(
     path.join(

@@ -14,7 +14,11 @@ const {
   compileMetseraExclusivityProductAdmission,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-admission');
 const {
-  compileMetseraExclusivityProductQuery,
+  compileMetseraExclusivityProcessPhrasebookAdmission,
+} = require(
+  '../lib/canonical-v2/metsera-exclusivity-process-phrasebook-admission',
+);
+const {
   compileMetseraExclusivityProductRow,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-row');
 const {
@@ -346,13 +350,13 @@ function writeBrowserFixture({
   );
 }
 
-function readCheckedProcessAdmission() {
-  const flag = '--process-admission';
+function readRealMaterialisationReceipt() {
+  const flag = '--materialisation-receipt';
   const index = process.argv.indexOf(flag);
   const filePath = index < 0 ? null : process.argv[index + 1];
   if (!filePath || filePath.startsWith('--')) {
     throw new Error(
-      'Metsera P8 requires --process-admission <checked-admission.json>.',
+      'Metsera P8 requires --materialisation-receipt <real-receipt.json>.',
     );
   }
   const value = JSON.parse(readFileSync(resolve(filePath), 'utf8'));
@@ -362,12 +366,40 @@ function readCheckedProcessAdmission() {
     || Array.isArray(value)
     || JSON.stringify(Object.keys(value).sort())
       !== JSON.stringify([
-        'process_admission_input',
-        'process_admission_receipt',
+        'authority_limits',
+        'authority_state',
+        'controlled_code_registry_binding',
+        'controlled_code_state',
+        'event_slot_bindings',
+        'exact_source_slices',
+        'external_operation_state',
+        'frozen_contract_pair_digest',
+        'governed_deal_admission_id',
+        'identities',
+        'materialisation_receipt_id',
+        'materialisation_state',
+        'occurrence_slot_bindings',
+        'participant_event_bindings',
+        'revisions',
+        'schema_version',
+        'source_document_bindings',
+        'source_interval_state',
       ])
   ) {
     throw new Error(
-      'The checked Process admission file must contain only input and receipt.',
+      'The Materialisation receipt file must contain the exact real receipt.',
+    );
+  }
+  return value;
+}
+
+function readProductQueryDefinitionId() {
+  const flag = '--product-query-definition-id';
+  const index = process.argv.indexOf(flag);
+  const value = index < 0 ? null : process.argv[index + 1];
+  if (!/^[a-f0-9]{64}$/.test(value || '')) {
+    throw new Error(
+      'Metsera P8 requires --product-query-definition-id <sha256>.',
     );
   }
   return value;
@@ -375,7 +407,8 @@ function readCheckedProcessAdmission() {
 
 async function main() {
   const m1Permission = currentM1Permission();
-  const checkedProcessAdmission = readCheckedProcessAdmission();
+  const materialisationReceipt = readRealMaterialisationReceipt();
+  const productQueryDefinitionId = readProductQueryDefinitionId();
   const combinedPilotBaseRelease = buildCombinedPilotBaseRelease();
   const productAuthority = currentProductAuthority(
     combinedPilotBaseRelease.manifest,
@@ -392,14 +425,23 @@ async function main() {
     release_state: 'CANDIDATE_NOT_ACTIVE',
     authority_state: 'NOT_GRANTED',
   };
-  candidateReleaseBinding.product_query_definition_id =
-    compileMetseraExclusivityProductQuery(
-      compileMetseraExclusivityProductAdmission(checkedProcessAdmission),
-      productAuthority.context,
-      productAuthority.input,
-    ).query_definition_id;
+  candidateReleaseBinding.product_query_definition_id = productQueryDefinitionId;
+  const realProcessAdmission =
+    compileMetseraExclusivityProcessPhrasebookAdmission({
+      materialisation_receipt: materialisationReceipt,
+      candidate_release_binding: {
+        candidate_release_manifest_id:
+          candidateReleaseBinding.candidate_release_manifest_id,
+        candidate_release_manifest_payload_digest:
+          candidateReleaseBinding.candidate_release_manifest_payload_digest,
+        corpus_release_id: candidateReleaseBinding.corpus_release_id,
+      },
+      product_query_definition_id: productQueryDefinitionId,
+    });
   const productAdmission =
-    compileMetseraExclusivityProductAdmission(checkedProcessAdmission);
+    compileMetseraExclusivityProductAdmission({
+      process_phrasebook_admission: realProcessAdmission,
+    });
   if (
     productAdmission.candidate_release_manifest_id
       !== candidateReleaseBinding.candidate_release_manifest_id
@@ -407,7 +449,7 @@ async function main() {
       !== candidateReleaseBinding.candidate_release_manifest_payload_digest
   ) {
     throw new Error(
-      'The checked Process admission is not intended for this inactive candidate release.',
+      'The real Process materialisation admission is not intended for this inactive candidate release.',
     );
   }
   const productRow = compileMetseraExclusivityProductRow(
@@ -440,7 +482,7 @@ async function main() {
     schema_version: PRODUCT_CANDIDATE_RESULT_WRITE_SET_SCHEMA,
     candidate_release_binding: candidateReleaseBinding,
     process_pilot_materialisation_receipt:
-      checkedProcessAdmission.process_admission_receipt,
+      realProcessAdmission.materialisation_receipt,
     product_admission: productAdmission,
     product_row: productRow,
     product_result_set: productResultSet,
