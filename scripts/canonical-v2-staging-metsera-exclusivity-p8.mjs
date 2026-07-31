@@ -97,7 +97,7 @@ const {
 
 const M1_ACKNOWLEDGEMENT_PATH = resolve(
   ROOT,
-  'docs/acks/M1-CONTRACT-FREEZE-2026-07-30.md',
+  'docs/acks/M1-CONTRACT-FREEZE-2026-07-31.md',
 );
 
 function currentM1Permission() {

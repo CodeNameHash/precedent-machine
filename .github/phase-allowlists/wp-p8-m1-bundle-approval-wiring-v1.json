@@ -1,0 +1,24 @@
+{
+  "phase": "WP-P8-M1-BUNDLE-APPROVAL-WIRING-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p8-m1-bundle-approval-wiring-v1.json",
+    "docs/acks/M1-CONTRACT-FREEZE-2026-07-31.md",
+    "scripts/canonical-v2-staging-metsera-exclusivity-p8.mjs",
+    "scripts/canonical-v2-staging-qxo-capitalisation-f28.mjs",
+    "tests/canonical-v2-staging-qxo-capitalisation-f28.test.js",
+    "tests/programme-gates/m1-milestone-permission.spec.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "lib/**",
+    "pages/**",
+    "public/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Binds Ben's approved exact P8 bundle to the existing isolated-staging M1 permission. It changes no contract, runtime product logic, database, release, signing or production authority."
+}

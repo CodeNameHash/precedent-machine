@@ -62,7 +62,7 @@ test('F28 offline attestation binds all fourteen market metrics', () => {
 test('F28 proof is exact-project, M1-approved and rollback-only', () => {
   assert.match(source, /deal-corpus-canonical-v2-staging/);
   assert.match(source, /sjumbznveyyiizhwvixj/);
-  assert.match(source, /M1-CONTRACT-FREEZE-2026-07-30\.md/);
+  assert.match(source, /M1-CONTRACT-FREEZE-2026-07-31\.md/);
   assert.match(source, /requireM1VerticalSliceExecutionPermission/);
   assert.match(source, /ADMITTED_QXO_IMMUTABLE_SOURCE/);
   assert.match(source, /buildAdmittedSemanticSourceContext/);
@@ -112,17 +112,17 @@ test('one probe insert and one set-based metric read cover all slots', () => {
 
 test('production-like execution requires the exact M1 acknowledgement', () => {
   const acknowledgement = fs.readFileSync(
-    'docs/acks/M1-CONTRACT-FREEZE-2026-07-30.md',
+    'docs/acks/M1-CONTRACT-FREEZE-2026-07-31.md',
     'utf8',
   );
   const currentBundle = {
     bundle_id: 'f'.repeat(64),
     contract_bundle_digest:
-      'b990bf90f98fd83b9dfcf34912ec4b3cd42c37f3e693bee9796b1c63198edc84',
+      'a953a215f9ff4cf94a204580b3b9a2b559fa531d1f3be16a3e787032257e87b3',
     canonical_payload_digest:
-      '73a9023d3ef831e7a544664929385a1aa61af1efed58139d1cd54bf5985d3ab8',
-    substantive_member_count: 171,
-    dependency_edge_count: 285,
+      '36762abe8f4dd666df0d9aa66760d8c4e41971fab633764108ee54f73d5c8d73',
+    substantive_member_count: 177,
+    dependency_edge_count: 315,
     compile_status: 'PASS',
     cycle_status: 'PASS',
   };
@@ -134,7 +134,7 @@ test('production-like execution requires the exact M1 acknowledgement', () => {
     (error) => error.code === 'M1_VERTICAL_SLICE_EXECUTION_NOT_AUTHORISED',
   );
   currentBundle.bundle_id =
-    '8c765d52d3f95ebfc21b28b5bd0e71689a095c482e113a4329d33b0140dbe83d';
+    'd222eba830fefad4772e358041e36f8818dbf227e4c7e13c77f4228514a37d8e';
   assert.equal(
     requireM1VerticalSliceExecutionPermission({
       acknowledgement_markdown: acknowledgement,
