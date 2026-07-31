@@ -16,6 +16,8 @@ const {
 );
 
 const ROOT = path.join(__dirname, '../contracts/canonical-v2/successor');
+const TARGET_CAPEX_DETAIL_ACTION_STABLE_ID =
+  'RESULT_COMPONENT_CLAIM_EVIDENCE';
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
@@ -96,16 +98,25 @@ test('admits separate representation and interim-operating-covenant catalogues',
   );
 });
 
-test('binds each predicate to its exact result version and composition action', () => {
-  for (const stableId of [
+test('binds each predicate to its exact result version and governing action', () => {
+  const representation = member(
+    members(),
     AGREEMENT_REPRESENTATION_PREDICATE_CATALOGUE_STABLE_ID,
+  ).canonical_value.definition.predicate_admissions[0];
+  const interimOperatingCovenant = member(
+    members(),
     AGREEMENT_INTERIM_OPERATING_COVENANT_PREDICATE_CATALOGUE_STABLE_ID,
-  ]) {
-    const admission = member(members(), stableId)
-      .canonical_value.definition.predicate_admissions[0];
-    assert.equal(admission.exact_detail_action_stable_id, TARGET_DETAIL_ACTION_STABLE_ID);
-    assert.equal(admission.exact_detail_action_version, 1);
-  }
+  ).canonical_value.definition.predicate_admissions[0];
+  assert.equal(
+    representation.exact_detail_action_stable_id,
+    TARGET_DETAIL_ACTION_STABLE_ID,
+  );
+  assert.equal(
+    interimOperatingCovenant.exact_detail_action_stable_id,
+    TARGET_CAPEX_DETAIL_ACTION_STABLE_ID,
+  );
+  assert.equal(representation.exact_detail_action_version, 1);
+  assert.equal(interimOperatingCovenant.exact_detail_action_version, 1);
   assert.equal(
     member(members(), AGREEMENT_INTERIM_OPERATING_COVENANT_PREDICATE_CATALOGUE_STABLE_ID)
       .canonical_value.definition.predicate_admissions[0].result_definition_version,

@@ -168,6 +168,7 @@ const OWNER_AUTHORITY_ALLOWED_PATHS = Object.freeze([
   '.github/phase-allowlists/wp-p2-shared-required-kind-expectations-v1.json',
   '.github/phase-allowlists/wp-p8-stage3-writer-authority-corrections-v1.json',
   '.github/phase-allowlists/wp-p8-stage3-writer-authority-corrections-v2.json',
+  '.github/phase-allowlists/wp-p8-stage5-candidate-reconciliation-v1.json',
   '.github/phase-allowlists/wp-pi-spark-premerge-review-v1.json',
   '.github/phase-allowlists/wp-pilot-freeze-evidence-integration-v1.json',
   '.github/phase-allowlists/wp-pilot-freeze-pi-integration-v1.json',

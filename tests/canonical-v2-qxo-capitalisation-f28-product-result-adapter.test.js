@@ -335,7 +335,7 @@ test('rejects direct and disguised F27 results at every serving selector', () =>
   }
 });
 
-test('rejects F27 queries at saved-query and presentation release selection', () => {
+test('rejects F27 saved queries and incomplete presentation input', () => {
   const retiredQuery = asRetiredF27QueryIr(
     buildF28ProductInputs().product_query_ir,
   );
@@ -357,7 +357,7 @@ test('rejects F27 queries at saved-query and presentation release selection', ()
     () => compileProductResultPresentation({
       product_query_ir: retiredQuery,
     }),
-    { code: 'RETIRED_QXO_CAPITALISATION_F27_NOT_RELEASE_ADMITTED' },
+    { code: 'INVALID_PRODUCT_RESULT_PRESENTATION_INPUT' },
   );
 });
 

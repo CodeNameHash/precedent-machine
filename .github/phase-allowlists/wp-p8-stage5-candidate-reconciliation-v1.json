@@ -1,0 +1,33 @@
+{
+  "phase": "WP-P8-STAGE5-CANDIDATE-RECONCILIATION-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p8-stage5-candidate-reconciliation-v1.json",
+    "contracts/canonical-v2/successor/manifest.json",
+    "contracts/canonical-v2/successor/product/query/product-source-reader-definition.v1.json",
+    "docs/codex-program/EXECUTION-LEDGER.md",
+    "docs/codex-program/specification-manifest.json",
+    "lib/canonical-v2/product-source-reader-contract-input-validator.js",
+    "scripts/canonical-v2-staging-schema.mjs",
+    "scripts/sign-g0-evidence.mjs",
+    "tests/canonical-v2-agreement-query-ordering-contract-input.test.js",
+    "tests/canonical-v2-agreement-representation-predicate-contract-input.test.js",
+    "tests/canonical-v2-agreement-writer-sql-native-validator.test.js",
+    "tests/canonical-v2-process-contract-input.test.js",
+    "tests/canonical-v2-process-event-participant-contract-input.test.js",
+    "tests/canonical-v2-process-exclusivity-completeness-challenge.test.js",
+    "tests/canonical-v2-process-exclusivity-contract-input.test.js",
+    "tests/canonical-v2-process-object-contract-input.test.js",
+    "tests/canonical-v2-process-track-phase-contract-input.test.js",
+    "tests/canonical-v2-qxo-capitalisation-f28-product-result-adapter.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "supabase/migrations/**"
+  ],
+  "note": "Reconciles the final P8 candidate after the complete-suite run. It updates approved contract fingerprints, global authored-universe counts, SQL test extraction, the staging schema fingerprint and the generic F27 refusal expectation. It adds no extraction, serving, database, release, activation or production authority."
+}

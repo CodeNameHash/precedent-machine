@@ -12,11 +12,9 @@ const signature = 'CREATE OR REPLACE FUNCTION canonical_v2_staging.validate_agre
 
 function validator(source) {
   const start = source.indexOf(signature);
-  const end = source.indexOf('\n\nREVOKE ALL ON FUNCTION canonical_v2_staging.validate_agreement_candidate_product_carrier', start) !== -1
-    ? source.indexOf('\n\nREVOKE ALL ON FUNCTION canonical_v2_staging.validate_agreement_candidate_product_carrier', start)
-    : source.indexOf('\n\nCREATE OR REPLACE FUNCTION public.canonical_v2_write(', start);
+  const end = source.indexOf('\n$$;', start);
   assert.ok(start !== -1 && end > start);
-  return source.slice(start, end);
+  return source.slice(start, end + 4);
 }
 
 test('the three SQL installation forms carry byte-identical native Agreement validation', () => {

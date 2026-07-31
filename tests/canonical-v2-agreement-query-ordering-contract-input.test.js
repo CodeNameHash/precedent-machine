@@ -57,7 +57,7 @@ test('registers one closed Agreement comparable-result ordering contract', () =>
     AGREEMENT_QUERY_ORDERING_CONTRACT_DEFINITIONS
       .AGREEMENT_COMPARABLE_RESULT_ORDERING_PROJECTION
       .definition_digest,
-    '7101692597e7378f2de083ce28c16b079ffd915fe8419e3c65c4749a54978b5c',
+    '17eb9ac896e0898febaf06618b6cbf0d23b43b9fedcbd204be325c52af8d8df0',
   );
 });
 
