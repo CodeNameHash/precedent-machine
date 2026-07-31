@@ -36,6 +36,18 @@ test('proves writer, import and inactive serving in one rollback transaction', (
   assert.doesNotMatch(source, /commit:\s*true/);
 });
 
+test('proves V7 import replay identity and Product serving-record identity fail closed', () => {
+  const source = fs.readFileSync(scriptPath, 'utf8');
+
+  assert.match(source, /changed V7 import body was accepted/);
+  assert.match(source, /invalid candidate release import plan/);
+  assert.match(source, /tampered Product serving record ID was accepted/);
+  assert.match(source, /product_query_result_serving_record_id/);
+  assert.match(source, /canonical_v2_staging\.content_id\(/);
+  assert.match(source, /replay_result->>'replayed' IS DISTINCT FROM 'true'/);
+  assert.match(source, /tampered_serving_record_id_rejected IS NOT TRUE/);
+});
+
 test('requires no durable staging change and preserves the inactive source-reader boundary', () => {
   const source = fs.readFileSync(scriptPath, 'utf8');
 

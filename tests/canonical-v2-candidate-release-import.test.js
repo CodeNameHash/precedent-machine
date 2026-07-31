@@ -435,6 +435,48 @@ test('inactive candidate rollback is one exact writer RPC and validates every de
   }), (error) => error.code === 'INVALID_RESPONSE');
 });
 
+test('V7 inactive rollback preserves the Product partition plan identity and counts', async () => {
+  const release = buildProjectionBoundRelease();
+  const productResultReleasePartition = productPartitionFor(release);
+  const expectedPlan = buildCandidateReleaseImportPlan({
+    release,
+    product_result_release_partition: productResultReleasePartition,
+  });
+  const calls = [];
+
+  const rolledBack = await rollbackInactiveCandidateRelease({
+    client: {
+      rpc(name, params) {
+        calls.push({ name, params });
+        return Promise.resolve({
+          data: rollbackReceiptFor(expectedPlan),
+          error: null,
+        });
+      },
+    },
+    release,
+    productResultReleasePartition,
+  });
+
+  assert.equal(rolledBack.plan.schema_version, 'CANDIDATE_RELEASE_IMPORT_PLAN/V7');
+  assert.equal(
+    rolledBack.plan.candidate_release_import_plan_id,
+    expectedPlan.candidate_release_import_plan_id,
+  );
+  assert.equal(
+    rolledBack.plan.expected_counts.product_query_result_serving_records,
+    1,
+  );
+  assert.equal(
+    calls[0].params.p_candidate_release_import_plan_id,
+    expectedPlan.candidate_release_import_plan_id,
+  );
+  assert.deepEqual(
+    rolledBack.receipt.deleted_counts,
+    rollbackReceiptFor(expectedPlan).deleted_counts,
+  );
+});
+
 test('active release movement is one exact compare-and-swap RPC over a completely imported candidate', async () => {
   const { release } = buildLandosCandidateReleaseFixture();
   const currentPointer = buildInitialActiveReleasePointer();
@@ -598,10 +640,21 @@ test('import checkpoint exact replay is a no-op and conflicting replay fails clo
     importer,
     /candidate manifest already imported under different content/,
   );
+  assert.match(
+    importer,
+    /import_plan_id IS DISTINCT FROM canonical_v2_staging\.content_id\([\s\S]*p_import_plan - 'candidate_release_import_plan_id'/,
+  );
 
+  const planIdentityCheck = importer.indexOf(
+    'import_plan_id IS DISTINCT FROM canonical_v2_staging.content_id(',
+  );
   const replayCheck = importer.indexOf('IF existing_plan_id IS NOT NULL THEN');
   const firstReleaseInsert = importer.indexOf(
     'INSERT INTO canonical_v2_staging.fixture_corpus_releases',
   );
-  assert.ok(replayCheck >= 0 && replayCheck < firstReleaseInsert);
+  assert.ok(
+    planIdentityCheck >= 0
+      && planIdentityCheck < replayCheck
+      && replayCheck < firstReleaseInsert,
+  );
 });

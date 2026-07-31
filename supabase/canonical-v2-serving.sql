@@ -828,6 +828,10 @@ BEGIN
     OR discharge_map_id !~ '^[a-f0-9]{64}$'
     OR discharge_map_payload_digest !~ '^[a-f0-9]{64}$'
     OR import_plan_id !~ '^[a-f0-9]{64}$'
+    OR import_plan_id IS DISTINCT FROM canonical_v2_staging.content_id(
+      p_import_plan->>'schema_version',
+      p_import_plan - 'candidate_release_import_plan_id'
+    )
     OR (
       carries_product_partition
       AND (
@@ -1111,8 +1115,54 @@ BEGIN
       FROM jsonb_array_elements(
         p_import_plan->'product_query_result_serving_records'
       ) item
-      WHERE item->>'schema_version'
+      WHERE NOT (item ?& ARRAY[
+          'schema_version',
+          'product_query_result_serving_record_id',
+          'serving_namespace_id',
+          'corpus_release_id',
+          'candidate_release_manifest_id',
+          'candidate_release_manifest_payload_digest',
+          'product_query_definition_id',
+          'product_query_result_identity',
+          'domain_key',
+          'domain_result_identity',
+          'candidate_product_result_id',
+          'candidate_product_result_schema_version',
+          'candidate_product_result_payload_digest',
+          'canonical_payload',
+          'canonical_payload_digest',
+          'serving_state',
+          'authority_state'
+        ])
+        OR item - ARRAY[
+          'schema_version',
+          'product_query_result_serving_record_id',
+          'serving_namespace_id',
+          'corpus_release_id',
+          'candidate_release_manifest_id',
+          'candidate_release_manifest_payload_digest',
+          'product_query_definition_id',
+          'product_query_result_identity',
+          'domain_key',
+          'domain_result_identity',
+          'candidate_product_result_id',
+          'candidate_product_result_schema_version',
+          'candidate_product_result_payload_digest',
+          'canonical_payload',
+          'canonical_payload_digest',
+          'serving_state',
+          'authority_state'
+        ]::text[] <> '{}'::jsonb
+        OR item->>'schema_version'
           IS DISTINCT FROM 'PRODUCT_QUERY_RESULT_SERVING_RECORD/V1'
+        OR item->>'product_query_result_serving_record_id'
+          IS DISTINCT FROM canonical_v2_staging.content_id(
+            'PRODUCT_QUERY_RESULT_SERVING_RECORD/V1',
+            item - ARRAY[
+              'schema_version',
+              'product_query_result_serving_record_id'
+            ]::text[]
+          )
         OR item->>'serving_state' IS DISTINCT FROM 'CANDIDATE_NOT_ACTIVE'
         OR item->>'authority_state' IS DISTINCT FROM 'NOT_GRANTED'
         OR item->>'serving_namespace_id' IS DISTINCT FROM namespace_id

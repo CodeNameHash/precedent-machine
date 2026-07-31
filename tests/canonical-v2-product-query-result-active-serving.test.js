@@ -150,6 +150,14 @@ test('staging SQL serves Product rows through one active release-pinned set quer
   assert.match(importer, /CANDIDATE_RELEASE_IMPORT_RECEIPT\/V7/);
   assert.match(importer, /product_candidate_results candidate/);
   assert.match(importer, /shared_row_adapter_receipt[\s\S]*product_query_result/);
+  assert.match(
+    importer,
+    /product_query_result_serving_record_id'[\s\S]*canonical_v2_staging\.content_id\([\s\S]*'PRODUCT_QUERY_RESULT_SERVING_RECORD\/V1'/,
+  );
+  assert.match(
+    importer,
+    /item - ARRAY\[[\s\S]*'authority_state'[\s\S]*\]::text\[\] <> '\{\}'::jsonb/,
+  );
   assert.match(importer, /INSERT INTO canonical_v2_staging\.product_query_result_serving_records/);
   assert.doesNotMatch(importer, /\bLOOP\b/i);
   assert.match(

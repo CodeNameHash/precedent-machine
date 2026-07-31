@@ -592,14 +592,22 @@ CREATE TEMP TABLE metsera_product_release_proof(
   import_receipt jsonb NOT NULL,
   inactive_query_is_null boolean NOT NULL,
   product_partition_count integer NOT NULL,
-  product_serving_record_count integer NOT NULL
+  product_serving_record_count integer NOT NULL,
+  exact_import_replay_is_no_op boolean NOT NULL,
+  changed_v7_body_rejected boolean NOT NULL,
+  tampered_serving_record_id_rejected boolean NOT NULL
 ) ON COMMIT DROP;
 
 DO $metsera_product_release_proof$
 DECLARE
   writer_result jsonb;
   import_result jsonb;
+  replay_result jsonb;
   inactive_page jsonb;
+  changed_body_plan jsonb;
+  tampered_serving_record_id_plan jsonb;
+  changed_v7_body_rejected boolean := false;
+  tampered_serving_record_id_rejected boolean := false;
 BEGIN
   writer_result := public.canonical_v2_write(
     'staging',
@@ -611,7 +619,58 @@ BEGIN
     '[]'::jsonb,
     ${stagingRuntime.sqlJson(candidateCommit.receipt)}
   );
+  changed_body_plan := jsonb_set(
+    ${stagingRuntime.sqlJson(candidateReleaseImportPlan)},
+    '{expected_counts,product_query_result_serving_records}',
+    '2'::jsonb
+  );
+  BEGIN
+    PERFORM public.canonical_v2_import_candidate_release(
+      'staging',
+      changed_body_plan
+    );
+    RAISE EXCEPTION 'changed V7 import body was accepted';
+  EXCEPTION
+    WHEN invalid_parameter_value THEN
+      IF position('invalid candidate release import plan' in SQLERRM) = 0 THEN
+        RAISE;
+      END IF;
+      changed_v7_body_rejected := true;
+  END;
+  tampered_serving_record_id_plan := jsonb_set(
+    ${stagingRuntime.sqlJson(candidateReleaseImportPlan)},
+    '{product_query_result_serving_records,0,product_query_result_serving_record_id}',
+    to_jsonb(repeat('0', 64))
+  );
+  tampered_serving_record_id_plan := jsonb_set(
+    tampered_serving_record_id_plan,
+    '{candidate_release_import_plan_id}',
+    to_jsonb(canonical_v2_staging.content_id(
+      tampered_serving_record_id_plan->>'schema_version',
+      tampered_serving_record_id_plan - 'candidate_release_import_plan_id'
+    ))
+  );
+  BEGIN
+    PERFORM public.canonical_v2_import_candidate_release(
+      'staging',
+      tampered_serving_record_id_plan
+    );
+    RAISE EXCEPTION 'tampered Product serving record ID was accepted';
+  EXCEPTION
+    WHEN check_violation THEN
+      IF position(
+        'Product result records do not equal the candidate writer evidence'
+        in SQLERRM
+      ) = 0 THEN
+        RAISE;
+      END IF;
+      tampered_serving_record_id_rejected := true;
+  END;
   import_result := public.canonical_v2_import_candidate_release(
+    'staging',
+    ${stagingRuntime.sqlJson(candidateReleaseImportPlan)}
+  );
+  replay_result := public.canonical_v2_import_candidate_release(
     'staging',
     ${stagingRuntime.sqlJson(candidateReleaseImportPlan)}
   );
@@ -634,6 +693,12 @@ BEGIN
       IS DISTINCT FROM 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V7'
     OR import_result->>'import_state'
       IS DISTINCT FROM 'IMPORTED_COMPLETE'
+    OR replay_result->>'replayed' IS DISTINCT FROM 'true'
+    OR replay_result IS DISTINCT FROM import_result || jsonb_build_object(
+      'replayed', true
+    )
+    OR changed_v7_body_rejected IS NOT TRUE
+    OR tampered_serving_record_id_rejected IS NOT TRUE
     OR inactive_page IS NOT NULL
     OR (
       SELECT count(*)
@@ -684,7 +749,10 @@ BEGIN
             .product_query_result_serving_record_id,
         )
       }
-    );
+    ),
+    replay_result->>'replayed' = 'true',
+    changed_v7_body_rejected,
+    tampered_serving_record_id_rejected;
 END
 $metsera_product_release_proof$;
 
@@ -705,6 +773,9 @@ SELECT * FROM metsera_product_release_proof;
     || releaseProof.inactive_query_is_null !== true
     || releaseProof.product_partition_count !== 1
     || releaseProof.product_serving_record_count !== 1
+    || releaseProof.exact_import_replay_is_no_op !== true
+    || releaseProof.changed_v7_body_rejected !== true
+    || releaseProof.tampered_serving_record_id_rejected !== true
   ) {
     throw new Error(
       'Metsera Product release proof changed durable staging state.',
@@ -806,6 +877,12 @@ SELECT * FROM metsera_product_release_proof;
       releaseProof.import_receipt.schema_version,
     product_release_import_state:
       releaseProof.import_receipt.import_state,
+    product_release_import_exact_replay_no_op:
+      releaseProof.exact_import_replay_is_no_op,
+    product_release_import_changed_v7_body_rejected:
+      releaseProof.changed_v7_body_rejected,
+    product_release_import_tampered_serving_record_id_rejected:
+      releaseProof.tampered_serving_record_id_rejected,
     product_active_query_before_activation:
       releaseProof.inactive_query_is_null
         ? 'INACTIVE_FAIL_CLOSED'

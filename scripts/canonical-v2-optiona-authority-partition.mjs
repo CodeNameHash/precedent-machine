@@ -38,7 +38,7 @@ REVOKE ALL ON FUNCTION canonical_v2_staging.content_id(text, jsonb)
     output: 'step0c-candidate-import-by-contract.sql',
     source: 'supabase/canonical-v2-serving.sql',
     marker: 'CREATE OR REPLACE FUNCTION public.canonical_v2_import_candidate_release(',
-    digest: '15afa0d97c10ea46efea8bbce69fff80ddf952e9467fc0b52ba5a98efca66df9',
+    digest: 'fafcd327938eb00ec41b212d2863878932b0ff2a627c95b5fa8c01c2ae853f1a',
   },
   {
     output: 'step0d-candidate-activation-by-contract.sql',
