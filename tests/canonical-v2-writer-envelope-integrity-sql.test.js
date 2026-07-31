@@ -1,7 +1,17 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const path = require('node:path');
 const { canonicalJson, contentId } = require('../lib/canonical-v2/canonical-bytes');
+const {
+  compileCanonicalContractInput,
+} = require('../lib/canonical-v2/canonical-contract-input-compiler');
+const {
+  assembleCanonicalContractBundleCurrentRootProposal,
+} = require('../lib/canonical-v2/canonical-contract-bundle-current-root');
+const {
+  compileCanonicalContractBundle,
+} = require('../lib/canonical-v2/canonical-contract-bundle-compiler');
 
 const sql = fs.readFileSync('supabase/canonical-v2-foundation.sql', 'utf8');
 const canonicalStart = sql.indexOf(
@@ -261,6 +271,43 @@ test('every SQL writer form validates the exact Process authority pair before DM
     assert.match(helper, /FIXTURE_CANDIDATE_RELEASE_MANIFEST\/V3/);
     assert.match(helper, /invalid SQL-native Process Product authority carrier/);
   }
+});
+
+test('every SQL writer form pins the mechanically compiled current root', () => {
+  const root = path.resolve(__dirname, '..', 'contracts/canonical-v2/successor');
+  const input = compileCanonicalContractInput({ root_directory: root });
+  const proposal = assembleCanonicalContractBundleCurrentRootProposal({
+    canonical_contract_input_compilation: input,
+  });
+  const bundle = compileCanonicalContractBundle({
+    canonical_contract_input_compilation: input,
+    classification_registry: proposal.registry_assembly.classification_registry,
+    dependency_registry: proposal.registry_assembly.dependency_registry,
+    governed_registry_bindings: proposal.registry_assembly.governed_registry_bindings,
+  });
+  const expected = [
+    input.canonical_bundle_input_identity.root_input_manifest_id,
+    input.canonical_bundle_input_identity.root_input_manifest_payload_digest,
+    bundle.contract_bundle_id,
+    bundle.contract_bundle_digest,
+    bundle.canonical_payload_digest,
+  ];
+  const helpers = [
+    'sql/optionA/step0b-canonical-writer-by-contract.sql',
+    'supabase/canonical-v2-foundation.sql',
+    'supabase/canonical-v2-product-candidate-result-writer.sql',
+  ].map((file) => {
+    const source = fs.readFileSync(file, 'utf8');
+    const start = source.indexOf(
+      'CREATE OR REPLACE FUNCTION canonical_v2_staging.validate_process_phrasebook_product_carrier',
+    );
+    const end = source.indexOf('\n$$;', start);
+    assert.ok(start >= 0 && end > start, `${file} must contain the Process authority validator`);
+    return source.slice(start, end + 4);
+  });
+  assert.equal(helpers[0], helpers[1]);
+  assert.equal(helpers[0], helpers[2]);
+  for (const value of expected) assert.match(helpers[0], new RegExp(value));
 });
 
 test('every SQL writer form invokes the native Agreement validator before DML', () => {

@@ -70,20 +70,20 @@ BEGIN
   IF c - ARRAY['schema_version','authority_context_id','approved_pm_data_version_id','canonical_contract_bundle','candidate_release_manifest','product_field_catalogue_manifest','product_field_catalogue_query_admission','product_navigation_catalogue_manifest','product_navigation_catalogue_query_admission','predicate_catalogue_bindings','predicate_admissions','product_query_admission_context','certification_identities','authority_limits']::text[] <> '{}'::jsonb
     OR NOT c ?& ARRAY['schema_version','authority_context_id','approved_pm_data_version_id','canonical_contract_bundle','candidate_release_manifest','product_field_catalogue_manifest','product_field_catalogue_query_admission','product_navigation_catalogue_manifest','product_navigation_catalogue_query_admission','predicate_catalogue_bindings','predicate_admissions','product_query_admission_context','certification_identities','authority_limits']
     OR c->>'schema_version' IS DISTINCT FROM 'PILOT_PRODUCT_AUTHORITY_CONTEXT/V1'
-    OR c->>'authority_context_id' IS DISTINCT FROM '49bc88d832e84219c5c9266e0e07595b0fc292b1ec42be040cd84315bf61b6dc'
+    OR c->>'authority_context_id' IS DISTINCT FROM '2eb112eadb276fec43be7c86bab26b9abc65d584ae1a23ba041965ed4fe0a669'
     OR c->>'authority_context_id' IS DISTINCT FROM canonical_v2_staging.content_id('PILOT_PRODUCT_AUTHORITY_CONTEXT/V1',c-'authority_context_id')
-    OR c->>'approved_pm_data_version_id' IS DISTINCT FROM '0f5b8490a824d9c044fb1f0eefc2e2cec229f0f424d7247e65b0bd1f9fc93556'
+    OR c->>'approved_pm_data_version_id' IS DISTINCT FROM '750d74d401f174d5c9437d7f5fb7e6ac908dab8ae1366ca73c1e34c0d7e873fd'
     OR c->'authority_limits' IS DISTINCT FROM '{"activation":"NONE","database_write":"NONE","extraction":"NONE","import":"NONE","materialisation":"NONE","production":"NONE","query_execution":"NONE","release":"NONE","serving":"NONE","source_read":"NONE","writer":"NONE"}'::jsonb
   THEN RAISE EXCEPTION 'invalid SQL-native Process Product authority carrier' USING ERRCODE = '23514'; END IF;
 
   IF i - ARRAY['canonical_contract_input_compilation','compiled_contract_bundle','candidate_release_manifest']::text[] <> '{}'::jsonb
     OR NOT i ?& ARRAY['canonical_contract_input_compilation','compiled_contract_bundle','candidate_release_manifest']
-    OR i->'canonical_contract_input_compilation'->'canonical_bundle_input_identity'->>'root_input_manifest_id' IS DISTINCT FROM '47131fd24cb9a4cf9f342c00acb50feab67b9ed96371224f1c778d9b6d7766ea'
-    OR i->'canonical_contract_input_compilation'->'canonical_bundle_input_identity'->>'root_input_manifest_payload_digest' IS DISTINCT FROM 'f777edf82da8ff9e08d9efab93b309fd2a3ecc1877e2a23fdc6cb32ae5ebdb75'
+    OR i->'canonical_contract_input_compilation'->'canonical_bundle_input_identity'->>'root_input_manifest_id' IS DISTINCT FROM '0d74f2f40600863ae474efdaa876215fb752c44463fc5aa0ec8114db61477416'
+    OR i->'canonical_contract_input_compilation'->'canonical_bundle_input_identity'->>'root_input_manifest_payload_digest' IS DISTINCT FROM '4dd9971ff5954b879b5b079e4a154a1175f8c61f3882ef68d02d9e2174df8343'
     OR b->>'schema_version' IS DISTINCT FROM 'CANONICAL_CONTRACT_BUNDLE_COMPILATION/V1'
-    OR b->>'contract_bundle_id' IS DISTINCT FROM 'dfc22fe07d54053db1e7ec92247d6428406f97aac7df351230b37ce7aafeb1d1'
-    OR b->>'contract_bundle_digest' IS DISTINCT FROM 'ee81cf33b874850132acb880f88fb35f7cb90b0d20847d2e8167977a6b590409'
-    OR b->>'canonical_payload_digest' IS DISTINCT FROM '934da806a678bb75819bf9013fc6cd2154681375d841328af1e2d4af6096ca49'
+    OR b->>'contract_bundle_id' IS DISTINCT FROM 'd222eba830fefad4772e358041e36f8818dbf227e4c7e13c77f4228514a37d8e'
+    OR b->>'contract_bundle_digest' IS DISTINCT FROM 'a953a215f9ff4cf94a204580b3b9a2b559fa531d1f3be16a3e787032257e87b3'
+    OR b->>'canonical_payload_digest' IS DISTINCT FROM '36762abe8f4dd666df0d9aa66760d8c4e41971fab633764108ee54f73d5c8d73'
     OR b->>'canonical_payload_digest' IS DISTINCT FROM canonical_v2_staging.content_id('CANONICAL_CONTRACT_BUNDLE_COMPILATION_PAYLOAD/V1',b-ARRAY['schema_version','canonical_payload_digest','disposition']::text[])
     OR b->'compile_report'->>'status' IS DISTINCT FROM 'PASS'
     OR b->'dependency_cycle_report'->>'status' IS DISTINCT FROM 'PASS'
