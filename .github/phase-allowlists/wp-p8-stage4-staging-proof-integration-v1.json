@@ -1,0 +1,22 @@
+{
+  "phase": "WP-P8-STAGE4-STAGING-PROOF-INTEGRATION-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p8-stage4-staging-proof-integration-v1.json",
+    "docs/codex-program/EXECUTION-LEDGER.md",
+    "docs/codex-program/specification-manifest.json",
+    "scripts/sign-g0-evidence.mjs"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "contracts/**",
+    "lib/**",
+    "pages/**",
+    "public/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Records the passed rollback-only IOC writer and Product query cache staging proofs and adds their exact phase files to the protected signer inventory. It changes no product, contract, database, release or production authority."
+}
