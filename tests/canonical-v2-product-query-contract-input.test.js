@@ -54,10 +54,40 @@ function loadAgreementEnvelopeMember() {
   };
 }
 
+function loadAgreementMaterialisationMember() {
+  const canonicalValue = JSON.parse(fs.readFileSync(
+    path.join(
+      ROOT,
+      'product/query/agreement-candidate-product-materialisation.v1.json',
+    ),
+    'utf8',
+  ));
+  return {
+    object_kind: canonicalValue.object_kind,
+    canonical_value: canonicalValue,
+  };
+}
+
+function loadResultSurfaceBindingMember() {
+  const canonicalValue = JSON.parse(fs.readFileSync(
+    path.join(
+      ROOT,
+      'product/query/product-result-surface-binding.v1.json',
+    ),
+    'utf8',
+  ));
+  return {
+    object_kind: canonicalValue.object_kind,
+    canonical_value: canonicalValue,
+  };
+}
+
 function loadRegisteredMembers() {
   return [
+    loadAgreementMaterialisationMember(),
     loadAgreementEnvelopeMember(),
     loadMember(),
+    loadResultSurfaceBindingMember(),
     loadCandidateEnvelopeMember(),
   ];
 }
@@ -174,24 +204,26 @@ test('rejects missing, extra and semantically drifted Product contracts', () => 
   const changed = loadMember();
   changed.canonical_value.definition.domain_contract
     .cross_domain_boolean_query_permitted = true;
+  const changedMembers = loadRegisteredMembers().map(
+    (member) => member.canonical_value.stable_id === 'PRODUCT_QUERY_IR'
+      ? changed
+      : member,
+  );
   assert.throws(
-    () => validateAuthoredProductQueryInputs([
-      changed,
-      loadAgreementEnvelopeMember(),
-      loadCandidateEnvelopeMember(),
-    ]),
+    () => validateAuthoredProductQueryInputs(changedMembers),
     { code: 'INVALID_PRODUCT_QUERY_IR_CONTRACT_INPUT' },
   );
 
   const nested = loadMember();
   nested.canonical_value.definition.required_sections
     .invented_authority = true;
+  const nestedMembers = loadRegisteredMembers().map(
+    (member) => member.canonical_value.stable_id === 'PRODUCT_QUERY_IR'
+      ? nested
+      : member,
+  );
   assert.throws(
-    () => validateAuthoredProductQueryInputs([
-      nested,
-      loadAgreementEnvelopeMember(),
-      loadCandidateEnvelopeMember(),
-    ]),
+    () => validateAuthoredProductQueryInputs(nestedMembers),
     { code: 'INVALID_PRODUCT_QUERY_IR_CONTRACT_INPUT' },
   );
 });
@@ -202,7 +234,7 @@ test('compiles as one non-authorising successor input', () => {
     (candidate) => candidate.stable_id === 'PRODUCT_QUERY_IR',
   );
 
-  assert.equal(compiled.authored_members.length, 175);
+  assert.equal(compiled.authored_members.length, 178);
   assert.equal(member.object_kind, 'PRODUCT_QUERY_CONTRACT_INPUT');
   assert.equal(
     Object.values(member.canonical_value.definition.authority_contract)

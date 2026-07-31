@@ -1,0 +1,52 @@
+{
+  "object_kind": "PRODUCT_QUERY_CONTRACT_INPUT",
+  "stable_id": "AGREEMENT_CANDIDATE_PRODUCT_MATERIALISATION",
+  "schema_version": "PRODUCT_QUERY_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PRODUCT",
+    "contract_type": "AGREEMENT_CANDIDATE_PRODUCT_MATERIALISATION",
+    "contract_version": 1,
+    "input_contract": {
+      "exact_inputs": ["agreement_candidate_envelope", "family_input", "pilot_product_authority_context", "pilot_product_authority_context_input", "product_evaluation_evidence"],
+      "revalidate_envelope": true,
+      "revalidate_authority_context": true,
+      "admitted_profiles": ["CAPITALISATION_BRING_DOWN_V3", "IOC_CAPEX_RESTRICTION_V1"],
+      "source_derivation": "PROFILE_GOVERNED_ONLY"
+    },
+    "evaluation_evidence_contract": {
+      "schema_version": "AGREEMENT_CANDIDATE_PRODUCT_EVALUATION_EVIDENCE/V1",
+      "required_members": ["raw_product_query", "ordered_result_fields", "product_query_result_admission_receipt", "agreement_ordering_facts", "product_query_result_ordering_receipt", "coverage_certification", "understood_legal_question"],
+      "caller_pass_state_permitted": false,
+      "caller_rank_permitted": false,
+      "caller_authority_identity_permitted": false,
+      "full_checked_receipts_required": true
+    },
+    "compiler_contract": {
+      "required_compilers": ["PRODUCT_QUERY_IR", "PRODUCT_QUERY_RESULT", "AGREEMENT_COMPARABLE_RESULT_ORDERING", "PRODUCT_QUERY_RESULT_SET", "PRODUCT_RESULT_PRESENTATION", "PRODUCT_RESULT_SURFACE_BINDING"],
+      "caller_rank_permitted": false,
+      "caller_pass_state_permitted": false,
+      "caller_authority_identity_permitted": false,
+      "dummy_sidecar_permitted": false,
+      "ioc_requested_fields": ["deal"],
+      "ioc_sort_permitted": false
+    },
+    "output_contract": {
+      "schema_version": "AGREEMENT_CANDIDATE_PRODUCT_MATERIALISATION/V1",
+      "candidate_state": "VALIDATED_NOT_PERSISTED",
+      "authority_state": "NOT_GRANTED",
+      "exact_candidate_release_binding_required": true,
+      "one_generic_runtime_for_all_admitted_profiles": true
+    },
+    "authority_contract": {
+      "creates_query_execution_authority": false,
+      "creates_source_read_authority": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_database_authority": false,
+      "creates_release_authority": false,
+      "creates_import_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false
+    }
+  }
+}
