@@ -31,7 +31,7 @@ const FUNCTIONS = Object.freeze([
       Object.freeze({
         source: 'supabase/canonical-v2-foundation.sql',
         marker: 'CREATE OR REPLACE FUNCTION canonical_v2_staging.validate_process_phrasebook_product_carrier(',
-        digest: '6bb1b06d7d0637d371d8b3a81f2015521ad33b01a657305cf182049035e16b18',
+        digest: 'a03c57a1f3990c61365dc628619735853aec29d168834240e2f836c514bd06b4',
       }),
       Object.freeze({
         source: 'supabase/canonical-v2-foundation.sql',

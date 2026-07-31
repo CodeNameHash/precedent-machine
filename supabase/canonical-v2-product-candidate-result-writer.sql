@@ -70,9 +70,9 @@ BEGIN
   IF c - ARRAY['schema_version','authority_context_id','approved_pm_data_version_id','canonical_contract_bundle','candidate_release_manifest','product_field_catalogue_manifest','product_field_catalogue_query_admission','product_navigation_catalogue_manifest','product_navigation_catalogue_query_admission','predicate_catalogue_bindings','predicate_admissions','product_query_admission_context','certification_identities','authority_limits']::text[] <> '{}'::jsonb
     OR NOT c ?& ARRAY['schema_version','authority_context_id','approved_pm_data_version_id','canonical_contract_bundle','candidate_release_manifest','product_field_catalogue_manifest','product_field_catalogue_query_admission','product_navigation_catalogue_manifest','product_navigation_catalogue_query_admission','predicate_catalogue_bindings','predicate_admissions','product_query_admission_context','certification_identities','authority_limits']
     OR c->>'schema_version' IS DISTINCT FROM 'PILOT_PRODUCT_AUTHORITY_CONTEXT/V1'
-    OR c->>'authority_context_id' IS DISTINCT FROM '2eb112eadb276fec43be7c86bab26b9abc65d584ae1a23ba041965ed4fe0a669'
+    OR c->>'authority_context_id' IS DISTINCT FROM '067811cd46aff7d35ace7ff3c49551533ae9822940567a9b276152fcafc2a173'
     OR c->>'authority_context_id' IS DISTINCT FROM canonical_v2_staging.content_id('PILOT_PRODUCT_AUTHORITY_CONTEXT/V1',c-'authority_context_id')
-    OR c->>'approved_pm_data_version_id' IS DISTINCT FROM '750d74d401f174d5c9437d7f5fb7e6ac908dab8ae1366ca73c1e34c0d7e873fd'
+    OR c->>'approved_pm_data_version_id' IS DISTINCT FROM 'baa2bf3b6d097e6d5e28faa0bc2e55f3cf8026e3ad4122fa83cec599390d6a54'
     OR c->'authority_limits' IS DISTINCT FROM '{"activation":"NONE","database_write":"NONE","extraction":"NONE","import":"NONE","materialisation":"NONE","production":"NONE","query_execution":"NONE","release":"NONE","serving":"NONE","source_read":"NONE","writer":"NONE"}'::jsonb
   THEN RAISE EXCEPTION 'invalid SQL-native Process Product authority carrier' USING ERRCODE = '23514'; END IF;
 
