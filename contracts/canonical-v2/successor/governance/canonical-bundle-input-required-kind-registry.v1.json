@@ -196,6 +196,14 @@
       ]
     },
     {
+      "object_kind": "PROCESS_PILOT_ADMISSION_ADAPTER_CONTRACT_INPUT",
+      "minimum_count": 1,
+      "maximum_count": 1,
+      "allowed_schema_versions": [
+        "PROCESS_PILOT_ADMISSION_ADAPTER_CONTRACT_INPUT/V1"
+      ]
+    },
+    {
       "object_kind": "PROCESS_PREDICATE_CONTRACT_INPUT",
       "minimum_count": 2,
       "maximum_count": 2,

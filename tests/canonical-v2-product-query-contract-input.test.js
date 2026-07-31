@@ -234,7 +234,7 @@ test('compiles as one non-authorising successor input', () => {
     (candidate) => candidate.stable_id === 'PRODUCT_QUERY_IR',
   );
 
-  assert.equal(compiled.authored_members.length, 178);
+  assert.equal(compiled.authored_members.length, 179);
   assert.equal(member.object_kind, 'PRODUCT_QUERY_CONTRACT_INPUT');
   assert.equal(
     Object.values(member.canonical_value.definition.authority_contract)

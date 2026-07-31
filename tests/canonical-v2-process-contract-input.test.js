@@ -59,7 +59,7 @@ test('compiles the bounded Process core contracts deterministically without free
   );
 
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.authored_members.length, 178);
+  assert.equal(first.authored_members.length, 179);
   assert.deepEqual(
     processEntries.map((member) => [member.object_kind, member.stable_id]),
     [
@@ -107,6 +107,10 @@ test('compiles the bounded Process core contracts deterministically without free
       ['PROCESS_QUERY_CONTRACT_INPUT', 'PROCESS_QUERY_IR'],
       ['PROCESS_CONTROLLED_CODE_REGISTRY_INPUT', 'PROCESS_CONTROLLED_CODE_REGISTRY'],
       ['PROCESS_LOGICAL_TYPE_INPUT', 'PROCESS_RELATIONSHIP'],
+      [
+        'PROCESS_PILOT_ADMISSION_ADAPTER_CONTRACT_INPUT',
+        'METSERA_EXCLUSIVITY_PROCESS_PHRASEBOOK_ADMISSION_ADAPTER',
+      ],
       ['SERVING_PROCESS_CONTRACT_INPUT', 'PROCESS_EXCLUSIVITY_EVENT_RESULT'],
       ['SERVING_PROCESS_CONTRACT_INPUT', 'PROCESS_PHRASEBOOK_PASSAGE_RESULT'],
       ['SERVING_PROCESS_CONTRACT_INPUT', 'BOUNDED_INLINE_PASSAGE_PREVIEW'],

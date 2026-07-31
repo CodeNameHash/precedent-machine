@@ -1,0 +1,34 @@
+{
+  "phase": "WP-METSERA-EXCLUSIVITY-PROCESS-PHRASEBOOK-ADMISSION-ADAPTER-CONTRACT-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-metsera-exclusivity-process-phrasebook-admission-adapter-contract-v1.json",
+    "contracts/canonical-v2/successor/governance/canonical-bundle-input-required-kind-registry.v1.json",
+    "contracts/canonical-v2/successor/manifest.json",
+    "contracts/canonical-v2/successor/process/results/metsera-exclusivity-process-phrasebook-admission-adapter.v1.json",
+    "lib/canonical-v2/canonical-contract-bundle-current-root.js",
+    "lib/canonical-v2/canonical-contract-input-compiler.js",
+    "lib/canonical-v2/metsera-exclusivity-process-phrasebook-admission-adapter-contract-input-validator.js",
+    "lib/canonical-v2/process-contract-input-validator.js",
+    "tests/canonical-v2-canonical-contract-bundle-current-root.test.js",
+    "tests/canonical-v2-canonical-contract-source-tree.test.js",
+    "tests/canonical-v2-metsera-exclusivity-process-phrasebook-admission-adapter-contract.test.js",
+    "tests/canonical-v2-process-contract-input.test.js",
+    "tests/canonical-v2-process-event-participant-contract-input.test.js",
+    "tests/canonical-v2-process-exclusivity-completeness-challenge.test.js",
+    "tests/canonical-v2-process-exclusivity-contract-input.test.js",
+    "tests/canonical-v2-process-object-contract-input.test.js",
+    "tests/canonical-v2-process-track-phase-contract-input.test.js",
+    "tests/canonical-v2-product-query-contract-input.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "lib/canonical-v2/metsera-exclusivity-process-phrasebook-admission.js",
+    "lib/canonical-v2/metsera-exclusivity-staging-pilot.js",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Governs only the closed, non-authorising Metsera materialisation-to-Process-admission bridge contract. It binds full source receipt and target input and receipt bytes, preserves source, evidence, UTF-8 interval and lineage identities, and grants no caller or external authority."
+}

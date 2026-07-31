@@ -673,7 +673,7 @@
       "object_kind": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
       "stable_id": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
       "schema_version": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY/V1",
-      "canonical_bytes_digest": "a4768f79a3f4e56fedf5ca26737645009cacd198ba84825fb76896dca667f0bf"
+      "canonical_bytes_digest": "aceda38f98ff0c1157862e10d59c07dcacdceb01660e5cf54a1fcef5fe782d2e"
     },
     {
       "relative_path": "governance/residuals/governed-residual-disposition.v1.json",
@@ -933,6 +933,13 @@
       "stable_id": "PROCESS_RELATIONSHIP",
       "schema_version": "PROCESS_LOGICAL_TYPE_INPUT/V1",
       "canonical_bytes_digest": "2c5d0ce74c3b9fa42df639568742eb6a0fda7baf804c1208279440bfd1f25824"
+    },
+    {
+      "relative_path": "process/results/metsera-exclusivity-process-phrasebook-admission-adapter.v1.json",
+      "object_kind": "PROCESS_PILOT_ADMISSION_ADAPTER_CONTRACT_INPUT",
+      "stable_id": "METSERA_EXCLUSIVITY_PROCESS_PHRASEBOOK_ADMISSION_ADAPTER",
+      "schema_version": "PROCESS_PILOT_ADMISSION_ADAPTER_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "c46748c83327b5168b9df4f2c2f4731bd06a7938d635a965b788ee9936c1d248"
     },
     {
       "relative_path": "process/results/process-exclusivity-event-result.v1.json",
@@ -1275,6 +1282,7 @@
     "PROCESS_INTEGRITY_CONTRACT_INPUT": 2,
     "PROCESS_LOGICAL_TYPE_INPUT": 10,
     "PROCESS_NAVIGATION_CATALOGUE_INPUT": 1,
+    "PROCESS_PILOT_ADMISSION_ADAPTER_CONTRACT_INPUT": 1,
     "PROCESS_PREDICATE_CONTRACT_INPUT": 2,
     "PROCESS_QUERY_CONTRACT_INPUT": 3,
     "PROCESS_RESULT_ACTION_CONTRACT_INPUT": 4,
@@ -1371,6 +1379,9 @@
     ],
     "PROCESS_NAVIGATION_CATALOGUE_INPUT": [
       "PROCESS_NAVIGATION_CATALOGUE_INPUT/V2"
+    ],
+    "PROCESS_PILOT_ADMISSION_ADAPTER_CONTRACT_INPUT": [
+      "PROCESS_PILOT_ADMISSION_ADAPTER_CONTRACT_INPUT/V1"
     ],
     "PROCESS_PREDICATE_CONTRACT_INPUT": [
       "PROCESS_PREDICATE_CONTRACT_INPUT/V1"

@@ -1,0 +1,85 @@
+{
+  "object_kind": "PROCESS_PILOT_ADMISSION_ADAPTER_CONTRACT_INPUT",
+  "stable_id": "METSERA_EXCLUSIVITY_PROCESS_PHRASEBOOK_ADMISSION_ADAPTER",
+  "schema_version": "PROCESS_PILOT_ADMISSION_ADAPTER_CONTRACT_INPUT/V1",
+  "definition": {
+    "domain_key": "PROCESS",
+    "contract_type": "METSERA_EXCLUSIVITY_PROCESS_PHRASEBOOK_ADMISSION_ADAPTER",
+    "contract_version": 1,
+    "source_receipt_contract": {
+      "schema_version": "PROCESS_EXCLUSIVITY_PILOT_MATERIALISATION_RECEIPT/V1",
+      "receipt_id_field": "materialisation_receipt_id",
+      "full_source_receipt_required": true,
+      "source_receipt_id_and_canonical_bytes_required": true,
+      "source_receipt_canonical_bytes_participate_in_adapter_identity": true,
+      "required_source_states": {
+        "source_interval_state": "EXACT_UTF8_INTERVALS_VALIDATED",
+        "controlled_code_state": "CLOSED_AND_RECONCILED",
+        "materialisation_state": "VALIDATED_SIDECAR_ONLY",
+        "external_operation_state": "NOT_PERFORMED",
+        "authority_state": "NOT_GRANTED"
+      },
+      "preserved_source_fields": [
+        "source_document_bindings",
+        "exact_source_slices",
+        "event_slot_bindings",
+        "participant_event_bindings",
+        "occurrence_slot_bindings",
+        "identities",
+        "revisions",
+        "source_interval_state"
+      ]
+    },
+    "target_admission_contract": {
+      "adapter_output_schema_version": "METSERA_EXCLUSIVITY_PROCESS_PHRASEBOOK_ADMISSION/V1",
+      "admission_input_schema_version": "PROCESS_PHRASEBOOK_RESULT_ADMISSION_INPUT/V1",
+      "admission_receipt_schema_version": "PROCESS_PHRASEBOOK_RESULT_ADMISSION_RECEIPT/V1",
+      "full_admission_input_required": true,
+      "full_admission_receipt_required": true,
+      "admission_input_and_receipt_canonical_bytes_required": true,
+      "admission_input_and_receipt_participate_in_adapter_identity": true,
+      "admission_receipt_must_bind_exact_admission_input": true,
+      "required_target_states": {
+        "adapter_state": "VALIDATED_NOT_RELEASE_BOUND",
+        "admission_receipt_state": "VALIDATED_NOT_RELEASE_BOUND",
+        "authority_state": "NOT_GRANTED"
+      }
+    },
+    "lineage_preservation_contract": {
+      "exact_utf8_bytes_preserved": true,
+      "source_document_identity_preserved": true,
+      "source_revision_identity_preserved": true,
+      "source_interval_order_preserved": true,
+      "source_evidence_identity_preserved": true,
+      "narration_witness_and_ordering_lineage_preserved": true,
+      "digest_only_substitution_permitted": false,
+      "summary_rewrite_or_classification_substitution_permitted": false
+    },
+    "caller_prohibition_contract": {
+      "caller_source_authority_permitted": false,
+      "caller_value_authority_permitted": false,
+      "caller_query_authority_permitted": false,
+      "caller_pass_state_permitted": false,
+      "caller_authority_identity_permitted": false,
+      "caller_can_substitute_receipt_or_receipt_id": false
+    },
+    "authority_contract": {
+      "creates_new_result_architecture": false,
+      "creates_runtime_result": false,
+      "creates_query_execution_authority": false,
+      "creates_source_read_authority": false,
+      "creates_extraction_authority": false,
+      "creates_materialisation_authority": false,
+      "creates_domain_validation_authority": false,
+      "creates_writer_authority": false,
+      "creates_serving_authority": false,
+      "creates_database_authority": false,
+      "creates_release_authority": false,
+      "creates_import_authority": false,
+      "creates_activation_authority": false,
+      "creates_production_authority": false,
+      "creates_contract_freeze_authority": false,
+      "creates_external_authority": false
+    }
+  }
+}
