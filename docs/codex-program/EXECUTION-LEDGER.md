@@ -147,6 +147,98 @@ staging pilots.
 | `PM-M2-METSERA-RUNNER-FIX-01` | The Metsera staging runner never set `product_query_definition_id` on its candidate release binding, failing `validateReleaseBinding` before DML. Fixed by binding the compiled row's `product_query_ir.query_definition_id`. Found by prep-agent interop run. | COMPLETE |
 | `PM-M2-WRITE-ENVELOPE-01` | TEMPORARY: the canonical writer's persistence-envelope cap was raised from 4 MiB to 16 MiB (repo SQL, pinned digests and staging deployment) because the seam-removal correctly carries the complete real Metsera materialisation input, which embeds the nine sealed source documents (~5.8 MiB). MANDATORY BEFORE M3 CORPUS SCALE: slim the write set to carry sources by digest against sealed or staging-admitted immutable source documents — the sources are public SEC filings pinned by sealed SHA-256s, so per-write byte embedding adds no evidential value and scales the envelope with source size. The Management API request cap (HTTP 413 below 4 MiB) also forced a governed direct `--db-url` transport with a simple-protocol pg executor for oversized staging writes. | COMPLETE (temporary) |
 
+### M3 basis decision (2026-07-31, Ben)
+
+Canonical v2 proves validation, identity, relationships, writing, release and
+product behaviour for reviewed inputs. It does NOT prove generic
+source-to-candidate extraction: `lib/canonical-v2/` contains zero model calls
+and every v2 deal to date is a hand-authored reviewed-slice module.
+
+DECISION: build the native canonical v2 extractor. `lib/parser-v2/` does not
+become the v2 extraction engine. Existing v1 claims, cards and provision
+records are never canonical facts.
+
+- **Native path**: source document -> deterministic sections and offsets ->
+  definitions first -> governed scope -> semantic candidate production ->
+  lexical disagreement net -> candidate graph -> validation and quarantine ->
+  review and corrections -> canonical writer -> candidate release -> serving.
+- **Migration path**: v1 provisions/cards/claims -> legacy-derived candidate
+  adapter -> source-evidence rebinding -> the same downstream path. Labelled
+  legacy-derived throughout; a migration aid, never an extraction authority.
+- One downstream canonical path only. No separate writer, release, query or
+  product systems for native and legacy inputs.
+- Model output is a proposal. Model calls stay inside a bounded
+  extraction-provider layer; identity functions, validators, normalisers,
+  writers and release compilers remain deterministic.
+- v1's accumulated legal knowledge (`lib/rubric.js`, `lib/taxonomy.js`,
+  `lib/parser-v2/` prompts and taxonomy) is source material for the v2
+  producer's prompts. That is not treating v1 output as canonical.
+- Golden evals (`scripts/eval.js`) gate the producer from its first commit.
+  Native extraction must match or beat v1 on the same deals before it
+  displaces v1's role anywhere.
+- Per-deal cost and wall-clock are measured on the F28 pilot before any
+  corpus-scale run. No such telemetry exists today.
+
+Claims discipline: pilots may claim the narrow source-to-product paths work,
+that candidates preserve exact source evidence, that validation/review/writer/
+serving contracts work, and that one failed candidate does not remove valid
+siblings. Pilots may NOT claim generic extraction across the corpus. M3 may
+claim the corpus was migrated and reviewed through a labelled legacy-derived
+path; it may NOT claim native extraction generality until fresh
+source-to-candidate runs pass the required family and corpus tests.
+
+### M3 review protocol (2026-07-31, Ben)
+
+**Auto-pass** requires ALL of: quoted text reproduces byte-identically from
+stored source offsets; source document, hash and revision valid; provision
+inside the certified complete source scope; v1 and v2 independently agree on
+the material legal value under a governed comparator; not in a known-defect
+group for that deal, family, attribute or extraction mechanism; lexical
+disagreement set holds no unmatched signal that could change the result. A
+candidate is never auto-passed when it is novel, an ABSENT/NOT_APPLICABLE
+conclusion, multi-span or composed, a nested or cross-referenced definition,
+an unresolved residual, a failed or uncertain extraction, or a high-risk
+proposition selected for mandatory review. Auto-pass means "eligible subject
+to sampling certification"; it does not make v1 canonical authority.
+
+**Technical failure** (returns to engineering, unpublished, NOT to Ben unless
+the source itself is ambiguous): quote or offset mismatch, document-hash
+mismatch, malformed evidence, invalid code, missing required source,
+inconsistent identity, invalid normalisation, schema failure.
+
+**Ben review** when: v1 and v2 materially disagree; v2 asserts a material
+proposition with no v1 counterpart; the candidate is in a known-defect group;
+the source supports more than one reasonable legal reading; the candidate is
+novel or source-specific; the result composes material propositions across
+several spans; the lexical net flags a potentially missed proposition; or a
+sampled auto-pass proves wrong. Queue ranked by legal materiality —
+termination rights, fees, MAE, fiduciary provisions, no-shop exceptions,
+consideration and closing conditions ahead of notices and administrative
+clauses.
+
+**Sampling**: fixed reproducible seed, ~2% overall, with a minimum sample from
+every deal, provision family, candidate state, native-or-legacy input path and
+important normalisation type. The reviewer reads the source WITHOUT first
+seeing the v1 answer — an anchored sample cannot detect correlated error. A
+sampled error fails the affected sample group, triggers review of the complete
+deal-family or mechanism group, adds the pattern to the known-defect registry,
+reruns the relevant extraction and disagreement sets, and resamples after
+correction.
+
+Three implementation notes recorded with the protocol: the governed comparator
+for "material legal value" is legal-semantic engineering and is specified and
+reviewed explicitly, not improvised; the known-defect registry is a versioned
+artefact from day one because three protocol branches depend on it; per-group
+minimums dominate the sample size, so expect 300-500 blind reads rather than
+the ~260 a flat 2% implies.
+
+### P9 registry correction (2026-07-31, mechanically verified)
+
+`docs/codex-program/programme-gates.yaml` contains 22 P9 gates, not 25.
+Exactly one (`P9_DEPLOYMENT_PARITY`) carries an acceptance block; the other 21
+have an id and state only. Every gate receives a mechanical acceptance
+definition before M3 relies on it.
+
 ## 3. Next 48 hours
 
 1. DONE 2026-07-31: complete suite and build passed, main moved once to
