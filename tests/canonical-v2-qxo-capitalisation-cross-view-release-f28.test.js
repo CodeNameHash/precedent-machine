@@ -415,6 +415,36 @@ test('F28 refuses slot reordering, peer leakage, untyped subject exclusion and r
     /invalid or reordered/,
   );
 
+  const subjectCountedAsPeer = clone(subjectOnly);
+  Object.assign(subjectCountedAsPeer.slot_results[0], {
+    result_state: 'READY',
+    counts: {
+      eligible_deals: 2,
+      comparable_deals: 2,
+      excluded_deals: 0,
+      independent_peer_count: 2,
+    },
+    state_groups: [{
+      state: 'PRESENT',
+      deal_count: 2,
+      percentage: '100',
+    }],
+    value_groups: [{
+      state: 'PRESENT',
+      canonical_value: request.metric_bindings[0].subject_canonical_value,
+      deal_count: 2,
+      percentage: '100',
+    }],
+    cohort_reason_code: null,
+  });
+  assert.throws(
+    () => validateQxoCapitalisationF28MarketResult(
+      sealResult(subjectCountedAsPeer),
+      request,
+    ),
+    /invalid or reordered/,
+  );
+
   const untypedExclusion = clone(subjectOnly);
   untypedExclusion.slot_results[0].subject_cohort_membership = {
     status: 'EXCLUDED',
