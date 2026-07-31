@@ -114,9 +114,26 @@ test('active Product query rejects reordered rows and invalid cursors', async ()
   );
 });
 
+test('active Product query accepts a complete valid empty page', async () => {
+  const response = responseFor();
+  response.page_count = 0;
+  response.rows = [];
+  const page = await queryActiveProductResults({
+    client: {
+      rpc() {
+        return Promise.resolve({ data: response, error: null });
+      },
+    },
+    request: requestFor(),
+  });
+  assert.deepEqual(page.rows, []);
+  assert.equal(page.has_more, false);
+  assert.equal(page.next_after_product_query_result_identity, null);
+});
+
 test('staging SQL serves Product rows through one active release-pinned set query', () => {
   const sql = fs.readFileSync('supabase/canonical-v2-serving.sql', 'utf8');
-  const start = sql.indexOf(
+  const start = sql.lastIndexOf(
     'CREATE OR REPLACE FUNCTION public.canonical_v2_active_product_query_results',
   );
   const end = sql.indexOf(
@@ -135,15 +152,27 @@ test('staging SQL serves Product rows through one active release-pinned set quer
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.product_query_result_release_partitions/);
   assert.match(sql, /CREATE TABLE IF NOT EXISTS canonical_v2_staging\.product_query_result_serving_records/);
   assert.match(sql, /canonical_v2_product_query_result_active_page_idx/);
+  assert.match(activeQuery, /LANGUAGE plpgsql[\s\S]*VOLATILE/);
   assert.match(activeQuery, /SET statement_timeout = '2500ms'/);
   assert.match(activeQuery, /active_corpus_release_pointers/);
+  assert.match(activeQuery, /Product query release is not actively admitted/);
+  assert.match(activeQuery, /product_query_result_active_page_cache/);
+  assert.match(activeQuery, /authorisation_scope_id/);
+  assert.match(activeQuery, /capacity_manifest_payload_digest/);
+  assert.match(activeQuery, /route_budget_manifest_payload_digest/);
+  assert.match(activeQuery, /cache_budget_manifest_payload_digest/);
+  assert.match(activeQuery, /clock_timestamp\(\) \+ interval '1 hour'/);
+  assert.match(activeQuery, /active Product query response exceeds its byte ceiling/);
+  assert.match(activeQuery, /active Product query contains an invalid result row/);
+  assert.match(activeQuery, /jsonb_object_keys\(candidate\.canonical_payload\)/);
+  assert.match(activeQuery, /PRODUCT_QUERY_RESULT\/V1/);
   assert.match(
     activeQuery,
-    /validated AS MATERIALIZED \([\s\S]*product_query_result_release_partitions/,
+    /SELECT pointer\.\* INTO active_pointer[\s\S]*product_query_result_release_partitions/,
   );
   assert.match(activeQuery, /candidate_release_import_plan_id[\s\S]*candidate_release_import_plan_id/);
   assert.match(activeQuery, /LIMIT p_page_size \+ 1/);
-  assert.match(activeQuery, /WHERE page_payload\.page_count > 0/);
+  assert.doesNotMatch(activeQuery, /WHERE page_payload\.page_count > 0/);
   assert.doesNotMatch(activeQuery, /\bOFFSET\b/i);
   assert.doesNotMatch(activeQuery, /\bLOOP\b/i);
   assert.match(importer, /CANDIDATE_RELEASE_IMPORT_PLAN\/V7/);
@@ -163,6 +192,14 @@ test('staging SQL serves Product rows through one active release-pinned set quer
   assert.match(
     sql,
     /REVOKE ALL ON TABLE canonical_v2_staging\.product_query_result_serving_records[\s\S]*canonical_v2_serving/,
+  );
+  assert.match(
+    sql,
+    /ALTER TABLE canonical_v2_staging\.product_query_result_active_page_cache ENABLE ROW LEVEL SECURITY/,
+  );
+  assert.match(
+    sql,
+    /REVOKE ALL ON TABLE canonical_v2_staging\.product_query_result_active_page_cache[\s\S]*canonical_v2_serving/,
   );
   assert.match(
     sql,

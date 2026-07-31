@@ -294,6 +294,51 @@ CREATE TABLE IF NOT EXISTS canonical_v2_staging.query_response_cache (
 CREATE INDEX IF NOT EXISTS canonical_v2_query_response_cache_expiry_idx
   ON canonical_v2_staging.query_response_cache (expires_at, created_at);
 
+-- This cache is separate from query_response_cache.  The two payload schemas
+-- are intentionally closed and cannot share a row.
+CREATE TABLE IF NOT EXISTS canonical_v2_staging.product_query_result_active_page_cache (
+  serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
+  corpus_release_id text NOT NULL
+    REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id) ON DELETE CASCADE,
+  candidate_manifest_id text NOT NULL CHECK (candidate_manifest_id ~ '^[a-f0-9]{64}$'),
+  candidate_release_import_plan_id text NOT NULL
+    CHECK (candidate_release_import_plan_id ~ '^[a-f0-9]{64}$'),
+  authorisation_scope_id text NOT NULL CHECK (authorisation_scope_id ~ '^[a-f0-9]{64}$'),
+  capacity_manifest_id text NOT NULL CHECK (capacity_manifest_id ~ '^[a-f0-9]{64}$'),
+  capacity_manifest_payload_digest text NOT NULL
+    CHECK (capacity_manifest_payload_digest ~ '^[a-f0-9]{64}$'),
+  route_budget_manifest_id text NOT NULL CHECK (route_budget_manifest_id ~ '^[a-f0-9]{64}$'),
+  route_budget_manifest_payload_digest text NOT NULL
+    CHECK (route_budget_manifest_payload_digest ~ '^[a-f0-9]{64}$'),
+  cache_budget_manifest_id text NOT NULL CHECK (cache_budget_manifest_id ~ '^[a-f0-9]{64}$'),
+  cache_budget_manifest_payload_digest text NOT NULL
+    CHECK (cache_budget_manifest_payload_digest ~ '^[a-f0-9]{64}$'),
+  product_query_definition_id text NOT NULL CHECK (product_query_definition_id ~ '^[a-f0-9]{64}$'),
+  page_size integer NOT NULL CHECK (page_size BETWEEN 1 AND 50),
+  after_product_query_result_identity text NOT NULL
+    CHECK (after_product_query_result_identity = '' OR after_product_query_result_identity ~ '^[a-f0-9]{64}$'),
+  exact_query_semantics jsonb NOT NULL,
+  response_payload jsonb NOT NULL
+    CHECK (response_payload->>'schema_version' = 'PRODUCT_QUERY_RESULT_ACTIVE_PAGE/V1'),
+  response_payload_bytes integer NOT NULL CHECK (
+    response_payload_bytes BETWEEN 1 AND 1048576
+  ),
+  created_at timestamptz NOT NULL DEFAULT clock_timestamp(),
+  expires_at timestamptz NOT NULL,
+  PRIMARY KEY (
+    serving_namespace_id,
+    corpus_release_id,
+    candidate_manifest_id,
+    candidate_release_import_plan_id,
+    authorisation_scope_id,
+    product_query_definition_id,
+    page_size,
+    after_product_query_result_identity
+  )
+);
+CREATE INDEX IF NOT EXISTS canonical_v2_product_query_result_active_page_cache_expiry_idx
+  ON canonical_v2_staging.product_query_result_active_page_cache (expires_at, created_at);
+
 CREATE TABLE IF NOT EXISTS canonical_v2_staging.reviewed_source_specific_serving_rows (
   serving_namespace_id text NOT NULL CHECK (serving_namespace_id ~ '^[a-f0-9]{64}$'),
   corpus_release_id text NOT NULL REFERENCES canonical_v2_staging.fixture_corpus_releases(corpus_release_id),
@@ -715,6 +760,7 @@ ALTER TABLE canonical_v2_staging.candidate_release_correction_input_seals ENABLE
 ALTER TABLE canonical_v2_staging.candidate_release_correction_discharges ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.product_query_result_release_partitions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.product_query_result_serving_records ENABLE ROW LEVEL SECURITY;
+ALTER TABLE canonical_v2_staging.product_query_result_active_page_cache ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.candidate_release_import_receipts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.active_corpus_release_pointer_history ENABLE ROW LEVEL SECURITY;
 ALTER TABLE canonical_v2_staging.active_corpus_release_pointers ENABLE ROW LEVEL SECURITY;
@@ -3589,114 +3635,257 @@ CREATE OR REPLACE FUNCTION public.canonical_v2_active_product_query_results(
   p_page_size integer DEFAULT 20
 )
 RETURNS jsonb
-LANGUAGE sql
-STABLE
+LANGUAGE plpgsql
+VOLATILE
 SECURITY DEFINER
 SET search_path = pg_catalog, canonical_v2_staging
 SET statement_timeout = '2500ms'
 AS $$
-  WITH validated AS MATERIALIZED (
-    SELECT pointer.*
-    FROM canonical_v2_staging.active_corpus_release_pointers pointer
-    JOIN canonical_v2_staging.product_query_result_release_partitions partition
-      ON partition.serving_namespace_id = pointer.serving_namespace_id
-      AND partition.corpus_release_id = pointer.corpus_release_id
-      AND partition.candidate_manifest_id = pointer.candidate_manifest_id
-      AND partition.candidate_release_import_plan_id
-        = pointer.candidate_release_import_plan_id
-    WHERE p_environment = 'staging'
-      AND p_serving_namespace_id ~ '^[a-f0-9]{64}$'
-      AND p_corpus_release_id ~ '^[a-f0-9]{64}$'
-      AND p_product_query_definition_id ~ '^[a-f0-9]{64}$'
-      AND (
-        p_after_product_query_result_identity IS NULL
-        OR p_after_product_query_result_identity ~ '^[a-f0-9]{64}$'
-      )
-      AND p_page_size BETWEEN 1 AND 50
-      AND pointer.environment = p_environment
-      AND pointer.serving_namespace_id = p_serving_namespace_id
-      AND pointer.corpus_release_id = p_corpus_release_id
-  ), candidates AS MATERIALIZED (
-    SELECT
-      record.product_query_result_serving_record_id,
-      record.product_query_result_identity,
-      record.candidate_product_result_id,
-      record.canonical_payload
-    FROM validated pointer
-    JOIN canonical_v2_staging.product_query_result_release_partitions partition
-      ON partition.serving_namespace_id = pointer.serving_namespace_id
-      AND partition.corpus_release_id = pointer.corpus_release_id
-      AND partition.candidate_manifest_id = pointer.candidate_manifest_id
-      AND partition.candidate_release_import_plan_id
-        = pointer.candidate_release_import_plan_id
+DECLARE
+  active_pointer canonical_v2_staging.active_corpus_release_pointers%ROWTYPE;
+  result jsonb;
+  cached_result jsonb;
+  exact_query_semantics jsonb;
+  authorisation_scope jsonb;
+  capacity_manifest jsonb;
+  route_budget_manifest jsonb;
+  cache_budget_manifest jsonb;
+  capacity_manifest_id text;
+  capacity_manifest_payload_digest text;
+  route_budget_manifest_id text;
+  route_budget_manifest_payload_digest text;
+  cache_budget_manifest_id text;
+  cache_budget_manifest_payload_digest text;
+  authorisation_scope_id text;
+  query_lock_id bigint;
+BEGIN
+  IF p_environment IS DISTINCT FROM 'staging'
+    OR p_serving_namespace_id !~ '^[a-f0-9]{64}$'
+    OR p_corpus_release_id !~ '^[a-f0-9]{64}$'
+    OR p_product_query_definition_id !~ '^[a-f0-9]{64}$'
+    OR (p_after_product_query_result_identity IS NOT NULL
+      AND p_after_product_query_result_identity !~ '^[a-f0-9]{64}$')
+    OR p_page_size IS NULL OR p_page_size NOT BETWEEN 1 AND 50 THEN
+    RAISE EXCEPTION 'invalid active Product query request' USING ERRCODE = '22023';
+  END IF;
+
+  -- A release must be admitted again for every request. A cache entry never
+  -- has authority by itself.
+  SELECT pointer.* INTO active_pointer
+  FROM canonical_v2_staging.active_corpus_release_pointers pointer
+  JOIN canonical_v2_staging.product_query_result_release_partitions partition
+    ON partition.serving_namespace_id = pointer.serving_namespace_id
+    AND partition.corpus_release_id = pointer.corpus_release_id
+    AND partition.candidate_manifest_id = pointer.candidate_manifest_id
+    AND partition.candidate_release_import_plan_id = pointer.candidate_release_import_plan_id
+  WHERE pointer.environment = p_environment
+    AND pointer.serving_namespace_id = p_serving_namespace_id
+    AND pointer.corpus_release_id = p_corpus_release_id;
+  IF active_pointer.pointer_id IS NULL THEN
+    RAISE EXCEPTION 'Product query release is not actively admitted' USING ERRCODE = '02000';
+  END IF;
+
+  capacity_manifest := jsonb_build_object(
+    'schema_version', 'CAPACITY_MANIFEST/V1', 'stable_id', 'CAPACITY_MANIFEST',
+    'route_class', 'PRODUCT_QUERY_SERVING', 'exact_numeric_limit_bindings', jsonb_build_object(
+      'maximum_admission_database_calls', 1, 'maximum_route_serving_database_calls', 1,
+      'maximum_immediate_retries', 0));
+  route_budget_manifest := jsonb_build_object(
+    'schema_version', 'ROUTE_BUDGET_MANIFEST/V1', 'stable_id', 'ROUTE_BUDGET_MANIFEST',
+    'route_class', 'PRODUCT_QUERY_SERVING', 'exact_numeric_limit_bindings', jsonb_build_object(
+      'maximum_request_bytes', 32768, 'maximum_page_size', 50,
+      'maximum_initial_response_bytes', 1048576,
+      'maximum_database_rows_per_request', 51, 'maximum_http_rows_per_response', 50));
+  cache_budget_manifest := jsonb_build_object(
+    'schema_version', 'CACHE_BUDGET_MANIFEST/V1', 'stable_id', 'CACHE_BUDGET_MANIFEST',
+    'cache_class', 'PRODUCT_QUERY_SERVING', 'exact_numeric_limit_bindings', jsonb_build_object(
+      'maximum_value_ttl_seconds', 3600, 'maximum_cached_value_bytes', 1048576));
+  capacity_manifest_id := canonical_v2_staging.content_id('CAPACITY_MANIFEST/V1', capacity_manifest);
+  capacity_manifest_payload_digest := canonical_v2_staging.payload_digest(capacity_manifest);
+  route_budget_manifest_id := canonical_v2_staging.content_id('ROUTE_BUDGET_MANIFEST/V1', route_budget_manifest);
+  route_budget_manifest_payload_digest := canonical_v2_staging.payload_digest(route_budget_manifest);
+  cache_budget_manifest_id := canonical_v2_staging.content_id('CACHE_BUDGET_MANIFEST/V1', cache_budget_manifest);
+  cache_budget_manifest_payload_digest := canonical_v2_staging.payload_digest(cache_budget_manifest);
+  IF capacity_manifest_id IS NULL OR capacity_manifest_payload_digest IS NULL
+    OR route_budget_manifest_id IS NULL OR route_budget_manifest_payload_digest IS NULL
+    OR cache_budget_manifest_id IS NULL OR cache_budget_manifest_payload_digest IS NULL THEN
+    RAISE EXCEPTION 'Product query serving budget manifests are unset' USING ERRCODE = '23514';
+  END IF;
+
+  authorisation_scope := jsonb_build_object(
+    'schema_version', 'PRODUCT_QUERY_SERVING_AUTHORISATION_SCOPE/V1',
+    'database_role', session_user, 'active_pointer_id', active_pointer.pointer_id,
+    'candidate_manifest_id', active_pointer.candidate_manifest_id,
+    'candidate_release_import_plan_id', active_pointer.candidate_release_import_plan_id);
+  authorisation_scope_id := canonical_v2_staging.content_id(
+    'PRODUCT_QUERY_SERVING_AUTHORISATION_SCOPE/V1', authorisation_scope);
+  exact_query_semantics := jsonb_build_object(
+    'schema_version', 'PRODUCT_QUERY_SERVING_CACHE_KEY/V1',
+    'serving_namespace_id', p_serving_namespace_id, 'corpus_release_id', p_corpus_release_id,
+    'candidate_manifest_id', active_pointer.candidate_manifest_id,
+    'candidate_release_import_plan_id', active_pointer.candidate_release_import_plan_id,
+    'authorisation_scope_id', authorisation_scope_id,
+    'capacity_manifest_id', capacity_manifest_id,
+    'capacity_manifest_payload_digest', capacity_manifest_payload_digest,
+    'route_budget_manifest_id', route_budget_manifest_id,
+    'route_budget_manifest_payload_digest', route_budget_manifest_payload_digest,
+    'cache_budget_manifest_id', cache_budget_manifest_id,
+    'cache_budget_manifest_payload_digest', cache_budget_manifest_payload_digest,
+    'product_query_definition_id', p_product_query_definition_id,
+    'after_product_query_result_identity', p_after_product_query_result_identity,
+    'page_size', p_page_size);
+  IF octet_length(exact_query_semantics::text) > 32768 THEN
+    RAISE EXCEPTION 'Product query request exceeds its byte ceiling' USING ERRCODE = '54000';
+  END IF;
+
+  SELECT cache.response_payload INTO cached_result
+  FROM canonical_v2_staging.product_query_result_active_page_cache cache
+  WHERE cache.serving_namespace_id = p_serving_namespace_id
+    AND cache.corpus_release_id = p_corpus_release_id
+    AND cache.candidate_manifest_id = active_pointer.candidate_manifest_id
+    AND cache.candidate_release_import_plan_id = active_pointer.candidate_release_import_plan_id
+    AND cache.authorisation_scope_id = authorisation_scope_id
+    AND cache.capacity_manifest_id = capacity_manifest_id
+    AND cache.capacity_manifest_payload_digest = capacity_manifest_payload_digest
+    AND cache.route_budget_manifest_id = route_budget_manifest_id
+    AND cache.route_budget_manifest_payload_digest = route_budget_manifest_payload_digest
+    AND cache.cache_budget_manifest_id = cache_budget_manifest_id
+    AND cache.cache_budget_manifest_payload_digest = cache_budget_manifest_payload_digest
+    AND cache.product_query_definition_id = p_product_query_definition_id
+    AND cache.page_size = p_page_size
+    AND cache.after_product_query_result_identity = coalesce(p_after_product_query_result_identity, '')
+    AND cache.exact_query_semantics = exact_query_semantics
+    AND cache.expires_at > clock_timestamp();
+  IF cached_result IS NOT NULL THEN RETURN cached_result; END IF;
+
+  query_lock_id := hashtextextended(exact_query_semantics::text, 20260730);
+  IF NOT pg_try_advisory_xact_lock(query_lock_id) THEN
+    RAISE EXCEPTION 'Product query cache miss is already in flight' USING ERRCODE = '55P03';
+  END IF;
+  SELECT cache.response_payload INTO cached_result
+  FROM canonical_v2_staging.product_query_result_active_page_cache cache
+  WHERE cache.serving_namespace_id = p_serving_namespace_id
+    AND cache.corpus_release_id = p_corpus_release_id
+    AND cache.candidate_manifest_id = active_pointer.candidate_manifest_id
+    AND cache.candidate_release_import_plan_id = active_pointer.candidate_release_import_plan_id
+    AND cache.authorisation_scope_id = authorisation_scope_id
+    AND cache.product_query_definition_id = p_product_query_definition_id
+    AND cache.page_size = p_page_size
+    AND cache.after_product_query_result_identity = coalesce(p_after_product_query_result_identity, '')
+    AND cache.exact_query_semantics = exact_query_semantics
+    AND cache.expires_at > clock_timestamp();
+  IF cached_result IS NOT NULL THEN RETURN cached_result; END IF;
+
+  WITH candidates AS MATERIALIZED (
+    SELECT record.product_query_result_serving_record_id, record.product_query_result_identity,
+      record.candidate_product_result_id, record.canonical_payload
+    FROM canonical_v2_staging.product_query_result_release_partitions partition
     JOIN canonical_v2_staging.product_query_result_serving_records record
-      ON record.serving_namespace_id = pointer.serving_namespace_id
-      AND record.corpus_release_id = pointer.corpus_release_id
-      AND record.candidate_manifest_id = pointer.candidate_manifest_id
-      AND record.product_query_result_release_partition_manifest_id
-        = partition.product_query_result_release_partition_manifest_id
-      AND record.candidate_release_import_plan_id
-        = pointer.candidate_release_import_plan_id
-    WHERE record.product_query_definition_id
-        = p_product_query_definition_id
-      AND (
-        p_after_product_query_result_identity IS NULL
-        OR record.product_query_result_identity
-          > p_after_product_query_result_identity
-      )
-    ORDER BY record.product_query_result_identity
-    LIMIT p_page_size + 1
+      ON record.serving_namespace_id = active_pointer.serving_namespace_id
+      AND record.corpus_release_id = active_pointer.corpus_release_id
+      AND record.candidate_manifest_id = active_pointer.candidate_manifest_id
+      AND record.product_query_result_release_partition_manifest_id = partition.product_query_result_release_partition_manifest_id
+      AND record.candidate_release_import_plan_id = active_pointer.candidate_release_import_plan_id
+    WHERE partition.serving_namespace_id = active_pointer.serving_namespace_id
+      AND partition.corpus_release_id = active_pointer.corpus_release_id
+      AND partition.candidate_manifest_id = active_pointer.candidate_manifest_id
+      AND partition.candidate_release_import_plan_id = active_pointer.candidate_release_import_plan_id
+      AND record.product_query_definition_id = p_product_query_definition_id
+      AND (p_after_product_query_result_identity IS NULL
+        OR record.product_query_result_identity > p_after_product_query_result_identity)
+    ORDER BY record.product_query_result_identity LIMIT p_page_size + 1
   ), visible AS MATERIALIZED (
-    SELECT candidate.*
-    FROM candidates candidate
-    ORDER BY candidate.product_query_result_identity
-    LIMIT p_page_size
+    SELECT candidate.* FROM candidates candidate
+    ORDER BY candidate.product_query_result_identity LIMIT p_page_size
+  ), invalid_visible AS (
+    SELECT count(*)::integer AS count FROM visible candidate
+    WHERE jsonb_typeof(candidate.canonical_payload) IS DISTINCT FROM 'object'
+      OR (SELECT count(*) FROM jsonb_object_keys(candidate.canonical_payload)) <> 17
+      OR NOT candidate.canonical_payload ?& ARRAY[
+        'schema_version', 'product_query_result_identity', 'product_query_definition_id',
+        'approved_pm_data_version_id', 'candidate_release_manifest_id',
+        'candidate_release_manifest_payload_digest', 'domain_key', 'domain_result_definition',
+        'domain_result_identity', 'domain_result_payload', 'domain_result_payload_digest',
+        'domain_result_validation', 'domain_result_source_representation_kind', 'exact_citation',
+        'exact_detail_action', 'query_provenance', 'result_fields'
+      ]
+      OR candidate.canonical_payload->>'schema_version' IS DISTINCT FROM 'PRODUCT_QUERY_RESULT/V1'
+      OR candidate.canonical_payload->>'product_query_result_identity' IS DISTINCT FROM candidate.product_query_result_identity
+      OR candidate.canonical_payload->>'product_query_definition_id' IS DISTINCT FROM p_product_query_definition_id
+      OR candidate.canonical_payload->>'candidate_release_manifest_id' IS DISTINCT FROM active_pointer.candidate_manifest_id
+      OR candidate.canonical_payload->>'candidate_release_manifest_payload_digest' !~ '^[a-f0-9]{64}$'
+      OR candidate.canonical_payload->>'domain_result_identity' !~ '^[a-f0-9]{64}$'
+      OR candidate.canonical_payload->>'domain_result_payload_digest' !~ '^[a-f0-9]{64}$'
+      OR jsonb_typeof(candidate.canonical_payload->'domain_result_definition') IS DISTINCT FROM 'object'
+      OR jsonb_typeof(candidate.canonical_payload->'exact_citation') IS DISTINCT FROM 'object'
+      OR jsonb_typeof(candidate.canonical_payload->'exact_detail_action') IS DISTINCT FROM 'object'
+      OR jsonb_typeof(candidate.canonical_payload->'query_provenance') IS DISTINCT FROM 'object'
+      OR jsonb_typeof(candidate.canonical_payload->'result_fields') IS DISTINCT FROM 'array'
   ), page_payload AS (
-    SELECT
-      count(*)::integer AS page_count,
-      coalesce(
-        jsonb_agg(
-          jsonb_build_object(
-            'product_query_result_serving_record_id',
-              candidate.product_query_result_serving_record_id,
-            'product_query_result_identity',
-              candidate.product_query_result_identity,
-            'candidate_product_result_id',
-              candidate.candidate_product_result_id,
-            'canonical_payload',
-              candidate.canonical_payload
-          )
-          ORDER BY candidate.product_query_result_identity
-        ),
-        '[]'::jsonb
-      ) AS rows
+    SELECT count(*)::integer AS page_count, coalesce(jsonb_agg(jsonb_build_object(
+      'product_query_result_serving_record_id', candidate.product_query_result_serving_record_id,
+      'product_query_result_identity', candidate.product_query_result_identity,
+      'candidate_product_result_id', candidate.candidate_product_result_id,
+      'canonical_payload', candidate.canonical_payload
+    ) ORDER BY candidate.product_query_result_identity), '[]'::jsonb) AS rows
     FROM visible candidate
   )
   SELECT jsonb_build_object(
     'schema_version', 'PRODUCT_QUERY_RESULT_ACTIVE_PAGE/V1',
-    'serving_namespace_id', pointer.serving_namespace_id,
-    'corpus_release_id', pointer.corpus_release_id,
-    'candidate_release_import_plan_id',
-      pointer.candidate_release_import_plan_id,
-    'candidate_manifest_id', pointer.candidate_manifest_id,
+    'serving_namespace_id', active_pointer.serving_namespace_id,
+    'corpus_release_id', active_pointer.corpus_release_id,
+    'candidate_release_import_plan_id', active_pointer.candidate_release_import_plan_id,
+    'candidate_manifest_id', active_pointer.candidate_manifest_id,
     'product_query_definition_id', p_product_query_definition_id,
-    'page_count', page_payload.page_count,
-    'rows', page_payload.rows,
+    'page_count', page_payload.page_count, 'rows', page_payload.rows,
     'has_more', (SELECT count(*) FROM candidates) > p_page_size,
-    'next_after_product_query_result_identity', CASE
-      WHEN (SELECT count(*) FROM candidates) > p_page_size
-      THEN (
-        SELECT candidate.product_query_result_identity
-        FROM visible candidate
-        ORDER BY candidate.product_query_result_identity DESC
-        LIMIT 1
-      )
-      ELSE NULL
-    END
-  )
-  FROM validated pointer
-  CROSS JOIN page_payload
-  WHERE page_payload.page_count > 0
+    'next_after_product_query_result_identity', CASE WHEN (SELECT count(*) FROM candidates) > p_page_size THEN (
+      SELECT candidate.product_query_result_identity FROM visible candidate
+      ORDER BY candidate.product_query_result_identity DESC LIMIT 1) ELSE NULL END,
+    '_invalid_visible_rows', invalid_visible.count
+  ) INTO result FROM page_payload CROSS JOIN invalid_visible;
+  IF coalesce((result->>'_invalid_visible_rows')::integer, 0) <> 0 THEN
+    RAISE EXCEPTION 'active Product query contains an invalid result row' USING ERRCODE = '23514';
+  END IF;
+  result := result - '_invalid_visible_rows';
+  IF octet_length(result::text) > 1048576 THEN
+    RAISE EXCEPTION 'active Product query response exceeds its byte ceiling' USING ERRCODE = '54000';
+  END IF;
+
+  INSERT INTO canonical_v2_staging.product_query_result_active_page_cache (
+    serving_namespace_id, corpus_release_id, candidate_manifest_id, candidate_release_import_plan_id,
+    authorisation_scope_id, capacity_manifest_id, capacity_manifest_payload_digest,
+    route_budget_manifest_id, route_budget_manifest_payload_digest,
+    cache_budget_manifest_id, cache_budget_manifest_payload_digest,
+    product_query_definition_id, page_size, after_product_query_result_identity,
+    exact_query_semantics, response_payload, response_payload_bytes, expires_at
+  ) VALUES (
+    p_serving_namespace_id, p_corpus_release_id, active_pointer.candidate_manifest_id,
+    active_pointer.candidate_release_import_plan_id, authorisation_scope_id,
+    capacity_manifest_id, capacity_manifest_payload_digest,
+    route_budget_manifest_id, route_budget_manifest_payload_digest,
+    cache_budget_manifest_id, cache_budget_manifest_payload_digest,
+    p_product_query_definition_id, p_page_size, coalesce(p_after_product_query_result_identity, ''),
+    exact_query_semantics, result, octet_length(result::text), clock_timestamp() + interval '1 hour'
+  ) ON CONFLICT (
+    serving_namespace_id, corpus_release_id, candidate_manifest_id, candidate_release_import_plan_id,
+    authorisation_scope_id, product_query_definition_id, page_size, after_product_query_result_identity
+  ) DO UPDATE SET exact_query_semantics = EXCLUDED.exact_query_semantics,
+    response_payload = EXCLUDED.response_payload,
+    response_payload_bytes = EXCLUDED.response_payload_bytes,
+    created_at = clock_timestamp(), expires_at = EXCLUDED.expires_at
+  WHERE canonical_v2_staging.product_query_result_active_page_cache.capacity_manifest_id = EXCLUDED.capacity_manifest_id
+    AND canonical_v2_staging.product_query_result_active_page_cache.capacity_manifest_payload_digest = EXCLUDED.capacity_manifest_payload_digest
+    AND canonical_v2_staging.product_query_result_active_page_cache.route_budget_manifest_id = EXCLUDED.route_budget_manifest_id
+    AND canonical_v2_staging.product_query_result_active_page_cache.route_budget_manifest_payload_digest = EXCLUDED.route_budget_manifest_payload_digest
+    AND canonical_v2_staging.product_query_result_active_page_cache.cache_budget_manifest_id = EXCLUDED.cache_budget_manifest_id
+    AND canonical_v2_staging.product_query_result_active_page_cache.cache_budget_manifest_payload_digest = EXCLUDED.cache_budget_manifest_payload_digest;
+  DELETE FROM canonical_v2_staging.product_query_result_active_page_cache cache
+  WHERE cache.ctid IN (
+    SELECT expired.ctid FROM canonical_v2_staging.product_query_result_active_page_cache expired
+    WHERE expired.expires_at <= clock_timestamp() ORDER BY expired.expires_at LIMIT 100);
+  RETURN result;
+END;
 $$;
 
 CREATE OR REPLACE FUNCTION public.canonical_v2_active_review_context(
@@ -4110,6 +4299,8 @@ REVOKE ALL ON TABLE canonical_v2_staging.market_metric_slot_exclusions
 REVOKE ALL ON TABLE canonical_v2_staging.shared_serving_rows
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON TABLE canonical_v2_staging.query_response_cache
+  FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
+REVOKE ALL ON TABLE canonical_v2_staging.product_query_result_active_page_cache
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
 REVOKE ALL ON TABLE canonical_v2_staging.reviewed_source_specific_serving_rows
   FROM PUBLIC, anon, authenticated, service_role, canonical_v2_serving, canonical_v2_writer;
