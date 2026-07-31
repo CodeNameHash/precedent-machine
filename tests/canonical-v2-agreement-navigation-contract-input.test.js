@@ -58,6 +58,10 @@ function members() {
       + 'result-composition-evidence.v1.json',
     ),
     load(
+      'agreement/serving-exact-detail-action-definitions/'
+      + 'result-component-claim-evidence.v1.json',
+    ),
+    load(
       'agreement/predicates/'
       + 'qxo-capitalisation-representation-predicate-catalogue.v1.json',
     ),
@@ -102,7 +106,7 @@ test('exposes separate representations and interim-operating-covenants topics', 
   ]);
 });
 
-test('requires exact result definitions and the composition action for both topics', () => {
+test('requires each result definition and its exact profile action', () => {
   const definition = member(
     members(),
     AGREEMENT_NAVIGATION_STABLE_ID,
@@ -119,7 +123,7 @@ test('requires exact result definitions and the composition action for both topi
   );
   assert.equal(
     definition.admission_contract
-      .target_capex_pattern_requires_result_composition_evidence_v1,
+      .target_capex_pattern_requires_result_component_claim_evidence_v1,
     true,
   );
   assert.equal(definition.hierarchy_contract.display_only_entry_permitted, false);
@@ -186,6 +190,28 @@ test('rejects result, action, authority and duplicate navigation drift', () => {
     () => validateAuthoredAgreementNavigationInputs(actionDrift),
     (error) => error.code
       === 'AGREEMENT_NAVIGATION_DETAIL_ACTION_DEPENDENCY_INVALID',
+  );
+
+  const claimActionDrift = clone(members());
+  member(claimActionDrift, 'RESULT_COMPONENT_CLAIM_EVIDENCE')
+    .canonical_value.object_authorisation_predicate =
+      'PARENT_SELECTED_RESULT_COMPOSITION_ONLY';
+  assert.throws(
+    () => validateAuthoredAgreementNavigationInputs(claimActionDrift),
+    (error) => error.code
+      === 'AGREEMENT_NAVIGATION_DETAIL_ACTION_DEPENDENCY_INVALID',
+  );
+
+  const predicateActionSwap = clone(members());
+  member(
+    predicateActionSwap,
+    AGREEMENT_INTERIM_OPERATING_COVENANT_PREDICATE_CATALOGUE_STABLE_ID,
+  ).canonical_value.definition.predicate_admissions[0]
+    .exact_detail_action_stable_id = TARGET_DETAIL_ACTION_STABLE_ID;
+  assert.throws(
+    () => validateAuthoredAgreementNavigationInputs(predicateActionSwap),
+    (error) => error.code
+      === 'AGREEMENT_NAVIGATION_PREDICATE_DEPENDENCY_INVALID',
   );
 
   const authorityDrift = clone(members());

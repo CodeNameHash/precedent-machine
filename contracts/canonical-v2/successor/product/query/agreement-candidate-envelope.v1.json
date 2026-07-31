@@ -17,6 +17,8 @@
         "source_validator_version",
         "source_release_schema_version",
         "provision_row_schema_version",
+        "exact_detail_action_stable_id",
+        "exact_detail_action_version",
         "ordered_metric_slots",
         "product_membership"
       ],
@@ -49,6 +51,8 @@
           "source_validator_version": 1,
           "source_release_schema_version": "QXO_CAPITALISATION_CROSS_VIEW_RELEASE_F28/V1",
           "provision_row_schema_version": "CAPITALISATION_SHARED_PROVISION_ROW_F28/V1",
+          "exact_detail_action_stable_id": "RESULT_COMPOSITION_EVIDENCE",
+          "exact_detail_action_version": 1,
           "ordered_metric_slots": [
             {"ordinal":0,"metric_key":"REPRESENTATION_ACCURACY_STANDARD","value_slot_key":"CAPITALISATION_CLAUSE_B_LIMBS_I_III","subject_terminal_kind":"MARKET_OBSERVATION"},
             {"ordinal":1,"metric_key":"REPRESENTATION_ACCURACY_EXCEPTION","value_slot_key":"CAPITALISATION_CLAUSE_B_LIMBS_I_III","subject_terminal_kind":"MARKET_OBSERVATION"},
@@ -79,6 +83,8 @@
           "source_validator_version": 1,
           "source_release_schema_version": "REVIEWED_CANONICAL_MAPPING/V1",
           "provision_row_schema_version": "SHARED_SERVING_ROW/V1",
+          "exact_detail_action_stable_id": "RESULT_COMPONENT_CLAIM_EVIDENCE",
+          "exact_detail_action_version": 1,
           "ordered_metric_slots": [
             {"ordinal":0,"metric_key":"IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE","value_slot_key":"CAPEX_THRESHOLD","subject_terminal_kind":"MARKET_OBSERVATION"}
           ],
