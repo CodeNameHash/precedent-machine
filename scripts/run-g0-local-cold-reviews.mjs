@@ -205,7 +205,7 @@ async function runLane({ lane, runRoot, exactSpecificationRoot, privateKey, comm
       frozen_specification: {
         manifest_id: 'codex-program-specification-manifest/v1',
         manifest_digest: sha256(manifestBytes),
-        file_count: SPEC_PATHS.length,
+        file_count: orderedSpecificationMembers.length,
         ordered_members: orderedSpecificationMembers,
         immutable: true,
       },
