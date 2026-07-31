@@ -58,17 +58,24 @@ test('governs the exact non-authorising Metsera materialisation-to-admission bri
     'schema_version', 'process_phrasebook_admission_id', 'materialisation_input', 'materialisation_receipt',
     'materialisation_receipt_id', 'process_admission_input',
     'process_admission_receipt', 'candidate_release_binding',
+    'pilot_product_authority_context', 'pilot_product_authority_input',
     'product_query_definition_id', 'adapter_state', 'authority_state',
     'authority_limits',
   ]);
   assert.deepEqual(value.definition.adapter_receipt_contract.identity_inputs, [
     'materialisation_input', 'materialisation_receipt', 'materialisation_receipt_id',
     'process_admission_input', 'process_admission_receipt',
-    'candidate_release_binding', 'product_query_definition_id',
+    'candidate_release_binding', 'pilot_product_authority_context',
+    'pilot_product_authority_input', 'product_query_definition_id',
     'adapter_state', 'authority_state', 'authority_limits',
   ]);
   assert.equal(value.definition.adapter_receipt_contract.complete_candidate_release_binding_required, true);
-  assert.equal(value.definition.adapter_receipt_contract.product_query_definition_id_derivation, 'DERIVED_FROM_COMPLETE_CANDIDATE_RELEASE_BOUND_ADMISSION_INPUT');
+  assert.equal(value.definition.adapter_receipt_contract.complete_pilot_product_authority_context_required, true);
+  assert.equal(value.definition.adapter_receipt_contract.complete_pilot_product_authority_input_required, true);
+  assert.equal(
+    value.definition.adapter_receipt_contract.product_query_definition_id_derivation,
+    'DERIVED_FROM_COMPLETE_CANDIDATE_RELEASE_BOUND_ADMISSION_EVIDENCE_AND_VALIDATED_PILOT_PRODUCT_AUTHORITY',
+  );
   assert.equal(value.definition.adapter_receipt_contract.authority_state, 'NOT_GRANTED');
   assert.deepEqual(new Set(Object.values(value.definition.adapter_receipt_contract.authority_limits)), new Set(['NONE']));
   assert.equal(value.definition.lineage_preservation_contract.exact_utf8_bytes_preserved, true);

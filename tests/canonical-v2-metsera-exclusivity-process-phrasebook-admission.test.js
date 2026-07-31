@@ -121,6 +121,8 @@ test('derives admission-only state from the materialisation receipt', () => {
   assert.match(source, /NOT_RELEASE_BOUND/);
   assert.match(source, /eventDateFromReceipt/);
   assert.match(source, /validateProcessExclusivityPilotMaterialisation/);
+  assert.match(source, /validateProcessPilotAdmissionAdapterContractInput/);
+  assert.match(source, /authority_state:\s*'NOT_GRANTED'/);
   assert.doesNotMatch(source, /metsera-gold-evidence|loadSealedMetseraGoldEvidence|exclusivityGold/);
   assert.doesNotMatch(source, /buildMetseraAuthorityBoundProcessAdmission/);
   assert.doesNotMatch(source, /buildFixtureCandidateRelease/);

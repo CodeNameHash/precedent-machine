@@ -63,6 +63,8 @@
         "process_admission_input",
         "process_admission_receipt",
         "candidate_release_binding",
+        "pilot_product_authority_context",
+        "pilot_product_authority_input",
         "product_query_definition_id",
         "adapter_state",
         "authority_state",
@@ -75,6 +77,8 @@
         "process_admission_input",
         "process_admission_receipt",
         "candidate_release_binding",
+        "pilot_product_authority_context",
+        "pilot_product_authority_input",
         "product_query_definition_id",
         "adapter_state",
         "authority_state",
@@ -85,12 +89,14 @@
       "full_process_admission_input_required": true,
       "full_process_admission_receipt_required": true,
       "complete_candidate_release_binding_required": true,
+      "complete_pilot_product_authority_context_required": true,
+      "complete_pilot_product_authority_input_required": true,
       "candidate_release_binding_required_fields": [
         "candidate_release_manifest_id",
         "candidate_release_manifest_payload_digest",
         "corpus_release_id"
       ],
-      "product_query_definition_id_derivation": "DERIVED_FROM_COMPLETE_CANDIDATE_RELEASE_BOUND_ADMISSION_INPUT",
+      "product_query_definition_id_derivation": "DERIVED_FROM_COMPLETE_CANDIDATE_RELEASE_BOUND_ADMISSION_EVIDENCE_AND_VALIDATED_PILOT_PRODUCT_AUTHORITY",
       "all_identity_inputs_canonical_bytes_required": true,
       "authority_state": "NOT_GRANTED",
       "authority_limits": {

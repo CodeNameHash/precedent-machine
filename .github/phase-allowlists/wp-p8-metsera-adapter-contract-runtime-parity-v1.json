@@ -1,0 +1,24 @@
+{
+  "phase": "WP-P8-METSERA-ADAPTER-CONTRACT-RUNTIME-PARITY-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p8-metsera-adapter-contract-runtime-parity-v1.json",
+    "contracts/canonical-v2/successor/manifest.json",
+    "contracts/canonical-v2/successor/process/results/metsera-exclusivity-process-phrasebook-admission-adapter.v1.json",
+    "lib/canonical-v2/metsera-exclusivity-process-phrasebook-admission-adapter-contract-input-validator.js",
+    "lib/canonical-v2/metsera-exclusivity-process-phrasebook-admission.js",
+    "tests/canonical-v2-metsera-exclusivity-process-phrasebook-admission-adapter-contract.test.js",
+    "tests/canonical-v2-metsera-exclusivity-process-phrasebook-admission.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "components/**",
+    "data/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Makes the Metsera adapter runtime match its governed source, authority and identity contract. It grants no extraction, query, database, writer, serving, release, import, activation, production or contract-freeze authority."
+}
