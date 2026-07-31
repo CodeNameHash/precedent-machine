@@ -1,0 +1,87 @@
+{
+  "$schema_note": "Data-only manifest for scripts/regenerate-release-identity-chain.mjs. Each link describes one frozen release-identity fixture in the F21-F26/F28 chain. mode 'recompute' means the pinned fixture JSON is exactly the frozen return value of a pure build function exported by the named lib module, callable again from committed bytes on disk -- so it can be mechanically recomputed and (in --write mode) rewritten in full. mode 'report-only' means the fixture's pinning is produced by a multi-stage pipeline (an external runner script simulating market execution, or no committed pinned-digest fixture at all) that cannot be safely reproduced by calling a single pure function -- --write must skip these with a printed notice rather than guess.",
+  "links": [
+    {
+      "id": "f21",
+      "label": "V12 serving-admission readiness (F21)",
+      "fixture": "tests/fixtures/canonical-v2/v12-serving-admission-readiness-f21.json",
+      "mode": "recompute",
+      "module": "lib/canonical-v2/v12-serving-admission-readiness-f21.js",
+      "buildExport": "buildV12ServingAdmissionReadinessF21",
+      "inputsExport": "fixtureF21Inputs",
+      "inputsFixture": "tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-query-f20-staging-attestation.json",
+      "sourceEvidenceExport": "SOURCE_EVIDENCE_SPECS",
+      "sourceEvidenceDomain": "F21_SOURCE_SNAPSHOT/V1",
+      "upstream": [
+        "tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-query-f20-staging-attestation.json",
+        "lib/canonical-v2/contract-bundle.js",
+        "lib/canonical-v2/candidate-metric-definition-policy.js",
+        "lib/canonical-v2/qxo-no-shop-actions-f6-parser-bridge.js",
+        "lib/canonical-v2/qxo-no-shop-exception-source-binding-f6.js",
+        "lib/canonical-v2/qxo-no-shop-notice-review-materialisation-f7.js",
+        "lib/canonical-v2/qxo-no-shop-definition-relationships-f8.js",
+        "lib/canonical-v2/qxo-no-shop-notice-receipt-f10.js",
+        "lib/canonical-v2/qxo-no-shop-definition-control-f11.js",
+        "lib/canonical-v2/qxo-no-shop-definition-scope-closure-f13.js",
+        "lib/canonical-v2/qxo-no-shop-notice-revision-f14.js",
+        "lib/canonical-v2/qxo-no-shop-copy-clock-f15.js",
+        "lib/canonical-v2/market-cohort-query.js",
+        "lib/canonical-v2/shared-serving-row.js"
+      ],
+      "note": "buildV12ServingAdmissionReadinessF21(fixtureF21Inputs(readJson(F20 fixture))) is pure and deterministic: it re-derives every nested identity (source_snapshot_digest -> source_artifact_id -> serving_policy_snapshot_id -> v12_serving_admission_readiness_f21_id / canonical_payload_digest) from the F20 fixture plus the 11 SOURCE_EVIDENCE_SPECS carrier/validator files read fresh off disk. Fully mechanical."
+    },
+    {
+      "id": "f22",
+      "label": "Metric serving admission registry (F22)",
+      "fixture": "tests/fixtures/canonical-v2/metric-serving-admission-f22.json",
+      "mode": "recompute",
+      "module": "lib/canonical-v2/metric-serving-admission.js",
+      "buildExport": "buildMetricServingAdmissionRegistry",
+      "inputsExport": null,
+      "inputsFixture": null,
+      "sourceEvidenceExport": null,
+      "upstream": [
+        "lib/canonical-v2/contract-bundle.js",
+        "lib/canonical-v2/candidate-metric-definition-policy.js",
+        "lib/canonical-v2/serving-projection.js",
+        "lib/canonical-v2/metric-serving-admission.js"
+      ],
+      "note": "buildMetricServingAdmissionRegistry() takes no arguments: contract compilation is deterministic and the F19/F20/F21 upstream identities it binds to (F19_ID, F20_ID, F21_ID, F21_DIGEST) are literal constants embedded in metric-serving-admission.js itself. If those literals go stale relative to the current F21 fixture, buildCopyDeliveryMetricServingAdmission throws 'F22 copy-delivery certification inputs have drifted' -- fixing that requires editing the lib literal (out of scope for this tool) before the fixture can be mechanically resynced."
+    },
+    {
+      "id": "f23",
+      "label": "Copy-delivery candidate release (F23)",
+      "fixture": "tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-release-f23-staging-attestation.json",
+      "mode": "report-only",
+      "note": "The candidate_release_bundle is produced historically by scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs, which executes a simulated market cohort request/result (compileFixtureContractV12, buildCopyDeliveryMetricServingAdmission, and a hand-authored 'sealed' cohort execution result) rather than a pure build(input) call over committed bytes alone. There is no single deterministic function this script can call with only file-read inputs to reproduce the bundle, so mechanical rewrite is unsafe here -- do not guess."
+    },
+    {
+      "id": "f24",
+      "label": "No-shop timing certification (F24)",
+      "fixture": "tests/fixtures/canonical-v2/qxo-no-shop-timing-f24-staging-attestation.json",
+      "mode": "report-only",
+      "note": "Same shape as F23: the timing_certification_bundle is produced by the staging runner script against simulated market cohort execution results, not by calling buildNoShopTimingCertificationF24 with disk-only inputs (the test file only validates the frozen fixture, it never rebuilds it). Report-only."
+    },
+    {
+      "id": "f25",
+      "label": "No-shop actions/exceptions certification (F25)",
+      "fixture": "tests/fixtures/canonical-v2/qxo-no-shop-actions-f25-staging-attestation.json",
+      "mode": "report-only",
+      "note": "Same shape as F23/F24: actions_certification_bundle depends on a simulated combined market request/result produced by the staging runner script, not a pure build(input) call over committed bytes. Report-only."
+    },
+    {
+      "id": "f26",
+      "label": "No-shop cross-view release (F26)",
+      "fixture": null,
+      "mode": "report-only",
+      "note": "F26 has no committed pinned-digest JSON fixture under tests/fixtures/canonical-v2. tests/canonical-v2-no-shop-cross-view-release-f26.test.js calls buildNoShopCrossViewReleaseF26({ f23_candidate_release, f24_timing_certification, f25_actions_certification }) live, sourcing f23/f24/f25 directly from their fixture files on every run -- there is no frozen fixture value to drift or rebind at this layer. Listed for completeness only."
+    },
+    {
+      "id": "f28",
+      "label": "QXO capitalisation product envelope (F28)",
+      "fixture": null,
+      "mode": "report-only",
+      "note": "No committed pinned-digest JSON fixture exists for F28 under tests/fixtures/canonical-v2 -- qxo-capitalisation-f27-inputs.js and qxo-capitalisation-f28-product-inputs.js are input-only fixtures (raw source data), not frozen build output with pinned content digests. Nothing to check or rewrite mechanically at this layer. Listed for completeness only, per the task's mention of F28."
+    }
+  ]
+}
