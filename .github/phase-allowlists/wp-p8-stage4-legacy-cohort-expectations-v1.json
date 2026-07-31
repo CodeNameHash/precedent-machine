@@ -1,0 +1,22 @@
+{
+  "phase": "WP-P8-STAGE4-LEGACY-COHORT-EXPECTATIONS-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p8-stage4-legacy-cohort-expectations-v1.json",
+    "tests/canonical-v2-corrected-no-shop-vertical-slice.test.js",
+    "tests/canonical-v2-p1-vertical-slice.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "lib/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Updates only legacy full-suite expectations after the approved release-wide cohort rule. A reviewed subject with the same cohort basis is included, and its membership receipt must bind to the stored cohort digest. This creates no runtime, contract, authority, serving, database, release activation or production change."
+}

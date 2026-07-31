@@ -442,12 +442,18 @@ test('one corrected no-shop claim closes from admitted source through writer, re
     (row) => row.governed_deal_key === LANDOS_DEAL_KEY,
   );
   const releasedMarket = releasedLandosRow.canonical_result.market_context;
-  assert.equal(releasedMarket.cohort.counts.comparable_deals, 1);
-  assert.equal(releasedMarket.cohort.counts.distribution_deals, 1);
+  assert.equal(releasedMarket.subject_cohort_membership.status, 'INCLUDED');
+  assert.equal(releasedMarket.subject_cohort_membership.exclusion_reason, null);
+  assert.equal(
+    releasedMarket.subject_cohort_membership.cohort_digest,
+    releasedMarket.cohort.cohort_digest,
+  );
+  assert.equal(releasedMarket.cohort.counts.comparable_deals, 2);
+  assert.equal(releasedMarket.cohort.counts.distribution_deals, 2);
   assert.deepEqual(releasedMarket.cohort.distribution, [{
     canonical_value: '1',
-    subject_count: 1,
-    deal_count: 1,
+    subject_count: 2,
+    deal_count: 2,
   }]);
   const queryProjection = release.query_records.find(
     (record) => record.row_serving_key === releasedLandosRow.row_serving_key,
@@ -463,7 +469,7 @@ test('one corrected no-shop claim closes from admitted source through writer, re
   const preparedMetric = prepared.data.byRow[prepared.row_key].metrics[NOTICE_METRIC];
   assert.equal(preparedMetric.subject.value, 1);
   assert.equal(preparedMetric.subject.label, '1 elapsed day');
-  assert.equal(preparedMetric.coverage.comparableCount, 1);
+  assert.equal(preparedMetric.coverage.comparableCount, 2);
   assert.equal(prepared.surface_bindings.QUERY.row_key, releasedLandosRow.row_serving_key);
 
   const queryRows = release.shared_rows

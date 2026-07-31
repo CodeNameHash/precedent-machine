@@ -280,7 +280,20 @@ test('P1 fixed fixtures close from admitted source through one write, release an
   assert.ok(qxoNoticeRow);
   assert.equal(landosNoticeRow.canonical_result.market_context.subject_observation.canonical_value, '1');
   assert.equal(qxoNoticeRow.canonical_result.market_context.subject_observation.canonical_value, '1');
-  assert.equal(landosNoticeRow.canonical_result.market_context.cohort.counts.comparable_deals, 1);
+  const landosNoticeMarket = landosNoticeRow.canonical_result.market_context;
+  assert.equal(landosNoticeMarket.subject_cohort_membership.status, 'INCLUDED');
+  assert.equal(landosNoticeMarket.subject_cohort_membership.exclusion_reason, null);
+  assert.equal(
+    landosNoticeMarket.subject_cohort_membership.cohort_digest,
+    landosNoticeMarket.cohort.cohort_digest,
+  );
+  assert.equal(landosNoticeMarket.cohort.counts.comparable_deals, 2);
+  assert.equal(landosNoticeMarket.cohort.counts.distribution_deals, 2);
+  assert.deepEqual(landosNoticeMarket.cohort.distribution, [{
+    canonical_value: '1',
+    subject_count: 2,
+    deal_count: 2,
+  }]);
 
   const noticeDetail = release.exact_detail_packages.find(
     (detailPackage) => detailPackage.row.row_serving_key === landosNoticeRow.row_serving_key,
