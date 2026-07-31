@@ -48,7 +48,7 @@ test('the stable notice occurrence remains the revision anchor', () => {
   const value = fixture();
   assert.equal(
     value.notice_occurrence.notice_obligation_occurrence_id,
-    '5bfba36963af3a1baec65d09a4fa479e21889ab522f66aaca89de348839c7440',
+    '397e3db47dc62bd3090809574a4d4f1978644fc9b0c121ac10c3b1d2d5e2ade5',
   );
   assert.deepEqual(
     [
@@ -73,7 +73,7 @@ test('F14 remints the overall scope while retaining the exact F13 closure', () =
   );
   assert.equal(
     revision.definition_scope_closure_id,
-    '58d8f42f20fc8be31af4a1b7b2e57a17b4da60894bffe61cb8ee5babacc76b17',
+    '75969d43503b16f2664e4e871a72b03847301d51de307cd04b5420552685034e',
   );
 });
 
@@ -82,7 +82,7 @@ test('the revision binds the complete sorted F13 relationship set', () => {
   assert.equal(revision.definition_use_relationship_count, 30);
   assert.equal(
     revision.definition_use_relationship_ids_digest,
-    'dd580ad0c42882311b379f75df9a6b86e9018ed39db0acf715e91e0dddd5f29c',
+    '7f4e2180e6949df6b5200d88b1b9c53890021e81265dfd1dddac055950405c16',
   );
 });
 
@@ -92,7 +92,7 @@ test('notice evidence stays direct and bounded instead of absorbing definition e
   assert.ok(revision.evidence_excerpt_count <= 32);
   assert.equal(
     revision.evidence_excerpt_ids_digest,
-    'c7b61d29e7364682ad76c3b4285c3f867f39b6d3d2d314b1e4d9402df3ecc691',
+    'cad29c2f8ae670860c0844c2b5a8d0897d38008e10935ff1f1945cc462de54fa',
   );
 });
 

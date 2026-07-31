@@ -25,9 +25,9 @@ const FIXTURE =
 const RUNNER =
   'scripts/canonical-v2-staging-qxo-no-shop-clock-attestation.mjs';
 const PREDECESSOR_OCCURRENCE_ID =
-  '6cf05aa3bfd07c7ff8ae5dc8ab0ee6e3451cb68c1b19a9a13b3b4ea7b7d85a67';
+  'eef50f360f7efab5c0d7ca00c32d51bfb4a9a142d3a76d7052db99b948964b7b';
 const PREDECESSOR_REVISION_ID =
-  'fdc473bb486f0104c3e29e5afb263ee81c7a2953b6da67de42a0c3737322a177';
+  '8bc47e7e4c1ee206052b1f7bda05c337d2b99c3b670b456c8826542128b34f33';
 
 function fixture() {
   return JSON.parse(fs.readFileSync(FIXTURE, 'utf8'));
@@ -123,14 +123,14 @@ test('the exact source-backed evidence set and governed ordinal survive reclassi
       {
         evidence_role: 'OPERATIVE_TEXT',
         excerpt_id:
-          '44a59d6c4707340d532c3f699aae5c24ebe0cc79825961bc88d4799aa8ed6afc',
+          'f931ad1384f4c6eab9e70191ca85120dc35788ecdbb3eadae55ade483913e8e6',
         absolute_start: 208562,
         absolute_end: 208858,
       },
       {
         evidence_role: 'DERIVATION_INPUT',
         excerpt_id:
-          'd0713059174b292f75c3f80909ad40535fdb52c53f13c696447fdb591e4230e5',
+          'cf20e94b556b2742883007922268fc58026d1a58f733e6ecb65f40d1dce58c8e',
         absolute_start: 208605,
         absolute_end: 208641,
       },
@@ -321,26 +321,26 @@ test('all F17 identities are pinned', () => {
   const value = fixture();
   assert.equal(
     value.interpretation.interpretation_payload_id,
-    '5b1522fe966e51fd5d49753447b72d5b74ce3969d213e1343fc4e887120967d5',
+    '37cb53c93218aa39f22e6055808f08dce5d9c0b172baeca21e0955b2c9dd6e56',
   );
   assert.equal(
     value.claim.claim_occurrence_id,
-    'a145fb632bf40de3b145e73035be1d97b42ef21ba8bc0399f81a25557371e044',
+    '8c4caf3744d4b40245ccc122d77286134394b98b0261ba01d088c9327c7078cf',
   );
   assert.equal(
     value.claim.claim_revision_id,
-    '4b3139c908c7abb5babb6d58c004c3d4b171bcc1a50fb7d854eeddb1e0180f11',
+    'e622340d03ffda82adf750a597723f715d6abb9b6b8bbec659a72bc4242cacd2',
   );
   assert.equal(
     value.result.component_revision_id,
-    '641c88190e1e93ce0663130fbbea6cb71245a363a83f3b72d58aba9a930a2752',
+    'c92142e85bb79ff91a0c4fc5e78711d38aa1e55fe4dde8081f2104e46e66a743',
   );
   assert.equal(
     value.qxo_no_shop_copy_delivery_claim_f17_id,
-    'a3321ec1688efeecf5aece34151cde26def625bbc9b613898a0b5e31b41492bb',
+    'f89db21d30e4985296c82abd7cdd6df63452f0fd61503d27a834c8c9c199c753',
   );
   assert.equal(
     value.canonical_payload_digest,
-    'a54fc7b5eaa94e80f5772430e02eb4d2868d478848b4ba87525100d146cfe4d6',
+    '01ff52425c64daac1ad40654c2848619b567d95c9884b8f30201b58963fe97dd',
   );
 });

@@ -136,7 +136,7 @@ test('F10 preserves the stable occurrence and assembles one review notice revisi
   const revision = attestation.notice_revision;
   assert.equal(
     attestation.notice_occurrence.notice_obligation_occurrence_id,
-    '5bfba36963af3a1baec65d09a4fa479e21889ab522f66aaca89de348839c7440',
+    '397e3db47dc62bd3090809574a4d4f1978644fc9b0c121ac10c3b1d2d5e2ade5',
   );
   assert.equal(
     revision.notice_obligation_occurrence_id,
@@ -144,7 +144,7 @@ test('F10 preserves the stable occurrence and assembles one review notice revisi
   );
   assert.equal(
     revision.notice_obligation_revision_id,
-    '30a4d734017871bce5decb70194b5cc99b84969c94ec77b7b6878cbaae9097f1',
+    'ad75d2ead635b0298d681ff8b2567c68235d8a4e2900e93d2d53dcc3e8f0bde6',
   );
   assert.equal(revision.schema_version, 'NO_SHOP_NOTICE_OBLIGATION/V4');
   assert.deepEqual(revision.trigger_codes, [

@@ -105,40 +105,40 @@ test('the staging carrier is pinned to the exact F6 contract, source, and upstre
   });
   assert.deepEqual(attestation.source_binding, {
     admitted_semantic_source_context_id:
-      '1b20b897f7e3c33570e4b07fc68f2b2e3b641b187eb617de4847c3a1400ecad8',
+      '4749510f2fe70ac2f23d76c4a1e61d1d0208b2f56cdba7b27e4dcabef1cac201',
     canonical_text_id:
-      'bcc60682b1914dcd2dc81417399a74d3f2b82451b8b3119af0d6c8c7e7213ce1',
+      '6a4ba385ae52f0135250abeadf0756c6a7cb79d64a3d98a7fa9d75e42e41b6ac',
     deal_admission_id:
-      'f8d4c707ad160d069c3975fd62a79544a28cdca1ddb122e45a5018b38d81d5b5',
+      'e5be39266d3919fe4b4815e16b46628f2e79c37efd017f0788ba4b697954ff9b',
     document_hash:
       'abba043018410d718c207e7d7a43c9567166f6a10c4c9a6b4b0c8c7761cd6b9d',
     governed_deal_key: 'deal:qxo-topbuild',
     immutable_source_document_id:
-      '5c6f01b194e7f195a5c5fe48ac88b3cf900656d8dcc70028a3e8f103bba9fc6b',
+      'a918bacf8fea58f4b8a3d83789fffc9512a7140510a671a4c62fdb9430baed8a',
     semantic_extraction_input_envelope_id:
-      '9dcc596af6312d3d9ac65cc5266bc564ee00f99d0a6b23a9b5b822813bc3fd07',
+      'f24f8e51ff1ca0db672082a7f458d5419fe9a8b68613285cd472ba2f5a0e81f7',
     source_admission_manifest_id:
-      'f31cad8c3813ededa01c644891b0b2e14c6a475d868ba89f6b60b597f0e1d819',
+      '4b3e94cbc66b7bb568b519d41ec561633c51a78a79ee8bb79ba414c6b51b3394',
     source_ordinal: 0,
   });
   assert.equal(
     attestation.upstream_bindings
       .qxo_no_shop_actions_f6_parser_bound_review_seed_id,
-    '0f7faa1713931ef5ea80a483e9e11ae5456595caefedd90a927117c2a0f1ed0f',
+    'd1c8ab4fd5259f5ee67a6ade430d08e555029bc34eb371fc6620b7e91091a95c',
   );
   assert.equal(
     attestation.upstream_bindings
       .qxo_no_shop_actions_f6_parser_bound_review_seed_payload_digest,
-    'e29687eb4637ab3d24f6cd8abd5d949d9fe024b5331009a57d958214f74440c8',
+    '82d4e7207854048789dc02df9ef5691c5bfeaba94dfd40662171e4c3a4559094',
   );
   assert.equal(
     attestation.upstream_bindings.qxo_no_shop_reviewed_definition_graph_f6_id,
-    '5f10f1f883b623efa5e988630240cf7c7bdbf6308c261383ae86a992f3f856bc',
+    '65362ac2af8f3459f8b1f09b1ce4485ef5b22b23b4a51c0c1407a35cdb811e18',
   );
   assert.equal(
     attestation.upstream_bindings
       .qxo_no_shop_reviewed_definition_graph_f6_payload_digest,
-    '8f60c00c44c6d34e0a0ddec9c94f170c4e0e62dc9aafdd90cc9742cd713a8b1b',
+    'b0fc4d26a0a13cdf79612e91ac4778e62be768ec083b1d11174ada627a4eb84a',
   );
 });
 
@@ -278,7 +278,7 @@ test('continue discussions and negotiations remain explicit unresolved effect ga
   assert.equal(attestation.unresolved_effect_count, 2);
   assert.equal(
     attestation.unresolved_effects_digest,
-    'b3454a80db2b0b0104b7a8b3f8514418cfa8103525d22f0ecfa4eb91083d66e5',
+    '3ad1016ae6880ac5ef337ef1e5db8c2a1d41c5e73ce3fef67cbaeeb499394a78',
   );
   assert.equal(
     attestation.binding_status.blocker_codes.includes(

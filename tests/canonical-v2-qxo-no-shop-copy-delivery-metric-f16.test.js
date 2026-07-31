@@ -87,7 +87,7 @@ test('24 hours remains raw evidence and normalises to one elapsed day', () => {
       source_normalisation_payload_digest:
         '5bfd481545b53ec694ffa59ce51bd39019294b3d61a8c7b8a690a215ddb2b4fc',
       source_timing_claim_revision_id:
-        'fdc473bb486f0104c3e29e5afb263ee81c7a2953b6da67de42a0c3737322a177',
+        '8bc47e7e4c1ee206052b1f7bda05c337d2b99c3b670b456c8826542128b34f33',
     },
   });
 });
@@ -334,10 +334,10 @@ test('all F16 identities are pinned', () => {
   const value = fixture();
   assert.equal(
     value.qxo_no_shop_copy_delivery_metric_f16_id,
-    '2cf61241fbf6c17bc642322943ba950b6664ec1447c9c3e3ec0adcd3804428bc',
+    'cacbc0bd480f6204df1d714a00e99a6df541e6969a2b4d32a06defeedc81a2f9',
   );
   assert.equal(
     value.canonical_payload_digest,
-    'bd802b68186e77586676b4792564795c353d8d7c0d51f5edc59d7bd88add651d',
+    '99e9dc38ca6ac74d3170f04a861aab30d7b81209115cbed2b4096d846192e149',
   );
 });

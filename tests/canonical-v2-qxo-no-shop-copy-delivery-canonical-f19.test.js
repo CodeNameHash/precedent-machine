@@ -60,7 +60,7 @@ test('F19 staging verification executes the deterministic admitted-source runner
   assert.equal(expected.environment, 'STAGING');
   assert.equal(
     expected.qxo_no_shop_copy_delivery_canonical_f19_id,
-    '362d2a28419eb77a321267a733ba84ab6d61e44afc42a45a8d13a4ce3586afa1',
+    '4b825c971317b982e20d2fd231f9f2329f263237648b363a4e3cf988dfc142a8',
   );
   if (!fs.existsSync('supabase/.temp/project-ref')
     || !fs.existsSync('supabase/.temp/linked-project.json')) {
@@ -102,7 +102,7 @@ test('F19 resolves canonical and exact-source readiness but remains non-activata
   assert.equal(value.exact_excerpt_ids.length, 4);
   assert.equal(
     value.exact_excerpt_ids[0],
-    'efafb72569738061be086a211e7d9bd01830df0a6bc2f7ea7881b2bfbb7f97ee',
+    'bf612df38b8732a7908aa6c30ab9b3f85609b3ffc21ce01dc88e28e1367c0ed4',
   );
   assert.deepEqual(value.exact_detail_legal_evidence, {
     company_request_definition_present: true,

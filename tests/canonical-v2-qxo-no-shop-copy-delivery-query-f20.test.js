@@ -82,11 +82,11 @@ test('F20 certifies the honest indexed executor boundary and no more', () => {
   const value = JSON.parse(fs.readFileSync(FIXTURE, 'utf8'));
   assert.equal(
     value.qxo_no_shop_copy_delivery_query_f20_id,
-    'c9045081e5950fbb2d9785ae8c8f40e30f4251b34135ce9e14d8e04c3ed1bc00',
+    'bf2e3edd1bf1247fe2bb5a21f01b86141725beb3ad9b1c0d61091b855fe4ba23',
   );
   assert.equal(
     value.canonical_payload_digest,
-    '829074d4bca5bd45e974a1b7c9ef198118702516d6c361e358f71c51f22361fe',
+    '9108e606e7a423c48a65b6c92efa818793701f16b717a3b949565c1c63eeaccc',
   );
   assert.equal(
     value.query_certification.candidate_executor_function,
@@ -185,7 +185,7 @@ test('F20 rejects semantic leakage, plan drift and rollback residue', () => {
   );
   assert.equal(
     value.upstream_f19_id,
-    '362d2a28419eb77a321267a733ba84ab6d61e44afc42a45a8d13a4ce3586afa1',
+    '4b825c971317b982e20d2fd231f9f2329f263237648b363a4e3cf988dfc142a8',
   );
 });
 

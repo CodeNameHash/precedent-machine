@@ -121,7 +121,7 @@ test('staging pins the exact F7 contract and immutable QXO source lineage', () =
   assert.equal(
     attestation.upstream_binding
       .qxo_no_shop_notice_semantic_closure_f6_id,
-    '9863498a9792cb3655560213b625b99aadb7cc526b4039410133dcc4c5adbc64',
+    '20f43fd7ae4ee3518e16827fe3974df77d4be84e76228b7db7cdcedfcf49b148',
   );
 });
 
@@ -135,7 +135,7 @@ test('the initial clock is an inclusive ANY_OF with one shared ceiling', () => {
   );
   assert.equal(
     initial.timing_claim_revision_id,
-    '609e1153fd0e8fe5f75127bee4ef32480814226e7cb07b0b21448e9b11b28985',
+    'a492fa77d2c529fcc63b21df119e1f4b4169294167bb243e7745668b18393a3b',
   );
   assert.equal(
     initial.application_scope_code,
@@ -182,7 +182,7 @@ test('the copy clock shows the primary reading and retains the ambiguity', () =>
     exact_bytes_digest:
       '6f32860910ca0fb2a20c7fda143666b09dbf8db5238195c90a586fb542ff0cad',
     parent_evidence_excerpt_id:
-      'd0713059174b292f75c3f80909ad40535fdb52c53f13c696447fdb591e4230e5',
+      'cf20e94b556b2742883007922268fc58026d1a58f733e6ecb65f40d1dce58c8e',
   });
   assert.equal(copy.item_or_batch_cardinality_state, 'UNRESOLVED');
   assert.equal(

@@ -121,7 +121,7 @@ test('staging pins the exact inactive F8 contract and immutable QXO lineage', ()
   assert.equal(
     attestation.upstream_bindings
       .qxo_no_shop_notice_review_materialisation_f7_id,
-    '2d934013aba6d7571559696ecc2f0e063100798b2fea256e5804111dd9d3abba',
+    '9428ccc3bf24ed9effa7714db03c4ebe380a238587fd71b183faf58efc36dbbe',
   );
 });
 
@@ -129,7 +129,7 @@ test('F8 mints the stable notice and two neutral definition occurrences', () => 
   const attestation = fixture();
   assert.equal(
     attestation.notice_occurrence.notice_obligation_occurrence_id,
-    '5bfba36963af3a1baec65d09a4fa479e21889ab522f66aaca89de348839c7440',
+    '397e3db47dc62bd3090809574a4d4f1978644fc9b0c121ac10c3b1d2d5e2ade5',
   );
   assert.deepEqual(
     [

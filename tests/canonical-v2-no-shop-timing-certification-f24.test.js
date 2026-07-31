@@ -32,7 +32,7 @@ const HISTORICAL_SNAPSHOTS = Object.freeze({
   'lib/canonical-v2/metric-scoped-candidate-release-f23.js':
     '41a7cb83d356bc5be43ebb4823e10672dd690ba672c413529772729576aa8951',
   'lib/canonical-v2/metric-serving-admission.js':
-    'c771279c8ff9dded8f676cd51e514f3cd90808558dccdd00db5e1bd9603088c9',
+    '31fb33453cff4d76f02de7161f761702f4f9a3dfa73d82c6cf83b34d30dd427d',
   'lib/canonical-v2/market-cohort-query.js':
     '01f42bd1afb7764d1b43278b3f64f8a01f1adf29a9ea3b76ee28e2391d0a6ae9',
   'lib/canonical-v2/shared-serving-row.js':

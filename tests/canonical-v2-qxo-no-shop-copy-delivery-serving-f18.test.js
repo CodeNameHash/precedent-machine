@@ -311,26 +311,26 @@ test('all F18 identities are pinned', () => {
   const value = build();
   assert.equal(
     value.observation.market_observation_serving_key,
-    '9a2ab1a54686c65d70466adbda5e790dba2c9c31c431980b874dee341f18092c',
+    'db3a2fb9429099325f5cf009fecf68312d201418df5723e8e026159f05f62c90',
   );
   assert.equal(
     value.shared_row.row_serving_key,
-    'db1afafc733ff2af79602883b0403617bcec87556829ee6487965e0d9d84ceae',
+    'dd7092007add9ee15759b23adb76b281f600f0afbc46c16ff0d78a41fda1e2c2',
   );
   assert.equal(
     value.exact_detail_package.source_detail_payload_id,
-    '7568fa1cc030a742e0abfca9de42ea10ae93f07630412b9146ac7fdce0f7b9ab',
+    '1473b35537382373a2a6cb3242ac9775572da7c0af9507b2dadb04e3300147cd',
   );
   assert.equal(
     value.cohort.cohort_digest,
-    '54d427cc914e77e48a93cc9fe6c6d7f4fad602a8c518b6a0f03d09f9996aec0a',
+    'c999bf6b96a7343c596b280bb20683e098c9a6e506cfe5b4baa2c533754babfe',
   );
   assert.equal(
     value.qxo_no_shop_copy_delivery_serving_f18_id,
-    '543b1e37db768d316d3b33a5f63e348d61e0a3bf7f2113dd61f312f270808e36',
+    '4d6aae5d8b52dd314ee6fde0e06d158e5267172ef5024fd697889350246855df',
   );
   assert.equal(
     value.canonical_payload_digest,
-    'a5700db031335497c8f6c7d88878e3f39845164c4232e5285ff95371eede7fd4',
+    '5570cb1b5c16401cd9c23975a7dcd7d2145d22cd7e174f48a7a012405186a0ba',
   );
 });

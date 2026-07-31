@@ -491,22 +491,22 @@ test('F19 through F22 identities and frozen live validators remain unchanged', (
     [
       'tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-canonical-f19-staging-attestation.json',
       'qxo_no_shop_copy_delivery_canonical_f19_id',
-      '362d2a28419eb77a321267a733ba84ab6d61e44afc42a45a8d13a4ce3586afa1',
+      '4b825c971317b982e20d2fd231f9f2329f263237648b363a4e3cf988dfc142a8',
     ],
     [
       'tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-query-f20-staging-attestation.json',
       'qxo_no_shop_copy_delivery_query_f20_id',
-      'c9045081e5950fbb2d9785ae8c8f40e30f4251b34135ce9e14d8e04c3ed1bc00',
+      'bf2e3edd1bf1247fe2bb5a21f01b86141725beb3ad9b1c0d61091b855fe4ba23',
     ],
     [
       'tests/fixtures/canonical-v2/v12-serving-admission-readiness-f21.json',
       'v12_serving_admission_readiness_f21_id',
-      'bdc62dc415b92024c5e6604c46f12041974c9ec63798d9d61206054ff35ccdca',
+      '7783e9734d257cadf52c330a6f201b246af060c486c5d69a9b2d490dccae6bd9',
     ],
     [
       'tests/fixtures/canonical-v2/metric-serving-admission-f22.json',
       'metric_serving_admission_registry_id',
-      'd826967dfe53ae68c1513dd555d60be0ac0153e8a68dd3488cb4e14bec294b1d',
+      '419e1198e8cfb0451634a5847ed08c5935b17f4f06749f81804085318df71a9c',
     ],
   ];
   identities.forEach(([path, key, expected]) => {

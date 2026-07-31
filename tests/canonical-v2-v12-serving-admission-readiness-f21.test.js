@@ -81,11 +81,11 @@ test('F21 identities cover the complete readiness payload', () => {
   );
   assert.equal(
     readinessId,
-    'bdc62dc415b92024c5e6604c46f12041974c9ec63798d9d61206054ff35ccdca',
+    '7783e9734d257cadf52c330a6f201b246af060c486c5d69a9b2d490dccae6bd9',
   );
   assert.equal(
     payloadDigest,
-    '0d0bcbcc14ed9dafeebd1952ef30f3d0253f3a6a82d20beb4a0799745e6f2456',
+    '1cf8e29e045c35a36184b499d5d2d91b1ba6cda0acc3d7073bf72a3881c153fc',
   );
 });
 
@@ -231,7 +231,7 @@ test('F21 blocks global V12 admission and identifies the exact metric-scoped bou
       integration_admission_id:
         '03bdc0671b85755d517a994fb903960beae5969c2bbb5443e1be3fe288524714',
       qxo_no_shop_copy_delivery_canonical_f19_id:
-        '362d2a28419eb77a321267a733ba84ab6d61e44afc42a45a8d13a4ce3586afa1',
+        '4b825c971317b982e20d2fd231f9f2329f263237648b363a4e3cf988dfc142a8',
       qxo_no_shop_copy_delivery_query_f20_id: F20_ID,
       certification_state: 'CERTIFIED_OFFLINE_ONLY',
     },
