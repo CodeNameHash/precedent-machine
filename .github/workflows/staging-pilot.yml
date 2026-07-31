@@ -47,6 +47,10 @@ jobs:
         env:
           STAGING_DB_URL: ${{ secrets.STAGING_DB_URL }}
         run: |
+          if [ -z "$STAGING_DB_URL" ]; then
+            echo "::error::The STAGING_DB_URL repository secret is missing or empty. Add it under Settings > Secrets and variables > Actions > Repository secrets."
+            exit 1
+          fi
           node scripts/canonical-v2-staging-metsera-exclusivity-p8.mjs \
             --materialisation-input /tmp/metsera-pilot-inputs/materialisation-input.json \
             --materialisation-receipt /tmp/metsera-pilot-inputs/materialisation-receipt.json \
