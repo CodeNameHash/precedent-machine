@@ -158,6 +158,26 @@ test('staging SQL serves Product rows through one active release-pinned set quer
   assert.match(activeQuery, /Product query release is not actively admitted/);
   assert.match(activeQuery, /product_query_result_active_page_cache/);
   assert.match(activeQuery, /authorisation_scope_id/);
+  assert.match(
+    activeQuery,
+    /cache\.authorisation_scope_id = v_authorisation_scope_id/,
+  );
+  assert.doesNotMatch(
+    activeQuery,
+    /cache\.authorisation_scope_id = authorisation_scope_id/,
+  );
+  for (const column of [
+    'capacity_manifest_id',
+    'capacity_manifest_payload_digest',
+    'route_budget_manifest_id',
+    'route_budget_manifest_payload_digest',
+    'cache_budget_manifest_id',
+    'cache_budget_manifest_payload_digest',
+    'exact_query_semantics',
+  ]) {
+    assert.match(activeQuery, new RegExp(`cache\\.${column} = v_${column}`));
+    assert.doesNotMatch(activeQuery, new RegExp(`cache\\.${column} = ${column}`));
+  }
   assert.match(activeQuery, /capacity_manifest_payload_digest/);
   assert.match(activeQuery, /route_budget_manifest_payload_digest/);
   assert.match(activeQuery, /cache_budget_manifest_payload_digest/);

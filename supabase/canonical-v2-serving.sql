@@ -3645,18 +3645,18 @@ DECLARE
   active_pointer canonical_v2_staging.active_corpus_release_pointers%ROWTYPE;
   result jsonb;
   cached_result jsonb;
-  exact_query_semantics jsonb;
+  v_exact_query_semantics jsonb;
   authorisation_scope jsonb;
   capacity_manifest jsonb;
   route_budget_manifest jsonb;
   cache_budget_manifest jsonb;
-  capacity_manifest_id text;
-  capacity_manifest_payload_digest text;
-  route_budget_manifest_id text;
-  route_budget_manifest_payload_digest text;
-  cache_budget_manifest_id text;
-  cache_budget_manifest_payload_digest text;
-  authorisation_scope_id text;
+  v_capacity_manifest_id text;
+  v_capacity_manifest_payload_digest text;
+  v_route_budget_manifest_id text;
+  v_route_budget_manifest_payload_digest text;
+  v_cache_budget_manifest_id text;
+  v_cache_budget_manifest_payload_digest text;
+  v_authorisation_scope_id text;
   query_lock_id bigint;
 BEGIN
   IF p_environment IS DISTINCT FROM 'staging'
@@ -3700,15 +3700,15 @@ BEGIN
     'schema_version', 'CACHE_BUDGET_MANIFEST/V1', 'stable_id', 'CACHE_BUDGET_MANIFEST',
     'cache_class', 'PRODUCT_QUERY_SERVING', 'exact_numeric_limit_bindings', jsonb_build_object(
       'maximum_value_ttl_seconds', 3600, 'maximum_cached_value_bytes', 1048576));
-  capacity_manifest_id := canonical_v2_staging.content_id('CAPACITY_MANIFEST/V1', capacity_manifest);
-  capacity_manifest_payload_digest := canonical_v2_staging.payload_digest(capacity_manifest);
-  route_budget_manifest_id := canonical_v2_staging.content_id('ROUTE_BUDGET_MANIFEST/V1', route_budget_manifest);
-  route_budget_manifest_payload_digest := canonical_v2_staging.payload_digest(route_budget_manifest);
-  cache_budget_manifest_id := canonical_v2_staging.content_id('CACHE_BUDGET_MANIFEST/V1', cache_budget_manifest);
-  cache_budget_manifest_payload_digest := canonical_v2_staging.payload_digest(cache_budget_manifest);
-  IF capacity_manifest_id IS NULL OR capacity_manifest_payload_digest IS NULL
-    OR route_budget_manifest_id IS NULL OR route_budget_manifest_payload_digest IS NULL
-    OR cache_budget_manifest_id IS NULL OR cache_budget_manifest_payload_digest IS NULL THEN
+  v_capacity_manifest_id := canonical_v2_staging.content_id('CAPACITY_MANIFEST/V1', capacity_manifest);
+  v_capacity_manifest_payload_digest := canonical_v2_staging.payload_digest(capacity_manifest);
+  v_route_budget_manifest_id := canonical_v2_staging.content_id('ROUTE_BUDGET_MANIFEST/V1', route_budget_manifest);
+  v_route_budget_manifest_payload_digest := canonical_v2_staging.payload_digest(route_budget_manifest);
+  v_cache_budget_manifest_id := canonical_v2_staging.content_id('CACHE_BUDGET_MANIFEST/V1', cache_budget_manifest);
+  v_cache_budget_manifest_payload_digest := canonical_v2_staging.payload_digest(cache_budget_manifest);
+  IF v_capacity_manifest_id IS NULL OR v_capacity_manifest_payload_digest IS NULL
+    OR v_route_budget_manifest_id IS NULL OR v_route_budget_manifest_payload_digest IS NULL
+    OR v_cache_budget_manifest_id IS NULL OR v_cache_budget_manifest_payload_digest IS NULL THEN
     RAISE EXCEPTION 'Product query serving budget manifests are unset' USING ERRCODE = '23514';
   END IF;
 
@@ -3717,24 +3717,24 @@ BEGIN
     'database_role', session_user, 'active_pointer_id', active_pointer.pointer_id,
     'candidate_manifest_id', active_pointer.candidate_manifest_id,
     'candidate_release_import_plan_id', active_pointer.candidate_release_import_plan_id);
-  authorisation_scope_id := canonical_v2_staging.content_id(
+  v_authorisation_scope_id := canonical_v2_staging.content_id(
     'PRODUCT_QUERY_SERVING_AUTHORISATION_SCOPE/V1', authorisation_scope);
-  exact_query_semantics := jsonb_build_object(
+  v_exact_query_semantics := jsonb_build_object(
     'schema_version', 'PRODUCT_QUERY_SERVING_CACHE_KEY/V1',
     'serving_namespace_id', p_serving_namespace_id, 'corpus_release_id', p_corpus_release_id,
     'candidate_manifest_id', active_pointer.candidate_manifest_id,
     'candidate_release_import_plan_id', active_pointer.candidate_release_import_plan_id,
-    'authorisation_scope_id', authorisation_scope_id,
-    'capacity_manifest_id', capacity_manifest_id,
-    'capacity_manifest_payload_digest', capacity_manifest_payload_digest,
-    'route_budget_manifest_id', route_budget_manifest_id,
-    'route_budget_manifest_payload_digest', route_budget_manifest_payload_digest,
-    'cache_budget_manifest_id', cache_budget_manifest_id,
-    'cache_budget_manifest_payload_digest', cache_budget_manifest_payload_digest,
+    'authorisation_scope_id', v_authorisation_scope_id,
+    'capacity_manifest_id', v_capacity_manifest_id,
+    'capacity_manifest_payload_digest', v_capacity_manifest_payload_digest,
+    'route_budget_manifest_id', v_route_budget_manifest_id,
+    'route_budget_manifest_payload_digest', v_route_budget_manifest_payload_digest,
+    'cache_budget_manifest_id', v_cache_budget_manifest_id,
+    'cache_budget_manifest_payload_digest', v_cache_budget_manifest_payload_digest,
     'product_query_definition_id', p_product_query_definition_id,
     'after_product_query_result_identity', p_after_product_query_result_identity,
     'page_size', p_page_size);
-  IF octet_length(exact_query_semantics::text) > 32768 THEN
+  IF octet_length(v_exact_query_semantics::text) > 32768 THEN
     RAISE EXCEPTION 'Product query request exceeds its byte ceiling' USING ERRCODE = '54000';
   END IF;
 
@@ -3744,21 +3744,21 @@ BEGIN
     AND cache.corpus_release_id = p_corpus_release_id
     AND cache.candidate_manifest_id = active_pointer.candidate_manifest_id
     AND cache.candidate_release_import_plan_id = active_pointer.candidate_release_import_plan_id
-    AND cache.authorisation_scope_id = authorisation_scope_id
-    AND cache.capacity_manifest_id = capacity_manifest_id
-    AND cache.capacity_manifest_payload_digest = capacity_manifest_payload_digest
-    AND cache.route_budget_manifest_id = route_budget_manifest_id
-    AND cache.route_budget_manifest_payload_digest = route_budget_manifest_payload_digest
-    AND cache.cache_budget_manifest_id = cache_budget_manifest_id
-    AND cache.cache_budget_manifest_payload_digest = cache_budget_manifest_payload_digest
+    AND cache.authorisation_scope_id = v_authorisation_scope_id
+    AND cache.capacity_manifest_id = v_capacity_manifest_id
+    AND cache.capacity_manifest_payload_digest = v_capacity_manifest_payload_digest
+    AND cache.route_budget_manifest_id = v_route_budget_manifest_id
+    AND cache.route_budget_manifest_payload_digest = v_route_budget_manifest_payload_digest
+    AND cache.cache_budget_manifest_id = v_cache_budget_manifest_id
+    AND cache.cache_budget_manifest_payload_digest = v_cache_budget_manifest_payload_digest
     AND cache.product_query_definition_id = p_product_query_definition_id
     AND cache.page_size = p_page_size
     AND cache.after_product_query_result_identity = coalesce(p_after_product_query_result_identity, '')
-    AND cache.exact_query_semantics = exact_query_semantics
+    AND cache.exact_query_semantics = v_exact_query_semantics
     AND cache.expires_at > clock_timestamp();
   IF cached_result IS NOT NULL THEN RETURN cached_result; END IF;
 
-  query_lock_id := hashtextextended(exact_query_semantics::text, 20260730);
+  query_lock_id := hashtextextended(v_exact_query_semantics::text, 20260730);
   IF NOT pg_try_advisory_xact_lock(query_lock_id) THEN
     RAISE EXCEPTION 'Product query cache miss is already in flight' USING ERRCODE = '55P03';
   END IF;
@@ -3768,11 +3768,11 @@ BEGIN
     AND cache.corpus_release_id = p_corpus_release_id
     AND cache.candidate_manifest_id = active_pointer.candidate_manifest_id
     AND cache.candidate_release_import_plan_id = active_pointer.candidate_release_import_plan_id
-    AND cache.authorisation_scope_id = authorisation_scope_id
+    AND cache.authorisation_scope_id = v_authorisation_scope_id
     AND cache.product_query_definition_id = p_product_query_definition_id
     AND cache.page_size = p_page_size
     AND cache.after_product_query_result_identity = coalesce(p_after_product_query_result_identity, '')
-    AND cache.exact_query_semantics = exact_query_semantics
+    AND cache.exact_query_semantics = v_exact_query_semantics
     AND cache.expires_at > clock_timestamp();
   IF cached_result IS NOT NULL THEN RETURN cached_result; END IF;
 
@@ -3861,12 +3861,12 @@ BEGIN
     exact_query_semantics, response_payload, response_payload_bytes, expires_at
   ) VALUES (
     p_serving_namespace_id, p_corpus_release_id, active_pointer.candidate_manifest_id,
-    active_pointer.candidate_release_import_plan_id, authorisation_scope_id,
-    capacity_manifest_id, capacity_manifest_payload_digest,
-    route_budget_manifest_id, route_budget_manifest_payload_digest,
-    cache_budget_manifest_id, cache_budget_manifest_payload_digest,
+    active_pointer.candidate_release_import_plan_id, v_authorisation_scope_id,
+    v_capacity_manifest_id, v_capacity_manifest_payload_digest,
+    v_route_budget_manifest_id, v_route_budget_manifest_payload_digest,
+    v_cache_budget_manifest_id, v_cache_budget_manifest_payload_digest,
     p_product_query_definition_id, p_page_size, coalesce(p_after_product_query_result_identity, ''),
-    exact_query_semantics, result, octet_length(result::text), clock_timestamp() + interval '1 hour'
+    v_exact_query_semantics, result, octet_length(result::text), clock_timestamp() + interval '1 hour'
   ) ON CONFLICT (
     serving_namespace_id, corpus_release_id, candidate_manifest_id, candidate_release_import_plan_id,
     authorisation_scope_id, product_query_definition_id, page_size, after_product_query_result_identity

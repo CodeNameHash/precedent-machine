@@ -208,8 +208,8 @@ BEGIN
     OR first_page->>'has_more' IS DISTINCT FROM 'false'
     OR first_page->'next_after_product_query_result_identity' IS DISTINCT FROM 'null'::jsonb
     OR cache_row_count <> 1 OR rls IS DISTINCT FROM true OR direct_access IS DISTINCT FROM false
-    OR function_definition NOT LIKE '%SET search_path = pg_catalog, canonical_v2_staging%'
-    OR function_definition NOT LIKE '%SET statement_timeout = ''2500ms''%'
+    OR function_definition NOT LIKE '%SET search_path TO ''pg_catalog'', ''canonical_v2_staging''%'
+    OR function_definition NOT LIKE '%SET statement_timeout TO ''2500ms''%'
     OR function_definition NOT LIKE '%maximum_admission_database_calls'', 1%'
     OR function_definition NOT LIKE '%maximum_route_serving_database_calls'', 1%'
     OR function_definition NOT LIKE '%maximum_page_size'', 50%'
