@@ -329,6 +329,33 @@ same breath. `CITATION_DISAGREEMENT` carrying BOTH values, with no assumption
 about which side is wrong, is what surfaced this. A strict "not in text =
 hallucination" rule would have permanently mislabelled correct extractions.
 
+### P9 acceptance definitions drafted (2026-08-01)
+
+`docs/codex-program/P9-ACCEPTANCE-DEFINITIONS.md` proposes a mechanical
+acceptance definition for all 22 P9 gates. PROPOSAL ONLY —
+`programme-gates.yaml` is untouched; adoption is a separate deliberate step.
+
+Sobering summary: 1 HIGH / 8 MEDIUM / 13 LOW confidence, and **11 of 22 need
+Ben's ruling** on a genuine judgment call. Six gates (`P9_MKT_WORK`,
+`P9_NUMERIC`, `P9_STRUCTURED_CLAIMS`, `P9_PARTY_LINT`,
+`P9_SHADOW_REEXTRACTION`, `P9_IDENTITY_AND_DRIFT`) presuppose a canonical-v2
+corpus that does not exist and cannot run even in principle until the native
+extractor produces a real multi-deal candidate set. `P9_RENDER_PARITY` has a
+wrong-but-plausible answer already in the repo (`reports/PARITY-GATE-2026-07-15.md`
+is legacy M2 evidence, explicitly NOT P9 evidence). `P9_DEPLOYMENT_PARITY`'s
+existing acceptance block is unreachable: its named governing test is prose in
+`adversarial-tests.md`, and the only test referencing those IDs checks the
+strings exist in the markdown, not that the mechanism works.
+
+LATENT DEFECT FOUND AND VERIFIED, not fixed: `lib/programme-gates/governing-registry.js`
+hard-requires `schema: canonical-programme-gates/v1` (line 100) while the live
+`programme-gates.yaml` declares `v2`, so loading the real registry through it
+throws. Its consumers (`g0-status-readiness.js`,
+`containment-status-readiness.js`) belong to the retired signed-status
+machinery. No test exercises the path, so the drift is invisible. Candidate
+for deletion alongside the rest of the retired publication layer rather than
+repair — a decision, not a bug fix.
+
 ### P9 registry correction (2026-07-31, mechanically verified)
 
 `docs/codex-program/programme-gates.yaml` contains 22 P9 gates, not 25.
