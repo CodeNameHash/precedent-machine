@@ -1,5 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 
 const {
   APPLICATION_DEALS,
@@ -7,6 +8,7 @@ const {
 } = require('../__fixtures__/canonical-v2/multi-deal-candidate-release');
 const {
   buildFixtureCandidateRelease,
+  releaseWideMarketContext,
   validateCandidateReleaseBundle,
 } = require('../lib/canonical-v2/candidate-release');
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
@@ -74,16 +76,29 @@ test('QXO and Landos freeze into one bounded shared release and namespace', () =
   ));
   assert.equal(overlappingRows.length, 4);
   assert.equal(overlappingRows.every((row) => (
-    row.canonical_result.market_context.cohort.counts.comparable_deals === 1
-      && row.canonical_result.market_context.cohort.counts.distribution_deals === 1
-      && row.canonical_result.market_context.cohort.distribution[0].deal_count === 1
+    row.canonical_result.market_context.cohort.counts.comparable_deals === 2
+      && row.canonical_result.market_context.cohort.counts.distribution_deals === 2
+      && row.canonical_result.market_context.cohort.distribution[0].deal_count === 2
   )), true);
   const feeRow = release.shared_rows.find((row) => (
     row.row_kind === 'CANONICAL_RESULT'
       && row.canonical_result.market_context.metric_key === 'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE'
   ));
-  assert.equal(feeRow.canonical_result.market_context.cohort.counts.comparable_deals, 0);
-  assert.deepEqual(feeRow.canonical_result.market_context.cohort.distribution, []);
+  assert.equal(feeRow.canonical_result.market_context.cohort.counts.comparable_deals, 1);
+  assert.deepEqual(feeRow.canonical_result.market_context.cohort.distribution, [{
+    canonical_value: feeRow.canonical_result.market_context.subject_observation.canonical_value,
+    subject_count: 1,
+    deal_count: 1,
+  }]);
+  const iocRow = release.shared_rows.find((row) => (
+    row.row_kind === 'CANONICAL_RESULT'
+      && row.canonical_result.market_context.metric_key === 'IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE'
+  ));
+  assert.equal(iocRow.canonical_result.market_context.subject_cohort_membership.status, 'INCLUDED');
+  assert.equal(
+    iocRow.canonical_result.market_context.subject_cohort_membership.cohort_digest,
+    iocRow.canonical_result.market_context.cohort.cohort_digest,
+  );
 });
 
 test('the combined release preserves every exact-detail package and both directory entries', () => {
@@ -178,7 +193,7 @@ test('candidate validation rejects a validly re-signed row carrying its stale on
   const stale = clone(fixture.release);
   const row = stale.shared_rows.find((item) => (
     item.row_kind === 'CANONICAL_RESULT'
-      && item.canonical_result.market_context.metric_key === 'SELLER_TERMINATION_FEE_PERCENT_OF_DEAL_VALUE'
+      && item.canonical_result.market_context.metric_key === 'NO_SHOP_NOTICE_PERIOD_DAYS'
   ));
   const market = row.canonical_result.market_context;
   market.cohort.counts = {
@@ -206,4 +221,60 @@ test('candidate validation rejects a validly re-signed row carrying its stale on
     () => validateCandidateReleaseBundle(stale),
     /stale embedded market cohort statistics/,
   );
+});
+
+test('release-wide computation preserves a matching typed subject exclusion and rejects a stale receipt', () => {
+  const row = clone(fixture.release.shared_rows.find((item) => (
+    item.row_kind === 'CANONICAL_RESULT'
+      && item.canonical_result.market_context.metric_key === 'IOC_CAPEX_THRESHOLD_PERCENT_OF_DEAL_VALUE'
+  )));
+  const membership = row.canonical_result.market_context.subject_cohort_membership;
+  membership.status = 'EXCLUDED';
+  membership.exclusion_reason = 'NOT_COMPARABLE_UNDER_COHORT_RULE';
+  const { membership_receipt_id: _receiptId, ...receiptBody } = membership;
+  membership.membership_receipt_id = contentId(
+    'SUBJECT_COHORT_MEMBERSHIP_RECEIPT/V1',
+    receiptBody,
+  );
+  const excluded = releaseWideMarketContext({
+    row,
+    servingNamespaceId: fixture.servingNamespaceId,
+    observations: fixture.release.market_observations,
+    exclusions: fixture.release.market_exclusions,
+  });
+  assert.deepEqual(excluded.subject_cohort_membership, membership);
+  assert.equal(excluded.cohort.counts.comparable_deals, 0);
+  assert.deepEqual(excluded.cohort.distribution, []);
+
+  membership.cohort_digest = contentId('MARKET_COHORT/V1', 'stale-subject-receipt');
+  const { membership_receipt_id: _staleReceiptId, ...staleReceiptBody } = membership;
+  membership.membership_receipt_id = contentId(
+    'SUBJECT_COHORT_MEMBERSHIP_RECEIPT/V1',
+    staleReceiptBody,
+  );
+  assert.throws(
+    () => releaseWideMarketContext({
+      row,
+      servingNamespaceId: fixture.servingNamespaceId,
+      observations: fixture.release.market_observations,
+      exclusions: fixture.release.market_exclusions,
+    }),
+    /stale subject exclusion receipt/,
+  );
+});
+
+test('uses the exact release-wide subject-cohort inclusion boundary', () => {
+  const allowlistPath =
+    '.github/phase-allowlists/wp-p8-stage4-release-wide-subject-cohort-inclusion-v1.json';
+  const allowlist = JSON.parse(fs.readFileSync(allowlistPath, 'utf8'));
+  assert.equal(
+    allowlist.phase,
+    'WP-P8-STAGE4-RELEASE-WIDE-SUBJECT-COHORT-INCLUSION-V1',
+  );
+  assert.deepEqual(allowlist.allowed, [
+    allowlistPath,
+    'lib/canonical-v2/candidate-release.js',
+    'tests/canonical-v2-multi-deal-candidate-release.test.js',
+  ]);
+  assert.match(allowlist.note, /stale receipt fails closed/i);
 });

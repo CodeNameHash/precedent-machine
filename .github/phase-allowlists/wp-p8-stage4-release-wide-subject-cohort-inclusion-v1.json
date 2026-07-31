@@ -1,0 +1,21 @@
+{
+  "phase": "WP-P8-STAGE4-RELEASE-WIDE-SUBJECT-COHORT-INCLUSION-V1",
+  "required_work_class": "canonical_work_start",
+  "allowed": [
+    ".github/phase-allowlists/wp-p8-stage4-release-wide-subject-cohort-inclusion-v1.json",
+    "lib/canonical-v2/candidate-release.js",
+    "tests/canonical-v2-multi-deal-candidate-release.test.js"
+  ],
+  "denied": [
+    ".env*",
+    ".github/workflows/**",
+    "contracts/**",
+    "data/**",
+    "docs/**",
+    "pages/**",
+    "scripts/**",
+    "sql/**",
+    "supabase/**"
+  ],
+  "note": "Release-wide cohorts include a subject terminal with the same cohort basis. A typed subject exclusion remains only when its governed receipt matches the release-wide cohort digest; a stale receipt fails closed. This creates no production, database, extraction, writer, release activation or governance action."
+}
