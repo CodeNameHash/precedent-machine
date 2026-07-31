@@ -34,12 +34,16 @@ const {
   compileMetseraExclusivityProductPresentation,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-presentation');
 const {
-  buildMetseraExclusivityExecutedCohortEvidence,
   compileMetseraExclusivityProductSurfaces,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-surfaces');
 const {
   buildMetseraRealProcessAdmission,
 } = require('./fixtures/canonical-v2/metsera-real-process-admission');
+const {
+  executeMetseraTestCohort,
+} = require(
+  './fixtures/canonical-v2/metsera-external-cohort-execution',
+);
 const {
   PILOT_PRODUCT_AUTHORITY_CONTEXT_SCHEMA,
 } = require('../lib/canonical-v2/pilot-product-authority-context');
@@ -131,17 +135,10 @@ function metseraProcessWriteFixture() {
     authorityInput,
   );
   const presentation = compileMetseraExclusivityProductPresentation(row, resultSet);
-  const cohortEvidence =
-    buildMetseraExclusivityExecutedCohortEvidence(
-      productAdmission,
-      row,
-      {
-        execution_receipt_id: contentId(
-          'METSERA_TEST_COHORT_EXECUTION/V1',
-          row.product_row_receipt_id,
-        ),
-      },
-    );
+  const cohortEvidence = executeMetseraTestCohort(
+    productAdmission,
+    row,
+  );
   const surfaces = compileMetseraExclusivityProductSurfaces(
     productAdmission,
     row,
@@ -207,6 +204,33 @@ function rehashProcessCarrier(writeSet) {
     Buffer.from(canonicalJson(body), 'utf8'),
   );
   return writeSet;
+}
+
+function rehashProductSurfaces(surfaces) {
+  const surfaceBody = clone(surfaces);
+  delete surfaceBody.schema_version;
+  delete surfaceBody.product_surfaces_receipt_id;
+  surfaces.product_surfaces_receipt_id = contentId(
+    surfaces.schema_version,
+    surfaceBody,
+  );
+}
+
+function replaceMarketExecutionEvidence(surfaces, evidence) {
+  for (const surface of ['COMPARE', 'CORPUS_CONTEXT']) {
+    const binding = surfaces.surface_bindings[surface];
+    binding.cohort_request = clone(evidence.cohort_request);
+    binding.cohort_execution_input =
+      clone(evidence.cohort_execution_input);
+    binding.cohort_result = clone(evidence.cohort_result);
+    binding.cohort_execution_receipt =
+      clone(evidence.cohort_execution_receipt);
+    binding.subject_cohort_membership = clone(
+      evidence.cohort_result.subject_cohort_membership,
+    );
+    binding.independent_peer_count =
+      evidence.cohort_result.counts.independent_peer_count;
+  }
 }
 
 test('registers one staging-only candidate-result writer contract', () => {
@@ -310,6 +334,18 @@ test('the Process Product candidate writer requires the exact authority pair in 
   assert.equal(first.replayed, false);
   assert.equal(replay.replayed, true);
   assert.equal(repository.snapshot().productCandidateResults.length, 1);
+  const retained = repository.snapshot().productCandidateResults[0]
+    .complete_write_set.product_surfaces.surface_bindings.COMPARE;
+  const supplied = fixture.writeSet.domain_carrier.complete_write_set
+    .product_surfaces.surface_bindings.COMPARE;
+  for (const key of [
+    'cohort_request',
+    'cohort_execution_input',
+    'cohort_result',
+    'cohort_execution_receipt',
+  ]) {
+    assert.deepEqual(retained[key], supplied[key]);
+  }
 });
 
 test('rejects a correctly rehashed persisted materialisation receipt substitution', () => {
@@ -345,7 +381,37 @@ test('Metsera surfaces fail closed without executed cohort evidence', () => {
       fixture.authorityContext,
       fixture.authorityInput,
     ),
-    /executed cohort evidence is required/,
+    /cohort execution evidence is required/,
+  );
+});
+
+test('rejects locally fabricated execution proof in place of selected candidates', () => {
+  const fixture = metseraProcessWriteFixture();
+  const writeSet =
+    fixture.writeSet.domain_carrier.complete_write_set;
+  const fabricated = clone(
+    writeSet.product_surfaces.surface_bindings.COMPARE,
+  );
+  const cohortEvidence = {
+    cohort_request: fabricated.cohort_request,
+    cohort_execution_input: {
+      schema_version: 'METSERA_EXCLUSIVITY_COHORT_EXECUTION_INPUT/V1',
+      execution_receipt_id: 'f'.repeat(64),
+    },
+    cohort_result: fabricated.cohort_result,
+    cohort_execution_receipt: fabricated.cohort_execution_receipt,
+  };
+  assert.throws(
+    () => compileMetseraExclusivityProductSurfaces(
+      writeSet.product_admission,
+      writeSet.product_row,
+      writeSet.product_result_set,
+      writeSet.product_presentation,
+      fixture.authorityContext,
+      fixture.authorityInput,
+      cohortEvidence,
+    ),
+    /selected candidate cohort input fields are invalid/,
   );
 });
 
@@ -373,32 +439,99 @@ test('rejects a correctly rehashed untyped Metsera subject exclusion', () => {
   );
 });
 
-test('rejects a re-signed Metsera cohort receipt substitution', () => {
+test('rejects a re-signed Metsera cohort result inconsistent with its execution input', () => {
   const fixture = metseraProcessWriteFixture();
   const substituted = clone(fixture.writeSet);
   const surfaces = substituted.domain_carrier.complete_write_set
     .product_surfaces;
+  const evidence = {
+    cohort_request:
+      surfaces.surface_bindings.COMPARE.cohort_request,
+    cohort_execution_input:
+      surfaces.surface_bindings.COMPARE.cohort_execution_input,
+    cohort_result:
+      clone(surfaces.surface_bindings.COMPARE.cohort_result),
+    cohort_execution_receipt:
+      clone(
+        surfaces.surface_bindings.COMPARE.cohort_execution_receipt,
+      ),
+  };
+  evidence.cohort_result.counts.independent_peer_count = 1;
   const membership =
-    surfaces.surface_bindings.COMPARE.subject_cohort_membership;
-  membership.counts_digest = 'f'.repeat(64);
+    evidence.cohort_result.subject_cohort_membership;
+  membership.counts_digest = contentId(
+    'SUBJECT_COHORT_COUNTS/V1',
+    evidence.cohort_result.counts,
+  );
   const membershipBody = clone(membership);
   delete membershipBody.membership_receipt_id;
   membership.membership_receipt_id = contentId(
     'SUBJECT_COHORT_MEMBERSHIP_RECEIPT/V1',
     membershipBody,
   );
-  const surfaceBody = clone(surfaces);
-  delete surfaceBody.schema_version;
-  delete surfaceBody.product_surfaces_receipt_id;
-  surfaces.product_surfaces_receipt_id = contentId(
-    surfaces.schema_version,
-    surfaceBody,
+  const resultBody = clone(evidence.cohort_result);
+  delete resultBody.cohort_result_id;
+  evidence.cohort_result.cohort_result_id = contentId(
+    evidence.cohort_result.schema_version,
+    resultBody,
   );
+  const receipt = evidence.cohort_execution_receipt;
+  receipt.cohort_result_id = evidence.cohort_result.cohort_result_id;
+  receipt.counts_digest = membership.counts_digest;
+  receipt.membership_receipt_id = membership.membership_receipt_id;
+  const receiptBody = clone(receipt);
+  delete receiptBody.cohort_execution_receipt_id;
+  receipt.cohort_execution_receipt_id = contentId(
+    receipt.schema_version,
+    receiptBody,
+  );
+  replaceMarketExecutionEvidence(surfaces, evidence);
+  rehashProductSurfaces(surfaces);
   rehashProcessCarrier(substituted);
   assert.throws(
     () => validateProductCandidateResultWriteSet(substituted),
     (error) => error.code === 'INVALID_PRODUCT_CANDIDATE_RESULT_LINEAGE'
-      && /membership receipt|surface receipt/.test(error.details.cause),
+      && /result or receipt was changed|surface receipt/.test(
+        error.details.cause,
+      ),
+  );
+});
+
+test('rejects a content-addressed execution receipt substituted for the exact result', () => {
+  const fixture = metseraProcessWriteFixture();
+  const substituted = clone(fixture.writeSet);
+  const surfaces = substituted.domain_carrier.complete_write_set
+    .product_surfaces;
+  const evidence = {
+    cohort_request:
+      surfaces.surface_bindings.COMPARE.cohort_request,
+    cohort_execution_input:
+      surfaces.surface_bindings.COMPARE.cohort_execution_input,
+    cohort_result:
+      surfaces.surface_bindings.COMPARE.cohort_result,
+    cohort_execution_receipt:
+      clone(
+        surfaces.surface_bindings.COMPARE.cohort_execution_receipt,
+      ),
+  };
+  evidence.cohort_execution_receipt.cohort_result_id =
+    'f'.repeat(64);
+  const receiptBody = clone(evidence.cohort_execution_receipt);
+  delete receiptBody.cohort_execution_receipt_id;
+  evidence.cohort_execution_receipt.cohort_execution_receipt_id =
+    contentId(
+      evidence.cohort_execution_receipt.schema_version,
+      receiptBody,
+    );
+  replaceMarketExecutionEvidence(surfaces, evidence);
+  rehashProductSurfaces(surfaces);
+  rehashProcessCarrier(substituted);
+  assert.throws(
+    () => validateProductCandidateResultWriteSet(substituted),
+    (error) => error.code === 'INVALID_PRODUCT_CANDIDATE_RESULT_LINEAGE'
+      && /result or receipt was changed|surface receipt/.test(
+        error.details.cause,
+      ),
   );
 });
 

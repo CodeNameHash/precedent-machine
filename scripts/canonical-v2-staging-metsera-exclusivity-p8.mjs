@@ -32,10 +32,14 @@ const {
   '../lib/canonical-v2/metsera-exclusivity-product-presentation',
 );
 const {
-  buildMetseraExclusivityExecutedCohortEvidence,
   compileMetseraExclusivityProductSurfaces,
 } = require(
   '../lib/canonical-v2/metsera-exclusivity-product-surfaces',
+);
+const {
+  compileMetseraExclusivityCohortExecution,
+} = require(
+  '../lib/canonical-v2/metsera-exclusivity-cohort-executor',
 );
 const {
   canonicalJson,
@@ -415,10 +419,28 @@ function readRealMaterialisationInput() {
   return value;
 }
 
+function readExternalCohortValue(flag, label) {
+  const value = readRealMaterialisationValue(flag, label);
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    throw new Error(
+      `The ${label} file must contain one exact content-addressed object.`,
+    );
+  }
+  return value;
+}
+
 async function main() {
   const m1Permission = currentM1Permission();
   const materialisationInput = readRealMaterialisationInput();
   const materialisationReceipt = readRealMaterialisationReceipt();
+  const externalCohortRequest = readExternalCohortValue(
+    '--cohort-request',
+    'cohort-request',
+  );
+  const externalCohortExecutionInput = readExternalCohortValue(
+    '--cohort-execution-input',
+    'cohort-execution-input',
+  );
   const combinedPilotBaseRelease = buildCombinedPilotBaseRelease();
   const productAuthority = currentProductAuthority(
     combinedPilotBaseRelease.manifest,
@@ -480,21 +502,12 @@ async function main() {
       productResultSet,
     );
   const cohortEvidence =
-    buildMetseraExclusivityExecutedCohortEvidence(
-      productAdmission,
-      productRow,
-      {
-        execution_receipt_id: contentId(
-          'METSERA_P8_BOUNDED_COHORT_EXECUTION/V1',
-          {
-            materialisation_receipt_id:
-              realProcessAdmission.materialisation_receipt_id,
-            product_row_receipt_id:
-              productRow.product_row_receipt_id,
-          },
-        ),
-      },
-    );
+    compileMetseraExclusivityCohortExecution({
+      cohort_request: externalCohortRequest,
+      cohort_execution_input: externalCohortExecutionInput,
+      product_admission: productAdmission,
+      product_row: productRow,
+    });
   const productSurfaces =
     compileMetseraExclusivityProductSurfaces(
       productAdmission,

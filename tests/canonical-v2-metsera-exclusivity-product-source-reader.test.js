@@ -34,12 +34,16 @@ const {
   compileMetseraExclusivityProductPresentation,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-presentation');
 const {
-  buildMetseraExclusivityExecutedCohortEvidence,
   compileMetseraExclusivityProductSurfaces,
 } = require('../lib/canonical-v2/metsera-exclusivity-product-surfaces');
 const {
   buildMetseraRealProcessAdmission,
 } = require('./fixtures/canonical-v2/metsera-real-process-admission');
+const {
+  executeMetseraTestCohort,
+} = require(
+  './fixtures/canonical-v2/metsera-external-cohort-execution',
+);
 const {
   authority,
 } = require(
@@ -80,16 +84,7 @@ function validCandidate() {
   const presentation =
     compileMetseraExclusivityProductPresentation(row, resultSet);
   const cohortEvidence =
-    buildMetseraExclusivityExecutedCohortEvidence(
-      productAdmission,
-      row,
-      {
-        execution_receipt_id: contentId(
-          'METSERA_TEST_COHORT_EXECUTION/V1',
-          row.product_row_receipt_id,
-        ),
-      },
-    );
+    executeMetseraTestCohort(productAdmission, row);
   const surfaces = compileMetseraExclusivityProductSurfaces(
     productAdmission,
     row,
