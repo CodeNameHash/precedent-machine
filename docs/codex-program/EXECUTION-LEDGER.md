@@ -293,6 +293,42 @@ will silently cite the wrong text. The writer integration must either shift
 offsets to document-absolute (re-deriving `excerpt_id`) or assert the
 coordinate frame explicitly. A test must pin whichever is chosen.
 
+### Converter defect and the faithful/tolerant split (2026-08-01)
+
+The first live F28 run concluded the model had hallucinated citations like
+`3.1(b)(i)`. THAT CONCLUSION WAS WRONG and is corrected here. The document
+contains `3.1` 104 times; a real cross-reference reads
+`Section&nbsp;<B><I>&lrm;</I></B>3.1(b)(i)`. The canonical-v2 lexer decoded
+all numeric entities but only ~20 named ones, so `&lrm;` fell through and the
+literal string was emitted into canonical text, making "Section 3.1"
+unsearchable. The model quoted real bytes correctly; our converter corrupted
+them first.
+
+First fix attempt was also wrong: decoding zero-width marks to an empty
+string made matching work by DELETING real characters, which makes canonical
+text a lie about the document, stops quotes reproducing honestly, and shifts
+every later byte offset. The F19 drift check caught it —
+`reviewed-qxo-admitted-no-shop-actions-slice.js` anchors on a literal U+200E
+between "Article" and "VI", so those marks are load-bearing.
+
+SETTLED DESIGN — two layers, never collapse them:
+- **Canonical text is FAITHFUL.** Entities decode to their real codepoints and
+  are KEPT. The literal `&lrm;` never survives, but U+200E does.
+- **Matching is TOLERANT.** `lib/canonical-v2/zero-width-normalise.js` strips
+  zero-width and bidi marks at COMPARISON time only, returning offsets into
+  the untouched original so byte spans stay valid. Never use it to produce
+  anything stored, hashed or offset-indexed.
+
+Consequence of record: fixing the converter invalidates every source admitted
+under the old one. Content-addressed identity means an upstream correctness
+fix propagates to everything derived from it. That propagation is the system
+working, not failing.
+
+Method lesson: a verification that derives its own answer can be wrong in the
+same breath. `CITATION_DISAGREEMENT` carrying BOTH values, with no assumption
+about which side is wrong, is what surfaced this. A strict "not in text =
+hallucination" rule would have permanently mislabelled correct extractions.
+
 ### P9 registry correction (2026-07-31, mechanically verified)
 
 `docs/codex-program/programme-gates.yaml` contains 22 P9 gates, not 25.
