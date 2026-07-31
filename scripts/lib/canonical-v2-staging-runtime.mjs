@@ -27,7 +27,7 @@ const DEFAULT_BOUNDS = Object.freeze({
 const BOUND_RANGES = Object.freeze({
   statementTimeoutMs: Object.freeze([1, 120_000]),
   processTimeoutMs: Object.freeze([1, 180_000]),
-  maxSqlBytes: Object.freeze([1, 16 * 1024 * 1024]),
+  maxSqlBytes: Object.freeze([1, 48 * 1024 * 1024]),
   maxResponseBytes: Object.freeze([1, 6 * 1024 * 1024]),
   maxProcessBufferBytes: Object.freeze([1, 20 * 1024 * 1024]),
   maxDiagnosticChars: Object.freeze([1, 2_000]),

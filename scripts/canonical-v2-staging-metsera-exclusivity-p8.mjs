@@ -575,9 +575,10 @@ async function main() {
     bounds: {
       // The complete real materialisation input embeds the nine sealed
       // source documents (~5.8 MiB); the candidate write revalidates it in
-      // full, so the request bound must admit the write set plus wrapper.
-      maxSqlBytes: 12 * 1024 * 1024,
-      maxProcessBufferBytes: 14 * 1024 * 1024,
+      // full, and the conflicting-replay proof embeds the write set twice,
+      // so the request bound must admit two write sets plus wrapper.
+      maxSqlBytes: 32 * 1024 * 1024,
+      maxProcessBufferBytes: 20 * 1024 * 1024,
       maxResponseBytes: 6 * 1024 * 1024,
     },
   });
