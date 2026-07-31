@@ -1,0 +1,11 @@
+{
+  "phase": "WP-P8-AGREEMENT-PRODUCT-CENTRAL-INTEGRATION-V1",
+  "allowed": [
+    ".github/phase-allowlists/wp-p8-agreement-product-central-integration-v1.json",
+    "contracts/canonical-v2/successor/governance/canonical-bundle-input-required-kind-registry.v1.json",
+    "contracts/canonical-v2/successor/manifest.json",
+    "tests/canonical-v2-canonical-contract-bundle-current-root.test.js",
+    "tests/canonical-v2-canonical-contract-source-tree.test.js"
+  ],
+  "note": "Reconciles the exact successor manifest, required-kind counts and mechanical root assertions after the bounded P8 Agreement Product units. It grants no runtime, writer, serving, release, activation or production authority."
+}

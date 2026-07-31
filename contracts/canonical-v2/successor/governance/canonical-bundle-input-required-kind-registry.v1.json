@@ -13,8 +13,8 @@
     },
     {
       "object_kind": "AGREEMENT_PREDICATE_CONTRACT_INPUT",
-      "minimum_count": 1,
-      "maximum_count": 1,
+      "minimum_count": 2,
+      "maximum_count": 2,
       "allowed_schema_versions": [
         "AGREEMENT_PREDICATE_CONTRACT_INPUT/V1"
       ]
@@ -237,8 +237,8 @@
     },
     {
       "object_kind": "PRODUCT_QUERY_CONTRACT_INPUT",
-      "minimum_count": 3,
-      "maximum_count": 3,
+      "minimum_count": 5,
+      "maximum_count": 5,
       "allowed_schema_versions": [
         "PRODUCT_QUERY_CONTRACT_INPUT/V1"
       ]

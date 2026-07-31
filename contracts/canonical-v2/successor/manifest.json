@@ -309,7 +309,7 @@
       "object_kind": "AGREEMENT_NAVIGATION_CATALOGUE_INPUT",
       "stable_id": "AGREEMENT_NAVIGATION_DEFINITION_CATALOGUE",
       "schema_version": "AGREEMENT_NAVIGATION_CATALOGUE_INPUT/V1",
-      "canonical_bytes_digest": "62c1b58b5cd44ccbc3ac838172cd5f15f8913434fa1e51d31e0a816688504fb4"
+      "canonical_bytes_digest": "fcd27db1ee4d4388020b2fd6a1033fff05cb5c438bd2668ea3caa0b5a926b051"
     },
     {
       "relative_path": "agreement/no-shop-semantic-schema-inputs/no-shop-action-comparison-rollup.v1.json",
@@ -366,6 +366,13 @@
       "stable_id": "MONEY_DENOMINATOR_PRECISION_POLICY",
       "schema_version": "MONEY_DENOMINATOR_PRECISION_POLICY/V1",
       "canonical_bytes_digest": "4d7aa146615ca4c2ebf25f4dad10b97b05b36164b31e3e600fe220923cf36e3d"
+    },
+    {
+      "relative_path": "agreement/predicates/qxo-capex-restriction-predicate-catalogue.v1.json",
+      "object_kind": "AGREEMENT_PREDICATE_CONTRACT_INPUT",
+      "stable_id": "AGREEMENT_INTERIM_OPERATING_COVENANT_PREDICATE_CATALOGUE",
+      "schema_version": "AGREEMENT_PREDICATE_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "281ce720ee9326afd30f7b52c115234b956de40108b07d9746b1821b50a340ff"
     },
     {
       "relative_path": "agreement/predicates/qxo-capitalisation-representation-predicate-catalogue.v1.json",
@@ -512,7 +519,7 @@
       "object_kind": "AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT",
       "stable_id": "AGREEMENT_COMPARABLE_RESULT_ORDERING_PROJECTION",
       "schema_version": "AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT/V1",
-      "canonical_bytes_digest": "20a2deab111035f69468da9f10249473db0842976b0b277c0f83ebb6cd28d76c"
+      "canonical_bytes_digest": "f556e70c37e7ce6f231d8626c97c3ad1a48905de59ee3d45bb2eced2615b03ec"
     },
     {
       "relative_path": "agreement/relationship-definitions/brings-down.v3.json",
@@ -666,7 +673,7 @@
       "object_kind": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
       "stable_id": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY",
       "schema_version": "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY/V1",
-      "canonical_bytes_digest": "943dcfd1acd918f8af411f0dcbbe6127e53646d05833cdd81c2e547698bd6cc8"
+      "canonical_bytes_digest": "a4768f79a3f4e56fedf5ca26737645009cacd198ba84825fb76896dca667f0bf"
     },
     {
       "relative_path": "governance/residuals/governed-residual-disposition.v1.json",
@@ -939,7 +946,7 @@
       "object_kind": "SERVING_PROCESS_CONTRACT_INPUT",
       "stable_id": "PROCESS_PHRASEBOOK_PASSAGE_RESULT",
       "schema_version": "SERVING_PROCESS_CONTRACT_INPUT/V1",
-      "canonical_bytes_digest": "97c2834a26a88ff5355fcc30eaa79cebdad3d64f5de9658ad7fce2f48b0bf65f"
+      "canonical_bytes_digest": "ba34b5f44e2916f12c8486413e8963e49daa608d416be419b659795190d51cbb"
     },
     {
       "relative_path": "process/serving/bounded-inline-passage-preview.v1.json",
@@ -981,14 +988,21 @@
       "object_kind": "PRODUCT_QUERY_CONTRACT_INPUT",
       "stable_id": "AGREEMENT_CANDIDATE_ENVELOPE",
       "schema_version": "PRODUCT_QUERY_CONTRACT_INPUT/V1",
-      "canonical_bytes_digest": "9f35aa9598a9523e7e40b99e669fc1ae4fb929e66cfb31c325965cf23f4ce2a2"
+      "canonical_bytes_digest": "41d73e387e54a03be25884faf58c185d0a3ae410889bbfd5942554f4fe59a847"
+    },
+    {
+      "relative_path": "product/query/agreement-candidate-product-materialisation.v1.json",
+      "object_kind": "PRODUCT_QUERY_CONTRACT_INPUT",
+      "stable_id": "AGREEMENT_CANDIDATE_PRODUCT_MATERIALISATION",
+      "schema_version": "PRODUCT_QUERY_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "364d7cf43bfd492f987588792880ca566a7079234914d970a129b5ec6224e023"
     },
     {
       "relative_path": "product/query/process-phrasebook-product-result-adapter.v1.json",
       "object_kind": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT",
       "stable_id": "PROCESS_PHRASEBOOK_PRODUCT_RESULT_ADAPTER",
       "schema_version": "PRODUCT_QUERY_RESULT_CONTRACT_INPUT/V1",
-      "canonical_bytes_digest": "2c8c17815b677c1c41d7876a58b3b58fad5f6ace7f5a0cfa73f1b75ea772b8ec"
+      "canonical_bytes_digest": "024d328adaa63c474dca2c49e655d8d466b891c357098c156f94d0df60011f9d"
     },
     {
       "relative_path": "product/query/process-phrasebook-product-result-set-adapter.v1.json",
@@ -1002,7 +1016,7 @@
       "object_kind": "PRODUCT_CANDIDATE_WRITE_CONTRACT_INPUT",
       "stable_id": "PRODUCT_CANDIDATE_RESULT_WRITER",
       "schema_version": "PRODUCT_CANDIDATE_WRITE_CONTRACT_INPUT/V1",
-      "canonical_bytes_digest": "01c595f18c9b55cc3ed8596d9d0174caca22ccfea9d7cd7910c669121460d7a0"
+      "canonical_bytes_digest": "d4b6eefa73281c333aa4ad51d329229966b2881d15bfe2522adf42f3e3e51bc6"
     },
     {
       "relative_path": "product/query/product-query-ir.v1.json",
@@ -1052,6 +1066,13 @@
       "stable_id": "PRODUCT_RESULT_PRESENTATION_DEFINITION",
       "schema_version": "PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT/V1",
       "canonical_bytes_digest": "7a7cc1149f428a1a4c1056a8879a650e1c446aebbd2014760d5420c3ace34dff"
+    },
+    {
+      "relative_path": "product/query/product-result-surface-binding.v1.json",
+      "object_kind": "PRODUCT_QUERY_CONTRACT_INPUT",
+      "stable_id": "PRODUCT_RESULT_SURFACE_BINDING",
+      "schema_version": "PRODUCT_QUERY_CONTRACT_INPUT/V1",
+      "canonical_bytes_digest": "cdddb921d64b5f2dcd14b4f9fd6e14e82d4e393e2554daf656d7a5da9e3eaf09"
     },
     {
       "relative_path": "product/query/product-saved-query-definition.v1.json",
@@ -1231,7 +1252,7 @@
   ],
   "per_kind_counts": {
     "AGREEMENT_NAVIGATION_CATALOGUE_INPUT": 1,
-    "AGREEMENT_PREDICATE_CONTRACT_INPUT": 1,
+    "AGREEMENT_PREDICATE_CONTRACT_INPUT": 2,
     "AGREEMENT_QUERY_ORDERING_CONTRACT_INPUT": 1,
     "CANONICAL_BUNDLE_INPUT_REQUIRED_KIND_REGISTRY": 1,
     "CAPITALISATION_SEMANTIC_SCHEMA_INPUT": 1,
@@ -1259,7 +1280,7 @@
     "PROCESS_RESULT_ACTION_CONTRACT_INPUT": 4,
     "PRODUCT_CANDIDATE_WRITE_CONTRACT_INPUT": 1,
     "PRODUCT_QUERY_ACTION_CONTRACT_INPUT": 2,
-    "PRODUCT_QUERY_CONTRACT_INPUT": 3,
+    "PRODUCT_QUERY_CONTRACT_INPUT": 5,
     "PRODUCT_QUERY_RESULT_CONTRACT_INPUT": 6,
     "PRODUCT_RESULT_ACTION_CONTRACT_INPUT": 2,
     "PRODUCT_RESULT_PRESENTATION_CONTRACT_INPUT": 1,
