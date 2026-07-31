@@ -27,9 +27,9 @@ const DEFAULT_BOUNDS = Object.freeze({
 const BOUND_RANGES = Object.freeze({
   statementTimeoutMs: Object.freeze([1, 120_000]),
   processTimeoutMs: Object.freeze([1, 180_000]),
-  maxSqlBytes: Object.freeze([1, 6 * 1024 * 1024]),
+  maxSqlBytes: Object.freeze([1, 16 * 1024 * 1024]),
   maxResponseBytes: Object.freeze([1, 6 * 1024 * 1024]),
-  maxProcessBufferBytes: Object.freeze([1, 8 * 1024 * 1024]),
+  maxProcessBufferBytes: Object.freeze([1, 20 * 1024 * 1024]),
   maxDiagnosticChars: Object.freeze([1, 2_000]),
 });
 
@@ -85,17 +85,18 @@ function redactDiagnostic(output, fallback, maxChars) {
     .slice(0, maxChars);
 }
 
-export function governedSupabaseCommand() {
-  const shim = process.env.CANONICAL_V2_STAGING_SUPABASE_SHIM;
-  if (shim == null || shim === '') {
+export function governedSupabaseCommand(supabaseShim = null) {
+  if (supabaseShim == null || supabaseShim === '') {
     return { command: 'supabase', prefixArgs: [] };
   }
-  if (!/\.(?:mjs|js|cjs)$/.test(shim) || !existsSync(shim)) {
+  if (typeof supabaseShim !== 'string'
+    || !/\.(?:mjs|js|cjs)$/.test(supabaseShim)
+    || !existsSync(supabaseShim)) {
     throw new Error(
-      'CANONICAL_V2_STAGING_SUPABASE_SHIM must point at an existing JavaScript shim file.',
+      'The supabase transport shim must be an existing JavaScript file.',
     );
   }
-  return { command: process.execPath, prefixArgs: [shim] };
+  return { command: process.execPath, prefixArgs: [supabaseShim] };
 }
 
 function parseRows(stdout, operationLabel) {
@@ -116,6 +117,7 @@ export function createCanonicalV2StagingRuntime({
   tempPrefix = 'canonical-v2-staging-runtime-',
   operationLabel = 'Canonical v2 staging operation',
   bounds: boundOverrides = {},
+  supabaseShim = null,
 } = {}) {
   if (typeof root !== 'string' || !root) {
     throw new TypeError('Canonical staging runtime root is required.');
@@ -225,7 +227,7 @@ ${sql}
 ${commit ? 'COMMIT;' : 'ROLLBACK;'}
 `, { mode: 0o600 });
     try {
-      const supabaseCommand = governedSupabaseCommand();
+      const supabaseCommand = governedSupabaseCommand(supabaseShim);
       const result = spawnSync(
         supabaseCommand.command,
         [

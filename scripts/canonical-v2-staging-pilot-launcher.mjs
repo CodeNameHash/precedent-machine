@@ -56,13 +56,16 @@ if (typeof token !== 'string' || !token.startsWith('sbp_')
   process.stderr.write('Launcher config must supply supabase_access_token (sbp_...) and an existing supabase_shim_path.\n');
   process.exit(2);
 }
-const result = spawnSync(process.execPath, [runnerPath, ...runnerArgs], {
-  cwd: ROOT,
-  stdio: 'inherit',
-  env: {
-    ...process.env,
-    SUPABASE_ACCESS_TOKEN: token,
-    CANONICAL_V2_STAGING_SUPABASE_SHIM: shim,
+const result = spawnSync(
+  process.execPath,
+  [runnerPath, ...runnerArgs, '--supabase-shim', shim],
+  {
+    cwd: ROOT,
+    stdio: 'inherit',
+    env: {
+      ...process.env,
+      SUPABASE_ACCESS_TOKEN: token,
+    },
   },
-});
+);
 process.exit(result.status === null ? 1 : result.status);

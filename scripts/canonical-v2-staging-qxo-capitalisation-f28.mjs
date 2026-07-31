@@ -796,8 +796,11 @@ function runLinkedSql(
   ));
   const file = join(directory, fileName);
   writeFileSync(file, sql, { mode: 0o600 });
+  const shimFlagIndex = process.argv.indexOf('--supabase-shim');
   const spawnPlan = executable === 'supabase'
-    ? governedSupabaseCommand()
+    ? governedSupabaseCommand(
+      shimFlagIndex === -1 ? null : process.argv[shimFlagIndex + 1],
+    )
     : { command: executable, prefixArgs: [] };
   try {
     const result = spawnSync(
@@ -1061,7 +1064,11 @@ function offlineAttestation(candidate) {
   };
 }
 
-const args = process.argv.slice(2);
+const allArgs = process.argv.slice(2);
+const shimArgIndex = allArgs.indexOf('--supabase-shim');
+const args = shimArgIndex === -1
+  ? allArgs
+  : [...allArgs.slice(0, shimArgIndex), ...allArgs.slice(shimArgIndex + 2)];
 if (
   args.length !== 1
   || ![
@@ -1072,7 +1079,8 @@ if (
 ) {
   fail(
     'Usage: node scripts/canonical-v2-staging-qxo-capitalisation-f28.mjs '
-      + '--attest|--verify|--verify-fixture-rollback',
+      + '--attest|--verify|--verify-fixture-rollback '
+      + '[--supabase-shim <transport.cjs>]',
   );
 }
 

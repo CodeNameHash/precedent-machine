@@ -564,13 +564,18 @@ async function main() {
     processAuthorityContext: productAuthority.context,
     processAuthorityInput: productAuthority.input,
   });
+  const shimFlagIndex = process.argv.indexOf('--supabase-shim');
   const stagingRuntime = createCanonicalV2StagingRuntime({
     root: ROOT,
     tempPrefix: 'canonical-v2-metsera-p8-',
     operationLabel: 'Metsera P8 candidate write',
+    supabaseShim: shimFlagIndex === -1 ? null : process.argv[shimFlagIndex + 1],
     bounds: {
-      maxSqlBytes: 6 * 1024 * 1024,
-      maxProcessBufferBytes: 8 * 1024 * 1024,
+      // The complete real materialisation input embeds the nine sealed
+      // source documents (~5.8 MiB); the candidate write revalidates it in
+      // full, so the request bound must admit the write set plus wrapper.
+      maxSqlBytes: 12 * 1024 * 1024,
+      maxProcessBufferBytes: 14 * 1024 * 1024,
       maxResponseBytes: 6 * 1024 * 1024,
     },
   });

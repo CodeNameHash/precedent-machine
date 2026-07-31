@@ -13,58 +13,57 @@ async function loadHelper() {
 
 test('default command is the real supabase CLI with no prefix', async () => {
   const governedSupabaseCommand = await loadHelper();
-  delete process.env.CANONICAL_V2_STAGING_SUPABASE_SHIM;
   assert.deepStrictEqual(governedSupabaseCommand(), {
+    command: 'supabase',
+    prefixArgs: [],
+  });
+  assert.deepStrictEqual(governedSupabaseCommand(null), {
+    command: 'supabase',
+    prefixArgs: [],
+  });
+  assert.deepStrictEqual(governedSupabaseCommand(''), {
     command: 'supabase',
     prefixArgs: [],
   });
 });
 
-test('an empty override keeps the real CLI', async () => {
-  const governedSupabaseCommand = await loadHelper();
-  process.env.CANONICAL_V2_STAGING_SUPABASE_SHIM = '';
-  try {
-    assert.deepStrictEqual(governedSupabaseCommand(), {
-      command: 'supabase',
-      prefixArgs: [],
-    });
-  } finally {
-    delete process.env.CANONICAL_V2_STAGING_SUPABASE_SHIM;
-  }
-});
-
-test('a non-JavaScript or missing override fails closed', async () => {
+test('a non-JavaScript or missing shim fails closed', async () => {
   const governedSupabaseCommand = await loadHelper();
   const directory = mkdtempSync(join(tmpdir(), 'supabase-command-test-'));
   try {
     const binaryPath = join(directory, 'impostor.bin');
     writeFileSync(binaryPath, '#!/bin/sh\n', { mode: 0o600 });
-    for (const candidate of [binaryPath, join(directory, 'absent.cjs')]) {
-      process.env.CANONICAL_V2_STAGING_SUPABASE_SHIM = candidate;
+    for (const candidate of [binaryPath, join(directory, 'absent.cjs'), 42]) {
       assert.throws(
-        () => governedSupabaseCommand(),
-        /must point at an existing JavaScript shim file/,
+        () => governedSupabaseCommand(candidate),
+        /must be an existing JavaScript file/,
       );
     }
   } finally {
-    delete process.env.CANONICAL_V2_STAGING_SUPABASE_SHIM;
     rmSync(directory, { recursive: true, force: true });
   }
 });
 
-test('a valid JavaScript override runs through the node executable', async () => {
+test('a valid JavaScript shim runs through the node executable', async () => {
   const governedSupabaseCommand = await loadHelper();
   const directory = mkdtempSync(join(tmpdir(), 'supabase-command-test-'));
   try {
     const shimPath = join(directory, 'transport.cjs');
     writeFileSync(shimPath, 'process.exit(0);\n', { mode: 0o600 });
-    process.env.CANONICAL_V2_STAGING_SUPABASE_SHIM = shimPath;
-    assert.deepStrictEqual(governedSupabaseCommand(), {
+    assert.deepStrictEqual(governedSupabaseCommand(shimPath), {
       command: process.execPath,
       prefixArgs: [shimPath],
     });
   } finally {
-    delete process.env.CANONICAL_V2_STAGING_SUPABASE_SHIM;
     rmSync(directory, { recursive: true, force: true });
   }
+});
+
+test('the staging runtime source reads no environment variables', async () => {
+  const { readFileSync } = require('node:fs');
+  const source = readFileSync(
+    join(__dirname, '..', 'scripts', 'lib', 'canonical-v2-staging-runtime.mjs'),
+    'utf8',
+  );
+  assert.doesNotMatch(source, /process\.env/);
 });
