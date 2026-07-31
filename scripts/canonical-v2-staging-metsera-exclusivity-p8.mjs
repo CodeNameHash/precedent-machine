@@ -893,6 +893,7 @@ DECLARE
   import_result jsonb;
   replay_result jsonb;
   inactive_page jsonb;
+  inactive_query_refused boolean := false;
   changed_body_plan jsonb;
   tampered_serving_record_id_plan jsonb;
   changed_v7_body_rejected boolean := false;
@@ -963,20 +964,31 @@ BEGIN
     'staging',
     ${stagingRuntime.sqlJson(candidateReleaseImportPlan)}
   );
-  inactive_page := public.canonical_v2_active_product_query_results(
-    'staging',
-    ${stagingRuntime.sqlText(
-      combinedPilotBaseRelease.manifest.serving_namespace_id,
-    )},
-    ${stagingRuntime.sqlText(
-      combinedPilotBaseRelease.manifest.corpus_release_id,
-    )},
-    ${stagingRuntime.sqlText(
-      productResult.product_query_definition_id,
-    )},
-    NULL,
-    20
-  );
+  BEGIN
+    inactive_page := public.canonical_v2_active_product_query_results(
+      'staging',
+      ${stagingRuntime.sqlText(
+        combinedPilotBaseRelease.manifest.serving_namespace_id,
+      )},
+      ${stagingRuntime.sqlText(
+        combinedPilotBaseRelease.manifest.corpus_release_id,
+      )},
+      ${stagingRuntime.sqlText(
+        productResult.product_query_definition_id,
+      )},
+      NULL,
+      20
+    );
+  EXCEPTION
+    WHEN SQLSTATE '02000' THEN
+      IF position(
+        'Product query release is not actively admitted' in SQLERRM
+      ) = 0 THEN
+        RAISE;
+      END IF;
+      inactive_page := NULL;
+      inactive_query_refused := true;
+  END;
   IF writer_result->>'replayed' IS DISTINCT FROM 'false'
     OR import_result->>'schema_version'
       IS DISTINCT FROM 'CANDIDATE_RELEASE_IMPORT_RECEIPT/V7'
@@ -989,6 +1001,7 @@ BEGIN
     OR changed_v7_body_rejected IS NOT TRUE
     OR tampered_serving_record_id_rejected IS NOT TRUE
     OR inactive_page IS NOT NULL
+    OR inactive_query_refused IS NOT TRUE
     OR (
       SELECT count(*)
       FROM canonical_v2_staging.product_query_result_release_partitions
@@ -1017,7 +1030,7 @@ BEGIN
   SELECT
     writer_result,
     import_result,
-    inactive_page IS NULL,
+    inactive_page IS NULL AND inactive_query_refused,
     (
       SELECT count(*)::integer
       FROM canonical_v2_staging.product_query_result_release_partitions
