@@ -1446,3 +1446,189 @@ test('resolved output feeds buildNativeWriteSet and passes the real validate-wri
     assert.ok(publishableProvisionIds.includes(provision.provision_instance_id));
   }
 });
+
+// ─── Approval item 2 (M2) / spec section 2 rule 3 (M6a) / spec finding-2
+// reachability (M6b) -- three approved fixes to the honest-tag and
+// measurement-date-reachability behaviour, tests written failing-first per
+// the module's house pattern. ───
+
+// A KNOWLEDGE+calendar-date multi-family quote, NOT present in the shared
+// qxoFullText fixture (only the KNOWLEDGE+symbolic-date variant is, via
+// ACCURACY_TAIL_TEXT) -- so these tests need their own governed document
+// with this exact quote embedded verbatim, same "tail text" composition
+// pattern the shared fixture already uses for KNOWLEDGE_TEMPORAL_SPLIT_QUOTE.
+const KNOWLEDGE_CALENDAR_SPLIT_QUOTE = 'To the knowledge of the Company as of April 17, 2026';
+const KNOWLEDGE_CALENDAR_TAIL_TEXT = [' ', KNOWLEDGE_CALENDAR_SPLIT_QUOTE, ', no such default exists.'].join('');
+const knowledgeCalendarFullText = [
+  'This AGREEMENT AND PLAN OF MERGER, dated as of April 18, 2026, by and among ',
+  'QXO, Inc., Titanium Merger Sub and Forward Merger Sub.\n\n',
+  'ARTICLE III\n\nREPRESENTATIONS AND WARRANTIES OF THE COMPANY\n\n',
+  'Except as set forth in the Company Disclosure Letter, the Company represents ',
+  'and warrants to Parent as follows:\n\n',
+  'Section 3.1 Representations Concerning the Company.\n\n',
+  '(a)Organization; Standing. The Company is a corporation duly organized, ',
+  'validly existing and in good standing under the Laws of the State of Delaware.\n\n',
+  capitalStructureText,
+  KNOWLEDGE_CALENDAR_TAIL_TEXT,
+  '\n',
+].join('');
+const KNOWLEDGE_CALENDAR_DOCUMENT_HASH = sha256Hex(Buffer.from(knowledgeCalendarFullText, 'utf8'));
+const KNOWLEDGE_CALENDAR_DEAL_KEY = 'deal:qxo-knowledge-calendar-split';
+const KNOWLEDGE_CALENDAR_ADMITTED_SOURCE_CONTEXT = buildIdentityAdmittedSourceContext(knowledgeCalendarFullText, {
+  dealKey: KNOWLEDGE_CALENDAR_DEAL_KEY,
+  dealAdmissionId: sha256Hex(`deal-admission:${KNOWLEDGE_CALENDAR_DEAL_KEY}`),
+  sourceOrdinal: 0,
+});
+
+async function resolveSingleQualifierInKnowledgeCalendarDocument(
+  { quote, attachment, modelKind = null, modelCode = null },
+  resolveOptions = {},
+) {
+  const receipt = await runNativeExtraction({
+    source_text: knowledgeCalendarFullText,
+    document_hash: KNOWLEDGE_CALENDAR_DOCUMENT_HASH,
+    section_references: ['3.1(b)'],
+    contract_bundle: resolveOptions.contract_vocabulary || CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: async ({ governed_scope: governedScope }) => {
+      const { proposals, evidence_residuals: evidenceResiduals } = shapeProposals(
+        singleQualifierResponse({
+          quote, attachment, modelKind, modelCode,
+        }),
+        governedScope.source_text,
+      );
+      return {
+        provider_id: 'candidate-resolution-knowledge-calendar/v1',
+        model_id: 'stub-model',
+        prompt: 'candidate-resolution-knowledge-calendar-prompt/v1',
+        proposals,
+        evidence_residuals: evidenceResiduals,
+      };
+    },
+  });
+  return resolveCandidates({
+    run_receipt: receipt,
+    contract_vocabulary: resolveOptions.contract_vocabulary || CONTRACT_BUNDLE,
+    admitted_source_context: KNOWLEDGE_CALENDAR_ADMITTED_SOURCE_CONTEXT,
+    ruling_corpus: resolveOptions.ruling_corpus,
+    agreement_date: resolveOptions.agreement_date,
+  });
+}
+
+test('bring-down claim answer_provenance pins the allowed-values-membership gate; qualifier-path pins carry no gate field (approval item 2, M2)', async () => {
+  const receipt = await buildReceipt();
+  const resolution = resolveCandidates({
+    run_receipt: receipt,
+    contract_vocabulary: CONTRACT_BUNDLE,
+    admitted_source_context: ADMITTED_SOURCE_CONTEXT,
+  });
+
+  // Bring-down tier: MECHANICAL, but honest about resting on allowed-values
+  // membership rather than a written resolver rule -- option (b), approved.
+  const tier = findResolved(resolution, BRING_DOWN_TIER_CLAIM_KEY);
+  assert.ok(tier, 'the bring-down tier proposal resolved');
+  assert.equal(tier.claim.attributes.answer_provenance.tag, 'MECHANICAL');
+  assert.equal(tier.claim.attributes.answer_provenance.pins.gate, 'ALLOWED_VALUES_MEMBERSHIP');
+
+  // Qualifier path: kind/code IS a written resolver rule (the lexicon), so
+  // its pins are unchanged -- no gate field, per the approval.
+  const qualifier = findResolved(resolution, QUALIFIER_CLAIM_KEY);
+  assert.ok(qualifier, 'the qualifier proposal resolved');
+  assert.equal(qualifier.claim.attributes.answer_provenance.tag, 'MECHANICAL');
+  assert.equal(
+    Object.prototype.hasOwnProperty.call(qualifier.claim.attributes.answer_provenance.pins, 'gate'),
+    false,
+    'qualifier-path pins must not gain a gate field',
+  );
+});
+
+test('(QUALIFIER, KNOWLEDGE, *) preserves a split-off ineligible TEMPORAL date on the resolved KNOWLEDGE claim, and mints no measurement date (spec section 2 rule 3, M6a)', async () => {
+  const resolution = await resolveSingleQualifierInKnowledgeCalendarDocument(
+    { quote: KNOWLEDGE_CALENDAR_SPLIT_QUOTE, attachment: chapeauAttachment() },
+    { contract_vocabulary: CONTRACT_BUNDLE_WITH_MEASUREMENT_DATE },
+  );
+
+  const resolvedEntry = resolution.resolved.find(
+    (entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY && entry.resolved_claim_definition_key === 'KNOWLEDGE_QUALIFIER',
+  );
+  assert.ok(resolvedEntry, 'the KNOWLEDGE split part resolved');
+  assert.equal(resolvedEntry.claim.canonical_value, true);
+  assert.equal(resolvedEntry.claim.attributes.qualifier_dated_as_of, '2026-04-17');
+  assert.equal(resolvedEntry.claim.attributes.qualifier_date_raw, 'as of April 17, 2026');
+
+  assert.equal(
+    resolution.resolved.some((entry) => entry.resolved_claim_definition_key === 'REPRESENTATION_MEASUREMENT_DATE'),
+    false,
+    'a TEMPORAL part split from a KNOWLEDGE host never mints a measurement-date claim -- the date dates the qualifier',
+  );
+});
+
+test('a VERIFIED corpus TEMPORAL ruling never mints a measurement date on a multi-family phrase (reachability is computed, not inherited); the same ruling still resolves normally on a clean whole-quote TEMPORAL (spec finding-2 reachability, M6b)', async () => {
+  const multiFamilyQuote = KNOWLEDGE_CALENDAR_SPLIT_QUOTE;
+  const multiFamilyRuling = {
+    schema_version: 'RULING_CORPUS_ENTRY/V1',
+    normalised_phrase: multiFamilyQuote,
+    attachment_position: 'CHAPEAU',
+    concept_family: 'REP-T-CAP',
+    // A human ruling settling KIND as TEMPORAL for this exact phrase --
+    // rulings carry no split concept, so this applies to the WHOLE clause
+    // as one unit. Reachability must still be computed by the lexicon rule,
+    // never inherited from this ruling (spec finding-2).
+    ruled_kind: 'TEMPORAL',
+    ruled_code: null,
+    ruler: 'test-fixture',
+    ruled_at: '2026-08-01T00:00:00.000Z',
+    provenance_tag: 'VERIFIED',
+    lexicon_version_at_ruling: QUALIFIER_KIND_LEXICON_VERSION,
+  };
+  const multiFamilyCorpus = buildRulingCorpus({ version: 1, rulings: [multiFamilyRuling] });
+
+  const multiFamilyResolution = await resolveSingleQualifierInKnowledgeCalendarDocument(
+    { quote: multiFamilyQuote, attachment: chapeauAttachment(), modelKind: 'TEMPORAL' },
+    {
+      contract_vocabulary: CONTRACT_BUNDLE_WITH_MEASUREMENT_DATE,
+      ruling_corpus: multiFamilyCorpus,
+      agreement_date: '2026-04-18',
+    },
+  );
+
+  assert.equal(
+    multiFamilyResolution.resolved.some((entry) => entry.resolved_claim_definition_key === 'REPRESENTATION_MEASUREMENT_DATE'),
+    false,
+    'a corpus-applied TEMPORAL ruling on a multi-family phrase never mints a measurement date',
+  );
+  const openWorldEntry = multiFamilyResolution.open_world.find(
+    (entry) => entry.claim_definition_key === QUALIFIER_CLAIM_KEY && entry.reason === 'TEMPORAL_MEASUREMENT_DATE_INELIGIBLE',
+  );
+  assert.ok(openWorldEntry, 'the ruled-TEMPORAL item keeps kind TEMPORAL and routes open world, never dropped');
+  assert.equal(openWorldEntry.attributes.qualifier_dated_as_of, '2026-04-17');
+
+  // Same ruling mechanism, but on a CLEAN whole-quote TEMPORAL phrase (no
+  // co-occurring family): the lexicon marks it eligible, so it still
+  // resolves to a measurement date exactly as an unruled clean TEMPORAL
+  // would.
+  const cleanQuote = TEMPORAL_CALENDAR_QUOTE;
+  const cleanRuling = {
+    schema_version: 'RULING_CORPUS_ENTRY/V1',
+    normalised_phrase: cleanQuote,
+    attachment_position: 'CHAPEAU',
+    concept_family: 'REP-T-CAP',
+    ruled_kind: 'TEMPORAL',
+    ruled_code: null,
+    ruler: 'test-fixture',
+    ruled_at: '2026-08-01T00:00:00.000Z',
+    provenance_tag: 'VERIFIED',
+    lexicon_version_at_ruling: QUALIFIER_KIND_LEXICON_VERSION,
+  };
+  const cleanCorpus = buildRulingCorpus({ version: 1, rulings: [cleanRuling] });
+
+  const cleanResolution = await resolveSingleQualifier(
+    { quote: cleanQuote, attachment: chapeauAttachment(), modelKind: 'TEMPORAL' },
+    { contract_vocabulary: CONTRACT_BUNDLE_WITH_MEASUREMENT_DATE, ruling_corpus: cleanCorpus },
+  );
+  const resolvedDate = cleanResolution.resolved.find(
+    (entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY && entry.resolved_claim_definition_key === 'REPRESENTATION_MEASUREMENT_DATE',
+  );
+  assert.ok(resolvedDate, 'a VERIFIED ruling on a clean whole-quote TEMPORAL still resolves to a measurement date');
+  assert.equal(resolvedDate.claim.canonical_value, '2026-04-17');
+});
