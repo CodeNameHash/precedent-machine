@@ -333,12 +333,15 @@ test('scope integrity: a candidate citing text outside its licensed scope is rej
   }
 });
 
-// ─── Citation constructibility (docs/handoffs/F28-FIRST-LIVE-RUN.md defect
-// 3): a section_reference that does not resolve against the sectionizer's
-// discovered tree is excluded from compiled_candidates and recorded as a
-// typed citation_residuals entry, never silently accepted. ───
+// ─── Citation constructibility, corroboration, and never-silently-discard
+// (docs/handoffs/F28-FIRST-LIVE-RUN.md defect 3 and
+// docs/handoffs/F28-SECOND-LIVE-RUN.md). A section_reference that does not
+// resolve against the sectionizer's discovered tree is recorded as a typed
+// citation_residuals entry AND a citation_validation object on the compiled
+// candidate -- but the proposal still compiles: a failing or unvalidated
+// citation is never a silent drop. ───
 
-test('a section_reference that cannot be constructed from the discovered tree is a CITATION_NOT_CONSTRUCTIBLE residual, and the proposal is excluded', async () => {
+test('a section_reference that cannot be constructed from the discovered tree, and is not corroborated by the document text, still compiles -- with an unaccepted citation_validation and a typed residual', async () => {
   const provider = async ({ governed_scope: governedScope }) => {
     const { start, end } = locateInGovernedScope(governedScope, LIMB_I_QUOTE);
     const proposal = makeClaimProposal({
@@ -347,13 +350,9 @@ test('a section_reference that cannot be constructed from the discovered tree is
       quote: LIMB_I_QUOTE,
       absoluteStart: start,
       absoluteEnd: end,
-      // This is a real-shaped citation ("3.1(b)(i)") but this test's
-      // governing section is requested and resolved as "3.1(b)" -- a
-      // sibling limb citation the sectionizer never discovered as its own
-      // node under THIS request is exactly the F28 live-run failure mode
-      // (there the whole document had no "3.1" numbering at all; here the
-      // citation just names a node this call's tree lookup cannot produce
-      // from the governing node's own span).
+      // A citation naming a node the tree never discovered AND that never
+      // appears anywhere in the document's own text either -- neither
+      // source validates it, so it must still compile but stay unaccepted.
       attributes: { section_reference: 'NOT-A-REAL-CITATION(z)(z)' },
       allowedAttributes: ['section_reference'],
     });
@@ -375,8 +374,15 @@ test('a section_reference that cannot be constructed from the discovered tree is
     provider,
   });
 
-  assert.equal(receipt.compiled_candidates.length, 0, 'the bad-citation proposal never reaches the compiler');
-  assert.equal(receipt.compiled_candidate_count, 0);
+  assert.equal(receipt.compiled_candidates.length, 1, 'the bad-citation proposal still compiles -- never silently dropped');
+  assert.equal(receipt.compiled_candidate_count, 1);
+  const [entry] = receipt.compiled_candidates;
+  assert.equal(entry.ok, true);
+  assert.ok(entry.citation_validation, 'a citation_validation record is attached');
+  assert.equal(entry.citation_validation.status, 'CITATION_NOT_CONSTRUCTIBLE');
+  assert.equal(entry.citation_validation.accepted, false);
+  assert.equal(entry.citation_validation.validation_source, null);
+
   assert.equal(receipt.citation_residual_count, 1);
   assert.equal(receipt.citation_residuals.length, 1);
   const [residual] = receipt.citation_residuals;
@@ -386,7 +392,7 @@ test('a section_reference that cannot be constructed from the discovered tree is
   assert.equal(residual.section_reference, '3.1(b)');
 });
 
-test('a section_reference matching the governing section\'s own discovered reference is accepted with no citation residual', async () => {
+test('a section_reference matching the governing section\'s own discovered reference is accepted with no citation residual, and validation_source is CONSTRUCTED_FROM_TREE', async () => {
   const receipt = await runNativeExtraction({
     source_text: qxoRealisticFullText,
     document_hash: DOCUMENT_HASH,
@@ -415,6 +421,124 @@ test('a section_reference matching the governing section\'s own discovered refer
 
   assert.equal(receipt.citation_residual_count, 0);
   assert.equal(receipt.compiled_candidate_count, 1);
+  const [entry] = receipt.compiled_candidates;
+  assert.equal(entry.citation_validation.status, 'AGREEMENT');
+  assert.equal(entry.citation_validation.accepted, true);
+  assert.equal(entry.citation_validation.validation_source, 'CONSTRUCTED_FROM_TREE');
+});
+
+// ─── Corroboration: a citation the tree cannot construct, but which the
+// document's own cross-reference prose corroborates (the real QXO/TopBuild
+// failure mode -- bare lettered subsections with no "Section 3.1" heading
+// anywhere, yet the document's own text cites "Section 3.1(b)(i)" freely
+// elsewhere), is ACCEPTED with validation_source CORROBORATED_BY_DOCUMENT_
+// TEXT, still compiles, and carries no exclusionary residual treatment. ───
+
+const DEGENERATE_LIMB_QUOTE = '(i)The authorized capital stock of the Company consists of 100,000,000 shares.';
+
+function buildDegenerateFullText() {
+  // Mirrors tests/canonical-v2-citation-constructibility.test.js's own
+  // degenerate-tree fixture: bare lettered subsections directly under an
+  // ARTICLE heading, no "Section 3.1" heading anywhere -- plus a genuine
+  // cross-reference elsewhere in the SAME article that cites "Section
+  // 3.1(b)(i)" with a real U+200E LRM between "Section" and the number,
+  // exactly as EDGAR renders it.
+  return [
+    'ARTICLE III\n\nREPRESENTATIONS AND WARRANTIES OF THE COMPANY\n\n',
+    '(a)Organization; Standing. The Company is duly organized.\n\n',
+    '(b)Capital Structure.\n',
+    `${DEGENERATE_LIMB_QUOTE}\n`,
+    '(ii)There are no other outstanding equity securities.\n\n',
+    '(c)Closing Condition Cross-Reference. The obligations of Parent to consummate the Merger are subject to the ',
+    'representations set forth in Section‎3.1(b)(i) being true and correct.\n',
+  ].join('');
+}
+
+test('a citation the tree cannot construct, but the document\'s own cross-reference text corroborates (zero-width tolerant), is accepted as CORROBORATED_BY_DOCUMENT_TEXT and compiles', async () => {
+  const degenerateFullText = buildDegenerateFullText();
+  const documentHash = sha256Hex(Buffer.from(degenerateFullText, 'utf8'));
+
+  const receipt = await runNativeExtraction({
+    source_text: degenerateFullText,
+    document_hash: documentHash,
+    section_references: ['III-INTRO(b)'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: async ({ governed_scope: governedScope }) => {
+      const { start, end } = locateInGovernedScope(governedScope, DEGENERATE_LIMB_QUOTE);
+      return {
+        provider_id: 'native-extraction-run-test-stub/v1',
+        model_id: 'stub-model',
+        prompt: 'native-extraction-run-test-stub-prompt-v1',
+        proposals: [makeClaimProposal({
+          subjectSeed: { kind: 'corroborated-citation' },
+          ordinal: 0,
+          quote: DEGENERATE_LIMB_QUOTE,
+          absoluteStart: start,
+          absoluteEnd: end,
+          // The model's honest, document-consistent citation -- the exact
+          // failure mode from docs/handoffs/F28-SECOND-LIVE-RUN.md: real,
+          // grounded in the document's own cross-reference prose, but not a
+          // node the heading-only tree ever discovers.
+          attributes: { section_reference: '3.1(b)(i)' },
+          allowedAttributes: ['section_reference'],
+        })],
+        evidence_residuals: [],
+      };
+    },
+  });
+
+  assert.equal(receipt.compiled_candidates.length, 1);
+  const [entry] = receipt.compiled_candidates;
+  assert.equal(entry.ok, true, 'the corroborated-but-not-constructible proposal compiles');
+  assert.ok(entry.citation_validation);
+  assert.equal(entry.citation_validation.status, 'CITATION_NOT_CONSTRUCTIBLE', 'the tree genuinely cannot construct this citation');
+  assert.equal(entry.citation_validation.accepted, true, 'but document-text corroboration accepts it');
+  assert.equal(entry.citation_validation.validation_source, 'CORROBORATED_BY_DOCUMENT_TEXT');
+
+  // Accepted via corroboration carries no exclusionary residual -- the
+  // citation_residuals bucket only records UNACCEPTED outcomes.
+  assert.equal(receipt.citation_residual_count, 0);
+  assert.equal(receipt.citation_residuals.length, 0);
+});
+
+test('a citation absent from both the tree and the document\'s own text is neither constructed nor corroborated, and remains unaccepted', async () => {
+  const degenerateFullText = buildDegenerateFullText();
+  const documentHash = sha256Hex(Buffer.from(degenerateFullText, 'utf8'));
+
+  const receipt = await runNativeExtraction({
+    source_text: degenerateFullText,
+    document_hash: documentHash,
+    section_references: ['III-INTRO(b)'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: async ({ governed_scope: governedScope }) => {
+      const { start, end } = locateInGovernedScope(governedScope, DEGENERATE_LIMB_QUOTE);
+      return {
+        provider_id: 'native-extraction-run-test-stub/v1',
+        model_id: 'stub-model',
+        prompt: 'native-extraction-run-test-stub-prompt-v1',
+        proposals: [makeClaimProposal({
+          subjectSeed: { kind: 'uncorroborated-citation' },
+          ordinal: 0,
+          quote: DEGENERATE_LIMB_QUOTE,
+          absoluteStart: start,
+          absoluteEnd: end,
+          attributes: { section_reference: '9.9(z)(z)' },
+          allowedAttributes: ['section_reference'],
+        })],
+        evidence_residuals: [],
+      };
+    },
+  });
+
+  assert.equal(receipt.compiled_candidates.length, 1, 'still compiles -- never vanishes');
+  const [entry] = receipt.compiled_candidates;
+  assert.equal(entry.ok, true);
+  assert.equal(entry.citation_validation.status, 'CITATION_NOT_CONSTRUCTIBLE');
+  assert.equal(entry.citation_validation.accepted, false);
+  assert.equal(entry.citation_validation.validation_source, null);
+  assert.equal(receipt.citation_residual_count, 1);
 });
 
 // ─── Input validation ───
