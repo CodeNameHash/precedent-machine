@@ -43,22 +43,32 @@
  *
  * What THIS replay DOES exercise directly, unaffected by the schema
  * mismatch above:
- *  - Defect 3 (citation constructibility): every one of the 12 instances'
+ *  - Defect 3 (citation constructibility, plus corroboration -- docs/
+ *    handoffs/F28-SECOND-LIVE-RUN.md): every one of the 12 instances'
  *    `section_reference` ("3.1(b)(i)", "3.1(b)(ii)", ...) is checked
  *    against the real document's sectionizer tree, which -- exactly as the
  *    live run's own Step 5 finding 3 describes -- has no "Section 3.1"
  *    numbering anywhere (the governed node's own discovered reference is
- *    "III-INTRO(b)"). Every one of those citations is
- *    CITATION_NOT_CONSTRUCTIBLE, so every limb-assertion proposal derived
- *    from those instances is excluded before it ever reaches candidate
- *    resolution -- a hallucination class that was completely invisible in
- *    the original run (see the run doc's finding 3: "not caught by the
- *    byte-exact evidence gate... a class of hallucination the current
- *    architecture has no mechanism to detect at all"). One of the 18 limb
- *    assertions the run doc counted separately fails BYTE-EXACT evidence
- *    verification first (see the "entity-decoding note" below), so only 17
- *    of the 18 reach the citation check at all; all 17 that do are
- *    CITATION_NOT_CONSTRUCTIBLE.
+ *    "III-INTRO(b)"), so the tree alone constructs NONE of them. But this
+ *    fixture's governed text (capitalStructureText, limb (iii)) ITSELF
+ *    contains the real, printed cross-reference "as set forth in Sections
+ *    ‎3.1(b)(i) and ‎3.1(b)(ii)" (with a genuine U+200E LRM before each
+ *    number) -- so citation-constructibility.js's corroboration check (see
+ *    that module's header) ACCEPTS the "3.1(b)(i)" and "3.1(b)(ii)"
+ *    citations as `CORROBORATED_BY_DOCUMENT_TEXT`, even though the tree
+ *    cannot construct them either. "3.1(b)(iii)", "3.1(b)(iv)" and
+ *    "3.1(b)(v)" are corroborated by nothing in this fixture's text, so they
+ *    stay unaccepted. One of the 18 limb assertions the run doc counted
+ *    separately fails BYTE-EXACT evidence verification first (see the
+ *    "entity-decoding note" below), so only 17 of the 18 reach the citation
+ *    check at all. NEVER SILENTLY DISCARDED (docs/handoffs/
+ *    F28-SECOND-LIVE-RUN.md): every one of those 17, accepted or not,
+ *    still COMPILES -- an unaccepted citation is recorded as a typed
+ *    `citation_residuals` entry (9 of the 17: the three uncorroborated
+ *    citations, several of them repeated across the run's fragmented
+ *    representation_instances) and as a `citation_validation` object on the
+ *    compiled candidate, never excluded from `compiled_candidates` the way
+ *    an earlier version of this pipeline did.
  *  - Defect 4 (kind-aware mapping table): moot on THIS replay, because
  *    every qualifier that would have exercised it is already invisible per
  *    (1) above -- see canonical-v2-candidate-resolution.test.js's
@@ -317,7 +327,7 @@ test('sanity: this document has no "Section 3." numbering anywhere, exactly like
   assert.equal(degenerateFullText.includes('Section 3.'), false);
 });
 
-test('replaying the F28 recorded raw response through the fixed pipeline: defect 3 catches every hallucinated citation, defect 2 refuses to guess at the stale attachment shape', async () => {
+test('replaying the F28 recorded raw response through the fixed pipeline: defect 3 corroborates the citations the document text supports and never silently drops the rest, defect 2 refuses to guess at the stale attachment shape', async () => {
   const recordedParsed = loadRecordedResponse();
   assert.equal(recordedParsed.representation_instances.length, 12, 'sanity: the recording is still the 12-fragment response the live run actually produced');
 
@@ -364,28 +374,46 @@ test('replaying the F28 recorded raw response through the fixed pipeline: defect
   assert.equal(receipt.evidence_residuals[0].reason, 'LIMB_ASSERTION_QUOTE_UNVERIFIED');
 
   // Defect 3: every one of the remaining 17 limb assertions' inherited
-  // section_reference ("3.1(b)(i)" etc.) fails to construct against this
+  // section_reference ("3.1(b)(i)" etc.) fails to CONSTRUCT against this
   // document's real tree, whose governing node is discovered as
   // "III-INTRO(b)" -- exactly the live run's own finding 3, and STILL true
   // after the entity-decoding fix (see the ENTITY-DECODING NOTE in the file
   // header): this document genuinely has no numbered "Section 3.1" heading,
-  // independent of entity decoding.
-  assert.equal(receipt.citation_residuals.length, 17);
+  // independent of entity decoding. But "3.1(b)(i)" and "3.1(b)(ii)" ARE
+  // corroborated by this fixture's own governed text (limb (iii)'s real
+  // "Sections ‎3.1(b)(i) and ‎3.1(b)(ii)" cross-reference), so only the
+  // OTHER three distinct citations -- "3.1(b)(iii)", "3.1(b)(iv)",
+  // "3.1(b)(v)" -- remain as unaccepted citation_residuals (9 occurrences
+  // total across the run's 12 fragmented, label-reusing representation
+  // instances).
+  assert.equal(receipt.citation_residual_count, 9);
+  assert.equal(receipt.citation_residuals.length, 9);
   assert.ok(receipt.citation_residuals.every((r) => r.reason === 'CITATION_NOT_CONSTRUCTIBLE'));
   assert.ok(receipt.citation_residuals.every((r) => r.derived_citation === 'III-INTRO(b)'));
   const distinctModelCitations = new Set(receipt.citation_residuals.map((r) => r.model_citation));
   assert.deepEqual(
     [...distinctModelCitations].sort(),
-    ['3.1(b)(i)', '3.1(b)(ii)', '3.1(b)(iii)', '3.1(b)(iv)', '3.1(b)(v)'],
+    ['3.1(b)(iii)', '3.1(b)(iv)', '3.1(b)(v)'],
   );
 
-  // Net effect: nothing from this stale recording reaches compilation at
-  // all -- not because the fixes are too aggressive, but because a
-  // PROMPT_VERSION 1 recording cannot satisfy a PROMPT_VERSION 2 contract,
-  // and every one of its citations was already wrong under the OLD contract
-  // too (the fixes just make that visible for the first time).
-  assert.equal(receipt.compiled_candidate_count, 0);
-  assert.equal(receipt.rejected_candidate_count, 0, 'nothing even reaches the compiler to be rejected -- all filtered upstream');
+  // Net effect: NEVER SILENTLY DISCARDED. Every one of the 17 citation-
+  // checked proposals still compiles -- accepted (via corroboration) or
+  // not -- so compiled_candidate_count is 17, not 0. Each compiled entry
+  // carries its own citation_validation record; 8 of the 17 (the "(i)"/
+  // "(ii)" citations, repeated across fragments) are accepted via
+  // CORROBORATED_BY_DOCUMENT_TEXT, the other 9 stay unaccepted.
+  assert.equal(receipt.compiled_candidate_count, 17);
+  assert.equal(receipt.rejected_candidate_count, 0, 'nothing fails compilation on its own terms');
+  assert.ok(receipt.compiled_candidates.every((entry) => entry.ok === true));
+  const acceptedCount = receipt.compiled_candidates.filter(
+    (entry) => entry.citation_validation && entry.citation_validation.accepted === true,
+  ).length;
+  assert.equal(acceptedCount, 8);
+  assert.ok(
+    receipt.compiled_candidates
+      .filter((entry) => entry.citation_validation && entry.citation_validation.accepted === true)
+      .every((entry) => entry.citation_validation.validation_source === 'CORROBORATED_BY_DOCUMENT_TEXT'),
+  );
 
   const admittedSourceContext = buildIdentityAdmittedSourceContext(degenerateFullText, {
     dealKey: 'deal:f28-live-fixture-replay',
@@ -398,12 +426,18 @@ test('replaying the F28 recorded raw response through the fixed pipeline: defect
     admitted_source_context: admittedSourceContext,
   });
 
-  // Versus the run doc's own numbers (15 review_queue / 18 open_world / 15
-  // quarantined / 0 publishable): every one of those buckets is now empty,
-  // because every candidate that used to reach them was filtered BEFORE
-  // resolution even runs, not because resolution behaves differently.
+  // Every one of the 17 compiled candidates is a bare limb assertion
+  // (LIMB_ASSERTION_CLAIM_KEY, unmapped by design -- see candidate-
+  // resolution.js's own table comments), so all 17 land in open_world
+  // regardless of citation outcome, exactly as before this fix -- citation
+  // validation changes WHETHER a candidate compiles and what it carries,
+  // never which resolution bucket an already-unmapped generic key lands in.
+  // What DOES change: none of them vanish, and each open_world entry now
+  // carries its own citation_validation record for visibility.
   assert.equal(resolution.resolved.length, 0);
   assert.equal(resolution.review_queue.length, 0);
-  assert.equal(resolution.open_world.length, 0);
+  assert.equal(resolution.open_world.length, 17);
   assert.equal(resolution.residuals.length, 0);
+  assert.ok(resolution.open_world.every((entry) => entry.reason === 'UNMAPPED_GENERIC_CLAIM_KEY'));
+  assert.ok(resolution.open_world.every((entry) => entry.citation_validation != null));
 });

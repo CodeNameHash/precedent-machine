@@ -227,7 +227,7 @@ function locateInGovernedScope(governedScope, quote) {
 // so every proposal this test resolves is genuinely producer-shaped (generic
 // keys, mintSubjectId identities, byte-verified evidence) rather than a
 // hand-rolled stand-in that could drift from what the real backend emits.
-function parsedResponse({ includeUnresolvedParty = false } = {}) {
+function parsedResponse({ includeUnresolvedParty = false, sectionReference = '3.1(b)' } = {}) {
   const qualifiers = [{
     kind: 'ACCURACY',
     code: 'MAT_ALL_RESPECTS_DE_MINIMIS',
@@ -252,7 +252,7 @@ function parsedResponse({ includeUnresolvedParty = false } = {}) {
   }
   return {
     representation_instances: [{
-      section_reference: '3.1(b)',
+      section_reference: sectionReference,
       party_making: includeUnresolvedParty ? 'Acme Holdco III' : 'the Company',
       chapeau_quote: 'Capital Structure.',
       limbs: [{
@@ -499,6 +499,84 @@ test('a proposal with an unresolvable party lands in review_queue with PARTY_UNR
     !resolution.resolved.some((entry) => entry.claim.raw_value === UNRESOLVED_PARTY_QUOTE),
     'no provision or claim was minted for the party-unresolved proposal',
   );
+});
+
+// ─── Citation validation, never a silent drop (docs/handoffs/
+// F28-SECOND-LIVE-RUN.md). A proposal whose citation is neither constructed
+// from the sectionizer's tree nor corroborated by the document's own text
+// still RESOLVES (a provision and claim are minted) but is routed to
+// review_queue with a typed CITATION_NOT_VALIDATED reason, never silently
+// auto-passed and never dropped. ───
+
+test('a proposal whose citation cannot be validated (tree or corroboration) still resolves, but routes to review_queue with CITATION_NOT_VALIDATED', async () => {
+  const receipt = await runNativeExtraction({
+    source_text: qxoFullText,
+    document_hash: DOCUMENT_HASH,
+    section_references: ['3.1(b)'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: async ({ governed_scope: governedScope }) => {
+      const { proposals, evidence_residuals: evidenceResiduals } = shapeProposals(
+        // A section_reference that resolves to neither a real tree node nor
+        // any corroborating cross-reference text anywhere in qxoFullText.
+        parsedResponse({ sectionReference: 'NOT-A-REAL-CITATION(z)(z)' }),
+        governedScope.source_text,
+      );
+      return {
+        provider_id: 'candidate-resolution-test-bad-citation/v1',
+        model_id: 'stub-model',
+        prompt: 'candidate-resolution-test-bad-citation-prompt/v1',
+        proposals,
+        evidence_residuals: evidenceResiduals,
+      };
+    },
+  });
+
+  // Never a silent drop: the proposal still compiled into the run receipt.
+  // (bring_down_conditions in this fixture still cites the real '3.1(b)',
+  // so only the representation's own limb/qualifier proposals -- which
+  // inherit the bad section_reference -- carry an unaccepted validation.)
+  assert.ok(receipt.compiled_candidates.length > 0);
+  assert.ok(receipt.compiled_candidates.every((entry) => entry.ok === true));
+  const qualifierEntry = receipt.compiled_candidates.find(
+    (entry) => entry.candidate.kind === 'claim' && entry.candidate.claim.claim_definition_key === QUALIFIER_CLAIM_KEY,
+  );
+  assert.ok(qualifierEntry, 'the qualifier proposal compiled');
+  assert.ok(qualifierEntry.citation_validation);
+  assert.equal(qualifierEntry.citation_validation.accepted, false);
+
+  const resolution = resolveCandidates({
+    run_receipt: receipt,
+    contract_vocabulary: CONTRACT_BUNDLE,
+    admitted_source_context: ADMITTED_SOURCE_CONTEXT,
+  });
+
+  const qualifier = findResolved(resolution, QUALIFIER_CLAIM_KEY);
+  assert.ok(qualifier, 'the qualifier proposal still resolved -- a provision and claim were minted');
+  assert.equal(qualifier.triage.deterministic_gates_passed, false);
+  assert.ok(qualifier.triage.reasons.includes('CITATION_NOT_VALIDATED'));
+  assert.equal(qualifier.triage.auto_pass, false);
+  assert.equal(qualifier.triage.citation_validation.accepted, false);
+  assert.equal(qualifier.triage.citation_validation.status, 'CITATION_NOT_CONSTRUCTIBLE');
+
+  const queued = resolution.review_queue.find((item) => item.closure_id === qualifier.claim.closure_id);
+  assert.ok(queued, 'the citation-unvalidated candidate reached review_queue, not silently accepted');
+  assert.ok(queued.reasons.includes('CITATION_NOT_VALIDATED'));
+});
+
+test('a proposal whose citation IS validated (matches the governing section) carries no CITATION_NOT_VALIDATED reason', async () => {
+  const receipt = await buildReceipt();
+  const resolution = resolveCandidates({
+    run_receipt: receipt,
+    contract_vocabulary: CONTRACT_BUNDLE,
+    admitted_source_context: ADMITTED_SOURCE_CONTEXT,
+  });
+
+  const qualifier = findResolved(resolution, QUALIFIER_CLAIM_KEY);
+  assert.ok(qualifier);
+  assert.equal(qualifier.triage.citation_validation.accepted, true);
+  assert.equal(qualifier.triage.citation_validation.validation_source, 'CONSTRUCTED_FROM_TREE');
+  assert.ok(!qualifier.triage.reasons.includes('CITATION_NOT_VALIDATED'));
 });
 
 // ─── Known-defect exclusion. ───
