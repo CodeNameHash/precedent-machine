@@ -20,23 +20,26 @@ Files:
 - `lib/canonical-v2/native-producer/candidate-resolution.js` (integration)
 - `tests/canonical-v2-limb-components.test.js` (new)
 
-Work:
+Work (two-node model per the amended spec — audit A1, blocking):
 
-1. Mint one component row per distinct `limb_path` under a minted provision:
-   content-derived `limb_component_id`, explicit `parent_limb_component_id`,
-   `ordinal_under_parent`, verbatim `limb_path`, real `SEMANTIC_SPAN/V1` from
-   the union of that limb's byte-verified evidence.
-2. Parent resolution is mechanical: the parent of `["(ii)","(A)"]` is the
-   component for `["(ii)"]`; mint missing ancestors from the paths present.
-3. Allow claim subjects to be limb components: qualifier claims whose
-   `attachment.governs_path` names a limb attach to that limb's component,
-   not to the section provision.
-4. Qualifier scope traversal helper: given a component, return the component
-   set it governs (itself plus descendants via parent links).
+1. Mint PATH nodes per distinct `limb_path`: content-derived id from
+   (provision_instance_id, limb_path), explicit `parent_limb_component_id`,
+   `ordinal_under_parent`, verbatim path, span null unless supplied by
+   assertions. Mint missing ancestors mechanically.
+2. Mint ASSERTION nodes per compiled assertion proposal: id from (path node
+   id, document-order assertion ordinal), parent = path node, span = exactly
+   that assertion's own byte-verified evidence. Assertion nodes are the
+   claim subjects. No union spans anywhere.
+3. Qualifier subject assignment: `governs_path` → path node; exactly one
+   assertion child → attach to it; multiple children → attach to the path
+   node with typed `ASSERTION_SCOPE_AMBIGUOUS`, auto-pass blocked, review.
+4. Scope traversal helper over the two-node tree.
 
-Tests: deterministic IDs; parent links correct at every nesting depth in the
-run-2 fixture; ancestor minting; span unions; a `governs_path` qualifier
-attaching to the right component; byte-identical output on identical input.
+Tests: deterministic IDs; the run-2 fixture's repeated paths (`["(i)"]`,
+`["(ii)"]`, `["(iii)"]`, `["(iv)"]` each carry 3 assertions) produce 3
+assertion nodes each, distinct spans, no envelope spans; the securities-law
+carve-out on `["(ii)"]` routes `ASSERTION_SCOPE_AMBIGUOUS`; ancestor minting;
+byte-identical output on identical input.
 
 ## Task 2: qualifier-kind lexicon and classifier
 
@@ -52,9 +55,13 @@ Work:
 2. Marker tables for KNOWLEDGE / TEMPORAL / ACCURACY / THRESHOLD per the
    spec, including the closed symbolic-date list.
 3. Classification order: zero-width normalise (comparison only) →
-   exception-connective binding → deterministic split of free-standing
-   multi-family quotes (each part re-verified byte-exact) → single-family
-   fire + model-hint agreement → kind.
+   exception-connective binding per the spec's written algorithm
+   (depth-tracked tokenisation; clause-close rules; "provided that" /
+   "subject to" excluded from auto-binding; hostless bound clause → doubt
+   rule) → deterministic split per the spec's partition/residue/inheritance
+   rules (each part re-verified byte-exact; failed part voids the split) →
+   single-family fire + model-hint agreement → kind. A TEMPORAL part split
+   from a THRESHOLD host never reaches the measurement-date mapping.
 4. Asymmetric doubt routing: ACCURACY-boundary doubt returns a typed review
    outcome (`QUALIFIER_KIND_DISAGREEMENT` / `QUALIFIER_KIND_UNCLASSIFIED`);
    non-ACCURACY doubt returns an open-world outcome.
@@ -64,12 +71,18 @@ Work:
 
 Tests (each fails first): the run-1/run-2 disagreement clause classifies
 THRESHOLD both times; "true and correct, except for inaccuracies that are not
-material …" stays ONE ACCURACY unit (binding rule); "… in all material
-respects as of the Closing Date" splits into ACCURACY + TEMPORAL with both
-parts byte-verified; "as of the date hereof" fires TEMPORAL via the symbolic
-list; "correct and complete list of Company Options" ITEM-attached never
-resolves rep-level; U+200E inside a marker phrase still matches; whitelist
-ambiguity yields null code; version pinned in receipt.
+material …" stays ONE ACCURACY unit (binding rule); "true and correct,
+except as provided in Section X, in all material respects" — bound clause
+closes at the second comma, trailing ACCURACY classifies; the fixture's
+nested "(other than …)" inside "except for …" binds innermost-first;
+"provided that" with markers both sides routes by the doubt rule; "… in all
+material respects as of the Closing Date" splits into ACCURACY + TEMPORAL
+with both parts byte-verified and inherited attachment; "material to the
+Company as of the date hereof" — the TEMPORAL part does NOT reach the
+measurement-date mapping; "as of the date hereof" fires TEMPORAL via the
+symbolic list; "correct and complete list of Company Options" ITEM-attached
+never resolves rep-level; U+200E inside a marker phrase still matches;
+whitelist ambiguity yields null code; version pinned in receipt.
 
 ## Task 3: resolution-table rekey and the two mappings
 
@@ -77,8 +90,13 @@ Files:
 
 - `lib/canonical-v2/native-producer/candidate-resolution.js`
 - `lib/canonical-v2/native-producer/measurement-date-parse.js` (new)
+- `lib/canonical-v2/native-producer/native-write-set-adapter.js` (split-part
+  and assertion-node identity plumbing: split claims carry new sub-spans and
+  assertion subjects whose excerpt/evidence/revision identities must
+  re-derive through the adapter — audit A6b)
 - `tests/canonical-v2-candidate-resolution.test.js` (extend)
 - `tests/canonical-v2-measurement-date-parse.test.js` (new)
+- `tests/canonical-v2-native-write-set-adapter.test.js` (extend)
 
 Work:
 
@@ -110,19 +128,30 @@ Files:
 - `lib/canonical-v2/native-producer/ruling-corpus.js` (new)
 - `tests/canonical-v2-ruling-corpus.test.js` (new)
 
+Files (add):
+
+- `contracts/ruling-corpus/ruling-corpus.v1.json` (new — persisted,
+  content-addressed corpus store; updated only by the confirmation script)
+- `scripts/confirm-kind-ruling.mjs` (new — the queue → Ben-confirms →
+  corpus write path; audit A6d: the loop needs real storage and a script)
+
 Work:
 
-1. `RULING_CORPUS/V1`: exact normalised phrase → ruled kind (+ code where
-   applicable), ruler, timestamp, provenance tag. Content-addressed,
-   versioned, pinned in the resolution receipt.
-2. Only VERIFIED rulings apply. Exact match only; near-match goes to review.
-3. Application order: corpus exact match runs BEFORE the lexicon (a ruled
-   phrase is settled precedent); the applied answer is tagged MECHANICAL
-   with a link to the originating VERIFIED ruling.
+1. `RULING_CORPUS/V1`: key = (exact normalised phrase, attachment position,
+   concept family) — audit A4; record = ruled kind (+ code), ruler,
+   timestamp, provenance tag, lexicon version at ruling time.
+   Content-addressed, versioned, pinned in the resolution receipt.
+2. Only VERIFIED rulings apply. Exact key match only; near-match → review.
+3. Application order: corpus exact match runs BEFORE the lexicon, BUT every
+   application also runs the current lexicon; a contradiction routes to
+   review with `RULING_LEXICON_CONFLICT` instead of applying silently.
+4. AI drafts (Task 7) can never enter the corpus file; only the
+   confirmation script writes it, and only with a VERIFIED record.
 
-Tests: exact match applies; one-character difference does not; unverified
-rulings never apply; receipt pins corpus version; corpus + lexicon
-precedence.
+Tests: exact key applies; same phrase + different attachment position does
+not; one-character difference does not; unverified rulings never apply;
+lexicon conflict routes to review; receipt pins corpus version; the corpus
+file round-trips content-addressed.
 
 ## Task 5: provenance tags
 
@@ -137,16 +166,25 @@ Work:
 
 1. `answer_provenance` on every resolved claim and ruling:
    `{tag: MECHANICAL|AI|VERIFIED, pins: {...}}` per the spec's pinning rules.
+   VERIFIED pins include the canonical_text hash and evidence excerpt id
+   (audit A5).
 2. Resolver outputs are MECHANICAL (pinning lexicon, table, corpus
    versions). Producer-originated raw values carried into open world are AI
    (pinning model, PROMPT_ID, PROMPT_VERSION).
-3. Validator requires the field, rejects unknown tags, and never accepts an
-   AI tag on an identity-bearing field (claim_definition_key resolution).
+3. Validator STAGED (audit A6a): validates the field whenever present;
+   REQUIRES it only for native-producer-originated write sets. Reviewed-
+   slice write sets and existing fixtures are untouched; the universal
+   requirement and stored-row backfill are a separate decision for Ben.
+   Never accepts an AI tag on an identity-bearing field.
 4. Supersession scaffolding: rule-version bumps mint superseding revisions
-   linked to the superseded ones; VERIFIED survives version bumps.
+   linked to the superseded ones; VERIFIED survives rule bumps but a
+   canonical-text pin mismatch on source re-admission routes it to review
+   (`SOURCE_SUPERSEDED`).
 
-Tests: tag required; identity-with-AI-tag rejected; pins round-trip through
-adapter identity recomputation; supersession links.
+Tests: field required on native write sets and optional-but-validated
+elsewhere (existing reviewed-slice fixtures stay green); identity-with-AI-
+tag rejected; pins round-trip through adapter identity recomputation;
+supersession links; pin-mismatch routes to review.
 
 ## Task 6: PROMPT_VERSION 4 vocabulary cleanup
 
@@ -185,6 +223,32 @@ Work:
    (VERIFIED) does.
 3. No secrets in prompts; prompts are self-contained per CLAUDE.md Codex
    mechanics.
+
+## Task 8: recall and volume instrumentation (audit-driven; deterministic)
+
+Files:
+
+- `lib/canonical-v2/native-producer/run-comparator.js` (new)
+- `lib/canonical-v2/native-producer/coverage-proxies.js` (new)
+- `scripts/queue-volume-dry-run.mjs` (new)
+- `tests/canonical-v2-run-comparator.test.js`,
+  `tests/canonical-v2-coverage-proxies.test.js` (new)
+
+Work:
+
+1. Cross-run disagreement diff over two run receipts for the same section
+   (limbs by path + span overlap; qualifiers by normalised quote); first
+   consumers are the two existing F28 recordings, whose known ~10-qualifier
+   disagreement is the test fixture (audit B1).
+2. Coverage proxies written into the run receipt: verified-span coverage
+   share of the governed section, and source-text marker counts versus
+   qualifiers emitted; a large gap sets a typed `COVERAGE_SUSPECT` signal.
+3. Queue-volume dry run script: given N run receipts, report projected
+   review-queue items and corpus exact-key hit rate (audit B6 — price the
+   human bottleneck before the 50-deal corpus).
+4. Also here: `CITATION_CORROBORATED_ONLY` triage reason in
+   `candidate-resolution.js` — corroborated-only citations never auto-pass
+   (audit B2).
 
 ## Gates before merge
 
