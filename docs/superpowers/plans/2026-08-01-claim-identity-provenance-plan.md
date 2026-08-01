@@ -38,8 +38,13 @@ Work (two-node model per the amended spec — audit A1, blocking):
 Tests: deterministic IDs; the run-2 fixture's repeated paths (`["(i)"]`,
 `["(ii)"]`, `["(iii)"]`, `["(iv)"]` each carry 3 assertions) produce 3
 assertion nodes each, distinct spans, no envelope spans; the securities-law
-carve-out on `["(ii)"]` routes `ASSERTION_SCOPE_AMBIGUOUS`; ancestor minting;
-byte-identical output on identical input.
+carve-out on `["(ii)"]` routes `ASSERTION_SCOPE_AMBIGUOUS`; PERMUTED
+assertion array order mints identical ids (span-rank ordinals, round-2
+finding 3); the mixed-children case — limb (ii) with 3 assertions AND path
+children (A)(B)(C) — ambiguity counts assertion children only, flow-down
+suspended while ambiguous, zero-assertion chapeau attaches with flow-down,
+`GOVERNS_WHOLE_NODE` review outcome enables it (round-2 finding 4); ancestor
+minting; byte-identical output on identical input.
 
 ## Task 2: qualifier-kind lexicon and classifier
 
@@ -82,7 +87,15 @@ Company as of the date hereof" — the TEMPORAL part does NOT reach the
 measurement-date mapping; "as of the date hereof" fires TEMPORAL via the
 symbolic list; "correct and complete list of Company Options" ITEM-attached
 never resolves rep-level; U+200E inside a marker phrase still matches;
-whitelist ambiguity yields null code; version pinned in receipt.
+whitelist non-match yields null code (whole-quote exact matching, no
+precedence); the run-2 Securities Act carve-out ("… Act of 1933, as amended
+… or other applicable securities Laws") binds as ONE clause through its
+interior comma (round-2 finding 1 — blocking fix); "except for X, Y and Z,
+the Company …" list exceptions bind through their list commas; "to the
+knowledge of the Company as of the date hereof" — the TEMPORAL part never
+reaches the measurement-date mapping (round-2 finding 2); a three-family
+quote partitions pairwise; null producer kind is abstention; version pinned
+in receipt.
 
 ## Task 3: resolution-table rekey and the two mappings
 
@@ -112,8 +125,13 @@ Work:
 4. `(QUALIFIER, KNOWLEDGE, *)` → `KNOWLEDGE_QUALIFIER`, canonical value
    `true`, knowledge standard preserved in `attributes`.
 5. THRESHOLD and everything unmapped: open world, unchanged.
-6. Subject assignment: ITEM-attached claims take the limb component subject
-   (Task 1); CHAPEAU-attached take the provision subject.
+6. Subject assignment: ITEM-attached claims take the assertion-node subject
+   per Task 1's attachment rules; CHAPEAU-attached take the provision
+   subject.
+7. `CITATION_CORROBORATED_ONLY` triage reason: a candidate whose citation
+   was accepted by corroboration alone never auto-passes (moved here from
+   Task 8 — round-2 finding 7: it is a publishing-safety rule and must land
+   with the mappings, not with instrumentation).
 
 Tests: replay of the run-2 fixture end-to-end asserting the new bucket
 counts (limb components minted with correct tree; the two THRESHOLD
@@ -159,8 +177,21 @@ Files:
 
 - `lib/canonical-v2/native-producer/candidate-resolution.js`
 - `lib/canonical-v2/native-producer/native-write-set-adapter.js`
-- `lib/canonical-v2/validate-write-set.js` (accept + require the field)
+- `lib/canonical-v2/validate-write-set.js` (accept + staged-require the
+  field, keyed on the envelope's `write_set_origin` discriminator)
+- `lib/canonical-v2/verified-pin-sweep.js` (new — the SOURCE_SUPERSEDED
+  executor: given a re-admitted source context and stored VERIFIED answers,
+  compare pinned canonical_text hashes and route mismatches to review;
+  round-2 finding 5: the rule needs an executor, not just a rule)
+- `contracts/serving-requirements/claim-provenance-serving-contract.v1.json`
+  (new — machine-readable record of Ben's three serving rulings: the
+  not-comparable count surface, the all-with-warnings default with one
+  switch, warning-exposure logging; round-2 finding 6)
 - `tests/canonical-v2-provenance-tags.test.js` (new)
+- `tests/canonical-v2-verified-pin-sweep.test.js` (new)
+- `tests/canonical-v2-serving-requirements-contract.test.js` (new — asserts
+  the three requirements exist as typed constants the serving slice must
+  consume; the anti-drop mechanism is a test, not a comment)
 
 Work:
 
@@ -184,7 +215,10 @@ Work:
 Tests: field required on native write sets and optional-but-validated
 elsewhere (existing reviewed-slice fixtures stay green); identity-with-AI-
 tag rejected; pins round-trip through adapter identity recomputation;
-supersession links; pin-mismatch routes to review.
+supersession links; the pin sweep re-admits a fixture source with changed
+canonical text and every pinned VERIFIED answer routes `SOURCE_SUPERSEDED`;
+the serving-requirements contract test fails if any of the three rulings is
+removed.
 
 ## Task 6: PROMPT_VERSION 4 vocabulary cleanup
 
@@ -245,10 +279,14 @@ Work:
    qualifiers emitted; a large gap sets a typed `COVERAGE_SUSPECT` signal.
 3. Queue-volume dry run script: given N run receipts, report projected
    review-queue items and corpus exact-key hit rate (audit B6 — price the
-   human bottleneck before the 50-deal corpus).
-4. Also here: `CITATION_CORROBORATED_ONLY` triage reason in
-   `candidate-resolution.js` — corroborated-only citations never auto-pass
-   (audit B2).
+   human bottleneck before the 50-deal corpus). Gets a fixture-driven test
+   (round-2 finding 12), reading the persisted `RESOLUTION_REVIEW_QUEUE/V1`
+   artifacts the run driver writes.
+
+(`CITATION_CORROBORATED_ONLY` moved to Task 3 item 7 — round-2 finding 7:
+publishing safety cannot wait for instrumentation.) Sequencing: Task 8 lands
+BEFORE merge gates 3 and 4 run — the fresh live run is not accepted without
+the cross-run diff and coverage proxies in place.
 
 ## Gates before merge
 

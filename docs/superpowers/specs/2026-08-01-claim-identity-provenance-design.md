@@ -59,18 +59,34 @@ A1 — blocking). The resolver therefore mints TWO node kinds:
   assertion supplies one — spans live on assertion nodes, never invented);
   `ordinal_under_parent`; verbatim `limb_path`. Structure only.
 - **Assertion nodes** — one per compiled assertion proposal: content-derived
-  id from (path node id, assertion ordinal in document order); parent is the
-  path node; a real `SEMANTIC_SPAN/V1` covering exactly that assertion's own
-  byte-verified evidence. Assertion nodes are the claim subjects.
+  id from (path node id, assertion ordinal); parent is the path node; a real
+  `SEMANTIC_SPAN/V1` covering exactly that assertion's own byte-verified
+  evidence. Assertion nodes are the claim subjects. **Ordinal definition
+  (round-2 audit, finding 3):** the ordinal is the assertion's rank among
+  its siblings by (verified span start, span end), tie-broken by the hash of
+  the normalised quote — NEVER producer emission order. Two runs emitting
+  the same assertions in different array order mint identical ids; a
+  permutation test enforces this.
 
-A qualifier whose `governs_path` resolves to a path node with exactly one
-assertion child attaches to that assertion. A qualifier whose path node has
-MULTIPLE assertion children is genuinely ambiguous — the model's coordinates
-cannot say which sentence it modifies. It attaches to the path node with a
-typed `ASSERTION_SCOPE_AMBIGUOUS` reason, blocks auto-pass, and routes to
-review. Never spread across siblings by default: the run-2 securities-law
-carve-out governs only ONE of limb (ii)'s three assertions in the source
-text.
+Qualifier attachment rules over the tree (round-2 audit, finding 4 — all
+four cases defined):
+
+- Ambiguity counts ASSERTION children only; path-node children do not make
+  an attachment ambiguous.
+- Exactly one assertion child → the qualifier attaches to that assertion.
+- Multiple assertion children → attaches to the path node with a typed
+  `ASSERTION_SCOPE_AMBIGUOUS` reason, auto-pass blocked, routed to review.
+  **Scope flow-down is SUSPENDED while the ambiguity is unresolved** — an
+  ambiguous attachment governs nothing via traversal.
+- Zero assertion children (a pure structural node over sub-limbs) → the
+  qualifier is a chapeau of that node: it attaches to the path node and
+  scope flows down to descendants.
+- Review has a `GOVERNS_WHOLE_NODE` resolution outcome: a human ruling that
+  the qualifier deliberately governs the whole node (e.g. the "As of April
+  17, 2026" chapeau over (ii)(A)–(C)); flow-down enables on that ruling.
+
+Never spread across siblings by default: the run-2 securities-law carve-out
+governs only ONE of limb (ii)'s three assertions in the source text.
 
 Ben's requirement: a limb may be a representation in its own right (e.g.
 (a) no-conflict, (b) authority under one section heading). Therefore:
@@ -123,9 +139,17 @@ Rules, in order:
    binding algorithm (2026-08-01 audit, finding A2 — blocking; two
    implementers must produce the same classifier):
    - Tokenise the normalised quote tracking parenthetical depth.
-   - A bound clause opens at a connective and closes at the FIRST of: the
-     next comma or semicolon at the connective's own depth, the close of the
-     connective's enclosing parenthetical, or the end of the quote.
+   - A bound clause opens at a connective. A comma at the connective's own
+     depth closes it ONLY when the continuation after that comma (up to the
+     next boundary at the same depth) contains a lexicon marker or another
+     connective; otherwise the bound clause extends through the comma
+     (round-2 audit, finding 1 — blocking: the first-comma rule truncated
+     the run-2 fixture's own "… Securities Act of 1933, as amended (the
+     "Securities Act") or other applicable securities Laws" clause at the
+     comma after "1933", and truncates any list exception "except for X, Y
+     and Z, …" after X). Failing that, the clause closes at the FIRST of: a
+     semicolon at the connective's depth, the close of the connective's
+     enclosing parenthetical, or the end of the quote.
    - A connective inside a parenthetical binds within that parenthetical
      only. Nesting resolves innermost-first.
    - The host is the marker-bearing span immediately preceding the bound
@@ -150,12 +174,18 @@ Rules, in order:
    verification voids the whole split → doubt rule); every part inherits the
    original qualifier's attachment position and `governs_path` unchanged.
    "true and correct in all material respects as of the Closing Date" splits
-   into one ACCURACY and one TEMPORAL claim on the same attachment. A
-   TEMPORAL part split out of a THRESHOLD host (e.g. "material to the
-   Company as of the date hereof") dates the qualifier, not the
-   representation: it does NOT mint `REPRESENTATION_MEASUREMENT_DATE` — only
-   a TEMPORAL that is free-standing before binding, or split from an
-   ACCURACY host, may reach that mapping (audit finding A3).
+   into one ACCURACY and one TEMPORAL claim on the same attachment. Split
+   applies pairwise to two OR MORE free-standing families; a three-family
+   quote partitions the same way, each part classifying alone.
+   **Measurement-date reachability, stated positively (round-2 audit,
+   finding 2):** a TEMPORAL may reach the `REPRESENTATION_MEASUREMENT_DATE`
+   mapping ONLY when (a) the whole quote fires TEMPORAL alone, or (b) the
+   TEMPORAL part was split from an ACCURACY host. A TEMPORAL co-occurring
+   with KNOWLEDGE or THRESHOLD in the same original quote dates the
+   QUALIFIER, not the representation ("to the knowledge of the Company as
+   of the date hereof" dates the knowledge): it never mints a measurement
+   date; the date is preserved in the qualifier claim's `attributes` and
+   the item routes per its host family.
 4. **Single-family fire + model agreement → kind set.** The model's `kind` is
    a hint only.
 5. **Doubt routing is asymmetric.** Doubt at the ACCURACY boundary (lexicon
@@ -171,9 +201,19 @@ Rules, in order:
    `REPRESENTATION_ACCURACY_STANDARD`. An ITEM-attached (limb-level) ACCURACY
    qualifier goes to review — never minted as a rep-level claim.
 7. **Code derivation by exact phrase only.** The controlled ACCURACY code
-   comes from a whitelist of exact normalised-phrase → code pairs with a
-   stated precedence order. Zero matches → code null. Two or more → code
-   null and review. Never nearest-fit.
+   comes from a whitelist of exact normalised-phrase → code pairs, matched
+   against the WHOLE normalised quote (round-2 audit, finding 9: whole-quote
+   matching means at most one pair can match, so there is no precedence
+   order). Zero matches → code null. Never nearest-fit. The initial pairs
+   (Fable/Ben-governed, versioned with the lexicon): "true and correct in
+   all respects" → `MAT_ALL_RESPECTS`; "true and correct in all respects,
+   except for de minimis inaccuracies" (and the merged de-minimis phrasings)
+   → `MAT_ALL_RESPECTS_DE_MINIMIS`; "true and correct in all material
+   respects" → `MAT_ALL_MATERIAL`; the whole-rep "except as would not be
+   material to the Company" form → `MAT_MATERIAL_TO_COMPANY`; the MAE-
+   qualified form → `MAT_MAE_QUALIFIED`. Deal-specific variants that match
+   no pair get code null and route to review — that is the intended intake
+   for new whitelist pairs.
 
 ### Governance
 
@@ -226,10 +266,13 @@ confirmation script — never hand-edited.
   VERIFIED ruling, code applies it. The application is MECHANICAL, linked to
   the originating VERIFIED ruling.
 - **Lexicon-conflict flag:** on every application, code also runs the
-  current lexicon. If the ruling contradicts what the current lexicon would
-  decide, the application is NOT silent: the item routes to review with a
-  typed `RULING_LEXICON_CONFLICT` reason. A stale ruling never permanently
-  overrides a lexicon improvement.
+  current lexicon. Only an AFFIRMATIVE different-kind fire is a conflict
+  (lexicon abstention is not — round-2 audit, finding 10): a conflict routes
+  to review with a typed `RULING_LEXICON_CONFLICT` reason. A stale ruling
+  never permanently overrides a lexicon improvement.
+- **Family for open-world items (round-2 audit, finding 8):** an unmapped or
+  open-world item carries the concept family of its governing section-level
+  provision in the ruling key. There is no null-family ruling.
 - Near-match never applies. Anything not exact goes to review.
 - The queue-shrinking benefit is a hypothesis, not a promise: recurring
   quotes often embed deal-specific dates and numbers, so the cross-deal
@@ -345,6 +388,37 @@ residuals. Three cheap, deterministic instruments ship with this slice:
    exact-match-corpus hit rates over a handful of deals BEFORE the 50-deal
    corpus is attempted (audit finding B6: one human verifier; the number has
    never been computed).
+
+## Pinned implementation decisions (round-2 audit guess list — pinned so no
+implementer guesses them)
+
+- **Review-queue store:** the resolver's `review_queue` bucket is persisted
+  by the run driver as a content-addressed `RESOLUTION_REVIEW_QUEUE/V1` JSON
+  artifact alongside the run receipt. Tasks 4 and 7 read that artifact, not
+  process memory.
+- **Validator origin discriminator:** the write-set envelope gains
+  `write_set_origin: 'NATIVE_PRODUCER' | 'REVIEWED_SLICE'`, set by the
+  adapter. The staged `answer_provenance` requirement keys on it.
+- **Typed reasons:** `ASSERTION_SCOPE_AMBIGUOUS`, `QUALIFIER_KIND_*`,
+  `RULING_LEXICON_CONFLICT`, `SOURCE_SUPERSEDED`,
+  `CITATION_CORROBORATED_ONLY` join the existing `triage.reasons` string
+  enum in `candidate-resolution.js`; review-queue ordering keeps the
+  existing materiality sort unchanged.
+- **`MAPPING_TABLE_VERSION` becomes 3.** Version-2 receipts remain
+  replayable; the receipt pins the version, per the existing pattern.
+- **Model-hint absence:** a missing/null producer `kind` is ABSTENTION, not
+  agreement and not disagreement — classification proceeds on the lexicon
+  alone when exactly one family fires; otherwise the doubt rule.
+- **Agreement date injection:** `measurement-date-parse.js` stays pure; the
+  caller (`candidate-resolution.js`) injects the governed agreement date
+  from the admitted source context's deal record. No governed date → the
+  symbolic resolution abstains → open world.
+- **Reviewer identity:** `scripts/confirm-kind-ruling.mjs` records the
+  ruler from an explicit `--reviewer` argument; it refuses to write a
+  ruling without one.
+- Content-id derivation for new node/ruling ids follows the existing
+  `contentId(domain, payload)` convention with new `/V1` domain strings, as
+  everywhere else in `candidate-resolution.js`.
 
 ## Error handling
 
