@@ -28,6 +28,7 @@
     "lib/canonical-v2/validate-write-set.js",
     "lib/canonical-v2/verified-pin-sweep.js",
     "scripts/canonical-v2-f28-third-live-extraction-run.mjs",
+    "scripts/canonical-v2-modiv-first-live-extraction-run.mjs",
     "scripts/canonical-v2-skechers-first-live-extraction-run.mjs",
     "scripts/confirm-kind-ruling.mjs",
     "scripts/draft-kind-rulings.mjs",
@@ -43,6 +44,7 @@
     "tests/canonical-v2-limb-components.test.js",
     "tests/canonical-v2-limb-enumeration-scan.test.js",
     "tests/canonical-v2-measurement-date-parse.test.js",
+    "tests/canonical-v2-modiv-replay.test.js",
     "tests/canonical-v2-native-extraction-run.test.js",
     "tests/canonical-v2-native-write-set-adapter.test.js",
     "tests/canonical-v2-provenance-tags.test.js",
@@ -52,9 +54,9 @@
     "tests/canonical-v2-ruling-corpus.test.js",
     "tests/canonical-v2-run-comparator.test.js",
     "tests/canonical-v2-serving-requirements-contract.test.js",
+    "tests/canonical-v2-skechers-replay.test.js",
     "tests/canonical-v2-verified-pin-sweep.test.js",
-    "tests/fixtures/canonical-v2/f28-third-live-run/**",
-    "tests/fixtures/canonical-v2/skechers-first-live-run/**"
+    "tests/fixtures/canonical-v2/*-live-run/**"
   ],
   "denied": [
     ".env*",
