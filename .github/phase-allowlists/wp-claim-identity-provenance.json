@@ -53,18 +53,8 @@
     "tests/canonical-v2-run-comparator.test.js",
     "tests/canonical-v2-serving-requirements-contract.test.js",
     "tests/canonical-v2-verified-pin-sweep.test.js",
-    "tests/fixtures/canonical-v2/f28-third-live-run/adapter-result.json",
-    "tests/fixtures/canonical-v2/f28-third-live-run/call-telemetry.json",
-    "tests/fixtures/canonical-v2/f28-third-live-run/coverage-proxies.json",
-    "tests/fixtures/canonical-v2/f28-third-live-run/limb-enumeration-scan.json",
-    "tests/fixtures/canonical-v2/f28-third-live-run/qxo-topbuild-3-1-b-live-response.json",
-    "tests/fixtures/canonical-v2/f28-third-live-run/resolution.json",
-    "tests/fixtures/canonical-v2/f28-third-live-run/run-comparator-vs-run2.json",
-    "tests/fixtures/canonical-v2/f28-third-live-run/run-receipt.json",
-    "tests/fixtures/canonical-v2/f28-third-live-run/validation.json",
-    "tests/fixtures/canonical-v2/skechers-first-live-run/article-iii-canonical-excerpt.txt",
-    "tests/fixtures/canonical-v2/skechers-first-live-run/intake-pin.json",
-    "tests/fixtures/canonical-v2/skechers-first-live-run/section-location-scan.json"
+    "tests/fixtures/canonical-v2/f28-third-live-run/**",
+    "tests/fixtures/canonical-v2/skechers-first-live-run/**"
   ],
   "denied": [
     ".env*",
