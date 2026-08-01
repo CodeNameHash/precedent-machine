@@ -134,9 +134,12 @@ The default is (A) unless Ben rules (B).
 `candidate-resolution.js` accepts an optional `v1v2_comparison` input
 (the comparator's receipt). When present: remove
 `V1_V2_COMPARATOR_ABSENT` from `unevaluatedConditions` for claims whose
-provision has a Tier-1 result, and push typed reasons
-(`V1V2_SECTION_MISMATCH`, `V1V2_VALUE_MISMATCH`, `V2_MISSING_SIBLING`)
-into the same gate-failure flow as every other structural check. Absent
+provision has a Tier-1 result (value-invisible claims instead carry
+`V1_V2_COMPARATOR_INAPPLICABLE_TO_CLAIM` under default option A; open-
+world entries and provisionless queue items keep the ABSENT condition),
+and push the provision's OWN typed reasons (`V1V2_SECTION_MISMATCH`,
+`V1V2_VALUE_MISMATCH`) into the same gate-failure flow as every other
+structural check — never receipt-level recall outcomes. Absent
 the input, behavior is exactly today's — strictly additive. Auto-pass
 still requires the lexical-disagreement net (condition 2, separate
 slice) before it can ever open.
