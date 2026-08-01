@@ -131,9 +131,14 @@ test('"... in all material respects as of the Closing Date" splits into ACCURACY
   const quote = 'true and correct in all material respects as of the Closing Date';
   const result = classifyQualifierQuote({ quote });
   assert.equal(result.outcome, 'SPLIT');
-  const kinds = result.parts.map((p) => p.kind);
-  assert.ok(kinds.includes('ACCURACY'));
-  assert.ok(kinds.includes('TEMPORAL'));
+  // Spec §2 rule 3's worked example: EXACTLY two parts -- one merged
+  // ACCURACY region, one TEMPORAL. Per-occurrence fragmentation (three
+  // parts, none matching the code whitelist) was final-audit finding C1.
+  assert.equal(result.parts.length, 2);
+  assert.deepEqual(result.parts.map((p) => p.kind), ['ACCURACY', 'TEMPORAL']);
+  const accuracyPart = result.parts[0];
+  assert.equal(accuracyPart.code, 'MAT_ALL_MATERIAL',
+    'the merged ACCURACY part must match the whole-part whitelist -- the slice headline capability');
 
   // Parts exactly partition the quote (no gap, no overlap, no drop).
   let cursor = 0;
@@ -152,8 +157,10 @@ test('a three-family quote partitions pairwise, each part classifying alone', ()
   const quote = 'to the knowledge of the Company, true and correct in all material respects, as of the date hereof';
   const result = classifyQualifierQuote({ quote });
   assert.equal(result.outcome, 'SPLIT');
+  // One part per FAMILY region: adjacent same-family occurrences merge
+  // (audit C1) -- three families, exactly three parts.
   const kinds = result.parts.map((p) => p.kind);
-  assert.deepEqual(kinds, ['KNOWLEDGE', 'ACCURACY', 'ACCURACY', 'TEMPORAL']);
+  assert.deepEqual(kinds, ['KNOWLEDGE', 'ACCURACY', 'TEMPORAL']);
 
   let cursor = 0;
   for (const part of result.parts) {
@@ -381,4 +388,31 @@ test('classifyQualifierQuote rejects a non-string quote', () => {
 
 test('classifyQualifierQuote rejects an unrecognised modelKind', () => {
   assert.throws(() => classifyQualifierQuote({ quote: 'true and correct', modelKind: 'NOT_A_KIND' }), TypeError);
+});
+
+// ─── Final-audit finding C1: depth-zero boundary enforcement ───
+
+test('a comma inside a parenthetical never cuts a part: the TEMPORAL claim is never a mangled fragment', () => {
+  const quote = 'true and correct in all material respects (as amended, restated) as of the Closing Date';
+  const result = classifyQualifierQuote({ quote });
+  assert.equal(result.outcome, 'SPLIT');
+  assert.equal(result.parts.length, 2);
+  const temporalPart = result.parts.find((p) => p.kind === 'TEMPORAL');
+  // The depth-1 comma inside "(as amended, restated)" must not become a
+  // boundary: the parenthetical residue stays with the ACCURACY host, and
+  // the TEMPORAL part is the clean date clause -- never " restated) as of...".
+  assert.equal(temporalPart.text.trim(), 'as of the Closing Date');
+  const accuracyPart = result.parts.find((p) => p.kind === 'ACCURACY');
+  assert.ok(accuracyPart.text.includes('(as amended, restated)'),
+    'the parenthetical residue stays with the host part');
+  // The polluted ACCURACY part must NOT match the whitelist (no nearest-fit).
+  assert.equal(accuracyPart.code, null);
+
+  let cursor = 0;
+  for (const part of result.parts) {
+    assert.equal(part.start, cursor);
+    assert.equal(quote.slice(part.start, part.end), part.text);
+    cursor = part.end;
+  }
+  assert.equal(cursor, quote.length);
 });
