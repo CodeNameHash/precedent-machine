@@ -26,7 +26,7 @@ jobs:
           set -o pipefail
           npm test 2>&1 | tee /tmp/test-output.log || status=$?
           echo "──── failing tests (if any) ────"
-          grep "^not ok" /tmp/test-output.log || true
+          grep -A 25 "^not ok" /tmp/test-output.log || true
           exit "${status:-0}"
       - name: Production build
         run: npm run build
