@@ -10,6 +10,9 @@ const {
   NativeExtractionRunError,
 } = require('../lib/canonical-v2/native-producer/native-extraction-run');
 const { QXO_5_2_TEXT } = require('./fixtures/qxo-section-5-2');
+const { QUALIFIER_CLAIM_KEY, LIMB_ASSERTION_CLAIM_KEY } = require('../lib/canonical-v2/native-producer/anthropic-provider');
+const { COVERAGE_PROXY_REPORT_SCHEMA } = require('../lib/canonical-v2/native-producer/coverage-proxies');
+const { LIMB_ENUMERATION_SCAN_REPORT_SCHEMA } = require('../lib/canonical-v2/native-producer/limb-enumeration-scan');
 
 // ─── Fixture: a realistic full merger-agreement text with the real QXO
 // Section 3.1(b) capital-structure and Section 5.2 closing-condition text
@@ -250,6 +253,152 @@ test('evidence residuals from the provider reach the run receipt and are counted
     receipt.evidence_residuals.map((r) => r.reason),
     ['LIMB_ASSERTION_QUOTE_UNVERIFIED', 'QUALIFIER_QUOTE_UNVERIFIED'],
   );
+});
+
+// ─── Task-8 recall instruments wired into the receipt (F28-THIRD-LIVE-RUN.md
+// known-limitations register item 5 / final-audit finding M7) ───
+
+// A provider that emits a real LIMB_ASSERTION_CLAIM_KEY proposal (with a
+// limb_path attribute) and a real QUALIFIER_CLAIM_KEY proposal, so the
+// receipt-built coverage-proxies / limb-enumeration-scan projections have
+// something concrete to report on.
+function limbAndQualifierProvider({
+  limbPath = ['(i)'],
+  limbQuote = LIMB_I_QUOTE,
+  qualifierQuote = LIMB_II_QUOTE,
+} = {}) {
+  return async ({ governed_scope: governedScope }) => {
+    const limbEvidence = locateInGovernedScope(governedScope, limbQuote);
+    const qualifierEvidence = locateInGovernedScope(governedScope, qualifierQuote);
+    return {
+      provider_id: 'native-extraction-run-test-stub/v1',
+      model_id: 'stub-model',
+      prompt: 'native-extraction-run-test-stub-prompt-v1',
+      proposals: [
+        makeClaimProposal({
+          subjectSeed: { section_reference: governedScope.section_reference, kind: 'limb', limbQuote },
+          ordinal: 0,
+          quote: limbQuote,
+          absoluteStart: limbEvidence.start,
+          absoluteEnd: limbEvidence.end,
+          claimDefinitionKey: LIMB_ASSERTION_CLAIM_KEY,
+          attributes: { limb_path: limbPath },
+          allowedAttributes: ['limb_path'],
+        }),
+        makeClaimProposal({
+          subjectSeed: { section_reference: governedScope.section_reference, kind: 'qualifier', qualifierQuote },
+          ordinal: 0,
+          quote: qualifierQuote,
+          absoluteStart: qualifierEvidence.start,
+          absoluteEnd: qualifierEvidence.end,
+          claimDefinitionKey: QUALIFIER_CLAIM_KEY,
+          attributes: {},
+          allowedAttributes: [],
+        }),
+      ],
+      evidence_residuals: [],
+    };
+  };
+}
+
+test('the run receipt carries a coverage_proxies report and a limb_enumeration_scan report, one per resolved section', async () => {
+  const receipt = await runNativeExtraction({
+    source_text: qxoRealisticFullText,
+    document_hash: DOCUMENT_HASH,
+    section_references: ['3.1(b)'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: limbAndQualifierProvider(),
+  });
+
+  assert.ok(Array.isArray(receipt.coverage_proxies));
+  assert.equal(receipt.coverage_proxies.length, 1);
+  const [coverageReport] = receipt.coverage_proxies;
+  assert.equal(coverageReport.schema_version, COVERAGE_PROXY_REPORT_SCHEMA);
+  assert.equal(coverageReport.section_reference, '3.1(b)');
+  // One qualifier proposal (QUALIFIER_CLAIM_KEY) was emitted.
+  assert.equal(coverageReport.qualifiers_emitted_count, 1);
+  assert.ok(Array.isArray(coverageReport.signals));
+
+  assert.ok(Array.isArray(receipt.limb_enumeration_scan));
+  assert.equal(receipt.limb_enumeration_scan.length, 1);
+  const [limbScanReport] = receipt.limb_enumeration_scan;
+  assert.equal(limbScanReport.schema_version, LIMB_ENUMERATION_SCAN_REPORT_SCHEMA);
+  assert.equal(limbScanReport.section_reference, '3.1(b)');
+  assert.deepEqual(limbScanReport.proposed_tokens, ['(i)']);
+
+  // The two new fields participate in the receipt's own content-id
+  // derivation exactly like every other field: a run whose only difference
+  // is the instrument input (here, a different limb_path) must mint a
+  // different run_receipt_id.
+  const receiptWithDifferentLimb = await runNativeExtraction({
+    source_text: qxoRealisticFullText,
+    document_hash: DOCUMENT_HASH,
+    section_references: ['3.1(b)'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: limbAndQualifierProvider({ limbPath: ['(ii)'] }),
+  });
+  assert.notEqual(receipt.run_receipt_id, receiptWithDifferentLimb.run_receipt_id);
+});
+
+test('an instrument failure is typed into the receipt, never thrown -- the run still completes', async () => {
+  // A LIMB_ASSERTION_CLAIM_KEY proposal whose limb_path carries a non-string
+  // segment: our own projection only checks "is a non-empty array", so this
+  // malformed value reaches scanLimbEnumeration's own input validation
+  // (limb-enumeration-scan.js's flattenProposedTokens), which throws
+  // LimbEnumerationScanError('INVALID_INPUT', ...) for a non-string segment.
+  const provider = async ({ governed_scope: governedScope }) => {
+    const limbEvidence = locateInGovernedScope(governedScope, LIMB_I_QUOTE);
+    return {
+      provider_id: 'native-extraction-run-test-stub/v1',
+      model_id: 'stub-model',
+      prompt: 'native-extraction-run-test-stub-prompt-v1',
+      proposals: [
+        makeClaimProposal({
+          subjectSeed: { section_reference: governedScope.section_reference, kind: 'bad-limb' },
+          ordinal: 0,
+          quote: LIMB_I_QUOTE,
+          absoluteStart: limbEvidence.start,
+          absoluteEnd: limbEvidence.end,
+          claimDefinitionKey: LIMB_ASSERTION_CLAIM_KEY,
+          attributes: { limb_path: [123] }, // malformed: a number, not a string segment
+          allowedAttributes: ['limb_path'],
+        }),
+      ],
+      evidence_residuals: [],
+    };
+  };
+
+  const receipt = await runNativeExtraction({
+    source_text: qxoRealisticFullText,
+    document_hash: DOCUMENT_HASH,
+    section_references: ['3.1(b)'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider,
+  });
+
+  // The run completed: compiled_candidates, resolved_sections etc are all
+  // still populated normally.
+  assert.equal(receipt.compiled_candidates.length, 1);
+  assert.equal(receipt.resolved_sections.length, 1);
+
+  // The failing instrument is typed into the receipt, not thrown.
+  assert.equal(receipt.limb_enumeration_scan.length, 1);
+  const [failedReport] = receipt.limb_enumeration_scan;
+  assert.equal(failedReport.section_reference, '3.1(b)');
+  assert.equal(typeof failedReport.error, 'string');
+  assert.equal(failedReport.error, 'INVALID_INPUT');
+  assert.equal(typeof failedReport.message, 'string');
+  assert.equal(failedReport.schema_version, undefined);
+
+  // The OTHER instrument, unaffected by this failure, still produced a real
+  // report for the same section.
+  assert.equal(receipt.coverage_proxies.length, 1);
+  assert.equal(receipt.coverage_proxies[0].schema_version, COVERAGE_PROXY_REPORT_SCHEMA);
+
+  assert.match(receipt.run_receipt_id, /^[a-f0-9]{64}$/);
 });
 
 // ─── Scope integrity: evidence outside the licensed scope is rejected ───

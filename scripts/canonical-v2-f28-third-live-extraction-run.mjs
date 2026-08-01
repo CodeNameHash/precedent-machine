@@ -78,6 +78,9 @@ const { indexOfIgnoringZeroWidth, normaliseForMatching } = require('../lib/canon
 const { compareRuns } = require('../lib/canonical-v2/native-producer/run-comparator');
 const { computeCoverageProxies } = require('../lib/canonical-v2/native-producer/coverage-proxies');
 const { scanLimbEnumeration } = require('../lib/canonical-v2/native-producer/limb-enumeration-scan');
+const {
+  buildReviewQueueArtifact, serialiseReviewQueueArtifact,
+} = require('../lib/canonical-v2/native-producer/review-queue-artifact');
 
 const AGREEMENT_DATE = '2026-04-18'; // pinned QXO/TopBuild signing date (repo fixtures)
 const COMPARATOR_SECTION_REFERENCE = '3.1(b)'; // human section id used by both prior F28 run recordings
@@ -355,6 +358,18 @@ async function main() {
   });
   writeFileSync(resolve(outDir, 'resolution.json'), JSON.stringify(resolution, null, 2));
 
+  // Pinned implementation decision (design spec, "Pinned implementation
+  // decisions"): the resolver's review_queue bucket is persisted by the run
+  // driver as a content-addressed RESOLUTION_REVIEW_QUEUE/V1 JSON artifact
+  // alongside the run receipt -- scripts/confirm-kind-ruling.mjs,
+  // scripts/draft-kind-rulings.mjs and scripts/queue-volume-dry-run.mjs all
+  // read this file, not process memory.
+  const reviewQueueArtifact = buildReviewQueueArtifact({
+    resolution,
+    run_receipt_id: receipt.run_receipt_id,
+  });
+  writeFileSync(resolve(outDir, 'review-queue.json'), serialiseReviewQueueArtifact(reviewQueueArtifact));
+
   const resolvedRunReceipt = {
     ...receipt,
     compiled_candidates: resolution.resolved.map((entry) => entry.compiled_candidate),
@@ -431,6 +446,7 @@ async function main() {
   process.stderr.write(`resolution: resolved=${resolution.resolved.length} auto_pass=${resolution.resolved.filter((e) => e.triage.auto_pass).length} review_queue=${resolution.review_queue.length} open_world=${resolution.open_world.length} residuals=${resolution.residuals.length}\n`);
   process.stderr.write(`write_set claims: ${adapterResult.write_set.claims.length}, adapter residuals: ${adapterResult.residuals.length}\n`);
   process.stderr.write(`validation accepted: ${validation.accepted}, residuals: ${validation.residuals.length}, quarantines: ${validation.quarantines.length}\n`);
+  process.stderr.write(`review_queue artifact: ${reviewQueueArtifact.review_queue.length} item(s), review_queue_artifact_id=${reviewQueueArtifact.review_queue_artifact_id}\n`);
   process.stderr.write(`publishable claims: ${validation.publishableWriteSet ? validation.publishableWriteSet.claims.length : 'n/a'}\n`);
   process.stderr.write(`run-comparator (run2 vs run3): limb_disagreement=${comparisonReport.summary.limb_disagreement_count} qualifier_disagreement=${comparisonReport.summary.qualifier_disagreement_count}\n`);
   process.stderr.write(`coverage-proxies: coverage_share=${coverageReport.coverage_share} qualifier_to_marker_ratio=${coverageReport.qualifier_to_marker_ratio} signals=${JSON.stringify(coverageReport.signals.map((s) => s.reason))}\n`);
