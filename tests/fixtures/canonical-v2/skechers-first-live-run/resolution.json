@@ -1,0 +1,2772 @@
+{
+  "resolved": [
+    {
+      "section_reference": "3.7",
+      "generic_claim_key": "NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
+      "concept_key": "REP-T-CAP",
+      "party": {
+        "role": "REPRESENTATION_MAKER",
+        "value": "the Company",
+        "capacity": "TARGET"
+      },
+      "provision_instance": {
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_occurrence_id": "c136c6adc572c1083ed8fe9c4bcc14b2c01456d3c2e1af0bef1937bb04d2f489",
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "absolute_start": 122698,
+        "absolute_end": 127852,
+        "concept_key": "REP-T-CAP",
+        "party": {
+          "role": "REPRESENTATION_MAKER",
+          "value": "the Company",
+          "capacity": "TARGET"
+        },
+        "ordinal": 1,
+        "source_anchor_id": "b4498ffc6baef4b05ae744841701536cbea52acc836411a42690891a94a772ec",
+        "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+        "closure_id": "a30cbd846c960877c68b492ee3d4aef99aa70252b5606aa8dbf9c747abcce3a0"
+      },
+      "claim": {
+        "schema_version": "CLAIM_REVISION/V1",
+        "claim_revision_id": "217018b68854bad15c689aa7d8277fb64037ccfef3376a0513d89402193505d1",
+        "claim_occurrence_id": "510c429da7b6f5033287f2f880a6602c3f8108ddec15243ed7fafd07224f001f",
+        "subject_occurrence_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+        "claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
+        "claim_definition_version": 1,
+        "ordinal": 0,
+        "state": "PRESENT",
+        "raw_value": "as of May 2, 2025",
+        "canonical_value": "2025-05-02",
+        "unit": null,
+        "day_basis": null,
+        "denominator": null,
+        "scope": null,
+        "applicability": null,
+        "not_examined": null,
+        "failure": null,
+        "evidence_ids": [
+          "5cceae224558ebc4231e82f0c37deb44eec2e129e926f31683e57552beba2164"
+        ],
+        "attributes": {
+          "section_reference": "3.7(b)",
+          "party_making": "the Company",
+          "qualifier_kind": "TEMPORAL",
+          "attachment": {
+            "position": "ITEM",
+            "governs_path": null,
+            "scope_reading": "THIS_ITEM_ONLY",
+            "ambiguity_signals": {
+              "comma_before_qualifier": true,
+              "in_each_case_language": null,
+              "single_clause_language": null,
+              "items_grammatically_parallel": false
+            },
+            "readings": null
+          },
+          "deterministic_kind": "TEMPORAL",
+          "answer_provenance": {
+            "tag": "MECHANICAL",
+            "pins": {
+              "mapping_table_version": 3,
+              "qualifier_kind_lexicon_version": 1
+            }
+          },
+          "enrichment_state": "UNENRICHED",
+          "comparability": "NOT_COMPARABLE",
+          "measurement_date_resolution": "CALENDAR"
+        },
+        "taxonomy_codes": {},
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "schema_version": "CLAIM_EVIDENCE/V1",
+            "claim_evidence_id": "5cceae224558ebc4231e82f0c37deb44eec2e129e926f31683e57552beba2164",
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "6b624f6b093f489901f4f06d16902a5d3ba8f44f2dcc1f8174156f43cf388266",
+            "document_ordinal": 0,
+            "absolute_start": 2088,
+            "absolute_end": 2105,
+            "ordinal": 0
+          }
+        ],
+        "publication_state": "VALIDATED",
+        "retained_residuals": [],
+        "quarantine": null,
+        "closure_id": "3a6bda33c38474a465bd42cda4565a6f75f846033159fd5ced4385163504737f"
+      },
+      "compiled_candidate": {
+        "section_reference": "3.7",
+        "ok": true,
+        "citation_validation": {
+          "status": "CITATION_DISAGREEMENT",
+          "accepted": false,
+          "validation_source": null,
+          "model_citation": "3.7(b)",
+          "normalized_citation": "3.7(b)",
+          "derived_citation": "III-INTRO(d)"
+        },
+        "candidate": {
+          "kind": "claim",
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "217018b68854bad15c689aa7d8277fb64037ccfef3376a0513d89402193505d1",
+            "claim_occurrence_id": "510c429da7b6f5033287f2f880a6602c3f8108ddec15243ed7fafd07224f001f",
+            "subject_occurrence_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+            "claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "as of May 2, 2025",
+            "canonical_value": "2025-05-02",
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "5cceae224558ebc4231e82f0c37deb44eec2e129e926f31683e57552beba2164"
+            ],
+            "attributes": {
+              "section_reference": "3.7(b)",
+              "party_making": "the Company",
+              "qualifier_kind": "TEMPORAL",
+              "attachment": {
+                "position": "ITEM",
+                "governs_path": null,
+                "scope_reading": "THIS_ITEM_ONLY",
+                "ambiguity_signals": {
+                  "comma_before_qualifier": true,
+                  "in_each_case_language": null,
+                  "single_clause_language": null,
+                  "items_grammatically_parallel": false
+                },
+                "readings": null
+              },
+              "deterministic_kind": "TEMPORAL",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 3,
+                  "qualifier_kind_lexicon_version": 1
+                }
+              },
+              "enrichment_state": "UNENRICHED",
+              "comparability": "NOT_COMPARABLE",
+              "measurement_date_resolution": "CALENDAR"
+            },
+            "taxonomy_codes": {},
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "5cceae224558ebc4231e82f0c37deb44eec2e129e926f31683e57552beba2164",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "6b624f6b093f489901f4f06d16902a5d3ba8f44f2dcc1f8174156f43cf388266",
+                "document_ordinal": 0,
+                "absolute_start": 2088,
+                "absolute_end": 2105,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "3a6bda33c38474a465bd42cda4565a6f75f846033159fd5ced4385163504737f"
+          },
+          "extraction_provenance": {
+            "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+            "extractor_id": "canonical-v2-native-extraction-run/v1",
+            "extractor_version": "1",
+            "proposal_kind": "GOVERNED",
+            "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+            "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+            "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+            "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+          }
+        }
+      },
+      "triage": {
+        "auto_pass": false,
+        "deterministic_gates_passed": false,
+        "unevaluated_conditions": [
+          "V1_V2_COMPARATOR_ABSENT",
+          "LEXICAL_DISAGREEMENT_NET_ABSENT"
+        ],
+        "reasons": [
+          "CITATION_NOT_VALIDATED"
+        ],
+        "materiality_rank": 55,
+        "materiality_label": "REPRESENTATIONS",
+        "known_defect": null,
+        "citation_validation": {
+          "status": "CITATION_DISAGREEMENT",
+          "accepted": false,
+          "validation_source": null,
+          "model_citation": "3.7(b)",
+          "normalized_citation": "3.7(b)",
+          "derived_citation": "III-INTRO(d)"
+        }
+      }
+    }
+  ],
+  "review_queue": [
+    {
+      "section_reference": "3.7",
+      "generic_claim_key": "NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE",
+      "resolved_claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
+      "concept_key": "REP-T-CAP",
+      "reasons": [
+        "CITATION_NOT_VALIDATED"
+      ],
+      "materiality_rank": 55,
+      "materiality_label": "REPRESENTATIONS",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "217018b68854bad15c689aa7d8277fb64037ccfef3376a0513d89402193505d1",
+      "closure_id": "3a6bda33c38474a465bd42cda4565a6f75f846033159fd5ced4385163504737f",
+      "normalised_phrase": "as of May 2, 2025",
+      "attachment_position": "ITEM",
+      "concept_family": "REP-T-CAP"
+    }
+  ],
+  "open_world": [
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "500,000,000 shares of Company Class A Common Stock",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(a)",
+        "party_making": "the Company",
+        "limb_path": [
+          "(i)"
+        ],
+        "subject": "authorized shares of Company Class A Common Stock"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "5b089bef808654595e76e963c67d50651c7bd6b12ab54bbafbe8fa8fcf05cc2d",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "3932e9b8aaad6b64fd6e58b0d0932d3a0396a7d2809c36911fcd0bf54fc8bee5",
+          "document_ordinal": 0,
+          "absolute_start": 107,
+          "absolute_end": 157,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "11c71b7fe9c825608fc197e8fd428bbb70073a96fb509921bfbd7976623502b4",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(a)",
+        "normalized_citation": "3.7(a)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "75,000,000 shares of Class B Common Stock",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(a)",
+        "party_making": "the Company",
+        "limb_path": [
+          "(ii)"
+        ],
+        "subject": "authorized shares of Class B Common Stock"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "ae8e8b2c406b734eba21ce50ef639fc40c0e88b3fbc9ecbdc054d32d636eb3e4",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "6518a9c67011c5f96b22b092b6bf7d5ebf6cf2abd7fc90b9e1ad94eafbf5e2ff",
+          "document_ordinal": 0,
+          "absolute_start": 164,
+          "absolute_end": 205,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "f974200f9b3d12a20df837825f9219ea82208d651e3ec9f88eb08fcf36466d77",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(a)",
+        "normalized_citation": "3.7(a)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "10,000,000 shares of Company Preferred Stock",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(a)",
+        "party_making": "the Company",
+        "limb_path": [
+          "(iii)"
+        ],
+        "subject": "authorized shares of Company Preferred Stock"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "2c8fc22f692faa4328efeb1df4feef268354288812f26036b90e41a6682a6b8a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b80c81e930c34074ba3dc3f7848191606251e55d0ae43f7c50bfa8626f40b2cf",
+          "document_ordinal": 0,
+          "absolute_start": 216,
+          "absolute_end": 260,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "77c65e06e2a8f7f2aedd6c8159cfb59d5d311154c8edde27183f1dfe4a33f5df",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(a)",
+        "normalized_citation": "3.7(a)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "130,289,468 shares of Company Class A Common Stock were issued and outstanding",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(a)",
+        "party_making": "the Company",
+        "limb_path": [
+          "(A)"
+        ],
+        "subject": "shares of Company Class A Common Stock issued and outstanding"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "07a63e699926b08bad08b627b7f7cd676656c425a29a825c6d3d13f8ba407b5d",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "3354ce5b6fecf3c2add4b7a283e722c51035c534edf5b330356912c6c9220e49",
+          "document_ordinal": 0,
+          "absolute_start": 365,
+          "absolute_end": 443,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "c5cc993c1356248f25a3c3259d82b23c7eabaa2b55aa25c8710e1de86b29fe49",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(a)",
+        "normalized_citation": "3.7(a)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "19,313,651 shares of Company Class B Common Stock were issued and outstanding",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(a)",
+        "party_making": "the Company",
+        "limb_path": [
+          "(B)"
+        ],
+        "subject": "shares of Company Class B Common Stock issued and outstanding"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "9c18929adcbf3154830d472af2a2bf0a69a5ac9f5036566b50f0da1d16be5523",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "906f2f8138ad20efa79e713525308aa483d5ee4fb4954700dc0219c6eeee0d66",
+          "document_ordinal": 0,
+          "absolute_start": 449,
+          "absolute_end": 526,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "37f042f7daf101f17b34f69763cc5cb184360cdc3ce8e6399c2f127aee6d8425",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(a)",
+        "normalized_citation": "3.7(a)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "no shares of Company Preferred Stock were issued and outstanding",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(a)",
+        "party_making": "the Company",
+        "limb_path": [
+          "(C)"
+        ],
+        "subject": "no Company Preferred Stock issued and outstanding"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "653120fa20c30f64791035a510de1d802865104fc92f325b4df10470d9f2f281",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "048741502b7e0a0a47684e440bf57a78b438465ae5d88db738f28ba2d3a99610",
+          "document_ordinal": 0,
+          "absolute_start": 532,
+          "absolute_end": 596,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "c4dc017c63f78d5fca267a7ea705964c7708b4a8dec0810e3f8ed06034f8fca5",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(a)",
+        "normalized_citation": "3.7(a)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "no shares of Company Common Stock were held by the Company as treasury shares",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(a)",
+        "party_making": "the Company",
+        "limb_path": [
+          "(D)"
+        ],
+        "subject": "no Company Common Stock held as treasury shares"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "2ba41ad17f398cf974d8597da2ae0afcb14680004aa44198a7b246e57c14db6a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "56cecb1e9d48e634d87883cce599bd300c19fc202cc79be0d99fc3b5aeb47f96",
+          "document_ordinal": 0,
+          "absolute_start": 606,
+          "absolute_end": 683,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "e40c41100a121238c88741ddf1fcd2ca0b6fa13c17c64f7a8f3f0bb469b5581a",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(a)",
+        "normalized_citation": "3.7(a)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "All outstanding shares of Company Common Stock are validly issued, fully paid, nonassessable and free of any preemptive rights.",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(a)",
+        "party_making": "the Company",
+        "limb_path": null,
+        "subject": "all outstanding Company Common Stock is validly issued, fully paid, nonassessable, and free of preemptive rights"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "fb6fddbd902a6d934c5f3070bc03316786ef94b0fb6e2fd008193b40cc89414a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "42167a7fee52a07b9e8040fc65a5db4294abcc9b5f0a9e85a915d22a4d7eb745",
+          "document_ordinal": 0,
+          "absolute_start": 685,
+          "absolute_end": 812,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "4c25446815f578ca3b2b138a6546ee7fffdfdc80c850b9dba8c23f5e1aaa6de1",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(a)",
+        "normalized_citation": "3.7(a)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "From the Capitalization Date to the date hereof, the Company has not issued or granted any Company Securities other than pursuant to the exercise or settlement of Company Equity Awards granted prior to the date hereof.",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(a)",
+        "party_making": "the Company",
+        "limb_path": null,
+        "subject": "no issuance or grant of Company Securities from the Capitalization Date to the date hereof other than under pre-existing Company Equity Awards"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "7d99220d9708b6b4f0cd8f713e2dc958c44df2e442f91df9c1b71d048b7709b7",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b82dc9726bb64ea33e64790637c683efe036693ead58e31293735c94ba70aa94",
+          "document_ordinal": 0,
+          "absolute_start": 813,
+          "absolute_end": 1031,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "63fe36fd11e769225b53f0cb1de146899fc17526fe51791fe0467c0e48f9981e",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(a)",
+        "normalized_citation": "3.7(a)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE",
+      "raw_value": "As of 5:00 p.m., Eastern time, on May 2, 2025 (such time and date, the “Capitalization Date”),",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(a)",
+        "party_making": "the Company",
+        "qualifier_kind": "TEMPORAL",
+        "attachment": {
+          "position": "CHAPEAU",
+          "governs_path": null,
+          "scope_reading": "ALL_ITEMS",
+          "ambiguity_signals": {
+            "comma_before_qualifier": false,
+            "in_each_case_language": null,
+            "single_clause_language": null,
+            "items_grammatically_parallel": true
+          },
+          "readings": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "3c551f6639c249f41272bbdc992c93aaf3804c4845c5cca614529ee22793f371",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c9d81916e0f185503c4ff80d1c89be5d16774232f8fa02791f826d7249dc433d",
+          "document_ordinal": 0,
+          "absolute_start": 262,
+          "absolute_end": 360,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "f049b2040d9581d3fbd52f15b7041bf63945fb8443cb4c463827c2f0c5f99228",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(a)",
+        "normalized_citation": "3.7(a)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE",
+      "raw_value": "From the Capitalization Date to the date hereof",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(a)",
+        "party_making": "the Company",
+        "qualifier_kind": "TEMPORAL",
+        "attachment": {
+          "position": "ITEM",
+          "governs_path": null,
+          "scope_reading": "THIS_ITEM_ONLY",
+          "ambiguity_signals": {
+            "comma_before_qualifier": false,
+            "in_each_case_language": null,
+            "single_clause_language": null,
+            "items_grammatically_parallel": false
+          },
+          "readings": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "86188c534e2db64218bf15aea0294260585321f7987bfadea9c74c273f82c489",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "cf5919f436d78ff40f4f0262d8ab97a1578230f40b808bf0af451430c8084c09",
+          "document_ordinal": 0,
+          "absolute_start": 813,
+          "absolute_end": 860,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "767fadaf06adf82d3e031e108c201f60d978d4bf4b6b09f76c164264549e2173",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(a)",
+        "normalized_citation": "3.7(a)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE",
+      "raw_value": "granted prior to the date hereof",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(a)",
+        "party_making": "the Company",
+        "qualifier_kind": "TEMPORAL",
+        "attachment": {
+          "position": "ITEM",
+          "governs_path": null,
+          "scope_reading": "THIS_ITEM_ONLY",
+          "ambiguity_signals": {
+            "comma_before_qualifier": false,
+            "in_each_case_language": null,
+            "single_clause_language": null,
+            "items_grammatically_parallel": false
+          },
+          "readings": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "d22e6f76694e7b5f4c665ff8e706d1caf0eaf5a26520e0c4719b4e302090aa36",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "c222811f5cbe06949dd1a685bc803dbdd430c3fe6f86dbb1da93c3a6ca58a343",
+          "document_ordinal": 0,
+          "absolute_start": 998,
+          "absolute_end": 1030,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "3f7a7080ffd87c8149d2aa2e941ded2f07515f57d8f4e09159d91c82bc41480f",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(a)",
+        "normalized_citation": "3.7(a)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "the Company has reserved 4,682,006 shares of Company Common Stock for issuance pursuant to the Company Equity Plans.",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(b)",
+        "party_making": "the Company",
+        "limb_path": null,
+        "subject": "Company Common Stock reserved for issuance under the Company Equity Plans"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "26456d19db45ef13e58190d9d16b6ff841405bfe7a4741cf527cc418b53e80f9",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "5c9014352b9f66faf16cee2405711baf2777b6f16b8bb72ee9eb28516a876b04",
+          "document_ordinal": 0,
+          "absolute_start": 1086,
+          "absolute_end": 1202,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "19619bc8b6c1680fe2c491edb56a71745d83aa919592853ec581d3d4b7b6f972",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(b)",
+        "normalized_citation": "3.7(b)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "Company RSAs with respect to 980,677 shares of Company Common Stock",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(b)",
+        "party_making": "the Company",
+        "limb_path": [
+          "(i)"
+        ],
+        "subject": "outstanding Company RSAs"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "fcb5de0a658b3c518db5444fb98c8646d2f6e1a1f9e45de373e8b01ef16b041c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "b731b2d174bed2892259beeaf6b3da09e02f85978bf1dc176dfab9008e778ed5",
+          "document_ordinal": 0,
+          "absolute_start": 1324,
+          "absolute_end": 1391,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "c22659bab4347e62c594a6acbbb3432ae0d2bd2f34783a830b0e9c495b52e75a",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(b)",
+        "normalized_citation": "3.7(b)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "Company PSAs with respect to 650,778 shares of Company Common Stock (assuming satisfaction of applicable performance criteria at target levels) and 1,301,556 shares of Company Common Stock (assuming satisfaction of applicable performance criteria at maximum levels)",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(b)",
+        "party_making": "the Company",
+        "limb_path": [
+          "(ii)"
+        ],
+        "subject": "outstanding Company PSAs at target and maximum performance levels"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "556834b3032e482daa939a6ab41a22f828dfc23bee2a737e8dfdfbd4031b28d2",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "4695cc1630e60736cd74a7b234c95d459bd3c851fdb66672c6f85b2a7b0f450f",
+          "document_ordinal": 0,
+          "absolute_start": 1398,
+          "absolute_end": 1663,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "06ad88a3383c60ff24abe1f280eabd4bc9b3dc9b893f943fe032f225f628007f",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(b)",
+        "normalized_citation": "3.7(b)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "Company RSUs representing the right to receive up to 2,653,056 shares of Company Common Stock",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(b)",
+        "party_making": "the Company",
+        "limb_path": [
+          "(iii)"
+        ],
+        "subject": "outstanding Company RSUs"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "1b99241bfc8d45c6b967b775db045e1b6ace5c409d1a778cc8560a34dce6e288",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "22631c47e96d1ee20fe9a2829c00b258791f19c3f0b27c7be856e4481415255f",
+          "document_ordinal": 0,
+          "absolute_start": 1671,
+          "absolute_end": 1764,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "93cbc6001e290387f34a19c4d49adef6adf6ca774eb7d876c4a873224d2f55bd",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(b)",
+        "normalized_citation": "3.7(b)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "3,360,412 shares of Company Common Stock reserved and available for issuance under the Company ESPP",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(b)",
+        "party_making": "the Company",
+        "limb_path": [
+          "(iv)"
+        ],
+        "subject": "shares reserved and available for issuance under the Company ESPP"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "96bae4c8923daec70d22036ac59e011cc8cb00ace539c7edac88be22f30857bd",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "5a459028d046a8e313c2e705ae312ca00023d623e113ee68368bd93e774a5a96",
+          "document_ordinal": 0,
+          "absolute_start": 1774,
+          "absolute_end": 1873,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "f974f1704f6e9c14091721f23f3cc4b295c0a583e9c3c606ecd0c16226ee4b57",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(b)",
+        "normalized_citation": "3.7(b)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "The Company has made available to Parent (or will make available to Parent within 30 Business Days following the date of this Agreement), a current, correct and complete list of outstanding Company Equity Awards, as of May 2, 2025, and with respect to each outstanding Company Equity Award, the name of the holder of such Company Equity Award, the award type and grant date of such Company Equity Award, and the vesting schedule of such Company Equity Award.",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(b)",
+        "party_making": "the Company",
+        "limb_path": null,
+        "subject": "delivery to Parent of a list of outstanding Company Equity Awards with holder, award type, grant date, and vesting schedule"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "338cee3a4fff9a5f26dd0b2b8764fb94b5970a628d7f10037502967997790802",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "44f77ecfe1212ea08442301cfadb7901c43d6ec43cada06d024167ec424b6de1",
+          "document_ordinal": 0,
+          "absolute_start": 1875,
+          "absolute_end": 2333,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "08f01c2f4572a4d6ec38f40b7c86bec1dedf87aefc87e3f134e4467f9e8fcc34",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(b)",
+        "normalized_citation": "3.7(b)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE",
+      "raw_value": "As of the Capitalization Date,",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(b)",
+        "party_making": "the Company",
+        "qualifier_kind": "TEMPORAL",
+        "attachment": {
+          "position": "ITEM",
+          "governs_path": null,
+          "scope_reading": "THIS_ITEM_ONLY",
+          "ambiguity_signals": {
+            "comma_before_qualifier": false,
+            "in_each_case_language": null,
+            "single_clause_language": null,
+            "items_grammatically_parallel": false
+          },
+          "readings": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "6ae81455d74d5a391a661de0a2718edb590a3f4402e0d543b54d79b9c7ed0208",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "055711127a980c1d0ab59e4708e8321327f35d58e0c94e2d95962ad23be27eb4",
+          "document_ordinal": 0,
+          "absolute_start": 1055,
+          "absolute_end": 1085,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "2646a4cfae3ca25d99bca8ed518a6fe16a79933baec192aef9db38de1fd8fde1",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(b)",
+        "normalized_citation": "3.7(b)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE",
+      "raw_value": "As of the Capitalization Date,",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(b)",
+        "party_making": "the Company",
+        "qualifier_kind": "TEMPORAL",
+        "attachment": {
+          "position": "CHAPEAU",
+          "governs_path": null,
+          "scope_reading": "ALL_ITEMS",
+          "ambiguity_signals": {
+            "comma_before_qualifier": false,
+            "in_each_case_language": null,
+            "single_clause_language": null,
+            "items_grammatically_parallel": true
+          },
+          "readings": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "d66dba708969d6dac4deabc5524c3ecf5af1f5964364bc895105dbeb913a166e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "055711127a980c1d0ab59e4708e8321327f35d58e0c94e2d95962ad23be27eb4",
+          "document_ordinal": 0,
+          "absolute_start": 1055,
+          "absolute_end": 1085,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "e202b9e174fd0f34fa6039c28cde8048a4e57d277b921f581faf68a6a60c1f98",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(b)",
+        "normalized_citation": "3.7(b)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE",
+      "raw_value": "or will make available to Parent within 30 Business Days following the date of this Agreement",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(b)",
+        "party_making": "the Company",
+        "qualifier_kind": "TEMPORAL",
+        "attachment": {
+          "position": "ITEM",
+          "governs_path": null,
+          "scope_reading": "THIS_ITEM_ONLY",
+          "ambiguity_signals": {
+            "comma_before_qualifier": false,
+            "in_each_case_language": null,
+            "single_clause_language": null,
+            "items_grammatically_parallel": false
+          },
+          "readings": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "73df410c0da6341b99091a632882f0d954350ec1f01f7d3aa9bc175402b89080",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "7e7240e11794acf7cd7b7fe7c5242224aecd55a6265cef961cbf8d5508d3a94c",
+          "document_ordinal": 0,
+          "absolute_start": 1917,
+          "absolute_end": 2010,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "6cd59f5570133162b361beae620b206e1e609b4af51c60707bdb35297e63e4a5",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(b)",
+        "normalized_citation": "3.7(b)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "no outstanding shares of capital stock of, or other equity or voting interest in (including voting debt), the Company",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(c)",
+        "party_making": "the Company",
+        "limb_path": [
+          "(i)"
+        ],
+        "subject": "no outstanding shares of capital stock or other equity/voting interest in the Company"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "d9304c3760123c7485ab80cb3221b027945e0d3b9fcee7a9d96be55ecc20c24e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "e7c7e919914794dedb29e199f7b90981f01fa84fad93feb672b699967e529123",
+          "document_ordinal": 0,
+          "absolute_start": 2450,
+          "absolute_end": 2567,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "f5d25ca0912dbbd5929e273f71343b580e88b901b324b5f44bc09fb5fc7f5b23",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(c)",
+        "normalized_citation": "3.7(c)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "no outstanding securities of the Company convertible into or exchangeable or exercisable for shares of capital stock of, or other equity or voting interest (including voting debt) in, the Company",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(c)",
+        "party_making": "the Company",
+        "limb_path": [
+          "(ii)"
+        ],
+        "subject": "no outstanding securities convertible into or exercisable for Company capital stock or equity interests"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b65d275cfb89985dbdb22ca6a4ca88754eb10c907d126cb85e5a2aa27597df25",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "5e6fa84b3983b0b94a083074653e83ccb09f392b14c65d547f539af1dd151eb2",
+          "document_ordinal": 0,
+          "absolute_start": 2574,
+          "absolute_end": 2769,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "67bb23e06a54b8434721ce80ecea43b74dd2a6d4fd0da1a0930eaaec600d7494",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(c)",
+        "normalized_citation": "3.7(c)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "no outstanding options, warrants or other rights or binding arrangements to acquire from the Company, or that obligate the Company to issue, any capital stock of, or other equity or voting interest in, or any securities convertible into or exchangeable for shares of capital stock of, or other equity or voting interest (including voting debt) in, the Company",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(c)",
+        "party_making": "the Company",
+        "limb_path": [
+          "(iii)"
+        ],
+        "subject": "no outstanding options, warrants, or other rights/binding arrangements to acquire or requiring issuance of Company capital stock or equity interests"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "c4981a6602ae3857b5a99939e7c19455ddbf72fc0f747ec37225c4749bc8f590",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "4c7fe39ded7c422058b54852d918ec7c663421e269b60352c42811413366e7b6",
+          "document_ordinal": 0,
+          "absolute_start": 2777,
+          "absolute_end": 3136,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "9da2f2bab82fbe4c8a0df7258094bfa5e1cb2eae0d57eb34e151ef29f55c63c1",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(c)",
+        "normalized_citation": "3.7(c)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "no obligations of the Company to grant, extend or enter into any subscription, warrant, right, convertible, exchangeable or exercisable security, or other similar Contract relating to any capital stock of, or other equity or voting interest (including any voting debt) in, the Company",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(c)",
+        "party_making": "the Company",
+        "limb_path": [
+          "(iv)"
+        ],
+        "subject": "no Company obligations to grant or enter into subscriptions, warrants, or similar equity-related Contracts"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "45f838233bd2b582c48a857d3b3baa5bf6a3f1e49190d6b810e43da3d3da042e",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "a9b2245c89c57d2b50ec009c1c0145691112fa7217a88a25dda96187d92e50cb",
+          "document_ordinal": 0,
+          "absolute_start": 3143,
+          "absolute_end": 3427,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "8b5cb5775c4099469b0453d45319feecb0d1fba433685e0a535bff70ca66de5b",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(c)",
+        "normalized_citation": "3.7(c)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "no outstanding shares of restricted stock, restricted stock units, stock appreciation rights, performance shares, contingent value rights, “phantom” stock or similar securities or rights that are derivative of, or provide economic benefits based, directly or indirectly, on the value or price of, any capital stock of, or other securities or ownership interests in, the Company (the items in clauses (i), (ii), (iii), (iv) and (v), collectively with the Company Common Stock, the “Company Securities”)",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(c)",
+        "party_making": "the Company",
+        "limb_path": [
+          "(v)"
+        ],
+        "subject": "no outstanding equity-derivative securities or rights tied to the value of Company capital stock"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "7520821d9ad2e9a57f97509212e39d8bc2f49e2a1276427bf3c3d2179a85990a",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "ce319d7bede3305a8926d8e225c7f7b17eb20e9dd25fbcf838dee47a2de0e377",
+          "document_ordinal": 0,
+          "absolute_start": 3433,
+          "absolute_end": 3942,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "8badc52e73e31d88183c92f2c330eccf046fcbcaf82c4cc0e0e640b8b1ed3730",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(c)",
+        "normalized_citation": "3.7(c)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "no voting trusts, proxies or similar arrangements or understandings to which the Company is a party or by which the Company is bound with respect to the voting of any shares of capital stock of, or other equity or voting interest in, the Company",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(c)",
+        "party_making": "the Company",
+        "limb_path": [
+          "(vi)"
+        ],
+        "subject": "no voting trusts, proxies, or similar voting arrangements regarding Company capital stock"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "a67401b0713cc70d8162e5a335b3e9ac8bf3a96d553bf03e37fde32ff2b45f03",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "5d908eba09be220a965246c40304d1ed42c927320ff0eaab8cb5f69a94f4cbfc",
+          "document_ordinal": 0,
+          "absolute_start": 3949,
+          "absolute_end": 4194,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "c33f22afe5d81f4e9110c6f7e7e9aac684279debd03e9e2e3a4a7fe366792ee9",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(c)",
+        "normalized_citation": "3.7(c)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "except as provided in the Charter or the Bylaws, no obligations or binding commitments of any character restricting the transfer of any shares of capital stock of, or other equity or voting interest in, the Company to which the Company is a party or by which it is bound",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(c)",
+        "party_making": "the Company",
+        "limb_path": [
+          "(vii)"
+        ],
+        "subject": "no obligations or binding commitments restricting transfer of Company capital stock or equity interests"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "bf9a3e2e1a4a2cb6b5d2993731f150e1f518cecba3509c90ab45196ebc8a20cb",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "cf728b9d58d4f9e4b4c8fd7c42648506e52f121d727de48ea288fbebb977b2ea",
+          "document_ordinal": 0,
+          "absolute_start": 4202,
+          "absolute_end": 4472,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "c546dfb4d5d97dfed6617af8401db5ff1a083fe1e8fdc0d3e99fc765299bb051",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(c)",
+        "normalized_citation": "3.7(c)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "no other obligations by the Company to make any payments based on the price or value of any Company Securities",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(c)",
+        "party_making": "the Company",
+        "limb_path": [
+          "(viii)"
+        ],
+        "subject": "no other Company obligations to make payments based on the price or value of Company Securities"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "119540a9ebf3917f47b80204423aff4acf3f1f54169a73d0ff25823b90c7f4c3",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "5ccff8128b0731695c9c8af4695e5612a34ce66ddb77eedd348474ce805919cc",
+          "document_ordinal": 0,
+          "absolute_start": 4485,
+          "absolute_end": 4595,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "f5dceb7c4ce7342aaaa41f9c0b84a42219ee030f94af7459ee21400e40e24308",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(c)",
+        "normalized_citation": "3.7(c)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "The Company is not party to any Contract that obligates it to repurchase, redeem or otherwise acquire any Company Securities.",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(c)",
+        "party_making": "the Company",
+        "limb_path": null,
+        "subject": "no Contract obligating the Company to repurchase, redeem, or otherwise acquire Company Securities"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "0592708005ad074afc4dd7c94ed88fa895a55d005930b19dfb27d6cc1eb3ad39",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "e04db15770df4f533037c98b404ab75eecd6084c792cf8cd48155712be4817f7",
+          "document_ordinal": 0,
+          "absolute_start": 4597,
+          "absolute_end": 4722,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "52088a4421871059dcb9b4af233b90d9a7614b4fe694b4175347365ca53055db",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(c)",
+        "normalized_citation": "3.7(c)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "There are no accrued and unpaid dividends with respect to any outstanding shares of Company Common Stock.",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(c)",
+        "party_making": "the Company",
+        "limb_path": null,
+        "subject": "no accrued and unpaid dividends on outstanding Company Common Stock"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "e00250063d4bcd8ba47b0c21f5a290b8d7f620ad807922a4392b9b991acce144",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "ac9a05c32d2035dbea07309f2302f76458b7c6a9a81632d7d3fb17e30aa41971",
+          "document_ordinal": 0,
+          "absolute_start": 4723,
+          "absolute_end": 4828,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "3451036ac627785984fdedaa3a31603ce9207a4d49e292310b038122513d39e8",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(c)",
+        "normalized_citation": "3.7(c)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "The Company does not have a stockholder rights plan in effect.",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(c)",
+        "party_making": "the Company",
+        "limb_path": null,
+        "subject": "no stockholder rights plan in effect"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "2af3212a0a63ece9cd8bf6d8005638dde8d5d1422321797a63e46ce977e89e9c",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "8a58eda00b6045f30a329e9823a2e9ef759867129fa5ef05933490135624f500",
+          "document_ordinal": 0,
+          "absolute_start": 4829,
+          "absolute_end": 4891,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "a3510a4d3773cf24aad5565aa9679543f7358928fd9645d76bde08d8588559b4",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(c)",
+        "normalized_citation": "3.7(c)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE",
+      "raw_value": "Except as set forth in this Section 3.7",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(c)",
+        "party_making": "the Company",
+        "qualifier_kind": "THRESHOLD",
+        "attachment": {
+          "position": "CHAPEAU",
+          "governs_path": null,
+          "scope_reading": "ALL_ITEMS",
+          "ambiguity_signals": {
+            "comma_before_qualifier": false,
+            "in_each_case_language": null,
+            "single_clause_language": null,
+            "items_grammatically_parallel": true
+          },
+          "readings": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "015cfbe83fe5bec2132b2ddeff52d264007dcf24ae7df151599bce8c898bf068",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "543fcc3b45c46044d7478b9b2084a527ae58a9700da5cd781f4dc84aa2d5cd2e",
+          "document_ordinal": 0,
+          "absolute_start": 2363,
+          "absolute_end": 2402,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "fbc80a360755da220e482cd9dafd40b6fe6234fdaf873a381050b1c3d5b5a054",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(c)",
+        "normalized_citation": "3.7(c)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE",
+      "raw_value": "as of the Capitalization Date",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(c)",
+        "party_making": "the Company",
+        "qualifier_kind": "TEMPORAL",
+        "attachment": {
+          "position": "CHAPEAU",
+          "governs_path": null,
+          "scope_reading": "ALL_ITEMS",
+          "ambiguity_signals": {
+            "comma_before_qualifier": true,
+            "in_each_case_language": null,
+            "single_clause_language": null,
+            "items_grammatically_parallel": true
+          },
+          "readings": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "8c638fd9f01120857f95414f737b1d04dc1dedc709a8ce6ade3734921157cd98",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "61e61109e742b7630451966b0f3d4beba56710ec538621ec7cc0196f73e7168e",
+          "document_ordinal": 0,
+          "absolute_start": 2404,
+          "absolute_end": 2433,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "5c3b20d6ee17626a24b5735929693028062b34a530b4f554387a588207908ad9",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(c)",
+        "normalized_citation": "3.7(c)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE",
+      "raw_value": "except as provided in the Charter or the Bylaws",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(c)",
+        "party_making": "the Company",
+        "qualifier_kind": "THRESHOLD",
+        "attachment": {
+          "position": "ITEM",
+          "governs_path": [
+            "(vii)"
+          ],
+          "scope_reading": "THIS_ITEM_ONLY",
+          "ambiguity_signals": {
+            "comma_before_qualifier": false,
+            "in_each_case_language": null,
+            "single_clause_language": null,
+            "items_grammatically_parallel": false
+          },
+          "readings": null
+        }
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "74088d481c8ece223d29a89451c6ae6e5b6a0de48934c01597e1a5f0bc040ebb",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "3473e42e91190e524552c5305a512cc82b106d88f230cfdd91e53a954c64fe2c",
+          "document_ordinal": 0,
+          "absolute_start": 4202,
+          "absolute_end": 4249,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "23f39d5ec2ff38f0b5c06a050f1f3ec9e57402519cf12041b4e00943e8c5ceea",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(c)",
+        "normalized_citation": "3.7(c)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "UNMAPPED_GENERIC_CLAIM_KEY",
+      "claim_definition_key": "NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE",
+      "raw_value": "The Company is not a party to any Contract relating to the voting of, requiring registration of, or granting any preemptive rights, anti-dilutive rights or rights of first refusal or other similar rights with respect to any Company Securities.",
+      "canonical_value": null,
+      "attributes": {
+        "section_reference": "3.7(d)",
+        "party_making": "the Company",
+        "limb_path": null,
+        "subject": "no Contract granting voting, registration, preemptive, anti-dilutive, or first-refusal rights with respect to Company Securities"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "3c200b2af744b464c959dd1969d1b08021b9700ccf38d7d694df316a596ee7cc",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "91f82aa184b1d09c2fa7e40735a65a31d7980ac8b49bce14d8c09a506d1874d3",
+          "document_ordinal": 0,
+          "absolute_start": 4910,
+          "absolute_end": 5153,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "30ba239b92b7a4583f22fa23c1adcd2dbf4fd7c0a6fffcb185c4d6605b2996b4",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "GOVERNED",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "421779f34edeb035d2863ac740616b2fbb6e32ff80de75274d5ab3253c20f853"
+      },
+      "citation_validation": {
+        "status": "CITATION_DISAGREEMENT",
+        "accepted": false,
+        "validation_source": null,
+        "model_citation": "3.7(d)",
+        "normalized_citation": "3.7(d)",
+        "derived_citation": "III-INTRO(d)"
+      },
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "assuming satisfaction of applicable performance criteria at target levels",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "states the performance-vesting assumption underlying a PSA share count, not a truth-standard, scope-boundary, knowledge-standard, or date qualifier",
+        "nearest_concept": "THRESHOLD"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "bf391652a4b30243a7e904c97d0407d787733ffb7ecf7ab62ecf88057f7ce73f",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "012c20ebf9d1d39fbb9dff81fee5342890fe8d723c10be8f2a14f54beebb2be7",
+          "document_ordinal": 0,
+          "absolute_start": 1467,
+          "absolute_end": 1540,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "54bf50e52f218ef65ba9546596ba50e587d0eef09771b5085aae32bbf01cccc6",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "b83a1b01a9160cae2ef27bb360a0b7dee7d5a23fbe61466021567ef074f95ba6"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    },
+    {
+      "section_reference": "3.7",
+      "reason": "NATIVE_OPEN_WORLD_PROPOSAL",
+      "claim_definition_key": "OPEN_WORLD_PROPOSITION",
+      "raw_value": "assuming satisfaction of applicable performance criteria at maximum levels",
+      "canonical_value": null,
+      "attributes": {
+        "why_unmapped": "states the performance-vesting assumption underlying a PSA share count, not a truth-standard, scope-boundary, knowledge-standard, or date qualifier",
+        "nearest_concept": "THRESHOLD"
+      },
+      "evidence": [
+        {
+          "schema_version": "CLAIM_EVIDENCE/V1",
+          "claim_evidence_id": "b8a33cc71200c63ecd4088af35b969d7adfd9f4caea2c3067cf2f50041086013",
+          "evidence_role": "OPERATIVE_TEXT",
+          "excerpt_id": "574e8b6e861cde99964b75cbacbaf4fe769889d8011254bc858a531adeb0eeef",
+          "document_ordinal": 0,
+          "absolute_start": 1588,
+          "absolute_end": 1662,
+          "ordinal": 0
+        }
+      ],
+      "closure_id": "9b97ca124cfe6fefa555445b7b11b5652241f35af7bfba3d1db97dfd7673c0dd",
+      "extraction_provenance": {
+        "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+        "extractor_id": "canonical-v2-native-extraction-run/v1",
+        "extractor_version": "1",
+        "proposal_kind": "OPEN_WORLD",
+        "prompt_digest": "5b73ac5505c44c5f9224cbe1890339c08a8fd6817384926436319774ffdacb93",
+        "producer_receipt_id": "9b7ff10d098ff2f4e588a9642c3e57307347fe70abe21b0fc640f84b57497d33",
+        "governed_scope_digest": "b77fec574b520838925aa4833f3681fe663119f37fca5af6d41d90f68f786c0c",
+        "extraction_provenance_id": "b83a1b01a9160cae2ef27bb360a0b7dee7d5a23fbe61466021567ef074f95ba6"
+      },
+      "citation_validation": null,
+      "answer_provenance": {
+        "tag": "AI",
+        "pins": {
+          "model_id": "canonical-v2-native-extraction-run/v1",
+          "prompt_id": "CAPITALISATION_REPRESENTATION_PRODUCER",
+          "prompt_version": 4
+        }
+      }
+    }
+  ],
+  "residuals": [],
+  "limb_component_trees": [
+    {
+      "schema_version": "LIMB_COMPONENT_TREE/V1",
+      "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+      "path_nodes": [
+        {
+          "limb_component_id": "5cfd3a22cb6b09d7b2a0c11e52edc44b0143c140af6dd4c8fec3c59e3690cdf4",
+          "component_kind": "PATH",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(i)"
+          ],
+          "parent_limb_component_id": null,
+          "ordinal_under_parent": 0,
+          "span": null
+        },
+        {
+          "limb_component_id": "84fb14a11b575e886081bb917db13ada7c7c63386b47f2e7b60994f24e41d57f",
+          "component_kind": "PATH",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(ii)"
+          ],
+          "parent_limb_component_id": null,
+          "ordinal_under_parent": 1,
+          "span": null
+        },
+        {
+          "limb_component_id": "06dc91a34a24e14f08f908f6c881d6b4ae5599385486052fd36e98638b6359a2",
+          "component_kind": "PATH",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(iii)"
+          ],
+          "parent_limb_component_id": null,
+          "ordinal_under_parent": 2,
+          "span": null
+        },
+        {
+          "limb_component_id": "3672b8740046015c230be6678bd1f861078eedf99df44782b326489f661bdc24",
+          "component_kind": "PATH",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(A)"
+          ],
+          "parent_limb_component_id": null,
+          "ordinal_under_parent": 3,
+          "span": null
+        },
+        {
+          "limb_component_id": "eccb0fa2a76dd7fc8a0b29295aa8512829ef0262e531e319167cd210738f2c08",
+          "component_kind": "PATH",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(B)"
+          ],
+          "parent_limb_component_id": null,
+          "ordinal_under_parent": 4,
+          "span": null
+        },
+        {
+          "limb_component_id": "a1c580d7ba81390ba3544504c48b29efdd28cc84484ed639604c58887f7fd10e",
+          "component_kind": "PATH",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(C)"
+          ],
+          "parent_limb_component_id": null,
+          "ordinal_under_parent": 5,
+          "span": null
+        },
+        {
+          "limb_component_id": "66ab496acbe5447310f771f5967c8e7d81d5c9d87c8bea8708a2f07392e6bcbd",
+          "component_kind": "PATH",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(D)"
+          ],
+          "parent_limb_component_id": null,
+          "ordinal_under_parent": 6,
+          "span": null
+        }
+      ],
+      "assertion_nodes": [
+        {
+          "limb_component_id": "4a5d4de0f63b5046913d4a80416ab28edad5dd6bc80e3153ffe8a41ab3f7ddfa",
+          "component_kind": "ASSERTION",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(i)"
+          ],
+          "parent_limb_component_id": "5cfd3a22cb6b09d7b2a0c11e52edc44b0143c140af6dd4c8fec3c59e3690cdf4",
+          "ordinal_under_parent": 0,
+          "span": {
+            "absolute_start": 107,
+            "absolute_end": 157
+          },
+          "quote": "500,000,000 shares of Company Class A Common Stock",
+          "claim_occurrence_id": "5d7a1d2c6f0f98b69c68827c794765461e3581be5db6b86e2316532be3464e5b"
+        },
+        {
+          "limb_component_id": "2a9cdc1ce5755e135cb5e8f0ca0a4fc9774bfb1e1b93c6412e61b893842d1703",
+          "component_kind": "ASSERTION",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(ii)"
+          ],
+          "parent_limb_component_id": "84fb14a11b575e886081bb917db13ada7c7c63386b47f2e7b60994f24e41d57f",
+          "ordinal_under_parent": 0,
+          "span": {
+            "absolute_start": 164,
+            "absolute_end": 205
+          },
+          "quote": "75,000,000 shares of Class B Common Stock",
+          "claim_occurrence_id": "971f18d746c30c8f6b4ffa196b1132dc07975a4bf6910292df2190e4ef0ee7ed"
+        },
+        {
+          "limb_component_id": "867913a09e0a6dbd13abc37f5116857c4f0c98c8c2c7aeeedc516558fcfac91e",
+          "component_kind": "ASSERTION",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(iii)"
+          ],
+          "parent_limb_component_id": "06dc91a34a24e14f08f908f6c881d6b4ae5599385486052fd36e98638b6359a2",
+          "ordinal_under_parent": 0,
+          "span": {
+            "absolute_start": 216,
+            "absolute_end": 260
+          },
+          "quote": "10,000,000 shares of Company Preferred Stock",
+          "claim_occurrence_id": "902848b24d54f3a505d22351423b07f2d6f3c85aa25fa67f39e99f7bd4d79728"
+        },
+        {
+          "limb_component_id": "8c2ef86f4eb5a7e295e815f55df856c1d1da4a4d7cfe396e8b87fe4314dcc6a5",
+          "component_kind": "ASSERTION",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(A)"
+          ],
+          "parent_limb_component_id": "3672b8740046015c230be6678bd1f861078eedf99df44782b326489f661bdc24",
+          "ordinal_under_parent": 0,
+          "span": {
+            "absolute_start": 365,
+            "absolute_end": 443
+          },
+          "quote": "130,289,468 shares of Company Class A Common Stock were issued and outstanding",
+          "claim_occurrence_id": "7889e758597ff305050955403eee8786cc4e31a44d619e0a24ec2e012868819c"
+        },
+        {
+          "limb_component_id": "fafa57227c2ff54bfcd36df73d965f2cc83888583d440cc45a022828cfe9a831",
+          "component_kind": "ASSERTION",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(B)"
+          ],
+          "parent_limb_component_id": "eccb0fa2a76dd7fc8a0b29295aa8512829ef0262e531e319167cd210738f2c08",
+          "ordinal_under_parent": 0,
+          "span": {
+            "absolute_start": 449,
+            "absolute_end": 526
+          },
+          "quote": "19,313,651 shares of Company Class B Common Stock were issued and outstanding",
+          "claim_occurrence_id": "d8572b1c18b6b468b1b0723d513adb83be9d1ecc2686959ec5d632c71f8229e9"
+        },
+        {
+          "limb_component_id": "eb068dd66dc69a62fdc90f9da46b61b2fe17a04d1403286091118062ee015ab7",
+          "component_kind": "ASSERTION",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(C)"
+          ],
+          "parent_limb_component_id": "a1c580d7ba81390ba3544504c48b29efdd28cc84484ed639604c58887f7fd10e",
+          "ordinal_under_parent": 0,
+          "span": {
+            "absolute_start": 532,
+            "absolute_end": 596
+          },
+          "quote": "no shares of Company Preferred Stock were issued and outstanding",
+          "claim_occurrence_id": "90cf2eff844db65a39430136658e1a1630a991242c51f487f0bdb2e998784991"
+        },
+        {
+          "limb_component_id": "6c2a038b91610b07f9f539e8827f2ced332f7959dbb492e1a75108c62467501d",
+          "component_kind": "ASSERTION",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(D)"
+          ],
+          "parent_limb_component_id": "66ab496acbe5447310f771f5967c8e7d81d5c9d87c8bea8708a2f07392e6bcbd",
+          "ordinal_under_parent": 0,
+          "span": {
+            "absolute_start": 606,
+            "absolute_end": 683
+          },
+          "quote": "no shares of Company Common Stock were held by the Company as treasury shares",
+          "claim_occurrence_id": "72f46e4574c380631b64af77282023df1dcbc340d8c671c195a67f5341f4f731"
+        }
+      ],
+      "nodes_by_id": {
+        "5cfd3a22cb6b09d7b2a0c11e52edc44b0143c140af6dd4c8fec3c59e3690cdf4": {
+          "limb_component_id": "5cfd3a22cb6b09d7b2a0c11e52edc44b0143c140af6dd4c8fec3c59e3690cdf4",
+          "component_kind": "PATH",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(i)"
+          ],
+          "parent_limb_component_id": null,
+          "ordinal_under_parent": 0,
+          "span": null
+        },
+        "84fb14a11b575e886081bb917db13ada7c7c63386b47f2e7b60994f24e41d57f": {
+          "limb_component_id": "84fb14a11b575e886081bb917db13ada7c7c63386b47f2e7b60994f24e41d57f",
+          "component_kind": "PATH",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(ii)"
+          ],
+          "parent_limb_component_id": null,
+          "ordinal_under_parent": 1,
+          "span": null
+        },
+        "06dc91a34a24e14f08f908f6c881d6b4ae5599385486052fd36e98638b6359a2": {
+          "limb_component_id": "06dc91a34a24e14f08f908f6c881d6b4ae5599385486052fd36e98638b6359a2",
+          "component_kind": "PATH",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(iii)"
+          ],
+          "parent_limb_component_id": null,
+          "ordinal_under_parent": 2,
+          "span": null
+        },
+        "3672b8740046015c230be6678bd1f861078eedf99df44782b326489f661bdc24": {
+          "limb_component_id": "3672b8740046015c230be6678bd1f861078eedf99df44782b326489f661bdc24",
+          "component_kind": "PATH",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(A)"
+          ],
+          "parent_limb_component_id": null,
+          "ordinal_under_parent": 3,
+          "span": null
+        },
+        "eccb0fa2a76dd7fc8a0b29295aa8512829ef0262e531e319167cd210738f2c08": {
+          "limb_component_id": "eccb0fa2a76dd7fc8a0b29295aa8512829ef0262e531e319167cd210738f2c08",
+          "component_kind": "PATH",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(B)"
+          ],
+          "parent_limb_component_id": null,
+          "ordinal_under_parent": 4,
+          "span": null
+        },
+        "a1c580d7ba81390ba3544504c48b29efdd28cc84484ed639604c58887f7fd10e": {
+          "limb_component_id": "a1c580d7ba81390ba3544504c48b29efdd28cc84484ed639604c58887f7fd10e",
+          "component_kind": "PATH",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(C)"
+          ],
+          "parent_limb_component_id": null,
+          "ordinal_under_parent": 5,
+          "span": null
+        },
+        "66ab496acbe5447310f771f5967c8e7d81d5c9d87c8bea8708a2f07392e6bcbd": {
+          "limb_component_id": "66ab496acbe5447310f771f5967c8e7d81d5c9d87c8bea8708a2f07392e6bcbd",
+          "component_kind": "PATH",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(D)"
+          ],
+          "parent_limb_component_id": null,
+          "ordinal_under_parent": 6,
+          "span": null
+        },
+        "4a5d4de0f63b5046913d4a80416ab28edad5dd6bc80e3153ffe8a41ab3f7ddfa": {
+          "limb_component_id": "4a5d4de0f63b5046913d4a80416ab28edad5dd6bc80e3153ffe8a41ab3f7ddfa",
+          "component_kind": "ASSERTION",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(i)"
+          ],
+          "parent_limb_component_id": "5cfd3a22cb6b09d7b2a0c11e52edc44b0143c140af6dd4c8fec3c59e3690cdf4",
+          "ordinal_under_parent": 0,
+          "span": {
+            "absolute_start": 107,
+            "absolute_end": 157
+          },
+          "quote": "500,000,000 shares of Company Class A Common Stock",
+          "claim_occurrence_id": "5d7a1d2c6f0f98b69c68827c794765461e3581be5db6b86e2316532be3464e5b"
+        },
+        "2a9cdc1ce5755e135cb5e8f0ca0a4fc9774bfb1e1b93c6412e61b893842d1703": {
+          "limb_component_id": "2a9cdc1ce5755e135cb5e8f0ca0a4fc9774bfb1e1b93c6412e61b893842d1703",
+          "component_kind": "ASSERTION",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(ii)"
+          ],
+          "parent_limb_component_id": "84fb14a11b575e886081bb917db13ada7c7c63386b47f2e7b60994f24e41d57f",
+          "ordinal_under_parent": 0,
+          "span": {
+            "absolute_start": 164,
+            "absolute_end": 205
+          },
+          "quote": "75,000,000 shares of Class B Common Stock",
+          "claim_occurrence_id": "971f18d746c30c8f6b4ffa196b1132dc07975a4bf6910292df2190e4ef0ee7ed"
+        },
+        "867913a09e0a6dbd13abc37f5116857c4f0c98c8c2c7aeeedc516558fcfac91e": {
+          "limb_component_id": "867913a09e0a6dbd13abc37f5116857c4f0c98c8c2c7aeeedc516558fcfac91e",
+          "component_kind": "ASSERTION",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(iii)"
+          ],
+          "parent_limb_component_id": "06dc91a34a24e14f08f908f6c881d6b4ae5599385486052fd36e98638b6359a2",
+          "ordinal_under_parent": 0,
+          "span": {
+            "absolute_start": 216,
+            "absolute_end": 260
+          },
+          "quote": "10,000,000 shares of Company Preferred Stock",
+          "claim_occurrence_id": "902848b24d54f3a505d22351423b07f2d6f3c85aa25fa67f39e99f7bd4d79728"
+        },
+        "8c2ef86f4eb5a7e295e815f55df856c1d1da4a4d7cfe396e8b87fe4314dcc6a5": {
+          "limb_component_id": "8c2ef86f4eb5a7e295e815f55df856c1d1da4a4d7cfe396e8b87fe4314dcc6a5",
+          "component_kind": "ASSERTION",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(A)"
+          ],
+          "parent_limb_component_id": "3672b8740046015c230be6678bd1f861078eedf99df44782b326489f661bdc24",
+          "ordinal_under_parent": 0,
+          "span": {
+            "absolute_start": 365,
+            "absolute_end": 443
+          },
+          "quote": "130,289,468 shares of Company Class A Common Stock were issued and outstanding",
+          "claim_occurrence_id": "7889e758597ff305050955403eee8786cc4e31a44d619e0a24ec2e012868819c"
+        },
+        "fafa57227c2ff54bfcd36df73d965f2cc83888583d440cc45a022828cfe9a831": {
+          "limb_component_id": "fafa57227c2ff54bfcd36df73d965f2cc83888583d440cc45a022828cfe9a831",
+          "component_kind": "ASSERTION",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(B)"
+          ],
+          "parent_limb_component_id": "eccb0fa2a76dd7fc8a0b29295aa8512829ef0262e531e319167cd210738f2c08",
+          "ordinal_under_parent": 0,
+          "span": {
+            "absolute_start": 449,
+            "absolute_end": 526
+          },
+          "quote": "19,313,651 shares of Company Class B Common Stock were issued and outstanding",
+          "claim_occurrence_id": "d8572b1c18b6b468b1b0723d513adb83be9d1ecc2686959ec5d632c71f8229e9"
+        },
+        "eb068dd66dc69a62fdc90f9da46b61b2fe17a04d1403286091118062ee015ab7": {
+          "limb_component_id": "eb068dd66dc69a62fdc90f9da46b61b2fe17a04d1403286091118062ee015ab7",
+          "component_kind": "ASSERTION",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(C)"
+          ],
+          "parent_limb_component_id": "a1c580d7ba81390ba3544504c48b29efdd28cc84484ed639604c58887f7fd10e",
+          "ordinal_under_parent": 0,
+          "span": {
+            "absolute_start": 532,
+            "absolute_end": 596
+          },
+          "quote": "no shares of Company Preferred Stock were issued and outstanding",
+          "claim_occurrence_id": "90cf2eff844db65a39430136658e1a1630a991242c51f487f0bdb2e998784991"
+        },
+        "6c2a038b91610b07f9f539e8827f2ced332f7959dbb492e1a75108c62467501d": {
+          "limb_component_id": "6c2a038b91610b07f9f539e8827f2ced332f7959dbb492e1a75108c62467501d",
+          "component_kind": "ASSERTION",
+          "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+          "limb_path": [
+            "(D)"
+          ],
+          "parent_limb_component_id": "66ab496acbe5447310f771f5967c8e7d81d5c9d87c8bea8708a2f07392e6bcbd",
+          "ordinal_under_parent": 0,
+          "span": {
+            "absolute_start": 606,
+            "absolute_end": 683
+          },
+          "quote": "no shares of Company Common Stock were held by the Company as treasury shares",
+          "claim_occurrence_id": "72f46e4574c380631b64af77282023df1dcbc340d8c671c195a67f5341f4f731"
+        }
+      },
+      "path_node_id_by_limb_path": {
+        "[\"(i)\"]": "5cfd3a22cb6b09d7b2a0c11e52edc44b0143c140af6dd4c8fec3c59e3690cdf4",
+        "[\"(ii)\"]": "84fb14a11b575e886081bb917db13ada7c7c63386b47f2e7b60994f24e41d57f",
+        "[\"(iii)\"]": "06dc91a34a24e14f08f908f6c881d6b4ae5599385486052fd36e98638b6359a2",
+        "[\"(A)\"]": "3672b8740046015c230be6678bd1f861078eedf99df44782b326489f661bdc24",
+        "[\"(B)\"]": "eccb0fa2a76dd7fc8a0b29295aa8512829ef0262e531e319167cd210738f2c08",
+        "[\"(C)\"]": "a1c580d7ba81390ba3544504c48b29efdd28cc84484ed639604c58887f7fd10e",
+        "[\"(D)\"]": "66ab496acbe5447310f771f5967c8e7d81d5c9d87c8bea8708a2f07392e6bcbd"
+      },
+      "residuals": [
+        {
+          "residual_type": "LIMB_ASSERTION_MISSING_LIMB_PATH",
+          "claim_occurrence_id": "eb17f018b567307ea418888554b2107c0d42a594cae4757e418bcff80298631b"
+        },
+        {
+          "residual_type": "LIMB_ASSERTION_MISSING_LIMB_PATH",
+          "claim_occurrence_id": "d1ce0e79f200f117164e626f40994ca56d01fafae3e01a0ca07e62f70169df22"
+        }
+      ]
+    }
+  ],
+  "resolution_receipt": {
+    "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+    "run_receipt_id": "582d707395a40e08f6b9c32fb6d1643b737113393a442826810cd2bac5be5a1e",
+    "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+    "mapping_table_version": 3,
+    "qualifier_kind_lexicon_version": 1,
+    "measurement_date_parse_version": 1,
+    "ruling_corpus_version": 1,
+    "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+    "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+    "contract_vocabulary_digest": "51408a161f0f8343bdcc30f6ad512a0a49a5fc3f8897075545b3bf35c9a29dd6",
+    "counts": {
+      "compiled_candidates": 39,
+      "resolved": 1,
+      "auto_pass": 0,
+      "review_queue": 1,
+      "open_world": 38,
+      "residuals": 0,
+      "provisions": 1,
+      "limb_component_trees": 1
+    },
+    "resolution_receipt_id": "336816a890654aabdf176fb78572c4891c1e659b0150e927b628c820fcdc2c25"
+  }
+}

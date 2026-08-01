@@ -102,8 +102,13 @@ const {
 
 const SKECHERS_URL = 'https://www.sec.gov/Archives/edgar/data/1065837/000119312525112159/d943603dex21.htm';
 
+// Pinned per tests/fixtures/canonical-v2/skechers-first-live-run/intake-pin.json
+// (mechanical pinning fetch performed by this script's earlier run). This
+// run re-verifies the raw bytes hash before proceeding -- abort on mismatch.
+const EXPECTED_RAW_BYTES_SHA256 = '3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833';
+
 function parseArgs(argv) {
-  const out = { model: 'sonnet' };
+  const out = { model: 'sonnet', sectionRef: '3.7' };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     switch (arg) {
@@ -251,6 +256,14 @@ async function main() {
   }
   const bytesSha256 = sha256Hex(rawBytes);
   process.stderr.write(`[skechers-run1] *** PIN *** raw bytes length = ${rawBytes.length}, sha256 = ${bytesSha256}\n`);
+  if (bytesSha256 !== EXPECTED_RAW_BYTES_SHA256) {
+    throw new Error(
+      `PIN MISMATCH: fetched raw bytes sha256 ${bytesSha256} does not match the pinned `
+      + `intake-pin.json value ${EXPECTED_RAW_BYTES_SHA256}. Aborting -- do not proceed on `
+      + 'an unverified source document.',
+    );
+  }
+  process.stderr.write('[skechers-run1] pin verified OK against tests/fixtures/canonical-v2/skechers-first-live-run/intake-pin.json\n');
 
   const retrievalPolicyDigest = sha256Hex(
     'Skechers first live run pinning fetch: User-Agent "precedent-machine research bengoodchild@gmail.com", no redirects followed.',
@@ -301,8 +314,21 @@ async function main() {
   process.stderr.write(`[skechers-run1] sectionizer node count = ${tree.nodes.length}, by kind = ${JSON.stringify(kindCounts)}\n`);
 
   const node = findSectionByReference(tree, args.sectionRef);
-  if (!node) throw new Error(`section reference "${args.sectionRef}" could not be resolved against the tree`);
-  process.stderr.write(`[skechers-run1] resolved section ${args.sectionRef}: start=${node.start} end=${node.end}\n`);
+  if (!node) {
+    throw new Error(
+      `section reference "${args.sectionRef}" could not be resolved against the tree `
+      + `(node count=${tree.nodes.length}, kinds=${JSON.stringify(kindCounts)}). `
+      + 'Aborting per instruction: do not guess a section.',
+    );
+  }
+  if (node.kind !== 'SECTION' || !/capitalization/i.test(node.heading || '')) {
+    throw new Error(
+      `section "${args.sectionRef}" resolved to an unexpected node: kind=${node.kind}, `
+      + `heading=${JSON.stringify(node.heading)}, start=${node.start}, end=${node.end}. `
+      + 'Expected a SECTION node with a heading containing "Capitalization". Aborting.',
+    );
+  }
+  process.stderr.write(`[skechers-run1] resolved section ${args.sectionRef}: kind=${node.kind} heading=${JSON.stringify(node.heading)} start=${node.start} end=${node.end} toc_corroborated=${node.toc_corroborated}\n`);
   const governedSectionText = fullText.slice(node.start, node.end);
   process.stderr.write(`[skechers-run1] section opening excerpt: ${JSON.stringify(governedSectionText.slice(0, 200))}\n`);
 
