@@ -37,6 +37,20 @@ const globalPatterns = [
   'class="definition-term"(?!.*wrapped)',
 ];
 
+// See the exemption comment at the application site: verbatim recorded SEC
+// filing text inside pinned live-run fixtures must not trip prose-shaped
+// bug-fingerprints aimed at code/label regressions. Narrow by construction:
+// only files under a *-live-run fixture directory, only these patterns.
+const RECORDED_LIVE_RUN_DIR = /^tests\/fixtures\/canonical-v2\/[a-z0-9-]*live-run[a-z0-9-]*\//;
+const PROSE_CLASS_FINGERPRINTS = [
+  'QUALIFICATION.*litigation',
+  'Must defend \\(incl\\. appeals/final judgment\\)',
+  'burdensome.*closing.condition',
+  'Substantial Detriment.*closing',
+  'applies to Parent and Company',
+  'Mergers,\\s*Acquisitions,\\s*Dispositions',
+];
+
 const scopedPatterns = [
   'TSA|transition services agreement',
   'TODO\\s*[:—-].*market',
@@ -256,6 +270,15 @@ for (const rel of changedFiles()) {
   const src = fs.readFileSync(full, 'utf8');
   for (const pattern of globalPatterns) {
     if ((FILE_PATTERN_EXEMPTIONS[rel] || []).includes(pattern)) continue;
+    // Recorded live-run artifacts (tests/fixtures/canonical-v2/*-live-run/)
+    // embed VERBATIM admitted SEC filing text — real merger-agreement prose
+    // legitimately contains "Qualification … litigation", "burdensome …
+    // closing condition" etc. on one line. The PROSE-class bug-fingerprints
+    // below target past CODE/label regressions, not source documents, so a
+    // faithful recording must not trip them. Code-class fingerprints
+    // (console.log, .only(, field_path payloads, …) still apply to these
+    // files in full.
+    if (RECORDED_LIVE_RUN_DIR.test(rel) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (new RegExp(pattern, 'im').test(src)) {
       failures.push(`${rel} :: ${pattern}`);
     }

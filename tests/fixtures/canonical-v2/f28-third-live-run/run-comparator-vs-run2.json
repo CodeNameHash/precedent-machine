@@ -1,0 +1,119 @@
+{
+  "schema_version": "RUN_COMPARISON_REPORT/V1",
+  "section_reference": "3.1(b)",
+  "run_a_id": "f28-live-run-2",
+  "run_b_id": "f28-live-run-3",
+  "limbs": {
+    "matched_count": 21,
+    "only_in_a": [],
+    "only_in_b": []
+  },
+  "qualifiers": {
+    "matched_count": 2,
+    "only_in_a": [],
+    "only_in_b": [
+      {
+        "limb_path": [
+          "(i)",
+          "(A)"
+        ],
+        "kind": "TEMPORAL",
+        "quote": "as of the close of business on April 17, 2026"
+      },
+      {
+        "limb_path": [
+          "(i)",
+          "(A)"
+        ],
+        "kind": "THRESHOLD",
+        "quote": "(including 119,994 Company Shares subject to Company Restricted Stock Awards)"
+      },
+      {
+        "limb_path": [
+          "(i)",
+          "(B)"
+        ],
+        "kind": "TEMPORAL",
+        "quote": "as of the date hereof"
+      },
+      {
+        "limb_path": [
+          "(i)"
+        ],
+        "kind": "TEMPORAL",
+        "quote": "As of April 17, 2026,"
+      },
+      {
+        "limb_path": [
+          "(i)"
+        ],
+        "kind": "THRESHOLD",
+        "quote": "other than 1,600,514 Company Shares reserved for issuance under the Company’s Amended and Restated 2015 Long Term Stock Incentive Plan (the “A&R 2015 Plan”)"
+      },
+      {
+        "limb_path": null,
+        "kind": "TEMPORAL",
+        "quote": "As of April 17, 2026,"
+      },
+      {
+        "limb_path": [
+          "(ii)",
+          "(C)"
+        ],
+        "kind": "THRESHOLD",
+        "quote": "(assuming achievement of the applicable performance goals at the target level)"
+      },
+      {
+        "limb_path": [
+          "(ii)"
+        ],
+        "kind": "TEMPORAL",
+        "quote": "as of the close of business on April 17, 2026"
+      },
+      {
+        "limb_path": [
+          "(ii)"
+        ],
+        "kind": "ACCURACY",
+        "quote": "correct and complete"
+      },
+      {
+        "limb_path": [
+          "(ii)"
+        ],
+        "kind": "THRESHOLD",
+        "quote": "(including the number of Company Shares assuming achievement of the applicable performance goals at the target level)"
+      },
+      {
+        "limb_path": [
+          "(ii)"
+        ],
+        "kind": "THRESHOLD",
+        "quote": "(other than restrictions on transfer arising under applicable securities Laws)"
+      },
+      {
+        "limb_path": null,
+        "kind": "THRESHOLD",
+        "quote": "Except for any obligations pursuant to this Agreement, or as set forth in Sections ‎3.1(b)(i) and ‎3.1(b)(ii),"
+      },
+      {
+        "limb_path": [
+          "(iv)"
+        ],
+        "kind": "THRESHOLD",
+        "quote": "Except as set forth above,"
+      },
+      {
+        "limb_path": [
+          "(iv)"
+        ],
+        "kind": "THRESHOLD",
+        "quote": "(or which are convertible into or exercisable for securities having the right to vote)"
+      }
+    ]
+  },
+  "summary": {
+    "limb_disagreement_count": 0,
+    "qualifier_disagreement_count": 14
+  }
+}

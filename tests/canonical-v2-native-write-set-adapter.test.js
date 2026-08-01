@@ -15,6 +15,8 @@ const {
   buildNativeWriteSet,
   NativeWriteSetAdapterError,
 } = require('../lib/canonical-v2/native-producer/native-write-set-adapter');
+const { LIMB_ASSERTION_CLAIM_KEY } = require('../lib/canonical-v2/native-producer/anthropic-provider');
+const { mintLimbComponentTree } = require('../lib/canonical-v2/native-producer/limb-components');
 const { QXO_5_2_TEXT } = require('./fixtures/qxo-section-5-2');
 
 // ─── Fixture: identity admitted-source chain ───
@@ -333,8 +335,25 @@ function resolvableProvider() {
       state: 'PRESENT',
       raw_value: quote,
       canonical_value: canonicalValue,
-      attributes: {},
-      allowed_attributes: [],
+      // Task 5 (provenance tags): this fixture hand-assembles a proposal
+      // that already carries a REGISTERED claim_definition_key (ACCURACY_
+      // KEY), simulating a candidate-resolution.js-resolved row without
+      // actually running the resolver -- so it must also carry the
+      // MECHANICAL answer_provenance the resolver would have minted, or the
+      // staged validator's NATIVE_PRODUCER requirement (correctly) rejects
+      // it as an under-provenanced resolved claim.
+      attributes: {
+        answer_provenance: {
+          tag: 'MECHANICAL',
+          pins: { mapping_table_version: 3, qualifier_kind_lexicon_version: 1 },
+        },
+      },
+      // `answer_provenance` must be on the allow-list too, or claims-
+      // relationships.js's own compile-time `residualsFor` (buildClaimRevision)
+      // quarantines it as an UNKNOWN_ATTRIBUTE residual -- correct behaviour
+      // for a real unregistered attribute, but this fixture's added
+      // attribute IS the governed one this task adds.
+      allowed_attributes: ['answer_provenance'],
       taxonomy_codes: {},
       codebooks: {},
       evidence: [{
@@ -495,6 +514,34 @@ test('the assembled write set passes validate-write-set.js\'s real validation wi
   assert.equal(validation.accepted, true);
   assert.ok(Array.isArray(validation.residuals));
   assert.ok(Array.isArray(validation.quarantines));
+});
+
+// ─── Task 5 (docs/superpowers/plans/2026-08-01-claim-identity-provenance-
+// plan.md, provenance tags): the write-set envelope gains
+// `write_set_origin: 'NATIVE_PRODUCER'`, set by this adapter -- the ONE
+// place a native-producer write set is ever assembled -- so
+// validate-write-set.js's staged `answer_provenance` requirement has a
+// discriminator to key on. ───
+
+test('buildNativeWriteSet stamps write_set_origin: NATIVE_PRODUCER on every write set it assembles', async () => {
+  const receipt = await buildResolvableReceipt();
+  const result = buildNativeWriteSet({
+    run_receipt: receipt,
+    source_text: qxoRealisticFullText,
+    document_hash: DOCUMENT_HASH,
+    admitted_source_context: ADMITTED_SOURCE_CONTEXT,
+  });
+
+  assert.equal(result.write_set.write_set_origin, 'NATIVE_PRODUCER');
+
+  // The stamped field still passes the real validator (it is an ALLOWED
+  // extra key on the resolved write-set contract, not an unknown one).
+  const validation = validateResolvedCanonicalWriteSet({
+    writeSet: result.write_set,
+    contractBundle: CONTRACT_BUNDLE,
+    admittedSourceContexts: result.admitted_source_contexts,
+  });
+  assert.equal(validation.accepted, true);
 });
 
 // ─── Failure isolation through the REAL validator ───
@@ -726,4 +773,330 @@ test('rejects malformed inputs instead of silently misbehaving', () => {
     document_hash: DOCUMENT_HASH,
     admitted_source_context: ADMITTED_SOURCE_CONTEXT,
   }), NativeWriteSetAdapterError);
+});
+
+// ─── Component rows for assertion-node claim subjects (docs/superpowers/
+// specs/2026-08-01-component-rows-design.md). Everything above this line is
+// the PRE-EXISTING adapter suite, run unmodified against the new code -- its
+// continued green run IS the "absent context = today's behaviour exactly"
+// proof (spec point 5): not one of the tests above ever passes a
+// `resolution` argument. The tests below exercise the new, additive path. ───
+
+// A tree with TWO limb paths ((i) and (iii)), one assertion each, minted the
+// same way candidate-resolution.js's own pre-pass does (mintLimbComponentTree
+// over LIMB_ASSERTION-shaped compiled candidates) -- but built directly here,
+// without going through the resolver, so this suite stays a pure adapter
+// unit test per the file boundary (candidate-resolution.js is read-only from
+// this task). Returns everything a caller assembling `resolution` needs:
+// the provision (parent, for containment) and the tree (to find each
+// subject's assertion node).
+async function buildTwoAssertionReceipt() {
+  let provision;
+  let tree;
+  const receipt = await runNativeExtraction({
+    source_text: qxoRealisticFullText,
+    document_hash: DOCUMENT_HASH,
+    section_references: ['3.1(b)'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: async ({ governed_scope: governedScope }) => {
+      const provisionSpan = buildSemanticSpan(ADMITTED_SOURCE_CONTEXT, governedScope.start, governedScope.end);
+      provision = buildProvisionInstance({
+        source: ADMITTED_SOURCE_CONTEXT,
+        span: provisionSpan,
+        conceptKey: 'REP-T-CAP',
+        party: REP_PARTY,
+        ordinal: 1,
+        contractBundle: CONTRACT_BUNDLE,
+      });
+
+      const limbI = locateInGovernedScope(governedScope, LIMB_I_QUOTE);
+      const limbIII = locateInGovernedScope(governedScope, LIMB_III_QUOTE);
+
+      // The exact shape mintLimbComponentTree's own extractAssertionClaims/
+      // operativeEvidenceOf reads (limb-components.js file header): one
+      // LIMB_ASSERTION-keyed compiled candidate per assertion, SECTION-LOCAL
+      // evidence, `attributes.limb_path` set.
+      const assertionCandidates = [
+        {
+          ok: true,
+          candidate: {
+            kind: 'claim',
+            claim: {
+              claim_definition_key: LIMB_ASSERTION_CLAIM_KEY,
+              claim_occurrence_id: contentId('NATIVE_WRITE_SET_ADAPTER_TEST_LIMB_OCC/V1', { limb_path: ['(i)'] }),
+              raw_value: LIMB_I_QUOTE,
+              attributes: { limb_path: ['(i)'] },
+              evidence: [{
+                evidence_role: 'OPERATIVE_TEXT', absolute_start: limbI.start, absolute_end: limbI.end,
+              }],
+            },
+          },
+        },
+        {
+          ok: true,
+          candidate: {
+            kind: 'claim',
+            claim: {
+              claim_definition_key: LIMB_ASSERTION_CLAIM_KEY,
+              claim_occurrence_id: contentId('NATIVE_WRITE_SET_ADAPTER_TEST_LIMB_OCC/V1', { limb_path: ['(iii)'] }),
+              raw_value: LIMB_III_QUOTE,
+              attributes: { limb_path: ['(iii)'] },
+              evidence: [{
+                evidence_role: 'OPERATIVE_TEXT', absolute_start: limbIII.start, absolute_end: limbIII.end,
+              }],
+            },
+          },
+        },
+      ];
+      tree = mintLimbComponentTree({
+        compiled_candidates: assertionCandidates,
+        provision_instance_id: provision.provision_instance_id,
+      });
+
+      const assertionForPath = (limbPath) => tree.assertion_nodes.find(
+        (node) => JSON.stringify(node.limb_path) === JSON.stringify(limbPath),
+      );
+
+      const proposalFor = ({
+        ordinal, quote, start, end, subjectOccurrenceId,
+      }) => ({
+        kind: 'claim',
+        proposal_kind: 'GOVERNED',
+        subject_occurrence_id: subjectOccurrenceId,
+        claim_definition_key: 'NATIVE_WRITE_SET_ADAPTER_COMPONENT_TEST_CLAIM_CANDIDATE',
+        claim_definition_version: 1,
+        ordinal,
+        state: 'PRESENT',
+        raw_value: quote,
+        canonical_value: null,
+        attributes: {},
+        allowed_attributes: [],
+        taxonomy_codes: {},
+        codebooks: {},
+        evidence: [{
+          evidence_role: 'OPERATIVE_TEXT',
+          excerpt_id: contentId('NATIVE_WRITE_SET_ADAPTER_COMPONENT_TEST_EXCERPT/V1', {
+            quote, start, end, ordinal,
+          }),
+          document_ordinal: 0,
+          absolute_start: start,
+          absolute_end: end,
+          ordinal: 0,
+        }],
+        extraction_version: 'NATIVE_WRITE_SET_ADAPTER_TEST/V1',
+        normalisation_version: 'NATIVE_WRITE_SET_ADAPTER_TEST/V1',
+        derivation_version: 'NATIVE_WRITE_SET_ADAPTER_TEST/V1',
+      });
+
+      return {
+        provider_id: 'native-write-set-adapter-component-test-stub/v1',
+        model_id: 'stub-model',
+        prompt: 'native-write-set-adapter-component-test-stub-prompt-v1',
+        // Order: (iii) BEFORE (i) -- span order is the REVERSE of array
+        // order, on purpose, so ordinal-by-span (not by array position) is
+        // the only thing that could make the permutation-invariance
+        // assertions below pass.
+        proposals: [
+          proposalFor({
+            ordinal: 0,
+            quote: LIMB_III_QUOTE,
+            start: limbIII.start,
+            end: limbIII.end,
+            subjectOccurrenceId: assertionForPath(['(iii)']).limb_component_id,
+          }),
+          proposalFor({
+            ordinal: 1,
+            quote: LIMB_I_QUOTE,
+            start: limbI.start,
+            end: limbI.end,
+            subjectOccurrenceId: assertionForPath(['(i)']).limb_component_id,
+          }),
+        ],
+        evidence_residuals: [],
+      };
+    },
+  });
+  return { receipt, provision, tree };
+}
+
+test('component minting: an assertion-node claim subject mints a REPRESENTATION_LIMB component contained in its parent provision', async () => {
+  const { receipt, provision, tree } = await buildTwoAssertionReceipt();
+  const result = buildNativeWriteSet({
+    run_receipt: receipt,
+    source_text: qxoRealisticFullText,
+    document_hash: DOCUMENT_HASH,
+    admitted_source_context: ADMITTED_SOURCE_CONTEXT,
+    resolution: { provisions: [provision], limb_component_trees: [tree] },
+  });
+
+  assert.equal(result.write_set.components.length, 2);
+  assert.equal(result.write_set.claims.length, 2);
+  for (const component of result.write_set.components) {
+    assert.equal(component.schema_version, 'PROVISION_COMPONENT/V1');
+    assert.equal(component.component_key, 'REPRESENTATION_LIMB');
+    assert.equal(component.parent_provision_instance_id, provision.provision_instance_id);
+    assert.ok(component.absolute_start >= provision.absolute_start);
+    assert.ok(component.absolute_end <= provision.absolute_end);
+    assert.ok(typeof component.closure_id === 'string' && component.closure_id.length > 0);
+  }
+
+  // Ordinal is by ABSOLUTE SPAN ORDER, not by the array order the proposals
+  // arrived in (the provider above deliberately emitted (iii) first): limb
+  // (i) precedes limb (iii) in the governed section's own text, so limb (i)'s
+  // component must be ordinal 1.
+  const limbIAssertionId = tree.assertion_nodes.find((n) => JSON.stringify(n.limb_path) === '["(i)"]').limb_component_id;
+  const limbIIIAssertionId = tree.assertion_nodes.find((n) => JSON.stringify(n.limb_path) === '["(iii)"]').limb_component_id;
+  const mapByAssertionId = new Map(result.component_subject_map.map((entry) => [entry.assertion_node_id, entry]));
+  const limbIComponentId = mapByAssertionId.get(limbIAssertionId).provision_component_id;
+  const limbIIIComponentId = mapByAssertionId.get(limbIIIAssertionId).provision_component_id;
+  const limbIComponent = result.write_set.components.find((c) => c.provision_component_id === limbIComponentId);
+  const limbIIIComponent = result.write_set.components.find((c) => c.provision_component_id === limbIIIComponentId);
+  assert.equal(limbIComponent.ordinal, 1);
+  assert.equal(limbIIIComponent.ordinal, 2);
+
+  // Point 4: the join is recorded, never inferred.
+  assert.equal(result.component_subject_map.length, 2);
+  for (const entry of result.component_subject_map) {
+    assert.ok(typeof entry.assertion_node_id === 'string');
+    assert.ok(typeof entry.provision_component_id === 'string');
+    assert.ok(Array.isArray(entry.limb_path));
+  }
+
+  // Point 2: the claim's subject is rekeyed onto the minted component, and
+  // both dependent identities (claim_occurrence_id keys on
+  // subject_occurrence_id; claim_revision_id keys on both) are re-derived --
+  // never left pointing at the resolver-layer LIMB_ASSERTION_COMPONENT/V1 id.
+  for (const claim of result.write_set.claims) {
+    const minted = result.write_set.components.find(
+      (c) => c.provision_component_id === claim.subject_occurrence_id,
+    );
+    assert.ok(minted, 'every claim subject resolves to a minted component, never the resolution-layer node id');
+    const expectedOccurrenceId = contentId('CLAIM_OCCURRENCE/V1', {
+      subject_occurrence_id: claim.subject_occurrence_id,
+      claim_definition_key: claim.claim_definition_key,
+      claim_definition_version: claim.claim_definition_version,
+      ordinal: claim.ordinal,
+    });
+    assert.equal(claim.claim_occurrence_id, expectedOccurrenceId);
+  }
+
+  const provisionClosureId = contentId('NATIVE_WRITE_SET_ADAPTER_TEST_PROVISION_CLOSURE/V1', {
+    provision_instance_id: provision.provision_instance_id,
+  });
+  const validation = validateResolvedCanonicalWriteSet({
+    writeSet: { ...result.write_set, provisions: [{ ...provision, closure_id: provisionClosureId }] },
+    contractBundle: CONTRACT_BUNDLE,
+    admittedSourceContexts: result.admitted_source_contexts,
+  });
+  assert.equal(validation.accepted, true);
+  // Real, unregistered generic claim keys quarantine at the validator (not
+  // this adapter's concern) -- but the SEMANTIC_REFERENCE resolution this
+  // design closes must never be the reason: assert it never appears.
+  assert.ok(
+    !validation.residuals.some((r) => r.reason_code === 'SEMANTIC_REFERENCE_UNRESOLVED'),
+    'the minted component/rekeyed subject resolves cleanly at validation',
+  );
+});
+
+test('component minting is permutation-invariant: component and rekeyed claim identities are byte-identical regardless of compiled_candidates array order', async () => {
+  const { receipt, provision, tree } = await buildTwoAssertionReceipt();
+  const resolution = { provisions: [provision], limb_component_trees: [tree] };
+
+  const forward = buildNativeWriteSet({
+    run_receipt: receipt,
+    source_text: qxoRealisticFullText,
+    document_hash: DOCUMENT_HASH,
+    admitted_source_context: ADMITTED_SOURCE_CONTEXT,
+    resolution,
+  });
+
+  const reversedReceipt = {
+    ...receipt,
+    compiled_candidates: [...receipt.compiled_candidates].reverse(),
+  };
+  const reversed = buildNativeWriteSet({
+    run_receipt: reversedReceipt,
+    source_text: qxoRealisticFullText,
+    document_hash: DOCUMENT_HASH,
+    admitted_source_context: ADMITTED_SOURCE_CONTEXT,
+    resolution,
+  });
+
+  const sortById = (rows, field) => [...rows].sort((a, b) => a[field].localeCompare(b[field]));
+  assert.deepEqual(
+    sortById(forward.write_set.components, 'provision_component_id'),
+    sortById(reversed.write_set.components, 'provision_component_id'),
+  );
+  assert.deepEqual(
+    sortById(forward.write_set.claims, 'claim_revision_id'),
+    sortById(reversed.write_set.claims, 'claim_revision_id'),
+  );
+  assert.deepEqual(
+    sortById(forward.component_subject_map, 'provision_component_id'),
+    sortById(reversed.component_subject_map, 'provision_component_id'),
+  );
+});
+
+test('absent resolution context: write_set.components and component_subject_map stay empty, exactly today\'s behaviour (spec point 5)', async () => {
+  const { receipt } = await buildTwoAssertionReceipt();
+  const result = buildNativeWriteSet({
+    run_receipt: receipt,
+    source_text: qxoRealisticFullText,
+    document_hash: DOCUMENT_HASH,
+    admitted_source_context: ADMITTED_SOURCE_CONTEXT,
+    // No `resolution` -- the claims here carry resolver-layer assertion-node
+    // subject ids that resolve against nothing; without a `resolution`
+    // context this module has no way to know that, and must not try.
+  });
+  assert.deepEqual(result.write_set.components, []);
+  assert.deepEqual(result.component_subject_map, []);
+  // The claims themselves still write (evidence shifts fine) -- they are
+  // simply left with their original, un-rekeyed subject, exactly as before
+  // this design (module header: "This module passes them through verbatim").
+  assert.equal(result.write_set.claims.length, 2);
+  const originalSubjects = receipt.compiled_candidates.map((entry) => entry.candidate.claim.subject_occurrence_id);
+  for (const claim of result.write_set.claims) {
+    assert.ok(originalSubjects.includes(claim.subject_occurrence_id));
+  }
+});
+
+test('a PATH-node claim subject is never minted a component (spec point 1: "path nodes never mint")', async () => {
+  const { receipt, provision, tree } = await buildTwoAssertionReceipt();
+  const pathNodeI = tree.path_nodes.find((n) => JSON.stringify(n.limb_path) === '["(i)"]');
+  assert.ok(pathNodeI, 'limb (i) path node exists in the tree');
+
+  // Rekey the FIRST compiled candidate's subject onto the PATH node instead
+  // of its real assertion node.
+  const [first, ...rest] = receipt.compiled_candidates;
+  const retargeted = {
+    ...receipt,
+    compiled_candidates: [
+      {
+        ...first,
+        candidate: {
+          ...first.candidate,
+          claim: { ...first.candidate.claim, subject_occurrence_id: pathNodeI.limb_component_id },
+        },
+      },
+      ...rest,
+    ],
+  };
+
+  const result = buildNativeWriteSet({
+    run_receipt: retargeted,
+    source_text: qxoRealisticFullText,
+    document_hash: DOCUMENT_HASH,
+    admitted_source_context: ADMITTED_SOURCE_CONTEXT,
+    resolution: { provisions: [provision], limb_component_trees: [tree] },
+  });
+
+  // One component minted (the OTHER candidate's real assertion-node
+  // subject); the PATH-node-subject candidate's claim still writes (its
+  // evidence shifts fine), but its subject is left untouched -- there is no
+  // component for it to rekey onto.
+  assert.equal(result.write_set.components.length, 1);
+  assert.equal(result.write_set.claims.length, 2);
+  const untouchedClaim = result.write_set.claims.find((c) => c.subject_occurrence_id === pathNodeI.limb_component_id);
+  assert.ok(untouchedClaim, 'the PATH-node-subject claim keeps its original subject, unrekeyed');
 });

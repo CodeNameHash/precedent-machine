@@ -1,0 +1,164 @@
+{
+  "accepted": true,
+  "publishableWriteSet": {
+    "deal": {
+      "deal_admission_id": "58b714b91db2d944cafd147944d67c880b89385f0e5ba454d2954da92d5eeffa",
+      "deal_key": "deal:skechers-first-live-run:5e1d6f13ab83e3f9",
+      "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833"
+    },
+    "excerpts": [
+      {
+        "absolute_end": 124803,
+        "absolute_start": 124786,
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "closure_id": "09cf82b5496427ee0ea9fddc0b72dca542f3d1835e01e6da907301e474e737f8",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "exact_bytes_digest": "6b4e953a4b1cf9720eb745d38e31a5f97482a9f9bf9125c25a95984987ad2f5a",
+        "exact_text": "as of May 2, 2025",
+        "excerpt_definition_id": "0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02",
+        "excerpt_definition_key": "SINGLE_OPERATIVE_SPAN",
+        "excerpt_definition_payload_digest": "bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c",
+        "excerpt_definition_version": 1,
+        "excerpt_id": "ce95bddbebe0ba752d4747b709894337492f2a672ec75aa8f8a7a694e0ad2fe5",
+        "excerpt_purpose": "LEGAL_EVIDENCE",
+        "ordered_component_assignments": [
+          {
+            "component_slot_key": "PRIMARY",
+            "governed_slot_ordinal": 0,
+            "semantic_span_id": "a2b1fc6eff38c63778b2ba816d6e489b97760d6aa100965eb768d307f2915066"
+          }
+        ],
+        "output_text_hash": "6b4e953a4b1cf9720eb745d38e31a5f97482a9f9bf9125c25a95984987ad2f5a",
+        "schema_version": "EXCERPT/V1",
+        "source_content_id": "5d272a761baf15bc2f25dcef52224171fbf753b819a99124394c8c2cf7ff7764",
+        "source_occurrence_id": "c136c6adc572c1083ed8fe9c4bcc14b2c01456d3c2e1af0bef1937bb04d2f489",
+        "transformation_or_redaction_version": "IDENTITY_UTF8/V1"
+      }
+    ],
+    "definition_occurrences": [],
+    "provisions": [
+      {
+        "absolute_end": 127852,
+        "absolute_start": 122698,
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "closure_id": "a30cbd846c960877c68b492ee3d4aef99aa70252b5606aa8dbf9c747abcce3a0",
+        "concept_key": "REP-T-CAP",
+        "document_hash": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+        "ordinal": 1,
+        "party": {
+          "capacity": "TARGET",
+          "role": "REPRESENTATION_MAKER",
+          "value": "the Company"
+        },
+        "provision_instance_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_anchor_id": "b4498ffc6baef4b05ae744841701536cbea52acc836411a42690891a94a772ec",
+        "source_occurrence_id": "c136c6adc572c1083ed8fe9c4bcc14b2c01456d3c2e1af0bef1937bb04d2f489"
+      }
+    ],
+    "components": [],
+    "claims": [
+      {
+        "applicability": null,
+        "attributes": {
+          "answer_provenance": {
+            "pins": {
+              "mapping_table_version": 3,
+              "qualifier_kind_lexicon_version": 1
+            },
+            "tag": "MECHANICAL"
+          },
+          "attachment": {
+            "ambiguity_signals": {
+              "comma_before_qualifier": true,
+              "in_each_case_language": null,
+              "items_grammatically_parallel": false,
+              "single_clause_language": null
+            },
+            "governs_path": null,
+            "position": "ITEM",
+            "readings": null,
+            "scope_reading": "THIS_ITEM_ONLY"
+          },
+          "comparability": "NOT_COMPARABLE",
+          "deterministic_kind": "TEMPORAL",
+          "enrichment_state": "UNENRICHED",
+          "measurement_date_resolution": "CALENDAR",
+          "party_making": "the Company",
+          "qualifier_kind": "TEMPORAL",
+          "section_reference": "3.7(b)"
+        },
+        "canonical_value": "2025-05-02",
+        "claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
+        "claim_definition_version": 1,
+        "claim_occurrence_id": "510c429da7b6f5033287f2f880a6602c3f8108ddec15243ed7fafd07224f001f",
+        "claim_revision_id": "ac6c06b0711823fa45bc11198a653558e531546b0e611589f9ef87c29822f2fb",
+        "closure_id": "3a6bda33c38474a465bd42cda4565a6f75f846033159fd5ced4385163504737f",
+        "day_basis": null,
+        "denominator": null,
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "absolute_end": 124803,
+            "absolute_start": 124786,
+            "claim_evidence_id": "7d0c3222a103ec62aab33fc34410a3bad1478f7e664d31e807acd9946ae3eddf",
+            "document_ordinal": 0,
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "ce95bddbebe0ba752d4747b709894337492f2a672ec75aa8f8a7a694e0ad2fe5",
+            "ordinal": 0,
+            "schema_version": "CLAIM_EVIDENCE/V1"
+          }
+        ],
+        "evidence_ids": [
+          "7d0c3222a103ec62aab33fc34410a3bad1478f7e664d31e807acd9946ae3eddf"
+        ],
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "failure": null,
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "not_examined": null,
+        "ordinal": 0,
+        "publication_state": "VALIDATED",
+        "quarantine": null,
+        "raw_value": "as of May 2, 2025",
+        "retained_residuals": [],
+        "schema_version": "CLAIM_REVISION/V1",
+        "scope": null,
+        "state": "PRESENT",
+        "subject_occurrence_id": "a86f31adb0e140fef380ebb6e9d900d2c8765011d0fc6de6a56782b59f9602bd",
+        "taxonomy_codes": {},
+        "unit": null
+      }
+    ],
+    "relationships": [],
+    "condition_groups": [],
+    "validated_semantic_graphs": [],
+    "open_world_candidates": [],
+    "open_world_candidate_occurrences": [],
+    "open_world_evidence_references": [],
+    "open_world_candidate_dispositions": [],
+    "open_world_primitives": [],
+    "semantic_impact_closures": [],
+    "reviewed_source_specific_rows": [],
+    "incomplete_canonical_result_rows": [],
+    "source_references": [
+      {
+        "canonical_text_id": "1060184ea008e97c1493edcd7914ead1143202f4cab0e5c98d61c490471a54d0",
+        "deal_admission_id": "58b714b91db2d944cafd147944d67c880b89385f0e5ba454d2954da92d5eeffa",
+        "governed_deal_key": "deal:skechers-first-live-run:5e1d6f13ab83e3f9",
+        "immutable_source_document_id": "633656183e7afed8143448808548daee1bc326b45744ff49c17a93100404bfec",
+        "schema_version": "ADMITTED_SOURCE_REFERENCE/V1",
+        "semantic_extraction_input_envelope_id": "d49d0c348b1a135819fe74d0fa337f0a63ae39d3c19a4e401c643eacc37eea7e",
+        "source_admission_manifest_id": "88fdfab02a983f33fab143a9660f4ad693f31016c14d79b71069621e1fea6845",
+        "source_ordinal": 0
+      }
+    ]
+  },
+  "residuals": [],
+  "quarantines": [],
+  "quarantinedClosureIds": [],
+  "counts": {
+    "publishable": 3,
+    "residuals": 0,
+    "quarantinedClosures": 0
+  }
+}

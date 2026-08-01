@@ -1,0 +1,60 @@
+{
+  "note": "STOP at Work item 2: no sectionizer tree node aligns with the real decimal-numbered \"3.7 Company Capitalization.\" section. See report.",
+  "tree_node_count": 422,
+  "tree_kind_counts": {
+    "ROOT": 1,
+    "ARTICLE": 9,
+    "SECTION": 9,
+    "SUBSECTION": 403
+  },
+  "toc_heading_text": "Section 3.7 \"COMPANY CAPITALIZATION\" (Table of Contents, byte 1586)",
+  "body_heading_literal_match": {
+    "text": "3.7 Company Capitalization.",
+    "canonical_text_offset": 121686,
+    "next_heading_text": "3.8 Subsidiaries.",
+    "next_heading_canonical_text_offset": 126824,
+    "true_section_span_heading_to_heading": {
+      "start": 121686,
+      "end": 126824,
+      "length": 5138
+    },
+    "opening_excerpt_250_chars": "3.7 Company Capitalization.\n(a) Capital Stock. The authorized capital stock of the Company consists of (i) 500,000,000 shares of Company Class A Common Stock, (ii) 75,000,000 shares of Class B Common Stock and (iii) 10,000,000 shares of Company Prefe"
+  },
+  "candidate_tree_nodes_overlapping_true_span": [
+    {
+      "kind": "SUBSECTION",
+      "reference": "III-INTRO(d)",
+      "start": 118472,
+      "end": 181651,
+      "length": 63179
+    },
+    {
+      "kind": "SUBSECTION",
+      "reference": "III-INTRO(d)(a)",
+      "start": 122726,
+      "end": 123730,
+      "length": 1004
+    },
+    {
+      "kind": "SUBSECTION",
+      "reference": "III-INTRO(d)(b)",
+      "start": 123730,
+      "end": 125037,
+      "length": 1307
+    },
+    {
+      "kind": "SUBSECTION",
+      "reference": "III-INTRO(d)(c)",
+      "start": 125037,
+      "end": 127590,
+      "length": 2553
+    }
+  ],
+  "finding": "III-INTRO(d) spans [118472, 181651) -- the rest of ALL of Article III, because the lettered-clause walker never resets at a decimal section boundary it cannot see. Its own child III-INTRO(d)(c) [125037, 127590) straddles the 3.7/3.8 boundary (126824) -- containing the END of Section 3.7 AND the START of Section 3.8 in one node. No tree node exists whose span equals or nests cleanly within [121686, 126824). Per the task's explicit instruction (\"If you cannot locate it mechanically, STOP and report what the tree shows -- do not guess a section\"), this run stops here.",
+  "agreement_date_candidate": {
+    "quoted_text": "Dated as of May 4, 2025",
+    "canonical_text_offset": 537,
+    "parsed_iso": "2025-05-04",
+    "caveat": "Found in the title-block signature line, not a separate \"This Agreement... dated as of\" preamble sentence -- the only \"dated as of\" occurrence anchored to THIS agreement (others in the doc are the Guaranty/EFL/DFL/Confidentiality Agreement dates). Not fed into resolveCandidates since this run stopped before Step 4."
+  }
+}

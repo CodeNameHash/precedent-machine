@@ -1,0 +1,28 @@
+{
+  "schema_version": "CLAIM_PROVENANCE_SERVING_CONTRACT/V1",
+  "version": 1,
+  "requirements": [
+    {
+      "requirement_id": "CROSS_DEAL_DATE_QUERY_MUST_SURFACE_NOT_COMPARABLE_COUNT",
+      "ruled_by": "Ben",
+      "ruling_date": "2026-08-01",
+      "statement": "Any cross-deal date query MUST surface the count of deals it could not compare (\"N deals not comparable for this field\") -- silent omission is forbidden.",
+      "source_ref": "docs/superpowers/specs/2026-08-01-claim-identity-provenance-design.md#3-two-mappings-into-already-registered-definitions"
+    },
+    {
+      "requirement_id": "SEARCH_DEFAULT_ALL_RESULTS_WITH_WARNINGS_ONE_SWITCH",
+      "ruled_by": "Ben",
+      "ruling_date": "2026-08-01",
+      "statement": "Search defaults to \"all results, with warnings\" while the VERIFIED set is small, with exactly one clear control to switch to \"verified only\".",
+      "source_ref": "docs/superpowers/specs/2026-08-01-claim-identity-provenance-design.md#5-provenance-tags--mechanical--ai--verified"
+    },
+    {
+      "requirement_id": "WARNING_EXPOSURE_MUST_BE_LOGGED",
+      "ruled_by": "Ben",
+      "ruling_date": "2026-08-01",
+      "statement": "Warning-exposure should be logged so warning fatigue (audit finding B7) becomes measurable rather than assumed.",
+      "source_ref": "docs/superpowers/specs/2026-08-01-claim-identity-provenance-design.md#5-provenance-tags--mechanical--ai--verified"
+    }
+  ],
+  "claim_provenance_serving_contract_id": "f8e10c5157e44b64a44eafe938e2dac6f2e9ee9825da0d908c51da63368d1ddd"
+}
