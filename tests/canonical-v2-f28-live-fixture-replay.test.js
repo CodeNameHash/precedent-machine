@@ -389,7 +389,15 @@ test('replaying the F28 recorded raw response through the fixed pipeline: defect
   assert.equal(receipt.citation_residual_count, 9);
   assert.equal(receipt.citation_residuals.length, 9);
   assert.ok(receipt.citation_residuals.every((r) => r.reason === 'CITATION_NOT_CONSTRUCTIBLE'));
-  assert.ok(receipt.citation_residuals.every((r) => r.derived_citation === 'III-INTRO(b)'));
+  // Per-proposal citation derivation (Skechers citation fix): each residual
+  // now carries the node containing ITS OWN evidence span -- the governed
+  // section's nested lettered markers III-INTRO(b)(i)/(iii)/(iv)/(v) --
+  // instead of the old once-per-section constant 'III-INTRO(b)'. Strictly
+  // more precise information in the same typed residual.
+  assert.ok(receipt.citation_residuals.every((r) => /^III-INTRO\(b\)(\([ivx]+\))?$/.test(r.derived_citation)),
+    `unexpected derived citation: ${receipt.citation_residuals.map((r) => r.derived_citation).join(', ')}`);
+  assert.ok(receipt.citation_residuals.some((r) => r.derived_citation !== 'III-INTRO(b)'),
+    'per-proposal derivation must resolve at least some residuals to their own deeper limb node');
   const distinctModelCitations = new Set(receipt.citation_residuals.map((r) => r.model_citation));
   assert.deepEqual(
     [...distinctModelCitations].sort(),

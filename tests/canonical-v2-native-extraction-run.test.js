@@ -537,11 +537,15 @@ test('a section_reference that cannot be constructed from the discovered tree, a
   const [residual] = receipt.citation_residuals;
   assert.equal(residual.reason, 'CITATION_NOT_CONSTRUCTIBLE');
   assert.equal(residual.model_citation, 'NOT-A-REAL-CITATION(z)(z)');
-  assert.equal(residual.derived_citation, '3.1(b)');
+  // Per-proposal derivation (Skechers-live-run fix): the derived citation
+  // now comes from THIS proposal's own evidence span (LIMB_I_QUOTE, the
+  // "(i)" limb text) rather than the governing section's outer span --
+  // deeper and more precise than the governed "3.1(b)" scope itself.
+  assert.equal(residual.derived_citation, '3.1(b)(i)');
   assert.equal(residual.section_reference, '3.1(b)');
 });
 
-test('a section_reference matching the governing section\'s own discovered reference is accepted with no citation residual, and validation_source is CONSTRUCTED_FROM_TREE', async () => {
+test('a section_reference matching the citation derived from THIS proposal\'s own evidence span is accepted with no citation residual, and validation_source is CONSTRUCTED_FROM_TREE', async () => {
   const receipt = await runNativeExtraction({
     source_text: qxoRealisticFullText,
     document_hash: DOCUMENT_HASH,
@@ -560,7 +564,12 @@ test('a section_reference matching the governing section\'s own discovered refer
           quote: LIMB_I_QUOTE,
           absoluteStart: start,
           absoluteEnd: end,
-          attributes: { section_reference: '3.1(b)' },
+          // The proposal's own evidence (LIMB_I_QUOTE) sits inside the
+          // deeper "3.1(b)(i)" node, not merely the governed "3.1(b)"
+          // section -- per-proposal derivation means THIS is now the
+          // correct/agreeing citation, not the governing section's own
+          // reference.
+          attributes: { section_reference: '3.1(b)(i)' },
           allowedAttributes: ['section_reference'],
         })],
         evidence_residuals: [],
@@ -688,6 +697,117 @@ test('a citation absent from both the tree and the document\'s own text is neith
   assert.equal(entry.citation_validation.accepted, false);
   assert.equal(entry.citation_validation.validation_source, null);
   assert.equal(receipt.citation_residual_count, 1);
+});
+
+// ─── Skechers-first-live-run defect, reproduced against the REAL Skechers
+// excerpt fixture (not a hand-rolled tree): a governed section "3.7"
+// straddled by a legacy "III-INTRO(d)" node (see tests/canonical-v2-inline-
+// decimal-headings.test.js for the same excerpt's own provenance). Proves
+// BOTH halves of the fix together, at the runNativeExtraction level:
+//   1. per-proposal derivation -- each proposal's own evidence span, not the
+//      governed section's outer span, drives the derived citation;
+//   2. the decimal-lineage tie-break -- the derived node lands on the real
+//      "3.7(b)"/"3.7(c)" decimal SUBSECTION, never the deeper-but-straddling
+//      "III-INTRO(d)" legacy node. ───
+
+const skechersExcerptText = fs.readFileSync(
+  path.join(__dirname, 'fixtures', 'canonical-v2', 'skechers-first-live-run', 'article-iii-canonical-excerpt.txt'),
+  'utf8',
+);
+const SKECHERS_DOCUMENT_HASH = sha256Hex(Buffer.from(skechersExcerptText, 'utf8'));
+
+test('Skechers defect reproduction: a proposal whose evidence sits in a real decimal SUBSECTION straddled by a legacy "III-INTRO(d)" node still derives that decimal SUBSECTION, not the straddling legacy node', async () => {
+  const receipt = await runNativeExtraction({
+    source_text: skechersExcerptText,
+    document_hash: SKECHERS_DOCUMENT_HASH,
+    section_references: ['3.7'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: async ({ governed_scope: governedScope }) => {
+      const quoteB = 'Stock Reservation';
+      const { start: startB, end: endB } = locateInGovernedScope(governedScope, quoteB);
+      const proposalB = makeClaimProposal({
+        subjectSeed: { kind: 'skechers-b' },
+        ordinal: 0,
+        quote: quoteB,
+        absoluteStart: startB,
+        absoluteEnd: endB,
+        // The model's own citation, exactly as recorded in the real
+        // Skechers live run: correct, specific, and NOT the derivation the
+        // pre-fix pipeline produced ("III-INTRO(d)").
+        attributes: { section_reference: '3.7(b)' },
+        allowedAttributes: ['section_reference'],
+      });
+      return {
+        provider_id: 'skechers-defect-repro/v1',
+        model_id: 'stub-model',
+        prompt: 'skechers-defect-repro-prompt/v1',
+        proposals: [proposalB],
+        evidence_residuals: [],
+      };
+    },
+  });
+
+  assert.equal(receipt.compiled_candidates.length, 1);
+  const [entry] = receipt.compiled_candidates;
+  assert.ok(entry.citation_validation);
+  // Pre-fix, this would have been CITATION_DISAGREEMENT with derived_citation
+  // "III-INTRO(d)" -- the exact Skechers finding. Post-fix: AGREEMENT.
+  assert.equal(entry.citation_validation.status, 'AGREEMENT');
+  assert.equal(entry.citation_validation.accepted, true);
+  assert.equal(entry.citation_validation.validation_source, 'CONSTRUCTED_FROM_TREE');
+  assert.equal(entry.citation_validation.derived_citation, '3.7(b)');
+  assert.notEqual(entry.citation_validation.derived_citation, 'III-INTRO(d)');
+});
+
+test('Skechers defect reproduction: two proposals from the SAME governed section derive DIFFERENT citations from their own evidence spans (per-proposal derivation, not one derivation per section)', async () => {
+  const receipt = await runNativeExtraction({
+    source_text: skechersExcerptText,
+    document_hash: SKECHERS_DOCUMENT_HASH,
+    section_references: ['3.7'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: async ({ governed_scope: governedScope }) => {
+      const quoteB = 'Stock Reservation';
+      const { start: startB, end: endB } = locateInGovernedScope(governedScope, quoteB);
+      const quoteC = 'Capitalization Date';
+      const { start: startC, end: endC } = locateInGovernedScope(governedScope, quoteC);
+      const proposalB = makeClaimProposal({
+        subjectSeed: { kind: 'skechers-b' },
+        ordinal: 0,
+        quote: quoteB,
+        absoluteStart: startB,
+        absoluteEnd: endB,
+        attributes: { section_reference: '3.7(b)' },
+        allowedAttributes: ['section_reference'],
+      });
+      const proposalC = makeClaimProposal({
+        subjectSeed: { kind: 'skechers-c' },
+        ordinal: 1,
+        quote: quoteC,
+        absoluteStart: startC,
+        absoluteEnd: endC,
+        attributes: { section_reference: '3.7(b)' }, // deliberately WRONG for this evidence
+        allowedAttributes: ['section_reference'],
+      });
+      return {
+        provider_id: 'skechers-defect-repro/v1',
+        model_id: 'stub-model',
+        prompt: 'skechers-defect-repro-prompt/v1',
+        proposals: [proposalB, proposalC],
+        evidence_residuals: [],
+      };
+    },
+  });
+
+  assert.equal(receipt.compiled_candidates.length, 2);
+  const [entryB, entryC] = receipt.compiled_candidates;
+  // Both proposals share the SAME governed section ("3.7") but derive
+  // DIFFERENT citations, because each is derived from its own evidence span.
+  assert.equal(entryB.citation_validation.derived_citation, '3.7(b)');
+  assert.notEqual(entryC.citation_validation.derived_citation, '3.7(b)');
+  assert.equal(entryB.citation_validation.status, 'AGREEMENT');
+  assert.equal(entryC.citation_validation.status, 'CITATION_DISAGREEMENT');
 });
 
 // ─── Input validation ───
