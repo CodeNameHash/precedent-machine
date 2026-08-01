@@ -1,0 +1,165 @@
+{
+  "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+  "section_reference": "3.1(b)",
+  "markers_found": [
+    {
+      "token": "(ii)",
+      "family": "ROMAN",
+      "start": 297,
+      "end": 301
+    },
+    {
+      "token": "(A)",
+      "family": "ALPHA_UPPER",
+      "start": 324,
+      "end": 327
+    },
+    {
+      "token": "(B)",
+      "family": "ALPHA_UPPER",
+      "start": 452,
+      "end": 455
+    },
+    {
+      "token": "(C)",
+      "family": "ALPHA_UPPER",
+      "start": 527,
+      "end": 530
+    },
+    {
+      "token": "(b)",
+      "family": "ALPHA_LOWER",
+      "start": 692,
+      "end": 695
+    },
+    {
+      "token": "(ii)",
+      "family": "ROMAN",
+      "start": 695,
+      "end": 699
+    },
+    {
+      "token": "(iii)",
+      "family": "ROMAN",
+      "start": 1999,
+      "end": 2004
+    },
+    {
+      "token": "(b)",
+      "family": "ALPHA_LOWER",
+      "start": 2094,
+      "end": 2097
+    },
+    {
+      "token": "(i)",
+      "family": "ROMAN",
+      "start": 2097,
+      "end": 2100
+    },
+    {
+      "token": "(b)",
+      "family": "ALPHA_LOWER",
+      "start": 2111,
+      "end": 2114
+    },
+    {
+      "token": "(ii)",
+      "family": "ROMAN",
+      "start": 2114,
+      "end": 2118
+    },
+    {
+      "token": "(A)",
+      "family": "ALPHA_UPPER",
+      "start": 2133,
+      "end": 2136
+    },
+    {
+      "token": "(B)",
+      "family": "ALPHA_UPPER",
+      "start": 2204,
+      "end": 2207
+    },
+    {
+      "token": "(C)",
+      "family": "ALPHA_UPPER",
+      "start": 2612,
+      "end": 2615
+    },
+    {
+      "token": "(B)",
+      "family": "ALPHA_UPPER",
+      "start": 2919,
+      "end": 2922
+    },
+    {
+      "token": "(C)",
+      "family": "ALPHA_UPPER",
+      "start": 2927,
+      "end": 2930
+    },
+    {
+      "token": "(iv)",
+      "family": "ROMAN",
+      "start": 3170,
+      "end": 3174
+    },
+    {
+      "token": "(v)",
+      "family": "ROMAN",
+      "start": 3950,
+      "end": 3953
+    },
+    {
+      "token": "(c)",
+      "family": "ROMAN",
+      "start": 4201,
+      "end": 4204
+    }
+  ],
+  "proposed_tokens": [
+    "(i)",
+    "(A)",
+    "(B)",
+    "(ii)",
+    "(C)",
+    "(iii)",
+    "(iv)",
+    "(v)"
+  ],
+  "disagreements": [
+    {
+      "type": "LIMB_ENUMERATION_DISAGREEMENT",
+      "reason": "MARKER_WITHOUT_LIMB",
+      "token": "(b)",
+      "family": "ALPHA_LOWER",
+      "start": 692,
+      "end": 695
+    },
+    {
+      "type": "LIMB_ENUMERATION_DISAGREEMENT",
+      "reason": "MARKER_WITHOUT_LIMB",
+      "token": "(b)",
+      "family": "ALPHA_LOWER",
+      "start": 2094,
+      "end": 2097
+    },
+    {
+      "type": "LIMB_ENUMERATION_DISAGREEMENT",
+      "reason": "MARKER_WITHOUT_LIMB",
+      "token": "(b)",
+      "family": "ALPHA_LOWER",
+      "start": 2111,
+      "end": 2114
+    },
+    {
+      "type": "LIMB_ENUMERATION_DISAGREEMENT",
+      "reason": "MARKER_WITHOUT_LIMB",
+      "token": "(c)",
+      "family": "ROMAN",
+      "start": 4201,
+      "end": 4204
+    }
+  ],
+  "disagreement_count": 4
+}

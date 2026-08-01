@@ -326,6 +326,17 @@ test('replaying the F28 SECOND recorded raw response through the fixed pipeline:
   // exercised against real fixture text, and the Task 3 deliverable report
   // for why the nonzero-publishable proof for THIS slice is therefore a
   // SYNTHETIC fixture, not this replay.
+  //
+  // UNDER-EXTRACTION BASELINE, NOT A TARGET (spec Testing section --
+  // required label). This recording is itself missing ~10 of the ~12
+  // qualifiers a careful read of the source flags (run-2's known
+  // decomposition regression, docs/handoffs/F28-SECOND-LIVE-RUN.md
+  // quality finding 2). The counts asserted below bake in that
+  // impoverished extraction as a REGRESSION FLOOR for the pipeline code
+  // only -- they say nothing about extraction quality, and a richer
+  // future recording is expected to produce different (better) buckets.
+  // The F28 THIRD live run (PROMPT_VERSION 4) already recovers 16
+  // qualifiers on this same section.
   assert.equal(resolution.resolved.length, 0);
   assert.equal(resolution.review_queue.length, 0);
   assert.equal(resolution.open_world.length, 22);
