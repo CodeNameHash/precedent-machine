@@ -282,6 +282,14 @@ Work:
    human bottleneck before the 50-deal corpus). Gets a fixture-driven test
    (round-2 finding 12), reading the persisted `RESOLUTION_REVIEW_QUEUE/V1`
    artifacts the run driver writes.
+4. Limb-enumeration corroboration (Ben, 2026-08-01 — deterministic scan,
+   NOT a sectionizer change): code scans the governed section's text for
+   enumeration markers and compares against the limb paths the model
+   proposed. A marker with no limb, or a limb with no marker, is a typed
+   `LIMB_ENUMERATION_DISAGREEMENT` signal on the run receipt — same pattern
+   as citation corroboration and the coverage proxies. File:
+   `lib/canonical-v2/native-producer/limb-enumeration-scan.js` (+ test).
+   The scan corroborates; it never constructs identity or spans.
 
 (`CITATION_CORROBORATED_ONLY` moved to Task 3 item 7 — round-2 finding 7:
 publishing safety cannot wait for instrumentation.) Sequencing: Task 8 lands
