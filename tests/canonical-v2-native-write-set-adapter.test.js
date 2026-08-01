@@ -333,8 +333,25 @@ function resolvableProvider() {
       state: 'PRESENT',
       raw_value: quote,
       canonical_value: canonicalValue,
-      attributes: {},
-      allowed_attributes: [],
+      // Task 5 (provenance tags): this fixture hand-assembles a proposal
+      // that already carries a REGISTERED claim_definition_key (ACCURACY_
+      // KEY), simulating a candidate-resolution.js-resolved row without
+      // actually running the resolver -- so it must also carry the
+      // MECHANICAL answer_provenance the resolver would have minted, or the
+      // staged validator's NATIVE_PRODUCER requirement (correctly) rejects
+      // it as an under-provenanced resolved claim.
+      attributes: {
+        answer_provenance: {
+          tag: 'MECHANICAL',
+          pins: { mapping_table_version: 3, qualifier_kind_lexicon_version: 1 },
+        },
+      },
+      // `answer_provenance` must be on the allow-list too, or claims-
+      // relationships.js's own compile-time `residualsFor` (buildClaimRevision)
+      // quarantines it as an UNKNOWN_ATTRIBUTE residual -- correct behaviour
+      // for a real unregistered attribute, but this fixture's added
+      // attribute IS the governed one this task adds.
+      allowed_attributes: ['answer_provenance'],
       taxonomy_codes: {},
       codebooks: {},
       evidence: [{
@@ -495,6 +512,34 @@ test('the assembled write set passes validate-write-set.js\'s real validation wi
   assert.equal(validation.accepted, true);
   assert.ok(Array.isArray(validation.residuals));
   assert.ok(Array.isArray(validation.quarantines));
+});
+
+// ─── Task 5 (docs/superpowers/plans/2026-08-01-claim-identity-provenance-
+// plan.md, provenance tags): the write-set envelope gains
+// `write_set_origin: 'NATIVE_PRODUCER'`, set by this adapter -- the ONE
+// place a native-producer write set is ever assembled -- so
+// validate-write-set.js's staged `answer_provenance` requirement has a
+// discriminator to key on. ───
+
+test('buildNativeWriteSet stamps write_set_origin: NATIVE_PRODUCER on every write set it assembles', async () => {
+  const receipt = await buildResolvableReceipt();
+  const result = buildNativeWriteSet({
+    run_receipt: receipt,
+    source_text: qxoRealisticFullText,
+    document_hash: DOCUMENT_HASH,
+    admitted_source_context: ADMITTED_SOURCE_CONTEXT,
+  });
+
+  assert.equal(result.write_set.write_set_origin, 'NATIVE_PRODUCER');
+
+  // The stamped field still passes the real validator (it is an ALLOWED
+  // extra key on the resolved write-set contract, not an unknown one).
+  const validation = validateResolvedCanonicalWriteSet({
+    writeSet: result.write_set,
+    contractBundle: CONTRACT_BUNDLE,
+    admittedSourceContexts: result.admitted_source_contexts,
+  });
+  assert.equal(validation.accepted, true);
 });
 
 // ─── Failure isolation through the REAL validator ───
