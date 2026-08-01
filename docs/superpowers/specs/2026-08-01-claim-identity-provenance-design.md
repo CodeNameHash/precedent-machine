@@ -1,11 +1,18 @@
 # Claim identity, qualifier classification and provenance
 
 **Date:** 2026-08-01
-**Approved by:** Ben (in-session, 2026-08-01), decision by decision
-**Status of prior audit:** the qualifier-kind classifier section incorporates
-all six amendments from the Fable adversarial audit of 2026-08-01, plus Ben's
-exception-connective refinement which supersedes the audit's blunt
-co-occurrence rule.
+**Approved by:** Ben (in-session, 2026-08-01), decision by decision; spec as
+amended APPROVED by Ben 2026-08-01, including: Task 8 (recall and volume
+instrumentation) stays in this slice; unenriched date claims publish with the
+not-comparable mark; search defaults to "all results, with warnings" with one
+clear control to switch.
+**Status of prior audits:** the qualifier-kind classifier incorporates all
+six amendments from the first Fable adversarial audit of 2026-08-01, plus
+Ben's exception-connective refinement which supersedes the audit's blunt
+co-occurrence rule. A second Fable audit (spec + whole pipeline) produced the
+two-node limb model, the written binding algorithm, the widened corpus key,
+the VERIFIED source pin, the corroborated-only auto-pass block, the staged
+validator requirement, and Task 8.
 
 ## Purpose
 
@@ -187,6 +194,13 @@ produced it.
   minted this way is marked unenriched and NOT comparable across deals until
   the enrichment pass (the existing signing-anchor derivation) mints an
   enriched revision. Extract-then-enrich is Ben's approved model.
+  **Consumer contract (Ben's ruling, 2026-08-01):** unenriched claims DO
+  publish, carrying the mark. Any cross-deal date query MUST surface the
+  count of deals it could not compare ("N deals not comparable for this
+  field") — silent omission is forbidden. The mark ships in this slice's
+  data model; the search-UI rendering of the count lands with the serving
+  slice and is recorded here as a stated requirement so it cannot be
+  silently dropped.
 - **KNOWLEDGE → `KNOWLEDGE_QUALIFIER`.** Only when the KNOWLEDGE marker fires
   in the quote. Canonical value `true` per the registered definition; the
   knowledge standard (actual / constructive / after inquiry) is preserved in
@@ -246,7 +260,11 @@ old answer is kept, superseded and linked.
 
 Surface consequences: the UI shows the tag everywhere; precedent search can
 filter ("verified only" vs "all, with warnings"); open-world entries may be
-shown as AI-tagged unregistered observations rather than hidden.
+shown as AI-tagged unregistered observations rather than hidden. **Search
+default (Ben's ruling, 2026-08-01):** "all results, with warnings" while the
+VERIFIED set is small, with exactly one clear control to switch to
+"verified only". Warning-exposure should be logged so warning fatigue (audit
+finding B7) becomes measurable rather than assumed.
 
 **The invariant that does not move:** tags cover answers, never identity.
 Which claim definitions exist, and which registered key a claim resolves to,
