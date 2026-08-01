@@ -5,7 +5,10 @@ const path = require('node:path');
 const zlib = require('node:zlib');
 
 const { contentId, sha256Hex, canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
+const {
+  compileFixtureContract,
+  compileFixtureContractV13,
+} = require('../lib/canonical-v2/contract-bundle');
 const { validateResolvedCanonicalWriteSet } = require('../lib/canonical-v2/validate-write-set');
 const { buildAdmittedSemanticSourceContext } = require('../lib/canonical-v2/admitted-semantic-source');
 const { SOURCE_MAP_ENCODING } = require('../lib/canonical-v2/sec-html-canonical-text');
@@ -24,7 +27,11 @@ const {
   resolveCandidates,
   materialityFor,
   MATERIALITY_TABLE,
+  MAPPING_TABLE_VERSION,
 } = require('../lib/canonical-v2/native-producer/candidate-resolution');
+const { QUALIFIER_KIND_LEXICON_VERSION } = require('../lib/canonical-v2/native-producer/qualifier-kind-lexicon');
+const { MEASUREMENT_DATE_PARSE_VERSION } = require('../lib/canonical-v2/native-producer/measurement-date-parse');
+const { buildRulingCorpus } = require('../lib/canonical-v2/native-producer/ruling-corpus');
 
 // ─── Fixture: identity admitted-source chain (copied from
 // tests/canonical-v2-native-write-set-adapter.test.js -- see that file's own
@@ -183,6 +190,70 @@ const capitalStructureText = fs.readFileSync(
   'utf8',
 );
 
+const LIMB_I_QUOTE = '(i)The authorized capital stock of the Company consists of';
+const LIMB_III_QUOTE = '(iii)Except for any obligations pursuant to this Agreement,';
+const QUALIFIER_QUOTE = 'duly authorized and are validly issued, fully paid and nonassessable';
+const OPEN_WORLD_QUOTE = 'There are no voting trusts or other agreements';
+
+// ─── Task 3 rekey fixtures. The V3 GENERIC_CLAIM_KEY_RESOLUTION_TABLE keys
+// on a DETERMINISTIC kind computed from the quote's own TEXT (qualifier-
+// kind-lexicon.js), never from a model-supplied `kind`/`code` field, so a
+// qualifier's fate under the new table depends on real marker phrases --
+// these constants name exact ACCURACY_CODE_WHITELIST phrases (and other
+// lexicon-marker phrases) appended to the governed section's own text below
+// (`ACCURACY_TAIL_TEXT`), so every quote referenced here is both a real,
+// byte-verifiable substring of the governed scope AND deterministically
+// classifiable the way each test intends. ───
+
+// Exact ACCURACY_CODE_WHITELIST phrase -> MAT_ALL_RESPECTS.
+const ACCURACY_CHAPEAU_QUOTE = 'true and correct in all respects';
+// Exact ACCURACY_CODE_WHITELIST phrase -> MAT_ALL_RESPECTS_DE_MINIMIS. The
+// "except for de minimis inaccuracies" clause binds into the SAME ACCURACY
+// unit (exception-connective binding rule), so this whole string classifies
+// CLASSIFIED/ACCURACY, not SPLIT.
+const ACCURACY_CHAPEAU_DE_MINIMIS_QUOTE = 'true and correct in all respects, except for de minimis inaccuracies';
+// SPLITs into one ACCURACY part ("correct and complete ", code null -- no
+// whitelist match -- so it always routes to review) and one TEMPORAL part
+// ("as of the date hereof", measurement-date-eligible because it was split
+// from an ACCURACY host).
+const ACCURACY_TEMPORAL_SPLIT_QUOTE = 'correct and complete as of the date hereof';
+// SPLITs into one KNOWLEDGE part and one TEMPORAL part that is NOT
+// measurement-date-eligible (split from a KNOWLEDGE host, not ACCURACY --
+// spec section 2's stated worked example, round-2 finding 2).
+const KNOWLEDGE_TEMPORAL_SPLIT_QUOTE = 'To the knowledge of the Company as of the date hereof';
+// Present verbatim in the real QXO fixture (limb (i)): a calendar-date
+// TEMPORAL, classifiable and measurement-date-parseable with no extra text.
+const TEMPORAL_CALENDAR_QUOTE = 'As of April 17, 2026';
+// Present verbatim in the real QXO fixture (limb (i)): a symbolic-date
+// TEMPORAL that only resolves when the caller injects a governed
+// agreement_date.
+const TEMPORAL_SYMBOLIC_QUOTE = 'as of the date hereof';
+// Present verbatim in the real QXO fixture (limb (ii)) -- the plan's own
+// Task 2 test case: "'correct and complete list of Company Options'
+// ITEM-attached never resolves rep-level" (it also never resolves CHAPEAU-
+// attached: no whitelist phrase matches the WHOLE quote, so it is
+// QUALIFIER_KIND_UNCLASSIFIED regardless of attachment position).
+const ACCURACY_NO_CODE_QUOTE = 'correct and complete list of Company Options';
+// A distinct, unresolvable-party quote for the PARTY_UNRESOLVED test --
+// reuses the DE_MINIMIS whitelist phrase so classification succeeds and the
+// failure is squarely on party resolution, not kind.
+const UNRESOLVED_PARTY_QUOTE = ACCURACY_CHAPEAU_DE_MINIMIS_QUOTE;
+
+const ACCURACY_TAIL_TEXT = [
+  ' The Company represents that the following statement is ',
+  ACCURACY_CHAPEAU_QUOTE,
+  '.',
+  ' The related schedule is ',
+  ACCURACY_CHAPEAU_DE_MINIMIS_QUOTE,
+  '.',
+  ' The Company represents that the following is ',
+  ACCURACY_TEMPORAL_SPLIT_QUOTE,
+  '.',
+  ' ',
+  KNOWLEDGE_TEMPORAL_SPLIT_QUOTE,
+  ', no such default exists.',
+].join('');
+
 const qxoFullText = [
   'This AGREEMENT AND PLAN OF MERGER, dated as of April 18, 2026, by and among ',
   'QXO, Inc., Titanium Merger Sub and Forward Merger Sub.\n\n',
@@ -193,6 +264,7 @@ const qxoFullText = [
   '(a)Organization; Standing. The Company is a corporation duly organized, ',
   'validly existing and in good standing under the Laws of the State of Delaware.\n\n',
   capitalStructureText,
+  ACCURACY_TAIL_TEXT,
   '\n',
 ].join('');
 
@@ -208,11 +280,31 @@ const ADMITTED_SOURCE_CONTEXT = buildIdentityAdmittedSourceContext(qxoFullText, 
   sourceOrdinal: 0,
 });
 
-const LIMB_I_QUOTE = '(i)The authorized capital stock of the Company consists of';
-const LIMB_III_QUOTE = '(iii)Except for any obligations pursuant to this Agreement,';
-const QUALIFIER_QUOTE = 'duly authorized and are validly issued, fully paid and nonassessable';
-const UNRESOLVED_PARTY_QUOTE = '10,000,000 shares of preferred stock, par value $0.01 per share';
-const OPEN_WORLD_QUOTE = 'There are no voting trusts or other agreements';
+// The default V1 fixture bundle (CONTRACT_BUNDLE above) does not register
+// REPRESENTATION_MEASUREMENT_DATE at all -- contract-bundle.js's
+// compileFixtureContract() only accepts one of a CLOSED set of known
+// version shapes (validateInput's KNOWN_VERSION_SHAPES), so an ad-hoc bundle
+// cannot be hand-assembled here. compileFixtureContractV13() is the
+// smallest pre-registered shape that DOES register it (plus KNOWLEDGE_
+// QUALIFIER, already in V1) -- used only by the tests that specifically
+// exercise the TEMPORAL -> REPRESENTATION_MEASUREMENT_DATE mapping.
+const CONTRACT_BUNDLE_WITH_MEASUREMENT_DATE = compileFixtureContractV13();
+
+function chapeauAttachment() {
+  return Object.freeze({
+    position: 'CHAPEAU',
+    governs_path: null,
+    ambiguity_signals: { items_grammatically_parallel: null },
+  });
+}
+
+function itemAttachment(governsPath) {
+  return Object.freeze({
+    position: 'ITEM',
+    governs_path: governsPath,
+    ambiguity_signals: { items_grammatically_parallel: true },
+  });
+}
 
 function locateInGovernedScope(governedScope, quote) {
   const bytes = Buffer.from(governedScope.source_text, 'utf8');
@@ -228,14 +320,21 @@ function locateInGovernedScope(governedScope, quote) {
 // keys, mintSubjectId identities, byte-verified evidence) rather than a
 // hand-rolled stand-in that could drift from what the real backend emits.
 function parsedResponse({ includeUnresolvedParty = false, sectionReference = '3.1(b)' } = {}) {
+  // NOTE (Task 3 rekey): `kind`/`code` below are the PRODUCER'S hint only --
+  // the deterministic classifier (qualifier-kind-lexicon.js) recomputes both
+  // from the quote's own text, so what actually resolves is a function of
+  // ACCURACY_CHAPEAU_QUOTE's real content, not these fields. They are kept
+  // consistent with what the lexicon will independently derive so the
+  // "model agrees" path is exercised (model-hint absence/disagreement is
+  // covered by qualifier-kind-lexicon's own test suite, not this file's).
   const qualifiers = [{
     kind: 'ACCURACY',
-    code: 'MAT_ALL_RESPECTS_DE_MINIMIS',
-    quote: QUALIFIER_QUOTE,
+    code: 'MAT_ALL_RESPECTS',
+    quote: ACCURACY_CHAPEAU_QUOTE,
     attachment: {
-      position: 'ITEM',
-      governs_path: ['(i)'],
-      ambiguity_signals: { items_grammatically_parallel: true },
+      position: 'CHAPEAU',
+      governs_path: null,
+      ambiguity_signals: { items_grammatically_parallel: null },
     },
   }];
   if (includeUnresolvedParty) {
@@ -244,9 +343,9 @@ function parsedResponse({ includeUnresolvedParty = false, sectionReference = '3.
       code: 'MAT_ALL_RESPECTS_DE_MINIMIS',
       quote: UNRESOLVED_PARTY_QUOTE,
       attachment: {
-        position: 'ITEM',
-        governs_path: ['(i)'],
-        ambiguity_signals: { items_grammatically_parallel: true },
+        position: 'CHAPEAU',
+        governs_path: null,
+        ambiguity_signals: { items_grammatically_parallel: null },
       },
     });
   }
@@ -333,6 +432,18 @@ test('a clean proposal with verified evidence, registered concept and resolved p
   assert.equal(qualifier.resolved_claim_definition_key, 'REPRESENTATION_ACCURACY_STANDARD');
   assert.equal(qualifier.concept_key, 'REP-T-CAP');
   assert.deepEqual(qualifier.party, { role: 'REPRESENTATION_MAKER', value: 'the Company', capacity: 'TARGET' });
+  // CHANGED ASSERTION (Task 3 rekey): canonical_value is now derived
+  // MECHANICALLY from the lexicon's ACCURACY_CODE_WHITELIST against the
+  // quote's own text (spec section 2 rule 7), never carried through from
+  // the producer's own `code` field -- ACCURACY_CHAPEAU_QUOTE's exact
+  // whitelist match is MAT_ALL_RESPECTS, not whatever the fake model
+  // response happened to send.
+  assert.equal(qualifier.claim.canonical_value, 'MAT_ALL_RESPECTS');
+  // CHANGED ASSERTION: the qualifier's subject is now the CHAPEAU-attached
+  // provision itself (work item 6) -- unchanged in this CHAPEAU case, but
+  // asserted explicitly since ITEM attachment would instead take an
+  // assertion-node subject from the limb component tree.
+  assert.equal(qualifier.claim.subject_occurrence_id, qualifier.provision_instance.provision_instance_id);
   assert.equal(qualifier.triage.deterministic_gates_passed, true);
   // auto_pass stays FALSE until the v1/v2 comparator and the lexical net
   // exist: a check that never ran must not look like a check that passed.
@@ -358,6 +469,16 @@ test('a clean proposal with verified evidence, registered concept and resolved p
   assert.equal(resolution.review_queue.length, 2);
   assert.ok(resolution.review_queue.every((item) => item.reasons.length === 0
     || item.reasons.every((r) => r === 'AUTO_PASS_BLOCKED_PENDING_NETS')));
+  // Review-queue items now carry the ruling-corpus key fields (work item 8).
+  assert.ok(resolution.review_queue.every((item) => typeof item.normalised_phrase === 'string'));
+  assert.ok(resolution.review_queue.some((item) => item.concept_family === 'REP-T-CAP'));
+
+  // NEW (work item 6): a limb component tree is minted for the governed
+  // representation regardless of which individual qualifiers resolve.
+  assert.equal(resolution.limb_component_trees.length, 1);
+  const tree = resolution.limb_component_trees[0];
+  assert.equal(tree.provision_instance_id, qualifier.provision_instance.provision_instance_id);
+  assert.ok(tree.path_nodes.length >= 1);
 });
 
 test('a proposal with an unmappable concept lands in open_world, never forced to a near neighbour', async () => {
@@ -383,12 +504,16 @@ test('a proposal with an unmappable concept lands in open_world, never forced to
   );
 });
 
-// ─── Defect 4: the mapping table keys on (generic_claim_key,
-// qualifier_kind), so a TEMPORAL or THRESHOLD qualifier -- which correctly
-// carries canonical_value: null, since no ACCURACY_STANDARD code fits --
-// resolves as open-world instead of being force-mapped onto
-// REPRESENTATION_ACCURACY_STANDARD and quarantined for a canonical_value it
-// was never supposed to have. ───
+// ─── Defect 4 (V2-era; still true under the V3 rekey): a TEMPORAL or
+// THRESHOLD qualifier -- which correctly carries canonical_value: null,
+// since no ACCURACY_STANDARD code fits -- never force-maps onto
+// REPRESENTATION_ACCURACY_STANDARD. Under V3 this quote additionally never
+// even reaches TEMPORAL classification: "as of the close of business on
+// April 17, 2026" does not immediately follow "as of" with a parseable
+// calendar date or a closed symbolic phrase, so the lexicon abstains
+// entirely (OPEN_WORLD, familySet.size === 0) before this module's own
+// TEMPORAL-mapping logic is ever consulted -- see the new tests below for
+// the POSITIVE TEMPORAL -> REPRESENTATION_MEASUREMENT_DATE path. ───
 
 function temporalQualifierResponse() {
   return {
@@ -481,6 +606,357 @@ test('a TEMPORAL qualifier (canonical_value: null, no registered claim definitio
   assert.ok(openWorldEntry, 'the TEMPORAL qualifier lands in open_world instead');
   assert.equal(openWorldEntry.reason, 'UNMAPPED_GENERIC_CLAIM_KEY');
   assert.equal(openWorldEntry.raw_value, 'as of the close of business on April 17, 2026');
+});
+
+// ─── Task 3, work items 2-9: the new deterministic mappings, split
+// handling, the ruling corpus, and the citation guard. All NEW tests
+// (nothing here replaces an assertion from the 13 pre-Task-3 tests above). ───
+
+// A single-qualifier response builder, reused by every new test below --
+// the SAME shared qxoFullText/CONTRACT_BUNDLE/ADMITTED_SOURCE_CONTEXT
+// fixtures the pre-Task-3 tests already use, so every one of these
+// exercises the REAL producer-shaping path end to end.
+function singleQualifierResponse({ quote, attachment, modelKind = null, modelCode = null }) {
+  return {
+    representation_instances: [{
+      section_reference: '3.1(b)',
+      party_making: 'the Company',
+      chapeau_quote: 'Capital Structure.',
+      limbs: [
+        { limb_path: ['(i)'], assertion_quote: LIMB_I_QUOTE, subject: 'capital stock' },
+      ],
+      qualifiers: [{ kind: modelKind, code: modelCode, quote, attachment }],
+      definition_uses: [],
+      cross_references: [],
+    }],
+    bring_down_conditions: [],
+    open_world_candidates: [],
+  };
+}
+
+async function resolveSingleQualifier({ quote, attachment, modelKind = null, modelCode = null }, resolveOptions = {}) {
+  const receipt = await runNativeExtraction({
+    source_text: qxoFullText,
+    document_hash: DOCUMENT_HASH,
+    section_references: ['3.1(b)'],
+    contract_bundle: resolveOptions.contract_vocabulary || CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: async ({ governed_scope: governedScope }) => {
+      const { proposals, evidence_residuals: evidenceResiduals } = shapeProposals(
+        singleQualifierResponse({
+          quote, attachment, modelKind, modelCode,
+        }),
+        governedScope.source_text,
+      );
+      return {
+        provider_id: 'candidate-resolution-single-qualifier/v1',
+        model_id: 'stub-model',
+        prompt: 'candidate-resolution-single-qualifier-prompt/v1',
+        proposals,
+        evidence_residuals: evidenceResiduals,
+      };
+    },
+  });
+  return resolveCandidates({
+    run_receipt: receipt,
+    contract_vocabulary: resolveOptions.contract_vocabulary || CONTRACT_BUNDLE,
+    admitted_source_context: ADMITTED_SOURCE_CONTEXT,
+    ruling_corpus: resolveOptions.ruling_corpus,
+    agreement_date: resolveOptions.agreement_date,
+  });
+}
+
+test('(QUALIFIER, ACCURACY, ITEM) routes to review, never rep-level (work item 2)', async () => {
+  const resolution = await resolveSingleQualifier({
+    quote: ACCURACY_CHAPEAU_QUOTE,
+    attachment: itemAttachment(['(i)']),
+    modelKind: 'ACCURACY',
+    modelCode: 'MAT_ALL_RESPECTS',
+  });
+  assert.equal(resolution.resolved.some((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY), false);
+  const queued = resolution.review_queue.find((item) => item.generic_claim_key === QUALIFIER_CLAIM_KEY);
+  assert.ok(queued, 'the ITEM-attached ACCURACY qualifier reached review_queue');
+  assert.ok(queued.reasons.includes('ACCURACY_ITEM_ATTACHED_NOT_REP_LEVEL'));
+  assert.equal(queued.concept_family, 'REP-T-CAP');
+  assert.equal(queued.attachment_position, 'ITEM');
+  assert.equal(queued.normalised_phrase, ACCURACY_CHAPEAU_QUOTE);
+});
+
+test('an ACCURACY qualifier whose whole quote matches no whitelist phrase routes to review regardless of attachment (plan Task 2 test case)', async () => {
+  const resolution = await resolveSingleQualifier({
+    quote: ACCURACY_NO_CODE_QUOTE,
+    attachment: itemAttachment(['(ii)']),
+    modelKind: 'ACCURACY',
+  });
+  assert.equal(resolution.resolved.length, 0);
+  const queued = resolution.review_queue.find((item) => item.generic_claim_key === QUALIFIER_CLAIM_KEY);
+  assert.ok(queued);
+  assert.ok(queued.reasons.includes('QUALIFIER_KIND_UNCLASSIFIED'));
+
+  // Never resolves CHAPEAU-attached either -- code derivation, not
+  // attachment position, is what blocks this one.
+  const chapeauResolution = await resolveSingleQualifier({
+    quote: ACCURACY_NO_CODE_QUOTE,
+    attachment: chapeauAttachment(),
+    modelKind: 'ACCURACY',
+  });
+  assert.equal(chapeauResolution.resolved.length, 0);
+  assert.ok(chapeauResolution.review_queue.some((item) => item.reasons.includes('QUALIFIER_KIND_UNCLASSIFIED')));
+});
+
+test('(QUALIFIER, TEMPORAL, *) resolves to REPRESENTATION_MEASUREMENT_DATE for a calendar date (work item 3, positive path)', async () => {
+  const resolution = await resolveSingleQualifier(
+    { quote: TEMPORAL_CALENDAR_QUOTE, attachment: chapeauAttachment(), modelKind: 'TEMPORAL' },
+    { contract_vocabulary: CONTRACT_BUNDLE_WITH_MEASUREMENT_DATE },
+  );
+  const resolvedEntry = resolution.resolved.find((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY);
+  assert.ok(resolvedEntry, 'the calendar-date TEMPORAL qualifier resolved');
+  assert.equal(resolvedEntry.resolved_claim_definition_key, 'REPRESENTATION_MEASUREMENT_DATE');
+  assert.equal(resolvedEntry.claim.canonical_value, '2026-04-17');
+  // Unenriched + not-comparable mark (spec section 3).
+  assert.equal(resolvedEntry.claim.attributes.enrichment_state, 'UNENRICHED');
+  assert.equal(resolvedEntry.claim.attributes.comparability, 'NOT_COMPARABLE');
+  assert.equal(resolvedEntry.claim.attributes.measurement_date_resolution, 'CALENDAR');
+});
+
+test('(QUALIFIER, TEMPORAL, *) resolves a symbolic date only when a governed agreement_date is injected (work item 3, symbolic path)', async () => {
+  const withoutDate = await resolveSingleQualifier(
+    { quote: TEMPORAL_SYMBOLIC_QUOTE, attachment: chapeauAttachment(), modelKind: 'TEMPORAL' },
+    { contract_vocabulary: CONTRACT_BUNDLE_WITH_MEASUREMENT_DATE },
+  );
+  assert.equal(withoutDate.resolved.some((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY), false);
+  const openWorldEntry = withoutDate.open_world.find((entry) => entry.claim_definition_key === QUALIFIER_CLAIM_KEY);
+  assert.ok(openWorldEntry, 'unresolvable (no governed agreement_date) -> open world, per spec section 3');
+  assert.equal(openWorldEntry.reason, 'TEMPORAL_MEASUREMENT_DATE_UNRESOLVED');
+
+  const withDate = await resolveSingleQualifier(
+    { quote: TEMPORAL_SYMBOLIC_QUOTE, attachment: chapeauAttachment(), modelKind: 'TEMPORAL' },
+    { contract_vocabulary: CONTRACT_BUNDLE_WITH_MEASUREMENT_DATE, agreement_date: '2026-04-18' },
+  );
+  const resolvedEntry = withDate.resolved.find((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY);
+  assert.ok(resolvedEntry, 'resolves once the governed agreement_date is supplied');
+  assert.equal(resolvedEntry.claim.canonical_value, '2026-04-18');
+  assert.equal(resolvedEntry.claim.attributes.measurement_date_resolution, 'SYMBOLIC');
+});
+
+test('(QUALIFIER, KNOWLEDGE, *) resolves to KNOWLEDGE_QUALIFIER with canonical value true (work item 4)', async () => {
+  // KNOWLEDGE_TEMPORAL_SPLIT_QUOTE splits into a KNOWLEDGE part and an
+  // INELIGIBLE TEMPORAL part -- this test only asserts the KNOWLEDGE half;
+  // the split/ineligibility behaviour is asserted by the SPLIT test below.
+  const resolution = await resolveSingleQualifier({
+    quote: KNOWLEDGE_TEMPORAL_SPLIT_QUOTE,
+    attachment: chapeauAttachment(),
+  });
+  const resolvedEntry = resolution.resolved.find(
+    (entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY && entry.resolved_claim_definition_key === 'KNOWLEDGE_QUALIFIER',
+  );
+  assert.ok(resolvedEntry, 'the KNOWLEDGE split part resolved');
+  assert.equal(resolvedEntry.claim.canonical_value, true);
+  assert.equal(resolvedEntry.claim.attributes.deterministic_kind, 'KNOWLEDGE');
+});
+
+test('SPLIT: ACCURACY (no code, review) + TEMPORAL (eligible, symbolic) parts resolve independently (work item 9)', async () => {
+  const resolution = await resolveSingleQualifier(
+    { quote: ACCURACY_TEMPORAL_SPLIT_QUOTE, attachment: chapeauAttachment() },
+    { contract_vocabulary: CONTRACT_BUNDLE_WITH_MEASUREMENT_DATE, agreement_date: '2026-04-18' },
+  );
+  // The ACCURACY part ("correct and complete ") has no whitelist code ->
+  // review, never rep-level.
+  const queued = resolution.review_queue.find(
+    (item) => item.generic_claim_key === QUALIFIER_CLAIM_KEY && item.reasons.includes('QUALIFIER_KIND_UNCLASSIFIED'),
+  );
+  assert.ok(queued, 'the ACCURACY split part (no whitelist code) routed to review');
+  assert.equal(queued.normalised_phrase, 'correct and complete ');
+
+  // The TEMPORAL part ("as of the date hereof") was split FROM an ACCURACY
+  // host, so it is measurement-date-eligible, and resolves via the injected
+  // agreement_date.
+  const resolvedDate = resolution.resolved.find(
+    (entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY && entry.resolved_claim_definition_key === 'REPRESENTATION_MEASUREMENT_DATE',
+  );
+  assert.ok(resolvedDate, 'the TEMPORAL split part resolved to a measurement date');
+  assert.equal(resolvedDate.claim.canonical_value, '2026-04-18');
+  assert.equal(resolvedDate.claim.raw_value, 'as of the date hereof');
+});
+
+test('SPLIT: a TEMPORAL part split from a KNOWLEDGE host is NOT measurement-date-eligible (spec section 2, round-2 finding 2)', async () => {
+  const resolution = await resolveSingleQualifier(
+    { quote: KNOWLEDGE_TEMPORAL_SPLIT_QUOTE, attachment: chapeauAttachment() },
+    { contract_vocabulary: CONTRACT_BUNDLE_WITH_MEASUREMENT_DATE, agreement_date: '2026-04-18' },
+  );
+  // Never mints a measurement date for this split, no matter that a
+  // governed agreement_date is available.
+  assert.equal(
+    resolution.resolved.some((entry) => entry.resolved_claim_definition_key === 'REPRESENTATION_MEASUREMENT_DATE'),
+    false,
+    'a TEMPORAL part split from a non-ACCURACY host never reaches the measurement-date mapping',
+  );
+  const ineligible = resolution.open_world.find(
+    (entry) => entry.claim_definition_key === QUALIFIER_CLAIM_KEY && entry.reason === 'TEMPORAL_MEASUREMENT_DATE_INELIGIBLE',
+  );
+  assert.ok(ineligible, 'the TEMPORAL part is open-world, typed as ineligible rather than merely unmapped');
+  assert.equal(ineligible.raw_value, 'as of the date hereof');
+});
+
+test('CITATION_CORROBORATED_ONLY: a corroborated-only citation blocks auto-pass but still publishes, with the fact visible (Citation guard, work item 7)', async () => {
+  // Reuses the SAME degenerate (no "Section 3.1" heading) document shape as
+  // tests/canonical-v2-f28-second-live-fixture-replay.test.js so the REAL
+  // citation-constructibility corroboration path (not tree construction)
+  // fires, exactly as the spec's "Citation guard" section describes.
+  const degenerateFullText = [
+    'This AGREEMENT AND PLAN OF MERGER, dated as of April 18, 2026, by and among ',
+    'QXO, Inc., Titanium Merger Sub and Forward Merger Sub.\n\n',
+    'ARTICLE III\n\nREPRESENTATIONS AND WARRANTIES OF THE COMPANY\n\n',
+    'Except as set forth in the Company Disclosure Letter, the Company represents ',
+    'and warrants to Parent as follows:\n\n',
+    '(a)Organization; Standing. The Company is a corporation duly organized, ',
+    'validly existing and in good standing under the Laws of the State of Delaware.\n\n',
+    capitalStructureText,
+    ACCURACY_TAIL_TEXT,
+    '\n',
+  ].join('');
+  const documentHash = sha256Hex(Buffer.from(degenerateFullText, 'utf8'));
+  const admittedSourceContext = buildIdentityAdmittedSourceContext(degenerateFullText, {
+    dealKey: 'deal:qxo-citation-corroborated-only',
+    dealAdmissionId: sha256Hex('deal-admission:qxo-citation-corroborated-only'),
+    sourceOrdinal: 0,
+  });
+
+  const receipt = await runNativeExtraction({
+    source_text: degenerateFullText,
+    document_hash: documentHash,
+    section_references: ['III-INTRO(b)'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: async ({ governed_scope: governedScope }) => {
+      const { proposals, evidence_residuals: evidenceResiduals } = shapeProposals(
+        singleQualifierResponse({
+          quote: ACCURACY_CHAPEAU_QUOTE,
+          attachment: chapeauAttachment(),
+          modelKind: 'ACCURACY',
+          modelCode: 'MAT_ALL_RESPECTS',
+        }),
+        governedScope.source_text,
+      );
+      return {
+        provider_id: 'candidate-resolution-citation-corroborated/v1',
+        model_id: 'stub-model',
+        prompt: 'candidate-resolution-citation-corroborated-prompt/v1',
+        proposals,
+        evidence_residuals: evidenceResiduals,
+      };
+    },
+  });
+
+  const qualifierEntry = receipt.compiled_candidates.find(
+    (entry) => entry.candidate.kind === 'claim' && entry.candidate.claim.claim_definition_key === QUALIFIER_CLAIM_KEY,
+  );
+  assert.ok(qualifierEntry, 'the qualifier proposal compiled');
+  assert.equal(qualifierEntry.citation_validation.accepted, true);
+  assert.equal(qualifierEntry.citation_validation.validation_source, 'CORROBORATED_BY_DOCUMENT_TEXT');
+
+  const resolution = resolveCandidates({
+    run_receipt: receipt,
+    contract_vocabulary: CONTRACT_BUNDLE,
+    admitted_source_context: admittedSourceContext,
+  });
+
+  const resolvedEntry = resolution.resolved.find((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY);
+  assert.ok(resolvedEntry, 'a corroborated-only citation still resolves -- it publishes with the fact visible');
+  assert.ok(resolvedEntry.triage.reasons.includes('CITATION_CORROBORATED_ONLY'), 'the fact is visible in triage.reasons');
+  assert.equal(resolvedEntry.triage.auto_pass, false, 'a corroborated-only citation can never auto-pass');
+  // The citation guard is NOT itself a structural gate failure: it must not
+  // force deterministic_gates_passed to false the way MULTI_SPAN_COMPOSED
+  // etc. do -- see finalizeResolvedCandidate's own comment.
+  assert.equal(resolvedEntry.triage.deterministic_gates_passed, true);
+
+  const queued = resolution.review_queue.find((item) => item.closure_id === resolvedEntry.claim.closure_id);
+  assert.ok(queued, 'still reaches review_queue while auto-pass is unconditionally blocked pending the two absent nets');
+  assert.ok(queued.reasons.includes('CITATION_CORROBORATED_ONLY'));
+});
+
+test('the ruling corpus applies BEFORE the lexicon, and a lexicon disagreement routes to review as RULING_LEXICON_CONFLICT', async () => {
+  const normalisedPhrase = ACCURACY_CHAPEAU_QUOTE;
+  const rulingEntry = {
+    schema_version: 'RULING_CORPUS_ENTRY/V1',
+    normalised_phrase: normalisedPhrase,
+    attachment_position: 'CHAPEAU',
+    concept_family: 'REP-T-CAP',
+    // A WRONG ruling (KNOWLEDGE) that contradicts what the current lexicon
+    // affirmatively says (ACCURACY) -- this is the conflict case.
+    ruled_kind: 'KNOWLEDGE',
+    ruled_code: null,
+    ruler: 'test-fixture',
+    ruled_at: '2026-08-01T00:00:00.000Z',
+    provenance_tag: 'VERIFIED',
+    lexicon_version_at_ruling: QUALIFIER_KIND_LEXICON_VERSION,
+  };
+  const corpus = buildRulingCorpus({ version: 1, rulings: [rulingEntry] });
+
+  const resolution = await resolveSingleQualifier(
+    { quote: ACCURACY_CHAPEAU_QUOTE, attachment: chapeauAttachment(), modelKind: 'ACCURACY' },
+    { ruling_corpus: corpus },
+  );
+  assert.equal(resolution.resolved.length, 0);
+  const queued = resolution.review_queue.find((item) => item.generic_claim_key === QUALIFIER_CLAIM_KEY);
+  assert.ok(queued);
+  assert.ok(queued.reasons.includes('RULING_LEXICON_CONFLICT'));
+  assert.equal(resolution.resolution_receipt.ruling_corpus_id, corpus.ruling_corpus_id);
+  assert.equal(resolution.resolution_receipt.ruling_corpus_version, corpus.version);
+});
+
+test('a VERIFIED ruling in agreement with the lexicon applies mechanically', async () => {
+  const rulingEntry = {
+    schema_version: 'RULING_CORPUS_ENTRY/V1',
+    normalised_phrase: ACCURACY_CHAPEAU_QUOTE,
+    attachment_position: 'CHAPEAU',
+    concept_family: 'REP-T-CAP',
+    ruled_kind: 'ACCURACY',
+    ruled_code: 'MAT_ALL_RESPECTS',
+    ruler: 'test-fixture',
+    ruled_at: '2026-08-01T00:00:00.000Z',
+    provenance_tag: 'VERIFIED',
+    lexicon_version_at_ruling: QUALIFIER_KIND_LEXICON_VERSION,
+  };
+  const corpus = buildRulingCorpus({ version: 1, rulings: [rulingEntry] });
+
+  const resolution = await resolveSingleQualifier(
+    { quote: ACCURACY_CHAPEAU_QUOTE, attachment: chapeauAttachment(), modelKind: 'ACCURACY' },
+    { ruling_corpus: corpus },
+  );
+  const resolvedEntry = resolution.resolved.find((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY);
+  assert.ok(resolvedEntry, 'the VERIFIED ruling applied');
+  assert.equal(resolvedEntry.claim.canonical_value, 'MAT_ALL_RESPECTS');
+});
+
+test('receipt pins MAPPING_TABLE_VERSION 3, the lexicon version, the measurement-date-parse version and the ruling corpus identity', async () => {
+  const resolution = await resolveSingleQualifier({
+    quote: ACCURACY_CHAPEAU_QUOTE,
+    attachment: chapeauAttachment(),
+    modelKind: 'ACCURACY',
+  });
+  assert.equal(resolution.resolution_receipt.mapping_table_version, MAPPING_TABLE_VERSION);
+  assert.equal(MAPPING_TABLE_VERSION, 3);
+  assert.equal(resolution.resolution_receipt.qualifier_kind_lexicon_version, QUALIFIER_KIND_LEXICON_VERSION);
+  assert.equal(resolution.resolution_receipt.measurement_date_parse_version, MEASUREMENT_DATE_PARSE_VERSION);
+  assert.equal(resolution.resolution_receipt.ruling_corpus_id, require('../lib/canonical-v2/native-producer/ruling-corpus').EMPTY_RULING_CORPUS.ruling_corpus_id);
+});
+
+test('ITEM-attached qualifier with a single assertion child takes the assertion-node subject (work item 6)', async () => {
+  const resolution = await resolveSingleQualifier({
+    quote: ACCURACY_CHAPEAU_QUOTE,
+    attachment: itemAttachment(['(i)']),
+    modelKind: 'ACCURACY',
+  });
+  // ACCURACY+ITEM never resolves rep-level (already covered above) -- this
+  // test only asserts the TREE ITSELF still reflects limb (i)'s single
+  // assertion, independent of the qualifier's own fate.
+  assert.equal(resolution.limb_component_trees.length, 1);
+  const tree = resolution.limb_component_trees[0];
+  const pathNodeI = tree.path_nodes.find((node) => node.limb_path.length === 1 && node.limb_path[0] === '(i)');
+  assert.ok(pathNodeI, 'limb (i) path node minted');
+  const assertionUnderI = tree.assertion_nodes.filter((node) => node.parent_limb_component_id === pathNodeI.limb_component_id);
+  assert.equal(assertionUnderI.length, 1);
 });
 
 test('a proposal with an unresolvable party lands in review_queue with PARTY_UNRESOLVED, never a guessed party', async () => {
@@ -688,6 +1164,7 @@ test('a proposal claiming ABSENT is a typed failure, not a resolution', async ()
 
 function manualQualifierProposal({
   subjectSeed, evidenceSpecs, partyValue = 'the Company', canonicalValue = 'MAT_ALL_RESPECTS_DE_MINIMIS',
+  attachment = chapeauAttachment(),
 }) {
   return (governedScope) => {
     const bytes = Buffer.from(governedScope.source_text, 'utf8');
@@ -712,9 +1189,14 @@ function manualQualifierProposal({
       ordinal: 0,
       state: 'PRESENT',
       raw_value: evidenceSpecs[0].quote,
+      // NOTE (Task 3 rekey): canonical_value here is only what the FAKE
+      // producer sends -- the deterministic classifier now derives the
+      // REAL canonical_value from the quote's own text (see the module's
+      // rebuildClaim newCanonicalValue override), so this field's value is
+      // no longer load-bearing for whether/how the claim resolves.
       canonical_value: canonicalValue,
-      attributes: { party_making: partyValue, qualifier_kind: 'ACCURACY' },
-      allowed_attributes: ['party_making', 'qualifier_kind'],
+      attributes: { party_making: partyValue, qualifier_kind: 'ACCURACY', attachment },
+      allowed_attributes: ['party_making', 'qualifier_kind', 'attachment'],
       taxonomy_codes: {},
       codebooks: {},
       evidence,
@@ -736,18 +1218,22 @@ test('multi-span/composed and nested-definition proposals resolve but never auto
       // is upstream and out of scope here. Two edges over the SAME quote is
       // enough to exercise this module's own, purely structural
       // MULTI_SPAN_COMPOSED signal (evidence.length > 1), which does not
-      // care what the edges say, only how many there are.
+      // care what the edges say, only how many there are. CHANGED (Task 3
+      // rekey): the quote must now be one the deterministic classifier
+      // actually resolves (ACCURACY_CHAPEAU_QUOTE), not LIMB_I_QUOTE, which
+      // carries no lexicon marker at all and would route to review before
+      // ever reaching this module's structural MULTI_SPAN_COMPOSED check.
       evidenceSpecs: [
-        { quote: LIMB_I_QUOTE, role: 'OPERATIVE_TEXT' },
-        { quote: LIMB_I_QUOTE, role: 'OPERATIVE_TEXT' },
+        { quote: ACCURACY_CHAPEAU_QUOTE, role: 'OPERATIVE_TEXT' },
+        { quote: ACCURACY_CHAPEAU_QUOTE, role: 'OPERATIVE_TEXT' },
       ],
     })(governedScope);
-    multiSpan.raw_value = LIMB_I_QUOTE;
+    multiSpan.raw_value = ACCURACY_CHAPEAU_QUOTE;
     const nested = manualQualifierProposal({
       subjectSeed: { case: 'nested' },
-      evidenceSpecs: [{ quote: QUALIFIER_QUOTE, role: 'CROSS_REFERENCE' }],
+      evidenceSpecs: [{ quote: ACCURACY_CHAPEAU_QUOTE, role: 'CROSS_REFERENCE' }],
     })(governedScope);
-    nested.raw_value = QUALIFIER_QUOTE;
+    nested.raw_value = ACCURACY_CHAPEAU_QUOTE;
     return {
       provider_id: 'candidate-resolution-test-structural/v1',
       model_id: 'stub-model',

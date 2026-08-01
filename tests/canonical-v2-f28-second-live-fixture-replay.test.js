@@ -309,16 +309,23 @@ test('replaying the F28 SECOND recorded raw response through the fixed pipeline:
     admitted_source_context: admittedSourceContext,
   });
 
-  // Both generic keys this recording produces (LIMB_ASSERTION_CLAIM_KEY,
-  // and QUALIFIER_CLAIM_KEY with kind THRESHOLD) are DELIBERATELY unmapped
-  // in candidate-resolution.js's GENERIC_CLAIM_KEY_RESOLUTION_TABLE -- the
-  // model correctly coded BOTH qualifiers THRESHOLD (not ACCURACY), so this
-  // is defect 4's fix finally exercised against real live-recorded
-  // qualifiers: THRESHOLD routes to open_world, never force-mapped onto
-  // REPRESENTATION_ACCURACY_STANDARD and quarantined. Versus the run doc's
-  // "0 open_world" (nothing reached resolution at all), every surviving
-  // candidate is now visible in open_world, none vanish, none are wrongly
-  // auto-passed.
+  // CHANGED HEADLINE (Task 3, docs/superpowers/plans/2026-08-01-claim-
+  // identity-provenance-plan.md): LIMB_ASSERTION_CLAIM_KEY still has no
+  // table entry at all -- unchanged, open world. QUALIFIER_CLAIM_KEY is now
+  // rekeyed on the DETERMINISTIC (lexicon-derived) kind, not the model's
+  // own `kind` field -- but this recording's own two qualifiers still route
+  // to open_world, because the DETERMINISTIC classifier independently
+  // agrees they are THRESHOLD (qualifier-kind-lexicon.js: "material to" /
+  // monetary-threshold markers fire, no ACCURACY/TEMPORAL/KNOWLEDGE marker
+  // present), and THRESHOLD still has NO table entry (spec section 3:
+  // "THRESHOLD stays open world, feeding the commonality report"). The
+  // bucket counts are therefore UNCHANGED from the pre-Task-3 numbers below
+  // -- this recording simply does not contain any ACCURACY/TEMPORAL/
+  // KNOWLEDGE qualifier to exercise the two NEW mappings against. See
+  // tests/canonical-v2-candidate-resolution.test.js for those mappings
+  // exercised against real fixture text, and the Task 3 deliverable report
+  // for why the nonzero-publishable proof for THIS slice is therefore a
+  // SYNTHETIC fixture, not this replay.
   assert.equal(resolution.resolved.length, 0);
   assert.equal(resolution.review_queue.length, 0);
   assert.equal(resolution.open_world.length, 22);
@@ -328,6 +335,54 @@ test('replaying the F28 SECOND recorded raw response through the fixed pipeline:
   const openWorldGenericKeys = new Set(resolution.open_world.map((entry) => entry.claim_definition_key));
   assert.deepEqual([...openWorldGenericKeys].sort(), [LIMB_ASSERTION_CLAIM_KEY, QUALIFIER_CLAIM_KEY].sort());
 
+  // NEW (Task 3 work item 6): a limb component tree is minted for the
+  // governed representation even though every qualifier in it ends up
+  // open-world -- LIMB_ASSERTION proposals "are still open-world as
+  // claims, but the tree's path/assertion nodes are included in the
+  // resolution result" (spec section 1). The tree reflects the recording's
+  // real drafting shape: 5 top-level limbs (i)-(v), 3 of which ((i),(ii),
+  // (iii)) carry lettered sub-limbs, and 20 of the 21 recorded assertions
+  // survive byte-verification (see the evidence_residual_count assertion
+  // above for the one page-break artifact that does not).
+  assert.equal(resolution.limb_component_trees.length, 1);
+  const tree = resolution.limb_component_trees[0];
+  assert.equal(tree.assertion_nodes.length, 20);
+  const pathLabels = tree.path_nodes.map((node) => JSON.stringify(node.limb_path)).sort();
+  assert.deepEqual(pathLabels, [
+    '["(i)"]', '["(i)","(A)"]', '["(i)","(B)"]',
+    '["(ii)"]', '["(ii)","(A)"]', '["(ii)","(B)"]', '["(ii)","(C)"]',
+    '["(iii)"]', '["(iii)","(A)"]', '["(iii)","(B)"]', '["(iii)","(C)"]',
+    '["(iv)"]', '["(v)"]',
+  ].sort());
+
+  // NEW: the two REAL, RECORDED THRESHOLD qualifiers route open-world,
+  // ITEM-attached to their own real limbs -- limb (ii)'s securities-Laws
+  // carve-out and limb (iv)'s investment-materiality carve-out, exactly as
+  // drafted (never silently reattached to a different limb, never
+  // defaulted to the chapeau).
+  const qualifierOpenWorld = resolution.open_world.filter((entry) => entry.claim_definition_key === QUALIFIER_CLAIM_KEY);
+  assert.equal(qualifierOpenWorld.length, 2);
+  const byGovernsPath = new Map(
+    qualifierOpenWorld.map((entry) => [JSON.stringify(entry.attributes.attachment.governs_path), entry]),
+  );
+  assert.ok(byGovernsPath.has('["(ii)"]'), 'the securities-Laws carve-out attaches to limb (ii)');
+  assert.ok(
+    byGovernsPath.get('["(ii)"]').raw_value.includes('Securities Act'),
+    'limb (ii)\'s own THRESHOLD qualifier text',
+  );
+  assert.ok(byGovernsPath.has('["(iv)"]'), 'the investment-materiality carve-out attaches to limb (iv)');
+  assert.ok(
+    byGovernsPath.get('["(iv)"]').raw_value.includes('material to the Company'),
+    'limb (iv)\'s own THRESHOLD qualifier text',
+  );
+
+  // Receipt pins (Task 3 work item 1): every version that participated in
+  // this resolution is traceable.
+  assert.equal(resolution.resolution_receipt.mapping_table_version, 3);
+  assert.ok(Number.isInteger(resolution.resolution_receipt.qualifier_kind_lexicon_version));
+  assert.ok(Number.isInteger(resolution.resolution_receipt.measurement_date_parse_version));
+  assert.ok(typeof resolution.resolution_receipt.ruling_corpus_id === 'string' && resolution.resolution_receipt.ruling_corpus_id.length > 0);
+
   // No registered claim definition exists yet for either generic key this
   // producer emits for a capitalisation representation's own limbs/
   // qualifiers (a separate, known, pre-existing gap in the contract
@@ -336,6 +391,15 @@ test('replaying the F28 SECOND recorded raw response through the fixed pipeline:
   // run doc -- but for a completely different reason: every candidate is
   // now visible and accounted for in open_world, not silently rejected
   // before it ever reached resolution.
+  //
+  // THIS RECORDING THEREFORE PROVES ZERO RESOLVABLE CLAIMS end to end (both
+  // qualifiers are THRESHOLD -- see the headline comment above). Per the
+  // Task 3 acceptance criteria, the nonzero-publishable proof for the new
+  // mappings is a SEPARATE, SYNTHETIC fixture test in
+  // tests/canonical-v2-candidate-resolution.test.js ("resolved output feeds
+  // buildNativeWriteSet and passes the real validate-write-set.js" already
+  // proves this for ACCURACY; the new Task 3 tests in that file prove it
+  // again for TEMPORAL and KNOWLEDGE) -- NOT this replay.
   const { buildNativeWriteSet } = require('../lib/canonical-v2/native-producer/native-write-set-adapter');
   const { validateResolvedCanonicalWriteSet } = require('../lib/canonical-v2/validate-write-set');
   const resolvedRunReceipt = {
