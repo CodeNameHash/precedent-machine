@@ -329,6 +329,50 @@ same breath. `CITATION_DISAGREEMENT` carrying BOTH values, with no assumption
 about which side is wrong, is what surfaced this. A strict "not in text =
 hallucination" rule would have permanently mislabelled correct extractions.
 
+### DECISION FOR BEN — converter source hash sits inside canonical text identity (2026-08-01)
+
+Re-admitting the QXO source after the entity fix produced a finding that
+matters more than the re-admission. Branch `claude/qxo-readmit-after-entity-fix`
+is COMPLETE and NOT MERGED, awaiting this decision.
+
+WHAT WAS FOUND. The QXO filing contains none of the newly-decoded entities, so
+the corrected converter produces **byte-for-byte identical canonical text**:
+`canonical_text_sha256`, byte length, `converter_config_digest` and
+`source_map_digest` are all unchanged. Only `converter_digest` moved — and
+that is `sha256(the converter's own source file)`. Because `canonical_text_id`
+hashes `converter_digest`, the text's identity churned even though the text
+did not.
+
+BLAST RADIUS OF THAT ONE CHURN: ~20 lib modules re-pinned across the F6->F22
+chain, 71 files changed, and 15 F23/F26 tests broken. Those tests consume
+hand-authored "sealed" cohort fixtures that `scripts/regenerate-release-identity-chain.mjs`
+already flags as NOT mechanically reproducible ("do not guess"). F19 passes
+with the branch; the suite goes from 1 failing test to 15. The agent stopped
+rather than re-author sealed legal data, which was correct.
+
+THE QUESTION: should the identity of a canonical text depend on the hash of
+the SOURCE CODE that produced it?
+- **Keep it (status quo).** Provenance is airtight: the identity proves exactly
+  which converter build produced the bytes. Cost: every converter edit —
+  including a comment or a rename — churns every downstream identity in the
+  corpus, even when output is provably identical. At corpus scale this is a
+  standing tax on ever improving the converter.
+- **Drop it to metadata.** Identity derives from OUTPUT (text digest, config
+  digest, source-map digest); `converter_digest` is recorded alongside as
+  provenance but does not enter the identity. A converter fix that changes no
+  bytes then changes no identities. Cost: two converter builds producing
+  identical output become identity-indistinguishable, so a behavioural
+  difference that happens not to alter THIS document is not visible in the id.
+
+Recommendation: drop it to metadata. The evidence chain is carried by the text
+digest and the source map, both of which are output-derived and unaffected. We
+have just paid a 71-file, 15-test cost for a fix that changed nothing a reader
+would ever see — and that tax recurs on every future converter improvement,
+which is exactly the work we most want to keep cheap.
+
+Either way the F23/F26 sealed cohort fixtures need re-authoring by someone
+with the legal context, or an explicit decision to regenerate them.
+
 ### P9 acceptance definitions drafted (2026-08-01)
 
 `docs/codex-program/P9-ACCEPTANCE-DEFINITIONS.md` proposes a mechanical
