@@ -1,0 +1,164 @@
+{
+  "accepted": true,
+  "publishableWriteSet": {
+    "deal": {
+      "deal_admission_id": "691a9ce8c6cde0f49d7ebf228c1bf2876562fdf1b3dd792a8444ae1f3f8d55ae",
+      "deal_key": "deal:modiv-first-live-run:32065211e4688625",
+      "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968"
+    },
+    "excerpts": [
+      {
+        "absolute_end": 57220,
+        "absolute_start": 57199,
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "closure_id": "df04b4aa8b5d55fea83b587eae49e230c61ecd5e4f3e069eb25432cb1e60dde6",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "exact_bytes_digest": "7a5532e4b6bbb118a5f408e50834a87012ab70823dc8ada22f6233572fbc5491",
+        "exact_text": "As of the date hereof",
+        "excerpt_definition_id": "0d87cd91d729de22842daeb072262dfd491ff501b6ff0e4914e16c989dad9d02",
+        "excerpt_definition_key": "SINGLE_OPERATIVE_SPAN",
+        "excerpt_definition_payload_digest": "bd85340496ddb70a1771b4f9c087dc85b02b9b2a59645f8e62e50778c9a3173c",
+        "excerpt_definition_version": 1,
+        "excerpt_id": "9600e71a4f9aad9aaf00cefc255f2f32a718baf89e821219364a3c17976c70b8",
+        "excerpt_purpose": "LEGAL_EVIDENCE",
+        "ordered_component_assignments": [
+          {
+            "component_slot_key": "PRIMARY",
+            "governed_slot_ordinal": 0,
+            "semantic_span_id": "9b72c8ebeede0f4ca13b8b2ba5c0dcf5c9da0e5f685e0dfb39837bc82a6a058e"
+          }
+        ],
+        "output_text_hash": "7a5532e4b6bbb118a5f408e50834a87012ab70823dc8ada22f6233572fbc5491",
+        "schema_version": "EXCERPT/V1",
+        "source_content_id": "0174701fd4c2d921098954888d530a00efabc017434a5bcd0c7b2ff91bc96a77",
+        "source_occurrence_id": "3b0f6e71c4ad7640c55475e5db131ff85e991633cdf64a0a074c0de9497f7e68",
+        "transformation_or_redaction_version": "IDENTITY_UTF8/V1"
+      }
+    ],
+    "definition_occurrences": [],
+    "provisions": [
+      {
+        "absolute_end": 64180,
+        "absolute_start": 55994,
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "closure_id": "ffb28ca74efd848942654cc5b7b4d24e6679cf9777fc2e86693a8c62c640035f",
+        "concept_key": "REP-T-CAP",
+        "document_hash": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+        "ordinal": 1,
+        "party": {
+          "capacity": "TARGET",
+          "role": "REPRESENTATION_MAKER",
+          "value": "the Company"
+        },
+        "provision_instance_id": "b408169b86b0092b96f77a628785f71eec577fdd8bde6abad5ffb6d3f601e5f1",
+        "schema_version": "PROVISION_INSTANCE/V1",
+        "source_anchor_id": "cd9ce284c98d62b45b1d305a8685e449a6f8c164cdca042d4fe6fc2679941569",
+        "source_occurrence_id": "3b0f6e71c4ad7640c55475e5db131ff85e991633cdf64a0a074c0de9497f7e68"
+      }
+    ],
+    "components": [],
+    "claims": [
+      {
+        "applicability": null,
+        "attributes": {
+          "answer_provenance": {
+            "pins": {
+              "mapping_table_version": 3,
+              "qualifier_kind_lexicon_version": 1
+            },
+            "tag": "MECHANICAL"
+          },
+          "attachment": {
+            "ambiguity_signals": {
+              "comma_before_qualifier": false,
+              "in_each_case_language": null,
+              "items_grammatically_parallel": true,
+              "single_clause_language": null
+            },
+            "governs_path": null,
+            "position": "CHAPEAU",
+            "readings": null,
+            "scope_reading": "ALL_ITEMS"
+          },
+          "comparability": "NOT_COMPARABLE",
+          "deterministic_kind": "TEMPORAL",
+          "enrichment_state": "UNENRICHED",
+          "measurement_date_resolution": "SYMBOLIC",
+          "party_making": "the Company",
+          "qualifier_kind": "TEMPORAL",
+          "section_reference": "3.2(c)"
+        },
+        "canonical_value": "2026-05-03",
+        "claim_definition_key": "REPRESENTATION_MEASUREMENT_DATE",
+        "claim_definition_version": 1,
+        "claim_occurrence_id": "3a247bbd22b3719b18330940f824af83eeeec59ec9969a9dc8c964cb6e3f531d",
+        "claim_revision_id": "18c71aacc2a25a467878352a962faa6bd68cd5c02ded6ee112f5307fe3ee0234",
+        "closure_id": "f7a3dc3266e84504b18a766a29f2ff1e2bb72589175666e6047a11df62dc1133",
+        "day_basis": null,
+        "denominator": null,
+        "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "evidence": [
+          {
+            "absolute_end": 57220,
+            "absolute_start": 57199,
+            "claim_evidence_id": "ede7ea5786f9a15ba5c31ef3087025aa37529a3595d82dee4a918999f8c04cd0",
+            "document_ordinal": 0,
+            "evidence_role": "OPERATIVE_TEXT",
+            "excerpt_id": "9600e71a4f9aad9aaf00cefc255f2f32a718baf89e821219364a3c17976c70b8",
+            "ordinal": 0,
+            "schema_version": "CLAIM_EVIDENCE/V1"
+          }
+        ],
+        "evidence_ids": [
+          "ede7ea5786f9a15ba5c31ef3087025aa37529a3595d82dee4a918999f8c04cd0"
+        ],
+        "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "failure": null,
+        "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+        "not_examined": null,
+        "ordinal": 0,
+        "publication_state": "VALIDATED",
+        "quarantine": null,
+        "raw_value": "As of the date hereof",
+        "retained_residuals": [],
+        "schema_version": "CLAIM_REVISION/V1",
+        "scope": null,
+        "state": "PRESENT",
+        "subject_occurrence_id": "b408169b86b0092b96f77a628785f71eec577fdd8bde6abad5ffb6d3f601e5f1",
+        "taxonomy_codes": {},
+        "unit": null
+      }
+    ],
+    "relationships": [],
+    "condition_groups": [],
+    "validated_semantic_graphs": [],
+    "open_world_candidates": [],
+    "open_world_candidate_occurrences": [],
+    "open_world_evidence_references": [],
+    "open_world_candidate_dispositions": [],
+    "open_world_primitives": [],
+    "semantic_impact_closures": [],
+    "reviewed_source_specific_rows": [],
+    "incomplete_canonical_result_rows": [],
+    "source_references": [
+      {
+        "canonical_text_id": "9a9506a93f3e907f4fbcc330b6326a4e34ae98d3231a44e74ebfe6aa94c00ab9",
+        "deal_admission_id": "691a9ce8c6cde0f49d7ebf228c1bf2876562fdf1b3dd792a8444ae1f3f8d55ae",
+        "governed_deal_key": "deal:modiv-first-live-run:32065211e4688625",
+        "immutable_source_document_id": "fc45560ec017e6a3fd7876eb638c833483bed7b420557ab2c285f876d4c3520b",
+        "schema_version": "ADMITTED_SOURCE_REFERENCE/V1",
+        "semantic_extraction_input_envelope_id": "6cf541fcb21167abcc13142ec03de7fd55e115d1dcd28b98acf4d938c4f8954c",
+        "source_admission_manifest_id": "2892f5d41814755af2dc33bd191cfe2c7233232419b86597553025bc46f9a603",
+        "source_ordinal": 0
+      }
+    ]
+  },
+  "residuals": [],
+  "quarantines": [],
+  "quarantinedClosureIds": [],
+  "counts": {
+    "publishable": 3,
+    "residuals": 0,
+    "quarantinedClosures": 0
+  }
+}
