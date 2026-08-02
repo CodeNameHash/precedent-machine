@@ -243,6 +243,31 @@ test('No-Other-Reps sections are captured (coded) wherever they land: REP-T, REP
   }
 });
 
+// v1 reclassification (2026-08-02, R3): the Abry schema block is also
+// registered verbatim under the eight new element-split codes (the old
+// family codes above stay as retired-code regression cases — the classify
+// layer still stamps them as the family-level title match).
+test('The Abry schema is also registered for all eight R3 element-split codes', () => {
+  const ELEMENT_CODES = [
+    'REP-T-NOOTHERREPS', 'REP-T-NONRELIANCE', 'REP-T-INDEPINVEST', 'REP-T-FRAUDCARVEOUT',
+    'REP-B-NOOTHERREPS', 'REP-B-NONRELIANCE', 'REP-B-INDEPINVEST', 'REP-B-FRAUDCARVEOUT',
+  ];
+  for (const code of ELEMENT_CODES) {
+    const keys = (FEATURES[code] || []).map((f) => f.key);
+    for (const k of ['noOtherRepsPresent', 'noOtherRepsParty', 'nonRelianceClause', 'extraContractualClaimsWaived', 'fraudCarveout']) {
+      assert.ok(keys.includes(k), `${code} schema has ${k}`);
+    }
+  }
+  // The INDEPINVEST pair adds the one new field the ruling doc calls for.
+  for (const code of ['REP-T-INDEPINVEST', 'REP-B-INDEPINVEST']) {
+    const keys = (FEATURES[code] || []).map((f) => f.key);
+    assert.ok(keys.includes('independentInvestigationAcknowledged'), `${code} carries independentInvestigationAcknowledged`);
+  }
+  // MISC shared block also carries the new field (Metsera §9.07 landing pattern).
+  const miscKeys = (FEATURES.MISC || []).map((f) => f.key);
+  assert.ok(miscKeys.includes('independentInvestigationAcknowledged'));
+});
+
 test('REP prompts carry the Abry extraction rules (both articles)', () => {
   for (const type of ['REP-T', 'REP-B']) {
     const instr = buildFeatureInstructions(type);

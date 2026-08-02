@@ -44,6 +44,36 @@
    LLM calls go through the injectable CLI client (lib/llm-cli-client.js) —
    Claude Max / ChatGPT subscription, zero API tokens. Credentials from
    env / .env.local, same as ingest-local.
+
+   ─── v1 reclassification (2026-08-02) apply order — DOCUMENTED HERE, NOT
+   EXECUTED by the code-only build slice (docs/superpowers/specs/
+   2026-08-02-v1-reclassification-design.md §4, audit A-C3: reprocess.js
+   NEVER writes cards). Ben gates every step below in the morning; run in
+   this exact per-deal order, comparator-fixture deals FIRST
+   (TopBuild/Skechers/Modiv, hand-verified), then the corpus:
+
+     1. node scripts/reprocess.js --deal <id> --classify-only --apply
+        (rewrites the classified_sections snapshot; retired-code cache
+        entries are bypassed automatically — see classify.js's
+        prior-snapshot cache-invalidation comment)
+     2. node scripts/reprocess.js --deal <id> --types REP-T,REP-B,MISC --apply
+        (re-extracts the parent types — R3 cards live under MISC_BOILERPLATE
+        too; the anti-reliance element scan runs inside this step)
+     3. node scripts/backfill/extract-to-cards.js --deal <id> --apply
+        --extraction-version m2-01-reclass-v1
+        (the ONLY production card writer — its upsert/replaceDeal semantics
+        are what the scout verified; the extraction_version label MUST be
+        bumped for this pass so the comparator's isComparisonReceiptStale
+        fires on pre-reclass receipts — see extract-to-cards.js's
+        DEFAULT_EXTRACTION_VERSION comment)
+     4. Claim rematerialization (this script's built-in --apply step above,
+        or a standalone rematerialize-claims.js run for the same deal ids)
+
+   Pre-write safety gate: scripts/safety-check-reclass-rules.js must be
+   green (pinned flip set) before step 1 runs for the corpus; the 29-card
+   AI-only-split hand review (REP-T-CONSENT / REP-T-REGSTATUS populations)
+   is a manual review against the ruling doc, recorded in the slice's dated
+   handoff, and gates step 2 for those specific cards.
    ───────────────────────────────────────────────────────────────────────── */
 
 const fs = require('fs');

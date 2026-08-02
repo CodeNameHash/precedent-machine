@@ -5,6 +5,7 @@ const {
   buildExtractorOutput,
   dedupeProvisionCardRows,
   findRegionForProvision,
+  legacyProvisionForCard,
   markdownReport,
   parseArgs,
   replaceProvisionCardRows,
@@ -29,6 +30,30 @@ test('parseArgs supports all, apply, env file, output and min-card gate', () => 
   assert.equal(args.envFile, '/tmp/env');
   assert.equal(args.out, '/tmp/report.md');
   assert.equal(args.minCards, 50);
+});
+
+test('parseArgs defaults extractionVersion to the m2-00 label, unchanged for ordinary runs', () => {
+  const args = parseArgs(['node', 'scripts/backfill/extract-to-cards.js', '--all']);
+  assert.equal(args.extractionVersion, 'm2-00-corpus-backfill-v1');
+});
+
+// v1 reclassification (2026-08-02, audit A-M4): the reclassification apply
+// pass (documented, NOT executed by this code-only slice) bumps this label
+// so the comparator's isComparisonReceiptStale fires on pre-reclass
+// receipts. See docs/superpowers/specs/2026-08-02-v1-reclassification-design.md §4.
+test('parseArgs accepts --extraction-version to override the label for the reclass apply pass', () => {
+  const args = parseArgs(['node', 'scripts/backfill/extract-to-cards.js', '--all', '--extraction-version', 'm2-01-reclass-v1']);
+  assert.equal(args.extractionVersion, 'm2-01-reclass-v1');
+});
+
+test('legacyProvisionForCard stamps the passed-in extractionVersion, defaulting when omitted', () => {
+  const row = { id: 'r1', type: 'REP-T', category: 'x', full_text: 'text', ai_metadata: {} };
+  const deal = { id: 'd1' };
+  const region = { id: 'reg1', text_hash: 'h1' };
+  const withDefault = legacyProvisionForCard(row, deal, region);
+  assert.equal(withDefault.extraction_version, 'm2-00-corpus-backfill-v1');
+  const withOverride = legacyProvisionForCard(row, deal, region, 'm2-01-reclass-v1');
+  assert.equal(withOverride.extraction_version, 'm2-01-reclass-v1');
 });
 
 test('findRegionForProvision maps legacy provision text to parser region rows', () => {

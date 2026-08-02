@@ -1,16 +1,16 @@
 # WP-SCHEMA P1 Inventory Summary
 
-Generated: 2026-07-20T14:04:25.403Z
+Generated: 2026-08-02T23:37:31.652Z
 
 ## Counts
 
-- Distinct feature-like keys: 525
-- Keys in 2 or more source families: 474
+- Distinct feature-like keys: 531
+- Keys in 2 or more source families: 480
 - Keys in only 1 source family: 51
 - Cross-source type mismatches: 6
 - Schema shape mismatches: 33
 - Provision types in rubric: 22
-- Canonical codes in rubric: 276
+- Canonical codes in rubric: 290
 - Taxonomy families exported: 67
 - Curated expected-set codes: 38
 
@@ -18,7 +18,7 @@ Generated: 2026-07-20T14:04:25.403Z
 
 | Convention |Count |
 | --- |--- |
-| camelCase |494 |
+| camelCase |500 |
 | lowercase |24 |
 | snake_case |7 |
 
@@ -28,8 +28,8 @@ Generated: 2026-07-20T14:04:25.403Z
 | --- |--- |
 | category_summary_features_js |217 |
 | expected_sets_js |195 |
-| feature_validation_js |483 |
-| rubric_js |471 |
+| feature_validation_js |489 |
+| rubric_js |477 |
 | taxonomy_js |67 |
 | ui |184 |
 
@@ -37,26 +37,26 @@ Generated: 2026-07-20T14:04:25.403Z
 
 | Key |Appearances |Sources |
 | --- |--- |--- |
-| mainConcept |110 |expected_sets_js, feature_validation_js, rubric_js, ui |
+| mainConcept |124 |expected_sets_js, feature_validation_js, rubric_js, ui |
+| noOtherRepsParty |29 |expected_sets_js, feature_validation_js, rubric_js, ui |
+| extraContractualClaimsWaived |28 |expected_sets_js, feature_validation_js, rubric_js |
+| fraudCarveout |28 |expected_sets_js, feature_validation_js, rubric_js |
+| nonRelianceClause |28 |expected_sets_js, feature_validation_js, rubric_js |
+| noOtherRepsPresent |28 |expected_sets_js, feature_validation_js, rubric_js |
 | scheduleReference |28 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js |
 | materialityQualifier |25 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, taxonomy_js, ui |
 | crossReferences |23 |expected_sets_js, feature_validation_js, rubric_js |
 | fiduciaryOutStandard |21 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, ui |
 | matchingPeriod |21 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, ui |
-| noOtherRepsParty |21 |expected_sets_js, feature_validation_js, rubric_js, ui |
 | partyWhoCanTerminate |21 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, taxonomy_js |
-| extraContractualClaimsWaived |20 |expected_sets_js, feature_validation_js, rubric_js |
-| fraudCarveout |20 |expected_sets_js, feature_validation_js, rubric_js |
-| nonRelianceClause |20 |expected_sets_js, feature_validation_js, rubric_js |
-| noOtherRepsPresent |20 |expected_sets_js, feature_validation_js, rubric_js |
 | bringDownStandard |19 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, taxonomy_js |
 | initialMatchPeriodDays |19 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, ui |
+| language |19 |feature_validation_js, rubric_js, ui |
 | boardChangeStandard |18 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, ui |
 | knowledgeQualifier |18 |expected_sets_js, feature_validation_js, rubric_js, taxonomy_js, ui |
 | knowledgeScope |18 |expected_sets_js, feature_validation_js, rubric_js, ui |
 | linkedBringDownStandard |18 |expected_sets_js, feature_validation_js, rubric_js, taxonomy_js |
 | materialContractsBuckets |17 |expected_sets_js, feature_validation_js, rubric_js, taxonomy_js, ui |
-| materialityScrape |17 |expected_sets_js, feature_validation_js, rubric_js, taxonomy_js |
 
 ## Cross-Source Type Mismatches
 
@@ -88,8 +88,8 @@ Same feature key with multiple rubric labels, declared types, or enum option sha
 | faultBasedExclusion |6 |boolean |Fault-Based Exclusion (party at fault cannot invoke); Fault-Based Exclusion (party causing the restraint cannot invoke); Fault-Based Exclusion |
 | filingDeadline |2 |text |Regulatory Filing Deadline (e.g., "Within 15 business days of signing"); Regulatory Filing Deadline (short text, e.g. "Within 15 business days of signing" or "Within 30 days") |
 | knowledgeStandard |2 |enum, tagged |Knowledge Standard; Knowledge standard (ACTUAL / CONSTRUCTIVE / AFTER_INQUIRY / NA) |
-| language |6 |text |Verbatim collar language; Verbatim solvency language; Verbatim anti-reliance language |
-| mainConcept |61 |text |Provision; Provision (short deadline statement, e.g. "HSR filing within 15 business days of signing") |
+| language |14 |text |Verbatim collar language; Verbatim solvency language; Verbatim anti-reliance language |
+| mainConcept |75 |text |Provision; Provision (short deadline statement, e.g. "HSR filing within 15 business days of signing") |
 | materialContractsBuckets |2 |list-tagged |Material Contracts rep buckets (from MATERIAL_CONTRACT_BUCKET_CODES); Material-contracts buckets — list of tagged items drawn from MATERIAL_CONTRACT_BUCKET_CODES |
 | materialContractsDollarThresholds |2 |list |Material Contracts per-bucket dollar thresholds — array of { bucket, threshold }; Per-bucket dollar thresholds — array of { bucket, threshold } |
 | materialContractsRedactionsPermitted |2 |boolean |Redactions to material contracts permitted; Redactions permitted |

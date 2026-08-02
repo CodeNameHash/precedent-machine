@@ -2,10 +2,10 @@
 
 ## Generated Registry Baseline
 
-- Features generated: 553
+- Features generated: 559
 - Tags generated: 172
-- TODO descriptions pending hand-audit: 536
-- Benchmarkable hints retained: 212
+- TODO descriptions pending hand-audit: 542
+- Benchmarkable hints retained: 214
 - Generated baseline has been copied into `lib/schema/features.js` and `lib/schema/tags.js` so Phase 4+ can import the populated registry.
 - The generator adds 17 supplemental live-only keys found by the Supabase coverage test, including internal metadata keys such as `flags` and `parentProvisionType`.
 

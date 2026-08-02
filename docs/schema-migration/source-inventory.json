@@ -762,7 +762,58 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 535
+        "line": 543
+      },
+      {
+        "code": "REP-T-NOOTHERREPS",
+        "type": "REP-T",
+        "label": "No Other Representations (Disclaimer)",
+        "description": "Disclaimer that no representations or warranties were made beyond those expressly set forth in the agreement",
+        "aliases": [
+          "No Other Representations",
+          "Disclaimer of Representations"
+        ],
+        "frequency": "near-universal",
+        "industries": [],
+        "line": 557
+      },
+      {
+        "code": "REP-T-NONRELIANCE",
+        "type": "REP-T",
+        "label": "Non-Reliance on Extra-Contractual Statements",
+        "description": "Affirmative acknowledgment of non-reliance on statements, projections, or materials outside the agreement",
+        "aliases": [
+          "Non-Reliance",
+          "Non-Reliance Acknowledgment"
+        ],
+        "frequency": "common",
+        "industries": [],
+        "line": 565
+      },
+      {
+        "code": "REP-T-INDEPINVEST",
+        "type": "REP-T",
+        "label": "Independent Investigation Acknowledgment",
+        "description": "Acknowledgment that the party conducted its own independent investigation, review, and analysis",
+        "aliases": [
+          "Independent Investigation"
+        ],
+        "frequency": "common",
+        "industries": [],
+        "line": 573
+      },
+      {
+        "code": "REP-T-FRAUDCARVEOUT",
+        "type": "REP-T",
+        "label": "Fraud Carve-Out",
+        "description": "Express preservation of fraud remedies notwithstanding the non-reliance / no-other-reps disclaimers",
+        "aliases": [
+          "Fraud Carve-Out",
+          "Fraud Exception"
+        ],
+        "frequency": "uncommon",
+        "industries": [],
+        "line": 581
       },
       {
         "code": "REP-T-PRODUCT",
@@ -776,7 +827,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 543
+        "line": 589
       },
       {
         "code": "REP-T-SUPPLY",
@@ -791,7 +842,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 551
+        "line": 597
       },
       {
         "code": "REP-T-FDA",
@@ -812,7 +863,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 559
+        "line": 605
       },
       {
         "code": "REP-T-CONTROLS",
@@ -826,7 +877,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 576
+        "line": 622
       },
       {
         "code": "REP-T-SANCTIONS",
@@ -842,7 +893,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 584
+        "line": 630
       },
       {
         "code": "REP-T-OIL",
@@ -857,7 +908,7 @@
         "industries": [
           "energy"
         ],
-        "line": 592
+        "line": 638
       },
       {
         "code": "REP-T-WELLS",
@@ -872,7 +923,7 @@
         "industries": [
           "energy"
         ],
-        "line": 600
+        "line": 646
       },
       {
         "code": "REP-T-RESERVE",
@@ -887,7 +938,7 @@
         "industries": [
           "energy"
         ],
-        "line": 608
+        "line": 654
       },
       {
         "code": "REP-T-REGSTATUS",
@@ -902,7 +953,7 @@
         "industries": [
           "energy"
         ],
-        "line": 616
+        "line": 673
       },
       {
         "code": "REP-T-CONSENT",
@@ -916,7 +967,100 @@
         "industries": [
           "energy"
         ],
-        "line": 624
+        "line": 683
+      },
+      {
+        "code": "REP-T-STOCKAPPROVAL",
+        "type": "REP-T",
+        "label": "Requisite Stockholder Approval",
+        "description": "Target stockholder vote required to approve the merger (mirrors REP-B-VOTE on the buyer side)",
+        "aliases": [
+          "Requisite Stockholder Approval",
+          "Company Stockholder Approval",
+          "Required Stockholder Vote"
+        ],
+        "frequency": "industry-specific",
+        "industries": [],
+        "line": 699
+      },
+      {
+        "code": "REP-T-GOVAPPROVAL",
+        "type": "REP-T",
+        "label": "Governmental Approvals",
+        "description": "Governmental consents, filings, and approvals required of the target for the transaction",
+        "aliases": [
+          "Requisite Governmental Approvals",
+          "Governmental Authorizations",
+          "Governmental Authorization",
+          "Government Approvals"
+        ],
+        "frequency": "industry-specific",
+        "industries": [],
+        "line": 707
+      },
+      {
+        "code": "REP-T-40ACT",
+        "type": "REP-T",
+        "label": "Investment Company Act Status",
+        "description": "Target is not required to register as an investment company under the Investment Company Act of 1940",
+        "aliases": [
+          "Investment Company Act",
+          "Investment Company Act of 1940",
+          "1940 Act"
+        ],
+        "frequency": "industry-specific",
+        "industries": [
+          "reit",
+          "financial-services"
+        ],
+        "line": 720
+      },
+      {
+        "code": "REP-T-ADVISERSACT",
+        "type": "REP-T",
+        "label": "Investment Advisers Act / Broker-Dealer Registration",
+        "description": "Target investment adviser or broker-dealer registration status under the Investment Advisers Act",
+        "aliases": [
+          "Investment Advisers Act",
+          "Advisers Act",
+          "Broker-Dealer Registration"
+        ],
+        "frequency": "industry-specific",
+        "industries": [
+          "financial-services"
+        ],
+        "line": 728
+      },
+      {
+        "code": "REP-T-INSREG",
+        "type": "REP-T",
+        "label": "Insurance Licensing / Regulatory Status",
+        "description": "Target state insurance licensing and regulatory status",
+        "aliases": [
+          "Insurance Licensing",
+          "Insurance Regulatory Status",
+          "Insurance Laws"
+        ],
+        "frequency": "industry-specific",
+        "industries": [
+          "insurance"
+        ],
+        "line": 736
+      },
+      {
+        "code": "REP-T-CFIUS",
+        "type": "REP-T",
+        "label": "CFIUS / National Security Status",
+        "description": "Target status under CFIUS and critical-technologies national-security review",
+        "aliases": [
+          "CFIUS",
+          "National Security Status",
+          "Critical Technologies",
+          "Foreign Investment Review"
+        ],
+        "frequency": "industry-specific",
+        "industries": [],
+        "line": 744
       },
       {
         "code": "REP-T-CLINICAL",
@@ -932,7 +1076,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 633
+        "line": 753
       },
       {
         "code": "REP-T-HEALTHCARE",
@@ -949,7 +1093,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 641
+        "line": 761
       },
       {
         "code": "REP-T-HEALTHLAWS",
@@ -965,7 +1109,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 649
+        "line": 769
       },
       {
         "code": "REP-B-ORG",
@@ -977,7 +1121,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 659
+        "line": 779
       },
       {
         "code": "REP-B-AUTH",
@@ -990,7 +1134,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 667
+        "line": 787
       },
       {
         "code": "REP-B-NOCONFLICT",
@@ -1003,7 +1147,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 675
+        "line": 795
       },
       {
         "code": "REP-B-LIT",
@@ -1016,7 +1160,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 683
+        "line": 803
       },
       {
         "code": "REP-B-BROKERS",
@@ -1029,7 +1173,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 691
+        "line": 811
       },
       {
         "code": "REP-B-FUNDS",
@@ -1043,7 +1187,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 699
+        "line": 819
       },
       {
         "code": "REP-B-MERGESUB",
@@ -1056,7 +1200,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 707
+        "line": 827
       },
       {
         "code": "REP-B-PROXY",
@@ -1069,7 +1213,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 715
+        "line": 835
       },
       {
         "code": "REP-B-VOTE",
@@ -1082,7 +1226,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 723
+        "line": 843
       },
       {
         "code": "REP-B-NOINTEREST",
@@ -1095,7 +1239,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 731
+        "line": 851
       },
       {
         "code": "REP-B-NOREP",
@@ -1108,7 +1252,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 739
+        "line": 862
       },
       {
         "code": "REP-B-CAP",
@@ -1120,7 +1264,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 747
+        "line": 872
       },
       {
         "code": "REP-B-SEC",
@@ -1133,7 +1277,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 755
+        "line": 880
       },
       {
         "code": "REP-B-NOCHANGE",
@@ -1145,7 +1289,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 763
+        "line": 888
       },
       {
         "code": "REP-B-NOLIAB",
@@ -1157,7 +1301,7 @@
         ],
         "frequency": "industry-specific",
         "industries": [],
-        "line": 771
+        "line": 896
       },
       {
         "code": "REP-B-TAX",
@@ -1169,7 +1313,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 779
+        "line": 904
       },
       {
         "code": "REP-B-COMPLY",
@@ -1181,7 +1325,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 787
+        "line": 912
       },
       {
         "code": "REP-B-BENEFITS",
@@ -1193,7 +1337,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 795
+        "line": 920
       },
       {
         "code": "REP-B-ENV",
@@ -1207,7 +1351,7 @@
         "industries": [
           "energy"
         ],
-        "line": 803
+        "line": 928
       },
       {
         "code": "REP-B-IP",
@@ -1222,7 +1366,7 @@
         "industries": [
           "energy"
         ],
-        "line": 811
+        "line": 936
       },
       {
         "code": "REP-B-CONTRACTS",
@@ -1236,7 +1380,7 @@
         "industries": [
           "energy"
         ],
-        "line": 819
+        "line": 944
       },
       {
         "code": "REP-B-SOLVENCY",
@@ -1249,7 +1393,7 @@
         ],
         "frequency": "industry-specific",
         "industries": [],
-        "line": 827
+        "line": 952
       },
       {
         "code": "REP-B-LABOR",
@@ -1262,7 +1406,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 835
+        "line": 960
       },
       {
         "code": "REP-B-EQUITY",
@@ -1274,7 +1418,7 @@
         ],
         "frequency": "industry-specific",
         "industries": [],
-        "line": 843
+        "line": 968
       },
       {
         "code": "REP-B-FAIRNESS",
@@ -1286,7 +1430,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 851
+        "line": 976
       },
       {
         "code": "REP-B-NORIGHTS",
@@ -1301,7 +1445,7 @@
         "industries": [
           "energy"
         ],
-        "line": 859
+        "line": 984
       },
       {
         "code": "REP-B-SUBSIDIARIES",
@@ -1314,7 +1458,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 867
+        "line": 992
       },
       {
         "code": "REP-B-REALPROPERTY",
@@ -1327,7 +1471,7 @@
         ],
         "frequency": "industry-specific",
         "industries": [],
-        "line": 875
+        "line": 1000
       },
       {
         "code": "IOC-ORDINARY",
@@ -1340,7 +1484,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 885
+        "line": 1010
       },
       {
         "code": "IOC-EXISTENCE",
@@ -1354,7 +1498,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 893
+        "line": 1018
       },
       {
         "code": "IOC-PRESERVE",
@@ -1368,7 +1512,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 901
+        "line": 1026
       },
       {
         "code": "IOC-MAINTAIN",
@@ -1382,7 +1526,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 909
+        "line": 1034
       },
       {
         "code": "IOC-NEWLINE",
@@ -1395,7 +1539,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 917
+        "line": 1042
       },
       {
         "code": "IOC-NOACTION",
@@ -1407,7 +1551,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 925
+        "line": 1050
       },
       {
         "code": "IOC-OTHER-AFFIRMATIVE",
@@ -1417,7 +1561,7 @@
         "aliases": [],
         "frequency": "common",
         "industries": [],
-        "line": 933
+        "line": 1058
       },
       {
         "code": "IOC-AFFIRMATIVE",
@@ -1427,7 +1571,7 @@
         "aliases": [],
         "frequency": "common",
         "industries": [],
-        "line": 941
+        "line": 1066
       },
       {
         "code": "IOC-GENERAL-EXCEPTIONS",
@@ -1437,7 +1581,7 @@
         "aliases": [],
         "frequency": "common",
         "industries": [],
-        "line": 949
+        "line": 1074
       },
       {
         "code": "IOC-POSITIVE-PREAMBLE",
@@ -1447,7 +1591,7 @@
         "aliases": [],
         "frequency": "common",
         "industries": [],
-        "line": 961
+        "line": 1086
       },
       {
         "code": "IOC-NEGATIVE-PREAMBLE",
@@ -1457,7 +1601,7 @@
         "aliases": [],
         "frequency": "common",
         "industries": [],
-        "line": 969
+        "line": 1094
       },
       {
         "code": "IOC-CHARTER",
@@ -1471,7 +1615,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 977
+        "line": 1102
       },
       {
         "code": "IOC-MERGE",
@@ -1485,7 +1629,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 985
+        "line": 1110
       },
       {
         "code": "IOC-ISSUE",
@@ -1498,7 +1642,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 993
+        "line": 1118
       },
       {
         "code": "IOC-REPURCHASE",
@@ -1511,7 +1655,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1001
+        "line": 1126
       },
       {
         "code": "IOC-DIVIDEND",
@@ -1524,7 +1668,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1009
+        "line": 1134
       },
       {
         "code": "IOC-SPLIT",
@@ -1537,7 +1681,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1017
+        "line": 1142
       },
       {
         "code": "IOC-DEBT",
@@ -1551,7 +1695,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1025
+        "line": 1150
       },
       {
         "code": "IOC-LIEN",
@@ -1564,7 +1708,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1033
+        "line": 1158
       },
       {
         "code": "IOC-CAPEX",
@@ -1577,7 +1721,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1041
+        "line": 1166
       },
       {
         "code": "IOC-COMP",
@@ -1591,7 +1735,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1049
+        "line": 1174
       },
       {
         "code": "IOC-HIRE",
@@ -1604,7 +1748,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1057
+        "line": 1182
       },
       {
         "code": "IOC-SETTLE",
@@ -1617,7 +1761,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1065
+        "line": 1190
       },
       {
         "code": "IOC-TAX",
@@ -1630,7 +1774,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1073
+        "line": 1198
       },
       {
         "code": "IOC-ACCOUNTING",
@@ -1643,7 +1787,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1081
+        "line": 1206
       },
       {
         "code": "IOC-CONTRACT",
@@ -1656,7 +1800,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1089
+        "line": 1214
       },
       {
         "code": "IOC-IP",
@@ -1669,7 +1813,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1097
+        "line": 1222
       },
       {
         "code": "IOC-INSURANCE",
@@ -1681,7 +1825,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1105
+        "line": 1230
       },
       {
         "code": "IOC-REALPROP",
@@ -1694,7 +1838,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1113
+        "line": 1238
       },
       {
         "code": "IOC-WAIVE",
@@ -1707,7 +1851,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1121
+        "line": 1246
       },
       {
         "code": "IOC-AFFILIATE",
@@ -1720,7 +1864,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1129
+        "line": 1254
       },
       {
         "code": "IOC-ENVIRO",
@@ -1732,7 +1876,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1137
+        "line": 1262
       },
       {
         "code": "IOC-COMMIT",
@@ -1745,7 +1889,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1145
+        "line": 1270
       },
       {
         "code": "IOC-CLINICAL",
@@ -1760,7 +1904,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 1154
+        "line": 1279
       },
       {
         "code": "IOC-PRODUCT",
@@ -1775,7 +1919,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 1162
+        "line": 1287
       },
       {
         "code": "IOC-REGAUTH",
@@ -1790,7 +1934,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 1170
+        "line": 1295
       },
       {
         "code": "NOSOL-PROHIBIT",
@@ -1804,7 +1948,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1180
+        "line": 1305
       },
       {
         "code": "NOSOL-CEASE",
@@ -1817,7 +1961,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1188
+        "line": 1313
       },
       {
         "code": "NOSOL-EXCEPT",
@@ -1831,7 +1975,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1196
+        "line": 1321
       },
       {
         "code": "NOSOL-SUPERIOR",
@@ -1844,7 +1988,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1204
+        "line": 1329
       },
       {
         "code": "NOSOL-ACQPROPOSAL",
@@ -1858,7 +2002,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1212
+        "line": 1337
       },
       {
         "code": "NOSOL-NOTICE",
@@ -1871,7 +2015,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1220
+        "line": 1345
       },
       {
         "code": "NOSOL-DISCLOSE",
@@ -1884,7 +2028,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1228
+        "line": 1353
       },
       {
         "code": "NOSOL-MATCH",
@@ -1898,7 +2042,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1236
+        "line": 1361
       },
       {
         "code": "NOSOL-NEGOTIATE",
@@ -1911,7 +2055,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1244
+        "line": 1369
       },
       {
         "code": "NOSOL-REMATCH",
@@ -1925,7 +2069,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1252
+        "line": 1377
       },
       {
         "code": "NOSOL-RECOMMEND",
@@ -1939,7 +2083,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1260
+        "line": 1385
       },
       {
         "code": "NOSOL-INTERVENING",
@@ -1952,7 +2096,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1268
+        "line": 1393
       },
       {
         "code": "NOSOL-WINDOW",
@@ -1967,7 +2111,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1276
+        "line": 1401
       },
       {
         "code": "NOSOL-ENFORCE",
@@ -1980,7 +2124,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1284
+        "line": 1409
       },
       {
         "code": "NOSOL-WAIVER",
@@ -1994,7 +2138,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1292
+        "line": 1417
       },
       {
         "code": "NOSOL-INFORMATION",
@@ -2007,7 +2151,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1300
+        "line": 1425
       },
       {
         "code": "NOSOL-CONFID",
@@ -2020,7 +2164,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1308
+        "line": 1433
       },
       {
         "code": "ANTI-EFFORTS",
@@ -2034,7 +2178,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 1321
+        "line": 1446
       },
       {
         "code": "ANTI-BURDEN",
@@ -2049,7 +2193,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 1330
+        "line": 1455
       },
       {
         "code": "ANTI-NOACTION",
@@ -2062,7 +2206,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1339
+        "line": 1464
       },
       {
         "code": "ANTI-FILING",
@@ -2079,7 +2223,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1348
+        "line": 1473
       },
       {
         "code": "ANTI-COOPERATE",
@@ -2094,7 +2238,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1357
+        "line": 1482
       },
       {
         "code": "ANTI-INFO",
@@ -2107,7 +2251,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1366
+        "line": 1491
       },
       {
         "code": "ANTI-FOREIGN",
@@ -2122,7 +2266,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1375
+        "line": 1500
       },
       {
         "code": "ANTI-INTERIM",
@@ -2135,7 +2279,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1384
+        "line": 1509
       },
       {
         "code": "ANTI-NOTIFY",
@@ -2148,7 +2292,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1393
+        "line": 1518
       },
       {
         "code": "ANTI-LITIGATION",
@@ -2161,7 +2305,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1402
+        "line": 1527
       },
       {
         "code": "ANTI-CONSULT",
@@ -2174,7 +2318,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1411
+        "line": 1536
       },
       {
         "code": "ANTI-TIMING",
@@ -2187,7 +2331,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1420
+        "line": 1545
       },
       {
         "code": "COND-M-LEGAL",
@@ -2201,7 +2345,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 1431
+        "line": 1556
       },
       {
         "code": "COND-M-REG",
@@ -2217,7 +2361,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1439
+        "line": 1564
       },
       {
         "code": "COND-M-STOCKHOLDER",
@@ -2230,7 +2374,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 1450
+        "line": 1575
       },
       {
         "code": "COND-M-S4",
@@ -2243,7 +2387,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1458
+        "line": 1583
       },
       {
         "code": "COND-M-LISTING",
@@ -2257,7 +2401,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1466
+        "line": 1591
       },
       {
         "code": "COND-B-REP",
@@ -2270,7 +2414,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1476
+        "line": 1601
       },
       {
         "code": "COND-B-COV",
@@ -2283,7 +2427,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1484
+        "line": 1609
       },
       {
         "code": "COND-B-MAE",
@@ -2297,7 +2441,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1492
+        "line": 1617
       },
       {
         "code": "COND-B-CERT",
@@ -2310,7 +2454,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1500
+        "line": 1625
       },
       {
         "code": "COND-B-DISSENT",
@@ -2323,7 +2467,7 @@
         ],
         "frequency": "industry-specific",
         "industries": [],
-        "line": 1508
+        "line": 1633
       },
       {
         "code": "COND-S-REP",
@@ -2336,7 +2480,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1518
+        "line": 1643
       },
       {
         "code": "COND-S-COV",
@@ -2349,7 +2493,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1526
+        "line": 1651
       },
       {
         "code": "COND-S-CERT",
@@ -2362,7 +2506,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1534
+        "line": 1659
       },
       {
         "code": "COND-S-FUNDS",
@@ -2375,7 +2519,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1542
+        "line": 1667
       },
       {
         "code": "COND-M-PREAMBLE",
@@ -2388,7 +2532,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1555
+        "line": 1680
       },
       {
         "code": "COND-B-PREAMBLE",
@@ -2401,7 +2545,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1563
+        "line": 1688
       },
       {
         "code": "COND-S-PREAMBLE",
@@ -2414,7 +2558,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1571
+        "line": 1696
       },
       {
         "code": "COND-FRUSTRATE",
@@ -2427,7 +2571,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1581
+        "line": 1706
       },
       {
         "code": "COND-TAXOPINION",
@@ -2440,7 +2584,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1589
+        "line": 1714
       },
       {
         "code": "TERMR-PREAMBLE",
@@ -2453,7 +2597,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1599
+        "line": 1724
       },
       {
         "code": "TERMR-MUTUAL",
@@ -2465,7 +2609,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 1607
+        "line": 1732
       },
       {
         "code": "TERMR-OUTSIDE",
@@ -2480,7 +2624,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 1615
+        "line": 1740
       },
       {
         "code": "TERMR-EXTENSION",
@@ -2493,7 +2637,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1623
+        "line": 1748
       },
       {
         "code": "TERMR-LEGAL",
@@ -2506,7 +2650,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1631
+        "line": 1756
       },
       {
         "code": "TERMR-VOTE",
@@ -2519,7 +2663,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1639
+        "line": 1764
       },
       {
         "code": "TERMR-BREACH-T",
@@ -2532,7 +2676,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1647
+        "line": 1772
       },
       {
         "code": "TERMR-BREACH-B",
@@ -2545,7 +2689,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1655
+        "line": 1780
       },
       {
         "code": "TERMR-SUPERIOR",
@@ -2558,7 +2702,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1663
+        "line": 1788
       },
       {
         "code": "TERMR-RECOMMEND",
@@ -2571,7 +2715,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1671
+        "line": 1796
       },
       {
         "code": "TERMF-TARGET",
@@ -2585,7 +2729,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1681
+        "line": 1806
       },
       {
         "code": "TERMF-REVERSE",
@@ -2599,7 +2743,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1689
+        "line": 1814
       },
       {
         "code": "TERMF-EXPENSE",
@@ -2611,7 +2755,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1697
+        "line": 1822
       },
       {
         "code": "TERMF-TAIL",
@@ -2625,7 +2769,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1705
+        "line": 1830
       },
       {
         "code": "TERMF-EFFECT",
@@ -2638,7 +2782,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1713
+        "line": 1838
       },
       {
         "code": "TERMF-SOLE",
@@ -2652,7 +2796,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1721
+        "line": 1846
       },
       {
         "code": "DEF-MAE",
@@ -2666,7 +2810,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1732
+        "line": 1857
       },
       {
         "code": "DEF-MAE-CARVEOUT",
@@ -2680,7 +2824,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1740
+        "line": 1865
       },
       {
         "code": "DEF-MAE-DISPROP",
@@ -2693,7 +2837,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1748
+        "line": 1873
       },
       {
         "code": "DEF-MAE-CLINICAL",
@@ -2709,7 +2853,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 1757
+        "line": 1882
       },
       {
         "code": "DEF-SUPERIOR",
@@ -2722,7 +2866,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1765
+        "line": 1890
       },
       {
         "code": "DEF-ACQPROPOSAL",
@@ -2736,7 +2880,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1773
+        "line": 1898
       },
       {
         "code": "DEF-INTERVENING",
@@ -2748,7 +2892,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1781
+        "line": 1906
       },
       {
         "code": "DEF-KNOWLEDGE",
@@ -2762,7 +2906,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1789
+        "line": 1914
       },
       {
         "code": "DEF-ORDINARY",
@@ -2775,7 +2919,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1797
+        "line": 1922
       },
       {
         "code": "DEF-BURDENSOME",
@@ -2787,7 +2931,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1805
+        "line": 1930
       },
       {
         "code": "DEF-WILLFUL",
@@ -2801,7 +2945,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1813
+        "line": 1938
       },
       {
         "code": "DEF-SUBSIDIARY",
@@ -2813,7 +2957,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1822
+        "line": 1947
       },
       {
         "code": "DEF-AFFILIATE",
@@ -2825,7 +2969,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1830
+        "line": 1955
       },
       {
         "code": "DEF-PERSON",
@@ -2837,7 +2981,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1838
+        "line": 1963
       },
       {
         "code": "DEF-REPRESENTATIVE",
@@ -2849,7 +2993,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1846
+        "line": 1971
       },
       {
         "code": "DEF-COMPANY",
@@ -2862,7 +3006,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1854
+        "line": 1979
       },
       {
         "code": "DEF-LIEN",
@@ -2875,7 +3019,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1863
+        "line": 1988
       },
       {
         "code": "DEF-PERMITLIEN",
@@ -2888,7 +3032,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1871
+        "line": 1996
       },
       {
         "code": "DEF-CONTRACT",
@@ -2900,7 +3044,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1879
+        "line": 2004
       },
       {
         "code": "DEF-MATCONTRACT",
@@ -2913,7 +3057,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1887
+        "line": 2012
       },
       {
         "code": "DEF-INDEBTEDNESS",
@@ -2925,7 +3069,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1895
+        "line": 2020
       },
       {
         "code": "DEF-BUSINESSDAY",
@@ -2937,7 +3081,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1903
+        "line": 2028
       },
       {
         "code": "DEF-MERGERCONSID",
@@ -2951,7 +3095,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1912
+        "line": 2037
       },
       {
         "code": "DEF-EQUITYAWARD",
@@ -2964,7 +3108,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1920
+        "line": 2045
       },
       {
         "code": "DEF-DISSENTING",
@@ -2977,7 +3121,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1928
+        "line": 2053
       },
       {
         "code": "DEF-GOVAUTH",
@@ -2990,7 +3134,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1937
+        "line": 2062
       },
       {
         "code": "DEF-LAW",
@@ -3002,7 +3146,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1945
+        "line": 2070
       },
       {
         "code": "DEF-PERMIT",
@@ -3015,7 +3159,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1953
+        "line": 2078
       },
       {
         "code": "DEF-REQUIREDAPPROVAL",
@@ -3028,7 +3172,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1961
+        "line": 2086
       },
       {
         "code": "DEF-BENEFITPLAN",
@@ -3041,7 +3185,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1970
+        "line": 2095
       },
       {
         "code": "DEF-COMPANYEMPLOYEE",
@@ -3054,7 +3198,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1978
+        "line": 2103
       },
       {
         "code": "DEF-TAX",
@@ -3066,7 +3210,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 1987
+        "line": 2112
       },
       {
         "code": "DEF-TAXRETURN",
@@ -3078,7 +3222,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 1995
+        "line": 2120
       },
       {
         "code": "DEF-GENERAL",
@@ -3090,7 +3234,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2004
+        "line": 2129
       },
       {
         "code": "DEF-INTERP",
@@ -3103,7 +3247,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2012
+        "line": 2137
       },
       {
         "code": "DEF-MADE-AVAILABLE",
@@ -3116,7 +3260,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2020
+        "line": 2145
       },
       {
         "code": "DEF-DISCLOSURELETTER",
@@ -3130,7 +3274,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2028
+        "line": 2153
       },
       {
         "code": "DEF-ENVIRONMENTAL-CLAIMS",
@@ -3143,7 +3287,7 @@
         ],
         "frequency": "industry-specific",
         "industries": [],
-        "line": 2036
+        "line": 2161
       },
       {
         "code": "COV-ACCESS",
@@ -3156,7 +3300,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2046
+        "line": 2171
       },
       {
         "code": "COV-PROXY",
@@ -3169,7 +3313,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2054
+        "line": 2179
       },
       {
         "code": "COV-MEETING",
@@ -3183,7 +3327,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2062
+        "line": 2187
       },
       {
         "code": "COV-SHAPRV-PARENT",
@@ -3197,7 +3341,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2074
+        "line": 2199
       },
       {
         "code": "COV-PUBLICITY",
@@ -3211,7 +3355,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 2082
+        "line": 2207
       },
       {
         "code": "COV-INDEMN",
@@ -3225,7 +3369,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 2090
+        "line": 2215
       },
       {
         "code": "COV-EMPLOYEE",
@@ -3239,7 +3383,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 2098
+        "line": 2223
       },
       {
         "code": "COV-TAKEOVER",
@@ -3252,7 +3396,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2106
+        "line": 2231
       },
       {
         "code": "COV-NOTIFY",
@@ -3265,7 +3409,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2114
+        "line": 2239
       },
       {
         "code": "COV-LITNOTIFY",
@@ -3278,7 +3422,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2122
+        "line": 2247
       },
       {
         "code": "COV-16B",
@@ -3292,7 +3436,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2130
+        "line": 2255
       },
       {
         "code": "COV-RESIGN",
@@ -3305,7 +3449,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2138
+        "line": 2263
       },
       {
         "code": "COV-FINANCING",
@@ -3319,7 +3463,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2146
+        "line": 2271
       },
       {
         "code": "COV-DELIST",
@@ -3333,7 +3477,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2154
+        "line": 2279
       },
       {
         "code": "COV-LIST",
@@ -3346,7 +3490,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2162
+        "line": 2287
       },
       {
         "code": "COV-FURTHER",
@@ -3359,7 +3503,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2170
+        "line": 2295
       },
       {
         "code": "COV-SECREPORT",
@@ -3372,7 +3516,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2178
+        "line": 2303
       },
       {
         "code": "COV-TAXMATTERS",
@@ -3385,7 +3529,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2186
+        "line": 2311
       },
       {
         "code": "COV-DEBT",
@@ -3399,7 +3543,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2194
+        "line": 2319
       },
       {
         "code": "COV-MERGESUB",
@@ -3412,7 +3556,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2202
+        "line": 2327
       },
       {
         "code": "COV-DIVIDEND",
@@ -3425,7 +3569,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2210
+        "line": 2335
       },
       {
         "code": "COV-CONSENT",
@@ -3438,7 +3582,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2218
+        "line": 2343
       },
       {
         "code": "COV-PAYOFF",
@@ -3451,7 +3595,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2226
+        "line": 2351
       },
       {
         "code": "COV-CVR",
@@ -3467,7 +3611,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 2234
+        "line": 2359
       },
       {
         "code": "COV-FDACOMMS",
@@ -3483,7 +3627,7 @@
         "industries": [
           "pharma"
         ],
-        "line": 2243
+        "line": 2368
       },
       {
         "code": "MISC-SURVIVAL",
@@ -3496,7 +3640,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2253
+        "line": 2378
       },
       {
         "code": "MISC-NOTICES",
@@ -3509,7 +3653,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2261
+        "line": 2386
       },
       {
         "code": "MISC-ENTIRE",
@@ -3522,7 +3666,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 2269
+        "line": 2394
       },
       {
         "code": "MISC-GOVLAW",
@@ -3535,7 +3679,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2277
+        "line": 2402
       },
       {
         "code": "MISC-JURISD",
@@ -3549,7 +3693,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2285
+        "line": 2410
       },
       {
         "code": "MISC-JURY",
@@ -3562,7 +3706,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2293
+        "line": 2418
       },
       {
         "code": "MISC-ASSIGN",
@@ -3575,7 +3719,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 2301
+        "line": 2426
       },
       {
         "code": "MISC-SEVER",
@@ -3587,7 +3731,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2309
+        "line": 2434
       },
       {
         "code": "MISC-EXPENSES",
@@ -3600,7 +3744,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2317
+        "line": 2442
       },
       {
         "code": "MISC-COUNTER",
@@ -3613,7 +3757,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2325
+        "line": 2450
       },
       {
         "code": "MISC-SPECIFIC",
@@ -3627,7 +3771,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2333
+        "line": 2458
       },
       {
         "code": "MISC-THIRDPARTY",
@@ -3639,7 +3783,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2341
+        "line": 2466
       },
       {
         "code": "MISC-AMEND",
@@ -3652,7 +3796,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2349
+        "line": 2474
       },
       {
         "code": "MISC-WAIVER",
@@ -3665,7 +3809,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2357
+        "line": 2482
       },
       {
         "code": "MISC-CONSTRUCT",
@@ -3678,7 +3822,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2373
+        "line": 2498
       },
       {
         "code": "COV-APPRAISAL",
@@ -3692,7 +3836,7 @@
         ],
         "frequency": "near-universal",
         "industries": [],
-        "line": 2383
+        "line": 2508
       },
       {
         "code": "COV-PAYAGENT",
@@ -3706,7 +3850,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2391
+        "line": 2516
       },
       {
         "code": "COV-MARKETING",
@@ -3719,7 +3863,7 @@
         ],
         "frequency": "occasional",
         "industries": [],
-        "line": 2399
+        "line": 2524
       },
       {
         "code": "COV-DO",
@@ -3733,7 +3877,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2407
+        "line": 2532
       },
       {
         "code": "TERMF-RTF-ANTI",
@@ -3747,7 +3891,7 @@
         ],
         "frequency": "occasional",
         "industries": [],
-        "line": 2415
+        "line": 2540
       },
       {
         "code": "TERMF-REIMBURSE",
@@ -3760,7 +3904,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2423
+        "line": 2548
       },
       {
         "code": "REP-B-ANTIRELIANCE",
@@ -3774,7 +3918,58 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2431
+        "line": 2563
+      },
+      {
+        "code": "REP-B-NOOTHERREPS",
+        "type": "REP-B",
+        "label": "No Other Representations (Disclaimer)",
+        "description": "Disclaimer that no representations or warranties were made beyond those expressly set forth in the agreement",
+        "aliases": [
+          "No Other Representations",
+          "Disclaimer of Representations"
+        ],
+        "frequency": "near-universal",
+        "industries": [],
+        "line": 2576
+      },
+      {
+        "code": "REP-B-NONRELIANCE",
+        "type": "REP-B",
+        "label": "Non-Reliance on Extra-Contractual Statements",
+        "description": "Affirmative acknowledgment of non-reliance on statements, projections, or materials outside the agreement",
+        "aliases": [
+          "Non-Reliance",
+          "Non-Reliance Acknowledgment"
+        ],
+        "frequency": "common",
+        "industries": [],
+        "line": 2584
+      },
+      {
+        "code": "REP-B-INDEPINVEST",
+        "type": "REP-B",
+        "label": "Independent Investigation Acknowledgment",
+        "description": "Acknowledgment that the party conducted its own independent investigation, review, and analysis",
+        "aliases": [
+          "Independent Investigation"
+        ],
+        "frequency": "common",
+        "industries": [],
+        "line": 2592
+      },
+      {
+        "code": "REP-B-FRAUDCARVEOUT",
+        "type": "REP-B",
+        "label": "Fraud Carve-Out",
+        "description": "Express preservation of fraud remedies notwithstanding the non-reliance / no-other-reps disclaimers",
+        "aliases": [
+          "Fraud Carve-Out",
+          "Fraud Exception"
+        ],
+        "frequency": "uncommon",
+        "industries": [],
+        "line": 2600
       },
       {
         "code": "REP-T-SUFFICIENCY",
@@ -3787,7 +3982,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2439
+        "line": 2608
       },
       {
         "code": "REP-T-TOP-CUSTOMERS",
@@ -3801,7 +3996,7 @@
         ],
         "frequency": "common",
         "industries": [],
-        "line": 2447
+        "line": 2616
       },
       {
         "code": "REP-T-MATERIAL-CONTRACTS",
@@ -3814,7 +4009,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2455
+        "line": 2624
       },
       {
         "code": "REP-T-PREAMBLE",
@@ -3828,7 +4023,7 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2467
+        "line": 2636
       },
       {
         "code": "REP-B-PREAMBLE",
@@ -3842,10 +4037,10 @@
         ],
         "frequency": "universal",
         "industries": [],
-        "line": 2475
+        "line": 2644
       }
     ],
-    "featureSchemaCount": 68
+    "featureSchemaCount": 82
   },
   "taxonomy": {
     "families": [
@@ -8990,7 +9185,7 @@
       "aocCitedCovenantNames",
       "reapplied_corrections"
     ],
-    "validatedRubricKeys": 471
+    "validatedRubricKeys": 477
   },
   "ui": {
     "files": [
@@ -9240,7 +9435,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/conditions.config.js",
-            "line": 333,
+            "line": 524,
             "kind": "features_property"
           }
         ]
@@ -9340,17 +9535,17 @@
         "hits": [
           {
             "file": "components/review/table-configs/conditions.config.js",
-            "line": 146,
+            "line": 93,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/conditions.config.js",
-            "line": 154,
+            "line": 331,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/conditions.config.js",
-            "line": 177,
+            "line": 357,
             "kind": "features_property"
           }
         ]
@@ -9360,12 +9555,12 @@
         "hits": [
           {
             "file": "components/review/EditPanel.js",
-            "line": 931,
+            "line": 932,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/conditions-m.config.js",
-            "line": 77,
+            "line": 46,
             "kind": "features_property"
           },
           {
@@ -9375,7 +9570,12 @@
           },
           {
             "file": "components/review/table-configs/conditions-m.config.js",
-            "line": 147,
+            "line": 121,
+            "kind": "features_property"
+          },
+          {
+            "file": "components/review/table-configs/conditions-m.config.js",
+            "line": 169,
             "kind": "features_property"
           }
         ]
@@ -9420,7 +9620,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/consideration-hero.config.js",
-            "line": 160,
+            "line": 292,
             "kind": "features_property"
           }
         ]
@@ -9515,7 +9715,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/conditions.config.js",
-            "line": 258,
+            "line": 445,
             "kind": "features_property"
           }
         ]
@@ -9655,12 +9855,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/consideration-hero.config.js",
-            "line": 162,
+            "line": 297,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/consideration-hero.config.js",
-            "line": 166,
+            "line": 305,
             "kind": "features_property"
           }
         ]
@@ -9730,7 +9930,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/representations-qualifiers.config.js",
-            "line": 226,
+            "line": 220,
             "kind": "features_property"
           }
         ]
@@ -9813,6 +10013,11 @@
       {
         "key": "exceptions",
         "hits": [
+          {
+            "file": "components/review/table-configs/misc-boilerplate.config.js",
+            "line": 91,
+            "kind": "object_key_literal"
+          },
           {
             "file": "pages/review-v1/[id].js",
             "line": 3556,
@@ -10125,7 +10330,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/conditions-m.config.js",
-            "line": 37,
+            "line": 41,
             "kind": "features_property"
           },
           {
@@ -10225,7 +10430,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/conditions-m.config.js",
-            "line": 37,
+            "line": 41,
             "kind": "features_property"
           },
           {
@@ -10310,12 +10515,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/material-contracts.config.js",
-            "line": 140,
+            "line": 146,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/material-contracts.config.js",
-            "line": 140,
+            "line": 147,
             "kind": "features_property"
           },
           {
@@ -10330,12 +10535,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/material-contracts.config.js",
-            "line": 96,
+            "line": 105,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/material-contracts.config.js",
-            "line": 97,
+            "line": 108,
             "kind": "features_property"
           },
           {
@@ -10424,6 +10629,11 @@
         "key": "milestones",
         "hits": [
           {
+            "file": "components/review/table-configs/consideration-hero.config.js",
+            "line": 212,
+            "kind": "object_key_literal"
+          },
+          {
             "file": "pages/review-v1/[id].js",
             "line": 3499,
             "kind": "keys_array"
@@ -10455,7 +10665,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/no-other-reps-fraud.config.js",
-            "line": 41,
+            "line": 99,
             "kind": "features_property"
           }
         ]
@@ -10555,7 +10765,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/consideration-hero.config.js",
-            "line": 159,
+            "line": 290,
             "kind": "features_property"
           },
           {
@@ -10620,7 +10830,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/votes-approvals-meeting.config.js",
-            "line": 112,
+            "line": 127,
             "kind": "features_property"
           }
         ]
@@ -10630,7 +10840,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/votes-approvals-meeting.config.js",
-            "line": 117,
+            "line": 130,
             "kind": "features_property"
           }
         ]
@@ -10740,7 +10950,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/consideration-hero.config.js",
-            "line": 159,
+            "line": 292,
             "kind": "features_property"
           }
         ]
@@ -10845,7 +11055,7 @@
         "hits": [
           {
             "file": "components/review/EditPanel.js",
-            "line": 531,
+            "line": 533,
             "kind": "features_property"
           }
         ]
@@ -10944,6 +11154,26 @@
         "key": "scope",
         "hits": [
           {
+            "file": "components/review/table-configs/general-covenants.config.js",
+            "line": 69,
+            "kind": "object_key_literal"
+          },
+          {
+            "file": "components/review/table-configs/general-covenants.config.js",
+            "line": 112,
+            "kind": "object_key_literal"
+          },
+          {
+            "file": "components/review/table-configs/no-other-reps-fraud.config.js",
+            "line": 46,
+            "kind": "object_key_literal"
+          },
+          {
+            "file": "components/review/table-configs/no-other-reps-fraud.config.js",
+            "line": 131,
+            "kind": "object_key_literal"
+          },
+          {
             "file": "pages/review-v1/[id].js",
             "line": 6692,
             "kind": "object_key_literal"
@@ -11015,7 +11245,7 @@
           },
           {
             "file": "components/review/table-configs/conditions-m.config.js",
-            "line": 38,
+            "line": 42,
             "kind": "features_property"
           },
           {
@@ -11230,17 +11460,17 @@
         "hits": [
           {
             "file": "components/review/table-configs/tail-fee.config.js",
-            "line": 103,
+            "line": 155,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/tail-fee.config.js",
-            "line": 104,
+            "line": 156,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/tail-fee.config.js",
-            "line": 113,
+            "line": 180,
             "kind": "features_property"
           }
         ]
@@ -11250,12 +11480,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/tail-fee.config.js",
-            "line": 105,
+            "line": 163,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/tail-fee.config.js",
-            "line": 119,
+            "line": 184,
             "kind": "features_property"
           }
         ]
@@ -11265,7 +11495,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/tail-fee.config.js",
-            "line": 104,
+            "line": 161,
             "kind": "features_property"
           }
         ]
@@ -11275,12 +11505,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/tail-fee.config.js",
-            "line": 101,
+            "line": 153,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/tail-fee.config.js",
-            "line": 111,
+            "line": 177,
             "kind": "features_property"
           }
         ]
@@ -11290,12 +11520,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/tail-fee.config.js",
-            "line": 101,
+            "line": 152,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/tail-fee.config.js",
-            "line": 108,
+            "line": 171,
             "kind": "features_property"
           }
         ]
@@ -11313,6 +11543,21 @@
       {
         "key": "threshold",
         "hits": [
+          {
+            "file": "components/review/table-configs/nosol-section.config.js",
+            "line": 206,
+            "kind": "object_key_literal"
+          },
+          {
+            "file": "components/review/table-configs/nosol-superior.config.js",
+            "line": 26,
+            "kind": "object_key_literal"
+          },
+          {
+            "file": "components/review/table-configs/tail-fee.config.js",
+            "line": 111,
+            "kind": "object_key_literal"
+          },
           {
             "file": "pages/review-v1/[id].js",
             "line": 3513,
@@ -11368,6 +11613,11 @@
       {
         "key": "triggers",
         "hits": [
+          {
+            "file": "components/review/table-configs/consideration-hero.config.js",
+            "line": 215,
+            "kind": "object_key_literal"
+          },
           {
             "file": "pages/review-v1/[id].js",
             "line": 3999,

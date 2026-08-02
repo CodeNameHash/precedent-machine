@@ -46,6 +46,12 @@ function isRepresentationCard(card) {
 // provision_type is MISC_BOILERPLATE (it lives under Anti-Reliance in that
 // section, not the Parent reps table); the loose OR would otherwise pull it
 // into this table by code prefix alone. See R5 note in FEEDBACK-4-PUNCHLIST.
+// v1 reclassification (2026-08-02, R3): the same is true of REP-B-ANTIRELIANCE's
+// eight element successors (REP-B-/REP-T- x NOOTHERREPS/NONRELIANCE/
+// INDEPINVEST/FRAUDCARVEOUT) -- they land wherever the anti-reliance
+// element scan found them (often MISC_BOILERPLATE, not a REPRESENTATION
+// section), so this strict provision_type check keeps them out of the
+// per-rep table the same way it always kept REP-B-ANTIRELIANCE out.
 function isPartyRepresentationCard(card, partyPrefix) {
   return cardType(card) === 'REPRESENTATION' && cardCode(card).startsWith(partyPrefix);
 }

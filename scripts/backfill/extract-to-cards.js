@@ -17,6 +17,14 @@ const { normalizeForMatch } = require('../../lib/verification');
 
 const DEFAULT_REPORT = 'docs/reprocess/round-m2-00-backfill.md';
 const DEFAULT_MIN_CARDS = 40;
+// Default extraction_version label — unchanged for ordinary backfill runs.
+// v1 reclassification (2026-08-02, audit A-M4): the reclassification apply
+// pass MUST run this script with `--extraction-version m2-01-reclass-v1` so
+// the comparator's isComparisonReceiptStale actually fires on pre-reclass
+// receipts (lib/canonical-v2/native-producer/v1v2-comparator.js). Pinned
+// per docs/superpowers/specs/2026-08-02-v1-reclassification-design.md §4 —
+// DOCUMENTED here, NOT executed by this slice (CODE ONLY; no DB writes).
+const DEFAULT_EXTRACTION_VERSION = 'm2-00-corpus-backfill-v1';
 const UPSERT_BATCH_SIZE = 50;
 const UPSERT_RETRIES = 3;
 
@@ -42,6 +50,7 @@ function parseArgs(argv) {
     envFile: null,
     minCards: DEFAULT_MIN_CARDS,
     out: DEFAULT_REPORT,
+    extractionVersion: DEFAULT_EXTRACTION_VERSION,
   };
   for (let i = 2; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -51,6 +60,7 @@ function parseArgs(argv) {
     else if (arg === '--env-file') args.envFile = argv[++i];
     else if (arg === '--min-cards') args.minCards = Number(argv[++i]);
     else if (arg === '--out') args.out = argv[++i];
+    else if (arg === '--extraction-version') args.extractionVersion = argv[++i];
     else throw new Error(`Unknown arg: ${arg}`);
   }
   if (!args.all && !args.deal) throw new Error('Usage: node scripts/backfill/extract-to-cards.js (--all | --deal <substring-or-id>) [--apply] [--env-file <path>] [--out <path>]');
@@ -291,7 +301,7 @@ async function ensureParserRegions(sb, deal, apply) {
   return rows;
 }
 
-function legacyProvisionForCard(row, deal, region) {
+function legacyProvisionForCard(row, deal, region, extractionVersion) {
   const features = featureBag(row);
   const code = rowCode(row);
   const text = String(row.full_text || '').trim();
@@ -312,11 +322,11 @@ function legacyProvisionForCard(row, deal, region) {
     ai_metadata: row.ai_metadata,
     source_doc_id: deal.id,
     extracted_by: 'CODEX',
-    extraction_version: 'm2-00-corpus-backfill-v1',
+    extraction_version: extractionVersion || DEFAULT_EXTRACTION_VERSION,
   };
 }
 
-function buildExtractorOutput(deal, provisionRows, parserRegionRows) {
+function buildExtractorOutput(deal, provisionRows, parserRegionRows, extractionVersion) {
   const regionIndex = buildRegionIndex(parserRegionRows);
   const provisions = [];
   const skipped = [];
@@ -330,7 +340,7 @@ function buildExtractorOutput(deal, provisionRows, parserRegionRows) {
       skipped.push({ id: row.id, reason: 'no matching parser region' });
       continue;
     }
-    provisions.push(legacyProvisionForCard(row, deal, region));
+    provisions.push(legacyProvisionForCard(row, deal, region, extractionVersion));
   }
   return { provisions, skipped };
 }
@@ -340,7 +350,7 @@ async function backfillDeal(sb, deal, options = {}) {
   const provisionRows = await fetchProvisionRows(sb, deal.id);
   const beforeCards = await existingCardCount(sb, deal.id);
   const parserRegionRows = await ensureParserRegions(sb, deal, options.apply);
-  const extractorOutput = buildExtractorOutput(deal, provisionRows, parserRegionRows);
+  const extractorOutput = buildExtractorOutput(deal, provisionRows, parserRegionRows, options.extractionVersion);
   const runOptions = {
     sourceDocId: deal.id,
     model: 'legacy-provisions',
@@ -426,6 +436,7 @@ async function run(argv = process.argv) {
       minCards: args.minCards,
       runId,
       extractedAt: generatedAt,
+      extractionVersion: args.extractionVersion,
     });
     results.push(result);
     console.log(`${result.ok ? 'PASS' : 'FAIL'} ${result.deal}: ${result.cards} cards (${result.ms}ms)`);

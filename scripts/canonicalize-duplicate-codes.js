@@ -43,10 +43,14 @@ const { getServiceSupabase } = require('../lib/supabase');
 const APPLY = process.argv.includes('--apply');
 
 // The TWO true duplicates only (docs/PLAN.md P3) — the other taxonomy-split
-// pairs in that list (REP-T-CONSENT/REP-T-NOCONFLICT,
-// REP-T-SANCTIONS/REP-T-ANTICORR, MISC-JURY/MISC-JURISD, COV-PROXY/
-// COV-MEETING) are related-but-distinct concepts, not duplicates, and are
-// deliberately NOT retyped here — they stay display-layer-only unions.
+// pairs in that list (REP-T-GOVAPPROVAL/REP-T-NOCONFLICT [was
+// REP-T-CONSENT/REP-T-NOCONFLICT before the 2026-08-02 v1 reclassification
+// retired REP-T-CONSENT — see docs/superpowers/specs/
+// 2026-08-02-v1-reclassification-design.md], REP-T-SANCTIONS/
+// REP-T-ANTICORR, MISC-JURY/MISC-JURISD, COV-PROXY/COV-MEETING) are
+// related-but-distinct concepts, not duplicates, and are deliberately NOT
+// retyped here — they stay display-layer-only unions
+// (components/review-v2/compareRowUnion.js).
 const RETYPE_MAP = new Map([
   ['REP-T-CONTRACTS', 'REP-T-MATERIAL-CONTRACTS'],
   ['COV-PAYAGENT', 'CONSID-EXCHANGE'],

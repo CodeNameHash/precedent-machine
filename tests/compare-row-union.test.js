@@ -161,7 +161,9 @@ test('unionRows: a ROW_FAMILY pair that previously produced two one-sided rows n
 
 test('unionRows: ROW_FAMILY pairs for the other five mapped groups also collapse to one row', () => {
   const groups = [
-    ['REP-T-CONSENT', 'REP-T-NOCONFLICT', 'No conflict; consents & approvals'],
+    // v1 reclassification (2026-08-02, R1): REP-T-CONSENT retired; the
+    // union follows its GOVAPPROVAL successor (see compareRowUnion.js).
+    ['REP-T-GOVAPPROVAL', 'REP-T-NOCONFLICT', 'No conflict; consents & approvals'],
     ['REP-T-SANCTIONS', 'REP-T-ANTICORR', 'Anti-corruption & sanctions'],
     ['MISC-JURY', 'MISC-JURISD', 'Jurisdiction & jury waiver'],
     ['COV-PROXY', 'COV-MEETING', 'Stockholder meeting & proxy'],
