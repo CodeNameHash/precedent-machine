@@ -40,8 +40,11 @@ const globalPatterns = [
 // See the exemption comment at the application site: verbatim recorded SEC
 // filing text inside pinned live-run fixtures must not trip prose-shaped
 // bug-fingerprints aimed at code/label regressions. Narrow by construction:
-// only files under a *-live-run fixture directory, only these patterns.
-const RECORDED_LIVE_RUN_DIR = /^tests\/fixtures\/canonical-v2\/[a-z0-9-]*live-run[a-z0-9-]*\//;
+// only files under a *-live-run fixture directory — plus the v1v2-comparator
+// snapshot fixture, which is the same artifact class (recorded production
+// provision_cards text: section titles and primary_quotes are verbatim
+// merger-agreement prose) — and only these patterns.
+const RECORDED_LIVE_RUN_DIR = /^tests\/fixtures\/canonical-v2\/([a-z0-9-]*live-run[a-z0-9-]*|v1v2-comparator)\//;
 const PROSE_CLASS_FINGERPRINTS = [
   'QUALIFICATION.*litigation',
   'Must defend \\(incl\\. appeals/final judgment\\)',
