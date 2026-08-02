@@ -2,11 +2,12 @@
   "phase": "WP-INSTRUMENT-FIXES",
   "allowed": [
     ".github/phase-allowlists/wp-instrument-fixes.json",
-    "lib/canonical-v2/native-producer/limb-enumeration-scan.js",
+    "docs/codex-program/specification-manifest.json",
     "lib/canonical-v2/native-producer/citation-constructibility.js",
+    "lib/canonical-v2/native-producer/limb-enumeration-scan.js",
     "lib/canonical-v2/native-producer/native-extraction-run.js",
-    "tests/canonical-v2-limb-enumeration-scan.test.js",
     "tests/canonical-v2-citation-constructibility.test.js",
+    "tests/canonical-v2-limb-enumeration-scan.test.js",
     "tests/canonical-v2-native-extraction-run.test.js"
   ],
   "denied": [

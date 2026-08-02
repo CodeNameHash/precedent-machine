@@ -15,6 +15,14 @@ and milestone acknowledgement work. Mechanical work uses lower-cost agents. Lega
 identity, security and exact-root review uses the stronger governed review
 model. Agents do not move main.
 
+Process Intelligence work follows the approved execution plan at
+`precedent-machine-process-design/docs/superpowers/plans/2026-07-29-process-intelligence-execution-plan.md`,
+SHA-256 `570e19ff0ef8a8a130f18f11833348d25a0d9783eda01b540bfe7320dec6a55d`,
+as amended by the FINAL 2026-08-02 amendment (Ben's rulings folded) at
+`precedent-machine-process-design/docs/superpowers/plans/2026-08-02-process-intelligence-successor-plan.md`,
+committed at `b5f2feae` on `codex/process-intelligence-design`,
+SHA-256 `36788a52eb281abdb03ffe42421e3d224dee670f0a5572fd8f0d08d53d631abd`.
+
 ## 1. Current state
 
 | Item | State |
