@@ -295,16 +295,35 @@ This slice therefore builds the seam explicitly:
   `TERMINATION → buildTerminationProducerPrompt`. Unknown family → the
   section is NOT sent to any producer (fail closed: no prompt, no
   candidates, no silent fallback to the capitalisation prompt).
-- **Native-side section-family classifier** — a new deterministic function
-  in/alongside `deterministic-sectionizer.js` that classifies a section as
-  `TERMINATION` on section-title evidence only (title regexes ported from,
-  and tested against, the v1 `lib/parser-v2/classify.js` TERMR/TERMF title
-  split at ~498–510 — including the TERMF exclusion so fee sections never
-  reach this prompt). Its own
-  `SECTION_FAMILY_CLASSIFIER_VERSION`, threaded into the run receipt
-  alongside the prompt versions. The classifier is validated against ALL
-  deals' section titles (the classify-rules safety check from repo
-  conventions) before the prompt is ever dispatched.
+- **Native-side section-family classifier — two-stage, AI-assisted with
+  flagged provenance (BEN RULING 2026-08-02, amending the original
+  title-rules-only design):**
+  1. STAGE 1, deterministic: title regexes ported from, and tested
+     against, the v1 `lib/parser-v2/classify.js` TERMR/TERMF title split
+     (~498-510, incl. the TERMF exclusion so fee sections never reach
+     this prompt). A stage-1 match classifies with provenance
+     `SECTION_FAMILY_RULE_CLASSIFIED`.
+  2. STAGE 2, AI-assisted: sections stage 1 leaves unmatched MAY be
+     classified by a bounded model call (same provider seam disciplines:
+     typed failure on malformed response, never an empty success). An
+     AI classification carries provenance
+     `SECTION_FAMILY_AI_CLASSIFIED`, which travels — run receipt,
+     every downstream candidate's extraction_provenance, and the
+     review-queue item — so the flag is VISIBLE IN OUTPUT per Ben's
+     ruling, mirroring the existing MECHANICAL/AI/VERIFIED provenance
+     tag convention. AI-classified sections' claims NEVER auto-pass
+     while the classification is unverified (a typed
+     `SECTION_FAMILY_AI_UNVERIFIED` condition in
+     `unevaluated_conditions`, cleared only by a human confirming the
+     family or a later rule-classified re-run agreeing).
+  3. AI declines / no confident family / unknown family → the section
+     is dispatched to NO producer (fail closed, unchanged).
+  Its own `SECTION_FAMILY_CLASSIFIER_VERSION` (and the stage-2 prompt's
+  own version), threaded into the run receipt alongside the prompt
+  versions. Stage 1 is validated against ALL deals' section titles (the
+  classify-rules safety check) before dispatch; stage 2's accuracy is
+  measured against stage-1-classified sections as a golden baseline
+  (agreement rate reported per run) before Ben relies on the flag.
 - `native-extraction-run.js` is refactored to select prompts through the
   registry; the hard-required capitalisation import becomes one registry
   entry. This refactor is in-slice, spec'd here, and covered by test 6's
