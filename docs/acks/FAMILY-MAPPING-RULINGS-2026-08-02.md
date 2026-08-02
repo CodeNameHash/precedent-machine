@@ -40,14 +40,14 @@ decisions first:
   an express fraud carve-out. The rubric's feature schema already
   models these elements; the subtype never did.
 
-## Fable rulings (pending Ben's confirm on 1-2)
+## Fable rulings — ALL CONFIRMED BY BEN 2026-08-02
 
 **R1 — REP-T-CONSENT splits:** `REP-T-STOCKAPPROVAL` (target
 stockholder vote required; mirrors REP-B-VOTE and fixes the T/B
 asymmetry) + `REP-T-GOVAPPROVAL` (governmental consents/filings — the
 de facto content of 18/19 cards). v1 reclassification of the 19 cards
 is mechanical (one card moves; the Bonds misclassification df393645
-§3.22 exits to backlog). NEEDS BEN CONFIRM.
+§3.22 exits to backlog). CONFIRMED (Ben, 2026-08-02).
 
 **R2 — REP-T-REGSTATUS splits four ways by regime:** `REP-T-40ACT`
 (Investment Company Act — Ben's "40Act", exactly the Modiv card),
@@ -57,9 +57,7 @@ status). Rationale: different statutes, regulators and diligence
 questions; a single "40Act" bucket would reproduce the lumping one
 level down by conflating the ICA with the Advisers Act. Low per-subtype
 counts accepted — low-frequency/high-materiality is what dedicated
-subtypes are for. The ce061fd0 miscode exits to backlog. NEEDS BEN
-CONFIRM (his instinct named the ICA cards; this ruling refines, not
-contradicts).
+subtypes are for. The ce061fd0 miscode exits to backlog. CONFIRMED (Ben, 2026-08-02).
 
 **R3 — REP-B-ANTIRELIANCE/NOREP element split (Ben already ruled
 SPLIT; this is the design):** four subtypes —
@@ -101,5 +99,4 @@ boolean.
 The investigation's Supabase advisory: 19 tables in the production
 project have Row Level Security DISABLED (anon read/write exposure),
 including provisions_archive_20260706, deal_topology,
-termination_fee_triggers. Not acted on (read-only task). Needs its own
-decision/slice.
+termination_fee_triggers. Not acted on (read-only task). Ben authorized the hardening pass 2026-08-02; slice in flight.
