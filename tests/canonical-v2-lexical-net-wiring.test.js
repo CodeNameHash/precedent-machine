@@ -137,12 +137,33 @@ test('FIXTURE PIN (test 4, additivity): the no-lexical-input resolveCandidates()
 
   assert.ok(!('lexical_disagreement_counts' in baseline.resolution_receipt), 'omitted entirely, not present-as-null, for a no-input run');
   assert.ok(!('v1v2_comparison_receipt_id' in baseline.resolution_receipt));
-  assert.equal(
+  // Re-pinned (P1 cap-table numerics, docs/superpowers/specs/2026-08-02-
+  // p1-captable-numerics-design.md section 4, audit M-1 "additivity pin,
+  // restated honestly"): a no-share-count-input run is NO LONGER
+  // byte-identical to the pre-slice fixture's own resolution_receipt_id --
+  // MAPPING_TABLE_VERSION bumped 3 -> 4, and receiptBody now carries two
+  // new unconditional fields (share_count_parse_version,
+  // zero_pattern_table_version) alongside the pre-existing
+  // measurement_date_parse_version. This is the field-level diff the spec
+  // requires documenting, not a silent break of the fixture's own
+  // committed pin (tests/fixtures/canonical-v2/f28-third-live-run/
+  // resolution.json is a fixture, untouched -- only THIS assertion's
+  // expectation moves). SOURCE_SCOPE_CERTIFICATION_ABSENT still never
+  // touches receiptBody, only per-claim triage, as the comment always said.
+  assert.notEqual(
     baseline.resolution_receipt.resolution_receipt_id,
     resolutionFixture.resolution_receipt.resolution_receipt_id,
-    'must equal the resolution_receipt_id recorded in the committed pre-slice fixture -- SOURCE_SCOPE_CERTIFICATION_ABSENT never touches receiptBody, only per-claim triage',
+    'the committed pre-slice fixture is now stale under MAPPING_TABLE_VERSION 4 -- this is the expected, documented re-pin',
   );
   assert.equal(resolutionFixture.resolution_receipt.resolution_receipt_id, '16939d3bbf295686be514e51245429c7096fd99e1dca1b19f8037a10a6b41a79');
+  assert.equal(baseline.resolution_receipt.mapping_table_version, 4);
+  assert.equal(baseline.resolution_receipt.share_count_parse_version, 1);
+  assert.equal(baseline.resolution_receipt.zero_pattern_table_version, 1);
+  assert.equal(
+    baseline.resolution_receipt.resolution_receipt_id,
+    '24ada5d4445f5c885d01f168582f03426b06c474062ae001e475ff87da8a37a9',
+    'the new, re-pinned resolution_receipt_id under MAPPING_TABLE_VERSION 4',
+  );
 
   // SOURCE_SCOPE_CERTIFICATION_ABSENT is unconditional -- present even with
   // no lexical_disagreement input at all (spec: "PERMANENT for this

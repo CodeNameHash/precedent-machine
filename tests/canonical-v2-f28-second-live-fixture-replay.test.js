@@ -388,8 +388,10 @@ test('replaying the F28 SECOND recorded raw response through the fixed pipeline:
   );
 
   // Receipt pins (Task 3 work item 1): every version that participated in
-  // this resolution is traceable.
-  assert.equal(resolution.resolution_receipt.mapping_table_version, 3);
+  // this resolution is traceable. MAPPING_TABLE_VERSION 3 -> 4 (P1
+  // cap-table numerics, docs/superpowers/specs/2026-08-02-p1-captable-
+  // numerics-design.md section 4).
+  assert.equal(resolution.resolution_receipt.mapping_table_version, 4);
   assert.ok(Number.isInteger(resolution.resolution_receipt.qualifier_kind_lexicon_version));
   assert.ok(Number.isInteger(resolution.resolution_receipt.measurement_date_parse_version));
   assert.ok(typeof resolution.resolution_receipt.ruling_corpus_id === 'string' && resolution.resolution_receipt.ruling_corpus_id.length > 0);
