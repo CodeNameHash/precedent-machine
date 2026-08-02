@@ -223,12 +223,26 @@ test('FIXTURE PIN: the no-v1v2-input resolveCandidates() path reproduces the com
     !('v1v2_comparison_receipt_id' in baseline.resolution_receipt),
     'omitted entirely, not present-as-null, for a no-input run',
   );
-  assert.equal(
+  // Re-pinned (P1 cap-table numerics, docs/superpowers/specs/2026-08-02-
+  // p1-captable-numerics-design.md section 4, audit M-1): MAPPING_TABLE_
+  // VERSION bumped 3 -> 4 and receiptBody now always carries
+  // share_count_parse_version/zero_pattern_table_version, so a no-v1v2-input
+  // run is no longer byte-identical to the pre-slice fixture's committed
+  // resolution_receipt_id. FIX 1's conditional spread (v1v2_comparison_
+  // receipt_id omitted when no input supplied) still holds -- only the
+  // hash itself moves, for the reason asserted below.
+  assert.notEqual(
     baseline.resolution_receipt.resolution_receipt_id,
     resolutionFixture.resolution_receipt.resolution_receipt_id,
-    'must equal the resolution_receipt_id recorded in the committed pre-slice fixture -- proves FIX 1\'s conditional spread keeps no-input hashes byte-identical to pre-slice code',
+    'the committed pre-slice fixture is now stale under MAPPING_TABLE_VERSION 4 -- this is the expected, documented re-pin',
   );
   assert.equal(resolutionFixture.resolution_receipt.resolution_receipt_id, '16939d3bbf295686be514e51245429c7096fd99e1dca1b19f8037a10a6b41a79');
+  assert.equal(baseline.resolution_receipt.mapping_table_version, 4);
+  assert.equal(
+    baseline.resolution_receipt.resolution_receipt_id,
+    '24ada5d4445f5c885d01f168582f03426b06c474062ae001e475ff87da8a37a9',
+    'the new, re-pinned resolution_receipt_id under MAPPING_TABLE_VERSION 4',
+  );
 });
 
 test('TopBuild snapshot fixture: 43 real REPRESENTATION cards, one REP-T-CAP at 3.1(b), the rest a real REP taxonomy spread', () => {

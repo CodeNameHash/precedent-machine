@@ -1,0 +1,38 @@
+{
+  "phase": "WP-P1-CAPTABLE-NUMERICS",
+  "allowed": [
+    ".github/phase-allowlists/wp-p1-captable-numerics.json",
+    "docs/codex-program/specification-manifest.json",
+    "docs/superpowers/specs/2026-08-02-p1-captable-numerics-design.md",
+    "lib/canonical-v2/contract-bundle.js",
+    "lib/canonical-v2/native-producer/anthropic-provider.js",
+    "lib/canonical-v2/native-producer/candidate-proposal-compiler.js",
+    "lib/canonical-v2/native-producer/candidate-resolution.js",
+    "lib/canonical-v2/native-producer/capitalisation-producer-prompt.js",
+    "lib/canonical-v2/native-producer/measurement-date-parse.js",
+    "lib/canonical-v2/native-producer/share-count-parse.js",
+    "tests/canonical-v2-candidate-resolution.test.js",
+    "tests/canonical-v2-capitalisation-producer-prompt.test.js",
+    "tests/canonical-v2-contract-bundle-v14.test.js",
+    "tests/canonical-v2-contract-bundle-versions.test.js",
+    "tests/canonical-v2-f28-second-live-fixture-replay.test.js",
+    "tests/canonical-v2-lexical-net-wiring.test.js",
+    "tests/canonical-v2-p1-captable-numerics-resolution.test.js",
+    "tests/canonical-v2-share-count-parse.test.js",
+    "tests/canonical-v2-v1v2-comparator-wiring.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**",
+    "lib/parser-v2/**",
+    "lib/taxonomy.js",
+    "lib/rubric.js",
+    "lib/canonical-v2/native-producer/v1v2-comparator.js",
+    "lib/canonical-v2/native-producer/lexical-disagreement-net.js",
+    "tests/fixtures/**"
+  ],
+  "note": "P1 cap-table numeric promotions (C1+C9 authorized/outstanding share counts, C8+C11 reserved-share-pool): CAPITALIZATION_SHARE_COUNT + RESERVED_SHARE_POOL claim definitions (contract-bundle.js V14), the pinned share-count-parse.js numeric parser, PROMPT_VERSION 5's share_count_assertions array, and candidate-resolution.js's dedicated SHARE_COUNT handler (MAPPING_TABLE_VERSION 3->4). Coverage-map deliverable only -- no live re-extraction runs in this slice; C1/C8/C9/C11 conversion is not claimed until the dated post-merge live-rerun handoffs land (spec audit M-5)."
+}
