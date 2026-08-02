@@ -1,0 +1,29 @@
+{
+  "phase": "WP-COMPARATOR-WIRING",
+  "allowed": [
+    ".github/phase-allowlists/wp-comparator-wiring.json",
+    "docs/superpowers/specs/2026-08-02-comparator-wiring-design.md",
+    "docs/acks/FAMILY-MAPPING-RULINGS-2026-08-02.md",
+    "docs/handoffs/NETS-ELIGIBILITY-2026-08-02.md",
+    "docs/codex-program/specification-manifest.json",
+    "lib/canonical-v2/native-producer/v1v2-comparator.js",
+    "scripts/nets-eligibility-report.mjs",
+    "tests/canonical-v2-comparator-wiring-replay.test.js",
+    "tests/fixtures/canonical-v2/v1v2-comparator/**"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**",
+    "lib/parser-v2/**",
+    "lib/taxonomy.js",
+    "lib/rubric.js",
+    "lib/canonical-v2/native-producer/candidate-resolution.js",
+    "lib/canonical-v2/native-producer/lexical-disagreement-net.js",
+    "lib/canonical-v2/native-producer/share-count-parse.js",
+    "lib/canonical-v2/contract-bundle.js"
+  ],
+  "note": "Comparator-wiring slice: FAMILY_MAPPING_TABLE_VERSION 1->2 (seven Ben-ratified identity rows), Skechers/Modiv v1 snapshot re-export with the literal recorded governed_deal_key (replacing placeholder fixtures), two-pass comparator+lexical-net wiring replay tests across all three recorded runs, and the offline nets-eligibility-report script + its dated handoff. Wiring is test-side only -- candidate-resolution.js/lexical-disagreement-net.js/share-count-parse.js/contract-bundle.js are explicitly denied, unchanged by this slice."
+}
