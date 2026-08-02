@@ -1,8 +1,10 @@
 # V1↔V2 comparator net (auto-pass condition 1 of 2)
 
-**Date:** 2026-08-01. **Status:** amended after Fable adversarial audit (2026-08-01); ONE OPEN
-DECISION for Ben — the condition-1 satisfaction rule (see "The open
-protocol question" below). Everything else is settled.
+**Date:** 2026-08-01. **Status:** APPROVED — Ben ruled option (A) on the
+condition-1 question (2026-08-02): for value-invisible claims the
+condition stays unevaluated (`V1_V2_COMPARATOR_INAPPLICABLE_TO_CLAIM`)
+and keeps blocking auto-pass; the M3 protocol text is unchanged.
+Revisit trigger: lexical net landed + queue data showing the cost.
 **Why now:** `candidate-resolution.js` hard-blocks auto-pass on
 `V1_V2_COMPARATOR_ABSENT`. This net is one of the two conditions in Ben's
 M3 protocol the code cannot yet evaluate. Its absence makes every clean
@@ -127,7 +129,7 @@ provision. Options:
       the value is already mechanically derived from byte-verified
       quotes and the comparator's realistic job is catching misplaced or
       hallucinated provisions.
-The default is (A) unless Ben rules (B).
+**RESOLVED: Ben ruled (A), 2026-08-02.**
 
 ### Wiring
 
