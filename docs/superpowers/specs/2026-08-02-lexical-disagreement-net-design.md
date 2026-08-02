@@ -37,8 +37,9 @@ This spec implements clauses of Ben's M3 protocol
    every claim in the section) would also make condition 2 unpassable
    until every family has a lexicon, producing no eligibility data at
    all. This is a READING of the protocol, not a mechanical
-   consequence — **Ben ratifies or rejects it in one line at PR
-   review**; rejecting changes one wiring predicate, nothing else.
+   consequence — **RATIFIED by Ben at PR #472 review (2026-08-02), together with the
+   digest erratum acknowledgment.** Standing note: Ben granted merge
+   authority without per-PR confirmation going forward.
 
 ## Design
 
