@@ -56,8 +56,8 @@ function renderedPromptText() {
   return built.messages[0].content;
 }
 
-test('PROMPT_VERSION is 4', () => {
-  assert.equal(PROMPT_VERSION, 4);
+test('PROMPT_VERSION is 5 (P1 cap-table numerics: share_count_assertions added)', () => {
+  assert.equal(PROMPT_VERSION, 5);
 });
 
 test('PROMPT_ID is unchanged by the vocabulary cleanup', () => {
