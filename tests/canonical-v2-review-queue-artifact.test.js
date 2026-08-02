@@ -134,6 +134,58 @@ test('buildReviewQueueArtifact: content-addressed and deterministic', () => {
   assert.notEqual(artifactOne.review_queue_artifact_id, artifactDifferentQueue.review_queue_artifact_id);
 });
 
+// ═══════════════════════════════════════════════════════════════════════
+// FIXTURE PIN (docs/superpowers/specs/2026-08-02-lexical-disagreement-net-
+// design.md wiring, Fable review finding 2): `counts` must be OMITTED
+// entirely from artifactBody -- and hence never touch review_queue_
+// artifact_id -- for a run whose queue items carry no both_nets_clean
+// marker at all (every pre-lexical-net run, and every lexical-net run
+// where nothing ever bound clean on both nets). Reproduces the REAL
+// committed skechers-first-live-run fixture byte-for-byte from its own
+// recorded review_queue + run_receipt_id, proving this module's `counts`
+// addition never silently changed an existing artifact id.
+// ═══════════════════════════════════════════════════════════════════════
+test('FIXTURE PIN: the skechers-first-live-run review-queue.json artifact reproduces byte-for-byte (counts omitted -- no item carries both_nets_clean)', () => {
+  const fixturePath = path.join(__dirname, 'fixtures', 'canonical-v2', 'skechers-first-live-run', 'review-queue.json');
+  const fixture = JSON.parse(fs.readFileSync(fixturePath, 'utf8'));
+  assert.equal(fixture.schema_version, REVIEW_QUEUE_ARTIFACT_SCHEMA);
+  assert.ok(!('counts' in fixture), 'sanity: the committed fixture itself predates the counts field');
+
+  const artifact = buildReviewQueueArtifact({
+    resolution: { review_queue: fixture.review_queue },
+    run_receipt_id: fixture.run_receipt_id,
+  });
+
+  assert.ok(!('counts' in artifact), 'no queue item carries both_nets_clean -- counts stays omitted, not present-as-zero');
+  assert.equal(artifact.review_queue_artifact_id, fixture.review_queue_artifact_id,
+    'must equal the id recorded in the committed pre-both_nets_clean fixture -- proves the omit-when-absent fix keeps no-input hashes byte-identical');
+  assert.equal(fixture.review_queue_artifact_id, 'bbe3dff6bbb6fa238295e96cfb1106b32735a5aba4c25bd57b870a2a1ba78830');
+});
+
+test('buildReviewQueueArtifact: counts IS present, additive, when at least one queue item carries both_nets_clean: true', () => {
+  const cleanItem = { ...SAMPLE_ITEM_A, both_nets_clean: true };
+  const dirtyItem = { ...SAMPLE_ITEM_A, generic_claim_key: 'REP-T-CAP::OTHER' };
+  const artifact = buildReviewQueueArtifact({
+    resolution: sampleResolution([cleanItem, dirtyItem]),
+    run_receipt_id: 'run-receipt-both-nets-clean',
+  });
+  assert.deepEqual(artifact.counts, { review_queue: 2, both_nets_clean: 1 });
+
+  const serialised = serialiseReviewQueueArtifact(artifact);
+  const parsed = JSON.parse(serialised);
+  assert.deepEqual(parsed.counts, { review_queue: 2, both_nets_clean: 1 });
+
+  // Changing whether counts is present at all must change the artifact id
+  // (it is part of the content-addressed body) -- proving `counts` isn't
+  // silently invisible to the id once it legitimately appears.
+  const artifactWithoutCleanItem = buildReviewQueueArtifact({
+    resolution: sampleResolution([dirtyItem]),
+    run_receipt_id: 'run-receipt-both-nets-clean',
+  });
+  assert.ok(!('counts' in artifactWithoutCleanItem));
+  assert.notEqual(artifact.review_queue_artifact_id, artifactWithoutCleanItem.review_queue_artifact_id);
+});
+
 test('buildReviewQueueArtifact: fails closed on malformed input', () => {
   assert.throws(() => buildReviewQueueArtifact({ resolution: null, run_receipt_id: 'x' }), ReviewQueueArtifactError);
   assert.throws(() => buildReviewQueueArtifact({ resolution: {}, run_receipt_id: 'x' }), ReviewQueueArtifactError);
