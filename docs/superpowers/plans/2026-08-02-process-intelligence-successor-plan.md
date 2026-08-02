@@ -1,186 +1,142 @@
-# Process Intelligence: pilot → corpus plan (revised 2026-08-02)
+# Process Intelligence execution plan — 2026-08-02 amendment
 
-**Status:** DRAFT — BLOCKED pending reconciliation with the approved
-Process execution plan (`precedent-machine-process-design/docs/
-superpowers/plans/2026-07-29-process-intelligence-execution-plan.md`,
-ledger-pinned SHA-256 `a255661c…f1d49b0`) and its companion design doc
-(`2026-07-27-process-intelligence-design.md`), which live in a repo
-not yet pushed from Ben's machine. This draft was written from the
-ledger, contracts and evidence trees only; it must be reconciled
-against the approved plan's P10/P11 structure (and superseded where
-they conflict) BEFORE the Fable adversarial review runs. Do not build
-from this document in its current state.
-**Supersedes:** the implicit plan scattered across the P8 ledger rows,
-the storylines inventory's successor_requirements, and the M3 basis
-decision's process-side silence. **Requested by Ben:** "ASAP but as
-reliable as possible," importing everything the native-extractor
-program has proven since 2026-07-31.
+**Status:** DRAFT AMENDMENT — pending Fable delta review (planning
+review; NOT one of the programme's three independent adversarial
+review milestones, which remain exactly WP3A pre-freeze,
+vertical-slice completion if uncovered, and pre-activation).
+**Amends:** `2026-07-29-process-intelligence-execution-plan.md`
+(ledger-pinned SHA-256 `a255661c…f1d49b0`) under the authority of the
+`2026-07-27-process-intelligence-design.md` (both provided by Ben
+2026-08-02; neither is superseded — this amendment REBASES the plan
+onto current repo reality and imports the Agreement-side lessons of
+2026-07-31 → 2026-08-02).
+**Source-of-record note:** the parent plan's own rule requires
+amendments to be committed to the Deal Storylines
+(`precedent-machine-process-design`) repository with the ledger
+SHA-256 updated. That repo is not pushed/reachable from this
+environment. This file is the working copy; Ben (or a session with
+that repo attached) must commit the reviewed amendment there and
+update `docs/codex-program/EXECUTION-LEDGER.md`'s pinned hash. Until
+then the 2026-07-29 bytes remain the plan of record.
 
-## Where Process Intelligence actually stands
+## 1. Rebase: what the ledger shows against the plan's packages
 
-- **Storylines prototype:** sealed `PROTOTYPE_EVIDENCE_ONLY`
-  (3 Fable rounds); its successor requirements are binding on this
-  plan and each is discharged explicitly below.
-- **Metsera pilot (P8):** COMPLETE through isolated staging with
-  rollback proofs — sealed 9-filing source universe, dual independent
-  source enumerations + reconciliation, one reviewed exclusivity-grant
-  passage → typed Process sidecar → Product row (27 fields,
-  `EXCLUSIVITY_GRANTED`) → four surfaces → persistence → combined
-  candidate release → serving partition. All inactive; production
-  authority NONE.
-- **Not proven:** any model-driven extraction of process narrative.
-  Every reviewed passage was hand-selected; the pilot proves the
-  PLUMBING (identity, admission, persistence, serving), not process
-  EXTRACTION. This is the same gap the M3 basis decision named for
-  Agreement: reviewed-slice ≠ native extractor.
-- **Standing debt (ledger, MANDATORY BEFORE CORPUS SCALE):** the
-  16 MiB write-envelope exception — write sets must carry sources by
-  digest against sealed immutable documents, not embedded bytes.
+| Package | Plan status → actual (ledger evidence) |
+|---|---|
+| P-1 gate check | **OBSOLETE.** The protected programme-status/signer apparatus was retired 2026-07-30 (`PM-GOV-BALANCE-01`); milestone Markdown acknowledgements are the only pre-production approval artefact. The plan's every "protected status" reference re-bases onto: exact-commit basis + allowlist per unit (already enforced by CI `phase-allowlist`) + milestone acknowledgements. |
+| P0 baselines | **COMPLETE** — both inventories exist and are content-addressed (`evidence/process-intelligence/baseline/`). |
+| P1 successor contracts | **COMPLETE** — full tree under `contracts/canonical-v2/successor/process/` incl. exclusivity predicate catalogue v2, completeness-challenge protocol, witness contracts. |
+| P2 shared authority | **PARTIAL.** Kernels/manifests exist (`wp-shared-authority-*` allowlists). The WP3A scope decision — full shared-field release vs expressly reduced — is OPEN and is a Ben decision this amendment schedules (§3, A2). |
+| P3 process semantics | **COMPLETE** for exclusivity (typed states incl. request≠grant, silence≠refusal; 68-test connector `PI-METSERA-RUNTIME-01`). |
+| P4 catalogue/Query IR | **NOT DONE** (product-side; some Query IR groundwork via `PM-METSERA-PRODUCT-ROW-01`). |
+| P5 passage serving | **LARGELY COMPLETE** for the pilot shape (phrasebook result rows, presentation, source reader refusal, four surfaces — `PM-METSERA-*` chain). Paragraph-context repeat-click action: NOT yet built (design mandates a successor parent-bound action). |
+| P6 interface | **NOT DONE** beyond the guarded preview route (`PM-METSERA-BROWSER-01`). |
+| P7 acquisition/extraction machinery | **PILOT-PROVEN** (acquisition, dual enumeration, graph validation, materialisation — sealed Metsera only). Not exercised beyond one deal/family. |
+| PE1 Metsera gold | **COMPLETE AND SEALED** (`metsera-gold/exclusivity-gold.v1`, dual enumerations + reconciliation + blind-challenge freeze artefacts). |
+| P8 freeze/slices | **OPEN — the live blocker.** Multiple ledger rows carry "Reserved exact contract freeze only." WP3A pre-freeze review + Ben approval + `ContractFreezeAttestation` + fresh same-pair slices have not run. |
+| P9 certification | **NOT STARTED** (the 25-deal tuning + one-shot holdout programme; the plan's own estimate makes it the largest block: 220-380 team hours, 15-22 Ben hours). |
+| P10/P11 | **NOT STARTED** (plus the M2 envelope debt is a named P10 prerequisite: slim write sets to digest-carried sources before corpus scale). |
+| P12 | Post-cutover, unchanged. |
 
-## What the Agreement program proved that this plan imports
+## 2. Lessons imported from the Agreement programme (binding deltas)
 
-1. **Spec → adversarial Fable audit → cheap-model build → Fable
-   review, per slice.** Every audit this week caught critical
-   fail-open holes pre-build (comparator: 2C/5M; lexical net: 4C/6M;
-   P1: 4C/6M). Process slices get the identical treatment; no slice
-   builds from an unaudited spec.
-2. **Deterministic structure first, model second.** The sectionizer/
-   limb precision Ben likes is a property of doing structure
-   deterministically with byte offsets and letting the model only
-   propose content inside governed scopes. Process narrative gets the
-   same split: a deterministic NARRATIVE SECTIONIZER (see slice PI-2)
-   before any producer call.
-3. **The producer never asserts a negative; instruments veto,
-   never create.** "No other bidders contacted" is a DERIVED
-   conclusion, never a model emission. The lexical-net pattern
-   (unmatched signal → cannot conclude absent → review) transfers
-   directly to process tells.
-4. **Typed fail-closed everything; a check never run must never look
-   passed.** Auto-pass-style gating with explicit unevaluated
-   conditions from day one.
-5. **Open-world preservation + deterministic commonality clustering +
-   Ben adjudication UI.** The event vocabulary will be wrong at first;
-   the pipeline must bank novelty losslessly and grow the taxonomy
-   through Ben's rulings, not force-fit. (The adjudication artifact
-   loop from 2026-08-02 took hours, not days — reuse it.)
-6. **Instrument first-workload gating.** The Modiv enumeration scan
-   failed 21/21 on its first real workload. Every new process
-   instrument ships gated UNTRUSTED until its first real-workload
-   triage is documented (the storylines prototype's typed-refusal
-   evidence counts as prior art here, not as certification).
-7. **The checker-derives-its-own-answer defect class.** Two incidents
-   now (QXO converter, Modiv citation checker). Process verification
-   instruments must resolve within governed spans, never global
-   first-match; and dual independent derivation + reconciliation
-   (which the pilot's source enumeration already does) is the house
-   pattern for anything identity-bearing.
-8. **Recorded-fixture replay as the test substrate** — live runs are
-   expensive and rate-limited; every slice pins recorded responses and
-   replays them deterministically, with one documented fresh live run
-   per slice.
+D1. **Audit-before-build on every spec.** Every remaining package unit
+gets spec → adversarial Fable audit → cheap-model build → Fable
+review. This is COMPATIBLE with the parent plan's "cheap Stage 2
+review" language: the adversarial audit runs on the SPEC (pre-build,
+where three consecutive audits this week each caught critical
+fail-open holes), Stage 2 stays the cheap conformance check on the
+build, Stage 3 escalation unchanged. No new milestone reviews are
+created.
 
-## The slices (each: spec → audit → build → review; own branch/
-worktree per the PM concurrency rule; ledger row per slice)
+D2. **Instrument first-workload gating.** Every discovery/verification
+instrument (the lexical enumerator, the completeness oracle, the
+reconciler) ships tagged UNTRUSTED until its first real-workload
+triage is a committed dated handoff. Precedent: the Agreement
+limb-enumeration scan failed 21/21 on its first real document shape;
+the plan's disagreement-rate retention makes this cheap to honor.
 
-**PI-0 — Contract freeze + activation decision (BEN, blocking,
-zero build).** The reserved exact-root contract freeze over the P8
-bundle, then the reviewed activation of the Metsera candidate release.
-Everything below stacks on frozen contracts; freezing first is the
-ASAP move because it de-risks rework in every later slice.
+D3. **The checker-derives-its-own-answer defect class** (two Agreement
+incidents). Any process instrument that derives its own answer for
+comparison (the citation-style rederivations, span checks) must
+resolve within the governed unit/span, never global first-match —
+named as an explicit test class in every P7-family unit.
 
-**PI-1 — Envelope slimming (the M2 debt).** Write sets carry sources
-by digest; staging cap returns to 4 MiB; the direct `--db-url`
-transport exception retires. Mechanical, spec-able, cheap-build.
-Acceptance: byte-identical pilot replay with digest-carried sources;
-envelope ≤ 4 MiB on the full nine-source Metsera chain.
+D4. **Recorded-fixture replay as the default test substrate.** The
+pilot already records everything content-addressed; every remaining
+unit pins recorded artefacts and replays deterministically, with live
+runs as dated handoffs only.
 
-**PI-2 — Deterministic narrative sectionizer.** The process analog of
-the Agreement sectionizer: split "Background of the Merger" (and
-adjacent Reasons/Opinion sections) into DATE-ANCHORED narrative units
-with exact byte offsets — paragraph-level segmentation keyed on the
-section's own date leads ("On March 14, 2026, ..."), actor sentences,
-and meeting/communication markers. Pure, no model calls, replayed on
-the 9 sealed Metsera filings + the three Agreement deals' proxy
-statements (public, seal-able). Acceptance: hand-verified unit
-boundaries on Metsera's real Background section (the gold's passage
-offsets must fall inside single units); dual-walker reconciliation on
-unit boundaries (import lesson 7).
+D5. **Adjudication-loop speed.** Open-world process observations
+(outside the governed taxonomy) get the deterministic commonality
+clustering + adjudication-artifact loop that turned 136 Agreement
+candidates into 14 Ben decisions in one day. This implements the
+design's "observation outside the governed taxonomy → review" branch
+at corpus scale without queue drowning.
 
-**PI-3 — Native process producer, first family = EXCLUSIVITY.**
-Bounded provider (same seam contract as the Agreement producer):
-governed narrative units in, typed proposals out — exclusivity
-grants/denials/expiries, with party, date, byte-verified quote, and
-the predicate slots the frozen exclusivity catalogue v2 defines.
-Never a negative; unknown event shapes go to open-world candidates
-verbatim. Golden eval from day one: `metsera-gold/exclusivity-gold.v1`
-is the eval target — the native producer must reproduce the gold's
-grant (same passage, same predicate outcomes) before anything else
-runs. The blind completeness-challenge protocol (already frozen in
-contracts) runs as the recall check.
+D6. **Envelope debt is a scheduled unit, not a note** (§3, B1).
 
-**PI-4 — Process disagreement net (veto instrument).** Lexical tells
-per event family over the narrative units (exclusivity: "exclusiv",
-"standstill", "no-shop period", "negotiate solely"; later families
-theirs), overlap-matched against producer proposals exactly like the
-Agreement lexical net (same receipt conventions, same
-uncovered-family blocking, same veto-only semantics). Ships gated
-UNTRUSTED until its Metsera first-workload triage is documented
-(lesson 6). Unmatched tell → the unit cannot be concluded
-event-free → review.
+D7. **Two-strike escalation + never-commit-unreviewed** (the watchdog
+protocol) governs all delegated production, as on the Agreement side.
 
-**PI-5 — Review queue + adjudication loop.** Process candidates join
-the SAME review-queue artifact and materiality conventions as
-Agreement claims (one queue, ranked; process events rank below
-Agreement money terms initially — flagged for Ben like every
-materiality call). Open-world process candidates get the
-deterministic commonality clustering + adjudication-artifact loop
-verbatim from the Agreement side.
+## 3. Remaining work, sequenced for ASAP-without-gate-skipping
 
-**PI-6 — Breadth: second and third deal.** Skechers and Modiv proxy
-Background sections through PI-2..PI-5 (their agreement-side fixtures
-already exist, so cross-referencing process events against agreement
-facts — e.g. the exclusivity grant vs the no-shop covenant — becomes
-the first cross-domain corroboration instrument; scoped read-only
-this slice). New event families only via commonality adjudication,
-never by implementer fiat.
+**Lane A — Ben-gated path to freeze (starts immediately):**
+- A1. Assemble the WP3A pre-freeze package: exact successor root,
+  delta since the last reviewed state, prior-disposition regression
+  table (the four Sol/Fable review dispositions in the design are the
+  regression baseline).
+- A2. The shared-authority SCOPE DECISION goes to Ben as a single
+  costed question (full shared-field release vs expressly reduced
+  first release omitting named-entity/adviser/equity filters). The
+  design already licenses the reduced release honestly; deciding it
+  BEFORE freeze is the single highest-leverage ASAP move because it
+  unblocks WP3A regardless of the upstream entity-authority
+  workstream's pace.
+- A3. WP3A independent adversarial review (milestone 1 of 3) → Ben
+  approval → `ContractFreezeAttestation` → fresh same-pair
+  `P1_VERTICAL_SLICE_PASS` + `PROCESS_VERTICAL_SLICE_PASS` replays.
 
-**PI-7 — Certification + serving activation at family scale.**
-The M3-protocol analog for process: auto-pass conditions defined
-(producer/gold agreement on the family, disagreement net clean,
-completeness challenge passed, not novel, not in a known-defect
-group), sampling with blind reads, and Ben's activation of process
-rows into the already-proven generic Product partition. Nothing
-serves before this gate; the pilot's serving plumbing means this
-slice is approval + certification work, not new machinery.
+**Lane B — build lanes that need no freeze (start immediately,
+parallel):**
+- B1. Envelope slimming (M2 debt): digest-carried sources; cap back to
+  4 MiB; retire the `--db-url` transport exception. Acceptance:
+  byte-identical pilot replay.
+- B2. P4 field catalogue + navigation catalogue + Ask/Browse → one
+  Query IR, built against immutable fixtures (the parent plan already
+  authorizes generic code work). Spec-on-Fable (the checked phrase
+  mappings and refusal semantics are legal-adjacent), produce on
+  Codex/Sonnet, golden utterance suites from day one (design:
+  "a handwritten lexicon with inspected examples is not
+  certification").
+- B3. P5 remainder: the parent-bound repeat-click paragraph-context
+  action (successor contract already named in P1's member list).
+- B4. P6 interface against immutable fixtures (acceptance tests 1-76
+  trace). UI is Codex-friendly; the four-surface pilot fixtures make
+  the browser acceptance concrete.
 
-## Sequencing and the ASAP argument
+**Lane C — certification runway (starts now, pays off at P9):**
+- C1. Pre-register the 25-deal sampling frame + tuning/holdout split
+  NOW (PE1's pre-registration duty; zero build dependency; the
+  custodian rules in the design demand it before any holdout detail
+  exists). Ben-hours: minutes, not the P9 15-22h.
+- C2. Seal source universes for the 2-3 tuning deals that double as
+  Agreement-side deals (Skechers, Modiv, TopBuild proxies) — reuses
+  the acquisition machinery, feeds both programmes' breadth, and
+  de-risks the ten-minute-per-deal extraction target early.
+- C3. Run the dual-enumeration + gold protocol on tuning deal #2 with
+  delegated enumeration labour (the design's own budget rule), so P9
+  doesn't start cold.
 
-PI-0 is Ben-only and unblocks everything. PI-1 and PI-2 are
-independent of each other and of PI-0's outcome — they start
-immediately and in parallel (PI-1 cheap-build; PI-2 is the
-precision-critical piece and gets the full Fable treatment). PI-3
-depends on PI-2; PI-4 on PI-3's proposal shape; PI-5 reuses existing
-machinery (small); PI-6 is throughput; PI-7 is governance. Critical
-path: PI-2 → PI-3 → PI-4 → PI-6 → PI-7, with the same
-serialization discipline the Agreement side uses (shared files =
-serialized; docs/spec work overlaps freely).
+**Order of Ben touchpoints (total ≈ 3-6 hours before P9):** A2 scope
+decision → A3 WP3A approval → C1 frame sign-off → then the P9 blind
+reads on the plan's own schedule.
 
-Reliability is not traded for speed anywhere: the speed comes from
-(a) reusing proven machinery (sidecar, admission, writer, partition,
-surfaces — all done), (b) the adjudication loop's demonstrated
-turnaround, (c) parallel spec/audit pipelining while builds run —
-not from skipping gates. Every storylines successor requirement is
-discharged: per-candidate adjudication (PI-5), independently sealed
-sources (PI-2/PI-6 seal each deal's proxy like Metsera's nine),
-canonical PM facts as inputs only (PI-6 corroboration is read-only),
-typed refusal preserved (PI-3/PI-4 fail-closed vocabulary), release
-bound to contract+code+data+certification (PI-0/PI-7).
+## 4. What this amendment does NOT change
 
-## What this plan refuses to do
-
-No model calls inside identity/validation/writer code (M3 basis
-decision, unchanged). No storylines-prototype row, repair rule,
-vocabulary item or NLP result promoted by osmosis — evidence only.
-No process row served before PI-7's certification gate. No new
-serving/writer/release machinery — the generic partition is the
-single path, or the plan is wrong.
+The three-milestone review structure; the one-shot holdout rule and
+custodian regime; the mandatory predicate floor; the no-narrative-LLM
+product boundary; source-of-record residence in the process-design
+repo; the freeze-before-broad-extraction gate; Storylines'
+evidence-only status; every accepted Sol/Fable disposition. Where any
+wording here conflicts with the 2026-07-27 design, the design wins.
