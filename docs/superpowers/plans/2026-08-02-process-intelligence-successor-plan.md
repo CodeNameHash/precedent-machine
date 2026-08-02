@@ -1,9 +1,13 @@
 # Process Intelligence execution plan — 2026-08-02 amendment
 
-**Status:** DRAFT AMENDMENT — pending Fable delta review (planning
-review; NOT one of the programme's three independent adversarial
-review milestones, which remain exactly WP3A pre-freeze,
-vertical-slice completion if uncovered, and pre-activation).
+**Status:** FINAL (2026-08-02) — Fable delta review completed and
+folded; all open decisions ruled by Ben (see the rulings section):
+full shared-field release day one, and costed deltas D1/D2/D5 each
+ACCEPTED. The planning review was not one of the programme's three
+independent adversarial review milestones, which remain exactly WP3A
+pre-freeze, vertical-slice completion if uncovered, and
+pre-activation. Remaining formality: commit-of-record to the
+process-design repository + current ledger pin (Ben-side).
 **Amends:** `2026-07-29-process-intelligence-execution-plan.md` under
 the authority of the
 `2026-07-27-process-intelligence-design.md` (both provided by Ben
@@ -191,9 +195,19 @@ wording here conflicts with the 2026-07-27 design, the design wins.
    as the design's own rule provides. Lane B gains a workstream:
    scope, spec and build the shared-authority projection to
    release-compatibility.
-2. Costed deltas D1/D2/D5: presented to Ben; disposition recorded in
-   the conversation of 2026-08-02 (D1/D2/D5 pending his three
-   yes/nos).
+2. Costed deltas ALL ACCEPTED (Ben, 2026-08-02): D1 pre-handoff
+   adversarial spec audits — YES; D2 instrument UNTRUSTED-until-
+   first-workload tagging — YES; D5 commonality-clustering +
+   adjudication-artifact loop for open-world process observations —
+   YES. All three are now binding programme practice.
 3. Ben directive: prioritize proving core extraction/segmentation
    rigor (see the segmentation-parity assessment of 2026-08-02) and
    reuse the v1 Storylines UI as the interaction baseline for P6.
+   Consequences folded into Lane B: (i) the FIRST Lane B unit is the
+   graded extractor run against the sealed Metsera gold (surface
+   segmentation/recall defects before UI work matures); (ii) a
+   narrative-list scan instrument (the limb-enumeration-scan pattern
+   applied to intra-paragraph enumerations in narrative prose) joins
+   the P7-family backlog, shipping UNTRUSTED per D2; (iii) the
+   shared-authority projection workstream joins Lane B as a hard
+   release prerequisite per ruling 1.
