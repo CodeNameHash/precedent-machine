@@ -447,9 +447,16 @@ test('a clean proposal with verified evidence, registered concept and resolved p
   assert.equal(qualifier.triage.deterministic_gates_passed, true);
   // auto_pass stays FALSE until the v1/v2 comparator and the lexical net
   // exist: a check that never ran must not look like a check that passed.
+  // SPEC-MANDATED PIN UPDATE (docs/superpowers/specs/2026-08-02-lexical-
+  // disagreement-net-design.md, "Auto-pass arithmetic", audit M4): a THIRD
+  // entry, SOURCE_SCOPE_CERTIFICATION_ABSENT, is now PERMANENT here --
+  // certified-complete source scope and mandatory-review selection remain
+  // structurally unrepresented even after both nets land, so this entry
+  // never clears via either net's wiring. This is the one intentional,
+  // spec-required change to a previously-committed pin in this slice.
   assert.equal(qualifier.triage.auto_pass, false);
   assert.deepEqual([...qualifier.triage.unevaluated_conditions].sort(),
-    ['LEXICAL_DISAGREEMENT_NET_ABSENT', 'V1_V2_COMPARATOR_ABSENT']);
+    ['LEXICAL_DISAGREEMENT_NET_ABSENT', 'SOURCE_SCOPE_CERTIFICATION_ABSENT', 'V1_V2_COMPARATOR_ABSENT']);
   assert.deepEqual(qualifier.triage.reasons, []);
 
   const tier = findResolved(resolution, BRING_DOWN_TIER_CLAIM_KEY);
