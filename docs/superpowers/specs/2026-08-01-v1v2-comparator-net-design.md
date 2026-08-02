@@ -159,10 +159,16 @@ receipt id when supplied.
 
 **Staleness rule (audit M4):** a comparison receipt is valid for gating
 ONLY while the deal's maximum v1 `extraction_version` equals the value
-pinned in its snapshot. A v1 reprocess invalidates the receipt: stored
-outcomes that gated anything route back through comparison (the same
-re-examination pattern as `SOURCE_SUPERSEDED`), never left standing
-silently.
+pinned in its snapshot (literal string equality — versions are opaque
+labels, any change invalidates). A v1 reprocess invalidates the
+receipt: stored outcomes that gated anything route back through
+comparison (the same re-examination pattern as `SOURCE_SUPERSEDED`),
+never left standing silently. KNOWN LIMITATION (review finding): a deal
+with mixed versions where a non-max card reprocesses without changing
+the max escapes this rule; the fix — pinning the distinct-version SET —
+is deferred to the slice that builds the first receipt store, where the
+rule gains its first enforcement point. Until then no stored receipt
+gates anything, so the hole is unreachable.
 
 ## Acceptance
 
@@ -174,8 +180,11 @@ silently.
   ~42 other v1 rep cards all `V2_NOT_ATTEMPTED`, zero `V2_MISSING`.
 - Synthetic: `SECTION_MISMATCH` and `V2_MISSING` route as specified;
   value mismatch on a TERMF fixture blocks and reports both values.
-- Determinism: identical inputs, byte-identical receipt; permuted card
-  order invariant.
+- Determinism: identical inputs, byte-identical receipt. Permutation
+  invariance is defined over the snapshot's canonical card ordering (the
+  export script sorts cards by id; a permuted card array is a different
+  content-addressed snapshot) — outcome SETS are order-invariant,
+  receipt bytes are canonical-order-invariant.
 - Strictly additive: absent input, all existing suites byte-identical.
 - The snapshot export script runs read-only SQL and refuses to run
   without an explicit `--deal` allowlist argument.
