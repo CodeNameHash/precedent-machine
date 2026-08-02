@@ -2,10 +2,16 @@
 
 **Date:** 2026-08-02. **Status:** AUDIT-AMENDED (2 CRITICAL, 5 MATERIAL, 5
 MINOR findings applied mechanically from the 2026-08-02 adversarial audit;
-0 parked). Re-run the corrected query receipts (provision_type filter) and
-route back through review per program convention (spec-detail → audit →
-build → review) before build. Nothing below may be built before that
-review returns.
+0 parked). RECEIPT RE-RUN GATE: PASSED 2026-08-02 — the corrected
+provision_type-filtered receipts were re-run read-only against production
+(tzulhdasmioeechxapdy) and every one reproduced exactly: the 13-row/353-card
+corpus grounding table byte-for-byte, and the corrected
+COMMERCIALLY_REASONABLE_EFFORTS receipt (four ANTI-EFFORTS grounding cards
+8116d793/6751e0ab/5b65d2cc/6ca75363 retained; the two out-of-family
+COVENANT_INTERIM_OPERATING cards d9b46458/21e6844a the unfiltered join had
+wrongly surfaced excluded). Fable reviewed the re-run at fold: the audit's
+correction is confirmed applied; the build gate is CLEAR. Normal program
+convention (build → Fable review) still applies to the build itself.
 **Parent:** `2026-08-02-openworld-promotion-program.md` (family-track sibling
 of P1–P4; five-layer promotion structure and cross-slice invariants apply
 verbatim).
