@@ -2,12 +2,15 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const {
   deriveCitationForSpan,
   parseCitationComponents,
   citationFromComponents,
   checkCitationConstructibility,
+  resolveQuoteOccurrence,
 } = require('../lib/canonical-v2/native-producer/citation-constructibility');
 const { sectionizeAdmittedSource } = require('../lib/canonical-v2/native-producer/deterministic-sectionizer');
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
@@ -246,4 +249,124 @@ test('checkCitationConstructibility returns null when no citation is supplied', 
   assert.equal(checkCitationConstructibility({ tree: [], model_citation: null }), null);
   assert.equal(checkCitationConstructibility({ tree: [], model_citation: '' }), null);
   assert.equal(checkCitationConstructibility({ tree: [], model_citation: undefined }), null);
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+// 2026-08-02 Modiv triage fix: quote-occurrence resolution, never a global
+// first-match. Real Modiv document, real sectionizer tree, real defect:
+// idx 64's proposal quotes "as of the Capitalization Date" (evidence for
+// its own "3.2(g)(iii)" occurrence), the model correctly cited "3.2(g)",
+// but the evidence span the run recorded pointed at the FIRST of three
+// textually-identical occurrences of that phrase sitting inside "3.2(f)" --
+// deriving from that span alone produces "3.2(f)" and a false
+// CITATION_DISAGREEMENT. See this module's file header, "QUOTE-OCCURRENCE
+// RESOLUTION: NEVER A GLOBAL FIRST-MATCH".
+// ═══════════════════════════════════════════════════════════════════════
+
+const MODIV_QUOTE = 'as of the Capitalization Date';
+// The real (wrong) evidence span run-receipt.json actually recorded for
+// compiled_candidates[64] -- document-absolute UTF-8 byte offsets of the
+// FIRST of the four real occurrences of MODIV_QUOTE in the document (three
+// in "3.2(f)", one -- the correct one -- in "3.2(g)").
+const MODIV_WRONG_EVIDENCE_SPAN = { start: 61432, end: 61432 + Buffer.byteLength(MODIV_QUOTE, 'utf8') };
+
+function loadModivTree() {
+  const adapterResult = JSON.parse(fs.readFileSync(
+    path.join(__dirname, 'fixtures', 'canonical-v2', 'modiv-first-live-run', 'adapter-result.json'),
+    'utf8',
+  ));
+  const canonicalText = adapterResult.admitted_source_contexts[0].canonical_text.text;
+  const documentHash = adapterResult.admitted_source_contexts[0].document_hash;
+  const tree = sectionizeAdmittedSource({ source_text: canonicalText, document_hash: documentHash });
+  return { tree, canonicalText };
+}
+
+test('MODIV REGRESSION (resolveQuoteOccurrence): the real quote "as of the Capitalization Date" occurs 7 times in the real document (3 in "3.2(f)", 1 in "3.2(g)", 3 more in an unrelated "4.2(f)") -- position, not global first-match, resolves which one the model\'s "3.2(g)" citation actually names', () => {
+  const { tree, canonicalText } = loadModivTree();
+  const resolution = resolveQuoteOccurrence({
+    tree, document_text: canonicalText, quote: MODIV_QUOTE, model_citation: '3.2(g)',
+  });
+  assert.equal(resolution.occurrence_count, 7, 'sanity: exactly 7 real occurrences in the real document');
+  assert.equal(resolution.resolved, true);
+  assert.equal(resolution.ambiguous, false);
+  assert.equal(resolution.occurrence.derived_citation, '3.2(g)', 'the model was right -- resolves to the (g)(iii) occurrence, not the first (f) occurrence, and not the unrelated (4.2(f)) occurrences');
+});
+
+test('MODIV REGRESSION (checkCitationConstructibility): given the (wrong, first-matched) evidence span the real run recorded, supplying the quote upgrades the false CITATION_DISAGREEMENT to AGREEMENT, deriving 3.2(g)', () => {
+  const { tree, canonicalText } = loadModivTree();
+
+  const derivedFromWrongSpan = deriveCitationForSpan(tree, MODIV_WRONG_EVIDENCE_SPAN.start, MODIV_WRONG_EVIDENCE_SPAN.end);
+  assert.equal(derivedFromWrongSpan.reference, '3.2(f)', 'sanity: the wrong evidence span really does derive "3.2(f)" -- reproducing the real defect');
+
+  // WITHOUT the quote (the pre-fix call shape): a false CITATION_DISAGREEMENT.
+  const withoutQuote = checkCitationConstructibility({
+    tree, model_citation: '3.2(g)', derived_node: derivedFromWrongSpan, document_text: canonicalText,
+  });
+  assert.equal(withoutQuote.status, 'CITATION_DISAGREEMENT');
+  assert.equal(withoutQuote.derived_citation, '3.2(f)');
+
+  // WITH the quote: position-aware resolution fixes it.
+  const withQuote = checkCitationConstructibility({
+    tree, model_citation: '3.2(g)', derived_node: derivedFromWrongSpan, document_text: canonicalText, quote: MODIV_QUOTE,
+  });
+  assert.equal(withQuote.status, 'AGREEMENT');
+  assert.equal(withQuote.accepted, true);
+  assert.equal(withQuote.validation_source, 'CONSTRUCTED_FROM_TREE_QUOTE_POSITION');
+  assert.equal(withQuote.derived_citation, '3.2(g)');
+  assert.equal(withQuote.normalized_citation, '3.2(g)');
+});
+
+test('MODIV REGRESSION: when the quote occurs at multiple offsets and no evidence span disambiguates (model cites "3.2(f)", which the SAME quote genuinely occurs at 3 times), the checker emits typed AMBIGUOUS_CITATION_OCCURRENCE, never silently picks the first', () => {
+  const { tree, canonicalText } = loadModivTree();
+
+  const check = checkCitationConstructibility({
+    tree, model_citation: '3.2(f)', derived_node: null, document_text: canonicalText, quote: MODIV_QUOTE,
+  });
+  assert.equal(check.status, 'AMBIGUOUS_CITATION_OCCURRENCE');
+  assert.equal(check.accepted, false, 'counts as a disagreement routed to review, never a silent first-match pick');
+  assert.equal(check.validation_source, null);
+  assert.equal(check.occurrence_count, 7);
+  assert.ok(check.candidate_citations.includes('3.2(f)'));
+  assert.ok(check.candidate_citations.includes('3.2(g)'));
+});
+
+test('resolveQuoteOccurrence: a quote occurring exactly once resolves unambiguously when it agrees with the model citation, and yields nothing usable when it does not', () => {
+  const text = [
+    'Section 3.1 Representations.\n\n',
+    '(a)Organization. The Company represents that it is duly organized.\n\n',
+    '(b)Authority. The Company represents that it has full corporate power.\n',
+  ].join('');
+  const documentHash = sha256Hex(Buffer.from(text, 'utf8'));
+  const tree = sectionizeAdmittedSource({ source_text: text, document_hash: documentHash });
+
+  const resolved = resolveQuoteOccurrence({
+    tree, document_text: text, quote: 'it is duly organized', model_citation: '3.1(a)',
+  });
+  assert.equal(resolved.occurrence_count, 1);
+  assert.equal(resolved.resolved, true);
+  assert.equal(resolved.ambiguous, false);
+  assert.equal(resolved.occurrence.derived_citation, '3.1(a)');
+
+  const mismatched = resolveQuoteOccurrence({
+    tree, document_text: text, quote: 'it is duly organized', model_citation: '3.1(b)',
+  });
+  assert.equal(mismatched.resolved, false);
+  assert.equal(mismatched.ambiguous, false, 'a single real occurrence that disagrees with the model is not "ambiguous" -- it is a genuine disagreement, left for the caller to report as such');
+});
+
+test('resolveQuoteOccurrence: returns null when there is nothing to resolve from (no quote text, no document text, or the quote is absent)', () => {
+  assert.equal(resolveQuoteOccurrence({ tree: [], document_text: 'text', quote: '' }), null);
+  assert.equal(resolveQuoteOccurrence({ tree: [], document_text: '', quote: 'x' }), null);
+  assert.equal(resolveQuoteOccurrence({ tree: [], document_text: 'no match here', quote: 'absent phrase' }), null);
+});
+
+test('existing citation tests stay green: quote-occurrence resolution is opt-in -- omitting `quote` leaves CITATION_DISAGREEMENT behaviour byte-identical to before this fix', () => {
+  const tree = [
+    { section_id: 'a', reference: '3.1(a)', depth: 1, start: 0, end: 50 },
+    { section_id: 'b', reference: '3.1(b)', depth: 1, start: 50, end: 100 },
+  ];
+  const derivedForB = deriveCitationForSpan(tree, 60, 90);
+  const check = checkCitationConstructibility({ tree, model_citation: '3.1(a)', derived_node: derivedForB });
+  assert.equal(check.status, 'CITATION_DISAGREEMENT');
+  assert.equal(check.derived_citation, '3.1(b)');
 });
