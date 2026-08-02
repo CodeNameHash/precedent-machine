@@ -218,8 +218,20 @@ immediately):
   2. `receipt.text_sha256` equals that section's hash in the run
      receipt's `resolved_sections`; and
   3. `receipt.candidate_digest` equals the digest the wiring itself
-     recomputes from the run's compiled candidates for that section;
+     recomputes from the RESOLVED candidates for that section (via the
+     net module's exported `computeSectionCandidatesForLexicalDigest`);
      and
+     **[ERRATUM 2026-08-02, recorded at Fable review]** this bullet
+     originally read "from the run's compiled candidates". That is
+     unimplementable: compiled candidates carry no family/concept_key
+     (families are stamped at resolution — `mapping.concept_key`), and
+     digesting the 37-candidate compiled set against a 3-candidate
+     resolved mint would make every honest receipt permanently stale.
+     The honest end-to-end flow is two-pass (resolve → mint receipts →
+     resolve again); determinism holds because wiring touches only
+     triage, never closure_id/concept_key/evidence. Evidence remains
+     transitively bound: closure_id is content-addressed over the
+     claim revision including evidence spans; and
   4. the receipt validates structurally (schema, outcome domain).
   ANY failure → the receipt satisfies nothing for that claim: a typed
   `LEXICAL_RECEIPT_STALE` (mismatch) or `LEXICAL_RECEIPT_MALFORMED`
