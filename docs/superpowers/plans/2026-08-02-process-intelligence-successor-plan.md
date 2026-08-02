@@ -180,3 +180,20 @@ product boundary; source-of-record residence in the process-design
 repo; the freeze-before-broad-extraction gate; Storylines'
 evidence-only status; every accepted Sol/Fable disposition. Where any
 wording here conflicts with the 2026-07-27 design, the design wins.
+
+## Ben's rulings on the amendment's open decisions (2026-08-02)
+
+1. **Scope decision (A2): FULL shared-field release, day one.** The
+   reduced-release option is rejected. Consequence: the shared
+   deal-facts/entity-authority workstream is now a HARD PREREQUISITE
+   on the critical path before the release can claim its filter set —
+   WP3A fails on an absent or incompatible shared projection exactly
+   as the design's own rule provides. Lane B gains a workstream:
+   scope, spec and build the shared-authority projection to
+   release-compatibility.
+2. Costed deltas D1/D2/D5: presented to Ben; disposition recorded in
+   the conversation of 2026-08-02 (D1/D2/D5 pending his three
+   yes/nos).
+3. Ben directive: prioritize proving core extraction/segmentation
+   rigor (see the segmentation-parity assessment of 2026-08-02) and
+   reuse the v1 Storylines UI as the interaction baseline for P6.
