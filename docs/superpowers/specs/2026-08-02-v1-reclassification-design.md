@@ -1,7 +1,7 @@
 # v1 reclassification — R1/R2/R3 subtype splits
 
-**Date:** 2026-08-02. **Status:** DRAFT — pending adversarial audit
-(D1 standing practice). **Authority:** Ben's confirmed rulings R1-R3
+**Date:** 2026-08-02. **Status:** AUDIT-AMENDED (3 critical, 5 material folded; verdict was
+AMEND). **Authority:** Ben's confirmed rulings R1-R3
 (`docs/acks/FAMILY-MAPPING-RULINGS-2026-08-02.md`).
 
 ## What splits, and by which mechanism (the scout's central finding)
@@ -24,7 +24,7 @@ different safety treatment:
 
 ## 1. CODES registry (`lib/rubric.js`)
 
-Ten new entries (exact names per the ruling ack). Pinned decisions:
+Fourteen new entries (exact names per the ruling ack: 2 R1 + 4 R2 + 8 R3 mirrored). Pinned decisions:
 
 - **R3 party mirroring:** element codes exist in BOTH prefixes
   (`REP-B-NOOTHERREPS`… and `REP-T-NOOTHERREPS`…) because
@@ -54,8 +54,17 @@ Ten new entries (exact names per the ruling ack). Pinned decisions:
 
 ## 2. Classify rules (`lib/parser-v2/classify.js`)
 
-- **R3:** rewrite the four SUBCODE_REFINEMENT_RULES entries. Title
-  routing alone CANNOT distinguish the four elements (titles like
+- **R3 (RELOCATED per audit A-C1 — the classify layer cannot emit
+  multiple cards per section):** classify keeps stamping ONE
+  family-level code per section via the existing
+  SUBCODE_REFINEMENT_RULES (snapshot schema carries one code slot);
+  the ELEMENT SPLIT happens in the EXTRACT phase as a deterministic
+  multi-provision emitter for the anti-reliance family (the Strategy-B
+  precedent, extract.js ~136: one provisions row per element with
+  element-scoped full_text/spans — card identity hashes over text, so
+  element rows mint distinct cards; the card backfill's replaceDeal
+  orphan-delete removes the old whole-section card). Title routing
+  alone CANNOT distinguish the four elements (titles like
   "Exclusivity of Representations and Warranties" cover compound
   sections). Pinned design: the title rules route to a NEW
   two-stage refinement — title match identifies the anti-reliance
@@ -69,17 +78,38 @@ Ten new entries (exact names per the ruling ack). Pinned decisions:
   (deal, sectionPath, text) — element cards must therefore carry
   element-scoped text spans, not the whole section, or they collide;
   the scan emits per-element spans). Elements the scan cannot
-  confidently bound route the WHOLE section to a single
-  `REP-B-NOOTHERREPS`-family card with a typed
-  `ELEMENT_SCAN_UNSPLIT` flag in ai_metadata — fail toward
-  under-splitting, never guess spans.
-- **R1/R2:** new deterministic title rules ONLY where the corpus
+  confidently bound route the WHOLE section to a single card carrying
+  `needs_review: true` (a field cards actually have — audit A-M2;
+  ai_metadata does not reach cards), coded NOOTHERREPS ONLY when the
+  no-other-reps phrase class itself matched despite unboundable
+  spans; otherwise the family-level legacy code with needs_review —
+  never a specific element the scan did not establish. Fail toward
+  review, never toward a plausible-but-unproven element.
+- **R1/R2 (mechanism pinned per audit A-M3):** SUBCODE_REFINEMENT_RULES
+  entries with `whenType: 'REP-T'` (the NOREP precedent at
+  classify.js:333) — NOT DETERMINISTIC_RULES, which never fire inside
+  strong-typed REP articles without overrideArticle and would be
+  silent no-ops. Rules ONLY where the corpus
   shows regular titles: "Requisite Stockholder Approval" →
   STOCKAPPROVAL; "Requisite Governmental Approvals" / "Governmental
   Authorization[s]" / "Government Approvals" → GOVAPPROVAL;
   "Investment Company Act" → 40ACT. Everything else stays
   AI-classified against the new CODES vocabulary (the prompt sees the
   new labels/descriptions; the old codes are excluded as retired).
+
+### Retired-code enforcement (audit A-C2 — the real emission layer)
+
+Subtype codes are emitted by EXTRACT, not classify. Enforcement set:
+`retired:` filtering inside `getCodesForType` (extract prompt
+vocabulary — retired codes never shown to the model);
+`enforceCanonicalCodes`/`isValidCode` treats a retired code as a typed
+REMAP to its `superseded_by` target when unambiguous, else typed
+rejection to review — NEVER silent acceptance. Classify prior-snapshot
+CACHE INVALIDATION: cached `provisionCode` values that are retired are
+dropped (cache bypass for affected sections) so `--classify-only
+--apply` cannot carry old codes forward. Acceptance adds: extract
+prompts contain zero retired codes; a synthetic model response
+emitting a retired code produces the typed remap/rejection.
 
 ## 3. Safety check (the CLAUDE.md rule, mechanized)
 
@@ -89,8 +119,10 @@ Extend the `safety-check-nosol-rule.js` pattern: a new
    `git show HEAD:` and diffs against the new rules over EVERY deal's
    stored `classified_sections` snapshot (read-only);
 2. hard-pins the EXPECTED flip set — exactly the cards the corpus
-   investigation enumerated (19 CONSENT, 10 REGSTATUS, 44
-   ANTIRELIANCE/NOREP family cards, by deal + section_ref) plus the
+   investigation enumerated (19 CONSENT, 10 REGSTATUS, 44 REP-B ANTIRELIANCE/NOREP cards, PLUS
+   the REP-T-NOREP population — audit A-M1: uncounted in the ack; the
+   slice's FIRST step is the read-only corpus count of REP-T-NOREP,
+   added to the pin by deal + section_ref before any rule edits) plus the
    known misclassifications exiting to backlog (Bonds df393645
    §3.22, Foreign Matters ce061fd0 §3.26 — these must flip to
    NOTHING deterministic, i.e. fall back to AI/open review, and the
@@ -108,7 +140,15 @@ classifications, recorded in the slice's dated handoff.
 MISC_BOILERPLATE) re-extracts the parent type. Scout-verified
 mechanics honored: card `provision_instance_id`/`region_hash` are
 text-derived and survive; the upsert updates `provision_subtype` in
-place; claims anchored via excerpt_id survive. Order: the three
+place; claims anchored via excerpt_id survive. **Pinned per-deal order (audit A-C3 — reprocess NEVER writes cards):**
+classify-only apply → per-type extract apply → `node
+scripts/backfill/extract-to-cards.js --deal <id> --apply` (the ONLY
+production card writer; its upsert/replaceDeal semantics are what the
+scout verified) → claim rematerialization. The backfill's
+`extraction_version` label is BUMPED for this pass
+(`m2-01-reclass-v1`, audit A-M4) so the comparator's
+`isComparisonReceiptStale` actually fires on pre-reclass receipts;
+acceptance asserts the new label. Order: the three
 comparator-fixture deals FIRST (TopBuild, Skechers, Modiv — they are
 the ruling doc's own ground-truth examples), hand-verified, then the
 corpus. QA gates are silent on subtype splits (family-level
@@ -122,9 +162,14 @@ nobody mistakes green QA for validation.
   inventory selector: extended with the eight R3 codes (old codes
   retained — historic rows).
 - `compareRowUnion.js`: `REP-T-CONSENT`+`NOCONFLICT` union becomes
-  `GOVAPPROVAL`+`NOCONFLICT`; NEW union `STOCKAPPROVAL`+`REP-B-VOTE`
-  ("Votes & approvals required") per the ruling's own mirror
-  rationale; `compare-row-union.test.js` updated.
+  `GOVAPPROVAL`+`NOCONFLICT`; the proposed cross-party
+  `STOCKAPPROVAL`+`REP-B-VOTE` union is WITHDRAWN (audit A-M5:
+  cross-party unions are a novel hazard — occurrence-order pairing
+  could pair a buyer vote rep against another deal's target approval
+  rep, and the rows may never co-list). STOCKAPPROVAL renders as its
+  own row; any future cross-party grouping is a Fable+Ben design
+  item with party-aware pairing, not a rename rider.
+  `compare-row-union.test.js` updated.
 - `metsfb2-extraction-batch2.test.js` refineSubCode assertions and
   `abry.test.js`/`provision-table-configs.test.js` fixture literals:
   updated to the new codes (old-code variants kept as
@@ -141,7 +186,14 @@ nobody mistakes green QA for validation.
   when they start carrying them); the three comparator snapshots are
   RE-EXPORTED post-reclassification (new snapshot ids, hash-stable)
   so fixtures and reality never desync.
-- `canonicalize-duplicate-codes.js` stale comment refreshed.
+- `canonicalize-duplicate-codes.js` stale comment refreshed; ALSO
+  (audit A-m2): `pages/review-v1/[id].js` per-code label map gains the
+  element codes; stale comments in `lib/abry.js:23` and
+  `representations-qualifiers.config.js:45` refreshed.
+- **Sequencing (audit cross-cutting): this slice builds AFTER the
+  comparator-wiring slice (order B → A) and OWNS re-deriving that
+  slice's expected-count tables + re-exporting all three snapshots
+  when the reclassification lands.**
 
 ## Acceptance
 

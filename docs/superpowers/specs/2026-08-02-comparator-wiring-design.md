@@ -1,18 +1,22 @@
 # Comparator + lexical-net wiring into the live-run replays
 
-**Date:** 2026-08-02. **Status:** DRAFT — pending adversarial audit
-(D1 standing practice). **Authority:** Ben's seven MAP rulings
+**Date:** 2026-08-02. **Status:** AUDIT-AMENDED (4 material folded; verdict was AMEND). **Authority:** Ben's seven MAP rulings
 (`docs/acks/FAMILY-MAPPING-RULINGS-2026-08-02.md`); both nets merged
 to main (PRs #471, #472).
 
 ## Why
 
-Both nets exist as modules; nothing FEEDS them yet. Until the
-recorded replays run with real receipts, `both_nets_clean` stays
-zero everywhere and Ben gets no eligibility data. This slice makes
-every committed replay carry both verdicts.
+Both nets exist as modules; nothing FEEDS them yet. HONESTY PIN (audit B-M1): `both_nets_clean` will be ZERO on every
+claim in all three runs BY CONSTRUCTION this slice — every resolved
+claim is REP-family, REP cards carry no Tier 2 values, so condition 1
+stays `V1_V2_COMPARATOR_INAPPLICABLE_TO_CLAIM` under Ben's option A,
+working as designed. The review-queue artifact's counts field is
+therefore ABSENT (present only when > 0) and the tests pin that
+absence. The deliverable is the CONDITION BREAKDOWN — both conditions
+now EVALUATE and the blockers become visible, typed data — not
+nonzero clean counts. The eligibility report says so in its header.
 
-## 1. FAMILY_MAPPING_TABLE v2 → v3 (`v1v2-comparator.js`)
+## 1. FAMILY_MAPPING_TABLE version 1 → 2 (`v1v2-comparator.js`)
 
 Add exactly the SEVEN Ben-ratified identity rows: `REP-B-VOTE`,
 `REP-T-CONTROLS`, `REP-T-NOLIAB`, `REP-B-NOLIAB`, `REP-T-PROXY`,
@@ -26,12 +30,20 @@ the v1 reclassification splits; their cards stay typed
 ## 2. Deal identity bridge
 
 The Skechers/Modiv snapshots carry the documented placeholder
-`governed_deal_key`. This slice registers REAL governed deal keys for
-the three deals (the TopBuild pattern) and re-exports the two
-snapshots with them (same read-only export script; new snapshot ids;
-the placeholder fixtures are REPLACED, not kept alongside — two
-snapshots for one deal with different ids is an ambiguity trap).
-Hash-stability re-verified on export.
+`governed_deal_key`. "Register" means exactly (audit B-M3): re-export
+each snapshot with `--governed-deal-key` set to the deal's LITERAL
+RECORDED adapter-result context key —
+`deal:skechers-first-live-run:5e1d6f13ab83e3f9` and
+`deal:modiv-first-live-run:32065211e4688625` — matching the
+fixture-pin replay pattern; there is no registration system, and
+freshly invented keys are wrong. New snapshot ids; placeholders
+REPLACED. The re-export needs ONE read-only production-DB session
+(prerequisite, called out); the wiring tests and eligibility script
+then run fully OFFLINE from committed fixtures. Hash-stability
+re-verified on export. Note: re-exported snapshots inherit
+deal_max_extraction_version m2-00-corpus-backfill-v1; the
+reclassification slice's label bump re-stales them by rule — one more
+reason for the pinned build order below.
 
 ## 3. Replay wiring (the deliverable)
 
@@ -46,7 +58,19 @@ a wiring test that:
    section via the net module (two-pass flow ratified at #472), and
    runs resolution AGAIN with BOTH optional inputs;
 4. asserts, per deal, the exact expected outcome counts —
-   hand-derived, pinned as literals with derivation comments:
+   hand-derived, pinned as literals with derivation comments.
+   PINNED NOW (audit B-M2/B-m2): Skechers Tier 1 = 1
+   PRESENCE_AGREEMENT (§3.7) + 1 SECTION_MISMATCH (§3.8 — the
+   snapshot has TWO REP-T-CAP cards, the run resolved §3.7 only;
+   severity preference makes the mismatch WIN, so Skechers' resolved
+   claims are V1V2_SECTION_MISMATCH-blocked with
+   deterministic_gates_passed false — expected, not a bug). TopBuild
+   and Modiv have one CAP card each — clean. Post-seven-rows UNMAPPED
+   sets: Skechers 5 (null §4.13/§4.10, CONSENT §3.4/§3.6,
+   ANTIRELIANCE §4.17), Modiv 4 (null §4.16/§4.19, REGSTATUS §3.22,
+   ANTIRELIANCE §4.21), TopBuild 0. All non-CAP families read
+   LEXICAL_LEXICON_UNCOVERED_FAMILY (lexicon covers REP-T-CAP only).
+   Sub-pins:
    - Tier 1 outcomes incl. the EXPECTED `V1_CARD_UNMAPPED` set (the
      held-back three subtypes plus the null-subtype cards — exact
      card ids);
@@ -76,6 +100,16 @@ expected-count tables hand-verified in review (the TopBuild-snapshot-
 hash precedent); full suite + build + allowlist + forbidden-patterns;
 eligibility report generated once and committed as the slice's dated
 handoff.
+
+## Sequencing (audit cross-cutting, binding)
+
+THIS SLICE BUILDS FIRST; the v1 reclassification slice builds AFTER
+it and owns re-deriving this slice's expected-count tables and
+re-exporting all three snapshots when the splits land. To shrink the
+brittle surface, the UNMAPPED assertions derive the SET
+programmatically from (snapshot subtypes − mapping table) with pinned
+per-outcome totals, so the later re-export changes data, not test
+logic.
 
 ## Out of scope
 
