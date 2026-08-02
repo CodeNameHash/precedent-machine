@@ -1,0 +1,24 @@
+{
+  "phase": "WP-INSTRUMENT-FIXES",
+  "allowed": [
+    ".github/phase-allowlists/wp-instrument-fixes.json",
+    "lib/canonical-v2/native-producer/limb-enumeration-scan.js",
+    "lib/canonical-v2/native-producer/citation-constructibility.js",
+    "lib/canonical-v2/native-producer/native-extraction-run.js",
+    "tests/canonical-v2-limb-enumeration-scan.test.js",
+    "tests/canonical-v2-citation-constructibility.test.js",
+    "tests/canonical-v2-native-extraction-run.test.js"
+  ],
+  "denied": [
+    ".env*",
+    "components/**",
+    "pages/**",
+    "sql/**",
+    "supabase/**",
+    "lib/canonical-v2/native-producer/candidate-resolution.js",
+    "lib/canonical-v2/contract-bundle.js",
+    "lib/canonical-v2/native-producer/anthropic-provider.js",
+    "lib/canonical-v2/native-producer/capitalisation-producer-prompt.js"
+  ],
+  "note": "2026-08-02 Modiv triage, two mechanical instrument fixes plus a Fable-review follow-up: (1) limb-enumeration-scan.js MARKER_WITHOUT_LIMB false positives -- section-paragraph-marker and cross-reference-marker classification, plus sequence-context family resolution for the (c)/(d) roman/alpha ambiguity, and a value-aware resolution for a lone ambiguous letter when neither chain fits. (2) citation-constructibility.js citation-checker first-match defect -- position-aware quote-occurrence resolution (resolveQuoteOccurrence), typed AMBIGUOUS_CITATION_OCCURRENCE when a repeated quote cannot be disambiguated. (3) native-extraction-run.js: the FIX-2 quote-occurrence resolution was dead code in production until this follow-up -- the sole caller now passes `quote: proposal.raw_value` into checkCitationConstructibility, trustworthy because checkEvidenceScope already verifies the evidence slice equals raw_value before this point."
+}

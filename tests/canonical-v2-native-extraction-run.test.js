@@ -807,7 +807,91 @@ test('Skechers defect reproduction: two proposals from the SAME governed section
   assert.equal(entryB.citation_validation.derived_citation, '3.7(b)');
   assert.notEqual(entryC.citation_validation.derived_citation, '3.7(b)');
   assert.equal(entryB.citation_validation.status, 'AGREEMENT');
-  assert.equal(entryC.citation_validation.status, 'CITATION_DISAGREEMENT');
+  // 2026-08-02 Fable review fix: the sole production caller now passes
+  // `quote: proposal.raw_value` into checkCitationConstructibility (see
+  // native-extraction-run.js). Proposal C's quote ("Capitalization Date")
+  // occurs more than once in this real Skechers excerpt, so what was a
+  // plain CITATION_DISAGREEMENT before that wiring is now the more precise
+  // typed outcome AMBIGUOUS_CITATION_OCCURRENCE -- still unaccepted, still
+  // routed to review, never silently resolved in either direction.
+  assert.equal(entryC.citation_validation.status, 'AMBIGUOUS_CITATION_OCCURRENCE');
+  assert.equal(entryC.citation_validation.accepted, false);
+});
+
+// ─── Fable-review follow-up (2026-08-02): FIX 2's position-aware quote-
+// occurrence resolution (citation-constructibility.js's resolveQuoteOccur-
+// rence, exercised via checkCitationConstructibility's opt-in `quote` param)
+// was dead code in production until this fix -- the sole caller here never
+// passed it. Reproduces the real Modiv shape at the RECEIPT level, not just
+// the unit level tested in tests/canonical-v2-citation-constructibility.
+// test.js: a governed section ("3.2") whose child (f) and child (g) both
+// contain the SAME repeated quote text; the model's own recorded evidence
+// offsets point at the FIRST occurrence (inside "(f)"), same as the real
+// run's naive-first-match defect, while the model's own section_reference
+// attribute correctly says "3.2(g)". Without wiring `quote:
+// proposal.raw_value` through, this is a false CITATION_DISAGREEMENT
+// (derived "3.2(f)"); with it wired, the position-aware resolver finds the
+// "(g)" occurrence, and the compiled candidate's citation_validation is
+// AGREEMENT deriving "3.2(g)". ───
+
+const MODIV_STYLE_QUOTE = 'as of the Capitalization Date';
+
+function buildModivStyleText() {
+  return [
+    'Section 3.2 Capitalization.\n\n',
+    `(f)Optionholder Matters. Immediately prior to the Effective Time, the Company shall take commercially reasonable actions such that, ${MODIV_STYLE_QUOTE}, each outstanding Company Option shall be treated as follows, and again ${MODIV_STYLE_QUOTE}, such treatment shall apply.\n\n`,
+    `(g)Warrant Matters. Immediately prior to the Effective Time, ${MODIV_STYLE_QUOTE}, each outstanding Company Warrant shall be treated as follows.\n`,
+  ].join('');
+}
+
+const MODIV_STYLE_TEXT = buildModivStyleText();
+const MODIV_STYLE_DOCUMENT_HASH = sha256Hex(Buffer.from(MODIV_STYLE_TEXT, 'utf8'));
+
+test('MODIV REGRESSION at the receipt level: quote wiring upgrades a false CITATION_DISAGREEMENT (derived from the first-matched, wrong occurrence in "(f)") to AGREEMENT deriving "3.2(g)", the model\'s real citation', async () => {
+  const receipt = await runNativeExtraction({
+    source_text: MODIV_STYLE_TEXT,
+    document_hash: MODIV_STYLE_DOCUMENT_HASH,
+    section_references: ['3.2'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: async ({ governed_scope: governedScope }) => {
+      // Same naive first-match the real run's evidence-offset defect
+      // reproduced: locates the FIRST occurrence of the repeated quote in
+      // the governed section's text, which sits inside "(f)", not "(g)".
+      const { start, end } = locateInGovernedScope(governedScope, MODIV_STYLE_QUOTE);
+      const proposal = makeClaimProposal({
+        subjectSeed: { kind: 'modiv-style-repeated-phrase' },
+        ordinal: 0,
+        quote: MODIV_STYLE_QUOTE,
+        absoluteStart: start,
+        absoluteEnd: end,
+        // The model's own, correct citation -- exactly as recorded in the
+        // real Modiv run receipt.
+        attributes: { section_reference: '3.2(g)' },
+        allowedAttributes: ['section_reference'],
+      });
+      return {
+        provider_id: 'modiv-style-defect-repro/v1',
+        model_id: 'stub-model',
+        prompt: 'modiv-style-defect-repro-prompt/v1',
+        proposals: [proposal],
+        evidence_residuals: [],
+      };
+    },
+  });
+
+  assert.equal(receipt.compiled_candidates.length, 1);
+  const [entry] = receipt.compiled_candidates;
+  assert.ok(entry.citation_validation);
+  // Pre-fix (quote never wired through): CITATION_DISAGREEMENT, derived
+  // "3.2(f)" -- the first-matched, wrong occurrence.
+  // Post-fix: AGREEMENT, derived "3.2(g)".
+  assert.equal(entry.citation_validation.status, 'AGREEMENT');
+  assert.equal(entry.citation_validation.accepted, true);
+  assert.equal(entry.citation_validation.validation_source, 'CONSTRUCTED_FROM_TREE_QUOTE_POSITION');
+  assert.equal(entry.citation_validation.derived_citation, '3.2(g)');
+  assert.notEqual(entry.citation_validation.derived_citation, '3.2(f)');
+  assert.equal(receipt.citation_residual_count, 0);
 });
 
 // ─── Input validation ───
