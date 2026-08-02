@@ -21,8 +21,14 @@ are compound ("250,000,000 … of which 28,142,327 …") and must ABSTAIN
 under the parser's own one-number rule. The deliverable is therefore a
 **COVERAGE MAP**, pinned in the acceptance tests: for each pinned
 source closure_id in C1/C9/C8/C11, hand-enumerate the expected SPLIT
-sub-quotes — each byte-verified as a contiguous substring of BOTH the
-committed canonical text AND the parent fixture quote — and assert (a)
+sub-quotes — each byte-verified as a contiguous substring of the
+committed canonical text, and OVERLAPPING the parent fixture quote at
+least on the full numeric token (re-audit finding 1: strict
+parent-containment made AUTHORIZED corroboration unsatisfiable, because
+the kind-bearing words "authorized … consists of" sit adjacent to, not
+inside, some parent limb quotes; a live producer legitimately quotes
+the fuller span, so the coverage map may extend into adjacent canonical
+text while staying anchored to the parent's location) — and assert (a)
 each sub-quote resolves with the exact value/kind/class, (b) the
 parent compound quote ABSTAINs `MULTIPLE_NUMERIC_LITERALS`, (c) the
 original limb-assertion rows REMAIN open_world (they are structure,
@@ -88,8 +94,11 @@ validator rejects extra definition fields, so it cannot live there). A
 frozen count_kind↔quote corroboration table binds label to text: the
 byte-verified quote must match the kind's corroboration pattern
 (RESERVED `/reserv/i`; TREASURY `/treasury/i`; ISSUED_OUTSTANDING
-`/outstanding|issued/i`; AUTHORIZED `/authorized|consists of/i`;
-OUTSTANDING_AWARDS `/issuable|option|RSU|PSU|award/i`); mismatch →
+`/outstanding|issued/i`; AUTHORIZED `/authorized|consists of|classified
+as/i`; OUTSTANDING_AWARDS `/issuable|option|\bRSUs?\b|\bPSUs?\b|award/i`
+— the acronyms are WORD-BOUNDED and case-sensitive because `/RSU/i`
+matches "puRSUant" (re-audit finding 2), which would void the veto);
+mismatch →
 review, typed `COUNT_KIND_UNCORROBORATED` — a wrong-but-in-enum label
 must never publish a number under the wrong kind. Out-of-enum
 count_kind routes to open world by an EXPLICIT `pushOpenWorld` with a
@@ -142,6 +151,13 @@ arithmetic.
   compound sentences are TWO claims and the producer prompt is
   responsible for splitting — the parser never picks). Zero
   survivors and no zero-pattern match → ABSTAIN `NO_NUMERIC_LITERAL`.
+- Precedence pin (re-audit finding 3): a quote containing BOTH a
+  surviving numeric literal AND a kind-matching zero pattern (the live
+  case: "10,000,000 shares of preferred stock … none of which were
+  outstanding") → typed ABSTAIN `AMBIGUOUS_LITERAL_AND_ZERO`, never
+  resolve either. The producer must split that sentence into an
+  AUTHORIZED claim and an ISSUED_OUTSTANDING zero claim; the parser
+  never picks.
 - Spelled-out numbers ("ten million") → ABSTAIN `NON_LITERAL_NUMERAL`.
   Zero-case: per the count_kind-keyed zero table in section 1
   (`ZERO_PATTERN_KIND_MISMATCH` on mismatch); the table lives in the
@@ -234,8 +250,11 @@ arithmetic.
    pin from audit M-5) resolve end-to-end: correct definition split by
    count_kind, exact canonical values, corroboration failures typed
    `COUNT_KIND_UNCORROBORATED`, attribute-verbatim failures typed,
-   materiality rank 52, review routing for every ABSTAIN class, and
-   the restated additivity pin (field-level diff documented).
+   materiality rank 52, review routing for every ABSTAIN class
+   (including `AMBIGUOUS_LITERAL_AND_ZERO` on the F28 preferred quote
+   and a named `RESERVED_POOL_PLAN_UNIDENTIFIED` case), an out-of-enum
+   count_kind exercising the explicit `pushOpenWorld` path, and the
+   restated additivity pin (field-level diff documented).
 4. Write-path: resolved share-count claim with an ITEM attachment
    travels adapter → validation → publishableWriteSet via the
    component-rows machinery.
