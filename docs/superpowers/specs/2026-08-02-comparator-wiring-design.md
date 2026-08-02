@@ -59,13 +59,18 @@ a wiring test that:
    runs resolution AGAIN with BOTH optional inputs;
 4. asserts, per deal, the exact expected outcome counts —
    hand-derived, pinned as literals with derivation comments.
-   PINNED NOW (audit B-M2/B-m2): Skechers Tier 1 = 1
-   PRESENCE_AGREEMENT (§3.7) + 1 SECTION_MISMATCH (§3.8 — the
-   snapshot has TWO REP-T-CAP cards, the run resolved §3.7 only;
-   severity preference makes the mismatch WIN, so Skechers' resolved
-   claims are V1V2_SECTION_MISMATCH-blocked with
-   deterministic_gates_passed false — expected, not a bug). TopBuild
-   and Modiv have one CAP card each — clean. Post-seven-rows UNMAPPED
+   PINNED (corrected at Fable review of the build — the audit-era
+   prose below was wrong under the module's exact-string Tier-1
+   citation rule and the reviewer independently re-derived the truth
+   from the fixtures): Skechers Tier 1 = 0 PRESENCE_AGREEMENT + 2
+   SECTION_MISMATCH (its claim cites "3.7(b)"; both v1 cards carry
+   bare "3.7"/"3.8" — no exact match); Modiv = 0 + 1 (claim
+   "3.2(c)" vs card "3.2"); TopBuild = 1 + 0 (corroborated "3.1(b)"
+   matches its subsection-granularity card). The claim-level
+   consequence stands as originally specced: mismatch-blocked claims
+   with deterministic_gates_passed false — expected, not a bug.
+   [Superseded original prose: Skechers 1+1 via a §3.7/§3.8 pair;
+   TopBuild/Modiv "clean" — kept here struck-through for the record.] Post-seven-rows UNMAPPED
    sets: Skechers 5 (null §4.13/§4.10, CONSENT §3.4/§3.6,
    ANTIRELIANCE §4.17), Modiv 4 (null §4.16/§4.19, REGSTATUS §3.22,
    ANTIRELIANCE §4.21), TopBuild 0. All non-CAP families read
