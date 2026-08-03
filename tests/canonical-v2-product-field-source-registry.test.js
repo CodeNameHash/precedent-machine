@@ -94,6 +94,12 @@ function agreementProductDefinition(field) {
       operators: ['CONTAINS', 'EQ', 'EXISTS', 'NONE'],
       vocabulary: false,
     },
+    'list-tagged': {
+      valueType: 'ENUM',
+      controlType: 'ENUM_MULTISELECT',
+      operators: ['EQ', 'EXISTS', 'IN', 'NONE'],
+      vocabulary: true,
+    },
     boolean: {
       valueType: 'BOOLEAN',
       controlType: 'BOOLEAN_SELECT',
@@ -155,7 +161,9 @@ function agreementProductDefinition(field) {
     },
     permitted_operators: [...shape.operators].sort(),
     filter_scope: 'SAME_AGREEMENT_PROVISION_OCCURRENCE',
-    multiplicity: field.value_type === 'list' ? 'MANY' : 'ZERO_OR_ONE',
+    multiplicity: ['list', 'list-tagged'].includes(field.value_type)
+      ? 'MANY'
+      : 'ZERO_OR_ONE',
     completeness_semantics:
       'UNKNOWN_IF_NOT_CERTIFIED_FOR_SELECTED_RELEASE',
     source_requirement:
