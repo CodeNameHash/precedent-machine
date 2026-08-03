@@ -21,22 +21,22 @@ function snapshotSources() {
   const snapshot = JSON.parse(bytes.toString('utf8'));
   const patterns = new Map(LEXICAL_FAMILY_LEXICON.entries.filter((entry) => GENERAL_COVENANT_CODES_V1.includes(entry.family)).map((entry) => [entry.family, entry.value]));
   return GENERAL_COVENANT_CODES_V1.map((code) => {
-    const candidates = snapshot.triples.filter((entry) => entry.ai_metadata?.code === code && entry.evidence_quote);
+    const candidates = snapshot.triples.filter((entry) => (
+      entry.evidence_quote
+      && (entry.ai_metadata?.code === code
+        || (code === 'COV-SECREPORT' && /Post-Closing SEC Reports/i.test(entry.evidence_quote)))
+    ));
     const literal = candidates.find((entry) => entry.evidence_quote.toLowerCase().includes(patterns.get(code).toLowerCase())) || candidates[0] || null;
     return { code, literal };
   });
 }
 
-test('repository production snapshot is an exhaustive literal General Covenants source pack with an explicit no-evidence disposition', () => {
+test('repository production snapshot is an exhaustive literal General Covenants source pack, including the legacy COV-LIST source for post-closing SEC reports', () => {
   const bytes = fs.readFileSync(SNAPSHOT);
   const sources = snapshotSources();
   assert.equal(sources.length, 18);
   assert.equal(sha256Hex(bytes), 'df62de96cb844320a1d5916130095847fba8034646768c6f7d94f55e09476c68');
   for (const { code, literal } of sources) {
-    if (code === 'COV-SECREPORT') {
-      assert.equal(literal, null, 'no grounded production evidence is explicitly retained as open');
-      continue;
-    }
     assert.ok(literal, `${code} must retain one literal source record`);
     assert.equal(typeof literal.deal_id, 'string');
     assert.equal(typeof literal.source_provision_id, 'string');
@@ -44,12 +44,12 @@ test('repository production snapshot is an exhaustive literal General Covenants 
     assert.equal(sha256Hex(Buffer.from(literal.evidence_quote, 'utf8')).length, 64);
   }
   assert.equal(validateGeneralCovenantSourceDispositions(), true);
-  assert.equal(GENERAL_COVENANT_SOURCE_DISPOSITIONS['COV-SECREPORT'], OPEN_NO_GROUNDED_PRODUCTION_EVIDENCE);
-  assert.equal(sourceEvidencePromotionPermitted('COV-SECREPORT'), false);
+  assert.notEqual(GENERAL_COVENANT_SOURCE_DISPOSITIONS['COV-SECREPORT'], OPEN_NO_GROUNDED_PRODUCTION_EVIDENCE);
+  assert.equal(sourceEvidencePromotionPermitted('COV-SECREPORT'), true);
   assert.equal(sourceEvidencePromotionPermitted('COV-ACCESS'), true);
 });
 
-test('every grounded General Covenants source record produces a complete lexical receipt; COV-SECREPORT stays uncovered', () => {
+test('every grounded General Covenants source record produces a complete lexical receipt', () => {
   for (const { code, literal } of snapshotSources()) {
     if (!literal) continue;
     const bytes = Buffer.from(literal.evidence_quote, 'utf8');

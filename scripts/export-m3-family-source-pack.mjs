@@ -24,6 +24,7 @@ const FAMILY_CODES = Object.freeze({
 });
 const CARD_COLUMNS = 'id,deal_id,provision_type,provision_subtype,section_ref,primary_quote,region_hash,extraction_version';
 const WRITE_VERB_RE = /\b(INSERT|UPDATE|DELETE|DROP|ALTER|TRUNCATE|GRANT|REVOKE|CREATE)\b/i;
+const GENERAL_COVENANT_LEGACY_TEXT_ROUTE = Object.freeze({ code: 'COV-SECREPORT', phrase: 'Post-Closing SEC Reports' });
 
 function fail(message) { throw new Error(message); }
 
@@ -52,17 +53,19 @@ function loadEnvFile(filePath) {
   }
 }
 
-function buildSourcePackSql({ codes }) {
+function buildSourcePackSql({ codes, family = null }) {
   if (!Array.isArray(codes) || codes.length === 0) fail('buildSourcePackSql requires at least one exact code.');
   const text = [
     'SELECT c.id, c.deal_id, c.provision_type, c.provision_subtype, c.section_ref,',
     '       c.primary_quote, c.region_hash, c.extraction_version, d.acquirer, d.target',
     'FROM public.provision_cards c',
     'JOIN public.deals d ON d.id = c.deal_id',
-    'WHERE c.provision_subtype = ANY($1::text[])',
+    family === 'general-covenants'
+      ? 'WHERE c.provision_subtype = ANY($1::text[]) OR c.primary_quote ILIKE $2'
+      : 'WHERE c.provision_subtype = ANY($1::text[])',
     'ORDER BY c.provision_subtype, c.deal_id, c.section_ref, c.id;',
   ].join('\n');
-  return { text, values: [codes] };
+  return { text, values: family === 'general-covenants' ? [codes, `%${GENERAL_COVENANT_LEGACY_TEXT_ROUTE.phrase}%`] : [codes] };
 }
 
 function assertReadOnlySql(sql) {
@@ -81,27 +84,36 @@ async function selectAll(sb, table, columns, query) {
   }
 }
 
+function routedCodeFor({ family, card }) {
+  if (family === 'general-covenants'
+    && new RegExp(GENERAL_COVENANT_LEGACY_TEXT_ROUTE.phrase, 'i').test(String(card.primary_quote || ''))) {
+    return GENERAL_COVENANT_LEGACY_TEXT_ROUTE.code;
+  }
+  return card.provision_subtype;
+}
+
 function buildSourcePack({ family, codes, cards, deals }) {
   const allowed = new Set(codes);
   const byDeal = new Map(deals.map((row) => [row.id, row]));
   const sources = cards
-    .filter((card) => allowed.has(card.provision_subtype))
+    .filter((card) => allowed.has(routedCodeFor({ family, card })))
     .map((card) => {
       const quote = String(card.primary_quote || '');
       return Object.freeze({
         card_id: card.id, deal_id: card.deal_id,
         acquirer: byDeal.get(card.deal_id)?.acquirer || null, target: byDeal.get(card.deal_id)?.target || null,
         provision_type: card.provision_type, provision_subtype: card.provision_subtype,
+        routed_code: routedCodeFor({ family, card }),
         section_ref: card.section_ref || null, primary_quote: quote,
         primary_quote_sha256: sha256Hex(Buffer.from(quote, 'utf8')),
         region_hash: card.region_hash || null, extraction_version: card.extraction_version || null,
       });
     })
-    .sort((a, b) => [a.provision_subtype, a.deal_id, a.section_ref || '', a.card_id].join('\u0000').localeCompare([b.provision_subtype, b.deal_id, b.section_ref || '', b.card_id].join('\u0000')));
+    .sort((a, b) => [a.routed_code, a.deal_id, a.section_ref || '', a.card_id].join('\u0000').localeCompare([b.routed_code, b.deal_id, b.section_ref || '', b.card_id].join('\u0000')));
   const coverage = codes.slice().sort().map((code) => Object.freeze({
     code,
-    source_count: sources.filter((source) => source.provision_subtype === code && source.primary_quote.length > 0).length,
-    disposition: sources.some((source) => source.provision_subtype === code && source.primary_quote.length > 0)
+    source_count: sources.filter((source) => source.routed_code === code && source.primary_quote.length > 0).length,
+    disposition: sources.some((source) => source.routed_code === code && source.primary_quote.length > 0)
       ? 'GROUNDED' : 'NO_GROUNDED_PRODUCTION_EVIDENCE',
   }));
   const body = { schema_version: SOURCE_PACK_SCHEMA, family, selected_codes: [...codes].sort(), sources, coverage };
@@ -112,7 +124,7 @@ function verifySourcePack(pack) {
   if (!pack || pack.schema_version !== SOURCE_PACK_SCHEMA || !FAMILY_CODES[pack.family]) fail('Invalid M3 source pack schema or family.');
   const allowed = new Set(FAMILY_CODES[pack.family]);
   for (const source of pack.sources || []) {
-    if (!allowed.has(source.provision_subtype)) fail(`Unexpected source code: ${source.provision_subtype}`);
+    if (!allowed.has(source.routed_code)) fail(`Unexpected routed source code: ${source.routed_code}`);
     if (sha256Hex(Buffer.from(String(source.primary_quote || ''), 'utf8')) !== source.primary_quote_sha256) fail(`Quote hash mismatch: ${source.card_id}`);
   }
   const rebuilt = buildSourcePack({ family: pack.family, codes: FAMILY_CODES[pack.family], cards: pack.sources.map((source) => ({ ...source, id: source.card_id })), deals: pack.sources.map((source) => ({ id: source.deal_id, acquirer: source.acquirer, target: source.target })) });
@@ -122,13 +134,17 @@ function verifySourcePack(pack) {
 
 async function run(args) {
   if (args.envFile) loadEnvFile(args.envFile);
-  assertReadOnlySql(buildSourcePackSql({ codes: args.codes }).text);
+  assertReadOnlySql(buildSourcePackSql({ codes: args.codes, family: args.family }).text);
   const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) fail('Supabase env vars missing. Expected SUPABASE_URL/NEXT_PUBLIC_SUPABASE_URL and service or anon key.');
   const { createClient } = await import('@supabase/supabase-js');
   const sb = createClient(url, key);
-  const cards = await selectAll(sb, 'provision_cards', CARD_COLUMNS, (q) => q.in('provision_subtype', args.codes).order('provision_subtype').order('deal_id').order('section_ref').order('id'));
+  const cards = await selectAll(sb, 'provision_cards', CARD_COLUMNS, (q) => {
+    const ordered = q.order('provision_subtype').order('deal_id').order('section_ref').order('id');
+    if (args.family !== 'general-covenants') return ordered.in('provision_subtype', args.codes);
+    return ordered.or(`provision_subtype.in.(${args.codes.join(',')}),primary_quote.ilike.%${GENERAL_COVENANT_LEGACY_TEXT_ROUTE.phrase}%`);
+  });
   const dealIds = [...new Set(cards.map((card) => card.deal_id))];
   const deals = dealIds.length ? await selectAll(sb, 'deals', 'id,acquirer,target', (q) => q.in('id', dealIds).order('id')) : [];
   const pack = buildSourcePack({ family: args.family, codes: args.codes, cards, deals });
@@ -141,4 +157,4 @@ async function run(args) {
 
 if (import.meta.url === `file://${process.argv[1]}`) run(parseArgs()).catch((error) => { process.stderr.write(`${error.message || error}\n`); process.exit(1); });
 
-export { SOURCE_PACK_SCHEMA, FAMILY_CODES, parseArgs, buildSourcePackSql, assertReadOnlySql, buildSourcePack, verifySourcePack, run };
+export { SOURCE_PACK_SCHEMA, FAMILY_CODES, GENERAL_COVENANT_LEGACY_TEXT_ROUTE, parseArgs, buildSourcePackSql, assertReadOnlySql, buildSourcePack, verifySourcePack, run };
