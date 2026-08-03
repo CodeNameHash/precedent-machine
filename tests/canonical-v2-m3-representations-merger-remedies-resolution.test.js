@@ -12,6 +12,7 @@ const {
 } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
 const { buildIdentityAdmittedSourceContext } = require('./helpers/identity-admitted-source');
+const { buildLexicalDisagreementReceipt } = require('../lib/canonical-v2/native-producer/lexical-disagreement-net');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -37,6 +38,42 @@ test('V31 recorded real-agreement replay pack remains byte-grounded and resolves
     assert.equal(receipt.compiled_candidates.filter((entry) => entry.ok).length, 1, item.family);
     assert.equal(resolution.resolved.length, 1, item.family);
   }
+});
+
+test('V31 read-only production corpus excerpts replay each M3 carrier across two deals', async () => {
+  const pack = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'canonical-v2', 'm3-v31-live-run', 'corpus-cards.json'), 'utf8'));
+  assert.equal(pack.schema, 'CANONICAL_V2_M3_V31_REPLAY_FIXTURES/V1');
+  const byFamily = new Map();
+  for (const item of pack.cards) {
+    const source = `Section ${item.section_reference} Fixture\n${item.source_excerpt}\n`;
+    const shaped = item.family === 'REPRESENTATIONS'
+      ? shapeRepresentationQualifierProposals({ representation_instances: [{ section_reference: item.section_reference, party_making: item.party_making, qualifiers: [{ kind: item.qualifier_kind, code: item.qualifier_code, quote: item.source_excerpt, attachment: { position: 'TRAILING', governs_path: null } }] }], open_world_candidates: [] }, source)
+      : item.family === 'MERGER_STRUCTURE_CLOSING'
+        ? shapeMergerStructureProposals({ structure_assertions: [{ assertion_kind: item.assertion_kind, quote: item.source_excerpt }], open_world_candidates: [] }, source)
+        : item.family === 'SPECIFIC_PERFORMANCE_REMEDIES'
+          ? shapeSpecificPerformanceRemedyProposals({ remedy_assertions: [{ assertion_kind: item.assertion_kind, quote: item.source_excerpt }], open_world_candidates: [] }, source)
+          : shapeMiscBoilerplateProposals({ boilerplate_assertions: [{ assertion_kind: item.assertion_kind, quote: item.source_excerpt }], open_world_candidates: [] }, source);
+    const { receipt, resolution } = await replay({ source, sectionReference: item.section_reference, dealKey: item.deal_id, shape: () => shaped, parsed: null });
+    assert.equal(receipt.compiled_candidates.filter((entry) => entry.ok).length, 1, item.id);
+    assert.equal(resolution.open_world.length, 0, item.id);
+    assert.equal(resolution.resolved.length, 1, item.id);
+    const resolved = resolution.resolved[0];
+    const section = receipt.resolved_sections[0];
+    const text = Buffer.from(source, 'utf8').slice(section.start, section.end).toString('utf8');
+    const lexical = buildLexicalDisagreementReceipt({
+      governed_section: { section_ref: section.section_reference, text, text_sha256: section.text_sha256 },
+      candidates: [{ closure_id: resolved.claim.closure_id, section_reference: resolved.section_reference, family: resolved.concept_key, evidence: resolved.claim.evidence.map((edge) => ({ start: edge.absolute_start, end: edge.absolute_end })) }],
+    });
+    const ownOutcome = lexical.family_outcomes.find((entry) => entry.family === resolved.concept_key);
+    assert.equal(ownOutcome.outcome, 'LEXICAL_ALL_SIGNALS_MATCHED', item.id);
+    byFamily.set(item.family, (byFamily.get(item.family) || 0) + 1);
+  }
+  assert.deepEqual(Object.fromEntries(byFamily), {
+    REPRESENTATIONS: 2,
+    MERGER_STRUCTURE_CLOSING: 2,
+    SPECIFIC_PERFORMANCE_REMEDIES: 2,
+    MISC_BOILERPLATE: 2,
+  });
 });
 
 async function replay({ source, sectionReference, parsed, shape, dealKey }) {
