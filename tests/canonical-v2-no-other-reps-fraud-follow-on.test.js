@@ -29,7 +29,7 @@ const {
 const { fieldsForCompareCell } = require('../lib/query/render/deal-compare-cell-fields');
 const { createAnthropicProvider } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
-const { compileFixtureContractV31 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV34 } = require('../lib/canonical-v2/contract-bundle');
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -114,7 +114,7 @@ test('native extraction dispatch compiles every family proposal before dedicated
     source_text: document,
     document_hash: sha256Hex(document),
     section_references: ['4.20'],
-    contract_bundle: compileFixtureContractV31(),
+    contract_bundle: compileFixtureContractV34(),
     definitions: {},
     section_family_classifier: classifySectionFamily,
     provider: async ({ governed_scope: governedScope, section_family: sectionFamily }) => {
@@ -242,7 +242,7 @@ test('recorded Skechers and Modiv sources preserve real no-other-reps and indepe
 });
 
 test('the current additive contract bundle accepts all six distinct Abry definitions without merging Fraud and Willful Breach', () => {
-  const bundle = compileFixtureContractV31();
+  const bundle = compileFixtureContractV34();
   const definitions = new Set(bundle.claim_definitions.map((row) => row.claim_definition_key));
   for (const key of Object.keys(CLAIM_DEFINITIONS)) assert.ok(definitions.has(key));
   const concepts = new Set(bundle.concepts.map((row) => row.concept_key));

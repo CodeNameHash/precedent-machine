@@ -161,7 +161,7 @@ test('Material Contracts registers its exact contract, producer and title route'
   assert.equal(getProducerPromptModule('MATERIAL_CONTRACTS'), buildMaterialContractsProducerPrompt);
   assert.ok(MATERIAL_CONTRACT_BUCKET_KINDS.includes('SUPPLY'));
   assert.equal(MATERIAL_CONTRACT_BUCKET_KINDS.includes('OTHER'), false);
-  assert.equal(MAPPING_TABLE_VERSION, 19);
+  assert.equal(MAPPING_TABLE_VERSION, 20);
   const classification = await classifySectionFamily({ title: 'Material Contracts' });
   assert.equal(classification.section_family, 'MATERIAL_CONTRACTS');
   assert.equal(classification.provenance, SECTION_FAMILY_RULE_CLASSIFIED);
@@ -243,7 +243,7 @@ test('committed Landos/AbbVie text replays through native resolution and the lex
   ]);
   assert.equal(resolution.open_world.length, 0);
 
-  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 11);
+  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 15);
   assert.ok(LEXICAL_FAMILY_LEXICON.entries.some((entry) => entry.family === 'REP-T-CONTRACTS'));
   const bytes = Buffer.from(quote, 'utf8');
   const lexical = buildLexicalDisagreementReceipt({
