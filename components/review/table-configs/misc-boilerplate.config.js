@@ -144,7 +144,7 @@ const ROWS_TOP = [
   // ingestion-schema key (lib/parser-v2/extract.js: "NEVER return a bare
   // boolean" for forum) -- preferred over the legacy jurisdictionExclusive*
   // aliases, which stay as fallbacks for older extractions.
-  ['forum', 'Forum / jurisdiction', 'Boilerplate', ['forumCourts', 'jurisdictionExclusive', 'jurisdictionExclusiveText', 'forumFallback']],
+  ['forum', 'Forum / jurisdiction', 'Boilerplate', ['forumCourts', 'jurisdictionExclusive', 'jurisdictionExclusiveText']],
 ];
 
 // Third-party beneficiaries renders separately (see buildThirdPartyBeneficiaryRow
@@ -153,6 +153,10 @@ const ROWS_TOP = [
 const ROWS_BOTTOM = [
   ['specific-performance', 'Specific performance', 'Remedies', ['specificPerformance']],
   ['specific-performance-limitations', 'Specific performance limitations', 'Remedies', ['specificPerformanceLimitations']],
+  ['jury-waiver', 'Jury trial waiver', 'Remedies', ['juryWaiver']],
+  ['amendment', 'Amendment formalities', 'Boilerplate', ['amendmentsRequirement']],
+  ['severability', 'Severability', 'Boilerplate', ['severability']],
+  ['counterparts', 'Counterparts and electronic execution', 'Boilerplate', ['counterparts']],
   // Assignment: the five raw-clause rows below are replaced by ONE summarized
   // "Assignment" row (buildAssignmentRow) -- Ben round 6. Kept commented for
   // provenance.
@@ -160,6 +164,13 @@ const ROWS_BOTTOM = [
   // (Metsera parity gap root cause 4: "whole sub-section, no rows"). Kept as
   // five discrete rows -- each is a distinct fact the review team checks
   // independently -- clustered under the shared 'Assignment' kind.
+];
+
+const GOVERNED_CONCEPT_ROWS = [
+  ['REM-NONRECOURSE', 'non-recourse', 'Non-recourse protections', 'Remedies'],
+  ['ADMIN-NOTICES', 'notices', 'Notices provision', 'Boilerplate'],
+  ['ADMIN-ENTIRE', 'entire-agreement', 'Entire agreement', 'Boilerplate'],
+  ['ADMIN-TPB', 'no-third-party-beneficiaries', 'No third-party beneficiaries', 'Boilerplate'],
 ];
 
 function isMiscBoilerplateCard(card) {
@@ -218,9 +229,53 @@ function mappedBoilerplateRows(cards, specs) {
         const canonical = governingLawCodeLabel(hit);
         if (canonical) row = { ...row, detail: canonical };
       }
-      return { ...row, sourceCard: hit.card, signals: [miscBoilerplateSignal({ ...row, sourceCard: hit.card })].filter(Boolean) };
+      return {
+        ...row,
+        featureKeys: keys,
+        sourceCard: hit.card,
+        signals: [miscBoilerplateSignal({ ...row, sourceCard: hit.card })].filter(Boolean),
+      };
     })
     .filter(Boolean);
+}
+
+function governedConceptRows(cards) {
+  return GOVERNED_CONCEPT_ROWS.flatMap(([code, id, label, kind]) => {
+    const card = cards.find((candidate) => cardCode(candidate) === code);
+    const hit = card ? firstFeature([card], ['mainConcept']) : null;
+    const row = makeRow('misc-boilerplate', id, label, kind, hit);
+    if (!row) return [];
+    return [{
+      ...row,
+      featureKeys: ['mainConcept'],
+      sourceCard: card,
+      signals: [miscBoilerplateSignal({ ...row, sourceCard: card })].filter(Boolean),
+    }];
+  });
+}
+
+function evidenceOnlyRows(cards) {
+  return cards
+    .filter((card) => card?.canonical_v2_lineage?.source === 'CANONICAL_V2_OPEN_WORLD_EVIDENCE')
+    .map((card, ordinal) => ({
+      id: `misc-boilerplate-open-evidence-${card.id || ordinal}`,
+      label: card.short_title || 'Deferred evidence',
+      kind: 'Evidence',
+      detail: textOf(card),
+      evidence: textOf(card),
+      source: labelOf(card),
+      sourceCard: card,
+      present: true,
+      marketState: 'OPEN_NATIVE_FIELD',
+      signals: [{
+        id: `misc-boilerplate-open-evidence-${card.id || ordinal}-signal`,
+        label: 'Evidence only',
+        value: 'evidence-only',
+        tone: 'neutral',
+        evidence: textOf(card),
+        source: card,
+      }],
+    }));
 }
 // Canonical layer: parentAssignmentConditions is a LIST feature whose items
 // can carry an extraction-assigned ASSIGNMENT_PARENT_EXCEPTION code. When at
@@ -557,7 +612,9 @@ const miscBoilerplateConfig = {
       ...(thirdPartyRow ? [thirdPartyRow] : []),
       ...(feeRow ? [feeRow] : []),
       ...mappedBoilerplateRows(cards, ROWS_BOTTOM),
+      ...governedConceptRows(cards),
       ...(assignmentRow ? [assignmentRow] : []),
+      ...evidenceOnlyRows(cards),
     ];
   },
   // Item 46: narrower Term/Signals columns than the 18rem default other
