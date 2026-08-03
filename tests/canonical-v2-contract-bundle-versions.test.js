@@ -42,6 +42,8 @@ const {
   FIXTURE_CONTRACT_INPUT_V23,
   FIXTURE_CONTRACT_INPUT_V24,
   FIXTURE_CONTRACT_INPUT_V25,
+  FIXTURE_CONTRACT_INPUT_V26,
+  FIXTURE_CONTRACT_INPUT_V27,
   FIXTURE_CONTRACT_FINGERPRINTS,
   FIXTURE_SERVING_CONTRACT_FINGERPRINTS,
   BRINGS_DOWN_EFFECT_SCHEMA_V1,
@@ -91,6 +93,7 @@ const {
   compileFixtureContractV24,
   compileFixtureContractV25,
   compileFixtureContractV26,
+  compileFixtureContractV27,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -203,7 +206,7 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F26 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F27 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
@@ -229,6 +232,7 @@ test('F1 through F26 are distinct recognised fixture contract fingerprints', () 
   assert.notEqual(compileFixtureContractV23().fingerprint, compileFixtureContractV24().fingerprint);
   assert.notEqual(compileFixtureContractV24().fingerprint, compileFixtureContractV25().fingerprint);
   assert.notEqual(compileFixtureContractV25().fingerprint, compileFixtureContractV26().fingerprint);
+  assert.notEqual(compileFixtureContractV26().fingerprint, compileFixtureContractV27().fingerprint);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -258,6 +262,7 @@ test('F1 through F26 are distinct recognised fixture contract fingerprints', () 
       compileFixtureContractV24().fingerprint,
       compileFixtureContractV25().fingerprint,
       compileFixtureContractV26().fingerprint,
+      compileFixtureContractV27().fingerprint,
     ].sort(),
   );
   assert.deepEqual(
@@ -399,6 +404,21 @@ test('F25 adds only IOC restriction-presence concepts and claim', () => {
     )).map((entry) => entry.claim_definition_key),
     ['IOC_RESTRICTION_PRESENT'],
   );
+});
+
+test('F27 adds only the two grounded Material Contracts claims', () => {
+  const f26 = compileFixtureContractV26();
+  const f27 = compileFixtureContractV27();
+  assert.equal(validateContractBundle(f27), true);
+  assert.equal(canonicalJson(f27), canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V27)));
+  assert.deepEqual(f27.concepts, f26.concepts);
+  assert.deepEqual(
+    f27.claim_definitions.filter((entry) => !f26.claim_definitions.some(
+      (prior) => prior.claim_definition_key === entry.claim_definition_key,
+    )).map((entry) => entry.claim_definition_key),
+    ['MATERIAL_CONTRACT_BUCKET_PRESENT', 'MATERIAL_CONTRACT_THRESHOLD_STRUCTURE'],
+  );
+  assert.equal(FIXTURE_CONTRACT_INPUT_V27.claim_definitions.length, FIXTURE_CONTRACT_INPUT_V26.claim_definitions.length + 2);
 });
 
 // ---------------------------------------------------------------------------

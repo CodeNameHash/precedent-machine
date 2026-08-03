@@ -273,7 +273,7 @@ test('resolver publishes mixed cash and ratio values through partyless structura
     }),
   ], quote);
 
-  assert.equal(MAPPING_TABLE_VERSION, 14);
+  assert.equal(MAPPING_TABLE_VERSION, 15);
   assert.equal(result.resolved.length, 2);
   assert.equal(result.review_queue.length, 2);
   assert.equal(result.open_world.length, 0);

@@ -86,7 +86,7 @@ test('current Wave A and follow-on gaps block M3 certification', () => {
       && !error.details.incomplete_families.includes('NO_SHOP')
       && !error.details.incomplete_families.includes('MAE_DEFINITION')
       && !error.details.incomplete_families.includes('PROXY_MEETING_COVENANTS')
-      && error.details.incomplete_supplemental_owners.length === 3
+      && error.details.incomplete_supplemental_owners.length === 2
       && error.details.unassigned_product_surfaces.length === 0
   ));
 });

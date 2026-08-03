@@ -275,6 +275,23 @@ function rowsFromText(source) {
   return rows;
 }
 
+function evidenceOnlyRows(cards) {
+  return cards
+    .filter((card) => card?.canonical_v2_lineage?.source === 'CANONICAL_V2_OPEN_WORLD_EVIDENCE')
+    .map((card, index) => ({
+      id: `material-contracts-open-evidence-${card.id || index}`,
+      code: null,
+      itemCode: null,
+      label: card.short_title || 'Deferred material-contract evidence',
+      threshold: 'Evidence only',
+      evidence: textOf(card),
+      source: card,
+      sourceCard: card,
+      present: true,
+      marketState: 'OPEN_NATIVE_FIELD',
+    }));
+}
+
 // One line per contract type: a single pill, the friendly bucket label as
 // its only text. No ordinal wrapper, no nested "also covered" checklist --
 // the title renders exactly once, here.
@@ -345,15 +362,16 @@ const materialContractsConfig = {
   hideRepeatedTitle: true,
   selectRows(reviewDeal) {
     const cards = reviewDeal?.cards || [];
+    const deferredRows = evidenceOnlyRows(cards);
     // FIX 1: the REP-T-MATERIAL-CONTRACTS rep card always wins; only fall
     // back to the looser title-regex match (excluding definition cards) when
     // no such rep card exists on the deal.
     const source = cards.find(isMaterialContractsRepCard) ||
       cards.find((card) => card?.kind !== 'definition' && isMaterialContractsCard(card)) ||
       cards.find(isMaterialContractsCard);
-    if (!source) return [];
+    if (!source) return deferredRows;
     const featureRows = rowsFromFeatures(source);
-    return featureRows.length ? featureRows : rowsFromText(source);
+    return [...(featureRows.length ? featureRows : rowsFromText(source)), ...deferredRows];
   },
   columns: [
     { id: 'bucket', header: 'Contract Type', width: '24rem', renderCell: renderTerm },

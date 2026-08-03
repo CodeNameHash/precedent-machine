@@ -316,8 +316,8 @@ test('materiality rank 20 asserted on TERMF-TARGET/TERMF-REVERSE/TERMF-TAIL and 
   );
 });
 
-test('MAPPING_TABLE_VERSION is 14 and TERMINATION_FEE_PARSE_VERSION is exported', () => {
-  assert.equal(MAPPING_TABLE_VERSION, 14);
+test('MAPPING_TABLE_VERSION is 15 and TERMINATION_FEE_PARSE_VERSION is exported', () => {
+  assert.equal(MAPPING_TABLE_VERSION, 15);
   assert.equal(TERMINATION_FEE_PARSE_VERSION, 1);
 });
 

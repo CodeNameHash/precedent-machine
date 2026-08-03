@@ -318,8 +318,8 @@ test('a Termination Fee titled section is NOT classified TERMINATION (the shared
   assert.equal(result.section_family, 'TERMINATION_FEE');
 });
 
-test('MAPPING_TABLE_VERSION is 14; materiality rank 10 TERMINATION_RIGHTS tier is unchanged and covers every TERMR- concept, including the two new ones', () => {
-  assert.equal(MAPPING_TABLE_VERSION, 14);
+test('MAPPING_TABLE_VERSION is 15; materiality rank 10 TERMINATION_RIGHTS tier is unchanged and covers every TERMR- concept, including the two new ones', () => {
+  assert.equal(MAPPING_TABLE_VERSION, 15);
   const tier = MATERIALITY_TABLE.find((t) => t.label === 'TERMINATION_RIGHTS');
   assert.equal(tier.rank, 10);
   assert.deepEqual([...tier.concept_key_prefixes], ['TERMR-']);
@@ -697,11 +697,11 @@ test('materiality rank 10 on every resolved claim and every review item', async 
   assert.equal(queued.materiality_rank, 10);
 });
 
-test('additivity re-pin: the resolution receipt threads mapping_table_version 14 and the two new parser versions', async () => {
+test('additivity re-pin: the resolution receipt threads mapping_table_version 15 and the two new parser versions', async () => {
   const { resolution } = await resolveTerminationAssertions('deal:termr-additivity', shell('no termination assertions here'), {
     termination_right_assertions: [],
   });
-  assert.equal(resolution.resolution_receipt.mapping_table_version, 14);
+  assert.equal(resolution.resolution_receipt.mapping_table_version, 15);
   assert.equal(resolution.resolution_receipt.termination_deadline_parse_version, 1);
   assert.equal(resolution.resolution_receipt.cure_period_parse_version, 1);
 });

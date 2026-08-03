@@ -68,7 +68,7 @@ async function productFixture() {
 
 test('the resolver promotes only the six governed Proxy and Meeting claim definitions', async () => {
   const { resolution } = await productFixture();
-  assert.equal(MAPPING_TABLE_VERSION, 14);
+  assert.equal(MAPPING_TABLE_VERSION, 15);
   assert.deepEqual(resolution.resolved.map((entry) => entry.resolved_claim_definition_key).sort(), [
     'BOARD_RECOMMENDATION_INCLUSION',
     'MEETING_ADJOURNMENT_MAX_COUNT',
