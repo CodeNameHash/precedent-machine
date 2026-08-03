@@ -2,7 +2,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContractV31 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV33 } = require('../lib/canonical-v2/contract-bundle');
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
 const {
   shapeRepresentationQualifierProposals,
@@ -16,7 +16,7 @@ const { buildLexicalDisagreementReceipt } = require('../lib/canonical-v2/native-
 const fs = require('node:fs');
 const path = require('node:path');
 
-const CONTRACT = compileFixtureContractV31();
+const CONTRACT = compileFixtureContractV33();
 
 test('V31 recorded real-agreement replay pack remains byte-grounded and resolves deterministically', async () => {
   const pack = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'canonical-v2', 'm3-v31-real-replay.json'), 'utf8'));

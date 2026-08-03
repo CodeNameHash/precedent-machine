@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContractV30 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV32 } = require('../lib/canonical-v2/contract-bundle');
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
 const { shapeGovernedEmployeeMattersProposals, shapeGovernedDnoProposals } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { resolveCandidates, materialityFor } = require('../lib/canonical-v2/native-producer/candidate-resolution');
@@ -13,7 +13,7 @@ const { buildIdentityAdmittedSourceContext } = require('./helpers/identity-admit
 function card(family, id) { return JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'canonical-v2', family, 'corpus-cards.json'))).cards.find((entry) => entry.id === id); }
 const EMPLOYEE = card('employee-matters-live-run', '470c560c-1534-452c-890a-f9403bb189b5');
 const DNO = card('dno-live-run', '01d091dc-03b3-4e25-8551-0ca5ecea3a12');
-const BUNDLE = compileFixtureContractV30();
+const BUNDLE = compileFixtureContractV32();
 async function replay({ source, reference, parsed, shape, dealKey }) {
   const receipt = await runNativeExtraction({ source_text: source, document_hash: sha256Hex(Buffer.from(source)), section_references: [reference], contract_bundle: BUNDLE, definitions: {}, section_family_classifier: async () => ({ declined: true }), provider: async ({ governed_scope }) => ({ provider_id: 'recorded-employee-dno-replay/v1', model_id: 'recorded-fixture', prompt: 'recorded-employee-dno-replay/v1', ...shape(parsed, governed_scope.source_text) }) });
   return { receipt, resolution: resolveCandidates({ run_receipt: receipt, contract_vocabulary: BUNDLE, admitted_source_context: buildIdentityAdmittedSourceContext(source, { dealKey, dealAdmissionId: sha256Hex(`M3-${dealKey}`) }) }) };

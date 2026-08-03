@@ -146,7 +146,7 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
     CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
       (family) => family.family_id === 'ANTITRUST_REGULATORY_EFFORTS',
     ).completion_state,
-    'WAVE_A_OPEN',
+    'FAMILY_COMPLETE',
   );
   const consideration = CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
     (family) => family.family_id === 'CONSIDERATION',
@@ -158,6 +158,7 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
       'CLOSING_CONDITIONS',
       'PROXY_MEETING_COVENANTS', 'MERGER_STRUCTURE_CLOSING', 'MISC_BOILERPLATE',
       'REPRESENTATIONS', 'SPECIFIC_PERFORMANCE_REMEDIES', 'TERMINATION_FEE', 'TERMINATION_RIGHTS',
+      'EMPLOYEE_MATTERS', 'DNO_INDEMNIFICATION',
       'FINANCING_COVENANTS', 'GUARANTY_FINANCING_PARTY',
       'TAX_MATTERS', 'DIVIDENDS', 'APPRAISAL_DISSENTERS_RIGHTS',
     ].includes(family.family_id))
@@ -359,15 +360,16 @@ test('the M3 register has no production-import or cutover authority', () => {
   assert.doesNotMatch(source, /PRODUCTION_IMPORT|PRODUCTION_CUTOVER|M4_PRE_CUTOVER/);
 });
 
-test('Antitrust remains open until the real litigation quote coverage map is committed', () => {
+test('Antitrust is complete once the real litigation quote coverage map is committed', () => {
   const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families
     .find((entry) => entry.family_id === 'ANTITRUST_REGULATORY_EFFORTS');
-  assert.deepEqual(family.wave_a.checks.fixture_proof, { state: 'OPEN', evidence_paths: [] });
+  assert.equal(family.wave_a.checks.fixture_proof.state, 'PASS');
+  assert.ok(family.wave_a.checks.fixture_proof.evidence_paths.includes('tests/fixtures/canonical-v2/antitrust-regulatory-live-run/coverage-map.json'));
   assert.ok(family.product_surfaces.every((surface) => surface.state === 'PASS'));
   assert.equal(
     CURRENT_M3_FAMILY_PARITY_STATUS.family_states
       .find((entry) => entry.family_id === family.family_id).completion_state,
-    'WAVE_A_OPEN',
+    'FAMILY_COMPLETE',
   );
 });
 
