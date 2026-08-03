@@ -88,6 +88,12 @@ function agreementProductDefinition(field) {
       operators: ['CONTAINS', 'EQ', 'EXISTS', 'NONE'],
       vocabulary: false,
     },
+    list: {
+      valueType: 'TEXT',
+      controlType: 'TEXT_SEARCH',
+      operators: ['CONTAINS', 'EQ', 'EXISTS', 'NONE'],
+      vocabulary: false,
+    },
     boolean: {
       valueType: 'BOOLEAN',
       controlType: 'BOOLEAN_SELECT',
@@ -149,7 +155,7 @@ function agreementProductDefinition(field) {
     },
     permitted_operators: [...shape.operators].sort(),
     filter_scope: 'SAME_AGREEMENT_PROVISION_OCCURRENCE',
-    multiplicity: 'ZERO_OR_ONE',
+    multiplicity: field.value_type === 'list' ? 'MANY' : 'ZERO_OR_ONE',
     completeness_semantics:
       'UNKNOWN_IF_NOT_CERTIFIED_FOR_SELECTED_RELEASE',
     source_requirement:

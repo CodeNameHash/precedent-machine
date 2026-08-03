@@ -13,7 +13,10 @@ const ROWS = [
   ['efforts', 'General efforts standard', ['effortsStandard', 'reasonableBestEfforts']],
   ['access', 'Access / information rights', ['accessRights', 'informationAccess']],
   ['public-statements', 'Public statements', ['publicStatements', 'publicStatementExceptions']],
+  ['insurance', 'D&O / insurance covenant', ['insuranceCap', 'insurancePeriod', 'doInsurance']],
 ];
+
+const GENERAL_COVENANT_RENDERED_DEDICATED_CODES = new Set(['COV-DO']);
 
 // FEEDBACK-2-PUNCHLIST.md #13/#31/#32: stockholders-meeting mechanics
 // (COV-MEETING / COV-PROXY -- already owned by sec-meeting.config.js) and
@@ -34,7 +37,7 @@ function isGeneralCovenant(card) {
   const code = cardCode(card);
   if (type === 'COVENANT_INTERIM_OPERATING' || code.startsWith('IOC')) return false;
   if (VOTES_OWNED_CODES.has(code)) return false;
-  if (isDedicatedFamilyCovenantCode(code)) return false;
+  if (isDedicatedFamilyCovenantCode(code) && !GENERAL_COVENANT_RENDERED_DEDICATED_CODES.has(code)) return false;
   return type === 'COVENANT_OTHER' || code.startsWith('COV');
 }
 

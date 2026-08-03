@@ -1668,7 +1668,7 @@ test('general-covenants config renders one row PER genuine COVENANT_OTHER clause
   assert.equal(maintain, undefined, 'the IOC card must not appear here -- ioc-exceptions.config.js owns it');
 });
 
-test('general-covenants routes dedicated-family cards out and retains code-scoped metrics for residual rows', () => {
+test('general-covenants hosts the completed D&O family with explicit ownership and retains code-scoped metrics for residual rows', () => {
   const rows = generalCovenantsMod.generalCovenantsConfig.selectRows({
     cards: [
       {
@@ -1695,7 +1695,9 @@ test('general-covenants routes dedicated-family cards out and retains code-scope
     ],
   });
   const insurance = rows.find((row) => row.sourceCard?.id === 'do');
-  assert.equal(insurance, undefined, 'COV-DO belongs only to DNO_INDEMNIFICATION');
+  assert.equal(insurance.ownerFamily, 'DNO_INDEMNIFICATION');
+  assert.equal(insurance.ownershipState, 'DEDICATED_FAMILY');
+  assert.equal(insurance.marketSubterms.some((subterm) => subterm.key === 'insurance-cap'), true);
   const publicity = rows.find((row) => row.sourceCard?.id === 'publicity');
   assert.equal(publicity.marketSubterms.length, 3);
   assert.ok(publicity.marketSubterms.every((subterm) => subterm.kind === 'presence'));
