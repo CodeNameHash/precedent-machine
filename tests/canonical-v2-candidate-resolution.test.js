@@ -462,6 +462,7 @@ test('a clean proposal with verified evidence, registered concept and resolved p
   const tier = findResolved(resolution, BRING_DOWN_TIER_CLAIM_KEY);
   assert.ok(tier, 'the bring-down tier proposal resolved');
   assert.equal(tier.resolved_claim_definition_key, 'REPRESENTATION_ACCURACY_STANDARD');
+  assert.ok(tier.triage.unevaluated_conditions.includes('BRING_DOWN_TIER_PROVENANCE_REVISIT_PENDING'));
   assert.equal(tier.concept_key, 'COND-B-REP');
   assert.deepEqual(tier.party, { role: 'CONDITION_OBLIGOR', value: 'Parent', capacity: 'BUYER' });
   assert.equal(tier.triage.deterministic_gates_passed, true);
