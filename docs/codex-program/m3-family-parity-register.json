@@ -345,11 +345,15 @@
         "evidence_paths": [
           "lib/canonical-v2/p0-product-surface-routing.js",
           "lib/canonical-v2/native-producer/p0-product-surface-ownership.js",
-          "components/review/table-configs/general-covenants.config.js"
+          "components/review/table-configs/general-covenants.config.js",
+          "lib/canonical-v2/native-producer/general-covenants-producer-prompt.js",
+          "tests/canonical-v2-general-covenants-family-parity.test.js"
         ]
       },
       "product_surfaces": [
-        { "surface_id": "assigned-general-covenants", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/general-covenants.config.js", "source_locator": "generalCovenantsConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+        { "surface_id": "assigned-general-covenants", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/general-covenants.config.js", "source_locator": "generalCovenantsConfig", "wave": "FOLLOW_ON", "state": "PASS", "disposition": "NATIVE_COMPLETE", "evidence_paths": ["lib/canonical-v2/general-covenants-product-projection.js", "tests/canonical-v2-general-covenants-family-parity.test.js"] },
+        { "surface_id": "general-covenants-query-compare", "source_kind": "QUERY_FIELD", "source_path": "lib/query/render/deal-compare-cell-fields.js", "source_locator": "COVENANT_OTHER", "wave": "FOLLOW_ON", "state": "PASS", "disposition": "NATIVE_COMPLETE", "evidence_paths": ["lib/canonical-v2/general-covenants-product-projection.js", "tests/canonical-v2-general-covenants-family-parity.test.js"] },
+        { "surface_id": "general-covenants-market-fields", "source_kind": "MARKET_FIELD", "source_path": "components/review/table-configs/general-covenants.config.js", "source_locator": "generalCovenantMarket", "wave": "FOLLOW_ON", "state": "PASS", "disposition": "NATIVE_COMPLETE", "evidence_paths": ["lib/canonical-v2/general-covenants-product-projection.js", "tests/canonical-v2-general-covenants-family-parity.test.js"] }
       ]
     }
   ],

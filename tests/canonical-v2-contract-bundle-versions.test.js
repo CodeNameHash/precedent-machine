@@ -44,6 +44,7 @@ const {
   FIXTURE_CONTRACT_INPUT_V25,
   FIXTURE_CONTRACT_INPUT_V26,
   FIXTURE_CONTRACT_INPUT_V27,
+  FIXTURE_CONTRACT_INPUT_V28,
   FIXTURE_CONTRACT_FINGERPRINTS,
   FIXTURE_SERVING_CONTRACT_FINGERPRINTS,
   BRINGS_DOWN_EFFECT_SCHEMA_V1,
@@ -94,6 +95,7 @@ const {
   compileFixtureContractV25,
   compileFixtureContractV26,
   compileFixtureContractV27,
+  compileFixtureContractV28,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -146,6 +148,7 @@ const FROZEN_F16 = 'a1fe3ddb45d2371ccd428747da6837084ea61cd476afd1f74a964c5824f4
 const FROZEN_F17 = 'c2d43ad9f6fd0008cc09b74d1d2dd75c87793781a40bd79faaa6f91e4b0fae5b';
 const FROZEN_F18 = '49ffa4029d5bc4431b5bf7249c7008d482b41c13e7b01984822742b90027433d';
 const FROZEN_F19 = '8ad419a69175c5c5db1506da15ccaff1d63fbf56c0d4424a123a0e7ebcfbec33';
+const FROZEN_F28 = '1c0a086d1e9d20eb1eadcb6fab09527bbe9483189269e4ce6f8ba31b59402b1f';
 
 const APPROVED_V2_ADDITIONS = [
   'TERMR-BREACH',
@@ -233,6 +236,7 @@ test('F1 through F27 are distinct recognised fixture contract fingerprints', () 
   assert.notEqual(compileFixtureContractV24().fingerprint, compileFixtureContractV25().fingerprint);
   assert.notEqual(compileFixtureContractV25().fingerprint, compileFixtureContractV26().fingerprint);
   assert.notEqual(compileFixtureContractV26().fingerprint, compileFixtureContractV27().fingerprint);
+  assert.notEqual(compileFixtureContractV27().fingerprint, compileFixtureContractV28().fingerprint);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -263,6 +267,7 @@ test('F1 through F27 are distinct recognised fixture contract fingerprints', () 
       compileFixtureContractV25().fingerprint,
       compileFixtureContractV26().fingerprint,
       compileFixtureContractV27().fingerprint,
+      FROZEN_F28,
     ].sort(),
   );
   assert.deepEqual(
@@ -306,6 +311,16 @@ test('compileFixtureContractV20() adds the M3-B antitrust shapes without changin
     ['ANTI-AGREEMENTS', 'ANTI-BURDEN', 'ANTI-CONSULT', 'ANTI-EFFORTS', 'ANTI-FILING', 'ANTI-LITIGATION', 'ANTI-NOACTION', 'ANTI-STRATEGY', 'ANTI-TIMING'],
   );
   assert.equal(FIXTURE_CONTRACT_INPUT_V20.claim_definitions.length, FIXTURE_CONTRACT_INPUT_V19.claim_definitions.length + 7);
+});
+
+test('compileFixtureContractV28() adds the exact General Covenants vocabulary', () => {
+  const bundle = compileFixtureContractV28();
+  assert.equal(bundle.fingerprint, FROZEN_F28);
+  assert.equal(validateContractBundle(bundle), true);
+  assert.equal(canonicalJson(bundle), canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V28)));
+  assert.equal(bundle.claim_definitions.some(
+    (definition) => definition.claim_definition_key === 'GENERAL_COVENANT_PRESENT',
+  ), true);
 });
 
 test('F22 adds only the three grounded Consideration concepts and claims', () => {
