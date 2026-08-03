@@ -39,6 +39,8 @@ test('recorded rulings stay fixed and follow-on rulings are added without duplic
       'proxy-parent-adoption',
       'proxy-adjournment-reasons',
       'appraisal-dispatch-ownership',
+      'dividend-concept-scope',
+      'rank-85-dividend-dno',
       'consideration-mechanics-promotion',
       'employee-dno-follow-on',
       'financing-follow-on',
@@ -57,7 +59,7 @@ test('recorded rulings stay fixed and follow-on rulings are added without duplic
 
 test('follow-on rulings carry corpus counts, clause examples and a promotion horizon', () => {
   const followOn = DECISIONS.filter((decision) => decision.origin === 'follow-on');
-  assert.equal(followOn.length, 13);
+  assert.equal(followOn.length, 15);
   assert.deepEqual(
     followOn.filter((decision) => decision.horizon === 'now').map((decision) => decision.id),
     [
@@ -65,6 +67,8 @@ test('follow-on rulings carry corpus counts, clause examples and a promotion hor
       'proxy-parent-adoption',
       'proxy-adjournment-reasons',
       'appraisal-dispatch-ownership',
+      'dividend-concept-scope',
+      'rank-85-dividend-dno',
     ],
   );
   assert.equal(followOn.filter((decision) => decision.horizon === 'later').length, 9);
