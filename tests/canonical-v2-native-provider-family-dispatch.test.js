@@ -117,7 +117,7 @@ const CASES = Object.freeze([
       bring_down_conditions: Object.freeze([]),
       open_world_candidates: Object.freeze([]),
     }),
-    expectedClaimKey: 'NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE',
+    expectedClaimKey: 'NATIVE_REPRESENTATION_QUALIFIER_CANDIDATE',
   }),
 ]);
 
