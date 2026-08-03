@@ -1,6 +1,6 @@
 import React from 'react';
 import { conditionsBConfig, conditionsMConfig, conditionsSConfig } from './conditions-m.config.js';
-import { splitForCell, triggerThresholdLabel, valueText } from './card-utils.js';
+import { cardCode, cardFeatures, labelOf, splitForCell, triggerThresholdLabel, valueText } from './card-utils.js';
 import { STANDARD_TEXT, standardColorKey } from './standard-colors.js';
 import { voteStandard } from './vote-standard.js';
 import bringDownTiers from '../../../lib/bring-down-tiers.js';
@@ -332,6 +332,8 @@ const CERT_CERTIFIES = {
 function repNameBySection(matches) {
   const map = {};
   for (const provision of matches || []) {
+    const ownSection = sectionNumberForCard(provision);
+    if (ownSection && labelOf(provision)) map[ownSection] = labelOf(provision);
     const cited = provision?.features?.citedProvisionNames;
     if (Array.isArray(cited)) {
       for (const item of cited) {
@@ -340,6 +342,26 @@ function repNameBySection(matches) {
     }
   }
   return map;
+}
+
+function sectionNumberForCard(card) {
+  const fromFeatures = cardFeatures(card).sectionNumber || card?.section_number;
+  if (fromFeatures) return String(fromFeatures).trim();
+  const sectionRef = String(card?.section_ref || '');
+  const match = sectionRef.match(/\d+(?:\.\d+)+(?:\([a-z0-9]+\))*/i);
+  return match ? match[0] : null;
+}
+
+function repTypeForBringDownCondition(code) {
+  if (code === 'COND-B-REP') return 'REP-T';
+  if (code === 'COND-S-REP') return 'REP-B';
+  return null;
+}
+
+function isCatchAllBringDownTier(covered) {
+  return /^all\s+(?:company\s+|parent\s+)?representations/i.test(covered)
+    || /\ball\s+other\b/i.test(covered)
+    || /representations?\s+(?:and\s+warranties\s+)?other than/i.test(covered);
 }
 
 // Resolve a "3.05(a)(i)(x)"-style section key to its rep name via PREFIX
@@ -446,32 +468,60 @@ function normRepName(name) {
 // is intentionally NOT mapped -- any rep absent from the map defaults to MAE.
 function buildRepBringDownMap(reviewDeal) {
   const cards = reviewDeal?.cards || [];
-  const matches = cards
+  const carriers = cards
     .map((card) => {
       const recovered = recoverBringDownFromCard(card);
-      return recovered.tiers.length
-        ? { ...card, features: { ...(card.features || {}), bringDownTiers: recovered.tiers } }
+      const repType = repTypeForBringDownCondition(recovered.provisionCode);
+      return recovered.tiers.length && repType
+        ? { card, recovered, repType }
         : null;
     })
     .filter(Boolean);
   const map = new Map();
-  if (!matches.length) return map;
-  const nameBySec = repNameBySection(matches);
-  const tiers = matches
-    .flatMap((provision) => provision.features.bringDownTiers.map((tier) => ({ tier, meta: tierMeta(tier) })))
-    .sort((a, b) => a.meta.rank - b.meta.rank); // most-stringent first: a rep in >1 tier keeps the most stringent
-  for (const { tier, meta } of tiers) {
-    const covered = String(tier.reps_covered || tier.repsCovered || '').trim();
-    const general = /^all\s+(?:company\s+|parent\s+)?representations/i.test(covered)
-      || /\ball\s+other\b/i.test(covered)
-      || /representations?\s+(?:and\s+warranties\s+)?other than/i.test(covered);
-    if (general || !covered) continue;
-    const short = SHORT_BRINGDOWN_BY_RANK[meta.rank] || meta.label;
-    const colorKey = standardColorKey(meta.label);
-    for (const part of splitBringdownCoveredPills(covered).map((token) => resolveRepsCovered(token, nameBySec))) {
-      const key = normRepName(part);
-      if (key && !map.has(key)) map.set(key, { short, rank: meta.rank, colorKey });
+  map.catchAllByRepType = new Map();
+  if (!carriers.length) return map;
+
+  const explicit = new Map();
+  const catchAll = new Map();
+  for (const { card, recovered, repType } of carriers) {
+    // Resolve cites against the representations on the SAME side. Condition
+    // citations are a useful fallback, but must never supply the other side's
+    // labels when one condition was extracted more completely than the other.
+    const sameSideReps = cards.filter((candidate) => String(cardCode(candidate) || '').startsWith(`${repType}-`));
+    const nameBySec = repNameBySection(sameSideReps);
+    for (const [section, name] of Object.entries(repNameBySection([card]))) {
+      if (!nameBySec[section]) nameBySec[section] = name;
     }
+    for (const tier of recovered.tiers) {
+      const meta = tierMeta(tier);
+      const standard = String(tier.standard || tier.standardCode || tier.standard_code || '').trim();
+      if (!standard) continue;
+      const covered = String(tier.reps_covered || tier.repsCovered || '').trim();
+      const value = { short: SHORT_BRINGDOWN_BY_RANK[meta.rank] || meta.label, rank: meta.rank, colorKey: standardColorKey(meta.label), standard };
+      if (isCatchAllBringDownTier(covered)) {
+        const key = repType;
+        if (!catchAll.has(key)) catchAll.set(key, []);
+        catchAll.get(key).push(value);
+        continue;
+      }
+      if (!covered) continue;
+      for (const part of splitBringdownCoveredPills(covered).map((token) => resolveRepsCovered(token, nameBySec))) {
+        const key = normRepName(part);
+        if (!key) continue;
+        const candidateKey = `${repType}:${key}`;
+        if (!explicit.has(candidateKey)) explicit.set(candidateKey, []);
+        explicit.get(candidateKey).push(value);
+      }
+    }
+  }
+
+  for (const [candidateKey, values] of explicit) {
+    const standards = new Set(values.map((value) => value.standard));
+    if (standards.size === 1) map.set(candidateKey, values[0]);
+  }
+  for (const [repType, values] of catchAll) {
+    const standards = new Set(values.map((value) => value.standard));
+    if (standards.size === 1) map.catchAllByRepType.set(repType, values[0]);
   }
   return map;
 }

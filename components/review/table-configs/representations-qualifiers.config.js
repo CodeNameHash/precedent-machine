@@ -187,19 +187,30 @@ function resolveMateriality(card) {
 // condition's `bringDownTiers` (in-all-material-respects / de-minimis / MAE,
 // each with a section-cited reps_covered list). We resolve it via the SAME
 // map the Conditions section uses (buildRepBringDownMap) so the two agree, and
-// default to MAE for any rep the tiers don't carve out.
+// use MAE only when the matching side has an explicit catch-all tier.
 function resolveBringDown(card, bringDownMap) {
   if (!bringDownMap) return null;
+  const code = String(cardCode(card) || '');
+  const repType = code.startsWith('REP-T-') ? 'REP-T'
+    : code.startsWith('REP-B-') ? 'REP-B' : null;
+  if (!repType) return null;
   const key = normRepName(labelOf(card));
-  let hit = bringDownMap.get(key);
+  let hit = bringDownMap.get(`${repType}:${key}`);
   if (!hit) {
     for (const [name, meta] of bringDownMap) {
-      if (name && (key.includes(name) || name.includes(key))) { hit = meta; break; }
+      const prefix = `${repType}:`;
+      if (name.startsWith(prefix)) {
+        const candidate = name.slice(prefix.length);
+        if (candidate && (key.includes(candidate) || candidate.includes(key))) { hit = meta; break; }
+      }
     }
   }
-  // Not carved into a specific tier -> MAE (the closing condition's catch-all).
-  const short = hit ? hit.short : 'MAE';
-  const colorKey = hit ? hit.colorKey : 'MAE';
+  // An unlisted rep is MAE only when its OWN side has an explicit catch-all.
+  // Missing or contradictory closing-condition data is unknown, not MAE.
+  if (!hit) hit = bringDownMap.catchAllByRepType?.get(repType);
+  if (!hit) return null;
+  const short = hit.short;
+  const colorKey = hit.colorKey;
   return { label: `Bringdown: ${short}`, colorKey, evidence: textOf(card) };
 }
 

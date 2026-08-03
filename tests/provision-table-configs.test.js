@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 const React = require('react');
 const { renderToStaticMarkup } = require('react-dom/server');
+const { QXO_5_2_TEXT } = require('./fixtures/qxo-section-5-2');
 
 let mod;
 let advisersFeesExpensesMod;
@@ -529,6 +530,51 @@ test('representations-qualifiers carries the current rep bringdown treatment wit
   assert.equal(bringDownMarket.value.normalizer, 'bring_down_for_rep');
   assert.equal(bringDownMarket.kind, 'multi_select');
   assert.deepEqual(bringDownMarket.provisionCodes, ['COND-B-REP']);
+});
+
+test('representations-qualifiers derives bring-downs only from the matching party condition', () => {
+  const cards = [
+    { id: 'target-org', provision_type: 'REPRESENTATION', provision_subtype: 'REP-T-ORG', short_title: 'Organization', features: { sectionNumber: '3.1(a)' } },
+    { id: 'target-other', provision_type: 'REPRESENTATION', provision_subtype: 'REP-T-LIT', short_title: 'Litigation', features: { sectionNumber: '3.1(g)' } },
+    { id: 'buyer-org', provision_type: 'REPRESENTATION', provision_subtype: 'REP-B-ORG', short_title: 'Organization', features: { sectionNumber: '3.2(a)' } },
+    { id: 'target-condition', provision_type: 'CLOSING_CONDITION', provision_subtype: 'COND-B-REP', short_title: 'Accuracy of Target Reps', features: { bringDownTiers: [
+      { standard: 'MAT_ALL_MATERIAL', reps_covered: 'Section 3.1(a)' },
+      { standard: 'MAT_MAE_QUALIFIED', reps_covered: 'All other representations and warranties of the Company' },
+    ] } },
+    { id: 'buyer-condition', provision_type: 'CLOSING_CONDITION', provision_subtype: 'COND-S-REP', short_title: 'Accuracy of Buyer Reps', features: { bringDownTiers: [
+      { standard: 'MAT_ALL_RESPECTS', reps_covered: 'Section 3.2(a)' },
+      { standard: 'MAT_MAE_QUALIFIED', reps_covered: 'All other representations and warranties of Parent' },
+    ] } },
+  ];
+  const targetRows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({ cards }).filter((row) => row.kind === 'rep');
+  const buyerRows = representationsQualifiersMod.parentRepresentationsConfig.selectRows({ cards }).filter((row) => row.kind === 'rep');
+  assert.deepEqual(targetRows.map((row) => row.currentTreatments[0]?.value), ['In all material respects', 'MAE']);
+  assert.deepEqual(buyerRows.map((row) => row.currentTreatments[0]?.value), ['In all respects']);
+});
+
+test('representations-qualifiers leaves a side unknown when only the other side has a bring-down condition', () => {
+  const cards = [
+    { id: 'target-org', provision_type: 'REPRESENTATION', provision_subtype: 'REP-T-ORG', short_title: 'Organization', features: { sectionNumber: '3.1(a)' } },
+    { id: 'buyer-condition', provision_type: 'CLOSING_CONDITION', provision_subtype: 'COND-S-REP', short_title: 'Accuracy of Buyer Reps', features: { bringDownTiers: [
+      { standard: 'MAT_MAE_QUALIFIED', reps_covered: 'All other representations and warranties of Parent' },
+    ] } },
+  ];
+  const row = representationsQualifiersMod.representationsQualifiersConfig.selectRows({ cards }).find((candidate) => candidate.kind === 'rep');
+  assert.deepEqual(row.currentTreatments, []);
+  assert.equal(row.bringDown, null);
+});
+
+test('representations-qualifiers recovers a bundled target bring-down only for target reps', () => {
+  const cards = [
+    { id: 'target-org', provision_type: 'REPRESENTATION', provision_subtype: 'REP-T-ORG', short_title: 'Organization; Qualification; Standing', features: { sectionNumber: '3.1(a)' } },
+    { id: 'target-lit', provision_type: 'REPRESENTATION', provision_subtype: 'REP-T-LIT', short_title: 'Litigation; Legal Proceedings', features: { sectionNumber: '3.1(g)' } },
+    { id: 'buyer-org', provision_type: 'REPRESENTATION', provision_subtype: 'REP-B-ORG', short_title: 'Organization; Qualification; Standing', features: { sectionNumber: '3.2(a)' } },
+    { id: 'bundled-target-condition', provision_type: 'CLOSING_CONDITION', provision_subtype: 'COND-B-MAE', short_title: 'No Target MAE', primary_quote: QXO_5_2_TEXT, features: {} },
+  ];
+  const targetRows = representationsQualifiersMod.representationsQualifiersConfig.selectRows({ cards }).filter((row) => row.kind === 'rep');
+  const buyerRows = representationsQualifiersMod.parentRepresentationsConfig.selectRows({ cards }).filter((row) => row.kind === 'rep');
+  assert.deepEqual(targetRows.map((row) => row.currentTreatments[0]?.value), ['In all material respects', 'MAE']);
+  assert.deepEqual(buyerRows.map((row) => row.currentTreatments), [[]]);
 });
 
 // R1 (FEEDBACK-3-PUNCHLIST.md): General Exceptions renders as its OWN
