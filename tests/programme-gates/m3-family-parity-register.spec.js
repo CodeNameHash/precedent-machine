@@ -130,13 +130,19 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
     ).completion_state,
     'FAMILY_COMPLETE',
   );
+  assert.equal(
+    CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
+      (family) => family.family_id === 'MAE_DEFINITION',
+    ).completion_state,
+    'FAMILY_COMPLETE',
+  );
   const consideration = CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
     (family) => family.family_id === 'CONSIDERATION',
   );
   assert.equal(consideration.completion_state, 'FOLLOW_ON_OPEN');
   assert.ok(CURRENT_M3_FAMILY_PARITY_STATUS.family_states
     .filter((family) => ![
-      'NO_SHOP', 'CONSIDERATION', 'INTERIM_OPERATING_COVENANTS', 'TERMINATION_FEE', 'TERMINATION_RIGHTS',
+      'NO_SHOP', 'MAE_DEFINITION', 'CONSIDERATION', 'INTERIM_OPERATING_COVENANTS', 'TERMINATION_FEE', 'TERMINATION_RIGHTS',
     ].includes(family.family_id))
     .every((family) => family.completion_state === 'WAVE_A_OPEN'));
   for (const familyId of ['INTERIM_OPERATING_COVENANTS', 'TERMINATION_FEE', 'TERMINATION_RIGHTS']) {
@@ -224,6 +230,24 @@ test('IOC governed presence claims pass while long-tail and numeric mechanics re
     assert.equal(surface.state, 'OPEN');
     assert.equal(surface.disposition, 'FOLLOW_ON_REQUIRED');
   }
+});
+
+test('Key Defined Terms and MAE product parity is native without claiming relationship joins', () => {
+  const keyTerms = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
+    (family) => family.family_id === 'KEY_DEFINED_TERMS',
+  );
+  const mae = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
+    (family) => family.family_id === 'MAE_DEFINITION',
+  );
+  assert.ok(keyTerms.product_surfaces.every(
+    (surface) => surface.state === 'PASS' && surface.disposition === 'NATIVE_COMPLETE',
+  ));
+  assert.ok(mae.product_surfaces.every(
+    (surface) => surface.state === 'PASS' && surface.disposition === 'NATIVE_COMPLETE',
+  ));
+  assert.equal(keyTerms.wave_a.checks.resolver.state, 'OPEN');
+  assert.equal(keyTerms.wave_a.checks.lexical_net.state, 'OPEN');
+  assert.ok(Object.values(mae.wave_a.checks).every((check) => check.state === 'PASS'));
 });
 
 test('a rehashed complete label cannot contradict open family state', () => {

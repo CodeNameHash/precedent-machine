@@ -52,6 +52,7 @@ const {
 } = require('../lib/canonical-v2/native-producer/candidate-resolution');
 const { getProducerPromptModule } = require('../lib/canonical-v2/native-producer/producer-prompt-registry');
 const { buildMaeDefinitionProducerPrompt } = require('../lib/canonical-v2/native-producer/mae-definition-producer-prompt');
+const { projectKeyTermsMaeClaims } = require('../lib/canonical-v2/key-terms-mae-product-projection');
 
 // ─── identity admitted-source chain (copied verbatim from the no-shop/
 // termination-fee resolution tests' own helper -- see those files' comment
@@ -450,6 +451,20 @@ test('a resolved MAE_DEFINITION_PRONG claim (BUSINESS_EFFECTS, with "taken as a 
   assert.equal(prongResolved.length, 1);
   assert.equal(prongResolved[0].claim.canonical_value, 'BUSINESS_EFFECTS');
   assert.equal(prongResolved[0].concept_key, 'DEF-MAE');
+  const projection = projectKeyTermsMaeClaims({ resolved_entries: prongResolved });
+  assert.equal(projection.records.length, 1);
+  assert.deepEqual(projection.records[0].query, {
+    field_key: 'maeDefinitionFact',
+    value: {
+      concept_key: 'DEF-MAE',
+      claim_definition_key: 'MAE_DEFINITION_PRONG',
+      canonical_value: 'BUSINESS_EFFECTS',
+      dimensions: { prong_code: 'BUSINESS_EFFECTS' },
+    },
+  });
+  assert.deepEqual(projection.records[0].compare, projection.records[0].query);
+  assert.equal(projection.records[0].review.label, 'MAE definition prong');
+  assert.equal(projection.records[0].market.metric_key, 'MAE_GOVERNED_VALUE_BY_CLAIM');
 });
 
 test('a BUSINESS_EFFECTS prong without "taken as a whole" queues MAE_PRONG_UNCORROBORATED (recurring prong-queue cost, audit m-4)', async () => {
