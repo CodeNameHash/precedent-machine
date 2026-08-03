@@ -142,6 +142,14 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
     ).completion_state,
     'FAMILY_COMPLETE',
   );
+  for (const familyId of ['DNO_INDEMNIFICATION', 'EMPLOYEE_MATTERS']) {
+    assert.equal(
+      CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
+        (family) => family.family_id === familyId,
+      ).completion_state,
+      'FAMILY_COMPLETE',
+    );
+  }
   assert.equal(
     CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
       (family) => family.family_id === 'ANTITRUST_REGULATORY_EFFORTS',
@@ -156,6 +164,7 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
     .filter((family) => ![
       'ANTITRUST_REGULATORY_EFFORTS', 'NO_SHOP', 'MAE_DEFINITION',
       'PROXY_MEETING_COVENANTS', 'TERMINATION_FEE', 'TERMINATION_RIGHTS',
+      'EMPLOYEE_MATTERS', 'DNO_INDEMNIFICATION',
     ].includes(family.family_id))
     .every((family) => family.completion_state === 'WAVE_A_OPEN'));
   for (const familyId of [

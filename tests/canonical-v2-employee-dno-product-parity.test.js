@@ -72,7 +72,7 @@ test('D&O claims use Ben-ratified materiality rank 85', () => {
   assert.deepEqual(tier, {
     rank: 85,
     label: 'DNO_INDEMNIFICATION',
-    concept_key_prefixes: ['DNO-'],
+    concept_key_prefixes: ['DNO-INDEM', 'DNO-TAIL', 'DNO-BENEF'],
   });
   assert.deepEqual(
     materialityFor({ conceptKey: 'DNO-INDEM', claimDefinitionKey: 'INDEMNIFICATION_CONTINUATION' }),
