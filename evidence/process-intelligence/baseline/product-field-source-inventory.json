@@ -258,7 +258,7 @@
       },
       {
         "provision_type": "ANTITRUST_REGULATORY",
-        "current_user_facing_field_count": 32,
+        "current_user_facing_field_count": 35,
         "disposition": "INCLUDE_CURRENT_AGREEMENT_PROVISION_TYPE",
         "disposition_reason": "The pinned PM query surface returns one or more user-facing fields for this type."
       },
@@ -299,8 +299,8 @@
         "disposition_reason": "The pinned PM query surface returns one or more user-facing fields for this type."
       }
     ],
-    "distinct_user_facing_field_count": 331,
-    "field_occurrence_count": 489,
+    "distinct_user_facing_field_count": 334,
+    "field_occurrence_count": 492,
     "fields": [
       {
         "field_key": "absenceOfChangesExceptions",
@@ -1761,6 +1761,29 @@
           {
             "provision_type": "ANTITRUST_REGULATORY",
             "source_kind": "SERVING_REGISTRY_ENTRY",
+            "source_request_key": "clearSkies",
+            "source_registry_index": 80
+          }
+        ],
+        "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
+        "future_result_type_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES",
+        "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
+      },
+      {
+        "field_key": "clearSkiesCompany",
+        "label": "Clear-skies covenant on the Company side",
+        "value_type": "boolean",
+        "unit": null,
+        "coded": false,
+        "boolean": true,
+        "numeric": false,
+        "provision_types": [
+          "ANTITRUST_REGULATORY"
+        ],
+        "source_occurrences": [
+          {
+            "provision_type": "ANTITRUST_REGULATORY",
+            "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "clearSkiesCompany",
             "source_registry_index": 80
           }
@@ -1786,6 +1809,29 @@
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "clearSkiesCompanyScope",
             "source_registry_index": 82
+          }
+        ],
+        "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
+        "future_result_type_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES",
+        "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
+      },
+      {
+        "field_key": "clearSkiesParent",
+        "label": "Clear-skies covenant on the Parent side",
+        "value_type": "boolean",
+        "unit": null,
+        "coded": false,
+        "boolean": true,
+        "numeric": false,
+        "provision_types": [
+          "ANTITRUST_REGULATORY"
+        ],
+        "source_occurrences": [
+          {
+            "provision_type": "ANTITRUST_REGULATORY",
+            "source_kind": "SERVING_REGISTRY_ENTRY",
+            "source_request_key": "clearSkiesParent",
+            "source_registry_index": 80
           }
         ],
         "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
@@ -6870,6 +6916,29 @@
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "pullAndRefileRight",
             "source_registry_index": 496
+          }
+        ],
+        "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
+        "future_result_type_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES",
+        "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
+      },
+      {
+        "field_key": "pullRefile",
+        "label": "Pull-and-refile gating",
+        "value_type": "string",
+        "unit": null,
+        "coded": false,
+        "boolean": false,
+        "numeric": false,
+        "provision_types": [
+          "ANTITRUST_REGULATORY"
+        ],
+        "source_occurrences": [
+          {
+            "provision_type": "ANTITRUST_REGULATORY",
+            "source_kind": "SERVING_REGISTRY_ENTRY",
+            "source_request_key": "pullRefile",
+            "source_registry_index": 495
           }
         ],
         "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
@@ -29394,7 +29463,7 @@
   "content_identity": {
     "scheme": "CANONICAL_CONTENT_ID/V1",
     "domain": "PROCESS_INTELLIGENCE_PRODUCT_FIELD_SOURCE_INVENTORY/V1",
-    "content_id": "e63782c47ad48292db1b9a1b72eb6ddb1160d5ac6f78c897794c5a100b2278d0",
-    "canonical_payload_sha256": "0c7a0cfce9a10ba7f0fa22537104b56c76e5378d68ac42a91cce48f1251584d5"
+    "content_id": "194f202b7537e1772a8af67c61e6d9f559cfc96392d41e8982a9e01bbf853b92",
+    "canonical_payload_sha256": "f11acbd5280173bb75da509df9a835ff4ffbf772cf9955177f14a2b0fe3e71c7"
   }
 }

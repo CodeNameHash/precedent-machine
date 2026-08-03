@@ -3,7 +3,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { compileFixtureContractV19 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV21 } = require('../lib/canonical-v2/contract-bundle');
 const {
   CONTROLLED_VOCABULARIES,
   PROMPT_VERSION,
@@ -17,8 +17,8 @@ const {
   noShopWaveBValueCorroborated,
 } = require('../lib/canonical-v2/native-producer/candidate-resolution');
 
-test('F19 registers the bounded No-Shop Wave B concepts and claims', () => {
-  const bundle = compileFixtureContractV19();
+test('F21 registers the bounded No-Shop Wave B concepts and claims', () => {
+  const bundle = compileFixtureContractV21();
   const concepts = new Set(bundle.concepts.map((entry) => entry.concept_key));
   for (const key of ['NOSOL-CEASE', 'NOSOL-ENFORCE', 'NOSOL-WAIVER', 'NOSOL-RECOMMEND']) {
     assert.equal(concepts.has(key), true, key);

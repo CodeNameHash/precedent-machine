@@ -172,7 +172,7 @@ test('resolver parses mixed cash and ratio values but blocks publication until a
     }),
   ], quote);
 
-  assert.equal(MAPPING_TABLE_VERSION, 11);
+  assert.equal(MAPPING_TABLE_VERSION, 12);
   assert.equal(result.resolved.length, 0);
   assert.equal(result.review_queue.length, 2);
   assert.equal(result.open_world.length, 0);

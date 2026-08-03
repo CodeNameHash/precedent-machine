@@ -252,9 +252,9 @@ function agreementInventory(registryEntries) {
       certified_data_disposition: 'NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES',
     }));
 
-  if (fields.length !== 331) fail(`Agreement field count is ${fields.length}, expected 331`);
-  if (allOccurrences.length !== 489) {
-    fail(`Agreement field occurrence count is ${allOccurrences.length}, expected 489`);
+  if (fields.length !== 334) fail(`Agreement field count is ${fields.length}, expected 334`);
+  if (allOccurrences.length !== 492) {
+    fail(`Agreement field occurrence count is ${allOccurrences.length}, expected 492`);
   }
   const sec = provisionTypes.find((entry) => entry.provision_type === 'SEC_FILING_MEETING');
   if (!sec || sec.current_user_facing_field_count !== 0

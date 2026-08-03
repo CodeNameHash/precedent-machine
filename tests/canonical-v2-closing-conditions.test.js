@@ -3,7 +3,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { compileFixtureContractV19, compileFixtureContractV20 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV23, compileFixtureContractV24 } = require('../lib/canonical-v2/contract-bundle');
 const { classifySectionFamily, SECTION_FAMILY_RULE_CLASSIFIED } = require('../lib/canonical-v2/native-producer/section-family-classifier');
 const { buildClosingConditionsProducerPrompt } = require('../lib/canonical-v2/native-producer/closing-conditions-producer-prompt');
 const { shapeClosingConditionProposals, CLOSING_CONDITION_CLAIM_KEY } = require('../lib/canonical-v2/native-producer/anthropic-provider');
@@ -14,8 +14,8 @@ const { CLOSING_CONDITION_SURFACE_OWNERSHIP, OPEN_WORLD_SURFACE_GAPS } = require
 
 const QUOTE = 'there shall not have occurred a Company Material Adverse Effect that is continuing';
 
-test('closing conditions have a separate v19 vocabulary', () => {
-  const bundle = compileFixtureContractV19();
+test('closing conditions have a separate v23 vocabulary', () => {
+  const bundle = compileFixtureContractV23();
   assert.ok(bundle.concepts.some((row) => row.concept_key === 'COND-MAE'));
   assert.ok(bundle.claim_definitions.some((row) => row.claim_definition_key === 'NO_MAE_CONDITION_CONTINUING'));
 });
@@ -44,7 +44,7 @@ test('live provider dispatches closing conditions through its own prompt and per
   const result = await produceCandidateProposals({
     governed_scope: { deal_key: 'fixture', source_text: QUOTE },
     definitions: { known_definitions: [] },
-    contract_bundle: compileFixtureContractV19(),
+    contract_bundle: compileFixtureContractV23(),
     section_family: 'CLOSING_CONDITIONS',
     provider,
   });
@@ -67,7 +67,7 @@ test('Wave B preserves certificate targets as an open-world relationship while r
 });
 
 test('the central compiler accepts Closing Conditions proposals end to end', async () => {
-  const bundle = compileFixtureContractV20();
+  const bundle = compileFixtureContractV24();
   const governedScope = { deal_key: 'fixture', source_text: QUOTE };
   const produced = await produceCandidateProposals({
     governed_scope: governedScope,

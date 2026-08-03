@@ -86,12 +86,12 @@ test('records all 15 current Deals-table fields and their future filter requirem
   );
 });
 
-test('records the exact 331-field Agreement surface without silent loss', () => {
+test('records the exact 334-field Agreement surface without silent loss', () => {
   const agreement = inventory().agreement_query_surface;
   assert.equal(agreement.provision_type_count, 17);
-  assert.equal(agreement.distinct_user_facing_field_count, 331);
-  assert.equal(agreement.field_occurrence_count, 489);
-  assert.equal(new Set(agreement.fields.map((field) => field.field_key)).size, 331);
+  assert.equal(agreement.distinct_user_facing_field_count, 334);
+  assert.equal(agreement.field_occurrence_count, 492);
+  assert.equal(new Set(agreement.fields.map((field) => field.field_key)).size, 334);
   assert.ok(agreement.fields.every((field) => (
     field.disposition === 'INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD'
     && field.source_occurrences.length > 0
@@ -102,7 +102,7 @@ test('records the exact 331-field Agreement surface without silent loss', () => 
   )));
   assert.equal(
     agreement.fields.reduce((total, field) => total + field.source_occurrences.length, 0),
-    489,
+    492,
   );
 });
 

@@ -39,6 +39,8 @@ const {
   FIXTURE_CONTRACT_INPUT_V20,
   FIXTURE_CONTRACT_INPUT_V21,
   FIXTURE_CONTRACT_INPUT_V22,
+  FIXTURE_CONTRACT_INPUT_V23,
+  FIXTURE_CONTRACT_INPUT_V24,
   FIXTURE_CONTRACT_FINGERPRINTS,
   FIXTURE_SERVING_CONTRACT_FINGERPRINTS,
   BRINGS_DOWN_EFFECT_SCHEMA_V1,
@@ -84,6 +86,8 @@ const {
   compileFixtureContractV20,
   compileFixtureContractV21,
   compileFixtureContractV22,
+  compileFixtureContractV23,
+  compileFixtureContractV24,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -196,7 +200,7 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F22 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F24 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
@@ -218,6 +222,8 @@ test('F1 through F22 are distinct recognised fixture contract fingerprints', () 
   assert.notEqual(FROZEN_F19, compileFixtureContractV20().fingerprint);
   assert.notEqual(compileFixtureContractV20().fingerprint, compileFixtureContractV21().fingerprint);
   assert.notEqual(compileFixtureContractV21().fingerprint, compileFixtureContractV22().fingerprint);
+  assert.notEqual(compileFixtureContractV22().fingerprint, compileFixtureContractV23().fingerprint);
+  assert.notEqual(compileFixtureContractV23().fingerprint, compileFixtureContractV24().fingerprint);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -243,6 +249,8 @@ test('F1 through F22 are distinct recognised fixture contract fingerprints', () 
       compileFixtureContractV20().fingerprint,
       compileFixtureContractV21().fingerprint,
       compileFixtureContractV22().fingerprint,
+      compileFixtureContractV23().fingerprint,
+      compileFixtureContractV24().fingerprint,
     ].sort(),
   );
   assert.deepEqual(
@@ -317,6 +325,53 @@ test('F22 adds only the three grounded Consideration concepts and claims', () =>
   const { concepts: _concepts, claim_definitions: _claims, fingerprint: _fingerprint, ...f22Rest } = f22;
   const { concepts: _priorConcepts, claim_definitions: _priorClaims, fingerprint: _priorFingerprint, ...f21Rest } = f21;
   assert.equal(canonicalJson(f22Rest), canonicalJson(f21Rest));
+});
+
+test('F23 adds only the Closing Conditions foundation concepts and claims', () => {
+  const f22 = compileFixtureContractV22();
+  const f23 = compileFixtureContractV23();
+  assert.equal(validateContractBundle(f23), true);
+  assert.equal(canonicalJson(f23), canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V23)));
+  assert.deepEqual(
+    f23.concepts.filter((entry) => !f22.concepts.some((prior) => prior.concept_key === entry.concept_key)),
+    [
+      { concept_key: 'COND-COV', version: 1 },
+      { concept_key: 'COND-MAE', version: 1 },
+      { concept_key: 'COND-REG', version: 1 },
+      { concept_key: 'COND-S-REP', version: 1 },
+    ],
+  );
+  assert.deepEqual(
+    f23.claim_definitions.filter((entry) => !f22.claim_definitions.some(
+      (prior) => prior.claim_definition_key === entry.claim_definition_key,
+    )).map((entry) => entry.claim_definition_key),
+    [
+      'COVENANT_COMPLIANCE_STANDARD',
+      'NO_MAE_CONDITION',
+      'NO_MAE_CONDITION_CONTINUING',
+      'REGULATORY_APPROVAL_CONDITION',
+    ],
+  );
+});
+
+test('F24 adds only the Closing Conditions Wave B concepts and claims', () => {
+  const f23 = compileFixtureContractV23();
+  const f24 = compileFixtureContractV24();
+  assert.equal(validateContractBundle(f24), true);
+  assert.equal(canonicalJson(f24), canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V24)));
+  assert.deepEqual(
+    f24.concepts.filter((entry) => !f23.concepts.some((prior) => prior.concept_key === entry.concept_key)),
+    [
+      { concept_key: 'COND-B-CERT', version: 1 },
+      { concept_key: 'COND-FRUSTRATE', version: 1 },
+      { concept_key: 'COND-M-LEGAL', version: 1 },
+      { concept_key: 'COND-M-LISTING', version: 1 },
+      { concept_key: 'COND-M-S4', version: 1 },
+      { concept_key: 'COND-M-STOCKHOLDER', version: 1 },
+      { concept_key: 'COND-S-CERT', version: 1 },
+      { concept_key: 'COND-S-FUNDS', version: 1 },
+    ],
+  );
 });
 
 // ---------------------------------------------------------------------------

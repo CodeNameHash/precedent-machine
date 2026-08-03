@@ -48,7 +48,7 @@ test('the M3 register records the three surfaces as assigned follow-on owners, n
   );
   assert.deepEqual(
     CURRENT_M3_FAMILY_PARITY_REGISTER.unassigned_product_surfaces.map((surface) => surface.surface_id),
-    ['unassigned-target-representations', 'unassigned-parent-representations'],
+    [],
   );
 });
 
