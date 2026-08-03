@@ -314,3 +314,32 @@ test('Financing Covenants and Guaranty product parity is native-complete while u
     );
   }
 });
+
+test('Tax Matters, Dividends and Appraisal product parity closes with adjacent-owner surfaces retired', () => {
+  const expectedRetired = {
+    APPRAISAL_DISSENTERS_RIGHTS: [
+      'appraisal-condition-row', 'appraisal-consideration-row', 'appraisal-query-intent',
+    ],
+    DIVIDENDS: ['dividends-generic-ioc-row', 'dividends-query-registry'],
+    TAX_MATTERS: ['tax-generic-covenant-row', 'tax-query-registry', 'tax-withholding-market-field'],
+  };
+  for (const [familyId, retiredIds] of Object.entries(expectedRetired)) {
+    const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families
+      .find((entry) => entry.family_id === familyId);
+    assert.ok(family, familyId);
+    assert.ok(family.product_surfaces.every((surface) => surface.state === 'PASS'));
+    assert.deepEqual(
+      family.product_surfaces
+        .filter((surface) => surface.disposition === 'APPROVED_RETIRED')
+        .map((surface) => surface.surface_id)
+        .sort(),
+      retiredIds,
+    );
+    assert.ok(family.product_surfaces.some((surface) => surface.disposition === 'NATIVE_COMPLETE'));
+    assert.equal(
+      CURRENT_M3_FAMILY_PARITY_STATUS.family_states
+        .find((entry) => entry.family_id === familyId).completion_state,
+      'WAVE_A_OPEN',
+    );
+  }
+});
