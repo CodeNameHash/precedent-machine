@@ -29,11 +29,15 @@ const REGISTERED_CONCEPT_KEYS = new Set([
   // family-no-shop slice (LEXICAL_FAMILY_LEXICON_VERSION 2 -> 3): the five
   // NOSOL concepts, registered in contract-bundle.js's concept table.
   'NOSOL-PROHIBIT', 'NOSOL-EXCEPT', 'NOSOL-NOTICE', 'NOSOL-MATCH', 'NOSOL-REMATCH',
+  // family-mae-definition slice (LEXICAL_FAMILY_LEXICON_VERSION 3 -> 4):
+  // DEF-MAE, registered in contract-bundle.js's V16 concept table in the
+  // same slice.
+  'DEF-MAE',
 ]);
 
-test('LEXICAL_FAMILY_LEXICON_VERSION bumped 1 -> 2 (fee slice), then 2 -> 3 (no-shop slice)', () => {
-  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 3);
-  assert.equal(LEXICAL_FAMILY_LEXICON.version, 3);
+test('LEXICAL_FAMILY_LEXICON_VERSION bumped 1 -> 2 (fee slice), then 2 -> 3 (no-shop slice), then 3 -> 4 (family-mae-definition slice)', () => {
+  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 4);
+  assert.equal(LEXICAL_FAMILY_LEXICON.version, 4);
 });
 
 test('table validation: every entry has a non-empty pattern_id, family, kind, value, rationale; no duplicate pattern_id; every family is a registered concept key', () => {

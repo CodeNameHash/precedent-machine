@@ -53,8 +53,8 @@ test('registry: unknown/unregistered family returns null -- fail closed, never a
   assert.equal(getProducerPromptModule(undefined), null);
 });
 
-test('registry: CAPITALISATION, NO_SHOP and TERMINATION_FEE are registered (family-no-shop slice adds NO_SHOP)', () => {
-  assert.deepEqual(listRegisteredSectionFamilies(), ['CAPITALISATION', 'NO_SHOP', 'TERMINATION_FEE']);
+test('registry: CAPITALISATION, MAE_DEFINITION, NO_SHOP and TERMINATION_FEE are registered (family-mae-definition slice adds MAE_DEFINITION)', () => {
+  assert.deepEqual(listRegisteredSectionFamilies(), ['CAPITALISATION', 'MAE_DEFINITION', 'NO_SHOP', 'TERMINATION_FEE']);
 });
 
 test('registry: schema constant is exported', () => {

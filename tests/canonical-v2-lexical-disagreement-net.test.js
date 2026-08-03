@@ -280,8 +280,12 @@ test('TEST 6: overlap-not-containment -- a clipping (partially overlapping) evid
 // rationale; content hash pinned.
 // ═══════════════════════════════════════════════════════════════════════
 test('TEST 7: table validation', () => {
-  const { compileFixtureContractV13 } = require('../lib/canonical-v2/contract-bundle');
-  const bundle = compileFixtureContractV13();
+  // Bumped V13 -> V16 (family-mae-definition slice): the lexicon now
+  // carries DEF-MAE entries, registered only from contract-bundle.js's V16
+  // concept table onward -- a stale V13 bundle would fail this test's own
+  // registered-key assertion on every new DEF-MAE pattern_id.
+  const { compileFixtureContractV16 } = require('../lib/canonical-v2/contract-bundle');
+  const bundle = compileFixtureContractV16();
   const registeredConceptKeys = new Set(bundle.concepts.map((entry) => entry.concept_key));
 
   assert.doesNotThrow(() => validateLexicalFamilyLexicon(LEXICAL_FAMILY_LEXICON, { registeredConceptKeys }));

@@ -948,8 +948,12 @@ test('receipt pins MAPPING_TABLE_VERSION 6, the lexicon version, the measurement
   // unconditional SHARE_COUNT table entry. family-termination-fee slice
   // (docs/superpowers/specs/2026-08-02-family-termination-fee-design.md
   // section 4): MAPPING_TABLE_VERSION 4 -> 5, three new unconditional
-  // entries (FEE_AMOUNT/FEE_TRIGGER/FEE_TAIL_PERIOD).
-  assert.equal(MAPPING_TABLE_VERSION, 6);
+  // entries (FEE_AMOUNT/FEE_TRIGGER/FEE_TAIL_PERIOD). family-no-shop slice:
+  // 5 -> 6, five new unconditional entries. family-mae-definition slice
+  // (docs/superpowers/specs/2026-08-02-family-mae-definition-design.md
+  // section 4): MAPPING_TABLE_VERSION 6 -> 7, three new unconditional
+  // entries (MAE_CARVEOUT/MAE_DEFINITION_PRONG/MAE_DISPROPORTIONALITY).
+  assert.equal(MAPPING_TABLE_VERSION, 7);
   assert.equal(resolution.resolution_receipt.qualifier_kind_lexicon_version, QUALIFIER_KIND_LEXICON_VERSION);
   assert.equal(resolution.resolution_receipt.measurement_date_parse_version, MEASUREMENT_DATE_PARSE_VERSION);
   assert.equal(resolution.resolution_receipt.ruling_corpus_id, require('../lib/canonical-v2/native-producer/ruling-corpus').EMPTY_RULING_CORPUS.ruling_corpus_id);

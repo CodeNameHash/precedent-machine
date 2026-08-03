@@ -72,6 +72,7 @@ const {
   compileFixtureContractV11,
   compileFixtureContractV12,
   compileFixtureContractV13,
+  compileFixtureContractV16,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -103,6 +104,15 @@ const FROZEN_F14 = '6b58314592cc553675a4a3efefea8ae3caa7e9edb8a5625260b61e0e8b25
 // acceptance tests (superset-diff by content, per the openworld-promotion-
 // program's own merge-order convention).
 const FROZEN_F15 = 'e7ae756e69c289ebe125bb2a1a9aa03753951bb761fb9b2a9b9a88cb7f48b57f';
+// F16 (family-mae-definition slice, docs/superpowers/specs/2026-08-02-
+// family-mae-definition-design.md section 1, AUDIT-AMENDED): strictly
+// additive spread of F15 -- one new concept (DEF-MAE) and three new claim
+// definitions (MAE_CARVEOUT, MAE_DEFINITION_PRONG,
+// MAE_DISPROPORTIONALITY_CARVEBACK), zero other field changes. Derived by
+// running compileFixtureContractV16() against the current code and pinning
+// the resulting fingerprint (see tests/canonical-v2-contract-bundle-v16.test.js
+// for the dedicated V16 acceptance tests).
+const FROZEN_F16 = 'a1fe3ddb45d2371ccd428747da6837084ea61cd476afd1f74a964c5824f4fb87';
 
 const APPROVED_V2_ADDITIONS = [
   'TERMR-BREACH',
@@ -163,7 +173,7 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F15 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F16 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
@@ -178,6 +188,7 @@ test('F1 through F15 are distinct recognised fixture contract fingerprints', () 
   assert.notEqual(FROZEN_F12, FROZEN_F13);
   assert.notEqual(FROZEN_F13, FROZEN_F14);
   assert.notEqual(FROZEN_F14, FROZEN_F15);
+  assert.notEqual(FROZEN_F15, FROZEN_F16);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -196,12 +207,19 @@ test('F1 through F15 are distinct recognised fixture contract fingerprints', () 
       FROZEN_F13,
       FROZEN_F14,
       FROZEN_F15,
+      FROZEN_F16,
     ].sort(),
   );
   assert.deepEqual(
     [...FIXTURE_SERVING_CONTRACT_FINGERPRINTS].sort(),
     [FROZEN_F1, FROZEN_F2, FROZEN_F3, FROZEN_F4, FROZEN_F5].sort(),
   );
+});
+
+test('compileFixtureContractV16() compiles to a pinned F16 fingerprint (family-mae-definition slice)', () => {
+  const bundle = compileFixtureContractV16();
+  assert.equal(bundle.fingerprint, FROZEN_F16);
+  assert.equal(validateContractBundle(bundle), true);
 });
 
 // ---------------------------------------------------------------------------
