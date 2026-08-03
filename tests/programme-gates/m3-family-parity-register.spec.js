@@ -156,6 +156,7 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
     .filter((family) => ![
       'ANTITRUST_REGULATORY_EFFORTS', 'NO_SHOP', 'MAE_DEFINITION',
       'PROXY_MEETING_COVENANTS', 'TERMINATION_FEE', 'TERMINATION_RIGHTS',
+      'FINANCING_COVENANTS', 'GUARANTY_FINANCING_PARTY',
     ].includes(family.family_id))
     .every((family) => family.completion_state === 'WAVE_A_OPEN'));
   for (const familyId of [
@@ -342,7 +343,7 @@ test('Antitrust remains open until the real litigation quote coverage map is com
   );
 });
 
-test('Financing Covenants and Guaranty product parity is native-complete while unresolved Wave A work stays open', () => {
+test('Financing Covenants and Guaranty are fully governed while their follow-on surfaces remain separately recorded', () => {
   for (const familyId of ['FINANCING_COVENANTS', 'GUARANTY_FINANCING_PARTY']) {
     const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families
       .find((entry) => entry.family_id === familyId);
@@ -351,12 +352,14 @@ test('Financing Covenants and Guaranty product parity is native-complete while u
       surface.state === 'PASS' && surface.disposition === 'NATIVE_COMPLETE'
     )));
     assert.equal(family.wave_a.checks.producer.state, 'PASS');
-    assert.equal(family.wave_a.checks.registry.state, 'OPEN');
-    assert.equal(family.wave_a.checks.resolver.state, 'OPEN');
+    assert.equal(family.wave_a.checks.fixture_proof.state, 'PASS');
+    assert.equal(family.wave_a.checks.lexical_net.state, 'PASS');
+    assert.equal(family.wave_a.checks.registry.state, 'PASS');
+    assert.equal(family.wave_a.checks.resolver.state, 'PASS');
     assert.equal(
       CURRENT_M3_FAMILY_PARITY_STATUS.family_states
         .find((entry) => entry.family_id === familyId).completion_state,
-      'WAVE_A_OPEN',
+      'FAMILY_COMPLETE',
     );
   }
 });

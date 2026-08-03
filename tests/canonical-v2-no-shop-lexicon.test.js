@@ -47,11 +47,12 @@ const REGISTERED_CONCEPT_KEYS = new Set([
   'IOC-ACCOUNTING', 'IOC-CAPEX', 'IOC-CHARTER', 'IOC-COMP', 'IOC-CONTRACT',
   'IOC-DEBT', 'IOC-DIVIDEND', 'IOC-ISSUE', 'IOC-MERGE', 'IOC-SETTLE', 'IOC-TAX',
   'COV-PROXY', 'COV-MEETING',
+  'COV-FINANCING', 'COV-PAYOFF', 'COV-MARKETING', 'GTY-PERF', 'GTY-DELIVERY',
 ]);
 
 test('LEXICAL_FAMILY_LEXICON_VERSION bumped 2 -> 3 (no-shop), then 3 -> 4 (family-mae-definition slice)', () => {
-  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 9);
-  assert.equal(LEXICAL_FAMILY_LEXICON.version, 9);
+  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 10);
+  assert.equal(LEXICAL_FAMILY_LEXICON.version, 10);
 });
 
 test('table validation: every entry has a non-empty pattern_id, family, kind, value, rationale; no duplicate pattern_id; every family is a registered concept key; BOUNDED_REGEX patterns stay <= 128 static max', () => {
