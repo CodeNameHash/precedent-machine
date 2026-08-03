@@ -30,7 +30,7 @@ test('decision console has one complete, unique recommendation per decision', ()
 });
 
 test('recorded rulings stay fixed and follow-on rulings are added without duplicates', () => {
-  assert.equal(Object.keys(RECORDED_RULINGS).length, 32);
+  assert.equal(Object.keys(RECORDED_RULINGS).length, 40);
   assert.deepEqual(
     DECISIONS.filter((decision) => !RECORDED_RULINGS[decision.id]).map((decision) => decision.id),
     [
@@ -51,7 +51,7 @@ test('recorded rulings stay fixed and follow-on rulings are added without duplic
 
 test('follow-on rulings carry corpus counts, clause examples and a promotion horizon', () => {
   const followOn = DECISIONS.filter((decision) => decision.origin === 'follow-on');
-  assert.equal(followOn.length, 19);
+  assert.equal(followOn.length, 27);
   assert.deepEqual(
     followOn.filter((decision) => decision.horizon === 'now').map((decision) => decision.id),
     [
@@ -66,6 +66,14 @@ test('follow-on rulings carry corpus counts, clause examples and a promotion hor
       'ioc-qualifier-attachment',
       'ioc-numeric-shape',
       'derived-comparison-layer',
+      'remaining-family-ranks',
+      'outside-date-extension-shape',
+      'restraint-finality-states',
+      'sole-remedy-ownership',
+      'fee-tail-shape',
+      'late-interest-shape',
+      'key-defined-terms-ranks',
+      'family-routing-key',
     ],
   );
   assert.equal(followOn.filter((decision) => decision.horizon === 'later').length, 8);
@@ -88,11 +96,21 @@ test('recorded family rulings retain their controlling legal distinctions', () =
   assert.match(numeric.recommendation, /separately traced derived layer/);
 
   const derived = decisionById('derived-comparison-layer');
-  for (const field of ['source literal', 'source unit', 'FX source', 'rate and date', 'target unit', 'output', 'derived status']) {
+  for (const field of ['source literal', 'source unit', 'FX source', 'rate and signing date', 'target unit', 'output', 'derived status']) {
     assert.match(derived.recommendation, new RegExp(field, 'i'));
   }
   assert.match(derived.recommendation, /Never overwrite the raw claim/);
   assert.equal(RECORDED_RULINGS[derived.id], 'approve-layer');
+  assert.match(derived.recommendation, /signing date/i);
+  assert.match(derived.recommendation, /clearly label.*derived/i);
+
+  assert.equal(RECORDED_RULINGS['remaining-family-ranks'], 'approve-ranks');
+  assert.match(decisionById('remaining-family-ranks').recommendation, /Guaranty 74.*Financing 75.*Proxy 80.*Tax 81.*Employee 82.*Dividends 84.*D&O 85/);
+  assert.equal(RECORDED_RULINGS['family-routing-key'], 'type-plus-subtype');
+  assert.match(decisionById('family-routing-key').question, /wider definition/i);
+  assert.match(decisionById('family-routing-key').examples.join(' '), /TERMR-VOTE/);
+  assert.equal(RECORDED_RULINGS['consideration-mechanics-promotion'], 'ratify-core');
+  assert.equal(RECORDED_RULINGS['termination-wave-b-promotion'], undefined);
 });
 
 test('prior rulings are represented once and remain recorded', () => {
