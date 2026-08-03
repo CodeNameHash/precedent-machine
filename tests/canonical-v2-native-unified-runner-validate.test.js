@@ -96,6 +96,60 @@ test('validation identity is stable across declaration order', () => {
   assert.equal(first.semantic_manifest.semantic_manifest_id, second.semantic_manifest.semantic_manifest_id);
 });
 
+test('execution plan is a pure zero-retry summary', () => {
+  const blocked = {
+    source_id: 'metsera-original-exhibit-2-1',
+    disposition: 'BLOCKED_SOURCE_PIN',
+    source_locator: 'SEC 8-K Exhibit 2.1, accession 0001193125-25-210030',
+    blocking_code: 'EXHIBIT_BYTES_NOT_PINNED',
+  };
+  const absent = {
+    work_item_id: 'absent-financing',
+    source_id: 'topbuild-original',
+    family_id: 'FINANCING_COVENANTS',
+    disposition: 'NOT_PRESENT',
+    absence_proof: {
+      schema_version: ABSENCE_PROOF_SCHEMA,
+      scanned_nodes: [pin('2.1')],
+      heading_terms: ['unfindable-heading-token'],
+      lexical_terms: ['unfindable-lexical-token'],
+      heading_match_count: 0,
+      lexical_match_count: 0,
+    },
+  };
+  const blockedWork = {
+    work_item_id: 'metsera-consideration',
+    source_id: blocked.source_id,
+    family_id: 'CONSIDERATION',
+    disposition: 'BLOCKED_SOURCE_PIN',
+    blocking_code: 'EXHIBIT_BYTES_NOT_PINNED',
+  };
+  const result = validateUnifiedRunManifest({
+    manifest: manifest({
+      sources: [localSource(), blocked],
+      workItems: [
+        extract('capitalisation', 'CAPITALISATION'),
+        extract('consideration', 'CONSIDERATION'),
+        absent,
+        blockedWork,
+      ],
+    }),
+    root_dir: ROOT,
+  });
+  assert.deepEqual(result.execution_plan, {
+    schema_version: 'NATIVE_UNIFIED_RUN_EXECUTION_PLAN/V1',
+    extract_work_item_count: 2,
+    not_present_work_item_count: 1,
+    blocked_source_pin_work_item_count: 1,
+    distinct_source_count: 2,
+    distinct_family_count: 3,
+    distinct_extract_section_count: 1,
+    zero_retry_provider_call_count: 2,
+    execution_plan_id: result.execution_plan.execution_plan_id,
+  });
+  assert.equal(result.receipt.execution_plan_id, result.execution_plan.execution_plan_id);
+});
+
 test('duplicate work items fail closed', () => {
   const repeated = extract('same', 'CAPITALISATION');
   assert.equal(errorCode(() => validateUnifiedRunManifest({ manifest: manifest({ workItems: [repeated, repeated] }), root_dir: ROOT })), 'DUPLICATE_WORK_ITEM');
