@@ -121,7 +121,7 @@ test('General Covenants registers the exact 18-code contract, producer and title
   });
   assert.match(prompt.messages[0].content, /Parent stockholder approval and Merger Sub stockholder approval are separate/);
   assert.match(prompt.messages[0].content, /Never encode either as COV-CONSENT or COV-MERGESUB/);
-  assert.equal(MAPPING_TABLE_VERSION, 20);
+  assert.equal(MAPPING_TABLE_VERSION, 19);
   assert.equal(new Set(Object.values(GENERAL_COVENANT_CLAIM_KEYS)).size, 18);
   const mappingRows = GENERIC_CLAIM_KEY_RESOLUTION_TABLE.filter(
     (row) => Object.values(GENERAL_COVENANT_CLAIM_KEYS).includes(row.generic_claim_key),

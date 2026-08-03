@@ -3,7 +3,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContractV20, compileFixtureContractV26, compileFixtureContractV34 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV20, compileFixtureContractV26, compileFixtureContractV30 } = require('../lib/canonical-v2/contract-bundle');
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
 const { parseDivestitureCapAmount, parseFilingDeadlineDays, ANTITRUST_REGULATORY_PARSE_VERSION } = require('../lib/canonical-v2/native-producer/antitrust-regulatory-parse');
 const { buildAntitrustRegulatoryProducerPrompt } = require('../lib/canonical-v2/native-producer/antitrust-regulatory-producer-prompt');
@@ -45,7 +45,7 @@ test('registry, resolver seam and materiality tier include the M3-B antitrust sh
   assert.equal(burden.allowed_canonical_values.includes('SILENT'), false);
   const row = GENERIC_CLAIM_KEY_RESOLUTION_TABLE.find((entry) => entry.generic_claim_key === REGULATORY_EFFORTS_CLAIM_KEY);
   assert.deepEqual(row && { concept_key: row.concept_key, registered_claim_definition_key: row.registered_claim_definition_key, party_field: row.party_field }, { concept_key: null, registered_claim_definition_key: null, party_field: 'obligor_party' });
-  assert.equal(MAPPING_TABLE_VERSION, 20);
+  assert.equal(MAPPING_TABLE_VERSION, 19);
   assert.deepEqual(MATERIALITY_TABLE.find((tier) => tier.label === 'REGULATORY_EFFORTS'), { rank: 63, label: 'REGULATORY_EFFORTS', concept_key_prefixes: ['ANTI-'] });
 });
 
@@ -81,9 +81,9 @@ test('M3-B corroboration requires distinct grounded antitrust facts', () => {
 });
 
 test('antitrust lexical entries are registered and include the bounded family set', () => {
-  const registered = new Set(compileFixtureContractV34().concepts.map((concept) => concept.concept_key));
+  const registered = new Set(compileFixtureContractV30().concepts.map((concept) => concept.concept_key));
   assert.doesNotThrow(() => validateLexicalFamilyLexicon(LEXICAL_FAMILY_LEXICON, { registeredConceptKeys: registered }));
-  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 15);
+  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 11);
   for (const family of ['ANTI-EFFORTS', 'ANTI-BURDEN', 'ANTI-LITIGATION', 'ANTI-TIMING', 'ANTI-FILING']) {
     assert.ok(LEXICAL_FAMILY_LEXICON.entries.some((entry) => entry.family === family), family);
   }

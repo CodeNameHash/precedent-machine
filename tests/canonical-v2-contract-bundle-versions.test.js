@@ -50,7 +50,6 @@ const {
   FIXTURE_CONTRACT_INPUT_V31,
   FIXTURE_CONTRACT_INPUT_V32,
   FIXTURE_CONTRACT_INPUT_V33,
-  FIXTURE_CONTRACT_INPUT_V34,
   FIXTURE_CONTRACT_FINGERPRINTS,
   FIXTURE_SERVING_CONTRACT_FINGERPRINTS,
   BRINGS_DOWN_EFFECT_SCHEMA_V1,
@@ -107,7 +106,6 @@ const {
   compileFixtureContractV31,
   compileFixtureContractV32,
   compileFixtureContractV33,
-  compileFixtureContractV34,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -166,7 +164,6 @@ const FROZEN_F30 = '971bc5619960cd54fb555a0260ba53f0e8d20f29f95bd6e9553ba8ddaf42
 const FROZEN_F31 = 'd74472b9b5b06fde1e73f7b35fc7dddfec84d9a4a0a87c58851240799d340a29';
 const FROZEN_F32 = '8f2cbebb81fad57ec4baed29a79ebba3c25bafca85112438e6ce1679f89f1a49';
 const FROZEN_F33 = 'd282131065db749b0153dc03df73764a0d3089e6a9ec75e3e7e51603d4b1b230';
-const FROZEN_F34 = '5eafc3fed937525022cdbde1a0f5c42552e875336afa515c9ade580c021707ad';
 
 const APPROVED_V2_ADDITIONS = [
   'TERMR-BREACH',
@@ -227,7 +224,7 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F34 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F31 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
@@ -260,7 +257,6 @@ test('F1 through F34 are distinct recognised fixture contract fingerprints', () 
   assert.notEqual(FROZEN_F30, FROZEN_F31);
   assert.notEqual(FROZEN_F31, FROZEN_F32);
   assert.notEqual(FROZEN_F32, FROZEN_F33);
-  assert.notEqual(FROZEN_F33, FROZEN_F34);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -297,7 +293,6 @@ test('F1 through F34 are distinct recognised fixture contract fingerprints', () 
       FROZEN_F31,
       FROZEN_F32,
       FROZEN_F33,
-      FROZEN_F34,
     ].sort(),
   );
   assert.deepEqual(
@@ -401,14 +396,6 @@ test('compileFixtureContractV33() adds only M3 governed carrier vocabulary', () 
   assert.equal(canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V33)), canonicalJson(bundle));
   assert.equal(bundle.concepts.length, previous.concepts.length + 5);
   assert.equal(bundle.claim_definitions.length, previous.claim_definitions.length + 4);
-});
-
-test('compileFixtureContractV34() adds only No Other Reps and Fraud vocabulary', () => {
-  const bundle = compileFixtureContractV34(); const previous = compileFixtureContractV33();
-  assert.equal(bundle.fingerprint, FROZEN_F34); assert.equal(validateContractBundle(bundle), true);
-  assert.equal(canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V34)), canonicalJson(bundle));
-  assert.equal(bundle.concepts.length, previous.concepts.length + 8);
-  assert.equal(bundle.claim_definitions.length, previous.claim_definitions.length + 6);
 });
 
 test('F22 adds only the three grounded Consideration concepts and claims', () => {

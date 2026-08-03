@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContractV24, compileFixtureContractV34 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV24, compileFixtureContractV33 } = require('../lib/canonical-v2/contract-bundle');
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
 const { shapeClosingConditionProposals, shapeRegulatoryEffortsProposals } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
@@ -87,7 +87,7 @@ test('Antitrust recorded sources and Closing Conditions fixture pack cover the f
     assert.ok(LEXICAL_FAMILY_LEXICON.entries.some((entry) => entry.family === family && entryMatches(entry, combined)), family);
   }
   const bodies = closingFixtureBodies();
-  const registeredConceptKeys = new Set(compileFixtureContractV34().concepts.map((concept) => concept.concept_key));
+  const registeredConceptKeys = new Set(compileFixtureContractV33().concepts.map((concept) => concept.concept_key));
   assert.doesNotThrow(() => validateLexicalFamilyLexicon(LEXICAL_FAMILY_LEXICON, { registeredConceptKeys }));
   for (const family of ['COND-B-REP', 'COND-S-REP', 'COND-MAE', 'COND-COV', 'COND-REG']) {
     assert.ok(LEXICAL_FAMILY_LEXICON.entries.some((entry) => entry.family === family && entryMatches(entry, bodies.join('\n'))), family);
