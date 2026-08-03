@@ -27,6 +27,7 @@ const { buildCapitalisationProducerPrompt } = require('../lib/canonical-v2/nativ
 const { buildNoShopProducerPrompt } = require('../lib/canonical-v2/native-producer/no-shop-producer-prompt');
 const { buildTerminationProducerPrompt } = require('../lib/canonical-v2/native-producer/termination-producer-prompt');
 const { buildAntitrustRegulatoryProducerPrompt } = require('../lib/canonical-v2/native-producer/antitrust-regulatory-producer-prompt');
+const { buildRepresentationsProducerPrompt } = require('../lib/canonical-v2/native-producer/representations-producer-prompt');
 const {
   SECTION_FAMILY_CLASSIFIER_VERSION,
   SECTION_FAMILY_RULE_CLASSIFIED,
@@ -58,6 +59,10 @@ test('registry: ANTITRUST_REGULATORY is registered to its own prompt builder', (
   assert.equal(getProducerPromptModule('ANTITRUST_REGULATORY'), buildAntitrustRegulatoryProducerPrompt);
 });
 
+test('registry: REPRESENTATIONS is registered to its native qualifier producer', () => {
+  assert.equal(getProducerPromptModule('REPRESENTATIONS'), buildRepresentationsProducerPrompt);
+});
+
 test('registry: unknown/unregistered family returns null -- fail closed, never a capitalisation fallback', () => {
   assert.equal(getProducerPromptModule('SOME_UNKNOWN_FAMILY'), null);
   assert.equal(getProducerPromptModule(''), null);
@@ -68,7 +73,7 @@ test('registry: unknown/unregistered family returns null -- fail closed, never a
 test('registry: composed adapter prompt families are registered', () => {
   assert.deepEqual(
     listRegisteredSectionFamilies(),
-    ['ANTITRUST_REGULATORY', 'APPRAISAL_DISSENTERS_RIGHTS', 'CAPITALISATION', 'DIVIDENDS', 'DNO_INDEMNIFICATION', 'EMPLOYEE_MATTERS', 'FINANCING_COVENANTS', 'GUARANTY_FINANCING_PARTY', 'KEY_DEFINED_TERMS', 'MAE_DEFINITION', 'MERGER_STRUCTURE_CLOSING', 'MISC_BOILERPLATE', 'NO_SHOP', 'SPECIFIC_PERFORMANCE_REMEDIES', 'TAX_MATTERS', 'TERMINATION', 'TERMINATION_FEE'],
+    ['ANTITRUST_REGULATORY', 'APPRAISAL_DISSENTERS_RIGHTS', 'CAPITALISATION', 'DIVIDENDS', 'DNO_INDEMNIFICATION', 'EMPLOYEE_MATTERS', 'FINANCING_COVENANTS', 'GUARANTY_FINANCING_PARTY', 'KEY_DEFINED_TERMS', 'MAE_DEFINITION', 'MERGER_STRUCTURE_CLOSING', 'MISC_BOILERPLATE', 'NO_SHOP', 'REPRESENTATIONS', 'SPECIFIC_PERFORMANCE_REMEDIES', 'TAX_MATTERS', 'TERMINATION', 'TERMINATION_FEE'],
   );
 });
 
@@ -76,6 +81,15 @@ test('classifier stage 1: regulatory-efforts titles classify ANTITRUST_REGULATOR
   assert.equal((await classifySectionFamily({ title: 'Regulatory Cooperation' })).section_family, 'ANTITRUST_REGULATORY');
   assert.notEqual((await classifySectionFamily({ title: 'State Takeover Statutes' })).section_family, 'ANTITRUST_REGULATORY');
   assert.notEqual((await classifySectionFamily({ title: 'Regulatory Matters' })).section_family, 'ANTITRUST_REGULATORY');
+});
+
+test('classifier stage 1: Company and Parent representations articles route to REPRESENTATIONS', async () => {
+  for (const title of ['Representations and Warranties of the Company', 'Representations and Warranties of Parent']) {
+    // eslint-disable-next-line no-await-in-loop
+    const result = await classifySectionFamily({ title });
+    assert.equal(result.section_family, 'REPRESENTATIONS');
+    assert.equal(result.provenance, SECTION_FAMILY_RULE_CLASSIFIED);
+  }
 });
 
 test('registry: schema constant is exported', () => {

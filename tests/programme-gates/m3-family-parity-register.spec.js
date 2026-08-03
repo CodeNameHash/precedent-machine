@@ -36,6 +36,7 @@ const EXPECTED_FAMILIES = Object.freeze([
   'MISC_BOILERPLATE',
   'NO_SHOP',
   'PROXY_MEETING_COVENANTS',
+  'REPRESENTATIONS',
   'SPECIFIC_PERFORMANCE_REMEDIES',
   'TAX_MATTERS',
   'TERMINATION_FEE',
@@ -76,7 +77,7 @@ function completedRegister() {
   return register;
 }
 
-test('M3 parity register covers the exact 20 Wave A family designs and every product source kind', () => {
+test('M3 parity register covers every Wave A family design and every product source kind', () => {
   validateM3FamilyParityRegister(CURRENT_M3_FAMILY_PARITY_REGISTER);
   assert.deepEqual(
     CURRENT_M3_FAMILY_PARITY_REGISTER.families.map((family) => family.family_id),
@@ -122,11 +123,11 @@ test('every review-v2 table configuration is assigned or recorded as an unassign
 test('Wave A completion cannot hide open follow-on or unassigned product work', () => {
   assert.ok(Object.isFrozen(CURRENT_M3_FAMILY_PARITY_REGISTER.families[0].wave_a.checks));
   assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.state, 'BLOCKED');
-  assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.family_states.length, 20);
+  assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.family_states.length, 21);
   assert.ok(CURRENT_M3_FAMILY_PARITY_STATUS.family_states.every(
     (family) => family.completion_state === 'WAVE_A_OPEN',
   ));
-  assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.unassigned_product_surface_ids.length, 2);
+  assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.unassigned_product_surface_ids.length, 0);
   assert.deepEqual(
     CURRENT_M3_FAMILY_PARITY_REGISTER.supplemental_owners.map((owner) => owner.first_slice.state),
     ['PASS', 'PASS', 'PASS'],

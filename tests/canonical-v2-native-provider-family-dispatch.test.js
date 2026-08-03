@@ -92,6 +92,33 @@ const CASES = Object.freeze([
     }),
     expectedClaimKey: 'NATIVE_TERMINATION_RIGHT_CANDIDATE',
   }),
+  Object.freeze({
+    family: 'REPRESENTATIONS',
+    sourceText: 'The Company represents and warrants that this representation is true and correct in all material respects.',
+    response: Object.freeze({
+      representation_instances: Object.freeze([Object.freeze({
+        section_reference: '3.1',
+        party_making: 'The Company',
+        chapeau_quote: 'The Company represents and warrants that',
+        limbs: Object.freeze([]),
+        qualifiers: Object.freeze([Object.freeze({
+          kind: 'ACCURACY',
+          code: 'MAT_ALL_MATERIAL',
+          quote: 'true and correct in all material respects',
+          attachment: Object.freeze({
+            position: 'ITEM',
+            governs_path: Object.freeze(['3.1']),
+            ambiguity_signals: Object.freeze({ items_grammatically_parallel: false }),
+          }),
+        })]),
+        definition_uses: Object.freeze([]),
+        cross_references: Object.freeze([]),
+      })]),
+      bring_down_conditions: Object.freeze([]),
+      open_world_candidates: Object.freeze([]),
+    }),
+    expectedClaimKey: 'NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE',
+  }),
 ]);
 
 for (const familyCase of CASES) {
