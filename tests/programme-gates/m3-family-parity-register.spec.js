@@ -44,6 +44,7 @@ const EXPECTED_FAMILIES = Object.freeze([
 function allSurfaces(register) {
   return [
     ...register.families.flatMap((family) => family.product_surfaces),
+    ...register.supplemental_owners.flatMap((owner) => owner.product_surfaces),
     ...register.unassigned_product_surfaces,
   ];
 }
@@ -57,6 +58,15 @@ function completedRegister() {
       check.evidence_paths = [family.design_path];
     }
     for (const surface of family.product_surfaces) {
+      surface.state = 'PASS';
+      surface.disposition = 'NATIVE_COMPLETE';
+      surface.evidence_paths = [surface.source_path];
+    }
+  }
+  for (const owner of register.supplemental_owners) {
+    owner.first_slice.state = 'PASS';
+    if (!owner.first_slice.evidence_paths.length) owner.first_slice.evidence_paths = [owner.ownership_path];
+    for (const surface of owner.product_surfaces) {
       surface.state = 'PASS';
       surface.disposition = 'NATIVE_COMPLETE';
       surface.evidence_paths = [surface.source_path];
@@ -80,6 +90,7 @@ test('M3 parity register covers the exact 20 Wave A family designs and every pro
     assert.equal(family.wave_a.scope, 'FIRST_NATIVE_SLICE');
     assert.ok(fs.existsSync(path.join(ROOT, family.design_path)), family.design_path);
   }
+  assert.equal(CURRENT_M3_FAMILY_PARITY_REGISTER.supplemental_owners.length, 3);
 });
 
 test('every registered product surface points to an existing source and an exact locator', () => {
@@ -114,7 +125,11 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
   assert.ok(CURRENT_M3_FAMILY_PARITY_STATUS.family_states.every(
     (family) => family.completion_state === 'WAVE_A_OPEN',
   ));
-  assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.unassigned_product_surface_ids.length, 5);
+  assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.unassigned_product_surface_ids.length, 2);
+  assert.deepEqual(
+    CURRENT_M3_FAMILY_PARITY_STATUS.supplemental_owner_states.map((owner) => owner.completion_state),
+    ['FOLLOW_ON_OPEN', 'FOLLOW_ON_OPEN', 'FOLLOW_ON_OPEN'],
+  );
 
   const waveAOnly = completedRegister();
   waveAOnly.families[0].product_surfaces[0].state = 'OPEN';
@@ -127,6 +142,7 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
   const complete = buildM3FamilyParityStatus(completedRegister());
   assert.equal(complete.state, 'FAMILY_COMPLETE');
   assert.ok(complete.family_states.every((family) => family.completion_state === 'FAMILY_COMPLETE'));
+  assert.ok(complete.supplemental_owner_states.every((owner) => owner.completion_state === 'OWNER_COMPLETE'));
 });
 
 test('a rehashed complete label cannot contradict open family state', () => {

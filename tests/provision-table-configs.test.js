@@ -1667,7 +1667,7 @@ test('general-covenants config renders one row PER genuine COVENANT_OTHER clause
   assert.equal(maintain, undefined, 'the IOC card must not appear here -- ioc-exceptions.config.js owns it');
 });
 
-test('general-covenants link rows retain code-scoped treatment metrics when structured terms exist', () => {
+test('general-covenants routes dedicated-family cards out and retains code-scoped metrics for residual rows', () => {
   const rows = generalCovenantsMod.generalCovenantsConfig.selectRows({
     cards: [
       {
@@ -1694,19 +1694,16 @@ test('general-covenants link rows retain code-scoped treatment metrics when stru
     ],
   });
   const insurance = rows.find((row) => row.sourceCard?.id === 'do');
-  assert.deepEqual(insurance.marketSubterms.map((subterm) => subterm.label), [
-    'D&O protection period',
-    'Tail premium cap',
-    'Advancement of expenses',
-  ]);
-  assert.equal(insurance.marketSubterms[1].value.normalizer, 'insurance_cap_multiplier');
-  assert.equal(insurance.marketSubterms[1].semantics.unit, 'multiplier');
+  assert.equal(insurance, undefined, 'COV-DO belongs only to DNO_INDEMNIFICATION');
   const publicity = rows.find((row) => row.sourceCard?.id === 'publicity');
   assert.equal(publicity.marketSubterms.length, 3);
   assert.ok(publicity.marketSubterms.every((subterm) => subterm.kind === 'presence'));
+  assert.equal(publicity.ownerFamily, 'PUBLICITY_COVENANTS');
+  assert.equal(publicity.ownershipState, 'NARROW_FOLLOW_ON');
   const access = rows.find((row) => row.sourceCard?.id === 'access');
   assert.equal(access.marketSubterms[0].kind, 'categorical');
   assert.deepEqual(access.marketProvisionCodes, ['COV-ACCESS']);
+  assert.equal(access.ownerFamily, 'ACCESS_INFORMATION_COVENANTS');
 });
 
 test('uncoded control and board-appointment covenants use title-scoped treatment comparisons', () => {

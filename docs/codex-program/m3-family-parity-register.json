@@ -1,5 +1,5 @@
 {
-  "schema": "CANONICAL_V2_M3_FAMILY_PARITY_REGISTER/V1",
+  "schema": "CANONICAL_V2_M3_FAMILY_PARITY_REGISTER/V2",
   "milestone_id": "M3_FULL_CORPUS_CERTIFICATION",
   "source_kinds": ["DERIVED_VALUE", "MARKET_FIELD", "QUERY_FIELD", "RENDERED_ROW", "SIDE_TABLE"],
   "families": [
@@ -253,11 +253,56 @@
       ]
     }
   ],
+  "supplemental_owners": [
+    {
+      "owner_id": "MATERIAL_CONTRACTS",
+      "owner_kind": "NATIVE_FAMILY",
+      "ownership_path": "docs/codex-program/m3-p0-product-surface-ownership.json",
+      "first_slice": {
+        "state": "PASS",
+        "evidence_paths": [
+          "lib/canonical-v2/reviewed-material-contracts-slice.js",
+          "lib/canonical-v2/qxo-material-contracts-slice.js"
+        ]
+      },
+      "product_surfaces": [
+        { "surface_id": "assigned-material-contracts", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/material-contracts.config.js", "source_locator": "materialContractsConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "owner_id": "NO_OTHER_REPS_FRAUD",
+      "owner_kind": "NATIVE_FAMILY",
+      "ownership_path": "docs/codex-program/m3-p0-product-surface-ownership.json",
+      "first_slice": {
+        "state": "PASS",
+        "evidence_paths": [
+          "lib/canonical-v2/native-producer/no-other-reps-native-first-slice.js",
+          "tests/canonical-v2-no-other-reps-native-first-slice.test.js"
+        ]
+      },
+      "product_surfaces": [
+        { "surface_id": "assigned-no-other-reps-fraud", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/no-other-reps-fraud.config.js", "source_locator": "noOtherRepsFraudConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "owner_id": "GENERAL_COVENANT_ROUTER",
+      "owner_kind": "ROUTING_UMBRELLA",
+      "ownership_path": "docs/codex-program/m3-p0-product-surface-ownership.json",
+      "first_slice": {
+        "state": "PASS",
+        "evidence_paths": [
+          "lib/canonical-v2/p0-product-surface-routing.js",
+          "lib/canonical-v2/native-producer/p0-product-surface-ownership.js",
+          "components/review/table-configs/general-covenants.config.js"
+        ]
+      },
+      "product_surfaces": [
+        { "surface_id": "assigned-general-covenants", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/general-covenants.config.js", "source_locator": "generalCovenantsConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    }
+  ],
   "unassigned_product_surfaces": [
     { "surface_id": "unassigned-target-representations", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/representations-qualifiers.config.js", "source_locator": "representationsQualifiersConfig", "reason": "No native family design governs the complete target-representations surface." },
-    { "surface_id": "unassigned-parent-representations", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/representations-qualifiers.config.js", "source_locator": "parentRepresentationsConfig", "reason": "No native family design governs the complete parent-representations surface." },
-    { "surface_id": "unassigned-material-contracts", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/material-contracts.config.js", "source_locator": "materialContractsConfig", "reason": "No native family design governs the material-contracts surface." },
-    { "surface_id": "unassigned-no-other-reps-fraud", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/no-other-reps-fraud.config.js", "source_locator": "noOtherRepsFraudConfig", "reason": "No native family design governs the no-other-representations and fraud surface." },
-    { "surface_id": "unassigned-general-covenants", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/general-covenants.config.js", "source_locator": "generalCovenantsConfig", "reason": "The residual general-covenants rows are not assigned to a native family." }
+    { "surface_id": "unassigned-parent-representations", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/representations-qualifiers.config.js", "source_locator": "parentRepresentationsConfig", "reason": "No native family design governs the complete parent-representations surface." }
   ]
 }

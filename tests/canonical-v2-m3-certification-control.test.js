@@ -32,6 +32,14 @@ function completeParityStatus() {
       surface.evidence_paths = [surface.source_path];
     }
   }
+  for (const owner of register.supplemental_owners) {
+    owner.first_slice.state = 'PASS';
+    for (const surface of owner.product_surfaces) {
+      surface.state = 'PASS';
+      surface.disposition = 'NATIVE_COMPLETE';
+      surface.evidence_paths = [surface.source_path];
+    }
+  }
   return buildM3FamilyParityStatus(register);
 }
 
@@ -75,7 +83,8 @@ test('current Wave A and follow-on gaps block M3 certification', () => {
     error instanceof M3CertificationControlError
       && error.code === 'INCOMPLETE_FAMILY_PARITY'
       && error.details.incomplete_families.length === 20
-      && error.details.unassigned_product_surfaces.length === 5
+      && error.details.incomplete_supplemental_owners.length === 3
+      && error.details.unassigned_product_surfaces.length === 2
   ));
 });
 

@@ -1,5 +1,8 @@
 import React from 'react';
 import { cardCode, cardFeatures, cardType, firstFeature, selectCards, textOf } from './card-utils.js';
+import p0Routing from '../../../lib/canonical-v2/p0-product-surface-routing.js';
+
+const { isDedicatedFamilyCovenantCode, routeGeneralCovenantCode } = p0Routing;
 
 // REBUILD-SPECS.md section 6: interim-operating-covenant content (ordinary
 // course, negative-covenant restrictions, affirmative limbs) is owned
@@ -10,8 +13,6 @@ const ROWS = [
   ['efforts', 'General efforts standard', ['effortsStandard', 'reasonableBestEfforts']],
   ['access', 'Access / information rights', ['accessRights', 'informationAccess']],
   ['public-statements', 'Public statements', ['publicStatements', 'publicStatementExceptions']],
-  ['insurance', 'D&O / insurance covenant', ['insuranceCap', 'insurancePeriod', 'doInsurance']],
-  ['financing', 'Financing cooperation', ['financingCooperation']],
 ];
 
 // FEEDBACK-2-PUNCHLIST.md #13/#31/#32: stockholders-meeting mechanics
@@ -33,6 +34,7 @@ function isGeneralCovenant(card) {
   const code = cardCode(card);
   if (type === 'COVENANT_INTERIM_OPERATING' || code.startsWith('IOC')) return false;
   if (VOTES_OWNED_CODES.has(code)) return false;
+  if (isDedicatedFamilyCovenantCode(code)) return false;
   return type === 'COVENANT_OTHER' || code.startsWith('COV');
 }
 
@@ -213,6 +215,7 @@ function generalCovenantMarket(card) {
 // link's hover never comes up empty when the card-level quote is missing.
 function linkRow(idSuffix, label, card, evidenceOverride) {
   if (!card) return null;
+  const ownership = routeGeneralCovenantCode(cardCode(card));
   return {
     id: `general-covenants-${idSuffix}`,
     label,
@@ -222,6 +225,8 @@ function linkRow(idSuffix, label, card, evidenceOverride) {
     evidence: textOf(card) || evidenceOverride || '',
     sourceCard: card,
     present: true,
+    ownerFamily: ownership.owner_id,
+    ownershipState: ownership.route_state,
     ...generalCovenantMarket(card),
   };
 }
