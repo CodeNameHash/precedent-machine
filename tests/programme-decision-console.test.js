@@ -111,6 +111,10 @@ test('recorded family rulings retain their controlling legal distinctions', () =
   assert.match(decisionById('family-routing-key').examples.join(' '), /TERMR-VOTE/);
   assert.equal(RECORDED_RULINGS['consideration-mechanics-promotion'], 'ratify-core');
   assert.equal(RECORDED_RULINGS['termination-wave-b-promotion'], undefined);
+  assert.equal(RECORDED_RULINGS['sole-remedy-ownership'], 'remedies-owner');
+  assert.match(decisionById('sole-remedy-ownership').recommendation, /Route the sole-remedy legal effect and exceptions to Remedies/);
+  assert.match(decisionById('sole-remedy-ownership').recommendation, /payment context and source evidence with Termination Fees/);
+  assert.match(decisionById('sole-remedy-ownership').recommendation, /Fraud and Willful Breach as separate quoted carve-outs/);
 });
 
 test('prior rulings are represented once and remain recorded', () => {
