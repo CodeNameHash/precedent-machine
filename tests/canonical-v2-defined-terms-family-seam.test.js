@@ -30,6 +30,10 @@ const {
 const CONTRACT_BUNDLE = compileFixtureContract();
 const DEFINITIONS = Object.freeze({ known_definitions: [] });
 const SOURCE_TEXT = '"Acquisition Proposal" means an offer to acquire more than 20% of the outstanding equity securities.';
+const LANDOS_SOURCE = fs.readFileSync(
+  path.join(__dirname, '..', '__fixtures__', 'demo-deal', 'landos-abbvie-agreement.txt'),
+  'utf8',
+);
 const GOVERNED_SCOPE = Object.freeze({
   deal_key: 'deal:defined-terms-family-seam',
   governed_intervals: Object.freeze(['1.1']),
@@ -64,8 +68,13 @@ function response(overrides = {}) {
   };
 }
 
-async function run(modelResponse) {
+async function run(modelResponse, { sourceText = SOURCE_TEXT, sectionReference = '1.1' } = {}) {
   let request;
+  const governedScope = Object.freeze({
+    deal_key: 'deal:defined-terms-family-seam',
+    governed_intervals: Object.freeze([sectionReference]),
+    source_text: sourceText,
+  });
   const provider = createAnthropicProvider({
     model: 'defined-terms-family-seam',
     maxRetries: 0,
@@ -75,13 +84,13 @@ async function run(modelResponse) {
     } } },
   });
   const result = await produceCandidateProposals({
-    governed_scope: GOVERNED_SCOPE,
+    governed_scope: governedScope,
     definitions: DEFINITIONS,
     contract_bundle: CONTRACT_BUNDLE,
     section_family: 'KEY_DEFINED_TERMS',
     provider,
   });
-  return { request, result };
+  return { governedScope, request, result };
 }
 
 test('registry dispatches KEY_DEFINED_TERMS to its exact prompt builder', () => {
@@ -144,6 +153,35 @@ test('live provider uses the family prompt, byte-verifies both spans and compile
   });
   assert.equal(compiled.length, 1);
   assert.equal(compiled[0].ok, true);
+});
+
+test('the provider byte-verifies a Superior Proposal assertion against the full committed Landos agreement', async () => {
+  const definitionHead = '“Superior Proposal” means any bona fide written proposal';
+  const limb = 'is reasonably likely to be consummated in accordance with its terms and conditions';
+  assert.ok(LANDOS_SOURCE.includes(definitionHead));
+  assert.ok(LANDOS_SOURCE.includes(limb));
+  const assertion = {
+    ...response().defined_term_assertions[0],
+    section_reference: 'Exhibit A',
+    assertion_kind: 'SUPERIOR_QUALIFIER',
+    definition_head_quote: definitionHead,
+    limb_quote: limb,
+    proposal_term_ref: null,
+    superior_term_ref: 'Superior Proposal',
+    threshold_basis: null,
+    qualifier_code: 'CONSUMMATION_LIKELIHOOD',
+  };
+  const { result } = await run({
+    defined_term_assertions: [assertion],
+    open_world_candidates: [],
+  }, { sourceText: LANDOS_SOURCE, sectionReference: 'Exhibit A' });
+  assert.equal(result.proposals.length, 1);
+  assert.deepEqual(
+    result.proposals[0].evidence.map((item) => (
+      Buffer.from(LANDOS_SOURCE).subarray(item.absolute_start, item.absolute_end).toString('utf8')
+    )),
+    [definitionHead, limb],
+  );
 });
 
 test('missing additive assertions is an empty success, not a schema failure', async () => {
