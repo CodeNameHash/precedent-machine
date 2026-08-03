@@ -65,6 +65,8 @@ const path = require('path');
 const { execFileSync } = require('child_process');
 const { refineSubCode: newRefineSubCode } = require('../lib/parser-v2/classify');
 const {
+  V1_RECLASS_EXTRACTION_VERSION,
+  V1_FIXTURE_DEAL_IDS,
   EXPECTED_R1R2_FLIPS,
   R1R2_CARD_RULINGS,
   REP_T_NOREP_PIN,
@@ -155,6 +157,27 @@ function flipKey(value) {
 function cardKey(value) {
   if (Array.isArray(value)) return value.slice(0, 3).join('|');
   return [value.id, String(value.deal_id || '').slice(0, 8), sectionNumberFromRef(value.section_ref)].join('|');
+}
+
+function expectedCardPinsForIncompleteFixtures(pins, completedDealPrefixes) {
+  const completed = new Set(completedDealPrefixes || []);
+  return (pins || []).filter((pin) => !completed.has(String(pin[1] || '').slice(0, 8)));
+}
+
+async function completedFixtureDealPrefixes(sb) {
+  const completed = [];
+  for (const dealId of V1_FIXTURE_DEAL_IDS) {
+    const base = () => sb.from('provision_cards').select('id', { count: 'exact', head: true }).eq('deal_id', dealId);
+    const [{ count: total, error: totalError }, { count: current, error: currentError }] = await Promise.all([
+      base(),
+      base().eq('extraction_version', V1_RECLASS_EXTRACTION_VERSION),
+    ]);
+    if (totalError || currentError) {
+      throw new Error(`Fixture completion check failed for ${dealId}: ${(totalError || currentError).message}`);
+    }
+    if (total > 0 && current === total) completed.push(dealId.slice(0, 8));
+  }
+  return completed;
 }
 
 /**
@@ -256,6 +279,10 @@ async function main() {
     process.exit(1);
   }
 
+  const completedFixturePrefixes = await completedFixtureDealPrefixes(sb);
+  const expectedR1r2CardPins = expectedCardPinsForIncompleteFixtures(R1R2_CARD_RULINGS, completedFixturePrefixes);
+  const expectedNoRepPins = expectedCardPinsForIncompleteFixtures(REP_T_NOREP_PIN, completedFixturePrefixes);
+
   const oldRefineSubCode = loadOldRefineSubCode();
   const flips = computeFlips(deals || [], oldRefineSubCode);
   const backlogViolations = checkBacklogExits(deals || []);
@@ -268,8 +295,8 @@ async function main() {
   const r1r2Cards = retiredCards.filter((card) =>
     card.provision_subtype === 'REP-T-CONSENT' || card.provision_subtype === 'REP-T-REGSTATUS');
   const noRepCards = retiredCards.filter((card) => card.provision_subtype === 'REP-T-NOREP');
-  const r1r2CardPin = comparePinnedKeys(r1r2Cards.map(cardKey), R1R2_CARD_RULINGS.map(cardKey));
-  const noRepPin = comparePinnedKeys(noRepCards.map(cardKey), REP_T_NOREP_PIN.map(cardKey));
+  const r1r2CardPin = comparePinnedKeys(r1r2Cards.map(cardKey), expectedR1r2CardPins.map(cardKey));
+  const noRepPin = comparePinnedKeys(noRepCards.map(cardKey), expectedNoRepPins.map(cardKey));
   const pinIssues = [
     ...flipPin.unexpected,
     ...flipPin.missing,
@@ -288,9 +315,12 @@ async function main() {
       backlogViolations,
       flipPin,
       r1r2CardReviewCount: R1R2_CARD_RULINGS.length,
+      r1r2CardPinExpectedCount: expectedR1r2CardPins.length,
       r1r2CardPin,
       repTNoRepCount: noRepCards.length,
+      repTNoRepPinExpectedCount: expectedNoRepPins.length,
       noRepPin,
+      completedFixturePrefixes,
     }, null, 2));
     if (invalidCodes.length > 0 || backlogViolations.length > 0 || pinIssues.length > 0) process.exitCode = 1;
     return;
@@ -316,7 +346,7 @@ async function main() {
     for (const key of pinIssues) console.log(`  ${key}`);
   }
   if (backlogViolations.length === 0 && invalidCodes.length === 0 && pinIssues.length === 0) {
-    console.log(`Clean: exact 24-flip set, 29 reviewed R1/R2 cards and ${noRepCards.length} REP-T-NOREP cards match their pins.`);
+    console.log(`Clean: exact 24-flip set, ${expectedR1r2CardPins.length} remaining reviewed R1/R2 cards and ${expectedNoRepPins.length} remaining REP-T-NOREP cards match their pins.`);
   } else {
     process.exitCode = 1;
   }
@@ -333,6 +363,8 @@ module.exports = {
   comparePinnedKeys,
   flipKey,
   cardKey,
+  expectedCardPinsForIncompleteFixtures,
+  completedFixtureDealPrefixes,
 };
 
 if (require.main === module) {

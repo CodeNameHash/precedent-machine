@@ -15,6 +15,7 @@ const {
   BACKLOG_EXITS,
   BASELINE_REF,
   comparePinnedKeys,
+  expectedCardPinsForIncompleteFixtures,
 } = require('../scripts/safety-check-reclass-rules');
 
 // A stand-in for the OLD (pre-change) refineSubCode: R1/R2 old codes were
@@ -36,6 +37,18 @@ test('pinned population comparison fails on both additions and omissions', () =>
     unexpected: ['c'],
     missing: ['b'],
   });
+});
+
+test('completed fixture card pins leave the remaining corpus pins exact', () => {
+  const pins = [
+    ['topbuild-card', '7dc3a05f', '3.1(w)', 'REP-T-NOOTHERREPS'],
+    ['skechers-card', 'af4940e1', '3.4', 'REP-T-STOCKAPPROVAL'],
+    ['corpus-card', 'df393645', '3.3', 'REP-T-GOVAPPROVAL'],
+  ];
+  assert.deepEqual(
+    expectedCardPinsForIncompleteFixtures(pins, ['7dc3a05f']),
+    [pins[1], pins[2]],
+  );
 });
 
 test('R1: a "Requisite Stockholder Approval" REP-T section is a pinned, expected flip', () => {
