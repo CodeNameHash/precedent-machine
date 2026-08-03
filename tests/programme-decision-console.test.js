@@ -28,11 +28,11 @@ test('decision console has one complete, unique recommendation per decision', ()
   }
 });
 
-test('the original 15 programme rulings are fixed and new M3 blockers stay open', () => {
-  assert.equal(Object.keys(RECORDED_RULINGS).length, 15);
+test('the original 15 programme rulings and the IOC parent-party ruling are fixed', () => {
+  assert.equal(Object.keys(RECORDED_RULINGS).length, 16);
   assert.deepEqual(
     DECISIONS.filter((decision) => !RECORDED_RULINGS[decision.id]).map((decision) => decision.id),
-    ['ioc-partyless-provision'],
+    [],
   );
   for (const [decisionId, optionId] of Object.entries(RECORDED_RULINGS)) {
     assert.ok(decisionById(decisionId).options.some((option) => option.id === optionId));
