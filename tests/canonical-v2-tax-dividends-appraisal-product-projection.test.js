@@ -12,6 +12,7 @@ const {
   projectTaxDividendsAppraisalClaims,
 } = require('../lib/canonical-v2/tax-dividends-appraisal-product-projection');
 const { fieldsForCompareCell } = require('../lib/query/render/deal-compare-cell-fields');
+const { MATERIALITY_TABLE } = require('../lib/canonical-v2/native-producer/candidate-resolution');
 
 const CLAIM_FIXTURES = Object.freeze({
   INTENDED_TAX_TREATMENT_KIND: Object.freeze({
@@ -176,4 +177,13 @@ test('product projection fails closed on wrong ownership, invalid values and dup
     () => projectTaxDividendsAppraisalClaims({ resolved_entries: [duplicate, structuredClone(duplicate)] }),
     projectionError('DUPLICATE_PRODUCT_CLAIM'),
   );
+});
+
+test('ratified dividend and D&O review ranks are distinct and ordered', () => {
+  assert.deepEqual(MATERIALITY_TABLE.find((tier) => tier.label === 'DIVIDENDS'), {
+    rank: 84, label: 'DIVIDENDS', concept_key_prefixes: ['DIVD-'],
+  });
+  assert.deepEqual(MATERIALITY_TABLE.find((tier) => tier.label === 'DNO_INDEMNIFICATION'), {
+    rank: 85, label: 'DNO_INDEMNIFICATION', concept_key_prefixes: ['DNO-'],
+  });
 });

@@ -9,7 +9,22 @@ const {
 } = require('../lib/canonical-v2/native-producer/ioc-threshold-parse');
 
 test('IOC threshold parser is versioned', () => {
-  assert.equal(IOC_THRESHOLD_PARSE_VERSION, 1);
+  assert.equal(IOC_THRESHOLD_PARSE_VERSION, 2);
+});
+
+test('explicit monetary scale words normalise without formula arithmetic', () => {
+  assert.deepEqual(parseThresholdAmount('not in excess of $25 million in the aggregate'), {
+    outcome: 'RESOLVED',
+    canonical_value: '25000000',
+    matched_text: '$25 million',
+    corroboration_text: 'not in excess of $25 million in the aggregate',
+    currency: 'USD',
+    scale: 'million',
+  });
+  assert.equal(parseThresholdAmount('$25.5 million').canonical_value, '25500000');
+  assert.deepEqual(parseThresholdAmount('$0.0000001 million'), {
+    outcome: 'ABSTAIN', reason: 'SCALED_MONEY_PRECISION_UNSAFE', matched_text: '$0.0000001 million',
+  });
 });
 
 test('single aggregate dollar threshold resolves and ignores bare numerals', () => {

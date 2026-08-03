@@ -340,14 +340,17 @@ test('resolver publishes both quoted appraisal statuses through partyless struct
   assert.deepEqual(contradicted.review_queue[0].reasons, ['APPRAISAL_STATUS_CONTRADICTED']);
   assert.equal(contradicted.review_queue[0].materiality_rank, 60);
 
-  const impliedWithoutStatute = 'Each Dissenting Share shall be treated in accordance with its Dissenter Rights.';
-  const ungrounded = await resolveConsideration([
+  const impliedWithoutStatute = await resolveConsideration([
     assertion({
-      kind: 'APPRAISAL_STATUS', quote: impliedWithoutStatute, appraisalStatus: 'AVAILABLE',
+      kind: 'APPRAISAL_STATUS',
+      quote: 'Each Dissenting Share remains subject to the appraisal process.',
+      appraisalStatus: 'AVAILABLE',
     }),
-  ], impliedWithoutStatute, 'deal:appraisal-ungrounded-implication');
-  assert.equal(ungrounded.resolved.length, 0);
-  assert.deepEqual(ungrounded.review_queue[0].reasons, ['APPRAISAL_STATUTE_REQUIRED']);
+  ], 'Each Dissenting Share remains subject to the appraisal process.', 'deal:appraisal-implied-no-statute');
+  assert.equal(impliedWithoutStatute.resolved.length, 0);
+  assert.deepEqual(impliedWithoutStatute.review_queue[0].reasons, [
+    'APPRAISAL_STATUTE_REQUIRED_FOR_NECESSARY_IMPLICATION',
+  ]);
 
   const sectionWithoutLaw = 'Holders may exercise appraisal rights under Section 262.';
   const incompleteStatute = await resolveConsideration([
@@ -356,7 +359,9 @@ test('resolver publishes both quoted appraisal statuses through partyless struct
     }),
   ], sectionWithoutLaw, 'deal:appraisal-incomplete-statute');
   assert.equal(incompleteStatute.resolved.length, 0);
-  assert.deepEqual(incompleteStatute.review_queue[0].reasons, ['APPRAISAL_STATUTE_REQUIRED']);
+  assert.deepEqual(incompleteStatute.review_queue[0].reasons, [
+    'APPRAISAL_STATUTE_REQUIRED_FOR_NECESSARY_IMPLICATION',
+  ]);
 });
 
 test('published Wave A claims pass the native adapter and resolved canonical validator end to end', async () => {

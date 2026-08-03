@@ -48,10 +48,41 @@ test('CONSIDERATION uses the repository prompt registry and preserves the contro
   assert.match(prompt.messages[0].content, /PER_SHARE_CASH \| EXCHANGE_RATIO \| APPRAISAL_STATUS/);
   assert.match(prompt.messages[0].content, /Never emit fixed or floating ratio type/);
   assert.match(prompt.messages[0].content, /NEVER ASSERT A NEGATIVE FROM SILENCE/);
+  assert.match(prompt.messages[0].content, /ELECTION_ALLOCATION/);
+  assert.match(prompt.messages[0].content, /same quote identifies an appraisal statute/);
   assert.deepEqual(CONSIDERATION_ASSERTION_KINDS, [
     'PER_SHARE_CASH', 'EXCHANGE_RATIO', 'APPRAISAL_STATUS',
   ]);
   assert.deepEqual(APPRAISAL_STATUS_VALUES, ['AVAILABLE', 'NOT_AVAILABLE']);
+});
+
+test('CVR and election mechanics remain exact open-world evidence and never become per-share claims', async () => {
+  const sourceText = 'If the aggregate number of Mixed Election Shares exceeds the Maximum Equity Election Cap, the remaining shares receive Cash Election Consideration.';
+  const provider = createAnthropicProvider({
+    model: 'consideration-seam-test',
+    maxRetries: 0,
+    client: { messages: { async create() {
+      return { content: [{ text: JSON.stringify({
+        consideration_assertions: [],
+        consideration_mechanics: [{
+          surface: 'ELECTION_ALLOCATION', quote: sourceText,
+          detail: 'Cap-based allocation between mixed and cash elections.',
+        }],
+        open_world_candidates: [],
+      }) }] };
+    } } },
+  });
+  const produced = await produceCandidateProposals({
+    governed_scope: { ...GOVERNED_SCOPE, source_text: sourceText },
+    definitions: DEFINITIONS,
+    contract_bundle: CONTRACT_BUNDLE,
+    section_family: 'CONSIDERATION',
+    provider,
+  });
+  assert.equal(produced.proposals.length, 1);
+  assert.equal(produced.proposals[0].claim_definition_key, 'OPEN_WORLD_PROPOSITION');
+  assert.equal(produced.proposals[0].canonical_value, null);
+  assert.match(produced.proposals[0].attributes.why_unmapped, /^ELECTION_ALLOCATION:/);
 });
 
 test('consideration titles classify at stage 1 without capturing capitalisation or termination titles', async () => {

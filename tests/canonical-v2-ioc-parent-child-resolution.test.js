@@ -77,8 +77,12 @@ test('IOC uses the nearest preceding chapeau party on a parent provision and a c
 
   assert.equal(resolution.review_queue.length, 1);
   assert.equal(resolution.review_queue[0].has_resolution, true);
+  assert.equal(resolution.review_queue[0].materiality_rank, 65);
+  assert.equal(resolution.review_queue[0].materiality_label, 'INTERIM_OPERATING_COVENANTS');
   assert.equal(resolution.review_queue[0].reasons.includes('IOC_PARTY_TUPLE_OMITTED'), false);
   assert.equal(resolution.resolved.length, 1);
+  assert.equal(resolution.resolved[0].triage.materiality_rank, 65);
+  assert.equal(resolution.resolved[0].triage.materiality_label, 'INTERIM_OPERATING_COVENANTS');
   assert.deepEqual(resolution.resolved[0].party, {
     role: 'IOC_COVENANT_OBLIGOR', value: 'Parent', capacity: 'BUYER',
   });
