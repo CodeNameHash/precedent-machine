@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const {
+  fetchStoredDefinitionsForPostPass,
   hydratePerTypeCrossTypeFeatures,
 } = require('../lib/parser-v2/run-extract');
 
@@ -14,10 +15,10 @@ test('REP per-type extraction rebuilds knowledge features from the stored defini
   }];
   const definitions = [{
     type: 'DEF',
-    provision_subtype: 'DEF-KNOWLEDGE',
     category: 'Knowledge',
     full_text: '“Knowledge” means the actual knowledge of Alice Example and Bob Example.',
     ai_metadata: {
+      code: 'DEF-KNOWLEDGE',
       features: {
         canonicalTerm: 'Knowledge',
         definitionText: 'the actual knowledge of Alice Example and Bob Example',
@@ -36,6 +37,31 @@ test('REP per-type extraction rebuilds knowledge features from the stored defini
     label: 'Knowledge-qualified',
     text: 'To the Knowledge of',
   });
+});
+
+test('stored definition lookup uses only columns in the legacy provisions table', async () => {
+  let selected = null;
+  const query = {
+    select(columns) {
+      selected = columns;
+      return this;
+    },
+    eq() { return this; },
+    then(resolve, reject) {
+      return Promise.resolve({ data: [{ type: 'DEF', category: 'Knowledge', full_text: 'text', ai_metadata: {} }], error: null })
+        .then(resolve, reject);
+    },
+  };
+  const sb = {
+    from(table) {
+      assert.equal(table, 'provisions');
+      return query;
+    },
+  };
+
+  const rows = await fetchStoredDefinitionsForPostPass(sb, 'deal-id');
+  assert.equal(selected, 'type, category, full_text, ai_metadata');
+  assert.equal(rows.length, 1);
 });
 
 test('non-REP per-type extraction remains unchanged', () => {
