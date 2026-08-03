@@ -9,6 +9,10 @@ const {
 } = require('../lib/canonical-v2/employee-dno-product-projection');
 const { executeDealCompare } = require('../lib/query/executors/deal-compare');
 const { calculateMarketStats } = require('../lib/row-market-stats/service');
+const {
+  MATERIALITY_TABLE,
+  materialityFor,
+} = require('../lib/canonical-v2/native-producer/candidate-resolution');
 
 const DEAL_ID = 'employee-dno-product-deal';
 
@@ -62,6 +66,19 @@ function fixture() {
   };
   return { employeeQuote, dnoQuote, projection: projectEmployeeDnoProductSurfaces({ resolution, deal_id: DEAL_ID }) };
 }
+
+test('D&O claims use Ben-ratified materiality rank 85', () => {
+  const tier = MATERIALITY_TABLE.find((entry) => entry.label === 'DNO_INDEMNIFICATION');
+  assert.deepEqual(tier, {
+    rank: 85,
+    label: 'DNO_INDEMNIFICATION',
+    concept_key_prefixes: ['DNO-'],
+  });
+  assert.deepEqual(
+    materialityFor({ conceptKey: 'DNO-INDEM', claimDefinitionKey: 'INDEMNIFICATION_CONTINUATION' }),
+    tier,
+  );
+});
 
 test('governed Employee Matters and D&O claims project to product cards without promoting held-open mechanics', () => {
   const { projection } = fixture();
