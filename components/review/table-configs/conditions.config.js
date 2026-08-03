@@ -39,6 +39,7 @@ const GROUP_SPECS = [
 function bandAligned(provision, party) {
   const code = provision?.features?.canonicalCode;
   if (!code) return true;
+  if (code === 'COND-FRUSTRATE') return party === 'M';
   const seg = String(code).split('-')[1];
   return !seg || seg === party;
 }
@@ -62,6 +63,7 @@ const CONDITION_FAMILY_LABELS = {
   LISTING: 'Stock Exchange Listing',
   DISSENT: 'Dissenting Shares Threshold',
   FUNDS: 'Financing / Sufficient Funds',
+  FRUSTRATE: 'Condition Frustration / Prevention',
 };
 
 // Rows without a canonical code (matched by category regex only, e.g. the
@@ -251,6 +253,19 @@ function conditionMarketSubterms(family, matches) {
         featureKeys: ['absenceOfEnjoiningOrderPresent'],
         kind: 'categorical',
       },
+      {
+        key: 'government-proceeding',
+        label: 'Government proceeding condition',
+        featureKeys: ['governmentProceedingConditionPresent'],
+        kind: 'categorical',
+      },
+      {
+        key: 'burdensome-condition',
+        label: 'Burdensome condition',
+        featureKeys: ['burdensomeConditionPresent'],
+        kind: 'categorical',
+      },
+      conditionTermSubterm('burdensome-scope', 'Burdensome-condition scope', ['burdensomeConditionScope'], 'LEGAL'),
     ];
   } else if (family === 'MAE') {
     subterms = [
@@ -278,9 +293,14 @@ function conditionMarketSubterms(family, matches) {
       },
     ];
   } else if (family === 'S4') {
-    subterms = [conditionTermSubterm('s4-formulation', 'S-4 condition', ['mainCondition'], 'S4')];
+    subterms = [{
+      key: 's4-components',
+      label: 'S-4 condition components',
+      featureKeys: ['s4ConditionComponents'],
+      kind: 'multi_select',
+    }];
   } else if (family === 'LISTING') {
-    subterms = [conditionTermSubterm('listing-formulation', 'Listing condition', ['mainCondition'], 'LISTING')];
+    subterms = [conditionTermSubterm('listing-venue', 'Listing venue', ['listingVenue'], 'LISTING')];
   } else if (family === 'DISSENT') {
     subterms = [{
       key: 'dissent-threshold',
@@ -298,6 +318,11 @@ function conditionMarketSubterms(family, matches) {
         kind: 'categorical',
       },
       conditionTermSubterm('funds-formulation', 'Funds condition formulation', ['mainCondition'], 'FUNDS'),
+    ];
+  } else if (family === 'FRUSTRATE') {
+    subterms = [
+      conditionTermSubterm('causation-standard', 'Causation standard', ['frustrationCausationStandard'], 'FRUSTRATE'),
+      conditionTermSubterm('breach-standard', 'Breach standard', ['frustrationBreachStandard'], 'FRUSTRATE'),
     ];
   }
 
@@ -817,6 +842,15 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
       chips.push(mkChip(PillCell, 'legal-restraint', present ? 'No legal restraint' : 'No legal restraint (absent)', present ? 'present' : 'missing', primary, details));
       featureKeys = ['absenceOfEnjoiningOrderPresent'];
     }
+    if (firstDefined(matches, 'governmentProceedingConditionPresent') === true) {
+      chips.push(mkChip(PillCell, 'government-proceeding', 'No blocking governmental proceeding', 'present', primary));
+      featureKeys = null;
+    }
+    if (firstDefined(matches, 'burdensomeConditionPresent') === true) {
+      const scope = valueText(firstDefined(matches, 'burdensomeConditionScope'));
+      chips.push(mkChip(PillCell, 'burdensome-condition', scope ? `Burdensome condition: ${scope}` : 'Burdensome condition limitation', 'warning', primary));
+      featureKeys = null;
+    }
   } else if (family === 'MAE') {
     // The condition name ("No Material Adverse Effect") is already the TERM
     // column, so the right column only carries the continuing-effect qualifier.
@@ -841,8 +875,46 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
       chips.push(mkChip(PillCell, 'cert-req', "Officer's certificate required", 'present', primary));
       featureKeys = ['certificationRequired'];
     }
+  } else if (family === 'S4') {
+    const components = [].concat(firstDefined(matches, 's4ConditionComponents') || []);
+    if (components.length) {
+      components.forEach((component, index) => chips.push(mkChip(
+        PillCell, `s4-component-${index}`, valueText(component), 'present', primary,
+      )));
+      featureKeys = ['s4ConditionComponents'];
+    } else {
+      const generic = genericChips(PillCell, matches, primary);
+      chips.push(...generic.chips);
+      if (generic.keys.length === 1) featureKeys = [generic.keys[0]];
+    }
+  } else if (family === 'LISTING') {
+    const venue = valueText(firstDefined(matches, 'listingVenue'));
+    if (venue) {
+      chips.push(mkChip(PillCell, 'listing-venue', `Listing: ${venue}`, 'present', primary));
+      featureKeys = ['listingVenue'];
+    } else {
+      const generic = genericChips(PillCell, matches, primary);
+      chips.push(...generic.chips);
+      if (generic.keys.length === 1) featureKeys = [generic.keys[0]];
+    }
+  } else if (family === 'FUNDS') {
+    if (firstDefined(matches, 'fundsCondition') === true) {
+      chips.push(mkChip(PillCell, 'funds-condition', 'Funds availability required', 'present', primary));
+      featureKeys = ['fundsCondition'];
+    }
+    const generic = genericChips(PillCell, matches, primary);
+    chips.push(...generic.chips);
+    if (generic.keys.length === 1 && !featureKeys) featureKeys = [generic.keys[0]];
+    else if (generic.keys.length) featureKeys = null;
+  } else if (family === 'FRUSTRATE') {
+    const causation = valueText(firstDefined(matches, 'frustrationCausationStandard'));
+    const breach = valueText(firstDefined(matches, 'frustrationBreachStandard'));
+    if (causation) chips.push(mkChip(PillCell, 'frustration-causation', causation, 'warning', primary));
+    if (breach) chips.push(mkChip(PillCell, 'frustration-breach', breach, 'warning', primary));
+    if (causation && !breach) featureKeys = ['frustrationCausationStandard'];
+    if (breach && !causation) featureKeys = ['frustrationBreachStandard'];
   } else {
-    // S4 / LISTING / DISSENT / FUNDS (no bespoke synthesis): thread the one
+    // DISSENT and other legacy-only fields: thread the one
     // field this row's chips came from ONLY when exactly one fired -- e.g. a
     // cureDays-only row is genuinely 1:1, but a row combining
     // dollarThreshold + cureDays has no single comparable feature.

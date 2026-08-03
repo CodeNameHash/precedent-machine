@@ -7,6 +7,9 @@ const { compileFixtureContractV20 } = require('../lib/canonical-v2/contract-bund
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
 const { shapeClosingConditionProposals } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { resolveCandidates, MAPPING_TABLE_VERSION } = require('../lib/canonical-v2/native-producer/candidate-resolution');
+const { projectClosingConditionProductSurfaces } = require('../lib/canonical-v2/closing-conditions-product-projection');
+const { executeDealCompare } = require('../lib/query/executors/deal-compare');
+const { calculateMarketStats } = require('../lib/row-market-stats/service');
 const { buildIdentityAdmittedSourceContext } = require('./helpers/identity-admitted-source');
 
 const SECTION_REFERENCE = '7.2';
@@ -96,4 +99,50 @@ test('Closing Conditions Wave B resolves grounded facts and keeps dissent and ce
   assert.ok(resolution.open_world.some((entry) => entry.reason === 'CONDITION_ASSERTION_KIND_OUT_OF_ENUM' && entry.attributes.assertion_kind === 'DISSENT_THRESHOLD'));
   assert.equal(resolution.resolution_receipt.mapping_table_version, 11);
   assert.equal(MAPPING_TABLE_VERSION, 11);
+
+  const projection = projectClosingConditionProductSurfaces({ resolution, deal_id: dealKey });
+  assert.ok(projection.cards.every((card) => card.canonical_v2_lineage.source === 'CANONICAL_V2_NATIVE_CLAIM'));
+  assert.ok(projection.open_items.every((item) => item.state === 'BLOCKED'));
+
+  const conditions = await import('../components/review/table-configs/conditions.config.js');
+  const groups = conditions.conditionGroups({ cards: projection.cards }, {});
+  const renderedCodes = groups.flatMap((group) => group.presentRows)
+    .map((row) => row.matches[0]?.features?.canonicalCode);
+  for (const code of [
+    'COND-M-STOCKHOLDER', 'COND-M-LEGAL', 'COND-M-S4', 'COND-M-LISTING',
+    'COND-S-FUNDS', 'COND-B-CERT', 'COND-FRUSTRATE',
+  ]) assert.ok(renderedCodes.includes(code), `review row ${code}`);
+
+  const compare = executeDealCompare({
+    deal_ids: [dealKey], provision_types: ['CLOSING_CONDITION'],
+    included_field_groups: ['all'], highlight_deltas: false,
+  }, {
+    deals: [{ id: dealKey, acquirer: 'Parent', target: 'Company', metadata: {} }],
+    provisions: projection.cards,
+  });
+  const compareFields = new Map(compare.rows[0].cells[0].key_fields.map((field) => [field.field, field.value]));
+  assert.equal(compareFields.get('stockholderApprovalRequired'), true);
+  assert.equal(compareFields.get('absenceOfEnjoiningOrderPresent'), true);
+  assert.equal(compareFields.get('governmentProceedingConditionPresent'), true);
+  assert.equal(compareFields.get('certificationRequired'), true);
+  assert.equal(compareFields.get('fundsCondition'), true);
+  assert.equal(compareFields.get('dollarThreshold'), 3800002.59);
+
+  const marketAdapter = await import('../lib/market-metrics/adapter.js');
+  const sellerGroup = groups.find((group) => group.id === 'seller');
+  const fundsRow = sellerGroup.rows.find((row) => row.marketProvisionCodes?.includes('COND-S-FUNDS'));
+  const specs = marketAdapter.resolveMarketMetricSpecs(fundsRow, { configId: 'conditions' });
+  const market = calculateMarketStats({
+    contractVersion: 1, subjectDealId: null, filters: {}, specs,
+  }, {
+    deals: [{ id: dealKey, acquirer: 'Parent', target: 'Company', value_usd: 100000000, metadata: {} }],
+    cards: projection.cards,
+    claims: projection.claims,
+  });
+  const marketResults = Object.values(market.byRow[specs[0].rowKey].metrics);
+  assert.ok(marketResults.some((result) => (
+    result.distribution?.kind === 'money'
+      && result.coverage?.observedCount === 1
+      && result.distribution?.raw?.stats?.n === 1
+  )));
 });
