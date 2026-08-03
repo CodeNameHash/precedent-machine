@@ -7,6 +7,12 @@ const path = require('node:path');
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const { GENERAL_COVENANT_CODES_V1 } = require('../lib/canonical-v2/contract-bundle');
 const { LEXICAL_FAMILY_LEXICON, buildLexicalDisagreementReceipt } = require('../lib/canonical-v2/native-producer/lexical-disagreement-net');
+const {
+  GENERAL_COVENANT_SOURCE_DISPOSITIONS,
+  OPEN_NO_GROUNDED_PRODUCTION_EVIDENCE,
+  sourceEvidencePromotionPermitted,
+  validateGeneralCovenantSourceDispositions,
+} = require('../lib/canonical-v2/general-covenants-source-disposition');
 
 const SNAPSHOT = path.join(__dirname, '..', 'docs', 'schema-shape', 'normalized-v1.json');
 
@@ -37,6 +43,10 @@ test('repository production snapshot is an exhaustive literal General Covenants 
     assert.equal(typeof literal.extracted_at, 'string');
     assert.equal(sha256Hex(Buffer.from(literal.evidence_quote, 'utf8')).length, 64);
   }
+  assert.equal(validateGeneralCovenantSourceDispositions(), true);
+  assert.equal(GENERAL_COVENANT_SOURCE_DISPOSITIONS['COV-SECREPORT'], OPEN_NO_GROUNDED_PRODUCTION_EVIDENCE);
+  assert.equal(sourceEvidencePromotionPermitted('COV-SECREPORT'), false);
+  assert.equal(sourceEvidencePromotionPermitted('COV-ACCESS'), true);
 });
 
 test('every grounded General Covenants source record produces a complete lexical receipt; COV-SECREPORT stays uncovered', () => {
