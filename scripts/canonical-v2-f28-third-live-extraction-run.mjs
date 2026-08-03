@@ -46,6 +46,8 @@
  *     --out-dir <directory to write receipt/resolution/validation/telemetry/instrument JSON> \
  *     --fixture-out <path to write the NATIVE_PRODUCER_RECORDED_RESPONSE/V1 fixture>
  *     [--model <cli model alias, default "sonnet">]
+ *     [--section-family-classifier-live]
+ *     [--section-family-classifier-replay <JSON map by section reference>]
  */
 
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -86,7 +88,7 @@ const AGREEMENT_DATE = '2026-04-18'; // pinned QXO/TopBuild signing date (repo f
 const COMPARATOR_SECTION_REFERENCE = '3.1(b)'; // human section id used by both prior F28 run recordings
 
 function parseArgs(argv) {
-  const out = { model: 'sonnet' };
+  const out = { model: 'sonnet', sectionFamilyClassifierLive: false };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     switch (arg) {
@@ -96,11 +98,24 @@ function parseArgs(argv) {
       case '--out-dir': out.outDir = argv[++i]; break;
       case '--fixture-out': out.fixtureOut = argv[++i]; break;
       case '--model': out.model = argv[++i]; break;
+      case '--section-family-classifier-live': out.sectionFamilyClassifierLive = true; break;
+      case '--section-family-classifier-replay': {
+        const value = argv[i + 1];
+        if (!value || value.startsWith('--')) {
+          throw new Error('--section-family-classifier-replay requires a JSON file path.');
+        }
+        out.sectionFamilyClassifierReplay = value;
+        i += 1;
+        break;
+      }
       default: throw new Error(`unrecognised argument: ${arg}`);
     }
   }
   for (const req2 of ['rawHtml', 'retrievalUrl', 'sectionRef', 'outDir', 'fixtureOut']) {
     if (!out[req2]) throw new Error(`--${req2.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)} is required`);
+  }
+  if (out.sectionFamilyClassifierLive && out.sectionFamilyClassifierReplay) {
+    throw new Error('Choose one section-family classifier mode.');
   }
   return out;
 }
@@ -181,6 +196,60 @@ function makeMeasuredCliClient(model, telemetry, fixtureOutPath) {
         return { content: [{ type: 'text', text: rawResponseText }] };
       },
     },
+  };
+}
+
+function classifierPrompt({ title, section_reference: sectionReference, source_text: sourceText, registered_families: registeredFamilies }) {
+  return [
+    'Classify this merger-agreement section into exactly one registered family, or decline.',
+    `Registered families: ${JSON.stringify(registeredFamilies)}`,
+    `Section reference: ${JSON.stringify(sectionReference)}`,
+    `Title: ${JSON.stringify(title)}`,
+    `Section text: ${JSON.stringify(sourceText)}`,
+    'Return JSON only: {"section_family":"<registered family>"} or {"declined":true}.',
+  ].join('\n');
+}
+
+function makeSectionFamilyClassifier(args, telemetry) {
+  if (args.sectionFamilyClassifierReplay) {
+    const replay = JSON.parse(readFileSync(resolve(args.sectionFamilyClassifierReplay), 'utf8'));
+    if (!replay || typeof replay !== 'object' || Array.isArray(replay)) {
+      throw new Error('The section-family replay must be a JSON object keyed by section reference.');
+    }
+    return async ({ section_reference: sectionReference, registered_families: registeredFamilies }) => {
+      const result = replay[sectionReference];
+      if (!result || typeof result !== 'object' || Array.isArray(result)) return { declined: true };
+      if (result.declined === true) return { declined: true };
+      if (typeof result.section_family !== 'string' || !registeredFamilies.includes(result.section_family)) {
+        return { declined: true };
+      }
+      return { section_family: result.section_family };
+    };
+  }
+  if (!args.sectionFamilyClassifierLive) return undefined;
+  return async (input) => {
+    const startedAt = Date.now();
+    const raw = await runClaudeCli(classifierPrompt(input), { model: args.model });
+    const cli = JSON.parse(raw);
+    telemetry.calls.push({
+      stage: 'section_family_classifier',
+      wall_clock_ms: Date.now() - startedAt,
+      duration_ms_reported: cli.duration_ms,
+      duration_api_ms_reported: cli.duration_api_ms,
+      total_cost_usd_cli: cli.total_cost_usd,
+      usage: cli.usage,
+      model_usage: cli.modelUsage,
+      served_model: cli.model || null,
+      session_id: cli.session_id,
+    });
+    if (cli.is_error) throw new Error(`section-family classifier error: ${String(cli.result).slice(0, 500)}`);
+    const parsed = parseJSON(cli.result || '');
+    if (!parsed || parsed.declined === true) return { declined: true };
+    if (typeof parsed.section_family !== 'string'
+      || !input.registered_families.includes(parsed.section_family)) {
+      return { declined: true };
+    }
+    return { section_family: parsed.section_family };
   };
 }
 
@@ -331,6 +400,7 @@ async function main() {
     maxRetries: 0,
   };
   const provider = createAnthropicProvider(providerOptions);
+  const sectionFamilyClassifier = makeSectionFamilyClassifier(args, telemetry);
 
   process.stderr.write('[f28-run3] starting LIVE extraction call...\n');
   const runStart = Date.now();
@@ -341,6 +411,7 @@ async function main() {
     contract_bundle: contractBundle,
     definitions,
     provider,
+    section_family_classifier: sectionFamilyClassifier,
   });
   const runWallClockMs = Date.now() - runStart;
   process.stderr.write(`[f28-run3] extraction run complete in ${runWallClockMs}ms\n`);

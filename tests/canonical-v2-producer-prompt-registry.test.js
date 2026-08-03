@@ -379,6 +379,7 @@ test('native-extraction-run with classifier: an UNKNOWN family still fails close
 });
 
 test('native-extraction-run with classifier: stage 2 AI-classifies a registered family and dispatches it, provenance visible in the receipt', async () => {
+  let registeredFamilies = null;
   const receipt = await runNativeExtraction({
     source_text: qxoFullText,
     document_hash: DOCUMENT_HASH,
@@ -386,13 +387,46 @@ test('native-extraction-run with classifier: stage 2 AI-classifies a registered 
     contract_bundle: CONTRACT_BUNDLE,
     definitions: DEFINITIONS,
     provider: stubProducerProvider(),
-    section_family_classifier: async () => ({ section_family: 'CAPITALISATION' }),
+    section_family_classifier: async (input) => {
+      registeredFamilies = input.registered_families;
+      return { section_family: 'CAPITALISATION' };
+    },
   });
 
   assert.equal(receipt.resolved_sections[0].section_family, 'CAPITALISATION');
   assert.equal(receipt.resolved_sections[0].section_family_provenance, SECTION_FAMILY_AI_CLASSIFIED);
   assert.equal(receipt.compiled_candidate_count, 1);
   assert.equal(receipt.compiled_candidates[0].section_family_provenance, SECTION_FAMILY_AI_CLASSIFIED);
+  assert.equal(receipt.undispatched_sections.length, 0);
+  assert.deepEqual(registeredFamilies, listRegisteredSectionFamilies());
+});
+
+test('native-extraction-run stage 2 can reach each non-capitalisation registered family without a default fallback', async () => {
+  const expectedFamilies = ['TERMINATION_FEE', 'NO_SHOP', 'MAE_DEFINITION', 'TERMINATION'];
+  let nextFamily = 0;
+  let producerCalls = 0;
+  const receipt = await runNativeExtraction({
+    source_text: qxoFullText,
+    document_hash: DOCUMENT_HASH,
+    section_references: ['3.1(b)', '3.1(b)', '3.1(b)', '3.1(b)'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: async () => {
+      producerCalls += 1;
+      return {
+        provider_id: 'all-families-registry-test/v1', model_id: 'stub-model', prompt: 'all-families-registry-test-prompt/v1',
+        proposals: [], evidence_residuals: [],
+      };
+    },
+    section_family_classifier: async ({ registered_families: registeredFamilies }) => {
+      assert.deepEqual(registeredFamilies, listRegisteredSectionFamilies());
+      return { section_family: expectedFamilies[nextFamily++] };
+    },
+  });
+
+  assert.equal(producerCalls, expectedFamilies.length);
+  assert.deepEqual(receipt.resolved_sections.map((section) => section.section_family), expectedFamilies);
+  assert.ok(receipt.resolved_sections.every((section) => section.section_family_provenance === SECTION_FAMILY_AI_CLASSIFIED));
   assert.equal(receipt.undispatched_sections.length, 0);
 });
 
