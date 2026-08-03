@@ -1,12 +1,12 @@
 # WP-SCHEMA P1 Inventory Summary
 
-Generated: 2026-08-03T16:43:42.467Z
+Generated: 2026-08-03T19:03:15.807Z
 
 ## Counts
 
-- Distinct feature-like keys: 534
+- Distinct feature-like keys: 538
 - Keys in 2 or more source families: 483
-- Keys in only 1 source family: 51
+- Keys in only 1 source family: 55
 - Cross-source type mismatches: 6
 - Schema shape mismatches: 33
 - Provision types in rubric: 22
@@ -18,7 +18,7 @@ Generated: 2026-08-03T16:43:42.467Z
 
 | Convention |Count |
 | --- |--- |
-| camelCase |503 |
+| camelCase |507 |
 | lowercase |24 |
 | snake_case |7 |
 
@@ -31,7 +31,7 @@ Generated: 2026-08-03T16:43:42.467Z
 | feature_validation_js |492 |
 | rubric_js |480 |
 | taxonomy_js |67 |
-| ui |184 |
+| ui |188 |
 
 ## Top 20 Highest-Appearance Keys
 
@@ -145,7 +145,11 @@ Keys in only one source family. These are candidates for dead-code review, not a
 | ltiStandard |category_summary_features_js |1 |
 | maeStandaloneCondition |category_summary_features_js |2 |
 | materialityQualifiers |taxonomy_js |1 |
+| mergerSubApprovalMechanism |ui |1 |
+| mergerSubApprovalTiming |ui |1 |
 | ongoingUpdates |taxonomy_js |1 |
+| parentApprovalMechanism |ui |1 |
+| parentApprovalTiming |ui |1 |
 | partOfRep |ui |1 |
 | proposedCode |feature_validation_js |1 |
 | proposedLabel |feature_validation_js |1 |
@@ -173,6 +177,10 @@ Keys in only one source family. These are candidates for dead-code review, not a
 - cashAmount
 - chapeauProviso
 - closingDeadline
+- mergerSubApprovalMechanism
+- mergerSubApprovalTiming
+- parentApprovalMechanism
+- parentApprovalTiming
 - partOfRep
 - proviso
 - region_id
