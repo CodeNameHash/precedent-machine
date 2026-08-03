@@ -159,20 +159,25 @@ test('FIXTURE PIN (test 4, additivity): the no-lexical-input resolveCandidates()
   // MAPPING_TABLE_VERSION 4 -> 5 (family-termination-fee slice, three fee
   // entries -- docs/superpowers/specs/2026-08-02-family-termination-fee-
   // design.md section 4).
-  assert.equal(baseline.resolution_receipt.mapping_table_version, 5);
+  assert.equal(baseline.resolution_receipt.mapping_table_version, 6);
   assert.equal(baseline.resolution_receipt.share_count_parse_version, 1);
   assert.equal(baseline.resolution_receipt.zero_pattern_table_version, 1);
   assert.equal(
     baseline.resolution_receipt.resolution_receipt_id,
-    '0ebe8e8fe0f38ddd1a1b564ab6b45f22cb41c0da470b10fc64484e51774468dd',
-    // Re-pinned (family-termination-fee slice, Fable build review
-    // 2026-08-03): MAPPING_TABLE_VERSION 4 -> 5 and receiptBody gains ONE
-    // new unconditional field (termination_fee_parse_version) -- the full
-    // field-level diff vs the committed fixture was re-derived at review:
-    // mapping_table_version 3->5, share_count_parse_version +1,
-    // zero_pattern_table_version +1, termination_fee_parse_version +1,
-    // nothing else. [P1-era pin 24ada5d4... superseded.]
-    'the new, re-pinned resolution_receipt_id under MAPPING_TABLE_VERSION 4',
+    '55b1e8da176524867df834c475efb17be86670593abc03e2ccc6328d619c5979',
+    // Re-pinned (family-no-shop slice, build 2026-08-03): MAPPING_TABLE_
+    // VERSION 5 -> 6 and receiptBody gains THREE new unconditional fields
+    // (no_shop_period_parse_version, no_shop_action_corroboration_table_
+    // version, no_shop_prerequisite_corroboration_table_version) -- the
+    // full field-level diff vs the prior committed pin was re-derived by
+    // running this exact test against the current code:
+    // mapping_table_version 5->6, no_shop_period_parse_version +1 (new),
+    // no_shop_action_corroboration_table_version +1 (new),
+    // no_shop_prerequisite_corroboration_table_version +1 (new), nothing
+    // else -- contract_vocabulary_digest is UNCHANGED (spec section 1: this
+    // slice adds zero registry vocabulary). [family-termination-fee-era pin
+    // 0ebe8e8f... superseded.]
+    'the new, re-pinned resolution_receipt_id under MAPPING_TABLE_VERSION 6',
   );
 
   // SOURCE_SCOPE_CERTIFICATION_ABSENT is unconditional -- present even with

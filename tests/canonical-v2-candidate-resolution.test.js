@@ -936,7 +936,7 @@ test('a VERIFIED ruling in agreement with the lexicon applies mechanically', asy
   assert.equal(resolvedEntry.claim.canonical_value, 'MAT_ALL_RESPECTS');
 });
 
-test('receipt pins MAPPING_TABLE_VERSION 5, the lexicon version, the measurement-date-parse version and the ruling corpus identity', async () => {
+test('receipt pins MAPPING_TABLE_VERSION 6, the lexicon version, the measurement-date-parse version and the ruling corpus identity', async () => {
   const resolution = await resolveSingleQualifier({
     quote: ACCURACY_CHAPEAU_QUOTE,
     attachment: chapeauAttachment(),
@@ -949,7 +949,7 @@ test('receipt pins MAPPING_TABLE_VERSION 5, the lexicon version, the measurement
   // (docs/superpowers/specs/2026-08-02-family-termination-fee-design.md
   // section 4): MAPPING_TABLE_VERSION 4 -> 5, three new unconditional
   // entries (FEE_AMOUNT/FEE_TRIGGER/FEE_TAIL_PERIOD).
-  assert.equal(MAPPING_TABLE_VERSION, 5);
+  assert.equal(MAPPING_TABLE_VERSION, 6);
   assert.equal(resolution.resolution_receipt.qualifier_kind_lexicon_version, QUALIFIER_KIND_LEXICON_VERSION);
   assert.equal(resolution.resolution_receipt.measurement_date_parse_version, MEASUREMENT_DATE_PARSE_VERSION);
   assert.equal(resolution.resolution_receipt.ruling_corpus_id, require('../lib/canonical-v2/native-producer/ruling-corpus').EMPTY_RULING_CORPUS.ruling_corpus_id);

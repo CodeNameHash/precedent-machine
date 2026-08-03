@@ -24,6 +24,7 @@ const {
   listRegisteredSectionFamilies,
 } = require('../lib/canonical-v2/native-producer/producer-prompt-registry');
 const { buildCapitalisationProducerPrompt } = require('../lib/canonical-v2/native-producer/capitalisation-producer-prompt');
+const { buildNoShopProducerPrompt } = require('../lib/canonical-v2/native-producer/no-shop-producer-prompt');
 const {
   SECTION_FAMILY_CLASSIFIER_VERSION,
   SECTION_FAMILY_RULE_CLASSIFIED,
@@ -40,6 +41,10 @@ test('registry: CAPITALISATION is registered to the unchanged buildCapitalisatio
   assert.equal(getProducerPromptModule('CAPITALISATION'), buildCapitalisationProducerPrompt);
 });
 
+test('registry: NO_SHOP is registered to the unchanged buildNoShopProducerPrompt function', () => {
+  assert.equal(getProducerPromptModule('NO_SHOP'), buildNoShopProducerPrompt);
+});
+
 test('registry: unknown/unregistered family returns null -- fail closed, never a capitalisation fallback', () => {
   assert.equal(getProducerPromptModule('TERMINATION'), null);
   assert.equal(getProducerPromptModule('SOME_UNKNOWN_FAMILY'), null);
@@ -48,8 +53,8 @@ test('registry: unknown/unregistered family returns null -- fail closed, never a
   assert.equal(getProducerPromptModule(undefined), null);
 });
 
-test('registry: CAPITALISATION and TERMINATION_FEE are registered (family-termination-fee slice)', () => {
-  assert.deepEqual(listRegisteredSectionFamilies(), ['CAPITALISATION', 'TERMINATION_FEE']);
+test('registry: CAPITALISATION, NO_SHOP and TERMINATION_FEE are registered (family-no-shop slice adds NO_SHOP)', () => {
+  assert.deepEqual(listRegisteredSectionFamilies(), ['CAPITALISATION', 'NO_SHOP', 'TERMINATION_FEE']);
 });
 
 test('registry: schema constant is exported', () => {
@@ -104,6 +109,29 @@ test('classifier stage 1: fee/break-up/expense-reimbursement/effect-of-terminati
     assert.equal(result.section_family, 'TERMINATION_FEE', `expected "${title}" to classify TERMINATION_FEE`);
     assert.equal(result.provenance, SECTION_FAMILY_RULE_CLASSIFIED);
     assert.equal(result.declined_reason, null);
+  }
+});
+
+// docs/superpowers/specs/2026-08-02-family-no-shop-design.md section 3:
+// NO_SHOP's own stage-1 title rule, registered in producer-prompt-
+// registry.js in this same slice.
+test('classifier stage 1: "No Solicitation" / "Non-Solicitation" / "No-Shop" titles classify NO_SHOP, rule-classified', async () => {
+  const noShopTitles = ['No Solicitation', 'No Solicitation; Other Offers', 'Non-Solicitation of Transactions', 'No-Shop Provisions'];
+  for (const title of noShopTitles) {
+    // eslint-disable-next-line no-await-in-loop
+    const result = await classifySectionFamily({ title });
+    assert.equal(result.section_family, 'NO_SHOP', `expected "${title}" to classify NO_SHOP`);
+    assert.equal(result.provenance, SECTION_FAMILY_RULE_CLASSIFIED);
+    assert.equal(result.declined_reason, null);
+  }
+});
+
+test('classifier stage 1: the NO_SHOP title exclusion -- personnel/customer non-solicitation titles never classify NO_SHOP', async () => {
+  const excludedTitles = ['Non-Solicitation of Employees', 'Non-Solicitation of Customers', 'Employee Non-Solicitation'];
+  for (const title of excludedTitles) {
+    // eslint-disable-next-line no-await-in-loop
+    const result = await classifySectionFamily({ title });
+    assert.notEqual(result.section_family, 'NO_SHOP', `expected "${title}" to NOT classify NO_SHOP`);
   }
 });
 
