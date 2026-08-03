@@ -487,6 +487,7 @@ module.exports = {
   resolveReclassificationCompact,
   isV1ExtractionTypeSet,
   assertV1FixtureScope,
+  isV1TypeCompleteAfterClassification,
   hasPendingV1Classification,
   assertV1ApplyOrderNotBypassed,
 };
@@ -519,7 +520,7 @@ function parseArgs(argv) {
     // D1 flip-on) — --apply now rematerializes claims by default so they can
     // never silently go stale. --no-rematerialize restores the warn-only
     // behavior; --rematerialize is still accepted as an explicit no-op.
-    rematerialize: true, rematerializePartial: false, v1Reclass: false,
+    rematerialize: true, rematerializePartial: false, v1Reclass: false, resume: false,
   };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
@@ -536,6 +537,7 @@ function parseArgs(argv) {
     else if (a === '--no-rematerialize') args.rematerialize = false;
     else if (a === '--rematerialize-partial') args.rematerializePartial = true;
     else if (a === '--v1-reclass') args.v1Reclass = true;
+    else if (a === '--resume') args.resume = true;
     else { console.error(`Unknown arg: ${a}`); usage(); }
   }
   if (!args.deal && !args.all) usage();
@@ -557,6 +559,10 @@ function parseArgs(argv) {
   }
   if (args.v1Reclass && !args.classifyOnly && !isV1ExtractionTypeSet(args.types)) {
     console.error('v1 reclassification extraction requires exactly --types REP-T,REP-B,MISC.');
+    process.exit(1);
+  }
+  if (args.resume && (!args.v1Reclass || !args.apply || args.classifyOnly)) {
+    console.error('--resume is only valid for an applying v1 reclassification extraction.');
     process.exit(1);
   }
   return args;
@@ -786,7 +792,15 @@ async function planExtractDeal(deal, types) {
   return true;
 }
 
-async function extractDeal(sb, deal, types, client) {
+function isV1TypeCompleteAfterClassification(deal, type) {
+  const classifiedAt = Date.parse(deal?.metadata?.v1_reclassification?.classified_at || '');
+  const status = deal?.metadata?.extract_status?.[type];
+  const completedAt = Date.parse(status?.completed_at || '');
+  return status?.status === 'done' && Number.isFinite(classifiedAt) &&
+    Number.isFinite(completedAt) && completedAt >= classifiedAt;
+}
+
+async function extractDeal(sb, deal, types, client, { resumeV1 = false, stopOnError = false } = {}) {
   const { runExtractTypePhase, markExtractFailed } = require('../lib/parser-v2/run-extract');
   const { diffSnapshots, formatDiff, snapshotStoredProvision } = require('../lib/run-history');
   const { computeCounts } = require('./ingest-qa');
@@ -809,6 +823,10 @@ async function extractDeal(sb, deal, types, client) {
   let ok = true;
 
   for (const type of types) {
+    if (resumeV1 && isV1TypeCompleteAfterClassification(deal, type)) {
+      console.log(`  → ${type} … resume: already completed after v1 classification`);
+      continue;
+    }
     const t0 = Date.now();
     process.stdout.write(`  → ${type} … `);
     try {
@@ -827,6 +845,7 @@ async function extractDeal(sb, deal, types, client) {
       console.log(`FAILED after ${Math.round((Date.now() - t0) / 1000)}s: ${err.message}`);
       await markExtractFailed(sb, deal.id, type, err.message);
       ok = false;
+      if (stopOnError) break;
     }
   }
 
@@ -893,7 +912,10 @@ async function main() {
       } else if (!apply) {
         ok = await planExtractDeal(deal, args.types);
       } else {
-        ok = await extractDeal(sb, deal, args.types, client);
+        ok = await extractDeal(sb, deal, args.types, client, {
+          resumeV1: args.resume,
+          stopOnError: args.v1Reclass,
+        });
       }
       if (!ok) allOk = false;
     } catch (err) {

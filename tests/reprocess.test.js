@@ -37,6 +37,7 @@ const {
   resolveReclassificationCompact,
   isV1ExtractionTypeSet,
   assertV1FixtureScope,
+  isV1TypeCompleteAfterClassification,
   hasPendingV1Classification,
   assertV1ApplyOrderNotBypassed,
 } = require('../scripts/reprocess');
@@ -227,6 +228,22 @@ test('v1 fixture mode rejects corpus, broad, and non-fixture scopes but permits 
   assert.doesNotThrow(
     () => assertV1FixtureScope([{ id: 'dfaa71fa-9723-4794-825d-bd5024aa0b5d' }], { v1Reclass: true, all: false }),
   );
+});
+
+test('v1 resume skips only a successful type completed after classification', () => {
+  const deal = {
+    metadata: {
+      v1_reclassification: { classified_at: '2026-08-03T07:00:00.000Z' },
+      extract_status: {
+        'REP-T': { status: 'done', completed_at: '2026-08-03T08:00:00.000Z' },
+        'REP-B': { status: 'failed', completed_at: '2026-08-03T08:01:00.000Z' },
+        MISC: { status: 'done', completed_at: '2026-08-03T06:59:59.000Z' },
+      },
+    },
+  };
+  assert.equal(isV1TypeCompleteAfterClassification(deal, 'REP-T'), true);
+  assert.equal(isV1TypeCompleteAfterClassification(deal, 'REP-B'), false);
+  assert.equal(isV1TypeCompleteAfterClassification(deal, 'MISC'), false);
 });
 
 test('a classified v1 snapshot remains pending until every card has the v1 extraction version', async () => {
