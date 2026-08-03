@@ -52,11 +52,11 @@
    this exact per-deal order, comparator-fixture deals FIRST
    (TopBuild/Skechers/Modiv, hand-verified), then the corpus:
 
-     1. node scripts/reprocess.js --deal <id> --classify-only --apply
-        (rewrites the classified_sections snapshot; retired-code cache
-        entries are bypassed automatically — see classify.js's
-        prior-snapshot cache-invalidation comment)
-     2. node scripts/reprocess.js --deal <id> --types REP-T,REP-B,MISC --apply
+     1. node scripts/reprocess.js --deal <name> --classify-only --apply
+        --v1-reclass
+        (rewrites only the reviewed, identity-pinned classifications)
+     2. node scripts/reprocess.js --deal <name> --types REP-T,REP-B,MISC
+        --apply --no-rematerialize --v1-reclass
         (re-extracts the parent types — R3 cards live under MISC_BOILERPLATE
         too; the anti-reliance element scan runs inside this step)
      3. node scripts/backfill/extract-to-cards.js --deal <id> --apply
@@ -66,8 +66,8 @@
         bumped for this pass so the comparator's isComparisonReceiptStale
         fires on pre-reclass receipts — see extract-to-cards.js's
         DEFAULT_EXTRACTION_VERSION comment)
-     4. Claim rematerialization (this script's built-in --apply step above,
-        or a standalone rematerialize-claims.js run for the same deal ids)
+     4. node scripts/reprocess/rematerialize-claims.js --deal <id>
+        followed by the same command with --apply after the dry-run is clean
 
    Pre-write safety gate: scripts/safety-check-reclass-rules.js must be
    green (pinned flip set) before step 1 runs for the corpus; the 29-card
@@ -78,6 +78,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const { PROVISION_TYPES } = require('../lib/rubric');
 const {
   toCompactSections,
@@ -87,6 +88,13 @@ const {
 } = require('../lib/parser-v2/snapshot');
 const { attachRegionIdsToSections, persistParserRegions } = require('../lib/parser-v2/region-store');
 const { MODEL_READONLY_KEYS } = require('../lib/schema/prompt');
+const {
+  V1_RECLASS_EXTRACTION_VERSION,
+  V1_FIXTURE_DEAL_IDS,
+  EXPECTED_R1R2_FLIPS,
+  R1R2_CARD_RULINGS,
+  V1_RECLASSIFICATION_PIN_TARGETS,
+} = require('./reprocess/v1-reclassification-pins');
 
 /* ── pure helpers (exported for tests — no DB, no LLM) ───────────────────── */
 
@@ -121,22 +129,10 @@ function expandGroup(type) {
 }
 
 /* ── EXT-4 guard: per-type reprocess vs. cross-type post-pass features ───────
-   linkBringDownToReps / linkKnowledgeScopeToReps / resolveCondCitedProvisionNames
-   (lib/parser-v2/extract.js:5140/5144/5171) stamp these features onto REP/COND
-   provisions from OUTSIDE their own type's extraction, and run ONLY in the
-   all-types extractProvisions() path — never in runExtractTypePhase() (see
-   lib/parser-v2/run-extract.js:134-137, which deliberately skips them). A
-   per-type --apply reprocess deletes + reinserts the affected type's
-   provisions (storeProvisionsForType) without re-running these passes, so
-   the features are stripped. All three are MODEL_READONLY
-   (lib/schema/prompt.js MODEL_READONLY_KEYS), so the per-type extraction LLM
-   is not even allowed to repopulate them afterward — the loss is permanent
-   short of a full all-types re-ingest. */
+   REP runs now rejoin stored Knowledge definitions before writing, so their
+   MODEL_READONLY knowledge fields are rebuilt. COND citedProvisionNames
+   still depends on other provision families and remains unsafe here. */
 const CROSS_TYPE_POST_PASS_FEATURES = {
-  // linkBringDownToReps (extract.js:6993) — stamped onto REP-T/REP-B.
-  linkedBringDownStandard: ['REP-T', 'REP-B'],
-  // linkKnowledgeScopeToReps (extract.js:6712) — stamped onto REP-T/REP-B.
-  knowledgeScope: ['REP-T', 'REP-B'],
   // resolveCondCitedProvisionNames (extract.js:6380) — stamped onto any
   // provision whose type starts with "COND" (COND, COND-M, COND-B, COND-S).
   citedProvisionNames: ['COND', 'COND-M', 'COND-B', 'COND-S'],
@@ -293,6 +289,95 @@ function classifiedByTally(classified) {
   return tally;
 }
 
+function pinTextHash(text) {
+  return crypto.createHash('sha256').update(String(text || '')).digest('hex');
+}
+
+function buildV1ReclassificationPinMap() {
+  const pins = new Map();
+  const expectedCodes = new Map();
+  for (const [dealPrefix, sectionNumber, targetCode] of EXPECTED_R1R2_FLIPS) {
+    expectedCodes.set(`${dealPrefix}|${sectionNumber}`, targetCode);
+  }
+  for (const [, dealPrefix, sectionNumber, targetCode] of R1R2_CARD_RULINGS) {
+    const key = `${dealPrefix}|${sectionNumber}`;
+    const existing = expectedCodes.get(key);
+    if (existing && existing !== targetCode) {
+      throw new Error(`Conflicting v1 reclassification pin for ${key}: ${existing} vs ${targetCode}`);
+    }
+    expectedCodes.set(key, targetCode);
+  }
+  for (const [dealPrefix, sectionNumber, targetCode, title, textHash] of V1_RECLASSIFICATION_PIN_TARGETS) {
+    const key = `${dealPrefix}|${sectionNumber}`;
+    if (expectedCodes.get(key) !== targetCode) {
+      throw new Error(`v1 reclassification identity pin disagrees with ruling for ${key}`);
+    }
+    if (pins.has(key)) throw new Error(`Duplicate v1 reclassification identity pin for ${key}`);
+    pins.set(key, { code: targetCode, type: 'REP-T', title, textHash });
+  }
+  if (pins.size !== expectedCodes.size) throw new Error('Missing v1 reclassification identity pin');
+  return pins;
+}
+
+function applyV1ReclassificationPins(dealId, compact, pins = buildV1ReclassificationPinMap()) {
+  const dealPrefix = String(dealId || '').slice(0, 8);
+  const rows = compact || [];
+  const dealPins = [...pins.entries()].filter(([key]) => key.startsWith(`${dealPrefix}|`));
+  for (const [key, pin] of dealPins) {
+    const sectionNumber = key.slice(dealPrefix.length + 1);
+    const matches = rows.filter((section) => String(section.sectionNumber || '') === sectionNumber);
+    if (matches.length !== 1) {
+      throw new Error(`v1 pin ${key} requires exactly one snapshot section, found ${matches.length}`);
+    }
+    const section = matches[0];
+    if (section.type !== pin.type) {
+      throw new Error(`v1 pin ${key} requires ${pin.type}, found ${section.type || '(none)'}`);
+    }
+    if (section.title !== pin.title || pinTextHash(section.text) !== pin.textHash) {
+      throw new Error(`v1 pin ${key} target identity drifted`);
+    }
+  }
+  return rows.map((section) => {
+    const key = `${dealPrefix}|${section.sectionNumber || ''}`;
+    if (!pins.has(key)) return section;
+    const target = pins.get(key);
+    const targetCode = target.code;
+    const next = { ...section, classifiedBy: 'v1-reclass-pin', confidence: 'high' };
+    if (targetCode === 'OPEN_WORLD') {
+      delete next.code;
+      next.v1Disposition = 'OPEN_WORLD';
+    } else {
+      next.code = targetCode;
+      delete next.v1Disposition;
+    }
+    return next;
+  });
+}
+
+async function resolveReclassificationCompact({ deal, before, v1Reclass = false, classify, pins }) {
+  if (!v1Reclass) return (await classify()).compact;
+  if (!before || before.length === 0) {
+    throw new Error('v1 reclassification requires an existing classified_sections snapshot for identity-pin verification');
+  }
+  return applyV1ReclassificationPins(deal.id, before, pins);
+}
+
+function isV1ExtractionTypeSet(types) {
+  const expected = new Set(['REP-T', 'REP-B', 'MISC']);
+  return Array.isArray(types) && types.length === expected.size && types.every((type) => expected.has(type));
+}
+
+function assertV1FixtureScope(deals, args) {
+  if (!args?.v1Reclass) return;
+  if (args.all) throw new Error('v1 fixture mode rejects --all; select one approved fixture deal.');
+  if (!Array.isArray(deals) || deals.length !== 1) {
+    throw new Error(`v1 fixture mode requires exactly one selected deal, found ${Array.isArray(deals) ? deals.length : 0}`);
+  }
+  if (!V1_FIXTURE_DEAL_IDS.includes(deals[0].id)) {
+    throw new Error(`v1 fixture mode only permits TopBuild, Skechers, or Modiv (${deals[0].id})`);
+  }
+}
+
 /* ── DATA-1 (GAP-A) opt-in wiring: --rematerialize ────────────────────────
    Reuses the EXISTING planner/writer exported from
    scripts/reprocess/rematerialize-claims.js (buildDealPlan / formatDealTable
@@ -396,6 +481,14 @@ module.exports = {
   buildRematerializePlans,
   printRematerializePlans,
   runRematerializeApply,
+  buildV1ReclassificationPinMap,
+  applyV1ReclassificationPins,
+  pinTextHash,
+  resolveReclassificationCompact,
+  isV1ExtractionTypeSet,
+  assertV1FixtureScope,
+  hasPendingV1Classification,
+  assertV1ApplyOrderNotBypassed,
 };
 
 /* ── CLI / DB / LLM plumbing ─────────────────────────────────────────────── */
@@ -413,7 +506,7 @@ function usage() {
   console.error(
     'Usage: node scripts/reprocess.js (--deal <substring> | --all) ' +
     '(--types TERMF[,ANTI…] | --classify-only) [--apply | --dry-run] ' +
-    '[--backend claude|codex] [--model …] [--no-rematerialize | --rematerialize-partial]',
+    '[--backend claude|codex] [--model …] [--no-rematerialize | --rematerialize-partial] [--v1-reclass]',
   );
   process.exit(1);
 }
@@ -426,7 +519,7 @@ function parseArgs(argv) {
     // D1 flip-on) — --apply now rematerializes claims by default so they can
     // never silently go stale. --no-rematerialize restores the warn-only
     // behavior; --rematerialize is still accepted as an explicit no-op.
-    rematerialize: true, rematerializePartial: false,
+    rematerialize: true, rematerializePartial: false, v1Reclass: false,
   };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
@@ -442,15 +535,28 @@ function parseArgs(argv) {
     else if (a === '--rematerialize') args.rematerialize = true;
     else if (a === '--no-rematerialize') args.rematerialize = false;
     else if (a === '--rematerialize-partial') args.rematerializePartial = true;
+    else if (a === '--v1-reclass') args.v1Reclass = true;
     else { console.error(`Unknown arg: ${a}`); usage(); }
   }
   if (!args.deal && !args.all) usage();
+  if (args.v1Reclass && args.all) {
+    console.error('v1 fixture mode rejects --all; select one approved fixture deal.');
+    process.exit(1);
+  }
   if (args.apply && args.dryRun) { console.error('--apply and --dry-run are mutually exclusive.'); process.exit(1); }
   if (!args.classifyOnly && args.typesRaw.length === 0) usage();
+  if (args.v1Reclass && !args.classifyOnly && args.rematerialize) {
+    console.error('v1 reclassification extraction must use --no-rematerialize: backfill cards before materialising claims.');
+    process.exit(1);
+  }
   try {
     args.types = args.classifyOnly ? [] : parseTypesArg(args.typesRaw);
   } catch (err) {
     console.error(err.message);
+    process.exit(1);
+  }
+  if (args.v1Reclass && !args.classifyOnly && !isV1ExtractionTypeSet(args.types)) {
+    console.error('v1 reclassification extraction requires exactly --types REP-T,REP-B,MISC.');
     process.exit(1);
   }
   return args;
@@ -490,6 +596,44 @@ async function fetchDeals(sb, args) {
   return deals;
 }
 
+function hasPendingV1Classification(deal) {
+  const marker = deal?.metadata?.v1_reclassification;
+  return marker?.version === V1_RECLASS_EXTRACTION_VERSION && marker?.state === 'CLASSIFIED';
+}
+
+async function assertV1ApplyOrderNotBypassed(sb, deals, args) {
+  if (!args?.apply || args.v1Reclass) return;
+  const pendingDeals = (deals || []).filter(hasPendingV1Classification);
+  const stale = [];
+  for (const deal of pendingDeals) {
+    const base = () => sb
+      .from('provision_cards')
+      .select('id', { count: 'exact', head: true })
+      .eq('deal_id', deal.id);
+    const [{ count: total, error: totalError }, { count: current, error: currentError }] = await Promise.all([
+      base(),
+      base().eq('extraction_version', V1_RECLASS_EXTRACTION_VERSION),
+    ]);
+    if (totalError || currentError) {
+      throw new Error(`v1 card-version preflight failed for ${deal.id}: ${(totalError || currentError).message}`);
+    }
+    if (!total || current !== total) stale.push(deal.id);
+  }
+  if (stale.length > 0) {
+    throw new Error(
+      `v1 reclassification apply order is incomplete for ${stale.join(', ')}: ` +
+      'use --v1-reclass and --no-rematerialize until the card backfill has replaced every card.',
+    );
+  }
+}
+
+async function assertV1DeterministicSafetySubset(sb) {
+  const { assertExactDeterministicSafetySubset } = require('./safety-check-reclass-rules');
+  const { data: allDeals, error } = await sb.from('deals').select('id, acquirer, target, metadata');
+  if (error) throw new Error(`v1 safety deal fetch failed: ${error.message}`);
+  assertExactDeterministicSafetySubset(allDeals || []);
+}
+
 async function fetchTypeGroupProvisions(sb, dealId, type) {
   const { expandTypeGroup } = require('../lib/parser-v2/extract');
   const { data, error } = await sb
@@ -520,7 +664,10 @@ async function fetchAllTypes(sb, dealId) {
  * Parse + classify a deal's STORED full_text (no fetch), cache-assisted.
  * Returns { classified, compact, sections, articles }.
  */
-async function classifyFromStoredText(sb, deal, client, prior, { persistRegions = true } = {}) {
+async function classifyFromStoredText(sb, deal, client, prior, {
+  persistRegions = true,
+  rerunPriorCodes = null,
+} = {}) {
   const { cleanText, parseStructure } = require('../lib/parser-v2/structural');
   const { classifySections } = require('../lib/parser-v2/classify');
   const fullText = deal.metadata && deal.metadata.full_text;
@@ -528,7 +675,7 @@ async function classifyFromStoredText(sb, deal, client, prior, { persistRegions 
   const cleaned = cleanText(fullText);
   const { sections, articles, regions } = parseStructure(cleaned);
   if (sections.length === 0) throw new Error('Parser found no sections in stored full_text');
-  const classified = await classifySections(sections, articles, client, { prior });
+  const classified = await classifySections(sections, articles, client, { prior, rerunPriorCodes });
   // A --classify-only dry-run must be a true dry-run: persistParserRegions
   // performs a real upsert into parser_regions, so it is skipped (along
   // with region-id attachment, which needs the persisted rows) unless the
@@ -541,7 +688,10 @@ async function classifyFromStoredText(sb, deal, client, prior, { persistRegions 
   return { classified: withRegions, compact: toCompactSections(withRegions), sections, articles };
 }
 
-async function persistSnapshot(sb, deal, compact, { resetExtractStatus = false } = {}) {
+async function persistSnapshot(sb, deal, compact, {
+  resetExtractStatus = false,
+  v1Reclass = false,
+} = {}) {
   const meta = deal.metadata || {};
   const nextMetadata = {
     ...meta,
@@ -549,6 +699,13 @@ async function persistSnapshot(sb, deal, compact, { resetExtractStatus = false }
     classify_run_at: new Date().toISOString(),
     classify_breakdown: classifyBreakdown(compact),
     ...(resetExtractStatus ? { extract_status: {} } : {}),
+    ...(v1Reclass ? {
+      v1_reclassification: {
+        version: V1_RECLASS_EXTRACTION_VERSION,
+        state: 'CLASSIFIED',
+        classified_at: new Date().toISOString(),
+      },
+    } : {}),
   };
   const { error } = await sb.from('deals').update({ metadata: nextMetadata }).eq('id', deal.id);
   if (error) throw new Error(`Failed to persist classified sections: ${error.message}`);
@@ -557,7 +714,7 @@ async function persistSnapshot(sb, deal, compact, { resetExtractStatus = false }
 
 /* ── per-deal drivers ────────────────────────────────────────────────────── */
 
-async function reclassifyDeal(sb, deal, client, apply) {
+async function reclassifyDeal(sb, deal, client, apply, v1Reclass = false) {
   const meta = deal.metadata || {};
   const before = Array.isArray(meta.classified_sections) ? meta.classified_sections : [];
   const prior = buildPriorLookup(before);
@@ -565,7 +722,15 @@ async function reclassifyDeal(sb, deal, client, apply) {
     console.log('  no prior snapshot — every non-deterministic section will need the AI');
   }
 
-  const { compact } = await classifyFromStoredText(sb, deal, client, prior, { persistRegions: apply });
+  const compact = await resolveReclassificationCompact({
+    deal,
+    before,
+    v1Reclass,
+    classify: () => classifyFromStoredText(sb, deal, client, prior, {
+      persistRegions: apply,
+      rerunPriorCodes: v1Reclass ? new Set(['REP-T-CONSENT', 'REP-T-REGSTATUS']) : null,
+    }),
+  });
   const tally = classifiedByTally(compact);
   console.log(`  classified ${compact.length} sections (${Object.entries(tally).map(([k, n]) => `${k}: ${n}`).join(', ')})`);
 
@@ -585,7 +750,7 @@ async function reclassifyDeal(sb, deal, client, apply) {
   }
   // New classification invalidates per-type extract status (same semantics
   // as POST /api/ingest/classify).
-  await persistSnapshot(sb, deal, compact, { resetExtractStatus: true });
+  await persistSnapshot(sb, deal, compact, { resetExtractStatus: true, v1Reclass });
   console.log('  committed: classified_sections updated, extract_status reset.');
   return true;
 }
@@ -688,6 +853,10 @@ async function main() {
   if (!dbUrl || !key) { console.error('Supabase creds required (env / .env.local).'); process.exit(1); }
   const sb = createClient(dbUrl, key);
 
+  if (apply && args.classifyOnly && args.v1Reclass) {
+    await assertV1DeterministicSafetySubset(sb);
+  }
+
   // EXT-4 guard: refuse a per-type --apply reprocess that would strip
   // MODEL_READONLY cross-type post-pass features (see stripRiskConflicts
   // above). Does not apply to --classify-only (no provision writes) or to
@@ -707,6 +876,8 @@ async function main() {
   }
 
   const deals = await fetchDeals(sb, args);
+  assertV1FixtureScope(deals, args);
+  await assertV1ApplyOrderNotBypassed(sb, deals, args);
   const mode = args.classifyOnly ? 'classify-only' : `types: ${args.types.join(', ')}`;
   console.log(`Reprocess (${mode}) — ${deals.length} deal(s), ${apply ? 'APPLY' : 'dry-run'}`);
 
@@ -718,7 +889,7 @@ async function main() {
     try {
       let ok;
       if (args.classifyOnly) {
-        ok = await reclassifyDeal(sb, deal, client, apply);
+        ok = await reclassifyDeal(sb, deal, client, apply, args.v1Reclass);
       } else if (!apply) {
         ok = await planExtractDeal(deal, args.types);
       } else {

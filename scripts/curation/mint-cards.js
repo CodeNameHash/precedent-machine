@@ -567,6 +567,26 @@ async function fetchRegionsForDeal(sb, dealId) {
   return data || [];
 }
 
+// PostgREST caps a select response at 1,000 rows by default. A backup that
+// silently stops there is not recoverable, so every dump reads until an
+// under-full page proves the table is exhausted.
+const BACKUP_PAGE_SIZE = 1000;
+async function fetchAllRowsByColumn(sb, table, column, value) {
+  const rows = [];
+  for (let start = 0; ; start += BACKUP_PAGE_SIZE) {
+    const { data, error } = await sb
+      .from(table)
+      .select('*')
+      .eq(column, value)
+      .order('id', { ascending: true })
+      .range(start, start + BACKUP_PAGE_SIZE - 1);
+    if (error) throw new Error(`Backup dump failed (${table}, ${column}=${value}): ${error.message}`);
+    const page = data || [];
+    rows.push(...page);
+    if (page.length < BACKUP_PAGE_SIZE) return rows;
+  }
+}
+
 // BEFORE any write: dump every provision_cards + claims + parser_regions row
 // for every affected deal to `backupPath`. Local rather than reusing
 // prune-cards' dumpBackup because a mint rollback must also be able to
@@ -577,23 +597,19 @@ async function dumpBackup(sb, dealIds, backupPath) {
   if (fs.existsSync(backupPath)) {
     throw new Error(`Backup path already exists, refusing to overwrite: ${backupPath}`);
   }
+  const deals = {};
+  const provisions = {};
   const provision_cards = {};
   const claims = {};
   const parser_regions = {};
   for (const dealId of dealIds) {
-    const { data: cards, error: cardsErr } = await sb.from('provision_cards').select('*').eq('deal_id', dealId);
-    if (cardsErr) throw new Error(`Backup dump failed (provision_cards, deal ${dealId}): ${cardsErr.message}`);
-    provision_cards[dealId] = cards || [];
-
-    const { data: dealClaims, error: claimsErr } = await sb.from('claims').select('*').eq('deal_id', dealId);
-    if (claimsErr) throw new Error(`Backup dump failed (claims, deal ${dealId}): ${claimsErr.message}`);
-    claims[dealId] = dealClaims || [];
-
-    const { data: regions, error: regionsErr } = await sb.from('parser_regions').select('*').eq('deal_id', dealId);
-    if (regionsErr) throw new Error(`Backup dump failed (parser_regions, deal ${dealId}): ${regionsErr.message}`);
-    parser_regions[dealId] = regions || [];
+    deals[dealId] = await fetchAllRowsByColumn(sb, 'deals', 'id', dealId);
+    provisions[dealId] = await fetchAllRowsByColumn(sb, 'provisions', 'deal_id', dealId);
+    provision_cards[dealId] = await fetchAllRowsByColumn(sb, 'provision_cards', 'deal_id', dealId);
+    claims[dealId] = await fetchAllRowsByColumn(sb, 'claims', 'deal_id', dealId);
+    parser_regions[dealId] = await fetchAllRowsByColumn(sb, 'parser_regions', 'deal_id', dealId);
   }
-  const payload = { dumpedAt: new Date().toISOString(), dealIds, provision_cards, claims, parser_regions };
+  const payload = { dumpedAt: new Date().toISOString(), dealIds, deals, provisions, provision_cards, claims, parser_regions };
   fs.writeFileSync(backupPath, JSON.stringify(payload, null, 2));
   return payload;
 }
@@ -784,6 +800,7 @@ module.exports = {
   formatDealTable,
   formatRunReport,
   dumpBackup,
+  fetchAllRowsByColumn,
   executeWrites,
   parseArgs,
 };

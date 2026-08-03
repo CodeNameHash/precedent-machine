@@ -638,7 +638,11 @@ test('dumpBackup: dumps provision_cards + claims + parser_regions per deal, refu
         select: () => ({
           eq: (col, val) => {
             reads.push([table, val]);
-            return Promise.resolve({ data: [{ table, deal: val }], error: null });
+            return {
+              order: () => ({
+                range: () => Promise.resolve({ data: [{ table, deal: val }], error: null }),
+              }),
+            };
           },
         }),
       };
@@ -649,7 +653,9 @@ test('dumpBackup: dumps provision_cards + claims + parser_regions per deal, refu
   const backupPath = path.join(dir, 'backup.json');
   try {
     const payload = await dumpBackup(sb, [DEAL_A], backupPath);
-    assert.deepEqual(Object.keys(payload).sort(), ['claims', 'dealIds', 'dumpedAt', 'parser_regions', 'provision_cards']);
+    assert.deepEqual(Object.keys(payload).sort(), ['claims', 'dealIds', 'deals', 'dumpedAt', 'parser_regions', 'provision_cards', 'provisions']);
+    assert.deepEqual(payload.deals[DEAL_A], [{ table: 'deals', deal: DEAL_A }]);
+    assert.deepEqual(payload.provisions[DEAL_A], [{ table: 'provisions', deal: DEAL_A }]);
     assert.deepEqual(payload.parser_regions[DEAL_A], [{ table: 'parser_regions', deal: DEAL_A }]);
     assert.ok(reads.some(([t]) => t === 'parser_regions'));
     assert.ok(fs.existsSync(backupPath));
@@ -662,4 +668,29 @@ test('dumpBackup: dumps provision_cards + claims + parser_regions per deal, refu
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
+});
+
+test('fetchAllRowsByColumn: reads beyond the PostgREST 1,000-row response cap', async () => {
+  const { fetchAllRowsByColumn } = require('../scripts/curation/mint-cards');
+  const ranges = [];
+  const sb = {
+    from: () => ({
+      select: () => ({
+        eq: () => ({
+          order: () => ({
+            range: (start) => {
+              ranges.push(start);
+              const rows = start === 0
+                ? Array.from({ length: 1000 }, (_, index) => ({ id: index }))
+                : [{ id: 1000 }];
+              return Promise.resolve({ data: rows, error: null });
+            },
+          }),
+        }),
+      }),
+    }),
+  };
+  const rows = await fetchAllRowsByColumn(sb, 'claims', 'deal_id', DEAL_A);
+  assert.equal(rows.length, 1001);
+  assert.deepEqual(ranges, [0, 1000]);
 });

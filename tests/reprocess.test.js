@@ -31,6 +31,14 @@ const {
   buildRematerializePlans,
   printRematerializePlans,
   runRematerializeApply,
+  buildV1ReclassificationPinMap,
+  applyV1ReclassificationPins,
+  pinTextHash,
+  resolveReclassificationCompact,
+  isV1ExtractionTypeSet,
+  assertV1FixtureScope,
+  hasPendingV1Classification,
+  assertV1ApplyOrderNotBypassed,
 } = require('../scripts/reprocess');
 
 const { classifySections } = require('../lib/parser-v2/classify');
@@ -125,6 +133,146 @@ test('deterministic rules beat the cache — rule changes take effect immediatel
   assert.strictEqual(out[0].classifiedBy, 'regex');
 });
 
+test('a bounded reclassification preserves unrelated cached types', async () => {
+  const section = {
+    number: '4.2',
+    title: 'Interim Operations of Parent',
+    text: 'Parent shall operate in the ordinary course before Closing.',
+  };
+  const prior = new Map([[
+    sectionTextHash(section.text),
+    { provisionType: 'IOC-T', provisionCode: null, confidence: 'high' },
+  ]]);
+  const out = await classifySections([section], [], throwingClient, {
+    prior,
+    rerunPriorCodes: new Set(['REP-T-CONSENT', 'REP-T-REGSTATUS']),
+  });
+  assert.equal(out[0].provisionType, 'IOC-T');
+  assert.equal(out[0].classifiedBy, 'cache');
+});
+
+test('the reviewed v1 pin map rewrites only governed sections', () => {
+  const pins = buildV1ReclassificationPinMap();
+  assert.equal(pins.get('af4940e1|3.4').code, 'REP-T-STOCKAPPROVAL');
+  assert.equal(pins.get('dfaa71fa|3.22').code, 'REP-T-40ACT');
+  assert.equal(pins.get('df393645|3.22').code, 'OPEN_WORLD');
+
+  const before = [
+    { sectionNumber: '3.22', type: 'REP-T', title: 'Investment Company Act', text: 'fixture text', code: 'REP-T-REGSTATUS', classifiedBy: 'regex' },
+    { sectionNumber: '5.1', type: 'COV', code: 'COV-ACCESS', classifiedBy: 'cache' },
+  ];
+  const pinsForTest = new Map([['dfaa71fa|3.22', {
+    code: 'REP-T-40ACT', type: 'REP-T', title: 'Investment Company Act', textHash: pinTextHash('fixture text'),
+  }]]);
+  const after = applyV1ReclassificationPins('dfaa71fa-9723', before, pinsForTest);
+  assert.equal(after[0].code, 'REP-T-40ACT');
+  assert.equal(after[0].classifiedBy, 'v1-reclass-pin');
+  assert.equal(after[1], before[1]);
+});
+
+test('v1 pin application fails closed on a changed target identity or duplicate section number', () => {
+  const pin = new Map([['dfaa71fa|3.22', {
+    code: 'REP-T-40ACT', type: 'REP-T', title: 'Investment Company Act', textHash: pinTextHash('expected text'),
+  }]]);
+  assert.throws(
+    () => applyV1ReclassificationPins('dfaa71fa-9723', [{ sectionNumber: '3.22', type: 'REP-T', title: 'Investment Company Act', text: 'changed text' }], pin),
+    /identity drift/,
+  );
+  assert.throws(
+    () => applyV1ReclassificationPins('dfaa71fa-9723', [
+      { sectionNumber: '3.22', type: 'REP-T', title: 'Investment Company Act', text: 'expected text' },
+      { sectionNumber: '3.22', type: 'REP-T', title: 'Investment Company Act', text: 'expected text' },
+    ], pin),
+    /exactly one snapshot section/,
+  );
+});
+
+test('only explicit v1 mode applies pins; ordinary classify-only uses the stored-text classifier', async () => {
+  const before = [{ sectionNumber: '3.22', type: 'REP-T', title: 'Investment Company Act', text: 'fixture text' }];
+  const pins = new Map([['dfaa71fa|3.22', {
+    code: 'REP-T-40ACT', type: 'REP-T', title: 'Investment Company Act', textHash: pinTextHash('fixture text'),
+  }]]);
+  let classifierCalls = 0;
+  const classify = async () => {
+    classifierCalls += 1;
+    return { compact: [{ ...before[0], code: 'ordinary-classify-result' }] };
+  };
+  const ordinary = await resolveReclassificationCompact({ deal: { id: 'dfaa71fa-9723' }, before, v1Reclass: false, classify, pins });
+  assert.equal(classifierCalls, 1);
+  assert.equal(ordinary[0].code, 'ordinary-classify-result');
+  const v1 = await resolveReclassificationCompact({ deal: { id: 'dfaa71fa-9723' }, before, v1Reclass: true, classify, pins });
+  assert.equal(classifierCalls, 1);
+  assert.equal(v1[0].code, 'REP-T-40ACT');
+});
+
+test('v1 extraction mode accepts exactly REP-T, REP-B and MISC', () => {
+  assert.equal(isV1ExtractionTypeSet(['REP-T', 'REP-B', 'MISC']), true);
+  assert.equal(isV1ExtractionTypeSet(['REP-T', 'MISC']), false);
+  assert.equal(isV1ExtractionTypeSet(['REP-T', 'REP-B', 'MISC', 'DEF']), false);
+});
+
+test('v1 fixture mode rejects corpus, broad, and non-fixture scopes but permits one approved UUID', () => {
+  assert.throws(
+    () => assertV1FixtureScope([], { v1Reclass: true, all: true }),
+    /rejects --all/,
+  );
+  assert.throws(
+    () => assertV1FixtureScope([{ id: '7dc3a05f-b170-4d59-a255-b7103cca16e1' }, { id: 'af4940e1-a645-437c-acfa-4a53e8d9f7ac' }], { v1Reclass: true, all: false }),
+    /exactly one selected deal/,
+  );
+  assert.throws(
+    () => assertV1FixtureScope([{ id: '00000000-0000-0000-0000-000000000000' }], { v1Reclass: true, all: false }),
+    /only permits TopBuild, Skechers, or Modiv/,
+  );
+  assert.doesNotThrow(
+    () => assertV1FixtureScope([{ id: 'dfaa71fa-9723-4794-825d-bd5024aa0b5d' }], { v1Reclass: true, all: false }),
+  );
+});
+
+test('a classified v1 snapshot remains pending until every card has the v1 extraction version', async () => {
+  const deal = {
+    id: 'fixture-deal',
+    metadata: {
+      v1_reclassification: {
+        version: 'm2-01-reclass-v1',
+        state: 'CLASSIFIED',
+      },
+    },
+  };
+  assert.equal(hasPendingV1Classification(deal), true);
+
+  const sb = {
+    from() {
+      return {
+        select() {
+          return {
+            eq(field) {
+              assert.equal(field, 'deal_id');
+              return {
+                eq(versionField, version) {
+                  assert.equal(versionField, 'extraction_version');
+                  assert.equal(version, 'm2-01-reclass-v1');
+                  return Promise.resolve({ count: 0, error: null });
+                },
+                then(resolve, reject) {
+                  return Promise.resolve({ count: 300, error: null }).then(resolve, reject);
+                },
+              };
+            },
+          };
+        },
+      };
+    },
+  };
+  await assert.rejects(
+    () => assertV1ApplyOrderNotBypassed(sb, [deal], { apply: true, v1Reclass: false }),
+    /apply order is incomplete/,
+  );
+  await assert.doesNotReject(
+    () => assertV1ApplyOrderNotBypassed(sb, [deal], { apply: true, v1Reclass: true }),
+  );
+});
+
 test('buildPriorLookup skips untyped rows and keeps first entry per hash', () => {
   const prior = buildPriorLookup([
     { type: null, text: 'abc' },
@@ -193,16 +341,10 @@ test('stripRiskConflicts: happy path (NOSOL/MISC/TERMF) has zero conflicts', () 
   assert.deepStrictEqual(stripRiskConflicts(['NOSOL', 'MISC', 'TERMF']), []);
 });
 
-test('stripRiskConflicts: flags REP-T and REP-B for linkedBringDownStandard + knowledgeScope', () => {
-  const conflicts = stripRiskConflicts(['REP-T']);
-  const byFeature = Object.fromEntries(conflicts.map((c) => [c.feature, c.types]));
-  assert.deepStrictEqual(byFeature.linkedBringDownStandard, ['REP-T']);
-  assert.deepStrictEqual(byFeature.knowledgeScope, ['REP-T']);
-  assert.ok(!('citedProvisionNames' in byFeature));
-
-  const both = stripRiskConflicts(['REP-T', 'REP-B']);
-  const byFeature2 = Object.fromEntries(both.map((c) => [c.feature, c.types]));
-  assert.deepStrictEqual(byFeature2.linkedBringDownStandard.sort(), ['REP-B', 'REP-T']);
+test('stripRiskConflicts: REP per-type runs are safe after knowledge definitions are rejoined', () => {
+  assert.deepStrictEqual(stripRiskConflicts(['REP-T']), []);
+  assert.deepStrictEqual(stripRiskConflicts(['REP-B']), []);
+  assert.deepStrictEqual(stripRiskConflicts(['REP-T', 'REP-B']), []);
 });
 
 test('stripRiskConflicts: COND (group-expanded to COND-M/COND-B/COND-S) flags citedProvisionNames', () => {
@@ -214,8 +356,7 @@ test('stripRiskConflicts: COND (group-expanded to COND-M/COND-B/COND-S) flags ci
 
 test('stripRiskConflicts: a mixed request only flags the affected type', () => {
   const conflicts = stripRiskConflicts(['REP-T', 'NOSOL']);
-  assert.equal(conflicts.length, 2); // linkedBringDownStandard + knowledgeScope, both on REP-T only
-  for (const c of conflicts) assert.deepStrictEqual(c.types, ['REP-T']);
+  assert.deepStrictEqual(conflicts, []);
 });
 
 test('stripRiskConflicts: unrelated REP/COND-adjacent types are not flagged (DEF, REP-B untouched by COND request)', () => {
@@ -223,10 +364,9 @@ test('stripRiskConflicts: unrelated REP/COND-adjacent types are not flagged (DEF
 });
 
 test('formatStripRiskError names the feature and the type, and mentions --allow-strip', () => {
-  const msg = formatStripRiskError(stripRiskConflicts(['REP-T']));
-  assert.match(msg, /linkedBringDownStandard/);
-  assert.match(msg, /knowledgeScope/);
-  assert.match(msg, /REP-T/);
+  const msg = formatStripRiskError(stripRiskConflicts(['COND']));
+  assert.match(msg, /citedProvisionNames/);
+  assert.match(msg, /COND/);
   assert.match(msg, /--allow-strip/);
 });
 

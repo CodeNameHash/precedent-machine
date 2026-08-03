@@ -7,12 +7,36 @@
  * snapshots. Run: npm test */
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { computeFlips, checkBacklogExits, R1R2_NEW_CODES, BACKLOG_EXITS } = require('../scripts/safety-check-reclass-rules');
+const {
+  computeFlips,
+  checkBacklogExits,
+  loadOldRefineSubCode,
+  R1R2_NEW_CODES,
+  BACKLOG_EXITS,
+  BASELINE_REF,
+  comparePinnedKeys,
+} = require('../scripts/safety-check-reclass-rules');
 
 // A stand-in for the OLD (pre-change) refineSubCode: R1/R2 old codes were
 // AI-classification-only, so the old rule table never stamped a sub-code
 // for these titles — always returns null for REP-T.
 const oldRefineSubCode = () => null;
+
+test('the live safety gate compares against the pre-reclassification baseline', () => {
+  assert.equal(BASELINE_REF, '1ce030c^');
+  const baseline = loadOldRefineSubCode();
+  assert.equal(
+    baseline({ title: 'Requisite Stockholder Approval' }, 'REP-T'),
+    null,
+  );
+});
+
+test('pinned population comparison fails on both additions and omissions', () => {
+  assert.deepEqual(comparePinnedKeys(['a', 'c'], ['a', 'b']), {
+    unexpected: ['c'],
+    missing: ['b'],
+  });
+});
 
 test('R1: a "Requisite Stockholder Approval" REP-T section is a pinned, expected flip', () => {
   const deals = [{

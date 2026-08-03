@@ -64,6 +64,11 @@ const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
 const { refineSubCode: newRefineSubCode } = require('../lib/parser-v2/classify');
+const {
+  EXPECTED_R1R2_FLIPS,
+  R1R2_CARD_RULINGS,
+  REP_T_NOREP_PIN,
+} = require('./reprocess/v1-reclassification-pins');
 
 // The specific known-miscoded cards the ruling doc pins as MUST-exit-to-
 // backlog — asserted to receive NO new deterministic sub-code from this
@@ -74,13 +79,15 @@ const BACKLOG_EXITS = [
 ];
 
 /**
- * Loads the PRE-change refineSubCode (git HEAD's lib/parser-v2/classify.js)
+ * Loads the PRE-change refineSubCode from the last commit before this slice
  * into a throwaway sibling module, same technique as
  * safety-check-nosol-rule.js's loadOldTryDeterministic.
  */
-function loadOldRefineSubCode() {
+const BASELINE_REF = '1ce030c^';
+
+function loadOldRefineSubCode(ref = BASELINE_REF) {
   const tmpPath = path.join(__dirname, '..', 'lib', 'parser-v2', '_classify-old-snapshot-reclass.js');
-  const oldSource = execFileSync('git', ['show', 'HEAD:lib/parser-v2/classify.js'], {
+  const oldSource = execFileSync('git', ['show', `${ref}:lib/parser-v2/classify.js`], {
     cwd: path.join(__dirname, '..'),
     encoding: 'utf8',
   });
@@ -126,6 +133,29 @@ function loadDotEnvLocal(envPath = findDotEnvLocal()) {
 const R1R2_NEW_CODES = new Set([
   'REP-T-STOCKAPPROVAL', 'REP-T-GOVAPPROVAL', 'REP-T-40ACT',
 ]);
+
+function sectionNumberFromRef(value) {
+  return String(value || '').split(' | ')[0];
+}
+
+function comparePinnedKeys(actualKeys, expectedKeys) {
+  const actual = new Set(actualKeys);
+  const expected = new Set(expectedKeys);
+  return {
+    unexpected: [...actual].filter((key) => !expected.has(key)).sort(),
+    missing: [...expected].filter((key) => !actual.has(key)).sort(),
+  };
+}
+
+function flipKey(value) {
+  if (Array.isArray(value)) return value.join('|');
+  return [String(value.dealId || '').slice(0, 8), value.sectionNumber, value.newSub].join('|');
+}
+
+function cardKey(value) {
+  if (Array.isArray(value)) return value.slice(0, 3).join('|');
+  return [value.id, String(value.deal_id || '').slice(0, 8), sectionNumberFromRef(value.section_ref)].join('|');
+}
 
 /**
  * Pure core: given all deals' classified_sections snapshots and the
@@ -182,6 +212,27 @@ function checkBacklogExits(deals) {
   return violations;
 }
 
+// This subset deliberately excludes provision_cards. Fixture card replacement
+// changes the retired-card population by design, but must never weaken the
+// classify-before-write gate used for subsequent fixture deals.
+function assertExactDeterministicSafetySubset(deals, oldRefineSubCode = loadOldRefineSubCode()) {
+  const flips = computeFlips(deals || [], oldRefineSubCode);
+  const flipPin = comparePinnedKeys(
+    flips.map(flipKey),
+    EXPECTED_R1R2_FLIPS.map(flipKey),
+  );
+  const backlogViolations = checkBacklogExits(deals || []);
+  const invalidCodes = flips.filter((flip) => !R1R2_NEW_CODES.has(flip.newSub));
+  if (invalidCodes.length || backlogViolations.length || flipPin.unexpected.length || flipPin.missing.length) {
+    throw new Error(
+      `v1 deterministic safety subset failed: ${invalidCodes.length} invalid code(s), ` +
+      `${backlogViolations.length} backlog violation(s), ${flipPin.unexpected.length} unexpected flip(s), ` +
+      `${flipPin.missing.length} missing flip(s)`,
+    );
+  }
+  return { flips, flipPin, backlogViolations };
+}
+
 async function main() {
   loadDotEnvLocal();
   const args = process.argv.slice(2);
@@ -196,21 +247,52 @@ async function main() {
   const { data: deals, error } = await sb.from('deals').select('id, acquirer, target, metadata');
   if (error) { console.error(`Deal fetch failed: ${error.message}`); process.exit(1); }
 
+  const { data: retiredCards, error: retiredCardsError } = await sb
+    .from('provision_cards')
+    .select('id, deal_id, provision_subtype, section_ref')
+    .in('provision_subtype', ['REP-T-CONSENT', 'REP-T-REGSTATUS', 'REP-T-NOREP']);
+  if (retiredCardsError) {
+    console.error(`Retired-card fetch failed: ${retiredCardsError.message}`);
+    process.exit(1);
+  }
+
   const oldRefineSubCode = loadOldRefineSubCode();
   const flips = computeFlips(deals || [], oldRefineSubCode);
   const backlogViolations = checkBacklogExits(deals || []);
 
-  const unexpected = flips.filter((f) => !R1R2_NEW_CODES.has(f.newSub));
+  const invalidCodes = flips.filter((f) => !R1R2_NEW_CODES.has(f.newSub));
+  const flipPin = comparePinnedKeys(
+    flips.map(flipKey),
+    EXPECTED_R1R2_FLIPS.map(flipKey),
+  );
+  const r1r2Cards = retiredCards.filter((card) =>
+    card.provision_subtype === 'REP-T-CONSENT' || card.provision_subtype === 'REP-T-REGSTATUS');
+  const noRepCards = retiredCards.filter((card) => card.provision_subtype === 'REP-T-NOREP');
+  const r1r2CardPin = comparePinnedKeys(r1r2Cards.map(cardKey), R1R2_CARD_RULINGS.map(cardKey));
+  const noRepPin = comparePinnedKeys(noRepCards.map(cardKey), REP_T_NOREP_PIN.map(cardKey));
+  const pinIssues = [
+    ...flipPin.unexpected,
+    ...flipPin.missing,
+    ...r1r2CardPin.unexpected,
+    ...r1r2CardPin.missing,
+    ...noRepPin.unexpected,
+    ...noRepPin.missing,
+  ];
 
   if (asJson) {
     console.log(JSON.stringify({
       dealCount: (deals || []).length,
       flipCount: flips.length,
       flips,
-      unexpectedCount: unexpected.length,
+      unexpectedCount: invalidCodes.length,
       backlogViolations,
+      flipPin,
+      r1r2CardReviewCount: R1R2_CARD_RULINGS.length,
+      r1r2CardPin,
+      repTNoRepCount: noRepCards.length,
+      noRepPin,
     }, null, 2));
-    if (unexpected.length > 0 || backlogViolations.length > 0) process.exitCode = 1;
+    if (invalidCodes.length > 0 || backlogViolations.length > 0 || pinIssues.length > 0) process.exitCode = 1;
     return;
   }
 
@@ -225,18 +307,33 @@ async function main() {
     console.log(`STOP: ${backlogViolations.length} known-backlog card(s) received a new deterministic code instead of exiting to review:`);
     for (const v of backlogViolations) console.log(`  ${v.label} (${v.dealId}) §${v.sectionNumber} -> ${v.newSub}`);
   }
-  if (unexpected.length > 0) {
-    console.log(`STOP: ${unexpected.length} unexpected flip(s) outside the pinned R1/R2 code set. Do not proceed to writes.`);
-    for (const f of unexpected) console.log(`  [${f.dealLabel}] ${f.sectionNumber || '(no #)'} : ${f.oldSub || '(none)'} -> ${f.newSub}`);
+  if (invalidCodes.length > 0) {
+    console.log(`STOP: ${invalidCodes.length} flip(s) use a code outside the R1/R2 code set. Do not proceed to writes.`);
+    for (const f of invalidCodes) console.log(`  [${f.dealLabel}] ${f.sectionNumber || '(no #)'} : ${f.oldSub || '(none)'} -> ${f.newSub}`);
   }
-  if (backlogViolations.length === 0 && unexpected.length === 0) {
-    console.log('Clean: all flips are within the pinned R1/R2 code set, and both known-backlog cards stayed uncoded.');
+  if (pinIssues.length > 0) {
+    console.log(`STOP: ${pinIssues.length} pinned population difference(s). Do not proceed to writes.`);
+    for (const key of pinIssues) console.log(`  ${key}`);
+  }
+  if (backlogViolations.length === 0 && invalidCodes.length === 0 && pinIssues.length === 0) {
+    console.log(`Clean: exact 24-flip set, 29 reviewed R1/R2 cards and ${noRepCards.length} REP-T-NOREP cards match their pins.`);
   } else {
     process.exitCode = 1;
   }
 }
 
-module.exports = { computeFlips, checkBacklogExits, BACKLOG_EXITS, R1R2_NEW_CODES };
+module.exports = {
+  computeFlips,
+  checkBacklogExits,
+  assertExactDeterministicSafetySubset,
+  loadOldRefineSubCode,
+  BACKLOG_EXITS,
+  R1R2_NEW_CODES,
+  BASELINE_REF,
+  comparePinnedKeys,
+  flipKey,
+  cardKey,
+};
 
 if (require.main === module) {
   main().catch((err) => {
