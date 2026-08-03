@@ -327,11 +327,41 @@ function provisionHasCodedFeatures(provision) {
   return false;
 }
 
+function attachExactTextSupplements(matches, unmatchedProvisions) {
+  const matchesBySource = groupBy(matches, ({ card }) => {
+    const text = trimmedOrNull(card.region_full_text);
+    return text ? `${card.provision_type}\0${text}` : null;
+  });
+  const supplementalMatches = [];
+  const remainingProvisions = [];
+  for (const provision of unmatchedProvisions) {
+    const text = trimmedOrNull(provision.full_text);
+    const key = text ? `${provisionType(provision)}\0${text}` : null;
+    const candidates = key ? matchesBySource.get(key) : null;
+    if (!candidates || candidates.length !== 1) {
+      remainingProvisions.push(provision);
+      continue;
+    }
+    supplementalMatches.push({
+      card: candidates[0].card,
+      provision,
+      primaryProvision: candidates[0].provision,
+      matchKind: 'exact-text-supplement',
+    });
+  }
+  return { supplementalMatches, remainingProvisions };
+}
+
 // Builds the full per-deal plan: match ladder + coverage check. Never
 // touches the network. `cards` / `provisions` are the raw rows selected for
 // one deal.
 function buildDealPlan(dealId, cards, provisions, options = {}) {
-  const { matches, ambiguities, unmatchedCards, unmatchedProvisions } = matchCardsToProvisions(cards, provisions);
+  const matchResult = matchCardsToProvisions(cards, provisions);
+  const { supplementalMatches, remainingProvisions: unmatchedProvisions } = attachExactTextSupplements(
+    matchResult.matches,
+    matchResult.unmatchedProvisions,
+  );
+  const { matches, ambiguities, unmatchedCards } = matchResult;
 
   const coverageFailures = unmatchedProvisions
     .filter(provisionHasCodedFeatures)
@@ -341,8 +371,9 @@ function buildDealPlan(dealId, cards, provisions, options = {}) {
   const claimOptions = { extractorName: 'rematerialize-claims', runId };
 
   const claimRows = [];
+  const claimIds = new Set();
   const unknownAttributes = [];
-  for (const { card, provision } of matches) {
+  for (const { card, provision } of [...matches, ...supplementalMatches]) {
     const perProvisionOptions = {
       ...claimOptions,
       // provisions carries no extraction_version/extracted_at columns —
@@ -351,7 +382,11 @@ function buildDealPlan(dealId, cards, provisions, options = {}) {
       extractedAt: provision.extracted_at || provision.created_at || null,
     };
     const { rows, unknownAttributes: unknown } = buildClaimRowsForCard(dealId, card, provision, perProvisionOptions);
-    claimRows.push(...rows);
+    for (const row of rows) {
+      if (claimIds.has(row.id)) continue;
+      claimIds.add(row.id);
+      claimRows.push(row);
+    }
     unknownAttributes.push(...unknown);
   }
 
@@ -368,6 +403,7 @@ function buildDealPlan(dealId, cards, provisions, options = {}) {
     cardsTotal: cards.length,
     provisionsTotal: provisions.length,
     matches,
+    supplementalMatches,
     ambiguities,
     unmatchedCards,
     unmatchedProvisions,
@@ -389,6 +425,9 @@ function formatDealTable(plan) {
   const lines = [];
   lines.push(`  cards: ${plan.cardsTotal}  provisions: ${plan.provisionsTotal}`);
   lines.push(`  matched: ${plan.matches.length} (r1: ${plan.rungCounts[1]}, r2: ${plan.rungCounts[2]}, r3: ${plan.rungCounts[3]}, r4: ${plan.rungCounts[4]}, r5: ${plan.rungCounts[5]})`);
+  if (plan.supplementalMatches.length > 0) {
+    lines.push(`  exact-text supplemental provisions: ${plan.supplementalMatches.length}`);
+  }
   lines.push(`  unmatched cards: ${plan.unmatchedCards.length}`);
   lines.push(`  unmatched provisions: ${plan.unmatchedProvisions.length} (with coded features: ${withCoded}, without: ${withoutCoded})`);
   lines.push(`  ambiguities: ${plan.ambiguities.length}`);
@@ -516,6 +555,7 @@ function planToReportEntry(deal, plan) {
     cardsTotal: plan.cardsTotal,
     provisionsTotal: plan.provisionsTotal,
     matched: plan.matches.length,
+    supplementalMatches: plan.supplementalMatches.length,
     rungCounts: plan.rungCounts,
     unmatchedCards: plan.unmatchedCards.length,
     unmatchedProvisions: plan.unmatchedProvisions.length,

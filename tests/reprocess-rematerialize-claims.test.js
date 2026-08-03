@@ -368,6 +368,43 @@ test('buildDealPlan: fully clean plan (all matched, no leftovers) is ok', () => 
   assert.equal(plan.coverageFailures.length, 0);
 });
 
+test('buildDealPlan supplements one card from exact-text duplicate provisions without duplicate claims', () => {
+  const sharedText = 'The Company may waive a standstill solely when fiduciary duties require it.';
+  const waiver = provision({
+    id: 'prov-waiver',
+    category: 'Standstill Waiver',
+    full_text: sharedText,
+    ai_metadata: { features: {
+      mainConcept: 'Waiver concept',
+      standstillWaiver: true,
+      standstillWaiverConditions: 'solely when fiduciary duties require it',
+    } },
+  });
+  const enforce = provision({
+    id: 'prov-enforce',
+    category: 'Enforcement of Standstills',
+    full_text: sharedText,
+    ai_metadata: { features: {
+      mainConcept: 'Enforcement concept',
+      standstillWaiverPermitted: true,
+      standstillWaiverConditions: 'solely when fiduciary duties require it',
+    } },
+  });
+  const plan = buildDealPlan(DEAL_ID, [card({
+    short_title: 'Standstill Waiver',
+    region_full_text: sharedText,
+  })], [waiver, enforce]);
+
+  assert.equal(plan.ok, true);
+  assert.equal(plan.matches.length, 1);
+  assert.equal(plan.supplementalMatches.length, 1);
+  assert.equal(plan.unmatchedProvisions.length, 0);
+  assert.deepEqual(
+    plan.claimRows.map((row) => row.attribute).sort(),
+    ['mainConcept', 'standstillWaiver', 'standstillWaiverConditions', 'standstillWaiverPermitted'].sort(),
+  );
+});
+
 // ---------------------------------------------------------------------------
 // 6/7/8. Claim writing via a mock sb client, idempotency, no card writes.
 // ---------------------------------------------------------------------------
