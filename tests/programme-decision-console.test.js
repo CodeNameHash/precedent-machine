@@ -28,16 +28,12 @@ test('decision console has one complete, unique recommendation per decision', ()
   }
 });
 
-test('recorded rulings stay fixed and new family taxonomy decisions stay open', () => {
-  assert.equal(Object.keys(RECORDED_RULINGS).length, 16);
+test('recorded rulings stay fixed and the antitrust core decision stays open', () => {
+  assert.equal(Object.keys(RECORDED_RULINGS).length, 20);
   assert.deepEqual(
     DECISIONS.filter((decision) => !RECORDED_RULINGS[decision.id]).map((decision) => decision.id),
     [
       'antitrust-core-taxonomy',
-      'antitrust-hohw',
-      'closing-core-taxonomy',
-      'ioc-core-taxonomy',
-      'rank-65-collision',
     ],
   );
   for (const [decisionId, optionId] of Object.entries(RECORDED_RULINGS)) {
