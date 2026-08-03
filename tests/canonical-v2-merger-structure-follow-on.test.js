@@ -1,0 +1,10 @@
+'use strict';
+const assert = require('assert');
+const { shapeMergerStructureProposals } = require('../lib/canonical-v2/native-producer/anthropic-provider');
+const quote = 'the Merger will be governed by and effected under Section 251(h) of the DGCL.';
+const output = shapeMergerStructureProposals({ structure_mechanics: [{ surface: 'SHORT_FORM_251H', quote, detail: 'DGCL short-form mechanism' }], open_world_candidates: [] }, quote);
+assert.strictEqual(output.proposals.length, 1);
+assert.strictEqual(output.proposals[0].claim_definition_key, 'OPEN_WORLD_PROPOSITION');
+assert.strictEqual(output.proposals[0].canonical_value, null);
+assert.match(output.proposals[0].attributes.why_unmapped, /^SHORT_FORM_251H:/);
+console.log('canonical-v2 merger structure follow-on tests passed');
