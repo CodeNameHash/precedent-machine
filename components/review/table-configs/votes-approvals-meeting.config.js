@@ -5,6 +5,9 @@ import { enumLabel } from '../../../lib/sec-meeting.js';
 import { cardCode, cardFeatures, textOf, valueText } from './card-utils.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 import { voteStandard } from './vote-standard.js';
+import productCoverage from '../../../lib/canonical-v2/proxy-meeting-product-coverage.js';
+
+const { COMPOSITE_SEC_ROW_IDS, enrichProxyMeetingRow } = productCoverage;
 
 // Rebuild target: REBUILD-SPECS.md section 9 ("Ben: really good" in the old
 // site). The old deadline-pill pattern is number + [unit pill] + "after" +
@@ -96,8 +99,11 @@ function deadlinePillNode(deadline, ctx, evidence, source) {
 // as three named parts -- Permitted reason / Controlling party /
 // Restriction -- not three interchangeable tags.
 function consentPartyFromText(text) {
-  const match = /without\s+(?:the\s+)?(?:prior\s+)?(?:written\s+)?consent\s+of\s+(?:the\s+)?(Parent|Company)/i.exec(String(text || ''));
-  return match ? match[1] : null;
+  const value = String(text || '');
+  const consentOf = /without\s+(?:the\s+)?(?:prior\s+)?(?:written\s+)?consent\s+of\s+(?:the\s+)?(Parent|Company)/i.exec(value);
+  if (consentOf) return consentOf[1];
+  const possessive = /without\s+(?:the\s+)?(Parent|Company)['’]s\s+(?:prior\s+)?(?:written\s+)?consent/i.exec(value);
+  return possessive ? possessive[1] : null;
 }
 
 // "No more than N days[/each/adjournments]" -- optionally suffixed with
@@ -310,6 +316,18 @@ function boolPillNode(text, ctx, evidence, source) {
     : text;
 }
 
+function detailNode(text, ctx, evidence, source) {
+  const PillCell = ctx?.primitives?.PillCell;
+  const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
+  if (!text) return null;
+  if (text === 'Required' && PillCell) {
+    return React.createElement(PillCell, { label: text, tone: 'present', evidence, source });
+  }
+  return TruncatedWithSeeText
+    ? React.createElement(TruncatedWithSeeText, { text, evidence: evidence || text, source })
+    : text;
+}
+
 // Curated row list: Approval definition, Written consent, Vote threshold,
 // Parent / Merger Sub approvals, Proxy filing deadline, Mailing, Meeting,
 // Adjournment rights (one row per party/reason combination). Each row
@@ -328,7 +346,10 @@ function buildRows(reviewDeal) {
   const proxyRow = byId(meetingRows, 'sec-meeting-proxy-filing');
   const mailingRow = byId(meetingRows, 'sec-meeting-mailing');
   const meetingRow = byId(meetingRows, 'sec-meeting-meeting');
+  const recordDateRow = byId(meetingRows, 'sec-meeting-record-date');
+  const brokerSearchRow = byId(meetingRows, 'sec-meeting-broker-search');
   const adjournmentRowList = meetingRows.filter((row) => row.id.startsWith('sec-meeting-adjournment-'));
+  const offerRows = COMPOSITE_SEC_ROW_IDS.map((id) => byId(meetingRows, id)).filter(Boolean);
   const parentApprovalCard = findParentApprovalCard(reviewDeal);
 
   const rows = [];
@@ -403,6 +424,22 @@ function buildRows(reviewDeal) {
       sourceCard: meetingRow.sourceCard, featureKeys: meetingRow.featureKeys, marketSubterms: meetingRow.marketSubterms,
     });
   }
+  if (recordDateRow) {
+    rows.push({
+      id: 'votes-approvals-meeting-record-date', label: 'Meeting record date', kind: 'detail',
+      text: recordDateRow.detail, evidence: recordDateRow.evidence, source: recordDateRow.sourceCard,
+      sourceCard: recordDateRow.sourceCard, featureKeys: recordDateRow.featureKeys,
+      marketState: recordDateRow.marketState,
+    });
+  }
+  if (brokerSearchRow) {
+    rows.push({
+      id: 'votes-approvals-meeting-broker-search', label: 'Broker search', kind: 'detail',
+      text: brokerSearchRow.detail, evidence: brokerSearchRow.evidence, source: brokerSearchRow.sourceCard,
+      sourceCard: brokerSearchRow.sourceCard, featureKeys: brokerSearchRow.featureKeys,
+      marketState: brokerSearchRow.marketState,
+    });
+  }
   adjournmentRowList.forEach((row, index) => {
     rows.push({
       id: `votes-approvals-meeting-adjournment-${index}`, label: 'Adjournment rights', kind: 'adjournment',
@@ -411,7 +448,22 @@ function buildRows(reviewDeal) {
       marketSubterms: row.marketSubterms,
     });
   });
-  return rows;
+  for (const offerRow of offerRows) {
+    rows.push({
+      id: `votes-approvals-meeting-${offerRow.id.slice('sec-meeting-'.length)}`,
+      label: offerRow.label,
+      kind: 'detail',
+      text: offerRow.detail,
+      evidence: offerRow.evidence,
+      source: offerRow.sourceCard,
+      sourceCard: offerRow.sourceCard,
+      featureKeys: offerRow.featureKeys,
+      marketPresence: offerRow.marketPresence,
+      marketSubterms: offerRow.marketSubterms,
+      marketProvisionCodes: offerRow.marketProvisionCodes,
+    });
+  }
+  return rows.map(enrichProxyMeetingRow);
 }
 
 function renderProvisionCell(row, ctx) {
@@ -421,6 +473,7 @@ function renderProvisionCell(row, ctx) {
     case 'deadline': return deadlinePillNode(row.deadline, ctx, row.evidence, row.source);
     case 'adjournment': return adjournmentGroupedNode(row.adjournment, ctx, row.evidence, row.source);
     case 'parent-approval': return parentApprovalNode(row.card, ctx);
+    case 'detail': return detailNode(row.text, ctx, row.evidence, row.source);
     default: return row.text || null;
   }
 }

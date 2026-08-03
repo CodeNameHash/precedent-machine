@@ -1497,6 +1497,7 @@ test('sec-meeting config exposes proxy and offer signals with hover details', ()
     'Maximum adjournments',
     'Maximum days per adjournment',
     'Maximum aggregate adjournment period',
+    'Consent needed above the cap',
   ]);
   assert.equal(proxy.evidence, 'The Company shall file the proxy statement within 10 business days and Parent may require one adjournment.');
   assert.match(proxy.signals[0].label, /Proxy \/ meeting: 10 business days after signing/);
@@ -3645,6 +3646,82 @@ test('sec-meeting config maps tender-offer SEC filing mechanics', () => {
     'Tender-offer minimum condition',
   ]);
   assert.equal(rows.find((row) => row.id === 'sec-meeting-schedule14D9Filing').subject, 'SEC / offer');
+});
+
+test('votes / approvals / meeting surfaces grounded record-date and broker-search facts without inventing direction numerics', () => {
+  const card = {
+    id: 'meeting-record-broker',
+    provision_subtype: 'COV-MEETING',
+    primary_quote: 'The Company shall take all necessary action, including establishing a record date and completing a broker search, to convene the Company Stockholder Meeting.',
+    features: {},
+  };
+  const rows = votesApprovalsMeetingMod.buildRows({ cards: [card] });
+  const recordDate = rows.find((row) => row.id === 'votes-approvals-meeting-record-date');
+  const brokerSearch = rows.find((row) => row.id === 'votes-approvals-meeting-broker-search');
+  assert.ok(recordDate);
+  assert.ok(brokerSearch);
+  for (const row of [recordDate, brokerSearch]) {
+    assert.equal(row.text, 'Required');
+    assert.equal(row.sourceCard, card);
+    assert.equal(row.ownerFamily, 'PROXY_MEETING_COVENANTS');
+    assert.equal(row.governanceState, 'BEN_DECISION_REQUIRED');
+    assert.equal(row.marketState, 'OPEN_NATIVE_FIELD');
+    assert.doesNotMatch(row.text, /20|before|after/i);
+  }
+});
+
+test('the composite keeps tender SEC mechanics visible under merger-structure ownership and excludes the minimum condition', () => {
+  const card = {
+    id: 'offer-follow-on',
+    provision_subtype: 'STRUCT-OFFER',
+    primary_quote: 'Parent shall commence the Offer, file Schedule TO and disseminate the Offer Documents. The Company shall file Schedule 14D-9 and provide stockholder lists.',
+    features: {
+      offerCommencementDeadline: 'Commence within 15 Business Days after signing.',
+      scheduleTOFiling: 'File Schedule TO on commencement.',
+      schedule14D9Filing: 'File Schedule 14D-9 on commencement.',
+      stockholderListCovenant: 'Provide stockholder lists and mailing labels.',
+      acceptanceAndPaymentMechanics: 'Accept and pay for validly tendered shares.',
+      tenderOfferMinimumCondition: 'More than 50% of outstanding shares.',
+    },
+  };
+  const rows = votesApprovalsMeetingMod.buildRows({ cards: [card] });
+  const offerRows = rows.filter((row) => row.ownerFamily === 'MERGER_STRUCTURE_CLOSING');
+  assert.deepEqual(offerRows.map((row) => row.label), [
+    'Offer commencement',
+    'Schedule TO / offer documents',
+    'Schedule 14D-9',
+    'Stockholder list / holder communications',
+    'Acceptance / payment',
+  ]);
+  assert.ok(offerRows.every((row) => row.marketPresence.strategy === 'feature_non_empty'));
+  assert.ok(offerRows.every((row) => row.marketSubterms.length === 1));
+  assert.equal(rows.some((row) => /minimum condition/i.test(row.label)), false);
+});
+
+test('adjournment consent overrides compare separately and render possessive consent drafting', () => {
+  const rows = votesApprovalsMeetingMod.buildRows({
+    cards: [{
+      id: 'adjournment-consent',
+      provision_subtype: 'COV-MEETING',
+      primary_quote: "The Company may not adjourn for more than ten (10) Business Days without Parent's prior written consent.",
+      features: {
+        adjournmentRights: [{
+          party: 'COMPANY',
+          reasons: [{ code: 'INSUFFICIENT_VOTES', label: 'Insufficient votes' }],
+          maxDaysTotal: 10,
+          text: "The Company may not adjourn for more than ten (10) Business Days without Parent's prior written consent.",
+        }],
+      },
+    }],
+  });
+  const row = rows.find((candidate) => candidate.id.startsWith('votes-approvals-meeting-adjournment-'));
+  assert.ok(row);
+  assert.equal(row.ownerFamily, 'PROXY_MEETING_COVENANTS');
+  assert.equal(row.marketSubterms.at(-1).value.normalizer, 'adjournment_consent_override');
+  const provisionColumn = votesApprovalsMeetingMod.votesApprovalsMeetingConfig.columns.find((column) => column.id === 'provision');
+  const primitives = { PillCell: ({ label }) => React.createElement('span', null, label) };
+  const html = renderToStaticMarkup(React.createElement(React.Fragment, null, provisionColumn.renderCell(row, { primitives })));
+  assert.match(html, /No more than 10 days without Parent(?:'|&#x27;)s consent/);
 });
 
 test('no-other-reps fraud config maps Abry four-question summary', () => {

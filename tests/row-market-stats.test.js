@@ -729,13 +729,23 @@ test('adjournment metrics select one stable party item instead of leaking the fu
   });
   const companyAggregatePeriod = aggregatePeriod('COMPANY');
   const parentAggregatePeriod = aggregatePeriod('PARENT');
+  const parentConsentOverride = spec('categorical', {
+    metricKey: 'adjournment.company.consent-override',
+    observation: {
+      presence: observation('COMPANY', 'text').presence,
+      value: {
+        ...observation('COMPANY', 'text').value,
+        normalizer: 'adjournment_consent_override',
+      },
+    },
+  });
   const rights = [
     {
       party: 'COMPANY',
       reasons: [{ code: 'QUORUM_ABSENT', label: 'Quorum absent' }],
       maxAdjournments: 3,
       maxDaysPerAdjournment: 10,
-      text: 'The Company may adjourn up to three times for no more than 10 Business Days each time.',
+      text: "The Company may adjourn up to three times for no more than 10 Business Days each time without Parent's prior written consent.",
     },
     {
       party: 'PARENT',
@@ -762,7 +772,15 @@ test('adjournment metrics select one stable party item instead of leaking the fu
     contractVersion: 1,
     subjectDealId: 'qxo',
     filters: {},
-    specs: [companyParty, companyReasons, companyLimit, parentParty, companyAggregatePeriod, parentAggregatePeriod],
+    specs: [
+      companyParty,
+      companyReasons,
+      companyLimit,
+      parentParty,
+      companyAggregatePeriod,
+      parentAggregatePeriod,
+      parentConsentOverride,
+    ],
   }, dataset).byRow['row-1'].metrics;
 
   assert.equal(metrics['adjournment.company.party'].subject.value, 'COMPANY');
@@ -774,6 +792,7 @@ test('adjournment metrics select one stable party item instead of leaking the fu
   assert.equal(metrics['adjournment.company.aggregate-period'].subject.semantics.unit, 'days_equivalent');
   assert.equal(metrics['adjournment.parent.aggregate-period'].subject.value, 30);
   assert.equal(metrics['adjournment.parent.aggregate-period'].subject.semantics.unit, 'days_equivalent');
+  assert.equal(metrics['adjournment.company.consent-override'].subject.value, 'PARENT_CONSENT_REQUIRED');
 });
 
 test('optional extension periods normalise to months while an uncaptured optional term remains absent', () => {

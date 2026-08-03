@@ -7,6 +7,9 @@ import {
 } from '../../../lib/sec-meeting.js';
 import { valueText } from './card-utils.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
+import productCoverage from '../../../lib/canonical-v2/proxy-meeting-product-coverage.js';
+
+const { coverageForSecRowId } = productCoverage;
 
 const DIRECT_ROWS = [
   ['offerCommencementDeadline', 'Offer commencement'],
@@ -215,6 +218,20 @@ function adjournmentRows(rights, sourceCard = null) {
             normalisation: { type: 'duration_to_days', hoursPerDay: 24 },
           },
         },
+        {
+          key: 'consent-override',
+          label: 'Consent needed above the cap',
+          featureKeys: ['adjournmentRights'],
+          kind: 'categorical',
+          role: 'exception',
+          value: {
+            strategy: 'list_item_field',
+            featureKeys: ['adjournmentRights'],
+            ...itemMatch,
+            path: 'text',
+            normalizer: 'adjournment_consent_override',
+          },
+        },
       ],
       // Normalised { party, reasons, maxAdjournments, maxDaysPerAdjournment,
       // maxDaysTotal, text } -- see deadlineRow()'s `deadline` field above
@@ -228,14 +245,89 @@ function directRows(cards) {
   for (const [key, label] of DIRECT_ROWS) {
     const hit = firstFeature(cards, key);
     if (!hit) continue;
+    const id = `sec-meeting-${key}`;
+    const coverage = coverageForSecRowId(id);
     rows.push(withSignal({
-      id: `sec-meeting-${key}`,
+      id,
       label,
       subject: key === 'tenderOfferMinimumCondition' ? 'Condition' : 'SEC / offer',
       detail: hit.text,
       evidence: textOf(hit.card),
       sourceCard: hit.card,
       featureKeys: [key],
+      marketProvisionCodes: key === 'tenderOfferMinimumCondition'
+        ? ['COND-M-STOCKHOLDER']
+        : ['STRUCT-OFFER'],
+      marketPresence: {
+        strategy: 'feature_non_empty',
+        featureKeys: [key],
+        missingState: 'absent',
+      },
+      marketSubterms: [{
+        key: 'treatment',
+        label,
+        featureKeys: [key],
+        kind: 'categorical',
+        role: 'treatment',
+        value: { strategy: 'feature_value', featureKeys: [key] },
+      }],
+      ownerFamily: coverage?.owner_id || null,
+      governanceState: coverage?.governance_state || null,
+      targetClaimKeys: coverage ? [...coverage.claim_keys] : [],
+      present: true,
+    }));
+  }
+  return rows;
+}
+
+function evidenceFact(cards, pattern) {
+  return cards.find((card) => ['COV-PROXY', 'COV-MEETING'].includes(cardCode(card))
+    && pattern.test(textOf(card))) || null;
+}
+
+function meetingMechanicFactRows(cards) {
+  const rows = [];
+  const recordFeature = firstFeature(cards, 'meetingRecordDate') || firstFeature(cards, 'recordDate');
+  const recordCard = recordFeature?.card || evidenceFact(
+    cards,
+    /\b(?:establish|set|fix|select)(?:es|ed|ing)?\b[\s\S]{0,120}\brecord date\b|\brecord date\b[\s\S]{0,120}\b(?:establish|set|fix|select)(?:es|ed|ing)?\b/i,
+  );
+  if (recordCard) {
+    const coverage = coverageForSecRowId('sec-meeting-record-date');
+    rows.push(withSignal({
+      id: 'sec-meeting-record-date',
+      label: 'Meeting record date',
+      subject: 'Meeting',
+      detail: recordFeature?.text || 'Required',
+      evidence: textOf(recordCard),
+      sourceCard: recordCard,
+      featureKeys: recordFeature ? ['meetingRecordDate', 'recordDate'] : [],
+      ownerFamily: coverage?.owner_id || null,
+      governanceState: coverage?.governance_state || null,
+      targetClaimKeys: coverage ? [...coverage.claim_keys] : [],
+      marketState: recordFeature ? 'FEATURE_BACKED' : 'OPEN_NATIVE_FIELD',
+      present: true,
+    }));
+  }
+
+  const brokerCard = evidenceFact(
+    cards,
+    /\b(?:complet\w*|conduct\w*|perform\w*|commenc\w*|initiat\w*|undertak\w*)\b[\s\S]{0,100}\bbroker search\b|\bbroker search\b[\s\S]{0,100}\b(?:complet\w*|conduct\w*|perform\w*|commenc\w*|initiat\w*|undertak\w*)\b/i,
+  );
+  if (brokerCard) {
+    const coverage = coverageForSecRowId('sec-meeting-broker-search');
+    rows.push(withSignal({
+      id: 'sec-meeting-broker-search',
+      label: 'Broker search',
+      subject: 'Proxy / meeting',
+      detail: 'Required',
+      evidence: textOf(brokerCard),
+      sourceCard: brokerCard,
+      featureKeys: [],
+      ownerFamily: coverage?.owner_id || null,
+      governanceState: coverage?.governance_state || null,
+      targetClaimKeys: coverage ? [...coverage.claim_keys] : [],
+      marketState: 'OPEN_NATIVE_FIELD',
       present: true,
     }));
   }
@@ -290,6 +382,7 @@ const secMeetingConfig = {
       deadlineRow('proxy-filing', summary.proxyFilingDeadline?.term || 'Proxy filing deadline', summary.proxyFilingDeadline, 'proxyFilingDeadline', proxyCard),
       deadlineRow('mailing', summary.mailingDeadline?.term || 'Proxy mailing', summary.mailingDeadline, 'mailingDeadline', mailingCard),
       deadlineRow('meeting', summary.meetingDeadline?.term || 'Shareholder meeting', summary.meetingDeadline, 'meetingDeadline', meetingCard),
+      ...meetingMechanicFactRows(cards),
       ...adjournmentRows(summary.adjournmentRights, adjournmentCard),
       summary.meetingControlNotes ? withSignal({ id: 'sec-meeting-control', label: 'Meeting control notes', subject: 'Meeting', detail: summary.meetingControlNotes, evidence: textOf(controlCard) || summary.meetingControlNotes, sourceCard: controlCard, featureKeys: ['meetingControlNotes'], present: true }) : null,
       ...directRows(cards),
