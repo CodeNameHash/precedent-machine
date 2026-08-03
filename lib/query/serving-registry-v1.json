@@ -8,7 +8,7 @@
       "lib/rubric.js",
       "lib/category-summary-features.js"
     ],
-    "entry_count": 694,
+    "entry_count": 698,
     "stored_value_shape": "triples-v1",
     "migrated_by_phase": "0-C",
     "phase0C_reconciliation_notes": [
@@ -10864,6 +10864,112 @@
         "appliesTo": "CONSID",
         "provisionCodes": [
           "CONSID-CVR"
+        ]
+      }
+    },
+    {
+      "key": "boardRecommendationInclusion",
+      "displayName": "Board recommendation included in proxy statement",
+      "type": "boolean",
+      "aliases": [
+        "boardRecommendationInclusion",
+        "board_recommendation_inclusion",
+        "rubric.cov_meeting.board_recommendation_inclusion",
+        "rubric.cov_proxy.board_recommendation_inclusion"
+      ],
+      "sourceOfTruth": "lib/schema/features.js:10851",
+      "usedIn": [
+        "components/review/table-configs/sec-meeting.config.js",
+        "components/review/table-configs/votes-approvals-meeting.config.js"
+      ],
+      "benchmarkable": true,
+      "stableAnchor": false,
+      "provenance": {
+        "origin": "reviewer-added",
+        "originalDataType": "BOOLEAN",
+        "appliesTo": "COV",
+        "provisionCodes": [
+          "COV-MEETING",
+          "COV-PROXY"
+        ]
+      }
+    },
+    {
+      "key": "meetingAdjournmentMaxCount",
+      "displayName": "Maximum number of meeting adjournments",
+      "type": "number",
+      "aliases": [
+        "meetingAdjournmentMaxCount",
+        "meeting_adjournment_max_count",
+        "rubric.cov_meeting.meeting_adjournment_max_count",
+        "rubric.cov_proxy.meeting_adjournment_max_count"
+      ],
+      "sourceOfTruth": "lib/schema/features.js:10882",
+      "usedIn": [
+        "components/review/table-configs/sec-meeting.config.js"
+      ],
+      "benchmarkable": true,
+      "stableAnchor": false,
+      "provenance": {
+        "origin": "reviewer-added",
+        "originalDataType": "NUMBER",
+        "appliesTo": "COV",
+        "provisionCodes": [
+          "COV-MEETING",
+          "COV-PROXY"
+        ]
+      }
+    },
+    {
+      "key": "meetingAdjournmentMaxDays",
+      "displayName": "Maximum meeting adjournment period in days",
+      "type": "number",
+      "aliases": [
+        "meetingAdjournmentMaxDays",
+        "meeting_adjournment_max_days",
+        "rubric.cov_meeting.meeting_adjournment_max_days",
+        "rubric.cov_proxy.meeting_adjournment_max_days"
+      ],
+      "sourceOfTruth": "lib/schema/features.js:10913",
+      "usedIn": [
+        "components/review/table-configs/sec-meeting.config.js"
+      ],
+      "benchmarkable": true,
+      "stableAnchor": false,
+      "provenance": {
+        "origin": "reviewer-added",
+        "originalDataType": "NUMBER",
+        "appliesTo": "COV",
+        "provisionCodes": [
+          "COV-MEETING",
+          "COV-PROXY"
+        ]
+      }
+    },
+    {
+      "key": "meetingConveneObligation",
+      "displayName": "Stockholder meeting convene-and-hold obligation",
+      "type": "boolean",
+      "aliases": [
+        "meetingConveneObligation",
+        "meeting_convene_obligation",
+        "rubric.cov_meeting.meeting_convene_obligation",
+        "rubric.cov_proxy.meeting_convene_obligation"
+      ],
+      "sourceOfTruth": "lib/schema/features.js:10944",
+      "usedIn": [
+        "components/review/table-configs/sec-meeting.config.js",
+        "components/review/table-configs/votes-approvals-meeting.config.js"
+      ],
+      "benchmarkable": true,
+      "stableAnchor": false,
+      "provenance": {
+        "origin": "reviewer-added",
+        "originalDataType": "BOOLEAN",
+        "appliesTo": "COV",
+        "provisionCodes": [
+          "COV-MEETING",
+          "COV-PROXY"
         ]
       }
     },

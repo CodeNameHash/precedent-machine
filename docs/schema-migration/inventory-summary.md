@@ -1,11 +1,11 @@
 # WP-SCHEMA P1 Inventory Summary
 
-Generated: 2026-08-02T23:37:31.652Z
+Generated: 2026-08-03T15:52:04.926Z
 
 ## Counts
 
-- Distinct feature-like keys: 531
-- Keys in 2 or more source families: 480
+- Distinct feature-like keys: 535
+- Keys in 2 or more source families: 484
 - Keys in only 1 source family: 51
 - Cross-source type mismatches: 6
 - Schema shape mismatches: 33
@@ -18,7 +18,7 @@ Generated: 2026-08-02T23:37:31.652Z
 
 | Convention |Count |
 | --- |--- |
-| camelCase |500 |
+| camelCase |504 |
 | lowercase |24 |
 | snake_case |7 |
 
@@ -28,8 +28,8 @@ Generated: 2026-08-02T23:37:31.652Z
 | --- |--- |
 | category_summary_features_js |217 |
 | expected_sets_js |195 |
-| feature_validation_js |489 |
-| rubric_js |477 |
+| feature_validation_js |493 |
+| rubric_js |481 |
 | taxonomy_js |67 |
 | ui |184 |
 

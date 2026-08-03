@@ -69,7 +69,7 @@ function hasSecSignal(card) {
   if (['COV-PROXY', 'COV-MEETING', 'STRUCT-OFFER'].includes(code)) return true;
   const features = cardFeatures(card);
   if (DIRECT_ROWS.some(([key]) => valueText(features[key]))) return true;
-  if (['proxyFilingDeadline', 'mailingDeadline', 'meetingDeadline', 'adjournmentRights', 'meetingControlNotes'].some((key) => valueText(features[key]))) return true;
+  if (['proxyFilingDeadline', 'mailingDeadline', 'meetingDeadline', 'adjournmentRights', 'meetingControlNotes', 'boardRecommendationInclusion', 'meetingConveneObligation'].some((key) => valueText(features[key]))) return true;
   return /proxy|stockholder|shareholder|Schedule\s+(?:TO|14D-9)|tender\s+offer|adjourn/i.test(`${card?.short_title || ''} ${textOf(card)}`);
 }
 function deadlineRow(id, label, deadline, featureKey, sourceCard = null) {
@@ -280,6 +280,41 @@ function directRows(cards) {
   return rows;
 }
 
+function governedPresenceRows(cards) {
+  const definitions = [
+    ['boardRecommendationInclusion', 'Board recommendation in proxy statement', 'Proxy / meeting'],
+    ['meetingConveneObligation', 'Convene and hold stockholder meeting', 'Meeting'],
+  ];
+  return definitions.flatMap(([key, label, subject]) => {
+    const hit = firstFeature(cards, key);
+    if (!hit || cardFeatures(hit.card)[key] !== true) return [];
+    return [withSignal({
+      id: `sec-meeting-${key}`,
+      label,
+      subject,
+      detail: 'Required',
+      evidence: textOf(hit.card),
+      sourceCard: hit.card,
+      present: true,
+      featureKeys: [key],
+      marketProvisionCodes: [key === 'boardRecommendationInclusion' ? 'COV-PROXY' : 'COV-MEETING'],
+      marketPresence: {
+        strategy: 'feature_non_empty',
+        featureKeys: [key],
+        missingState: 'absent',
+      },
+      marketSubterms: [{
+        key: 'required',
+        label,
+        featureKeys: [key],
+        kind: 'categorical',
+        role: 'treatment',
+        value: { strategy: 'feature_value', featureKeys: [key] },
+      }],
+    })];
+  });
+}
+
 function evidenceFact(cards, pattern) {
   return cards.find((card) => ['COV-PROXY', 'COV-MEETING'].includes(cardCode(card))
     && pattern.test(textOf(card))) || null;
@@ -382,6 +417,7 @@ const secMeetingConfig = {
       deadlineRow('proxy-filing', summary.proxyFilingDeadline?.term || 'Proxy filing deadline', summary.proxyFilingDeadline, 'proxyFilingDeadline', proxyCard),
       deadlineRow('mailing', summary.mailingDeadline?.term || 'Proxy mailing', summary.mailingDeadline, 'mailingDeadline', mailingCard),
       deadlineRow('meeting', summary.meetingDeadline?.term || 'Shareholder meeting', summary.meetingDeadline, 'meetingDeadline', meetingCard),
+      ...governedPresenceRows(cards),
       ...meetingMechanicFactRows(cards),
       ...adjournmentRows(summary.adjournmentRights, adjournmentCard),
       summary.meetingControlNotes ? withSignal({ id: 'sec-meeting-control', label: 'Meeting control notes', subject: 'Meeting', detail: summary.meetingControlNotes, evidence: textOf(controlCard) || summary.meetingControlNotes, sourceCard: controlCard, featureKeys: ['meetingControlNotes'], present: true }) : null,

@@ -23,7 +23,7 @@ const SOURCE_FILES = Object.freeze([
   },
   {
     path: 'lib/query/serving-registry-v1.json',
-    sha256: '83916dc4ad0ee02e6db7dfa8515f70dd0c39364feee1740c38c44dc684e3deb5',
+    sha256: 'a07d2e16e7370f807c0ea01c619ead25fab4969c87313389abbe30cbaa4c221d',
   },
 ]);
 const EXPECTED_DEALS_FIELD_KEYS = Object.freeze([
@@ -361,11 +361,11 @@ function buildInventory() {
   const agreement = agreementInventory(registry.entries);
   const servingRegistry = registryInventory(registry, agreement.fields);
 
-  if (servingRegistry.observed_entry_count !== 696) {
-    fail(`serving registry contains ${servingRegistry.observed_entry_count} entries, expected 696`);
+  if (servingRegistry.observed_entry_count !== 700) {
+    fail(`serving registry contains ${servingRegistry.observed_entry_count} entries, expected 700`);
   }
   if (servingRegistry.included_input_count !== 329
-    || servingRegistry.excluded_input_count !== 367) {
+    || servingRegistry.excluded_input_count !== 371) {
     fail('serving-registry inclusion and exclusion counts changed');
   }
 

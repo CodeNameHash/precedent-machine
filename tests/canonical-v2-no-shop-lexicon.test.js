@@ -49,7 +49,7 @@ const REGISTERED_CONCEPT_KEYS = new Set([
 ]);
 
 test('LEXICAL_FAMILY_LEXICON_VERSION bumped 2 -> 3 (no-shop), then 3 -> 4 (family-mae-definition slice)', () => {
-  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 8);
+  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 9);
   assert.equal(LEXICAL_FAMILY_LEXICON.version, 8);
 });
 

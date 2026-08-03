@@ -346,6 +346,8 @@ function buildRows(reviewDeal) {
   const proxyRow = byId(meetingRows, 'sec-meeting-proxy-filing');
   const mailingRow = byId(meetingRows, 'sec-meeting-mailing');
   const meetingRow = byId(meetingRows, 'sec-meeting-meeting');
+  const recommendationInclusionRow = byId(meetingRows, 'sec-meeting-boardRecommendationInclusion');
+  const conveneObligationRow = byId(meetingRows, 'sec-meeting-meetingConveneObligation');
   const recordDateRow = byId(meetingRows, 'sec-meeting-record-date');
   const brokerSearchRow = byId(meetingRows, 'sec-meeting-broker-search');
   const adjournmentRowList = meetingRows.filter((row) => row.id.startsWith('sec-meeting-adjournment-'));
@@ -422,6 +424,21 @@ function buildRows(reviewDeal) {
       id: 'votes-approvals-meeting-meeting', label: 'Meeting', kind: 'deadline',
       deadline: meetingRow.deadline, evidence: meetingRow.evidence, source: meetingRow.sourceCard,
       sourceCard: meetingRow.sourceCard, featureKeys: meetingRow.featureKeys, marketSubterms: meetingRow.marketSubterms,
+    });
+  }
+  for (const presenceRow of [recommendationInclusionRow, conveneObligationRow].filter(Boolean)) {
+    rows.push({
+      id: `votes-approvals-meeting-${presenceRow.id.slice('sec-meeting-'.length)}`,
+      label: presenceRow.label,
+      kind: 'detail',
+      text: presenceRow.detail,
+      evidence: presenceRow.evidence,
+      source: presenceRow.sourceCard,
+      sourceCard: presenceRow.sourceCard,
+      featureKeys: presenceRow.featureKeys,
+      marketPresence: presenceRow.marketPresence,
+      marketSubterms: presenceRow.marketSubterms,
+      marketProvisionCodes: presenceRow.marketProvisionCodes,
     });
   }
   if (recordDateRow) {

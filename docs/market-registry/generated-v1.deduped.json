@@ -6,8 +6,8 @@
     "lib/rubric.js",
     "lib/vocab/ioc-categories.js"
   ],
-  "input_field_count": 1329,
-  "field_count": 704,
+  "input_field_count": 1333,
+  "field_count": 708,
   "fields": [
     {
       "key": "absenceConductedOrdinaryCourse",
@@ -18951,6 +18951,140 @@
           }
         ]
       },
+      "status": "PENDING_REVIEW"
+    },
+    {
+      "key": "boardRecommendationInclusion",
+      "label": "Board recommendation included in proxy statement",
+      "data_type": "BOOLEAN",
+      "applies_to": "COV",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE",
+        "COMPONENT_LIMB"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "boardRecommendationInclusion",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve from the governed proxy recommendation-inclusion claim."
+      },
+      "resolver_notes": "Board recommendation inclusion is a separately governed proxy covenant fact.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "reviewer-added",
+      "merged_from": [],
+      "also_matches_provision_codes": [
+        "COV-MEETING",
+        "COV-PROXY"
+      ],
+      "status": "PENDING_REVIEW"
+    },
+    {
+      "key": "meetingAdjournmentMaxCount",
+      "label": "Maximum number of meeting adjournments",
+      "data_type": "NUMBER",
+      "applies_to": "COV",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE",
+        "COMPONENT_LIMB",
+        "TEMPORAL_CUTOFF"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "meetingAdjournmentMaxCount",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve from the governed adjournment-count-cap claim."
+      },
+      "resolver_notes": "Maximum express count of meeting adjournments.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "reviewer-added",
+      "merged_from": [],
+      "also_matches_provision_codes": [
+        "COV-MEETING",
+        "COV-PROXY"
+      ],
+      "status": "PENDING_REVIEW"
+    },
+    {
+      "key": "meetingAdjournmentMaxDays",
+      "label": "Maximum meeting adjournment period in days",
+      "data_type": "NUMBER",
+      "applies_to": "COV",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE",
+        "COMPONENT_LIMB",
+        "TEMPORAL_CUTOFF"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "meetingAdjournmentMaxDays",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve from the governed adjournment-duration-cap claim."
+      },
+      "resolver_notes": "Maximum express meeting adjournment period in days.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "reviewer-added",
+      "merged_from": [],
+      "also_matches_provision_codes": [
+        "COV-MEETING",
+        "COV-PROXY"
+      ],
+      "status": "PENDING_REVIEW"
+    },
+    {
+      "key": "meetingConveneObligation",
+      "label": "Stockholder meeting convene-and-hold obligation",
+      "data_type": "BOOLEAN",
+      "applies_to": "COV",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE",
+        "COMPONENT_LIMB"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "meetingConveneObligation",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve from the governed meeting convene-obligation claim."
+      },
+      "resolver_notes": "Stockholder meeting convene-and-hold obligation.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "reviewer-added",
+      "merged_from": [],
+      "also_matches_provision_codes": [
+        "COV-MEETING",
+        "COV-PROXY"
+      ],
       "status": "PENDING_REVIEW"
     },
     {

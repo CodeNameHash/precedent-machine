@@ -136,13 +136,20 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
     ).completion_state,
     'FAMILY_COMPLETE',
   );
+  assert.equal(
+    CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
+      (family) => family.family_id === 'PROXY_MEETING_COVENANTS',
+    ).completion_state,
+    'FAMILY_COMPLETE',
+  );
   const consideration = CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
     (family) => family.family_id === 'CONSIDERATION',
   );
   assert.equal(consideration.completion_state, 'FOLLOW_ON_OPEN');
   assert.ok(CURRENT_M3_FAMILY_PARITY_STATUS.family_states
     .filter((family) => ![
-      'NO_SHOP', 'MAE_DEFINITION', 'CONSIDERATION', 'INTERIM_OPERATING_COVENANTS', 'TERMINATION_FEE', 'TERMINATION_RIGHTS',
+      'NO_SHOP', 'MAE_DEFINITION', 'PROXY_MEETING_COVENANTS', 'CONSIDERATION',
+      'INTERIM_OPERATING_COVENANTS', 'TERMINATION_FEE', 'TERMINATION_RIGHTS',
     ].includes(family.family_id))
     .every((family) => family.completion_state === 'WAVE_A_OPEN'));
   for (const familyId of ['INTERIM_OPERATING_COVENANTS', 'TERMINATION_FEE', 'TERMINATION_RIGHTS']) {

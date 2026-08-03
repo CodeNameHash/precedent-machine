@@ -492,7 +492,7 @@ test('compiles the exact current PM sources into one deterministic registry', ()
     334,
   );
   assert.equal(inventory.agreement_query_surface.field_occurrence_count, 492);
-  assert.equal(inventory.serving_registry.observed_entry_count, 696);
+  assert.equal(inventory.serving_registry.observed_entry_count, 700);
   assert.equal(inventory.serving_registry.alias_collision_count, 156);
   assert.equal(input.agreement_alias_decisions.mappings.length, 490);
   assert.ok(

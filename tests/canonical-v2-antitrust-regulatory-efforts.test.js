@@ -45,7 +45,7 @@ test('registry, resolver seam and materiality tier include the M3-B antitrust sh
   assert.equal(burden.allowed_canonical_values.includes('SILENT'), false);
   const row = GENERIC_CLAIM_KEY_RESOLUTION_TABLE.find((entry) => entry.generic_claim_key === REGULATORY_EFFORTS_CLAIM_KEY);
   assert.deepEqual(row && { concept_key: row.concept_key, registered_claim_definition_key: row.registered_claim_definition_key, party_field: row.party_field }, { concept_key: null, registered_claim_definition_key: null, party_field: 'obligor_party' });
-  assert.equal(MAPPING_TABLE_VERSION, 13);
+  assert.equal(MAPPING_TABLE_VERSION, 14);
   assert.deepEqual(MATERIALITY_TABLE.find((tier) => tier.label === 'REGULATORY_EFFORTS'), { rank: 65, label: 'REGULATORY_EFFORTS', concept_key_prefixes: ['ANTI-'] });
 });
 
@@ -83,7 +83,7 @@ test('M3-B corroboration requires distinct grounded antitrust facts', () => {
 test('antitrust lexical entries are registered and include the bounded family set', () => {
   const registered = new Set(compileFixtureContractV25().concepts.map((concept) => concept.concept_key));
   assert.doesNotThrow(() => validateLexicalFamilyLexicon(LEXICAL_FAMILY_LEXICON, { registeredConceptKeys: registered }));
-  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 8);
+  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 9);
   for (const family of ['ANTI-EFFORTS', 'ANTI-BURDEN', 'ANTI-LITIGATION', 'ANTI-TIMING', 'ANTI-FILING']) {
     assert.ok(LEXICAL_FAMILY_LEXICON.entries.some((entry) => entry.family === family), family);
   }
