@@ -2,7 +2,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { compileFixtureContractV26 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV26, compileFixtureContractV29 } = require('../lib/canonical-v2/contract-bundle');
 const { parseDayCount, parseAdjournmentCount } = require('../lib/canonical-v2/native-producer/proxy-meeting-count-parse');
 const { buildProxyMeetingProducerPrompt } = require('../lib/canonical-v2/native-producer/proxy-meeting-producer-prompt');
 const { shapeProxyMeetingProposals, PROXY_MEETING_COVENANT_CLAIM_KEY } = require('../lib/canonical-v2/native-producer/anthropic-provider');
@@ -13,6 +13,20 @@ test('proxy-meeting v26 contract registers both concepts and six claims', () => 
   assert.ok(bundle.concepts.some((row) => row.concept_key === 'COV-PROXY'));
   assert.ok(bundle.concepts.some((row) => row.concept_key === 'COV-MEETING'));
   assert.ok(bundle.claim_definitions.some((row) => row.claim_definition_key === 'MEETING_CONVENE_OBLIGATION'));
+});
+
+test('proxy-meeting v29 contract registers the three adopted follow-ons', () => {
+  const bundle = compileFixtureContractV29();
+  for (const conceptKey of ['COV-PROXY-PARENT-APPROVAL', 'COV-PROXY-MERGERSUB-APPROVAL']) {
+    assert.ok(bundle.concepts.some((row) => row.concept_key === conceptKey), conceptKey);
+  }
+  for (const claimKey of [
+    'RECORD_DATE_ESTABLISHMENT_PRESENT',
+    'BROKER_SEARCH_OBLIGATION_PRESENT',
+    'PARENT_APPROVAL_OBLIGATION',
+    'MERGER_SUB_APPROVAL_OBLIGATION',
+    'MEETING_ADJOURNMENT_REASON',
+  ]) assert.ok(bundle.claim_definitions.some((row) => row.claim_definition_key === claimKey), claimKey);
 });
 
 test('proxy-meeting parser resolves supported day and occurrence counts and refuses ambiguity', () => {

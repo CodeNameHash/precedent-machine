@@ -66,10 +66,10 @@ function firstCardWithFeature(cards, key, derivedValue = null) {
 }
 function hasSecSignal(card) {
   const code = cardCode(card);
-  if (['COV-PROXY', 'COV-MEETING', 'STRUCT-OFFER'].includes(code)) return true;
+  if (['COV-PROXY', 'COV-MEETING', 'COV-PROXY-PARENT-APPROVAL', 'COV-PROXY-MERGERSUB-APPROVAL', 'STRUCT-OFFER'].includes(code)) return true;
   const features = cardFeatures(card);
   if (DIRECT_ROWS.some(([key]) => valueText(features[key]))) return true;
-  if (['proxyFilingDeadline', 'mailingDeadline', 'meetingDeadline', 'adjournmentRights', 'meetingControlNotes', 'boardRecommendationInclusion', 'meetingConveneObligation'].some((key) => valueText(features[key]))) return true;
+  if (['proxyFilingDeadline', 'mailingDeadline', 'meetingDeadline', 'adjournmentRights', 'meetingControlNotes', 'boardRecommendationInclusion', 'meetingConveneObligation', 'meetingRecordDate', 'brokerSearchObligation'].some((key) => valueText(features[key]))) return true;
   return /proxy|stockholder|shareholder|Schedule\s+(?:TO|14D-9)|tender\s+offer|adjourn/i.test(`${card?.short_title || ''} ${textOf(card)}`);
 }
 function deadlineRow(id, label, deadline, featureKey, sourceCard = null) {
@@ -341,11 +341,17 @@ function meetingMechanicFactRows(cards) {
       governanceState: coverage?.governance_state || null,
       targetClaimKeys: coverage ? [...coverage.claim_keys] : [],
       marketState: recordFeature ? 'FEATURE_BACKED' : 'OPEN_NATIVE_FIELD',
+      marketPresence: recordFeature ? {
+        strategy: 'feature_non_empty',
+        featureKeys: ['meetingRecordDate', 'recordDate'],
+        missingState: 'absent',
+      } : undefined,
       present: true,
     }));
   }
 
-  const brokerCard = evidenceFact(
+  const brokerFeature = firstFeature(cards, 'brokerSearchObligation');
+  const brokerCard = brokerFeature?.card || evidenceFact(
     cards,
     /\b(?:complet\w*|conduct\w*|perform\w*|commenc\w*|initiat\w*|undertak\w*)\b[\s\S]{0,100}\bbroker search\b|\bbroker search\b[\s\S]{0,100}\b(?:complet\w*|conduct\w*|perform\w*|commenc\w*|initiat\w*|undertak\w*)\b/i,
   );
@@ -358,11 +364,16 @@ function meetingMechanicFactRows(cards) {
       detail: 'Required',
       evidence: textOf(brokerCard),
       sourceCard: brokerCard,
-      featureKeys: [],
+      featureKeys: brokerFeature ? ['brokerSearchObligation'] : [],
       ownerFamily: coverage?.owner_id || null,
       governanceState: coverage?.governance_state || null,
       targetClaimKeys: coverage ? [...coverage.claim_keys] : [],
-      marketState: 'OPEN_NATIVE_FIELD',
+      marketState: brokerFeature ? 'FEATURE_BACKED' : 'OPEN_NATIVE_FIELD',
+      marketPresence: brokerFeature ? {
+        strategy: 'feature_non_empty',
+        featureKeys: ['brokerSearchObligation'],
+        missingState: 'absent',
+      } : undefined,
       present: true,
     }));
   }

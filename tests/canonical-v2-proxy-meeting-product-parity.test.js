@@ -4,7 +4,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContractV26 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV29 } = require('../lib/canonical-v2/contract-bundle');
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
 const { shapeProxyMeetingProposals } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { classifySectionFamily } = require('../lib/canonical-v2/native-producer/section-family-classifier');
@@ -27,7 +27,15 @@ async function productFixture() {
     count: 'The Company may adjourn the Stockholders Meeting no more than two (2) such adjournments.',
     duration: 'The Company may adjourn the Stockholders Meeting for no more than ten (10) Business Days in the aggregate.',
     inclusion: 'The Company shall include the Company Board Recommendation in the Proxy Statement.',
-    recordDate: 'The Company shall establish a record date 20 Business Days after the broker search.',
+    recordDate: 'The Company shall establish the record date for the Stockholders Meeting.',
+    brokerSearch: 'The Company shall complete a broker search for the Stockholders Meeting.',
+    parentApproval: 'Parent stockholders shall approve this Agreement by shareholder vote at the Parent Meeting promptly after mailing.',
+    mergerSubApproval: "Merger Sub's sole stockholder shall approve this Agreement by written consent immediately following execution.",
+    quorumReason: 'The Company may adjourn the Stockholders Meeting due to the absence of a quorum.',
+    voteReason: 'The Company may adjourn the Stockholders Meeting due to insufficient affirmative votes.',
+    disclosureReason: 'The Company may adjourn the Stockholders Meeting to provide supplemental disclosure.',
+    legalReason: 'The Company may adjourn the Stockholders Meeting when required by applicable law.',
+    crossReferenceReason: 'The Company may adjourn the Stockholders Meeting for the legal requirement described in Section 6.3(b).',
   };
   const source = `AGREEMENT AND PLAN OF MERGER\n\nSection ${SECTION_REFERENCE} Proxy Statement and Stockholders Meeting.\n${Object.values(quotes).join('\n')}\n`;
   const assertions = [
@@ -37,9 +45,17 @@ async function productFixture() {
     { assertion_kind: 'ADJOURNMENT_COUNT_CAP', control_party: 'The Company', meeting_ref: 'Stockholders Meeting', quote: quotes.count },
     { assertion_kind: 'ADJOURNMENT_DURATION_CAP', day_kind: 'BUSINESS', limit_basis: 'AGGREGATE', control_party: 'The Company', meeting_ref: 'Stockholders Meeting', quote: quotes.duration },
     { assertion_kind: 'RECOMMENDATION_INCLUSION', document_ref: 'Proxy Statement', quote: quotes.inclusion },
-    { assertion_kind: 'RECORD_DATE_ESTABLISHMENT', obligated_party: 'The Company', meeting_ref: 'record date', quote: quotes.recordDate },
+    { assertion_kind: 'RECORD_DATE_ESTABLISHMENT', obligated_party: 'The Company', meeting_ref: 'Stockholders Meeting', quote: quotes.recordDate },
+    { assertion_kind: 'BROKER_SEARCH_OBLIGATION', obligated_party: 'The Company', meeting_ref: 'Stockholders Meeting', quote: quotes.brokerSearch },
+    { assertion_kind: 'PARENT_APPROVAL', obligated_party: 'Parent', adoption_mechanism: 'SHAREHOLDER_VOTE', adoption_timing: 'promptly after mailing', quote: quotes.parentApproval },
+    { assertion_kind: 'MERGER_SUB_APPROVAL', obligated_party: 'Merger Sub', adoption_mechanism: 'WRITTEN_CONSENT', adoption_timing: 'immediately following execution', quote: quotes.mergerSubApproval },
+    { assertion_kind: 'ADJOURNMENT_REASON', reason_kind: 'QUORUM_ABSENT', meeting_ref: 'Stockholders Meeting', quote: quotes.quorumReason },
+    { assertion_kind: 'ADJOURNMENT_REASON', reason_kind: 'INSUFFICIENT_VOTES', meeting_ref: 'Stockholders Meeting', quote: quotes.voteReason },
+    { assertion_kind: 'ADJOURNMENT_REASON', reason_kind: 'SUPPLEMENTAL_DISCLOSURE', meeting_ref: 'Stockholders Meeting', quote: quotes.disclosureReason },
+    { assertion_kind: 'ADJOURNMENT_REASON', reason_kind: 'LEGAL_REQUIREMENT', meeting_ref: 'Stockholders Meeting', quote: quotes.legalReason },
+    { assertion_kind: 'ADJOURNMENT_REASON', reason_kind: null, meeting_ref: 'Stockholders Meeting', quote: quotes.crossReferenceReason },
   ].map((assertion) => ({ section_reference: SECTION_REFERENCE, ...assertion }));
-  const contract = compileFixtureContractV26();
+  const contract = compileFixtureContractV29();
   const receipt = await runNativeExtraction({
     source_text: source,
     document_hash: sha256Hex(Buffer.from(source, 'utf8')),
@@ -66,20 +82,27 @@ async function productFixture() {
   return { dealId, quotes, receipt, resolution, projection: projectProxyMeetingProductSurfaces({ resolution, deal_id: dealId }) };
 }
 
-test('the resolver promotes only the six governed Proxy and Meeting claim definitions', async () => {
+test('the resolver promotes the governed Proxy and Meeting follow-on facts', async () => {
   const { resolution } = await productFixture();
-  assert.equal(MAPPING_TABLE_VERSION, 16);
+  assert.equal(MAPPING_TABLE_VERSION, 17);
   assert.deepEqual(resolution.resolved.map((entry) => entry.resolved_claim_definition_key).sort(), [
     'BOARD_RECOMMENDATION_INCLUSION',
+    'BROKER_SEARCH_OBLIGATION_PRESENT',
     'MEETING_ADJOURNMENT_MAX_COUNT',
     'MEETING_ADJOURNMENT_MAX_DAYS',
+    'MEETING_ADJOURNMENT_REASON',
+    'MEETING_ADJOURNMENT_REASON',
+    'MEETING_ADJOURNMENT_REASON',
+    'MEETING_ADJOURNMENT_REASON',
     'MEETING_CONVENE_OBLIGATION',
     'MEETING_DEADLINE_DAYS',
+    'MERGER_SUB_APPROVAL_OBLIGATION',
+    'PARENT_APPROVAL_OBLIGATION',
     'PROXY_FILING_DEADLINE_DAYS',
+    'RECORD_DATE_ESTABLISHMENT_PRESENT',
   ], JSON.stringify({ sections: resolution.resolution_receipt, review: resolution.review_queue, open: resolution.open_world, residuals: resolution.residuals }, null, 2));
-  assert.equal(resolution.open_world.length, 1);
-  assert.equal(resolution.open_world[0].attributes.assertion_kind, 'RECORD_DATE_ESTABLISHMENT');
-  assert.equal(resolution.open_world[0].reason, 'PROXY_MEETING_ASSERTION_KIND_NOT_GOVERNED');
+  assert.equal(resolution.open_world.length, 0);
+  assert.ok(resolution.review_queue.some((item) => item.reasons.includes('ADJOURNMENT_REASON_NOT_DIRECTLY_GROUNDED')));
   assert.equal(resolution.resolution_receipt.proxy_meeting_parse_version, 1);
   const meetingClaims = resolution.resolved.filter((entry) => entry.claim.raw_value.includes('special meeting'));
   assert.deepEqual(meetingClaims.map((entry) => entry.resolved_claim_definition_key).sort(), [
@@ -92,9 +115,8 @@ test('native Proxy and Meeting claims reach Review, Query, Compare and market st
   const { dealId, projection } = await productFixture();
   const nativeCards = projection.cards.filter((card) => card.canonical_v2_lineage.source !== EVIDENCE_SOURCE);
   const evidenceCards = projection.cards.filter((card) => card.canonical_v2_lineage.source === EVIDENCE_SOURCE);
-  assert.equal(evidenceCards.length, 1);
-  assert.deepEqual(evidenceCards[0].features, {});
-  assert.equal(projection.claims.some((claim) => claim.verbatim.includes('record date')), false);
+  assert.equal(evidenceCards.length, 0);
+  assert.equal(projection.claims.some((claim) => claim.verbatim.includes('record date')), true);
 
   const proxyCard = nativeCards.find((card) => card.features.proxyFilingDeadline);
   assert.equal(provisionFieldValue(proxyCard, 'SEC_FILING_MEETING', 'proxyFilingDeadline').value, '30');
@@ -109,13 +131,18 @@ test('native Proxy and Meeting claims reach Review, Query, Compare and market st
     'sec-meeting-meetingConveneObligation',
     'sec-meeting-adjournment-0',
     'sec-meeting-record-date',
+    'sec-meeting-broker-search',
   ]) assert.ok(rows.some((row) => row.id === rowId), rowId);
   const composite = await import('../components/review/table-configs/votes-approvals-meeting.config.js');
   const compositeRows = composite.votesApprovalsMeetingConfig.selectRows({ cards: projection.cards });
   assert.ok(compositeRows.some((row) => row.id === 'votes-approvals-meeting-boardRecommendationInclusion'));
   assert.ok(compositeRows.some((row) => row.id === 'votes-approvals-meeting-meetingConveneObligation'));
-  const evidenceRow = rows.find((row) => row.id === 'sec-meeting-record-date');
-  assert.equal(evidenceRow.marketState, 'OPEN_NATIVE_FIELD');
+  assert.ok(compositeRows.some((row) => row.id === 'votes-approvals-meeting-parent-approval'));
+  assert.ok(compositeRows.some((row) => row.id === 'votes-approvals-meeting-merger-sub-approval'));
+  const recordRow = rows.find((row) => row.id === 'sec-meeting-record-date');
+  const brokerRow = rows.find((row) => row.id === 'sec-meeting-broker-search');
+  assert.equal(recordRow.marketState, 'FEATURE_BACKED');
+  assert.equal(brokerRow.marketState, 'FEATURE_BACKED');
 
   const compare = executeDealCompare({
     deal_ids: [dealId],
@@ -133,12 +160,17 @@ test('native Proxy and Meeting claims reach Review, Query, Compare and market st
   assert.equal(fields.get('meetingConveneObligation'), true);
   assert.equal(fields.get('meetingAdjournmentMaxCount'), 2);
   assert.equal(fields.get('meetingAdjournmentMaxDays'), 10);
+  assert.equal(fields.get('meetingRecordDate'), true);
+  assert.equal(fields.get('brokerSearchObligation'), true);
+  assert.equal(fields.get('parentApprovalMechanism'), 'SHAREHOLDER_VOTE');
+  assert.equal(fields.get('mergerSubApprovalMechanism'), 'WRITTEN_CONSENT');
 
   const adapter = await import('../lib/market-metrics/adapter.js');
   const governedRows = rows.filter((row) => row.marketPresence || row.marketSubterms);
   const specs = governedRows.flatMap((row) => adapter.resolveMarketMetricSpecs(row, { configId: 'sec-meeting' }));
   assert.ok(specs.length >= 5);
-  assert.equal(adapter.resolveMarketMetricRow(evidenceRow, { configId: 'sec-meeting' }).resolution, 'evidence_only');
+  assert.equal(adapter.resolveMarketMetricRow(recordRow, { configId: 'sec-meeting' }).resolution, 'feature_registry');
+  assert.equal(adapter.resolveMarketMetricRow(brokerRow, { configId: 'sec-meeting' }).resolution, 'feature_registry');
   const market = calculateMarketStats({
     contractVersion: 1,
     subjectDealId: null,

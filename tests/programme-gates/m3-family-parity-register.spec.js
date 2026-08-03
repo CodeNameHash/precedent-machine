@@ -140,13 +140,13 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
     CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
       (family) => family.family_id === 'PROXY_MEETING_COVENANTS',
     ).completion_state,
-    'FOLLOW_ON_OPEN',
+    'FAMILY_COMPLETE',
   );
   assert.equal(
     CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
       (family) => family.family_id === 'ANTITRUST_REGULATORY_EFFORTS',
     ).completion_state,
-    'FAMILY_COMPLETE',
+    'WAVE_A_OPEN',
   );
   const consideration = CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
     (family) => family.family_id === 'CONSIDERATION',
@@ -159,7 +159,6 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
     ].includes(family.family_id))
     .every((family) => family.completion_state === 'WAVE_A_OPEN'));
   for (const familyId of [
-    'PROXY_MEETING_COVENANTS',
     'TERMINATION_FEE',
     'TERMINATION_RIGHTS',
   ]) {
@@ -189,13 +188,13 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
   assert.ok(complete.family_states.every((family) => family.completion_state === 'FAMILY_COMPLETE'));
 });
 
-test('recorded Proxy and Meeting rulings reopen the exact adopted follow-on surfaces', () => {
+test('recorded Proxy and Meeting rulings are implemented on the exact adopted follow-on surfaces', () => {
   const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
     (entry) => entry.family_id === 'PROXY_MEETING_COVENANTS',
   );
   assert.deepEqual(
     family.product_surfaces
-      .filter((surface) => surface.state === 'OPEN')
+      .filter((surface) => surface.surface_id.startsWith('proxy-') && surface.source_kind === 'SIDE_TABLE')
       .map((surface) => surface.surface_id),
     [
       'proxy-record-date-broker-search-presence',
@@ -204,8 +203,8 @@ test('recorded Proxy and Meeting rulings reopen the exact adopted follow-on surf
     ],
   );
   assert.ok(family.product_surfaces
-    .filter((surface) => surface.state === 'OPEN')
-    .every((surface) => surface.disposition === 'FOLLOW_ON_REQUIRED'));
+    .filter((surface) => surface.source_kind === 'SIDE_TABLE')
+    .every((surface) => surface.state === 'PASS' && surface.disposition === 'NATIVE_COMPLETE'));
 });
 
 test('parity blocker inventory is exact and never treats open-world evidence as semantic completion', () => {
@@ -331,18 +330,15 @@ test('the M3 register has no production-import or cutover authority', () => {
   assert.doesNotMatch(source, /PRODUCTION_IMPORT|PRODUCTION_CUTOVER|M4_PRE_CUTOVER/);
 });
 
-test('Antitrust has complete native evidence for every family and product gate', () => {
+test('Antitrust remains open until the real litigation quote coverage map is committed', () => {
   const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families
     .find((entry) => entry.family_id === 'ANTITRUST_REGULATORY_EFFORTS');
-  assert.ok(Object.values(family.wave_a.checks).every((check) => check.state === 'PASS'));
-  assert.ok(Object.values(family.wave_a.checks).every((check) => (
-    check.evidence_paths.includes('tests/canonical-v2-antitrust-regulatory-efforts.test.js')
-  )));
+  assert.deepEqual(family.wave_a.checks.fixture_proof, { state: 'OPEN', evidence_paths: [] });
   assert.ok(family.product_surfaces.every((surface) => surface.state === 'PASS'));
   assert.equal(
     CURRENT_M3_FAMILY_PARITY_STATUS.family_states
       .find((entry) => entry.family_id === family.family_id).completion_state,
-    'FAMILY_COMPLETE',
+    'WAVE_A_OPEN',
   );
 });
 

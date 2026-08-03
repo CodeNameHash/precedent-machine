@@ -34,7 +34,8 @@ test('the follow-on producer carries the grounded meeting fact kinds without cro
     'ADJOURNMENT_REASON',
     'ADJOURNMENT_CONTROL',
     'ADJOURNMENT_CONSENT_OVERRIDE',
-    'PARENT_ADOPTION',
+    'PARENT_APPROVAL',
+    'MERGER_SUB_APPROVAL',
   ]) {
     assert.ok(PROXY_MEETING_ASSERTION_KINDS.includes(kind), kind);
     assert.match(RESPONSE_SHAPE, new RegExp(kind));
@@ -47,7 +48,7 @@ test('the follow-on producer carries the grounded meeting fact kinds without cro
   assert.match(RESPONSE_SHAPE, /ALL_RECORD_HOLDERS_WRITTEN_CONSENT/);
 });
 
-test('record date, broker search and Parent adoption remain byte-bound generic candidates pending Ben rulings', () => {
+test('record date, broker search and separate approval facts remain byte-bound generic candidates', () => {
   const sourceText = [
     'The Company shall establish a record date and complete a broker search.',
     'Parent shall cause the sole stockholder of Merger Sub to adopt this Agreement by written consent immediately following execution.',
@@ -68,7 +69,7 @@ test('record date, broker search and Parent adoption remain byte-bound generic c
       },
       {
         section_reference: '6.18',
-        assertion_kind: 'PARENT_ADOPTION',
+        assertion_kind: 'MERGER_SUB_APPROVAL',
         obligated_party: 'Parent',
         adoption_mechanism: 'WRITTEN_CONSENT',
         adoption_timing: 'immediately following execution',
@@ -81,7 +82,7 @@ test('record date, broker search and Parent adoption remain byte-bound generic c
   assert.equal(shaped.proposals.length, 3);
   assert.deepEqual(
     shaped.proposals.map((proposal) => proposal.attributes.assertion_kind),
-    ['RECORD_DATE_ESTABLISHMENT', 'BROKER_SEARCH_OBLIGATION', 'PARENT_ADOPTION'],
+    ['RECORD_DATE_ESTABLISHMENT', 'BROKER_SEARCH_OBLIGATION', 'MERGER_SUB_APPROVAL'],
   );
   assert.equal(shaped.proposals[2].attributes.adoption_mechanism, 'WRITTEN_CONSENT');
   assert.equal(shaped.evidence_residuals.length, 0);

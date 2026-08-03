@@ -178,6 +178,9 @@ function adjournmentGroupedNode(right, ctx, evidence, source) {
 // consent. This is Parent/Merger Sub's OWN mechanism, distinct from (and
 // not conditioned on) the Company stockholder vote.
 const PARENT_ADOPTION_MECHANISM_TEXT = {
+  SHAREHOLDER_VOTE: 'by shareholder vote',
+  SOLE_HOLDER_WRITTEN_CONSENT: 'by sole-holder written consent',
+  ALL_RECORD_HOLDERS_WRITTEN_CONSENT: 'by written consent of all record holders',
   WRITTEN_CONSENT: "in writing by Parent; no separate Parent vote required",
   SOLE_STOCKHOLDER_ADOPTION: "by Parent, as sole stockholder of Merger Sub; no separate Parent vote required",
   BOARD_ONLY: 'by Parent board resolution only; no Parent stockholder approval required',
@@ -212,15 +215,26 @@ const PARENT_APPROVAL_MARKET_SUBTERMS = [
 
 function findParentApprovalCard(reviewDeal) {
   const cards = reviewDeal?.cards || [];
-  return cards.find((card) => cardCode(card) === 'COV-SHAPRV-PARENT') || null;
+  return cards.find((card) => cardCode(card) === 'COV-PROXY-PARENT-APPROVAL')
+    || cards.find((card) => cardCode(card) === 'COV-SHAPRV-PARENT')
+    || null;
+}
+
+function findMergerSubApprovalCard(reviewDeal) {
+  return (reviewDeal?.cards || [])
+    .find((card) => cardCode(card) === 'COV-PROXY-MERGERSUB-APPROVAL') || null;
 }
 
 function parentApprovalText(card) {
   const features = cardFeatures(card);
-  const mechanismRaw = features.parentAdoptionMechanism;
+  const mechanismRaw = features.parentApprovalMechanism
+    || features.mergerSubApprovalMechanism
+    || features.parentAdoptionMechanism;
   const mechanismCode = String(mechanismRaw?.code || mechanismRaw?.value || mechanismRaw || '').toUpperCase();
   const mechanismText = PARENT_ADOPTION_MECHANISM_TEXT[mechanismCode] || null;
-  const timing = valueText(features.parentAdoptionTiming);
+  const timing = valueText(features.parentApprovalTiming
+    || features.mergerSubApprovalTiming
+    || features.parentAdoptionTiming);
   if (mechanismText) return timing ? `${mechanismText} (${timing})` : mechanismText;
   // Ben (Mergertrace round 1): no structured mechanism claim on the card
   // (Metsera) left this row dumping raw clause prose while every sibling
@@ -353,6 +367,7 @@ function buildRows(reviewDeal) {
   const adjournmentRowList = meetingRows.filter((row) => row.id.startsWith('sec-meeting-adjournment-'));
   const offerRows = COMPOSITE_SEC_ROW_IDS.map((id) => byId(meetingRows, id)).filter(Boolean);
   const parentApprovalCard = findParentApprovalCard(reviewDeal);
+  const mergerSubApprovalCard = findMergerSubApprovalCard(reviewDeal);
 
   const rows = [];
   // Ben (round 6): make Company vs Parent approvals explicit, and drop the
@@ -388,11 +403,16 @@ function buildRows(reviewDeal) {
   }
   if (parentApprovalCard) {
     const parentFeatures = cardFeatures(parentApprovalCard);
-    const parentFeatureKeys = ['parentAdoptionMechanism', 'parentAdoptionTiming']
+    const parentFeatureKeys = [
+      'parentApprovalRequired', 'parentApprovalMechanism', 'parentApprovalTiming',
+      'parentAdoptionMechanism', 'parentAdoptionTiming',
+    ]
       .filter((key) => valueText(parentFeatures[key]));
     if (!parentFeatureKeys.length && valueText(parentFeatures.mainConcept)) parentFeatureKeys.push('mainConcept');
     rows.push({
-      id: 'votes-approvals-meeting-parent-approval', label: 'Parent / Merger Sub approvals', kind: 'parent-approval',
+      id: 'votes-approvals-meeting-parent-approval',
+      label: mergerSubApprovalCard ? 'Parent approval' : 'Parent / Merger Sub approvals',
+      kind: 'parent-approval',
       card: parentApprovalCard,
       sourceCard: parentApprovalCard,
       featureKeys: parentFeatureKeys,
@@ -403,6 +423,20 @@ function buildRows(reviewDeal) {
     rows.push({
       id: 'votes-approvals-meeting-parent-approval', label: 'Parent / Merger Sub approvals', kind: 'vote-standard',
       text: 'Not specified',
+    });
+  }
+  if (mergerSubApprovalCard) {
+    const mergerSubFeatures = cardFeatures(mergerSubApprovalCard);
+    const featureKeys = [
+      'mergerSubApprovalRequired', 'mergerSubApprovalMechanism', 'mergerSubApprovalTiming',
+    ].filter((key) => valueText(mergerSubFeatures[key]));
+    rows.push({
+      id: 'votes-approvals-meeting-merger-sub-approval',
+      label: 'Merger Sub approval',
+      kind: 'parent-approval',
+      card: mergerSubApprovalCard,
+      sourceCard: mergerSubApprovalCard,
+      featureKeys,
     });
   }
   if (proxyRow) {
@@ -447,6 +481,7 @@ function buildRows(reviewDeal) {
       text: recordDateRow.detail, evidence: recordDateRow.evidence, source: recordDateRow.sourceCard,
       sourceCard: recordDateRow.sourceCard, featureKeys: recordDateRow.featureKeys,
       marketState: recordDateRow.marketState,
+      marketPresence: recordDateRow.marketPresence,
     });
   }
   if (brokerSearchRow) {
@@ -455,6 +490,7 @@ function buildRows(reviewDeal) {
       text: brokerSearchRow.detail, evidence: brokerSearchRow.evidence, source: brokerSearchRow.sourceCard,
       sourceCard: brokerSearchRow.sourceCard, featureKeys: brokerSearchRow.featureKeys,
       marketState: brokerSearchRow.marketState,
+      marketPresence: brokerSearchRow.marketPresence,
     });
   }
   adjournmentRowList.forEach((row, index) => {
