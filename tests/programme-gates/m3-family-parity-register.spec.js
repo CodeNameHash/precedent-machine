@@ -130,8 +130,12 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
     ).completion_state,
     'FAMILY_COMPLETE',
   );
+  const consideration = CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
+    (family) => family.family_id === 'CONSIDERATION',
+  );
+  assert.equal(consideration.completion_state, 'FOLLOW_ON_OPEN');
   assert.ok(CURRENT_M3_FAMILY_PARITY_STATUS.family_states
-    .filter((family) => family.family_id !== 'NO_SHOP')
+    .filter((family) => !['NO_SHOP', 'CONSIDERATION'].includes(family.family_id))
     .every((family) => family.completion_state === 'WAVE_A_OPEN'));
   assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.unassigned_product_surface_ids.length, 0);
   assert.deepEqual(
@@ -163,6 +167,31 @@ test('parity blocker inventory is exact and never treats open-world evidence as 
     [...blockers.map((blocker) => blocker.surface_id)].sort(),
   );
   assert.deepEqual(listM3ProductParityBlockers(completedRegister()), []);
+});
+
+test('Consideration Wave A and grounded product projections pass while Wave B stays open world', () => {
+  const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
+    (entry) => entry.family_id === 'CONSIDERATION',
+  );
+  assert.ok(Object.values(family.wave_a.checks).every((check) => check.state === 'PASS'));
+  for (const surfaceId of [
+    'consideration-rendered-rows',
+    'consideration-market-fields',
+    'consideration-query-fields',
+  ]) {
+    const surface = family.product_surfaces.find((entry) => entry.surface_id === surfaceId);
+    assert.equal(surface.state, 'PASS');
+    assert.equal(surface.disposition, 'NATIVE_COMPLETE');
+    assert.ok(surface.evidence_paths.includes('lib/canonical-v2/consideration-wave-a-product-projection.js'));
+  }
+  for (const surfaceId of [
+    'consideration-wave-b-market-fields',
+    'consideration-wave-b-query-fields',
+  ]) {
+    const surface = family.product_surfaces.find((entry) => entry.surface_id === surfaceId);
+    assert.equal(surface.state, 'OPEN');
+    assert.equal(surface.disposition, 'FOLLOW_ON_REQUIRED');
+  }
 });
 
 test('a rehashed complete label cannot contradict open family state', () => {

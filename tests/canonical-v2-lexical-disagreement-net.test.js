@@ -285,8 +285,8 @@ test('TEST 7: table validation', () => {
   // (registered from V16 onward) and TERMR-MUTUAL/TERMR-LEGAL entries
   // (registered from V17 onward) -- a stale bundle would fail this test's
   // own registered-key assertion on every new pattern_id.
-  const { compileFixtureContractV19 } = require('../lib/canonical-v2/contract-bundle');
-  const bundle = compileFixtureContractV19();
+  const { compileFixtureContractV24 } = require('../lib/canonical-v2/contract-bundle');
+  const bundle = compileFixtureContractV24();
   const registeredConceptKeys = new Set(bundle.concepts.map((entry) => entry.concept_key));
 
   assert.doesNotThrow(() => validateLexicalFamilyLexicon(LEXICAL_FAMILY_LEXICON, { registeredConceptKeys }));

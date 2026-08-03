@@ -24,7 +24,7 @@ const {
   sortedLexiconEntries,
   scanLiteral,
 } = require('../lib/canonical-v2/native-producer/lexical-disagreement-net');
-const { compileFixtureContractV19 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV24 } = require('../lib/canonical-v2/contract-bundle');
 const {
   CONTROLLED_VOCABULARIES,
 } = require('../lib/canonical-v2/native-producer/no-shop-producer-prompt');
@@ -43,11 +43,12 @@ const REGISTERED_CONCEPT_KEYS = new Set([
   'TERMR-OUTSIDE', 'TERMR-NOVOTE', 'TERMR-BREACH', 'TERMR-SUPERIOR', 'TERMR-RECOMMEND',
   'TERMR-NOSOL-BREACH',
   'ANTI-EFFORTS', 'ANTI-BURDEN', 'ANTI-LITIGATION', 'ANTI-TIMING', 'ANTI-FILING',
+  'CONS-PERSHARE', 'CONS-RATIO', 'CONS-DISSENT',
 ]);
 
 test('LEXICAL_FAMILY_LEXICON_VERSION bumped 2 -> 3 (no-shop), then 3 -> 4 (family-mae-definition slice)', () => {
-  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 6);
-  assert.equal(LEXICAL_FAMILY_LEXICON.version, 6);
+  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 7);
+  assert.equal(LEXICAL_FAMILY_LEXICON.version, 7);
 });
 
 test('table validation: every entry has a non-empty pattern_id, family, kind, value, rationale; no duplicate pattern_id; every family is a registered concept key; BOUNDED_REGEX patterns stay <= 128 static max', () => {
@@ -152,7 +153,7 @@ test('ungrounded market-standard tells are present but their rationale honestly 
 // ---------------------------------------------------------------------------
 
 test('no-shop-producer-prompt.js ACTION_CODE / PREREQUISITE_CODE vocabularies are byte-identical to the compiled V15 bundle\'s own registered claim-definition enums', () => {
-  const bundle = compileFixtureContractV19();
+  const bundle = compileFixtureContractV24();
   const actionDefinition = bundle.claim_definitions.find((d) => d.claim_definition_key === 'NO_SHOP_PROHIBITED_ACTION');
   const prerequisiteDefinition = bundle.claim_definitions.find((d) => d.claim_definition_key === 'NO_SHOP_EXCEPTION_PREREQUISITE');
   assert.ok(actionDefinition && prerequisiteDefinition);
