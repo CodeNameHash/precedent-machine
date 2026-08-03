@@ -156,7 +156,8 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
     .filter((family) => ![
       'ANTITRUST_REGULATORY_EFFORTS', 'NO_SHOP', 'MAE_DEFINITION',
       'CLOSING_CONDITIONS',
-      'PROXY_MEETING_COVENANTS', 'TERMINATION_FEE', 'TERMINATION_RIGHTS',
+      'PROXY_MEETING_COVENANTS', 'MERGER_STRUCTURE_CLOSING', 'MISC_BOILERPLATE',
+      'REPRESENTATIONS', 'SPECIFIC_PERFORMANCE_REMEDIES', 'TERMINATION_FEE', 'TERMINATION_RIGHTS',
       'FINANCING_COVENANTS', 'GUARANTY_FINANCING_PARTY',
       'TAX_MATTERS', 'DIVIDENDS', 'APPRAISAL_DISSENTERS_RIGHTS',
     ].includes(family.family_id))
@@ -433,10 +434,12 @@ test('Merger Structure and Closing Mechanics product parity is native-complete w
   assert.equal(transactionSteps.source_path, 'pages/api/provisions.js');
   assert.equal(family.wave_a.checks.producer.state, 'PASS');
   assert.equal(family.wave_a.checks.registry.state, 'PASS');
-  assert.equal(family.wave_a.checks.resolver.state, 'OPEN');
+  assert.equal(family.wave_a.checks.fixture_proof.state, 'PASS');
+  assert.equal(family.wave_a.checks.lexical_net.state, 'PASS');
+  assert.equal(family.wave_a.checks.resolver.state, 'PASS');
   assert.equal(
     CURRENT_M3_FAMILY_PARITY_STATUS.family_states
       .find((entry) => entry.family_id === family.family_id).completion_state,
-    'WAVE_A_OPEN',
+    'FAMILY_COMPLETE',
   );
 });
