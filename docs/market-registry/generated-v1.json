@@ -7,7 +7,7 @@
     "lib/vocab/ioc-categories.js"
   ],
   "generated_at": "2026-07-06T20:11:24.931Z",
-  "field_count": 1330,
+  "field_count": 1346,
   "fields": [
     {
       "key": "absenceOfChangesExceptions",
@@ -20449,31 +20449,6 @@
       "origin": "rubric-features"
     },
     {
-      "key": "rubric.cov.tsa_contemplated",
-      "label": "Transition Services Agreement contemplated",
-      "data_type": "BOOLEAN",
-      "applies_to": "COV",
-      "party_scope": "DEAL_LEVEL",
-      "structural_patterns": [
-        "THREE_STATE"
-      ],
-      "states": [
-        "PRESENT",
-        "ABSENT"
-      ],
-      "source_file": "lib/rubric.js",
-      "resolver_stub": {
-        "resolver_kind": "DIRECT_PATH",
-        "source": "lib/rubric.js",
-        "json_path": "rubric.cov.tsa_contemplated",
-        "stateful_test_deal_ids_required": true,
-        "notes": "Resolve rubric.cov.tsa_contemplated from lib/rubric.js; normalise to BOOLEAN before activation."
-      },
-      "resolver_notes": null,
-      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
-      "origin": "rubric-features"
-    },
-    {
       "key": "rubric.def.acquisition_proposal_percentage",
       "label": "Acquisition Proposal Percentage Threshold",
       "data_type": "FLOAT_PERCENT",
@@ -35045,32 +35020,6 @@
       "origin": "schema-features"
     },
     {
-      "key": "tsaContemplated",
-      "label": "Transition Services Agreement contemplated",
-      "data_type": "BOOLEAN",
-      "applies_to": "COV",
-      "party_scope": "DEAL_LEVEL",
-      "structural_patterns": [
-        "THREE_STATE",
-        "COMPONENT_LIMB"
-      ],
-      "states": [
-        "PRESENT",
-        "ABSENT"
-      ],
-      "source_file": "lib/schema/features.js",
-      "resolver_stub": {
-        "resolver_kind": "DIRECT_PATH",
-        "source": "lib/schema/features.js",
-        "json_path": "tsaContemplated",
-        "stateful_test_deal_ids_required": true,
-        "notes": "Resolve tsaContemplated from lib/schema/features.js; normalise to BOOLEAN before activation."
-      },
-      "resolver_notes": "Transition Services Agreement contemplated",
-      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
-      "origin": "schema-features"
-    },
-    {
       "key": "undisclosedLiabilitiesExceptions",
       "label": "Undisclosed-liabilities exceptions",
       "data_type": "ENUM_MULTI",
@@ -35525,6 +35474,479 @@
         "absorbed_from": []
       },
       "status": "PENDING_REVIEW"
+    },
+    {
+      "key": "interestRateBasis",
+      "label": "Interest-rate basis on late payment",
+      "data_type": "TEXT",
+      "applies_to": "TERMF",
+      "party_scope": "PER_PARTY",
+      "structural_patterns": [
+        "THREE_STATE",
+        "PARTY_ASYMMETRIC"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "interestRateBasis",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve interestRateBasis from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "Basis of the late-payment interest rate — the published reference rate the late fee accrues at (WSJ prime / named-bank prime / 6-month Treasury / LIBOR / fixed). The spread and the named source stay on interestOnLatePayment.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features"
+    },
+    {
+      "key": "interveningEventType",
+      "label": "Intervening Event — grade code (IE_POSITIVE_ONLY / IE_POSITIVE_OR_NEGATIVE / IE_NONE)",
+      "data_type": "TEXT",
+      "applies_to": "NOSOL",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "interveningEventType",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve interveningEventType from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "Coded intervening-event grade (Ben-decided codebook). IE_POSITIVE_ONLY: the definition is expressly limited to positive/value-increasing developments. IE_POSITIVE_OR_NEGATIVE: the definition covers any material unknown/unforeseeable development, positive or negative. IE_NONE: no intervening-event fiduciary out. The excluded-event carve-out list rides interveningEventExceptions. Codebook: INTERVENING_EVENT_TYPE in lib/taxonomy.js.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features"
+    },
+    {
+      "key": "antitrustEffortsStandard",
+      "label": "Antitrust efforts standard",
+      "data_type": "ENUM",
+      "applies_to": "ANTI",
+      "party_scope": "PER_PARTY",
+      "structural_patterns": [
+        "THREE_STATE",
+        "PARTY_ASYMMETRIC"
+      ],
+      "states": [
+        "best-efforts",
+        "commercially-reasonable-efforts",
+        "flat",
+        "good-faith-efforts",
+        "reasonable-best-efforts",
+        "reasonable-efforts"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "antitrustEffortsStandard",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve antitrustEffortsStandard from lib/schema/features.js; normalise to ENUM before activation."
+      },
+      "resolver_notes": "TODO: describe Antitrust efforts standard.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features"
+    },
+    {
+      "key": "absenceConductedOrdinaryCourse",
+      "label": "Absence-of-changes — conducted in ordinary course",
+      "data_type": "BOOLEAN",
+      "applies_to": "REP-T",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "absenceConductedOrdinaryCourse",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve absenceConductedOrdinaryCourse from lib/schema/features.js; normalise to BOOLEAN before activation."
+      },
+      "resolver_notes": "TODO: describe Absence-of-changes — conducted in ordinary course.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features"
+    },
+    {
+      "key": "absenceSpecifiedIOCReferences",
+      "label": "Absence-of-changes — specified IOC references",
+      "data_type": "TEXT",
+      "applies_to": "REP-T",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "absenceSpecifiedIOCReferences",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve absenceSpecifiedIOCReferences from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "TODO: describe Absence-of-changes — specified IOC references.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features"
+    },
+    {
+      "key": "feeExpenseAllocationExceptions",
+      "label": "Fee / expense allocation exceptions",
+      "data_type": "TEXT",
+      "applies_to": "MISC",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "feeExpenseAllocationExceptions",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve feeExpenseAllocationExceptions from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "TODO: describe Fee / expense allocation exceptions.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features"
+    },
+    {
+      "key": "absenceSpecifiedIOCs",
+      "label": "Absence-of-changes — specified IOCs absent",
+      "data_type": "BOOLEAN",
+      "applies_to": "REP-T",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "absenceSpecifiedIOCs",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve absenceSpecifiedIOCs from lib/schema/features.js; normalise to BOOLEAN before activation."
+      },
+      "resolver_notes": "TODO: describe Absence-of-changes — specified IOCs absent.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features"
+    },
+    {
+      "key": "party_role",
+      "label": "IOC covenant party role — grammatical covenanting party (e.g. COMPANY, PARENT, COLUMBUS, CABOT, SPINCO, REMAINCO, JV)",
+      "data_type": "TEXT",
+      "applies_to": "IOC",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "party_role",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve party_role from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "TODO: describe IOC covenant party role — grammatical covenanting party (e.g. COMPANY, PARENT, COLUMBUS, CABOT, SPINCO, REMAINCO, JV).",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features"
+    },
+    {
+      "key": "interveningEventExceptions",
+      "label": "Intervening Event exceptions",
+      "data_type": "ENUM_MULTI",
+      "applies_to": "NOSOL",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "interveningEventExceptions",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve interveningEventExceptions from lib/schema/features.js; normalise to ENUM_MULTI before activation."
+      },
+      "resolver_notes": "Excluded-event carve-out list from the Intervening Event definition (\"in no event shall ... constitute an Intervening Event\"), tagged with INTERVENING_EVENT_EXCEPTION_CODES (lib/taxonomy.js) and rendered as a carve-out pill list like the MAE carve-outs.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features"
+    },
+    {
+      "key": "notificationCovenantFailureStandard",
+      "label": "Notification covenant — covenant-failure standard",
+      "data_type": "ENUM",
+      "applies_to": "COV",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE"
+      ],
+      "states": [
+        "ALL_IN_MATERIAL_RESPECTS",
+        "EACH_IN_MATERIAL_RESPECTS",
+        "HYBRID"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "notificationCovenantFailureStandard",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve notificationCovenantFailureStandard from lib/schema/features.js; normalise to ENUM before activation."
+      },
+      "resolver_notes": "TODO: describe Notification covenant — covenant-failure standard.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features"
+    },
+    {
+      "key": "buyerEffortsCap",
+      "label": "Buyer antitrust efforts cap / prohibited remedy limit",
+      "data_type": "TEXT",
+      "applies_to": "ANTI",
+      "party_scope": "PER_PARTY",
+      "structural_patterns": [
+        "THREE_STATE",
+        "PARTY_ASYMMETRIC"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "buyerEffortsCap",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve buyerEffortsCap from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "TODO: describe Buyer antitrust efforts cap / prohibited remedy limit.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features"
+    },
+    {
+      "key": "targetEffortsCap",
+      "label": "Target antitrust efforts cap / prohibited remedy limit",
+      "data_type": "TEXT",
+      "applies_to": "ANTI",
+      "party_scope": "PER_PARTY",
+      "structural_patterns": [
+        "THREE_STATE",
+        "PARTY_ASYMMETRIC"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "targetEffortsCap",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve targetEffortsCap from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "TODO: describe Target antitrust efforts cap / prohibited remedy limit.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features"
+    },
+    {
+      "key": "nominalTargetParty",
+      "label": "Nominal target party for role coding",
+      "data_type": "TEXT",
+      "applies_to": "STRUCT",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "nominalTargetParty",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve nominalTargetParty from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "TODO: describe Nominal target party for role coding.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features"
+    },
+    {
+      "key": "informationSharing",
+      "label": "Information sharing — primary grade (TERMS_AND_COPIES / TERMS_ONLY / NOTICE_ONLY)",
+      "data_type": "TEXT",
+      "applies_to": "NOSOL",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "informationSharing",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve informationSharing from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "Coded information-sharing grade (Ben-decided codebook, 2026-07-20) for the NOSOL notice/disclosure provision: what the Company must hand over about an inbound competing proposal. TERMS_AND_COPIES: full material terms plus copies of bid documents. TERMS_ONLY: material terms described, no documents. NOTICE_ONLY: bare notice that a proposal arrived (a market-floor value with zero corpus precedent as of 2026-07 — no deck in the corpus pass coded to it). Redaction posture on any copies rides copiesScope; bidder-identity disclosure rides bidderIdentity; ongoing-update cadence rides ongoingUpdates; pre-engagement notice rides engagementNotice. Codebook: INFORMATION_SHARING_GRADE in lib/taxonomy.js.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features"
+    },
+    {
+      "key": "copiesScope",
+      "label": "Copies redaction posture (UNREDACTED / UNSPECIFIED / REDACTION_PERMITTED)",
+      "data_type": "TEXT",
+      "applies_to": "NOSOL",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "copiesScope",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve copiesScope from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "When informationSharing is TERMS_AND_COPIES, the redaction posture of the copies of bid documents the Company must provide Parent: UNREDACTED (must be complete/unredacted), UNSPECIFIED (agreement is silent on redaction), or REDACTION_PERMITTED (bidder-confidential redactions expressly allowed). Not stamped for TERMS_ONLY / NOTICE_ONLY decks (no documents change hands). Codebook: COPIES_SCOPE in lib/taxonomy.js.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features"
+    },
+    {
+      "key": "bidderIdentity",
+      "label": "Bidder identity disclosure (REQUIRED / CARVEOUT / NOT_REQUIRED)",
+      "data_type": "TEXT",
+      "applies_to": "NOSOL",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "bidderIdentity",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve bidderIdentity from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "Whether the notice provision requires disclosure of the identity of the Person making the competing proposal at receipt: REQUIRED (identity required), CARVEOUT (identity required unless a pre-signing confidentiality/NDA restriction already in effect blocks it), or NOT_REQUIRED (identity not required at receipt). Codebook: BIDDER_IDENTITY_REQUIREMENT in lib/taxonomy.js.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features"
+    },
+    {
+      "key": "ongoingUpdates",
+      "label": "Ongoing-updates standard (DEADLINE / REASONABLY_INFORMED / ON_REQUEST / NONE)",
+      "data_type": "TEXT",
+      "applies_to": "NOSOL",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "ongoingUpdates",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve ongoingUpdates from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "The standard governing the Company's continuing duty to keep Parent apprised of a competing process after the initial notice: DEADLINE (updates due within a fixed deadline of each material development), REASONABLY_INFORMED (keep Parent reasonably informed on a current basis, no fixed clock), ON_REQUEST (updates provided upon Parent's request), or NONE (no ongoing-update obligation). Codebook: ONGOING_UPDATES_STANDARD in lib/taxonomy.js.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features"
+    },
+    {
+      "key": "engagementNotice",
+      "label": "Engagement notice timing (ADVANCE / PROMPT_AFTER / NONE)",
+      "data_type": "TEXT",
+      "applies_to": "NOSOL",
+      "party_scope": "DEAL_LEVEL",
+      "structural_patterns": [
+        "THREE_STATE"
+      ],
+      "states": [
+        "PRESENT",
+        "ABSENT",
+        "UNKNOWN"
+      ],
+      "source_file": "lib/schema/features.js",
+      "resolver_stub": {
+        "resolver_kind": "DIRECT_PATH",
+        "source": "lib/schema/features.js",
+        "json_path": "engagementNotice",
+        "stateful_test_deal_ids_required": true,
+        "notes": "Resolve engagementNotice from lib/schema/features.js; normalise to TEXT before activation."
+      },
+      "resolver_notes": "Whether the Company must notify Parent before or after it begins providing information to, or engaging in discussions with, a bidder: ADVANCE (notice required before engaging), PROMPT_AFTER (notice required promptly, typically 24-48 hours, after the Company has already begun engaging), or NONE (no separate notice of the decision to engage). Deliberately omitted (not stamped) on decks where the corpus pass could not establish the timing from stored text — never default-guessed. Codebook: ENGAGEMENT_NOTICE_TIMING in lib/taxonomy.js.",
+      "test_deal_ids_required_per_state": "Required before ACTIVE registry promotion.",
+      "origin": "schema-features"
     }
   ]
 }

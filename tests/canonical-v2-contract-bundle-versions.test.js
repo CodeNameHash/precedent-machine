@@ -90,6 +90,7 @@ const {
   compileFixtureContractV23,
   compileFixtureContractV24,
   compileFixtureContractV25,
+  compileFixtureContractV26,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -202,7 +203,7 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F25 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F26 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
@@ -227,6 +228,7 @@ test('F1 through F25 are distinct recognised fixture contract fingerprints', () 
   assert.notEqual(compileFixtureContractV22().fingerprint, compileFixtureContractV23().fingerprint);
   assert.notEqual(compileFixtureContractV23().fingerprint, compileFixtureContractV24().fingerprint);
   assert.notEqual(compileFixtureContractV24().fingerprint, compileFixtureContractV25().fingerprint);
+  assert.notEqual(compileFixtureContractV25().fingerprint, compileFixtureContractV26().fingerprint);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -255,6 +257,7 @@ test('F1 through F25 are distinct recognised fixture contract fingerprints', () 
       compileFixtureContractV23().fingerprint,
       compileFixtureContractV24().fingerprint,
       compileFixtureContractV25().fingerprint,
+      compileFixtureContractV26().fingerprint,
     ].sort(),
   );
   assert.deepEqual(

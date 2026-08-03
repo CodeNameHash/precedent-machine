@@ -478,7 +478,7 @@ test('compiles the exact current PM sources into one deterministic registry', ()
   assert.equal(first.schema_version, 'PRODUCT_FIELD_SOURCE_REGISTRY/V1');
   assert.equal(first.stable_id, 'PRODUCT_FIELD_SOURCE_REGISTRY');
   assert.equal(first.source_bindings.length, 3);
-  assert.equal(first.field_definitions.length, 15 + 12 + 334);
+  assert.equal(first.field_definitions.length, 15 + 12 + 333);
   assert.equal(first.source_exclusions.length, 0);
   assert.equal(
     first.canonical_payload_digest,
@@ -489,12 +489,12 @@ test('compiles the exact current PM sources into one deterministic registry', ()
   assert.equal(Object.isFrozen(first.field_definitions[0].source_binding), true);
   assert.equal(
     inventory.agreement_query_surface.distinct_user_facing_field_count,
-    334,
+    333,
   );
-  assert.equal(inventory.agreement_query_surface.field_occurrence_count, 492);
-  assert.equal(inventory.serving_registry.observed_entry_count, 700);
+  assert.equal(inventory.agreement_query_surface.field_occurrence_count, 491);
+  assert.equal(inventory.serving_registry.observed_entry_count, 699);
   assert.equal(inventory.serving_registry.alias_collision_count, 156);
-  assert.equal(input.agreement_alias_decisions.mappings.length, 490);
+  assert.equal(input.agreement_alias_decisions.mappings.length, 489);
   assert.ok(
     input.agreement_alias_decisions.rejected_collision_claims.length > 0,
   );
@@ -546,7 +546,7 @@ test('records one explicit exclusion without losing source reconciliation', () =
   input.enumeration_certification = expectedEnumerationCertification(input);
   const registry = buildProductFieldSourceRegistry(input);
 
-  assert.equal(registry.field_definitions.length, 15 + 12 + 333);
+  assert.equal(registry.field_definitions.length, 15 + 12 + 333 - 1);
   assert.equal(registry.source_exclusions.length, 1);
   assert.equal(
     registry.source_exclusions[0].source_binding.source_field_key,

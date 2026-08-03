@@ -7620,17 +7620,6 @@ Entry count: 699.
 - benchmarkable: false
 - stableAnchor: false
 
-### tsaContemplated
-
-- key: tsaContemplated
-- displayName: Transition Services Agreement contemplated
-- type: boolean
-- aliases: rubric.cov.tsa_contemplated, tsaContemplated, tsa_contemplated
-- sourceOfTruth: lib/schema/features.js:18279
-- usedIn: pages/review/[id].js
-- benchmarkable: true
-- stableAnchor: false
-
 ### undisclosedLiabilitiesExceptions
 
 - key: undisclosedLiabilitiesExceptions

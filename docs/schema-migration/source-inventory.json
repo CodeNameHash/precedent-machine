@@ -8884,9 +8884,8 @@
       },
       {
         "type": "COV",
-        "rows": 17,
+        "rows": 16,
         "featureKeys": [
-          "tsaContemplated",
           "baseSalaryStandard",
           "bonusStandard",
           "targetBonusStandard",
@@ -9185,7 +9184,7 @@
       "aocCitedCovenantNames",
       "reapplied_corrections"
     ],
-    "validatedRubricKeys": 481
+    "validatedRubricKeys": 480
   },
   "ui": {
     "files": [
@@ -9435,7 +9434,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/conditions.config.js",
-            "line": 573,
+            "line": 598,
             "kind": "features_property"
           }
         ]
@@ -9535,12 +9534,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/conditions.config.js",
-            "line": 93,
+            "line": 95,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/conditions.config.js",
-            "line": 399,
+            "line": 424,
             "kind": "features_property"
           }
         ]
@@ -9590,7 +9589,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/antitrust-regulatory.config.js",
-            "line": 66,
+            "line": 70,
             "kind": "features_property"
           }
         ]
@@ -9710,7 +9709,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/conditions.config.js",
-            "line": 490,
+            "line": 515,
             "kind": "features_property"
           }
         ]
@@ -9720,7 +9719,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/antitrust-regulatory.config.js",
-            "line": 259,
+            "line": 279,
             "kind": "features_property"
           }
         ]
@@ -9730,7 +9729,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/antitrust-regulatory.config.js",
-            "line": 259,
+            "line": 278,
             "kind": "features_property"
           }
         ]
@@ -9945,7 +9944,7 @@
         "hits": [
           {
             "file": "components/review/table-configs/antitrust-regulatory.config.js",
-            "line": 64,
+            "line": 68,
             "kind": "features_property"
           }
         ]
@@ -11005,12 +11004,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/antitrust-regulatory.config.js",
-            "line": 306,
+            "line": 327,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/antitrust-regulatory.config.js",
-            "line": 336,
+            "line": 356,
             "kind": "features_property"
           }
         ]
@@ -11150,12 +11149,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/general-covenants.config.js",
-            "line": 69,
+            "line": 71,
             "kind": "object_key_literal"
           },
           {
             "file": "components/review/table-configs/general-covenants.config.js",
-            "line": 112,
+            "line": 114,
             "kind": "object_key_literal"
           },
           {
@@ -11455,17 +11454,17 @@
         "hits": [
           {
             "file": "components/review/table-configs/tail-fee.config.js",
-            "line": 155,
+            "line": 168,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/tail-fee.config.js",
-            "line": 156,
+            "line": 170,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/tail-fee.config.js",
-            "line": 180,
+            "line": 188,
             "kind": "features_property"
           }
         ]
@@ -11475,7 +11474,32 @@
         "hits": [
           {
             "file": "components/review/table-configs/tail-fee.config.js",
-            "line": 163,
+            "line": 172,
+            "kind": "features_property"
+          },
+          {
+            "file": "components/review/table-configs/tail-fee.config.js",
+            "line": 193,
+            "kind": "features_property"
+          }
+        ]
+      },
+      {
+        "key": "tailFeeSameProposalRequired",
+        "hits": [
+          {
+            "file": "components/review/table-configs/tail-fee.config.js",
+            "line": 171,
+            "kind": "features_property"
+          }
+        ]
+      },
+      {
+        "key": "tailFeeThresholdPct",
+        "hits": [
+          {
+            "file": "components/review/table-configs/tail-fee.config.js",
+            "line": 166,
             "kind": "features_property"
           },
           {
@@ -11486,41 +11510,16 @@
         ]
       },
       {
-        "key": "tailFeeSameProposalRequired",
-        "hits": [
-          {
-            "file": "components/review/table-configs/tail-fee.config.js",
-            "line": 161,
-            "kind": "features_property"
-          }
-        ]
-      },
-      {
-        "key": "tailFeeThresholdPct",
-        "hits": [
-          {
-            "file": "components/review/table-configs/tail-fee.config.js",
-            "line": 153,
-            "kind": "features_property"
-          },
-          {
-            "file": "components/review/table-configs/tail-fee.config.js",
-            "line": 177,
-            "kind": "features_property"
-          }
-        ]
-      },
-      {
         "key": "tailFeeWindowMonths",
         "hits": [
           {
             "file": "components/review/table-configs/tail-fee.config.js",
-            "line": 152,
+            "line": 164,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/tail-fee.config.js",
-            "line": 171,
+            "line": 181,
             "kind": "features_property"
           }
         ]
@@ -11565,12 +11564,12 @@
         "hits": [
           {
             "file": "components/review/table-configs/antitrust-regulatory.config.js",
-            "line": 309,
+            "line": 328,
             "kind": "features_property"
           },
           {
             "file": "components/review/table-configs/antitrust-regulatory.config.js",
-            "line": 353,
+            "line": 377,
             "kind": "features_property"
           }
         ]

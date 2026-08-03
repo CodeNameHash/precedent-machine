@@ -43,11 +43,12 @@ const REGISTERED_CONCEPT_KEYS = new Set([
   'CONS-PERSHARE', 'CONS-RATIO', 'CONS-DISSENT',
   'IOC-ACCOUNTING', 'IOC-CAPEX', 'IOC-CHARTER', 'IOC-COMP', 'IOC-CONTRACT',
   'IOC-DEBT', 'IOC-DIVIDEND', 'IOC-ISSUE', 'IOC-MERGE', 'IOC-SETTLE', 'IOC-TAX',
+  'COV-PROXY', 'COV-MEETING',
 ]);
 
 test('LEXICAL_FAMILY_LEXICON_VERSION bumped 1 -> 2 (fee slice), then 2 -> 3 (no-shop slice), then 3 -> 4 (family-mae-definition slice)', () => {
   assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 9);
-  assert.equal(LEXICAL_FAMILY_LEXICON.version, 8);
+  assert.equal(LEXICAL_FAMILY_LEXICON.version, 9);
 });
 
 test('table validation: every entry has a non-empty pattern_id, family, kind, value, rationale; no duplicate pattern_id; every family is a registered concept key', () => {

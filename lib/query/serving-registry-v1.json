@@ -17887,28 +17887,6 @@
       }
     },
     {
-      "key": "tsaContemplated",
-      "displayName": "Transition Services Agreement contemplated",
-      "type": "boolean",
-      "aliases": [
-        "rubric.cov.tsa_contemplated",
-        "tsaContemplated",
-        "tsa_contemplated"
-      ],
-      "sourceOfTruth": "lib/schema/features.js:18279",
-      "usedIn": [
-        "pages/review/[id].js"
-      ],
-      "benchmarkable": true,
-      "stableAnchor": false,
-      "provenance": {
-        "origin": "schema-features",
-        "originalDataType": "BOOLEAN",
-        "appliesTo": "COV",
-        "provisionCodes": []
-      }
-    },
-    {
       "key": "undisclosedLiabilitiesExceptions",
       "displayName": "Undisclosed-liabilities exceptions",
       "type": "enum",

@@ -3,7 +3,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContractV20, compileFixtureContractV25 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV20, compileFixtureContractV26 } = require('../lib/canonical-v2/contract-bundle');
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
 const { parseDivestitureCapAmount, parseFilingDeadlineDays, ANTITRUST_REGULATORY_PARSE_VERSION } = require('../lib/canonical-v2/native-producer/antitrust-regulatory-parse');
 const { buildAntitrustRegulatoryProducerPrompt } = require('../lib/canonical-v2/native-producer/antitrust-regulatory-producer-prompt');
@@ -81,7 +81,7 @@ test('M3-B corroboration requires distinct grounded antitrust facts', () => {
 });
 
 test('antitrust lexical entries are registered and include the bounded family set', () => {
-  const registered = new Set(compileFixtureContractV25().concepts.map((concept) => concept.concept_key));
+  const registered = new Set(compileFixtureContractV26().concepts.map((concept) => concept.concept_key));
   assert.doesNotThrow(() => validateLexicalFamilyLexicon(LEXICAL_FAMILY_LEXICON, { registeredConceptKeys: registered }));
   assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 9);
   for (const family of ['ANTI-EFFORTS', 'ANTI-BURDEN', 'ANTI-LITIGATION', 'ANTI-TIMING', 'ANTI-FILING']) {

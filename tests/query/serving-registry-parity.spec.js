@@ -23,7 +23,7 @@ test('Query serving registry is the deterministic _meta and entries projection',
   assert.deepEqual(serving, buildServingRegistry(source));
   assert.equal(fs.readFileSync(TARGET_PATH, 'utf8'), serializeServingRegistry(serving));
   assert.deepEqual(Object.keys(serving), ['_meta', 'entries']);
-  assert.equal(serving.entries.length, 700);
+  assert.equal(serving.entries.length, 699);
   assert.equal(source.triples.length, 71576);
   assert.equal(serving._meta.version, source._meta.version);
   assert.equal(digest(serving.entries), digest(source.entries));

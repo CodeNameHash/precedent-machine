@@ -1,14 +1,14 @@
 # Market Registry Merge Report
 
-input rows: 1327
-output rows: 683
+input rows: 1346
+output rows: 687
 mechanical merges: 701
-flagged near-duplicates: 59
-groups untouched: 158
+flagged near-duplicates: 39
+groups untouched: 182
 
 ## REQUIRES_REVIEWER_DECISION
 
-- 59 rows in generated-v1.deduped.json carry review_flag=REQUIRES_REVIEWER_DECISION.
+- 39 rows in generated-v1.deduped.json carry review_flag=REQUIRES_REVIEWER_DECISION.
 
 ## Mechanical Merge Groups
 
@@ -174,7 +174,6 @@ groups untouched: 158
 - publicStatementsCarveoutCompany: rubric.cov.public_statements_carveout_company
 - publicStatementsCarveoutParent: rubric.cov.public_statements_carveout_parent
 - publicStatementsJointApproval: rubric.cov.public_statements_joint_approval
-- tsaContemplated: rubric.cov.tsa_contemplated
 - acquisitionProposalPercentage: rubric.def.acquisition_proposal_percentage
 - canonicalTerm: rubric.def.canonical_term
 - carveouts: rubric.def.carve_outs, rubric.def.carveouts
@@ -213,6 +212,7 @@ groups untouched: 158
 - newHireExceptions: rubric.ioc.new_hire_exceptions
 - ordinaryCourseCarveout: rubric.ioc.ordinary_course_carveout
 - parentBuyerIocBuckets: rubric.ioc.parent_buyer_ioc_buckets
+- party_role: rubric.ioc.party_role
 - permittedExceptions: rubric.ioc.permitted_exceptions
 - positiveObligations: rubric.ioc.positive_obligations
 - requiredByLawCarveout: rubric.ioc.required_by_law_carveout
@@ -528,6 +528,7 @@ groups untouched: 158
 - REQUIRES_REVIEWER_DECISION negativePreambleExceptions <= rubric.ioc_negative_preamble.negative_preamble_exceptions: party_scope
 - REQUIRES_REVIEWER_DECISION dollarThreshold <= rubric.ioc.dollar_threshold: data_type
 - REQUIRES_REVIEWER_DECISION interimSettlementCap <= rubric.ioc.interim_settlement_cap: data_type
+- REQUIRES_REVIEWER_DECISION party_role <= rubric.ioc.party_role: party_scope
 - REQUIRES_REVIEWER_DECISION extraContractualClaimsWaived <= rubric.misc.extra_contractual_claims_waived: party_scope
 - REQUIRES_REVIEWER_DECISION fraudCarveout <= rubric.misc.fraud_carveout: party_scope
 - REQUIRES_REVIEWER_DECISION mainConcept <= rubric.misc.main_concept: party_scope

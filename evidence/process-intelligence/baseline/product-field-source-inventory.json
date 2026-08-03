@@ -18,8 +18,8 @@
     },
     {
       "path": "lib/query/serving-registry-v1.json",
-      "sha256": "a07d2e16e7370f807c0ea01c619ead25fab4969c87313389abbe30cbaa4c221d",
-      "byte_length": 526146,
+      "sha256": "ecbace4566431277bb96b34eead1c03cc3ca4ca7e10fe15bf0796bcfbb95e8de",
+      "byte_length": 525554,
       "disposition": "INCLUDE_PINNED_PRODUCT_SOURCE"
     }
   ],
@@ -234,7 +234,7 @@
       },
       {
         "provision_type": "COVENANT_OTHER",
-        "current_user_facing_field_count": 13,
+        "current_user_facing_field_count": 12,
         "disposition": "INCLUDE_CURRENT_AGREEMENT_PROVISION_TYPE",
         "disposition_reason": "The pinned PM query surface returns one or more user-facing fields for this type."
       },
@@ -299,8 +299,8 @@
         "disposition_reason": "The pinned PM query surface returns one or more user-facing fields for this type."
       }
     ],
-    "distinct_user_facing_field_count": 334,
-    "field_occurrence_count": 492,
+    "distinct_user_facing_field_count": 333,
+    "field_occurrence_count": 491,
     "fields": [
       {
         "field_key": "absenceOfChangesExceptions",
@@ -8821,29 +8821,6 @@
         "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
       },
       {
-        "field_key": "tsaContemplated",
-        "label": "Transition Services Agreement contemplated",
-        "value_type": "boolean",
-        "unit": null,
-        "coded": false,
-        "boolean": true,
-        "numeric": false,
-        "provision_types": [
-          "COVENANT_OTHER"
-        ],
-        "source_occurrences": [
-          {
-            "provision_type": "COVENANT_OTHER",
-            "source_kind": "SERVING_REGISTRY_ENTRY",
-            "source_request_key": "tsaContemplated",
-            "source_registry_index": 682
-          }
-        ],
-        "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
-        "future_result_type_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES",
-        "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
-      },
-      {
         "field_key": "undisclosedLiabilitiesExceptions",
         "label": "Undisclosed-liabilities exceptions",
         "value_type": "enum",
@@ -8860,13 +8837,13 @@
             "provision_type": "REPRESENTATION",
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "undisclosedLiabilitiesExceptions",
-            "source_registry_index": 683
+            "source_registry_index": 682
           },
           {
             "provision_type": "NO_OTHER_REPS",
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "undisclosedLiabilitiesExceptions",
-            "source_registry_index": 683
+            "source_registry_index": 682
           }
         ],
         "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
@@ -8890,13 +8867,13 @@
             "provision_type": "CONSIDERATION",
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "vestingAcceleration",
-            "source_registry_index": 687
+            "source_registry_index": 686
           },
           {
             "provision_type": "EMPLOYEE_BENEFITS",
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "vestingAcceleration",
-            "source_registry_index": 687
+            "source_registry_index": 686
           }
         ],
         "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
@@ -8920,13 +8897,13 @@
             "provision_type": "CONSIDERATION",
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "walkAwayRight",
-            "source_registry_index": 691
+            "source_registry_index": 690
           },
           {
             "provision_type": "EMPLOYEE_BENEFITS",
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "walkAwayRight",
-            "source_registry_index": 691
+            "source_registry_index": 690
           }
         ],
         "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
@@ -8950,13 +8927,13 @@
             "provision_type": "NO_OTHER_REPS",
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "willfulBreachCoversOmissions",
-            "source_registry_index": 692
+            "source_registry_index": 691
           },
           {
             "provision_type": "MISC_BOILERPLATE",
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "willfulBreachCoversOmissions",
-            "source_registry_index": 692
+            "source_registry_index": 691
           }
         ],
         "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
@@ -8981,19 +8958,19 @@
             "provision_type": "DEFINITION",
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "willfulBreachDefinition",
-            "source_registry_index": 693
+            "source_registry_index": 692
           },
           {
             "provision_type": "NO_OTHER_REPS",
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "willfulBreachDefinition",
-            "source_registry_index": 693
+            "source_registry_index": 692
           },
           {
             "provision_type": "MISC_BOILERPLATE",
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "willfulBreachDefinition",
-            "source_registry_index": 693
+            "source_registry_index": 692
           }
         ],
         "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
@@ -9017,13 +8994,13 @@
             "provision_type": "NO_OTHER_REPS",
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "willfulBreachLimitedToMaterial",
-            "source_registry_index": 695
+            "source_registry_index": 694
           },
           {
             "provision_type": "MISC_BOILERPLATE",
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "willfulBreachLimitedToMaterial",
-            "source_registry_index": 695
+            "source_registry_index": 694
           }
         ],
         "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
@@ -9047,13 +9024,13 @@
             "provision_type": "NO_OTHER_REPS",
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "willfulBreachRequiresActualKnowledge",
-            "source_registry_index": 696
+            "source_registry_index": 695
           },
           {
             "provision_type": "MISC_BOILERPLATE",
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "willfulBreachRequiresActualKnowledge",
-            "source_registry_index": 696
+            "source_registry_index": 695
           }
         ],
         "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
@@ -9077,13 +9054,13 @@
             "provision_type": "CONSIDERATION",
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "withholdingProvision",
-            "source_registry_index": 697
+            "source_registry_index": 696
           },
           {
             "provision_type": "EMPLOYEE_BENEFITS",
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "withholdingProvision",
-            "source_registry_index": 697
+            "source_registry_index": 696
           }
         ],
         "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
@@ -9094,9 +9071,9 @@
   },
   "serving_registry": {
     "declared_entry_count": 698,
-    "observed_entry_count": 700,
+    "observed_entry_count": 699,
     "declared_count_matches_observed": false,
-    "included_input_count": 329,
+    "included_input_count": 328,
     "excluded_input_count": 371,
     "alias_collision_count": 156,
     "alias_collisions": [
@@ -9580,7 +9557,7 @@
         "alias": "feeSoleRemedyExceptions",
         "claimant_registry_indexes": [
           294,
-          694
+          693
         ],
         "resolved_registry_index": 294,
         "resolved_registry_key": "feeSoleRemedyExceptions",
@@ -10997,7 +10974,7 @@
         "alias": "willfulBreachException",
         "claimant_registry_indexes": [
           294,
-          694
+          693
         ],
         "resolved_registry_index": 294,
         "resolved_registry_key": "feeSoleRemedyExceptions",
@@ -29115,29 +29092,6 @@
       {
         "input_id": "SERVING_REGISTRY_ENTRY:682",
         "registry_index": 682,
-        "key": "tsaContemplated",
-        "display_name": "Transition Services Agreement contemplated",
-        "value_type": "boolean",
-        "aliases": [
-          "tsaContemplated",
-          "rubric.cov.tsa_contemplated",
-          "tsa_contemplated"
-        ],
-        "runtime_resolved_aliases": [
-          "tsaContemplated",
-          "rubric.cov.tsa_contemplated",
-          "tsa_contemplated"
-        ],
-        "runtime_shadowed_aliases": [],
-        "source_of_truth": "lib/schema/features.js:18279",
-        "applies_to": "COV",
-        "provision_codes": [],
-        "disposition": "INCLUDE_AS_CURRENT_AGREEMENT_QUERY_FIELD_SOURCE",
-        "disposition_reason": "At least one current user-facing Agreement field resolves from this exact registry row."
-      },
-      {
-        "input_id": "SERVING_REGISTRY_ENTRY:683",
-        "registry_index": 683,
         "key": "undisclosedLiabilitiesExceptions",
         "display_name": "Undisclosed-liabilities exceptions",
         "value_type": "enum",
@@ -29175,8 +29129,8 @@
         "disposition_reason": "At least one current user-facing Agreement field resolves from this exact registry row."
       },
       {
-        "input_id": "SERVING_REGISTRY_ENTRY:684",
-        "registry_index": 684,
+        "input_id": "SERVING_REGISTRY_ENTRY:683",
+        "registry_index": 683,
         "key": "unionContracts",
         "display_name": "Union / CBA Treatment",
         "value_type": "string",
@@ -29200,8 +29154,8 @@
         "disposition_reason": "No current user-facing Agreement field resolves from this exact registry row."
       },
       {
-        "input_id": "SERVING_REGISTRY_ENTRY:685",
-        "registry_index": 685,
+        "input_id": "SERVING_REGISTRY_ENTRY:684",
+        "registry_index": 684,
         "key": "upperBound",
         "display_name": "Upper bound (price or %)",
         "value_type": "string",
@@ -29225,8 +29179,8 @@
         "disposition_reason": "No current user-facing Agreement field resolves from this exact registry row."
       },
       {
-        "input_id": "SERVING_REGISTRY_ENTRY:686",
-        "registry_index": 686,
+        "input_id": "SERVING_REGISTRY_ENTRY:685",
+        "registry_index": 685,
         "key": "value",
         "display_name": "Value (e.g. 0.5275 shares of Parent per share)",
         "value_type": "percent",
@@ -29248,8 +29202,8 @@
         "disposition_reason": "No current user-facing Agreement field resolves from this exact registry row."
       },
       {
-        "input_id": "SERVING_REGISTRY_ENTRY:687",
-        "registry_index": 687,
+        "input_id": "SERVING_REGISTRY_ENTRY:686",
+        "registry_index": 686,
         "key": "vestingAcceleration",
         "display_name": "Vesting Acceleration (overall / dominant vesting treatment)",
         "value_type": "percent",
@@ -29271,8 +29225,8 @@
         "disposition_reason": "At least one current user-facing Agreement field resolves from this exact registry row."
       },
       {
-        "input_id": "SERVING_REGISTRY_ENTRY:688",
-        "registry_index": 688,
+        "input_id": "SERVING_REGISTRY_ENTRY:687",
+        "registry_index": 687,
         "key": "vestingStatus",
         "display_name": "Vesting Status",
         "value_type": "string",
@@ -29292,8 +29246,8 @@
         "disposition_reason": "No current user-facing Agreement field resolves from this exact registry row."
       },
       {
-        "input_id": "SERVING_REGISTRY_ENTRY:689",
-        "registry_index": 689,
+        "input_id": "SERVING_REGISTRY_ENTRY:688",
+        "registry_index": 688,
         "key": "voteThreshold",
         "display_name": "Required Stockholder Vote Threshold (e.g. majority of outstanding)",
         "value_type": "string",
@@ -29317,8 +29271,8 @@
         "disposition_reason": "No current user-facing Agreement field resolves from this exact registry row."
       },
       {
-        "input_id": "SERVING_REGISTRY_ENTRY:690",
-        "registry_index": 690,
+        "input_id": "SERVING_REGISTRY_ENTRY:689",
+        "registry_index": 689,
         "key": "waiverStandard",
         "display_name": "Waiver Standard",
         "value_type": "string",
@@ -29338,8 +29292,8 @@
         "disposition_reason": "No current user-facing Agreement field resolves from this exact registry row."
       },
       {
-        "input_id": "SERVING_REGISTRY_ENTRY:691",
-        "registry_index": 691,
+        "input_id": "SERVING_REGISTRY_ENTRY:690",
+        "registry_index": 690,
         "key": "walkAwayRight",
         "display_name": "Walk-Away Right - object { present, party, trigger, fillOrKillOption, text }",
         "value_type": "string",
@@ -29361,8 +29315,8 @@
         "disposition_reason": "At least one current user-facing Agreement field resolves from this exact registry row."
       },
       {
-        "input_id": "SERVING_REGISTRY_ENTRY:692",
-        "registry_index": 692,
+        "input_id": "SERVING_REGISTRY_ENTRY:691",
+        "registry_index": 691,
         "key": "willfulBreachCoversOmissions",
         "display_name": "Willful Breach covers omissions",
         "value_type": "boolean",
@@ -29384,8 +29338,8 @@
         "disposition_reason": "At least one current user-facing Agreement field resolves from this exact registry row."
       },
       {
-        "input_id": "SERVING_REGISTRY_ENTRY:693",
-        "registry_index": 693,
+        "input_id": "SERVING_REGISTRY_ENTRY:692",
+        "registry_index": 692,
         "key": "willfulBreachDefinition",
         "display_name": "Willful Breach Defined",
         "value_type": "boolean",
@@ -29409,8 +29363,8 @@
         "disposition_reason": "At least one current user-facing Agreement field resolves from this exact registry row."
       },
       {
-        "input_id": "SERVING_REGISTRY_ENTRY:694",
-        "registry_index": 694,
+        "input_id": "SERVING_REGISTRY_ENTRY:693",
+        "registry_index": 693,
         "key": "willfulBreachException",
         "display_name": "Willful Breach Carve-out to Sole Remedy",
         "value_type": "boolean",
@@ -29442,8 +29396,8 @@
         "disposition_reason": "No current user-facing Agreement field resolves from this exact registry row."
       },
       {
-        "input_id": "SERVING_REGISTRY_ENTRY:695",
-        "registry_index": 695,
+        "input_id": "SERVING_REGISTRY_ENTRY:694",
+        "registry_index": 694,
         "key": "willfulBreachLimitedToMaterial",
         "display_name": "Willful Breach limited to material breaches",
         "value_type": "boolean",
@@ -29465,8 +29419,8 @@
         "disposition_reason": "At least one current user-facing Agreement field resolves from this exact registry row."
       },
       {
-        "input_id": "SERVING_REGISTRY_ENTRY:696",
-        "registry_index": 696,
+        "input_id": "SERVING_REGISTRY_ENTRY:695",
+        "registry_index": 695,
         "key": "willfulBreachRequiresActualKnowledge",
         "display_name": "Willful Breach requires actual knowledge",
         "value_type": "boolean",
@@ -29488,8 +29442,8 @@
         "disposition_reason": "At least one current user-facing Agreement field resolves from this exact registry row."
       },
       {
-        "input_id": "SERVING_REGISTRY_ENTRY:697",
-        "registry_index": 697,
+        "input_id": "SERVING_REGISTRY_ENTRY:696",
+        "registry_index": 696,
         "key": "withholdingProvision",
         "display_name": "Withholding Provision Included",
         "value_type": "boolean",
@@ -29511,8 +29465,8 @@
         "disposition_reason": "At least one current user-facing Agreement field resolves from this exact registry row."
       },
       {
-        "input_id": "SERVING_REGISTRY_ENTRY:698",
-        "registry_index": 698,
+        "input_id": "SERVING_REGISTRY_ENTRY:697",
+        "registry_index": 697,
         "key": "writtenConsentRequired",
         "display_name": "Written Consent Required (vs. oral)",
         "value_type": "boolean",
@@ -29536,8 +29490,8 @@
         "disposition_reason": "No current user-facing Agreement field resolves from this exact registry row."
       },
       {
-        "input_id": "SERVING_REGISTRY_ENTRY:699",
-        "registry_index": 699,
+        "input_id": "SERVING_REGISTRY_ENTRY:698",
+        "registry_index": 698,
         "key": "feeExpenseAllocationExceptions",
         "display_name": "General fee / expense allocation exceptions",
         "value_type": "string",
@@ -29575,7 +29529,7 @@
   "content_identity": {
     "scheme": "CANONICAL_CONTENT_ID/V1",
     "domain": "PROCESS_INTELLIGENCE_PRODUCT_FIELD_SOURCE_INVENTORY/V1",
-    "content_id": "f699a0c3e37b641c3063908b6e972217a7434a2618b01d3db8e1cbcb9c625af7",
-    "canonical_payload_sha256": "1f64fa3a758260e07fc67fe6738fc5a0d81c9078a51fde9c2986761f59160a60"
+    "content_id": "25a601d6679ddad0fb32c01f831e66d526cbd20ec08c74135c5b1fdbb1bef3a4",
+    "canonical_payload_sha256": "8fcabadf30c51128dcd3ba21d7220284ec75f40a6d340f2bef584b17bbb76436"
   }
 }
