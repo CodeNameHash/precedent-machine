@@ -47,6 +47,7 @@ const {
   FIXTURE_CONTRACT_INPUT_V28,
   FIXTURE_CONTRACT_INPUT_V29,
   FIXTURE_CONTRACT_INPUT_V30,
+  FIXTURE_CONTRACT_INPUT_V31,
   FIXTURE_CONTRACT_FINGERPRINTS,
   FIXTURE_SERVING_CONTRACT_FINGERPRINTS,
   BRINGS_DOWN_EFFECT_SCHEMA_V1,
@@ -100,6 +101,7 @@ const {
   compileFixtureContractV28,
   compileFixtureContractV29,
   compileFixtureContractV30,
+  compileFixtureContractV31,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -155,6 +157,7 @@ const FROZEN_F19 = '8ad419a69175c5c5db1506da15ccaff1d63fbf56c0d4424a123a0e7ebcfb
 const FROZEN_F28 = '1c0a086d1e9d20eb1eadcb6fab09527bbe9483189269e4ce6f8ba31b59402b1f';
 const FROZEN_F29 = '25a9b634ce4e8c3e6f06d6287e9514116f7f13fa1b986ab0f282ca62aae22691';
 const FROZEN_F30 = '971bc5619960cd54fb555a0260ba53f0e8d20f29f95bd6e9553ba8ddaf42be64';
+const FROZEN_F31 = '058f2fd1875715c7c19f651b6d3c862d408c51ed01bda524e3ba22db904aaba8';
 
 const APPROVED_V2_ADDITIONS = [
   'TERMR-BREACH',
@@ -215,7 +218,7 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F30 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F31 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
@@ -245,6 +248,7 @@ test('F1 through F30 are distinct recognised fixture contract fingerprints', () 
   assert.notEqual(compileFixtureContractV27().fingerprint, compileFixtureContractV28().fingerprint);
   assert.notEqual(compileFixtureContractV28().fingerprint, compileFixtureContractV29().fingerprint);
   assert.notEqual(FROZEN_F29, FROZEN_F30);
+  assert.notEqual(FROZEN_F30, FROZEN_F31);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -278,6 +282,7 @@ test('F1 through F30 are distinct recognised fixture contract fingerprints', () 
       FROZEN_F28,
       FROZEN_F29,
       FROZEN_F30,
+      FROZEN_F31,
     ].sort(),
   );
   assert.deepEqual(
@@ -357,6 +362,14 @@ test('compileFixtureContractV30() adds exactly the approved Financing and Guaran
     bundle.claim_definitions.map((definition) => definition.claim_definition_key).filter((key) => !previous.claim_definitions.some((definition) => definition.claim_definition_key === key)).sort(),
     ['FINANCING_COOPERATION_PRESENT', 'FINANCING_OBTAIN_EFFORTS_STANDARD', 'LIMITED_GUARANTY_DELIVERED', 'LIMITED_GUARANTY_IN_EFFECT', 'MARKETING_PERIOD_LENGTH_DAYS', 'NO_FINANCING_CONDITION_ACKNOWLEDGMENT', 'PARENT_PERFORMANCE_GUARANTY', 'PAYOFF_DELIVERY_LEAD_TIME_DAYS'],
   );
+});
+
+test('compileFixtureContractV31() adds only Tax, Dividends and Appraisal vocabulary', () => {
+  const bundle = compileFixtureContractV31(); const previous = compileFixtureContractV30();
+  assert.equal(bundle.fingerprint, FROZEN_F31); assert.equal(validateContractBundle(bundle), true);
+  assert.equal(canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V31)), canonicalJson(bundle));
+  assert.equal(bundle.concepts.length, previous.concepts.length + 7);
+  assert.equal(bundle.claim_definitions.length, previous.claim_definitions.length + 10);
 });
 
 test('F22 adds only the three grounded Consideration concepts and claims', () => {

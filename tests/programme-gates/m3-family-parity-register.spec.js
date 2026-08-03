@@ -155,8 +155,10 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
   assert.ok(CURRENT_M3_FAMILY_PARITY_STATUS.family_states
     .filter((family) => ![
       'ANTITRUST_REGULATORY_EFFORTS', 'NO_SHOP', 'MAE_DEFINITION',
+      'CLOSING_CONDITIONS',
       'PROXY_MEETING_COVENANTS', 'TERMINATION_FEE', 'TERMINATION_RIGHTS',
       'FINANCING_COVENANTS', 'GUARANTY_FINANCING_PARTY',
+      'TAX_MATTERS', 'DIVIDENDS', 'APPRAISAL_DISSENTERS_RIGHTS',
     ].includes(family.family_id))
     .every((family) => family.completion_state === 'WAVE_A_OPEN'));
   for (const familyId of [
@@ -413,7 +415,7 @@ test('Tax Matters, Dividends and Appraisal product parity closes with adjacent-o
     assert.equal(
       CURRENT_M3_FAMILY_PARITY_STATUS.family_states
         .find((entry) => entry.family_id === familyId).completion_state,
-      'WAVE_A_OPEN',
+      'FAMILY_COMPLETE',
     );
   }
 });

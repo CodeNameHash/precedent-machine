@@ -27,8 +27,9 @@ const CLAIM_FIXTURES = Object.freeze({
   }),
   TRANSFER_TAX_COOPERATION: Object.freeze({ value: true, attributes: Object.freeze({}) }),
   FIRPTA_CERTIFICATE_DELIVERY: Object.freeze({ value: true, attributes: Object.freeze({}) }),
-  TAX_OPINION_COOPERATION_COVENANT: Object.freeze({ value: true, attributes: Object.freeze({}) }),
   DIVIDEND_COORDINATION_COVENANT: Object.freeze({ value: true, attributes: Object.freeze({}) }),
+  PRE_CLOSING_SPECIAL_DIVIDEND: Object.freeze({ value: true, attributes: Object.freeze({ dividend_term_ref: 'Special Dividend' }) }),
+  PRE_CLOSING_SPECIAL_DIVIDEND_PER_SHARE_AMOUNT: Object.freeze({ value: '2.00', attributes: Object.freeze({ dividend_term_ref: 'Special Dividend', currency: 'USD' }) }),
   APPRAISAL_SETTLEMENT_CONSENT: Object.freeze({
     value: true, attributes: Object.freeze({ statute_ref: 'Section 262 of the DGCL' }),
   }),
@@ -71,7 +72,7 @@ test('all governed tax, dividend and appraisal claims reach Review, Query, Compa
   const keys = [...Object.keys(TAX_CLAIMS), ...Object.keys(DIVIDEND_CLAIMS), ...Object.keys(APPRAISAL_CLAIMS)];
   const projection = projectTaxDividendsAppraisalClaims({ resolved_entries: keys.map((key) => entry(key)) });
   assert.equal(projection.authority_state, AUTHORITY_STATE);
-  assert.equal(projection.records.length, 9);
+  assert.equal(projection.records.length, 10);
   const byKey = new Map(projection.records.map((record) => [record.review.row_key, record]));
   for (const key of keys) {
     const record = byKey.get(key);
@@ -81,7 +82,6 @@ test('all governed tax, dividend and appraisal claims reach Review, Query, Compa
     assert.equal(record.market.metric_version, 1);
     assert.equal(record.market.weighting, 'DEAL');
   }
-  assert.equal(byKey.get('TAX_OPINION_COOPERATION_COVENANT').review.dimensions.condition_scope_state, 'COVENANT_ONLY');
   assert.equal(byKey.get('APPRAISAL_SETTLEMENT_CONSENT').review.dimensions.statute_taxonomy_state, 'VERBATIM_ONLY_NO_ENUM');
 });
 
@@ -97,15 +97,9 @@ test('Query and Compare expose the three governed family fields without taking a
   assert.ok(!fieldsForCompareCell('REPRESENTATION', ['all']).includes('taxMatterFact'));
 });
 
-test('the ratified tax-opinion covenant cannot absorb a condition-side tax opinion', () => {
-  const candidate = entry('TAX_OPINION_COOPERATION_COVENANT');
-  candidate.claim.attributes.condition_to_closing = true;
+test('tax opinion cooperation remains open world and cannot absorb a condition-side tax opinion', () => {
   assert.throws(
-    () => projectTaxDividendsAppraisalClaims({ resolved_entries: [candidate] }),
-    projectionError('UNADJUDICATED_PRODUCT_ATTRIBUTE'),
-  );
-  assert.throws(
-    () => projectTaxDividendsAppraisalClaims({ resolved_entries: [entry('TAX_OPINION_CLOSING_CONDITION')] }),
+    () => projectTaxDividendsAppraisalClaims({ resolved_entries: [entry('TAX_OPINION_COOPERATION_COVENANT')] }),
     projectionError('UNGOVERNED_CLAIM'),
   );
 });
@@ -126,8 +120,6 @@ test('tax-sharing ambiguity and adjacent consideration and representation tax fa
 
 test('low-count dividend mechanics and IOC or consideration dividend facts remain evidence-only', () => {
   for (const key of [
-    'PRE_CLOSING_SPECIAL_DIVIDEND',
-    'PRE_CLOSING_SPECIAL_DIVIDEND_PER_SHARE_AMOUNT',
     'RECURRING_MANDATED_DIVIDEND',
     'DIVIDEND_COORDINATION_WINDOW_DAYS',
     'FINAL_PARTIAL_PERIOD_DIVIDEND',
