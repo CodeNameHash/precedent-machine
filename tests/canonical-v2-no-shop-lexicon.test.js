@@ -36,11 +36,17 @@ const REGISTERED_CONCEPT_KEYS = new Set([
   // DEF-MAE, registered in contract-bundle.js's V16 concept table in the
   // same slice.
   'DEF-MAE',
+  // family-termination-rights slice (LEXICAL_FAMILY_LEXICON_VERSION 4 ->
+  // 5): TERMR-MUTUAL/TERMR-LEGAL (newly registered) plus the six
+  // already-registered TERMR families the lexicon now also covers.
+  'TERMR-MUTUAL', 'TERMR-LEGAL',
+  'TERMR-OUTSIDE', 'TERMR-NOVOTE', 'TERMR-BREACH', 'TERMR-SUPERIOR', 'TERMR-RECOMMEND',
+  'TERMR-NOSOL-BREACH',
 ]);
 
 test('LEXICAL_FAMILY_LEXICON_VERSION bumped 2 -> 3 (no-shop), then 3 -> 4 (family-mae-definition slice)', () => {
-  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 4);
-  assert.equal(LEXICAL_FAMILY_LEXICON.version, 4);
+  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 5);
+  assert.equal(LEXICAL_FAMILY_LEXICON.version, 5);
 });
 
 test('table validation: every entry has a non-empty pattern_id, family, kind, value, rationale; no duplicate pattern_id; every family is a registered concept key; BOUNDED_REGEX patterns stay <= 128 static max', () => {

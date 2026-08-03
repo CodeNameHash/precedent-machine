@@ -318,8 +318,8 @@ test('materiality rank 50 asserted on all five NOSOL- concepts via the EXISTING 
   }
 });
 
-test('MAPPING_TABLE_VERSION is 7 (bumped 6 -> 7 by the family-mae-definition slice) and NO_SHOP_PERIOD_PARSE_VERSION is exported', () => {
-  assert.equal(MAPPING_TABLE_VERSION, 7);
+test('MAPPING_TABLE_VERSION is 8 (bumped 6 -> 7 by the family-mae-definition slice, 7 -> 8 by the family-termination-rights slice) and NO_SHOP_PERIOD_PARSE_VERSION is exported', () => {
+  assert.equal(MAPPING_TABLE_VERSION, 8);
   assert.equal(NO_SHOP_PERIOD_PARSE_VERSION, 1);
 });
 

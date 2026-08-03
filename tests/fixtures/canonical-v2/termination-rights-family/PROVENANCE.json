@@ -1,0 +1,10 @@
+{
+  "schema": "TERMINATION_RIGHTS_FAMILY_FIXTURE_PROVENANCE/V1",
+  "note": "Test 0 build step (docs/superpowers/specs/2026-08-02-family-termination-rights-design.md section 6). UNLIKE the mae-definition-family fixture set, these excerpts were NOT independently re-fetched from EDGAR in this build session -- they are copied verbatim from the spec document's own 'Corpus grounding' section (production Supabase project tzulhdasmioeechxapdy, read 2026-08-02, provision_type='TERMINATION_RIGHT'), which itself attests every quote is byte-verbatim from production `primary_quote`/`region_full_text`. This is a DOCUMENTED SCOPE GAP against the spec's own test-0 wording ('committed as LITERAL bytes from production region_full_text ... never retyped ASCII') -- flagged explicitly in the build report for Fable/Ben: a from-scratch EDGAR fetch-and-verify pass (mirroring mae-definition-family/PROVENANCE.json's own committed-raw-file + intake-pin + sha256 chain) was not performed this session. The strings below are typed exactly as they appear in the spec text (including the deliberate no-space 'April 30, 2021(such date' irregularity the spec calls out), so the tests exercise the SAME literal byte irregularities the spec pins, even though the chain-of-custody back to a freshly-fetched raw filing is not (yet) re-established here.",
+  "quotes": [
+    "outside-date-clock-time.txt: clock-time outside date (Houston time, no-space irregularity pinned by spec section 6)",
+    "cure-period.txt: 30-day and 45-day cure/notice forms",
+    "mutual-consent.txt: mutual-consent termination section",
+    "vote-failure.txt: vote-failure section, including the corpus's own extension-proviso defect quote"
+  ]
+}

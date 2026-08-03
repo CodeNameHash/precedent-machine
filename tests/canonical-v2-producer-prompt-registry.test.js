@@ -25,6 +25,7 @@ const {
 } = require('../lib/canonical-v2/native-producer/producer-prompt-registry');
 const { buildCapitalisationProducerPrompt } = require('../lib/canonical-v2/native-producer/capitalisation-producer-prompt');
 const { buildNoShopProducerPrompt } = require('../lib/canonical-v2/native-producer/no-shop-producer-prompt');
+const { buildTerminationProducerPrompt } = require('../lib/canonical-v2/native-producer/termination-producer-prompt');
 const {
   SECTION_FAMILY_CLASSIFIER_VERSION,
   SECTION_FAMILY_RULE_CLASSIFIED,
@@ -45,16 +46,25 @@ test('registry: NO_SHOP is registered to the unchanged buildNoShopProducerPrompt
   assert.equal(getProducerPromptModule('NO_SHOP'), buildNoShopProducerPrompt);
 });
 
+// TERMINATION is now registered (family-termination-rights slice, docs/
+// superpowers/specs/2026-08-02-family-termination-rights-design.md section
+// 3) -- this is the seam's pre-existing rule finally getting a producer.
+test('registry: TERMINATION is registered to the unchanged buildTerminationProducerPrompt function', () => {
+  assert.equal(getProducerPromptModule('TERMINATION'), buildTerminationProducerPrompt);
+});
+
 test('registry: unknown/unregistered family returns null -- fail closed, never a capitalisation fallback', () => {
-  assert.equal(getProducerPromptModule('TERMINATION'), null);
   assert.equal(getProducerPromptModule('SOME_UNKNOWN_FAMILY'), null);
   assert.equal(getProducerPromptModule(''), null);
   assert.equal(getProducerPromptModule(null), null);
   assert.equal(getProducerPromptModule(undefined), null);
 });
 
-test('registry: CAPITALISATION, MAE_DEFINITION, NO_SHOP and TERMINATION_FEE are registered (family-mae-definition slice adds MAE_DEFINITION)', () => {
-  assert.deepEqual(listRegisteredSectionFamilies(), ['CAPITALISATION', 'MAE_DEFINITION', 'NO_SHOP', 'TERMINATION_FEE']);
+test('registry: CAPITALISATION, MAE_DEFINITION, NO_SHOP, TERMINATION and TERMINATION_FEE are registered (family-termination-rights slice adds TERMINATION)', () => {
+  assert.deepEqual(
+    listRegisteredSectionFamilies(),
+    ['CAPITALISATION', 'MAE_DEFINITION', 'NO_SHOP', 'TERMINATION', 'TERMINATION_FEE'],
+  );
 });
 
 test('registry: schema constant is exported', () => {
@@ -306,7 +316,7 @@ test('native-extraction-run default (no classifier): every section dispatches CA
   assert.equal(receipt.compiled_candidates[0].section_family_provenance, null);
 });
 
-test('native-extraction-run with classifier: stage 1 classifies TERMINATION from title, but it is unregistered -- fail closed, no producer, no candidates, never a capitalisation fallback', async () => {
+test('native-extraction-run with classifier: stage 1 classifies TERMINATION from title, and it is now REGISTERED -- the producer is dispatched, never fails closed (family-termination-rights slice)', async () => {
   const terminationText = [
     'ARTICLE VIII\n\nTermination\n\n',
     'Section 8.1 Termination. This Agreement may be terminated at any time ',
@@ -322,25 +332,50 @@ test('native-extraction-run with classifier: stage 1 classifies TERMINATION from
     section_references: ['8.1'],
     contract_bundle: CONTRACT_BUNDLE,
     definitions: DEFINITIONS,
-    provider: async () => { providerCalled = true; return { proposals: [], evidence_residuals: [] }; },
+    provider: async () => {
+      providerCalled = true;
+      return {
+        provider_id: 'registry-test-stub/v1', model_id: 'stub-model', prompt: 'registry-test-stub-prompt-v1',
+        proposals: [], evidence_residuals: [],
+      };
+    },
     section_family_classifier: async () => ({ section_family: 'CAPITALISATION' }), // should never be called: stage 1 matches first
   });
 
-  assert.equal(providerCalled, false, 'no producer is dispatched for an unregistered family');
+  assert.equal(providerCalled, true, 'TERMINATION is now registered -- the producer IS dispatched');
   assert.equal(receipt.resolved_sections[0].section_family, 'TERMINATION');
   assert.equal(receipt.resolved_sections[0].section_family_provenance, SECTION_FAMILY_RULE_CLASSIFIED);
+  assert.notEqual(receipt.resolved_sections[0].prompt_id, null);
+  assert.notEqual(receipt.resolved_sections[0].producer_receipt, null);
+  assert.equal(receipt.undispatched_sections.length, 0);
+  assert.equal(receipt.compiled_candidate_count, 0);
+  assert.equal(receipt.compiled_candidates.length, 0);
+  assert.equal(receipt.coverage_proxies.length, 1);
+  assert.equal(receipt.limb_enumeration_scan.length, 1);
+});
+
+test('native-extraction-run with classifier: an UNKNOWN family still fails closed -- no producer, no candidates, never a capitalisation fallback (proves the fail-closed contract independent of TERMINATION\'s own registration)', async () => {
+  const documentHash = sha256Hex(Buffer.from(qxoFullText, 'utf8'));
+  let providerCalled = false;
+
+  const receipt = await runNativeExtraction({
+    source_text: qxoFullText,
+    document_hash: documentHash,
+    section_references: ['3.1(b)'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: async () => { providerCalled = true; return { proposals: [], evidence_residuals: [] }; },
+    section_family_classifier: async () => ({ section_family: 'SOME_UNKNOWN_FAMILY' }),
+  });
+
+  assert.equal(providerCalled, false, 'no producer is dispatched for an unregistered family');
+  assert.equal(receipt.resolved_sections[0].section_family, 'SOME_UNKNOWN_FAMILY');
   assert.equal(receipt.resolved_sections[0].prompt_id, null);
   assert.equal(receipt.resolved_sections[0].producer_receipt, null);
   assert.equal(receipt.undispatched_sections.length, 1);
-  assert.equal(receipt.undispatched_sections[0].section_reference, '8.1');
-  assert.equal(receipt.undispatched_sections[0].section_family, 'TERMINATION');
-  assert.equal(receipt.undispatched_sections[0].section_family_provenance, SECTION_FAMILY_RULE_CLASSIFIED);
+  assert.equal(receipt.undispatched_sections[0].section_family, 'SOME_UNKNOWN_FAMILY');
   assert.equal(receipt.compiled_candidate_count, 0);
   assert.equal(receipt.compiled_candidates.length, 0);
-  // Recall instruments still run (index-aligned with resolved_sections),
-  // even for an undispatched section -- never silently omitted.
-  assert.equal(receipt.coverage_proxies.length, 1);
-  assert.equal(receipt.limb_enumeration_scan.length, 1);
 });
 
 test('native-extraction-run with classifier: stage 2 AI-classifies a registered family and dispatches it, provenance visible in the receipt', async () => {

@@ -316,8 +316,8 @@ test('materiality rank 20 asserted on TERMF-TARGET/TERMF-REVERSE/TERMF-TAIL and 
   );
 });
 
-test('MAPPING_TABLE_VERSION is 7 (bumped 5 -> 6 by the family-no-shop slice, 6 -> 7 by the family-mae-definition slice, three new unconditional MAE_CARVEOUT/MAE_DEFINITION_PRONG/MAE_DISPROPORTIONALITY entries) and TERMINATION_FEE_PARSE_VERSION is exported', () => {
-  assert.equal(MAPPING_TABLE_VERSION, 7);
+test('MAPPING_TABLE_VERSION is 8 (bumped 5 -> 6 by the family-no-shop slice, 6 -> 7 by the family-mae-definition slice, 7 -> 8 by the family-termination-rights slice) and TERMINATION_FEE_PARSE_VERSION is exported', () => {
+  assert.equal(MAPPING_TABLE_VERSION, 8);
   assert.equal(TERMINATION_FEE_PARSE_VERSION, 1);
 });
 

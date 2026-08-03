@@ -73,6 +73,7 @@ const {
   compileFixtureContractV12,
   compileFixtureContractV13,
   compileFixtureContractV16,
+  compileFixtureContractV17,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -113,6 +114,16 @@ const FROZEN_F15 = 'e7ae756e69c289ebe125bb2a1a9aa03753951bb761fb9b2a9b9a88cb7f48
 // the resulting fingerprint (see tests/canonical-v2-contract-bundle-v16.test.js
 // for the dedicated V16 acceptance tests).
 const FROZEN_F16 = 'a1fe3ddb45d2371ccd428747da6837084ea61cd476afd1f74a964c5824f4fb87';
+// F17 (family-termination-rights slice, docs/superpowers/specs/2026-08-02-
+// family-termination-rights-design.md section 1, AUDIT-AMENDED): strictly
+// additive spread of F16 -- two new concepts (TERMR-MUTUAL, TERMR-LEGAL,
+// both FLAGGED FOR BEN) and three new claim definitions
+// (TERMINATION_RIGHT_GRANT, TERMINATION_OUTSIDE_DATE, TERMINATION_CURE_
+// PERIOD_DAYS), zero other field changes. Derived by running
+// compileFixtureContractV17() against the current code and pinning the
+// resulting fingerprint (see tests/canonical-v2-contract-bundle-v17.test.js
+// for the dedicated V17 acceptance tests).
+const FROZEN_F17 = 'c2d43ad9f6fd0008cc09b74d1d2dd75c87793781a40bd79faaa6f91e4b0fae5b';
 
 const APPROVED_V2_ADDITIONS = [
   'TERMR-BREACH',
@@ -173,7 +184,7 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F16 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F17 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
@@ -189,6 +200,7 @@ test('F1 through F16 are distinct recognised fixture contract fingerprints', () 
   assert.notEqual(FROZEN_F13, FROZEN_F14);
   assert.notEqual(FROZEN_F14, FROZEN_F15);
   assert.notEqual(FROZEN_F15, FROZEN_F16);
+  assert.notEqual(FROZEN_F16, FROZEN_F17);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -208,6 +220,7 @@ test('F1 through F16 are distinct recognised fixture contract fingerprints', () 
       FROZEN_F14,
       FROZEN_F15,
       FROZEN_F16,
+      FROZEN_F17,
     ].sort(),
   );
   assert.deepEqual(
@@ -219,6 +232,12 @@ test('F1 through F16 are distinct recognised fixture contract fingerprints', () 
 test('compileFixtureContractV16() compiles to a pinned F16 fingerprint (family-mae-definition slice)', () => {
   const bundle = compileFixtureContractV16();
   assert.equal(bundle.fingerprint, FROZEN_F16);
+  assert.equal(validateContractBundle(bundle), true);
+});
+
+test('compileFixtureContractV17() compiles to a pinned F17 fingerprint (family-termination-rights slice)', () => {
+  const bundle = compileFixtureContractV17();
+  assert.equal(bundle.fingerprint, FROZEN_F17);
   assert.equal(validateContractBundle(bundle), true);
 });
 

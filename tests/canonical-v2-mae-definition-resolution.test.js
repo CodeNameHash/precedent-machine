@@ -324,8 +324,8 @@ test('MAE_CARVEOUT_CODES_V2 has exactly 26 members and no OTHER', () => {
   assert.ok(!MAE_CARVEOUT_CODES.includes('OTHER'));
 });
 
-test('MAPPING_TABLE_VERSION is 7; materiality rank 30 MAE tier is wired to the DEF-MAE prefix', () => {
-  assert.equal(MAPPING_TABLE_VERSION, 7);
+test('MAPPING_TABLE_VERSION is 8 (bumped 7 -> 8 by the family-termination-rights slice); materiality rank 30 MAE tier is wired to the DEF-MAE prefix', () => {
+  assert.equal(MAPPING_TABLE_VERSION, 8);
   const maeTier = MATERIALITY_TABLE.find((t) => t.label === 'MAE');
   assert.equal(maeTier.rank, 30);
   assert.deepEqual([...maeTier.concept_key_prefixes], ['DEF-MAE']);

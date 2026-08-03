@@ -159,26 +159,29 @@ test('FIXTURE PIN (test 4, additivity): the no-lexical-input resolveCandidates()
   // MAPPING_TABLE_VERSION 4 -> 5 (family-termination-fee slice, three fee
   // entries -- docs/superpowers/specs/2026-08-02-family-termination-fee-
   // design.md section 4).
-  assert.equal(baseline.resolution_receipt.mapping_table_version, 7);
+  assert.equal(baseline.resolution_receipt.mapping_table_version, 8);
   assert.equal(baseline.resolution_receipt.share_count_parse_version, 1);
   assert.equal(baseline.resolution_receipt.zero_pattern_table_version, 1);
   assert.equal(
     baseline.resolution_receipt.resolution_receipt_id,
-    'eae76e562bd51f0242381a4a08be6426d435d074ffb8083bdb753a2abd6a4bab',
-    // Re-pinned (family-mae-definition slice, build 2026-08-03):
-    // MAPPING_TABLE_VERSION 6 -> 7 and receiptBody gains ONE new
-    // unconditional field (mae_corroboration_table_version) -- the full
-    // field-level diff vs the prior committed pin
-    // (55b1e8da176524867df834c475efb17be86670593abc03e2ccc6328d619c5979)
-    // was re-derived by running this exact test against the current code:
-    // mapping_table_version 6->7, mae_corroboration_table_version +1 (new,
-    // value 1), nothing else changed -- contract_vocabulary_digest is
-    // UNCHANGED at this call site (CONTRACT_BUNDLE_V13 is a fixed pre-slice
-    // bundle snapshot this test deliberately keeps stale; only
-    // MAPPING_TABLE_VERSION and the new receipt field, both resolver-module
-    // constants independent of which contract_vocabulary is passed in,
-    // move). [family-no-shop-era pin 55b1e8da... superseded.]
-    'the new, re-pinned resolution_receipt_id under MAPPING_TABLE_VERSION 7',
+    '2bbfd9305c3e75c864ddda9b89119413c35ec35b3fdd541f798603a368973cee',
+    // Re-pinned (family-termination-rights slice, build 2026-08-03):
+    // MAPPING_TABLE_VERSION 7 -> 8 and receiptBody gains TWO new
+    // unconditional fields (termination_deadline_parse_version,
+    // cure_period_parse_version) -- the full field-level diff vs the prior
+    // committed pin (eae76e562bd51f0242381a4a08be6426d435d074ffb8083bdb753a
+    // 2abd6a4bab) was re-derived by running this exact test against the
+    // current code: mapping_table_version 7->8,
+    // termination_deadline_parse_version +1 (new, value 1),
+    // cure_period_parse_version +1 (new, value 1), nothing else changed --
+    // contract_vocabulary_digest is UNCHANGED at this call site
+    // (CONTRACT_BUNDLE_V13 is a fixed pre-slice bundle snapshot this test
+    // deliberately keeps stale; only MAPPING_TABLE_VERSION and the two new
+    // receipt fields, resolver-module constants independent of which
+    // contract_vocabulary is passed in, move). [family-mae-definition-era
+    // pin eae76e56... superseded; family-no-shop-era pin 55b1e8da...
+    // superseded before that.]
+    'the new, re-pinned resolution_receipt_id under MAPPING_TABLE_VERSION 8',
   );
 
   // SOURCE_SCOPE_CERTIFICATION_ABSENT is unconditional -- present even with
