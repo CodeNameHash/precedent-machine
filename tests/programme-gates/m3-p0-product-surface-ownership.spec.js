@@ -41,7 +41,7 @@ test('the three P0 surfaces have explicit owners, source inventories, counts and
   }
 });
 
-test('the M3 register records the three surfaces as assigned follow-on owners, not unassigned work', () => {
+test('the M3 register records every P0 and representations surface under an explicit owner', () => {
   assert.deepEqual(
     CURRENT_M3_FAMILY_PARITY_REGISTER.supplemental_owners.map((owner) => owner.owner_id),
     ['MATERIAL_CONTRACTS', 'NO_OTHER_REPS_FRAUD', 'GENERAL_COVENANT_ROUTER'],
