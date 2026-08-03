@@ -179,10 +179,11 @@ test('a rehashed complete label cannot contradict open family state', () => {
 
 test('an open follow-on cannot be relabelled PASS and PASS requires evidence', () => {
   const openAsPass = structuredClone(CURRENT_M3_FAMILY_PARITY_REGISTER);
-  openAsPass.families[0].product_surfaces[0].state = 'PASS';
-  openAsPass.families[0].product_surfaces[0].evidence_paths = [
-    openAsPass.families[0].product_surfaces[0].source_path,
-  ];
+  const openSurface = openAsPass.families
+    .flatMap((family) => family.product_surfaces)
+    .find((surface) => surface.state === 'OPEN');
+  openSurface.state = 'PASS';
+  openSurface.evidence_paths = [openSurface.source_path];
   assert.throws(
     () => validateM3FamilyParityRegister(openAsPass),
     (error) => error instanceof M3FamilyParityRegisterError

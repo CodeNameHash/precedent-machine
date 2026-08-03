@@ -35,6 +35,10 @@ function isFalsy(value) {
   return false;
 }
 
+function isNativeProjection(card) {
+  return card?.canonical_v2_lineage?.source === 'CANONICAL_V2_NATIVE_CLAIM';
+}
+
 // Fallback ONLY -- lib/schema/features.js documents mainConcept as "Fallback
 // one-sentence provision summary ... when no more specific structured field
 // explains the provision." It is an AI paraphrase, not verbatim clause text,
@@ -138,6 +142,8 @@ function effortsStandardRow(cards) {
     detail: valueText(hit.value) || mainConceptOf(hit.card),
     evidence: textOf(hit.card),
     source: hit.card,
+    featureKeys: ['antitrustEffortsStandard', 'effortsStandard'],
+    marketProvisionCodes: ['ANTI-EFFORTS'],
     present: true,
     signals: [{
       id: 'antitrust-regulatory-efforts-signal',
@@ -200,6 +206,8 @@ function divestitureCapRow(cards) {
     detail: (capHit && valueText(cardFeatures(capHit.card).capDetail)) || capHit?.detail || conditionHit?.detail || mainConceptOf(capHit?.card) || mainConceptOf(conditionHit?.card),
     evidence: textOf(primaryCard),
     source: primaryCard,
+    featureKeys: ['burdenCommitment', 'divestitureCap', 'hellOrHighWater'],
+    marketProvisionCodes: ['ANTI-BURDEN'],
     present: true,
     signals,
   };
@@ -237,6 +245,8 @@ function hsrDeadlineRow(cards) {
     detail: hit.detail || mainConceptOf(hit.card),
     evidence: textOf(hit.card),
     source: hit.card,
+    featureKeys: ['hsrFilingDeadlineBusinessDays'],
+    marketProvisionCodes: ['ANTI-FILING'],
     present: true,
     signals: [{
       id: 'antitrust-regulatory-hsr-deadline-signal',
@@ -284,11 +294,13 @@ function foreignTimelineLabel(raw) {
 }
 
 function foreignFilingsRow(cards) {
-  const hit = firstFeature(cards, ['foreignFilingsRequired', 'foreignFilings']);
+  const hit = firstFeature(cards, ['foreignFilingsRequired', 'regulatoryFilingRegimes', 'foreignFilings']);
   if (!hit) return null;
+  const regimeHit = firstFeature(cards, ['regulatoryFilingRegimes']);
+  const regimeLabel = regimeHit && valueText(regimeHit.value);
   const signals = [{
     id: 'antitrust-regulatory-foreign-filings-signal',
-    label: foreignPresenceLabel(hit.value),
+    label: regimeLabel ? `Required: ${regimeLabel}` : foreignPresenceLabel(hit.value),
     value: hit.value,
     tone: isFalsy(hit.value) ? 'missing' : 'present',
     evidence: textOf(hit.card),
@@ -324,6 +336,8 @@ function foreignFilingsRow(cards) {
     detail: hit.detail || mainConceptOf(hit.card),
     evidence: textOf(hit.card),
     source: hit.card,
+    featureKeys: ['foreignFilingsRequired', 'otherRegulatoryFilingDeadlines'],
+    marketProvisionCodes: ['ANTI-FILING'],
     present: true,
     signals,
   };
@@ -377,6 +391,8 @@ function strategyControlRow(cards) {
     detail: hit.detail || mainConceptOf(hit.card),
     evidence: textOf(hit.card),
     source: hit.card,
+    featureKeys: ['regulatoryStrategyControlTagged'],
+    marketProvisionCodes: ['ANTI-STRATEGY'],
     present: true,
     signals: [{
       id: 'antitrust-regulatory-strategy-control-signal',
@@ -401,10 +417,12 @@ function clearSkiesRow(cards) {
   const scope = valueText(features.clearSkiesParentScope) || valueText(features.clearSkiesCompanyScope);
   return {
     id: 'antitrust-regulatory-clear-skies',
-    label: 'Clear-skies covenant',
+    label: cardCode(hit.card) === 'ANTI-NOACTION' ? 'No inconsistent action' : 'Clear-skies covenant',
     detail: scope || hit.detail || mainConceptOf(hit.card),
     evidence: textOf(hit.card),
     source: hit.card,
+    featureKeys: ['clearSkiesParent', 'clearSkiesCompany'],
+    marketProvisionCodes: ['ANTI-NOACTION'],
     present: true,
     signals: [{
       id: 'antitrust-regulatory-clear-skies-signal',
@@ -507,7 +525,7 @@ function pullRefileRow(cards) {
     evidence: textOf(hit.card),
     source: hit.card,
   }];
-  const proviso = withdrawalProvisoSignal(hit.card, 'pull-refile');
+  const proviso = isNativeProjection(hit.card) ? null : withdrawalProvisoSignal(hit.card, 'pull-refile');
   if (proviso) signals.push(proviso);
   return {
     id: 'antitrust-regulatory-pull-refile',
@@ -515,6 +533,8 @@ function pullRefileRow(cards) {
     detail: valueText(features.pullRefileText) || hit.detail || mainConceptOf(hit.card),
     evidence: textOf(hit.card),
     source: hit.card,
+    featureKeys: ['pullRefile'],
+    marketProvisionCodes: ['ANTI-AGREEMENTS'],
     present: true,
     signals,
   };
@@ -542,17 +562,71 @@ function timingAgreementsRow(cards) {
     detail: valueText(features.timingAgreementText) || hit.detail || mainConceptOf(hit.card),
     evidence: textOf(hit.card),
     source: hit.card,
+    featureKeys: ['timingAgreement'],
+    marketProvisionCodes: ['ANTI-AGREEMENTS'],
     present: true,
     signals,
+  };
+}
+
+function litigationObligationRow(cards) {
+  const hit = firstFeature(cards, ['litigationObligation']);
+  if (!hit) return null;
+  const label = readableValue('litigationObligation', hit.value);
+  if (!label) return null;
+  return {
+    id: 'antitrust-regulatory-litigation',
+    label: 'Regulatory litigation',
+    detail: hit.detail || mainConceptOf(hit.card),
+    evidence: textOf(hit.card),
+    source: hit.card,
+    featureKeys: ['litigationObligation'],
+    marketProvisionCodes: ['ANTI-LITIGATION'],
+    present: true,
+    signals: [{
+      id: 'antitrust-regulatory-litigation-signal',
+      label,
+      value: hit.value,
+      tone: 'warning',
+      evidence: textOf(hit.card),
+      source: hit.card,
+    }],
+  };
+}
+
+function consultationRightsRow(cards) {
+  const hit = firstFeature(cards, ['consultationTier']);
+  if (!hit) return null;
+  const label = readableValue('consultationTier', hit.value);
+  if (!label) return null;
+  return {
+    id: 'antitrust-regulatory-consultation',
+    label: 'Consultation rights',
+    detail: hit.detail || mainConceptOf(hit.card),
+    evidence: textOf(hit.card),
+    source: hit.card,
+    featureKeys: ['consultationTier'],
+    marketProvisionCodes: ['ANTI-CONSULT'],
+    present: true,
+    signals: [{
+      id: 'antitrust-regulatory-consultation-signal',
+      label,
+      value: hit.value,
+      tone: 'info',
+      evidence: textOf(hit.card),
+      source: hit.card,
+    }],
   };
 }
 
 const ROW_BUILDERS = [
   effortsStandardRow,
   divestitureCapRow,
+  litigationObligationRow,
   hsrDeadlineRow,
   foreignFilingsRow,
   strategyControlRow,
+  consultationRightsRow,
   clearSkiesRow,
   pullRefileRow,
   timingAgreementsRow,
