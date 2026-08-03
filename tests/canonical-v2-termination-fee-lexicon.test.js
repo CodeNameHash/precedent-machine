@@ -25,7 +25,7 @@ const {
 } = require('../lib/canonical-v2/native-producer/lexical-disagreement-net');
 
 const REGISTERED_CONCEPT_KEYS = new Set([
-  'REP-T-CAP', 'TERMF-TARGET', 'TERMF-REVERSE', 'TERMF-TAIL',
+  'REP-T-CAP', 'REP-T-CONTRACTS', 'TERMF-TARGET', 'TERMF-REVERSE', 'TERMF-TAIL',
   // family-no-shop slice (LEXICAL_FAMILY_LEXICON_VERSION 2 -> 3): the five
   // NOSOL concepts, registered in contract-bundle.js's concept table.
   'NOSOL-PROHIBIT', 'NOSOL-EXCEPT', 'NOSOL-NOTICE', 'NOSOL-MATCH', 'NOSOL-REMATCH',

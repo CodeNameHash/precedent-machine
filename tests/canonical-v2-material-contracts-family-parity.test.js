@@ -2,6 +2,8 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
 const { compileFixtureContractV27, validateContractBundle } = require('../lib/canonical-v2/contract-bundle');
@@ -25,6 +27,11 @@ const {
 } = require('../lib/canonical-v2/material-contracts-product-projection');
 const { executeDealCompare } = require('../lib/query/executors/deal-compare');
 const { calculateMarketStats } = require('../lib/row-market-stats/service');
+const {
+  LEXICAL_FAMILY_LEXICON,
+  LEXICAL_FAMILY_LEXICON_VERSION,
+  buildLexicalDisagreementReceipt,
+} = require('../lib/canonical-v2/native-producer/lexical-disagreement-net');
 
 const CONTRACT = compileFixtureContractV27();
 const DEAL_ID = 'material-contracts-family-deal';
@@ -96,6 +103,55 @@ async function resolveFixture() {
     admitted_source_context: admittedSourceContext,
   });
   return { receipt, resolution };
+}
+
+async function resolveLandosFixture() {
+  const agreement = fs.readFileSync(path.join(__dirname, '../__fixtures__/demo-deal/landos-abbvie-agreement.txt'), 'utf8');
+  const match = agreement.match(/any Company Contract relating to Indebtedness[\s\S]*?Company Subsidiary;/);
+  assert.ok(match, 'committed Landos/AbbVie Material Contracts clause');
+  const quote = match[0];
+  const sourceText = `Section 3.13 Contracts.\n\n${quote}\n`;
+  const source = buildImmutableSource({ sourceBytes: sourceText, sourceOccurrenceKey: 'landos-material-contracts-real-replay' });
+  const admittedSourceContext = Object.freeze({
+    ...source,
+    governed_deal_key: 'deal:landos-abbvie',
+    deal_admission_id: sha256Hex('deal-admission:landos-abbvie'),
+    source_ordinal: 0,
+  });
+  const receipt = await runNativeExtraction({
+    source_text: sourceText,
+    document_hash: sha256Hex(Buffer.from(sourceText, 'utf8')),
+    section_references: ['3.13'],
+    contract_bundle: CONTRACT,
+    definitions: { known_definitions: [] },
+    section_family_classifier: async () => ({ declined: true }),
+    provider: async ({ governed_scope: governedScope }) => {
+      const shaped = shapeMaterialContractsProposals({
+        material_contract_criteria: [{
+          section_reference: '3.13',
+          party_making: 'the Company',
+          bucket_code: 'INDEBTEDNESS',
+          threshold_kind: 'USD',
+          threshold_value: '$100,000',
+          cadence_kind: null,
+          definition_cross_references: [],
+          quote,
+        }],
+        open_world_candidates: [],
+      }, governedScope.source_text);
+      return {
+        provider_id: 'material-contracts-landos-replay/v1', model_id: 'stub-model',
+        prompt: 'material-contracts-landos-replay/v1', proposals: shaped.proposals,
+        evidence_residuals: shaped.evidence_residuals,
+      };
+    },
+  });
+  const resolution = resolveCandidates({
+    run_receipt: receipt,
+    contract_vocabulary: CONTRACT,
+    admitted_source_context: admittedSourceContext,
+  });
+  return { quote, receipt, resolution };
 }
 
 test('Material Contracts registers its exact contract, producer and title route', async () => {
@@ -175,4 +231,31 @@ test('governed Material Contracts claims reach Review, Query, Compare and market
   });
   assert.ok(Object.values(market.byRow).flatMap((row) => Object.values(row.metrics))
     .some((result) => result.coverage?.observedCount === 1));
+});
+
+test('committed Landos/AbbVie text replays through native resolution and the lexical net', async () => {
+  const { quote, receipt, resolution } = await resolveLandosFixture();
+  assert.equal(receipt.compiled_candidates.length, 2);
+  assert.ok(receipt.compiled_candidates.every((entry) => entry.ok));
+  assert.deepEqual(resolution.resolved.map((entry) => entry.resolved_claim_definition_key).sort(), [
+    'MATERIAL_CONTRACT_BUCKET_PRESENT',
+    'MATERIAL_CONTRACT_THRESHOLD_STRUCTURE',
+  ]);
+  assert.equal(resolution.open_world.length, 0);
+
+  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 10);
+  assert.ok(LEXICAL_FAMILY_LEXICON.entries.some((entry) => entry.family === 'REP-T-CONTRACTS'));
+  const bytes = Buffer.from(quote, 'utf8');
+  const lexical = buildLexicalDisagreementReceipt({
+    governed_section: { section_ref: '3.13', text: quote, text_sha256: sha256Hex(bytes) },
+    candidates: [{
+      closure_id: 'landos-material-contracts',
+      section_reference: '3.13',
+      family: 'REP-T-CONTRACTS',
+      evidence: [{ start: 0, end: bytes.length }],
+    }],
+  });
+  const family = lexical.family_outcomes.find((entry) => entry.family === 'REP-T-CONTRACTS');
+  assert.equal(family.outcome, 'LEXICAL_ALL_SIGNALS_MATCHED');
+  assert.ok(family.matched_count > 0);
 });

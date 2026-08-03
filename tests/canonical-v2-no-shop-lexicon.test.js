@@ -30,7 +30,7 @@ const {
 } = require('../lib/canonical-v2/native-producer/no-shop-producer-prompt');
 
 const REGISTERED_CONCEPT_KEYS = new Set([
-  'REP-T-CAP', 'TERMF-TARGET', 'TERMF-REVERSE', 'TERMF-TAIL',
+  'REP-T-CAP', 'REP-T-CONTRACTS', 'TERMF-TARGET', 'TERMF-REVERSE', 'TERMF-TAIL',
   'NOSOL-PROHIBIT', 'NOSOL-EXCEPT', 'NOSOL-NOTICE', 'NOSOL-MATCH', 'NOSOL-REMATCH',
   // family-mae-definition slice (LEXICAL_FAMILY_LEXICON_VERSION 3 -> 4):
   // DEF-MAE, registered in contract-bundle.js's V16 concept table in the

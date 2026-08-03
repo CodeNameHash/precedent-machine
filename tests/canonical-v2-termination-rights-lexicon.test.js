@@ -22,7 +22,7 @@ const {
 } = require('../lib/canonical-v2/native-producer/lexical-disagreement-net');
 
 const REGISTERED_CONCEPT_KEYS = new Set([
-  'REP-T-CAP', 'TERMF-TARGET', 'TERMF-REVERSE', 'TERMF-TAIL',
+  'REP-T-CAP', 'REP-T-CONTRACTS', 'TERMF-TARGET', 'TERMF-REVERSE', 'TERMF-TAIL',
   'NOSOL-PROHIBIT', 'NOSOL-EXCEPT', 'NOSOL-NOTICE', 'NOSOL-MATCH', 'NOSOL-REMATCH',
   'DEF-MAE',
   // family-termination-rights slice (LEXICAL_FAMILY_LEXICON_VERSION 4 -> 5):
