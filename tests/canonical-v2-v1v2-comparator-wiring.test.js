@@ -247,10 +247,10 @@ test('FIXTURE PIN: the no-v1v2-input resolveCandidates() path reproduces the com
   // MAPPING_TABLE_VERSION 4 -> 5 (family-termination-fee slice, three fee
   // entries -- docs/superpowers/specs/2026-08-02-family-termination-fee-
   // design.md section 4).
-  assert.equal(baseline.resolution_receipt.mapping_table_version, 9);
+  assert.equal(baseline.resolution_receipt.mapping_table_version, 10);
   assert.equal(
     baseline.resolution_receipt.resolution_receipt_id,
-    'ce3bec10aaa08547282a58cb926bd559f3a4a04c7d265e0d7c9497fdba7c7795',
+    '9c34b19da0024be8d095d08236221faf07e8c98ff3886f7f78b832465589f135',
     // Re-pinned after Ben's 2026-08-03 ruling: bare no-shop "days"
     // now resolve as CALENDAR_DAYS, and no_shop_period_parse_version is 2.
     // Re-pinned (P2 qualifier kinds phase 1, Fable review 2026-08-03):

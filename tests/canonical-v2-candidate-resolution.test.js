@@ -950,7 +950,7 @@ test('a VERIFIED ruling in agreement with the lexicon applies mechanically', asy
   assert.equal(resolvedEntry.claim.canonical_value, 'MAT_ALL_RESPECTS');
 });
 
-test('receipt pins MAPPING_TABLE_VERSION 9, the lexicon version, the measurement-date-parse version and the ruling corpus identity', async () => {
+test('receipt pins MAPPING_TABLE_VERSION 10, the lexicon version, the measurement-date-parse version and the ruling corpus identity', async () => {
   const resolution = await resolveSingleQualifier({
     quote: ACCURACY_CHAPEAU_QUOTE,
     attachment: chapeauAttachment(),
