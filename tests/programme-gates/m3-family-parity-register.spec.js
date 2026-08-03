@@ -140,7 +140,7 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
     CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
       (family) => family.family_id === 'PROXY_MEETING_COVENANTS',
     ).completion_state,
-    'FAMILY_COMPLETE',
+    'FOLLOW_ON_OPEN',
   );
   assert.equal(
     CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
@@ -159,7 +159,12 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
       'INTERIM_OPERATING_COVENANTS', 'TERMINATION_FEE', 'TERMINATION_RIGHTS',
     ].includes(family.family_id))
     .every((family) => family.completion_state === 'WAVE_A_OPEN'));
-  for (const familyId of ['INTERIM_OPERATING_COVENANTS', 'TERMINATION_FEE', 'TERMINATION_RIGHTS']) {
+  for (const familyId of [
+    'PROXY_MEETING_COVENANTS',
+    'INTERIM_OPERATING_COVENANTS',
+    'TERMINATION_FEE',
+    'TERMINATION_RIGHTS',
+  ]) {
     assert.equal(
       CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
         (family) => family.family_id === familyId,
@@ -184,6 +189,25 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
   const complete = buildM3FamilyParityStatus(completedRegister());
   assert.equal(complete.state, 'FAMILY_COMPLETE');
   assert.ok(complete.family_states.every((family) => family.completion_state === 'FAMILY_COMPLETE'));
+});
+
+test('recorded Proxy and Meeting rulings reopen the exact adopted follow-on surfaces', () => {
+  const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
+    (entry) => entry.family_id === 'PROXY_MEETING_COVENANTS',
+  );
+  assert.deepEqual(
+    family.product_surfaces
+      .filter((surface) => surface.state === 'OPEN')
+      .map((surface) => surface.surface_id),
+    [
+      'proxy-record-date-broker-search-presence',
+      'proxy-parent-merger-sub-approval-split',
+      'proxy-adjournment-grounded-reasons',
+    ],
+  );
+  assert.ok(family.product_surfaces
+    .filter((surface) => surface.state === 'OPEN')
+    .every((surface) => surface.disposition === 'FOLLOW_ON_REQUIRED'));
 });
 
 test('parity blocker inventory is exact and never treats open-world evidence as semantic completion', () => {
