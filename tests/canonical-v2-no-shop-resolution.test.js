@@ -26,7 +26,7 @@ const path = require('node:path');
 const zlib = require('node:zlib');
 
 const { contentId, sha256Hex, canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContractV15 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV21 } = require('../lib/canonical-v2/contract-bundle');
 const { buildAdmittedSemanticSourceContext } = require('../lib/canonical-v2/admitted-semantic-source');
 const { SOURCE_MAP_ENCODING } = require('../lib/canonical-v2/sec-html-canonical-text');
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
@@ -37,6 +37,7 @@ const {
   NO_SHOP_NOTICE_PERIOD_CLAIM_KEY,
   NO_SHOP_MATCH_PERIOD_CLAIM_KEY,
   NO_SHOP_REMATCH_PERIOD_CLAIM_KEY,
+  NO_SHOP_WAVE_B_CLAIM_KEY,
   NativeProducerAnthropicError,
 } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const {
@@ -233,7 +234,7 @@ function wrapInAgreementShell(sectionBody) {
   ].join('');
 }
 
-const CONTRACT_BUNDLE_V15 = compileFixtureContractV15();
+const CONTRACT_BUNDLE_V21 = compileFixtureContractV21();
 
 function buildSourceAndContext(dealKey, sectionBody) {
   const sourceText = wrapInAgreementShell(sectionBody);
@@ -252,7 +253,7 @@ async function resolveNoShopAssertions(dealKey, sectionBody, response) {
     source_text: sourceText,
     document_hash: documentHash,
     section_references: [SECTION_REFERENCE],
-    contract_bundle: CONTRACT_BUNDLE_V15,
+    contract_bundle: CONTRACT_BUNDLE_V21,
     definitions: Object.freeze({ known_definitions: [] }),
     provider: async ({ governed_scope: governedScope }) => {
       const { proposals, evidence_residuals: evidenceResiduals } = shapeNoShopProposals(
@@ -260,6 +261,10 @@ async function resolveNoShopAssertions(dealKey, sectionBody, response) {
           no_shop_action_assertions: response.no_shop_action_assertions || [],
           exception_prerequisite_assertions: response.exception_prerequisite_assertions || [],
           period_assertions: response.period_assertions || [],
+          cease_assertions: response.cease_assertions || [],
+          standstill_assertions: response.standstill_assertions || [],
+          fiduciary_standard_assertions: response.fiduciary_standard_assertions || [],
+          recommendation_assertions: response.recommendation_assertions || [],
           open_world_candidates: response.open_world_candidates || [],
         },
         governedScope.source_text,
@@ -275,7 +280,7 @@ async function resolveNoShopAssertions(dealKey, sectionBody, response) {
   });
   const resolution = resolveCandidates({
     run_receipt: receipt,
-    contract_vocabulary: CONTRACT_BUNDLE_V15,
+    contract_vocabulary: CONTRACT_BUNDLE_V21,
     admitted_source_context: admittedSourceContext,
   });
   return { receipt, resolution, sourceText, documentHash, admittedSourceContext };

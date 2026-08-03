@@ -156,7 +156,7 @@ test('parity blocker inventory is exact and never treats open-world evidence as 
   const blockers = listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER);
   assert.ok(blockers.length > 0);
   assert.ok(blockers.every((blocker) => blocker.semantic_completion === false));
-  assert.ok(blockers.some((blocker) => blocker.disposition === 'UNASSIGNED'));
+  assert.equal(blockers.some((blocker) => blocker.disposition === 'UNASSIGNED'), false);
   assert.ok(blockers.some((blocker) => blocker.disposition === 'FOLLOW_ON_REQUIRED'));
   assert.deepEqual(
     blockers.map((blocker) => blocker.surface_id),
