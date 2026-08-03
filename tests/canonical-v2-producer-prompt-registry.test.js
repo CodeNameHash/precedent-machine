@@ -65,10 +65,10 @@ test('registry: unknown/unregistered family returns null -- fail closed, never a
   assert.equal(getProducerPromptModule(undefined), null);
 });
 
-test('registry: CAPITALISATION, MAE_DEFINITION, NO_SHOP, TERMINATION and TERMINATION_FEE are registered (family-termination-rights slice adds TERMINATION)', () => {
+test('registry: composed adapter prompt families are registered', () => {
   assert.deepEqual(
     listRegisteredSectionFamilies(),
-    ['ANTITRUST_REGULATORY', 'CAPITALISATION', 'MAE_DEFINITION', 'NO_SHOP', 'TERMINATION', 'TERMINATION_FEE'],
+    ['ANTITRUST_REGULATORY', 'APPRAISAL_DISSENTERS_RIGHTS', 'CAPITALISATION', 'DIVIDENDS', 'DNO_INDEMNIFICATION', 'EMPLOYEE_MATTERS', 'FINANCING_COVENANTS', 'GUARANTY_FINANCING_PARTY', 'KEY_DEFINED_TERMS', 'MAE_DEFINITION', 'MERGER_STRUCTURE_CLOSING', 'MISC_BOILERPLATE', 'NO_SHOP', 'SPECIFIC_PERFORMANCE_REMEDIES', 'TAX_MATTERS', 'TERMINATION', 'TERMINATION_FEE'],
   );
 });
 

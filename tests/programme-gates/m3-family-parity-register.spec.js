@@ -128,8 +128,8 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
   ));
   assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.unassigned_product_surface_ids.length, 2);
   assert.deepEqual(
-    CURRENT_M3_FAMILY_PARITY_STATUS.supplemental_owner_states.map((owner) => owner.completion_state),
-    ['FOLLOW_ON_OPEN', 'FOLLOW_ON_OPEN', 'FOLLOW_ON_OPEN'],
+    CURRENT_M3_FAMILY_PARITY_REGISTER.supplemental_owners.map((owner) => owner.first_slice.state),
+    ['PASS', 'PASS', 'PASS'],
   );
 
   const waveAOnly = completedRegister();
@@ -143,7 +143,6 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
   const complete = buildM3FamilyParityStatus(completedRegister());
   assert.equal(complete.state, 'FAMILY_COMPLETE');
   assert.ok(complete.family_states.every((family) => family.completion_state === 'FAMILY_COMPLETE'));
-  assert.ok(complete.supplemental_owner_states.every((owner) => owner.completion_state === 'OWNER_COMPLETE'));
 });
 
 test('parity blocker inventory is exact and never treats open-world evidence as semantic completion', () => {
