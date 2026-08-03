@@ -12,6 +12,7 @@ const {
   SOURCE_KINDS,
   STATUS_SCHEMA,
   buildM3FamilyParityStatus,
+  listM3ProductParityBlockers,
   validateM3FamilyParityRegister,
   validateM3FamilyParityStatus,
 } = require('../../lib/canonical-v2/native-producer/m3-family-parity-register');
@@ -143,6 +144,19 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
   assert.equal(complete.state, 'FAMILY_COMPLETE');
   assert.ok(complete.family_states.every((family) => family.completion_state === 'FAMILY_COMPLETE'));
   assert.ok(complete.supplemental_owner_states.every((owner) => owner.completion_state === 'OWNER_COMPLETE'));
+});
+
+test('parity blocker inventory is exact and never treats open-world evidence as semantic completion', () => {
+  const blockers = listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER);
+  assert.ok(blockers.length > 0);
+  assert.ok(blockers.every((blocker) => blocker.semantic_completion === false));
+  assert.ok(blockers.some((blocker) => blocker.disposition === 'UNASSIGNED'));
+  assert.ok(blockers.some((blocker) => blocker.disposition === 'FOLLOW_ON_REQUIRED'));
+  assert.deepEqual(
+    blockers.map((blocker) => blocker.surface_id),
+    [...blockers.map((blocker) => blocker.surface_id)].sort(),
+  );
+  assert.deepEqual(listM3ProductParityBlockers(completedRegister()), []);
 });
 
 test('a rehashed complete label cannot contradict open family state', () => {
