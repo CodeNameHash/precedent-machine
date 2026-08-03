@@ -599,10 +599,26 @@ test('a TEMPORAL qualifier (canonical_value: null, no registered claim definitio
     admitted_source_context: admittedSourceContext,
   });
 
+  // P2 qualifier kinds (docs/superpowers/specs/2026-08-02-p2-qualifier-
+  // kinds-design.md, "CONVERTS ON REPLAY" table, audit C-1): this quote is
+  // byte-form-identical to F28 closure b6185150… — the AS_OF_BRIDGE now
+  // converts it to a plain CALENDAR measurement-date claim. The test's
+  // original quarantine concern is UNCHANGED and still asserted: it never
+  // resolves or queues as a REPRESENTATION_ACCURACY_STANDARD claim.
+  // This test runs the LEGACY fixture bundle (compileFixtureContract(),
+  // which predates REPRESENTATION_MEASUREMENT_DATE), so the conversion
+  // cannot complete against this vocabulary — and the outcome is the TYPED
+  // residual, never a silent drop:
+  const residual = (resolution.residuals || []).find(
+    (r) => r.residual_type === 'VOCABULARY_MISSING_MAPPED_CLAIM_DEFINITION'
+      && r.mapped_claim_definition_key === 'REPRESENTATION_MEASUREMENT_DATE',
+  );
+  assert.ok(residual, 'legacy-vocabulary run surfaces the typed VOCABULARY_MISSING residual for the attempted date mint');
   assert.equal(
-    resolution.resolved.some((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY),
+    resolution.resolved.some((entry) => entry.claim.registered_claim_definition_key === 'REPRESENTATION_ACCURACY_STANDARD'
+      && entry.claim.canonical_value === null),
     false,
-    'the TEMPORAL qualifier never resolves to a REPRESENTATION_ACCURACY_STANDARD claim',
+    'never quarantines as an accuracy claim',
   );
   assert.equal(
     resolution.review_queue.some((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY),
@@ -610,9 +626,7 @@ test('a TEMPORAL qualifier (canonical_value: null, no registered claim definitio
     'it never reaches review_queue as an INVALID_CANONICAL_VALUE/UNREGISTERED_CANONICAL_VALUE claim either',
   );
   const openWorldEntry = resolution.open_world.find((entry) => entry.claim_definition_key === QUALIFIER_CLAIM_KEY);
-  assert.ok(openWorldEntry, 'the TEMPORAL qualifier lands in open_world instead');
-  assert.equal(openWorldEntry.reason, 'UNMAPPED_GENERIC_CLAIM_KEY');
-  assert.equal(openWorldEntry.raw_value, 'as of the close of business on April 17, 2026');
+  assert.equal(openWorldEntry, undefined, 'no longer falls open-world — the conversion is the P2 deliverable');
 });
 
 // ─── Task 3, work items 2-9: the new deterministic mappings, split

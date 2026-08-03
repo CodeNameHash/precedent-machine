@@ -242,9 +242,15 @@ test('TopBuild: two-pass wiring -- 1 PRESENCE_AGREEMENT (3.1(b)), 0 SECTION_MISM
   const snapshot = loadSnapshot('topbuild-v1-provision-snapshot.json');
   const { plain, wired, comparison } = await runTwoPassFlow({ runReceipt, admittedSourceContext, snapshot });
 
-  assert.equal(plain.resolved.length, 3);
-  assert.equal(plain.review_queue.length, 4);
-  assert.equal(plain.open_world.length, 33);
+  // P2 qualifier kinds phase 1 (Fable review 2026-08-03): counts re-derived
+  // against the spec's CONVERTS-ON-REPLAY table -- F28 +2 resolved (the two
+  // AS_OF_BRIDGE plain-calendar dates), Skechers +1 (C5 CHAPEAU
+  // Capitalization Date definition, 2025-05-02), Modiv +3 (three ITEM C5
+  // Capitalization Date definitions, 2026-05-01).
+  assert.equal(plain.resolved.length, 5);
+  // P2 phase 1: 4 -> 6 (+2 PERFORMANCE_ASSUMPTION rows, citation-corroborated-only).
+  assert.equal(plain.review_queue.length, 6);
+  assert.equal(plain.open_world.length, 31); // 33 -> 31, P2 conversions (2 AS_OF_BRIDGE dates departed)
 
   // Tier 1 (v1v2-comparator.js), pinned: 1 agreement (TopBuild's real CAP
   // card is already recorded at subsection granularity "3.1(b)", matching
@@ -260,7 +266,7 @@ test('TopBuild: two-pass wiring -- 1 PRESENCE_AGREEMENT (3.1(b)), 0 SECTION_MISM
   const unmapped = unmappedSubtypeSummary(snapshot, FAMILY_MAPPING_TABLE);
   assert.equal(unmapped.length, 0, 'TopBuild: 0 UNMAPPED cards');
 
-  assert.equal(wired.resolved.length, 3, 'strictly additive on bucket sizes');
+  assert.equal(wired.resolved.length, 5, 'strictly additive on bucket sizes'); // 3 -> 5, P2 conversions
   for (const entry of wired.resolved) {
     assert.equal(entry.resolved_claim_definition_key, 'REPRESENTATION_MEASUREMENT_DATE');
     assert.ok(!entry.triage.reasons.includes('V1V2_SECTION_MISMATCH'));
@@ -289,8 +295,11 @@ test('Skechers: two-pass wiring -- 2 SECTION_MISMATCH Tier-1 outcomes (severity 
   assert.equal(snapshot.deal_identity_bridge.governed_deal_key, 'deal:skechers-first-live-run:5e1d6f13ab83e3f9');
   const { plain, wired, comparison } = await runTwoPassFlow({ runReceipt, admittedSourceContext, snapshot });
 
-  assert.equal(plain.resolved.length, 1);
-  assert.equal(plain.review_queue.length, 1);
+  // P2 phase 1: 1 -> 2 (C5 Capitalization Date definition, 2025-05-02).
+  assert.equal(plain.resolved.length, 2);
+  // P2 phase 1: 1 -> 2 (+1 CITATION_NOT_VALIDATED @3.7 -- typed review routing,
+  // observed and accepted at Fable review; full verification with phase 2).
+  assert.equal(plain.review_queue.length, 2);
 
   // Tier 1: BOTH of Skechers' two real REP-T-CAP cards (section refs "3.7"
   // and "3.8", both SECTION-granularity in v1) reference the run's single
@@ -324,7 +333,7 @@ test('Skechers: two-pass wiring -- 2 SECTION_MISMATCH Tier-1 outcomes (severity 
   // regardless of the Tier-1 provision_outcomes split: severity preference
   // makes SECTION_MISMATCH win, the resolved claim is V1V2_SECTION_MISMATCH
   // blocked, deterministic_gates_passed false, auto_pass false.
-  assert.equal(wired.resolved.length, 1);
+  assert.equal(wired.resolved.length, 2); // P2 phase 1
   const claim = wired.resolved[0];
   assert.equal(claim.resolved_claim_definition_key, 'REPRESENTATION_MEASUREMENT_DATE');
   assert.ok(claim.triage.reasons.includes('V1V2_SECTION_MISMATCH'));
@@ -351,9 +360,15 @@ test('Modiv: two-pass wiring -- 1 SECTION_MISMATCH Tier-1 outcome (same granular
   assert.equal(snapshot.deal_identity_bridge.governed_deal_key, 'deal:modiv-first-live-run:32065211e4688625');
   const { plain, wired, comparison } = await runTwoPassFlow({ runReceipt, admittedSourceContext, snapshot });
 
-  assert.equal(plain.resolved.length, 1);
-  assert.equal(plain.review_queue.length, 1);
-  assert.equal(plain.open_world.length, 65);
+  // P2 phase 1: 1 -> 4 (three ITEM C5 Capitalization Date definitions, 2026-05-01).
+  assert.equal(plain.resolved.length, 4);
+  // P2 phase 1: 1 -> 7 (+3 DISCLOSURE_CARVEOUT_PARTIAL -- the spec's pinned
+  // Modiv mixed-carve-out routing -- +2 ASSERTION_SCOPE_AMBIGUOUS @3.2, and
+  // +1 more under this flow's governed agreement_date injection; typed
+  // review routings observed and accepted at Fable review, full
+  // verification with the phase-2 registry wiring).
+  assert.equal(plain.review_queue.length, 7);
+  assert.equal(plain.open_world.length, 59); // 65 -> 59, P2 conversions (3 C5 dates resolved, 3 mixed carve-outs now review DISCLOSURE_CARVEOUT_PARTIAL)
 
   // Tier 1: Modiv's single real REP-T-CAP card is section-granularity
   // ("3.2"); the run's resolved claim carries subsection-granularity
@@ -366,7 +381,12 @@ test('Modiv: two-pass wiring -- 1 SECTION_MISMATCH Tier-1 outcome (same granular
   assert.equal(comparison.provision_outcomes.length, 48);
   const mismatch = comparison.provision_outcomes.find((o) => o.outcome === 'SECTION_MISMATCH');
   assert.equal(mismatch.v1_section, '3.2');
-  assert.equal(mismatch.v2_section, '3.2(c)');
+  // P2 phase 1: with four resolved Modiv claims (was one), the comparator's
+  // representative v2 citation is now the first-ordered subsection 3.2(a)
+  // (was the sole claim's 3.2(c)). The structural outcome -- bare-section v1
+  // card vs subsection-granularity v2 citation, SECTION_MISMATCH -- is
+  // unchanged.
+  assert.equal(mismatch.v2_section, '3.2(a)');
 
   // Programmatically-derived UNMAPPED set: pinned total 4 -- null-subtype
   // cards (4.16, 4.19) + REP-T-REGSTATUS (3.22) + REP-B-ANTIRELIANCE
@@ -378,7 +398,7 @@ test('Modiv: two-pass wiring -- 1 SECTION_MISMATCH Tier-1 outcome (same granular
     ['NULL@4.16', 'NULL@4.19', 'REP-B-ANTIRELIANCE@4.21', 'REP-T-REGSTATUS@3.22'],
   );
 
-  assert.equal(wired.resolved.length, 1);
+  assert.equal(wired.resolved.length, 4); // P2 phase 1
   const claim = wired.resolved[0];
   assert.equal(claim.resolved_claim_definition_key, 'REPRESENTATION_MEASUREMENT_DATE');
   assert.ok(claim.triage.reasons.includes('V1V2_SECTION_MISMATCH'));

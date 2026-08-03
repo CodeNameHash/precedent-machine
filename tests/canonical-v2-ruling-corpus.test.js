@@ -11,6 +11,7 @@ const {
   RULING_CORPUS_SCHEMA,
   RULING_CORPUS_ENTRY_SCHEMA,
   EMPTY_RULING_CORPUS,
+  QUALIFIER_KINDS,
   buildRulingCorpus,
   validateRulingCorpus,
   rulingKey,
@@ -19,6 +20,10 @@ const {
   appendRuling,
   RulingCorpusError,
 } = require('../lib/canonical-v2/native-producer/ruling-corpus');
+const {
+  QUALIFIER_KINDS: LEXICON_QUALIFIER_KINDS,
+  classifyQualifierQuote,
+} = require('../lib/canonical-v2/native-producer/qualifier-kind-lexicon');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const REAL_CORPUS_PATH = path.join(REPO_ROOT, 'contracts', 'ruling-corpus', 'ruling-corpus.v1.json');
@@ -373,4 +378,55 @@ test('confirm-kind-ruling.mjs refuses a queue item missing concept_family', () =
   // Temp copy started identical to the real file and must still be
   // unmodified since the script failed before writing.
   assert.equal(after, before);
+});
+
+// ─── P2 (docs/superpowers/specs/2026-08-02-p2-qualifier-kinds-design.md
+// section 2, audit M-2): ruling-corpus vocabulary lockstep ───
+
+test('ruling-corpus QUALIFIER_KINDS agrees exactly with the lexicon QUALIFIER_KINDS (shared vector)', () => {
+  assert.deepEqual([...QUALIFIER_KINDS].sort(), [...LEXICON_QUALIFIER_KINDS].sort());
+});
+
+test('ruling-corpus rejects a ruled_kind outside the six-kind vocabulary', () => {
+  assert.throws(() => {
+    validateRulingCorpus(
+      buildRulingCorpus({
+        version: 1,
+        rulings: [verifiedEntry({ ruled_kind: 'NOT_A_KIND' })],
+      })
+    );
+  }, RulingCorpusError);
+});
+
+test('the real committed corpus (contracts/ruling-corpus/ruling-corpus.v1.json) contains no ruling matching any P2 fixture phrase (spec section 10, test 10)', () => {
+  const real = JSON.parse(fs.readFileSync(REAL_CORPUS_PATH, 'utf8'));
+  validateRulingCorpus(real);
+  assert.equal(real.rulings.length, 0, 'the real corpus is empty -- trivially no P2 fixture phrase is covered');
+});
+
+test('a synthetic v1-era THRESHOLD ruling on a pure carve-out phrase conflicts with the v2 lexicon (RULING_LEXICON_CONFLICT)', () => {
+  const phrase = 'except as set forth in Section 3.2(b) of the Company Disclosure Letter';
+  const corpus = buildRulingCorpus({
+    version: 1,
+    rulings: [
+      verifiedEntry({
+        normalised_phrase: phrase,
+        attachment_position: 'ITEM',
+        concept_family: 'REP-T-CAP',
+        ruled_kind: 'THRESHOLD',
+        lexicon_version_at_ruling: 1,
+      }),
+    ],
+  });
+  const result = applyRuling(corpus, {
+    normalised_phrase: phrase,
+    attachment_position: 'ITEM',
+    concept_family: 'REP-T-CAP',
+    classifyKind: (quote) => {
+      const outcome = classifyQualifierQuote({ quote });
+      return { kind: outcome.lexiconKind ?? null };
+    },
+  });
+  assert.equal(result.outcome, 'RULING_LEXICON_CONFLICT');
+  assert.equal(result.lexicon_kind, 'DISCLOSURE_SCHEDULE_CARVEOUT');
 });
