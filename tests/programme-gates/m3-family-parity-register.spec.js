@@ -151,17 +151,15 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
   const consideration = CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
     (family) => family.family_id === 'CONSIDERATION',
   );
-  assert.equal(consideration.completion_state, 'FOLLOW_ON_OPEN');
+  assert.equal(consideration.completion_state, 'WAVE_A_OPEN');
   assert.ok(CURRENT_M3_FAMILY_PARITY_STATUS.family_states
     .filter((family) => ![
       'ANTITRUST_REGULATORY_EFFORTS', 'NO_SHOP', 'MAE_DEFINITION',
-      'PROXY_MEETING_COVENANTS', 'CONSIDERATION',
-      'INTERIM_OPERATING_COVENANTS', 'TERMINATION_FEE', 'TERMINATION_RIGHTS',
+      'PROXY_MEETING_COVENANTS', 'TERMINATION_FEE', 'TERMINATION_RIGHTS',
     ].includes(family.family_id))
     .every((family) => family.completion_state === 'WAVE_A_OPEN'));
   for (const familyId of [
     'PROXY_MEETING_COVENANTS',
-    'INTERIM_OPERATING_COVENANTS',
     'TERMINATION_FEE',
     'TERMINATION_RIGHTS',
   ]) {
@@ -227,7 +225,10 @@ test('Consideration Wave A and grounded product projections pass while Wave B st
   const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
     (entry) => entry.family_id === 'CONSIDERATION',
   );
-  assert.ok(Object.values(family.wave_a.checks).every((check) => check.state === 'PASS'));
+  assert.deepEqual(family.wave_a.checks.fixture_proof, { state: 'OPEN', evidence_paths: [] });
+  assert.ok(Object.entries(family.wave_a.checks)
+    .filter(([checkId]) => checkId !== 'fixture_proof')
+    .every(([, check]) => check.state === 'PASS'));
   for (const surfaceId of [
     'consideration-rendered-rows',
     'consideration-market-fields',
@@ -252,7 +253,10 @@ test('IOC governed presence claims pass while long-tail and numeric mechanics re
   const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
     (entry) => entry.family_id === 'INTERIM_OPERATING_COVENANTS',
   );
-  assert.ok(Object.values(family.wave_a.checks).every((check) => check.state === 'PASS'));
+  assert.deepEqual(family.wave_a.checks.fixture_proof, { state: 'OPEN', evidence_paths: [] });
+  assert.ok(Object.entries(family.wave_a.checks)
+    .filter(([checkId]) => checkId !== 'fixture_proof')
+    .every(([, check]) => check.state === 'PASS'));
   for (const surfaceId of ['ioc-rendered-rows', 'ioc-market-fields', 'ioc-query-fields']) {
     const surface = family.product_surfaces.find((entry) => entry.surface_id === surfaceId);
     assert.equal(surface.state, 'PASS');
