@@ -132,6 +132,7 @@ async function existingCardCount(sb, dealId) {
 // this deal before this run but are absent from the new row set.
 function reconcileProvisionCardIdentities(rows, existingRows) {
   const existingByRegionHash = new Map();
+  const existingBySectionType = new Map();
   for (const existing of existingRows || []) {
     if (!existing.region_hash) continue;
     const prior = existingByRegionHash.get(existing.region_hash);
@@ -139,11 +140,27 @@ function reconcileProvisionCardIdentities(rows, existingRows) {
       throw new Error(`Existing provision_cards contain duplicate region identity ${existing.region_hash}`);
     }
     existingByRegionHash.set(existing.region_hash, existing);
+    if (existing.section_ref && existing.provision_type) {
+      const sectionTypeKey = `${existing.section_ref}\0${existing.provision_type}`;
+      const priorSection = existingBySectionType.get(sectionTypeKey);
+      if (priorSection && priorSection.provision_instance_id !== existing.provision_instance_id) {
+        throw new Error(`Existing provision_cards contain duplicate section/type identity ${sectionTypeKey}`);
+      }
+      existingBySectionType.set(sectionTypeKey, existing);
+    }
   }
 
   const identityRemap = new Map();
   const reconciled = (rows || []).map((row) => {
-    const existing = existingByRegionHash.get(row.region_hash);
+    const regionMatch = existingByRegionHash.get(row.region_hash);
+    const sectionTypeKey = row.section_ref && row.provision_type
+      ? `${row.section_ref}\0${row.provision_type}`
+      : null;
+    const sectionMatch = sectionTypeKey ? existingBySectionType.get(sectionTypeKey) : null;
+    if (regionMatch && sectionMatch && regionMatch.provision_instance_id !== sectionMatch.provision_instance_id) {
+      throw new Error(`Incoming provision_card has conflicting stored identities for region ${row.region_hash} and section/type ${sectionTypeKey}`);
+    }
+    const existing = regionMatch || sectionMatch;
     if (!existing || existing.provision_instance_id === row.provision_instance_id) return { ...row };
     if (!existing.provision_instance_id || !existing.excerpt_id) {
       throw new Error(`Existing provision_card is missing canonical identity for region ${row.region_hash}`);
@@ -185,7 +202,7 @@ async function replaceProvisionCardRows(sb, dealId, rows, batchSize = UPSERT_BAT
 
   const { data: storedRows, error: storedRowsError } = await sb
     .from('provision_cards')
-    .select('provision_instance_id,excerpt_id,region_hash')
+    .select('provision_instance_id,excerpt_id,region_hash,section_ref,provision_type')
     .eq('deal_id', dealId);
   if (storedRowsError) {
     throw new Error(`Failed to read existing provision_cards for identity reconciliation: ${storedRowsError.message}`);

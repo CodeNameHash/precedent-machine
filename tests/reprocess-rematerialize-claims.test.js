@@ -7,6 +7,8 @@ const {
   matchTypeBucket,
   provisionHasCodedFeatures,
   buildDealPlan,
+  canPartiallyWritePlan,
+  writeDealClaims,
 } = require('../scripts/reprocess/rematerialize-claims');
 
 const DEAL_ID = '885edae5-49e8-464a-9f33-edd229119d7c';
@@ -398,11 +400,46 @@ test('buildDealPlan supplements one card from exact-text duplicate provisions wi
   assert.equal(plan.ok, true);
   assert.equal(plan.matches.length, 1);
   assert.equal(plan.supplementalMatches.length, 1);
+  assert.deepEqual(plan.supplementalConflicts, []);
+  assert.deepEqual(plan.supplementalDispositions, [{
+    attribute: 'mainConcept',
+    primaryProvisionId: 'prov-waiver',
+    supplementalProvisionId: 'prov-enforce',
+    disposition: 'PRIMARY_CARD_SUMMARY_WINS',
+  }]);
   assert.equal(plan.unmatchedProvisions.length, 0);
   assert.deepEqual(
     plan.claimRows.map((row) => row.attribute).sort(),
     ['mainConcept', 'standstillWaiver', 'standstillWaiverConditions', 'standstillWaiverPermitted'].sort(),
   );
+});
+
+test('buildDealPlan and partial writer fail closed when exact-text duplicates disagree on a shared non-summary attribute', async () => {
+  const sharedText = 'The Company may waive a standstill solely when fiduciary duties require it.';
+  const primary = provision({
+    id: 'prov-primary',
+    category: 'Standstill Waiver',
+    full_text: sharedText,
+    ai_metadata: { features: { standstillWaiverConditions: 'condition A' } },
+  });
+  const supplement = provision({
+    id: 'prov-supplement',
+    category: 'Enforcement of Standstills',
+    full_text: sharedText,
+    ai_metadata: { features: { standstillWaiverConditions: 'condition B' } },
+  });
+  const plan = buildDealPlan(DEAL_ID, [card({
+    short_title: 'Standstill Waiver',
+    region_full_text: sharedText,
+  })], [primary, supplement]);
+
+  assert.equal(plan.ok, false);
+  assert.equal(plan.supplementalConflicts.length, 1);
+  assert.equal(plan.supplementalConflicts[0].attribute, 'standstillWaiverConditions');
+  assert.equal(canPartiallyWritePlan(plan), false);
+  const sb = makeMockSb();
+  await assert.rejects(writeDealClaims(sb, plan), /supplemental claim conflict/);
+  assert.deepEqual(sb.tables.claims, []);
 });
 
 // ---------------------------------------------------------------------------

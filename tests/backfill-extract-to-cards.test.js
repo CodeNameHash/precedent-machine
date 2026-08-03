@@ -281,6 +281,61 @@ test('replaceProvisionCardRows keeps a new identity and deletes a true source-re
   assert.deepEqual(sb.calls.find((call) => call.op === 'delete-in').values, ['old-provision-id']);
 });
 
+test('replaceProvisionCardRows preserves stored identity when section and type survive a source-text change', async () => {
+  const sb = fakeReplaceSupabase({
+    existingRows: [{
+      deal_id: 'deal-1',
+      provision_instance_id: 'old-provision-id',
+      excerpt_id: 'old-excerpt-id',
+      region_hash: 'old-region-hash',
+      section_ref: 'Section 5.1',
+      provision_type: 'COVENANT_OTHER',
+    }],
+  });
+  const incoming = [{
+    deal_id: 'deal-1',
+    provision_instance_id: 'new-provision-id',
+    excerpt_id: 'new-excerpt-id',
+    region_hash: 'new-region-hash',
+    section_ref: 'Section 5.1',
+    provision_type: 'COVENANT_OTHER',
+    references: [],
+  }];
+
+  await replaceProvisionCardRows(sb, 'deal-1', incoming, 50);
+
+  const [upserted] = sb.calls.find((call) => call.op === 'upsert').rows;
+  assert.equal(upserted.provision_instance_id, 'old-provision-id');
+  assert.equal(upserted.excerpt_id, 'old-excerpt-id');
+  assert.ok(!sb.calls.some((call) => call.op === 'delete-in'));
+});
+
+test('replaceProvisionCardRows rejects crossed region and section identities before any write', async () => {
+  const sb = fakeReplaceSupabase({
+    existingRows: [
+      {
+        deal_id: 'deal-1', provision_instance_id: 'region-owner', excerpt_id: 'region-excerpt',
+        region_hash: 'region-a', section_ref: 'Section A', provision_type: 'COVENANT_OTHER',
+      },
+      {
+        deal_id: 'deal-1', provision_instance_id: 'section-owner', excerpt_id: 'section-excerpt',
+        region_hash: 'region-b', section_ref: 'Section B', provision_type: 'COVENANT_OTHER',
+      },
+    ],
+  });
+  const incoming = [{
+    deal_id: 'deal-1', provision_instance_id: 'new-id', excerpt_id: 'new-excerpt',
+    region_hash: 'region-a', section_ref: 'Section B', provision_type: 'COVENANT_OTHER', references: [],
+  }];
+
+  await assert.rejects(
+    replaceProvisionCardRows(sb, 'deal-1', incoming, 50),
+    /conflicting stored identities/,
+  );
+  assert.ok(!sb.calls.some((call) => call.op === 'upsert'));
+  assert.ok(!sb.calls.some((call) => call.op === 'delete'));
+});
+
 test('replaceProvisionCardRows with zero rows deletes all existing cards for the deal', async () => {
   const sb = fakeReplaceSupabase({
     existingRows: [{ deal_id: 'deal-empty', provision_instance_id: 'x' }],
