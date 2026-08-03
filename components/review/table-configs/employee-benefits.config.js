@@ -340,6 +340,24 @@ function dividerRow(headline) {
   };
 }
 
+function evidenceOnlyRows(cards) {
+  return cards
+    .filter((card) => card?.canonical_v2_lineage?.source === 'CANONICAL_V2_OPEN_WORLD_EVIDENCE')
+    .map((card, ordinal) => ({
+      id: `employee-benefits-open-evidence-${card.id || ordinal}`,
+      kind: 'item',
+      benefit: card.short_title || 'Deferred employee-matters evidence',
+      comparison: 'Not adjudicated',
+      standard: 'Evidence only',
+      period: null,
+      detail: textOf(card),
+      evidence: textOf(card),
+      sourceCard: card,
+      present: true,
+      marketState: 'OPEN_NATIVE_FIELD',
+    }));
+}
+
 function shortStandard(text) {
   if (!text) return null;
   // E (truncation sweep, Cox "Comparable to similarly situated buyer…"):
@@ -384,7 +402,7 @@ const employeeBenefitsConfig = {
     // ERISA_ITEMS / isErisaCard kept for a possible future standalone table.
     const belowRows = [...continuationRows, ...protectionRows];
     const divider = belowRows.length ? [dividerRow(headline)] : [];
-    return [...baseRows, ...divider, ...belowRows];
+    return [...baseRows, ...divider, ...belowRows, ...evidenceOnlyRows(cards)];
   },
   // "Protection period: 12 months" -- hoisted out of every row into the
   // section chrome (ProvisionTable's headerNote slot) instead of repeated

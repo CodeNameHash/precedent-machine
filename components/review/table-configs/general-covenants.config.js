@@ -216,6 +216,7 @@ function generalCovenantMarket(card) {
 function linkRow(idSuffix, label, card, evidenceOverride) {
   if (!card) return null;
   const ownership = routeGeneralCovenantCode(cardCode(card));
+  const evidenceOnly = card?.canonical_v2_lineage?.source === 'CANONICAL_V2_OPEN_WORLD_EVIDENCE';
   return {
     id: `general-covenants-${idSuffix}`,
     label,
@@ -227,6 +228,7 @@ function linkRow(idSuffix, label, card, evidenceOverride) {
     present: true,
     ownerFamily: ownership.owner_id,
     ownershipState: ownership.route_state,
+    ...(evidenceOnly ? { marketState: 'OPEN_NATIVE_FIELD' } : {}),
     ...generalCovenantMarket(card),
   };
 }
