@@ -250,7 +250,9 @@ test('FIXTURE PIN: the no-v1v2-input resolveCandidates() path reproduces the com
   assert.equal(baseline.resolution_receipt.mapping_table_version, 8);
   assert.equal(
     baseline.resolution_receipt.resolution_receipt_id,
-    'f43d13ba47d9f71a956dc2e25f425aead98365378754c2fe4ce8ac977817417c',
+    '7422d3abd3fc0da9b6c0015a638697d4026f3abfb333859c0f82b867eb6492f4',
+    // Re-pinned after Ben's 2026-08-03 ruling: bare no-shop "days"
+    // now resolve as CALENDAR_DAYS, and no_shop_period_parse_version is 2.
     // Re-pinned (P2 qualifier kinds phase 1, Fable review 2026-08-03):
     // field-level delta re-derived by running the baseline -- mapping_table_
     // version stays 8, qualifier_kind_lexicon_version 1->2, measurement_

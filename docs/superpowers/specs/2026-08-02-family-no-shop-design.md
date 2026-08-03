@@ -81,10 +81,9 @@ the P1 verification that write-set attributes are schema-free except
 - Period claims: `period_role` (`NOTICE | INITIAL_MATCH |
   SUBSEQUENT_MATCH` — redundant with the generic key by construction,
   carried for receipt legibility), `day_kind` (enum `BUSINESS_DAYS |
-  CALENDAR_DAYS | UNSPECIFIED_DAYS` — section 2; **bare "days" is
-  UNSPECIFIED_DAYS, never silently read as calendar days**: "business
-  days" vs "days" is a real economic difference in a 3–5 day match
-  window and the machine must not adopt a default legal reading), and
+  CALENDAR_DAYS | UNSPECIFIED_DAYS` — section 2; **Ben ruled on
+  2026-08-03 that bare "days" defaults to CALENDAR_DAYS**, while the
+  verbatim bare unit phrase remains recorded so the default is visible), and
   `unit_phrase` (the verbatim unit text, e.g. "Business Days"), required
   to be a verbatim substring of the byte-verified quote — failure typed
   `PERIOD_UNIT_PHRASE_NOT_IN_QUOTE` → review (the P1 M-3 discipline).
@@ -178,7 +177,8 @@ Then, on the survivors:
   - `business day(s)` (case-insensitive) → RESOLVED,
     `day_kind: 'BUSINESS_DAYS'`;
   - `calendar day(s)` → RESOLVED, `day_kind: 'CALENDAR_DAYS'`;
-  - bare `day(s)` → RESOLVED, `day_kind: 'UNSPECIFIED_DAYS'`;
+  - bare `day(s)` → RESOLVED, `day_kind: 'CALENDAR_DAYS'`, preserving
+    the verbatim bare `unit_phrase` (Ben ruling, 2026-08-03);
   - `hour(s)` → typed ABSTAIN **`PERIOD_UNIT_HOURS`** → review. This is
     the family's central legal pin: hour-denominated obligations
     ("within 24 hours", "within forty-eight (48) hours", "at least 96
@@ -572,7 +572,8 @@ no-shop extraction.
 2. **Parser, table-driven:** "four (4) business days" → `'4'` /
    BUSINESS_DAYS (the one-intervening-`)` rule, audit C-1); "5 Business
    Days'" (trailing possessive) → `'5'` / BUSINESS_DAYS; "ten (10)
-   business days" → `'10'`; bare-"days" form → UNSPECIFIED_DAYS; a
+   business days" → `'10'`; bare-"days" form → CALENDAR_DAYS while
+   preserving the bare unit phrase; a
    "(the 'Notice Period')"-before-unit form → `PERIOD_UNIT_UNCORROBORATED`
    (audit C-1 ABSTAIN fixture); "within 24 hours" and "within
    forty-eight (48) hours" and "96 hours" → `PERIOD_UNIT_HOURS`;

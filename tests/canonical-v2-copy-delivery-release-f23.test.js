@@ -138,21 +138,21 @@ test('F23 attestation and release identities are deterministic', () => {
   );
   assert.equal(
     id,
-    '92861af61ef69e3f527ee665570f3f733dded29c6fb33721fae2d5502d8e288e',
+    'b1205e6364517a0b57c276618475ce12a2c76a81df589159927ab468455ccf65',
   );
   assert.equal(
     digest,
-    '20671b3e3a84e0adb05feace16a74ab6140c7d6124c5cfbcbd7237da6a8cbe8e',
+    'b43ea5cb3ca45ac7b24d08f85378e1b532bedaa80187460d21ae55b7dd5d8dd7',
   );
   assert.equal(
     value.candidate_release_bundle
       .metric_scoped_candidate_release_bundle_id,
-    '0f1f8e74238900979557f451926716511935b7562d005540a9ea1cdc83881ff9',
+    '831c95a1465aa02e1cd3314f1d2cea1847aef59e160a35afbfca966b4f330218',
   );
   assert.equal(
     value.candidate_release_bundle.manifest
       .candidate_release_manifest_id,
-    'a0f46126193f45787ad393fc0400bd82617d2682d267257b6d9dc1705e929c75',
+    '974fe5d7d6e0378416076bdbc748b6fe2e6b9c12c7b08b79a39974579c88703f',
   );
   assert.equal(
     validateMetricScopedCandidateReleaseF23(
@@ -180,19 +180,19 @@ test('one exact admission binds the manifest and all five carriers', () => {
   assert.deepEqual(carrierAdmissions, Array(5).fill(admission));
   assert.equal(
     value.shared_rows[0].canonical_payload_digest,
-    '5728a300d9ee4da77b37b9fe045624e4dd0bafa81823c1ce7d2a76679c02a809',
+    'c1e585a6e4acdf3c21a693ea469ea809681de2b8bb869b4daa1a1cee4a95caff',
   );
   assert.equal(
     value.cohort_requests[0].cohort_digest,
-    '7db6415234663a325db4ccb9cbb3acc9b9523e175df4f4df63f0822cf2ca73e5',
+    '8b9b894fa751c9907b4ca7e738d23c67627da38219cb27a277b3f7165464952e',
   );
   assert.equal(
     value.cohort_requests[0].cache_key,
-    '0e1ef2a348a89054be41bf787a2be8f529c9078029ec3ec610a057ef88acf79a',
+    'aea4dba6c47f4e868a8fef68f27e704b6cc90546b6f72819d9801f12a03ef934',
   );
   assert.equal(
     value.query_records[0].canonical_payload_digest,
-    '76f168840385f2792307b002029162a148c9be3d9bbcf79fe3038b697da5395d',
+    'a5db487f58e2e1fbdf0eca34adff3bea35a67157d179cfd0ccbd5e43c5cc0ec0',
   );
 });
 
@@ -208,11 +208,11 @@ test('F23 reconstructs the exact predecessor row and remains non-activating', ()
   );
   assert.equal(
     predecessor.canonical_payload_digest,
-    'f741577096c9701f0293b9309729fdb3f3ee24c294a9b0c5a719a7b07f4be239',
+    'bb882b5b18746af5a47c5b01d5e8c0dde6dfa6c037fcb2c4a21b290730a25a2d',
   );
   assert.equal(
     release.predecessor_manifest.candidate_release_manifest_id,
-    '6b3413890ccd2af00da87ebe8033c43b25f1122453c1ef6c8dcca56fc93f915c',
+    '38a9b2110c8e7d36bbcf4d92b4932456f0a9e7e8ab3d287e9b9fdc16ef2c632e',
   );
   assert.deepEqual(release.manifest.authority, {
     active_release_authority: 'NONE',

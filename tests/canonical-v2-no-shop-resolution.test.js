@@ -320,7 +320,7 @@ test('materiality rank 50 asserted on all five NOSOL- concepts via the EXISTING 
 
 test('MAPPING_TABLE_VERSION is 8 (bumped 6 -> 7 by the family-mae-definition slice, 7 -> 8 by the family-termination-rights slice) and NO_SHOP_PERIOD_PARSE_VERSION is exported', () => {
   assert.equal(MAPPING_TABLE_VERSION, 8);
-  assert.equal(NO_SHOP_PERIOD_PARSE_VERSION, 1);
+  assert.equal(NO_SHOP_PERIOD_PARSE_VERSION, 2);
 });
 
 // ---------------------------------------------------------------------------
@@ -512,6 +512,19 @@ test('production NOSOL-MATCH card resolves end to end as INITIAL_MATCH: concept 
   assert.equal(resolved[0].claim.attributes.day_kind, 'BUSINESS_DAYS');
   assert.equal(resolved[0].concept_key, 'NOSOL-MATCH');
   assert.equal(resolved[0].party.capacity, 'TARGET');
+});
+
+test('a bare-day initial match period defaults to CALENDAR_DAYS without rewriting its unit phrase', async () => {
+  const quote = 'prior written notice to Parent, at least five (5) days in advance of terminating this Agreement to accept a Superior Proposal';
+  const { resolution } = await resolveNoShopAssertions('deal:nosol-match-bare-days', quote, {
+    period_assertions: [periodAssertion({ periodRole: 'INITIAL_MATCH', quote })],
+  });
+  const resolved = resolution.resolved.find((r) => r.generic_claim_key === NO_SHOP_MATCH_PERIOD_CLAIM_KEY);
+  assert.ok(resolved);
+  assert.equal(resolved.claim.canonical_value, '5');
+  assert.equal(resolved.claim.attributes.day_kind, 'CALENDAR_DAYS');
+  assert.equal(resolved.claim.attributes.unit_phrase, 'days');
+  assert.equal(resolution.resolution_receipt.no_shop_period_parse_version, 2);
 });
 
 test('production NOSOL-NOTICE card ("within 24 hours") proposed as NOTICE routes to review, typed PERIOD_UNIT_HOURS -- never converts to a day count (the family\'s central legal pin)', async () => {

@@ -31,7 +31,7 @@ function quoteById(id) {
 }
 
 test('NO_SHOP_PERIOD_PARSE_VERSION is an exported, versioned constant', () => {
-  assert.equal(NO_SHOP_PERIOD_PARSE_VERSION, 1);
+  assert.equal(NO_SHOP_PERIOD_PARSE_VERSION, 2);
 });
 
 test('fixture integrity: the fixture file parses and every entry carries a retrieval date and a quote', () => {
@@ -103,11 +103,11 @@ test('"ten (10) business days" resolves 10 / BUSINESS_DAYS', () => {
   assert.equal(result.day_kind, 'BUSINESS_DAYS');
 });
 
-test('bare "days" form resolves UNSPECIFIED_DAYS', () => {
+test('bare "days" form defaults to CALENDAR_DAYS while preserving the raw unit phrase', () => {
   const result = parseNoShopPeriod('the Company shall notify Parent within five (5) days of receipt');
   assert.equal(result.outcome, 'RESOLVED');
   assert.equal(result.canonical_value, '5');
-  assert.equal(result.day_kind, 'UNSPECIFIED_DAYS');
+  assert.equal(result.day_kind, 'CALENDAR_DAYS');
   assert.equal(result.unit_phrase, 'days');
 });
 
