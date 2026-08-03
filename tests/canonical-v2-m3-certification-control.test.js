@@ -82,11 +82,11 @@ test('current Wave A and follow-on gaps block M3 certification', () => {
   }), (error) => (
     error instanceof M3CertificationControlError
       && error.code === 'INCOMPLETE_FAMILY_PARITY'
-      && error.details.incomplete_families.length === 4
+      && error.details.incomplete_families.length === 1
       && error.details.incomplete_families.includes('CLOSING_CONDITIONS')
-      && error.details.incomplete_families.includes('KEY_DEFINED_TERMS')
-      && error.details.incomplete_families.includes('TERMINATION_FEE')
-      && error.details.incomplete_families.includes('TERMINATION_RIGHTS')
+      && !error.details.incomplete_families.includes('KEY_DEFINED_TERMS')
+      && !error.details.incomplete_families.includes('TERMINATION_FEE')
+      && !error.details.incomplete_families.includes('TERMINATION_RIGHTS')
       && !error.details.incomplete_families.includes('CONSIDERATION')
       && !error.details.incomplete_families.includes('INTERIM_OPERATING_COVENANTS')
       && !error.details.incomplete_families.includes('ANTITRUST_REGULATORY_EFFORTS')

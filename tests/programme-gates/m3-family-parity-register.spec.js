@@ -152,18 +152,12 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
     (family) => family.family_id === 'CONSIDERATION',
   );
   assert.equal(consideration.completion_state, 'FAMILY_COMPLETE');
-  assert.ok(CURRENT_M3_FAMILY_PARITY_STATUS.family_states
-    .filter((family) => ![
-      'ANTITRUST_REGULATORY_EFFORTS', 'NO_SHOP', 'MAE_DEFINITION',
-      'CLOSING_CONDITIONS',
-      'PROXY_MEETING_COVENANTS', 'MERGER_STRUCTURE_CLOSING', 'MISC_BOILERPLATE',
-      'REPRESENTATIONS', 'SPECIFIC_PERFORMANCE_REMEDIES', 'TERMINATION_FEE', 'TERMINATION_RIGHTS',
-      'EMPLOYEE_MATTERS', 'DNO_INDEMNIFICATION',
-      'FINANCING_COVENANTS', 'GUARANTY_FINANCING_PARTY',
-      'TAX_MATTERS', 'DIVIDENDS', 'APPRAISAL_DISSENTERS_RIGHTS',
-      'CONSIDERATION', 'INTERIM_OPERATING_COVENANTS',
-    ].includes(family.family_id))
-    .every((family) => family.completion_state === 'WAVE_A_OPEN'));
+  assert.deepEqual(
+    CURRENT_M3_FAMILY_PARITY_STATUS.family_states
+      .filter((family) => family.family_id !== 'CLOSING_CONDITIONS')
+      .map((family) => family.completion_state),
+    Array(20).fill('FAMILY_COMPLETE'),
+  );
   for (const familyId of [
     'TERMINATION_FEE',
     'TERMINATION_RIGHTS',
@@ -172,7 +166,7 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
       CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
         (family) => family.family_id === familyId,
       ).completion_state,
-      'FOLLOW_ON_OPEN',
+      'FAMILY_COMPLETE',
     );
   }
   assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.unassigned_product_surface_ids.length, 0);
@@ -281,7 +275,7 @@ test('IOC governed presence claims pass while long-tail mechanics remain exact e
   }
 });
 
-test('approved Key Defined Terms are native while the remaining definition universe stays open', () => {
+test('approved Key Defined Terms have complete bounded lexical evidence', () => {
   const keyTerms = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
     (family) => family.family_id === 'KEY_DEFINED_TERMS',
   );
@@ -295,7 +289,7 @@ test('approved Key Defined Terms are native while the remaining definition unive
     (surface) => surface.state === 'PASS' && surface.disposition === 'NATIVE_COMPLETE',
   ));
   assert.equal(keyTerms.wave_a.checks.resolver.state, 'PASS');
-  assert.equal(keyTerms.wave_a.checks.lexical_net.state, 'OPEN');
+  assert.equal(keyTerms.wave_a.checks.lexical_net.state, 'PASS');
   assert.ok(keyTerms.wave_a.checks.resolver.evidence_paths.includes(
     'lib/canonical-v2/native-producer/candidate-resolution.js',
   ));
