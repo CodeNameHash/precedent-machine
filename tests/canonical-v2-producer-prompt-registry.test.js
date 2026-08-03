@@ -411,7 +411,8 @@ test('native-extraction-run stage 2 can reach each non-capitalisation registered
     section_references: ['3.1(b)', '3.1(b)', '3.1(b)', '3.1(b)'],
     contract_bundle: CONTRACT_BUNDLE,
     definitions: DEFINITIONS,
-    provider: async () => {
+    provider: async ({ section_family: sectionFamily }) => {
+      assert.equal(sectionFamily, expectedFamilies[producerCalls]);
       producerCalls += 1;
       return {
         provider_id: 'all-families-registry-test/v1', model_id: 'stub-model', prompt: 'all-families-registry-test-prompt/v1',
