@@ -343,3 +343,24 @@ test('Tax Matters, Dividends and Appraisal product parity closes with adjacent-o
     );
   }
 });
+
+test('Merger Structure and Closing Mechanics product parity is native-complete with transaction steps distinct', () => {
+  const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families
+    .find((entry) => entry.family_id === 'MERGER_STRUCTURE_CLOSING');
+  assert.ok(family);
+  assert.ok(family.product_surfaces.every((surface) => (
+    surface.state === 'PASS' && surface.disposition === 'NATIVE_COMPLETE'
+  )));
+  const transactionSteps = family.product_surfaces
+    .find((surface) => surface.surface_id === 'structure-transaction-steps');
+  assert.equal(transactionSteps.source_kind, 'SIDE_TABLE');
+  assert.equal(transactionSteps.source_path, 'pages/api/provisions.js');
+  assert.equal(family.wave_a.checks.producer.state, 'PASS');
+  assert.equal(family.wave_a.checks.registry.state, 'PASS');
+  assert.equal(family.wave_a.checks.resolver.state, 'OPEN');
+  assert.equal(
+    CURRENT_M3_FAMILY_PARITY_STATUS.family_states
+      .find((entry) => entry.family_id === family.family_id).completion_state,
+    'WAVE_A_OPEN',
+  );
+});
