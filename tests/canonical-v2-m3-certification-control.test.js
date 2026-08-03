@@ -12,6 +12,30 @@ const {
   buildM3CertificationControlPlan,
   buildM3FailureResponse,
 } = require('../lib/canonical-v2/native-producer/m3-certification-control');
+const {
+  CURRENT_M3_FAMILY_PARITY_REGISTER,
+  CURRENT_M3_FAMILY_PARITY_STATUS,
+  buildM3FamilyParityStatus,
+} = require('../lib/canonical-v2/native-producer/m3-family-parity-register');
+
+function completeParityStatus() {
+  const register = structuredClone(CURRENT_M3_FAMILY_PARITY_REGISTER);
+  register.unassigned_product_surfaces = [];
+  for (const family of register.families) {
+    for (const check of Object.values(family.wave_a.checks)) {
+      check.state = 'PASS';
+      check.evidence_paths = [family.design_path];
+    }
+    for (const surface of family.product_surfaces) {
+      surface.state = 'PASS';
+      surface.disposition = 'NATIVE_COMPLETE';
+      surface.evidence_paths = [surface.source_path];
+    }
+  }
+  return buildM3FamilyParityStatus(register);
+}
+
+const COMPLETE_PARITY_STATUS = completeParityStatus();
 
 function candidate(id, overrides = {}) {
   return {
@@ -33,10 +57,27 @@ function plan(candidates, registry = EMPTY_REGISTRY) {
   return buildM3CertificationControlPlan({
     candidate_set_id: 'candidate-set-1',
     candidates,
+    family_parity_status: COMPLETE_PARITY_STATUS,
     known_defect_registry: registry,
     sampling_seed: 'm3-fixed-seed-2026-08-03',
   });
 }
+
+test('current Wave A and follow-on gaps block M3 certification', () => {
+  assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.state, 'BLOCKED');
+  assert.throws(() => buildM3CertificationControlPlan({
+    candidate_set_id: 'candidate-set-1',
+    candidates: [candidate('blocked')],
+    family_parity_status: CURRENT_M3_FAMILY_PARITY_STATUS,
+    known_defect_registry: EMPTY_REGISTRY,
+    sampling_seed: 'm3-fixed-seed-2026-08-03',
+  }), (error) => (
+    error instanceof M3CertificationControlError
+      && error.code === 'INCOMPLETE_FAMILY_PARITY'
+      && error.details.incomplete_families.length === 20
+      && error.details.unassigned_product_surfaces.length === 5
+  ));
+});
 
 test('fixed seed produces a stable blind sample that covers every eligible stratum', () => {
   const candidates = [

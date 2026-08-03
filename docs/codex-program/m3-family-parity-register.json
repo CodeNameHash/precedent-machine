@@ -1,0 +1,263 @@
+{
+  "schema": "CANONICAL_V2_M3_FAMILY_PARITY_REGISTER/V1",
+  "milestone_id": "M3_FULL_CORPUS_CERTIFICATION",
+  "source_kinds": ["DERIVED_VALUE", "MARKET_FIELD", "QUERY_FIELD", "RENDERED_ROW", "SIDE_TABLE"],
+  "families": [
+    {
+      "family_id": "ANTITRUST_REGULATORY_EFFORTS",
+      "design_path": "docs/superpowers/specs/2026-08-02-family-antitrust-regulatory-efforts-design.md",
+      "wave_a": { "scope": "FIRST_NATIVE_SLICE", "checks": {
+        "fixture_proof": { "state": "OPEN", "evidence_paths": [] }, "lexical_net": { "state": "OPEN", "evidence_paths": [] }, "producer": { "state": "OPEN", "evidence_paths": [] }, "registry": { "state": "OPEN", "evidence_paths": [] }, "resolver": { "state": "OPEN", "evidence_paths": [] }
+      } },
+      "product_surfaces": [
+        { "surface_id": "antitrust-rendered-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/antitrust-regulatory.config.js", "source_locator": "antitrustRegulatoryConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "antitrust-market-fields", "source_kind": "MARKET_FIELD", "source_path": "lib/market-metrics/adapter.js", "source_locator": "card_presence", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "antitrust-render-derived-withdrawal", "source_kind": "DERIVED_VALUE", "source_path": "components/review/table-configs/antitrust-regulatory.config.js", "source_locator": "withdrawalProvisoLabel", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "antitrust-query-fields", "source_kind": "QUERY_FIELD", "source_path": "lib/query/render/deal-compare-cell-fields.js", "source_locator": "effortsStandard", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "family_id": "APPRAISAL_DISSENTERS_RIGHTS",
+      "design_path": "docs/superpowers/specs/2026-08-03-family-appraisal-dissenters-rights-design.md",
+      "wave_a": { "scope": "FIRST_NATIVE_SLICE", "checks": {
+        "fixture_proof": { "state": "OPEN", "evidence_paths": [] }, "lexical_net": { "state": "OPEN", "evidence_paths": [] }, "producer": { "state": "OPEN", "evidence_paths": [] }, "registry": { "state": "OPEN", "evidence_paths": [] }, "resolver": { "state": "OPEN", "evidence_paths": [] }
+      } },
+      "product_surfaces": [
+        { "surface_id": "appraisal-consideration-row", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/consideration-hero.config.js", "source_locator": "appraisalRightsAvailable", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "appraisal-condition-row", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/conditions.config.js", "source_locator": "dissentingSharesThreshold", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "appraisal-query-intent", "source_kind": "QUERY_FIELD", "source_path": "lib/query/whats-market.js", "source_locator": "appraisal", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "family_id": "CLOSING_CONDITIONS",
+      "design_path": "docs/superpowers/specs/2026-08-02-family-closing-conditions-design.md",
+      "wave_a": { "scope": "FIRST_NATIVE_SLICE", "checks": {
+        "fixture_proof": { "state": "OPEN", "evidence_paths": [] }, "lexical_net": { "state": "OPEN", "evidence_paths": [] }, "producer": { "state": "OPEN", "evidence_paths": [] }, "registry": { "state": "OPEN", "evidence_paths": [] }, "resolver": { "state": "OPEN", "evidence_paths": [] }
+      } },
+      "product_surfaces": [
+        { "surface_id": "closing-conditions-rendered-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/conditions.config.js", "source_locator": "conditionsConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "closing-conditions-market-fields", "source_kind": "MARKET_FIELD", "source_path": "components/review/table-configs/conditions.config.js", "source_locator": "marketSubterms", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "closing-conditions-query-fields", "source_kind": "QUERY_FIELD", "source_path": "lib/query/render/deal-compare-cell-fields.js", "source_locator": "mainCondition", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "family_id": "CONSIDERATION",
+      "design_path": "docs/superpowers/specs/2026-08-02-family-consideration-design.md",
+      "wave_a": { "scope": "FIRST_NATIVE_SLICE", "checks": {
+        "fixture_proof": { "state": "OPEN", "evidence_paths": [] }, "lexical_net": { "state": "OPEN", "evidence_paths": [] }, "producer": { "state": "OPEN", "evidence_paths": [] }, "registry": { "state": "OPEN", "evidence_paths": [] }, "resolver": { "state": "OPEN", "evidence_paths": [] }
+      } },
+      "product_surfaces": [
+        { "surface_id": "consideration-rendered-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/consideration-hero.config.js", "source_locator": "considerationHeroConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "equity-awards-rendered-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/equity-awards.config.js", "source_locator": "equityAwardsConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "consideration-market-fields", "source_kind": "MARKET_FIELD", "source_path": "components/review/table-configs/consideration-hero.config.js", "source_locator": "marketSubterms", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "consideration-side-tables", "source_kind": "SIDE_TABLE", "source_path": "pages/api/provisions.js", "source_locator": "consideration_equity_provisions", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "consideration-election-summary", "source_kind": "DERIVED_VALUE", "source_path": "components/review-v2/sectionList.js", "source_locator": "deriveElectionSummary", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "consideration-election-deadline", "source_kind": "DERIVED_VALUE", "source_path": "components/review-v2/electionRows.js", "source_locator": "pickElectionDeadline", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "consideration-query-fields", "source_kind": "QUERY_FIELD", "source_path": "lib/query/render/deal-compare-cell-fields.js", "source_locator": "considerationType", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "family_id": "DIVIDENDS",
+      "design_path": "docs/superpowers/specs/2026-08-03-family-dividends-design.md",
+      "wave_a": { "scope": "FIRST_NATIVE_SLICE", "checks": {
+        "fixture_proof": { "state": "OPEN", "evidence_paths": [] }, "lexical_net": { "state": "OPEN", "evidence_paths": [] }, "producer": { "state": "OPEN", "evidence_paths": [] }, "registry": { "state": "OPEN", "evidence_paths": [] }, "resolver": { "state": "OPEN", "evidence_paths": [] }
+      } },
+      "product_surfaces": [
+        { "surface_id": "dividends-generic-ioc-row", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/ioc-exceptions.config.js", "source_locator": "restrictionComponents", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "dividends-query-registry", "source_kind": "QUERY_FIELD", "source_path": "lib/query/serving-registry-v1.json", "source_locator": "dividends", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "family_id": "DNO_INDEMNIFICATION",
+      "design_path": "docs/superpowers/specs/2026-08-03-family-dno-indemnification-design.md",
+      "wave_a": { "scope": "FIRST_NATIVE_SLICE", "checks": {
+        "fixture_proof": { "state": "OPEN", "evidence_paths": [] }, "lexical_net": { "state": "OPEN", "evidence_paths": [] }, "producer": { "state": "OPEN", "evidence_paths": [] }, "registry": { "state": "OPEN", "evidence_paths": [] }, "resolver": { "state": "OPEN", "evidence_paths": [] }
+      } },
+      "product_surfaces": [
+        { "surface_id": "dno-rendered-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/general-covenants.config.js", "source_locator": "doInsurance", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "dno-market-fields", "source_kind": "MARKET_FIELD", "source_path": "components/review/table-configs/general-covenants.config.js", "source_locator": "insuranceCap", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "family_id": "EMPLOYEE_MATTERS",
+      "design_path": "docs/superpowers/specs/2026-08-03-family-employee-matters-design.md",
+      "wave_a": { "scope": "FIRST_NATIVE_SLICE", "checks": {
+        "fixture_proof": { "state": "OPEN", "evidence_paths": [] }, "lexical_net": { "state": "OPEN", "evidence_paths": [] }, "producer": { "state": "OPEN", "evidence_paths": [] }, "registry": { "state": "OPEN", "evidence_paths": [] }, "resolver": { "state": "OPEN", "evidence_paths": [] }
+      } },
+      "product_surfaces": [
+        { "surface_id": "employee-rendered-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/employee-benefits.config.js", "source_locator": "employeeBenefitsConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "employee-market-fields", "source_kind": "MARKET_FIELD", "source_path": "components/review/table-configs/employee-benefits.config.js", "source_locator": "marketSubterms", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "family_id": "FINANCING_COVENANTS",
+      "design_path": "docs/superpowers/specs/2026-08-02-family-financing-covenants-design.md",
+      "wave_a": { "scope": "FIRST_NATIVE_SLICE", "checks": {
+        "fixture_proof": { "state": "OPEN", "evidence_paths": [] }, "lexical_net": { "state": "OPEN", "evidence_paths": [] }, "producer": { "state": "OPEN", "evidence_paths": [] }, "registry": { "state": "OPEN", "evidence_paths": [] }, "resolver": { "state": "OPEN", "evidence_paths": [] }
+      } },
+      "product_surfaces": [
+        { "surface_id": "financing-rendered-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/general-covenants.config.js", "source_locator": "financingCooperation", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "financing-market-fields", "source_kind": "MARKET_FIELD", "source_path": "components/review/table-configs/general-covenants.config.js", "source_locator": "financingCooperationScope", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "financing-marketing-period-derived-row", "source_kind": "DERIVED_VALUE", "source_path": "components/review-v2/sectionList.js", "source_locator": "periodBusinessDays", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "family_id": "GUARANTY_FINANCING_PARTY",
+      "design_path": "docs/superpowers/specs/2026-08-03-family-guaranty-financing-party-design.md",
+      "wave_a": { "scope": "FIRST_NATIVE_SLICE", "checks": {
+        "fixture_proof": { "state": "OPEN", "evidence_paths": [] }, "lexical_net": { "state": "OPEN", "evidence_paths": [] }, "producer": { "state": "OPEN", "evidence_paths": [] }, "registry": { "state": "OPEN", "evidence_paths": [] }, "resolver": { "state": "OPEN", "evidence_paths": [] }
+      } },
+      "product_surfaces": [
+        { "surface_id": "guaranty-market-classifier", "source_kind": "MARKET_FIELD", "source_path": "lib/row-market-stats/observations.js", "source_locator": "guarantor", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "family_id": "INTERIM_OPERATING_COVENANTS",
+      "design_path": "docs/superpowers/specs/2026-08-02-family-ioc-design.md",
+      "wave_a": { "scope": "FIRST_NATIVE_SLICE", "checks": {
+        "fixture_proof": { "state": "OPEN", "evidence_paths": [] }, "lexical_net": { "state": "OPEN", "evidence_paths": [] }, "producer": { "state": "OPEN", "evidence_paths": [] }, "registry": { "state": "OPEN", "evidence_paths": [] }, "resolver": { "state": "OPEN", "evidence_paths": [] }
+      } },
+      "product_surfaces": [
+        { "surface_id": "ioc-rendered-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/ioc-exceptions.config.js", "source_locator": "iocExceptionsConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "ioc-market-fields", "source_kind": "MARKET_FIELD", "source_path": "components/review/table-configs/ioc-exceptions.config.js", "source_locator": "featureKeys", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "ioc-query-fields", "source_kind": "QUERY_FIELD", "source_path": "lib/query/render/deal-compare-cell-fields.js", "source_locator": "consentStandard", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "family_id": "KEY_DEFINED_TERMS",
+      "design_path": "docs/superpowers/specs/2026-08-02-family-key-defined-terms-design.md",
+      "wave_a": { "scope": "FIRST_NATIVE_SLICE", "checks": {
+        "fixture_proof": { "state": "OPEN", "evidence_paths": [] }, "lexical_net": { "state": "OPEN", "evidence_paths": [] }, "producer": { "state": "OPEN", "evidence_paths": [] }, "registry": { "state": "OPEN", "evidence_paths": [] }, "resolver": { "state": "OPEN", "evidence_paths": [] }
+      } },
+      "product_surfaces": [
+        { "surface_id": "key-terms-acquisition-proposal-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/nosol-section.config.js", "source_locator": "buildAcquisitionProposalGroup", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "key-terms-knowledge-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/representations-qualifiers.config.js", "source_locator": "knowledgeQualifier", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "key-terms-market-fields", "source_kind": "MARKET_FIELD", "source_path": "components/review/table-configs/representations-qualifiers.config.js", "source_locator": "marketSubterms", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "key-terms-query-registry", "source_kind": "QUERY_FIELD", "source_path": "lib/query/serving-registry-v1.json", "source_locator": "willfulBreach", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "family_id": "MAE_DEFINITION",
+      "design_path": "docs/superpowers/specs/2026-08-02-family-mae-definition-design.md",
+      "wave_a": { "scope": "FIRST_NATIVE_SLICE", "checks": {
+        "fixture_proof": { "state": "OPEN", "evidence_paths": [] }, "lexical_net": { "state": "OPEN", "evidence_paths": [] }, "producer": { "state": "OPEN", "evidence_paths": [] }, "registry": { "state": "OPEN", "evidence_paths": [] }, "resolver": { "state": "OPEN", "evidence_paths": [] }
+      } },
+      "product_surfaces": [
+        { "surface_id": "mae-rendered-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/mae-definitions.config.js", "source_locator": "maeDefinitionsConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "mae-market-fields", "source_kind": "MARKET_FIELD", "source_path": "components/review/table-configs/mae-definitions.config.js", "source_locator": "marketSubterms", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "mae-display-maps", "source_kind": "DERIVED_VALUE", "source_path": "components/review/table-configs/mae-definitions.config.js", "source_locator": "MAE_LIMB_TEXT", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "family_id": "MERGER_STRUCTURE_CLOSING",
+      "design_path": "docs/superpowers/specs/2026-08-03-family-merger-structure-closing-design.md",
+      "wave_a": { "scope": "FIRST_NATIVE_SLICE", "checks": {
+        "fixture_proof": { "state": "OPEN", "evidence_paths": [] }, "lexical_net": { "state": "OPEN", "evidence_paths": [] }, "producer": { "state": "OPEN", "evidence_paths": [] }, "registry": { "state": "OPEN", "evidence_paths": [] }, "resolver": { "state": "OPEN", "evidence_paths": [] }
+      } },
+      "product_surfaces": [
+        { "surface_id": "structure-rendered-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/structure-mechanics.config.js", "source_locator": "structureMechanicsConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "structure-transaction-steps", "source_kind": "SIDE_TABLE", "source_path": "pages/api/provisions.js", "source_locator": "transaction_steps", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "structure-closing-derived-rows", "source_kind": "DERIVED_VALUE", "source_path": "components/review-v2/sectionList.js", "source_locator": "deriveClosingTimingRows", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "family_id": "MISC_BOILERPLATE",
+      "design_path": "docs/superpowers/specs/2026-08-03-family-misc-boilerplate-design.md",
+      "wave_a": { "scope": "FIRST_NATIVE_SLICE", "checks": {
+        "fixture_proof": { "state": "OPEN", "evidence_paths": [] }, "lexical_net": { "state": "OPEN", "evidence_paths": [] }, "producer": { "state": "OPEN", "evidence_paths": [] }, "registry": { "state": "OPEN", "evidence_paths": [] }, "resolver": { "state": "OPEN", "evidence_paths": [] }
+      } },
+      "product_surfaces": [
+        { "surface_id": "misc-rendered-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/misc-boilerplate.config.js", "source_locator": "miscBoilerplateConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "misc-market-fields", "source_kind": "MARKET_FIELD", "source_path": "components/review/table-configs/misc-boilerplate.config.js", "source_locator": "marketSubterms", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "family_id": "NO_SHOP",
+      "design_path": "docs/superpowers/specs/2026-08-02-family-no-shop-design.md",
+      "wave_a": { "scope": "FIRST_NATIVE_SLICE", "checks": {
+        "fixture_proof": { "state": "OPEN", "evidence_paths": [] }, "lexical_net": { "state": "OPEN", "evidence_paths": [] }, "producer": { "state": "OPEN", "evidence_paths": [] }, "registry": { "state": "OPEN", "evidence_paths": [] }, "resolver": { "state": "OPEN", "evidence_paths": [] }
+      } },
+      "product_surfaces": [
+        { "surface_id": "no-shop-section-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/nosol-section.config.js", "source_locator": "nosolSectionConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "no-shop-restriction-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/nosol-noshop.config.js", "source_locator": "nosolNoshopConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "no-shop-superior-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/nosol-superior.config.js", "source_locator": "nosolSuperiorConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "no-shop-fiduciary-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/nosol-fiduciary.config.js", "source_locator": "nosolFiduciaryConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "no-shop-intervening-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/nosol-intervening.config.js", "source_locator": "nosolInterveningConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "no-shop-market-fields", "source_kind": "MARKET_FIELD", "source_path": "components/review/table-configs/nosol-fiduciary.config.js", "source_locator": "featureKeys", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "no-shop-render-fallbacks", "source_kind": "DERIVED_VALUE", "source_path": "components/review/table-configs/nosol-fiduciary.config.js", "source_locator": "firstFallback", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "no-shop-query-fields", "source_kind": "QUERY_FIELD", "source_path": "lib/query/render/deal-compare-cell-fields.js", "source_locator": "goShopPresent", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "family_id": "PROXY_MEETING_COVENANTS",
+      "design_path": "docs/superpowers/specs/2026-08-02-family-proxy-meeting-covenants-design.md",
+      "wave_a": { "scope": "FIRST_NATIVE_SLICE", "checks": {
+        "fixture_proof": { "state": "OPEN", "evidence_paths": [] }, "lexical_net": { "state": "OPEN", "evidence_paths": [] }, "producer": { "state": "OPEN", "evidence_paths": [] }, "registry": { "state": "OPEN", "evidence_paths": [] }, "resolver": { "state": "OPEN", "evidence_paths": [] }
+      } },
+      "product_surfaces": [
+        { "surface_id": "proxy-meeting-rendered-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/votes-approvals-meeting.config.js", "source_locator": "votesApprovalsMeetingConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "proxy-sec-meeting-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/sec-meeting.config.js", "source_locator": "secMeetingConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "proxy-market-fields", "source_kind": "MARKET_FIELD", "source_path": "components/review/table-configs/sec-meeting.config.js", "source_locator": "marketSubterms", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "proxy-render-derived-deadlines", "source_kind": "DERIVED_VALUE", "source_path": "lib/sec-meeting.js", "source_locator": "parseDeadline", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "family_id": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "design_path": "docs/superpowers/specs/2026-08-02-family-specific-performance-remedies-design.md",
+      "wave_a": { "scope": "FIRST_NATIVE_SLICE", "checks": {
+        "fixture_proof": { "state": "OPEN", "evidence_paths": [] }, "lexical_net": { "state": "OPEN", "evidence_paths": [] }, "producer": { "state": "OPEN", "evidence_paths": [] }, "registry": { "state": "OPEN", "evidence_paths": [] }, "resolver": { "state": "OPEN", "evidence_paths": [] }
+      } },
+      "product_surfaces": [
+        { "surface_id": "remedies-misc-rendered-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/misc-boilerplate.config.js", "source_locator": "specificPerformance", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "remedies-v1-rendered-rows", "source_kind": "RENDERED_ROW", "source_path": "pages/review-v1/[id].js", "source_locator": "companyRightToForceClose", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "remedies-query-registry", "source_kind": "QUERY_FIELD", "source_path": "lib/query/serving-registry-v1.json", "source_locator": "specificPerformance", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "family_id": "TAX_MATTERS",
+      "design_path": "docs/superpowers/specs/2026-08-03-family-tax-matters-design.md",
+      "wave_a": { "scope": "FIRST_NATIVE_SLICE", "checks": {
+        "fixture_proof": { "state": "OPEN", "evidence_paths": [] }, "lexical_net": { "state": "OPEN", "evidence_paths": [] }, "producer": { "state": "OPEN", "evidence_paths": [] }, "registry": { "state": "OPEN", "evidence_paths": [] }, "resolver": { "state": "OPEN", "evidence_paths": [] }
+      } },
+      "product_surfaces": [
+        { "surface_id": "tax-generic-covenant-row", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/general-covenants.config.js", "source_locator": "COV-TAXMATTERS", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "tax-withholding-market-field", "source_kind": "MARKET_FIELD", "source_path": "components/review/table-configs/consideration-hero.config.js", "source_locator": "withholding", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "tax-query-registry", "source_kind": "QUERY_FIELD", "source_path": "lib/query/serving-registry-v1.json", "source_locator": "taxReorgIntended", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "family_id": "TERMINATION_FEE",
+      "design_path": "docs/superpowers/specs/2026-08-02-family-termination-fee-design.md",
+      "wave_a": { "scope": "FIRST_NATIVE_SLICE", "checks": {
+        "fixture_proof": { "state": "OPEN", "evidence_paths": [] }, "lexical_net": { "state": "OPEN", "evidence_paths": [] }, "producer": { "state": "OPEN", "evidence_paths": [] }, "registry": { "state": "OPEN", "evidence_paths": [] }, "resolver": { "state": "OPEN", "evidence_paths": [] }
+      } },
+      "product_surfaces": [
+        { "surface_id": "termination-fee-rendered-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/termination-fees.config.js", "source_locator": "terminationFeesConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "tail-fee-rendered-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/tail-fee.config.js", "source_locator": "tailFeeConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "termination-fee-market-fields", "source_kind": "MARKET_FIELD", "source_path": "components/review/table-configs/tail-fee.config.js", "source_locator": "marketSubterms", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "termination-fee-render-derived-values", "source_kind": "DERIVED_VALUE", "source_path": "lib/termf.js", "source_locator": "percentage_of_equity", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "termination-fee-query-derived-values", "source_kind": "DERIVED_VALUE", "source_path": "lib/query/derived-fields.js", "source_locator": "feePctOfDealValue", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "termination-fee-query-fields", "source_kind": "QUERY_FIELD", "source_path": "lib/query/render/deal-compare-cell-fields.js", "source_locator": "reverseFeePercentage", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    },
+    {
+      "family_id": "TERMINATION_RIGHTS",
+      "design_path": "docs/superpowers/specs/2026-08-02-family-termination-rights-design.md",
+      "wave_a": { "scope": "FIRST_NATIVE_SLICE", "checks": {
+        "fixture_proof": { "state": "OPEN", "evidence_paths": [] }, "lexical_net": { "state": "OPEN", "evidence_paths": [] }, "producer": { "state": "OPEN", "evidence_paths": [] }, "registry": { "state": "OPEN", "evidence_paths": [] }, "resolver": { "state": "OPEN", "evidence_paths": [] }
+      } },
+      "product_surfaces": [
+        { "surface_id": "termination-rights-rendered-rows", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/termination-rights.config.js", "source_locator": "terminationRightsConfig", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "termination-rights-market-fields", "source_kind": "MARKET_FIELD", "source_path": "components/review/table-configs/termination-rights.config.js", "source_locator": "marketSubterms", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] },
+        { "surface_id": "termination-rights-query-fields", "source_kind": "QUERY_FIELD", "source_path": "lib/query/render/deal-compare-cell-fields.js", "source_locator": "partyWhoCanTerminate", "wave": "FOLLOW_ON", "state": "OPEN", "disposition": "FOLLOW_ON_REQUIRED", "evidence_paths": [] }
+      ]
+    }
+  ],
+  "unassigned_product_surfaces": [
+    { "surface_id": "unassigned-target-representations", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/representations-qualifiers.config.js", "source_locator": "representationsQualifiersConfig", "reason": "No native family design governs the complete target-representations surface." },
+    { "surface_id": "unassigned-parent-representations", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/representations-qualifiers.config.js", "source_locator": "parentRepresentationsConfig", "reason": "No native family design governs the complete parent-representations surface." },
+    { "surface_id": "unassigned-material-contracts", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/material-contracts.config.js", "source_locator": "materialContractsConfig", "reason": "No native family design governs the material-contracts surface." },
+    { "surface_id": "unassigned-no-other-reps-fraud", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/no-other-reps-fraud.config.js", "source_locator": "noOtherRepsFraudConfig", "reason": "No native family design governs the no-other-representations and fraud surface." },
+    { "surface_id": "unassigned-general-covenants", "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/general-covenants.config.js", "source_locator": "generalCovenantsConfig", "reason": "The residual general-covenants rows are not assigned to a native family." }
+  ]
+}

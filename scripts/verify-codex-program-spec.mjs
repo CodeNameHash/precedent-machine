@@ -10,6 +10,7 @@ const files = [
   'docs/CODEX-PROGRAM.md',
   'docs/codex-program/EXECUTION-LEDGER.md',
   'docs/codex-program/programme-gates.yaml',
+  'docs/codex-program/m3-family-parity-register.json',
   'docs/codex-program/canonical-contracts.md',
   'docs/codex-program/adversarial-tests.md',
 ];
