@@ -20,34 +20,13 @@ const {
   validateLexicalFamilyLexicon,
   scanLiteral,
 } = require('../lib/canonical-v2/native-producer/lexical-disagreement-net');
+const { compileFixtureContractV34 } = require('../lib/canonical-v2/contract-bundle');
 
-const REGISTERED_CONCEPT_KEYS = new Set([
-  'REP-T-CAP', 'REP-T-CONTRACTS', 'TERMF-TARGET', 'TERMF-REVERSE', 'TERMF-TAIL',
-  'NOSOL-PROHIBIT', 'NOSOL-EXCEPT', 'NOSOL-NOTICE', 'NOSOL-MATCH', 'NOSOL-REMATCH',
-  'DEF-MAE',
-  // family-termination-rights slice (LEXICAL_FAMILY_LEXICON_VERSION 4 -> 5):
-  // the two new registered concepts, plus the six already-registered TERMR
-  // families the lexicon now also covers.
-  'TERMR-MUTUAL', 'TERMR-LEGAL',
-  'TERMR-OUTSIDE', 'TERMR-NOVOTE', 'TERMR-BREACH', 'TERMR-SUPERIOR', 'TERMR-RECOMMEND',
-  'TERMR-NOSOL-BREACH',
-  'ANTI-EFFORTS', 'ANTI-BURDEN', 'ANTI-LITIGATION', 'ANTI-TIMING', 'ANTI-FILING',
-  'COND-B-REP', 'COND-S-REP', 'COND-MAE', 'COND-COV', 'COND-REG',
-  'CONS-PERSHARE', 'CONS-RATIO', 'CONS-DISSENT',
-  'IOC-ACCOUNTING', 'IOC-CAPEX', 'IOC-CHARTER', 'IOC-COMP', 'IOC-CONTRACT',
-  'IOC-DEBT', 'IOC-DIVIDEND', 'IOC-ISSUE', 'IOC-MERGE', 'IOC-SETTLE', 'IOC-TAX',
-  'COV-PROXY', 'COV-MEETING',
-  'COV-FINANCING', 'COV-PAYOFF', 'COV-MARKETING', 'GTY-PERF', 'GTY-DELIVERY',
-  'DEF-WILLFUL', 'REP-T-NOOTHERREPS', 'REP-B-NOOTHERREPS', 'REP-T-NONRELIANCE', 'REP-B-NONRELIANCE',
-  'REP-T-INDEPINVEST', 'REP-B-INDEPINVEST', 'REP-T-FRAUDCARVEOUT', 'REP-B-FRAUDCARVEOUT',
-  'COV-16B', 'COV-ACCESS', 'COV-CONSENT', 'COV-CVR', 'COV-DEBT', 'COV-DELIST', 'COV-FDACOMMS',
-  'COV-FURTHER', 'COV-INDEMN', 'COV-LIST', 'COV-LITNOTIFY', 'COV-MERGESUB', 'COV-NOTIFY', 'COV-PAYAGENT',
-  'COV-PUBLICITY', 'COV-RESIGN', 'COV-SECREPORT', 'COV-TAKEOVER',
-]);
+const REGISTERED_CONCEPT_KEYS = new Set(compileFixtureContractV34().concepts.map((concept) => concept.concept_key));
 
 test('LEXICAL_FAMILY_LEXICON_VERSION bumped 4 -> 5 (family-termination-rights slice)', () => {
-  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 11);
-  assert.equal(LEXICAL_FAMILY_LEXICON.version, 11);
+  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 15);
+  assert.equal(LEXICAL_FAMILY_LEXICON.version, 15);
 });
 
 test('table validation: every TERMR entry has a non-empty pattern_id, family, kind, value, rationale; no duplicate pattern_id; every family is a registered concept key', () => {

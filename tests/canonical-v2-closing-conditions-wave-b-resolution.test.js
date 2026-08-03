@@ -55,7 +55,7 @@ function assertions() {
   ];
 }
 
-test('Closing Conditions Wave B resolves grounded facts and keeps dissent and certificate targets honest', async () => {
+test('Closing Conditions Wave B resolves grounded facts, preserves certificate references and keeps dissent honest', async () => {
   const source = sourceText();
   const dealKey = 'closing-wave-b';
   const contract = compileFixtureContractV24();
@@ -94,15 +94,17 @@ test('Closing Conditions Wave B resolves grounded facts and keeps dissent and ce
   const money = resolution.resolved.find((entry) => entry.resolved_claim_definition_key === 'CONDITION_DOLLAR_THRESHOLD');
   assert.equal(money.claim.canonical_value, '3800002.59');
   const certificate = resolution.resolved.find((entry) => entry.resolved_claim_definition_key === 'OFFICER_CERTIFICATE_REQUIRED');
-  assert.equal(certificate.claim.attributes.certificate_relationship_status, 'OPEN_WORLD_RELATIONSHIP');
+  assert.equal(certificate.claim.attributes.certificate_relationship_status, 'VERBATIM_SECTION_REFERENCES');
   assert.deepEqual(certificate.claim.attributes.certified_condition_refs, ['7.2(a)', '7.2(b)', '7.2(c)']);
   assert.ok(resolution.open_world.some((entry) => entry.reason === 'CONDITION_ASSERTION_KIND_OUT_OF_ENUM' && entry.attributes.assertion_kind === 'DISSENT_THRESHOLD'));
-  assert.equal(resolution.resolution_receipt.mapping_table_version, 19);
-  assert.equal(MAPPING_TABLE_VERSION, 19);
+  assert.equal(resolution.resolution_receipt.mapping_table_version, 20);
+  assert.equal(MAPPING_TABLE_VERSION, 20);
 
   const projection = projectClosingConditionProductSurfaces({ resolution, deal_id: dealKey });
   assert.ok(projection.cards.every((card) => card.canonical_v2_lineage.source === 'CANONICAL_V2_NATIVE_CLAIM'));
-  assert.ok(projection.open_items.every((item) => item.state === 'BLOCKED'));
+  assert.deepEqual(projection.open_items, [
+    { item: 'DISSENT_THRESHOLD', state: 'BLOCKED', reason: 'NO_GROUNDED_CORPUS_QUOTE' },
+  ]);
 
   const conditions = await import('../components/review/table-configs/conditions.config.js');
   const groups = conditions.conditionGroups({ cards: projection.cards }, {});

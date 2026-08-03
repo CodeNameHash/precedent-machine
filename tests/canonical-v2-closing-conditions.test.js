@@ -28,7 +28,7 @@ test('conditions-to-closing titles dispatch only to closing conditions', async (
 
 test('closing-condition producer preserves a byte-exact positive candidate', () => {
   const prompt = buildClosingConditionsProducerPrompt({ source_text: QUOTE, governed_scope: { section_reference: '7.2' } });
-  assert.equal(prompt.prompt_id, 'native-producer-closing-conditions/v2');
+  assert.equal(prompt.prompt_id, 'native-producer-closing-conditions/v3');
   const shaped = shapeClosingConditionProposals({ closing_condition_assertions: [{ section_reference: '7.2', assertion_kind: 'MAE_CONTINUING', mae_term: 'Company Material Adverse Effect', mae_party: 'TARGET', quote: QUOTE }], open_world_candidates: [] }, QUOTE);
   assert.equal(shaped.proposals.length, 1);
   assert.equal(shaped.proposals[0].claim_definition_key, CLOSING_CONDITION_CLAIM_KEY);
@@ -52,7 +52,7 @@ test('live provider dispatches closing conditions through its own prompt and per
   assert.equal(result.proposals.length, 0);
 });
 
-test('Wave B preserves certificate targets as an open-world relationship while resolving the local certificate fact', () => {
+test('Wave B preserves certificate targets as verbatim section-reference relationships without resolving cited conditions', () => {
   const quote = 'The Company shall have delivered to Parent a certificate certifying that the conditions set forth in Sections 7.2(a), 7.2(b) and 7.2(c) have been satisfied.';
   const shaped = shapeClosingConditionProposals({
     closing_condition_assertions: [{
@@ -62,7 +62,7 @@ test('Wave B preserves certificate targets as an open-world relationship while r
     }],
   }, quote);
   assert.equal(shaped.proposals.length, 1);
-  assert.equal(shaped.proposals[0].attributes.certificate_relationship_status, 'OPEN_WORLD_RELATIONSHIP');
+  assert.equal(shaped.proposals[0].attributes.certificate_relationship_status, 'VERBATIM_SECTION_REFERENCES');
   assert.deepEqual(shaped.proposals[0].attributes.certified_condition_refs, ['7.2(a)', '7.2(b)', '7.2(c)']);
 });
 

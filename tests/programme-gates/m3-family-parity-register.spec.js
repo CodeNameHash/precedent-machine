@@ -151,7 +151,7 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
   const consideration = CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
     (family) => family.family_id === 'CONSIDERATION',
   );
-  assert.equal(consideration.completion_state, 'WAVE_A_OPEN');
+  assert.equal(consideration.completion_state, 'FAMILY_COMPLETE');
   assert.ok(CURRENT_M3_FAMILY_PARITY_STATUS.family_states
     .filter((family) => ![
       'ANTITRUST_REGULATORY_EFFORTS', 'NO_SHOP', 'MAE_DEFINITION',
@@ -225,7 +225,7 @@ test('parity blocker inventory is exact and never treats open-world evidence as 
   assert.deepEqual(listM3ProductParityBlockers(completedRegister()), []);
 });
 
-test('Consideration Wave A and grounded product projections pass while Wave B stays open world', () => {
+test('Consideration Wave A is native and its remaining mechanics are exact evidence-only products', () => {
   const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
     (entry) => entry.family_id === 'CONSIDERATION',
   );
@@ -244,16 +244,19 @@ test('Consideration Wave A and grounded product projections pass while Wave B st
     assert.ok(surface.evidence_paths.includes('lib/canonical-v2/consideration-wave-a-product-projection.js'));
   }
   for (const surfaceId of [
-    'consideration-wave-b-market-fields',
+    'equity-awards-rendered-rows', 'consideration-side-tables',
+    'consideration-election-summary', 'consideration-election-deadline',
+    'consideration-wave-b-market-fields', 'consideration-equity-market-fields',
     'consideration-wave-b-query-fields',
   ]) {
     const surface = family.product_surfaces.find((entry) => entry.surface_id === surfaceId);
-    assert.equal(surface.state, 'OPEN');
-    assert.equal(surface.disposition, 'FOLLOW_ON_REQUIRED');
+    assert.equal(surface.state, 'PASS');
+    assert.equal(surface.disposition, 'EVIDENCE_ONLY');
+    assert.ok(surface.evidence_paths.includes('lib/canonical-v2/consideration-ioc-evidence-product-projection.js'));
   }
 });
 
-test('IOC governed presence claims pass while long-tail and numeric mechanics remain open', () => {
+test('IOC governed presence claims pass while long-tail mechanics remain exact evidence-only', () => {
   const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
     (entry) => entry.family_id === 'INTERIM_OPERATING_COVENANTS',
   );
@@ -273,8 +276,9 @@ test('IOC governed presence claims pass while long-tail and numeric mechanics re
     'ioc-remaining-query-mechanics',
   ]) {
     const surface = family.product_surfaces.find((entry) => entry.surface_id === surfaceId);
-    assert.equal(surface.state, 'OPEN');
-    assert.equal(surface.disposition, 'FOLLOW_ON_REQUIRED');
+    assert.equal(surface.state, 'PASS');
+    assert.equal(surface.disposition, 'EVIDENCE_ONLY');
+    assert.ok(surface.evidence_paths.includes('lib/canonical-v2/consideration-ioc-evidence-product-projection.js'));
   }
 });
 
@@ -334,10 +338,11 @@ test('a rehashed complete label cannot contradict open family state', () => {
 });
 
 test('an open follow-on cannot be relabelled PASS and PASS requires evidence', () => {
-  const openAsPass = structuredClone(CURRENT_M3_FAMILY_PARITY_REGISTER);
-  const openSurface = openAsPass.families
-    .flatMap((family) => family.product_surfaces)
-    .find((surface) => surface.state === 'OPEN');
+  const openAsPass = completedRegister();
+  const openSurface = openAsPass.families[0].product_surfaces[0];
+  openSurface.state = 'OPEN';
+  openSurface.disposition = 'FOLLOW_ON_REQUIRED';
+  openSurface.evidence_paths = [];
   openSurface.state = 'PASS';
   openSurface.evidence_paths = [openSurface.source_path];
   assert.throws(
