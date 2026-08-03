@@ -243,7 +243,7 @@ test('committed Landos/AbbVie text replays through native resolution and the lex
   ]);
   assert.equal(resolution.open_world.length, 0);
 
-  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 10);
+  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 11);
   assert.ok(LEXICAL_FAMILY_LEXICON.entries.some((entry) => entry.family === 'REP-T-CONTRACTS'));
   const bytes = Buffer.from(quote, 'utf8');
   const lexical = buildLexicalDisagreementReceipt({
