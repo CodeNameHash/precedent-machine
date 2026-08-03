@@ -10,6 +10,7 @@ const {
   projectTerminationRightsProductSurfaces,
 } = require('../lib/canonical-v2/termination-product-projection');
 const { executeDealCompare } = require('../lib/query/executors/deal-compare');
+const { executeDealToMarket } = require('../lib/query/executors/deal-to-market');
 const { provisionFieldValue } = require('../lib/query/types');
 const { calculateMarketStats } = require('../lib/row-market-stats/service');
 
@@ -60,7 +61,14 @@ function compareFields(dealId, provisionType, cards, deal = {}) {
   return new Map(output.rows[0].cells[0].key_fields.map((field) => [field.field, field.value]));
 }
 
-test('governed termination rights reach Review, Query, Compare and market while Wave B stays evidence only', async () => {
+function marketFields(dealId, provisionType, cards, deals) {
+  return new Map(executeDealToMarket({
+    deal_id: dealId,
+    provision_types: [provisionType],
+  }, { deals, provisions: cards }).scorecard.map((field) => [field.field_path, field.deal_value]));
+}
+
+test('governed termination rights retain Wave B evidence and expose direct Query and market fields', async () => {
   const dealId = 'termination-rights-product';
   const resolution = {
     resolved: [
@@ -107,12 +115,27 @@ test('governed termination rights reach Review, Query, Compare and market while 
         attributes: { trigger_kind: 'VOTE_FAILURE' },
       }),
     ],
-    open_world: [openWorld('OUTSIDE_DATE_EXTENSION', 'The Outside Date shall automatically extend by three months.')],
+    open_world: [
+      openWorld(
+        'OUTSIDE_DATE_EXTENSION',
+        'The Outside Date shall automatically extend by three months, up to two times.',
+        {
+          surface: 'OUTSIDE_DATE_EXTENSION', extension_mode: 'AUTOMATIC', electing_party: null,
+          consent_requirement_quote: null, trigger_quote: null, maximum_exercises: 2,
+          extension_period_quote: 'three months',
+        },
+      ),
+      openWorld(
+        'RESTRAINT_FINALITY',
+        'A final order may prevent the transaction.',
+        { surface: 'RESTRAINT_FINALITY', finality_terms_present: ['FINAL'], other_finality_terms: [] },
+      ),
+    ],
   };
   const projection = projectTerminationRightsProductSurfaces({ resolution, deal_id: dealId });
-  assert.equal(projection.open_items.length, 1);
+  assert.equal(projection.open_items.length, 2);
   assert.equal(projection.claims.some((claim) => /extension/i.test(claim.attribute)), false);
-  assert.equal(projection.cards.filter((card) => card.canonical_v2_lineage.source === EVIDENCE_SOURCE).length, 1);
+  assert.equal(projection.cards.filter((card) => card.canonical_v2_lineage.source === EVIDENCE_SOURCE).length, 2);
   assert.ok(projection.cards.filter((card) => card.provision_subtype !== 'OPEN-WORLD')
     .every((card) => card.canonical_v2_lineage.source === NATIVE_SOURCE));
 
@@ -135,7 +158,8 @@ test('governed termination rights reach Review, Query, Compare and market while 
   assert.equal(compare.get('partyWhoCanTerminate'), 'PARTY_MUTUAL');
   assert.equal(compare.get('outsideDate'), '2027-06-30');
   assert.equal(compare.get('curePeriod'), 30);
-  assert.equal(compare.has('extensionMaxExercises'), false);
+  assert.equal(compare.has('extensionMaxExercises'), true);
+  assert.equal(compare.get('extensionMaxExercises'), 2);
 
   const adapter = await import('../lib/market-metrics/adapter.js');
   const specs = adapter.resolveMarketMetricSpecs(outsideRow, { configId: 'termination-rights' });
@@ -146,9 +170,15 @@ test('governed termination rights reach Review, Query, Compare and market while 
     claims: projection.claims,
   });
   assert.ok(Object.values(market.byRow[specs[0].rowKey].metrics).some((metric) => metric.coverage?.observedCount === 1));
+
+  const rightsMarket = marketFields(dealId, 'TERMINATION_RIGHT', projection.cards, [
+    { id: dealId, announce_date: '2026-06-30', metadata: {} },
+    { id: 'peer-rights', announce_date: '2026-06-30', metadata: {} },
+  ]);
+  assert.equal(rightsMarket.get('extensionMaxExercises'), 2);
 });
 
-test('governed termination fees reach Review, Query, Compare and market while Wave B stays evidence only', async () => {
+test('governed termination fees retain remedies ownership and expose direct late-interest Query and market fields', async () => {
   const dealId = 'termination-fee-product';
   const sellerQuote = 'The Company shall pay Parent a termination fee of $100,000,000 following a change in recommendation.';
   const resolution = {
@@ -158,19 +188,29 @@ test('governed termination fees reach Review, Query, Compare and market while Wa
       resolved({ id: 'fee-buyer', definition: 'TERMINATION_FEE_AMOUNT', value: '150000000', concept: 'TERMF-REVERSE', quote: 'Parent shall pay the Company a reverse termination fee of $150,000,000.' }),
       resolved({ id: 'fee-tail', definition: 'TERMINATION_FEE_TAIL_PERIOD_MONTHS', value: '12', concept: 'TERMF-TAIL', quote: 'The tail period is twelve (12) months following termination.', capacity: 'TARGET' }),
     ],
-    open_world: [openWorld(
-      'SOLE_REMEDY',
-      'Receipt of the termination fee is the sole and exclusive remedy, except for Fraud and Willful Breach.',
-      {
-        surface: 'SOLE_REMEDY_EVIDENCE', owner_family: 'SPECIFIC_PERFORMANCE_REMEDIES',
-        payment_context_quote: 'Receipt of the termination fee',
-        remedy_effect_quote: 'sole and exclusive remedy',
-        carve_outs: ['Fraud', 'Willful Breach'],
-      },
-    )],
+    open_world: [
+      openWorld(
+        'SOLE_REMEDY',
+        'Receipt of the termination fee is the sole and exclusive remedy, except for Fraud and Willful Breach.',
+        {
+          surface: 'SOLE_REMEDY_EVIDENCE', owner_family: 'SPECIFIC_PERFORMANCE_REMEDIES',
+          payment_context_quote: 'Receipt of the termination fee',
+          remedy_effect_quote: 'sole and exclusive remedy',
+          carve_outs: ['Fraud', 'Willful Breach'],
+        },
+      ),
+      openWorld(
+        'LATE_PAYMENT_INTEREST',
+        'If the termination fee is not paid when due, interest accrues at the Applicable Rate.',
+        {
+          surface: 'LATE_PAYMENT_INTEREST', interest_present: true,
+          benchmark_quote: 'Applicable Rate', due_date_reference_quote: 'when due',
+        },
+      ),
+    ],
   };
   const projection = projectTerminationFeeProductSurfaces({ resolution, deal_id: dealId });
-  assert.equal(projection.open_items.length, 1);
+  assert.equal(projection.open_items.length, 2);
   assert.equal(projection.claims.some((claim) => /sole|remedy/i.test(claim.attribute)), false);
   const seller = projection.cards.find((card) => card.provision_subtype === 'TERMF-TARGET');
   assert.equal(provisionFieldValue(seller, 'TERMINATION_FEE', 'feeAmount').value, 100000000);
@@ -187,10 +227,13 @@ test('governed termination fees reach Review, Query, Compare and market while Wa
   assert.ok(rows.some((row) => row.id === 'termination-fees-COMPANY_TERMINATION_FEE'));
   assert.ok(rows.some((row) => row.id === 'termination-fees-REVERSE_TERMINATION_FEE'));
   assert.ok(rows.some((row) => row.id.startsWith('termination-fees-deferred-')));
-  const deferred = projection.cards.find((card) => card.canonical_v2_lineage.source === 'CANONICAL_V2_OPEN_WORLD_EVIDENCE');
+  const deferred = projection.cards.find((card) => card.features.remediesOwnedSoleRemedyEvidence);
   assert.ok(deferred.features.canonicalV2OpenWorldEvidence.structuredMechanic);
   assert.deepEqual(deferred.features.remediesOwnedSoleRemedyEvidence.carve_outs, ['Fraud', 'Willful Breach']);
   assert.equal(deferred.features.soleRemedy, undefined);
+  const interest = projection.cards.find((card) => card.features.interestOnLatePayment);
+  assert.equal(interest.features.interestOnLatePayment, true);
+  assert.equal(interest.features.latePaymentInterestBenchmark, 'Applicable Rate');
   const sellerRow = rows.find((row) => row.id === 'termination-fees-COMPANY_TERMINATION_FEE');
   assert.ok(sellerRow.signals.some((signal) => signal.label === 'Change in recommendation'));
 
@@ -205,6 +248,7 @@ test('governed termination fees reach Review, Query, Compare and market while Wa
   assert.equal(compare.get('reverseFeeAmount'), 150000000);
   assert.equal(compare.get('reverseFeePctOfDealValue'), 7.5);
   assert.equal(compare.get('tailFeeWindowMonths'), 12);
+  assert.equal(compare.get('interestOnLatePayment'), true);
   assert.equal(compare.has('reverseFeePercentage'), false);
 
   const adapter = await import('../lib/market-metrics/adapter.js');
@@ -215,4 +259,10 @@ test('governed termination fees reach Review, Query, Compare and market while Wa
     claims: projection.claims,
   });
   assert.ok(Object.values(market.byRow[specs[0].rowKey].metrics).some((metric) => metric.coverage?.observedCount === 1));
+
+  const feeMarket = marketFields(dealId, 'TERMINATION_FEE', projection.cards, [
+    { id: dealId, announce_date: '2026-06-30', value_usd: 2000000000, metadata: {} },
+    { id: 'peer-fee', announce_date: '2026-06-30', value_usd: 1800000000, metadata: {} },
+  ]);
+  assert.equal(feeMarket.get('interestOnLatePayment'), true);
 });

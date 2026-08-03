@@ -160,7 +160,7 @@ test('the full committed Landos agreement resolves Termination Rights and keeps 
 
   const compare = compareFields(dealId, 'TERMINATION_RIGHT', projection.cards);
   assert.equal(compare.get('partyWhoCanTerminate'), 'PARTY_MUTUAL');
-  assert.equal(compare.has('outsideDateExtension'), false);
+  assert.equal(compare.get('extensionMaxExercises'), 3);
 
   const mutualRow = rows.find((row) => row.id === 'termination-rights-mutual');
   const adapter = await import('../lib/market-metrics/adapter.js');
