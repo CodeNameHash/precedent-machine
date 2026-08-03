@@ -31,6 +31,8 @@ const { createAnthropicProvider } = require('../lib/canonical-v2/native-producer
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
 const { compileFixtureContractV17 } = require('../lib/canonical-v2/contract-bundle');
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const TARGET_NO_OTHER = 'The Company acknowledges that Parent has not made any representation other than those expressly set forth in this Agreement.';
 const BUYER_NON_RELIANCE = 'Parent acknowledges that it is not relying on any representation by the Company except those expressly set forth in this Agreement, including projections or data-room materials.';
@@ -221,4 +223,20 @@ test('classifier recognises narrow no-other-representations titles and leaves ge
   }
   const generic = await classifySectionFamily({ title: 'Representations and Warranties' });
   assert.equal(generic.section_family, 'REPRESENTATIONS');
+});
+
+test('recorded Skechers and Modiv sources preserve real no-other-reps and independent-investigation evidence', () => {
+  for (const directory of ['skechers-first-live-run', 'modiv-first-live-run']) {
+    const root = path.join(__dirname, 'fixtures', 'canonical-v2', directory);
+    const adapter = JSON.parse(fs.readFileSync(path.join(root, 'adapter-result.json'), 'utf8'));
+    const pin = JSON.parse(fs.readFileSync(path.join(root, 'intake-pin.json'), 'utf8'));
+    const text = adapter.admitted_source_contexts[0].canonical_text.text;
+    assert.equal(sha256Hex(Buffer.from(text, 'utf8')), pin.canonical_text_sha256);
+    assert.equal(pin.verification_status, 'PASS');
+  }
+  const skechers = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'canonical-v2', 'skechers-first-live-run', 'adapter-result.json'), 'utf8')).admitted_source_contexts[0].canonical_text.text;
+  const modiv = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'canonical-v2', 'modiv-first-live-run', 'adapter-result.json'), 'utf8')).admitted_source_contexts[0].canonical_text.text;
+  assert.match(skechers, /3\.28 Exclusivity of Representations and Warranties\./);
+  assert.match(skechers, /No Other Representations and Warranties/);
+  assert.match(modiv, /relied on the results of their own independent investigation/);
 });
