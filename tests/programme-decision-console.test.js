@@ -11,7 +11,7 @@ const {
 } = require('../lib/programme-decision-console');
 
 test('decision console has one complete, unique recommendation per decision', () => {
-  assert.equal(DECISIONS.length, 15);
+  assert.ok(DECISIONS.length >= 15);
   assert.equal(new Set(DECISIONS.map((decision) => decision.id)).size, DECISIONS.length);
 
   for (const decision of DECISIONS) {
@@ -28,11 +28,11 @@ test('decision console has one complete, unique recommendation per decision', ()
   }
 });
 
-test('all 15 programme rulings are fixed', () => {
+test('the original 15 programme rulings are fixed and new M3 blockers stay open', () => {
   assert.equal(Object.keys(RECORDED_RULINGS).length, 15);
   assert.deepEqual(
     DECISIONS.filter((decision) => !RECORDED_RULINGS[decision.id]).map((decision) => decision.id),
-    [],
+    ['ioc-partyless-provision'],
   );
   for (const [decisionId, optionId] of Object.entries(RECORDED_RULINGS)) {
     assert.ok(decisionById(decisionId).options.some((option) => option.id === optionId));

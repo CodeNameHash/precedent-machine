@@ -250,7 +250,7 @@ export default function ProgrammeDecisionsPage() {
           <div className="heroCopy">
             <span className="kicker">Canonical v2 · 3 August 2026</span>
             <h1>Your decisions, in the order they unblock the programme</h1>
-            <p>All 15 rulings are fixed in this record. Each card states the legal effect, evidence and ruling.</p>
+            <p>The original 15 rulings are fixed. New M3 build blockers appear here as they are found.</p>
           </div>
           <div className="progressPanel">
             <div className="progressCount"><strong>{answered}</strong><span>of {DECISIONS.length}</span></div>
@@ -302,7 +302,7 @@ export default function ProgrammeDecisionsPage() {
             <h2>The critical path</h2>
             <ol>
               <li><strong>Apply the three fixtures in order.</strong><span>TopBuild, then Skechers, then Modiv. Stop after any failed verification.</span></li>
-              <li><strong>Apply the closed taxonomy rulings.</strong><span>All 15 programme decisions now have a recorded answer.</span></li>
+              <li><strong>Apply the closed taxonomy rulings.</strong><span>The original 15 programme decisions have recorded answers. New build blockers remain explicit.</span></li>
               <li><strong>Finish P2 phase 2.</strong><span>This is the first family build in the handoff.</span></li>
               <li><strong>Build and prove families.</strong><span>Fixture proof comes before corpus-scale claims.</span></li>
               <li><strong>Certify M3 in staging.</strong><span>Production import starts after M3.</span></li>
