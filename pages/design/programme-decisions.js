@@ -8,6 +8,7 @@ import {
   DECISIONS,
   M3_STAGES,
   RECORDED_RULINGS,
+  mergeRecordedRulings,
   recommendedChoice,
 } from '../../lib/programme-decision-console';
 
@@ -20,18 +21,15 @@ export async function getServerSideProps() {
 ProgrammeDecisionsPage.noLayout = true;
 
 function readSavedState() {
-  if (typeof window === 'undefined') return { choices: { ...RECORDED_RULINGS }, notes: {} };
+  if (typeof window === 'undefined') return { choices: mergeRecordedRulings(), notes: {} };
   try {
     const saved = JSON.parse(window.localStorage.getItem(STORAGE_KEY));
     return {
-      choices: {
-        ...(saved?.choices && typeof saved.choices === 'object' ? saved.choices : {}),
-        ...RECORDED_RULINGS,
-      },
+      choices: mergeRecordedRulings(saved?.choices),
       notes: saved?.notes && typeof saved.notes === 'object' ? saved.notes : {},
     };
   } catch {
-    return { choices: { ...RECORDED_RULINGS }, notes: {} };
+    return { choices: mergeRecordedRulings(), notes: {} };
   }
 }
 
@@ -79,6 +77,8 @@ function DecisionCard({ decision, choice, note, locked, onChoose, onNote }) {
           <div className="decisionMeta">
             <span>{locked ? 'Ruling recorded' : choice ? 'Answered' : 'Decision needed'}</span>
             <span>·</span>
+            <span>{decision.horizon === 'later' ? 'Later promotion' : 'Current programme'}</span>
+            <span>·</span>
             <span>{decision.source}</span>
           </div>
           <h3>{decision.title}</h3>
@@ -120,6 +120,18 @@ function DecisionCard({ decision, choice, note, locked, onChoose, onNote }) {
             <span>Why this needs you</span>
             <p>{decision.why}</p>
           </div>
+          {decision.corpus ? (
+            <div>
+              <span>Corpus</span>
+              <p>{decision.corpus}</p>
+            </div>
+          ) : null}
+          {decision.examples?.length ? (
+            <div>
+              <span>Clause examples</span>
+              <ul>{decision.examples.map((example) => <li key={example}>{example}</li>)}</ul>
+            </div>
+          ) : null}
           <div>
             <span>Evidence</span>
             <p>{decision.evidence}</p>
@@ -177,7 +189,7 @@ function Roadmap() {
 }
 
 export default function ProgrammeDecisionsPage() {
-  const [state, setState] = useState({ choices: { ...RECORDED_RULINGS }, notes: {} });
+  const [state, setState] = useState({ choices: mergeRecordedRulings(), notes: {} });
   const [hydrated, setHydrated] = useState(false);
   const [activeGroup, setActiveGroup] = useState('all');
   const [onlyOpen, setOnlyOpen] = useState(false);
@@ -193,7 +205,9 @@ export default function ProgrammeDecisionsPage() {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state, hydrated]);
 
-  const answered = Object.values(state.choices).filter(Boolean).length;
+  const answered = DECISIONS.filter((decision) => state.choices[decision.id]).length;
+  const openNow = DECISIONS.filter((decision) => decision.horizon !== 'later' && !state.choices[decision.id]).length;
+  const openLater = DECISIONS.filter((decision) => decision.horizon === 'later' && !state.choices[decision.id]).length;
   const visible = useMemo(() => DECISIONS.filter((decision) => {
     if (activeGroup !== 'all' && decision.group !== activeGroup) return false;
     if (onlyOpen && state.choices[decision.id]) return false;
@@ -228,7 +242,7 @@ export default function ProgrammeDecisionsPage() {
   };
 
   const clearRulings = () => {
-    setState({ choices: { ...RECORDED_RULINGS }, notes: {} });
+    setState({ choices: mergeRecordedRulings(), notes: {} });
   };
 
   const copyRulings = async () => {
@@ -250,14 +264,14 @@ export default function ProgrammeDecisionsPage() {
           <div className="heroCopy">
             <span className="kicker">Canonical v2 · 3 August 2026</span>
             <h1>Your decisions, in the order they unblock the programme</h1>
-            <p>The original 15 rulings are fixed. New M3 build blockers appear here as they are found.</p>
+            <p>Recorded rulings stay fixed. Current M3 calls are separate from later promotion packages, which remain open world unless you decide otherwise.</p>
           </div>
           <div className="progressPanel">
             <div className="progressCount"><strong>{answered}</strong><span>of {DECISIONS.length}</span></div>
             <div className="progressTrack" aria-label={`${answered} of ${DECISIONS.length} decisions answered`}>
               <span style={{ width: `${(answered / DECISIONS.length) * 100}%` }} />
             </div>
-            <span>{answered === DECISIONS.length ? 'Decision record complete' : `${DECISIONS.length - answered} rulings remain`}</span>
+            <span>{answered === DECISIONS.length ? 'Decision record complete' : `${openNow} current · ${openLater} later`}</span>
           </div>
         </header>
 
@@ -302,7 +316,7 @@ export default function ProgrammeDecisionsPage() {
             <h2>The critical path</h2>
             <ol>
               <li><strong>Apply the three fixtures in order.</strong><span>TopBuild, then Skechers, then Modiv. Stop after any failed verification.</span></li>
-              <li><strong>Apply the closed taxonomy rulings.</strong><span>The original 15 programme decisions have recorded answers. New build blockers remain explicit.</span></li>
+              <li><strong>Close the current legal calls.</strong><span>{openNow} current rulings remain. {openLater} later-promotion rulings do not block evidence capture.</span></li>
               <li><strong>Finish P2 phase 2.</strong><span>This is the first family build in the handoff.</span></li>
               <li><strong>Build and prove families.</strong><span>Fixture proof comes before corpus-scale claims.</span></li>
               <li><strong>Certify M3 in staging.</strong><span>Production import starts after M3.</span></li>
@@ -364,7 +378,8 @@ export default function ProgrammeDecisionsPage() {
         .decisionConsole .choice small { margin-top: 4px; font: 500 8px/1.2 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; opacity: .62; }
         .decisionConsole .detailsToggle { display: flex; width: 100%; justify-content: space-between; padding: 13px 28px; border: 0; border-top: 1px solid #eceae5; background: #faf9f7; color: #5f5c55; font-size: 11px; cursor: pointer; }
         .decisionConsole .detailsGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; padding: 20px 28px; border-top: 1px solid #eceae5; background: #faf9f7; }
-        .decisionConsole .detailsGrid p { margin: 0; color: #55524c; font-size: 12px; line-height: 1.6; }
+        .decisionConsole .detailsGrid p, .decisionConsole .detailsGrid li { margin: 0; color: #55524c; font-size: 12px; line-height: 1.6; }
+        .decisionConsole .detailsGrid ul { display: grid; gap: 7px; margin: 0; padding-left: 17px; }
         .decisionConsole .noteField { display: block; padding: 18px 28px 24px; border-top: 1px solid #eceae5; }
         .decisionConsole .noteField textarea { width: 100%; resize: vertical; padding: 10px 11px; border: 1px solid #d5d2ca; background: #fff; color: #20201e; font-size: 12px; line-height: 1.5; }
         .decisionConsole .noteField textarea:focus { outline: 2px solid #1b3fa0; outline-offset: 1px; }
