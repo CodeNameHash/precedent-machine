@@ -159,12 +159,12 @@ test('FIXTURE PIN (test 4, additivity): the no-lexical-input resolveCandidates()
   // MAPPING_TABLE_VERSION 4 -> 5 (family-termination-fee slice, three fee
   // entries -- docs/superpowers/specs/2026-08-02-family-termination-fee-
   // design.md section 4).
-  assert.equal(baseline.resolution_receipt.mapping_table_version, 10);
+  assert.equal(baseline.resolution_receipt.mapping_table_version, 11);
   assert.equal(baseline.resolution_receipt.share_count_parse_version, 1);
   assert.equal(baseline.resolution_receipt.zero_pattern_table_version, 1);
   assert.equal(
     baseline.resolution_receipt.resolution_receipt_id,
-    '9c34b19da0024be8d095d08236221faf07e8c98ff3886f7f78b832465589f135',
+    'c76bb4c257004402cf2c5d065da513c97e57fe5a1be277d1ef6f4100825760c8',
     // Re-pinned after Ben's 2026-08-03 ruling: bare no-shop "days"
     // now resolve as CALENDAR_DAYS, and no_shop_period_parse_version is 2.
     // Re-pinned (P2 qualifier kinds phase 1, Fable review 2026-08-03): delta =
@@ -188,7 +188,7 @@ test('FIXTURE PIN (test 4, additivity): the no-lexical-input resolveCandidates()
     // contract_vocabulary is passed in, move). [family-mae-definition-era
     // pin eae76e56... superseded; family-no-shop-era pin 55b1e8da...
     // superseded before that.]
-    'the new, re-pinned resolution_receipt_id under MAPPING_TABLE_VERSION 10',
+    'the new, re-pinned resolution_receipt_id under MAPPING_TABLE_VERSION 11',
   );
 
   // SOURCE_SCOPE_CERTIFICATION_ABSENT is unconditional -- present even with

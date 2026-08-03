@@ -45,7 +45,7 @@ test('registry, resolver seam and materiality tier include the M3-B antitrust sh
   assert.equal(burden.allowed_canonical_values.includes('SILENT'), false);
   const row = GENERIC_CLAIM_KEY_RESOLUTION_TABLE.find((entry) => entry.generic_claim_key === REGULATORY_EFFORTS_CLAIM_KEY);
   assert.deepEqual(row && { concept_key: row.concept_key, registered_claim_definition_key: row.registered_claim_definition_key, party_field: row.party_field }, { concept_key: null, registered_claim_definition_key: null, party_field: 'obligor_party' });
-  assert.equal(MAPPING_TABLE_VERSION, 10);
+  assert.equal(MAPPING_TABLE_VERSION, 11);
   assert.deepEqual(MATERIALITY_TABLE.find((tier) => tier.label === 'REGULATORY_EFFORTS'), { rank: 65, label: 'REGULATORY_EFFORTS', concept_key_prefixes: ['ANTI-'] });
 });
 

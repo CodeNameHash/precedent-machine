@@ -37,6 +37,8 @@ const {
   FIXTURE_CONTRACT_INPUT_V18,
   FIXTURE_CONTRACT_INPUT_V19,
   FIXTURE_CONTRACT_INPUT_V20,
+  FIXTURE_CONTRACT_INPUT_V21,
+  FIXTURE_CONTRACT_INPUT_V22,
   FIXTURE_CONTRACT_FINGERPRINTS,
   FIXTURE_SERVING_CONTRACT_FINGERPRINTS,
   BRINGS_DOWN_EFFECT_SCHEMA_V1,
@@ -80,6 +82,8 @@ const {
   compileFixtureContractV18,
   compileFixtureContractV19,
   compileFixtureContractV20,
+  compileFixtureContractV21,
+  compileFixtureContractV22,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -192,7 +196,7 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F20 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F22 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
@@ -212,6 +216,8 @@ test('F1 through F20 are distinct recognised fixture contract fingerprints', () 
   assert.notEqual(FROZEN_F17, FROZEN_F18);
   assert.notEqual(FROZEN_F18, FROZEN_F19);
   assert.notEqual(FROZEN_F19, compileFixtureContractV20().fingerprint);
+  assert.notEqual(compileFixtureContractV20().fingerprint, compileFixtureContractV21().fingerprint);
+  assert.notEqual(compileFixtureContractV21().fingerprint, compileFixtureContractV22().fingerprint);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -235,6 +241,8 @@ test('F1 through F20 are distinct recognised fixture contract fingerprints', () 
       FROZEN_F18,
       FROZEN_F19,
       compileFixtureContractV20().fingerprint,
+      compileFixtureContractV21().fingerprint,
+      compileFixtureContractV22().fingerprint,
     ].sort(),
   );
   assert.deepEqual(
@@ -278,6 +286,37 @@ test('compileFixtureContractV20() adds the M3-B antitrust shapes without changin
     ['ANTI-AGREEMENTS', 'ANTI-BURDEN', 'ANTI-CONSULT', 'ANTI-EFFORTS', 'ANTI-FILING', 'ANTI-LITIGATION', 'ANTI-NOACTION', 'ANTI-STRATEGY', 'ANTI-TIMING'],
   );
   assert.equal(FIXTURE_CONTRACT_INPUT_V20.claim_definitions.length, FIXTURE_CONTRACT_INPUT_V19.claim_definitions.length + 7);
+});
+
+test('F22 adds only the three grounded Consideration concepts and claims', () => {
+  const f21 = compileFixtureContractV21();
+  const f22 = compileFixtureContractV22();
+  assert.equal(validateContractBundle(f22), true);
+  assert.equal(FIXTURE_SERVING_CONTRACT_FINGERPRINTS.includes(f22.fingerprint), false);
+  assert.equal(canonicalJson(f22), canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V22)));
+  assert.deepEqual(
+    f22.concepts.filter((entry) => !f21.concepts.some(
+      (prior) => prior.concept_key === entry.concept_key,
+    )),
+    [
+      { concept_key: 'CONS-DISSENT', version: 1 },
+      { concept_key: 'CONS-PERSHARE', version: 1 },
+      { concept_key: 'CONS-RATIO', version: 1 },
+    ],
+  );
+  assert.deepEqual(
+    f22.claim_definitions.filter((entry) => !f21.claim_definitions.some(
+      (prior) => prior.claim_definition_key === entry.claim_definition_key,
+    )).map((entry) => entry.claim_definition_key),
+    [
+      'APPRAISAL_RIGHTS_STATUS',
+      'EXCHANGE_RATIO_VALUE',
+      'PER_SHARE_CASH_CONSIDERATION',
+    ],
+  );
+  const { concepts: _concepts, claim_definitions: _claims, fingerprint: _fingerprint, ...f22Rest } = f22;
+  const { concepts: _priorConcepts, claim_definitions: _priorClaims, fingerprint: _priorFingerprint, ...f21Rest } = f21;
+  assert.equal(canonicalJson(f22Rest), canonicalJson(f21Rest));
 });
 
 // ---------------------------------------------------------------------------
