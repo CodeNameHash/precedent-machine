@@ -17,11 +17,26 @@ const path = require('node:path');
 
 const CONTRACT = compileFixtureContractV31();
 
-test('V31 recorded real-agreement replay pack remains byte-grounded', () => {
+test('V31 recorded real-agreement replay pack remains byte-grounded and resolves deterministically', async () => {
   const pack = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'canonical-v2', 'm3-v31-real-replay.json'), 'utf8'));
   const source = fs.readFileSync(path.join(__dirname, '..', pack.source_path), 'utf8');
   assert.equal(pack.schema, 'CANONICAL_V2_M3_V31_REPLAY_PACK/V1');
-  for (const item of pack.cases) assert.ok(source.includes(item.quote), `${item.family} quote remains exact in admitted fixture`);
+  const shapes = {
+    MERGER_STRUCTURE_CLOSING: shapeMergerStructureProposals,
+    SPECIFIC_PERFORMANCE_REMEDIES: shapeSpecificPerformanceRemedyProposals,
+    MISC_BOILERPLATE: shapeMiscBoilerplateProposals,
+  };
+  const parsed = {
+    MERGER_STRUCTURE_CLOSING: (item) => ({ structure_assertions: [{ assertion_kind: item.assertion_kind, quote: item.quote }], open_world_candidates: [] }),
+    SPECIFIC_PERFORMANCE_REMEDIES: (item) => ({ remedy_assertions: [{ assertion_kind: item.assertion_kind, quote: item.quote }], open_world_candidates: [] }),
+    MISC_BOILERPLATE: (item) => ({ boilerplate_assertions: [{ assertion_kind: item.assertion_kind, quote: item.quote }], open_world_candidates: [] }),
+  };
+  for (const item of pack.cases) {
+    assert.ok(source.includes(item.quote), `${item.family} quote remains exact in admitted fixture`);
+    const { receipt, resolution } = await replay({ source, sectionReference: item.section_reference, dealKey: `landos-${item.family}`, shape: shapes[item.family], parsed: parsed[item.family](item) });
+    assert.equal(receipt.compiled_candidates.filter((entry) => entry.ok).length, 1, item.family);
+    assert.equal(resolution.resolved.length, 1, item.family);
+  }
 });
 
 async function replay({ source, sectionReference, parsed, shape, dealKey }) {
