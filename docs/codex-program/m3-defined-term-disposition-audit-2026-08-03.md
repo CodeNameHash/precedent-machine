@@ -2,8 +2,9 @@
 
 Date: 2026-08-03
 
-Status: OPEN. This audit does not approve a concept. It records the current
-corpus, the proposed owner, and the minimum shape needed before promotion.
+Status: PARTIALLY SETTLED. Ben approved the first structured comparable
+concepts and the neutral exact-definition envelope on 2026-08-03. The
+remaining unapproved populations stay open-world or derived as stated below.
 
 ## Method
 
@@ -129,20 +130,35 @@ Review, Query, Compare and market may use output 1. Review and Query may use
 output 2. Exact-text search and source detail may use output 3. Compare and
 market must not aggregate outputs 2 or 3 as if they were controlled values.
 
+## Settled rulings
+
+1. `DEF-ACQPROPOSAL`, `DEF-SUPERIOR`, `DEF-INTERVENING`, `DEF-KNOWLEDGE`
+   and `DEF-WILLFUL` are the first structured comparable concepts. Their
+   controlled facts preserve exact definition text and deal-specific variants.
+   They are not a licence to collapse distinct terms or clauses.
+2. Tax, Tax Return, Made Available and Ordinary Course are approved as the
+   next structured slices. Until their dedicated claim contracts are built,
+   their exact evidence remains visible through the neutral envelope.
+3. Company Employee routes to Employee Matters and Material Contract routes
+   to Material Contracts. Those owning families retain the operative claim.
+4. Contract, Benefit Plan, Permit, Permitted Lien and Lien remain exact text
+   plus relationships only. They have no market output until a product use is
+   approved.
+5. The neutral definition envelope is approved. It stores exact head/body
+   text, kind, optional source-quoted cross-reference, owner hint and a
+   normalised defined-term identity. The identity permits side-by-side Review
+   and Query for the same name, such as `Law`, but it never establishes
+   equivalence, aggregation or a market statistic.
+6. `definition_components` remains non-authoritative through M3.
+7. Misclassified-subtype migration remains undecided. This audit does not
+   record a migration rule pending Ben's clarified answer.
+
 ## Remaining decisions before Key Defined Terms can close
 
-1. Approve the initial comparable concept set after reviewing this complete
-   owner and variant inventory. The five scaffolded concepts remain
-   proposals, not ratified taxonomy.
-2. Decide whether Tax, Contract, Benefit Plan, Company Employee, Permit,
-   Permitted Lien, Lien, Material Contract, Made Available and Ordinary
-   Course need later comparable slices or only exact-text search.
-3. Approve one neutral definition-envelope and one definition-relationship
-   contract. These are needed to keep the long tail without turning
-   `DEF-GENERAL` into a concept.
-4. Approve migration rules for retired and mistagged v1 subtypes. The rules
-   must use `(provision_type, provision_subtype)` plus content review.
-5. Decide the data-hygiene disposition of the empty
-   `definition_components` table. Do not make it authoritative merely
-   because its schema resembles the proposed envelope.
-
+1. Build dedicated structured contracts for the approved next slices, Tax,
+   Tax Return, Made Available and Ordinary Course.
+2. Define product use before promoting Contract, Benefit Plan, Permit,
+   Permitted Lien or Lien beyond exact evidence and relationships.
+3. Decide migration rules for retired and mistagged v1 subtypes after Ben's
+   clarified answer. The rules must use `(provision_type, provision_subtype)`
+   plus content review.

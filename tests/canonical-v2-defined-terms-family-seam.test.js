@@ -5,7 +5,12 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContract, compileFixtureContractV31 } = require('../lib/canonical-v2/contract-bundle');
+const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
+const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
+const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
+const { projectKeyTermsMaeClaims } = require('../lib/canonical-v2/key-terms-mae-product-projection');
+const { buildIdentityAdmittedSourceContext } = require('./helpers/identity-admitted-source');
 const { compileCandidateProposals } = require('../lib/canonical-v2/native-producer/candidate-proposal-compiler');
 const {
   createAnthropicProvider,
@@ -202,6 +207,57 @@ test('either unverified assertion span drops the whole assertion as a typed resi
   const limbResult = (await run(missingLimb)).result;
   assert.equal(limbResult.proposals.length, 0);
   assert.equal(limbResult.evidence_residuals[0].reason, 'DEFINED_TERM_LIMB_QUOTE_UNVERIFIED');
+});
+
+test('approved Key Terms resolve as separate structured concepts and retain a normalised term identity', async () => {
+  const source = 'Section 1.1 Definitions.\n"Acquisition Proposal" means an offer to acquire more than 20% of the outstanding equity securities.';
+  const bundle = compileFixtureContractV31();
+  const receipt = await runNativeExtraction({
+    source_text: source,
+    document_hash: sha256Hex(Buffer.from(source, 'utf8')),
+    section_references: ['1.1'],
+    contract_bundle: bundle,
+    definitions: { known_definitions: [] },
+    section_family_classifier: () => ({ section_family: 'KEY_DEFINED_TERMS', provenance: 'TEST' }),
+    provider: async ({ governed_scope }) => ({
+      provider_id: 'defined-terms-resolution-test/v1', model_id: 'stub', prompt: 'defined-terms-resolution-test',
+      ...require('../lib/canonical-v2/native-producer/anthropic-provider').shapeDefinedTermsProposals(response(), governed_scope.source_text),
+    }),
+  });
+  const resolution = resolveCandidates({
+    run_receipt: receipt,
+    contract_vocabulary: bundle,
+    admitted_source_context: buildIdentityAdmittedSourceContext(source, {
+      dealKey: 'defined-term-resolution',
+      dealAdmissionId: sha256Hex('deal-admission:defined-term-resolution'),
+    }),
+  });
+  assert.equal(resolution.resolved.length, 1);
+  const [entry] = resolution.resolved;
+  assert.equal(entry.concept_key, 'DEF-ACQPROPOSAL');
+  assert.equal(entry.resolved_claim_definition_key, 'ACQUISITION_PROPOSAL_THRESHOLD_PERCENT');
+  assert.equal(entry.claim.canonical_value, '20');
+  assert.equal(entry.claim.attributes.defined_term_identity, 'acquisition proposal');
+  assert.equal(entry.provision_instance.schema_version, 'STRUCTURAL_PROVISION_INSTANCE/V1');
+  const product = projectKeyTermsMaeClaims({ resolved_entries: [entry] });
+  assert.equal(product.records[0].market.metric_key, 'KEY_DEFINED_TERM_PERCENT_BY_CLAIM_AND_BASIS');
+});
+
+test('neutral definition envelopes retain exact text and a side-by-side identity without market promotion', () => {
+  const source = '"Law" means any statute, regulation or ordinance.';
+  const { shapeDefinedTermsProposals } = require('../lib/canonical-v2/native-producer/anthropic-provider');
+  const shaped = shapeDefinedTermsProposals({
+    definition_envelopes: [{
+      section_reference: '1.1', defined_term: 'Law', definition_kind: 'TERM_DEFINITION',
+      definition_head_quote: '"Law" means', definition_body_quote: source,
+      cross_reference_target: null, owner_hint: 'REFERENCE_UNIVERSE',
+    }],
+    open_world_candidates: [],
+  }, source);
+  assert.equal(shaped.proposals.length, 1);
+  assert.equal(shaped.proposals[0].canonical_value, null);
+  assert.equal(shaped.proposals[0].attributes.definition_envelope.normalized_term_identity, 'law');
+  assert.equal(shaped.proposals[0].attributes.definition_envelope.definition_body_quote, source);
 });
 
 test('bounded seam adds no MAE carve-out or day-count vocabulary', () => {

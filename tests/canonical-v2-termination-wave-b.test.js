@@ -41,6 +41,40 @@ function waveB(proposals) {
 }
 
 {
+  const quote = 'Parent may terminate under Section 7.2(b) if the Company has committed a material breach.';
+  const output = shapeTerminationProposals({
+    termination_right_assertions: [],
+    wave_b_mechanics: [{
+      surface: 'BREACH_STANDARD', section_reference: '8.1(c)', quote,
+      detail: 'termination breach standard', related_clause_reference: '7.2(b)',
+      cross_reference_quote: 'under Section 7.2(b)',
+    }],
+    open_world_candidates: [],
+  }, quote);
+  const mechanic = waveB(output.proposals)[0].attributes.structured_mechanic;
+  assert.deepEqual(mechanic.explicit_clause_cross_reference, {
+    clause_reference: '7.2(b)', quote: 'under Section 7.2(b)',
+  });
+}
+
+{
+  const quote = 'Parent may terminate if the Company has committed a material breach.';
+  const output = shapeTerminationProposals({
+    termination_right_assertions: [],
+    wave_b_mechanics: [{
+      surface: 'BREACH_STANDARD', section_reference: '8.1(c)', quote,
+      detail: 'termination breach standard', related_clause_reference: '7.2(b)',
+      cross_reference_quote: 'under Section 7.2(b)',
+    }],
+    open_world_candidates: [],
+  }, quote);
+  assert.equal(Object.hasOwn(
+    waveB(output.proposals)[0].attributes.structured_mechanic,
+    'explicit_clause_cross_reference',
+  ), false);
+}
+
+{
   const quote = 'if payment is not made when due, interest shall accrue at the Applicable Rate.';
   const output = shapeTerminationFeeProposals({
     fee_amount_assertions: [],

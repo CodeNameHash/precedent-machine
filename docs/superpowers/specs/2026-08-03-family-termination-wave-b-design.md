@@ -24,6 +24,12 @@ Ben settled the storage and ownership rules on 2026-08-03:
 Vote-threshold and breach-standard ownership is still open. Those items stay
 unstructured evidence until Ben settles the owner/link rule.
 
+Closing Conditions and Termination Rights can state different standards. Each
+clause keeps its own expressly stated standard. An `explicit_clause_cross_reference`
+is stored only where that same source clause quotes the other clause's section
+reference. The system does not infer a link, inherit a standard, or merge two
+standards because they appear related.
+
 ## Corpus basis
 
 `TERMINATION_RIGHT` has 76 cards across 19 deals. The main deferred cards are

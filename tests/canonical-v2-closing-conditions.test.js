@@ -66,6 +66,19 @@ test('Wave B preserves certificate targets as an open-world relationship while r
   assert.deepEqual(shaped.proposals[0].attributes.certified_condition_refs, ['7.2(a)', '7.2(b)', '7.2(c)']);
 });
 
+test('Closing Conditions keep an explicit termination link only when the clause itself quotes it', () => {
+  const quote = 'The condition in Section 7.2(a) shall be satisfied notwithstanding Section 8.1(b).';
+  const shaped = shapeClosingConditionProposals({
+    closing_condition_assertions: [{
+      section_reference: '7.2(a)', assertion_kind: 'LEGAL_RESTRAINT', quote,
+      related_clause_reference: '8.1(b)', cross_reference_quote: 'Section 8.1(b)',
+    }],
+  }, quote);
+  assert.deepEqual(shaped.proposals[0].attributes.explicit_clause_cross_reference, {
+    clause_reference: '8.1(b)', quote: 'Section 8.1(b)',
+  });
+});
+
 test('the central compiler accepts Closing Conditions proposals end to end', async () => {
   const bundle = compileFixtureContractV24();
   const governedScope = { deal_key: 'fixture', source_text: QUOTE };

@@ -274,7 +274,7 @@ test('IOC governed presence claims pass while long-tail and numeric mechanics re
   }
 });
 
-test('Key Defined Terms product scaffolding stays open pending the disposition audit while MAE is native', () => {
+test('approved Key Defined Terms are native while the remaining definition universe stays open', () => {
   const keyTerms = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
     (family) => family.family_id === 'KEY_DEFINED_TERMS',
   );
@@ -282,15 +282,15 @@ test('Key Defined Terms product scaffolding stays open pending the disposition a
     (family) => family.family_id === 'MAE_DEFINITION',
   );
   assert.ok(keyTerms.product_surfaces.every(
-    (surface) => surface.state === 'OPEN' && surface.disposition === 'FOLLOW_ON_REQUIRED',
+    (surface) => surface.state === 'PASS' && surface.disposition === 'NATIVE_COMPLETE',
   ));
   assert.ok(mae.product_surfaces.every(
     (surface) => surface.state === 'PASS' && surface.disposition === 'NATIVE_COMPLETE',
   ));
-  assert.equal(keyTerms.wave_a.checks.resolver.state, 'OPEN');
+  assert.equal(keyTerms.wave_a.checks.resolver.state, 'PASS');
   assert.equal(keyTerms.wave_a.checks.lexical_net.state, 'OPEN');
   assert.ok(keyTerms.wave_a.checks.resolver.evidence_paths.includes(
-    'docs/codex-program/m3-defined-term-disposition-audit-2026-08-03.md',
+    'lib/canonical-v2/native-producer/candidate-resolution.js',
   ));
   assert.ok(Object.values(mae.wave_a.checks).every((check) => check.state === 'PASS'));
 });
