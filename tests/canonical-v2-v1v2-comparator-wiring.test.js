@@ -237,10 +237,20 @@ test('FIXTURE PIN: the no-v1v2-input resolveCandidates() path reproduces the com
     'the committed pre-slice fixture is now stale under MAPPING_TABLE_VERSION 4 -- this is the expected, documented re-pin',
   );
   assert.equal(resolutionFixture.resolution_receipt.resolution_receipt_id, '16939d3bbf295686be514e51245429c7096fd99e1dca1b19f8037a10a6b41a79');
-  assert.equal(baseline.resolution_receipt.mapping_table_version, 4);
+  // MAPPING_TABLE_VERSION 4 -> 5 (family-termination-fee slice, three fee
+  // entries -- docs/superpowers/specs/2026-08-02-family-termination-fee-
+  // design.md section 4).
+  assert.equal(baseline.resolution_receipt.mapping_table_version, 5);
   assert.equal(
     baseline.resolution_receipt.resolution_receipt_id,
-    '24ada5d4445f5c885d01f168582f03426b06c474062ae001e475ff87da8a37a9',
+    '0ebe8e8fe0f38ddd1a1b564ab6b45f22cb41c0da470b10fc64484e51774468dd',
+    // Re-pinned (family-termination-fee slice, Fable build review
+    // 2026-08-03): MAPPING_TABLE_VERSION 4 -> 5 and receiptBody gains ONE
+    // new unconditional field (termination_fee_parse_version) -- the full
+    // field-level diff vs the committed fixture was re-derived at review:
+    // mapping_table_version 3->5, share_count_parse_version +1,
+    // zero_pattern_table_version +1, termination_fee_parse_version +1,
+    // nothing else. [P1-era pin 24ada5d4... superseded.]
     'the new, re-pinned resolution_receipt_id under MAPPING_TABLE_VERSION 4',
   );
 });

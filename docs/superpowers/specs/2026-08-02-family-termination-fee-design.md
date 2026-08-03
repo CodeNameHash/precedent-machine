@@ -347,6 +347,17 @@ a fee quote's count — all real fixture quotes contain such numerals).
   cross-reference-only definition).
 - Spelled-out money ("three hundred million dollars") → ABSTAIN
   `NON_LITERAL_MONEY`.
+- **Hybrid magnitude money ("$91.5 million", "$1.2 billion", "$45 mm") →
+  ABSTAIN `HYBRID_MAGNITUDE_MONEY` (Fable build review 2026-08-03, F-1 —
+  this spec originally pinned only the pure spelled-out form; the hybrid
+  form is neither pure-literal nor pure-spelled, and resolving its bare
+  digits is a wrong-survivor RESOLVED of the P1 F-4 class. The parser
+  never multiplies prose into a number.) Checked after multiplicity, so
+  "$91.5 million (i.e., $91,500,000)" stays `MULTIPLE_MONEY_LITERALS`.**
+- **Tokenizer pin (F-2, same review): the digit-comma run must end on a
+  digit, so the sentence comma in "$280,000,000, payable …" is never
+  swallowed into the run (a bare `[\d,]*` turns the most common fee
+  drafting shape into a spurious `MALFORMED_GROUPING`).**
 - NO zero-pattern table for this family: a genuine $0 termination fee is
   not corpus-attested; "no more than one termination fee" (Carrols) is
   anti-double-dip prose (TERMF-RTF-ANTI territory), never a fee amount.

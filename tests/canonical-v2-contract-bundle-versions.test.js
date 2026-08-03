@@ -94,6 +94,15 @@ const FROZEN_F13 = '3c8ca48ff4f1f2f482b14a188045aa3a1ec7072704d396f7306b483e6338
 // F13 -- two new claim definitions (CAPITALIZATION_SHARE_COUNT,
 // RESERVED_SHARE_POOL), zero concept additions, zero other field changes.
 const FROZEN_F14 = '6b58314592cc553675a4a3efefea8ae3caa7e9edb8a5625260b61e0e8b2591e7';
+// F15 (family-termination-fee slice, docs/superpowers/specs/2026-08-02-
+// family-termination-fee-design.md section 1): strictly additive spread of
+// F14 -- three new claim definitions (TERMINATION_FEE_AMOUNT,
+// TERMINATION_FEE_TRIGGER, TERMINATION_FEE_TAIL_PERIOD_MONTHS), zero
+// concept additions, zero other field changes. See
+// tests/canonical-v2-contract-bundle-v15.test.js for the dedicated V15
+// acceptance tests (superset-diff by content, per the openworld-promotion-
+// program's own merge-order convention).
+const FROZEN_F15 = 'e7ae756e69c289ebe125bb2a1a9aa03753951bb761fb9b2a9b9a88cb7f48b57f';
 
 const APPROVED_V2_ADDITIONS = [
   'TERMR-BREACH',
@@ -154,7 +163,7 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F14 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F15 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
@@ -168,6 +177,7 @@ test('F1 through F14 are distinct recognised fixture contract fingerprints', () 
   assert.notEqual(FROZEN_F11, FROZEN_F12);
   assert.notEqual(FROZEN_F12, FROZEN_F13);
   assert.notEqual(FROZEN_F13, FROZEN_F14);
+  assert.notEqual(FROZEN_F14, FROZEN_F15);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -185,6 +195,7 @@ test('F1 through F14 are distinct recognised fixture contract fingerprints', () 
       FROZEN_F12,
       FROZEN_F13,
       FROZEN_F14,
+      FROZEN_F15,
     ].sort(),
   );
   assert.deepEqual(

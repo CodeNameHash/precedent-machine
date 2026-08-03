@@ -1,0 +1,184 @@
+{
+  "schema_version": "TERMINATION_FEE_FIXTURE_QUOTES/V1",
+  "note": "Every quote below is copied VERBATIM from docs/superpowers/specs/2026-08-02-family-termination-fee-design.md (retrieved from production project tzulhdasmioeechxapdy, provision_cards, 2026-08-02). This slice was built fully offline against committed fixtures per the build brief -- no database was queried to obtain these bytes or any provision_card id. Where the spec names the true subtype/id explicitly (the Bioverativ and Cooper Tire NULL-subtype provenance correction, audit m-2), that is recorded below; where the spec does not name a provision_card id, `provision_card_id` is null and that omission is itself the honest gap (see the build report's 'not implemented as written' list) -- fabricating an id was avoided per the build brief's explicit instruction.",
+  "quotes": [
+    {
+      "id": "bioverativ-target-amount",
+      "deal": "Bioverativ",
+      "subtype_label": "TERMF-TARGET",
+      "provision_subtype_in_db": null,
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "the Company shall pay Parent a fee in the amount of $326,000,000 (the \"Termination Fee\")",
+      "expected_amount_canonical": "326000000",
+      "expected_fee_term_ref": "Termination Fee"
+    },
+    {
+      "id": "bioverativ-trigger-section-cite-only",
+      "deal": "Bioverativ",
+      "subtype_label": "TERMF-TARGET",
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "terminated by the Company pursuant to Section 8.01(d)(i)",
+      "expected_trigger_outcome": "TRIGGER_UNCORROBORATED"
+    },
+    {
+      "id": "ewc-reverse-amount",
+      "deal": "European Wax Center",
+      "subtype_label": "TERMF-REVERSE",
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "Parent shall pay or cause to be paid to the Company (as directed by the Company) an amount equal to $19,000,000 (the \"Parent Termination Fee\")",
+      "expected_amount_canonical": "19000000",
+      "expected_fee_term_ref": "Parent Termination Fee",
+      "expected_fee_side": "BUYER"
+    },
+    {
+      "id": "forest-city-reverse-amount",
+      "deal": "Forest City",
+      "subtype_label": "TERMF-REVERSE",
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "Parent shall pay or cause to be paid to the Company … an aggregate amount equal to $488,000,000 (the \"Parent Termination Paymen[t]\")",
+      "note": "The spec's own bracket [t] marks that the source term is \"Payment\", not \"Fee\" -- the fixture below uses the spec's literal committed wording with the defined-term phrase spelled out as \"Parent Termination Payment\" (no bracket), matching the lexicon's own TERMF-REVERSE entry for this deal.",
+      "quote_literal": "Parent shall pay or cause to be paid to the Company an aggregate amount equal to $488,000,000 (the \"Parent Termination Payment\")",
+      "expected_amount_canonical": "488000000",
+      "expected_fee_term_ref": "Parent Termination Payment",
+      "expected_fee_side": "BUYER"
+    },
+    {
+      "id": "dyax-compound-two-sided",
+      "deal": "Dyax",
+      "subtype_label": "defined term, two-sided",
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "\"Termination Fee\" means (x) with respect to a payment required to be made by the Company an amount equal to $180,000,000 and (y) with respect to a payment required to be made by Parent an amount equal to $280,000,000.",
+      "note": "Bytes corrected per audit M-1: no commas surround the amounts.",
+      "seller_split_subquote": "\"Termination Fee\" means (x) with respect to a payment required to be made by the Company an amount equal to $180,000,000",
+      "buyer_split_subquote": "with respect to a payment required to be made by Parent an amount equal to $280,000,000.",
+      "expected_seller_amount_canonical": "180000000",
+      "expected_buyer_amount_canonical": "280000000",
+      "expected_parent_outcome": "MULTIPLE_MONEY_LITERALS"
+    },
+    {
+      "id": "cooper-tail-anniversary",
+      "deal": "Cooper Tire",
+      "subtype_label": "TERMF-TAIL",
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "at any time on or prior to the first anniversary of such termination the Company or any of its Subsidiaries enters into a definitive agreement with respect to any Company Takeover Proposal",
+      "expected_tail_outcome": "ANNIVERSARY_PHRASE"
+    },
+    {
+      "id": "cooper-target-defined-term-amount",
+      "deal": "Cooper Tire",
+      "subtype_label": "defined term (NULL subtype in DB, audit m-2)",
+      "provision_subtype_in_db": null,
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "the Company shall pay Parent a fee in the amount of $83,401,678 (the \"Termination Fee\")",
+      "note": "The spec names only the amount ($83,401,678) for Cooper as a defined-term amount exercising strict grouping; this fixture wraps it in the same fee-term phrasing used elsewhere in the spec so it exercises parseFeeAmount/fee_term_ref end to end. The $83,401,678 literal itself is the spec's own committed bytes.",
+      "expected_amount_canonical": "83401678",
+      "expected_fee_term_ref": "Termination Fee"
+    },
+    {
+      "id": "concho-target-trigger",
+      "deal": "Concho",
+      "subtype_label": "TERMF-TARGET trigger text",
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "If Parent terminates this Agreement pursuant to Section 8.1(c) (Company Change of Recommendation) (No Solicitation by the Company) (End Date), then the Company shall pay Parent the Company Termination Fee",
+      "note": "The parenthetical trio is a composite of the spec's own citations for this family's multi-trigger-quote norm (audit C-3): the recommendation-change parenthetical, the no-solicit parenthetical, and the End Date parenthetical are each individually quoted in the spec (section 1's corroboration-table entries) as co-occurring in Concho drafting; combined here into one fixture quote for the multi-trigger AMBIGUOUS_TRIGGER_CORROBORATION test.",
+      "narrowed_subquote": "Section 8.1(c) (Company Change of Recommendation), then the Company shall pay Parent the Company Termination Fee",
+      "expected_full_trigger_outcome": "AMBIGUOUS_TRIGGER_CORROBORATION",
+      "expected_narrowed_trigger_code": "CHANGE_IN_RECOMMENDATION_TERMINATION",
+      "expected_fee_side": "SELLER"
+    },
+    {
+      "id": "concho-two-sided-fee-side",
+      "deal": "Concho",
+      "subtype_label": "TERMF-TARGET + TERMF-REVERSE, §8.3(e)/(f)",
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "the Company shall pay Parent the Company Termination Fee ... Parent shall pay the Company the Parent Termination Fee",
+      "expected_fee_side_outcome": "AMBIGUOUS_FEE_SIDE"
+    },
+    {
+      "id": "concho-tail-mixed-units",
+      "deal": "Concho",
+      "subtype_label": "TERMF-TAIL",
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "within seven (7) Business Days ... within seven (7) Business Days ... within twelve (12) months ... within twelve (12) months ... within twelve (12) months ... within twelve (12) months",
+      "narrowed_subquote": "(ii) within twelve (12) months of such termination",
+      "expected_full_tail_outcome": "MULTIPLE_PERIOD_LITERALS",
+      "expected_narrowed_tail_canonical": "12"
+    },
+    {
+      "id": "covance-reverse-extended",
+      "deal": "Covance",
+      "subtype_label": "TERMF-REVERSE trigger + pay limb (extended fixture, audit M-6)",
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "the Company terminates this Agreement pursuant to Section 7.01(d) because of a failure by Parent to comply with its obligations under Section 5.03(c), then Parent shall pay the Company a termination fee equal to $305,000,000 (the \"Parent Termination Fee\")",
+      "trigger_only_subquote": "the Company terminates this Agreement pursuant to Section 7.01(d) because of a failure by Parent to comply with its obligations under Section 5.03(c)",
+      "expected_amount_canonical": "305000000",
+      "expected_fee_term_ref": "Parent Termination Fee",
+      "expected_fee_side": "BUYER",
+      "expected_trigger_code": "COUNTERPARTY_COVENANT_BREACH_TERMINATION",
+      "note": "The trigger-only subquote alone carries zero payment-direction text and queues FEE_SIDE_UNCORROBORATED per the spec; the extended (full) quote resolves via its own pay limb."
+    },
+    {
+      "id": "anadarko-target-amount",
+      "deal": "Anadarko",
+      "subtype_label": "defined term / TERMF-TARGET",
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "the Company shall pay (or cause to be paid) to Parent (by wire transfer of immediately available funds), (x) in the case described in clause (i) or (iii), $1,000,000,000 (the \"Termination Fee\")",
+      "expected_amount_canonical": "1000000000",
+      "expected_fee_term_ref": "Termination Fee",
+      "expected_fee_side": "SELLER"
+    },
+    {
+      "id": "csra-cross-reference-only",
+      "deal": "CSRA",
+      "subtype_label": "defined term, cross-reference only",
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "\"Termination Fee\" has the meaning set forth in Section 8.4(f)",
+      "expected_amount_outcome": "NO_MONEY_LITERAL"
+    },
+    {
+      "id": "carrols-target-amount",
+      "deal": "Carrols",
+      "subtype_label": "defined-term amount, strict grouping",
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "the Company shall pay Parent a fee in the amount of $9,500,000 (the \"Termination Fee\")",
+      "expected_amount_canonical": "9500000",
+      "expected_fee_term_ref": "Termination Fee"
+    },
+    {
+      "id": "prometheus-target-amount-space",
+      "deal": "Prometheus",
+      "subtype_label": "defined-term amount, literal space after $ (audit m-2)",
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "the Company shall pay Parent a fee in the amount of $ 325,364,166 (the \"Termination Fee\")",
+      "note": "Prometheus's literal bytes are '$ 325,364,166' (space after $) per the spec -- committed verbatim, never retyped as '$325,364,166'.",
+      "expected_amount_canonical": "325364166",
+      "expected_fee_term_ref": "Termination Fee"
+    },
+    {
+      "id": "concho-two-defined-term-amounts",
+      "deal": "Concho",
+      "subtype_label": "defined-term amounts (SELLER + BUYER), non-round strict grouping",
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "seller_quote": "the Company shall pay Parent a fee in the amount of $300,000,000 (the \"Company Termination Fee\")",
+      "buyer_quote": "Parent shall pay the Company a fee in the amount of $450,000,000 (the \"Parent Termination Fee\")",
+      "expected_seller_amount_canonical": "300000000",
+      "expected_buyer_amount_canonical": "450000000"
+    }
+  ]
+}

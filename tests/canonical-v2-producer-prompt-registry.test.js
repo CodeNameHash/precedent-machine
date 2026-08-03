@@ -48,8 +48,8 @@ test('registry: unknown/unregistered family returns null -- fail closed, never a
   assert.equal(getProducerPromptModule(undefined), null);
 });
 
-test('registry: this slice registers exactly one family', () => {
-  assert.deepEqual(listRegisteredSectionFamilies(), ['CAPITALISATION']);
+test('registry: CAPITALISATION and TERMINATION_FEE are registered (family-termination-fee slice)', () => {
+  assert.deepEqual(listRegisteredSectionFamilies(), ['CAPITALISATION', 'TERMINATION_FEE']);
 });
 
 test('registry: schema constant is exported', () => {
@@ -79,8 +79,31 @@ test('classifier stage 1: the TERMF exclusion -- fee/expense/effect-of-terminati
   for (const title of termfTitles) {
     // eslint-disable-next-line no-await-in-loop
     const result = await classifySectionFamily({ title });
-    assert.equal(result.section_family, null, `expected "${title}" to NOT classify TERMINATION`);
-    assert.equal(result.declined_reason, 'NO_STAGE_2_PROVIDER');
+    assert.notEqual(result.section_family, 'TERMINATION', `expected "${title}" to NOT classify TERMINATION`);
+  }
+});
+
+// docs/superpowers/specs/2026-08-02-family-termination-fee-design.md
+// section 3: the TERMF exclusion above is now claimed by its own family,
+// TERMINATION_FEE, rule-classified at stage 1 -- registered in
+// producer-prompt-registry.js in this same slice (see that file's own
+// registration comment).
+test('classifier stage 1: fee/break-up/expense-reimbursement/effect-of-termination/sole-remedy titles classify TERMINATION_FEE, rule-classified', async () => {
+  const termfTitles = [
+    'Termination Fee',
+    'Company Termination Fees',
+    'Fees and Expenses',
+    'Expense Reimbursement',
+    'Expenses and Other Payments',
+    'Effect of Termination',
+    'Sole and Exclusive Remedy',
+  ];
+  for (const title of termfTitles) {
+    // eslint-disable-next-line no-await-in-loop
+    const result = await classifySectionFamily({ title });
+    assert.equal(result.section_family, 'TERMINATION_FEE', `expected "${title}" to classify TERMINATION_FEE`);
+    assert.equal(result.provenance, SECTION_FAMILY_RULE_CLASSIFIED);
+    assert.equal(result.declined_reason, null);
   }
 });
 
