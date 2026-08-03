@@ -42,8 +42,17 @@ const {
   parseMeasurementDate,
   parseMeasurementPeriod,
 } = require('../lib/canonical-v2/native-producer/measurement-date-parse');
-const { canonicalValueAllowed: candidateResolutionCanonicalValueAllowed } = require('../lib/canonical-v2/native-producer/candidate-resolution');
+const {
+  canonicalValueAllowed: candidateResolutionCanonicalValueAllowed,
+  lookupGenericClaimKeyMapping,
+  derivePerformanceAssumptionLevel,
+  resolveCandidates,
+} = require('../lib/canonical-v2/native-producer/candidate-resolution');
 const validateWriteSet = require('../lib/canonical-v2/validate-write-set');
+const {
+  compileFixtureContractV17,
+  compileFixtureContractV18,
+} = require('../lib/canonical-v2/contract-bundle');
 
 const MODIV_FIXTURE = JSON.parse(
   fs.readFileSync(
@@ -51,6 +60,18 @@ const MODIV_FIXTURE = JSON.parse(
     'utf8'
   )
 );
+const MODIV_RUN_RECEIPT = JSON.parse(
+  fs.readFileSync(
+    path.join(__dirname, 'fixtures', 'canonical-v2', 'modiv-first-live-run', 'run-receipt.json'),
+    'utf8'
+  )
+);
+const MODIV_ADMITTED_SOURCE_CONTEXT = JSON.parse(
+  fs.readFileSync(
+    path.join(__dirname, 'fixtures', 'canonical-v2', 'modiv-first-live-run', 'adapter-result.json'),
+    'utf8'
+  )
+).admitted_source_contexts[0];
 
 function fixtureQuote(closurePrefix) {
   const row = MODIV_FIXTURE.open_world.find((r) => r.closure_id.startsWith(closurePrefix));
@@ -86,11 +107,12 @@ test('every coverage-map CONVERTS carve-out quote classifies DISCLOSURE_SCHEDULE
   }
 });
 
-test('three of the four Modiv mixed carve-out quotes route REVIEW DISCLOSURE_CARVEOUT_PARTIAL; the fourth (af9d...) is a documented spec gap -- see delivery report', () => {
+test('all four Modiv mixed carve-out quotes route REVIEW DISCLOSURE_CARVEOUT_PARTIAL', () => {
   const reviewsExpected = [
     'a7e0b0788330cc18',
     'eafc21cab5c139a9',
     '1c3a8c1e70f50080',
+    'af9d471091f10ad0',
   ];
   for (const prefix of reviewsExpected) {
     const quote = fixtureQuote(prefix);
@@ -98,18 +120,16 @@ test('three of the four Modiv mixed carve-out quotes route REVIEW DISCLOSURE_CAR
     assert.equal(result.outcome, 'REVIEW', prefix);
     assert.equal(result.reason, DISCLOSURE_CARVEOUT_PARTIAL, prefix);
   }
-  // af9d471091f10ad0's ONLY set-forth verb sits ~200 normalised chars after
-  // the sentence-initial "Except" (i)-(iv) enumeration -- outside the
-  // spec's own pinned 40-char connective window (section 2 rule 3). Under
-  // the LITERAL section-2 grammar this quote does not trip the signal and
-  // stays open world (v1-identical), even though section 9's coverage
-  // table lists it as converting to REVIEW. This is a spec-internal
-  // inconsistency (section 2's precise, audit-pinned regex vs. section 9's
-  // table), not a legal-judgment call -- flagged for Ben/Fable rather than
-  // silently resolved either way.
-  const af9d = fixtureQuote('af9d471091f10ad0');
-  const result = classifyQualifierQuote({ quote: af9d, modelKind: 'THRESHOLD' });
-  assert.equal(result.outcome, 'OPEN_WORLD', 'af9d... under the literal section-2 40-char window: documented spec-conflict gap');
+});
+
+test('the full af9d Modiv enumerated exception quote routes REVIEW', () => {
+  const exactQuote =
+    'Except (i) pursuant to the Company Charter, (ii) pursuant to the Partnership Agreement, (iii) for equity securities and other instruments (including loans) in wholly owned Company Subsidiaries and (iv) as set forth in Section 3.2(d) of the Company Disclosure Letter,';
+  assert.equal(fixtureQuote('af9d471091f10ad0'), exactQuote);
+
+  const result = classifyQualifierQuote({ quote: exactQuote, modelKind: 'THRESHOLD' });
+  assert.equal(result.outcome, 'REVIEW');
+  assert.equal(result.reason, DISCLOSURE_CARVEOUT_PARTIAL);
 });
 
 test('anti-noise: Skechers "this Section 3.7" and whole-letter (no citation) quotes are non-fires, v1-identical', () => {
@@ -119,6 +139,23 @@ test('anti-noise: Skechers "this Section 3.7" and whole-letter (no citation) quo
   );
   assert.equal(
     classifyQualifierQuote({ quote: 'except as set forth in the Disclosure Letter' }).outcome,
+    'OPEN_WORLD'
+  );
+  assert.equal(
+    classifyQualifierQuote({
+      quote:
+        'Except (i) pursuant to the Company Charter, (ii) pursuant to the Partnership Agreement, (iii) pursuant to another agreement and (iv) as set forth in the Disclosure Letter',
+    }).outcome,
+    'OPEN_WORLD'
+  );
+});
+
+test('anti-noise: an enumerated multi-citation carve-out is not admitted by the Modiv-only tripwire', () => {
+  assert.equal(
+    classifyQualifierQuote({
+      quote:
+        'Except (i) pursuant to the Company Charter, (ii) pursuant to the Partnership Agreement, (iii) pursuant to another agreement and (iv) as set forth in Sections 3.2(d) and 3.2(e) of the Company Disclosure Letter',
+    }).outcome,
     'OPEN_WORLD'
   );
 });
@@ -231,6 +268,77 @@ test('three-place lockstep vector (two of three sites): accept/reject agree exac
     assert.equal(candidateResolutionCanonicalValueAllowed(definition, value), false, value);
     assert.equal(validateWriteSet.canonicalValueAllowed(definition, value), false, value);
   }
+});
+
+test('P2 phase 2 registry admits only the two approved claim definitions', () => {
+  const v17 = compileFixtureContractV17();
+  const v18 = compileFixtureContractV18();
+  const v17Keys = v17.claim_definitions.map((definition) => definition.claim_definition_key).sort();
+  const v18Keys = v18.claim_definitions.map((definition) => definition.claim_definition_key).sort();
+  assert.deepEqual(
+    v18Keys.filter((key) => !v17Keys.includes(key)),
+    ['DISCLOSURE_SCHEDULE_CARVEOUT', 'PERFORMANCE_VESTING_ASSUMPTION']
+  );
+  const carveout = v18.claim_definitions.find((definition) => definition.claim_definition_key === 'DISCLOSURE_SCHEDULE_CARVEOUT');
+  const performance = v18.claim_definitions.find((definition) => definition.claim_definition_key === 'PERFORMANCE_VESTING_ASSUMPTION');
+  assert.equal(carveout.canonical_value_type, 'SCHEDULE_REFERENCE_STRING');
+  assert.deepEqual(performance.allowed_canonical_values, ['MAXIMUM', 'TARGET']);
+});
+
+test('P2 phase 2 maps only the approved carve-out and performance shapes', () => {
+  const carveout = lookupGenericClaimKeyMapping(
+    'NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE',
+    'DISCLOSURE_SCHEDULE_CARVEOUT',
+    'ITEM'
+  );
+  assert.equal(carveout.registered_claim_definition_key, 'DISCLOSURE_SCHEDULE_CARVEOUT');
+  assert.equal(
+    lookupGenericClaimKeyMapping(
+      'NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE',
+      'DISCLOSURE_SCHEDULE_CARVEOUT',
+      'TRAILING'
+    ),
+    null
+  );
+  const performance = lookupGenericClaimKeyMapping(
+    'NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE',
+    'PERFORMANCE_ASSUMPTION',
+    'ITEM'
+  );
+  assert.equal(performance.registered_claim_definition_key, 'PERFORMANCE_VESTING_ASSUMPTION');
+  assert.equal(derivePerformanceAssumptionLevel('assuming achievement of the applicable performance goals at the target level'), 'TARGET');
+  assert.equal(derivePerformanceAssumptionLevel('assuming satisfaction of applicable performance criteria at maximum levels'), 'MAXIMUM');
+  assert.equal(
+    derivePerformanceAssumptionLevel('assuming achievement of applicable performance goals at target levels and assuming satisfaction of applicable performance criteria at maximum levels'),
+    null
+  );
+});
+
+test('P2 phase 2 resolves the five grounded Modiv disclosure-letter pointers under V18', () => {
+  const resolution = resolveCandidates({
+    run_receipt: MODIV_RUN_RECEIPT,
+    contract_vocabulary: compileFixtureContractV18(),
+    admitted_source_context: MODIV_ADMITTED_SOURCE_CONTEXT,
+    agreement_date: '2026-05-01',
+  });
+  const pointers = resolution.resolved
+    .filter((entry) => entry.resolved_claim_definition_key === 'DISCLOSURE_SCHEDULE_CARVEOUT')
+    .map((entry) => entry.claim.canonical_value)
+    .sort();
+  assert.deepEqual(
+    pointers,
+    [
+      '3.2(b)@DISCLOSURE_LETTER',
+      '3.2(c)@DISCLOSURE_LETTER',
+      '3.2(c)@DISCLOSURE_LETTER',
+      '3.2(f)@DISCLOSURE_LETTER',
+      '3.2(f)@DISCLOSURE_LETTER',
+    ]
+  );
+  assert.ok(
+    resolution.review_queue.some((entry) => entry.reasons.includes(DISCLOSURE_CARVEOUT_PARTIAL)),
+    'mixed carve-outs remain review items'
+  );
 });
 
 // ─── Test 7: date machinery ───
