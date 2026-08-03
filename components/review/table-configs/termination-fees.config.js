@@ -79,13 +79,29 @@ function isTerminationFee(card) {
 // other.
 function combineTermfFeatures(cards) {
   let combined = {};
-  for (const card of cards) combined = { ...combined, ...normalizeTermfFeatures(cardFeatures(card), cardCode(card)) };
+  for (const card of cards) {
+    const next = normalizeTermfFeatures(cardFeatures(card), cardCode(card));
+    const merged = { ...combined, ...next };
+    for (const key of ['companyTerminationFee', 'reverseTerminationFee', 'tailProvision']) {
+      const left = combined[key];
+      const right = next[key];
+      if (!left || !right || typeof left !== 'object' || typeof right !== 'object') continue;
+      merged[key] = { ...left, ...right };
+      if (Array.isArray(left.triggers) || Array.isArray(right.triggers)) {
+        merged[key].triggers = [...new Map([...(left.triggers || []), ...(right.triggers || [])]
+          .map((trigger) => [trigger?.code || JSON.stringify(trigger), trigger])).values()];
+      }
+    }
+    combined = merged;
+  }
   return combined;
 }
 
 function findSourceCard(cards, sourceKey) {
   const wantCode = SOURCE_CARD_CODE_BY_KEY[sourceKey];
-  return (wantCode && cards.find((card) => cardCode(card) === wantCode)) || cards[0];
+  return cards.find((card) => cardCode(card) === wantCode && cardFeatures(card)[sourceKey] !== undefined)
+    || (wantCode && cards.find((card) => cardCode(card) === wantCode))
+    || cards[0];
 }
 
 // r13 (Ben, "% of deal value" feature): scope is FEES ONLY — company/parent
@@ -339,6 +355,34 @@ function scalarRows(cards) {
     .filter(Boolean);
 }
 
+function deferredEvidenceRows(cards) {
+  return cards
+    .filter((card) => card?.canonical_v2_lineage?.source === 'CANONICAL_V2_OPEN_WORLD_EVIDENCE')
+    .map((card, index) => {
+      const evidence = cardFeatures(card).canonicalV2OpenWorldEvidence || {};
+      const surface = String(evidence.surface || 'UNCLASSIFIED').replaceAll('_', ' ').toLowerCase();
+      const label = surface.charAt(0).toUpperCase() + surface.slice(1);
+      const detail = evidence.detail || 'Evidence retained for later adjudication';
+      return {
+        id: `termination-fees-deferred-${card.id || index}`,
+        label: `Deferred evidence: ${label}`,
+        kind: 'Evidence',
+        detail,
+        evidence: textOf(card),
+        sourceCard: card,
+        present: true,
+        signals: [{
+          id: `termination-fees-deferred-${card.id || index}-signal`,
+          label: detail,
+          value: detail,
+          tone: 'neutral',
+          evidence: textOf(card),
+          source: card,
+        }],
+      };
+    });
+}
+
 function renderSignals(row, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
   if (!PillCell) return (row.signals || []).map((item) => item.label).join('\n');
@@ -373,7 +417,7 @@ const terminationFeesConfig = {
     const dealValueUsd = reviewDeal && typeof reviewDeal.value_usd === 'number' && Number.isFinite(reviewDeal.value_usd)
       ? reviewDeal.value_usd
       : null;
-    return [...feeTableRows(cards, dealValueUsd), ...scalarRows(cards)];
+    return [...feeTableRows(cards, dealValueUsd), ...scalarRows(cards), ...deferredEvidenceRows(cards)];
   },
   fixedLayout: true,
   columns: [
@@ -385,6 +429,7 @@ const terminationFeesConfig = {
 export {
   combineTermfFeatures,
   dealPercentText,
+  deferredEvidenceRows,
   feeAmountSignal,
   feeTableRows,
   formatFeeDetail,

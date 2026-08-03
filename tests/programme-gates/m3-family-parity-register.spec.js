@@ -135,8 +135,18 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
   );
   assert.equal(consideration.completion_state, 'FOLLOW_ON_OPEN');
   assert.ok(CURRENT_M3_FAMILY_PARITY_STATUS.family_states
-    .filter((family) => !['NO_SHOP', 'CONSIDERATION'].includes(family.family_id))
+    .filter((family) => ![
+      'NO_SHOP', 'CONSIDERATION', 'TERMINATION_FEE', 'TERMINATION_RIGHTS',
+    ].includes(family.family_id))
     .every((family) => family.completion_state === 'WAVE_A_OPEN'));
+  for (const familyId of ['TERMINATION_FEE', 'TERMINATION_RIGHTS']) {
+    assert.equal(
+      CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
+        (family) => family.family_id === familyId,
+      ).completion_state,
+      'FOLLOW_ON_OPEN',
+    );
+  }
   assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.unassigned_product_surface_ids.length, 0);
   assert.deepEqual(
     CURRENT_M3_FAMILY_PARITY_REGISTER.supplemental_owners.map((owner) => owner.first_slice.state),

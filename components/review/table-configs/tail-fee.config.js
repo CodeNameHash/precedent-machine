@@ -245,10 +245,14 @@ const tailFeeConfig = {
   title: 'Tail Fee Mechanics',
   layoutSlot: 'termination-fees',
   selectRows(reviewDeal) {
-    const cards = (reviewDeal?.cards || []).filter(isTermfCard);
+    const cards = (reviewDeal?.cards || []).filter((card) => (
+      isTermfCard(card)
+      && card?.canonical_v2_lineage?.source !== 'CANONICAL_V2_OPEN_WORLD_EVIDENCE'
+    ));
     if (!cards.length) return [];
     const source = sourceCard(cards, {});
-    const features = { ...fallbackFromText(source), ...combineFeatures(cards) };
+    const nativeGoverned = cards.some((card) => card?.canonical_v2_lineage?.source === 'CANONICAL_V2_NATIVE_CLAIM');
+    const features = { ...(nativeGoverned ? {} : fallbackFromText(source)), ...combineFeatures(cards) };
     const hasTail = [
       features.tailFeeWindowMonths,
       features.tailFeeThresholdPct,
@@ -257,12 +261,13 @@ const tailFeeConfig = {
       features.tailFeeRecognitionEvent,
     ].some((value) => value !== null && value !== undefined && value !== '');
     if (!hasTail) return [];
-    return [
+    const rows = [
       tailRow('tail-window', 'Tail window', formatWindow(features.tailFeeWindowMonths), source),
       tailRow('tail-threshold', 'Threshold % for Company Takeover Proposal', formatPct(features.tailFeeThresholdPct), source),
       tailRow('tail-arming', 'Termination scenarios', formatClauses(features.tailFeeActivatingClauses), source),
       tailRow('tail-trigger-scope', 'Qualifying transaction scope', formatTriggerScope(features.tailFeeRecognitionEvent), source),
     ];
+    return nativeGoverned ? rows.slice(0, 1) : rows;
   },
   // Tidy per REBUILD-SPECS.md §11, revised per punchlist #38: TWO columns
   // (Term / Signals) -- the old third "Mechanic" column duplicated whatever
