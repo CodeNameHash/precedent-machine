@@ -31,6 +31,9 @@ const {
   SECTION_FAMILY_RULE_CLASSIFIED,
   classifySectionFamily,
 } = require('../lib/canonical-v2/native-producer/section-family-classifier');
+const {
+  buildLexicalDisagreementReceipt,
+} = require('../lib/canonical-v2/native-producer/lexical-disagreement-net');
 
 const CONTRACT_BUNDLE = compileFixtureContract();
 const DEFINITIONS = Object.freeze({ known_definitions: [] });
@@ -113,6 +116,23 @@ test('registry dispatches KEY_DEFINED_TERMS to its exact prompt builder', () => 
   assert.match(text, /Material Adverse Effect definition belongs to another producer/i);
   assert.match(text, /Never emit an absent definition/i);
   assert.match(text, /never apply the substitution/i);
+});
+
+test('the five approved Key Defined Terms have literal lexical gates while a neutral envelope stays exact evidence', () => {
+  const pairs = [
+    ['DEF-ACQPROPOSAL', '"Acquisition Proposal" means an offer.'],
+    ['DEF-SUPERIOR', '"Superior Proposal" means a bona fide proposal.'],
+    ['DEF-INTERVENING', '"Intervening Event" means a material event.'],
+    ['DEF-KNOWLEDGE', '"Knowledge" means actual knowledge.'],
+    ['DEF-WILLFUL', '"Willful Breach" means a knowing breach.'],
+  ];
+  for (const [family, text] of pairs) {
+    const receipt = buildLexicalDisagreementReceipt({
+      governed_section: { section_ref: '1.1', text, text_sha256: sha256Hex(Buffer.from(text, 'utf8')) },
+      candidates: [{ closure_id: sha256Hex(`${family}:${text}`), section_reference: '1.1', family, evidence: [{ start: 0, end: Buffer.byteLength(text) }] }],
+    });
+    assert.equal(receipt.family_outcomes[0].outcome, 'LEXICAL_ALL_SIGNALS_MATCHED');
+  }
 });
 
 test('stage 1 routes definition titles and preserves the MAE-specific priority', async () => {

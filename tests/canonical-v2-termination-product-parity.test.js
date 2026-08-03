@@ -32,14 +32,17 @@ function resolved({ id, definition, value, concept, quote, attributes = {}, capa
   };
 }
 
-function openWorld(surface, quote) {
+function openWorld(surface, quote, structured_mechanic = null) {
   return {
     section_reference: '8.1',
     reason: 'NATIVE_OPEN_WORLD_PROPOSAL',
     claim_definition_key: 'OPEN_WORLD_PROPOSITION',
     raw_value: quote,
     canonical_value: null,
-    attributes: { why_unmapped: `${surface}: retained pending adjudication` },
+    attributes: {
+      why_unmapped: `${surface}: retained pending adjudication`,
+      ...(structured_mechanic ? { structured_mechanic } : {}),
+    },
     closure_id: `open:${surface}`,
   };
 }
@@ -155,7 +158,16 @@ test('governed termination fees reach Review, Query, Compare and market while Wa
       resolved({ id: 'fee-buyer', definition: 'TERMINATION_FEE_AMOUNT', value: '150000000', concept: 'TERMF-REVERSE', quote: 'Parent shall pay the Company a reverse termination fee of $150,000,000.' }),
       resolved({ id: 'fee-tail', definition: 'TERMINATION_FEE_TAIL_PERIOD_MONTHS', value: '12', concept: 'TERMF-TAIL', quote: 'The tail period is twelve (12) months following termination.', capacity: 'TARGET' }),
     ],
-    open_world: [openWorld('SOLE_REMEDY', 'Receipt of the termination fee is the sole and exclusive remedy.')],
+    open_world: [openWorld(
+      'SOLE_REMEDY',
+      'Receipt of the termination fee is the sole and exclusive remedy, except for Fraud and Willful Breach.',
+      {
+        surface: 'SOLE_REMEDY_EVIDENCE', owner_family: 'SPECIFIC_PERFORMANCE_REMEDIES',
+        payment_context_quote: 'Receipt of the termination fee',
+        remedy_effect_quote: 'sole and exclusive remedy',
+        carve_outs: ['Fraud', 'Willful Breach'],
+      },
+    )],
   };
   const projection = projectTerminationFeeProductSurfaces({ resolution, deal_id: dealId });
   assert.equal(projection.open_items.length, 1);
@@ -175,6 +187,10 @@ test('governed termination fees reach Review, Query, Compare and market while Wa
   assert.ok(rows.some((row) => row.id === 'termination-fees-COMPANY_TERMINATION_FEE'));
   assert.ok(rows.some((row) => row.id === 'termination-fees-REVERSE_TERMINATION_FEE'));
   assert.ok(rows.some((row) => row.id.startsWith('termination-fees-deferred-')));
+  const deferred = projection.cards.find((card) => card.canonical_v2_lineage.source === 'CANONICAL_V2_OPEN_WORLD_EVIDENCE');
+  assert.ok(deferred.features.canonicalV2OpenWorldEvidence.structuredMechanic);
+  assert.deepEqual(deferred.features.remediesOwnedSoleRemedyEvidence.carve_outs, ['Fraud', 'Willful Breach']);
+  assert.equal(deferred.features.soleRemedy, undefined);
   const sellerRow = rows.find((row) => row.id === 'termination-fees-COMPANY_TERMINATION_FEE');
   assert.ok(sellerRow.signals.some((signal) => signal.label === 'Change in recommendation'));
 
