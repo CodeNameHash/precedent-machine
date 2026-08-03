@@ -30,21 +30,13 @@ test('decision console has one complete, unique recommendation per decision', ()
 });
 
 test('recorded rulings stay fixed and follow-on rulings are added without duplicates', () => {
-  assert.equal(Object.keys(RECORDED_RULINGS).length, 20);
+  assert.equal(Object.keys(RECORDED_RULINGS).length, 32);
   assert.deepEqual(
     DECISIONS.filter((decision) => !RECORDED_RULINGS[decision.id]).map((decision) => decision.id),
     [
       'antitrust-core-taxonomy',
-      'proxy-record-date-broker-search',
-      'proxy-parent-adoption',
-      'proxy-adjournment-reasons',
-      'appraisal-dispatch-ownership',
-      'dividend-concept-scope',
-      'rank-85-dividend-dno',
-      'consideration-mechanics-promotion',
       'employee-dno-follow-on',
       'financing-follow-on',
-      'ioc-long-tail-promotion',
       'defined-term-relationship-model',
       'merger-mechanics-follow-on',
       'remedies-boilerplate-follow-on',
@@ -59,7 +51,7 @@ test('recorded rulings stay fixed and follow-on rulings are added without duplic
 
 test('follow-on rulings carry corpus counts, clause examples and a promotion horizon', () => {
   const followOn = DECISIONS.filter((decision) => decision.origin === 'follow-on');
-  assert.equal(followOn.length, 15);
+  assert.equal(followOn.length, 19);
   assert.deepEqual(
     followOn.filter((decision) => decision.horizon === 'now').map((decision) => decision.id),
     [
@@ -69,15 +61,38 @@ test('follow-on rulings carry corpus counts, clause examples and a promotion hor
       'appraisal-dispatch-ownership',
       'dividend-concept-scope',
       'rank-85-dividend-dno',
+      'consideration-mechanics-promotion',
+      'appraisal-necessary-implication',
+      'ioc-qualifier-attachment',
+      'ioc-numeric-shape',
+      'derived-comparison-layer',
     ],
   );
-  assert.equal(followOn.filter((decision) => decision.horizon === 'later').length, 9);
+  assert.equal(followOn.filter((decision) => decision.horizon === 'later').length, 8);
   for (const decision of followOn) {
     assert.match(decision.corpus, /\d/);
     assert.ok(Array.isArray(decision.examples));
     assert.ok(decision.examples.length > 0);
     assert.ok(decision.examples.every((example) => typeof example === 'string' && example.length > 20));
   }
+});
+
+test('recorded family rulings retain their controlling legal distinctions', () => {
+  const approvals = decisionById('proxy-parent-adoption');
+  assert.match(approvals.recommendation, /separate Parent approval and Merger Sub approval concepts/);
+  assert.equal(RECORDED_RULINGS[approvals.id], 'split-concepts');
+
+  const numeric = decisionById('ioc-numeric-shape');
+  assert.ok(numeric.examples.some((example) => /25000000/.test(example)));
+  assert.match(numeric.recommendation, /exact literal plus normalised amount, currency, basis and period/);
+  assert.match(numeric.recommendation, /separately traced derived layer/);
+
+  const derived = decisionById('derived-comparison-layer');
+  for (const field of ['source literal', 'source unit', 'FX source', 'rate and date', 'target unit', 'output', 'derived status']) {
+    assert.match(derived.recommendation, new RegExp(field, 'i'));
+  }
+  assert.match(derived.recommendation, /Never overwrite the raw claim/);
+  assert.equal(RECORDED_RULINGS[derived.id], 'approve-layer');
 });
 
 test('prior rulings are represented once and remain recorded', () => {

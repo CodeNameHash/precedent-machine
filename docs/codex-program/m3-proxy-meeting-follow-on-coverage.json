@@ -35,12 +35,12 @@
   "product_rows": [
     { "row_id": "votes-approvals-meeting-approval-definition", "owner_id": "KEY_DEFINED_TERMS", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "BOUNDARY_VISIBLE" },
     { "row_id": "votes-approvals-meeting-vote-threshold", "owner_id": "KEY_DEFINED_TERMS", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "BOUNDARY_VISIBLE" },
-    { "row_id": "votes-approvals-meeting-parent-approval", "owner_id": "PROXY_MEETING_COVENANTS", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "BEN_DECISION_REQUIRED" },
+    { "row_id": "votes-approvals-meeting-parent-approval", "owner_id": "PROXY_MEETING_COVENANTS", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "BEN_RULING_REQUIRES_PARENT_MERGER_SUB_SPLIT" },
     { "row_id": "votes-approvals-meeting-proxy-filing", "owner_id": "PROXY_MEETING_COVENANTS", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "REGISTERED_FIRST_SLICE" },
     { "row_id": "votes-approvals-meeting-mailing", "owner_id": "PROXY_MEETING_COVENANTS", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "GROUNDED_FOLLOW_ON" },
     { "row_id": "votes-approvals-meeting-meeting", "owner_id": "PROXY_MEETING_COVENANTS", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "REGISTERED_FIRST_SLICE" },
-    { "row_id": "votes-approvals-meeting-record-date", "owner_id": "PROXY_MEETING_COVENANTS", "render": "VISIBLE", "query": "OPEN", "compare": "ROW_VISIBLE", "market": "OPEN", "disposition": "BEN_DECISION_REQUIRED" },
-    { "row_id": "votes-approvals-meeting-broker-search", "owner_id": "PROXY_MEETING_COVENANTS", "render": "VISIBLE", "query": "OPEN", "compare": "ROW_VISIBLE", "market": "OPEN", "disposition": "BEN_DECISION_REQUIRED" },
+    { "row_id": "votes-approvals-meeting-record-date", "owner_id": "PROXY_MEETING_COVENANTS", "render": "VISIBLE", "query": "OPEN", "compare": "ROW_VISIBLE", "market": "OPEN", "disposition": "BEN_RULING_SEPARATE_PRESENCE_FACT" },
+    { "row_id": "votes-approvals-meeting-broker-search", "owner_id": "PROXY_MEETING_COVENANTS", "render": "VISIBLE", "query": "OPEN", "compare": "ROW_VISIBLE", "market": "OPEN", "disposition": "BEN_RULING_SEPARATE_PRESENCE_FACT" },
     { "row_id": "votes-approvals-meeting-adjournment", "owner_id": "PROXY_MEETING_COVENANTS", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "GROUNDED_FOLLOW_ON" },
     { "row_id": "votes-approvals-meeting-offerCommencementDeadline", "owner_id": "MERGER_STRUCTURE_CLOSING", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "BOUNDARY_VISIBLE" },
     { "row_id": "votes-approvals-meeting-scheduleTOFiling", "owner_id": "MERGER_STRUCTURE_CLOSING", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "BOUNDARY_VISIBLE" },
@@ -68,19 +68,19 @@
       "decision_id": "PROXY_RECORD_DATE_DIRECTION",
       "recommendation": "Promote record-date establishment and broker-search completion as separate presence facts now. Keep record-date numerics open until direction is a governed attribute.",
       "why": "The 26 record-date cards and 17 broker-search cards are common, but European Wax Center states record date 20 Business Days after broker search while Mr. Cooper states broker search 20 Business Days before record date.",
-      "state": "RATIFICATION_REQUIRED"
+      "state": "RECORDED_2026_08_03"
     },
     {
       "decision_id": "PROXY_PARENT_ADOPTION_CONCEPT",
-      "recommendation": "Adopt COV-SHAPRV-PARENT as a linked third concept in the Proxy and Meeting programme, with mechanism and timing as separate attributes.",
-      "why": "There are 18 cards across 17 deals. Carrols uses sole-stockholder written consent; QXO uses all record holders; Summit uses immediate sole-stockholder adoption without a meeting.",
-      "state": "RATIFICATION_REQUIRED"
+      "recommendation": "Create separate Parent approval and Merger Sub approval concepts. Keep mechanism and timing as separate attributes.",
+      "why": "There are 18 cards across 17 deals. Parent approval can require a real shareholder vote, while Merger Sub approval commonly means Parent acting as sole stockholder. Carrols uses sole-stockholder written consent; QXO uses all record holders; Summit uses immediate sole-stockholder adoption without a meeting.",
+      "state": "RECORDED_2026_08_03"
     },
     {
       "decision_id": "PROXY_ADJOURNMENT_REASON_ENUM",
       "recommendation": "Adopt the four grounded reasons: quorum absent, insufficient votes, supplemental disclosure and legal requirement. Keep clause-cross-reference-only reasons open until the reference resolves.",
       "why": "Adjournment has 52 family claims across 30 deals. Consent overrides appear in 13 deals, and both Company and Parent control forms occur.",
-      "state": "RATIFICATION_REQUIRED"
+      "state": "RECORDED_2026_08_03"
     }
   ]
 }
