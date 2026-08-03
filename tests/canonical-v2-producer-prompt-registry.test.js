@@ -26,6 +26,7 @@ const {
 const { buildCapitalisationProducerPrompt } = require('../lib/canonical-v2/native-producer/capitalisation-producer-prompt');
 const { buildNoShopProducerPrompt } = require('../lib/canonical-v2/native-producer/no-shop-producer-prompt');
 const { buildTerminationProducerPrompt } = require('../lib/canonical-v2/native-producer/termination-producer-prompt');
+const { buildAntitrustRegulatoryProducerPrompt } = require('../lib/canonical-v2/native-producer/antitrust-regulatory-producer-prompt');
 const {
   SECTION_FAMILY_CLASSIFIER_VERSION,
   SECTION_FAMILY_RULE_CLASSIFIED,
@@ -53,6 +54,10 @@ test('registry: TERMINATION is registered to the unchanged buildTerminationProdu
   assert.equal(getProducerPromptModule('TERMINATION'), buildTerminationProducerPrompt);
 });
 
+test('registry: ANTITRUST_REGULATORY is registered to its own prompt builder', () => {
+  assert.equal(getProducerPromptModule('ANTITRUST_REGULATORY'), buildAntitrustRegulatoryProducerPrompt);
+});
+
 test('registry: unknown/unregistered family returns null -- fail closed, never a capitalisation fallback', () => {
   assert.equal(getProducerPromptModule('SOME_UNKNOWN_FAMILY'), null);
   assert.equal(getProducerPromptModule(''), null);
@@ -63,8 +68,14 @@ test('registry: unknown/unregistered family returns null -- fail closed, never a
 test('registry: CAPITALISATION, MAE_DEFINITION, NO_SHOP, TERMINATION and TERMINATION_FEE are registered (family-termination-rights slice adds TERMINATION)', () => {
   assert.deepEqual(
     listRegisteredSectionFamilies(),
-    ['CAPITALISATION', 'MAE_DEFINITION', 'NO_SHOP', 'TERMINATION', 'TERMINATION_FEE'],
+    ['ANTITRUST_REGULATORY', 'CAPITALISATION', 'MAE_DEFINITION', 'NO_SHOP', 'TERMINATION', 'TERMINATION_FEE'],
   );
+});
+
+test('classifier stage 1: regulatory-efforts titles classify ANTITRUST_REGULATORY, while takeover and rep titles do not', async () => {
+  assert.equal((await classifySectionFamily({ title: 'Regulatory Cooperation' })).section_family, 'ANTITRUST_REGULATORY');
+  assert.notEqual((await classifySectionFamily({ title: 'State Takeover Statutes' })).section_family, 'ANTITRUST_REGULATORY');
+  assert.notEqual((await classifySectionFamily({ title: 'Regulatory Matters' })).section_family, 'ANTITRUST_REGULATORY');
 });
 
 test('registry: schema constant is exported', () => {

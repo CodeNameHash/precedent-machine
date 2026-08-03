@@ -541,7 +541,7 @@ test('SHARE_CLASS_REF_NOT_IN_QUOTE: a share_class not actually present in the by
 });
 
 test('MAPPING_TABLE_VERSION is 9; GENERIC_CLAIM_KEY_RESOLUTION_TABLE carries exactly ONE SHARE_COUNT entry and no duplicate generic keys anywhere (audit M-2)', () => {
-  assert.equal(MAPPING_TABLE_VERSION, 9);
+  assert.equal(MAPPING_TABLE_VERSION, 10);
   const shareCountEntries = GENERIC_CLAIM_KEY_RESOLUTION_TABLE.filter(
     (entry) => entry.generic_claim_key === SHARE_COUNT_CLAIM_KEY,
   );
@@ -587,7 +587,7 @@ test('the resolution receipt carries share_count_parse_version and zero_pattern_
   ]);
   assert.equal(resolution.resolution_receipt.share_count_parse_version, SHARE_COUNT_PARSE_VERSION);
   assert.equal(resolution.resolution_receipt.zero_pattern_table_version, ZERO_PATTERN_TABLE_VERSION);
-  assert.equal(resolution.resolution_receipt.mapping_table_version, 9);
+  assert.equal(resolution.resolution_receipt.mapping_table_version, 10);
 });
 
 // ---------------------------------------------------------------------------

@@ -39,11 +39,12 @@ const REGISTERED_CONCEPT_KEYS = new Set([
   'TERMR-MUTUAL', 'TERMR-LEGAL',
   'TERMR-OUTSIDE', 'TERMR-NOVOTE', 'TERMR-BREACH', 'TERMR-SUPERIOR', 'TERMR-RECOMMEND',
   'TERMR-NOSOL-BREACH',
+  'ANTI-EFFORTS', 'ANTI-BURDEN', 'ANTI-LITIGATION', 'ANTI-TIMING', 'ANTI-FILING',
 ]);
 
 test('LEXICAL_FAMILY_LEXICON_VERSION bumped 1 -> 2 (fee slice), then 2 -> 3 (no-shop slice), then 3 -> 4 (family-mae-definition slice)', () => {
-  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 5);
-  assert.equal(LEXICAL_FAMILY_LEXICON.version, 5);
+  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 6);
+  assert.equal(LEXICAL_FAMILY_LEXICON.version, 6);
 });
 
 test('table validation: every entry has a non-empty pattern_id, family, kind, value, rationale; no duplicate pattern_id; every family is a registered concept key', () => {

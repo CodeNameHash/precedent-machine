@@ -35,6 +35,7 @@ const {
   FIXTURE_CONTRACT_INPUT_V12,
   FIXTURE_CONTRACT_INPUT_V13,
   FIXTURE_CONTRACT_INPUT_V18,
+  FIXTURE_CONTRACT_INPUT_V19,
   FIXTURE_CONTRACT_FINGERPRINTS,
   FIXTURE_SERVING_CONTRACT_FINGERPRINTS,
   BRINGS_DOWN_EFFECT_SCHEMA_V1,
@@ -76,6 +77,7 @@ const {
   compileFixtureContractV16,
   compileFixtureContractV17,
   compileFixtureContractV18,
+  compileFixtureContractV19,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -127,6 +129,7 @@ const FROZEN_F16 = 'a1fe3ddb45d2371ccd428747da6837084ea61cd476afd1f74a964c5824f4
 // for the dedicated V17 acceptance tests).
 const FROZEN_F17 = 'c2d43ad9f6fd0008cc09b74d1d2dd75c87793781a40bd79faaa6f91e4b0fae5b';
 const FROZEN_F18 = '49ffa4029d5bc4431b5bf7249c7008d482b41c13e7b01984822742b90027433d';
+const FROZEN_F19 = '8ad419a69175c5c5db1506da15ccaff1d63fbf56c0d4424a123a0e7ebcfbec33';
 
 const APPROVED_V2_ADDITIONS = [
   'TERMR-BREACH',
@@ -187,7 +190,7 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F18 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F19 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
@@ -205,6 +208,7 @@ test('F1 through F18 are distinct recognised fixture contract fingerprints', () 
   assert.notEqual(FROZEN_F15, FROZEN_F16);
   assert.notEqual(FROZEN_F16, FROZEN_F17);
   assert.notEqual(FROZEN_F17, FROZEN_F18);
+  assert.notEqual(FROZEN_F18, FROZEN_F19);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -226,6 +230,7 @@ test('F1 through F18 are distinct recognised fixture contract fingerprints', () 
       FROZEN_F16,
       FROZEN_F17,
       FROZEN_F18,
+      FROZEN_F19,
     ].sort(),
   );
   assert.deepEqual(
@@ -251,6 +256,14 @@ test('compileFixtureContractV18() compiles to a pinned F18 fingerprint (P2 quali
   assert.equal(bundle.fingerprint, FROZEN_F18);
   assert.equal(validateContractBundle(bundle), true);
   assert.equal(canonicalJson(bundle), canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V18)));
+});
+
+test('compileFixtureContractV19() compiles to the antitrust regulatory-efforts vocabulary', () => {
+  const bundle = compileFixtureContractV19();
+  assert.equal(bundle.fingerprint, FROZEN_F19);
+  assert.equal(validateContractBundle(bundle), true);
+  assert.deepEqual(bundle.concepts.filter((concept) => concept.concept_key.startsWith('ANTI-')).map((concept) => concept.concept_key).sort(), ['ANTI-BURDEN', 'ANTI-EFFORTS', 'ANTI-FILING', 'ANTI-LITIGATION', 'ANTI-TIMING']);
+  assert.equal(FIXTURE_CONTRACT_INPUT_V19.claim_definitions.length, FIXTURE_CONTRACT_INPUT_V18.claim_definitions.length + 6);
 });
 
 // ---------------------------------------------------------------------------
