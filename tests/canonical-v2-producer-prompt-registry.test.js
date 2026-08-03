@@ -33,6 +33,7 @@ const {
   SECTION_FAMILY_CLASSIFIER_VERSION,
   SECTION_FAMILY_RULE_CLASSIFIED,
   SECTION_FAMILY_AI_CLASSIFIED,
+  SECTION_FAMILY_MANIFEST_ASSIGNED,
   SECTION_FAMILY_AI_UNVERIFIED,
   classifySectionFamily,
 } = require('../lib/canonical-v2/native-producer/section-family-classifier');
@@ -429,6 +430,72 @@ test('native-extraction-run with classifier: stage 2 AI-classifies a registered 
   assert.equal(receipt.compiled_candidates[0].section_family_provenance, SECTION_FAMILY_AI_CLASSIFIED);
   assert.equal(receipt.undispatched_sections.length, 0);
   assert.deepEqual(registeredFamilies, listRegisteredSectionFamilies());
+});
+
+test('native-extraction-run dispatches an exact manifest assignment without a classifier call', async () => {
+  let governedSide = null;
+  const baseProvider = stubProducerProvider();
+  const receipt = await runNativeExtraction({
+    source_text: qxoFullText,
+    document_hash: DOCUMENT_HASH,
+    section_references: ['3.1(b)'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: async (input) => {
+      governedSide = input.governed_scope.covenant_side;
+      return baseProvider(input);
+    },
+    section_family_assignments: [{
+      section_reference: '3.1(b)',
+      family_id: 'CAPITALISATION',
+      covenant_side: 'TARGET',
+    }],
+  });
+
+  assert.equal(governedSide, 'TARGET');
+  assert.equal(receipt.resolved_sections[0].section_family, 'CAPITALISATION');
+  assert.equal(
+    receipt.resolved_sections[0].section_family_provenance,
+    SECTION_FAMILY_MANIFEST_ASSIGNED,
+  );
+  assert.equal(
+    receipt.compiled_candidates[0].section_family_provenance,
+    SECTION_FAMILY_MANIFEST_ASSIGNED,
+  );
+});
+
+test('manifest assignment fails closed on incomplete, unknown or mixed classifier input', async () => {
+  const base = {
+    source_text: qxoFullText,
+    document_hash: DOCUMENT_HASH,
+    section_references: ['3.1(b)'],
+    contract_bundle: CONTRACT_BUNDLE,
+    definitions: DEFINITIONS,
+    provider: stubProducerProvider(),
+  };
+  await assert.rejects(
+    () => runNativeExtraction({ ...base, section_family_assignments: [] }),
+    (error) => error.code === 'INVALID_INPUT',
+  );
+  await assert.rejects(
+    () => runNativeExtraction({
+      ...base,
+      section_family_assignments: [{
+        section_reference: '3.1(b)', family_id: 'UNKNOWN_FAMILY',
+      }],
+    }),
+    (error) => error.code === 'INVALID_INPUT',
+  );
+  await assert.rejects(
+    () => runNativeExtraction({
+      ...base,
+      section_family_assignments: [{
+        section_reference: '3.1(b)', family_id: 'CAPITALISATION',
+      }],
+      section_family_classifier: async () => ({ section_family: 'CAPITALISATION' }),
+    }),
+    (error) => error.code === 'INVALID_INPUT',
+  );
 });
 
 test('native-extraction-run stage 2 can reach each non-capitalisation registered family without a default fallback', async () => {
