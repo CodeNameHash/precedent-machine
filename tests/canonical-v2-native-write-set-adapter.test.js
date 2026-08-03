@@ -5,11 +5,15 @@ const path = require('node:path');
 const zlib = require('node:zlib');
 
 const { contentId, sha256Hex, canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContract } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContract, compileFixtureContractV25 } = require('../lib/canonical-v2/contract-bundle');
 const { validateResolvedCanonicalWriteSet } = require('../lib/canonical-v2/validate-write-set');
 const { buildAdmittedSemanticSourceContext } = require('../lib/canonical-v2/admitted-semantic-source');
 const { SOURCE_MAP_ENCODING } = require('../lib/canonical-v2/sec-html-canonical-text');
-const { buildSemanticSpan, buildProvisionInstance } = require('../lib/canonical-v2/source-structure');
+const {
+  buildSemanticSpan,
+  buildProvisionComponent,
+  buildProvisionInstance,
+} = require('../lib/canonical-v2/source-structure');
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
 const {
   buildNativeWriteSet,
@@ -470,6 +474,49 @@ test('coordinate frame: evidence that verifies section-locally also verifies doc
   assert.equal(excerpt.absolute_start, shiftedEdge.absolute_start);
   assert.equal(excerpt.absolute_end, shiftedEdge.absolute_end);
   assert.notEqual(excerpt.excerpt_id, localEdge.excerpt_id, 'the section-local excerpt id must not survive into the write set');
+});
+
+test('resolution-supplied IOC parent provisions and restricted-action components reach the write set', async () => {
+  const receipt = await buildSimpleReceipt();
+  const section = findSection(receipt, '3.1(b)');
+  const contractBundle = compileFixtureContractV25();
+  const provision = buildProvisionInstance({
+    source: ADMITTED_SOURCE_CONTEXT,
+    span: buildSemanticSpan(ADMITTED_SOURCE_CONTEXT, section.start, section.end),
+    conceptKey: 'IOC-MERGE',
+    party: { role: 'IOC_COVENANT_OBLIGOR', value: 'Company', capacity: 'TARGET' },
+    ordinal: 1,
+    contractBundle,
+  });
+  const component = buildProvisionComponent({
+    source: ADMITTED_SOURCE_CONTEXT,
+    parentProvision: provision,
+    span: buildSemanticSpan(ADMITTED_SOURCE_CONTEXT, section.start, section.start + 20),
+    componentKey: 'RESTRICTED_ACTION',
+    ordinal: 1,
+    contractBundle,
+  });
+  const result = buildNativeWriteSet({
+    run_receipt: receipt,
+    source_text: qxoRealisticFullText,
+    document_hash: DOCUMENT_HASH,
+    admitted_source_context: ADMITTED_SOURCE_CONTEXT,
+    resolution: {
+      provisions: [{
+        ...provision,
+        closure_id: contentId('IOC_ADAPTER_TEST_PROVISION_CLOSURE/V1', provision.provision_instance_id),
+      }],
+      limb_component_trees: [],
+      ioc_restriction_components: [{
+        ...component,
+        closure_id: contentId('IOC_ADAPTER_TEST_COMPONENT_CLOSURE/V1', component.provision_component_id),
+      }],
+    },
+  });
+  assert.equal(result.write_set.provisions.length, 1);
+  assert.equal(result.write_set.provisions[0].provision_instance_id, provision.provision_instance_id);
+  assert.equal(result.write_set.components.length, 1);
+  assert.equal(result.write_set.components[0].provision_component_id, component.provision_component_id);
 });
 
 // ─── Round-trip ───

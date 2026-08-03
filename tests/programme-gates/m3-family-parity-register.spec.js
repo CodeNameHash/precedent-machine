@@ -136,10 +136,10 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
   assert.equal(consideration.completion_state, 'FOLLOW_ON_OPEN');
   assert.ok(CURRENT_M3_FAMILY_PARITY_STATUS.family_states
     .filter((family) => ![
-      'NO_SHOP', 'CONSIDERATION', 'TERMINATION_FEE', 'TERMINATION_RIGHTS',
+      'NO_SHOP', 'CONSIDERATION', 'INTERIM_OPERATING_COVENANTS', 'TERMINATION_FEE', 'TERMINATION_RIGHTS',
     ].includes(family.family_id))
     .every((family) => family.completion_state === 'WAVE_A_OPEN'));
-  for (const familyId of ['TERMINATION_FEE', 'TERMINATION_RIGHTS']) {
+  for (const familyId of ['INTERIM_OPERATING_COVENANTS', 'TERMINATION_FEE', 'TERMINATION_RIGHTS']) {
     assert.equal(
       CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
         (family) => family.family_id === familyId,
@@ -197,6 +197,28 @@ test('Consideration Wave A and grounded product projections pass while Wave B st
   for (const surfaceId of [
     'consideration-wave-b-market-fields',
     'consideration-wave-b-query-fields',
+  ]) {
+    const surface = family.product_surfaces.find((entry) => entry.surface_id === surfaceId);
+    assert.equal(surface.state, 'OPEN');
+    assert.equal(surface.disposition, 'FOLLOW_ON_REQUIRED');
+  }
+});
+
+test('IOC governed presence claims pass while long-tail and numeric mechanics remain open', () => {
+  const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
+    (entry) => entry.family_id === 'INTERIM_OPERATING_COVENANTS',
+  );
+  assert.ok(Object.values(family.wave_a.checks).every((check) => check.state === 'PASS'));
+  for (const surfaceId of ['ioc-rendered-rows', 'ioc-market-fields', 'ioc-query-fields']) {
+    const surface = family.product_surfaces.find((entry) => entry.surface_id === surfaceId);
+    assert.equal(surface.state, 'PASS');
+    assert.equal(surface.disposition, 'NATIVE_COMPLETE');
+    assert.ok(surface.evidence_paths.includes('lib/canonical-v2/ioc-wave-a-product-projection.js'));
+  }
+  for (const surfaceId of [
+    'ioc-remaining-rendered-mechanics',
+    'ioc-remaining-compare-mechanics',
+    'ioc-remaining-query-mechanics',
   ]) {
     const surface = family.product_surfaces.find((entry) => entry.surface_id === surfaceId);
     assert.equal(surface.state, 'OPEN');

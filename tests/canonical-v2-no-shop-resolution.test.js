@@ -329,8 +329,8 @@ test('materiality rank 50 asserted on all five NOSOL- concepts via the EXISTING 
   }
 });
 
-test('MAPPING_TABLE_VERSION is 12 and NO_SHOP_PERIOD_PARSE_VERSION is exported', () => {
-  assert.equal(MAPPING_TABLE_VERSION, 12);
+test('MAPPING_TABLE_VERSION is 13 and NO_SHOP_PERIOD_PARSE_VERSION is exported', () => {
+  assert.equal(MAPPING_TABLE_VERSION, 13);
   assert.equal(NO_SHOP_PERIOD_PARSE_VERSION, 2);
 });
 

@@ -41,6 +41,7 @@ const {
   FIXTURE_CONTRACT_INPUT_V22,
   FIXTURE_CONTRACT_INPUT_V23,
   FIXTURE_CONTRACT_INPUT_V24,
+  FIXTURE_CONTRACT_INPUT_V25,
   FIXTURE_CONTRACT_FINGERPRINTS,
   FIXTURE_SERVING_CONTRACT_FINGERPRINTS,
   BRINGS_DOWN_EFFECT_SCHEMA_V1,
@@ -88,6 +89,7 @@ const {
   compileFixtureContractV22,
   compileFixtureContractV23,
   compileFixtureContractV24,
+  compileFixtureContractV25,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -200,7 +202,7 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F24 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F25 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
@@ -224,6 +226,7 @@ test('F1 through F24 are distinct recognised fixture contract fingerprints', () 
   assert.notEqual(compileFixtureContractV21().fingerprint, compileFixtureContractV22().fingerprint);
   assert.notEqual(compileFixtureContractV22().fingerprint, compileFixtureContractV23().fingerprint);
   assert.notEqual(compileFixtureContractV23().fingerprint, compileFixtureContractV24().fingerprint);
+  assert.notEqual(compileFixtureContractV24().fingerprint, compileFixtureContractV25().fingerprint);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -251,6 +254,7 @@ test('F1 through F24 are distinct recognised fixture contract fingerprints', () 
       compileFixtureContractV22().fingerprint,
       compileFixtureContractV23().fingerprint,
       compileFixtureContractV24().fingerprint,
+      compileFixtureContractV25().fingerprint,
     ].sort(),
   );
   assert.deepEqual(
@@ -371,6 +375,26 @@ test('F24 adds only the Closing Conditions Wave B concepts and claims', () => {
       { concept_key: 'COND-S-CERT', version: 1 },
       { concept_key: 'COND-S-FUNDS', version: 1 },
     ],
+  );
+});
+
+test('F25 adds only IOC restriction-presence concepts and claim', () => {
+  const f24 = compileFixtureContractV24();
+  const f25 = compileFixtureContractV25();
+  assert.equal(validateContractBundle(f25), true);
+  assert.equal(canonicalJson(f25), canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V25)));
+  assert.deepEqual(
+    f25.concepts.filter((entry) => !f24.concepts.some((prior) => prior.concept_key === entry.concept_key)),
+    [
+      'IOC-ACCOUNTING', 'IOC-CHARTER', 'IOC-COMP', 'IOC-CONTRACT', 'IOC-DEBT',
+      'IOC-DIVIDEND', 'IOC-ISSUE', 'IOC-MERGE', 'IOC-SETTLE', 'IOC-TAX',
+    ].map((concept_key) => ({ concept_key, version: 1 })).sort((a, b) => a.concept_key.localeCompare(b.concept_key)),
+  );
+  assert.deepEqual(
+    f25.claim_definitions.filter((entry) => !f24.claim_definitions.some(
+      (prior) => prior.claim_definition_key === entry.claim_definition_key,
+    )).map((entry) => entry.claim_definition_key),
+    ['IOC_RESTRICTION_PRESENT'],
   );
 });
 

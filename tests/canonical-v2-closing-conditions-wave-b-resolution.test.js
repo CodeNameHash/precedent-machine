@@ -97,8 +97,8 @@ test('Closing Conditions Wave B resolves grounded facts and keeps dissent and ce
   assert.equal(certificate.claim.attributes.certificate_relationship_status, 'OPEN_WORLD_RELATIONSHIP');
   assert.deepEqual(certificate.claim.attributes.certified_condition_refs, ['7.2(a)', '7.2(b)', '7.2(c)']);
   assert.ok(resolution.open_world.some((entry) => entry.reason === 'CONDITION_ASSERTION_KIND_OUT_OF_ENUM' && entry.attributes.assertion_kind === 'DISSENT_THRESHOLD'));
-  assert.equal(resolution.resolution_receipt.mapping_table_version, 12);
-  assert.equal(MAPPING_TABLE_VERSION, 12);
+  assert.equal(resolution.resolution_receipt.mapping_table_version, 13);
+  assert.equal(MAPPING_TABLE_VERSION, 13);
 
   const projection = projectClosingConditionProductSurfaces({ resolution, deal_id: dealKey });
   assert.ok(projection.cards.every((card) => card.canonical_v2_lineage.source === 'CANONICAL_V2_NATIVE_CLAIM'));
