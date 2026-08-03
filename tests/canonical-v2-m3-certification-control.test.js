@@ -85,6 +85,7 @@ test('sample errors add a scoped known defect and reprocess the full deal-family
     candidate('a'),
     candidate('b', { family: 'TERMF-TARGET' }),
     candidate('c', { deal: 'skechers', family: 'REP-T-CAP', extraction_mechanism: 'other-producer/v2' }),
+    candidate('d', { extraction_mechanism: 'other-producer/v2' }),
   ]);
   const findings = result.blind_sample.map((entry) => entry.candidate_id === 'a'
     ? {
@@ -100,14 +101,75 @@ test('sample errors add a scoped known defect and reprocess the full deal-family
     plan: result,
     findings,
     known_defect_registry: EMPTY_REGISTRY,
+    current_candidate_set_id: 'candidate-set-1',
     next_registry_version: 2,
   });
 
   assert.equal(response.confirmed_error_count, 1);
   assert.equal(response.updated_known_defect_registry.entries.length, 1);
   assert.deepEqual(response.reprocess_groups, [
-    { group_type: 'DEAL_FAMILY', scope: { deal: 'topbuild', family: 'REP-T-CAP' }, candidate_ids: ['a'] },
+    { group_type: 'DEAL_FAMILY', scope: { deal: 'topbuild', family: 'REP-T-CAP' }, candidate_ids: ['a', 'd'] },
     { group_type: 'EXTRACTION_MECHANISM', scope: { extraction_mechanism: 'semantic-producer/v1' }, candidate_ids: ['a', 'b'] },
+  ]);
+});
+
+test('failure response identity is stable across finding order and records every reviewed outcome', () => {
+  const result = plan([candidate('a'), candidate('b', { deal: 'skechers' })]);
+  const findings = result.blind_sample.map((entry) => ({
+    candidate_id: entry.candidate_id,
+    outcome: 'CONFIRMED_ERROR',
+    defect_entry: {
+      deal: entry.deal,
+      family: entry.family,
+      attribute: entry.attribute,
+      extraction_mechanism: 'semantic-producer/v1',
+      pattern_description: `sampled defect ${entry.candidate_id}`,
+      date_added: '2026-08-03',
+    },
+  }));
+  const first = buildM3FailureResponse({
+    plan: result, findings, known_defect_registry: EMPTY_REGISTRY,
+    current_candidate_set_id: 'candidate-set-1', next_registry_version: 2,
+  });
+  const second = buildM3FailureResponse({
+    plan: result, findings: [...findings].reverse(), known_defect_registry: EMPTY_REGISTRY,
+    current_candidate_set_id: 'candidate-set-1', next_registry_version: 2,
+  });
+
+  assert.equal(first.m3_failure_response_id, second.m3_failure_response_id);
+  assert.equal(first.updated_known_defect_registry_id, second.updated_known_defect_registry_id);
+  assert.deepEqual(first.reviewed_findings.map((finding) => finding.candidate_id), ['a', 'b']);
+});
+
+test('a sampled defect may use any registry wildcard when its scope still includes the candidate', () => {
+  const result = plan([
+    candidate('a'),
+    candidate('b', { deal: 'skechers', extraction_mechanism: 'other-producer/v2' }),
+  ]);
+  const response = buildM3FailureResponse({
+    plan: result,
+    findings: result.blind_sample.map((entry) => entry.candidate_id === 'a'
+      ? {
+        candidate_id: 'a',
+        outcome: 'CONFIRMED_ERROR',
+        defect_entry: {
+          deal: '*', family: '*', attribute: '*', extraction_mechanism: '*',
+          pattern_description: 'corpus-wide defect', date_added: '2026-08-03',
+        },
+      }
+      : { candidate_id: entry.candidate_id, outcome: 'CONFIRMED_CORRECT' }),
+    known_defect_registry: EMPTY_REGISTRY,
+    current_candidate_set_id: 'candidate-set-1',
+    next_registry_version: 2,
+  });
+
+  assert.equal(response.updated_known_defect_registry.entries[0].deal, '*');
+  assert.equal(response.updated_known_defect_registry.entries[0].family, '*');
+  assert.deepEqual(response.reprocess_groups, [
+    { group_type: 'DEAL_FAMILY', scope: { deal: 'skechers', family: 'REP-T-CAP' }, candidate_ids: ['b'] },
+    { group_type: 'DEAL_FAMILY', scope: { deal: 'topbuild', family: 'REP-T-CAP' }, candidate_ids: ['a'] },
+    { group_type: 'EXTRACTION_MECHANISM', scope: { extraction_mechanism: 'other-producer/v2' }, candidate_ids: ['b'] },
+    { group_type: 'EXTRACTION_MECHANISM', scope: { extraction_mechanism: 'semantic-producer/v1' }, candidate_ids: ['a'] },
   ]);
 });
 
@@ -117,14 +179,27 @@ test('failure response refuses incomplete or unselected sample findings', () => 
     plan: result,
     findings: [{ candidate_id: result.blind_sample[0].candidate_id, outcome: 'CONFIRMED_CORRECT' }],
     known_defect_registry: EMPTY_REGISTRY,
+    current_candidate_set_id: 'candidate-set-1',
     next_registry_version: 2,
   }), (error) => error instanceof M3CertificationControlError && error.code === 'INCOMPLETE_SAMPLE_REVIEW');
   assert.throws(() => buildM3FailureResponse({
     plan: result,
     findings: [{ candidate_id: 'not-sampled', outcome: 'CONFIRMED_CORRECT' }],
     known_defect_registry: EMPTY_REGISTRY,
+    current_candidate_set_id: 'candidate-set-1',
     next_registry_version: 2,
   }), (error) => error instanceof M3CertificationControlError && error.code === 'UNSAMPLED_FINDING');
+});
+
+test('failure response refuses a plan from an earlier candidate set', () => {
+  const result = plan([candidate('a')]);
+  assert.throws(() => buildM3FailureResponse({
+    plan: result,
+    findings: [{ candidate_id: 'a', outcome: 'CONFIRMED_CORRECT' }],
+    known_defect_registry: EMPTY_REGISTRY,
+    current_candidate_set_id: 'candidate-set-2',
+    next_registry_version: 2,
+  }), (error) => error instanceof M3CertificationControlError && error.code === 'STALE_OR_TAMPERED_PLAN');
 });
 
 test('failure response refuses a plan bound to a different defect registry', () => {
@@ -140,6 +215,7 @@ test('failure response refuses a plan bound to a different defect registry', () 
     plan: result,
     findings: [{ candidate_id: result.blind_sample[0].candidate_id, outcome: 'CONFIRMED_CORRECT' }],
     known_defect_registry: changedRegistry,
+    current_candidate_set_id: 'candidate-set-1',
     next_registry_version: 3,
   }), (error) => error instanceof M3CertificationControlError && error.code === 'STALE_OR_TAMPERED_PLAN');
 });
