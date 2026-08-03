@@ -1010,6 +1010,7 @@ test('component minting is permutation-invariant: component and rekeyed claim id
     admitted_source_context: ADMITTED_SOURCE_CONTEXT,
     resolution,
   });
+  assert.deepEqual(forward.write_set.provisions, [provision]);
 
   const reversedReceipt = {
     ...receipt,
