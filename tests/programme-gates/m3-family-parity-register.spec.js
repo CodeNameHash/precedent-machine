@@ -364,3 +364,4 @@ test('Merger Structure and Closing Mechanics product parity is native-complete w
     'WAVE_A_OPEN',
   );
 });
+

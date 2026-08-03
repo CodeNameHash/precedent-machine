@@ -612,3 +612,4 @@ test('additivity: the resolution receipt carries termination_fee_parse_version u
   assert.equal(resolution.resolution_receipt.termination_fee_parse_version, TERMINATION_FEE_PARSE_VERSION);
   assert.equal(resolution.resolution_receipt.mapping_table_version, MAPPING_TABLE_VERSION);
 });
+
