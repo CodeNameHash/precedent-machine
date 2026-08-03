@@ -274,7 +274,7 @@ test('IOC governed presence claims pass while long-tail and numeric mechanics re
   }
 });
 
-test('Key Defined Terms and MAE product parity is native without claiming relationship joins', () => {
+test('Key Defined Terms product scaffolding stays open pending the disposition audit while MAE is native', () => {
   const keyTerms = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
     (family) => family.family_id === 'KEY_DEFINED_TERMS',
   );
@@ -282,14 +282,39 @@ test('Key Defined Terms and MAE product parity is native without claiming relati
     (family) => family.family_id === 'MAE_DEFINITION',
   );
   assert.ok(keyTerms.product_surfaces.every(
-    (surface) => surface.state === 'PASS' && surface.disposition === 'NATIVE_COMPLETE',
+    (surface) => surface.state === 'OPEN' && surface.disposition === 'FOLLOW_ON_REQUIRED',
   ));
   assert.ok(mae.product_surfaces.every(
     (surface) => surface.state === 'PASS' && surface.disposition === 'NATIVE_COMPLETE',
   ));
   assert.equal(keyTerms.wave_a.checks.resolver.state, 'OPEN');
   assert.equal(keyTerms.wave_a.checks.lexical_net.state, 'OPEN');
+  assert.ok(keyTerms.wave_a.checks.resolver.evidence_paths.includes(
+    'docs/codex-program/m3-defined-term-disposition-audit-2026-08-03.md',
+  ));
   assert.ok(Object.values(mae.wave_a.checks).every((check) => check.state === 'PASS'));
+});
+
+test('the defined-term disposition audit covers every recurring production population', () => {
+  const audit = fs.readFileSync(
+    path.join(ROOT, 'docs/codex-program/m3-defined-term-disposition-audit-2026-08-03.md'),
+    'utf8',
+  );
+  for (const subtype of [
+    'DEF-GENERAL', 'DEF-EQUITYAWARD', 'DEF-LAW', 'DEF-GOVAUTH', 'DEF-CONTRACT',
+    'DEF-BENEFITPLAN', 'DEF-INDEBTEDNESS', 'DEF-MERGERCONSID', 'DEF-INTERP',
+    'DEF-AFFILIATE', 'DEF-SUBSIDIARY', 'DEF-MAE', 'DEF-PERSON', 'DEF-TAX',
+    'DEF-DISCLOSURELETTER', 'DEF-COMPANYEMPLOYEE', 'DEF-ACQPROPOSAL', 'DEF-PERMIT',
+    'DEF-COMPANY', 'DEF-REQUIREDAPPROVAL', 'DEF-REPRESENTATIVE', 'DEF-BUSINESSDAY',
+    'DEF-TAXRETURN', 'DEF-SUPERIOR', 'DEF-KNOWLEDGE', 'DEF-PERMITLIEN', 'DEF-LIEN',
+    'DEF-MATCONTRACT', 'DEF-WILLFUL', 'DEF-INTERVENING', 'NOSOL-SUPERIOR',
+    'NOSOL-ACQPROPOSAL', 'DEF-MADE-AVAILABLE', 'DEF-DISSENTING', 'NOSOL-INTERVENING',
+    'REP-T-TAX', 'DEF-ORDINARY',
+  ]) {
+    assert.match(audit, new RegExp(`\\b${subtype.replaceAll('-', '\\-')}\\b`));
+  }
+  assert.match(audit, /5,731 cards/);
+  assert.match(audit, /Concept scope is not approved/);
 });
 
 test('a rehashed complete label cannot contradict open family state', () => {

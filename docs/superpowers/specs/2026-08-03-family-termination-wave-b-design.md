@@ -2,9 +2,27 @@
 
 ## Decision
 
-Capture the deferred mechanisms as byte-verified open-world evidence. Do not
-promote them to governed claims in this wave. A surface label is only an
-evidence-routing label. It is not a legal taxonomy.
+Capture the deferred mechanisms as byte-verified structured open-world
+evidence. Do not promote them to governed claims until the existing resolver
+and contract layers receive claim definitions. A surface label is an evidence
+route, not a legal taxonomy.
+
+Ben settled the storage and ownership rules on 2026-08-03:
+
+- outside-date extensions use a structured object. It keeps automatic or
+  elective status, elector, consent wording, trigger wording, maximum
+  exercises and one-period wording. It never calculates a total period;
+- permanent, final and nonappealable restraint terms stay distinct in
+  storage. Presentation can flatten them only after storage;
+- Remedies owns the sole-remedy effect. Fraud and Willful Breach are separate
+  carve-outs. Termination Fee retains payment context, evidence and the link;
+- tail structure keeps period, arming event, qualifying transaction,
+  threshold and same-proposal wording separately;
+- late-payment interest keeps positive presence, quoted benchmark/base and
+  due-date reference only. It does not derive a rate or day count.
+
+Vote-threshold and breach-standard ownership is still open. Those items stay
+unstructured evidence until Ben settles the owner/link rule.
 
 ## Corpus basis
 
@@ -37,22 +55,18 @@ Remedies own the legal effect of sole-remedy language. Termination fees own
 the payment context and retain the evidence. The producer must not decide a
 boundary case.
 
-## Ben decisions before promotion
+## Decision record
 
-1. Define an extension object: automatic or elective, who may elect, consent,
-   trigger, and maximum period. Do not calculate months from prose.
-2. Define restraint finality: permanent, final, non-appealable, and related
-   terms must not be treated as equivalent without a rule.
-3. Decide whether vote threshold and breach standard are governed here or
-   only linked from their owning condition family.
-4. Define the remedy boundary for sole-remedy and willful-breach exceptions.
-5. Define tail structure as separate facts: period, arming event, qualifying
-   transaction, threshold, and same-proposal requirement.
-6. Define late-payment interest without deriving a rate or day-count basis.
+1. Outside-date extension object: settled as above.
+2. Restraint finality: settled as distinct storage.
+3. Vote threshold and breach standard: OPEN.
+4. Sole-remedy and carve-out boundary: settled as above.
+5. Tail structure: settled as above.
+6. Late-payment interest: settled as above.
 
 ## Test rule
 
 The tests prove a Wave B item has exact source evidence, `canonical_value:
-null`, and an open-world claim key. They also preserve backwards compatibility:
-`wave_b_mechanics` is optional, so recorded earlier producer responses still
-validate.
+null`, an open-world claim key and the settled structured object where one is
+approved. They also preserve backwards compatibility: `wave_b_mechanics` is
+optional, so recorded earlier producer responses still validate.

@@ -42,10 +42,11 @@ function snapshot({ cards, dealMaxExtractionVersion = 'v1', dealId = 'deal-uuid-
 
 function v1Card({
   id, provisionSubtype = 'REP-T-CAP', sectionRef = '3.1(b) | Capitalization | abc123',
-  primaryQuote = 'the quoted text', regionHash = 'region-hash-1', extractionVersion = 'v1', values = undefined,
+  provisionType = 'REPRESENTATION', primaryQuote = 'the quoted text', regionHash = 'region-hash-1',
+  extractionVersion = 'v1', values = undefined,
 }) {
   const card = {
-    id, provision_type: 'REPRESENTATION', provision_subtype: provisionSubtype, section_ref: sectionRef,
+    id, provision_type: provisionType, provision_subtype: provisionSubtype, section_ref: sectionRef,
     primary_quote: primaryQuote, region_hash: regionHash, extraction_version: extractionVersion,
   };
   if (values) card.values = values;
@@ -226,18 +227,29 @@ test('Tier 1: V1_MISSING when v2 found a provision whose family has NO v1 card a
   assert.equal(capOutcome.v1_card_id, null);
 });
 
-test('FAMILY_MAPPING_TABLE: every entry is a real (v1_provision_subtype, concept_key) pair; no fuzzy matching', () => {
+test('FAMILY_MAPPING_TABLE: every entry is a real (v1_provision_type, v1_provision_subtype, concept_key) tuple; no fuzzy matching', () => {
   assert.ok(Array.isArray(FAMILY_MAPPING_TABLE) && FAMILY_MAPPING_TABLE.length > 0);
   assert.equal(typeof FAMILY_MAPPING_TABLE_VERSION, 'number');
   assert.ok(Object.isFrozen(FAMILY_MAPPING_TABLE));
   for (const entry of FAMILY_MAPPING_TABLE) {
     assert.ok(Object.isFrozen(entry));
+    assert.equal(typeof entry.v1_provision_type, 'string');
     assert.equal(typeof entry.v1_provision_subtype, 'string');
     assert.equal(typeof entry.concept_key, 'string');
   }
   const capEntry = FAMILY_MAPPING_TABLE.find((entry) => entry.v1_provision_subtype === 'REP-T-CAP');
   assert.ok(capEntry, 'REP-T-CAP is the one grounded, verified mapping');
+  assert.equal(capEntry.v1_provision_type, 'REPRESENTATION');
   assert.equal(capEntry.concept_key, 'REP-T-CAP');
+});
+
+test('FAMILY_MAPPING_TABLE partitions identical subtypes by provision type', () => {
+  const v1 = snapshot({
+    cards: [v1Card({ id: 'wrong-owner', provisionType: 'DEFINITION', provisionSubtype: 'REP-T-CAP' })],
+  });
+  const v2 = v2Side({ resolved: [v2ResolvedEntry({ provisionInstanceId: 'prov-1', conceptKey: 'REP-T-CAP' })] });
+  const receipt = buildV1V2ComparisonReceipt({ v1_snapshot: v1, v2_side: v2, attempted_section_scope: ['3.1(b)'] });
+  assert.equal(receipt.provision_outcomes.find((entry) => entry.v1_card_id === 'wrong-owner').reason, 'SUBTYPE_UNMAPPED');
 });
 
 // ─── Tier 2 value comparison. ───
@@ -249,7 +261,8 @@ test('Tier 2: V1V2_VALUE_AGREEMENT, VALUE_MISMATCH (both values reported), and V
   function scenario(v1Values, v2CanonicalValue) {
     const v1 = snapshot({
       cards: [v1Card({
-        id: 'card-1', provisionSubtype: 'TERMF-TARGET', sectionRef: '8.3(a) | Fee | x', values: v1Values,
+        id: 'card-1', provisionType: 'TERMINATION_FEE', provisionSubtype: 'TERMF-TARGET',
+        sectionRef: '8.3(a) | Fee | x', values: v1Values,
       })],
     });
     const v2 = v2Side({
@@ -281,7 +294,8 @@ test('Tier 2 never runs on a SECTION_MISMATCH outcome -- "the dangerous one; alw
   const mappingEntry = VALUE_MAPPING_TABLE.find((entry) => entry.concept_key === 'TERMF-TARGET');
   const v1 = snapshot({
     cards: [v1Card({
-      id: 'card-1', provisionSubtype: 'TERMF-TARGET', sectionRef: '8.3(a) | Fee | x',
+      id: 'card-1', provisionType: 'TERMINATION_FEE', provisionSubtype: 'TERMF-TARGET',
+      sectionRef: '8.3(a) | Fee | x',
       values: { [mappingEntry.v1_value_field]: '3.0' },
     })],
   });

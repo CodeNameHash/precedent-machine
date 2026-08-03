@@ -121,8 +121,13 @@ test('the full committed Landos agreement resolves Termination Rights and keeps 
       ],
       wave_b_mechanics: [{
         surface: 'OUTSIDE_DATE_EXTENSION',
+        section_reference: '7.1',
         detail: 'Parent may extend the End Date up to three times for three months each.',
         quote: extensionQuote,
+        extension_mode: 'ELECTIVE',
+        electing_party: 'Parent',
+        maximum_exercises: 3,
+        extension_period_quote: 'three (3) months',
       }],
       open_world_candidates: [],
     },
@@ -136,11 +141,14 @@ test('the full committed Landos agreement resolves Termination Rights and keeps 
   assert.ok(resolution.review_queue.every((item) => item.has_resolution && item.reasons.length === 0));
   assert.equal(resolution.open_world.length, 1);
   assert.match(resolution.open_world[0].attributes.why_unmapped, /^OUTSIDE_DATE_EXTENSION:/);
+  assert.equal(resolution.open_world[0].attributes.structured_mechanic.extension_mode, 'ELECTIVE');
+  assert.equal(resolution.open_world[0].attributes.structured_mechanic.maximum_exercises, 3);
 
   const dealId = 'landos-termination-rights';
   const projection = projectTerminationRightsProductSurfaces({ resolution, deal_id: dealId });
   assert.equal(projection.cards.filter((card) => card.canonical_v2_lineage.source === NATIVE_SOURCE).length, 2);
   assert.equal(projection.cards.filter((card) => card.canonical_v2_lineage.source === EVIDENCE_SOURCE).length, 1);
+  assert.equal(projection.open_items[0].structured_mechanic.maximum_exercises, 3);
   const mutual = projection.cards.find((card) => card.provision_subtype === 'TERMR-MUTUAL');
   assert.equal(provisionFieldValue(mutual, 'TERMINATION_RIGHT', 'partyWhoCanTerminate').value, 'PARTY_MUTUAL');
 
@@ -195,8 +203,15 @@ test('the full committed Landos agreement resolves the Termination Fee amount an
       tail_period_assertions: [{ section_reference: '7.3', quote: tailQuote }],
       wave_b_mechanics: [{
         surface: 'SOLE_REMEDY',
+        section_reference: '7.3',
         detail: 'Payment is the sole and exclusive remedy, subject to Fraud and Willful Breach.',
         quote: soleRemedyQuote,
+        payment_context_quote: 'payment of the Termination Fee',
+        remedy_effect_quote: 'sole and exclusive remedy',
+        carve_outs: [
+          { kind: 'FRAUD', quote: 'Fraud' },
+          { kind: 'WILLFUL_BREACH', quote: 'Willful Breach' },
+        ],
       }],
       open_world_candidates: [],
     },
@@ -205,7 +220,11 @@ test('the full committed Landos agreement resolves the Termination Fee amount an
   assert.equal(resolution.review_queue.length, 2);
   assert.ok(resolution.review_queue.every((item) => item.has_resolution && item.reasons.length === 0));
   assert.equal(resolution.open_world.length, 1);
-  assert.match(resolution.open_world[0].attributes.why_unmapped, /^SOLE_REMEDY:/);
+  assert.match(resolution.open_world[0].attributes.why_unmapped, /^SOLE_REMEDY_EVIDENCE:/);
+  assert.deepEqual(
+    resolution.open_world[0].attributes.structured_mechanic.carve_outs.map((entry) => entry.kind),
+    ['FRAUD', 'WILLFUL_BREACH'],
+  );
   const amount = resolution.resolved.find((entry) => entry.resolved_claim_definition_key === 'TERMINATION_FEE_AMOUNT');
   const tail = resolution.resolved.find((entry) => entry.resolved_claim_definition_key === 'TERMINATION_FEE_TAIL_PERIOD_MONTHS');
   assert.equal(amount.claim.canonical_value, '7000000');
@@ -217,6 +236,8 @@ test('the full committed Landos agreement resolves the Termination Fee amount an
   const projection = projectTerminationFeeProductSurfaces({ resolution, deal_id: dealId });
   assert.equal(projection.cards.filter((card) => card.canonical_v2_lineage.source === NATIVE_SOURCE).length, 2);
   assert.equal(projection.cards.filter((card) => card.canonical_v2_lineage.source === EVIDENCE_SOURCE).length, 1);
+  assert.equal(projection.open_items[0].surface, 'SOLE_REMEDY_EVIDENCE');
+  assert.equal(projection.open_items[0].structured_mechanic.owner_family, 'SPECIFIC_PERFORMANCE_REMEDIES');
   const seller = projection.cards.find((card) => card.provision_subtype === 'TERMF-TARGET');
   assert.equal(provisionFieldValue(seller, 'TERMINATION_FEE', 'feeAmount').value, 7000000);
 

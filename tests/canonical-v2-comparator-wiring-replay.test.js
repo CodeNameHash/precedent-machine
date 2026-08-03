@@ -207,7 +207,7 @@ async function runTwoPassFlow({ runReceipt, admittedSourceContext, snapshot }) {
     v1_snapshot: snapshot, v2_side: plain, attempted_section_scope: attemptedSectionScope,
   });
   // Fable-review Finding 2: the receipt must pin the bumped table version.
-  assert.equal(comparison.family_mapping_table_version, 2);
+  assert.equal(comparison.family_mapping_table_version, 3);
 
   const wired = resolveCandidates({
     run_receipt: runReceipt, contract_vocabulary: CONTRACT_BUNDLE_V13,
@@ -225,9 +225,12 @@ async function runTwoPassFlow({ runReceipt, admittedSourceContext, snapshot }) {
 // hardcoded card ids, so a later re-export/re-classification changes data,
 // not test logic -- only the per-run TOTAL is pinned as a literal.
 function unmappedSubtypeSummary(snapshot, mappedSubtypes) {
-  const mappedSet = new Set(mappedSubtypes.map((entry) => entry.v1_provision_subtype));
+  const mappedSet = new Set(mappedSubtypes.map(
+    (entry) => `${entry.v1_provision_type}\u0000${entry.v1_provision_subtype}`,
+  ));
   return snapshot.cards
-    .filter((card) => card.provision_subtype == null || !mappedSet.has(card.provision_subtype))
+    .filter((card) => card.provision_subtype == null
+      || !mappedSet.has(`${card.provision_type}\u0000${card.provision_subtype}`))
     .map((card) => ({ id: card.id, subtype: card.provision_subtype, section_ref: card.section_ref }));
 }
 

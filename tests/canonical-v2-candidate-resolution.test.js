@@ -1330,6 +1330,20 @@ test('materiality table ranks a termination-fee family above notices/administrat
   assert.ok(byLabel.CLOSING_CONDITIONS < byLabel.NOTICES_ADMINISTRATIVE);
 });
 
+test('approved Key Defined Terms rank scaffolding uses the existing fiduciary, representation and fee tiers', () => {
+  for (const conceptKey of ['DEF-ACQPROPOSAL', 'DEF-SUPERIOR', 'DEF-INTERVENING']) {
+    assert.deepEqual(materialityFor({ conceptKey }), {
+      rank: 40,
+      label: 'FIDUCIARY',
+      concept_key_prefixes: MATERIALITY_TABLE.find((tier) => tier.label === 'FIDUCIARY').concept_key_prefixes,
+    });
+  }
+  assert.equal(materialityFor({ conceptKey: 'DEF-KNOWLEDGE' }).rank, 55);
+  assert.equal(materialityFor({ conceptKey: 'DEF-KNOWLEDGE' }).label, 'REPRESENTATIONS');
+  assert.equal(materialityFor({ conceptKey: 'DEF-WILLFUL' }).rank, 20);
+  assert.equal(materialityFor({ conceptKey: 'DEF-WILLFUL' }).label, 'FEES');
+});
+
 test('review_queue orders a more material item ahead of a less material item end to end', async () => {
   // The producer today only emits REP-T-CAP (rank 55) and COND-B-REP (rank
   // 70) families, so this proves the actual sort behaviour on real resolved
