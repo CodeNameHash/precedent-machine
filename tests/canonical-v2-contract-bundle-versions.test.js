@@ -36,6 +36,7 @@ const {
   FIXTURE_CONTRACT_INPUT_V13,
   FIXTURE_CONTRACT_INPUT_V18,
   FIXTURE_CONTRACT_INPUT_V19,
+  FIXTURE_CONTRACT_INPUT_V20,
   FIXTURE_CONTRACT_FINGERPRINTS,
   FIXTURE_SERVING_CONTRACT_FINGERPRINTS,
   BRINGS_DOWN_EFFECT_SCHEMA_V1,
@@ -78,6 +79,7 @@ const {
   compileFixtureContractV17,
   compileFixtureContractV18,
   compileFixtureContractV19,
+  compileFixtureContractV20,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -190,7 +192,7 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F19 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F20 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
@@ -209,6 +211,7 @@ test('F1 through F19 are distinct recognised fixture contract fingerprints', () 
   assert.notEqual(FROZEN_F16, FROZEN_F17);
   assert.notEqual(FROZEN_F17, FROZEN_F18);
   assert.notEqual(FROZEN_F18, FROZEN_F19);
+  assert.notEqual(FROZEN_F19, compileFixtureContractV20().fingerprint);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -231,6 +234,7 @@ test('F1 through F19 are distinct recognised fixture contract fingerprints', () 
       FROZEN_F17,
       FROZEN_F18,
       FROZEN_F19,
+      compileFixtureContractV20().fingerprint,
     ].sort(),
   );
   assert.deepEqual(
@@ -264,6 +268,16 @@ test('compileFixtureContractV19() compiles to the antitrust regulatory-efforts v
   assert.equal(validateContractBundle(bundle), true);
   assert.deepEqual(bundle.concepts.filter((concept) => concept.concept_key.startsWith('ANTI-')).map((concept) => concept.concept_key).sort(), ['ANTI-BURDEN', 'ANTI-EFFORTS', 'ANTI-FILING', 'ANTI-LITIGATION', 'ANTI-TIMING']);
   assert.equal(FIXTURE_CONTRACT_INPUT_V19.claim_definitions.length, FIXTURE_CONTRACT_INPUT_V18.claim_definitions.length + 6);
+});
+
+test('compileFixtureContractV20() adds the M3-B antitrust shapes without changing V19', () => {
+  const bundle = compileFixtureContractV20();
+  assert.equal(validateContractBundle(bundle), true);
+  assert.deepEqual(
+    bundle.concepts.filter((concept) => concept.concept_key.startsWith('ANTI-')).map((concept) => concept.concept_key).sort(),
+    ['ANTI-AGREEMENTS', 'ANTI-BURDEN', 'ANTI-CONSULT', 'ANTI-EFFORTS', 'ANTI-FILING', 'ANTI-LITIGATION', 'ANTI-NOACTION', 'ANTI-STRATEGY', 'ANTI-TIMING'],
+  );
+  assert.equal(FIXTURE_CONTRACT_INPUT_V20.claim_definitions.length, FIXTURE_CONTRACT_INPUT_V19.claim_definitions.length + 7);
 });
 
 // ---------------------------------------------------------------------------
