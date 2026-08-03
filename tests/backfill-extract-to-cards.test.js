@@ -229,6 +229,58 @@ test('replaceProvisionCardRows upserts before deleting (claims FK-cascade safety
   assert.equal(sb.calls.filter((call) => call.op === 'delete').length, 1);
 });
 
+test('replaceProvisionCardRows preserves stored card and claim identities across a reclassification', async () => {
+  const sb = fakeReplaceSupabase({
+    existingRows: [{
+      deal_id: 'deal-1',
+      provision_instance_id: 'old-provision-id',
+      excerpt_id: 'old-excerpt-id',
+      region_hash: 'stable-region-hash',
+    }],
+  });
+  const incoming = [{
+    deal_id: 'deal-1',
+    provision_instance_id: 'new-title-derived-id',
+    excerpt_id: 'new-title-derived-excerpt',
+    region_hash: 'stable-region-hash',
+    references: ['new-title-derived-id'],
+  }];
+
+  const written = await replaceProvisionCardRows(sb, 'deal-1', incoming, 50);
+
+  assert.equal(written, 1);
+  const [upserted] = sb.calls.find((call) => call.op === 'upsert').rows;
+  assert.equal(upserted.provision_instance_id, 'old-provision-id');
+  assert.equal(upserted.excerpt_id, 'old-excerpt-id');
+  assert.deepEqual(upserted.references, ['old-provision-id']);
+  assert.ok(!sb.calls.some((call) => call.op === 'delete-in'));
+});
+
+test('replaceProvisionCardRows keeps a new identity and deletes a true source-region orphan', async () => {
+  const sb = fakeReplaceSupabase({
+    existingRows: [{
+      deal_id: 'deal-1',
+      provision_instance_id: 'old-provision-id',
+      excerpt_id: 'old-excerpt-id',
+      region_hash: 'old-region-hash',
+    }],
+  });
+  const incoming = [{
+    deal_id: 'deal-1',
+    provision_instance_id: 'new-provision-id',
+    excerpt_id: 'new-excerpt-id',
+    region_hash: 'new-region-hash',
+    references: [],
+  }];
+
+  await replaceProvisionCardRows(sb, 'deal-1', incoming, 50);
+
+  const [upserted] = sb.calls.find((call) => call.op === 'upsert').rows;
+  assert.equal(upserted.provision_instance_id, 'new-provision-id');
+  assert.equal(upserted.excerpt_id, 'new-excerpt-id');
+  assert.deepEqual(sb.calls.find((call) => call.op === 'delete-in').values, ['old-provision-id']);
+});
+
 test('replaceProvisionCardRows with zero rows deletes all existing cards for the deal', async () => {
   const sb = fakeReplaceSupabase({
     existingRows: [{ deal_id: 'deal-empty', provision_instance_id: 'x' }],

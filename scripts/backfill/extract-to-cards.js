@@ -130,6 +130,48 @@ async function existingCardCount(sb, dealId) {
 // provision_instance_id / excerpt_id, so no cascade fires for survivors),
 // then delete only the orphans -- provision_instance_ids that existed for
 // this deal before this run but are absent from the new row set.
+function reconcileProvisionCardIdentities(rows, existingRows) {
+  const existingByRegionHash = new Map();
+  for (const existing of existingRows || []) {
+    if (!existing.region_hash) continue;
+    const prior = existingByRegionHash.get(existing.region_hash);
+    if (prior && prior.provision_instance_id !== existing.provision_instance_id) {
+      throw new Error(`Existing provision_cards contain duplicate region identity ${existing.region_hash}`);
+    }
+    existingByRegionHash.set(existing.region_hash, existing);
+  }
+
+  const identityRemap = new Map();
+  const reconciled = (rows || []).map((row) => {
+    const existing = existingByRegionHash.get(row.region_hash);
+    if (!existing || existing.provision_instance_id === row.provision_instance_id) return { ...row };
+    if (!existing.provision_instance_id || !existing.excerpt_id) {
+      throw new Error(`Existing provision_card is missing canonical identity for region ${row.region_hash}`);
+    }
+    identityRemap.set(row.provision_instance_id, existing.provision_instance_id);
+    return {
+      ...row,
+      provision_instance_id: existing.provision_instance_id,
+      excerpt_id: existing.excerpt_id,
+    };
+  });
+
+  const survivingIds = new Set();
+  for (const row of reconciled) {
+    if (survivingIds.has(row.provision_instance_id)) {
+      throw new Error(`Reconciled provision_cards contain duplicate identity ${row.provision_instance_id}`);
+    }
+    survivingIds.add(row.provision_instance_id);
+  }
+
+  return reconciled.map((row) => ({
+    ...row,
+    references: Array.isArray(row.references)
+      ? row.references.map((reference) => identityRemap.get(reference) || reference)
+      : row.references,
+  }));
+}
+
 async function replaceProvisionCardRows(sb, dealId, rows, batchSize = UPSERT_BATCH_SIZE) {
   if (rows.length === 0) {
     // Nothing survives this extraction, so every existing card for the deal
@@ -141,8 +183,17 @@ async function replaceProvisionCardRows(sb, dealId, rows, batchSize = UPSERT_BAT
     return 0;
   }
 
-  for (let index = 0; index < rows.length; index += batchSize) {
-    const batch = rows.slice(index, index + batchSize);
+  const { data: storedRows, error: storedRowsError } = await sb
+    .from('provision_cards')
+    .select('provision_instance_id,excerpt_id,region_hash')
+    .eq('deal_id', dealId);
+  if (storedRowsError) {
+    throw new Error(`Failed to read existing provision_cards for identity reconciliation: ${storedRowsError.message}`);
+  }
+  const reconciledRows = reconcileProvisionCardIdentities(rows, storedRows || []);
+
+  for (let index = 0; index < reconciledRows.length; index += batchSize) {
+    const batch = reconciledRows.slice(index, index + batchSize);
     let lastError = null;
     for (let attempt = 1; attempt <= UPSERT_RETRIES; attempt += 1) {
       try {
@@ -162,7 +213,7 @@ async function replaceProvisionCardRows(sb, dealId, rows, batchSize = UPSERT_BAT
     if (lastError) throw new Error(`Failed to upsert provision_cards batch ${index / batchSize + 1}: ${lastError.message || String(lastError)}`);
   }
 
-  const survivingIds = new Set(rows.map((row) => row.provision_instance_id));
+  const survivingIds = new Set(reconciledRows.map((row) => row.provision_instance_id));
   const { data: existingRows, error: existingError } = await sb
     .from('provision_cards')
     .select('provision_instance_id')
@@ -465,6 +516,7 @@ module.exports = {
   legacyProvisionForCard,
   markdownReport,
   parseArgs,
+  reconcileProvisionCardIdentities,
   replaceProvisionCardRows,
   run,
   sectionPathForRow,
