@@ -48,6 +48,7 @@ const {
   FIXTURE_CONTRACT_INPUT_V29,
   FIXTURE_CONTRACT_INPUT_V30,
   FIXTURE_CONTRACT_INPUT_V31,
+  FIXTURE_CONTRACT_INPUT_V32,
   FIXTURE_CONTRACT_FINGERPRINTS,
   FIXTURE_SERVING_CONTRACT_FINGERPRINTS,
   BRINGS_DOWN_EFFECT_SCHEMA_V1,
@@ -102,6 +103,7 @@ const {
   compileFixtureContractV29,
   compileFixtureContractV30,
   compileFixtureContractV31,
+  compileFixtureContractV32,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -158,6 +160,7 @@ const FROZEN_F28 = '1c0a086d1e9d20eb1eadcb6fab09527bbe9483189269e4ce6f8ba31b5940
 const FROZEN_F29 = '25a9b634ce4e8c3e6f06d6287e9514116f7f13fa1b986ab0f282ca62aae22691';
 const FROZEN_F30 = '971bc5619960cd54fb555a0260ba53f0e8d20f29f95bd6e9553ba8ddaf42be64';
 const FROZEN_F31 = '058f2fd1875715c7c19f651b6d3c862d408c51ed01bda524e3ba22db904aaba8';
+const FROZEN_F32 = '__PIN_AFTER_COMPILE__';
 
 const APPROVED_V2_ADDITIONS = [
   'TERMR-BREACH',
@@ -249,6 +252,7 @@ test('F1 through F31 are distinct recognised fixture contract fingerprints', () 
   assert.notEqual(compileFixtureContractV28().fingerprint, compileFixtureContractV29().fingerprint);
   assert.notEqual(FROZEN_F29, FROZEN_F30);
   assert.notEqual(FROZEN_F30, FROZEN_F31);
+  assert.notEqual(FROZEN_F31, FROZEN_F32);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -283,6 +287,7 @@ test('F1 through F31 are distinct recognised fixture contract fingerprints', () 
       FROZEN_F29,
       FROZEN_F30,
       FROZEN_F31,
+      FROZEN_F32,
     ].sort(),
   );
   assert.deepEqual(
@@ -364,12 +369,20 @@ test('compileFixtureContractV30() adds exactly the approved Financing and Guaran
   );
 });
 
-test('compileFixtureContractV31() adds only Tax, Dividends and Appraisal vocabulary', () => {
+test('compileFixtureContractV31() adds Key Terms, Tax, Dividends and Appraisal vocabulary', () => {
   const bundle = compileFixtureContractV31(); const previous = compileFixtureContractV30();
   assert.equal(bundle.fingerprint, FROZEN_F31); assert.equal(validateContractBundle(bundle), true);
   assert.equal(canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V31)), canonicalJson(bundle));
-  assert.equal(bundle.concepts.length, previous.concepts.length + 7);
-  assert.equal(bundle.claim_definitions.length, previous.claim_definitions.length + 10);
+  assert.equal(bundle.concepts.length, previous.concepts.length + 12);
+  assert.equal(bundle.claim_definitions.length, previous.claim_definitions.length + 20);
+});
+
+test('compileFixtureContractV32() adds only Employee Matters and D&O vocabulary', () => {
+  const bundle = compileFixtureContractV32(); const previous = compileFixtureContractV31();
+  assert.equal(bundle.fingerprint, FROZEN_F32); assert.equal(validateContractBundle(bundle), true);
+  assert.equal(canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V32)), canonicalJson(bundle));
+  assert.equal(bundle.concepts.length, previous.concepts.length + 4);
+  assert.equal(bundle.claim_definitions.length, previous.claim_definitions.length + 14);
 });
 
 test('F22 adds only the three grounded Consideration concepts and claims', () => {
