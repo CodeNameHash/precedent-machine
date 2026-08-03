@@ -161,6 +161,7 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
       'EMPLOYEE_MATTERS', 'DNO_INDEMNIFICATION',
       'FINANCING_COVENANTS', 'GUARANTY_FINANCING_PARTY',
       'TAX_MATTERS', 'DIVIDENDS', 'APPRAISAL_DISSENTERS_RIGHTS',
+      'CONSIDERATION', 'INTERIM_OPERATING_COVENANTS',
     ].includes(family.family_id))
     .every((family) => family.completion_state === 'WAVE_A_OPEN'));
   for (const familyId of [
@@ -229,10 +230,9 @@ test('Consideration Wave A is native and its remaining mechanics are exact evide
   const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
     (entry) => entry.family_id === 'CONSIDERATION',
   );
-  assert.deepEqual(family.wave_a.checks.fixture_proof, { state: 'OPEN', evidence_paths: [] });
-  assert.ok(Object.entries(family.wave_a.checks)
-    .filter(([checkId]) => checkId !== 'fixture_proof')
-    .every(([, check]) => check.state === 'PASS'));
+  assert.equal(family.wave_a.checks.fixture_proof.state, 'PASS');
+  assert.ok(family.wave_a.checks.fixture_proof.evidence_paths.includes('tests/canonical-v2-consideration-ioc-product-parity.test.js'));
+  assert.ok(Object.values(family.wave_a.checks).every((check) => check.state === 'PASS'));
   for (const surfaceId of [
     'consideration-rendered-rows',
     'consideration-market-fields',
@@ -260,10 +260,9 @@ test('IOC governed presence claims pass while long-tail mechanics remain exact e
   const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
     (entry) => entry.family_id === 'INTERIM_OPERATING_COVENANTS',
   );
-  assert.deepEqual(family.wave_a.checks.fixture_proof, { state: 'OPEN', evidence_paths: [] });
-  assert.ok(Object.entries(family.wave_a.checks)
-    .filter(([checkId]) => checkId !== 'fixture_proof')
-    .every(([, check]) => check.state === 'PASS'));
+  assert.equal(family.wave_a.checks.fixture_proof.state, 'PASS');
+  assert.ok(family.wave_a.checks.fixture_proof.evidence_paths.includes('tests/canonical-v2-consideration-ioc-product-parity.test.js'));
+  assert.ok(Object.values(family.wave_a.checks).every((check) => check.state === 'PASS'));
   for (const surfaceId of ['ioc-rendered-rows', 'ioc-market-fields', 'ioc-query-fields']) {
     const surface = family.product_surfaces.find((entry) => entry.surface_id === surfaceId);
     assert.equal(surface.state, 'PASS');
