@@ -83,7 +83,7 @@ test('M3-B corroboration requires distinct grounded antitrust facts', () => {
 test('antitrust lexical entries are registered and include the bounded family set', () => {
   const registered = new Set(compileFixtureContractV30().concepts.map((concept) => concept.concept_key));
   assert.doesNotThrow(() => validateLexicalFamilyLexicon(LEXICAL_FAMILY_LEXICON, { registeredConceptKeys: registered }));
-  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 10);
+  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 11);
   for (const family of ['ANTI-EFFORTS', 'ANTI-BURDEN', 'ANTI-LITIGATION', 'ANTI-TIMING', 'ANTI-FILING']) {
     assert.ok(LEXICAL_FAMILY_LEXICON.entries.some((entry) => entry.family === family), family);
   }

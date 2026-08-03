@@ -242,7 +242,7 @@ test('exchange-ratio parser abstains on pointer, spelled and compound shapes', (
 });
 
 test('Consideration lexical families cover grounded text and preserve defined-term case boundaries', () => {
-  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 10);
+  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 11);
   for (const [family, text] of [
     ['CONS-PERSHARE', 'converted into the right to receive $16.25 in cash, without interest as the Merger Consideration'],
     ['CONS-RATIO', '0.3869 of a share of Parent Common Stock as the Exchange Ratio'],

@@ -32,6 +32,7 @@ const REGISTERED_CONCEPT_KEYS = new Set([
   'TERMR-OUTSIDE', 'TERMR-NOVOTE', 'TERMR-BREACH', 'TERMR-SUPERIOR', 'TERMR-RECOMMEND',
   'TERMR-NOSOL-BREACH',
   'ANTI-EFFORTS', 'ANTI-BURDEN', 'ANTI-LITIGATION', 'ANTI-TIMING', 'ANTI-FILING',
+  'COND-B-REP', 'COND-S-REP', 'COND-MAE', 'COND-COV', 'COND-REG',
   'CONS-PERSHARE', 'CONS-RATIO', 'CONS-DISSENT',
   'IOC-ACCOUNTING', 'IOC-CAPEX', 'IOC-CHARTER', 'IOC-COMP', 'IOC-CONTRACT',
   'IOC-DEBT', 'IOC-DIVIDEND', 'IOC-ISSUE', 'IOC-MERGE', 'IOC-SETTLE', 'IOC-TAX',
@@ -40,8 +41,8 @@ const REGISTERED_CONCEPT_KEYS = new Set([
 ]);
 
 test('LEXICAL_FAMILY_LEXICON_VERSION bumped 4 -> 5 (family-termination-rights slice)', () => {
-  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 10);
-  assert.equal(LEXICAL_FAMILY_LEXICON.version, 10);
+  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 11);
+  assert.equal(LEXICAL_FAMILY_LEXICON.version, 11);
 });
 
 test('table validation: every TERMR entry has a non-empty pattern_id, family, kind, value, rationale; no duplicate pattern_id; every family is a registered concept key', () => {
