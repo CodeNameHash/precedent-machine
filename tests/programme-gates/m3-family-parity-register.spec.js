@@ -295,3 +295,22 @@ test('the M3 register has no production-import or cutover authority', () => {
   const source = JSON.stringify(CURRENT_M3_FAMILY_PARITY_REGISTER);
   assert.doesNotMatch(source, /PRODUCTION_IMPORT|PRODUCTION_CUTOVER|M4_PRE_CUTOVER/);
 });
+
+test('Financing Covenants and Guaranty product parity is native-complete while unresolved Wave A work stays open', () => {
+  for (const familyId of ['FINANCING_COVENANTS', 'GUARANTY_FINANCING_PARTY']) {
+    const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families
+      .find((entry) => entry.family_id === familyId);
+    assert.ok(family, familyId);
+    assert.ok(family.product_surfaces.every((surface) => (
+      surface.state === 'PASS' && surface.disposition === 'NATIVE_COMPLETE'
+    )));
+    assert.equal(family.wave_a.checks.producer.state, 'PASS');
+    assert.equal(family.wave_a.checks.registry.state, 'OPEN');
+    assert.equal(family.wave_a.checks.resolver.state, 'OPEN');
+    assert.equal(
+      CURRENT_M3_FAMILY_PARITY_STATUS.family_states
+        .find((entry) => entry.family_id === familyId).completion_state,
+      'WAVE_A_OPEN',
+    );
+  }
+});
