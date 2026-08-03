@@ -16,13 +16,15 @@ const {
 } = require('../lib/canonical-v2/native-producer/unified-runner-validate');
 
 const ROOT = path.resolve(__dirname, '..');
-const RAW_PATH = 'tests/fixtures/canonical-v2/mae-definition-family/topbuild-raw-fetched.htm';
+const RAW_PATH = 'tests/fixtures/canonical-v2/native-unified-runner/compact-source.htm';
 const RAW = fs.readFileSync(path.resolve(ROOT, RAW_PATH));
 const URL = 'https://www.sec.gov/Archives/edgar/data/1/topbuild.htm';
 const POLICY_DIGEST = sha256Hex('native unified runner validate test');
 const DEAL_ADMISSION_ID = sha256Hex('native unified runner validate deal');
+let admittedFixture;
 
 function admittedSource() {
+  if (admittedFixture) return admittedFixture;
   const capture = buildSecEdgarIntakeCapture({
     retrieval_url: URL,
     final_url: URL,
@@ -35,7 +37,8 @@ function admittedSource() {
   });
   const conversion = convertSecHtmlToCanonicalText(capture);
   const tree = sectionizeAdmittedSource({ source_text: conversion.canonical_text, document_hash: sha256Hex(RAW) });
-  return { conversion, tree };
+  admittedFixture = { conversion, tree };
+  return admittedFixture;
 }
 
 function pin(reference) {
@@ -161,8 +164,8 @@ test('raw pin mismatch fails before section dispatch', () => {
   assert.equal(errorCode(() => validateUnifiedRunManifest({ manifest: manifest({ sources: [source], workItems: [invalidSection] }), root_dir: ROOT })), 'RAW_PIN_MISMATCH');
 });
 
-test('TopBuild aliases must use the deterministic section-tree reference', () => {
-  const result = validateUnifiedRunManifest({ manifest: manifest({ workItems: [extract('no-reps', 'NO_OTHER_REPS_FRAUD', 'III-INTRO(w)')] }), root_dir: ROOT });
+test('section pins must use the deterministic section-tree reference', () => {
+  const result = validateUnifiedRunManifest({ manifest: manifest({ workItems: [extract('no-reps', 'NO_OTHER_REPS_FRAUD', '2.1')] }), root_dir: ROOT });
   assert.equal(result.receipt.disposition_counts.EXTRACT, 1);
   const nonTreeAlias = extract('bad-alias', 'ANTITRUST_REGULATORY', '2.1');
   nonTreeAlias.section_pin = { ...nonTreeAlias.section_pin, section_reference: '4.6' };
