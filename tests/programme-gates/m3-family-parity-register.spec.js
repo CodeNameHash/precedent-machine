@@ -124,9 +124,15 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
   assert.ok(Object.isFrozen(CURRENT_M3_FAMILY_PARITY_REGISTER.families[0].wave_a.checks));
   assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.state, 'BLOCKED');
   assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.family_states.length, 21);
-  assert.ok(CURRENT_M3_FAMILY_PARITY_STATUS.family_states.every(
-    (family) => family.completion_state === 'WAVE_A_OPEN',
-  ));
+  assert.equal(
+    CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
+      (family) => family.family_id === 'NO_SHOP',
+    ).completion_state,
+    'FAMILY_COMPLETE',
+  );
+  assert.ok(CURRENT_M3_FAMILY_PARITY_STATUS.family_states
+    .filter((family) => family.family_id !== 'NO_SHOP')
+    .every((family) => family.completion_state === 'WAVE_A_OPEN'));
   assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.unassigned_product_surface_ids.length, 0);
   assert.deepEqual(
     CURRENT_M3_FAMILY_PARITY_REGISTER.supplemental_owners.map((owner) => owner.first_slice.state),

@@ -49,6 +49,12 @@ const {
   MAPPING_TABLE_VERSION,
 } = require('../lib/canonical-v2/native-producer/candidate-resolution');
 const { NO_SHOP_PERIOD_PARSE_VERSION } = require('../lib/canonical-v2/native-producer/no-shop-period-parse');
+const {
+  CLAIM_PRESENTATION,
+  KEY_TERMS_OWNED_CONCEPTS,
+  KEY_TERMS_OWNED_DEFINITIONS,
+  compileNoShopProductParity,
+} = require('../lib/canonical-v2/native-producer/no-shop-product-parity');
 
 // ─── Fixture: identity admitted-source chain (copied verbatim from
 // tests/canonical-v2-termination-fee-resolution.test.js -- see that file's
@@ -634,4 +640,213 @@ test('additivity: the resolution receipt carries no_shop_period_parse_version an
   assert.equal(resolution.resolution_receipt.mapping_table_version, MAPPING_TABLE_VERSION);
   assert.ok(typeof resolution.resolution_receipt.no_shop_action_corroboration_table_version === 'number');
   assert.ok(typeof resolution.resolution_receipt.no_shop_prerequisite_corroboration_table_version === 'number');
+});
+
+test('Wave B cease, fiduciary and recommendation facts resolve to their registered No-Shop concepts', async () => {
+  const quotes = [
+    'the Company shall immediately cease all discussions or negotiations.',
+    'the Company Board determines that the proposal could reasonably be expected to lead to a Superior Proposal.',
+    'the Company Board may withdraw or modify the Company Recommendation.',
+  ];
+  const { resolution } = await resolveNoShopAssertions('NO-SHOP-WAVE-B-CORE', quotes.join(' '), {
+    cease_assertions: [{
+      section_reference: SECTION_REFERENCE,
+      assertion_kind: 'CEASE_ACTION',
+      canonical_value: 'CEASE_EXISTING_DISCUSSIONS_OR_NEGOTIATIONS',
+      covenant_obligor: 'the Company',
+      quote: quotes[0],
+    }],
+    fiduciary_standard_assertions: [{
+      section_reference: SECTION_REFERENCE,
+      assertion_kind: 'FIDUCIARY_ENGAGEMENT_STANDARD',
+      canonical_value: 'COULD_REASONABLY_BE_EXPECTED_TO_LEAD',
+      covenant_obligor: 'the Company Board',
+      quote: quotes[1],
+    }],
+    recommendation_assertions: [{
+      section_reference: SECTION_REFERENCE,
+      assertion_kind: 'RECOMMENDATION_CHANGE_ACTION',
+      canonical_value: 'WITHDRAW_QUALIFY_OR_MODIFY_RECOMMENDATION',
+      covenant_obligor: 'the Company Board',
+      quote: quotes[2],
+    }],
+  });
+  const resolved = resolution.resolved.filter((item) => item.generic_claim_key === NO_SHOP_WAVE_B_CLAIM_KEY);
+  assert.deepEqual(resolved.map((item) => item.concept_key).sort(), ['NOSOL-CEASE', 'NOSOL-EXCEPT', 'NOSOL-RECOMMEND']);
+});
+
+test('Wave B standstill enforcement and positive waiver permission remain separate concepts', async () => {
+  const quotes = [
+    'The Company shall enforce each standstill agreement.',
+    'The Company may waive a standstill if failure to do so would be inconsistent with the directors\' fiduciary duties.',
+  ];
+  const { resolution } = await resolveNoShopAssertions('NO-SHOP-WAVE-B-STANDSTILL', quotes.join(' '), {
+    standstill_assertions: [{
+      section_reference: SECTION_REFERENCE,
+      assertion_kind: 'STANDSTILL_ACTION',
+      canonical_value: 'ENFORCE',
+      covenant_obligor: 'The Company',
+      quote: quotes[0],
+    }, {
+      section_reference: SECTION_REFERENCE,
+      assertion_kind: 'STANDSTILL_ACTION',
+      canonical_value: 'PERMIT_WAIVER_FIDUCIARY_DUTY_GATED',
+      covenant_obligor: 'The Company',
+      quote: quotes[1],
+    }],
+  });
+  const resolved = resolution.resolved.filter((item) => item.generic_claim_key === NO_SHOP_WAVE_B_CLAIM_KEY);
+  assert.deepEqual(resolved.map((item) => item.concept_key).sort(), ['NOSOL-ENFORCE', 'NOSOL-WAIVER']);
+});
+
+test('native Wave A and B candidates reach Review, Query, Compare and market statistics through the same product rows', async () => {
+  const actionQuote = quoteById('action-solicit').quote;
+  const matchQuote = quoteById('period-business-days-parenthesised').quote;
+  const ceaseQuote = 'the Company shall immediately cease all discussions or negotiations.';
+  const enforceQuote = 'The Company shall enforce each standstill agreement.';
+  const waiverQuote = 'The Company may waive a standstill if failure to do so would be inconsistent with the directors\' fiduciary duties.';
+  const engagementQuote = 'the Company Board determines that the proposal could reasonably be expected to lead to a Superior Proposal.';
+  const recommendationQuote = 'the Company Board may withdraw or modify the Company Recommendation.';
+  const sectionBody = [
+    actionQuote,
+    matchQuote,
+    ceaseQuote,
+    enforceQuote,
+    waiverQuote,
+    engagementQuote,
+    recommendationQuote,
+  ].join(' ');
+  const { resolution } = await resolveNoShopAssertions('deal:no-shop-product-parity', sectionBody, {
+    no_shop_action_assertions: [actionAssertion({
+      actionCode: 'SOLICIT_ACQUISITION_INQUIRY_PROPOSAL_OR_OFFER',
+      quote: actionQuote,
+    })],
+    period_assertions: [periodAssertion({ periodRole: 'INITIAL_MATCH', quote: matchQuote })],
+    cease_assertions: [{
+      section_reference: SECTION_REFERENCE,
+      assertion_kind: 'CEASE_ACTION',
+      canonical_value: 'CEASE_EXISTING_DISCUSSIONS_OR_NEGOTIATIONS',
+      covenant_obligor: 'the Company',
+      quote: ceaseQuote,
+    }],
+    standstill_assertions: [{
+      section_reference: SECTION_REFERENCE,
+      assertion_kind: 'STANDSTILL_ACTION',
+      canonical_value: 'ENFORCE',
+      covenant_obligor: 'The Company',
+      quote: enforceQuote,
+    }, {
+      section_reference: SECTION_REFERENCE,
+      assertion_kind: 'STANDSTILL_ACTION',
+      canonical_value: 'PERMIT_WAIVER_FIDUCIARY_DUTY_GATED',
+      covenant_obligor: 'The Company',
+      quote: waiverQuote,
+    }],
+    fiduciary_standard_assertions: [{
+      section_reference: SECTION_REFERENCE,
+      assertion_kind: 'FIDUCIARY_ENGAGEMENT_STANDARD',
+      canonical_value: 'COULD_REASONABLY_BE_EXPECTED_TO_LEAD',
+      covenant_obligor: 'the Company Board',
+      quote: engagementQuote,
+    }],
+    recommendation_assertions: [{
+      section_reference: SECTION_REFERENCE,
+      assertion_kind: 'RECOMMENDATION_CHANGE_ACTION',
+      canonical_value: 'WITHDRAW_QUALIFY_OR_MODIFY_RECOMMENDATION',
+      covenant_obligor: 'the Company Board',
+      quote: recommendationQuote,
+    }],
+  });
+  const parity = compileNoShopProductParity({
+    candidate_results: [{
+      governed_deal_key: 'deal:no-shop-product-parity',
+      resolution,
+    }],
+  });
+  assert.equal(parity.product_rows.length, 7);
+  assert.deepEqual(Object.keys(parity.surfaces), [
+    'REVIEW',
+    'QUERY',
+    'COMPARE',
+    'MARKET_STATISTICS',
+  ]);
+  const productIds = parity.product_rows.map((row) => row.product_row_id).sort();
+  assert.deepEqual(parity.surfaces.REVIEW.map((row) => row.product_row_id).sort(), productIds);
+  assert.deepEqual(parity.surfaces.QUERY.map((row) => row.product_row_id).sort(), productIds);
+  assert.deepEqual(parity.surfaces.COMPARE.map((row) => row.product_row_id).sort(), productIds);
+  assert.ok(parity.surfaces.MARKET_STATISTICS.every((group) => (
+    group.deal_count === 1 && group.product_row_ids.every((id) => productIds.includes(id))
+  )));
+  const initialMatch = parity.product_rows.find((row) => (
+    row.field_path === 'noShop.initialMatchPeriodDays'
+  ));
+  assert.deepEqual(initialMatch.comparison_tuple, {
+    canonical_value: '4',
+    day_kind: 'BUSINESS_DAYS',
+  });
+  assert.ok(parity.product_rows.every((row) => row.evidence.length > 0 && row.evidence_text));
+});
+
+test('No-Shop product vocabulary excludes Acquisition Proposal and Superior Proposal definitions and thresholds', () => {
+  assert.equal(Object.keys(CLAIM_PRESENTATION).some((key) => (
+    KEY_TERMS_OWNED_DEFINITIONS.includes(key)
+  )), false);
+  assert.deepEqual(KEY_TERMS_OWNED_DEFINITIONS, [
+    'ACQUISITION_PROPOSAL_THRESHOLD_PERCENT',
+    'SUPERIOR_PROPOSAL_THRESHOLD_PERCENT',
+    'DEFINED_TERM_THRESHOLD_SUBSTITUTION',
+    'SUPERIOR_PROPOSAL_QUALIFIER',
+  ]);
+  assert.deepEqual(KEY_TERMS_OWNED_CONCEPTS, [
+    'DEF-ACQPROPOSAL',
+    'DEF-SUPERIOR',
+  ]);
+});
+
+test('market statistics and Compare keep business-day and calendar-day periods separate', async () => {
+  const businessQuote = 'prior written notice to Parent, at least five (5) business days in advance of terminating this Agreement to accept a Superior Proposal';
+  const calendarQuote = 'prior written notice to Parent, at least five (5) days in advance of terminating this Agreement to accept a Superior Proposal';
+  const business = await resolveNoShopAssertions('deal:no-shop-business-days', businessQuote, {
+    period_assertions: [periodAssertion({ periodRole: 'INITIAL_MATCH', quote: businessQuote })],
+  });
+  const calendar = await resolveNoShopAssertions('deal:no-shop-calendar-days', calendarQuote, {
+    period_assertions: [periodAssertion({ periodRole: 'INITIAL_MATCH', quote: calendarQuote })],
+  });
+  const parity = compileNoShopProductParity({
+    candidate_results: [{
+      governed_deal_key: 'deal:no-shop-business-days',
+      resolution: business.resolution,
+    }, {
+      governed_deal_key: 'deal:no-shop-calendar-days',
+      resolution: calendar.resolution,
+    }],
+  });
+  const compare = parity.surfaces.COMPARE.filter((row) => (
+    row.field_path === 'noShop.initialMatchPeriodDays'
+  ));
+  assert.deepEqual(compare.map((row) => row.comparison_tuple), [{
+    canonical_value: '5',
+    day_kind: 'BUSINESS_DAYS',
+  }, {
+    canonical_value: '5',
+    day_kind: 'CALENDAR_DAYS',
+  }]);
+  const groups = parity.surfaces.MARKET_STATISTICS.filter((row) => (
+    row.field_path === 'noShop.initialMatchPeriodDays'
+  ));
+  assert.equal(groups.length, 2);
+  assert.deepEqual(groups.map((group) => group.comparison_tuple.day_kind), [
+    'BUSINESS_DAYS',
+    'CALENDAR_DAYS',
+  ]);
+  const reversed = compileNoShopProductParity({
+    candidate_results: [{
+      governed_deal_key: 'deal:no-shop-calendar-days',
+      resolution: calendar.resolution,
+    }, {
+      governed_deal_key: 'deal:no-shop-business-days',
+      resolution: business.resolution,
+    }],
+  });
+  assert.deepEqual(reversed, parity);
 });
