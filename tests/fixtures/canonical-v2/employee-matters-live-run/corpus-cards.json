@@ -4,10 +4,11 @@
   "source_spec": "docs/superpowers/specs/2026-08-03-family-employee-matters-design.md",
   "retrieval_date": "2026-08-03",
   "source_table": "provision_cards",
-  "missing_prefixes": [
-    "13211d88",
-    "bb5f062d"
-  ],
+  "resolved_prefix_dispositions": {
+    "13211d88": "DEAL_ID_NOT_CARD_ID",
+    "bb5f062d": "DEAL_ID_NOT_CARD_ID"
+  },
+  "missing_prefixes": [],
   "cards": [
     {
       "id": "290d77dc-e1a7-414d-8892-8a34d5911223",

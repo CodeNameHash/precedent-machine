@@ -9,6 +9,12 @@ const FAMILIES = Object.freeze([
   ['financing-covenants-live-run', 'docs/superpowers/specs/2026-08-02-family-financing-covenants-design.md'],
   ['guaranty-live-run', 'docs/superpowers/specs/2026-08-03-family-guaranty-financing-party-design.md'],
 ]);
+const PREFIX_DISPOSITIONS = Object.freeze({
+  '13211d88': 'DEAL_ID_NOT_CARD_ID',
+  bb5f062d: 'DEAL_ID_NOT_CARD_ID',
+  df393645: 'DEAL_ID_NOT_CARD_ID',
+  '1bdddd29': 'OPEN_WORLD_REFERENCE_OUTSIDE_ACCEPTANCE_FIXTURE_SET',
+});
 
 function requiredPrefixes(specPath) {
   const source = fs.readFileSync(path.join(ROOT, specPath), 'utf8');
@@ -33,7 +39,12 @@ async function fetchCards(client) {
 
 function buildFixture({ family, specPath, prefixes, cards, retrievalDate }) {
   const missing_prefixes = [];
+  const resolved_prefix_dispositions = {};
   const matches = prefixes.flatMap((prefix) => {
+    if (PREFIX_DISPOSITIONS[prefix]) {
+      resolved_prefix_dispositions[prefix] = PREFIX_DISPOSITIONS[prefix];
+      return [];
+    }
     const found = cards.filter((card) => card.id.startsWith(prefix));
     if (found.length === 0) {
       missing_prefixes.push(prefix);
@@ -52,6 +63,7 @@ function buildFixture({ family, specPath, prefixes, cards, retrievalDate }) {
     source_spec: specPath,
     retrieval_date: retrievalDate,
     source_table: 'provision_cards',
+    resolved_prefix_dispositions,
     missing_prefixes,
     cards: matches,
   };

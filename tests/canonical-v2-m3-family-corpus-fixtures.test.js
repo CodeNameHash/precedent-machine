@@ -23,6 +23,7 @@ for (const family of FAMILIES) {
     assert.equal(fixture.family, family);
     assert.match(fixture.retrieval_date, /^\d{4}-\d{2}-\d{2}$/);
     assert.equal(fixture.source_table, 'provision_cards');
+    assert.deepEqual(fixture.missing_prefixes, []);
     assert.ok(fixture.cards.length >= 14);
     assert.equal(new Set(fixture.cards.map((card) => card.id)).size, fixture.cards.length);
     for (const card of fixture.cards) {
