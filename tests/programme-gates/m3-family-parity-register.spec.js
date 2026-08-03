@@ -142,13 +142,20 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
     ).completion_state,
     'FAMILY_COMPLETE',
   );
+  assert.equal(
+    CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
+      (family) => family.family_id === 'ANTITRUST_REGULATORY_EFFORTS',
+    ).completion_state,
+    'FAMILY_COMPLETE',
+  );
   const consideration = CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
     (family) => family.family_id === 'CONSIDERATION',
   );
   assert.equal(consideration.completion_state, 'FOLLOW_ON_OPEN');
   assert.ok(CURRENT_M3_FAMILY_PARITY_STATUS.family_states
     .filter((family) => ![
-      'NO_SHOP', 'MAE_DEFINITION', 'PROXY_MEETING_COVENANTS', 'CONSIDERATION',
+      'ANTITRUST_REGULATORY_EFFORTS', 'NO_SHOP', 'MAE_DEFINITION',
+      'PROXY_MEETING_COVENANTS', 'CONSIDERATION',
       'INTERIM_OPERATING_COVENANTS', 'TERMINATION_FEE', 'TERMINATION_RIGHTS',
     ].includes(family.family_id))
     .every((family) => family.completion_state === 'WAVE_A_OPEN'));
@@ -296,6 +303,21 @@ test('the M3 register has no production-import or cutover authority', () => {
   assert.doesNotMatch(source, /PRODUCTION_IMPORT|PRODUCTION_CUTOVER|M4_PRE_CUTOVER/);
 });
 
+test('Antitrust has complete native evidence for every family and product gate', () => {
+  const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families
+    .find((entry) => entry.family_id === 'ANTITRUST_REGULATORY_EFFORTS');
+  assert.ok(Object.values(family.wave_a.checks).every((check) => check.state === 'PASS'));
+  assert.ok(Object.values(family.wave_a.checks).every((check) => (
+    check.evidence_paths.includes('tests/canonical-v2-antitrust-regulatory-efforts.test.js')
+  )));
+  assert.ok(family.product_surfaces.every((surface) => surface.state === 'PASS'));
+  assert.equal(
+    CURRENT_M3_FAMILY_PARITY_STATUS.family_states
+      .find((entry) => entry.family_id === family.family_id).completion_state,
+    'FAMILY_COMPLETE',
+  );
+});
+
 test('Financing Covenants and Guaranty product parity is native-complete while unresolved Wave A work stays open', () => {
   for (const familyId of ['FINANCING_COVENANTS', 'GUARANTY_FINANCING_PARTY']) {
     const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families
@@ -364,4 +386,3 @@ test('Merger Structure and Closing Mechanics product parity is native-complete w
     'WAVE_A_OPEN',
   );
 });
-
