@@ -1,12 +1,16 @@
 'use strict';
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { compileFixtureContractV19 } = require('../lib/canonical-v2/contract-bundle');
+const fs = require('node:fs');
+const path = require('node:path');
+const { compileFixtureContractV19, compileFixtureContractV20 } = require('../lib/canonical-v2/contract-bundle');
 const { classifySectionFamily, SECTION_FAMILY_RULE_CLASSIFIED } = require('../lib/canonical-v2/native-producer/section-family-classifier');
 const { buildClosingConditionsProducerPrompt } = require('../lib/canonical-v2/native-producer/closing-conditions-producer-prompt');
 const { shapeClosingConditionProposals, CLOSING_CONDITION_CLAIM_KEY } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { createAnthropicProvider } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { produceCandidateProposals } = require('../lib/canonical-v2/native-producer/provider-interface');
+const { compileCandidateProposals } = require('../lib/canonical-v2/native-producer/candidate-proposal-compiler');
+const { CLOSING_CONDITION_SURFACE_OWNERSHIP, OPEN_WORLD_SURFACE_GAPS } = require('../lib/canonical-v2/native-producer/closing-conditions-parity');
 
 const QUOTE = 'there shall not have occurred a Company Material Adverse Effect that is continuing';
 
@@ -24,7 +28,7 @@ test('conditions-to-closing titles dispatch only to closing conditions', async (
 
 test('closing-condition producer preserves a byte-exact positive candidate', () => {
   const prompt = buildClosingConditionsProducerPrompt({ source_text: QUOTE, governed_scope: { section_reference: '7.2' } });
-  assert.equal(prompt.prompt_id, 'native-producer-closing-conditions/v1');
+  assert.equal(prompt.prompt_id, 'native-producer-closing-conditions/v2');
   const shaped = shapeClosingConditionProposals({ closing_condition_assertions: [{ section_reference: '7.2', assertion_kind: 'MAE_CONTINUING', mae_term: 'Company Material Adverse Effect', mae_party: 'TARGET', quote: QUOTE }], open_world_candidates: [] }, QUOTE);
   assert.equal(shaped.proposals.length, 1);
   assert.equal(shaped.proposals[0].claim_definition_key, CLOSING_CONDITION_CLAIM_KEY);
@@ -46,4 +50,56 @@ test('live provider dispatches closing conditions through its own prompt and per
   });
   assert.ok(request.messages[0].content.includes('closing_condition_assertions'));
   assert.equal(result.proposals.length, 0);
+});
+
+test('Wave B preserves certificate targets as an open-world relationship while resolving the local certificate fact', () => {
+  const quote = 'The Company shall have delivered to Parent a certificate certifying that the conditions set forth in Sections 7.2(a), 7.2(b) and 7.2(c) have been satisfied.';
+  const shaped = shapeClosingConditionProposals({
+    closing_condition_assertions: [{
+      section_reference: '7.2(d)', assertion_kind: 'OFFICER_CERTIFICATE',
+      certificate_side: 'TARGET_CERTIFICATE', certifying_party: 'Company',
+      certified_condition_refs: ['7.2(a)', '7.2(b)', '7.2(c)'], quote,
+    }],
+  }, quote);
+  assert.equal(shaped.proposals.length, 1);
+  assert.equal(shaped.proposals[0].attributes.certificate_relationship_status, 'OPEN_WORLD_RELATIONSHIP');
+  assert.deepEqual(shaped.proposals[0].attributes.certified_condition_refs, ['7.2(a)', '7.2(b)', '7.2(c)']);
+});
+
+test('the central compiler accepts Closing Conditions proposals end to end', async () => {
+  const bundle = compileFixtureContractV20();
+  const governedScope = { deal_key: 'fixture', source_text: QUOTE };
+  const produced = await produceCandidateProposals({
+    governed_scope: governedScope,
+    definitions: { known_definitions: [] },
+    contract_bundle: bundle,
+    section_family: 'CLOSING_CONDITIONS',
+    provider: async () => ({
+      provider_id: 'closing-test/v2', model_id: 'stub', prompt: 'closing-test',
+      ...shapeClosingConditionProposals({ closing_condition_assertions: [{
+        section_reference: '7.2', assertion_kind: 'MAE_CONTINUING',
+        mae_term: 'Company Material Adverse Effect', mae_party: 'TARGET', quote: QUOTE,
+      }] }, QUOTE),
+    }),
+  });
+  const compiled = compileCandidateProposals({
+    proposals: produced.proposals,
+    governed_scope: governedScope,
+    producer_receipt: produced.producer_receipt,
+    extractor_id: 'closing-test', extractor_version: '2',
+  });
+  assert.equal(compiled.length, 1);
+  assert.equal(compiled[0].ok, true);
+  assert.equal(compiled[0].candidate.extraction_provenance.proposal_kind, 'CLOSING_CONDITION');
+});
+
+test('Wave B prompt keeps dissent thresholds open world and owns every grounded product surface', () => {
+  const prompt = buildClosingConditionsProducerPrompt({ source_text: QUOTE, governed_scope: { section_reference: '7.2' } });
+  assert.match(prompt.messages[0].content, /Dissent thresholds remain open world/);
+  assert.ok(OPEN_WORLD_SURFACE_GAPS.some((row) => row.item === 'DISSENT_THRESHOLD' && row.reason === 'NO_GROUNDED_CORPUS_QUOTE'));
+  for (const row of CLOSING_CONDITION_SURFACE_OWNERSHIP) {
+    for (const surfacePath of Object.values(row.surfaces)) {
+      assert.equal(fs.existsSync(path.resolve(__dirname, '..', surfacePath)), true, `${row.claim_definition_key}: ${surfacePath}`);
+    }
+  }
 });
