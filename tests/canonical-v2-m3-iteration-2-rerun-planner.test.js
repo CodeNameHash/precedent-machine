@@ -341,5 +341,6 @@ test('planner has no model, network, database or deletion authority imports', ()
     'lib/canonical-v2/native-producer/m3-iteration-2-rerun-planner.js',
   ), 'utf8');
   assert.doesNotMatch(source, /codex-cli-provider|anthropic-provider|provider-interface|node:https|node:http|\bfetch\s*\(|supabase|unlinkSync|rmSync|writeFileSync/);
-  assert.match(source, /provider:\s*async \(\) => providerOutput/);
+  assert.match(source, /recorded-provider-response-replay/);
+  assert.match(source, /provider:\s*async \(\{ governed_scope: governedScope \}\)/);
 });

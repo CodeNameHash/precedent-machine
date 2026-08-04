@@ -9,12 +9,21 @@ const { compileFixtureContractV34 } = require('../lib/canonical-v2/contract-bund
 const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
 const { shapeProposals } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
+const {
+  FinalPilotSynthesisError,
+  replayProviderRecording,
+} = require('../lib/canonical-v2/native-producer/m3-final-pilot-synthesis');
+const {
+  Iteration2RerunPlannerError,
+  replayRetainedProviderOutput,
+} = require('../lib/canonical-v2/native-producer/m3-iteration-2-rerun-planner');
 const { loadAdmittedSourceForExecution } = require('../lib/canonical-v2/native-producer/unified-runner-validate');
 
 const ROOT = path.resolve(__dirname, '..');
 const PILOT_ROOT = process.env.CANONICAL_V2_M3_PILOT_ARTIFACT_ROOT
   || '/private/tmp/canonical-v2-m3-pilot-20260803.L3KSNP';
 const EXECUTION_PATH = path.join(PILOT_ROOT, 'final-output', 'execution-result.json');
+const V6_REVIEW_PACKET_PATH = path.join(PILOT_ROOT, 'final-review-v6', 'sealed-final-pilot-review-packet.json');
 const MANIFEST = require('./fixtures/canonical-v2/m3-12-call-pilot-manifest.json');
 const EXECUTION_ID = '7c5eeece5741d77ac5ecc493783be657447d8c183b25e25daf20e41a38910b2f';
 
@@ -60,6 +69,57 @@ async function replay(workItemId, { reshapeRecordedResponse = false } = {}) {
     admitted_source_context: admitted.context,
   });
   return { runReceipt, resolution };
+}
+
+function recordedInputs(workItemId) {
+  const packet = JSON.parse(fs.readFileSync(V6_REVIEW_PACKET_PATH, 'utf8'));
+  const packetItem = packet.work_items.find((entry) => entry.work_item_id === workItemId);
+  assert.ok(packetItem);
+  const prior = {
+    work_item_id: workItemId,
+    work_result_id: packetItem.repaired_replay.source_work_result_id,
+    provider_recording: packetItem.repaired_replay.provider_recording,
+  };
+  const workItem = MANIFEST.work_items.find((entry) => entry.work_item_id === workItemId);
+  assert.ok(workItem);
+  return { executionId: packet.first_execution_result_id, prior, workItem };
+}
+
+async function replayAtFinalBoundary(workItemId, priorOverride = null) {
+  const { prior, workItem } = recordedInputs(workItemId);
+  return replayProviderRecording({
+    work_item: workItem,
+    prior_result: priorOverride || prior,
+    source_execution_kind: 'FIRST_PASS',
+    manifest: MANIFEST,
+    root_dir: ROOT,
+    contract_bundle: compileFixtureContractV34(),
+  });
+}
+
+async function replayAtRetainedBoundary(workItemId, priorOverride = null) {
+  const { executionId, prior, workItem } = recordedInputs(workItemId);
+  const selectedPrior = priorOverride || prior;
+  return replayRetainedProviderOutput({
+    plan: {
+      schema_version: 'M3_12_CALL_ITERATION_2_RERUN_PLAN/V1',
+      first_execution_result_id: executionId,
+      iteration_2_rerun_plan_id: 'a'.repeat(64),
+      replay_only_work_items: [{
+        work_item_id: workItemId,
+        first_work_result_id: selectedPrior.work_result_id,
+        provider_recording_id: selectedPrior.provider_recording.provider_recording_id,
+      }],
+    },
+    first_execution_result: {
+      execution_result_id: executionId,
+      work_results: [selectedPrior],
+    },
+    work_item_id: workItemId,
+    manifest: MANIFEST,
+    root_dir: ROOT,
+    contract_bundle: compileFixtureContractV34(),
+  });
 }
 
 function countClaims(resolution) {
@@ -186,3 +246,66 @@ test('zero-share derivation does not duplicate an already asserted preferred-sto
   assert.equal(zeroClaims.length, 1);
   assert.equal(zeroClaims[0].attributes.section_reference, '3.7(a)(C)');
 });
+
+for (const [boundary, replayBoundary] of [
+  ['final-pilot synthesis', replayAtFinalBoundary],
+  ['iteration-2 retained replay', replayAtRetainedBoundary],
+]) {
+  test(`${boundary} reshapes immutable capitalisation raw text with current zero and citation rules`, {
+    skip: !fs.existsSync(V6_REVIEW_PACKET_PATH),
+  }, async () => {
+    const skechers = await replayBoundary('skechers-capitalisation-3-7');
+    const topBuild = await replayBoundary('topbuild-capitalisation-3-1-b');
+
+    const skechersZeros = countClaims(skechers.resolution).filter((entry) => (
+      entry.claim.raw_value === 'no shares of Company Preferred Stock were issued and outstanding'
+    ));
+    assert.equal(skechersZeros.length, 1);
+    assert.equal(skechersZeros[0].claim.canonical_value, '0');
+    assert.equal(skechersZeros[0].source_citation, '3.7(a)(C)');
+
+    const topBuildZeros = countClaims(topBuild.resolution).filter((entry) => (
+      entry.claim.raw_value === 'shares of preferred stock, par value $0.01 per share, none of which were outstanding as of the date hereof'
+    ));
+    assert.equal(topBuildZeros.length, 1);
+    assert.equal(topBuildZeros[0].claim.canonical_value, '0');
+    assert.equal(topBuildZeros[0].source_citation, 'III-INTRO(b)(i)(B)');
+
+    const topBuildAwardDate = topBuild.run_receipt.compiled_candidates.find((entry) => (
+      entry.candidate.claim?.claim_definition_key === 'NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE'
+        && entry.candidate.claim.raw_value === 'as of the close of business on April 17, 2026'
+        && JSON.stringify(entry.candidate.claim.attributes.attachment.governs_path) === JSON.stringify(['(ii)'])
+    ));
+    assert.ok(topBuildAwardDate);
+    assert.equal(topBuildAwardDate.citation_validation.derived_citation, 'III-INTRO(b)(ii)');
+    assert.equal(skechers.model_call_count, 0);
+    assert.equal(topBuild.model_call_count, 0);
+    assert.equal(
+      skechers.provider_recording?.provider_recording_id || skechers.provider_recording_id,
+      recordedInputs('skechers-capitalisation-3-7').prior.provider_recording.provider_recording_id,
+    );
+    assert.equal(
+      topBuild.provider_recording?.provider_recording_id || topBuild.provider_recording_id,
+      recordedInputs('topbuild-capitalisation-3-1-b').prior.provider_recording.provider_recording_id,
+    );
+  });
+
+  test(`${boundary} replay is deterministic and fails closed instead of using stale proposals`, {
+    skip: !fs.existsSync(V6_REVIEW_PACKET_PATH),
+  }, async () => {
+    const first = await replayBoundary('topbuild-capitalisation-3-1-b');
+    const second = await replayBoundary('topbuild-capitalisation-3-1-b');
+    assert.deepEqual(second, first);
+
+    const { prior } = recordedInputs('topbuild-capitalisation-3-1-b');
+    const malformed = structuredClone(prior);
+    malformed.provider_recording.provider_output.raw_response_text = '{not-json';
+    malformed.provider_recording.provider_output.proposals = [{ stale: true }];
+    await assert.rejects(
+      () => replayBoundary('topbuild-capitalisation-3-1-b', malformed),
+      (error) => error instanceof (boundary === 'final-pilot synthesis'
+        ? FinalPilotSynthesisError : Iteration2RerunPlannerError)
+        && error.code === 'REPLAY_RAW_RESPONSE_MALFORMED',
+    );
+  });
+}
