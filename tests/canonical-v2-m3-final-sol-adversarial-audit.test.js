@@ -9,6 +9,7 @@ const test = require('node:test');
 const {
   AUDIT_TOPICS,
   M3FinalSolAdversarialAuditError,
+  PROMPT_BYTE_CEILING,
   SOL_HIGH_PROFILE,
   auditPrompt,
   buildSealedM3FinalSolAuditInput,
@@ -23,19 +24,53 @@ function writeJson(root, name, value) {
   return pathname;
 }
 
+function finalWorkItem(index) {
+  const workItemId = `work-${index + 1}`;
+  return {
+    work_item_id: workItemId,
+    source_kind: 'PASSED_ITERATION_2',
+    model_call_count: 2,
+    legal_disposition: 'NOT_DETERMINED',
+    independent_review_state: 'PENDING_INDEPENDENT_REVIEW',
+    iteration_2_work_result: {
+      work_item_id: workItemId,
+      work_result_id: `result-${index + 1}`,
+      source_id: `source-${index + 1}`,
+      resolution: {
+        resolved: index === 0 ? [{
+          resolved_claim_definition_key: 'NO_SHOP_DURATION',
+          concept_key: 'NO_SHOP',
+          party: 'Target',
+          source_citation: 'Section 4.3',
+          triage: { reasons: ['SOURCE_BOUND'] },
+          claim: {
+            claim_revision_id: 'claim-1',
+            canonical_value: '45 days',
+            raw_value: '45 days',
+            attributes: { duration_days: 45 },
+          },
+        }] : [],
+        review_queue: [],
+        open_world: [],
+        resolution_receipt: { counts: { resolved: index === 0 ? 1 : 0, review_queue: 0, open_world: 0 } },
+      },
+    },
+  };
+}
+
 function fixture(root) {
   const review = writeJson(root, 'final-review.json', {
-    work_items: Array.from({ length: 12 }, (_, index) => ({ work_item_id: `work-${index + 1}` })),
+    work_items: Array.from({ length: 12 }, (_, index) => finalWorkItem(index)),
   });
-  const legalA = writeJson(root, 'legal-a.json', { findings: Array.from({ length: 6 }, (_, index) => ({ finding: index })) });
-  const legalB = writeJson(root, 'legal-b.json', { findings: Array.from({ length: 6 }, (_, index) => ({ finding: index + 6 })) });
+  const legalA = writeJson(root, 'legal-a.json', { findings: Array.from({ length: 6 }, (_, index) => ({ work_item_id: `work-${index + 1}`, status: 'FAIL', finding: index })) });
+  const legalB = writeJson(root, 'legal-b.json', { findings: Array.from({ length: 6 }, (_, index) => ({ work_item_id: `work-${index + 7}`, status: 'PASS', finding: index + 6 })) });
   const sevenFails = writeJson(root, 'seven-fails.json', { findings: Array.from({ length: 7 }, (_, index) => ({ status: 'FAIL', finding: index })) });
   const risk = writeJson(root, 'risk.json', { family_control_audit: [{ family: 'NO_SHOP' }] });
   const plan = writeJson(root, 'plan.json', { proposed_execution: [{ control: 'SOURCE_BOUND' }] });
   return { review, legalA, legalB, sevenFails, risk, plan };
 }
 
-function build(root) {
+function build(root, gitDiff = null) {
   const files = fixture(root);
   return buildSealedM3FinalSolAuditInput({
     repo_root: root,
@@ -46,7 +81,7 @@ function build(root) {
     original_seven_fail_findings_path: files.sevenFails,
     cross_family_risk_audit_path: files.risk,
     production_plan_path: files.plan,
-    git_diff: (range, paths) => `diff --git a/${paths[0]} b/${paths[0]}\nindex a..b 100644\n--- a/${paths[0]}\n+++ b/${paths[0]}\n@@\n+source-bound repair\n${range}`,
+    git_diff: gitDiff || ((range, paths) => `diff --git a/${paths[0]} b/${paths[0]}\nindex a..b 100644\n--- a/${paths[0]}\n+++ b/${paths[0]}\n@@\n+source-bound repair\n${range}`),
   });
 }
 
@@ -71,14 +106,42 @@ test('builds and validates a sealed input with the final 12, final 12 legal find
   const root = mkdtempSync(join(tmpdir(), 'm3-sol-audit-'));
   const input = build(root);
   assert.equal(input.audit_model_profile.profile_id, 'SOL_HIGH');
+  assert.equal(SOL_HIGH_PROFILE.model, 'gpt-5.6-sol');
+  assert.equal(SOL_HIGH_PROFILE.reasoning_effort, 'high');
   assert.equal(input.audit_model_profile.call_count, 1);
-  assert.equal(input.final_review_packet.content.work_items.length, 12);
-  assert.equal(input.final_independent_legal_findings.flatMap((entry) => entry.content.findings).length, 12);
-  assert.equal(input.original_seven_fail_findings.content.findings.length, 7);
+  assert.equal(input.audit_projection.final_review_packet.length, 12);
+  assert.equal(input.audit_projection.final_independent_legal_findings.length, 12);
+  assert.equal(input.audit_projection.original_seven_fail_findings.length, 7);
+  assert.equal(input.audit_projection.final_review_packet[0].resolved_claims[0].exact_source_quote, '45 days');
+  assert.equal(input.audit_projection.final_review_packet[0].resolved_claims[0].exact_source_citation, 'Section 4.3');
+  assert.equal(input.audit_projection.final_review_packet[0].source_kind, 'PASSED_ITERATION_2');
+  assert.equal(input.audit_artifact_seals.final_review_packet.content, undefined);
   assert.match(input.consolidation_code_diff.text, /source-bound repair/);
   assert.equal(Object.isFrozen(input), true);
   assert.equal(validateSealedM3FinalSolAuditInput(input), true);
-  assert.match(auditPrompt(input), /demo_truthfulness/);
+  const prompt = auditPrompt(input);
+  assert.match(prompt, /demo_truthfulness/);
+  assert.ok(Buffer.byteLength(prompt, 'utf8') <= PROMPT_BYTE_CEILING);
+});
+
+test('uses deterministic relevant hunks with hashes when a scoped diff exceeds the declared full-diff ceiling', () => {
+  const root = mkdtempSync(join(tmpdir(), 'm3-sol-audit-'));
+  const input = build(root, (range, paths) => (
+    `diff --git a/${paths[0]} b/${paths[0]}\nindex a..b 100644\n--- a/${paths[0]}\n+++ b/${paths[0]}\n@@\n+${'source-bound repair\n'.repeat(20000)}${range}`
+  ));
+  assert.equal(input.consolidation_code_diff.representation, 'DETERMINISTIC_RELEVANT_HUNKS');
+  assert.equal(input.consolidation_code_diff.relevant_hunks.length, 1);
+  assert.equal(input.consolidation_code_diff.relevant_hunks[0].path, 'lib/candidate-resolution.js');
+  assert.match(input.consolidation_code_diff.relevant_hunks[0].full_file_diff_sha256, /^[a-f0-9]{64}$/);
+  assert.ok(Buffer.byteLength(auditPrompt(input), 'utf8') <= PROMPT_BYTE_CEILING);
+});
+
+test('fails closed when a required code path is absent from a compacted scoped diff', () => {
+  const root = mkdtempSync(join(tmpdir(), 'm3-sol-audit-'));
+  assert.throws(
+    () => build(root, () => `diff --git a/lib/other.js b/lib/other.js\n@@\n+${'x\n'.repeat(200000)}`),
+    (error) => error instanceof M3FinalSolAdversarialAuditError && error.code === 'CODE_DIFF_UNREPRESENTED',
+  );
 });
 
 test('makes exactly one SOL_HIGH subscription-client call and seals the raw provider output at the explicit path', async () => {
@@ -100,8 +163,8 @@ test('makes exactly one SOL_HIGH subscription-client call and seals the raw prov
   });
   assert.equal(calls, 1);
   assert.deepEqual(options, {
-    model: SOL_HIGH_PROFILE.model,
-    reasoningEffort: SOL_HIGH_PROFILE.reasoning_effort,
+    model: 'gpt-5.6-sol',
+    reasoningEffort: 'high',
     maxAttempts: 1,
     ephemeral: true,
     isolated: true,
