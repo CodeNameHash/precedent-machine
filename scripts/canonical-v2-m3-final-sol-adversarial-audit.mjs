@@ -8,7 +8,7 @@ const require = createRequire(import.meta.url);
 function usage() {
   throw new Error(
     'Usage: node scripts/canonical-v2-m3-final-sol-adversarial-audit.mjs '
-      + '--final-review-packet <path> --final-legal-findings <path> --final-legal-findings <path> '
+      + '--final-review-packet <path> --final-legal-findings <path> [--final-legal-findings <path>] '
       + '--original-seven-fail-findings <path> --cross-family-risk-audit <path> '
       + '--production-plan <path> --commit-range <base..head> --code-path <path> '
       + '[--code-path <path>] --output <path>',
@@ -29,7 +29,7 @@ function parseArgs(argv) {
     else if (value === '--output') args.outputPath = argv[++index] || null;
     else usage();
   }
-  if (!args.finalReviewPacketPath || args.finalLegalFindingPaths.length !== 2 || args.finalLegalFindingPaths.some((value) => !value)
+  if (!args.finalReviewPacketPath || ![1, 2].includes(args.finalLegalFindingPaths.length) || args.finalLegalFindingPaths.some((value) => !value)
     || !args.originalSevenFailFindingsPath || !args.crossFamilyRiskAuditPath || !args.productionPlanPath
     || !args.commitRange || args.codePaths.length === 0 || args.codePaths.some((value) => !value) || !args.outputPath) usage();
   return args;

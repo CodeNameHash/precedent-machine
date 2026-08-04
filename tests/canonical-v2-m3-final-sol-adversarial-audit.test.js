@@ -70,14 +70,14 @@ function fixture(root) {
   return { review, legalA, legalB, sevenFails, risk, plan };
 }
 
-function build(root, gitDiff = null) {
+function build(root, gitDiff = null, finalFindingPaths = null) {
   const files = fixture(root);
   return buildSealedM3FinalSolAuditInput({
     repo_root: root,
     commit_range: 'base..head',
     code_paths: ['lib/candidate-resolution.js'],
     final_review_packet_path: files.review,
-    final_legal_finding_paths: [files.legalA, files.legalB],
+    final_legal_finding_paths: finalFindingPaths || [files.legalA, files.legalB],
     original_seven_fail_findings_path: files.sevenFails,
     cross_family_risk_audit_path: files.risk,
     production_plan_path: files.plan,
@@ -122,6 +122,20 @@ test('builds and validates a sealed input with the final 12, final 12 legal find
   const prompt = auditPrompt(input);
   assert.match(prompt, /demo_truthfulness/);
   assert.ok(Buffer.byteLength(prompt, 'utf8') <= PROMPT_BYTE_CEILING);
+});
+
+test('accepts one sealed twelve-item final legal findings file', () => {
+  const root = mkdtempSync(join(tmpdir(), 'm3-sol-audit-'));
+  const files = fixture(root);
+  const finalFindings = writeJson(root, 'legal-all.json', {
+    findings: [
+      ...JSON.parse(readFileSync(files.legalA, 'utf8')).findings,
+      ...JSON.parse(readFileSync(files.legalB, 'utf8')).findings,
+    ],
+  });
+  const input = build(root, null, [finalFindings]);
+  assert.equal(input.audit_artifact_seals.final_independent_legal_findings.length, 1);
+  assert.equal(input.audit_projection.final_independent_legal_findings.length, 12);
 });
 
 test('uses deterministic relevant hunks with hashes when a scoped diff exceeds the declared full-diff ceiling', () => {
