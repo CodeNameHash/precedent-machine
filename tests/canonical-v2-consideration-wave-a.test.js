@@ -514,3 +514,66 @@ test('resolver routes unsafe Consideration candidates to typed review or open wo
   assert.equal(badKind.open_world[0].claim_definition_key, CONSIDERATION_CLAIM_KEY);
   assert.equal(badKind.open_world[0].reason, 'ASSERTION_KIND_OUT_OF_ENUM');
 });
+
+test('Modiv defined-term replay resolves the ratio, preserves the preferred formula, and excludes fractional-share cash', async () => {
+  const ratioQuote = 'each Company Common Share shall be automatically converted into the right to receive from Parent that number of validly issued, fully paid and nonassessable shares of Parent Common Stock equal to the Exchange Ratio';
+  const fractionalQuote = 'plus the right to receive cash in lieu of fractional shares of Parent Common Stock, if any (the “Fractional Per Company Common Share Merger Consideration”)';
+  const preferredQuote = 'each Company Preferred Share shall automatically be converted into the right to receive an amount in cash equal to the Per Preferred Share Liquidation Price (such amount, the “Per Company Preferred Share Merger Consideration”)';
+  const source = [
+    ratioQuote,
+    fractionalQuote,
+    preferredQuote,
+    '“Exchange Ratio” means 1.975.',
+    '“Per Preferred Share Liquidation Price” means an amount in cash equal to Twenty-Five Dollars ($25.00) plus accrued and unpaid dividends, if any, to, but not including, the Closing Date.',
+  ].join('\n');
+
+  const result = await resolveConsideration([
+    assertion({
+      kind: 'EXCHANGE_RATIO', quote: ratioQuote, ratioTerm: 'Exchange Ratio', issuerStock: 'Parent Common Stock',
+    }),
+    assertion({
+      kind: 'PER_SHARE_CASH', quote: fractionalQuote, considerationTerm: 'Fractional Per Company Common Share Merger Consideration',
+    }),
+    assertion({
+      kind: 'PER_SHARE_CASH', quote: preferredQuote, considerationTerm: 'Per Company Preferred Share Merger Consideration',
+    }),
+  ], source, 'deal:modiv-defined-term-consideration');
+
+  assert.equal(result.resolved.length, 1);
+  assert.equal(result.resolved[0].resolved_claim_definition_key, 'EXCHANGE_RATIO_VALUE');
+  assert.equal(result.resolved[0].claim.canonical_value, '1.975');
+  assert.equal(result.resolved[0].claim.attributes.defined_term_value, '1.975');
+
+  assert.equal(result.structured_per_share_cash_values.length, 1);
+  assert.deepEqual(
+    {
+      consideration_term_ref: result.structured_per_share_cash_values[0].consideration_term_ref,
+      operator: result.structured_per_share_cash_values[0].operator,
+      base_amount: result.structured_per_share_cash_values[0].base_amount,
+      currency: result.structured_per_share_cash_values[0].currency,
+      variable_component: result.structured_per_share_cash_values[0].variable_component,
+      defined_term_lineage: result.structured_per_share_cash_values[0].defined_term_lineage,
+    },
+    {
+      consideration_term_ref: 'Per Company Preferred Share Merger Consideration',
+      operator: 'BASE_PLUS_VARIABLE',
+      base_amount: '25.00',
+      currency: 'USD',
+      variable_component: 'accrued and unpaid dividends, if any, to, but not including, the Closing Date',
+      defined_term_lineage: [
+        'Per Company Preferred Share Merger Consideration',
+        'Per Preferred Share Liquidation Price',
+      ],
+    },
+  );
+  assert.match(result.structured_per_share_cash_values[0].raw_formula, /\$25\.00.*plus accrued and unpaid dividends/i);
+
+  assert.equal(
+    result.resolved.filter((entry) => entry.resolved_claim_definition_key === 'PER_SHARE_CASH_CONSIDERATION').length,
+    0,
+  );
+  assert.equal(
+    result.structured_per_share_cash_values.some((entry) => /fractional/i.test(entry.consideration_term_ref)),
+    false,
+  );
+});
