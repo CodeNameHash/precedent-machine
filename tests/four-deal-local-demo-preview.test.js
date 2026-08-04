@@ -59,3 +59,12 @@ test('four-deal preview binds PASS or FAIL only when sealed final legal findings
   assert.ok(modiv.rows.some((row) => row.work_item_id === 'modiv-antitrust-consents-5-5'
     && row.legal_review_state === 'FAIL'));
 });
+
+test('four-deal preview keeps governed scope separate from a missing published citation', () => {
+  const result = getFrozenFourDealLocalDemoResult();
+  const row = result.deals
+    .flatMap((deal) => deal.rows)
+    .find((candidate) => candidate.source_citation.startsWith('Published citation pending; governed scope '));
+  assert.ok(row);
+  assert.doesNotMatch(row.source_citation, /^\d/);
+});
