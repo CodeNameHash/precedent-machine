@@ -191,6 +191,14 @@ const capitalStructureText = fs.readFileSync(
 );
 
 const LIMB_I_QUOTE = '(i)The authorized capital stock of the Company consists of';
+const LIMB_I_FULL_QUOTE = capitalStructureText.slice(
+  capitalStructureText.indexOf(LIMB_I_QUOTE),
+  capitalStructureText.indexOf('\n(ii)'),
+);
+const LIMB_II_DISCLOSURE_LIST_QUOTE = capitalStructureText.slice(
+  capitalStructureText.indexOf('Section ‎3.1(b)(ii) of the Company Disclosure Letter'),
+  capitalStructureText.indexOf('Each of the outstanding shares'),
+).trimEnd();
 const LIMB_III_QUOTE = '(iii)Except for any obligations pursuant to this Agreement,';
 const QUALIFIER_QUOTE = 'duly authorized and are validly issued, fully paid and nonassessable';
 const OPEN_WORLD_QUOTE = 'There are no voting trusts or other agreements';
@@ -207,6 +215,7 @@ const OPEN_WORLD_QUOTE = 'There are no voting trusts or other agreements';
 
 // Exact ACCURACY_CODE_WHITELIST phrase -> MAT_ALL_RESPECTS.
 const ACCURACY_CHAPEAU_QUOTE = 'true and correct in all respects';
+const ACCURACY_ITEM_LIMB_QUOTE = 'The Company represents that the following statement is true and correct in all respects.';
 // Exact ACCURACY_CODE_WHITELIST phrase -> MAT_ALL_RESPECTS_DE_MINIMIS. The
 // "except for de minimis inaccuracies" clause binds into the SAME ACCURACY
 // unit (exception-connective binding rule), so this whole string classifies
@@ -531,7 +540,7 @@ function temporalQualifierResponse() {
       chapeau_quote: 'Capital Structure.',
       limbs: [{
         limb_path: ['(i)'],
-        assertion_quote: LIMB_I_QUOTE,
+        assertion_quote: LIMB_I_FULL_QUOTE,
         subject: 'capital stock',
       }],
       qualifiers: [{
@@ -694,6 +703,11 @@ test('(QUALIFIER, ACCURACY, ITEM) routes to review, never rep-level (work item 2
     attachment: itemAttachment(['(i)']),
     modelKind: 'ACCURACY',
     modelCode: 'MAT_ALL_RESPECTS',
+    limbs: [{
+      limb_path: ['(i)'],
+      assertion_quote: ACCURACY_ITEM_LIMB_QUOTE,
+      subject: 'synthetic item-level accuracy statement',
+    }],
   });
   assert.equal(resolution.resolved.some((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY), false);
   const queued = resolution.review_queue.find((item) => item.generic_claim_key === QUALIFIER_CLAIM_KEY);
@@ -709,6 +723,11 @@ test('an ACCURACY qualifier whose whole quote matches no whitelist phrase routes
     quote: ACCURACY_NO_CODE_QUOTE,
     attachment: itemAttachment(['(ii)']),
     modelKind: 'ACCURACY',
+    limbs: [{
+      limb_path: ['(ii)'],
+      assertion_quote: LIMB_II_DISCLOSURE_LIST_QUOTE,
+      subject: 'Disclosure Letter equity-award list',
+    }],
   });
   assert.equal(resolution.resolved.length, 0);
   const queued = resolution.review_queue.find((item) => item.generic_claim_key === QUALIFIER_CLAIM_KEY);

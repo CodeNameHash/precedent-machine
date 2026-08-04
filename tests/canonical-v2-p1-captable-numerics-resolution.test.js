@@ -452,7 +452,7 @@ test('Skechers C8/C11: RESERVED (Company ESPP) sub-quote resolves to RESERVED_SH
   assert.equal(resolved.triage.materiality_rank, 52);
 });
 
-test('Skechers C11: a clipped RESERVED candidate adopts its unique matching limb quote before parsing', async () => {
+test('Skechers C11: a clipped RESERVED candidate uses a unique matching limb for corroboration while retaining its raw quote', async () => {
   const clippedQuote = '3,360,412 shares of Company Common Stock';
   const limbQuote = '3,360,412 shares of Company Common Stock reserved and available for issuance under the Company ESPP.';
   assert.ok(SKECHERS_PARAGRAPH.includes(clippedQuote));
@@ -476,7 +476,7 @@ test('Skechers C11: a clipped RESERVED candidate adopts its unique matching limb
 
   const resolved = resolution.resolved.find((entry) => entry.generic_claim_key === SHARE_COUNT_CLAIM_KEY);
   assert.ok(resolved);
-  assert.equal(resolved.claim.raw_value, limbQuote);
+  assert.equal(resolved.claim.raw_value, clippedQuote);
   assert.equal(resolved.claim.canonical_value, '3360412');
   assert.equal(resolved.claim.attributes.plan_ref, 'the Company ESPP');
 });
