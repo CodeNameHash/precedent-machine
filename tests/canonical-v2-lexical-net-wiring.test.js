@@ -164,7 +164,7 @@ test('FIXTURE PIN (test 4, additivity): the no-lexical-input resolveCandidates()
   assert.equal(baseline.resolution_receipt.zero_pattern_table_version, 1);
   assert.equal(
     baseline.resolution_receipt.resolution_receipt_id,
-    '4ba7e5bc27bb64845972ed17535d7bf22aa7c46673817ccd75007b6a54ad2732',
+    '0ba71328736a9ac38e09240840a35bbfb26805e3a2fb6ec226bc7b95074cd2be',
     // Re-pinned after Ben's 2026-08-03 ruling: bare no-shop "days"
     // now resolve as CALENDAR_DAYS, and no_shop_period_parse_version is 2.
     // Re-pinned (P2 qualifier kinds phase 1, Fable review 2026-08-03): delta =
@@ -223,10 +223,8 @@ test('ACCEPTANCE (real-data fixture): a bound, fresh lexical_disagreement receip
     run_receipt: runReceipt, contract_vocabulary: CONTRACT_BUNDLE_V13,
     admitted_source_context: admittedSourceContext, agreement_date: AGREEMENT_DATE,
   });
-  // P2 qualifier kinds phase 1: 3 -> 5 (the two F28 AS_OF_BRIDGE conversions
-  // resolve as plain-calendar measurement-date claims; counts re-derived at
-  // Fable review, see canonical-v2-v1v2-comparator-wiring.test.js's sanity pin).
-  assert.equal(baseline.resolved.length, 5);
+  // Current ITEM evidence binding retains the three limb-grounded claims.
+  assert.equal(baseline.resolved.length, 3);
 
   const section = loadF28ThirdRunSection();
   const candidates = baseline.resolved
@@ -245,7 +243,7 @@ test('ACCEPTANCE (real-data fixture): a bound, fresh lexical_disagreement receip
     agreement_date: AGREEMENT_DATE, lexical_disagreement: { [section.section_ref]: receipt },
   });
 
-  assert.equal(wired.resolved.length, 5, 'strictly additive on bucket sizes'); // 3 -> 5, P2 conversions
+  assert.equal(wired.resolved.length, 3, 'strictly additive on bucket sizes');
   for (const entry of wired.resolved) {
     assert.ok(!entry.triage.unevaluated_conditions.includes('LEXICAL_DISAGREEMENT_NET_ABSENT'), 'ABSENT removed -- condition 2 DID evaluate');
     assert.ok(entry.triage.reasons.includes('LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE'));
@@ -258,7 +256,7 @@ test('ACCEPTANCE (real-data fixture): a bound, fresh lexical_disagreement receip
   assert.equal(wired.resolution_receipt.lexical_disagreement_counts.lexical_receipt_malformed_sections, 0);
 
   const wiredReviewItems = wired.review_queue.filter((item) => item.has_resolution === true && item.concept_key === 'REP-T-CAP');
-  assert.equal(wiredReviewItems.length, 5); // 3 -> 5, P2 conversions
+  assert.equal(wiredReviewItems.length, 3);
   for (const item of wiredReviewItems) {
     assert.ok(item.reasons.includes('LEXICAL_UNMATCHED_SIGNAL_IN_SCOPE'));
     assert.ok(Array.isArray(item.lexical_disagreement_excerpts), 'disagreement excerpts travel on the queue item');

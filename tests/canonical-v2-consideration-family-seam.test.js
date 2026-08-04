@@ -15,6 +15,9 @@ const {
   buildConsiderationProducerPrompt,
 } = require('../lib/canonical-v2/native-producer/consideration-producer-prompt');
 const {
+  bindNativePromptToGovernedScope,
+} = require('../lib/canonical-v2/native-producer/native-prompt-binding');
+const {
   compileCandidateProposals,
 } = require('../lib/canonical-v2/native-producer/candidate-proposal-compiler');
 const {
@@ -135,10 +138,13 @@ test('live provider sends the consideration prompt and shapes a byte-evidenced g
     provider,
   });
 
-  const expectedPrompt = buildConsiderationProducerPrompt({
-    source_text: SOURCE_TEXT,
+  const expectedPrompt = bindNativePromptToGovernedScope({
+    prompt: buildConsiderationProducerPrompt({
+      source_text: SOURCE_TEXT,
+      governed_scope: GOVERNED_SCOPE,
+      known_definitions: [],
+    }),
     governed_scope: GOVERNED_SCOPE,
-    known_definitions: [],
   });
   assert.deepEqual(request.messages, expectedPrompt.messages);
   assert.equal(produced.proposals.length, 1);

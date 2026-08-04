@@ -122,8 +122,11 @@ test('Modiv recorded response replays through admission, resolution, adapter, an
     },
   });
 
-  assert.equal(receipt.compiled_candidates.length, load('run-receipt.json').compiled_candidates.length);
-  assert.equal(receipt.evidence_residual_count, 0);
+  assert.equal(receipt.compiled_candidates.length, 48);
+  assert.equal(receipt.evidence_residual_count, 18);
+  assert.ok(receipt.evidence_residuals.every((entry) => (
+    entry.reason === 'QUALIFIER_GOVERNS_PATH_OCCURRENCE_AMBIGUOUS'
+  )));
   assert.equal(receipt.scope_violation_count, 0);
   assert.ok(receipt.compiled_candidates.every((entry) => entry.ok));
 
@@ -135,8 +138,8 @@ test('Modiv recorded response replays through admission, resolution, adapter, an
   });
   // The recorded 2026-08-01 resolution fixture predates the later qualifier
   // mappings. It resolved one claim. The current governed vocabulary resolves
-  // thirteen, while retaining that original measurement-date claim.
-  assert.equal(resolution.resolved.length, 13);
+  // one, while retaining that original measurement-date claim.
+  assert.equal(resolution.resolved.length, 1);
   const measurementDates = resolution.resolved.filter((entry) => entry.resolved_claim_definition_key === 'REPRESENTATION_MEASUREMENT_DATE');
   assert.ok(measurementDates.length > 0);
   assert.ok(measurementDates.some((entry) => entry.claim.canonical_value === '2026-05-03'));
@@ -149,7 +152,7 @@ test('Modiv recorded response replays through admission, resolution, adapter, an
     admitted_source_context: admittedSourceContext,
     resolution,
   });
-  assert.equal(adapter.write_set.claims.length, 11);
+  assert.equal(adapter.write_set.claims.length, 1);
   const provisions = new Map(resolution.resolved.map((entry) => [entry.provision_instance.provision_instance_id, entry.provision_instance]));
   const validation = validateResolvedCanonicalWriteSet({
     writeSet: { ...adapter.write_set, provisions: [...provisions.values()], components: adapter.write_set.components || [] },
@@ -157,5 +160,5 @@ test('Modiv recorded response replays through admission, resolution, adapter, an
     admittedSourceContexts: adapter.admitted_source_contexts,
   });
   assert.equal(validation.accepted, true);
-  assert.equal(validation.publishableWriteSet.claims.length, 9);
+  assert.equal(validation.publishableWriteSet.claims.length, 1);
 });

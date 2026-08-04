@@ -41,8 +41,8 @@ const FRAUD = 'Nothing in this Section limits liability for Fraud.';
 const WILLFUL = '“Willful Breach” means a deliberate act with actual knowledge that the act constitutes a material breach.';
 const SOURCE = [TARGET_NO_OTHER, BUYER_NON_RELIANCE, BUYER_INDEPENDENT, FRAUD, WILLFUL].join('\n');
 
-function parsedResponse() {
-  return {
+function parsedResponse({ includeWillful = true } = {}) {
+  const response = {
     no_other_reps_assertions: [{
       section_reference: '4.20', representation_side: 'TARGET', assertion_quote: TARGET_NO_OTHER,
       representation_maker_ref: 'Parent', agreement_scope_quote: 'other than those expressly set forth in this Agreement',
@@ -65,6 +65,8 @@ function parsedResponse() {
     }],
     open_world_candidates: [{ observed_quote: FRAUD, why_unmapped: 'The fraud scope is not adjudicated.' }],
   };
+  if (!includeWillful) response.willful_breach_definitions = [];
+  return response;
 }
 
 test('producer prompt keeps fraud scope and remedy relationships out of structured output', () => {
@@ -91,19 +93,20 @@ test('producer shapes the six grounded claim types and preserves open-world evid
 });
 
 test('live provider runtime validates and shapes the family response', async () => {
+  const governedSource = [TARGET_NO_OTHER, BUYER_NON_RELIANCE, BUYER_INDEPENDENT, FRAUD].join('\n');
   const client = {
-    messages: {
-      create: async () => ({ content: [{ text: JSON.stringify({ ...parsedResponse(), open_world_candidates: [] }) }] }),
-    },
+    messages: { create: async () => ({ content: [{ text: JSON.stringify({
+      ...parsedResponse({ includeWillful: false }), open_world_candidates: [],
+    }) }] }) },
   };
   const provider = createAnthropicProvider({ client, maxRetries: 0 });
   const result = await provider({
-    governed_scope: { source_text: SOURCE },
+    governed_scope: { section_reference: '4.20', source_text: governedSource },
     definitions: {},
     section_family: 'NO_OTHER_REPS_FRAUD',
   });
   assert.equal(result.prompt_id, 'native-producer-no-other-reps-fraud/v1');
-  assert.equal(result.proposals.length, 6);
+  assert.equal(result.proposals.length, 5);
   assert.equal(result.evidence_residuals.length, 0);
 });
 

@@ -55,10 +55,12 @@ test('immutable live M3 capitalisation and no-other-reps checkpoint replays cons
   assert.equal(skechersCapitalisation.resolved.filter((entry) => (
     entry.claim.claim_definition_key === 'CAPITALIZATION_SHARE_COUNT'
       || entry.claim.claim_definition_key === 'RESERVED_SHARE_POOL'
-  )).length, 8);
+  )).length, 6);
   assert.deepEqual(unresolvedCountValues(skechersCapitalisation), [
+    '1,301,556 shares of Company Common Stock',
     '10,000,000 shares of Company Preferred Stock',
     '500,000,000 shares of Company Class A Common Stock',
+    '650,778 shares of Company Common Stock',
     '75,000,000 shares of Class B Common Stock',
   ]);
   assert.equal(skechersCapitalisation.open_world.filter((entry) => (

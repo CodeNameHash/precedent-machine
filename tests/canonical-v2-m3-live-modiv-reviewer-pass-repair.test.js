@@ -52,11 +52,16 @@ test('immutable Modiv reviewer-PASS replay preserves named consideration terms a
   assert.equal(adjudication.reviewer_disposition, 'PASS');
   assert.equal(adjudication.adjudication_outcome, 'PRESERVE_NAMED_TERM_WITHOUT_LITERAL');
   assert.deepEqual(adjudication.items.map((entry) => entry.named_term_ref).sort(), [
-    'Exchange Ratio',
     'Fractional Per Company Common Share Merger Consideration',
     'Per Company Preferred Share Merger Consideration',
   ]);
   assert.ok(adjudication.items.every((entry) => entry.canonical_value === null));
+  const exchangeRatio = consideration.resolution.resolved.find((entry) => (
+    entry.claim.claim_definition_key === 'EXCHANGE_RATIO_VALUE'
+  ));
+  assert.ok(exchangeRatio);
+  assert.equal(exchangeRatio.claim.canonical_value, '1.975');
+  assert.deepEqual(exchangeRatio.claim.attributes.definition_source_citations, ['8.12(u)']);
   assert.equal(consideration.resolution.open_world.length, 4);
 
   const terminationFee = replay('modiv-termination-fee-7-3');

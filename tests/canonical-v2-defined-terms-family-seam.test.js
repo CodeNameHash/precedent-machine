@@ -22,6 +22,9 @@ const {
   PROMPT_VERSION,
   buildDefinedTermsProducerPrompt,
 } = require('../lib/canonical-v2/native-producer/defined-terms-producer-prompt');
+const {
+  bindNativePromptToGovernedScope,
+} = require('../lib/canonical-v2/native-producer/native-prompt-binding');
 const { produceCandidateProposals } = require('../lib/canonical-v2/native-producer/provider-interface');
 const {
   getProducerPromptModule,
@@ -44,6 +47,7 @@ const LANDOS_SOURCE = fs.readFileSync(
 );
 const GOVERNED_SCOPE = Object.freeze({
   deal_key: 'deal:defined-terms-family-seam',
+  section_reference: '1.1',
   governed_intervals: Object.freeze(['1.1']),
   source_text: SOURCE_TEXT,
 });
@@ -80,6 +84,7 @@ async function run(modelResponse, { sourceText = SOURCE_TEXT, sectionReference =
   let request;
   const governedScope = Object.freeze({
     deal_key: 'deal:defined-terms-family-seam',
+    section_reference: sectionReference,
     governed_intervals: Object.freeze([sectionReference]),
     source_text: sourceText,
   });
@@ -152,10 +157,13 @@ test('stage 1 routes definition titles and preserves the MAE-specific priority',
 
 test('live provider uses the family prompt, byte-verifies both spans and compiles the candidate', async () => {
   const { request, result } = await run(response());
-  const expectedPrompt = buildDefinedTermsProducerPrompt({
-    source_text: SOURCE_TEXT,
+  const expectedPrompt = bindNativePromptToGovernedScope({
+    prompt: buildDefinedTermsProducerPrompt({
+      source_text: SOURCE_TEXT,
+      governed_scope: GOVERNED_SCOPE,
+      known_definitions: [],
+    }),
     governed_scope: GOVERNED_SCOPE,
-    known_definitions: [],
   });
   assert.deepEqual(request.messages, expectedPrompt.messages);
   assert.equal(result.proposals.length, 1);

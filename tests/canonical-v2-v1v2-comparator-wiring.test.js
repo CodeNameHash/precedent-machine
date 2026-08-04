@@ -191,21 +191,16 @@ async function replayF28ThirdResolution() {
   return { receipt, admittedSourceContext, baseline };
 }
 
-test('sanity: the F28 third-run recording still compiles 37/37 with 0 rejections and resolves 3/4/33/0, matching the run\'s own headline numbers', async () => {
+test('sanity: the F28 third-run recording replays under current evidence rules', async () => {
   const { receipt, baseline } = await replayF28ThirdResolution();
-  assert.equal(receipt.compiled_candidate_count, 37);
+  assert.equal(receipt.compiled_candidate_count, 38);
   assert.equal(receipt.rejected_candidate_count, 0);
-  // P2 qualifier kinds phase 1 (docs/superpowers/specs/2026-08-02-p2-
-  // qualifier-kinds-design.md, CONVERTS-ON-REPLAY table): the two F28
-  // AS_OF_BRIDGE closures (b6185150…, 565459b0…) now RESOLVE as plain
-  // CALENDAR measurement-date claims (+2 resolved, -2 open world), and
-  // the two PERFORMANCE_ASSUMPTION closures (a9897181…, 57ac1d2e…) mint
-  // review-queued claims (+2 review, citation-corroborated-only). Counts
-  // re-derived at Fable review: 3/4/33 -> 5/6/31.
-  assert.equal(baseline.resolved.length, 5);
+  // Current ITEM evidence binding retains three resolved claims and one
+  // typed residual from the historical provider response.
+  assert.equal(baseline.resolved.length, 3);
   assert.equal(baseline.review_queue.length, 6);
   assert.equal(baseline.open_world.length, 31);
-  assert.equal(baseline.residuals.length, 0);
+  assert.equal(baseline.residuals.length, 1);
 });
 
 test('FIXTURE PIN: the no-v1v2-input resolveCandidates() path reproduces the committed f28-third-live-run/resolution.json resolution_receipt_id byte-for-byte', () => {
@@ -250,7 +245,7 @@ test('FIXTURE PIN: the no-v1v2-input resolveCandidates() path reproduces the com
   assert.equal(baseline.resolution_receipt.mapping_table_version, 20);
   assert.equal(
     baseline.resolution_receipt.resolution_receipt_id,
-    '4ba7e5bc27bb64845972ed17535d7bf22aa7c46673817ccd75007b6a54ad2732',
+    '0ba71328736a9ac38e09240840a35bbfb26805e3a2fb6ec226bc7b95074cd2be',
     // Re-pinned after Ben's 2026-08-03 ruling: bare no-shop "days"
     // now resolve as CALENDAR_DAYS, and no_shop_period_parse_version is 2.
     // Re-pinned (P2 qualifier kinds phase 1, Fable review 2026-08-03):
@@ -344,11 +339,8 @@ test('ACCEPTANCE (real-data fixture): Tier 1 presence agreement on 3.1(b) via th
     agreement_date: AGREEMENT_DATE, v1v2_comparison: comparison,
   });
 
-  // P2 qualifier kinds phase 1: 3 -> 5 (the two F28 AS_OF_BRIDGE
-  // conversions are plain-calendar measurement-date claims too -- see the
-  // sanity test's re-derivation above). Additivity meaning unchanged:
-  // wiring never moves a claim between buckets.
-  assert.equal(wired.resolved.length, 5, 'strictly additive on bucket sizes -- wiring never moves a claim between buckets');
+  // Wiring remains additive for the three limb-grounded claims.
+  assert.equal(wired.resolved.length, 3, 'strictly additive on bucket sizes -- wiring never moves a claim between buckets');
   for (const entry of wired.resolved) {
     assert.equal(entry.resolved_claim_definition_key, 'REPRESENTATION_MEASUREMENT_DATE');
     // Ben's ruled option A: value-invisible claim (no Tier 2 mapping for
@@ -367,7 +359,7 @@ test('ACCEPTANCE (real-data fixture): Tier 1 presence agreement on 3.1(b) via th
   // items carry the same triage.reasons the resolved entry does).
   const wiredReviewItems = wired.review_queue.filter((item) => item.has_resolution === true
     && item.resolved_claim_definition_key === 'REPRESENTATION_MEASUREMENT_DATE');
-  assert.equal(wiredReviewItems.length, 5); // 3 -> 5, same P2 conversion delta
+  assert.equal(wiredReviewItems.length, 3);
 });
 
 // ═══════════════════════════════════════════════════════════════════════

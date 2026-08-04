@@ -12,6 +12,9 @@ const {
   getProducerPromptModule,
 } = require('../lib/canonical-v2/native-producer/producer-prompt-registry');
 const {
+  bindNativePromptToGovernedScope,
+} = require('../lib/canonical-v2/native-producer/native-prompt-binding');
+const {
   produceCandidateProposals,
 } = require('../lib/canonical-v2/native-producer/provider-interface');
 
@@ -21,6 +24,7 @@ const DEFINITIONS = Object.freeze({ known_definitions: [] });
 const CASES = Object.freeze([
   Object.freeze({
     family: 'TERMINATION_FEE',
+    sectionReference: '1.1',
     sourceText: 'Parent shall pay the Company the "Parent Termination Fee" of $10.',
     response: Object.freeze({
       fee_amount_assertions: Object.freeze([Object.freeze({
@@ -38,6 +42,7 @@ const CASES = Object.freeze([
   }),
   Object.freeze({
     family: 'NO_SHOP',
+    sectionReference: '1.2',
     sourceText: 'The Company shall not solicit an Acquisition Proposal.',
     response: Object.freeze({
       no_shop_action_assertions: Object.freeze([Object.freeze({
@@ -54,6 +59,7 @@ const CASES = Object.freeze([
   }),
   Object.freeze({
     family: 'MAE_DEFINITION',
+    sectionReference: '1.3',
     sourceText: 'Material Adverse Effect means an effect adverse to the business.',
     response: Object.freeze({
       mae_definition_instances: Object.freeze([Object.freeze({
@@ -75,6 +81,7 @@ const CASES = Object.freeze([
   }),
   Object.freeze({
     family: 'TERMINATION',
+    sectionReference: '1.4',
     sourceText: 'Either Parent or the Company may terminate this Agreement by mutual written consent.',
     response: Object.freeze({
       termination_right_assertions: Object.freeze([Object.freeze({
@@ -94,6 +101,7 @@ const CASES = Object.freeze([
   }),
   Object.freeze({
     family: 'REPRESENTATIONS',
+    sectionReference: '3.1',
     sourceText: 'The Company represents and warrants that this representation is true and correct in all material respects.',
     response: Object.freeze({
       representation_instances: Object.freeze([Object.freeze({
@@ -125,7 +133,8 @@ for (const familyCase of CASES) {
   test(`live provider dispatches ${familyCase.family} through its registered prompt and response shaper`, async () => {
     const governedScope = {
       deal_key: `deal:provider-${familyCase.family.toLowerCase()}`,
-      governed_intervals: [familyCase.response.section_reference || '1'],
+      section_reference: familyCase.sectionReference,
+      governed_intervals: [familyCase.sectionReference],
       source_text: familyCase.sourceText,
     };
     let request = null;
@@ -146,10 +155,13 @@ for (const familyCase of CASES) {
       provider,
     });
 
-    const expectedPrompt = getProducerPromptModule(familyCase.family)({
-      source_text: familyCase.sourceText,
+    const expectedPrompt = bindNativePromptToGovernedScope({
+      prompt: getProducerPromptModule(familyCase.family)({
+        source_text: familyCase.sourceText,
+        governed_scope: governedScope,
+        known_definitions: [],
+      }),
       governed_scope: governedScope,
-      known_definitions: [],
     });
     assert.deepEqual(request.messages, expectedPrompt.messages);
     assert.equal(result.proposals.length, 1);
@@ -172,7 +184,7 @@ test('live provider rejects a response shaped for a different family', async () 
   const provider = createAnthropicProvider({ model: 'family-dispatch-test', client, maxRetries: 0 });
 
   await assert.rejects(() => produceCandidateProposals({
-    governed_scope: { deal_key: 'deal:wrong-shape', source_text: 'No solicitation.' },
+    governed_scope: { deal_key: 'deal:wrong-shape', section_reference: '1.2', source_text: 'No solicitation.' },
     definitions: DEFINITIONS,
     contract_bundle: CONTRACT_BUNDLE,
     section_family: 'NO_SHOP',
@@ -196,7 +208,7 @@ test('the omitted-family default and explicit CAPITALISATION path remain byte-co
     client: { messages: { async create() { return { content: [{ text: response }] }; } } },
   });
   const input = {
-    governed_scope: { deal_key: 'deal:capitalisation-default', source_text: 'Capitalisation.' },
+    governed_scope: { deal_key: 'deal:capitalisation-default', section_reference: '3.1', source_text: 'Capitalisation.' },
     definitions: DEFINITIONS,
     contract_bundle: CONTRACT_BUNDLE,
   };
