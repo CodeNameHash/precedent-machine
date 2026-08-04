@@ -65,4 +65,20 @@ test('immutable Modiv reviewer-PASS replay preserves named consideration terms a
   assert.ok(unresolvedTriggers.every((entry) => entry.reasons.includes('TRIGGER_UNCORROBORATED')));
   assert.ok(unresolvedTriggers.every((entry) => !entry.reasons.includes('FEE_SIDE_UNCORROBORATED')));
   assert.equal(terminationFee.resolution.open_world.length, 4);
+  assert.deepEqual(
+    terminationFee.resolution.conditional_termination_fee_values.map((entry) => ({
+      fee_side: entry.fee_side,
+      triggering_branch: entry.triggering_branch,
+      base_amount: entry.base_amount,
+      source_citations: entry.source_citations,
+    })),
+    [
+      { fee_side: 'SELLER', triggering_branch: '7.3(b)(i)', base_amount: '10000000', source_citations: ['7.3(b)(i)', '8.12(m)', '8.12(f)'] },
+      { fee_side: 'SELLER', triggering_branch: '7.3(b)(ii)', base_amount: '10000000', source_citations: ['7.3(b)(ii)', '8.12(m)', '8.12(f)'] },
+      { fee_side: 'SELLER', triggering_branch: '7.3(b)(iii)', base_amount: '10000000', source_citations: ['7.3(b)(iii)', '8.12(m)', '8.12(f)'] },
+      { fee_side: 'SELLER', triggering_branch: '7.3(b)(iv)', base_amount: '15000000.00', source_citations: ['7.3(b)(iv)', '8.12(m)', '8.12(f)'] },
+      { fee_side: 'SELLER', triggering_branch: '7.3(b)(v)', base_amount: '15000000.00', source_citations: ['7.3(b)(v)', '8.12(m)', '8.12(f)'] },
+      { fee_side: 'BUYER', triggering_branch: '7.3(c)', base_amount: '15000000.00', source_citations: ['7.3(c)', '8.12(vv)', '8.12(gg)'] },
+    ],
+  );
 });
