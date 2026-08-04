@@ -38,6 +38,8 @@ test('four-deal preview binds immutable M3 rows and the sealed Metsera Process r
   assert.ok(topBuild.rows.some((row) => row.result_type === 'OPEN_WORLD_WARNING'
     && row.warning));
   assert.equal(metsera.result_domain, 'PROCESS_PRODUCT');
+  assert.equal(metsera.rows[0].legal_review_state, null);
+  assert.equal(metsera.rows[0].product_result_state, 'INACTIVE_CANDIDATE');
   assert.equal(metsera.rows[0].governed_value, 'EXCLUSIVITY_GRANTED');
   assert.match(metsera.rows[0].source_citation, /Metsera DEFM14A/);
   assert.equal(metsera.product_component.slot_state, 'VALID');
