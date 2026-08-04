@@ -37,11 +37,11 @@ function finalWorkItem(index) {
       work_result_id: `result-${index + 1}`,
       source_id: `source-${index + 1}`,
       resolution: {
-        resolved: index === 0 ? [{
+        resolved: index <= 1 ? [{
           resolved_claim_definition_key: 'NO_SHOP_DURATION',
           concept_key: 'NO_SHOP',
           party: 'Target',
-          source_citation: 'Section 4.3',
+          ...(index === 0 ? { source_citation: 'Section 4.3' } : { section_reference: '4.3' }),
           triage: { reasons: ['SOURCE_BOUND'] },
           claim: {
             claim_revision_id: 'claim-1',
@@ -52,7 +52,7 @@ function finalWorkItem(index) {
         }] : [],
         review_queue: [],
         open_world: [],
-        resolution_receipt: { counts: { resolved: index === 0 ? 1 : 0, review_queue: 0, open_world: 0 } },
+        resolution_receipt: { counts: { resolved: index <= 1 ? 1 : 0, review_queue: 0, open_world: 0 } },
       },
     },
   };
@@ -114,6 +114,8 @@ test('builds and validates a sealed input with the final 12, final 12 legal find
   assert.equal(input.audit_projection.original_seven_fail_findings.length, 7);
   assert.equal(input.audit_projection.final_review_packet[0].resolved_claims[0].exact_source_quote, '45 days');
   assert.equal(input.audit_projection.final_review_packet[0].resolved_claims[0].exact_source_citation, 'Section 4.3');
+  assert.equal(input.audit_projection.final_review_packet[1].resolved_claims[0].exact_source_citation,
+    'Published citation pending; governed scope 4.3');
   assert.equal(input.audit_projection.final_review_packet[0].source_kind, 'PASSED_ITERATION_2');
   assert.equal(input.audit_artifact_seals.final_review_packet.content, undefined);
   assert.match(input.consolidation_code_diff.text, /source-bound repair/);
