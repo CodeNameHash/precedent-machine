@@ -523,8 +523,9 @@ test('Modiv defined-term replay resolves the ratio, preserves the preferred form
     ratioQuote,
     fractionalQuote,
     preferredQuote,
-    '“Exchange Ratio” means 1.975.',
-    '“Per Preferred Share Liquidation Price” means an amount in cash equal to Twenty-Five Dollars ($25.00) plus accrued and unpaid dividends, if any, to, but not including, the Closing Date.',
+    'Section 8.12 Definitions.',
+    '(u) “Exchange Ratio” means 1.975.',
+    '(zz) “Per Preferred Share Liquidation Price” means an amount in cash equal to Twenty-Five Dollars ($25.00) plus accrued and unpaid dividends, if any, to, but not including, the Closing Date.',
   ].join('\n');
 
   const result = await resolveConsideration([
@@ -543,8 +544,19 @@ test('Modiv defined-term replay resolves the ratio, preserves the preferred form
   assert.equal(result.resolved[0].resolved_claim_definition_key, 'EXCHANGE_RATIO_VALUE');
   assert.equal(result.resolved[0].claim.canonical_value, '1.975');
   assert.equal(result.resolved[0].claim.attributes.defined_term_value, '1.975');
+  assert.equal(result.resolved[0].source_citation, SECTION_REFERENCE);
+  assert.deepEqual(result.resolved[0].claim.attributes.defined_term_lineage, ['Exchange Ratio']);
+  assert.deepEqual(result.resolved[0].claim.attributes.definition_source_citations, ['8.12(u)']);
+  assert.deepEqual(
+    result.resolved[0].claim.attributes.definition_source_quotes,
+    ['“Exchange Ratio” means 1.975.'],
+  );
 
   assert.equal(result.structured_per_share_cash_values.length, 1);
+  assert.equal(
+    result.structured_per_share_cash_values[0].schema_version,
+    'STRUCTURED_PER_SHARE_CASH_VALUE/V2',
+  );
   assert.deepEqual(
     {
       consideration_term_ref: result.structured_per_share_cash_values[0].consideration_term_ref,
@@ -567,6 +579,14 @@ test('Modiv defined-term replay resolves the ratio, preserves the preferred form
     },
   );
   assert.match(result.structured_per_share_cash_values[0].raw_formula, /\$25\.00.*plus accrued and unpaid dividends/i);
+  assert.deepEqual(
+    result.structured_per_share_cash_values[0].source_citations,
+    [SECTION_REFERENCE, '8.12(zz)'],
+  );
+  assert.equal(
+    result.structured_per_share_cash_values[0].definition_quote,
+    '“Per Preferred Share Liquidation Price” means an amount in cash equal to Twenty-Five Dollars ($25.00) plus accrued and unpaid dividends, if any, to, but not including, the Closing Date.',
+  );
 
   assert.equal(
     result.resolved.filter((entry) => entry.resolved_claim_definition_key === 'PER_SHARE_CASH_CONSIDERATION').length,
@@ -575,5 +595,50 @@ test('Modiv defined-term replay resolves the ratio, preserves the preferred form
   assert.equal(
     result.structured_per_share_cash_values.some((entry) => /fractional/i.test(entry.consideration_term_ref)),
     false,
+  );
+});
+
+test('defined-term cash resolves only for a fixed amount and never flattens additional consideration', async () => {
+  const variableQuote = 'Each Share shall be converted into the right to receive cash equal to the Additional Cash Consideration.';
+  const variableSource = [
+    variableQuote,
+    'Section 8.12 Definitions.',
+    '(aa) “Additional Cash Consideration” means an amount in cash equal to Twenty-Five Dollars ($25.00) plus accrued and unpaid dividends.',
+  ].join('\n');
+  const variable = await resolveConsideration([
+    assertion({
+      kind: 'PER_SHARE_CASH', quote: variableQuote, considerationTerm: 'Additional Cash Consideration',
+    }),
+  ], variableSource, 'deal:variable-defined-cash');
+
+  assert.equal(variable.resolved.length, 0);
+  assert.deepEqual(variable.review_queue[0].reasons, ['NO_MONEY_LITERAL']);
+
+  const fixedQuote = 'Each Share shall be converted into the right to receive cash equal to the Fixed Cash Consideration.';
+  const fixedSource = [
+    fixedQuote,
+    'Section 8.12 Definitions.',
+    '(bb) “Fixed Cash Consideration” means an amount in cash equal to Twenty-Five Dollars ($25.00).',
+  ].join('\n');
+  const fixed = await resolveConsideration([
+    assertion({
+      kind: 'PER_SHARE_CASH', quote: fixedQuote, considerationTerm: 'Fixed Cash Consideration',
+    }),
+  ], fixedSource, 'deal:fixed-defined-cash');
+
+  assert.equal(fixed.resolved.length, 1);
+  assert.equal(fixed.resolved[0].claim.canonical_value, '25.00');
+  assert.equal(fixed.resolved[0].source_citation, SECTION_REFERENCE);
+  assert.deepEqual(
+    fixed.resolved[0].claim.attributes.defined_term_lineage,
+    ['Fixed Cash Consideration'],
+  );
+  assert.deepEqual(
+    fixed.resolved[0].claim.attributes.definition_source_citations,
+    ['8.12(bb)'],
+  );
+  assert.deepEqual(
+    fixed.resolved[0].claim.attributes.definition_source_quotes,
+    ['“Fixed Cash Consideration” means an amount in cash equal to Twenty-Five Dollars ($25.00).'],
   );
 });
