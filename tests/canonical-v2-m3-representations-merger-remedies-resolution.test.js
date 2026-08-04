@@ -36,6 +36,12 @@ test('V31 recorded real-agreement replay pack remains byte-grounded and resolves
     assert.ok(source.includes(item.quote), `${item.family} quote remains exact in admitted fixture`);
     const { receipt, resolution } = await replay({ source, sectionReference: item.section_reference, dealKey: `landos-${item.family}`, shape: shapes[item.family], parsed: parsed[item.family](item) });
     assert.equal(receipt.compiled_candidates.filter((entry) => entry.ok).length, 1, item.family);
+    if (item.family === 'SPECIFIC_PERFORMANCE_REMEDIES' && item.assertion_kind !== 'SPECIFIC_PERFORMANCE') {
+      assert.equal(resolution.resolved.length, 0, item.family);
+      assert.equal(resolution.open_world.length, 1, item.family);
+      assert.equal(resolution.open_world[0].reason, 'M3_CARRIER_ASSERTION_KIND_OUT_OF_ENUM', item.family);
+      continue;
+    }
     assert.equal(resolution.resolved.length, 1, item.family);
   }
 });
@@ -102,11 +108,17 @@ test('V31 replays distinct side-specific representation qualifier carriers', asy
 test('V31 replays grounded merger, remedies and boilerplate presence claims', async () => {
   const cases = [
     { sectionReference: '2.1', dealKey: 'm3-merger-v31', source: 'ARTICLE II\nSection 2.1 Effect of the Merger.\nThe Merger will be governed by and effected under Section 251(h) of the DGCL.\n', quote: 'The Merger will be governed by and effected under Section 251(h) of the DGCL.', shape: shapeMergerStructureProposals, parsed: (quote) => ({ structure_assertions: [{ assertion_kind: 'SHORT_FORM_251H', quote }], open_world_candidates: [] }), definition: 'MERGER_STRUCTURE_MECHANIC_PRESENT', concept: 'MERGER-STRUCTURE' },
-    { sectionReference: '9.8', dealKey: 'm3-remedy-v31', source: 'ARTICLE IX\nSection 9.8 Specific Performance.\nEach party shall use reasonable best efforts to obtain an expedited proceeding.\n', quote: 'Each party shall use reasonable best efforts to obtain an expedited proceeding.', shape: shapeSpecificPerformanceRemedyProposals, parsed: (quote) => ({ remedy_assertions: [{ assertion_kind: 'EXPEDITED_PROCEEDING', quote }], open_world_candidates: [] }), definition: 'SPECIFIC_PERFORMANCE_REMEDY_PRESENT', concept: 'REMEDY-SPECIFIC-PERFORMANCE' },
+    { sectionReference: '9.8', dealKey: 'm3-remedy-v31', source: 'ARTICLE IX\nSection 9.8 Specific Performance.\nEach party shall use reasonable best efforts to obtain an expedited proceeding.\n', quote: 'Each party shall use reasonable best efforts to obtain an expedited proceeding.', shape: shapeSpecificPerformanceRemedyProposals, parsed: (quote) => ({ remedy_assertions: [{ assertion_kind: 'EXPEDITED_PROCEEDING', quote }], open_world_candidates: [] }), expect_open_world: true },
     { sectionReference: '10.9', dealKey: 'm3-misc-v31', source: 'ARTICLE X\nSection 10.9 Governing Law.\nThis Agreement shall be governed by the Laws of the State of Delaware.\n', quote: 'This Agreement shall be governed by the Laws of the State of Delaware.', shape: shapeMiscBoilerplateProposals, parsed: (quote) => ({ boilerplate_assertions: [{ assertion_kind: 'GOVERNING_LAW', quote }], open_world_candidates: [] }), definition: 'MISC_BOILERPLATE_MECHANIC_PRESENT', concept: 'MISC-BOILERPLATE' },
   ];
   for (const item of cases) {
     const { resolution } = await replay({ ...item, parsed: item.parsed(item.quote) });
+    if (item.expect_open_world) {
+      assert.equal(resolution.resolved.length, 0, item.dealKey);
+      assert.equal(resolution.open_world.length, 1, item.dealKey);
+      assert.equal(resolution.open_world[0].reason, 'M3_CARRIER_ASSERTION_KIND_OUT_OF_ENUM', item.dealKey);
+      continue;
+    }
     assert.equal(resolution.open_world.length, 0, item.dealKey);
     assert.equal(resolution.resolved.length, 1, item.dealKey);
     assert.equal(resolution.resolved[0].resolved_claim_definition_key, item.definition);

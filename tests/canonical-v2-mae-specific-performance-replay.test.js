@@ -137,6 +137,47 @@ test('TopBuild 7.6 rejects a bare equitable-relief grant and retains the operati
   assert.match(prompt.messages[0].content, /condition gates, termination limits, non-waiver language, bond or security waivers/);
 });
 
+test('TopBuild 7.6 publishes only the governed specific-performance assertion and keeps a litigation extension open-world', async () => {
+  const pilot = pilotSection('topbuild-remedies-specific-performance-7-6');
+  const fullGrant = exact(pilot.text, /The parties acknowledge and agree that irreparable harm would occur[\s\S]*?executed in connection herewith\./);
+  const litigationExtension = exact(pilot.text, /If on the date of any termination of this Agreement,[\s\S]*?entry of final order with respect to such Action\./);
+  const provider = async ({ governed_scope: scope }) => ({
+    provider_id: 'recorded-topbuild-7-6-replay/v1',
+    model_id: 'recorded-provider-output',
+    prompt: 'recorded-topbuild-7-6-replay/v1',
+    ...shapeSpecificPerformanceRemedyProposals({
+      remedy_assertions: [
+        { assertion_kind: 'SPECIFIC_PERFORMANCE', quote: fullGrant },
+        { assertion_kind: 'LITIGATION_EXTENSION', quote: litigationExtension },
+      ],
+      open_world_candidates: [],
+    }, scope.source_text),
+  });
+  const receipt = await runNativeExtraction({
+    source_text: pilot.admitted.context.canonical_text.text,
+    document_hash: pilot.admitted.context.document_hash,
+    section_references: ['7.6'],
+    section_family_assignments: [{ section_reference: '7.6', family_id: 'SPECIFIC_PERFORMANCE_REMEDIES' }],
+    contract_bundle: CONTRACT,
+    definitions: { known_definitions: [] },
+    provider,
+  });
+  const resolution = resolveCandidates({
+    run_receipt: receipt,
+    contract_vocabulary: CONTRACT,
+    admitted_source_context: pilot.admitted.context,
+  });
+
+  assert.equal(receipt.resolved_sections[0].section_reference, '7.6');
+  assert.deepEqual(resolution.resolved.map((entry) => entry.claim.attributes.assertion_kind), ['SPECIFIC_PERFORMANCE']);
+  assert.equal(resolution.resolved[0].resolved_claim_definition_key, 'SPECIFIC_PERFORMANCE_REMEDY_PRESENT');
+  assert.match(resolution.resolved[0].claim.raw_value, /irreparable harm would occur/);
+  assert.match(resolution.resolved[0].claim.raw_value, /money damages would not be an adequate remedy/);
+  assert.equal(resolution.open_world.length, 1);
+  assert.equal(resolution.open_world[0].attributes.assertion_kind, 'LITIGATION_EXTENSION');
+  assert.equal(resolution.open_world[0].reason, 'M3_CARRIER_ASSERTION_KIND_OUT_OF_ENUM');
+});
+
 test('a source-exact specific-performance grant resolves when its governed source has no operative premise', () => {
   const source = 'Section 9.09 Specific Performance. It is accordingly agreed that the parties shall be entitled to an injunction or injunctions, specific performance, or other equitable relief, to prevent breaches or threatened or anticipated breaches of this Agreement and to enforce specifically the terms and provisions of this Agreement.';
   const shaped = shapeSpecificPerformanceRemedyProposals({
