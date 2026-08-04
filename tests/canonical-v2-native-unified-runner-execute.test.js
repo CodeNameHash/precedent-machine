@@ -15,6 +15,7 @@ const {
   NativeUnifiedRunExecutionError,
   executeUnifiedRun,
 } = require('../lib/canonical-v2/native-producer/unified-runner-execute');
+const { createAnthropicProvider } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 
 const ROOT = path.resolve(__dirname, '..');
 const RAW_PATH = 'tests/fixtures/canonical-v2/native-unified-runner/compact-source.htm';
@@ -170,6 +171,30 @@ test('one provider failure is resumable and does not suppress a valid sibling', 
   assert.equal(result.work_results[0].failure_code, 'RETRIES_EXHAUSTED');
   assert.equal(result.work_results[0].failure_stage, 'PROVIDER_CALL');
   assert.equal(result.work_results[1].status, 'SUCCEEDED');
+});
+
+test('a truncated native response is checkpointed with its raw bytes and fails closed', async () => {
+  const workItems = [extract('topbuild-capitalisation', 'CAPITALISATION', '2.1')];
+  const rawResponse = '{"representation_instances":[],"bring_down_conditions":[],"open_world_candidates":[],"truncated":';
+  const checkpoints = [];
+  const result = await executeUnifiedRun({
+    manifest: manifest(workItems),
+    work_item_controls: controls(workItems),
+    root_dir: ROOT,
+    provider_factory: () => createAnthropicProvider({
+      model: 'strict-json-test',
+      maxRetries: 0,
+      client: { messages: { async create() { return { content: [{ text: rawResponse }] }; } } },
+    }),
+    on_work_result: async (_result, checkpoint) => checkpoints.push(checkpoint),
+  });
+  assert.equal(result.succeeded_count, 0);
+  assert.equal(result.failed_count, 1);
+  assert.equal(result.work_results[0].failure_code, 'RETRIES_EXHAUSTED');
+  assert.equal(result.work_results[0].failure_stage, 'POST_PROVIDER_VALIDATION');
+  assert.equal(result.work_results[0].provider_recording.provider_output.raw_response_text, rawResponse);
+  assert.equal(checkpoints.length, 1);
+  assert.equal(checkpoints[0].work_result.provider_recording.provider_output.raw_response_text, rawResponse);
 });
 
 test('validated successful checkpoints resume without another provider call', async () => {

@@ -148,6 +148,30 @@ test('malformed JSON is a typed failure, not an empty success', async () => {
   );
 });
 
+test('native extraction accepts only complete literal JSON objects and retains a rejected raw response', async () => {
+  const complete = JSON.stringify(wellFormedResponse());
+  const rejectedResponses = [
+    '{"representation_instances":[],"bring_down_conditions":[],"open_world_candidates":[],"truncated":',
+    `${complete}\nexplanation`,
+    `\`\`\`json\n${complete}\n\`\`\``,
+  ];
+  for (const response of rejectedResponses) {
+    // eslint-disable-next-line no-await-in-loop
+    await assert.rejects(
+      () => runProvider({ model: 'test-model', client: stubClientReturning(response), maxRetries: 0 }),
+      (error) => {
+        assert.ok(error instanceof NativeProducerAnthropicError);
+        assert.equal(error.code, 'RETRIES_EXHAUSTED');
+        assert.equal(error.details.last_code, 'MALFORMED_RESPONSE');
+        assert.equal(error.details.provider_output.raw_response_text, response);
+        return true;
+      },
+    );
+  }
+  const result = await runProvider({ model: 'test-model', client: stubClientReturning(`\n ${complete}\t`) });
+  assert.ok(result.proposals.length >= 4);
+});
+
 test('a response missing a required top-level key is a typed failure', async () => {
   const incomplete = { representation_instances: [], open_world_candidates: [] }; // bring_down_conditions missing
   const client = stubClientReturning(JSON.stringify(incomplete));
