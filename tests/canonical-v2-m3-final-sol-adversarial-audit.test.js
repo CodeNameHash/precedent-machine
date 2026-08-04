@@ -138,6 +138,59 @@ test('accepts one sealed twelve-item final legal findings file', () => {
   assert.equal(input.audit_projection.final_independent_legal_findings.length, 12);
 });
 
+test('preserves the exact seven-FAIL rows and projects the current risk and production controls', () => {
+  const root = mkdtempSync(join(tmpdir(), 'm3-sol-audit-'));
+  const files = fixture(root);
+  const sevenFails = [
+    {
+      work_item_id: 'topbuild-no-shop-company-4-3',
+      status: 'FAIL',
+      source: { source_id: 'topbuild-full', section_reference: '4.3' },
+      reasons: ['The Company chapeau and child clauses are both required.'],
+      false_positive_check: 'Open-world items remain open-world.',
+      omission_check: 'Controlled actions remain unresolved.',
+    },
+    {
+      work_item_id: 'topbuild-remedies-specific-performance-7-6',
+      status: 'FAIL',
+      source: { source_id: 'topbuild-full', section_reference: '7.6' },
+      reasons: ['The equitable-relief premise lacks its required citation.'],
+      false_positive_check: 'A litigation-extension clause is not a remedy grant.',
+      omission_check: 'The supported grant is not fully traceable.',
+    },
+    ...Array.from({ length: 5 }, (_, index) => ({
+      work_item_id: `original-fail-${index + 1}`,
+      status: 'FAIL',
+      source: { source_id: `source-${index + 1}`, section_reference: `${index + 1}.0` },
+      reasons: [`reason-${index + 1}`],
+      false_positive_check: `false-positive-${index + 1}`,
+      omission_check: `omission-${index + 1}`,
+    })),
+  ];
+  const riskControls = [{ family_id: 'NO_SHOP', control: 'CHAPEAU_REQUIRED' }];
+  const executionControls = [{ stage: 5, status: 'CURRENT' }];
+  const originalSevenFails = writeJson(root, 'seven-fails-exact.json', {
+    schema_version: 'M3_FINAL_SOL_AUDIT_SEVEN_FAIL_SUBSET/V1',
+    findings: sevenFails,
+  });
+  const risk = writeJson(root, 'risk-current.json', { family_control_audit: riskControls });
+  const plan = writeJson(root, 'plan-current.json', { proposed_execution: executionControls });
+  const input = buildSealedM3FinalSolAuditInput({
+    repo_root: root,
+    commit_range: 'base..head',
+    code_paths: ['lib/candidate-resolution.js'],
+    final_review_packet_path: files.review,
+    final_legal_finding_paths: [files.legalA, files.legalB],
+    original_seven_fail_findings_path: originalSevenFails,
+    cross_family_risk_audit_path: risk,
+    production_plan_path: plan,
+    git_diff: (range, paths) => `diff --git a/${paths[0]} b/${paths[0]}\n@@\n+source-bound repair\n${range}`,
+  });
+  assert.deepEqual(input.audit_projection.original_seven_fail_findings, sevenFails);
+  assert.deepEqual(input.audit_projection.cross_family_risk_audit.family_control_audit, riskControls);
+  assert.deepEqual(input.audit_projection.production_extraction_plan.proposed_execution, executionControls);
+});
+
 test('uses deterministic relevant hunks with hashes when a scoped diff exceeds the declared full-diff ceiling', () => {
   const root = mkdtempSync(join(tmpdir(), 'm3-sol-audit-'));
   const input = build(root, (range, paths) => (
