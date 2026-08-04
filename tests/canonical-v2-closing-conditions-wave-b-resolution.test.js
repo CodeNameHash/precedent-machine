@@ -96,14 +96,24 @@ test('Closing Conditions Wave B resolves grounded facts, preserves certificate r
   const certificate = resolution.resolved.find((entry) => entry.resolved_claim_definition_key === 'OFFICER_CERTIFICATE_REQUIRED');
   assert.equal(certificate.claim.attributes.certificate_relationship_status, 'VERBATIM_SECTION_REFERENCES');
   assert.deepEqual(certificate.claim.attributes.certified_condition_refs, ['7.2(a)', '7.2(b)', '7.2(c)']);
-  assert.ok(resolution.open_world.some((entry) => entry.reason === 'CONDITION_ASSERTION_KIND_OUT_OF_ENUM' && entry.attributes.assertion_kind === 'DISSENT_THRESHOLD'));
+  const dissentOpenWorld = resolution.open_world.find((entry) => (
+    entry.reason === 'CONDITION_ASSERTION_KIND_OUT_OF_ENUM'
+      && entry.attributes.assertion_kind === 'DISSENT_THRESHOLD'
+  ));
+  assert.ok(dissentOpenWorld);
+  assert.equal(dissentOpenWorld.raw_value, QUOTES.dissent);
   assert.equal(resolution.resolution_receipt.mapping_table_version, 20);
   assert.equal(MAPPING_TABLE_VERSION, 20);
 
   const projection = projectClosingConditionProductSurfaces({ resolution, deal_id: dealKey });
   assert.ok(projection.cards.every((card) => card.canonical_v2_lineage.source === 'CANONICAL_V2_NATIVE_CLAIM'));
   assert.deepEqual(projection.open_items, [
-    { item: 'DISSENT_THRESHOLD', state: 'BLOCKED', reason: 'NO_GROUNDED_CORPUS_QUOTE' },
+    {
+      item: 'DISSENT_THRESHOLD',
+      state: 'RETIRED',
+      reason: 'APPROVED_M3_RETIRED_OPEN_WORLD',
+      reintroduction_requirement: 'STABLE_GROUNDED_SHAPE_AND_SEPARATE_APPROVAL',
+    },
   ]);
 
   const conditions = await import('../components/review/table-configs/conditions.config.js');

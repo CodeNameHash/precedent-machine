@@ -15,12 +15,12 @@ const {
   validateRetainedLedgerBindings,
   verifyAttempt3Package,
 } = require('../lib/canonical-v2/native-producer/m3-attempt-3-package-verifier');
+const { resolveDurableArtifactRoot } = require('../lib/canonical-v2/durable-artifact-root');
 
 const ROOT = path.resolve(__dirname, '..');
-const ARTIFACT_ROOT = process.env.CANONICAL_V2_M3_PILOT_ARTIFACT_ROOT
-  || '/private/tmp/canonical-v2-m3-pilot-20260803.L3KSNP';
-const REVIEW_ROOT = path.join(ARTIFACT_ROOT, 'final-output');
-const ATTEMPT_2_ROOT = path.join(ARTIFACT_ROOT, 'iteration-2-preparation', 'attempt-2');
+const ARTIFACT_ROOT = resolveDurableArtifactRoot();
+const REVIEW_ROOT = ARTIFACT_ROOT && path.join(ARTIFACT_ROOT, 'final-output');
+const ATTEMPT_2_ROOT = ARTIFACT_ROOT && path.join(ARTIFACT_ROOT, 'iteration-2-preparation', 'attempt-2');
 
 function loadJson(file) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -69,7 +69,7 @@ function retainedLedgerFixture() {
 }
 
 test('independently recomputes the corrected gate from first-pass packets, findings and Modiv adjudications', {
-  skip: !fs.existsSync(path.join(REVIEW_ROOT, 'review-packet-adapter.json')),
+  skip: !REVIEW_ROOT || !fs.existsSync(path.join(REVIEW_ROOT, 'review-packet-adapter.json')),
 }, () => {
   const result = recomputeAttempt3Gate({ ...firstPassInputs(), root_dir: ROOT });
   assert.equal(result.gate.quality_gate_id, ATTEMPT_3_GATE_ID);
@@ -78,7 +78,7 @@ test('independently recomputes the corrected gate from first-pass packets, findi
 });
 
 test('refuses the prior attempt reference before it can be treated as an attempt-3 full plan', {
-  skip: !fs.existsSync(path.join(ATTEMPT_2_ROOT, 'sealed-plan.json')),
+  skip: !ATTEMPT_2_ROOT || !fs.existsSync(path.join(ATTEMPT_2_ROOT, 'sealed-plan.json')),
 }, () => {
   const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'm3-attempt-3-verifier-'));
   try {

@@ -11,7 +11,7 @@ const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/nat
 const { createAnthropicProvider, shapeSpecificPerformanceRemedyProposals } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { buildSpecificPerformanceRemediesProducerPrompt } = require('../lib/canonical-v2/native-producer/specific-performance-remedies-producer-prompt');
 const { maeCarveoutCorroborated, resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
-const { loadAdmittedSourceForExecution } = require('../lib/canonical-v2/native-producer/unified-runner-validate');
+const { diagnosticAdmittedSource } = require('./helpers/diagnostic-admitted-source');
 
 const ROOT = path.resolve(__dirname, '..');
 const MANIFEST = JSON.parse(fs.readFileSync(
@@ -23,7 +23,7 @@ const CONTRACT = compileFixtureContractV34();
 function pilotSection(workItemId) {
   const workItem = MANIFEST.work_items.find((item) => item.work_item_id === workItemId);
   const source = MANIFEST.sources.find((item) => item.source_id === workItem.source_id);
-  const admitted = loadAdmittedSourceForExecution({ source, root_dir: ROOT });
+  const admitted = diagnosticAdmittedSource({ source, root_dir: ROOT });
   const node = findSectionByReference(admitted.tree, workItem.section_pin.section_reference);
   assert.ok(node, `${workItemId}: pinned section exists`);
   return {

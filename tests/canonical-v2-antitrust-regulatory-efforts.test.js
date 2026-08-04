@@ -11,7 +11,10 @@ const { shapeRegulatoryEffortsProposals, REGULATORY_EFFORTS_CLAIM_KEY } = requir
 const { GENERIC_CLAIM_KEY_RESOLUTION_TABLE, MATERIALITY_TABLE, MAPPING_TABLE_VERSION, regulatoryValueCorroborated, regulatoryFilingRegimeCorroborated } = require('../lib/canonical-v2/native-producer/candidate-resolution');
 const { LEXICAL_FAMILY_LEXICON, LEXICAL_FAMILY_LEXICON_VERSION, validateLexicalFamilyLexicon } = require('../lib/canonical-v2/native-producer/lexical-disagreement-net');
 const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
-const { projectAntitrustProductSurfaces } = require('../lib/canonical-v2/antitrust-product-projection');
+const {
+  NON_HSR_FILING_DEADLINE_SCHEMA,
+  projectAntitrustProductSurfaces,
+} = require('../lib/canonical-v2/antitrust-product-projection');
 const { executeDealCompare } = require('../lib/query/executors/deal-compare');
 const { provisionFieldValue } = require('../lib/query/types');
 const { calculateMarketStats } = require('../lib/row-market-stats/service');
@@ -53,7 +56,7 @@ test('prompt and provider shaping retain a single evidenced regulatory assertion
   const quote = 'Each of Parent and the Company shall use reasonable best efforts to obtain all approvals.';
   const prompt = buildAntitrustRegulatoryProducerPrompt({ source_text: quote, governed_scope: {} });
   assert.equal(prompt.prompt_id, 'native-producer-antitrust-regulatory/v1');
-  assert.equal(prompt.prompt_version, 3);
+  assert.equal(prompt.prompt_version, 4);
   const shaped = shapeRegulatoryEffortsProposals({ regulatory_efforts_assertions: [{ section_reference: '6.1', assertion_kind: 'EFFORTS_STANDARD', canonical_value: 'REASONABLE_BEST_EFFORTS', obligor_party_scope: 'MUTUAL', obligor_party: 'Each of Parent and the Company', quote }], open_world_candidates: [] }, quote);
   assert.equal(shaped.proposals.length, 1);
   assert.equal(shaped.proposals[0].claim_definition_key, REGULATORY_EFFORTS_CLAIM_KEY);
@@ -209,7 +212,21 @@ test('native antitrust candidates reach Review, Query, Compare and market statis
   assert.equal(compareFields.get('litigationObligation'), 'MANDATORY_DEFEND');
   assert.equal(compareFields.get('hsrFilingDeadlineBusinessDays'), 10);
   assert.equal(compareFields.get('foreignFilingsRequired'), 'PRESENT');
-  assert.equal(compareFields.get('otherRegulatoryFilingDeadlines'), 15);
+  assert.equal(compareFields.get('otherRegulatoryFilingDeadlines'), null);
+  assert.equal(
+    projection.cards.some((card) => Object.hasOwn(card.features, 'otherRegulatoryFilingDeadlines')),
+    false,
+  );
+  assert.deepEqual(projection.non_hsr_filing_deadlines.map((deadline) => ({
+    filing_regime_ref: deadline.filing_regime_ref,
+    value: deadline.value,
+    unit: deadline.unit,
+    day_kind: deadline.day_kind,
+    exact_evidence: deadline.exact_evidence,
+  })), [{
+    filing_regime_ref: 'Foreign Competition Act', value: '15', unit: 'DAYS', day_kind: 'CALENDAR',
+    exact_evidence: quotes.foreignDeadline,
+  }]);
   assert.equal(compareFields.get('regulatoryStrategyControlTagged'), 'PARENT_CONTROL');
   assert.equal(compareFields.get('consultationTier'), 'GOOD_FAITH_VIEWS');
   assert.equal(compareFields.get('pullRefile'), 'BUYER_UNILATERAL_GF');
@@ -265,4 +282,62 @@ test('native antitrust candidates reach Review, Query, Compare and market statis
   assert.ok(marketResults.some((result) => (
     result.distribution?.kind === 'categorical' && result.coverage?.observedCount === 1
   )));
+});
+
+function resolvedNonHsrDeadline({ id, regime, value, dayKind, quote, timingRelation = null, timingTrigger = null }) {
+  return {
+    resolved_claim_definition_key: 'REGULATORY_FILING_DEADLINE_DAYS',
+    concept_key: 'ANTI-FILING',
+    section_reference: '6.1',
+    provision_instance: { provision_instance_id: `provision:${id}` },
+    claim: {
+      claim_revision_id: `claim:${id}`,
+      raw_value: quote,
+      canonical_value: value,
+      attributes: {
+        filing_regime_ref: regime,
+        day_kind: dayKind,
+        timing_relation: timingRelation,
+        timing_trigger: timingTrigger,
+      },
+    },
+  };
+}
+
+test('non-HSR deadline objects preserve every exact regime/deadline pair without conversion or aggregation', () => {
+  const fcc = 'Parent shall file under the FCC Rules within fifteen (15) Calendar Days after signing.';
+  const foreign = 'Parent shall file under the Foreign Competition Act within ten (10) Business Days after signing.';
+  const foreignExtension = 'Parent shall file under the Foreign Competition Act within twenty (20) Calendar Days after the triggering event.';
+  const hsr = 'Parent shall file under the HSR Act within ten (10) Business Days after signing.';
+  const missingDayKind = 'Parent shall file under the German FDI regime within thirty (30) Days.';
+  const projection = projectAntitrustProductSurfaces({
+    deal_id: 'non-hsr-deadline-product',
+    resolution: { resolved: [
+      resolvedNonHsrDeadline({ id: 'fcc', regime: 'FCC Rules', value: '15', dayKind: 'CALENDAR', quote: fcc, timingRelation: 'within', timingTrigger: 'after signing' }),
+      resolvedNonHsrDeadline({ id: 'foreign', regime: 'Foreign Competition Act', value: '10', dayKind: 'BUSINESS', quote: foreign, timingRelation: 'within', timingTrigger: 'after signing' }),
+      resolvedNonHsrDeadline({ id: 'foreign-extension', regime: 'Foreign Competition Act', value: '20', dayKind: 'CALENDAR', quote: foreignExtension, timingRelation: 'within', timingTrigger: 'after the triggering event' }),
+      {
+        ...resolvedNonHsrDeadline({ id: 'hsr', regime: 'HSR Act', value: '10', dayKind: 'BUSINESS', quote: hsr }),
+        resolved_claim_definition_key: 'HSR_FILING_DEADLINE_DAYS',
+      },
+      resolvedNonHsrDeadline({ id: 'missing-day-kind', regime: 'German FDI regime', value: '30', dayKind: null, quote: missingDayKind }),
+    ] },
+  });
+  assert.equal(projection.non_hsr_filing_deadlines.length, 3);
+  assert.deepEqual(projection.non_hsr_filing_deadlines.map((deadline) => ({
+    schema_version: deadline.schema_version,
+    filing_regime_ref: deadline.filing_regime_ref,
+    value: deadline.value,
+    unit: deadline.unit,
+    day_kind: deadline.day_kind,
+    timing_relation: deadline.timing_relation,
+    timing_trigger: deadline.timing_trigger,
+    exact_evidence: deadline.exact_evidence,
+  })).sort((left, right) => left.exact_evidence.localeCompare(right.exact_evidence)), [
+    { schema_version: NON_HSR_FILING_DEADLINE_SCHEMA, filing_regime_ref: 'FCC Rules', value: '15', unit: 'DAYS', day_kind: 'CALENDAR', timing_relation: 'within', timing_trigger: 'after signing', exact_evidence: fcc },
+    { schema_version: NON_HSR_FILING_DEADLINE_SCHEMA, filing_regime_ref: 'Foreign Competition Act', value: '20', unit: 'DAYS', day_kind: 'CALENDAR', timing_relation: 'within', timing_trigger: 'after the triggering event', exact_evidence: foreignExtension },
+    { schema_version: NON_HSR_FILING_DEADLINE_SCHEMA, filing_regime_ref: 'Foreign Competition Act', value: '10', unit: 'DAYS', day_kind: 'BUSINESS', timing_relation: 'within', timing_trigger: 'after signing', exact_evidence: foreign },
+  ].sort((left, right) => left.exact_evidence.localeCompare(right.exact_evidence)));
+  assert.equal(projection.non_hsr_filing_deadlines.some((deadline) => deadline.filing_regime_ref === 'HSR Act'), false);
+  assert.equal(projection.non_hsr_filing_deadlines.some((deadline) => deadline.filing_regime_ref === 'German FDI regime'), false);
 });

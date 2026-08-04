@@ -267,6 +267,8 @@ const qxoFullText = [
   '\n',
 ].join('');
 const DOCUMENT_HASH = sha256Hex(Buffer.from(qxoFullText, 'utf8'));
+const qxoClassifierFallbackText = qxoFullText.replace('(b)Capital Structure.', '(b)Other Matters.');
+const CLASSIFIER_FALLBACK_DOCUMENT_HASH = sha256Hex(Buffer.from(qxoClassifierFallbackText, 'utf8'));
 const CONTRACT_BUNDLE = compileFixtureContract();
 const DEFINITIONS = Object.freeze({ known_definitions: [] });
 const LIMB_I_QUOTE = '(i)The authorized capital stock of the Company consists of';
@@ -386,11 +388,11 @@ test('native-extraction-run with classifier: stage 1 classifies TERMINATION from
 });
 
 test('native-extraction-run with classifier: an UNKNOWN family still fails closed -- no producer, no candidates, never a capitalisation fallback (proves the fail-closed contract independent of TERMINATION\'s own registration)', async () => {
-  const documentHash = sha256Hex(Buffer.from(qxoFullText, 'utf8'));
+  const documentHash = CLASSIFIER_FALLBACK_DOCUMENT_HASH;
   let providerCalled = false;
 
   const receipt = await runNativeExtraction({
-    source_text: qxoFullText,
+    source_text: qxoClassifierFallbackText,
     document_hash: documentHash,
     section_references: ['3.1(b)'],
     contract_bundle: CONTRACT_BUNDLE,
@@ -412,8 +414,8 @@ test('native-extraction-run with classifier: an UNKNOWN family still fails close
 test('native-extraction-run with classifier: stage 2 AI-classifies a registered family and dispatches it, provenance visible in the receipt', async () => {
   let registeredFamilies = null;
   const receipt = await runNativeExtraction({
-    source_text: qxoFullText,
-    document_hash: DOCUMENT_HASH,
+    source_text: qxoClassifierFallbackText,
+    document_hash: CLASSIFIER_FALLBACK_DOCUMENT_HASH,
     section_references: ['3.1(b)'],
     contract_bundle: CONTRACT_BUNDLE,
     definitions: DEFINITIONS,
@@ -503,8 +505,8 @@ test('native-extraction-run stage 2 can reach each non-capitalisation registered
   let nextFamily = 0;
   let producerCalls = 0;
   const receipt = await runNativeExtraction({
-    source_text: qxoFullText,
-    document_hash: DOCUMENT_HASH,
+    source_text: qxoClassifierFallbackText,
+    document_hash: CLASSIFIER_FALLBACK_DOCUMENT_HASH,
     section_references: ['3.1(b)', '3.1(b)', '3.1(b)', '3.1(b)', '3.1(b)'],
     contract_bundle: CONTRACT_BUNDLE,
     definitions: DEFINITIONS,
@@ -530,8 +532,8 @@ test('native-extraction-run stage 2 can reach each non-capitalisation registered
 
 test('native-extraction-run with classifier: an AI decline/malformed response is a fail-closed skip, never a capitalisation fallback', async () => {
   const receipt = await runNativeExtraction({
-    source_text: qxoFullText,
-    document_hash: DOCUMENT_HASH,
+    source_text: qxoClassifierFallbackText,
+    document_hash: CLASSIFIER_FALLBACK_DOCUMENT_HASH,
     section_references: ['3.1(b)'],
     contract_bundle: CONTRACT_BUNDLE,
     definitions: DEFINITIONS,
@@ -565,8 +567,8 @@ test('native-extraction-run: section_family_classifier must be a function when s
 
 test('candidate-resolution: an AI-classified section carries SECTION_FAMILY_AI_UNVERIFIED on its open-world candidates, never a silently-clean one', async () => {
   const receipt = await runNativeExtraction({
-    source_text: qxoFullText,
-    document_hash: DOCUMENT_HASH,
+    source_text: qxoClassifierFallbackText,
+    document_hash: CLASSIFIER_FALLBACK_DOCUMENT_HASH,
     section_references: ['3.1(b)'],
     contract_bundle: CONTRACT_BUNDLE,
     definitions: DEFINITIONS,
@@ -578,7 +580,7 @@ test('candidate-resolution: an AI-classified section carries SECTION_FAMILY_AI_U
     run_receipt: receipt,
     contract_vocabulary: CONTRACT_BUNDLE,
     admitted_source_context: {
-      document_hash: DOCUMENT_HASH,
+      document_hash: CLASSIFIER_FALLBACK_DOCUMENT_HASH,
       governed_deal_key: 'registry-test-deal',
     },
   });

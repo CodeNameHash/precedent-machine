@@ -8,6 +8,8 @@ const { execFileSync } = require('node:child_process');
 const REPO_ROOT = path.resolve(__dirname, '..');
 const SCRIPT_RELATIVE = path.join('scripts', 'regenerate-release-identity-chain.mjs');
 const F21_FIXTURE = 'tests/fixtures/canonical-v2/v12-serving-admission-readiness-f21.json';
+const F20_FIXTURE = 'tests/fixtures/canonical-v2/qxo-no-shop-copy-delivery-query-f20-staging-attestation.json';
+const F22_FIXTURE = 'tests/fixtures/canonical-v2/metric-serving-admission-f22.json';
 const F21_UPSTREAM_SOURCE = 'lib/canonical-v2/shared-serving-row.js';
 
 // Runs the script that lives inside `cwd` itself (not the real repo's copy).
@@ -39,6 +41,11 @@ function makeTempRepoCopy() {
     '-c',
     `tar --exclude=.git --exclude=node_modules -cf - -C '${REPO_ROOT}' . | tar -xf - -C '${dir}'`,
   ]);
+  for (const fixture of [F20_FIXTURE, F21_FIXTURE, F22_FIXTURE]) {
+    const destination = path.join(dir, fixture);
+    fs.mkdirSync(path.dirname(destination), { recursive: true });
+    fs.copyFileSync(path.join(REPO_ROOT, fixture), destination);
+  }
   return dir;
 }
 

@@ -38,11 +38,11 @@ try {
   const { buildFinalPilotStrictIndependentReviewInput } = require('../lib/canonical-v2/native-producer/m3-final-pilot-independent-review');
   let exactSourceBytesByDocumentHash = {};
   if (args.includeExactSourceBytes) {
-    const { loadAdmittedSourceForExecution } = require('../lib/canonical-v2/native-producer/unified-runner-validate');
+    const { loadSourceForDiagnostic } = require('../lib/canonical-v2/native-producer/unified-runner-validate');
     const manifest = require('../tests/fixtures/canonical-v2/m3-12-call-pilot-manifest.json');
     exactSourceBytesByDocumentHash = Object.fromEntries(manifest.sources.map((source) => {
-      const admitted = loadAdmittedSourceForExecution({ source, root_dir: process.cwd() });
-      return [admitted.context.document_hash, admitted.context.canonical_text.text];
+      const diagnostic = loadSourceForDiagnostic({ source, root_dir: process.cwd() });
+      return [diagnostic.context.document_hash, diagnostic.context.canonical_text.text];
     }));
   }
   const result = buildFinalPilotStrictIndependentReviewInput({

@@ -12,7 +12,8 @@ const { shapeClosingConditionProposals, shapeRegulatoryEffortsProposals } = requ
 const { buildAntitrustRegulatoryProducerPrompt } = require('../lib/canonical-v2/native-producer/antitrust-regulatory-producer-prompt');
 const { buildClosingConditionsProducerPrompt } = require('../lib/canonical-v2/native-producer/closing-conditions-producer-prompt');
 const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
-const { loadAdmittedSourceForExecution } = require('../lib/canonical-v2/native-producer/unified-runner-validate');
+const { loadSourceForDiagnostic } = require('../lib/canonical-v2/native-producer/unified-runner-validate');
+const { buildIdentityAdmittedSourceContext } = require('./helpers/identity-admitted-source');
 
 const ROOT = path.resolve(__dirname, '..');
 const MANIFEST = JSON.parse(fs.readFileSync(
@@ -24,8 +25,16 @@ const CONTRACT = compileFixtureContractV34();
 function pilotSection(workItemId) {
   const workItem = MANIFEST.work_items.find((item) => item.work_item_id === workItemId);
   const source = MANIFEST.sources.find((item) => item.source_id === workItem.source_id);
-  const admitted = loadAdmittedSourceForExecution({ source, root_dir: ROOT });
-  const node = findSectionByReference(admitted.tree, workItem.section_pin.section_reference);
+  const diagnostic = loadSourceForDiagnostic({ source, root_dir: ROOT });
+  const admitted = Object.freeze({
+    ...diagnostic,
+    context: buildIdentityAdmittedSourceContext(diagnostic.context.canonical_text.text, {
+      dealKey: source.governed_deal_key,
+      dealAdmissionId: source.deal_admission_id,
+      sourceOrdinal: source.source_ordinal,
+    }),
+  });
+  const node = findSectionByReference(diagnostic.tree, workItem.section_pin.section_reference);
   assert.ok(node, `${workItemId}: pinned section exists`);
   return {
     workItem,
@@ -201,7 +210,7 @@ test('Modiv 6.1 checkpoint replay carries the complete Registration Statement ch
 test('affected prompts require the source coverage needed by the governed mappings', () => {
   const antitrust = buildAntitrustRegulatoryProducerPrompt({ source_text: 'x', governed_scope: {} });
   const closing = buildClosingConditionsProducerPrompt({ source_text: 'x', governed_scope: {} });
-  assert.equal(antitrust.prompt_version, 3);
+  assert.equal(antitrust.prompt_version, 4);
   assert.match(antitrust.messages[0].content, /quote must include the exact obligor_party phrase and the operative verb/);
   assert.match(antitrust.messages[0].content, /MANDATORY_DEFEND/);
   assert.equal(closing.prompt_version, 4);

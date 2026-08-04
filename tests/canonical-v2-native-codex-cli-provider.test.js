@@ -123,6 +123,25 @@ test('native Codex provider retains the literal response for exact replay', asyn
   assert.equal(output.raw_response_length, response.length);
 });
 
+test('native Codex provider preserves request identity and usage for durable runner telemetry', async () => {
+  const provider = createCodexCliProvider({
+    client: {
+      messages: {
+        async create() {
+          return {
+            id: 'codex-request-123',
+            usage: { input_tokens: 123, output_tokens: 45 },
+            content: [{ text: JSON.stringify({ general_covenants: [], open_world_candidates: [] }) }],
+          };
+        },
+      },
+    },
+  });
+  const output = await provider(INPUT);
+  assert.equal(output.provider_request_id, 'codex-request-123');
+  assert.deepEqual(output.provider_usage, { input_tokens: 123, output_tokens: 45 });
+});
+
 test('Codex CLI controls reject invalid retry and reasoning settings', () => {
   assert.throws(() => createCodexCliClient({ maxAttempts: 0 }), /positive integer/);
   assert.throws(() => createCodexCliClient({ reasoningEffort: 'high; unsafe' }), /simple non-empty identifier/);

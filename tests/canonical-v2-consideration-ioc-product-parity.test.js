@@ -5,6 +5,7 @@ const assert = require('node:assert/strict');
 
 const {
   AUTHORITY_STATE,
+  ELECTION_MECHANISM_SCHEMA,
   EVIDENCE_SOURCE,
   projectConsiderationEvidenceProductSurfaces,
   projectIocEvidenceProductSurfaces,
@@ -99,4 +100,61 @@ test('IOC evidence projection preserves long-tail mechanics, narrow attachments 
     provisions: output.cards,
   });
   assert.equal(market.scorecard.find((item) => item.field_path === 'iocEvidenceMechanicPresent').deal_value, true);
+});
+
+test('governed election mechanisms retain only quoted choice, cash and stock alternatives, proration and exact evidence', () => {
+  const quote = 'A holder may make either a Cash Election to receive $63.00 in cash or a Stock Election to receive one Parent Share. If no election is made, the holder shall be deemed to have made a Cash Election. The proration fraction has a numerator equal to the Maximum Equity Election Cap and a denominator equal to the aggregate number of Mixed Election Shares.';
+  const output = projectConsiderationEvidenceProductSurfaces({
+    deal_id: 'election-mechanism-product',
+    resolution: { open_world: [openWorld('PRORATION_FORMULA', quote, {
+      surface: 'PRORATION_FORMULA',
+      election_choice: 'may make either a Cash Election to receive $63.00 in cash or a Stock Election to receive one Parent Share',
+      cash_alternatives: ['Cash Election to receive $63.00 in cash'],
+      stock_alternatives: ['Stock Election to receive one Parent Share'],
+      default_treatment: 'shall be deemed to have made a Cash Election',
+      equity_cap: 'Maximum Equity Election Cap',
+      proration_numerator: 'numerator equal to the Maximum Equity Election Cap',
+      proration_denominator: 'denominator equal to the aggregate number of Mixed Election Shares',
+    })] },
+  });
+  assert.equal(output.election_mechanisms.length, 1);
+  const [mechanism] = output.election_mechanisms;
+  assert.equal(mechanism.schema_version, ELECTION_MECHANISM_SCHEMA);
+  assert.equal(mechanism.exact_evidence, quote);
+  assert.equal(mechanism.election_choice, 'may make either a Cash Election to receive $63.00 in cash or a Stock Election to receive one Parent Share');
+  assert.deepEqual(mechanism.cash_alternatives, ['Cash Election to receive $63.00 in cash']);
+  assert.deepEqual(mechanism.stock_alternatives, ['Stock Election to receive one Parent Share']);
+  assert.equal(mechanism.default_treatment, 'shall be deemed to have made a Cash Election');
+  assert.deepEqual(mechanism.proration, {
+    equity_cap: 'Maximum Equity Election Cap',
+    numerator: 'numerator equal to the Maximum Equity Election Cap',
+    denominator: 'denominator equal to the aggregate number of Mixed Election Shares',
+  });
+  assert.equal(Object.hasOwn(mechanism.proration, 'cash_cap'), false);
+});
+
+test('hostile election fields outside the exact evidence are dropped and CVR never becomes an election mechanism', () => {
+  const electionQuote = 'A holder may make a Cash Election.';
+  const cvrQuote = 'Each Share shall receive one contractual contingent value right pursuant to the CVR Agreement.';
+  const output = projectConsiderationEvidenceProductSurfaces({
+    deal_id: 'hostile-election-mechanism-product',
+    resolution: { open_world: [
+      openWorld('ELECTION_ALTERNATIVE', electionQuote, {
+        surface: 'ELECTION_ALTERNATIVE',
+        election_choice: 'not in the source',
+        cash_alternatives: ['not in the source'],
+        stock_alternatives: ['not in the source'],
+        default_treatment: 'not in the source',
+        proration_numerator: 'not in the source',
+      }),
+      openWorld('CVR', cvrQuote, { surface: 'CVR' }),
+    ] },
+  });
+  assert.equal(output.election_mechanisms.length, 1);
+  const [mechanism] = output.election_mechanisms;
+  assert.equal(mechanism.exact_evidence, electionQuote);
+  for (const field of ['election_choice', 'alternatives', 'cash_alternatives', 'stock_alternatives', 'default_treatment', 'proration']) {
+    assert.equal(Object.hasOwn(mechanism, field), false, field);
+  }
+  assert.equal(output.cards.find((card) => card.full_text === cvrQuote).features.cvrPresent, true);
 });

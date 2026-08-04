@@ -122,33 +122,23 @@ test('accepts only the two governed seed kinds', () => {
   }
 });
 
-test('authority proof is content-addressed separately and does not rekey the deal manifest', () => {
+test('quarantines the V1 authority-attestation path so arbitrary text and digests cannot mint authority', () => {
   const manifest = build();
-  const first = buildDealIdentityAuthorityAttestation({
-    deal_identity_manifest: manifest,
-    authority_reference_id: id('ben-approval-v1'),
-  });
-  const replacement = buildDealIdentityAuthorityAttestation({
-    deal_identity_manifest: manifest,
-    authority_reference_id: id('ben-approval-v2'),
-  });
-
-  assert.equal(first.deal_identity_manifest_id, manifest.deal_identity_manifest_id);
-  assert.equal(replacement.deal_identity_manifest_id, manifest.deal_identity_manifest_id);
-  assert.equal(first.governed_deal_key, manifest.governed_deal_key);
-  assert.equal(replacement.governed_deal_key, manifest.governed_deal_key);
-  assert.notEqual(
-    first.deal_identity_authority_attestation_id,
-    replacement.deal_identity_authority_attestation_id,
-  );
-  assert.equal(validateDealIdentityAuthorityAttestation({
-    attestation: first,
-    deal_identity_manifest: manifest,
-  }), true);
   assert.throws(() => buildDealIdentityAuthorityAttestation({
     deal_identity_manifest: manifest,
-    authority_reference_id: 'short',
-  }), (error) => error.code === 'INVALID_DEAL_IDENTITY');
+    authority_reference_id: id('ben-approval-v1'),
+  }), { code: 'OBSOLETE_V1_DEAL_IDENTITY_NON_AUTHORITY' });
+  assert.throws(() => validateDealIdentityAuthorityAttestation({
+    attestation: {
+      schema_version: 'DEAL_IDENTITY_AUTHORITY_ATTESTATION/V1',
+      deal_identity_manifest_id: manifest.deal_identity_manifest_id,
+      governed_deal_key: manifest.governed_deal_key,
+      immutable_deal_seed: manifest.immutable_deal_seed,
+      authority_reference_id: id('arbitrary-text-digest'),
+      deal_identity_authority_attestation_id: id('forged-attestation'),
+    },
+    deal_identity_manifest: manifest,
+  }), { code: 'OBSOLETE_V1_DEAL_IDENTITY_NON_AUTHORITY' });
 });
 
 test('requires canonical bounded text and unique reviewed supersession references', () => {

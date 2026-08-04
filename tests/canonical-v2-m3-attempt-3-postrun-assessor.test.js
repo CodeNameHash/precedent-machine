@@ -10,17 +10,18 @@ const {
   Attempt3PostrunAssessorError,
   assessAttempt3LiveOutputs,
 } = require('../lib/canonical-v2/native-producer/m3-attempt-3-postrun-assessor');
+const { resolveDurableArtifactRoot } = require('../lib/canonical-v2/durable-artifact-root');
 
 const ROOT = path.resolve(__dirname, '..');
-const ARTIFACT_ROOT = process.env.CANONICAL_V2_M3_PILOT_ARTIFACT_ROOT
-  || '/private/tmp/canonical-v2-m3-pilot-20260803.L3KSNP';
-const ATTEMPT_ROOT = path.join(ARTIFACT_ROOT, 'iteration-2-preparation', 'attempt-3');
+const ARTIFACT_ROOT = resolveDurableArtifactRoot();
+const ATTEMPT_ROOT = ARTIFACT_ROOT && path.join(ARTIFACT_ROOT, 'iteration-2-preparation', 'attempt-3');
 
 function loadJson(file) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
 }
 
 function fixturePathsPresent() {
+  if (!ARTIFACT_ROOT || !ATTEMPT_ROOT) return false;
   return [
     path.join(ATTEMPT_ROOT, 'sealed-rerun-plan.json'),
     path.join(ATTEMPT_ROOT, 'live-only-manifest.json'),

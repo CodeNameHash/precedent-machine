@@ -276,7 +276,7 @@ test('iteration 2 runner consumes the sealed plan before validation can reach a 
       '--checkpoint-dir', 'iteration-2/checkpoints',
     ], { cwd: ROOT, encoding: 'utf8' });
     assert.equal(result.status, 1);
-    assert.match(result.stderr, /section pin/i);
+    assert.match(result.stderr, /Caller manifests cannot produce an executable unified-run validation result/i);
     assert.equal(fs.existsSync(path.join(tempDir, 'iteration-2', 'execution-result.json')), false);
   } finally {
     fs.rmSync(fixture.checkpoints, { recursive: true, force: true });

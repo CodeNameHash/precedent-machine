@@ -7,12 +7,12 @@ const test = require('node:test');
 
 const { compileFixtureContractV34 } = require('../lib/canonical-v2/contract-bundle');
 const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
+const { resolveDurableArtifactRoot } = require('../lib/canonical-v2/durable-artifact-root');
 const { loadAdmittedSourceForExecution } = require('../lib/canonical-v2/native-producer/unified-runner-validate');
 
 const ROOT = path.resolve(__dirname, '..');
-const LIVE_ARTIFACT_ROOT = process.env.CANONICAL_V2_M3_PILOT_ARTIFACT_ROOT
-  || '/private/tmp/canonical-v2-m3-pilot-20260803.L3KSNP';
-const RESULT_PATH = path.join(LIVE_ARTIFACT_ROOT, 'final-output', 'execution-result.json');
+const LIVE_ARTIFACT_ROOT = resolveDurableArtifactRoot();
+const RESULT_PATH = LIVE_ARTIFACT_ROOT && path.join(LIVE_ARTIFACT_ROOT, 'final-output', 'execution-result.json');
 const MANIFEST = require('./fixtures/canonical-v2/m3-12-call-pilot-manifest.json');
 const LIVE_EXECUTION_RESULT_ID = '7c5eeece5741d77ac5ecc493783be657447d8c183b25e25daf20e41a38910b2f';
 
@@ -49,7 +49,7 @@ function assertPublishedChildCitation(entry, parentSectionReference) {
 }
 
 test('immutable live M3 capitalisation and no-other-reps checkpoint replays conservatively', {
-  skip: !fs.existsSync(RESULT_PATH),
+  skip: !RESULT_PATH || !fs.existsSync(RESULT_PATH),
 }, () => {
   const skechersCapitalisation = replay('skechers-capitalisation-3-7');
   assert.equal(skechersCapitalisation.resolved.filter((entry) => (
@@ -93,7 +93,7 @@ test('immutable live M3 capitalisation and no-other-reps checkpoint replays cons
 });
 
 test('immutable live M3 track-B rows publish child citations with their source context', {
-  skip: !fs.existsSync(RESULT_PATH),
+  skip: !RESULT_PATH || !fs.existsSync(RESULT_PATH),
 }, () => {
   const antitrust = replay('modiv-antitrust-consents-5-5');
   assert.deepEqual(

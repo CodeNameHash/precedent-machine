@@ -17,13 +17,13 @@ const {
   Iteration2RerunPlannerError,
   replayRetainedProviderOutput,
 } = require('../lib/canonical-v2/native-producer/m3-iteration-2-rerun-planner');
+const { resolveDurableArtifactRoot } = require('../lib/canonical-v2/durable-artifact-root');
 const { loadAdmittedSourceForExecution } = require('../lib/canonical-v2/native-producer/unified-runner-validate');
 
 const ROOT = path.resolve(__dirname, '..');
-const PILOT_ROOT = process.env.CANONICAL_V2_M3_PILOT_ARTIFACT_ROOT
-  || '/private/tmp/canonical-v2-m3-pilot-20260803.L3KSNP';
-const EXECUTION_PATH = path.join(PILOT_ROOT, 'final-output', 'execution-result.json');
-const V6_REVIEW_PACKET_PATH = path.join(PILOT_ROOT, 'final-review-v6', 'sealed-final-pilot-review-packet.json');
+const PILOT_ROOT = resolveDurableArtifactRoot();
+const EXECUTION_PATH = PILOT_ROOT && path.join(PILOT_ROOT, 'final-output', 'execution-result.json');
+const V6_REVIEW_PACKET_PATH = PILOT_ROOT && path.join(PILOT_ROOT, 'final-review-v6', 'sealed-final-pilot-review-packet.json');
 const MANIFEST = require('./fixtures/canonical-v2/m3-12-call-pilot-manifest.json');
 const EXECUTION_ID = '7c5eeece5741d77ac5ecc493783be657447d8c183b25e25daf20e41a38910b2f';
 
@@ -138,7 +138,7 @@ function citationFor(runReceipt, rawValue) {
 }
 
 test('recorded Skechers and TopBuild capitalisation outputs replay through source-tree child citations', {
-  skip: !fs.existsSync(EXECUTION_PATH),
+  skip: !EXECUTION_PATH || !fs.existsSync(EXECUTION_PATH),
 }, async () => {
   const skechers = await replay('skechers-capitalisation-3-7');
   const topBuild = await replay('topbuild-capitalisation-3-1-b');
@@ -181,7 +181,7 @@ test('recorded Skechers and TopBuild capitalisation outputs replay through sourc
 });
 
 test('recorded capitalisation responses derive source-grounded preferred-stock zero counts', {
-  skip: !fs.existsSync(EXECUTION_PATH),
+  skip: !EXECUTION_PATH || !fs.existsSync(EXECUTION_PATH),
 }, async () => {
   const skechers = await replay('skechers-capitalisation-3-7', { reshapeRecordedResponse: true });
   const topBuild = await replay('topbuild-capitalisation-3-1-b', { reshapeRecordedResponse: true });
@@ -221,7 +221,7 @@ test('recorded capitalisation responses derive source-grounded preferred-stock z
 });
 
 test('zero-share derivation does not duplicate an already asserted preferred-stock zero', {
-  skip: !fs.existsSync(EXECUTION_PATH),
+  skip: !EXECUTION_PATH || !fs.existsSync(EXECUTION_PATH),
 }, () => {
   const execution = JSON.parse(fs.readFileSync(EXECUTION_PATH, 'utf8'));
   const prior = execution.work_results.find((entry) => entry.work_item_id === 'skechers-capitalisation-3-7');
@@ -252,7 +252,7 @@ for (const [boundary, replayBoundary] of [
   ['iteration-2 retained replay', replayAtRetainedBoundary],
 ]) {
   test(`${boundary} reshapes immutable capitalisation raw text with current zero and citation rules`, {
-    skip: !fs.existsSync(V6_REVIEW_PACKET_PATH),
+    skip: !V6_REVIEW_PACKET_PATH || !fs.existsSync(V6_REVIEW_PACKET_PATH),
   }, async () => {
     const skechers = await replayBoundary('skechers-capitalisation-3-7');
     const topBuild = await replayBoundary('topbuild-capitalisation-3-1-b');
@@ -291,7 +291,7 @@ for (const [boundary, replayBoundary] of [
   });
 
   test(`${boundary} replay is deterministic and fails closed instead of using stale proposals`, {
-    skip: !fs.existsSync(V6_REVIEW_PACKET_PATH),
+    skip: !V6_REVIEW_PACKET_PATH || !fs.existsSync(V6_REVIEW_PACKET_PATH),
   }, async () => {
     const first = await replayBoundary('topbuild-capitalisation-3-1-b');
     const second = await replayBoundary('topbuild-capitalisation-3-1-b');

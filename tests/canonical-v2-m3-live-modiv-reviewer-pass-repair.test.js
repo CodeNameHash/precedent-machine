@@ -8,13 +8,13 @@ const test = require('node:test');
 const { compileFixtureContractV34 } = require('../lib/canonical-v2/contract-bundle');
 const { buildDefinedTermOnlyAdjudication } = require('../lib/canonical-v2/native-producer/m3-defined-term-only-adjudication');
 const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
+const { resolveDurableArtifactRoot } = require('../lib/canonical-v2/durable-artifact-root');
 const { loadAdmittedSourceForExecution } = require('../lib/canonical-v2/native-producer/unified-runner-validate');
 
 const ROOT = path.resolve(__dirname, '..');
-const LIVE_ARTIFACT_ROOT = process.env.CANONICAL_V2_M3_PILOT_ARTIFACT_ROOT
-  || '/private/tmp/canonical-v2-m3-pilot-20260803.L3KSNP';
-const RESULT_PATH = path.join(LIVE_ARTIFACT_ROOT, 'final-output', 'execution-result.json');
-const REVIEW_PATH = path.join(LIVE_ARTIFACT_ROOT, 'final-output', 'independent-first-six-review-findings.json');
+const LIVE_ARTIFACT_ROOT = resolveDurableArtifactRoot();
+const RESULT_PATH = LIVE_ARTIFACT_ROOT && path.join(LIVE_ARTIFACT_ROOT, 'final-output', 'execution-result.json');
+const REVIEW_PATH = LIVE_ARTIFACT_ROOT && path.join(LIVE_ARTIFACT_ROOT, 'final-output', 'independent-first-six-review-findings.json');
 const MANIFEST = require('./fixtures/canonical-v2/m3-12-call-pilot-manifest.json');
 const LIVE_EXECUTION_RESULT_ID = '7c5eeece5741d77ac5ecc493783be657447d8c183b25e25daf20e41a38910b2f';
 
@@ -36,7 +36,7 @@ function replay(workItemId) {
 }
 
 test('immutable Modiv reviewer-PASS replay preserves named consideration terms and confirms fee sides from full payment text', {
-  skip: !fs.existsSync(RESULT_PATH) || !fs.existsSync(REVIEW_PATH),
+  skip: !RESULT_PATH || !REVIEW_PATH || !fs.existsSync(RESULT_PATH) || !fs.existsSync(REVIEW_PATH),
 }, () => {
   const consideration = replay('modiv-consideration-2-1');
   const reviewFinding = JSON.parse(fs.readFileSync(REVIEW_PATH, 'utf8')).findings.find(

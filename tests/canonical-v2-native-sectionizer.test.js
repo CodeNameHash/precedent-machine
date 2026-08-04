@@ -367,6 +367,23 @@ test('four-letter Roman markers remain siblings in an unheaded TopBuild-style li
   assert.equal(findSectionByReference(tree, '4.1(vii)(xii)(xvi)'), null);
 });
 
+test('recognises terminal-dot decimal headings split across lines, but not inline decimal prose', () => {
+  const source = [
+    'ARTICLE VI',
+    'COVENANTS',
+    '6.1.',
+    'Interim Operations.',
+    '6.2.',
+    'Cooperation; Antitrust Matters.',
+    'This sentence refers to 6.3. Cooperation, but is not a heading.',
+  ].join('\n');
+  const tree = sectionizeAdmittedSource({ source_text: source, document_hash: DOC_HASH });
+  assert.equal(findSectionByReference(tree, '6.1')?.heading, 'Interim Operations');
+  assert.equal(findSectionByReference(tree, '6.2')?.heading, 'Cooperation; Antitrust Matters');
+  assert.equal(tree.nodes.filter((node) => node.kind === 'SECTION' && node.reference === '6.2').length, 1);
+  assertRoundTripsExactly(tree, source, 'terminal-dot-decimal-headings');
+});
+
 // ─── Input validation ───
 
 test('rejects missing or malformed inputs instead of silently misbehaving', () => {

@@ -17,11 +17,11 @@ const {
   loadAdmittedSourceForExecution,
   validateUnifiedRunManifest,
 } = require('../lib/canonical-v2/native-producer/unified-runner-validate');
+const { resolveDurableArtifactRoot } = require('../lib/canonical-v2/durable-artifact-root');
 
 const ROOT = path.resolve(__dirname, '..');
-const PILOT_ROOT = process.env.CANONICAL_V2_M3_PILOT_ARTIFACT_ROOT
-  || '/private/tmp/canonical-v2-m3-pilot-20260803.L3KSNP';
-const V6_REVIEW_PACKET_PATH = path.join(PILOT_ROOT, 'final-review-v6', 'sealed-final-pilot-review-packet.json');
+const PILOT_ROOT = resolveDurableArtifactRoot();
+const V6_REVIEW_PACKET_PATH = PILOT_ROOT && path.join(PILOT_ROOT, 'final-review-v6', 'sealed-final-pilot-review-packet.json');
 const MANIFEST = require('./fixtures/canonical-v2/m3-12-call-pilot-manifest.json');
 
 function providerOutput(rawResponseText) {
@@ -80,7 +80,7 @@ for (const [label, raw, code] of [
 }
 
 test('V6 recordings reshape through their current family adapters with deterministic counts', {
-  skip: !fs.existsSync(V6_REVIEW_PACKET_PATH),
+  skip: !V6_REVIEW_PACKET_PATH || !fs.existsSync(V6_REVIEW_PACKET_PATH),
 }, () => {
   const packet = JSON.parse(fs.readFileSync(V6_REVIEW_PACKET_PATH, 'utf8'));
   const semantic = validateUnifiedRunManifest({ manifest: MANIFEST, root_dir: ROOT }).semantic_manifest;

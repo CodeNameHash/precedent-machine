@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 
@@ -12,10 +13,25 @@ const {
   getFrozenFourDealLocalDemoResult,
   m3Rows,
 } = require('../lib/four-deal-local-demo-preview');
+const {
+  DurableArtifactRootError,
+  resolveDurableArtifactRoot,
+} = require('../lib/canonical-v2/durable-artifact-root');
 
-const ARTIFACT_ROOT = '/private/tmp/canonical-v2-m3-pilot-20260803.L3KSNP';
+const ARTIFACT_ROOT = resolveDurableArtifactRoot({
+  environmentKey: 'CANONICAL_V2_M3_PREVIEW_ARTIFACT_ROOT',
+});
+const PREVIEW_AVAILABLE = Boolean(ARTIFACT_ROOT)
+  && fs.existsSync(path.join(ARTIFACT_ROOT, FINAL_REVIEW_PACKET_PATH));
 
-test('four-deal preview binds immutable M3 rows and the sealed Metsera Process result into one read-only contract', () => {
+test('four-deal preview fails closed without a durable M3 artefact root', () => {
+  assert.throws(
+    () => getFrozenFourDealLocalDemoResult({ artifact_root: null }),
+    (error) => error instanceof DurableArtifactRootError && error.code === 'DURABLE_ARTIFACT_ROOT_REQUIRED',
+  );
+});
+
+test('four-deal preview binds immutable M3 rows and the sealed Metsera Process result into one read-only contract', { skip: !PREVIEW_AVAILABLE }, () => {
   const result = getFrozenFourDealLocalDemoResult();
   assert.equal(result.schema_version, FOUR_DEAL_LOCAL_DEMO_RESULT_SCHEMA);
   assert.equal(result.mode, 'FROZEN_READ_ONLY_PREVIEW');
@@ -78,7 +94,7 @@ test('four-deal preview binds immutable M3 rows and the sealed Metsera Process r
   assert.equal(metsera.product_component.slot_state, 'VALID');
 });
 
-test('four-deal preview retains an explicit no-findings path', () => {
+test('four-deal preview retains an explicit no-findings path', { skip: !PREVIEW_AVAILABLE }, () => {
   const result = getFrozenFourDealLocalDemoResult({
     artifact_root: ARTIFACT_ROOT,
     final_legal_finding_paths: [],
@@ -96,7 +112,7 @@ test('four-deal preview retains an explicit no-findings path', () => {
     && row.work_item_legal_review_state === 'PENDING_INDEPENDENT_REVIEW'));
 });
 
-test('four-deal preview rejects sealed V5 findings against the sealed V8 packet and strict input', () => {
+test('four-deal preview rejects sealed V5 findings against the sealed V8 packet and strict input', { skip: !PREVIEW_AVAILABLE }, () => {
   assert.throws(
     () => getFrozenFourDealLocalDemoResult({
       artifact_root: ARTIFACT_ROOT,
@@ -159,7 +175,7 @@ test('four-deal preview keeps governed scope separate from a missing published c
   assert.equal(rows[0].source_citation, 'Published citation pending; governed scope 4.3');
 });
 
-test('four-deal preview exposes structured fee and consideration formulas without flattening them', () => {
+test('four-deal preview exposes structured fee and consideration formulas without flattening them', { skip: !PREVIEW_AVAILABLE }, () => {
   const result = getFrozenFourDealLocalDemoResult();
   const modiv = result.deals.find((deal) => deal.deal_name === 'Modiv');
   const formulas = modiv.rows.filter((row) => row.result_type === 'STRUCTURED_FORMULA');
@@ -199,7 +215,7 @@ test('four-deal preview does not project a work-item PASS onto an unreviewed for
   assert.equal(rows[0].legal_review_state, null);
 });
 
-test('four-deal preview projects V8 row findings without inventing a work-item legal basis', () => {
+test('four-deal preview projects V8 row findings without inventing a work-item legal basis', { skip: !PREVIEW_AVAILABLE }, () => {
   const result = getFrozenFourDealLocalDemoResult();
   const modiv = result.deals.find((deal) => deal.deal_name === 'Modiv');
   assert.ok(modiv.rows.every((row) => row.work_item_legal_review_state === 'PASS'));

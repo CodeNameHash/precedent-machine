@@ -4,6 +4,7 @@ const test = require('node:test');
 const {
   DECISION_GROUPS,
   DECISIONS,
+  DISSENT_THRESHOLD_RETIREMENT_PROVENANCE,
   M3_STAGES,
   RECORDED_RULINGS,
   decisionById,
@@ -30,11 +31,11 @@ test('decision console has one complete, unique recommendation per decision', ()
 });
 
 test('recorded rulings stay fixed and follow-on rulings are added without duplicates', () => {
-  assert.equal(Object.keys(RECORDED_RULINGS).length, 40);
+  assert.equal(Object.keys(RECORDED_RULINGS).length, 48);
   assert.deepEqual(
     DECISIONS.filter((decision) => !RECORDED_RULINGS[decision.id]).map((decision) => decision.id),
     [
-      'antitrust-core-taxonomy',
+      'antitrust-expanded-taxonomy',
       'employee-dno-follow-on',
       'financing-follow-on',
       'defined-term-relationship-model',
@@ -49,9 +50,26 @@ test('recorded rulings stay fixed and follow-on rulings are added without duplic
   }
 });
 
+test('the dissent-threshold retirement has an exact recorded option and primary provenance', () => {
+  const decision = decisionById('closing-dissent-threshold-retirement');
+  assert.equal(RECORDED_RULINGS[decision.id], 'APPROVED_RETIRED_OPEN_WORLD');
+  assert.equal(recommendedChoice(decision), 'APPROVED_RETIRED_OPEN_WORLD');
+  assert.equal(decision.provenance, DISSENT_THRESHOLD_RETIREMENT_PROVENANCE);
+  assert.deepEqual(DISSENT_THRESHOLD_RETIREMENT_PROVENANCE, {
+    assistant_prompt_timestamp: '2026-08-04T13:13:05.876Z',
+    response_timestamp: '2026-08-04T13:21:06.252Z',
+    external_session_log_locator: 'sessions/2026/08/03/rollout-2026-08-03T06-01-47-019fc5ff-dc06-70b3-bc8a-6f6afc627632.jsonl',
+    assistant_prompt_line: 21490,
+    response_line: 21496,
+    assistant_prompt_excerpt: 'One decision is needed now: approve retiring `DISSENT_THRESHOLD` as a comparable M3 field. Exact future language remains preserved as open-world evidence. My recommendation remains to approve.',
+    response_excerpt: 'Approved. Proceed with all speed, using agents to maximize speed and manage cost',
+  });
+  assert.equal(DISSENT_THRESHOLD_RETIREMENT_PROVENANCE.external_session_log_locator.startsWith('/'), false);
+});
+
 test('follow-on rulings carry corpus counts, clause examples and a promotion horizon', () => {
   const followOn = DECISIONS.filter((decision) => decision.origin === 'follow-on');
-  assert.equal(followOn.length, 27);
+  assert.equal(followOn.length, 34);
   assert.deepEqual(
     followOn.filter((decision) => decision.horizon === 'now').map((decision) => decision.id),
     [
@@ -62,6 +80,12 @@ test('follow-on rulings carry corpus counts, clause examples and a promotion hor
       'dividend-concept-scope',
       'rank-85-dividend-dno',
       'consideration-mechanics-promotion',
+      'consideration-cvr-presence',
+      'consideration-election-mechanism',
+      'closing-termination-linking',
+      'defined-terms-first-comparable',
+      'defined-terms-neutral-long-tail',
+      'defined-terms-misclassified-reclassification',
       'appraisal-necessary-implication',
       'ioc-qualifier-attachment',
       'ioc-numeric-shape',
@@ -76,7 +100,7 @@ test('follow-on rulings carry corpus counts, clause examples and a promotion hor
       'family-routing-key',
     ],
   );
-  assert.equal(followOn.filter((decision) => decision.horizon === 'later').length, 8);
+  assert.equal(followOn.filter((decision) => decision.horizon === 'later').length, 9);
   for (const decision of followOn) {
     assert.match(decision.corpus, /\d/);
     assert.ok(Array.isArray(decision.examples));
@@ -126,11 +150,42 @@ test('prior rulings are represented once and remain recorded', () => {
 
 test('saved open answers survive while recorded rulings remain authoritative', () => {
   const choices = mergeRecordedRulings({
-    'antitrust-core-taxonomy': 'adopt-core',
+    'antitrust-expanded-taxonomy': 'adjudicate-expanded-package',
     'db-apply': 'hold',
   });
-  assert.equal(choices['antitrust-core-taxonomy'], 'adopt-core');
+  assert.equal(choices['antitrust-expanded-taxonomy'], 'adjudicate-expanded-package');
   assert.equal(choices['db-apply'], 'fixture-go');
+});
+
+test('later Ben rulings are recorded without claiming missing implementation', () => {
+  assert.equal(RECORDED_RULINGS['consideration-cvr-presence'], 'presence-only');
+  assert.equal(RECORDED_RULINGS['consideration-election-mechanism'], 'structured-mechanism');
+  assert.equal(RECORDED_RULINGS['closing-termination-linking'], 'preserve-distinct-link-xref');
+  assert.equal(RECORDED_RULINGS['defined-terms-first-comparable'], 'adopt-five');
+  assert.equal(RECORDED_RULINGS['defined-terms-next-slices'], 'adopt-later-slices');
+  assert.equal(RECORDED_RULINGS['defined-terms-neutral-long-tail'], 'neutral-exact-comparable-by-term');
+  assert.equal(RECORDED_RULINGS['defined-terms-misclassified-reclassification'], 'content-reviewed');
+  assert.match(decisionById('consideration-election-mechanism').current, /approved/i);
+  assert.match(decisionById('defined-terms-next-slices').current, /approved/i);
+});
+
+test('obsolete antitrust core question is replaced by the bounded unresolved docket', () => {
+  assert.equal(decisionById('antitrust-core-taxonomy'), null);
+  const decision = decisionById('antitrust-expanded-taxonomy');
+  assert.equal(RECORDED_RULINGS[decision.id], undefined);
+  assert.match(decision.current, /^Unresolved/);
+  assert.deepEqual(decision.unresolved_topics.map((topic) => topic.topic_id), [
+    'agreements-name-and-claims',
+    'strategy-control-and-consultation',
+    'filing-regimes-and-deadlines',
+    'rendered-v1-terminal-dispositions',
+  ]);
+  assert.deepEqual(decision.unresolved_topics.at(-1).rendered_v1_surfaces, [
+    'ANTI-BURDEN', 'ANTI-CONSULT', 'ANTI-COOPERATE', 'ANTI-EFFORTS',
+    'ANTI-FILING', 'ANTI-FOREIGN', 'ANTI-INFO', 'ANTI-INTERIM',
+    'ANTI-LITIGATION', 'ANTI-NOACTION', 'ANTI-NOTIFY', 'ANTI-TIMING',
+    'UNCLASSIFIED_NULL_SUBTYPE',
+  ]);
 });
 
 test('M3 route ends at certification and keeps production import outside M3', () => {

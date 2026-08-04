@@ -19,7 +19,7 @@ const {
   findSectionByReference,
 } = require('../lib/canonical-v2/native-producer/deterministic-sectionizer');
 const {
-  loadAdmittedSourceForExecution,
+  loadSourceForDiagnostic,
 } = require('../lib/canonical-v2/native-producer/unified-runner-validate');
 const {
   utf8Slice,
@@ -56,7 +56,7 @@ test('specific-performance prompt and adapter response contracts remain compatib
 test('TopBuild Section 7.6 enters the specific-performance prompt with its equitable relief and limitations', () => {
   const workItem = MANIFEST.work_items.find((item) => item.work_item_id === 'topbuild-remedies-specific-performance-7-6');
   const source = MANIFEST.sources.find((item) => item.source_id === workItem.source_id);
-  const admitted = loadAdmittedSourceForExecution({ source, root_dir: ROOT });
+  const admitted = loadSourceForDiagnostic({ source, root_dir: ROOT });
   const section = findSectionByReference(admitted.tree, workItem.section_pin.section_reference);
   const sourceText = utf8Slice(admitted.context.canonical_text.text, section.start, section.end);
   const prompt = getProducerPromptModule(workItem.family_id)({

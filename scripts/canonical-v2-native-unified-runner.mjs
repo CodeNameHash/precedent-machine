@@ -15,7 +15,10 @@ import { dirname, isAbsolute, relative, resolve } from 'node:path';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const { validateUnifiedRunManifest } = require('../lib/canonical-v2/native-producer/unified-runner-validate');
+const {
+  validateUnifiedRunManifest,
+  validateUnifiedRunManifestDiagnostic,
+} = require('../lib/canonical-v2/native-producer/unified-runner-validate');
 
 function usage() {
   throw new Error(
@@ -158,9 +161,14 @@ try {
   const resolvedManifest = resolve(process.cwd(), manifestPath);
   const manifest = JSON.parse(readFileSync(resolvedManifest, 'utf8'));
   if (args.mode === 'validate') {
-    const result = validateUnifiedRunManifest({ manifest, root_dir: process.cwd() });
+    const result = validateUnifiedRunManifestDiagnostic({ manifest, root_dir: process.cwd() });
     process.stdout.write(`${JSON.stringify(result)}\n`);
   } else {
+    // This is intentionally before every execution-only read, provider import
+    // and filesystem mutation. The real validator is fenced until a trusted
+    // external verifier exists, so a diagnostic manifest cannot prepare an
+    // execution directory, checkpoint or output reservation.
+    validateUnifiedRunManifest({ manifest, root_dir: process.cwd() });
     const {
       executeUnifiedRun,
       CONTROLS_SCHEMA,

@@ -7,15 +7,15 @@ const test = require('node:test');
 
 const { compileFixtureContractV34 } = require('../lib/canonical-v2/contract-bundle');
 const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
+const { resolveDurableArtifactRoot } = require('../lib/canonical-v2/durable-artifact-root');
 const { loadAdmittedSourceForExecution } = require('../lib/canonical-v2/native-producer/unified-runner-validate');
 
-const ARTIFACT_ROOT = process.env.CANONICAL_V2_M3_PILOT_ARTIFACT_ROOT
-  || '/private/tmp/canonical-v2-m3-pilot-20260803.L3KSNP';
-const MANIFEST_PATH = path.join(ARTIFACT_ROOT, 'iteration-2-preparation', 'attempt-3', 'live-only-manifest.json');
-const EXECUTION_PATH = path.join(ARTIFACT_ROOT, 'iteration-2', 'execution-result.json');
+const ARTIFACT_ROOT = resolveDurableArtifactRoot();
+const MANIFEST_PATH = ARTIFACT_ROOT && path.join(ARTIFACT_ROOT, 'iteration-2-preparation', 'attempt-3', 'live-only-manifest.json');
+const EXECUTION_PATH = ARTIFACT_ROOT && path.join(ARTIFACT_ROOT, 'iteration-2', 'execution-result.json');
 
 function available() {
-  return fs.existsSync(MANIFEST_PATH) && fs.existsSync(EXECUTION_PATH);
+  return Boolean(MANIFEST_PATH && EXECUTION_PATH) && fs.existsSync(MANIFEST_PATH) && fs.existsSync(EXECUTION_PATH);
 }
 
 function load() {

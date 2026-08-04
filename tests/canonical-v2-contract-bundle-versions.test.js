@@ -51,6 +51,7 @@ const {
   FIXTURE_CONTRACT_INPUT_V32,
   FIXTURE_CONTRACT_INPUT_V33,
   FIXTURE_CONTRACT_INPUT_V34,
+  FIXTURE_CONTRACT_INPUT_V35,
   FIXTURE_CONTRACT_FINGERPRINTS,
   FIXTURE_SERVING_CONTRACT_FINGERPRINTS,
   BRINGS_DOWN_EFFECT_SCHEMA_V1,
@@ -108,6 +109,7 @@ const {
   compileFixtureContractV32,
   compileFixtureContractV33,
   compileFixtureContractV34,
+  compileFixtureContractV35,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -167,6 +169,7 @@ const FROZEN_F31 = 'd74472b9b5b06fde1e73f7b35fc7dddfec84d9a4a0a87c58851240799d34
 const FROZEN_F32 = '8f2cbebb81fad57ec4baed29a79ebba3c25bafca85112438e6ce1679f89f1a49';
 const FROZEN_F33 = 'd282131065db749b0153dc03df73764a0d3089e6a9ec75e3e7e51603d4b1b230';
 const FROZEN_F34 = '5eafc3fed937525022cdbde1a0f5c42552e875336afa515c9ade580c021707ad';
+const FROZEN_F35 = '5d58ef7417fb0f24747745913f8ae9fc46326b0fd2851b6afcef9e272b978cb6';
 
 const APPROVED_V2_ADDITIONS = [
   'TERMR-BREACH',
@@ -227,7 +230,7 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F34 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F35 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
@@ -261,6 +264,7 @@ test('F1 through F34 are distinct recognised fixture contract fingerprints', () 
   assert.notEqual(FROZEN_F31, FROZEN_F32);
   assert.notEqual(FROZEN_F32, FROZEN_F33);
   assert.notEqual(FROZEN_F33, FROZEN_F34);
+  assert.notEqual(FROZEN_F34, FROZEN_F35);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -298,6 +302,7 @@ test('F1 through F34 are distinct recognised fixture contract fingerprints', () 
       FROZEN_F32,
       FROZEN_F33,
       FROZEN_F34,
+      FROZEN_F35,
     ].sort(),
   );
   assert.deepEqual(
@@ -409,6 +414,22 @@ test('compileFixtureContractV34() adds only No Other Reps and Fraud vocabulary',
   assert.equal(canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V34)), canonicalJson(bundle));
   assert.equal(bundle.concepts.length, previous.concepts.length + 8);
   assert.equal(bundle.claim_definitions.length, previous.claim_definitions.length + 6);
+});
+
+test('compileFixtureContractV35() adds only recorded defined-term identities', () => {
+  const bundle = compileFixtureContractV35(); const previous = compileFixtureContractV34();
+  assert.equal(bundle.fingerprint, FROZEN_F35); assert.equal(validateContractBundle(bundle), true);
+  assert.equal(canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V35)), canonicalJson(bundle));
+  assert.deepEqual(
+    bundle.concepts.filter((concept) => !previous.concepts.some((prior) => prior.concept_key === concept.concept_key))
+      .map((concept) => concept.concept_key).sort(),
+    ['DEF-MADE-AVAILABLE', 'DEF-ORDINARY-COURSE', 'DEF-TAX', 'DEF-TAX-RETURN'],
+  );
+  assert.deepEqual(
+    bundle.claim_definitions.filter((definition) => !previous.claim_definitions.some((prior) => prior.claim_definition_key === definition.claim_definition_key))
+      .map((definition) => definition.claim_definition_key).sort(),
+    ['MADE_AVAILABLE_DEFINITION_RECORDED', 'ORDINARY_COURSE_DEFINITION_RECORDED', 'TAX_DEFINITION_RECORDED', 'TAX_RETURN_DEFINITION_RECORDED'],
+  );
 });
 
 test('F22 adds only the three grounded Consideration concepts and claims', () => {

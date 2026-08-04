@@ -10,6 +10,7 @@ const {
   CONSIDERATION_CLAIM_KEY,
   CONSIDERATION_PROPOSAL_KIND,
   createAnthropicProvider,
+  shapeConsiderationProposals,
 } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const {
   buildConsiderationProducerPrompt,
@@ -52,6 +53,7 @@ test('CONSIDERATION uses the repository prompt registry and preserves the contro
   assert.match(prompt.messages[0].content, /Never emit fixed or floating ratio type/);
   assert.match(prompt.messages[0].content, /NEVER ASSERT A NEGATIVE FROM SILENCE/);
   assert.match(prompt.messages[0].content, /ELECTION_ALLOCATION/);
+  assert.match(prompt.messages[0].content, /cash_alternatives/);
   assert.match(prompt.messages[0].content, /same quote identifies an appraisal statute/);
   assert.deepEqual(CONSIDERATION_ASSERTION_KINDS, [
     'PER_SHARE_CASH', 'EXCHANGE_RATIO', 'APPRAISAL_STATUS',
@@ -88,13 +90,39 @@ test('CVR and election mechanics remain exact open-world evidence and never beco
   assert.match(produced.proposals[0].attributes.why_unmapped, /^ELECTION_ALLOCATION:/);
 });
 
+test('consideration provider keeps only quote-local election object fields and keeps CVR presence-only', () => {
+  const electionQuote = 'A holder may make a Cash Election to receive $63.00 in cash or a Stock Election to receive one Parent Share.';
+  const cvrQuote = 'Each Share shall receive one contractual contingent value right pursuant to the CVR Agreement.';
+  const shaped = shapeConsiderationProposals({
+    consideration_assertions: [],
+    consideration_mechanics: [
+      {
+        surface: 'ELECTION_ALTERNATIVE', quote: electionQuote, detail: 'two choices',
+        election_choice: 'may make a Cash Election to receive $63.00 in cash or a Stock Election to receive one Parent Share',
+        cash_alternatives: ['Cash Election to receive $63.00 in cash', 'invented cash alternative'],
+        stock_alternatives: ['Stock Election to receive one Parent Share'],
+      },
+      { surface: 'CVR', quote: cvrQuote, detail: 'separate agreement right' },
+    ],
+    open_world_candidates: [],
+  }, `${electionQuote}\n${cvrQuote}`);
+  const election = shaped.proposals.find((proposal) => proposal.raw_value === electionQuote);
+  assert.deepEqual(election.attributes.structured_mechanic, {
+    surface: 'ELECTION_ALTERNATIVE',
+    election_choice: 'may make a Cash Election to receive $63.00 in cash or a Stock Election to receive one Parent Share',
+    cash_alternatives: ['Cash Election to receive $63.00 in cash'],
+    stock_alternatives: ['Stock Election to receive one Parent Share'],
+  });
+  const cvr = shaped.proposals.find((proposal) => proposal.raw_value === cvrQuote);
+  assert.deepEqual(cvr.attributes.structured_mechanic, { surface: 'CVR' });
+});
+
 test('consideration titles classify at stage 1 without capturing capitalisation or termination titles', async () => {
   const titles = [
     'Conversion of Shares',
     'Effect of the Merger on Capital Stock',
     'Exchange of Certificates',
     'Treatment of Company Equity Awards',
-    'Dissenters’ Rights',
     'Withholding Rights',
     'Adjustments to Prevent Dilution',
   ];
@@ -103,6 +131,7 @@ test('consideration titles classify at stage 1 without capturing capitalisation 
     assert.equal(result.section_family, 'CONSIDERATION', title);
     assert.equal(result.provenance, SECTION_FAMILY_RULE_CLASSIFIED, title);
   }
+  assert.equal((await classifySectionFamily({ title: 'Dissenters’ Rights' })).section_family, 'APPRAISAL_DISSENTERS_RIGHTS');
   assert.notEqual((await classifySectionFamily({ title: 'Capitalization' })).section_family, 'CONSIDERATION');
   assert.notEqual((await classifySectionFamily({ title: 'Termination Rights' })).section_family, 'CONSIDERATION');
 });

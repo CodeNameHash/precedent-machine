@@ -255,7 +255,12 @@ precedent); CERT (the certificate is procedural machinery whose content is
 a cross-reference to sibling conditions — see Known costs);
 `COND-B-DISSENT` / `COND-TAXOPINION` (zero corpus cards; registering them
 would be vocabulary with no grounding text, the exact fabrication this
-programme forbids).
+programme forbids). On 2026-08-04, adjacent Codex session messages recorded
+retirement of `DISSENT_THRESHOLD` as a comparable M3 field. The decision
+register carries the exact timestamps, excerpts, and session-log line
+references. Any future matching text is preserved as exact open-world
+evidence. Reintroduction requires a stable grounded shape and separate
+approval.
 
 **Claim definitions** (three new; bring-down reuses the existing one):
 

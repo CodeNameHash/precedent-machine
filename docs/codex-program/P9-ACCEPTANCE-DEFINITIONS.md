@@ -1,4 +1,13 @@
-# P9 gate acceptance definitions (proposal)
+# P9 gate acceptance definitions (withdrawn proposal)
+
+Status: `WITHDRAWN_NON_AUTHORITY`.
+
+This proposal is retained only as audit history. It is not a reliable gate
+inventory or acceptance-definition source. The adversarial recovery found one
+missing terminal candidate leaf, `P9_PROGRAMME_COMPLETION_ATTESTATION`, and
+found that the nine listed missing Ben decisions were already governed. The
+executable recovery scaffold fails closed until the completion-leaf ruling and
+the successor M1 amendment. No text below can issue a definition or `PASS`.
 
 Status: **proposal for review, not adopted**. `docs/codex-program/programme-gates.yaml`
 is governed; nothing here has been written into it. Adopting any definition
@@ -168,34 +177,31 @@ these pass against evidence that was never designed to answer the question.
 
 **Existing definition found:** none under this exact ID. `canonical-contracts.md`
 has extensive prose on "corpus scope" freeze mechanics (e.g. line 664:
-"Corpus scope selects those fixed pre-freeze roots"; line 1400: "Before a
-corpus scope can freeze, two disjoint implementations build a..."; line 3807:
+"Corpus scope selects those fixed pre-freeze roots"; line 3807:
 "Before corpus scope freezes, create one immutable `ExpectedOccurrenceSlot`")
 and Phase 9 step 5 in `CODEX-PROGRAM.md` describes `CorpusScopeManifest` and
-`CorpusScopeFreezeAttestation` as two-independent-enumerator equality proofs.
+`CorpusScopeFreezeAttestation`. The later controlling contract text supersedes
+the earlier dual-inventory language for pre-production work.
 None of this prose is bound to the string `P9_SCOPE_EXACT`.
 
 - **statement**: The certified corpus scope (the exact set of deals,
   sources and sections examined) is provably complete and exact — nothing in
   scope was silently dropped, and nothing out of scope was silently included.
-- **acceptance**: Two independently implemented scope enumerators (one
-  driven off the deal/source admission ledger, one driven off the frozen
-  `CorpusScopeManifest`) must produce byte-identical inventories of
-  deals × sources × sections in scope. A script (not yet built —
-  `scripts/verify-corpus-scope-exact.js`) computes both sets and diffs them;
-  zero missing, zero extra, zero duplicate.
-- **evidence**: A generated `CorpusScopeEqualityReport` (JSON) recording
-  both enumerator outputs, their diff (must be empty), and the digest of the
+- **acceptance**: One deterministic complete corpus-scope inventory records
+  deals × sources × sections in scope. Focused and hostile correctness tests
+  validate missing, extra and duplicate detection. The dual-independent rule
+  applies only to the extraction golden comparison. A script (not yet built —
+  `scripts/verify-corpus-scope-exact.js`) validates the inventory against the
+  frozen `CorpusScopeManifest`; zero missing, zero extra, zero duplicate.
+- **evidence**: A generated `CorpusScopeCompletenessReport` (JSON) recording
+  the deterministic inventory, its validation result, and the digest of the
   frozen `CorpusScopeManifest` it was checked against, committed under
   `docs/certification/evidence/` (directory does not currently exist —
   confirmed absent by the 2026-07-23 audit; must be created as part of
   adopting this gate).
-- **confidence**: LOW. The two-independent-enumerator pattern is real and
-  used elsewhere in the spec (e.g. `InventoryEnumeratorIndependenceAttestation`
-  for CORPUS_SCOPE at `canonical-contracts.md` line ~11004), so I am
-  extrapolating an established pattern to this gate name rather than
-  inventing from nothing — but nothing ties that pattern to this specific
-  gate ID.
+- **confidence**: LOW. The exact inventory mechanism is not built, but the
+  later contract text expressly makes focused and hostile tests the required
+  pre-production check and limits dual independence to golden extraction.
 - **needs_ben**: yes. What counts as "in scope" for M3 (which deals, which
   document types, whether amendments/schedules count) is a product/legal
   scoping decision, not an engineering one.

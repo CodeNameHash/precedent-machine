@@ -14,12 +14,12 @@ const {
   evaluatePilotQualityGate,
   loadPilotWorkItems,
 } = require('../lib/canonical-v2/native-producer/m3-12-call-pilot-quality-gate');
+const { resolveDurableArtifactRoot } = require('../lib/canonical-v2/durable-artifact-root');
 
 const ROOT = path.resolve(__dirname, '..');
-const LIVE_ARTIFACT_ROOT = process.env.CANONICAL_V2_M3_PILOT_ARTIFACT_ROOT
-  || '/private/tmp/canonical-v2-m3-pilot-20260803.L3KSNP';
-const ADAPTER_PATH = path.join(LIVE_ARTIFACT_ROOT, 'final-output', 'review-packet-adapter.json');
-const REVIEW_PATH = path.join(LIVE_ARTIFACT_ROOT, 'final-output', 'independent-first-six-review-findings.json');
+const LIVE_ARTIFACT_ROOT = resolveDurableArtifactRoot();
+const ADAPTER_PATH = LIVE_ARTIFACT_ROOT && path.join(LIVE_ARTIFACT_ROOT, 'final-output', 'review-packet-adapter.json');
+const REVIEW_PATH = LIVE_ARTIFACT_ROOT && path.join(LIVE_ARTIFACT_ROOT, 'final-output', 'independent-first-six-review-findings.json');
 
 function baseInput() {
   const items = loadPilotWorkItems({ root_dir: ROOT });
@@ -62,7 +62,7 @@ function dispositionsFor(packet) {
 }
 
 test('sealed live adjudications clear only the two reviewer-PASS Modiv unresolved-output escalations', {
-  skip: !fs.existsSync(ADAPTER_PATH) || !fs.existsSync(REVIEW_PATH),
+  skip: !ADAPTER_PATH || !REVIEW_PATH || !fs.existsSync(ADAPTER_PATH) || !fs.existsSync(REVIEW_PATH),
 }, () => {
   const adapter = JSON.parse(fs.readFileSync(ADAPTER_PATH, 'utf8'));
   const findings = JSON.parse(fs.readFileSync(REVIEW_PATH, 'utf8')).findings;

@@ -4,8 +4,6 @@ import process from 'node:process';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const YAML = require('yaml');
-const { domainDigest } = require('../lib/programme-gates/bytes');
 const {
   collectContainmentEvidence,
 } = require('../lib/programme-gates/containment-collector');
@@ -99,15 +97,7 @@ if (!process.argv.includes('--skip-build')) {
   });
 }
 
-const governingRegistryAuthority = createGoverningRegistryAuthority({
-  readFileSync(file) {
-    return CONTAINMENT_RUNTIME.readFile(file);
-  },
-  parseYaml(source) {
-    return YAML.parse(source);
-  },
-  domainDigest,
-});
+const governingRegistryAuthority = createGoverningRegistryAuthority();
 
 const bundle = await collectContainmentEvidence({
   runtime: CONTAINMENT_RUNTIME,

@@ -22,6 +22,10 @@ const VALUES = Object.freeze({
   KNOWLEDGE_PERSON_SOURCE: 'NAMED_INDIVIDUALS',
   WILLFUL_BREACH_DEFINITION: true,
   WILLFUL_BREACH_KNOWLEDGE_STANDARD: 'ACTUAL_OR_CONSTRUCTIVE',
+  TAX_DEFINITION_RECORDED: true,
+  TAX_RETURN_DEFINITION_RECORDED: true,
+  MADE_AVAILABLE_DEFINITION_RECORDED: true,
+  ORDINARY_COURSE_DEFINITION_RECORDED: true,
   MAE_CARVEOUT: 'PANDEMIC',
   MAE_DEFINITION_PRONG: 'BUSINESS_EFFECTS',
   MAE_DISPROPORTIONALITY_CARVEBACK: true,
@@ -38,6 +42,22 @@ const ATTRIBUTES = Object.freeze({
   KNOWLEDGE_PERSON_SOURCE: { knowledge_term_ref: 'Knowledge', source_code: 'NAMED_INDIVIDUALS', named_persons: ['Jane Doe'] },
   WILLFUL_BREACH_DEFINITION: { breach_term_ref: 'Willful Breach' },
   WILLFUL_BREACH_KNOWLEDGE_STANDARD: { breach_term_ref: 'Willful Breach', standard_code: 'ACTUAL_OR_CONSTRUCTIVE' },
+  TAX_DEFINITION_RECORDED: {
+    defined_term_identity: 'tax', definition_equivalence: 'NOT_ASSERTED',
+    definition_envelope: { defined_term: 'Tax', definition_kind: 'TERM_DEFINITION', definition_head_quote: '"Tax" means', definition_body_quote: '"Tax" means any tax.', cross_reference_target: null },
+  },
+  TAX_RETURN_DEFINITION_RECORDED: {
+    defined_term_identity: 'tax return', definition_equivalence: 'NOT_ASSERTED',
+    definition_envelope: { defined_term: 'Tax Return', definition_kind: 'TERM_DEFINITION', definition_head_quote: '"Tax Return" means', definition_body_quote: '"Tax Return" means any return required by Law.', cross_reference_target: null },
+  },
+  MADE_AVAILABLE_DEFINITION_RECORDED: {
+    defined_term_identity: 'made available', definition_equivalence: 'NOT_ASSERTED',
+    definition_envelope: { defined_term: 'Made Available', definition_kind: 'TERM_DEFINITION', definition_head_quote: '"Made Available" means', definition_body_quote: '"Made Available" means provided before signing.', cross_reference_target: null },
+  },
+  ORDINARY_COURSE_DEFINITION_RECORDED: {
+    defined_term_identity: 'ordinary course', definition_equivalence: 'NOT_ASSERTED',
+    definition_envelope: { defined_term: 'Ordinary Course', definition_kind: 'TERM_DEFINITION', definition_head_quote: '"Ordinary Course" means', definition_body_quote: '"Ordinary Course" means the ordinary course of business.', cross_reference_target: null },
+  },
   MAE_CARVEOUT: { defined_term_ref: 'Company Material Adverse Effect', carveout_code: 'PANDEMIC', clause_label: '(a)' },
   MAE_DEFINITION_PRONG: { defined_term_ref: 'Company Material Adverse Effect', prong_code: 'BUSINESS_EFFECTS' },
   MAE_DISPROPORTIONALITY_CARVEBACK: { defined_term_ref: 'Company Material Adverse Effect', applies_to_clause_labels: ['(a)', '(b)'], comparison_baseline_phrase: 'other participants in the industry' },
@@ -71,18 +91,37 @@ test('all governed Key Defined Terms and MAE claims reach Review, Query, Compare
   const entries = [...Object.keys(KEY_TERM_CLAIMS), ...Object.keys(MAE_CLAIMS)].map(resolvedEntry);
   const projection = projectKeyTermsMaeClaims({ resolved_entries: entries });
   assert.equal(projection.authority_state, 'VALIDATED_NOT_SERVED');
-  assert.equal(projection.records.length, 13);
+  assert.equal(projection.records.length, 17);
   for (const record of projection.records) {
     assert.equal(record.review.row_key, record.query.value.claim_definition_key);
     assert.deepEqual(record.compare, record.query);
     assert.equal(record.market.metric_version, 1);
-    assert.equal(record.market.weighting, 'DEAL');
+    if (KEY_TERM_CLAIMS[record.review.row_key]?.value_kind === 'RECORDED_DEFINITION') {
+      assert.equal(record.market.market_statistics, 'NOT_CALCULATED');
+      assert.equal(Object.hasOwn(record.market, 'weighting'), false);
+    } else {
+      assert.equal(record.market.weighting, 'DEAL');
+    }
   }
   assert.deepEqual(
     new Set(projection.records.map((record) => record.owner_family)),
     new Set(['KEY_DEFINED_TERMS', 'MAE_DEFINITION']),
   );
   assert.deepEqual(fieldsForCompareCell('DEFINITION').slice(0, 2), ['definedTermFact', 'maeDefinitionFact']);
+});
+
+test('the four later definition records preserve exact envelopes without comparable market output', () => {
+  const keys = [
+    'TAX_DEFINITION_RECORDED', 'TAX_RETURN_DEFINITION_RECORDED',
+    'MADE_AVAILABLE_DEFINITION_RECORDED', 'ORDINARY_COURSE_DEFINITION_RECORDED',
+  ];
+  const projection = projectKeyTermsMaeClaims({ resolved_entries: keys.map(resolvedEntry) });
+  assert.deepEqual(projection.records.map((record) => record.review.row_key).sort(), [...keys].sort());
+  for (const record of projection.records) {
+    assert.equal(record.market.market_statistics, 'NOT_CALCULATED');
+    assert.equal(record.query.value.definition_equivalence, 'NOT_ASSERTED');
+    assert.equal(record.review.exact_definition.definition_body_quote, ATTRIBUTES[record.review.row_key].definition_envelope.definition_body_quote);
+  }
 });
 
 test('threshold substitution is visible as a raw rule but never becomes an effective threshold statistic', () => {

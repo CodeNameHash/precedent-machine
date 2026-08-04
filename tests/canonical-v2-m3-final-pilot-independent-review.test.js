@@ -14,10 +14,14 @@ const {
   buildFinalPilotStrictIndependentReviewInput,
   validateFinalPilotReReviewFindings,
 } = require('../lib/canonical-v2/native-producer/m3-final-pilot-independent-review');
+const { resolveDurableArtifactRoot } = require('../lib/canonical-v2/durable-artifact-root');
 
-const PACKET_PATH = '/private/tmp/canonical-v2-m3-pilot-20260803.L3KSNP/final-review/sealed-final-pilot-review-packet.json';
-const V5_PACKET_PATH = '/private/tmp/canonical-v2-m3-pilot-20260803.L3KSNP/final-review-v5/sealed-final-pilot-review-packet.json';
-const V5_SOURCE_BOUND_INPUT_PATH = '/private/tmp/canonical-v2-m3-pilot-20260803.L3KSNP/final-review-v5/sealed-strict-independent-legal-review-input-source-bound-v5.json';
+const ARTIFACT_ROOT = resolveDurableArtifactRoot();
+const PACKET_PATH = ARTIFACT_ROOT && path.join(ARTIFACT_ROOT, 'final-review', 'sealed-final-pilot-review-packet.json');
+const V5_PACKET_PATH = ARTIFACT_ROOT && path.join(ARTIFACT_ROOT, 'final-review-v5', 'sealed-final-pilot-review-packet.json');
+const V5_SOURCE_BOUND_INPUT_PATH = ARTIFACT_ROOT && path.join(ARTIFACT_ROOT, 'final-review-v5', 'sealed-strict-independent-legal-review-input-source-bound-v5.json');
+const V5_EVIDENCE_AVAILABLE = Boolean(V5_PACKET_PATH && V5_SOURCE_BOUND_INPUT_PATH)
+  && fs.existsSync(V5_PACKET_PATH) && fs.existsSync(V5_SOURCE_BOUND_INPUT_PATH);
 
 function exactSourceBytesByDocumentHash(sourceBound) {
   const bytes = {};
@@ -53,7 +57,7 @@ function sealedFindings({ packet, input, findings = input.review_items.map((item
   };
 }
 
-test('prepares a strict twelve-item legal review with no automatic PASS', { skip: !fs.existsSync(PACKET_PATH) }, () => {
+test('prepares a strict twelve-item legal review with no automatic PASS', { skip: !PACKET_PATH || !fs.existsSync(PACKET_PATH) }, () => {
   const packet = JSON.parse(fs.readFileSync(PACKET_PATH, 'utf8'));
   const input = buildFinalPilotStrictIndependentReviewInput({ final_review_packet: packet });
   assert.equal(input.schema_version, STRICT_INDEPENDENT_REVIEW_SCHEMA);
@@ -168,7 +172,7 @@ function findingFor(reviewItem, status = 'PASS') {
 }
 
 test('accepts one sealed twelve-item findings file and does not reject a parent extraction scope with a child published citation', {
-  skip: !fs.existsSync(V5_PACKET_PATH) || !fs.existsSync(V5_SOURCE_BOUND_INPUT_PATH),
+  skip: !V5_EVIDENCE_AVAILABLE,
 }, () => {
   const { packet, input } = boundV5Review();
   assert.equal(validateFinalPilotReReviewFindings({
@@ -179,7 +183,7 @@ test('accepts one sealed twelve-item findings file and does not reject a parent 
 });
 
 test('accepts two sealed six-item findings files and rejects a findings artefact whose claim status conflicts with its finding', {
-  skip: !fs.existsSync(V5_PACKET_PATH) || !fs.existsSync(V5_SOURCE_BOUND_INPUT_PATH),
+  skip: !V5_EVIDENCE_AVAILABLE,
 }, () => {
   const { packet, input } = boundV5Review();
   const findings = input.review_items.map((item) => findingFor(item));
@@ -206,7 +210,7 @@ test('accepts two sealed six-item findings files and rejects a findings artefact
 });
 
 test('requires exact formula coverage and makes a failed formula fail its work item', {
-  skip: !fs.existsSync(V5_PACKET_PATH) || !fs.existsSync(V5_SOURCE_BOUND_INPUT_PATH),
+  skip: !V5_EVIDENCE_AVAILABLE,
 }, () => {
   const { packet, input } = boundV5Review();
   const findings = input.review_items.map((item) => findingFor(item));
@@ -244,7 +248,7 @@ test('requires exact formula coverage and makes a failed formula fail its work i
 });
 
 test('rejects a rehashed strict input that differs from the packet rebuild', {
-  skip: !fs.existsSync(V5_PACKET_PATH) || !fs.existsSync(V5_SOURCE_BOUND_INPUT_PATH),
+  skip: !V5_EVIDENCE_AVAILABLE,
 }, () => {
   const { packet, input } = boundV5Review();
   const findings = sealedFindings({ packet, input });
@@ -271,7 +275,7 @@ test('rejects a rehashed strict input that differs from the packet rebuild', {
 });
 
 test('rejects a findings artefact with a broken identity or a rehashed rubric violation', {
-  skip: !fs.existsSync(V5_PACKET_PATH) || !fs.existsSync(V5_SOURCE_BOUND_INPUT_PATH),
+  skip: !V5_EVIDENCE_AVAILABLE,
 }, () => {
   const { packet, input } = boundV5Review();
   const forged = sealedFindings({ packet, input });
@@ -301,7 +305,7 @@ test('rejects a findings artefact with a broken identity or a rehashed rubric vi
 });
 
 test('preserves V5 formula sidecars, claim attributes, citation context, and formula source citations', {
-  skip: !fs.existsSync(V5_PACKET_PATH) || !fs.existsSync(V5_SOURCE_BOUND_INPUT_PATH),
+  skip: !V5_EVIDENCE_AVAILABLE,
 }, () => {
   const packet = JSON.parse(fs.readFileSync(V5_PACKET_PATH, 'utf8'));
   const sourceBound = JSON.parse(fs.readFileSync(V5_SOURCE_BOUND_INPUT_PATH, 'utf8'));
@@ -326,7 +330,7 @@ test('preserves V5 formula sidecars, claim attributes, citation context, and for
   assert.equal(consideration.review_rows.resolved_claims[0].citation_context.child_section_reference, '2.1');
 });
 
-test('rejects a final packet that has any automatic legal PASS', { skip: !fs.existsSync(PACKET_PATH) }, () => {
+test('rejects a final packet that has any automatic legal PASS', { skip: !PACKET_PATH || !fs.existsSync(PACKET_PATH) }, () => {
   const packet = JSON.parse(fs.readFileSync(PACKET_PATH, 'utf8'));
   packet.legal_disposition = 'PASS';
   const body = { ...packet }; delete body.final_review_packet_id;

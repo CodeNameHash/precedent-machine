@@ -53,10 +53,23 @@ function priorityRows(rows) {
 
 export function getServerSideProps() {
   const { getFrozenFourDealLocalDemoResult } = require('../../lib/four-deal-local-demo-preview');
-  return { props: { demo: getFourDealLocalDemo(), resultContract: getFrozenFourDealLocalDemoResult() } };
+  try {
+    return { props: { demo: getFourDealLocalDemo(), resultContract: getFrozenFourDealLocalDemoResult(), previewUnavailable: null } };
+  } catch (error) {
+    return {
+      props: {
+        demo: getFourDealLocalDemo(),
+        resultContract: null,
+        previewUnavailable: 'The M3 preview is unavailable. Configure a durable artefact root before opening it.',
+      },
+    };
+  }
 }
 
-export default function FourDealLocalDemo({ demo, resultContract }) {
+export default function FourDealLocalDemo({ demo, resultContract, previewUnavailable }) {
+  if (!resultContract) {
+    return <><Head><title>Four-deal local demo unavailable · Corpus</title></Head><MergertraceStyles /><main className="mtx min-h-screen bg-[#F2F0EA] text-[#1F1F1F]"><AppHeader active="corpus" center={<span className="text-xs font-semibold uppercase tracking-[0.12em] text-[#6B6B6B]">Four-deal local demo</span>} /><div className="mx-auto max-w-3xl px-4 py-12 sm:px-6"><section className="rounded border border-[#D9D7D2] bg-white p-6"><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#77736C]">Read-only preview</p><h1 className="mt-2 text-2xl font-bold tracking-tight">Preview unavailable</h1><p className="mt-3 text-sm leading-6 text-[#66625C]">{previewUnavailable}</p></section></div></main></>;
+  }
   const [tab, setTab] = useState('review');
   const [selectedId, setSelectedId] = useState(demo.deals[0].id);
   const selected = useMemo(() => demo.deals.find((deal) => deal.id === selectedId) || demo.deals[0], [demo.deals, selectedId]);

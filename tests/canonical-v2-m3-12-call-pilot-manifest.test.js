@@ -7,7 +7,7 @@ const test = require('node:test');
 
 const {
   NativeUnifiedRunValidationError,
-  validateUnifiedRunManifest,
+  validateUnifiedRunManifestDiagnostic,
 } = require('../lib/canonical-v2/native-producer/unified-runner-validate');
 const {
   sectionizeAdmittedSource,
@@ -25,18 +25,17 @@ function loadManifest() {
 }
 
 test('M3 12-call pilot manifest validates locally with exact source and section pins', () => {
-  const result = validateUnifiedRunManifest({
+  const result = validateUnifiedRunManifestDiagnostic({
     manifest: loadManifest(),
     root_dir: ROOT,
   });
   assert.equal(result.receipt.source_count, 3);
   assert.equal(result.receipt.work_item_count, 12);
-  assert.deepEqual(result.receipt.disposition_counts, {
-    BLOCKED_SOURCE_PIN: 0,
-    EXTRACT: 12,
-    NOT_PRESENT: 0,
-  });
-  assert.equal(result.execution_plan.zero_retry_provider_call_count, 12);
+  assert.equal(result.receipt.authority, 'NONE');
+  assert.equal(result.diagnostic_manifest.status, 'BLOCKED_PROPOSAL_ONLY_NOT_EXECUTION_AUTHORITY');
+  assert.equal(result.diagnostic_manifest.work_item_diagnostics.filter((item) => (
+    item.diagnostic_state === 'EXTRACT_CANDIDATE_PENDING_TRUSTED_SOURCE_ADMISSION'
+  )).length, 12);
 });
 
 test('M3 12-call pilot binds the two non-title family assignments directly', () => {
@@ -94,10 +93,9 @@ test('M3 12-call pilot admits recorded TopBuild context with explicit identity a
       section_text_sha256: 'ab4ce66d8e07577673bf4ea1f99838b21bd518786778e8511c71efab3df30487',
     },
   });
-  const result = validateUnifiedRunManifest({ manifest, root_dir: ROOT });
-  const admitted = result.semantic_manifest.sources.find((entry) => entry.source_id === 'topbuild-full');
-  assert.equal(admitted.admitted_semantic_source_context_id,
-    source.admitted_semantic_source_context_id);
+  const result = validateUnifiedRunManifestDiagnostic({ manifest, root_dir: ROOT });
+  const diagnostic = result.diagnostic_manifest.source_diagnostics.find((entry) => entry.source_id === 'topbuild-full');
+  assert.equal(diagnostic.authority, 'NONE');
 });
 
 test('M3 12-call pilot rejects a recorded TopBuild context whose explicit pins drift', () => {
@@ -105,20 +103,20 @@ test('M3 12-call pilot rejects a recorded TopBuild context whose explicit pins d
   const source = manifest.sources.find((entry) => entry.source_id === 'topbuild-full');
   source.canonical_text_sha256 = '0'.repeat(64);
   assert.throws(
-    () => validateUnifiedRunManifest({ manifest, root_dir: ROOT }),
+    () => validateUnifiedRunManifestDiagnostic({ manifest, root_dir: ROOT }),
     (error) => error instanceof NativeUnifiedRunValidationError
       && error.code === 'RECORDED_CONTEXT_PIN_MISMATCH',
   );
 });
 
-test('M3 12-call pilot rejects a recorded TopBuild source-reference pin that drifts', () => {
+test('M3 12-call pilot never turns a caller-modified recorded source reference into executable authority', () => {
   const manifest = loadManifest();
   const source = manifest.sources.find((entry) => entry.source_id === 'topbuild-full');
   source.admitted_source_reference.canonical_text_id = '0'.repeat(64);
   assert.throws(
-    () => validateUnifiedRunManifest({ manifest, root_dir: ROOT }),
+    () => require('../lib/canonical-v2/native-producer/unified-runner-validate').validateUnifiedRunManifest({ manifest }),
     (error) => error instanceof NativeUnifiedRunValidationError
-      && error.code === 'RECORDED_SOURCE_REFERENCE_MISMATCH',
+      && error.code === 'TRUSTED_UNIFIED_RUN_VERIFIER_UNAVAILABLE',
   );
 });
 

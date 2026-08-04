@@ -120,9 +120,9 @@ test('every review-v2 table configuration is assigned or recorded as an unassign
   );
 });
 
-test('Wave A completion cannot hide open follow-on or unassigned product work', () => {
+test('approved retirement closes the final follow-on surface without hiding open product work', () => {
   assert.ok(Object.isFrozen(CURRENT_M3_FAMILY_PARITY_REGISTER.families[0].wave_a.checks));
-  assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.state, 'BLOCKED');
+  assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.state, 'FAMILY_COMPLETE');
   assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.family_states.length, 21);
   assert.equal(
     CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
@@ -152,12 +152,9 @@ test('Wave A completion cannot hide open follow-on or unassigned product work', 
     (family) => family.family_id === 'CONSIDERATION',
   );
   assert.equal(consideration.completion_state, 'FAMILY_COMPLETE');
-  assert.deepEqual(
-    CURRENT_M3_FAMILY_PARITY_STATUS.family_states
-      .filter((family) => family.family_id !== 'CLOSING_CONDITIONS')
-      .map((family) => family.completion_state),
-    Array(20).fill('FAMILY_COMPLETE'),
-  );
+  assert.ok(CURRENT_M3_FAMILY_PARITY_STATUS.family_states.every(
+    (family) => family.completion_state === 'FAMILY_COMPLETE',
+  ));
   for (const familyId of [
     'TERMINATION_FEE',
     'TERMINATION_RIGHTS',
@@ -207,16 +204,9 @@ test('recorded Proxy and Meeting rulings are implemented on the exact adopted fo
     .every((surface) => surface.state === 'PASS' && surface.disposition === 'NATIVE_COMPLETE'));
 });
 
-test('parity blocker inventory is exact and never treats open-world evidence as semantic completion', () => {
+test('approved retirement leaves no M3 family-parity blocker', () => {
   const blockers = listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER);
-  assert.ok(blockers.length > 0);
-  assert.ok(blockers.every((blocker) => blocker.semantic_completion === false));
-  assert.equal(blockers.some((blocker) => blocker.disposition === 'UNASSIGNED'), false);
-  assert.ok(blockers.some((blocker) => blocker.disposition === 'FOLLOW_ON_REQUIRED'));
-  assert.deepEqual(
-    blockers.map((blocker) => blocker.surface_id),
-    [...blockers.map((blocker) => blocker.surface_id)].sort(),
-  );
+  assert.deepEqual(blockers, []);
   assert.deepEqual(listM3ProductParityBlockers(completedRegister()), []);
 });
 
@@ -318,9 +308,9 @@ test('the defined-term disposition audit covers every recurring production popul
   assert.match(audit, /Concept scope is not approved/);
 });
 
-test('a rehashed complete label cannot contradict open family state', () => {
+test('a rehashed blocked label cannot contradict complete family state', () => {
   const forged = structuredClone(CURRENT_M3_FAMILY_PARITY_STATUS);
-  forged.state = 'FAMILY_COMPLETE';
+  forged.state = 'BLOCKED';
   const { m3_family_parity_status_id: _oldId, ...body } = forged;
   forged.m3_family_parity_status_id = contentId(STATUS_SCHEMA, body);
   assert.throws(

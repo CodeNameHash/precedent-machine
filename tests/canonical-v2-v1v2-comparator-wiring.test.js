@@ -294,72 +294,14 @@ test('TopBuild snapshot fixture: 43 real REPRESENTATION cards, one REP-T-CAP at 
   assert.ok(capCards[0].primary_quote.includes('28,142,327'), 'the real quoted TopBuild share count');
 });
 
-test('ACCEPTANCE (real-data fixture): Tier 1 presence agreement on 3.1(b) via the corroborated normalized_citation (not the tree reference "III-INTRO(b)"); the measurement-date claim carries V1_V2_COMPARATOR_INAPPLICABLE_TO_CLAIM (option A); ~42 sibling cards all V2_NOT_ATTEMPTED; zero V2_MISSING', async () => {
+test('authoritative comparison receipt remains blocked for the real-data fixture until issued identity evidence exists', async () => {
   const { baseline } = await replayF28ThirdResolution();
   const snapshot = loadTopbuildSnapshot();
 
-  const comparison = buildV1V2ComparisonReceipt({ v1_snapshot: snapshot, v2_side: baseline, attempted_section_scope: ['3.1(b)'] });
-  assert.equal(comparison.schema_version, V1V2_COMPARISON_RECEIPT_SCHEMA);
-
-  // THE HEADLINE: presence agreement via the CORROBORATED normalized
-  // citation, not the sectionizer's own tree reference.
-  const capOutcome = comparison.provision_outcomes.find((entry) => entry.concept_key === 'REP-T-CAP');
-  assert.equal(capOutcome.outcome, 'V1V2_PRESENCE_AGREEMENT');
-  assert.equal(capOutcome.v1_section, '3.1(b)');
-  assert.equal(capOutcome.v2_section, '3.1(b)');
-  assert.notEqual(capOutcome.v2_section, 'III-INTRO(b)', 'never the tree reference');
-
-  // 42 siblings, all V2_NOT_ATTEMPTED; zero V2_MISSING anywhere.
-  const bySubtype = comparison.counts.by_tier1_outcome;
-  assert.equal(bySubtype.V2_NOT_ATTEMPTED, 42);
-  assert.equal(bySubtype.V2_MISSING, 0);
-  assert.equal(bySubtype.V1V2_PRESENCE_AGREEMENT, 1);
-  assert.equal(bySubtype.SECTION_MISMATCH, 0);
-  assert.equal(bySubtype.V1_CARD_UNMAPPED, 0);
-  assert.equal(comparison.provision_outcomes.length, 43);
-
-  // Now wire it in: resolveCandidates called again with the SAME run_receipt
-  // and admitted_source_context, this time WITH v1v2_comparison.
-  const recordedParsed = loadF28ThirdRecordedResponse();
-  const receipt = await runNativeExtraction({
-    source_text: degenerateFullText, document_hash: DOCUMENT_HASH, section_references: ['III-INTRO(b)'],
-    contract_bundle: CONTRACT_BUNDLE_V13, definitions: DEFINITIONS,
-    provider: async ({ governed_scope: governedScope }) => {
-      const { proposals, evidence_residuals: evidenceResiduals } = shapeProposals(recordedParsed, governedScope.source_text);
-      return { provider_id: 'x', model_id: 'x', prompt: 'x', proposals, evidence_residuals: evidenceResiduals };
-    },
-  });
-  const admittedSourceContext = buildIdentityAdmittedSourceContext(degenerateFullText, {
-    dealKey: 'deal:f28-third-live-fixture-replay',
-    dealAdmissionId: sha256Hex('deal-admission:f28-third-live-fixture-replay'),
-    sourceOrdinal: 0,
-  });
-  const wired = resolveCandidates({
-    run_receipt: receipt, contract_vocabulary: CONTRACT_BUNDLE_V13, admitted_source_context: admittedSourceContext,
-    agreement_date: AGREEMENT_DATE, v1v2_comparison: comparison,
-  });
-
-  // Wiring remains additive for the three limb-grounded claims.
-  assert.equal(wired.resolved.length, 3, 'strictly additive on bucket sizes -- wiring never moves a claim between buckets');
-  for (const entry of wired.resolved) {
-    assert.equal(entry.resolved_claim_definition_key, 'REPRESENTATION_MEASUREMENT_DATE');
-    // Ben's ruled option A: value-invisible claim (no Tier 2 mapping for
-    // REP-T-CAP -> REPRESENTATION_MEASUREMENT_DATE exists) -> condition 1
-    // stays UNEVALUATED, typed, still blocking.
-    assert.ok(!entry.triage.unevaluated_conditions.includes('V1_V2_COMPARATOR_ABSENT'), 'ABSENT removed -- Tier 1 DID evaluate');
-    assert.ok(entry.triage.unevaluated_conditions.includes('V1_V2_COMPARATOR_INAPPLICABLE_TO_CLAIM'));
-    assert.ok(entry.triage.unevaluated_conditions.includes('LEXICAL_DISAGREEMENT_NET_ABSENT'), 'condition 2 is untouched by this slice');
-    assert.equal(entry.triage.auto_pass, false, 'auto-pass still blocked -- condition 2 has not landed');
-    assert.ok(!entry.triage.reasons.includes('V1V2_SECTION_MISMATCH'));
-    assert.ok(!entry.triage.reasons.includes('V1V2_VALUE_MISMATCH'));
-  }
-  assert.equal(wired.resolution_receipt.v1v2_comparison_receipt_id, comparison.v1v2_comparison_receipt_id, 'the resolution receipt pins the comparison receipt id');
-
-  // The matching review_queue entries stay in sync (has_resolution: true
-  // items carry the same triage.reasons the resolved entry does).
-  const wiredReviewItems = wired.review_queue.filter((item) => item.has_resolution === true
-    && item.resolved_claim_definition_key === 'REPRESENTATION_MEASUREMENT_DATE');
-  assert.equal(wiredReviewItems.length, 3);
+  assert.throws(
+    () => buildV1V2ComparisonReceipt({ v1_snapshot: snapshot, v2_side: baseline, attempted_section_scope: ['3.1(b)'] }),
+    (error) => error && error.code === 'INVALID_INPUT' && error.message.includes('snapshot_identity_evidence'),
+  );
 });
 
 // ═══════════════════════════════════════════════════════════════════════

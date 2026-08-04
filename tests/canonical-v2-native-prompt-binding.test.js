@@ -11,7 +11,7 @@ const { findSectionByReference } = require('../lib/canonical-v2/native-producer/
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
 const { createAnthropicProvider, shapeClosingConditionProposals, shapeRegulatoryEffortsProposals } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { PROMPT_BINDING_SCHEMA, bindNativePromptToGovernedScope } = require('../lib/canonical-v2/native-producer/native-prompt-binding');
-const { loadAdmittedSourceForExecution } = require('../lib/canonical-v2/native-producer/unified-runner-validate');
+const { diagnosticAdmittedSource } = require('./helpers/diagnostic-admitted-source');
 
 const ROOT = path.resolve(__dirname, '..');
 const MANIFEST = JSON.parse(fs.readFileSync(
@@ -25,7 +25,7 @@ function pilotInput(workItemId) {
   assert.ok(workItem, `missing pilot work item ${workItemId}`);
   const source = MANIFEST.sources.find((candidate) => candidate.source_id === workItem.source_id);
   assert.ok(source, `missing pilot source ${workItem.source_id}`);
-  const admitted = loadAdmittedSourceForExecution({ source, root_dir: ROOT });
+  const admitted = diagnosticAdmittedSource({ source, root_dir: ROOT });
   const node = findSectionByReference(admitted.tree, workItem.section_pin.section_reference);
   assert.ok(node, `missing admitted section ${workItem.section_pin.section_reference}`);
   return { workItem, admitted, node };
