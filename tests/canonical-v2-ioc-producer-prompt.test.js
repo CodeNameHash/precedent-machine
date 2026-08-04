@@ -18,7 +18,7 @@ test('IOC producer prompt owns the governed categories and split discipline', ()
     governed_scope: { section_reference: '5.1' },
   });
   assert.equal(prompt.prompt_version, IOC_PROMPT_VERSION);
-  assert.equal(IOC_PROMPT_VERSION, 3);
+  assert.equal(IOC_PROMPT_VERSION, 4);
   assert.deepEqual(RESTRICTION_CATEGORIES, [
     'MERGE', 'CONTRACT', 'COMP', 'DEBT', 'TAX', 'CHARTER', 'ISSUE',
     'ACCOUNTING', 'SETTLE', 'DIVIDEND', 'CAPEX',
@@ -28,6 +28,9 @@ test('IOC producer prompt owns the governed categories and split discipline', ()
   assert.match(prompt.messages[0].content, /parent-section chapeau supplies the governed party/);
   assert.match(prompt.messages[0].content, /QUOTE THE RESTRICTION LIMB/);
   assert.match(prompt.messages[0].content, /narrowest restriction limb/);
+  assert.match(prompt.messages[0].content, /MECHANIC COMPLETENESS/);
+  assert.match(prompt.messages[0].content, /MUST contain both a surface and one non-empty, exact, contiguous quote/);
+  assert.match(prompt.messages[0].content, /Each non-null field must occur inside that mechanism quote/);
   assert.match(prompt.messages[0].content, /\$25 million means 25000000 USD/);
   assert.ok(prompt.messages[0].content.endsWith(source));
 });

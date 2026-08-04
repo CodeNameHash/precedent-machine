@@ -39,12 +39,14 @@ test('F21 registers the bounded No-Shop Wave B concepts and claims', () => {
 
 test('Wave B prompt makes the new positive arrays explicit and keeps definitions with their owner family', () => {
   const prompt = buildNoShopProducerPrompt({ source_text: 'the Company shall immediately cease discussions.', governed_scope: {} });
-  assert.equal(PROMPT_VERSION, 2);
+  assert.equal(PROMPT_VERSION, 3);
   assert.match(prompt.messages[0].content, /cease_assertions/);
   assert.match(prompt.messages[0].content, /standstill_assertions/);
   assert.match(prompt.messages[0].content, /fiduciary_standard_assertions/);
   assert.match(prompt.messages[0].content, /recommendation_assertions/);
   assert.match(prompt.messages[0].content, /defined-terms producer/i);
+  assert.match(prompt.messages[0].content, /SECTION REFERENCE/);
+  assert.match(prompt.messages[0].content, /COVERAGE CHECK BEFORE YOU RETURN/);
   assert.ok(CONTROLLED_VOCABULARIES.WAVE_B_ASSERTION_KIND.includes('CEASE_ACTION'));
 });
 

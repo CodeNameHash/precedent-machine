@@ -6,10 +6,11 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContractV34 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV25 } = require('../lib/canonical-v2/contract-bundle');
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
 const {
   shapeIocProposals,
+  shapeNoShopProposals,
   shapeTerminationProposals,
 } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
@@ -19,7 +20,7 @@ const sourceFixture = JSON.parse(fs.readFileSync(path.join(
 ), 'utf8'));
 const admittedSourceContext = sourceFixture.admitted_source_contexts[0];
 const sourceText = admittedSourceContext.canonical_text.text;
-const contractBundle = compileFixtureContractV34();
+const contractBundle = compileFixtureContractV25();
 
 // Focused, verbatim records from the M3 pilot checkpoints. Their parent
 // source and checkpoint IDs are immutable pins, rather than regenerated
@@ -101,4 +102,28 @@ test('M3 live termination checkpoint keeps grant, trigger and cross-reference ev
   assert.equal(resolution.open_world.length, 3);
   assert.ok(resolution.review_queue.every((item) => !item.reasons.includes('TERMINATING_PARTY_REF_NOT_IN_QUOTE')));
   assert.equal(sha256Hex(Buffer.from(sourceText, 'utf8')), '7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d');
+});
+
+test('M3 live No Shop checkpoint resolves exact action and exception limbs against the pinned parent section', async () => {
+  const parsed = {
+    no_shop_action_assertions: [{
+      section_reference: '4.3(a)', action_code: 'SOLICIT_ACQUISITION_INQUIRY_PROPOSAL_OR_OFFER',
+      covenant_obligor: 'the Company', quote: 'solicit',
+    }],
+    exception_prerequisite_assertions: [{
+      section_reference: '4.3(b)', prerequisite_code: 'BONA_FIDE_UNSOLICITED_WRITTEN_PROPOSAL_RECEIVED',
+      permitted_action_context: 'then the Company may, directly or indirectly through its Representatives',
+      quote: 'the Company receives a bona fide, unsolicited written Company Acquisition Proposal from any Person',
+    }],
+    period_assertions: [], cease_assertions: [], standstill_assertions: [],
+    fiduciary_standard_assertions: [], recommendation_assertions: [], open_world_candidates: [],
+  };
+  const { receipt, resolution } = await replay({
+    sectionReference: '4.3', familyId: 'NO_SHOP',
+    shape: (scopeText) => shapeNoShopProposals(parsed, scopeText),
+  });
+  assert.equal(receipt.compiled_candidate_count, 2);
+  assert.equal(resolution.resolved.length, 2);
+  assert.equal(resolution.residuals.length, 0);
+  assert.deepEqual(new Set(resolution.resolved.map((item) => item.concept_key)), new Set(['NOSOL-PROHIBIT', 'NOSOL-EXCEPT']));
 });
