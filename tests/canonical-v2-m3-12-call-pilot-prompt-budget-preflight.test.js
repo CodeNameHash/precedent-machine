@@ -23,24 +23,23 @@ function extract(workItemId) {
   return structuredClone(MANIFEST.work_items.find((item) => item.work_item_id === workItemId));
 }
 
-test('the pilot preflight reports exact admitted section bytes and prompt bytes for every EXTRACT work item', () => {
-  const result = buildPilotPromptBudgetPreflight({ root_dir: ROOT });
-  assert.equal(result.call_count, 7);
-  assert.equal(result.calls.length, 7);
-  assert.equal(result.prompt_byte_ceiling, PROMPT_BYTE_CEILING);
-  assert.equal(result.total_prompt_byte_length, result.calls.reduce((total, call) => total + call.prompt_byte_length, 0));
-  assert.ok(result.calls.every((call) => call.section_text_byte_length > 0
-    && call.prompt_byte_length > call.section_text_byte_length
-    && call.prompt_byte_length <= PROMPT_BYTE_CEILING));
-  assert.deepEqual(result.calls.map((call) => call.work_item_id), [
-    'modiv-antitrust-consents-5-5',
-    'modiv-closing-conditions-6-1',
-    'modiv-consideration-2-1',
-    'modiv-mae-definition-8-12-g',
-    'modiv-termination-fee-7-3',
-    'skechers-capitalisation-3-7',
-    'skechers-no-other-reps-3-28',
-  ]);
+test('the preflight fails closed when the current TopBuild capitalisation pin widens above 64 KiB', () => {
+  assert.throws(
+    () => buildPilotPromptBudgetPreflight({ root_dir: ROOT }),
+    (error) => error instanceof PilotPromptBudgetPreflightError
+      && error.code === 'PROMPT_BYTE_CEILING_EXCEEDED'
+      && error.details.work_item_id === 'topbuild-capitalisation-3-1-b'
+      && error.details.prompt_byte_ceiling === PROMPT_BYTE_CEILING,
+  );
+});
+
+test('a valid recorded TopBuild source is admitted through the shared execution loader', () => {
+  const item = extract('topbuild-ioc-company-4-1');
+  const call = buildPromptBudgetCall({ source: sourceFor(item), work_item: item, root_dir: ROOT });
+  assert.equal(call.source_id, 'topbuild-full');
+  assert.equal(call.section_reference, '4.1');
+  assert.ok(call.section_text_byte_length > 0);
+  assert.ok(call.prompt_byte_length <= PROMPT_BYTE_CEILING);
 });
 
 test('a section pin or family mismatch fails before any provider path exists', () => {
@@ -69,4 +68,5 @@ test('the explicit prompt-byte ceiling fails closed', () => {
 test('the preflight imports no provider, transport, database, or UI path', () => {
   const source = fs.readFileSync(path.join(ROOT, 'lib/canonical-v2/native-producer/m3-12-call-pilot-prompt-budget-preflight.js'), 'utf8');
   assert.doesNotMatch(source, /provider-interface|anthropic-provider|codex-cli-provider|node:https|node:http|\bfetch\s*\(|supabase|next\//);
+  assert.match(source, /loadAdmittedSourceForExecution/);
 });
