@@ -167,7 +167,7 @@ test('zero-share derivation does not duplicate an already asserted preferred-sto
   const prior = execution.work_results.find((entry) => entry.work_item_id === 'skechers-capitalisation-3-7');
   const parsed = JSON.parse(prior.provider_recording.provider_output.raw_response_text);
   parsed.share_count_assertions.push({
-    section_reference: '3.7(a)',
+    section_reference: '3.7(a)(C)',
     party_making: 'the Company',
     count_kind: 'ISSUED_OUTSTANDING',
     share_class: 'Company Preferred Stock',
@@ -184,4 +184,5 @@ test('zero-share derivation does not duplicate an already asserted preferred-sto
       && proposal.raw_value === 'no shares of Company Preferred Stock were issued and outstanding'
   ));
   assert.equal(zeroClaims.length, 1);
+  assert.equal(zeroClaims[0].attributes.section_reference, '3.7(a)(C)');
 });
