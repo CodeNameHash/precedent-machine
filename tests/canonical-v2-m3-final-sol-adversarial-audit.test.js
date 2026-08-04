@@ -84,6 +84,66 @@ function finalWorkItem(index) {
   };
 }
 
+function v4ProductionPlan({
+  finalReviewPacketId,
+  strictIndependentReviewInputId,
+  proposedExecution = [{ control: 'SOURCE_BOUND' }],
+} = {}) {
+  const body = {
+    schema_version: 'CANONICAL_V2_M3_PRODUCTION_EXTRACTION_PLAN/V4',
+    status: 'PROPOSED_NOT_AUTHORISED',
+    prepared_at: '2026-08-03',
+    seal: {
+      method: 'canonical content identifier over this artifact body excluding content_hash',
+      sealed_at: '2026-08-03',
+      write_scope: 'pilot artifact root only',
+      rendered_markdown_path: 'production-extraction-plan-v4.md',
+      rendered_markdown_sha256: 'markdown-digest',
+    },
+    scope: {
+      objective: 'Build and certify a full-corpus Canonical V2 release.',
+      non_actions: ['No model calls were made for this plan.'],
+    },
+    bound_pilot_evidence: {
+      packet: {
+        contract: 'M3_12_CALL_FINAL_PILOT_REVIEW_PACKET/V1',
+        final_review_packet_id: finalReviewPacketId,
+        legal_disposition: 'NOT_DETERMINED',
+        independent_review_state: 'PENDING_INDEPENDENT_LEGAL_REVIEW',
+        certification_status: 'NOT_CERTIFIED',
+      },
+      strict_review_input: {
+        contract: 'M3_12_CALL_FINAL_PILOT_STRICT_INDEPENDENT_REVIEW_INPUT/V3',
+        strict_independent_review_input_id: strictIndependentReviewInputId,
+      },
+      final_findings: {
+        contract: 'M3_12_CALL_FINAL_PILOT_RE_REVIEW_FINDINGS/V2',
+        id: 'sealed-final-findings-id',
+        binding_state: 'SEALED_FINAL_FINDINGS_BOUND',
+      },
+      quality_facts: {
+        resolved_claim_count: 152,
+        unresolved_review_count: 13,
+        open_world_count: 136,
+        missing_resolved_citation_count: 0,
+        missing_party_evidence_count: 0,
+        conditional_fee_formula_count: 6,
+        structured_cash_formula_count: 1,
+        formula_review_row_count: 7,
+      },
+    },
+    pilot_controls: [{ control: 'SOURCE_SCOPE_IS_NOT_CITATION' }],
+    preview_lanes: { agreement_lane: ['Modiv', 'Skechers', 'TopBuild'] },
+    proposed_execution: proposedExecution,
+    release_gates: ['Every included source is admitted and verified.'],
+    future_authority_decisions: [],
+  };
+  return {
+    ...body,
+    content_hash: contentId(body.schema_version, body),
+  };
+}
+
 function fixture(root) {
   const reviewBody = {
     schema_version: 'M3_12_CALL_FINAL_PILOT_REVIEW_PACKET/V1',
@@ -120,7 +180,10 @@ function fixture(root) {
   const legalB = writeJson(root, 'legal-b.json', findingsArtifact(Array.from({ length: 6 }, (_, index) => ({ work_item_id: `work-${index + 7}`, status: 'PASS', finding: index + 6 }))));
   const sevenFails = writeJson(root, 'seven-fails.json', { findings: Array.from({ length: 7 }, (_, index) => ({ status: 'FAIL', finding: index })) });
   const risk = writeJson(root, 'risk.json', { family_control_audit: [{ family: 'NO_SHOP' }] });
-  const plan = writeJson(root, 'plan.json', { proposed_execution: [{ control: 'SOURCE_BOUND' }] });
+  const plan = writeJson(root, 'plan.json', v4ProductionPlan({
+    finalReviewPacketId,
+    strictIndependentReviewInputId,
+  }));
   return {
     review,
     strict,
@@ -201,6 +264,51 @@ test('builds and validates a sealed input with the final 12, final 12 legal find
   assert.ok(prompt.includes('Every finding_id must be a unique, non-empty, trimmed string.'));
   assert.ok(prompt.includes('Every finding must have at least one non-empty, trimmed evidence_refs string.'));
   assert.ok(Buffer.byteLength(prompt, 'utf8') <= PROMPT_BYTE_CEILING);
+});
+
+test('projects the sealed V4 production plan without fabricating a current_facts field', () => {
+  const root = mkdtempSync(join(tmpdir(), 'm3-sol-audit-'));
+  const input = build(root);
+  const projection = input.audit_projection.production_extraction_plan;
+  assert.equal(projection.schema_version, 'CANONICAL_V2_M3_PRODUCTION_EXTRACTION_PLAN/V4');
+  assert.equal(projection.status, 'PROPOSED_NOT_AUTHORISED');
+  assert.equal(projection.bound_pilot_evidence.packet.final_review_packet_id,
+    input.audit_projection.final_review_packet_id);
+  assert.equal(projection.bound_pilot_evidence.strict_review_input.strict_independent_review_input_id,
+    input.audit_projection.strict_independent_review_input.strict_independent_review_input_id);
+  assert.equal(projection.bound_pilot_evidence.final_findings.id, 'sealed-final-findings-id');
+  assert.equal(projection.bound_pilot_evidence.quality_facts.resolved_claim_count, 152);
+  assert.deepEqual(projection.proposed_execution, [{ control: 'SOURCE_BOUND' }]);
+  assert.deepEqual(projection.release_gates, ['Every included source is admitted and verified.']);
+  assert.equal(Object.hasOwn(projection, 'current_facts'), false);
+});
+
+test('fails closed on a production plan outside the sealed V4 shape', () => {
+  const root = mkdtempSync(join(tmpdir(), 'm3-sol-audit-'));
+  const files = fixture(root);
+  const unsupportedPlan = writeJson(root, 'production-plan-v3.json', {
+    schema_version: 'CANONICAL_V2_M3_PRODUCTION_EXTRACTION_PLAN/V3',
+    status: 'PROPOSED_NOT_AUTHORISED',
+    current_facts: { stale: true },
+    proposed_execution: [{ control: 'SOURCE_BOUND' }],
+    release_gates: [],
+  });
+  assert.throws(
+    () => buildSealedM3FinalSolAuditInput({
+      repo_root: root,
+      commit_range: 'base..head',
+      code_paths: ['lib/candidate-resolution.js'],
+      final_review_packet_path: files.review,
+      strict_review_input_path: files.strict,
+      final_legal_finding_paths: [files.legalA, files.legalB],
+      original_seven_fail_findings_path: files.sevenFails,
+      cross_family_risk_audit_path: files.risk,
+      production_plan_path: unsupportedPlan,
+      git_diff: () => 'diff --git a/lib/candidate-resolution.js b/lib/candidate-resolution.js\n@@\n+repair',
+    }),
+    (error) => error instanceof M3FinalSolAdversarialAuditError
+      && error.code === 'PRODUCTION_PLAN_SHAPE_UNSUPPORTED',
+  );
 });
 
 test('accepts one sealed twelve-item final legal findings file', () => {
@@ -329,7 +437,11 @@ test('preserves the exact seven-FAIL rows and projects the current risk and prod
     findings: sevenFails,
   });
   const risk = writeJson(root, 'risk-current.json', { family_control_audit: riskControls });
-  const plan = writeJson(root, 'plan-current.json', { proposed_execution: executionControls });
+  const plan = writeJson(root, 'plan-current.json', v4ProductionPlan({
+    finalReviewPacketId: files.finalReviewPacketId,
+    strictIndependentReviewInputId: files.strictIndependentReviewInputId,
+    proposedExecution: executionControls,
+  }));
   const input = buildSealedM3FinalSolAuditInput({
     repo_root: root,
     commit_range: 'base..head',
