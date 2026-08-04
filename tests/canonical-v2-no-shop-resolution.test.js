@@ -538,18 +538,17 @@ test('a bare-day initial match period defaults to CALENDAR_DAYS without rewritin
   assert.equal(resolution.resolution_receipt.no_shop_period_parse_version, 2);
 });
 
-test('production NOSOL-NOTICE card ("within 24 hours") proposed as NOTICE routes to review, typed PERIOD_UNIT_HOURS -- never converts to a day count (the family\'s central legal pin)', async () => {
+test('production NOSOL-NOTICE card ("within 24 hours") remains open-world, never converts to a day count', async () => {
   const q = quoteById('notice-within-24-hours');
   const { resolution } = await resolveNoShopAssertions('deal:nosol-notice-hours', q.quote, {
     period_assertions: [periodAssertion({ periodRole: 'NOTICE', quote: q.quote })],
   });
   const resolved = resolution.resolved.filter((r) => r.generic_claim_key === NO_SHOP_NOTICE_PERIOD_CLAIM_KEY);
   assert.equal(resolved.length, 0);
-  const item = resolution.review_queue.find((r) => r.generic_claim_key === NO_SHOP_NOTICE_PERIOD_CLAIM_KEY);
+  const item = resolution.open_world.find((r) => r.claim_definition_key === NO_SHOP_NOTICE_PERIOD_CLAIM_KEY);
   assert.ok(item);
-  assert.deepEqual(item.reasons, ['PERIOD_UNIT_HOURS']);
-  assert.equal(item.concept_key, 'NOSOL-NOTICE');
-  assert.equal(item.materiality_rank, 50);
+  assert.equal(item.reason, 'NO_SHOP_PERIOD_HOUR_NOTICE_OPEN_WORLD');
+  assert.equal(item.raw_value, q.quote);
 });
 
 test('the mislabelled "Notice Period" defined-term quote proposed as NOTICE (rather than its true INITIAL_MATCH role) routes to review, typed NO_SHOP_PERIOD_ROLE_UNCORROBORATED (spec section 6 test 4)', async () => {

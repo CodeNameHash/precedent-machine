@@ -98,3 +98,30 @@ test('attempt-3 retained no-shop replay decomposes only exact null-code action v
   assert.ok(replayed.open_world.some((entry) => entry.raw_value.includes('on a reasonably prompt basis')),
     'daily-update timing remains open-world');
 });
+
+test('attempt-3 retained no-shop replay closes only source-corroborated claims', { skip: !available() }, () => {
+  const replayed = replay('topbuild-no-shop-company-4-3');
+  assert.equal(replayed.review_queue.filter((entry) => !entry.has_resolution).length, 0);
+  assert.ok(replayed.resolved.every((entry) => entry.source_citation.startsWith('4.3(')));
+
+  const byRaw = new Map(replayed.resolved.map((entry) => [entry.claim.raw_value, entry]));
+  assert.equal(
+    byRaw.get('a new four (4)-business day notice period').claim.canonical_value,
+    '4',
+  );
+  assert.equal(
+    byRaw.get('subject to the first sentence of Section ‎4.3(c)').claim.canonical_value,
+    'SUBJECT_TO_INITIAL_PROPOSAL_NOTICE',
+  );
+  assert.equal(
+    byRaw.get('the Company shall, and shall cause its Subsidiaries to, enforce the confidentiality and standstill provisions of any such agreement').claim.canonical_value,
+    'ENFORCE',
+  );
+
+  const hourNotices = replayed.open_world.filter(
+    (entry) => entry.reason === 'NO_SHOP_PERIOD_HOUR_NOTICE_OPEN_WORLD',
+  );
+  assert.equal(hourNotices.length, 3);
+  assert.ok(replayed.open_world.some((entry) => entry.reason === 'NO_SHOP_RUBRIC_OPEN_WORLD'
+    && entry.raw_value.includes('return or destroy')));
+});
