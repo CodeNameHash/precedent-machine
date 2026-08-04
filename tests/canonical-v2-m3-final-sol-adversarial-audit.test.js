@@ -196,6 +196,10 @@ test('builds and validates a sealed input with the final 12, final 12 legal find
   assert.equal(validateSealedM3FinalSolAuditInput(input), true);
   const prompt = auditPrompt(input);
   assert.match(prompt, /demo_truthfulness/);
+  assert.ok(prompt.includes(`Allowed topic slugs (exactly): ${AUDIT_TOPICS.join(', ')}`));
+  assert.ok(prompt.includes('Allowed severities (exactly): CRITICAL, HIGH, MEDIUM, LOW'));
+  assert.ok(prompt.includes('Every finding_id must be a unique, non-empty, trimmed string.'));
+  assert.ok(prompt.includes('Every finding must have at least one non-empty, trimmed evidence_refs string.'));
   assert.ok(Buffer.byteLength(prompt, 'utf8') <= PROMPT_BYTE_CEILING);
 });
 
@@ -398,17 +402,66 @@ test('fails closed on missing required provider coverage and does not write an o
   const root = mkdtempSync(join(tmpdir(), 'm3-sol-audit-'));
   const input = build(root);
   const outputPath = join(root, 'must-not-exist.json');
+  const invalidPath = join(root, 'must-not-exist.invalid.json');
   const malformed = validProviderOutput();
   delete malformed.coverage.demo_truthfulness;
+  const rawProviderOutput = JSON.stringify(malformed);
   await assert.rejects(
     runSealedM3FinalSolAdversarialAudit({
       input,
       output_path: outputPath,
-      client_factory: () => ({ messages: { create: async () => ({ content: [{ text: JSON.stringify(malformed) }] }) } }),
+      client_factory: () => ({ messages: { create: async () => ({ content: [{ text: rawProviderOutput }] }) } }),
     }),
     (error) => error instanceof M3FinalSolAdversarialAuditError && error.code === 'INVALID_PROVIDER_OUTPUT',
   );
   assert.equal(existsSync(outputPath), false);
+  assert.equal(existsSync(invalidPath), true);
+  const failureEvidence = JSON.parse(readFileSync(invalidPath, 'utf8'));
+  assert.equal(failureEvidence.schema_version, 'M3_FINAL_SOL_ADVERSARIAL_AUDIT_FAILURE_EVIDENCE/V1');
+  assert.equal(failureEvidence.failure_state, 'INVALID_PROVIDER_OUTPUT_NOT_A_VALID_AUDIT');
+  assert.equal(failureEvidence.audit_input_id, input.audit_input_id);
+  assert.deepEqual(failureEvidence.audit_model_profile, SOL_HIGH_PROFILE);
+  assert.equal(failureEvidence.raw_provider_output, rawProviderOutput);
+  assert.match(failureEvidence.raw_provider_output_sha256, /^[a-f0-9]{64}$/);
+  assert.deepEqual(failureEvidence.validation_error, {
+    code: 'INVALID_PROVIDER_OUTPUT',
+    message: 'provider output coverage does not match the closed contract.',
+  });
+  const { failure_evidence_id: failureEvidenceId, ...failureEvidenceBody } = failureEvidence;
+  assert.equal(
+    failureEvidenceId,
+    contentId('M3_FINAL_SOL_ADVERSARIAL_AUDIT_FAILURE_EVIDENCE/V1', failureEvidenceBody),
+  );
+});
+
+test('preserves raw failure evidence when parsed findings use an unsupported topic slug', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'm3-sol-audit-'));
+  const input = build(root);
+  const outputPath = join(root, 'final-audit.json');
+  const invalidPath = join(root, 'final-audit.invalid.json');
+  const malformed = validProviderOutput();
+  malformed.findings[0].topic = 'citation-integrity';
+  const rawProviderOutput = JSON.stringify(malformed);
+
+  await assert.rejects(
+    runSealedM3FinalSolAdversarialAudit({
+      input,
+      output_path: outputPath,
+      client_factory: () => ({ messages: { create: async () => ({ content: [{ text: rawProviderOutput }] }) } }),
+    }),
+    (error) => error instanceof M3FinalSolAdversarialAuditError
+      && error.code === 'INVALID_PROVIDER_OUTPUT'
+      && error.message === 'Provider findings are malformed or unsupported.',
+  );
+
+  assert.equal(existsSync(outputPath), false);
+  const failureEvidence = JSON.parse(readFileSync(invalidPath, 'utf8'));
+  assert.equal(failureEvidence.failure_state, 'INVALID_PROVIDER_OUTPUT_NOT_A_VALID_AUDIT');
+  assert.equal(failureEvidence.raw_provider_output, rawProviderOutput);
+  assert.deepEqual(failureEvidence.validation_error, {
+    code: 'INVALID_PROVIDER_OUTPUT',
+    message: 'Provider findings are malformed or unsupported.',
+  });
 });
 
 test('fails closed when the original seven-fail input loses a failure', () => {
