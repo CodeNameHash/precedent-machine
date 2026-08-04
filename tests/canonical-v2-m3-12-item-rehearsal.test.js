@@ -77,12 +77,12 @@ const PROMPT_IDS = Object.freeze({
   CAPITALISATION: 'CAPITALISATION_REPRESENTATION_PRODUCER',
   CLOSING_CONDITIONS: 'native-producer-closing-conditions/v3',
   CONSIDERATION: 'native-producer-consideration/v1',
-  INTERIM_OPERATING: 'native-producer-interim-operating/v3',
+  INTERIM_OPERATING: 'native-producer-interim-operating/v4',
   MAE_DEFINITION: 'mae-definition-producer/v1',
   NO_OTHER_REPS_FRAUD: 'native-producer-no-other-reps-fraud/v1',
-  NO_SHOP: 'native-producer-no-shop/v1',
+  NO_SHOP: 'native-producer-no-shop/v2',
   SPECIFIC_PERFORMANCE_REMEDIES: 'native-producer-specific-performance-remedies/v1',
-  TERMINATION: 'native-producer-termination/v1',
+  TERMINATION: 'native-producer-termination/v2',
   TERMINATION_FEE: 'native-producer-termination-fee/v1',
 });
 
