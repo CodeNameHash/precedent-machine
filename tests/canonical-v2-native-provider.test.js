@@ -29,6 +29,7 @@ const SOURCE_TEXT =
 const CONTRACT_BUNDLE = compileFixtureContract();
 const GOVERNED_SCOPE = Object.freeze({
   deal_key: 'test-deal:native-anthropic-provider',
+  section_reference: '3.1',
   governed_intervals: ['3.1'],
   source_text: SOURCE_TEXT,
 });
