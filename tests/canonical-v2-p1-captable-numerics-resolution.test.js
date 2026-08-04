@@ -481,6 +481,55 @@ test('Skechers C11: a clipped RESERVED candidate adopts its unique matching limb
   assert.equal(resolved.claim.attributes.plan_ref, 'the Company ESPP');
 });
 
+test('a clipped RESERVED candidate does not expand when two eligible limbs contain it', async () => {
+  const clippedQuote = '3,360,412 shares of Company Common Stock';
+  const firstLimbQuote = '3,360,412 shares of Company Common Stock reserved and available for issuance under the Company ESPP.';
+  const secondLimbQuote = '3,360,412 shares of Company Common Stock reserved and available for issuance under the Company ESPP. The reservation is subject to the plan terms.';
+  const sectionBody = secondLimbQuote;
+  const { resolution } = await resolveShareCountAssertions('deal:skechers-reserved-espp-two-limbs', sectionBody, [
+    shareCountAssertion({
+      sectionReference: SECTION_REFERENCE,
+      countKind: 'RESERVED',
+      shareClass: 'Company Common Stock',
+      plan: 'the Company ESPP',
+      quote: clippedQuote,
+      limbPath: ['(iv)'],
+    }),
+  ], [
+    { limb_path: ['(iv)'], assertion_quote: firstLimbQuote, subject: 'first reserve pool' },
+    { limb_path: ['(iv)'], assertion_quote: secondLimbQuote, subject: 'second reserve pool' },
+  ]);
+
+  assert.equal(resolution.resolved.filter((entry) => entry.generic_claim_key === SHARE_COUNT_CLAIM_KEY).length, 0);
+  const review = resolution.review_queue.find((entry) => entry.generic_claim_key === SHARE_COUNT_CLAIM_KEY);
+  assert.ok(review);
+  assert.equal(review.raw_value, clippedQuote);
+  assert.deepEqual(review.reasons, ['COUNT_KIND_UNCORROBORATED']);
+});
+
+test('a clipped RESERVED candidate does not expand to a compound limb with another share count', async () => {
+  const clippedQuote = '3,360,412 shares of Company Common Stock';
+  const compoundLimbQuote = '3,360,412 shares of Company Common Stock reserved and available for issuance under the Company ESPP, and 1,000,000 shares of Company Common Stock reserved and available for issuance under the Company ESPP.';
+  const { resolution } = await resolveShareCountAssertions('deal:skechers-reserved-espp-compound-limb', compoundLimbQuote, [
+    shareCountAssertion({
+      sectionReference: SECTION_REFERENCE,
+      countKind: 'RESERVED',
+      shareClass: 'Company Common Stock',
+      plan: 'the Company ESPP',
+      quote: clippedQuote,
+      limbPath: ['(iv)'],
+    }),
+  ], [
+    { limb_path: ['(iv)'], assertion_quote: compoundLimbQuote, subject: 'two reserve pools' },
+  ]);
+
+  assert.equal(resolution.resolved.filter((entry) => entry.generic_claim_key === SHARE_COUNT_CLAIM_KEY).length, 0);
+  const review = resolution.review_queue.find((entry) => entry.generic_claim_key === SHARE_COUNT_CLAIM_KEY);
+  assert.ok(review);
+  assert.equal(review.raw_value, clippedQuote);
+  assert.deepEqual(review.reasons, ['COUNT_KIND_UNCORROBORATED']);
+});
+
 test('Skechers: RESERVED with no plan named in the quote routes to review, typed RESERVED_POOL_PLAN_UNIDENTIFIED, never resolves with an empty ref', async () => {
   const quote = '3,360,412 shares of Company Common Stock reserved and available for issuance under the Company ESPP';
   const { resolution } = await resolveShareCountAssertions('deal:skechers-reserved-no-plan', SKECHERS_PARAGRAPH, [
