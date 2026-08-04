@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const { contentId } = require('../lib/canonical-v2/canonical-bytes');
 
 const {
   Attempt3MaterialiserError,
@@ -26,15 +27,16 @@ function fixture() {
     })),
   };
   const gate = { quality_gate_id: hash('b') };
-  const vector = {
-    schema_version: 'M3_12_CALL_ITERATION_2_REVISED_DECISION_VECTOR/V3', content_hash: hash('c'),
-    bindings: { first_execution_result_id: execution.execution_result_id, quality_gate_id: gate.quality_gate_id },
+  const vectorBody = {
+    schema_version: 'M3_12_CALL_ITERATION_2_REVISED_DECISION_VECTOR/V3',
+    bindings: { first_execution_result_id: execution.execution_result_id, quality_gate_id: gate.quality_gate_id, iteration_2_rerun_plan_id: hash('d') },
     decisions: manifest.work_items.map((item) => ({
       work_item_id: item.work_item_id,
       action: retainedIds.has(item.work_item_id) ? 'RETAIN' : replayIds.has(item.work_item_id) ? 'REPLAY_ONLY' : 'LIVE',
       profile_id: retainedIds.has(item.work_item_id) || replayIds.has(item.work_item_id) ? null : solIds.has(item.work_item_id) ? 'SOL_HIGH' : 'TERRA_MEDIUM',
     })),
   };
+  const vector = { ...vectorBody, content_hash: contentId(vectorBody.schema_version, vectorBody) };
   return { execution, gate, vector };
 }
 
