@@ -46,7 +46,7 @@ test('the quality gate passes only the exact twelve-item cohort with determinist
   assert.equal(result.gate_status, 'PASS');
   assert.equal(result.pilot_work_item_set_id, PILOT_WORK_ITEM_SET_ID);
   assert.equal(result.work_item_findings.length, 12);
-  assert.equal(result.selected_present_work_item_ids.length, 7);
+  assert.equal(result.selected_present_work_item_ids.length, 12);
   assert.deepEqual(result.rerun_work_item_ids, []);
   assert.deepEqual(result.escalation_work_item_ids, []);
   assert.ok(result.work_item_findings.every((entry) => entry.independent_review_status === 'PASS'
