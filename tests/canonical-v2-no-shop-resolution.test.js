@@ -401,6 +401,25 @@ test('production FURNISH_NONPUBLIC_INFORMATION card resolves end to end', async 
   assert.equal(resolved[0].claim.canonical_value, 'FURNISH_NONPUBLIC_INFORMATION');
 });
 
+test('a FURNISH example nested in knowingly facilitating or encouraging routes to review, while a direct FURNISH prohibition resolves', async () => {
+  const parentheticalExample = 'solicit, initiate or knowingly facilitate or knowingly encourage (including by way of furnishing non-public information) any inquiries regarding an Acquisition Proposal';
+  const directFurnish = 'furnish any non-public information';
+  const sectionBody = `The Company shall not ${parentheticalExample}. The Company shall not ${directFurnish}.`;
+  const { resolution } = await resolveNoShopAssertions('deal:nosol-furnish-parenthetical', sectionBody, {
+    no_shop_action_assertions: [
+      actionAssertion({ actionCode: 'FURNISH_NONPUBLIC_INFORMATION', quote: parentheticalExample }),
+      actionAssertion({ actionCode: 'FURNISH_NONPUBLIC_INFORMATION', quote: directFurnish }),
+    ],
+  });
+
+  const resolved = resolution.resolved.filter((entry) => entry.generic_claim_key === NO_SHOP_ACTION_CLAIM_KEY);
+  assert.equal(resolved.length, 1);
+  assert.equal(resolved[0].claim.raw_value, directFurnish);
+  const review = resolution.review_queue.find((entry) => entry.raw_value === parentheticalExample);
+  assert.ok(review);
+  assert.deepEqual(review.reasons, ['NO_SHOP_ACTION_UNCORROBORATED']);
+});
+
 test('a SOLICIT_* code on an "unsolicited"-containing quote routes to review, typed NO_SHOP_ACTION_UNCORROBORATED (audit M-2 named case)', async () => {
   const q = quoteById('action-unsolicited-veto');
   const { resolution } = await resolveNoShopAssertions('deal:nosol-unsolicited-veto', q.quote, {
