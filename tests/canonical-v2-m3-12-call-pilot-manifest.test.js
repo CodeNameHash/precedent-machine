@@ -9,6 +9,10 @@ const {
   NativeUnifiedRunValidationError,
   validateUnifiedRunManifest,
 } = require('../lib/canonical-v2/native-producer/unified-runner-validate');
+const {
+  sectionizeAdmittedSource,
+  findSectionByReference,
+} = require('../lib/canonical-v2/native-producer/deterministic-sectionizer');
 
 const ROOT = path.resolve(__dirname, '..');
 const MANIFEST_PATH = path.join(
@@ -78,6 +82,18 @@ test('M3 12-call pilot admits recorded TopBuild context with explicit identity a
   const topbuildItems = manifest.work_items.filter((item) => item.source_id === 'topbuild-full');
   assert.equal(topbuildItems.length, 5);
   assert.ok(topbuildItems.every((item) => item.disposition === 'EXTRACT' && item.section_pin));
+  assert.deepEqual(manifest.work_items.find((item) => item.work_item_id === 'topbuild-capitalisation-3-1-b'), {
+    work_item_id: 'topbuild-capitalisation-3-1-b',
+    source_id: 'topbuild-full',
+    family_id: 'CAPITALISATION',
+    disposition: 'EXTRACT',
+    section_pin: {
+      section_reference: 'III-INTRO(b)',
+      section_id: '77955b9a124841078a565df44e2fd4bc7d6d43c20afdc21be6d3347c8250c4d7',
+      section_kind: 'SUBSECTION',
+      section_text_sha256: 'ab4ce66d8e07577673bf4ea1f99838b21bd518786778e8511c71efab3df30487',
+    },
+  });
   const result = validateUnifiedRunManifest({ manifest, root_dir: ROOT });
   const admitted = result.semantic_manifest.sources.find((entry) => entry.source_id === 'topbuild-full');
   assert.equal(admitted.admitted_semantic_source_context_id,
@@ -104,4 +120,35 @@ test('M3 12-call pilot rejects a recorded TopBuild source-reference pin that dri
     (error) => error instanceof NativeUnifiedRunValidationError
       && error.code === 'RECORDED_SOURCE_REFERENCE_MISMATCH',
   );
+});
+
+test('M3 TopBuild capitalisation pin is the exact Capital Structure subsection, not Article III', () => {
+  const recorded = JSON.parse(fs.readFileSync(path.join(
+    ROOT,
+    'tests/fixtures/canonical-v2/f28-third-live-run/adapter-result.json',
+  ), 'utf8'));
+  const context = recorded.admitted_source_contexts[0];
+  const tree = sectionizeAdmittedSource({
+    source_text: context.canonical_text.text,
+    document_hash: context.document_hash,
+  });
+  const capital = findSectionByReference(tree, 'III-INTRO(b)');
+  const article = findSectionByReference(tree, 'III-INTRO');
+  assert.ok(capital);
+  assert.ok(article);
+  assert.deepEqual({
+    start: capital.start,
+    end: capital.end,
+    section_id: capital.section_id,
+    text_sha256: capital.text_sha256,
+  }, {
+    start: 57763,
+    end: 62446,
+    section_id: '77955b9a124841078a565df44e2fd4bc7d6d43c20afdc21be6d3347c8250c4d7',
+    text_sha256: 'ab4ce66d8e07577673bf4ea1f99838b21bd518786778e8511c71efab3df30487',
+  });
+  const bytes = Buffer.from(context.canonical_text.text, 'utf8');
+  assert.match(bytes.subarray(capital.start, capital.end).toString('utf8'), /^\(b\) Capital Structure\./);
+  assert.match(bytes.subarray(capital.end, article.end).toString('utf8'), /^\(c\)/);
+  assert.ok(capital.start > article.start && capital.end < article.end);
 });
