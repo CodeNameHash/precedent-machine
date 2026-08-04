@@ -9,6 +9,7 @@ const { contentId } = require('../lib/canonical-v2/canonical-bytes');
 const {
   FINAL_REVIEW_PACKET_SCHEMA,
   REPAIRED_REPLAY_SCHEMA,
+  ADJUDICATED_FIRST_PASS_REPLAY,
   FinalPilotSynthesisError,
   buildFinalPilotSynthesis,
 } = require('../lib/canonical-v2/native-producer/m3-final-pilot-synthesis');
@@ -115,7 +116,7 @@ test('builds one sealed, no-model review packet for all twelve original items', 
   assert.equal(packet.independent_review_state, 'PENDING_INDEPENDENT_LEGAL_REVIEW');
   assert.equal(packet.work_items.length, 12);
   assert.deepEqual(packet.work_items.map((item) => item.work_item_id), MANIFEST.work_items.map((item) => item.work_item_id).sort());
-  assert.equal(packet.work_items.filter((item) => item.source_kind === 'ADJUDICATED_FIRST_PASS').length, 2);
+  assert.equal(packet.work_items.filter((item) => item.source_kind === ADJUDICATED_FIRST_PASS_REPLAY).length, 2);
   assert.equal(packet.work_items.filter((item) => item.source_kind === 'REPLAY_ONLY').length, 2);
   assert.equal(packet.work_items.filter((item) => item.source_kind === 'PASSED_ITERATION_2').length, 1);
   assert.equal(packet.work_items.filter((item) => item.source_kind === 'REPAIRED_REPLAY').length, 7);
@@ -126,6 +127,12 @@ test('builds one sealed, no-model review packet for all twelve original items', 
   assert.equal(repaired.repaired_replay.source_execution_kind, 'ITERATION_2');
   const skechersCapitalisation = packet.work_items.find((item) => item.work_item_id === 'skechers-capitalisation-3-7');
   assert.equal(skechersCapitalisation.repaired_replay.source_execution_kind, 'FIRST_PASS');
+  const terminationFee = packet.work_items.find((item) => item.work_item_id === 'modiv-termination-fee-7-3');
+  assert.equal(terminationFee.source_kind, ADJUDICATED_FIRST_PASS_REPLAY);
+  assert.equal(terminationFee.repaired_replay.source_execution_kind, 'FIRST_PASS');
+  assert.equal(terminationFee.repaired_replay.source_work_result_id, terminationFee.first_work_result.work_result_id);
+  assert.equal(terminationFee.repaired_replay.provider_recording.provider_recording_id,
+    terminationFee.first_work_result.provider_recording.provider_recording_id);
   const body = { ...packet }; delete body.final_review_packet_id;
   assert.equal(packet.final_review_packet_id, contentId(FINAL_REVIEW_PACKET_SCHEMA, body));
 });
