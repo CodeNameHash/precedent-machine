@@ -316,8 +316,8 @@ test('materiality rank 20 asserted on TERMF-TARGET/TERMF-REVERSE/TERMF-TAIL and 
   );
 });
 
-test('MAPPING_TABLE_VERSION is 17 and TERMINATION_FEE_PARSE_VERSION is exported', () => {
-  assert.equal(MAPPING_TABLE_VERSION, 17);
+test('MAPPING_TABLE_VERSION is 18 and TERMINATION_FEE_PARSE_VERSION is exported', () => {
+  assert.equal(MAPPING_TABLE_VERSION, 18);
   assert.equal(TERMINATION_FEE_PARSE_VERSION, 1);
 });
 
@@ -612,4 +612,3 @@ test('additivity: the resolution receipt carries termination_fee_parse_version u
   assert.equal(resolution.resolution_receipt.termination_fee_parse_version, TERMINATION_FEE_PARSE_VERSION);
   assert.equal(resolution.resolution_receipt.mapping_table_version, MAPPING_TABLE_VERSION);
 });
-

@@ -184,6 +184,6 @@ test('ratified dividend and D&O review ranks are distinct and ordered', () => {
     rank: 84, label: 'DIVIDENDS', concept_key_prefixes: ['DIVD-'],
   });
   assert.deepEqual(MATERIALITY_TABLE.find((tier) => tier.label === 'DNO_INDEMNIFICATION'), {
-    rank: 85, label: 'DNO_INDEMNIFICATION', concept_key_prefixes: ['DNO-'],
+    rank: 85, label: 'DNO_INDEMNIFICATION', concept_key_prefixes: ['DNO-INDEM', 'DNO-TAIL', 'DNO-BENEF'],
   });
 });
