@@ -23,19 +23,23 @@ test('four-deal preview binds immutable M3 rows and the sealed Metsera Process r
   assert.equal(Object.isFrozen(result), true);
   assert.equal(result.deals.length, 4);
   assert.equal(result.m3_artifact.relative_path, FINAL_REVIEW_PACKET_PATH);
-  assert.equal(FINAL_REVIEW_PACKET_PATH, 'final-review-v6/sealed-final-pilot-review-packet.json');
-  assert.equal(result.m3_artifact.final_review_packet_id, '39875619332f16886a7b884b79e5388d430321c3e9589760df450cfc79822f86');
+  assert.equal(FINAL_REVIEW_PACKET_PATH, 'final-review-v8/sealed-final-pilot-review-packet-v8.json');
+  assert.equal(result.m3_artifact.final_review_packet_id, 'a7c30ba55850819dd265b1bc5bade8571a26c1686812a11c0144b22e8e2c7df2');
   assert.equal(FINAL_STRICT_INDEPENDENT_REVIEW_INPUT_PATH,
-    'final-review-v6/sealed-strict-independent-legal-review-input-source-bound-v6.json');
+    'final-review-v8/sealed-strict-independent-legal-review-input-source-bound-v8.json');
   assert.equal(result.m3_artifact.strict_independent_review_input.relative_path, FINAL_STRICT_INDEPENDENT_REVIEW_INPUT_PATH);
   assert.equal(result.m3_artifact.strict_independent_review_input.strict_independent_review_input_id,
-    'a124735d163bf45b5e16cfa0ec7ff5cb680fc777b70c7c29c4ded9dcfcb9bdb7');
+    'e1773faf57e75274c0da1b8c9b9efb694cf7bad4019e50a87e173d207fcf8da7');
   assert.deepEqual(FINAL_LEGAL_FINDING_PATHS, [
-    'final-review-v6/sealed-corrected-independent-legal-re-review-findings-v2.json',
+    'final-review-v8/sealed-corrected-independent-legal-re-review-findings-v2.json',
   ]);
   assert.deepEqual(
     result.m3_artifact.final_legal_findings.map((finding) => finding.path),
     FINAL_LEGAL_FINDING_PATHS.map((relativePath) => path.join(ARTIFACT_ROOT, relativePath)),
+  );
+  assert.deepEqual(
+    result.m3_artifact.final_legal_findings.map((finding) => finding.independent_legal_review_findings_id),
+    ['9773bb7a88e90f9f58ae67c75decdf8c3102e73663a890365fd2376a5195e7c1'],
   );
 
   const topBuild = result.deals.find((deal) => deal.deal_name === 'TopBuild');
@@ -43,6 +47,17 @@ test('four-deal preview binds immutable M3 rows and the sealed Metsera Process r
   const modiv = result.deals.find((deal) => deal.deal_name === 'Modiv');
   const metsera = result.deals.find((deal) => deal.deal_name === 'Metsera');
   assert.equal([topBuild, skechers, modiv].flatMap((deal) => deal.work_items).length, 12);
+  assert.deepEqual(
+    [topBuild, skechers, modiv, metsera].map((deal) => [deal.deal_name, deal.rows.length]),
+    [['TopBuild', 193], ['Skechers', 50], ['Modiv', 61], ['Metsera', 1]],
+  );
+  const globalSourceCounts = [topBuild, skechers, modiv].flatMap((deal) => deal.rows)
+    .reduce((counts, row) => ({
+      governed: counts.governed + Number(row.result_type === 'GOVERNED_VALUE'),
+      review: counts.review + Number(row.result_type === 'REVIEW_ITEM'),
+      open_world: counts.open_world + Number(row.result_type === 'OPEN_WORLD_WARNING'),
+    }), { governed: 0, review: 0, open_world: 0 });
+  assert.deepEqual(globalSourceCounts, { governed: 150, review: 15, open_world: 132 });
   for (const deal of [topBuild, skechers, modiv]) {
     assert.equal(deal.result_domain, 'M3_CANONICAL_REVIEW');
     assert.ok(deal.rows.some((row) => row.result_type === 'GOVERNED_VALUE'
@@ -81,7 +96,7 @@ test('four-deal preview retains an explicit no-findings path', () => {
     && row.work_item_legal_review_state === 'PENDING_INDEPENDENT_REVIEW'));
 });
 
-test('four-deal preview rejects sealed V5 findings against the sealed V6 packet and strict input', () => {
+test('four-deal preview rejects sealed V5 findings against the sealed V8 packet and strict input', () => {
   assert.throws(
     () => getFrozenFourDealLocalDemoResult({
       artifact_root: ARTIFACT_ROOT,
@@ -184,12 +199,11 @@ test('four-deal preview does not project a work-item PASS onto an unreviewed for
   assert.equal(rows[0].legal_review_state, null);
 });
 
-test('four-deal preview shows the sealed work-item review reason code as the legal basis', () => {
+test('four-deal preview projects V8 row findings without inventing a work-item legal basis', () => {
   const result = getFrozenFourDealLocalDemoResult();
   const modiv = result.deals.find((deal) => deal.deal_name === 'Modiv');
   assert.ok(modiv.rows.every((row) => row.work_item_legal_review_state === 'PASS'));
-  assert.ok(modiv.rows.every((row) => row.work_item_legal_review_reason
-    === 'ALL_GOVERNED_CLAIMS_ROUTES_AND_FORMULAS_VERIFIED'));
+  assert.ok(modiv.rows.every((row) => row.work_item_legal_review_reason === null));
   assert.ok(modiv.rows.filter((row) => ['REVIEW_QUEUE', 'OPEN_WORLD'].includes(row.resolver_state))
     .every((row) => row.legal_review_state === null));
   assert.ok(modiv.rows.filter((row) => row.resolver_state === 'RESOLVED')
