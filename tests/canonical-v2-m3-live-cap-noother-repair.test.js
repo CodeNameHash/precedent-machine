@@ -38,6 +38,15 @@ function unresolvedCountValues(resolution) {
     .sort();
 }
 
+function assertPublishedChildCitation(entry, parentSectionReference) {
+  const citation = entry.compiled_candidate.citation_validation;
+  assert.ok(citation && citation.accepted === true, 'resolved row keeps an accepted citation record');
+  assert.equal(entry.section_reference, citation.derived_citation, 'resolved row publishes the derived child citation');
+  assert.equal(entry.citation_context.parent_section_reference, parentSectionReference);
+  assert.equal(entry.citation_context.child_section_reference, citation.derived_citation);
+  assert.ok(entry.citation_context.child_clause_quote.includes(entry.claim.raw_value));
+}
+
 test('immutable live M3 capitalisation and no-other-reps checkpoint replays conservatively', {
   skip: !fs.existsSync(RESULT_PATH),
 }, () => {
@@ -66,6 +75,9 @@ test('immutable live M3 capitalisation and no-other-reps checkpoint replays cons
       'NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT',
     ],
   );
+  for (const entry of skechersNoOtherReps.resolved) {
+    assertPublishedChildCitation(entry, '3.28');
+  }
 
   const topBuildCapitalisation = replay('topbuild-capitalisation-3-1-b');
   assert.deepEqual(unresolvedCountValues(topBuildCapitalisation), [
@@ -75,4 +87,45 @@ test('immutable live M3 capitalisation and no-other-reps checkpoint replays cons
   assert.equal(topBuildCapitalisation.open_world.filter((entry) => (
     entry.claim_definition_key === 'NATIVE_CAPITALISATION_LIMB_ASSERTION_CANDIDATE'
   )).length, 21);
+});
+
+test('immutable live M3 track-B rows publish child citations with their source context', {
+  skip: !fs.existsSync(RESULT_PATH),
+}, () => {
+  const antitrust = replay('modiv-antitrust-consents-5-5');
+  assert.deepEqual(
+    antitrust.resolved.map((entry) => entry.section_reference).sort(),
+    ['5.5(b)', '5.5(d)'],
+  );
+  for (const entry of antitrust.resolved) {
+    assertPublishedChildCitation(entry, '5.5');
+    assert.ok(entry.citation_context.parent_chapeau_quote.includes('Appropriate Action; Consents; Filings'));
+  }
+
+  const closing = replay('modiv-closing-conditions-6-1');
+  assert.deepEqual(
+    closing.resolved.map((entry) => entry.section_reference).sort(),
+    ['6.1(a)', '6.1(b)', '6.1(b)', '6.1(c)', '6.1(d)'],
+  );
+  for (const entry of closing.resolved) {
+    assertPublishedChildCitation(entry, '6.1');
+  }
+  const s4StopOrder = closing.resolved.find((entry) => (
+    entry.claim.attributes.s4_component === 'NO_STOP_ORDER'
+  ));
+  assert.ok(s4StopOrder.citation_context.child_clause_quote.includes('pending or threatened in writing proceeding seeking a stop order'));
+  const listing = closing.resolved.find((entry) => entry.claim.claim_definition_key === 'LISTING_CONDITION');
+  assert.ok(listing.citation_context.child_clause_quote.includes('subject to official notice of issuance'));
+
+  const termination = replay('topbuild-termination-company-6-3');
+  assert.deepEqual(
+    termination.resolved.map((entry) => entry.section_reference).sort(),
+    ['6.3(a)(i)(A)', '6.3(a)(i)(B)', '6.3(a)(ii)', '6.3(b)', '6.3(b)'],
+  );
+  for (const entry of termination.resolved) {
+    assertPublishedChildCitation(entry, '6.3');
+    assert.ok(entry.citation_context.parent_chapeau_quote.includes('by the Company if:'));
+  }
+  assert.ok(termination.open_world.some((entry) => entry.raw_value.includes('Parent Stockholder Approval')));
+  assert.ok(termination.open_world.some((entry) => entry.raw_value.includes('Sections ‎5.3(a)(i) or ‎5.3(a)(ii)')));
 });

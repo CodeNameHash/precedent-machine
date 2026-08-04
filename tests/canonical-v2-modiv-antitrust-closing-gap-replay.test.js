@@ -70,7 +70,7 @@ async function replay({ pilot, response, shaper }) {
   };
 }
 
-test('Modiv 5.5 checkpoint replay distinguishes resolver mappings from a source-quote rerun', async () => {
+test('Modiv 5.5 checkpoint replay carries the child clause that corroborates a parent-scoped obligor', async () => {
   const pilot = pilotSection('modiv-antitrust-consents-5-5');
   const consultationViews = exact(pilot.text, /Each party hereto will have the right to review[\s\S]*?Transactions\./);
   const consultationParticipation = exact(pilot.text, /In addition, except as may be prohibited[\s\S]*?legal proceeding\./);
@@ -118,11 +118,8 @@ test('Modiv 5.5 checkpoint replay distinguishes resolver mappings from a source-
 
   assert.equal(before.receipt.evidence_residual_count, 1);
   assert.equal(before.receipt.compiled_candidate_count, 6);
-  assert.deepEqual(before.unresolved.map((entry) => entry.reasons), [
-    ['OBLIGOR_REF_NOT_IN_QUOTE'],
-    ['OBLIGOR_REF_NOT_IN_QUOTE'],
-  ]);
-  assert.equal(before.resolution.open_world.length, 3);
+  assert.equal(before.unresolved.length, 0);
+  assert.equal(before.resolution.open_world.length, 4);
   assert.equal(after.receipt.evidence_residual_count, 0);
   assert.equal(after.receipt.compiled_candidate_count, 7);
   assert.equal(after.unresolved.length, 0);
@@ -130,7 +127,7 @@ test('Modiv 5.5 checkpoint replay distinguishes resolver mappings from a source-
   assert.equal(after.resolution.resolved.length, 7);
 });
 
-test('Modiv 6.1 checkpoint replay requires a full Registration Statement quote for every S4 component', async () => {
+test('Modiv 6.1 checkpoint replay carries the complete Registration Statement child clause', async () => {
   const pilot = pilotSection('modiv-closing-conditions-6-1');
   const registrationStatement = exact(pilot.text, /The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order\./);
   const formEffective = 'The Registration Statement shall have been declared effective by the SEC';
@@ -164,9 +161,7 @@ test('Modiv 6.1 checkpoint replay requires a full Registration Statement quote f
 
   assert.equal(before.receipt.evidence_residual_count, 1);
   assert.equal(before.receipt.compiled_candidate_count, 5);
-  assert.deepEqual(before.unresolved.map((entry) => entry.reasons), [
-    ['CONDITION_KIND_UNCORROBORATED'],
-  ]);
+  assert.equal(before.unresolved.length, 0);
   assert.equal(before.resolution.open_world.length, 0);
   assert.equal(after.receipt.evidence_residual_count, 0);
   assert.equal(after.receipt.compiled_candidate_count, 6);

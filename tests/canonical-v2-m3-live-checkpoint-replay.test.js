@@ -83,7 +83,7 @@ test('M3 live IOC checkpoint inherits only the TARGET parent chapeau with exact 
   assert.equal(Buffer.from(sourceText, 'utf8').subarray(resolved.party_source_span.absolute_start, resolved.party_source_span.absolute_end).toString('utf8'), 'the Company will not, and will not permit any of its Subsidiaries, to:');
 });
 
-test('M3 live termination checkpoint keeps grant, trigger and cross-reference evidence without resolving new standards', async () => {
+test('M3 live termination checkpoint resolves supported branch, party and cure evidence without inventing standards', async () => {
   const { parsed } = LIVE_CHECKPOINTS.termination;
   const { receipt, resolution } = await replay({
     sectionReference: '6.3', familyId: 'TERMINATION',
@@ -91,8 +91,8 @@ test('M3 live termination checkpoint keeps grant, trigger and cross-reference ev
   });
   assert.equal(receipt.compiled_candidate_count, 9);
   assert.deepEqual(resolution.resolution_receipt.counts, {
-    compiled_candidates: 9, resolved: 2, auto_pass: 0, review_queue: 6,
-    open_world: 3, residuals: 0, provisions: 2, limb_component_trees: 0, ioc_restriction_components: 0,
+    compiled_candidates: 9, resolved: 5, auto_pass: 0, review_queue: 6,
+    open_world: 3, residuals: 0, provisions: 3, limb_component_trees: 0, ioc_restriction_components: 0,
   });
   for (const item of resolution.resolved) {
     assert.deepEqual(item.party, { role: 'TERMINATION_RIGHT_HOLDER', value: 'the Company', capacity: 'TARGET' });
