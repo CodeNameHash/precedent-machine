@@ -7,6 +7,7 @@ const test = require('node:test');
 const {
   FOUR_DEAL_LOCAL_DEMO_RESULT_SCHEMA,
   getFrozenFourDealLocalDemoResult,
+  m3Rows,
 } = require('../lib/four-deal-local-demo-preview');
 
 const ARTIFACT_ROOT = '/private/tmp/canonical-v2-m3-pilot-20260803.L3KSNP';
@@ -60,13 +61,54 @@ test('four-deal preview binds PASS or FAIL only when sealed final legal findings
     && row.legal_review_state === 'FAIL'));
 });
 
+test('four-deal preview reads current-resolver replays instead of their retained prior results', () => {
+  const workItems = [
+    ['REPLAY_ONLY_CURRENT_RESOLVER_REPLAY', 'replay-only'],
+    ['PASSED_ITERATION_2_CURRENT_RESOLVER_REPLAY', 'passed-iteration-2'],
+  ].map(([sourceKind, suffix]) => ({
+    work_item_id: `work-${suffix}`,
+    source_kind: sourceKind,
+    repaired_replay: {
+      work_item_id: `work-${suffix}`,
+      resolution: {
+        resolved: [{
+          section_reference: '6.3',
+          source_citation: '6.3(a)(i)(A)',
+          resolved_claim_definition_key: 'TERMINATION_RIGHT_PRESENT',
+          claim: { claim_revision_id: `claim-${suffix}`, canonical_value: true, raw_value: 'current source quote' },
+          triage: { reasons: [] },
+        }],
+        review_queue: [],
+        open_world: [],
+      },
+    },
+    replay_result: { work_item_id: `work-${suffix}`, resolution: { resolved: [] } },
+    iteration_2_work_result: { work_item_id: `work-${suffix}`, resolution: { resolved: [] } },
+  }));
+  const rows = m3Rows(workItems, new Map());
+  assert.equal(rows.length, 2);
+  assert.ok(rows.every((row) => row.source_citation === '6.3(a)(i)(A)'
+    && row.source_quote === 'current source quote'));
+});
+
 test('four-deal preview keeps governed scope separate from a missing published citation', () => {
-  const result = getFrozenFourDealLocalDemoResult();
-  const row = result.deals
-    .flatMap((deal) => deal.rows)
-    .find((candidate) => candidate.source_citation.startsWith('Published citation pending; governed scope '));
-  assert.ok(row);
-  assert.doesNotMatch(row.source_citation, /^\d/);
+  const rows = m3Rows([{
+    work_item_id: 'work-missing-citation',
+    source_kind: 'REPAIRED_REPLAY',
+    repaired_replay: {
+      work_item_id: 'work-missing-citation',
+      resolution: {
+        resolved: [{
+          section_reference: '4.3',
+          resolved_claim_definition_key: 'NO_SHOP_DURATION',
+          claim: { claim_revision_id: 'claim-missing-citation', canonical_value: '45', raw_value: '45 days' },
+        }],
+        review_queue: [],
+        open_world: [],
+      },
+    },
+  }], new Map());
+  assert.equal(rows[0].source_citation, 'Published citation pending; governed scope 4.3');
 });
 
 test('four-deal preview exposes structured fee and consideration formulas without flattening them', () => {

@@ -10,9 +10,14 @@ const {
   FINAL_REVIEW_PACKET_SCHEMA,
   REPAIRED_REPLAY_SCHEMA,
   ADJUDICATED_FIRST_PASS_REPLAY,
+  REPLAY_ONLY_CURRENT_RESOLVER_REPLAY,
+  PASSED_ITERATION_2_CURRENT_RESOLVER_REPLAY,
   FinalPilotSynthesisError,
   buildFinalPilotSynthesis,
 } = require('../lib/canonical-v2/native-producer/m3-final-pilot-synthesis');
+const {
+  buildFinalPilotStrictIndependentReviewInput,
+} = require('../lib/canonical-v2/native-producer/m3-final-pilot-independent-review');
 
 const ROOT = path.resolve(__dirname, '..');
 const MANIFEST = JSON.parse(fs.readFileSync(path.join(ROOT, 'tests/fixtures/canonical-v2/m3-12-call-pilot-manifest.json'), 'utf8'));
@@ -117,11 +122,22 @@ test('builds one sealed, no-model review packet for all twelve original items', 
   assert.equal(packet.work_items.length, 12);
   assert.deepEqual(packet.work_items.map((item) => item.work_item_id), MANIFEST.work_items.map((item) => item.work_item_id).sort());
   assert.equal(packet.work_items.filter((item) => item.source_kind === ADJUDICATED_FIRST_PASS_REPLAY).length, 2);
-  assert.equal(packet.work_items.filter((item) => item.source_kind === 'REPLAY_ONLY').length, 2);
-  assert.equal(packet.work_items.filter((item) => item.source_kind === 'PASSED_ITERATION_2').length, 1);
+  assert.equal(packet.work_items.filter((item) => item.source_kind === REPLAY_ONLY_CURRENT_RESOLVER_REPLAY).length, 2);
+  assert.equal(packet.work_items.filter((item) => item.source_kind === PASSED_ITERATION_2_CURRENT_RESOLVER_REPLAY).length, 1);
   assert.equal(packet.work_items.filter((item) => item.source_kind === 'REPAIRED_REPLAY').length, 7);
   const replayOnly = packet.work_items.find((item) => item.work_item_id === 'skechers-no-other-reps-3-28');
-  assert.match(replayOnly.first_provider_recording.provider_output.raw_response_text, /skechers-no-other-reps/);
+  assert.equal(replayOnly.repaired_replay.source_execution_kind, 'REPLAY_ONLY_FIRST_PASS');
+  assert.equal(replayOnly.repaired_replay.source_work_result_id, replayOnly.first_work_result.work_result_id);
+  assert.equal(replayOnly.repaired_replay.provider_recording.provider_recording_id,
+    replayOnly.first_work_result.provider_recording.provider_recording_id);
+  assert.equal(replayOnly.prior_replay_result.provider_recording_id,
+    replayOnly.first_work_result.provider_recording.provider_recording_id);
+  const passedIteration2 = packet.work_items.find((item) => item.work_item_id === 'modiv-mae-definition-8-12-g');
+  assert.equal(passedIteration2.repaired_replay.source_execution_kind, 'PASSED_ITERATION_2');
+  assert.equal(passedIteration2.repaired_replay.source_work_result_id,
+    passedIteration2.iteration_2_work_result.work_result_id);
+  assert.equal(passedIteration2.repaired_replay.provider_recording.provider_recording_id,
+    passedIteration2.iteration_2_work_result.provider_recording.provider_recording_id);
   const repaired = packet.work_items.find((item) => item.work_item_id === 'topbuild-remedies-specific-performance-7-6');
   assert.match(repaired.repaired_replay.provider_recording.provider_output.raw_response_text, /topbuild-remedies-specific-performance/);
   assert.equal(repaired.repaired_replay.source_execution_kind, 'ITERATION_2');
@@ -135,6 +151,16 @@ test('builds one sealed, no-model review packet for all twelve original items', 
     terminationFee.first_work_result.provider_recording.provider_recording_id);
   const body = { ...packet }; delete body.final_review_packet_id;
   assert.equal(packet.final_review_packet_id, contentId(FINAL_REVIEW_PACKET_SCHEMA, body));
+
+  const legalInput = buildFinalPilotStrictIndependentReviewInput({ final_review_packet: packet });
+  const replayOnlyReview = legalInput.review_items.find((item) => item.work_item_id === replayOnly.work_item_id);
+  assert.equal(replayOnlyReview.source_output_id, replayOnly.repaired_replay.repaired_replay_id);
+  assert.equal(replayOnlyReview.additional_binding.prior_replay_result.replay_result_id,
+    replayOnly.prior_replay_result.replay_result_id);
+  const passedReview = legalInput.review_items.find((item) => item.work_item_id === passedIteration2.work_item_id);
+  assert.equal(passedReview.source_output_id, passedIteration2.repaired_replay.repaired_replay_id);
+  assert.equal(passedReview.additional_binding.iteration_2_work_result.work_result_id,
+    passedIteration2.iteration_2_work_result.work_result_id);
 });
 
 test('fails before replay when any declared repair commit is absent', async () => {

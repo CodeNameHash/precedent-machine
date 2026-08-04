@@ -28,7 +28,7 @@ function finalWorkItem(index) {
   const workItemId = `work-${index + 1}`;
   return {
     work_item_id: workItemId,
-    source_kind: 'PASSED_ITERATION_2',
+    source_kind: 'PASSED_ITERATION_2_CURRENT_RESOLVER_REPLAY',
     model_call_count: 2,
     legal_disposition: 'NOT_DETERMINED',
     independent_review_state: 'PENDING_INDEPENDENT_REVIEW',
@@ -41,7 +41,29 @@ function finalWorkItem(index) {
           resolved_claim_definition_key: 'NO_SHOP_DURATION',
           concept_key: 'NO_SHOP',
           party: 'Target',
-          ...(index === 0 ? { source_citation: 'Section 4.3' } : { section_reference: '4.3' }),
+          source_citation: 'Section 4.3',
+          triage: { reasons: ['SOURCE_BOUND'] },
+          claim: {
+            claim_revision_id: 'claim-1',
+            canonical_value: '45 days',
+            raw_value: '45 days',
+            attributes: { duration_days: 45 },
+          },
+        }] : [],
+        review_queue: [],
+        open_world: [],
+        resolution_receipt: { counts: { resolved: index === 0 ? 1 : 0, review_queue: 0, open_world: 0 } },
+      },
+    },
+    repaired_replay: {
+      work_item_id: workItemId,
+      repaired_replay_id: `current-replay-${index + 1}`,
+      resolution: {
+        resolved: index <= 1 ? [{
+          resolved_claim_definition_key: 'NO_SHOP_DURATION',
+          concept_key: 'NO_SHOP',
+          party: 'Target',
+          ...(index === 0 ? { source_citation: 'Section 4.3(a)' } : { section_reference: '4.3' }),
           triage: { reasons: ['SOURCE_BOUND'] },
           claim: {
             claim_revision_id: 'claim-1',
@@ -115,10 +137,10 @@ test('builds and validates a sealed input with the final 12, final 12 legal find
   assert.equal(input.audit_projection.final_independent_legal_findings.length, 12);
   assert.equal(input.audit_projection.original_seven_fail_findings.length, 7);
   assert.equal(input.audit_projection.final_review_packet[0].resolved_claims[0].exact_source_quote, '45 days');
-  assert.equal(input.audit_projection.final_review_packet[0].resolved_claims[0].exact_source_citation, 'Section 4.3');
+  assert.equal(input.audit_projection.final_review_packet[0].resolved_claims[0].exact_source_citation, 'Section 4.3(a)');
   assert.equal(input.audit_projection.final_review_packet[1].resolved_claims[0].exact_source_citation,
     'Published citation pending; governed scope 4.3');
-  assert.equal(input.audit_projection.final_review_packet[0].source_kind, 'PASSED_ITERATION_2');
+  assert.equal(input.audit_projection.final_review_packet[0].source_kind, 'PASSED_ITERATION_2_CURRENT_RESOLVER_REPLAY');
   assert.equal(input.audit_projection.final_review_packet[0].conditional_termination_fee_values[0].conditional_termination_fee_value_id, 'fee-formula-1');
   assert.equal(input.audit_projection.final_review_packet[0].structured_per_share_cash_values[0].structured_per_share_cash_value_id, 'cash-formula-1');
   assert.equal(input.audit_artifact_seals.final_review_packet.content, undefined);
