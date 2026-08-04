@@ -87,9 +87,10 @@ function fixture() {
   return { first, iteration2, plan, vector, repairVector, replayResults };
 }
 
-function replayStub({ work_item: item, prior_result: prior }) {
+function replayStub({ work_item: item, prior_result: prior, source_execution_kind: sourceExecutionKind }) {
   return sealed(REPAIRED_REPLAY_SCHEMA, {
-    work_item_id: item.work_item_id, iteration_2_work_result_id: prior.work_result_id,
+    work_item_id: item.work_item_id, source_execution_kind: sourceExecutionKind,
+    source_work_result_id: prior.work_result_id,
     provider_recording: prior.provider_recording, model_call_count: 0,
     run_receipt: { replayed_recording: prior.provider_recording.provider_recording_id }, resolution: { resolved: [] },
   }, 'repaired_replay_id');
@@ -122,6 +123,9 @@ test('builds one sealed, no-model review packet for all twelve original items', 
   assert.match(replayOnly.first_provider_recording.provider_output.raw_response_text, /skechers-no-other-reps/);
   const repaired = packet.work_items.find((item) => item.work_item_id === 'topbuild-remedies-specific-performance-7-6');
   assert.match(repaired.repaired_replay.provider_recording.provider_output.raw_response_text, /topbuild-remedies-specific-performance/);
+  assert.equal(repaired.repaired_replay.source_execution_kind, 'ITERATION_2');
+  const skechersCapitalisation = packet.work_items.find((item) => item.work_item_id === 'skechers-capitalisation-3-7');
+  assert.equal(skechersCapitalisation.repaired_replay.source_execution_kind, 'FIRST_PASS');
   const body = { ...packet }; delete body.final_review_packet_id;
   assert.equal(packet.final_review_packet_id, contentId(FINAL_REVIEW_PACKET_SCHEMA, body));
 });

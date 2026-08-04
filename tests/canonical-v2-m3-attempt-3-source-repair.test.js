@@ -69,6 +69,8 @@ test('attempt-3 retained IOC replay resolves only closed categories and preserve
   ]) assert.ok([...byRaw.keys()].some((value) => value.includes(anchor)), `missing controlled anchor: ${anchor}`);
   assert.ok(replayed.resolved.every((entry) => /^4\.1\(/.test(entry.source_citation)));
   assert.ok(replayed.resolved.every((entry) => entry.party_source_span), 'IOC claims retain the governing chapeau span');
+  assert.ok(replayed.resolved.every((entry) => typeof entry.governing_context_quote === 'string'
+    && /Company[\s\S]*Subsidiar/i.test(entry.governing_context_quote)), 'IOC claims retain the governing Company and Subsidiary chapeau text');
   assert.ok(replayed.open_world.some((entry) => entry.raw_value.includes('enter into a joint venture')));
   assert.ok(replayed.open_world.some((entry) => entry.raw_value.includes('acquire, transfer, sell, lease, license')));
   assert.ok(replayed.open_world.some((entry) => entry.raw_value.startsWith('acquire by merging or consolidating')));
