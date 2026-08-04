@@ -7,6 +7,7 @@ const test = require('node:test');
 const {
   FINAL_LEGAL_FINDING_PATHS,
   FINAL_REVIEW_PACKET_PATH,
+  FINAL_STRICT_INDEPENDENT_REVIEW_INPUT_PATH,
   FOUR_DEAL_LOCAL_DEMO_RESULT_SCHEMA,
   getFrozenFourDealLocalDemoResult,
   m3Rows,
@@ -23,6 +24,9 @@ test('four-deal preview binds immutable M3 rows and the sealed Metsera Process r
   assert.equal(result.deals.length, 4);
   assert.equal(result.m3_artifact.relative_path, FINAL_REVIEW_PACKET_PATH);
   assert.equal(result.m3_artifact.final_review_packet_id, 'd78f0e42594d483c44d9110640d076b3b0be1f0f047fc093a92cdf77cf14f866');
+  assert.equal(result.m3_artifact.strict_independent_review_input.relative_path, FINAL_STRICT_INDEPENDENT_REVIEW_INPUT_PATH);
+  assert.equal(result.m3_artifact.strict_independent_review_input.strict_independent_review_input_id,
+    '45fad3c04ee79278ab2f0ef068cfdda68af2e01cf561927652a9caaf2eff1942');
   assert.deepEqual(
     result.m3_artifact.final_legal_findings.map((finding) => finding.path),
     FINAL_LEGAL_FINDING_PATHS.map((relativePath) => path.join(ARTIFACT_ROOT, relativePath)),

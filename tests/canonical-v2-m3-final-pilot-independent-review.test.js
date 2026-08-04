@@ -19,6 +19,40 @@ const PACKET_PATH = '/private/tmp/canonical-v2-m3-pilot-20260803.L3KSNP/final-re
 const V5_PACKET_PATH = '/private/tmp/canonical-v2-m3-pilot-20260803.L3KSNP/final-review-v5/sealed-final-pilot-review-packet.json';
 const V5_SOURCE_BOUND_INPUT_PATH = '/private/tmp/canonical-v2-m3-pilot-20260803.L3KSNP/final-review-v5/sealed-strict-independent-legal-review-input-source-bound-v5.json';
 
+function exactSourceBytesByDocumentHash(sourceBound) {
+  const bytes = {};
+  for (const item of sourceBound.review_items) {
+    for (const claim of item.review_rows.resolved_claims || []) {
+      const source = claim.exact_source_bytes;
+      if (source?.document_hash && source.text) bytes[source.document_hash] = source.text;
+    }
+  }
+  return bytes;
+}
+
+function boundV5Review() {
+  const packet = JSON.parse(fs.readFileSync(V5_PACKET_PATH, 'utf8'));
+  const sourceBound = JSON.parse(fs.readFileSync(V5_SOURCE_BOUND_INPUT_PATH, 'utf8'));
+  const input = buildFinalPilotStrictIndependentReviewInput({
+    final_review_packet: packet,
+    exact_source_bytes_by_document_hash: exactSourceBytesByDocumentHash(sourceBound),
+  });
+  return { packet, input };
+}
+
+function sealedFindings({ packet, input, findings = input.review_items.map((item) => findingFor(item)) }) {
+  const body = {
+    schema_version: FINAL_RE_REVIEW_FINDINGS_SCHEMA,
+    final_review_packet_id: packet.final_review_packet_id,
+    strict_independent_review_input_id: input.strict_independent_review_input_id,
+    findings,
+  };
+  return {
+    ...body,
+    independent_legal_review_findings_id: contentId(FINAL_RE_REVIEW_FINDINGS_SCHEMA, body),
+  };
+}
+
 test('prepares a strict twelve-item legal review with no automatic PASS', { skip: !fs.existsSync(PACKET_PATH) }, () => {
   const packet = JSON.parse(fs.readFileSync(PACKET_PATH, 'utf8'));
   const input = buildFinalPilotStrictIndependentReviewInput({ final_review_packet: packet });
@@ -82,10 +116,32 @@ function reviewInputWithTwelveRows({ missingCitation = false, formulaRows = fals
 }
 
 function findingFor(reviewItem, status = 'PASS') {
+  const formulaRows = [
+    ...(reviewItem.review_rows.conditional_termination_fee_values || []),
+    ...(reviewItem.review_rows.structured_per_share_cash_values || []),
+  ];
+  const hasFormulaFailure = formulaRows.some((row) => (
+    !Array.isArray(row.source_citations) || row.source_citations.length === 0
+      || !Array.isArray(row.formula?.defined_term_lineage) || row.formula.defined_term_lineage.length === 0
+      || !row.exact_source_bytes?.text?.includes(row.formula?.raw_formula)
+  ));
+  const findingStatus = hasFormulaFailure ? 'FAIL' : status;
+  const formulaReview = (row, idKey) => {
+    const missingCitationOrLineage = !Array.isArray(row.source_citations) || row.source_citations.length === 0
+      || !Array.isArray(row.formula?.defined_term_lineage) || row.formula.defined_term_lineage.length === 0;
+    const missingFormula = !row.exact_source_bytes?.text?.includes(row.formula?.raw_formula);
+    return {
+      [idKey]: row[idKey],
+      value_status: status,
+      formula_status: missingFormula ? 'FAIL' : status,
+      citation_lineage_status: missingCitationOrLineage ? 'FAIL' : status,
+      status: missingFormula || missingCitationOrLineage ? 'FAIL' : status,
+    };
+  };
   return {
     work_item_id: reviewItem.work_item_id,
-    status,
-    reason_codes: status === 'FAIL' ? ['MISSING_PUBLISHED_SOURCE_CITATION'] : [],
+    status: findingStatus,
+    reason_codes: findingStatus === 'FAIL' ? ['MISSING_PUBLISHED_SOURCE_CITATION'] : [],
     claim_reviews: reviewItem.review_rows.resolved_claims.map((row) => ({
       claim_revision_id: row.claim_revision_id,
       value_status: status,
@@ -94,77 +150,153 @@ function findingFor(reviewItem, status = 'PASS') {
       chapeau_status: status,
       status,
     })),
-    review_queue_reviews: [],
-    open_world_reviews: [],
-    conditional_termination_fee_value_reviews: (reviewItem.review_rows.conditional_termination_fee_values || []).map((row) => ({
-      conditional_termination_fee_value_id: row.conditional_termination_fee_value_id,
-      value_status: status,
-      formula_status: status,
-      citation_lineage_status: status,
-      status,
+    review_queue_reviews: reviewItem.review_rows.review_queue.map((row) => ({
+      row_id: row.row_id,
+      routing_status: 'RETAINED',
     })),
-    structured_per_share_cash_value_reviews: (reviewItem.review_rows.structured_per_share_cash_values || []).map((row) => ({
-      structured_per_share_cash_value_id: row.structured_per_share_cash_value_id,
-      value_status: status,
-      formula_status: status,
-      citation_lineage_status: status,
-      status,
+    open_world_reviews: reviewItem.review_rows.open_world.map((row) => ({
+      row_id: row.row_id,
+      routing_status: 'RETAINED',
     })),
+    conditional_termination_fee_value_reviews: (reviewItem.review_rows.conditional_termination_fee_values || []).map((row) => (
+      formulaReview(row, 'conditional_termination_fee_value_id')
+    )),
+    structured_per_share_cash_value_reviews: (reviewItem.review_rows.structured_per_share_cash_values || []).map((row) => (
+      formulaReview(row, 'structured_per_share_cash_value_id')
+    )),
   };
 }
 
-test('accepts one sealed twelve-item findings file and does not reject a parent extraction scope with a child published citation', () => {
-  const input = reviewInputWithTwelveRows();
-  const artifact = {
-    schema_version: FINAL_RE_REVIEW_FINDINGS_SCHEMA,
-    findings: input.review_items.map((item) => findingFor(item)),
-  };
-  assert.equal(validateFinalPilotReReviewFindings({ strict_independent_review_input: input, finding_artifacts: [artifact] }), true);
+test('accepts one sealed twelve-item findings file and does not reject a parent extraction scope with a child published citation', {
+  skip: !fs.existsSync(V5_PACKET_PATH) || !fs.existsSync(V5_SOURCE_BOUND_INPUT_PATH),
+}, () => {
+  const { packet, input } = boundV5Review();
+  assert.equal(validateFinalPilotReReviewFindings({
+    final_review_packet: packet,
+    strict_independent_review_input: input,
+    finding_artifacts: [sealedFindings({ packet, input })],
+  }), true);
 });
 
-test('accepts two sealed six-item findings files and requires a FAIL for a missing published citation', () => {
-  const input = reviewInputWithTwelveRows({ missingCitation: true });
-  const findings = input.review_items.map((item) => findingFor(item, item.work_item_id === 'work-1' ? 'FAIL' : 'PASS'));
+test('accepts two sealed six-item findings files and rejects a findings artefact whose claim status conflicts with its finding', {
+  skip: !fs.existsSync(V5_PACKET_PATH) || !fs.existsSync(V5_SOURCE_BOUND_INPUT_PATH),
+}, () => {
+  const { packet, input } = boundV5Review();
+  const findings = input.review_items.map((item) => findingFor(item));
   const artifacts = [
-    { schema_version: FINAL_RE_REVIEW_FINDINGS_SCHEMA, findings: findings.slice(0, 6) },
-    { schema_version: FINAL_RE_REVIEW_FINDINGS_SCHEMA, findings: findings.slice(6) },
+    sealedFindings({ packet, input, findings: findings.slice(0, 6) }),
+    sealedFindings({ packet, input, findings: findings.slice(6) }),
   ];
-  assert.equal(validateFinalPilotReReviewFindings({ strict_independent_review_input: input, finding_artifacts: artifacts }), true);
-  artifacts[0].findings[0] = findingFor(input.review_items[0]);
+  assert.equal(validateFinalPilotReReviewFindings({
+    final_review_packet: packet,
+    strict_independent_review_input: input,
+    finding_artifacts: artifacts,
+  }), true);
+  const changed = structuredClone(artifacts[0].findings);
+  changed[0].claim_reviews[0].status = 'FAIL';
+  artifacts[0] = sealedFindings({ packet, input, findings: changed });
   assert.throws(
-    () => validateFinalPilotReReviewFindings({ strict_independent_review_input: input, finding_artifacts: artifacts }),
+    () => validateFinalPilotReReviewFindings({
+      final_review_packet: packet,
+      strict_independent_review_input: input,
+      finding_artifacts: artifacts,
+    }),
     (error) => error instanceof FinalPilotIndependentReviewError && error.code === 'RE_REVIEW_RUBRIC_VIOLATION',
   );
 });
 
-test('requires exact formula coverage and makes a failed formula fail its work item', () => {
-  const input = reviewInputWithTwelveRows({ formulaRows: true });
+test('requires exact formula coverage and makes a failed formula fail its work item', {
+  skip: !fs.existsSync(V5_PACKET_PATH) || !fs.existsSync(V5_SOURCE_BOUND_INPUT_PATH),
+}, () => {
+  const { packet, input } = boundV5Review();
   const findings = input.review_items.map((item) => findingFor(item));
-  const artifact = { schema_version: FINAL_RE_REVIEW_FINDINGS_SCHEMA, findings };
-  assert.equal(validateFinalPilotReReviewFindings({ strict_independent_review_input: input, finding_artifacts: [artifact] }), true);
+  let artifact = sealedFindings({ packet, input, findings });
+  assert.equal(validateFinalPilotReReviewFindings({
+    final_review_packet: packet,
+    strict_independent_review_input: input,
+    finding_artifacts: [artifact],
+  }), true);
 
-  artifact.findings[0].conditional_termination_fee_value_reviews = [];
+  const consideration = findings.find((finding) => finding.work_item_id === 'modiv-consideration-2-1');
+  consideration.structured_per_share_cash_value_reviews = [];
+  artifact = sealedFindings({ packet, input, findings });
   assert.throws(
-    () => validateFinalPilotReReviewFindings({ strict_independent_review_input: input, finding_artifacts: [artifact] }),
+    () => validateFinalPilotReReviewFindings({
+      final_review_packet: packet,
+      strict_independent_review_input: input,
+      finding_artifacts: [artifact],
+    }),
     (error) => error instanceof FinalPilotIndependentReviewError && error.code === 'RE_REVIEW_OMISSION',
   );
 
-  artifact.findings[0] = findingFor(input.review_items[0]);
-  artifact.findings[0].conditional_termination_fee_value_reviews[0].status = 'FAIL';
+  const completeFindings = input.review_items.map((item) => findingFor(item));
+  const formulaFailure = completeFindings.find((finding) => finding.work_item_id === 'modiv-consideration-2-1');
+  formulaFailure.status = 'PASS';
+  artifact = sealedFindings({ packet, input, findings: completeFindings });
   assert.throws(
-    () => validateFinalPilotReReviewFindings({ strict_independent_review_input: input, finding_artifacts: [artifact] }),
+    () => validateFinalPilotReReviewFindings({
+      final_review_packet: packet,
+      strict_independent_review_input: input,
+      finding_artifacts: [artifact],
+    }),
     (error) => error instanceof FinalPilotIndependentReviewError && error.code === 'RE_REVIEW_RUBRIC_VIOLATION',
   );
+});
 
-  const citationlessInput = reviewInputWithTwelveRows({ formulaRows: true });
-  citationlessInput.review_items[0].review_rows.conditional_termination_fee_values[0].source_citations = [];
-  const citationlessArtifact = {
-    schema_version: FINAL_RE_REVIEW_FINDINGS_SCHEMA,
-    findings: citationlessInput.review_items.map((item) => findingFor(item)),
-  };
+test('rejects a rehashed strict input that differs from the packet rebuild', {
+  skip: !fs.existsSync(V5_PACKET_PATH) || !fs.existsSync(V5_SOURCE_BOUND_INPUT_PATH),
+}, () => {
+  const { packet, input } = boundV5Review();
+  const findings = sealedFindings({ packet, input });
+  assert.equal(validateFinalPilotReReviewFindings({
+    final_review_packet: packet,
+    strict_independent_review_input: input,
+    finding_artifacts: [findings],
+  }), true);
+
+  const forged = structuredClone(input);
+  forged.review_items[0].review_rows.resolved_claims[0].source_citation = '9.9';
+  const body = { ...forged };
+  delete body.strict_independent_review_input_id;
+  forged.strict_independent_review_input_id = contentId(STRICT_INDEPENDENT_REVIEW_SCHEMA, body);
   assert.throws(
-    () => validateFinalPilotReReviewFindings({ strict_independent_review_input: citationlessInput, finding_artifacts: [citationlessArtifact] }),
-    (error) => error instanceof FinalPilotIndependentReviewError && error.code === 'RE_REVIEW_RUBRIC_VIOLATION',
+    () => validateFinalPilotReReviewFindings({
+      final_review_packet: packet,
+      strict_independent_review_input: forged,
+      finding_artifacts: [findings],
+    }),
+    (error) => error instanceof FinalPilotIndependentReviewError
+      && error.code === 'STRICT_REVIEW_INPUT_REBUILD_MISMATCH',
+  );
+});
+
+test('rejects a findings artefact with a broken identity or a rehashed rubric violation', {
+  skip: !fs.existsSync(V5_PACKET_PATH) || !fs.existsSync(V5_SOURCE_BOUND_INPUT_PATH),
+}, () => {
+  const { packet, input } = boundV5Review();
+  const forged = sealedFindings({ packet, input });
+  forged.findings[0].claim_reviews[0].status = 'FAIL';
+  assert.throws(
+    () => validateFinalPilotReReviewFindings({
+      final_review_packet: packet,
+      strict_independent_review_input: input,
+      finding_artifacts: [forged],
+    }),
+    (error) => error instanceof FinalPilotIndependentReviewError
+      && error.code === 'RE_REVIEW_FINDINGS_ID_MISMATCH',
+  );
+
+  const body = { ...forged };
+  delete body.independent_legal_review_findings_id;
+  forged.independent_legal_review_findings_id = contentId(FINAL_RE_REVIEW_FINDINGS_SCHEMA, body);
+  assert.throws(
+    () => validateFinalPilotReReviewFindings({
+      final_review_packet: packet,
+      strict_independent_review_input: input,
+      finding_artifacts: [forged],
+    }),
+    (error) => error instanceof FinalPilotIndependentReviewError
+      && error.code === 'RE_REVIEW_RUBRIC_VIOLATION',
   );
 });
 
