@@ -31,9 +31,22 @@
     },
     {
       "source_id": "topbuild-full",
-      "disposition": "BLOCKED_SOURCE_PIN",
-      "source_locator": "tests/fixtures/canonical-v2/mae-definition-family/topbuild-raw-fetched.htm, raw_sha256 146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
-      "blocking_code": "RETRIEVAL_POLICY_DIGEST_UNAVAILABLE"
+      "disposition": "ADMITTED_RECORDED",
+      "recorded_admitted_source_context_path": "tests/fixtures/canonical-v2/f28-third-live-run/adapter-result.json",
+      "admitted_semantic_source_context_id": "b069039c65512a01b0be43396e9c0c25c0eff925867f0eec7a173862e7cfc352",
+      "admitted_source_reference": {
+        "schema_version": "ADMITTED_SOURCE_REFERENCE/V1",
+        "immutable_source_document_id": "6a0b0c1eee2035ea01fbaa272008b11d99c9ccabc10d3d3810c5c8d68a2613a7",
+        "source_admission_manifest_id": "b2eca29a562812f4d7993953b29d8ab0329d7673ade908439b2875b24b373558",
+        "semantic_extraction_input_envelope_id": "7c2eab4c41a724c432ef42546e5ea072f02e58a6d7ded73e141a5e666f2863db",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "governed_deal_key": "deal:f28-third-live-run:e552449e17bebcd1",
+        "deal_admission_id": "d0e3649379240a201bfb9fd58dc4be998b3c83980c48b0618dbdf8db4ee5287a",
+        "source_ordinal": 0
+      },
+      "canonical_text_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+      "canonical_text_byte_length": 412860,
+      "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f"
     }
   ],
   "work_items": [
@@ -125,36 +138,61 @@
       "work_item_id": "topbuild-capitalisation-3-1-b",
       "source_id": "topbuild-full",
       "family_id": "CAPITALISATION",
-      "disposition": "BLOCKED_SOURCE_PIN",
-      "blocking_code": "RETRIEVAL_POLICY_DIGEST_UNAVAILABLE"
+      "disposition": "EXTRACT",
+      "section_pin": {
+        "section_reference": "III-INTRO",
+        "section_id": "6e7bc343be6f5d106a396f83e68fc0508e88db58a70af4a19f3a0f90cd3064ba",
+        "section_kind": "SECTION",
+        "section_text_sha256": "d96bde386d740c7bc0d986c57db8597c77f96db5495fabfb03cf5c8331e17cfe"
+      }
     },
     {
       "work_item_id": "topbuild-ioc-company-4-1",
       "source_id": "topbuild-full",
       "family_id": "INTERIM_OPERATING",
-      "disposition": "BLOCKED_SOURCE_PIN",
-      "blocking_code": "RETRIEVAL_POLICY_DIGEST_UNAVAILABLE"
+      "disposition": "EXTRACT",
+      "section_pin": {
+        "section_reference": "4.1",
+        "section_id": "d5d911cbaa9b7478d45698eb0267c9673e00eb00dfb317d4c0732395f1bfcf9e",
+        "section_kind": "SECTION",
+        "section_text_sha256": "9fb0efdb4bae0f1b3b2bec3af9b993a37214c3e679a21bb495d0e48b65061bb7"
+      }
     },
     {
       "work_item_id": "topbuild-no-shop-company-4-3",
       "source_id": "topbuild-full",
       "family_id": "NO_SHOP",
-      "disposition": "BLOCKED_SOURCE_PIN",
-      "blocking_code": "RETRIEVAL_POLICY_DIGEST_UNAVAILABLE"
+      "disposition": "EXTRACT",
+      "section_pin": {
+        "section_reference": "4.3",
+        "section_id": "ccc83db74e89a0090aa95fe9a9b49a270fcd88ce4e094dd4510419c59604996c",
+        "section_kind": "SECTION",
+        "section_text_sha256": "c9a33bfe0529501c90d97963daf6bdf83c1f28957ed13dc331a29b928a07ca31"
+      }
     },
     {
       "work_item_id": "topbuild-remedies-specific-performance-7-6",
       "source_id": "topbuild-full",
       "family_id": "SPECIFIC_PERFORMANCE_REMEDIES",
-      "disposition": "BLOCKED_SOURCE_PIN",
-      "blocking_code": "RETRIEVAL_POLICY_DIGEST_UNAVAILABLE"
+      "disposition": "EXTRACT",
+      "section_pin": {
+        "section_reference": "7.6",
+        "section_id": "9323c0c8f33357c8a78e7e9a261b9fe168a0e52cec4429373705576e20907dc5",
+        "section_kind": "SECTION",
+        "section_text_sha256": "9d375b85093b476fbecb795ababa596001919093729231adb190ec369094312c"
+      }
     },
     {
       "work_item_id": "topbuild-termination-company-6-3",
       "source_id": "topbuild-full",
       "family_id": "TERMINATION",
-      "disposition": "BLOCKED_SOURCE_PIN",
-      "blocking_code": "RETRIEVAL_POLICY_DIGEST_UNAVAILABLE"
+      "disposition": "EXTRACT",
+      "section_pin": {
+        "section_reference": "6.3",
+        "section_id": "6a3c3467e28533b8987f177261ad88ec9d337bd6e7684073e01088fd6ef6dc82",
+        "section_kind": "SECTION",
+        "section_text_sha256": "4406f381343348f6ab2e63a47ef92f6b89a6f449d1edc5752c54b9aa7113cf57"
+      }
     }
   ]
 }
