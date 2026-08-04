@@ -12,6 +12,7 @@ const {
   ATTEMPT_3_RETAIN_WORK_ITEM_IDS,
   Attempt3PackageVerifierError,
   recomputeAttempt3Gate,
+  validateRetainedLedgerBindings,
   verifyAttempt3Package,
 } = require('../lib/canonical-v2/native-producer/m3-attempt-3-package-verifier');
 
@@ -33,6 +34,38 @@ function firstPassInputs() {
       ...loadJson(path.join(REVIEW_ROOT, 'independent-last-six-review-findings.json')).findings,
     ],
   };
+}
+
+const hash = (value) => value.repeat(64).slice(0, 64);
+
+function retainedLedgerFixture() {
+  const plan = {
+    iteration_2_rerun_plan_id: hash('a'),
+    first_execution_result_id: hash('b'),
+    quality_gate_id: hash('c'),
+  };
+  const bindings = new Map([
+    ['modiv-consideration-2-1', { review_packet_id: hash('d'), adjudication_id: hash('e') }],
+    ['modiv-termination-fee-7-3', { review_packet_id: hash('f'), adjudication_id: hash('0') }],
+  ]);
+  const ledger = {
+    iteration_2_rerun_plan_id: plan.iteration_2_rerun_plan_id,
+    first_execution_result_id: plan.first_execution_result_id,
+    quality_gate_id: plan.quality_gate_id,
+    retained_items: [
+      {
+        work_item_id: 'modiv-consideration-2-1', first_work_result_id: hash('1'),
+        preserved_checkpoint_id: hash('2'), provider_recording_id: hash('3'),
+        review_packet_id: hash('d'), adjudication_id: hash('e'),
+      },
+      {
+        work_item_id: 'modiv-termination-fee-7-3', first_work_result_id: hash('4'),
+        preserved_checkpoint_id: hash('5'), provider_recording_id: hash('6'),
+        review_packet_id: hash('f'), adjudication_id: hash('0'),
+      },
+    ],
+  };
+  return { plan, bindings, ledger };
 }
 
 test('independently recomputes the corrected gate from first-pass packets, findings and Modiv adjudications', {
@@ -74,4 +107,22 @@ test('the corrected action vector fixes exactly two retained and two replay-only
     'skechers-no-other-reps-3-28',
     'topbuild-termination-company-6-3',
   ]);
+});
+
+test('requires each retained ledger row to carry its exact validated review-packet and adjudication IDs', () => {
+  const { plan, bindings, ledger } = retainedLedgerFixture();
+  assert.doesNotThrow(() => validateRetainedLedgerBindings({
+    ledger,
+    plan,
+    retained_adjudication_bindings: bindings,
+  }));
+  ledger.retained_items[0].adjudication_id = hash('7');
+  assert.throws(
+    () => validateRetainedLedgerBindings({
+      ledger,
+      plan,
+      retained_adjudication_bindings: bindings,
+    }),
+    (error) => error instanceof Attempt3PackageVerifierError && error.code === 'ATTEMPT_3_RETAINED_LEDGER_MISMATCH',
+  );
 });

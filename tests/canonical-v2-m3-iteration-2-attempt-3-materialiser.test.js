@@ -19,6 +19,18 @@ const replayIds = new Set(['skechers-no-other-reps-3-28', 'topbuild-termination-
 const solIds = new Set(['topbuild-ioc-company-4-1', 'topbuild-no-shop-company-4-3']);
 
 function fixture() {
+  const validatedAdjudications = [
+    {
+      work_item_id: 'modiv-consideration-2-1',
+      review_packet_id: hash('e'),
+      adjudication_id: hash('f'),
+    },
+    {
+      work_item_id: 'modiv-termination-fee-7-3',
+      review_packet_id: hash('0'),
+      adjudication_id: hash('1'),
+    },
+  ];
   const execution = {
     execution_result_id: hash('a'),
     work_results: manifest.work_items.map((item, index) => ({
@@ -29,7 +41,12 @@ function fixture() {
   const gate = { quality_gate_id: hash('b') };
   const vectorBody = {
     schema_version: 'M3_12_CALL_ITERATION_2_REVISED_DECISION_VECTOR/V3',
-    bindings: { first_execution_result_id: execution.execution_result_id, quality_gate_id: gate.quality_gate_id, iteration_2_rerun_plan_id: hash('d') },
+    bindings: {
+      first_execution_result_id: execution.execution_result_id,
+      quality_gate_id: gate.quality_gate_id,
+      iteration_2_rerun_plan_id: hash('d'),
+      adjudications: validatedAdjudications.map((row) => ({ ...row })),
+    },
     decisions: manifest.work_items.map((item) => ({
       work_item_id: item.work_item_id,
       action: retainedIds.has(item.work_item_id) ? 'RETAIN' : replayIds.has(item.work_item_id) ? 'REPLAY_ONLY' : 'LIVE',
@@ -37,7 +54,7 @@ function fixture() {
     })),
   };
   const vector = { ...vectorBody, content_hash: contentId(vectorBody.schema_version, vectorBody) };
-  return { execution, gate, vector };
+  return { execution, gate, vector, validatedAdjudications };
 }
 
 function fakePlanner({ first_execution_result: execution, aggregate_gate: gate }) {
@@ -61,11 +78,12 @@ function fakePlanner({ first_execution_result: execution, aggregate_gate: gate }
 }
 
 test('materialises the full plan, two replays, eight-item live inputs and sealed ledger without a model', async () => {
-  const { execution, gate, vector } = fixture();
+  const { execution, gate, vector, validatedAdjudications } = fixture();
   const writes = [];
   const result = await materialiseAttempt3({
     first_execution_result: execution, aggregate_gate: gate, original_manifest: manifest,
-    checkpoint_directory: '/sealed/checkpoints', revised_vector: vector, root_dir: ROOT,
+    checkpoint_directory: '/sealed/checkpoints', revised_vector: vector,
+    validated_adjudications: validatedAdjudications, root_dir: ROOT,
     write_artifact: async (artifact) => writes.push(artifact.path),
     dependencies: {
       plan_iteration_2_rerun: fakePlanner,
@@ -80,6 +98,11 @@ test('materialises the full plan, two replays, eight-item live inputs and sealed
   assert.equal(result.replay_results.length, 2);
   assert.equal(result.ledger.retained_items.length, 2);
   assert.equal(result.ledger.actual_model_call_count, 0);
+  assert.deepEqual(result.ledger.retained_items.map(({ work_item_id: workItemId, review_packet_id: reviewPacketId, adjudication_id: adjudicationId }) => ({
+    work_item_id: workItemId,
+    review_packet_id: reviewPacketId,
+    adjudication_id: adjudicationId,
+  })), validatedAdjudications);
   assert.equal(result.placeholders.review_items.length, 8);
   assert.deepEqual(writes, [
     'sealed-rerun-plan.json', 'live-only-manifest.json', 'live-only-controls.json',
@@ -89,14 +112,29 @@ test('materialises the full plan, two replays, eight-item live inputs and sealed
 });
 
 test('fails closed when the V3 vector and recomputed gate do not match', async () => {
-  const { execution, gate, vector } = fixture();
+  const { execution, gate, vector, validatedAdjudications } = fixture();
   vector.bindings.quality_gate_id = hash('z');
   await assert.rejects(
     () => materialiseAttempt3({
       first_execution_result: execution, aggregate_gate: gate, original_manifest: manifest,
-      checkpoint_directory: '/sealed/checkpoints', revised_vector: vector, root_dir: ROOT,
+      checkpoint_directory: '/sealed/checkpoints', revised_vector: vector,
+      validated_adjudications: validatedAdjudications, root_dir: ROOT,
       write_artifact: async () => {}, dependencies: { plan_iteration_2_rerun: fakePlanner },
     }),
     (error) => error instanceof Attempt3MaterialiserError && error.code === 'INVALID_REVISED_VECTOR',
+  );
+});
+
+test('fails closed when a retained V3 binding differs from its validated adjudication', async () => {
+  const { execution, gate, vector, validatedAdjudications } = fixture();
+  validatedAdjudications[0] = { ...validatedAdjudications[0], adjudication_id: hash('2') };
+  await assert.rejects(
+    () => materialiseAttempt3({
+      first_execution_result: execution, aggregate_gate: gate, original_manifest: manifest,
+      checkpoint_directory: '/sealed/checkpoints', revised_vector: vector,
+      validated_adjudications: validatedAdjudications, root_dir: ROOT,
+      write_artifact: async () => {}, dependencies: { plan_iteration_2_rerun: fakePlanner },
+    }),
+    (error) => error instanceof Attempt3MaterialiserError && error.code === 'RETAINED_ADJUDICATION_BINDING_MISMATCH',
   );
 });
