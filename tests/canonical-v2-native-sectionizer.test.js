@@ -337,6 +337,36 @@ test('a document with only unstructured lettered prose (no digits at all) still 
   assert.ok(findSectionByReference(tree, '(b)(ii)'));
 });
 
+test('four-letter Roman markers remain siblings in an unheaded TopBuild-style list', () => {
+  const source = [
+    '4.1 Interim Operations of the Company. The Company will not:',
+    '(vii) incur Indebtedness;',
+    '(viii) settle any Action;',
+    '(ix) make any capital expenditure;',
+    '(x) change accounting policies;',
+    '(xi) amend a material Contract;',
+    '(xii) make a Tax election;',
+    '(xiii) dispose of assets;',
+    '(xiv) increase compensation;',
+    '(xv) terminate an insurance policy; or',
+    '(xvi) agree to do any of the foregoing.',
+  ].join('\n');
+  const tree = sectionizeAdmittedSource({ source_text: source, document_hash: DOC_HASH });
+  const expected = ['4.1(vii)', '4.1(viii)', '4.1(ix)', '4.1(x)', '4.1(xi)', '4.1(xii)', '4.1(xiii)', '4.1(xiv)', '4.1(xv)', '4.1(xvi)'];
+
+  assert.deepEqual(
+    tree.nodes.filter((node) => node.kind === 'SUBSECTION').map((node) => node.reference),
+    expected,
+  );
+  for (const reference of expected) {
+    const node = findSectionByReference(tree, reference);
+    assert.equal(node.parent_section_id, findSectionByReference(tree, '4.1').section_id, `${reference} remains a sibling`);
+  }
+  assert.equal(findSectionByReference(tree, '4.1(vii)(ix)'), null);
+  assert.equal(findSectionByReference(tree, '4.1(vii)(xii)(xiv)'), null);
+  assert.equal(findSectionByReference(tree, '4.1(vii)(xii)(xvi)'), null);
+});
+
 // ─── Input validation ───
 
 test('rejects missing or malformed inputs instead of silently misbehaving', () => {
