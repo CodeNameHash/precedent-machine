@@ -133,6 +133,7 @@ test('native Codex execution is pinned, ephemeral, read-only and isolated from r
     model: 'gpt-5.6-terra',
     reasoningEffort: 'medium',
     ephemeral: true,
+    ignoreUserConfig: true,
     ignoreRules: true,
     isolated: true,
   });
@@ -141,6 +142,7 @@ test('native Codex execution is pinned, ephemeral, read-only and isolated from r
     '-m', 'gpt-5.6-terra', '-c', 'model_reasoning_effort="medium"',
   ]);
   assert.ok(args.includes('--ephemeral'));
+  assert.ok(args.includes('--ignore-user-config'));
   assert.ok(args.includes('--ignore-rules'));
   assert.ok(args.includes('--skip-git-repo-check'));
   assert.ok(args.includes('-C'));
