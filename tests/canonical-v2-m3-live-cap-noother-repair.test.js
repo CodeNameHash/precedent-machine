@@ -41,7 +41,8 @@ function unresolvedCountValues(resolution) {
 function assertPublishedChildCitation(entry, parentSectionReference) {
   const citation = entry.compiled_candidate.citation_validation;
   assert.ok(citation && citation.accepted === true, 'resolved row keeps an accepted citation record');
-  assert.equal(entry.section_reference, citation.derived_citation, 'resolved row publishes the derived child citation');
+  assert.equal(entry.section_reference, parentSectionReference, 'resolved row retains its governed parent scope');
+  assert.equal(entry.source_citation, citation.derived_citation, 'resolved row publishes the derived child citation separately');
   assert.equal(entry.citation_context.parent_section_reference, parentSectionReference);
   assert.equal(entry.citation_context.child_section_reference, citation.derived_citation);
   assert.ok(entry.citation_context.child_clause_quote.includes(entry.claim.raw_value));
@@ -94,7 +95,7 @@ test('immutable live M3 track-B rows publish child citations with their source c
 }, () => {
   const antitrust = replay('modiv-antitrust-consents-5-5');
   assert.deepEqual(
-    antitrust.resolved.map((entry) => entry.section_reference).sort(),
+    antitrust.resolved.map((entry) => entry.source_citation).sort(),
     ['5.5(b)', '5.5(d)'],
   );
   for (const entry of antitrust.resolved) {
@@ -104,7 +105,7 @@ test('immutable live M3 track-B rows publish child citations with their source c
 
   const closing = replay('modiv-closing-conditions-6-1');
   assert.deepEqual(
-    closing.resolved.map((entry) => entry.section_reference).sort(),
+    closing.resolved.map((entry) => entry.source_citation).sort(),
     ['6.1(a)', '6.1(b)', '6.1(b)', '6.1(c)', '6.1(d)'],
   );
   for (const entry of closing.resolved) {
@@ -119,7 +120,7 @@ test('immutable live M3 track-B rows publish child citations with their source c
 
   const termination = replay('topbuild-termination-company-6-3');
   assert.deepEqual(
-    termination.resolved.map((entry) => entry.section_reference).sort(),
+    termination.resolved.map((entry) => entry.source_citation).sort(),
     ['6.3(a)(i)(A)', '6.3(a)(i)(B)', '6.3(a)(ii)', '6.3(b)', '6.3(b)'],
   );
   for (const entry of termination.resolved) {
