@@ -107,6 +107,22 @@ test('native Codex calls make one attempt and expose failure for deliberate resu
   assert.equal(attempts, 1);
 });
 
+test('native Codex provider retains the literal response for exact replay', async () => {
+  const response = JSON.stringify({ general_covenants: [], open_world_candidates: [] });
+  const provider = createCodexCliProvider({
+    client: {
+      messages: {
+        async create() {
+          return { content: [{ text: response }] };
+        },
+      },
+    },
+  });
+  const output = await provider(INPUT);
+  assert.equal(output.raw_response_text, response);
+  assert.equal(output.raw_response_length, response.length);
+});
+
 test('Codex CLI controls reject invalid retry and reasoning settings', () => {
   assert.throws(() => createCodexCliClient({ maxAttempts: 0 }), /positive integer/);
   assert.throws(() => createCodexCliClient({ reasoningEffort: 'high; unsafe' }), /simple non-empty identifier/);
