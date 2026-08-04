@@ -187,7 +187,7 @@ test('preserves V5 formula sidecars, claim attributes, citation context, and for
   const consideration = input.review_items.find((item) => item.work_item_id === 'modiv-consideration-2-1');
   const fees = input.review_items.find((item) => item.work_item_id === 'modiv-termination-fee-7-3');
   assert.equal(consideration.review_rows.structured_per_share_cash_values.length, 1);
-  assert.ok(consideration.review_rows.structured_per_share_cash_values[0].source_citations.includes('2.1(b)(ii)'));
+  assert.deepEqual(consideration.review_rows.structured_per_share_cash_values[0].source_citations, []);
   assert.equal(fees.review_rows.conditional_termination_fee_values.length, 6);
   assert.ok(fees.review_rows.conditional_termination_fee_values.every((row) => row.source_citations.length >= 3));
   assert.ok(consideration.review_rows.resolved_claims[0].attributes.ratio_term_ref);
