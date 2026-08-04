@@ -101,8 +101,8 @@ function iteration2LaunchManifest() {
     schema_version: 'NATIVE_UNIFIED_RUN_MANIFEST/V1',
     sources: [],
     work_items: [
-      { work_item_id: 'topbuild-no-shop-company-4-3', disposition: 'EXTRACT' },
-      { work_item_id: 'topbuild-remedies-specific-performance-7-6', disposition: 'EXTRACT' },
+      { work_item_id: 'topbuild-no-shop-company-4-3', source_id: 'sealed-topbuild', family_id: 'NO_SHOP', disposition: 'EXTRACT' },
+      { work_item_id: 'topbuild-remedies-specific-performance-7-6', source_id: 'sealed-topbuild', family_id: 'REMEDIES', disposition: 'EXTRACT' },
     ],
   };
 }
@@ -112,6 +112,24 @@ function iteration2LaunchControls() {
     { work_item_id: 'topbuild-no-shop-company-4-3', profile_id: 'SOL_HIGH', covenant_side: null },
     { work_item_id: 'topbuild-remedies-specific-performance-7-6', profile_id: 'TERRA_MEDIUM', covenant_side: null },
   ];
+}
+
+function iteration2LaunchPolicy() {
+  return {
+    live_work_item_profiles: {
+      'topbuild-no-shop-company-4-3': 'SOL_HIGH',
+      'topbuild-remedies-specific-performance-7-6': 'TERRA_MEDIUM',
+    },
+    live_work_item_context: {
+      'topbuild-no-shop-company-4-3': { source_id: 'sealed-topbuild', family_id: 'NO_SHOP' },
+      'topbuild-remedies-specific-performance-7-6': { source_id: 'sealed-topbuild', family_id: 'REMEDIES' },
+    },
+    live_work_item_controls: {
+      'topbuild-no-shop-company-4-3': { profile_id: 'SOL_HIGH', covenant_side: null },
+      'topbuild-remedies-specific-performance-7-6': { profile_id: 'TERRA_MEDIUM', covenant_side: null },
+    },
+    max_model_invocations: 2,
+  };
 }
 
 function successfulProviderFactory(observed) {
@@ -308,6 +326,7 @@ test('iteration 2 launch binds the exact Terra/Sol work-item set and two-call ce
   const launch = validateIteration2LiveLaunch({
     manifest: iteration2LaunchManifest(),
     work_item_controls: iteration2LaunchControls(),
+    ...iteration2LaunchPolicy(),
   });
   assert.equal(launch.max_model_invocations, 2);
   assert.deepEqual(launch.work_item_ids, [
@@ -323,6 +342,17 @@ test('iteration 2 launch binds the exact Terra/Sol work-item set and two-call ce
         }],
       },
       work_item_controls: iteration2LaunchControls(),
+      ...iteration2LaunchPolicy(),
+    }),
+    (error) => error instanceof NativeUnifiedRunExecutionError
+      && error.code === 'ITERATION_2_WORK_ITEM_SET_MISMATCH',
+  );
+  const wrongSource = iteration2LaunchManifest();
+  wrongSource.work_items[0] = { ...wrongSource.work_items[0], source_id: 'different-source' };
+  assert.throws(
+    () => validateIteration2LiveLaunch({
+      manifest: wrongSource, work_item_controls: iteration2LaunchControls(),
+      ...iteration2LaunchPolicy(),
     }),
     (error) => error instanceof NativeUnifiedRunExecutionError
       && error.code === 'ITERATION_2_WORK_ITEM_SET_MISMATCH',
@@ -332,6 +362,7 @@ test('iteration 2 launch binds the exact Terra/Sol work-item set and two-call ce
   assert.throws(
     () => validateIteration2LiveLaunch({
       manifest: iteration2LaunchManifest(), work_item_controls: wrongProfile,
+      ...iteration2LaunchPolicy(),
     }),
     (error) => error instanceof NativeUnifiedRunExecutionError
       && error.code === 'ITERATION_2_CONTROL_MISMATCH',
@@ -416,7 +447,7 @@ test('execute CLI keeps artefacts inside the declared artefact root', () => {
   fs.rmSync(tempDir, { recursive: true, force: true });
 });
 
-test('iteration 2 CLI requires its isolated paths and refuses an existing checkpoint directory', () => {
+test('iteration 2 CLI requires its sealed plan and isolated output path before any provider can run', () => {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'native-unified-iteration-2-'));
   const manifestPath = path.join(tempDir, 'manifest.json');
   const controlsPath = path.join(tempDir, 'controls.json');
@@ -433,21 +464,21 @@ test('iteration 2 CLI requires its isolated paths and refuses an existing checkp
   const wrongPath = spawnSync(process.execPath, [
     'scripts/canonical-v2-native-unified-runner.mjs', '--mode=execute-iteration-2',
     '--manifest', manifestPath, '--controls', controlsPath, '--artifact-root', tempDir,
+    '--iteration-2-plan', 'missing-plan.json',
     '--checkpoint-dir', 'iteration-2/checkpoints', '--out', 'iteration-2/other.json',
   ], { cwd: ROOT, encoding: 'utf8' });
   assert.equal(wrongPath.status, 1);
   assert.match(wrongPath.stderr, /iteration 2 output path must be iteration-2\/execution-result\.json/);
   assert.equal(fs.readFileSync(iteration1Output, 'utf8'), 'iteration 1 remains immutable');
 
-  fs.mkdirSync(path.join(tempDir, 'iteration-2'), { recursive: true });
-  fs.mkdirSync(path.join(tempDir, 'iteration-2', 'checkpoints'));
-  const existingCheckpoint = spawnSync(process.execPath, [
+  const missingPlan = spawnSync(process.execPath, [
     'scripts/canonical-v2-native-unified-runner.mjs', '--mode=execute-iteration-2',
     '--manifest', manifestPath, '--controls', controlsPath, '--artifact-root', tempDir,
+    '--iteration-2-plan', 'missing-plan.json',
     '--checkpoint-dir', 'iteration-2/checkpoints', '--out', 'iteration-2/execution-result.json',
   ], { cwd: ROOT, encoding: 'utf8' });
-  assert.equal(existingCheckpoint.status, 1);
-  assert.match(existingCheckpoint.stderr, /checkpoint directory must be new/);
+  assert.equal(missingPlan.status, 1);
+  assert.match(missingPlan.stderr, /ENOENT/);
   assert.equal(fs.readFileSync(iteration1Output, 'utf8'), 'iteration 1 remains immutable');
   assert.equal(fs.existsSync(path.join(tempDir, 'iteration-2', 'execution-result.json')), false);
   fs.rmSync(tempDir, { recursive: true, force: true });

@@ -24,6 +24,7 @@ function usage() {
       + '--mode=execute --manifest <path> --controls <path> --artifact-root <path> --out <relative-path> '
       + '--checkpoint-dir <path> [--max-concurrency 1|2|3|4] | '
       + '--mode=execute-iteration-2 --manifest <path> --controls <path> --artifact-root <path> '
+      + '--iteration-2-plan <path> '
       + '--out iteration-2/execution-result.json --checkpoint-dir iteration-2/checkpoints '
       + '[--max-concurrency 1|2]',
   );
@@ -36,6 +37,7 @@ function parseArgs(argv) {
   let outPath = null;
   let checkpointDir = null;
   let artifactRoot = null;
+  let iteration2PlanPath = null;
   let maxConcurrency = 2;
   for (let index = 0; index < argv.length; index += 1) {
     const value = argv[index];
@@ -45,16 +47,18 @@ function parseArgs(argv) {
     else if (value === '--out') outPath = argv[++index] || null;
     else if (value === '--checkpoint-dir') checkpointDir = argv[++index] || null;
     else if (value === '--artifact-root') artifactRoot = argv[++index] || null;
+    else if (value === '--iteration-2-plan') iteration2PlanPath = argv[++index] || null;
     else if (value === '--max-concurrency') maxConcurrency = Number(argv[++index]);
     else usage();
   }
   if (!['validate', 'execute', 'execute-iteration-2'].includes(mode) || !manifestPath) usage();
-  if (mode === 'validate' && (controlsPath || outPath || checkpointDir || artifactRoot || maxConcurrency !== 2)) usage();
+  if (mode === 'validate' && (controlsPath || outPath || checkpointDir || artifactRoot || iteration2PlanPath || maxConcurrency !== 2)) usage();
   if (mode.startsWith('execute') && (!controlsPath || !outPath || !checkpointDir || !artifactRoot
     || !Number.isInteger(maxConcurrency) || maxConcurrency < 1 || maxConcurrency > 4)) usage();
-  if (mode === 'execute-iteration-2' && maxConcurrency > 2) usage();
+  if (mode === 'execute-iteration-2' && (!iteration2PlanPath || maxConcurrency > 2)) usage();
+  if (mode === 'execute' && iteration2PlanPath) usage();
   return {
-    mode, manifestPath, controlsPath, outPath, checkpointDir, artifactRoot, maxConcurrency,
+    mode, manifestPath, controlsPath, outPath, checkpointDir, artifactRoot, iteration2PlanPath, maxConcurrency,
   };
 }
 
@@ -160,7 +164,6 @@ try {
     const {
       executeUnifiedRun,
       CONTROLS_SCHEMA,
-      ITERATION_2_MAX_MODEL_INVOCATIONS,
       validateIteration2LiveLaunch,
     } = require('../lib/canonical-v2/native-producer/unified-runner-execute');
     const controls = JSON.parse(readFileSync(resolve(process.cwd(), args.controlsPath), 'utf8'));
@@ -170,10 +173,18 @@ try {
       throw new Error(`controls file must match ${CONTROLS_SCHEMA}`);
     }
     if (args.mode === 'execute-iteration-2') {
-      validateIteration2LiveLaunch({ manifest, work_item_controls: controls.work_item_controls });
       if (args.outPath !== 'iteration-2/execution-result.json') {
         throw new Error('iteration 2 output path must be iteration-2/execution-result.json');
       }
+      const { validateIteration2RerunPlan } = require('../lib/canonical-v2/native-producer/m3-iteration-2-rerun-planner');
+      const plan = JSON.parse(readFileSync(resolve(process.cwd(), args.iteration2PlanPath), 'utf8'));
+      const policy = validateIteration2RerunPlan({ plan });
+      const launch = validateIteration2LiveLaunch({
+        manifest,
+        work_item_controls: controls.work_item_controls,
+        ...policy,
+      });
+      args.iteration2Policy = launch;
     }
     const resolvedArtifactRoot = resolveArtifactRoot(args.artifactRoot);
     const resolvedCheckpointDir = args.mode === 'execute-iteration-2'
@@ -191,7 +202,7 @@ try {
       root_dir: process.cwd(),
       max_concurrency: args.maxConcurrency,
       ...(args.mode === 'execute-iteration-2'
-        ? { max_model_invocations: ITERATION_2_MAX_MODEL_INVOCATIONS }
+        ? { max_model_invocations: args.iteration2Policy.max_model_invocations }
         : {}),
       resume_checkpoints: readCheckpoints(resolvedCheckpointDir),
       on_work_result: async (_workResult, checkpoint) => {

@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { spawnSync } = require('node:child_process');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
@@ -18,6 +19,7 @@ const {
   ITERATION_2_PROFILE_DECISIONS_SCHEMA,
   Iteration2RerunPlannerError,
   planIteration2Rerun,
+  validateIteration2RerunPlan,
 } = require('../lib/canonical-v2/native-producer/m3-iteration-2-rerun-planner');
 const { PILOT_WORK_ITEM_SET_ID } = require('../lib/canonical-v2/native-producer/m3-12-call-pilot-quality-gate');
 
@@ -185,8 +187,100 @@ test('plans an exact retained checkpoint archive, one no-model replay, and the d
     assert.equal(plan.new_controls.schema_version, 'NATIVE_UNIFIED_RUN_WORK_ITEM_CONTROLS/V1');
     assert.equal(plan.new_controls.work_item_controls.length, 12);
     assert.equal(fs.readdirSync(fixture.checkpoints).length, 12);
+    assert.deepEqual(validateIteration2RerunPlan({ plan }), {
+      iteration_2_rerun_plan_id: plan.iteration_2_rerun_plan_id,
+      first_execution_result_id: plan.first_execution_result_id,
+      live_work_item_profiles: {
+        'topbuild-no-shop-company-4-3': 'SOL_HIGH',
+        'topbuild-remedies-specific-performance-7-6': 'TERRA_MEDIUM',
+      },
+      live_work_item_context: {
+        'topbuild-no-shop-company-4-3': { source_id: 'topbuild-full', family_id: 'NO_SHOP' },
+        'topbuild-remedies-specific-performance-7-6': { source_id: 'topbuild-full', family_id: 'SPECIFIC_PERFORMANCE_REMEDIES' },
+      },
+      live_work_item_controls: {
+        'topbuild-no-shop-company-4-3': { profile_id: 'SOL_HIGH', covenant_side: null },
+        'topbuild-remedies-specific-performance-7-6': { profile_id: 'TERRA_MEDIUM', covenant_side: null },
+      },
+      replay_work_item_ids: ['modiv-mae-definition-8-12-g'],
+      max_model_invocations: 2,
+    });
   } finally {
     fs.rmSync(fixture.checkpoints, { recursive: true, force: true });
+  }
+});
+
+test('sealed plan validation rejects a changed call ceiling or a replay-only live item', () => {
+  const fixture = planFixture();
+  try {
+    const plan = planIteration2Rerun({
+      first_execution_result: fixture.execution, aggregate_gate: fixture.gate,
+      profile_decisions: fixture.decisions, current_checkpoint_directory: fixture.checkpoints, root_dir: ROOT,
+    });
+    const changedCeiling = JSON.parse(JSON.stringify(plan));
+    changedCeiling.controls.live_model_call_count = 3;
+    const { iteration_2_rerun_plan_id: _changedId, ...changedBody } = changedCeiling;
+    changedCeiling.iteration_2_rerun_plan_id = contentId(changedCeiling.schema_version, changedBody);
+    assert.throws(
+      () => validateIteration2RerunPlan({ plan: changedCeiling }),
+      (error) => error instanceof Iteration2RerunPlannerError
+        && error.code === 'INVALID_SEALED_RERUN_PLAN',
+    );
+    const replayLive = JSON.parse(JSON.stringify(plan));
+    replayLive.live_terra_work_items.push({
+      work_item_id: 'modiv-mae-definition-8-12-g', source_id: 'modiv-original', family_id: 'MAE',
+    });
+    replayLive.controls.live_model_call_count = 3;
+    const { iteration_2_rerun_plan_id: _replayId, ...replayBody } = replayLive;
+    replayLive.iteration_2_rerun_plan_id = contentId(replayLive.schema_version, replayBody);
+    assert.throws(
+      () => validateIteration2RerunPlan({ plan: replayLive }),
+      (error) => error instanceof Iteration2RerunPlannerError
+        && error.code === 'INVALID_SEALED_RERUN_PLAN',
+    );
+  } finally {
+    fs.rmSync(fixture.checkpoints, { recursive: true, force: true });
+  }
+});
+
+test('iteration 2 runner consumes the sealed plan before validation can reach a provider', () => {
+  const fixture = planFixture();
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'm3-iteration-2-runner-plan-'));
+  try {
+    const plan = planIteration2Rerun({
+      first_execution_result: fixture.execution, aggregate_gate: fixture.gate,
+      profile_decisions: fixture.decisions, current_checkpoint_directory: fixture.checkpoints, root_dir: ROOT,
+    });
+    const policy = validateIteration2RerunPlan({ plan });
+    const manifest = JSON.parse(JSON.stringify(MANIFEST));
+    manifest.work_items = manifest.work_items.filter((item) => (
+      Object.hasOwn(policy.live_work_item_profiles, item.work_item_id)
+    ));
+    manifest.work_items[0].section_pin.section_text_sha256 = '0'.repeat(64);
+    const manifestPath = path.join(tempDir, 'manifest.json');
+    const planPath = path.join(tempDir, 'plan.json');
+    const controlsPath = path.join(tempDir, 'controls.json');
+    fs.writeFileSync(manifestPath, JSON.stringify(manifest));
+    fs.writeFileSync(planPath, JSON.stringify(plan));
+    fs.writeFileSync(controlsPath, JSON.stringify({
+      schema_version: 'NATIVE_UNIFIED_RUN_WORK_ITEM_CONTROLS/V1',
+      work_item_controls: Object.entries(policy.live_work_item_controls).map(([work_item_id, control]) => ({
+        work_item_id,
+        ...control,
+      })),
+    }));
+    const result = spawnSync(process.execPath, [
+      'scripts/canonical-v2-native-unified-runner.mjs', '--mode=execute-iteration-2',
+      '--manifest', manifestPath, '--controls', controlsPath, '--iteration-2-plan', planPath,
+      '--artifact-root', tempDir, '--out', 'iteration-2/execution-result.json',
+      '--checkpoint-dir', 'iteration-2/checkpoints',
+    ], { cwd: ROOT, encoding: 'utf8' });
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /section pin/i);
+    assert.equal(fs.existsSync(path.join(tempDir, 'iteration-2', 'execution-result.json')), false);
+  } finally {
+    fs.rmSync(fixture.checkpoints, { recursive: true, force: true });
+    fs.rmSync(tempDir, { recursive: true, force: true });
   }
 });
 
