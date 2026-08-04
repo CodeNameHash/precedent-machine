@@ -48,8 +48,10 @@ test('four-deal preview binds immutable M3 rows and the sealed Metsera Process r
     assert.ok(deal.rows.some((row) => row.result_type === 'GOVERNED_VALUE'
       && row.source_quote && row.source_citation));
     assert.equal(deal.result_state, 'SEALED_FINAL_LEGAL_FINDINGS_BOUND');
-    assert.ok(deal.rows.every((row) => row.legal_review_state === 'PASS'
+    assert.ok(deal.rows.every((row) => row.work_item_legal_review_state === 'PASS'
       && row.resolver_state && row.source_citation));
+    assert.ok(deal.rows.filter((row) => ['REVIEW_QUEUE', 'OPEN_WORLD'].includes(row.resolver_state))
+      .every((row) => row.legal_review_state === null));
   }
   assert.ok(topBuild.rows.some((row) => row.result_type === 'OPEN_WORLD_WARNING'
     && row.warning));
@@ -69,11 +71,14 @@ test('four-deal preview retains an explicit no-findings path', () => {
   const topBuild = result.deals.find((deal) => deal.deal_name === 'TopBuild');
   const modiv = result.deals.find((deal) => deal.deal_name === 'Modiv');
   assert.equal(topBuild.result_state, 'PENDING_INDEPENDENT_REVIEW');
-  assert.ok(topBuild.rows.every((row) => row.legal_review_state === 'PENDING_INDEPENDENT_REVIEW'));
+  assert.ok(topBuild.rows.every((row) => row.legal_review_state === null
+    && row.work_item_legal_review_state === 'PENDING_INDEPENDENT_REVIEW'));
   assert.ok(modiv.rows.some((row) => row.work_item_id === 'modiv-consideration-2-1'
-    && row.legal_review_state === 'PENDING_INDEPENDENT_REVIEW'));
+    && row.legal_review_state === null
+    && row.work_item_legal_review_state === 'PENDING_INDEPENDENT_REVIEW'));
   assert.ok(modiv.rows.some((row) => row.work_item_id === 'modiv-antitrust-consents-5-5'
-    && row.legal_review_state === 'PENDING_INDEPENDENT_REVIEW'));
+    && row.legal_review_state === null
+    && row.work_item_legal_review_state === 'PENDING_INDEPENDENT_REVIEW'));
 });
 
 test('four-deal preview rejects sealed V5 findings against the sealed V6 packet and strict input', () => {
@@ -140,23 +145,55 @@ test('four-deal preview keeps governed scope separate from a missing published c
 });
 
 test('four-deal preview exposes structured fee and consideration formulas without flattening them', () => {
-  const result = getFrozenFourDealLocalDemoResult({
-    artifact_root: ARTIFACT_ROOT,
-    final_review_packet_path: 'final-review-v4/sealed-final-pilot-review-packet.json',
-    final_legal_finding_paths: [],
-  });
+  const result = getFrozenFourDealLocalDemoResult();
   const modiv = result.deals.find((deal) => deal.deal_name === 'Modiv');
   const formulas = modiv.rows.filter((row) => row.result_type === 'STRUCTURED_FORMULA');
   assert.equal(formulas.filter((row) => row.governed_field === 'CONDITIONAL_TERMINATION_FEE_VALUE').length, 6);
   assert.equal(formulas.filter((row) => row.governed_field === 'STRUCTURED_PER_SHARE_CASH_VALUE').length, 1);
   assert.ok(formulas.some((row) => /accrued and unpaid dividends/.test(row.source_quote)));
   assert.ok(formulas.some((row) => /not flattened/.test(row.warning)));
+  const structuredCash = formulas.find((row) => row.governed_field === 'STRUCTURED_PER_SHARE_CASH_VALUE');
+  assert.equal(structuredCash.source_citation, '2.1(b)(ii) + 8.12(zz)');
+  assert.doesNotMatch(structuredCash.source_citation, /→/);
+});
+
+test('four-deal preview does not project a work-item PASS onto an unreviewed formula row', () => {
+  const rows = m3Rows([{
+    work_item_id: 'work-formula',
+    source_kind: 'REPAIRED_REPLAY',
+    repaired_replay: {
+      work_item_id: 'work-formula',
+      resolution: {
+        structured_per_share_cash_values: [{
+          structured_per_share_cash_value_id: 'formula-unreviewed',
+          operator: 'BASE_PLUS_VARIABLE',
+          base_amount: '25.00',
+          currency: 'USD',
+          variable_component: 'accrued dividends',
+          raw_formula: '$25.00 plus accrued dividends',
+          source_citations: ['2.1(b)(ii)', '8.12(zz)'],
+        }],
+      },
+    },
+  }], new Map([['work-formula', {
+    status: 'PASS',
+    reason: 'Work item reviewed.',
+    row_review_status_by_id: {},
+  }]]));
+  assert.equal(rows[0].work_item_legal_review_state, 'PASS');
+  assert.equal(rows[0].legal_review_state, null);
 });
 
 test('four-deal preview shows the sealed work-item review reason code as the legal basis', () => {
   const result = getFrozenFourDealLocalDemoResult();
   const modiv = result.deals.find((deal) => deal.deal_name === 'Modiv');
-  assert.ok(modiv.rows.every((row) => row.legal_review_state === 'PASS'));
-  assert.ok(modiv.rows.every((row) => row.legal_review_reason
+  assert.ok(modiv.rows.every((row) => row.work_item_legal_review_state === 'PASS'));
+  assert.ok(modiv.rows.every((row) => row.work_item_legal_review_reason
     === 'ALL_GOVERNED_CLAIMS_ROUTES_AND_FORMULAS_VERIFIED'));
+  assert.ok(modiv.rows.filter((row) => ['REVIEW_QUEUE', 'OPEN_WORLD'].includes(row.resolver_state))
+    .every((row) => row.legal_review_state === null));
+  assert.ok(modiv.rows.filter((row) => row.resolver_state === 'RESOLVED')
+    .every((row) => row.legal_review_state === 'PASS'));
+  assert.ok(modiv.rows.filter((row) => row.result_type === 'STRUCTURED_FORMULA')
+    .every((row) => row.legal_review_state === 'PASS'));
 });

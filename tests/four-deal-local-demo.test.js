@@ -1,6 +1,8 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { readFileSync } = require('node:fs');
+const { join } = require('node:path');
 const test = require('node:test');
 
 const {
@@ -23,4 +25,14 @@ test('review adapter admits only a selected frozen demo deal', () => {
   assert.equal(adapted.target, 'TopBuild');
   assert.equal(adapted.metadata.headline_consideration_type, deal.consideration_type);
   assert.throws(() => reviewDealFromDirectory({ id: 'outside-demo' }), /outside the four-deal local demo/);
+});
+
+test('four-deal page separates work-item legal review from row review and labels frozen rows truthfully', () => {
+  const page = readFileSync(join(__dirname, '..', 'pages', 'demo', 'four-deal.js'), 'utf8');
+  assert.match(page, /Work item legal review:/);
+  assert.match(page, /Row legal review:/);
+  assert.match(page, /NOT_SEPARATELY_REVIEWED/);
+  assert.match(page, /Frozen review rows/);
+  assert.doesNotMatch(page, />Final review output</);
+  assert.doesNotMatch(page, /Legal: \{stateLabel\(row\.legal_review_state\)\}/);
 });
