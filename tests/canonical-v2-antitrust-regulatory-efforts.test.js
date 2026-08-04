@@ -53,7 +53,7 @@ test('prompt and provider shaping retain a single evidenced regulatory assertion
   const quote = 'Each of Parent and the Company shall use reasonable best efforts to obtain all approvals.';
   const prompt = buildAntitrustRegulatoryProducerPrompt({ source_text: quote, governed_scope: {} });
   assert.equal(prompt.prompt_id, 'native-producer-antitrust-regulatory/v1');
-  assert.equal(prompt.prompt_version, 2);
+  assert.equal(prompt.prompt_version, 3);
   const shaped = shapeRegulatoryEffortsProposals({ regulatory_efforts_assertions: [{ section_reference: '6.1', assertion_kind: 'EFFORTS_STANDARD', canonical_value: 'REASONABLE_BEST_EFFORTS', obligor_party_scope: 'MUTUAL', obligor_party: 'Each of Parent and the Company', quote }], open_world_candidates: [] }, quote);
   assert.equal(shaped.proposals.length, 1);
   assert.equal(shaped.proposals[0].claim_definition_key, REGULATORY_EFFORTS_CLAIM_KEY);

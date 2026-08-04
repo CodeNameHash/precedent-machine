@@ -42,7 +42,7 @@ test('live provider dispatches closing conditions through its own prompt and per
     client: { messages: { async create(value) { request = value; return { content: [{ text: JSON.stringify({ open_world_candidates: [] }) }] }; } } },
   });
   const result = await produceCandidateProposals({
-    governed_scope: { deal_key: 'fixture', source_text: QUOTE },
+    governed_scope: { deal_key: 'fixture', section_reference: '7.2', source_text: QUOTE },
     definitions: { known_definitions: [] },
     contract_bundle: compileFixtureContractV23(),
     section_family: 'CLOSING_CONDITIONS',
