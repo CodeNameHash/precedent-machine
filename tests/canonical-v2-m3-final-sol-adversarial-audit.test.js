@@ -52,6 +52,8 @@ function finalWorkItem(index) {
         }] : [],
         review_queue: [],
         open_world: [],
+        conditional_termination_fee_values: index === 0 ? [{ conditional_termination_fee_value_id: 'fee-formula-1' }] : [],
+        structured_per_share_cash_values: index === 0 ? [{ structured_per_share_cash_value_id: 'cash-formula-1' }] : [],
         resolution_receipt: { counts: { resolved: index <= 1 ? 1 : 0, review_queue: 0, open_world: 0 } },
       },
     },
@@ -117,6 +119,8 @@ test('builds and validates a sealed input with the final 12, final 12 legal find
   assert.equal(input.audit_projection.final_review_packet[1].resolved_claims[0].exact_source_citation,
     'Published citation pending; governed scope 4.3');
   assert.equal(input.audit_projection.final_review_packet[0].source_kind, 'PASSED_ITERATION_2');
+  assert.equal(input.audit_projection.final_review_packet[0].conditional_termination_fee_values[0].conditional_termination_fee_value_id, 'fee-formula-1');
+  assert.equal(input.audit_projection.final_review_packet[0].structured_per_share_cash_values[0].structured_per_share_cash_value_id, 'cash-formula-1');
   assert.equal(input.audit_artifact_seals.final_review_packet.content, undefined);
   assert.match(input.consolidation_code_diff.text, /source-bound repair/);
   assert.equal(Object.isFrozen(input), true);

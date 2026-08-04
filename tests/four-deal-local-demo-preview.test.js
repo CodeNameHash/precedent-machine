@@ -68,3 +68,16 @@ test('four-deal preview keeps governed scope separate from a missing published c
   assert.ok(row);
   assert.doesNotMatch(row.source_citation, /^\d/);
 });
+
+test('four-deal preview exposes structured fee and consideration formulas without flattening them', () => {
+  const result = getFrozenFourDealLocalDemoResult({
+    artifact_root: ARTIFACT_ROOT,
+    final_review_packet_path: 'final-review-v4/sealed-final-pilot-review-packet.json',
+  });
+  const modiv = result.deals.find((deal) => deal.deal_name === 'Modiv');
+  const formulas = modiv.rows.filter((row) => row.result_type === 'STRUCTURED_FORMULA');
+  assert.equal(formulas.filter((row) => row.governed_field === 'CONDITIONAL_TERMINATION_FEE_VALUE').length, 6);
+  assert.equal(formulas.filter((row) => row.governed_field === 'STRUCTURED_PER_SHARE_CASH_VALUE').length, 1);
+  assert.ok(formulas.some((row) => /accrued and unpaid dividends/.test(row.source_quote)));
+  assert.ok(formulas.some((row) => /not flattened/.test(row.warning)));
+});
