@@ -638,13 +638,13 @@ test('a TEMPORAL qualifier (canonical_value: null, no registered claim definitio
 // the SAME shared qxoFullText/CONTRACT_BUNDLE/ADMITTED_SOURCE_CONTEXT
 // fixtures the pre-Task-3 tests already use, so every one of these
 // exercises the REAL producer-shaping path end to end.
-function singleQualifierResponse({ quote, attachment, modelKind = null, modelCode = null }) {
+function singleQualifierResponse({ quote, attachment, modelKind = null, modelCode = null, limbs = null }) {
   return {
     representation_instances: [{
       section_reference: '3.1(b)',
       party_making: 'the Company',
       chapeau_quote: 'Capital Structure.',
-      limbs: [
+      limbs: limbs || [
         { limb_path: ['(i)'], assertion_quote: LIMB_I_QUOTE, subject: 'capital stock' },
       ],
       qualifiers: [{ kind: modelKind, code: modelCode, quote, attachment }],
@@ -656,7 +656,7 @@ function singleQualifierResponse({ quote, attachment, modelKind = null, modelCod
   };
 }
 
-async function resolveSingleQualifier({ quote, attachment, modelKind = null, modelCode = null }, resolveOptions = {}) {
+async function resolveSingleQualifier({ quote, attachment, modelKind = null, modelCode = null, limbs = null }, resolveOptions = {}) {
   const receipt = await runNativeExtraction({
     source_text: qxoFullText,
     document_hash: DOCUMENT_HASH,
@@ -666,7 +666,7 @@ async function resolveSingleQualifier({ quote, attachment, modelKind = null, mod
     provider: async ({ governed_scope: governedScope }) => {
       const { proposals, evidence_residuals: evidenceResiduals } = shapeProposals(
         singleQualifierResponse({
-          quote, attachment, modelKind, modelCode,
+          quote, attachment, modelKind, modelCode, limbs,
         }),
         governedScope.source_text,
       );
@@ -739,6 +739,40 @@ test('(QUALIFIER, TEMPORAL, *) resolves to REPRESENTATION_MEASUREMENT_DATE for a
   assert.equal(resolvedEntry.claim.attributes.enrichment_state, 'UNENRICHED');
   assert.equal(resolvedEntry.claim.attributes.comparability, 'NOT_COMPARABLE');
   assert.equal(resolvedEntry.claim.attributes.measurement_date_resolution, 'CALENDAR');
+});
+
+test('an ITEM qualifier on an ambiguous assertion path routes to review without minting a canonical claim', async () => {
+  const resolution = await resolveSingleQualifier(
+    {
+      quote: TEMPORAL_CALENDAR_QUOTE,
+      attachment: itemAttachment(['(i)']),
+      modelKind: 'TEMPORAL',
+      limbs: [
+        { limb_path: ['(i)'], assertion_quote: LIMB_I_QUOTE, subject: 'capital stock' },
+        {
+          limb_path: ['(i)'],
+          assertion_quote: 'All of the outstanding Company Shares have been duly authorized and are validly issued, fully paid and nonassessable.',
+          subject: 'validity of outstanding Company Shares',
+        },
+        {
+          limb_path: ['(i)'],
+          assertion_quote: 'As of April 17, 2026, other than 1,600,514 Company Shares reserved for issuance under the Company’s Amended and Restated 2015 Long Term Stock Incentive Plan (the “A&R 2015 Plan”), the Company has no Company Shares reserved for issuance.',
+          subject: 'Company Shares reserved for issuance',
+        },
+      ],
+    },
+    { contract_vocabulary: CONTRACT_BUNDLE_WITH_MEASUREMENT_DATE },
+  );
+
+  assert.equal(
+    resolution.resolved.some((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY),
+    false,
+    'an ambiguous attachment cannot publish a canonical representation-level claim',
+  );
+  const queued = resolution.review_queue.find((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY);
+  assert.ok(queued, 'the unresolved qualifier remains visible for legal review');
+  assert.deepEqual(queued.reasons, ['ASSERTION_SCOPE_AMBIGUOUS']);
+  assert.equal(queued.has_resolution, false);
 });
 
 test('(QUALIFIER, TEMPORAL, *) resolves a symbolic date only when a governed agreement_date is injected (work item 3, symbolic path)', async () => {
