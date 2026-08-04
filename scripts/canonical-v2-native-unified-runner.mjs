@@ -22,7 +22,10 @@ function usage() {
     'Usage: node scripts/canonical-v2-native-unified-runner.mjs '
       + '--mode=validate --manifest <path> | '
       + '--mode=execute --manifest <path> --controls <path> --artifact-root <path> --out <relative-path> '
-      + '--checkpoint-dir <path> [--max-concurrency 1|2|3|4]',
+      + '--checkpoint-dir <path> [--max-concurrency 1|2|3|4] | '
+      + '--mode=execute-iteration-2 --manifest <path> --controls <path> --artifact-root <path> '
+      + '--out iteration-2/execution-result.json --checkpoint-dir iteration-2/checkpoints '
+      + '[--max-concurrency 1|2]',
   );
 }
 
@@ -45,10 +48,11 @@ function parseArgs(argv) {
     else if (value === '--max-concurrency') maxConcurrency = Number(argv[++index]);
     else usage();
   }
-  if (!['validate', 'execute'].includes(mode) || !manifestPath) usage();
+  if (!['validate', 'execute', 'execute-iteration-2'].includes(mode) || !manifestPath) usage();
   if (mode === 'validate' && (controlsPath || outPath || checkpointDir || artifactRoot || maxConcurrency !== 2)) usage();
-  if (mode === 'execute' && (!controlsPath || !outPath || !checkpointDir || !artifactRoot
+  if (mode.startsWith('execute') && (!controlsPath || !outPath || !checkpointDir || !artifactRoot
     || !Number.isInteger(maxConcurrency) || maxConcurrency < 1 || maxConcurrency > 4)) usage();
+  if (mode === 'execute-iteration-2' && maxConcurrency > 2) usage();
   return {
     mode, manifestPath, controlsPath, outPath, checkpointDir, artifactRoot, maxConcurrency,
   };
@@ -94,6 +98,34 @@ function prepareCheckpointDirectory(root, value) {
   return realDirectory;
 }
 
+function prepareFreshIteration2CheckpointDirectory(root, value) {
+  if (value !== 'iteration-2/checkpoints') {
+    throw new Error('iteration 2 checkpoint directory must be iteration-2/checkpoints');
+  }
+  const namespace = resolve(root, 'iteration-2');
+  try {
+    const stats = lstatSync(namespace);
+    if (!stats.isDirectory()) throw new Error('iteration 2 artefact namespace must be a directory');
+  } catch (error) {
+    if (error && error.code !== 'ENOENT') throw error;
+    mkdirSync(namespace, { mode: 0o700 });
+  }
+  const realNamespace = realpathSync(namespace);
+  if (!isInside(root, realNamespace)) throw new Error('iteration 2 artefact namespace resolves outside --artifact-root');
+  const directory = resolveArtifactPath(root, value, '--checkpoint-dir');
+  try {
+    mkdirSync(directory, { mode: 0o700 });
+  } catch (error) {
+    if (error && error.code === 'EEXIST') {
+      throw new Error('iteration 2 checkpoint directory must be new and cannot resume or overwrite iteration 1');
+    }
+    throw error;
+  }
+  const realDirectory = realpathSync(directory);
+  if (!isInside(realNamespace, realDirectory)) throw new Error('iteration 2 checkpoint directory resolves outside its artefact namespace');
+  return realDirectory;
+}
+
 function readCheckpoints(directory) {
   return readdirSync(directory, { withFileTypes: true })
     .filter((entry) => entry.isFile() && entry.name.endsWith('.json'))
@@ -128,6 +160,8 @@ try {
     const {
       executeUnifiedRun,
       CONTROLS_SCHEMA,
+      ITERATION_2_MAX_MODEL_INVOCATIONS,
+      validateIteration2LiveLaunch,
     } = require('../lib/canonical-v2/native-producer/unified-runner-execute');
     const controls = JSON.parse(readFileSync(resolve(process.cwd(), args.controlsPath), 'utf8'));
     if (!controls || controls.schema_version !== CONTROLS_SCHEMA
@@ -135,11 +169,16 @@ try {
         !== JSON.stringify(['schema_version', 'work_item_controls'])) {
       throw new Error(`controls file must match ${CONTROLS_SCHEMA}`);
     }
+    if (args.mode === 'execute-iteration-2') {
+      validateIteration2LiveLaunch({ manifest, work_item_controls: controls.work_item_controls });
+      if (args.outPath !== 'iteration-2/execution-result.json') {
+        throw new Error('iteration 2 output path must be iteration-2/execution-result.json');
+      }
+    }
     const resolvedArtifactRoot = resolveArtifactRoot(args.artifactRoot);
-    const resolvedCheckpointDir = prepareCheckpointDirectory(
-      resolvedArtifactRoot,
-      args.checkpointDir,
-    );
+    const resolvedCheckpointDir = args.mode === 'execute-iteration-2'
+      ? prepareFreshIteration2CheckpointDirectory(resolvedArtifactRoot, args.checkpointDir)
+      : prepareCheckpointDirectory(resolvedArtifactRoot, args.checkpointDir);
     const resolvedOut = resolveArtifactPath(resolvedArtifactRoot, args.outPath, '--out');
     if (isInside(resolvedCheckpointDir, resolvedOut)) {
       throw new Error('--out cannot be inside --checkpoint-dir');
@@ -151,6 +190,9 @@ try {
       work_item_controls: controls.work_item_controls,
       root_dir: process.cwd(),
       max_concurrency: args.maxConcurrency,
+      ...(args.mode === 'execute-iteration-2'
+        ? { max_model_invocations: ITERATION_2_MAX_MODEL_INVOCATIONS }
+        : {}),
       resume_checkpoints: readCheckpoints(resolvedCheckpointDir),
       on_work_result: async (_workResult, checkpoint) => {
         persistCheckpoint(resolvedCheckpointDir, checkpoint);

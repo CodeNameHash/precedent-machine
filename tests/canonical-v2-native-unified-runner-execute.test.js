@@ -14,6 +14,7 @@ const { sectionizeAdmittedSource, findSectionByReference } = require('../lib/can
 const {
   NativeUnifiedRunExecutionError,
   executeUnifiedRun,
+  validateIteration2LiveLaunch,
 } = require('../lib/canonical-v2/native-producer/unified-runner-execute');
 const { createAnthropicProvider } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 
@@ -93,6 +94,24 @@ function controls(workItems) {
     profile_id: 'TERRA_MEDIUM',
     covenant_side: item.family_id === 'INTERIM_OPERATING' ? 'TARGET' : null,
   }));
+}
+
+function iteration2LaunchManifest() {
+  return {
+    schema_version: 'NATIVE_UNIFIED_RUN_MANIFEST/V1',
+    sources: [],
+    work_items: [
+      { work_item_id: 'topbuild-no-shop-company-4-3', disposition: 'EXTRACT' },
+      { work_item_id: 'topbuild-remedies-specific-performance-7-6', disposition: 'EXTRACT' },
+    ],
+  };
+}
+
+function iteration2LaunchControls() {
+  return [
+    { work_item_id: 'topbuild-no-shop-company-4-3', profile_id: 'SOL_HIGH', covenant_side: null },
+    { work_item_id: 'topbuild-remedies-specific-performance-7-6', profile_id: 'TERRA_MEDIUM', covenant_side: null },
+  ];
 }
 
 function successfulProviderFactory(observed) {
@@ -285,6 +304,61 @@ test('controls fail closed on missing rows, wrong sides and unknown profiles', a
   );
 });
 
+test('iteration 2 launch binds the exact Terra/Sol work-item set and two-call ceiling', () => {
+  const launch = validateIteration2LiveLaunch({
+    manifest: iteration2LaunchManifest(),
+    work_item_controls: iteration2LaunchControls(),
+  });
+  assert.equal(launch.max_model_invocations, 2);
+  assert.deepEqual(launch.work_item_ids, [
+    'topbuild-no-shop-company-4-3',
+    'topbuild-remedies-specific-performance-7-6',
+  ]);
+  assert.throws(
+    () => validateIteration2LiveLaunch({
+      manifest: {
+        ...iteration2LaunchManifest(),
+        work_items: [...iteration2LaunchManifest().work_items, {
+          work_item_id: 'outside-iteration-2', disposition: 'EXTRACT',
+        }],
+      },
+      work_item_controls: iteration2LaunchControls(),
+    }),
+    (error) => error instanceof NativeUnifiedRunExecutionError
+      && error.code === 'ITERATION_2_WORK_ITEM_SET_MISMATCH',
+  );
+  const wrongProfile = iteration2LaunchControls();
+  wrongProfile[0] = { ...wrongProfile[0], profile_id: 'TERRA_MEDIUM' };
+  assert.throws(
+    () => validateIteration2LiveLaunch({
+      manifest: iteration2LaunchManifest(), work_item_controls: wrongProfile,
+    }),
+    (error) => error instanceof NativeUnifiedRunExecutionError
+      && error.code === 'ITERATION_2_CONTROL_MISMATCH',
+  );
+});
+
+test('model invocation ceiling prevents a later work item from reaching its provider', async () => {
+  const workItems = [
+    extract('topbuild-ioc', 'INTERIM_OPERATING', '2.1'),
+    extract('topbuild-consideration', 'CONSIDERATION', '2.1'),
+  ];
+  const observed = [];
+  const result = await executeUnifiedRun({
+    manifest: manifest(workItems),
+    work_item_controls: controls(workItems),
+    root_dir: ROOT,
+    max_concurrency: 1,
+    max_model_invocations: 1,
+    provider_factory: successfulProviderFactory(observed),
+  });
+  assert.equal(observed.length, 1);
+  assert.equal(result.failed_count, 1);
+  assert.ok(result.work_results.some((workResult) => (
+    workResult.failure_code === 'MAX_MODEL_INVOCATIONS_EXCEEDED'
+  )));
+});
+
 test('execute CLI requires a closed controls file before any provider can run', () => {
   const workItems = [extract('topbuild-capitalisation', 'CAPITALISATION', '2.1')];
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'native-unified-execute-'));
@@ -339,5 +413,42 @@ test('execute CLI keeps artefacts inside the declared artefact root', () => {
   assert.equal(result.status, 1);
   assert.match(result.stderr, /--out escapes --artifact-root/);
   assert.equal(fs.existsSync(outsidePath), false);
+  fs.rmSync(tempDir, { recursive: true, force: true });
+});
+
+test('iteration 2 CLI requires its isolated paths and refuses an existing checkpoint directory', () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'native-unified-iteration-2-'));
+  const manifestPath = path.join(tempDir, 'manifest.json');
+  const controlsPath = path.join(tempDir, 'controls.json');
+  const iteration1Dir = path.join(tempDir, 'iteration-1');
+  const iteration1Output = path.join(iteration1Dir, 'execution-result.json');
+  fs.mkdirSync(iteration1Dir);
+  fs.writeFileSync(iteration1Output, 'iteration 1 remains immutable');
+  fs.writeFileSync(manifestPath, JSON.stringify(iteration2LaunchManifest()));
+  fs.writeFileSync(controlsPath, JSON.stringify({
+    schema_version: 'NATIVE_UNIFIED_RUN_WORK_ITEM_CONTROLS/V1',
+    work_item_controls: iteration2LaunchControls(),
+  }));
+
+  const wrongPath = spawnSync(process.execPath, [
+    'scripts/canonical-v2-native-unified-runner.mjs', '--mode=execute-iteration-2',
+    '--manifest', manifestPath, '--controls', controlsPath, '--artifact-root', tempDir,
+    '--checkpoint-dir', 'iteration-2/checkpoints', '--out', 'iteration-2/other.json',
+  ], { cwd: ROOT, encoding: 'utf8' });
+  assert.equal(wrongPath.status, 1);
+  assert.match(wrongPath.stderr, /iteration 2 output path must be iteration-2\/execution-result\.json/);
+  assert.equal(fs.readFileSync(iteration1Output, 'utf8'), 'iteration 1 remains immutable');
+
+  fs.mkdirSync(path.join(tempDir, 'iteration-2'), { recursive: true });
+  fs.mkdirSync(path.join(tempDir, 'iteration-2', 'checkpoints'));
+  const existingCheckpoint = spawnSync(process.execPath, [
+    'scripts/canonical-v2-native-unified-runner.mjs', '--mode=execute-iteration-2',
+    '--manifest', manifestPath, '--controls', controlsPath, '--artifact-root', tempDir,
+    '--checkpoint-dir', 'iteration-2/checkpoints', '--out', 'iteration-2/execution-result.json',
+  ], { cwd: ROOT, encoding: 'utf8' });
+  assert.equal(existingCheckpoint.status, 1);
+  assert.match(existingCheckpoint.stderr, /checkpoint directory must be new/);
+  assert.equal(fs.readFileSync(iteration1Output, 'utf8'), 'iteration 1 remains immutable');
+  assert.equal(fs.existsSync(path.join(tempDir, 'iteration-2', 'execution-result.json')), false);
   fs.rmSync(tempDir, { recursive: true, force: true });
 });
