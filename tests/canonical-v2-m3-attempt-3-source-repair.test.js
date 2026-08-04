@@ -47,7 +47,7 @@ test('attempt-3 retained Modiv outputs publish the source-tree child citations',
   const closing = replay('modiv-closing-conditions-6-1');
   assert.deepEqual(
     [...new Set(antitrust.resolved.map((entry) => entry.source_citation))].sort(),
-    ['5.5(a)', '5.5(b)', '5.5(c)', '5.5(d)', '5.5(g)'],
+    ['5.5(a)', '5.5(b)', '5.5(c)', '5.5(d)', '5.5(f)', '5.5(g)'],
   );
   assert.deepEqual(
     [...new Set(closing.resolved.map((entry) => entry.source_citation))].sort(),

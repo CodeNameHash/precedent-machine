@@ -127,6 +127,34 @@ test('Modiv 5.5 checkpoint replay carries the child clause that corroborates a p
   assert.equal(after.resolution.resolved.length, 7);
 });
 
+test('Modiv 5.5(f) resolves the exact Company-and-Parent mutual-obligor order', async () => {
+  const pilot = pilotSection('modiv-antitrust-consents-5-5');
+  const exactFiveFiveF = exact(
+    pilot.text,
+    /\(f\) Each of the Company and Parent shall use their respective commercially reasonable efforts to \(i\) take all action necessary[\s\S]*?the other Transactions\./,
+  );
+  const replayed = await replay({
+    pilot,
+    response: {
+      regulatory_efforts_assertions: [{
+        section_reference: 'Section 5.5(f)',
+        assertion_kind: 'EFFORTS_STANDARD',
+        canonical_value: 'COMMERCIALLY_REASONABLE_EFFORTS',
+        obligor_party_scope: 'MUTUAL',
+        obligor_party: 'Each of the Company and Parent',
+        quote: exactFiveFiveF,
+      }],
+      open_world_candidates: [],
+    },
+    shaper: shapeRegulatoryEffortsProposals,
+  });
+
+  assert.equal(replayed.unresolved.length, 0, JSON.stringify(replayed.resolution.review_queue, null, 2));
+  assert.equal(replayed.resolution.resolved.length, 1);
+  assert.equal(replayed.resolution.resolved[0].source_citation, '5.5(f)');
+  assert.equal(replayed.resolution.resolved[0].claim.canonical_value, 'COMMERCIALLY_REASONABLE_EFFORTS');
+});
+
 test('Modiv 6.1 checkpoint replay carries the complete Registration Statement child clause', async () => {
   const pilot = pilotSection('modiv-closing-conditions-6-1');
   const registrationStatement = exact(pilot.text, /The Registration Statement shall have been declared effective by the SEC and shall not be the subject of any stop order or pending or threatened in writing proceeding seeking a stop order\./);
