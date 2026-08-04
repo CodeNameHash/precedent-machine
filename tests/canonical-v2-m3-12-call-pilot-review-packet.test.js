@@ -38,7 +38,21 @@ function recording(item) {
   return { ...body, provider_recording_id: contentId(PROVIDER_RECORDING_SCHEMA, body) };
 }
 
-function successfulWorkResult(item) {
+function successfulWorkResult(item, {
+  compiledCandidateCount = 1,
+  openWorldCount = 0,
+  reviewQueueCount = 0,
+} = {}) {
+  const compiledCandidates = Array.from({ length: compiledCandidateCount }, (_, index) => ({
+    ok: true,
+    candidate_id: `candidate:${item.work_item_id}:${index}`,
+  }));
+  const openWorld = Array.from({ length: openWorldCount }, (_, index) => ({
+    candidate_id: `open-world:${item.work_item_id}:${index}`,
+  }));
+  const reviewQueue = Array.from({ length: reviewQueueCount }, (_, index) => ({
+    candidate_id: `review-queue:${item.work_item_id}:${index}`,
+  }));
   const body = {
     schema_version: WORK_RESULT_SCHEMA,
     work_item_id: item.work_item_id,
@@ -49,20 +63,33 @@ function successfulWorkResult(item) {
     failure_code: null,
     failure_stage: null,
     run_receipt: {
-      compiled_candidates: [{ candidate_id: `candidate:${item.work_item_id}` }],
+      compiled_candidates: compiledCandidates,
+      compiled_candidate_count: compiledCandidateCount,
       evidence_residual_count: 0,
       scope_violation_count: 0,
       citation_residual_count: 0,
     },
-    resolution: { resolution_id: `resolution:${item.work_item_id}` },
+    resolution: {
+      open_world: openWorld,
+      review_queue: reviewQueue,
+      resolution_receipt: {
+        counts: {
+          open_world: openWorldCount,
+          review_queue: reviewQueueCount,
+        },
+      },
+    },
     provider_recording: recording(item),
   };
   return { ...body, work_result_id: contentId(WORK_RESULT_SCHEMA, body) };
 }
 
-function executionResult() {
+function executionResult(optionsForItem = () => ({})) {
   const validation = validateUnifiedRunManifest({ manifest: MANIFEST, root_dir: ROOT });
-  const workResults = validation.semantic_manifest.work_items.map(successfulWorkResult);
+  const workResults = validation.semantic_manifest.work_items.map((item) => successfulWorkResult(
+    item,
+    optionsForItem(item),
+  ));
   const validationEvidence = {
     schema_version: VALIDATION_EVIDENCE_SCHEMA,
     receipt: validation.receipt,
@@ -100,6 +127,9 @@ test('materialises one deterministic, review-unset packet for every sealed pilot
     && record.provider_evidence_residual_count === 0
     && record.scope_violation_count === 0
     && record.citation_residual_count === 0
+    && record.compiled_candidate_count === 1
+    && record.open_world_count === 0
+    && record.review_queue_count === 0
     && record.compiled_output));
   assert.ok(result.review_packets.every((packet) => packet.independent_review_status === null
     && packet.pinned_section_text.length > 0
@@ -107,6 +137,68 @@ test('materialises one deterministic, review-unset packet for every sealed pilot
     && packet.compiled_output.length === 1
     && packet.resolved_output));
   assert.equal(result.review_packets[0].provenance.execution_result_id, result.execution_result_id);
+});
+
+test('a true positive packet passes with mandatory independent review', () => {
+  const gate = evaluatePilotQualityGate({
+    quality_records: ADAPTER.quality_records,
+    review_findings: ADAPTER.quality_records.map((record) => ({
+      work_item_id: record.work_item_id,
+      reviewer_kind: 'INDEPENDENT',
+      status: 'PASS',
+    })),
+    root_dir: ROOT,
+  });
+  assert.equal(gate.gate_status, 'PASS');
+  assert.deepEqual(gate.rerun_work_item_ids, []);
+  assert.deepEqual(gate.escalation_work_item_ids, []);
+});
+
+test('twelve empty successful outputs rerun through packet-bound candidate counts', () => {
+  const execution = executionResult(() => ({ compiledCandidateCount: 0 }));
+  const adapter = buildPilotReviewPackets({
+    manifest: MANIFEST,
+    execution_result: execution,
+    root_dir: ROOT,
+  });
+  const gate = evaluatePilotQualityGate({
+    quality_records: adapter.quality_records,
+    review_findings: adapter.quality_records.map((record) => ({
+      work_item_id: record.work_item_id,
+      reviewer_kind: 'INDEPENDENT',
+      status: 'PASS',
+    })),
+    root_dir: ROOT,
+  });
+  assert.deepEqual(gate.rerun_work_item_ids, MANIFEST.work_items.map((item) => item.work_item_id).sort());
+  assert.deepEqual(gate.escalation_work_item_ids, []);
+});
+
+test('open-world-only and review-queue packets escalate the exact unresolved items', () => {
+  const execution = executionResult((item) => {
+    if (item.work_item_id === 'modiv-consideration-2-1') return { openWorldCount: 1 };
+    if (item.work_item_id === 'topbuild-no-shop-company-4-3') return { reviewQueueCount: 1 };
+    return {};
+  });
+  const adapter = buildPilotReviewPackets({
+    manifest: MANIFEST,
+    execution_result: execution,
+    root_dir: ROOT,
+  });
+  const gate = evaluatePilotQualityGate({
+    quality_records: adapter.quality_records,
+    review_findings: adapter.quality_records.map((record) => ({
+      work_item_id: record.work_item_id,
+      reviewer_kind: 'INDEPENDENT',
+      status: 'PASS',
+    })),
+    root_dir: ROOT,
+  });
+  assert.deepEqual(gate.rerun_work_item_ids, []);
+  assert.deepEqual(gate.escalation_work_item_ids, [
+    'modiv-consideration-2-1',
+    'topbuild-no-shop-company-4-3',
+  ]);
 });
 
 test('quality records cannot supply an independent review PASS result', () => {

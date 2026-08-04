@@ -28,6 +28,9 @@ function passingInput() {
       provider_evidence_residual_count: 0,
       scope_violation_count: 0,
       citation_residual_count: 0,
+      compiled_candidate_count: 1,
+      open_world_count: 0,
+      review_queue_count: 0,
     })),
     review_findings: workItems.map((item) => ({
       work_item_id: item.work_item_id,
@@ -88,6 +91,36 @@ test('exact manifest-family provenance and present-family compiled output are re
     'SOURCE_PROVENANCE_MISMATCH',
     'FAMILY_PROVENANCE_MISMATCH',
     'COMPILED_OUTPUT_EMPTY',
+  ]);
+});
+
+test('known-present output reruns when no candidate compiled', () => {
+  const input = passingInput();
+  input.quality_records.forEach((record) => { record.compiled_candidate_count = 0; });
+  const result = evaluatePilotQualityGate({ ...input, root_dir: ROOT });
+  const expected = input.quality_records.map((record) => record.work_item_id).sort();
+  assert.deepEqual(result.rerun_work_item_ids, expected);
+  assert.deepEqual(result.escalation_work_item_ids, []);
+  assert.ok(result.work_item_findings.every((entry) => entry.deterministic_failure_codes.includes(
+    'KNOWN_PRESENT_CANDIDATE_COUNT_ZERO',
+  )));
+});
+
+test('unresolved open-world and review-queue output escalates the exact item set', () => {
+  const input = passingInput();
+  input.quality_records.find((record) => record.work_item_id === 'modiv-consideration-2-1').open_world_count = 1;
+  input.quality_records.find((record) => record.work_item_id === 'topbuild-no-shop-company-4-3').review_queue_count = 1;
+  const result = evaluatePilotQualityGate({ ...input, root_dir: ROOT });
+  assert.deepEqual(result.rerun_work_item_ids, []);
+  assert.deepEqual(result.escalation_work_item_ids, [
+    'modiv-consideration-2-1',
+    'topbuild-no-shop-company-4-3',
+  ]);
+  assert.deepEqual(finding(result, 'modiv-consideration-2-1').unresolved_output_codes, [
+    'OPEN_WORLD_OUTPUT_UNRESOLVED',
+  ]);
+  assert.deepEqual(finding(result, 'topbuild-no-shop-company-4-3').unresolved_output_codes, [
+    'REVIEW_QUEUE_OUTPUT_UNRESOLVED',
   ]);
 });
 
