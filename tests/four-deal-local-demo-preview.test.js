@@ -5,16 +5,14 @@ const path = require('node:path');
 const test = require('node:test');
 
 const {
+  FINAL_LEGAL_FINDING_PATHS,
+  FINAL_REVIEW_PACKET_PATH,
   FOUR_DEAL_LOCAL_DEMO_RESULT_SCHEMA,
   getFrozenFourDealLocalDemoResult,
   m3Rows,
 } = require('../lib/four-deal-local-demo-preview');
 
 const ARTIFACT_ROOT = '/private/tmp/canonical-v2-m3-pilot-20260803.L3KSNP';
-const FINAL_LEGAL_FINDINGS = [
-  path.join(ARTIFACT_ROOT, 'final-output', 'independent-first-six-review-findings.json'),
-  path.join(ARTIFACT_ROOT, 'final-output', 'independent-last-six-review-findings.json'),
-];
 
 test('four-deal preview binds immutable M3 rows and the sealed Metsera Process result into one read-only contract', () => {
   const result = getFrozenFourDealLocalDemoResult();
@@ -23,17 +21,24 @@ test('four-deal preview binds immutable M3 rows and the sealed Metsera Process r
   assert.equal(result.write_authority, 'NONE');
   assert.equal(Object.isFrozen(result), true);
   assert.equal(result.deals.length, 4);
-  assert.equal(result.m3_artifact.relative_path, 'final-review/sealed-final-pilot-review-packet.json');
+  assert.equal(result.m3_artifact.relative_path, FINAL_REVIEW_PACKET_PATH);
+  assert.equal(result.m3_artifact.final_review_packet_id, 'd78f0e42594d483c44d9110640d076b3b0be1f0f047fc093a92cdf77cf14f866');
+  assert.deepEqual(
+    result.m3_artifact.final_legal_findings.map((finding) => finding.path),
+    FINAL_LEGAL_FINDING_PATHS.map((relativePath) => path.join(ARTIFACT_ROOT, relativePath)),
+  );
 
   const topBuild = result.deals.find((deal) => deal.deal_name === 'TopBuild');
   const skechers = result.deals.find((deal) => deal.deal_name === 'Skechers');
   const modiv = result.deals.find((deal) => deal.deal_name === 'Modiv');
   const metsera = result.deals.find((deal) => deal.deal_name === 'Metsera');
+  assert.equal([topBuild, skechers, modiv].flatMap((deal) => deal.work_items).length, 12);
   for (const deal of [topBuild, skechers, modiv]) {
     assert.equal(deal.result_domain, 'M3_CANONICAL_REVIEW');
     assert.ok(deal.rows.some((row) => row.result_type === 'GOVERNED_VALUE'
       && row.source_quote && row.source_citation));
-    assert.ok(deal.rows.every((row) => row.legal_review_state === 'PENDING_INDEPENDENT_REVIEW'
+    assert.equal(deal.result_state, 'SEALED_FINAL_LEGAL_FINDINGS_BOUND');
+    assert.ok(deal.rows.every((row) => row.legal_review_state === 'PASS'
       && row.resolver_state && row.source_citation));
   }
   assert.ok(topBuild.rows.some((row) => row.result_type === 'OPEN_WORLD_WARNING'
@@ -46,19 +51,19 @@ test('four-deal preview binds immutable M3 rows and the sealed Metsera Process r
   assert.equal(metsera.product_component.slot_state, 'VALID');
 });
 
-test('four-deal preview binds PASS or FAIL only when sealed final legal findings are supplied', () => {
+test('four-deal preview retains an explicit no-findings path', () => {
   const result = getFrozenFourDealLocalDemoResult({
     artifact_root: ARTIFACT_ROOT,
-    final_legal_finding_paths: FINAL_LEGAL_FINDINGS,
+    final_legal_finding_paths: [],
   });
   const topBuild = result.deals.find((deal) => deal.deal_name === 'TopBuild');
   const modiv = result.deals.find((deal) => deal.deal_name === 'Modiv');
-  assert.equal(topBuild.result_state, 'SEALED_FINAL_LEGAL_FINDINGS_BOUND');
-  assert.ok(topBuild.rows.every((row) => row.legal_review_state === 'FAIL'));
+  assert.equal(topBuild.result_state, 'PENDING_INDEPENDENT_REVIEW');
+  assert.ok(topBuild.rows.every((row) => row.legal_review_state === 'PENDING_INDEPENDENT_REVIEW'));
   assert.ok(modiv.rows.some((row) => row.work_item_id === 'modiv-consideration-2-1'
-    && row.legal_review_state === 'PASS'));
+    && row.legal_review_state === 'PENDING_INDEPENDENT_REVIEW'));
   assert.ok(modiv.rows.some((row) => row.work_item_id === 'modiv-antitrust-consents-5-5'
-    && row.legal_review_state === 'FAIL'));
+    && row.legal_review_state === 'PENDING_INDEPENDENT_REVIEW'));
 });
 
 test('four-deal preview reads current-resolver replays instead of their retained prior results', () => {
@@ -115,6 +120,7 @@ test('four-deal preview exposes structured fee and consideration formulas withou
   const result = getFrozenFourDealLocalDemoResult({
     artifact_root: ARTIFACT_ROOT,
     final_review_packet_path: 'final-review-v4/sealed-final-pilot-review-packet.json',
+    final_legal_finding_paths: [],
   });
   const modiv = result.deals.find((deal) => deal.deal_name === 'Modiv');
   const formulas = modiv.rows.filter((row) => row.result_type === 'STRUCTURED_FORMULA');
@@ -125,11 +131,7 @@ test('four-deal preview exposes structured fee and consideration formulas withou
 });
 
 test('four-deal preview shows the sealed work-item review note as the legal basis', () => {
-  const result = getFrozenFourDealLocalDemoResult({
-    artifact_root: ARTIFACT_ROOT,
-    final_review_packet_path: 'final-review-v5/sealed-final-pilot-review-packet.json',
-    final_legal_finding_paths: [path.join(ARTIFACT_ROOT, 'final-review-v5', 'sealed-corrected-independent-legal-re-review-findings.json')],
-  });
+  const result = getFrozenFourDealLocalDemoResult();
   const modiv = result.deals.find((deal) => deal.deal_name === 'Modiv');
   assert.ok(modiv.rows.every((row) => row.legal_review_state === 'PASS'));
   assert.ok(modiv.rows.some((row) => /structured per-share cash value/.test(row.legal_review_reason)));
