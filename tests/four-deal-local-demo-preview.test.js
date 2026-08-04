@@ -123,3 +123,14 @@ test('four-deal preview exposes structured fee and consideration formulas withou
   assert.ok(formulas.some((row) => /accrued and unpaid dividends/.test(row.source_quote)));
   assert.ok(formulas.some((row) => /not flattened/.test(row.warning)));
 });
+
+test('four-deal preview shows the sealed work-item review note as the legal basis', () => {
+  const result = getFrozenFourDealLocalDemoResult({
+    artifact_root: ARTIFACT_ROOT,
+    final_review_packet_path: 'final-review-v5/sealed-final-pilot-review-packet.json',
+    final_legal_finding_paths: [path.join(ARTIFACT_ROOT, 'final-review-v5', 'sealed-corrected-independent-legal-re-review-findings.json')],
+  });
+  const modiv = result.deals.find((deal) => deal.deal_name === 'Modiv');
+  assert.ok(modiv.rows.every((row) => row.legal_review_state === 'PASS'));
+  assert.ok(modiv.rows.some((row) => /structured per-share cash value/.test(row.legal_review_reason)));
+});
