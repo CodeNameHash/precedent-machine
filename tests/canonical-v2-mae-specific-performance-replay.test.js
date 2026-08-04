@@ -136,3 +136,13 @@ test('TopBuild 7.6 rejects a bare equitable-relief grant and retains the operati
   assert.match(prompt.messages[0].content, /irreparable harm would occur and money damages would not be an adequate remedy/);
   assert.match(prompt.messages[0].content, /condition gates, termination limits, non-waiver language, bond or security waivers/);
 });
+
+test('a source-exact specific-performance grant resolves when its governed source has no operative premise', () => {
+  const source = 'Section 9.09 Specific Performance. It is accordingly agreed that the parties shall be entitled to an injunction or injunctions, specific performance, or other equitable relief, to prevent breaches or threatened or anticipated breaches of this Agreement and to enforce specifically the terms and provisions of this Agreement.';
+  const shaped = shapeSpecificPerformanceRemedyProposals({
+    remedy_assertions: [{ assertion_kind: 'SPECIFIC_PERFORMANCE', quote: source.slice(source.indexOf('It is accordingly agreed')) }],
+    open_world_candidates: [],
+  }, source);
+  assert.equal(shaped.proposals.length, 1);
+  assert.deepEqual(shaped.evidence_residuals, []);
+});
