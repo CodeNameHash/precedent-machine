@@ -6,6 +6,8 @@ const { tmpdir } = require('node:os');
 const { join } = require('node:path');
 const test = require('node:test');
 
+const { contentId } = require('../lib/canonical-v2/canonical-bytes');
+
 const {
   AUDIT_TOPICS,
   M3FinalSolAdversarialAuditError,
@@ -83,15 +85,53 @@ function finalWorkItem(index) {
 }
 
 function fixture(root) {
-  const review = writeJson(root, 'final-review.json', {
+  const reviewBody = {
+    schema_version: 'M3_12_CALL_FINAL_PILOT_REVIEW_PACKET/V1',
     work_items: Array.from({ length: 12 }, (_, index) => finalWorkItem(index)),
+  };
+  const finalReviewPacketId = contentId(reviewBody.schema_version, reviewBody);
+  const review = writeJson(root, 'final-review.json', {
+    ...reviewBody,
+    final_review_packet_id: finalReviewPacketId,
   });
-  const legalA = writeJson(root, 'legal-a.json', { findings: Array.from({ length: 6 }, (_, index) => ({ work_item_id: `work-${index + 1}`, status: 'FAIL', finding: index })) });
-  const legalB = writeJson(root, 'legal-b.json', { findings: Array.from({ length: 6 }, (_, index) => ({ work_item_id: `work-${index + 7}`, status: 'PASS', finding: index + 6 })) });
+  const strictBody = {
+    schema_version: 'M3_12_CALL_FINAL_PILOT_STRICT_INDEPENDENT_REVIEW_INPUT/V3',
+    final_review_packet_id: finalReviewPacketId,
+    review_items: reviewBody.work_items.map((item) => ({ work_item_id: item.work_item_id })),
+  };
+  const strictIndependentReviewInputId = contentId(strictBody.schema_version, strictBody);
+  const strict = writeJson(root, 'strict-review.json', {
+    ...strictBody,
+    strict_independent_review_input_id: strictIndependentReviewInputId,
+  });
+  const findingsArtifact = (findings) => {
+    const body = {
+      schema_version: 'M3_12_CALL_FINAL_PILOT_RE_REVIEW_FINDINGS/V2',
+      final_review_packet_id: finalReviewPacketId,
+      strict_independent_review_input_id: strictIndependentReviewInputId,
+      findings,
+    };
+    return {
+      ...body,
+      independent_legal_review_findings_id: contentId(body.schema_version, body),
+    };
+  };
+  const legalA = writeJson(root, 'legal-a.json', findingsArtifact(Array.from({ length: 6 }, (_, index) => ({ work_item_id: `work-${index + 1}`, status: 'FAIL', finding: index }))));
+  const legalB = writeJson(root, 'legal-b.json', findingsArtifact(Array.from({ length: 6 }, (_, index) => ({ work_item_id: `work-${index + 7}`, status: 'PASS', finding: index + 6 }))));
   const sevenFails = writeJson(root, 'seven-fails.json', { findings: Array.from({ length: 7 }, (_, index) => ({ status: 'FAIL', finding: index })) });
   const risk = writeJson(root, 'risk.json', { family_control_audit: [{ family: 'NO_SHOP' }] });
   const plan = writeJson(root, 'plan.json', { proposed_execution: [{ control: 'SOURCE_BOUND' }] });
-  return { review, legalA, legalB, sevenFails, risk, plan };
+  return {
+    review,
+    strict,
+    legalA,
+    legalB,
+    sevenFails,
+    risk,
+    plan,
+    finalReviewPacketId,
+    strictIndependentReviewInputId,
+  };
 }
 
 function build(root, gitDiff = null, finalFindingPaths = null) {
@@ -101,6 +141,7 @@ function build(root, gitDiff = null, finalFindingPaths = null) {
     commit_range: 'base..head',
     code_paths: ['lib/candidate-resolution.js'],
     final_review_packet_path: files.review,
+    strict_review_input_path: files.strict,
     final_legal_finding_paths: finalFindingPaths || [files.legalA, files.legalB],
     original_seven_fail_findings_path: files.sevenFails,
     cross_family_risk_audit_path: files.risk,
@@ -134,6 +175,11 @@ test('builds and validates a sealed input with the final 12, final 12 legal find
   assert.equal(SOL_HIGH_PROFILE.reasoning_effort, 'high');
   assert.equal(input.audit_model_profile.call_count, 1);
   assert.equal(input.audit_projection.final_review_packet.length, 12);
+  assert.match(
+    input.audit_projection.strict_independent_review_input.strict_independent_review_input_id,
+    /^[a-f0-9]{64}$/,
+  );
+  assert.equal(input.audit_projection.strict_independent_review_input.work_item_ids.length, 12);
   assert.equal(input.audit_projection.final_independent_legal_findings.length, 12);
   assert.equal(input.audit_projection.original_seven_fail_findings.length, 7);
   assert.equal(input.audit_projection.final_review_packet[0].resolved_claims[0].exact_source_quote, '45 days');
@@ -144,6 +190,7 @@ test('builds and validates a sealed input with the final 12, final 12 legal find
   assert.equal(input.audit_projection.final_review_packet[0].conditional_termination_fee_values[0].conditional_termination_fee_value_id, 'fee-formula-1');
   assert.equal(input.audit_projection.final_review_packet[0].structured_per_share_cash_values[0].structured_per_share_cash_value_id, 'cash-formula-1');
   assert.equal(input.audit_artifact_seals.final_review_packet.content, undefined);
+  assert.equal(input.audit_artifact_seals.strict_independent_review_input.content, undefined);
   assert.match(input.consolidation_code_diff.text, /source-bound repair/);
   assert.equal(Object.isFrozen(input), true);
   assert.equal(validateSealedM3FinalSolAuditInput(input), true);
@@ -155,15 +202,91 @@ test('builds and validates a sealed input with the final 12, final 12 legal find
 test('accepts one sealed twelve-item final legal findings file', () => {
   const root = mkdtempSync(join(tmpdir(), 'm3-sol-audit-'));
   const files = fixture(root);
-  const finalFindings = writeJson(root, 'legal-all.json', {
+  const findings = [
+    ...JSON.parse(readFileSync(files.legalA, 'utf8')).findings,
+    ...JSON.parse(readFileSync(files.legalB, 'utf8')).findings,
+  ];
+  const body = {
+    schema_version: 'M3_12_CALL_FINAL_PILOT_RE_REVIEW_FINDINGS/V2',
+    final_review_packet_id: files.finalReviewPacketId,
+    strict_independent_review_input_id: files.strictIndependentReviewInputId,
     findings: [
-      ...JSON.parse(readFileSync(files.legalA, 'utf8')).findings,
-      ...JSON.parse(readFileSync(files.legalB, 'utf8')).findings,
+      ...findings,
     ],
+  };
+  const finalFindings = writeJson(root, 'legal-all.json', {
+    ...body,
+    independent_legal_review_findings_id: contentId(body.schema_version, body),
   });
   const input = build(root, null, [finalFindings]);
   assert.equal(input.audit_artifact_seals.final_independent_legal_findings.length, 1);
   assert.equal(input.audit_projection.final_independent_legal_findings.length, 12);
+});
+
+test('rejects sealed final findings that cover the same work items but bind a stale strict input', () => {
+  const root = mkdtempSync(join(tmpdir(), 'm3-sol-audit-'));
+  const files = fixture(root);
+  const findings = [
+    ...JSON.parse(readFileSync(files.legalA, 'utf8')).findings,
+    ...JSON.parse(readFileSync(files.legalB, 'utf8')).findings,
+  ];
+  const staleBody = {
+    schema_version: 'M3_12_CALL_FINAL_PILOT_RE_REVIEW_FINDINGS/V2',
+    final_review_packet_id: files.finalReviewPacketId,
+    strict_independent_review_input_id: 'stale-v5-strict-input-id',
+    findings,
+  };
+  const staleFindings = writeJson(root, 'stale-v5-findings.json', {
+    ...staleBody,
+    independent_legal_review_findings_id: contentId(staleBody.schema_version, staleBody),
+  });
+
+  assert.throws(
+    () => build(root, null, [staleFindings]),
+    (error) => error instanceof M3FinalSolAdversarialAuditError
+      && error.code === 'FINAL_FINDINGS_BINDING_MISMATCH',
+  );
+});
+
+test('rejects sealed final findings that bind the strict input but a stale final packet', () => {
+  const root = mkdtempSync(join(tmpdir(), 'm3-sol-audit-'));
+  const files = fixture(root);
+  const findings = [
+    ...JSON.parse(readFileSync(files.legalA, 'utf8')).findings,
+    ...JSON.parse(readFileSync(files.legalB, 'utf8')).findings,
+  ];
+  const staleBody = {
+    schema_version: 'M3_12_CALL_FINAL_PILOT_RE_REVIEW_FINDINGS/V2',
+    final_review_packet_id: 'stale-v5-packet-id',
+    strict_independent_review_input_id: files.strictIndependentReviewInputId,
+    findings,
+  };
+  const staleFindings = writeJson(root, 'stale-v5-packet-findings.json', {
+    ...staleBody,
+    independent_legal_review_findings_id: contentId(staleBody.schema_version, staleBody),
+  });
+
+  assert.throws(
+    () => build(root, null, [staleFindings]),
+    (error) => error instanceof M3FinalSolAdversarialAuditError
+      && error.code === 'FINAL_FINDINGS_BINDING_MISMATCH',
+  );
+});
+
+test('sealed input validation rejects a forged strict-input packet binding even after resealing', () => {
+  const root = mkdtempSync(join(tmpdir(), 'm3-sol-audit-'));
+  const input = build(root);
+  const forged = structuredClone(input);
+  forged.audit_projection.strict_independent_review_input.final_review_packet_id = 'stale-v5-packet-id';
+  const body = { ...forged };
+  delete body.audit_input_id;
+  forged.audit_input_id = contentId(forged.schema_version, body);
+
+  assert.throws(
+    () => validateSealedM3FinalSolAuditInput(forged),
+    (error) => error instanceof M3FinalSolAdversarialAuditError
+      && error.code === 'AUDIT_REVIEW_BINDING_MISMATCH',
+  );
 });
 
 test('preserves the exact seven-FAIL rows and projects the current risk and production controls', () => {
@@ -208,6 +331,7 @@ test('preserves the exact seven-FAIL rows and projects the current risk and prod
     commit_range: 'base..head',
     code_paths: ['lib/candidate-resolution.js'],
     final_review_packet_path: files.review,
+    strict_review_input_path: files.strict,
     final_legal_finding_paths: [files.legalA, files.legalB],
     original_seven_fail_findings_path: originalSevenFails,
     cross_family_risk_audit_path: risk,
@@ -297,6 +421,7 @@ test('fails closed when the original seven-fail input loses a failure', () => {
       commit_range: 'base..head',
       code_paths: ['lib/candidate-resolution.js'],
       final_review_packet_path: files.review,
+      strict_review_input_path: files.strict,
       final_legal_finding_paths: [files.legalA, files.legalB],
       original_seven_fail_findings_path: join(root, 'seven-short.json'),
       cross_family_risk_audit_path: files.risk,
