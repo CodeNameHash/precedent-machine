@@ -144,6 +144,14 @@ test('recorded capitalisation responses derive source-grounded preferred-stock z
   assert.equal(topBuildPreferredZero.claim.attributes.share_class_ref, 'preferred stock, par value $0.01 per share');
   assert.equal(topBuildPreferredZero.source_citation, 'III-INTRO(b)(i)(B)');
 
+  const topBuildAwardDate = topBuild.runReceipt.compiled_candidates.find((entry) => (
+    entry.candidate.claim?.claim_definition_key === 'NATIVE_CAPITALISATION_QUALIFIER_CANDIDATE'
+      && entry.candidate.claim.raw_value === 'as of the close of business on April 17, 2026'
+      && JSON.stringify(entry.candidate.claim.attributes.attachment.governs_path) === JSON.stringify(['(ii)'])
+  ));
+  assert.ok(topBuildAwardDate);
+  assert.equal(topBuildAwardDate.citation_validation.derived_citation, 'III-INTRO(b)(ii)');
+
   assert.equal(countClaims(skechers.resolution).filter((entry) => (
     entry.claim.raw_value === 'no shares of Company Preferred Stock were issued and outstanding'
   )).length, 1);

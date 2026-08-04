@@ -173,7 +173,10 @@ test('replaying the Skechers recorded raw response through the FIXED citation-de
     },
   });
 
-  assert.equal(receipt.evidence_residual_count, 0, 'sanity: every recorded quote is still byte-verifiable against the real canonical text');
+  assert.equal(receipt.evidence_residual_count, 5);
+  assert.ok(receipt.evidence_residuals.every((residual) => (
+    residual.reason === 'QUALIFIER_GOVERNS_PATH_OCCURRENCE_AMBIGUOUS'
+  )));
   assert.equal(receipt.scope_violation_count, 0);
 
   const statusCounts = {};
@@ -184,18 +187,17 @@ test('replaying the Skechers recorded raw response through the FIXED citation-de
   // eslint-disable-next-line no-console
   console.log('[skechers-replay] citation status counts (post-fix):', JSON.stringify(statusCounts), 'total compiled:', receipt.compiled_candidates.length);
 
-  assert.equal(receipt.compiled_candidates.length, 39, 'every one of the 39 proposals still compiles -- never silently dropped, matching the live run\'s own compiled_candidate_count');
+  assert.equal(receipt.compiled_candidates.length, 35);
   assert.ok(receipt.compiled_candidates.every((entry) => entry.ok === true));
 
-  // THE HEADLINE FLIP: AGREEMENT is now the strong majority outcome (37/39
-  // observed), versus the live run's own 37/39 CITATION_DISAGREEMENT --
-  // almost exactly the same 37 candidates that were wrongly disagreeing
-  // before the fix now agree correctly. The remaining 2 carry no
+  // THE HEADLINE FLIP: AGREEMENT is now the strong majority outcome (33/35
+  // observed), versus the live run's own 37/39 CITATION_DISAGREEMENT. The
+  // remaining 2 carry no
   // section_reference at all (NO_CITATION -- nothing to check), not a
   // disagreement. Every derived citation that agrees is a real "3.7(x)"
   // decimal reference, never the legacy straddling node.
   const agreementCount = statusCounts.AGREEMENT || 0;
-  assert.equal(agreementCount, 37, `expected the strong majority AGREEMENT count observed in this replay, got ${agreementCount}/39`);
+  assert.equal(agreementCount, 33, `expected the strong majority AGREEMENT count observed in this replay, got ${agreementCount}/35`);
   assert.equal(statusCounts.CITATION_DISAGREEMENT || 0, 0, 'zero CITATION_DISAGREEMENT post-fix, versus the live run\'s own 37');
   assert.ok(
     receipt.compiled_candidates

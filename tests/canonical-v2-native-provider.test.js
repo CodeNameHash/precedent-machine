@@ -395,6 +395,62 @@ test('a limb with no usable limb_path (e.g. a stale pre-PROMPT_VERSION-2 recordi
   assert.equal(limbAssertion.attributes.limb_path, null);
 });
 
+const ITEM_QUALIFIER_SOURCE_TEXT = 'SECTION 9. Capitalization. (i) As of April 17, 2026, Common stock exists. '
+  + '(ii) As of April 17, 2026, Preferred stock exists.';
+
+function itemQualifierResponse(assertionQuote = 'As of April 17, 2026, Preferred stock exists.') {
+  return {
+    representation_instances: [{
+      section_reference: '9',
+      party_making: 'the Company',
+      chapeau_quote: 'SECTION 9. Capitalization.',
+      limbs: [
+        { limb_path: ['(i)'], assertion_quote: 'As of April 17, 2026, Common stock exists.', subject: 'common stock' },
+        { limb_path: ['(ii)'], assertion_quote: assertionQuote, subject: 'preferred stock' },
+      ],
+      qualifiers: [{
+        kind: 'TEMPORAL',
+        code: null,
+        quote: 'As of April 17, 2026',
+        attachment: {
+          position: 'ITEM',
+          governs_path: ['(ii)'],
+          ambiguity_signals: { items_grammatically_parallel: false },
+        },
+      }],
+      definition_uses: [],
+      cross_references: [],
+    }],
+    bring_down_conditions: [],
+    open_world_candidates: [],
+  };
+}
+
+test('an ITEM qualifier with repeated text binds evidence to its unique occurrence in the governed limb', () => {
+  const { proposals, evidence_residuals: residuals } = shapeProposals(
+    itemQualifierResponse(),
+    ITEM_QUALIFIER_SOURCE_TEXT,
+  );
+  const [qualifier] = proposals.filter((proposal) => proposal.claim_definition_key === QUALIFIER_CLAIM_KEY);
+  assert.ok(qualifier);
+  assert.equal(
+    qualifier.evidence[0].absolute_start,
+    Buffer.byteLength(ITEM_QUALIFIER_SOURCE_TEXT.slice(0, ITEM_QUALIFIER_SOURCE_TEXT.lastIndexOf('As of April 17, 2026'))),
+  );
+  assert.equal(residuals.some((residual) => residual.reason === 'QUALIFIER_GOVERNS_PATH_OCCURRENCE_AMBIGUOUS'), false);
+});
+
+test('an ITEM qualifier without one governed-limb occurrence emits a typed ambiguity residual and no proposal', () => {
+  const source = ITEM_QUALIFIER_SOURCE_TEXT.replace(
+    'As of April 17, 2026, Preferred stock exists.',
+    'As of April 17, 2026, then As of April 17, 2026, Preferred stock exists.',
+  );
+  const response = itemQualifierResponse('As of April 17, 2026, then As of April 17, 2026, Preferred stock exists.');
+  const { proposals, evidence_residuals: residuals } = shapeProposals(response, source);
+  assert.equal(proposals.filter((proposal) => proposal.claim_definition_key === QUALIFIER_CLAIM_KEY).length, 0);
+  assert.ok(residuals.some((residual) => residual.reason === 'QUALIFIER_GOVERNS_PATH_OCCURRENCE_AMBIGUOUS'));
+});
+
 // ---------------------------------------------------------------------------
 // Qualifier attachment (docs/handoffs/F28-FIRST-LIVE-RUN.md defect 2): the
 // model cannot express a resolved TRAILING reading through the schema --
