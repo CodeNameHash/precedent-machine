@@ -23,10 +23,16 @@ test('four-deal preview binds immutable M3 rows and the sealed Metsera Process r
   assert.equal(Object.isFrozen(result), true);
   assert.equal(result.deals.length, 4);
   assert.equal(result.m3_artifact.relative_path, FINAL_REVIEW_PACKET_PATH);
-  assert.equal(result.m3_artifact.final_review_packet_id, 'd78f0e42594d483c44d9110640d076b3b0be1f0f047fc093a92cdf77cf14f866');
+  assert.equal(FINAL_REVIEW_PACKET_PATH, 'final-review-v6/sealed-final-pilot-review-packet.json');
+  assert.equal(result.m3_artifact.final_review_packet_id, '39875619332f16886a7b884b79e5388d430321c3e9589760df450cfc79822f86');
+  assert.equal(FINAL_STRICT_INDEPENDENT_REVIEW_INPUT_PATH,
+    'final-review-v6/sealed-strict-independent-legal-review-input-source-bound-v6.json');
   assert.equal(result.m3_artifact.strict_independent_review_input.relative_path, FINAL_STRICT_INDEPENDENT_REVIEW_INPUT_PATH);
   assert.equal(result.m3_artifact.strict_independent_review_input.strict_independent_review_input_id,
-    '45fad3c04ee79278ab2f0ef068cfdda68af2e01cf561927652a9caaf2eff1942');
+    'a124735d163bf45b5e16cfa0ec7ff5cb680fc777b70c7c29c4ded9dcfcb9bdb7');
+  assert.deepEqual(FINAL_LEGAL_FINDING_PATHS, [
+    'final-review-v6/sealed-corrected-independent-legal-re-review-findings-v2.json',
+  ]);
   assert.deepEqual(
     result.m3_artifact.final_legal_findings.map((finding) => finding.path),
     FINAL_LEGAL_FINDING_PATHS.map((relativePath) => path.join(ARTIFACT_ROOT, relativePath)),
@@ -68,6 +74,19 @@ test('four-deal preview retains an explicit no-findings path', () => {
     && row.legal_review_state === 'PENDING_INDEPENDENT_REVIEW'));
   assert.ok(modiv.rows.some((row) => row.work_item_id === 'modiv-antitrust-consents-5-5'
     && row.legal_review_state === 'PENDING_INDEPENDENT_REVIEW'));
+});
+
+test('four-deal preview rejects sealed V5 findings against the sealed V6 packet and strict input', () => {
+  assert.throws(
+    () => getFrozenFourDealLocalDemoResult({
+      artifact_root: ARTIFACT_ROOT,
+      final_legal_finding_paths: [path.join(
+        ARTIFACT_ROOT,
+        'final-review-v5/sealed-corrected-independent-legal-re-review-findings.json',
+      )],
+    }),
+    (error) => error?.code === 'FINAL_FINDINGS_BINDING_MISMATCH',
+  );
 });
 
 test('four-deal preview reads current-resolver replays instead of their retained prior results', () => {
@@ -134,9 +153,10 @@ test('four-deal preview exposes structured fee and consideration formulas withou
   assert.ok(formulas.some((row) => /not flattened/.test(row.warning)));
 });
 
-test('four-deal preview shows the sealed work-item review note as the legal basis', () => {
+test('four-deal preview shows the sealed work-item review reason code as the legal basis', () => {
   const result = getFrozenFourDealLocalDemoResult();
   const modiv = result.deals.find((deal) => deal.deal_name === 'Modiv');
   assert.ok(modiv.rows.every((row) => row.legal_review_state === 'PASS'));
-  assert.ok(modiv.rows.some((row) => /structured per-share cash value/.test(row.legal_review_reason)));
+  assert.ok(modiv.rows.every((row) => row.legal_review_reason
+    === 'ALL_GOVERNED_CLAIMS_ROUTES_AND_FORMULAS_VERIFIED'));
 });
