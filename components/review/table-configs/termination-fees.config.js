@@ -68,8 +68,42 @@ const SOURCE_CARD_CODE_BY_KEY = {
   tailFeeWindowMonths: 'TERMF-TAIL',
 };
 
+// The title/quote fallback below exists for ONE case: a genuine fee card the
+// classifier never subtyped, which carries neither the fee provision_type nor a
+// TERMF code and would otherwise be invisible to this table. It is NOT a
+// classifier. Run unguarded it also nets every card of every OTHER family that
+// merely MENTIONS the fee -- and clauses that mention it are common: a
+// sole-remedy clause (REM-SOLE, owned by Specific Performance / Remedies) is
+// usually about the fee, and a buyer financing rep quotes the guarantee of "the
+// Parent Termination Fee" (see the real REP-B-FUNDS card in
+// tests/fixtures/canonical-v2/financing-covenants-live-run/corpus-cards.json,
+// exported from the production provision_cards table, which this guard now
+// keeps out). Once such a card is selected, combineTermfFeatures() merges its
+// features into the fee row's bag and findSourceCard()'s `|| cards[0]` fallback
+// can hand a fee row a foreign clause as its evidence.
+//
+// So the fallback is narrowed, not removed: it applies only to a card NO family
+// has claimed. A card already carrying another family's provision_type or
+// canonical code belongs to that family, and a word match in its quote must
+// never re-home it here.
+const FEE_TEXT_RE = /termination fee|reverse termination|tail fee|ticking fee/i;
+
+// cardType() reads provision_type first and falls back to `type`; canonical fee
+// cards carry 'TERMINATION_FEE' on the former and 'TERMF' on the latter, so
+// both spellings count as this family's own.
+const FEE_CARD_TYPES = new Set(['TERMINATION_FEE', 'TERMF']);
+
+function isClaimedByAnotherFamily(card) {
+  const type = cardType(card);
+  if (type && !FEE_CARD_TYPES.has(type)) return true;
+  const code = cardCode(card);
+  return Boolean(code) && !code.startsWith('TERMF');
+}
+
 function isTerminationFee(card) {
-  return cardType(card) === 'TERMINATION_FEE' || cardCode(card).startsWith('TERMF') || /termination fee|reverse termination|tail fee|ticking fee/i.test(`${card?.short_title || ''} ${textOf(card)}`);
+  if (cardType(card) === 'TERMINATION_FEE' || cardCode(card).startsWith('TERMF')) return true;
+  if (isClaimedByAnotherFamily(card)) return false;
+  return FEE_TEXT_RE.test(`${card?.short_title || ''} ${textOf(card)}`);
 }
 
 // Merge every TERMF card's features into one bag, routing each card's flat
@@ -275,6 +309,51 @@ function formatInterestBasis(cards) {
   return spread ? `${label} + ${spread}` : label;
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   CANONICAL LATE-PAYMENT INTEREST
+   ─────────────────────────────────────────────────────────────────────────
+   Canonical serving publishes the rate as PROSE on
+   `latePaymentInterestBenchmark`, beside a BOOLEAN `interestOnLatePayment`
+   (lib/canonical-v2/termination-product-projection.js's LATE_PAYMENT_INTEREST
+   branch). formatInterestOnLatePayment() above only reads the legacy
+   { rate, base } object, so it saw the bare boolean and the row that reads
+   "Prime rate (Bank of America)" under legacy collapsed to "Yes".
+
+   The prose runs through the SAME summarizeRate() the legacy rate goes
+   through, so one agreement reads identically whichever extraction served it,
+   and the two sides of the V1/V2 comparison are compared like for like rather
+   than differing only in house style.
+
+   The reference-rate CODE is NOT re-derived here. The projection derives it
+   with lib/row-market-stats/legal-normalizers.js#latePaymentRateBasis -- the
+   classifier this row's own market subterms already use -- and publishes it as
+   `interestRateBasis`. Its presence is therefore this config's signal that the
+   rate was actually resolved; its absence is the signal that it was not.
+   ───────────────────────────────────────────────────────────────────────── */
+const INTEREST_BENCHMARK_KEYS = ['latePaymentInterestBenchmark'];
+
+function interestBenchmarkProse(cards) {
+  const hit = firstFeature(cards, INTEREST_BENCHMARK_KEYS);
+  const raw = typeof hit?.value === 'string' ? hit.value : null;
+  const prose = raw ? raw.trim() : '';
+  return prose || null;
+}
+
+function formatInterestBenchmark(cards) {
+  const prose = interestBenchmarkProse(cards);
+  if (!prose) return null;
+  const summarized = summarizeRate(prose);
+  return typeof summarized === 'string' && summarized.trim() ? summarized.trim() : prose;
+}
+
+// The projection publishes interestRateBasis ONLY when its classifier resolved
+// a real reference rate, so "benchmark prose but no code" is exactly the case
+// where the agreement states something the classifier could not read as a rate
+// -- a defined-term cross-reference ("the Applicable Rate") above all.
+function hasResolvedInterestRateBasis(cards) {
+  return Boolean(firstFeature(cards, ['interestRateBasis']));
+}
+
 const INTEREST_MARKET_CODES = ['TERMF-TARGET', 'TERMF-REVERSE'];
 const INTEREST_MARKET_KEYS = ['interestOnLatePayment', 'interestRateBasis'];
 
@@ -324,8 +403,12 @@ function scalarRows(cards) {
       const hit = firstFeature(cards, keys || id);
       const row = makeRow('termination-fees', id, label, kind, hit);
       if (!row) return null;
+      // Benchmark prose first: it is what the AGREEMENT says, and it is
+      // strictly more informative than the code's taxonomy label ("Prime rate
+      // (Bank of America)" vs "Prime rate (a named bank)"). Legacy cards carry
+      // no benchmark, so their row is byte-identical to before.
       const detail = id === 'interest'
-        ? (formatInterestBasis(cards) || formatInterestOnLatePayment(hit.value) || row.detail)
+        ? (formatInterestBenchmark(cards) || formatInterestBasis(cards) || formatInterestOnLatePayment(hit.value) || row.detail)
         : row.detail;
       return {
         ...row,
@@ -599,16 +682,39 @@ function feeRowCoverageSignal(feeRow) {
   };
 }
 
-// The interest row degrades rather than vanishes under canonical: the
-// projection publishes `interestOnLatePayment: true` from Wave B evidence but
-// carries neither the rate prose nor the interestRateBasis code, so the row
-// that read "Prime rate (Bank of America)" collapses to a bare "Yes". "Yes"
-// alone implies we know the terms; we do not. Say so on the row.
+// The interest row degrades rather than vanishes under canonical. Two
+// different, and differently-honest, degradations:
+//
+//   no benchmark at all -- Wave B recorded only `interestOnLatePayment: true`,
+//     so the row that reads "Prime rate (Bank of America)" under legacy
+//     collapses to a bare "Yes". "Yes" alone implies we know the terms; we do
+//     not. Say so.
+//
+//   benchmark, but no resolved reference rate -- the agreement DOES state a
+//     rate and we DO have its words, but they are a defined-term
+//     cross-reference ("the Applicable Rate"): a pointer to a definition
+//     elsewhere in the agreement, not a rate. The projection deliberately
+//     publishes no interestRateBasis for one, so nothing downstream treats the
+//     pointer as an extracted rate. The row shows the agreement's own words --
+//     hiding them behind "not yet extracted" would be false, we did extract
+//     them -- in quotes, so they read as the agreement's term rather than as
+//     our finding, followed by the plain statement that they have not been
+//     resolved to a reference rate. Amber, and PARTIAL_NOT_YET_EXTRACTED, the
+//     same as the bare-"Yes" case: this row is not finished either way.
 const INTEREST_RATE_NOT_EXTRACTED = 'reference rate not yet extracted';
+const INTEREST_RATE_NOT_RESOLVED = 'reference rate not resolved';
 
-function withInterestCoverage(row) {
-  if (row.id !== 'termination-fees-interest' || row.detail !== 'Yes') return row;
-  const detail = `Yes (${INTEREST_RATE_NOT_EXTRACTED})`;
+function interestCoverageDetail(row, cards) {
+  if (row.detail === 'Yes') return `Yes (${INTEREST_RATE_NOT_EXTRACTED})`;
+  const prose = interestBenchmarkProse(cards);
+  if (!prose || hasResolvedInterestRateBasis(cards)) return null;
+  return `"${prose}" (${INTEREST_RATE_NOT_RESOLVED})`;
+}
+
+function withInterestCoverage(row, cards) {
+  if (row.id !== 'termination-fees-interest') return row;
+  const detail = interestCoverageDetail(row, cards);
+  if (!detail) return row;
   return {
     ...row,
     detail,
@@ -639,7 +745,7 @@ function canonicalServedRows(cards, dealValueUsd) {
     const coverage = byId.has(row.id) ? feeRowCoverageSignal(byId.get(row.id)) : null;
     return coverage ? { ...row, signals: [...row.signals, coverage] } : row;
   });
-  return [...fees, ...scalarRows(cards).map(withInterestCoverage), ...deferredEvidenceRows(cards)];
+  return [...fees, ...scalarRows(cards).map((row) => withInterestCoverage(row, cards)), ...deferredEvidenceRows(cards)];
 }
 
 // Builds the canonical-served rows: the same builders the legacy path uses,
@@ -1171,6 +1277,8 @@ export {
   CANONICAL_V2_TERMINATION_FEE_CARDS_FIELD,
   CANONICAL_V2_TERMINATION_FEE_COMPARE_FIELD,
   CANONICAL_V2_TERMINATION_FEE_SERVING_FIELD,
+  INTEREST_RATE_NOT_EXTRACTED,
+  INTEREST_RATE_NOT_RESOLVED,
   NOT_IN_V1_DETAIL,
   NOT_YET_EXTRACTED_DETAIL,
   V1_COLUMN_HEADER,
@@ -1184,6 +1292,7 @@ export {
   formatFeeDetail,
   isCanonicalTerminationFeeCompareEnabled,
   isCanonicalTerminationFeeServingEnabled,
+  isTerminationFee,
   parseFeeAmountUsd,
   partitionTerminationFeeCards,
   renderSignals,

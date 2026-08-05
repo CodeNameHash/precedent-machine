@@ -169,6 +169,25 @@ function canonicalInterestCard() {
   };
 }
 
+// The same Wave B surface with a benchmark the classifier DOES resolve, shaped
+// exactly as lib/canonical-v2/termination-product-projection.js publishes it:
+// the prose plus the interestRateBasis code its classifier derived.
+function canonicalResolvedInterestCard() {
+  return {
+    id: 'canonical-open-world-interest-resolved',
+    provision_type: 'TERMINATION_FEE',
+    provision_subtype: 'OPEN-WORLD',
+    short_title: 'Deferred Evidence',
+    primary_quote: 'If the termination fee is not paid when due, interest accrues at the prime rate of Bank of America.',
+    features: {
+      interestOnLatePayment: true,
+      latePaymentInterestBenchmark: 'the prime rate of Bank of America (or its successors or assigns) in effect on the date such payment was required to be made',
+      interestRateBasis: 'PRIME_BANK',
+    },
+    canonical_v2_lineage: { source: 'CANONICAL_V2_NATIVE_CLAIM' },
+  };
+}
+
 function bothSourcesDeal({ cards = legacyCards(), canonical = qxoCanonicalCards() } = {}) {
   return {
     cards,
@@ -395,12 +414,30 @@ test('a V2 row that is only partly extracted says so rather than reading as a di
   }));
   const interest = rowById(rows, 'termination-fees-interest');
   assert.equal(interest.sourceComparison.state, 'V2_PARTIAL');
+  // V2's benchmark here is "Applicable Rate" -- a defined-term cross-reference
+  // the classifier cannot resolve to a rate. V2's cell names the agreement's
+  // own words AND says they are unresolved, so the row is still V2_PARTIAL and
+  // still not a disagreement with V1's resolved prime-rate reading.
   assert.equal(
     interest.detail,
-    'V2 only partly extracted — V1: Prime rate (Bank of America) · V2: Yes (reference rate not yet extracted)',
+    'V2 only partly extracted — V1: Prime rate (Bank of America) · V2: "Applicable Rate" (reference rate not resolved)',
   );
   assert.equal(interest.sources.v1.headline, 'Prime rate (Bank of America)');
-  assert.equal(interest.sources.v2.headline, 'Yes (reference rate not yet extracted)');
+  assert.equal(interest.sources.v2.headline, '"Applicable Rate" (reference rate not resolved)');
+});
+
+test('a V2 benchmark the classifier DOES resolve renders the rate, not a coverage gap', async () => {
+  const mod = await config();
+  const rows = mod.terminationFeesConfig.selectRows(bothSourcesDeal({
+    canonical: [...qxoCanonicalCards(), canonicalResolvedInterestCard()],
+  }));
+  const interest = rowById(rows, 'termination-fees-interest');
+  // Same agreement, same rate, two extractions: V1's { rate, base } object and
+  // V2's benchmark prose both render through summarizeRate(), so the
+  // comparison reports agreement instead of a house-style difference.
+  assert.equal(interest.sources.v2.headline, 'Prime rate (Bank of America)');
+  assert.equal(interest.sourceComparison.state, 'MATCH');
+  assert.equal(interest.detail, 'V1 and V2 agree — Prime rate (Bank of America)');
 });
 
 test('a field-level V2 gap inside a served row is still named', async () => {

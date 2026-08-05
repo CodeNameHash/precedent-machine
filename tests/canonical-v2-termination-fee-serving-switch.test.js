@@ -446,31 +446,48 @@ test('a canonical fee row names its own missing fields', async () => {
   assert.equal(gap.label, 'Not yet extracted: % of equity value, payment deadline, sole-remedy status');
 });
 
-test('the interest row degrades honestly instead of collapsing to a bare Yes', async () => {
-  const mod = await config();
-  // The projection publishes interestOnLatePayment: true from Wave B evidence
-  // with no rate and no interestRateBasis -- legacy showed "Prime rate (Bank of
-  // America)", canonical would otherwise show "Yes".
-  const canonicalInterestCard = {
+// The Wave B interest surface, shaped exactly as lib/canonical-v2/termination-
+// product-projection.js publishes it: a BOOLEAN interestOnLatePayment plus the
+// benchmark PROSE, and the interestRateBasis code only when its classifier
+// resolved one.
+function canonicalInterestCard(features) {
+  return {
     id: 'canonical-open-world-interest',
     provision_type: 'TERMINATION_FEE',
     provision_subtype: 'OPEN-WORLD',
     short_title: 'Deferred Evidence',
-    primary_quote: 'If the termination fee is not paid when due, interest accrues at the Applicable Rate.',
-    features: { interestOnLatePayment: true, latePaymentInterestBenchmark: 'Applicable Rate' },
+    primary_quote: 'If the termination fee is not paid when due, interest accrues at the stated rate.',
+    features: { interestOnLatePayment: true, ...features },
     canonical_v2_lineage: { source: 'CANONICAL_V2_NATIVE_CLAIM' },
   };
-  const rows = mod.terminationFeesConfig.selectRows({
+}
+
+function canonicalInterestRows(mod, features) {
+  return mod.terminationFeesConfig.selectRows({
     cards: [],
     value_usd: DEAL_VALUE_USD,
     [SERVING_FIELD]: true,
-    [CARDS_FIELD]: [...qxoCanonicalCards(), canonicalInterestCard],
+    [CARDS_FIELD]: [...qxoCanonicalCards(), canonicalInterestCard(features)],
   });
-  const interest = rowById(rows, 'termination-fees-interest');
-  assert.ok(interest);
-  assert.equal(interest.detail, 'Yes (reference rate not yet extracted)');
-  assert.equal(interest.coverageState, 'PARTIAL_NOT_YET_EXTRACTED');
-  assert.equal(interest.signals[0].tone, 'warning');
+}
+
+test('the interest row degrades honestly instead of collapsing to a bare Yes', async () => {
+  const mod = await config();
+  // Wave B recorded presence only -- no benchmark prose, no interestRateBasis.
+  // Legacy showed "Prime rate (Bank of America)"; canonical would otherwise
+  // show a bare "Yes", which implies we know terms we do not have.
+  // Both shapes the projection can emit for "no benchmark": the key absent, and
+  // the key present holding null (which is what it publishes when the producer
+  // captured no benchmark_quote).
+  for (const features of [{}, { latePaymentInterestBenchmark: null }]) {
+    const interest = rowById(canonicalInterestRows(mod, features), 'termination-fees-interest');
+    assert.ok(interest);
+    assert.equal(interest.detail, `Yes (${mod.INTEREST_RATE_NOT_EXTRACTED})`);
+    assert.equal(interest.detail, 'Yes (reference rate not yet extracted)');
+    assert.equal(interest.coverageState, 'PARTIAL_NOT_YET_EXTRACTED');
+    assert.equal(interest.signals[0].tone, 'warning');
+  }
+  const rows = canonicalInterestRows(mod, {});
   // A partially-covered row is a real row, so it keeps its id and is NOT also
   // reported as a missing surface.
   assert.equal(rows.some((row) => row.id === 'termination-fees-not-yet-extracted-interest'), false);
@@ -478,6 +495,72 @@ test('the interest row degrades honestly instead of collapsing to a bare Yes', a
   // Legacy, by contrast, still renders the extracted rate verbatim-derived.
   const legacyRows = mod.terminationFeesConfig.selectRows({ cards: legacyCards(), value_usd: DEAL_VALUE_USD });
   assert.equal(rowById(legacyRows, 'termination-fees-interest').detail, 'Prime rate (Bank of America)');
+});
+
+test('the canonical interest row shows the benchmark prose the agreement states', async () => {
+  const mod = await config();
+  const rows = canonicalInterestRows(mod, {
+    latePaymentInterestBenchmark: 'the prime rate of Bank of America (or its successors or assigns) in effect on the date such payment was required to be made',
+    interestRateBasis: 'PRIME_BANK',
+  });
+  const interest = rowById(rows, 'termination-fees-interest');
+  assert.ok(interest);
+  // The wiring gap this closes: the row read "Yes" because the projection
+  // publishes the rate as prose on latePaymentInterestBenchmark while
+  // formatInterestOnLatePayment() only reads the legacy { rate, base } object.
+  assert.equal(interest.detail, 'Prime rate (Bank of America)');
+  // The rate IS resolved, so this is a finished row -- no coverage flag, and
+  // the ordinary quantitative tone rather than amber.
+  assert.equal(interest.coverageState, undefined);
+  assert.equal(interest.signals[0].tone, 'info');
+  // Byte-identical to the legacy row for the same agreement: the two
+  // extractions render the same rate the same way.
+  const legacyRows = mod.terminationFeesConfig.selectRows({ cards: legacyCards(), value_usd: DEAL_VALUE_USD });
+  assert.equal(interest.detail, rowById(legacyRows, 'termination-fees-interest').detail);
+});
+
+test('the benchmark prose beats the interestRateBasis taxonomy label', async () => {
+  const mod = await config();
+  // PRIME_BANK's taxonomy label is the generic "Prime rate (a named bank)".
+  // The agreement names the bank; the row must show what the agreement says.
+  const rows = canonicalInterestRows(mod, {
+    latePaymentInterestBenchmark: 'the prime rate of Bank of America in effect on the date such payment was required to be made',
+    interestRateBasis: 'PRIME_BANK',
+  });
+  assert.equal(rowById(rows, 'termination-fees-interest').detail, 'Prime rate (Bank of America)');
+});
+
+test('a benchmark with no recognised reference rate still reaches the row, unclassified', async () => {
+  const mod = await config();
+  // SOFR resolves in the classifier but has no INTEREST_RATE_BASIS taxonomy
+  // label, so formatInterestBasis() returns null. The prose still renders, and
+  // because a code WAS resolved the row is not flagged as unresolved.
+  const rows = canonicalInterestRows(mod, {
+    latePaymentInterestBenchmark: 'SOFR plus 2% per annum',
+    interestRateBasis: 'SOFR',
+  });
+  const interest = rowById(rows, 'termination-fees-interest');
+  assert.equal(interest.detail, 'SOFR plus 2% per annum');
+  assert.equal(interest.coverageState, undefined);
+});
+
+test('a defined-term cross-reference is never rendered as though it were a rate', async () => {
+  const mod = await config();
+  // "the Applicable Rate" is a POINTER to a definition elsewhere. The
+  // projection's classifier publishes no interestRateBasis for it (see the
+  // projection test below), so the row shows the agreement's own words in
+  // quotes and says plainly that they are not resolved to a reference rate.
+  const rows = canonicalInterestRows(mod, { latePaymentInterestBenchmark: 'the Applicable Rate' });
+  const interest = rowById(rows, 'termination-fees-interest');
+  assert.equal(interest.detail, `"the Applicable Rate" (${mod.INTEREST_RATE_NOT_RESOLVED})`);
+  assert.equal(interest.detail, '"the Applicable Rate" (reference rate not resolved)');
+  // Still an unfinished row: amber, and the same PARTIAL state the bare-"Yes"
+  // degradation carries.
+  assert.equal(interest.coverageState, 'PARTIAL_NOT_YET_EXTRACTED');
+  assert.equal(interest.signals[0].tone, 'warning');
+  // It must never read as a resolved rate, and never claim we have not looked.
+  assert.equal(/^Prime rate|^Fixed rate|^6-month/.test(interest.detail), false);
+  assert.equal(interest.detail.includes(mod.NOT_YET_EXTRACTED_DETAIL), false);
 });
 
 // ---------------------------------------------------------------------------

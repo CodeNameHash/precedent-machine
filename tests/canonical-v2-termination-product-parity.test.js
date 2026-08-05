@@ -243,6 +243,11 @@ test('governed termination fees retain remedies ownership and expose direct late
   const interest = projection.cards.find((card) => card.features.interestOnLatePayment);
   assert.equal(interest.features.interestOnLatePayment, true);
   assert.equal(interest.features.latePaymentInterestBenchmark, 'Applicable Rate');
+  // "Applicable Rate" is a defined-term cross-reference, not a rate. The
+  // classifier's OTHER_REFERENCE_RATE fallback is its "unrecognised" bucket, so
+  // NO interestRateBasis is published -- not even a null one, which would still
+  // be a published rate-basis field.
+  assert.equal(Object.hasOwn(interest.features, 'interestRateBasis'), false);
   const sellerRow = rows.find((row) => row.id === 'termination-fees-COMPANY_TERMINATION_FEE');
   assert.ok(sellerRow.signals.some((signal) => signal.label === 'Change in recommendation'));
 
@@ -274,4 +279,78 @@ test('governed termination fees retain remedies ownership and expose direct late
     { id: 'peer-fee', announce_date: '2026-06-30', value_usd: 1800000000, metadata: {} },
   ]);
   assert.equal(feeMarket.get('interestOnLatePayment'), true);
+});
+
+// ---------------------------------------------------------------------------
+// Late-payment interest: the rate basis is DERIVED, by the existing classifier
+// ---------------------------------------------------------------------------
+
+function interestProjection(benchmarkQuote) {
+  const projection = projectTerminationFeeProductSurfaces({
+    resolution: {
+      resolved: [],
+      open_world: [openWorld(
+        'LATE_PAYMENT_INTEREST',
+        'If the termination fee is not paid when due, interest accrues.',
+        {
+          surface: 'LATE_PAYMENT_INTEREST',
+          interest_present: true,
+          benchmark_quote: benchmarkQuote,
+          due_date_reference_quote: 'when due',
+        },
+      )],
+    },
+    deal_id: 'interest-basis-deal',
+  });
+  return projection.cards.find((card) => card.features.interestOnLatePayment).features;
+}
+
+test('the late-payment rate basis is derived by the row-market-stats classifier, not a second regex', () => {
+  const { NORMALIZERS } = require('../lib/row-market-stats/legal-normalizers');
+  const cases = [
+    'the prime rate of Bank of America (or its successors or assigns) in effect on the date such payment was required to be made',
+    'the prime rate as published in The Wall Street Journal',
+    'the six-month U.S. Treasury rate',
+    'SOFR plus 2% per annum',
+    'a fixed rate of 8% per annum',
+    'the maximum rate permitted by law',
+  ];
+  for (const prose of cases) {
+    const features = interestProjection(prose);
+    // Identity with the classifier's own answer -- not merely "some code".
+    assert.deepEqual([features.interestRateBasis], NORMALIZERS.late_payment_rate_basis(prose), prose);
+    assert.equal(features.latePaymentInterestBenchmark, prose);
+  }
+  // The classifier's own answers, pinned, so a change to it is visible here.
+  assert.deepEqual(cases.map((prose) => interestProjection(prose).interestRateBasis), [
+    'PRIME_BANK',
+    'PRIME_WSJ',
+    'US_TREASURY_6MO',
+    'SOFR',
+    'FIXED',
+    'STATUTORY_OR_MAXIMUM_LAWFUL_RATE',
+  ]);
+});
+
+test('a defined-term cross-reference is not classified as a rate', () => {
+  const { NORMALIZERS } = require('../lib/row-market-stats/legal-normalizers');
+  for (const pointer of ['the Applicable Rate', 'Applicable Rate', 'the Default Rate']) {
+    // The classifier's fallback bucket is "I did not recognise this", not a
+    // rate it identified...
+    assert.deepEqual(NORMALIZERS.late_payment_rate_basis(pointer), ['OTHER_REFERENCE_RATE']);
+    const features = interestProjection(pointer);
+    // ...so the projection publishes the agreement's words and NO rate basis.
+    assert.equal(features.latePaymentInterestBenchmark, pointer);
+    assert.equal(Object.hasOwn(features, 'interestRateBasis'), false);
+    assert.equal(features.interestOnLatePayment, true);
+  }
+  // Nor is OTHER_REFERENCE_RATE ever published as a value.
+  assert.equal(JSON.stringify(interestProjection('the Applicable Rate')).includes('OTHER_REFERENCE_RATE'), false);
+});
+
+test('an absent benchmark publishes neither prose nor a rate basis', () => {
+  const features = interestProjection(null);
+  assert.equal(features.interestOnLatePayment, true);
+  assert.equal(features.latePaymentInterestBenchmark, null);
+  assert.equal(Object.hasOwn(features, 'interestRateBasis'), false);
 });
