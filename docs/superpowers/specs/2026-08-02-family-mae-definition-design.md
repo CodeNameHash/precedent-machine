@@ -52,7 +52,9 @@ clause ("(i) … (xiv)" / "(A) … (J)" / "(a) … (k)" — all three labelling
 styles are live in the fixture deals) is a limb carrying one or more
 governed carve-out codes, and the disproportionality carveback is a
 separate claim that claws back SPECIFIC enumerated clauses, quoted
-verbatim.
+verbatim. The claim preserves whether the agreement states the carveback
+inside each affected limb (`PER_LIMB`) or in one trailing list
+(`TRAILING_LIST`).
 
 **What "conversion" honestly means here (P1 audit C-1/M-5, applied
 verbatim).** NO recorded native runs exist for this family. There are no
@@ -199,12 +201,19 @@ P1 verified write-set attributes are schema-free except
   optional — one-prong definitions have no label), substring-of-quote
   when present.
 - `MAE_DISPROPORTIONALITY_CARVEBACK`:
+  - `carveback_source_form` — REQUIRED enum, either `PER_LIMB` or
+    `TRAILING_LIST`. The producer records the agreement's drafting form.
+    It never rewrites a per-limb clause as a synthetic trailing list.
   - `applies_to_clause_labels` — REQUIRED array of verbatim clause labels
-    the carveback claws back, each individually a substring of the
-    byte-verified quote (live groundings: Skechers "with respect to
+    the carveback claws back. A `PER_LIMB` claim contains exactly one
+    label and a full `limb_path` identifying that limb. A
+    `TRAILING_LIST` claim contains the labels stated in the trailing
+    proviso. Each label must be a substring of the byte-verified quote
+    (live trailing-list groundings: Skechers "with respect to
     clauses (i), (ii), (vi), (vii) and (xi)"; Metsera "in the case of
     clause (A), (B), (C), (D), (E) or (I)"; Modiv "in the case of the
-    foregoing clauses (a), (b), (c), (d), (g) or (k)"). Any element
+    foregoing clauses (a), (b), (c), (d), (g) or (k)"; live per-limb
+    grounding: TopBuild clauses (A), (B), (D), (G) and (H)). Any element
     failing the substring check → typed
     `CARVEBACK_CLAUSE_LABELS_NOT_IN_QUOTE` → review. An empty array is
     NOT an error by itself — a carveback drafted without clause
@@ -231,16 +240,16 @@ P1 verified write-set attributes are schema-free except
     derived conclusion the scope-closure machinery may someday make, not
     the producer).
 
-**The carveback→carve-out JOIN is deliberately NOT made this slice.** The
-v1 rubric wants per-carveout `hasDisproportionateImpactCarveback` tagging.
-Joining `applies_to_clause_labels` ("(vi)") to the carve-out claim
-labelled "(vi)" is a deterministic post-pass over limb structure — but it
-is correct ONLY when the enumeration parse is proven complete and
-label-stable, which is exactly the self-containment machinery this slice
-does not build. A wrong silent join mislabels which carve-outs survive
-disproportionality — a plausible-but-wrong output of the first order. The
-carveback claim carries the verbatim labels; the join is a named future
-slice (Out of scope).
+**The carveback→carve-out JOIN is made only in the product projection.**
+The producer never emits target claim identifiers. A `PER_LIMB` source
+joins by full `limb_path`. A `TRAILING_LIST` source joins a quoted label
+only when that label identifies one full limb within the same provision
+instance and defined term. The projection uses the actual carve-out claim
+revision identifiers. It never joins by a bare label across definitions or
+by a carve-out code. Duplicate labels route to review. A listed label with
+no governed carve-out claim remains an open-world limb relationship. Mixed
+source forms form a positive union and retain every contributor edge. A
+limb with no positive source is `NOT_ESTABLISHED`, not `false` or absent.
 
 **Named seam to verify at build time** (no-shop section 1 convention): the
 bundle validator's `assertExact(input.parser_proposal_boundary,
@@ -283,7 +292,7 @@ None observed in the production corpus examined; do not build for it.
 The capitalisation prompt (`capitalisation-producer-prompt.js`) is NOT
 edited — its `PROMPT_VERSION` does not move, its golden evals do not
 re-run. The new module mints its own `PROMPT_ID`
-(`mae-definition-producer/v1`), its own `PROMPT_VERSION` (1), and imports
+(`mae-definition-producer/v2`), its own `PROMPT_VERSION` (2), and imports
 `MAE_CARVEOUT_CODES_V2` per section 1's single-sourcing rule.
 
 Response shape — top-level arrays:
@@ -294,7 +303,7 @@ Response shape — top-level arrays:
   section — Modiv, Metsera). Each instance: `section_reference`,
   `defined_term` (verbatim), `definition_subject` (the verbatim party
   phrase the definition attaches to — "the Company", "Parent", "any
-  Party"), and three nested lists:
+  Party"), and four nested lists:
   - `prong_assertions`: `{ prong_code ∈ {BUSINESS_EFFECTS,
     CONSUMMATION_PREVENTION}, prong_label?, verbatim quote, limb_path }`.
     Groundings: Metsera "(i) has had, or would reasonably be expected to
@@ -322,7 +331,10 @@ Response shape — top-level arrays:
     (vii) example, stated in the prompt as a worked example).
   - `disproportionality_assertions`: `{ applies_to_clause_labels[],
     comparison_baseline_phrase, incremental_impact_phrase?, verbatim
-    quote }`.
+    quote }`, used only for `TRAILING_LIST` drafting.
+  - `limb_local_disproportionality_assertions`: `{ clause_label,
+    comparison_baseline_phrase, incremental_impact_phrase?, verbatim
+    quote, limb_path }`, used only for `PER_LIMB` drafting.
 - `open_world_candidates` (unchanged shape, PRESERVE-THE-NOVEL retained
   verbatim).
 
@@ -350,6 +362,10 @@ Family-specific prompt instructions (each a legal pin, not style):
   carve-out list. It STILL gets its own `disproportionality_assertion`
   object; text already quoted by a carve-out assertion does not excuse
   omitting the carveback object.
+- The drafting-form rule: use `limb_local_disproportionality_assertions`
+  when the operative disproportionality text appears inside the affected
+  limb. Use `disproportionality_assertions` when one trailing proviso names
+  several limbs. Never convert between these forms.
 - M3 rule 1 restated: emit only evidence-backed positives; never assert a
   carve-out is NOT present, a carveback does NOT apply to a clause, or a
   definition LACKS a prong. ABSENT stays derived downstream, forever.
@@ -697,7 +713,7 @@ post-merge live rerun handoffs may claim native MAE extraction.
    The COVERAGE MAP is hand-enumerated from those LITERAL bytes: per
    defined term, the expected prong claims, the expected (clause_label,
    carveout_code) set, the expected carveback with its
-   applies_to_clause_labels — each expected quote asserted to be a
+   source form and covered clause labels — each expected quote asserted to be a
    contiguous byte-substring of the committed text. Production-DB quotes
    in this spec are design grounding only — the tests never read the DB.
 2. **Registry:** new version compiles; prior version's arrays untouched
@@ -729,6 +745,12 @@ post-merge live rerun handoffs may claim native MAE extraction.
    including one where both nets are bound, fresh and clean
    (`both_nets_clean` may be true; the unevaluated entry is still
    present; nothing reads as auto-pass-eligible).
+   TopBuild Company and Parent definitions each resolve `PER_LIMB`
+   carvebacks for clauses (A), (B), (D), (G) and (H). Skechers and Modiv
+   exercise `TRAILING_LIST`. Product-projection tests prove that one
+   two-code limb is not duplicated, mixed source forms retain all edges,
+   duplicate labels route to review, and a trailing-list label without a
+   governed claim remains open world.
 4. **Identity:** Company-MAE and Parent-MAE claims from one section mint
    distinct stable identities (`defined_term_ref` identity-bearing);
    same clause_label under two codes mints distinct identities; the same
@@ -758,9 +780,6 @@ post-merge live rerun handoffs may claim native MAE extraction.
 - `COND-B-MAE` (the No-MAE closing condition, 28 production cards) and
   the MAE bring-down interaction — a condition-family slice, not a
   definition slice.
-- The carveback→carve-out per-clause JOIN
-  (`hasDisproportionateImpactCarveback` per carve-out) — requires proven
-  enumeration completeness; named future slice (section 1).
 - Any self-containment prover / lifting of
   `MAE_DEFINITION_SELF_CONTAINMENT_UNPROVEN` — future, Ben-ratified
   machinery; until then every DEF-MAE claim queues by construction.

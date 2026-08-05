@@ -149,6 +149,22 @@ test('every production source changed from the fixed Phase 1 base is classified 
 });
 
 test('pure proposals and local artefact writers have their exact capability boundaries', () => {
+  assert.ok(PURE_PROPOSAL_SOURCES.includes('lib/canonical-v2/antitrust-v1-surface-disposition.js'));
+  assert.ok(PURE_PROPOSAL_SOURCES.includes('lib/canonical-v2/bd837f1d-financing-source-open-world-pin.js'));
+  for (const source of [
+    'lib/canonical-v2/derived-comparison.js',
+    'lib/canonical-v2/native-producer/ioc-mechanic-resolution.js',
+    'lib/canonical-v2/native-producer/prompt-budget-split-preflight.js',
+    'lib/canonical-v2/native-producer/sole-remedy-resolution.js',
+    'lib/canonical-v2/policy-successor-m1-adoption-binding.js',
+    'scripts/reprocess/v1-apply-guard.js',
+    'lib/canonical-v2/legacy-card-bridge.js',
+  ]) assert.ok(PURE_PROPOSAL_SOURCES.includes(source), source);
+  for (const source of [
+    'scripts/reprocess/v1-apply-backup.js',
+    'scripts/reprocess/v1-apply-receipt.js',
+    'scripts/reprocess/v1-apply-sequence.js',
+  ]) assert.ok(LOCAL_ARTIFACT_WRITERS.includes(source), source);
   for (const source of Object.values(REQUIRED_AUTHORITY_BOUNDARY_CONTRACT_SOURCES)) {
     assert.ok(PURE_PROPOSAL_SOURCES.includes(source), source);
   }
@@ -159,6 +175,10 @@ test('pure proposals and local artefact writers have their exact capability boun
   assert.equal(
     REQUIRED_AUTHORITY_BOUNDARY_CONTRACT_SOURCES.SUCCESSOR_M1_TRUSTED_CONTROLLER_VERIFICATION,
     'lib/canonical-v2/native-producer/durable-12-item-pilot-readiness.js',
+  );
+  assert.equal(
+    REQUIRED_AUTHORITY_BOUNDARY_CONTRACT_SOURCES.GOVERNED_IDENTITY_LITERAL_KEY_REGISTRY_PATCH,
+    'lib/canonical-v2/deal-identity-trusted-key-registry-proposal.js',
   );
   assert.ok(PURE_PROPOSAL_SOURCES.includes(REQUIRED_AUTHORITY_BOUNDARY_CONTRACT_SOURCES.SOURCE_INTAKE_TRUSTED_AUTHORITY_VERIFIER));
   for (const relativePath of PURE_PROPOSAL_SOURCES) {

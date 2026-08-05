@@ -24,16 +24,16 @@ const {
   sortedLexiconEntries,
   scanLiteral,
 } = require('../lib/canonical-v2/native-producer/lexical-disagreement-net');
-const { compileFixtureContractV25, compileFixtureContractV34 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV25, compileFixtureContractV36 } = require('../lib/canonical-v2/contract-bundle');
 const {
   CONTROLLED_VOCABULARIES,
 } = require('../lib/canonical-v2/native-producer/no-shop-producer-prompt');
 
-const REGISTERED_CONCEPT_KEYS = new Set(compileFixtureContractV34().concepts.map((concept) => concept.concept_key));
+const REGISTERED_CONCEPT_KEYS = new Set(compileFixtureContractV36().concepts.map((concept) => concept.concept_key));
 
 test('LEXICAL_FAMILY_LEXICON_VERSION bumped 2 -> 3 (no-shop), then 3 -> 4 (family-mae-definition slice)', () => {
-  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 15);
-  assert.equal(LEXICAL_FAMILY_LEXICON.version, 15);
+  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 16);
+  assert.equal(LEXICAL_FAMILY_LEXICON.version, 16);
 });
 
 test('table validation: every entry has a non-empty pattern_id, family, kind, value, rationale; no duplicate pattern_id; every family is a registered concept key; BOUNDED_REGEX patterns stay <= 128 static max', () => {

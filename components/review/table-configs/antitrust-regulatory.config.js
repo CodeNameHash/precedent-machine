@@ -171,10 +171,14 @@ function effortsStandardRow(cards) {
 // row reads the code through readableValue()/labelForCode instead of
 // re-deriving the posture from a render-time regex over the clause text.
 function divestitureCapRow(cards) {
-  const capHit = firstFeature(cards, ['divestitureCapDescription', 'burdenCommitment', 'divestitureCap', 'burdensomeConditionLimit']);
+  const capHit = firstFeature(cards, ['burdenCommitment', 'divestitureCapDescription', 'divestitureCap', 'burdensomeConditionLimit']);
   const conditionHit = firstFeature(cards, ['divestitureInCondition']);
-  if (!capHit && !conditionHit) return null;
-  const primaryCard = capHit?.card || conditionHit.card;
+  const amountHit = firstFeature(cards, ['divestitureCapAmount']);
+  const currencyHit = firstFeature(cards, ['divestitureCapCurrency']);
+  const baselineHit = firstFeature(cards, ['burdenBaseline']);
+  const baselineRefHit = firstFeature(cards, ['burdenBaselineRef']);
+  if (!capHit && !conditionHit && !amountHit && !baselineHit) return null;
+  const primaryCard = capHit?.card || amountHit?.card || baselineHit?.card || conditionHit.card;
   const signals = [];
   if (capHit) {
     const label = shortText(readableValue(capHit.key, capHit.value), 60);
@@ -188,6 +192,28 @@ function divestitureCapRow(cards) {
         source: capHit.card,
       });
     }
+  }
+  if (amountHit) {
+    const currency = currencyHit ? valueText(currencyHit.value) : null;
+    signals.push({
+      id: 'antitrust-regulatory-divestiture-cap-amount-signal',
+      label: `${currency ? `${currency} ` : ''}${valueText(amountHit.value)}`,
+      value: amountHit.value,
+      tone: 'warning',
+      evidence: textOf(amountHit.card),
+      source: amountHit.card,
+    });
+  }
+  if (baselineHit) {
+    const baselineLabel = readableValue('burdenBaseline', baselineHit.value);
+    if (baselineLabel) signals.push({
+      id: 'antitrust-regulatory-divestiture-cap-baseline-signal',
+      label: baselineLabel,
+      value: baselineHit.value,
+      tone: 'neutral',
+      evidence: textOf(baselineRefHit?.card || baselineHit.card),
+      source: baselineRefHit?.card || baselineHit.card,
+    });
   }
   if (conditionHit && isTruthy(conditionHit.value)) {
     signals.push({
@@ -203,10 +229,10 @@ function divestitureCapRow(cards) {
   return {
     id: 'antitrust-regulatory-divestiture-cap',
     label: 'Divestiture cap',
-    detail: (capHit && valueText(cardFeatures(capHit.card).capDetail)) || capHit?.detail || conditionHit?.detail || mainConceptOf(capHit?.card) || mainConceptOf(conditionHit?.card),
+    detail: valueText(baselineRefHit?.value) || (capHit && valueText(cardFeatures(capHit.card).capDetail)) || capHit?.detail || conditionHit?.detail || mainConceptOf(capHit?.card) || mainConceptOf(conditionHit?.card),
     evidence: textOf(primaryCard),
     source: primaryCard,
-    featureKeys: ['burdenCommitment', 'divestitureCap', 'hellOrHighWater'],
+    featureKeys: ['burdenCommitment', 'divestitureCap', 'divestitureCapAmount', 'divestitureCapCurrency', 'burdenBaseline', 'burdenBaselineRef', 'hellOrHighWater'],
     marketProvisionCodes: ['ANTI-BURDEN'],
     present: true,
     signals,
@@ -235,9 +261,13 @@ function hsrDaysLabel(raw) {
 }
 
 function hsrDeadlineRow(cards) {
-  const hit = firstFeature(cards, ['hsrFilingDeadlineBusinessDays', 'hsrFilingDeadline', 'exHsrFilingDeadline']);
+  const hit = firstFeature(cards, ['hsrFilingDeadlineDays', 'hsrFilingDeadlineBusinessDays', 'hsrFilingDeadline', 'exHsrFilingDeadline']);
   if (!hit) return null;
-  const label = hsrDaysLabel(hit.value) || shortText(hit.detail, 40);
+  const dayKind = valueText(cardFeatures(hit.card).hsrFilingDeadlineDayKind);
+  const numeric = typeof hit.value === 'object' ? null : Number(hit.value);
+  const label = Number.isFinite(numeric) && dayKind
+    ? `${numeric} ${dayKind.toLowerCase()} days`
+    : hsrDaysLabel(hit.value) || shortText(hit.detail, 40);
   if (!label) return null;
   return {
     id: 'antitrust-regulatory-hsr-deadline',
@@ -245,7 +275,7 @@ function hsrDeadlineRow(cards) {
     detail: hit.detail || mainConceptOf(hit.card),
     evidence: textOf(hit.card),
     source: hit.card,
-    featureKeys: ['hsrFilingDeadlineBusinessDays'],
+    featureKeys: ['hsrFilingDeadlineDays', 'hsrFilingDeadlineDayKind', 'hsrFilingDeadlineBusinessDays'],
     marketProvisionCodes: ['ANTI-FILING'],
     present: true,
     signals: [{
@@ -273,6 +303,49 @@ function foreignPresenceLabel(value) {
   return isFalsy(value) ? 'Not required' : 'Required';
 }
 
+const FILING_TIMING_LABELS = {
+  AS_PROMPTLY_AS_PRACTICABLE: 'As promptly as practicable',
+  AS_PROMPTLY_AS_REASONABLY_PRACTICABLE: 'As promptly as reasonably practicable',
+  AS_SOON_AS_PRACTICABLE: 'As soon as practicable',
+  AS_SOON_AS_REASONABLY_PRACTICABLE: 'As soon as reasonably practicable',
+  PROMPTLY: 'Promptly',
+};
+
+function isHsrRegimeLabel(value) {
+  return /^HSR Act$/i.test(String(value || '').trim())
+    || /^Hart[- ]Scott[- ]Rodino(?: Antitrust Improvements)? Act/i.test(String(value || '').trim());
+}
+
+function filingFactEntries(cards) {
+  const entries = [];
+  const seen = new Set();
+  for (const card of cards) {
+    const raw = cardFeatures(card).regulatoryFilingFacts;
+    for (const fact of (Array.isArray(raw) ? raw : (raw ? [raw] : []))) {
+      if (!fact || typeof fact !== 'object' || isHsrRegimeLabel(fact.filingRegime)) continue;
+      const key = JSON.stringify(fact);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      entries.push({ fact, card });
+    }
+  }
+  return entries;
+}
+
+function filingFactLabel(fact) {
+  if (fact.factKind === 'OBLIGATION') return `Required: ${fact.filingRegime}`;
+  if (fact.factKind === 'DEADLINE_DAYS') {
+    const dayKind = fact.dayKind ? `${String(fact.dayKind).toLowerCase()} ` : '';
+    const trigger = fact.timingTrigger ? ` ${fact.timingTrigger}` : '';
+    return `${fact.filingRegime}: ${fact.value} ${dayKind}days${trigger}`;
+  }
+  if (fact.factKind === 'FIXED_DATE') return `${fact.filingRegime}: ${fact.fixedDate}`;
+  if (fact.factKind === 'TIMING_STANDARD') {
+    return `${fact.filingRegime}: ${FILING_TIMING_LABELS[fact.timingStandard] || prettifyCode(fact.timingStandard)}`;
+  }
+  return null;
+}
+
 function foreignTimelineLabel(raw) {
   if (raw === null || raw === undefined || raw === '') return null;
   if (typeof raw === 'number') return `${raw} days`;
@@ -294,6 +367,30 @@ function foreignTimelineLabel(raw) {
 }
 
 function foreignFilingsRow(cards) {
+  const nativeFacts = filingFactEntries(cards);
+  if (nativeFacts.length > 0) {
+    const first = nativeFacts[0];
+    const signals = nativeFacts.map(({ fact, card }, index) => ({
+      id: `antitrust-regulatory-non-hsr-filing-fact-${index}`,
+      label: filingFactLabel(fact),
+      value: fact,
+      tone: fact.factKind === 'OBLIGATION' ? 'present' : 'info',
+      evidence: fact.exactEvidence || textOf(card),
+      source: card,
+    })).filter(({ label }) => Boolean(label));
+    if (!signals.length) return null;
+    return {
+      id: 'antitrust-regulatory-foreign-filings',
+      label: 'Non-HSR regulatory filings',
+      detail: signals.map(({ label }) => label).join('; '),
+      evidence: first.fact.exactEvidence || textOf(first.card),
+      source: first.card,
+      featureKeys: ['regulatoryFilingFacts'],
+      marketProvisionCodes: ['ANTI-FILING'],
+      present: true,
+      signals,
+    };
+  }
   const hit = firstFeature(cards, ['foreignFilingsRequired', 'regulatoryFilingRegimes', 'foreignFilings']);
   if (!hit) return null;
   const regimeHit = firstFeature(cards, ['regulatoryFilingRegimes']);
@@ -306,19 +403,7 @@ function foreignFilingsRow(cards) {
     evidence: textOf(hit.card),
     source: hit.card,
   }];
-  const hsrHit = firstFeature(cards, ['hsrFilingDeadlineBusinessDays', 'hsrFilingDeadline', 'exHsrFilingDeadline']);
-  const hsrLimb = hsrHit && (hsrDaysLabel(hsrHit.value) || shortText(hsrHit.detail, 40));
-  if (hsrLimb) {
-    signals.push({
-      id: 'antitrust-regulatory-foreign-filings-hsr-limb',
-      label: `(i) HSR — ${hsrLimb}`,
-      value: hsrHit.value,
-      tone: 'info',
-      evidence: textOf(hsrHit.card),
-      source: hsrHit.card,
-    });
-  }
-  const foreignTimelineHit = firstFeature(cards, ['exHsrFilingDeadline', 'otherRegulatoryFilingDeadlines', 'filingDeadline']);
+  const foreignTimelineHit = firstFeature(cards, ['regulatoryFilingTimingStandard', 'regulatoryFilingFixedDate', 'exHsrFilingDeadline', 'otherRegulatoryFilingDeadlines', 'filingDeadline']);
   const foreignLimb = foreignTimelineHit && foreignTimelineLabel(foreignTimelineHit.value);
   if (foreignLimb) {
     signals.push({
@@ -332,11 +417,11 @@ function foreignFilingsRow(cards) {
   }
   return {
     id: 'antitrust-regulatory-foreign-filings',
-    label: 'Foreign regulatory filings',
+    label: 'Non-HSR regulatory filings',
     detail: hit.detail || mainConceptOf(hit.card),
     evidence: textOf(hit.card),
     source: hit.card,
-    featureKeys: ['foreignFilingsRequired', 'otherRegulatoryFilingDeadlines'],
+    featureKeys: ['foreignFilingsRequired', 'regulatoryFilingRegimes', 'regulatoryFilingTimingStandard', 'regulatoryFilingFixedDate', 'otherRegulatoryFilingDeadlines'],
     marketProvisionCodes: ['ANTI-FILING'],
     present: true,
     signals,
@@ -367,6 +452,15 @@ const CONTROL_SHORT_LABELS = {
   SHARED_CONTROL: 'Shared',
   CONTROL_SILENT: 'Silent',
   SILENT_CONTROL: 'Silent',
+  BUYER_WITH_SETTLEMENT_GAG: 'Buyer, settlement gated',
+  BUYER_LEAD: 'Buyer lead',
+  PRINCIPAL_WITH_VETO: 'Principal, counterparty veto',
+  JURISDICTION_SPLIT: 'Split by jurisdiction',
+  SELLER_LED: 'Seller lead',
+  BUYER: 'Parent',
+  TARGET: 'Company',
+  MUTUAL: 'Shared',
+  SILENT: 'Silent',
 };
 
 function controlLabel(value) {
@@ -381,17 +475,17 @@ function controlLabel(value) {
 }
 
 function strategyControlRow(cards) {
-  const hit = firstFeature(cards, ['regulatoryStrategyControlTagged', 'controllingParty', 'regulatoryStrategyControl']);
+  const hit = firstFeature(cards, ['regulatoryStrategyControlTagged', 'controllingParty', 'regulatoryStrategyControl', 'partyControlsStrategy']);
   if (!hit) return null;
   const label = controlLabel(hit.value);
   if (!label) return null;
   return {
     id: 'antitrust-regulatory-strategy-control',
     label: 'Strategy control',
-    detail: hit.detail || mainConceptOf(hit.card),
+    detail: valueText(cardFeatures(hit.card).regulatoryStrategyScope) || hit.detail || mainConceptOf(hit.card),
     evidence: textOf(hit.card),
     source: hit.card,
-    featureKeys: ['regulatoryStrategyControlTagged'],
+    featureKeys: ['regulatoryStrategyControlTagged', 'regulatoryStrategyControlHolder', 'regulatoryStrategyScope', 'partyControlsStrategy'],
     marketProvisionCodes: ['ANTI-STRATEGY'],
     present: true,
     signals: [{
@@ -408,20 +502,20 @@ function strategyControlRow(cards) {
 // --- Clear-skies covenant --------------------------------------------------
 
 function clearSkiesRow(cards) {
-  const hit = firstFeature(cards, ['clearSkiesParent', 'clearSkiesCompany', 'clearSkies']);
+  const hit = firstFeature(cards, ['regulatoryNonImpedimentRequired', 'clearSkiesParent', 'clearSkiesCompany', 'clearSkies']);
   if (!hit) return null;
   const truthy = isTruthy(hit.value);
   const falsy = isFalsy(hit.value);
   if (!truthy && !falsy) return null;
   const features = cardFeatures(hit.card);
-  const scope = valueText(features.clearSkiesParentScope) || valueText(features.clearSkiesCompanyScope);
+  const scope = valueText(features.regulatoryImpairmentEffect) || valueText(features.regulatoryProhibitedAction) || valueText(features.clearSkiesParentScope) || valueText(features.clearSkiesCompanyScope);
   return {
     id: 'antitrust-regulatory-clear-skies',
     label: cardCode(hit.card) === 'ANTI-NOACTION' ? 'No inconsistent action' : 'Clear-skies covenant',
     detail: scope || hit.detail || mainConceptOf(hit.card),
     evidence: textOf(hit.card),
     source: hit.card,
-    featureKeys: ['clearSkiesParent', 'clearSkiesCompany'],
+    featureKeys: ['regulatoryNonImpedimentRequired', 'regulatoryProhibitedAction', 'regulatoryImpairmentEffect', 'clearSkiesParent', 'clearSkiesCompany'],
     marketProvisionCodes: ['ANTI-NOACTION'],
     present: true,
     signals: [{
@@ -525,7 +619,15 @@ function pullRefileRow(cards) {
     evidence: textOf(hit.card),
     source: hit.card,
   }];
-  const proviso = isNativeProjection(hit.card) ? null : withdrawalProvisoSignal(hit.card, 'pull-refile');
+  const nativeProviso = valueText(features.pullRefileProviso);
+  const proviso = nativeProviso ? {
+    id: 'antitrust-regulatory-pull-refile-proviso-signal',
+    label: nativeProviso,
+    value: nativeProviso,
+    tone: 'warning',
+    evidence: textOf(hit.card),
+    source: hit.card,
+  } : (isNativeProjection(hit.card) ? null : withdrawalProvisoSignal(hit.card, 'pull-refile'));
   if (proviso) signals.push(proviso);
   return {
     id: 'antitrust-regulatory-pull-refile',
@@ -533,7 +635,7 @@ function pullRefileRow(cards) {
     detail: valueText(features.pullRefileText) || hit.detail || mainConceptOf(hit.card),
     evidence: textOf(hit.card),
     source: hit.card,
-    featureKeys: ['pullRefile'],
+    featureKeys: ['pullRefile', 'pullRefileProviso', 'pullRefileProvisoDays', 'pullRefileProvisoDayKind'],
     marketProvisionCodes: ['ANTI-AGREEMENTS'],
     present: true,
     signals,
@@ -602,10 +704,10 @@ function consultationRightsRow(cards) {
   return {
     id: 'antitrust-regulatory-consultation',
     label: 'Consultation rights',
-    detail: hit.detail || mainConceptOf(hit.card),
+    detail: valueText(cardFeatures(hit.card).consultationRightHolder) || hit.detail || mainConceptOf(hit.card),
     evidence: textOf(hit.card),
     source: hit.card,
-    featureKeys: ['consultationTier'],
+    featureKeys: ['consultationTier', 'consultationRightHolder'],
     marketProvisionCodes: ['ANTI-CONSULT'],
     present: true,
     signals: [{
@@ -619,6 +721,109 @@ function consultationRightsRow(cards) {
   };
 }
 
+function obligationRow(cards, {
+  id, label, presenceKey, detailKeys, marketProvisionCode, tone = 'info', signalLabel,
+}) {
+  const hit = firstFeature(cards, [presenceKey]);
+  if (!hit || !isTruthy(hit.value)) return null;
+  const seenDetailLabels = new Set();
+  const detailHits = detailKeys.map((key) => firstFeature(cards, [key])).filter((detailHit) => {
+    if (!detailHit) return false;
+    const labelValue = valueText(detailHit.value);
+    if (!labelValue || seenDetailLabels.has(labelValue)) return false;
+    seenDetailLabels.add(labelValue);
+    return true;
+  });
+  const details = detailHits.map((detailHit) => valueText(detailHit.value));
+  const detail = details.join('; ') || null;
+  const signals = [{
+    id: `${id}-signal`,
+    label: signalLabel,
+    value: hit.value,
+    tone,
+    evidence: textOf(hit.card),
+    source: hit.card,
+  }];
+  detailHits.forEach((detailHit, index) => {
+    const detailLabel = valueText(detailHit.value);
+    if (!detailLabel) return;
+    signals.push({
+      id: `${id}-detail-signal-${index}`,
+      label: detailLabel,
+      value: detailHit.value,
+      tone: 'neutral',
+      evidence: textOf(detailHit.card),
+      source: detailHit.card,
+    });
+  });
+  return {
+    id,
+    label,
+    detail: detail || hit.detail || mainConceptOf(hit.card),
+    evidence: textOf(hit.card),
+    source: hit.card,
+    featureKeys: [presenceKey, ...detailKeys],
+    marketProvisionCodes: [marketProvisionCode],
+    present: true,
+    signals,
+  };
+}
+
+function cooperationRow(cards) {
+  return obligationRow(cards, {
+    id: 'antitrust-regulatory-cooperation', label: 'Regulatory cooperation',
+    presenceKey: 'regulatoryCooperationRequired', detailKeys: ['regulatoryCooperationScope'],
+    marketProvisionCode: 'ANTI-COOPERATE', signalLabel: 'Required',
+  });
+}
+
+function informationSharingRow(cards) {
+  return obligationRow(cards, {
+    id: 'antitrust-regulatory-information-sharing', label: 'Information sharing',
+    presenceKey: 'regulatoryInformationSharingRequired',
+    detailKeys: ['regulatoryInformationScope', 'regulatoryInformationProtections', 'regulatoryInformationProtection'],
+    marketProvisionCode: 'ANTI-INFO', signalLabel: 'Required',
+  });
+}
+
+function notificationRow(cards) {
+  return obligationRow(cards, {
+    id: 'antitrust-regulatory-notification', label: 'Regulatory notification',
+    presenceKey: 'regulatoryNotificationRequired', detailKeys: ['regulatoryNotificationEvent', 'regulatoryNotificationTiming'],
+    marketProvisionCode: 'ANTI-NOTIFY', signalLabel: 'Required',
+  });
+}
+
+function deferredEvidenceRows(cards) {
+  return cards.filter((card) => (
+    card?.canonical_v2_lineage?.source === 'CANONICAL_V2_OPEN_WORLD_EVIDENCE'
+    || isTruthy(cardFeatures(card).antitrustUnresolvedEvidence)
+  )).map((card, index) => {
+    const reason = valueText(cardFeatures(card).antitrustReviewReason)
+      || card?.canonical_v2_lineage?.reason
+      || 'Unresolved antitrust evidence';
+    return {
+      id: `antitrust-regulatory-deferred-evidence-${index}`,
+      label: 'Needs review',
+      detail: reason,
+      evidence: textOf(card),
+      source: card,
+      sourceCard: card,
+      featureKeys: ['antitrustUnresolvedEvidence', 'antitrustReviewReason'],
+      marketProvisionCodes: [],
+      present: true,
+      signals: [{
+        id: `antitrust-regulatory-deferred-evidence-signal-${index}`,
+        label: 'Unresolved',
+        value: reason,
+        tone: 'warning',
+        evidence: textOf(card),
+        source: card,
+      }],
+    };
+  });
+}
+
 const ROW_BUILDERS = [
   effortsStandardRow,
   divestitureCapRow,
@@ -627,6 +832,9 @@ const ROW_BUILDERS = [
   foreignFilingsRow,
   strategyControlRow,
   consultationRightsRow,
+  cooperationRow,
+  informationSharingRow,
+  notificationRow,
   clearSkiesRow,
   pullRefileRow,
   timingAgreementsRow,
@@ -637,7 +845,7 @@ const ROW_BUILDERS = [
 // only reads card/sourceCard/sourceCards -- copy `source` onto `sourceCard`
 // here, once, rather than touching all eight row builders individually.
 function mappedAntitrustRows(cards) {
-  return ROW_BUILDERS.map((build) => build(cards)).filter(Boolean).map((row) => (
+  return [...ROW_BUILDERS.map((build) => build(cards)).filter(Boolean), ...deferredEvidenceRows(cards)].map((row) => (
     row.sourceCard || !row.source ? row : { ...row, sourceCard: row.source }
   ));
 }

@@ -1397,6 +1397,13 @@ test('approved Key Defined Terms rank scaffolding uses the existing fiduciary, r
   assert.equal(materialityFor({ conceptKey: 'DEF-WILLFUL' }).label, 'FEES');
 });
 
+test('approved merger-structure and appraisal review ranks remain distinct', () => {
+  assert.equal(materialityFor({ conceptKey: 'COV-PROXY' }).rank, 80);
+  assert.equal(materialityFor({ conceptKey: 'COV-MEETING' }).rank, 80);
+  assert.equal(materialityFor({ conceptKey: 'MERGER-STRUCTURE' }).rank, 87);
+  assert.equal(materialityFor({ conceptKey: 'APPR-SETTLE' }).rank, 88);
+});
+
 test('review_queue orders a more material item ahead of a less material item end to end', async () => {
   // The producer today only emits REP-T-CAP (rank 55) and COND-B-REP (rank
   // 70) families, so this proves the actual sort behaviour on real resolved

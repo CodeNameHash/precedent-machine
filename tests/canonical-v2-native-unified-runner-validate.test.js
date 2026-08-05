@@ -10,9 +10,14 @@ const {
   MANIFEST_SCHEMA,
   NativeUnifiedRunValidationError,
   buildExecutionPlanSummary,
+  validatePromptBudgetSplitPreflightFence,
   validateUnifiedRunManifest,
   validateUnifiedRunManifestDiagnostic,
 } = require('../lib/canonical-v2/native-producer/unified-runner-validate');
+const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
+const {
+  buildPromptBudgetSplitPreflight,
+} = require('../lib/canonical-v2/native-producer/prompt-budget-split-preflight');
 const { createDiagnosticFixture } = require('./helpers/native-unified-runner-diagnostic-fixture');
 
 const ROOT = path.resolve(__dirname, '..');
@@ -37,6 +42,69 @@ function blockedManifest() {
   };
 }
 
+function splitNode({ canonicalText, sectionId, reference, parentSectionId = null, start = 0, end = Buffer.byteLength(canonicalText, 'utf8') }) {
+  return Object.freeze({
+    section_id: sha256Hex(sectionId),
+    reference,
+    parent_section_id: parentSectionId,
+    kind: parentSectionId ? 'SUBSECTION' : 'SECTION',
+    depth: parentSectionId ? 2 : 1,
+    heading: 'Material Adverse Effect',
+    article_context: 'DEFINITIONS',
+    start,
+    end,
+    text_sha256: sha256Hex(Buffer.from(canonicalText).subarray(start, end)),
+  });
+}
+
+function extractManifest({ workItemId = 'extract-mae', sourceId = 'source-one', familyId = 'MAE_DEFINITION', node }) {
+  return {
+    schema_version: MANIFEST_SCHEMA,
+    sources: [{
+      source_id: sourceId,
+      disposition: 'BLOCKED_SOURCE_PIN',
+      source_locator: 'content-addressed split-preflight fixture',
+      blocking_code: 'SOURCE_NOT_ISSUED',
+    }],
+    work_items: [{
+      work_item_id: workItemId,
+      source_id: sourceId,
+      family_id: familyId,
+      disposition: 'EXTRACT',
+      section_pin: {
+        section_reference: node.reference,
+        section_id: node.section_id,
+        section_kind: node.kind,
+        section_text_sha256: node.text_sha256,
+      },
+    }],
+  };
+}
+
+function underCeilingPreflight({ workItemId = 'extract-mae', sourceId = 'source-one' } = {}) {
+  const canonicalText = 'Material Adverse Effect means any event materially adverse to the Company.';
+  const documentHash = sha256Hex(canonicalText);
+  const node = splitNode({ canonicalText, sectionId: 'mae-section', reference: '1.1' });
+  const tree = Object.freeze({
+    document_hash: documentHash,
+    source_byte_length: Buffer.byteLength(canonicalText, 'utf8'),
+    source_sha256: sha256Hex(canonicalText),
+    nodes: Object.freeze([node]),
+  });
+  const preflight = buildPromptBudgetSplitPreflight({
+    tree,
+    canonical_text: canonicalText,
+    document_hash: documentHash,
+    source_id: sourceId,
+    origin_work_item_id: workItemId,
+    family_id: 'MAE_DEFINITION',
+    nodes: [node],
+    prompt_budget_policy: { prompt_byte_ceiling: 65536 },
+  });
+  assert.equal(preflight.status, 'PASS');
+  return { node, preflight };
+}
+
 test('a caller manifest can produce only an authority-NONE diagnostic', () => {
   const result = validateUnifiedRunManifestDiagnostic({ manifest: blockedManifest(), root_dir: ROOT });
   assert.equal(result.receipt.authority, 'NONE');
@@ -52,6 +120,93 @@ test('a caller manifest cannot receive executable validation', () => {
     (error) => error instanceof NativeUnifiedRunValidationError
       && error.code === 'TRUSTED_UNIFIED_RUN_VERIFIER_UNAVAILABLE',
   );
+});
+
+test('prompt-budget preflights bind every EXTRACT origin, source, family and exact parent section', () => {
+  const { node, preflight } = underCeilingPreflight();
+  const manifest = extractManifest({ node });
+  assert.deepEqual(validatePromptBudgetSplitPreflightFence({
+    manifest,
+    prompt_budget_split_preflights: [preflight],
+  }), {
+    status: 'PASS',
+    extract_work_item_ids: ['extract-mae'],
+    preflight_ids: [preflight.preflight_id],
+  });
+
+  assert.throws(() => validatePromptBudgetSplitPreflightFence({
+    manifest,
+    prompt_budget_split_preflights: [],
+  }), (error) => error.code === 'PROMPT_BUDGET_SPLIT_PREFLIGHT_COVERAGE_MISMATCH');
+
+  assert.throws(() => validatePromptBudgetSplitPreflightFence({
+    manifest,
+    prompt_budget_split_preflights: [preflight, preflight],
+  }), (error) => error.code === 'DUPLICATE_PROMPT_BUDGET_SPLIT_PREFLIGHT');
+
+  const otherSource = underCeilingPreflight({ sourceId: 'source-two' }).preflight;
+  assert.throws(() => validatePromptBudgetSplitPreflightFence({
+    manifest,
+    prompt_budget_split_preflights: [otherSource],
+  }), (error) => error.code === 'PROMPT_BUDGET_SPLIT_PREFLIGHT_BINDING_MISMATCH');
+
+  assert.throws(() => validatePromptBudgetSplitPreflightFence({
+    manifest: extractManifest({ node, familyId: 'KEY_DEFINED_TERMS' }),
+    prompt_budget_split_preflights: [preflight],
+  }), (error) => error.code === 'PROMPT_BUDGET_SPLIT_PREFLIGHT_BINDING_MISMATCH');
+
+  assert.throws(() => validatePromptBudgetSplitPreflightFence({
+    manifest,
+    prompt_budget_split_preflights: [{ ...preflight, prompt_byte_ceiling: 1 }],
+  }), (error) => error.code === 'INVALID_PROMPT_BUDGET_SPLIT_PREFLIGHT'
+    && error.details.cause_code === 'SPLIT_PREFLIGHT_IDENTITY_INVALID');
+});
+
+test('split children cannot authorise execution of their oversized parent work item', () => {
+  const firstClause = 'Material Adverse Effect means any adverse event. ';
+  const filler = 'x'.repeat(70000);
+  const secondClause = 'Material Adverse Effect excludes industry-wide changes.';
+  const canonicalText = `${firstClause}${filler}${secondClause}`;
+  const secondStart = Buffer.byteLength(`${firstClause}${filler}`, 'utf8');
+  const parent = splitNode({ canonicalText, sectionId: 'mae-parent', reference: '1.1' });
+  const first = splitNode({
+    canonicalText,
+    sectionId: 'mae-child-a',
+    reference: '1.1(a)',
+    parentSectionId: parent.section_id,
+    end: Buffer.byteLength(firstClause, 'utf8'),
+  });
+  const second = splitNode({
+    canonicalText,
+    sectionId: 'mae-child-b',
+    reference: '1.1(b)',
+    parentSectionId: parent.section_id,
+    start: secondStart,
+  });
+  const documentHash = sha256Hex(canonicalText);
+  const tree = Object.freeze({
+    document_hash: documentHash,
+    source_byte_length: Buffer.byteLength(canonicalText, 'utf8'),
+    source_sha256: sha256Hex(canonicalText),
+    nodes: Object.freeze([parent, first, second]),
+  });
+  const preflight = buildPromptBudgetSplitPreflight({
+    tree,
+    canonical_text: canonicalText,
+    document_hash: documentHash,
+    source_id: 'source-one',
+    origin_work_item_id: 'extract-mae-parent',
+    family_id: 'MAE_DEFINITION',
+    nodes: [parent],
+    prompt_budget_policy: { prompt_byte_ceiling: 65536 },
+  });
+  assert.equal(preflight.status, 'PASS');
+  assert.ok(preflight.work_items.length > 0);
+  assert.ok(preflight.work_items.every((item) => item.section_id !== parent.section_id));
+  assert.throws(() => validatePromptBudgetSplitPreflightFence({
+    manifest: extractManifest({ workItemId: 'extract-mae-parent', node: parent }),
+    prompt_budget_split_preflights: [preflight],
+  }), (error) => error.code === 'PROMPT_BUDGET_PARENT_WORK_ITEM_NOT_EXECUTABLE');
 });
 
 test('diagnostic identity is stable across declaration order', () => {

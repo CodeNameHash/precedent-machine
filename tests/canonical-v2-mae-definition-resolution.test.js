@@ -211,6 +211,23 @@ function readFixture(name) {
 
 const SKECHERS_MAE_TEXT = readFixture('skechers-company-mae-definition.txt');
 const MODIV_MAE_TEXT = readFixture('modiv-company-mae-definition.txt');
+const MODIV_PARENT_MAE_TEXT = readFixture('modiv-parent-mae-definition.txt');
+const TOPBUILD_COMPANY_MAE_TEXT = readFixture('topbuild-company-mae-definition.txt');
+const TOPBUILD_PARENT_MAE_TEXT = readFixture('topbuild-parent-mae-definition.txt');
+
+function enumeratedClause(text, label, nextLabel) {
+  const marker = `${label} `;
+  const start = text.indexOf(marker);
+  assert.ok(start >= 0, `fixture must contain ${label}`);
+  const nextStarts = nextLabel
+    ? [`\n${nextLabel} `, `; ${nextLabel} `]
+      .map((nextMarker) => text.indexOf(nextMarker, start))
+      .filter((index) => index >= 0)
+    : [];
+  const end = nextStarts.length > 0 ? Math.min(...nextStarts) : text.length;
+  assert.ok(end > start, `fixture must contain the end of ${label}`);
+  return text.slice(start, end).trim();
+}
 
 const SKECHERS_DUAL_CODE_CLAUSE = '(vii) earthquakes, hurricanes, tsunamis, tornadoes, floods, mudslides, wild fires '
   + 'or other natural disasters, weather conditions, epidemics, pandemics or disease outbreaks and other force '
@@ -229,6 +246,17 @@ const MODIV_DISPROPORTIONALITY_CLAUSE = 'provided, further, that in the case of 
   + 'and adverse impact may be taken into account in determining whether there has been, or would reasonably be '
   + 'expected to be, a Company Material Adverse Effect.';
 assert.ok(MODIV_MAE_TEXT.includes(MODIV_DISPROPORTIONALITY_CLAUSE), 'fixture must contain the Modiv disproportionality clause verbatim');
+
+const SKECHERS_DISPROPORTIONALITY_CLAUSE = SKECHERS_MAE_TEXT.slice(
+  SKECHERS_MAE_TEXT.lastIndexOf('except, with respect to clauses'),
+).trim();
+assert.match(SKECHERS_DISPROPORTIONALITY_CLAUSE, /clauses \(i\), \(ii\), \(vi\), \(vii\) and \(xi\)/);
+
+function trailingModivClause(text) {
+  const start = text.lastIndexOf('provided, further, that in the case of the foregoing clauses');
+  assert.ok(start >= 0, 'fixture must contain the Modiv trailing carveback');
+  return text.slice(start).trim();
+}
 
 const MODIV_BUSINESS_EFFECTS_PRONG = '(i) has resulted in, or would reasonably be expected to have, a material '
   + 'adverse effect on the business, properties, condition (financial or otherwise), results of operations of the '
@@ -300,7 +328,7 @@ async function resolveMaeAssertions(dealKey, sectionBody, response) {
 
 function instance({
   sectionReference = SECTION_REFERENCE, definedTerm = 'Company Material Adverse Effect', definitionSubject = 'the Company',
-  prongAssertions = [], carveoutAssertions = [], disproportionalityAssertions = [],
+  prongAssertions = [], carveoutAssertions = [], limbLocalDisproportionalityAssertions = [], disproportionalityAssertions = [],
 }) {
   return {
     section_reference: sectionReference,
@@ -308,6 +336,7 @@ function instance({
     definition_subject: definitionSubject,
     prong_assertions: prongAssertions,
     carveout_assertions: carveoutAssertions,
+    limb_local_disproportionality_assertions: limbLocalDisproportionalityAssertions,
     disproportionality_assertions: disproportionalityAssertions,
   };
 }
@@ -498,7 +527,174 @@ test('a resolved MAE_DISPROPORTIONALITY_CARVEBACK claim carries the Modiv applie
   const resolved = resolution.resolved.filter((e) => e.generic_claim_key === MAE_DISPROPORTIONALITY_CLAIM_KEY);
   assert.equal(resolved.length, 1);
   assert.equal(resolved[0].claim.canonical_value, true);
+  assert.equal(resolved[0].claim.attributes.carveback_source_form, 'TRAILING_LIST');
   assert.deepEqual(resolved[0].claim.attributes.applies_to_clause_labels, ['(a)', '(b)', '(c)', '(d)', '(g)', '(k)']);
+});
+
+test('real TopBuild Company and Parent definitions resolve per-limb carvebacks for A, B, D, G and H and reach deduplicated product rollups', async () => {
+  const expected = [
+    ['(A)', '(B)', 'ECONOMY_GENERAL'],
+    ['(B)', '(C)', 'INDUSTRY_GENERAL'],
+    ['(D)', '(E)', 'ACTS_OF_WAR_TERRORISM'],
+    ['(G)', '(H)', 'CHANGE_IN_LAW'],
+    ['(H)', '(I)', 'CHANGE_IN_GAAP'],
+  ];
+  for (const fixture of [
+    {
+      dealKey: 'deal:topbuild-company-mae', text: TOPBUILD_COMPANY_MAE_TEXT,
+      definedTerm: 'Company Material Adverse Effect', subject: 'the Company', capacity: 'TARGET',
+      baseline: 'others in the industry or industries in which the Company and its Subsidiaries operate',
+    },
+    {
+      dealKey: 'deal:topbuild-parent-mae', text: TOPBUILD_PARENT_MAE_TEXT,
+      definedTerm: 'Parent Material Adverse Effect', subject: 'Parent', capacity: 'BUYER',
+      baseline: 'others in the industry or industries in which Parent and its Subsidiaries operate',
+    },
+  ]) {
+    const clauses = new Map(expected.map(([label, nextLabel]) => [label, enumeratedClause(fixture.text, label, nextLabel)]));
+    const { resolution } = await resolveMaeAssertions(fixture.dealKey, fixture.text, {
+      mae_definition_instances: [instance({
+        definedTerm: fixture.definedTerm,
+        definitionSubject: fixture.subject,
+        carveoutAssertions: expected.map(([label, , code]) => ({
+          carveout_code: code, clause_label: label, quote: clauses.get(label), limb_path: ['carveouts', label],
+        })),
+        limbLocalDisproportionalityAssertions: expected.map(([label]) => ({
+          clause_label: label,
+          comparison_baseline_phrase: fixture.baseline,
+          incremental_impact_phrase: null,
+          quote: clauses.get(label),
+          limb_path: ['carveouts', label],
+        })),
+      })],
+    });
+    const carveouts = resolution.resolved.filter((entry) => entry.generic_claim_key === MAE_CARVEOUT_CLAIM_KEY);
+    const disproportionality = resolution.resolved.filter((entry) => entry.generic_claim_key === MAE_DISPROPORTIONALITY_CLAIM_KEY);
+    assert.equal(carveouts.length, 5, fixture.definedTerm);
+    assert.equal(disproportionality.length, 5, fixture.definedTerm);
+    assert.ok(disproportionality.every((entry) => entry.claim.attributes.carveback_source_form === 'PER_LIMB'));
+    assert.ok(disproportionality.every((entry) => entry.party.capacity === fixture.capacity));
+    const [rollup] = projectKeyTermsMaeClaims({
+      resolved_entries: [...carveouts, ...disproportionality],
+    }).mae_disproportionality_rollups;
+    assert.deepEqual(rollup.covered_limbs.map(({ clause_label: label }) => label), ['(A)', '(B)', '(D)', '(G)', '(H)']);
+    assert.ok(rollup.covered_limbs.every((limb) => limb.source_forms.length === 1 && limb.source_forms[0] === 'PER_LIMB'));
+    assert.ok(rollup.covered_limbs.every((limb) => limb.relationship_edges.length === 1));
+    assert.ok(rollup.covered_limbs.every((limb) => limb.sources[0].exact_disproportionality_quote === clauses.get(limb.clause_label)));
+  }
+});
+
+test('real Skechers trailing list resolves i, ii, vi, vii and xi once, including the two-code vii limb', async () => {
+  const carveoutSpecs = [
+    ['(i)', '(ii)', 'ECONOMY_GENERAL'],
+    ['(ii)', '(iii)', 'FINANCIAL_MARKETS'],
+    ['(vi)', '(vii)', 'ACTS_OF_WAR_TERRORISM'],
+    ['(vii)', '(viii)', 'NATURAL_DISASTERS'],
+    ['(vii)', '(viii)', 'PANDEMIC'],
+    ['(xi)', '(xii)', 'CHANGE_IN_GAAP'],
+  ];
+  const clauses = new Map(carveoutSpecs.map(([label, nextLabel]) => [label, enumeratedClause(SKECHERS_MAE_TEXT, label, nextLabel)]));
+  const { resolution } = await resolveMaeAssertions('deal:skechers-trailing-list', SKECHERS_MAE_TEXT, {
+    mae_definition_instances: [instance({
+      carveoutAssertions: carveoutSpecs.map(([label, , code]) => ({
+        carveout_code: code, clause_label: label, quote: clauses.get(label), limb_path: ['carveouts', label],
+      })),
+      disproportionalityAssertions: [{
+        applies_to_clause_labels: ['(i)', '(ii)', '(vi)', '(vii)', '(xi)'],
+        comparison_baseline_phrase: 'other companies of a similar size operating in the industries in which the Company Group conducts business',
+        incremental_impact_phrase: 'only the incremental disproportionate adverse impact may be taken into account',
+        quote: SKECHERS_DISPROPORTIONALITY_CLAUSE,
+      }],
+    })],
+  });
+  const governed = resolution.resolved.filter((entry) => [MAE_CARVEOUT_CLAIM_KEY, MAE_DISPROPORTIONALITY_CLAIM_KEY].includes(entry.generic_claim_key));
+  assert.equal(governed.filter((entry) => entry.generic_claim_key === MAE_CARVEOUT_CLAIM_KEY).length, 6);
+  const [rollup] = projectKeyTermsMaeClaims({ resolved_entries: governed }).mae_disproportionality_rollups;
+  assert.deepEqual(rollup.covered_limbs.map(({ clause_label: label }) => label), ['(i)', '(ii)', '(vi)', '(vii)', '(xi)']);
+  const vii = rollup.covered_limbs.find(({ clause_label: label }) => label === '(vii)');
+  assert.deepEqual(vii.carveout_codes, ['NATURAL_DISASTERS', 'PANDEMIC']);
+  assert.equal(vii.relationship_edges.length, 2);
+  assert.deepEqual(vii.source_forms, ['TRAILING_LIST']);
+});
+
+test('real Modiv Company and Parent trailing lists resolve a, b, c, d, g and preserve cyber k as an open-world limb relationship', async () => {
+  const specs = [
+    ['(a)', '(b)', 'CHANGE_IN_LAW'],
+    ['(b)', '(c)', 'ECONOMY_GENERAL'],
+    ['(c)', '(d)', 'FINANCIAL_MARKETS'],
+    ['(d)', '(e)', 'INDUSTRY_GENERAL'],
+    ['(g)', '(h)', 'NATURAL_DISASTERS'],
+  ];
+  for (const fixture of [
+    {
+      dealKey: 'deal:modiv-company-trailing-list', text: MODIV_MAE_TEXT,
+      definedTerm: 'Company Material Adverse Effect', subject: 'the Company',
+      baseline: 'other similarly situated businesses in the industries in which the Company and the Subsidiaries conduct their business',
+    },
+    {
+      dealKey: 'deal:modiv-parent-trailing-list', text: MODIV_PARENT_MAE_TEXT,
+      definedTerm: 'Parent Material Adverse Effect', subject: 'Parent',
+      baseline: 'other similarly situated businesses in the industries in which Parent and the Parent Subsidiaries conduct their business',
+    },
+  ]) {
+    const clauses = new Map(specs.map(([label, nextLabel]) => [label, enumeratedClause(fixture.text, label, nextLabel)]));
+    const trailing = trailingModivClause(fixture.text);
+    const cyberStart = fixture.text.lastIndexOf('(k) any computer hacking');
+    const cyberEnd = fixture.text.indexOf('; provided, further', cyberStart);
+    assert.ok(cyberStart >= 0 && cyberEnd > cyberStart, `${fixture.definedTerm} cyber limb must be exact`);
+    const cyberQuote = fixture.text.slice(cyberStart, cyberEnd + 1);
+    const { resolution } = await resolveMaeAssertions(fixture.dealKey, fixture.text, {
+      mae_definition_instances: [instance({
+        definedTerm: fixture.definedTerm,
+        definitionSubject: fixture.subject,
+        carveoutAssertions: specs.map(([label, , code]) => ({
+          carveout_code: code, clause_label: label, quote: clauses.get(label), limb_path: ['carveouts', label],
+        })),
+        disproportionalityAssertions: [{
+          applies_to_clause_labels: ['(a)', '(b)', '(c)', '(d)', '(g)', '(k)'],
+          comparison_baseline_phrase: fixture.baseline,
+          incremental_impact_phrase: 'the incremental disproportionate and adverse impact may be taken into account',
+          quote: trailing,
+        }],
+      })],
+      open_world_candidates: [{
+        observed_quote: cyberQuote,
+        why_unmapped: 'cybersecurity carve-out has no registered code',
+        nearest_concept: 'DEF-MAE',
+      }],
+    });
+    const governed = resolution.resolved.filter((entry) => [MAE_CARVEOUT_CLAIM_KEY, MAE_DISPROPORTIONALITY_CLAIM_KEY].includes(entry.generic_claim_key));
+    assert.equal(governed.filter((entry) => entry.generic_claim_key === MAE_CARVEOUT_CLAIM_KEY).length, 5);
+    const [rollup] = projectKeyTermsMaeClaims({
+      resolved_entries: governed,
+      open_world_entries: resolution.open_world,
+    }).mae_disproportionality_rollups;
+    assert.deepEqual(rollup.covered_limbs.map(({ clause_label: label }) => label), ['(a)', '(b)', '(c)', '(d)', '(g)', '(k)']);
+    const cyber = rollup.covered_limbs.find(({ clause_label: label }) => label === '(k)');
+    assert.equal(cyber.relationship_state, 'OPEN_WORLD_LIMB_RELATIONSHIP');
+    assert.deepEqual(cyber.carveout_claim_revision_ids, []);
+    assert.equal(cyber.open_world_evidence.length, 1);
+    assert.equal(cyber.open_world_evidence[0].exact_open_world_quote, cyberQuote);
+    assert.equal(cyber.open_world_evidence.length, 1);
+    assert.equal(cyber.sources[0].exact_disproportionality_quote, trailing);
+  }
+});
+
+test('a per-limb carveback whose full limb path does not identify its clause queues instead of joining by label alone', async () => {
+  const quote = enumeratedClause(TOPBUILD_COMPANY_MAE_TEXT, '(A)', '(B)');
+  const { resolution } = await resolveMaeAssertions('deal:topbuild-invalid-limb-path', TOPBUILD_COMPANY_MAE_TEXT, {
+    mae_definition_instances: [instance({
+      limbLocalDisproportionalityAssertions: [{
+        clause_label: '(A)',
+        comparison_baseline_phrase: 'others in the industry or industries in which the Company and its Subsidiaries operate',
+        incremental_impact_phrase: null,
+        quote,
+        limb_path: ['carveouts', '(B)'],
+      }],
+    })],
+  });
+  assert.equal(resolution.resolved.filter((entry) => entry.generic_claim_key === MAE_DISPROPORTIONALITY_CLAIM_KEY).length, 0);
+  assert.ok(resolution.review_queue.some(({ reasons }) => reasons.includes('LIMB_LOCAL_CARVEBACK_SCOPE_INVALID')));
 });
 
 test('an unenumerated disproportionality carveback (empty applies_to_clause_labels) queues CARVEBACK_SCOPE_UNENUMERATED, never resolves silently as "applies to everything"', async () => {

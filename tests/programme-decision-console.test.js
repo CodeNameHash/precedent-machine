@@ -1,16 +1,31 @@
 const assert = require('node:assert/strict');
+const crypto = require('node:crypto');
+const fs = require('node:fs');
+const path = require('node:path');
 const test = require('node:test');
 
 const {
+  AUGUST_4_FINAL_RATIFICATION_PROVENANCE,
+  AUGUST_4_PACKAGE_RULING_PROVENANCE,
   DECISION_GROUPS,
   DECISIONS,
   DISSENT_THRESHOLD_RETIREMENT_PROVENANCE,
   M3_STAGES,
+  PENDING_USER_RATIFICATION_RULING_IDS,
+  PRIMARY_RULING_PROVENANCE_BY_ID,
+  PRIMARY_RULING_PROVENANCE_GROUPS,
   RECORDED_RULINGS,
+  VALIDATED_RULING_CHOICES,
   decisionById,
   mergeRecordedRulings,
   recommendedChoice,
+  validateRecordedRulingProvenance,
 } = require('../lib/programme-decision-console');
+
+const PORTABLE_PROVENANCE_FIXTURE = JSON.parse(fs.readFileSync(
+  path.join(__dirname, 'fixtures', 'programme-decision-provenance.json'),
+  'utf8',
+));
 
 test('decision console has one complete, unique recommendation per decision', () => {
   assert.ok(DECISIONS.length >= 15);
@@ -31,11 +46,10 @@ test('decision console has one complete, unique recommendation per decision', ()
 });
 
 test('recorded rulings stay fixed and follow-on rulings are added without duplicates', () => {
-  assert.equal(Object.keys(RECORDED_RULINGS).length, 48);
+  assert.equal(Object.keys(RECORDED_RULINGS).length, 54);
   assert.deepEqual(
     DECISIONS.filter((decision) => !RECORDED_RULINGS[decision.id]).map((decision) => decision.id),
     [
-      'antitrust-expanded-taxonomy',
       'employee-dno-follow-on',
       'financing-follow-on',
       'defined-term-relationship-model',
@@ -55,16 +69,134 @@ test('the dissent-threshold retirement has an exact recorded option and primary 
   assert.equal(RECORDED_RULINGS[decision.id], 'APPROVED_RETIRED_OPEN_WORLD');
   assert.equal(recommendedChoice(decision), 'APPROVED_RETIRED_OPEN_WORLD');
   assert.equal(decision.provenance, DISSENT_THRESHOLD_RETIREMENT_PROVENANCE);
-  assert.deepEqual(DISSENT_THRESHOLD_RETIREMENT_PROVENANCE, {
-    assistant_prompt_timestamp: '2026-08-04T13:13:05.876Z',
-    response_timestamp: '2026-08-04T13:21:06.252Z',
-    external_session_log_locator: 'sessions/2026/08/03/rollout-2026-08-03T06-01-47-019fc5ff-dc06-70b3-bc8a-6f6afc627632.jsonl',
-    assistant_prompt_line: 21490,
-    response_line: 21496,
-    assistant_prompt_excerpt: 'One decision is needed now: approve retiring `DISSENT_THRESHOLD` as a comparable M3 field. Exact future language remains preserved as open-world evidence. My recommendation remains to approve.',
-    response_excerpt: 'Approved. Proceed with all speed, using agents to maximize speed and manage cost',
-  });
+  assert.equal(DISSENT_THRESHOLD_RETIREMENT_PROVENANCE.authority, 'NONE');
+  assert.equal(DISSENT_THRESHOLD_RETIREMENT_PROVENANCE.response_role, 'USER');
+  assert.equal(DISSENT_THRESHOLD_RETIREMENT_PROVENANCE.response_message_type, 'input_text');
+  assert.equal(DISSENT_THRESHOLD_RETIREMENT_PROVENANCE.assistant_prompt_role, 'ASSISTANT');
+  assert.equal(DISSENT_THRESHOLD_RETIREMENT_PROVENANCE.assistant_prompt_message_type, 'output_text');
   assert.equal(DISSENT_THRESHOLD_RETIREMENT_PROVENANCE.external_session_log_locator.startsWith('/'), false);
+});
+
+test('primary ruling provenance is complete after the final two ratifications', () => {
+  assert.equal(validateRecordedRulingProvenance(), true);
+  assert.deepEqual(PENDING_USER_RATIFICATION_RULING_IDS, []);
+  assert.equal(Object.keys(PRIMARY_RULING_PROVENANCE_BY_ID).length, 54);
+  assert.equal(Object.keys(VALIDATED_RULING_CHOICES).length, 54);
+  assert.equal(AUGUST_4_FINAL_RATIFICATION_PROVENANCE.response_excerpt, 'Okay on all\n');
+  assert.deepEqual(AUGUST_4_FINAL_RATIFICATION_PROVENANCE.ruling_ids, ['rem-cap', 'closing-revisit']);
+
+  for (const [rulingId, optionId] of Object.entries(RECORDED_RULINGS)) {
+    const decision = decisionById(rulingId);
+    assert.equal(decision.provenance, PRIMARY_RULING_PROVENANCE_BY_ID[rulingId]);
+    assert.equal(decision.provenance_status, 'PRIMARY_USER_EVIDENCE');
+    assert.equal(decision.provenance.selected_options[rulingId], optionId);
+  }
+});
+
+test('primary provenance is portable, evidence-only and has exact response identity', () => {
+  for (const provenance of PRIMARY_RULING_PROVENANCE_GROUPS) {
+    assert.equal(provenance.authority, 'NONE');
+    assert.equal(provenance.response_role, 'USER');
+    assert.equal(provenance.response_message_type, 'input_text');
+    assert.equal(provenance.external_session_log_locator.startsWith('/'), false);
+    assert.match(provenance.external_session_log_locator, /^sessions\/2026\/08\/0[34]\//);
+    assert.ok(Number.isInteger(provenance.response_line));
+    assert.match(provenance.response_message_id, /^msg_/);
+    assert.match(provenance.response_turn_id, /^[0-9a-f-]{36}$/);
+    assert.match(provenance.response_line_sha256, /^[a-f0-9]{64}$/);
+    if (provenance.assistant_prompt_line !== undefined) {
+      assert.equal(provenance.assistant_prompt_role, 'ASSISTANT');
+      assert.equal(provenance.assistant_prompt_message_type, 'output_text');
+      assert.match(provenance.assistant_prompt_message_id, /^msg_/);
+      assert.match(provenance.assistant_prompt_turn_id, /^[0-9a-f-]{36}$/);
+      assert.match(provenance.assistant_prompt_line_sha256, /^[a-f0-9]{64}$/);
+    }
+    assert.equal(Object.keys(provenance.selected_options).length, provenance.ruling_ids.length);
+  }
+  assert.equal('condition_terminal_disposition' in AUGUST_4_PACKAGE_RULING_PROVENANCE, false);
+});
+
+test('portable JSONL fixture verifies exact excerpts and raw-line hashes without a home-session read', () => {
+  assert.equal(PORTABLE_PROVENANCE_FIXTURE.schema_version, 'CANONICAL_V2_PROGRAMME_DECISION_PROVENANCE_FIXTURE/V2');
+  const recordKey = (locator, line) => `${locator}:${line}`;
+  const recordsByKey = new Map(PORTABLE_PROVENANCE_FIXTURE.records.map((record) => [recordKey(record.locator, record.line), record]));
+  assert.equal(recordsByKey.size, PORTABLE_PROVENANCE_FIXTURE.records.length);
+  const expectedKeys = new Set();
+  for (const record of recordsByKey.values()) {
+    assert.equal(crypto.createHash('sha256').update(record.raw_line, 'utf8').digest('hex'), record.sha256);
+    assert.match(record.locator, /^sessions\/2026\/08\/0[34]\//);
+    assert.ok(Number.isInteger(record.line));
+    assert.match(record.message_id, /^msg_/);
+    assert.match(record.turn_id, /^[0-9a-f-]{36}$/);
+    assert.ok(['user', 'assistant'].includes(record.role));
+    assert.ok(['input_text', 'output_text'].includes(record.message_type));
+  }
+  for (const provenance of PRIMARY_RULING_PROVENANCE_GROUPS) {
+    for (const kind of ['response', 'assistant_prompt']) {
+      if (!Number.isInteger(provenance[`${kind}_line`])) continue;
+      const key = recordKey(provenance.external_session_log_locator, provenance[`${kind}_line`]);
+      expectedKeys.add(key);
+      const record = recordsByKey.get(key);
+      assert.ok(record, `missing fixture record ${key}`);
+      const parsed = JSON.parse(record.raw_line);
+      const content = parsed.payload.content[0].text;
+      assert.equal(record.sha256, provenance[`${kind}_line_sha256`]);
+      assert.equal(record.message_id, provenance[`${kind}_message_id`]);
+      assert.equal(record.turn_id, provenance[`${kind}_turn_id`]);
+      assert.equal(record.role, provenance[`${kind}_role`].toLowerCase());
+      assert.equal(record.message_type, provenance[`${kind}_message_type`]);
+      assert.equal(parsed.payload.id, provenance[`${kind}_message_id`]);
+      assert.equal(parsed.payload.role, record.role);
+      assert.equal(parsed.payload.content[0].type, record.message_type);
+      assert.equal(parsed.payload.internal_chat_message_metadata_passthrough.turn_id, provenance[`${kind}_turn_id`]);
+      assert.ok(content.includes(provenance[`${kind}_excerpt`]), key);
+    }
+  }
+  assert.deepEqual([...recordsByKey.keys()].sort(), [...expectedKeys].sort());
+});
+
+test('provenance validator rejects hostile option, identity, role, excerpt, scope and override tampering', () => {
+  const first = PRIMARY_RULING_PROVENANCE_GROUPS[0];
+  const alteredOption = Object.freeze({
+    ...first,
+    selected_options: Object.freeze({ ...first.selected_options, 'db-apply': 'hold' }),
+  });
+  assert.throws(
+    () => validateRecordedRulingProvenance({ provenanceGroups: [alteredOption, ...PRIMARY_RULING_PROVENANCE_GROUPS.slice(1)] }),
+    /identity mismatch for db-apply/,
+  );
+
+  const alteredIdentity = Object.freeze({ ...first, response_line_sha256: '0'.repeat(64) });
+  assert.throws(
+    () => validateRecordedRulingProvenance({ provenanceGroups: [alteredIdentity, ...PRIMARY_RULING_PROVENANCE_GROUPS.slice(1)] }),
+    /identity mismatch for db-apply/,
+  );
+
+  const alteredRole = Object.freeze({
+    ...first,
+    response_role: 'ASSISTANT',
+  });
+  assert.throws(
+    () => validateRecordedRulingProvenance({ provenanceGroups: [alteredRole, ...PRIMARY_RULING_PROVENANCE_GROUPS.slice(1)] }),
+    /exact user response/,
+  );
+  const alteredExcerpt = Object.freeze({ ...first, response_excerpt: 'paraphrase' });
+  assert.throws(() => validateRecordedRulingProvenance({ provenanceGroups: [alteredExcerpt, ...PRIMARY_RULING_PROVENANCE_GROUPS.slice(1)] }), /identity mismatch/);
+  const alteredAuthority = Object.freeze({ ...first, authority: 'READ' });
+  assert.throws(() => validateRecordedRulingProvenance({ provenanceGroups: [alteredAuthority, ...PRIMARY_RULING_PROVENANCE_GROUPS.slice(1)] }), /evidence only/);
+  const prompted = PRIMARY_RULING_PROVENANCE_GROUPS.find((provenance) => provenance.assistant_prompt_line !== undefined);
+  const alteredPromptRole = Object.freeze({ ...prompted, assistant_prompt_role: 'USER' });
+  assert.throws(
+    () => validateRecordedRulingProvenance({ provenanceGroups: PRIMARY_RULING_PROVENANCE_GROUPS.map((provenance) => (provenance === prompted ? alteredPromptRole : provenance)) }),
+    /cited assistant prompt/,
+  );
+  const scopeLeak = Object.freeze({
+    ...first,
+    ruling_ids: Object.freeze([...first.ruling_ids, 'rem-cap']),
+    selected_options: Object.freeze({ ...first.selected_options, 'rem-cap': 'ratify' }),
+  });
+  assert.throws(() => validateRecordedRulingProvenance({ provenanceGroups: [scopeLeak, ...PRIMARY_RULING_PROVENANCE_GROUPS.slice(1)] }), /identity mismatch/);
+  assert.throws(() => validateRecordedRulingProvenance({ pending_user_ratification_ruling_ids: [] }), /override is forbidden/);
 });
 
 test('follow-on rulings carry corpus counts, clause examples and a promotion horizon', () => {
@@ -150,10 +282,10 @@ test('prior rulings are represented once and remain recorded', () => {
 
 test('saved open answers survive while recorded rulings remain authoritative', () => {
   const choices = mergeRecordedRulings({
-    'antitrust-expanded-taxonomy': 'adjudicate-expanded-package',
+    'antitrust-expanded-taxonomy': 'explicit-open-world-deferrals',
     'db-apply': 'hold',
   });
-  assert.equal(choices['antitrust-expanded-taxonomy'], 'adjudicate-expanded-package');
+  assert.equal(choices['antitrust-expanded-taxonomy'], 'adopt-expanded-package');
   assert.equal(choices['db-apply'], 'fixture-go');
 });
 
@@ -169,18 +301,31 @@ test('later Ben rulings are recorded without claiming missing implementation', (
   assert.match(decisionById('defined-terms-next-slices').current, /approved/i);
 });
 
-test('obsolete antitrust core question is replaced by the bounded unresolved docket', () => {
+test('records the approved programme foundations without granting production authority', () => {
+  assert.equal(RECORDED_RULINGS['p9-programme-completion-terminal'], 'ratify-bundle-frozen-terminal');
+  assert.equal(RECORDED_RULINGS['p9-security-production-access'], 'require-before-production-access');
+  assert.equal(RECORDED_RULINGS['identity-initial-import-foundation'], 'adopt-v2-namespace-seeds-and-tx-sequence');
+  assert.equal(RECORDED_RULINGS['identity-batch-mapping-signature'], 'one-ben-batch-signature');
+  assert.equal(RECORDED_RULINGS['production-policy-package-v2'], 'adopt-policy-direction');
+  assert.match(decisionById('identity-initial-import-foundation').current, /No mapping, receipt, bridge or identity was issued/);
+  assert.match(decisionById('identity-batch-mapping-signature').recommendation, /40 machine receipts.*40 serialisable CAS proofs.*reviewed bridge.*current-head verification.*full-chain verification/);
+  assert.match(decisionById('production-policy-package-v2').current, /Exact policy-manifest digest adoption and successor M1 approval remain pending/);
+  assert.match(decisionById('p9-security-production-access').current, /grants no credential, import or activation authority/);
+});
+
+test('obsolete antitrust core question is replaced by the approved expanded docket', () => {
   assert.equal(decisionById('antitrust-core-taxonomy'), null);
   const decision = decisionById('antitrust-expanded-taxonomy');
-  assert.equal(RECORDED_RULINGS[decision.id], undefined);
-  assert.match(decision.current, /^Unresolved/);
-  assert.deepEqual(decision.unresolved_topics.map((topic) => topic.topic_id), [
+  assert.equal(RECORDED_RULINGS[decision.id], 'adopt-expanded-package');
+  assert.match(decision.current, /Ben approved the expanded package/);
+  assert.match(decision.current, /ANTI-FOREIGN.*ANTI-FILING/);
+  assert.deepEqual(decision.resolved_topics.map((topic) => topic.topic_id), [
     'agreements-name-and-claims',
     'strategy-control-and-consultation',
     'filing-regimes-and-deadlines',
     'rendered-v1-terminal-dispositions',
   ]);
-  assert.deepEqual(decision.unresolved_topics.at(-1).rendered_v1_surfaces, [
+  assert.deepEqual(decision.resolved_topics.at(-1).rendered_v1_surfaces, [
     'ANTI-BURDEN', 'ANTI-CONSULT', 'ANTI-COOPERATE', 'ANTI-EFFORTS',
     'ANTI-FILING', 'ANTI-FOREIGN', 'ANTI-INFO', 'ANTI-INTERIM',
     'ANTI-LITIGATION', 'ANTI-NOACTION', 'ANTI-NOTIFY', 'ANTI-TIMING',

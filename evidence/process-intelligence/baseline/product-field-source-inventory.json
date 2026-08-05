@@ -11,9 +11,27 @@
       "disposition": "INCLUDE_PINNED_PRODUCT_SOURCE"
     },
     {
+      "path": "lib/query/types.js",
+      "sha256": "7ff2577f958ab9f0337eebd8186cf283f9bae4be03ddcc88aff424fc55ae22b3",
+      "byte_length": 26068,
+      "disposition": "INCLUDE_PINNED_PRODUCT_SOURCE"
+    },
+    {
       "path": "lib/query/field-meta.js",
       "sha256": "4b74cfa416a2a811b929d03851e7b9cdc91654dc754b6c74756be8f47988bbb5",
       "byte_length": 12083,
+      "disposition": "INCLUDE_PINNED_PRODUCT_SOURCE"
+    },
+    {
+      "path": "lib/query/derived-fields.js",
+      "sha256": "5d35d1dc874ee56c96e17e30df79d698d1a3dc4f6d9c5378279086f235ae539e",
+      "byte_length": 6668,
+      "disposition": "INCLUDE_PINNED_PRODUCT_SOURCE"
+    },
+    {
+      "path": "lib/query/resolve.js",
+      "sha256": "c7d25168c0f08f413158342b12f46be4ae5e889012a2f9531a20d59df3ab01b5",
+      "byte_length": 5659,
       "disposition": "INCLUDE_PINNED_PRODUCT_SOURCE"
     },
     {
@@ -258,7 +276,7 @@
       },
       {
         "provision_type": "ANTITRUST_REGULATORY",
-        "current_user_facing_field_count": 35,
+        "current_user_facing_field_count": 36,
         "disposition": "INCLUDE_CURRENT_AGREEMENT_PROVISION_TYPE",
         "disposition_reason": "The pinned PM query surface returns one or more user-facing fields for this type."
       },
@@ -299,8 +317,8 @@
         "disposition_reason": "The pinned PM query surface returns one or more user-facing fields for this type."
       }
     ],
-    "distinct_user_facing_field_count": 333,
-    "field_occurrence_count": 491,
+    "distinct_user_facing_field_count": 334,
+    "field_occurrence_count": 492,
     "fields": [
       {
         "field_key": "absenceOfChangesExceptions",
@@ -1304,10 +1322,10 @@
       },
       {
         "field_key": "burdenBaseline",
-        "label": "Burden measurement subject",
-        "value_type": "string",
+        "label": "Burden baseline",
+        "value_type": "enum",
         "unit": null,
-        "coded": false,
+        "coded": true,
         "boolean": false,
         "numeric": false,
         "provision_types": [
@@ -2832,29 +2850,6 @@
         "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
       },
       {
-        "field_key": "effectiveTimeShort",
-        "label": "Effective Time",
-        "value_type": "string",
-        "unit": null,
-        "coded": false,
-        "boolean": false,
-        "numeric": false,
-        "provision_types": [
-          "STRUCTURE_MECHANICS"
-        ],
-        "source_occurrences": [
-          {
-            "provision_type": "STRUCTURE_MECHANICS",
-            "source_kind": "SERVING_REGISTRY_ENTRY",
-            "source_request_key": "effectiveTimeShort",
-            "source_registry_index": 246
-          }
-        ],
-        "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
-        "future_result_type_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES",
-        "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
-      },
-      {
         "field_key": "effectOfTermination",
         "label": "Effect of Termination",
         "value_type": "string",
@@ -2871,6 +2866,29 @@
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "effectOfTermination",
             "source_registry_index": 247
+          }
+        ],
+        "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
+        "future_result_type_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES",
+        "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
+      },
+      {
+        "field_key": "effectiveTimeShort",
+        "label": "Effective Time",
+        "value_type": "string",
+        "unit": null,
+        "coded": false,
+        "boolean": false,
+        "numeric": false,
+        "provision_types": [
+          "STRUCTURE_MECHANICS"
+        ],
+        "source_occurrences": [
+          {
+            "provision_type": "STRUCTURE_MECHANICS",
+            "source_kind": "SERVING_REGISTRY_ENTRY",
+            "source_request_key": "effectiveTimeShort",
+            "source_registry_index": 246
           }
         ],
         "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
@@ -3083,6 +3101,29 @@
         "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
       },
       {
+        "field_key": "exHsrFilingDeadline",
+        "label": "Ex-HSR filing deadline",
+        "value_type": "date",
+        "unit": null,
+        "coded": false,
+        "boolean": false,
+        "numeric": false,
+        "provision_types": [
+          "ANTITRUST_REGULATORY"
+        ],
+        "source_occurrences": [
+          {
+            "provision_type": "ANTITRUST_REGULATORY",
+            "source_kind": "SERVING_REGISTRY_ENTRY",
+            "source_request_key": "filingDeadline",
+            "source_registry_index": 273
+          }
+        ],
+        "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
+        "future_result_type_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES",
+        "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
+      },
+      {
         "field_key": "exchangeRatio",
         "label": "Per-share stock exchange ratio",
         "value_type": "percent",
@@ -3166,29 +3207,6 @@
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "exchangeRatioType",
             "source_registry_index": 270
-          }
-        ],
-        "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
-        "future_result_type_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES",
-        "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
-      },
-      {
-        "field_key": "exHsrFilingDeadline",
-        "label": "Ex-HSR filing deadline",
-        "value_type": "date",
-        "unit": null,
-        "coded": false,
-        "boolean": false,
-        "numeric": false,
-        "provision_types": [
-          "ANTITRUST_REGULATORY"
-        ],
-        "source_occurrences": [
-          {
-            "provision_type": "ANTITRUST_REGULATORY",
-            "source_kind": "SERVING_REGISTRY_ENTRY",
-            "source_request_key": "filingDeadline",
-            "source_registry_index": 273
           }
         ],
         "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
@@ -5805,66 +5823,6 @@
         "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
       },
       {
-        "field_key": "nonDisproportionateImpactCarveouts",
-        "label": "Carve-Outs NOT subject to disproportionate-impact carveback",
-        "value_type": "enum",
-        "unit": null,
-        "coded": true,
-        "boolean": false,
-        "numeric": false,
-        "provision_types": [
-          "DEFINITION"
-        ],
-        "source_occurrences": [
-          {
-            "provision_type": "DEFINITION",
-            "source_kind": "SERVING_REGISTRY_ENTRY",
-            "source_request_key": "nonDisproportionateImpactCarveouts",
-            "source_registry_index": 426
-          }
-        ],
-        "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
-        "future_result_type_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES",
-        "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
-      },
-      {
-        "field_key": "nonRelianceClause",
-        "label": "Non-reliance disclaimer",
-        "value_type": "string",
-        "unit": null,
-        "coded": false,
-        "boolean": false,
-        "numeric": false,
-        "provision_types": [
-          "REPRESENTATION",
-          "NO_OTHER_REPS",
-          "MISC_BOILERPLATE"
-        ],
-        "source_occurrences": [
-          {
-            "provision_type": "REPRESENTATION",
-            "source_kind": "SERVING_REGISTRY_ENTRY",
-            "source_request_key": "nonRelianceClause",
-            "source_registry_index": 427
-          },
-          {
-            "provision_type": "NO_OTHER_REPS",
-            "source_kind": "SERVING_REGISTRY_ENTRY",
-            "source_request_key": "nonRelianceClause",
-            "source_registry_index": 427
-          },
-          {
-            "provision_type": "MISC_BOILERPLATE",
-            "source_kind": "SERVING_REGISTRY_ENTRY",
-            "source_request_key": "nonRelianceClause",
-            "source_registry_index": 427
-          }
-        ],
-        "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
-        "future_result_type_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES",
-        "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
-      },
-      {
         "field_key": "noOtherRepsParty",
         "label": "Whose reps are disclaimed beyond the agreement",
         "value_type": "enum",
@@ -5962,6 +5920,66 @@
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "noSetoffPresent",
             "source_registry_index": 430
+          }
+        ],
+        "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
+        "future_result_type_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES",
+        "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
+      },
+      {
+        "field_key": "nonDisproportionateImpactCarveouts",
+        "label": "Carve-Outs NOT subject to disproportionate-impact carveback",
+        "value_type": "enum",
+        "unit": null,
+        "coded": true,
+        "boolean": false,
+        "numeric": false,
+        "provision_types": [
+          "DEFINITION"
+        ],
+        "source_occurrences": [
+          {
+            "provision_type": "DEFINITION",
+            "source_kind": "SERVING_REGISTRY_ENTRY",
+            "source_request_key": "nonDisproportionateImpactCarveouts",
+            "source_registry_index": 426
+          }
+        ],
+        "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
+        "future_result_type_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES",
+        "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
+      },
+      {
+        "field_key": "nonRelianceClause",
+        "label": "Non-reliance disclaimer",
+        "value_type": "string",
+        "unit": null,
+        "coded": false,
+        "boolean": false,
+        "numeric": false,
+        "provision_types": [
+          "REPRESENTATION",
+          "NO_OTHER_REPS",
+          "MISC_BOILERPLATE"
+        ],
+        "source_occurrences": [
+          {
+            "provision_type": "REPRESENTATION",
+            "source_kind": "SERVING_REGISTRY_ENTRY",
+            "source_request_key": "nonRelianceClause",
+            "source_registry_index": 427
+          },
+          {
+            "provision_type": "NO_OTHER_REPS",
+            "source_kind": "SERVING_REGISTRY_ENTRY",
+            "source_request_key": "nonRelianceClause",
+            "source_registry_index": 427
+          },
+          {
+            "provision_type": "MISC_BOILERPLATE",
+            "source_kind": "SERVING_REGISTRY_ENTRY",
+            "source_request_key": "nonRelianceClause",
+            "source_registry_index": 427
           }
         ],
         "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
@@ -6068,36 +6086,6 @@
         "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
       },
       {
-        "field_key": "optionsCvrEarnIn",
-        "label": "Options earn-in via CVR",
-        "value_type": "enum",
-        "unit": null,
-        "coded": true,
-        "boolean": false,
-        "numeric": false,
-        "provision_types": [
-          "CONSIDERATION",
-          "EMPLOYEE_BENEFITS"
-        ],
-        "source_occurrences": [
-          {
-            "provision_type": "CONSIDERATION",
-            "source_kind": "SERVING_REGISTRY_ENTRY",
-            "source_request_key": "optionsCvrEarnIn",
-            "source_registry_index": 442
-          },
-          {
-            "provision_type": "EMPLOYEE_BENEFITS",
-            "source_kind": "SERVING_REGISTRY_ENTRY",
-            "source_request_key": "optionsCvrEarnIn",
-            "source_registry_index": 442
-          }
-        ],
-        "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
-        "future_result_type_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES",
-        "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
-      },
-      {
         "field_key": "optionSpread",
         "label": "Option Spread Calculation",
         "value_type": "string",
@@ -6121,6 +6109,36 @@
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "optionSpread",
             "source_registry_index": 443
+          }
+        ],
+        "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
+        "future_result_type_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES",
+        "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
+      },
+      {
+        "field_key": "optionsCvrEarnIn",
+        "label": "Options earn-in via CVR",
+        "value_type": "enum",
+        "unit": null,
+        "coded": true,
+        "boolean": false,
+        "numeric": false,
+        "provision_types": [
+          "CONSIDERATION",
+          "EMPLOYEE_BENEFITS"
+        ],
+        "source_occurrences": [
+          {
+            "provision_type": "CONSIDERATION",
+            "source_kind": "SERVING_REGISTRY_ENTRY",
+            "source_request_key": "optionsCvrEarnIn",
+            "source_registry_index": 442
+          },
+          {
+            "provision_type": "EMPLOYEE_BENEFITS",
+            "source_kind": "SERVING_REGISTRY_ENTRY",
+            "source_request_key": "optionsCvrEarnIn",
+            "source_registry_index": 442
           }
         ],
         "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
@@ -6513,29 +6531,6 @@
         "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
       },
       {
-        "field_key": "party_role",
-        "label": "IOC covenant party role",
-        "value_type": "string",
-        "unit": null,
-        "coded": false,
-        "boolean": false,
-        "numeric": false,
-        "provision_types": [
-          "COVENANT_INTERIM_OPERATING"
-        ],
-        "source_occurrences": [
-          {
-            "provision_type": "COVENANT_INTERIM_OPERATING",
-            "source_kind": "SERVING_REGISTRY_ENTRY",
-            "source_request_key": "party_role",
-            "source_registry_index": 473
-          }
-        ],
-        "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
-        "future_result_type_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES",
-        "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
-      },
-      {
         "field_key": "partyControlsStrategy",
         "label": "Party That Controls Regulatory Strategy",
         "value_type": "enum",
@@ -6575,6 +6570,59 @@
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "partyWhoCanTerminate",
             "source_registry_index": 475
+          }
+        ],
+        "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
+        "future_result_type_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES",
+        "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
+      },
+      {
+        "field_key": "party_role",
+        "label": "IOC covenant party role",
+        "value_type": "string",
+        "unit": null,
+        "coded": false,
+        "boolean": false,
+        "numeric": false,
+        "provision_types": [
+          "COVENANT_INTERIM_OPERATING"
+        ],
+        "source_occurrences": [
+          {
+            "provision_type": "COVENANT_INTERIM_OPERATING",
+            "source_kind": "SERVING_REGISTRY_ENTRY",
+            "source_request_key": "party_role",
+            "source_registry_index": 473
+          }
+        ],
+        "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
+        "future_result_type_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES",
+        "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
+      },
+      {
+        "field_key": "perShareAmount",
+        "label": "Per-share consideration text",
+        "value_type": "string",
+        "unit": null,
+        "coded": false,
+        "boolean": false,
+        "numeric": false,
+        "provision_types": [
+          "CONSIDERATION",
+          "EMPLOYEE_BENEFITS"
+        ],
+        "source_occurrences": [
+          {
+            "provision_type": "CONSIDERATION",
+            "source_kind": "SERVING_REGISTRY_ENTRY",
+            "source_request_key": "perShareAmount",
+            "source_registry_index": 481
+          },
+          {
+            "provision_type": "EMPLOYEE_BENEFITS",
+            "source_kind": "SERVING_REGISTRY_ENTRY",
+            "source_request_key": "perShareAmount",
+            "source_registry_index": 481
           }
         ],
         "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
@@ -6665,36 +6713,6 @@
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "permittedRedactionsDefinition",
             "source_registry_index": 480
-          }
-        ],
-        "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
-        "future_result_type_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES",
-        "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
-      },
-      {
-        "field_key": "perShareAmount",
-        "label": "Per-share consideration text",
-        "value_type": "string",
-        "unit": null,
-        "coded": false,
-        "boolean": false,
-        "numeric": false,
-        "provision_types": [
-          "CONSIDERATION",
-          "EMPLOYEE_BENEFITS"
-        ],
-        "source_occurrences": [
-          {
-            "provision_type": "CONSIDERATION",
-            "source_kind": "SERVING_REGISTRY_ENTRY",
-            "source_request_key": "perShareAmount",
-            "source_registry_index": 481
-          },
-          {
-            "provision_type": "EMPLOYEE_BENEFITS",
-            "source_kind": "SERVING_REGISTRY_ENTRY",
-            "source_request_key": "perShareAmount",
-            "source_registry_index": 481
           }
         ],
         "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
@@ -7031,6 +7049,29 @@
             "source_kind": "SERVING_REGISTRY_ENTRY",
             "source_request_key": "regulatoryCooperationCarveout",
             "source_registry_index": 508
+          }
+        ],
+        "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
+        "future_result_type_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES",
+        "certified_data_disposition": "NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES"
+      },
+      {
+        "field_key": "regulatoryCooperationScope",
+        "label": "Regulatory cooperation scope",
+        "value_type": "string",
+        "unit": null,
+        "coded": false,
+        "boolean": false,
+        "numeric": false,
+        "provision_types": [
+          "ANTITRUST_REGULATORY"
+        ],
+        "source_occurrences": [
+          {
+            "provision_type": "ANTITRUST_REGULATORY",
+            "source_kind": "SERVING_REGISTRY_ENTRY",
+            "source_request_key": "regulatoryCooperationScope",
+            "source_registry_index": 104
           }
         ],
         "disposition": "INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD",
@@ -9202,31 +9243,6 @@
         "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
       },
       {
-        "alias": "carve_outs",
-        "claimant_registry_indexes": [
-          66,
-          67
-        ],
-        "resolved_registry_index": 66,
-        "resolved_registry_key": "carveouts",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
-        "alias": "carveouts",
-        "claimant_registry_indexes": [
-          66,
-          67,
-          69
-        ],
-        "resolved_registry_index": 66,
-        "resolved_registry_key": "carveouts",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
         "alias": "carveOuts",
         "claimant_registry_indexes": [
           66,
@@ -9241,6 +9257,31 @@
       },
       {
         "alias": "carveOutsList",
+        "claimant_registry_indexes": [
+          66,
+          67,
+          69
+        ],
+        "resolved_registry_index": 66,
+        "resolved_registry_key": "carveouts",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
+        "alias": "carve_outs",
+        "claimant_registry_indexes": [
+          66,
+          67
+        ],
+        "resolved_registry_index": 66,
+        "resolved_registry_key": "carveouts",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
+        "alias": "carveouts",
         "claimant_registry_indexes": [
           66,
           67,
@@ -10090,236 +10131,6 @@
         "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
       },
       {
-        "alias": "rubric.anti_burden.burden_cap",
-        "claimant_registry_indexes": [
-          55,
-          528
-        ],
-        "resolved_registry_index": 55,
-        "resolved_registry_key": "burdenCap",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
-        "alias": "rubric.anti_burden.burdensom_condition_defined",
-        "claimant_registry_indexes": [
-          57,
-          529
-        ],
-        "resolved_registry_index": 57,
-        "resolved_registry_key": "burdensomConditionDefined",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
-        "alias": "rubric.anti_burden.burdensome_condition_in_termination_triggers",
-        "claimant_registry_indexes": [
-          58,
-          530
-        ],
-        "resolved_registry_index": 58,
-        "resolved_registry_key": "burdensomeConditionInTerminationTriggers",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
-        "alias": "rubric.anti_burden.burdensome_condition_present",
-        "claimant_registry_indexes": [
-          59,
-          531
-        ],
-        "resolved_registry_index": 59,
-        "resolved_registry_key": "burdensomeConditionPresent",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
-        "alias": "rubric.anti_burden.burdensome_condition_scope",
-        "claimant_registry_indexes": [
-          60,
-          532
-        ],
-        "resolved_registry_index": 60,
-        "resolved_registry_key": "burdensomeConditionScope",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
-        "alias": "rubric.anti_burden.cap_detail",
-        "claimant_registry_indexes": [
-          65,
-          533
-        ],
-        "resolved_registry_index": 65,
-        "resolved_registry_key": "capDetail",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
-        "alias": "rubric.anti_burden.divestiture_cap",
-        "claimant_registry_indexes": [
-          238,
-          534
-        ],
-        "resolved_registry_index": 238,
-        "resolved_registry_key": "divestitureCap",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
-        "alias": "rubric.anti_burden.divestiture_cap_description",
-        "claimant_registry_indexes": [
-          239,
-          535
-        ],
-        "resolved_registry_index": 239,
-        "resolved_registry_key": "divestitureCapDescription",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
-        "alias": "rubric.anti_burden.efforts_standard",
-        "claimant_registry_indexes": [
-          249,
-          250,
-          536
-        ],
-        "resolved_registry_index": 249,
-        "resolved_registry_key": "effortsStandard",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
-        "alias": "rubric.anti_cooperate.controlling_party",
-        "claimant_registry_indexes": [
-          108,
-          537
-        ],
-        "resolved_registry_index": 108,
-        "resolved_registry_key": "controllingParty",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
-        "alias": "rubric.anti_efforts.cap_detail",
-        "claimant_registry_indexes": [
-          65,
-          538
-        ],
-        "resolved_registry_index": 65,
-        "resolved_registry_key": "capDetail",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
-        "alias": "rubric.anti_efforts.efforts_standard",
-        "claimant_registry_indexes": [
-          249,
-          250,
-          539
-        ],
-        "resolved_registry_index": 249,
-        "resolved_registry_key": "effortsStandard",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
-        "alias": "rubric.anti_efforts.efforts_standard_differs_by_remedy",
-        "claimant_registry_indexes": [
-          254,
-          540
-        ],
-        "resolved_registry_index": 254,
-        "resolved_registry_key": "effortsStandardDiffersByRemedy",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
-        "alias": "rubric.anti_filing.ex_hsr_filing_deadline",
-        "claimant_registry_indexes": [
-          273,
-          541
-        ],
-        "resolved_registry_index": 273,
-        "resolved_registry_key": "exHsrFilingDeadline",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
-        "alias": "rubric.anti_filing.filing_deadline",
-        "claimant_registry_indexes": [
-          299,
-          542
-        ],
-        "resolved_registry_index": 299,
-        "resolved_registry_key": "filingDeadline",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
-        "alias": "rubric.anti_filing.hsr_filing_deadline",
-        "claimant_registry_indexes": [
-          329,
-          543
-        ],
-        "resolved_registry_index": 329,
-        "resolved_registry_key": "hsrFilingDeadline",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
-        "alias": "rubric.anti_filing.hsr_filing_deadline_business_days",
-        "claimant_registry_indexes": [
-          330,
-          544
-        ],
-        "resolved_registry_index": 330,
-        "resolved_registry_key": "hsrFilingDeadlineBusinessDays",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
-        "alias": "rubric.anti_filing.other_regulatory_filing_deadlines",
-        "claimant_registry_indexes": [
-          447,
-          545
-        ],
-        "resolved_registry_index": 447,
-        "resolved_registry_key": "otherRegulatoryFilingDeadlines",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
-        "alias": "rubric.anti_noaction.applies_to_party",
-        "claimant_registry_indexes": [
-          36,
-          546
-        ],
-        "resolved_registry_index": 36,
-        "resolved_registry_key": "appliesToParty",
-        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
-        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
-        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
-      },
-      {
         "alias": "rubric.anti.applies_to_party",
         "claimant_registry_indexes": [
           36,
@@ -10597,6 +10408,236 @@
         "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
       },
       {
+        "alias": "rubric.anti_burden.burden_cap",
+        "claimant_registry_indexes": [
+          55,
+          528
+        ],
+        "resolved_registry_index": 55,
+        "resolved_registry_key": "burdenCap",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
+        "alias": "rubric.anti_burden.burdensom_condition_defined",
+        "claimant_registry_indexes": [
+          57,
+          529
+        ],
+        "resolved_registry_index": 57,
+        "resolved_registry_key": "burdensomConditionDefined",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
+        "alias": "rubric.anti_burden.burdensome_condition_in_termination_triggers",
+        "claimant_registry_indexes": [
+          58,
+          530
+        ],
+        "resolved_registry_index": 58,
+        "resolved_registry_key": "burdensomeConditionInTerminationTriggers",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
+        "alias": "rubric.anti_burden.burdensome_condition_present",
+        "claimant_registry_indexes": [
+          59,
+          531
+        ],
+        "resolved_registry_index": 59,
+        "resolved_registry_key": "burdensomeConditionPresent",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
+        "alias": "rubric.anti_burden.burdensome_condition_scope",
+        "claimant_registry_indexes": [
+          60,
+          532
+        ],
+        "resolved_registry_index": 60,
+        "resolved_registry_key": "burdensomeConditionScope",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
+        "alias": "rubric.anti_burden.cap_detail",
+        "claimant_registry_indexes": [
+          65,
+          533
+        ],
+        "resolved_registry_index": 65,
+        "resolved_registry_key": "capDetail",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
+        "alias": "rubric.anti_burden.divestiture_cap",
+        "claimant_registry_indexes": [
+          238,
+          534
+        ],
+        "resolved_registry_index": 238,
+        "resolved_registry_key": "divestitureCap",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
+        "alias": "rubric.anti_burden.divestiture_cap_description",
+        "claimant_registry_indexes": [
+          239,
+          535
+        ],
+        "resolved_registry_index": 239,
+        "resolved_registry_key": "divestitureCapDescription",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
+        "alias": "rubric.anti_burden.efforts_standard",
+        "claimant_registry_indexes": [
+          249,
+          250,
+          536
+        ],
+        "resolved_registry_index": 249,
+        "resolved_registry_key": "effortsStandard",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
+        "alias": "rubric.anti_cooperate.controlling_party",
+        "claimant_registry_indexes": [
+          108,
+          537
+        ],
+        "resolved_registry_index": 108,
+        "resolved_registry_key": "controllingParty",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
+        "alias": "rubric.anti_efforts.cap_detail",
+        "claimant_registry_indexes": [
+          65,
+          538
+        ],
+        "resolved_registry_index": 65,
+        "resolved_registry_key": "capDetail",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
+        "alias": "rubric.anti_efforts.efforts_standard",
+        "claimant_registry_indexes": [
+          249,
+          250,
+          539
+        ],
+        "resolved_registry_index": 249,
+        "resolved_registry_key": "effortsStandard",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
+        "alias": "rubric.anti_efforts.efforts_standard_differs_by_remedy",
+        "claimant_registry_indexes": [
+          254,
+          540
+        ],
+        "resolved_registry_index": 254,
+        "resolved_registry_key": "effortsStandardDiffersByRemedy",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
+        "alias": "rubric.anti_filing.ex_hsr_filing_deadline",
+        "claimant_registry_indexes": [
+          273,
+          541
+        ],
+        "resolved_registry_index": 273,
+        "resolved_registry_key": "exHsrFilingDeadline",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
+        "alias": "rubric.anti_filing.filing_deadline",
+        "claimant_registry_indexes": [
+          299,
+          542
+        ],
+        "resolved_registry_index": 299,
+        "resolved_registry_key": "filingDeadline",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
+        "alias": "rubric.anti_filing.hsr_filing_deadline",
+        "claimant_registry_indexes": [
+          329,
+          543
+        ],
+        "resolved_registry_index": 329,
+        "resolved_registry_key": "hsrFilingDeadline",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
+        "alias": "rubric.anti_filing.hsr_filing_deadline_business_days",
+        "claimant_registry_indexes": [
+          330,
+          544
+        ],
+        "resolved_registry_index": 330,
+        "resolved_registry_key": "hsrFilingDeadlineBusinessDays",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
+        "alias": "rubric.anti_filing.other_regulatory_filing_deadlines",
+        "claimant_registry_indexes": [
+          447,
+          545
+        ],
+        "resolved_registry_index": 447,
+        "resolved_registry_key": "otherRegulatoryFilingDeadlines",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
+        "alias": "rubric.anti_noaction.applies_to_party",
+        "claimant_registry_indexes": [
+          36,
+          546
+        ],
+        "resolved_registry_index": 36,
+        "resolved_registry_key": "appliesToParty",
+        "current_resolution_rule": "FIRST_REGISTRY_CLAIMANT_WINS",
+        "disposition": "RECORDED_NONCANONICAL_ALIAS_COLLISION",
+        "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
+      },
+      {
         "alias": "rubric.cond_b.burdensome_condition_present",
         "claimant_registry_indexes": [
           59,
@@ -10791,7 +10832,7 @@
         "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
       },
       {
-        "alias": "subsequentMatchingPeriod",
+        "alias": "subsequentMatchPeriodDays",
         "claimant_registry_indexes": [
           632,
           633
@@ -10803,7 +10844,7 @@
         "successor_requirement": "EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED"
       },
       {
-        "alias": "subsequentMatchPeriodDays",
+        "alias": "subsequentMatchingPeriod",
         "claimant_registry_indexes": [
           632,
           633
@@ -29529,7 +29570,7 @@
   "content_identity": {
     "scheme": "CANONICAL_CONTENT_ID/V1",
     "domain": "PROCESS_INTELLIGENCE_PRODUCT_FIELD_SOURCE_INVENTORY/V1",
-    "content_id": "8ddf78aec50435e3cc41474daa9f3430d2e9f4232402d33120cf9271a2eda6f7",
-    "canonical_payload_sha256": "43fd6fc3cddba24e2d8270098a249c41ac823c4b3b59dbbb7fc2d3327eb2936a"
+    "content_id": "360e0ac78eb00a2363f3d14b1063ed8ff5453d925f9025fab9aa5db2ef44bb5d",
+    "canonical_payload_sha256": "870664dbea0814b775682f959b270cd1e351438626b1f2260c2efa77f147ff40"
   }
 }

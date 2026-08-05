@@ -20,6 +20,9 @@ function entry({
 } = {}) {
   const provisionId = `provision-${suffix}`;
   const parent = side === 'PARENT';
+  const quote = key === 'KNOWLEDGE_QUALIFIER'
+    ? `to the Knowledge of ${parent ? 'Parent' : 'the Company'}`
+    : 'true and correct in all material respects';
   return {
     resolved_claim_definition_key: key,
     concept_key: conceptKey,
@@ -40,6 +43,8 @@ function entry({
       claim_definition_key: key,
       state: 'PRESENT',
       canonical_value: value,
+      raw_value: quote,
+      evidence: [{ start: 0, end: Buffer.byteLength(quote, 'utf8') }],
       attributes: {
         party_making: parent ? 'Parent' : 'the Company',
         qualifier_kind: key === 'KNOWLEDGE_QUALIFIER' ? 'KNOWLEDGE' : 'ACCURACY',

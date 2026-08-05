@@ -2,6 +2,7 @@ import { Fragment, useState } from 'react';
 import * as ProvisionTablePrimitives from './primitives/ProvisionTablePrimitives';
 import { buildCardIndex, resolveRowCard, resolveRowFocus } from '../review-v2/provisionIndexHelpers.js';
 import { headerLines } from './table-configs/card-utils.js';
+import { buildCanonicalV2PreviewLane, partitionCanonicalV2PreviewRows } from './table-configs/canonical-v2-preview-lane.js';
 
 /*
 Config shape:
@@ -156,6 +157,16 @@ export default function ProvisionTable({
   if (!config || typeof config.selectRows !== 'function') return null;
   const rows = config.selectRows(reviewDeal);
   if (!Array.isArray(rows) || rows.length === 0) return null;
+  // Ben's ruling: dark Canonical V2 preview rows never render as ordinary
+  // inline rows in the legacy table -- they render in ONE shared, labelled,
+  // read-only, default-collapsed lane instead (see
+  // table-configs/canonical-v2-preview-lane.js). config.selectRows() keeps
+  // returning its full row set exactly as before -- every dark-bridge test
+  // asserts against that exact array -- so the split happens here, at
+  // render time only. This is a pure no-op whenever no row carries the
+  // dark-preview market state, which is every reviewDeal the live product
+  // builds today (no route under pages/ ever merges a dark card in).
+  const { legacyRows, previewRows } = partitionCanonicalV2PreviewRows(rows);
   // Item 17 (r4): the same source-card resolution the ProvisionIndex
   // "see provision" evidence path uses (provisionIndexHelpers.js), reused
   // here so a summary-row click opens the ClauseSidebar for the CARD that
@@ -201,13 +212,16 @@ export default function ProvisionTable({
           </div>
         ) : null}
         <div data-testid={`provision-table-body-${config.id}`} className="p-3 space-y-4">
-          {config.renderBody(rows, bodyCtx)}
+          {config.renderBody(legacyRows, bodyCtx)}
         </div>
         {typeof config.renderFooter === 'function' ? (
           <div data-testid={`provision-table-footer-${config.id}`}>
             {config.renderFooter(rows, bodyCtx)}
           </div>
         ) : null}
+        {buildCanonicalV2PreviewLane(previewRows, config.columns, bodyCtx, {
+          testId: `provision-table-preview-lane-${config.id}`,
+        })}
       </section>
     );
   }
@@ -302,7 +316,7 @@ export default function ProvisionTable({
             </thead>
           ) : null}
           <tbody className="divide-y divide-border">
-            {rows.map((row) => {
+            {legacyRows.map((row) => {
               // Resolve first so rows using the compact `source` shape (and
               // rows whose source only exists in sectionCards) get both the
               // drilldown click and the universal provision-text fallback.
@@ -382,6 +396,9 @@ export default function ProvisionTable({
           {config.renderFooter(rows, ctx)}
         </div>
       ) : null}
+      {buildCanonicalV2PreviewLane(previewRows, allColumns, ctx, {
+        testId: `provision-table-preview-lane-${config.id}`,
+      })}
     </section>
   );
 }

@@ -218,6 +218,8 @@ test('an actual unified-runner result binds raw document hash separately from ca
     manifest,
     work_item_controls: [{ work_item_id: 'topbuild-preflight-cap', profile_id: 'TERRA_MEDIUM', covenant_side: null }],
     root_dir: root,
+    // Explicit zero budget: the trusted-verifier fence, not the budget fence, must reject.
+    max_model_invocations: 0,
     provider_factory: () => async () => ({
       provider_id: 'semantic-safety-test', model_id: 'stub', prompt: 'test prompt', proposals: [], evidence_residuals: [],
       raw_response_text: '{"open_world_candidates":[]}', raw_response_length: 28, attempts: 1,

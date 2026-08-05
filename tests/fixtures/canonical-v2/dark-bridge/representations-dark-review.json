@@ -1,0 +1,155 @@
+{
+  "deal_id": "landos-abbvie-representations-dark-bridge",
+  "legacy_cards": [
+    {
+      "id_seed": "landos-abbvie-representations-dark-bridge:rep-t-organization",
+      "provision_instance_id_seed": "landos-abbvie-representations-dark-bridge:rep-t-organization",
+      "excerpt_id": "legacy-rep-t-organization:0",
+      "section_ref": "3.1",
+      "short_title": "Organization; Qualification; Standing",
+      "kind": "standard",
+      "provision_type": "REPRESENTATION",
+      "provision_subtype": "REP-T-ORGANIZATION",
+      "primary_quote": "The Company is a corporation duly organized, validly existing and in good standing under the Laws of the State of Delaware, except as would not have a Company Material Adverse Effect, and the Company has actual knowledge of no fact that would render this representation inaccurate.",
+      "region_full_text": "The Company is a corporation duly organized, validly existing and in good standing under the Laws of the State of Delaware, except as would not have a Company Material Adverse Effect, and the Company has actual knowledge of no fact that would render this representation inaccurate.",
+      "references": [],
+      "provenance": {
+        "source_doc_id": "legacy-document",
+        "source_doc_page": 12,
+        "source_doc_offset_start": 1200,
+        "source_doc_offset_end": 1500,
+        "extractor_name": "parser-v2",
+        "extractor_version": "fixture",
+        "model": "fixture",
+        "prompt_hash": "sha256:legacy-rep-t-organization",
+        "run_id": "legacy-run",
+        "extracted_at": "2026-08-03T00:00:00.000Z"
+      }
+    },
+    {
+      "id_seed": "landos-abbvie-representations-dark-bridge:rep-b-organization",
+      "provision_instance_id_seed": "landos-abbvie-representations-dark-bridge:rep-b-organization",
+      "excerpt_id": "legacy-rep-b-organization:0",
+      "section_ref": "4.1",
+      "short_title": "Parent Organization; Qualification; Standing",
+      "kind": "standard",
+      "provision_type": "REPRESENTATION",
+      "provision_subtype": "REP-B-ORGANIZATION",
+      "primary_quote": "Parent is a corporation duly organized, validly existing and in good standing under the Laws of the State of Delaware.",
+      "region_full_text": "Parent is a corporation duly organized, validly existing and in good standing under the Laws of the State of Delaware.",
+      "references": [],
+      "provenance": {
+        "source_doc_id": "legacy-document",
+        "source_doc_page": 40,
+        "source_doc_offset_start": 4000,
+        "source_doc_offset_end": 4200,
+        "extractor_name": "parser-v2",
+        "extractor_version": "fixture",
+        "model": "fixture",
+        "prompt_hash": "sha256:legacy-rep-b-organization",
+        "run_id": "legacy-run",
+        "extracted_at": "2026-08-03T00:00:00.000Z"
+      }
+    },
+    {
+      "id_seed": "landos-abbvie-representations-dark-bridge:rep-t-novel",
+      "provision_instance_id_seed": "landos-abbvie-representations-dark-bridge:rep-t-novel",
+      "excerpt_id": "legacy-rep-t-novel:0",
+      "section_ref": "3.30",
+      "short_title": "Biosimilar Exclusivity Period",
+      "kind": "standard",
+      "provision_type": "REPRESENTATION",
+      "provision_subtype": "REP-T-BIOSIMILAR-EXCLUSIVITY-NOVEL",
+      "primary_quote": "The Company represents that the biosimilar exclusivity period applicable to the Company's lead product has not been challenged or curtailed by any Governmental Authority.",
+      "region_full_text": "The Company represents that the biosimilar exclusivity period applicable to the Company's lead product has not been challenged or curtailed by any Governmental Authority.",
+      "references": [],
+      "provenance": {
+        "source_doc_id": "legacy-document",
+        "source_doc_page": 55,
+        "source_doc_offset_start": 5500,
+        "source_doc_offset_end": 5700,
+        "extractor_name": "parser-v2",
+        "extractor_version": "fixture",
+        "model": "fixture",
+        "prompt_hash": "sha256:legacy-rep-t-novel",
+        "run_id": "legacy-run",
+        "extracted_at": "2026-08-03T00:00:00.000Z"
+      }
+    },
+    {
+      "id_seed": "landos-abbvie-representations-dark-bridge:definition-mae",
+      "provision_instance_id_seed": "landos-abbvie-representations-dark-bridge:definition-mae",
+      "excerpt_id": "legacy-definition-mae:0",
+      "section_ref": "Article I",
+      "short_title": "Company Material Adverse Effect",
+      "kind": "definition",
+      "provision_type": "DEFINITION",
+      "defined_term": "Company Material Adverse Effect",
+      "defined_value": "an effect materially adverse to the Company",
+      "primary_quote": "Company Material Adverse Effect means an effect materially adverse to the Company.",
+      "region_full_text": "Company Material Adverse Effect means an effect materially adverse to the Company.",
+      "references": [],
+      "provenance": {
+        "source_doc_id": "legacy-document",
+        "source_doc_page": 1,
+        "source_doc_offset_start": 10,
+        "source_doc_offset_end": 90,
+        "extractor_name": "parser-v2",
+        "extractor_version": "fixture",
+        "model": "fixture",
+        "prompt_hash": "sha256:legacy-definition-mae",
+        "run_id": "legacy-run",
+        "extracted_at": "2026-08-03T00:00:00.000Z"
+      }
+    }
+  ],
+  "target_representation": {
+    "provision_instance_id_seed": "landos-abbvie-representations-dark-bridge:rep-t-organization",
+    "concept_key": "REP-T-ORGANIZATION",
+    "section_reference": "3.1",
+    "representation_maker": "the Company",
+    "representation_maker_capacity": "TARGET",
+    "accuracy": {
+      "canonical_value": "MAT_MAE_QUALIFIED",
+      "quote": "The Company is a corporation duly organized, validly existing and in good standing under the Laws of the State of Delaware, except as would not have a Company Material Adverse Effect, and the Company has actual knowledge of no fact that would render this representation inaccurate.",
+      "qualifier_kind": "MAE_QUALIFIED_STANDARD"
+    },
+    "knowledge": {
+      "quote": "the Company has actual knowledge of no fact that would render this representation inaccurate",
+      "qualifier_kind": "ACTUAL_KNOWLEDGE",
+      "knowledge_standard": "ACTUAL"
+    }
+  },
+  "parent_representation": {
+    "provision_instance_id_seed": "landos-abbvie-representations-dark-bridge:rep-b-organization",
+    "concept_key": "REP-B-ORGANIZATION",
+    "section_reference": "4.1",
+    "representation_maker": "Parent",
+    "representation_maker_capacity": "BUYER",
+    "accuracy": {
+      "canonical_value": "MAT_ALL_MATERIAL",
+      "quote": "Parent is a corporation duly organized, validly existing and in good standing under the Laws of the State of Delaware.",
+      "qualifier_kind": "ALL_MATERIAL_RESPECTS_STANDARD"
+    }
+  },
+  "novel_concept_representation": {
+    "provision_instance_id_seed": "landos-abbvie-representations-dark-bridge:rep-t-novel",
+    "concept_key": "REP-T-BIOSIMILAR-EXCLUSIVITY-NOVEL",
+    "section_reference": "3.30",
+    "representation_maker": "the Company",
+    "representation_maker_capacity": "TARGET",
+    "accuracy": {
+      "canonical_value": "MAT_ALL_RESPECTS",
+      "quote": "The Company represents that the biosimilar exclusivity period applicable to the Company's lead product has not been challenged or curtailed by any Governmental Authority.",
+      "qualifier_kind": "ALL_RESPECTS_STANDARD"
+    }
+  },
+  "open_world_evidence": {
+    "section_reference": "3.31",
+    "reason": "No governed representation concept in the REPRESENTATIONS product surface covers deal-specific patent-term-extension representations.",
+    "raw_value": "The Company represents that it has timely filed all applications for patent term extension available under the Hatch-Waxman Act.",
+    "observed_category": "PATENT_TERM_EXTENSION_REPRESENTATION",
+    "why_unmapped": "Patent-term-extension representations are not covered by REPRESENTATION_ACCURACY_STANDARD or KNOWLEDGE_QUALIFIER.",
+    "nearest_concept": "REP-T-INTELLECTUAL-PROPERTY"
+  }
+}

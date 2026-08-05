@@ -1,6 +1,6 @@
 # Family — Antitrust / regulatory efforts (ANTI-*)
 
-**Date:** 2026-08-02. **Status:** AUDIT-AMENDED (2 CRITICAL, 5 MATERIAL, 5
+**Date:** 2026-08-02. **Status:** CANONICAL PACKAGE AMENDED 2026-08-04 (2 CRITICAL, 5 MATERIAL, 5
 MINOR findings applied mechanically from the 2026-08-02 adversarial audit;
 0 parked). RECEIPT RE-RUN GATE: PASSED 2026-08-02 — the corrected
 provision_type-filtered receipts were re-run read-only against production
@@ -28,6 +28,37 @@ spec implements, and may not amend, them).
 `MATERIALITY_TABLE`, `candidate-resolution.js` ~446–457, has no ANTI prefix;
 this family would sort UNCLASSIFIED rank 99 behind notices). Section 4
 proposes a new tier, flagged for Ben.
+
+## Canonical 2026-08-04 amendment
+
+Ben approved the expanded antitrust package on 2026-08-04. This amendment
+supersedes the narrower first-slice vocabulary and the old out-of-scope
+list below.
+
+- `ANTI-AGREEMENTS` owns timing agreements and withdrawal/refiling.
+  `ANTI-TIMING` is retired from the current V2 contract.
+- `ANTI-COOPERATE`, `ANTI-INFO` and `ANTI-NOTIFY` are governed concepts.
+  `ANTI-NOACTION` retains a structured non-impediment claim.
+- `ANTI-FOREIGN` is retired as a concept. A foreign or international filing
+  obligation or deadline becomes `ANTI-FILING`, with one exact named regime
+  per fact. Strategy, cooperation, information-sharing and notification
+  text found on an `ANTI-FOREIGN` card goes to its actual governed concept.
+  Unmatched text stays exact open-world evidence.
+- `ANTI-INTERIM` is retired as a concept. Its atomic facts route to
+  `ANTI-NOACTION`, `ANTI-BURDEN`, `ANTI-STRATEGY`, Employee Matters or IOC,
+  as supported by the text. Unmatched text stays exact open-world evidence.
+- HSR remains separate. A mixed clause can produce multiple facts. No fact
+  may aggregate HSR with another regime.
+- Current production authority remains `NONE`.
+
+The implementation also closes the fourteen correction items found during
+the rendered-corpus audit: the agreements title; legacy timing retirement;
+the Skechers enum regression; Review, Query and Compare wiring; qualitative
+and fixed-date filing timing; HSR day kind; the narrow pull/refile proviso;
+strategy-control shape; consultation right holder; all four burden
+baselines; cap scale, currency and derived-USD boundaries; cooperation,
+information and notification claims; real Skechers fixture proof; and a
+terminal disposition for every rendered V1 antitrust surface.
 
 ## Corpus grounding (production Supabase, project `tzulhdasmioeechxapdy`;
 evidence pack of 2026-08-02 + this spec's own SELECT-only receipts of
@@ -148,7 +179,10 @@ ANTI-BURDEN cards. The v2 design replaces both with typed-abstain parsers
 that either resolve a literal or queue with a typed reason — never a
 prose-in-a-number-field row again.
 
-## 1. Registry (`contract-bundle.js` → next fixture-contract version)
+## 1. Historical first-slice registry (`contract-bundle.js`)
+
+This section records the first-slice design. The 2026-08-04 amendment above
+is authoritative for the current contract.
 
 Strictly additive spread of the current head version (V14 as of this
 writing; sibling family slices are queued on the same file — the version
@@ -169,7 +203,7 @@ reused verbatim so the future FAMILY_MAPPING_TABLE rows are rename-free:**
   cards / 13 deals.
 - `ANTI-FILING` — regulatory filing deadline. 31 cards / 26 deals.
 
-NOT registered this slice: `ANTI-COOPERATE`, `ANTI-CONSULT`, `ANTI-INFO`,
+Historically not registered in the first slice: `ANTI-COOPERATE`, `ANTI-CONSULT`, `ANTI-INFO`,
 `ANTI-FOREIGN`, `ANTI-NOTIFY`, `ANTI-NOACTION`, `ANTI-INTERIM` (prose/
 process families — control-of-strategy and consultation-tier promotion is a
 named future slice; see Out of scope), and no concept for the 23
@@ -989,25 +1023,19 @@ burdensome/condition line-pattern. Pins for the build:
 
 ## Out of scope
 
-- `ANTI-COOPERATE` / `ANTI-CONSULT` control-and-consultation promotion
-  (`controllingParty` CONTROL_PARENT 31 / consultationTier 70 corpus
-  claims — a strong second slice, with its own tagged-value taxonomy at
-  `lib/taxonomy.js` `ANTITRUST_CONTROL`; not this one), `ANTI-INFO`,
-  `ANTI-FOREIGN`, `ANTI-NOTIFY`, `ANTI-NOACTION`, `ANTI-INTERIM` (prose
-  families; no registered v2 concepts).
-- Ex-HSR and foreign filing deadlines (mixed units, multi-regime packs,
-  disclosure-schedule pointers — open world; the Frontier FCC/PUC limbs
-  and the SecureWorks/Envestnet schedule cross-references are named
-  examples), and any `foreignFilingsRequired`-style list claim (the v1
-  field mixes statutes, agencies and export-control regimes — evidence-
-  pack warning 8; promoting it would launder that mixture into a
-  governed list).
+- No undifferentiated foreign-filings list. Each governed filing fact has
+  one exact named regime. A disclosure-schedule pointer or mixed regime
+  pack stays exact open world until its atomic facts are supported.
+- No derived USD amount in a governed legal claim. A later comparison
+  process may create a separately flagged derived value with its input,
+  signing-date FX source, rate and method. It never overwrites the raw
+  amount or currency.
 - Derived nakedness/silence facts: no-cap-silent, no-litigation-silent,
   clear-skies flags, `pullAndRefileRight` booleans — all scope-closure
   territory (M3 rule 1).
-- The Metsera one-time-parent-withdrawal proviso and all pull-and-refile
-  EXCEPTION mechanics (the restriction claim carries the proviso in its
-  quoted evidence; the exception shape feeds the commonality report).
+- Pull/refile exceptions are governed only when the exact proviso, literal
+  period and day kind are supported. The proviso attaches to pull/refile,
+  not to the separate timing-agreement fact.
 - Efforts-standard-differs-by-remedy (`effortsStandardDiffersByRemedy`),
   burdensome-condition-in-termination-trigger interactions, and any
   cross-family join to the conditions or termination families
@@ -1015,8 +1043,9 @@ burdensome/condition line-pattern. Pins for the build:
 - Template-level dedup for the precedent product (the ANTI-NOACTION/
   ANTI-NOTIFY shared-template observation — a commonality-report/serving
   concern, not extraction).
-- Divestiture-cap scale-word interpretation ($700 million → 700000000 is
-  a one-second Ben confirmation, never parser arithmetic).
+- Divestiture-cap scale-word interpretation remains outside the governed
+  parser. `$700 million` does not become `700000000` there. The raw amount
+  and currency remain distinct from any traced comparison output.
 - Cross-deal normalization of `burden_term_ref` and party phrases; the
   live re-extraction runs (dated handoffs); `FAMILY_MAPPING_TABLE`
   extension (separate Fable+Ben table edit); any amendment to M3

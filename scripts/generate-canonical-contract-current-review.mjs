@@ -23,9 +23,9 @@ const {
 } = require('../lib/canonical-v2/canonical-contract-bundle-pre-review-source-closure');
 const {
   SPECIFICATION_MANIFEST_PATH,
-  SPECIFICATION_ROOT_DOMAIN,
-  SPECIFICATION_ROOT_INPUT_ENCODING,
-  SPECIFICATION_ROOT_MEMBERSHIP,
+  SPECIFICATION_MANIFEST_SCHEMA,
+  SPECIFICATION_MANIFEST_PURPOSE,
+  SPECIFICATION_DECLARED_FILE_COUNT,
 } = require('../lib/canonical-v2/canonical-contract-bundle-pre-review-package-assembler');
 
 const SCRIPT_DIRECTORY = path.dirname(fileURLToPath(import.meta.url));
@@ -146,14 +146,13 @@ function parseSpecificationManifest(bytes) {
     !manifest
     || typeof manifest !== 'object'
     || Array.isArray(manifest)
-    || manifest.schema !== 'codex-program-specification-manifest/v1'
-    || manifest.domain_separator !== SPECIFICATION_ROOT_DOMAIN
-    || manifest.root_input_encoding !== SPECIFICATION_ROOT_INPUT_ENCODING
-    || manifest.root_membership !== SPECIFICATION_ROOT_MEMBERSHIP
+    || Object.keys(manifest).sort().join(',') !== 'files,purpose,schema'
+    || manifest.schema !== SPECIFICATION_MANIFEST_SCHEMA
+    || manifest.purpose !== SPECIFICATION_MANIFEST_PURPOSE
     || !Array.isArray(manifest.files)
-    || manifest.files.length !== 5
+    || manifest.files.length !== SPECIFICATION_DECLARED_FILE_COUNT
   ) {
-    fail('The governing specification manifest does not match the frozen six-member root contract');
+    fail('The governing specification manifest does not match the current V2 root contract');
   }
   return manifest;
 }
@@ -180,7 +179,7 @@ function readGoverningSpecificationMembers(repositoryRoot = REPOSITORY_ROOT) {
       || typeof declared !== 'object'
       || Array.isArray(declared)
       || Object.keys(declared).sort().join(',') !== 'byte_length,order,path,sha256'
-      || declared.order !== index + 2
+      || declared.order !== index + 1
       || !Number.isSafeInteger(declared.byte_length)
       || declared.byte_length < 1
       || typeof declared.sha256 !== 'string'
@@ -203,7 +202,7 @@ function readGoverningSpecificationMembers(repositoryRoot = REPOSITORY_ROOT) {
       fail(`Governing specification member drift: ${declared.path}`);
     }
     members.push({
-      order: declared.order,
+      order: index + 2,
       path: declared.path,
       byte_length: bytes.length,
       payload_digest: digest,

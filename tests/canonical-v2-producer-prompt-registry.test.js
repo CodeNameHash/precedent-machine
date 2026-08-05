@@ -39,6 +39,7 @@ const {
 } = require('../lib/canonical-v2/native-producer/section-family-classifier');
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
 const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
+const { buildIdentityAdmittedSourceContext } = require('./helpers/identity-admitted-source');
 
 // ─── producer-prompt-registry.js ───
 
@@ -579,10 +580,10 @@ test('candidate-resolution: an AI-classified section carries SECTION_FAMILY_AI_U
   const resolution = resolveCandidates({
     run_receipt: receipt,
     contract_vocabulary: CONTRACT_BUNDLE,
-    admitted_source_context: {
-      document_hash: CLASSIFIER_FALLBACK_DOCUMENT_HASH,
-      governed_deal_key: 'registry-test-deal',
-    },
+    admitted_source_context: buildIdentityAdmittedSourceContext(qxoClassifierFallbackText, {
+      dealKey: 'registry-test-deal',
+      dealAdmissionId: sha256Hex('deal-admission:registry-test-deal:classifier-fallback'),
+    }),
   });
 
   // The synthetic REGISTRY_TEST_CLAIM_CANDIDATE key is unmapped, so this
@@ -604,10 +605,10 @@ test('candidate-resolution: a default (unclassified) CAPITALISATION section carr
   const resolution = resolveCandidates({
     run_receipt: receipt,
     contract_vocabulary: CONTRACT_BUNDLE,
-    admitted_source_context: {
-      document_hash: DOCUMENT_HASH,
-      governed_deal_key: 'registry-test-deal',
-    },
+    admitted_source_context: buildIdentityAdmittedSourceContext(qxoFullText, {
+      dealKey: 'registry-test-deal',
+      dealAdmissionId: sha256Hex('deal-admission:registry-test-deal:default'),
+    }),
   });
 
   assert.equal(resolution.open_world.length, 1);

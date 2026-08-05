@@ -7,7 +7,8 @@ import {
   DECISION_GROUPS,
   DECISIONS,
   M3_STAGES,
-  RECORDED_RULINGS,
+  PENDING_USER_RATIFICATION_RULING_IDS,
+  VALIDATED_RULING_CHOICES,
   mergeRecordedRulings,
   recommendedChoice,
 } from '../../lib/programme-decision-console';
@@ -26,25 +27,26 @@ function readSavedState() {
     const saved = JSON.parse(window.localStorage.getItem(STORAGE_KEY));
     return {
       choices: mergeRecordedRulings(saved?.choices),
-      notes: saved?.notes && typeof saved.notes === 'object' ? saved.notes : {},
+      notes: Object.fromEntries(Object.entries(saved?.notes && typeof saved.notes === 'object' ? saved.notes : {})
+        .filter(([decisionId, note]) => !Object.prototype.hasOwnProperty.call(VALIDATED_RULING_CHOICES, decisionId)
+          && typeof note === 'string')),
     };
   } catch {
     return { choices: mergeRecordedRulings(), notes: {} };
   }
 }
 
-function rulingMarkdown(choices, notes) {
-  const answered = DECISIONS.filter((decision) => choices[decision.id]);
+function rulingMarkdown(choices) {
+  const answered = DECISIONS.filter((decision) => Object.prototype.hasOwnProperty.call(VALIDATED_RULING_CHOICES, decision.id));
   const lines = [
     '# Canonical v2 rulings, 2026-08-03',
     '',
-    `Answered: ${answered.length}/${DECISIONS.length}`,
+    `Primary-evidenced rulings: ${answered.length}/${DECISIONS.length}`,
     '',
   ];
   for (const decision of answered) {
     const option = decision.options.find((entry) => entry.id === choices[decision.id]);
     lines.push(`## ${decision.title}`, '', `Ruling: ${option?.label || choices[decision.id]}.`);
-    if (notes[decision.id]?.trim()) lines.push('', `Note: ${notes[decision.id].trim()}`);
     lines.push('', `Source: ${decision.source}.`, '');
   }
   return lines.join('\n');
@@ -68,14 +70,15 @@ async function copyText(value) {
   }
 }
 
-function DecisionCard({ decision, choice, note, locked, onChoose, onNote }) {
+function DecisionCard({ decision, choice, note, locked, pending, onChoose, onNote }) {
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const resolved = locked || (!pending && Boolean(choice));
   return (
-    <article className={`decisionCard ${choice ? 'answered' : ''}`} id={decision.id}>
+    <article className={`decisionCard ${resolved ? 'answered' : ''}`} id={decision.id}>
       <div className="decisionHead">
         <div>
           <div className="decisionMeta">
-            <span>{locked ? 'Ruling recorded' : choice ? 'Answered' : 'Decision needed'}</span>
+            <span>{locked ? 'Ruling recorded' : pending ? 'User ratification needed' : choice ? 'Selected locally' : 'Decision needed'}</span>
             <span>·</span>
             <span>{decision.horizon === 'later' ? 'Later promotion' : 'Current programme'}</span>
             <span>·</span>
@@ -84,7 +87,7 @@ function DecisionCard({ decision, choice, note, locked, onChoose, onNote }) {
           <h3>{decision.title}</h3>
           <p className="question">{decision.question}</p>
         </div>
-        <span className={`stateDot ${choice ? 'isDone' : ''}`} aria-label={choice ? 'Answered' : 'Unanswered'} />
+        <span className={`stateDot ${resolved ? 'isDone' : ''}`} aria-label={resolved ? 'Answered' : 'Unanswered'} />
       </div>
 
       <div className="recommendation">
@@ -205,17 +208,22 @@ export default function ProgrammeDecisionsPage() {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state, hydrated]);
 
-  const answered = DECISIONS.filter((decision) => state.choices[decision.id]).length;
-  const openNow = DECISIONS.filter((decision) => decision.horizon !== 'later' && !state.choices[decision.id]).length;
-  const openLater = DECISIONS.filter((decision) => decision.horizon === 'later' && !state.choices[decision.id]).length;
+  const isPending = (decisionId) => PENDING_USER_RATIFICATION_RULING_IDS.includes(decisionId);
+  const isValidated = (decisionId) => Object.prototype.hasOwnProperty.call(VALIDATED_RULING_CHOICES, decisionId);
+  const isLocallySelected = (decision) => !isValidated(decision.id) && Boolean(state.choices[decision.id]);
+  const isResolved = (decision) => isValidated(decision.id) || isLocallySelected(decision);
+  const authoritativeAnswered = DECISIONS.filter((decision) => isValidated(decision.id)).length;
+  const locallySelected = DECISIONS.filter(isLocallySelected).length;
+  const openNow = DECISIONS.filter((decision) => decision.horizon !== 'later' && !isResolved(decision)).length;
+  const openLater = DECISIONS.filter((decision) => decision.horizon === 'later' && !isResolved(decision)).length;
   const visible = useMemo(() => DECISIONS.filter((decision) => {
     if (activeGroup !== 'all' && decision.group !== activeGroup) return false;
-    if (onlyOpen && state.choices[decision.id]) return false;
+    if (onlyOpen && isResolved(decision)) return false;
     return true;
   }), [activeGroup, onlyOpen, state.choices]);
 
   const choose = (decisionId, optionId) => {
-    if (RECORDED_RULINGS[decisionId]) return;
+    if (isValidated(decisionId)) return;
     setState((current) => ({
       ...current,
       choices: { ...current.choices, [decisionId]: optionId },
@@ -223,6 +231,7 @@ export default function ProgrammeDecisionsPage() {
   };
 
   const note = (decisionId, value) => {
+    if (isValidated(decisionId)) return;
     setState((current) => ({
       ...current,
       notes: { ...current.notes, [decisionId]: value },
@@ -235,7 +244,7 @@ export default function ProgrammeDecisionsPage() {
       choices: {
         ...current.choices,
         ...Object.fromEntries(DECISIONS
-          .filter((decision) => !RECORDED_RULINGS[decision.id])
+          .filter((decision) => !isValidated(decision.id) && !isPending(decision.id))
           .map((decision) => [decision.id, recommendedChoice(decision)])),
       },
     }));
@@ -246,7 +255,7 @@ export default function ProgrammeDecisionsPage() {
   };
 
   const copyRulings = async () => {
-    const copied = await copyText(rulingMarkdown(state.choices, state.notes));
+    const copied = await copyText(rulingMarkdown(state.choices));
     setCopyState(copied ? 'copied' : 'failed');
     window.setTimeout(() => setCopyState('idle'), 1800);
   };
@@ -262,16 +271,20 @@ export default function ProgrammeDecisionsPage() {
       <main>
         <header className="hero">
           <div className="heroCopy">
-            <span className="kicker">Canonical v2 · 3 August 2026</span>
+            <span className="kicker">Canonical v2 · decision record</span>
             <h1>Your decisions, in the order they unblock the programme</h1>
-            <p>Recorded rulings stay fixed. Current M3 calls are separate from later promotion packages, which remain open world unless you decide otherwise.</p>
+            <p>Primary-evidenced rulings stay fixed. Current M3 calls are separate from later promotion packages, which remain open world unless you decide otherwise.</p>
           </div>
           <div className="progressPanel">
-            <div className="progressCount"><strong>{answered}</strong><span>of {DECISIONS.length}</span></div>
-            <div className="progressTrack" aria-label={`${answered} of ${DECISIONS.length} decisions answered`}>
-              <span style={{ width: `${(answered / DECISIONS.length) * 100}%` }} />
+            <div className="progressCount"><strong>{authoritativeAnswered}</strong><span>primary of {DECISIONS.length}</span></div>
+            <div className="progressTrack" aria-label={`${authoritativeAnswered} of ${DECISIONS.length} decisions have primary user evidence`}>
+              <span style={{ width: `${(authoritativeAnswered / DECISIONS.length) * 100}%` }} />
             </div>
-            <span>{answered === DECISIONS.length ? 'Decision record complete' : `${openNow} current · ${openLater} later`}</span>
+            <span>{authoritativeAnswered === DECISIONS.length ? 'Decision record complete' : `${openNow} current · ${openLater} later`}</span>
+            {locallySelected > 0 ? <span className="localChoices">{locallySelected === DECISIONS.filter((decision) => !isValidated(decision.id)).length ? 'All choices selected locally' : `${locallySelected} choices selected locally`}</span> : null}
+            {PENDING_USER_RATIFICATION_RULING_IDS.length > 0 ? (
+              <span className="pendingRulings">Pending direct ratification: {PENDING_USER_RATIFICATION_RULING_IDS.join(', ')}</span>
+            ) : null}
           </div>
         </header>
 
@@ -288,10 +301,10 @@ export default function ProgrammeDecisionsPage() {
               <input type="checkbox" checked={onlyOpen} onChange={(event) => setOnlyOpen(event.target.checked)} />
               <span>Unanswered only</span>
             </label>
-            {answered > Object.keys(RECORDED_RULINGS).length ? <button type="button" className="quietAction" onClick={clearRulings}>Clear open rulings</button> : null}
+            {locallySelected > 0 ? <button type="button" className="quietAction" onClick={clearRulings}>Clear local choices</button> : null}
             <button type="button" className="secondaryAction" onClick={acceptRecommendations}>Accept recommendations</button>
-            <button type="button" className="primaryAction" onClick={copyRulings} disabled={answered === 0}>
-              {copyState === 'copied' ? 'Copied' : copyState === 'failed' ? 'Copy failed' : 'Copy rulings'}
+            <button type="button" className="primaryAction" onClick={copyRulings} disabled={authoritativeAnswered === 0}>
+              {copyState === 'copied' ? 'Copied' : copyState === 'failed' ? 'Copy failed' : 'Copy recorded rulings'}
             </button>
           </div>
         </div>
@@ -304,7 +317,8 @@ export default function ProgrammeDecisionsPage() {
                 decision={decision}
                 choice={state.choices[decision.id]}
                 note={state.notes[decision.id]}
-                locked={Boolean(RECORDED_RULINGS[decision.id])}
+                locked={isValidated(decision.id)}
+                pending={isPending(decision.id)}
                 onChoose={(optionId) => choose(decision.id, optionId)}
                 onNote={(value) => note(decision.id, value)}
               />
@@ -340,6 +354,7 @@ export default function ProgrammeDecisionsPage() {
         .decisionConsole .progressCount { display: flex; align-items: baseline; gap: 8px; }
         .decisionConsole .progressCount strong { font: 400 46px/1 'Tinos', serif; }
         .decisionConsole .progressCount span, .decisionConsole .progressPanel > span { color: #6d6a64; font-size: 12px; }
+        .decisionConsole .progressPanel > .pendingRulings, .decisionConsole .progressPanel > .localChoices { display: block; margin-top: 9px; color: #9a4f27; font-size: 10px; line-height: 1.45; }
         .decisionConsole .progressTrack { height: 4px; margin: 14px 0 10px; background: #dcd9d2; overflow: hidden; }
         .decisionConsole .progressTrack span { display: block; height: 100%; background: #1b3fa0; transition: width .2s ease; }
         .decisionConsole .stickyControls { position: sticky; top: 56px; z-index: 30; display: flex; align-items: center; justify-content: space-between; gap: 24px; margin: 0 -40px 36px; padding: 14px 40px; border-bottom: 1px solid #cfcdc6; background: rgba(244, 242, 237, .96); backdrop-filter: blur(12px); }

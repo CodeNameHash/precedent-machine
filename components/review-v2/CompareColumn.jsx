@@ -263,11 +263,13 @@ function textValueLocal(value) {
   return String(inner);
 }
 
-function safeRows(config, reviewDeal) {
+export function safeRows(config, reviewDeal) {
   if (!config || typeof config.selectRows !== 'function') return [];
   try {
     const rows = config.selectRows(reviewDeal);
-    return Array.isArray(rows) ? rows : [];
+    return Array.isArray(rows)
+      ? rows.filter((row) => row?.comparisonState !== 'NOT_ADMITTED')
+      : [];
   } catch {
     return [];
   }

@@ -115,13 +115,14 @@ programme_gate_registry:
       opens_when: M2_VERTICAL_SLICE_PASS
     production_import:
       state: OPEN
-      opens_when: ALL_PREIMPORT_GATES_PASS
+      opens_when: ALL_PREIMPORT_GATES_INCLUDING_P9_SECURITY_AUTH_PASS
     production_cutover:
       state: OPEN
       opens_when: M4_PRE_CUTOVER_PASS_AND_ONE_USE_BEN_AUTHORISATION
     security_hardening:
-      state: DEFERRED_POST_CUTOVER
-      phase: 12
+      state: OPEN
+      phase: 9
+      opens_when: BEFORE_ANY_CANONICAL_V2_PRODUCTION_CREDENTIAL_INACTIVE_IMPORT_OR_ACTIVATION
 
   preproduction_gates:
     - id: P1_CONTRACT_BUNDLE_COMPLETE
@@ -167,6 +168,16 @@ programme_gate_registry:
       state: OPEN
     - id: P9_PREIMPORT_TRACEABILITY
       state: OPEN
+    - id: P9_SECURITY_AUTH
+      state: OPEN
+      acceptance:
+        - SECURITY_REVIEW_PASS
+        - ZERO_UNRESOLVED_CRITICAL_OR_HIGH_FINDINGS
+        - PRODUCTION_ACCESS_PRECONDITION_VERIFIED
+      prerequisite_for:
+        - CANONICAL_V2_PRODUCTION_CREDENTIAL_ISSUANCE_OR_USE
+        - INACTIVE_PRODUCTION_IMPORT
+        - PRODUCTION_ACTIVATION
     - id: P9_DEPLOYMENT_PARITY
       state: OPEN
       acceptance:
@@ -186,6 +197,13 @@ programme_gate_registry:
       state: OPEN
     - id: P9_TRACEABILITY
       state: OPEN
+    - id: P9_PROGRAMME_COMPLETION_ATTESTATION
+      state: OPEN
+      terminal: true
+      bundle_frozen: true
+      acceptance:
+        - P9_TRACEABILITY_PASS
+        - TERMINAL_COMPLETION_PAIR_PASS
 
   production_import_and_cutover:
     strictness: UNCHANGED
@@ -198,14 +216,13 @@ programme_gate_registry:
       - ATOMIC_WHOLE_TUPLE_ACTIVATION
       - POST_CUTOVER_SMOKE_WITH_ROLLBACK
       - ONE_USE_BEN_CUTOVER_AUTHORISATION
+      - P9_SECURITY_AUTH_PASS_BEFORE_PRODUCTION_CREDENTIAL_ISSUANCE_OR_USE
 
   phase_12_security_gates:
     phase: 12
     state: DEFERRED_POST_CUTOVER
     blocks_cutover: false
     gates:
-      - id: P9_SECURITY_AUTH
-        state: DEFERRED_POST_CUTOVER
       - id: P10_SECURITY_01
         state: DEFERRED_POST_CUTOVER
       - id: ROUTE_ACTION_THREE_WAY_INVENTORY

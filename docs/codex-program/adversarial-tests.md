@@ -2381,7 +2381,8 @@ The following adversarial closure tests are mandatory traceability entries:
   epoch and therefore valid cursors, exports and cache identities; a release,
   policy, authorisation or compatibility change creates a new epoch and rejects
   the old work.
-- `SHADOW-REEXTRACTION-01`: bind both complete extraction runs, every third run,
+- `SHADOW-REEXTRACTION-01`: bind the default complete independent extraction run,
+  any trigger-required second complete shadow, every targeted confirming run,
   adjudication and confirming run to one exact frozen pair, CandidateInputHead,
   CandidateBuildHead, CandidateReleaseManifest, correction-head root and source-
   scope root. A 2-to-1 result never establishes truth. Every disagreement is
@@ -2389,10 +2390,11 @@ The following adversarial closure tests are mandatory traceability entries:
   the adjudicated contract and extractor inputs are fixed. Advancing any bound
   candidate input, correction, scope, manifest, contract or extractor input,
   omitting a unit, selecting a majority result, retaining an unresolved result or
-  changing a result after confirmation leaves the gate `OPEN`. Two shadow runs
-  that agree with each other but differ from the candidate on any result,
-  component, claim, relationship, open-world disposition, comparability state or
-  cohort membership also fail the exact candidate-to-shadow reconciliation.
+  changing a result after confirmation leaves the gate `OPEN`. A required shadow
+  that differs from the candidate on any result, component, claim, relationship,
+  open-world disposition, comparability state or cohort membership fails the exact
+  candidate-to-shadow reconciliation. A compromised default shadow or material
+  shared error requires the named second complete shadow before the gate can pass.
 - `RETRY-01`: instrumentation proves one admission-token attempt and at most one
   route-specific serving attempt with zero interactive
   retries; eligible background work makes at most two delayed attempts with

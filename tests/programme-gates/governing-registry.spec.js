@@ -31,27 +31,36 @@ test('the ledger is the human-readable current-state source', () => {
   );
 });
 
-test('current work classes permit bounded work but keep import and cutover closed', () => {
+test('current work classes permit bounded work and require security before production access', () => {
   assert.equal(registry.work_classes.canonical_work_start.state, 'PASS');
   assert.equal(registry.work_classes.vertical_slice_execution.state, 'OPEN');
   assert.equal(registry.work_classes.production_import.state, 'OPEN');
   assert.equal(registry.work_classes.production_cutover.state, 'OPEN');
-  assert.equal(registry.work_classes.security_hardening.state, 'DEFERRED_POST_CUTOVER');
+  assert.equal(registry.work_classes.security_hardening.state, 'OPEN');
+  assert.equal(registry.work_classes.security_hardening.phase, 9);
+  assert.match(registry.work_classes.production_import.opens_when, /P9_SECURITY_AUTH/);
 });
 
-test('the governing reader accepts the v2 registry with exactly 21 live P9 leaves', () => {
+test('the governing reader accepts the v2 registry with security and terminal completion live', () => {
   const authority = createGoverningRegistryAuthority();
   assert.equal(authority.source_registry.schema, 'canonical-programme-gates/v2');
   assert.deepEqual(authority.source_registry, registry);
   assert.equal(authority.digest, domainDigest(REGISTRY_DIGEST_DOMAIN, registry));
   assert.deepEqual(authority.live_p9_gate_ids, CURRENT_LIVE_P9_GATE_IDS);
-  assert.equal(authority.live_p9_gate_ids.length, 21);
-  assert.equal(authority.phase_12_security_gate_id, PHASE_12_SECURITY_GATE_ID);
-  assert.equal(authority.source_registry.preproduction_gates.some((gate) => gate.id === PHASE_12_SECURITY_GATE_ID), false);
-  assert.equal(authority.source_registry.phase_12_security_gates.gates.some((gate) => gate.id === PHASE_12_SECURITY_GATE_ID), true);
+  assert.equal(authority.live_p9_gate_ids.length, 23);
+  assert.equal(authority.security_prerequisite_gate_id, PHASE_12_SECURITY_GATE_ID);
+  const security = authority.source_registry.preproduction_gates.find((gate) => gate.id === PHASE_12_SECURITY_GATE_ID);
+  assert.deepEqual(security.prerequisite_for, [
+    'CANONICAL_V2_PRODUCTION_CREDENTIAL_ISSUANCE_OR_USE',
+    'INACTIVE_PRODUCTION_IMPORT',
+    'PRODUCTION_ACTIVATION',
+  ]);
+  assert.equal(authority.source_registry.phase_12_security_gates.gates.some((gate) => gate.id === PHASE_12_SECURITY_GATE_ID), false);
   assert.equal(authority.completion_gate_id, COMPLETION_GATE_ID);
-  assert.equal(authority.completion_gate_live, false);
-  assert.equal(authority.source_registry.preproduction_gates.some((gate) => gate.id === COMPLETION_GATE_ID), false);
+  assert.equal(authority.completion_gate_live, true);
+  const completion = authority.source_registry.preproduction_gates.find((gate) => gate.id === COMPLETION_GATE_ID);
+  assert.equal(completion.terminal, true);
+  assert.equal(completion.bundle_frozen, true);
 });
 
 const hostileV2Mutations = [
@@ -72,7 +81,7 @@ const hostileV2Mutations = [
   ['preproduction gate contract', (value) => { value.preproduction_gates[0].acceptance.pop(); }],
   ['vertical-slice gate contract', (value) => { value.preproduction_gates[1].acceptance.pop(); }],
   ['live P9 gate contract', (value) => { value.preproduction_gates[2].state = 'PASS'; }],
-  ['deployment-parity gate contract', (value) => { value.preproduction_gates[17].required_adversarial_tests.pop(); }],
+  ['deployment-parity gate contract', (value) => { value.preproduction_gates.find((gate) => gate.id === 'P9_DEPLOYMENT_PARITY').required_adversarial_tests.pop(); }],
   ['production import and cutover controls', (value) => { value.production_import_and_cutover.required_controls.pop(); }],
   ['Phase 12 cutover disposition', (value) => { value.phase_12_security_gates.blocks_cutover = true; }],
   ['Phase 12 security inventory', (value) => { value.phase_12_security_gates.gates.pop(); }],

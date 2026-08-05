@@ -227,10 +227,19 @@ test('governed termination fees retain remedies ownership and expose direct late
   assert.ok(rows.some((row) => row.id === 'termination-fees-COMPANY_TERMINATION_FEE'));
   assert.ok(rows.some((row) => row.id === 'termination-fees-REVERSE_TERMINATION_FEE'));
   assert.ok(rows.some((row) => row.id.startsWith('termination-fees-deferred-')));
-  const deferred = projection.cards.find((card) => card.features.remediesOwnedSoleRemedyEvidence);
+  const deferred = projection.cards.find((card) => card.features.soleRemedyFeeContext);
   assert.ok(deferred.features.canonicalV2OpenWorldEvidence.structuredMechanic);
-  assert.deepEqual(deferred.features.remediesOwnedSoleRemedyEvidence.carve_outs, ['Fraud', 'Willful Breach']);
+  assert.deepEqual(deferred.features.soleRemedyFeeContext, {
+    payment_context_quote: 'Receipt of the termination fee',
+    source_section_reference: '8.1',
+  });
+  assert.equal(deferred.features.soleRemedyRemediesClaimLink, null);
+  assert.equal(deferred.features.remediesOwnedSoleRemedyEvidence, undefined);
   assert.equal(deferred.features.soleRemedy, undefined);
+  assert.deepEqual(
+    deferred.features.canonicalV2OpenWorldEvidence.structuredMechanic.carve_outs,
+    ['Fraud', 'Willful Breach'],
+  );
   const interest = projection.cards.find((card) => card.features.interestOnLatePayment);
   assert.equal(interest.features.interestOnLatePayment, true);
   assert.equal(interest.features.latePaymentInterestBenchmark, 'Applicable Rate');

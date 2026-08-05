@@ -1,12 +1,12 @@
 # WP-SCHEMA P1 Inventory Summary
 
-Generated: 2026-08-03T19:03:15.807Z
+Generated: 2026-08-04T22:23:02.994Z
 
 ## Counts
 
-- Distinct feature-like keys: 538
+- Distinct feature-like keys: 541
 - Keys in 2 or more source families: 483
-- Keys in only 1 source family: 55
+- Keys in only 1 source family: 58
 - Cross-source type mismatches: 6
 - Schema shape mismatches: 33
 - Provision types in rubric: 22
@@ -18,7 +18,7 @@ Generated: 2026-08-03T19:03:15.807Z
 
 | Convention |Count |
 | --- |--- |
-| camelCase |507 |
+| camelCase |510 |
 | lowercase |24 |
 | snake_case |7 |
 
@@ -31,7 +31,7 @@ Generated: 2026-08-03T19:03:15.807Z
 | feature_validation_js |492 |
 | rubric_js |480 |
 | taxonomy_js |67 |
-| ui |188 |
+| ui |191 |
 
 ## Top 20 Highest-Appearance Keys
 
@@ -154,9 +154,12 @@ Keys in only one source family. These are candidates for dead-code review, not a
 | proposedCode |feature_validation_js |1 |
 | proposedLabel |feature_validation_js |1 |
 | proviso |ui |1 |
+| pullRefileProviso |ui |1 |
 | reapplied_corrections |feature_validation_js |1 |
 | region_id |ui |1 |
 | regionId |ui |1 |
+| regulatoryImpairmentEffect |ui |1 |
+| regulatoryProhibitedAction |ui |1 |
 | relatedDefinitions |feature_validation_js |1 |
 | section_number |ui |1 |
 | severanceStandard |category_summary_features_js |1 |
@@ -183,8 +186,11 @@ Keys in only one source family. These are candidates for dead-code review, not a
 - parentApprovalTiming
 - partOfRep
 - proviso
+- pullRefileProviso
 - region_id
 - regionId
+- regulatoryImpairmentEffect
+- regulatoryProhibitedAction
 - section_number
 - source_section
 - triggerTerminationClauses

@@ -10,16 +10,17 @@ const layer = require('../../lib/programme-gates/p9-definition-proposal-layer');
 
 const ROOT = path.resolve(__dirname, '../..');
 
-test('builds one exact proposal record for 21 live P9 leaves and the separately tagged completion candidate', () => {
+test('builds one exact proposal record for all 23 live P9 leaves', () => {
   const value = layer.buildP9DefinitionProposalLayer({ repository_root: ROOT });
-  assert.equal(value.live_p9_gate_ids.length, 21);
-  assert.equal(value.recovered_candidate_p9_gate_ids.length, 22);
-  assert.equal(value.records.length, 22);
-  assert.equal(value.records.filter((record) => record.partition === 'LIVE_P9_LEAF').length, 21);
+  assert.equal(value.live_p9_gate_ids.length, 23);
+  assert.equal(value.complete_p9_gate_ids.length, 23);
+  assert.equal(value.records.length, 23);
+  assert.equal(value.records.filter((record) => record.partition === 'LIVE_P9_LEAF').length, 22);
   const completion = value.records.at(-1);
   assert.equal(completion.gate_id, 'P9_PROGRAMME_COMPLETION_ATTESTATION');
-  assert.equal(completion.partition, 'RECOVERED_COMPLETION_CANDIDATE_NOT_LIVE');
-  assert.equal(completion.adoption_blocker, 'P9_COMPLETION_LEAF_RATIFICATION_REQUIRED');
+  assert.equal(completion.partition, 'LIVE_BUNDLE_FROZEN_TERMINAL_LEAF');
+  assert.equal(completion.adoption_blocker, layer.ADOPTION_BLOCKER);
+  assert.equal(value.records.some((record) => record.gate_id === 'P9_SECURITY_AUTH'), true);
   assert.deepEqual(layer.validateP9DefinitionProposalLayer(value, { repository_root: ROOT }), value);
 });
 

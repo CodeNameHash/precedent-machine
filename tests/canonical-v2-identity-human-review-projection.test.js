@@ -8,11 +8,11 @@ const identity = require('../lib/canonical-v2/governed-identity-trust-contracts'
 const { buildIdentityHumanReviewProjection, validateIdentityHumanReviewProjection } = require('../lib/canonical-v2/identity-human-review-projection');
 
 const digest = (value) => value.toString(16).padStart(64, '0');
-const tx = (index) => digest(index + 1);
+const tx = (index) => `TX-${String(index + 1).padStart(6, '0')}`;
 const seed = (index) => digest(1000 + index);
 
 function fixture() {
-  const namespace_approval_request = identity.buildNamespaceApprovalRequest({ namespace_value: 'EXTERNALLY_RATIFIED_NAMESPACE/V3', pending_ben_ruling_id: digest(3), request_nonce: 'namespace-request-0001' });
+  const namespace_approval_request = identity.buildNamespaceApprovalRequest({ recorded_ben_ruling_id: digest(3), request_nonce: 'namespace-request-0001' });
   const namespace_binding = identity.bindExternallyRatifiedNamespace({ namespace_approval_request, external_ruling_id: digest(4) });
   const mapping_seed_root_id = digest(5); const source_occurrence_root_id = digest(6);
   const proofs = Array.from({ length: 40 }, (_, index) => identity.buildSerialisableCasProof({ transaction_id: tx(index), mapping_seed_root_id, nonce_registry_predecessor_id: digest(100 + index), slot_predecessor_id: digest(200 + index), serialisable_isolation_root_id: digest(300 + index), expected_slot_version: index, expected_nonce_version: index }));

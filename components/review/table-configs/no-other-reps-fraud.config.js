@@ -2,6 +2,52 @@ import React from 'react';
 import { deriveAbrySummary } from '../../../lib/abry.js';
 import { valueText } from './card-utils.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
+import { DARK_PREVIEW_MARKET_STATE, isCanonicalV2PreviewEnabled } from './canonical-v2-preview-lane.js';
+
+// Canonical V2 dark-bridge preview (INTEGRATED_NOT_SERVED, never production
+// authority -- see lib/canonical-v2/no-other-reps-fraud-dark-bridge.js).
+// Mirrors material-contracts.config.js's isDarkV2Card/darkPreviewRows
+// pattern: a dark card is recognised purely by its stamped
+// authority_state, and its claim_definition_key (one of the six governed
+// No Other Reps / Fraud claim types) discriminates it from any other
+// family's dark cards that might also carry that authority_state.
+const NORF_DARK_CLAIM_DEFINITION_KEYS = new Set([
+  'NO_OTHER_REPRESENTATIONS_DISCLAIMER_PRESENT',
+  'NON_RELIANCE_ACKNOWLEDGMENT_PRESENT',
+  'EXTRA_CONTRACTUAL_RELIANCE_DISCLAIMER_PRESENT',
+  'INDEPENDENT_INVESTIGATION_ACKNOWLEDGMENT_PRESENT',
+  'FRAUD_CARVEOUT_PRESENT',
+  'WILLFUL_BREACH_DEFINITION_PRESENT',
+]);
+function isDarkV2Card(card) {
+  return card?.authority_state === 'VALIDATED_NOT_SERVED';
+}
+function isNoOtherRepsFraudDarkCard(card) {
+  return isDarkV2Card(card) && NORF_DARK_CLAIM_DEFINITION_KEYS.has(card?.claim_definition_key);
+}
+// One row per dark card (this family's bridge is atomic -- one fact, one
+// card -- so there is no bucket-list to flatten the way Material Contracts
+// does). Labelled, excluded from market coverage and never comparable,
+// exactly like Material Contracts' darkPreviewRows output.
+function darkPreviewRowFromCard(card) {
+  const isDefined = card.claim_definition_key === 'WILLFUL_BREACH_DEFINITION_PRESENT';
+  return {
+    id: `no-other-reps-fraud-dark-${card.id}`,
+    label: `${card.short_title} (Canonical V2 preview)`,
+    kind: 'Canonical V2 preview',
+    status: isDefined ? 'Defined' : 'Present',
+    detail: card.primary_quote,
+    evidence: card.primary_quote,
+    sourceCard: card,
+    source: card,
+    present: true,
+    authorityState: 'VALIDATED_NOT_SERVED',
+    comparisonState: 'NOT_ADMITTED',
+    marketState: DARK_PREVIEW_MARKET_STATE,
+    marketSkip: true,
+    marketProvisionCodes: [],
+  };
+}
 
 // v1 reclassification (2026-08-02, R3): the old family-level codes
 // (REP-T-NOREP / REP-B-NOREP / REP-B-ANTIRELIANCE) are retired but kept
@@ -219,17 +265,35 @@ const noOtherRepsFraudConfig = {
   title: 'No Other Reps / Fraud',
   layoutSlot: 'misc',
   selectRows(reviewDeal) {
-    const cards = (reviewDeal?.cards || []).filter(hasAbrySignal);
-    if (!cards.length) return [];
-    const summary = deriveAbrySummary(cards.map(pseudoProvision));
-    return [
-      ...QUESTIONS.map(([key, label, kind]) => questionRow(key, label, kind, summary[key])),
-      fraudRow(summary.fraud),
-      // extraContractualClaimsWaived row removed (spec #48): it's a
-      // conclusion that follows from the non-reliance / no-other-reps rows
-      // above, not a distinct fact worth its own row.
-      willfulBreachRow(summary.willfulBreach),
-    ].filter(Boolean);
+    const allCards = reviewDeal?.cards || [];
+    // Dark V2 cards are unconditionally excluded from the live ABRY
+    // computation -- not just when the gate is off -- so a dark card can
+    // never silently answer a live Q1-Q4/fraud/willful-breach row. When the
+    // gate is off (always in production, and the default everywhere else),
+    // no dark cards exist in reviewDeal.cards in the first place, so this
+    // filter is a no-op and output is byte-identical to before this change.
+    const liveCards = allCards.filter((card) => !isDarkV2Card(card)).filter(hasAbrySignal);
+    const liveRows = [];
+    if (liveCards.length) {
+      const summary = deriveAbrySummary(liveCards.map(pseudoProvision));
+      liveRows.push(
+        ...QUESTIONS.map(([key, label, kind]) => questionRow(key, label, kind, summary[key])),
+        fraudRow(summary.fraud),
+        // extraContractualClaimsWaived row removed (spec #48): it's a
+        // conclusion that follows from the non-reliance / no-other-reps rows
+        // above, not a distinct fact worth its own row.
+        willfulBreachRow(summary.willfulBreach),
+      );
+    }
+    // Canonical V2 dark preview rows are additive only, and only ever
+    // computed when the dark-bridge gate itself is enabled (local /
+    // pre-production) -- independent of whatever merged the dark cards
+    // into reviewDeal.cards, so a stray dark card reaching this config in
+    // production is still inert.
+    const darkRows = isCanonicalV2PreviewEnabled(reviewDeal)
+      ? allCards.filter(isNoOtherRepsFraudDarkCard).map(darkPreviewRowFromCard)
+      : [];
+    return [...liveRows.filter(Boolean), ...darkRows];
   },
   fixedLayout: true,
   columns: [

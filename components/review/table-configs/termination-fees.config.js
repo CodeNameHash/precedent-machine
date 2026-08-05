@@ -186,7 +186,7 @@ function feeAmountSignal(feeRow, dealValueUsd) {
     : dealPercentText(feeRow, dealValueUsd);
   return {
     id: `${feeRow.feeType}-amount`,
-    label: pctText ? `${pctText} (${feeRow.amount})` : String(feeRow.amount),
+    label: pctText ? `${feeRow.amount} (${pctText})` : String(feeRow.amount),
     value: feeRow.amount,
     tone: 'present',
   };

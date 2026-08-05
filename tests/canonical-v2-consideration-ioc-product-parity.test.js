@@ -87,6 +87,7 @@ test('IOC evidence projection preserves long-tail mechanics, narrow attachments 
   assert.deepEqual(output.cards[0].features.iocEvidenceNumeric, {
     value_literal: '$25 million', unit_literal: 'million', basis_literal: 'in the aggregate',
     period_literal: 'during the period ending December 31, 2027',
+    normalised: null,
   });
   assert.deepEqual(output.market[0], {
     metric_key: 'IOC_EVIDENCE_COMMONALITY_BY_SURFACE', value: 'LONG_TAIL_RESTRICTION',

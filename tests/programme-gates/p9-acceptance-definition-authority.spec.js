@@ -4,11 +4,14 @@ const path = require('node:path');
 const test = require('node:test');
 const YAML = require('yaml');
 
+const { domainDigest } = require('../../lib/programme-gates/bytes');
+
 const {
+  AUTHORITY_ID_DOMAIN,
   COMPLETION_GATE_ID,
+  COMPLETE_P9_GATE_IDS,
   CURRENT_LIVE_P9_GATE_IDS,
-  GOVERNING_INVENTORY_CONFLICT,
-  RECOVERED_CANDIDATE_P9_GATE_IDS,
+  GOVERNING_INVENTORY_DECISION,
   compileP9AcceptanceDefinitionAuthority,
   validateP9AcceptanceDefinitionAuthority,
 } = require('../../lib/programme-gates/p9-acceptance-definition-authority');
@@ -22,14 +25,13 @@ const p9GateIds = registry.preproduction_gates
   .map((gate) => gate.id)
   .filter((gateId) => gateId.startsWith('P9_'));
 
-test('records the live 21-leaf inventory and the recovered 22-leaf conflict without adopting it', () => {
+test('records the 23 live leaves with security and ratified terminal completion', () => {
   const authority = compileP9AcceptanceDefinitionAuthority({ p9GateIds });
   assert.deepEqual(authority.live_p9_gate_ids, CURRENT_LIVE_P9_GATE_IDS);
-  assert.deepEqual(authority.recovered_candidate_p9_gate_ids, RECOVERED_CANDIDATE_P9_GATE_IDS);
-  assert.equal(authority.live_p9_gate_ids.length, 21);
-  assert.equal(authority.recovered_candidate_p9_gate_ids.length, 22);
-  assert.equal(authority.recovered_candidate_p9_gate_ids.at(-1), COMPLETION_GATE_ID);
-  assert.deepEqual(authority.governing_inventory_conflict, GOVERNING_INVENTORY_CONFLICT);
+  assert.deepEqual(authority.complete_p9_gate_ids, COMPLETE_P9_GATE_IDS);
+  assert.equal(authority.live_p9_gate_ids.length, 23);
+  assert.equal(authority.complete_p9_gate_ids.at(-1), COMPLETION_GATE_ID);
+  assert.deepEqual(authority.governing_inventory_decision, GOVERNING_INVENTORY_DECISION);
   assert.equal(validateP9AcceptanceDefinitionAuthority(authority, { p9GateIds }), true);
 });
 
@@ -53,27 +55,47 @@ test('uses one deterministic scope inventory but cannot issue definitions or PAS
   )));
 });
 
-test('does not invent nine new Ben decisions from the obsolete proposal', () => {
+test('records no pending Ben decision after ratification', () => {
   const authority = compileP9AcceptanceDefinitionAuthority({ p9GateIds });
   const decisions = authority.leaves.filter((leaf) => leaf.required_ben_decision !== null);
-  assert.deepEqual(decisions.map((leaf) => leaf.gate_id), [COMPLETION_GATE_ID]);
-  assert.equal(decisions[0].required_ben_decision,
-    'P9_COMPLETION_LEAF_RATIFICATION_REQUIRED');
+  assert.deepEqual(decisions, []);
+  const completion = authority.leaves.at(-1);
+  assert.equal(completion.recovery_state, 'LIVE_RATIFIED_BUNDLE_FROZEN_TERMINAL_DEFINITION_NOT_ADOPTED');
 });
 
-test('hostile drift cannot hide the conflict, add security, restore dual inventory, or issue PASS', () => {
+test('hostile drift cannot remove security or completion, restore dual inventory, or issue PASS', () => {
   const authority = compileP9AcceptanceDefinitionAuthority({ p9GateIds });
   assert.throws(
     () => compileP9AcceptanceDefinitionAuthority({
-      p9GateIds: [...p9GateIds, 'P9_SECURITY_AUTH'],
+      p9GateIds: p9GateIds.filter((gateId) => gateId !== 'P9_SECURITY_AUTH'),
     }),
     /recorded governing conflict/,
   );
   assert.throws(
     () => validateP9AcceptanceDefinitionAuthority({
       ...authority,
-      governing_inventory_conflict: null,
+      governing_inventory_decision: null,
     }, { p9GateIds }),
+    /not fail-closed/,
+  );
+  const rehashedDecisionForgery = structuredClone(authority);
+  rehashedDecisionForgery.governing_inventory_decision.authority = 'PRODUCTION_AUTHORITY';
+  delete rehashedDecisionForgery.governing_inventory_decision.production_access_prerequisite;
+  const payload = {
+    schema_version: rehashedDecisionForgery.schema_version,
+    live_p9_gate_ids: rehashedDecisionForgery.live_p9_gate_ids,
+    complete_p9_gate_ids: rehashedDecisionForgery.complete_p9_gate_ids,
+    governing_inventory_decision: rehashedDecisionForgery.governing_inventory_decision,
+    scope_inventory_rule: rehashedDecisionForgery.scope_inventory_rule,
+    leaves: rehashedDecisionForgery.leaves,
+    formal_definition_issuance: rehashedDecisionForgery.formal_definition_issuance,
+    pass_issuance: rehashedDecisionForgery.pass_issuance,
+  };
+  const forgedDigest = domainDigest(AUTHORITY_ID_DOMAIN, payload);
+  rehashedDecisionForgery.authority_id = forgedDigest;
+  rehashedDecisionForgery.authority_digest = forgedDigest;
+  assert.throws(
+    () => validateP9AcceptanceDefinitionAuthority(rehashedDecisionForgery, { p9GateIds }),
     /not fail-closed/,
   );
   assert.throws(

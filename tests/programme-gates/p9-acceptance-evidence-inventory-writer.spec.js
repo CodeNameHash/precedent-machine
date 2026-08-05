@@ -34,21 +34,22 @@ function sourceBundle() {
   };
 }
 
-test('generates one bounded queue with 15 M3, 3 M4, 3 live-cutover and one completion candidate item', () => {
+test('generates one bounded queue with a separate security prerequisite and ratified terminal item', () => {
   const { p9GateIds, queue } = sourceBundle();
   assert.equal(validateP9AcceptanceEvidenceEngineeringQueue(queue, { p9GateIds, repositoryRoot: ROOT }), true);
   assert.deepEqual(queue.groups.map((group) => [group.queue_group_id, group.items.length]), [
     ['M3_CORPUS_CERTIFICATION', 15],
+    ['PRODUCTION_ACCESS_SECURITY_PREREQUISITE', 1],
     ['M4_PRODUCTION_IMPORT', 3],
     ['LIVE_CUTOVER', 3],
-    ['COMPLETION_CANDIDATE', 1],
+    ['RATIFIED_TERMINAL_COMPLETION', 1],
   ]);
   assert.ok(queue.groups.every((group) => group.execution_authority === 'NONE'));
   assert.ok(queue.groups.flatMap((group) => group.items).every((item) => (
     item.work_state === 'UNIMPLEMENTED_PROPOSAL_QUEUE_ONLY'
   )));
-  assert.equal(queue.source_definition_proposal_binding.live_record_count, 21);
-  assert.equal(queue.source_definition_proposal_binding.completion_candidate_count, 1);
+  assert.equal(queue.source_definition_proposal_binding.live_record_count, 23);
+  assert.equal(queue.source_definition_proposal_binding.completion_terminal_count, 1);
   assert.equal(queue.source_definition_proposal_binding.predicate_authority, 'NONE');
   const changedDefinitionProposal = structuredClone(queue);
   changedDefinitionProposal.source_definition_proposal_binding.definition_proposal_layer_id = '0'.repeat(64);

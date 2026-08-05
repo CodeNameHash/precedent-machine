@@ -6,6 +6,7 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const ROOT = path.resolve(import.meta.dirname, '..');
+process.chdir(ROOT);
 const OUTPUT_PATH = path.join(
   ROOT,
   'evidence/process-intelligence/baseline/product-field-source-inventory.json',
@@ -18,8 +19,20 @@ const SOURCE_FILES = Object.freeze([
     sha256: '3457984b065a277bc3aa18d34da62a7436325a7fe7ec0672ab0cbccd9473c1d3',
   },
   {
+    path: 'lib/query/types.js',
+    sha256: '7ff2577f958ab9f0337eebd8186cf283f9bae4be03ddcc88aff424fc55ae22b3',
+  },
+  {
     path: 'lib/query/field-meta.js',
     sha256: '4b74cfa416a2a811b929d03851e7b9cdc91654dc754b6c74756be8f47988bbb5',
+  },
+  {
+    path: 'lib/query/derived-fields.js',
+    sha256: '5d35d1dc874ee56c96e17e30df79d698d1a3dc4f6d9c5378279086f235ae539e',
+  },
+  {
+    path: 'lib/query/resolve.js',
+    sha256: 'c7d25168c0f08f413158342b12f46be4ae5e889012a2f9531a20d59df3ab01b5',
   },
   {
     path: 'lib/query/serving-registry-v1.json',
@@ -70,9 +83,35 @@ function fail(message) {
   throw new Error(`PROCESS_INTELLIGENCE_BASELINE_INVALID: ${message}`);
 }
 
+function compareCanonicalText(left, right) {
+  const leftText = String(left);
+  const rightText = String(right);
+  if (leftText === rightText) return 0;
+  return leftText < rightText ? -1 : 1;
+}
+
 function exactSourceFiles() {
+  const sourcePaths = new Set();
   return SOURCE_FILES.map((source) => {
-    const bytes = fs.readFileSync(path.join(ROOT, source.path));
+    if (!source || typeof source.path !== 'string' || !source.path) {
+      fail('a pinned source file lacks a relative path');
+    }
+    if (path.isAbsolute(source.path) || source.path.split(path.sep).includes('..')) {
+      fail(`pinned source path is not repository-relative: ${source.path}`);
+    }
+    if (sourcePaths.has(source.path)) {
+      fail(`pinned source path is duplicated: ${source.path}`);
+    }
+    sourcePaths.add(source.path);
+    const sourcePath = path.resolve(ROOT, source.path);
+    if (!sourcePath.startsWith(`${ROOT}${path.sep}`)) {
+      fail(`pinned source path escapes the repository: ${source.path}`);
+    }
+    const sourceStat = fs.lstatSync(sourcePath);
+    if (!sourceStat.isFile()) {
+      fail(`pinned source path is not a regular file: ${source.path}`);
+    }
+    const bytes = fs.readFileSync(sourcePath);
     const observedSha256 = sha256Hex(bytes);
     if (observedSha256 !== source.sha256) {
       fail(`${source.path} digest is ${observedSha256}, expected ${source.sha256}`);
@@ -117,7 +156,10 @@ function registrySource(registryEntries, requestedKey) {
 }
 
 function exactProvisionSurface(provisionType, registryEntries) {
-  const surface = fieldsForProvisionType(provisionType);
+  const surface = [...fieldsForProvisionType(provisionType)].sort((left, right) => (
+    compareCanonicalText(left.label, right.label)
+    || compareCanonicalText(left.key, right.key)
+  ));
   const surfaceByKey = new Map(surface.map((field) => [field.key, field]));
   if (surfaceByKey.size !== surface.length) {
     fail(`${provisionType} exposes a duplicate final field key`);
@@ -166,8 +208,10 @@ function exactProvisionSurface(provisionType, registryEntries) {
     });
   }
 
-  const occurrenceKeys = occurrences.map((occurrence) => occurrence.field_key).sort();
-  const surfaceKeys = [...surfaceByKey.keys()].sort();
+  const occurrenceKeys = occurrences
+    .map((occurrence) => occurrence.field_key)
+    .sort(compareCanonicalText);
+  const surfaceKeys = [...surfaceByKey.keys()].sort(compareCanonicalText);
   if (canonicalJson(occurrenceKeys) !== canonicalJson(surfaceKeys)) {
     fail(`${provisionType} source enumeration does not reproduce its query surface`);
   }
@@ -175,7 +219,7 @@ function exactProvisionSurface(provisionType, registryEntries) {
   const duplicateLabels = new Set();
   const labels = new Set();
   for (const field of surface) {
-    const label = field.label.toLocaleLowerCase('en-US');
+    const label = field.label.toLowerCase();
     if (labels.has(label)) duplicateLabels.add(label);
     labels.add(label);
   }
@@ -241,7 +285,7 @@ function agreementInventory(registryEntries) {
   }
 
   const fields = [...fieldsByKey.values()]
-    .sort((left, right) => left.field_key.localeCompare(right.field_key))
+    .sort((left, right) => compareCanonicalText(left.field_key, right.field_key))
     .map((field) => ({
       field_key: field.field_key,
       ...field.stable_shape,
@@ -252,9 +296,9 @@ function agreementInventory(registryEntries) {
       certified_data_disposition: 'NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES',
     }));
 
-  if (fields.length !== 333) fail(`Agreement field count is ${fields.length}, expected 333`);
-  if (allOccurrences.length !== 491) {
-    fail(`Agreement field occurrence count is ${allOccurrences.length}, expected 491`);
+  if (fields.length !== 334) fail(`Agreement field count is ${fields.length}, expected 334`);
+  if (allOccurrences.length !== 492) {
+    fail(`Agreement field occurrence count is ${allOccurrences.length}, expected 492`);
   }
   const sec = provisionTypes.find((entry) => entry.provision_type === 'SEC_FILING_MEETING');
   if (!sec || sec.current_user_facing_field_count !== 0
@@ -303,7 +347,7 @@ function registryInventory(registry, agreementFields) {
         successor_requirement: 'EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED',
       };
     })
-    .sort((left, right) => left.alias.localeCompare(right.alias));
+    .sort((left, right) => compareCanonicalText(left.alias, right.alias));
 
   const inputs = entries.map((entry, index) => {
     const aliases = [...new Set([entry.key, ...(entry.aliases || [])])];

@@ -45,9 +45,9 @@ function topBuildPacket(cohort) {
   });
 }
 
-test('pending forty-row identity proposal cannot become identity, source admission, execution input, database authority, or production authority through any current consumer', async () => {
+test('adopted forty-row identity-seed policy cannot become identity, source admission, execution input, database authority, or production authority through any current consumer', async () => {
   const pendingPacket = buildInitialImportProposalPacket({ initial_import_source_inventory_digest: id('current-forty-row-inventory') });
-  assert.equal(pendingPacket.status, 'PENDING_NAMESPACE_AND_KEY_DOMAIN_RATIFICATION');
+  assert.equal(pendingPacket.status, 'ADOPTED_IDENTITY_SEED_POLICY_NO_ISSUANCE_OR_ADMISSION_AUTHORITY');
   assert.equal(pendingPacket.rows.length, INITIAL_IMPORT_COUNT);
   assert.equal(pendingPacket.admission_authority, 'NONE');
   assert.equal(pendingPacket.source_admission_authority, 'NONE');
@@ -79,7 +79,7 @@ test('pending forty-row identity proposal cannot become identity, source admissi
   });
   assert.equal(readiness.status, 'BLOCKED');
   assert.deepEqual(readiness.blockers, [
-    'PENDING_INITIAL_IMPORT_PACKET_NOT_IDENTITY_AUTHORITY',
+    'ADOPTED_INITIAL_IMPORT_SEED_POLICY_NOT_IDENTITY_AUTHORITY',
     'UNISSUED_DEAL_IDENTITIES',
     'SOURCE_INTAKE_TRUSTED_CONTROLLER_AND_REGISTRY_VERIFIER_REQUIRED',
     'ROUTINE_PRIMARY_POLICY_NOT_ADOPTED',

@@ -1,10 +1,21 @@
 import React from 'react';
 import { cardCode, cardFeatures, cardType, firstFeature, selectCards, textOf } from './card-utils.js';
 import p0Routing from '../../../lib/canonical-v2/p0-product-surface-routing.js';
+import { DARK_PREVIEW_MARKET_STATE, isCanonicalV2PreviewEnabled } from './canonical-v2-preview-lane.js';
 
 const { isDedicatedFamilyCovenantCode, routeGeneralCovenantCode } = p0Routing;
 const NATIVE_SOURCE = 'CANONICAL_V2_NATIVE_CLAIM';
 const EVIDENCE_SOURCE = 'CANONICAL_V2_OPEN_WORLD_EVIDENCE';
+const DARK_AUTHORITY_STATE = 'VALIDATED_NOT_SERVED';
+
+// Dark Canonical V2 preview only -- see lib/canonical-v2/general-covenants-
+// dark-bridge.js. A card only ever carries this when something upstream
+// explicitly called mergeCanonicalV2CardsIntoReviewDeal (no route under
+// pages/ does), so this is inert for every reviewDeal built by the live
+// product today.
+function isDarkV2Card(card) {
+  return card?.authority_state === DARK_AUTHORITY_STATE;
+}
 
 // REBUILD-SPECS.md section 6: interim-operating-covenant content (ordinary
 // course, negative-covenant restrictions, affirmative limbs) is owned
@@ -222,12 +233,32 @@ function generalCovenantMarket(card) {
 // region_full_text of its own (textOf(card) empty) -- falls back to the
 // matched feature's own resolved text (firstFeature's `.detail`) so the
 // link's hover never comes up empty when the card-level quote is missing.
+// Canonical V2 dark preview stamping, applied uniformly regardless of which
+// branch below builds the row: label gets the "(Canonical V2 preview)"
+// suffix (mirrors table-configs/material-contracts.config.js's
+// darkPreviewRows), and market/comparison fields are force-overridden LAST
+// so a dark row can never be counted, compared or fed into market stats even
+// though generalCovenantMarket() above may have computed real-looking
+// marketProvisionCodes for it.
+function darkPreviewFields(card) {
+  if (!isDarkV2Card(card)) return {};
+  return {
+    authorityState: DARK_AUTHORITY_STATE,
+    comparisonState: 'NOT_ADMITTED',
+    marketState: DARK_PREVIEW_MARKET_STATE,
+    marketSkip: true,
+    marketProvisionCodes: [],
+  };
+}
+
 function linkRow(idSuffix, label, card, evidenceOverride) {
   if (!card) return null;
+  const dark = isDarkV2Card(card);
+  const rowLabel = dark ? `${label} (Canonical V2 preview)` : label;
   if (card?.canonical_v2_lineage?.source === EVIDENCE_SOURCE) {
     return {
       id: `general-covenants-${idSuffix}`,
-      label,
+      label: rowLabel,
       kind: 'Link',
       detail: label,
       isLink: true,
@@ -235,13 +266,14 @@ function linkRow(idSuffix, label, card, evidenceOverride) {
       sourceCard: card,
       present: true,
       marketState: 'OPEN_NATIVE_FIELD',
+      ...darkPreviewFields(card),
     };
   }
   const ownership = routeGeneralCovenantCode(cardCode(card));
   const evidenceOnly = card?.canonical_v2_lineage?.source === 'CANONICAL_V2_OPEN_WORLD_EVIDENCE';
   return {
     id: `general-covenants-${idSuffix}`,
-    label,
+    label: rowLabel,
     kind: 'Link',
     detail: label,
     isLink: true,
@@ -252,6 +284,7 @@ function linkRow(idSuffix, label, card, evidenceOverride) {
     ownershipState: ownership.route_state,
     ...(evidenceOnly ? { marketState: 'OPEN_NATIVE_FIELD' } : {}),
     ...generalCovenantMarket(card),
+    ...darkPreviewFields(card),
   };
 }
 
@@ -307,9 +340,35 @@ const generalCovenantsConfig = {
   title: 'Other Covenants',
   layoutSlot: 'covenants',
   selectRows(reviewDeal) {
-    const cards = selectCards(reviewDeal, isGeneralCovenant);
+    const allCards = reviewDeal?.cards || [];
+    // Dark cards are excluded from the live pipeline UNCONDITIONALLY, not
+    // only when the gate happens to be on -- isGeneralCovenant() has no
+    // opinion on authority_state, so without this a dark card would
+    // otherwise fall through perClauseRows()'s generic "every uncovered
+    // card gets a link" fallback and render un-labelled even with the gate
+    // off. Gate-off (the default, and always in production): no route
+    // under pages/ ever merges dark cards in, so `hasDarkCards` is always
+    // false there and `liveDeal` stays the exact same reviewDeal reference,
+    // unfiltered -- behaviour is byte-identical to before this file learned
+    // about dark cards at all.
+    const hasDarkCards = allCards.some(isDarkV2Card);
+    const liveDeal = hasDarkCards
+      ? { ...reviewDeal, cards: allCards.filter((card) => !isDarkV2Card(card)) }
+      : reviewDeal;
+    const cards = selectCards(liveDeal, isGeneralCovenant);
     const { rows: curated, covered } = curatedRows(cards);
-    return [...curated, ...perClauseRows(cards, covered)];
+    const liveRows = [...curated, ...perClauseRows(cards, covered)];
+    if (!isCanonicalV2PreviewEnabled(reviewDeal)) return liveRows;
+    // Dark cards are partitioned out of `cards` above so they can never be
+    // matched into a curated ROW or counted in `covered` -- they get their
+    // own rows here, appended after the live table, each one routed through
+    // the SAME linkRow() used everywhere else (now dark-aware; see
+    // darkPreviewFields above) rather than a parallel rendering path.
+    const darkCards = selectCards({ cards: allCards.filter(isDarkV2Card) }, isGeneralCovenant);
+    const darkRows = darkCards
+      .map((card) => linkRow(`dark-${card.id}`, clauseLabel(card), card))
+      .filter(Boolean);
+    return [...liveRows, ...darkRows];
   },
   columns: [
     { id: 'term', header: 'Provision', width: '20rem', renderCell: (row) => row.label },

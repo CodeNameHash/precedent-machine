@@ -7,6 +7,9 @@ const { parseDayCount, parseAdjournmentCount } = require('../lib/canonical-v2/na
 const { buildProxyMeetingProducerPrompt } = require('../lib/canonical-v2/native-producer/proxy-meeting-producer-prompt');
 const { shapeProxyMeetingProposals, PROXY_MEETING_COVENANT_CLAIM_KEY } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { classifySectionFamily } = require('../lib/canonical-v2/native-producer/section-family-classifier');
+const {
+  proxyMeetingKindsAreCompatible,
+} = require('../lib/canonical-v2/native-producer/candidate-resolution');
 
 test('proxy-meeting v26 contract registers both concepts and six claims', () => {
   const bundle = compileFixtureContractV26();
@@ -47,4 +50,13 @@ test('proxy-meeting provider shape retains only byte-exact proposed facts', () =
 test('proxy and meeting titles classify as one family after punctuation-only normalisation', async () => {
   assert.equal((await classifySectionFamily({ title: 'Proxy Statement.' })).section_family, 'PROXY_MEETING');
   assert.equal((await classifySectionFamily({ title: 'Stockholder Vote Failure' })).section_family, null);
+});
+
+test('only the adopted meeting-convene and meeting-deadline pair may share one quote', () => {
+  assert.equal(proxyMeetingKindsAreCompatible(['MEETING_DEADLINE', 'CONVENE_OBLIGATION']), true);
+  assert.equal(proxyMeetingKindsAreCompatible(['CONVENE_OBLIGATION', 'MEETING_DEADLINE']), true);
+  assert.equal(proxyMeetingKindsAreCompatible(['RECORD_DATE_ESTABLISHMENT', 'BROKER_SEARCH_OBLIGATION']), false);
+  assert.equal(proxyMeetingKindsAreCompatible(['ADJOURNMENT_COUNT_CAP', 'ADJOURNMENT_DURATION_CAP']), false);
+  assert.equal(proxyMeetingKindsAreCompatible(['MEETING_DEADLINE', 'CONVENE_OBLIGATION', 'BROKER_SEARCH_OBLIGATION']), false);
+  assert.equal(proxyMeetingKindsAreCompatible(['MEETING_DEADLINE']), false);
 });

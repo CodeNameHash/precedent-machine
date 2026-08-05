@@ -7,16 +7,15 @@ const test = require('node:test');
 const YAML = require('yaml');
 
 const {
-  COMPLETION_RATIFICATION,
-  PHASE_12_SECURITY_GATE_ID,
   PROPOSAL_STATE,
+  SECURITY_GATE_ID,
   compileP9AcceptanceEvidenceInventory,
   validateP9AcceptanceEvidenceInventory,
 } = require('../../lib/programme-gates/p9-acceptance-evidence-inventory');
 const {
   COMPLETION_GATE_ID,
+  COMPLETE_P9_GATE_IDS,
   CURRENT_LIVE_P9_GATE_IDS,
-  RECOVERED_CANDIDATE_P9_GATE_IDS,
 } = require('../../lib/programme-gates/p9-acceptance-definition-authority');
 
 const ROOT = path.resolve(__dirname, '../..');
@@ -32,18 +31,18 @@ function inventory() {
   return compileP9AcceptanceEvidenceInventory({ p9GateIds, repositoryRoot: ROOT });
 }
 
-test('enumerates the 21 live P9 leaves and only the recovered completion candidate', () => {
+test('enumerates the 23 live P9 leaves including security and terminal completion', () => {
   const evidence = inventory();
   assert.deepEqual(evidence.live_p9_gate_ids, CURRENT_LIVE_P9_GATE_IDS);
-  assert.deepEqual(evidence.recovered_candidate_p9_gate_ids, RECOVERED_CANDIDATE_P9_GATE_IDS);
-  assert.equal(evidence.leaves.length, 22);
-  assert.equal(evidence.definition_proposal_binding.live_record_count, 21);
-  assert.equal(evidence.definition_proposal_binding.completion_candidate_count, 1);
+  assert.deepEqual(evidence.complete_p9_gate_ids, COMPLETE_P9_GATE_IDS);
+  assert.equal(evidence.leaves.length, 23);
+  assert.equal(evidence.definition_proposal_binding.live_record_count, 23);
+  assert.equal(evidence.definition_proposal_binding.completion_terminal_count, 1);
   assert.equal(evidence.definition_proposal_binding.formal_definition_authority, 'NONE');
   assert.equal(evidence.definition_proposal_binding.predicate_authority, 'NONE');
   assert.equal(evidence.definition_proposal_binding.pass_authority, 'NONE');
   assert.equal(evidence.leaves.at(-1).gate_id, COMPLETION_GATE_ID);
-  assert.equal(evidence.leaves.at(-1).required_user_decision, COMPLETION_RATIFICATION);
+  assert.equal(evidence.leaves.at(-1).required_user_decision, null);
   assert.equal(validateP9AcceptanceEvidenceInventory(evidence, { p9GateIds, repositoryRoot: ROOT }), true);
 });
 
@@ -110,13 +109,16 @@ test('becomes stale when the bound P9 definition proposal set changes', () => {
   );
 });
 
-test('keeps P9_SECURITY_AUTH in Phase 12 only', () => {
+test('keeps P9_SECURITY_AUTH as a no-authority pre-access prerequisite', () => {
   const evidence = inventory();
-  assert.equal(evidence.phase_12_security_exclusion.gate_id, PHASE_12_SECURITY_GATE_ID);
-  assert.equal(evidence.phase_12_security_exclusion.phase_partition, 'P12_SECURITY_HARDENING_ONLY');
-  assert.equal(evidence.phase_12_security_exclusion.blocks_cutover, false);
+  assert.equal(evidence.security_prerequisite.gate_id, SECURITY_GATE_ID);
+  assert.equal(evidence.security_prerequisite.phase_partition, 'P9_PRODUCTION_ACCESS_PREREQUISITE');
+  assert.equal(evidence.security_prerequisite.blocks_production_credential, true);
+  assert.equal(evidence.security_prerequisite.blocks_inactive_import, true);
+  assert.equal(evidence.security_prerequisite.blocks_activation, true);
+  assert.equal(evidence.security_prerequisite.authority, 'NONE');
   const forged = structuredClone(evidence);
-  forged.leaves[0].gate_id = PHASE_12_SECURITY_GATE_ID;
+  forged.leaves.splice(forged.leaves.findIndex((leaf) => leaf.gate_id === SECURITY_GATE_ID), 1);
   assert.throws(
     () => validateP9AcceptanceEvidenceInventory(forged, { p9GateIds, repositoryRoot: ROOT }),
     /misclassified|not fail-closed|stale/,

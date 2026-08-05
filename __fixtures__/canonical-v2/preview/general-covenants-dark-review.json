@@ -1,0 +1,81 @@
+{
+  "deal_id": "acme-globex-general-covenants-dark-bridge",
+  "section_reference": "6.05",
+  "section_title": "Access to Information",
+  "grounded_covenants": [
+    {
+      "covenant_code": "COV-ACCESS",
+      "owner_id": "ACCESS_INFORMATION_COVENANTS",
+      "quote": "The Company shall provide Parent and its Representatives reasonable access to information, including the books and records of the Company, during normal business hours upon reasonable prior notice."
+    },
+    {
+      "covenant_code": "COV-PUBLICITY",
+      "owner_id": "PUBLICITY_COVENANTS",
+      "quote": "Neither the Company nor Parent shall issue any press releases or make any public announcements concerning this Agreement without the prior written consent of the other party."
+    }
+  ],
+  "unresolved_definition_reference": {
+    "covenant_code": "COV-ACCESS",
+    "definition_cross_references": ["Access Protocol"],
+    "quote": "The Company shall comply with the covenants set forth in the Ancillary Covenant Schedule."
+  },
+  "unsupported_code": {
+    "covenant_code": "COV-NEW",
+    "quote": "The Company shall maintain a dedicated integration steering committee."
+  },
+  "legacy_cards": [
+    {
+      "id": "legacy-definition-mae",
+      "deal_id": "acme-globex-general-covenants-dark-bridge",
+      "provision_instance_id": "legacy-definition-mae",
+      "excerpt_id": "legacy-definition-mae:0",
+      "section_ref": "Article I",
+      "short_title": "Company Material Adverse Effect",
+      "kind": "definition",
+      "provision_type": "DEFINITION",
+      "defined_term": "Company Material Adverse Effect",
+      "defined_value": "an effect materially adverse to the Company",
+      "primary_quote": "Company Material Adverse Effect means an effect materially adverse to the Company.",
+      "region_full_text": "Company Material Adverse Effect means an effect materially adverse to the Company.",
+      "references": [],
+      "provenance": {
+        "source_doc_id": "legacy-document",
+        "source_doc_page": 1,
+        "source_doc_offset_start": 10,
+        "source_doc_offset_end": 90,
+        "extractor_name": "parser-v2",
+        "extractor_version": "fixture",
+        "model": "fixture",
+        "prompt_hash": "sha256:legacy-definition",
+        "run_id": "legacy-run",
+        "extracted_at": "2026-08-03T00:00:00.000Z"
+      }
+    },
+    {
+      "id": "legacy-general-covenant-further-assurances",
+      "deal_id": "acme-globex-general-covenants-dark-bridge",
+      "provision_instance_id": "legacy-general-covenant-further-assurances",
+      "excerpt_id": "legacy-general-covenant-further-assurances:0",
+      "section_ref": "Section 6.09",
+      "short_title": "Further Assurances",
+      "kind": "standard",
+      "provision_type": "COVENANT_OTHER",
+      "provision_subtype": "COV-FURTHER",
+      "primary_quote": "Each party shall use reasonable best efforts to take, or cause to be taken, all further actions necessary to carry out the purposes of this Agreement.",
+      "region_full_text": "Each party shall use reasonable best efforts to take, or cause to be taken, all further actions necessary to carry out the purposes of this Agreement.",
+      "references": [],
+      "provenance": {
+        "source_doc_id": "legacy-document",
+        "source_doc_page": 60,
+        "source_doc_offset_start": 6000,
+        "source_doc_offset_end": 6155,
+        "extractor_name": "parser-v2",
+        "extractor_version": "fixture",
+        "model": "fixture",
+        "prompt_hash": "sha256:legacy-further-assurances",
+        "run_id": "legacy-run",
+        "extracted_at": "2026-08-03T00:00:00.000Z"
+      }
+    }
+  ]
+}

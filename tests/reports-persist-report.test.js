@@ -4,6 +4,8 @@
    resolution, and kind validation. */
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const {
   VALID_KINDS,
@@ -37,10 +39,12 @@ function fakeSupabase({ insertResult }) {
 }
 
 test('VALID_KINDS matches the run_reports CHECK constraint', () => {
-  assert.deepEqual(
-    [...VALID_KINDS].sort(),
-    ['coverage-audit', 'demo-dryrun', 'ingest-qa', 'mint-cards', 'rematerialize-claims', 'span-residual'].sort(),
-  );
+  const expected = ['coverage-audit', 'demo-dryrun', 'ingest-qa', 'mint-cards', 'rematerialize-claims', 'span-residual', 'v1-reclass-apply'].sort();
+  assert.deepEqual([...VALID_KINDS].sort(), expected);
+  const schema = fs.readFileSync(path.join(__dirname, '../supabase/schema-06-run-reports.sql'), 'utf8');
+  const constraint = schema.match(/ADD CONSTRAINT run_reports_kind_check CHECK \(kind IN \(([\s\S]*?)\)\);/);
+  assert.ok(constraint, 'schema must update the existing run_reports check constraint');
+  assert.deepEqual([...constraint[1].matchAll(/'([^']+)'/g)].map((match) => match[1]).sort(), expected);
 });
 
 test('capPayload leaves small payloads untouched', () => {

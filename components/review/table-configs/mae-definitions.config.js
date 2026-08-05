@@ -217,10 +217,17 @@ function carveoutName(item, dict) {
   return sentenceCaseLabel(valueText(item)) || 'Carve-out';
 }
 
-function carveoutHasCarveback(item, code, dispSet) {
+function carvebackState(item, code, dispSet) {
   const flag = item && typeof item === 'object' ? item.hasDisproportionateImpactCarveback : null;
   if (flag === true || flag === 'true') return true;
-  return !!(code && dispSet.has(code));
+  if (code && dispSet.has(code)) return true;
+  return 'NOT_ESTABLISHED';
+}
+
+function exactItemEvidence(item, fallback) {
+  if (item && typeof item === 'object' && Array.isArray(item.quotes) && item.quotes[0]) return item.quotes[0];
+  if (item && typeof item === 'object' && typeof item.text === 'string' && item.text.trim()) return item.text;
+  return fallback;
 }
 
 // fb2 #19: the carve-out NAME alone is sufficient -- the right-hand TEXT
@@ -240,12 +247,15 @@ function carveoutsTableNode(row, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
   const dict = taxonomyForFeatureKey('carveouts');
   const dispSet = disproportionateCodeSet(row.sourceCard);
-  // Ben (round 6): the extracted `carveouts` list carries duplicates (26 items
-  // on Metsera, several repeated) -- dedupe by resolved carve-out name so each
-  // carve-out renders once.
+  // Canonical items preserve each stable claim/limb occurrence. Legacy items
+  // have no identity and retain the old name-based cleanup.
   const seen = new Set();
   const items = rawItems.filter((item) => {
-    const key = String(carveoutName(item, dict) || '').trim().toLowerCase();
+    const key = item?.claim_revision_id
+      || item?.closure_id
+      || (item?.limb_identity && normalizeCarveoutCode(item)
+        ? `${item.limb_identity}:${normalizeCarveoutCode(item)}`
+        : String(carveoutName(item, dict) || '').trim().toLowerCase());
     if (!key || seen.has(key)) return false;
     seen.add(key);
     return true;
@@ -258,13 +268,22 @@ function carveoutsTableNode(row, ctx) {
     items.map((item, index) => {
       const code = normalizeCarveoutCode(item);
       const name = carveoutName(item, dict);
-      const hasCarveback = carveoutHasCarveback(item, code, dispSet);
+      const carveback = carvebackState(item, code, dispSet);
+      const carvebackEvidence = Array.isArray(item?.disproportionality_quotes)
+        ? item.disproportionality_quotes[0]
+        : null;
+      const itemEvidence = exactItemEvidence(item, row.evidence);
       return React.createElement(
         'li',
-        { key: code || `${name}-${index}`, className: 'flex flex-wrap items-baseline gap-x-2 gap-y-0.5 py-1 first:pt-0 last:pb-0' },
+        { key: item?.claim_revision_id || item?.closure_id || (item?.limb_identity ? `${item.limb_identity}:${code || index}` : null) || `${name}-${index}`, className: 'flex flex-wrap items-baseline gap-x-2 gap-y-0.5 py-1 first:pt-0 last:pb-0' },
         React.createElement('span', { className: 'text-ink', title: code || undefined }, name),
-        hasCarveback && PillCell
-          ? React.createElement(PillCell, { label: 'Disp. carveback applies', tone: 'warning' })
+        PillCell
+          ? React.createElement(PillCell, {
+            label: carveback === true ? 'Yes' : 'Not established',
+            tone: carveback === true ? 'warning' : 'neutral',
+            evidence: carveback === true ? carvebackEvidence : itemEvidence,
+            source: row.sourceCard,
+          })
           : null,
       );
     }),

@@ -726,22 +726,25 @@ This file is the sole authority for detailed identities, state machines, writer 
   CandidateInputHead and CandidateBuildHead IDs and payload digests, candidate
   release and CandidateReleaseManifest IDs and payload digests, the candidate's
   complete semantic serving-output root, current
-  correction-head set root, exact source-scope and expected-unit roots, both full
-  extraction-run member and output roots, disagreement and high-risk-family
-  universe roots, required third-run roots, every human-adjudication decision and
+  correction-head set root, exact source-scope and expected-unit roots, one default
+  full independent extraction-run member and output root, and a second full-run
+  member and output root only after the named compromised-shadow or material-shared-
+  error trigger, disagreement and high-risk-family universe roots, required targeted
+  confirming-run roots, every human-adjudication decision and
   every fresh post-adjudication confirming-run root and one candidate-to-
   confirmed-shadow semantic reconciliation. That reconciliation compares the
   complete source-backed result, component, claim, relationship, disposition,
   comparability and cohort-membership payloads under their canonical stable keys
   and has fixed empty missing, extra, duplicate, conflicting and different-value
   roots. Its other reconciliations prove
-  that both full runs cover the exact candidate scope, every disagreement and
+  that every required full run covers the exact candidate scope, every disagreement and
   high-risk unit received the required third run, no result was selected by
   majority, every disagreement was human-adjudicated, and every affected unit
   passed a fresh confirming run after any required contract or extractor change.
   The unresolved set and the set changed after confirmation must both be empty.
-  Agreement between the shadow runs cannot pass unless their confirmed semantics
-  also equal the bound candidate output exactly.
+  Agreement between the required shadow run and the candidate cannot pass unless
+  their confirmed semantics equal the bound candidate output exactly. A second
+  full shadow is required only after its named trigger.
   Advancing any bound head, correction, scope, candidate, manifest, contract or
   extractor input makes the attestation stale and leaves
   `P9_SHADOW_REEXTRACTION` `OPEN`; `PreCutoverCertification` requires the
@@ -14244,6 +14247,16 @@ the classifier and PostgreSQL planner, including relation cardinalities and
 the selected column and extended-statistics payloads. An asserted class or the
 fingerprint stored in QueryExecutionClassResolverProjection is expected state,
 not evidence of the production planner's output.
+
+`P9_SECURITY_AUTH` is the production-access security prerequisite. Its passing
+evidence must bind the exact candidate bundle, code tree, deployment plan,
+credential plan, route/action inventory and unresolved-finding register. It
+must show a passing security review and zero unresolved critical or high
+findings. No Canonical V2 production credential may be issued or used, no
+inactive production import may start, and no production activation may occur
+before this gate passes. This gate cannot issue a credential, import data,
+deploy code or activate a release. The remaining Phase 12 hardening gates do
+not replace this pre-access requirement.
 
 After ProductionImportAttestation and before the POST_IMPORT
 TraceabilityExtension or cutover authorisation, one
