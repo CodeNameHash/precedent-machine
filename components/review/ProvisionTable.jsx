@@ -225,7 +225,16 @@ export default function ProvisionTable({
       </section>
     );
   }
-  const allColumns = Array.isArray(config.columns) ? config.columns : [];
+  // Row-dependent columns. A config whose SHAPE depends on what selectRows()
+  // produced -- termination-fees.config.js's both-sources mode renders one
+  // answer column per extraction source instead of one shared Provision column
+  // -- returns them from columnsFor(rows); returning null (or not defining it
+  // at all, which is every other config) falls straight back to config.columns,
+  // so this is a no-op for every existing table.
+  const overrideColumns = typeof config.columnsFor === 'function' ? config.columnsFor(rows) : null;
+  const allColumns = Array.isArray(overrideColumns)
+    ? overrideColumns
+    : (Array.isArray(config.columns) ? config.columns : []);
   const fullTextIds = FULL_TEXT_COLUMNS[config.id] || [];
   const columns = allColumns.filter((column) => !fullTextIds.includes(column.id));
   const fullTextColumns = allColumns.filter((column) => fullTextIds.includes(column.id));

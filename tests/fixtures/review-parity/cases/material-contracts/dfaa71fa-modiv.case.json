@@ -1,0 +1,14 @@
+{
+  "schema": "REVIEW_PARITY_CASE/V1",
+  "family_id": "MATERIAL_CONTRACTS",
+  "deal_id": "dfaa71fa-modiv",
+  "deal_label": "Global Net Lease / Modiv Industrial",
+  "notes": "Legacy cards are recorded production provision_cards. CAVEAT: that snapshot carries only id / provision_type / provision_subtype / section_ref / primary_quote / region_hash / extraction_version -- it has no `features` and no `ai_metadata`, which is what the production legacy table actually renders from. The legacy view built from it therefore falls through material-contracts.config.js's rowsFromText() text-mining path, not the rowsFromFeatures() path production uses. It is real data in the real shape, but it is NOT the production legacy view, and a parity claim must not be based on it.",
+  "legacy": {
+    "cards_file": "tests/fixtures/canonical-v2/v1v2-comparator/modiv-v1-provision-snapshot.json",
+    "cards_path": "cards"
+  },
+  "v2": {
+    "unavailable": "No committed artefact in this repository contains a Canonical V2 resolution for the MATERIAL_CONTRACTS family on this deal. The three committed live-run resolutions (modiv-first-live-run, skechers-first-live-run, f28-third-live-run) resolve only concept_key REP-T-CAP, so projectMaterialContractsProductSurfaces returns zero cards for all of them. Producing this side requires either production access or an extraction run; the harness has neither."
+  }
+}

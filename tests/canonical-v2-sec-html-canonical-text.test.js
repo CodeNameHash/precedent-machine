@@ -189,7 +189,7 @@ test('keeps zero-width/bidi marks in canonical text (faithful) while matching ig
   // decodeEntity returned null and the literal 5-character string "&lrm;"
   // survived into canonical text verbatim, breaking "Section 3.1(b)(i)" into
   // the unsearchable "Section &lrm;3.1(b)(i)" -- see
-  // docs/handoffs/F28-FIRST-LIVE-RUN.md's (incorrect) "hallucinated
+  // docs/archive/handoffs/F28-FIRST-LIVE-RUN.md's (incorrect) "hallucinated
   // citation" conclusion, which this fix corrects at the root.
   const html = '<p>Section&nbsp;<B><I>&lrm;</I></B>3.1(b)(i) and Section&nbsp;<B><I>&rlm;</I></B>3.1(b)(ii)</p>';
   const result = convertSecHtmlToCanonicalText(capture(html));

@@ -10,6 +10,7 @@ const {
   PURE_PROPOSAL_SOURCES,
   LOCAL_ARTIFACT_WRITERS,
   READ_ONLY_GIT_INSPECTORS,
+  PRODUCTION_PATH_PURE_ANALYSIS_SOURCES,
   REQUIRED_AUTHORITY_BOUNDARY_CONTRACT_SOURCES,
   EXPLICIT_NEW_SOURCE_CLASSES,
   classifyChangedProductionSources,
@@ -58,6 +59,13 @@ const PURE_FORBIDDEN_CAPABILITIES = Object.freeze(Object.keys(CAPABILITY_PATTERN
 const LOCAL_WRITER_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'filesystem_write'));
 const GIT_INSPECTOR_FORBIDDEN_CAPABILITIES = Object.freeze(LOCAL_WRITER_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'external_process').concat('filesystem_write'));
 const ALLOWED_GIT_COMMANDS = Object.freeze(new Set(['rev-parse', 'show', 'status']));
+// The capability scan reads one file's own text, so it cannot see a capability
+// reached through an import. A production-path pure analysis source therefore
+// has to be a leaf: no dependencies at all, nothing to reach through.
+const MODULE_DEPENDENCY_PATTERNS = Object.freeze([
+  /\brequire\s*\(/g,
+  /^\s*import\b/gm,
+]);
 
 function git(args, options = {}) {
   return childProcess.execFileSync('git', args, {
@@ -103,6 +111,11 @@ function assertNoCapabilities(source, forbiddenCapabilities, label) {
   assert.deepEqual(present, [], `${label} has forbidden capabilities: ${present.join(', ')}`);
 }
 
+function assertNoModuleDependencies(source, label) {
+  const found = MODULE_DEPENDENCY_PATTERNS.reduce((count, pattern) => count + (source.match(pattern) || []).length, 0);
+  assert.equal(found, 0, `${label} must declare no module dependencies: purity resting on an import is purity the capability scan never checked`);
+}
+
 function assertNoCapabilityGrowth(baseSource, currentSource, label) {
   const before = capabilityCounts(baseSource);
   const after = capabilityCounts(currentSource);
@@ -144,6 +157,7 @@ test('every production source changed from the fixed Phase 1 base is classified 
     'PURE_PROPOSAL',
     'LOCAL_ARTIFACT_WRITER',
     'READ_ONLY_GIT_INSPECTOR',
+    'PRODUCTION_PATH_PURE_ANALYSIS',
     'MODIFIED_PREEXISTING',
   ]));
 });
@@ -186,6 +200,18 @@ test('pure proposals and local artefact writers have their exact capability boun
   }
   for (const relativePath of LOCAL_ARTIFACT_WRITERS) {
     assertNoCapabilities(fs.readFileSync(path.join(ROOT, relativePath), 'utf8'), LOCAL_WRITER_FORBIDDEN_CAPABILITIES, relativePath);
+  }
+});
+
+test('production-path pure analysis sources are capability-free leaf modules', () => {
+  assert.ok(PRODUCTION_PATH_PURE_ANALYSIS_SOURCES.includes('lib/agreement-revision-classifier.js'));
+  for (const relativePath of PRODUCTION_PATH_PURE_ANALYSIS_SOURCES) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    // The same full scan PURE_PROPOSAL gets, plus the leaf requirement. This
+    // class is where live product logic goes, so it is the strictest of the
+    // four, never a softer landing than the class it sits beside.
+    assertNoCapabilities(source, PURE_FORBIDDEN_CAPABILITIES, relativePath);
+    assertNoModuleDependencies(source, relativePath);
   }
 });
 
@@ -248,5 +274,7 @@ test('hostile inventory and capability changes fail closed', () => {
   assert.throws(() => assertNoCapabilities('createClient(url, key)', LOCAL_WRITER_FORBIDDEN_CAPABILITIES, 'hostile writer'), /database/);
   assert.throws(() => assertReadOnlyGitInspector("execFileSync('git', ['push'])", 'hostile inspector'), /non-read-only Git command/);
   assert.throws(() => assertNoCapabilityGrowth('', 'fetch(url)', 'hostile legacy'), /network/);
-  assert.equal(Object.keys(EXPLICIT_NEW_SOURCE_CLASSES).length, 3);
+  assert.throws(() => assertNoModuleDependencies("const fs = require('node:fs');", 'hostile analysis'), /no module dependencies/);
+  assert.throws(() => assertNoModuleDependencies("import fs from 'node:fs';", 'hostile analysis'), /no module dependencies/);
+  assert.equal(Object.keys(EXPLICIT_NEW_SOURCE_CLASSES).length, 4);
 });

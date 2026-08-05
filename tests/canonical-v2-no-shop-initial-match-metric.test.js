@@ -1,4 +1,4 @@
-// Tests for the D3 widening (docs/handoffs/SPEC-QUERY-METRICS-WIDENING-
+// Tests for the D3 widening (docs/archive/handoffs/SPEC-QUERY-METRICS-WIDENING-
 // 2026-07-23.md): serving NO_SHOP_INITIAL_MATCH_PERIOD_DAYS through
 // lib/canonical-v2/query-result.js. Covers the spec's numbered test groups
 // 1, 2 and 4. Group 3 (mapper routing) and group 5 (refinementOptionsFromView)

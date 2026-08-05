@@ -7,8 +7,9 @@
  * admission chain -> canonical text -> real sectionizer -> LIVE model call
  * under PROMPT_VERSION 2 -> resolveCandidates -> buildNativeWriteSet ->
  * real validateResolvedCanonicalWriteSet), against the SAME filing, so the
- * two runs are directly comparable. See docs/handoffs/F28-FIRST-LIVE-RUN.md
- * and docs/handoffs/F28-SECOND-LIVE-RUN.md.
+ * two runs are directly comparable. See
+ * docs/archive/handoffs/F28-FIRST-LIVE-RUN.md
+ * and docs/archive/handoffs/F28-SECOND-LIVE-RUN.md.
  *
  * The one behavioural difference from the first run's script: this one also
  * writes the model's raw response text out in the

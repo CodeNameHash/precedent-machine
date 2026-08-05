@@ -210,6 +210,22 @@ const FILE_PATTERN_EXEMPTIONS = {
     'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
     'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
   ],
+  // Same class, with an extra wrinkle worth stating so nobody re-litigates it.
+  // The fingerprint targets the LEGACY AD HOC PAYLOAD `{provision_type: 'X',
+  // field_path: 'y'}` in production query code. What trips here is the
+  // natural-language MODEL INTENT contract's own `field_paths` (PLURAL) --
+  // `field_path` is a prefix of it, and `\s*,\s*` spans the newline between the
+  // two object keys, so a line-based grep does not show the match. The literal
+  // is an INPUT to compileIntent inside assert.throws: the test proves an
+  // unknown deal_id is rejected, i.e. it exercises the compiler rather than
+  // bypassing it. It appeared only because retiring DEAL_TO_MARKET (61d7280c)
+  // forced that test onto PROVISION_CROSS_CUT, which needs a provision_type and
+  // field_paths to reach the deal_id check at all. Exempt only this pattern for
+  // this file; the singular-field_path fingerprint and every other check still
+  // apply here, and production query code stays fully covered.
+  'tests/query-natural-language.test.js': [
+    'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
+  ],
   'lib/taxonomy.js': ['Must defend \\(incl\\. appeals/final judgment\\)'],
   // Same false-positive class: Sidebar.js renders "(applies to Parent and
   // Company)" GATED on group.maeAppliesToBoth (data-driven, correct since

@@ -4,7 +4,7 @@
  * tests/canonical-v2-f28-second-live-fixture-replay.test.js
  *
  * Replays the RECORDED, UNMODIFIED raw model response from the F28 SECOND
- * live run (docs/handoffs/F28-SECOND-LIVE-RUN.md,
+ * live run (docs/archive/handoffs/F28-SECOND-LIVE-RUN.md,
  * tests/fixtures/canonical-v2/f28-second-live-run/qxo-topbuild-3-1-b-live-response.json)
  * through the pipeline as it stands after this fix (citation corroboration +
  * never-silently-discard), and documents how the buckets change versus that
@@ -329,7 +329,7 @@ test('replaying the F28 SECOND recorded raw response through the fixed pipeline:
   // UNDER-EXTRACTION BASELINE, NOT A TARGET (spec Testing section --
   // required label). This recording is itself missing ~10 of the ~12
   // qualifiers a careful read of the source flags (run-2's known
-  // decomposition regression, docs/handoffs/F28-SECOND-LIVE-RUN.md
+  // decomposition regression, docs/archive/handoffs/F28-SECOND-LIVE-RUN.md
   // quality finding 2). The counts asserted below bake in that
   // impoverished extraction as a REGRESSION FLOOR for the pipeline code
   // only -- they say nothing about extraction quality, and a richer

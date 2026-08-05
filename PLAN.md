@@ -41,7 +41,7 @@ text is deleted per this file's own convention. Open residue is listed in §1 be
 serving projection bound to immutable releases; bounded canonical Query endpoint live
 flag-off; first canonical Query UI slice (seller termination fee % of deal value) merged
 to `main` 2026-07-23 behind `NEXT_PUBLIC_CANONICAL_V2_QUERY_UI_ENABLED` (off), production
-live-verified with containment intact. See `docs/handoffs/` for slice specs, the
+live-verified with containment intact. See `docs/archive/handoffs/` for slice specs, the
 next-slice proposal, and the field↔metric correspondence analysis (no further
 legacy→canonical mappings are currently safe).
 

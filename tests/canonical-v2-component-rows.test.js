@@ -5,7 +5,7 @@
  *
  * End-to-end acceptance tests for docs/superpowers/specs/2026-08-01-
  * component-rows-design.md (closes final-audit M1,
- * docs/handoffs/F28-THIRD-LIVE-RUN.md register item 1): limb-level
+ * docs/archive/handoffs/F28-THIRD-LIVE-RUN.md register item 1): limb-level
  * (ITEM-attached) resolved claims carry assertion-node subject ids that
  * resolve against nothing at validation. This file proves the fix through
  * the REAL pipeline seam -- `resolveCandidates` (candidate-resolution.js,

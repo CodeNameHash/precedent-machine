@@ -23,7 +23,11 @@ const {
   listM3ProductParityBlockers,
   liveProductVisibility,
   locatorServingProof,
+  moduleImportSpecifiers,
+  servedModuleClosure,
+  servedModules,
   servingPathReachesLocator,
+  unparseableServedCandidates,
 } = require('../lib/canonical-v2/native-producer/m3-family-parity-register');
 
 const SEC_MEETING_CONFIG = 'components/review/table-configs/sec-meeting.config.js';
@@ -352,6 +356,163 @@ test('the register-wide blocker inventory is unchanged by the strict locator rul
   // 104 blockers and 6 review holds were the pinned counts before ruling 3. The strict
   // rule demoted nothing, because every currently-visible row proves a complete path.
   assert.equal(listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER).length, 104);
+});
+
+// ---------------------------------------------------------------------------------------
+// 6. The served-entry-point walk is a real parse, not a text scan.
+//
+// servedModules() is the FIRST link of the chain every visibility claim hangs off, and it
+// is the link that inflates: a module that joins the served set can only ever push a
+// surface towards visible (liveProductVisibility requires every proving consumer to be a
+// member, and servedExportUsage mines members for locator entry symbols). A text scan
+// cannot tell a real import from a string that merely reads like one, and every phantom
+// edge widens the set in exactly the direction that manufactures a false PASS.
+// ---------------------------------------------------------------------------------------
+
+function closure(sources, entryPoints) {
+  return servedModuleClosure({
+    files: new Set(Object.keys(sources)),
+    entryPoints,
+    readSource: (file) => (Object.hasOwn(sources, file) ? sources[file] : null),
+  });
+}
+
+test('a specifier that appears only in a comment is not an import edge', () => {
+  const { reachable, unparseable } = closure({
+    'pages/entry.js': "// require('./phantom')\n"
+      + "/* import phantom from './phantom'; */\n"
+      + "/** @see require('./phantom') */\n"
+      + 'module.exports = function Page() { return null; };\n',
+    'pages/phantom.js': 'module.exports = 1;\n',
+  }, ['pages/entry.js']);
+  assert.deepEqual([...reachable].sort(), ['pages/entry.js']);
+  assert.deepEqual([...unparseable], []);
+});
+
+test('a specifier that appears only in a string literal is not an import edge', () => {
+  const { reachable } = closure({
+    'pages/entry.js': 'const NOTE = \'kept separate from "./phantom", never joined\';\n'
+      + "const PROMPT = `require('./phantom')`;\n"
+      + 'module.exports = { NOTE, PROMPT };\n',
+    'pages/phantom.js': 'module.exports = 1;\n',
+  }, ['pages/entry.js']);
+  assert.deepEqual([...reachable].sort(), ['pages/entry.js']);
+});
+
+test('the exact shapes the old text scan matched in this repository are not import edges', () => {
+  // Both reproduce a real false match the retired MODULE_SPECIFIER regex produced:
+  // `from "treasury shares"` inside a phrasebook row's prose (lexical-disagreement-net.js)
+  // and `from "acquisitions"` inside an extraction prompt template (parser-v2/extract.js).
+  // Neither happened to resolve to a repository file, which is luck, not a guarantee.
+  const specifiers = moduleImportSpecifiers(
+    "const ROW = ['TREASURY_STOCK', 'treasury stock', 'kept separate from \"treasury shares\", never slash-joined.'];\n"
+      + 'const PROMPT = `Subsidiaries restricted from "acquisitions" / "mergers"`;\n'
+      + "// require('./commented-out')\n"
+      + "const { canonicalJson } = require('./canonical-bytes');\n",
+    'lib/synthetic-phrasebook.js',
+  );
+  assert.deepEqual(specifiers, ['./canonical-bytes']);
+});
+
+test('a multi-line require the old text scan could not close is a real import edge', () => {
+  // The mirror failure: `require(\n  './x',\n)` never matched MODULE_SPECIFIER because of
+  // the trailing comma, so the old walk under-reported real edges too.
+  assert.deepEqual(
+    moduleImportSpecifiers("const { validate } = require(\n  './contract-input-validator',\n);\n", 'lib/synthetic.js'),
+    ['./contract-input-validator'],
+  );
+});
+
+test('a genuine transitive import chain is followed end to end, in every import form', () => {
+  const { reachable, unparseable } = closure({
+    'pages/entry.js': "import { first } from '../lib/first';\n"
+      + 'export default function Page() { return first(); }\n',
+    'lib/first.js': "const { second } = require('./second');\n"
+      + 'function first() { return second(); }\n'
+      + 'module.exports = { first };\n',
+    'lib/second.js': "export { third as second } from './third';\n",
+    'lib/third.js': "export async function third() { const m = await import('./fourth'); return m.fourth(); }\n",
+    'lib/fourth.js': 'export function fourth() { return 4; }\n',
+    'lib/unreached.js': 'export function nope() { return 0; }\n',
+  }, ['pages/entry.js']);
+  assert.deepEqual([...reachable].sort(), [
+    'lib/first.js',
+    'lib/fourth.js',
+    'lib/second.js',
+    'lib/third.js',
+    'pages/entry.js',
+  ]);
+  assert.deepEqual([...unparseable], []);
+});
+
+test('contained routes and design-guarded pages stay outside the real served set', () => {
+  const served = servedModules();
+
+  // The 503 containment handlers answer ROUTE_CONTAINED, so nothing reached only through
+  // them is served -- including the derived-field module the query surfaces name.
+  assert.equal(served.has('pages/api/query/run.js'), false);
+  assert.equal(served.has('pages/api/canonical-v2/query.js'), false);
+  assert.equal(served.has('lib/query/derived-fields.js'), false);
+
+  // A design-guarded page answers notFound in production and lends serving proof to nothing.
+  assert.equal(served.has('pages/design/canonical-v2.js'), false);
+  assert.deepEqual([...served].filter((file) => file.startsWith('pages/design/')), []);
+
+  // The walk still reaches a genuine chain: a live page, its table config, and the adapter
+  // the config imports. Without this the exclusions above would be trivially satisfied.
+  assert.equal(served.has('pages/review/[id].js'), true);
+  assert.equal(served.has(SEC_MEETING_CONFIG), true);
+  assert.equal(served.has('lib/sec-meeting.js'), true);
+});
+
+test('an unparseable or unreadable module is refused rather than served, and the refusal is visible', () => {
+  // The deliberate fail-closed direction. The served set is monotone towards visible, so a
+  // module whose contents cannot be read cannot be evidence that it serves anyone. It is
+  // withheld from the set, contributes no edges, and is RECORDED rather than swallowed.
+  const { reachable, unparseable } = closure({
+    'pages/entry.js': "require('./broken');\nrequire('./fine');\n",
+    'pages/broken.js': "function ( { <<< not javascript\nrequire('./downstream');\n",
+    'pages/downstream.js': 'module.exports = 1;\n',
+    'pages/fine.js': 'module.exports = 2;\n',
+  }, ['pages/entry.js']);
+  assert.deepEqual([...reachable].sort(), ['pages/entry.js', 'pages/fine.js']);
+  assert.deepEqual([...unparseable], ['pages/broken.js']);
+  // The refused module lends nothing onwards either.
+  assert.equal(reachable.has('pages/downstream.js'), false);
+
+  // An unparseable entry point seeds nothing at all.
+  const entryBroken = closure({
+    'pages/entry.js': 'function ( { <<<\n',
+    'pages/target.js': 'module.exports = 1;\n',
+  }, ['pages/entry.js']);
+  assert.deepEqual([...entryBroken.reachable], []);
+  assert.deepEqual([...entryBroken.unparseable], ['pages/entry.js']);
+
+  // A module that cannot be read off disk at all gets the same answer as one that cannot
+  // be parsed. Previously an unreadable module was added to the served set anyway.
+  const unreadable = servedModuleClosure({
+    files: new Set(['pages/entry.js', 'pages/unreadable.js']),
+    entryPoints: ['pages/entry.js'],
+    readSource: (file) => (file === 'pages/entry.js' ? "require('./unreadable');\n" : null),
+  });
+  assert.deepEqual([...unreadable.reachable], ['pages/entry.js']);
+  assert.deepEqual([...unreadable.unparseable], ['pages/unreadable.js']);
+});
+
+test('the live walk refuses nothing today, so no serving claim rests on an unread module', () => {
+  // Non-empty is a defect to fix, never a result to accept: it would mean the register is
+  // silently under-reporting serving for some part of the product.
+  assert.deepEqual(unparseableServedCandidates(), []);
+});
+
+test('every served module is a real product source file reached from a live page', () => {
+  const served = servedModules();
+  assert.ok(served.size > 0);
+  assert.ok([...served].every((file) => /\.(js|jsx|mjs)$/.test(file)));
+  assert.ok([...served].every((file) => file.startsWith('pages/')
+    || file.startsWith('lib/')
+    || file.startsWith('components/')));
+  assert.ok([...served].some((file) => file.startsWith('pages/')));
 });
 
 test('the strict analysis stays fast enough for the programme gates', () => {

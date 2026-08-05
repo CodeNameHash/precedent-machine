@@ -44,7 +44,7 @@ const { formatPercentValue } = require('../../../lib/percent-of-deal');
 // GROUP_SPECS below.
 const { groupColumnsForCrossCut } = require('../../../lib/query/cross-cut-groups');
 // Canonical Query UI slice (2026-07-22): the single interception point for
-// the one supported ad hoc request (see docs/handoffs/
+// the one supported ad hoc request (see docs/archive/handoffs/
 // SPEC-CANONICAL-QUERY-UI-SLICE-2026-07-22.md).
 const { isCanonicalV2QueryUiEnabled } = require('../../../lib/canonical-v2/feature-flags');
 const {

@@ -12,7 +12,7 @@
 // deals). Rows with neither a stable id nor a string label never match
 // across deals (anon key) — they render in their own deal only.
 //
-// r16 ROW_FAMILY step (docs/PLAN.md P3, Ben decision 1 = option B):
+// r16 ROW_FAMILY step (docs/archive/PLAN.md P3, Ben decision 1 = option B):
 // taxonomy splits put the SAME real-world clause under two different
 // provision-subtype codes depending on the deal (e.g. one deal's payment
 // agent covenant classifies REP-T-CONTRACTS, another's the same concept

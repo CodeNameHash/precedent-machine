@@ -14,7 +14,12 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const { attachCanonicalV2Preview } = require('../lib/canonical-v2/review-preview-assembly');
+const {
+  attachCanonicalV2Preview,
+  assembleCanonicalV2Preview,
+  CANONICAL_V2_PREVIEW_STATE,
+} = require('../lib/canonical-v2/review-preview-assembly');
+const { DARK_BRIDGE_GATE_REASON } = require('../lib/canonical-v2/dark-bridge-gate');
 const { shapeReviewDealRows } = require('../lib/queries/review-deal');
 const { CARD_SCHEMA: REPRESENTATIONS_CARD_SCHEMA } = require('../lib/canonical-v2/representations-dark-bridge');
 
@@ -23,6 +28,30 @@ const DISABLED_ENV = Object.freeze({});
 const ASSEMBLER_PATH = path.join(__dirname, '..', 'lib', 'canonical-v2', 'review-preview-assembly.js');
 
 const BASE_DEAL_ID = 'preview-route-fixture-deal';
+
+// A logger that records instead of printing: the assembler reports every
+// REFUSED/FAILED outcome to a log sink, and these suites both assert that it
+// did and keep the real console clean while deliberately breaking things.
+function capturingLogger() {
+  const lines = [];
+  return {
+    lines,
+    warn: (...args) => lines.push({ level: 'warn', args }),
+    error: (...args) => lines.push({ level: 'error', args }),
+  };
+}
+
+// The legacy half of a review deal -- everything a reviewer's page is built
+// from -- with only the two preview stamps removed. Used to prove a failed or
+// refused preview left the served deal's real content untouched.
+function legacyContent(deal) {
+  const {
+    canonical_v2_preview_enabled: previewEnabled,
+    canonical_v2_preview_status: previewStatus,
+    ...rest
+  } = deal;
+  return rest;
+}
 
 function buildBaseReviewDeal() {
   return shapeReviewDealRows(BASE_DEAL_ID, [{
@@ -125,27 +154,144 @@ test('gate on: all four areas dark cards land in one review deal, flagged, every
   );
 });
 
-test('gate on with a deliberately corrupted fixture: the original review deal is returned unchanged and nothing throws', async () => {
-  const reviewDeal = buildBaseReviewDeal();
-  const corruptFixtureCases = {
-    materialContracts: { section_reference: '3.13' },
-    generalCovenants: { section_reference: '6.05' },
-    noOtherRepsFraud: { deal_id: 'corrupt' },
-    representations: { deal_id: 'corrupt' },
-  };
+// =============================================================================
+// Defect 1: a throwing canonical path used to be swallowed by attachCanonical
+// V2Preview's catch and returned as the untouched legacy reviewDeal -- byte-
+// identical to a clean gate-off no-op. A Canonical-V2-vs-legacy comparison run
+// against that result compares legacy against legacy and passes perfectly
+// while proving nothing. The failure must still not break the page, but it
+// must be visible to a caller that asks.
+// =============================================================================
 
-  for (const [familyKey, corruptFixture] of Object.entries(corruptFixtureCases)) {
-    const result = await attachCanonicalV2Preview(reviewDeal, {
+const CORRUPT_FIXTURE_CASES = Object.freeze({
+  materialContracts: { section_reference: '3.13' },
+  generalCovenants: { section_reference: '6.05' },
+  noOtherRepsFraud: { deal_id: 'corrupt' },
+  representations: { deal_id: 'corrupt' },
+});
+
+const CORRUPT_FIXTURE_PHASES = Object.freeze({
+  materialContracts: 'MATERIAL_CONTRACTS',
+  generalCovenants: 'GENERAL_COVENANTS',
+  noOtherRepsFraud: 'NO_OTHER_REPS_FRAUD',
+  representations: 'REPRESENTATIONS',
+});
+
+test('gate on with a deliberately corrupted fixture: nothing throws, the legacy deal is served intact, and the failure is reported as FAILED', async () => {
+  for (const [familyKey, corruptFixture] of Object.entries(CORRUPT_FIXTURE_CASES)) {
+    const reviewDeal = buildBaseReviewDeal();
+    const logger = capturingLogger();
+    const { reviewDeal: result, outcome } = await assembleCanonicalV2Preview(reviewDeal, {
       env: ENABLED_ENV,
       fixtures: { [familyKey]: corruptFixture },
+      logger,
     });
-    assert.equal(result, reviewDeal, `a corrupted ${familyKey} fixture must fall back to the original reviewDeal reference`);
-    assert.equal(
-      Object.prototype.hasOwnProperty.call(result, 'canonical_v2_preview_enabled'),
-      false,
-      `a corrupted ${familyKey} fixture must not leave a partial preview flagged on`,
+
+    // The page survives: no throw, and every field the review page renders
+    // from is the legacy deal's own, untouched -- not a partial merge.
+    assert.deepEqual(
+      legacyContent(result),
+      legacyContent(reviewDeal),
+      `a corrupted ${familyKey} fixture must serve the legacy deal's content unchanged`,
     );
+    assert.equal(result.cardCount, 1, `a corrupted ${familyKey} fixture must not leave a partially-merged deal`);
+    assert.equal(result.cards.length, 1);
+    assert.equal(
+      result.cards.some((card) => card.authority_state === 'VALIDATED_NOT_SERVED'),
+      false,
+      `a corrupted ${familyKey} fixture must leave no dark card behind`,
+    );
+
+    // The failure is visible: the preview is explicitly OFF (never merely
+    // absent, which is what a clean no-op looks like) and the outcome names
+    // the state, the failing family and the underlying error.
+    assert.equal(outcome.state, CANONICAL_V2_PREVIEW_STATE.FAILED);
+    assert.equal(outcome.gate.enabled, true, 'the gate itself was open -- this is a failure, not a refusal');
+    assert.equal(outcome.failure.phase, CORRUPT_FIXTURE_PHASES[familyKey]);
+    assert.ok(outcome.failure.error_message.length > 0, 'the underlying error message must be carried through');
+    assert.equal(result.canonical_v2_preview_enabled, false, `a corrupted ${familyKey} fixture must not leave a partial preview flagged on`);
+    assert.equal(result.canonical_v2_preview_status.state, CANONICAL_V2_PREVIEW_STATE.FAILED);
+
+    // And it is reported out of band, where a served route that only returns
+    // a deal still leaves a trace a verifier can find.
+    assert.equal(logger.lines.length, 1, `a corrupted ${familyKey} fixture must report exactly one log line`);
+    assert.equal(logger.lines[0].level, 'error');
+    assert.match(logger.lines[0].args[0], /FAILED/);
   }
+});
+
+test('a swallowed failure is distinguishable from a clean no-op: FAILED, NOT_REQUESTED and ATTACHED are three different observable outcomes', async () => {
+  const failed = await assembleCanonicalV2Preview(buildBaseReviewDeal(), {
+    env: ENABLED_ENV,
+    fixtures: { materialContracts: CORRUPT_FIXTURE_CASES.materialContracts },
+    logger: capturingLogger(),
+  });
+  const noOp = await assembleCanonicalV2Preview(buildBaseReviewDeal(), { env: DISABLED_ENV });
+  const attached = await assembleCanonicalV2Preview(buildBaseReviewDeal(), { env: ENABLED_ENV });
+
+  assert.deepEqual(
+    [failed.outcome.state, noOp.outcome.state, attached.outcome.state],
+    [
+      CANONICAL_V2_PREVIEW_STATE.FAILED,
+      CANONICAL_V2_PREVIEW_STATE.NOT_REQUESTED,
+      CANONICAL_V2_PREVIEW_STATE.ATTACHED,
+    ],
+  );
+
+  // The exact confusion the old catch caused: the failed deal and the no-op
+  // deal used to be the same object, so no assertion could tell them apart.
+  assert.notDeepEqual(
+    Object.keys(failed.reviewDeal).sort(),
+    Object.keys(noOp.reviewDeal).sort(),
+    'a failed preview must no longer be shaped exactly like a deal the preview never touched',
+  );
+  assert.equal(failed.reviewDeal.canonical_v2_preview_enabled, false);
+  assert.equal(Object.prototype.hasOwnProperty.call(noOp.reviewDeal, 'canonical_v2_preview_enabled'), false);
+  assert.equal(attached.reviewDeal.canonical_v2_preview_enabled, true);
+});
+
+test('a comparison harness cannot mistake a failure for a pass: only ATTACHED carries attached cards, and ATTACHED with zero cards is still not FAILED', async () => {
+  // The harness contract: "the canonical path produced this" is
+  // outcome.state === ATTACHED. A failure can never satisfy it, however the
+  // harness looks at the returned deal.
+  const { reviewDeal: failedDeal, outcome: failedOutcome } = await assembleCanonicalV2Preview(buildBaseReviewDeal(), {
+    env: ENABLED_ENV,
+    fixtures: { representations: CORRUPT_FIXTURE_CASES.representations },
+    logger: capturingLogger(),
+  });
+  assert.notEqual(failedOutcome.state, CANONICAL_V2_PREVIEW_STATE.ATTACHED);
+  assert.equal(failedOutcome.attached_card_count, 0);
+  assert.equal(
+    Object.prototype.hasOwnProperty.call(failedDeal, 'canonical_v2_bridge_receipts'),
+    false,
+    'a failed preview must leave no bridge receipt for a harness to mistake for canonical output',
+  );
+
+  // "Added nothing" is not the discriminator -- `state` is. A failure and a
+  // hypothetical success that added nothing would both show
+  // attached_card_count 0; they are still told apart by state and by
+  // `failure`, which is null on every ATTACHED outcome and populated on every
+  // FAILED one.
+  const { outcome: attachedOutcome } = await assembleCanonicalV2Preview(buildBaseReviewDeal(), { env: ENABLED_ENV });
+  assert.equal(attachedOutcome.state, CANONICAL_V2_PREVIEW_STATE.ATTACHED);
+  assert.ok(attachedOutcome.attached_card_count > 0);
+  assert.equal(attachedOutcome.failure, null);
+  assert.equal(failedOutcome.failure === null, false);
+});
+
+test('attachCanonicalV2Preview (the served route\'s deal-only view) still never throws on a corrupted fixture and still returns a renderable deal', async () => {
+  const reviewDeal = buildBaseReviewDeal();
+  const result = await attachCanonicalV2Preview(reviewDeal, {
+    env: ENABLED_ENV,
+    fixtures: { generalCovenants: CORRUPT_FIXTURE_CASES.generalCovenants },
+    logger: capturingLogger(),
+  });
+  assert.equal(result.dealId, BASE_DEAL_ID);
+  assert.equal(result.cardCount, 1);
+  assert.deepEqual(legacyContent(result), legacyContent(reviewDeal));
+  // The route hands this straight to the client, whose lane gate requires
+  // === true -- an explicit false fails closed exactly like an absent field.
+  assert.equal(result.canonical_v2_preview_enabled, false);
 });
 
 test('the assembler performs no write: source contains no insert/upsert/update/supabase/fetch', () => {
@@ -157,11 +303,72 @@ test('the assembler performs no write: source contains no insert/upsert/update/s
   );
 });
 
-test('production env with the flag set: no preview, byte-identical', async () => {
+test('production env with the flag set: no preview at all, and the refusal is reported rather than silent', async () => {
   const reviewDeal = buildBaseReviewDeal();
-  const result = await attachCanonicalV2Preview(reviewDeal, {
+  const logger = capturingLogger();
+  const { reviewDeal: result, outcome } = await assembleCanonicalV2Preview(reviewDeal, {
     env: { CANONICAL_V2_DARK_BRIDGE: 'ENABLED_LOCAL_PREPRODUCTION', VERCEL_ENV: 'production' },
+    logger,
   });
-  assert.equal(result, reviewDeal, 'VERCEL_ENV=production must hard-block the preview even with the flag set');
-  assert.equal(Object.prototype.hasOwnProperty.call(result, 'canonical_v2_preview_enabled'), false);
+
+  // Unchanged and non-negotiable: production is hard-blocked. Nothing
+  // canonical is built, merged or flagged on.
+  assert.equal(outcome.state, CANONICAL_V2_PREVIEW_STATE.REFUSED);
+  assert.equal(outcome.gate.enabled, false, 'VERCEL_ENV=production must hard-block the preview even with the flag set');
+  assert.equal(outcome.gate.reason, DARK_BRIDGE_GATE_REASON.RUNTIME_NOT_PERMITTED);
+  assert.equal(result.canonical_v2_preview_enabled, false);
+  assert.deepEqual(legacyContent(result), legacyContent(reviewDeal), 'the served deal must carry no canonical content');
+  assert.equal(outcome.attached_card_count, 0);
+
+  // New: setting the flag somewhere it cannot take effect is now loud. The
+  // one case a human can be wrong about is "I set the flag, so it must be
+  // on" -- so a refusal against a stated intent reports itself.
+  assert.equal(logger.lines.length, 1);
+  assert.equal(logger.lines[0].level, 'warn');
+  assert.match(logger.lines[0].args[0], /REFUSED gate_reason=RUNTIME_NOT_PERMITTED/);
+});
+
+// =============================================================================
+// Defect 2, at the assembler seam: CI set in the FUNCTION RUNTIME (as opposed
+// to the build) is the one signal that can switch a Vercel preview deployment
+// off while looking exactly like a preview nobody enabled. It must stay
+// refusing -- and it must say so.
+// =============================================================================
+
+test('CI set in the runtime of an otherwise-permitted Vercel preview: preview off, reason CI_ENVIRONMENT_DETECTED, and the refusal is visible on the served deal', async () => {
+  const reviewDeal = buildBaseReviewDeal();
+  const logger = capturingLogger();
+  const { reviewDeal: result, outcome } = await assembleCanonicalV2Preview(reviewDeal, {
+    env: {
+      CANONICAL_V2_DARK_BRIDGE: 'ENABLED_LOCAL_PREPRODUCTION',
+      VERCEL: '1',
+      VERCEL_ENV: 'preview',
+      CI: '1',
+    },
+    logger,
+  });
+
+  assert.equal(outcome.state, CANONICAL_V2_PREVIEW_STATE.REFUSED);
+  assert.equal(outcome.gate.reason, DARK_BRIDGE_GATE_REASON.CI_ENVIRONMENT_DETECTED);
+  assert.equal(outcome.gate.signals.vercel_env, 'preview', 'the runtime allowlist itself passed -- only the CI clause refused');
+  assert.equal(outcome.gate.signals.ci_recognised_truthy, true);
+  assert.equal(result.canonical_v2_preview_enabled, false, 'a CI-refused preview must be explicitly off, not indistinguishable from never-requested');
+  assert.equal(result.canonical_v2_preview_status.gate.reason, DARK_BRIDGE_GATE_REASON.CI_ENVIRONMENT_DETECTED);
+  assert.equal(
+    result.cards.some((card) => card.authority_state === 'VALIDATED_NOT_SERVED'),
+    false,
+    'a CI-refused preview must attach nothing',
+  );
+  assert.equal(logger.lines.length, 1);
+  assert.match(logger.lines[0].args[0], /REFUSED gate_reason=CI_ENVIRONMENT_DETECTED/);
+});
+
+test('the same Vercel preview runtime WITHOUT CI attaches the preview: the CI clause is the only difference between on and off', async () => {
+  const previewEnv = { CANONICAL_V2_DARK_BRIDGE: 'ENABLED_LOCAL_PREPRODUCTION', VERCEL: '1', VERCEL_ENV: 'preview' };
+  const { reviewDeal: result, outcome } = await assembleCanonicalV2Preview(buildBaseReviewDeal(), { env: previewEnv });
+  assert.equal(outcome.state, CANONICAL_V2_PREVIEW_STATE.ATTACHED);
+  assert.equal(outcome.gate.reason, DARK_BRIDGE_GATE_REASON.PERMITTED);
+  assert.equal(outcome.gate.signals.ci_present, false);
+  assert.equal(result.canonical_v2_preview_enabled, true);
+  assert.ok(outcome.attached_card_count > 0);
 });

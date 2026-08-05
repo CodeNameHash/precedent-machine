@@ -1,0 +1,94 @@
+{
+  "schema_version": "CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_PROJECTION/V1",
+  "projection_id": "90d7538c8a83c18400ba02d4ef4640ac9bb6e3e99b889aa94ed713f2ad8da2be",
+  "cards": [
+    {
+      "ai_metadata": {
+        "code": "REP-T-MATERIAL-CONTRACTS",
+        "features": {
+          "materialContractsBuckets": [
+            {
+              "cadence_kind": null,
+              "code": "INDEBTEDNESS",
+              "label": "Indebtedness contracts",
+              "quotes": [
+                "any Company Contract relating to Indebtedness in excess of $100,000 (whether incurred, assumed, guaranteed, or secured by\nany asset) of the Company or any Company Subsidiary;"
+              ],
+              "text": "any Company Contract relating to Indebtedness in excess of $100,000 (whether incurred, assumed, guaranteed, or secured by\nany asset) of the Company or any Company Subsidiary;",
+              "threshold": "$100,000",
+              "threshold_kind": "USD"
+            }
+          ]
+        }
+      },
+      "canonical_v2_lineage": {
+        "claim_revision_ids": [
+          "74af51690de43515709a58aeb2588d4583dd1e4d5e1406f6526a4eb505b61c40",
+          "7fb1f3034bee735c3cec7c3f0fd5accfdaaca81739c4ef3bc6e6cef637050777"
+        ],
+        "source": "CANONICAL_V2_NATIVE_CLAIM"
+      },
+      "deal_id": "landos-abbvie",
+      "excerpt_id": "native:e0a822e0c93293766e2672c9a9000a54f2c236d93c2c71d14b98f1b3c8234b9b",
+      "features": {
+        "materialContractsBuckets": [
+          {
+            "cadence_kind": null,
+            "code": "INDEBTEDNESS",
+            "label": "Indebtedness contracts",
+            "quotes": [
+              "any Company Contract relating to Indebtedness in excess of $100,000 (whether incurred, assumed, guaranteed, or secured by\nany asset) of the Company or any Company Subsidiary;"
+            ],
+            "text": "any Company Contract relating to Indebtedness in excess of $100,000 (whether incurred, assumed, guaranteed, or secured by\nany asset) of the Company or any Company Subsidiary;",
+            "threshold": "$100,000",
+            "threshold_kind": "USD"
+          }
+        ]
+      },
+      "full_text": "any Company Contract relating to Indebtedness in excess of $100,000 (whether incurred, assumed, guaranteed, or secured by\nany asset) of the Company or any Company Subsidiary;",
+      "id": "e0a822e0c93293766e2672c9a9000a54f2c236d93c2c71d14b98f1b3c8234b9b",
+      "primary_quote": "any Company Contract relating to Indebtedness in excess of $100,000 (whether incurred, assumed, guaranteed, or secured by\nany asset) of the Company or any Company Subsidiary;",
+      "provision_instance_id": "e0a822e0c93293766e2672c9a9000a54f2c236d93c2c71d14b98f1b3c8234b9b",
+      "provision_subtype": "REP-T-MATERIAL-CONTRACTS",
+      "provision_type": "REPRESENTATION",
+      "region_full_text": "any Company Contract relating to Indebtedness in excess of $100,000 (whether incurred, assumed, guaranteed, or secured by\nany asset) of the Company or any Company Subsidiary;",
+      "section_ref": "3.13",
+      "short_title": "Material Contracts",
+      "type": "REP-T"
+    }
+  ],
+  "claims": [
+    {
+      "attribute": "materialContractsBuckets",
+      "canonical": [
+        {
+          "cadence_kind": null,
+          "code": "INDEBTEDNESS",
+          "label": "Indebtedness contracts",
+          "quotes": [
+            "any Company Contract relating to Indebtedness in excess of $100,000 (whether incurred, assumed, guaranteed, or secured by\nany asset) of the Company or any Company Subsidiary;"
+          ],
+          "text": "any Company Contract relating to Indebtedness in excess of $100,000 (whether incurred, assumed, guaranteed, or secured by\nany asset) of the Company or any Company Subsidiary;",
+          "threshold": "$100,000",
+          "threshold_kind": "USD"
+        }
+      ],
+      "deal_id": "landos-abbvie",
+      "evidence_quote": "any Company Contract relating to Indebtedness in excess of $100,000 (whether incurred, assumed, guaranteed, or secured by\nany asset) of the Company or any Company Subsidiary;",
+      "excerpt_id": "native:e0a822e0c93293766e2672c9a9000a54f2c236d93c2c71d14b98f1b3c8234b9b",
+      "id": "16295ab4e949029660a528f02c96cfc62853d8dfba5865b3c27c813f44d6f398",
+      "provenance": {
+        "code": "REP-T-CONTRACTS",
+        "source": "CANONICAL_V2_NATIVE_CLAIM",
+        "source_claim_revision_ids": [
+          "74af51690de43515709a58aeb2588d4583dd1e4d5e1406f6526a4eb505b61c40",
+          "7fb1f3034bee735c3cec7c3f0fd5accfdaaca81739c4ef3bc6e6cef637050777"
+        ]
+      },
+      "verbatim": "any Company Contract relating to Indebtedness in excess of $100,000 (whether incurred, assumed, guaranteed, or secured by\nany asset) of the Company or any Company Subsidiary;"
+    }
+  ],
+  "deal_id": "landos-abbvie",
+  "open_items": [],
+  "source": "CANONICAL_V2_NATIVE_CLAIM"
+}

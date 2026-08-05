@@ -323,7 +323,7 @@ test('unverifiable evidence becomes a typed residual bound into the receipt, nev
 });
 
 // ---------------------------------------------------------------------------
-// limb_path (docs/handoffs/F28-FIRST-LIVE-RUN.md defect 1): nested limbs
+// limb_path (docs/archive/handoffs/F28-FIRST-LIVE-RUN.md defect 1): nested limbs
 // stay inside ONE representation_instance, and a shared trailing label under
 // two different parents produces two DISTINCT limb_path values.
 // ---------------------------------------------------------------------------
@@ -568,7 +568,7 @@ test('a derived zero without one unique governed-limb occurrence fails closed', 
 });
 
 // ---------------------------------------------------------------------------
-// Qualifier attachment (docs/handoffs/F28-FIRST-LIVE-RUN.md defect 2): the
+// Qualifier attachment (docs/archive/handoffs/F28-FIRST-LIVE-RUN.md defect 2): the
 // model cannot express a resolved TRAILING reading through the schema --
 // scope_reading is always computed here, never taken from the response.
 // ---------------------------------------------------------------------------

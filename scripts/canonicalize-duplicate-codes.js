@@ -2,7 +2,7 @@
 /*
  * canonicalize-duplicate-codes.js — deterministic, in-place retype of the
  * TWO true-duplicate provision-subtype codes identified by the r16
- * deal-compare gap audit (docs/PLAN.md P3):
+ * deal-compare gap audit (docs/archive/PLAN.md P3):
  *
  *   REP-T-CONTRACTS      -> REP-T-MATERIAL-CONTRACTS
  *   COV-PAYAGENT         -> CONSID-EXCHANGE
@@ -42,7 +42,7 @@ const { getServiceSupabase } = require('../lib/supabase');
 
 const APPLY = process.argv.includes('--apply');
 
-// The TWO true duplicates only (docs/PLAN.md P3) — the other taxonomy-split
+// The TWO true duplicates only (docs/archive/PLAN.md P3) — the other taxonomy-split
 // pairs in that list (REP-T-GOVAPPROVAL/REP-T-NOCONFLICT [was
 // REP-T-CONSENT/REP-T-NOCONFLICT before the 2026-08-02 v1 reclassification
 // retired REP-T-CONSENT — see docs/superpowers/specs/

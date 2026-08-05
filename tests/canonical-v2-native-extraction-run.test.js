@@ -483,8 +483,8 @@ test('scope integrity: a candidate citing text outside its licensed scope is rej
 });
 
 // ─── Citation constructibility, corroboration, and never-silently-discard
-// (docs/handoffs/F28-FIRST-LIVE-RUN.md defect 3 and
-// docs/handoffs/F28-SECOND-LIVE-RUN.md). A section_reference that does not
+// (docs/archive/handoffs/F28-FIRST-LIVE-RUN.md defect 3 and
+// docs/archive/handoffs/F28-SECOND-LIVE-RUN.md). A section_reference that does not
 // resolve against the sectionizer's discovered tree is recorded as a typed
 // citation_residuals entry AND a citation_validation object on the compiled
 // candidate -- but the proposal still compiles: a failing or unvalidated
@@ -635,7 +635,7 @@ test('a citation the tree cannot construct, but the document\'s own cross-refere
           absoluteStart: start,
           absoluteEnd: end,
           // The model's honest, document-consistent citation -- the exact
-          // failure mode from docs/handoffs/F28-SECOND-LIVE-RUN.md: real,
+          // failure mode from docs/archive/handoffs/F28-SECOND-LIVE-RUN.md: real,
           // grounded in the document's own cross-reference prose, but not a
           // node the heading-only tree ever discovers.
           attributes: { section_reference: '3.1(b)(i)' },

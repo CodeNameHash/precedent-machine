@@ -2,7 +2,7 @@
 
 // Additive, narrowly-scoped migration for the release-declared-fingerprint
 // serving fix (2026-07-23). See
-// docs/handoffs/SPEC-CONTRACT-AMENDMENT-PATH-2026-07-23.md, option 1.
+// docs/archive/handoffs/SPEC-CONTRACT-AMENDMENT-PATH-2026-07-23.md, option 1.
 //
 // Applies ONLY the updated public.canonical_v2_active_query_page_v2 function
 // body (extracted verbatim from supabase/canonical-v2-serving.sql, the

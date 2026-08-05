@@ -8,7 +8,7 @@ const { applyResolution, selectedEntries, resolveDecidedBy } = require('../../li
 const { bumpVersion, BASE_VERSION } = require('../../lib/schema-shape/registry-version');
 const { checkVersionPins } = require('../../scripts/schema-shape/version-pin-check');
 
-// WP-4 delta (docs/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md §5,
+// WP-4 delta (docs/archive/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md §5,
 // "WP-4 (M4-01) — Reconciliation log: delta only"): decided_by actor,
 // claim_ids[] linkage, and the normalized-v1.json `_meta.version` bump.
 // These tests exercise the pure applyResolution() function against small

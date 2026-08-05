@@ -120,7 +120,7 @@ test('unionRows: rows with no identity never match across deals', () => {
   assert.equal(union[1].rows[0], null);
 });
 
-// r16 ROW_FAMILY step (docs/PLAN.md P3): taxonomy-split code pairs whose
+// r16 ROW_FAMILY step (docs/archive/PLAN.md P3): taxonomy-split code pairs whose
 // per-deal labels differ (each is that deal's own card.short_title/
 // defined_term, not a fixed taxonomy label) must still union into ONE
 // compare row, keyed off the underlying provision code rather than id/label.

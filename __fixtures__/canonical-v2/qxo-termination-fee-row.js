@@ -21,7 +21,7 @@
 // CONCEPT KEYS (SPEC-VERSIONED-CONTRACT-2026-07-23): every provision below
 // carries a `conceptKey` from FIXTURE_CONTRACT_INPUT_V2.concepts
 // (lib/canonical-v2/contract-bundle.js) — V1 plus the four concept keys Ben
-// approved in docs/handoffs/SPEC-CONTRACT-AMENDMENT-PATH-2026-07-23.md. This
+// approved in docs/archive/handoffs/SPEC-CONTRACT-AMENDMENT-PATH-2026-07-23.md. This
 // fixture now compiles under F2 (compileFixtureContractV2()), not the frozen
 // F1 default; F1 and every reviewed-*-slice.js oracle's pinned digest are
 // untouched (they still compile under F1, proven by

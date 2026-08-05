@@ -1,0 +1,14 @@
+{
+  "schema": "REVIEW_PARITY_CASE/V1",
+  "family_id": "MATERIAL_CONTRACTS",
+  "deal_id": "landos-abbvie",
+  "deal_label": "Bespin (AbbVie) / Landos Biopharma",
+  "notes": "Both sides reachable offline. Legacy cards are the committed dark-review fixture. The V2 side is the real material-contracts product projection, produced by replaying the recorded provider response in that same fixture through the real producer/resolver/projection chain (scripts/review-parity-build-cases.js). Zero model calls. NOTE: the committed legacy cards for this deal carry no Material Contracts card at all, so the legacy view of this family is legitimately empty -- the comparison result is a V2 ADDITION, and that is the true reading of these two committed artefacts, not a harness defect.",
+  "legacy": {
+    "cards_file": "tests/fixtures/canonical-v2/legacy-card-bridge/material-contracts-dark-review.json",
+    "cards_path": "legacy_cards"
+  },
+  "v2": {
+    "projection_file": "tests/fixtures/review-parity/cases/material-contracts/landos-abbvie.projection.json"
+  }
+}

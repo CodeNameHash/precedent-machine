@@ -7,11 +7,11 @@ import MergeTargetInspector from '../../../components/admin/reconcile/MergeTarge
 ReconcilePage.noLayout = true;
 
 // Same editor-key convention as the Correct tab
-// (components/review-v2/ClauseSidebar.jsx, docs/handoffs/CORRECT-TAB-SPEC-
+// (components/review-v2/ClauseSidebar.jsx, docs/archive/handoffs/CORRECT-TAB-SPEC-
 // 2026-07-17.md): a valid `x-editor-key` resolves to a named EDITOR_KEYS
 // actor server-side; the free-text name is only a fallback decided_by when
 // no key is set. WP-4 delta item 1 — see
-// docs/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md §5.
+// docs/archive/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md §5.
 const EDITOR_KEY_STORAGE = 'mtx_editor_key';
 const EDITOR_NAME_STORAGE = 'mtx_editor_name';
 

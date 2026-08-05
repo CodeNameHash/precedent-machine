@@ -18,7 +18,7 @@ const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
 const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 // Hand-picked so the exact-quote pass resolves cleanly (byte-verbatim) —
-// see docs/handoffs probe notes: card.primary_quote_start/end are NOT
+// see docs/archive/handoffs probe notes: card.primary_quote_start/end are NOT
 // reliable absolute offsets into full_text (store-cards.js computes them
 // relative to region_full_text), so "offset" status essentially never
 // fires on live data. These 5 all resolve via the exact-string fallback.

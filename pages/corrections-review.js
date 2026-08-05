@@ -2,7 +2,7 @@
 // (components/review-v2/ClauseSidebar.jsx) by non-approved editors, plus
 // any approved-editor proposal that couldn't be auto-applied (free-text
 // 'other', or no resolvable provision_id — see lib/corrections/submit.js).
-// Spec: docs/handoffs/CORRECT-TAB-SPEC-2026-07-17.md's "Review queue"
+// Spec: docs/archive/handoffs/CORRECT-TAB-SPEC-2026-07-17.md's "Review queue"
 // section. Edit-gated per the spec, same UX-only convention as the rest of
 // isEdit (components/ViewModeContext.js) — Approve/Reject are enforced
 // server-side by requiring a valid EDITOR_KEYS key, not by this gate.

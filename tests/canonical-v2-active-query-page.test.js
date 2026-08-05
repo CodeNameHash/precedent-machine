@@ -202,7 +202,7 @@ test('active Query SQL resolves and filters against the release-declared fingerp
 });
 
 // Release-declared fingerprint (contract-amendment serving fix): see
-// docs/handoffs/SPEC-CONTRACT-AMENDMENT-PATH-2026-07-23.md option 1. These
+// docs/archive/handoffs/SPEC-CONTRACT-AMENDMENT-PATH-2026-07-23.md option 1. These
 // two tests exercise resolveActiveQueryPage directly because
 // validateSharedServingRow hard-requires every row's own
 // provenance.contract_fingerprint to equal whatever this process currently

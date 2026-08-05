@@ -7,11 +7,11 @@
 // resolveSourceSpan()/resolveCardSourceSpan() BEFORE opening the overlay.
 // That keeps this component ignorant of card shape, so when the unmerged
 // span-accounting branch (per-claim, section-relative offsets — see
-// docs/handoffs/SPAN-ACCOUNTING-SPEC-2026-07-18.md) lands, a claim chip can
+// docs/archive/handoffs/SPAN-ACCOUNTING-SPEC-2026-07-18.md) lands, a claim chip can
 // resolve its own {start, end} and open the SAME overlay with no changes
 // here.
 //
-// Scope decision (per docs/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md
+// Scope decision (per docs/archive/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md
 // §6): renders the deal's full_text in a single offset-faithful pane
 // (marker tags stripped, offsets tracked) rather than reusing
 // parseFormattedDocument's lossy block parse — that parser has no

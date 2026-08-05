@@ -2,7 +2,7 @@
 /* ─────────────────────────────────────────────────────────────────────────
    scripts/span-residual-baseline.js — span accounting spec, Part 3 rollout
    gate 1: REPORT-ONLY corpus baseline.
-   (docs/handoffs/SPAN-ACCOUNTING-SPEC-2026-07-18.md)
+   (docs/archive/handoffs/SPAN-ACCOUNTING-SPEC-2026-07-18.md)
 
    Runs the Part 1 (subclauses.js) / Part 2 (span-claims.js) / Part 3
    (span-residual.js) machinery over every deal's ALREADY-STORED provisions
@@ -204,7 +204,7 @@ async function main() {
 
   const report = {
     generatedAt: new Date().toISOString(),
-    spec: 'docs/handoffs/SPAN-ACCOUNTING-SPEC-2026-07-18.md Part 3, rollout gate 1 (REPORT-ONLY)',
+    spec: 'docs/archive/handoffs/SPAN-ACCOUNTING-SPEC-2026-07-18.md Part 3, rollout gate 1 (REPORT-ONLY)',
     note: 'Retroactive reconstruction over STORED provisions/snapshots (Part 2 span-claims wiring is inert by default and was never run live for this corpus). A flagged section with provisionCount:0 is a provision-to-section ATTRIBUTION miss (stale ai_metadata.startChar vs. the current classified_sections snapshot, or a Strategy re-run that changed section boundaries) — investigate zeroProvisionFlags separately from genuine partial-coverage flags before treating this as an extraction-quality signal.',
     dealsTotal: deals.length,
     dealsSkipped,

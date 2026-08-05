@@ -1,5 +1,5 @@
 /* Tests for the WP-6 (M5-05) ingest-qa JSON emitter refactor:
-   docs/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md §7 item 2.
+   docs/archive/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md §7 item 2.
 
    Two concerns, kept in separate tests:
      1. The PASS-path CONSOLE OUTPUT must be byte-identical to pre-refactor

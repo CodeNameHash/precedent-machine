@@ -66,7 +66,7 @@ function collectAssertionSpansAndQualifiers(recorded) {
       }
     }
     // Run 2's PROMPT_VERSION 2 shape carries qualifiers at the
-    // representation level, not per limb (docs/handoffs/
+    // representation level, not per limb (docs/archive/handoffs/
     // F28-SECOND-LIVE-RUN.md defect 2) -- collect both shapes.
     for (const qualifier of representation.qualifiers || []) {
       qualifiers.push({ quote: qualifier.quote });

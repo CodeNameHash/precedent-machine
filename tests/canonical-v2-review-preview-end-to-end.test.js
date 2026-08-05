@@ -31,7 +31,11 @@ const assert = require('node:assert/strict');
 const React = require('react');
 const { renderToStaticMarkup } = require('react-dom/server');
 
-const { attachCanonicalV2Preview } = require('../lib/canonical-v2/review-preview-assembly');
+const {
+  attachCanonicalV2Preview,
+  assembleCanonicalV2Preview,
+  CANONICAL_V2_PREVIEW_STATE,
+} = require('../lib/canonical-v2/review-preview-assembly');
 const { shapeReviewDealRows } = require('../lib/queries/review-deal');
 const { canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
 // Each family's own BRIDGE_SCHEMA, imported for the F3 receipts-chain proof
@@ -236,12 +240,26 @@ let disabledInputDeal;
 let disabledResult;
 let enabledResult;
 let addedCards;
+// The gate is open, but the canonical path throws (one deliberately invalid
+// family fixture). Used by the render-survival proof at the end of this file.
+let failedInputDeal;
+let failedResult;
+let failedOutcome;
 
 test.before(async () => {
   disabledInputDeal = buildBaseReviewDeal();
   disabledResult = await attachCanonicalV2Preview(disabledInputDeal, { env: DISABLED_ENV });
   enabledResult = await attachCanonicalV2Preview(buildBaseReviewDeal(), { env: ENABLED_ENV });
   addedCards = (enabledResult.cards || []).filter((card) => !LIVE_CARD_IDS.has(card.id));
+
+  failedInputDeal = buildBaseReviewDeal();
+  const failed = await assembleCanonicalV2Preview(failedInputDeal, {
+    env: ENABLED_ENV,
+    fixtures: { materialContracts: { section_reference: '3.13' } },
+    logger: { warn: () => {}, error: () => {} },
+  });
+  failedResult = failed.reviewDeal;
+  failedOutcome = failed.outcome;
 });
 
 // =============================================================================
@@ -731,6 +749,74 @@ test('representations-qualifiers.config.js: a genuinely-owned live rep card is c
 // / Fraud card, just reachable without any Canonical V2 preview machinery at
 // all -- confirming the brief's own note that this is a real, pre-existing
 // defect in the live config, not something the preview introduced.
+// =============================================================================
+// Silent-failure fix, render half: when the canonical path throws with the
+// gate OPEN, the real review page must still render exactly as it does with
+// the gate off -- that is why the catch exists and it stays true. What
+// changes is that the failure is no longer invisible: the served deal says
+// the preview is off, and the outcome record says why. Rendered through the
+// real ProvisionTable and the real configs, same as every other proof here.
+// =============================================================================
+
+test('canonical path throws with the gate OPEN: the outcome is FAILED, and the served deal is the legacy deal, not a partial merge', () => {
+  assert.equal(failedOutcome.state, CANONICAL_V2_PREVIEW_STATE.FAILED);
+  assert.equal(failedOutcome.gate.enabled, true, 'the gate was open: this is a failure, not a refusal');
+  assert.equal(failedOutcome.failure.phase, 'MATERIAL_CONTRACTS');
+  assert.equal(failedOutcome.attached_card_count, 0);
+
+  assert.equal(failedResult.cardCount, failedInputDeal.cardCount);
+  assert.deepEqual(
+    failedResult.cards.map((card) => card.id).sort(),
+    failedInputDeal.cards.map((card) => card.id).sort(),
+    'a failed preview must serve exactly the legacy cards, no dark card from an earlier family',
+  );
+  assert.equal(
+    failedResult.cards.some((card) => card.authority_state === 'VALIDATED_NOT_SERVED'),
+    false,
+  );
+  assert.equal(
+    Object.prototype.hasOwnProperty.call(failedResult, 'canonical_v2_bridge_receipts'),
+    false,
+    'a failed preview must leave no bridge receipt behind',
+  );
+
+  // The distinguishing bit: a clean gate-off no-op carries no flag at all; a
+  // failure carries an explicit false plus the reason. A comparison harness
+  // that saw only the deal can now tell these apart.
+  assert.equal(Object.prototype.hasOwnProperty.call(disabledResult, 'canonical_v2_preview_enabled'), false);
+  assert.equal(failedResult.canonical_v2_preview_enabled, false);
+  assert.equal(failedResult.canonical_v2_preview_status.state, CANONICAL_V2_PREVIEW_STATE.FAILED);
+});
+
+for (const area of AREAS) {
+  const { config } = area;
+  test(`${config.id}: the review page survives a canonical throw -- renders no lane, no preview row, and legacy rows byte-identical to the gate-off render`, () => {
+    const failedRows = config.selectRows(failedResult);
+    const { previewRows } = partitionCanonicalV2PreviewRows(failedRows);
+    assert.equal(previewRows.length, 0, `${config.id}: a failed preview must produce no preview row`);
+    assert.deepEqual(
+      withoutUndefinedKeys(failedRows),
+      withoutUndefinedKeys(config.selectRows(disabledResult)),
+      `${config.id}: a failed preview must leave the legacy rows exactly as the gate-off render has them`,
+    );
+
+    const html = renderToStaticMarkup(
+      React.createElement(ProvisionTable, { config, reviewDeal: failedResult, isEdit: false }),
+    );
+    assert.doesNotMatch(
+      html,
+      new RegExp(`data-testid="provision-table-preview-lane-${config.id}"`),
+      `${config.id}: a failed preview must render no lane`,
+    );
+    assert.doesNotMatch(html, PREVIEW_SUFFIX_RE, `${config.id}: a failed preview must render no preview-suffixed row`);
+    assert.equal(
+      html,
+      renderToStaticMarkup(React.createElement(ProvisionTable, { config, reviewDeal: disabledResult, isEdit: false })),
+      `${config.id}: the page a reviewer sees after a canonical throw must be identical to the gate-off page`,
+    );
+  });
+}
+
 test('representations-qualifiers.config.js: a live Material Contracts rep card no longer leaks into the Representations lane (pre-existing defect, not preview-only)', () => {
   const rows = representationsQualifiersConfig.selectRows(disabledResult);
   assert.ok(

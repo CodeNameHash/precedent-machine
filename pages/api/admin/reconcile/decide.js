@@ -11,7 +11,7 @@ const NORMALIZED_FILE = 'docs/schema-shape/normalized-v1.json';
 // claim_ids[] linkage, registry_version bump) lives in
 // lib/schema-shape/reconcile-decide.js so it can be unit-tested against
 // fixtures without going through the Next.js build transform. See
-// docs/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md §5 (WP-4 delta) and
+// docs/archive/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md §5 (WP-4 delta) and
 // docs/schema-shape/README-reconciliation.md.
 export default function handler(req, res) {
   if (blockVercelRepositoryArtifactRoute(res)) return;

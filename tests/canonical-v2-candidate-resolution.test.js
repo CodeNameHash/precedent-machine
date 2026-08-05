@@ -1062,7 +1062,7 @@ test('a proposal with an unresolvable party lands in review_queue with PARTY_UNR
   );
 });
 
-// ─── Citation validation, never a silent drop (docs/handoffs/
+// ─── Citation validation, never a silent drop (docs/archive/handoffs/
 // F28-SECOND-LIVE-RUN.md). A proposal whose citation is neither constructed
 // from the sectionizer's tree nor corroborated by the document's own text
 // still RESOLVES (a provision and claim are minted) but is routed to

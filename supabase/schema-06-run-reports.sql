@@ -1,6 +1,6 @@
 -- WP-6 (M5-05) — run_reports persistence.
 --
--- Ben decision (B-schema, docs/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md
+-- Ben decision (B-schema, docs/archive/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md
 -- §7): one new table for producer run reports. `reports/` on disk is
 -- gitignored deliberately (commits c5935cf, ba600ea) so it is invisible to
 -- Vercel — this table is the durable, admin-visible substitute. Ben runs

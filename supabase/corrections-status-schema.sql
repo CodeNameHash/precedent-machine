@@ -1,5 +1,5 @@
 -- Correct-tab: editor roles, pending queue, weekly review.
--- Spec: docs/handoffs/CORRECT-TAB-SPEC-2026-07-17.md
+-- Spec: docs/archive/handoffs/CORRECT-TAB-SPEC-2026-07-17.md
 --
 -- Additive to supabase/corrections-schema.sql. Run this in the Supabase SQL
 -- editor (manual apply, like every other file in this directory — DO NOT
