@@ -12,8 +12,6 @@ const ACTIVE_CONSUMERS = [
   'lib/canonical-v2/native-producer/full-corpus-routing-prompt-cost-audit.js',
   'lib/canonical-v2/native-producer/m3-certification-control.js',
   'lib/canonical-v2/native-producer/m3-family-parity-register.js',
-  'lib/programme-gates/p9-acceptance-evidence-inventory.js',
-  'lib/programme-gates/p9-acceptance-evidence-engineering-queue.js',
 ];
 
 test('active readiness, pilot, cost, certification and programme plans cannot consume static V1 corroboration', () => {

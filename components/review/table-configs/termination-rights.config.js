@@ -605,49 +605,35 @@ function rowForSpec(spec, cards, PillCell) {
 // their own group when present, rather than folding them into the
 // code-matched TERMR_CANONICAL rows above.
 //
-// willful-breach carries a 4th tuple element (sourceCode), read by
-// crossCuttingRow() below, for the identical reason termination-fees.
-// config.js's SCALAR_ROWS 'willful-breach-effect'/'willful-breach-sole'
-// entries do: willfulBreachException is the SAME feature key on both
-// TERMF-EFFECT ("Willful Breach Carve-out", rubric.js ~3627 -- a carve-out to
-// the effect-of-termination survival rule) and TERMF-SOLE ("Willful Breach
-// Carve-out to Sole Remedy", rubric.js ~3634 -- a carve-out to the
-// fee-as-damages cap). An unscoped firstCardWithFeature() search over
-// allCards let whichever of those two cards sorted first in the deal's card
-// array silently decide this row's single answer -- the identical
-// order-dependent hybrid the fee-table split fixed, on this table instead.
-// This row's own label already names the TERMF-SOLE concept specifically
-// ("to sole remedy / fee" tracks TERMF-SOLE's rubric.js label almost
-// verbatim; TERMF-EFFECT's label mentions neither "remedy" nor "fee"), and it
-// sits in the "Remedies" cross-reference group besides -- TERMF-SOLE's own
-// concept ("fee is sole and exclusive REMEDY") fits that group; TERMF-EFFECT's
-// (survival of liability post-termination) is not itself a remedy. So the
-// row is scoped to TERMF-SOLE, narrowing (not deleting) the search exactly as
-// termination-fees.config.js's scalarRows() narrows its two split rows.
-//
-// This does NOT give the rights table its own EFFECT-of-termination row. If
-// an agreement carries a willful-breach carve-out to TERMF-EFFECT but not
-// TERMF-SOLE, this row now correctly shows nothing (present:false) rather
-// than showing the EFFECT card's fact under a SOLE-remedy label -- but that
-// EFFECT fact still has no row of its own here (it never did before this
-// fix either: unscoped, this row could show EITHER fact, never both, so an
-// EFFECT-only deal was already one accident of card order away from showing
-// nothing here too). Per the owner's own stated principle for the identical
-// conflation on the fee table -- two legally distinct facts that "can each be
-// present without the other" -- the more complete fix is almost certainly a
-// second row here (e.g. scoped to TERMF-EFFECT), mirroring the fee table's
-// split exactly. That split is NOT made here: the owner's 2026-08-05 ruling
-// named the fee table's row by its (then-unqualified) label and did not rule
-// on this differently-labelled rights-table row, so extending the ruling to
-// it is the same call the fee-table fix deliberately declined to make on its
-// own authority.
+// Owner ruling (2026-08-05): willfulBreachException is the SAME feature key
+// on two cards that mean legally distinct things -- TERMF-EFFECT ("Willful
+// Breach Carve-out", rubric.js ~3627) is a carve-out to the
+// effect-of-termination survival rule (liability survives termination);
+// TERMF-SOLE ("Willful Breach Carve-out to Sole Remedy", rubric.js ~3634)
+// is a carve-out to the fee-as-damages cap. An agreement can carry either
+// without the other, and they allocate different risk.
+// termination-fees.config.js's SCALAR_ROWS split this into two rows earlier
+// the same day ('willful-breach-effect' / 'willful-breach-sole'); this
+// table's single row was, at the time, only narrowed to TERMF-SOLE -- the
+// ruling had named the fee table's row specifically, and extending it to
+// this differently-labelled row was not this fix's call to make. That
+// narrowing traded a wrong answer (card order silently deciding which fact
+// showed under a single label) for a gap (an EFFECT-only deal showed
+// nothing in this group at all). Asked whether to extend the split here
+// too, the owner ruled yes -- so the row below is split the same way,
+// mirroring the fee table's mechanism exactly: each entry carries its own
+// 4th tuple element (sourceCode), read by crossCuttingRow() below, which
+// scopes the lookup to cards of that EXACT code before the first-match
+// search runs, so neither row can ever read the other's card even though
+// both share the willfulBreachException key.
 //
 // specific-performance-mutual carries no such split: rubric.js declares
 // specificPerformanceMutual exactly once (~4597, no per-code variants), so an
 // unscoped search carries no risk of silently reading the wrong of two
 // distinct facts and is left as-is.
 const CROSS_CUTTING_ROWS = [
-  ['willful-breach', 'Willful-breach exception (to sole remedy / fee)', ['willfulBreachException'], 'TERMF-SOLE'],
+  ['willful-breach-effect', 'Willful-breach carve-out', ['willfulBreachException'], 'TERMF-EFFECT'],
+  ['willful-breach-sole', 'Willful-breach carve-out to sole remedy', ['willfulBreachException'], 'TERMF-SOLE'],
   ['specific-performance-mutual', 'Specific performance available to both parties', ['specificPerformanceMutual']],
 ];
 

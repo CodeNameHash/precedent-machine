@@ -992,16 +992,33 @@ function gateRefusal(error) {
   return error instanceof DarkBridgeGateError && error.code === 'DARK_BRIDGE_INTEGRATION_NOT_PERMITTED';
 }
 
+// CI is cleared alongside the flag, and that is load-bearing rather than
+// tidiness. The gate refuses on several independent clauses, one of which is
+// a truthy CI. GitHub Actions sets CI=true, so a helper that enables only the
+// flag produces an ambient environment the gate still refuses, and every test
+// asserting "omitting env falls back to the enabled ambient env" fails on CI
+// while passing on a developer machine where CI is unset. That is exactly what
+// happened: these tests were green locally and red on the first pull request.
+//
+// This weakens nothing. The CI clause has its own dedicated tests in
+// tests/canonical-v2-dark-bridge-gate.test.js, which assert it refuses for
+// '1', 'true' and 'TRUE'. What these tests are about is the env-argument
+// fallback, so the environment they construct must isolate that one variable.
 function withAmbientDarkBridgeEnabled(fn) {
   const key = 'CANONICAL_V2_DARK_BRIDGE';
   const had = Object.prototype.hasOwnProperty.call(process.env, key);
   const previous = process.env[key];
+  const hadCi = Object.prototype.hasOwnProperty.call(process.env, 'CI');
+  const previousCi = process.env.CI;
   process.env[key] = 'ENABLED_LOCAL_PREPRODUCTION';
+  delete process.env.CI;
   try {
     return fn();
   } finally {
     if (had) process.env[key] = previous;
     else delete process.env[key];
+    if (hadCi) process.env.CI = previousCi;
+    else delete process.env.CI;
   }
 }
 

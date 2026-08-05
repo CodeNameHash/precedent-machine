@@ -1047,11 +1047,35 @@ export function normalizeQualifierScope(raw) {
   return null;
 }
 
+// Shared by deriveInsuranceCapConcise below and compactDoValue's insuranceCap
+// branch further down this file — both independently re-derived "pull the
+// dollar figure out of raw D&O insurance-cap prose" before this fix, and each
+// took the FIRST figure a bare regex match found. Real D&O run-off cover is
+// routinely stated as TWO figures (a per-incident limit and an aggregate,
+// e.g. "$30,000,000 per incident and $50,000,000 in the aggregate") — taking
+// the first silently reports whichever happened to be written first, not the
+// operative one. Standing rule (established across the six sites already
+// consolidated onto lib/parse-money.js): more than one figure returns
+// nothing, not the first one. Returns the single matched substring, or null
+// when the pattern finds zero OR more than one match.
+//
+// Inlined rather than delegating to lib/parse-money.js's shared
+// parseMoneyAmount: this file is deliberately dependency-free (see file
+// header — "everything here is directly importable by tests... inlined so
+// this module stays dependency-free"), and both callers here want the
+// matched STRING verbatim for display ("$2,500,000", "$91.5 million"), not
+// parseMoneyAmount's parsed number.
+function singleDollarFigure(text, globalPattern) {
+  const matches = text.match(globalPattern);
+  return matches && matches.length === 1 ? matches[0].trim() : null;
+}
+
 /* ══════════════════════════════════════════════════════════════════════════
  * FB3 item 4(a) — D&O Insurance Cap concise form: derive "N% of annual
  * premium" from the verbatim clause. Never invents a number — returns null
  * (caller falls back to a truncated verbatim snippet) when no percentage or
- * dollar figure is found near "premium".
+ * dollar figure is found near "premium", OR when more than one dollar figure
+ * is found (see singleDollarFigure above).
  * ══════════════════════════════════════════════════════════════════════════ */
 export function deriveInsuranceCapConcise(text) {
   if (typeof text !== 'string' || !text.trim()) return null;
@@ -1063,9 +1087,8 @@ export function deriveInsuranceCapConcise(text) {
   // "such last annual premium".
   const pct = text.match(/(\d+(?:\.\d+)?)\s*%\)?\s*of\s+(?:the\s+|such\s+)?(?:then-current\s+|current\s+|last\s+|existing\s+)?(?:aggregate\s+)?annual\s+premium/i);
   if (pct) return `${pct[1]}% of annual premium`;
-  const dollar = text.match(/\$[\d,]+(?:\.\d+)?(?:\s*(?:million|billion|thousand|mm|k))?/i);
-  if (dollar && /premium/i.test(text)) return dollar[0].trim();
-  return null;
+  if (!/premium/i.test(text)) return null;
+  return singleDollarFigure(text, /\$[\d,]+(?:\.\d+)?(?:\s*(?:million|billion|thousand|mm|k))?/gi);
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -1699,8 +1722,13 @@ export function compactDoValue(featureKey, raw) {
     if (pct) return `${pct[1]}% of annual premium`;
     const capName = s.match(/"([^"]*Cap Amount[^"]*)"/i);
     if (capName) return capName[1];
-    const dollars = s.match(/\$\s?[\d,]+(?:\.\d+)?(?:\s*(?:million|billion|thousand))?/i);
-    if (dollars) return dollars[0];
+    // More than one dollar figure -> fall through to the raw-text fallback
+    // below rather than the first (singleDollarFigure, defined above beside
+    // deriveInsuranceCapConcise — this branch duplicated that function's
+    // "take the first dollar figure" logic verbatim before this fix; see its
+    // comment for the full reasoning).
+    const dollars = singleDollarFigure(s, /\$\s?[\d,]+(?:\.\d+)?(?:\s*(?:million|billion|thousand))?/gi);
+    if (dollars) return dollars;
     // E (truncation sweep): drop the literal "..." fallback marker.
     return s.length > 90 ? s.slice(0, 89).trim() : s;
   }

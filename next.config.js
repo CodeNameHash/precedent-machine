@@ -10,22 +10,16 @@ const nextConfig = {
         './docs/review-queue/*.json',
         './HANDOFF.md',
       ],
-      // lib/canonical-v2/termination-fee-serving-source.js reads this pinned,
-      // hash-verified excerpt file at REQUEST time via fs.readFileSync(path.join(
-      // __dirname, ...)), not require()/import -- Next's static file tracer only
-      // follows real module edges, so a path assembled at runtime is invisible to
-      // it and the file was silently dropped from this route's Vercel bundle
-      // (production incident, 2026-08-05: confirmed by diffing
-      // .next/server/pages/api/review/[id]/cards.js.nft.json, which listed the
-      // sibling __fixtures__/canonical-v2/preview/*.json files -- genuine static
-      // imports elsewhere in the same route -- but not this one). The module
-      // never throws on a missing/mismatched source, so without this entry the
-      // read failure was indistinguishable from "this deal has no canonical
-      // data": a false negative, not a missing feature. See the
-      // QXO_EXCERPTS_RELATIVE_PATH comment in termination-fee-serving-source.js.
-      '/api/review/[id]/cards': [
-        './__fixtures__/canonical-v2/qxo-termination-fee-reviewed-excerpts.txt',
-      ],
+      // NOTE: this used to also force-include the QXO termination-fee excerpt
+      // for '/api/review/[id]/cards' (production incident, 2026-08-05: the
+      // route read that .txt at REQUEST time via a runtime-assembled path,
+      // which Next's tracer could not see). That entry was confirmed correctly
+      // written and STILL failed to fix the route in production. The real fix
+      // was to stop reading a file at request time at all -- see
+      // lib/canonical-v2/termination-fee-serving-source.js's QXO_EXCERPTS_TEXT,
+      // which now reaches the excerpt through an ordinary literal require() of
+      // a generated module instead. No outputFileTracingIncludes entry is
+      // needed for that route any more.
     },
   },
   async redirects() {

@@ -138,7 +138,20 @@ test('Review keeps its non-Query market paths and does not launch the contained 
 
 test('the production build contains exactly the source containment inventory', (t) => {
   const manifestFile = path.join(ROOT, '.next/server/pages-manifest.json');
-  if (!fs.existsSync(manifestFile)) {
+  // BUILD_ID is written only by `next build`, never by `next dev`.
+  // tests/auth-route-enforcement.test.js starts a real `next({ dev: true })`
+  // server for its own, unrelated integration test and — as an ordinary,
+  // documented side effect of Next's dev compiler — leaves a dev-mode
+  // .next behind covering only the handful of routes that test happened to
+  // hit. pages-manifest.json exists under both modes, so its presence alone
+  // cannot tell a genuine production build (this test's actual subject)
+  // apart from incidental dev-server output; without this second check, a
+  // dev .next left behind by that test (or any manual `next dev` run) makes
+  // this test assert against partial dev output instead of skipping, and
+  // fail on routes dev mode never compiled rather than proving anything
+  // about a real build.
+  const buildIdFile = path.join(ROOT, '.next/BUILD_ID');
+  if (!fs.existsSync(manifestFile) || !fs.existsSync(buildIdFile)) {
     if (process.env.REQUIRE_QUERY_CONTAINMENT_BUILD === '1') {
       assert.fail('The production pages manifest is missing. Run next build first.');
     }

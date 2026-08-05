@@ -289,6 +289,18 @@ const FILE_PATTERN_EXEMPTIONS = {
   // real taxonomy fallback label. Genuine fixture, not the duplicated-label
   // regression this pattern fingerprints.
   'tests/provision-table-configs.test.js': ['Mergers,\\s*Acquisitions,\\s*Dispositions'],
+  // Same class as the tests/query/* fixture exemptions above: this file's
+  // executeMarketRange() calls (parity with market-range-percent-of-deal.test.js
+  // and relative-periods.test.js) must carry the EXACT literal payload
+  // ({provision_type: 'TERMINATION_FEE', field_path: 'feePctOfDealValue'} /
+  // 'reverseFeePctOfDealValue') to exercise the query executor end to end
+  // against the real Modiv-shaped ambiguous-amount fixtures. The raw-payload
+  // fingerprint is aimed at production query code constructing this shape ad
+  // hoc, which stays covered.
+  'tests/derived-fields.test.js': [
+    'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
+    'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
+  ],
 };
 
 const failures = [];

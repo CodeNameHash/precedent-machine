@@ -406,6 +406,77 @@ ever").
 
 ---
 
+## 13. How Canonical V2 gets served, and when V1 comes off: DECIDED 2026-08-05, the cheap per-family pattern, gated by the equivalence harness
+
+**Blocks:** step P3 and, through it, every family P9 rolls out afterward.
+
+**The problem.** Two different ways of deciding when a family's new system
+is trustworthy enough to serve had already been built, separately, before
+anyone asked which one the programme should actually use.
+
+The first is rigorous: certify one fact at a time against its own reviewed
+evidence, before admitting it. It was designed in detail and mostly built,
+eleven real, tested components, for one family, no-shop. Its own plan then
+called for two more things before anyone relied on it: a deliberate decision
+to turn it on, and proving it worked on a second family, Material Contracts.
+Neither happened, and nothing recorded that it had stalled.
+
+The second is cheap: a hand-built switch per family that shows the new
+system next to the old one. It already exists and already works, for one
+family, termination fees.
+
+**The question.** Which pattern does the programme standardise on for the
+other twenty families: finish and extend the rigorous one, or keep building
+the cheap one family by family.
+
+**Ben's decision: the cheap pattern, family by family, gated by the
+equivalence harness rather than by certification.**
+
+**The reasoning, which matters more than the choice.** Ben clarified the
+premise the question had been asked under: V2 is not meant to sit next to
+V1 forever. It is meant to replace V1 entirely, and the side-by-side view
+that both patterns would feed is a temporary visual check on the road to
+that, not the permanent design.
+
+That changes what the safety mechanism actually has to be. While both
+systems render, a wrong value from V2 sits right next to V1's value with a
+verdict on the page saying they disagree, so a mistake is visible the moment
+it ships. Once V1 is gone for a family, that check is gone too. Whatever
+catches a wrong V2 value has to live somewhere else by then, and it has to
+be trusted enough to carry that weight alone.
+
+**The rule this produces.** V1 is not removed for a family until the
+equivalence harness proves, on real data across the corpus, that V2 says the
+same thing V1 does, or demonstrably better. V1 is the oracle for that proof
+while it is still on the page, and that is the last moment it can serve that
+purpose: once it is gone, there is nothing left to check V2 against except
+the harness's own prior verdict.
+
+**Why this beats certification, specifically.** Certification tests a claim
+against hand-authored fixtures, which tests it against whoever wrote the
+fixture's belief about what the agreement says. The harness instead tests V2
+against the extraction the programme has actually been relying on for real
+deal work, which is a higher bar and a more honest one. It is also far
+cheaper: the execution ledger already shows what certification-grade rigour
+costs when something upstream changes. One converter fix, with no change to
+any output, forced roughly 20 modules and 71 files to be re-pinned and broke
+15 tests that needed hand-authored legal fixtures to fix. Twenty more
+families are coming. That tax, paid once, is expensive; paid twenty times,
+it is not affordable.
+
+**Technical.** Cross-ref `ROADMAP.md` step P3. The rigorous chain
+stays in the repository, real and passing, and is not being deleted: eleven
+components built against
+`docs/superpowers/specs/2026-07-27-metric-scoped-serving-admission-f22-design.md`,
+F16 through F26 inclusive. It is not extended to any other family. The cheap
+pattern's reference implementation is
+`lib/canonical-v2/termination-fee-serving-source.js` and
+`components/review/table-configs/termination-fees.config.js`; P9 repeats it
+per family. The equivalence harness is `scripts/review-parity-check.js` (see
+P1). Where it cannot compare a family, that is an absence of committed V1 input, not a fault in it, and it does not gate retiring V1: Ben ruled on 2026-08-05 that the harness is a convenience and not a gate.
+
+---
+
 # Smaller decisions, blocking nothing
 
 Recorded so they are not lost. None of these was urgent, and all four are

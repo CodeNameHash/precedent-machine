@@ -2,6 +2,7 @@ import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
 import { belowThresholdLabel, cardCode, cardFeatures, cardType, textOf, triggerThresholdLabel, valueText } from './card-utils.js';
 import { standardColorKey } from './standard-colors.js';
+import { parseMoneyAmount } from '../../../lib/parse-money.js';
 
 const {
   EFFORTS_STANDARDS, EXCEPTION_CODES, IOC_AFFIRMATIVE_SCOPE_CODES, IOC_CATEGORY_CODES, MATERIALITY_CODES, labelForCode,
@@ -585,26 +586,39 @@ function negativeCovenantColumn(keyId, heading, pills, emptyCopy) {
 // a "Threshold: $X" pill in Specific Restrictions, always the same figure.
 // dollarFromText pulls the exception's OWN verbatim $ figure (preferred
 // source of truth for what that exception actually caps at) before falling
-// back to the card's dollarThreshold; parseDollarNumber lets the two
-// figures be compared numerically (not string-equal, so "$1,000,000" and
-// "$1,000,000.00" still match) to decide whether the restriction pill is a
-// true duplicate (suppress it) or a genuinely different number (keep both).
-// Item 3 (r6): the restriction-side pill's wording is now the shared
-// triggerThresholdLabel() helper ("Trigger: $Y", card-utils.js) -- the
-// approved cross-config rule -- instead of this config's own "Threshold:
-// $X" string, so every family renders the identical two threshold
-// phrasings (monetary exception = "Below $X", restriction/trigger with no
-// matching exception, or a different figure, = "Trigger: $Y").
+// back to the card's dollarThreshold; the shared parseMoneyAmount() (see
+// below) lets the two figures be compared numerically (not string-equal, so
+// "$1,000,000" and "$1,000,000.00" still match) to decide whether the
+// restriction pill is a true duplicate (suppress it) or a genuinely
+// different number (keep both). Item 3 (r6): the restriction-side pill's
+// wording is now the shared triggerThresholdLabel() helper ("Trigger: $Y",
+// card-utils.js) -- the approved cross-config rule -- instead of this
+// config's own "Threshold: $X" string, so every family renders the
+// identical two threshold phrasings (monetary exception = "Below $X",
+// restriction/trigger with no matching exception, or a different figure,
+// = "Trigger: $Y").
+//
+// dollarFromText used to be the WORST of six independent, duplicate "parse a
+// dollar amount" functions across this codebase (see lib/parse-money.js's
+// header for the full backstory). Its sibling in this file, the old
+// parseDollarNumber, stripped every non-digit character and parsed what was
+// left as ONE number, so "$10,000,000 or $15,000,000" didn't yield the first
+// figure, it yielded both CONCATENATED into 1000000015000000 -- a ten-digit
+// fabrication rendered as if it were a real threshold. dollarFromText itself
+// took the first "$" match with no ambiguity check at all (the same
+// first-number-wins defect the other five had). Both are now built on the
+// one shared parseMoneyAmount(): dollarFromText only returns its matched
+// substring when the underlying text names exactly one dollar figure (a
+// two-figure exception clause now falls through to cardDollarThreshold, or
+// to no monetary-exception label at all, rather than silently reporting the
+// first figure alone); the standalone parseDollarNumber wrapper is gone,
+// replaced by a direct parseMoneyAmount() call at its one use site below.
 const DOLLAR_FIGURE_RE = /\$[\d,]+(?:\.\d+)?/;
 function dollarFromText(text) {
   if (!text) return null;
+  if (parseMoneyAmount(text) === null) return null;
   const m = String(text).match(DOLLAR_FIGURE_RE);
   return m ? m[0] : null;
-}
-function parseDollarNumber(str) {
-  if (!str) return null;
-  const digits = String(str).replace(/[^0-9.]/g, '');
-  return digits ? Number(digits) : null;
 }
 
 function renderNegativeRow(entry, ctx) {
@@ -632,7 +646,7 @@ function renderNegativeRow(entry, ctx) {
     return { ...e, label: belowThresholdLabel(amount) };
   });
   const visibleThresholdEntries = monetaryExceptionAmount
-    ? thresholdEntries.filter((t) => parseDollarNumber(t.amount) !== parseDollarNumber(monetaryExceptionAmount))
+    ? thresholdEntries.filter((t) => parseMoneyAmount(t.amount) !== parseMoneyAmount(monetaryExceptionAmount))
     : thresholdEntries;
   // Ben: "see text" must expand to the ACTUAL negative-covenant clause, not
   // mainObligation -- lib/schema/features.js documents mainObligation as a

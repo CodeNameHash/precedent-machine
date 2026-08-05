@@ -59,10 +59,19 @@ const SOURCE_FILES = [
     // table-configs/termination-fees.config.js and numericValue in
     // lib/feature-compare.js, both fixed the same day for the identical
     // defect: a string naming more than one number now returns null rather
-    // than its first figure. Both pins are deliberate and must move together
-    // and only for a stated reason.
+    // than its first figure.
+    //
+    // Re-baselined again 2026-08-05, same day, alongside the pin in
+    // scripts/process-intelligence-baseline.mjs: consolidated onto
+    // lib/parse-money.js, the one shared implementation for what were six
+    // independent, duplicate "parse a dollar amount" functions. The
+    // dollar-sign-aware ambiguity rule resolves a single dollar figure beside
+    // an unrelated citation (the real Modiv reverse fee headline) instead of
+    // nulling it out -- see lib/parse-money.js's header "FINDING" note and
+    // tests/derived-fields.test.js. Both pins are deliberate and must move
+    // together and only for a stated reason.
     path: 'lib/query/derived-fields.js',
-    sha256: '6fa9f5889f1172e4a8aec9c9eb063ef24571fe3cde875092be895bd1f83b6c1d',
+    sha256: 'bd523c781b7ab0f1ffba70beaf98ed4738a2b817b7e74acb65b284c8e4094f13',
   },
   {
     path: 'lib/query/resolve.js',

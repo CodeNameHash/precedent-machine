@@ -58,6 +58,7 @@ import { getDisplayAcquirer, getDisplayTarget } from '../../lib/deal-display';
 import { asNumber, buildValueUsdFact, mergeDealFacts, valueUsdFromDeal } from '../../lib/deal-facts';
 import { resolveEditFields } from '../../lib/edit-schema';
 import { isCanonicalCode } from '../../lib/expected-sets';
+import { parseMoneyAmount } from '../../lib/parse-money';
 import { AddSectionItem } from '../../components/review/AddSectionItem';
 import { TrustStrip } from '../../components/review/TrustStrip';
 import { useViewMode, ViewModeToggle } from '../../components/ViewModeContext';
@@ -5045,21 +5046,23 @@ function CategoryFeatureSummaryTable({ provisions, type, onSelectProvision, hide
 // Parse a USD amount from a number, a citable wrapper, an object {amount},
 // or a string like "$190,000,000" / "$190 million" / "$1.3 billion". Returns a
 // Number of dollars, or null if nothing parseable.
+//
+// Delegates to lib/parse-money.js, the one shared implementation for what
+// were six independent "parse a dollar amount" functions (see that file's
+// header for the full backstory). This was a LIVE, unfixed defect: the old
+// inline regex here took the FIRST number it found with no ambiguity check
+// at all, so a branch-conditional fee headline ("Lesser of $10,000,000 (...)
+// or $15,000,000 (...) and the REIT Requirements cap") would have silently
+// rendered "computed approximately 0.5% of deal value" off the first branch
+// alone -- now null, so pctOfDealValue() below renders nothing rather than
+// an invented percentage. The citable/{amount}/{value} unwrap stays local
+// -- it is this page's own shape, not the shared parser's job (see
+// lib/parse-money.js "SCOPE"). scale:true preserves every scale-word variant
+// this function already recognized (billion/bn/million/mm/m/thousand/k).
 function parseDollarAmount(raw) {
   let v = isCitableValue(raw) ? getCitableValue(raw) : raw;
   if (v && typeof v === 'object' && !Array.isArray(v)) v = v.amount != null ? v.amount : v.value;
-  if (typeof v === 'number' && Number.isFinite(v)) return v;
-  if (typeof v !== 'string') return null;
-  const s = v.replace(/,/g, '');
-  const m = s.match(/\$?\s*(\d+(?:\.\d+)?)\s*(billion|bn|million|mm|m|thousand|k)?/i);
-  if (!m) return null;
-  let n = parseFloat(m[1]);
-  if (!Number.isFinite(n)) return null;
-  const unit = (m[2] || '').toLowerCase();
-  if (unit === 'billion' || unit === 'bn') n *= 1e9;
-  else if (unit === 'million' || unit === 'mm' || unit === 'm') n *= 1e6;
-  else if (unit === 'thousand' || unit === 'k') n *= 1e3;
-  return n;
+  return parseMoneyAmount(v, { scale: true });
 }
 
 // Audit block 7: reusable "$X (≈Y% of deal value)" computation, shared

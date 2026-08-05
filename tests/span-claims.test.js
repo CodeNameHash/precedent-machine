@@ -115,6 +115,69 @@ test('computeSpanClaims does not mutate the input items array', () => {
 });
 
 // ---------------------------------------------------------------------------
+// The actual gap offsets close (docs/codex-program/ROADMAP.md P5): a quote
+// trimmed in a way that reverses its legal meaning is still a byte-exact
+// substring of the source, so a text-search-only check ("is this string
+// present anywhere?") waves it through with full confidence. It cannot
+// catch the trim, because a search never learns WHERE the match sits
+// relative to its own clause. An offset, once recorded, can be compared to
+// the clause's own structural boundary (subclauses.js's leaf) — the
+// comparison a search-only verifier structurally cannot perform.
+// ---------------------------------------------------------------------------
+test('a quote trimmed to drop a leading negation is accepted by a text search, but its recorded offset shows it starts well inside its own clause — a check search cannot do', () => {
+  const clause = 'The Company represents and warrants that the transactions contemplated '
+    + 'by this Agreement would not have a Material Adverse Effect on the Company.';
+  const section = [
+    '9.03 No Material Adverse Effect.',
+    '',
+    `(a) ${clause}`,
+  ].join('\n');
+
+  // The model (or a hostile re-trim of a real quote) dropped the leading
+  // "...would not " — what remains reverses the clause's meaning while
+  // still being a real, contiguous substring of the source.
+  const trimmedQuote = 'have a Material Adverse Effect on the Company.';
+
+  // A pure text-search verifier — everything quote verification could do
+  // before offsets existed — reports this as present/verified. This is
+  // the exact failure mode the roadmap names: "reads as a faithful quote
+  // and says the opposite."
+  assert.ok(section.includes(trimmedQuote), 'fixture sanity: a naive text search finds it and would call it verified');
+
+  const [trimmed] = computeSpanClaims(section, [{ text: trimmedQuote }]);
+  const [honest] = computeSpanClaims(section, [{ text: clause }]);
+
+  // computeSpanClaims's OWN hallucination flag does not fire either — the
+  // text genuinely is in the source. That is correct and is a DIFFERENT,
+  // narrower guarantee (span-claims.js's header: "an item whose evidence
+  // isn't actually IN the source") than the one this test proves.
+  assert.equal(trimmed.spanUnlocated, false);
+
+  // THE CHECK ONLY THE OFFSET ENABLES: both quotes claim the SAME leaf
+  // (clause "(a)")...
+  assert.equal(trimmed.claimedSpans[0].marker, honest.claimedSpans[0].marker);
+  const leafStart = honest.claimedSpans[0].start;
+  assert.equal(trimmed.claimedSpans[0].start, leafStart);
+
+  // ...but where each quote's OWN recorded span starts, relative to that
+  // shared leaf boundary, is what a text search can never surface (search
+  // returns yes/no, never a position to compare). The honest quote starts
+  // at the leaf boundary (off by at most the single space after the "(a)"
+  // marker); the trimmed one starts ~100 characters inside it.
+  const honestGap = honest.textSpan.start - leafStart;
+  const trimmedGap = trimmed.textSpan.start - leafStart;
+  assert.ok(honestGap <= 1, `a faithful quote should start at its clause boundary, gap was ${honestGap}`);
+  assert.ok(trimmedGap > 90, `a trimmed quote should start well inside its clause, gap was ${trimmedGap}`);
+
+  // And because the offset is a POSITION, not just a match, a downstream
+  // reader can slice exactly what was dropped — surfacing "would not" —
+  // which is the entire point: "every check becomes an exact comparison
+  // against the source rather than a search for the text."
+  const droppedText = section.slice(leafStart, trimmed.textSpan.start);
+  assert.match(droppedText, /would not/, 'the offset positions expose exactly what the trim removed');
+});
+
+// ---------------------------------------------------------------------------
 // Wiring inertness — Part 2's strategy-A/C hook (attachSpanClaimsToProvisions,
 // called from extract.js's strategyA/strategyC) must be a no-op unless a
 // caller explicitly opts in with { spanClaims: true }. No default extract.js

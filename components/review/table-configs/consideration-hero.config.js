@@ -10,6 +10,7 @@ import {
 import taxonomy from '../../../lib/taxonomy.js';
 import { valueText } from './card-utils.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
+import { parseMoneyAmount } from '../../../lib/parse-money.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -528,14 +529,22 @@ function headlineLabel(headlineType, cards, featuresList) {
 // real numbers -- never fabricates a total from a partial figure. Rendered
 // on the right-hand side of the per-share consideration row itself (not a
 // separate row -- the two figures describe the same economics).
+// Delegates to lib/parse-money.js, the one shared implementation for what
+// were six independent "parse a dollar amount" functions (see that file's
+// header for the full backstory). This was the WORST of the six: it used to
+// strip every non-digit character and parse what was left as one number, so
+// two figures didn't yield the first one, they yielded both CONCATENATED --
+// "$47.50 ... $22.50" would have become 4750225.0-shaped garbage rather than
+// failing safely. Now: exactly one figure resolves, anything else (absent,
+// or genuinely ambiguous) returns null and computeMaxConsideration() below
+// simply omits the "Up to $X / share" annotation, same as it already does
+// when either side is merely absent. The {value|text|label} unwrap stays
+// local -- it is this config's own card-feature shape, not the shared
+// parser's job (see lib/parse-money.js "SCOPE").
 function parseDollarNumber(raw) {
   if (raw === null || raw === undefined || raw === '') return null;
   const inner = typeof raw === 'object' ? (raw.value ?? raw.text ?? raw.label) : raw;
-  if (inner === null || inner === undefined || inner === '') return null;
-  const digits = String(inner).replace(/[^0-9.\-]/g, '');
-  if (!digits) return null;
-  const n = Number.parseFloat(digits);
-  return Number.isFinite(n) ? n : null;
+  return parseMoneyAmount(inner);
 }
 function computeMaxConsideration(cards) {
   const perShareHit = firstFeature(cards, 'perShareAmount') || firstFeature(cards, 'cashAmount');

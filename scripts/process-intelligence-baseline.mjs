@@ -56,12 +56,27 @@ const SOURCE_FILES = Object.freeze([
     // principle as parseFeeAmountUsd in components/review/table-configs/
     // termination-fees.config.js and numericValue in lib/feature-compare.js,
     // both fixed the same day for the identical defect: a string naming more
-    // than one number now returns null rather than its first figure. The pin
-    // is deliberate: this baseline must never silently track whatever the
-    // sources happen to be, so moving it is an explicit act with a stated
-    // reason.
+    // than one number now returns null rather than its first figure.
+    //
+    // Re-baselined again 2026-08-05, same day: consolidated onto
+    // lib/parse-money.js, the one shared implementation for what were six
+    // independent, duplicate "parse a dollar amount" functions across this
+    // codebase. parseUsdAmount() here is now a thin wrapper over
+    // parseMoneyAmount(), not its own implementation. One behavior change
+    // fell out of unifying the ambiguity rule: the shared parser is
+    // "$"-sign-aware (counts "$"-marked figures rather than every bare
+    // numeral), so a single dollar figure sitting beside an unrelated
+    // section citation -- the real Modiv PARENT/reverse fee headline,
+    // "Lesser of $15,000,000 (§7.3(c)) and the REIT Requirements cap" -- now
+    // resolves instead of nulling out, matching parseFeeAmountUsd's
+    // already-shipped behavior on the identical string and closing a live
+    // disagreement between the review page and the query engine. See
+    // lib/parse-money.js's header "FINDING" note and tests/derived-fields.test.js
+    // for the full writeup. The pin is deliberate: this baseline must never
+    // silently track whatever the sources happen to be, so moving it is an
+    // explicit act with a stated reason.
     path: 'lib/query/derived-fields.js',
-    sha256: '6fa9f5889f1172e4a8aec9c9eb063ef24571fe3cde875092be895bd1f83b6c1d',
+    sha256: 'bd523c781b7ab0f1ffba70beaf98ed4738a2b817b7e74acb65b284c8e4094f13',
   },
   {
     path: 'lib/query/resolve.js',

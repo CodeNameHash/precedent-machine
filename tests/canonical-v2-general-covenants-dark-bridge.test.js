@@ -860,7 +860,21 @@ test('an explicit undefined/null env, or a merge options object missing its env 
   const dummyBridge = {};
   const dummyReviewDeal = { dealId: 'deal-1', cards: [] };
 
-  withEnv('CANONICAL_V2_DARK_BRIDGE', 'ENABLED_LOCAL_PREPRODUCTION', () => {
+  // CI is cleared alongside the flag, and that is load-bearing rather than
+  // tidiness. The gate refuses on several independent clauses, one of which is
+  // a truthy CI. GitHub Actions sets CI=true, so enabling only the flag leaves
+  // an ambient environment the gate still refuses, and the sanity check at the
+  // end of this block, that an omitted env really does read the enabled
+  // ambient env, fails on CI while passing on a developer machine.
+  //
+  // All four dark-bridge suites carried this. Two turned a pull request red on
+  // 2026-08-05; this one and the legacy-card bridge were found only by running
+  // the whole suite with CI=true locally, which is how CI runs it.
+  //
+  // This weakens nothing: the CI clause has its own tests in
+  // tests/canonical-v2-dark-bridge-gate.test.js. This block is about the
+  // env-argument fallback, so it must isolate that one variable.
+  withEnv('CI', undefined, () => withEnv('CANONICAL_V2_DARK_BRIDGE', 'ENABLED_LOCAL_PREPRODUCTION', () => {
     for (const env of [undefined, null]) {
       assert.throws(
         () => bridgeGeneralCovenantsCardsToLegacyShape(dummyProjection, env),
@@ -898,7 +912,7 @@ test('an explicit undefined/null env, or a merge options object missing its env 
       (error) => !(error instanceof DarkBridgeGateError),
       'omitting env entirely must fall back to the now-enabled ambient process.env',
     );
-  });
+  }));
 });
 
 // --- hostile grounding tests (this family is already the model) ------------
