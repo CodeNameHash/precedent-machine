@@ -214,6 +214,17 @@ const FILE_PATTERN_EXEMPTIONS = {
     'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
     'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
   ],
+  // Same class: the 2026-08-05 parseUsdAmount regression suite drives
+  // executeMarketRange() with two real registry field_paths
+  // (feePctOfDealValue, the derived percentage field, and
+  // companyTerminationFee, the raw "usd"-typed field -- both route through
+  // the same ambiguity-rejecting numericValue()) to prove the row-inclusion
+  // guard behaves identically for both. Both literal payloads are the
+  // executor's real request shape; production query code stays covered.
+  'tests/derived-fields.test.js': [
+    'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
+    'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
+  ],
   // Same class as the tests/query/* fixture exemptions above: the canonical-v2
   // Query UI slice tests must carry the EXACT legacy ad hoc payload
   // ({provision_type: 'TERMINATION_FEE', field_path: 'feePctOfDealValue'})
