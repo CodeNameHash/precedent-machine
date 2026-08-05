@@ -301,6 +301,35 @@ const FILE_PATTERN_EXEMPTIONS = {
     'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
     'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
   ],
+  // Same class once more, and the same real Metsera deal
+  // (885edae5-49e8-464a-9f33-edd229119d7c) as tests/provision-table-
+  // configs.test.js's exemption above: this file's own header states "Fixtures
+  // are real-shaped: field values below are taken directly from the Metsera
+  // deal... as stored in ai_metadata.features, not invented shapes" --
+  // aocCitedCovenantNames pins IOC-MERGE's real taxonomy fallback label.
+  // Genuine fixture, not the duplicated-label regression this pattern
+  // fingerprints.
+  'tests/fb3-section-tables.test.js': ['Mergers,\\s*Acquisitions,\\s*Dispositions'],
+  // NOT a hand-authored test fixture -- the committed evidence output of
+  // scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs (a
+  // registered LIVE_EXTRACTION_RUN_SOURCES script; see phase1-authority-
+  // boundary-inventory.js). The matched text is a real merger agreement's
+  // table of contents ("...Qualification; Subsidiaries... [later]
+  // ...Litigation...", both real ARTICLE III rep headings), not the past
+  // duplicated-label regression this fingerprint targets. Verified via this
+  // run's own sibling file, source-reference.json: it REUSES the already-
+  // committed, already hash-pinned raw HTML at tests/fixtures/canonical-v2/
+  // mae-definition-family/modiv-raw-fetched.htm ("REUSE, not a pinning
+  // fetch. No network call was made by this script"), matching the pin at
+  // tests/fixtures/canonical-v2/modiv-first-live-run/intake-pin.json -- and
+  // the bundle's native-producer-recorded-response-*.json siblings are
+  // exactly the "genuine recorded model-output capture... real
+  // raw_response_text / native-producer-recorded-response body" category the
+  // comment above RECORDED_LIVE_RUN_DIR already defines. Recorded as a
+  // narrow per-file entry, not folded into that directory regex, because
+  // this evidence/ output was not independently produced by this change --
+  // see the task report for full provenance.
+  'evidence/canonical-v2/modiv-termination-fee-scope-correction-20260805/adapter-result.json': ['QUALIFICATION.*litigation'],
 };
 
 const failures = [];
