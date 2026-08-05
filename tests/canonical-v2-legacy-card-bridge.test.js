@@ -916,16 +916,37 @@ test('cross-family merge: No Other Reps / Fraud bridge output (whose own non-rel
 // object) refuses rather than silently falling back to an enabled ambient
 // process.env.
 
+// CI is cleared alongside the flag, and that is load-bearing rather than
+// tidiness. The gate refuses on several independent clauses, one of which is
+// a truthy CI. GitHub Actions sets CI=true, so a helper that enables only the
+// flag produces an ambient environment the gate still refuses, and every test
+// asserting "omitting env falls back to the enabled ambient env" fails on CI
+// while passing on a developer machine where CI is unset.
+//
+// All four dark-bridge suites carried this same helper and the same latent
+// failure. Two of them turned a pull request red on 2026-08-05; the other two
+// were only found by running the whole suite with CI=true locally, which is
+// how CI runs it and how it should have been run all along.
+//
+// This weakens nothing. The CI clause has its own dedicated tests in
+// tests/canonical-v2-dark-bridge-gate.test.js. What these tests are about is
+// the env-argument fallback, so the environment they construct must isolate
+// that one variable.
 function withAmbientDarkBridgeEnabled(fn) {
   const key = 'CANONICAL_V2_DARK_BRIDGE';
   const had = Object.prototype.hasOwnProperty.call(process.env, key);
   const previous = process.env[key];
+  const hadCi = Object.prototype.hasOwnProperty.call(process.env, 'CI');
+  const previousCi = process.env.CI;
   process.env[key] = 'ENABLED_LOCAL_PREPRODUCTION';
+  delete process.env.CI;
   try {
     return fn();
   } finally {
     if (had) process.env[key] = previous;
     else delete process.env[key];
+    if (hadCi) process.env.CI = previousCi;
+    else delete process.env.CI;
   }
 }
 

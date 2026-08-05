@@ -4301,14 +4301,15 @@ test('r13: card-utils makeRow() threads featureKey/value/sourceCard, matching ma
 
 test('r13: termination-rights cross-cutting rows (willfulBreachException / specificPerformanceMutual) thread featureKeys 1:1', () => {
   const cards = [
-    // 'willful-breach' is scoped to TERMF-SOLE (see CROSS_CUTTING_ROWS in
-    // termination-rights.config.js) -- a code-less/other-coded card would no
-    // longer be found by this row, so the fixture uses the real code.
+    // willfulBreachException now renders as TWO rows, each scoped to its own
+    // code (see CROSS_CUTTING_ROWS in termination-rights.config.js) -- a
+    // code-less/other-coded card would no longer be found by either row, so
+    // the fixture uses the real TERMF-SOLE code for the sole-remedy row.
     { id: 'wb', provision_type: 'TERMINATION_FEE', provision_subtype: 'TERMF-SOLE', primary_quote: 'Willful breach carve-out applies.', features: { willfulBreachException: 'Yes, fraud and willful breach excluded.' } },
     { id: 'sp', provision_type: 'MISC', provision_subtype: 'MISC-REMEDIES', primary_quote: 'Specific performance available to either party.', features: { specificPerformanceMutual: 'true' } },
   ];
   const groups = terminationRightsMod.crossCuttingGroup({ cards });
-  const willfulRow = groups.rows.find((r) => r.id === 'termination-rights-willful-breach');
+  const willfulRow = groups.rows.find((r) => r.id === 'termination-rights-willful-breach-sole');
   const specPerfRow = groups.rows.find((r) => r.id === 'termination-rights-specific-performance-mutual');
   assert.deepEqual(willfulRow.featureKeys, ['willfulBreachException']);
   assert.deepEqual(specPerfRow.featureKeys, ['specificPerformanceMutual']);

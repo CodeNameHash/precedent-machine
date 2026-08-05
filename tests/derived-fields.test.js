@@ -2,15 +2,20 @@
 
 // Regression coverage for the 2026-08-05 parseUsdAmount fix (was
 // first-number-wins -- see the dated comment on parseUsdAmount in
-// lib/query/derived-fields.js for the full defect writeup). This function
-// backs feeDetails()/feePercentOfDealValue(), which power the LIVE
-// feePctOfDealValue / reverseFeePctOfDealValue query fields (both the
-// DERIVED_FIELDS path and executeMarketRange's amount_usd enrichment).
+// lib/query/derived-fields.js for the full defect writeup), and for the
+// later-that-day consolidation onto lib/parse-money.js, the one shared
+// implementation for what were six independent "parse a dollar amount"
+// functions. This function backs feeDetails()/feePercentOfDealValue(),
+// which power the LIVE feePctOfDealValue / reverseFeePctOfDealValue query
+// fields (both the DERIVED_FIELDS path and executeMarketRange's amount_usd
+// enrichment).
 //
-// The Modiv headline used below is the REAL committed conditional company
-// termination fee, pinned byte-for-byte in
+// The Modiv headlines used below are the REAL committed conditional
+// termination fee amounts, pinned byte-for-byte in
 // tests/canonical-v2-termination-fee-conditional-amount-projection.test.js
-// (COMPANY_FEE_HEADLINE) -- not a synthetic approximation.
+// (COMPANY_FEE_HEADLINE / PARENT_FEE_HEADLINE) -- not synthetic
+// approximations. Both are sourced from the real committed fixture at
+// tests/fixtures/review-parity/cases/termination-fees/dfaa71fa-modiv.resolution.json.
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -31,11 +36,15 @@ const { executeMarketRange } = require('../lib/query/executors/market-range');
 // resolution in
 // evidence/canonical-v2/m3-pilot-20260804-fresh/final-output/execution-result.json.
 const MODIV_COMPANY_FEE_HEADLINE = 'Lesser of $10,000,000 (§7.3(b)(i), (ii) or (iii)) or $15,000,000 (§7.3(b)(iv) or (v)) and the REIT Requirements cap';
-// The reverse/parent fee headline for the same deal -- one dollar figure,
-// but still names a second number (the "§7.3(c)" citation), so it is also
-// not "one clean figure" by the same standard the company-side headline
-// fails: a reader cannot programmatically tell a citation number from an
-// amount without more structure than free text carries here.
+// The reverse/parent fee headline for the same deal -- one dollar figure
+// plus an unrelated section citation (the "§7.3(c)"), not a second dollar
+// figure. lib/parse-money.js's ambiguity rule is dollar-sign-aware: it
+// counts "$"-marked figures, not every bare numeral, so this string resolves
+// to 15000000, not null (see that file's header "AMBIGUITY RULE" / "FINDING"
+// notes for the full reasoning and the cross-surface inconsistency this
+// closes -- the termination-fees review-page table already rendered this
+// exact figure as "0.75% of deal value" via parseFeeAmountUsd before this
+// file agreed with it).
 const MODIV_PARENT_FEE_HEADLINE = 'Lesser of $15,000,000 (§7.3(c)) and the REIT Requirements cap';
 
 function feature(value) {
@@ -80,14 +89,17 @@ test('parseUsdAmount: the real Modiv conditional headline returns null, not the 
   assert.match(MODIV_COMPANY_FEE_HEADLINE, /^Lesser of \$10,000,000/);
 });
 
-test('parseUsdAmount: a single dollar figure alongside an unrelated citation number also returns null', () => {
-  // "$15,000,000 (§7.3(c))" names two numbers (15000000 and 7.3) even though
-  // only one is a dollar amount -- same "more than one figure" standard
-  // numericValue() applies in lib/feature-compare.js, not a dollar-specific
-  // carve-out. Documented here as a deliberate, conservative consequence of
-  // following that established pattern rather than inventing a narrower
-  // dollar-only counting rule.
-  assert.equal(parseUsdAmount(MODIV_PARENT_FEE_HEADLINE), null);
+test('parseUsdAmount: a single dollar figure alongside an unrelated citation number resolves (dollar-sign-scoped ambiguity)', () => {
+  // "$15,000,000 (§7.3(c))" names one dollar figure and one unrelated
+  // citation number. This function used to count every bare numeral
+  // (matching numericValue()'s rule) and return null here; consolidating
+  // onto lib/parse-money.js's dollar-sign-aware rule resolves it to
+  // 15000000 instead, matching parseFeeAmountUsd's (termination-
+  // fees.config.js) already-shipped, already-tested behavior on this exact
+  // real Modiv string. See lib/parse-money.js's header "FINDING" note: before
+  // this change the review page and the query engine silently disagreed
+  // about this deal's reverse fee.
+  assert.equal(parseUsdAmount(MODIV_PARENT_FEE_HEADLINE), 15000000);
 });
 
 test('parseUsdAmount: a range returns null, not its first endpoint', () => {
@@ -126,9 +138,9 @@ test('feeDetails: Modiv-shaped conditional company fee resolves amount to null, 
   assert.equal(details.triggers[0].label, 'Superior proposal');
 });
 
-test('feeDetails: Modiv-shaped reverse fee also resolves amount to null', () => {
+test('feeDetails: Modiv-shaped reverse fee (single figure + citation) resolves amount to 15000000, not null', () => {
   const provision = feeProvision({ reverseAmount: MODIV_PARENT_FEE_HEADLINE });
-  assert.equal(feeDetails(provision, 'reverse').amount, null);
+  assert.equal(feeDetails(provision, 'reverse').amount, 15000000);
 });
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -151,14 +163,18 @@ test('feePercentOfDealValue: Modiv conditional fee skips the deal -- null, not a
   assert.equal(feePercentOfDealValue(clean, { value_usd: 2000000000 }, 'company').value, 0.5);
 });
 
-test('computeDerivedField: feePctOfDealValue / reverseFeePctOfDealValue both null out for the Modiv-shaped provision', () => {
+test('computeDerivedField: feePctOfDealValue nulls out for the genuinely two-figure company headline; reverseFeePctOfDealValue resolves for the single-figure-plus-citation reverse headline', () => {
   const provision = feeProvision({
     companyAmount: MODIV_COMPANY_FEE_HEADLINE,
     reverseAmount: MODIV_PARENT_FEE_HEADLINE,
   });
   const deal = { value_usd: 2000000000 };
+  // Company side genuinely names two different dollar figures ($10M or
+  // $15M depending on branch) -- still null under any ambiguity rule.
   assert.equal(computeDerivedField('TERMINATION_FEE', 'feePctOfDealValue', provision, deal), null);
-  assert.equal(computeDerivedField('TERMINATION_FEE', 'reverseFeePctOfDealValue', provision, deal), null);
+  // Reverse side names one dollar figure and one unrelated citation --
+  // resolves to 15000000 / 2000000000 = 0.75%.
+  assert.equal(computeDerivedField('TERMINATION_FEE', 'reverseFeePctOfDealValue', provision, deal).value, 0.75);
 });
 
 test('DERIVED_FIELDS registry entries are unchanged by the fix (key/label/type/provisionType)', () => {
@@ -230,4 +246,38 @@ test('executeMarketRange: companyTerminationFee is registered "usd"-typed, so a 
   assert.equal(result.deal_points.length, 1);
   assert.equal(byDeal.get('clean-1').amount_usd, 30000000);
   assert.ok(!byDeal.has('modiv-like'));
+});
+
+test('executeMarketRange: reverseFeePctOfDealValue includes the Modiv-shaped deal (single figure + citation resolves), still skips a genuinely two-figure deal', () => {
+  // Three deals: a plain clean figure, the real Modiv-shaped reverse fee
+  // (one dollar figure + an unrelated citation -- resolves), and a
+  // genuinely two-branch conditional fee reused from the company side above
+  // (two real dollar figures -- still excluded). Proves the dollar-sign-
+  // scoped ambiguity rule is a targeted fix, not a blanket "include
+  // everything" change.
+  const deals = [
+    { id: 'clean-1', acquirer: 'Buyer One', target: 'Target One', value_usd: 2000000000 },
+    { id: 'modiv-like', acquirer: 'Modiv Buyer', target: 'Modiv Target', value_usd: 500000000 },
+    { id: 'two-branch', acquirer: 'Two Branch Buyer', target: 'Two Branch Target', value_usd: 1000000000 },
+  ];
+  const provisions = [
+    feeProvision({ id: 'p1', dealId: 'clean-1', reverseAmount: '$150,000,000' }), // 7.5%
+    feeProvision({ id: 'p3', dealId: 'modiv-like', reverseAmount: MODIV_PARENT_FEE_HEADLINE }), // 15000000 / 500000000 = 3%
+    feeProvision({ id: 'p4', dealId: 'two-branch', reverseAmount: MODIV_COMPANY_FEE_HEADLINE }), // genuinely 2 figures -> excluded
+  ];
+  const result = executeMarketRange(
+    { provision_type: 'TERMINATION_FEE', field_path: 'reverseFeePctOfDealValue', deal_filter: {} },
+    { deals, provisions },
+  );
+  // clean-1 and modiv-like both resolve; two-branch is still excluded --
+  // never included with either $10,000,000/$15,000,000 branch or a
+  // percentage computed off an arbitrary one of them.
+  assert.equal(result.n, 2);
+  assert.equal(result.deal_points.length, 2);
+  assert.ok(result.deal_points.every((point) => point.deal_id !== 'two-branch'));
+  const byDeal = new Map(result.deal_points.map((point) => [point.deal_id, point]));
+  assert.equal(byDeal.get('clean-1').value, 7.5);
+  assert.equal(byDeal.get('clean-1').amount_usd, 150000000);
+  assert.equal(byDeal.get('modiv-like').value, 3);
+  assert.equal(byDeal.get('modiv-like').amount_usd, 15000000);
 });

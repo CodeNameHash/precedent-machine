@@ -115,11 +115,15 @@ One genuine twelve-item run across eleven families existed only outside the
 repository, one deletion from being lost. It is now committed at
 `evidence/canonical-v2/m3-pilot-20260804-fresh/`.
 
-**Nothing serves.** The serving layer admits contract versions 1 to 5, plus
-one exception at version 12. Roughly 110 of the claim definitions live above
-that ceiling. Registering a new claim definition costs eleven file edits and
-buys nothing until the ceiling moves. **That policy is the real bottleneck,
-not the claim vocabulary.**
+**Nothing serves, in production, and not because of a version limit.** Every
+Canonical V2 surface is hard-off there on a runtime check that ignores
+contract version entirely; see P3. A separate limit does exist: it admits
+only contract versions 1 to 5, plus one exception at version 12, and roughly
+110 of the claim definitions live above it, so registering a new one still
+costs eleven file edits regardless. But no live route reads that limit to
+decide what serves; it is not why nothing reaches a user. **The runtime
+check in P3 is the production bottleneck. The version limit is not, and
+raising it was never going to fix this.**
 
 **Two projection modules are dead code.** Merger Structure and Miscellaneous
 Boilerplate key on claim types and concepts that do not exist. Their tests
@@ -157,10 +161,10 @@ does not mean proven on real data.
 | No Other Reps / Fraud | 6 | complete | fixture | analysis not finished |
 | General Covenant Router | 1 | complete | synthetic | analysis not finished |
 
-**Eleven families are structurally complete and blocked only by data and the
-serving ceiling**: Guaranty, D&O, Employee Matters, Financing, Tax, Key
-Defined Terms, Antitrust, MAE, Proxy & Meeting, No Other Reps, General
-Covenant Router.
+**Eleven families are structurally complete and blocked only by data and
+their own per-family serving switch**: Guaranty, D&O, Employee Matters,
+Financing, Tax, Key Defined Terms, Antitrust, MAE, Proxy & Meeting, No Other
+Reps, General Covenant Router.
 
 **Capitalisation is the most proven component in the system and is tracked
 nowhere.** Largest extraction prompt in the repository, three claim types, the
@@ -422,21 +426,106 @@ the willful-breach carve-out are already governed in the Remedies family
 projected with **zero consumers outside tests**; late-payment interest was
 wired tonight. A genuine new definition costs 11 edits in
 `lib/canonical-v2/contract-bundle.js` (watch the dual numbering: input at
-V38, concept keys at V24) and is worthless until P3.
+V38, concept keys at V24), and still needs projecting and wiring into the
+termination-fees switch before it reaches the review page; see P3. That
+switch already exists and does not wait on any version limit.
 
-### P3. Move the serving ceiling
+### P3. The real serving path, and the rule for retiring V1
 
-**What it is.** The serving layer accepts contract versions 1 to 5. Most of
-the claim vocabulary is above that and cannot be served at all. Raise it.
+**What it is.** This step used to say: raise a limit on which contract
+versions are allowed to serve, because that limit was what stood between V2
+and a user. That was wrong. Nothing that actually runs in the product reads
+that limit; raising it would have changed a number nobody consults.
 
-**Why it matters.** Until this moves, no amount of extraction or definition
-work reaches a user. It is the true bottleneck.
+What actually decides whether a family shows up is a small switch, built
+once per family: extraction produces the facts, projection turns them into
+rows, and the switch turns that family on for the review page, next to the
+old system's version of the same row. That switch already exists and
+already works, for one family, termination fees. Building the same switch
+for each remaining family is P9's job.
 
-**Technical.** `FIXTURE_SERVING_CONTRACT_FINGERPRINTS` at
-`contract-bundle.js:5319`; `metric-serving-admission.js:111` admits V12.
-**Establish why the ceiling exists before raising it.** If it is a deliberate
-freeze, that is a governance decision; if neglect, a one-line change with a
-large blast radius. Do not raise it without knowing which.
+What this step now covers is the other half of the question: when is a
+family's new system allowed to stand on its own, with the old one no longer
+shown beside it. Today the two always render together, as a temporary check
+on the way to replacing the old system entirely, not as the finished
+product. The rule for when that replacement is safe is below.
+
+**Why it matters.** A more rigorous way of deciding what gets served was
+designed and mostly built before this one, then quietly stalled without
+anyone recording that it had. Left unrecorded, the next person to hit this
+problem would either believe the old, wrong story about a version limit, or
+rediscover the rigorous approach and start rebuilding it without knowing it
+already exists. Neither is acceptable, so both the correction and the
+history are written down below.
+
+**Decided.** Ben ruled in favour of the cheap, already-working per-family
+switch over the more rigorous approach, on one condition: a family's old
+system is not removed from the review page until the equivalence harness
+proves, on real data, that the new system agrees with the old one or is
+demonstrably better. See `DECISIONS.md` item 13 for the full reasoning,
+including why this beats the more rigorous approach.
+
+**Technical.** `FIXTURE_SERVING_CONTRACT_FINGERPRINTS`
+(`lib/canonical-v2/contract-bundle.js`, currently around line 5317) is not
+imported anywhere under `pages/`. Its only consumers are the abandoned
+certification chain below and `contract-bundle.js`'s own version-gating
+tests; nothing live reads it, so raising it changes nothing a user sees.
+
+What actually keeps Canonical V2 off in production is
+`lib/canonical-v2/feature-flags.js`. Every `CANONICAL_V2_*_ENABLED` flag is
+checked together with `isPermittedCanonicalV2Runtime()`, which is true only
+on a Vercel preview deployment or genuinely local development, and false on
+Vercel production or anywhere `NODE_ENV` is `production`, regardless of the
+flag's own value. That is the "hard-off on two independent signals" named in
+section 2.2: the flag, and this runtime check. Neither one looks at a
+contract version.
+
+The real per-family path, already built once:
+`lib/canonical-v2/termination-fee-serving-source.js` is the server-side
+per-family gate and card source; `components/review/table-configs/termination-fees.config.js`'s
+`selectRows()` is the client-side switch and side-by-side render. P9 repeats
+this shape per family.
+
+The abandoned, more rigorous alternative: commit `c0610635` (25 Jul 2026)
+froze the fingerprint list at versions 1 to 5 in the same change that added
+the no-shop schema. Two days later,
+`docs/superpowers/specs/2026-07-27-metric-scoped-serving-admission-f22-design.md`
+chose, instead of widening that list, a lane that admits one certified
+metric identity at a time, reasoning that versions 1 to 5 were the original
+hand-reviewed slice and nothing admitted since had equivalent scrutiny.
+Eleven components were built against that design and remain in the repo,
+real, substantial and passing, each with its own test: the F16 through F21
+no-shop copy-delivery chain, then `metric-serving-admission.js` (F22),
+`metric-scoped-candidate-release-f23.js`, `no-shop-timing-certification-f24.js`,
+`no-shop-actions-certification-f25.js` and `no-shop-cross-view-release-f26.js`.
+Its own "Planned increments" list named two things still to do after F26: an
+explicit activation gate, and Material Contracts as a second family to prove
+the approach generalised. Neither was built. Material Contracts shipped
+instead through the ordinary path above (`material-contracts-product-projection.js`,
+`material-contracts.config.js`), the same shape termination fees uses. **Do
+not delete this chain and do not extend it.** It stays in the repo, complete
+enough to read and deliberately unused, so a future need for per-fact
+certification at that level of rigour does not get rebuilt from nothing.
+
+**A step that was drafted here and removed, 2026-08-05.** An earlier version of
+this plan added a step to capture V1's rendered output into the repository so
+the equivalence harness would have something to diff against, and made it a
+prerequisite for retiring V1. Ben rejected that outright: "I don't need V1. If
+it was there, great, if not, forget it. I want to get V2 up and running, not
+building V1."
+
+He is right, and the reasoning is worth keeping so nobody reinstates it. V1's
+data is not missing. It is live in the production database and rendering on
+the site at this moment. What does not exist is a committed offline copy for
+the harness, which is a convenience for an automated comparison, not a
+precondition for anything a user sees. Turning that convenience into a gate
+would have blocked the whole programme behind an access request nobody needs
+to make.
+
+So the harness stays a useful tool where it can be applied and is not a gate.
+Where it cannot compare a family, that does not stop V2 serving or V1 being
+retired. The judgement about whether V2 is good enough for a family is made by
+looking at it, which is what the side-by-side view is for while it exists.
 
 ### P4. Fix the card-selection defect class
 
@@ -656,10 +745,16 @@ across 5 modules) whose validator compares its own output to itself.
 
 # Part 5. What I need from Ben
 
-Only one item below is still genuinely open. Rows 2 through 12 were decided
+Two items below are still genuinely open. Rows 2 through 12 were decided
 by Ben on 2026-08-05 and have moved to the decided list beneath the table;
 each keeps its original row number so it is still easy to trace back to
 this document's steps and to the matching entry in `DECISIONS.md`.
+
+A row asking for production read access, so V1's output could be captured for
+the equivalence harness, was drafted here and removed on 2026-08-05. Ben
+rejected the underlying step: the harness is a convenience, not a gate, and
+turning it into one would have blocked the programme behind an access request
+nobody needs to make. See the note under P3.
 
 | # | Decision | Blocks | If it waits |
 |---|---|---|---|
@@ -685,6 +780,9 @@ this document's steps and to the matching entry in `DECISIONS.md`.
 - **11, original or amended terms for market comparison:** amended terms,
   labelled.
 - **12, go live:** when ready. No external customer is waiting on a date.
+- **13, cheap per-family serving pattern or per-metric certification:** the
+  cheap pattern, gated by the equivalence harness proving parity before a
+  family's old system is retired.
 
 **Already granted, recorded so nobody re-asks:** running extraction across the
 corpus (2026-08-05); the shape of the comparison and search product; the
@@ -697,12 +795,18 @@ approval; the four no-shop concepts, all approved; representation subjects
 stay open indefinitely rather than ever closing; and the human-verified
 status is named `DOCUMENT_TEXT_VERIFIED_AGAINST_SOURCE_BYTES`.
 
-**What remains genuinely open.** One item: S0's browser check, whether
+**What remains genuinely open.** One item. S0's browser check, whether
 `precedent-machine.vercel.app` requires a login and whether the July
-database key was rotated. That is an action for Ben to perform, not a
-ruling for him to make, and `DECISIONS.md` item 1 already recorded what
-happens once the answer is known. Nothing else on this page is still
-waiting on a decision.
+database key was rotated: an action for Ben to perform, not a ruling for
+him to make, and `DECISIONS.md` item 1 already recorded what happens once
+the answer is known. Nothing else on this page is waiting on a decision or a
+grant.
+
+When authentication is switched on there will be one more, and it is
+configuration rather than a decision: `AUTH_PASSWORD` and `SESSION_SECRET`
+have to be set in the environment, and nothing authenticates until they
+are. The gate fails closed without them, which is the correct behaviour and
+also means it does nothing at all until someone sets them.
 
 ---
 

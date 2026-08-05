@@ -12,6 +12,9 @@ const {
   READ_ONLY_GIT_INSPECTORS,
   PRODUCTION_PATH_PURE_ANALYSIS_SOURCES,
   LIVE_EXTRACTION_RUN_SOURCES,
+  LIVE_REQUEST_AUTHORIZATION_SOURCES,
+  LIVE_REQUEST_AUTHORIZATION_CLIENT_SOURCES,
+  CONTAINED_ROUTE_REPAIR_SOURCES,
   REQUIRED_AUTHORITY_BOUNDARY_CONTRACT_SOURCES,
   EXPLICIT_NEW_SOURCE_CLASSES,
   classifyChangedProductionSources,
@@ -65,6 +68,20 @@ const GIT_INSPECTOR_FORBIDDEN_CAPABILITIES = Object.freeze(LOCAL_WRITER_FORBIDDE
 // and nothing that would give it database, network, signing, or deployment
 // authority.
 const LIVE_EXTRACTION_RUN_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => !['provider', 'external_process', 'filesystem_write'].includes(name)));
+// The session/credential mechanism: genuinely live, but the same full
+// zero-capability boundary as PURE_PROPOSAL -- see the class's own comment
+// in phase1-authority-boundary-inventory.js for why it is recorded as live
+// anyway.
+const LIVE_REQUEST_AUTHORIZATION_FORBIDDEN_CAPABILITIES = PURE_FORBIDDEN_CAPABILITIES;
+// The one client-side member of that surface: same boundary, minus the one
+// capability (`network`) its own same-origin fetch() calls require.
+const LIVE_REQUEST_AUTHORIZATION_CLIENT_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'network'));
+// Held-dormant repairs for routes the live pages/api/** file still contains:
+// `database` is the one capability permitted (that is the repaired
+// functionality itself); every other one of the seven -- including
+// `network`, so from-url-fetch.js's SSRF-guarded fetch cannot silently grow
+// a second, unguarded way to reach the network -- stays forbidden.
+const CONTAINED_ROUTE_REPAIR_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'database'));
 const ALLOWED_GIT_COMMANDS = Object.freeze(new Set(['rev-parse', 'show', 'status']));
 // The capability scan reads one file's own text, so it cannot see a capability
 // reached through an import. A production-path pure analysis source therefore
@@ -166,6 +183,9 @@ test('every production source changed from the fixed Phase 1 base is classified 
     'READ_ONLY_GIT_INSPECTOR',
     'PRODUCTION_PATH_PURE_ANALYSIS',
     'LIVE_EXTRACTION_RUN',
+    'LIVE_REQUEST_AUTHORIZATION',
+    'LIVE_REQUEST_AUTHORIZATION_CLIENT',
+    'CONTAINED_ROUTE_REPAIR',
     'MODIFIED_PREEXISTING',
   ]));
 });
@@ -235,6 +255,42 @@ test('live extraction run sources have their exact capability boundary', () => {
   }
 });
 
+test('live request authorization sources have their exact capability boundary', () => {
+  assert.ok(LIVE_REQUEST_AUTHORIZATION_SOURCES.includes('lib/auth/gate.js'));
+  assert.ok(LIVE_REQUEST_AUTHORIZATION_SOURCES.includes('lib/auth/session.js'));
+  assert.ok(LIVE_REQUEST_AUTHORIZATION_SOURCES.includes('pages/api/auth/login.js'));
+  for (const relativePath of LIVE_REQUEST_AUTHORIZATION_SOURCES) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assertNoCapabilities(source, LIVE_REQUEST_AUTHORIZATION_FORBIDDEN_CAPABILITIES, relativePath);
+  }
+});
+
+test('the live request authorization client source has its exact capability boundary', () => {
+  assert.deepEqual(LIVE_REQUEST_AUTHORIZATION_CLIENT_SOURCES, ['pages/login.js']);
+  for (const relativePath of LIVE_REQUEST_AUTHORIZATION_CLIENT_SOURCES) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assertNoCapabilities(source, LIVE_REQUEST_AUTHORIZATION_CLIENT_FORBIDDEN_CAPABILITIES, relativePath);
+    // Not vacuous: this file must actually exercise the one capability its
+    // narrower boundary permits, or the distinction from
+    // LIVE_REQUEST_AUTHORIZATION_SOURCES above would be untested.
+    assert.ok(capabilityCounts(source).network > 0, `${relativePath} must exercise network -- that is why it is not in LIVE_REQUEST_AUTHORIZATION_SOURCES`);
+  }
+});
+
+test('contained route repair sources have their exact capability boundary', () => {
+  assert.ok(CONTAINED_ROUTE_REPAIR_SOURCES.includes('lib/broad-corpus/contained-routes/users.js'));
+  assert.ok(CONTAINED_ROUTE_REPAIR_SOURCES.includes('lib/broad-corpus/contained-routes/from-url-fetch.js'));
+  const { BROAD_CORPUS_CONTAINED_ROUTE_FILES } = require('../lib/broad-corpus-containment');
+  const liveRouteFiles = new Set(Object.values(BROAD_CORPUS_CONTAINED_ROUTE_FILES));
+  for (const relativePath of CONTAINED_ROUTE_REPAIR_SOURCES) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assertNoCapabilities(source, CONTAINED_ROUTE_REPAIR_FORBIDDEN_CAPABILITIES, relativePath);
+    // Not vacuous, and re-proves the property the class exists to record:
+    // the repair must never itself be the live route file it repairs.
+    assert.equal(liveRouteFiles.has(relativePath), false, `${relativePath} must not be one of the live, still-contained route files`);
+  }
+});
+
 test('read-only Git inspectors launch only whitelisted inspection commands', () => {
   for (const relativePath of READ_ONLY_GIT_INSPECTORS) {
     assertReadOnlyGitInspector(fs.readFileSync(path.join(ROOT, relativePath), 'utf8'), relativePath);
@@ -296,5 +352,5 @@ test('hostile inventory and capability changes fail closed', () => {
   assert.throws(() => assertNoCapabilityGrowth('', 'fetch(url)', 'hostile legacy'), /network/);
   assert.throws(() => assertNoModuleDependencies("const fs = require('node:fs');", 'hostile analysis'), /no module dependencies/);
   assert.throws(() => assertNoModuleDependencies("import fs from 'node:fs';", 'hostile analysis'), /no module dependencies/);
-  assert.equal(Object.keys(EXPLICIT_NEW_SOURCE_CLASSES).length, 5);
+  assert.equal(Object.keys(EXPLICIT_NEW_SOURCE_CLASSES).length, 8);
 });

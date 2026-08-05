@@ -4,6 +4,7 @@ import { cardCode, cardFeatures, cardType, firstFeature, makeRow, selectCards, t
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 import taxonomy from '../../../lib/taxonomy.js';
 import { formatPercentOfDeal } from '../../../lib/percent-of-deal.js';
+import { parseMoneyAmount } from '../../../lib/parse-money.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -169,31 +170,18 @@ const FEE_TYPES_ELIGIBLE_FOR_DEAL_PERCENT = new Set(['COMPANY_TERMINATION_FEE', 
 // separators (e.g. "$332,000,000") — parse it back to a plain number so it
 // can be divided by the deal's value_usd. Never guesses: anything that
 // doesn't contain a clean dollar figure resolves to null.
+//
+// Delegates to lib/parse-money.js, the one shared implementation for what
+// were six independent, duplicate "parse a dollar amount" functions (see
+// that file's header for the full backstory). This was the one call site
+// whose own dollar-sign-scoped ambiguity rule and million/billion scale
+// words became the shared parser's default behavior — its own inline
+// implementation is gone, but its exact behavior on every string this table
+// has ever rendered is unchanged (see tests/canonical-v2-termination-fee-
+// conditional-amount-projection.test.js and tests/review/termination-fees-
+// percent-of-deal.test.js, both still pinned byte-for-byte).
 function parseFeeAmountUsd(amount) {
-  if (typeof amount === 'number') return Number.isFinite(amount) ? amount : null;
-  const str = String(amount || '').replace(/,/g, '');
-  // A string naming more than one dollar figure is not "a clean dollar
-  // figure" (see the function comment below) -- it's a branch-conditional
-  // fee's headline (e.g. "Lesser of $10,000,000 (...) or $15,000,000 (...)
-  // and the REIT Requirements cap", from a canonical conditional termination
-  // fee value -- see lib/canonical-v2/termination-product-projection.js).
-  // Picking the first figure would silently compute a % of deal value off an
-  // arbitrary substring: invented precision this row is not entitled to.
-  if ((str.match(/\$\s*-?\d/g) || []).length > 1) return null;
-  const match = str.match(/-?\d+(?:\.\d+)?/);
-  if (!match) return null;
-  let n = Number(match[0]);
-  if (!Number.isFinite(n)) return null;
-  // Word-scaled amounts ("$10 million", "$1.2 billion"): scale the numeral
-  // by the word that immediately follows it, or bail if a scale word
-  // appears anywhere else in the string (a bare `10` divided into a
-  // billion-dollar deal value would render an absurd near-zero percent
-  // that reads as authoritative).
-  const tail = str.slice(match.index + match[0].length);
-  if (/^\s*million\b/i.test(tail)) n *= 1e6;
-  else if (/^\s*billion\b/i.test(tail)) n *= 1e9;
-  else if (/\b(?:million|billion)\b/i.test(str)) return null;
-  return n;
+  return parseMoneyAmount(amount, { scale: true });
 }
 
 // The agreement's own extracted percentage (feeRow.percentEquityValue) wins

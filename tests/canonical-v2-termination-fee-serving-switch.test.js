@@ -731,10 +731,10 @@ test('the QXO/TopBuild canonical source is built from the pinned filed text', ()
 //    TopBuild's registered, pinned source unreadable in the deployed
 //    function, and the page told a reviewer "Canonical V2 has no
 //    termination-fee data for this deal" -- true for every OTHER deal, false
-//    for this one. See termination-fee-serving-source.js's
-//    QXO_EXCERPTS_RELATIVE_PATH comment and next.config.js's
-//    outputFileTracingIncludes entry for the underlying fix; this section
-//    proves the failure itself is no longer silent.)
+//    for this one. See termination-fee-serving-source.js's QXO_EXCERPTS_TEXT
+//    comment for the underlying fix (a literal require() of a generated
+//    module replaced the runtime disk read entirely); this section proves
+//    the failure itself is no longer silent.)
 // ---------------------------------------------------------------------------
 
 const FAKE_DEAL_ID = 'fake-deal-0000-0000-0000-000000000000';
@@ -968,53 +968,64 @@ test('the review table still renders in all three server-side source states, wit
 });
 
 // ---------------------------------------------------------------------------
-// 6c. End to end against the REAL pinned fixture file -- the actual live bug
+// 6c. End to end against the REAL pinned source -- the actual live bug
 // ---------------------------------------------------------------------------
-// Proves the fix against the real mechanism (the genuine fs.readFileSync call
-// over the genuine on-disk fixture), not just an injected stand-in: the file
-// is moved out of the way exactly as an incomplete Vercel bundle would leave
-// it missing, the real serving path is exercised, and the file is restored
-// in `finally` no matter what happens in between.
+// Proves the fix against the real mechanism -- the real, uninjected registry
+// entry backed by the real, committed require()'d generated module -- not an
+// injected stand-in.
+//
+// This test used to prove the fix by renaming the .txt fixture out of the
+// way and observing a graceful FAILED state, because the pre-fix mechanism
+// read that .txt at REQUEST time via fs.readFileSync, and the live incident
+// (Vercel, 2026-08-05) was exactly that read silently failing in production.
+// That mechanism no longer exists: lib/canonical-v2/termination-fee-serving-
+// source.js now reaches its text through a literal, static require() of
+// __fixtures__/canonical-v2/qxo-termination-fee-reviewed-excerpts.generated.js,
+// resolved once at module load and cached -- see that module's "VERCEL FILE
+// TRACING" comment for the full incident and fix. Renaming the .txt on disk
+// no longer has any effect on the served path, so the old rename-and-restore
+// mechanic here would prove nothing and was never finished being updated to
+// match. tests/qxo-termination-fee-excerpt-module.test.js separately, and
+// exhaustively, proves the generated module can never drift from the .txt.
+// What is left for THIS test to prove, end to end, for real, is the thing
+// the live incident actually broke: that the real registered QXO/TopBuild
+// source -- no `sources` override, no simulated failure -- resolves ATTACHED
+// with real cards, through the real require()'d module.
 
-test('the real pinned QXO source: an on-disk read failure is FAILED end to end, and recovers cleanly', () => {
+test('the real pinned QXO source: resolves ATTACHED with real cards end to end through the real require()\'d module', () => {
   const fixturePath = path.join(__dirname, '..', '__fixtures__', 'canonical-v2', 'qxo-termination-fee-reviewed-excerpts.txt');
-  const backupPath = `${fixturePath}.test-backup`;
-  assert.ok(fs.existsSync(fixturePath), 'precondition: the real pinned fixture must exist on disk before this test moves it');
-  assert.equal(fs.existsSync(backupPath), false, 'precondition: no stray backup from a previous interrupted run');
+  const generatedPath = path.join(__dirname, '..', '__fixtures__', 'canonical-v2', 'qxo-termination-fee-reviewed-excerpts.generated.js');
+  assert.ok(fs.existsSync(fixturePath), 'precondition: the real reviewed .txt source must exist on disk');
+  assert.ok(fs.existsSync(generatedPath), 'precondition: the real generated module the server actually require()s at load time must exist on disk');
 
-  const key = serving.CANONICAL_V2_TERMINATION_FEE_SERVING_ENV_KEY;
-  const on = serving.CANONICAL_V2_TERMINATION_FEE_SERVING_ENABLED_VALUE;
   const STATUS_FIELD = serving.CANONICAL_V2_TERMINATION_FEE_SOURCE_STATUS_FIELD;
 
-  let moved = false;
-  try {
-    fs.renameSync(fixturePath, backupPath);
-    moved = true;
+  // No `sources` override: this is the real registry, the real deal id, the
+  // real require()'d module -- the exact path the live incident broke.
+  const { cards, outcome } = serving.describeCanonicalTerminationFeeSource(serving.QXO_TOPBUILD_DEAL_ID);
+  assert.equal(outcome.state, 'ATTACHED');
+  assert.equal(outcome.card_count, cards.length);
+  assert.ok(cards.length > 0, 'the real source must produce at least one card, never the silent empty array the live incident served');
 
-    // This is precisely the Vercel incident: the registered QXO/TopBuild
-    // deal, with its pinned source unreadable.
-    const served = serving.attachCanonicalTerminationFeeServing(
-      { dealId: serving.QXO_TOPBUILD_DEAL_ID, cards: [] },
-      { env: { [key]: on } },
-    );
-    assert.equal(served[SERVING_FIELD], true);
-    assert.deepEqual(served[CARDS_FIELD], []);
-    assert.equal(served[STATUS_FIELD].state, 'FAILED');
-    assert.equal(served[STATUS_FIELD].failure.error_code, 'ENOENT');
-    assert.deepEqual(serving.canonicalTerminationFeeCardsForDeal(serving.QXO_TOPBUILD_DEAL_ID), []);
-  } finally {
-    if (moved) fs.renameSync(backupPath, fixturePath);
-  }
-
-  assert.equal(fs.existsSync(fixturePath), true, 'postcondition: the real fixture must be restored');
-  assert.equal(fs.existsSync(backupPath), false, 'postcondition: no backup file left behind');
-
-  // Recovery: with the file restored, the real source is ATTACHED again --
-  // proves the failure was specific to the read, not permanent module state.
-  const recovered = serving.attachCanonicalTerminationFeeServing(
+  // canonicalTerminationFeeCardsForDeal() is the same real, uninjected call
+  // qxoCanonicalCards() (used throughout this file) makes, and
+  // attachCanonicalTerminationFeeServing() is the actual served wire path.
+  assert.deepEqual(serving.canonicalTerminationFeeCardsForDeal(serving.QXO_TOPBUILD_DEAL_ID), cards);
+  const key = serving.CANONICAL_V2_TERMINATION_FEE_SERVING_ENV_KEY;
+  const on = serving.CANONICAL_V2_TERMINATION_FEE_SERVING_ENABLED_VALUE;
+  const served = serving.attachCanonicalTerminationFeeServing(
     { dealId: serving.QXO_TOPBUILD_DEAL_ID, cards: [] },
     { env: { [key]: on } },
   );
-  assert.equal(recovered[STATUS_FIELD].state, 'ATTACHED');
-  assert.ok(recovered[CARDS_FIELD].length > 0);
+  assert.equal(served[SERVING_FIELD], true);
+  assert.deepEqual(served[CARDS_FIELD], cards);
+  assert.equal(served[STATUS_FIELD].state, 'ATTACHED');
+
+  // And it is the real reviewed fee, not a stub: the pinned $600,000,000
+  // company termination fee amount and all five real triggers, on the
+  // TERMF-TARGET card.
+  const feeCard = cards.find((card) => card.provision_subtype === 'TERMF-TARGET');
+  assert.ok(feeCard, 'the real source must produce the company termination fee card');
+  assert.equal(feeCard.features.companyTerminationFee.amount, '$600,000,000');
+  assert.equal(feeCard.features.companyTerminationFee.triggers.length, 5);
 });

@@ -150,14 +150,30 @@ test('malformed JSON is a typed failure, not an empty success', async () => {
   );
 });
 
-test('native extraction accepts only complete literal JSON objects and retains a rejected raw response', async () => {
+test('native extraction tolerates wrapped JSON: markdown fences, leading prose, and trailing commentary', async () => {
   const complete = JSON.stringify(wellFormedResponse());
-  const rejectedResponses = [
-    '{"representation_instances":[],"bring_down_conditions":[],"open_world_candidates":[],"truncated":',
-    `${complete}\nexplanation`,
-    `\`\`\`json\n${complete}\n\`\`\``,
-  ];
-  for (const response of rejectedResponses) {
+  const acceptedResponses = {
+    'bare object with incidental surrounding whitespace': `\n ${complete}\t`,
+    'fenced in a triple-backtick json code block': `\`\`\`json\n${complete}\n\`\`\``,
+    'fenced in a bare triple-backtick block with no language tag': `\`\`\`\n${complete}\n\`\`\``,
+    'a leading prose sentence before the object': `Here is the JSON you requested:\n\n${complete}`,
+    'trailing commentary after the object': `${complete}\nLet me know if you need anything else!`,
+    'leading prose, a fence, and trailing commentary together':
+      `Here is the JSON:\n\`\`\`json\n${complete}\n\`\`\`\nHope that helps!`,
+  };
+  for (const [label, response] of Object.entries(acceptedResponses)) {
+    // eslint-disable-next-line no-await-in-loop
+    const result = await runProvider({ model: 'test-model', client: stubClientReturning(response) });
+    assert.ok(result.proposals.length >= 4, `expected proposals for case: ${label}`);
+  }
+});
+
+test('native extraction rejects a truncated object and a response with no JSON at all, retaining the raw response', async () => {
+  const rejectedResponses = {
+    'truncated mid-object': '{"representation_instances":[],"bring_down_conditions":[],"open_world_candidates":[],"truncated":',
+    'no JSON object anywhere in the text': 'The model declined to produce structured output for this section.',
+  };
+  for (const [label, response] of Object.entries(rejectedResponses)) {
     // eslint-disable-next-line no-await-in-loop
     await assert.rejects(
       () => runProvider({ model: 'test-model', client: stubClientReturning(response), maxRetries: 0 }),
@@ -165,13 +181,32 @@ test('native extraction accepts only complete literal JSON objects and retains a
         assert.ok(error instanceof NativeProducerAnthropicError);
         assert.equal(error.code, 'RETRIES_EXHAUSTED');
         assert.equal(error.details.last_code, 'MALFORMED_RESPONSE');
-        assert.equal(error.details.provider_output.raw_response_text, response);
+        assert.equal(error.details.provider_output.raw_response_text, response, `raw response preserved for: ${label}`);
         return true;
       },
     );
   }
-  const result = await runProvider({ model: 'test-model', client: stubClientReturning(`\n ${complete}\t`) });
-  assert.ok(result.proposals.length >= 4);
+});
+
+test('two independent JSON objects in one response is ambiguous and fails rather than picking one', async () => {
+  const complete = JSON.stringify(wellFormedResponse());
+  const decoy = '{"note":"an example shape, not the answer"}';
+  const response = `Here is an example shape: ${decoy}\n\nAnd here is the real answer: ${complete}`;
+  await assert.rejects(
+    () => runProvider({ model: 'test-model', client: stubClientReturning(response), maxRetries: 0 }),
+    (error) => {
+      assert.ok(error instanceof NativeProducerAnthropicError);
+      assert.equal(error.code, 'RETRIES_EXHAUSTED');
+      assert.equal(error.details.last_code, 'MALFORMED_RESPONSE');
+      assert.equal(error.details.last_details.candidate_object_count, 2);
+      assert.equal(
+        error.details.provider_output.raw_response_text,
+        response,
+        'the ambiguous raw response is preserved even though it could not be resolved',
+      );
+      return true;
+    },
+  );
 });
 
 test('a response missing a required top-level key is a typed failure', async () => {
@@ -214,7 +249,7 @@ test('a transient call failure followed by success still produces proposals', as
     },
   };
 
-  const { proposals } = await runProvider({ model: 'test-model', client, maxRetries: 1 });
+  const { proposals } = await runProvider({ model: 'test-model', client, maxRetries: 1, retryBackoffMs: 1 });
   assert.equal(calls, 2, 'expected exactly one retry after the transient failure');
   assert.ok(proposals.length >= 4);
 });
@@ -231,7 +266,7 @@ test('exhausted retries on a persistently failing call surface a typed failure',
   };
 
   await assert.rejects(
-    () => runProvider({ model: 'test-model', client, maxRetries: 1 }),
+    () => runProvider({ model: 'test-model', client, maxRetries: 1, retryBackoffMs: 1 }),
     (error) => {
       assert.ok(error instanceof NativeProducerAnthropicError);
       assert.equal(error.code, 'RETRIES_EXHAUSTED');
@@ -241,6 +276,98 @@ test('exhausted retries on a persistently failing call surface a typed failure',
     },
   );
   assert.equal(calls, 2, 'expected exactly maxRetries + 1 attempts');
+});
+
+test('a malformed response is retried, and a later attempt that parses succeeds', async () => {
+  let calls = 0;
+  const client = {
+    messages: {
+      async create() {
+        calls += 1;
+        if (calls === 1) return { content: [{ text: 'Sorry, I cannot produce that right now.' }] };
+        return { content: [{ text: JSON.stringify(wellFormedResponse()) }] };
+      },
+    },
+  };
+
+  const { proposals } = await runProvider({
+    model: 'test-model', client, maxRetries: 1, retryBackoffMs: 1,
+  });
+  assert.equal(calls, 2, 'expected exactly one retry after the malformed first response');
+  assert.ok(proposals.length >= 4);
+});
+
+test('retries exhaust and fail cleanly, preserving the raw response from the final attempt', async () => {
+  let calls = 0;
+  const client = {
+    messages: {
+      async create() {
+        calls += 1;
+        return { content: [{ text: `malformed attempt number ${calls}` }] };
+      },
+    },
+  };
+
+  await assert.rejects(
+    () => runProvider({ model: 'test-model', client, maxRetries: 2, retryBackoffMs: 1 }),
+    (error) => {
+      assert.ok(error instanceof NativeProducerAnthropicError);
+      assert.equal(error.code, 'RETRIES_EXHAUSTED');
+      assert.equal(error.details.attempts, 3);
+      assert.equal(error.details.last_code, 'MALFORMED_RESPONSE');
+      assert.equal(
+        error.details.provider_output.raw_response_text,
+        'malformed attempt number 3',
+        'the raw text of the final failed attempt is preserved, not an earlier one',
+      );
+      return true;
+    },
+  );
+  assert.equal(calls, 3, 'expected exactly maxRetries + 1 attempts, none skipped');
+});
+
+test('retry backoff actually delays before the next attempt, rather than retrying instantly', async () => {
+  const alwaysMalformedClient = () => ({
+    messages: {
+      async create() {
+        return { content: [{ text: 'not json' }] };
+      },
+    },
+  });
+
+  const zeroBackoffStart = Date.now();
+  await assert.rejects(() => runProvider({
+    model: 'test-model', client: alwaysMalformedClient(), maxRetries: 2, retryBackoffMs: 0,
+  }));
+  const zeroBackoffElapsedMs = Date.now() - zeroBackoffStart;
+
+  const baseMs = 40;
+  const factor = 2;
+  const realBackoffStart = Date.now();
+  await assert.rejects(() => runProvider({
+    model: 'test-model',
+    client: alwaysMalformedClient(),
+    maxRetries: 2,
+    retryBackoffMs: baseMs,
+    retryBackoffFactor: factor,
+  }));
+  const realBackoffElapsedMs = Date.now() - realBackoffStart;
+
+  // maxRetries: 2 means two retries fire (three attempts total), so two
+  // backoff delays are awaited in sequence: baseMs, then baseMs * factor.
+  // The assertion uses a generous lower bound rather than the full
+  // theoretical sum, so it stays robust against timer-scheduling slop on a
+  // loaded machine while still proving the delay is real, not spinning.
+  const expectedMinimumMs = (baseMs + baseMs * factor) * 0.7;
+  assert.ok(
+    realBackoffElapsedMs >= expectedMinimumMs,
+    `expected at least ~${expectedMinimumMs}ms with backoff enabled, measured ${realBackoffElapsedMs}ms`,
+  );
+  assert.ok(
+    realBackoffElapsedMs > zeroBackoffElapsedMs,
+    `backoff-enabled run (${realBackoffElapsedMs}ms) should take meaningfully longer than `
+      + `the zero-backoff run (${zeroBackoffElapsedMs}ms)`,
+  );
 });
 
 test('the same stubbed response produces a byte-identical receipt and proposal set across two independent runs', async () => {

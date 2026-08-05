@@ -214,13 +214,14 @@ const FILE_PATTERN_EXEMPTIONS = {
     'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
     'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
   ],
-  // Same class: the 2026-08-05 parseUsdAmount regression suite drives
-  // executeMarketRange() with two real registry field_paths
-  // (feePctOfDealValue, the derived percentage field, and
-  // companyTerminationFee, the raw "usd"-typed field -- both route through
-  // the same ambiguity-rejecting numericValue()) to prove the row-inclusion
-  // guard behaves identically for both. Both literal payloads are the
-  // executor's real request shape; production query code stays covered.
+  // Same class: the 2026-08-05 parseUsdAmount regression suite (and its
+  // later-that-day consolidation onto lib/parse-money.js) drives
+  // executeMarketRange() with real registry field_paths -- feePctOfDealValue
+  // and reverseFeePctOfDealValue (the derived percentage fields) and
+  // companyTerminationFee (the raw "usd"-typed field) -- all routing through
+  // the same ambiguity-rejecting parse path, to prove the row-inclusion guard
+  // behaves correctly for each. Literal payloads are the executor's real
+  // request shape; production query code stays covered.
   'tests/derived-fields.test.js': [
     'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
     'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',

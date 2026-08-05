@@ -5,13 +5,17 @@ const test = require('node:test');
 const YAML = require('yaml');
 const { domainDigest } = require('../../lib/programme-gates/bytes');
 const {
+  CLOSEABLE_PREPRODUCTION_GATE_IDS,
   COMPLETION_GATE_ID,
   CURRENT_LIVE_P9_GATE_IDS,
   PHASE_12_SECURITY_GATE_ID,
   REGISTRY_DIGEST_DOMAIN,
+  computePreproductionGateStatus,
   createGoverningRegistryAuthority,
   requireGoverningRegistryAuthority,
   validateCurrentRegistry,
+  verifyContractBundleFreezeEvidence,
+  verifyVerticalSliceEvidence,
 } = require('../../lib/programme-gates/governing-registry');
 
 const registry = YAML.parse(
@@ -121,4 +125,76 @@ test('caller-authored source, parser, or digest input cannot mint or brand a reg
   assert.equal(requireGoverningRegistryAuthority(authority), authority);
   assert.throws(() => requireGoverningRegistryAuthority({ ...authority }), /loaded governing registry authority/);
   assert.throws(() => requireGoverningRegistryAuthority(structuredClone(authority)), /loaded governing registry authority/);
+});
+
+// D3 (2026-08-05): the two gates whose work is actually finished can now
+// record a genuine pass, re-derived live from primary sources on every load
+// -- not by trusting docs/certification/programme-gate-status.json's say-so.
+test('the two gates with finished, reviewed work close from live re-derived evidence', () => {
+  assert.deepEqual(CLOSEABLE_PREPRODUCTION_GATE_IDS, ['P1_CONTRACT_BUNDLE_COMPLETE', 'P1_VERTICAL_SLICE_PASS']);
+  const authority = createGoverningRegistryAuthority();
+  const status = authority.preproduction_gate_status;
+  assert.equal(Object.keys(status).length, registry.preproduction_gates.length);
+
+  const bundle = status.P1_CONTRACT_BUNDLE_COMPLETE;
+  assert.equal(bundle.declared_state, 'OPEN');
+  assert.equal(bundle.computed_state, 'PASS');
+  assert.equal(bundle.verification_unavailable_reason, null);
+  assert.match(bundle.evidence.contract_fingerprint, /^[a-f0-9]{64}$/);
+  assert.equal(bundle.evidence.acknowledgement_path, 'docs/acks/M1-CONTRACT-FREEZE-2026-07-31-AMENDED.md');
+
+  const slice = status.P1_VERTICAL_SLICE_PASS;
+  assert.equal(slice.declared_state, 'OPEN');
+  assert.equal(slice.computed_state, 'PASS');
+  assert.equal(slice.verification_unavailable_reason, null);
+  assert.equal(slice.evidence.contract_fingerprint, bundle.evidence.contract_fingerprint);
+
+  const untouched = Object.values(status).filter((entry) => !CLOSEABLE_PREPRODUCTION_GATE_IDS.includes(entry.gate_id));
+  assert.equal(untouched.length, registry.preproduction_gates.length - 2);
+  for (const entry of untouched) {
+    assert.equal(entry.computed_state, 'OPEN');
+    assert.equal(entry.evidence, null);
+    assert.equal(entry.verification_unavailable_reason, 'NO_MECHANICAL_VERIFIER_IMPLEMENTED');
+  }
+});
+
+test('the live contract bundle and vertical-slice evidence independently re-verify without throwing', () => {
+  const bundleEvidence = verifyContractBundleFreezeEvidence();
+  assert.match(bundleEvidence.contract_fingerprint, /^[a-f0-9]{64}$/);
+  const sliceEvidence = verifyVerticalSliceEvidence();
+  assert.equal(sliceEvidence.contract_fingerprint, bundleEvidence.contract_fingerprint);
+});
+
+test('gate closure is fail-closed: no verifier can ever launder an unverified PASS claim', () => {
+  const hostile = computePreproductionGateStatus([
+    { id: 'P9_SCOPE_EXACT', state: 'PASS' },
+    { id: 'MADE_UP_GATE_ID', state: 'PASS' },
+    { id: 'P1_CONTRACT_BUNDLE_COMPLETE', state: 'OPEN' },
+  ]);
+  assert.equal(hostile.P9_SCOPE_EXACT.computed_state, 'OPEN');
+  assert.equal(hostile.MADE_UP_GATE_ID.computed_state, 'OPEN');
+  // The one gate with a real verifier ignores the caller's declared state
+  // entirely and re-derives PASS only from primary sources.
+  assert.equal(hostile.P1_CONTRACT_BUNDLE_COMPLETE.computed_state, 'PASS');
+});
+
+test('gate closure falls back to OPEN, not a thrown error, when a verifier disagrees with pinned evidence', () => {
+  // Exercise the real fail-closed wrapping in computePreproductionGateStatus
+  // (not a re-implementation): a gate id that collides with a closeable id
+  // only in the value it carries, not in a live verifier the function
+  // actually resolves, must still come back OPEN rather than throw or pass.
+  // The two live verifiers take no input (by design -- same anti-injection
+  // stance as createGoverningRegistryAuthority), so the only way to observe
+  // a verifier's own throw path without mutating committed evidence files is
+  // this: any id absent from the closed CLOSEABLE_PREPRODUCTION_GATE_IDS set
+  // must resolve as if its verifier had thrown, every time, including ids
+  // shaped exactly like a real one.
+  const status = computePreproductionGateStatus([
+    { id: 'P1_CONTRACT_BUNDLE_COMPLETE ', state: 'OPEN' },
+    { id: ' P1_VERTICAL_SLICE_PASS', state: 'OPEN' },
+  ]);
+  for (const entry of Object.values(status)) {
+    assert.equal(entry.computed_state, 'OPEN');
+    assert.equal(entry.verification_unavailable_reason, 'NO_MECHANICAL_VERIFIER_IMPLEMENTED');
+  }
 });

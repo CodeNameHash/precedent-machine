@@ -22,14 +22,24 @@
 //      merely mentions "superior proposal" leak into the rights table.
 //      Narrowed to the same "no other family has claimed this card" guard
 //      already applied to termination-fees.config.js#isTerminationFee().
+//   4. Extended same-day: the rights table's OWN cross-cutting
+//      "Willful-breach exception" row (CROSS_CUTTING_ROWS) carried the
+//      identical conflation and was, at first, only narrowed to TERMF-SOLE
+//      -- closing the wrong-answer defect but opening a gap (a deal whose
+//      only carve-out was to TERMF-EFFECT showed nothing in that group at
+//      all). Asked whether to extend the fee table's split here too, the
+//      owner ruled yes. Same split, same code-scoping mechanism, second
+//      table.
 //
 // This file proves: the two willful-breach rows are independently populated,
 // in either card order; the fee-required row renders in the rights table and
 // never in the fee table, with prose preserved where prose was stored; a
 // no-shop/fee card mentioning "superior proposal" no longer lands in the
 // rights table while a genuine subtype-less rights card is still caught; all
-// four fee-table serving modes still work; and no row id collides with the
-// review-row-binding registry.
+// four fee-table serving modes still work; the rights table's own
+// willful-breach cross-cutting row is likewise split into two
+// independently-scoped rows, closing the effect-of-termination gap; and no
+// row id collides with the review-row-binding registry.
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -420,24 +430,22 @@ test('row identity: neither table produces a duplicate id, and none of the new/m
 });
 
 // ---------------------------------------------------------------------------
-// 6. The RIGHTS table's OWN 'willful-breach' cross-cutting row
+// 6. The RIGHTS table's OWN willful-breach cross-cutting rows (owner ruling 4)
 // ---------------------------------------------------------------------------
 //
-// NOT an owner ruling above -- the owner's 2026-08-05 ruling (section 1) named
-// the FEE table's row, then labelled "Willful-breach exception" with no
-// qualifier. termination-rights.config.js#CROSS_CUTTING_ROWS' own
-// 'termination-rights-willful-breach' row has the IDENTICAL defect
+// termination-rights.config.js#CROSS_CUTTING_ROWS' own
+// 'termination-rights-willful-breach' row had the IDENTICAL defect
 // (willfulBreachException read, unscoped, over TERMF-EFFECT/TERMF-SOLE cards
-// that share the key but mean different things) and was deliberately left
-// alone at the time, because the ruling named a differently-labelled row the
-// owner had not seen. Closed now, the same way: scoped to its own code
-// (TERMF-SOLE -- see termination-rights.config.js's CROSS_CUTTING_ROWS
-// comment for why that code and not TERMF-EFFECT), never a second row.
+// that share the key but mean different things). It was first narrowed to
+// TERMF-SOLE only, which fixed the wrong-answer defect but opened a gap: a
+// deal whose only carve-out was to TERMF-EFFECT rendered nothing in this
+// group. The owner has now ruled to close that gap the same way the fee
+// table did: two rows, each scoped to its own code.
 
-test('rights willful-breach: unguarded, card order alone decided which legally distinct fact rendered (the defect, reproduced)', () => {
-  // firstCardWithFeature() as it read before this fix -- no code scoping at
-  // all, first card in array order with a non-null willfulBreachException
-  // wins, whichever family it belongs to.
+test('rights willful-breach: unguarded, card order alone decided which legally distinct fact rendered (the defect the split fixes)', () => {
+  // firstCardWithFeature() as it read with no code scoping at all -- first
+  // card in array order with a non-null willfulBreachException wins,
+  // whichever family it belongs to.
   function unguardedFirstCardWithFeature(cards, keys) {
     for (const card of cards || []) {
       const f = card.features || {};
@@ -457,40 +465,53 @@ test('rights willful-breach: unguarded, card order alone decided which legally d
   assert.notEqual(firstOrder.raw, secondOrder.raw, 'the unguarded lookup answers differently depending on array order alone');
 });
 
-test('rights willful-breach: a TERMF-SOLE card populates the row', async () => {
+test('rights willful-breach: a TERMF-EFFECT-only card populates ONLY the effect row -- the gap this split closes', async () => {
+  const mod = await rightsConfig();
+  // Before this fix, a TERMF-EFFECT-only deal rendered NOTHING in this
+  // group: the row was scoped to TERMF-SOLE only, so an EFFECT-only carve-
+  // out had no row anywhere in the table. This is the gap the owner's
+  // extension ruling closes.
+  const group = mod.crossCuttingGroup({ cards: [termfEffectCard(true)] });
+  assert.ok(group, 'the group must now render for a TERMF-EFFECT-only deal');
+  const effect = group.rows.find((row) => row.id === 'termination-rights-willful-breach-effect');
+  const sole = group.rows.find((row) => row.id === 'termination-rights-willful-breach-sole');
+  assert.ok(effect, 'the effect-of-termination carve-out row must render');
+  assert.equal(effect.label, 'Willful-breach carve-out', 'label derives from rubric.js TERMF-EFFECT wording');
+  assert.equal(effect.sourceCard.provision_subtype, 'TERMF-EFFECT');
+  assert.equal(effect.value[0], 'Yes');
+  assert.equal(sole, undefined, 'the sole-remedy row must NOT render -- there is no TERMF-SOLE card');
+});
+
+test('rights willful-breach: a TERMF-SOLE-only card populates ONLY the sole-remedy row', async () => {
   const mod = await rightsConfig();
   const group = mod.crossCuttingGroup({ cards: [termfSoleCard(true)] });
-  const willful = group.rows.find((row) => row.id === 'termination-rights-willful-breach');
-  assert.ok(willful, 'the row must render from a real TERMF-SOLE card');
-  assert.equal(willful.sourceCard.provision_subtype, 'TERMF-SOLE');
-  assert.equal(willful.featureKeys[0], 'willfulBreachException');
+  const effect = group.rows.find((row) => row.id === 'termination-rights-willful-breach-effect');
+  const sole = group.rows.find((row) => row.id === 'termination-rights-willful-breach-sole');
+  assert.equal(effect, undefined, 'the effect-of-termination row must NOT render -- there is no TERMF-EFFECT card');
+  assert.ok(sole, 'the row must render from a real TERMF-SOLE card');
+  assert.equal(sole.label, 'Willful-breach carve-out to sole remedy', 'label derives from rubric.js TERMF-SOLE wording');
+  assert.equal(sole.sourceCard.provision_subtype, 'TERMF-SOLE');
+  assert.equal(sole.featureKeys[0], 'willfulBreachException');
 });
 
-test('rights willful-breach: a TERMF-EFFECT-only card no longer populates the row (the stated trade)', async () => {
-  const mod = await rightsConfig();
-  // Before this fix, an unscoped search would have found this card (it is
-  // the ONLY card with the feature) and rendered its fact under the
-  // sole-remedy-labelled row -- a legally wrong attribution, not merely an
-  // absent one. Scoped, the row correctly renders nothing rather than
-  // mislabelling a different fact as this one.
-  // No TERMF-SOLE card and no specificPerformanceMutual card at all -- the
-  // whole group collapses to null (crossReferenceGroup's own "no rows at
-  // all" contract), which is itself part of the proof: the TERMF-EFFECT
-  // card's fact does not survive anywhere in this cross-reference group.
-  const group = mod.crossCuttingGroup({ cards: [termfEffectCard(true)] });
-  assert.equal(group, null, 'a TERMF-EFFECT-only card must not populate the TERMF-SOLE-scoped row, or any other row in the group');
-});
-
-test('rights willful-breach: both facts present, in EITHER card order, the row always reads TERMF-SOLE -- never TERMF-EFFECT', async () => {
+// The regression test: both facts present with DIFFERENT values, in EITHER
+// card order. Before the split, an unscoped search meant whichever card
+// sorted first silently decided the single row's answer; a TERMF-SOLE-only
+// scope fixed that but at the cost of the effect row entirely. Now each row
+// is scoped to its own code, so both answers render and neither can move.
+test('rights willful-breach: both facts render independently and correctly regardless of card order', async () => {
   const mod = await rightsConfig();
   for (const cards of [
     [termfEffectCard(true), termfSoleCard(false)],
     [termfSoleCard(false), termfEffectCard(true)],
   ]) {
     const group = mod.crossCuttingGroup({ cards });
-    const willful = group.rows.find((row) => row.id === 'termination-rights-willful-breach');
-    assert.equal(willful.sourceCard.provision_subtype, 'TERMF-SOLE', 'must read TERMF-SOLE regardless of array order');
-    assert.equal(willful.value[0], 'No', 'must read TERMF-SOLE\'s own value (false), never TERMF-EFFECT\'s (true)');
+    const effect = group.rows.find((row) => row.id === 'termination-rights-willful-breach-effect');
+    const sole = group.rows.find((row) => row.id === 'termination-rights-willful-breach-sole');
+    assert.equal(effect.sourceCard.provision_subtype, 'TERMF-EFFECT', 'effect row must read TERMF-EFFECT, never TERMF-SOLE, whatever the array order');
+    assert.equal(sole.sourceCard.provision_subtype, 'TERMF-SOLE', 'sole row must read TERMF-SOLE, never TERMF-EFFECT, whatever the array order');
+    assert.equal(effect.value[0], 'Yes', 'effect row must read TERMF-EFFECT\'s own value (true), never TERMF-SOLE\'s (false)');
+    assert.equal(sole.value[0], 'No', 'sole row must read TERMF-SOLE\'s own value (false), never TERMF-EFFECT\'s (true)');
   }
 });
 
@@ -502,8 +523,32 @@ test('rights willful-breach: the real end-to-end pipeline (terminationRightsConf
   ]) {
     const rows = mod.terminationRightsConfig.selectRows({ cards });
     const remedies = rows[0].groups.find((g) => g.id === 'remedies');
-    const willful = remedies.rows.find((row) => row.id === 'termination-rights-willful-breach');
-    assert.equal(willful.sourceCard.provision_subtype, 'TERMF-SOLE');
+    const effect = remedies.rows.find((row) => row.id === 'termination-rights-willful-breach-effect');
+    const sole = remedies.rows.find((row) => row.id === 'termination-rights-willful-breach-sole');
+    assert.equal(effect.sourceCard.provision_subtype, 'TERMF-EFFECT');
+    assert.equal(sole.sourceCard.provision_subtype, 'TERMF-SOLE');
+  }
+});
+
+test('rights willful-breach: row ids are distinct and neither collides with the pre-split id', async () => {
+  const mod = await rightsConfig();
+  const group = mod.crossCuttingGroup({ cards: [termfEffectCard(true), termfSoleCard(true)] });
+  const ids = group.rows.map((row) => row.id);
+  assert.equal(new Set(ids).size, ids.length, 'no two rows in the group may share an id');
+  assert.deepEqual(ids.filter((id) => id.includes('willful-breach')).sort(), [
+    'termination-rights-willful-breach-effect',
+    'termination-rights-willful-breach-sole',
+  ]);
+  assert.equal(ids.includes('termination-rights-willful-breach'), false, 'the old single-row id must no longer be produced');
+});
+
+test('rights willful-breach: neither new row id is bound by the review-row-binding registry', async () => {
+  const boundRowIds = F4_REVIEW_ROW_BINDING_RULES.filter((rule) => rule.review.identity_kind === 'ROW_ID').map((rule) => rule.review.identity_value);
+  // The pre-split id was never bound either (confirmed here, not merely
+  // asserted), so nothing needed preserving when it was renamed.
+  assert.equal(boundRowIds.includes('termination-rights-willful-breach'), false);
+  for (const id of ['termination-rights-willful-breach-effect', 'termination-rights-willful-breach-sole']) {
+    assert.equal(boundRowIds.includes(id), false, `${id} must not collide with a bound review row`);
   }
 });
 

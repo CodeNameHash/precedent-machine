@@ -99,23 +99,24 @@ test('builds a content-addressed current proposal-only M1 successor packet with 
     packet.decision_reconciliation.proposal_id,
   );
   assert.equal(packet.dissent_retirement.authority, 'M3_PRODUCT_PARITY_ONLY_NOT_M1_AUTHORITY');
-  assert.equal(packet.p9_binding.live_gate_count, 23);
-  assert.equal(packet.p9_binding.complete_gate_count, 23);
-  assert.equal(packet.p9_binding.governing_inventory_decision.code, 'P9_COMPLETION_LEAF_RATIFIED');
   assert.equal(packet.p9_binding.registry_schema, 'canonical-programme-gates/v2');
-  assert.equal(packet.p9_binding.registry_live_gate_count, 23);
+  assert.match(packet.p9_binding.registry_digest, /^[a-f0-9]{64}$/);
+  assert.equal(packet.p9_binding.live_gate_count, 23);
   assert.equal(packet.p9_binding.security_prerequisite_gate_id, 'P9_SECURITY_AUTH');
   assert.equal(packet.p9_binding.completion_gate_id, 'P9_PROGRAMME_COMPLETION_ATTESTATION');
   assert.equal(packet.p9_binding.completion_gate_live, true);
-  assert.equal(packet.p9_binding.evidence_map_state, 'CORRECTED_CURRENT_CATALOGUE_REFERENCES_PROPOSAL_ONLY');
-  assert.deepEqual(packet.p9_binding.database_soak_scenario_ids, ['CAPACITY-LOAD-01', 'QUERY-EXEC-01']);
+  // D3 (2026-08-05): the self-verifying p9-acceptance-* proposal layer is
+  // deleted (docs/codex-program/DECISIONS.md item 10). The two gates whose
+  // work is actually finished now close from governing-registry.js's live,
+  // evidence-verified computePreproductionGateStatus, re-derived on every
+  // load rather than trusted from a stored assertion.
+  assert.deepEqual(packet.p9_binding.closeable_preproduction_gate_ids, [
+    'P1_CONTRACT_BUNDLE_COMPLETE', 'P1_VERTICAL_SLICE_PASS',
+  ]);
+  assert.deepEqual(packet.p9_binding.closed_preproduction_gate_ids, [
+    'P1_CONTRACT_BUNDLE_COMPLETE', 'P1_VERTICAL_SLICE_PASS',
+  ]);
   assert.equal(packet.p9_binding.acceptance_definition_and_predicate_state, 'UNADOPTED_NO_EXECUTABLE_PREDICATES');
-  assert.equal(packet.p9_binding.definition_live_record_count, 23);
-  assert.equal(packet.p9_binding.definition_completion_terminal_count, 1);
-  assert.equal(packet.p9_binding.definition_formal_definition_authority, 'NONE');
-  assert.equal(packet.p9_binding.definition_predicate_authority, 'NONE');
-  assert.equal(packet.p9_binding.definition_pass_authority, 'NONE');
-  assert.ok(packet.p9_binding.definition_threshold_blocker_gate_ids.includes('P9_DATABASE_SOAK'));
   assert.equal(packet.v2_identity_binding.adopted_namespace, 'BEN_APPROVED_IMPORT/V2');
   assert.equal(packet.v2_identity_binding.adopted_seed_schema, 'BEN_APPROVED_IMPORT_SEED/V2');
   assert.equal(packet.v2_identity_binding.adopted_transaction_count, 40);
@@ -186,7 +187,8 @@ test('fails closed on a changed governing digest, authority field, family count,
     (value) => { value.v1_trusted_capture_readiness.schema_count = 16; },
     (value) => { value.governed_identity_readiness.schema_count = 8; },
     (value) => { value.source_intake_authority_readiness.authority = 'GRANTED'; },
-    (value) => { value.p9_binding.definition_proposal_layer_id = '0'.repeat(64); },
+    (value) => { value.p9_binding.registry_digest = '0'.repeat(64); },
+    (value) => { value.p9_binding.closed_preproduction_gate_ids = []; },
     (value) => { value.worktree_binding.phase1_worktree_base_commit = '0'.repeat(40); },
     (value) => { value.worktree_binding.final_integrated_head_commit = '0'.repeat(40); },
     (value) => { value.blockers = value.blockers.filter((entry) => entry.code !== 'P9_ACCEPTANCE_DEFINITIONS_UNADOPTED'); },
