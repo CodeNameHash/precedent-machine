@@ -1,0 +1,103 @@
+{
+ "schema_version": "CANONICAL_V2_TERMINATION_PRODUCT_PROJECTION/V1",
+ "cards": [
+  {
+   "ai_metadata": {
+    "features": {
+     "companyTerminationFee": {
+      "amount": "$600,000,000",
+      "triggers": [
+       {
+        "code": "CHANGE_IN_RECOMMENDATION_TERMINATION",
+        "label": "Change in recommendation",
+        "text": "the Company Board shall have made a Company Adverse Recommendation Change"
+       },
+       {
+        "code": "STOCKHOLDER_APPROVAL_FAILURE_TERMINATION",
+        "label": "Stockholder approval failure",
+        "text": "the Company Stockholder Approval shall not have been obtained by reason of the failure to obtain the required vote at the Company Stockholder Meeting duly convened (or any adjournment or postponement thereof)"
+       },
+       {
+        "code": "NO_SOLICIT_BREACH_TERMINATION",
+        "label": "No-solicitation breach",
+        "text": "the Company or any of its Representatives (acting on behalf of the Company) materially breaches its obligations under Section 4.3 and, in the case of this clause (ii), such breach is not curable or, if curable is not cured prior to the earlier of (A) the fifth business day after written notice thereof is given by Parent to the Company and (B) the date that is three business days prior to the Outside Date"
+       },
+       {
+        "code": "COUNTERPARTY_COVENANT_BREACH_TERMINATION",
+        "label": "Counterparty covenant breach",
+        "text": "a breach of any other covenant or agreement of this Agreement"
+       },
+       {
+        "code": "INTERVENING_EVENT_RECOMMENDATION_CHANGE_TERMINATION",
+        "label": "Intervening-event recommendation change",
+        "text": "(D) by Parent pursuant to the provisions of Section 6.4(a)(i)(B) (and the Company Stockholder Approval shall not theretofore have been obtained)"
+       }
+      ]
+     },
+     "feeAmount": "$600,000,000"
+    }
+   },
+   "canonical_v2_lineage": {
+    "claim_definition_keys": [
+     "TERMINATION_FEE_AMOUNT",
+     "TERMINATION_FEE_TRIGGER"
+    ],
+    "claim_revision_ids": [
+     "canonical-v2:termf:qxo-topbuild:company-termination-fee:TERMINATION_FEE_AMOUNT:0",
+     "canonical-v2:termf:qxo-topbuild:company-termination-fee:TERMINATION_FEE_TRIGGER:1",
+     "canonical-v2:termf:qxo-topbuild:company-termination-fee:TERMINATION_FEE_TRIGGER:2",
+     "canonical-v2:termf:qxo-topbuild:company-termination-fee:TERMINATION_FEE_TRIGGER:3",
+     "canonical-v2:termf:qxo-topbuild:company-termination-fee:TERMINATION_FEE_TRIGGER:4",
+     "canonical-v2:termf:qxo-topbuild:company-termination-fee:TERMINATION_FEE_TRIGGER:5",
+     "canonical-v2:termf:qxo-topbuild:company-termination-fee:TERMINATION_FEE_TRIGGER:6"
+    ],
+    "source": "CANONICAL_V2_NATIVE_CLAIM"
+   },
+   "deal_id": "7dc3a05f-b170-4d59-a255-b7103cca16e1",
+   "excerpt_id": "native:canonical-v2:termf:qxo-topbuild:company-termination-fee",
+   "features": {
+    "companyTerminationFee": {
+     "amount": "$600,000,000",
+     "triggers": [
+      {
+       "code": "CHANGE_IN_RECOMMENDATION_TERMINATION",
+       "label": "Change in recommendation",
+       "text": "the Company Board shall have made a Company Adverse Recommendation Change"
+      },
+      {
+       "code": "STOCKHOLDER_APPROVAL_FAILURE_TERMINATION",
+       "label": "Stockholder approval failure",
+       "text": "the Company Stockholder Approval shall not have been obtained by reason of the failure to obtain the required vote at the Company Stockholder Meeting duly convened (or any adjournment or postponement thereof)"
+      },
+      {
+       "code": "NO_SOLICIT_BREACH_TERMINATION",
+       "label": "No-solicitation breach",
+       "text": "the Company or any of its Representatives (acting on behalf of the Company) materially breaches its obligations under Section 4.3 and, in the case of this clause (ii), such breach is not curable or, if curable is not cured prior to the earlier of (A) the fifth business day after written notice thereof is given by Parent to the Company and (B) the date that is three business days prior to the Outside Date"
+      },
+      {
+       "code": "COUNTERPARTY_COVENANT_BREACH_TERMINATION",
+       "label": "Counterparty covenant breach",
+       "text": "a breach of any other covenant or agreement of this Agreement"
+      },
+      {
+       "code": "INTERVENING_EVENT_RECOMMENDATION_CHANGE_TERMINATION",
+       "label": "Intervening-event recommendation change",
+       "text": "(D) by Parent pursuant to the provisions of Section 6.4(a)(i)(B) (and the Company Stockholder Approval shall not theretofore have been obtained)"
+      }
+     ]
+    },
+    "feeAmount": "$600,000,000"
+   },
+   "full_text": "\"Company Termination Fee\" shall mean a cash amount equal to $600,000,000.\nthe Company Board shall have made a Company Adverse Recommendation Change\nthe Company Stockholder Approval shall not have been obtained by reason of the failure to obtain the required vote at the Company Stockholder Meeting duly convened (or any adjournment or postponement thereof)\nby Parent pursuant to the provisions of Section 6.4(b) in respect of a (1) breach of the Company's obligations under Section 4.3 (and the Company Stockholder Approval shall not theretofore have been obtained)\nthe Company or any of its Representatives (acting on behalf of the Company) materially breaches its obligations under Section 4.3 and, in the case of this clause (ii), such breach is not curable or, if curable is not cured prior to the earlier of (A) the fifth business day after written notice thereof is given by Parent to the Company and (B) the date that is three business days prior to the Outside Date\na breach of any other covenant or agreement of this Agreement\n(D) by Parent pursuant to the provisions of Section 6.4(a)(i)(B) (and the Company Stockholder Approval shall not theretofore have been obtained)",
+   "id": "canonical-v2:termf:qxo-topbuild:company-termination-fee",
+   "primary_quote": "\"Company Termination Fee\" shall mean a cash amount equal to $600,000,000.\nthe Company Board shall have made a Company Adverse Recommendation Change\nthe Company Stockholder Approval shall not have been obtained by reason of the failure to obtain the required vote at the Company Stockholder Meeting duly convened (or any adjournment or postponement thereof)\nby Parent pursuant to the provisions of Section 6.4(b) in respect of a (1) breach of the Company's obligations under Section 4.3 (and the Company Stockholder Approval shall not theretofore have been obtained)\nthe Company or any of its Representatives (acting on behalf of the Company) materially breaches its obligations under Section 4.3 and, in the case of this clause (ii), such breach is not curable or, if curable is not cured prior to the earlier of (A) the fifth business day after written notice thereof is given by Parent to the Company and (B) the date that is three business days prior to the Outside Date\na breach of any other covenant or agreement of this Agreement\n(D) by Parent pursuant to the provisions of Section 6.4(a)(i)(B) (and the Company Stockholder Approval shall not theretofore have been obtained)",
+   "provision_instance_id": "canonical-v2:termf:qxo-topbuild:company-termination-fee",
+   "provision_subtype": "TERMF-TARGET",
+   "provision_type": "TERMINATION_FEE",
+   "region_full_text": "\"Company Termination Fee\" shall mean a cash amount equal to $600,000,000.\nthe Company Board shall have made a Company Adverse Recommendation Change\nthe Company Stockholder Approval shall not have been obtained by reason of the failure to obtain the required vote at the Company Stockholder Meeting duly convened (or any adjournment or postponement thereof)\nby Parent pursuant to the provisions of Section 6.4(b) in respect of a (1) breach of the Company's obligations under Section 4.3 (and the Company Stockholder Approval shall not theretofore have been obtained)\nthe Company or any of its Representatives (acting on behalf of the Company) materially breaches its obligations under Section 4.3 and, in the case of this clause (ii), such breach is not curable or, if curable is not cured prior to the earlier of (A) the fifth business day after written notice thereof is given by Parent to the Company and (B) the date that is three business days prior to the Outside Date\na breach of any other covenant or agreement of this Agreement\n(D) by Parent pursuant to the provisions of Section 6.4(a)(i)(B) (and the Company Stockholder Approval shall not theretofore have been obtained)",
+   "section_ref": "6.5(b)",
+   "short_title": "TERMF-TARGET",
+   "type": "TERMF"
+  }
+ ]
+}

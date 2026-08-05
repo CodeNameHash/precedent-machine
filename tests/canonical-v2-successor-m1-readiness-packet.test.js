@@ -67,7 +67,7 @@ test('builds a content-addressed current proposal-only M1 successor packet with 
   const packet = buildCurrentSuccessorM1ReadinessPacket({ repository_root: ROOT });
   assert.equal(packet.schema_version, SUCCESSOR_M1_READINESS_PACKET_SCHEMA);
   assert.equal(packet.status, 'PROPOSAL_ONLY_BLOCKED_NOT_M1_AUTHORITY');
-  assert.equal(packet.family_register.family_count, 21);
+  assert.equal(packet.family_register.family_count, 22);
   assert.equal(packet.family_register.raw_status, 'BLOCKED');
   assert.equal(packet.family_register.status, 'BLOCKED');
   assert.equal(packet.family_register.decision_reconciliation_proposal_id, packet.decision_reconciliation.proposal_id);

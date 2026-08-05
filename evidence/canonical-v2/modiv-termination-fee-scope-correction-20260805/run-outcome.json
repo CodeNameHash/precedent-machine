@@ -1,0 +1,39 @@
+{
+  "schema_version": "MODIV_TERMFEE_SCOPE_FIX_RUN_OUTCOME/V1",
+  "status": "FAILED",
+  "script": "scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs",
+  "purpose": "Scope-corrected re-run of TERMINATION_FEE family for Modiv/Global Net Lease: 7.1 + 7.3 + 8.12 pinned together and dispatched under the same TERMINATION_FEE family (prior run pinned 7.3 only). Prior run: evidence/canonical-v2/m3-pilot-20260804-fresh/final-output/execution-result.json, work_item_id modiv-termination-fee-7-3.",
+  "requested_section_references": ["7.1", "7.3", "8.12"],
+  "section_family_assignments": [
+    { "section_reference": "7.1", "family_id": "TERMINATION_FEE" },
+    { "section_reference": "7.3", "family_id": "TERMINATION_FEE" },
+    { "section_reference": "8.12", "family_id": "TERMINATION_FEE" }
+  ],
+  "contract_bundle_version": "compileFixtureContractV34",
+  "model_cli_alias": "sonnet",
+  "max_retries": 0,
+  "run_started_at_utc": "2026-08-05T20:26:32Z",
+  "run_ended_at_utc": "2026-08-05T20:28:00Z",
+  "total_elapsed_ms": 88000,
+  "extraction_wall_clock_ms": 85590,
+  "model_call_count": 1,
+  "model_calls_planned": 3,
+  "failed_on_call_index": 0,
+  "failed_on_section_reference": "7.1",
+  "failure_code": "MALFORMED_RESPONSE",
+  "failure_message": "native producer model call failed after 1 attempt(s): model response must be one complete literal JSON object with no prose or trailing bytes",
+  "failure_site": "lib/canonical-v2/native-producer/anthropic-provider.js:3281-3287 (callModelOnce) -- JSON.parse() is called on the raw response after only leading/trailing WHITESPACE is stripped; there is no markdown-code-fence stripping in this path despite this file's own header claiming a \"tolerant JSON parser\" is used.",
+  "root_cause_diagnosis": {
+    "summary": "Mechanical/extraction-quality failure, NOT a scope or coverage problem, and NOT introduced by this run's scope widening.",
+    "detail": "The model's actual output for Section 7.1 (see native-producer-recorded-response-7.1.json) was well-formed, complete JSON containing exactly one grounded fee_trigger_assertions entry, but the model wrapped it in a ```json ... ``` markdown fence despite the termination-fee prompt's explicit closing instruction ('Return only the JSON object described. No prose, no markdown fences.'). anthropic-provider.js's callModelOnce() has no fence-stripping step, so JSON.parse() threw on the leading backticks and the call was recorded as MALFORMED_RESPONSE. This exact risk is pre-existing and orthogonal to section scope: verified via `git diff`/`git log` that anthropic-provider.js carries no local changes on this branch (last touched by an unrelated commit), so the identical failure could equally have hit a 7.3-only run, on any section, on any day the model happens to fence its output. Confirmed NOT a tracked/known defect (no MALFORMED_RESPONSE entry in known-defect-registry.js or docs/); it is deliberately strict, unit-tested behaviour (tests/canonical-v2-native-provider.test.js) that this one live call happened to trip.",
+    "not_a_retry_situation": "Per the run's own brief, retries are effectively off for this pipeline (maxRetries: 0 was set explicitly, matching every other real live-run script in this repo) and repeated re-invocation was explicitly out of scope for this task. This run was executed exactly once and stopped on the first failure, consuming 1 of the 3 planned model calls."
+  },
+  "real_data_obtained_despite_failure": {
+    "section": "7.1",
+    "file": "native-producer-recorded-response-7.1.json",
+    "summary": "The model, scoped to ONLY Section 7.1's own text (no 7.3, no 8.12 visible in this call), proposed fee_amount_assertions: [] (correctly abstained -- 7.1 states no dollar figures), exactly one fee_trigger_assertions entry (fee_side SELLER, trigger_code SUPERIOR_PROPOSAL_TERMINATION, quote narrowed to the Superior-Proposal-approval language in 7.1(c)(i)), and one open_world_candidates entry for the adjacent 'payment is a condition precedent to termination' sentence (which is the ONLY place in 7.1(c)(i) the literal phrase 'Company Termination Fee' appears -- the model correctly did not fold it into the trigger quote, per the prompt's own quote-narrowing instruction).",
+    "analysis_against_candidate_resolution.js": "candidate-resolution.js's feeSideCorroboratedSides() requires the SAME quote to literally contain /\\bCompany (?:shall|will) pay\\b/i, /payment required to be made by the Company/i, or /Company Termination Fee/ -- none of which appear in this narrowed trigger quote. Read against the resolver's current, unmodified logic, this candidate would very likely have routed to FEE_SIDE_UNCORROBORATED even though the model's fee_side call was substantively correct. This is a real, concrete illustration of a tension between the producer prompt's 'narrow the quote to one trigger limb' instruction and the resolver's 'the fee-side corroboration phrase must be inside that same narrowed quote' requirement -- worth a design note independent of this run's pass/fail outcome."
+  },
+  "orphaned_state_check": "No orphaned `node`/`claude -p` processes after the kill+retry cycle (verified via `ps aux`). This script performs plain writeFileSync with no reservation/lock file, so there is no stale-reserved-output-file blocker at this --out-dir path.",
+  "not_attempted": "Sections 7.3 and 8.12 were never called (call 2 and 3 of the planned 3 never started). No comparison against the prior 7.3-only run's trigger/amount outcomes could be completed empirically. No output write-set, resolution, or validation artefacts exist for this run (resolveCandidates/buildNativeWriteSet/validateResolvedCanonicalWriteSet were never reached)."
+}

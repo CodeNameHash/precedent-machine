@@ -45,7 +45,15 @@ const ROW_FAMILY_GROUPS = [
   // REP-T-STOCKAPPROVAL renders as its own row; any future cross-party
   // grouping is a Fable+Ben design item with party-aware pairing, not a
   // rename rider on this table.
-  { label: 'No conflict; consents & approvals', codes: ['REP-T-GOVAPPROVAL', 'REP-T-NOCONFLICT'] },
+  // The retired code stays in this list deliberately. Retirement removes a code
+  // from the extraction prompt so new runs use the successor; it does not
+  // relabel cards already in the database. Verified against production on
+  // 2026-08-05: 17 cards still carry REP-T-CONSENT against 1 on the successor.
+  // Listing only the successor drops those 17 out of this group in compare
+  // mode, so two deals' equivalent consent reps stop pairing, which is the one
+  // thing compare mode exists to do. Remove REP-T-CONSENT here only once the
+  // stored cards have actually been reclassified, not when the code retires.
+  { label: 'No conflict; consents & approvals', codes: ['REP-T-GOVAPPROVAL', 'REP-T-CONSENT', 'REP-T-NOCONFLICT'] },
   { label: 'Anti-corruption & sanctions', codes: ['REP-T-SANCTIONS', 'REP-T-ANTICORR'] },
   { label: 'Jurisdiction & jury waiver', codes: ['MISC-JURY', 'MISC-JURISD'] },
   { label: 'Stockholder meeting & proxy', codes: ['COV-PROXY', 'COV-MEETING'] },

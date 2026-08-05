@@ -5,6 +5,7 @@ import { MarketMetricCell } from './MarketColumn';
 import { buildTypedRowMarketContext } from './rowMarketContext';
 import triggerPresentation from '../../lib/canonical-v2/termination-fee-trigger-presentation';
 import reviewPagination from '../../lib/canonical-v2/review-pagination';
+import { SeeProvisionDisclosure } from '../review/primitives/ProvisionTablePrimitives';
 
 const {
   conditionExpressionView,
@@ -187,16 +188,17 @@ export function TerminationFeeTriggerDetail({ detail }) {
                 {trigger.conditions.map((condition) => <li key={condition}>{condition}</li>)}
               </ul>
             ) : null}
-            <details className="mt-2">
-              <summary className="cursor-pointer text-[9px] font-bold uppercase tracking-[0.08em] text-[#2F6DB5]">
-                Exact trigger evidence
-              </summary>
+            <SeeProvisionDisclosure
+              className="mt-2"
+              triggerClassName="cursor-pointer text-[9px] font-bold uppercase tracking-[0.08em] text-[#2F6DB5]"
+              label="Exact trigger evidence"
+            >
               {trigger.evidence.map((text, index) => (
                 <p key={`${trigger.key}:${index}`} className="mt-2 whitespace-pre-wrap text-[10px] leading-4 text-[#1F1F1F]">
                   {text}
                 </p>
               ))}
-            </details>
+            </SeeProvisionDisclosure>
           </li>
         ))}
       </ol>

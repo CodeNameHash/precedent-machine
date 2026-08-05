@@ -386,7 +386,7 @@ then the honest claim is "the machinery exists and is proven on committed
 fixtures".
 
 **Fixture placement is load-bearing:** all committed fixtures live under
-`tests/fixtures/canonical-v2/dno-live-run/` (the forbidden-patterns
+`tests/fixtures/canonical-v2/dno-fixtures/` (the forbidden-patterns
 PROSE_CLASS_FINGERPRINTS-exempt directory class). Checked against
 `scripts/lint/forbidden-patterns.sh`'s `PROSE_CLASS_FINGERPRINTS` and
 `scopedPatterns` (AUDIT-AMENDED, m-4: corrected from the originally-drafted
@@ -1107,7 +1107,7 @@ bytes, clearly labeled as the pre-rerun harness)
    `c7f36323…`, `e4b70e97…`, `4052eaf1…`, `0f6fce9e…`, `9e16b52c…`,
    `973e6b36…`, `41cc2470…`, `6848fc24…`, `9254f119…`, `edad0ad3…`,
    `219a2167…` committed as LITERAL production bytes under
-   `tests/fixtures/canonical-v2/dno-live-run/`, provenance headers with
+   `tests/fixtures/canonical-v2/dno-fixtures/`, provenance headers with
    deal uuid + provision_card uuid + retrieval date + provision_type/
    subtype — NEVER v1 `section_ref` label strings (the IOC lint pin; and
    here the labels are 38/38 identical rubric strings, so committing them

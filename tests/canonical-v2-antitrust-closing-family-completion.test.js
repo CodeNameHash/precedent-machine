@@ -28,7 +28,7 @@ function entryMatches(entry, text) {
 }
 
 function closingFixtureBodies() {
-  const directory = path.join(FIXTURE_ROOT, 'closing-conditions-live-run');
+  const directory = path.join(FIXTURE_ROOT, 'closing-conditions-fixtures');
   return fs.readdirSync(directory).filter((name) => name.endsWith('.txt')).sort().map((name) => {
     const content = fs.readFileSync(path.join(directory, name), 'utf8');
     const separator = content.indexOf('\n\n');
@@ -39,12 +39,12 @@ function closingFixtureBodies() {
 }
 
 function closingFixtureBody(name) {
-  const content = fs.readFileSync(path.join(FIXTURE_ROOT, 'closing-conditions-live-run', `${name}.txt`), 'utf8');
+  const content = fs.readFileSync(path.join(FIXTURE_ROOT, 'closing-conditions-fixtures', `${name}.txt`), 'utf8');
   return content.slice(content.indexOf('\n\n') + 2).trimEnd();
 }
 
 test('Antitrust map replays grounded multi-deal litigation and regulatory evidence', async () => {
-  const map = JSON.parse(fs.readFileSync(path.join(FIXTURE_ROOT, 'antitrust-regulatory-live-run', 'coverage-map.json'), 'utf8'));
+  const map = JSON.parse(fs.readFileSync(path.join(FIXTURE_ROOT, 'antitrust-regulatory-fixtures', 'coverage-map.json'), 'utf8'));
   assert.equal(map.schema_version, 'ANTITRUST_REGULATORY_COVERAGE_MAP/V1');
   const contract = compileFixtureContractV24();
   const seen = new Set();
@@ -122,7 +122,7 @@ test('Closing Conditions replay preserves clause standards and resolves Kraft fr
     }),
   });
   assert.ok(receipt.compiled_candidates.every((entry) => entry.ok), JSON.stringify(receipt.compiled_candidates, null, 2));
-  const partyContext = JSON.parse(fs.readFileSync(path.join(FIXTURE_ROOT, 'closing-conditions-live-run', 'party-capacity-context.json'), 'utf8'));
+  const partyContext = JSON.parse(fs.readFileSync(path.join(FIXTURE_ROOT, 'closing-conditions-fixtures', 'party-capacity-context.json'), 'utf8'));
   const deal = require('../lib/generated/home-deal-directory-v1.json').deals.find((entry) => entry.id === partyContext.deal_id);
   assert.equal(deal.target_display, 'Kraft');
   const resolution = resolveCandidates({

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { formatNumericMarketSummary } from './marketNumericFormat';
+import { SeeProvisionDisclosure } from '../review/primitives/ProvisionTablePrimitives';
 
 const SIDEBAR_CLASS = 'hidden lg:block w-56 xl:w-[280px] shrink-0 border-l border-border bg-white sticky top-[var(--mtx-head-h,72px)] h-[calc(100vh-var(--mtx-head-h,72px))] overflow-y-auto';
 
@@ -46,23 +47,40 @@ function CategoricalDistribution({ summary, defaultDenominator }) {
       {values.map((value, index) => {
         const denominator = Number.isFinite(value.denominator) ? value.denominator : defaultDenominator;
         const deals = Array.isArray(value.deals) ? value.deals : [];
+        const valueLabel = (
+          <div className="flex items-start justify-between gap-3">
+            <span className="text-[11px] font-medium text-ink">
+              {value.label || value.value || 'Not captured'}
+              {(summary.subjectValues || []).map(String).includes(String(value.value)) ? <span className="ml-1.5 text-[8px] font-bold uppercase tracking-wider text-[#2F6DB5]">Current deal</span> : null}
+            </span>
+            <CountLine count={value.count} denominator={denominator} />
+          </div>
+        );
+        const key = `${summary.attribute || 'value'}-${value.value || value.label || index}`;
+        // The value/count row itself always shows -- only the supporting-
+        // deals list underneath is a disclosure, and it's genuinely absent
+        // (not just collapsed) when this value carries no per-deal
+        // breakdown, so SeeProvisionDisclosure's own "no children, don't
+        // render anything" contract doesn't fit here; branch instead of
+        // handing it empty children.
+        if (!deals.length) {
+          return (
+            <div key={key} className="py-2">
+              {valueLabel}
+            </div>
+          );
+        }
         return (
-          <details key={`${summary.attribute || 'value'}-${value.value || value.label || index}`} className="py-2">
-            <summary className="cursor-pointer list-none">
-              <div className="flex items-start justify-between gap-3">
-                <span className="text-[11px] font-medium text-ink">
-                  {value.label || value.value || 'Not captured'}
-                  {(summary.subjectValues || []).map(String).includes(String(value.value)) ? <span className="ml-1.5 text-[8px] font-bold uppercase tracking-wider text-[#2F6DB5]">Current deal</span> : null}
-                </span>
-                <CountLine count={value.count} denominator={denominator} />
-              </div>
-            </summary>
-            {deals.length ? (
-              <div className="mt-2 space-y-1 pl-2 border-l border-border text-[10px] text-inkLight">
-                {deals.map((deal, dealIndex) => <div key={deal.dealId || deal.deal_id || deal.id || dealIndex}><DealLink deal={deal} /></div>)}
-              </div>
-            ) : null}
-          </details>
+          <SeeProvisionDisclosure
+            key={key}
+            as="div"
+            className="py-2"
+            triggerClassName="cursor-pointer"
+            label={valueLabel}
+            bodyClassName="mt-2 space-y-1 pl-2 border-l border-border text-[10px] text-inkLight"
+          >
+            {deals.map((deal, dealIndex) => <div key={deal.dealId || deal.deal_id || deal.id || dealIndex}><DealLink deal={deal} /></div>)}
+          </SeeProvisionDisclosure>
         );
       })}
       <CapturedCoverageNote summary={summary} />
@@ -217,14 +235,15 @@ export default function MarketDrilldownSidebar({ context, onClose }) {
         </div>
 
         {Array.isArray(context.deals) && context.deals.length ? (
-          <details className="border-t border-border pt-4">
-            <summary className="cursor-pointer list-none text-[9px] font-bold uppercase tracking-[0.1em] text-inkLight">
-              Supporting deals ({context.deals.length})
-            </summary>
-            <div className="mt-2 space-y-1 text-[10px] text-inkLight">
-              {context.deals.map((deal, index) => <div key={deal.dealId || deal.deal_id || deal.id || index}><DealLink deal={deal} /></div>)}
-            </div>
-          </details>
+          <SeeProvisionDisclosure
+            as="div"
+            className="border-t border-border pt-4"
+            triggerClassName="cursor-pointer list-none text-[9px] font-bold uppercase tracking-[0.1em] text-inkLight"
+            label={`Supporting deals (${context.deals.length})`}
+            bodyClassName="mt-2 space-y-1 text-[10px] text-inkLight"
+          >
+            {context.deals.map((deal, index) => <div key={deal.dealId || deal.deal_id || deal.id || index}><DealLink deal={deal} /></div>)}
+          </SeeProvisionDisclosure>
         ) : null}
       </div>
     </aside>

@@ -11,8 +11,8 @@ const { resolveCandidates, materialityFor } = require('../lib/canonical-v2/nativ
 const { buildIdentityAdmittedSourceContext } = require('./helpers/identity-admitted-source');
 
 function card(family, id) { return JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'canonical-v2', family, 'corpus-cards.json'))).cards.find((entry) => entry.id === id); }
-const EMPLOYEE = card('employee-matters-live-run', '470c560c-1534-452c-890a-f9403bb189b5');
-const DNO = card('dno-live-run', '01d091dc-03b3-4e25-8551-0ca5ecea3a12');
+const EMPLOYEE = card('employee-matters-fixtures', '470c560c-1534-452c-890a-f9403bb189b5');
+const DNO = card('dno-fixtures', '01d091dc-03b3-4e25-8551-0ca5ecea3a12');
 const BUNDLE = compileFixtureContractV32();
 async function replay({ source, reference, parsed, shape, dealKey }) {
   const receipt = await runNativeExtraction({ source_text: source, document_hash: sha256Hex(Buffer.from(source)), section_references: [reference], contract_bundle: BUNDLE, definitions: {}, section_family_classifier: async () => ({ declined: true }), provider: async ({ governed_scope }) => ({ provider_id: 'recorded-employee-dno-replay/v1', model_id: 'recorded-fixture', prompt: 'recorded-employee-dno-replay/v1', ...shape(parsed, governed_scope.source_text) }) });

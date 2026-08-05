@@ -1,4 +1,5 @@
 import { HoverSource, humanizeBadgeText } from './shared';
+import { SeeProvisionDisclosure } from './primitives/ProvisionTablePrimitives';
 
 function money(value, formula) {
   if (value !== null && value !== undefined && value !== '') return `$${Number(value).toLocaleString(undefined, { maximumFractionDigits: 4 })}`;
@@ -103,12 +104,16 @@ export default function ElectionCard({ election }) {
                 <p className="text-xs font-ui text-ink">{proration.proration_walkthrough || proration.prorationWalkthrough}</p>
               </div>
             ) : null}
-            <details className="text-xs font-ui">
-              <summary className="cursor-pointer text-accent hover:underline">Source proration language</summary>
+            <SeeProvisionDisclosure
+              as="div"
+              className="text-xs font-ui"
+              triggerClassName="cursor-pointer text-accent hover:underline"
+              label="Source proration language"
+            >
               <HoverSource quote={proration.verbatim_quote || proration.verbatimQuote} as="blockquote" className="mt-2 text-xs font-body text-ink leading-relaxed border-l-2 border-sky-200 pl-2">
                 {proration.verbatim_quote || proration.verbatimQuote}
               </HoverSource>
-            </details>
+            </SeeProvisionDisclosure>
           </div>
         ) : null}
       </div>

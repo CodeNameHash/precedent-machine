@@ -15,6 +15,8 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const serving = require('../lib/canonical-v2/termination-fee-serving-source');
 const { trimReviewDealForWire } = require('../lib/queries/review-deal-wire');
@@ -415,13 +417,18 @@ test('every legacy surface canonical cannot yet produce is named, never dropped'
     [CARDS_FIELD]: qxoCanonicalCards(),
   });
   const pending = rows.filter((row) => row.coverageState === 'NOT_YET_EXTRACTED').map((row) => row.label);
+  // 'Fee required to terminate' no longer appears here at all -- owner ruling
+  // 2026-08-05 moved feeRequired to the Termination Rights table, so it is no
+  // longer one of this table's coverage surfaces (tracked or otherwise).
+  // 'Willful-breach exception' is now the two split rows, each independently
+  // not-yet-extracted (rubric.js's own wording for TERMF-EFFECT/TERMF-SOLE).
   assert.deepEqual(pending, [
     'Reverse termination fee',
     'Expense reimbursement cap',
-    'Fee required to terminate',
     'Naked no-vote fee',
     'Sole and exclusive remedy',
-    'Willful-breach exception',
+    'Willful-breach carve-out',
+    'Willful-breach carve-out to sole remedy',
     'Interest on late payment',
   ]);
   // The one surface canonical DOES serve gets no placeholder.
@@ -716,4 +723,298 @@ test('the QXO/TopBuild canonical source is built from the pinned filed text', ()
   ]);
   // Every trigger's evidence is verbatim from the filed agreement.
   assert.ok(card.features.companyTerminationFee.triggers.every((trigger) => card.primary_quote.includes(trigger.text)));
+});
+
+// ---------------------------------------------------------------------------
+// 6. A registered-but-unreadable source is distinguishable from no source at
+//    all (production incident, 2026-08-05: a Vercel file-tracing gap made
+//    TopBuild's registered, pinned source unreadable in the deployed
+//    function, and the page told a reviewer "Canonical V2 has no
+//    termination-fee data for this deal" -- true for every OTHER deal, false
+//    for this one. See termination-fee-serving-source.js's
+//    QXO_EXCERPTS_RELATIVE_PATH comment and next.config.js's
+//    outputFileTracingIncludes entry for the underlying fix; this section
+//    proves the failure itself is no longer silent.)
+// ---------------------------------------------------------------------------
+
+const FAKE_DEAL_ID = 'fake-deal-0000-0000-0000-000000000000';
+
+function fakeSources(build) {
+  return { [FAKE_DEAL_ID]: build };
+}
+
+function enoentError() {
+  const error = new Error("ENOENT: no such file or directory, open '/fake/path/qxo-termination-fee-reviewed-excerpts.txt'");
+  error.code = 'ENOENT';
+  return error;
+}
+
+function digestMismatchError() {
+  return new Error('canonical termination-fee QXO/TopBuild source digest mismatch');
+}
+
+function loggerSpy() {
+  const calls = [];
+  return { calls, error: (...args) => calls.push(args) };
+}
+
+test('describeCanonicalTerminationFeeSource: an unregistered deal is NOT_REGISTERED, never FAILED', () => {
+  const { outcome } = serving.describeCanonicalTerminationFeeSource('00000000-0000-4000-8000-000000000000');
+  assert.equal(outcome.state, serving.TERMINATION_FEE_SOURCE_STATE.NOT_REGISTERED);
+  assert.equal(outcome.card_count, 0);
+  assert.equal(outcome.failure, null);
+});
+
+test('describeCanonicalTerminationFeeSource: a registered source that builds cleanly is ATTACHED', () => {
+  const { cards, outcome } = serving.describeCanonicalTerminationFeeSource(FAKE_DEAL_ID, {
+    sources: fakeSources(() => [{ id: 'x' }, { id: 'y' }]),
+  });
+  assert.equal(outcome.state, serving.TERMINATION_FEE_SOURCE_STATE.ATTACHED);
+  assert.equal(outcome.card_count, 2);
+  assert.equal(outcome.failure, null);
+  assert.equal(cards.length, 2);
+});
+
+test('describeCanonicalTerminationFeeSource: an unreadable source is FAILED, not NOT_REGISTERED', () => {
+  const { cards, outcome } = serving.describeCanonicalTerminationFeeSource(FAKE_DEAL_ID, {
+    sources: fakeSources(() => { throw enoentError(); }),
+  });
+  assert.equal(outcome.state, serving.TERMINATION_FEE_SOURCE_STATE.FAILED);
+  assert.notEqual(outcome.state, serving.TERMINATION_FEE_SOURCE_STATE.NOT_REGISTERED);
+  assert.equal(cards.length, 0);
+  assert.equal(outcome.failure.error_code, 'ENOENT');
+  assert.match(outcome.failure.error_message, /ENOENT/);
+});
+
+test('describeCanonicalTerminationFeeSource: a digest mismatch is FAILED with its own distinguishable detail', () => {
+  const { cards, outcome } = serving.describeCanonicalTerminationFeeSource(FAKE_DEAL_ID, {
+    sources: fakeSources(() => { throw digestMismatchError(); }),
+  });
+  assert.equal(outcome.state, serving.TERMINATION_FEE_SOURCE_STATE.FAILED);
+  assert.equal(cards.length, 0);
+  assert.equal(outcome.failure.error_code, null);
+  assert.match(outcome.failure.error_message, /digest mismatch/);
+});
+
+test('an unreadable source and a digest mismatch are both FAILED but carry different failure detail', () => {
+  const unreadable = serving.describeCanonicalTerminationFeeSource(FAKE_DEAL_ID, {
+    sources: fakeSources(() => { throw enoentError(); }),
+  }).outcome;
+  const mismatched = serving.describeCanonicalTerminationFeeSource(FAKE_DEAL_ID, {
+    sources: fakeSources(() => { throw digestMismatchError(); }),
+  }).outcome;
+  assert.equal(unreadable.state, mismatched.state, 'both are FAILED at the state level');
+  assert.notEqual(unreadable.failure.error_message, mismatched.failure.error_message, 'but the failure detail tells them apart');
+  assert.notEqual(unreadable.failure.error_code, mismatched.failure.error_code);
+});
+
+test('canonicalTerminationFeeCardsForDeal keeps its exact public contract: [] either way, never throws', () => {
+  assert.deepEqual(
+    serving.canonicalTerminationFeeCardsForDeal(FAKE_DEAL_ID, { sources: fakeSources(() => { throw enoentError(); }) }),
+    [],
+  );
+  assert.deepEqual(serving.canonicalTerminationFeeCardsForDeal('00000000-0000-4000-8000-000000000000'), []);
+});
+
+test('attachCanonicalTerminationFeeServing stamps FAILED and logs it; NOT_REGISTERED/ATTACHED stay silent', () => {
+  const key = serving.CANONICAL_V2_TERMINATION_FEE_SERVING_ENV_KEY;
+  const on = serving.CANONICAL_V2_TERMINATION_FEE_SERVING_ENABLED_VALUE;
+  const STATUS_FIELD = serving.CANONICAL_V2_TERMINATION_FEE_SOURCE_STATUS_FIELD;
+
+  // FAILED: logged, tagged with the deal id, on the injected sink (never the
+  // real console during a test run).
+  const failedLogger = loggerSpy();
+  const failedServed = serving.attachCanonicalTerminationFeeServing(
+    { dealId: FAKE_DEAL_ID, cards: [] },
+    { env: { [key]: on }, logger: failedLogger, sources: fakeSources(() => { throw enoentError(); }) },
+  );
+  assert.equal(failedServed[SERVING_FIELD], true);
+  assert.deepEqual(failedServed[CARDS_FIELD], []);
+  assert.equal(failedServed[STATUS_FIELD].state, 'FAILED');
+  assert.equal(failedLogger.calls.length, 1);
+  assert.match(failedLogger.calls[0][0], /FAILED/);
+  assert.match(failedLogger.calls[0][0], new RegExp(FAKE_DEAL_ID));
+
+  // NOT_REGISTERED: the common case for nearly every deal. Not logged.
+  const unregisteredLogger = loggerSpy();
+  const unregisteredServed = serving.attachCanonicalTerminationFeeServing(
+    { dealId: '00000000-0000-4000-8000-000000000000', cards: [] },
+    { env: { [key]: on }, logger: unregisteredLogger },
+  );
+  assert.equal(unregisteredServed[STATUS_FIELD].state, 'NOT_REGISTERED');
+  assert.equal(unregisteredLogger.calls.length, 0);
+
+  // ATTACHED, through the REAL QXO/TopBuild registry entry (no `sources`
+  // override): the real pinned source still loads through the new code
+  // path, unchanged, and is not logged either.
+  const attachedLogger = loggerSpy();
+  const attachedServed = serving.attachCanonicalTerminationFeeServing(
+    { dealId: serving.QXO_TOPBUILD_DEAL_ID, cards: [] },
+    { env: { [key]: on }, logger: attachedLogger },
+  );
+  assert.equal(attachedServed[STATUS_FIELD].state, 'ATTACHED');
+  assert.equal(attachedServed[STATUS_FIELD].card_count, attachedServed[CARDS_FIELD].length);
+  assert.ok(attachedServed[CARDS_FIELD].length > 0);
+  assert.equal(attachedLogger.calls.length, 0);
+});
+
+test('the wire allowlist carries the source status through, and omits it when absent', () => {
+  const STATUS_FIELD = serving.CANONICAL_V2_TERMINATION_FEE_SOURCE_STATUS_FIELD;
+  const bare = trimReviewDealForWire({ dealId: 'd', cardCount: 0, cards: [] });
+  assert.equal(Object.prototype.hasOwnProperty.call(bare, STATUS_FIELD), false);
+
+  const outcome = {
+    schema_version: 'CANONICAL_V2_TERMINATION_FEE_SOURCE_STATUS/V1',
+    state: 'FAILED',
+    card_count: 0,
+    failure: { error_name: 'Error', error_code: 'ENOENT', error_message: 'boom' },
+  };
+  const served = trimReviewDealForWire({ dealId: 'd', cardCount: 0, cards: [], [STATUS_FIELD]: outcome });
+  assert.deepEqual(served[STATUS_FIELD], outcome);
+});
+
+// ---------------------------------------------------------------------------
+// 6b. The rendered table distinguishes the two failure states
+// ---------------------------------------------------------------------------
+
+test('a FAILED source renders a different, actionable message -- never "no data for this deal"', async () => {
+  const mod = await config();
+  const STATUS_FIELD = mod.CANONICAL_V2_TERMINATION_FEE_SOURCE_STATUS_FIELD;
+  const legacy = legacyCards();
+  const rows = mod.terminationFeesConfig.selectRows({
+    cards: legacy,
+    value_usd: DEAL_VALUE_USD,
+    [SERVING_FIELD]: true,
+    [CARDS_FIELD]: [],
+    [STATUS_FIELD]: { state: 'FAILED', card_count: 0, failure: { error_name: 'Error', error_code: 'ENOENT', error_message: 'boom' } },
+  });
+
+  assert.equal(rows[0].id, 'termination-fees-serving-source');
+  assert.equal(rows[0].servingSourceState, 'LEGACY_FALLBACK_SOURCE_FAILED');
+  assert.match(rows[0].detail, /could not load or verify its source/);
+  // Never the false claim: this deal DOES have canonical data, it just
+  // couldn't be read or verified.
+  assert.equal(/has no termination-fee data for this deal/.test(rows[0].detail), false);
+  assert.equal(rows[0].signals[0].tone, 'warning');
+
+  // The legacy table underneath is unaffected -- the failure degrades the
+  // provenance notice only, never the data the reviewer is actually using.
+  const expected = [
+    ...mod.feeTableRows(legacy, DEAL_VALUE_USD),
+    ...mod.scalarRows(legacy),
+    ...mod.deferredEvidenceRows(legacy),
+  ];
+  assert.equal(JSON.stringify(rows.slice(1)), JSON.stringify(expected));
+});
+
+test('FAILED and NOT_REGISTERED render textually distinct messages for the same empty card set', async () => {
+  const mod = await config();
+  const STATUS_FIELD = mod.CANONICAL_V2_TERMINATION_FEE_SOURCE_STATUS_FIELD;
+  const legacy = legacyCards();
+  const base = { cards: legacy, value_usd: DEAL_VALUE_USD, [SERVING_FIELD]: true, [CARDS_FIELD]: [] };
+
+  const notRegisteredRows = mod.terminationFeesConfig.selectRows(base);
+  const failedRows = mod.terminationFeesConfig.selectRows({
+    ...base,
+    [STATUS_FIELD]: { state: 'FAILED', card_count: 0, failure: null },
+  });
+  const explicitNotRegisteredRows = mod.terminationFeesConfig.selectRows({
+    ...base,
+    [STATUS_FIELD]: { state: 'NOT_REGISTERED', card_count: 0, failure: null },
+  });
+
+  assert.equal(notRegisteredRows[0].servingSourceState, 'LEGACY_FALLBACK');
+  assert.equal(failedRows[0].servingSourceState, 'LEGACY_FALLBACK_SOURCE_FAILED');
+  assert.notEqual(notRegisteredRows[0].detail, failedRows[0].detail);
+
+  // Absent status field and an explicit NOT_REGISTERED status render
+  // identically -- both are "no data for this deal", stated the same way,
+  // so every reviewDeal built before this field existed stays byte-identical.
+  assert.equal(explicitNotRegisteredRows[0].servingSourceState, 'LEGACY_FALLBACK');
+  assert.equal(JSON.stringify(explicitNotRegisteredRows), JSON.stringify(notRegisteredRows));
+});
+
+test('isCanonicalTerminationFeeSourceFailed fails closed on malformed and prototype-chain input', async () => {
+  const mod = await config();
+  const STATUS_FIELD = mod.CANONICAL_V2_TERMINATION_FEE_SOURCE_STATUS_FIELD;
+  assert.equal(mod.isCanonicalTerminationFeeSourceFailed(null), false);
+  assert.equal(mod.isCanonicalTerminationFeeSourceFailed(undefined), false);
+  assert.equal(mod.isCanonicalTerminationFeeSourceFailed({}), false);
+  assert.equal(mod.isCanonicalTerminationFeeSourceFailed({ [STATUS_FIELD]: 'FAILED' }), false, 'a bare string is not a status object');
+  assert.equal(mod.isCanonicalTerminationFeeSourceFailed({ [STATUS_FIELD]: { state: 'ATTACHED' } }), false);
+  assert.equal(mod.isCanonicalTerminationFeeSourceFailed({ [STATUS_FIELD]: { state: 'FAILED' } }), true);
+  // A prototype-chain status can never trigger the FAILED message either.
+  const polluted = Object.create({ [STATUS_FIELD]: { state: 'FAILED' } });
+  assert.equal(mod.isCanonicalTerminationFeeSourceFailed(polluted), false);
+});
+
+test('the review table still renders in all three server-side source states, without throwing', async () => {
+  const mod = await config();
+  const STATUS_FIELD = mod.CANONICAL_V2_TERMINATION_FEE_SOURCE_STATUS_FIELD;
+  const legacy = legacyCards();
+  const base = { cards: legacy, value_usd: DEAL_VALUE_USD, [SERVING_FIELD]: true };
+
+  const notRegistered = mod.terminationFeesConfig.selectRows({ ...base, [CARDS_FIELD]: [], [STATUS_FIELD]: { state: 'NOT_REGISTERED' } });
+  assert.ok(notRegistered.length > 1);
+  assert.equal(notRegistered[0].servingSourceState, 'LEGACY_FALLBACK');
+
+  const attached = mod.terminationFeesConfig.selectRows({ ...base, [CARDS_FIELD]: qxoCanonicalCards(), [STATUS_FIELD]: { state: 'ATTACHED', card_count: 1 } });
+  assert.ok(attached.length > 1);
+  assert.equal(attached[0].servingSourceState, 'CANONICAL');
+
+  const failed = mod.terminationFeesConfig.selectRows({ ...base, [CARDS_FIELD]: [], [STATUS_FIELD]: { state: 'FAILED', card_count: 0, failure: null } });
+  assert.ok(failed.length > 1);
+  assert.equal(failed[0].servingSourceState, 'LEGACY_FALLBACK_SOURCE_FAILED');
+});
+
+// ---------------------------------------------------------------------------
+// 6c. End to end against the REAL pinned fixture file -- the actual live bug
+// ---------------------------------------------------------------------------
+// Proves the fix against the real mechanism (the genuine fs.readFileSync call
+// over the genuine on-disk fixture), not just an injected stand-in: the file
+// is moved out of the way exactly as an incomplete Vercel bundle would leave
+// it missing, the real serving path is exercised, and the file is restored
+// in `finally` no matter what happens in between.
+
+test('the real pinned QXO source: an on-disk read failure is FAILED end to end, and recovers cleanly', () => {
+  const fixturePath = path.join(__dirname, '..', '__fixtures__', 'canonical-v2', 'qxo-termination-fee-reviewed-excerpts.txt');
+  const backupPath = `${fixturePath}.test-backup`;
+  assert.ok(fs.existsSync(fixturePath), 'precondition: the real pinned fixture must exist on disk before this test moves it');
+  assert.equal(fs.existsSync(backupPath), false, 'precondition: no stray backup from a previous interrupted run');
+
+  const key = serving.CANONICAL_V2_TERMINATION_FEE_SERVING_ENV_KEY;
+  const on = serving.CANONICAL_V2_TERMINATION_FEE_SERVING_ENABLED_VALUE;
+  const STATUS_FIELD = serving.CANONICAL_V2_TERMINATION_FEE_SOURCE_STATUS_FIELD;
+
+  let moved = false;
+  try {
+    fs.renameSync(fixturePath, backupPath);
+    moved = true;
+
+    // This is precisely the Vercel incident: the registered QXO/TopBuild
+    // deal, with its pinned source unreadable.
+    const served = serving.attachCanonicalTerminationFeeServing(
+      { dealId: serving.QXO_TOPBUILD_DEAL_ID, cards: [] },
+      { env: { [key]: on } },
+    );
+    assert.equal(served[SERVING_FIELD], true);
+    assert.deepEqual(served[CARDS_FIELD], []);
+    assert.equal(served[STATUS_FIELD].state, 'FAILED');
+    assert.equal(served[STATUS_FIELD].failure.error_code, 'ENOENT');
+    assert.deepEqual(serving.canonicalTerminationFeeCardsForDeal(serving.QXO_TOPBUILD_DEAL_ID), []);
+  } finally {
+    if (moved) fs.renameSync(backupPath, fixturePath);
+  }
+
+  assert.equal(fs.existsSync(fixturePath), true, 'postcondition: the real fixture must be restored');
+  assert.equal(fs.existsSync(backupPath), false, 'postcondition: no backup file left behind');
+
+  // Recovery: with the file restored, the real source is ATTACHED again --
+  // proves the failure was specific to the read, not permanent module state.
+  const recovered = serving.attachCanonicalTerminationFeeServing(
+    { dealId: serving.QXO_TOPBUILD_DEAL_ID, cards: [] },
+    { env: { [key]: on } },
+  );
+  assert.equal(recovered[STATUS_FIELD].state, 'ATTACHED');
+  assert.ok(recovered[CARDS_FIELD].length > 0);
 });

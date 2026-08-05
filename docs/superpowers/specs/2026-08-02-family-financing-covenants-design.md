@@ -224,7 +224,7 @@ until then the honest claim is "the machinery exists and is proven on
 committed fixtures".
 
 **Fixture placement is load-bearing:** all committed fixtures live under
-`tests/fixtures/canonical-v2/financing-covenants-live-run/` so the
+`tests/fixtures/canonical-v2/financing-covenants-fixtures/` so the
 forbidden-patterns PROSE_CLASS_FINGERPRINTS exemption
 (scripts/lint/forbidden-patterns.sh ~42–55) covers its six listed
 patterns for this fixture directory (corrected per audit m-4: the
@@ -924,7 +924,7 @@ pre-rerun harness)
    `7bb30c73`, `200eee42`, `72134a6a`, `d7cdddd0`, plus boundary fixtures
    (deal `13211d88` §5.2(x) IOC cross-link; `f9224f32` minimum-cash
    condition; `733b5b4c` REP-B-FUNDS) committed as LITERAL production
-   bytes under `tests/fixtures/canonical-v2/financing-covenants-live-run/`
+   bytes under `tests/fixtures/canonical-v2/financing-covenants-fixtures/`
    with provenance headers (deal, card id, retrieval date, provision_type
    AND subtype — recording DEFINITION where true, per the TERMF m-2
    discipline; all cards additionally record the shared

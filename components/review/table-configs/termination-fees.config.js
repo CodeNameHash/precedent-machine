@@ -12,21 +12,41 @@ const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 // lives in lib/termf.js's routeRawTerminationFees, used by feeTableRows()
 // below for the amount/trigger/tail rows). REBUILD-SPECS.md §11's clean-row
 // list is Company Termination Fee / Willful-breach exception / Interest on
-// late payment / Sole remedy; "Fee required to terminate" and "Naked no-vote
-// fee" are kept alongside them (real per-deal Yes/No facts, not prose) but
-// the boilerplate "Effect of Termination" sentence (void-on-termination
-// survival language) is dropped — it isn't a decision-relevant signal and
-// its one substantive fact (willfulBreachException) already has its own row.
+// late payment / Sole remedy; "Naked no-vote fee" is kept alongside them (a
+// real per-deal Yes/No fact, not prose) but the boilerplate "Effect of
+// Termination" sentence (void-on-termination survival language) is dropped —
+// it isn't a decision-relevant signal and its substantive facts (the two
+// willful-breach rows below) already have their own rows.
+//
+// Owner ruling (2026-08-05): "Willful-breach exception" split into TWO rows.
+// TERMF-EFFECT's willfulBreachException (rubric.js ~3627, "Willful Breach
+// Carve-out") is a carve-out to the effect-of-termination rule — liability
+// survives termination. TERMF-SOLE's willfulBreachException (rubric.js
+// ~3634, "Willful Breach Carve-out to Sole Remedy") is a carve-out to the
+// fee-as-damages cap. Same feature key, two legally distinct facts that
+// allocate different risk, and an agreement can carry either without the
+// other — so each row below is scoped to its OWN source code (see the 5th
+// tuple element, read by scalarRows()) rather than both reading
+// firstFeature() over the combined card set, which let card order silently
+// decide which of the two facts a lawyer saw (the live defect this fixes).
+//
+// "Fee required to terminate" (feeRequired) has moved OUT of this table: it
+// means payment is a condition precedent to exercising the fiduciary out
+// (lib/schema/features.js scopes it to provisionTypes: ["TERMR"],
+// provisionCodes: ["TERMR-SUPERIOR"]), not that a termination fee is itself
+// payable. It now renders on the Termination Rights table's "Fiduciary out"
+// cross-reference group — see termination-rights.config.js.
+//
 // Punchlist #36: "Interest on late payment" moved to the LAST position --
 // it's a remedy-mechanics footnote, not a headline fact, and reads better
 // after the fee/condition rows above it. Since selectRows() below appends
 // scalarRows() after feeTableRows(), this ordering also puts it at the very
 // bottom of the whole table, not just the scalar-row group.
 const SCALAR_ROWS = [
-  ['required', 'Fee required to terminate', 'Condition', ['feeRequired', 'terminationFeeRequired']],
   ['naked-no-vote', 'Naked no-vote fee', 'Condition', ['nakedNoVoteFeePresent', 'nakedNoVoteFee']],
   ['sole-remedy', 'Sole and exclusive remedy', 'Remedy', ['soleRemedy', 'soleAndExclusiveRemedy']],
-  ['willful-breach', 'Willful-breach exception', 'Remedy', ['willfulBreachException']],
+  ['willful-breach-effect', 'Willful-breach carve-out', 'Remedy', ['willfulBreachException'], 'TERMF-EFFECT'],
+  ['willful-breach-sole', 'Willful-breach carve-out to sole remedy', 'Remedy', ['willfulBreachException'], 'TERMF-SOLE'],
   ['interest', 'Interest on late payment', 'Remedy', ['interestOnLatePayment']],
 ];
 
@@ -152,6 +172,14 @@ const FEE_TYPES_ELIGIBLE_FOR_DEAL_PERCENT = new Set(['COMPANY_TERMINATION_FEE', 
 function parseFeeAmountUsd(amount) {
   if (typeof amount === 'number') return Number.isFinite(amount) ? amount : null;
   const str = String(amount || '').replace(/,/g, '');
+  // A string naming more than one dollar figure is not "a clean dollar
+  // figure" (see the function comment below) -- it's a branch-conditional
+  // fee's headline (e.g. "Lesser of $10,000,000 (...) or $15,000,000 (...)
+  // and the REIT Requirements cap", from a canonical conditional termination
+  // fee value -- see lib/canonical-v2/termination-product-projection.js).
+  // Picking the first figure would silently compute a % of deal value off an
+  // arbitrary substring: invented precision this row is not entitled to.
+  if ((str.match(/\$\s*-?\d/g) || []).length > 1) return null;
   const match = str.match(/-?\d+(?:\.\d+)?/);
   if (!match) return null;
   let n = Number(match[0]);
@@ -384,7 +412,7 @@ function interestMarketSubterms() {
   ];
 }
 
-// A boolean-shaped scalar (soleRemedy, willfulBreachException, feeRequired,
+// A boolean-shaped scalar (soleRemedy, willfulBreachException,
 // nakedNoVoteFeePresent) renders as an affirmative "Yes" pill (present/
 // green) or a "No" pill (missing/grey) so those read the same as every other
 // present/absent flag in the app; a substantive non-boolean fact (the
@@ -399,8 +427,14 @@ function scalarTone(detail) {
 
 function scalarRows(cards) {
   return SCALAR_ROWS
-    .map(([id, label, kind, keys]) => {
-      const hit = firstFeature(cards, keys || id);
+    .map(([id, label, kind, keys, sourceCode]) => {
+      // sourceCode (willful-breach-effect / willful-breach-sole) scopes the
+      // lookup to cards carrying that EXACT canonical code before the first-
+      // match search runs, so the two rows can never read each other's card
+      // even though they share the willfulBreachException feature key -- the
+      // fix for the order-dependent hybrid described above SCALAR_ROWS.
+      const pool = sourceCode ? cards.filter((c) => cardCode(c) === sourceCode) : cards;
+      const hit = firstFeature(pool, keys || id);
       const row = makeRow('termination-fees', id, label, kind, hit);
       if (!row) return null;
       // Benchmark prose first: it is what the AGREEMENT says, and it is
@@ -502,6 +536,17 @@ const CANONICAL_V2_TERMINATION_FEE_CARDS_FIELD = 'canonical_v2_termination_fee_c
 // read exactly the field they read today and a payload without this key is
 // bit-for-bit the payload they already handle.
 const CANONICAL_V2_TERMINATION_FEE_COMPARE_FIELD = 'canonical_v2_termination_fee_compare_enabled';
+// The outcome that produced CANONICAL_V2_TERMINATION_FEE_CARDS_FIELD (see
+// lib/canonical-v2/termination-fee-serving-source.js's TERMINATION_FEE_SOURCE_STATE
+// -- re-declared as a bare string check below rather than imported, same
+// client/server split as the three fields above). Absent, or present with
+// state !== 'FAILED', renders exactly the pre-existing "no canonical data"
+// fallback -- so every reviewDeal built before this field existed, and every
+// deal that is genuinely just unregistered, is byte-identical to before.
+// Only an explicit FAILED renders the DIFFERENT message below: a registered
+// source Canonical V2 could not read or verify is not the same claim as "no
+// data for this deal", and must never look like it on the page.
+const CANONICAL_V2_TERMINATION_FEE_SOURCE_STATUS_FIELD = 'canonical_v2_termination_fee_source_status';
 
 const CANONICAL_V2_CARD_SOURCES = new Set(['CANONICAL_V2_NATIVE_CLAIM', 'CANONICAL_V2_OPEN_WORLD_EVIDENCE']);
 
@@ -527,6 +572,20 @@ function isCanonicalTerminationFeeCompareEnabled(reviewDeal) {
 
 function isCanonicalV2Card(card) {
   return CANONICAL_V2_CARD_SOURCES.has(card?.canonical_v2_lineage?.source);
+}
+
+// Strict by construction, same idiom as isCanonicalTerminationFeeServingEnabled
+// above: only an OWN property holding a status object whose `state` is the
+// exact string 'FAILED' counts. A missing field, a non-object payload, or any
+// other state (NOT_REGISTERED, ATTACHED, or a value from a future state this
+// config does not yet know about) all read as "not a failure" -- fail closed
+// into the existing, already-correct fallback message rather than risk a
+// false "source failed" claim.
+function isCanonicalTerminationFeeSourceFailed(reviewDeal) {
+  if (reviewDeal === null || typeof reviewDeal !== 'object') return false;
+  if (!Object.prototype.hasOwnProperty.call(reviewDeal, CANONICAL_V2_TERMINATION_FEE_SOURCE_STATUS_FIELD)) return false;
+  const status = reviewDeal[CANONICAL_V2_TERMINATION_FEE_SOURCE_STATUS_FIELD];
+  return Boolean(status) && typeof status === 'object' && status.state === 'FAILED';
 }
 
 // Splits every termination-fee card reachable for this deal into the two
@@ -560,11 +619,25 @@ const SERVING_SOURCE_ROW_ID = 'termination-fees-serving-source';
 // the partition exists to prevent. Both notices are ordinary rows (first in
 // the table) carrying marketSkip, so no market metric is ever computed off a
 // provenance notice.
+// LEGACY_FALLBACK_SOURCE_FAILED (2026-08-05 fix): a registered canonical
+// source that Canonical V2 could not READ or VERIFY -- an unreadable pinned
+// file or a sha256 digest mismatch -- is not the same fact as LEGACY_FALLBACK
+// (this deal simply has no canonical entry) and must not render the same
+// sentence. The 2026-08-05 production incident was exactly this collapse: a
+// Vercel file-tracing gap made TopBuild's registered source unreadable, and
+// the page told a reviewer "Canonical V2 has no termination-fee data for
+// this deal" -- true only for the OTHER deals, false for this one. The
+// message below says what actually happened (data exists, could not be
+// loaded) without naming the specific cause -- that detail belongs in the
+// server log (see reportTerminationFeeSourceFailure in termination-fee-
+// serving-source.js), not on a lawyer's review page.
 function servingSourceRow(state) {
   if (state === 'BOTH_SOURCES') return bothSourcesProvenanceRow();
   const detail = state === 'CANONICAL'
     ? 'Canonical V2'
-    : 'Legacy extraction — Canonical V2 has no termination-fee data for this deal';
+    : state === 'LEGACY_FALLBACK_SOURCE_FAILED'
+      ? 'Legacy extraction — Canonical V2 has termination-fee data for this deal but could not load or verify its source'
+      : 'Legacy extraction — Canonical V2 has no termination-fee data for this deal';
   return {
     id: SERVING_SOURCE_ROW_ID,
     label: 'Served from',
@@ -620,10 +693,10 @@ const CANONICAL_COVERAGE_SURFACES = [
   ['termination-fees-COMPANY_TERMINATION_FEE', 'Company termination fee'],
   ['termination-fees-REVERSE_TERMINATION_FEE', 'Reverse termination fee'],
   ['termination-fees-EXPENSE_REIMBURSEMENT', 'Expense reimbursement cap'],
-  ['termination-fees-required', 'Fee required to terminate'],
   ['termination-fees-naked-no-vote', 'Naked no-vote fee'],
   ['termination-fees-sole-remedy', 'Sole and exclusive remedy'],
-  ['termination-fees-willful-breach', 'Willful-breach exception'],
+  ['termination-fees-willful-breach-effect', 'Willful-breach carve-out'],
+  ['termination-fees-willful-breach-sole', 'Willful-breach carve-out to sole remedy'],
   ['termination-fees-interest', 'Interest on late payment'],
 ];
 
@@ -1253,10 +1326,15 @@ const terminationFeesConfig = {
     const cards = legacyCards.length ? legacyCards : canonicalCards;
     if (!cards.length) return [];
     const rows = legacyServedRows(cards, dealValueUsd);
-    // Flag on but this deal has no canonical termination-fee data: say so.
-    // Never render an empty table as though the agreement were silent.
+    // Flag on but no canonical rows reached the table: say so, and say
+    // WHICH of the two reasons it is. Never render an empty table as though
+    // the agreement were silent, and never claim "no data" for a deal whose
+    // registered source merely failed to load or verify.
     if (isCanonicalTerminationFeeServingEnabled(reviewDeal)) {
-      return [servingSourceRow('LEGACY_FALLBACK'), ...rows];
+      const sourceState = isCanonicalTerminationFeeSourceFailed(reviewDeal)
+        ? 'LEGACY_FALLBACK_SOURCE_FAILED'
+        : 'LEGACY_FALLBACK';
+      return [servingSourceRow(sourceState), ...rows];
     }
     return rows;
   },
@@ -1277,6 +1355,7 @@ export {
   CANONICAL_V2_TERMINATION_FEE_CARDS_FIELD,
   CANONICAL_V2_TERMINATION_FEE_COMPARE_FIELD,
   CANONICAL_V2_TERMINATION_FEE_SERVING_FIELD,
+  CANONICAL_V2_TERMINATION_FEE_SOURCE_STATUS_FIELD,
   INTEREST_RATE_NOT_EXTRACTED,
   INTEREST_RATE_NOT_RESOLVED,
   NOT_IN_V1_DETAIL,
@@ -1292,6 +1371,7 @@ export {
   formatFeeDetail,
   isCanonicalTerminationFeeCompareEnabled,
   isCanonicalTerminationFeeServingEnabled,
+  isCanonicalTerminationFeeSourceFailed,
   isTerminationFee,
   parseFeeAmountUsd,
   partitionTerminationFeeCards,

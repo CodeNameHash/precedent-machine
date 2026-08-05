@@ -38,13 +38,37 @@ const globalPatterns = [
 ];
 
 // See the exemption comment at the application site: verbatim recorded SEC
-// filing text inside pinned live-run fixtures must not trip prose-shaped
+// filing text inside pinned fixtures must not trip prose-shaped
 // bug-fingerprints aimed at code/label regressions. Narrow by construction:
-// only files under a *-live-run fixture directory — plus the v1v2-comparator
-// snapshot fixture, which is the same artifact class (recorded production
-// provision_cards text: section titles and primary_quotes are verbatim
-// merger-agreement prose) — and only these patterns.
-const RECORDED_LIVE_RUN_DIR = /^tests\/fixtures\/canonical-v2\/([a-z0-9-]*live-run[a-z0-9-]*|v1v2-comparator)\//;
+// an EXPLICIT allowlist of directories independently verified to hold real
+// merger-agreement prose, never a directory admitted by name pattern. Two
+// verified categories, both the same underlying justification (this is
+// recorded source text, not application code):
+//   - a genuine recorded model-output capture: a dated, subscription-CLI
+//     live-run handoff with a real raw_response_text /
+//     native-producer-recorded-response body and model id (f28-live-run,
+//     f28-second-live-run, f28-third-live-run, modiv-first-live-run,
+//     skechers-first-live-run);
+//   - a committed production-text fixture: cards pulled verbatim from the
+//     production provision_cards table (or hand-transcribed from a real
+//     filing), no model call involved -- the *-fixtures directories below,
+//     and v1v2-comparator (recorded production provision_cards text:
+//     section titles and primary_quotes are verbatim merger-agreement
+//     prose).
+//
+// Register hygiene audit, 2026-08-05: ten of fifteen directories then named
+// tests/fixtures/canonical-v2/*-live-run/ earned this exemption by NAME
+// alone (matching the substring "live-run") without containing a live run
+// at all -- nine held curated "committed fixtures" (hand-typed or
+// DB-replayed corpus-cards.json, no captured model response ever recorded),
+// and closing-conditions-live-run's own README said outright that it
+// "support[s] only synthetic resolver and lexicon tests until a dated
+// live-run recording exists". All ten were renamed to *-fixtures/: still
+// listed below (they hold real prose, verified per file above), but no
+// longer able to claim they are a live run they are not. A directory earns
+// this exemption only by being added here deliberately after the same
+// verification, never by its name.
+const RECORDED_LIVE_RUN_DIR = /^tests\/fixtures\/canonical-v2\/(f28-live-run|f28-second-live-run|f28-third-live-run|modiv-first-live-run|skechers-first-live-run|antitrust-regulatory-fixtures|appraisal-fixtures|closing-conditions-fixtures|dividends-fixtures|dno-fixtures|employee-matters-fixtures|financing-covenants-fixtures|guaranty-fixtures|m3-v31-fixtures|tax-matters-fixtures|v1v2-comparator)\//;
 const PROSE_CLASS_FINGERPRINTS = [
   'QUALIFICATION.*litigation',
   'Must defend \\(incl\\. appeals/final judgment\\)',

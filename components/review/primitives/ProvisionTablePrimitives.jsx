@@ -12,7 +12,89 @@ import { HoverSource } from '../shared.js';
 import { splitForCell } from '../table-configs/card-utils.js';
 import { STANDARD_COLORS } from '../table-configs/standard-colors.js';
 import { resolveRowFocus } from '../../review-v2/provisionIndexHelpers.js';
+import { useClauseSearchMode } from '../../review-v2/clauseSearchMode.js';
 import { TERM_GRID_COLUMN } from '../table-configs/layout.js';
+
+// Shared "See provision" disclosure — every collapsed verbatim-clause
+// affordance in the app (this file's own TruncatedWithSeeText/
+// ClampedWithSeeText/CoverageFooter, plus the sidebar/index call sites in
+// review-v2) should render through this, not a bare <details>. See
+// clauseSearchMode.js for the full rationale; short version: Chrome
+// force-opens closed <details> for find-in-page (dedicated browser
+// behaviour, not interceptable — the <details> `toggle` event is
+// non-cancelable), so a page full of raw <details> explodes on an ordinary
+// Ctrl+F. Off (default) renders a plain `hidden`-attribute div — invisible
+// to find-in-page, no auto-reveal, manual click-to-expand unaffected. On
+// (the reader opted in via the masthead toggle) renders a real
+// <details open> so find-in-page can reach it like any other page content.
+//
+// `renderTrigger`, when given, fully owns the trigger's markup and receives
+// { open, toggle } — needed for the one call site (ClauseSidebar's "View
+// clause") whose trigger already contains its OWN nested interactive
+// button, which cannot legally nest inside this component's default
+// <button> trigger (interactive content inside interactive content is
+// invalid HTML). Everyone else just passes `label`.
+export function SeeProvisionDisclosure({
+  label = 'See provision',
+  renderTrigger,
+  className = '',
+  triggerClassName = 'term-cell-seetext',
+  bodyClassName = '',
+  as: Wrapper = 'span',
+  testId,
+  children,
+}) {
+  const [searchable] = useClauseSearchMode();
+  const [manualOpen, setManualOpen] = useState(false);
+  if (!children) return null;
+  const bodyClass = `mtx-disclosure-body${bodyClassName ? ` ${bodyClassName}` : ''}`;
+
+  if (searchable) {
+    // `open` is passed as a static value on purpose: <details> is not one
+    // of React's controlled form elements, so React only re-touches the
+    // attribute when this PROP's value changes between renders — an
+    // unrelated re-render never stomps a reader's own manual click (or
+    // Chrome's own find-driven open) back closed/open.
+    return (
+      <Wrapper className={className || undefined} data-testid={testId}>
+        <details open data-mtx-see-provision-trigger="">
+          <summary
+            className={typeof renderTrigger === 'function' ? undefined : triggerClassName}
+            style={{ listStyle: 'none', cursor: 'pointer' }}
+          >
+            {typeof renderTrigger === 'function' ? renderTrigger({ open: true, toggle: () => {} }) : label}
+          </summary>
+          <div className={bodyClass}>{children}</div>
+        </details>
+      </Wrapper>
+    );
+  }
+
+  // Default: never a <details>. Collapsed content sits behind the plain
+  // `hidden` attribute (never `hidden="until-found"`) — invisible to
+  // find-in-page with no browser auto-reveal behaviour, which is what keeps
+  // an ordinary Ctrl+F from exploding the page. See MergertraceStyles.jsx's
+  // @media print block for how this still prints fully expanded regardless
+  // of `manualOpen`.
+  const toggle = () => setManualOpen((current) => !current);
+  const triggerNode = typeof renderTrigger === 'function' ? renderTrigger({ open: manualOpen, toggle }) : (
+    <button
+      type="button"
+      className={triggerClassName}
+      style={{ listStyle: 'none', cursor: 'pointer' }}
+      onClick={toggle}
+      aria-expanded={manualOpen}
+    >
+      {label}
+    </button>
+  );
+  return (
+    <Wrapper className={className || undefined} data-testid={testId}>
+      <span data-mtx-see-provision-trigger="" style={{ display: 'contents' }}>{triggerNode}</span>
+      <div className={bodyClass} hidden={!manualOpen}>{children}</div>
+    </Wrapper>
+  );
+}
 
 const { MATERIAL_CONTRACT_BUCKET_CODES, MATERIAL_CONTRACT_BUCKET_META } = taxonomy;
 
@@ -140,14 +222,12 @@ export function TruncatedWithSeeText({ text, evidence, source, max = 160, classN
       <EvidenceHoverSource evidence={evidence || value} source={source} as="span">
         {short}&hellip;
       </EvidenceHoverSource>
-      <details className="mt-1">
-        <summary className="term-cell-seetext" style={{ listStyle: 'none' }}>
-          See provision
-        </summary>
-        <div className="mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">
-          {value}
-        </div>
-      </details>
+      <SeeProvisionDisclosure
+        className="mt-1"
+        bodyClassName="mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight"
+      >
+        {value}
+      </SeeProvisionDisclosure>
     </span>
   );
 }
@@ -182,14 +262,12 @@ export function ClampedWithSeeText({ text, evidence, source, lines = 3, classNam
           {value}
         </div>
       </EvidenceHoverSource>
-      <details className="mt-1">
-        <summary className="term-cell-seetext" style={{ listStyle: 'none' }}>
-          See provision
-        </summary>
-        <div className="mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">
-          {value}
-        </div>
-      </details>
+      <SeeProvisionDisclosure
+        className="mt-1"
+        bodyClassName="mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight"
+      >
+        {value}
+      </SeeProvisionDisclosure>
     </div>
   );
 }
@@ -358,22 +436,22 @@ export function CoverageFooter({ presentCount = 0, totalCount = 0, absentItems =
     <div className="border-t border-border bg-bg/40 px-3 py-2 text-[11px] text-inkFaint" data-testid="coverage-footer">
       <span className="font-medium text-ink">{presentCount} of {totalCount} {label}</span>
       {absent.length > 0 ? (
-        <details className="mt-1">
-          <summary className="cursor-pointer text-inkFaint" style={{ listStyle: 'none' }}>
-            {absent.length} not included
-          </summary>
-          <span className="mt-1 flex flex-wrap items-center gap-1">
-            {absent.map((item, index) => (
-              <span
-                key={item.id || item.label || index}
-                title={item.code || undefined}
-                className="inline-flex items-center rounded border border-border bg-bg/60 px-1.5 py-0.5 text-inkFaint"
-              >
-                {item.label || `Item ${index + 1}`}
-              </span>
-            ))}
-          </span>
-        </details>
+        <SeeProvisionDisclosure
+          className="mt-1"
+          label={`${absent.length} not included`}
+          triggerClassName="cursor-pointer text-inkFaint"
+          bodyClassName="mt-1 flex flex-wrap items-center gap-1"
+        >
+          {absent.map((item, index) => (
+            <span
+              key={item.id || item.label || index}
+              title={item.code || undefined}
+              className="inline-flex items-center rounded border border-border bg-bg/60 px-1.5 py-0.5 text-inkFaint"
+            >
+              {item.label || `Item ${index + 1}`}
+            </span>
+          ))}
+        </SeeProvisionDisclosure>
       ) : null}
     </div>
   );

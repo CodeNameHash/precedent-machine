@@ -1,0 +1,13 @@
+{
+  "schema": "REVIEW_PARITY_CASE/V1",
+  "family_id": "TERMINATION_FEE",
+  "deal_id": "dfaa71fa-modiv",
+  "deal_label": "Global Net Lease / Modiv Industrial",
+  "notes": "V2 side is the real Canonical V2 native extraction of Modiv Section 7.3, replayed from evidence/canonical-v2/m3-pilot-20260804-fresh/final-output/execution-result.json (work item modiv-termination-fee-7-3, SUCCEEDED, provider OPENAI_CODEX_CLI_SUBSCRIPTION, profile TERRA_MEDIUM). Its run receipt pins source_sha256 0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e, which is the exact canonical text committed at tests/fixtures/canonical-v2/modiv-first-live-run/adapter-result.json. LEGACY SIDE UNAVAILABLE: no committed artefact in this repository holds a legacy termination-fee card for this deal, or for any deal. tests/fixtures/canonical-v2/v1v2-comparator/modiv-v1-provision-snapshot.json is a real production provision_cards export but contains only 48 REPRESENTATION cards, carries no `features`/`ai_metadata`, and holds zero TERMF cards; the eight tests/fixtures/canonical-v2/*/corpus-cards.json production exports likewise contain zero TERMF cards. Legacy termination-fee cards exist only in the production provision_cards/claims tables, which this harness has no authority to read.",
+  "legacy": {
+    "unavailable": "No committed artefact holds legacy TERMF cards for this deal. The production provision_cards snapshot at tests/fixtures/canonical-v2/v1v2-comparator/modiv-v1-provision-snapshot.json contains 48 REPRESENTATION cards, no TERMF cards, and no features/ai_metadata at all. Building this side requires read access to production, which this harness does not have."
+  },
+  "v2": {
+    "resolution_file": "tests/fixtures/review-parity/cases/termination-fees/dfaa71fa-modiv.resolution.json"
+  }
+}

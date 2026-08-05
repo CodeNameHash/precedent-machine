@@ -277,7 +277,40 @@ contained stubs on `main`. The programme's own gates already encode the right
 dependency: `programme-gates.yaml:171-180` makes the security gate a
 prerequisite for **import and activation**, not for engineering.
 
-So the lanes run in parallel. Security gates only the last three steps.
+So the lanes run in parallel. Security gates only the last three steps. D1,
+the merge to `main`, depends on neither lane and is authorised to start now;
+it moves first, below.
+
+---
+
+## D1. Merge to main: authorised, moved up
+
+**Ben authorised this on 2026-08-05 and wants it moving now: he does not
+want to keep developing on a branch.** It no longer waits behind anything
+else in this plan; it runs in parallel with lanes S and P, same as
+everything else here that does not touch containment.
+
+**What it is.** This branch is 287 commits and 910 files ahead of `main`,
+with 314,632 lines inserted. Production tracks `main`. None of it has ever
+passed CI as a merged unit.
+
+**Why it matters.** Step D2 is unreachable without it, and this is
+plausibly weeks of integration on its own. Treating it as ambient is how it
+becomes a crisis, which is exactly why it is authorised now rather than left
+for later.
+
+**How it gets sliced.** Not decided here. A separate assessment is
+establishing how to break 910 files into a mergeable sequence, recorded in
+`docs/codex-program/MERGE-PLAN.md`. Read that document for the actual
+slicing; nothing in this roadmap should be read as pre-empting it.
+
+**Done when.** The branch is merged, CI passes on `main` as a merged unit,
+and the deployed site is verified live rather than assumed.
+
+**Technical.** The `phase-allowlist` CI job runs on pull requests and the
+active phase's allowlist covers none of tonight's moved paths; it will fail
+until amended. Run `npm test` plus `npm run build` on the merge result, not
+just on the branch.
 
 ---
 
@@ -323,9 +356,10 @@ tests that make real requests rather than reading source. The four critical
 routes are repaired, not contained. A written route-and-action inventory
 exists.
 
-**Needs from Ben.** One decision: how the browser authenticates. Session
-cookie, proxy, or key to the client. A draft exists and dies without this,
-because every page fetches its own API routes and nothing sends a credential.
+**Decided.** Session cookie: a login page sets it, the API checks it. See
+`DECISIONS.md` item 2 for the full reasoning. A draft exists and dies
+without this being built, because every page fetches its own API routes and
+nothing sends a credential yet.
 
 **Technical.** Branch `wp/api-auth-middleware`, commit `e05bfeb5`, +493 lines,
 inert behind `API_AUTH_ENABLED`. No `middleware.js` at HEAD, no auth
@@ -377,7 +411,10 @@ learn, and teach it.
 **Why it matters.** For termination fees, V2 governs three facts where the
 table shows about twelve. Extracting more deals does not fix that.
 
-**Needs from Ben.** Three legal rulings, in Part 5.
+**Decided.** The three legal rulings are made: willful breach gets two
+rows, payment deadline becomes one claim per limb, and "fee required to
+terminate" moves to Termination Rights. See `DECISIONS.md` items 4, 5 and 6
+for the reasoning behind each.
 
 **Technical.** Three of the nine gaps need no new definitions: sole remedy and
 the willful-breach carve-out are already governed in the Remedies family
@@ -456,8 +493,9 @@ after.
 corpus runs clean against the ingest-QA gates, quote verification at zero
 flags, and the golden evaluation harness.
 
-**Needs from Ben.** Approval to clear duplicate rows if any exist in
-production data.
+**Decided.** Approved, identification first: the list of any affected
+cards comes back to Ben before anything is deleted. See `DECISIONS.md` item
+7.
 
 **Technical.** Future writes were converged onto one scheme tonight; 128
 cards may still carry legacy-scheme rows, unconfirmed without database
@@ -480,8 +518,8 @@ environment, with the two-scope sidebar Ben asked for.
 **Why before search.** The machinery is more complete, the filters are already
 built end to end, and the review page is where a user sees it.
 
-**Needs from Ben.** One governance decision: a code-enforced rule declares the
-market route permanently contained.
+**Decided.** Approved: the rule may be amended to un-contain the route,
+applied when this step actually starts. See `DECISIONS.md` item 8.
 
 **Technical.** Three stubs: `pages/api/market-stats.js`, `corpus-stats.js`
 (641 lines, restore from `git show 8096bd6c^:`), `corpus-stats-batch.js`. Two
@@ -561,26 +599,9 @@ to Excel and PDF is deferred until after launch on Ben's instruction.
 
 ## Lane D: delivery
 
-### D1. Merge to main
-
-**This has no owner in any previous plan and it blocks going live.**
-
-**What it is.** This branch is 287 commits and 910 files ahead of `main`, with
-314,632 lines inserted. Production tracks `main`. None of it has ever passed
-CI as a merged unit.
-
-**Why it matters.** Step D2 is unreachable without it, and this is plausibly
-weeks of integration on its own. Treating it as ambient is how it becomes a
-crisis.
-
-**Done when.** The branch is merged, CI passes on `main` as a merged unit, and
-the deployed site is verified live rather than assumed.
-
-**Technical.** The `phase-allowlist` CI job runs on pull requests and the
-active phase's allowlist covers none of tonight's moved paths; it will fail
-until amended. Recommend merging in reviewable slices rather than one 910-file
-pull request, and running `npm test` plus `npm run build` on the merge
-result, not just on the branch.
+D1, the merge to `main`, moved up: see the standalone section above, right
+after the ordering correction. It is authorised and no longer waits on
+anything in this lane. What remains here is D2 and D3, both still gated.
 
 ### D2. Import and go live
 
@@ -589,19 +610,26 @@ result, not just on the branch.
 **What it is.** Load V2 data into production without switching to it, check it
 matches, then switch, with a tested way back.
 
-**Needs from Ben.** The go-live decision, and a ruling on scope (see Part 5).
+**Decided.** Scope is the five-step path Ben set, not the documented
+twenty-five: a real backup-and-restore drill, import to a copy the live site
+is not reading, a comparison proving the two match, flipping the switch, and
+a rollback someone has actually run. Go live when ready, with no external
+customer forcing the date. See `DECISIONS.md` items 9 and 12 for the full
+reasoning. What remains is building it.
 
-**Technical.** **There is no cutover mechanism.** The objects the documented
-chain requires do not exist in code: `ReleaseBundleEnvelope`,
-`PostActivationControlHead`, `CandidatePromotionFence`,
-`GeneratedLockPlanRegistry` are zero files each. There is no import,
-activation, rollback or restore script. Rollback has been proven only as a
-database transaction rollback in staging; **no production restore has ever
-been exercised**. Deliverables, in order: a backup-and-restore drill against
-the staging project (the cheapest real gate, roughly a day); an import script
-writing to an inactive namespace with checkpointed resume; a comparison proving
-the imported data matches; an activation switch; a rollback script; and a
-smoke test after activation.
+**Technical.** **There is no cutover mechanism yet.** The objects the
+documented twenty-five-step chain requires do not exist in code:
+`ReleaseBundleEnvelope`, `PostActivationControlHead`,
+`CandidatePromotionFence`, `GeneratedLockPlanRegistry` are zero files each.
+There is no import, activation, rollback or restore script. Rollback has
+been proven only as a database transaction rollback in staging; **no
+production restore has ever been exercised**. Build the five decided
+deliverables, in order: a backup-and-restore drill against the staging
+project, actually performed (the cheapest real gate, roughly a day); an
+import script writing to an inactive namespace with checkpointed resume; a
+comparison proving the imported data matches; an activation switch,
+smoke-tested immediately after; and a rollback script that gets actually
+run, not just written, before D2 is called done.
 
 ### D3. Decide what to do about the gate registry
 
@@ -614,7 +642,9 @@ verify nothing.
 a manifest-pinned governed document. Left as an opinion it is unactionable, so
 it needs a ruling and then a deletion step.
 
-**Needs from Ben.** One ruling, in Part 5.
+**Decided.** Keep the gates that map to real engineering; delete the
+self-verifying layer that checks nothing. See `DECISIONS.md` item 10 for the
+full reasoning.
 
 **Technical.** `lib/programme-gates/governing-registry.js:267` throws unless
 every pre-production gate stays `OPEN`. Two gates have their work finished and
@@ -626,36 +656,67 @@ across 5 modules) whose validator compares its own output to itself.
 
 # Part 5. What I need from Ben
 
+Only one item below is still genuinely open. Rows 2 through 12 were decided
+by Ben on 2026-08-05 and have moved to the decided list beneath the table;
+each keeps its original row number so it is still easy to trace back to
+this document's steps and to the matching entry in `DECISIONS.md`.
+
 | # | Decision | Blocks | If it waits |
 |---|---|---|---|
 | 1 | **Check the live site requires a login, and whether the July database key was rotated** | S0 | The corpus may be reachable now |
-| 2 | **How the browser authenticates**: session cookie, proxy, or key to the client | S2 | Auth cannot ship, so import and activation stay blocked |
-| 3 | **Permission to show V2 in place of V1, family by family** | P1 onward | The analysis stays invisible and the count cannot move |
-| 4 | **Willful breach: one row or two?** The table shows one row for two legally distinct carve-outs, one to the effect-of-termination rule and one to the fee-as-damages cap. An agreement can have either without the other, and today which one you see depends on card order | P2 | The row keeps meaning two things |
-| 5 | **Payment deadline: one claim per limb, or one verbatim string?** Real values are branchy prose keyed to which termination limb fired, not a number of days | P2 | Stays evidence, not a fact |
-| 6 | **Does "fee required to terminate" belong to Termination Rights?** It means payment is a condition precedent to exercising the fiduciary out, not that a fee exists. A wrong reading inverts a material deal point invisibly | P2 | Sits in the wrong family |
-| 7 | **Approval to clear duplicate claim rows** in production data, if any exist | P6 | Duplicates persist and the corpus run adds more |
-| 8 | **Un-contain the market route**, overriding a code-enforced rule | P7 | Market cannot be switched on |
-| 9 | **Is the full documented cutover chain proportionate** to a 40-deal internal corpus, or is a smaller import, verify, activate, rollback path with a real restore drill acceptable? | D2 | The largest remaining engineering block stays unscoped |
-| 10 | **Fix the gate registry or stop scoring it** | D3 | An unactionable opinion sits in the plan |
-| 11 | **Original or amended terms for market comparison** | After launch | Statistics cannot mix bases honestly |
-| 12 | **Go live** | D2 | The last act |
+
+**Decided, 2026-08-05.** Recorded in full, with reasoning, in
+`DECISIONS.md`:
+
+- **2, how the browser authenticates:** session cookie.
+- **3, show V2 in place of V1, family by family:** granted.
+- **4, willful breach, one row or two:** two rows.
+- **5, payment deadline, per limb or verbatim:** one claim per limb, against
+  the cheaper recommendation.
+- **6, does "fee required to terminate" belong to Termination Rights:** yes,
+  it moves there.
+- **7, clear duplicate claim rows:** approved, identification first, the
+  list shown before anything is deleted.
+- **8, un-contain the market route:** approved.
+- **9, is the full cutover chain proportionate:** no, the five-step path
+  instead of the documented twenty-five.
+- **10, fix the gate registry or stop scoring it:** keep the gates that map
+  to real engineering, delete the rest.
+- **11, original or amended terms for market comparison:** amended terms,
+  labelled.
+- **12, go live:** when ready. No external customer is waiting on a date.
 
 **Already granted, recorded so nobody re-asks:** running extraction across the
 corpus (2026-08-05); the shape of the comparison and search product; the
 per-family display approach; rendering V1 beside V2 rather than replacing it.
 
-**Smaller open questions that block nothing:** a market-position rank for four
-provision types, whether four no-shop concepts become fully approved, whether
-the list of representation subjects should ever close, and what to name the
-human-verified status.
+**Also decided, 2026-08-05, blocking nothing, recorded in full in
+`DECISIONS.md`:** materiality ranks for the four remaining provision types,
+approved, with Ben's objection to a fixed rank table recorded alongside the
+approval; the four no-shop concepts, all approved; representation subjects
+stay open indefinitely rather than ever closing; and the human-verified
+status is named `DOCUMENT_TEXT_VERIFIED_AGAINST_SOURCE_BYTES`.
+
+**What remains genuinely open.** One item: S0's browser check, whether
+`precedent-machine.vercel.app` requires a login and whether the July
+database key was rotated. That is an action for Ben to perform, not a
+ruling for him to make, and `DECISIONS.md` item 1 already recorded what
+happens once the answer is known. Nothing else on this page is still
+waiting on a decision.
 
 ---
 
 # Part 6. Risks, in order
 
 1. **Merging 287 commits and 910 files to `main`**, never tested as a merged
-   unit, gating everything downstream, and until now owned by nobody.
+   unit. The danger is not the raw count: most of those files are gated off
+   in production, additive, or documentation. What is actually risky is
+   whatever subset touches the live path, and how large that subset is is
+   being measured, not assumed, as part of the slicing work in
+   `MERGE-PLAN.md`. That does not make the merge safe; it narrows what is
+   still unknown to a smaller, checkable question. D1 is now authorised and
+   moved up in this plan (see above) precisely so this stops being owned by
+   nobody.
 2. **The evidence base is thinner than the register says.** One family has real
    committed model output. The first corpus run is the first honest
    measurement.

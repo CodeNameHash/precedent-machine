@@ -355,6 +355,18 @@ test('JSX product files are parsed rather than skipped', () => {
 test('the register-wide blocker inventory is unchanged by the strict locator rule', () => {
   // 104 blockers and 6 review holds were the pinned counts before ruling 3. The strict
   // rule demoted nothing, because every currently-visible row proves a complete path.
+  // Back to 104 as of 2026-08-05, after two movements the same day that happen to cancel.
+  // Up one: CAPITALISATION was added to the register (previously untracked despite carrying
+  // real recorded model output) with one honest, unproven FOLLOW_ON_REQUIRED product
+  // surface. Down one: merger-structure-product-projection.js was deleted as dead code, its
+  // claim keys and concepts having never existed in the contract bundle, and the
+  // structure-market-fields surface went with it because that module was its source_path.
+  // The other four structure surfaces stayed blockers; only their false PASS labels changed.
+  // Do not read 104 as "unchanged" and do not collapse this comment: the number is the same
+  // by coincidence, and a future reader who assumes stability will draw the wrong conclusion.
+  // Review holds fell from 6 to 2 the same day (the four owner-approved no-shop concepts
+  // were promoted out of review hold into the NO_SHOP family's product_surfaces), which is a
+  // distinct count this test does not assert.
   assert.equal(listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER).length, 104);
 });
 

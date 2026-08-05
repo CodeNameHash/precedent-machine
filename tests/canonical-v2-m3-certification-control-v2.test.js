@@ -143,8 +143,19 @@ function assertControlError(code) {
 
 test('V2 records the real serving block before it tests downstream fences', () => {
   assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.state, 'BLOCKED');
+  // 104 after two movements on 2026-08-05 that happen to cancel out. Up one:
+  // CAPITALISATION was added to the register (previously untracked despite
+  // being the only component with real recorded model output) with one
+  // honest, unproven FOLLOW_ON_REQUIRED product surface. Down one:
+  // merger-structure-product-projection.js was deleted as dead code, taking
+  // the structure-market-fields surface with it, since that module was its
+  // source_path. Do not read the unchanged number as nothing having happened.
   assert.equal(listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER).length, 104);
-  assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.review_hold_ids.length, 6);
+  // 2, not 6: the owner approved the four retained no-shop concepts
+  // (2026-08-05), promoting NOSOL-CEASE/RECOMMEND/ENFORCE/WAIVER out of
+  // review hold into the NO_SHOP family's product_surfaces. Only the two
+  // permanently-bounded NOSOL-SUPERIOR/NOSOL-INTERVENING claims remain.
+  assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.review_hold_ids.length, 2);
   assert.throws(() => build({
     family_parity_status: CURRENT_M3_FAMILY_PARITY_STATUS,
   }), assertControlError('INCOMPLETE_FAMILY_PARITY'));

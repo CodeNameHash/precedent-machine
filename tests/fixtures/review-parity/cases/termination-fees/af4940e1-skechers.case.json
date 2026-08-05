@@ -1,0 +1,13 @@
+{
+  "schema": "REVIEW_PARITY_CASE/V1",
+  "family_id": "TERMINATION_FEE",
+  "deal_id": "af4940e1-skechers",
+  "deal_label": "Beach Acquisition / Skechers",
+  "notes": "Neither side is available. Skechers is one of the three deals with committed admitted local source and a real pilot run, but its two pilot work items are CAPITALISATION and NO_OTHER_REPS_FRAUD; there is no TERMINATION_FEE work item for skechers-full in tests/fixtures/canonical-v2/m3-12-call-pilot-manifest.json. Recorded so the report states the gap rather than omitting the deal.",
+  "legacy": {
+    "unavailable": "No committed artefact holds legacy TERMF cards for this deal; the production snapshot at tests/fixtures/canonical-v2/v1v2-comparator/skechers-v1-provision-snapshot.json is 47 REPRESENTATION cards with no features."
+  },
+  "v2": {
+    "unavailable": "No Canonical V2 termination-fee resolution exists for this deal. The committed pilot manifest pins no TERMINATION_FEE work item for skechers-full, and lib/canonical-v2/termination-fee-serving-source.js registers no canonical source for this deal id."
+  }
+}

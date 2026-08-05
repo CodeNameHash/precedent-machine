@@ -2,6 +2,8 @@
 // DealHeader prototype, fed by real deal data. Sticky 108px bar: identity
 // block, metric columns, and the Full Agreement / Back to Summary toggle.
 
+import { useClauseSearchMode } from './clauseSearchMode.js';
+
 function formatDealValue(raw) {
   const n = Number(raw);
   if (!Number.isFinite(n) || n <= 0) return null;
@@ -90,6 +92,37 @@ export function deriveMetrics(deal, extracted = {}) {
   if (deal.sector) metrics.push({ label: 'Sector', value: deal.sector, priority: 3 });
 
   return metrics;
+}
+
+// Masthead control for clauseSearchMode.js's toggle -- the ONE place on the
+// review page guaranteed visible on every load without scrolling, so a
+// reader has a real chance of discovering it before reaching for Ctrl+F.
+// Off by default: an ordinary find-in-page only ever matches what's already
+// on screen. Switching it on makes every "See provision" disclosure render
+// as real, expanded, searchable content instead -- see clauseSearchMode.js
+// for the full rationale and ProvisionTablePrimitives.jsx's
+// SeeProvisionDisclosure for the mechanism.
+function ClauseSearchToggle() {
+  const [enabled, setEnabled] = useClauseSearchMode();
+  return (
+    <button
+      type="button"
+      onClick={() => setEnabled(!enabled)}
+      aria-pressed={enabled}
+      data-testid="clause-search-mode-toggle"
+      title={enabled
+        ? 'Clause text is expanded and searchable. Click to collapse it again.'
+        : 'Expand every "See provision" clause so Ctrl+F / Cmd+F can search inside it.'}
+      className={`inline-flex items-center gap-1.5 px-3 py-2 border text-[10px] font-bold uppercase tracking-wider whitespace-nowrap transition ${
+        enabled
+          ? 'border-[#1F1F1F] bg-[#1F1F1F] text-white'
+          : 'border-[#E0E0E0] text-[#6B6B6B] hover:border-[#1F1F1F] hover:text-[#1F1F1F]'
+      }`}
+    >
+      <span aria-hidden="true">{enabled ? '☑' : '☐'}</span>
+      Search clause text
+    </button>
+  );
 }
 
 export function deriveStatus(deal) {
@@ -200,6 +233,7 @@ export default function DealHeader({ deal, view, onToggleView, hasAgreementText,
             reachable: below md it wraps onto its own line via flex-wrap on
             the parent rather than being hidden. */}
         <div className="flex items-center gap-2 shrink-0 ml-auto md:ml-auto lg:ml-0">
+          <ClauseSearchToggle />
           {hasAgreementText ? (
             <button
               type="button"

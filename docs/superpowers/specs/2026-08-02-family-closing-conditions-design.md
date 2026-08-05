@@ -205,7 +205,7 @@ claim is "the machinery exists, is proven on committed fixtures, and the
 capitalisation bring-down sub-path is proven live".
 
 **Fixture placement is load-bearing:** all committed condition-text fixtures
-live under `tests/fixtures/canonical-v2/closing-conditions-live-run/` so the
+live under `tests/fixtures/canonical-v2/closing-conditions-fixtures/` so the
 forbidden-patterns PROSE_CLASS_FINGERPRINTS exemption
 (scripts/lint/forbidden-patterns.sh ~47–55) applies by construction — real
 condition prose legitimately contains the burdensome-condition and
@@ -708,7 +708,7 @@ recordings and must keep replaying)
    (`066e1fd7`, `ae155f39`, `f10b6b21`, `c0d6b18f`, `c5b50bfe`, `3a0c665c`,
    `84353d88`, `fa44d3ce`, `ecb30ef5`, `50f19dfa`) committed as LITERAL
    production bytes under
-   `tests/fixtures/canonical-v2/closing-conditions-live-run/` (the
+   `tests/fixtures/canonical-v2/closing-conditions-fixtures/` (the
    prose-fingerprint-exempt directory class — deliberate, documented in the
    fixture README), provenance headers recording true card ids and
    subtypes (including NULL where true — the TERMF m-2 discipline). Every

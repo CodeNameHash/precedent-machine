@@ -264,13 +264,32 @@ test('corrected production locators still cannot clear parity without a real pro
   assert.equal(isNativeSemanticCompletion(invalid), false);
 });
 
-test('unassigned no-shop locators identify existing rows without converting review holds into native claims', () => {
+test('approved no-shop concepts are promoted from review hold to owner-approved family surfaces', () => {
+  // Owner ruling, 2026-08-05: NOSOL-CEASE, NOSOL-RECOMMEND, NOSOL-ENFORCE
+  // and NOSOL-WAIVER are all approved. This register records approval the
+  // same way it records every other product surface's approved scope: a
+  // real disposition (semantics.disposition_field is literally
+  // APPROVED_SCOPE_DISPOSITION) inside a family's product_surfaces, not a
+  // bare surface_id parked in unassigned_product_surfaces with no
+  // disposition field at all. So approval means promotion out of
+  // unassigned_product_surfaces (and out of review_hold_ids) and into the
+  // NO_SHOP family's product_surfaces, not a relabelled reason string.
   const unassigned = CURRENT_M3_FAMILY_PARITY_REGISTER.unassigned_product_surfaces;
-  assert.equal(unassigned.find((entry) => entry.surface_id === 'nosol-cease-retained').source_locator, 'ROWS');
-  assert.equal(unassigned.find((entry) => entry.surface_id === 'nosol-enforce-retained').source_locator, 'ROWS');
-  assert.equal(unassigned.find((entry) => entry.surface_id === 'nosol-waiver-retained').source_locator, 'nosolSectionConfig');
-  assert.ok(CURRENT_M3_FAMILY_PARITY_STATUS.review_hold_ids.includes('nosol-cease-retained'));
-  assert.ok(!CURRENT_M3_FAMILY_PARITY_STATUS.unassigned_product_surface_ids.includes('nosol-cease-retained'));
+  for (const surfaceId of [
+    'nosol-cease-retained', 'nosol-enforce-retained', 'nosol-recommend-retained', 'nosol-waiver-retained',
+  ]) {
+    assert.ok(!unassigned.some((entry) => entry.surface_id === surfaceId), `${surfaceId} must no longer be unassigned`);
+    assert.ok(!CURRENT_M3_FAMILY_PARITY_STATUS.review_hold_ids.includes(surfaceId), surfaceId);
+    const promoted = surface(surfaceId);
+    assert.ok(promoted, `${surfaceId} must be a registered product surface`);
+    assert.equal(promoted.disposition, 'EVIDENCE_ONLY');
+    assert.equal(promoted.state, 'PASS');
+    assert.equal(promoted.wave, 'FOLLOW_ON');
+  }
+  assert.equal(surface('nosol-cease-retained').source_locator, 'ROWS');
+  assert.equal(surface('nosol-enforce-retained').source_locator, 'ROWS');
+  assert.equal(surface('nosol-waiver-retained').source_locator, 'nosolSectionConfig');
+  assert.equal(surface('nosol-recommend-retained').source_locator, 'nosolFiduciaryConfig');
 });
 
 test('decision records are evidence, not product-serving source paths', () => {
@@ -301,24 +320,26 @@ test('the complete supplemental-owner inventory is registered and its unbuilt su
   }
 });
 
-test('indirect table configurations and unadjudicated no-shop concepts remain explicit blockers', () => {
+test('indirect table configurations and the two permanently-bounded no-shop claims remain explicit review holds', () => {
   const unassigned = CURRENT_M3_FAMILY_PARITY_REGISTER.unassigned_product_surfaces;
   for (const surfaceId of [
     'indirect-advisers-fees-expenses-config',
     'indirect-approvals-votes-config',
     'indirect-conditions-m-config',
-    'nosol-cease-retained',
-    'nosol-enforce-retained',
-    'nosol-recommend-retained',
-    'nosol-waiver-retained',
     'nosol-superior-native-claim',
     'nosol-intervening-native-claim',
   ]) {
     assert.ok(unassigned.some((entry) => entry.surface_id === surfaceId), surfaceId);
   }
-  assert.ok(unassigned
-    .filter((entry) => entry.surface_id.includes('nosol-') && entry.surface_id.endsWith('-retained'))
-    .every((entry) => entry.reason.startsWith('UNADJUDICATED_RETAINED_BOUNDED_')));
+  // The four owner-approved concepts are gone from this list entirely --
+  // see "approved no-shop concepts are promoted..." above. Only the two
+  // NOSOL-SUPERIOR / NOSOL-INTERVENING claims, which the owner did not rule
+  // on, stay parked as permanently-bounded evidence.
+  for (const surfaceId of [
+    'nosol-cease-retained', 'nosol-enforce-retained', 'nosol-recommend-retained', 'nosol-waiver-retained',
+  ]) {
+    assert.ok(!unassigned.some((entry) => entry.surface_id === surfaceId), surfaceId);
+  }
   assert.ok(unassigned
     .filter((entry) => entry.surface_id.endsWith('-native-claim'))
     .every((entry) => entry.reason === 'UNSUPPORTED_NATIVE_CLAIM_DOWNGRADED_TO_BOUNDED_EVIDENCE'));

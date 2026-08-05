@@ -1,7 +1,8 @@
-# Decisions needed from Ben
+# Decisions from Ben
 
-As at 2026-08-05. Each says what is being asked, why it matters, the options,
-and my recommendation. Nothing here is urgent except number 1.
+As at 2026-08-05. Every item below, numbered and smaller alike, has now been
+decided. Each entry keeps the original ask, why it mattered, and the options
+considered, then records the decision and the reasoning behind it.
 
 Cross-references are to steps in `ROADMAP.md`.
 
@@ -62,7 +63,7 @@ product work to run in parallel rather than waiting weeks.
 
 ---
 
-## 2. How the browser authenticates
+## 2. How the browser authenticates: DECIDED 2026-08-05, session cookie
 
 **Blocks:** shipping authentication (step S2), which in turn gates import and
 production activation.
@@ -86,14 +87,21 @@ to be rewritten to go through it.
 *Ship a key to the browser.* Fastest. Also means the key is in the page
 source, so it protects against nothing except casual access.
 
-**Recommendation: session cookie.** It is the only one of the three that is
-still correct if this ever has a second user, and the page code does not
-change. The third option is not really authentication and would have to be
-redone before any client sees this.
+**Ben's decision: session cookie.** A login page sets an HTTP-only cookie and
+the API checks it, chosen over the proxy and over shipping a key to the
+browser because it is the only one of the three still correct if this
+product ever gets a second user, and no page's code has to change: the
+browser sends the cookie by itself.
+
+**Technical.** This authorises step S2's build: a login page, session storage
+and a user model. The existing draft middleware on `wp/api-auth-middleware`,
+inert behind `API_AUTH_ENABLED`, is the enforcement point once the cookie
+exists. See `ROADMAP.md` step S2 for the route inventory and the acceptance
+test.
 
 ---
 
-## 3. Permission to show V2 in place of V1, family by family
+## 3. Permission to show V2 in place of V1, family by family: DECIDED 2026-08-05, granted
 
 **Blocks:** steps P1 onward. Nothing can move the count without it.
 
@@ -106,14 +114,22 @@ V1 and V2 together with a verdict on each row, and an equivalence harness
 that refuses to report a pass when its coverage is incomplete. All behind a
 flag that cannot evaluate true in production.
 
-**Recommendation: yes, and it is low-risk.** Because you asked for V1 to stay
-visible beside V2 rather than being replaced, the failure mode is visible
-rather than silent: a field V2 has not extracted renders amber as "not yet
-extracted" beside V1's value, never as though the agreement were silent.
+**Ben's decision: granted.** V2 replaces V1 on the review page one provision
+family at a time, in preview, starting with termination fees. Because V1
+stays visible beside V2 rather than being replaced outright, the failure
+mode stays visible rather than silent: a field V2 has not extracted renders
+amber as "not yet extracted" beside V1's value, never as though the
+agreement were silent.
+
+**Technical.** This authorises the per-family switch-over that steps P1
+onward depend on. The switch, the side-by-side view and the equivalence
+harness described above are already built, gated behind a flag that cannot
+evaluate true in production; this decision is the permission to use them,
+family by family, in preview.
 
 ---
 
-## 4. Willful breach: one row or two?
+## 4. Willful breach: DECIDED 2026-08-05, two rows
 
 **Blocks:** step P2. This is a legal call, not an engineering one.
 
@@ -136,14 +152,23 @@ That is a live defect, not a design choice.
 that names which carve-out it reports. Or one row that reports both and says
 so.
 
-**Recommendation: two rows.** They are different questions a lawyer would ask
-separately, and the new claim vocabulary already governs only the sole-remedy
-variant, so wiring it to the existing single row would silently narrow what
-that row means without changing its label.
+**Ben's decision: two rows.** One row for the carve-out to the
+effect-of-termination rule, so liability survives termination; a second row
+for the carve-out to the sole-remedy cap, so the fee is not the exclusive
+remedy. Each is labelled for what it actually is, rather than one row that
+silently reports whichever fact the code happens to see first. They are
+different questions a lawyer would ask separately, and the new claim
+vocabulary already governs only the sole-remedy variant, so wiring it to the
+existing single row would have silently narrowed what that row means without
+changing its label.
+
+**Technical.** Cross-ref step P2. The sole-remedy row already has governing
+claims, `SOLE_REMEDY_LEGAL_EFFECT_PRESENT` and `SOLE_REMEDY_CARVEOUT_KIND`
+(see `ROADMAP.md` step P2); the effect-of-termination row is the new work.
 
 ---
 
-## 5. Payment deadline: one claim per limb, or one verbatim string?
+## 5. Payment deadline: DECIDED 2026-08-05, one claim per limb
 
 **Blocks:** step P2.
 
@@ -167,14 +192,23 @@ which path, which is a reading of the agreement.
 *One verbatim string.* Store the sentence, display it, do not try to structure
 it. Cheap, honest, not queryable.
 
-**Recommendation: one verbatim string for now, per-limb later if anyone asks
-for it.** The per-limb version is real work and its value is speculative. The
-string version loses nothing that exists today, because the legacy field is
-already the same prose.
+**Ben's decision: one claim per limb, against the recommendation.** The
+recommendation above was the cheaper option, one verbatim string. Ben chose
+the more useful and more expensive one instead: each limb's payment timing
+becomes its own governed fact, so a question like "which deals require
+payment simultaneously with termination" is answerable directly, rather than
+staying buried in prose nobody can query.
+
+**Technical.** Cross-ref step P2. This is real work, not reformatting: it
+requires deciding which termination limb governs which payment path for
+every deal, which is a reading of the agreement, not a mechanical split of
+the existing string. Budget it accordingly; do not let an implementation
+fall back to the cheaper verbatim-string shape to save time, since that is
+the option Ben specifically turned down.
 
 ---
 
-## 6. Does "fee required to terminate" belong to Termination Rights?
+## 6. "Fee required to terminate": DECIDED 2026-08-05, moves to Termination Rights
 
 **Blocks:** step P2.
 
@@ -191,12 +225,18 @@ different negotiating positions.
 **A complication.** 23 of 28 stored values are booleans and 5 are prose, so
 whatever is decided must handle both.
 
-**Recommendation: move it to Termination Rights.** The registry already says
-that is where it belongs; the display is what drifted.
+**Ben's decision: move it to Termination Rights.** The registry already
+scopes this field there, under "Fiduciary out"; the display is what had
+drifted. Moving it corrects the reading: this is about whether payment is a
+condition precedent to exercising the fiduciary out, not about whether a fee
+exists.
+
+**Technical.** Cross-ref step P2. 23 of 28 stored values are booleans and 5
+are prose; the moved display must handle both.
 
 ---
 
-## 7. Approval to clear duplicate claim rows in production
+## 7. Duplicate claim rows: DECIDED 2026-08-05, approved, identification first
 
 **Blocks:** step P6, the corpus run.
 
@@ -211,13 +251,18 @@ ones.
 production data, if any exist. Read-only identification first, with the list
 shown to you before anything is deleted.
 
-**Recommendation: approve the identification now, hold the deletion.** Knowing
-whether 128 cards are affected or zero changes how step P6 is planned, and
-counting costs nothing.
+**Ben's decision: approved, identification first.** Identify the duplicates
+read-only, and bring the list back to Ben before anything is deleted.
+Nothing is removed on the strength of a count alone.
+
+**Technical.** Cross-ref step P6. Run the read-only identification query
+across production data, confirm whether the 128 at-risk cards actually carry
+duplicates (or how many do), and hold the deletion for a separate,
+specifically-approved step once the list exists.
 
 ---
 
-## 8. Un-contain the market statistics route
+## 8. The market statistics route: DECIDED 2026-08-05, un-contain approved
 
 **Blocks:** step P7.
 
@@ -234,12 +279,14 @@ mismatched denominators or unknown deal-value bases. But **it has never run
 against real data**, and the module that reads the database has no test
 coverage at all.
 
-**Recommendation: approve it when step P7 starts, not before.** And treat the
-first live run as the real test, because it is.
+**Ben's decision: approved.** The rule may be amended to un-contain the
+route. Apply the change when step P7 actually starts, not before, and treat
+the first live run against real data as the real test of the machinery
+described above, because it is: nothing has proven it against real data yet.
 
 ---
 
-## 9. Is the full cutover chain proportionate?
+## 9. The cutover: DECIDED 2026-08-05, the five-step path, not the twenty-five
 
 **Blocks:** step D2, going live. This is the largest unscoped item.
 
@@ -254,16 +301,34 @@ with one user, or is a smaller path acceptable: import to an inactive
 namespace, verify it matches, activate, with a tested rollback and a real
 restore drill?
 
-**Recommendation: the smaller path.** The documented chain was designed for a
-scale and an audience this does not have, and building it would be months.
-The five things I would not cut are: a backup and restore drill actually
-performed, import to an inactive namespace, a comparison proving the imported
-data matches, a rollback that has been tested rather than described, and a
-smoke test after activation.
+**Ben's decision: the five-step path, not the documented twenty-five.** Ben
+delegated the judgement of which path to take, and confirmed the smaller
+one, the same shape as the recommendation. He then fixed the floor himself:
+five steps, and not one fewer.
+
+1. Take a database backup and actually restore it somewhere else, to prove
+   restore works. This has never been done.
+2. Load the new data into a separate copy that the live site is not reading.
+3. Compare the two and prove they say the same thing.
+4. Flip the switch.
+5. Have a rollback that someone has actually run, not just written down.
+
+The documented chain was designed for a scale and an audience this product
+does not have, and building it would be months. Nothing in it is being
+declared unnecessary in principle: the ruling is that these five are the
+proportionate substitute, and none of the five may be dropped to save time.
+
+**Technical.** Cross-ref step D2. None of the objects the twenty-five-step
+chain requires exist in code (`ReleaseBundleEnvelope`,
+`PostActivationControlHead`, `CandidatePromotionFence`,
+`GeneratedLockPlanRegistry` are zero files each), and there is no import,
+activation, rollback or restore script today. Build against the five steps
+above; fold a smoke test immediately after step 4 rather than treating it as
+a separate, optional sixth step.
 
 ---
 
-## 10. Fix the gate registry, or stop scoring it
+## 10. The gate registry: DECIDED 2026-08-05, keep the real gates, delete the rest
 
 **Blocks:** nothing operationally, but it distorts every status report.
 
@@ -279,16 +344,22 @@ text and never makes a request.
 gates" contradicts a document that is byte-pinned and machine-read. Left as
 an opinion it is unactionable.
 
-**Recommendation: keep the gates that map to real engineering, delete the
-rest.** Backup and restore, render parity, structured claims, security, import
-parity and cutover are real work worth tracking. The self-verifying layer,
-whose validator compares its own output to itself, catches nothing and should
-go. Every defect actually caught in this codebase was caught by ordinary
-engineering.
+**Ben's decision: approved.** Keep the gates that map to real engineering:
+backup and restore, render parity, structured claims, security, import
+parity and cutover. Delete the self-verifying layer, whose validator
+compares its own output to itself and catches nothing. Every defect actually
+caught in this codebase was caught by ordinary engineering, not by that
+layer.
+
+**Technical.** Cross-ref step D3.
+`lib/programme-gates/governing-registry.js:267` is the loader that currently
+throws unless every pre-production gate stays `OPEN`; it needs amending so a
+gate can record a genuine pass. The self-verifying layer to delete is
+`lib/programme-gates/p9-acceptance-*`, 1,001 lines across 5 modules.
 
 ---
 
-## 11. Original or amended terms for market comparison
+## 11. Market comparison basis: DECIDED 2026-08-05, amended terms, labelled
 
 **Blocks:** nothing before launch.
 
@@ -297,8 +368,8 @@ market statistics have to decide which figure counts: what the parties first
 agreed, or what they ended up with. Both are defensible. Mixing them silently
 is not.
 
-**Recommendation: the amended terms, labelled.** What the parties ended up
-with is what "market" usually means. But the statistic should say which basis
+**Ben's decision: the amended terms, labelled.** What the parties ended up
+with is what "market" usually means, but the statistic must say which basis
 it used rather than leaving the reader to assume.
 
 **Only one deal in the corpus is currently known to have an amendment**, so
@@ -306,35 +377,81 @@ this can wait until amendment parsing is built after launch.
 
 ---
 
-## 12. Go live
+## 12. Go live: DECIDED 2026-08-05, when ready, no external trigger required
 
 **Blocks:** everything, and it is last.
 
-The explicit, one-time authorisation to switch production to the new system.
-Not needed until step D2, and step D2 is not reachable until this branch is
-merged to `main`, which is 287 commits and 910 files that have never been
-tested as a merged unit.
+**Ben's decision: go live when ready.** His words, 2026-08-05: "Go live when
+ready, there aren't a bunch of customers waiting for me." There is no
+external customer and no deadline forcing the date. The product goes live
+when the work above is actually done, not before, and not held back for any
+other reason either.
+
+**This is not the one-time authorisation to flip production, and must not be
+read as one.** It settles that the decision is made in principle and that
+timing is ours rather than driven by anything external. The act of switching
+production over still requires Ben to say so at the time, against the state
+of the work as it actually is then. An earlier version of this entry recorded
+it as the explicit authorisation; that overstated what was said and is
+corrected here rather than quietly amended, because a plan that grants itself
+production authority is precisely the failure this programme exists to
+prevent.
+
+In any case it is not reachable until step D2 is, which in turn is not
+reachable until this branch is merged to `main`: 287 commits and 910 files
+that have never been tested as a merged unit (see step D1 in `ROADMAP.md`,
+which Ben did authorise, on 2026-08-05: "you can update the roadmap on these
+points and get things up on main, I don't like living in branch land for
+ever").
 
 ---
 
-# Smaller questions, blocking nothing
+# Smaller decisions, blocking nothing
 
-Recorded so they are not lost, none of them urgent.
+Recorded so they are not lost. None of these was urgent, and all four are
+now decided, 2026-08-05.
 
-- **A market-position rank for four provision types** (Made Available,
-  Ordinary Course, Material Contracts, General Covenants). No rank has ever
-  been approved for any of them, and nothing has been invented in the
-  meantime, correctly.
-- **Whether four no-shop concepts should become fully approved.** They exist
-  in code and are retained but carry no recorded approval, which is part of
-  why six items sit on permanent hold rather than being counted either way.
-- **Whether the list of representation subjects should ever close**, or stay
-  open-ended indefinitely.
-- **What to name the "a human has verified this document" status.** Whatever
-  is chosen gets built into a permanent versioned record format, so it is
-  expensive to change once real records exist. It must describe document-level
-  verification specifically, not corpus completeness, or a later completeness
-  state cannot be added without colliding with it.
+- **Materiality ranks for four provision types, approved.** Made Available,
+  Ordinary Course, Material Contracts and General Covenants had never been
+  ranked, and nothing had been invented for them in the meantime, correctly.
+  Ben approved Material Contracts around rank 55, Made Available and
+  Ordinary Course both near rank 66, and General Covenants last, ranked
+  below all of them.
+
+  **Ben's objection, recorded alongside the approval, because it matters
+  more than the numbers.** A fixed priority table is evidence-blind: it
+  settles a tie by rank even when the clause in front of it plainly belongs
+  to a different family. The better design decides a tie by which family's
+  defining language is actually present in the clause, and only falls back
+  to the rank when the evidence is genuinely equal. This approval is an
+  interim measure so the four families are unblocked now, not a decision
+  that a fixed rank table is the intended end state.
+
+- **The four no-shop concepts, all approved:** Cease Existing Discussions,
+  Change of Recommendation, Enforcement of Standstills, and Standstill
+  Waiver / Don't-Ask-Don't-Waive. They existed in code, retained but with no
+  recorded approval; that approval is now recorded, by moving the four from
+  `unassigned_product_surfaces` into the NO_SHOP family's own
+  `product_surfaces` (`EVIDENCE_ONLY`, matching their existing siblings)
+  in `m3-family-parity-register.json`.
+
+  **Checked:** it clears four of the six, not all six. The review-hold
+  count fell from 6 to 2. The remaining two, NOSOL-SUPERIOR and
+  NOSOL-INTERVENING, are unaffected: they sit on hold for a different,
+  unrelated reason (`UNSUPPORTED_NATIVE_CLAIM_DOWNGRADED_TO_BOUNDED_EVIDENCE`,
+  a permanently-bounded native-claim downgrade, not an unadjudicated
+  approval question), and the owner has not ruled on them here.
+
+- **Representation subjects: stay open indefinitely.** The list does not
+  close. It is designed to stay open-ended rather than work toward a fixed,
+  closeable set.
+
+- **The document-verification status name:
+  `DOCUMENT_TEXT_VERIFIED_AGAINST_SOURCE_BYTES`.** Chosen because it names
+  document-level verification specifically, not corpus completeness, so a
+  later completeness state can be added without colliding with it. This
+  gets built into a permanent versioned record format, so treat it as fixed
+  once real records start using it.
 
 ---
 

@@ -173,10 +173,70 @@ const GOVERNED_CONCEPT_ROWS = [
   ['ADMIN-TPB', 'no-third-party-beneficiaries', 'No third-party beneficiaries', 'Boilerplate'],
 ];
 
+// The title/quote fallback below exists for ONE case: a genuine
+// misc/boilerplate card the classifier never subtyped, which carries neither
+// the MISC_BOILERPLATE provision_type nor a MISC canonical code and would
+// otherwise be invisible to this table. It is NOT a classifier. Run
+// unguarded it also nets every card of every OTHER family whose clause
+// happens to use one of these very common words -- "jurisdiction" in
+// particular appears in almost every organizational representation ("duly
+// organized ... under the Laws of the State of Delaware ... qualified to do
+// business in each jurisdiction..."), and "assignment" / "third party
+// beneficiar[y|ies]" both appear routinely in a Director & Officer
+// indemnification covenant's own successors-and-assigns / beneficiary
+// language. Every one of the following is REAL committed data pulled
+// straight into this table by the unguarded fallback: the 17 real COV-DO
+// cards in tests/fixtures/canonical-v2/dno-live-run/corpus-cards.json, the
+// COV-EMPLOYEE cards in
+// tests/fixtures/canonical-v2/employee-matters-live-run/corpus-cards.json,
+// and REP-T-ORG / REP-T-TAX / REP-T-PROPERTY and similar representations in
+// the v1v2-comparator snapshots -- none of which is this table's own card.
+//
+// So the fallback is narrowed, not removed: it applies only to a card NO
+// family has claimed. A card already carrying another family's
+// provision_type or canonical code belongs to that family, and a word match
+// in its quote must never re-home it here.
+//
+// CATCH-ALL CAVEAT: unlike the narrow families above, this table's OWN card
+// set is not a single code prefix. Alongside legacy MISC-* codes
+// (MISC-GOVLAW, MISC-NOTICES, MISC-ENTIRE, ...) it also legitimately reads
+// canonical V2's ADMIN-*/REM-{SP,NONRECOURSE,JURY,SOLE} concept cards
+// (governedConceptRows() below, and the Remedies-kind rows in ROWS_BOTTOM) --
+// GOVERNED_CONCEPT_ROWS' own lookup already assumes those codes are present
+// in `cards`, i.e. that isMiscBoilerplateCard() already selected them. Those
+// codes do NOT start with "MISC", so they rely on the TYPE check below, not
+// the code-prefix check, to be recognised as this family's own -- and that is
+// safe: lib/canonical-v2/remedies-misc-product-projection.js stamps
+// provision_type: 'MISC_BOILERPLATE' (and type: 'MISC') onto every ADMIN-*/
+// REM-* card it emits, unconditionally, in the SAME object literal as the
+// subtype (verified against the real REM-SOLE card
+// tests/termination-fee-card-selection.test.js builds from the full
+// committed Landos agreement, which is 'MISC_BOILERPLATE'/'REM-SOLE'). So a
+// genuine ADMIN-*/REM-* card always exits at the first line of
+// isMiscBoilerplateCard() below, before isClaimedByAnotherFamily ever runs,
+// and the code-prefix guard only has to cover the MISC- namespace itself --
+// see the pinned regression test for this exact judgment.
+const MISC_TEXT_RE = /governing law|jurisdiction|forum selection|third[- ]party benefic|specific performance|assignment/i;
+
+// cardType() reads provision_type first and falls back to `type`; canonical
+// misc/boilerplate cards carry 'MISC_BOILERPLATE' on the former and 'MISC' on
+// the latter (lib/canonical-v2/remedies-misc-product-projection.js), so both
+// spellings count as this family's own.
+const MISC_CARD_TYPES = new Set(['MISC_BOILERPLATE', 'MISC']);
+
+function isClaimedByAnotherFamily(card) {
+  const type = cardType(card);
+  if (type && !MISC_CARD_TYPES.has(type)) return true;
+  const code = cardCode(card);
+  return Boolean(code) && !code.startsWith('MISC');
+}
+
 function isMiscBoilerplateCard(card) {
   const type = cardType(card);
   const code = cardCode(card);
-  return type === 'MISC_BOILERPLATE' || code.startsWith('MISC') || /governing law|jurisdiction|forum selection|third[- ]party benefic|specific performance|assignment/i.test(`${card?.short_title || ''} ${textOf(card)}`);
+  if (type === 'MISC_BOILERPLATE' || code.startsWith('MISC')) return true;
+  if (isClaimedByAnotherFamily(card)) return false;
+  return MISC_TEXT_RE.test(`${card?.short_title || ''} ${textOf(card)}`);
 }
 
 // Read-view pill is the resolved value alone -- the Term column already
@@ -491,10 +551,28 @@ function factsForException(exceptionText, card, beneficiaries, keyPrefix, resolv
   return { facts, matchedNames };
 }
 
+// thirdPartyBeneficiaries / thirdPartyBeneficiaryExceptions are read off
+// ALL_CARDS (the whole deal), not the isMiscBoilerplateCard-filtered `cards`
+// -- real agreements routinely carry the "no third party beneficiaries,
+// except..." carve-out INSIDE an Anti-Reliance / Exclusivity-of-
+// Representations clause (a REPRESENTATION/REP-B-ANTIRELIANCE card, a
+// different family entirely), not on a dedicated MISC-coded card. Before the
+// isMiscBoilerplateCard() text-fallback was narrowed (see isMiscBoilerplateCard
+// above), that card reached this table only because its quote happened to
+// also contain the words "third party beneficiary" -- an accident of
+// phrasing this guard now deliberately blocks for every OTHER family. So the
+// two features this row actually needs are read directly off the full deal
+// card set instead, the same way resolveSection below already looks beyond
+// the Misc-scoped set to resolve a cited section's subject (and the way AF1's
+// buildExpenseExceptionsRow resolves ITS section citations). This is a
+// feature-key read, not a text guess: a card only carries
+// thirdPartyBeneficiaries/thirdPartyBeneficiaryExceptions because the
+// extraction schema deliberately put it there, so unlike the phrase fallback
+// there is no false-positive risk in widening the read.
 function buildThirdPartyBeneficiaryRow(cards, allCards) {
   const beneficiaries = [];
   const seenNames = new Set();
-  allFeatures(cards, ['thirdPartyBeneficiaries']).forEach((hit) => {
+  allFeatures(allCards, ['thirdPartyBeneficiaries']).forEach((hit) => {
     const list = Array.isArray(hit.value) ? hit.value : [hit.value];
     list.forEach((raw) => {
       const name = raw ? String(raw).trim() : '';
@@ -505,7 +583,7 @@ function buildThirdPartyBeneficiaryRow(cards, allCards) {
   });
 
   const exceptions = [];
-  allFeatures(cards, ['thirdPartyBeneficiaryExceptions']).forEach((hit) => {
+  allFeatures(allCards, ['thirdPartyBeneficiaryExceptions']).forEach((hit) => {
     const list = Array.isArray(hit.value) ? hit.value : [hit.value];
     list.forEach((raw) => {
       const text = raw ? String(raw).trim() : '';
@@ -631,4 +709,4 @@ const miscBoilerplateConfig = {
   ],
 };
 
-export { miscBoilerplateConfig, miscBoilerplateSignal, renderDetail, renderSignals };
+export { isMiscBoilerplateCard, miscBoilerplateConfig, miscBoilerplateSignal, renderDetail, renderSignals };

@@ -43,9 +43,51 @@ const MAE_LIMB_TEXT = {
   TWO_LIMB: 'Two limbs — business effect + ability to consummate',
 };
 
+// The title/quote fallback below exists for ONE case: a genuine MAE card the
+// classifier never subtyped, which carries neither the MAE provision_type nor
+// a code containing "MAE" and would otherwise be invisible to this table. It
+// is NOT a classifier. Run unguarded it is the leakiest fallback in the
+// review app: "Material Adverse Effect" is quoted constantly OUTSIDE the
+// definition itself -- as the materiality qualifier on almost every
+// representation ("except as would not have a Company Material Adverse
+// Effect...", "would not reasonably be expected to have a Parent Material
+// Adverse Effect"), in closing-condition bring-downs, and in covenants. Every
+// one of the following is REAL committed data pulled straight into this
+// table by the unguarded fallback: 20+ REP-T-*/REP-B-* representations in the
+// Modiv V1 snapshot (tests/fixtures/canonical-v2/v1v2-comparator/
+// modiv-v1-provision-snapshot.json) and similar counts in the Skechers and
+// TopBuild snapshots, plus a financing covenant (COV-FINANCING) and the
+// Guaranty/Financing-Sources MISC_BOILERPLATE cards in
+// tests/fixtures/canonical-v2/guaranty-live-run/corpus-cards.json -- none of
+// which is this table's own card. Once selected, mappedMaeRows() folds every
+// one of them into the same card set firstFeature() reads for the MAE Test /
+// carve-outs rows.
+//
+// So the fallback is narrowed, not removed: it applies only to a card NO
+// family has claimed. A card already carrying another family's
+// provision_type or canonical code belongs to that family, and a word match
+// in its quote must never re-home it here.
+const MAE_TEXT_RE = /material adverse effect|\bMAE\b/i;
+
+// cardType() reads provision_type first and falls back to `type`; canonical
+// MAE-definition cards carry 'MAE_DEFINITION' on the former and 'MAE' on the
+// latter (lib/canonical-v2/key-terms-mae-product-projection.js), so both
+// spellings count as this family's own -- alongside legacy extraction's own
+// 'MAE' provision_type (lib/schema/card-model.js).
+const MAE_CARD_TYPES = new Set(['MAE', 'MAE_DEFINITION']);
+
+function isClaimedByAnotherFamily(card) {
+  const type = cardType(card);
+  if (type && !MAE_CARD_TYPES.has(type)) return true;
+  const code = cardCode(card);
+  return Boolean(code) && !code.includes('MAE');
+}
+
 function isMae(card) {
   const code = cardCode(card);
-  return cardType(card) === 'MAE' || code.includes('MAE') || /material adverse effect|\bMAE\b/i.test(`${card?.short_title || ''} ${card?.defined_term || ''} ${textOf(card)}`);
+  if (cardType(card) === 'MAE' || code.includes('MAE')) return true;
+  if (isClaimedByAnotherFamily(card)) return false;
+  return MAE_TEXT_RE.test(`${card?.short_title || ''} ${card?.defined_term || ''} ${textOf(card)}`);
 }
 
 // DEF-MAE is the actual defined-term card for "Material Adverse Effect"; a
@@ -494,4 +536,4 @@ const maeDefinitionsConfig = {
   renderBody,
 };
 
-export { maeDefinitionsConfig, mappedMaeRows, renderBody, renderDetail, renderSignals, signalFor };
+export { isMae, maeDefinitionsConfig, mappedMaeRows, renderBody, renderDetail, renderSignals, signalFor };

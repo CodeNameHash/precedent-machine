@@ -28,20 +28,57 @@ const SOURCE_FILES = Object.freeze([
     sha256: '5723635a55cb393ccc66bb39dc3736be1c20b5f7f790b36a4722350abb11a99b',
   },
   {
+    // Re-baselined 2026-08-05 alongside the query-serving-registry alias
+    // shadowing fix. Previously-shadowed boolean fields (e.g.
+    // standstillWaiverPermitted) now resolve to themselves and surface in
+    // fieldsForProvisionType() alongside a same-shaped sibling that cleans to
+    // an identical label; the r11 disambiguation pass gained a second tie
+    // breaker (append the canonical key) for when two colliding fields share
+    // the same type-based suffix. Re-baselined again the same day: the same
+    // unshadowing also let bringDownTiers (CLOSING_CONDITION), triggers
+    // (TERMINATION_FEE) and forceTheVoteDetails (COVENANT_NO_SOLICITATION)
+    // resolve to their own registry rows for the first time, exposing that
+    // cleanFieldLabel() never stripped "array of {...}" / "list of {...}"
+    // schema-shape annotations or trailing prose after "verbatim" -- widened
+    // ANNOTATION_SUFFIX_RE to cover both. The pin is deliberate: this
+    // baseline must never silently track whatever the sources happen to be,
+    // so moving it is an explicit act with a stated reason.
     path: 'lib/query/field-meta.js',
-    sha256: '4b74cfa416a2a811b929d03851e7b9cdc91654dc754b6c74756be8f47988bbb5',
+    sha256: '3d12c55723de6e67d684cd466495cf6b21bd0e1342e4cdff122caac73249b49a',
   },
   {
+    // Re-baselined 2026-08-05. parseUsdAmount() was first-number-wins --
+    // harmless while fee amounts were always single clean figures, but a
+    // canonical projection change now renders a real conditional fee (e.g.
+    // Modiv's company termination fee) as free text naming two dollar
+    // amounts plus a cap, and this function feeds feePctOfDealValue /
+    // reverseFeePctOfDealValue on the live query path. Fixed on the same
+    // principle as parseFeeAmountUsd in components/review/table-configs/
+    // termination-fees.config.js and numericValue in lib/feature-compare.js,
+    // both fixed the same day for the identical defect: a string naming more
+    // than one number now returns null rather than its first figure. The pin
+    // is deliberate: this baseline must never silently track whatever the
+    // sources happen to be, so moving it is an explicit act with a stated
+    // reason.
     path: 'lib/query/derived-fields.js',
-    sha256: '5d35d1dc874ee56c96e17e30df79d698d1a3dc4f6d9c5378279086f235ae539e',
+    sha256: '6fa9f5889f1172e4a8aec9c9eb063ef24571fe3cde875092be895bd1f83b6c1d',
   },
   {
     path: 'lib/query/resolve.js',
     sha256: 'c7d25168c0f08f413158342b12f46be4ae5e889012a2f9531a20d59df3ab01b5',
   },
   {
+    // Re-baselined 2026-08-05. scripts/generate-query-serving-registry.js now
+    // strips any alias that collides with a DIFFERENT entry's canonical key
+    // (104 entries were previously unreachable under their own key -- e.g.
+    // fiduciaryOutStandard resolved to fiduciaryEngageStandard's data) and
+    // corrects 5 registry rows whose declared type plainly contradicted
+    // their own displayName's stated unit (a duration or percentage typed
+    // usd). The pin is deliberate: this baseline must never silently track
+    // whatever the sources happen to be, so moving it is an explicit act
+    // with a stated reason.
     path: 'lib/query/serving-registry-v1.json',
-    sha256: 'ecbace4566431277bb96b34eead1c03cc3ca4ca7e10fe15bf0796bcfbb95e8de',
+    sha256: '7bdfb957bfe6fe2f6c65a57b5c73ffbafebd95b0eb8338e9944d2e879755eb9b',
   },
 ]);
 const EXPECTED_DEALS_FIELD_KEYS = Object.freeze([
@@ -301,9 +338,9 @@ function agreementInventory(registryEntries) {
       certified_data_disposition: 'NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES',
     }));
 
-  if (fields.length !== 334) fail(`Agreement field count is ${fields.length}, expected 334`);
-  if (allOccurrences.length !== 492) {
-    fail(`Agreement field occurrence count is ${allOccurrences.length}, expected 492`);
+  if (fields.length !== 367) fail(`Agreement field count is ${fields.length}, expected 367`);
+  if (allOccurrences.length !== 524) {
+    fail(`Agreement field occurrence count is ${allOccurrences.length}, expected 524`);
   }
   const sec = provisionTypes.find((entry) => entry.provision_type === 'SEC_FILING_MEETING');
   if (!sec || sec.current_user_facing_field_count !== 0
@@ -383,8 +420,8 @@ function registryInventory(registry, agreementFields) {
   if (inputs.some((input) => !input.disposition)) {
     fail('one or more serving-registry inputs lack a disposition');
   }
-  if (collisions.length !== 156) {
-    fail(`registry alias collision count is ${collisions.length}, expected 156`);
+  if (collisions.length !== 1) {
+    fail(`registry alias collision count is ${collisions.length}, expected 1`);
   }
 
   return {
@@ -413,8 +450,8 @@ function buildInventory() {
   if (servingRegistry.observed_entry_count !== 699) {
     fail(`serving registry contains ${servingRegistry.observed_entry_count} entries, expected 699`);
   }
-  if (servingRegistry.included_input_count !== 328
-    || servingRegistry.excluded_input_count !== 371) {
+  if (servingRegistry.included_input_count !== 365
+    || servingRegistry.excluded_input_count !== 334) {
     fail('serving-registry inclusion and exclusion counts changed');
   }
 

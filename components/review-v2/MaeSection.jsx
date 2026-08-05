@@ -17,7 +17,7 @@ import React from 'react';
 import taxonomy from '../../lib/taxonomy.js';
 import { maeDefinitionsConfig } from '../review/table-configs/mae-definitions.config';
 import { cardFeatures } from '../review/table-configs/card-utils';
-import { PillCell, EvidenceHoverSource } from '../review/primitives/ProvisionTablePrimitives';
+import { PillCell, EvidenceHoverSource, SeeProvisionDisclosure } from '../review/primitives/ProvisionTablePrimitives';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from '../review/table-configs/layout.js';
 import { resolveRowFocus } from './provisionIndexHelpers.js';
 
@@ -119,10 +119,12 @@ function itemQuote(item) {
 function seeTextNode(text) {
   if (!text) return null;
   return (
-    <details className="mt-1">
-      <summary className="term-cell-seetext" style={{ listStyle: 'none' }}>See provision</summary>
-      <div className="mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">{text}</div>
-    </details>
+    <SeeProvisionDisclosure
+      className="mt-1"
+      bodyClassName="mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight"
+    >
+      {text}
+    </SeeProvisionDisclosure>
   );
 }
 

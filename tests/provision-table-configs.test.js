@@ -2903,12 +2903,15 @@ test('termination fee and expense configs expose primitive-backed signals', () =
           amount: '$100,000,000',
           triggers: [{ code: 'SUPERIOR_PROPOSAL', text: 'Company terminates pursuant to Section 8.01(f)', label: 'Company terminates to accept a Superior Proposal' }],
         },
-        feeRequired: true,
+        // Owner ruling 2026-08-05 moved feeRequired off this table (now on
+        // termination-rights.config.js's Fiduciary out group), so this fixture
+        // exercises a boolean scalar that still lives here instead.
+        soleRemedy: true,
       },
     }],
   });
   const amount = terminationRows.find((row) => row.id === 'termination-fees-COMPANY_TERMINATION_FEE');
-  const feeRequired = terminationRows.find((row) => row.id === 'termination-fees-required');
+  const soleRemedyRow = terminationRows.find((row) => row.id === 'termination-fees-sole-remedy');
   // row.detail is still computed (other call sites may read it) even though
   // punchlist #35 dropped its dedicated table column.
   assert.match(amount.detail, /\$100,000,000/);
@@ -2916,11 +2919,11 @@ test('termination fee and expense configs expose primitive-backed signals', () =
   // own pill (REBUILD-SPECS.md "Company Termination Fee [$ amount pill]"),
   // ahead of the trigger-name pills.
   assert.deepEqual(amount.signals.map((item) => item.label), ['$100,000,000', 'Company terminates to accept a Superior Proposal']);
-  assert.deepEqual(feeRequired.signals.map((item) => item.label), ['Yes']);
+  assert.deepEqual(soleRemedyRow.signals.map((item) => item.label), ['Yes']);
   const termSignals = terminationFeesMod.terminationFeesConfig.columns.find((column) => column.id === 'signals');
   // Punchlist #35: the "Detail" column was removed -- only Term/Signals remain.
   assert.equal(terminationFeesMod.terminationFeesConfig.columns.find((column) => column.id === 'detail'), undefined);
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, termSignals.renderCell(feeRequired, { primitives }))), /Yes/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, termSignals.renderCell(soleRemedyRow, { primitives }))), /Yes/);
 
   const miscRows = advisersFeesExpensesMod.advisersFeesExpensesConfig.selectRows({
     cards: [{
@@ -4298,7 +4301,10 @@ test('r13: card-utils makeRow() threads featureKey/value/sourceCard, matching ma
 
 test('r13: termination-rights cross-cutting rows (willfulBreachException / specificPerformanceMutual) thread featureKeys 1:1', () => {
   const cards = [
-    { id: 'wb', provision_type: 'TERMINATION_FEE', provision_subtype: 'TERMF-COMPANY', primary_quote: 'Willful breach carve-out applies.', features: { willfulBreachException: 'Yes, fraud and willful breach excluded.' } },
+    // 'willful-breach' is scoped to TERMF-SOLE (see CROSS_CUTTING_ROWS in
+    // termination-rights.config.js) -- a code-less/other-coded card would no
+    // longer be found by this row, so the fixture uses the real code.
+    { id: 'wb', provision_type: 'TERMINATION_FEE', provision_subtype: 'TERMF-SOLE', primary_quote: 'Willful breach carve-out applies.', features: { willfulBreachException: 'Yes, fraud and willful breach excluded.' } },
     { id: 'sp', provision_type: 'MISC', provision_subtype: 'MISC-REMEDIES', primary_quote: 'Specific performance available to either party.', features: { specificPerformanceMutual: 'true' } },
   ];
   const groups = terminationRightsMod.crossCuttingGroup({ cards });

@@ -346,7 +346,7 @@ the honest claim is "the machinery exists and is proven on committed
 fixtures".
 
 **Fixture placement is load-bearing:** all committed fixtures live under
-`tests/fixtures/canonical-v2/dividends-live-run/` (the forbidden-patterns
+`tests/fixtures/canonical-v2/dividends-fixtures/` (the forbidden-patterns
 PROSE_CLASS_FINGERPRINTS-exempt directory class). Checked against
 `scripts/lint/forbidden-patterns.sh` globalPatterns: this family's
 vocabulary ("Pre-Closing Dividend", "Special Dividend", "coordinate their
@@ -925,7 +925,7 @@ committed fixture bytes, clearly labeled as the pre-rerun harness)
    headers, independent of the IOC slice's fixtures so neither slice's
    tests depend on the other's build order — committed as LITERAL
    production bytes under
-   `tests/fixtures/canonical-v2/dividends-live-run/`, provenance
+   `tests/fixtures/canonical-v2/dividends-fixtures/`, provenance
    headers with deal uuid + provision_card uuid + retrieval date +
    provision_type/subtype (including `1000229f…`'s CONSID-EXCHANGE home
    and `0906ff1d…`'s COVENANT_OTHER/"Unclassified" home), NEVER v1

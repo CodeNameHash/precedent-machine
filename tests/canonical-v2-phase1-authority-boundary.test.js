@@ -11,6 +11,7 @@ const {
   LOCAL_ARTIFACT_WRITERS,
   READ_ONLY_GIT_INSPECTORS,
   PRODUCTION_PATH_PURE_ANALYSIS_SOURCES,
+  LIVE_EXTRACTION_RUN_SOURCES,
   REQUIRED_AUTHORITY_BOUNDARY_CONTRACT_SOURCES,
   EXPLICIT_NEW_SOURCE_CLASSES,
   classifyChangedProductionSources,
@@ -58,6 +59,12 @@ const CAPABILITY_PATTERNS = Object.freeze({
 const PURE_FORBIDDEN_CAPABILITIES = Object.freeze(Object.keys(CAPABILITY_PATTERNS));
 const LOCAL_WRITER_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'filesystem_write'));
 const GIT_INSPECTOR_FORBIDDEN_CAPABILITIES = Object.freeze(LOCAL_WRITER_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'external_process').concat('filesystem_write'));
+// A live extraction run is allowed exactly the three capabilities that make
+// it what it is -- provider (the real model call), external_process (the
+// `claude` CLI it spawns) and filesystem_write (its receipts/evidence) --
+// and nothing that would give it database, network, signing, or deployment
+// authority.
+const LIVE_EXTRACTION_RUN_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => !['provider', 'external_process', 'filesystem_write'].includes(name)));
 const ALLOWED_GIT_COMMANDS = Object.freeze(new Set(['rev-parse', 'show', 'status']));
 // The capability scan reads one file's own text, so it cannot see a capability
 // reached through an import. A production-path pure analysis source therefore
@@ -158,6 +165,7 @@ test('every production source changed from the fixed Phase 1 base is classified 
     'LOCAL_ARTIFACT_WRITER',
     'READ_ONLY_GIT_INSPECTOR',
     'PRODUCTION_PATH_PURE_ANALYSIS',
+    'LIVE_EXTRACTION_RUN',
     'MODIFIED_PREEXISTING',
   ]));
 });
@@ -212,6 +220,18 @@ test('production-path pure analysis sources are capability-free leaf modules', (
     // four, never a softer landing than the class it sits beside.
     assertNoCapabilities(source, PURE_FORBIDDEN_CAPABILITIES, relativePath);
     assertNoModuleDependencies(source, relativePath);
+  }
+});
+
+test('live extraction run sources have their exact capability boundary', () => {
+  assert.ok(LIVE_EXTRACTION_RUN_SOURCES.includes('scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs'));
+  for (const relativePath of LIVE_EXTRACTION_RUN_SOURCES) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assertNoCapabilities(source, LIVE_EXTRACTION_RUN_FORBIDDEN_CAPABILITIES, relativePath);
+    const counts = capabilityCounts(source);
+    assert.ok(counts.provider > 0, `${relativePath} must exercise a real provider call -- that is what distinguishes this class`);
+    assert.ok(counts.external_process > 0, `${relativePath} must spawn its model CLI as an external process`);
+    assert.ok(counts.filesystem_write > 0, `${relativePath} must write its run evidence to local files`);
   }
 });
 
@@ -276,5 +296,5 @@ test('hostile inventory and capability changes fail closed', () => {
   assert.throws(() => assertNoCapabilityGrowth('', 'fetch(url)', 'hostile legacy'), /network/);
   assert.throws(() => assertNoModuleDependencies("const fs = require('node:fs');", 'hostile analysis'), /no module dependencies/);
   assert.throws(() => assertNoModuleDependencies("import fs from 'node:fs';", 'hostile analysis'), /no module dependencies/);
-  assert.equal(Object.keys(EXPLICIT_NEW_SOURCE_CLASSES).length, 4);
+  assert.equal(Object.keys(EXPLICIT_NEW_SOURCE_CLASSES).length, 5);
 });

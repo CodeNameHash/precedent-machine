@@ -27,10 +27,56 @@ const ROWS = [
   ['fee-expense', 'Fee / expense allocation', 'Expenses', ['feeExpenseAllocation', 'expensesAllocation']],
 ];
 
+// The title/quote fallback below exists for ONE case: a genuine adviser/fee/
+// expense card the classifier never subtyped, which carries neither the
+// MISC_BOILERPLATE provision_type nor a MISC canonical code and would
+// otherwise be invisible to this table. It is NOT a classifier. Run
+// unguarded it also nets every card of every OTHER family that merely
+// MENTIONS fees, expenses, or an adviser -- and that is extremely common: a
+// D&O indemnification covenant routinely promises "advancement of expenses"
+// (the real COV-DO cards in tests/fixtures/canonical-v2/dno-fixtures/
+// corpus-cards.json -- 27 of them), a financing representation names the
+// "financial advisor" and "fees" of the debt commitment letters (the real
+// REP-B-FUNDS cards in tests/fixtures/canonical-v2/financing-covenants-
+// fixtures/corpus-cards.json), a fairness-opinion rep names the company's
+// financial advisor (REP-T-FAIRNESS/REP-B-FAIRNESS), and a no-brokers rep is
+// entirely about "broker[s]" (REP-T-BROKERS/REP-B-BROKERS). Every one of
+// these is REAL committed data pulled straight into this table by the
+// unguarded fallback -- 62 cards across 15 foreign type/code combinations in
+// the committed real-deal fixture universe (dno/employee-matters/financing-
+// covenants/guaranty-fixtures plus the TopBuild/Skechers/Modiv V1 snapshots),
+// more than triple the 18 cards this table legitimately owns there.
+//
+// So the fallback is narrowed, not removed: it applies only to a card NO
+// family has claimed. A card already carrying another family's
+// provision_type or canonical code belongs to that family, and a word match
+// in its quote must never re-home it here.
+const ADVISERS_FEES_TEXT_RE = /fees|expenses|adviser|advisor|broker/i;
+
+// This table shares the MISC_BOILERPLATE provision_type / MISC canonical-code
+// namespace with misc-boilerplate.config.js#isMiscBoilerplateCard (that table's
+// buildFeeExpenseRow() folds THIS table's own fee/expense-allocation row into
+// its Misc section using this very predicate). Distinguishing "fee/expense"
+// from misc-boilerplate.config.js's other MISC-* concepts (governing law,
+// assignment, jury waiver, ...) is a separate, pre-existing design choice --
+// row-level feature lookups such as firstFeature(cards, ['feeExpenseAllocation',
+// 'expensesAllocation']) do that narrowing already -- and is out of scope
+// here; this guard only closes the text-fallback leak into `cards`.
+const MISC_CARD_TYPES = new Set(['MISC_BOILERPLATE', 'MISC']);
+
+function isClaimedByAnotherFamily(card) {
+  const type = cardType(card);
+  if (type && !MISC_CARD_TYPES.has(type)) return true;
+  const code = cardCode(card);
+  return Boolean(code) && !code.startsWith('MISC');
+}
+
 function isAdvisersFeesCard(card) {
   const type = cardType(card);
   const code = cardCode(card);
-  return type === 'MISC_BOILERPLATE' || code.startsWith('MISC') || /fees|expenses|adviser|advisor|broker/i.test(`${card?.short_title || ''} ${textOf(card)}`);
+  if (type === 'MISC_BOILERPLATE' || code.startsWith('MISC')) return true;
+  if (isClaimedByAnotherFamily(card)) return false;
+  return ADVISERS_FEES_TEXT_RE.test(`${card?.short_title || ''} ${textOf(card)}`);
 }
 
 // Financial advisor is a SINGLE clean row per the spec, not three ("Adviser

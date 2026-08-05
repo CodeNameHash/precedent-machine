@@ -333,7 +333,7 @@ post-merge live-run handoffs (subscription CLI); until then the honest
 claim is "the machinery exists and is proven on committed fixtures".
 
 **Fixture placement is load-bearing:** all committed fixtures live under
-`tests/fixtures/canonical-v2/tax-matters-live-run/` (the forbidden-patterns
+`tests/fixtures/canonical-v2/tax-matters-fixtures/` (the forbidden-patterns
 PROSE_CLASS_FINGERPRINTS-exempt directory class). Checked against
 `scripts/lint/forbidden-patterns.sh` globalPatterns: this family's
 vocabulary ("Transfer Taxes", "FIRPTA", "Intended Tax Treatment",
@@ -907,7 +907,7 @@ bytes, clearly labeled as the pre-rerun harness)
    `2c7fb882…`, `6b49f790…`, `0fedb4c5…`, `f6d488d9…`, `327f9369…`,
    `7f95a228…`, `9681d401…`, `effb1c28…`, `fe6ce201…`, `a1dbc559…`)
    committed as LITERAL production bytes under
-   `tests/fixtures/canonical-v2/tax-matters-live-run/`, provenance
+   `tests/fixtures/canonical-v2/tax-matters-fixtures/`, provenance
    headers with deal uuid + provision_card uuid + retrieval date +
    provision_type/subtype INCLUDING NULL and wrong-bucket homes where
    true — and NEVER v1 `section_ref` label strings (the IOC lint pin).

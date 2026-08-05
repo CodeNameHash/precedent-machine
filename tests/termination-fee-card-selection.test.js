@@ -15,7 +15,7 @@
 // handed to a fee row as its evidence by findSourceCard()'s `|| cards[0]`.
 //
 // Every case below is REAL committed data: the production `provision_cards`
-// export in tests/fixtures/canonical-v2/financing-covenants-live-run, and the
+// export in tests/fixtures/canonical-v2/financing-covenants-fixtures, and the
 // REM-SOLE card the Remedies projection builds from the full committed Landos
 // agreement in __fixtures__/demo-deal.
 
@@ -126,7 +126,7 @@ async function realSoleRemedyCard(remedyEffectQuote) {
 // The real financing rep, from the production provision_cards export
 // ---------------------------------------------------------------------------
 
-const FINANCING_CORPUS = require('./fixtures/canonical-v2/financing-covenants-live-run/corpus-cards.json');
+const FINANCING_CORPUS = require('./fixtures/canonical-v2/financing-covenants-fixtures/corpus-cards.json');
 
 function realFinancingRepCard() {
   const card = FINANCING_CORPUS.cards.find((entry) => entry.id === 'dd37da8c-30e2-4053-a0da-987e02120a40');
@@ -192,8 +192,8 @@ test('a real REP-B-FUNDS corpus card quoting the Parent Termination Fee stays ou
 test('no card in any committed provision_cards export is selected by the fallback alone', async () => {
   const mod = await config();
   const exports_ = [
-    'guaranty-live-run', 'employee-matters-live-run', 'dno-live-run',
-    'financing-covenants-live-run', 'm3-v31-live-run',
+    'guaranty-fixtures', 'employee-matters-fixtures', 'dno-fixtures',
+    'financing-covenants-fixtures', 'm3-v31-fixtures',
   ].map((name) => require(`./fixtures/canonical-v2/${name}/corpus-cards.json`));
   let scanned = 0;
   const leaked = [];

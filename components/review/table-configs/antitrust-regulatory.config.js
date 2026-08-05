@@ -19,8 +19,47 @@ const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 // VALUE ALONE -- the Term column already names the concept, so nothing here
 // ever prefixes a pill with its own row label.
 
+// The title/quote fallback below exists for ONE case: a genuine antitrust/
+// regulatory card the classifier never subtyped, which carries neither the
+// ANTITRUST_REGULATORY provision_type nor an ANTI canonical code and would
+// otherwise be invisible to this table. It is NOT a classifier. Run
+// unguarded it also nets every card of every OTHER family that merely
+// MENTIONS antitrust/regulatory/HSR/competition words -- and that is common:
+// a no-conflict / governmental-approvals representation routinely names the
+// "Hart-Scott-Rodino Antitrust Improvements Act" (see the real
+// REP-T-NOCONFLICT / REP-B-NOCONFLICT cards in
+// tests/fixtures/canonical-v2/v1v2-comparator/topbuild-v1-provision-snapshot.json,
+// a V1 snapshot of a real production deal, which this guard now keeps out),
+// and a Director & Officer indemnification covenant routinely names
+// "regulatory" investigations among the indemnified claims (the real COV-DO
+// cards in tests/fixtures/canonical-v2/dno-live-run/corpus-cards.json). Once
+// such a card is selected, mappedAntitrustRows() folds it into this table's
+// card set, and any row builder whose firstFeature() lookup happens to match
+// one of its features attributes that row to a foreign clause.
+//
+// So the fallback is narrowed, not removed: it applies only to a card NO
+// family has claimed. A card already carrying another family's
+// provision_type or canonical code belongs to that family, and a word match
+// in its quote must never re-home it here.
+const ANTITRUST_TEXT_RE = /antitrust|regulatory|HSR|competition/i;
+
+// cardType() reads provision_type first and falls back to `type`; canonical
+// antitrust cards carry 'ANTITRUST_REGULATORY' on the former and 'ANTI' on
+// the latter (lib/canonical-v2/antitrust-product-projection.js), so both
+// spellings count as this family's own.
+const ANTITRUST_CARD_TYPES = new Set(['ANTITRUST_REGULATORY', 'ANTI']);
+
+function isClaimedByAnotherFamily(card) {
+  const type = cardType(card);
+  if (type && !ANTITRUST_CARD_TYPES.has(type)) return true;
+  const code = cardCode(card);
+  return Boolean(code) && !code.startsWith('ANTI');
+}
+
 function isAntitrust(card) {
-  return cardType(card) === 'ANTITRUST_REGULATORY' || cardCode(card).startsWith('ANTI') || /antitrust|regulatory|HSR|competition/i.test(`${card?.short_title || ''} ${textOf(card)}`);
+  if (cardType(card) === 'ANTITRUST_REGULATORY' || cardCode(card).startsWith('ANTI')) return true;
+  if (isClaimedByAnotherFamily(card)) return false;
+  return ANTITRUST_TEXT_RE.test(`${card?.short_title || ''} ${textOf(card)}`);
 }
 
 function isTruthy(value) {

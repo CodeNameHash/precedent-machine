@@ -7,10 +7,10 @@ const assert = require('node:assert/strict');
 
 const ROOT = path.resolve(__dirname, '..');
 const FAMILIES = [
-  'employee-matters-live-run',
-  'dno-live-run',
-  'financing-covenants-live-run',
-  'guaranty-live-run',
+  'employee-matters-fixtures',
+  'dno-fixtures',
+  'financing-covenants-fixtures',
+  'guaranty-fixtures',
 ];
 
 for (const family of FAMILIES) {

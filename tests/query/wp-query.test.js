@@ -107,7 +107,12 @@ const provisions = [
 const context = { deals, provisions };
 
 test('resolveKey resolves registry aliases and provision values fall back across aliases', () => {
-  assert.equal(resolveKey('terminationFeePercentEquityValue'), 'feePercentage');
+  // A canonical key always resolves to itself (registry cross-entry-alias
+  // shadowing fix). terminationFeePercentEquityValue and feePercentage are
+  // two distinct fields (% of equity value vs % of deal value) that a stale
+  // registry alias used to conflate; resolveKey must never merge them.
+  assert.equal(resolveKey('terminationFeePercentEquityValue'), 'terminationFeePercentEquityValue');
+  assert.equal(resolveKey('company_termination_fee'), 'companyTerminationFee');
   const result = resolveFeatureValue('outsideDateMonths', provisions.find((p) => p.id === 'p1-termr'));
   assert.equal(result.key, 'outsideDateMonths');
   assert.equal(result.matchedKey, 'outside_date_months');
@@ -187,9 +192,14 @@ test('MARKET_RANGE treats registry usd and percent types as numeric', async () =
     [FIELD_PATH]: 'fee_amount_percent',
     deal_filter: {},
   }, { context });
-  assert.equal(result.field_path, 'feePercentage');
+  // fee_amount_percent resolves to terminationFeePercentEquityValue (types.js
+  // FIELD_ALIASES), a field distinct from feePercentage (see above). Only
+  // p1-termf's fixture stores its value under a terminationFeePercentEquityValue
+  // spelling; p2/p3 store feePercentage/fee_percentage, which now correctly
+  // belong to the OTHER field and no longer leak into this one's distribution.
+  assert.equal(result.field_path, 'terminationFeePercentEquityValue');
   assert.ok(result.stats);
-  assert.equal(result.distribution.reduce((sum, bucket) => sum + bucket.count, 0), 3);
+  assert.equal(result.distribution.reduce((sum, bucket) => sum + bucket.count, 0), 1);
 });
 
 test('FILTER_THEN_LIST filters deals by resolved feature aliases', async () => {

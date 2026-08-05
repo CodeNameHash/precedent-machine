@@ -52,7 +52,7 @@ test('V31 recorded real-agreement replay pack remains byte-grounded and resolves
 });
 
 test('V31 read-only production corpus excerpts replay each M3 carrier across two deals', async () => {
-  const pack = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'canonical-v2', 'm3-v31-live-run', 'corpus-cards.json'), 'utf8'));
+  const pack = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'canonical-v2', 'm3-v31-fixtures', 'corpus-cards.json'), 'utf8'));
   assert.equal(pack.schema, 'CANONICAL_V2_M3_V31_REPLAY_FIXTURES/V1');
   const byFamily = new Map();
   for (const item of pack.cards) {
@@ -139,7 +139,7 @@ async function replayRepresentationAdapter({ source, sectionReference, parsed, d
 }
 
 test('real representation excerpt reaches distinct accuracy and knowledge product records through the live adapter', async () => {
-  const pack = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'canonical-v2', 'm3-v31-live-run', 'corpus-cards.json'), 'utf8'));
+  const pack = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'canonical-v2', 'm3-v31-fixtures', 'corpus-cards.json'), 'utf8'));
   const card = pack.cards.find((item) => item.id === '31826de1-4399-4dd5-b3bb-fd58f5d6f9ae');
   const source = `Section ${card.section_reference} Regulatory Matters.\n${card.source_excerpt}\n`;
   const accuracyQuote = 'true and correct in all material respects';
@@ -204,7 +204,7 @@ test('real representation excerpt reaches distinct accuracy and knowledge produc
 });
 
 test('a novel attribute in a real known representation stays open-world through the dark projection', async () => {
-  const pack = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'canonical-v2', 'm3-v31-live-run', 'corpus-cards.json'), 'utf8'));
+  const pack = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'canonical-v2', 'm3-v31-fixtures', 'corpus-cards.json'), 'utf8'));
   const card = pack.cards.find((item) => item.id === '31826de1-4399-4dd5-b3bb-fd58f5d6f9ae');
   const source = `Section ${card.section_reference} Regulatory Matters.\n${card.source_excerpt}\n`;
   const accuracyQuote = 'true and correct in all material respects';
@@ -273,7 +273,7 @@ test('a novel attribute in a real known representation stays open-world through 
 });
 
 test('real representation long-tail evidence remains open-world', async () => {
-  const pack = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'canonical-v2', 'm3-v31-live-run', 'corpus-cards.json'), 'utf8'));
+  const pack = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'canonical-v2', 'm3-v31-fixtures', 'corpus-cards.json'), 'utf8'));
   const card = pack.cards.find((item) => item.id === '31826de1-4399-4dd5-b3bb-fd58f5d6f9ae');
   const source = `Section ${card.section_reference} Regulatory Matters.\n${card.source_excerpt}\n`;
   const subjectCatalogue = 'all applications, notifications, submissions, information, claims, reports and data';

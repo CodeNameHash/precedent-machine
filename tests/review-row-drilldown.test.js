@@ -29,7 +29,19 @@ test('MAE test, carve-out, and exception rows keep source-backed row drilldown a
   assert.match(MAE, /function rowTrProps\(row, onSelectCard, selectedCardId, rowFocus\)/);
   assert.match(MAE, /onClick: \(\) => onSelectCard\(card, rowFocus \|\| resolveRowFocus\(row\)\)/);
   assert.ok((MAE.match(/seeTextNode\(/g) || []).length >= 4);
-  assert.match(MAE, />See provision<\/summary>/);
+  // seeTextNode() used to build its own inline <details><summary>See
+  // provision</summary>...</details> -- it now renders through the shared
+  // SeeProvisionDisclosure (components/review/primitives/
+  // ProvisionTablePrimitives.jsx), which every other "See provision"
+  // disclosure in the app also uses. That component is what stops Chrome's
+  // find-in-page from force-opening every closed clause at once (see its
+  // own header comment and clauseSearchMode.js) while still defaulting the
+  // affordance to read "See provision" -- checked directly against
+  // SeeProvisionDisclosure's own default `label` prop, not duplicated here.
+  const seeTextNodeFn = MAE.match(/function seeTextNode\(text\) \{[\s\S]*?\n\}/);
+  assert.ok(seeTextNodeFn, 'seeTextNode() must still exist');
+  assert.match(seeTextNodeFn[0], /<SeeProvisionDisclosure/, 'seeTextNode renders the shared See-provision disclosure, not a bare <details>');
+  assert.match(MAE, /import \{[^}]*SeeProvisionDisclosure[^}]*\} from '\.\.\/review\/primitives\/ProvisionTablePrimitives';/);
 });
 
 test('grouped compare rows use source-backed fallback text when no bespoke expansion was supplied', () => {

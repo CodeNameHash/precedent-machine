@@ -44,8 +44,41 @@ const FAMILY_LABELS = {
 };
 const FAMILY_ORDER = ['mutual', 'buyer', 'target'];
 
+// The title/quote fallback below exists for ONE case: a genuine termination-
+// rights card the classifier never subtyped, which carries neither the
+// TERMINATION_RIGHT provision_type nor a TERMR code and would otherwise be
+// invisible to this table. It is NOT a classifier. Run unguarded it also nets
+// every card of every OTHER family that merely MENTIONS "superior proposal"
+// -- and clauses that mention it are common: a no-shop/fiduciary-out covenant
+// (NOSOL-*) and a termination-fee trigger clause (TERMF-*) both routinely
+// describe termination "to accept a Superior Proposal". Once such a card is
+// selected, familyGroups()/cardForCodes() can hand a rights row a foreign
+// clause as its evidence.
+//
+// So the fallback is narrowed, not removed (same fix as
+// termination-fees.config.js#isTerminationFee applied here): it applies only
+// to a card NO family has claimed. A card already carrying another family's
+// provision_type or canonical code belongs to that family, and a word match
+// in its quote must never re-home it here.
+const TERMR_TEXT_RE = /termination right|outside date|superior proposal/i;
+
+// cardType() reads provision_type first and falls back to `type`; canonical
+// rights cards carry 'TERMINATION_RIGHT' on the former and 'TERMR' on the
+// latter (lib/canonical-v2/termination-product-projection.js), so both
+// spellings count as this family's own.
+const TERMR_CARD_TYPES = new Set(['TERMINATION_RIGHT', 'TERMR']);
+
+function isClaimedByAnotherFamily(card) {
+  const type = cardType(card);
+  if (type && !TERMR_CARD_TYPES.has(type)) return true;
+  const code = cardCode(card);
+  return Boolean(code) && !code.startsWith('TERMR');
+}
+
 function isTerminationRight(card) {
-  return cardType(card) === 'TERMINATION_RIGHT' || cardCode(card).startsWith('TERMR') || /termination right|outside date|superior proposal/i.test(`${card?.short_title || ''} ${textOf(card)}`);
+  if (cardType(card) === 'TERMINATION_RIGHT' || cardCode(card).startsWith('TERMR')) return true;
+  if (isClaimedByAnotherFamily(card)) return false;
+  return TERMR_TEXT_RE.test(`${card?.short_title || ''} ${textOf(card)}`);
 }
 
 function isBoilerplateCard(card) {
@@ -571,9 +604,77 @@ function rowForSpec(spec, cards, PillCell) {
 // list for these two cross-cutting remedy attributes and append them as
 // their own group when present, rather than folding them into the
 // code-matched TERMR_CANONICAL rows above.
+//
+// willful-breach carries a 4th tuple element (sourceCode), read by
+// crossCuttingRow() below, for the identical reason termination-fees.
+// config.js's SCALAR_ROWS 'willful-breach-effect'/'willful-breach-sole'
+// entries do: willfulBreachException is the SAME feature key on both
+// TERMF-EFFECT ("Willful Breach Carve-out", rubric.js ~3627 -- a carve-out to
+// the effect-of-termination survival rule) and TERMF-SOLE ("Willful Breach
+// Carve-out to Sole Remedy", rubric.js ~3634 -- a carve-out to the
+// fee-as-damages cap). An unscoped firstCardWithFeature() search over
+// allCards let whichever of those two cards sorted first in the deal's card
+// array silently decide this row's single answer -- the identical
+// order-dependent hybrid the fee-table split fixed, on this table instead.
+// This row's own label already names the TERMF-SOLE concept specifically
+// ("to sole remedy / fee" tracks TERMF-SOLE's rubric.js label almost
+// verbatim; TERMF-EFFECT's label mentions neither "remedy" nor "fee"), and it
+// sits in the "Remedies" cross-reference group besides -- TERMF-SOLE's own
+// concept ("fee is sole and exclusive REMEDY") fits that group; TERMF-EFFECT's
+// (survival of liability post-termination) is not itself a remedy. So the
+// row is scoped to TERMF-SOLE, narrowing (not deleting) the search exactly as
+// termination-fees.config.js's scalarRows() narrows its two split rows.
+//
+// This does NOT give the rights table its own EFFECT-of-termination row. If
+// an agreement carries a willful-breach carve-out to TERMF-EFFECT but not
+// TERMF-SOLE, this row now correctly shows nothing (present:false) rather
+// than showing the EFFECT card's fact under a SOLE-remedy label -- but that
+// EFFECT fact still has no row of its own here (it never did before this
+// fix either: unscoped, this row could show EITHER fact, never both, so an
+// EFFECT-only deal was already one accident of card order away from showing
+// nothing here too). Per the owner's own stated principle for the identical
+// conflation on the fee table -- two legally distinct facts that "can each be
+// present without the other" -- the more complete fix is almost certainly a
+// second row here (e.g. scoped to TERMF-EFFECT), mirroring the fee table's
+// split exactly. That split is NOT made here: the owner's 2026-08-05 ruling
+// named the fee table's row by its (then-unqualified) label and did not rule
+// on this differently-labelled rights-table row, so extending the ruling to
+// it is the same call the fee-table fix deliberately declined to make on its
+// own authority.
+//
+// specific-performance-mutual carries no such split: rubric.js declares
+// specificPerformanceMutual exactly once (~4597, no per-code variants), so an
+// unscoped search carries no risk of silently reading the wrong of two
+// distinct facts and is left as-is.
 const CROSS_CUTTING_ROWS = [
-  ['willful-breach', 'Willful-breach exception (to sole remedy / fee)', ['willfulBreachException']],
+  ['willful-breach', 'Willful-breach exception (to sole remedy / fee)', ['willfulBreachException'], 'TERMF-SOLE'],
   ['specific-performance-mutual', 'Specific performance available to both parties', ['specificPerformanceMutual']],
+];
+
+// Owner ruling (2026-08-05): "Fee required to terminate" (feeRequired) moves
+// here from termination-fees.config.js. It means payment is a condition
+// precedent to exercising the fiduciary out, not that a fee is payable --
+// lib/schema/features.js:6493 already scopes it to provisionTypes: ["TERMR"],
+// provisionCodes: ["TERMR-SUPERIOR"], displayGroup: "Fiduciary out", so the
+// registry always said it belonged here; only the display drifted.
+//
+// TERMR-SUPERIOR cards ARE selected by isTerminationRight() (code starts
+// with TERMR), but WS-G T6 removed 'superior' from TERMR_CANONICAL -- that
+// right's own narrative now renders inside the No-Solicitation section's
+// Superior Proposal box (nosol-section.config.js), not here, so re-adding a
+// 'superior' family row would duplicate it. And in practice today's stored
+// feeRequired values sit on whatever card the extraction pipeline attached
+// them to (frequently a TERMF-* fee card, per the old fee-table row this
+// replaces) rather than reliably on a TERMR-SUPERIOR card -- the same
+// cross-family drift willfulBreachException/specificPerformanceMutual have.
+// So this is searched the same way: the UNFILTERED card list, via
+// crossCuttingRow(), never folded into a TERMR_CANONICAL family row.
+//
+// terminationFeeRequired is carried over from the old fee-table row's alias
+// list (components/review/table-configs/termination-fees.config.js's former
+// SCALAR_ROWS 'required' entry) though nothing in the corpus writes it today.
+const FIDUCIARY_OUT_CROSS_CUTTING_ROWS = [
+  ['fee-required', 'Fee required to terminate', ['feeRequired', 'terminationFeeRequired']],
 ];
 
 function firstCardWithFeature(cards, keys) {
@@ -586,8 +687,15 @@ function firstCardWithFeature(cards, keys) {
   return null;
 }
 
-function crossCuttingRow(id, label, allCards, keys, PillCell) {
-  const hit = firstCardWithFeature(allCards, keys);
+function crossCuttingRow(id, label, allCards, keys, PillCell, sourceCode) {
+  // sourceCode (see CROSS_CUTTING_ROWS' 'willful-breach' entry) scopes the
+  // lookup to cards carrying that EXACT canonical code before the
+  // first-match search runs, so a row backed by a code-ambiguous feature key
+  // can never read a different code's card even though they share the key --
+  // undefined for every spec that carries no such ambiguity, which keeps the
+  // search exactly as unfiltered as before for those.
+  const pool = sourceCode ? (allCards || []).filter((card) => cardCode(card) === sourceCode) : allCards;
+  const hit = firstCardWithFeature(pool, keys);
   if (!hit) return { id: `termination-rights-${id}`, label, present: false };
   const detail = readableValue(hit.key, hit.raw);
   const terms = detail ? [detail] : [];
@@ -613,13 +721,29 @@ function crossCuttingRow(id, label, allCards, keys, PillCell) {
   };
 }
 
-function crossCuttingGroup(reviewDeal, PillCell) {
-  const allCards = reviewDeal?.cards || [];
-  const rows = CROSS_CUTTING_ROWS
-    .map(([id, label, keys]) => crossCuttingRow(id, label, allCards, keys, PillCell))
+// Shared by every cross-reference group (remedies, fiduciary-out, ...): built
+// from a spec list via crossCuttingRow(), filtered to what actually matched,
+// collapsing to `null` (no group at all) rather than an empty one.
+function crossReferenceGroup(id, label, allCards, specs, PillCell) {
+  const rows = specs
+    .map(([rowId, rowLabel, keys, sourceCode]) => crossCuttingRow(rowId, rowLabel, allCards, keys, PillCell, sourceCode))
     .filter((row) => row.present);
   if (!rows.length) return null;
-  return { id: 'remedies', label: 'Remedies (cross-reference)', rows };
+  return { id, label, rows };
+}
+
+function crossCuttingGroup(reviewDeal, PillCell) {
+  const allCards = reviewDeal?.cards || [];
+  return crossReferenceGroup('remedies', 'Remedies (cross-reference)', allCards, CROSS_CUTTING_ROWS, PillCell);
+}
+
+// feeRequired's own group (not folded into "Remedies"): a condition
+// precedent to the fiduciary out is not a remedy, and mislabelling it as one
+// is exactly the kind of conflation this owner ruling is fixing elsewhere in
+// this file -- see FIDUCIARY_OUT_CROSS_CUTTING_ROWS above.
+function fiduciaryOutGroup(reviewDeal, PillCell) {
+  const allCards = reviewDeal?.cards || [];
+  return crossReferenceGroup('fiduciary-out', 'Fiduciary out (cross-reference)', allCards, FIDUCIARY_OUT_CROSS_CUTTING_ROWS, PillCell);
 }
 
 function familyGroups(cards, PillCell) {
@@ -657,6 +781,8 @@ function buildGroups(reviewDeal, cards, PillCell) {
   const groups = familyGroups(cards, PillCell);
   const remedies = crossCuttingGroup(reviewDeal, PillCell);
   if (remedies) groups.push(remedies);
+  const fiduciaryOut = fiduciaryOutGroup(reviewDeal, PillCell);
+  if (fiduciaryOut) groups.push(fiduciaryOut);
   const deferred = deferredEvidenceGroup(cards);
   if (deferred) groups.push(deferred);
   return groups;
@@ -702,10 +828,14 @@ const terminationRightsConfig = {
 export {
   CROSS_CUTTING_ROWS,
   FAMILY_LABELS,
+  FIDUCIARY_OUT_CROSS_CUTTING_ROWS,
   TERMR_CANONICAL,
+  buildGroups,
   crossCuttingGroup,
   familyGroups,
+  fiduciaryOutGroup,
   deferredEvidenceGroup,
+  isTerminationRight,
   keyTermsForRight,
   rowForSpec,
   terminationRightsConfig,

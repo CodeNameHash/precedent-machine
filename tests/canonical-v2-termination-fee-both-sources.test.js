@@ -239,10 +239,18 @@ test('both-sources mode renders V1 and V2 values for the same term, each attribu
 test('every legacy field with no V2 counterpart still has a visible V1 value', async () => {
   const mod = await config();
   const rows = mod.terminationFeesConfig.selectRows(bothSourcesDeal());
+  // 'termination-fees-required' (feeRequired) no longer renders in this table
+  // at all -- owner ruling 2026-08-05 moved it to the Termination Rights
+  // table's Fiduciary out group (see termination-rights.config.js). The
+  // legacySoleRemedyCard() fixture's willfulBreachException lives on its
+  // TERMF-SOLE card, so it now surfaces on the willful-breach-SOLE row only
+  // (the willful-breach split's own EFFECT row has no TERMF-EFFECT card in
+  // this fixture and correctly does not render -- see the sibling
+  // "the two willful-breach rows..." test in
+  // tests/termination-willful-breach-and-fee-required.test.js).
   const surfaces = [
-    ['termination-fees-required', 'Yes'],
     ['termination-fees-sole-remedy', 'No'],
-    ['termination-fees-willful-breach', 'Yes'],
+    ['termination-fees-willful-breach-sole', 'Yes'],
     ['termination-fees-interest', 'Prime rate (Bank of America)'],
   ];
   for (const [rowId, expected] of surfaces) {
