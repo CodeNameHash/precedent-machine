@@ -7,7 +7,39 @@ Cross-references are to steps in `ROADMAP.md`.
 
 ---
 
-## 1. Close the open site (do this first)
+## 1. The open site: DECIDED 2026-08-05, risk accepted
+
+**Ben's decision: accept it, and fix it properly with real authentication at
+step S2 rather than paying for a platform stopgap.**
+
+The free Vercel setting ("Standard Protection") only ever protects preview
+deployments; protecting production requires Advanced Deployment Protection at
+$150 per month. That is poor value for a single-user internal tool, and the
+paid toggle would be a detour from the session-cookie authentication that
+step S2 has to build anyway.
+
+**The reasoning, recorded so a future session does not quietly treat this as
+solved or reopen it.** The exposure is read-only: the mutation surface is
+closed by a module-load assertion at
+`lib/service-client-route-actions.js:235-237`, and the four routes a July
+review graded critical are contained stubs on `main`. Nothing can be written,
+modified, deleted or ingested. What is readable is 40 public SEC filings plus
+the extraction on top of them.
+
+**What would change the answer.** Showing the product to anyone outside the
+Vercel team, which is the point at which real authentication is required
+regardless. Until then this is a known, accepted, bounded risk rather than an
+oversight.
+
+**One check never completed.** Whether the production alias is genuinely open
+was inferred, not proven: an unauthenticated probe of a sibling project's
+alias returned HTTP 200, and both projects carry the same setting. A definitive
+test is opening the site in a private window while signed out of Vercel. Being
+signed in makes a protected site look open to you.
+
+---
+
+## 1a. Original context (superseded by the decision above)
 
 **Status: confirmed open.** `precedent-machine.vercel.app` serves without a
 login, and the database is configured behind it, so the corpus and the
