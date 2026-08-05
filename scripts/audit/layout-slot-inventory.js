@@ -193,7 +193,10 @@ const SURFACES = [
     name: 'No Other Reps / Fraud',
     component: 'NoOtherRepsFraudTable / lib/abry.js',
     slot: 'misc',
-    selector: 'MISC-ENTIRE, REP-T-NOREP, REP-B-NOREP, REP-B-ANTIRELIANCE',
+    // v1 reclassification (2026-08-02, R3): mirrors ABRY_CODES in
+    // no-other-reps-fraud.config.js — old family codes retained for
+    // historic rows, new element codes are the current landing spots.
+    selector: 'MISC-ENTIRE, REP-T-NOREP, REP-B-NOREP, REP-B-ANTIRELIANCE, REP-T-NOOTHERREPS, REP-T-NONRELIANCE, REP-T-INDEPINVEST, REP-T-FRAUDCARVEOUT, REP-B-NOOTHERREPS, REP-B-NONRELIANCE, REP-B-INDEPINVEST, REP-B-FRAUDCARVEOUT',
     status: 'mapped',
     m206: 'Mapped by no-other-reps-fraud.config.js.',
     config: '',

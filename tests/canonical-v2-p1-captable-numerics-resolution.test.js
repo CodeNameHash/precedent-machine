@@ -282,7 +282,7 @@ function buildSourceAndContext(dealKey, sectionBody) {
   return { sourceText, documentHash, admittedSourceContext };
 }
 
-async function resolveShareCountAssertions(dealKey, sectionBody, assertions) {
+async function resolveShareCountAssertions(dealKey, sectionBody, assertions, representationLimbs = []) {
   const { sourceText, documentHash, admittedSourceContext } = buildSourceAndContext(dealKey, sectionBody);
   const receipt = await runNativeExtraction({
     source_text: sourceText,
@@ -293,7 +293,15 @@ async function resolveShareCountAssertions(dealKey, sectionBody, assertions) {
     provider: async ({ governed_scope: governedScope }) => {
       const { proposals, evidence_residuals: evidenceResiduals } = shapeProposals(
         {
-          representation_instances: [],
+          representation_instances: representationLimbs.length === 0 ? [] : [{
+            section_reference: SECTION_REFERENCE,
+            party_making: 'the Company',
+            chapeau_quote: 'Capital Structure.',
+            limbs: representationLimbs,
+            qualifiers: [],
+            definition_uses: [],
+            cross_references: [],
+          }],
           bring_down_conditions: [],
           open_world_candidates: [],
           share_count_assertions: assertions,
@@ -318,11 +326,11 @@ async function resolveShareCountAssertions(dealKey, sectionBody, assertions) {
 }
 
 function shareCountAssertion({
-  sectionReference, countKind, shareClass, plan = null, quote, partyMaking = 'the Company',
+  sectionReference, countKind, shareClass, plan = null, quote, partyMaking = 'the Company', limbPath = null,
 }) {
   return {
     section_reference: sectionReference, party_making: partyMaking, count_kind: countKind,
-    share_class: shareClass, plan, quote,
+    share_class: shareClass, plan, quote, limb_path: limbPath,
   };
 }
 
@@ -444,6 +452,84 @@ test('Skechers C8/C11: RESERVED (Company ESPP) sub-quote resolves to RESERVED_SH
   assert.equal(resolved.triage.materiality_rank, 52);
 });
 
+test('Skechers C11: a clipped RESERVED candidate uses a unique matching limb for corroboration while retaining its raw quote', async () => {
+  const clippedQuote = '3,360,412 shares of Company Common Stock';
+  const limbQuote = '3,360,412 shares of Company Common Stock reserved and available for issuance under the Company ESPP.';
+  assert.ok(SKECHERS_PARAGRAPH.includes(clippedQuote));
+  assert.ok(SKECHERS_PARAGRAPH.includes(limbQuote));
+  const { resolution } = await resolveShareCountAssertions('deal:skechers-reserved-espp-clipped', SKECHERS_PARAGRAPH, [
+    shareCountAssertion({
+      sectionReference: SECTION_REFERENCE,
+      countKind: 'RESERVED',
+      shareClass: 'Company Common Stock',
+      plan: 'the Company ESPP',
+      quote: clippedQuote,
+      limbPath: ['(iv)'],
+    }),
+  ], [
+    {
+      limb_path: ['(iv)'],
+      assertion_quote: limbQuote,
+      subject: 'Company Common Stock reserved under the Company ESPP',
+    },
+  ]);
+
+  const resolved = resolution.resolved.find((entry) => entry.generic_claim_key === SHARE_COUNT_CLAIM_KEY);
+  assert.ok(resolved);
+  assert.equal(resolved.claim.raw_value, clippedQuote);
+  assert.equal(resolved.claim.canonical_value, '3360412');
+  assert.equal(resolved.claim.attributes.plan_ref, 'the Company ESPP');
+});
+
+test('a clipped RESERVED candidate does not expand when two eligible limbs contain it', async () => {
+  const clippedQuote = '3,360,412 shares of Company Common Stock';
+  const firstLimbQuote = '3,360,412 shares of Company Common Stock reserved and available for issuance under the Company ESPP.';
+  const secondLimbQuote = '3,360,412 shares of Company Common Stock reserved and available for issuance under the Company ESPP. The reservation is subject to the plan terms.';
+  const sectionBody = secondLimbQuote;
+  const { resolution } = await resolveShareCountAssertions('deal:skechers-reserved-espp-two-limbs', sectionBody, [
+    shareCountAssertion({
+      sectionReference: SECTION_REFERENCE,
+      countKind: 'RESERVED',
+      shareClass: 'Company Common Stock',
+      plan: 'the Company ESPP',
+      quote: clippedQuote,
+      limbPath: ['(iv)'],
+    }),
+  ], [
+    { limb_path: ['(iv)'], assertion_quote: firstLimbQuote, subject: 'first reserve pool' },
+    { limb_path: ['(iv)'], assertion_quote: secondLimbQuote, subject: 'second reserve pool' },
+  ]);
+
+  assert.equal(resolution.resolved.filter((entry) => entry.generic_claim_key === SHARE_COUNT_CLAIM_KEY).length, 0);
+  const review = resolution.review_queue.find((entry) => entry.generic_claim_key === SHARE_COUNT_CLAIM_KEY);
+  assert.ok(review);
+  assert.equal(review.raw_value, clippedQuote);
+  assert.deepEqual(review.reasons, ['COUNT_KIND_UNCORROBORATED']);
+});
+
+test('a clipped RESERVED candidate does not expand to a compound limb with another share count', async () => {
+  const clippedQuote = '3,360,412 shares of Company Common Stock';
+  const compoundLimbQuote = '3,360,412 shares of Company Common Stock reserved and available for issuance under the Company ESPP, and 1,000,000 shares of Company Common Stock reserved and available for issuance under the Company ESPP.';
+  const { resolution } = await resolveShareCountAssertions('deal:skechers-reserved-espp-compound-limb', compoundLimbQuote, [
+    shareCountAssertion({
+      sectionReference: SECTION_REFERENCE,
+      countKind: 'RESERVED',
+      shareClass: 'Company Common Stock',
+      plan: 'the Company ESPP',
+      quote: clippedQuote,
+      limbPath: ['(iv)'],
+    }),
+  ], [
+    { limb_path: ['(iv)'], assertion_quote: compoundLimbQuote, subject: 'two reserve pools' },
+  ]);
+
+  assert.equal(resolution.resolved.filter((entry) => entry.generic_claim_key === SHARE_COUNT_CLAIM_KEY).length, 0);
+  const review = resolution.review_queue.find((entry) => entry.generic_claim_key === SHARE_COUNT_CLAIM_KEY);
+  assert.ok(review);
+  assert.equal(review.raw_value, clippedQuote);
+  assert.deepEqual(review.reasons, ['COUNT_KIND_UNCORROBORATED']);
+});
+
 test('Skechers: RESERVED with no plan named in the quote routes to review, typed RESERVED_POOL_PLAN_UNIDENTIFIED, never resolves with an empty ref', async () => {
   const quote = '3,360,412 shares of Company Common Stock reserved and available for issuance under the Company ESPP';
   const { resolution } = await resolveShareCountAssertions('deal:skechers-reserved-no-plan', SKECHERS_PARAGRAPH, [
@@ -540,8 +626,8 @@ test('SHARE_CLASS_REF_NOT_IN_QUOTE: a share_class not actually present in the by
   assert.ok(reviewEntry.reasons.includes('SHARE_CLASS_REF_NOT_IN_QUOTE'));
 });
 
-test('MAPPING_TABLE_VERSION is 4; GENERIC_CLAIM_KEY_RESOLUTION_TABLE carries exactly ONE SHARE_COUNT entry and no duplicate generic keys anywhere (audit M-2)', () => {
-  assert.equal(MAPPING_TABLE_VERSION, 4);
+test('MAPPING_TABLE_VERSION is 20; GENERIC_CLAIM_KEY_RESOLUTION_TABLE carries exactly ONE SHARE_COUNT entry and no duplicate generic keys anywhere (audit M-2)', () => {
+  assert.equal(MAPPING_TABLE_VERSION, 20);
   const shareCountEntries = GENERIC_CLAIM_KEY_RESOLUTION_TABLE.filter(
     (entry) => entry.generic_claim_key === SHARE_COUNT_CLAIM_KEY,
   );
@@ -587,7 +673,7 @@ test('the resolution receipt carries share_count_parse_version and zero_pattern_
   ]);
   assert.equal(resolution.resolution_receipt.share_count_parse_version, SHARE_COUNT_PARSE_VERSION);
   assert.equal(resolution.resolution_receipt.zero_pattern_table_version, ZERO_PATTERN_TABLE_VERSION);
-  assert.equal(resolution.resolution_receipt.mapping_table_version, 4);
+  assert.equal(resolution.resolution_receipt.mapping_table_version, 20);
 });
 
 // ---------------------------------------------------------------------------

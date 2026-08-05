@@ -44,7 +44,7 @@ test('the stable source occurrence remains unchanged', () => {
   const value = fixture();
   assert.equal(
     value.notice_occurrence.notice_obligation_occurrence_id,
-    '5bfba36963af3a1baec65d09a4fa479e21889ab522f66aaca89de348839c7440',
+    '397e3db47dc62bd3090809574a4d4f1978644fc9b0c121ac10c3b1d2d5e2ade5',
   );
   assert.deepEqual(
     [
@@ -118,7 +118,7 @@ test('24 hours uses the governed normaliser and retains its F6 lineage', () => {
   );
   assert.equal(
     projection.source_timing_claim_revision_id,
-    'fdc473bb486f0104c3e29e5afb263ee81c7a2953b6da67de42a0c3737322a177',
+    '8bc47e7e4c1ee206052b1f7bda05c337d2b99c3b670b456c8826542128b34f33',
   );
   assert.equal(
     projection.source_normalisation_payload_digest,
@@ -183,7 +183,7 @@ test('definition closure, relationships and direct evidence remain exact', () =>
   const revision = fixture().revision_summary;
   assert.equal(
     revision.definition_scope_closure_id,
-    '58d8f42f20fc8be31af4a1b7b2e57a17b4da60894bffe61cb8ee5babacc76b17',
+    '75969d43503b16f2664e4e871a72b03847301d51de307cd04b5420552685034e',
   );
   assert.equal(revision.definition_use_relationship_count, 30);
   assert.equal(revision.evidence_excerpt_count, 30);

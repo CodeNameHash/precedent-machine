@@ -83,6 +83,7 @@ function loadDirectRun(dealDir) {
 // tests/canonical-v2-comparator-wiring-replay.test.js do. Still zero
 // network/DB access: skechers-raw-fetched.htm is a committed fixture.
 async function loadSkechersReplayRun() {
+  throw new Error('NETS eligibility report is blocked: no verified snapshot identity binding exists for Skechers. A raw governed deal key cannot substitute for issued allocation and reviewed bridge evidence.');
   const dealDir = 'skechers-first-live-run';
   const retrievalUrl = 'https://www.sec.gov/Archives/edgar/data/1065837/000119312525112159/d943603dex21.htm';
   const rawBytes = readFileSync(join(FIXTURES_DIR, dealDir, 'skechers-raw-fetched.htm'));
@@ -102,7 +103,6 @@ async function loadSkechersReplayRun() {
     source_admission_manifest: admissionBundle.source_admission_manifest,
     semantic_extraction_input_envelope: admissionBundle.semantic_extraction_input_envelope,
     conversion,
-    governed_deal_key: 'deal:skechers-first-live-run:5e1d6f13ab83e3f9',
     deal_admission_id: sha256Hex('deal-admission:skechers-first-live-run'),
     source_ordinal: 0,
   });
@@ -124,6 +124,9 @@ async function loadSkechersReplayRun() {
 }
 
 async function runTwoPassFlow({ runReceipt, admittedSourceContext, snapshot }) {
+  if (!snapshot?.snapshot_identity_evidence) {
+    throw new Error('NETS eligibility report is blocked: V1 snapshot lacks verified issued identity binding.');
+  }
   const canonicalText = admittedSourceContext.canonical_text.text;
   const plain = resolveCandidates({
     run_receipt: runReceipt, contract_vocabulary: CONTRACT_BUNDLE_V13,

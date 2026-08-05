@@ -1,0 +1,99 @@
+{
+  "schema": "CANONICAL_V2_M3_V31_REPLAY_FIXTURES/V1",
+  "retrieval_date": "2026-08-03",
+  "source_table": "provision_cards",
+  "cards": [
+    {
+      "family": "REPRESENTATIONS",
+      "id": "100febba-7cae-42da-99ef-80401f878707",
+      "deal_id": "cf32899a-37c6-4147-8350-4a2e132a30db",
+      "provision_type": "REPRESENTATION",
+      "provision_subtype": "REP-B-FUNDS",
+      "region_full_text_sha256": "9ddc03b83ccf5ead43e908e184985e9bfe6b65d9cfd0fa291b5782b02b1ff2d9",
+      "section_reference": "4.13",
+      "party_making": "Parent",
+      "qualifier_kind": "ACCURACY",
+      "qualifier_code": "MAT_ALL_MATERIAL",
+      "source_excerpt": "the Parent Parties have no reason to believe the Financing will not be in a sufficient amount to satisfy the Financing Purposes or that the Specified Representations (as defined in the Commitment Letter) as they relate to Parent and its Subsidiaries will not be true and correct in all material respects."
+    },
+    {
+      "family": "REPRESENTATIONS",
+      "id": "31826de1-4399-4dd5-b3bb-fd58f5d6f9ae",
+      "deal_id": "320a3899-0d74-42d6-a412-3a962997d6ca",
+      "provision_type": "REPRESENTATION",
+      "provision_subtype": "REP-T-FDA",
+      "region_full_text_sha256": "04a2a29b5954c4a21851443b8a5a98a7ff7227d40292f26a7218d40f374bb3fa",
+      "section_reference": "4.19",
+      "party_making": "Company",
+      "qualifier_kind": "ACCURACY",
+      "qualifier_code": "MAT_ALL_MATERIAL",
+      "source_excerpt": "Since January 1, 2023, all applications, notifications, submissions, information, claims, reports and data utilized by the Company and its Subsidiary as the basis for, or submitted by the Company or its Subsidiary in connection with, any and all requests for the Regulatory Authorizations relating to the Company or its Subsidiary when submitted to the FDA or other Governmental Body were, to the Knowledge of the Company, true and correct in all material respects as of the date of submission, and any material updates, changes, corrections or modification to such applications, notifications, submissions, information, claims, reports and data required under applicable Laws have been submitted to the FDA or other Governmental Body."
+    },
+    {
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "id": "5acd8a63-8bed-40a0-b08d-1d024169d656",
+      "deal_id": "320a3899-0d74-42d6-a412-3a962997d6ca",
+      "provision_type": "STRUCTURE_MECHANICS",
+      "provision_subtype": "STRUCT-MERGER",
+      "region_full_text_sha256": "196e650bb9afc960c92076a4b7cfe301939fb5632faee452a1f699acaf2d60a7",
+      "section_reference": "2.6",
+      "assertion_kind": "SHORT_FORM_251H",
+      "source_excerpt": "The Merger will be governed by and effected under Section 251(h) of the DGCL."
+    },
+    {
+      "family": "MERGER_STRUCTURE_CLOSING",
+      "id": "11f3ef36-3bf3-44c3-b6dd-5af0cb27de4c",
+      "deal_id": "555579a6-6a11-45b3-9da9-43e1b49a6e89",
+      "provision_type": "STRUCTURE_MECHANICS",
+      "provision_subtype": "STRUCT-MERGER",
+      "region_full_text_sha256": "cdbacf0dada9f76750e0da583e1aa3862e258e00b0786e998fb385bdc6a74aa1",
+      "section_reference": "2.04",
+      "assertion_kind": "SHORT_FORM_251H",
+      "source_excerpt": "The Merger shall be governed by and effected pursuant to Section 251(h) of the DGCL."
+    },
+    {
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "id": "625167cf-ef51-445f-9021-aea358301cbf",
+      "deal_id": "320a3899-0d74-42d6-a412-3a962997d6ca",
+      "provision_type": "MISC_BOILERPLATE",
+      "provision_subtype": "MISC-SPECIFIC",
+      "region_full_text_sha256": "39b2993649701c84f256ba3868ecdc46bf02ca75d5c2e66050e966f417275569",
+      "section_reference": "9.16",
+      "assertion_kind": "SPECIFIC_PERFORMANCE",
+      "source_excerpt": "It is accordingly agreed that (i) each party hereto will be entitled, in addition to any other remedy to which it may be entitled at law or in equity, to compel specific performance to prevent or restrain breaches or threatened breaches of this Agreement in any action without the posting of a bond or undertaking and (ii) the parties hereto will, and hereby do, waive, in any action for specific performance, the defense of adequacy of a remedy at law and any other objections to specific performance of this Agreement."
+    },
+    {
+      "family": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "id": "920ce30a-3d6d-42f2-88af-a80ff8623839",
+      "deal_id": "bf31d586-c0bc-4ed2-8d46-e69451a05756",
+      "provision_type": "MISC_BOILERPLATE",
+      "provision_subtype": "MISC-JURY",
+      "region_full_text_sha256": "432aa28df528b3daa512d30627d8476bb414ab37c6bcdff8644fa431fa8eb1db",
+      "section_reference": "9.09",
+      "assertion_kind": "SPECIFIC_PERFORMANCE",
+      "source_excerpt": "It is accordingly agreed that (a) the parties shall be entitled to an injunction or injunctions, specific performance, or other equitable relief, to prevent breaches or threatened or anticipated breaches of this Agreement and to enforce specifically the terms and provisions of this Agreement in the courts described in Section 9.07"
+    },
+    {
+      "family": "MISC_BOILERPLATE",
+      "id": "c44d44c2-c435-4ee1-ba56-a2cb31e2cbdf",
+      "deal_id": "ce061fd0-a437-4d20-8a84-fdd6296aa5a0",
+      "provision_type": "MISC_BOILERPLATE",
+      "provision_subtype": "MISC-GOVLAW",
+      "region_full_text_sha256": "f1e6494f338b9701042c5e6ac3078b8698daf72380ec7cd66e1a042a6d76d704",
+      "section_reference": "9.9",
+      "assertion_kind": "GOVERNING_LAW",
+      "source_excerpt": "This Agreement shall be governed by and interpreted and construed in accordance with the laws of the State of Delaware."
+    },
+    {
+      "family": "MISC_BOILERPLATE",
+      "id": "5c4c705f-9d53-48c1-86ba-e553200659ca",
+      "deal_id": "dc042001-b987-404f-bd02-41e1939fb914",
+      "provision_type": "MISC_BOILERPLATE",
+      "provision_subtype": "MISC-JURISD",
+      "region_full_text_sha256": "1cd67f8906bb1926f80e3c6e251db4948f166171afd57caca6051e63c6bc5de8",
+      "section_reference": "10.8",
+      "assertion_kind": "FORUM_FALLBACK",
+      "source_excerpt": "and each of the parties hereby irrevocably consents to the exclusive jurisdiction of the Delaware Courts in any such suit, action or proceeding and irrevocably waives, to the fullest extent permitted by law, any objection which it may now or hereafter have to the laying of the venue of any such suit, action or proceeding in any such court"
+    }
+  ]
+}

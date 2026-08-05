@@ -36,7 +36,16 @@ const DEAL_SPECIFIC_ID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-
 const ROW_FAMILY_GROUPS = [
   { label: 'Material contracts', codes: ['REP-T-CONTRACTS', 'REP-T-MATERIAL-CONTRACTS'] },
   { label: 'Payment & exchange mechanics', codes: ['COV-PAYAGENT', 'CONSID-EXCHANGE'] },
-  { label: 'No conflict; consents & approvals', codes: ['REP-T-CONSENT', 'REP-T-NOCONFLICT'] },
+  // v1 reclassification (2026-08-02, R1 — audit A-M5): REP-T-CONSENT is
+  // retired; its de facto content (18/19 corpus cards) was governmental
+  // approvals, so the union follows the successor code. The proposed
+  // cross-party STOCKAPPROVAL+REP-B-VOTE union was WITHDRAWN by the audit —
+  // occurrence-order pairing could pair a buyer vote rep against another
+  // deal's target approval rep, and the rows may never co-list.
+  // REP-T-STOCKAPPROVAL renders as its own row; any future cross-party
+  // grouping is a Fable+Ben design item with party-aware pairing, not a
+  // rename rider on this table.
+  { label: 'No conflict; consents & approvals', codes: ['REP-T-GOVAPPROVAL', 'REP-T-NOCONFLICT'] },
   { label: 'Anti-corruption & sanctions', codes: ['REP-T-SANCTIONS', 'REP-T-ANTICORR'] },
   { label: 'Jurisdiction & jury waiver', codes: ['MISC-JURY', 'MISC-JURISD'] },
   { label: 'Stockholder meeting & proxy', codes: ['COV-PROXY', 'COV-MEETING'] },

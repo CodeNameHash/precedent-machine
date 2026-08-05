@@ -200,13 +200,19 @@ function buildIdentityAdmittedSourceContext(text, { dealKey, dealAdmissionId, so
 // section -- same composition strategy as
 // tests/canonical-v2-candidate-resolution.test.js's own KNOWLEDGE fixtures. ───
 
+const KNOWLEDGE_QUOTE = 'To the knowledge of the Company, no such default under this Section 3.1(b) exists';
 const capitalStructureText = fs.readFileSync(
   path.join(__dirname, 'fixtures', 'qxo-section-3-1-b.txt'),
   'utf8',
 );
-
-const LIMB_I_QUOTE = '(i)The authorized capital stock of the Company consists of';
-const KNOWLEDGE_QUOTE = 'To the knowledge of the Company, no such default under this Section 3.1(b) exists';
+const capitalStructureWithKnowledge = capitalStructureText.replace(
+  '\n(ii)',
+  ` ${KNOWLEDGE_QUOTE}.\n(ii)`,
+);
+const LIMB_I_QUOTE = capitalStructureWithKnowledge.slice(
+  capitalStructureWithKnowledge.indexOf('(i)'),
+  capitalStructureWithKnowledge.indexOf('\n(ii)'),
+);
 
 const qxoFullText = [
   'This AGREEMENT AND PLAN OF MERGER, dated as of April 18, 2026, by and among ',
@@ -217,10 +223,8 @@ const qxoFullText = [
   'Section 3.1 Representations Concerning the Company.\n\n',
   '(a)Organization; Standing. The Company is a corporation duly organized, ',
   'validly existing and in good standing under the Laws of the State of Delaware.\n\n',
-  capitalStructureText,
-  ' ',
-  KNOWLEDGE_QUOTE,
-  '.\n',
+  capitalStructureWithKnowledge,
+  '\n',
 ].join('');
 
 const DOCUMENT_HASH = sha256Hex(Buffer.from(qxoFullText, 'utf8'));

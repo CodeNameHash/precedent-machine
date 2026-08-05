@@ -3,7 +3,18 @@ import { deriveAbrySummary } from '../../../lib/abry.js';
 import { valueText } from './card-utils.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 
-const ABRY_CODES = ['MISC-ENTIRE', 'REP-T-NOREP', 'REP-B-NOREP', 'REP-B-ANTIRELIANCE'];
+// v1 reclassification (2026-08-02, R3): the old family-level codes
+// (REP-T-NOREP / REP-B-NOREP / REP-B-ANTIRELIANCE) are retired but kept
+// here for historic rows that still carry them; the eight new element
+// codes (REP-T-/REP-B- x NOOTHERREPS/NONRELIANCE/INDEPINVEST/
+// FRAUDCARVEOUT) are the current landing spots for freshly-extracted
+// anti-reliance cards. This table is agnostic to which set a card carries.
+const ABRY_CODES = [
+  'MISC-ENTIRE',
+  'REP-T-NOREP', 'REP-B-NOREP', 'REP-B-ANTIRELIANCE',
+  'REP-T-NOOTHERREPS', 'REP-T-NONRELIANCE', 'REP-T-INDEPINVEST', 'REP-T-FRAUDCARVEOUT',
+  'REP-B-NOOTHERREPS', 'REP-B-NONRELIANCE', 'REP-B-INDEPINVEST', 'REP-B-FRAUDCARVEOUT',
+];
 const FEATURE_KEYS = [
   'noOtherRepsPresent',
   'noOtherRepsParty',

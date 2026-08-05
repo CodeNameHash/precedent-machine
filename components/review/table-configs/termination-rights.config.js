@@ -25,7 +25,7 @@ const TERMR_CANONICAL = [
   { key: 'mutual', label: 'Mutual consent', codes: ['TERMR-MUTUAL'], family: 'mutual', featureKeys: ['executionMethod'] },
   { key: 'outside', label: 'Outside / End Date', codes: ['TERMR-OUTSIDE', 'TERMR-EXTENSION'], family: 'mutual', featureKeys: ['outsideDate'] },
   { key: 'legal', label: 'Legal restraint / order', codes: ['TERMR-LEGAL'], family: 'mutual', featureKeys: ['restraintFinality'] },
-  { key: 'vote', label: 'Stockholder vote not obtained', codes: ['TERMR-VOTE'], family: 'mutual', featureKeys: ['voteThreshold'] },
+  { key: 'vote', label: 'Stockholder vote not obtained', codes: ['TERMR-VOTE', 'TERMR-NOVOTE'], family: 'mutual', featureKeys: ['voteThreshold'] },
   { key: 'breachT', label: 'Company (Target) breach', codes: ['TERMR-BREACH-T'], family: 'buyer', featureKeys: ['curePeriod'] },
   { key: 'recommend', label: 'Change of Recommendation', codes: ['TERMR-RECOMMEND'], family: 'buyer' },
   { key: 'breachB', label: 'Parent (Buyer) breach', codes: ['TERMR-BREACH-B'], family: 'target', featureKeys: ['curePeriod'] },
@@ -273,6 +273,8 @@ function keyTermsNode(key, card, PillCell) {
       PARTY_MUTUAL: 'Either party may elect (not automatic)',
       PARTY_COMPANY: 'Company may elect (not automatic)',
       PARTY_PARENT: 'Parent may elect (not automatic)',
+      PARTY_TARGET: 'Company may elect (not automatic)',
+      PARTY_BUYER: 'Parent may elect (not automatic)',
     };
     const whoLabel = WHO_LABELS[whoCode]
       || (whoRaw?.label ? `${whoRaw.label} may elect (not automatic)` : null);
@@ -497,6 +499,40 @@ function marketSubtermsForRight(key) {
   return entries[key] || [];
 }
 
+function isNativeGovernedCard(card) {
+  return card?.canonical_v2_lineage?.source === 'CANONICAL_V2_NATIVE_CLAIM';
+}
+
+function governedMarketSubtermsForRight(key) {
+  if (key === 'outside') {
+    return [
+      durationSubterm(
+        'outside-date',
+        'Outside date from signing',
+        ['outsideDate', 'outsideDateISO'],
+        'months',
+        'signing_date',
+        'forward_period_months',
+      ),
+      categoricalSubterm('exercised-by', 'Exercised by', ['partyWhoCanTerminate']),
+    ];
+  }
+  if (key === 'breachT' || key === 'breachB') {
+    return [durationSubterm('cure-period', 'Cure period', ['curePeriod'], 'days', 'breach_notice')];
+  }
+  return [
+    categoricalSubterm('trigger', 'Termination trigger', ['terminationTriggers']),
+    categoricalSubterm('exercised-by', 'Exercised by', ['partyWhoCanTerminate']),
+  ];
+}
+
+function governedHeadlineFeatureKeys(key) {
+  if (key === 'outside') return ['outsideDate'];
+  if (key === 'breachT' || key === 'breachB') return ['curePeriod'];
+  if (key === 'mutual') return ['partyWhoCanTerminate'];
+  return ['terminationTriggers'];
+}
+
 function rowForSpec(spec, cards, PillCell) {
   const card = cardForCodes(cards, spec.codes);
   const terms = keyTermsForRight(spec.key, card);
@@ -515,10 +551,14 @@ function rowForSpec(spec, cards, PillCell) {
     sourceCard: card,
     present: Boolean(card),
     marketProvisionCodes: spec.codes,
-    marketSubterms: marketSubtermsForRight(spec.key),
+    marketSubterms: isNativeGovernedCard(card)
+      ? governedMarketSubtermsForRight(spec.key)
+      : marketSubtermsForRight(spec.key),
     // r13: see TERMR_CANONICAL's comment -- only threaded for specs whose
     // row is actually defined by one registry attribute.
-    featureKeys: spec.featureKeys || null,
+    featureKeys: isNativeGovernedCard(card)
+      ? governedHeadlineFeatureKeys(spec.key)
+      : spec.featureKeys || null,
     children: keyTermsNode(spec.key, card, PillCell),
   };
 }
@@ -592,10 +632,33 @@ function familyGroups(cards, PillCell) {
     .filter((group) => group.rows.some((row) => row.present));
 }
 
+function deferredEvidenceGroup(cards) {
+  const rows = cards
+    .filter((card) => card?.canonical_v2_lineage?.source === 'CANONICAL_V2_OPEN_WORLD_EVIDENCE')
+    .map((card, index) => {
+      const evidence = cardFeatures(card).canonicalV2OpenWorldEvidence || {};
+      const surface = String(evidence.surface || 'UNCLASSIFIED').replaceAll('_', ' ').toLowerCase();
+      return {
+        id: `termination-rights-deferred-${card.id || index}`,
+        label: surface.charAt(0).toUpperCase() + surface.slice(1),
+        value: evidence.detail ? [evidence.detail] : [],
+        evidence: textOf(card),
+        seeTextContent: textOf(card),
+        source: card,
+        sourceCard: card,
+        present: true,
+        children: React.createElement('span', { className: 'text-[11px] text-inkLight' }, evidence.detail || 'Evidence retained for later adjudication'),
+      };
+    });
+  return rows.length ? { id: 'deferred-evidence', label: 'Deferred evidence', rows } : null;
+}
+
 function buildGroups(reviewDeal, cards, PillCell) {
   const groups = familyGroups(cards, PillCell);
   const remedies = crossCuttingGroup(reviewDeal, PillCell);
   if (remedies) groups.push(remedies);
+  const deferred = deferredEvidenceGroup(cards);
+  if (deferred) groups.push(deferred);
   return groups;
 }
 
@@ -642,6 +705,7 @@ export {
   TERMR_CANONICAL,
   crossCuttingGroup,
   familyGroups,
+  deferredEvidenceGroup,
   keyTermsForRight,
   rowForSpec,
   terminationRightsConfig,

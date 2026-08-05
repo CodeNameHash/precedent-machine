@@ -13,6 +13,7 @@ const {
   shapeProposals,
   QUALIFIER_CLAIM_KEY,
   LIMB_ASSERTION_CLAIM_KEY,
+  SHARE_COUNT_CLAIM_KEY,
 } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 
 // ---------------------------------------------------------------------------
@@ -29,6 +30,7 @@ const SOURCE_TEXT =
 const CONTRACT_BUNDLE = compileFixtureContract();
 const GOVERNED_SCOPE = Object.freeze({
   deal_key: 'test-deal:native-anthropic-provider',
+  section_reference: '3.1',
   governed_intervals: ['3.1'],
   source_text: SOURCE_TEXT,
 });
@@ -146,6 +148,30 @@ test('malformed JSON is a typed failure, not an empty success', async () => {
       return true;
     },
   );
+});
+
+test('native extraction accepts only complete literal JSON objects and retains a rejected raw response', async () => {
+  const complete = JSON.stringify(wellFormedResponse());
+  const rejectedResponses = [
+    '{"representation_instances":[],"bring_down_conditions":[],"open_world_candidates":[],"truncated":',
+    `${complete}\nexplanation`,
+    `\`\`\`json\n${complete}\n\`\`\``,
+  ];
+  for (const response of rejectedResponses) {
+    // eslint-disable-next-line no-await-in-loop
+    await assert.rejects(
+      () => runProvider({ model: 'test-model', client: stubClientReturning(response), maxRetries: 0 }),
+      (error) => {
+        assert.ok(error instanceof NativeProducerAnthropicError);
+        assert.equal(error.code, 'RETRIES_EXHAUSTED');
+        assert.equal(error.details.last_code, 'MALFORMED_RESPONSE');
+        assert.equal(error.details.provider_output.raw_response_text, response);
+        return true;
+      },
+    );
+  }
+  const result = await runProvider({ model: 'test-model', client: stubClientReturning(`\n ${complete}\t`) });
+  assert.ok(result.proposals.length >= 4);
 });
 
 test('a response missing a required top-level key is a typed failure', async () => {
@@ -368,6 +394,177 @@ test('a limb with no usable limb_path (e.g. a stale pre-PROMPT_VERSION-2 recordi
   const [limbAssertion] = proposals.filter((p) => p.claim_definition_key === LIMB_ASSERTION_CLAIM_KEY);
   assert.ok(limbAssertion, 'the assertion quote still verifies and shapes even without a usable limb_path');
   assert.equal(limbAssertion.attributes.limb_path, null);
+});
+
+const ITEM_QUALIFIER_SOURCE_TEXT = 'SECTION 9. Capitalization. (i) As of April 17, 2026, Common stock exists. '
+  + '(ii) As of April 17, 2026, Preferred stock exists.';
+
+function itemQualifierResponse(assertionQuote = 'As of April 17, 2026, Preferred stock exists.') {
+  return {
+    representation_instances: [{
+      section_reference: '9',
+      party_making: 'the Company',
+      chapeau_quote: 'SECTION 9. Capitalization.',
+      limbs: [
+        { limb_path: ['(i)'], assertion_quote: 'As of April 17, 2026, Common stock exists.', subject: 'common stock' },
+        { limb_path: ['(ii)'], assertion_quote: assertionQuote, subject: 'preferred stock' },
+      ],
+      qualifiers: [{
+        kind: 'TEMPORAL',
+        code: null,
+        quote: 'As of April 17, 2026',
+        attachment: {
+          position: 'ITEM',
+          governs_path: ['(ii)'],
+          ambiguity_signals: { items_grammatically_parallel: false },
+        },
+      }],
+      definition_uses: [],
+      cross_references: [],
+    }],
+    bring_down_conditions: [],
+    open_world_candidates: [],
+  };
+}
+
+test('an ITEM qualifier with repeated text binds evidence to its unique occurrence in the governed limb', () => {
+  const { proposals, evidence_residuals: residuals } = shapeProposals(
+    itemQualifierResponse(),
+    ITEM_QUALIFIER_SOURCE_TEXT,
+  );
+  const [qualifier] = proposals.filter((proposal) => proposal.claim_definition_key === QUALIFIER_CLAIM_KEY);
+  assert.ok(qualifier);
+  assert.equal(
+    qualifier.evidence[0].absolute_start,
+    Buffer.byteLength(ITEM_QUALIFIER_SOURCE_TEXT.slice(0, ITEM_QUALIFIER_SOURCE_TEXT.lastIndexOf('As of April 17, 2026'))),
+  );
+  assert.equal(residuals.some((residual) => residual.reason === 'QUALIFIER_GOVERNS_PATH_OCCURRENCE_AMBIGUOUS'), false);
+});
+
+test('an ITEM qualifier without one governed-limb occurrence emits a typed ambiguity residual and no proposal', () => {
+  const source = ITEM_QUALIFIER_SOURCE_TEXT.replace(
+    'As of April 17, 2026, Preferred stock exists.',
+    'As of April 17, 2026, then As of April 17, 2026, Preferred stock exists.',
+  );
+  const response = itemQualifierResponse('As of April 17, 2026, then As of April 17, 2026, Preferred stock exists.');
+  const { proposals, evidence_residuals: residuals } = shapeProposals(response, source);
+  assert.equal(proposals.filter((proposal) => proposal.claim_definition_key === QUALIFIER_CLAIM_KEY).length, 0);
+  assert.ok(residuals.some((residual) => residual.reason === 'QUALIFIER_GOVERNS_PATH_OCCURRENCE_AMBIGUOUS'));
+});
+
+test('a derived none-outstanding zero preserves the exact source bytes', () => {
+  const zeroQuote = 'Shares of preferred stock, par value $0.01 per share,\n  none of which were outstanding as of signing';
+  const source = `SECTION 9. Capitalization. (i) ${zeroQuote}.`;
+  const response = {
+    representation_instances: [{
+      section_reference: '9',
+      party_making: 'the Company',
+      chapeau_quote: 'SECTION 9. Capitalization.',
+      limbs: [{ limb_path: ['(i)'], assertion_quote: zeroQuote, subject: 'preferred stock' }],
+      qualifiers: [],
+      definition_uses: [],
+      cross_references: [],
+    }],
+    bring_down_conditions: [],
+    open_world_candidates: [],
+    share_count_assertions: [],
+  };
+
+  const { proposals, evidence_residuals: residuals } = shapeProposals(response, source);
+  const zeroClaims = proposals.filter((proposal) => proposal.claim_definition_key === SHARE_COUNT_CLAIM_KEY);
+  assert.equal(zeroClaims.length, 1);
+  assert.equal(zeroClaims[0].raw_value, zeroQuote);
+  assert.equal(residuals.some((residual) => residual.reason === 'SHARE_COUNT_QUOTE_UNVERIFIED'), false);
+});
+
+test('an unverified explicit count cannot suppress a verified derived zero', () => {
+  const zeroQuote = 'no shares of Company Preferred Stock were issued and outstanding';
+  const source = `SECTION 9. Capitalization. (i) ${zeroQuote}.`;
+  const response = {
+    representation_instances: [{
+      section_reference: '9',
+      party_making: 'the Company',
+      chapeau_quote: 'SECTION 9. Capitalization.',
+      limbs: [{ limb_path: ['(i)'], assertion_quote: zeroQuote, subject: 'preferred stock' }],
+      qualifiers: [],
+      definition_uses: [],
+      cross_references: [],
+    }],
+    bring_down_conditions: [],
+    open_world_candidates: [],
+    share_count_assertions: [{
+      section_reference: '9',
+      party_making: 'the Company',
+      count_kind: 'ISSUED_OUTSTANDING',
+      share_class: 'Company Preferred Stock',
+      plan: null,
+      quote: 'NO SHARES OF COMPANY PREFERRED STOCK WERE ISSUED AND OUTSTANDING',
+      limb_path: ['(i)'],
+    }],
+  };
+
+  const { proposals, evidence_residuals: residuals } = shapeProposals(response, source);
+  const zeroClaims = proposals.filter((proposal) => proposal.claim_definition_key === SHARE_COUNT_CLAIM_KEY);
+  assert.equal(zeroClaims.length, 1);
+  assert.equal(zeroClaims[0].raw_value, zeroQuote);
+  assert.ok(residuals.some((residual) => residual.reason === 'SHARE_COUNT_QUOTE_UNVERIFIED'));
+});
+
+test('verified explicit and derived zeros deduplicate by evidence rather than section label', () => {
+  const zeroQuote = 'no shares of Company Preferred Stock were issued and outstanding';
+  const source = `SECTION 9. Capitalization. (i) ${zeroQuote}.`;
+  const response = {
+    representation_instances: [{
+      section_reference: '9',
+      party_making: 'the Company',
+      chapeau_quote: 'SECTION 9. Capitalization.',
+      limbs: [{ limb_path: ['(i)'], assertion_quote: zeroQuote, subject: 'preferred stock' }],
+      qualifiers: [],
+      definition_uses: [],
+      cross_references: [],
+    }],
+    bring_down_conditions: [],
+    open_world_candidates: [],
+    share_count_assertions: [{
+      section_reference: '9(i)',
+      party_making: 'the Company',
+      count_kind: 'ISSUED_OUTSTANDING',
+      share_class: 'Company Preferred Stock',
+      plan: null,
+      quote: zeroQuote,
+      limb_path: ['(i)'],
+    }],
+  };
+
+  const { proposals } = shapeProposals(response, source);
+  const zeroClaims = proposals.filter((proposal) => proposal.claim_definition_key === SHARE_COUNT_CLAIM_KEY);
+  assert.equal(zeroClaims.length, 1);
+  assert.equal(zeroClaims[0].attributes.section_reference, '9(i)');
+});
+
+test('a derived zero without one unique governed-limb occurrence fails closed', () => {
+  const zeroQuote = 'no shares of Company Preferred Stock were issued and outstanding';
+  const source = `SECTION 8. Capitalization. (i) ${zeroQuote}. SECTION 9. Capitalization. (i) ${zeroQuote}.`;
+  const response = {
+    representation_instances: [{
+      section_reference: '9',
+      party_making: 'the Company',
+      chapeau_quote: 'SECTION 9. Capitalization.',
+      limbs: [{ limb_path: ['(i)'], assertion_quote: zeroQuote, subject: 'preferred stock' }],
+      qualifiers: [],
+      definition_uses: [],
+      cross_references: [],
+    }],
+    bring_down_conditions: [],
+    open_world_candidates: [],
+    share_count_assertions: [],
+  };
+
+  const { proposals, evidence_residuals: residuals } = shapeProposals(response, source);
+  assert.equal(proposals.filter((proposal) => proposal.claim_definition_key === SHARE_COUNT_CLAIM_KEY).length, 0);
+  assert.ok(residuals.some((residual) => (
+    residual.reason === 'SHARE_COUNT_GOVERNED_LIMB_OCCURRENCE_AMBIGUOUS'
+  )));
 });
 
 // ---------------------------------------------------------------------------

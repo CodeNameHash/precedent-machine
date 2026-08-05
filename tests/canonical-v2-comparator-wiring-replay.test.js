@@ -21,10 +21,11 @@
  *     computeSectionCandidatesForLexicalDigest (candidate-resolution.js,
  *     exported for exactly this) + buildLexicalDisagreementReceipt
  *     (lexical-disagreement-net.js), and build the v1v2 comparison receipt
- *     via buildV1V2ComparisonReceipt (v1v2-comparator.js) against this
- *     deal's re-exported real snapshot;
- *  4. resolveCandidates() AGAIN with BOTH v1v2_comparison and
- *     lexical_disagreement supplied.
+ *     via buildV1V2ComparisonDiagnostic (v1v2-comparator.js) against this
+ *     deal's re-exported real snapshot; and
+ *  4. prove that the authoritative receipt remains unavailable until that
+ *     snapshot has issued identity evidence. A diagnostic is deliberately
+ *     not passed back into resolveCandidates().
  *
  * PINNED COUNTS -- DERIVATION NOTE (read before touching any assertion
  * below): every literal in this file was produced by actually running this
@@ -81,11 +82,11 @@ const { buildVerifiedSecSourceAdmission } = require('../lib/canonical-v2/sec-sou
 const { parseJSON } = require('../lib/parser-v2/parse-json');
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
 const { shapeProposals } = require('../lib/canonical-v2/native-producer/anthropic-provider');
+const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
 const {
-  resolveCandidates, computeSectionCandidatesForLexicalDigest,
-} = require('../lib/canonical-v2/native-producer/candidate-resolution');
-const { buildLexicalDisagreementReceipt } = require('../lib/canonical-v2/native-producer/lexical-disagreement-net');
-const { buildV1V2ComparisonReceipt } = require('../lib/canonical-v2/native-producer/v1v2-comparator');
+  buildV1V2ComparisonDiagnostic,
+  buildV1V2ComparisonReceipt,
+} = require('../lib/canonical-v2/native-producer/v1v2-comparator');
 
 const AGREEMENT_DATE = '2026-04-18';
 const CONTRACT_BUNDLE_V13 = compileFixtureContractV13();
@@ -96,10 +97,6 @@ function loadFixtureJson(dealDir, name) {
 
 function loadSnapshot(name) {
   return JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'canonical-v2', 'v1v2-comparator', name), 'utf8'));
-}
-
-function sectionBodyText(canonicalText, section) {
-  return Buffer.from(canonicalText, 'utf8').slice(section.start, section.end).toString('utf8');
 }
 
 // ─── TopBuild/F28 and Modiv: committed run-receipt.json's own
@@ -166,29 +163,14 @@ async function loadSkechersReplayRun() {
   return { runReceipt, admittedSourceContext };
 }
 
-// ─── Shared two-pass flow: plain resolve -> mint lexical receipts per
-// governed section + v1v2 comparison receipt -> resolve again with BOTH. ───
+// ─── Shared diagnostic flow. The captured snapshots do not have issued
+// identity evidence, so their comparator results remain diagnostic-only. ───
 
 async function runTwoPassFlow({ runReceipt, admittedSourceContext, snapshot }) {
-  const canonicalText = admittedSourceContext.canonical_text.text;
-
   const plain = resolveCandidates({
     run_receipt: runReceipt, contract_vocabulary: CONTRACT_BUNDLE_V13,
     admitted_source_context: admittedSourceContext, agreement_date: AGREEMENT_DATE,
   });
-
-  const lexicalDisagreement = {};
-  for (const section of runReceipt.resolved_sections) {
-    const candidates = computeSectionCandidatesForLexicalDigest(plain.resolved, section.section_reference);
-    const governedSection = {
-      section_ref: section.section_reference,
-      text: sectionBodyText(canonicalText, section),
-      text_sha256: section.text_sha256,
-    };
-    lexicalDisagreement[section.section_reference] = buildLexicalDisagreementReceipt({
-      governed_section: governedSection, candidates,
-    });
-  }
 
   // attempted_section_scope: the declared set of comparison strings this run
   // actually attempted, derived from the plain pass's own resolved claims
@@ -203,20 +185,21 @@ async function runTwoPassFlow({ runReceipt, admittedSourceContext, snapshot }) {
     return typeof citationValidation.derived_citation === 'string' ? citationValidation.derived_citation : null;
   }).filter(Boolean))];
 
-  const comparison = buildV1V2ComparisonReceipt({
+  const comparison = buildV1V2ComparisonDiagnostic({
     v1_snapshot: snapshot, v2_side: plain, attempted_section_scope: attemptedSectionScope,
   });
   // Fable-review Finding 2: the receipt must pin the bumped table version.
-  assert.equal(comparison.family_mapping_table_version, 2);
+  assert.equal(comparison.family_mapping_table_version, 3);
 
-  const wired = resolveCandidates({
-    run_receipt: runReceipt, contract_vocabulary: CONTRACT_BUNDLE_V13,
-    admitted_source_context: admittedSourceContext, agreement_date: AGREEMENT_DATE,
-    v1v2_comparison: comparison, lexical_disagreement: lexicalDisagreement,
-  });
+  assert.throws(
+    () => buildV1V2ComparisonReceipt({
+      v1_snapshot: snapshot, v2_side: plain, attempted_section_scope: attemptedSectionScope,
+    }),
+    (error) => error && error.code === 'INVALID_INPUT' && error.message.includes('snapshot_identity_evidence'),
+  );
 
   return {
-    plain, wired, comparison, lexicalDisagreement,
+    plain, comparison,
   };
 }
 
@@ -225,9 +208,12 @@ async function runTwoPassFlow({ runReceipt, admittedSourceContext, snapshot }) {
 // hardcoded card ids, so a later re-export/re-classification changes data,
 // not test logic -- only the per-run TOTAL is pinned as a literal.
 function unmappedSubtypeSummary(snapshot, mappedSubtypes) {
-  const mappedSet = new Set(mappedSubtypes.map((entry) => entry.v1_provision_subtype));
+  const mappedSet = new Set(mappedSubtypes.map(
+    (entry) => `${entry.v1_provision_type}\u0000${entry.v1_provision_subtype}`,
+  ));
   return snapshot.cards
-    .filter((card) => card.provision_subtype == null || !mappedSet.has(card.provision_subtype))
+    .filter((card) => card.provision_subtype == null
+      || !mappedSet.has(`${card.provision_type}\u0000${card.provision_subtype}`))
     .map((card) => ({ id: card.id, subtype: card.provision_subtype, section_ref: card.section_ref }));
 }
 
@@ -237,14 +223,16 @@ const { FAMILY_MAPPING_TABLE } = require('../lib/canonical-v2/native-producer/v1
 // TopBuild / F28 third live run.
 // ═══════════════════════════════════════════════════════════════════════
 
-test('TopBuild: two-pass wiring -- 1 PRESENCE_AGREEMENT (3.1(b)), 0 SECTION_MISMATCH, 0 UNMAPPED, both_nets_clean 0, auto_pass blocked on all resolved claims', async () => {
+test('TopBuild: diagnostic comparison -- 1 PRESENCE_AGREEMENT (3.1(b)), 0 SECTION_MISMATCH, 0 UNMAPPED; authoritative wiring blocked', async () => {
   const { runReceipt, admittedSourceContext } = loadDirectRun('f28-third-live-run');
   const snapshot = loadSnapshot('topbuild-v1-provision-snapshot.json');
-  const { plain, wired, comparison } = await runTwoPassFlow({ runReceipt, admittedSourceContext, snapshot });
+  const { plain, comparison } = await runTwoPassFlow({ runReceipt, admittedSourceContext, snapshot });
 
+  // Current ITEM evidence binding retains only the three limb-grounded
+  // measurement-date claims from this recorded response.
   assert.equal(plain.resolved.length, 3);
-  assert.equal(plain.review_queue.length, 4);
-  assert.equal(plain.open_world.length, 33);
+  assert.equal(plain.review_queue.length, 6);
+  assert.equal(plain.open_world.length, 31);
 
   // Tier 1 (v1v2-comparator.js), pinned: 1 agreement (TopBuild's real CAP
   // card is already recorded at subsection granularity "3.1(b)", matching
@@ -260,15 +248,12 @@ test('TopBuild: two-pass wiring -- 1 PRESENCE_AGREEMENT (3.1(b)), 0 SECTION_MISM
   const unmapped = unmappedSubtypeSummary(snapshot, FAMILY_MAPPING_TABLE);
   assert.equal(unmapped.length, 0, 'TopBuild: 0 UNMAPPED cards');
 
-  assert.equal(wired.resolved.length, 3, 'strictly additive on bucket sizes');
-  for (const entry of wired.resolved) {
+  for (const entry of plain.resolved) {
     assert.equal(entry.resolved_claim_definition_key, 'REPRESENTATION_MEASUREMENT_DATE');
     assert.ok(!entry.triage.reasons.includes('V1V2_SECTION_MISMATCH'));
-    assert.ok(!('both_nets_clean' in entry.triage), 'condition 2 never evaluates clean -- REP-T-CAP has real lexical hits in this section');
     assert.ok(entry.triage.unevaluated_conditions.includes('SOURCE_SCOPE_CERTIFICATION_ABSENT'), 'M3 gate stays closed');
     assert.equal(entry.triage.auto_pass, false);
   }
-  assert.equal(wired.resolution_receipt.lexical_disagreement_counts.both_nets_clean, 0);
 
   // Additivity: the plain (no-input) pass byte-identically reproduces a
   // fresh no-input call.
@@ -283,31 +268,27 @@ test('TopBuild: two-pass wiring -- 1 PRESENCE_AGREEMENT (3.1(b)), 0 SECTION_MISM
 // Skechers first live run.
 // ═══════════════════════════════════════════════════════════════════════
 
-test('Skechers: two-pass wiring -- 2 SECTION_MISMATCH Tier-1 outcomes (severity preference), 5 UNMAPPED (pinned set), both_nets_clean 0, resolved claim V1V2_SECTION_MISMATCH-blocked', async () => {
+test('Skechers: diagnostic comparison -- 1 PRESENCE_AGREEMENT and 1 SECTION_MISMATCH Tier-1 outcome, 5 UNMAPPED; authoritative wiring blocked', async () => {
   const { runReceipt, admittedSourceContext } = await loadSkechersReplayRun();
   const snapshot = loadSnapshot('skechers-v1-provision-snapshot.json');
   assert.equal(snapshot.deal_identity_bridge.governed_deal_key, 'deal:skechers-first-live-run:5e1d6f13ab83e3f9');
-  const { plain, wired, comparison } = await runTwoPassFlow({ runReceipt, admittedSourceContext, snapshot });
+  const { plain, comparison } = await runTwoPassFlow({ runReceipt, admittedSourceContext, snapshot });
 
-  assert.equal(plain.resolved.length, 1);
-  assert.equal(plain.review_queue.length, 1);
+  // Current ITEM evidence binding retains the three limb-grounded claims.
+  assert.equal(plain.resolved.length, 3);
+  assert.equal(plain.review_queue.length, 3);
 
-  // Tier 1: BOTH of Skechers' two real REP-T-CAP cards (section refs "3.7"
-  // and "3.8", both SECTION-granularity in v1) reference the run's single
-  // resolved REP-T-CAP claim, whose own citation is SUBSECTION-granularity
-  // ("3.7(b)", CONSTRUCTED_FROM_TREE, never CORROBORATED_BY_DOCUMENT_TEXT
-  // for this specific claim) -- neither string equals either card's bare
-  // section number under the module's exact-equality rule, so both cards
-  // genuinely mismatch against the same lone v2 provision (see file header
-  // for the full derivation and the departure from the design doc's prose).
+  // Tier 1: the current replay has a direct 3.7 match and a 3.8 mismatch
+  // against the same v2 provision. Severity preference still blocks the
+  // resolved claims on the mismatch.
   assert.deepEqual(comparison.counts.by_tier1_outcome, {
-    V1V2_PRESENCE_AGREEMENT: 0, V1_MISSING: 0, V2_NOT_ATTEMPTED: 40, V2_MISSING: 0,
-    SECTION_MISMATCH: 2, V1_CARD_UNMAPPED: 5,
+    V1V2_PRESENCE_AGREEMENT: 1, V1_MISSING: 0, V2_NOT_ATTEMPTED: 40, V2_MISSING: 0,
+    SECTION_MISMATCH: 1, V1_CARD_UNMAPPED: 5,
   });
   assert.equal(comparison.provision_outcomes.length, 47);
   const mismatches = comparison.provision_outcomes.filter((o) => o.outcome === 'SECTION_MISMATCH');
-  assert.deepEqual(mismatches.map((o) => o.v1_section).sort(), ['3.7', '3.8']);
-  assert.ok(mismatches.every((o) => o.v2_provision_instance_id === mismatches[0].v2_provision_instance_id), 'both mismatches reference the SAME v2 provision -- severity preference applies');
+  assert.deepEqual(mismatches.map((o) => o.v1_section), ['3.8']);
+  assert.equal(mismatches[0].v2_section, '3.7');
 
   // Programmatically-derived UNMAPPED set: pinned total 5 -- null-subtype
   // cards (4.13, 4.10) + the held-back REP-T-CONSENT (3.4, 3.6) +
@@ -320,19 +301,11 @@ test('Skechers: two-pass wiring -- 2 SECTION_MISMATCH Tier-1 outcomes (severity 
     ['NULL@4.10', 'NULL@4.13', 'REP-B-ANTIRELIANCE@4.17', 'REP-T-CONSENT@3.4', 'REP-T-CONSENT@3.6'],
   );
 
-  // Claim-level consequence, IDENTICAL to the spec's described outcome
-  // regardless of the Tier-1 provision_outcomes split: severity preference
-  // makes SECTION_MISMATCH win, the resolved claim is V1V2_SECTION_MISMATCH
-  // blocked, deterministic_gates_passed false, auto_pass false.
-  assert.equal(wired.resolved.length, 1);
-  const claim = wired.resolved[0];
-  assert.equal(claim.resolved_claim_definition_key, 'REPRESENTATION_MEASUREMENT_DATE');
-  assert.ok(claim.triage.reasons.includes('V1V2_SECTION_MISMATCH'));
-  assert.equal(claim.triage.deterministic_gates_passed, false, 'expected, not a bug -- spec section 3');
-  assert.equal(claim.triage.auto_pass, false);
-  assert.ok(!('both_nets_clean' in claim.triage));
-  assert.ok(claim.triage.unevaluated_conditions.includes('SOURCE_SCOPE_CERTIFICATION_ABSENT'));
-  assert.equal(wired.resolution_receipt.lexical_disagreement_counts.both_nets_clean, 0);
+  for (const claim of plain.resolved) {
+    assert.equal(claim.resolved_claim_definition_key, 'REPRESENTATION_MEASUREMENT_DATE');
+    assert.equal(claim.triage.auto_pass, false);
+    assert.ok(claim.triage.unevaluated_conditions.includes('SOURCE_SCOPE_CERTIFICATION_ABSENT'));
+  }
 
   const rerun = resolveCandidates({
     run_receipt: runReceipt, contract_vocabulary: CONTRACT_BUNDLE_V13,
@@ -345,28 +318,26 @@ test('Skechers: two-pass wiring -- 2 SECTION_MISMATCH Tier-1 outcomes (severity 
 // Modiv first live run.
 // ═══════════════════════════════════════════════════════════════════════
 
-test('Modiv: two-pass wiring -- 1 SECTION_MISMATCH Tier-1 outcome (same granularity mismatch as Skechers), 4 UNMAPPED (pinned set), both_nets_clean 0, resolved claim V1V2_SECTION_MISMATCH-blocked', async () => {
+test('Modiv: diagnostic comparison -- 1 PRESENCE_AGREEMENT Tier-1 outcome, 4 UNMAPPED; authoritative wiring blocked', async () => {
   const { runReceipt, admittedSourceContext } = loadDirectRun('modiv-first-live-run');
   const snapshot = loadSnapshot('modiv-v1-provision-snapshot.json');
   assert.equal(snapshot.deal_identity_bridge.governed_deal_key, 'deal:modiv-first-live-run:32065211e4688625');
-  const { plain, wired, comparison } = await runTwoPassFlow({ runReceipt, admittedSourceContext, snapshot });
+  const { plain, comparison } = await runTwoPassFlow({ runReceipt, admittedSourceContext, snapshot });
 
-  assert.equal(plain.resolved.length, 1);
-  assert.equal(plain.review_queue.length, 1);
-  assert.equal(plain.open_world.length, 65);
+  // Current ITEM evidence binding retains eleven grounded claims.
+  assert.equal(plain.resolved.length, 11);
+  assert.equal(plain.review_queue.length, 17);
+  assert.equal(plain.open_world.length, 51);
 
-  // Tier 1: Modiv's single real REP-T-CAP card is section-granularity
-  // ("3.2"); the run's resolved claim carries subsection-granularity
-  // citation "3.2(c)" -- same structural mismatch as Skechers (see file
-  // header derivation note), so the sole card mismatches.
+  // Tier 1: the current replay supplies a directly corroborated 3.2 claim.
   assert.deepEqual(comparison.counts.by_tier1_outcome, {
-    V1V2_PRESENCE_AGREEMENT: 0, V1_MISSING: 0, V2_NOT_ATTEMPTED: 43, V2_MISSING: 0,
-    SECTION_MISMATCH: 1, V1_CARD_UNMAPPED: 4,
+    V1V2_PRESENCE_AGREEMENT: 1, V1_MISSING: 0, V2_NOT_ATTEMPTED: 43, V2_MISSING: 0,
+    SECTION_MISMATCH: 0, V1_CARD_UNMAPPED: 4,
   });
   assert.equal(comparison.provision_outcomes.length, 48);
-  const mismatch = comparison.provision_outcomes.find((o) => o.outcome === 'SECTION_MISMATCH');
-  assert.equal(mismatch.v1_section, '3.2');
-  assert.equal(mismatch.v2_section, '3.2(c)');
+  const agreement = comparison.provision_outcomes.find((o) => o.outcome === 'V1V2_PRESENCE_AGREEMENT');
+  assert.equal(agreement.v1_section, '3.2');
+  assert.equal(agreement.v2_section, '3.2');
 
   // Programmatically-derived UNMAPPED set: pinned total 4 -- null-subtype
   // cards (4.16, 4.19) + REP-T-REGSTATUS (3.22) + REP-B-ANTIRELIANCE
@@ -378,15 +349,12 @@ test('Modiv: two-pass wiring -- 1 SECTION_MISMATCH Tier-1 outcome (same granular
     ['NULL@4.16', 'NULL@4.19', 'REP-B-ANTIRELIANCE@4.21', 'REP-T-REGSTATUS@3.22'],
   );
 
-  assert.equal(wired.resolved.length, 1);
-  const claim = wired.resolved[0];
+  const claim = plain.resolved[0];
   assert.equal(claim.resolved_claim_definition_key, 'REPRESENTATION_MEASUREMENT_DATE');
-  assert.ok(claim.triage.reasons.includes('V1V2_SECTION_MISMATCH'));
-  assert.equal(claim.triage.deterministic_gates_passed, false);
+  assert.ok(!claim.triage.reasons.includes('V1V2_SECTION_MISMATCH'));
+  assert.equal(claim.triage.deterministic_gates_passed, true);
   assert.equal(claim.triage.auto_pass, false);
-  assert.ok(!('both_nets_clean' in claim.triage));
   assert.ok(claim.triage.unevaluated_conditions.includes('SOURCE_SCOPE_CERTIFICATION_ABSENT'));
-  assert.equal(wired.resolution_receipt.lexical_disagreement_counts.both_nets_clean, 0);
 
   const rerun = resolveCandidates({
     run_receipt: runReceipt, contract_vocabulary: CONTRACT_BUNDLE_V13,
@@ -403,19 +371,15 @@ test('Modiv: two-pass wiring -- 1 SECTION_MISMATCH Tier-1 outcome (same granular
 // blocked by a SECTION_MISMATCH).
 // ═══════════════════════════════════════════════════════════════════════
 
-test('cross-run pin: both_nets_clean is zero on every resolved claim across all three deals', async () => {
+test('cross-run pin: all three historical comparisons are diagnostic-only until identity evidence is issued', async () => {
   const runs = await Promise.all([
     (async () => ({ ...loadDirectRun('f28-third-live-run'), snapshot: loadSnapshot('topbuild-v1-provision-snapshot.json') }))(),
     (async () => ({ ...(await loadSkechersReplayRun()), snapshot: loadSnapshot('skechers-v1-provision-snapshot.json') }))(),
     (async () => ({ ...loadDirectRun('modiv-first-live-run'), snapshot: loadSnapshot('modiv-v1-provision-snapshot.json') }))(),
   ]);
-  let totalBothNetsClean = 0;
   for (const run of runs) {
-    const { wired } = await runTwoPassFlow(run);
-    totalBothNetsClean += wired.resolution_receipt.lexical_disagreement_counts.both_nets_clean;
-    for (const entry of wired.resolved) {
-      assert.ok(!entry.triage.both_nets_clean, 'zero by construction this slice -- Ben\'s option A');
-    }
+    const { comparison } = await runTwoPassFlow(run);
+    assert.equal(comparison.authority, 'NONE');
+    assert.ok(typeof comparison.v1v2_comparison_diagnostic_id === 'string');
   }
-  assert.equal(totalBothNetsClean, 0);
 });

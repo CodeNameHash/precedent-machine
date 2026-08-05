@@ -1,0 +1,41 @@
+{
+  "schema_version": "ANTITRUST_REGULATORY_COVERAGE_MAP/V1",
+  "source_runs": [
+    {
+      "deal_directory": "skechers-first-live-run",
+      "section_reference": "6.2",
+      "evidence": [
+        {
+          "evidence_id": "skechers-strategy-control",
+          "assertion_kind": "STRATEGY_CONTROL",
+          "canonical_value": "PARENT_CONTROL",
+          "obligor_party_scope": "ONE_PARTY",
+          "obligor_party": "Parent",
+          "quote": "Parent shall have the right to control and (having taken into consideration in good faith all comments, proposals and suggestions made by the Company) direct the process, strategy and determinations with respect to any Antitrust and Foreign Investment Law in connection with the Merger, including in dealing with any Governmental Authority with respect thereto."
+        },
+        {
+          "evidence_id": "skechers-timing-agreement",
+          "assertion_kind": "TIMING_AGREEMENT_RESTRICTION",
+          "canonical_value": "MUTUAL_CONSENT",
+          "obligor_party_scope": "MUTUAL",
+          "obligor_party": "Parent and the Company",
+          "quote": "Neither Parent nor the Company will (and each of the Company and Parent will cause their Subsidiaries and affiliates not to) agree to stay, toll or extend any applicable waiting period under any Antitrust and Foreign Investment Law or enter into or extend a timing agreement with any Governmental Authority, without the prior written consent of the other party."
+        }
+      ]
+    },
+    {
+      "deal_directory": "modiv-first-live-run",
+      "section_reference": "5.5",
+      "evidence": [
+        {
+          "evidence_id": "modiv-transaction-litigation",
+          "assertion_kind": "LITIGATION_OBLIGATION",
+          "canonical_value": "MANDATORY_DEFEND",
+          "obligor_party_scope": "MUTUAL",
+          "obligor_party": "Each party hereto",
+          "quote": "contesting, litigating and defending all lawsuits or other legal proceedings against it or any of its affiliates relating to or challenging this Agreement or the consummation of the Mergers (“Transaction Litigation”)"
+        }
+      ]
+    }
+  ]
+}

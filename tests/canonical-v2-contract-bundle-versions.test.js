@@ -34,6 +34,24 @@ const {
   FIXTURE_CONTRACT_INPUT_V11,
   FIXTURE_CONTRACT_INPUT_V12,
   FIXTURE_CONTRACT_INPUT_V13,
+  FIXTURE_CONTRACT_INPUT_V18,
+  FIXTURE_CONTRACT_INPUT_V19,
+  FIXTURE_CONTRACT_INPUT_V20,
+  FIXTURE_CONTRACT_INPUT_V21,
+  FIXTURE_CONTRACT_INPUT_V22,
+  FIXTURE_CONTRACT_INPUT_V23,
+  FIXTURE_CONTRACT_INPUT_V24,
+  FIXTURE_CONTRACT_INPUT_V25,
+  FIXTURE_CONTRACT_INPUT_V26,
+  FIXTURE_CONTRACT_INPUT_V27,
+  FIXTURE_CONTRACT_INPUT_V28,
+  FIXTURE_CONTRACT_INPUT_V29,
+  FIXTURE_CONTRACT_INPUT_V30,
+  FIXTURE_CONTRACT_INPUT_V31,
+  FIXTURE_CONTRACT_INPUT_V32,
+  FIXTURE_CONTRACT_INPUT_V33,
+  FIXTURE_CONTRACT_INPUT_V34,
+  FIXTURE_CONTRACT_INPUT_V35,
   FIXTURE_CONTRACT_FINGERPRINTS,
   FIXTURE_SERVING_CONTRACT_FINGERPRINTS,
   BRINGS_DOWN_EFFECT_SCHEMA_V1,
@@ -72,6 +90,26 @@ const {
   compileFixtureContractV11,
   compileFixtureContractV12,
   compileFixtureContractV13,
+  compileFixtureContractV16,
+  compileFixtureContractV17,
+  compileFixtureContractV18,
+  compileFixtureContractV19,
+  compileFixtureContractV20,
+  compileFixtureContractV21,
+  compileFixtureContractV22,
+  compileFixtureContractV23,
+  compileFixtureContractV24,
+  compileFixtureContractV25,
+  compileFixtureContractV26,
+  compileFixtureContractV27,
+  compileFixtureContractV28,
+  compileFixtureContractV29,
+  compileFixtureContractV30,
+  compileFixtureContractV31,
+  compileFixtureContractV32,
+  compileFixtureContractV33,
+  compileFixtureContractV34,
+  compileFixtureContractV35,
   fixtureContractForFingerprint,
   validateContractBundle,
 } = require('../lib/canonical-v2/contract-bundle');
@@ -94,6 +132,44 @@ const FROZEN_F13 = '3c8ca48ff4f1f2f482b14a188045aa3a1ec7072704d396f7306b483e6338
 // F13 -- two new claim definitions (CAPITALIZATION_SHARE_COUNT,
 // RESERVED_SHARE_POOL), zero concept additions, zero other field changes.
 const FROZEN_F14 = '6b58314592cc553675a4a3efefea8ae3caa7e9edb8a5625260b61e0e8b2591e7';
+// F15 (family-termination-fee slice, docs/superpowers/specs/2026-08-02-
+// family-termination-fee-design.md section 1): strictly additive spread of
+// F14 -- three new claim definitions (TERMINATION_FEE_AMOUNT,
+// TERMINATION_FEE_TRIGGER, TERMINATION_FEE_TAIL_PERIOD_MONTHS), zero
+// concept additions, zero other field changes. See
+// tests/canonical-v2-contract-bundle-v15.test.js for the dedicated V15
+// acceptance tests (superset-diff by content, per the openworld-promotion-
+// program's own merge-order convention).
+const FROZEN_F15 = 'e7ae756e69c289ebe125bb2a1a9aa03753951bb761fb9b2a9b9a88cb7f48b57f';
+// F16 (family-mae-definition slice, docs/superpowers/specs/2026-08-02-
+// family-mae-definition-design.md section 1, AUDIT-AMENDED): strictly
+// additive spread of F15 -- one new concept (DEF-MAE) and three new claim
+// definitions (MAE_CARVEOUT, MAE_DEFINITION_PRONG,
+// MAE_DISPROPORTIONALITY_CARVEBACK), zero other field changes. Derived by
+// running compileFixtureContractV16() against the current code and pinning
+// the resulting fingerprint (see tests/canonical-v2-contract-bundle-v16.test.js
+// for the dedicated V16 acceptance tests).
+const FROZEN_F16 = 'a1fe3ddb45d2371ccd428747da6837084ea61cd476afd1f74a964c5824f4fb87';
+// F17 (family-termination-rights slice, docs/superpowers/specs/2026-08-02-
+// family-termination-rights-design.md section 1, AUDIT-AMENDED): strictly
+// additive spread of F16 -- two new concepts (TERMR-MUTUAL, TERMR-LEGAL,
+// both FLAGGED FOR BEN) and three new claim definitions
+// (TERMINATION_RIGHT_GRANT, TERMINATION_OUTSIDE_DATE, TERMINATION_CURE_
+// PERIOD_DAYS), zero other field changes. Derived by running
+// compileFixtureContractV17() against the current code and pinning the
+// resulting fingerprint (see tests/canonical-v2-contract-bundle-v17.test.js
+// for the dedicated V17 acceptance tests).
+const FROZEN_F17 = 'c2d43ad9f6fd0008cc09b74d1d2dd75c87793781a40bd79faaa6f91e4b0fae5b';
+const FROZEN_F18 = '49ffa4029d5bc4431b5bf7249c7008d482b41c13e7b01984822742b90027433d';
+const FROZEN_F19 = '8ad419a69175c5c5db1506da15ccaff1d63fbf56c0d4424a123a0e7ebcfbec33';
+const FROZEN_F28 = '1c0a086d1e9d20eb1eadcb6fab09527bbe9483189269e4ce6f8ba31b59402b1f';
+const FROZEN_F29 = '25a9b634ce4e8c3e6f06d6287e9514116f7f13fa1b986ab0f282ca62aae22691';
+const FROZEN_F30 = '971bc5619960cd54fb555a0260ba53f0e8d20f29f95bd6e9553ba8ddaf42be64';
+const FROZEN_F31 = 'd74472b9b5b06fde1e73f7b35fc7dddfec84d9a4a0a87c58851240799d340a29';
+const FROZEN_F32 = '8f2cbebb81fad57ec4baed29a79ebba3c25bafca85112438e6ce1679f89f1a49';
+const FROZEN_F33 = 'd282131065db749b0153dc03df73764a0d3089e6a9ec75e3e7e51603d4b1b230';
+const FROZEN_F34 = '5eafc3fed937525022cdbde1a0f5c42552e875336afa515c9ade580c021707ad';
+const FROZEN_F35 = '5d58ef7417fb0f24747745913f8ae9fc46326b0fd2851b6afcef9e272b978cb6';
 
 const APPROVED_V2_ADDITIONS = [
   'TERMR-BREACH',
@@ -154,7 +230,7 @@ test('compileFixtureContract(FIXTURE_CONTRACT_INPUT_V2) is equivalent to compile
   );
 });
 
-test('F1 through F14 are distinct recognised fixture contract fingerprints', () => {
+test('F1 through F35 are distinct recognised fixture contract fingerprints', () => {
   assert.notEqual(FROZEN_F1, FROZEN_F2);
   assert.notEqual(FROZEN_F2, FROZEN_F3);
   assert.notEqual(FROZEN_F3, FROZEN_F4);
@@ -168,6 +244,27 @@ test('F1 through F14 are distinct recognised fixture contract fingerprints', () 
   assert.notEqual(FROZEN_F11, FROZEN_F12);
   assert.notEqual(FROZEN_F12, FROZEN_F13);
   assert.notEqual(FROZEN_F13, FROZEN_F14);
+  assert.notEqual(FROZEN_F14, FROZEN_F15);
+  assert.notEqual(FROZEN_F15, FROZEN_F16);
+  assert.notEqual(FROZEN_F16, FROZEN_F17);
+  assert.notEqual(FROZEN_F17, FROZEN_F18);
+  assert.notEqual(FROZEN_F18, FROZEN_F19);
+  assert.notEqual(FROZEN_F19, compileFixtureContractV20().fingerprint);
+  assert.notEqual(compileFixtureContractV20().fingerprint, compileFixtureContractV21().fingerprint);
+  assert.notEqual(compileFixtureContractV21().fingerprint, compileFixtureContractV22().fingerprint);
+  assert.notEqual(compileFixtureContractV22().fingerprint, compileFixtureContractV23().fingerprint);
+  assert.notEqual(compileFixtureContractV23().fingerprint, compileFixtureContractV24().fingerprint);
+  assert.notEqual(compileFixtureContractV24().fingerprint, compileFixtureContractV25().fingerprint);
+  assert.notEqual(compileFixtureContractV25().fingerprint, compileFixtureContractV26().fingerprint);
+  assert.notEqual(compileFixtureContractV26().fingerprint, compileFixtureContractV27().fingerprint);
+  assert.notEqual(compileFixtureContractV27().fingerprint, compileFixtureContractV28().fingerprint);
+  assert.notEqual(compileFixtureContractV28().fingerprint, compileFixtureContractV29().fingerprint);
+  assert.notEqual(FROZEN_F29, FROZEN_F30);
+  assert.notEqual(FROZEN_F30, FROZEN_F31);
+  assert.notEqual(FROZEN_F31, FROZEN_F32);
+  assert.notEqual(FROZEN_F32, FROZEN_F33);
+  assert.notEqual(FROZEN_F33, FROZEN_F34);
+  assert.notEqual(FROZEN_F34, FROZEN_F35);
   assert.deepEqual(
     [...FIXTURE_CONTRACT_FINGERPRINTS].sort(),
     [
@@ -185,12 +282,267 @@ test('F1 through F14 are distinct recognised fixture contract fingerprints', () 
       FROZEN_F12,
       FROZEN_F13,
       FROZEN_F14,
+      FROZEN_F15,
+      FROZEN_F16,
+      FROZEN_F17,
+      FROZEN_F18,
+      FROZEN_F19,
+      compileFixtureContractV20().fingerprint,
+      compileFixtureContractV21().fingerprint,
+      compileFixtureContractV22().fingerprint,
+      compileFixtureContractV23().fingerprint,
+      compileFixtureContractV24().fingerprint,
+      compileFixtureContractV25().fingerprint,
+      compileFixtureContractV26().fingerprint,
+      compileFixtureContractV27().fingerprint,
+      FROZEN_F28,
+      FROZEN_F29,
+      FROZEN_F30,
+      FROZEN_F31,
+      FROZEN_F32,
+      FROZEN_F33,
+      FROZEN_F34,
+      FROZEN_F35,
     ].sort(),
   );
   assert.deepEqual(
     [...FIXTURE_SERVING_CONTRACT_FINGERPRINTS].sort(),
     [FROZEN_F1, FROZEN_F2, FROZEN_F3, FROZEN_F4, FROZEN_F5].sort(),
   );
+});
+
+test('compileFixtureContractV16() compiles to a pinned F16 fingerprint (family-mae-definition slice)', () => {
+  const bundle = compileFixtureContractV16();
+  assert.equal(bundle.fingerprint, FROZEN_F16);
+  assert.equal(validateContractBundle(bundle), true);
+});
+
+test('compileFixtureContractV17() compiles to a pinned F17 fingerprint (family-termination-rights slice)', () => {
+  const bundle = compileFixtureContractV17();
+  assert.equal(bundle.fingerprint, FROZEN_F17);
+  assert.equal(validateContractBundle(bundle), true);
+});
+
+test('compileFixtureContractV18() compiles to a pinned F18 fingerprint (P2 qualifier kinds phase 2)', () => {
+  const bundle = compileFixtureContractV18();
+  assert.equal(bundle.fingerprint, FROZEN_F18);
+  assert.equal(validateContractBundle(bundle), true);
+  assert.equal(canonicalJson(bundle), canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V18)));
+});
+
+test('compileFixtureContractV19() compiles to the antitrust regulatory-efforts vocabulary', () => {
+  const bundle = compileFixtureContractV19();
+  assert.equal(bundle.fingerprint, FROZEN_F19);
+  assert.equal(validateContractBundle(bundle), true);
+  assert.deepEqual(bundle.concepts.filter((concept) => concept.concept_key.startsWith('ANTI-')).map((concept) => concept.concept_key).sort(), ['ANTI-BURDEN', 'ANTI-EFFORTS', 'ANTI-FILING', 'ANTI-LITIGATION', 'ANTI-TIMING']);
+  assert.equal(FIXTURE_CONTRACT_INPUT_V19.claim_definitions.length, FIXTURE_CONTRACT_INPUT_V18.claim_definitions.length + 6);
+});
+
+test('compileFixtureContractV20() adds the M3-B antitrust shapes without changing V19', () => {
+  const bundle = compileFixtureContractV20();
+  assert.equal(validateContractBundle(bundle), true);
+  assert.deepEqual(
+    bundle.concepts.filter((concept) => concept.concept_key.startsWith('ANTI-')).map((concept) => concept.concept_key).sort(),
+    ['ANTI-AGREEMENTS', 'ANTI-BURDEN', 'ANTI-CONSULT', 'ANTI-EFFORTS', 'ANTI-FILING', 'ANTI-LITIGATION', 'ANTI-NOACTION', 'ANTI-STRATEGY', 'ANTI-TIMING'],
+  );
+  assert.equal(FIXTURE_CONTRACT_INPUT_V20.claim_definitions.length, FIXTURE_CONTRACT_INPUT_V19.claim_definitions.length + 7);
+});
+
+test('compileFixtureContractV28() adds the exact General Covenants vocabulary', () => {
+  const bundle = compileFixtureContractV28();
+  assert.equal(bundle.fingerprint, FROZEN_F28);
+  assert.equal(validateContractBundle(bundle), true);
+  assert.equal(canonicalJson(bundle), canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V28)));
+  assert.equal(bundle.claim_definitions.some(
+    (definition) => definition.claim_definition_key === 'GENERAL_COVENANT_PRESENT',
+  ), true);
+});
+
+test('compileFixtureContractV29() adds the adjudicated Proxy and Meeting follow-on vocabulary', () => {
+  const bundle = compileFixtureContractV29();
+  assert.equal(bundle.fingerprint, FROZEN_F29);
+  assert.equal(validateContractBundle(bundle), true);
+  assert.equal(
+    canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V29)),
+    canonicalJson(bundle),
+  );
+});
+
+test('compileFixtureContractV30() adds exactly the approved Financing and Guaranty vocabulary', () => {
+  const bundle = compileFixtureContractV30();
+  assert.equal(bundle.fingerprint, FROZEN_F30);
+  assert.equal(validateContractBundle(bundle), true);
+  assert.equal(canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V30)), canonicalJson(bundle));
+  const previous = compileFixtureContractV29();
+  assert.deepEqual(
+    bundle.concepts.map((concept) => concept.concept_key).filter((key) => !previous.concepts.some((concept) => concept.concept_key === key)).sort(),
+    ['COV-FINANCING', 'COV-MARKETING', 'COV-PAYOFF', 'GTY-DELIVERY', 'GTY-PERF'],
+  );
+  assert.deepEqual(
+    bundle.claim_definitions.map((definition) => definition.claim_definition_key).filter((key) => !previous.claim_definitions.some((definition) => definition.claim_definition_key === key)).sort(),
+    ['FINANCING_COOPERATION_PRESENT', 'FINANCING_OBTAIN_EFFORTS_STANDARD', 'LIMITED_GUARANTY_DELIVERED', 'LIMITED_GUARANTY_IN_EFFECT', 'MARKETING_PERIOD_LENGTH_DAYS', 'NO_FINANCING_CONDITION_ACKNOWLEDGMENT', 'PARENT_PERFORMANCE_GUARANTY', 'PAYOFF_DELIVERY_LEAD_TIME_DAYS'],
+  );
+});
+
+test('compileFixtureContractV31() adds Key Terms, Tax, Dividends and Appraisal vocabulary', () => {
+  const bundle = compileFixtureContractV31(); const previous = compileFixtureContractV30();
+  assert.equal(bundle.fingerprint, FROZEN_F31); assert.equal(validateContractBundle(bundle), true);
+  assert.equal(canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V31)), canonicalJson(bundle));
+  assert.equal(bundle.concepts.length, previous.concepts.length + 12);
+  assert.equal(bundle.claim_definitions.length, previous.claim_definitions.length + 20);
+});
+
+test('compileFixtureContractV32() adds only Employee Matters and D&O vocabulary', () => {
+  const bundle = compileFixtureContractV32(); const previous = compileFixtureContractV31();
+  assert.equal(bundle.fingerprint, FROZEN_F32); assert.equal(validateContractBundle(bundle), true);
+  assert.equal(canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V32)), canonicalJson(bundle));
+  assert.equal(bundle.concepts.length, previous.concepts.length + 4);
+  assert.equal(bundle.claim_definitions.length, previous.claim_definitions.length + 14);
+});
+
+test('compileFixtureContractV33() adds only M3 governed carrier vocabulary', () => {
+  const bundle = compileFixtureContractV33(); const previous = compileFixtureContractV32();
+  assert.equal(bundle.fingerprint, FROZEN_F33); assert.equal(validateContractBundle(bundle), true);
+  assert.equal(canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V33)), canonicalJson(bundle));
+  assert.equal(bundle.concepts.length, previous.concepts.length + 5);
+  assert.equal(bundle.claim_definitions.length, previous.claim_definitions.length + 4);
+});
+
+test('compileFixtureContractV34() adds only No Other Reps and Fraud vocabulary', () => {
+  const bundle = compileFixtureContractV34(); const previous = compileFixtureContractV33();
+  assert.equal(bundle.fingerprint, FROZEN_F34); assert.equal(validateContractBundle(bundle), true);
+  assert.equal(canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V34)), canonicalJson(bundle));
+  assert.equal(bundle.concepts.length, previous.concepts.length + 8);
+  assert.equal(bundle.claim_definitions.length, previous.claim_definitions.length + 6);
+});
+
+test('compileFixtureContractV35() adds only recorded defined-term identities', () => {
+  const bundle = compileFixtureContractV35(); const previous = compileFixtureContractV34();
+  assert.equal(bundle.fingerprint, FROZEN_F35); assert.equal(validateContractBundle(bundle), true);
+  assert.equal(canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V35)), canonicalJson(bundle));
+  assert.deepEqual(
+    bundle.concepts.filter((concept) => !previous.concepts.some((prior) => prior.concept_key === concept.concept_key))
+      .map((concept) => concept.concept_key).sort(),
+    ['DEF-MADE-AVAILABLE', 'DEF-ORDINARY-COURSE', 'DEF-TAX', 'DEF-TAX-RETURN'],
+  );
+  assert.deepEqual(
+    bundle.claim_definitions.filter((definition) => !previous.claim_definitions.some((prior) => prior.claim_definition_key === definition.claim_definition_key))
+      .map((definition) => definition.claim_definition_key).sort(),
+    ['MADE_AVAILABLE_DEFINITION_RECORDED', 'ORDINARY_COURSE_DEFINITION_RECORDED', 'TAX_DEFINITION_RECORDED', 'TAX_RETURN_DEFINITION_RECORDED'],
+  );
+});
+
+test('F22 adds only the three grounded Consideration concepts and claims', () => {
+  const f21 = compileFixtureContractV21();
+  const f22 = compileFixtureContractV22();
+  assert.equal(validateContractBundle(f22), true);
+  assert.equal(FIXTURE_SERVING_CONTRACT_FINGERPRINTS.includes(f22.fingerprint), false);
+  assert.equal(canonicalJson(f22), canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V22)));
+  assert.deepEqual(
+    f22.concepts.filter((entry) => !f21.concepts.some(
+      (prior) => prior.concept_key === entry.concept_key,
+    )),
+    [
+      { concept_key: 'CONS-DISSENT', version: 1 },
+      { concept_key: 'CONS-PERSHARE', version: 1 },
+      { concept_key: 'CONS-RATIO', version: 1 },
+    ],
+  );
+  assert.deepEqual(
+    f22.claim_definitions.filter((entry) => !f21.claim_definitions.some(
+      (prior) => prior.claim_definition_key === entry.claim_definition_key,
+    )).map((entry) => entry.claim_definition_key),
+    [
+      'APPRAISAL_RIGHTS_STATUS',
+      'EXCHANGE_RATIO_VALUE',
+      'PER_SHARE_CASH_CONSIDERATION',
+    ],
+  );
+  const { concepts: _concepts, claim_definitions: _claims, fingerprint: _fingerprint, ...f22Rest } = f22;
+  const { concepts: _priorConcepts, claim_definitions: _priorClaims, fingerprint: _priorFingerprint, ...f21Rest } = f21;
+  assert.equal(canonicalJson(f22Rest), canonicalJson(f21Rest));
+});
+
+test('F23 adds only the Closing Conditions foundation concepts and claims', () => {
+  const f22 = compileFixtureContractV22();
+  const f23 = compileFixtureContractV23();
+  assert.equal(validateContractBundle(f23), true);
+  assert.equal(canonicalJson(f23), canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V23)));
+  assert.deepEqual(
+    f23.concepts.filter((entry) => !f22.concepts.some((prior) => prior.concept_key === entry.concept_key)),
+    [
+      { concept_key: 'COND-COV', version: 1 },
+      { concept_key: 'COND-MAE', version: 1 },
+      { concept_key: 'COND-REG', version: 1 },
+      { concept_key: 'COND-S-REP', version: 1 },
+    ],
+  );
+  assert.deepEqual(
+    f23.claim_definitions.filter((entry) => !f22.claim_definitions.some(
+      (prior) => prior.claim_definition_key === entry.claim_definition_key,
+    )).map((entry) => entry.claim_definition_key),
+    [
+      'COVENANT_COMPLIANCE_STANDARD',
+      'NO_MAE_CONDITION',
+      'NO_MAE_CONDITION_CONTINUING',
+      'REGULATORY_APPROVAL_CONDITION',
+    ],
+  );
+});
+
+test('F24 adds only the Closing Conditions Wave B concepts and claims', () => {
+  const f23 = compileFixtureContractV23();
+  const f24 = compileFixtureContractV24();
+  assert.equal(validateContractBundle(f24), true);
+  assert.equal(canonicalJson(f24), canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V24)));
+  assert.deepEqual(
+    f24.concepts.filter((entry) => !f23.concepts.some((prior) => prior.concept_key === entry.concept_key)),
+    [
+      { concept_key: 'COND-B-CERT', version: 1 },
+      { concept_key: 'COND-FRUSTRATE', version: 1 },
+      { concept_key: 'COND-M-LEGAL', version: 1 },
+      { concept_key: 'COND-M-LISTING', version: 1 },
+      { concept_key: 'COND-M-S4', version: 1 },
+      { concept_key: 'COND-M-STOCKHOLDER', version: 1 },
+      { concept_key: 'COND-S-CERT', version: 1 },
+      { concept_key: 'COND-S-FUNDS', version: 1 },
+    ],
+  );
+});
+
+test('F25 adds only IOC restriction-presence concepts and claim', () => {
+  const f24 = compileFixtureContractV24();
+  const f25 = compileFixtureContractV25();
+  assert.equal(validateContractBundle(f25), true);
+  assert.equal(canonicalJson(f25), canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V25)));
+  assert.deepEqual(
+    f25.concepts.filter((entry) => !f24.concepts.some((prior) => prior.concept_key === entry.concept_key)),
+    [
+      'IOC-ACCOUNTING', 'IOC-CHARTER', 'IOC-COMP', 'IOC-CONTRACT', 'IOC-DEBT',
+      'IOC-DIVIDEND', 'IOC-ISSUE', 'IOC-MERGE', 'IOC-SETTLE', 'IOC-TAX',
+    ].map((concept_key) => ({ concept_key, version: 1 })).sort((a, b) => a.concept_key.localeCompare(b.concept_key)),
+  );
+  assert.deepEqual(
+    f25.claim_definitions.filter((entry) => !f24.claim_definitions.some(
+      (prior) => prior.claim_definition_key === entry.claim_definition_key,
+    )).map((entry) => entry.claim_definition_key),
+    ['IOC_RESTRICTION_PRESENT'],
+  );
+});
+
+test('F27 adds only the two grounded Material Contracts claims', () => {
+  const f26 = compileFixtureContractV26();
+  const f27 = compileFixtureContractV27();
+  assert.equal(validateContractBundle(f27), true);
+  assert.equal(canonicalJson(f27), canonicalJson(compileFixtureContract(FIXTURE_CONTRACT_INPUT_V27)));
+  assert.deepEqual(f27.concepts, f26.concepts);
+  assert.deepEqual(
+    f27.claim_definitions.filter((entry) => !f26.claim_definitions.some(
+      (prior) => prior.claim_definition_key === entry.claim_definition_key,
+    )).map((entry) => entry.claim_definition_key),
+    ['MATERIAL_CONTRACT_BUCKET_PRESENT', 'MATERIAL_CONTRACT_THRESHOLD_STRUCTURE'],
+  );
+  assert.equal(FIXTURE_CONTRACT_INPUT_V27.claim_definitions.length, FIXTURE_CONTRACT_INPUT_V26.claim_definitions.length + 2);
 });
 
 // ---------------------------------------------------------------------------

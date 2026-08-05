@@ -204,7 +204,7 @@ test('all seven stable occurrences receive successor effects with clear control'
   const nestedProposal = relationships.find(
     (relationship) => (
       relationship.predecessor_relationship_effect_revision_id
-        === 'a3750363d3538974cde19f0d5d5cb7e75a51e51610ece5e336af3275b41b6c55'
+        === '52a0ec7900227c2d88907ee8e0d0880be4705759c530bad39dd55307e6344efc'
     ),
   );
   for (const relationship of relationships.filter(

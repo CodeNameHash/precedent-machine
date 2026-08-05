@@ -112,7 +112,7 @@ test('F25 is pinned to one exact predecessor, registry, manifest and bundle', ()
   );
   assert.equal(
     value.manifest.predecessor_manifest_id,
-    '3ed213307bdc564302411087ab766a6dd4be14516c64ced2ce5adc658634edc4',
+    'ca22f713c0056ca994f54177b427128d2a9dc9ba1e2c6a228a9b76763bb791c3',
   );
   assert.equal(value.manifest.metric_serving_admission_ids.length, 9);
   assert.equal(value.manifest.new_metric_serving_admission_ids.length, 5);

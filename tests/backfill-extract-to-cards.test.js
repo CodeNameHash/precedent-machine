@@ -5,6 +5,7 @@ const {
   buildExtractorOutput,
   dedupeProvisionCardRows,
   findRegionForProvision,
+  legacyProvisionForCard,
   markdownReport,
   parseArgs,
   replaceProvisionCardRows,
@@ -29,6 +30,30 @@ test('parseArgs supports all, apply, env file, output and min-card gate', () => 
   assert.equal(args.envFile, '/tmp/env');
   assert.equal(args.out, '/tmp/report.md');
   assert.equal(args.minCards, 50);
+});
+
+test('parseArgs defaults extractionVersion to the m2-00 label, unchanged for ordinary runs', () => {
+  const args = parseArgs(['node', 'scripts/backfill/extract-to-cards.js', '--all']);
+  assert.equal(args.extractionVersion, 'm2-00-corpus-backfill-v1');
+});
+
+// v1 reclassification (2026-08-02, audit A-M4): the reclassification apply
+// pass (documented, NOT executed by this code-only slice) bumps this label
+// so the comparator's isComparisonReceiptStale fires on pre-reclass
+// receipts. See docs/superpowers/specs/2026-08-02-v1-reclassification-design.md §4.
+test('parseArgs accepts --extraction-version to override the label for the reclass apply pass', () => {
+  const args = parseArgs(['node', 'scripts/backfill/extract-to-cards.js', '--all', '--extraction-version', 'm2-01-reclass-v1']);
+  assert.equal(args.extractionVersion, 'm2-01-reclass-v1');
+});
+
+test('legacyProvisionForCard stamps the passed-in extractionVersion, defaulting when omitted', () => {
+  const row = { id: 'r1', type: 'REP-T', category: 'x', full_text: 'text', ai_metadata: {} };
+  const deal = { id: 'd1' };
+  const region = { id: 'reg1', text_hash: 'h1' };
+  const withDefault = legacyProvisionForCard(row, deal, region);
+  assert.equal(withDefault.extraction_version, 'm2-00-corpus-backfill-v1');
+  const withOverride = legacyProvisionForCard(row, deal, region, 'm2-01-reclass-v1');
+  assert.equal(withOverride.extraction_version, 'm2-01-reclass-v1');
 });
 
 test('findRegionForProvision maps legacy provision text to parser region rows', () => {
@@ -202,6 +227,113 @@ test('replaceProvisionCardRows upserts before deleting (claims FK-cascade safety
   // Exactly one delete call total -- the scoped orphan cleanup -- never a
   // second, broader delete-all-for-deal call (the old, unsafe path).
   assert.equal(sb.calls.filter((call) => call.op === 'delete').length, 1);
+});
+
+test('replaceProvisionCardRows preserves stored card and claim identities across a reclassification', async () => {
+  const sb = fakeReplaceSupabase({
+    existingRows: [{
+      deal_id: 'deal-1',
+      provision_instance_id: 'old-provision-id',
+      excerpt_id: 'old-excerpt-id',
+      region_hash: 'stable-region-hash',
+    }],
+  });
+  const incoming = [{
+    deal_id: 'deal-1',
+    provision_instance_id: 'new-title-derived-id',
+    excerpt_id: 'new-title-derived-excerpt',
+    region_hash: 'stable-region-hash',
+    references: ['new-title-derived-id'],
+  }];
+
+  const written = await replaceProvisionCardRows(sb, 'deal-1', incoming, 50);
+
+  assert.equal(written, 1);
+  const [upserted] = sb.calls.find((call) => call.op === 'upsert').rows;
+  assert.equal(upserted.provision_instance_id, 'old-provision-id');
+  assert.equal(upserted.excerpt_id, 'old-excerpt-id');
+  assert.deepEqual(upserted.references, ['old-provision-id']);
+  assert.ok(!sb.calls.some((call) => call.op === 'delete-in'));
+});
+
+test('replaceProvisionCardRows keeps a new identity and deletes a true source-region orphan', async () => {
+  const sb = fakeReplaceSupabase({
+    existingRows: [{
+      deal_id: 'deal-1',
+      provision_instance_id: 'old-provision-id',
+      excerpt_id: 'old-excerpt-id',
+      region_hash: 'old-region-hash',
+    }],
+  });
+  const incoming = [{
+    deal_id: 'deal-1',
+    provision_instance_id: 'new-provision-id',
+    excerpt_id: 'new-excerpt-id',
+    region_hash: 'new-region-hash',
+    references: [],
+  }];
+
+  await replaceProvisionCardRows(sb, 'deal-1', incoming, 50);
+
+  const [upserted] = sb.calls.find((call) => call.op === 'upsert').rows;
+  assert.equal(upserted.provision_instance_id, 'new-provision-id');
+  assert.equal(upserted.excerpt_id, 'new-excerpt-id');
+  assert.deepEqual(sb.calls.find((call) => call.op === 'delete-in').values, ['old-provision-id']);
+});
+
+test('replaceProvisionCardRows preserves stored identity when section and type survive a source-text change', async () => {
+  const sb = fakeReplaceSupabase({
+    existingRows: [{
+      deal_id: 'deal-1',
+      provision_instance_id: 'old-provision-id',
+      excerpt_id: 'old-excerpt-id',
+      region_hash: 'old-region-hash',
+      section_ref: 'Section 5.1',
+      provision_type: 'COVENANT_OTHER',
+    }],
+  });
+  const incoming = [{
+    deal_id: 'deal-1',
+    provision_instance_id: 'new-provision-id',
+    excerpt_id: 'new-excerpt-id',
+    region_hash: 'new-region-hash',
+    section_ref: 'Section 5.1',
+    provision_type: 'COVENANT_OTHER',
+    references: [],
+  }];
+
+  await replaceProvisionCardRows(sb, 'deal-1', incoming, 50);
+
+  const [upserted] = sb.calls.find((call) => call.op === 'upsert').rows;
+  assert.equal(upserted.provision_instance_id, 'old-provision-id');
+  assert.equal(upserted.excerpt_id, 'old-excerpt-id');
+  assert.ok(!sb.calls.some((call) => call.op === 'delete-in'));
+});
+
+test('replaceProvisionCardRows rejects crossed region and section identities before any write', async () => {
+  const sb = fakeReplaceSupabase({
+    existingRows: [
+      {
+        deal_id: 'deal-1', provision_instance_id: 'region-owner', excerpt_id: 'region-excerpt',
+        region_hash: 'region-a', section_ref: 'Section A', provision_type: 'COVENANT_OTHER',
+      },
+      {
+        deal_id: 'deal-1', provision_instance_id: 'section-owner', excerpt_id: 'section-excerpt',
+        region_hash: 'region-b', section_ref: 'Section B', provision_type: 'COVENANT_OTHER',
+      },
+    ],
+  });
+  const incoming = [{
+    deal_id: 'deal-1', provision_instance_id: 'new-id', excerpt_id: 'new-excerpt',
+    region_hash: 'region-a', section_ref: 'Section B', provision_type: 'COVENANT_OTHER', references: [],
+  }];
+
+  await assert.rejects(
+    replaceProvisionCardRows(sb, 'deal-1', incoming, 50),
+    /conflicting stored identities/,
+  );
+  assert.ok(!sb.calls.some((call) => call.op === 'upsert'));
+  assert.ok(!sb.calls.some((call) => call.op === 'delete'));
 });
 
 test('replaceProvisionCardRows with zero rows deletes all existing cards for the deal', async () => {

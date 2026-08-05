@@ -22,7 +22,7 @@
  * Usage:
  *   node scripts/export-v1-provision-snapshot.mjs \
  *     --deal <production deal UUID> [--deal <uuid> ...] \
- *     [--governed-deal-key <uuid>=<governed_deal_key>] \
+ *     --deal-identity-evidence <uuid>=<closed-v2-evidence.json> \
  *     [--provision-type REPRESENTATION] \
  *     [--out <path> | --out-dir <dir> | --stdout] \
  *     [--env-file <path>]
@@ -42,6 +42,8 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
 const { V1_PROVISION_SNAPSHOT_SCHEMA } = require('../lib/canonical-v2/native-producer/v1v2-comparator');
+const { validateV2DealIdentityAuthorityEvidence } = require('../lib/canonical-v2/governed-identity-proposal-packet');
+const { requireIssuedIdentityConsumerEvidence } = require('../lib/canonical-v2/deal-identity-allocation-readiness');
 
 const DEFAULT_PROVISION_TYPE = 'REPRESENTATION';
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -59,7 +61,7 @@ function fail(message) {
 // ---------------------------------------------------------------------------
 function parseArgs(argv = process.argv.slice(2)) {
   const deals = [];
-  const governedDealKeys = new Map();
+  const dealIdentityEvidencePaths = new Map();
   const args = { provisionType: DEFAULT_PROVISION_TYPE, out: null, outDir: null, stdout: false, envFile: null };
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
@@ -67,15 +69,15 @@ function parseArgs(argv = process.argv.slice(2)) {
       const value = argv[++index];
       if (!value || !UUID_RE.test(value)) fail(`--deal must be a UUID, got: ${value}`);
       deals.push(value.toLowerCase());
-    } else if (arg === '--governed-deal-key') {
+    } else if (arg === '--deal-identity-evidence') {
       const value = argv[++index];
       const eq = value ? value.indexOf('=') : -1;
-      if (eq <= 0) fail(`--governed-deal-key must be <uuid>=<key>, got: ${value}`);
+      if (eq <= 0) fail(`--deal-identity-evidence must be <uuid>=<path>, got: ${value}`);
       const dealId = value.slice(0, eq);
-      const key = value.slice(eq + 1);
-      if (!UUID_RE.test(dealId)) fail(`--governed-deal-key's uuid segment is not a UUID: ${dealId}`);
-      if (!key) fail('--governed-deal-key\'s key segment must be non-empty');
-      governedDealKeys.set(dealId.toLowerCase(), key);
+      const evidencePath = value.slice(eq + 1);
+      if (!UUID_RE.test(dealId)) fail(`--deal-identity-evidence's uuid segment is not a UUID: ${dealId}`);
+      if (!evidencePath) fail('--deal-identity-evidence requires a non-empty JSON path');
+      dealIdentityEvidencePaths.set(dealId.toLowerCase(), evidencePath);
     } else if (arg === '--provision-type') {
       args.provisionType = argv[++index];
     } else if (arg === '--out') {
@@ -97,7 +99,10 @@ function parseArgs(argv = process.argv.slice(2)) {
   }
   if (!args.provisionType) fail('--provision-type must be non-empty.');
   if (args.out && deals.length > 1) fail('--out writes a single snapshot; pass --out-dir for more than one --deal.');
-  return { ...args, deals, governedDealKeys };
+  if (deals.some((dealId) => !dealIdentityEvidencePaths.has(dealId))) {
+    fail('Refusing to emit a V1 snapshot without one closed V2 --deal-identity-evidence record for every --deal.');
+  }
+  return { ...args, deals, dealIdentityEvidencePaths };
 }
 
 function loadEnvFile(filePath) {
@@ -192,27 +197,69 @@ function maxExtractionVersion(cards) {
   return versions.length > 0 ? versions[versions.length - 1] : null;
 }
 
-function buildSnapshotForDeal({ dealId, deal, cards, governedDealKey }) {
+function buildSnapshotIdentityEvidence({ authority, dealIdentityEvidence }) {
+  if (!authority || typeof authority !== 'object' || !authority.deal_identity_manifest_id
+    || !dealIdentityEvidence || typeof dealIdentityEvidence !== 'object'
+    || !dealIdentityEvidence.issued_allocation_receipt || !dealIdentityEvidence.issued_reviewed_bridge) {
+    fail('V1 snapshot requires the exact issued identity evidence that its authoritative comparator will verify.');
+  }
+  return Object.freeze({
+    manifest_id: authority.deal_identity_manifest_id,
+    issued_allocation_receipt: Object.freeze({ ...dealIdentityEvidence.issued_allocation_receipt }),
+    issued_reviewed_bridge: Object.freeze({ ...dealIdentityEvidence.issued_reviewed_bridge }),
+  });
+}
+
+function validatedV2IdentityForSnapshot({ dealId, dealIdentityEvidence }) {
+  const expectedKeys = [
+    'approval_signature_evidence', 'approval_signing_request', 'deal_identity_manifest',
+    'issued_allocation_receipt', 'issued_reviewed_bridge', 'production_deal_id',
+  ];
+  if (!dealIdentityEvidence || typeof dealIdentityEvidence !== 'object' || Array.isArray(dealIdentityEvidence)
+    || Object.keys(dealIdentityEvidence).sort().join(',') !== expectedKeys.sort().join(',')
+    || dealIdentityEvidence.production_deal_id !== dealId) {
+    fail(`V1 snapshot for deal ${dealId} requires a closed V2 identity evidence record bound to that production deal.`);
+  }
+  try {
+    const authority = validateV2DealIdentityAuthorityEvidence({
+      deal_identity_manifest: dealIdentityEvidence.deal_identity_manifest,
+      approval_signing_request: dealIdentityEvidence.approval_signing_request,
+      approval_signature_evidence: dealIdentityEvidence.approval_signature_evidence,
+    });
+    requireIssuedIdentityConsumerEvidence({
+      allocation_receipt: dealIdentityEvidence.issued_allocation_receipt,
+      reviewed_bridge: dealIdentityEvidence.issued_reviewed_bridge,
+      production_deal_id: dealId,
+      governed_deal_key: authority.governed_deal_key,
+      manifest_id: authority.deal_identity_manifest_id,
+    });
+    return Object.freeze({
+      governed_deal_key: authority.governed_deal_key,
+      snapshot_identity_evidence: buildSnapshotIdentityEvidence({ authority, dealIdentityEvidence }),
+    });
+  } catch (error) {
+    fail(`V1 snapshot for deal ${dealId} needs validated signed V2 approval or frozen issuer evidence: ${error.message || error}`);
+  }
+}
+
+function governedKeyFromValidatedV2Evidence(input) {
+  return validatedV2IdentityForSnapshot(input).governed_deal_key;
+}
+
+function buildSnapshotForDeal({ dealId, deal, cards, dealIdentityEvidence }) {
   if (cards.length === 0) fail(`No provision_cards found for deal ${dealId}.`);
+  const identity = validatedV2IdentityForSnapshot({ dealId, dealIdentityEvidence });
   const dealMaxExtractionVersion = maxExtractionVersion(cards);
   const body = {
     schema_version: V1_PROVISION_SNAPSHOT_SCHEMA,
     deal_identity_bridge: Object.freeze({
       production_deal_id: dealId,
-      // Recorded at export time (spec: "recorded in the snapshot at export
-      // time"). Falls back to a deterministic placeholder key when the
-      // caller does not supply --governed-deal-key for this deal -- a
-      // JUDGMENT CALL: production's `deals` table has no stored governed_
-      // deal_key of its own (that identity is minted per extraction RUN,
-      // not per deal -- see native-extraction-run.js callers), so this
-      // script cannot discover the real one on its own. A caller wiring
-      // this snapshot into a real resolveCandidates() run MUST pass
-      // --governed-deal-key matching that run's own admitted_source_
-      // context.governed_deal_key, or the comparator's Tier 1 output will
-      // still be internally consistent but the bridge will not resolve to
-      // any real run.
-      governed_deal_key: governedDealKey || `deal:v1-snapshot-placeholder:${dealId}`,
+      governed_deal_key: identity.governed_deal_key,
     }),
+    // This lives inside the content-addressed body. A successful future
+    // export therefore cannot be detached from the exact evidence the public
+    // comparator must validate.
+    snapshot_identity_evidence: identity.snapshot_identity_evidence,
     deal_max_extraction_version: dealMaxExtractionVersion,
     cards: cards
       .map((card) => Object.freeze({
@@ -254,7 +301,7 @@ async function run(args) {
     dealId,
     deal: deals.get(dealId),
     cards: cardsByDeal.get(dealId) || [],
-    governedDealKey: args.governedDealKeys.get(dealId) || null,
+    dealIdentityEvidence: JSON.parse(readFileSync(resolve(args.dealIdentityEvidencePaths.get(dealId)), 'utf8')),
   }));
 
   if (args.outDir) {
@@ -292,6 +339,8 @@ export {
   buildSnapshotSql,
   assertReadOnlySql,
   maxExtractionVersion,
+  buildSnapshotIdentityEvidence,
+  governedKeyFromValidatedV2Evidence,
   buildSnapshotForDeal,
   run,
 };

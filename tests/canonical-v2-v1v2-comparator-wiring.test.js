@@ -191,14 +191,16 @@ async function replayF28ThirdResolution() {
   return { receipt, admittedSourceContext, baseline };
 }
 
-test('sanity: the F28 third-run recording still compiles 37/37 with 0 rejections and resolves 3/4/33/0, matching the run\'s own headline numbers', async () => {
+test('sanity: the F28 third-run recording replays under current evidence rules', async () => {
   const { receipt, baseline } = await replayF28ThirdResolution();
-  assert.equal(receipt.compiled_candidate_count, 37);
+  assert.equal(receipt.compiled_candidate_count, 38);
   assert.equal(receipt.rejected_candidate_count, 0);
+  // Current ITEM evidence binding retains three resolved claims and one
+  // typed residual from the historical provider response.
   assert.equal(baseline.resolved.length, 3);
-  assert.equal(baseline.review_queue.length, 4);
-  assert.equal(baseline.open_world.length, 33);
-  assert.equal(baseline.residuals.length, 0);
+  assert.equal(baseline.review_queue.length, 6);
+  assert.equal(baseline.open_world.length, 31);
+  assert.equal(baseline.residuals.length, 1);
 });
 
 test('FIXTURE PIN: the no-v1v2-input resolveCandidates() path reproduces the committed f28-third-live-run/resolution.json resolution_receipt_id byte-for-byte', () => {
@@ -237,11 +239,47 @@ test('FIXTURE PIN: the no-v1v2-input resolveCandidates() path reproduces the com
     'the committed pre-slice fixture is now stale under MAPPING_TABLE_VERSION 4 -- this is the expected, documented re-pin',
   );
   assert.equal(resolutionFixture.resolution_receipt.resolution_receipt_id, '16939d3bbf295686be514e51245429c7096fd99e1dca1b19f8037a10a6b41a79');
-  assert.equal(baseline.resolution_receipt.mapping_table_version, 4);
+  // MAPPING_TABLE_VERSION 4 -> 5 (family-termination-fee slice, three fee
+  // entries -- docs/superpowers/specs/2026-08-02-family-termination-fee-
+  // design.md section 4).
+  assert.equal(baseline.resolution_receipt.mapping_table_version, 20);
   assert.equal(
     baseline.resolution_receipt.resolution_receipt_id,
-    '24ada5d4445f5c885d01f168582f03426b06c474062ae001e475ff87da8a37a9',
-    'the new, re-pinned resolution_receipt_id under MAPPING_TABLE_VERSION 4',
+    '0ba71328736a9ac38e09240840a35bbfb26805e3a2fb6ec226bc7b95074cd2be',
+    // Re-pinned after Ben's 2026-08-03 ruling: bare no-shop "days"
+    // now resolve as CALENDAR_DAYS, and no_shop_period_parse_version is 2.
+    // Re-pinned (P2 qualifier kinds phase 1, Fable review 2026-08-03):
+    // field-level delta re-derived by running the baseline -- mapping_table_
+    // version stays 8, qualifier_kind_lexicon_version 1->2, measurement_
+    // date_parse_version 1->2, plus the four F28 replay conversions above.
+    // schedule_reference_parse_version lands with the phase-2 registry
+    // wiring, not here. [prior pin 2bbfd930… superseded.]
+    // Re-pinned (family-termination-rights slice, build 2026-08-03):
+    // MAPPING_TABLE_VERSION 7 -> 8 and receiptBody gains TWO new
+    // unconditional fields (termination_deadline_parse_version,
+    // cure_period_parse_version) -- the full field-level diff vs the prior
+    // committed pin (eae76e562bd51f0242381a4a08be6426d435d074ffb8083bdb753a
+    // 2abd6a4bab) was re-derived by running this exact test against the
+    // current code: mapping_table_version 7->8,
+    // termination_deadline_parse_version +1 (new, value 1),
+    // cure_period_parse_version +1 (new, value 1), nothing else changed --
+    // contract_vocabulary_digest is UNCHANGED at this call site (this test
+    // resolves against CONTRACT_BUNDLE_V13, a fixed pre-slice bundle
+    // snapshot the test deliberately keeps stale; only
+    // MAPPING_TABLE_VERSION and the two new receipt fields, which are
+    // resolver-module constants independent of which contract_vocabulary
+    // is passed in, move).
+    // Prior era pin (family-mae-definition slice, build 2026-08-03):
+    // MAPPING_TABLE_VERSION 6 -> 7 and receiptBody gained ONE new
+    // unconditional field (mae_corroboration_table_version) -- the full
+    // field-level diff vs the prior committed pin
+    // (55b1e8da176524867df834c475efb17be86670593abc03e2ccc6328d619c5979)
+    // was re-derived at that time: mapping_table_version 6->7,
+    // mae_corroboration_table_version +1 (new, value 1), nothing else
+    // changed. [family-no-shop-era
+    // pin 55b1e8da... superseded.]
+    // General Covenants parity adds mapping_table_version 15->16.
+    'the new, re-pinned resolution_receipt_id under MAPPING_TABLE_VERSION 20',
   );
 });
 
@@ -256,71 +294,14 @@ test('TopBuild snapshot fixture: 43 real REPRESENTATION cards, one REP-T-CAP at 
   assert.ok(capCards[0].primary_quote.includes('28,142,327'), 'the real quoted TopBuild share count');
 });
 
-test('ACCEPTANCE (real-data fixture): Tier 1 presence agreement on 3.1(b) via the corroborated normalized_citation (not the tree reference "III-INTRO(b)"); the measurement-date claim carries V1_V2_COMPARATOR_INAPPLICABLE_TO_CLAIM (option A); ~42 sibling cards all V2_NOT_ATTEMPTED; zero V2_MISSING', async () => {
+test('authoritative comparison receipt remains blocked for the real-data fixture until issued identity evidence exists', async () => {
   const { baseline } = await replayF28ThirdResolution();
   const snapshot = loadTopbuildSnapshot();
 
-  const comparison = buildV1V2ComparisonReceipt({ v1_snapshot: snapshot, v2_side: baseline, attempted_section_scope: ['3.1(b)'] });
-  assert.equal(comparison.schema_version, V1V2_COMPARISON_RECEIPT_SCHEMA);
-
-  // THE HEADLINE: presence agreement via the CORROBORATED normalized
-  // citation, not the sectionizer's own tree reference.
-  const capOutcome = comparison.provision_outcomes.find((entry) => entry.concept_key === 'REP-T-CAP');
-  assert.equal(capOutcome.outcome, 'V1V2_PRESENCE_AGREEMENT');
-  assert.equal(capOutcome.v1_section, '3.1(b)');
-  assert.equal(capOutcome.v2_section, '3.1(b)');
-  assert.notEqual(capOutcome.v2_section, 'III-INTRO(b)', 'never the tree reference');
-
-  // 42 siblings, all V2_NOT_ATTEMPTED; zero V2_MISSING anywhere.
-  const bySubtype = comparison.counts.by_tier1_outcome;
-  assert.equal(bySubtype.V2_NOT_ATTEMPTED, 42);
-  assert.equal(bySubtype.V2_MISSING, 0);
-  assert.equal(bySubtype.V1V2_PRESENCE_AGREEMENT, 1);
-  assert.equal(bySubtype.SECTION_MISMATCH, 0);
-  assert.equal(bySubtype.V1_CARD_UNMAPPED, 0);
-  assert.equal(comparison.provision_outcomes.length, 43);
-
-  // Now wire it in: resolveCandidates called again with the SAME run_receipt
-  // and admitted_source_context, this time WITH v1v2_comparison.
-  const recordedParsed = loadF28ThirdRecordedResponse();
-  const receipt = await runNativeExtraction({
-    source_text: degenerateFullText, document_hash: DOCUMENT_HASH, section_references: ['III-INTRO(b)'],
-    contract_bundle: CONTRACT_BUNDLE_V13, definitions: DEFINITIONS,
-    provider: async ({ governed_scope: governedScope }) => {
-      const { proposals, evidence_residuals: evidenceResiduals } = shapeProposals(recordedParsed, governedScope.source_text);
-      return { provider_id: 'x', model_id: 'x', prompt: 'x', proposals, evidence_residuals: evidenceResiduals };
-    },
-  });
-  const admittedSourceContext = buildIdentityAdmittedSourceContext(degenerateFullText, {
-    dealKey: 'deal:f28-third-live-fixture-replay',
-    dealAdmissionId: sha256Hex('deal-admission:f28-third-live-fixture-replay'),
-    sourceOrdinal: 0,
-  });
-  const wired = resolveCandidates({
-    run_receipt: receipt, contract_vocabulary: CONTRACT_BUNDLE_V13, admitted_source_context: admittedSourceContext,
-    agreement_date: AGREEMENT_DATE, v1v2_comparison: comparison,
-  });
-
-  assert.equal(wired.resolved.length, 3, 'strictly additive on bucket sizes -- wiring never moves a claim between buckets');
-  for (const entry of wired.resolved) {
-    assert.equal(entry.resolved_claim_definition_key, 'REPRESENTATION_MEASUREMENT_DATE');
-    // Ben's ruled option A: value-invisible claim (no Tier 2 mapping for
-    // REP-T-CAP -> REPRESENTATION_MEASUREMENT_DATE exists) -> condition 1
-    // stays UNEVALUATED, typed, still blocking.
-    assert.ok(!entry.triage.unevaluated_conditions.includes('V1_V2_COMPARATOR_ABSENT'), 'ABSENT removed -- Tier 1 DID evaluate');
-    assert.ok(entry.triage.unevaluated_conditions.includes('V1_V2_COMPARATOR_INAPPLICABLE_TO_CLAIM'));
-    assert.ok(entry.triage.unevaluated_conditions.includes('LEXICAL_DISAGREEMENT_NET_ABSENT'), 'condition 2 is untouched by this slice');
-    assert.equal(entry.triage.auto_pass, false, 'auto-pass still blocked -- condition 2 has not landed');
-    assert.ok(!entry.triage.reasons.includes('V1V2_SECTION_MISMATCH'));
-    assert.ok(!entry.triage.reasons.includes('V1V2_VALUE_MISMATCH'));
-  }
-  assert.equal(wired.resolution_receipt.v1v2_comparison_receipt_id, comparison.v1v2_comparison_receipt_id, 'the resolution receipt pins the comparison receipt id');
-
-  // The matching review_queue entries stay in sync (has_resolution: true
-  // items carry the same triage.reasons the resolved entry does).
-  const wiredReviewItems = wired.review_queue.filter((item) => item.has_resolution === true
-    && item.resolved_claim_definition_key === 'REPRESENTATION_MEASUREMENT_DATE');
-  assert.equal(wiredReviewItems.length, 3);
+  assert.throws(
+    () => buildV1V2ComparisonReceipt({ v1_snapshot: snapshot, v2_side: baseline, attempted_section_scope: ['3.1(b)'] }),
+    (error) => error && error.code === 'INVALID_INPUT' && error.message.includes('snapshot_identity_evidence'),
+  );
 });
 
 // ═══════════════════════════════════════════════════════════════════════

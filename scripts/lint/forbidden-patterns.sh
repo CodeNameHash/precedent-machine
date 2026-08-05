@@ -55,7 +55,7 @@ const PROSE_CLASS_FINGERPRINTS = [
 ];
 
 const scopedPatterns = [
-  'TSA|transition services agreement',
+  '\\bTSA\\b|transition services agreement',
   'TODO\\s*[:—-].*market',
   'FIXME.*market',
   'console\\.log',

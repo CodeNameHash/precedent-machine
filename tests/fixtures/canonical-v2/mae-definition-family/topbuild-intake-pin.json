@@ -1,0 +1,18 @@
+{
+  "note": "PINNING FETCH for the MAE-definition family slice (docs/superpowers/specs/2026-08-02-family-mae-definition-design.md section 6, test 1a). The F28/TopBuild fixtures previously committed to this repo (tests/fixtures/canonical-v2/f28-live-run and successors) are SECTION EXCERPTS that do not contain the MAE definition (Section 3.1(d)(iii)/3.2(d)) -- this is the first fetch of the FULL TopBuild/QXO merger agreement in this repo. Same accession already referenced in docs/handoffs/F28-FIRST-LIVE-RUN.md (Exhibit 2.1 to QXO's 8-K).",
+  "accession_number": "0001104659-26-045111",
+  "retrieval_url": "https://www.sec.gov/Archives/edgar/data/1236275/000110465926045111/tm2612209d1_ex2-1.htm",
+  "status_code": 200,
+  "redirect_count": 0,
+  "retrieved_at": "2026-08-03T02:20:00Z",
+  "fetch_user_agent": "precedent-machine research bengoodchild@gmail.com",
+  "fetch_throttle": "single request, no prior/subsequent request within 1s",
+  "raw_bytes_length": 732686,
+  "raw_bytes_sha256": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+  "canonical_text_byte_length": 412860,
+  "canonical_text_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+  "verification_status": "PASS",
+  "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+  "committed_raw_file": "tests/fixtures/canonical-v2/mae-definition-family/topbuild-raw-fetched.htm",
+  "conversion_note": "Converted via lib/canonical-v2/sec-html-canonical-text.js convertSecHtmlToCanonicalText + independently re-verified via sec-html-canonical-text-verifier.js verifySecHtmlCanonicalText -- PASS. Canonical text itself is not committed (too large / not needed beyond the pinned excerpts below); the two definition-section excerpts below are byte-extracted from that canonical text and independently re-hashed."
+}

@@ -10,7 +10,9 @@ const {
 } = require('../lib/canonical-v2/native-producer/measurement-date-parse');
 
 test('version is pinned', () => {
-  assert.equal(MEASUREMENT_DATE_PARSE_VERSION, 1);
+  // P2 (docs/superpowers/specs/2026-08-02-p2-qualifier-kinds-design.md
+  // section 7b): 1 -> 2.
+  assert.equal(MEASUREMENT_DATE_PARSE_VERSION, 2);
 });
 
 test('a calendar date resolves to ISO-8601', () => {

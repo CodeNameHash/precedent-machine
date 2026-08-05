@@ -5,6 +5,9 @@ import { enumLabel } from '../../../lib/sec-meeting.js';
 import { cardCode, cardFeatures, textOf, valueText } from './card-utils.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 import { voteStandard } from './vote-standard.js';
+import productCoverage from '../../../lib/canonical-v2/proxy-meeting-product-coverage.js';
+
+const { COMPOSITE_SEC_ROW_IDS, enrichProxyMeetingRow } = productCoverage;
 
 // Rebuild target: REBUILD-SPECS.md section 9 ("Ben: really good" in the old
 // site). The old deadline-pill pattern is number + [unit pill] + "after" +
@@ -96,8 +99,11 @@ function deadlinePillNode(deadline, ctx, evidence, source) {
 // as three named parts -- Permitted reason / Controlling party /
 // Restriction -- not three interchangeable tags.
 function consentPartyFromText(text) {
-  const match = /without\s+(?:the\s+)?(?:prior\s+)?(?:written\s+)?consent\s+of\s+(?:the\s+)?(Parent|Company)/i.exec(String(text || ''));
-  return match ? match[1] : null;
+  const value = String(text || '');
+  const consentOf = /without\s+(?:the\s+)?(?:prior\s+)?(?:written\s+)?consent\s+of\s+(?:the\s+)?(Parent|Company)/i.exec(value);
+  if (consentOf) return consentOf[1];
+  const possessive = /without\s+(?:the\s+)?(Parent|Company)['’]s\s+(?:prior\s+)?(?:written\s+)?consent/i.exec(value);
+  return possessive ? possessive[1] : null;
 }
 
 // "No more than N days[/each/adjournments]" -- optionally suffixed with
@@ -172,6 +178,9 @@ function adjournmentGroupedNode(right, ctx, evidence, source) {
 // consent. This is Parent/Merger Sub's OWN mechanism, distinct from (and
 // not conditioned on) the Company stockholder vote.
 const PARENT_ADOPTION_MECHANISM_TEXT = {
+  SHAREHOLDER_VOTE: 'by shareholder vote',
+  SOLE_HOLDER_WRITTEN_CONSENT: 'by sole-holder written consent',
+  ALL_RECORD_HOLDERS_WRITTEN_CONSENT: 'by written consent of all record holders',
   WRITTEN_CONSENT: "in writing by Parent; no separate Parent vote required",
   SOLE_STOCKHOLDER_ADOPTION: "by Parent, as sole stockholder of Merger Sub; no separate Parent vote required",
   BOARD_ONLY: 'by Parent board resolution only; no Parent stockholder approval required',
@@ -206,15 +215,26 @@ const PARENT_APPROVAL_MARKET_SUBTERMS = [
 
 function findParentApprovalCard(reviewDeal) {
   const cards = reviewDeal?.cards || [];
-  return cards.find((card) => cardCode(card) === 'COV-SHAPRV-PARENT') || null;
+  return cards.find((card) => cardCode(card) === 'COV-PROXY-PARENT-APPROVAL')
+    || cards.find((card) => cardCode(card) === 'COV-SHAPRV-PARENT')
+    || null;
+}
+
+function findMergerSubApprovalCard(reviewDeal) {
+  return (reviewDeal?.cards || [])
+    .find((card) => cardCode(card) === 'COV-PROXY-MERGERSUB-APPROVAL') || null;
 }
 
 function parentApprovalText(card) {
   const features = cardFeatures(card);
-  const mechanismRaw = features.parentAdoptionMechanism;
+  const mechanismRaw = features.parentApprovalMechanism
+    || features.mergerSubApprovalMechanism
+    || features.parentAdoptionMechanism;
   const mechanismCode = String(mechanismRaw?.code || mechanismRaw?.value || mechanismRaw || '').toUpperCase();
   const mechanismText = PARENT_ADOPTION_MECHANISM_TEXT[mechanismCode] || null;
-  const timing = valueText(features.parentAdoptionTiming);
+  const timing = valueText(features.parentApprovalTiming
+    || features.mergerSubApprovalTiming
+    || features.parentAdoptionTiming);
   if (mechanismText) return timing ? `${mechanismText} (${timing})` : mechanismText;
   // Ben (Mergertrace round 1): no structured mechanism claim on the card
   // (Metsera) left this row dumping raw clause prose while every sibling
@@ -310,6 +330,18 @@ function boolPillNode(text, ctx, evidence, source) {
     : text;
 }
 
+function detailNode(text, ctx, evidence, source) {
+  const PillCell = ctx?.primitives?.PillCell;
+  const TruncatedWithSeeText = ctx?.primitives?.TruncatedWithSeeText;
+  if (!text) return null;
+  if (text === 'Required' && PillCell) {
+    return React.createElement(PillCell, { label: text, tone: 'present', evidence, source });
+  }
+  return TruncatedWithSeeText
+    ? React.createElement(TruncatedWithSeeText, { text, evidence: evidence || text, source })
+    : text;
+}
+
 // Curated row list: Approval definition, Written consent, Vote threshold,
 // Parent / Merger Sub approvals, Proxy filing deadline, Mailing, Meeting,
 // Adjournment rights (one row per party/reason combination). Each row
@@ -328,8 +360,14 @@ function buildRows(reviewDeal) {
   const proxyRow = byId(meetingRows, 'sec-meeting-proxy-filing');
   const mailingRow = byId(meetingRows, 'sec-meeting-mailing');
   const meetingRow = byId(meetingRows, 'sec-meeting-meeting');
+  const recommendationInclusionRow = byId(meetingRows, 'sec-meeting-boardRecommendationInclusion');
+  const conveneObligationRow = byId(meetingRows, 'sec-meeting-meetingConveneObligation');
+  const recordDateRow = byId(meetingRows, 'sec-meeting-record-date');
+  const brokerSearchRow = byId(meetingRows, 'sec-meeting-broker-search');
   const adjournmentRowList = meetingRows.filter((row) => row.id.startsWith('sec-meeting-adjournment-'));
+  const offerRows = COMPOSITE_SEC_ROW_IDS.map((id) => byId(meetingRows, id)).filter(Boolean);
   const parentApprovalCard = findParentApprovalCard(reviewDeal);
+  const mergerSubApprovalCard = findMergerSubApprovalCard(reviewDeal);
 
   const rows = [];
   // Ben (round 6): make Company vs Parent approvals explicit, and drop the
@@ -365,11 +403,16 @@ function buildRows(reviewDeal) {
   }
   if (parentApprovalCard) {
     const parentFeatures = cardFeatures(parentApprovalCard);
-    const parentFeatureKeys = ['parentAdoptionMechanism', 'parentAdoptionTiming']
+    const parentFeatureKeys = [
+      'parentApprovalRequired', 'parentApprovalMechanism', 'parentApprovalTiming',
+      'parentAdoptionMechanism', 'parentAdoptionTiming',
+    ]
       .filter((key) => valueText(parentFeatures[key]));
     if (!parentFeatureKeys.length && valueText(parentFeatures.mainConcept)) parentFeatureKeys.push('mainConcept');
     rows.push({
-      id: 'votes-approvals-meeting-parent-approval', label: 'Parent / Merger Sub approvals', kind: 'parent-approval',
+      id: 'votes-approvals-meeting-parent-approval',
+      label: mergerSubApprovalCard ? 'Parent approval' : 'Parent / Merger Sub approvals',
+      kind: 'parent-approval',
       card: parentApprovalCard,
       sourceCard: parentApprovalCard,
       featureKeys: parentFeatureKeys,
@@ -380,6 +423,20 @@ function buildRows(reviewDeal) {
     rows.push({
       id: 'votes-approvals-meeting-parent-approval', label: 'Parent / Merger Sub approvals', kind: 'vote-standard',
       text: 'Not specified',
+    });
+  }
+  if (mergerSubApprovalCard) {
+    const mergerSubFeatures = cardFeatures(mergerSubApprovalCard);
+    const featureKeys = [
+      'mergerSubApprovalRequired', 'mergerSubApprovalMechanism', 'mergerSubApprovalTiming',
+    ].filter((key) => valueText(mergerSubFeatures[key]));
+    rows.push({
+      id: 'votes-approvals-meeting-merger-sub-approval',
+      label: 'Merger Sub approval',
+      kind: 'parent-approval',
+      card: mergerSubApprovalCard,
+      sourceCard: mergerSubApprovalCard,
+      featureKeys,
     });
   }
   if (proxyRow) {
@@ -403,6 +460,39 @@ function buildRows(reviewDeal) {
       sourceCard: meetingRow.sourceCard, featureKeys: meetingRow.featureKeys, marketSubterms: meetingRow.marketSubterms,
     });
   }
+  for (const presenceRow of [recommendationInclusionRow, conveneObligationRow].filter(Boolean)) {
+    rows.push({
+      id: `votes-approvals-meeting-${presenceRow.id.slice('sec-meeting-'.length)}`,
+      label: presenceRow.label,
+      kind: 'detail',
+      text: presenceRow.detail,
+      evidence: presenceRow.evidence,
+      source: presenceRow.sourceCard,
+      sourceCard: presenceRow.sourceCard,
+      featureKeys: presenceRow.featureKeys,
+      marketPresence: presenceRow.marketPresence,
+      marketSubterms: presenceRow.marketSubterms,
+      marketProvisionCodes: presenceRow.marketProvisionCodes,
+    });
+  }
+  if (recordDateRow) {
+    rows.push({
+      id: 'votes-approvals-meeting-record-date', label: 'Meeting record date', kind: 'detail',
+      text: recordDateRow.detail, evidence: recordDateRow.evidence, source: recordDateRow.sourceCard,
+      sourceCard: recordDateRow.sourceCard, featureKeys: recordDateRow.featureKeys,
+      marketState: recordDateRow.marketState,
+      marketPresence: recordDateRow.marketPresence,
+    });
+  }
+  if (brokerSearchRow) {
+    rows.push({
+      id: 'votes-approvals-meeting-broker-search', label: 'Broker search', kind: 'detail',
+      text: brokerSearchRow.detail, evidence: brokerSearchRow.evidence, source: brokerSearchRow.sourceCard,
+      sourceCard: brokerSearchRow.sourceCard, featureKeys: brokerSearchRow.featureKeys,
+      marketState: brokerSearchRow.marketState,
+      marketPresence: brokerSearchRow.marketPresence,
+    });
+  }
   adjournmentRowList.forEach((row, index) => {
     rows.push({
       id: `votes-approvals-meeting-adjournment-${index}`, label: 'Adjournment rights', kind: 'adjournment',
@@ -411,7 +501,22 @@ function buildRows(reviewDeal) {
       marketSubterms: row.marketSubterms,
     });
   });
-  return rows;
+  for (const offerRow of offerRows) {
+    rows.push({
+      id: `votes-approvals-meeting-${offerRow.id.slice('sec-meeting-'.length)}`,
+      label: offerRow.label,
+      kind: 'detail',
+      text: offerRow.detail,
+      evidence: offerRow.evidence,
+      source: offerRow.sourceCard,
+      sourceCard: offerRow.sourceCard,
+      featureKeys: offerRow.featureKeys,
+      marketPresence: offerRow.marketPresence,
+      marketSubterms: offerRow.marketSubterms,
+      marketProvisionCodes: offerRow.marketProvisionCodes,
+    });
+  }
+  return rows.map(enrichProxyMeetingRow);
 }
 
 function renderProvisionCell(row, ctx) {
@@ -421,6 +526,7 @@ function renderProvisionCell(row, ctx) {
     case 'deadline': return deadlinePillNode(row.deadline, ctx, row.evidence, row.source);
     case 'adjournment': return adjournmentGroupedNode(row.adjournment, ctx, row.evidence, row.source);
     case 'parent-approval': return parentApprovalNode(row.card, ctx);
+    case 'detail': return detailNode(row.text, ctx, row.evidence, row.source);
     default: return row.text || null;
   }
 }

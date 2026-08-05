@@ -1,0 +1,198 @@
+{
+  "schema_version": "NATIVE_UNIFIED_RUN_MANIFEST/V1",
+  "sources": [
+    {
+      "source_id": "modiv-full",
+      "disposition": "ADMITTED_LOCAL",
+      "raw_file_path": "tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm",
+      "retrieval_url": "https://www.sec.gov/Archives/edgar/data/1645873/000114036126018656/ef20072329_ex2-1.htm",
+      "retrieved_at": "2026-08-01T15:05:49.024Z",
+      "retrieval_policy_digest": "1f2c6d1400fbf69498bb95f2d89e43f466dc2380be819a8d0fabf6bf39ea9acc",
+      "raw_sha256": "659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968",
+      "canonical_text_sha256": "0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e",
+      "canonical_text_byte_length": 428768,
+      "governed_deal_key": "deal:modiv-first-live-run:32065211e4688625",
+      "deal_admission_id": "691a9ce8c6cde0f49d7ebf228c1bf2876562fdf1b3dd792a8444ae1f3f8d55ae",
+      "source_ordinal": 0
+    },
+    {
+      "source_id": "skechers-full",
+      "disposition": "ADMITTED_LOCAL",
+      "raw_file_path": "tests/fixtures/canonical-v2/skechers-first-live-run/skechers-raw-fetched.htm",
+      "retrieval_url": "https://www.sec.gov/Archives/edgar/data/1065837/000119312525112159/d943603dex21.htm",
+      "retrieved_at": "2026-08-01T12:34:55.229Z",
+      "retrieval_policy_digest": "36a0954920b96ebb695bc9c18579f3010006fed5bc39839ccf359c27617a2b7f",
+      "raw_sha256": "3a8b8d77c126c85f4402f290da3dec43efa209d6a8a505d11d1af95fab115833",
+      "canonical_text_sha256": "a7d76e8a7f6efed945208b5870ddfa848438a7542806878bb2bc10646b557660",
+      "canonical_text_byte_length": 380704,
+      "governed_deal_key": "deal:skechers-first-live-run:5e1d6f13ab83e3f9",
+      "deal_admission_id": "918b58d3243febd2ad7e4fd878ced2780e76e81ce8e5c5ef9d2ac7ca5e7daa07",
+      "source_ordinal": 0
+    },
+    {
+      "source_id": "topbuild-full",
+      "disposition": "ADMITTED_RECORDED",
+      "recorded_admitted_source_context_path": "tests/fixtures/canonical-v2/f28-third-live-run/adapter-result.json",
+      "admitted_semantic_source_context_id": "b069039c65512a01b0be43396e9c0c25c0eff925867f0eec7a173862e7cfc352",
+      "admitted_source_reference": {
+        "schema_version": "ADMITTED_SOURCE_REFERENCE/V1",
+        "immutable_source_document_id": "6a0b0c1eee2035ea01fbaa272008b11d99c9ccabc10d3d3810c5c8d68a2613a7",
+        "source_admission_manifest_id": "b2eca29a562812f4d7993953b29d8ab0329d7673ade908439b2875b24b373558",
+        "semantic_extraction_input_envelope_id": "7c2eab4c41a724c432ef42546e5ea072f02e58a6d7ded73e141a5e666f2863db",
+        "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+        "governed_deal_key": "deal:f28-third-live-run:e552449e17bebcd1",
+        "deal_admission_id": "d0e3649379240a201bfb9fd58dc4be998b3c83980c48b0618dbdf8db4ee5287a",
+        "source_ordinal": 0
+      },
+      "canonical_text_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+      "canonical_text_byte_length": 412860,
+      "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f"
+    }
+  ],
+  "work_items": [
+    {
+      "work_item_id": "modiv-antitrust-consents-5-5",
+      "source_id": "modiv-full",
+      "family_id": "ANTITRUST_REGULATORY",
+      "disposition": "EXTRACT",
+      "section_pin": {
+        "section_reference": "5.5",
+        "section_id": "bb5439843fa52ec33354b0e021dd9ff5505ec508e0eebbd84f732391039d6ee9",
+        "section_kind": "SECTION",
+        "section_text_sha256": "f4bfedf0cc1ff04f2f458b6b049bef4dfa300d06f68d9444e176eb9f22cf6ffa"
+      }
+    },
+    {
+      "work_item_id": "modiv-closing-conditions-6-1",
+      "source_id": "modiv-full",
+      "family_id": "CLOSING_CONDITIONS",
+      "disposition": "EXTRACT",
+      "section_pin": {
+        "section_reference": "6.1",
+        "section_id": "4f316c94c95765818d0e6d6eb6e82dca2d472a5bf8ab076057b49ae6fc1a76ae",
+        "section_kind": "SECTION",
+        "section_text_sha256": "8104de7911e04ae561c8a9fa23acfe78326fcc441e63895e4632767e231260fb"
+      }
+    },
+    {
+      "work_item_id": "modiv-consideration-2-1",
+      "source_id": "modiv-full",
+      "family_id": "CONSIDERATION",
+      "disposition": "EXTRACT",
+      "section_pin": {
+        "section_reference": "2.1",
+        "section_id": "5661e317e8c6e16a3790bbee9ffaa08511106c064dbfd93233e562389b20d6b8",
+        "section_kind": "SECTION",
+        "section_text_sha256": "d3fca17d68046e1ddc7fd86cd9c210a3444ecf32c8af6ac85cf7ee67a4375199"
+      }
+    },
+    {
+      "work_item_id": "modiv-mae-definition-8-12-g",
+      "source_id": "modiv-full",
+      "family_id": "MAE_DEFINITION",
+      "disposition": "EXTRACT",
+      "section_pin": {
+        "section_reference": "8.12(g)",
+        "section_id": "8a1d973242979ca8e254302f9f3f3024f2c8e7f57f11d6b58450077542475e96",
+        "section_kind": "SUBSECTION",
+        "section_text_sha256": "0dec194d9d833eea3006a6cee3b74e7ab58961dd39f9a0932343b3eeb808643c"
+      }
+    },
+    {
+      "work_item_id": "modiv-termination-fee-7-3",
+      "source_id": "modiv-full",
+      "family_id": "TERMINATION_FEE",
+      "disposition": "EXTRACT",
+      "section_pin": {
+        "section_reference": "7.3",
+        "section_id": "843f3c84629d801917f6d8bd0307e752f7991e27a3d0dc8b3ed39f76b3834f29",
+        "section_kind": "SECTION",
+        "section_text_sha256": "c3a2da4fc1f755d0f471b4f043b19b42ed39634e57afa3c5a55e535aed7af2b9"
+      }
+    },
+    {
+      "work_item_id": "skechers-capitalisation-3-7",
+      "source_id": "skechers-full",
+      "family_id": "CAPITALISATION",
+      "disposition": "EXTRACT",
+      "section_pin": {
+        "section_reference": "3.7",
+        "section_id": "994f25813f31bb8d6fa4f79b8b1b35a9542b7037f00cd2ab0e54058f0b16b291",
+        "section_kind": "SECTION",
+        "section_text_sha256": "57fb980f2d1e27f8b3459f1d8abd41ade0fb0d07861e1035e360ed00aafa1cfe"
+      }
+    },
+    {
+      "work_item_id": "skechers-no-other-reps-3-28",
+      "source_id": "skechers-full",
+      "family_id": "NO_OTHER_REPS_FRAUD",
+      "disposition": "EXTRACT",
+      "section_pin": {
+        "section_reference": "3.28",
+        "section_id": "1c2d8ce136a230827db41f28bb4801572f0dc0d41df39fde51e32da13b20d5d0",
+        "section_kind": "SECTION",
+        "section_text_sha256": "93d4b8e23e45dd4cdafa991f99d19ceea8ccfc192139f82b1166a6f88751348c"
+      }
+    },
+    {
+      "work_item_id": "topbuild-capitalisation-3-1-b",
+      "source_id": "topbuild-full",
+      "family_id": "CAPITALISATION",
+      "disposition": "EXTRACT",
+      "section_pin": {
+        "section_reference": "III-INTRO(b)",
+        "section_id": "77955b9a124841078a565df44e2fd4bc7d6d43c20afdc21be6d3347c8250c4d7",
+        "section_kind": "SUBSECTION",
+        "section_text_sha256": "ab4ce66d8e07577673bf4ea1f99838b21bd518786778e8511c71efab3df30487"
+      }
+    },
+    {
+      "work_item_id": "topbuild-ioc-company-4-1",
+      "source_id": "topbuild-full",
+      "family_id": "INTERIM_OPERATING",
+      "disposition": "EXTRACT",
+      "section_pin": {
+        "section_reference": "4.1",
+        "section_id": "d5d911cbaa9b7478d45698eb0267c9673e00eb00dfb317d4c0732395f1bfcf9e",
+        "section_kind": "SECTION",
+        "section_text_sha256": "9fb0efdb4bae0f1b3b2bec3af9b993a37214c3e679a21bb495d0e48b65061bb7"
+      }
+    },
+    {
+      "work_item_id": "topbuild-no-shop-company-4-3",
+      "source_id": "topbuild-full",
+      "family_id": "NO_SHOP",
+      "disposition": "EXTRACT",
+      "section_pin": {
+        "section_reference": "4.3",
+        "section_id": "ccc83db74e89a0090aa95fe9a9b49a270fcd88ce4e094dd4510419c59604996c",
+        "section_kind": "SECTION",
+        "section_text_sha256": "c9a33bfe0529501c90d97963daf6bdf83c1f28957ed13dc331a29b928a07ca31"
+      }
+    },
+    {
+      "work_item_id": "topbuild-remedies-specific-performance-7-6",
+      "source_id": "topbuild-full",
+      "family_id": "SPECIFIC_PERFORMANCE_REMEDIES",
+      "disposition": "EXTRACT",
+      "section_pin": {
+        "section_reference": "7.6",
+        "section_id": "9323c0c8f33357c8a78e7e9a261b9fe168a0e52cec4429373705576e20907dc5",
+        "section_kind": "SECTION",
+        "section_text_sha256": "9d375b85093b476fbecb795ababa596001919093729231adb190ec369094312c"
+      }
+    },
+    {
+      "work_item_id": "topbuild-termination-company-6-3",
+      "source_id": "topbuild-full",
+      "family_id": "TERMINATION",
+      "disposition": "EXTRACT",
+      "section_pin": {
+        "section_reference": "6.3",
+        "section_id": "6a3c3467e28533b8987f177261ad88ec9d337bd6e7684073e01088fd6ef6dc82",
+        "section_kind": "SECTION",
+        "section_text_sha256": "4406f381343348f6ab2e63a47ef92f6b89a6f449d1edc5752c54b9aa7113cf57"
+      }
+    }
+  ]
+}

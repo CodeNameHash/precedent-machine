@@ -1,6 +1,6 @@
 import React from 'react';
 import { conditionsBConfig, conditionsMConfig, conditionsSConfig } from './conditions-m.config.js';
-import { splitForCell, triggerThresholdLabel, valueText } from './card-utils.js';
+import { cardCode, cardFeatures, labelOf, splitForCell, triggerThresholdLabel, valueText } from './card-utils.js';
 import { STANDARD_TEXT, standardColorKey } from './standard-colors.js';
 import { voteStandard } from './vote-standard.js';
 import bringDownTiers from '../../../lib/bring-down-tiers.js';
@@ -39,6 +39,7 @@ const GROUP_SPECS = [
 function bandAligned(provision, party) {
   const code = provision?.features?.canonicalCode;
   if (!code) return true;
+  if (code === 'COND-FRUSTRATE') return party === 'M';
   const seg = String(code).split('-')[1];
   return !seg || seg === party;
 }
@@ -62,6 +63,7 @@ const CONDITION_FAMILY_LABELS = {
   LISTING: 'Stock Exchange Listing',
   DISSENT: 'Dissenting Shares Threshold',
   FUNDS: 'Financing / Sufficient Funds',
+  FRUSTRATE: 'Condition Frustration / Prevention',
 };
 
 // Rows without a canonical code (matched by category regex only, e.g. the
@@ -251,6 +253,19 @@ function conditionMarketSubterms(family, matches) {
         featureKeys: ['absenceOfEnjoiningOrderPresent'],
         kind: 'categorical',
       },
+      {
+        key: 'government-proceeding',
+        label: 'Government proceeding condition',
+        featureKeys: ['governmentProceedingConditionPresent'],
+        kind: 'categorical',
+      },
+      {
+        key: 'burdensome-condition',
+        label: 'Burdensome condition',
+        featureKeys: ['burdensomeConditionPresent'],
+        kind: 'categorical',
+      },
+      conditionTermSubterm('burdensome-scope', 'Burdensome-condition scope', ['burdensomeConditionScope'], 'LEGAL'),
     ];
   } else if (family === 'MAE') {
     subterms = [
@@ -278,9 +293,14 @@ function conditionMarketSubterms(family, matches) {
       },
     ];
   } else if (family === 'S4') {
-    subterms = [conditionTermSubterm('s4-formulation', 'S-4 condition', ['mainCondition'], 'S4')];
+    subterms = [{
+      key: 's4-components',
+      label: 'S-4 condition components',
+      featureKeys: ['s4ConditionComponents'],
+      kind: 'multi_select',
+    }];
   } else if (family === 'LISTING') {
-    subterms = [conditionTermSubterm('listing-formulation', 'Listing condition', ['mainCondition'], 'LISTING')];
+    subterms = [conditionTermSubterm('listing-venue', 'Listing venue', ['listingVenue'], 'LISTING')];
   } else if (family === 'DISSENT') {
     subterms = [{
       key: 'dissent-threshold',
@@ -298,6 +318,11 @@ function conditionMarketSubterms(family, matches) {
         kind: 'categorical',
       },
       conditionTermSubterm('funds-formulation', 'Funds condition formulation', ['mainCondition'], 'FUNDS'),
+    ];
+  } else if (family === 'FRUSTRATE') {
+    subterms = [
+      conditionTermSubterm('causation-standard', 'Causation standard', ['frustrationCausationStandard'], 'FRUSTRATE'),
+      conditionTermSubterm('breach-standard', 'Breach standard', ['frustrationBreachStandard'], 'FRUSTRATE'),
     ];
   }
 
@@ -332,6 +357,8 @@ const CERT_CERTIFIES = {
 function repNameBySection(matches) {
   const map = {};
   for (const provision of matches || []) {
+    const ownSection = sectionNumberForCard(provision);
+    if (ownSection && labelOf(provision)) map[ownSection] = labelOf(provision);
     const cited = provision?.features?.citedProvisionNames;
     if (Array.isArray(cited)) {
       for (const item of cited) {
@@ -340,6 +367,26 @@ function repNameBySection(matches) {
     }
   }
   return map;
+}
+
+function sectionNumberForCard(card) {
+  const fromFeatures = cardFeatures(card).sectionNumber || card?.section_number;
+  if (fromFeatures) return String(fromFeatures).trim();
+  const sectionRef = String(card?.section_ref || '');
+  const match = sectionRef.match(/\d+(?:\.\d+)+(?:\([a-z0-9]+\))*/i);
+  return match ? match[0] : null;
+}
+
+function repTypeForBringDownCondition(code) {
+  if (code === 'COND-B-REP') return 'REP-T';
+  if (code === 'COND-S-REP') return 'REP-B';
+  return null;
+}
+
+function isCatchAllBringDownTier(covered) {
+  return /^all\s+(?:company\s+|parent\s+)?representations/i.test(covered)
+    || /\ball\s+other\b/i.test(covered)
+    || /representations?\s+(?:and\s+warranties\s+)?other than/i.test(covered);
 }
 
 // Resolve a "3.05(a)(i)(x)"-style section key to its rep name via PREFIX
@@ -446,32 +493,60 @@ function normRepName(name) {
 // is intentionally NOT mapped -- any rep absent from the map defaults to MAE.
 function buildRepBringDownMap(reviewDeal) {
   const cards = reviewDeal?.cards || [];
-  const matches = cards
+  const carriers = cards
     .map((card) => {
       const recovered = recoverBringDownFromCard(card);
-      return recovered.tiers.length
-        ? { ...card, features: { ...(card.features || {}), bringDownTiers: recovered.tiers } }
+      const repType = repTypeForBringDownCondition(recovered.provisionCode);
+      return recovered.tiers.length && repType
+        ? { card, recovered, repType }
         : null;
     })
     .filter(Boolean);
   const map = new Map();
-  if (!matches.length) return map;
-  const nameBySec = repNameBySection(matches);
-  const tiers = matches
-    .flatMap((provision) => provision.features.bringDownTiers.map((tier) => ({ tier, meta: tierMeta(tier) })))
-    .sort((a, b) => a.meta.rank - b.meta.rank); // most-stringent first: a rep in >1 tier keeps the most stringent
-  for (const { tier, meta } of tiers) {
-    const covered = String(tier.reps_covered || tier.repsCovered || '').trim();
-    const general = /^all\s+(?:company\s+|parent\s+)?representations/i.test(covered)
-      || /\ball\s+other\b/i.test(covered)
-      || /representations?\s+(?:and\s+warranties\s+)?other than/i.test(covered);
-    if (general || !covered) continue;
-    const short = SHORT_BRINGDOWN_BY_RANK[meta.rank] || meta.label;
-    const colorKey = standardColorKey(meta.label);
-    for (const part of splitBringdownCoveredPills(covered).map((token) => resolveRepsCovered(token, nameBySec))) {
-      const key = normRepName(part);
-      if (key && !map.has(key)) map.set(key, { short, rank: meta.rank, colorKey });
+  map.catchAllByRepType = new Map();
+  if (!carriers.length) return map;
+
+  const explicit = new Map();
+  const catchAll = new Map();
+  for (const { card, recovered, repType } of carriers) {
+    // Resolve cites against the representations on the SAME side. Condition
+    // citations are a useful fallback, but must never supply the other side's
+    // labels when one condition was extracted more completely than the other.
+    const sameSideReps = cards.filter((candidate) => String(cardCode(candidate) || '').startsWith(`${repType}-`));
+    const nameBySec = repNameBySection(sameSideReps);
+    for (const [section, name] of Object.entries(repNameBySection([card]))) {
+      if (!nameBySec[section]) nameBySec[section] = name;
     }
+    for (const tier of recovered.tiers) {
+      const meta = tierMeta(tier);
+      const standard = String(tier.standard || tier.standardCode || tier.standard_code || '').trim();
+      if (!standard) continue;
+      const covered = String(tier.reps_covered || tier.repsCovered || '').trim();
+      const value = { short: SHORT_BRINGDOWN_BY_RANK[meta.rank] || meta.label, rank: meta.rank, colorKey: standardColorKey(meta.label), standard };
+      if (isCatchAllBringDownTier(covered)) {
+        const key = repType;
+        if (!catchAll.has(key)) catchAll.set(key, []);
+        catchAll.get(key).push(value);
+        continue;
+      }
+      if (!covered) continue;
+      for (const part of splitBringdownCoveredPills(covered).map((token) => resolveRepsCovered(token, nameBySec))) {
+        const key = normRepName(part);
+        if (!key) continue;
+        const candidateKey = `${repType}:${key}`;
+        if (!explicit.has(candidateKey)) explicit.set(candidateKey, []);
+        explicit.get(candidateKey).push(value);
+      }
+    }
+  }
+
+  for (const [candidateKey, values] of explicit) {
+    const standards = new Set(values.map((value) => value.standard));
+    if (standards.size === 1) map.set(candidateKey, values[0]);
+  }
+  for (const [repType, values] of catchAll) {
+    const standards = new Set(values.map((value) => value.standard));
+    if (standards.size === 1) map.catchAllByRepType.set(repType, values[0]);
   }
   return map;
 }
@@ -767,6 +842,15 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
       chips.push(mkChip(PillCell, 'legal-restraint', present ? 'No legal restraint' : 'No legal restraint (absent)', present ? 'present' : 'missing', primary, details));
       featureKeys = ['absenceOfEnjoiningOrderPresent'];
     }
+    if (firstDefined(matches, 'governmentProceedingConditionPresent') === true) {
+      chips.push(mkChip(PillCell, 'government-proceeding', 'No blocking governmental proceeding', 'present', primary));
+      featureKeys = null;
+    }
+    if (firstDefined(matches, 'burdensomeConditionPresent') === true) {
+      const scope = valueText(firstDefined(matches, 'burdensomeConditionScope'));
+      chips.push(mkChip(PillCell, 'burdensome-condition', scope ? `Burdensome condition: ${scope}` : 'Burdensome condition limitation', 'warning', primary));
+      featureKeys = null;
+    }
   } else if (family === 'MAE') {
     // The condition name ("No Material Adverse Effect") is already the TERM
     // column, so the right column only carries the continuing-effect qualifier.
@@ -791,8 +875,46 @@ function buildStandardDetail(row, family, ctx, bandFamilies) {
       chips.push(mkChip(PillCell, 'cert-req', "Officer's certificate required", 'present', primary));
       featureKeys = ['certificationRequired'];
     }
+  } else if (family === 'S4') {
+    const components = [].concat(firstDefined(matches, 's4ConditionComponents') || []);
+    if (components.length) {
+      components.forEach((component, index) => chips.push(mkChip(
+        PillCell, `s4-component-${index}`, valueText(component), 'present', primary,
+      )));
+      featureKeys = ['s4ConditionComponents'];
+    } else {
+      const generic = genericChips(PillCell, matches, primary);
+      chips.push(...generic.chips);
+      if (generic.keys.length === 1) featureKeys = [generic.keys[0]];
+    }
+  } else if (family === 'LISTING') {
+    const venue = valueText(firstDefined(matches, 'listingVenue'));
+    if (venue) {
+      chips.push(mkChip(PillCell, 'listing-venue', `Listing: ${venue}`, 'present', primary));
+      featureKeys = ['listingVenue'];
+    } else {
+      const generic = genericChips(PillCell, matches, primary);
+      chips.push(...generic.chips);
+      if (generic.keys.length === 1) featureKeys = [generic.keys[0]];
+    }
+  } else if (family === 'FUNDS') {
+    if (firstDefined(matches, 'fundsCondition') === true) {
+      chips.push(mkChip(PillCell, 'funds-condition', 'Funds availability required', 'present', primary));
+      featureKeys = ['fundsCondition'];
+    }
+    const generic = genericChips(PillCell, matches, primary);
+    chips.push(...generic.chips);
+    if (generic.keys.length === 1 && !featureKeys) featureKeys = [generic.keys[0]];
+    else if (generic.keys.length) featureKeys = null;
+  } else if (family === 'FRUSTRATE') {
+    const causation = valueText(firstDefined(matches, 'frustrationCausationStandard'));
+    const breach = valueText(firstDefined(matches, 'frustrationBreachStandard'));
+    if (causation) chips.push(mkChip(PillCell, 'frustration-causation', causation, 'warning', primary));
+    if (breach) chips.push(mkChip(PillCell, 'frustration-breach', breach, 'warning', primary));
+    if (causation && !breach) featureKeys = ['frustrationCausationStandard'];
+    if (breach && !causation) featureKeys = ['frustrationBreachStandard'];
   } else {
-    // S4 / LISTING / DISSENT / FUNDS (no bespoke synthesis): thread the one
+    // DISSENT and other legacy-only fields: thread the one
     // field this row's chips came from ONLY when exactly one fired -- e.g. a
     // cureDays-only row is genuinely 1:1, but a row combining
     // dollarThreshold + cureDays has no single comparable feature.

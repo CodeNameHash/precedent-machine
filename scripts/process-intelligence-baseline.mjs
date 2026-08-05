@@ -23,7 +23,7 @@ const SOURCE_FILES = Object.freeze([
   },
   {
     path: 'lib/query/serving-registry-v1.json',
-    sha256: '83916dc4ad0ee02e6db7dfa8515f70dd0c39364feee1740c38c44dc684e3deb5',
+    sha256: 'ecbace4566431277bb96b34eead1c03cc3ca4ca7e10fe15bf0796bcfbb95e8de',
   },
 ]);
 const EXPECTED_DEALS_FIELD_KEYS = Object.freeze([
@@ -252,9 +252,9 @@ function agreementInventory(registryEntries) {
       certified_data_disposition: 'NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES',
     }));
 
-  if (fields.length !== 331) fail(`Agreement field count is ${fields.length}, expected 331`);
-  if (allOccurrences.length !== 489) {
-    fail(`Agreement field occurrence count is ${allOccurrences.length}, expected 489`);
+  if (fields.length !== 333) fail(`Agreement field count is ${fields.length}, expected 333`);
+  if (allOccurrences.length !== 491) {
+    fail(`Agreement field occurrence count is ${allOccurrences.length}, expected 491`);
   }
   const sec = provisionTypes.find((entry) => entry.provision_type === 'SEC_FILING_MEETING');
   if (!sec || sec.current_user_facing_field_count !== 0
@@ -361,11 +361,11 @@ function buildInventory() {
   const agreement = agreementInventory(registry.entries);
   const servingRegistry = registryInventory(registry, agreement.fields);
 
-  if (servingRegistry.observed_entry_count !== 696) {
-    fail(`serving registry contains ${servingRegistry.observed_entry_count} entries, expected 696`);
+  if (servingRegistry.observed_entry_count !== 699) {
+    fail(`serving registry contains ${servingRegistry.observed_entry_count} entries, expected 699`);
   }
-  if (servingRegistry.included_input_count !== 329
-    || servingRegistry.excluded_input_count !== 367) {
+  if (servingRegistry.included_input_count !== 328
+    || servingRegistry.excluded_input_count !== 371) {
     fail('serving-registry inclusion and exclusion counts changed');
   }
 

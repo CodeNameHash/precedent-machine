@@ -115,12 +115,12 @@ test('staging binds the exact F6 contract, source, clock, and definition graph',
   assert.equal(
     attestation.upstream_bindings
       .qxo_no_shop_clock_f6_parser_bound_review_seed_id,
-    'bc6c5001d9e8549982edb648f8bc2dd16241716edf602cebdef3a39bd788c56f',
+    'e46361c44ab49a10499edd257f5a17413aae51927405ab80a6baaf2364abbcc6',
   );
   assert.equal(
     attestation.upstream_bindings
       .qxo_no_shop_reviewed_definition_graph_f6_id,
-    '5f10f1f883b623efa5e988630240cf7c7bdbf6308c261383ae86a992f3f856bc',
+    '65362ac2af8f3459f8b1f09b1ce4485ef5b22b23b4a51c0c1407a35cdb811e18',
   );
   assert.equal(
     attestation.source_binding.document_hash,
@@ -167,11 +167,11 @@ test('the copy clock is a distinct reviewed claim while both clocks remain non-c
   const attestation = fixture();
   assert.equal(
     attestation.first_clock_claim_revision_id,
-    '609e1153fd0e8fe5f75127bee4ef32480814226e7cb07b0b21448e9b11b28985',
+    'a492fa77d2c529fcc63b21df119e1f4b4169294167bb243e7745668b18393a3b',
   );
   assert.equal(
     attestation.copy_clock_claim_revision_id,
-    'fdc473bb486f0104c3e29e5afb263ee81c7a2953b6da67de42a0c3737322a177',
+    '8bc47e7e4c1ee206052b1f7bda05c337d2b99c3b670b456c8826542128b34f33',
   );
   assert.notEqual(
     attestation.copy_clock_claim_revision_id,

@@ -133,17 +133,20 @@ test('SQL identity pins equal the current JavaScript compiler identities', () =>
   for (const sqlFile of SQL_FILES) {
     const sql = fs.readFileSync(path.resolve(ROOT, sqlFile), 'utf8');
     for (const pin of pins) {
-      if (!sql.includes(pin.qualifiedField)) continue;
+      assert.ok(
+        sql.includes(pin.qualifiedField),
+        `${sqlFile}: required ${pin.field} identity pin is missing`,
+      );
       const pinPattern = new RegExp(
         `${escapeRegExp(pin.qualifiedField)}\\s+IS\\s+DISTINCT\\s+FROM\\s+'([a-f0-9]{64})'`,
         'g',
       );
       const matches = [...sql.matchAll(pinPattern)];
-      if (matches.length === 0) {
-        assert.fail(
-          `${sqlFile}: ${pin.field} is present but is not immediately followed by IS DISTINCT FROM and a 64-character lowercase hexadecimal literal`,
-        );
-      }
+      assert.equal(
+        matches.length,
+        1,
+        `${sqlFile}: ${pin.field} must have exactly one literal identity pin`,
+      );
       for (const match of matches) {
         const pinnedValue = match[1];
         assert.equal(

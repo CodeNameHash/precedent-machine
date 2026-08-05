@@ -127,11 +127,11 @@ test('F22 identities cover the complete admission and registry payloads', () => 
   );
   assert.equal(
     admissionId,
-    '374bdce70c2e9425c66c20cb929daafa68a10b79b5da8a382437945d474366d7',
+    'e46d14c63140d04c2a9222b86fe56c16c00a97eed2971327066cb157b9911e03',
   );
   assert.equal(
     registryId,
-    'd826967dfe53ae68c1513dd555d60be0ac0153e8a68dd3488cb4e14bec294b1d',
+    '419e1198e8cfb0451634a5847ed08c5935b17f4f06749f81804085318df71a9c',
   );
 });
 

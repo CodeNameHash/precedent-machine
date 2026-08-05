@@ -156,13 +156,40 @@ test('FIXTURE PIN (test 4, additivity): the no-lexical-input resolveCandidates()
     'the committed pre-slice fixture is now stale under MAPPING_TABLE_VERSION 4 -- this is the expected, documented re-pin',
   );
   assert.equal(resolutionFixture.resolution_receipt.resolution_receipt_id, '16939d3bbf295686be514e51245429c7096fd99e1dca1b19f8037a10a6b41a79');
-  assert.equal(baseline.resolution_receipt.mapping_table_version, 4);
+  // MAPPING_TABLE_VERSION 4 -> 5 (family-termination-fee slice, three fee
+  // entries -- docs/superpowers/specs/2026-08-02-family-termination-fee-
+  // design.md section 4).
+  assert.equal(baseline.resolution_receipt.mapping_table_version, 20);
   assert.equal(baseline.resolution_receipt.share_count_parse_version, 1);
   assert.equal(baseline.resolution_receipt.zero_pattern_table_version, 1);
   assert.equal(
     baseline.resolution_receipt.resolution_receipt_id,
-    '24ada5d4445f5c885d01f168582f03426b06c474062ae001e475ff87da8a37a9',
-    'the new, re-pinned resolution_receipt_id under MAPPING_TABLE_VERSION 4',
+    '0ba71328736a9ac38e09240840a35bbfb26805e3a2fb6ec226bc7b95074cd2be',
+    // Re-pinned after Ben's 2026-08-03 ruling: bare no-shop "days"
+    // now resolve as CALENDAR_DAYS, and no_shop_period_parse_version is 2.
+    // Re-pinned (P2 qualifier kinds phase 1, Fable review 2026-08-03): delta =
+    // qualifier_kind_lexicon_version 1->2, measurement_date_parse_version 1->2,
+    // + four F28 replay conversions (2 resolved dates, 2 review performance rows).
+    // schedule_reference_parse_version lands with phase-2 registry wiring.
+    // [prior pin 2bbfd930… superseded.]
+    // Re-pinned (family-termination-rights slice, build 2026-08-03):
+    // MAPPING_TABLE_VERSION 7 -> 8 and receiptBody gains TWO new
+    // unconditional fields (termination_deadline_parse_version,
+    // cure_period_parse_version) -- the full field-level diff vs the prior
+    // committed pin (eae76e562bd51f0242381a4a08be6426d435d074ffb8083bdb753a
+    // 2abd6a4bab) was re-derived by running this exact test against the
+    // current code: mapping_table_version 7->8,
+    // termination_deadline_parse_version +1 (new, value 1),
+    // cure_period_parse_version +1 (new, value 1), nothing else changed --
+    // contract_vocabulary_digest is UNCHANGED at this call site
+    // (CONTRACT_BUNDLE_V13 is a fixed pre-slice bundle snapshot this test
+    // deliberately keeps stale; only MAPPING_TABLE_VERSION and the two new
+    // receipt fields, resolver-module constants independent of which
+    // contract_vocabulary is passed in, move). [family-mae-definition-era
+    // pin eae76e56... superseded; family-no-shop-era pin 55b1e8da...
+    // superseded before that.]
+    // General Covenants parity adds mapping_table_version 15->16.
+    'the new, re-pinned resolution_receipt_id under MAPPING_TABLE_VERSION 20',
   );
 
   // SOURCE_SCOPE_CERTIFICATION_ABSENT is unconditional -- present even with
@@ -196,6 +223,7 @@ test('ACCEPTANCE (real-data fixture): a bound, fresh lexical_disagreement receip
     run_receipt: runReceipt, contract_vocabulary: CONTRACT_BUNDLE_V13,
     admitted_source_context: admittedSourceContext, agreement_date: AGREEMENT_DATE,
   });
+  // Current ITEM evidence binding retains the three limb-grounded claims.
   assert.equal(baseline.resolved.length, 3);
 
   const section = loadF28ThirdRunSection();

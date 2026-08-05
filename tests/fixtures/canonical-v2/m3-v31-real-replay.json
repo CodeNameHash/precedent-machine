@@ -1,0 +1,10 @@
+{
+  "schema": "CANONICAL_V2_M3_V31_REPLAY_PACK/V1",
+  "source_path": "__fixtures__/demo-deal/landos-abbvie-agreement.txt",
+  "source_kind": "ADMITTED_AGREEMENT_FIXTURE",
+  "cases": [
+    { "family": "MERGER_STRUCTURE_CLOSING", "section_reference": "1.4", "assertion_kind": "EFFECTS", "quote": "The Merger shall have the effects set forth in this Agreement and the applicable provisions of\nthe DGCL." },
+    { "family": "SPECIFIC_PERFORMANCE_REMEDIES", "section_reference": "8.4", "assertion_kind": "EXPEDITED_PROCEEDING", "quote": "specific performance, or other non-monetary equitable relief, to prevent\nbreaches of this Agreement and to enforce specifically the terms and provisions hereof in the Chosen Courts without proof of damages or otherwise," },
+    { "family": "MISC_BOILERPLATE", "section_reference": "8.4", "assertion_kind": "FORUM_FALLBACK", "quote": "exclusive jurisdiction and venue of the Court of Chancery\nof the State of Delaware and any state appellate court therefrom or, if such court lacks subject matter jurisdiction, any other state" }
+  ]
+}

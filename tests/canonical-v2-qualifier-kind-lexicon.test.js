@@ -36,12 +36,18 @@ const {
 
 // ─── Version ───
 
-test('QUALIFIER_KIND_LEXICON_VERSION is pinned at 1', () => {
-  assert.equal(QUALIFIER_KIND_LEXICON_VERSION, 1);
+test('QUALIFIER_KIND_LEXICON_VERSION is pinned at 2', () => {
+  // P2 (docs/superpowers/specs/2026-08-02-p2-qualifier-kinds-design.md
+  // section 1): 1 -> 2.
+  assert.equal(QUALIFIER_KIND_LEXICON_VERSION, 2);
 });
 
-test('QUALIFIER_KINDS enumerates the four families', () => {
-  assert.deepEqual([...QUALIFIER_KINDS].sort(), ['ACCURACY', 'KNOWLEDGE', 'TEMPORAL', 'THRESHOLD']);
+test('QUALIFIER_KINDS enumerates the six families', () => {
+  // P2 section 1: four -> six, frozen.
+  assert.deepEqual(
+    [...QUALIFIER_KINDS].sort(),
+    ['ACCURACY', 'DISCLOSURE_SCHEDULE_CARVEOUT', 'KNOWLEDGE', 'PERFORMANCE_ASSUMPTION', 'TEMPORAL', 'THRESHOLD']
+  );
 });
 
 // ─── The run-1/run-2 model-disagreement clause ───

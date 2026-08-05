@@ -22,7 +22,7 @@ const SOURCE = Object.freeze({
   retrieval_url_sha256: 'c089e4896d7d1486f7d86ebe5b854b0cf2d4afcd2afcbcf9b8483133435d4f2e',
   response_bytes_sha256: 'abba043018410d718c207e7d7a43c9567166f6a10c4c9a6b4b0c8c7761cd6b9d',
 });
-const IDEMPOTENCY_KEY = 'QXO_SEC_SOURCE_ADMISSION_V2';
+const IDEMPOTENCY_KEY = 'QXO_SEC_SOURCE_ADMISSION_V3';
 const MAX_WRITER_REQUEST_BYTES = 512 * 1024;
 
 function fail(message) {

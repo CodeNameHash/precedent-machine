@@ -109,7 +109,7 @@ test('staging pins the exact F6 contract, source carrier and immutable source', 
   );
   assert.equal(
     attestation.upstream_binding.qxo_no_shop_notice_source_binding_f6_id,
-    '3e4e1a71bf89a360b7d712f96ea28ec2d8496868b7321648f9a214d96fcef7de',
+    '599727affea311b4ecc884e3806b21c5dbea8df77b10f01ca193c1184ce88c46',
   );
   assert.equal(
     attestation.source_binding.document_hash,
@@ -122,7 +122,7 @@ test('the first clock uses one inclusive ANY_OF expression across both receipts'
   assert.equal(initial.suppressed, false);
   assert.equal(
     initial.existing_claim_revision_id,
-    '609e1153fd0e8fe5f75127bee4ef32480814226e7cb07b0b21448e9b11b28985',
+    'a492fa77d2c529fcc63b21df119e1f4b4169294167bb243e7745668b18393a3b',
   );
   assert.equal(initial.trigger_operator, 'ANY_OF');
   assert.deepEqual(initial.trigger_codes, [
@@ -136,7 +136,7 @@ test('the copy clock retains raw receipt and invents no object or cardinality', 
   const copy = fixture().copy_clock;
   assert.equal(
     copy.existing_claim_revision_id,
-    'fdc473bb486f0104c3e29e5afb263ee81c7a2953b6da67de42a0c3737322a177',
+    '8bc47e7e4c1ee206052b1f7bda05c337d2b99c3b670b456c8826542128b34f33',
   );
   assert.deepEqual(copy.raw_referent, {
     exact_text: 'receipt',
@@ -145,7 +145,7 @@ test('the copy clock retains raw receipt and invents no object or cardinality', 
     exact_bytes_digest:
       '6f32860910ca0fb2a20c7fda143666b09dbf8db5238195c90a586fb542ff0cad',
     parent_evidence_excerpt_id:
-      'd0713059174b292f75c3f80909ad40535fdb52c53f13c696447fdb591e4230e5',
+      'cf20e94b556b2742883007922268fc58026d1a58f733e6ecb65f40d1dce58c8e',
   });
   assert.equal(copy.canonical_trigger_code, null);
   assert.equal(copy.receipt_object_resolution, 'UNRESOLVED');

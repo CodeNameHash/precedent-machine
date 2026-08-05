@@ -327,11 +327,41 @@ function provisionHasCodedFeatures(provision) {
   return false;
 }
 
+function attachExactTextSupplements(matches, unmatchedProvisions) {
+  const matchesBySource = groupBy(matches, ({ card }) => {
+    const text = trimmedOrNull(card.region_full_text);
+    return text ? `${card.provision_type}\0${text}` : null;
+  });
+  const supplementalMatches = [];
+  const remainingProvisions = [];
+  for (const provision of unmatchedProvisions) {
+    const text = trimmedOrNull(provision.full_text);
+    const key = text ? `${provisionType(provision)}\0${text}` : null;
+    const candidates = key ? matchesBySource.get(key) : null;
+    if (!candidates || candidates.length !== 1) {
+      remainingProvisions.push(provision);
+      continue;
+    }
+    supplementalMatches.push({
+      card: candidates[0].card,
+      provision,
+      primaryProvision: candidates[0].provision,
+      matchKind: 'exact-text-supplement',
+    });
+  }
+  return { supplementalMatches, remainingProvisions };
+}
+
 // Builds the full per-deal plan: match ladder + coverage check. Never
 // touches the network. `cards` / `provisions` are the raw rows selected for
 // one deal.
 function buildDealPlan(dealId, cards, provisions, options = {}) {
-  const { matches, ambiguities, unmatchedCards, unmatchedProvisions } = matchCardsToProvisions(cards, provisions);
+  const matchResult = matchCardsToProvisions(cards, provisions);
+  const { supplementalMatches, remainingProvisions: unmatchedProvisions } = attachExactTextSupplements(
+    matchResult.matches,
+    matchResult.unmatchedProvisions,
+  );
+  const { matches, ambiguities, unmatchedCards } = matchResult;
 
   const coverageFailures = unmatchedProvisions
     .filter(provisionHasCodedFeatures)
@@ -341,7 +371,10 @@ function buildDealPlan(dealId, cards, provisions, options = {}) {
   const claimOptions = { extractorName: 'rematerialize-claims', runId };
 
   const claimRows = [];
+  const claimById = new Map();
   const unknownAttributes = [];
+  const supplementalConflicts = [];
+  const supplementalDispositions = [];
   for (const { card, provision } of matches) {
     const perProvisionOptions = {
       ...claimOptions,
@@ -351,7 +384,49 @@ function buildDealPlan(dealId, cards, provisions, options = {}) {
       extractedAt: provision.extracted_at || provision.created_at || null,
     };
     const { rows, unknownAttributes: unknown } = buildClaimRowsForCard(dealId, card, provision, perProvisionOptions);
-    claimRows.push(...rows);
+    for (const row of rows) {
+      claimById.set(row.id, row);
+      claimRows.push(row);
+    }
+    unknownAttributes.push(...unknown);
+  }
+
+  for (const { card, provision, primaryProvision } of supplementalMatches) {
+    const perProvisionOptions = {
+      ...claimOptions,
+      extractionVersion: (provision.ai_metadata && provision.ai_metadata.extraction_version) || null,
+      extractedAt: provision.extracted_at || provision.created_at || null,
+    };
+    const { rows, unknownAttributes: unknown } = buildClaimRowsForCard(dealId, card, provision, perProvisionOptions);
+    for (const row of rows) {
+      const primaryRow = claimById.get(row.id);
+      if (!primaryRow) {
+        claimById.set(row.id, row);
+        claimRows.push(row);
+        continue;
+      }
+      const samePayload = primaryRow.verbatim === row.verbatim
+        && primaryRow.canonical === row.canonical
+        && primaryRow.evidence_quote === row.evidence_quote;
+      if (samePayload) continue;
+      if (row.attribute === 'mainConcept') {
+        supplementalDispositions.push({
+          attribute: row.attribute,
+          primaryProvisionId: primaryProvision.id,
+          supplementalProvisionId: provision.id,
+          disposition: 'PRIMARY_CARD_SUMMARY_WINS',
+        });
+        continue;
+      }
+      supplementalConflicts.push({
+        claimId: row.id,
+        attribute: row.attribute,
+        primaryProvisionId: primaryProvision.id,
+        supplementalProvisionId: provision.id,
+        primaryVerbatim: primaryRow.verbatim,
+        supplementalVerbatim: row.verbatim,
+      });
+    }
     unknownAttributes.push(...unknown);
   }
 
@@ -361,13 +436,18 @@ function buildDealPlan(dealId, cards, provisions, options = {}) {
   const rungCounts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
   for (const m of matches) rungCounts[m.rung] += 1;
 
-  const ok = ambiguities.length === 0 && coverageFailures.length === 0;
+  const ok = ambiguities.length === 0
+    && coverageFailures.length === 0
+    && supplementalConflicts.length === 0;
 
   return {
     dealId,
     cardsTotal: cards.length,
     provisionsTotal: provisions.length,
     matches,
+    supplementalMatches,
+    supplementalConflicts,
+    supplementalDispositions,
     ambiguities,
     unmatchedCards,
     unmatchedProvisions,
@@ -389,6 +469,12 @@ function formatDealTable(plan) {
   const lines = [];
   lines.push(`  cards: ${plan.cardsTotal}  provisions: ${plan.provisionsTotal}`);
   lines.push(`  matched: ${plan.matches.length} (r1: ${plan.rungCounts[1]}, r2: ${plan.rungCounts[2]}, r3: ${plan.rungCounts[3]}, r4: ${plan.rungCounts[4]}, r5: ${plan.rungCounts[5]})`);
+  if (plan.supplementalMatches.length > 0) {
+    lines.push(`  exact-text supplemental provisions: ${plan.supplementalMatches.length}`);
+  }
+  if (plan.supplementalConflicts.length > 0) {
+    lines.push(`  supplemental claim conflicts: ${plan.supplementalConflicts.length}`);
+  }
   lines.push(`  unmatched cards: ${plan.unmatchedCards.length}`);
   lines.push(`  unmatched provisions: ${plan.unmatchedProvisions.length} (with coded features: ${withCoded}, without: ${withoutCoded})`);
   lines.push(`  ambiguities: ${plan.ambiguities.length}`);
@@ -488,7 +574,14 @@ async function fetchCards(sb, dealId) {
   return data || [];
 }
 
+function canPartiallyWritePlan(plan) {
+  return !Array.isArray(plan.supplementalConflicts) || plan.supplementalConflicts.length === 0;
+}
+
 async function writeDealClaims(sb, plan) {
+  if (!canPartiallyWritePlan(plan)) {
+    throw new Error(`Refusing to write deal ${plan.dealId}: supplemental claim conflict requires adjudication`);
+  }
   await upsertClaims(sb, plan.claimRows);
   const staleDeleted = await deleteStaleClaimsForSurvivors(
     sb,
@@ -516,6 +609,9 @@ function planToReportEntry(deal, plan) {
     cardsTotal: plan.cardsTotal,
     provisionsTotal: plan.provisionsTotal,
     matched: plan.matches.length,
+    supplementalMatches: plan.supplementalMatches.length,
+    supplementalConflicts: plan.supplementalConflicts,
+    supplementalDispositions: plan.supplementalDispositions,
     rungCounts: plan.rungCounts,
     unmatchedCards: plan.unmatchedCards.length,
     unmatchedProvisions: plan.unmatchedProvisions.length,
@@ -573,6 +669,12 @@ async function main() {
     return;
   }
   if (anyFailed && args.partial) {
+    const conflictingPlans = plans.filter(({ plan }) => !canPartiallyWritePlan(plan));
+    if (conflictingPlans.length > 0) {
+      console.error('\nSupplemental claim conflict detected — partial mode will not write or prune any requested deal.');
+      process.exitCode = 1;
+      return;
+    }
     // --partial: claimRows/matchedExcerptIds are built from unique-rung
     // matches ONLY, so writing them involves no guessing. Ambiguous cards are
     // untouched (their claims stay stale until a prune resolves the dup) and
@@ -615,6 +717,7 @@ module.exports = {
   matchTypeBucket,
   provisionHasCodedFeatures,
   buildDealPlan,
+  canPartiallyWritePlan,
   formatDealTable,
   parseArgs,
   // Additive (SPEC-MECHANICAL-HARDENING-2026-07-23 part A): DB fetch + write

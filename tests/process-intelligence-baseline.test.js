@@ -66,7 +66,7 @@ test('binds the observational baseline to exact source bytes and a content ident
     [
       '3457984b065a277bc3aa18d34da62a7436325a7fe7ec0672ab0cbccd9473c1d3',
       '4b74cfa416a2a811b929d03851e7b9cdc91654dc754b6c74756be8f47988bbb5',
-      '83916dc4ad0ee02e6db7dfa8515f70dd0c39364feee1740c38c44dc684e3deb5',
+      'ecbace4566431277bb96b34eead1c03cc3ca4ca7e10fe15bf0796bcfbb95e8de',
     ],
   );
 });
@@ -86,12 +86,12 @@ test('records all 15 current Deals-table fields and their future filter requirem
   );
 });
 
-test('records the exact 331-field Agreement surface without silent loss', () => {
+test('records the exact 333-field Agreement surface without silent loss', () => {
   const agreement = inventory().agreement_query_surface;
   assert.equal(agreement.provision_type_count, 17);
-  assert.equal(agreement.distinct_user_facing_field_count, 331);
-  assert.equal(agreement.field_occurrence_count, 489);
-  assert.equal(new Set(agreement.fields.map((field) => field.field_key)).size, 331);
+  assert.equal(agreement.distinct_user_facing_field_count, 333);
+  assert.equal(agreement.field_occurrence_count, 491);
+  assert.equal(new Set(agreement.fields.map((field) => field.field_key)).size, 333);
   assert.ok(agreement.fields.every((field) => (
     field.disposition === 'INCLUDE_CURRENT_AGREEMENT_QUERY_FIELD'
     && field.source_occurrences.length > 0
@@ -102,7 +102,7 @@ test('records the exact 331-field Agreement surface without silent loss', () => 
   )));
   assert.equal(
     agreement.fields.reduce((total, field) => total + field.source_occurrences.length, 0),
-    489,
+    491,
   );
 });
 
@@ -121,12 +121,12 @@ test('gives SEC_FILING_MEETING an express exclusion', () => {
 
 test('dispositions every registry input and records the source count defect', () => {
   const registry = inventory().serving_registry;
-  assert.equal(registry.declared_entry_count, 694);
-  assert.equal(registry.observed_entry_count, 696);
+  assert.equal(registry.declared_entry_count, 698);
+  assert.equal(registry.observed_entry_count, 699);
   assert.equal(registry.declared_count_matches_observed, false);
-  assert.equal(registry.included_input_count, 329);
-  assert.equal(registry.excluded_input_count, 367);
-  assert.equal(registry.inputs.length, 696);
+  assert.equal(registry.included_input_count, 328);
+  assert.equal(registry.excluded_input_count, 371);
+  assert.equal(registry.inputs.length, 699);
   assert.ok(registry.inputs.every((input) => (
     input.input_id === `SERVING_REGISTRY_ENTRY:${input.registry_index}`
     && typeof input.disposition === 'string'
@@ -173,7 +173,7 @@ test('preserves distinct antitrust and general reverse-fee amount paths', () => 
       request: generalSource.source_request_key,
       registry_index: generalSource.source_registry_index,
     },
-    { request: 'reverseTerminationFee', registry_index: 521 },
+    { request: 'reverseTerminationFee', registry_index: 525 },
   );
 });
 

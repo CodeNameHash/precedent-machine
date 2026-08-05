@@ -1,0 +1,170 @@
+{
+  "schema_version": "NO_SHOP_FIXTURE_QUOTES/V1",
+  "note": "Every quote below is copied VERBATIM from docs/superpowers/specs/2026-08-02-family-no-shop-design.md (retrieved from production project tzulhdasmioeechxapdy, provision_cards, 2026-08-02 per the spec's own 'Evidence base' section). This slice was built fully offline against committed fixtures per the build brief -- no database was queried to obtain these bytes. The spec does not name individual provision_card ids for its quoted fragments (unlike the termination-fee slice's fixture, which had a handful of named ids); provision_card_id is therefore null throughout, and that omission is itself an honest gap (see the build report's 'not implemented as written' list) -- fabricating an id was avoided per the build brief's explicit instruction. Deal names are the spec's own labels where given ('production NOSOL-EXCEPT card', 'production NOSOL-MATCH card', etc.); where the spec quotes a fragment with no deal label at all, deal is null.",
+  "quotes": [
+    {
+      "id": "sec-rule-citation-list",
+      "deal": null,
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "the Board of Directors of the Company has taken all action necessary so that neither the restrictions on \"business combinations\" nor Rule 14d-9, Rule 14e-2(a) or Item 1012(a) of Regulation M-A shall apply",
+      "note": "The spec's own worked SEC-rule-citation-list fixture (section 2, exclusion class 2); the citation list itself excludes all three of its own digit runs from the period-literal tokenizer.",
+      "expected_period_outcome": "NO_NUMERIC_LITERAL"
+    },
+    {
+      "id": "period-business-days-parenthesised",
+      "deal": null,
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "prior written notice to Parent, at least four (4) business days in advance (the \"Notice Period\") of terminating this Agreement to enter into a definitive agreement with respect to a Superior Proposal",
+      "note": "Extended from the spec's own production NOSOL-MATCH fragment (spec section 4, \"Period roles\") with realistic surrounding termination-context language so the INITIAL_MATCH corroboration table's own second anchor (recommendation/terminat/negotiat/match) has something to match against -- the spec's shorter quoted fragment alone (\"...at least four (4) business days in advance (the 'Notice Period')\") is the core mislabel tell and is preserved verbatim as a substring below. This is the family's own central mislabel example: the matching window is named the defined term \"Notice Period\" even though its true role is INITIAL_MATCH.",
+      "expected_period_canonical": "4",
+      "expected_day_kind": "BUSINESS_DAYS",
+      "core_spec_fragment": "at least four (4) business days in advance (the \"Notice Period\")"
+    },
+    {
+      "id": "period-business-days-trailing-possessive",
+      "deal": null,
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "notify Parent in writing no less than 5 Business Days' prior to entering into such agreement",
+      "expected_period_canonical": "5",
+      "expected_day_kind": "BUSINESS_DAYS"
+    },
+    {
+      "id": "period-ten-business-days",
+      "deal": null,
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "the Company shall provide such notice at least ten (10) business days prior to the Company Stockholder Meeting",
+      "expected_period_canonical": "10",
+      "expected_day_kind": "BUSINESS_DAYS"
+    },
+    {
+      "id": "period-notice-period-veto",
+      "deal": null,
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "at least four (4) (the \"Notice Period\") business days in advance",
+      "note": "Constructed to exercise the audit C-1 veto (spec section 2/6): a defined-term parenthetical inserted BETWEEN the digit and its unit -- the corpus form always places the parenthetical AFTER the unit, so this ordering is deliberately synthetic to test the veto path itself, not a corpus quote.",
+      "expected_period_outcome": "PERIOD_UNIT_UNCORROBORATED"
+    },
+    {
+      "id": "notice-within-24-hours",
+      "deal": null,
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "promptly (and in any event within 24 hours) after receipt of any Acquisition Proposal, notify",
+      "note": "Production NOSOL-NOTICE card (spec section 2 and section 4's own \"Period roles\" worked example): the true, hour-denominated notice obligation the family's central legal pin exists to prevent from converting into a day count.",
+      "expected_period_outcome": "PERIOD_UNIT_HOURS",
+      "expected_notice_role_corroborated": true
+    },
+    {
+      "id": "period-forty-eight-hours",
+      "deal": null,
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "the Company shall notify Parent within forty-eight (48) hours of receipt",
+      "expected_period_outcome": "PERIOD_UNIT_HOURS"
+    },
+    {
+      "id": "period-96-hours",
+      "deal": null,
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "at least 96 hours written notice",
+      "expected_period_outcome": "PERIOD_UNIT_HOURS"
+    },
+    {
+      "id": "period-compound-rematch",
+      "deal": null,
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "in the event of any material amendment to the terms of such Acquisition Proposal, such period shall be three (3) Business Days instead of five (5) Business Days",
+      "note": "Extended from the spec's own production NOSOL-REMATCH fragment (spec section 2) with a leading material-amendment clause so the SUBSEQUENT_MATCH role-corroboration table has its own anchor to match -- the renewed three-day window vs. the initial five-day window is TWO claims and must ABSTAIN as one quote (core_spec_fragment preserved verbatim as a substring below).",
+      "expected_period_outcome": "MULTIPLE_PERIOD_LITERALS",
+      "first_split_subquote": "in the event of any material amendment to the terms of such Acquisition Proposal, such period shall be three (3) Business Days",
+      "second_split_subquote": "five (5) Business Days",
+      "expected_first_canonical": "3",
+      "expected_second_canonical": "5",
+      "core_spec_fragment": "such period shall be three (3) Business Days instead of five (5) Business Days"
+    },
+    {
+      "id": "period-spelled-only-five",
+      "deal": null,
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "at least five Business Days in advance",
+      "expected_period_outcome": "NON_LITERAL_NUMERAL"
+    },
+    {
+      "id": "period-spelled-only-three",
+      "deal": null,
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "the \"Notice Period\" ... will be three Business Days",
+      "expected_period_outcome": "NON_LITERAL_NUMERAL"
+    },
+    {
+      "id": "period-rematch-new-notice",
+      "deal": null,
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "in the event of any material amendment or material modification to the terms of such Acquisition Proposal, the Company shall be required to deliver a new written notice, and the period shall be three (3) Business Days",
+      "expected_period_canonical": "3",
+      "expected_day_kind": "BUSINESS_DAYS",
+      "expected_role": "SUBSEQUENT_MATCH"
+    },
+    {
+      "id": "action-solicit",
+      "deal": null,
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "the Company shall not, and shall not authorize or permit any of its Representatives to, (1) solicit, initiate or knowingly encourage or knowingly facilitate the making, submission or announcement of any Acquisition Proposal",
+      "note": "Production NOSOL-PROHIBIT card (spec section 4).",
+      "expected_action_code": "SOLICIT_ACQUISITION_INQUIRY_PROPOSAL_OR_OFFER"
+    },
+    {
+      "id": "action-furnish-information",
+      "deal": null,
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "the Company shall not furnish any nonpublic information regarding the Company to any Person in connection with or in response to an Acquisition Proposal",
+      "expected_action_code": "FURNISH_NONPUBLIC_INFORMATION"
+    },
+    {
+      "id": "action-unsolicited-veto",
+      "deal": null,
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "in response to a bona fide unsolicited written proposal that did not result from a breach of this Section, the Company may furnish nonpublic information",
+      "note": "Spec section 6 audit M-2 fixture: a SOLICIT_* code proposed on an \"unsolicited\"-containing quote must fail corroboration -- the \\b-bounded solicit stem must not match inside \"unsolicited\".",
+      "expected_action_code_proposed": "SOLICIT_ACQUISITION_INQUIRY_PROPOSAL_OR_OFFER",
+      "expected_action_outcome": "NO_SHOP_ACTION_UNCORROBORATED"
+    },
+    {
+      "id": "prerequisite-bona-fide",
+      "deal": null,
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "the Company has received a bona fide unsolicited written Acquisition Proposal that did not result from a material breach of this Agreement",
+      "expected_prerequisite_code": "BONA_FIDE_UNSOLICITED_WRITTEN_PROPOSAL_RECEIVED"
+    },
+    {
+      "id": "prerequisite-good-faith-superior",
+      "deal": null,
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "the Board of Directors determines in good faith, after consultation with its outside financial advisor and outside legal counsel, that such Acquisition Proposal constitutes, or could reasonably be expected to lead to, a Superior Proposal",
+      "expected_prerequisite_code": "BOARD_GOOD_FAITH_SUPERIOR_PROPOSAL_PATH_DETERMINATION"
+    },
+    {
+      "id": "prerequisite-window-signing-to-approval",
+      "deal": null,
+      "provision_card_id": null,
+      "retrieved": "2026-08-02",
+      "quote": "at any time prior to, but not after, receipt of the Company Stockholder Approval",
+      "expected_prerequisite_code": "WINDOW_SIGNING_TO_STOCKHOLDER_APPROVAL"
+    }
+  ]
+}

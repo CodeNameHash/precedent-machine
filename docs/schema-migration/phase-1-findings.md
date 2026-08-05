@@ -2,22 +2,22 @@
 
 ## Executive Finding
 
-The current codebase has 525 feature-like keys across rubric schemas, taxonomy feature mappings, expected-set helpers, summary table specs, validation infrastructure, and review UI references.
-Of those, 474 appear in at least two source families, while 51 appear in only one source family and need drift review before deletion.
+The current codebase has 538 feature-like keys across rubric schemas, taxonomy feature mappings, expected-set helpers, summary table specs, validation infrastructure, and review UI references.
+Of those, 483 appear in at least two source families, while 55 appear in only one source family and need drift review before deletion.
 
 ## Drift Signals
 
 - Strict cross-source type mismatches found: 6.
 - Broader schema shape mismatches found: 33.
 - Only the rubric currently declares value type in a systematic way; a zero mismatch count here is not proof of no drift.
-- UI-only feature-like keys found: 11. These are the highest-risk missing-schema candidates.
+- UI-only feature-like keys found: 15. These are the highest-risk missing-schema candidates.
 - Curated expected-set codes found: 38. These are code bundles, not direct feature definitions.
 
 ## Naming Convention Distribution
 
 | Convention |Count |
 | --- |--- |
-| camelCase |494 |
+| camelCase |507 |
 | lowercase |24 |
 | snake_case |7 |
 
@@ -27,26 +27,26 @@ Recommendation for Phase 3: use camelCase for canonical `FeatureDef.key`, becaus
 
 | Key |Appearances |Sources |
 | --- |--- |--- |
-| mainConcept |110 |expected_sets_js, feature_validation_js, rubric_js, ui |
+| mainConcept |124 |expected_sets_js, feature_validation_js, rubric_js, ui |
+| noOtherRepsParty |29 |expected_sets_js, feature_validation_js, rubric_js, ui |
+| extraContractualClaimsWaived |28 |expected_sets_js, feature_validation_js, rubric_js |
+| fraudCarveout |28 |expected_sets_js, feature_validation_js, rubric_js |
+| nonRelianceClause |28 |expected_sets_js, feature_validation_js, rubric_js |
+| noOtherRepsPresent |28 |expected_sets_js, feature_validation_js, rubric_js |
 | scheduleReference |28 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js |
 | materialityQualifier |25 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, taxonomy_js, ui |
 | crossReferences |23 |expected_sets_js, feature_validation_js, rubric_js |
 | fiduciaryOutStandard |21 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, ui |
 | matchingPeriod |21 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, ui |
-| noOtherRepsParty |21 |expected_sets_js, feature_validation_js, rubric_js, ui |
 | partyWhoCanTerminate |21 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, taxonomy_js |
-| extraContractualClaimsWaived |20 |expected_sets_js, feature_validation_js, rubric_js |
-| fraudCarveout |20 |expected_sets_js, feature_validation_js, rubric_js |
-| nonRelianceClause |20 |expected_sets_js, feature_validation_js, rubric_js |
-| noOtherRepsPresent |20 |expected_sets_js, feature_validation_js, rubric_js |
 | bringDownStandard |19 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, taxonomy_js |
 | initialMatchPeriodDays |19 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, ui |
+| language |19 |feature_validation_js, rubric_js, ui |
 | boardChangeStandard |18 |category_summary_features_js, expected_sets_js, feature_validation_js, rubric_js, ui |
 | knowledgeQualifier |18 |expected_sets_js, feature_validation_js, rubric_js, taxonomy_js, ui |
 | knowledgeScope |18 |expected_sets_js, feature_validation_js, rubric_js, ui |
 | linkedBringDownStandard |18 |expected_sets_js, feature_validation_js, rubric_js, taxonomy_js |
 | materialContractsBuckets |17 |expected_sets_js, feature_validation_js, rubric_js, taxonomy_js, ui |
-| materialityScrape |17 |expected_sets_js, feature_validation_js, rubric_js, taxonomy_js |
 
 ## Missing-Feature Patterns To Audit In Phase 3
 
@@ -55,6 +55,10 @@ Recommendation for Phase 3: use camelCase for canonical `FeatureDef.key`, becaus
   - cashAmount
   - chapeauProviso
   - closingDeadline
+  - mergerSubApprovalMechanism
+  - mergerSubApprovalTiming
+  - parentApprovalMechanism
+  - parentApprovalTiming
   - partOfRep
   - proviso
   - region_id

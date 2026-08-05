@@ -33,7 +33,7 @@ The following adversarial closure tests are mandatory traceability entries:
   result. Each result must carry the exact frozen executable-set digest for its
   test ID; a self-reported digest, changed test file, unregistered executable
   set or valid result from another binding leaves the gate open.
-  PreCutoverCertification must bind the exact 286-member
+  PreCutoverCertification must bind the exact 289-member
   MandatoryAdversarialTestCatalogueRoot and every member's definition,
   executable and passing result; the union of per-gate early minima cannot
   substitute. A fresh-looking session or empty edit set alone cannot pass.

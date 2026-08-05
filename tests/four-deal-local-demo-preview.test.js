@@ -1,0 +1,229 @@
+'use strict';
+
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const test = require('node:test');
+
+const {
+  FINAL_LEGAL_FINDING_PATHS,
+  FINAL_REVIEW_PACKET_PATH,
+  FINAL_STRICT_INDEPENDENT_REVIEW_INPUT_PATH,
+  FOUR_DEAL_LOCAL_DEMO_RESULT_SCHEMA,
+  getFrozenFourDealLocalDemoResult,
+  m3Rows,
+} = require('../lib/four-deal-local-demo-preview');
+const {
+  DurableArtifactRootError,
+  resolveDurableArtifactRoot,
+} = require('../lib/canonical-v2/durable-artifact-root');
+
+const ARTIFACT_ROOT = resolveDurableArtifactRoot({
+  environmentKey: 'CANONICAL_V2_M3_PREVIEW_ARTIFACT_ROOT',
+});
+const PREVIEW_AVAILABLE = Boolean(ARTIFACT_ROOT)
+  && fs.existsSync(path.join(ARTIFACT_ROOT, FINAL_REVIEW_PACKET_PATH));
+
+test('four-deal preview fails closed without a durable M3 artefact root', () => {
+  assert.throws(
+    () => getFrozenFourDealLocalDemoResult({ artifact_root: null }),
+    (error) => error instanceof DurableArtifactRootError && error.code === 'DURABLE_ARTIFACT_ROOT_REQUIRED',
+  );
+});
+
+test('four-deal preview binds immutable M3 rows and the sealed Metsera Process result into one read-only contract', { skip: !PREVIEW_AVAILABLE }, () => {
+  const result = getFrozenFourDealLocalDemoResult();
+  assert.equal(result.schema_version, FOUR_DEAL_LOCAL_DEMO_RESULT_SCHEMA);
+  assert.equal(result.mode, 'FROZEN_READ_ONLY_PREVIEW');
+  assert.equal(result.write_authority, 'NONE');
+  assert.equal(Object.isFrozen(result), true);
+  assert.equal(result.deals.length, 4);
+  assert.equal(result.m3_artifact.relative_path, FINAL_REVIEW_PACKET_PATH);
+  assert.equal(FINAL_REVIEW_PACKET_PATH, 'final-review-v8/sealed-final-pilot-review-packet-v8.json');
+  assert.equal(result.m3_artifact.final_review_packet_id, 'a7c30ba55850819dd265b1bc5bade8571a26c1686812a11c0144b22e8e2c7df2');
+  assert.equal(FINAL_STRICT_INDEPENDENT_REVIEW_INPUT_PATH,
+    'final-review-v8/sealed-strict-independent-legal-review-input-source-bound-v8.json');
+  assert.equal(result.m3_artifact.strict_independent_review_input.relative_path, FINAL_STRICT_INDEPENDENT_REVIEW_INPUT_PATH);
+  assert.equal(result.m3_artifact.strict_independent_review_input.strict_independent_review_input_id,
+    'e1773faf57e75274c0da1b8c9b9efb694cf7bad4019e50a87e173d207fcf8da7');
+  assert.deepEqual(FINAL_LEGAL_FINDING_PATHS, [
+    'final-review-v8/sealed-corrected-independent-legal-re-review-findings-v2.json',
+  ]);
+  assert.deepEqual(
+    result.m3_artifact.final_legal_findings.map((finding) => finding.path),
+    FINAL_LEGAL_FINDING_PATHS.map((relativePath) => path.join(ARTIFACT_ROOT, relativePath)),
+  );
+  assert.deepEqual(
+    result.m3_artifact.final_legal_findings.map((finding) => finding.independent_legal_review_findings_id),
+    ['9773bb7a88e90f9f58ae67c75decdf8c3102e73663a890365fd2376a5195e7c1'],
+  );
+
+  const topBuild = result.deals.find((deal) => deal.deal_name === 'TopBuild');
+  const skechers = result.deals.find((deal) => deal.deal_name === 'Skechers');
+  const modiv = result.deals.find((deal) => deal.deal_name === 'Modiv');
+  const metsera = result.deals.find((deal) => deal.deal_name === 'Metsera');
+  assert.equal([topBuild, skechers, modiv].flatMap((deal) => deal.work_items).length, 12);
+  assert.deepEqual(
+    [topBuild, skechers, modiv, metsera].map((deal) => [deal.deal_name, deal.rows.length]),
+    [['TopBuild', 193], ['Skechers', 50], ['Modiv', 61], ['Metsera', 1]],
+  );
+  const globalSourceCounts = [topBuild, skechers, modiv].flatMap((deal) => deal.rows)
+    .reduce((counts, row) => ({
+      governed: counts.governed + Number(row.result_type === 'GOVERNED_VALUE'),
+      review: counts.review + Number(row.result_type === 'REVIEW_ITEM'),
+      open_world: counts.open_world + Number(row.result_type === 'OPEN_WORLD_WARNING'),
+    }), { governed: 0, review: 0, open_world: 0 });
+  assert.deepEqual(globalSourceCounts, { governed: 150, review: 15, open_world: 132 });
+  for (const deal of [topBuild, skechers, modiv]) {
+    assert.equal(deal.result_domain, 'M3_CANONICAL_REVIEW');
+    assert.ok(deal.rows.some((row) => row.result_type === 'GOVERNED_VALUE'
+      && row.source_quote && row.source_citation));
+    assert.equal(deal.result_state, 'SEALED_FINAL_LEGAL_FINDINGS_BOUND');
+    assert.ok(deal.rows.every((row) => row.work_item_legal_review_state === 'PASS'
+      && row.resolver_state && row.source_citation));
+    assert.ok(deal.rows.filter((row) => ['REVIEW_QUEUE', 'OPEN_WORLD'].includes(row.resolver_state))
+      .every((row) => row.legal_review_state === null));
+  }
+  assert.ok(topBuild.rows.some((row) => row.result_type === 'OPEN_WORLD_WARNING'
+    && row.warning));
+  assert.equal(metsera.result_domain, 'PROCESS_PRODUCT');
+  assert.equal(metsera.rows[0].legal_review_state, null);
+  assert.equal(metsera.rows[0].product_result_state, 'INACTIVE_CANDIDATE');
+  assert.equal(metsera.rows[0].governed_value, 'EXCLUSIVITY_GRANTED');
+  assert.match(metsera.rows[0].source_citation, /Metsera DEFM14A/);
+  assert.equal(metsera.product_component.slot_state, 'VALID');
+});
+
+test('four-deal preview retains an explicit no-findings path', { skip: !PREVIEW_AVAILABLE }, () => {
+  const result = getFrozenFourDealLocalDemoResult({
+    artifact_root: ARTIFACT_ROOT,
+    final_legal_finding_paths: [],
+  });
+  const topBuild = result.deals.find((deal) => deal.deal_name === 'TopBuild');
+  const modiv = result.deals.find((deal) => deal.deal_name === 'Modiv');
+  assert.equal(topBuild.result_state, 'PENDING_INDEPENDENT_REVIEW');
+  assert.ok(topBuild.rows.every((row) => row.legal_review_state === null
+    && row.work_item_legal_review_state === 'PENDING_INDEPENDENT_REVIEW'));
+  assert.ok(modiv.rows.some((row) => row.work_item_id === 'modiv-consideration-2-1'
+    && row.legal_review_state === null
+    && row.work_item_legal_review_state === 'PENDING_INDEPENDENT_REVIEW'));
+  assert.ok(modiv.rows.some((row) => row.work_item_id === 'modiv-antitrust-consents-5-5'
+    && row.legal_review_state === null
+    && row.work_item_legal_review_state === 'PENDING_INDEPENDENT_REVIEW'));
+});
+
+test('four-deal preview rejects sealed V5 findings against the sealed V8 packet and strict input', { skip: !PREVIEW_AVAILABLE }, () => {
+  assert.throws(
+    () => getFrozenFourDealLocalDemoResult({
+      artifact_root: ARTIFACT_ROOT,
+      final_legal_finding_paths: [path.join(
+        ARTIFACT_ROOT,
+        'final-review-v5/sealed-corrected-independent-legal-re-review-findings.json',
+      )],
+    }),
+    (error) => error?.code === 'FINAL_FINDINGS_BINDING_MISMATCH',
+  );
+});
+
+test('four-deal preview reads current-resolver replays instead of their retained prior results', () => {
+  const workItems = [
+    ['REPLAY_ONLY_CURRENT_RESOLVER_REPLAY', 'replay-only'],
+    ['PASSED_ITERATION_2_CURRENT_RESOLVER_REPLAY', 'passed-iteration-2'],
+  ].map(([sourceKind, suffix]) => ({
+    work_item_id: `work-${suffix}`,
+    source_kind: sourceKind,
+    repaired_replay: {
+      work_item_id: `work-${suffix}`,
+      resolution: {
+        resolved: [{
+          section_reference: '6.3',
+          source_citation: '6.3(a)(i)(A)',
+          resolved_claim_definition_key: 'TERMINATION_RIGHT_PRESENT',
+          claim: { claim_revision_id: `claim-${suffix}`, canonical_value: true, raw_value: 'current source quote' },
+          triage: { reasons: [] },
+        }],
+        review_queue: [],
+        open_world: [],
+      },
+    },
+    replay_result: { work_item_id: `work-${suffix}`, resolution: { resolved: [] } },
+    iteration_2_work_result: { work_item_id: `work-${suffix}`, resolution: { resolved: [] } },
+  }));
+  const rows = m3Rows(workItems, new Map());
+  assert.equal(rows.length, 2);
+  assert.ok(rows.every((row) => row.source_citation === '6.3(a)(i)(A)'
+    && row.source_quote === 'current source quote'));
+});
+
+test('four-deal preview keeps governed scope separate from a missing published citation', () => {
+  const rows = m3Rows([{
+    work_item_id: 'work-missing-citation',
+    source_kind: 'REPAIRED_REPLAY',
+    repaired_replay: {
+      work_item_id: 'work-missing-citation',
+      resolution: {
+        resolved: [{
+          section_reference: '4.3',
+          resolved_claim_definition_key: 'NO_SHOP_DURATION',
+          claim: { claim_revision_id: 'claim-missing-citation', canonical_value: '45', raw_value: '45 days' },
+        }],
+        review_queue: [],
+        open_world: [],
+      },
+    },
+  }], new Map());
+  assert.equal(rows[0].source_citation, 'Published citation pending; governed scope 4.3');
+});
+
+test('four-deal preview exposes structured fee and consideration formulas without flattening them', { skip: !PREVIEW_AVAILABLE }, () => {
+  const result = getFrozenFourDealLocalDemoResult();
+  const modiv = result.deals.find((deal) => deal.deal_name === 'Modiv');
+  const formulas = modiv.rows.filter((row) => row.result_type === 'STRUCTURED_FORMULA');
+  assert.equal(formulas.filter((row) => row.governed_field === 'CONDITIONAL_TERMINATION_FEE_VALUE').length, 6);
+  assert.equal(formulas.filter((row) => row.governed_field === 'STRUCTURED_PER_SHARE_CASH_VALUE').length, 1);
+  assert.ok(formulas.some((row) => /accrued and unpaid dividends/.test(row.source_quote)));
+  assert.ok(formulas.some((row) => /not flattened/.test(row.warning)));
+  const structuredCash = formulas.find((row) => row.governed_field === 'STRUCTURED_PER_SHARE_CASH_VALUE');
+  assert.equal(structuredCash.source_citation, '2.1(b)(ii) + 8.12(zz)');
+  assert.doesNotMatch(structuredCash.source_citation, /→/);
+});
+
+test('four-deal preview does not project a work-item PASS onto an unreviewed formula row', () => {
+  const rows = m3Rows([{
+    work_item_id: 'work-formula',
+    source_kind: 'REPAIRED_REPLAY',
+    repaired_replay: {
+      work_item_id: 'work-formula',
+      resolution: {
+        structured_per_share_cash_values: [{
+          structured_per_share_cash_value_id: 'formula-unreviewed',
+          operator: 'BASE_PLUS_VARIABLE',
+          base_amount: '25.00',
+          currency: 'USD',
+          variable_component: 'accrued dividends',
+          raw_formula: '$25.00 plus accrued dividends',
+          source_citations: ['2.1(b)(ii)', '8.12(zz)'],
+        }],
+      },
+    },
+  }], new Map([['work-formula', {
+    status: 'PASS',
+    reason: 'Work item reviewed.',
+    row_review_status_by_id: {},
+  }]]));
+  assert.equal(rows[0].work_item_legal_review_state, 'PASS');
+  assert.equal(rows[0].legal_review_state, null);
+});
+
+test('four-deal preview projects V8 row findings without inventing a work-item legal basis', { skip: !PREVIEW_AVAILABLE }, () => {
+  const result = getFrozenFourDealLocalDemoResult();
+  const modiv = result.deals.find((deal) => deal.deal_name === 'Modiv');
+  assert.ok(modiv.rows.every((row) => row.work_item_legal_review_state === 'PASS'));
+  assert.ok(modiv.rows.every((row) => row.work_item_legal_review_reason === null));
+  assert.ok(modiv.rows.filter((row) => ['REVIEW_QUEUE', 'OPEN_WORLD'].includes(row.resolver_state))
+    .every((row) => row.legal_review_state === null));
+  assert.ok(modiv.rows.filter((row) => row.resolver_state === 'RESOLVED')
+    .every((row) => row.legal_review_state === 'PASS'));
+  assert.ok(modiv.rows.filter((row) => row.result_type === 'STRUCTURED_FORMULA')
+    .every((row) => row.legal_review_state === 'PASS'));
+});

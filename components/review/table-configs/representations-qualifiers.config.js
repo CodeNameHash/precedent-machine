@@ -46,6 +46,12 @@ function isRepresentationCard(card) {
 // provision_type is MISC_BOILERPLATE (it lives under Anti-Reliance in that
 // section, not the Parent reps table); the loose OR would otherwise pull it
 // into this table by code prefix alone. See R5 note in FEEDBACK-4-PUNCHLIST.
+// v1 reclassification (2026-08-02, R3): the same is true of REP-B-ANTIRELIANCE's
+// eight element successors (REP-B-/REP-T- x NOOTHERREPS/NONRELIANCE/
+// INDEPINVEST/FRAUDCARVEOUT) -- they land wherever the anti-reliance
+// element scan found them (often MISC_BOILERPLATE, not a REPRESENTATION
+// section), so this strict provision_type check keeps them out of the
+// per-rep table the same way it always kept REP-B-ANTIRELIANCE out.
 function isPartyRepresentationCard(card, partyPrefix) {
   return cardType(card) === 'REPRESENTATION' && cardCode(card).startsWith(partyPrefix);
 }
@@ -181,19 +187,30 @@ function resolveMateriality(card) {
 // condition's `bringDownTiers` (in-all-material-respects / de-minimis / MAE,
 // each with a section-cited reps_covered list). We resolve it via the SAME
 // map the Conditions section uses (buildRepBringDownMap) so the two agree, and
-// default to MAE for any rep the tiers don't carve out.
+// use MAE only when the matching side has an explicit catch-all tier.
 function resolveBringDown(card, bringDownMap) {
   if (!bringDownMap) return null;
+  const code = String(cardCode(card) || '');
+  const repType = code.startsWith('REP-T-') ? 'REP-T'
+    : code.startsWith('REP-B-') ? 'REP-B' : null;
+  if (!repType) return null;
   const key = normRepName(labelOf(card));
-  let hit = bringDownMap.get(key);
+  let hit = bringDownMap.get(`${repType}:${key}`);
   if (!hit) {
     for (const [name, meta] of bringDownMap) {
-      if (name && (key.includes(name) || name.includes(key))) { hit = meta; break; }
+      const prefix = `${repType}:`;
+      if (name.startsWith(prefix)) {
+        const candidate = name.slice(prefix.length);
+        if (candidate && (key.includes(candidate) || candidate.includes(key))) { hit = meta; break; }
+      }
     }
   }
-  // Not carved into a specific tier -> MAE (the closing condition's catch-all).
-  const short = hit ? hit.short : 'MAE';
-  const colorKey = hit ? hit.colorKey : 'MAE';
+  // An unlisted rep is MAE only when its OWN side has an explicit catch-all.
+  // Missing or contradictory closing-condition data is unknown, not MAE.
+  if (!hit) hit = bringDownMap.catchAllByRepType?.get(repType);
+  if (!hit) return null;
+  const short = hit.short;
+  const colorKey = hit.colorKey;
   return { label: `Bringdown: ${short}`, colorKey, evidence: textOf(card) };
 }
 

@@ -404,19 +404,19 @@ test('replaying the F28 recorded raw response through the fixed pipeline: defect
     ['3.1(b)(iii)', '3.1(b)(iv)', '3.1(b)(v)'],
   );
 
-  // Net effect: NEVER SILENTLY DISCARDED. Every one of the 17 citation-
+  // Net effect: NEVER SILENTLY DISCARDED. Every one of the 18 citation-
   // checked proposals still compiles -- accepted (via corroboration) or
-  // not -- so compiled_candidate_count is 17, not 0. Each compiled entry
-  // carries its own citation_validation record; 8 of the 17 (the "(i)"/
-  // "(ii)" citations, repeated across fragments) are accepted via
+  // not -- so compiled_candidate_count is 18, not 0. Each compiled entry
+  // carries its own citation_validation record; 9 of the 18 (the "(i)"/
+  // "(ii)" citations, repeated across fragments, plus the zero-share row) are accepted via
   // CORROBORATED_BY_DOCUMENT_TEXT, the other 9 stay unaccepted.
-  assert.equal(receipt.compiled_candidate_count, 17);
+  assert.equal(receipt.compiled_candidate_count, 18);
   assert.equal(receipt.rejected_candidate_count, 0, 'nothing fails compilation on its own terms');
   assert.ok(receipt.compiled_candidates.every((entry) => entry.ok === true));
   const acceptedCount = receipt.compiled_candidates.filter(
     (entry) => entry.citation_validation && entry.citation_validation.accepted === true,
   ).length;
-  assert.equal(acceptedCount, 8);
+  assert.equal(acceptedCount, 9);
   assert.ok(
     receipt.compiled_candidates
       .filter((entry) => entry.citation_validation && entry.citation_validation.accepted === true)
@@ -445,7 +445,7 @@ test('replaying the F28 recorded raw response through the fixed pipeline: defect
   assert.equal(resolution.resolved.length, 0);
   assert.equal(resolution.review_queue.length, 0);
   assert.equal(resolution.open_world.length, 17);
-  assert.equal(resolution.residuals.length, 0);
+  assert.equal(resolution.residuals.length, 1);
   assert.ok(resolution.open_world.every((entry) => entry.reason === 'UNMAPPED_GENERIC_CLAIM_KEY'));
   assert.ok(resolution.open_world.every((entry) => entry.citation_validation != null));
 });

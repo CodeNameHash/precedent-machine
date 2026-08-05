@@ -17,6 +17,14 @@ const { normalizeForMatch } = require('../../lib/verification');
 
 const DEFAULT_REPORT = 'docs/reprocess/round-m2-00-backfill.md';
 const DEFAULT_MIN_CARDS = 40;
+// Default extraction_version label — unchanged for ordinary backfill runs.
+// v1 reclassification (2026-08-02, audit A-M4): the reclassification apply
+// pass MUST run this script with `--extraction-version m2-01-reclass-v1` so
+// the comparator's isComparisonReceiptStale actually fires on pre-reclass
+// receipts (lib/canonical-v2/native-producer/v1v2-comparator.js). Pinned
+// per docs/superpowers/specs/2026-08-02-v1-reclassification-design.md §4 —
+// DOCUMENTED here, NOT executed by this slice (CODE ONLY; no DB writes).
+const DEFAULT_EXTRACTION_VERSION = 'm2-00-corpus-backfill-v1';
 const UPSERT_BATCH_SIZE = 50;
 const UPSERT_RETRIES = 3;
 
@@ -42,6 +50,7 @@ function parseArgs(argv) {
     envFile: null,
     minCards: DEFAULT_MIN_CARDS,
     out: DEFAULT_REPORT,
+    extractionVersion: DEFAULT_EXTRACTION_VERSION,
   };
   for (let i = 2; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -51,6 +60,7 @@ function parseArgs(argv) {
     else if (arg === '--env-file') args.envFile = argv[++i];
     else if (arg === '--min-cards') args.minCards = Number(argv[++i]);
     else if (arg === '--out') args.out = argv[++i];
+    else if (arg === '--extraction-version') args.extractionVersion = argv[++i];
     else throw new Error(`Unknown arg: ${arg}`);
   }
   if (!args.all && !args.deal) throw new Error('Usage: node scripts/backfill/extract-to-cards.js (--all | --deal <substring-or-id>) [--apply] [--env-file <path>] [--out <path>]');
@@ -120,6 +130,65 @@ async function existingCardCount(sb, dealId) {
 // provision_instance_id / excerpt_id, so no cascade fires for survivors),
 // then delete only the orphans -- provision_instance_ids that existed for
 // this deal before this run but are absent from the new row set.
+function reconcileProvisionCardIdentities(rows, existingRows) {
+  const existingByRegionHash = new Map();
+  const existingBySectionType = new Map();
+  for (const existing of existingRows || []) {
+    if (!existing.region_hash) continue;
+    const prior = existingByRegionHash.get(existing.region_hash);
+    if (prior && prior.provision_instance_id !== existing.provision_instance_id) {
+      throw new Error(`Existing provision_cards contain duplicate region identity ${existing.region_hash}`);
+    }
+    existingByRegionHash.set(existing.region_hash, existing);
+    if (existing.section_ref && existing.provision_type) {
+      const sectionTypeKey = `${existing.section_ref}\0${existing.provision_type}`;
+      const priorSection = existingBySectionType.get(sectionTypeKey);
+      if (priorSection && priorSection.provision_instance_id !== existing.provision_instance_id) {
+        throw new Error(`Existing provision_cards contain duplicate section/type identity ${sectionTypeKey}`);
+      }
+      existingBySectionType.set(sectionTypeKey, existing);
+    }
+  }
+
+  const identityRemap = new Map();
+  const reconciled = (rows || []).map((row) => {
+    const regionMatch = existingByRegionHash.get(row.region_hash);
+    const sectionTypeKey = row.section_ref && row.provision_type
+      ? `${row.section_ref}\0${row.provision_type}`
+      : null;
+    const sectionMatch = sectionTypeKey ? existingBySectionType.get(sectionTypeKey) : null;
+    if (regionMatch && sectionMatch && regionMatch.provision_instance_id !== sectionMatch.provision_instance_id) {
+      throw new Error(`Incoming provision_card has conflicting stored identities for region ${row.region_hash} and section/type ${sectionTypeKey}`);
+    }
+    const existing = regionMatch || sectionMatch;
+    if (!existing || existing.provision_instance_id === row.provision_instance_id) return { ...row };
+    if (!existing.provision_instance_id || !existing.excerpt_id) {
+      throw new Error(`Existing provision_card is missing canonical identity for region ${row.region_hash}`);
+    }
+    identityRemap.set(row.provision_instance_id, existing.provision_instance_id);
+    return {
+      ...row,
+      provision_instance_id: existing.provision_instance_id,
+      excerpt_id: existing.excerpt_id,
+    };
+  });
+
+  const survivingIds = new Set();
+  for (const row of reconciled) {
+    if (survivingIds.has(row.provision_instance_id)) {
+      throw new Error(`Reconciled provision_cards contain duplicate identity ${row.provision_instance_id}`);
+    }
+    survivingIds.add(row.provision_instance_id);
+  }
+
+  return reconciled.map((row) => ({
+    ...row,
+    references: Array.isArray(row.references)
+      ? row.references.map((reference) => identityRemap.get(reference) || reference)
+      : row.references,
+  }));
+}
+
 async function replaceProvisionCardRows(sb, dealId, rows, batchSize = UPSERT_BATCH_SIZE) {
   if (rows.length === 0) {
     // Nothing survives this extraction, so every existing card for the deal
@@ -131,8 +200,17 @@ async function replaceProvisionCardRows(sb, dealId, rows, batchSize = UPSERT_BAT
     return 0;
   }
 
-  for (let index = 0; index < rows.length; index += batchSize) {
-    const batch = rows.slice(index, index + batchSize);
+  const { data: storedRows, error: storedRowsError } = await sb
+    .from('provision_cards')
+    .select('provision_instance_id,excerpt_id,region_hash,section_ref,provision_type')
+    .eq('deal_id', dealId);
+  if (storedRowsError) {
+    throw new Error(`Failed to read existing provision_cards for identity reconciliation: ${storedRowsError.message}`);
+  }
+  const reconciledRows = reconcileProvisionCardIdentities(rows, storedRows || []);
+
+  for (let index = 0; index < reconciledRows.length; index += batchSize) {
+    const batch = reconciledRows.slice(index, index + batchSize);
     let lastError = null;
     for (let attempt = 1; attempt <= UPSERT_RETRIES; attempt += 1) {
       try {
@@ -152,7 +230,7 @@ async function replaceProvisionCardRows(sb, dealId, rows, batchSize = UPSERT_BAT
     if (lastError) throw new Error(`Failed to upsert provision_cards batch ${index / batchSize + 1}: ${lastError.message || String(lastError)}`);
   }
 
-  const survivingIds = new Set(rows.map((row) => row.provision_instance_id));
+  const survivingIds = new Set(reconciledRows.map((row) => row.provision_instance_id));
   const { data: existingRows, error: existingError } = await sb
     .from('provision_cards')
     .select('provision_instance_id')
@@ -291,7 +369,7 @@ async function ensureParserRegions(sb, deal, apply) {
   return rows;
 }
 
-function legacyProvisionForCard(row, deal, region) {
+function legacyProvisionForCard(row, deal, region, extractionVersion) {
   const features = featureBag(row);
   const code = rowCode(row);
   const text = String(row.full_text || '').trim();
@@ -312,11 +390,11 @@ function legacyProvisionForCard(row, deal, region) {
     ai_metadata: row.ai_metadata,
     source_doc_id: deal.id,
     extracted_by: 'CODEX',
-    extraction_version: 'm2-00-corpus-backfill-v1',
+    extraction_version: extractionVersion || DEFAULT_EXTRACTION_VERSION,
   };
 }
 
-function buildExtractorOutput(deal, provisionRows, parserRegionRows) {
+function buildExtractorOutput(deal, provisionRows, parserRegionRows, extractionVersion) {
   const regionIndex = buildRegionIndex(parserRegionRows);
   const provisions = [];
   const skipped = [];
@@ -330,7 +408,7 @@ function buildExtractorOutput(deal, provisionRows, parserRegionRows) {
       skipped.push({ id: row.id, reason: 'no matching parser region' });
       continue;
     }
-    provisions.push(legacyProvisionForCard(row, deal, region));
+    provisions.push(legacyProvisionForCard(row, deal, region, extractionVersion));
   }
   return { provisions, skipped };
 }
@@ -340,7 +418,7 @@ async function backfillDeal(sb, deal, options = {}) {
   const provisionRows = await fetchProvisionRows(sb, deal.id);
   const beforeCards = await existingCardCount(sb, deal.id);
   const parserRegionRows = await ensureParserRegions(sb, deal, options.apply);
-  const extractorOutput = buildExtractorOutput(deal, provisionRows, parserRegionRows);
+  const extractorOutput = buildExtractorOutput(deal, provisionRows, parserRegionRows, options.extractionVersion);
   const runOptions = {
     sourceDocId: deal.id,
     model: 'legacy-provisions',
@@ -426,6 +504,7 @@ async function run(argv = process.argv) {
       minCards: args.minCards,
       runId,
       extractedAt: generatedAt,
+      extractionVersion: args.extractionVersion,
     });
     results.push(result);
     console.log(`${result.ok ? 'PASS' : 'FAIL'} ${result.deal}: ${result.cards} cards (${result.ms}ms)`);
@@ -454,6 +533,7 @@ module.exports = {
   legacyProvisionForCard,
   markdownReport,
   parseArgs,
+  reconcileProvisionCardIdentities,
   replaceProvisionCardRows,
   run,
   sectionPathForRow,

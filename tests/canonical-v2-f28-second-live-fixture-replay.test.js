@@ -270,14 +270,13 @@ test('replaying the F28 SECOND recorded raw response through the fixed pipeline:
   // present in this hand-authored plain-text fixture but not quoted across by
   // the model at the time of the live run -- an artifact of replaying live
   // output against an approximated fixture, unrelated to citation validation
-  // or either of this fix's two other defects. 22 of the 23 original
-  // proposals (20 limbs + 2 qualifiers... actually 21-1=20 limbs + 2
-  // qualifiers = 22) reach the citation check.
+  // or either of this fix's two other defects. 23 proposals reach the citation
+  // check after the deterministic zero-share derivation.
   assert.equal(receipt.evidence_residual_count, 1);
   assert.equal(receipt.evidence_residuals[0].reason, 'LIMB_ASSERTION_QUOTE_UNVERIFIED');
   assert.equal(receipt.scope_violation_count, 0);
 
-  // THE HEADLINE FIX: every one of the 22 citation-checked proposals shares
+  // THE HEADLINE FIX: every one of the 23 citation-checked proposals shares
   // section_reference "3.1(b)" -- CITATION_NOT_CONSTRUCTIBLE against this
   // document's real tree (governing node "III-INTRO(b)", no "3.1" heading
   // anywhere) -- but "3.1(b)" is a literal substring of the real "Sections
@@ -288,9 +287,9 @@ test('replaying the F28 SECOND recorded raw response through the fixed pipeline:
   assert.equal(receipt.citation_residual_count, 0);
   assert.equal(receipt.citation_residuals.length, 0);
 
-  // NEVER SILENTLY DISCARDED: all 22 compile. Versus the run doc's headline
+  // NEVER SILENTLY DISCARDED: all 23 compile. Versus the run doc's headline
   // "0 compiled candidates" this is the direct, measured reversal.
-  assert.equal(receipt.compiled_candidate_count, 22);
+  assert.equal(receipt.compiled_candidate_count, 23);
   assert.equal(receipt.rejected_candidate_count, 0);
   assert.ok(receipt.compiled_candidates.every((entry) => entry.ok === true));
   assert.ok(receipt.compiled_candidates.every((entry) => entry.citation_validation
@@ -340,7 +339,7 @@ test('replaying the F28 SECOND recorded raw response through the fixed pipeline:
   assert.equal(resolution.resolved.length, 0);
   assert.equal(resolution.review_queue.length, 0);
   assert.equal(resolution.open_world.length, 22);
-  assert.equal(resolution.residuals.length, 0);
+  assert.equal(resolution.residuals.length, 1);
   assert.ok(resolution.open_world.every((entry) => entry.reason === 'UNMAPPED_GENERIC_CLAIM_KEY'));
   assert.ok(resolution.open_world.every((entry) => entry.citation_validation && entry.citation_validation.accepted === true));
   const openWorldGenericKeys = new Set(resolution.open_world.map((entry) => entry.claim_definition_key));
@@ -391,7 +390,10 @@ test('replaying the F28 SECOND recorded raw response through the fixed pipeline:
   // this resolution is traceable. MAPPING_TABLE_VERSION 3 -> 4 (P1
   // cap-table numerics, docs/superpowers/specs/2026-08-02-p1-captable-
   // numerics-design.md section 4).
-  assert.equal(resolution.resolution_receipt.mapping_table_version, 4);
+  // MAPPING_TABLE_VERSION 4 -> 5 (family-termination-fee slice, three fee
+  // entries -- docs/superpowers/specs/2026-08-02-family-termination-fee-
+  // design.md section 4).
+  assert.equal(resolution.resolution_receipt.mapping_table_version, 20);
   assert.ok(Number.isInteger(resolution.resolution_receipt.qualifier_kind_lexicon_version));
   assert.ok(Number.isInteger(resolution.resolution_receipt.measurement_date_parse_version));
   assert.ok(typeof resolution.resolution_receipt.ruling_corpus_id === 'string' && resolution.resolution_receipt.ruling_corpus_id.length > 0);

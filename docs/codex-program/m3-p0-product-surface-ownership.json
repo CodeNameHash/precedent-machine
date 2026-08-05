@@ -1,0 +1,148 @@
+{
+  "schema": "CANONICAL_V2_M3_P0_PRODUCT_SURFACE_OWNERSHIP/V1",
+  "snapshot": {
+    "date": "2026-08-03",
+    "source": "production Supabase tzulhdasmioeechxapdy, read-only provision_cards and claims counts"
+  },
+  "owners": [
+    {
+      "owner_id": "MATERIAL_CONTRACTS",
+      "owner_kind": "NATIVE_FAMILY",
+      "product_surface_id": "assigned-material-contracts",
+      "surface_path": "components/review/table-configs/material-contracts.config.js",
+      "surface_locator": "materialContractsConfig",
+      "first_slice": {
+        "slice_id": "MATERIAL_CONTRACT_CASH_FLOW_THRESHOLD",
+        "state": "IMPLEMENTED",
+        "evidence_paths": [
+          "lib/canonical-v2/reviewed-material-contracts-slice.js",
+          "lib/canonical-v2/qxo-material-contracts-slice.js",
+          "tests/canonical-v2-reviewed-material-contracts-slice.test.js",
+          "tests/canonical-v2-qxo-material-contracts-slice.test.js"
+        ]
+      },
+      "corpus": {
+        "card_count": 38,
+        "deal_count": 37,
+        "claim_counts": {
+          "materialContractsBuckets": 729,
+          "materialContractsDollarThresholds": 0,
+          "materialContractsRedactionsPermitted": 11
+        },
+        "examples": [
+          "Landos / AbbVie, section 3.13, reviewed canonical cash-flow threshold",
+          "QXO / TopBuild, section 3.1(p), open-world measurement period",
+          "Merck / Prometheus, section 3.20, REP-T-MATERIAL-CONTRACTS"
+        ]
+      },
+      "source_inventory": [
+        { "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/material-contracts.config.js", "source_locator": "materialContractsConfig", "disposition": "OWNED" },
+        { "source_kind": "QUERY_FIELD", "source_path": "lib/query/serving-registry-v1.json", "source_locator": "materialContractsBuckets", "disposition": "FOLLOW_ON" },
+        { "source_kind": "QUERY_FIELD", "source_path": "lib/query/natural-language.js", "source_locator": "MATERIAL_CONTRACT", "disposition": "FOLLOW_ON" },
+        { "source_kind": "COMPARE_FIELD", "source_path": "components/review-v2/compareRowUnion.js", "source_locator": "Material contracts", "disposition": "OWNED" },
+        { "source_kind": "MARKET_FIELD", "source_path": "lib/market-metrics/registry.js", "source_locator": "manifestMaterialContractMetrics", "disposition": "FOLLOW_ON" },
+        { "source_kind": "DERIVED_VALUE", "source_path": "lib/canonical-v2/reviewed-material-contracts-slice.js", "source_locator": "buildReviewedMaterialContractsSlice", "disposition": "NATIVE_FIRST_SLICE" },
+        { "source_kind": "DERIVED_VALUE", "source_path": "lib/canonical-v2/qxo-material-contracts-slice.js", "source_locator": "buildQxoMaterialContractsSlice", "disposition": "NATIVE_FIRST_SLICE" }
+      ],
+      "follow_on": [
+        "Promote bucket presence and per-bucket threshold structure from source text through the native producer.",
+        "Keep materialContractsDollarThresholds retired until extraction emits evidence-bound per-bucket values.",
+        "Delete renderer threshold mining only after native per-bucket values have product parity."
+      ]
+    },
+    {
+      "owner_id": "NO_OTHER_REPS_FRAUD",
+      "owner_kind": "NATIVE_FAMILY",
+      "product_surface_id": "assigned-no-other-reps-fraud",
+      "surface_path": "components/review/table-configs/no-other-reps-fraud.config.js",
+      "surface_locator": "noOtherRepsFraudConfig",
+      "first_slice": {
+        "slice_id": "NO_OTHER_REPS_ELEMENT_CANDIDATE_SET",
+        "state": "IMPLEMENTED",
+        "evidence_paths": [
+          "lib/canonical-v2/native-producer/no-other-reps-native-first-slice.js",
+          "tests/canonical-v2-no-other-reps-native-first-slice.test.js",
+          "tests/anti-reliance-element-scan.test.js"
+        ]
+      },
+      "corpus": {
+        "card_count": 109,
+        "deal_count": 39,
+        "claim_counts": {
+          "noOtherRepsPresent": 80,
+          "noOtherRepsParty": 81,
+          "nonRelianceClause": 69,
+          "extraContractualClaimsWaived": 64,
+          "fraudCarveout": 14,
+          "willfulBreachDefinition": 20
+        },
+        "examples": [
+          "Skechers, section 3.28, disjoint no-other-reps and non-reliance elements",
+          "Metsera, section 9.07, fraud carve-out element",
+          "Carrols, section 4.12, buyer-side anti-reliance"
+        ]
+      },
+      "source_inventory": [
+        { "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/no-other-reps-fraud.config.js", "source_locator": "noOtherRepsFraudConfig", "disposition": "OWNED" },
+        { "source_kind": "QUERY_FIELD", "source_path": "lib/query/serving-registry-v1.json", "source_locator": "noOtherRepsPresent", "disposition": "FOLLOW_ON" },
+        { "source_kind": "COMPARE_FIELD", "source_path": "components/review-v2/compareRowUnion.js", "source_locator": "unionRows", "disposition": "OWNED" },
+        { "source_kind": "MARKET_FIELD", "source_path": "components/review/table-configs/no-other-reps-fraud.config.js", "source_locator": "questionMarket", "disposition": "FOLLOW_ON" },
+        { "source_kind": "MARKET_FIELD", "source_path": "lib/row-market-stats/observations.js", "source_locator": "fraudCarveoutScope", "disposition": "FOLLOW_ON" },
+        { "source_kind": "DERIVED_VALUE", "source_path": "lib/abry.js", "source_locator": "deriveAbrySummary", "disposition": "FOLLOW_ON" },
+        { "source_kind": "DERIVED_VALUE", "source_path": "lib/canonical-v2/native-producer/no-other-reps-native-first-slice.js", "source_locator": "buildNoOtherRepsNativeFirstSlice", "disposition": "NATIVE_FIRST_SLICE" }
+      ],
+      "follow_on": [
+        "Register publishable claims for the eight approved REP-T and REP-B element codes.",
+        "Replace feature-derived Abry conclusions with native evidence-bound claims.",
+        "Keep willful-breach definition outside this family's first slice until its separate owner is designed."
+      ]
+    },
+    {
+      "owner_id": "GENERAL_COVENANT_ROUTER",
+      "owner_kind": "ROUTING_UMBRELLA",
+      "product_surface_id": "assigned-general-covenants",
+      "surface_path": "components/review/table-configs/general-covenants.config.js",
+      "surface_locator": "generalCovenantsConfig",
+      "first_slice": {
+        "slice_id": "EXACT_CODE_OWNERSHIP_ROUTER",
+        "state": "IMPLEMENTED",
+        "evidence_paths": [
+          "lib/canonical-v2/p0-product-surface-routing.js",
+          "lib/canonical-v2/native-producer/p0-product-surface-ownership.js",
+          "components/review/table-configs/general-covenants.config.js",
+          "tests/programme-gates/m3-p0-product-surface-ownership.spec.js",
+          "tests/provision-table-configs.test.js"
+        ]
+      },
+      "corpus": {
+        "card_count": 690,
+        "deal_count": 40,
+        "claim_counts": {
+          "coded_residual_cards": 263,
+          "uncoded_cards": 115,
+          "access_cards": 41,
+          "publicity_cards": 36,
+          "transaction_litigation_cards": 39
+        },
+        "examples": [
+          "Carrols, section 6.11, COV-ACCESS",
+          "Carrols, section 6.14, COV-PUBLICITY",
+          "Carrols, section 6.15, COV-LITNOTIFY"
+        ]
+      },
+      "source_inventory": [
+        { "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/general-covenants.config.js", "source_locator": "generalCovenantsConfig", "disposition": "OWNED" },
+        { "source_kind": "QUERY_FIELD", "source_path": "lib/query/serving-registry-v1.json", "source_locator": "publicStatementsJointApproval", "disposition": "FOLLOW_ON" },
+        { "source_kind": "COMPARE_FIELD", "source_path": "components/review-v2/compareRowUnion.js", "source_locator": "unionRows", "disposition": "OWNED" },
+        { "source_kind": "MARKET_FIELD", "source_path": "components/review/table-configs/general-covenants.config.js", "source_locator": "generalCovenantMarket", "disposition": "FOLLOW_ON" },
+        { "source_kind": "MARKET_FIELD", "source_path": "lib/market-metrics/adapter.js", "source_locator": "semanticRowMetrics", "disposition": "FOLLOW_ON" },
+        { "source_kind": "DERIVED_VALUE", "source_path": "components/review/table-configs/general-covenants.config.js", "source_locator": "perClauseRows", "disposition": "NO_SHARED_DERIVATION" }
+      ],
+      "follow_on": [
+        "Build narrow native families by exact covenant code. Never use a bare COV prefix.",
+        "Send null-subtype and unknown-code cards to taxonomy review instead of assigning a plausible family.",
+        "Remove each link from Other Covenants when its dedicated product family reaches rendered parity."
+      ]
+    }
+  ]
+}

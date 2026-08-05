@@ -4,7 +4,8 @@
  * tests/canonical-v2-v1v2-comparator.test.js
  *
  * Unit tests for lib/canonical-v2/native-producer/v1v2-comparator.js against
- * hand-built (synthetic) v1_snapshot/v2_side fixtures -- Tier 1 outcome
+ * hand-built (synthetic) v1_snapshot/v2_side fixtures through the
+ * non-authoritative diagnostic builder -- Tier 1 outcome
  * routing, Tier 2 value comparison, determinism, and the section-ref parse
  * rule. The REAL-DATA fixture acceptance test (TopBuild REP-T-CAP vs the
  * F28 third live run) lives in
@@ -15,37 +16,39 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { canonicalJson } = require('../lib/canonical-v2/canonical-bytes');
+const { canonicalJson, contentId } = require('../lib/canonical-v2/canonical-bytes');
 const {
   V1_PROVISION_SNAPSHOT_SCHEMA,
-  V1V2_COMPARISON_RECEIPT_SCHEMA,
+  V1V2_COMPARISON_DIAGNOSTIC_SCHEMA: V1V2_COMPARISON_RECEIPT_SCHEMA,
   FAMILY_MAPPING_TABLE,
   FAMILY_MAPPING_TABLE_VERSION,
   VALUE_MAPPING_TABLE,
   VALUE_MAPPING_TABLE_VERSION,
   parseV1SectionRef,
   candidateComparisonString,
-  buildV1V2ComparisonReceipt,
+  buildV1V2ComparisonDiagnostic: buildV1V2ComparisonReceipt,
+  buildV1V2ComparisonReceipt: buildAuthoritativeV1V2ComparisonReceipt,
   isComparisonReceiptStale,
   V1V2ComparatorError,
 } = require('../lib/canonical-v2/native-producer/v1v2-comparator');
 
 function snapshot({ cards, dealMaxExtractionVersion = 'v1', dealId = 'deal-uuid-1', governedDealKey = 'deal:test:1' }) {
-  return Object.freeze({
+  const body = {
     schema_version: V1_PROVISION_SNAPSHOT_SCHEMA,
-    snapshot_id: 'snapshot-id-1',
     deal_identity_bridge: Object.freeze({ production_deal_id: dealId, governed_deal_key: governedDealKey }),
     deal_max_extraction_version: dealMaxExtractionVersion,
     cards: Object.freeze(cards),
-  });
+  };
+  return Object.freeze({ ...body, snapshot_id: contentId(V1_PROVISION_SNAPSHOT_SCHEMA, body) });
 }
 
 function v1Card({
   id, provisionSubtype = 'REP-T-CAP', sectionRef = '3.1(b) | Capitalization | abc123',
-  primaryQuote = 'the quoted text', regionHash = 'region-hash-1', extractionVersion = 'v1', values = undefined,
+  provisionType = 'REPRESENTATION', primaryQuote = 'the quoted text', regionHash = 'region-hash-1',
+  extractionVersion = 'v1', values = undefined,
 }) {
   const card = {
-    id, provision_type: 'REPRESENTATION', provision_subtype: provisionSubtype, section_ref: sectionRef,
+    id, provision_type: provisionType, provision_subtype: provisionSubtype, section_ref: sectionRef,
     primary_quote: primaryQuote, region_hash: regionHash, extraction_version: extractionVersion,
   };
   if (values) card.values = values;
@@ -116,6 +119,8 @@ test('Tier 1: V1V2_PRESENCE_AGREEMENT when the v1 card\'s parsed section equals 
   const v2 = v2Side({ resolved: [v2ResolvedEntry({ provisionInstanceId: 'prov-1', conceptKey: 'REP-T-CAP' })] });
   const receipt = buildV1V2ComparisonReceipt({ v1_snapshot: v1, v2_side: v2, attempted_section_scope: ['3.1(b)'] });
   assert.equal(receipt.schema_version, V1V2_COMPARISON_RECEIPT_SCHEMA);
+  assert.equal(receipt.authority, 'NONE');
+  assert.ok(!('deal_identity_bridge' in receipt), 'a diagnostic must not present an asserted identity as verified');
   assert.equal(receipt.provision_outcomes.length, 1);
   assert.equal(receipt.provision_outcomes[0].outcome, 'V1V2_PRESENCE_AGREEMENT');
   assert.equal(receipt.provision_outcomes[0].v2_provision_instance_id, 'prov-1');
@@ -226,18 +231,29 @@ test('Tier 1: V1_MISSING when v2 found a provision whose family has NO v1 card a
   assert.equal(capOutcome.v1_card_id, null);
 });
 
-test('FAMILY_MAPPING_TABLE: every entry is a real (v1_provision_subtype, concept_key) pair; no fuzzy matching', () => {
+test('FAMILY_MAPPING_TABLE: every entry is a real (v1_provision_type, v1_provision_subtype, concept_key) tuple; no fuzzy matching', () => {
   assert.ok(Array.isArray(FAMILY_MAPPING_TABLE) && FAMILY_MAPPING_TABLE.length > 0);
   assert.equal(typeof FAMILY_MAPPING_TABLE_VERSION, 'number');
   assert.ok(Object.isFrozen(FAMILY_MAPPING_TABLE));
   for (const entry of FAMILY_MAPPING_TABLE) {
     assert.ok(Object.isFrozen(entry));
+    assert.equal(typeof entry.v1_provision_type, 'string');
     assert.equal(typeof entry.v1_provision_subtype, 'string');
     assert.equal(typeof entry.concept_key, 'string');
   }
   const capEntry = FAMILY_MAPPING_TABLE.find((entry) => entry.v1_provision_subtype === 'REP-T-CAP');
   assert.ok(capEntry, 'REP-T-CAP is the one grounded, verified mapping');
+  assert.equal(capEntry.v1_provision_type, 'REPRESENTATION');
   assert.equal(capEntry.concept_key, 'REP-T-CAP');
+});
+
+test('FAMILY_MAPPING_TABLE partitions identical subtypes by provision type', () => {
+  const v1 = snapshot({
+    cards: [v1Card({ id: 'wrong-owner', provisionType: 'DEFINITION', provisionSubtype: 'REP-T-CAP' })],
+  });
+  const v2 = v2Side({ resolved: [v2ResolvedEntry({ provisionInstanceId: 'prov-1', conceptKey: 'REP-T-CAP' })] });
+  const receipt = buildV1V2ComparisonReceipt({ v1_snapshot: v1, v2_side: v2, attempted_section_scope: ['3.1(b)'] });
+  assert.equal(receipt.provision_outcomes.find((entry) => entry.v1_card_id === 'wrong-owner').reason, 'SUBTYPE_UNMAPPED');
 });
 
 // ─── Tier 2 value comparison. ───
@@ -249,7 +265,8 @@ test('Tier 2: V1V2_VALUE_AGREEMENT, VALUE_MISMATCH (both values reported), and V
   function scenario(v1Values, v2CanonicalValue) {
     const v1 = snapshot({
       cards: [v1Card({
-        id: 'card-1', provisionSubtype: 'TERMF-TARGET', sectionRef: '8.3(a) | Fee | x', values: v1Values,
+        id: 'card-1', provisionType: 'TERMINATION_FEE', provisionSubtype: 'TERMF-TARGET',
+        sectionRef: '8.3(a) | Fee | x', values: v1Values,
       })],
     });
     const v2 = v2Side({
@@ -281,7 +298,8 @@ test('Tier 2 never runs on a SECTION_MISMATCH outcome -- "the dangerous one; alw
   const mappingEntry = VALUE_MAPPING_TABLE.find((entry) => entry.concept_key === 'TERMF-TARGET');
   const v1 = snapshot({
     cards: [v1Card({
-      id: 'card-1', provisionSubtype: 'TERMF-TARGET', sectionRef: '8.3(a) | Fee | x',
+      id: 'card-1', provisionType: 'TERMINATION_FEE', provisionSubtype: 'TERMF-TARGET',
+      sectionRef: '8.3(a) | Fee | x',
       values: { [mappingEntry.v1_value_field]: '3.0' },
     })],
   });
@@ -344,7 +362,8 @@ test('determinism: identical inputs produce a byte-identical receipt', () => {
   const first = buildV1V2ComparisonReceipt({ v1_snapshot: v1, v2_side: v2, attempted_section_scope: ['3.1(b)'] });
   const second = buildV1V2ComparisonReceipt({ v1_snapshot: v1, v2_side: v2, attempted_section_scope: ['3.1(b)'] });
   assert.equal(canonicalJson(first), canonicalJson(second));
-  assert.equal(first.v1v2_comparison_receipt_id, second.v1v2_comparison_receipt_id);
+  assert.ok(first.v1v2_comparison_diagnostic_id);
+  assert.equal(first.v1v2_comparison_diagnostic_id, second.v1v2_comparison_diagnostic_id);
 });
 
 test('determinism: v1 card order permutation invariant (same set, different array order -> byte-identical receipt)', () => {
@@ -380,7 +399,7 @@ test('isComparisonReceiptStale: EQUALITY, not ordering -- any change to the pinn
 
 // ─── Input validation. ───
 
-test('buildV1V2ComparisonReceipt rejects a malformed v1_snapshot or v2_side', () => {
+test('buildV1V2ComparisonDiagnostic rejects a malformed v1_snapshot or v2_side', () => {
   assert.throws(() => buildV1V2ComparisonReceipt({ v1_snapshot: null, v2_side: v2Side(), attempted_section_scope: ['3.1(b)'] }), V1V2ComparatorError);
   assert.throws(() => buildV1V2ComparisonReceipt({
     v1_snapshot: { ...snapshot({ cards: [] }), schema_version: 'WRONG/V1' }, v2_side: v2Side(), attempted_section_scope: ['3.1(b)'],
@@ -391,11 +410,42 @@ test('buildV1V2ComparisonReceipt rejects a malformed v1_snapshot or v2_side', ()
   }), V1V2ComparatorError, 'a card missing required fields (section_ref etc.) fails validation');
 });
 
-test('buildV1V2ComparisonReceipt rejects a missing/malformed attempted_section_scope', () => {
+test('buildV1V2ComparisonDiagnostic rejects a missing/malformed attempted_section_scope', () => {
   const v1 = snapshot({ cards: [] });
   assert.throws(() => buildV1V2ComparisonReceipt({ v1_snapshot: v1, v2_side: v2Side() }), V1V2ComparatorError, 'missing entirely');
   assert.throws(() => buildV1V2ComparisonReceipt({ v1_snapshot: v1, v2_side: v2Side(), attempted_section_scope: 'not-an-array' }), V1V2ComparatorError);
   assert.throws(() => buildV1V2ComparisonReceipt({ v1_snapshot: v1, v2_side: v2Side(), attempted_section_scope: ['3.1(b)', ''] }), V1V2ComparatorError, 'an empty-string entry is not a valid drafted-section string');
   assert.throws(() => buildV1V2ComparisonReceipt({ v1_snapshot: v1, v2_side: v2Side(), attempted_section_scope: ['3.1(b)', null] }), V1V2ComparatorError);
   assert.doesNotThrow(() => buildV1V2ComparisonReceipt({ v1_snapshot: v1, v2_side: v2Side(), attempted_section_scope: ['3.1(b)'] }));
+});
+
+test('authoritative comparator rejects omitted or mutated snapshot identity evidence before a receipt can exist', () => {
+  const v2 = v2Side();
+  const omitted = snapshot({ cards: [v1Card({ id: 'card-1' })] });
+  assert.throws(
+    () => buildAuthoritativeV1V2ComparisonReceipt({ v1_snapshot: omitted, v2_side: v2, attempted_section_scope: ['3.1(b)'] }),
+    (error) => error && error.code === 'INVALID_INPUT' && error.message.includes('snapshot_identity_evidence'),
+  );
+
+  const { snapshot_id: ignored, ...base } = omitted;
+  const completeBody = {
+    ...base,
+    snapshot_identity_evidence: {
+      manifest_id: 'manifest-1',
+      issued_allocation_receipt: { status: 'issued-shaped' },
+      issued_reviewed_bridge: { status: 'issued-shaped' },
+    },
+  };
+  const complete = { ...completeBody, snapshot_id: contentId(V1_PROVISION_SNAPSHOT_SCHEMA, completeBody) };
+  const mutated = {
+    ...complete,
+    snapshot_identity_evidence: {
+      ...complete.snapshot_identity_evidence,
+      issued_reviewed_bridge: { status: 'mutated' },
+    },
+  };
+  assert.throws(
+    () => buildAuthoritativeV1V2ComparisonReceipt({ v1_snapshot: mutated, v2_side: v2, attempted_section_scope: ['3.1(b)'] }),
+    (error) => error && error.code === 'INVALID_SNAPSHOT',
+  );
 });

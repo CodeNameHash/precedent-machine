@@ -1,0 +1,87 @@
+{
+  "schema": "CANONICAL_V2_PROXY_MEETING_FOLLOW_ON_COVERAGE/V1",
+  "snapshot": {
+    "date": "2026-08-03",
+    "source": "production Supabase tzulhdasmioeechxapdy, read-only provision_cards and claims inventory"
+  },
+  "corpus": {
+    "coded_cards": {
+      "STRUCT-OFFER": {
+        "cards": 0,
+        "deals": 0
+      },
+      "COV-PROXY": { "cards": 31, "deals": 28 },
+      "COV-MEETING": { "cards": 25, "deals": 24 },
+      "COV-SHAPRV-PARENT": { "cards": 18, "deals": 17 }
+    },
+    "family_claims": {
+      "proxyFilingDeadline": { "claims": 34, "deals": 33 },
+      "mailingDeadline": { "claims": 33, "deals": 31 },
+      "meetingDeadline": { "claims": 30, "deals": 30 },
+      "adjournmentRights": { "claims": 52, "deals": 30 },
+      "meetingControlNotes": { "claims": 32, "deals": 30 },
+      "record_date_text": { "cards": 26, "deals": 26 },
+      "broker_search_text": { "cards": 17, "deals": 17 }
+    },
+    "tender_surface_claims": {
+      "offerCommencementDeadline": 3,
+      "scheduleTOFiling": 6,
+      "schedule14D9Filing": 5,
+      "stockholderListCovenant": 8,
+      "acceptanceAndPaymentMechanics": 3,
+      "tenderOfferMinimumCondition": 5
+    }
+  },
+  "product_rows": [
+    { "row_id": "votes-approvals-meeting-approval-definition", "owner_id": "KEY_DEFINED_TERMS", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "BOUNDARY_VISIBLE" },
+    { "row_id": "votes-approvals-meeting-vote-threshold", "owner_id": "KEY_DEFINED_TERMS", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "BOUNDARY_VISIBLE" },
+    { "row_id": "votes-approvals-meeting-parent-approval", "owner_id": "PROXY_MEETING_COVENANTS", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "BEN_RULING_REQUIRES_PARENT_MERGER_SUB_SPLIT" },
+    { "row_id": "votes-approvals-meeting-merger-sub-approval", "owner_id": "PROXY_MEETING_COVENANTS", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "ADJUDICATED_NATIVE" },
+    { "row_id": "votes-approvals-meeting-proxy-filing", "owner_id": "PROXY_MEETING_COVENANTS", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "REGISTERED_FIRST_SLICE" },
+    { "row_id": "votes-approvals-meeting-mailing", "owner_id": "PROXY_MEETING_COVENANTS", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "GROUNDED_FOLLOW_ON" },
+    { "row_id": "votes-approvals-meeting-meeting", "owner_id": "PROXY_MEETING_COVENANTS", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "REGISTERED_FIRST_SLICE" },
+    { "row_id": "votes-approvals-meeting-record-date", "owner_id": "PROXY_MEETING_COVENANTS", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "ADJUDICATED_NATIVE_PRESENCE" },
+    { "row_id": "votes-approvals-meeting-broker-search", "owner_id": "PROXY_MEETING_COVENANTS", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "ADJUDICATED_NATIVE_PRESENCE" },
+    { "row_id": "votes-approvals-meeting-adjournment", "owner_id": "PROXY_MEETING_COVENANTS", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "GROUNDED_FOLLOW_ON" },
+    { "row_id": "votes-approvals-meeting-offerCommencementDeadline", "owner_id": "MERGER_STRUCTURE_CLOSING", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "BOUNDARY_VISIBLE" },
+    { "row_id": "votes-approvals-meeting-scheduleTOFiling", "owner_id": "MERGER_STRUCTURE_CLOSING", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "BOUNDARY_VISIBLE" },
+    { "row_id": "votes-approvals-meeting-schedule14D9Filing", "owner_id": "MERGER_STRUCTURE_CLOSING", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "BOUNDARY_VISIBLE" },
+    { "row_id": "votes-approvals-meeting-stockholderListCovenant", "owner_id": "MERGER_STRUCTURE_CLOSING", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "BOUNDARY_VISIBLE" },
+    { "row_id": "votes-approvals-meeting-acceptanceAndPaymentMechanics", "owner_id": "MERGER_STRUCTURE_CLOSING", "render": "VISIBLE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "BOUNDARY_VISIBLE" },
+    { "row_id": "sec-meeting-tenderOfferMinimumCondition", "owner_id": "CLOSING_CONDITIONS", "render": "EXCLUDED_FROM_COMPOSITE", "query": "EXISTING", "compare": "EXISTING", "market": "EXISTING", "disposition": "BOUNDARY_EXCLUDED" }
+  ],
+  "source_inventory": [
+    { "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/votes-approvals-meeting.config.js", "source_locator": "votesApprovalsMeetingConfig" },
+    { "source_kind": "RENDERED_ROW", "source_path": "components/review/table-configs/sec-meeting.config.js", "source_locator": "secMeetingConfig" },
+    { "source_kind": "QUERY_FIELD", "source_path": "lib/query/serving-registry-v1.json", "source_locator": "adjournmentRights" },
+    { "source_kind": "COMPARE_FIELD", "source_path": "components/review-v2/compareRowUnion.js", "source_locator": "unionRows" },
+    { "source_kind": "MARKET_FIELD", "source_path": "components/review/table-configs/sec-meeting.config.js", "source_locator": "marketSubterms" },
+    { "source_kind": "DERIVED_VALUE", "source_path": "lib/sec-meeting.js", "source_locator": "parseDeadlineText" }
+  ],
+  "boundaries": [
+    { "owner_id": "NO_SHOP", "excluded_shape": "recommendation change, fiduciary-out and force-the-vote conclusions" },
+    { "owner_id": "TERMINATION_RIGHTS", "excluded_shape": "vote-failure termination rights" },
+    { "owner_id": "CLOSING_CONDITIONS", "excluded_shape": "stockholder approval and tender-offer minimum conditions" },
+    { "owner_id": "MERGER_STRUCTURE_CLOSING", "visible_cross_owner_shape": "offer commencement, Schedule TO, Schedule 14D-9, stockholder-list and acceptance/payment mechanics" }
+  ],
+  "ben_decisions": [
+    {
+      "decision_id": "PROXY_RECORD_DATE_DIRECTION",
+      "recommendation": "Promote record-date establishment and broker-search completion as separate presence facts now. Keep record-date numerics open until direction is a governed attribute.",
+      "why": "The 26 record-date cards and 17 broker-search cards are common, but European Wax Center states record date 20 Business Days after broker search while Mr. Cooper states broker search 20 Business Days before record date.",
+      "state": "RECORDED_2026_08_03"
+    },
+    {
+      "decision_id": "PROXY_PARENT_ADOPTION_CONCEPT",
+      "recommendation": "Create separate Parent approval and Merger Sub approval concepts. Keep mechanism and timing as separate attributes.",
+      "why": "There are 18 cards across 17 deals. Parent approval can require a real shareholder vote, while Merger Sub approval commonly means Parent acting as sole stockholder. Carrols uses sole-stockholder written consent; QXO uses all record holders; Summit uses immediate sole-stockholder adoption without a meeting.",
+      "state": "RECORDED_2026_08_03"
+    },
+    {
+      "decision_id": "PROXY_ADJOURNMENT_REASON_ENUM",
+      "recommendation": "Adopt the four grounded reasons: quorum absent, insufficient votes, supplemental disclosure and legal requirement. Keep clause-cross-reference-only reasons open until the reference resolves.",
+      "why": "Adjournment has 52 family claims across 30 deals. Consent overrides appear in 13 deals, and both Company and Parent control forms occur.",
+      "state": "RECORDED_2026_08_03"
+    }
+  ]
+}

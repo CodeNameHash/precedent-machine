@@ -191,6 +191,14 @@ const capitalStructureText = fs.readFileSync(
 );
 
 const LIMB_I_QUOTE = '(i)The authorized capital stock of the Company consists of';
+const LIMB_I_FULL_QUOTE = capitalStructureText.slice(
+  capitalStructureText.indexOf(LIMB_I_QUOTE),
+  capitalStructureText.indexOf('\n(ii)'),
+);
+const LIMB_II_DISCLOSURE_LIST_QUOTE = capitalStructureText.slice(
+  capitalStructureText.indexOf('Section ‎3.1(b)(ii) of the Company Disclosure Letter'),
+  capitalStructureText.indexOf('Each of the outstanding shares'),
+).trimEnd();
 const LIMB_III_QUOTE = '(iii)Except for any obligations pursuant to this Agreement,';
 const QUALIFIER_QUOTE = 'duly authorized and are validly issued, fully paid and nonassessable';
 const OPEN_WORLD_QUOTE = 'There are no voting trusts or other agreements';
@@ -207,6 +215,7 @@ const OPEN_WORLD_QUOTE = 'There are no voting trusts or other agreements';
 
 // Exact ACCURACY_CODE_WHITELIST phrase -> MAT_ALL_RESPECTS.
 const ACCURACY_CHAPEAU_QUOTE = 'true and correct in all respects';
+const ACCURACY_ITEM_LIMB_QUOTE = 'The Company represents that the following statement is true and correct in all respects.';
 // Exact ACCURACY_CODE_WHITELIST phrase -> MAT_ALL_RESPECTS_DE_MINIMIS. The
 // "except for de minimis inaccuracies" clause binds into the SAME ACCURACY
 // unit (exception-connective binding rule), so this whole string classifies
@@ -462,6 +471,7 @@ test('a clean proposal with verified evidence, registered concept and resolved p
   const tier = findResolved(resolution, BRING_DOWN_TIER_CLAIM_KEY);
   assert.ok(tier, 'the bring-down tier proposal resolved');
   assert.equal(tier.resolved_claim_definition_key, 'REPRESENTATION_ACCURACY_STANDARD');
+  assert.ok(tier.triage.unevaluated_conditions.includes('BRING_DOWN_TIER_PROVENANCE_REVISIT_PENDING'));
   assert.equal(tier.concept_key, 'COND-B-REP');
   assert.deepEqual(tier.party, { role: 'CONDITION_OBLIGOR', value: 'Parent', capacity: 'BUYER' });
   assert.equal(tier.triage.deterministic_gates_passed, true);
@@ -530,7 +540,7 @@ function temporalQualifierResponse() {
       chapeau_quote: 'Capital Structure.',
       limbs: [{
         limb_path: ['(i)'],
-        assertion_quote: LIMB_I_QUOTE,
+        assertion_quote: LIMB_I_FULL_QUOTE,
         subject: 'capital stock',
       }],
       qualifiers: [{
@@ -599,10 +609,26 @@ test('a TEMPORAL qualifier (canonical_value: null, no registered claim definitio
     admitted_source_context: admittedSourceContext,
   });
 
+  // P2 qualifier kinds (docs/superpowers/specs/2026-08-02-p2-qualifier-
+  // kinds-design.md, "CONVERTS ON REPLAY" table, audit C-1): this quote is
+  // byte-form-identical to F28 closure b6185150… — the AS_OF_BRIDGE now
+  // converts it to a plain CALENDAR measurement-date claim. The test's
+  // original quarantine concern is UNCHANGED and still asserted: it never
+  // resolves or queues as a REPRESENTATION_ACCURACY_STANDARD claim.
+  // This test runs the LEGACY fixture bundle (compileFixtureContract(),
+  // which predates REPRESENTATION_MEASUREMENT_DATE), so the conversion
+  // cannot complete against this vocabulary — and the outcome is the TYPED
+  // residual, never a silent drop:
+  const residual = (resolution.residuals || []).find(
+    (r) => r.residual_type === 'VOCABULARY_MISSING_MAPPED_CLAIM_DEFINITION'
+      && r.mapped_claim_definition_key === 'REPRESENTATION_MEASUREMENT_DATE',
+  );
+  assert.ok(residual, 'legacy-vocabulary run surfaces the typed VOCABULARY_MISSING residual for the attempted date mint');
   assert.equal(
-    resolution.resolved.some((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY),
+    resolution.resolved.some((entry) => entry.claim.registered_claim_definition_key === 'REPRESENTATION_ACCURACY_STANDARD'
+      && entry.claim.canonical_value === null),
     false,
-    'the TEMPORAL qualifier never resolves to a REPRESENTATION_ACCURACY_STANDARD claim',
+    'never quarantines as an accuracy claim',
   );
   assert.equal(
     resolution.review_queue.some((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY),
@@ -610,9 +636,7 @@ test('a TEMPORAL qualifier (canonical_value: null, no registered claim definitio
     'it never reaches review_queue as an INVALID_CANONICAL_VALUE/UNREGISTERED_CANONICAL_VALUE claim either',
   );
   const openWorldEntry = resolution.open_world.find((entry) => entry.claim_definition_key === QUALIFIER_CLAIM_KEY);
-  assert.ok(openWorldEntry, 'the TEMPORAL qualifier lands in open_world instead');
-  assert.equal(openWorldEntry.reason, 'UNMAPPED_GENERIC_CLAIM_KEY');
-  assert.equal(openWorldEntry.raw_value, 'as of the close of business on April 17, 2026');
+  assert.equal(openWorldEntry, undefined, 'no longer falls open-world — the conversion is the P2 deliverable');
 });
 
 // ─── Task 3, work items 2-9: the new deterministic mappings, split
@@ -623,13 +647,13 @@ test('a TEMPORAL qualifier (canonical_value: null, no registered claim definitio
 // the SAME shared qxoFullText/CONTRACT_BUNDLE/ADMITTED_SOURCE_CONTEXT
 // fixtures the pre-Task-3 tests already use, so every one of these
 // exercises the REAL producer-shaping path end to end.
-function singleQualifierResponse({ quote, attachment, modelKind = null, modelCode = null }) {
+function singleQualifierResponse({ quote, attachment, modelKind = null, modelCode = null, limbs = null }) {
   return {
     representation_instances: [{
       section_reference: '3.1(b)',
       party_making: 'the Company',
       chapeau_quote: 'Capital Structure.',
-      limbs: [
+      limbs: limbs || [
         { limb_path: ['(i)'], assertion_quote: LIMB_I_QUOTE, subject: 'capital stock' },
       ],
       qualifiers: [{ kind: modelKind, code: modelCode, quote, attachment }],
@@ -641,7 +665,7 @@ function singleQualifierResponse({ quote, attachment, modelKind = null, modelCod
   };
 }
 
-async function resolveSingleQualifier({ quote, attachment, modelKind = null, modelCode = null }, resolveOptions = {}) {
+async function resolveSingleQualifier({ quote, attachment, modelKind = null, modelCode = null, limbs = null }, resolveOptions = {}) {
   const receipt = await runNativeExtraction({
     source_text: qxoFullText,
     document_hash: DOCUMENT_HASH,
@@ -651,7 +675,7 @@ async function resolveSingleQualifier({ quote, attachment, modelKind = null, mod
     provider: async ({ governed_scope: governedScope }) => {
       const { proposals, evidence_residuals: evidenceResiduals } = shapeProposals(
         singleQualifierResponse({
-          quote, attachment, modelKind, modelCode,
+          quote, attachment, modelKind, modelCode, limbs,
         }),
         governedScope.source_text,
       );
@@ -679,6 +703,11 @@ test('(QUALIFIER, ACCURACY, ITEM) routes to review, never rep-level (work item 2
     attachment: itemAttachment(['(i)']),
     modelKind: 'ACCURACY',
     modelCode: 'MAT_ALL_RESPECTS',
+    limbs: [{
+      limb_path: ['(i)'],
+      assertion_quote: ACCURACY_ITEM_LIMB_QUOTE,
+      subject: 'synthetic item-level accuracy statement',
+    }],
   });
   assert.equal(resolution.resolved.some((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY), false);
   const queued = resolution.review_queue.find((item) => item.generic_claim_key === QUALIFIER_CLAIM_KEY);
@@ -694,6 +723,11 @@ test('an ACCURACY qualifier whose whole quote matches no whitelist phrase routes
     quote: ACCURACY_NO_CODE_QUOTE,
     attachment: itemAttachment(['(ii)']),
     modelKind: 'ACCURACY',
+    limbs: [{
+      limb_path: ['(ii)'],
+      assertion_quote: LIMB_II_DISCLOSURE_LIST_QUOTE,
+      subject: 'Disclosure Letter equity-award list',
+    }],
   });
   assert.equal(resolution.resolved.length, 0);
   const queued = resolution.review_queue.find((item) => item.generic_claim_key === QUALIFIER_CLAIM_KEY);
@@ -724,6 +758,40 @@ test('(QUALIFIER, TEMPORAL, *) resolves to REPRESENTATION_MEASUREMENT_DATE for a
   assert.equal(resolvedEntry.claim.attributes.enrichment_state, 'UNENRICHED');
   assert.equal(resolvedEntry.claim.attributes.comparability, 'NOT_COMPARABLE');
   assert.equal(resolvedEntry.claim.attributes.measurement_date_resolution, 'CALENDAR');
+});
+
+test('an ITEM qualifier on an ambiguous assertion path routes to review without minting a canonical claim', async () => {
+  const resolution = await resolveSingleQualifier(
+    {
+      quote: TEMPORAL_CALENDAR_QUOTE,
+      attachment: itemAttachment(['(i)']),
+      modelKind: 'TEMPORAL',
+      limbs: [
+        { limb_path: ['(i)'], assertion_quote: LIMB_I_QUOTE, subject: 'capital stock' },
+        {
+          limb_path: ['(i)'],
+          assertion_quote: 'All of the outstanding Company Shares have been duly authorized and are validly issued, fully paid and nonassessable.',
+          subject: 'validity of outstanding Company Shares',
+        },
+        {
+          limb_path: ['(i)'],
+          assertion_quote: 'As of April 17, 2026, other than 1,600,514 Company Shares reserved for issuance under the Company’s Amended and Restated 2015 Long Term Stock Incentive Plan (the “A&R 2015 Plan”), the Company has no Company Shares reserved for issuance.',
+          subject: 'Company Shares reserved for issuance',
+        },
+      ],
+    },
+    { contract_vocabulary: CONTRACT_BUNDLE_WITH_MEASUREMENT_DATE },
+  );
+
+  assert.equal(
+    resolution.resolved.some((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY),
+    false,
+    'an ambiguous attachment cannot publish a canonical representation-level claim',
+  );
+  const queued = resolution.review_queue.find((entry) => entry.generic_claim_key === QUALIFIER_CLAIM_KEY);
+  assert.ok(queued, 'the unresolved qualifier remains visible for legal review');
+  assert.deepEqual(queued.reasons, ['ASSERTION_SCOPE_AMBIGUOUS']);
+  assert.equal(queued.has_resolution, false);
 });
 
 test('(QUALIFIER, TEMPORAL, *) resolves a symbolic date only when a governed agreement_date is injected (work item 3, symbolic path)', async () => {
@@ -936,7 +1004,7 @@ test('a VERIFIED ruling in agreement with the lexicon applies mechanically', asy
   assert.equal(resolvedEntry.claim.canonical_value, 'MAT_ALL_RESPECTS');
 });
 
-test('receipt pins MAPPING_TABLE_VERSION 4, the lexicon version, the measurement-date-parse version and the ruling corpus identity', async () => {
+test('receipt pins MAPPING_TABLE_VERSION 18, the lexicon version, the measurement-date-parse version and the ruling corpus identity', async () => {
   const resolution = await resolveSingleQualifier({
     quote: ACCURACY_CHAPEAU_QUOTE,
     attachment: chapeauAttachment(),
@@ -945,8 +1013,15 @@ test('receipt pins MAPPING_TABLE_VERSION 4, the lexicon version, the measurement
   assert.equal(resolution.resolution_receipt.mapping_table_version, MAPPING_TABLE_VERSION);
   // P1 cap-table numerics (docs/superpowers/specs/2026-08-02-p1-captable-
   // numerics-design.md section 4): MAPPING_TABLE_VERSION 3 -> 4, one new
-  // unconditional SHARE_COUNT table entry.
-  assert.equal(MAPPING_TABLE_VERSION, 4);
+  // unconditional SHARE_COUNT table entry. family-termination-fee slice
+  // (docs/superpowers/specs/2026-08-02-family-termination-fee-design.md
+  // section 4): MAPPING_TABLE_VERSION 4 -> 5, three new unconditional
+  // entries (FEE_AMOUNT/FEE_TRIGGER/FEE_TAIL_PERIOD). family-no-shop slice:
+  // 5 -> 6, five new unconditional entries. family-mae-definition slice
+  // (docs/superpowers/specs/2026-08-02-family-mae-definition-design.md
+  // section 4): MAPPING_TABLE_VERSION 6 -> 7, three new unconditional
+  // entries (MAE_CARVEOUT/MAE_DEFINITION_PRONG/MAE_DISPROPORTIONALITY).
+  assert.equal(MAPPING_TABLE_VERSION, 20);
   assert.equal(resolution.resolution_receipt.qualifier_kind_lexicon_version, QUALIFIER_KIND_LEXICON_VERSION);
   assert.equal(resolution.resolution_receipt.measurement_date_parse_version, MEASUREMENT_DATE_PARSE_VERSION);
   assert.equal(resolution.resolution_receipt.ruling_corpus_id, require('../lib/canonical-v2/native-producer/ruling-corpus').EMPTY_RULING_CORPUS.ruling_corpus_id);
@@ -1306,6 +1381,20 @@ test('materiality table ranks a termination-fee family above notices/administrat
   assert.ok(byLabel.NO_SHOP_EXCEPTIONS < byLabel.CONSIDERATION);
   assert.ok(byLabel.CONSIDERATION < byLabel.CLOSING_CONDITIONS);
   assert.ok(byLabel.CLOSING_CONDITIONS < byLabel.NOTICES_ADMINISTRATIVE);
+});
+
+test('approved Key Defined Terms rank scaffolding uses the existing fiduciary, representation and fee tiers', () => {
+  for (const conceptKey of ['DEF-ACQPROPOSAL', 'DEF-SUPERIOR', 'DEF-INTERVENING']) {
+    assert.deepEqual(materialityFor({ conceptKey }), {
+      rank: 40,
+      label: 'FIDUCIARY',
+      concept_key_prefixes: MATERIALITY_TABLE.find((tier) => tier.label === 'FIDUCIARY').concept_key_prefixes,
+    });
+  }
+  assert.equal(materialityFor({ conceptKey: 'DEF-KNOWLEDGE' }).rank, 55);
+  assert.equal(materialityFor({ conceptKey: 'DEF-KNOWLEDGE' }).label, 'REPRESENTATIONS');
+  assert.equal(materialityFor({ conceptKey: 'DEF-WILLFUL' }).rank, 20);
+  assert.equal(materialityFor({ conceptKey: 'DEF-WILLFUL' }).label, 'FEES');
 });
 
 test('review_queue orders a more material item ahead of a less material item end to end', async () => {
