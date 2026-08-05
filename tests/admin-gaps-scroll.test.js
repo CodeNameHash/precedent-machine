@@ -41,20 +41,25 @@ test('admin gaps surfaces schema-backed main concepts in review items', () => {
   assert.match(source, /Adjacent provisions/);
 });
 
-test('review and compare feature fallback rendering use the schema renderer', () => {
+// pages/compare.js was retired on 2026-08-05. Deal-versus-deal comparison now
+// lives on the review page's own compare mode, which renders through the review
+// table configs rather than a second feature renderer, so the compare half of
+// this assertion has no surviving subject. The review half is unchanged and
+// still guards what this test exists for: feature fallback must go through the
+// schema renderer, and must not reach for the retired category-summary import.
+test('review feature fallback rendering uses the schema renderer', () => {
   const reviewSource = fs.readFileSync(path.join(__dirname, '..', 'pages', 'review-v1', '[id].js'), 'utf8');
-  const compareSource = fs.readFileSync(path.join(__dirname, '..', 'pages', 'compare.js'), 'utf8');
   const summarySource = fs.readFileSync(path.join(__dirname, '..', 'lib', 'schema', 'summary.js'), 'utf8');
 
   assert.match(reviewSource, /renderFeatureValue as schemaRenderFeatureValue/);
   assert.match(reviewSource, /schemaRenderFeatureValue\(featureKey, value\)/);
   assert.match(reviewSource, /formatFeatureValue\(raw, featureKey\)/);
-  assert.match(compareSource, /renderFeatureValue as schemaRenderFeatureValue/);
-  assert.match(compareSource, /schemaRenderFeatureValue\(key, value\)/);
   assert.match(reviewSource, /lib\/schema\/summary/);
-  assert.match(compareSource, /lib\/schema\/summary/);
   assert.doesNotMatch(reviewSource, /import\s+\{ CATEGORY_SUMMARY_FEATURES \}\s+from ['"][^'"]*lib\/category-summary-features/);
-  assert.doesNotMatch(compareSource, /import\s+\{ CATEGORY_SUMMARY_FEATURES \}\s+from ['"][^'"]*lib\/category-summary-features/);
   assert.match(summarySource, /getCategorySummaryRows/);
   assert.match(summarySource, /primaryFeature/);
+});
+
+test('the retired compare page is gone and nothing references it', () => {
+  assert.equal(fs.existsSync(path.join(__dirname, '..', 'pages', 'compare.js')), false);
 });

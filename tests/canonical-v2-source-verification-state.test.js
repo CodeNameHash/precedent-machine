@@ -4,7 +4,8 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 
 const {
-  SOURCE_VERIFICATION_STATE_SCHEMA,
+  DOCUMENT_VERIFICATION_RECORD_SCHEMA,
+  CORPUS_COMPLETENESS_RECORD_SCHEMA,
   DOCUMENT_VERIFICATION_STATES,
   CORPUS_COMPLETENESS_STATES,
   DEFAULT_CORPUS_COMPLETENESS_STATE,
@@ -12,11 +13,13 @@ const {
   SourceVerificationStateError,
   assertDisjointVocabularies,
   assertLegalCorpusCompletenessTransition,
-  buildInitialSourceVerificationState,
-  buildSourceVerificationState,
+  buildCorpusCompletenessRecord,
+  buildDocumentVerificationRecord,
+  buildInitialCorpusCompletenessRecord,
   isLegalCorpusCompletenessTransition,
   transitionCorpusCompletenessState,
-  validateSourceVerificationState,
+  validateCorpusCompletenessRecord,
+  validateDocumentVerificationRecord,
 } = require('../lib/canonical-v2/source-verification-state');
 
 const DEAL_ID = 'deal-alpha';
@@ -30,11 +33,18 @@ const OTHER_ASSERTER = 'associate-jones';
 const ASSERTED_AT = '2026-08-04T12:00:00.000Z';
 const LATER_ASSERTED_AT = '2026-08-05T09:30:00.000Z';
 
-function validRecord(overrides = {}) {
-  return buildSourceVerificationState({
+function validDocumentRecord(overrides = {}) {
+  return buildDocumentVerificationRecord({
     deal_id: DEAL_ID,
     source_document_id: SOURCE_DOCUMENT_ID,
     document_verification_state: DOCUMENT_VERIFIED,
+    ...overrides,
+  });
+}
+
+function validCorpusRecord(overrides = {}) {
+  return buildCorpusCompletenessRecord({
+    deal_id: DEAL_ID,
     corpus_completeness_state: HUMAN_VERIFIED_COMPLETE,
     corpus_completeness_asserted_by: ASSERTER,
     corpus_completeness_asserted_at: ASSERTED_AT,
@@ -42,11 +52,9 @@ function validRecord(overrides = {}) {
   });
 }
 
-function initialRecord(overrides = {}) {
-  return buildInitialSourceVerificationState({
+function initialCorpusRecord(overrides = {}) {
+  return buildInitialCorpusCompletenessRecord({
     deal_id: DEAL_ID,
-    source_document_id: SOURCE_DOCUMENT_ID,
-    document_verification_state: DOCUMENT_VERIFIED,
     ...overrides,
   });
 }
@@ -104,56 +112,48 @@ test('SourceVerificationStateError carries name, code and details', () => {
   assert.deepEqual(error.details, { a: 1 });
 });
 
-// ---- defaults -----------------------------------------------------------
+// ---- defaults: corpus-completeness record --------------------------------
 
 test('the default corpus-completeness state is not-human-verified with no asserter', () => {
   assert.equal(DEFAULT_CORPUS_COMPLETENESS_STATE, 'CORPUS_COMPLETENESS_NOT_HUMAN_VERIFIED');
-  const record = initialRecord();
-  assert.equal(record.schema_version, SOURCE_VERIFICATION_STATE_SCHEMA);
+  const record = initialCorpusRecord();
+  assert.equal(record.schema_version, CORPUS_COMPLETENESS_RECORD_SCHEMA);
   assert.equal(record.corpus_completeness_state, DEFAULT_CORPUS_COMPLETENESS_STATE);
   assert.equal(record.corpus_completeness_asserted_by, null);
   assert.equal(record.corpus_completeness_asserted_at, null);
   assert.equal(record.deal_id, DEAL_ID);
-  assert.equal(record.source_document_id, SOURCE_DOCUMENT_ID);
-  assert.equal(record.document_verification_state, DOCUMENT_VERIFIED);
-  assert.match(record.source_verification_state_id, /^[a-f0-9]{64}$/);
-  assert.doesNotThrow(() => validateSourceVerificationState(record));
+  assert.match(record.corpus_completeness_record_id, /^[a-f0-9]{64}$/);
+  assert.doesNotThrow(() => validateCorpusCompletenessRecord(record));
 });
 
-test('buildInitialSourceVerificationState rejects a non-plain input', () => {
+test('buildInitialCorpusCompletenessRecord rejects a non-plain input', () => {
   for (const bad of [null, 'x', 42, ['a']]) {
     assert.throws(
-      () => buildInitialSourceVerificationState(bad),
+      () => buildInitialCorpusCompletenessRecord(bad),
       (error) => error.code === 'INVALID_RECORD_SHAPE',
       String(bad),
     );
   }
 });
 
-// ---- field-level validation ----------------------------------------------
+// ---- field-level validation: document-verification record ----------------
 
-test('deal_id and source_document_id must be non-empty trimmed strings', () => {
+test('deal_id and source_document_id must be non-empty trimmed strings on a document-verification record', () => {
   for (const bad of ['', '   ', ' deal', 'deal ', 42, null, undefined, {}]) {
     assert.throws(
-      () => buildSourceVerificationState({
+      () => buildDocumentVerificationRecord({
         deal_id: bad,
         source_document_id: SOURCE_DOCUMENT_ID,
         document_verification_state: DOCUMENT_VERIFIED,
-        corpus_completeness_state: DEFAULT_CORPUS_COMPLETENESS_STATE,
-        corpus_completeness_asserted_by: null,
-        corpus_completeness_asserted_at: null,
       }),
       (error) => error.code === 'INVALID_DEAL_ID',
       String(bad),
     );
     assert.throws(
-      () => buildSourceVerificationState({
+      () => buildDocumentVerificationRecord({
         deal_id: DEAL_ID,
         source_document_id: bad,
         document_verification_state: DOCUMENT_VERIFIED,
-        corpus_completeness_state: DEFAULT_CORPUS_COMPLETENESS_STATE,
-        corpus_completeness_asserted_by: null,
-        corpus_completeness_asserted_at: null,
       }),
       (error) => error.code === 'INVALID_SOURCE_DOCUMENT_ID',
       String(bad),
@@ -164,15 +164,29 @@ test('deal_id and source_document_id must be non-empty trimmed strings', () => {
 test('document_verification_state must be a member of its own closed vocabulary', () => {
   for (const bad of ['NOT_A_STATE', HUMAN_VERIFIED_COMPLETE, null, undefined, 1, {}]) {
     assert.throws(
-      () => buildSourceVerificationState({
+      () => buildDocumentVerificationRecord({
         deal_id: DEAL_ID,
         source_document_id: SOURCE_DOCUMENT_ID,
         document_verification_state: bad,
-        corpus_completeness_state: DEFAULT_CORPUS_COMPLETENESS_STATE,
-        corpus_completeness_asserted_by: null,
-        corpus_completeness_asserted_at: null,
       }),
       (error) => error.code === 'INVALID_DOCUMENT_VERIFICATION_STATE',
+      String(bad),
+    );
+  }
+});
+
+// ---- field-level validation: corpus-completeness record -------------------
+
+test('deal_id must be a non-empty trimmed string on a corpus-completeness record', () => {
+  for (const bad of ['', '   ', ' deal', 'deal ', 42, null, undefined, {}]) {
+    assert.throws(
+      () => buildCorpusCompletenessRecord({
+        deal_id: bad,
+        corpus_completeness_state: HUMAN_VERIFIED_COMPLETE,
+        corpus_completeness_asserted_by: ASSERTER,
+        corpus_completeness_asserted_at: ASSERTED_AT,
+      }),
+      (error) => error.code === 'INVALID_DEAL_ID',
       String(bad),
     );
   }
@@ -181,10 +195,8 @@ test('document_verification_state must be a member of its own closed vocabulary'
 test('corpus_completeness_state must be a member of its own closed vocabulary', () => {
   for (const bad of ['NOT_A_STATE', DOCUMENT_VERIFIED, null, undefined, 1, {}]) {
     assert.throws(
-      () => buildSourceVerificationState({
+      () => buildCorpusCompletenessRecord({
         deal_id: DEAL_ID,
-        source_document_id: SOURCE_DOCUMENT_ID,
-        document_verification_state: DOCUMENT_VERIFIED,
         corpus_completeness_state: bad,
         corpus_completeness_asserted_by: null,
         corpus_completeness_asserted_at: null,
@@ -195,23 +207,23 @@ test('corpus_completeness_state must be a member of its own closed vocabulary', 
   }
 });
 
-test('the two vocabularies cannot be swapped into the wrong field', () => {
+// ---- the two vocabularies cannot be swapped into the wrong builder --------
+
+test('the corpus-completeness vocabulary cannot be used as a document_verification_state', () => {
   assert.throws(
-    () => buildSourceVerificationState({
+    () => buildDocumentVerificationRecord({
       deal_id: DEAL_ID,
       source_document_id: SOURCE_DOCUMENT_ID,
       document_verification_state: CORPUS_COMPLETENESS_STATES[0],
-      corpus_completeness_state: DEFAULT_CORPUS_COMPLETENESS_STATE,
-      corpus_completeness_asserted_by: null,
-      corpus_completeness_asserted_at: null,
     }),
     (error) => error.code === 'INVALID_DOCUMENT_VERIFICATION_STATE',
   );
+});
+
+test('the document-verification vocabulary cannot be used as a corpus_completeness_state', () => {
   assert.throws(
-    () => buildSourceVerificationState({
+    () => buildCorpusCompletenessRecord({
       deal_id: DEAL_ID,
-      source_document_id: SOURCE_DOCUMENT_ID,
-      document_verification_state: DOCUMENT_VERIFIED,
       corpus_completeness_state: DOCUMENT_VERIFICATION_STATES[0],
       corpus_completeness_asserted_by: null,
       corpus_completeness_asserted_at: null,
@@ -224,10 +236,8 @@ test('the two vocabularies cannot be swapped into the wrong field', () => {
 
 test('a record asserting corpus-verified with no human asserter fails closed via the builder', () => {
   assert.throws(
-    () => buildSourceVerificationState({
+    () => buildCorpusCompletenessRecord({
       deal_id: DEAL_ID,
-      source_document_id: SOURCE_DOCUMENT_ID,
-      document_verification_state: DOCUMENT_VERIFIED,
       corpus_completeness_state: HUMAN_VERIFIED_COMPLETE,
       corpus_completeness_asserted_by: null,
       corpus_completeness_asserted_at: null,
@@ -239,28 +249,26 @@ test('a record asserting corpus-verified with no human asserter fails closed via
 test('a record asserting corpus-verified with no human asserter fails closed via the validator', () => {
   // Hand-crafted, bypassing the builder entirely -- the validator must
   // independently refuse to certify this, not just trust a pre-existing id.
+  // Note this hostile record also has no document-scoped field anywhere on
+  // it: a corpus-completeness record never had one to bypass.
   const hostile = {
-    schema_version: SOURCE_VERIFICATION_STATE_SCHEMA,
+    schema_version: CORPUS_COMPLETENESS_RECORD_SCHEMA,
     deal_id: DEAL_ID,
-    source_document_id: SOURCE_DOCUMENT_ID,
-    document_verification_state: DOCUMENT_VERIFIED,
     corpus_completeness_state: HUMAN_VERIFIED_COMPLETE,
     corpus_completeness_asserted_by: null,
     corpus_completeness_asserted_at: null,
-    source_verification_state_id: 'a'.repeat(64),
+    corpus_completeness_record_id: 'a'.repeat(64),
   };
   assert.throws(
-    () => validateSourceVerificationState(hostile),
+    () => validateCorpusCompletenessRecord(hostile),
     (error) => error.code === 'CORPUS_ASSERTION_REQUIRES_HUMAN_ASSERTER',
   );
 });
 
 test('flagging a corpus incomplete is just as much a human judgement: it also requires an asserter', () => {
   assert.throws(
-    () => buildSourceVerificationState({
+    () => buildCorpusCompletenessRecord({
       deal_id: DEAL_ID,
-      source_document_id: SOURCE_DOCUMENT_ID,
-      document_verification_state: DOCUMENT_VERIFIED,
       corpus_completeness_state: HUMAN_FLAGGED_INCOMPLETE,
       corpus_completeness_asserted_by: null,
       corpus_completeness_asserted_at: ASSERTED_AT,
@@ -268,10 +276,8 @@ test('flagging a corpus incomplete is just as much a human judgement: it also re
     (error) => error.code === 'CORPUS_ASSERTION_REQUIRES_HUMAN_ASSERTER',
   );
   assert.throws(
-    () => buildSourceVerificationState({
+    () => buildCorpusCompletenessRecord({
       deal_id: DEAL_ID,
-      source_document_id: SOURCE_DOCUMENT_ID,
-      document_verification_state: DOCUMENT_VERIFIED,
       corpus_completeness_state: HUMAN_FLAGGED_INCOMPLETE,
       corpus_completeness_asserted_by: ASSERTER,
       corpus_completeness_asserted_at: null,
@@ -282,10 +288,8 @@ test('flagging a corpus incomplete is just as much a human judgement: it also re
 
 test('the default state cannot carry a dangling asserter or timestamp', () => {
   assert.throws(
-    () => buildSourceVerificationState({
+    () => buildCorpusCompletenessRecord({
       deal_id: DEAL_ID,
-      source_document_id: SOURCE_DOCUMENT_ID,
-      document_verification_state: DOCUMENT_VERIFIED,
       corpus_completeness_state: DEFAULT_CORPUS_COMPLETENESS_STATE,
       corpus_completeness_asserted_by: ASSERTER,
       corpus_completeness_asserted_at: null,
@@ -293,10 +297,8 @@ test('the default state cannot carry a dangling asserter or timestamp', () => {
     (error) => error.code === 'CORPUS_DEFAULT_STATE_MUST_NOT_CARRY_ASSERTER',
   );
   assert.throws(
-    () => buildSourceVerificationState({
+    () => buildCorpusCompletenessRecord({
       deal_id: DEAL_ID,
-      source_document_id: SOURCE_DOCUMENT_ID,
-      document_verification_state: DOCUMENT_VERIFIED,
       corpus_completeness_state: DEFAULT_CORPUS_COMPLETENESS_STATE,
       corpus_completeness_asserted_by: null,
       corpus_completeness_asserted_at: ASSERTED_AT,
@@ -308,10 +310,8 @@ test('the default state cannot carry a dangling asserter or timestamp', () => {
 test('the human asserter must be a non-empty trimmed string', () => {
   for (const bad of ['', '   ', ' ben', 'ben ', 42, {}, undefined]) {
     assert.throws(
-      () => buildSourceVerificationState({
+      () => buildCorpusCompletenessRecord({
         deal_id: DEAL_ID,
-        source_document_id: SOURCE_DOCUMENT_ID,
-        document_verification_state: DOCUMENT_VERIFIED,
         corpus_completeness_state: HUMAN_VERIFIED_COMPLETE,
         corpus_completeness_asserted_by: bad,
         corpus_completeness_asserted_at: ASSERTED_AT,
@@ -333,10 +333,8 @@ test('the corpus assertion timestamp must be the canonical millisecond UTC form'
     undefined,
   ]) {
     assert.throws(
-      () => buildSourceVerificationState({
+      () => buildCorpusCompletenessRecord({
         deal_id: DEAL_ID,
-        source_document_id: SOURCE_DOCUMENT_ID,
-        document_verification_state: DOCUMENT_VERIFIED,
         corpus_completeness_state: HUMAN_VERIFIED_COMPLETE,
         corpus_completeness_asserted_by: ASSERTER,
         corpus_completeness_asserted_at: bad,
@@ -347,41 +345,130 @@ test('the corpus assertion timestamp must be the canonical millisecond UTC form'
   }
 });
 
-// ---- axis independence ----------------------------------------------------
+// ---- record-type independence ---------------------------------------------
 
-test('no combination of document-level verification implies corpus completeness', () => {
+test('a deal-keyed corpus record is valid without reference to any document', () => {
+  const record = buildCorpusCompletenessRecord({
+    deal_id: DEAL_ID,
+    corpus_completeness_state: HUMAN_VERIFIED_COMPLETE,
+    corpus_completeness_asserted_by: ASSERTER,
+    corpus_completeness_asserted_at: ASSERTED_AT,
+  });
+  assert.equal(Object.hasOwn(record, 'source_document_id'), false);
+  assert.equal(Object.hasOwn(record, 'document_verification_state'), false);
+  assert.deepEqual(Object.keys(record).sort(), [
+    'corpus_completeness_asserted_at',
+    'corpus_completeness_asserted_by',
+    'corpus_completeness_record_id',
+    'corpus_completeness_state',
+    'deal_id',
+    'schema_version',
+  ].sort());
+  assert.doesNotThrow(() => validateCorpusCompletenessRecord(record));
+});
+
+test('a per-document record is valid without reference to any corpus state', () => {
+  const record = buildDocumentVerificationRecord({
+    deal_id: DEAL_ID,
+    source_document_id: SOURCE_DOCUMENT_ID,
+    document_verification_state: DOCUMENT_VERIFIED,
+  });
+  assert.equal(record.schema_version, DOCUMENT_VERIFICATION_RECORD_SCHEMA);
+  assert.equal(Object.hasOwn(record, 'corpus_completeness_state'), false);
+  assert.equal(Object.hasOwn(record, 'corpus_completeness_asserted_by'), false);
+  assert.equal(Object.hasOwn(record, 'corpus_completeness_asserted_at'), false);
+  assert.deepEqual(Object.keys(record).sort(), [
+    'deal_id',
+    'document_verification_record_id',
+    'document_verification_state',
+    'schema_version',
+    'source_document_id',
+  ].sort());
+  assert.doesNotThrow(() => validateDocumentVerificationRecord(record));
+});
+
+test('validateDocumentVerificationRecord rejects a corpus-completeness record\'s field set', () => {
+  const corpusRecord = validCorpusRecord();
+  assert.throws(
+    () => validateDocumentVerificationRecord(corpusRecord),
+    (error) => error.code === 'INVALID_RECORD_FIELD_SET'
+      && error.details.missing.includes('source_document_id')
+      && error.details.missing.includes('document_verification_state')
+      && error.details.missing.includes('document_verification_record_id')
+      && error.details.unexpected.includes('corpus_completeness_state')
+      && error.details.unexpected.includes('corpus_completeness_asserted_by')
+      && error.details.unexpected.includes('corpus_completeness_asserted_at')
+      && error.details.unexpected.includes('corpus_completeness_record_id'),
+  );
+});
+
+test('validateCorpusCompletenessRecord rejects a document-verification record\'s field set', () => {
+  const documentRecord = validDocumentRecord();
+  assert.throws(
+    () => validateCorpusCompletenessRecord(documentRecord),
+    (error) => error.code === 'INVALID_RECORD_FIELD_SET'
+      && error.details.missing.includes('corpus_completeness_state')
+      && error.details.missing.includes('corpus_completeness_asserted_by')
+      && error.details.missing.includes('corpus_completeness_asserted_at')
+      && error.details.missing.includes('corpus_completeness_record_id')
+      && error.details.unexpected.includes('source_document_id')
+      && error.details.unexpected.includes('document_verification_state')
+      && error.details.unexpected.includes('document_verification_record_id'),
+  );
+});
+
+test('a well-formed record with an unverified corpus is ACCEPTED, proving the state is advisory rather than a gate', () => {
+  const verifiedDocument = validDocumentRecord();
+  const unverifiedCorpus = initialCorpusRecord();
+  assert.equal(unverifiedCorpus.corpus_completeness_state, DEFAULT_CORPUS_COMPLETENESS_STATE);
+  // Both are well-formed and both are ACCEPTED: an unverified corpus is a
+  // health warning shown alongside a document, never a reason to refuse it.
+  assert.doesNotThrow(() => validateDocumentVerificationRecord(verifiedDocument));
+  assert.doesNotThrow(() => validateCorpusCompletenessRecord(unverifiedCorpus));
+});
+
+test('every document-verification state is independently valid alongside every corpus-completeness state', () => {
   for (const documentState of DOCUMENT_VERIFICATION_STATES) {
+    const documentRecord = buildDocumentVerificationRecord({
+      deal_id: DEAL_ID,
+      source_document_id: SOURCE_DOCUMENT_ID,
+      document_verification_state: documentState,
+    });
+    assert.doesNotThrow(() => validateDocumentVerificationRecord(documentRecord));
+    assert.equal(documentRecord.document_verification_state, documentState);
     for (const corpusState of CORPUS_COMPLETENESS_STATES) {
       const isDefault = corpusState === DEFAULT_CORPUS_COMPLETENESS_STATE;
-      const record = buildSourceVerificationState({
+      const corpusRecord = buildCorpusCompletenessRecord({
         deal_id: DEAL_ID,
-        source_document_id: SOURCE_DOCUMENT_ID,
-        document_verification_state: documentState,
         corpus_completeness_state: corpusState,
         corpus_completeness_asserted_by: isDefault ? null : ASSERTER,
         corpus_completeness_asserted_at: isDefault ? null : ASSERTED_AT,
       });
-      assert.equal(record.document_verification_state, documentState);
-      assert.equal(record.corpus_completeness_state, corpusState);
-      assert.doesNotThrow(() => validateSourceVerificationState(record));
+      assert.doesNotThrow(() => validateCorpusCompletenessRecord(corpusRecord));
+      assert.equal(corpusRecord.corpus_completeness_state, corpusState);
     }
   }
-  assert.doesNotThrow(() => buildSourceVerificationState({
+  // Illustrative pairings from the pre-split combined-record model, now
+  // expressed as two independently valid records sharing nothing but a
+  // deal_id string value.
+  assert.doesNotThrow(() => buildDocumentVerificationRecord({
     deal_id: DEAL_ID,
     source_document_id: SOURCE_DOCUMENT_ID,
     document_verification_state: DOCUMENT_NOT_VERIFIED,
+  }), 'an unverified document can coexist with a human-verified-complete corpus');
+  assert.doesNotThrow(() => buildCorpusCompletenessRecord({
+    deal_id: DEAL_ID,
     corpus_completeness_state: HUMAN_VERIFIED_COMPLETE,
     corpus_completeness_asserted_by: ASSERTER,
     corpus_completeness_asserted_at: ASSERTED_AT,
-  }), 'an unverified document can still belong to a human-verified-complete corpus');
-  assert.doesNotThrow(() => buildSourceVerificationState({
+  }), 'an unverified document can coexist with a human-verified-complete corpus');
+  assert.doesNotThrow(() => buildDocumentVerificationRecord({
     deal_id: DEAL_ID,
     source_document_id: SOURCE_DOCUMENT_ID,
     document_verification_state: DOCUMENT_VERIFIED,
-    corpus_completeness_state: DEFAULT_CORPUS_COMPLETENESS_STATE,
-    corpus_completeness_asserted_by: null,
-    corpus_completeness_asserted_at: null,
-  }), 'a verified document does not by itself make its corpus human-verified');
+  }), 'a verified document does not by itself make its deal\'s corpus human-verified');
+  assert.doesNotThrow(() => buildInitialCorpusCompletenessRecord({ deal_id: DEAL_ID }),
+    'a verified document does not by itself make its deal\'s corpus human-verified');
 });
 
 // ---- transition table -----------------------------------------------------
@@ -449,7 +536,7 @@ test('every illegal transition is rejected with a specific code', () => {
 // ---- revocation: the whole point of the ruling ----------------------------
 
 test('human verification is revocable back to the exact initial not-human-verified state', () => {
-  const initial = initialRecord();
+  const initial = initialCorpusRecord();
   const verified = transitionCorpusCompletenessState({
     previous: initial,
     corpus_completeness_state: HUMAN_VERIFIED_COMPLETE,
@@ -458,7 +545,7 @@ test('human verification is revocable back to the exact initial not-human-verifi
   });
   assert.equal(verified.corpus_completeness_state, HUMAN_VERIFIED_COMPLETE);
   assert.equal(verified.corpus_completeness_asserted_by, ASSERTER);
-  assert.notEqual(verified.source_verification_state_id, initial.source_verification_state_id);
+  assert.notEqual(verified.corpus_completeness_record_id, initial.corpus_completeness_record_id);
 
   // A later document appears -> revoke back to not-human-verified.
   const revoked = transitionCorpusCompletenessState({
@@ -472,7 +559,7 @@ test('human verification is revocable back to the exact initial not-human-verifi
 });
 
 test('a human-flagged-incomplete corpus can be resolved to verified-complete and back', () => {
-  const initial = initialRecord();
+  const initial = initialCorpusRecord();
   const flagged = transitionCorpusCompletenessState({
     previous: initial,
     corpus_completeness_state: HUMAN_FLAGGED_INCOMPLETE,
@@ -501,8 +588,8 @@ test('a human-flagged-incomplete corpus can be resolved to verified-complete and
   assert.equal(reFlagged.corpus_completeness_state, HUMAN_FLAGGED_INCOMPLETE);
 });
 
-test('transitionCorpusCompletenessState preserves deal, document and document-verification fields', () => {
-  const verified = validRecord();
+test('transitionCorpusCompletenessState preserves the deal_id field', () => {
+  const verified = validCorpusRecord();
   const flagged = transitionCorpusCompletenessState({
     previous: verified,
     corpus_completeness_state: HUMAN_FLAGGED_INCOMPLETE,
@@ -510,13 +597,11 @@ test('transitionCorpusCompletenessState preserves deal, document and document-ve
     corpus_completeness_asserted_at: LATER_ASSERTED_AT,
   });
   assert.equal(flagged.deal_id, verified.deal_id);
-  assert.equal(flagged.source_document_id, verified.source_document_id);
-  assert.equal(flagged.document_verification_state, verified.document_verification_state);
-  assert.notEqual(flagged.source_verification_state_id, verified.source_verification_state_id);
+  assert.notEqual(flagged.corpus_completeness_record_id, verified.corpus_completeness_record_id);
 });
 
 test('transitionCorpusCompletenessState rejects a no-op transition on the default state', () => {
-  const initial = initialRecord();
+  const initial = initialCorpusRecord();
   assert.throws(
     () => transitionCorpusCompletenessState({
       previous: initial,
@@ -536,7 +621,7 @@ test('transitionCorpusCompletenessState validates the previous record and fails 
     }),
     (error) => error.code === 'INVALID_RECORD_SHAPE',
   );
-  const corrupted = shallowCopyWithout(initialRecord(), 'document_verification_state');
+  const corrupted = shallowCopyWithout(initialCorpusRecord(), 'corpus_completeness_asserted_by');
   assert.throws(
     () => transitionCorpusCompletenessState({
       previous: corrupted,
@@ -548,79 +633,200 @@ test('transitionCorpusCompletenessState validates the previous record and fails 
   );
 });
 
-// ---- validator: closed exact-field-set ------------------------------------
+// ---- validator: closed exact-field-set (document-verification record) -----
 
-test('validator rejects a record missing a required field', () => {
-  const missing = shallowCopyWithout(validRecord(), 'source_document_id');
+test('validator rejects a document-verification record missing a required field', () => {
+  const missing = shallowCopyWithout(validDocumentRecord(), 'source_document_id');
   assert.throws(
-    () => validateSourceVerificationState(missing),
+    () => validateDocumentVerificationRecord(missing),
     (error) => error.code === 'INVALID_RECORD_FIELD_SET'
       && error.details.missing.includes('source_document_id')
       && error.details.unexpected.length === 0,
   );
 });
 
-test('validator rejects a record with an unexpected extra field', () => {
-  const extra = { ...validRecord(), extra_field: 'not part of the schema' };
+test('validator rejects a document-verification record with an unexpected extra field', () => {
+  const extra = { ...validDocumentRecord(), extra_field: 'not part of the schema' };
   assert.throws(
-    () => validateSourceVerificationState(extra),
+    () => validateDocumentVerificationRecord(extra),
     (error) => error.code === 'INVALID_RECORD_FIELD_SET'
       && error.details.unexpected.includes('extra_field')
       && error.details.missing.length === 0,
   );
 });
 
-test('validator rejects wrong-value fields with the same specific codes as the builder', () => {
-  const wrongState = { ...validRecord(), document_verification_state: 'NOT_A_STATE' };
+test('validator rejects a document-verification record with a wrong-value field using the builder\'s code', () => {
+  const wrongState = { ...validDocumentRecord(), document_verification_state: 'NOT_A_STATE' };
   assert.throws(
-    () => validateSourceVerificationState(wrongState),
+    () => validateDocumentVerificationRecord(wrongState),
     (error) => error.code === 'INVALID_DOCUMENT_VERIFICATION_STATE',
   );
 });
 
-// ---- validator: prototype pollution ---------------------------------------
+// ---- validator: closed exact-field-set (corpus-completeness record) -------
 
-test('validator rejects a record whose prototype has been tampered with', () => {
-  const valid = validRecord();
+test('validator rejects a corpus-completeness record missing a required field', () => {
+  const missing = shallowCopyWithout(validCorpusRecord(), 'corpus_completeness_asserted_by');
+  assert.throws(
+    () => validateCorpusCompletenessRecord(missing),
+    (error) => error.code === 'INVALID_RECORD_FIELD_SET'
+      && error.details.missing.includes('corpus_completeness_asserted_by')
+      && error.details.unexpected.length === 0,
+  );
+});
+
+test('validator rejects a corpus-completeness record with an unexpected extra field', () => {
+  const extra = { ...validCorpusRecord(), extra_field: 'not part of the schema' };
+  assert.throws(
+    () => validateCorpusCompletenessRecord(extra),
+    (error) => error.code === 'INVALID_RECORD_FIELD_SET'
+      && error.details.unexpected.includes('extra_field')
+      && error.details.missing.length === 0,
+  );
+});
+
+test('validator rejects a corpus-completeness record with a wrong-value field using the builder\'s code', () => {
+  const wrongState = { ...validCorpusRecord(), corpus_completeness_state: 'NOT_A_STATE' };
+  assert.throws(
+    () => validateCorpusCompletenessRecord(wrongState),
+    (error) => error.code === 'INVALID_CORPUS_COMPLETENESS_STATE',
+  );
+});
+
+// ---- document-verification record: validator hardening --------------------
+
+test('document-verification validator rejects a record whose prototype has been tampered with', () => {
+  const valid = validDocumentRecord();
   const maliciousProto = { extra_authority: 'granted' };
   const hostile = Object.assign(Object.create(maliciousProto), valid);
   assert.deepEqual(Object.keys(hostile).sort(), Object.keys(valid).sort());
   assert.throws(
-    () => validateSourceVerificationState(hostile),
+    () => validateDocumentVerificationRecord(hostile),
     (error) => error.code === 'INVALID_RECORD_SHAPE',
   );
 });
 
-test('validator rejects a null-prototype record', () => {
-  const hostile = Object.assign(Object.create(null), validRecord());
+test('document-verification validator rejects a null-prototype record', () => {
+  const hostile = Object.assign(Object.create(null), validDocumentRecord());
   assert.throws(
-    () => validateSourceVerificationState(hostile),
+    () => validateDocumentVerificationRecord(hostile),
     (error) => error.code === 'INVALID_RECORD_SHAPE',
   );
 });
 
-test('validator rejects the object-literal __proto__ prototype-injection vector', () => {
-  const valid = validRecord();
+test('document-verification validator rejects the object-literal __proto__ prototype-injection vector', () => {
+  const valid = validDocumentRecord();
   const hostile = { __proto__: { extra_authority: 'granted' }, ...valid };
   assert.notEqual(Object.getPrototypeOf(hostile), Object.prototype);
   assert.throws(
-    () => validateSourceVerificationState(hostile),
+    () => validateDocumentVerificationRecord(hostile),
     (error) => error.code === 'INVALID_RECORD_SHAPE',
   );
 });
 
-test('validator rejects an ordinary own "__proto__" data property as an unexpected field', () => {
-  const hostile = { ...validRecord() };
+test('document-verification validator rejects an ordinary own "__proto__" data property as an unexpected field', () => {
+  const hostile = { ...validDocumentRecord() };
   Object.defineProperty(hostile, '__proto__', { value: 'evil', enumerable: true, configurable: true });
   assert.equal(Object.getPrototypeOf(hostile), Object.prototype);
   assert.throws(
-    () => validateSourceVerificationState(hostile),
+    () => validateDocumentVerificationRecord(hostile),
     (error) => error.code === 'INVALID_RECORD_FIELD_SET' && error.details.unexpected.includes('__proto__'),
   );
 });
 
-test('validator rejects a getter-backed field instead of a plain data property', () => {
-  const hostile = { ...validRecord() };
+test('document-verification validator rejects a getter-backed field instead of a plain data property', () => {
+  const hostile = { ...validDocumentRecord() };
+  delete hostile.document_verification_state;
+  Object.defineProperty(hostile, 'document_verification_state', {
+    enumerable: true,
+    configurable: true,
+    get() { return DOCUMENT_VERIFIED; },
+  });
+  assert.throws(
+    () => validateDocumentVerificationRecord(hostile),
+    (error) => error.code === 'INVALID_RECORD_SHAPE',
+  );
+});
+
+test('document-verification builder rejects input whose fields are only inherited, never its own', () => {
+  const valid = validDocumentRecord();
+  const inheritedOnly = Object.create({ ...valid });
+  assert.deepEqual(Object.keys(inheritedOnly), []);
+  assert.equal(inheritedOnly.deal_id, valid.deal_id); // inherited, not own
+  assert.throws(
+    () => buildDocumentVerificationRecord(inheritedOnly),
+    (error) => error.code === 'INVALID_RECORD_SHAPE',
+  );
+});
+
+test('document-verification validator and builder reject non-plain-object records outright', () => {
+  for (const bad of [null, 'x', 42, ['a'], () => {}]) {
+    assert.throws(
+      () => buildDocumentVerificationRecord(bad),
+      (error) => error.code === 'INVALID_RECORD_SHAPE',
+      String(bad),
+    );
+    assert.throws(
+      () => validateDocumentVerificationRecord(bad),
+      (error) => error.code === 'INVALID_RECORD_SHAPE',
+      String(bad),
+    );
+  }
+  // undefined is special-cased for the builder only: an omitted/undefined
+  // top-level argument hits the documented `input = {}` default parameter
+  // (the same convenience the header comment describes for individual
+  // fields) and is then rejected per-field instead of at the shape gate.
+  // The validator takes no such default, so undefined is exactly as
+  // rejected there as any other non-plain value.
+  assert.throws(
+    () => validateDocumentVerificationRecord(undefined),
+    (error) => error.code === 'INVALID_RECORD_SHAPE',
+  );
+});
+
+// ---- corpus-completeness record: validator hardening -----------------------
+
+test('corpus-completeness validator rejects a record whose prototype has been tampered with', () => {
+  const valid = validCorpusRecord();
+  const maliciousProto = { extra_authority: 'granted' };
+  const hostile = Object.assign(Object.create(maliciousProto), valid);
+  assert.deepEqual(Object.keys(hostile).sort(), Object.keys(valid).sort());
+  assert.throws(
+    () => validateCorpusCompletenessRecord(hostile),
+    (error) => error.code === 'INVALID_RECORD_SHAPE',
+  );
+});
+
+test('corpus-completeness validator rejects a null-prototype record', () => {
+  const hostile = Object.assign(Object.create(null), validCorpusRecord());
+  assert.throws(
+    () => validateCorpusCompletenessRecord(hostile),
+    (error) => error.code === 'INVALID_RECORD_SHAPE',
+  );
+});
+
+test('corpus-completeness validator rejects the object-literal __proto__ prototype-injection vector', () => {
+  const valid = validCorpusRecord();
+  const hostile = { __proto__: { extra_authority: 'granted' }, ...valid };
+  assert.notEqual(Object.getPrototypeOf(hostile), Object.prototype);
+  assert.throws(
+    () => validateCorpusCompletenessRecord(hostile),
+    (error) => error.code === 'INVALID_RECORD_SHAPE',
+  );
+});
+
+test('corpus-completeness validator rejects an ordinary own "__proto__" data property as an unexpected field', () => {
+  const hostile = { ...validCorpusRecord() };
+  Object.defineProperty(hostile, '__proto__', { value: 'evil', enumerable: true, configurable: true });
+  assert.equal(Object.getPrototypeOf(hostile), Object.prototype);
+  assert.throws(
+    () => validateCorpusCompletenessRecord(hostile),
+    (error) => error.code === 'INVALID_RECORD_FIELD_SET' && error.details.unexpected.includes('__proto__'),
+  );
+});
+
+test('corpus-completeness validator rejects a getter-backed field instead of a plain data property', () => {
+  const hostile = { ...validCorpusRecord() };
   delete hostile.corpus_completeness_state;
   Object.defineProperty(hostile, 'corpus_completeness_state', {
     enumerable: true,
@@ -628,91 +834,158 @@ test('validator rejects a getter-backed field instead of a plain data property',
     get() { return HUMAN_VERIFIED_COMPLETE; },
   });
   assert.throws(
-    () => validateSourceVerificationState(hostile),
+    () => validateCorpusCompletenessRecord(hostile),
     (error) => error.code === 'INVALID_RECORD_SHAPE',
   );
 });
 
-test('builder rejects input whose fields are only inherited, never its own', () => {
-  const valid = validRecord();
+test('corpus-completeness builder rejects input whose fields are only inherited, never its own', () => {
+  const valid = validCorpusRecord();
   const inheritedOnly = Object.create({ ...valid });
   assert.deepEqual(Object.keys(inheritedOnly), []);
   assert.equal(inheritedOnly.deal_id, valid.deal_id); // inherited, not own
   assert.throws(
-    () => buildSourceVerificationState(inheritedOnly),
+    () => buildCorpusCompletenessRecord(inheritedOnly),
     (error) => error.code === 'INVALID_RECORD_SHAPE',
   );
 });
 
-test('validator and builder reject non-plain-object records outright', () => {
-  for (const bad of [null, undefined, 'x', 42, ['a'], () => {}]) {
+test('corpus-completeness validator and builder reject non-plain-object records outright', () => {
+  for (const bad of [null, 'x', 42, ['a'], () => {}]) {
     assert.throws(
-      () => validateSourceVerificationState(bad),
+      () => buildCorpusCompletenessRecord(bad),
+      (error) => error.code === 'INVALID_RECORD_SHAPE',
+      String(bad),
+    );
+    assert.throws(
+      () => validateCorpusCompletenessRecord(bad),
       (error) => error.code === 'INVALID_RECORD_SHAPE',
       String(bad),
     );
   }
+  // undefined is special-cased for the builder only: an omitted/undefined
+  // top-level argument hits the documented `input = {}` default parameter
+  // (the same convenience the header comment describes for individual
+  // fields) and is then rejected per-field instead of at the shape gate.
+  // The validator takes no such default, so undefined is exactly as
+  // rejected there as any other non-plain value.
+  assert.throws(
+    () => validateCorpusCompletenessRecord(undefined),
+    (error) => error.code === 'INVALID_RECORD_SHAPE',
+  );
 });
 
-// ---- content identity: stability and drift detection -----------------------
+// ---- document-verification record: content identity ------------------------
 
-test('content identity is stable for identical input', () => {
-  const first = validRecord();
-  const second = validRecord();
-  assert.equal(first.source_verification_state_id, second.source_verification_state_id);
-  assert.match(first.source_verification_state_id, /^[a-f0-9]{64}$/);
+test('document-verification content identity is stable for identical input', () => {
+  const first = validDocumentRecord();
+  const second = validDocumentRecord();
+  assert.equal(first.document_verification_record_id, second.document_verification_record_id);
+  assert.match(first.document_verification_record_id, /^[a-f0-9]{64}$/);
 });
 
-test('content identity changes whenever any bound field changes', () => {
-  const base = validRecord();
-  const differentAssertedAt = validRecord({ corpus_completeness_asserted_at: LATER_ASSERTED_AT });
-  const differentAsserter = validRecord({ corpus_completeness_asserted_by: OTHER_ASSERTER });
-  const differentDeal = validRecord({ deal_id: 'deal-beta' });
-  const differentDocument = validRecord({ source_document_id: 'doc-beta-1' });
-  const differentDocState = validRecord({ document_verification_state: DOCUMENT_NOT_VERIFIED });
+test('document-verification content identity changes whenever any bound field changes', () => {
+  const base = validDocumentRecord();
+  const differentDeal = validDocumentRecord({ deal_id: 'deal-beta' });
+  const differentDocument = validDocumentRecord({ source_document_id: 'doc-beta-1' });
+  const differentDocState = validDocumentRecord({ document_verification_state: DOCUMENT_NOT_VERIFIED });
   const ids = new Set([
-    base.source_verification_state_id,
-    differentAssertedAt.source_verification_state_id,
-    differentAsserter.source_verification_state_id,
-    differentDeal.source_verification_state_id,
-    differentDocument.source_verification_state_id,
-    differentDocState.source_verification_state_id,
+    base.document_verification_record_id,
+    differentDeal.document_verification_record_id,
+    differentDocument.document_verification_record_id,
+    differentDocState.document_verification_record_id,
   ]);
-  assert.equal(ids.size, 6);
+  assert.equal(ids.size, 4);
 });
 
-test('validator detects content whose fields no longer match its stale identity', () => {
-  const valid = validRecord();
-  const other = validRecord({ deal_id: 'deal-beta' });
+test('document-verification validator detects content whose fields no longer match its stale identity', () => {
+  const valid = validDocumentRecord();
+  const other = validDocumentRecord({ deal_id: 'deal-beta' });
   const tampered = { ...valid, deal_id: other.deal_id }; // content changed, id left stale
   assert.throws(
-    () => validateSourceVerificationState(tampered),
-    (error) => error.code === 'SOURCE_VERIFICATION_STATE_MISMATCH',
+    () => validateDocumentVerificationRecord(tampered),
+    (error) => error.code === 'DOCUMENT_VERIFICATION_RECORD_MISMATCH',
   );
 });
 
-test('validator detects a directly tampered identity on an otherwise-correct record', () => {
-  const valid = validRecord();
-  const other = validRecord({ deal_id: 'deal-beta' });
-  const tampered = { ...valid, source_verification_state_id: other.source_verification_state_id };
+test('document-verification validator detects a directly tampered identity on an otherwise-correct record', () => {
+  const valid = validDocumentRecord();
+  const other = validDocumentRecord({ deal_id: 'deal-beta' });
+  const tampered = { ...valid, document_verification_record_id: other.document_verification_record_id };
   assert.throws(
-    () => validateSourceVerificationState(tampered),
-    (error) => error.code === 'SOURCE_VERIFICATION_STATE_MISMATCH',
+    () => validateDocumentVerificationRecord(tampered),
+    (error) => error.code === 'DOCUMENT_VERIFICATION_RECORD_MISMATCH',
   );
 });
 
-test('a validated record round-trips to an identical expected record', () => {
-  const valid = validRecord();
-  const revalidated = validateSourceVerificationState(valid);
+test('a validated document-verification record round-trips to an identical expected record', () => {
+  const valid = validDocumentRecord();
+  const revalidated = validateDocumentVerificationRecord(valid);
+  assert.deepEqual(revalidated, valid);
+});
+
+// ---- corpus-completeness record: content identity ---------------------------
+
+test('corpus-completeness content identity is stable for identical input', () => {
+  const first = validCorpusRecord();
+  const second = validCorpusRecord();
+  assert.equal(first.corpus_completeness_record_id, second.corpus_completeness_record_id);
+  assert.match(first.corpus_completeness_record_id, /^[a-f0-9]{64}$/);
+});
+
+test('corpus-completeness content identity changes whenever any bound field changes', () => {
+  const base = validCorpusRecord();
+  const differentDeal = validCorpusRecord({ deal_id: 'deal-beta' });
+  const differentAsserter = validCorpusRecord({ corpus_completeness_asserted_by: OTHER_ASSERTER });
+  const differentAssertedAt = validCorpusRecord({ corpus_completeness_asserted_at: LATER_ASSERTED_AT });
+  const differentState = validCorpusRecord({ corpus_completeness_state: HUMAN_FLAGGED_INCOMPLETE });
+  const ids = new Set([
+    base.corpus_completeness_record_id,
+    differentDeal.corpus_completeness_record_id,
+    differentAsserter.corpus_completeness_record_id,
+    differentAssertedAt.corpus_completeness_record_id,
+    differentState.corpus_completeness_record_id,
+  ]);
+  assert.equal(ids.size, 5);
+});
+
+test('corpus-completeness validator detects content whose fields no longer match its stale identity', () => {
+  const valid = validCorpusRecord();
+  const other = validCorpusRecord({ deal_id: 'deal-beta' });
+  const tampered = { ...valid, deal_id: other.deal_id }; // content changed, id left stale
+  assert.throws(
+    () => validateCorpusCompletenessRecord(tampered),
+    (error) => error.code === 'CORPUS_COMPLETENESS_RECORD_MISMATCH',
+  );
+});
+
+test('corpus-completeness validator detects a directly tampered identity on an otherwise-correct record', () => {
+  const valid = validCorpusRecord();
+  const other = validCorpusRecord({ deal_id: 'deal-beta' });
+  const tampered = { ...valid, corpus_completeness_record_id: other.corpus_completeness_record_id };
+  assert.throws(
+    () => validateCorpusCompletenessRecord(tampered),
+    (error) => error.code === 'CORPUS_COMPLETENESS_RECORD_MISMATCH',
+  );
+});
+
+test('a validated corpus-completeness record round-trips to an identical expected record', () => {
+  const valid = validCorpusRecord();
+  const revalidated = validateCorpusCompletenessRecord(valid);
   assert.deepEqual(revalidated, valid);
 });
 
 // ---- immutability -----------------------------------------------------
 
 test('built records and exported vocabularies are frozen', () => {
-  const record = validRecord();
-  assert.ok(Object.isFrozen(record));
-  assert.throws(() => { record.deal_id = 'other'; }, /read only|Cannot assign/);
+  const documentRecord = validDocumentRecord();
+  assert.ok(Object.isFrozen(documentRecord));
+  assert.throws(() => { documentRecord.deal_id = 'other'; }, /read only|Cannot assign/);
+
+  const corpusRecord = validCorpusRecord();
+  assert.ok(Object.isFrozen(corpusRecord));
+  assert.throws(() => { corpusRecord.deal_id = 'other'; }, /read only|Cannot assign/);
+
   assert.ok(Object.isFrozen(CORPUS_COMPLETENESS_TRANSITIONS));
   assert.ok(Object.isFrozen(CORPUS_COMPLETENESS_TRANSITIONS[DEFAULT_CORPUS_COMPLETENESS_STATE]));
 });

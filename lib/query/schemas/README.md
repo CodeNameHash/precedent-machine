@@ -13,11 +13,20 @@ under `lib/query/executors/`. There is no separate JSON Schema for results
 today — the executor + the render switch in `pages/query/[kind]/[id].js`
 (`ResultView`) are the source of truth for each kind's field names:
 
-- `DEAL_COMPARE` — `{ columns, rows: [{ provision_type, cells: [{ deal_id, card_id, primary_quote, key_fields: [...], delta_severity, delta_versus }] }] }`
 - `PROVISION_CROSS_CUT` — `{ provision_type, columns, rows: [{ ...dealColumn, card_id, cells: [{ value, verbatim_quote, quote_section_ref }] }] }`
 - `MARKET_RANGE` — `{ provision_type, field_path, field_kind, n, stats, distribution, deal_points: [{ deal_id, card_id, value, verbatim_quote, quote_section_ref }] }`
 - `FILTER_THEN_LIST` — `{ filters_applied, total_matches, rows: [{ ...dealColumn, columns, matched_provision_hits: [{ provision_type, card_id, field, value }] }] }`
-- `DEAL_TO_MARKET` — `{ deal_id, deal_name, comparison_set_size, scorecard: [{ provision_type, field_path, field_label, deal_value, baseline_stats, status, card_id, verbatim_quote }], summary }`
+
+`DEAL_COMPARE` and `DEAL_TO_MARKET` were retired as query kinds — deal-vs-deal
+and deal-vs-market comparison now live on the review page's own compare mode
+and market columns (`pages/review/[id].js`,
+`components/review-v2/CompareColumn.jsx`), not through this query engine.
+`lib/query/executors/deal-compare.js` and `deal-to-market.js` still exist and
+are still directly tested (several canonical-v2 product-parity tests import
+them as pure functions), but `lib/query/engine.js` no longer dispatches to
+them and `pages/query/[kind]/[id].js`'s `ResultView` no longer renders them —
+this directory has no `DEAL_COMPARE.json`/`DEAL_TO_MARKET.json` payload
+schema for the same reason.
 
 ### `_prov` (WP-3 / M4-02, additive & optional)
 

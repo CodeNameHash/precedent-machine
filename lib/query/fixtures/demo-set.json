@@ -530,53 +530,5 @@
       "median": 10
     },
     "notes": "WP-1 query #18. Two registry gaps compounded here: (1) 'hsrFilingDeadlineBusinessDays' is merged into the legacy 'hsrFilingDeadline' (ISO-date-ish object) canonical entry, and when a provision carried BOTH raw keys, alias resolution always picked whichever was listed first rather than the literally-requested one — fixed in lib/query/resolve.js resolveFeatureValue (try the requested alias first). (2) the merged entry's declared type ('date') doesn't fit the business-day-count shape at all, and its deadline-object raw shape ({days, text, unit}) has no top-level 'value', which was leaking the raw object itself into results ([object Object] in the histogram) for deals whose HSR covenant only has effort-standard prose (\"as promptly as practicable\") and no fixed day count. Fixed with a query-layer type override (lib/query/types.js FIELD_TYPE_OVERRIDES, scoped to this one field alias) plus a defensive rule in valueFromRaw: never return a bare object as a query cell value. n=19 matches the spec's own coverage estimate exactly and is the correct count of deals with an actual extracted business-day figure (an earlier intermediate fix left n at 25 by letting prose-only deals leak in as text \"data points\" — corrected)."
-  },
-  {
-    "id": "deal-protection-compare-2025-tech",
-    "title": "Deal-protection package compare (Redfin / Mr. Cooper / Juniper)",
-    "question": "Compare the deal-protection package of the three 2025 Rocket-adjacent / recent tech deals",
-    "kind": "DEAL_COMPARE",
-    "payload": {
-      "deal_ids": [
-        "@deal:Redfin",
-        "@deal:Mr. Cooper",
-        "@deal:Juniper"
-      ],
-      "provision_types": [
-        "TERMINATION_FEE",
-        "COVENANT_NO_SOLICITATION"
-      ],
-      "highlight_deltas": true,
-      "included_field_groups": [
-        "primary",
-        "qualifiers"
-      ]
-    },
-    "expected": {
-      "row_count": 2,
-      "deal_names_contains": [
-        "Hewlett Packard Enterprise Company / Juniper Networks, Inc.",
-        "Rocket Companies, Inc. / Mr. Cooper Group Inc.",
-        "Rocket Companies, Inc. / Redfin Corporation"
-      ],
-      "cards_present": true
-    },
-    "notes": "WP-1 query #19."
-  },
-  {
-    "id": "metsera-vs-market",
-    "title": "Metsera / Pfizer vs market",
-    "question": "How does Metsera / Pfizer sit vs market?",
-    "kind": "DEAL_TO_MARKET",
-    "payload": {
-      "deal_id": "@deal:Metsera",
-      "comparison_set_filter": {},
-      "provision_types": null
-    },
-    "expected": {
-      "deal_name_contains": "Metsera, Inc.",
-      "min_scorecard": 14
-    },
-    "notes": "WP-1 query #20."
   }
 ]

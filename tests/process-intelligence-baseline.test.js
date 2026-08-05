@@ -24,8 +24,13 @@ const SOURCE_FILES = [
     sha256: '3457984b065a277bc3aa18d34da62a7436325a7fe7ec0672ab0cbccd9473c1d3',
   },
   {
+    // Re-baselined 2026-08-05 alongside the pin in
+    // scripts/process-intelligence-baseline.mjs. lib/query/types.js changed when
+    // the DEAL_COMPARE and DEAL_TO_MARKET query kinds were retired on the
+    // product owner's decision. Both pins are deliberate and must move together
+    // and only for a stated reason.
     path: 'lib/query/types.js',
-    sha256: '7ff2577f958ab9f0337eebd8186cf283f9bae4be03ddcc88aff424fc55ae22b3',
+    sha256: '5723635a55cb393ccc66bb39dc3736be1c20b5f7f790b36a4722350abb11a99b',
   },
   {
     path: 'lib/query/field-meta.js',

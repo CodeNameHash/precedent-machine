@@ -18,8 +18,8 @@ This document is a Wave A design. It does not claim the family is complete.
 | General-exceptions side table | same file `buildGeneralExceptionsRow` | SEC-filing cut-off, exclusions, disclosure-letter reference | follow-on, no controlled vocabulary yet |
 | Knowledge side table | same file `buildKnowledgeSummaryRow` | knowledge standard and persons | standard remains a linked Definition-family fact; person list is follow-on |
 | Bring-down value | same file `resolveBringDown`, sourced from `conditions.config.js` | condition-derived closing accuracy standard | closing-conditions ownership, not duplicated here |
-| Compare view | `pages/compare.js` `RepsCompare` | union of target and parent categories, materiality, knowledge and lookback | qualifier values become native candidates; category identity and lookback follow on |
-| Material-contracts compare side table | `pages/compare.js` `MaterialContractsCompare` | target material-contract buckets and thresholds | material-contracts family owns it |
+| Compare view | `components/review-v2/compareRowUnion.js` `unionRows` | union of target and parent categories, materiality, knowledge and lookback | qualifier values become native candidates; category identity and lookback follow on |
+| Material-contracts compare side table | `components/review-v2/CompareColumn.jsx` `CompareSectionColumn` | target material-contract buckets and thresholds | material-contracts family owns it |
 | Query fields | `lib/query/field-meta.js`, `lib/query/serving-registry-v1.json` | all legacy REP-T/REP-B feature fields | follow-on register below |
 | Market rows | `lib/market-metrics/section-rows.js` and `lib/row-market-stats/families.js` | per-row market subterms for `REP-T`/`REP-B` | native qualifier fields only; the remaining rows are follow-on |
 | Browser-derived values | `representations-qualifiers.config.js` `resolveDateLookback` and `resolveBringDown` | date-term lookback resolution and condition-linked standard | follow-on and cross-family respectively |

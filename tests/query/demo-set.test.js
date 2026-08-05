@@ -42,9 +42,12 @@ function buildStubDeals() {
   return deals;
 }
 
-test('demo-set.json is a well-formed array of exactly 20 entries', () => {
+// WP-1 queries #19 (DEAL_COMPARE) and #20 (DEAL_TO_MARKET) were removed when
+// those kinds were retired — comparison now lives on the review page, not
+// through this query engine — dropping the fixture count from 20 to 18.
+test('demo-set.json is a well-formed array of exactly 18 entries', () => {
   assert.ok(Array.isArray(demoSet), 'demo-set.json must be a JSON array');
-  assert.equal(demoSet.length, 20, `expected 20 demo queries, found ${demoSet.length}`);
+  assert.equal(demoSet.length, 18, `expected 18 demo queries, found ${demoSet.length}`);
 });
 
 test('every demo-set id is unique', () => {
@@ -64,7 +67,7 @@ test('every demo-set entry has the required shape', () => {
   }
 });
 
-test('every kind appears at least once (5-kind coverage)', () => {
+test('every kind appears at least once (3-kind coverage)', () => {
   const kinds = new Set(demoSet.map((e) => e.kind));
   for (const kind of QUERY_KINDS) assert.ok(kinds.has(kind), `no demo-set entry exercises kind ${kind}`);
 });

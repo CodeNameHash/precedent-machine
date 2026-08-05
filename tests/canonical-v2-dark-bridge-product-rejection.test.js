@@ -225,9 +225,16 @@ test('negative control: a clean, non-dark record passes every hard fence without
   };
   const payload = { deal_ids: ['deal-a', 'deal-b'], provision_types: [] };
 
+  // DEAL_COMPARE was retired as a query kind (comparison now lives on the
+  // review page's own compare mode, not through the query engine), so the
+  // engine-dispatch fence is proven here through PROVISION_CROSS_CUT
+  // instead — a kind FILTER_THEN_LIST-shaped payload also happens to
+  // validate against — while executeDealCompare (still a real, directly
+  // tested function) keeps its own direct coverage right below.
+  const crossCutPayload = { deal_ids: ['deal-a', 'deal-b'], provision_type: 'CONSIDERATION', columns: [], sort_by: 'deal_signing_date_desc' };
   assertServable(() => assertNoDarkAuthorityRecords([CLEAN_RECORD]), 'assertNoDarkAuthorityRecords');
-  assertServable(() => executeQuery('DEAL_COMPARE', payload, context), 'executeQuery (query engine)');
-  await assertServableAsync(() => runQuery('DEAL_COMPARE', payload, { context }), 'runQuery (query engine)');
+  assertServable(() => executeQuery('PROVISION_CROSS_CUT', crossCutPayload, context), 'executeQuery (query engine)');
+  await assertServableAsync(() => runQuery('PROVISION_CROSS_CUT', crossCutPayload, { context }), 'runQuery (query engine)');
   assertServable(() => executeDealCompare(payload, context), 'executeDealCompare');
   assertServable(
     () => calculateMarketStats({ specs: [] }, { cards: [CLEAN_RECORD], claims: [] }),

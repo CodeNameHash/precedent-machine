@@ -114,16 +114,22 @@ test('resolveKey resolves registry aliases and provision values fall back across
   assert.equal(result.raw.value, 6);
 });
 
-test('DEAL_COMPARE returns a table with selected deals and requested groups', async () => {
-  const result = await runQuery('DEAL_COMPARE', {
-    deal_ids: ['d1', 'd2', 'd3'],
-    provision_types: ['CONSIDERATION', 'TERMINATION_FEE'],
-    highlight_deltas: true,
-    included_field_groups: ['primary', 'qualifiers'],
-  }, { context });
-  assert.equal(result.columns.length, 3);
-  assert.equal(result.rows.length, 2);
-  assert.ok(result.rows.every((row) => row.cells.length === 3));
+// DEAL_COMPARE was retired as a query kind — deal-vs-deal comparison now
+// lives on the review page's own compare mode (pages/review/[id].js,
+// components/review-v2/CompareColumn.jsx), not through the query engine.
+// executeDealCompare itself is untouched (several canonical-v2 tests still
+// exercise it directly as a pure function); only the engine's kind dispatch
+// is gone.
+test('DEAL_COMPARE no longer dispatches through the query engine', async () => {
+  await assert.rejects(
+    () => runQuery('DEAL_COMPARE', {
+      deal_ids: ['d1', 'd2', 'd3'],
+      provision_types: ['CONSIDERATION', 'TERMINATION_FEE'],
+      highlight_deltas: true,
+      included_field_groups: ['primary', 'qualifiers'],
+    }, { context }),
+    /invalid query_kind: DEAL_COMPARE/,
+  );
 });
 
 test('PROVISION_CROSS_CUT returns rows and evidence for populated columns', async () => {
@@ -226,15 +232,18 @@ test('MARKET_RANGE deal_filter.consideration_type narrows the comparison set the
   assert.deepEqual(result.deal_points.map((point) => point.deal_id), ['d2']);
 });
 
-test('DEAL_TO_MARKET returns per-feature comparisons with corpus baselines', async () => {
-  const result = await runQuery('DEAL_TO_MARKET', {
-    deal_id: 'd1',
-    comparison_set_filter: {},
-    provision_types: ['TERMINATION_FEE'],
-  }, { context });
-  assert.equal(result.deal_id, 'd1');
-  assert.ok(result.scorecard.length >= 1);
-  assert.ok(result.scorecard.some((row) => row.field_path === 'feePercentage'));
+// DEAL_TO_MARKET was retired the same way — deal-vs-market scoring now
+// lives on the review page (?market=1: a Market column per section). See
+// the DEAL_COMPARE note above.
+test('DEAL_TO_MARKET no longer dispatches through the query engine', async () => {
+  await assert.rejects(
+    () => runQuery('DEAL_TO_MARKET', {
+      deal_id: 'd1',
+      comparison_set_filter: {},
+      provision_types: ['TERMINATION_FEE'],
+    }, { context }),
+    /invalid query_kind: DEAL_TO_MARKET/,
+  );
 });
 
 test('raw feature-key lint catches direct feature property access', () => {
@@ -254,7 +263,7 @@ test('saved query payloads are version-pinned without requiring schema columns',
 });
 
 test('all query kinds have schemas and slugs for + New query wiring', () => {
-  assert.equal(QUERY_KINDS.length, 5);
+  assert.equal(QUERY_KINDS.length, 3);
   for (const kind of QUERY_KINDS) {
     assert.ok(KIND_SLUGS[kind]);
     const schema = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'lib/query/schemas', `${kind}.json`), 'utf8'));

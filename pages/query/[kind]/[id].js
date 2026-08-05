@@ -60,11 +60,9 @@ import CanonicalMarketRange from '../../../components/query/CanonicalMarketRange
 // same fix already used elsewhere on this surface). Only used to compare
 // this page's URL slug against the canonical predicate's expected enum kind.
 const QUERY_KIND_SLUG_TO_KIND = {
-  'deal-compare': 'DEAL_COMPARE',
   'provision-cross-cut': 'PROVISION_CROSS_CUT',
   'market-range': 'MARKET_RANGE',
   'filter-then-list': 'FILTER_THEN_LIST',
-  'deal-to-market': 'DEAL_TO_MARKET',
 };
 function slugToQueryKind(slug) {
   const raw = String(slug || '').trim();
@@ -121,9 +119,12 @@ function decodePayloadSafe(value) {
 // sentence ("No Solicitation across deals"). Fixed here at render, not in
 // lib/query/result-title.js, so the lib's own tests (which pin the Title
 // Case provisionTypeLabel output) stay green and every other caller of that
-// label keeps its Title Case. DEAL_COMPARE/DEAL_TO_MARKET titles carry
-// verbatim deal names (proper nouns) and must not be touched.
-const NO_SENTENCE_CASE_KINDS = new Set(['DEAL_COMPARE', 'DEAL_TO_MARKET']);
+// label keeps its Title Case. DEAL_COMPARE/DEAL_TO_MARKET, whose titles
+// carried verbatim deal names (proper nouns) that must not be touched, are
+// retired kinds — kept here as an empty set (not deleted outright) so a
+// future kind with the same proper-noun-title concern has an obvious place
+// to opt back in.
+const NO_SENTENCE_CASE_KINDS = new Set([]);
 function sentenceCaseTitle(kind, title) {
   if (!title || NO_SENTENCE_CASE_KINDS.has(kind)) return title;
   // Protect quoted spans (free-text filter values, e.g. `contains "Metsera"`)
@@ -474,7 +475,6 @@ function ResultRefinements({ result, payload, deals }) {
     const dealFilter = buildDealFilterPayload(values);
     const next = { ...payload };
     if (result.kind === 'MARKET_RANGE' || result.kind === 'FILTER_THEN_LIST') next.deal_filter = dealFilter;
-    if (result.kind === 'DEAL_TO_MARKET') next.comparison_set_filter = dealFilter;
     if (result.kind === 'PROVISION_CROSS_CUT') {
       const existing = new Set(payload.deal_ids || []);
       next.deal_ids = deals.filter((deal) => (!existing.size || existing.has(deal.id)) && dealMatchesDealFilter(deal, dealFilter)).map((deal) => deal.id);
@@ -486,7 +486,6 @@ function ResultRefinements({ result, payload, deals }) {
     const slug = result.kind.toLowerCase().replace(/_/g, '-');
     router.push(`/query/${slug}/adhoc?payload=${encodePayload(next)}`);
   };
-  if (result.kind === 'DEAL_COMPARE') return null;
   return (
     <div className="refinements">
       <DealFiltersBlock
@@ -571,29 +570,10 @@ function CanonicalErrorPanel({ error }) {
 }
 
 function ResultView({ result, onOpen }) {
-  if (result.kind === 'DEAL_COMPARE') return <DealCompare result={result} onOpen={onOpen} />;
   if (result.kind === 'PROVISION_CROSS_CUT') return <CrossCut result={result} onOpen={onOpen} />;
   if (result.kind === 'MARKET_RANGE') return <MarketRange result={result} onOpen={onOpen} />;
   if (result.kind === 'FILTER_THEN_LIST') return <FilterList result={result} />;
-  if (result.kind === 'DEAL_TO_MARKET') return <DealToMarket result={result} onOpen={onOpen} />;
   return <pre>{JSON.stringify(result, null, 2)}</pre>;
-}
-
-function DealCompare({ result }) {
-  // Deal-compare renders on the review page now (Ben: "just the normal deal
-  // review page but with an extra column for the added deal(s)") — this
-  // renderer only forwards to /review/<primary>?compare=<rest>. The
-  // executor is untouched; result.columns keeps carrying the deal ids.
-  const router = useRouter();
-  const ids = (result.columns || []).map((col) => col.deal_id).filter(Boolean);
-  const enough = ids.length >= 2;
-  useEffect(() => {
-    if (!enough) return;
-    router.replace(`/review/${ids[0]}?compare=${ids.slice(1).join(',')}`);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enough, ids.join(',')]);
-  if (!enough) return <Panel>Less than 2 deals selected. Add another deal to compare.</Panel>;
-  return <Panel>Opening review comparison…</Panel>;
 }
 
 // r13 item 2 (Ben: "all intervening event matters together"): for the
@@ -991,42 +971,13 @@ function FilterList({ result }) {
   );
 }
 
-// E5 (2026-07-19 pre-demo audit): DEAL_TO_MARKET's status is an internal
-// scoreValue() enum (lib/query/market-baseline.js), not a provision feature
-// — no taxonomy dictionary applies, so it needs its own small label map
-// rather than routing through prettifyEnumValue.
-const STATUS_LABELS = {
-  MARKET: 'Market',
-  OFF_MARKET: 'Off-market',
-  UNUSUAL: 'Unusual',
-  MISSING: 'Missing',
-  NOT_APPLICABLE: 'Not applicable',
-};
-
-function DealToMarket({ result }) {
-  // Deal-to-market renders on the review page now (?market=1: a Market
-  // column per section + an "Off-market terms" section on top) — this
-  // renderer only forwards there. The executor is untouched;
-  // result.deal_id is the payload's deal_id echoed back (see
-  // lib/query/executors/deal-to-market.js).
-  const router = useRouter();
-  const dealId = result.deal_id || (result.deal && result.deal.deal_id) || null;
-  useEffect(() => {
-    if (dealId) router.replace(`/review/${dealId}?market=1`);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dealId]);
-  if (!dealId) return <Panel>Deal not found in this result — re-run the query with a deal selected.</Panel>;
-  return <Panel>Opening review comparison…</Panel>;
-}
-
 // R (2026-07-19 render-parity pass): every result section now reads as a
 // review-page SECTION card — a grey uppercase title bar (same voice as the
 // reused ProvisionTable's own `[data-testid^='provision-table-'] > div:
 // first-child:has(> p)` title-bar rule in MergertraceStyles) over a white
 // body, all colors/sizes pulled from the .mtx custom properties rather than
-// restated as one-off hex. `title` is optional so DealCompare/DealToMarket
-// (owned by the render-swap in flight elsewhere) keep their existing
-// untitled/padded card look unchanged.
+// restated as one-off hex. `title` is optional so callers that render a
+// bare status panel keep their existing untitled/padded card look.
 function Panel({ title, children }) {
   return (
     <div className={`panel${title ? ' panelTitled' : ''}`}>

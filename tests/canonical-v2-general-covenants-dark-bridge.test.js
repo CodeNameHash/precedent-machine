@@ -900,3 +900,105 @@ test('an explicit undefined/null env, or a merge options object missing its env 
     );
   });
 });
+
+// --- hostile grounding tests (this family is already the model) ------------
+// mainConcept must equal card.primary_quote/region_full_text/full_text
+// EXACTLY (assertGeneralCovenantCardKind's QUOTE_NOT_VERBATIM check) -- no
+// containment fallback at all, unlike the other three families. Because
+// this family's covenant text has no legitimate "sub-phrase" concept (a
+// covenant IS its own whole retained quote, never a qualifier phrase
+// embedded in something larger), exact equality is not merely the
+// strongest available tier here, it is airtight against every pattern
+// below, including negation-stripping -- there is nothing for a fragment
+// to fall back to. These tests exist to prove that positively, not to
+// change any behaviour.
+
+test('quote grounding: a negation-style truncation (dropping the leading "Neither the Company nor Parent") is rejected', async () => {
+  const projection = await buildRealProjection();
+  const original = FIXTURE.grounded_covenants.find((entry) => entry.covenant_code === 'COV-PUBLICITY').quote;
+  assert.ok(original.startsWith('Neither the Company nor Parent '));
+  const truncated = original.slice('Neither the Company nor Parent '.length);
+  assert.notEqual(truncated, original);
+  const tampered = structuredClone(projection);
+  const card = tampered.cards.find((entry) => entry.provision_subtype === 'COV-PUBLICITY');
+  card.features.mainConcept = truncated;
+  card.ai_metadata.features = card.features;
+  resealProjection(tampered);
+  assert.throws(
+    () => bridgeGeneralCovenantsCardsToLegacyShape(tampered, ENABLED_ENV),
+    bridgeError('QUOTE_NOT_VERBATIM'),
+  );
+});
+
+test('quote grounding: a word-boundary flip ("nnouncements" sliced out of "announcements") is rejected', async () => {
+  const projection = await buildRealProjection();
+  const original = FIXTURE.grounded_covenants.find((entry) => entry.covenant_code === 'COV-PUBLICITY').quote;
+  assert.ok(original.includes('announcements'));
+  const tampered = structuredClone(projection);
+  const card = tampered.cards.find((entry) => entry.provision_subtype === 'COV-PUBLICITY');
+  card.features.mainConcept = 'nnouncements';
+  card.ai_metadata.features = card.features;
+  resealProjection(tampered);
+  assert.throws(
+    () => bridgeGeneralCovenantsCardsToLegacyShape(tampered, ENABLED_ENV),
+    bridgeError('QUOTE_NOT_VERBATIM'),
+  );
+});
+
+test('quote grounding: a truncated prefix ("The C" sliced out of "The Company") is rejected', async () => {
+  const projection = await buildRealProjection();
+  const original = FIXTURE.grounded_covenants.find((entry) => entry.covenant_code === 'COV-ACCESS').quote;
+  assert.ok(original.startsWith('The Company'));
+  const tampered = structuredClone(projection);
+  const card = tampered.cards.find((entry) => entry.provision_subtype === 'COV-ACCESS');
+  card.features.mainConcept = 'The C';
+  card.ai_metadata.features = card.features;
+  resealProjection(tampered);
+  assert.throws(
+    () => bridgeGeneralCovenantsCardsToLegacyShape(tampered, ENABLED_ENV),
+    bridgeError('QUOTE_NOT_VERBATIM'),
+  );
+});
+
+test('quote grounding: an arbitrary mid-quote substring is rejected', async () => {
+  const projection = await buildRealProjection();
+  const original = FIXTURE.grounded_covenants.find((entry) => entry.covenant_code === 'COV-ACCESS').quote;
+  const midWord = 'ompany shall provide Parent and its Representative';
+  assert.ok(original.includes(midWord));
+  const tampered = structuredClone(projection);
+  const card = tampered.cards.find((entry) => entry.provision_subtype === 'COV-ACCESS');
+  card.features.mainConcept = midWord;
+  card.ai_metadata.features = card.features;
+  resealProjection(tampered);
+  assert.throws(
+    () => bridgeGeneralCovenantsCardsToLegacyShape(tampered, ENABLED_ENV),
+    bridgeError('QUOTE_NOT_VERBATIM'),
+  );
+});
+
+test("quote grounding: a fragment that appears only in a DIFFERENT card's text is rejected against its own", async () => {
+  const projection = await buildRealProjection();
+  const accessQuote = FIXTURE.grounded_covenants.find((entry) => entry.covenant_code === 'COV-ACCESS').quote;
+  const publicityQuote = FIXTURE.grounded_covenants.find((entry) => entry.covenant_code === 'COV-PUBLICITY').quote;
+  assert.ok(!accessQuote.includes('press releases'));
+  assert.ok(publicityQuote.includes('press releases'));
+  const tampered = structuredClone(projection);
+  const card = tampered.cards.find((entry) => entry.provision_subtype === 'COV-ACCESS');
+  card.features.mainConcept = 'press releases';
+  card.ai_metadata.features = card.features;
+  resealProjection(tampered);
+  assert.throws(
+    () => bridgeGeneralCovenantsCardsToLegacyShape(tampered, ENABLED_ENV),
+    bridgeError('QUOTE_NOT_VERBATIM'),
+  );
+});
+
+test('quote grounding: the legitimate mainConcept for both grounded covenants still passes', async () => {
+  const projection = await buildRealProjection();
+  const bridge = bridgeGeneralCovenantsCardsToLegacyShape(projection, ENABLED_ENV);
+  const accessCard = bridge.cards.find((card) => card.provision_subtype === 'COV-ACCESS');
+  const publicityCard = bridge.cards.find((card) => card.provision_subtype === 'COV-PUBLICITY');
+  assert.equal(accessCard.features.mainConcept, accessCard.primary_quote);
+  assert.equal(publicityCard.features.mainConcept, publicityCard.primary_quote);
+  assert.doesNotThrow(() => validateBridgeEnvelope(bridge, ENABLED_ENV));
+});

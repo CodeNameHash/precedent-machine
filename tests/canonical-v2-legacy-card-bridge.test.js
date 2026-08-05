@@ -1166,7 +1166,7 @@ test('quote grounding: threshold scoped to a sibling bucket\'s unrelated text is
   // bucket's own text.
   const siblingText = 'a separate, unrelated obligation not to exceed $100,000 in the aggregate.';
   const sibling = {
-    code: 'INTELLECTUAL_PROPERTY', label: MATERIAL_CONTRACT_BUCKET_CODES.INTELLECTUAL_PROPERTY,
+    code: 'IP_LICENSES_IN', label: MATERIAL_CONTRACT_BUCKET_CODES.IP_LICENSES_IN,
     text: siblingText, quotes: [siblingText], threshold: null, threshold_kind: null, cadence_kind: null,
   };
   tampered.cards[0].features.materialContractsBuckets = [bucket, sibling].sort((a, b) => a.code.localeCompare(b.code));
@@ -1240,22 +1240,43 @@ test('quote grounding: the legitimate bucket text, quotes and threshold all stil
 // word can never itself violate a word boundary. This test pins the
 // CURRENT, honest behaviour -- it documents a real gap, not a proof of
 // safety.
-test('KNOWN LIMITATION: a negation-style truncation of a threshold sub-phrase is not caught by anchored containment alone', async () => {
+test('KNOWN LIMITATION: threshold containment does not detect that its own bucket text negates the threshold ("not in excess of" vs "in excess of")', async () => {
   const projection = await buildRealProjection();
-  const bucket = projection.cards[0].features.materialContractsBuckets[0];
-  assert.equal(bucket.threshold, '$100,000');
-  assert.ok(bucket.text.includes('in excess of $100,000'));
-  // A hypothetical qualifying prefix ("in excess of") dropped, keeping a
-  // word-boundary-aligned, still-anchored-containment-eligible threshold
-  // token -- the structural analogue of dropping "not"/"would not".
+  const original = FIXTURE.material_contract_criterion.quote;
+  assert.ok(original.includes('in excess of $100,000'));
+
+  // bucket.text is rewritten to say the OPPOSITE -- "that is not in excess
+  // of $100,000" -- and kept fully self-consistent (quotes/primary_quote/
+  // region_full_text/full_text/claim.verbatim all updated together), so
+  // isExactJoinedSegment (which DOES defeat negation-stripping on bucket
+  // text itself, see the tests above) has nothing to catch: this bucket's
+  // text genuinely, consistently IS this new string now. threshold stays
+  // "$100,000", USD, and is still word-boundary-anchored-contained in the
+  // negated text -- containment never looks at the "not" three words
+  // earlier, so the structured threshold field is accepted as "grounded"
+  // even though the sentence it is grounded in now says the reverse of
+  // what a $100,000 USD threshold implies.
+  const negatedText = original.replace('in excess of $100,000', 'that is not in excess of $100,000');
+  assert.notEqual(negatedText, original);
+
   const tampered = structuredClone(projection);
-  const drifted = tampered.cards[0].features.materialContractsBuckets[0];
-  drifted.threshold = '$100,000';
-  // threshold ($100,000) is unchanged and genuinely present in bucket.text
-  // -- this test documents that ANY word-boundary-anchored occurrence
-  // passes, including one whose surrounding qualifying context has quietly
-  // drifted elsewhere, because containment never looks at what precedes it.
+  const bucket = tampered.cards[0].features.materialContractsBuckets[0];
+  bucket.text = negatedText;
+  bucket.quotes = [negatedText];
+  tampered.cards[0].primary_quote = negatedText;
+  tampered.cards[0].region_full_text = negatedText;
+  tampered.cards[0].full_text = negatedText;
+  tampered.cards[0].ai_metadata.features = tampered.cards[0].features;
+  tampered.claims[0].verbatim = negatedText;
+  tampered.claims[0].evidence_quote = negatedText;
+  tampered.claims[0].canonical = tampered.cards[0].features.materialContractsBuckets;
+  tampered.claims[0].id = contentId('CANONICAL_V2_MATERIAL_CONTRACTS_PRODUCT_FEATURE_CLAIM/V1', {
+    provision_instance_id: tampered.cards[0].provision_instance_id,
+    materialContractsBuckets: tampered.cards[0].features.materialContractsBuckets,
+  });
   resealProjection(tampered);
+  // Documented as NOT throwing today -- this assertion records the residual
+  // gap; it is not a claim that this input is safe.
   assert.doesNotThrow(
     () => bridgeMaterialContractsCardsToLegacyShape(tampered, DARK_BRIDGE_ENABLED_ENV),
   );

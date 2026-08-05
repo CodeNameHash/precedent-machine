@@ -638,8 +638,8 @@ function FilterChipsRow({ filters, queryText, onRemoveChip, onClearAll }) {
 }
 
 /* ─── Top-level table: owns filter/sort/search state, syncs it to the URL
- * (shallow router.replace, mirroring pages/compare.js) so a filtered view
- * is shareable via ?buyerFirm=Paul%2C%20Weiss&sort=date:asc etc. ───────── */
+ * (shallow router.replace) so a filtered view is shareable via
+ * ?buyerFirm=Paul%2C%20Weiss&sort=date:asc etc. ───────────────────────── */
 export default function DealsTable({ rows, loading, dealsCount, totalProvisions, countsLoading, selected, onToggle, onOpen }) {
   const router = useRouter();
   const [ready, setReady] = useState(false);

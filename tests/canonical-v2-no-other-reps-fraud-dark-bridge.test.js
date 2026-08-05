@@ -700,3 +700,147 @@ test('an explicit undefined/null env, or an options object missing its env key, 
     );
   });
 });
+
+// --- hostile grounding tests (word-boundary-anchored vs plain containment) --
+// assertGovernedClaimShape checks each governed attribute (relying_party_ref,
+// agreement_scope_quote, defined_term_ref, ...) against its own fact's
+// evidence quote. These attributes are genuine sub-phrases with no offset
+// anywhere in this family's pipeline -- the PRODUCER only ever does
+// quote.includes(value) when shaping a candidate (no-other-reps-fraud-
+// producer.js's contained()), the RESOLVER repeats the same plain
+// containment (no-other-reps-fraud-resolution.js), and the PROJECTION
+// carries attributes straight through with no span field at all -- so word-
+// boundary-anchored containment is the honest ceiling here, not a choice
+// this bridge could improve on alone. It still closes every truncation
+// pattern below except a genuinely word-boundary-aligned negation drop; see
+// the KNOWN LIMITATION test at the end for that documented residual.
+//
+// Reproduces the fragments named in the audit that motivated this fix
+// almost verbatim: this fixture's own no_other_reps assertion_quote is
+// "Except for the express written representations and warranties made by
+// the Company in this Agreement, no Company Party makes any express or
+// implied representation or warranty with respect to the Company."
+
+function noOtherRepsFactIndex(review) {
+  return review.findIndex((fact) => fact.label === 'No other representations');
+}
+
+function tamperNoOtherRepsAttribute(projection, attributeValue) {
+  const tampered = structuredClone(projection);
+  const index = noOtherRepsFactIndex(tampered.review);
+  assert.notEqual(index, -1);
+  const attributes = { ...tampered.review[index].attributes, agreement_scope_quote: attributeValue };
+  tampered.review[index] = { ...tampered.review[index], attributes };
+  tampered.query[index] = { ...tampered.query[index], attributes };
+  tampered.market[index] = { ...tampered.market[index], breakdown: { ...attributes } };
+  resealProjection(tampered);
+  return { tampered, index };
+}
+
+test('quote grounding: a truncated prefix ("the C" sliced out of "the Company") is rejected', () => {
+  const { projection, resolved } = buildRealProjectionAndResolution();
+  assert.ok(FIXTURE.assertions.no_other_reps.assertion_quote.includes('the Company'));
+  const { tampered } = tamperNoOtherRepsAttribute(projection, 'the C');
+  assert.throws(
+    () => bridgeNoOtherRepsFraudCardsToLegacyShape(tampered, { deal_id: FIXTURE.deal_id, resolved, env: ENABLED_ENV }),
+    bridgeError('ATTRIBUTE_NOT_VERBATIM'),
+  );
+});
+
+test('quote grounding: the audit\'s own reproduced fragment (" the express written represent", a leading-space, mid-word truncation of "representations") is rejected', () => {
+  const { projection, resolved } = buildRealProjectionAndResolution();
+  const fragment = ' the express written represent';
+  assert.ok(FIXTURE.assertions.no_other_reps.assertion_quote.includes(fragment));
+  const { tampered } = tamperNoOtherRepsAttribute(projection, fragment);
+  assert.throws(
+    () => bridgeNoOtherRepsFraudCardsToLegacyShape(tampered, { deal_id: FIXTURE.deal_id, resolved, env: ENABLED_ENV }),
+    bridgeError('ATTRIBUTE_NOT_VERBATIM'),
+  );
+});
+
+test('quote grounding: a word-boundary flip ("arranty" sliced out of "warranty") is rejected', () => {
+  const { projection, resolved } = buildRealProjectionAndResolution();
+  assert.ok(FIXTURE.assertions.no_other_reps.assertion_quote.includes('warranty'));
+  const { tampered } = tamperNoOtherRepsAttribute(projection, 'arranty');
+  assert.throws(
+    () => bridgeNoOtherRepsFraudCardsToLegacyShape(tampered, { deal_id: FIXTURE.deal_id, resolved, env: ENABLED_ENV }),
+    bridgeError('ATTRIBUTE_NOT_VERBATIM'),
+  );
+});
+
+test('quote grounding: an arbitrary mid-quote substring (word-boundary-violating on both edges) is rejected', () => {
+  const { projection, resolved } = buildRealProjectionAndResolution();
+  const midWord = 'ritten representations and warrant';
+  assert.ok(FIXTURE.assertions.no_other_reps.assertion_quote.includes(midWord));
+  const { tampered } = tamperNoOtherRepsAttribute(projection, midWord);
+  assert.throws(
+    () => bridgeNoOtherRepsFraudCardsToLegacyShape(tampered, { deal_id: FIXTURE.deal_id, resolved, env: ENABLED_ENV }),
+    bridgeError('ATTRIBUTE_NOT_VERBATIM'),
+  );
+});
+
+test("quote grounding: a fragment that appears only in a DIFFERENT fact's evidence (the fraud carve-out) is rejected against its own", () => {
+  const { projection, resolved } = buildRealProjectionAndResolution();
+  const foreignFragment = 'the liability of either party for Fraud';
+  assert.ok(FIXTURE.assertions.fraud_carveout.assertion_quote.includes(foreignFragment));
+  assert.ok(!FIXTURE.assertions.no_other_reps.assertion_quote.includes(foreignFragment));
+  const { tampered } = tamperNoOtherRepsAttribute(projection, foreignFragment);
+  assert.throws(
+    () => bridgeNoOtherRepsFraudCardsToLegacyShape(tampered, { deal_id: FIXTURE.deal_id, resolved, env: ENABLED_ENV }),
+    bridgeError('ATTRIBUTE_NOT_VERBATIM'),
+  );
+});
+
+test('quote grounding: the legitimate agreement_scope_quote attribute (a genuine sub-phrase, shorter than the full assertion quote) still passes', () => {
+  const { projection, resolved } = buildRealProjectionAndResolution();
+  const index = noOtherRepsFactIndex(projection.review);
+  const attributeValue = projection.review[index].attributes.agreement_scope_quote;
+  assert.equal(attributeValue, FIXTURE.assertions.no_other_reps.agreement_scope_quote);
+  assert.ok(FIXTURE.assertions.no_other_reps.assertion_quote.length > attributeValue.length);
+  assert.ok(FIXTURE.assertions.no_other_reps.assertion_quote.includes(attributeValue));
+  const bridge = bridgeNoOtherRepsFraudCardsToLegacyShape(projection, { deal_id: FIXTURE.deal_id, resolved, env: ENABLED_ENV });
+  assert.equal(bridge.cards.length, 6);
+  assert.doesNotThrow(() => validateBridgeEnvelope(bridge, ENABLED_ENV));
+});
+
+// KNOWN LIMITATION, documented rather than hidden (see the groundedInSource
+// header comment added to assertGovernedClaimShape in lib/canonical-v2/no-
+// other-reps-fraud-dark-bridge.js): a governed attribute value is a genuine
+// sub-phrase of its own fact's evidence quote, and no stage of this family's
+// pipeline -- producer, resolver or projection -- has ever computed or
+// retained an independent start/end offset for one. Word-boundary-anchored
+// containment, the ceiling here, cannot close a word-boundary-aligned
+// negation drop, because dropping a whole preceding word can never itself
+// violate a word boundary. This test pins the CURRENT, honest behaviour --
+// it documents a real gap, not a proof of safety.
+test('KNOWN LIMITATION: negation-stripping within a governed attribute (dropping the leading "no ") is not caught by anchored containment alone', () => {
+  const { projection, resolved } = buildRealProjectionAndResolution();
+  const bridge = bridgeNoOtherRepsFraudCardsToLegacyShape(projection, { deal_id: FIXTURE.deal_id, resolved, env: ENABLED_ENV });
+  const original = FIXTURE.assertions.no_other_reps.assertion_quote;
+  // "...no Company Party makes any express or implied representation or
+  // warranty with respect to the Company." -- drop the leading "no " and
+  // keep the rest as a genuine, contiguous, word-boundary-aligned SUFFIX,
+  // inverting the disclaimer into an assertion that a Company Party DOES
+  // make representations.
+  const negated = 'Company Party makes any express or implied representation or warranty with respect to the Company.';
+  assert.ok(original.endsWith(negated));
+  assert.notEqual(negated, original);
+
+  // Re-validation path: card.primary_quote (== evidenceText) is left at its
+  // genuine, original value; only the attribute is tampered -- on BOTH the
+  // card and its bound claim, consistently, so this isolates the grounding
+  // check itself from the (separate, already-covered) card-vs-claim
+  // consistency checks.
+  const tampered = structuredClone(bridge);
+  const card = tampered.cards.find((entry) => entry.short_title === 'No other representations');
+  const claim = tampered.claims.find((entry) => entry.provision_instance_id === card.provision_instance_id);
+  const attributes = { ...card.attributes, agreement_scope_quote: negated };
+  card.attributes = attributes;
+  claim.attributes = attributes;
+  resealBridge(tampered);
+  // Documented as NOT throwing today -- this assertion records the residual
+  // gap; it is not a claim that this input is safe.
+  assert.doesNotThrow(
+    () => validateBridgeEnvelope(tampered, ENABLED_ENV),
+  );
+});
