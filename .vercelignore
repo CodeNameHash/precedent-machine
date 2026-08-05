@@ -15,14 +15,13 @@
 /reports/
 /supabase/
 /docs/acks/
+# handoffs/, progress/, reports/ and reviews/ moved under docs/archive/ on
+# 2026-08-05; the single archive entry replaces their four ignore lines.
+/docs/archive/
 /docs/audit/
 /docs/audits/
 /docs/codex-program/
-/docs/handoffs/
 /docs/ingest/
-/docs/progress/
-/docs/reports/
-/docs/reviews/
 /docs/schema-migration/
 /docs/schema-shape/normalized-v1.json
 *.md

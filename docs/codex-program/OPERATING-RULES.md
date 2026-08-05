@@ -11,13 +11,15 @@ Branch: `codex/m3-production-phase1`. Worktree:
 `/Users/bengoodchild/Documents/Claude/precedent-machine-m3-production-phase1`.
 
 **Production authority is NONE.** Since 2026-08-05, building and activating
-routes locally and on Vercel preview deployments is permitted. Everything
-else stays prohibited regardless of that carve-out:
+routes locally and on Vercel preview deployments is permitted. Also since
+2026-08-05, **running extraction to produce Canonical V2 data is permitted**
+(see "Extraction authorised for Canonical V2 production", below, for its
+exact limits). Everything else stays prohibited regardless of those
+carve-outs:
 
 - production activation of any route;
 - accessing or changing production data;
 - using real credentials or a real production database client;
-- running extraction or a model replay against live sources;
 - importing candidate data;
 - executing the v1 reclassification apply (only "go, fixtures first" is
   authorised; the execution act itself is not);
@@ -68,6 +70,60 @@ Every ruling below is dated and load-bearing. Nothing here grants
 production authority; these are decisions about direction, design and
 process within the boundary above, that production stays prohibited.
 
+### Extraction authorised for Canonical V2 production (2026-08-05)
+
+Ben has authorised running extraction to produce Canonical V2 data, and
+wants the product moved onto really extracted V2 data as soon as it is
+ready. This lifts the previous prohibition on extraction and model replay.
+
+**What this does not authorise.** Production data is untouched by this
+ruling: accessing or changing it, and using real credentials or a real
+production database client, all stay prohibited. Where extraction output
+lands must be established before any run, not assumed. Note the standing
+convention that corpus writes run only on Ben's machine, because that is
+where the credentials live; a run that cannot write anywhere legitimate is
+a run that should not start.
+
+**The condition attached.** Ben's words were "if we are ready to do so",
+and asked what checks the existing one to three deals need first. The
+answer recorded here, so nobody skips it: **extraction alone cannot close
+the termination-fee gap.** `FEE_DEFINITIONS` in
+`lib/canonical-v2/termination-product-projection.js` admits exactly three
+governed claims (amount, trigger, tail period in months). Nine legacy
+fields have no governed counterpart, some declared only as evidence
+surfaces and some absent entirely. Running the whole corpus buys three
+fields at scale and leaves the other nine exactly as they are.
+
+The sequence is therefore: prove the per-family switch and the equivalence
+harness against the deals that already carry canonical data; read off
+precisely which fields differ and how; use that as the specification for
+widening the claim definitions, which is a legal-taxonomy call and must not
+be produced cheaply; then extract at scale once, against definitions that
+can carry the answer. Extraction run before that is not wasted, because
+definitions get extended rather than revised and per-type refreshes exist,
+but it does require a second pass over the same deals.
+
+### Show V1 and V2 side by side, do not replace (2026-08-05)
+
+Ben's ruling: switch to really extracted V2 data as soon as it is ready,
+**and keep the V1 data visible on the rendering page**, not merely retained
+in the database, so the two can be compared by eye.
+
+This replaces the earlier replace-once-proven design, where equivalence was
+to be demonstrated by a harness and the legacy path then switched off. It is
+a better design for a specific reason: nine termination-fee fields have no
+canonical counterpart today, so a straight switch would make them vanish
+from the page. Absence on screen reads to a lawyer as "the agreement is
+silent on this", which is a different and more damaging statement than "this
+has not been extracted yet". Rendering V1 beside V2 makes that gap visible
+instead of silent, and puts the comparison in front of a human rather than
+inside a harness only an agent reads.
+
+The per-family partition remains the prerequisite either way. What changes
+is what happens after the partition: both sides render, rather than one
+replacing the other. The equivalence harness is still built and still
+required; it stops being the only evidence.
+
 ### Displaying the finished analysis moves earlier, and amendments split either side of launch (2026-08-05)
 
 Ben corrected the sequencing of an earlier draft of the plan, which had put
@@ -81,6 +137,15 @@ display-switchover step and its amendment-detection step:
   104 outstanding items actually depends on the search tools being switched
   on first; the other 103 do not, and the review page is where users would
   actually see the difference.
+
+  **Correction, 2026-08-05: the family-by-family switch this ruling assumes
+  does not exist yet.** Canonical serving today is a single whole-deal
+  block rendered alongside the legacy sections, behind one all-or-nothing
+  flag that strips the legacy market columns from every family at once.
+  Ben's permission is phrased per family, and cannot be acted on until that
+  mechanism, plus an equivalence harness, is built. The roadmap now splits
+  the step accordingly, and flags the mechanism as the item most likely to
+  overrun.
 - Amendment handling splits either side of launch: detecting an amendment
   and showing a visible warning ships before launch, because going live
   with no detection at all would let an amended deal silently display
@@ -157,6 +222,18 @@ Review preview for all four areas together, then the trusted
 source-admission boundary, then Compare, then Query, then Market, then a
 production activation package for Ben's later approval.
 
+**Note added 2026-08-05, after the plan was checked against the code.** The
+relative order is unchanged, but Query and Market are now last in the
+roadmap rather than mid-sequence. They were treated as switches to be
+flipped. They are not: the contained route calls a full-corpus fetch behind
+an emergency containment guard, a concurrency cap and a circuit breaker, so
+turning search on reinstates the load pattern that caused the containment;
+there has been no green real-data baseline since 2026-07-18; and the work is
+a rewrite of seven route files plus edits to six test files that currently
+assert the 503. They now follow the display work and full-corpus
+certification, which is what produces a real-data state worth baselining
+against.
+
 ### termination-fee-query-derived-values stays unserved until Query actually serves (2026-08-05)
 
 This one row stays at "integrated but not served" until the roadmap's
@@ -180,11 +257,22 @@ it: a transitively-served row is still genuinely served.
 > the occurrence and the source revision. Audit every existing and future
 > bridge for excerpt-only identity.
 
-This is the ruling behind the migration-ordering work described in the
-roadmap (the production-data-migration step and its known risks), and
-behind the fix, recorded in Work completed, that made previewing all four
-areas together possible at all (two cards can legitimately quote the same
-sentence and must not be treated as colliding).
+The ruling stands as a design constraint on anything newly built. It was
+also cited as the basis for a migration-ordering constraint in the roadmap,
+and **that part was wrong and has been retracted.** In the data this
+codebase actually produces, an excerpt reference is always
+`provision_instance_id + ':0'`: nothing ever mints a non-zero index, and the
+schema migration asserts the same. Two cards sharing an excerpt reference
+are therefore the same card. The collision the ordering constraint protected
+against is unreachable by construction, and the index change it forbade
+would be refused by Postgres anyway, because a foreign key depends on the
+index. The full retraction, with code and schema references, is in the
+roadmap's step 10 and its known risks.
+
+What survives: do not design new identity on excerpt alone, and do not
+assume the current one-to-one relationship is a guarantee rather than an
+artefact of nothing setting a non-zero index. The roadmap pins that
+assumption as a test so it fails loudly if it ever stops being true.
 
 ### ADR-001 accepted: flattening is scaffolding (2026-08-05)
 
@@ -230,6 +318,16 @@ fence data out, block ingestion, or gate a route. The point is to keep
 moving, with the open question surfaced honestly rather than blocking on
 it.
 
+**The page itself is deferred until after launch, 2026-08-05.** The ruling
+is unchanged; the roadmap's sizing of it was wrong. The state is advisory
+and blocks nothing, and the corpus is 40 deals Ben curated himself, so a
+dedicated admin page for managing that state solves a problem the product
+does not yet have. A column recording what a human concluded and a banner
+surfacing it are enough before launch. Build the page when the corpus is
+large enough to need one. The consequence is that the separate permission
+for the "go and find it" button is no longer a pre-launch decision either,
+since the button ships with the page.
+
 ### The comparison and search product shape (2026-08-05)
 
 Approved shape: provision cross-cut (one provision, every deal), what's
@@ -237,9 +335,10 @@ market (distribution of a value across the corpus), screen and filter
 (deals matching criteria), deal comparison (the review page with extra
 columns, already built and already correct), and a natural-language router
 across the above. Approved for retirement: the `DEAL_COMPARE` and
-`DEAL_TO_MARKET` search kinds and the old standalone comparison page (all
-three are covered by the roadmap's comparison-page retirement step). The
-reasoning given was not only redundancy: two independent implementations of
+`DEAL_TO_MARKET` search kinds and the old standalone comparison page. **All
+three are now retired, at `61d7280c`.** The roadmap's retirement step is
+complete, not forthcoming; `pages/compare.js` no longer exists.
+The reasoning given was not only redundancy: two independent implementations of
 one question is exactly what produced this programme's feature-flag
 inconsistency and a live rendering bug (see Work completed), and divergence
 between duplicated implementations is a recurring failure mode in this
@@ -258,19 +357,26 @@ comparison is open.
 
 ### The table-driven locator verifier is deferred (2026-08-05)
 
-Nineteen rows cannot be proven served by the current locator rule because
-their field is reached through a computed table lookup rather than a
-per-field branch (full technical detail is in the roadmap's known risks).
-Ben agreed to defer building a new verification instrument for this class
-of claim, and corrected the premise it rested on: the three-field limit
-these rows are pinned to belongs to a compact cross-deal comparison grid,
-not to the review page or a full document view. Ben's actual intent for the
-comparison product is a full side-by-side agreement view, which the
-roadmap's comparison-page retirement step is already moving toward. If that
-supersedes the grid, most of these rows need re-registering against the new
-surface rather than being made provable against the old one, which may
-dissolve the question rather than requiring it to be answered. Do not build
-a new verifier until the target surface is settled.
+Nineteen rows could not be proven served by the current locator rule because
+their field was reached through a computed table lookup rather than a
+per-field branch. Ben agreed to defer building a new verification instrument
+for this class of claim, and corrected the premise it rested on: the
+three-field limit those rows were pinned to belonged to a compact cross-deal
+comparison grid, not to the review page or a full document view. Ben's
+actual intent for the comparison product is a full side-by-side agreement
+view. If that superseded the grid, most of the rows would need re-registering
+against the new surface rather than being made provable against the old one,
+which might dissolve the question rather than requiring it to be answered.
+
+**Outcome, recorded 2026-08-05: it dissolved.** The comparison-page
+retirement shipped, the 17 grid rows were re-pointed at the new comparison
+view, and `lib/query/render/deal-compare-cell-fields.js` now appears zero
+times in the parity register, verified. Two rows remain unprovable, not
+nineteen: `remedies-query-registry`, whose locator is a JSON pointer into a
+serving-registry data file, and `appraisal-governed-review`, which has no
+candidate evaluation site anywhere. Both were flagged at the time as the two
+that re-registration would not help, and it did not. The ruling stands: do
+not build a new verifier for two rows.
 
 ### Amendment handling: the shape, and what ships before launch (2026-08-05)
 
@@ -281,17 +387,32 @@ remains deferred to after launch. Ben has since carved out a smaller,
 pre-launch scope from within it: detecting that an amendment exists and
 showing a visible warning, which does need to ship before go-live.
 
+**Correction, 2026-08-05: the pre-launch half is a live defect, not planned
+work, and it has moved forward accordingly.** Both this ruling and the
+roadmap treated detection as something to be built. In fact the product can
+already ingest a restatement and present it as the original agreement.
+`lib/edgar-catalog.js` scores candidate exhibits by regular expression;
+"AMENDED AND RESTATED AGREEMENT AND PLAN OF MERGER" contains "agreement and
+plan of merger" and so scores identically to an original;
+`chooseAgreementExhibit` returns the top-ranked candidate with no ambiguity
+guard; and the file contains no reference to amendment or restatement
+anywhere. There is no weak detector to strengthen. There is no detector. The
+step now sits immediately after the display mechanism work in the roadmap.
+
 ### Two decisions delegated to engineering (2026-08-05)
 
 Ben was asked to rule on two items and deferred both back to the
 engineering lane, which resolved them and recorded the reasoning:
 
-- **Leave the excerpt unique-index alone for now.** It is production
-  schema (outside current authority to change regardless) and it is
-  currently load-bearing, the only thing preventing the live corruption
-  path described in the roadmap's known risks. It moves into the rehearsed
-  migration in the roadmap's production-data-migration step once the
-  write-side fix lands, not before.
+- **Leave the excerpt unique-index alone.** The conclusion holds; the
+  reasoning recorded with it did not. It was justified on the ground that
+  the index is the only thing preventing a live corruption path. **That
+  justification was false** (see the excerpt-identity ruling above, and the
+  roadmap's step 10): there is no such corruption path, and a foreign key
+  in `supabase/schema-05-claims.sql` depends on the index, so it could not
+  be dropped even deliberately. The index stays because it is production
+  schema, outside current authority to change, and because nothing needs it
+  changed. It is no longer waiting on a write-side fix to land.
 - **The preview route uses fixtures, not live staging data.** Ben's own
   activation order (above) put the trusted source-admission boundary after
   the shared preview lane; wiring real staging data into the preview ahead
@@ -301,12 +422,12 @@ engineering lane, which resolved them and recorded the reasoning:
 
 ### Earlier standing ruling: v1 reclassification apply
 
-A separate, smaller thread, not part of the roadmap's twelve steps: whether
+A separate, smaller thread, not part of the roadmap's thirteen steps: whether
 to run a reclassification pass over the older, first-generation data. Ben's
 ruling was "go, fixtures first". The execution act itself has not been
 issued, and the current scaffold for it is not code-ready (see the
 roadmap's current state). This does not block or feed into any of the
-twelve steps; it is recorded here only so the standing authorisation is not
+thirteen steps; it is recorded here only so the standing authorisation is not
 lost.
 
 ---
@@ -377,12 +498,14 @@ parity register enforces most of this mechanically. A dark bridge is
 unreachable from any served route, so a surface proved only by a bridge can
 never report as genuinely visible and can never clear a blocker; it is
 structurally incapable of becoming the serving path. What is **not**
-enforced mechanically is constraint 2: nothing in code stops someone
-writing flattened cards into the production table except a database index
-that exists for unrelated reasons, and that the excerpt-identity
-remediation (the roadmap's production-data-migration step) may legitimately
-want to change. Anyone proposing to alter that index must satisfy
-constraint 2 by some other explicit means first.
+enforced mechanically is constraint 2: nothing in code stops someone writing
+flattened cards into the production table except a database index that
+exists for unrelated reasons. This record originally added that the
+excerpt-identity remediation might legitimately want to change that index.
+**It does not**, and no longer proposes to; see the retraction under the
+excerpt-identity ruling above. The index is not in play. Anyone who
+nevertheless proposes to alter it must satisfy constraint 2 by some other
+explicit means first.
 
 **Removal condition.** This scaffolding is not permanent, and the removal
 condition is testable rather than a matter of judgement: a bridge is
@@ -403,13 +526,25 @@ dark, gated, read-only, and outside every product route.
 - Work that clears blockers and work that improves the preview are
   different activities. Improving the preview never moves the blocker
   count.
+- **The preview lane is frozen, 2026-08-05.** No further work goes into it.
+  It is fixture-fed, so it cannot move the count by construction, and the
+  native serving path is the only route that can. This is a freeze, not a
+  deletion: leave it in place, gated, doing what it already does, until its
+  removal condition above is met. Effort that would go into polishing it
+  belongs in the native per-family display switch instead.
 - The seven-route search containment must not be quietly narrowed to make
   a blocker count improve; any change to which routes count as contained
-  is a decision in its own right.
-- The excerpt-identity remediation (the roadmap's production-data-migration
-  step) is required regardless of this decision, because the live read
-  paths it touches are real product code, not scaffolding, and their
-  keying is genuinely wrong today.
+  is a decision in its own right. Note that the containment is not merely
+  bookkeeping: the contained route calls a full-corpus fetch behind a
+  concurrency cap and a circuit breaker, so lifting it is a capacity
+  question as well as a parity one.
+- The excerpt-identity remediation this record refers to has since been
+  rewritten. It no longer touches the production schema, the sequencing
+  constraint originally recorded alongside it was false and has been
+  retracted (see the excerpt-identity ruling above), and what remains is a
+  tested invariant plus a genuine, previously missed defect: two different
+  claim-id minting schemes that produce duplicate rows when a backfilled
+  deal is re-materialised.
 
 ---
 
