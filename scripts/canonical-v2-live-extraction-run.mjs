@@ -117,6 +117,7 @@
  *     [--agreement-date <default: the deal's own pinned date, if any>] \
  *     [--model <claude CLI model alias, default "sonnet">] \
  *     [--no-follow-citations] \
+ *     [--call-timeout-ms <positive integer, default 600000>] \
  *     [--dry-run]
  *
  * --follow-citations dispatches an extra single-section call for each
@@ -275,6 +276,7 @@ function parseArgs(argv) {
     agreementDate: null,
     agreementDateGiven: false,
     followCitations: true,
+    timeoutMs: null,
     dryRun: false,
     outDir: null,
   };
@@ -290,6 +292,13 @@ function parseArgs(argv) {
       case '--model': out.model = argv[++i]; break;
       case '--follow-citations': out.followCitations = true; break;
       case '--no-follow-citations': out.followCitations = false; break;
+      case '--call-timeout-ms': {
+        const raw = argv[++i];
+        const parsed = Number.parseInt(raw, 10);
+        if (!Number.isFinite(parsed) || parsed <= 0) throw new Error(`--call-timeout-ms must be a positive integer, got ${JSON.stringify(raw)}`);
+        out.timeoutMs = parsed;
+        break;
+      }
       case '--dry-run': out.dryRun = true; break;
       default: throw new Error(`unrecognised argument: ${arg}`);
     }
@@ -647,7 +656,7 @@ function makeMeasuredCliClient({
         const sectionReference = orderedSectionRefs[callIndex] || `unknown-call-${callIndex}`;
         const prompt = flattenMessages(params);
         const startedAt = Date.now();
-        const rawCliOutput = await runClaudeCli(prompt, { model });
+        const rawCliOutput = await runClaudeCli(prompt, { model, ...(config.timeoutMs ? { timeoutMs: config.timeoutMs } : {}) });
         const wallClockMs = Date.now() - startedAt;
         const parsed = JSON.parse(rawCliOutput);
         if (parsed.is_error) throw new Error(`claude -p error (section ${sectionReference}): ${String(parsed.result).slice(0, 500)}`);
