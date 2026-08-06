@@ -1196,10 +1196,25 @@ significance into them beyond what this guide states explicitly.
   with the generated inventory's `serving_sources.per_family_modules` list
   and `docs/codex-program/m3-family-parity-register.json`.
 - **Whether `supabase/canonical-v2-foundation.sql` has ever run against a
-  real database:** no evidence found, staging or production, as of this
-  writing; see `docs/core/GRAVEYARD.md` for the full account,
-  including a script that is capable of applying it and why that is not the
-  same claim as it having been applied.
+  real database:** **superseded — evidence now exists, and it is not in
+  this repository's usual places.** This entry previously read "no evidence
+  found, staging or production", which was true of the sources it checked
+  and false of the programme as a whole.
+  `docs/codex-program/EXECUTION-LEDGER.md`'s P8 rows record multiple real
+  runs against isolated Supabase staging: `PM-METSERA-PERSISTENCE-01` used
+  "the existing `canonical_v2_write` entry point" and wrote a real candidate
+  record inside a rollback transaction (exact replay a no-op, conflicting
+  replay failed closed, RLS confirmed active, durable rows zero, active
+  pointer unchanged); `PM-P8-AGREEMENT-WRITER-STAGING-03` proved the generic
+  writer against isolated staging, PASS. Both are marked COMPLETE.
+  What is still genuinely unproven is a **durable, non-rolled-back** write —
+  every proof above ends in rollback by design. State it that precisely.
+  Note `PLAN.md`'s own re-measure command for this
+  (`grep -L "new Pool\|\.query(" tests/canonical-v2-writer-*-identity-sql.test.js`)
+  only shows that those tests pattern-match source text; it cannot show the
+  schema was never executed anywhere, and should not be cited as if it does.
+- **Whether Canonical V2 extraction output reaches any user:** no, and the
+  block is structural rather than incidental. See section 12.
 - **Adversarial test catalogue implementation:** of 289 mandatory tests
   named in `docs/codex-program/adversarial-tests.md`, 7 are genuinely
   implemented against real backing files today; the rest fall through to a
@@ -1340,3 +1355,137 @@ An agent changing behaviour will almost always be in one of these.
 Only one family's section mapping is currently in code. The other twenty-four
 exist only inside past run manifests under `evidence/`, and at least two of
 those are wrong.
+
+---
+
+## 12. Where Canonical V2 output goes, and where it stops
+
+Established 2026-08-06 by four independent code traces, each verifying
+against the tree rather than against a document. This section exists because
+the answer is counter-intuitive and has been mis-stated in both directions:
+the pieces all exist, and they are not connected to each other.
+
+### 12.1 The short version
+
+An extraction run writes JSON to disk and stops there. **Nothing functional
+reads it back.** Grep the tree for `resolution.json`, `run-receipt.json`,
+`adapter-result.json`, `review-queue.json`, `validation.json`: the only
+non-comment consumer is `scripts/nets-eligibility-report.mjs`, and that
+script has been broken since commit `0d17ad00` (2026-08-04).
+
+So a successful campaign of 25 families across 15 documents, every gate
+green, changes nothing any user can see. That is not a bug in the runner. It
+is a missing stage, and it is worth naming as one rather than rediscovering
+it per-family.
+
+### 12.2 The four things that are separately true
+
+1. **The general runner works and is disconnected.**
+   `scripts/canonical-v2-live-extraction-run.mjs` dispatches all 25
+   registered families through a real registry seam (334-340). Its output is
+   `evidence/canonical-v2/<deal>-<family>-<date>/`. Terminal.
+2. **A real Postgres client exists.** `lib/canonical-v2/serving-client.js`
+   is a genuine `pg` `Pool` client (line 2, `createPostgresServingClient` at
+   198) against a staging Supabase project, with import scripts under
+   `scripts/canonical-v2-staging-*.mjs` and SQL under `sql/optionA/`. So
+   `PLAN.md:152`'s "There is no persistent repository" is **false at the
+   tree level**. It is a separate, hand-built, per-deal pipeline (QXO), fed
+   by manual fixtures and SQL runbooks, gated to a staging env flag — so the
+   claim is *effectively* true for the general 25-family runner while being
+   *literally* false about the codebase. Both halves matter.
+3. **Production is hard-off by construction.** `pages/review/[id].js` embeds
+   `<CanonicalReviewSection>`, but `isPermittedCanonicalV2Runtime` in
+   `lib/canonical-v2/feature-flags.js` returns true only for
+   `VERCEL_ENV === 'preview'`, or when no Vercel runtime is detected and
+   `NODE_ENV !== 'production'`. Every other case is denied, deliberately —
+   the function's own comment says "so production stays hard-off".
+4. **The review UI users see is V1.** `lib/queries/review-deal.js` reads
+   `claims`, `provision_cards`, `provisions`, `deals`. Canonical V2 output
+   would not land in those tables even if it were persisted.
+
+### 12.3 Ingest: one live path, and what it skips
+
+`scripts/ingest-local.js` is the only working way to add a deal, and
+self-documents as such. Two consequences that are easy to miss:
+
+- It has **zero references** to `lib/edgar-catalog.js`, so it never calls
+  `selectAgreementExhibit` and therefore never runs the
+  amendment/restatement classifier. The classifier
+  (`lib/agreement-revision-classifier.js`) is real and good — it returns
+  `AMBIGUOUS` for a human rather than guessing — but the live ingest path
+  goes around it. You must already know your URL is the original agreement.
+- Its `needs_human_review` signal reaches no human. The only UI consumer,
+  `pages/api/admin/candidates.js`, is
+  `createBroadCorpusContainedHandler(['GET', 'PATCH'])` — a 503.
+
+`pages/admin/agreements.js` is the "add a deal" UI and cannot save in any of
+its three modes: `/api/deals` and `/api/provisions` both import
+`sendBroadCorpusRouteContained`. Of 23 routes contained via
+`createBroadCorpusContainedHandler`, 18 have no stated reason in any of the
+six core documents. `/api/ingest/from-url` is one of the 5 that does —
+`PLAN.md:1053`, unauthenticated SSRF, a good reason.
+
+A freshly ingested deal renders an **empty** `/review` page until a human
+runs card-materialisation scripts by hand (`scripts/backfill/extract-to-cards.js`,
+`scripts/backfill/claims-from-normalized.js`). This is a V1 gap, is
+self-documented as a "KNOWN PIPELINE GAP", and is unrelated to Canonical V2 —
+do not file it as a V2 problem.
+
+### 12.4 Measured cost of a family run
+
+From 25 committed telemetry files under `evidence/canonical-v2/modiv-*-20260806/`:
+
+| Measure | Value |
+|---|---|
+| Mean wall-clock per family-run | ~290,900 ms (~4.85 min) |
+| Median | ~205,900 ms |
+| Max | ~1,130,000 ms (and that run still timed out) |
+| Model calls | `projected_model_call_count` = `config.sectionRefs.length`; ~2 actual mean |
+| Parallelism | none — fully serial, no `Promise.all` (`native-extraction-run.js:635`) |
+
+A 1→4→12→25 ladder is 42 family-runs per document: roughly 3.4 hours per
+document, ~51 hours serial for a 15-document campaign.
+
+**Re-measure** rather than trusting these:
+`node -e "const fs=require('fs');const d=fs.readdirSync('evidence/canonical-v2').filter(x=>/^modiv-.*20260806/.test(x));..."`
+reading `extraction_wall_clock_ms` and `model_call_count` from each
+`run-manifest.json`.
+
+### 12.5 State of the committed Modiv baseline
+
+24 run directories. **Not all completed.** Two have no `run-receipt.json`
+(`capitalisation`, `closing-conditions`); four have no `run-manifest.json`
+(those two plus `interim-operating`, `no-other-reps`). Eleven of the twenty
+complete runs resolved zero.
+
+Zero can be correct — guaranty on an unfinanced deal is the standing example
+— but not all of these are. `REPRESENTATIONS`, `PROXY_MEETING` and
+`KEY_DEFINED_TERMS` show candidates present with zero resolved, which points
+at a resolver-stage gap rather than genuine absence. `MAE_DEFINITION` has
+never been run against Modiv at all; the only 2026-08-06 MAE run is
+`topbuild-mae-definition-20260806`.
+
+Consequence for any plan gated on "incomplete is 0": **that gate does not
+pass today**, before any new work begins.
+
+### 12.6 Section-reference lists are not lost
+
+`DEAL_PINS` in `scripts/canonical-v2-live-extraction-run.mjs` (226) pins
+exactly one family for Modiv (`TERMINATION_FEE`) and none for TopBuild. But
+the other lists exist: 20 run directories carry `section_references` in
+`run-manifest.json`, and the four without a manifest carry
+`requested_section_references` in `section-location-scan.json` (verified:
+capitalisation → `["3.2","4.2"]`). All 24 are mechanically recoverable.
+Do not re-derive by hand what is already committed.
+
+### 12.7 Re-deriving this section
+
+Nothing above should be trusted because it is written here. Each claim names
+its file and line so it can be re-checked, and the cheap re-checks are:
+
+```
+grep -rn "resolution\.json\|run-receipt\.json" --include=*.js --include=*.mjs lib/ pages/ scripts/
+grep -n "isPermittedCanonicalV2Runtime" -A 8 lib/canonical-v2/feature-flags.js
+grep -rln "createBroadCorpusContainedHandler" pages/api/ | wc -l
+grep -n "edgar-catalog" scripts/ingest-local.js    # expect no output
+```
