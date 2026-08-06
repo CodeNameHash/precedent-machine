@@ -147,9 +147,13 @@ test('V2 records the real serving block before it tests downstream fences', () =
   // tests/canonical-v2-parity-serving-path.test.js for the detail), then 103 the same day:
   // termination-fee-query-fields' dead CompareSectionColumn locator was repointed to the
   // component it actually renders through, UnifiedCompareSection, with a real served
-  // consumer named (docs/codex-program/notes/compare-locator-fix.md). Do not read either
-  // movement as nothing having happened.
-  assert.equal(listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER).length, 103);
+  // consumer named (docs/codex-program/notes/compare-locator-fix.md). Then 102 on 2026-08-06
+  // (docs/codex-program/notes/serving-path-proof.md): termination-fee-rendered-rows' real
+  // consumer (sectionList.js) was named AND it now carries server_stamped_field evidence
+  // proving the HTTP-boundary crossing to canonical_v2_termination_fee_cards -- see
+  // tests/canonical-v2-parity-serving-boundary.test.js. Do not read any movement as nothing
+  // having happened.
+  assert.equal(listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER).length, 102);
   // 2, not 6: the owner approved the four retained no-shop concepts
   // (2026-08-05), promoting NOSOL-CEASE/RECOMMEND/ENFORCE/WAIVER out of
   // review hold into the NO_SHOP family's product_surfaces. Only the two

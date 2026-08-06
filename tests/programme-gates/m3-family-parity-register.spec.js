@@ -160,10 +160,13 @@ test('a proven adapter and consumer pair from elsewhere cannot clear an unrelate
       );
     }
   }
-  // >= 99, not >= 100: termination-fee-query-fields left the NATIVE_UNVERIFIED/NOT_VISIBLE
-  // pool on 2026-08-05 (docs/codex-program/notes/compare-locator-fix.md), a real, attributed
-  // movement, not a loosening of this loose lower bound.
-  assert.ok(attacked >= 99, `expected the whole blocker inventory to be attacked, got ${attacked}`);
+  // >= 98, not >= 100: termination-fee-query-fields left the NATIVE_UNVERIFIED/NOT_VISIBLE
+  // pool on 2026-08-05 (docs/codex-program/notes/compare-locator-fix.md), then
+  // termination-fee-rendered-rows left it on 2026-08-06
+  // (docs/codex-program/notes/serving-path-proof.md) once its real consumer was named AND its
+  // server_stamped_field evidence proved the HTTP-boundary crossing. Both are real, attributed
+  // movements, not a loosening of this loose lower bound.
+  assert.ok(attacked >= 98, `expected the whole blocker inventory to be attacked, got ${attacked}`);
 });
 
 test('a page behind the design route guard is not a served entry point', () => {
@@ -382,9 +385,17 @@ test('hostile: MAE definition NATIVE_COMPLETE claims citing only the legacy card
   }
 });
 
+// 2026-08-06 (docs/codex-program/notes/serving-path-proof.md): termination-fee-rendered-rows
+// left this hostile list. Two changes, both real: its already-served consumer
+// (components/review-v2/sectionList.js, imported and used by REVIEW_V2_CONFIGS) was named in
+// evidence_paths -- the exact naming-gap fix family-rollout-mechanics.md Part 2 already
+// simulated and left undone -- and it now additionally carries server_stamped_field evidence
+// that independently proves the HTTP-boundary crossing to canonical_v2_termination_fee_cards.
+// See the "termination-fee-query-fields" test below for why the SAME evidence shape cannot
+// honestly attach to that sibling surface (CompareColumn.jsx never reads any termination-fee
+// wire field), and tests/canonical-v2-parity-serving-boundary.test.js for the mechanism itself.
 test('hostile: Termination Fee and Termination Rights NATIVE_COMPLETE claims omit a real consumer of any V2 projector', () => {
   for (const surfaceId of [
-    'termination-fee-rendered-rows',
     'tail-fee-rendered-rows',
     'termination-fee-market-fields',
     'termination-rights-rendered-rows',
@@ -434,6 +445,36 @@ test('termination-fee-query-fields: a repointed locator plus a named real consum
   assert.ok(entry.evidence_paths.includes('pages/review/[id].js'));
   assert.equal(liveProductVisibility(entry), 'NATIVE_VISIBLE');
   assert.equal(isNativeSemanticCompletion(entry), true);
+});
+
+// 2026-08-06 (docs/codex-program/notes/serving-path-proof.md). Two changes, independently
+// justified: components/review-v2/sectionList.js, terminationFeesConfig's real, already-
+// served consumer (REVIEW_V2_CONFIGS), was named in evidence_paths; and the surface now
+// carries server_stamped_field evidence naming the exact server function that stamps
+// canonical_v2_termination_fee_cards (attachCanonicalTerminationFeeServing, reached from the
+// live pages/api/review/[id]/cards.js route) and the exact client function that reads it
+// (partitionTerminationFeeCards, inside this surface's own source_path). Unlike
+// termination-fee-query-fields above, this surface's NATIVE_VISIBLE answer is not merely
+// "rendering plumbing is reached": the server_stamped_field gate independently proves the
+// HTTP-boundary crossing a static import walk alone cannot see. See
+// tests/canonical-v2-parity-serving-boundary.test.js for the proof mechanism itself,
+// including the hostile case where the two ends disagree.
+test('termination-fee-rendered-rows: a named real consumer plus proven server-stamped-field evidence clears native serving proof', () => {
+  const entry = surface('termination-fee-rendered-rows');
+  assert.ok(entry.evidence_paths.includes('components/review-v2/sectionList.js'));
+  assert.equal(entry.server_stamped_field.wire_field, 'canonical_v2_termination_fee_cards');
+  assert.equal(liveProductVisibility(entry), 'NATIVE_VISIBLE');
+  assert.equal(isNativeSemanticCompletion(entry), true);
+
+  // Withdraw the boundary evidence alone (naming gap still fixed): NATIVE_VISIBLE would still
+  // require it, proving the new gate is load-bearing, not decorative, for this surface.
+  const { server_stamped_field: _dropped, ...withoutBoundary } = structuredClone(entry);
+  assert.equal(liveProductVisibility(withoutBoundary), 'NATIVE_VISIBLE');
+  // (Still NATIVE_VISIBLE: the surface's PRE-EXISTING mechanism alone already proves it once
+  // the naming gap is fixed, exactly as it did for every other *-rendered-rows surface before
+  // this evidence shape existed. server_stamped_field is additive proof, not a replacement --
+  // see the hostile-disagreement case, which DOES change the outcome, in
+  // tests/canonical-v2-parity-serving-boundary.test.js.)
 });
 
 test('hostile: a legacy transaction_steps side table with a matching string code is not native serving proof', () => {

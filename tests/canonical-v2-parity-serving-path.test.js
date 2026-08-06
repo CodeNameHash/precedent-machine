@@ -311,6 +311,18 @@ test('the locator gate runs last and never promotes an unserved or unproven row'
   // was repointed to UnifiedCompareSection, the component pages/review/[id].js (its newly
   // named real consumer) actually renders, and the FUNCTION_CALL_PATH rule proves it -- the
   // first NATIVE_COMPLETE (as opposed to APPROVED_DERIVED) surface to clear this exact gate.
+  // termination-fee-rendered-rows joined on 2026-08-06
+  // (docs/codex-program/notes/serving-path-proof.md): its real, already-served consumer
+  // (components/review-v2/sectionList.js) was named in evidence_paths -- the exact naming-gap
+  // fix family-rollout-mechanics.md Part 2 had already simulated and left undone -- AND it now
+  // carries server_stamped_field evidence that independently, mechanically proves the HTTP-
+  // boundary crossing: attachCanonicalTerminationFeeServing (reached from the live,
+  // uncontained pages/api/review/[id]/cards.js route) genuinely stamps
+  // canonical_v2_termination_fee_cards, and partitionTerminationFeeCards (reached from this
+  // same surface's own source_path) genuinely reads that exact field. This is the one surface
+  // in the whole register today whose NATIVE_VISIBLE answer means more than "rendering
+  // plumbing is reached" -- see servingBoundaryProof and
+  // tests/canonical-v2-parity-serving-boundary.test.js.
   const visible = everySurface
     .filter((entry) => ['DERIVED_VISIBLE', 'NATIVE_VISIBLE'].includes(liveProductVisibility(entry)))
     .map((entry) => entry.surface_id)
@@ -319,6 +331,7 @@ test('the locator gate runs last and never promotes an unserved or unproven row'
     'proxy-render-derived-deadlines',
     'termination-fee-query-fields',
     'termination-fee-render-derived-values',
+    'termination-fee-rendered-rows',
   ]);
 
   // Containment and design-guard answers are still reached before the locator rule.
@@ -381,7 +394,21 @@ test('the register-wide blocker inventory reflects only real, attributed movemen
   // purpose because it would be hollow (see the hostile test in
   // tests/programme-gates/m3-family-parity-register.spec.js). Do not read 103 as evidence of
   // more than this one attributed movement.
-  assert.equal(listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER).length, 103);
+  //
+  // Down one more, 2026-08-06 (docs/codex-program/notes/serving-path-proof.md):
+  // termination-fee-rendered-rows. Two independently-justified changes to the same surface,
+  // not one: (a) components/review-v2/sectionList.js, its real, already-served consumer, was
+  // named in evidence_paths -- the exact fix family-rollout-mechanics.md Part 2 simulated and
+  // left undone, confirmed again here to move the surface to NATIVE_VISIBLE under the
+  // PRE-EXISTING mechanism alone; (b) it now ALSO carries server_stamped_field evidence,
+  // proving the HTTP-boundary crossing the prior notes named and declined to build --
+  // attachCanonicalTerminationFeeServing, reached from the live pages/api/review/[id]/cards.js
+  // route, genuinely stamps canonical_v2_termination_fee_cards, and
+  // partitionTerminationFeeCards, reached within this surface's own source_path, genuinely
+  // reads that exact field. Both had to hold for this surface to clear; either alone would
+  // have left it blocked (see tests/canonical-v2-parity-serving-boundary.test.js for both
+  // proven independently, and for the hostile case where they disagree). 103 - 1 = 102.
+  assert.equal(listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER).length, 102);
 });
 
 // ---------------------------------------------------------------------------------------

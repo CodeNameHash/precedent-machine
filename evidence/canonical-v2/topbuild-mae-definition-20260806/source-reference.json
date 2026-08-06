@@ -1,0 +1,14 @@
+{
+  "schema_version": "GENERAL_EXTRACTION_RUN_SOURCE_REFERENCE/V1",
+  "deal": "topbuild",
+  "reused_committed_raw_html": "tests/fixtures/canonical-v2/mae-definition-family/topbuild-raw-fetched.htm",
+  "retrieval_url": "https://www.sec.gov/Archives/edgar/data/1236275/000110465926045111/tm2612209d1_ex2-1.htm",
+  "raw_bytes_length": 732686,
+  "raw_bytes_sha256": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+  "canonical_text_byte_length": 412860,
+  "canonical_text_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+  "verification_status": "PASS",
+  "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+  "pin_corroboration": "tests/fixtures/canonical-v2/mae-definition-family/topbuild-intake-pin.json -- both raw_bytes_sha256 and canonical_text_sha256 above were independently re-derived from the committed raw HTML and match that pin file exactly (raw_bytes_length 732686, canonical_text_byte_length 412860, verification_status PASS)",
+  "note": "REUSE, not a pinning fetch. No network call was made by this script."
+}
