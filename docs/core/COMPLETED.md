@@ -625,9 +625,14 @@ the documentation against the running system, 28 findings", one file,
 
 Read this before quoting any of it.
 
-Extraction is proven across 25 families on essentially one agreement. **Nothing
-has been imported into the product's database.** The schema for it is 8,686
-lines and has never been executed. **Nothing V2 renders on the live site.** One
-family serves V2 data on a preview deployment, from a hand-typed fixture file.
+Extraction is proven across 25 families on essentially one agreement, and four
+of those 25 runs did not complete. **Nothing has been imported durably into the
+product's database.** The schema for it is 8,686 lines; it has been executed
+against isolated staging and rolled back (`docs/codex-program/EXECUTION-LEDGER.md`,
+P8), never durably. A previous version of this paragraph said it had "never been
+executed", which was false — see `CODEBASE-GUIDE.md` section 9. **Nothing V2
+renders on the live site**, and that is by construction: production is denied
+outright by `isPermittedCanonicalV2Runtime`. One family serves V2 data on a
+preview deployment, from a hand-typed fixture file.
 
 The volume of work here is real and it has not reached a user.

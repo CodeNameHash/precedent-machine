@@ -1353,8 +1353,11 @@ An agent changing behaviour will almost always be in one of these.
 | Gate definitions | `docs/codex-program/programme-gates.yaml` |
 
 Only one family's section mapping is currently in code. The other twenty-four
-exist only inside past run manifests under `evidence/`, and at least two of
-those are wrong.
+exist inside committed artefacts under `evidence/` — twenty in
+`run-manifest.json`'s `section_references`, four in
+`section-location-scan.json`'s `requested_section_references` — and at least
+two of those are wrong (CONSIDERATION and KEY_DEFINED_TERMS; see `PLAN.md`
+Step 2A). They are recoverable, not lost.
 
 ---
 
