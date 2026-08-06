@@ -13,7 +13,9 @@ const {
   buildSemanticSpan,
   buildProvisionComponent,
   buildProvisionInstance,
+  buildExcerpt,
 } = require('../lib/canonical-v2/source-structure');
+const { buildRelationshipRevision } = require('../lib/canonical-v2/claims-relationships');
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
 const {
   buildNativeWriteSet,
@@ -517,6 +519,146 @@ test('resolution-supplied IOC parent provisions and restricted-action components
   assert.equal(result.write_set.provisions[0].provision_instance_id, provision.provision_instance_id);
   assert.equal(result.write_set.components.length, 1);
   assert.equal(result.write_set.components[0].provision_component_id, component.provision_component_id);
+});
+
+// ─── Citation-following relationships (docs/codex-program/notes/citation-
+// scope-design.md Part 6.4; candidate-resolution.js's own
+// mintCitationTriggeredByRelationship). UNLIKE every other candidate this
+// adapter processes, these arrive from `resolution.relationships` already
+// document-absolute -- built directly against admitted_source_context, not
+// against a section-local buffer -- so they are concatenated as-is, never
+// run through this module's own section-local coordinate shift. ───
+
+test('citation-following: resolution.relationships bundles are concatenated into the write set, unshifted, alongside their own excerpts and cited provision', async () => {
+  const receipt = await buildSimpleReceipt();
+  const citingSection = findSection(receipt, '3.1(b)');
+  const contractBundle = compileFixtureContractV25();
+
+  // closure_id: same domain candidate-resolution.js's own mintProvision
+  // uses (PROVISION_CLOSURE_DOMAIN) -- every provision in a write set needs
+  // one. mintProvision itself (the real production path) always attaches
+  // this; buildProvisionInstance alone (used directly here to avoid
+  // depending on candidate-resolution.js's own private helper) does not.
+  const withProvisionClosure = (provision) => ({
+    ...provision, closure_id: contentId('CANDIDATE_RESOLUTION_PROVISION_CLOSURE/V1', { provision_instance_id: provision.provision_instance_id }),
+  });
+  const citingProvision = withProvisionClosure(buildProvisionInstance({
+    source: ADMITTED_SOURCE_CONTEXT,
+    span: buildSemanticSpan(ADMITTED_SOURCE_CONTEXT, citingSection.start, citingSection.start + 40),
+    conceptKey: 'TERMF-TARGET',
+    party: { role: 'FEE_PAYER', value: 'the Company', capacity: 'TARGET' },
+    ordinal: 1,
+    contractBundle,
+  }));
+  const citedProvision = withProvisionClosure(buildProvisionInstance({
+    source: ADMITTED_SOURCE_CONTEXT,
+    span: buildSemanticSpan(ADMITTED_SOURCE_CONTEXT, citingSection.start + 60, citingSection.start + 100),
+    conceptKey: 'TERMF-TARGET',
+    party: { role: 'FEE_PAYER', value: 'the Company', capacity: 'TARGET' },
+    ordinal: 2,
+    contractBundle,
+  }));
+  // closure_id: same domain/formula as native-write-set-adapter.js's own
+  // (private) EXCERPT_CLOSURE_DOMAIN/excerptFor, and as candidate-
+  // resolution.js's own withExcerptClosure -- every excerpt in a write set
+  // needs one (validate-write-set.js requires it), whichever code path
+  // minted the excerpt.
+  const withClosure = (excerpt) => ({ ...excerpt, closure_id: contentId('NATIVE_WRITE_SET_EXCERPT_CLOSURE/V1', { excerpt_id: excerpt.excerpt_id }) });
+  const citingExcerpt = withClosure(buildExcerpt({
+    source: ADMITTED_SOURCE_CONTEXT,
+    span: buildSemanticSpan(ADMITTED_SOURCE_CONTEXT, citingSection.start, citingSection.start + 10),
+  }));
+  const citedExcerpt = withClosure(buildExcerpt({
+    source: ADMITTED_SOURCE_CONTEXT,
+    span: buildSemanticSpan(ADMITTED_SOURCE_CONTEXT, citingSection.start + 60, citingSection.start + 70),
+  }));
+  const relationshipBuilt = buildRelationshipRevision({
+    source_occurrence_id: citingProvision.provision_instance_id,
+    relationship_definition_key: 'TRIGGERED_BY',
+    relationship_definition_version: 1,
+    ordinal: 0,
+    state: 'PRESENT',
+    raw_scope: 'test cited ground text',
+    target_occurrence_ids: [citedProvision.provision_instance_id],
+    effect: {
+      effect_mode: 'TYPED_LEGAL_EFFECT',
+      legal_operation: 'CREATES_SELLER_TERMINATION_FEE_PAYMENT_TRIGGER',
+      trigger_code: 'CHANGE_IN_RECOMMENDATION_TERMINATION',
+    },
+    evidence: [
+      { evidence_role: 'DERIVATION_INPUT', excerpt_id: citingExcerpt.excerpt_id, document_ordinal: 0, absolute_start: citingExcerpt.absolute_start, absolute_end: citingExcerpt.absolute_end },
+      { evidence_role: 'CROSS_REFERENCE', excerpt_id: citedExcerpt.excerpt_id, document_ordinal: 0, absolute_start: citedExcerpt.absolute_start, absolute_end: citedExcerpt.absolute_end },
+    ],
+  });
+  // closure_id: same domain/formula as candidate-resolution.js's own
+  // mintCitationTriggeredByRelationship (buildRelationshipRevision's raw
+  // output never carries one -- see that function's own comment on why).
+  const relationship = {
+    ...relationshipBuilt,
+    closure_id: contentId('CITATION_TRIGGERED_BY_RELATIONSHIP_CLOSURE/V1', { relationship_revision_id: relationshipBuilt.relationship_revision_id }),
+  };
+
+  const result = buildNativeWriteSet({
+    run_receipt: receipt,
+    source_text: qxoRealisticFullText,
+    document_hash: DOCUMENT_HASH,
+    admitted_source_context: ADMITTED_SOURCE_CONTEXT,
+    resolution: {
+      // citingProvision itself is supplied here exactly as a real caller
+      // supplies every OTHER resolved claim's own provision_instance (see
+      // scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs,
+      // `provisionsById = new Map(resolution.resolved.map((entry) => [...,
+      // entry.provision_instance]))`) -- citation-following mints a NEW
+      // relationship, not a new claim, so it does not appear in
+      // resolution.resolved itself, but the provision it names as its
+      // source_occurrence_id must still be present in the write set for
+      // validate-write-set.js's own referential-integrity checks.
+      provisions: [citingProvision],
+      limb_component_trees: [],
+      ioc_restriction_components: [],
+      relationships: [{
+        relationship, cited_provision: citedProvision, cited_reference: '3.1(c)', excerpts: [citingExcerpt, citedExcerpt],
+      }],
+    },
+  });
+
+  assert.equal(result.write_set.relationships.length, 1);
+  assert.equal(result.write_set.relationships[0].relationship_occurrence_id, relationship.relationship_occurrence_id);
+  assert.equal(result.write_set.relationships[0].relationship_definition_key, 'TRIGGERED_BY');
+  // Unshifted: the relationship's own evidence offsets are exactly what was
+  // supplied, never re-derived from a section-local buffer.
+  assert.deepEqual(
+    result.write_set.relationships[0].evidence.map((e) => [e.absolute_start, e.absolute_end]),
+    [[citingExcerpt.absolute_start, citingExcerpt.absolute_end], [citedExcerpt.absolute_start, citedExcerpt.absolute_end]],
+  );
+  assert.ok(result.write_set.excerpts.some((e) => e.excerpt_id === citingExcerpt.excerpt_id));
+  assert.ok(result.write_set.excerpts.some((e) => e.excerpt_id === citedExcerpt.excerpt_id));
+  assert.ok(result.write_set.provisions.some((p) => p.provision_instance_id === citedProvision.provision_instance_id));
+  assert.equal(result.counts.candidates_written, result.write_set.claims.length + result.write_set.relationships.length);
+
+  const validation = validateResolvedCanonicalWriteSet({
+    writeSet: result.write_set,
+    contractBundle,
+    admittedSourceContexts: result.admitted_source_contexts,
+  });
+  assert.equal(validation.accepted, true, `expected the real validator to accept this write set: ${JSON.stringify(validation.residuals)}`);
+});
+
+test('citation-following: absent or empty resolution.relationships leaves the write set byte-identical to today (inert)', async () => {
+  const receipt = await buildSimpleReceipt();
+  const withoutField = buildNativeWriteSet({
+    run_receipt: receipt, source_text: qxoRealisticFullText, document_hash: DOCUMENT_HASH, admitted_source_context: ADMITTED_SOURCE_CONTEXT,
+    resolution: { provisions: [], limb_component_trees: [], ioc_restriction_components: [] },
+  });
+  const withEmptyArray = buildNativeWriteSet({
+    run_receipt: receipt, source_text: qxoRealisticFullText, document_hash: DOCUMENT_HASH, admitted_source_context: ADMITTED_SOURCE_CONTEXT,
+    resolution: {
+      provisions: [], limb_component_trees: [], ioc_restriction_components: [], relationships: [],
+    },
+  });
+  assert.deepEqual(withoutField.write_set.relationships, []);
+  assert.deepEqual(withEmptyArray.write_set.relationships, []);
+  assert.deepEqual(withoutField.write_set, withEmptyArray.write_set);
 });
 
 // ─── Round-trip ───

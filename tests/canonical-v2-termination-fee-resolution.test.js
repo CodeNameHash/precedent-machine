@@ -45,6 +45,8 @@ const {
   feeSideFromFeeTermRef,
   feeTriggerCorroboratedCodes,
   MAPPING_TABLE_VERSION,
+  indexFeeTriggerCandidatesBySection,
+  resolveCitationFollowupTriggerCode,
 } = require('../lib/canonical-v2/native-producer/candidate-resolution');
 const { TERMINATION_FEE_PARSE_VERSION } = require('../lib/canonical-v2/native-producer/termination-fee-parse');
 
@@ -890,6 +892,341 @@ test('acceptance 3 (no regression): model asserts a registered code that equals 
   assert.equal(resolved[0].claim.canonical_value, 'STOCKHOLDER_APPROVAL_FAILURE_TERMINATION');
   assert.equal(resolved[0].concept_key, 'TERMF-TARGET');
   assert.equal(resolved[0].claim.attributes.trigger_code, 'STOCKHOLDER_APPROVAL_FAILURE_TERMINATION');
+});
+
+// ---------------------------------------------------------------------------
+// Citation-following (docs/codex-program/notes/citation-scope-design.md
+// Part 6.3; docs/codex-program/notes/citation-following-implementation.md).
+// handleFeeTriggerCandidate's new branch: a bare cross-reference quote
+// borrows a CITED, independently-dispatched section's own (raw_value,
+// trigger_code) for the SAME matchedCodes/triggerCode gate every other
+// candidate in this file already goes through, unmodified. These tests
+// use resolveMultiSectionTerminationFeeAssertions (defined above, built
+// for the fee-side-scope-fix tests) precisely because citation-following,
+// like that fix, structurally cannot be exercised by the single-section
+// harness: it needs a SECOND, independently-dispatched section in the SAME
+// run.
+// ---------------------------------------------------------------------------
+
+test('citation-following: a bare citation resolves via a cited, independently-dispatched section, and mints a TRIGGERED_BY relationship', async () => {
+  const { resolution } = await resolveMultiSectionTerminationFeeAssertions('deal:citation-following-clean-resolve', {
+    a: ` Termination Fee. In the event this Agreement is terminated by Parent pursuant to Section 3.1(b), then ${SELLER_FULL_PAYMENT_SENTENCE}`,
+    b: ` Grounds. the Company Board shall have effected an Adverse Recommendation Change prior to the Company Requisite Vote.`,
+  }, {
+    familyByReference: { '3.1(a)': 'TERMINATION_FEE', '3.1(b)': 'TERMINATION_FEE' },
+    responsesByReference: {
+      '3.1(a)': {
+        fee_trigger_assertions: [feeTriggerAssertion({
+          sectionReference: '3.1(a)', feeSide: 'SELLER', triggerCode: null, quote: 'by Parent pursuant to Section 3.1(b)',
+        })],
+      },
+      '3.1(b)': {
+        fee_trigger_assertions: [feeTriggerAssertion({
+          sectionReference: '3.1(b)', feeSide: 'SELLER', triggerCode: 'CHANGE_IN_RECOMMENDATION_TERMINATION',
+          quote: 'the Company Board shall have effected an Adverse Recommendation Change prior to the Company Requisite Vote.',
+        })],
+      },
+    },
+  });
+
+  const citing = resolution.resolved.find((r) => r.section_reference === '3.1(a)' && r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.ok(citing, `expected the citing candidate to resolve, got review_queue ${JSON.stringify(resolution.review_queue, null, 2)}`);
+  assert.equal(citing.claim.canonical_value, 'CHANGE_IN_RECOMMENDATION_TERMINATION');
+  assert.equal(citing.concept_key, 'TERMF-TARGET');
+  assert.equal(citing.claim.attributes.trigger_code, 'CHANGE_IN_RECOMMENDATION_TERMINATION');
+  assert.equal(
+    citing.claim.attributes.trigger_code_corroboration_scope, 'CITATION_FOLLOWUP',
+    'must be distinguishable from a same-section trigger-code resolution',
+  );
+  assert.deepEqual(citing.claim.attributes.trigger_code_corroboration_cited_references, ['3.1(b)']);
+  // The citing candidate's own raw_value is untouched -- still the bare
+  // quote, never rewritten to look like it said more than it did.
+  assert.equal(citing.claim.raw_value, 'by Parent pursuant to Section 3.1(b)');
+
+  assert.ok(resolution.relationships, 'a TRIGGERED_BY relationship must be minted');
+  assert.equal(resolution.relationships.length, 1);
+  const bundle = resolution.relationships[0];
+  assert.equal(bundle.relationship.relationship_definition_key, 'TRIGGERED_BY');
+  assert.equal(bundle.relationship.state, 'PRESENT');
+  assert.equal(bundle.relationship.source_occurrence_id, citing.provision_instance.provision_instance_id);
+  assert.deepEqual(bundle.relationship.target_occurrence_ids, [bundle.cited_provision.provision_instance_id]);
+  assert.equal(bundle.relationship.effect.effect_mode, 'TYPED_LEGAL_EFFECT');
+  assert.equal(bundle.relationship.effect.legal_operation, 'CREATES_SELLER_TERMINATION_FEE_PAYMENT_TRIGGER');
+  assert.equal(bundle.relationship.effect.trigger_code, 'CHANGE_IN_RECOMMENDATION_TERMINATION');
+  assert.equal(bundle.relationship.raw_scope, 'the Company Board shall have effected an Adverse Recommendation Change prior to the Company Requisite Vote.');
+  assert.equal(bundle.cited_reference, '3.1(b)');
+  assert.equal(bundle.relationship.evidence.length, 2);
+  assert.deepEqual(bundle.relationship.evidence.map((e) => e.evidence_role).sort(), ['CROSS_REFERENCE', 'DERIVATION_INPUT']);
+  assert.equal(bundle.relationship.retained_residuals.length, 0, 'a well-formed relationship carries no residuals');
+  assert.equal(resolution.resolution_receipt.counts.relationships, 1);
+});
+
+test('citation-following: a disjunctive bare citation naming two sections that AGREE on the same code resolves once, minting two relationships', async () => {
+  const { resolution } = await resolveMultiSectionTerminationFeeAssertions('deal:citation-following-disjunctive-agree', {
+    a: ` Termination Fee. by the Company pursuant to Section 3.1(b) or Section 3.1(c). ${SELLER_FULL_PAYMENT_SENTENCE}`,
+    b: ` Ground One. the Company Board has approved a Superior Proposal.`,
+    c: ` Ground Two. the Company Board has approved, substantially concurrently, a Superior Proposal transaction.`,
+  }, {
+    familyByReference: { '3.1(a)': 'TERMINATION_FEE', '3.1(b)': 'TERMINATION_FEE', '3.1(c)': 'TERMINATION_FEE' },
+    responsesByReference: {
+      '3.1(a)': {
+        fee_trigger_assertions: [feeTriggerAssertion({
+          sectionReference: '3.1(a)', feeSide: 'SELLER', triggerCode: null, quote: 'by the Company pursuant to Section 3.1(b) or Section 3.1(c)',
+        })],
+      },
+      '3.1(b)': {
+        fee_trigger_assertions: [feeTriggerAssertion({
+          sectionReference: '3.1(b)', feeSide: 'SELLER', triggerCode: 'SUPERIOR_PROPOSAL_TERMINATION', quote: 'the Company Board has approved a Superior Proposal.',
+        })],
+      },
+      '3.1(c)': {
+        fee_trigger_assertions: [feeTriggerAssertion({
+          sectionReference: '3.1(c)', feeSide: 'SELLER', triggerCode: 'SUPERIOR_PROPOSAL_TERMINATION', quote: 'the Company Board has approved, substantially concurrently, a Superior Proposal transaction.',
+        })],
+      },
+    },
+  });
+
+  const citing = resolution.resolved.find((r) => r.section_reference === '3.1(a)' && r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.ok(citing, `expected the citing candidate to resolve, got review_queue ${JSON.stringify(resolution.review_queue, null, 2)}`);
+  assert.equal(citing.claim.canonical_value, 'SUPERIOR_PROPOSAL_TERMINATION');
+  assert.deepEqual(citing.claim.attributes.trigger_code_corroboration_cited_references, ['3.1(b)', '3.1(c)']);
+  assert.equal(resolution.relationships.length, 2, 'one relationship per cited reference');
+  assert.deepEqual(resolution.relationships.map((b) => b.cited_reference).sort(), ['3.1(b)', '3.1(c)']);
+});
+
+test('citation-following hostile: a disjunctive bare citation naming two sections that DISAGREE on the code never resolves -- falls through unchanged, TRIGGER_UNCORROBORATED, no relationship', async () => {
+  const { resolution } = await resolveMultiSectionTerminationFeeAssertions('deal:citation-following-disjunctive-disagree', {
+    a: ` Termination Fee. by the Company pursuant to Section 3.1(b) or Section 3.1(c). ${SELLER_FULL_PAYMENT_SENTENCE}`,
+    b: ` Ground One. the Company Board has approved a Superior Proposal.`,
+    c: ` Ground Two. the Company Board shall have effected an Adverse Recommendation Change prior to the Company Requisite Vote.`,
+  }, {
+    familyByReference: { '3.1(a)': 'TERMINATION_FEE', '3.1(b)': 'TERMINATION_FEE', '3.1(c)': 'TERMINATION_FEE' },
+    responsesByReference: {
+      '3.1(a)': {
+        fee_trigger_assertions: [feeTriggerAssertion({
+          sectionReference: '3.1(a)', feeSide: 'SELLER', triggerCode: null, quote: 'by the Company pursuant to Section 3.1(b) or Section 3.1(c)',
+        })],
+      },
+      '3.1(b)': {
+        fee_trigger_assertions: [feeTriggerAssertion({
+          sectionReference: '3.1(b)', feeSide: 'SELLER', triggerCode: 'SUPERIOR_PROPOSAL_TERMINATION', quote: 'the Company Board has approved a Superior Proposal.',
+        })],
+      },
+      '3.1(c)': {
+        fee_trigger_assertions: [feeTriggerAssertion({
+          sectionReference: '3.1(c)', feeSide: 'SELLER', triggerCode: 'CHANGE_IN_RECOMMENDATION_TERMINATION',
+          quote: 'the Company Board shall have effected an Adverse Recommendation Change prior to the Company Requisite Vote.',
+        })],
+      },
+    },
+  });
+
+  const citing = resolution.resolved.find((r) => r.section_reference === '3.1(a)' && r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.equal(citing, undefined, 'must never guess between two genuinely disagreeing cited grounds');
+  const item = resolution.review_queue.find((r) => r.section_reference === '3.1(a)' && r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.ok(item);
+  assert.deepEqual(item.reasons, ['TRIGGER_UNCORROBORATED'], 'byte-identical to the ordinary bare-quote outcome -- no new reason code');
+  assert.equal(resolution.relationships, undefined, 'omitted entirely -- nothing was minted');
+});
+
+test('citation-following: a chained citation (the cited section\'s own answer is ITSELF still bare) never resolves -- falls through unchanged', async () => {
+  const { resolution } = await resolveMultiSectionTerminationFeeAssertions('deal:citation-following-chained', {
+    a: ` Termination Fee. by Parent pursuant to Section 3.1(b). ${SELLER_FULL_PAYMENT_SENTENCE}`,
+    b: ` by Parent pursuant to Section 3.1(c).`, // itself still bare
+    c: ` the Company Board shall have effected an Adverse Recommendation Change prior to the Company Requisite Vote.`,
+  }, {
+    familyByReference: { '3.1(a)': 'TERMINATION_FEE', '3.1(b)': 'TERMINATION_FEE', '3.1(c)': 'TERMINATION_FEE' },
+    responsesByReference: {
+      '3.1(a)': {
+        fee_trigger_assertions: [feeTriggerAssertion({
+          sectionReference: '3.1(a)', feeSide: 'SELLER', triggerCode: null, quote: 'by Parent pursuant to Section 3.1(b)',
+        })],
+      },
+      '3.1(b)': {
+        fee_trigger_assertions: [feeTriggerAssertion({
+          sectionReference: '3.1(b)', feeSide: 'SELLER', triggerCode: null, quote: 'by Parent pursuant to Section 3.1(c)',
+        })],
+      },
+      '3.1(c)': {
+        fee_trigger_assertions: [feeTriggerAssertion({
+          sectionReference: '3.1(c)', feeSide: 'SELLER', triggerCode: 'CHANGE_IN_RECOMMENDATION_TERMINATION',
+          quote: 'the Company Board shall have effected an Adverse Recommendation Change prior to the Company Requisite Vote.',
+        })],
+      },
+    },
+  });
+
+  // From 3.1(a)'s OWN point of view, the chain is correctly refused: the
+  // only candidate resolveCitationFollowupTriggerCode finds for its cited
+  // reference (3.1(b)) is bare, so it is filtered out of the candidate
+  // pool entirely (zero usable candidates, not one) -- 3.1(a) can never
+  // see two hops away into 3.1(c).
+  const citingA = resolution.resolved.find((r) => r.section_reference === '3.1(a)' && r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.equal(citingA, undefined, 'a chained citation (one hop short of real ground text) must never resolve in v1');
+  const itemA = resolution.review_queue.find((r) => r.section_reference === '3.1(a)' && r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.deepEqual(itemA.reasons, ['TRIGGER_UNCORROBORATED']);
+
+  // 3.1(b) is not ONLY "the cited target of 3.1(a)'s citation" -- it is
+  // ALSO its own independently-dispatched candidate this same run, and ITS
+  // bare quote cites 3.1(c), which DOES have real, cleanly-resolving
+  // ground text. This is hop limit 1 working exactly as designed: nobody
+  // ever sees two hops away, but the section one hop away gets its own,
+  // independent, single hop -- using data already dispatched for a
+  // different reason, at zero extra cost. This is not a shortfall of the
+  // hop-limit design; it is what "each dispatched section is asked the
+  // same question every other dispatched section is asked" (Part 6.1)
+  // means when the SAME document happens to chain through it twice.
+  const citingB = resolution.resolved.find((r) => r.section_reference === '3.1(b)' && r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.ok(citingB, `expected 3.1(b) to resolve on its own citation of 3.1(c), got review_queue ${JSON.stringify(resolution.review_queue, null, 2)}`);
+  assert.equal(citingB.claim.canonical_value, 'CHANGE_IN_RECOMMENDATION_TERMINATION');
+  assert.equal(citingB.claim.attributes.trigger_code_corroboration_scope, 'CITATION_FOLLOWUP');
+
+  assert.equal(resolution.relationships.length, 1, 'exactly one relationship -- 3.1(b) -> 3.1(c); NONE from 3.1(a), which never resolved');
+  assert.equal(resolution.relationships[0].cited_reference, '3.1(c)');
+  assert.equal(resolution.relationships[0].relationship.source_occurrence_id, citingB.provision_instance.provision_instance_id);
+});
+
+test('citation-following: the cited section resolving to a DIFFERENT code than its own text supports (a live disagreement) never resolves the citing candidate either', async () => {
+  const { resolution } = await resolveMultiSectionTerminationFeeAssertions('deal:citation-following-cited-disagrees', {
+    a: ` Termination Fee. by Parent pursuant to Section 3.1(b). ${SELLER_FULL_PAYMENT_SENTENCE}`,
+    b: ` Ground. the Company Board shall have effected an Adverse Recommendation Change prior to the Company Requisite Vote.`,
+  }, {
+    familyByReference: { '3.1(a)': 'TERMINATION_FEE', '3.1(b)': 'TERMINATION_FEE' },
+    responsesByReference: {
+      '3.1(a)': {
+        fee_trigger_assertions: [feeTriggerAssertion({
+          sectionReference: '3.1(a)', feeSide: 'SELLER', triggerCode: null, quote: 'by Parent pursuant to Section 3.1(b)',
+        })],
+      },
+      '3.1(b)': {
+        // The model asserts a code that disagrees with what its OWN text's
+        // pattern match supports (mirrors acceptance 2 above, one level
+        // removed) -- must not be borrowed.
+        fee_trigger_assertions: [feeTriggerAssertion({
+          sectionReference: '3.1(b)', feeSide: 'SELLER', triggerCode: 'OUTSIDE_DATE_TERMINATION',
+          quote: 'the Company Board shall have effected an Adverse Recommendation Change prior to the Company Requisite Vote.',
+        })],
+      },
+    },
+  });
+
+  const citing = resolution.resolved.find((r) => r.section_reference === '3.1(a)' && r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.equal(citing, undefined);
+  const item = resolution.review_queue.find((r) => r.section_reference === '3.1(a)' && r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.deepEqual(item.reasons, ['TRIGGER_UNCORROBORATED']);
+});
+
+test('citation-following inertness: a bare citation whose target section was never dispatched this run behaves BYTE-IDENTICALLY to before this feature existed (single-section harness, unaffected)', async () => {
+  // The single-section harness (resolveTerminationFeeAssertions) dispatches
+  // ONLY SECTION_REFERENCE ('3.1(b)') -- nothing this quote cites is ever
+  // present in feeTriggerCandidatesBySection, so citationFollowup must be
+  // null and every branch below must be untouched. This is the SAME real
+  // shape as every pre-existing TRIGGER_UNCORROBORATED test in this file
+  // (e.g. the Bioverativ test above) -- restated here explicitly as a
+  // citation-following inertness proof, not a new behaviour.
+  const quote = 'the Company shall pay Parent if the Company terminates by Parent pursuant to Section 9.9(z)';
+  const { resolution } = await resolveTerminationFeeAssertions('deal:citation-following-inert-single-section', quote, {
+    fee_trigger_assertions: [feeTriggerAssertion({ feeSide: 'SELLER', triggerCode: null, quote })],
+  });
+  const item = resolution.review_queue.find((r) => r.generic_claim_key === FEE_TRIGGER_CLAIM_KEY);
+  assert.ok(item);
+  assert.deepEqual(item.reasons, ['TRIGGER_UNCORROBORATED'], 'exactly one reason -- no CITATION_* code ever leaks into review_queue.reasons');
+  assert.equal(resolution.relationships, undefined);
+  assert.equal('relationships' in resolution.resolution_receipt.counts, false);
+});
+
+test('resolveCitationFollowupTriggerCode (exported, direct): reuses the identical matchedCodes.length===1 && triggerCode===matchedCodes[0] gate against a hand-built candidate index', () => {
+  const clean = new Map([
+    ['3.1(b)', [{
+      entry: { section_reference: '3.1(b)' },
+      claim: { raw_value: 'the Company Board has approved a Superior Proposal.', attributes: { trigger_code: 'SUPERIOR_PROPOSAL_TERMINATION' } },
+    }]],
+  ]);
+  assert.deepEqual(
+    Object.keys(resolveCitationFollowupTriggerCode(['3.1(b)'], clean)).sort(),
+    ['citedCandidates', 'triggerCode'],
+  );
+  assert.equal(resolveCitationFollowupTriggerCode(['3.1(b)'], clean).triggerCode, 'SUPERIOR_PROPOSAL_TERMINATION');
+
+  // Not resolved this run at all.
+  assert.equal(resolveCitationFollowupTriggerCode(['9.9(z)'], new Map()), null);
+
+  // Cited candidate itself null trigger_code (matchedCodes.length===1 but
+  // the model abstained) -- must not borrow a code the model never
+  // asserted, even at one remove.
+  const modelSilent = new Map([
+    ['3.1(b)', [{
+      entry: { section_reference: '3.1(b)' },
+      claim: { raw_value: 'the Company Board has approved a Superior Proposal.', attributes: { trigger_code: null } },
+    }]],
+  ]);
+  assert.equal(resolveCitationFollowupTriggerCode(['3.1(b)'], modelSilent), null);
+
+  // Cited candidate's own text matches ZERO codes.
+  const vocabGap = new Map([
+    ['3.1(b)', [{
+      entry: { section_reference: '3.1(b)' },
+      claim: { raw_value: 'the conditions in Section 6.1 were satisfied and the Company failed to close.', attributes: { trigger_code: 'OUTSIDE_DATE_TERMINATION' } },
+    }]],
+  ]);
+  assert.equal(resolveCitationFollowupTriggerCode(['3.1(b)'], vocabGap), null);
+
+  // Cited candidate's own text matches >=2 codes (ambiguous on its own).
+  const ambiguous = new Map([
+    ['3.1(b)', [{
+      entry: { section_reference: '3.1(b)' },
+      claim: { raw_value: 'a breach of the Outside Date provision occurred.', attributes: { trigger_code: 'OUTSIDE_DATE_TERMINATION' } },
+    }]],
+  ]);
+  assert.equal(resolveCitationFollowupTriggerCode(['3.1(b)'], ambiguous), null);
+
+  // Cited reference resolves to MORE than one candidate for that section --
+  // fails closed rather than picking one.
+  const multipleCandidates = new Map([
+    ['3.1(b)', [
+      {
+        entry: { section_reference: '3.1(b)' },
+        claim: { raw_value: 'the Company Board has approved a Superior Proposal.', attributes: { trigger_code: 'SUPERIOR_PROPOSAL_TERMINATION' } },
+      },
+      {
+        entry: { section_reference: '3.1(b)' },
+        claim: { raw_value: 'a second, unrelated Superior Proposal ground exists here too.', attributes: { trigger_code: 'SUPERIOR_PROPOSAL_TERMINATION' } },
+      },
+    ]],
+  ]);
+  assert.equal(resolveCitationFollowupTriggerCode(['3.1(b)'], multipleCandidates), null);
+
+  // Cited candidate itself still bare (chained) -- excluded from the
+  // candidate pool entirely, so it resolves to zero candidates for that
+  // reference, not one.
+  const chained = new Map([
+    ['3.1(b)', [{
+      entry: { section_reference: '3.1(b)' },
+      claim: { raw_value: 'by Parent pursuant to Section 3.1(c)', attributes: { trigger_code: null } },
+    }]],
+  ]);
+  assert.equal(resolveCitationFollowupTriggerCode(['3.1(b)'], chained), null);
+});
+
+test('indexFeeTriggerCandidatesBySection (exported, direct): indexes only ok===true FEE_TRIGGER_CLAIM_KEY claim candidates, by section_reference', () => {
+  const compiledCandidates = [
+    {
+      ok: true, section_reference: '3.1(a)', candidate: { kind: 'claim', claim: { claim_definition_key: FEE_TRIGGER_CLAIM_KEY, raw_value: 'x', attributes: {} } },
+    },
+    {
+      ok: true, section_reference: '3.1(a)', candidate: { kind: 'claim', claim: { claim_definition_key: FEE_TRIGGER_CLAIM_KEY, raw_value: 'y', attributes: {} } },
+    },
+    { ok: false, section_reference: '3.1(a)' },
+    {
+      ok: true, section_reference: '3.1(b)', candidate: { kind: 'claim', claim: { claim_definition_key: FEE_AMOUNT_CLAIM_KEY, raw_value: 'z', attributes: {} } },
+    },
+    { ok: true, section_reference: '3.1(c)', candidate: { kind: 'relationship' } },
+  ];
+  const index = indexFeeTriggerCandidatesBySection(compiledCandidates);
+  assert.deepEqual([...index.keys()], ['3.1(a)']);
+  assert.equal(index.get('3.1(a)').length, 2);
+  assert.equal(index.get('3.1(b)'), undefined);
 });
 
 // ---------------------------------------------------------------------------
