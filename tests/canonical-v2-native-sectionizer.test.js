@@ -14,6 +14,9 @@ const {
   SECTION_5_2_INTERVAL,
 } = require('../lib/canonical-v2/reviewed-qxo-capitalisation-slice');
 const { QXO_5_2_TEXT } = require('./fixtures/qxo-section-5-2');
+const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
+const { buildSecEdgarIntakeCapture } = require('../lib/canonical-v2/sec-edgar-intake-capture');
+const { convertSecHtmlToCanonicalText } = require('../lib/canonical-v2/sec-html-canonical-text');
 
 const DOC_HASH = 'a'.repeat(64);
 
@@ -382,6 +385,216 @@ test('recognises terminal-dot decimal headings split across lines, but not inlin
   assert.equal(findSectionByReference(tree, '6.2')?.heading, 'Cooperation; Antitrust Matters');
   assert.equal(tree.nodes.filter((node) => node.kind === 'SECTION' && node.reference === '6.2').length, 1);
   assertRoundTripsExactly(tree, source, 'terminal-dot-decimal-headings');
+});
+
+// ─── Section-boundary correctness on real filings ───
+//
+// Regression coverage for a defect found via a live extraction run
+// (evidence/canonical-v2/modiv-termination-fee-scope-correction-20260805/).
+// findSectionByReference itself is a plain exact-match lookup over nodes
+// the tree already built (see its definition below) — it does no boundary
+// computation and was not the defect. The reported symptom ("Section 7.1
+// starts 1,450 bytes late, silently excluding subsection (a) and (b)(i)")
+// does not reproduce: byte-level inspection of the real Modiv filing shows
+// node.start for "7.1" lands exactly on "Section 7.1 Termination.", and
+// both (a) and (b)(i) are and always were fully inside its span. The
+// "1,450 bytes" in the original report is the byte-length overhead of the
+// ~700 multi-byte characters (curly quotes etc.) preceding that point in
+// the document: `fullText.indexOf('Section 7.1 Termination.')` (a
+// character index) and the sectionizer's real byte offset both name the
+// SAME position, not two different ones — see the dedicated test below.
+//
+// A real, corpus-measured version of this bug class DOES exist, though:
+// appendInlineDecimalHeadingSections (deterministic-sectionizer.js) mints
+// real inline-numbered sections on top of parseStructure's tree without
+// reconciling parseStructure's own "<article>-INTRO" chapeau node, which —
+// on any article where every section uses bare, non-blank-line-anchored
+// numbering (TopBuild's Article I, all of Skechers) — swallows the ENTIRE
+// article, including every section the additive pass then mints on top.
+// reconcileStaleArticleChildren clips the stale INTRO node at the real
+// first-section boundary once it is known. These tests pin the corrected
+// behaviour against the real committed filings, not synthetic excerpts.
+
+function sectionizeRealFiling(relativeHtmlPath) {
+  const raw = fs.readFileSync(path.join(__dirname, '..', relativeHtmlPath));
+  const capture = buildSecEdgarIntakeCapture({
+    retrieval_url: 'https://www.sec.gov/Archives/edgar/data/1/sectionizer-corpus-check.htm',
+    final_url: 'https://www.sec.gov/Archives/edgar/data/1/sectionizer-corpus-check.htm',
+    status_code: 200,
+    content_type: 'text/html; charset=UTF-8',
+    retrieved_at: '2026-08-05T00:00:00.000Z',
+    retrieval_policy_digest: sha256Hex('canonical-v2-native-sectionizer.test.js corpus-wide boundary check'),
+    redirect_count: 0,
+    response_bytes: raw,
+  });
+  const conversion = convertSecHtmlToCanonicalText(capture);
+  const sourceText = conversion.canonical_text;
+  const documentHash = sha256Hex(raw);
+  return {
+    sourceText,
+    documentHash,
+    tree: sectionizeAdmittedSource({ source_text: sourceText, document_hash: documentHash }),
+  };
+}
+
+const REAL_FILINGS = [
+  { name: 'modiv', htmlPath: 'tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm' },
+  { name: 'topbuild', htmlPath: 'tests/fixtures/canonical-v2/mae-definition-family/topbuild-raw-fetched.htm' },
+  { name: 'skechers', htmlPath: 'tests/fixtures/canonical-v2/skechers-first-live-run/skechers-raw-fetched.htm' },
+];
+
+// Every pair of siblings sharing a parent must exactly tile: no overlap (one
+// section absorbing a neighbour's text) and no gap (silently dropped text —
+// this module's own header calls this "this codebase's worst failure
+// class"). Checked at EVERY tree level (ARTICLE/SECTION/SUBSECTION, any
+// depth), not just top-level sections.
+function assertSiblingsTileExactly(tree, sourceText, label) {
+  const byParent = new Map();
+  for (const node of tree.nodes) {
+    if (!node.parent_section_id) continue;
+    if (!byParent.has(node.parent_section_id)) byParent.set(node.parent_section_id, []);
+    byParent.get(node.parent_section_id).push(node);
+  }
+  const buf = Buffer.from(sourceText, 'utf8');
+  for (const siblings of byParent.values()) {
+    siblings.sort((a, b) => a.start - b.start);
+    for (let i = 0; i + 1 < siblings.length; i++) {
+      const left = siblings[i];
+      const right = siblings[i + 1];
+      assert.ok(
+        left.end <= right.start,
+        `${label}: ${left.reference || left.kind} [${left.start},${left.end}) overlaps its next sibling `
+          + `${right.reference || right.kind} [${right.start},${right.end})`,
+      );
+      if (left.end < right.start) {
+        const dropped = buf.subarray(left.end, right.start).toString('utf8');
+        assert.fail(
+          `${label}: ${right.start - left.end} bytes silently dropped between `
+            + `${left.reference || left.kind} and ${right.reference || right.kind}: ${JSON.stringify(dropped.slice(0, 120))}`,
+        );
+      }
+    }
+  }
+}
+
+// A decimal SECTION's own byte slice must literally begin with its own
+// heading anchor — never late, never on a neighbour's or a cross-
+// reference's text.
+function assertDecimalSectionsAnchorOnOwnHeading(tree, sourceText, label) {
+  const buf = Buffer.from(sourceText, 'utf8');
+  for (const node of tree.nodes) {
+    if (node.kind !== 'SECTION' || !/^\d+\.\d+$/.test(node.reference || '')) continue;
+    const windowText = buf.subarray(node.start, node.start + 40).toString('utf8');
+    const refPattern = node.inline_decimal_heading
+      ? new RegExp(`^${node.reference}\\b`)
+      : new RegExp(`^(?:SECTION|Section)\\s+${node.reference}\\b`);
+    assert.ok(
+      refPattern.test(windowText),
+      `${label}: SECTION "${node.reference}" at byte ${node.start} must start on its own heading text, got ${JSON.stringify(windowText)}`,
+    );
+  }
+}
+
+for (const filing of REAL_FILINGS) {
+  test(`corpus-wide boundary regression check: ${filing.name} — every sibling pair tiles exactly, every decimal section anchors on its own heading`, () => {
+    const { sourceText, tree } = sectionizeRealFiling(filing.htmlPath);
+    assert.ok(tree.nodes.filter((n) => n.kind === 'SECTION').length > 10, `${filing.name}: expected substantial real structure`);
+    assertSiblingsTileExactly(tree, sourceText, filing.name);
+    assertDecimalSectionsAnchorOnOwnHeading(tree, sourceText, filing.name);
+    assertParentageIsConsistent(tree, filing.name);
+  });
+}
+
+test('regression: TopBuild ARTICLE I chapeau no longer absorbs "1.1" through "1.8" (was: I-INTRO end=15734 straddling 1.1 start=8619)', () => {
+  const { sourceText, tree } = sectionizeRealFiling('tests/fixtures/canonical-v2/mae-definition-family/topbuild-raw-fetched.htm');
+  const intro = findSectionByReference(tree, 'I-INTRO');
+  const s11 = findSectionByReference(tree, '1.1');
+  assert.ok(intro && s11);
+  assert.equal(intro.end, s11.start, 'I-INTRO must end exactly where 1.1 begins, not swallow it');
+  assert.equal(s11.heading, 'The Titanium Merger');
+  const buf = Buffer.from(sourceText, 'utf8');
+  assert.match(buf.subarray(s11.start, s11.start + 30).toString('utf8'), /^1\.1 The Titanium Merger/);
+  // "I-INTRO(a)"/"I-INTRO(b)" were phantom subsection nodes misattributed
+  // from 1.8's own lettered clauses while I-INTRO wrongly spanned the
+  // whole article.
+  assert.equal(findSectionByReference(tree, 'I-INTRO(a)'), null);
+  assert.equal(findSectionByReference(tree, 'I-INTRO(b)'), null);
+});
+
+test('regression: Skechers "Company Material Adverse Effect" (clause (r)) resolves under the real "1.1" Certain Definitions section, not the stale INTRO node', () => {
+  const { sourceText, tree } = sectionizeRealFiling('tests/fixtures/canonical-v2/skechers-first-live-run/skechers-raw-fetched.htm');
+  const s11 = findSectionByReference(tree, '1.1');
+  assert.equal(s11.heading, 'Certain Definitions');
+  const clauseR = findSectionByReference(tree, '1.1(r)');
+  assert.ok(clauseR, '"1.1(r)" must resolve');
+  assert.equal(clauseR.parent_section_id, s11.section_id, '"1.1(r)" must be a direct child of the real "1.1" section');
+  const buf = Buffer.from(sourceText, 'utf8');
+  assert.match(buf.subarray(clauseR.start, clauseR.start + 60).toString('utf8'), /^\(r\) .Company Material Adverse Effect/);
+  assert.equal(findSectionByReference(tree, 'I-INTRO(r)'), null, 'the misattributed reference must no longer resolve at all');
+});
+
+test('Modiv Section 7.1 resolves from its real heading, with subsection (a) mutual consent and (b)(i) regulatory injunction fully inside it', () => {
+  const { sourceText, tree } = sectionizeRealFiling('tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm');
+  const node = findSectionByReference(tree, '7.1');
+  assert.ok(node);
+  assert.equal(node.kind, 'SECTION');
+  assert.equal(node.heading, 'Termination');
+
+  const buf = Buffer.from(sourceText, 'utf8');
+  const headingLiteral = 'Section 7.1 Termination.';
+  assert.equal(
+    buf.subarray(node.start, node.start + headingLiteral.length).toString('utf8'),
+    headingLiteral,
+    'node.start must land exactly on the literal heading text, not late',
+  );
+
+  // The originally-reported "1,450 bytes silently excluded" claim named two
+  // provisions as supposedly missing from the front of the resolved span:
+  // subsection (a) (mutual consent) and (b)(i) (a regulatory-injunction
+  // termination right). Both are, and always were, fully inside [start,end).
+  const subsectionA = findSectionByReference(tree, '7.1(a)');
+  const subsectionBI = findSectionByReference(tree, '7.1(b)(i)');
+  assert.ok(subsectionA && subsectionBI);
+  assert.ok(node.start <= subsectionA.start && subsectionA.end <= node.end, '7.1(a) is fully inside 7.1');
+  assert.ok(node.start <= subsectionBI.start && subsectionBI.end <= node.end, '7.1(b)(i) is fully inside 7.1');
+  assert.match(buf.subarray(subsectionA.start, subsectionA.end).toString('utf8'), /mutual written consent/i);
+  assert.match(buf.subarray(subsectionBI.start, subsectionBI.end).toString('utf8'), /(?:injunction|restraining|Governmental Authority)/i);
+
+  // The exact provenance of the original report's "320,311" figure: a JS
+  // string CHARACTER index (fullText.indexOf, UTF-16 code units), not a
+  // byte offset, naming the SAME position as node.start (a real byte
+  // offset) — not a different, earlier one. Pinned here so this specific
+  // unit-confusion cannot resurface as a false alarm.
+  const charIndex = sourceText.indexOf('Section 7.1 Termination.');
+  assert.equal(Buffer.byteLength(sourceText.slice(0, charIndex), 'utf8'), node.start);
+});
+
+test('the last section in a document terminates correctly: Modiv 8.12 ends exactly at the signature block, not before or after it', () => {
+  const { sourceText, tree } = sectionizeRealFiling('tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm');
+  const node = findSectionByReference(tree, '8.12');
+  assert.ok(node);
+  const buf = Buffer.from(sourceText, 'utf8');
+  assert.match(
+    buf.subarray(node.end, node.end + 40).toString('utf8'),
+    /^\n\[Signature Page Follows\]/,
+    '8.12 must end exactly where the signature block begins -- not swallow it, not stop short of it',
+  );
+});
+
+test('a reference that cannot be resolved fails rather than approximating', () => {
+  const { tree } = sectionizeRealFiling('tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm');
+  const real = findSectionByReference(tree, '7.1');
+  assert.ok(real);
+  // Documented contract: surrounding whitespace is trimmed...
+  assert.equal(findSectionByReference(tree, '7.1 ').section_id, real.section_id);
+  // ...but nothing else is fuzzy. No prefix match, no nearest-neighbour, no
+  // parent fallback when a deeper reference does not exist, no match on the
+  // literal heading text.
+  assert.equal(findSectionByReference(tree, '7.10'), null, 'one digit longer than a real reference must not match it');
+  assert.equal(findSectionByReference(tree, '7.1(b)(i)(extra)'), null, 'one clause deeper than any real node must not fall back to its parent');
+  assert.equal(findSectionByReference(tree, 'SECTION 7.1'), null, 'the literal heading text is not itself a valid reference');
+  assert.equal(findSectionByReference(tree, '999.99'), null);
+  assert.equal(findSectionByReference(tree, ''), null);
 });
 
 // ─── Input validation ───

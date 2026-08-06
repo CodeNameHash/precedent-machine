@@ -42,6 +42,7 @@ const {
   MATERIALITY_TABLE,
   TERMF_PENDING_CONCEPT_FAMILY,
   feeSideCorroboratedSides,
+  feeSideFromFeeTermRef,
   feeTriggerCorroboratedCodes,
   MAPPING_TABLE_VERSION,
 } = require('../lib/canonical-v2/native-producer/candidate-resolution');
@@ -611,4 +612,173 @@ test('additivity: the resolution receipt carries termination_fee_parse_version u
   });
   assert.equal(resolution.resolution_receipt.termination_fee_parse_version, TERMINATION_FEE_PARSE_VERSION);
   assert.equal(resolution.resolution_receipt.mapping_table_version, MAPPING_TABLE_VERSION);
+});
+
+// ---------------------------------------------------------------------------
+// Modiv §8.12 scope-correction regression (evidence/canonical-v2/modiv-
+// termination-fee-scope-correction-20260805, 2026-08-05 -- resolution.json,
+// native-producer-recorded-response-8.12.json). A live run correctly
+// extracted three termination-fee amounts governed by defined terms
+// "Company Base Amount" / "Parent Base Amount" and the resolver rejected
+// all three FEE_SIDE_UNCORROBORATED: the corroboration table only
+// recognised "Termination Fee"/"Termination Payment" as fee-noun heads,
+// and handleFeeAmountCandidate (unlike handleFeeTriggerCandidate) had no
+// fallback for a quote fragment that carries no party word of its own.
+//
+// Two changes, proved separately below:
+//   1. FEE_SIDE_CORROBORATION_TABLE gained one more pattern per side,
+//      generalising "Company/Parent <=1 word> Fee|Payment|Amount" instead
+//      of hardcoding "Base Amount" as a fourth literal phrase.
+//   2. handleFeeAmountCandidate gained feeSideFromFeeTermRef, an
+//      amount-family analogue of the trigger handler's long-standing
+//      feeSideFromFullPaymentContext fallback -- closing the asymmetry --
+//      implemented against the candidate's OWN fee_term_ref attribute
+//      rather than a whole-section scan (see that function's own comment
+//      in candidate-resolution.js for why a section-text scan is unsafe
+//      here: §8.12 defines BOTH sides' terms together, so "does this
+//      side's pattern appear anywhere in the section" would confirm
+//      either claimed side and stop discriminating at all).
+//
+// Every quote below is copied verbatim from the recorded model response.
+// ---------------------------------------------------------------------------
+
+const MODIV_COMPANY_BASE_X_QUOTE = '“Company Base Amount” means (x) if payable pursuant to Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii), $10,000,000';
+const MODIV_COMPANY_BASE_Y_QUOTE = '(y) if payable pursuant to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00';
+const MODIV_PARENT_BASE_QUOTE = '“Parent Base Amount” means $15,000,000.00';
+
+test('fee_side corroboration: Modiv "Company Base Amount" (x)-limb quote corroborates SELLER via the new party-headed defined-term pattern', () => {
+  assert.deepEqual(feeSideCorroboratedSides(MODIV_COMPANY_BASE_X_QUOTE), ['SELLER']);
+});
+
+test('fee_side corroboration: Modiv "Parent Base Amount" quote corroborates BUYER via the new party-headed defined-term pattern', () => {
+  assert.deepEqual(feeSideCorroboratedSides(MODIV_PARENT_BASE_QUOTE), ['BUYER']);
+});
+
+test('fee_side corroboration: the Modiv (y)-limb continuation quote corroborates NEITHER side directly -- it carries no party word at all, only a $ figure and a cross-reference', () => {
+  assert.deepEqual(feeSideCorroboratedSides(MODIV_COMPANY_BASE_Y_QUOTE), []);
+});
+
+test('feeSideFromFeeTermRef: the (y)-limb\'s own asserted fee_term_ref ("Company Base Amount") corroborates SELLER even though the quote itself does not', () => {
+  assert.equal(feeSideFromFeeTermRef('Company Base Amount', 'SELLER'), 'SELLER');
+  assert.equal(feeSideFromFeeTermRef('Parent Base Amount', 'BUYER'), 'BUYER');
+});
+
+test('feeSideFromFeeTermRef fails closed: a claimed side that contradicts its own fee_term_ref never corroborates the wrong side', () => {
+  assert.equal(feeSideFromFeeTermRef('Company Base Amount', 'BUYER'), null);
+  assert.equal(feeSideFromFeeTermRef('Parent Base Amount', 'SELLER'), null);
+});
+
+test('feeSideFromFeeTermRef: null, empty and undefined fee_term_ref never corroborate', () => {
+  assert.equal(feeSideFromFeeTermRef(null, 'SELLER'), null);
+  assert.equal(feeSideFromFeeTermRef('', 'SELLER'), null);
+  assert.equal(feeSideFromFeeTermRef(undefined, 'BUYER'), null);
+});
+
+test('Modiv "Company Base Amount" (x)-limb resolves end to end: SELLER, TERMF-TARGET, canonical 10000000 (was FEE_SIDE_UNCORROBORATED live)', async () => {
+  const { resolution } = await resolveTerminationFeeAssertions('deal:modiv-812-x', MODIV_COMPANY_BASE_X_QUOTE, {
+    fee_amount_assertions: [feeAmountAssertion({
+      sectionReference: '8.12', feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Base Amount', quote: MODIV_COMPANY_BASE_X_QUOTE,
+    })],
+  });
+  const resolved = resolution.resolved.filter((r) => r.generic_claim_key === FEE_AMOUNT_CLAIM_KEY);
+  assert.equal(resolved.length, 1);
+  assert.equal(resolved[0].claim.canonical_value, '10000000');
+  assert.equal(resolved[0].concept_key, 'TERMF-TARGET');
+  assert.equal(resolved[0].claim.attributes.fee_side, 'SELLER');
+});
+
+test('Modiv "Parent Base Amount" limb resolves end to end: BUYER, TERMF-REVERSE, canonical 15000000.00 (was FEE_SIDE_UNCORROBORATED live)', async () => {
+  const { resolution } = await resolveTerminationFeeAssertions('deal:modiv-812-parent', MODIV_PARENT_BASE_QUOTE, {
+    fee_amount_assertions: [feeAmountAssertion({
+      sectionReference: '8.12', feeSide: 'BUYER', payerParty: 'Parent', feeTermRef: 'Parent Base Amount', quote: MODIV_PARENT_BASE_QUOTE,
+    })],
+  });
+  const resolved = resolution.resolved.filter((r) => r.generic_claim_key === FEE_AMOUNT_CLAIM_KEY);
+  assert.equal(resolved.length, 1);
+  assert.equal(resolved[0].claim.canonical_value, '15000000.00');
+  assert.equal(resolved[0].concept_key, 'TERMF-REVERSE');
+  assert.equal(resolved[0].claim.attributes.fee_side, 'BUYER');
+});
+
+test('Modiv (y)-limb: fee_side now correctly corroborates SELLER via the new fallback (was FEE_SIDE_UNCORROBORATED live); still queues honestly on the pre-existing Dyax-shape fee_term_ref gate (spec section 1, audit M-2) rather than auto-resolving', async () => {
+  const { resolution } = await resolveTerminationFeeAssertions('deal:modiv-812-y', MODIV_COMPANY_BASE_Y_QUOTE, {
+    fee_amount_assertions: [feeAmountAssertion({
+      sectionReference: '8.12', feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Base Amount', quote: MODIV_COMPANY_BASE_Y_QUOTE,
+    })],
+  });
+  const resolved = resolution.resolved.filter((r) => r.generic_claim_key === FEE_AMOUNT_CLAIM_KEY);
+  assert.equal(resolved.length, 0, 'the (y)-limb quote never contains "Company Base Amount" verbatim -- the same far-side-of-the-term shape the spec already pinned for Dyax, never implementer discretion to relax');
+  const item = resolution.review_queue.find((r) => r.generic_claim_key === FEE_AMOUNT_CLAIM_KEY);
+  assert.ok(item);
+  assert.deepEqual(item.reasons, ['FEE_TERM_NOT_IN_QUOTE'], 'right fee side, wrong-gate rejection -- NOT FEE_SIDE_UNCORROBORATED as it was live');
+  assert.equal(item.concept_key, 'TERMF-TARGET', 'concept assignment happened, which only occurs AFTER fee_side corroboration passes -- proves fee_side resolved SELLER before the fee_term_ref gate ran');
+});
+
+test('genuine fee language is unaffected by the widening: a plain "Company Termination Fee" quote still resolves via the pre-existing exact-phrase pattern, not the new one', async () => {
+  const quote = 'the Company shall pay Parent a fee in the amount of $12,000,000 (the "Company Termination Fee")';
+  const { resolution } = await resolveTerminationFeeAssertions('deal:genuine-fee-language-unaffected', quote, {
+    fee_amount_assertions: [feeAmountAssertion({
+      feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Termination Fee', quote,
+    })],
+  });
+  const resolved = resolution.resolved.filter((r) => r.generic_claim_key === FEE_AMOUNT_CLAIM_KEY);
+  assert.equal(resolved.length, 1);
+  assert.equal(resolved[0].claim.canonical_value, '12000000');
+  assert.equal(resolved[0].concept_key, 'TERMF-TARGET');
+});
+
+// ---------------------------------------------------------------------------
+// Hostile tests (brief requirement): a dollar figure that merely sits near
+// party language -- an expense, a threshold, a share price -- must stay
+// rejected. These exercise the SAME widened table end to end, with a
+// producer that (wrongly) asserts fee_side/fee_term_ref for a quote that
+// carries no genuine fee-establishing language at all.
+// ---------------------------------------------------------------------------
+
+test('hostile: a per-share consideration figure near "Company Common Stock" is still rejected FEE_SIDE_UNCORROBORATED -- a share price must never become a termination fee', async () => {
+  const quote = '$50.00 in cash, without interest, for each share of Company Common Stock';
+  const { resolution } = await resolveTerminationFeeAssertions('deal:hostile-share-price', quote, {
+    fee_amount_assertions: [feeAmountAssertion({
+      feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Common Stock', quote,
+    })],
+  });
+  const resolved = resolution.resolved.filter((r) => r.generic_claim_key === FEE_AMOUNT_CLAIM_KEY);
+  assert.equal(resolved.length, 0);
+  const item = resolution.review_queue.find((r) => r.generic_claim_key === FEE_AMOUNT_CLAIM_KEY);
+  assert.ok(item);
+  assert.deepEqual(item.reasons, ['FEE_SIDE_UNCORROBORATED']);
+  assert.equal(item.concept_key, TERMF_PENDING_CONCEPT_FAMILY);
+});
+
+test('hostile: a Company Material Adverse Effect dollar threshold is still rejected FEE_SIDE_UNCORROBORATED -- a threshold must never become a termination fee', async () => {
+  const quote = 'losses arising from a Company Material Adverse Effect in excess of $50,000,000 in the aggregate';
+  const { resolution } = await resolveTerminationFeeAssertions('deal:hostile-mae-threshold', quote, {
+    fee_amount_assertions: [feeAmountAssertion({
+      feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Material Adverse Effect', quote,
+    })],
+  });
+  const resolved = resolution.resolved.filter((r) => r.generic_claim_key === FEE_AMOUNT_CLAIM_KEY);
+  assert.equal(resolved.length, 0);
+  const item = resolution.review_queue.find((r) => r.generic_claim_key === FEE_AMOUNT_CLAIM_KEY);
+  assert.ok(item);
+  assert.deepEqual(item.reasons, ['FEE_SIDE_UNCORROBORATED']);
+});
+
+test('hostile: an expense-reimbursement figure with a bare "Company" mention is still rejected FEE_SIDE_UNCORROBORATED -- an expense must never become a termination fee', async () => {
+  const quote = 'the Company shall reimburse Parent for documented out-of-pocket expenses not to exceed $2,000,000';
+  const { resolution } = await resolveTerminationFeeAssertions('deal:hostile-expense-reimbursement', quote, {
+    fee_amount_assertions: [feeAmountAssertion({
+      feeSide: 'BUYER', payerParty: 'the Company', feeTermRef: 'expenses', quote,
+    })],
+  });
+  const resolved = resolution.resolved.filter((r) => r.generic_claim_key === FEE_AMOUNT_CLAIM_KEY);
+  assert.equal(resolved.length, 0);
+  const item = resolution.review_queue.find((r) => r.generic_claim_key === FEE_AMOUNT_CLAIM_KEY);
+  assert.ok(item);
+  assert.deepEqual(item.reasons, ['FEE_SIDE_UNCORROBORATED']);
+});
+
+test('hostile: a same-shape but unrelated "Company <word> Amount" defined term two words from the party head is still rejected -- the tightened one-word cap does not extend the pattern that far', () => {
+  const quote = 'the Company Working Capital Amount shall be no less than $5,000,000 as of the Measurement Time';
+  assert.deepEqual(feeSideCorroboratedSides(quote), []);
 });

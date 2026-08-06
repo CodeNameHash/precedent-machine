@@ -8,13 +8,16 @@ const test = require('node:test');
 const {
   PHASE1_BASE_COMMIT,
   PURE_PROPOSAL_SOURCES,
+  PURE_PROPOSAL_SIGNATURE_VERIFICATION_SOURCES,
   LOCAL_ARTIFACT_WRITERS,
   READ_ONLY_GIT_INSPECTORS,
   PRODUCTION_PATH_PURE_ANALYSIS_SOURCES,
   LIVE_EXTRACTION_RUN_SOURCES,
   LIVE_REQUEST_AUTHORIZATION_SOURCES,
+  LIVE_REQUEST_AUTHORIZATION_SESSION_SOURCES,
   LIVE_REQUEST_AUTHORIZATION_CLIENT_SOURCES,
   CONTAINED_ROUTE_REPAIR_SOURCES,
+  CONTAINED_ROUTE_REPAIR_GUARDED_FETCH_SOURCES,
   REQUIRED_AUTHORITY_BOUNDARY_CONTRACT_SOURCES,
   EXPLICIT_NEW_SOURCE_CLASSES,
   classifyChangedProductionSources,
@@ -26,40 +29,189 @@ const {
 const ROOT = path.resolve(__dirname, '..');
 const PRODUCTION_ROOTS = Object.freeze(['lib', 'scripts', 'pages', 'components']);
 const SOURCE_EXTENSION = /\.(?:[cm]?js|jsx|mjs|ts|tsx)$/;
-const CAPABILITY_PATTERNS = Object.freeze({
-  database: Object.freeze([
-    /\b(?:createClient|getServiceSupabase)\s*\(/g,
-    /\b(?:db|supabase|database)\s*\.\s*(?:from|rpc|insert|upsert|update|delete)\s*\(/g,
-    /\b(?:INSERT\s+INTO|DELETE\s+FROM)\b/gi,
-  ]),
-  network: Object.freeze([
-    /\bfetch\s*\(/g,
-    /['"]node:https?['"]/g,
-    /\bhttps?\s*\.\s*(?:request|get)\s*\(/g,
-  ]),
-  provider: Object.freeze([
-    /@anthropic-ai\/sdk/g,
-    /\bcreate(?:CodexCli|Anthropic)Provider\s*\(/g,
-    /\bexecuteUnifiedRun\s*\(/g,
-  ]),
-  signing: Object.freeze([
-    /\bcrypto\s*\.\s*sign\s*\(/g,
-    /\bcreate(?:PrivateKey|Sign)\s*\(/g,
-  ]),
-  deployment_or_activation: Object.freeze([
-    /\bvercel\s+deploy\b/gi,
-    /\bactivate_candidate_release\s*\(/g,
-  ]),
-  external_process: Object.freeze([
-    /['"]node:child_process['"]/g,
-    /\b(?:execFileSync|execSync|spawnSync|spawn)\s*\(/g,
-  ]),
-  filesystem_write: Object.freeze([
-    /\b(?:writeFileSync|writeFile|appendFileSync|appendFile|mkdirSync|mkdir|renameSync|rename|unlinkSync|unlink|rmSync|rm)\s*\(/g,
-    /\bfs(?:Promises)?\s*\.\s*(?:writeFile|appendFile|mkdir|rename|unlink|rm)\s*\(/g,
-  ]),
+// ---------------------------------------------------------------------------------------
+// Capability scan: real AST analysis (acorn, ESTree; JSX lowered through sucrase when
+// acorn rejects raw source) rather than text matching over the raw file. Same toolchain,
+// same reasoning, as lib/canonical-v2/native-producer/m3-family-parity-register.js.
+//
+// The textual regex scanner this replaced had three proven holes (2026-08-05 audit):
+//   1. It matched capability-shaped text inside comments and unrelated string literals --
+//      a comment reading "calls getServiceSupabase() itself" counted as a database call.
+//   2. crypto.subtle.sign/.verify (Web Crypto) did not match a signing pattern written
+//      only for Node's `crypto` module -- lib/auth/session.js, which performs the real
+//      session HMAC, scanned as exercising zero capabilities.
+//   3. A receiver-anchored pattern (`https?\.(request|get)\(`, `(db|supabase|database)\.
+//      (from|rpc|...)\(`) evaded the moment the receiver was reached through a renamed or
+//      aliased binding -- lib/broad-corpus/contained-routes/from-url-fetch.js's
+//      `{ httpsClient = https }` default-parameter alias, and (found while building this
+//      fix, same species) lib/broad-corpus/contained-routes/users.js and
+//      reprocess-cond.js's `{ getSupabase = getServiceSupabase }`.
+//
+// All three are structural, not spelling gaps: a pattern list only catches spellings
+// someone thought of. This scanner instead resolves what a call's receiver actually IS --
+// through import/require bindings, local aliasing (const assignment and default
+// parameters, chained in source order), and return-passthrough wrapper functions
+// (`function getSubtle() { ...; return crypto.subtle; }` makes `getSubtle()` itself
+// resolve to `crypto.subtle`) -- and never treats a Comment node, or the text of an
+// unrelated String/Template literal, as a code reference.
+//
+// Coverage limits, recorded so they are not mistaken for rigour this does not have:
+// aliasing is a flat, whole-file table, not lexically scoped (a name reused across two
+// unrelated closures shares one entry -- over-approximation, so the failure mode is more
+// detection, never less); resolution is a single forward pass in source order, so an
+// alias or wrapper must be DECLARED before it is used, and backward references, cycles,
+// and reassignment via plain `=` after declaration are not traced; a dynamically computed
+// require specifier or a computed member access (`obj['request']`) is invisible to static
+// analysis, exactly as it was to the old regex; SQL and "vercel deploy" phrase detection
+// still pattern-matches literal string/template content, so (as before) a prose string
+// merely mentioning either phrase can still register -- comments are no longer reachable
+// at all, but literal string content was, and remains, matched on text.
+//
+// Two mitigations narrow the practical bite of the "reassignment/indirection is not
+// traced" limit above, verified empirically (2026-08-05) rather than assumed: (1) merely
+// requiring 'http'/'https'/'child_process' or importing '@anthropic-ai/sdk' is ALREADY
+// sufficient evidence on its own (bumpForModuleSpecifier), independent of how the binding
+// is later used, so most indirection against those three specifiers (destructuring a
+// method off the module, `.call()`/`.bind()` indirection, computed member access) still
+// registers via the import itself even when the specific call site does not; (2) a call to
+// a known factory/receiver name (getServiceSupabase, createClient, crypto.createPrivateKey,
+// activate_candidate_release, ...) is recognised anywhere it textually occurs, including
+// inside a plain reassignment (`x = getServiceSupabase()`), because that check runs against
+// every CallExpression node regardless of its parent. The gap that remains uncovered by
+// either mitigation, and the one this file's own reassignment tests exercise, is narrower
+// than "reassignment after declaration" suggests: a capability-bearing VALUE (not a factory
+// call) assigned to a fresh name via plain `=` -- e.g. `let s; s = crypto.subtle; s.sign(...)`,
+// or requiring 'fs' under one name and reassigning a second name to it before calling
+// `.writeFileSync` -- has no safety net, because database/filesystem/signing imports are
+// deliberately excluded from the import-alone rule (see bumpForModuleSpecifier's own
+// comment) and Web Crypto's global `crypto` object is never "required" at all.
+// ---------------------------------------------------------------------------------------
+
+let capabilityParserToolchain;
+function capabilityParsers() {
+  if (capabilityParserToolchain === undefined) {
+    let acorn = null;
+    let sucrase = null;
+    try {
+      // eslint-disable-next-line global-require
+      acorn = require('next/dist/compiled/acorn');
+    } catch {
+      acorn = null;
+    }
+    try {
+      // eslint-disable-next-line global-require
+      sucrase = require('sucrase');
+    } catch {
+      sucrase = null;
+    }
+    capabilityParserToolchain = { acorn, sucrase };
+  }
+  return capabilityParserToolchain;
+}
+
+const CAPABILITY_ACORN_OPTIONS = Object.freeze({
+  ecmaVersion: 'latest',
+  sourceType: 'module',
+  allowReturnOutsideFunction: true,
+  allowAwaitOutsideFunction: true,
+  allowHashBang: true,
+  allowSuperOutsideMethod: true,
 });
-const PURE_FORBIDDEN_CAPABILITIES = Object.freeze(Object.keys(CAPABILITY_PATTERNS));
+
+// null means genuinely unparseable (not "no capabilities found") -- callers must fail
+// closed on null, never treat it as a clean scan.
+function parseCapabilitySource(source, filePath) {
+  const { acorn, sucrase } = capabilityParsers();
+  if (!acorn) return null;
+  try {
+    return acorn.parse(source, CAPABILITY_ACORN_OPTIONS);
+  } catch {
+    // Almost always JSX. Lower it and retry; if that still fails the module is opaque.
+  }
+  if (!sucrase) return null;
+  try {
+    const lowered = sucrase.transform(source, {
+      transforms: ['jsx'],
+      filePath: filePath || 'module.jsx',
+      production: true,
+    }).code;
+    return acorn.parse(lowered, CAPABILITY_ACORN_OPTIONS);
+  } catch {
+    return null;
+  }
+}
+
+const CAPABILITY_AST_SKIP_KEYS = Object.freeze(new Set(['type', 'start', 'end', 'loc', 'range', 'comments']));
+
+// `visit` may return false to prune the subtree. Comments are never part of this tree --
+// acorn does not attach them unless asked to -- so nothing here can ever "see" one.
+function walkCapabilityAst(node, visit) {
+  if (Array.isArray(node)) {
+    for (const child of node) walkCapabilityAst(child, visit);
+    return;
+  }
+  if (!node || typeof node !== 'object' || typeof node.type !== 'string') return;
+  if (visit(node) === false) return;
+  for (const key of Object.keys(node)) {
+    if (CAPABILITY_AST_SKIP_KEYS.has(key)) continue;
+    const child = node[key];
+    if (child && typeof child === 'object') walkCapabilityAst(child, visit);
+  }
+}
+
+const CAPABILITY_NAMES = Object.freeze([
+  'database', 'network', 'provider', 'signing',
+  'deployment_or_activation', 'external_process', 'filesystem_write',
+]);
+
+// Node builtin module specifiers that carry a capability, keyed both bare and `node:`-
+// prefixed -- the exact spelling gap that let `require('https')` (no prefix) through.
+const NODE_BUILTIN_CAPABILITY_MODULES = Object.freeze({
+  http: 'HTTP_MODULE',
+  https: 'HTTP_MODULE',
+  'node:http': 'HTTP_MODULE',
+  'node:https': 'HTTP_MODULE',
+  child_process: 'CHILD_PROCESS_MODULE',
+  'node:child_process': 'CHILD_PROCESS_MODULE',
+  fs: 'FS_MODULE',
+  'fs/promises': 'FS_MODULE',
+  'node:fs': 'FS_MODULE',
+  'node:fs/promises': 'FS_MODULE',
+  crypto: 'CRYPTO',
+  'node:crypto': 'CRYPTO',
+});
+
+const FS_WRITE_METHODS = Object.freeze(new Set([
+  'writeFile', 'writeFileSync', 'appendFile', 'appendFileSync', 'mkdir', 'mkdirSync',
+  'rename', 'renameSync', 'unlink', 'unlinkSync', 'rm', 'rmSync',
+]));
+const CHILD_PROCESS_METHODS = Object.freeze(new Set(['execFileSync', 'execSync', 'spawnSync', 'spawn']));
+const HTTP_METHODS = Object.freeze(new Set(['request', 'get']));
+// Sign/verify are Web Crypto's SubtleCrypto methods too (crypto.subtle.sign/.verify) --
+// deliberately symmetric with `verify`, which the old pattern list omitted even for
+// Node's own crypto.verify/createVerify (found while building this fix; see the report).
+// createPublicKey is the verification-side counterpart to createPrivateKey -- the same
+// symmetry gap as sign/verify, and found the same way: lib/canonical-v2/
+// v1-output-routing-reconciliation-audit.js calls both crypto.createPublicKey(...) and
+// crypto.verify(...) two lines apart, in the same signature-verification routine.
+const CRYPTO_MEMBER_METHODS = Object.freeze(new Set(['sign', 'verify', 'createSign', 'createVerify', 'createPrivateKey', 'createPublicKey']));
+const CRYPTO_ANY_RECEIVER_NAMES = Object.freeze(new Set(['createPrivateKey', 'createPublicKey', 'createSign', 'createVerify']));
+const DB_CLIENT_METHODS = Object.freeze(new Set(['from', 'rpc', 'insert', 'upsert', 'update', 'delete']));
+const DB_FACTORY_NAMES = Object.freeze(new Set(['createClient', 'getServiceSupabase']));
+const PROVIDER_ANY_RECEIVER_NAMES = Object.freeze(new Set(['createCodexCliProvider', 'createAnthropicProvider', 'executeUnifiedRun']));
+const DEPLOYMENT_ANY_RECEIVER_NAMES = Object.freeze(new Set(['activate_candidate_release']));
+const DB_NAME_FALLBACK = Object.freeze(new Set(['db', 'supabase', 'database']));
+const FS_NAME_FALLBACK = Object.freeze(new Set(['fs', 'fsPromises']));
+const HTTP_NAME_FALLBACK = Object.freeze(new Set(['http', 'https']));
+const SQL_PHRASE = /\b(?:INSERT\s+INTO|DELETE\s+FROM)\b/i;
+const VERCEL_DEPLOY_PHRASE = /\bvercel\s+deploy\b/i;
+const ANTHROPIC_SDK_SPECIFIER = '@anthropic-ai/sdk';
+
+function isAnthropicSdkSpecifier(specifier) {
+  return specifier === ANTHROPIC_SDK_SPECIFIER || specifier.startsWith(`${ANTHROPIC_SDK_SPECIFIER}/`);
+}
+
+const PURE_FORBIDDEN_CAPABILITIES = CAPABILITY_NAMES;
 const LOCAL_WRITER_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'filesystem_write'));
 const GIT_INSPECTOR_FORBIDDEN_CAPABILITIES = Object.freeze(LOCAL_WRITER_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'external_process').concat('filesystem_write'));
 // A live extraction run is allowed exactly the three capabilities that make
@@ -73,15 +225,41 @@ const LIVE_EXTRACTION_RUN_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_
 // in phase1-authority-boundary-inventory.js for why it is recorded as live
 // anyway.
 const LIVE_REQUEST_AUTHORIZATION_FORBIDDEN_CAPABILITIES = PURE_FORBIDDEN_CAPABILITIES;
+// The session-token HMAC alone (lib/auth/session.js), split out of
+// LIVE_REQUEST_AUTHORIZATION_SOURCES: same boundary as the rest of that
+// mechanism, minus the one capability (`signing`) its own crypto.subtle
+// sign/verify pair requires. See LIVE_REQUEST_AUTHORIZATION_SESSION_SOURCES
+// in the inventory for why this is a narrower carve-out than "signing
+// permitted" reads on its own -- assertLiveRequestAuthorizationSessionBoundary
+// below enforces the narrower shape (Web Crypto only; Node's `crypto`
+// module must never be required).
+const LIVE_REQUEST_AUTHORIZATION_SESSION_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'signing'));
 // The one client-side member of that surface: same boundary, minus the one
 // capability (`network`) its own same-origin fetch() calls require.
 const LIVE_REQUEST_AUTHORIZATION_CLIENT_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'network'));
 // Held-dormant repairs for routes the live pages/api/** file still contains:
 // `database` is the one capability permitted (that is the repaired
-// functionality itself); every other one of the seven -- including
-// `network`, so from-url-fetch.js's SSRF-guarded fetch cannot silently grow
-// a second, unguarded way to reach the network -- stays forbidden.
+// functionality itself); every other one of the seven, including `network`,
+// stays forbidden for these three -- see
+// CONTAINED_ROUTE_REPAIR_GUARDED_FETCH_FORBIDDEN_CAPABILITIES below for the
+// one route-repair file whose repaired functionality is reaching the
+// network instead.
 const CONTAINED_ROUTE_REPAIR_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'database'));
+// The SSRF-guarded fetch alone (from-url-fetch.js), split out of
+// CONTAINED_ROUTE_REPAIR_SOURCES: `network` is the one capability permitted
+// -- not `database`, which this file never touches at all, so inheriting
+// the sibling class's allowance would be unjustified slack rather than a
+// needed permission. See CONTAINED_ROUTE_REPAIR_GUARDED_FETCH_SOURCES in
+// the inventory; the test below drives the real exported host-allowlist
+// guard rather than trusting the capability name alone.
+const CONTAINED_ROUTE_REPAIR_GUARDED_FETCH_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'network'));
+// A PURE_PROPOSAL file that must verify (never produce) a submitted
+// collector signature: same full boundary as PURE_PROPOSAL, minus the one
+// capability (`signing`) crypto.verify/createPublicKey require. See
+// PURE_PROPOSAL_SIGNATURE_VERIFICATION_SOURCES in the inventory;
+// assertPureProposalSignatureVerificationBoundary below enforces the
+// narrower verify-only shape, not just the bare capability name.
+const PURE_PROPOSAL_SIGNATURE_VERIFICATION_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'signing'));
 const ALLOWED_GIT_COMMANDS = Object.freeze(new Set(['rev-parse', 'show', 'status']));
 // The capability scan reads one file's own text, so it cannot see a capability
 // reached through an import. A production-path pure analysis source therefore
@@ -122,15 +300,272 @@ function sourceAtBase(relativePath) {
   return git(['show', `${PHASE1_BASE_COMMIT}:${relativePath}`], { ignoreErrors: true });
 }
 
-function capabilityCounts(source) {
-  return Object.fromEntries(Object.entries(CAPABILITY_PATTERNS).map(([name, patterns]) => [
-    name,
-    patterns.reduce((count, pattern) => count + (source.match(pattern) || []).length, 0),
-  ]));
+// Resolves one file's capability surface and returns exact per-capability hit counts.
+// Deliberately NOT lexically scoped -- every alias lives in one flat, whole-file table;
+// see the "Coverage limits" note above the parser toolchain for why that is a conscious
+// over-approximation. Throws (never returns zero counts) when the source cannot be
+// parsed at all: an unreadable account of what a file does must never be read as "does
+// nothing".
+function capabilityCounts(source, filePath) {
+  const program = parseCapabilitySource(source, filePath);
+  if (!program) {
+    throw new Error(`UNPARSEABLE_SOURCE: ${filePath || '(unknown source)'} could not be parsed as JavaScript/JSX by the capability scanner -- refusing to score it as capability-free.`);
+  }
+
+  const counts = Object.fromEntries(CAPABILITY_NAMES.map((name) => [name, 0]));
+  const bump = (name) => { counts[name] += 1; };
+
+  const valueTagOf = new Map(); // local name -> VALUE tag (module/global/client the name IS)
+  const canonicalNameOf = new Map(); // local name -> the original imported/declared name it aliases
+  const canonicalModuleOf = new Map(); // local name -> the module specifier it was bound from
+  const callableReturnsTag = new Map(); // local function name -> VALUE tag its call result carries
+
+  function resolveCanonicalCallee(node) {
+    if (node.type === 'Identifier') return canonicalNameOf.get(node.name) || node.name;
+    if (node.type === 'MemberExpression' && !node.computed && node.property.type === 'Identifier') {
+      return node.property.name;
+    }
+    return null;
+  }
+
+  function resolveValueTag(node) {
+    if (!node) return undefined;
+    if (node.type === 'Identifier') {
+      if (valueTagOf.has(node.name)) return valueTagOf.get(node.name);
+      if (node.name === 'crypto') return 'CRYPTO'; // Web Crypto / Node global, no import required
+      if (HTTP_NAME_FALLBACK.has(node.name)) return 'HTTP_MODULE';
+      if (FS_NAME_FALLBACK.has(node.name)) return 'FS_MODULE';
+      return undefined;
+    }
+    if (node.type === 'MemberExpression' && !node.computed && node.property.type === 'Identifier') {
+      const base = resolveValueTag(node.object);
+      const prop = node.property.name;
+      if (base === 'CRYPTO' && prop === 'subtle') return 'CRYPTO_SUBTLE';
+      if (base === 'CRYPTO' && prop === 'webcrypto') return 'CRYPTO';
+      if (base === 'FS_MODULE' && prop === 'promises') return 'FS_MODULE';
+      return undefined;
+    }
+    if (node.type === 'CallExpression') {
+      if (node.callee.type === 'Identifier' && node.callee.name === 'require'
+        && node.arguments.length === 1 && node.arguments[0].type === 'Literal'
+        && typeof node.arguments[0].value === 'string') {
+        return NODE_BUILTIN_CAPABILITY_MODULES[node.arguments[0].value] || undefined;
+      }
+      const canonical = resolveCanonicalCallee(node.callee);
+      if (canonical && DB_FACTORY_NAMES.has(canonical)) return 'DB_CLIENT';
+      if (node.callee.type === 'Identifier' && callableReturnsTag.has(node.callee.name)) {
+        return callableReturnsTag.get(node.callee.name);
+      }
+      return undefined;
+    }
+    return undefined;
+  }
+
+  function registerBinding(localName, sourceNode) {
+    if (!localName || !sourceNode) return;
+    const tag = resolveValueTag(sourceNode);
+    if (tag) valueTagOf.set(localName, tag);
+    if (sourceNode.type === 'Identifier') {
+      canonicalNameOf.set(localName, canonicalNameOf.get(sourceNode.name) || sourceNode.name);
+      const module = canonicalModuleOf.get(sourceNode.name);
+      if (module) canonicalModuleOf.set(localName, module);
+    }
+  }
+
+  function registerRequireOrImportBinding(localName, specifier, importedName) {
+    if (!localName) return;
+    const tag = NODE_BUILTIN_CAPABILITY_MODULES[specifier];
+    if (tag) valueTagOf.set(localName, tag);
+    canonicalModuleOf.set(localName, specifier);
+    canonicalNameOf.set(localName, importedName || localName);
+  }
+
+  // Any AssignmentPattern default nested anywhere in a binding pattern -- covers both
+  // `function f(x = y)` and the destructured-default shape that evaded the old scanner,
+  // `function f({ x = y } = {})`.
+  function registerPatternDefaults(pattern) {
+    if (!pattern) return;
+    if (pattern.type === 'AssignmentPattern') {
+      if (pattern.left.type === 'Identifier') registerBinding(pattern.left.name, pattern.right);
+      registerPatternDefaults(pattern.left);
+      return;
+    }
+    if (pattern.type === 'ObjectPattern') {
+      for (const prop of pattern.properties) {
+        registerPatternDefaults(prop.type === 'RestElement' ? prop.argument : prop.value);
+      }
+      return;
+    }
+    if (pattern.type === 'ArrayPattern') {
+      pattern.elements.forEach((element) => registerPatternDefaults(element));
+      return;
+    }
+    if (pattern.type === 'RestElement') registerPatternDefaults(pattern.argument);
+  }
+
+  // Return-passthrough: a function whose body returns an already-resolved capability
+  // value makes ITS OWN call result resolve to that same value -- e.g. `function
+  // getSubtle() { ...; return crypto.subtle; }` makes `getSubtle()` resolve to
+  // CRYPTO_SUBTLE, so `getSubtle().sign(...)` traces exactly like
+  // `crypto.subtle.sign(...)`. Resolved in source order (see "Coverage limits" above):
+  // a chain of wrapper functions resolves as long as each one is declared after what it
+  // wraps; backward references and cycles are not traced.
+  function registerReturnPassthrough(name, functionNode) {
+    if (!name || !functionNode) return;
+    let resolved;
+    const inspect = (expr) => { if (!resolved && expr) resolved = resolveValueTag(expr); };
+    if (functionNode.body && functionNode.body.type !== 'BlockStatement') {
+      inspect(functionNode.body);
+    } else if (functionNode.body) {
+      walkCapabilityAst(functionNode.body, (node) => {
+        if (node.type === 'ReturnStatement') inspect(node.argument);
+        if (node.type === 'FunctionDeclaration' || node.type === 'FunctionExpression'
+          || node.type === 'ArrowFunctionExpression') return false; // don't cross into nested functions
+        return undefined;
+      });
+    }
+    if (resolved) callableReturnsTag.set(name, resolved);
+  }
+
+  const FUNCTION_EXPRESSION_TYPES = new Set(['FunctionExpression', 'ArrowFunctionExpression']);
+
+  // Importing certain modules is ITSELF sufficient evidence, independent of whether any
+  // method on the resulting binding is ever called -- matching the old scanner's own
+  // design for these three specifiers (its `['"]node:https?['"]`, `['"]node:child_process
+  // ['"]` and `@anthropic-ai\/sdk` patterns matched the bare specifier text with no call
+  // required). `fs`/`crypto`/Supabase imports are NOT in this set: the old scanner never
+  // treated importing them alone as sufficient either, only actually calling a write/sign/
+  // db method -- preserved here rather than invented, so this stays a closed hole, not a
+  // wider net.
+  function bumpForModuleSpecifier(specifier) {
+    if (isAnthropicSdkSpecifier(specifier)) bump('provider');
+    const tag = NODE_BUILTIN_CAPABILITY_MODULES[specifier];
+    if (tag === 'HTTP_MODULE') bump('network');
+    if (tag === 'CHILD_PROCESS_MODULE') bump('external_process');
+  }
+
+  walkCapabilityAst(program, (node) => {
+    if (node.type === 'ImportDeclaration' && node.source && typeof node.source.value === 'string') {
+      const specifier = node.source.value;
+      bumpForModuleSpecifier(specifier);
+      for (const spec of node.specifiers) {
+        if (spec.type === 'ImportSpecifier') {
+          const importedName = spec.imported.name || spec.imported.value;
+          registerRequireOrImportBinding(spec.local.name, specifier, importedName);
+        } else {
+          registerRequireOrImportBinding(spec.local.name, specifier, null);
+        }
+      }
+      return undefined;
+    }
+
+    if (node.type === 'VariableDeclarator' && node.init) {
+      const { init } = node;
+      const isRequireCall = init.type === 'CallExpression' && init.callee.type === 'Identifier'
+        && init.callee.name === 'require' && init.arguments.length === 1
+        && init.arguments[0].type === 'Literal' && typeof init.arguments[0].value === 'string';
+      if (isRequireCall) {
+        const specifier = init.arguments[0].value;
+        bumpForModuleSpecifier(specifier);
+        if (node.id.type === 'Identifier') {
+          registerRequireOrImportBinding(node.id.name, specifier, null);
+        } else if (node.id.type === 'ObjectPattern') {
+          for (const prop of node.id.properties) {
+            if (prop.type !== 'Property' || prop.computed) continue;
+            const importedName = prop.key.type === 'Identifier' ? prop.key.name : prop.key.value;
+            const valueNode = prop.value.type === 'AssignmentPattern' ? prop.value.left : prop.value;
+            if (valueNode.type === 'Identifier') registerRequireOrImportBinding(valueNode.name, specifier, importedName);
+          }
+        }
+      } else if (node.id.type === 'Identifier') {
+        registerBinding(node.id.name, init);
+        if (FUNCTION_EXPRESSION_TYPES.has(init.type)) registerReturnPassthrough(node.id.name, init);
+      }
+      registerPatternDefaults(node.id);
+      return undefined;
+    }
+
+    if (node.type === 'FunctionDeclaration') {
+      node.params.forEach((param) => registerPatternDefaults(param));
+      if (node.id) registerReturnPassthrough(node.id.name, node);
+      return undefined;
+    }
+    if (node.type === 'FunctionExpression' || node.type === 'ArrowFunctionExpression') {
+      node.params.forEach((param) => registerPatternDefaults(param));
+      return undefined;
+    }
+
+    if (node.type === 'Literal' && typeof node.value === 'string') {
+      if (SQL_PHRASE.test(node.value)) bump('database');
+      if (VERCEL_DEPLOY_PHRASE.test(node.value)) bump('deployment_or_activation');
+      return undefined;
+    }
+    if (node.type === 'TemplateElement') {
+      const text = (node.value && (node.value.cooked || node.value.raw)) || '';
+      if (SQL_PHRASE.test(text)) bump('database');
+      if (VERCEL_DEPLOY_PHRASE.test(text)) bump('deployment_or_activation');
+      return undefined;
+    }
+
+    if (node.type === 'CallExpression') {
+      const { callee } = node;
+      // One call site is one hit, even when more than one rule below independently
+      // recognizes it (e.g. `crypto.createPrivateKey(...)` matches both the any-receiver
+      // name check and the CRYPTO-tagged-receiver method check) -- collect, then bump each
+      // capability at most once for this node.
+      const hits = new Set();
+      if (callee.type === 'Identifier' && callee.name === 'fetch') hits.add('network');
+
+      const canonical = resolveCanonicalCallee(callee);
+      if (canonical) {
+        if (DB_FACTORY_NAMES.has(canonical)) hits.add('database');
+        if (PROVIDER_ANY_RECEIVER_NAMES.has(canonical)) hits.add('provider');
+        if (DEPLOYMENT_ANY_RECEIVER_NAMES.has(canonical)) hits.add('deployment_or_activation');
+        if (CRYPTO_ANY_RECEIVER_NAMES.has(canonical)) hits.add('signing');
+      }
+
+      if (callee.type === 'Identifier') {
+        const resolvedBareName = canonicalNameOf.get(callee.name) || callee.name;
+        if (FS_WRITE_METHODS.has(resolvedBareName)) hits.add('filesystem_write');
+        if (CHILD_PROCESS_METHODS.has(resolvedBareName)) hits.add('external_process');
+        const boundModule = canonicalModuleOf.get(callee.name);
+        if ((resolvedBareName === 'sign' || resolvedBareName === 'verify')
+          && (boundModule === 'crypto' || boundModule === 'node:crypto')) {
+          hits.add('signing');
+        }
+      }
+
+      if (callee.type === 'MemberExpression' && !callee.computed && callee.property.type === 'Identifier') {
+        const propName = callee.property.name;
+        const baseTag = resolveValueTag(callee.object);
+        const objectName = callee.object.type === 'Identifier' ? callee.object.name : null;
+        if ((baseTag === 'HTTP_MODULE' || (objectName && HTTP_NAME_FALLBACK.has(objectName))) && HTTP_METHODS.has(propName)) {
+          hits.add('network');
+        }
+        if ((baseTag === 'CRYPTO' || baseTag === 'CRYPTO_SUBTLE' || objectName === 'crypto') && CRYPTO_MEMBER_METHODS.has(propName)) {
+          hits.add('signing');
+        }
+        if ((baseTag === 'FS_MODULE' || (objectName && FS_NAME_FALLBACK.has(objectName))) && FS_WRITE_METHODS.has(propName)) {
+          hits.add('filesystem_write');
+        }
+        if (baseTag === 'CHILD_PROCESS_MODULE' && CHILD_PROCESS_METHODS.has(propName)) {
+          hits.add('external_process');
+        }
+        if ((baseTag === 'DB_CLIENT' || (objectName && DB_NAME_FALLBACK.has(objectName))) && DB_CLIENT_METHODS.has(propName)) {
+          hits.add('database');
+        }
+      }
+      hits.forEach(bump);
+      return undefined;
+    }
+    return undefined;
+  });
+
+  return counts;
 }
 
 function assertNoCapabilities(source, forbiddenCapabilities, label) {
-  const counts = capabilityCounts(source);
+  const counts = capabilityCounts(source, label);
   const present = forbiddenCapabilities.filter((name) => counts[name] > 0);
   assert.deepEqual(present, [], `${label} has forbidden capabilities: ${present.join(', ')}`);
 }
@@ -141,8 +576,8 @@ function assertNoModuleDependencies(source, label) {
 }
 
 function assertNoCapabilityGrowth(baseSource, currentSource, label) {
-  const before = capabilityCounts(baseSource);
-  const after = capabilityCounts(currentSource);
+  const before = capabilityCounts(baseSource, label);
+  const after = capabilityCounts(currentSource, label);
   const growth = Object.keys(after).filter((name) => after[name] > before[name]);
   assert.deepEqual(growth, [], `${label} adds capabilities: ${growth.join(', ')}`);
 }
@@ -170,6 +605,41 @@ function assertReadOnlyGitInspector(source, label) {
   assert.deepEqual(commands.filter((command) => !ALLOWED_GIT_COMMANDS.has(command)), [], `${label} contains a non-read-only Git command`);
 }
 
+// The session-signing carve-out (LIVE_REQUEST_AUTHORIZATION_SESSION_SOURCES)
+// permits the `signing` capability outright, because the scanner has no
+// finer-grained notion of "signing" than one bucket covering both Web
+// Crypto's crypto.subtle and Node's crypto module. The narrower guarantee
+// the class exists to make -- signing ONLY through the ambient Web Crypto
+// global, for the session HMAC -- is enforced here independently of the
+// capability scan: Node's `crypto` module is the only way to reach
+// crypto.sign/createSign/createPrivateKey/createVerify, none of which Web
+// Crypto's ambient `crypto.subtle` exposes, so it must never be required.
+function assertLiveRequestAuthorizationSessionBoundary(source, label) {
+  assertNoCapabilities(source, LIVE_REQUEST_AUTHORIZATION_SESSION_FORBIDDEN_CAPABILITIES, label);
+  assert.doesNotMatch(
+    source,
+    /require\(\s*['"](?:node:)?crypto['"]\s*\)/,
+    `${label} may sign/verify only through the ambient Web Crypto global -- Node's crypto module must never be required`,
+  );
+}
+
+// The signature-verification carve-out
+// (PURE_PROPOSAL_SIGNATURE_VERIFICATION_SOURCES) permits `signing` outright
+// for the same reason: the scan cannot distinguish crypto.verify from
+// crypto.sign -- both are the one `signing` capability. The narrower
+// guarantee -- verification only, a signature is consumed here, never
+// produced -- is enforced independently: the production-side primitives
+// (crypto.sign, crypto.createPrivateKey, crypto.createSign) must never
+// appear in the source.
+function assertPureProposalSignatureVerificationBoundary(source, label) {
+  assertNoCapabilities(source, PURE_PROPOSAL_SIGNATURE_VERIFICATION_FORBIDDEN_CAPABILITIES, label);
+  assert.doesNotMatch(
+    source,
+    /\bcrypto\.(?:sign|createPrivateKey|createSign)\s*\(/,
+    `${label} may verify a signature but must never produce one`,
+  );
+}
+
 test('every production source changed from the fixed Phase 1 base is classified exactly once', () => {
   assert.equal(git(['rev-parse', PHASE1_BASE_COMMIT]), PHASE1_BASE_COMMIT);
   const changedSources = mechanicallyDerivedChangedProductionSources();
@@ -179,13 +649,16 @@ test('every production source changed from the fixed Phase 1 base is classified 
   assert.ok(inventory.some((entry) => entry.classification === 'MODIFIED_PREEXISTING'));
   assert.deepEqual(new Set(inventory.map((entry) => entry.classification)), new Set([
     'PURE_PROPOSAL',
+    'PURE_PROPOSAL_SIGNATURE_VERIFICATION',
     'LOCAL_ARTIFACT_WRITER',
     'READ_ONLY_GIT_INSPECTOR',
     'PRODUCTION_PATH_PURE_ANALYSIS',
     'LIVE_EXTRACTION_RUN',
     'LIVE_REQUEST_AUTHORIZATION',
+    'LIVE_REQUEST_AUTHORIZATION_SESSION',
     'LIVE_REQUEST_AUTHORIZATION_CLIENT',
     'CONTAINED_ROUTE_REPAIR',
+    'CONTAINED_ROUTE_REPAIR_GUARDED_FETCH',
     'MODIFIED_PREEXISTING',
   ]));
 });
@@ -229,6 +702,26 @@ test('pure proposals and local artefact writers have their exact capability boun
   for (const relativePath of LOCAL_ARTIFACT_WRITERS) {
     assertNoCapabilities(fs.readFileSync(path.join(ROOT, relativePath), 'utf8'), LOCAL_WRITER_FORBIDDEN_CAPABILITIES, relativePath);
   }
+  // The signature-verification source is deliberately not a member of
+  // PURE_PROPOSAL_SOURCES -- see the dedicated test below. Asserted here
+  // too so the split cannot silently regress back into one shared (and
+  // then falsely all-signing-forbidden) array.
+  assert.equal(PURE_PROPOSAL_SOURCES.includes('lib/canonical-v2/v1-output-routing-reconciliation-audit.js'), false);
+});
+
+test('the pure proposal signature-verification source has its exact capability boundary', () => {
+  assert.deepEqual(PURE_PROPOSAL_SIGNATURE_VERIFICATION_SOURCES, ['lib/canonical-v2/v1-output-routing-reconciliation-audit.js']);
+  for (const relativePath of PURE_PROPOSAL_SIGNATURE_VERIFICATION_SOURCES) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assertPureProposalSignatureVerificationBoundary(source, relativePath);
+    // Not vacuous: this file must actually exercise the one capability its
+    // narrower boundary permits, or the distinction from PURE_PROPOSAL_
+    // SOURCES above would be untested.
+    assert.ok(capabilityCounts(source).signing > 0, `${relativePath} must exercise signing -- that is why it is not in PURE_PROPOSAL_SOURCES`);
+    // And re-proves it is the verification side specifically, not merely
+    // "some signing capability or other".
+    assert.match(source, /\bcrypto\.(?:verify|createPublicKey)\s*\(/, `${relativePath} must actually verify a signature -- proving the carve-out is exercised, not unused slack`);
+  }
 });
 
 test('production-path pure analysis sources are capability-free leaf modules', () => {
@@ -257,11 +750,28 @@ test('live extraction run sources have their exact capability boundary', () => {
 
 test('live request authorization sources have their exact capability boundary', () => {
   assert.ok(LIVE_REQUEST_AUTHORIZATION_SOURCES.includes('lib/auth/gate.js'));
-  assert.ok(LIVE_REQUEST_AUTHORIZATION_SOURCES.includes('lib/auth/session.js'));
   assert.ok(LIVE_REQUEST_AUTHORIZATION_SOURCES.includes('pages/api/auth/login.js'));
+  // The session-token HMAC is deliberately not a member of this array --
+  // see the dedicated test below for why, and phase1-authority-boundary-
+  // inventory.js's LIVE_REQUEST_AUTHORIZATION_SESSION_SOURCES comment for
+  // the reasoning. Asserted here too so the split cannot silently regress
+  // back into one shared (and then falsely all-signing-forbidden) array.
+  assert.equal(LIVE_REQUEST_AUTHORIZATION_SOURCES.includes('lib/auth/session.js'), false);
   for (const relativePath of LIVE_REQUEST_AUTHORIZATION_SOURCES) {
     const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
     assertNoCapabilities(source, LIVE_REQUEST_AUTHORIZATION_FORBIDDEN_CAPABILITIES, relativePath);
+  }
+});
+
+test('the live request authorization session-signing source has its exact capability boundary', () => {
+  assert.deepEqual(LIVE_REQUEST_AUTHORIZATION_SESSION_SOURCES, ['lib/auth/session.js']);
+  for (const relativePath of LIVE_REQUEST_AUTHORIZATION_SESSION_SOURCES) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assertLiveRequestAuthorizationSessionBoundary(source, relativePath);
+    // Not vacuous: this file must actually exercise the one capability its
+    // narrower boundary permits, or the distinction from
+    // LIVE_REQUEST_AUTHORIZATION_SOURCES above would be untested.
+    assert.ok(capabilityCounts(source).signing > 0, `${relativePath} must exercise signing -- that is why it is not in LIVE_REQUEST_AUTHORIZATION_SOURCES`);
   }
 });
 
@@ -279,7 +789,10 @@ test('the live request authorization client source has its exact capability boun
 
 test('contained route repair sources have their exact capability boundary', () => {
   assert.ok(CONTAINED_ROUTE_REPAIR_SOURCES.includes('lib/broad-corpus/contained-routes/users.js'));
-  assert.ok(CONTAINED_ROUTE_REPAIR_SOURCES.includes('lib/broad-corpus/contained-routes/from-url-fetch.js'));
+  // The guarded fetch is deliberately not a member of this array -- see the
+  // dedicated test below. Asserted here too so the split cannot silently
+  // regress back into one shared (and then falsely database-only) array.
+  assert.equal(CONTAINED_ROUTE_REPAIR_SOURCES.includes('lib/broad-corpus/contained-routes/from-url-fetch.js'), false);
   const { BROAD_CORPUS_CONTAINED_ROUTE_FILES } = require('../lib/broad-corpus-containment');
   const liveRouteFiles = new Set(Object.values(BROAD_CORPUS_CONTAINED_ROUTE_FILES));
   for (const relativePath of CONTAINED_ROUTE_REPAIR_SOURCES) {
@@ -288,6 +801,47 @@ test('contained route repair sources have their exact capability boundary', () =
     // Not vacuous, and re-proves the property the class exists to record:
     // the repair must never itself be the live route file it repairs.
     assert.equal(liveRouteFiles.has(relativePath), false, `${relativePath} must not be one of the live, still-contained route files`);
+  }
+});
+
+test('the contained route repair guarded-fetch source has its exact capability boundary', () => {
+  assert.deepEqual(CONTAINED_ROUTE_REPAIR_GUARDED_FETCH_SOURCES, ['lib/broad-corpus/contained-routes/from-url-fetch.js']);
+  const { BROAD_CORPUS_CONTAINED_ROUTE_FILES } = require('../lib/broad-corpus-containment');
+  const liveRouteFiles = new Set(Object.values(BROAD_CORPUS_CONTAINED_ROUTE_FILES));
+  for (const relativePath of CONTAINED_ROUTE_REPAIR_GUARDED_FETCH_SOURCES) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assertNoCapabilities(source, CONTAINED_ROUTE_REPAIR_GUARDED_FETCH_FORBIDDEN_CAPABILITIES, relativePath);
+    // Not vacuous: this file must actually exercise the one capability its
+    // narrower boundary permits, or the distinction from
+    // CONTAINED_ROUTE_REPAIR_SOURCES above would be untested.
+    assert.ok(capabilityCounts(source).network > 0, `${relativePath} must exercise network -- that is why it is not in CONTAINED_ROUTE_REPAIR_SOURCES`);
+    // Re-proves the property the sibling class test records: the repair
+    // must never itself be the live route file it repairs.
+    assert.equal(liveRouteFiles.has(relativePath), false, `${relativePath} must not be one of the live, still-contained route files`);
+  }
+  // The class comment's safety claim -- "restricts to SEC domains and
+  // revalidates every redirect hop" -- is not just the bare capability
+  // name: drive the real exported guard against a battery of adversarial
+  // hosts that mirror the original SSRF finding's shape (arbitrary external
+  // host, wrong scheme, subdomain-confusable hosts, a cloud metadata
+  // address), proving the network capability this class permits is only
+  // ever reachable through this allowlist.
+  // eslint-disable-next-line global-require
+  const { isAllowedIngestUrl } = require('../lib/broad-corpus/contained-routes/from-url-fetch');
+  for (const blocked of [
+    'https://evil.example/',
+    'http://sec.gov/', // right host, wrong scheme
+    'https://sec.gov.evil.example/', // suffix-confusable host
+    'https://evilsec.gov/', // suffix-confusable host, no separating dot
+    'https://169.254.169.254/latest/meta-data/', // cloud metadata address
+    'https://localhost/',
+    'ftp://sec.gov/',
+    'not a url',
+  ]) {
+    assert.equal(isAllowedIngestUrl(blocked), false, `${blocked} must be refused`);
+  }
+  for (const allowed of ['https://sec.gov/', 'https://www.sec.gov/', 'https://efts.sec.gov/']) {
+    assert.equal(isAllowedIngestUrl(allowed), true, `${allowed} must be allowed`);
   }
 });
 
@@ -352,5 +906,176 @@ test('hostile inventory and capability changes fail closed', () => {
   assert.throws(() => assertNoCapabilityGrowth('', 'fetch(url)', 'hostile legacy'), /network/);
   assert.throws(() => assertNoModuleDependencies("const fs = require('node:fs');", 'hostile analysis'), /no module dependencies/);
   assert.throws(() => assertNoModuleDependencies("import fs from 'node:fs';", 'hostile analysis'), /no module dependencies/);
-  assert.equal(Object.keys(EXPLICIT_NEW_SOURCE_CLASSES).length, 8);
+
+  // The three narrow carve-outs added for lib/auth/session.js,
+  // lib/broad-corpus/contained-routes/from-url-fetch.js and lib/canonical-v2/
+  // v1-output-routing-reconciliation-audit.js must not silently become
+  // "this whole capability is fine now": a hostile variant that reaches the
+  // SAME permitted capability by a DIFFERENT, unreviewed route must still
+  // fail, and every one of the other six capabilities must stay exactly as
+  // forbidden as before.
+  assert.throws(
+    () => assertLiveRequestAuthorizationSessionBoundary(
+      "const crypto = require('node:crypto');\nfunction sign(k, d) { return crypto.sign(null, d, k); }",
+      'hostile session signer',
+    ),
+    /Node's crypto module must never be required/,
+  );
+  assert.throws(
+    () => assertLiveRequestAuthorizationSessionBoundary("fetch('https://evil.example');", 'hostile session network'),
+    /network/,
+  );
+  assert.throws(
+    () => assertNoCapabilities('createClient(url, key)', CONTAINED_ROUTE_REPAIR_GUARDED_FETCH_FORBIDDEN_CAPABILITIES, 'hostile guarded fetch database'),
+    /database/,
+  );
+  assert.throws(
+    () => assertNoCapabilities('crypto.sign(null, data, privateKey);', CONTAINED_ROUTE_REPAIR_GUARDED_FETCH_FORBIDDEN_CAPABILITIES, 'hostile guarded fetch signing'),
+    /signing/,
+  );
+  assert.throws(
+    () => assertPureProposalSignatureVerificationBoundary(
+      "const crypto = require('node:crypto');\ncrypto.sign(null, data, privateKey);",
+      'hostile signature producer',
+    ),
+    /must never produce one/,
+  );
+  assert.throws(
+    () => assertPureProposalSignatureVerificationBoundary(
+      "const crypto = require('node:crypto');\ncrypto.createPrivateKey(pem);",
+      'hostile private key generator',
+    ),
+    /must never produce one/,
+  );
+  assert.throws(
+    () => assertPureProposalSignatureVerificationBoundary("fetch('https://evil.example');", 'hostile proposal network'),
+    /network/,
+  );
+  assert.equal(Object.keys(EXPLICIT_NEW_SOURCE_CLASSES).length, 11);
+});
+
+// ---------------------------------------------------------------------------------------
+// Capability scanner: proves the three real holes the 2026-08-05 audit found are closed
+// (Web Crypto signing, an unprefixed/renamed network binding, comment and string-literal
+// text), that the scan fails closed on unparseable input rather than reading as clean,
+// and that every capability the old text-matching scanner already caught is still caught.
+// ---------------------------------------------------------------------------------------
+
+test('crypto.subtle signing is detected, including through a one-hop wrapper function', () => {
+  // Direct crypto.subtle.sign/.verify -- Web Crypto, not Node's crypto.sign/.verify.
+  assert.ok(capabilityCounts(
+    'async function f(k, d) { return crypto.subtle.sign("HMAC", k, d); }',
+    'direct-subtle-sign.js',
+  ).signing > 0);
+  assert.ok(capabilityCounts(
+    'async function f(k, s, d) { return crypto.subtle.verify("HMAC", k, s, d); }',
+    'direct-subtle-verify.js',
+  ).signing > 0);
+  // The exact real-world shape this control missed: lib/auth/session.js signs and
+  // verifies through a local getSubtle() wrapper, never writing `crypto.subtle.sign(`
+  // literally at the call site.
+  const wrapperSource = `
+    function getSubtle() {
+      if (typeof crypto !== 'undefined' && crypto && crypto.subtle) return crypto.subtle;
+      throw new Error('no subtle crypto');
+    }
+    async function sign(key, data) { return getSubtle().sign('HMAC', key, data); }
+    async function verify(key, sig, data) { return getSubtle().verify('HMAC', key, sig, data); }
+  `;
+  const wrapperCounts = capabilityCounts(wrapperSource, 'wrapper-session.js');
+  assert.equal(wrapperCounts.signing, 2, 'both the wrapped sign and verify calls must be traced');
+  // Node's own crypto.sign/.verify/.createPrivateKey/.createVerify/.createPublicKey stay
+  // covered too -- verify and createPublicKey were missing from the old pattern list
+  // entirely (asymmetric with sign/createPrivateKey), found on a real file while building
+  // this fix (lib/canonical-v2/v1-output-routing-reconciliation-audit.js).
+  assert.ok(capabilityCounts("crypto.verify(null, data, key, sig);", 'node-verify.js').signing > 0);
+  assert.ok(capabilityCounts("crypto.createPublicKey(pem);", 'node-create-public-key.js').signing > 0);
+});
+
+test('require("https") without the node: prefix, and a renamed require binding, are detected as network', () => {
+  assert.ok(
+    capabilityCounts("const https = require('https');", 'bare-https-require.js').network > 0,
+    'require("https") with no node: prefix must itself be sufficient evidence, same as require("node:https") already was',
+  );
+  // The already-working prefixed form must still be caught -- this is the "same as"
+  // half of the comparison above, made explicit rather than assumed.
+  assert.ok(
+    capabilityCounts("const https = require('node:https');", 'prefixed-https-require.js').network > 0,
+    'require("node:https") must still be detected -- the case the old regex already covered',
+  );
+  // The exact real-world shape this control missed: lib/broad-corpus/contained-routes/
+  // from-url-fetch.js requires https under its own name, then aliases it to a differently
+  // named parameter (`{ httpsClient = https }`) before ever calling `.get(`.
+  const renamedBindingSource = `
+    const https = require('https');
+    function fetchUrl(url, { httpsClient = https } = {}) {
+      return httpsClient.get(url, () => {});
+    }
+  `;
+  assert.ok(
+    capabilityCounts(renamedBindingSource, 'renamed-https-binding.js').network > 0,
+    'a renamed/aliased require("https") binding calling .get(...) must still be traced',
+  );
+  // node:child_process has the same bare-specifier gap as node:https; closed the same way.
+  assert.ok(
+    capabilityCounts("const cp = require('child_process'); cp.execSync('ls');", 'bare-child-process.js').external_process > 0,
+  );
+});
+
+test('a capability name inside a comment or a string literal is not a match', () => {
+  const commentOnly = capabilityCounts(
+    "// calls getServiceSupabase() itself with no injection point\nfunction noop() { return 1; }",
+    'comment-only.js',
+  );
+  assert.deepEqual(commentOnly, Object.fromEntries(CAPABILITY_NAMES.map((name) => [name, 0])));
+
+  const blockCommentOnly = capabilityCounts(
+    "/* fetch(url) is never called here; crypto.subtle.sign is not used either */\nfunction noop() { return 1; }",
+    'block-comment-only.js',
+  );
+  assert.deepEqual(blockCommentOnly, Object.fromEntries(CAPABILITY_NAMES.map((name) => [name, 0])));
+
+  const stringLiteralOnly = capabilityCounts(
+    'const msg = "this calls getServiceSupabase() itself, see fetch() and crypto.subtle.sign";',
+    'string-literal-only.js',
+  );
+  assert.equal(stringLiteralOnly.database, 0);
+  assert.equal(stringLiteralOnly.network, 0);
+  assert.equal(stringLiteralOnly.signing, 0);
+});
+
+test('an unparseable file fails closed rather than scanning as clean', () => {
+  assert.throws(
+    () => capabilityCounts('function( { [ * & ^ this is not JavaScript at all ~!@#', 'broken.js'),
+    /UNPARSEABLE_SOURCE/,
+  );
+  // Must not be reachable through the assertion helpers either -- a broken file must never
+  // silently read as "no forbidden capabilities present".
+  assert.throws(
+    () => assertNoCapabilities('function( { [ * & ^ broken', PURE_FORBIDDEN_CAPABILITIES, 'hostile broken'),
+    /UNPARSEABLE_SOURCE/,
+  );
+});
+
+test('every capability the old text-matching scanner caught is still caught', () => {
+  const positiveControls = {
+    database: "const { data } = await db.from('deals').insert({ x: 1 });",
+    network: 'fetch("https://example.invalid");',
+    provider: "const p = createAnthropicProvider({ apiKey: 'x' });",
+    signing: 'crypto.sign(null, data, privateKey);',
+    deployment_or_activation: 'activate_candidate_release(candidateId);',
+    external_process: "const { execFileSync } = require('node:child_process'); execFileSync('git', ['status']);",
+    filesystem_write: "const fs = require('fs'); fs.writeFileSync('/tmp/x', 'y');",
+  };
+  for (const [capability, source] of Object.entries(positiveControls)) {
+    const counts = capabilityCounts(source, `positive-control-${capability}.js`);
+    assert.ok(counts[capability] > 0, `${capability} positive control must still be detected: ${source}`);
+  }
+  // The two phrase-based capabilities (SQL text, "vercel deploy") stay detected in literal
+  // string/template content, exactly as the old scanner's raw-text match did.
+  assert.ok(capabilityCounts('const q = "INSERT INTO logs VALUES (1)";', 'sql-literal.js').database > 0);
+  assert.ok(capabilityCounts('const q = `DELETE FROM ${table} WHERE id = ${id}`;', 'sql-template.js').database > 0);
+  assert.ok(capabilityCounts('const cmd = "npx vercel deploy --prod";', 'vercel-deploy-literal.js').deployment_or_activation > 0);
+  assert.ok(capabilityCounts("import '@anthropic-ai/sdk';", 'anthropic-sdk-import.js').provider > 0);
+  assert.ok(capabilityCounts("const { createClient } = require('@supabase/supabase-js'); createClient(url, key);", 'supabase-create-client.js').database > 0);
 });
