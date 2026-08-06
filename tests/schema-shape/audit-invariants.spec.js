@@ -126,7 +126,7 @@ test('PH0C-OPTION-A: Metsera audit source data has populated cells and evidence'
 
 test('PH0C-OPTION-A: reconciliation queue is deterministic and well-formed', () => {
   const queue = JSON.parse(fs.readFileSync('docs/schema-shape/reconciliation-queue.json', 'utf8'));
-  const worklog = fs.readFileSync('WORKLOG-P0-C.md', 'utf8');
+  const worklog = fs.readFileSync('archive/WORKLOG-P0-C.md', 'utf8');
   if ((queue.entries || []).length === 0) {
     assert.match(worklog, /RECONCILE_CORPUS: 0 queue entries produced from [1-9]\d* triples/);
     return;

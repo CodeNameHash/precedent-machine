@@ -1,102 +1,124 @@
 # Precedent Machine
 
-Next.js M&A contract-review app: parses merger agreements (SEC filings),
-classifies provisions, extracts structured features via Claude, renders a
-review UI, and searches precedents across deals. Supabase Postgres backend;
-deployed on Vercel (production tracks `main`). Run `npm test` (node:test) and
-`npm run build` before pushing — CI enforces both.
+Next.js M&A contract-review app: parses merger agreements from SEC filings,
+classifies provisions, extracts structured facts, renders a review UI, and
+searches precedents across deals. Supabase Postgres backend, deployed on
+Vercel, production tracks `main`.
 
-## Model routing: your discretion, your watchdog duty
+Run `npm test` and `npm run build` before pushing. CI enforces both.
 
-**Routing is the main agent's call.** No fixed table to obey — you decide
-which model does what, and you own the outcome. Two non-negotiables frame
-every decision:
+## Read these before doing anything
 
-1. **Token conservation window (until Wed 8 Jul 2026).** Ben is light on
-   Claude high-token usage until then. Fable/Opus tokens are the scarce
-   resource: spend them on deciding, reviewing, and legal judgment — not on
-   producing. Default all production work to Codex (gpt-5.x — effectively
-   free on our plan) or Sonnet. After 8 Jul, cost pressure relaxes; judgment
-   stays yours.
-2. **Quality cannot suffer.** Cheap production is only acceptable because the
-   watchdog protocol below catches what cheap models get wrong. If the
-   protocol would be skipped, don't delegate — or don't do the work yet.
+`docs/core/` holds the working set. Six documents, and they are the only
+programme documents that are current.
 
-### Routing defaults during the window
+1. **`docs/core/OPERATING-RULES.md`** — what you may and may not do, and the
+   standing conventions. Read the authority boundary at the top in full.
+2. **`docs/core/PLAN.md`** — the step-by-step plan to production, numbered
+   Step 1A, 1B, 2A. Each step names the files to change and the command that
+   proves it done.
+3. **`docs/core/COMPLETED.md`** — steps already done, each with the evidence
+   that closed it. A step moves here from the plan when its proof passes.
+4. **`docs/core/DECISIONS.md`** — decisions already taken, with reasoning.
+   Read before proposing anything that sounds like a fresh design choice.
+5. **`docs/core/CODEBASE-GUIDE.md`** — how the system works end to end, with
+   the file paths, function names and commands to act on it.
+6. **`docs/core/GRAVEYARD.md`** — what was built and is no longer used, and
+   whether to keep, delete or revive it.
 
-- **Codex (gpt-5.x)** — first choice for everything with a writable spec:
-  implementation, refactors, tests against a spec, data scripts, migrations,
-  config, diagnosis with clear reproduction steps. If you can write the
-  acceptance criteria, Codex can do the work.
-- **Sonnet subagents** — Claude-native parallel work: research sweeps,
-  DB/live-page investigation, multi-file searches, build tasks needing
-  session-adjacent context that can't go to Codex, thin wrappers that drive
-  `codex exec` inside workflows.
-- **Fable/Opus** — reserve for: (a) specs and review of delegated output,
-  (b) legal-judgment calls in the rubric/taxonomy/extraction prompts where a
-  wrong call corrupts the product, (c) adversarial audits before anything
-  reaches Ben, (d) rework after a cheaper model failed the bar twice. Keep
-  these SHORT and focused — the token spend is in long producer runs, so
-  never use Fable/Opus as a producer when a reviewed cheaper model would do.
-- **Haiku** — trivial glue only.
-- Borderline case? Try the cheaper model first with tight acceptance
-  criteria. Escalation after a failed check costs less than defaulting
-  everything to expensive models. But do not run legal-judgment work through
-  a low-taste model even once: a plausible-but-wrong taxonomy or extraction
-  rule is worse than no output, because it reads as correct.
+`docs/core/README.md` is the entry point. Working notes, one per piece of
+work, are under `docs/codex-program/notes/`. Anything in `archive/` is
+historical and none of it is current.
 
-### Watchdog protocol (what makes cheap production safe)
+## The failure mode that costs the most time here
 
-Every piece of delegated output passes these gates before it merges or
-ships. No exceptions, including your own work:
+**This project repeatedly forgets what it has already built, then rebuilds it
+or declares it impossible.**
 
-1. **Spec first.** Delegations carry acceptance criteria written BEFORE the
-   handoff: constraints, file paths, expected deliverable, what "done" looks
-   like. A delegation you can't spec is work you shouldn't delegate.
-2. **Diff review** against those criteria, read like a PR from a new
-   contributor. Check what the diff does NOT do (dropped requirements,
-   silent scope-narrowing) — that is where cheap models fail.
-3. **Mechanical gates:** `npm test` + `npm run build`; scripts/ingest-qa.js
-   gates for anything touching ingestion; the golden eval harness for
-   extraction-prompt changes; quote verification stays at zero flags.
-4. **Live verification** for anything user-facing — build ≠ runtime; check
-   the deployed page, not just the code.
-5. **Two-strike escalation:** if delegated output fails review twice, stop
-   iterating cheap — redo on Fable/Opus. Log what failed so the routing
-   improves. Standing permission: escalate without asking.
-6. **Fable audits stay Fable.** Adversarial verification before Ben reviews
-   is the quality backstop and is exempt from the conservation window — it's
-   a small number of short, high-leverage runs. Never downgrade the auditor
-   to save tokens; that is the one place cheap breaks the whole scheme.
+Recent examples, all wrong, all stated confidently: that no general
+extraction runner existed, when one runs any of 25 registered families; that
+nothing wrote extraction output to the database, when 8,686 lines of schema
+and a writer were committed; that automatic section classification did not
+exist and 25 families would need mapping by hand across 40 agreements, when a
+classifier covering 26 families was built, wired and simply bypassed.
 
-### Mechanics
+The last one came from a header comment reading "this is the ONLY stage-1
+rule this slice ports". True when written, false for months, believed anyway.
 
-- **gpt-5.x is only reachable through the Codex CLI** (`codex exec` /
-  `codex review`), local terminal sessions only. `/codex` for implementation
-  handoffs, `/codex-review` for second-opinion reviews, `codex exec -s
-  read-only` for investigation/data analysis. Codex gets NO conversation
-  history — every prompt must be self-contained (task, file paths,
-  constraints, deliverable) and must never include secrets.
-- Claude models run via the Agent/Workflow `model` parameter. For gpt-5.x
-  inside workflows/subagents, spawn a thin `model: 'sonnet', effort: 'low'`
-  wrapper whose prompt composes a self-contained Codex prompt, runs
-  `codex exec` via Bash, and returns the result verbatim.
-- Extraction pipeline runs are subscription-CLI-powered (`--backend claude`,
-  zero API tokens) — but they still consume Claude plan usage. During the
-  window prefer `scripts/reprocess.js` per-type refreshes over full
-  re-ingests, and consider `--backend codex` for extraction phases whose
-  output is gated by QA + quote verification anyway.
-- Never commit unreviewed delegate output.
+So, before saying a thing does not exist:
 
-### Repo-specific guide
+- **Read the code, not the comment.** A header claiming "this module only
+  does X" is a claim to test, never a fact to record. Count the cases.
+- **Distinguish a genuine read from a mention.** A path appearing in a file
+  is usually a comment. A path passed to a file read is a dependency. This
+  has been confused repeatedly, in both directions.
+- **Check the library before the scripts.** Per-family work lives in `lib/`.
+  Reading only `scripts/` gives the false impression it does not exist.
+- **Search before concluding.** `grep -rn "name" lib/ scripts/ pages/ tests/`
+  costs seconds. "Nothing calls this" is a strong claim.
 
-- Good Codex candidates: component splits out of `pages/review/[id].js`,
-  tests for `lib/` helpers against doc comments, one-off data-analysis
-  scripts over Supabase exports, dependency/config chores, deterministic
-  post-pass helpers with pinned fixtures.
-- Spec-on-Fable, produce-on-cheap, review-on-Fable: UI changes, matcher/
-  verification changes, classify rules (the safety check against all deals'
-  section titles is the review).
-- Fable/Opus end to end: `lib/rubric.js` / `lib/taxonomy.js` semantics,
-  extraction-prompt engineering in `lib/parser-v2/extract.js`,
-  canonical-provision design, final pre-Ben audits.
+When you change what a module does, update its header comment in the same
+change. A stale header is the most authoritative-looking lie in a codebase.
+
+## Traps specific to this repository
+
+- **Never pipe `npm test` into `tail` or `head`.** A pipeline returns the
+  last command's exit code, so it reports success on a failing suite. This
+  has produced false "the suite passes" reports more than once. Redirect to a
+  file, echo `$?`, then grep the file.
+- **Use `CI=true`.** At least one subsystem behaves differently under CI, and
+  suites have passed locally while failing there.
+- **Byte offsets, not string indices.** The pipeline slices text by UTF-8
+  bytes everywhere. `indexOf` and `slice` count UTF-16 code units. Comparing
+  one to the other has produced three separate confident false findings, each
+  looking like a real defect. A conversion helper exists; use it.
+- **A family returning zero can be correct.** Guaranty finds nothing on an
+  unfinanced deal because the agreement has no such provisions. Treating that
+  as a bug means inventing provisions the deal does not contain.
+- **`review-parity-check.js` exit 2 means nothing could be compared.** It is
+  not a pass. A run that proves nothing must not read like a run that proves
+  everything.
+
+## Model routing
+
+Routing is the main agent's call. There is no fixed table.
+
+- **Sonnet subagents** for anything with a writable spec: implementation,
+  refactors, tests, sweeps, investigation, multi-file searches. If you can
+  write the acceptance criteria, delegate it.
+- **Opus** for the main loop, for specs, and for work where a wrong call
+  corrupts the product: taxonomy and rubric semantics, extraction prompt
+  design, canonical provision design.
+- **Fable** for adversarial review before anything reaches Ben. Keep these
+  short and focused. Never downgrade the auditor to save tokens: it is the
+  backstop that makes delegating everything else safe.
+- **Codex (gpt-5.x)** is reachable only through the Codex CLI in a local
+  terminal, and gets no conversation history, so every prompt must be
+  self-contained and must never include secrets.
+
+The token conservation window that used to constrain this expired on
+8 July 2026. Cost is no longer the binding constraint; judgement is.
+
+## What makes delegation safe
+
+1. **Spec first.** Acceptance criteria written before the handoff: files,
+   constraints, deliverable, what done looks like. Work you cannot spec is
+   work you should not delegate.
+2. **Brief hygiene.** Check file sizes before telling an agent to read
+   something; a multi-megabyte file at the top of a brief kills the agent
+   before it produces a line. Tell agents to write output incrementally, so
+   partial work survives.
+3. **Verify by artefact, not notification.** Does the file exist, did it
+   grow, did the branch move. Agents have been declared dead while working,
+   and killed minutes before delivering.
+4. **Diff review** against the criteria, looking hardest at what the diff
+   does *not* do. Silent scope-narrowing is the common failure.
+5. **Mechanical gates:** `CI=true npm test`, `npm run build`,
+   `bash scripts/lint/forbidden-patterns.sh`.
+6. **Live verification** for anything user-facing. A green build is not a
+   working page.
+7. **Two-strike escalation.** If delegated output fails review twice, stop
+   iterating cheap and redo it on a stronger model. Standing permission to
+   escalate without asking.
+
+Never commit unreviewed delegate output.

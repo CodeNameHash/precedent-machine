@@ -105,7 +105,7 @@ as an assessment of an as-yet-undecided future action: "This is an
 assessment and a plan, not a merge... Nothing here grants authority to
 merge; that is a decision for a person." It proposes exactly two pull
 requests as the mechanism (`wp/m3-canonical-v2-foundation` and `wp/m3-
-tonight-integration-and-live-fixes`). `docs/codex-program/DECISIONS.md`,
+tonight-integration-and-live-fixes`). `docs/core/DECISIONS.md`,
 item 12 ("Go live"), independently repeats the same premise: going live "is
 not reachable until step D2 is, which in turn is not reachable until this
 branch is merged to `main`: 287 commits and 910 files that have never been
@@ -402,7 +402,7 @@ pinned `git show`, not "no longer exists" framing):**
   longer at that path.
 
 **Checked and correctly excluded.** The same string also appears in
-`docs/codex-program/OPERATING-RULES.md` (twice), `docs/codex-program/
+`docs/core/OPERATING-RULES.md` (twice), `docs/codex-program/
 WORK-COMPLETED.md` (once) and `docs/codex-program/MERGE-PLAN.md` (once). All
 four of those are fine: two are pinned `git show 59568f92:docs/handoffs/...`
 commands (correct and reproducible, since `git show` resolves a path as it
@@ -807,7 +807,7 @@ check would cry wolf:
 
 ### 1.4 Genre note: decision logs and dated investigation notes
 
-`docs/codex-program/DECISIONS.md` and the ~18 files under `docs/codex-
+`docs/core/DECISIONS.md` and the ~18 files under `docs/codex-
 program/notes/` are, almost without exception, dated, append-only records of
 a specific investigation or ruling ("DECIDED 2026-08-05...", "Verification
 command: ..."). An old number preserved as part of that record is not a

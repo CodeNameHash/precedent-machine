@@ -1,0 +1,953 @@
+{
+  "schema_version": "M3_CODEBASE_INVENTORY/V1",
+  "generated_by": "scripts/generate-codebase-inventory.js",
+  "regenerate_with": "npm run generate:codebase-inventory",
+  "staleness_check": "tests/codex-program-generated-docs.test.js (npm test) runs the generator in --check mode and fails if this file does not match a fresh run.",
+  "not_included_on_purpose": "No timestamp, commit hash, or other value that would change without a corresponding change to one of the source files this script actually reads -- see this script's own header for why.",
+  "summary": {
+    "section_families": 25,
+    "product_projection_modules": 16,
+    "resolver_exports": 90,
+    "review_table_configs": 26,
+    "dark_bridge_leaves": 4,
+    "dark_bridge_aggregators": 1,
+    "per_family_serving_sources": 1,
+    "live_run_scripts": 6
+  },
+  "section_families": {
+    "method": "require()s lib/canonical-v2/native-producer/producer-prompt-registry.js and calls listRegisteredSectionFamilies() for the family list; parses the same file's source text for the family -> producer module mapping; throws if the two disagree.",
+    "registry_source": "lib/canonical-v2/native-producer/producer-prompt-registry.js",
+    "count": 25,
+    "families": [
+      {
+        "section_family": "ANTITRUST_REGULATORY",
+        "producer_function": "buildAntitrustRegulatoryProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/antitrust-regulatory-producer-prompt.js"
+      },
+      {
+        "section_family": "APPRAISAL_DISSENTERS_RIGHTS",
+        "producer_function": "buildAppraisalProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/appraisal-producer-prompt.js"
+      },
+      {
+        "section_family": "CAPITALISATION",
+        "producer_function": "buildCapitalisationProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/capitalisation-producer-prompt.js"
+      },
+      {
+        "section_family": "CLOSING_CONDITIONS",
+        "producer_function": "buildClosingConditionsProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/closing-conditions-producer-prompt.js"
+      },
+      {
+        "section_family": "CONSIDERATION",
+        "producer_function": "buildConsiderationProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/consideration-producer-prompt.js"
+      },
+      {
+        "section_family": "DIVIDENDS",
+        "producer_function": "buildDividendsProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/dividends-producer-prompt.js"
+      },
+      {
+        "section_family": "DNO_INDEMNIFICATION",
+        "producer_function": "buildDnoProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/dno-producer-prompt.js"
+      },
+      {
+        "section_family": "EMPLOYEE_MATTERS",
+        "producer_function": "buildEmployeeMattersProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/employee-matters-producer-prompt.js"
+      },
+      {
+        "section_family": "FINANCING_COVENANTS",
+        "producer_function": "buildFinancingProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/financing-producer-prompt.js"
+      },
+      {
+        "section_family": "GENERAL_COVENANTS",
+        "producer_function": "buildGeneralCovenantsProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/general-covenants-producer-prompt.js"
+      },
+      {
+        "section_family": "GUARANTY_FINANCING_PARTY",
+        "producer_function": "buildGuarantyProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/guaranty-producer-prompt.js"
+      },
+      {
+        "section_family": "INTERIM_OPERATING",
+        "producer_function": "buildIocProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/ioc-producer-prompt.js"
+      },
+      {
+        "section_family": "KEY_DEFINED_TERMS",
+        "producer_function": "buildDefinedTermsProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/defined-terms-producer-prompt.js"
+      },
+      {
+        "section_family": "MAE_DEFINITION",
+        "producer_function": "buildMaeDefinitionProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/mae-definition-producer-prompt.js"
+      },
+      {
+        "section_family": "MATERIAL_CONTRACTS",
+        "producer_function": "buildMaterialContractsProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/material-contracts-producer-prompt.js"
+      },
+      {
+        "section_family": "MERGER_STRUCTURE_CLOSING",
+        "producer_function": "buildMergerStructureProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/merger-structure-producer-prompt.js"
+      },
+      {
+        "section_family": "MISC_BOILERPLATE",
+        "producer_function": "buildRemediesMiscProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/remedies-misc-producer-prompt.js"
+      },
+      {
+        "section_family": "NO_OTHER_REPS_FRAUD",
+        "producer_function": "buildNoOtherRepsFraudProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/no-other-reps-fraud-producer.js"
+      },
+      {
+        "section_family": "NO_SHOP",
+        "producer_function": "buildNoShopProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/no-shop-producer-prompt.js"
+      },
+      {
+        "section_family": "PROXY_MEETING",
+        "producer_function": "buildProxyMeetingProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/proxy-meeting-producer-prompt.js"
+      },
+      {
+        "section_family": "REPRESENTATIONS",
+        "producer_function": "buildRepresentationsProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/representations-producer-prompt.js"
+      },
+      {
+        "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+        "producer_function": "buildSpecificPerformanceRemediesProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/specific-performance-remedies-producer-prompt.js"
+      },
+      {
+        "section_family": "TAX_MATTERS",
+        "producer_function": "buildTaxMattersProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/tax-matters-producer-prompt.js"
+      },
+      {
+        "section_family": "TERMINATION",
+        "producer_function": "buildTerminationProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/termination-producer-prompt.js"
+      },
+      {
+        "section_family": "TERMINATION_FEE",
+        "producer_function": "buildTerminationFeeProducerPrompt",
+        "producer_prompt_module": "lib/canonical-v2/native-producer/termination-fee-producer-prompt.js"
+      }
+    ]
+  },
+  "product_projections": {
+    "method": "lists lib/canonical-v2/*-product-projection.js, extracts each file's module.exports identifiers (informational, listed in full), then resolves the real import graph (every require()/from target elsewhere in the tree that resolves to this file's own basename) to find genuine importers -- not a text search on export names, which this codebase's many same-named local constants (SOURCE, PROJECTION_SCHEMA, ...) would make unreliable. 'imported_outside_scripts_and_tests' means something other than a script or a test imports it -- i.e. it is reachable from product code.",
+    "glob": "lib/canonical-v2/*-product-projection.js",
+    "count": 16,
+    "modules": [
+      {
+        "path": "lib/canonical-v2/antitrust-product-projection.js",
+        "exports": [
+          "EVIDENCE_SOURCE",
+          "NON_HSR_FILING_DEADLINE_SCHEMA",
+          "PROJECTION_SCHEMA",
+          "SOURCE",
+          "SUPPORTED_DEFINITIONS",
+          "projectAntitrustProductSurfaces"
+        ],
+        "projection_entry_points": [
+          "projectAntitrustProductSurfaces"
+        ],
+        "imported_by": {
+          "components": [],
+          "pages": [],
+          "lib": [],
+          "scripts": [],
+          "tests": [
+            "tests/canonical-v2-antitrust-expanded-package.test.js",
+            "tests/canonical-v2-antitrust-regulatory-efforts.test.js"
+          ],
+          "other": []
+        },
+        "imported_outside_scripts_and_tests": false
+      },
+      {
+        "path": "lib/canonical-v2/closing-conditions-product-projection.js",
+        "exports": [
+          "PROJECTION_SCHEMA",
+          "SOURCE",
+          "SUPPORTED_DEFINITIONS",
+          "projectClosingConditionProductSurfaces"
+        ],
+        "projection_entry_points": [
+          "projectClosingConditionProductSurfaces"
+        ],
+        "imported_by": {
+          "components": [],
+          "pages": [],
+          "lib": [],
+          "scripts": [],
+          "tests": [
+            "tests/canonical-v2-closing-conditions-wave-b-resolution.test.js"
+          ],
+          "other": []
+        },
+        "imported_outside_scripts_and_tests": false
+      },
+      {
+        "path": "lib/canonical-v2/consideration-ioc-evidence-product-projection.js",
+        "exports": [
+          "AUTHORITY_STATE",
+          "CONSIDERATION_SURFACES",
+          "ELECTION_MECHANISM_SCHEMA",
+          "ELECTION_MECHANISM_SURFACES",
+          "EVIDENCE_SOURCE",
+          "IOC_SURFACES",
+          "PROJECTION_SCHEMA",
+          "projectConsiderationEvidenceProductSurfaces",
+          "projectIocEvidenceProductSurfaces"
+        ],
+        "projection_entry_points": [
+          "projectConsiderationEvidenceProductSurfaces",
+          "projectIocEvidenceProductSurfaces"
+        ],
+        "imported_by": {
+          "components": [],
+          "pages": [],
+          "lib": [],
+          "scripts": [],
+          "tests": [
+            "tests/canonical-v2-consideration-ioc-product-parity.test.js",
+            "tests/canonical-v2-ioc-mechanic-resolution.test.js"
+          ],
+          "other": []
+        },
+        "imported_outside_scripts_and_tests": false
+      },
+      {
+        "path": "lib/canonical-v2/consideration-wave-a-product-projection.js",
+        "exports": [
+          "AUTHORITY_STATE",
+          "ConsiderationWaveAProjectionError",
+          "FIELD_DEFINITIONS",
+          "PROJECTION_SCHEMA",
+          "RECORD_SCHEMA",
+          "projectConsiderationWaveAClaims"
+        ],
+        "projection_entry_points": [
+          "projectConsiderationWaveAClaims"
+        ],
+        "imported_by": {
+          "components": [],
+          "pages": [],
+          "lib": [],
+          "scripts": [],
+          "tests": [
+            "tests/canonical-v2-consideration-wave-a.test.js"
+          ],
+          "other": []
+        },
+        "imported_outside_scripts_and_tests": false
+      },
+      {
+        "path": "lib/canonical-v2/employee-dno-product-projection.js",
+        "exports": [
+          "DNO_DEFINITIONS",
+          "EMPLOYEE_DEFINITIONS",
+          "EVIDENCE_SOURCE",
+          "NATIVE_SOURCE",
+          "PROJECTION_SCHEMA",
+          "projectEmployeeDnoProductSurfaces"
+        ],
+        "projection_entry_points": [
+          "projectEmployeeDnoProductSurfaces"
+        ],
+        "imported_by": {
+          "components": [],
+          "pages": [],
+          "lib": [],
+          "scripts": [],
+          "tests": [
+            "tests/canonical-v2-employee-dno-product-parity.test.js"
+          ],
+          "other": []
+        },
+        "imported_outside_scripts_and_tests": false
+      },
+      {
+        "path": "lib/canonical-v2/financing-guaranty-product-projection.js",
+        "exports": [
+          "AUTHORITY_STATE",
+          "FINANCING_CLAIMS",
+          "FinancingGuarantyProductProjectionError",
+          "GUARANTY_CLAIMS",
+          "PROJECTION_SCHEMA",
+          "RECORD_SCHEMA",
+          "projectFinancingGuarantyClaims"
+        ],
+        "projection_entry_points": [
+          "projectFinancingGuarantyClaims"
+        ],
+        "imported_by": {
+          "components": [],
+          "pages": [],
+          "lib": [],
+          "scripts": [],
+          "tests": [
+            "tests/canonical-v2-financing-guaranty-product-projection.test.js"
+          ],
+          "other": []
+        },
+        "imported_outside_scripts_and_tests": false
+      },
+      {
+        "path": "lib/canonical-v2/general-covenants-product-projection.js",
+        "exports": [
+          "EVIDENCE_SOURCE",
+          "NATIVE_SOURCE",
+          "PROJECTION_SCHEMA",
+          "projectGeneralCovenantsProductSurfaces"
+        ],
+        "projection_entry_points": [
+          "projectGeneralCovenantsProductSurfaces"
+        ],
+        "imported_by": {
+          "components": [],
+          "pages": [],
+          "lib": [
+            "lib/canonical-v2/general-covenants-dark-bridge.js",
+            "lib/canonical-v2/review-preview-assembly.js"
+          ],
+          "scripts": [],
+          "tests": [
+            "tests/canonical-v2-general-covenants-dark-bridge.test.js",
+            "tests/canonical-v2-general-covenants-family-parity.test.js"
+          ],
+          "other": []
+        },
+        "imported_outside_scripts_and_tests": true
+      },
+      {
+        "path": "lib/canonical-v2/ioc-wave-a-product-projection.js",
+        "exports": [
+          "AUTHORITY_STATE",
+          "CLAIM_DEFINITION_KEY",
+          "CONCEPT_LABELS",
+          "IocWaveAProjectionError",
+          "PROJECTION_SCHEMA",
+          "RECORD_SCHEMA",
+          "projectIocWaveAClaims"
+        ],
+        "projection_entry_points": [
+          "projectIocWaveAClaims"
+        ],
+        "imported_by": {
+          "components": [],
+          "pages": [],
+          "lib": [],
+          "scripts": [],
+          "tests": [
+            "tests/canonical-v2-ioc-parent-child-resolution.test.js"
+          ],
+          "other": []
+        },
+        "imported_outside_scripts_and_tests": false
+      },
+      {
+        "path": "lib/canonical-v2/key-terms-mae-product-projection.js",
+        "exports": [
+          "AUTHORITY_STATE",
+          "KEY_TERM_CLAIMS",
+          "KeyTermsMaeProductProjectionError",
+          "MAE_CLAIMS",
+          "MAE_DISPROPORTIONALITY_ROLLUP_SCHEMA",
+          "PROJECTION_SCHEMA",
+          "RECORD_SCHEMA",
+          "buildMaeDisproportionalityReviewCards",
+          "buildMaeDisproportionalityRollups",
+          "projectKeyTermsMaeClaims"
+        ],
+        "projection_entry_points": [
+          "projectKeyTermsMaeClaims"
+        ],
+        "imported_by": {
+          "components": [],
+          "pages": [],
+          "lib": [],
+          "scripts": [],
+          "tests": [
+            "tests/canonical-v2-defined-terms-family-seam.test.js",
+            "tests/canonical-v2-defined-terms-later-slices.test.js",
+            "tests/canonical-v2-key-terms-mae-product-projection.test.js",
+            "tests/canonical-v2-mae-definition-resolution.test.js"
+          ],
+          "other": []
+        },
+        "imported_outside_scripts_and_tests": false
+      },
+      {
+        "path": "lib/canonical-v2/material-contracts-product-projection.js",
+        "exports": [
+          "EVIDENCE_SOURCE",
+          "NATIVE_SOURCE",
+          "PROJECTION_SCHEMA",
+          "projectMaterialContractsProductSurfaces"
+        ],
+        "projection_entry_points": [
+          "projectMaterialContractsProductSurfaces"
+        ],
+        "imported_by": {
+          "components": [],
+          "pages": [],
+          "lib": [
+            "lib/canonical-v2/review-preview-assembly.js"
+          ],
+          "scripts": [
+            "scripts/review-parity-build-cases.js"
+          ],
+          "tests": [
+            "tests/canonical-v2-legacy-card-bridge.test.js",
+            "tests/canonical-v2-material-contracts-family-parity.test.js"
+          ],
+          "other": []
+        },
+        "imported_outside_scripts_and_tests": true
+      },
+      {
+        "path": "lib/canonical-v2/no-other-reps-fraud-product-projection.js",
+        "exports": [
+          "AUTHORITY_STATE",
+          "LABELS",
+          "PRODUCT_PROJECTION_SCHEMA",
+          "projectNoOtherRepsFraudProduct"
+        ],
+        "projection_entry_points": [
+          "projectNoOtherRepsFraudProduct"
+        ],
+        "imported_by": {
+          "components": [],
+          "pages": [],
+          "lib": [
+            "lib/canonical-v2/no-other-reps-fraud-dark-bridge.js",
+            "lib/canonical-v2/review-preview-assembly.js"
+          ],
+          "scripts": [],
+          "tests": [
+            "tests/canonical-v2-general-covenants-dark-bridge.test.js",
+            "tests/canonical-v2-legacy-card-bridge.test.js",
+            "tests/canonical-v2-no-other-reps-fraud-dark-bridge.test.js",
+            "tests/canonical-v2-no-other-reps-fraud-follow-on.test.js",
+            "tests/canonical-v2-representations-dark-bridge.test.js"
+          ],
+          "other": []
+        },
+        "imported_outside_scripts_and_tests": true
+      },
+      {
+        "path": "lib/canonical-v2/proxy-meeting-product-projection.js",
+        "exports": [
+          "EVIDENCE_SOURCE",
+          "NATIVE_SOURCE",
+          "PROJECTION_SCHEMA",
+          "SUPPORTED_DEFINITIONS",
+          "projectProxyMeetingProductSurfaces"
+        ],
+        "projection_entry_points": [
+          "projectProxyMeetingProductSurfaces"
+        ],
+        "imported_by": {
+          "components": [],
+          "pages": [],
+          "lib": [],
+          "scripts": [],
+          "tests": [
+            "tests/canonical-v2-proxy-meeting-product-parity.test.js"
+          ],
+          "other": []
+        },
+        "imported_outside_scripts_and_tests": false
+      },
+      {
+        "path": "lib/canonical-v2/remedies-misc-product-projection.js",
+        "exports": [
+          "EVIDENCE_SOURCE",
+          "MISC_DEFINITIONS",
+          "NATIVE_SOURCE",
+          "PROJECTION_SCHEMA",
+          "REMEDIES_CONCEPTS",
+          "REMEDIES_DEFINITIONS",
+          "projectRemediesMiscProductSurfaces"
+        ],
+        "projection_entry_points": [
+          "projectRemediesMiscProductSurfaces"
+        ],
+        "imported_by": {
+          "components": [],
+          "pages": [],
+          "lib": [],
+          "scripts": [],
+          "tests": [
+            "tests/canonical-v2-remedies-misc-product-parity.test.js",
+            "tests/canonical-v2-sole-remedy-resolution.test.js",
+            "tests/termination-fee-card-selection.test.js"
+          ],
+          "other": []
+        },
+        "imported_outside_scripts_and_tests": false
+      },
+      {
+        "path": "lib/canonical-v2/representations-product-projection.js",
+        "exports": [
+          "ACCURACY_CODES",
+          "AUTHORITY_STATE",
+          "GOVERNED_CLAIMS",
+          "KNOWLEDGE_STANDARDS",
+          "OPEN_WORLD_RECORD_SCHEMA",
+          "PROJECTION_SCHEMA",
+          "RECORD_SCHEMA",
+          "RepresentationsProductProjectionError",
+          "projectRepresentationClaims"
+        ],
+        "projection_entry_points": [
+          "projectRepresentationClaims"
+        ],
+        "imported_by": {
+          "components": [],
+          "pages": [],
+          "lib": [
+            "lib/canonical-v2/representations-dark-bridge.js",
+            "lib/canonical-v2/review-preview-assembly.js"
+          ],
+          "scripts": [],
+          "tests": [
+            "tests/canonical-v2-m3-representations-merger-remedies-resolution.test.js",
+            "tests/canonical-v2-representations-dark-bridge.test.js",
+            "tests/canonical-v2-representations-product-projection.test.js",
+            "tests/canonical-v2-review-preview-end-to-end.test.js"
+          ],
+          "other": []
+        },
+        "imported_outside_scripts_and_tests": true
+      },
+      {
+        "path": "lib/canonical-v2/tax-dividends-appraisal-product-projection.js",
+        "exports": [
+          "APPRAISAL_CLAIMS",
+          "AUTHORITY_STATE",
+          "DIVIDEND_CLAIMS",
+          "PROJECTION_SCHEMA",
+          "RECORD_SCHEMA",
+          "TAX_CLAIMS",
+          "TaxDividendsAppraisalProductProjectionError",
+          "projectTaxDividendsAppraisalClaims"
+        ],
+        "projection_entry_points": [
+          "projectTaxDividendsAppraisalClaims"
+        ],
+        "imported_by": {
+          "components": [],
+          "pages": [],
+          "lib": [],
+          "scripts": [],
+          "tests": [
+            "tests/canonical-v2-tax-dividends-appraisal-product-projection.test.js"
+          ],
+          "other": []
+        },
+        "imported_outside_scripts_and_tests": false
+      },
+      {
+        "path": "lib/canonical-v2/termination-product-projection.js",
+        "exports": [
+          "EVIDENCE_SOURCE",
+          "FEE_EVIDENCE_SURFACES",
+          "NATIVE_SOURCE",
+          "PROJECTION_SCHEMA",
+          "RIGHT_EVIDENCE_SURFACES",
+          "conditionalFeeHeadline",
+          "formatBranchCitations",
+          "projectTerminationFeeProductSurfaces",
+          "projectTerminationRightsProductSurfaces",
+          "waveBEvidenceFeatures"
+        ],
+        "projection_entry_points": [
+          "projectTerminationFeeProductSurfaces",
+          "projectTerminationRightsProductSurfaces"
+        ],
+        "imported_by": {
+          "components": [],
+          "pages": [],
+          "lib": [
+            "lib/canonical-v2/termination-fee-serving-source.js"
+          ],
+          "scripts": [],
+          "tests": [
+            "tests/canonical-v2-sole-remedy-resolution.test.js",
+            "tests/canonical-v2-termination-fee-conditional-amount-projection.test.js",
+            "tests/canonical-v2-termination-product-parity.test.js",
+            "tests/canonical-v2-termination-real-fixture-replay.test.js"
+          ],
+          "other": []
+        },
+        "imported_outside_scripts_and_tests": true
+      }
+    ]
+  },
+  "resolver": {
+    "method": "extracts module.exports identifiers from lib/canonical-v2/native-producer/candidate-resolution.js, the single module every registered family's proposals resolve through. 'tables' is every export ending _TABLE or _LEXICON (per-concept corroboration/lookup tables); 'helper_functions' is every export starting with a lowercase letter.",
+    "module": "lib/canonical-v2/native-producer/candidate-resolution.js",
+    "dispatch_entry_point": "resolveCandidates",
+    "total_exports": 90,
+    "tables": [
+      "FEE_SIDE_CORROBORATION_TABLE",
+      "FEE_TRIGGER_CORROBORATION_TABLE",
+      "GENERIC_CLAIM_KEY_RESOLUTION_TABLE",
+      "MAE_CARVEOUT_CORROBORATION_TABLE",
+      "MAE_DEFINITION_PRONG_CORROBORATION_TABLE",
+      "MATERIALITY_TABLE",
+      "NO_SHOP_ACTION_CORROBORATION_TABLE",
+      "NO_SHOP_PERIOD_ROLE_CORROBORATION_TABLE",
+      "NO_SHOP_PREREQUISITE_CORROBORATION_TABLE",
+      "NO_SHOP_WAVE_B_CORROBORATION_TABLE",
+      "PARTY_CAPACITY_LEXICON",
+      "SHARE_COUNT_KIND_CORROBORATION_TABLE",
+      "TERMINATION_TRIGGER_KIND_CORROBORATION_TABLE"
+    ],
+    "helper_functions": [
+      "appraisalStatusCorroboration",
+      "buildAiAnswerProvenance",
+      "buildMechanicalAnswerProvenance",
+      "buildVerifiedAnswerProvenance",
+      "canonicalValueAllowed",
+      "compareFeeSightingRank",
+      "computeSectionCandidatesForLexicalDigest",
+      "derivePerformanceAssumptionLevel",
+      "exchangeRatioContextCorroborated",
+      "factKeyForResolvedEntry",
+      "feePayerPartyForSide",
+      "feeSideCorroboratedSides",
+      "feeSideFromFeeTermRef",
+      "feeTriggerCorroboratedCodes",
+      "findTerminationLimbChapeau",
+      "findTerminationLimbGrantContext",
+      "indexFeeAmountCandidatesBySection",
+      "indexFeeTriggerCandidatesBySection",
+      "indexMaeLabelledCandidatesBySection",
+      "isCitationFollowupSighting",
+      "longestEvidenceSpan",
+      "lookupGenericClaimKeyMapping",
+      "maeCarveoutCorroborated",
+      "maeClauseLabelVerifiedInSection",
+      "maeDefinitionProngCorroborated",
+      "maeDisproportionalityCorroborated",
+      "materialityFor",
+      "mintEitherPrincipalParty",
+      "mintSupersessionLink",
+      "noShopActionCorroborated",
+      "noShopPeriodRoleCorroborated",
+      "noShopPrerequisiteCorroborated",
+      "noShopWaveBValueCorroborated",
+      "parseTerminationLimbDirection",
+      "perShareContextCorroborated",
+      "proxyMeetingControlPartyPositionCorroborated",
+      "proxyMeetingCorroboratedKinds",
+      "proxyMeetingKindsAreCompatible",
+      "proxyMeetingReferenceVerifiedInSection",
+      "reconcileDuplicateTerminationFeeSightings",
+      "regulatoryFilingRegimeCorroborated",
+      "regulatoryValueCorroborated",
+      "resolveCandidates",
+      "resolveCitationFollowupTriggerCode",
+      "resolveFeeAmountGrounds",
+      "resolvePartyCapacity",
+      "sectionReferenceDepth",
+      "shareCountKindCorroborated",
+      "terminatingPartyPositionCorroborated",
+      "terminationLimbLetter",
+      "terminationTriggerKindCorroborated"
+    ],
+    "other_constants": [
+      "ANSWER_PROVENANCE_TAGS",
+      "ANTITRUST_REGULATORY_PARSE_VERSION",
+      "CAPITAL_STRUCTURE_MATERIALITY_TIER",
+      "CONSIDERATION_RESOLUTION_MAP",
+      "CandidateResolutionError",
+      "EITHER_PRINCIPAL_PARTY_CAPACITY",
+      "LEXICAL_DISAGREEMENT_RECEIPT_SCHEMA",
+      "MAE_CORROBORATION_TABLE_VERSION",
+      "MAE_DISPROPORTIONALITY_CORROBORATION_PATTERN",
+      "MAPPING_TABLE_VERSION",
+      "MATERIALITY_DEFINITION_KEY_OVERRIDES",
+      "NO_SHOP_ACTION_CORROBORATION_TABLE_VERSION",
+      "NO_SHOP_COVENANT_OBLIGOR_PARTY",
+      "NO_SHOP_PREREQUISITE_CORROBORATION_TABLE_VERSION",
+      "NO_SHOP_WAVE_B_RESOLUTION_MAP",
+      "PROXY_MEETING_ASSERTION_MAP",
+      "PROXY_MEETING_COMPATIBLE_KIND_PAIRS",
+      "PROXY_MEETING_KIND_CORROBORATION",
+      "QUALIFIER_CONCEPT_KEY",
+      "RESOLUTION_RECEIPT_SCHEMA",
+      "TERMF_PENDING_CONCEPT_FAMILY",
+      "TERMINATION_EITHER_PARTY_PATTERN",
+      "TERMINATION_RIGHT_HOLDER_ROLE",
+      "TERMINATION_TRIGGER_KIND_TO_CONCEPT",
+      "TERMINATION_VOTE_FAILURE_PHRASE_PATTERN",
+      "UNCLASSIFIED_MATERIALITY"
+    ]
+  },
+  "review_table_configs": {
+    "method": "lists components/review/table-configs/*.config.js and regexes each file's own import/require statements for a path containing /lib/canonical-v2/. A config with an empty canonical_v2_modules_imported list renders V1 data only as of this run (it may still receive V2 data server-side through a wire flag rather than a direct import -- see the termination-fees.config.js worked example in CODEBASE-GUIDE.md).",
+    "directory": "components/review/table-configs",
+    "count": 26,
+    "configs": [
+      {
+        "path": "components/review/table-configs/advisers-fees-expenses.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/antitrust-regulatory.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/approvals-votes.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/conditions-m.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/conditions.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/consideration-hero.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/employee-benefits.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/equity-awards.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/general-covenants.config.js",
+        "imports_canonical_v2": true,
+        "canonical_v2_modules_imported": [
+          "lib/canonical-v2/p0-product-surface-routing.js"
+        ]
+      },
+      {
+        "path": "components/review/table-configs/ioc-exceptions.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/mae-definitions.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/material-contracts.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/misc-boilerplate.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/no-other-reps-fraud.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/nosol-fiduciary.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/nosol-intervening.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/nosol-noshop.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/nosol-section.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/nosol-superior.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/representations-qualifiers.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/sec-meeting.config.js",
+        "imports_canonical_v2": true,
+        "canonical_v2_modules_imported": [
+          "lib/canonical-v2/proxy-meeting-product-coverage.js"
+        ]
+      },
+      {
+        "path": "components/review/table-configs/structure-mechanics.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/tail-fee.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/termination-fees.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/termination-rights.config.js",
+        "imports_canonical_v2": false,
+        "canonical_v2_modules_imported": []
+      },
+      {
+        "path": "components/review/table-configs/votes-approvals-meeting.config.js",
+        "imports_canonical_v2": true,
+        "canonical_v2_modules_imported": [
+          "lib/canonical-v2/proxy-meeting-product-coverage.js"
+        ]
+      }
+    ]
+  },
+  "dark_bridges": {
+    "method": "finds every lib/canonical-v2/*.js file that requires ./dark-bridge-gate directly. Among those, a file that itself requires one or more OTHER such files is classed an aggregator (it composes several bridges, e.g. for the preview lane); the rest are leaf bridges (one bridge, one legacy-card-shaped product area).",
+    "gate_module": "lib/canonical-v2/dark-bridge-gate.js",
+    "leaf_bridges": [
+      {
+        "path": "lib/canonical-v2/general-covenants-dark-bridge.js",
+        "bridge_schema": "CANONICAL_V2_GENERAL_COVENANTS_DARK_BRIDGE/V1"
+      },
+      {
+        "path": "lib/canonical-v2/legacy-card-bridge.js",
+        "bridge_schema": "CANONICAL_V2_MATERIAL_CONTRACTS_LEGACY_CARD_BRIDGE/V1"
+      },
+      {
+        "path": "lib/canonical-v2/no-other-reps-fraud-dark-bridge.js",
+        "bridge_schema": "CANONICAL_V2_NO_OTHER_REPS_FRAUD_LEGACY_CARD_BRIDGE/V1"
+      },
+      {
+        "path": "lib/canonical-v2/representations-dark-bridge.js",
+        "bridge_schema": "CANONICAL_V2_REPRESENTATIONS_LEGACY_CARD_BRIDGE/V1"
+      }
+    ],
+    "aggregators": [
+      {
+        "path": "lib/canonical-v2/review-preview-assembly.js",
+        "bridge_schema": null
+      }
+    ]
+  },
+  "serving_sources": {
+    "method": "per_family_modules: lib/canonical-v2/*-serving-source.js, one per family that has reached the 'cheap pattern' rollout described in DECISIONS.md item 13 (compare against product_projections above -- a family can have a projection without yet having a serving source). generic_serving_infrastructure: every other lib/canonical-v2/*.js file with 'serving' in its name, listed without consumer analysis.",
+    "per_family_glob": "lib/canonical-v2/*-serving-source.js",
+    "per_family_modules": [
+      {
+        "path": "lib/canonical-v2/termination-fee-serving-source.js",
+        "referenced_by": {
+          "components": [
+            "components/review/table-configs/termination-fees.config.js"
+          ],
+          "pages": [
+            "pages/api/review/[id]/cards.js"
+          ],
+          "lib": [
+            "lib/canonical-v2/native-producer/m3-family-parity-register.js",
+            "lib/canonical-v2/phase1-authority-boundary-inventory.js",
+            "lib/queries/review-deal-wire.js"
+          ],
+          "scripts": [
+            "scripts/generate-qxo-termination-fee-excerpt-module.js"
+          ],
+          "tests": [
+            "tests/canonical-v2-parity-serving-boundary.test.js",
+            "tests/canonical-v2-termination-fee-both-sources.test.js",
+            "tests/canonical-v2-termination-fee-conditional-amount-projection.test.js",
+            "tests/canonical-v2-termination-fee-serving-switch.test.js",
+            "tests/programme-gates/m3-family-parity-register.spec.js"
+          ],
+          "other": []
+        },
+        "reference_count": 11
+      }
+    ],
+    "generic_serving_infrastructure": [
+      "lib/canonical-v2/metric-serving-admission.js",
+      "lib/canonical-v2/process-serving-contract-input-validator.js",
+      "lib/canonical-v2/product-query-result-active-serving.js",
+      "lib/canonical-v2/product-query-result-serving-record.js",
+      "lib/canonical-v2/product-serving-contract-input-validator.js",
+      "lib/canonical-v2/qxo-capitalisation-serving-slice.js",
+      "lib/canonical-v2/qxo-no-shop-actions-serving-slice.js",
+      "lib/canonical-v2/qxo-no-shop-copy-delivery-serving-f18.js",
+      "lib/canonical-v2/qxo-no-shop-rematch-serving-slice.js",
+      "lib/canonical-v2/qxo-no-shop-serving-slice.js",
+      "lib/canonical-v2/serving-client.js",
+      "lib/canonical-v2/serving-contract-policy.js",
+      "lib/canonical-v2/serving-exact-detail.js",
+      "lib/canonical-v2/serving-projection-contract.js",
+      "lib/canonical-v2/serving-projection.js",
+      "lib/canonical-v2/shared-serving-row.js",
+      "lib/canonical-v2/v12-serving-admission-readiness-f21.js"
+    ]
+  },
+  "live_run_scripts": {
+    "method": "lists scripts/*.mjs whose filename contains 'live-extraction-run'. Cross-checked (not sourced from) lib/canonical-v2/phase1-authority-boundary-inventory.js's LIVE_EXTRACTION_RUN_SOURCES, which only covers files added after that module's own base commit.",
+    "glob": "scripts/*live-extraction-run*.mjs",
+    "count": 6,
+    "scripts": [
+      "scripts/canonical-v2-f28-live-extraction-run.mjs",
+      "scripts/canonical-v2-f28-second-live-extraction-run.mjs",
+      "scripts/canonical-v2-f28-third-live-extraction-run.mjs",
+      "scripts/canonical-v2-live-extraction-run.mjs",
+      "scripts/canonical-v2-modiv-first-live-extraction-run.mjs",
+      "scripts/canonical-v2-skechers-first-live-extraction-run.mjs"
+    ]
+  },
+  "layer_locations": {
+    "section_families_and_producer_prompts": "lib/canonical-v2/native-producer/producer-prompt-registry.js (the dispatch seam) + one lib/canonical-v2/native-producer/*-producer-prompt.js per registered family.",
+    "resolver": "lib/canonical-v2/native-producer/candidate-resolution.js (single module, all families).",
+    "write_set_assembly": "lib/canonical-v2/native-producer/native-write-set-adapter.js (section-local -> document-absolute evidence) and lib/canonical-v2/validate-write-set.js (the write set shape every write must satisfy).",
+    "canonical_writer": "lib/canonical-v2/canonical-writer.js, against the schema in supabase/canonical-v2-foundation.sql (see GRAVEYARD.md: unexecuted against a real database as of this writing).",
+    "product_projections": "lib/canonical-v2/*-product-projection.js, one file per family or small family group.",
+    "dark_bridges": "lib/canonical-v2/*-dark-bridge.js plus lib/canonical-v2/legacy-card-bridge.js (Material Contracts, despite its generic name), gated by lib/canonical-v2/dark-bridge-gate.js.",
+    "serving_sources": "lib/canonical-v2/*-serving-source.js (per family, currently termination fees only) plus shared serving-layer modules named lib/canonical-v2/serving-*.js and lib/canonical-v2/*-serving-*.js.",
+    "review_rendering": "components/review/table-configs/*.config.js (render logic, V1 and V2 both flow through these), consumed by components/review/ProvisionTable.jsx, itself rendered from pages/review/[id].js (the live production review page -- see CODEBASE-GUIDE.md for why pages/review-v2/[id].js is a redirect stub, not the V2 page).",
+    "live_run_scripts": "scripts/*live-extraction-run*.mjs (human-invoked, one real model call per run, never scheduled or triggered by the product itself).",
+    "governance_and_status": "docs/codex-program/m3-family-parity-register.json + lib/canonical-v2/native-producer/m3-family-parity-register.js (product-surface certification, a different question from this inventory -- see this file's own header)."
+  }
+}

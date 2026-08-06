@@ -4,6 +4,16 @@
  * cards required by one named family and records literal quote hashes. The
  * output may be committed as a replay fixture, but this program never writes
  * to the database.
+ *
+ * SQL builder vs. actual fetch: `buildSourcePackSql` (exported, pure,
+ * unit-testable without a DB connection) is the documented, testable,
+ * read-only-provable statement this script's query is EQUIVALENT to. The
+ * actual fetch in `run()` goes through the supabase-js query builder
+ * instead (safe parameterisation on its own, no raw-SQL execution surface
+ * this script needs) -- `assertReadOnlySql` runs against the builder text
+ * as a spec check, not as a guard on the live network call. Same convention
+ * as scripts/export-v1-provision-snapshot.mjs (see that file's header for
+ * the fuller rationale) and scripts/audit/all-deals-card-backed.js.
  */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';

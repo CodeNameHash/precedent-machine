@@ -8,6 +8,17 @@
    `claude -p` / `codex exec` (lib/llm-cli-client.js) instead of the metered
    Anthropic API, and with no 300s serverless budget. Reuses the exact same
    CJS parser-v2 libs the API route uses, so extraction output is identical.
+   As of this writing pages/api/ingest/from-url.js is itself hard-503'd by
+   lib/broad-corpus-containment.js ("ingestion stays off" pending a session/
+   auth gate -- its own comment says un-containing it is separate work, not
+   done here; see docs/API-ROUTE-CLASSIFICATION.md) -- so this script is
+   presently the only live path to ingest a new deal at all, local-only,
+   run by hand. Note also (see storeProvisions/runParserPipeline below):
+   neither this script's ingestOne() nor prepareDealForIngest() mints
+   provision_cards -- a freshly-ingested deal has provisions but no cards
+   until scripts/curation/mint-cards.js (or extract-to-cards.js /
+   rematerialize-claims.js) is run separately; see scripts/demo-dryrun.js's
+   header for the fuller "KNOWN PIPELINE GAP" note.
 
    Usage:
      node scripts/ingest-local.js --url <EX-2.1 url> [--backend claude|codex] [--model sonnet]

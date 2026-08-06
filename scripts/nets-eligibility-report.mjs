@@ -27,6 +27,26 @@
  * claim that auto-pass "would open" -- activation remains Ben + sampling.
  *
  * Usage: node scripts/nets-eligibility-report.mjs [--json]
+ *
+ * CURRENTLY BLOCKED END-TO-END (as of commit 0d17ad00, "Phase 1
+ * production-readiness controls", 2026-08-04). That commit made
+ * `runTwoPassFlow` refuse a snapshot without verified
+ * `snapshot_identity_evidence` (tests/nets-eligibility-report-identity-
+ * fence.test.js), and, correctly, could no longer trust the raw
+ * `governed_deal_key` `loadSkechersReplayRun()` used to hand-pass into
+ * `buildAdmittedSemanticSourceContext()` (a derived value, not issued/
+ * verified identity evidence) -- so the same commit made
+ * `loadSkechersReplayRun()` throw unconditionally as its very first
+ * statement, leaving ~38 lines of the original replay below it dead. That
+ * fence is correctly scoped to Skechers in principle. In practice, `main()`'s
+ * `deals` loop has no per-deal try/catch, so today running this script
+ * produces NO output at all for ANY deal -- not just Skechers, but also
+ * TopBuild and Modiv, which have complete data and nothing to do with the
+ * Skechers identity gap (see the last successful run, captured before this
+ * commit, in docs/archive/handoffs/NETS-ELIGIBILITY-2026-08-02.md). Until
+ * Skechers has real issued identity evidence, or `main()` is changed to
+ * isolate a per-deal failure instead of aborting the whole run, this script
+ * cannot produce the report its own header above describes.
  */
 
 import { readFileSync } from 'node:fs';

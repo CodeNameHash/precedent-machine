@@ -24,8 +24,8 @@ finds nothing. The document does have a real "known risks" section (`Part 6. Ris
 in order`), and it does have a real item about quotation provenance (item 7:
 "Quotation provenance sits in three incompatible coordinate systems, two of them
 populated with wrong values that read as right"), but that item is about coordinate
-systems, not about negation, and does not name this defect. `docs/codex-program/
-OPERATING-RULES.md` contains the only other appearance of "step 1b" language in the
+systems, not about negation, and does not name this defect.
+`docs/core/OPERATING-RULES.md` contains the only other appearance of "step 1b" language in the
 programme's docs ("the roadmap's step 10 and its known risks"), and that sentence is
 about excerpt-identity uniqueness, an unrelated topic. There is no step 1b anywhere,
 for this or any other topic.

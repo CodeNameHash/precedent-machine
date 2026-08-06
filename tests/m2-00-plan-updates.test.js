@@ -3,14 +3,14 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 test('M2 plan records WP-M2-00 as shipped and backfill green', () => {
-  const src = fs.readFileSync('PLAN-M2-schema-deploy.md', 'utf8');
+  const src = fs.readFileSync('archive/PLAN-M2-schema-deploy.md', 'utf8');
   assert.match(src, /WP-M2-00 has shipped/);
   assert.match(src, /minimum of 237 `provision_cards` rows per deal/);
   assert.match(src, /round-m2-00-backfill\.md/);
 });
 
 test('M3 plan no longer owns pulled-forward provision-card semantics', () => {
-  const src = fs.readFileSync('PLAN-M3-ingest-seamless.md', 'utf8');
+  const src = fs.readFileSync('archive/PLAN-M3-ingest-seamless.md', 'utf8');
   assert.doesNotMatch(src, /WP-M3-01: Provision-instance identity/);
   assert.doesNotMatch(src, /WP-M3-03: Provenance bundle/);
   assert.doesNotMatch(src, /WP-M3-04: Definitions as Provisions/);
@@ -19,7 +19,7 @@ test('M3 plan no longer owns pulled-forward provision-card semantics', () => {
 });
 
 test('taxonomy gaps pulled forward G1 G2 G4 G5 G10 G11 to M2', () => {
-  const src = fs.readFileSync('PLAN-TAXONOMY-GAPS.md', 'utf8');
+  const src = fs.readFileSync('archive/PLAN-TAXONOMY-GAPS.md', 'utf8');
   for (const gap of ['G1', 'G2', 'G4', 'G5', 'G10', 'G11']) {
     assert.match(src, new RegExp(`\\| ${gap} \\|[^\\n]+\\| WP-M2-00`));
   }

@@ -2,10 +2,15 @@
 /* ─────────────────────────────────────────────────────────────────────────
    scripts/extract-local.js — run extraction on subscriptions, not tokens.
    ───────────────────────────────────────────────────────────────────────────
-   Runs the identical extraction phase as POST /api/ingest/extract-type, but
-   locally: LLM calls go through `claude -p` (Claude Max) or `codex exec`
-   (ChatGPT plan) via lib/llm-cli-client.js, so re-extraction costs zero API
-   tokens and has no 300s serverless budget.
+   Runs the same extraction phase POST /api/ingest/extract-type was built to
+   run, but locally: LLM calls go through `claude -p` (Claude Max) or
+   `codex exec` (ChatGPT plan) via lib/llm-cli-client.js, so re-extraction
+   costs zero API tokens and has no 300s serverless budget. Both call the
+   identical lib/parser-v2/run-extract.js orchestration by design (P0.1,
+   commit b41d3281) -- but the API route itself is now hard-503'd by
+   lib/broad-corpus-containment.js pending a session/auth gate (see
+   docs/API-ROUTE-CLASSIFICATION.md, ROADMAP.md P7/P8), so today this script
+   is not merely the cheaper way to run this phase, it is the only live way.
 
    Usage:
      SUPABASE_URL=… SUPABASE_SERVICE_ROLE_KEY=… \

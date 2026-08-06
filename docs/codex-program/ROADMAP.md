@@ -311,34 +311,56 @@ it moves first, below.
 
 ---
 
-## D1. Merge to main: authorised, moved up
+## D1. Merge to main: done, three times over, and now open again in miniature
 
-**Ben authorised this on 2026-08-05 and wants it moving now: he does not
-want to keep developing on a branch.** It no longer waits behind anything
-else in this plan; it runs in parallel with lanes S and P, same as
-everything else here that does not touch containment.
+**Correction, 2026-08-06.** This step previously read as still pending: "This
+branch is 287 commits and 910 files ahead of main... None of it has ever
+passed CI as a merged unit." That stopped being true on 2026-08-05. The merge
+happened, in exactly the shape `MERGE-PLAN.md` proposed, as three pull
+requests: #476 (`wp/m3-canonical-v2-foundation`, merged
+2026-08-05T21:55:41Z), #477 (`wp/m3-tonight-integration-and-live-fixes`,
+merged 2026-08-06T00:30:37Z), and #478 (the whole `codex/m3-production-phase1`
+branch head, merged 2026-08-06T09:51:01Z). Checked directly against GitHub,
+not against another document: `gh pr list --state merged --json
+number,title,mergedAt,baseRefName,headRefName`. `origin/main` is now at
+`016288cb`, the merge commit for PR #478. What follows below is left as
+written, as the record of the step that was authorised and then carried out;
+read it in the past tense.
 
-**What it is.** This branch is 287 commits and 910 files ahead of `main`,
-with 314,632 lines inserted. Production tracks `main`. None of it has ever
-passed CI as a merged unit.
+**What is actually open now.** Work continued on `codex/m3-production-phase1`
+after PR #478, including the documentation audit this correction is part of.
+As of this correction the branch is 15 commits ahead of `origin/main` again
+(`git log --oneline origin/main..HEAD`; this number moves as other agents
+land documentation-only commits on this same branch concurrently, run the
+command rather than trust the figure), not yet merged. This is a small,
+fresh merge, not a revival of the original 287-commit backlog; it needs its
+own slicing decision if `MERGE-PLAN.md`'s per-phase-allowlist discipline is
+still wanted for it, but it is nowhere near the size or risk of what is
+described below.
 
-**Why it matters.** Step D2 is unreachable without it, and this is
-plausibly weeks of integration on its own. Treating it as ambient is how it
-becomes a crisis, which is exactly why it is authorised now rather than left
-for later.
+**What it was.** This branch was 287 commits and 910 files ahead of `main`,
+with 314,632 lines inserted. Production tracks `main`. None of it had passed
+CI as a merged unit until the merges above.
 
-**How it gets sliced.** Not decided here. A separate assessment is
-establishing how to break 910 files into a mergeable sequence, recorded in
-`docs/codex-program/MERGE-PLAN.md`. Read that document for the actual
-slicing; nothing in this roadmap should be read as pre-empting it.
+**Why it mattered.** Step D2 was unreachable without it, and it was
+plausibly weeks of integration on its own. Treating it as ambient was how it
+would have become a crisis, which is why it was authorised immediately
+rather than left for later.
 
-**Done when.** The branch is merged, CI passes on `main` as a merged unit,
-and the deployed site is verified live rather than assumed.
+**How it was sliced.** Recorded in `docs/codex-program/MERGE-PLAN.md`,
+itself corrected 2026-08-06 to state plainly that its plan was executed.
+Read that document for the actual slicing that was used.
 
-**Technical.** The `phase-allowlist` CI job runs on pull requests and the
-active phase's allowlist covers none of tonight's moved paths; it will fail
-until amended. Run `npm test` plus `npm run build` on the merge result, not
-just on the branch.
+**Done when.** Was: the branch is merged, CI passes on `main` as a merged
+unit, and the deployed site is verified live rather than assumed. All three
+merges above passed CI (each landing commit's own message records "Suite
+green as CI runs it"); live-site verification after PR #478 specifically was
+not independently re-checked as part of this correction.
+
+**Technical.** The `phase-allowlist` CI job ran on these pull requests and
+the allowlist mechanism `MERGE-PLAN.md` designed was used to satisfy it. Run
+`npm test` plus `npm run build` on any future merge result, not just on the
+branch, exactly as this instruction originally said.
 
 ---
 
@@ -481,6 +503,146 @@ The runner requires `prompt_budget_split_preflights` and
 Codex path sets `maxRetries: 0`, the Anthropic path allows two with no
 backoff. Acceptance for a fresh run: harness exits 0 or 1, never 2 (which
 means coverage incomplete), and a human reads its report field by field.
+
+### P1 addendum, 2026-08-06. All 25 families run once against real data
+
+**What it is.** Every registered section family, not just termination fees,
+was dispatched against Modiv in a single sweep: 58 model calls, $20.30,
+resolving 108 claims, queueing 203 for human review, and leaving 193
+candidates in open world (no governed home at all). Pinned as a baseline
+before any of the fixes below, so a later re-run can be measured against it
+rather than against impressions:
+`docs/codex-program/notes/all-families-baseline-20260806.json`. Full detail:
+`docs/codex-program/notes/all-families-aggregate.md`,
+`all-families-aggregate-review.md` (the adversarial check on that first
+analysis, which found its fix plan covered at most 74 of the 193 open-world
+candidates and named 119 with no owner), and `open-world-ownership.md` (the
+follow-up that classified all 193).
+
+**Why it matters.** P1 above proved the mechanism works for one family. This
+is the first time the same mechanism was pointed at everything the product
+is meant to eventually extract, in one sweep rather than one family at a
+time, and it is the first real evidence of where the whole extraction layer,
+not just termination fees, actually stands today.
+
+**Three crashes, fixed, none of them the model's fault.** Each reproduced
+offline from the real recorded evidence before being touched
+(`docs/codex-program/notes/extraction-crashes.md`):
+
+- A shared helper, used by two different resolution steps, handed back its
+  caller's own in-progress list of unmatched items by reference instead of a
+  copy, then froze that list as part of building an unrelated result. Every
+  family's run has been doing this silently for as long as this code has
+  existed; it only crashed the one family (interim operating covenants)
+  whose own code writes into that list a second time afterward. Fixed by
+  copying, not aliasing, at the point the list is handed back.
+- A second family's resolver rebuilt a claim's data wholesale rather than
+  merging into it, and the rebuilt version dropped one required provenance
+  tag that every other resolver in the same file remembers to keep. The
+  family produced three good answers, then crashed two steps later, in a
+  check that a governed answer must always say where it came from.
+- A third family's run received a reply from the model that was not the
+  data it asked for: over a thousand characters of ordinary prose narrating
+  that a file had been written, not the file itself, consistent with the
+  model going agentic under the command-line transport rather than the
+  reply being truncated. The old behaviour discarded the whole batch on this
+  kind of failure, including earlier sections in the same batch that had
+  already succeeded and been paid for. Fixed by keeping what already
+  succeeded when a later step in the same batch fails, instead of
+  discarding it.
+
+**A legal-correctness defect, found and fixed, separately from the
+25-family sweep.** Adversarial testing found that the live, production
+quote-acceptance gate would accept a quote with a governing negation cut
+from its front, for example storing "have a Company Material Adverse
+Effect" as if it were the whole sentence when the source actually read
+"would not have a Company Material Adverse Effect": a stored quote reading
+as genuine, verbatim evidence for the opposite of what the agreement says.
+This was live in production with no boundary check of any kind, and two
+committed tests literally named "KNOWN LIMITATION" pinned the unsafe
+behaviour as expected. Both are now fixed, at the live production
+quote-acceptance path (`lib/verification.js`) and at one of the four preview
+bridges (`representations-dark-bridge.js`); a second bridge was attempted,
+found to need a more careful fix than first tried, and deliberately
+reverted rather than shipped half-right; the most principled version of the
+fix, capturing a quote's position before any trimming rather than
+re-deriving it afterward, is specified but not built, because it belongs in
+a file that was under another agent's active edit at the time. Full
+account, including exactly what remains open and why:
+`docs/codex-program/notes/negation-reversal.md`. `WORK-COMPLETED.md` is
+corrected to match; it previously claimed this was tracked in this
+roadmap's known risks as "step 1b", which never existed.
+
+**Termination corroboration: one resolved claim becomes eight.** The
+termination family (which party may exercise a given termination right, a
+different family from termination fees above) was refusing nearly every
+candidate because the right's own chapeau names no party, which describes
+most of Modiv's rights: the party is only named down in each lettered
+limb's own grant language ("by written notice from Parent to the Company"),
+and every limb names both parties, so a naive text match would have
+attributed a right to the wrong side on roughly half of them, an answer
+worse than refusing because it reads as correct. Fixed by anchoring
+corroboration on the specific limb a candidate cites, reading that limb's
+own grant direction ("from X to Y" grants to X), and failing closed
+whenever the direction cannot be determined. Twelve candidates, the single
+largest blocked group in the 25-family sweep, clear this gate; six of them
+then queue at a different, pre-existing gate, on four identified vocabulary
+gaps left named rather than fixed.
+`docs/codex-program/notes/resolver-reference-fixes.md`.
+
+**Open-world candidates: all 193 classified, 21 given a governed home in
+code.** `open-world-ownership.md` traced every one of the 193 to one of
+fifteen mechanisms and fixed the ones that were genuinely mechanical.
+Material contracts' corroboration vocabulary was too narrow for real
+drafting ("Space Lease", "earn-out", hyphenated "in-bound"/"out-bound"), now
+widened, moving 10 of its 26 open-world items to resolved, verified by
+replaying the real recorded run with no regressions. Antitrust's 11
+open-world items were not a vocabulary gap at all: the extraction runner
+was compiling an old version of the shared contract definitions (version
+34) after the resolver's own dispatch logic for these exact three
+obligation types had already shipped, tested, in version 38; the runner now
+compiles version 38, verified by replaying the real recorded run, which
+gives all 11 a governed home, 2 resolved and 9 correctly queued for review,
+with nothing that already resolved changing. Representations needed one
+word added in two places: an UPREIT deal structure gives the target its own
+operating partnership, which makes representations alongside it, and
+nothing in the party-recognition code treated "the Partnership" as
+belonging to either side; fixed in both places it needed fixing, which
+unblocks at most one of the three items it touches, the other two being
+temporal qualifiers correctly routed to open world by an existing,
+deliberate design rule rather than a bug. None of these three fixes has
+been re-confirmed by a fresh, paid model call against the corrected code;
+what confirms them today is replaying the already-recorded run through the
+corrected, real resolver and vocabulary, which is real evidence but a
+different kind of proof from a fresh run. The rest of the 193 are, for the
+most part, correctly left alone: real design work needing new claim types
+(consideration, proxy meeting), genuine judgement calls named for Ben
+rather than guessed at, or defects diagnosed and specified precisely that
+sit in `candidate-resolution.js`, a file none of this work was permitted to
+touch. Full per-item accounting:
+`docs/codex-program/notes/open-world-ownership.md`.
+
+**What this does not yet prove.** A per-run call timeout is now
+configurable rather than fixed at ten minutes, after capitalisation's own
+definitions section ran long and was killed by the old default (commit
+`ae8b12de`). Separately, the same commit checked directly against the
+source and confirmed that guaranty returning nothing for Modiv is correct:
+this is an unfinanced REIT merger with no financing-party protections in
+the text, not a mapping failure. Neither of these changes the central
+caution: this sweep ran against one agreement. The recommended next check,
+running all 25 families again against a second, differently-drafted deal
+(TopBuild, a financed transaction the Modiv-tuned fixes were never tested
+against) to see which fixes generalise and which were tuned to Modiv's own
+drafting, has not been done (`docs/codex-program/HANDOFF-2026-08-06.md`).
+
+**Technical.** `scripts/canonical-v2-live-extraction-run.mjs` (renamed from
+`scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs`,
+history preserved with `git mv`, once it became a general runner rather
+than a Modiv-termination-fee-only one) dispatches any of the 25 registered
+families against any pinned deal; `--dry-run` reports projected call count
+and cost with no model call. Full measured totals, per family, with every
+review-queue reason code and its count:
+`docs/codex-program/notes/all-families-baseline-20260806.json`.
 
 ### P2. Widen the claim definitions where the diff says to
 
@@ -643,9 +805,27 @@ subtype-less cards.
 
 **What it is.** Store the exact position of every quote, not just its text.
 
-**Why it matters.** Without it, a quote that arrives already trimmed in a way
-that reverses its legal meaning cannot be detected. It is also the cheapest
-item in this plan.
+**Why it matters.** It is the cheapest item in this plan, and it catches a
+real, separate problem: a quote whose stored text is later changed while an
+old, stale position is left in place beside it. **Correction, 2026-08-06.**
+This entry previously said, in this sentence, that without this feature "a
+quote that arrives already trimmed in a way that reverses its legal meaning
+cannot be detected." That overstated what this feature does, checked
+directly against `span-claims.js` itself
+(`docs/codex-program/notes/negation-reversal.md`, section 7a): it runs
+strictly after extraction, locating whatever text it is handed inside the
+section it came from. If that text was already trimmed, in a meaning-
+reversing way or otherwise, before this module ever sees it, the module will
+find a real, self-consistent position for the wrong text and report nothing
+wrong, because nothing about that position is actually wrong: it correctly
+answers "where does this exact string sit in the section," which is a
+different question from "was this string cut in a way that changed what it
+asserts." The meaning-reversing trim this sentence originally had in mind
+(dropping a governing "would not" from a materiality quote) was found live in
+production and fixed directly, at the point a quote is accepted or rejected,
+in `lib/verification.js` and `lib/canonical-v2/representations-dark-
+bridge.js` (`docs/codex-program/notes/negation-reversal.md`); turning this P5
+feature on does not touch that defect and was never capable of catching it.
 
 **Technical.** `lib/parser-v2/span-claims.js` already does the job,
 deterministically and with no model. It was gated at `extract.js:102` and the
@@ -1419,15 +1599,13 @@ also means it does nothing at all until someone sets them.
 
 # Part 6. Risks, in order
 
-1. **Merging 287 commits and 910 files to `main`**, never tested as a merged
-   unit. The danger is not the raw count: most of those files are gated off
-   in production, additive, or documentation. What is actually risky is
-   whatever subset touches the live path, and how large that subset is is
-   being measured, not assumed, as part of the slicing work in
-   `MERGE-PLAN.md`. That does not make the merge safe; it narrows what is
-   still unknown to a smaller, checkable question. D1 is now authorised and
-   moved up in this plan (see above) precisely so this stops being owned by
-   nobody.
+1. **Merging to `main`.** Corrected 2026-08-06: this item previously
+   described merging 287 commits and 910 files, never tested as a merged
+   unit, as the open risk. That merge happened, three times, the most
+   recent nine hours before this correction (see D1 above). The residual
+   version of this risk is smaller: 12 commits of this session's own work,
+   not yet merged, and D1 above records both what already landed and what
+   is still outstanding.
 2. **The evidence base is thinner than the register says.** One family has real
    committed model output. The first corpus run is the first honest
    measurement.
@@ -1450,19 +1628,46 @@ also means it does nothing at all until someone sets them.
 
 # Appendix: current state, verified 2026-08-06
 
-- Test suite: **7555 tests, 7513 pass, 0 fail, 42 skipped**, exit 0, measured
-  at commit 84518eef. Lint invariant 4 passes and the build exits 0. The suite
-  grew by roughly 490 tests overnight, almost all of them pinning behaviour
-  that was found to be wrong and corrected.
-- Parity: **103 blockers** (was 104; one cleared by the compare-locator work,
-  see P9), **0 natively visible**, 443 served modules, 0 unparseable. The
-  earlier split of that total, 73 finished-not-displayed, 27 not analysed, 3
-  unowned and 1 route-blocked, predates the six-way breakdown in P9 and P9 is
-  the current account.
-- Pre-production gates: 25, none closed, none closeable while the loader
-  forbids it.
-- Corpus: 40 deals, last quality snapshot 13 July, 18 fully clean.
-- Real V2 model output: 1 family as committed recorded responses, plus a
-  12-item run across 11 families preserved tonight.
-- Branch `codex/m3-production-phase1`: 287 commits and 910 files ahead of
-  `main`, pushed, tree clean.
+**Corrected 2026-08-06, same day.** This appendix's own numbers went stale
+within the day they were measured, because commits kept landing after they
+were taken; that is the general problem
+`docs/codex-program/notes/doc-reality-audit.md` was commissioned to find
+(its finding F15 is this exact appendix). Every figure below carries the
+command that produces it, per that audit's own recommendation, so the next
+reader can re-check rather than trust a typed number.
+
+- Test suite: **7718 tests, 7676 pass, 0 fail, 42 skipped**, exit 0. Measured
+  by `CI=true npm test`, reading `$?` from the `npm test` command itself,
+  never through a pipe to `tail`/`head`.
+- Parity: **102 blockers**, down from 104. Measured by
+  `node -e "const {CURRENT_M3_FAMILY_PARITY_REGISTER,listM3ProductParityBlockers}=require('./lib/canonical-v2/native-producer/m3-family-parity-register.js');console.log(listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER).length)"`.
+  The earlier split of the total (73 finished-not-displayed, 27 not
+  analysed, 3 unowned, 1 route-blocked) predates the six-way breakdown in P9
+  and P9 is the current account.
+- Pre-production gates: 25 declared under `P1_*`/`P9_*` (2 P1, 23 P9;
+  `grep -c "id: P9_" docs/codex-program/programme-gates.yaml` gives 23),
+  every one declared `OPEN` in the frozen registry, by design, so the
+  reviewed contract stays byte-identical. Separately, `governing-
+  registry.js`'s live overlay re-derives fresh evidence for 2 of the 25
+  (`P1_CONTRACT_BUNDLE_COMPLETE`, `P1_VERTICAL_SLICE_PASS`) on every load;
+  both currently compute `PASS` (`docs/codex-program/EXECUTION-LEDGER.md`,
+  entry "D3 ratified", has the method and a runnable check). See
+  `docs/certification/programme-gate-status.json`, corrected 2026-08-06,
+  for the fuller account of why this file, `programme-gates.yaml` and
+  `governing-registry.js` can look like they disagree.
+- Corpus: 40 deals, last quality snapshot 13 July, 18 fully clean. Not
+  independently re-verified for this correction.
+- Real V2 model output: grown substantially since this line was last true.
+  All 25 registered families have now been run live against Modiv in one
+  sweep (58 model calls, $20.30), pinned as a baseline at
+  `docs/codex-program/notes/all-families-baseline-20260806.json`; see the
+  P1 addendum above for what that found and fixed. This is still one
+  agreement; a second, differently-drafted deal has not yet been run
+  through the same sweep.
+- Branch `codex/m3-production-phase1`: the 287 commits and 910 files this
+  line used to describe were merged to `main` on 2026-08-05 and
+  2026-08-06, across three pull requests (#476, #477, #478; see D1 above).
+  The branch is now 15 commits ahead of `origin/main` again
+  (`git log --oneline origin/main..HEAD`; run it fresh, this branch has
+  moved twice already while this appendix was being corrected), pushed,
+  tree clean.

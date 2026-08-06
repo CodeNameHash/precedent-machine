@@ -38,6 +38,20 @@ alias returned HTTP 200, and both projects carry the same setting. A definitive
 test is opening the site in a private window while signed out of Vercel. Being
 signed in makes a protected site look open to you.
 
+**Code.** The module-load assertion is `assertServiceClientRouteActionInventory`
+in `lib/service-client-route-actions.js`, and the specific throw is at lines
+235 to 237: `if (descriptor.service_client_mode === 'ZERO_IMPORT' &&
+routeAction.disposition !== 'HARD_CONTAIN') { throw ... }`. One caveat worth
+recording precisely, since this whole decision rests on the mutation surface
+staying closed: this function is not called anywhere in the running
+application, only from `tests/service-client-route-actions.test.js`. It is a
+real, tested invariant over the declared route inventory, checked on every CI
+run, not a guard that fires when the server itself boots. What actually
+refuses a write at runtime is each contained route handler's own code, not
+this assertion; the assertion only guarantees the declared inventory cannot
+mark a `ZERO_IMPORT` route anything other than `HARD_CONTAIN` without the
+suite failing.
+
 ---
 
 ## 1a. Original context (superseded by the decision above)
@@ -99,6 +113,16 @@ inert behind `API_AUTH_ENABLED`, is the enforcement point once the cookie
 exists. See `ROADMAP.md` step S2 for the route inventory and the acceptance
 test.
 
+**Code.** Built since the paragraph above was written; the mechanism it
+describes is superseded, not current. There is no `API_AUTH_ENABLED` flag
+anywhere in the repository any more. The real gate is `middleware.js` at the
+repository root, with its decision logic in `lib/auth/gate.js`, and it fails
+closed on a missing `SESSION_SECRET` rather than on a feature flag. Session
+issuance and verification are `lib/auth/session.js` and `lib/auth/cookies.js`;
+credential checking is `lib/auth/credentials.js`; the login page is
+`pages/login.js`. See `COMPLETED.md` Step 0I for the full account and its
+verification command.
+
 ---
 
 ## 3. Permission to show V2 in place of V1, family by family: DECIDED 2026-08-05, granted
@@ -126,6 +150,18 @@ onward depend on. The switch, the side-by-side view and the equivalence
 harness described above are already built, gated behind a flag that cannot
 evaluate true in production; this decision is the permission to use them,
 family by family, in preview.
+
+**Code.** The flags live in `lib/canonical-v2/feature-flags.js`:
+`isCanonicalV2ReviewEnabled` and `isCanonicalV2QueryEnabled` both additionally
+require `isPermittedCanonicalV2Runtime`, which is hard-denied whenever
+`VERCEL_ENV` is a non-preview value or `NODE_ENV` is `production`, so the
+"cannot evaluate true in production" claim is enforced in that one function,
+not by convention. The side-by-side rendering this decision authorised for
+termination fees is in
+`components/review/table-configs/termination-fees.config.js`, the block
+headed "Ben's ruling (2026-08-05): switch to real Canonical V2 data as it
+lands, but keep V1 VISIBLE ON THE PAGE beside it", which is this decision
+quoted back almost verbatim in the code that implements it.
 
 ---
 
@@ -165,6 +201,18 @@ changing its label.
 **Technical.** Cross-ref step P2. The sole-remedy row already has governing
 claims, `SOLE_REMEDY_LEGAL_EFFECT_PRESENT` and `SOLE_REMEDY_CARVEOUT_KIND`
 (see `ROADMAP.md` step P2); the effect-of-termination row is the new work.
+
+**Code.** Built. `SOLE_REMEDY_LEGAL_EFFECT_PRESENT` and
+`SOLE_REMEDY_CARVEOUT_KIND` are defined in
+`lib/canonical-v2/native-producer/sole-remedy-resolution.js`. The two-row
+split itself is in `components/review/table-configs/termination-fees.config.js`,
+`SCALAR_ROWS`: the row `willful-breach-effect` (label "Willful-breach
+carve-out", scoped to source code `TERMF-EFFECT`) and the row
+`willful-breach-sole` (label "Willful-breach carve-out to sole remedy", scoped
+to `TERMF-SOLE`), each reading only its own scoped source rather than the
+first card either happens to see, which is the exact defect this decision
+describes. The file's own header comment records the same reasoning as this
+entry, including the "Owner ruling (2026-08-05)" citation.
 
 ---
 
@@ -206,6 +254,21 @@ the existing string. Budget it accordingly; do not let an implementation
 fall back to the cheaper verbatim-string shape to save time, since that is
 the option Ben specifically turned down.
 
+**Code.** Partly built, and the split matters. The per-limb shape exists:
+each termination-fee trigger carries its own `payment_timing` field (an enum
+constrained by `allowed_payment_timings` in `lib/canonical-v2/contract-bundle.js`,
+labelled for display by `PAYMENT_TIMING_LABELS` in
+`lib/canonical-v2/termination-fee-trigger-presentation.js`), which is the "one
+claim per limb" structure this decision chose, not a single verbatim string.
+But every occurrence found is in serving, query and presentation code
+(`shared-serving-row.js`, `qxo-termination-fee-admitted-slice.js`,
+`legacy-query-mapper.js` and similar), which per `COMPLETED.md` Step 0A is
+hand-typed for the two deals currently served. No producer prompt or
+resolver under `lib/canonical-v2/native-producer/` sets `payment_timing`, so
+the reading-the-agreement work this decision calls "real work, not
+reformatting" is not yet done: the shape is built, the extraction that would
+populate it from a live model call is not.
+
 ---
 
 ## 6. "Fee required to terminate": DECIDED 2026-08-05, moves to Termination Rights
@@ -234,6 +297,20 @@ exists.
 **Technical.** Cross-ref step P2. 23 of 28 stored values are booleans and 5
 are prose; the moved display must handle both.
 
+**Code.** Built. The field is `feeRequired`, defined at
+`lib/schema/features.js:6493` and already scoped there to
+`provisionTypes: ["TERMR"], provisionCodes: ["TERMR-SUPERIOR"], displayGroup:
+"Fiduciary out"`, which is the registry entry this decision's problem
+statement refers to. The display now matches: it renders in
+`components/review/table-configs/termination-rights.config.js`'s
+`FIDUCIARY_OUT_CROSS_CUTTING_ROWS` (row id `fee-required`) and has been
+removed from `components/review/table-configs/termination-fees.config.js`,
+whose header comment records the same move and cites the same registry
+scoping this entry does. As with Decision 5, this is a display-layer
+correction: `feeRequired` does not appear anywhere under
+`lib/canonical-v2/native-producer/`, so today's values still come from the V1
+extraction path, not a V2 resolver.
+
 ---
 
 ## 7. Duplicate claim rows: DECIDED 2026-08-05, approved, identification first
@@ -260,6 +337,17 @@ across production data, confirm whether the 128 at-risk cards actually carry
 duplicates (or how many do), and hold the deletion for a separate,
 specifically-approved step once the list exists.
 
+**Code.** `scripts/curation/prune-cards.js`. Dry-run by default and writes
+nothing without both `--apply` and `--backup <path>`; `--backup` refuses to
+proceed if the target path already exists or the dump fails, and it acts only
+on cards explicitly named in a checked-in decisions file under
+`scripts/curation/decisions/`, never on cards it discovers itself. That
+matches this decision's "identification first, nothing removed on the
+strength of a count alone" structurally, not just by description. Whether it
+has been run against the 128 at-risk cards is not something this repository
+records; a corpus-wide run is still what would surface them, per the problem
+statement above.
+
 ---
 
 ## 8. The market statistics route: DECIDED 2026-08-05, un-contain approved
@@ -283,6 +371,16 @@ coverage at all.
 route. Apply the change when step P7 actually starts, not before, and treat
 the first live run against real data as the real test of the machinery
 described above, because it is: nothing has proven it against real data yet.
+
+**Code.** The rule is the same assertion Decision 1 above cites,
+`assertServiceClientRouteActionInventory` at
+`lib/service-client-route-actions.js:235` (the `if` clause; the `throw` is
+line 236). Amending it means changing the market-statistics route's
+`service_client_mode` entry in `SERVICE_CLIENT_ROUTE_ACTIONS`, in the same
+file, from `ZERO_IMPORT` to whatever the un-contained mode is, not editing
+the assertion itself. As of this audit that entry has not been changed: the
+route remains declared `ZERO_IMPORT`, consistent with "apply the change when
+step P7 actually starts, not before".
 
 ---
 
@@ -326,6 +424,13 @@ activation, rollback or restore script today. Build against the five steps
 above; fold a smoke test immediately after step 4 rather than treating it as
 a separate, optional sixth step.
 
+**Code.** Re-checked for this audit: still zero files for all four names.
+`CandidatePromotionFence` appears once in the whole repository, inside a
+regular-expression string in
+`tests/programme-gates/query-release-contract-closure.spec.js`, describing
+future behaviour, not a built class. This governs no code today; it governs
+the absence of code, which is itself the finding the decision responds to.
+
 ---
 
 ## 10. The gate registry: DECIDED 2026-08-05, keep the real gates, delete the rest
@@ -357,6 +462,24 @@ throws unless every pre-production gate stays `OPEN`; it needs amending so a
 gate can record a genuine pass. The self-verifying layer to delete is
 `lib/programme-gates/p9-acceptance-*`, 1,001 lines across 5 modules.
 
+**Code.** Both halves of this decision are now built; see `COMPLETED.md` Step
+0K for the full account. The deletion is confirmed complete: `p9-acceptance-*`
+and `p9-definition-proposal-layer.js` no longer exist anywhere in the
+repository as code. The amendment landed as `computePreproductionGateStatus`,
+line 134 of `lib/programme-gates/governing-registry.js`, which re-derives
+`P1_CONTRACT_BUNDLE_COMPLETE` and `P1_VERTICAL_SLICE_PASS` from primary
+sources on every load; every other gate still reports `OPEN`. One correction
+to the paragraph above: the throw-unless-`OPEN` clause it cites at line 267
+has since moved to line 407, because the amendment inserted the new
+re-derivation logic above it in the same file (confirmed by `git show
+2396bf50 -- lib/programme-gates/governing-registry.js`, a 132-line insertion
+starting at the old line 15). The clause is unchanged, only its position; the
+line number is not load-bearing but is stale as written. Separately, the
+problem statement above says "8 are implemented and 281 throw"; `COMPLETED.md`
+Step 0K, sourced from the same commit, corrects this to 7 and 282, because the
+eighth test matched regular expressions against a script's source text and
+was un-registered rather than counted.
+
 ---
 
 ## 11. Market comparison basis: DECIDED 2026-08-05, amended terms, labelled
@@ -374,6 +497,13 @@ it used rather than leaving the reader to assume.
 
 **Only one deal in the corpus is currently known to have an amendment**, so
 this can wait until amendment parsing is built after launch.
+
+**Code.** None. Searched for a basis label or an amended-versus-original
+distinction anywhere market statistics touch, and found nothing: this
+decision governs code that does not exist yet, consistent with the deferral
+above. `market-stats.js` itself is also the contained route Decision 8
+covers, so the earliest this can be built is after that route is
+un-contained.
 
 ---
 
@@ -397,12 +527,37 @@ corrected here rather than quietly amended, because a plan that grants itself
 production authority is precisely the failure this programme exists to
 prevent.
 
-In any case it is not reachable until step D2 is, which in turn is not
-reachable until this branch is merged to `main`: 287 commits and 910 files
-that have never been tested as a merged unit (see step D1 in `ROADMAP.md`,
-which Ben did authorise, on 2026-08-05: "you can update the roadmap on these
-points and get things up on main, I don't like living in branch land for
-ever").
+In any case it is not reachable until step D2 is, which is gated on lane S
+completing and on D1 (see step D1 in `ROADMAP.md`, which Ben did authorise,
+on 2026-08-05: "you can update the roadmap on these points and get things up
+on main, I don't like living in branch land for ever").
+
+**Correction, 2026-08-06.** This entry previously described D1 as blocked on
+merging a single, still-pending branch of 287 commits and 910 files, never
+tested as a merged unit. That merge happened, in exactly the shape
+`MERGE-PLAN.md` proposed, in three pull requests: #476
+(`wp/m3-canonical-v2-foundation`, merged 2026-08-05T21:55:41Z), #477
+(`wp/m3-tonight-integration-and-live-fixes`, merged 2026-08-06T00:30:37Z) and
+#478 (the whole `codex/m3-production-phase1` branch head, merged
+2026-08-06T09:51:01Z), checked directly against GitHub (`gh pr list --state
+merged`), not against another document. D1 is not, on that account, finished:
+work on this branch continued after PR #478, and as of this correction the
+branch is 15 commits ahead of `origin/main` again
+(`git log --oneline origin/main..HEAD`; this moved twice more while this
+entry was being corrected, run it fresh rather than trust the figure), not
+yet merged. What changed is the
+shape of what is outstanding: a small, fresh merge of this session's own
+work, not the original 287-commit backlog, and D2 remains gated on lane S
+regardless of either one.
+
+**Code.** None; this is a scheduling and authorisation decision, and `D1`/`D2`
+are `ROADMAP.md` step labels, not gate identifiers in
+`lib/programme-gates/governing-registry.js` (its gates use a different naming
+scheme entirely, for example `P1_CONTRACT_BUNDLE_COMPLETE`). Re-checked for
+this audit: `gh pr view` on 476, 477 and 478 confirms all three `MERGED` with
+exactly the `headRefName` and `mergedAt` values above, and `origin/main` is
+at `016288cb`, 15 commits behind `HEAD`, matching this entry's own caution to
+run the count fresh rather than trust a figure.
 
 ---
 
@@ -475,6 +630,16 @@ pattern's reference implementation is
 per family. The equivalence harness is `scripts/review-parity-check.js` (see
 P1). Where it cannot compare a family, that is an absence of committed V1 input, not a fault in it, and it does not gate retiring V1: Ben ruled on 2026-08-05 that the harness is a convenience and not a gate.
 
+**Code.** A sample of the eleven F16 to F26 components, confirmed present and
+distinct from the deleted `p9-acceptance-*` layer (`DECISIONS.md` item 10,
+`COMPLETED.md` Step 0K, a different acceptance mechanism entirely):
+`lib/canonical-v2/qxo-no-shop-copy-delivery-canonical-f19.js`,
+`lib/canonical-v2/qxo-no-shop-copy-delivery-query-f20.js`,
+`lib/canonical-v2/v12-serving-admission-readiness-f21.js`,
+`lib/canonical-v2/metric-serving-admission.js` (F22) and
+`lib/canonical-v2/metric-scoped-candidate-release-f23.js`. All exist and are
+distinct files, none deleted.
+
 ---
 
 # Smaller decisions, blocking nothing
@@ -498,6 +663,19 @@ now decided, 2026-08-05.
   interim measure so the four families are unblocked now, not a decision
   that a fixed rank table is the intended end state.
 
+  **Code.** Built. `MATERIALITY_TABLE` and `materialityFor` in
+  `lib/canonical-v2/native-producer/candidate-resolution.js` carry the
+  actual numbers: Material Contracts (`REP-T-CONTRACTS`) at rank 54,
+  Made Available and Ordinary Course (`DEF-MADE-AVAILABLE`,
+  `DEF-ORDINARY-COURSE`) both at rank 66, General Covenants at rank 95, the
+  highest of any tier. Pinned by
+  `tests/canonical-v2-approved-family-materiality-ranks.test.js` (re-run for
+  this audit, passes). One live contradiction worth flagging:
+  `docs/codex-program/OPERATING-RULES.md`, in its "Ben's legal and taxonomy
+  rulings" section, still states these four "remain at rank 99 because no
+  exact rank was ever approved. Do not invent one." That line is stale; the
+  pinned test above is the current, enforced answer and should govern.
+
 - **The four no-shop concepts, all approved:** Cease Existing Discussions,
   Change of Recommendation, Enforcement of Standstills, and Standstill
   Waiver / Don't-Ask-Don't-Waive. They existed in code, retained but with no
@@ -513,9 +691,29 @@ now decided, 2026-08-05.
   a permanently-bounded native-claim downgrade, not an unadjudicated
   approval question), and the owner has not ruled on them here.
 
+  **Code.** The four surfaces are `nosol-cease-retained`,
+  `nosol-enforce-retained`, `nosol-recommend-retained` and
+  `nosol-waiver-retained` in `docs/codex-program/m3-family-parity-register.json`,
+  now inside the `NO_SHOP` family's `product_surfaces`, disposition
+  `EVIDENCE_ONLY`. The "review-hold count" is `review_hold_ids`, computed
+  from `unassigned_product_surfaces` in
+  `lib/canonical-v2/native-producer/m3-family-parity-register.js` (line
+  1724). Its length is pinned at exactly 2 by
+  `tests/canonical-v2-m3-certification-control.test.js`,
+  `tests/canonical-v2-m3-certification-control-v2.test.js` and
+  `tests/programme-gates/m3-family-parity-register.spec.js` (the last of
+  these is titled "approved no-shop concepts are promoted from review hold
+  to owner-approved family surfaces"), all three re-run for this audit and
+  passing.
+
 - **Representation subjects: stay open indefinitely.** The list does not
   close. It is designed to stay open-ended rather than work toward a fixed,
   closeable set.
+
+  **Code.** None, deliberately. Searched for a closed representation-subject
+  enum or constant across `lib/taxonomy.js` and the representations producer
+  prompt and found none, which is consistent with this decision: the
+  governed thing here is the absence of a closing list, not a list itself.
 
 - **The document-verification status name:
   `DOCUMENT_TEXT_VERIFIED_AGAINST_SOURCE_BYTES`.** Chosen because it names
@@ -523,6 +721,8 @@ now decided, 2026-08-05.
   later completeness state can be added without colliding with it. This
   gets built into a permanent versioned record format, so treat it as fixed
   once real records start using it.
+
+  **Code.** `lib/canonical-v2/source-verification-state.js`, line 196.
 
 ---
 

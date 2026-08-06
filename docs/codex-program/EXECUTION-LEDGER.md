@@ -25,9 +25,23 @@ SHA-256 `36788a52eb281abdb03ffe42421e3d224dee670f0a5572fd8f0d08d53d631abd`.
 
 ## 1. Current state
 
+**Correction, 2026-08-06** (`docs/codex-program/notes/doc-reality-audit.md`,
+finding F28). The table below is pinned to the basis commit its own first
+row names, `484c40a9`, from 2026-07-31. It went 109 commits stale before
+anyone corrected it, which is exactly the failure this correction exists to
+stop happening again: a reader opening this file for "where are we" got an
+answer from a week earlier without any signal that it was old. The rows most
+affected (main basis, suite and build counts, deployments, pre-production
+approval) are corrected in place below rather than left to stand; the rows
+below them (contract freeze, vertical slice, staging proofs) describe
+specific, dated approvals that this correction did not re-verify and that
+remain plausible on their face. For what is actually true today, read the
+new entry dated 2026-08-06 at the end of section 2, added by this
+correction.
+
 | Item | State |
 | --- | --- |
-| Main basis | `484c40a9515366d8efbfdcc72b71aaaa3aafe6e0` |
+| Main basis (as at 2026-07-31; superseded, see the 2026-08-06 entry in section 2) | `484c40a9515366d8efbfdcc72b71aaaa3aafe6e0` |
 | Approved M1 review commit | `9cef64ec626a50a78710ee90b08cdc0466b42374` |
 | Controller | Claude (Fable) took over as PM controller for M2 onward on 2026-07-31. Working branch `claude/codex-attestations-build-balance-z3xm23`. |
 | Prior approved contract bundle | 177 contracts and 315 dependency links. It is immutable. |
@@ -36,10 +50,10 @@ SHA-256 `36788a52eb281abdb03ffe42421e3d224dee670f0a5572fd8f0d08d53d631abd`.
 | Current amended payload digest | `b8c1d79b6f8e9e7d403246804d52f10c5b6976a8928ce7bb95ae6a3687045a9d` |
 | Contract dependency graph | 178 nodes, 324 links, 0 missing members, 0 duplicate identities, 0 conflicts, 0 unresolved dependencies, and 0 cycles |
 | Bundle compile reference | Two clean compiles produced identical 1,096,276-byte output with SHA-256 `6cc2247acbcc63f9e0a0c81afc536ba65ab2ddc417abf3cb569c73629125152c`. |
-| Latest complete suite on this branch | PASS on exact GitHub main `8bf79ff0`: 4,786 pass, 0 fail, 5 skip. GitHub CI run `30612191260` is green. |
-| Latest production build on this branch | PASS on exact GitHub main `8bf79ff0`, 29/29 pages. Existing warnings remain: ESLint is absent, offline Supabase variables are absent, and two admin pages exceed the page-data warning threshold. |
-| Latest deployments | Production `dpl_9qwje4q6Tgu9c9gqMJj925yzDRrK` and isolated Preview `dpl_BZfeBxY2zHUXCEeqVHqrnk4VyxGF` are READY and bind exact commit `484c40a9`. Production root returns HTTP 200; Preview is protected. Verified by Ben 2026-07-31. |
-| Pre-production approval | The M1 Markdown acknowledgement is the only approval artefact. Signed status publication, signer inventory and protected review workflows are retired. |
+| Latest complete suite on this branch (as at 2026-07-31; superseded) | PASS on exact GitHub main `8bf79ff0`: 4,786 pass, 0 fail, 5 skip. GitHub CI run `30612191260` is green. Current figure, measured 2026-08-06 by `CI=true npm test`, reading `$?` from the `npm test` command itself: 7718 tests, 7676 pass, 0 fail, 42 skipped, exit 0. |
+| Latest production build on this branch (as at 2026-07-31; not reverified by this correction) | PASS on exact GitHub main `8bf79ff0`, 29/29 pages. Existing warnings remain: ESLint is absent, offline Supabase variables are absent, and two admin pages exceed the page-data warning threshold. |
+| Latest deployments (as at 2026-07-31; not reverified by this correction) | Production `dpl_9qwje4q6Tgu9c9gqMJj925yzDRrK` and isolated Preview `dpl_BZfeBxY2zHUXCEeqVHqrnk4VyxGF` are READY and bind exact commit `484c40a9`. Production root returns HTTP 200; Preview is protected. Verified by Ben 2026-07-31. `main` has since moved to `016288cb` (see the 2026-08-06 entry in section 2); the live deployment's current commit was not re-checked as part of this correction. |
+| Pre-production approval | Corrected 2026-08-06 (doc-reality-audit.md finding F22, found independently for this file): the M1 Markdown acknowledgement was recorded here as the only approval artefact. It is not; it is the required artefact for the M1 milestone specifically. Further milestone and decision acknowledgements exist in `docs/acks/`, including `M2-VERTICAL-SLICE-2026-07-31.md` and three further Ben-decision records dated after it (`CLAIM-IDENTITY-APPROVALS-2026-08-01.md`, `FAMILY-MAPPING-RULINGS-2026-08-02.md`, `OPEN-WORLD-ADJUDICATION-2026-08-02.md`). Signed status publication, signer inventory and protected review workflows remain retired. |
 | M1 contract freeze | PASS for the exact amended 178-contract bundle. Ben approved it subject to the reviewed-deal cohort condition. `docs/acks/M1-CONTRACT-FREEZE-2026-07-31-AMENDED.md` binds the exact fingerprint and permits isolated-staging pilots only. |
 | M1 independent review | PASS. The milestone architecture, legal and query reviews completed. The one high-reasoning fix-diff review passed at `9cef64ec`. No further M1 review is required. |
 | Reviewed-deal cohort rule | PASS. An eligible reviewed deal is a real member of the executed selected cohort. A narrower filter or typed non-comparability can exclude it. QXO and Metsera retain content-addressed request, result, membership and execution evidence. Every market surface states `INCLUDED` or `EXCLUDED` and gives the reason. |
@@ -415,6 +429,13 @@ Exactly one (`P9_DEPLOYMENT_PARITY`) carries an acceptance block; the other 21
 have an id and state only. Every gate receives a mechanical acceptance
 definition before M3 relies on it.
 
+**Superseded, 2026-08-06** (doc-reality-audit.md finding F28, which found
+this entry disagreeing with the D3 entry below inside this same document):
+the count above is stale. Measured directly, right now:
+`grep -c "id: P9_" docs/codex-program/programme-gates.yaml` gives 23, the
+same figure the D3 entry below already states. This earlier entry is left as
+written for the dated record; treat 23, not 22, as current.
+
 ### D3 ratified: live gate-evidence channel built, self-verifying layer deleted, adversarial count corrected (2026-08-05)
 
 `ROADMAP.md` step D3 and `DECISIONS.md` item 10 asked for two things: a way
@@ -486,7 +507,125 @@ stays in the repository, `WITHDRAWN_NON_AUTHORITY` and not adopted into
 `programme-gates.yaml`, as a graded starting draft for that work rather than
 current authority.
 
+### M3 family sweep, a legal-correctness fix, and documentation reconciliation (2026-08-06)
+
+This entry is current as of this correction and is the right place to read
+"where are we", not section 1 above, which is now 109 commits stale
+(corrected at the top of this document rather than rewritten line by line).
+
+**Three pull requests merged the branch this ledger tracks into `main`.**
+PR #476 (`wp/m3-canonical-v2-foundation`, merged 2026-08-05T21:55:41Z), PR
+#477 (`wp/m3-tonight-integration-and-live-fixes`, merged
+2026-08-06T00:30:37Z), PR #478 (the whole `codex/m3-production-phase1`
+branch head, merged 2026-08-06T09:51:01Z). Checked directly against GitHub:
+`gh pr list --state merged --json number,title,mergedAt,baseRefName,
+headRefName`. `origin/main` is now at `016288cb`. Work continued on this
+branch after PR #478, including everything below; as of this correction the
+branch is 15 commits ahead of `origin/main` again
+(`git log --oneline origin/main..HEAD`; this moved twice more while this
+entry was being written, run it fresh rather than trust the figure), not
+yet merged. Full account:
+`docs/codex-program/MERGE-PLAN.md` and `DECISIONS.md` item 12, both
+corrected 2026-08-06 to match.
+
+**All 25 registered extraction families were run live against one real
+agreement (Modiv) for the first time, in a single sweep**: 58 model calls,
+$20.30, 108 claims resolved, 203 queued for human review, 193 left in open
+world with no governed home. Pinned as a baseline before any fix, so a later
+re-run can be measured against it:
+`docs/codex-program/notes/all-families-baseline-20260806.json`. Full
+account: `docs/codex-program/notes/all-families-aggregate.md`.
+
+**Three crashes in this codebase's own resolution code, not model quality,
+stopped four families dead; all three fixed and each reproduced offline
+from real recorded evidence before being touched.** One was latent under
+every family, not just the one it crashed: two resolution modules handed
+back their caller's own in-progress list by reference instead of a copy,
+then froze it, meaning every family's run has been silently freezing its own
+open-world list for as long as this code has existed; only interim operating
+covenants crashed, because it is the only family whose own code writes into
+that list a second time. A second family's resolver dropped a required
+provenance tag by rebuilding a claim's attributes wholesale instead of
+merging. A third family's run received narrated prose instead of JSON from
+the model (consistent with the model going agentic under the command-line
+transport) and the old behaviour discarded two already-successful,
+already-paid-for sections along with the failed one; fixed to keep a partial
+receipt of what already succeeded. Full account:
+`docs/codex-program/notes/extraction-crashes.md`.
+
+**An adversarial review of the first fix plan found it covered at most 74 of
+the 193 open-world candidates and named 119 with no owner at all**, including
+five families whose entire output was open world and an eleven-candidate
+group failing on a mechanism the plan never named
+(`docs/codex-program/notes/all-families-aggregate-review.md`). The follow-up
+classified all 193 into fifteen mechanisms and fixed what was genuinely
+mechanical: material contracts' corroboration vocabulary widened (10 of 26
+resolved), antitrust's extraction runner corrected from an old, four-
+versions-stale contract compilation to the current one (11 of 11 given a
+governed home, 2 resolved), and a representations party-recognition gap for
+an UPREIT operating partnership fixed in both places it needed fixing
+(unblocks at most 1 of 3 affected items, the other 2 being open world by
+correct, existing design). 21 of the 193 candidates now have a governed home
+in committed code; none of the three fixes has been re-confirmed by a fresh
+model call, only by replaying the already-recorded run through the corrected
+code. Full account: `docs/codex-program/notes/open-world-ownership.md`.
+
+**Termination corroboration (a different family from termination fees)
+anchored on the limb that actually grants the right, taking that family from
+1 resolved claim to 8**, the single largest previously-blocked group in the
+25-family sweep. Full account:
+`docs/codex-program/notes/resolver-reference-fixes.md`.
+
+**A legal-correctness defect was found and fixed, live in the production
+quote-acceptance path.** A quote missing a governing negation (for example,
+storing "have a Company Material Adverse Effect" with "would not" cut from
+its front) passed every existing check and would have been stored as
+verbatim evidence for the opposite of what the agreement says. No boundary
+check against this existed anywhere in the production path, and two
+committed tests named "KNOWN LIMITATION" pinned the unsafe behaviour as
+expected; both are now fixed to refuse it. Full account, including what
+remains open: `docs/codex-program/notes/negation-reversal.md`.
+`docs/codex-program/WORK-COMPLETED.md` is corrected to match; it previously
+claimed this exact defect was tracked in `ROADMAP.md` as "step 1b", which
+never existed anywhere in this repository.
+
+**A documentation-reality audit found 28 ways the governed documents and
+the running system had drifted apart**, the two most serious being the
+"step 1b" claim above and two documents (`MERGE-PLAN.md`,
+`DECISIONS.md`) presenting the already-completed merge above as a pending
+decision. `docs/codex-program/notes/doc-reality-audit.md`. This correction
+is the reconciliation of those findings against `ROADMAP.md`,
+`WORK-COMPLETED.md`, `P1-PLAN.md`, this document, `MERGE-PLAN.md`,
+`DECISIONS.md` and `docs/certification/programme-gate-status.json`; findings
+about documents outside that list (`OPERATING-RULES.md`,
+`canonical-contracts.md`, `m3-family-parity-register.json`,
+`adversarial-tests.md`, and several `docs/codex-program/notes/` files) were
+found but are not fixed here, and remain open per the audit itself.
+
+**Fresh measurements, superseding section 1 above and its own now-stale
+figures**: test suite 7718 tests, 7676 pass, 0 fail, 42 skipped
+(`CI=true npm test`, reading `$?` from the `npm test` command itself);
+parity blockers 102, down from 104
+(`node -e` against `listM3ProductParityBlockers`, see the roadmap appendix
+for the exact command); P9 gates 23, not 22 (`grep -c "id: P9_"
+docs/codex-program/programme-gates.yaml`, see the correction above).
+
+**What this does not change.** Nothing extracted in the 25-family sweep has
+been written to the product's database; extraction writes JSON evidence
+files, the site reads Postgres, and nothing yet connects the two.
+`supabase/canonical-v2-foundation.sql`, the schema and writer for that
+connection, still has never been executed. Nothing in the sweep changes
+what a user sees on the review page. The pipeline is proven, on one
+agreement, across every registered family; it is not connected to anything a
+reader of this ledger would call live.
+
 ## 3. Next 48 hours
+
+**This section is dated 2026-07-31 and was not carried forward as work
+proceeded; item 1 is historical, items 2-6 were substantially overtaken by
+different work (see the 2026-08-06 entry above).** For what is actually next,
+read `ROADMAP.md` Part 4, "The steps", which this ledger's own opening
+paragraph already names as a separate document this file does not duplicate.
 
 1. DONE 2026-07-31: complete suite and build passed, main moved once to
    `484c40a9`, production and isolated Preview deployed and verified.

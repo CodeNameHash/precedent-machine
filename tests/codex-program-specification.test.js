@@ -48,7 +48,13 @@ test('governing CODEX programme specification is mechanically valid', () => {
   ));
   assert.equal(manifest.schema, 'codex-program-specification-manifest/v2');
   assert.equal(manifest.purpose, 'DRIFT_DETECTION_ONLY_NOT_EXECUTION_AUTHORITY');
-  assert.equal(manifest.files.length, 6);
+  // Two, not six, since 2026-08-06. Four prose documents were unpinned: the
+  // fingerprint exists to catch a governing file changing unnoticed, which is
+  // worth having for data the application reads and was not worth having for
+  // prose, where git already records every change and the fingerprints mainly
+  // made stale documents expensive to correct. The two survivors are the gates
+  // registry and the parity register, both genuinely read by lib/ code.
+  assert.equal(manifest.files.length, 2);
 });
 
 test('verifier root is the review-controller root for committed specification membership', () => {
@@ -138,8 +144,14 @@ test('bootstrap-for-ledger membership substitution fails the committed root cont
     'utf8',
   ));
   const committedPaths = [MANIFEST_PATH, ...manifest.files.map(({ path: file }) => file)];
+  // Substitutes a member that is still pinned. This used to swap
+  // EXECUTION-LEDGER.md, which was unpinned on 2026-08-06, making the
+  // substitution a no-op and the assertion below vacuously false. The property
+  // under test is unchanged: swapping any member for a different file must
+  // change the specification root, so the fingerprint cannot be satisfied by a
+  // different set of files.
   const substitutedPaths = committedPaths.map((file) => (
-    file === 'docs/codex-program/EXECUTION-LEDGER.md'
+    file === 'docs/codex-program/programme-gates.yaml'
       ? 'docs/codex-program/bootstrap-acceptance-source.json'
       : file
   ));
@@ -169,7 +181,7 @@ test('bootstrap-for-ledger membership substitution fails the committed root cont
   }), /frozen specification bytes do not derive the exact specification root/);
 });
 
-test('pre-review member compiler accepts only the current seven-member V2 manifest contract', () => {
+test('pre-review member compiler accepts only the current three-member V2 manifest contract', () => {
   const manifest = JSON.parse(require('node:fs').readFileSync(
     path.resolve(__dirname, '..', MANIFEST_PATH),
     'utf8',

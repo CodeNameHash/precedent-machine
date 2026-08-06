@@ -100,11 +100,11 @@ function walk(dir, files = []) {
     const full = path.join(dir, entry.name);
     const rel = path.relative(root, full).replace(/\\/g, '/');
     if (entry.isDirectory()) {
-      if (['node_modules', '.next', 'docs', '.git', '.claude', '.vercel'].includes(entry.name)) continue;
+      if (['node_modules', '.next', 'docs', 'archive', '.git', '.claude', '.vercel'].includes(entry.name)) continue;
       walk(full, files);
     } else if (
       rel !== 'scripts/lint/forbidden-patterns.sh' &&
-      rel !== 'pm-master-straitjacket.codex.md'
+      rel !== 'archive/pm-master-straitjacket.codex.md'
     ) {
       files.push({ full, rel });
     }
@@ -350,13 +350,14 @@ for (const rel of changedFiles()) {
     rel.startsWith('node_modules/') ||
     rel.startsWith('.next/') ||
     rel.startsWith('docs/') ||
+    rel.startsWith('archive/') || // relocated, superseded documents: historical prose, not live code
     rel.startsWith('.git/') ||
     rel.startsWith('.claude/') ||
     rel.startsWith('.vercel/') ||
     rel.startsWith('public/generated/') || // Data labels can legitimately match code-regression fingerprints.
     rel.startsWith('reports/backups/') || // raw DB dumps: agreement text legitimately hits bug-fingerprints
     rel.startsWith('scripts/lint/') ||
-    rel === 'pm-master-straitjacket.codex.md'
+    rel === 'archive/pm-master-straitjacket.codex.md'
   ) {
     continue;
   }

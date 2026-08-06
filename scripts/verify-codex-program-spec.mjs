@@ -6,13 +6,19 @@ import YAML from 'yaml';
 const require = createRequire(import.meta.url);
 const { specificationRootFromMembers } = require('../lib/programme-gates/review-controller');
 const manifestPath = 'docs/codex-program/specification-manifest.json';
+// Fingerprinted files, narrowed on 2026-08-06 from six to two.
+//
+// This check exists to detect a governing file changing without anyone
+// meaning it to. That is worth having for DATA the code actually reads, where
+// an accidental edit changes behaviour silently. It was not worth having for
+// prose: git already records who changed a document and when, this repository
+// has one author, and in practice the fingerprints mostly served to make stale
+// documents expensive to correct, which is the opposite of what anyone wanted.
+// Four prose documents were unpinned for that reason. They are still tracked,
+// reviewed and diffed like any other file.
 const files = [
-  'docs/CODEX-PROGRAM.md',
-  'docs/codex-program/EXECUTION-LEDGER.md',
   'docs/codex-program/programme-gates.yaml',
   'docs/codex-program/m3-family-parity-register.json',
-  'docs/codex-program/canonical-contracts.md',
-  'docs/codex-program/adversarial-tests.md',
 ];
 
 function fail(message) {

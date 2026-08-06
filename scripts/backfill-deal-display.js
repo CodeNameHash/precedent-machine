@@ -34,12 +34,15 @@
    Covers, in one script (per-item detail below):
 
      1. buyer_display  — metadata.acquirer_display / metadata.ultimateParent
-        for the 6 confident rows (Envestnet, Endeavor, HireRight, European
+        for the 7 confident rows (Envestnet, Endeavor, HireRight, European
         Wax Center, Superior Industries, Sekisui House/M.D.C. — the last of
         which was ALREADY correct on acquirer_display; this only backfills
-        its missing top-level ultimateParent key) + a United Homes Group
-        ultimateParent-only note (display already correct, real operating
-        company). No buyer_display rows remain VERIFY after this round.
+        its missing top-level ultimateParent key — and Catalent, folded in
+        2026-07-19 after this round closed: an earlier-rounds omission, not
+        a VERIFY/skip decision, see its own BUYER_DISPLAY_ROWS entry below)
+        + a United Homes Group ultimateParent-only note (display already
+        correct, real operating company). No buyer_display rows remain
+        VERIFY after this round.
      2. value_usd + metadata.value_provenance — all 13 rows resolved and
         WILL WRITE (6 originally confident + 7 resolved this round via PR),
         each with a source_url + verbatim quote. No value rows remain

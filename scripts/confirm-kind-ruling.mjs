@@ -45,10 +45,16 @@
  *     [--lexicon-version <n>]
  *
  * --corpus defaults to contracts/ruling-corpus/ruling-corpus.v1.json.
- * --lexicon-version defaults to the corpus's own
- * QUALIFIER_KIND_LEXICON_VERSION import when that module exists; since it
- * does not yet, it is REQUIRED until that module lands (fails closed rather
- * than guessing a version number that would corrupt the receipt pin).
+ * --lexicon-version is REQUIRED and typed by hand on every invocation (this
+ * was written to fail closed rather than guess a version number that would
+ * corrupt the receipt pin). `qualifier-kind-lexicon.js` has since landed and
+ * exports QUALIFIER_KIND_LEXICON_VERSION, but this script was never updated
+ * to import it and default from it, and nothing here or in
+ * ruling-corpus.js's `appendRuling` cross-checks the typed number against
+ * that constant -- `lexicon_version_at_ruling` on the written entry is only
+ * as trustworthy as what the caller remembers to type. Read the current
+ * value from lib/canonical-v2/native-producer/qualifier-kind-lexicon.js by
+ * hand until the default (and a mismatch check) is wired up.
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';

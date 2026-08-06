@@ -6,18 +6,25 @@
  *
  * Why: the FTV codebook (forceTheVoteType: FTV_HARD / FTV_SOFT / FTV_NONE,
  * Ben-gated taxonomy in lib/taxonomy.js) was written to claims only. The
- * query engine reads provisions.ai_metadata (lib/query/context), so
- * `forceTheVoteType` had zero corpus coverage on the query surface —
+ * query engine reads provisions.ai_metadata (lib/query/context-cache.js),
+ * so `forceTheVoteType` had zero corpus coverage on the query surface —
  * /api/query/field-options returned no options and FILTER_THEN_LIST matched
  * nothing. This copies the verified claims values across. Deterministic
  * placement, no LLM calls.
  *
- * Placement per deal (first match wins):
+ * Placement per deal (first match wins), four tiers -- only the first two
+ * are anchored to actual evidence:
  *   1. the NOSOL provision whose full_text CONTAINS the deal's
  *      forceTheVoteDetails verbatim slice (whitespace-normalized, first 100
  *      chars) — the clause the codebook was coded FROM;
  *   2. the NOSOL provision already carrying features.forceTheVote === true;
- *   3. otherwise SKIP with a warning (never guess).
+ *   3. the NOSOL provision categorized "Solicitation Prohibition" (the
+ *      family's conventional head clause on every corpus deck checked);
+ *   4. last resort: the longest NOSOL provision in the deal. This IS a
+ *      guess, not evidence -- kept instead of a SKIP so the value still
+ *      surfaces on the query engine, but logged as "longest-family" in the
+ *      plan/dry-run output so it's auditable rather than silent. A deal is
+ *      only skipped outright when it has no NOSOL provisions at all.
  *
  * Usage:
  *   node scripts/backfill-ftv-type.js            # dry run (default): prints plan
