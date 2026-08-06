@@ -16,12 +16,19 @@ is restated here. Findings are cited by their register IDs (`F-AA-01`,
 `F-OLD-07`, …) so the originals can be traced if the scratchpad is
 recovered.
 
-**Two of those findings were re-checked directly for this spec and are
-wrong as written.** Both corrections are in the build-impact section. They
-are called out because the whole point of this exercise is that
-confidently-stated false claims are this programme's expensive failure
-mode, and a spec that laundered two of them into the plan would be
-reproducing exactly that.
+**Several register findings were re-checked and are wrong as written; so
+were three claims in this spec's own earlier drafts.** Both sets of
+corrections are in the build-impact section, marked as such. The spec's own
+errors are left visible rather than quietly fixed, because the failure mode
+this whole exercise exists to correct is confident false claims being
+believed on the strength of who stated them — and this document produced
+three of its own inside two days, including one presented as a direct
+verification that was a 3× undercount, and one that ordered an implementer
+to "fix" a header that was already correct.
+
+The audit that caught them was adversarial and ran against the code, not
+against this text. Nothing here should be trusted further than that: the
+spec is a set of claims to check, not a record of what is true.
 
 ---
 
@@ -93,11 +100,23 @@ background noise. It lands squarely in Part E: onboarding a document is not
 down.
 
 **3. The "add a new deal" UI is broken for two of its three modes**
-(`F-OLD-06`), because 17 of 23 hard-contained (503) API routes have no
-disposition anywhere in the core docs, including all of `/api/ingest/*`
-(`F-OLD-01`). A consequence of the same containment: the production review
-page's Correct tab is non-functional (`F-OLD-02`). Part E cannot write an
-onboarding runbook around a UI that is two-thirds broken without saying so.
+(`F-OLD-06`), because most of the 23 hard-contained (503) API routes have
+no disposition anywhere in the core docs (`F-OLD-01`). A consequence of the
+same containment: the production review page's Correct tab is
+non-functional (`F-OLD-02`). Part E cannot write an onboarding runbook
+around a UI that is two-thirds broken without saying so.
+
+**Correction to an earlier draft:** it said "17 of 23… including all of
+`/api/ingest/*`". The route count is 23, verified. But
+`pages/api/ingest/from-url.js` **is** dispositioned — `PLAN.md:1053` names
+it as contained for unauthenticated SSRF, and `CODEBASE-GUIDE.md:186`
+mentions it too. So "all of `/api/ingest/*` is undispositioned" was false,
+and it contradicted Part E's own "none has a disposition anywhere". Both
+could not hold; the disposition is real. Establish the exact undispositioned
+count as the first act of the routes pass rather than inheriting a number
+from this document — and note that SSRF is a *good* reason for containment,
+which is what standing ruling 3 asks for. It is evidence the ruling works,
+not an obstacle to it.
 
 **4. There is a second live governing document, and PLAN.md wrongly claims
 to supersede it** (`F-OLD-07`, the registers' headline). PLAN.md line 8
@@ -137,7 +156,8 @@ This closes the largest open question in the previous draft, and it changes
 the step:
 
 - A working precedent exists: `buildAuditFromCaptureRecords` in
-  `full-corpus-routing-prompt-cost-audit.js` (lines 303–347) already does
+  `full-corpus-routing-prompt-cost-audit.js` (function starts 278; the
+  sectionize/classify loop is 303-347) already does
   "sectionize a document, label every relevant node with a family",
   producing a `family_id -> work_item_ids` matrix. It is not exported
   (`module.exports`, 484–500) and is scoped to a fixed 41-receipt cohort
@@ -168,18 +188,38 @@ the step:
 Skip the title walk and the output silently under-classifies; skip the node
 filter and it wildly over-reports. Neither throws.
 
-**7. Modiv has one pinned family, not twenty-five** (`classifier-questions-closed.md`
-Q4, verified directly at `scripts/canonical-v2-live-extraction-run.mjs:226`).
-`DEAL_PINS.modiv.default_section_refs_by_family` contains exactly
-`TERMINATION_FEE: ['7.1','7.3','8.12']`. TopBuild's is `Object.freeze({})`.
-The previous draft of Step 2A said to diff the generated map against the
-existing pins and correct the disagreements — that diff is 1 family wide,
-not 25. And when a (deal, family) pair has no pin and no `--section-refs`,
-`resolveRunConfig` (357–363) throws immediately rather than falling back to
-anything. So the generator is not an improvement on an existing 25-family
-map; it is the only thing that makes 24 of 25 families runnable at all
-without hand-authoring. Step 2A is load-bearing for the entire stage, and
-its review pass is the first time those 24 lists will ever have been read.
+**7. Modiv has one *pinned* family — but the other lists exist, committed,
+in the run manifests.** The pin facts are true and verified at
+`scripts/canonical-v2-live-extraction-run.mjs`:
+`DEAL_PINS.modiv.default_section_refs_by_family` is exactly
+`TERMINATION_FEE: ['7.1','7.3','8.12']` (237–238), TopBuild's is
+`Object.freeze({})` (269), and an unpinned pair with no `--section-refs`
+throws at `resolveRunConfig` (~357–363).
+
+**But the conclusion drawn from them was wrong.** An earlier draft said the
+generator is "the only thing that makes 24 of 25 families runnable" and
+that its review would be "the first time those 24 lists will ever have been
+read". Both are false. `evidence/canonical-v2/modiv-*-20260806/` holds 24
+run-manifest directories, and 20 of them record the hand-chosen
+`section_references` used for the committed baseline — `ANTITRUST` 5.5,
+`CONSIDERATION` 2.1–2.3, `MERGER_STRUCTURE` 1.1/1.4/1.5/1.6,
+`MISC_BOILERPLATE` six sections, and so on. Including
+**`modiv-appraisal-20260806` → `["2.6"]`**
+(family `APPRAISAL_DISSENTERS_RIGHTS`) — the exact human discovery this spec twice
+offered as proof that only a person reading the document could produce
+these lists. It was produced, by a person, and committed.
+
+This restores the old Step 2A's method. Mining the manifests was not
+archaeology for something that might not exist; the artefacts are in the
+tree, and they carry the human judgement already spent. The generator's
+real job is narrower and still necessary: TopBuild has no manifests at all,
+and neither will any of the 10–15 new documents. See the rewritten Step 2A.
+
+**One consequence to chase, not to assert.** The committed baseline used
+`KEY_DEFINED_TERMS: ["8.5"]`, while this spec twice claims Modiv's defined
+terms sit at 8.12 and calls that a correction to be applied. Only one can
+be right, and the only committed artefact says 8.5. Re-argue it against the
+document text before writing anything into the pins.
 
 **8. `family-detection-profiles.js` is not a competing classifier**
 (`classifier-questions-closed.md` Q2). A prior audit framed it and
@@ -191,16 +231,33 @@ versioned term-list contract, consumed only by
 current profile version. This matters for Part F: it is exactly the kind of
 module a disposal pass would delete as redundant, and it is not.
 
-**9. The `lib/search.js` finding overstates itself, and the correction
-makes it more actionable, not less** (`F-AC-01`). The register says a
-complete corpus-wide provision search backend sits "with zero live
-callers", its two API routes and UI page deleted 2026-07-07 (`0811c979`),
-with a prior implementation recoverable from `35e74353`. Re-checked
-directly: `lib/search.js` has **one** real non-test importer —
-`scripts/deal-context.js:24`, which uses `canonicalFavorability`. So the
-module is live, one helper deep; the routes and page are what is gone. The
-"reconnect, don't rebuild" recommendation stands and is strengthened — the
-module is not cold code of unknown viability, part of it is in daily use.
+**9. The `lib/search.js` finding overstates itself — and this spec's own
+correction of it was wrong too** (`F-AC-01`). The register says a complete
+corpus-wide provision search backend sits "with zero live callers", its two
+API routes and UI page deleted 2026-07-07 (`0811c979`), with a prior
+implementation recoverable from `35e74353`.
+
+`lib/search.js` has **three** real non-test importers, all pulling
+`canonicalFavorability`: `lib/parser-v2/store.js:25`,
+`lib/feature-validation.js:1`, and `scripts/deal-context.js:24`. The first
+two sit on live paths — `scripts/ingest-local.js`, `scripts/eval.js`,
+several backfills, and `lib/broad-corpus/contained-routes/from-url.js`.
+
+An earlier draft of this spec said "one importer" and said it had verified
+that directly. It had not. The grep behind it required the literal string
+`lib/search`, which misses the relative `require('./search')` and
+`require('../search')` that two of the three use. That is a 3× undercount,
+in the document whose stated purpose is stopping confident false counts,
+presented as a correction of somebody else's confident false count. A Part
+F ruling scoped to "one importer, one context script" could have broken the
+V1 store path. "Reconnect, don't rebuild" stands and is strengthened
+further — more of this module is in live use than either the register or
+this spec first said.
+
+Also unmentioned by the register, and worth knowing before anyone
+reconciles "the search routes were deleted" against the tree: a live
+`pages/api/search.js` exists. It is an AI-query route and does not use
+`lib/search.js`.
 
 **10. Real, tested capabilities exist that the plan does not credit.** In
 Part F's scope, and each one is a build-or-reconnect decision rather than a
@@ -219,13 +276,33 @@ complete span-level provenance feature never switched on in any real ingest
 run (`F-AB-06`); GAP-E residual-capture buckets coded end to end and gated
 only by an unset `RESIDUAL_CAPTURE_ENABLED` (`F-OLD-03`).
 
-**11. The trigger case has a twin in a live central module** (`F-AB-01`).
-`lib/parser-v2/classify.js` carries a header claiming "~10 patterns" with
-everything else going to AI. It actually holds 80 deterministic rule
-entries across three tables, plus a cache layer and four
-post-classification override passes — roughly 8× undercounting of
-deterministic coverage, in a live module, structurally the same mistake as
-PLAN.md:145. Part B's sweep therefore cannot stop at PLAN.md.
+**11. WITHDRAWN — and the withdrawal is the finding.** This item previously
+said `lib/parser-v2/classify.js` carries a header claiming "~10 patterns"
+against 80 actual rule entries (`F-AB-01`), a twin of the PLAN.md:145
+trigger case. **That is false.** The header was already fixed in `d9cca0f`,
+an ancestor of `8d2d992`, the very commit this spec's evidence is pinned
+to. It now reads, in part: "do not assume 'two passes' describes this
+file… Count the arrays in the code for today's total; a number here would
+just go stale again the next time a deal needs a new rule." It is a model
+header. The earlier draft of this spec ordered an implementer to correct a
+defect that did not exist, and to write "80 rule entries" into a header
+that deliberately refuses hardcoded counts — which would have made it
+worse.
+
+The rule count itself (80 = 32+33+15) is right. The premise was a stale
+register finding, laundered into a spec whose entire purpose is to stop
+stale claims being believed. It survived because it was read in a report
+rather than checked against the tree.
+
+**Consequence for Part C, which is larger than this one item.** The
+registers were written against reports produced before `d9cca0f` landed.
+At least one finding was already fixed by the time it was recorded. **Every
+register finding must be re-checked against HEAD before it is acted on**,
+not just transcribed. Part C's disposition pass therefore includes a
+verified-at-HEAD stamp per finding, and any finding that no longer
+reproduces is recorded as already-fixed with the commit that fixed it —
+not silently dropped, because the pattern of which findings went stale is
+itself information.
 
 ---
 
@@ -297,7 +374,7 @@ Both halves are false (`F-AA-01`, re-verified directly):
   provenance). Stage-1 deterministic title-rule matches
   (`SECTION_FAMILY_RULE_CLASSIFIED`) and defined-term-anchored matches
   carry no blocking flag — `sectionFamilyUnverifiedReason` in
-  `candidate-resolution.js` (~3894–3908).
+  `candidate-resolution.js:3928-3932`.
 - Stage 1 costs zero model calls: 26 family labels across 27 rules, 25 with
   a registered producer.
 
@@ -314,9 +391,14 @@ about the exact component Stage 2 depends on — and it is why the old Step
 2. Correct line 142 per build-impact 5: state which script, if any, applies
    Ben's two M3 auto-pass conditions, and record that
    `nets-eligibility-report.mjs` is broken as of `0d17ad00`.
-3. Correct `lib/parser-v2/classify.js`'s header per build-impact 11: 80
-   rule entries across three tables, a cache layer, four post-classification
-   override passes.
+3. **Do not touch `lib/parser-v2/classify.js`'s header.** An earlier draft
+   ordered it corrected. It is already correct — fixed in `d9cca0f` — and
+   it deliberately refuses to state a rule count, for the reason this
+   programme keeps rediscovering. Writing a number into it would be a
+   regression. See build-impact 11.
+   Instead: **re-check every register finding against HEAD before acting on
+   it.** The registers predate `d9cca0f` and at least one of their findings
+   was already fixed when it was written down.
 4. Sweep the rest of PLAN.md's capability table and step preambles the way
    `core-docs-audit.md` swept the other four documents — every claim naming
    a file, function, line number, count or command, checked against the
@@ -372,9 +454,11 @@ document points at one of them.
    items 4–6 all cite "step P2".
 5. **D1's residual merge state** (branch again ahead of `origin/main`) gets
    recorded, as a PLAN.md line or a COMPLETED.md addendum to Step 0J.
-6. **The two unanchored OPERATING-RULES.md cross-references** — "the
-   roadmap's step 10", "the roadmap's amendment-detection step" — get
-   fixed. Both already point at content absent from the current ROADMAP.md,
+6. **The unanchored OPERATING-RULES.md cross-references** get fixed. Two
+   distinct targets, **four occurrences**: "amendment-detection step" at
+   lines 142 and 392, "roadmap's step 10" at 279 and 420. An earlier draft
+   said "the two", which would leave an implementer fixing half the lines.
+   Both targets already point at content absent from the current ROADMAP.md,
    so archiving does not worsen them; they need restoring from git history
    or rewriting to stand alone. The other six OPERATING-RULES references
    resolve cleanly to a PLAN.md or GRAVEYARD.md step and are safe to
@@ -485,10 +569,14 @@ analysis" is not a ruling.
 
 The inventory, from build-impact 9 and 10:
 
-- `lib/search.js` — complete corpus-wide provision search backend; one live
-  importer (`scripts/deal-context.js:24`, `canonicalFavorability`); routes
-  and UI page deleted 2026-07-07 (`0811c979`), prior implementation
-  recoverable at `35e74353`. Register recommends reconnect, don't rebuild.
+- `lib/search.js` — complete corpus-wide provision search backend; **three**
+  live importers (`lib/parser-v2/store.js:25`, `lib/feature-validation.js:1`,
+  `scripts/deal-context.js:24`, all `canonicalFavorability`), two of them on
+  live ingest/eval paths; routes and UI page deleted 2026-07-07
+  (`0811c979`), prior implementation recoverable at `35e74353`. Register
+  recommends reconnect, don't rebuild. **Any disposal ruling must account
+  for all three importers** — see build-impact 9 for why this count has
+  already been got wrong twice.
 - `v1v2-comparator.js` / `lexical-disagreement-net.js` — Ben-approved
   cross-validation, merged (#471/#472), 7 test files, near-invisible in the
   core docs. Interacts with build-impact 5: this is plausibly the answer to
@@ -640,7 +728,8 @@ produces wrong output that does not throw):
 - Slice with `utf8Slice`/`Buffer`, never `.slice()`/`indexOf`.
 - Do not rely on `article_context`; it is `null` in every live path today.
 - Read `buildAuditFromCaptureRecords`
-  (`full-corpus-routing-prompt-cost-audit.js:303-347`) first. It is not
+  (`full-corpus-routing-prompt-cost-audit.js`, function at 278, loop at
+  303-347) first. It is not
   exported and is scoped to a fixed cohort shape, so it cannot be called —
   but it is a reviewed, working template for this exact composition.
 
@@ -653,13 +742,33 @@ reading the document. The generated list gets read the same way, family by
 family — and per build-impact 7, for 24 of 25 families this is the first
 time anyone will have read them at all, not a diff against existing work.
 
-**Change.** Write the script. Run for Modiv. Where the output disagrees
-with the one existing pin (`TERMINATION_FEE`), read both candidate sets
-against the document and record which is right. Review all 24 unpinned
-families against the document text — this is the bulk of the step's cost
-and it is not optional. The CONSIDERATION/2.6 and KEY_DEFINED_TERMS/8.12
-corrections land here. Write the corrected result into
-`default_section_refs_by_family` for all 25.
+**Change — harvest first, generate as cross-check.** Per build-impact 7,
+the old plan's manifest-mining method was sound and its artefacts exist.
+Order of operations:
+
+1. **Harvest** `section_references` from the 24 committed run manifests
+   under `evidence/canonical-v2/modiv-*-20260806/`. Twenty carry them
+   directly; the four that do not (`CAPITALISATION`, `CLOSING_CONDITIONS`,
+   `INTERIM_OPERATING`, `NO_OTHER_REPS_FRAUD` — they failed to parse as
+   plain `section_references`) need reading out of their manifest shape by
+   hand. This is human judgement already spent, and it is free to recover.
+2. **Generate** with the script and **diff against the harvest.** The
+   generator is now a cross-check on 25 families rather than the sole
+   source for 24 — a much stronger position, because two independent
+   derivations disagreeing is a signal, whereas one unreviewed derivation
+   is just an assertion.
+3. **Human-review every disagreement**, and only those, against the
+   document text. That is where `CONSIDERATION`/2.6 belongs. The
+   `KEY_DEFINED_TERMS` question — spec says 8.12, committed baseline says
+   8.5 — is a disagreement to adjudicate here, not a correction to apply.
+   Do not assume the spec is right against the artefact.
+4. **Write the reviewed result** into `default_section_refs_by_family` for
+   all 25 families.
+
+The generator still gets written, and is still required: TopBuild has no
+manifests, and neither will the 10–15 new documents. Step 2C and every
+document round depend on it. What changes is that Modiv stops being its
+proving ground of last resort and becomes its validation set.
 
 **Proves it is done.** A test asserting every registered family has a
 pinned section list for Modiv (unchanged from the old 2A — note it passes
@@ -681,15 +790,20 @@ same evidence-directory convention.
   `all-families-baseline-20260806.json`'s entry. Must match or the round
   does not proceed.
 - **Round 2 — four families.** Add `CONSIDERATION` and `KEY_DEFINED_TERMS`
-  (both corrected in 2A — first real test of the correction) and
-  `APPRAISAL` (whose zero output was reclassified as correct-by-design;
-  confirm still zero for the *same* reason, not because it silently broke).
-  Re-run `TERMINATION_FEE` alongside, not instead.
+  (both adjudicated in 2A — first real test of that adjudication) and
+  `APPRAISAL_DISSENTERS_RIGHTS` (whose zero output was reclassified as
+  correct-by-design; confirm still zero for the *same* reason, not because
+  it silently broke). Re-run `TERMINATION_FEE` alongside, not instead.
 - **Round 3 — twelve families.** Add eight covering the families the plan
   names as having known issues (`TERMINATION`,
-  `SPECIFIC_PERFORMANCE_AND_REMEDIES`, `MATERIAL_CONTRACTS`,
+  `SPECIFIC_PERFORMANCE_REMEDIES`, `MATERIAL_CONTRACTS`,
   `GENERAL_COVENANTS`, `REPRESENTATIONS`, `TAX_MATTERS`,
   `CLOSING_CONDITIONS`, `INTERIM_OPERATING`). Re-run Round 2's four.
+
+Family names above are the registered identifiers, verified against
+`listRegisteredSectionFamilies()`. The runner rejects anything else with
+`UNREGISTERED_FAMILY`. An earlier draft wrote `APPRAISAL` and
+`SPECIFIC_PERFORMANCE_AND_REMEDIES`; neither exists.
 - **Round 4 — all 25.** Add the remaining 13, including `MAE_DEFINITION`
   (never run against Modiv — this creates its first baseline, it is not a
   regression check) and `CAPITALISATION` (needs the raised
@@ -705,6 +819,41 @@ note to fix later — find and fix the cause before the next round adds
 families, or the next round repeats the defect 8–13 more times for nothing.
 Final output is the regenerated `all-families-baseline-<date>.json`, diffed
 against `all-families-baseline-20260806.json`.
+
+**Three holes in that gate, which must be closed before the ladder runs.**
+Each one produces a green result indistinguishable from a skipped check —
+the exact criticism this spec makes of the plan it replaces.
+
+*The gate assumes deterministic re-runs; the runner is not deterministic.*
+Every re-run is a fresh live model call. `canonical-v2-live-extraction-run.mjs`
+has no `--replay` flag and no temperature pin, so two runs of the same
+family on the same document can differ with zero code change. Mandating
+hard stops on a noisy signal gives one of two outcomes, both bad: ladder
+deadlock on a flaky family, or ad-hoc "re-run until green", which is
+precisely the silent gate-erosion this ladder exists to prevent. **Required
+before Round 1:** either a replay path that re-scores recorded responses
+without new calls, or a written tolerance policy — what magnitude of
+`resolved` delta counts as noise, how many confirmations a red gate needs
+before it is believed, and who decides. Silence here means the first flaky
+round gets resolved by whoever is at the keyboard.
+
+*A zero-resolving family passes the gate vacuously.* Ten of Modiv's 25
+families resolve zero. "No resolved count falls" is trivially satisfied by
+0 → 0, so for those ten the gate checks nothing at all. Only
+`APPRAISAL_DISSENTERS_RIGHTS` gets the still-zero-for-the-same-reason
+check. **Required:** extend that check to every zero-resolving family, or
+state per family why zero is correct and what would make it wrong. A family
+returning zero can be correct — but "correct" and "silently broken" look
+identical under this gate.
+
+*A correct-empty family collides with 2A's own test and with the runner.*
+2A's "proves it is done" demands every registered family have a pinned
+Modiv list, while `resolveRunConfig` throws on an empty list. On Modiv this
+was papered over by pinning `5.11` for guaranty (resolved 0, COMPLETE). On
+a new document there may be no section to pin at all. **Required:** decide
+what a correct-empty pin looks like — a sentinel value, an explicit
+`expected_empty` flag, or a runner escape hatch — and reconcile it with the
+25/25 test, before Doc round B rather than during it.
 
 ### Step 2C. Map the families to TopBuild, same method as 2A
 
@@ -768,11 +917,36 @@ dedicated financing sections — at whichever round includes it.
   "40 deal", "all 40", "corpus size" — zero hits), which is why it was an
   open question at all.
 
-On both axes, every round: real re-execution, and the gate must pass — or
-be understood and explicitly fixed or recorded — before the next round
-starts. No round proceeds past a red gate to keep momentum. That is the
-shortcut that lets one defect repeat across every subsequent round instead
-of being caught once.
+**Re-run policy: change-triggered, not blanket.** An earlier draft
+mandated re-executing every prior family against every prior document at
+every round. Costed from the tree — model calls per family-run equals the
+number of pinned sections (`projected_model_call_count`), averaging ~2.3 on
+Modiv, so ~55–60 calls per full 25-family document pass — the full ladder
+at 15 documents is roughly 3,000–6,000 calls. Affordable in money. Not
+affordable in wall-clock: `CAPITALISATION` already needs a raised
+`--call-timeout-ms` after timing out at 600s, and thousands of serial long
+calls is days, with every red gate — including flaky ones — stopping the
+line.
+
+Worse, most of that spend buys nothing. Given live-model nondeterminism, a
+re-run whose inputs are unchanged is sampling noise, not a regression
+check. So: **re-run a (deal, family) pair only when something it depends on
+has changed since its last green receipt** — code, `prompt_version`,
+`contract_bundle_version`, or `section_references`, all of which are
+already recorded in `run-manifest.json`. That gives the guarantee the
+ladder actually wants ("a pair can only regress if something changed") at a
+fraction of the cost, and it is what this spec's own Doc round B reasoning
+implies when it calls a cross-document regression "structurally
+impossible". Blanket re-runs were the weaker design.
+
+Round 1 of each ladder is exempt: it establishes the receipt everything
+else is compared against.
+
+On both axes, every round: the gate must pass — or be understood and
+explicitly fixed or recorded — before the next round starts. No round
+proceeds past a red gate to keep momentum. That is the shortcut that lets
+one defect repeat across every subsequent round instead of being caught
+once.
 
 **Proves it is done.** Run receipts under
 `evidence/canonical-v2/<deal>-<family>-<date>` for every deal × family pair
@@ -820,11 +994,12 @@ Each is a place this spec could be wrong.
 4. **Is the ladder concrete enough for a Sonnet implementer?** Round 3's
    twelve families are named. Doc round B's "different drafter" criterion is
    not operationalised, and the third document is not chosen.
-5. **Is there a cheaper fan-out shape with the same guarantee?** Re-running
-   every prior family against every prior document each round is not free,
-   and cost grows quadratically as the document ladder extends. A sampling
-   scheme might buy most of the guarantee for much less — or reintroduce
-   exactly the blind spot the ladder exists to close.
+5. ~~Is there a cheaper fan-out shape with the same guarantee?~~ **Closed
+   by the adversarial audit: change-triggered invalidation**, which is
+   better than the sampling this question floated — it re-runs only pairs
+   whose inputs changed, which is a stronger guarantee than sampling *and*
+   cheaper. See Step 2D's re-run policy. What remains open is the tolerance
+   policy for nondeterministic re-runs, which is question 9.
 6. ~~Does Part D's ladder mean anything without Ben's auto-pass
    conditions?~~ **Closed by standing ruling 2: wire them first.** The new
    risk this creates is schedule, not correctness — D now depends on
@@ -839,3 +1014,18 @@ Each is a place this spec could be wrong.
 8. **28 paths were never read** (`coverage-matrix.md`). The registers this
    spec is built on have a known coverage hole. Part C schedules reading
    them; until then, "the findings" is not the same as "the defects".
+9. **What is the tolerance policy for a nondeterministic gate?** The runner
+   makes live model calls with no replay path and no temperature pin, so
+   the ladder's core gate is measuring a noisy signal while mandating hard
+   stops. Either a replay path gets built or a tolerance policy gets
+   written, and nobody has scoped which is cheaper. This is the single
+   likeliest cause of the ladder stalling in practice.
+10. **How many register findings are already fixed?** At least one
+    (`F-AB-01`) was fixed before it was written down, and this spec
+    propagated it anyway. The registers were produced against
+    pre-`d9cca0f` reads. Until Part C's verified-at-HEAD pass runs, the
+    finding count is an upper bound on real defects, not a measure of them.
+11. **Is `KEY_DEFINED_TERMS` at 8.5 or 8.12?** This spec says 8.12 twice
+    and calls it a correction. The only committed artefact — the baseline
+    run manifest — says 8.5. Unadjudicated, and it must be settled against
+    the document text before anything is written to the pins.
