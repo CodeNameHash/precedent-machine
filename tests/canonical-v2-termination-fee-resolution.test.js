@@ -53,6 +53,8 @@ const {
   longestEvidenceSpan,
   compareFeeSightingRank,
   reconcileDuplicateTerminationFeeSightings,
+  indexFeeAmountCandidatesBySection,
+  resolveFeeAmountGrounds,
 } = require('../lib/canonical-v2/native-producer/candidate-resolution');
 const { TERMINATION_FEE_PARSE_VERSION } = require('../lib/canonical-v2/native-producer/termination-fee-parse');
 
@@ -281,11 +283,17 @@ async function resolveTerminationFeeAssertions(dealKey, sectionBody, response) {
   return { receipt, resolution, sourceText, documentHash, admittedSourceContext };
 }
 
+// limbAmountQuote: OPTIONAL, mirrors the real producer's own
+// fee_amount_assertions[].limb_amount_quote field (docs/codex-program/
+// notes/per-limb-fee-amount.md) -- omitted entirely, not null, when not
+// passed, so every pre-existing call site in this file stays byte-for-byte
+// unaffected.
 function feeAmountAssertion({
-  sectionReference = SECTION_REFERENCE, feeSide, payerParty, feeTermRef, quote,
+  sectionReference = SECTION_REFERENCE, feeSide, payerParty, feeTermRef, quote, limbAmountQuote,
 }) {
   return {
     section_reference: sectionReference, fee_side: feeSide, payer_party: payerParty, fee_term_ref: feeTermRef, quote,
+    ...(limbAmountQuote !== undefined ? { limb_amount_quote: limbAmountQuote } : {}),
   };
 }
 
@@ -1299,6 +1307,253 @@ test('indexFeeTriggerCandidatesBySection (exported, direct): indexes only ok===t
   assert.deepEqual([...index.keys()], ['3.1(a)']);
   assert.equal(index.get('3.1(a)').length, 2);
   assert.equal(index.get('3.1(b)'), undefined);
+});
+
+// ---------------------------------------------------------------------------
+// Grounds-to-amount mapping (docs/codex-program/notes/grounds-to-amount-
+// mapping.md; per-limb-fee-amount.md section 7's own named, deliberately
+// unsolved gap). indexFeeAmountCandidatesBySection mirrors
+// indexFeeTriggerCandidatesBySection's own direct test immediately above;
+// resolveFeeAmountGrounds mirrors resolveCitationFollowupTriggerCode's own
+// direct test against hand-built indexes, immediately above that.
+// ---------------------------------------------------------------------------
+
+test('indexFeeAmountCandidatesBySection (exported, direct): indexes only ok===true FEE_AMOUNT_CLAIM_KEY claim candidates, by section_reference', () => {
+  const compiledCandidates = [
+    {
+      ok: true, section_reference: '3.1(a)', candidate: { kind: 'claim', claim: { claim_definition_key: FEE_AMOUNT_CLAIM_KEY, raw_value: 'x', attributes: {} } },
+    },
+    {
+      ok: true, section_reference: '3.1(a)', candidate: { kind: 'claim', claim: { claim_definition_key: FEE_AMOUNT_CLAIM_KEY, raw_value: 'y', attributes: {} } },
+    },
+    { ok: false, section_reference: '3.1(a)' },
+    {
+      ok: true, section_reference: '3.1(b)', candidate: { kind: 'claim', claim: { claim_definition_key: FEE_TRIGGER_CLAIM_KEY, raw_value: 'z', attributes: {} } },
+    },
+    { ok: true, section_reference: '3.1(c)', candidate: { kind: 'relationship' } },
+  ];
+  const index = indexFeeAmountCandidatesBySection(compiledCandidates);
+  assert.deepEqual([...index.keys()], ['3.1(a)']);
+  assert.equal(index.get('3.1(a)').length, 2);
+  assert.equal(index.get('3.1(b)'), undefined);
+});
+
+test('resolveFeeAmountGrounds (exported, direct): selects, verifies against sectionsByReference, and fails closed -- against hand-built indexes', () => {
+  const sectionsByReference = new Map([
+    ['9.1(a)', { section_reference: '9.1(a)' }],
+    ['9.1(b)', { section_reference: '9.1(b)' }],
+  ]);
+  const feeTriggerCandidatesBySection = new Map([
+    ['8.1', [{
+      entry: {},
+      claim: { raw_value: 'if terminated pursuant to Section 9.1(a) or Section 9.1(b)', attributes: {} },
+    }]],
+  ]);
+  const feeAmountCandidatesBySection = new Map([
+    ['8.1', [{
+      entry: {},
+      claim: {
+        raw_value: '“Widget Fee” means if terminated pursuant to Section 9.1(a) or Section 9.1(b), $1,000,000.',
+        attributes: {},
+      },
+    }]],
+  ]);
+
+  const matched = resolveFeeAmountGrounds({
+    sectionReference: '8.1',
+    quote: '“Widget Fee” means if terminated pursuant to Section 9.1(a) or Section 9.1(b), $1,000,000.',
+    anchorQuote: null,
+    feeAmountCandidatesBySection, feeTriggerCandidatesBySection, sectionsByReference,
+  });
+  assert.deepEqual(matched, {
+    matched: true,
+    grounds_quote: 'if terminated pursuant to Section 9.1(a) or Section 9.1(b)',
+    grounds_cited_references: ['9.1(a)', '9.1(b)'],
+  });
+
+  // Nothing nested nearby at all -- the ordinary case.
+  const none = resolveFeeAmountGrounds({
+    sectionReference: '8.1',
+    quote: '“Widget Fee” means $1,000,000.',
+    anchorQuote: null,
+    feeAmountCandidatesBySection, feeTriggerCandidatesBySection, sectionsByReference,
+  });
+  assert.equal(none, null);
+
+  // A cited reference that does not resolve -- fail closed, typed residual,
+  // never a partial or guessed grounds set.
+  const missingOneSection = new Map([['9.1(a)', { section_reference: '9.1(a)' }]]); // 9.1(b) absent
+  const unresolved = resolveFeeAmountGrounds({
+    sectionReference: '8.1',
+    quote: '“Widget Fee” means if terminated pursuant to Section 9.1(a) or Section 9.1(b), $1,000,000.',
+    anchorQuote: null,
+    feeAmountCandidatesBySection, feeTriggerCandidatesBySection, sectionsByReference: missingOneSection,
+  });
+  assert.equal(unresolved.matched, false);
+  assert.deepEqual(unresolved.residual, {
+    residual_type: 'FEE_AMOUNT_GROUNDS_REFERENCE_UNRESOLVED',
+    section_reference: '8.1',
+    cited_reference: '9.1(b)',
+    grounds_quote: 'if terminated pursuant to Section 9.1(a) or Section 9.1(b)',
+  });
+
+  // Two candidates equally owned by the same (absent) anchor -- ambiguous,
+  // reported rather than picked or merged.
+  const ambiguousTriggers = new Map([
+    ['8.1', [
+      { entry: {}, claim: { raw_value: 'Section 9.1(a)', attributes: {} } },
+      { entry: {}, claim: { raw_value: 'Section 9.1(b)', attributes: {} } },
+    ]],
+  ]);
+  const ambiguousAmounts = new Map([
+    ['8.1', [{
+      entry: {},
+      claim: { raw_value: '“Widget Fee” means Section 9.1(a) or Section 9.1(b), $1,000,000.', attributes: {} },
+    }]],
+  ]);
+  const ambiguous = resolveFeeAmountGrounds({
+    sectionReference: '8.1',
+    quote: '“Widget Fee” means Section 9.1(a) or Section 9.1(b), $1,000,000.',
+    anchorQuote: null,
+    feeAmountCandidatesBySection: ambiguousAmounts, feeTriggerCandidatesBySection: ambiguousTriggers, sectionsByReference,
+  });
+  assert.equal(ambiguous.matched, false);
+  assert.deepEqual(ambiguous.residual, {
+    residual_type: 'FEE_AMOUNT_GROUNDS_CONDITION_AMBIGUOUS',
+    section_reference: '8.1',
+    candidate_count: 2,
+  });
+});
+
+// ─── Full pipeline (resolveTerminationFeeAssertions/resolveMultiSection
+// TerminationFeeAssertions) -- the three hostile scenarios named in the
+// task acceptance criteria, plus a regression pin and a generalisation
+// proof beyond the one committed Modiv fixture. ───
+
+test('grounds-to-amount mapping regression (no condition at all): behaves EXACTLY as it did before this feature existed -- identical canonical_value, identical attribute key set, zero residuals', async () => {
+  const { resolution } = await resolveTerminationFeeAssertions('deal:grounds-none-nearby', ' “Company Base Amount” means $1,000,000.', {
+    fee_amount_assertions: [feeAmountAssertion({
+      feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Base Amount', quote: '“Company Base Amount” means $1,000,000.',
+    })],
+    fee_trigger_assertions: [],
+  });
+  const amount = resolution.resolved.find((r) => r.resolved_claim_definition_key === 'TERMINATION_FEE_AMOUNT');
+  assert.ok(amount);
+  assert.equal(amount.claim.canonical_value, '1000000');
+  assert.deepEqual(Object.keys(amount.claim.attributes).sort(), [
+    'answer_provenance', 'fee_side', 'fee_term_ref', 'payer_party', 'section_reference',
+  ]);
+  assert.equal(resolution.residuals.length, 0);
+});
+
+test('grounds-to-amount mapping hostile: a condition citing a section that never resolves this run fails closed -- amount still resolves exactly as it would without the condition, and the decision not to attach is left as a typed residual, never silent', async () => {
+  const AMOUNT_QUOTE = '“Company Base Amount” means, if payable pursuant to Section 9.9(z), $1,000,000.';
+  const { resolution } = await resolveTerminationFeeAssertions('deal:grounds-unresolvable-reference', ` ${AMOUNT_QUOTE}`, {
+    fee_amount_assertions: [feeAmountAssertion({
+      feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Base Amount', quote: AMOUNT_QUOTE,
+    })],
+    fee_trigger_assertions: [feeTriggerAssertion({
+      feeSide: 'SELLER', quote: 'if payable pursuant to Section 9.9(z)',
+    })],
+  });
+
+  const amount = resolution.resolved.find((r) => r.resolved_claim_definition_key === 'TERMINATION_FEE_AMOUNT');
+  assert.ok(amount, 'a declined enrichment must never block the amount itself from resolving');
+  assert.equal(amount.claim.canonical_value, '1000000');
+  assert.equal('grounds_quote' in amount.claim.attributes, false);
+  assert.equal('grounds_cited_references' in amount.claim.attributes, false);
+
+  const residual = resolution.residuals.find((r) => r.residual_type === 'FEE_AMOUNT_GROUNDS_REFERENCE_UNRESOLVED');
+  assert.ok(residual, 'the decision not to attach must be explainable, not silent');
+  assert.equal(residual.section_reference, SECTION_REFERENCE);
+  assert.equal(residual.cited_reference, '9.9(z)');
+  assert.equal(residual.grounds_quote, 'if payable pursuant to Section 9.9(z)');
+});
+
+test('grounds-to-amount mapping hostile: a bare-citation condition that exists in the same section but is NOT nested inside this amount\'s own quote is never attached -- fails closed exactly like an unverifiable quote, no residual either (nothing was ever selected)', async () => {
+  const AMOUNT_QUOTE = '“Company Base Amount” means $1,000,000.';
+  const TRIGGER_QUOTE = 'if payable pursuant to Section 9.9(z)';
+  const { resolution } = await resolveTerminationFeeAssertions(
+    'deal:grounds-not-nested',
+    ` ${AMOUNT_QUOTE} Separately, ${TRIGGER_QUOTE}, the Company shall notify Parent.`,
+    {
+      fee_amount_assertions: [feeAmountAssertion({
+        feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Base Amount', quote: AMOUNT_QUOTE,
+      })],
+      fee_trigger_assertions: [feeTriggerAssertion({ feeSide: 'SELLER', quote: TRIGGER_QUOTE })],
+    },
+  );
+
+  const amount = resolution.resolved.find((r) => r.resolved_claim_definition_key === 'TERMINATION_FEE_AMOUNT');
+  assert.ok(amount);
+  assert.equal(amount.claim.canonical_value, '1000000');
+  assert.equal('grounds_quote' in amount.claim.attributes, false);
+  assert.equal('grounds_cited_references' in amount.claim.attributes, false);
+  assert.equal(resolution.residuals.filter((r) => r.residual_type.startsWith('FEE_AMOUNT_GROUNDS')).length, 0);
+});
+
+test('grounds-to-amount mapping hostile: a fragmented disjunction (several single-reference conditions instead of one combined quote -- Modiv\'s own real 2026-08-05 shape) never gets merged or guessed at, even at full-pipeline level', async () => {
+  const AMOUNT_QUOTE = '“Company Base Amount” means, if payable pursuant to Section 9.9(x) or Section 9.9(y), $1,000,000.';
+  const { resolution } = await resolveTerminationFeeAssertions('deal:grounds-fragmented-disjunction', ` ${AMOUNT_QUOTE}`, {
+    fee_amount_assertions: [feeAmountAssertion({
+      feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Base Amount', quote: AMOUNT_QUOTE,
+    })],
+    fee_trigger_assertions: [
+      feeTriggerAssertion({ feeSide: 'SELLER', quote: 'Section 9.9(x)' }),
+      feeTriggerAssertion({ feeSide: 'SELLER', quote: 'Section 9.9(y)' }),
+    ],
+  });
+
+  const amount = resolution.resolved.find((r) => r.resolved_claim_definition_key === 'TERMINATION_FEE_AMOUNT');
+  assert.ok(amount);
+  assert.equal(amount.claim.canonical_value, '1000000');
+  assert.equal('grounds_quote' in amount.claim.attributes, false);
+
+  const residual = resolution.residuals.find((r) => r.residual_type === 'FEE_AMOUNT_GROUNDS_CONDITION_AMBIGUOUS');
+  assert.ok(residual);
+  assert.equal(residual.section_reference, SECTION_REFERENCE);
+  assert.equal(residual.candidate_count, 2);
+});
+
+test('grounds-to-amount mapping: generalises beyond the one committed Modiv fixture -- a synthetic two-limb conditional fee, citing REAL, independently dispatched sibling sections (never Modiv\'s own section numbers or figures), resolves both limbs to their own distinct grounds end to end', async () => {
+  const SHARED_QUOTE = '“Company Base Amount” means (x) if terminated pursuant to Section 3.1(a), $7,000,000, '
+    + 'or (y) if terminated pursuant to Section 3.1(c), $9,000,000.';
+  const { resolution } = await resolveMultiSectionTerminationFeeAssertions('deal:grounds-generalises', {
+    a: ' Ground One. The Company Board has approved a Superior Proposal.',
+    b: ` Termination Fee. ${SHARED_QUOTE}`,
+    c: ' Ground Two. The Outside Date has passed without the Closing having occurred.',
+  }, {
+    responsesByReference: {
+      '3.1(b)': {
+        fee_amount_assertions: [
+          feeAmountAssertion({
+            sectionReference: '3.1(b)', feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Base Amount',
+            quote: SHARED_QUOTE, limbAmountQuote: '$7,000,000',
+          }),
+          feeAmountAssertion({
+            sectionReference: '3.1(b)', feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Base Amount',
+            quote: SHARED_QUOTE, limbAmountQuote: '$9,000,000',
+          }),
+        ],
+        fee_trigger_assertions: [
+          feeTriggerAssertion({ sectionReference: '3.1(b)', feeSide: 'SELLER', quote: 'if terminated pursuant to Section 3.1(a)' }),
+          feeTriggerAssertion({ sectionReference: '3.1(b)', feeSide: 'SELLER', quote: 'if terminated pursuant to Section 3.1(c)' }),
+        ],
+      },
+    },
+  });
+
+  const amounts = resolution.resolved.filter((r) => r.resolved_claim_definition_key === 'TERMINATION_FEE_AMOUNT');
+  assert.equal(amounts.length, 2);
+  const byValue = Object.fromEntries(amounts.map((r) => [r.claim.canonical_value, r.claim.attributes]));
+
+  assert.equal(byValue['7000000'].grounds_quote, 'if terminated pursuant to Section 3.1(a)');
+  assert.deepEqual(byValue['7000000'].grounds_cited_references, ['3.1(a)']);
+  assert.equal(byValue['7000000'].limb_amount_disambiguated, true);
+
+  assert.equal(byValue['9000000'].grounds_quote, 'if terminated pursuant to Section 3.1(c)');
+  assert.deepEqual(byValue['9000000'].grounds_cited_references, ['3.1(c)']);
+  assert.equal(byValue['9000000'].limb_amount_disambiguated, true);
 });
 
 // ---------------------------------------------------------------------------

@@ -21,6 +21,7 @@ const {
   TERMINATION_FEE_PARSE_VERSION,
   parseFeeAmount,
   resolveFeeAmount,
+  selectFeeAmountGroundsCondition,
   parseTailPeriodMonths,
 } = require('../lib/canonical-v2/native-producer/termination-fee-parse');
 
@@ -165,6 +166,149 @@ test('resolveFeeAmount: a byte-real but WRONG-limb sub-quote (the model swaps wh
   const result = resolveFeeAmount(MODIV_COMPANY_BASE_FULL_SENTENCE, '$15,000,000.00');
   assert.equal(result.outcome, 'RESOLVED');
   assert.equal(result.canonical_value, '15000000.00');
+});
+
+// ---------------------------------------------------------------------------
+// selectFeeAmountGroundsCondition (docs/codex-program/notes/grounds-to-
+// amount-mapping.md): picks which of several bare-citation-shaped condition
+// clauses is THIS limb's own, given only string positions -- see the
+// function's own file-header comment for the full ownership rule. Every
+// grounds-quote constant below is copied verbatim from real evidence: the
+// combined-quote pair from evidence/canonical-v2/modiv-termination-fee-
+// citation-following-20260806/native-producer-recorded-response-8.12.json's
+// own fee_trigger_assertions, and the fragmented single-reference triple
+// from evidence/canonical-v2/modiv-termination-fee-scope-correction-
+// 20260805/native-producer-recorded-response-8.12.json's own
+// fee_trigger_assertions -- not invented shapes.
+// ---------------------------------------------------------------------------
+
+const MODIV_GROUNDS_X = 'if payable pursuant to Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii)';
+const MODIV_GROUNDS_Y = 'if payable pursuant to Section 7.3(b)(iv) or Section 7.3(b)(v)';
+
+test('selectFeeAmountGroundsCondition: Modiv shape -- each limb of a shared whole-sentence quote is attributed to its OWN, disjoint condition clause', () => {
+  const candidates = [{ quote: MODIV_GROUNDS_X }, { quote: MODIV_GROUNDS_Y }];
+
+  const forLimbX = selectFeeAmountGroundsCondition({
+    quote: MODIV_COMPANY_BASE_FULL_SENTENCE,
+    anchorQuote: '$10,000,000',
+    siblingAnchorQuotes: ['$15,000,000.00'],
+    candidates,
+  });
+  assert.equal(forLimbX.outcome, 'SELECTED');
+  assert.equal(forLimbX.condition.quote, MODIV_GROUNDS_X);
+
+  const forLimbY = selectFeeAmountGroundsCondition({
+    quote: MODIV_COMPANY_BASE_FULL_SENTENCE,
+    anchorQuote: '$15,000,000.00',
+    siblingAnchorQuotes: ['$10,000,000'],
+    candidates,
+  });
+  assert.equal(forLimbY.outcome, 'SELECTED');
+  assert.equal(forLimbY.condition.quote, MODIV_GROUNDS_Y);
+});
+
+test('selectFeeAmountGroundsCondition: extra fields on the winning candidate (e.g. cited_references) pass through unchanged', () => {
+  const result = selectFeeAmountGroundsCondition({
+    quote: MODIV_COMPANY_BASE_FULL_SENTENCE,
+    anchorQuote: '$10,000,000',
+    siblingAnchorQuotes: ['$15,000,000.00'],
+    candidates: [
+      { quote: MODIV_GROUNDS_X, cited_references: ['7.3(b)(i)', '7.3(b)(ii)', '7.3(b)(iii)'] },
+      { quote: MODIV_GROUNDS_Y, cited_references: ['7.3(b)(iv)', '7.3(b)(v)'] },
+    ],
+  });
+  assert.equal(result.outcome, 'SELECTED');
+  assert.deepEqual(result.condition.cited_references, ['7.3(b)(i)', '7.3(b)(ii)', '7.3(b)(iii)']);
+});
+
+test('selectFeeAmountGroundsCondition: NONE when the candidate list is empty (the ordinary, ubiquitous case -- an unconditional amount)', () => {
+  const result = selectFeeAmountGroundsCondition({
+    quote: '“Parent Base Amount” means $15,000,000.00.', anchorQuote: null, candidates: [],
+  });
+  assert.deepEqual(result, { outcome: 'NONE' });
+});
+
+test('selectFeeAmountGroundsCondition: NONE when candidates are real quotes, just never nested in THIS quote -- Modiv\'s own unconditional Parent Base Amount sharing a section with the Company Base Amount grounds', () => {
+  const result = selectFeeAmountGroundsCondition({
+    quote: '“Parent Base Amount” means $15,000,000.00.',
+    anchorQuote: null,
+    candidates: [{ quote: MODIV_GROUNDS_X }, { quote: MODIV_GROUNDS_Y }],
+  });
+  assert.deepEqual(result, { outcome: 'NONE' });
+});
+
+test('selectFeeAmountGroundsCondition: AMBIGUOUS -- Modiv\'s own 2026-08-05 fragmented-disjunction shape, reproduced from real recorded bytes, correctly refuses to pick or merge among three equally-owned candidates', () => {
+  // The PROMPT_VERSION-1 (x)-limb's own fragment quote: no limb_amount_quote
+  // field exists yet at this prompt version, so this limb carries no anchor
+  // sub-quote at all -- exactly evidence/canonical-v2/modiv-termination-fee-
+  // scope-correction-20260805's real shape.
+  const oldLimbXFragment = '“Company Base Amount” means (x) if payable pursuant to Section 7.3(b)(i), '
+    + 'Section 7.3(b)(ii) or Section 7.3(b)(iii), $10,000,000';
+  const result = selectFeeAmountGroundsCondition({
+    quote: oldLimbXFragment,
+    anchorQuote: undefined,
+    candidates: [
+      { quote: 'Section 7.3(b)(i)' },
+      { quote: 'Section 7.3(b)(ii)' },
+      { quote: 'Section 7.3(b)(iii)' },
+    ],
+  });
+  assert.deepEqual(result, { outcome: 'AMBIGUOUS', candidate_count: 3 });
+});
+
+test('selectFeeAmountGroundsCondition: sibling exclusion -- a candidate that textually precedes BOTH anchors is owned only by the nearer one, never by both', () => {
+  const quote = 'if X, $1, or if Y, $2.';
+  const candidates = [{ quote: 'if X' }, { quote: 'if Y' }];
+
+  const forFirstLimb = selectFeeAmountGroundsCondition({
+    quote, anchorQuote: '$1', siblingAnchorQuotes: ['$2'], candidates,
+  });
+  assert.equal(forFirstLimb.outcome, 'SELECTED');
+  assert.equal(forFirstLimb.condition.quote, 'if X');
+
+  const forSecondLimb = selectFeeAmountGroundsCondition({
+    quote, anchorQuote: '$2', siblingAnchorQuotes: ['$1'], candidates,
+  });
+  assert.equal(forSecondLimb.outcome, 'SELECTED');
+  assert.equal(forSecondLimb.condition.quote, 'if Y');
+});
+
+test('selectFeeAmountGroundsCondition: an ordinary, undisambiguated single-figure amount (no anchorQuote, no siblings) still selects its own lone nearby condition', () => {
+  const result = selectFeeAmountGroundsCondition({
+    quote: 'if terminated pursuant to Section 9.1, the Company shall pay $5,000,000.',
+    anchorQuote: null,
+    candidates: [{ quote: 'if terminated pursuant to Section 9.1' }],
+  });
+  assert.equal(result.outcome, 'SELECTED');
+  assert.equal(result.condition.quote, 'if terminated pursuant to Section 9.1');
+});
+
+test('selectFeeAmountGroundsCondition: a candidate quote that appears TWICE in the outer quote is ambiguous nesting -- excluded, never guessed at its first occurrence', () => {
+  const result = selectFeeAmountGroundsCondition({
+    quote: 'if X, $1. Restated for clarity: if X, $1.',
+    anchorQuote: '$1',
+    candidates: [{ quote: 'if X' }],
+  });
+  assert.deepEqual(result, { outcome: 'NONE' });
+});
+
+test('selectFeeAmountGroundsCondition: candidate entries with a missing/empty/non-string quote are skipped defensively, never crash the search', () => {
+  const result = selectFeeAmountGroundsCondition({
+    quote: 'if terminated pursuant to Section 9.1, the Company shall pay $5,000,000.',
+    anchorQuote: null,
+    candidates: [{}, { quote: '' }, { quote: null }, { quote: 'if terminated pursuant to Section 9.1' }],
+  });
+  assert.equal(result.outcome, 'SELECTED');
+  assert.equal(result.condition.quote, 'if terminated pursuant to Section 9.1');
+});
+
+test('selectFeeAmountGroundsCondition: throws on a missing/empty quote -- a required input, same discipline as parseFeeAmount/parseTailPeriodMonths', () => {
+  assert.throws(() => selectFeeAmountGroundsCondition({ quote: '', candidates: [] }), TypeError);
+  assert.throws(() => selectFeeAmountGroundsCondition({ candidates: [] }), TypeError);
+});
+
+test('selectFeeAmountGroundsCondition: throws when candidates is not an array', () => {
+  assert.throws(() => selectFeeAmountGroundsCondition({ quote: 'text', candidates: null }), TypeError);
 });
 
 test('Carrols amount resolves 9500000 (strict grouping, round number)', () => {

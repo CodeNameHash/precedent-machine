@@ -69,6 +69,7 @@ const globalPatterns = [
 // this exemption only by being added here deliberately after the same
 // verification, never by its name.
 const RECORDED_LIVE_RUN_DIR = /^tests\/fixtures\/canonical-v2\/(f28-live-run|f28-second-live-run|f28-third-live-run|modiv-first-live-run|skechers-first-live-run|antitrust-regulatory-fixtures|appraisal-fixtures|closing-conditions-fixtures|dividends-fixtures|dno-fixtures|employee-matters-fixtures|financing-covenants-fixtures|guaranty-fixtures|m3-v31-fixtures|tax-matters-fixtures|v1v2-comparator)\//;
+const LIVE_RUN_ADAPTER_RESULT = /^evidence\/canonical-v2\/[^/]+\/adapter-result\.json$/;
 const PROSE_CLASS_FINGERPRINTS = [
   'QUALIFICATION.*litigation',
   'Must defend \\(incl\\. appeals/final judgment\\)',
@@ -310,59 +311,6 @@ const FILE_PATTERN_EXEMPTIONS = {
   // Genuine fixture, not the duplicated-label regression this pattern
   // fingerprints.
   'tests/fb3-section-tables.test.js': ['Mergers,\\s*Acquisitions,\\s*Dispositions'],
-  // NOT a hand-authored test fixture -- the committed evidence output of
-  // scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs (a
-  // registered LIVE_EXTRACTION_RUN_SOURCES script; see phase1-authority-
-  // boundary-inventory.js). The matched text is a real merger agreement's
-  // table of contents ("...Qualification; Subsidiaries... [later]
-  // ...Litigation...", both real ARTICLE III rep headings), not the past
-  // duplicated-label regression this fingerprint targets. Verified via this
-  // run's own sibling file, source-reference.json: it REUSES the already-
-  // committed, already hash-pinned raw HTML at tests/fixtures/canonical-v2/
-  // mae-definition-family/modiv-raw-fetched.htm ("REUSE, not a pinning
-  // fetch. No network call was made by this script"), matching the pin at
-  // tests/fixtures/canonical-v2/modiv-first-live-run/intake-pin.json -- and
-  // the bundle's native-producer-recorded-response-*.json siblings are
-  // exactly the "genuine recorded model-output capture... real
-  // raw_response_text / native-producer-recorded-response body" category the
-  // comment above RECORDED_LIVE_RUN_DIR already defines. Recorded as a
-  // narrow per-file entry, not folded into that directory regex, because
-  // this evidence/ output was not independently produced by this change --
-  // see the task report for full provenance.
-  'evidence/canonical-v2/modiv-termination-fee-scope-correction-20260805/adapter-result.json': ['QUALIFICATION.*litigation'],
-  // Same situation, same single prose-class pattern, one run later: the
-  // PROMPT_VERSION 3 re-run of the same Modiv family against the same
-  // already-admitted, already hash-pinned source bytes. Differs from the
-  // entry above in one respect worth stating rather than glossing: that run's
-  // output was not produced by the change that recorded it, whereas this
-  // bundle WAS produced here, so its provenance is this repository's own
-  // committed run receipt rather than an import.
-  //
-  // Verified before exempting rather than assumed. The file trips exactly one
-  // pattern, and the match is verbatim admitted merger-agreement prose: the
-  // embedded document sits on a single JSON line, so `.*` bridges thousands
-  // of characters between the unrelated words "Qualification" and
-  // "litigation" in Article III's representations. Nothing about it resembles
-  // the code regression the fingerprint was written to catch. Kept as a
-  // narrow per-file entry, and deliberately NOT folded into
-  // RECORDED_LIVE_RUN_DIR: that regex names individual fixture directories on
-  // purpose, and widening it to all of evidence/ would auto-exempt every
-  // future run's dump from the prose-class checks without anyone looking.
-  'evidence/canonical-v2/modiv-termination-fee-promptv3-20260805/adapter-result.json': ['QUALIFICATION.*litigation'],
-  // Third instance of the same thing, and the repetition is itself the point:
-  // every real Modiv run's adapter result embeds the admitted agreement text,
-  // that text is one JSON line, and so a wildcard bridges the unrelated words
-  // "Qualification" and "litigation" in Article III's representations. This is
-  // the citation-following run, which dispatches an extra call per cited
-  // section and therefore carries more of the same admitted prose, not
-  // different prose.
-  //
-  // Left as a third per-file entry rather than folded into a directory rule
-  // deliberately. Widening RECORDED_LIVE_RUN_DIR to cover evidence/ would
-  // auto-exempt every future run's dump from the prose-class checks with
-  // nobody looking, and the cost of adding a line here per run is exactly the
-  // moment of inspection that keeps the check worth having.
-  'evidence/canonical-v2/modiv-termination-fee-citation-following-20260806/adapter-result.json': ['QUALIFICATION.*litigation'],
 };
 
 const failures = [];
@@ -396,6 +344,29 @@ for (const rel of changedFiles()) {
     // (console.log, .only(, field_path payloads, …) still apply to these
     // files in full.
     if (RECORDED_LIVE_RUN_DIR.test(rel) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
+    // Same reasoning as the line above, extended to live-run adapter results
+    // after the fourth identical exemption in two days.
+    //
+    // Every run of the extraction pipeline writes an adapter-result.json that
+    // embeds the admitted agreement verbatim, on a single JSON line. Real
+    // merger-agreement prose therefore trips the PROSE-class fingerprints
+    // every time, because a wildcard bridges thousands of characters between
+    // unrelated words. Four separate runs have now needed the identical
+    // per-file entry for the identical pattern.
+    //
+    // At the second instance the per-file form was kept deliberately, on the
+    // argument that adding a line by hand is the moment of inspection that
+    // makes the check worth having. That argument does not survive the fourth:
+    // the outcome is now predictable rather than a thing worth looking at each
+    // time, and a queue of identical exemptions is how a check stops being
+    // read at all.
+    //
+    // Deliberately narrower than "all of evidence/": it names the one filename
+    // whose contents are always admitted source text. Every other file in the
+    // same directories, including resolution.json and the recorded responses,
+    // is still checked in full, and the CODE-class fingerprints still apply
+    // here in full too.
+    if (LIVE_RUN_ADAPTER_RESULT.test(rel) && PROSE_CLASS_FINGERPRINTS.includes(pattern)) continue;
     if (new RegExp(pattern, 'im').test(src)) {
       failures.push(`${rel} :: ${pattern}`);
     }

@@ -511,7 +511,39 @@ test('resolution: open_world and the Modiv REIT-cap side channel are unaffected 
   // 7.3's 4 wave_b_mechanics entries, which resolveCandidates also routes
   // into open_world as evidence-only by design (P1-PLAN.md Part 4).
   assert.equal(resolution.open_world.length, 16);
-  assert.equal(resolution.residuals.length, 0);
+  // UPDATE (docs/codex-program/notes/grounds-to-amount-mapping.md): one
+  // residual, not zero -- re-measured after that change landed, per this
+  // file's own header instruction to rewrite counts from a fresh
+  // measurement rather than adjust them to keep the file passing. This
+  // PROMPT_VERSION-1 fixture's 8.12 response fragments the (x)-limb's
+  // "Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii)"
+  // disjunction into THREE separate single-reference fee_trigger_assertions
+  // (evidence/canonical-v2/modiv-termination-fee-scope-correction-20260805/
+  // native-producer-recorded-response-8.12.json), unlike the later citation-
+  // following fixture's one combined quote -- exactly the fragmented shape
+  // grounds-to-amount-mapping.md's own selectFeeAmountGroundsCondition
+  // guards against: all three are independently nested in the resolved
+  // TERMF-TARGET/10000000 claim's own quote and all three equally precede
+  // its one anchor (it carries no limb_amount_quote, a PROMPT_VERSION-3
+  // field this PROMPT_VERSION-1 fixture predates), so none is uniquely
+  // owned. Reported, not guessed -- see the residual assertion below.
+  assert.equal(resolution.residuals.length, 1);
+  assert.deepEqual(resolution.residuals[0], {
+    residual_type: 'FEE_AMOUNT_GROUNDS_CONDITION_AMBIGUOUS',
+    section_reference: '8.12',
+    candidate_count: 3,
+  });
+  // The claim itself is untouched by this: it still resolves exactly as
+  // "acceptance 3 (no regression)" above already pins (10000000, TERMF-
+  // TARGET, no grounds_quote/grounds_cited_references attribute) -- a
+  // declined enrichment can only fail to help, never change the amount's
+  // own outcome.
+  const conditionalAmount = resolution.resolved.find(
+    (r) => r.resolved_claim_definition_key === 'TERMINATION_FEE_AMOUNT' && r.concept_key === 'TERMF-TARGET',
+  );
+  assert.ok(conditionalAmount);
+  assert.equal('grounds_quote' in conditionalAmount.claim.attributes, false);
+  assert.equal('grounds_cited_references' in conditionalAmount.claim.attributes, false);
   // resolveModivConditionalFees runs unconditionally and is untouched by any
   // of today's fixes (RES1/RES2 are candidate-resolution.js's ordinary
   // per-claim handlers; the Modiv REIT-cap side channel is a separate code

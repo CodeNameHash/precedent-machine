@@ -317,6 +317,58 @@ test('acceptance 1: every claim NOT part of a merge resolves under the SAME cont
 });
 
 // ─────────────────────────────────────────────────────────────────────────
+// Grounds-to-amount mapping (docs/codex-program/notes/grounds-to-amount-
+// mapping.md; acceptance criterion 1 of that task): replaying THIS SAME
+// committed run -- no prompt change, no new field the model was ever
+// asked for, the identical frozen recorded responses already loaded above
+// -- now associates each Modiv Company Base Amount limb with its own
+// grounds, derived entirely from the model's own already-extracted
+// fee_trigger_assertions (evidence/canonical-v2/modiv-termination-fee-
+// citation-following-20260806/native-producer-recorded-response-8.12.json),
+// never from a hardcoded Modiv literal.
+// ─────────────────────────────────────────────────────────────────────────
+
+test('grounds-to-amount mapping: each Modiv Company Base Amount limb resolves with its OWN, distinct grounds; the unconditional Parent Base Amount carries none', async () => {
+  const { resolution } = await runReplay();
+
+  const tenMillion = resolution.resolved.find(
+    (r) => r.section_reference === '8.12' && r.resolved_claim_definition_key === 'TERMINATION_FEE_AMOUNT'
+      && r.concept_key === 'TERMF-TARGET' && r.claim.canonical_value === '10000000',
+  );
+  assert.ok(tenMillion);
+  assert.equal(tenMillion.claim.attributes.grounds_quote, 'if payable pursuant to Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii)');
+  assert.deepEqual(tenMillion.claim.attributes.grounds_cited_references, ['7.3(b)(i)', '7.3(b)(ii)', '7.3(b)(iii)']);
+
+  const fifteenMillionTarget = resolution.resolved.find(
+    (r) => r.section_reference === '8.12' && r.resolved_claim_definition_key === 'TERMINATION_FEE_AMOUNT'
+      && r.concept_key === 'TERMF-TARGET' && r.claim.canonical_value === '15000000.00',
+  );
+  assert.ok(fifteenMillionTarget);
+  assert.equal(fifteenMillionTarget.claim.attributes.grounds_quote, 'if payable pursuant to Section 7.3(b)(iv) or Section 7.3(b)(v)');
+  assert.deepEqual(fifteenMillionTarget.claim.attributes.grounds_cited_references, ['7.3(b)(iv)', '7.3(b)(v)']);
+
+  // The unconditional Parent Base Amount (BUYER side) shares section 8.12
+  // with both SELLER-side grounds candidates above -- proves the mapping is
+  // keyed on textual nesting within THIS claim's own quote, never merely
+  // "some bare citation exists somewhere in the same section".
+  const parentAmount = resolution.resolved.find(
+    (r) => r.section_reference === '8.12' && r.resolved_claim_definition_key === 'TERMINATION_FEE_AMOUNT'
+      && r.concept_key === 'TERMF-REVERSE',
+  );
+  assert.ok(parentAmount);
+  assert.equal('grounds_quote' in parentAmount.claim.attributes, false);
+  assert.equal('grounds_cited_references' in parentAmount.claim.attributes, false);
+
+  // Every cited reference resolved cleanly this run (7.3(b)(i)-(v) are all
+  // real, dispatched sections) -- no FEE_AMOUNT_GROUNDS_* residual, and the
+  // total residual count is unchanged from the pre-existing "acceptance 1 +
+  // 2 combined" test's own pin (4), proving this feature added nothing to
+  // account for on the one run that matters most.
+  assert.equal(resolution.residuals.filter((r) => r.residual_type.startsWith('FEE_AMOUNT_GROUNDS')).length, 0);
+  assert.equal(resolution.residuals.length, 4);
+});
+
+// ─────────────────────────────────────────────────────────────────────────
 // Acceptance criterion 2: no quarantined relationship, achieved by not
 // minting a dangling one.
 // ─────────────────────────────────────────────────────────────────────────
