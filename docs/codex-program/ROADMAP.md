@@ -173,7 +173,8 @@ parity register.
 
 ## 2.5 By product area
 
-143 tracked surfaces, 104 blocked.
+143 tracked surfaces, 103 blocked. It was 104 until the compare-locator
+work cleared exactly one, described in step P9.
 
 | Area | Surfaces | Blocked |
 |---|---:|---:|
@@ -190,7 +191,7 @@ done, all in four areas (Material Contracts, No Other Reps, General
 Covenants, Representations); **3** with no owner; **1** behind a switched-off
 route.
 
-**Turning search and market back on clears one of the 104.** Not fifty-three.
+**Turning search and market back on clears one of the 103.** Not fifty-three.
 The count is not an argument for that work; product value is.
 
 ---
@@ -227,6 +228,21 @@ proves only that a file exists.
 Eleven of fifteen directories named `*-live-run/` contain no live run, and the
 lint script exempts any path matching `live-run` from prose checking, so the
 name buys a waiver. One design spec warns in writing against exactly this.
+
+Even a genuine live run can carry a defect nobody chose. A tool that cuts an
+agreement into sections was capping section titles at a fixed length; a title
+longer than that was never recognised, so on one deal it silently folded five
+whole sections, including an entire article, into the section before them,
+and stamped the wrong reference on what it kept. That defect is now fixed and
+checked by a tripwire that raises an alarm the moment it happens again on any
+future filing. But one already-committed live run,
+`tests/fixtures/canonical-v2/f28-third-live-run/`, a Capitalisation item on
+TopBuild, was produced before the fix: forty of its entries still cite a
+section reference that does not exist in the agreement. The underlying bytes
+and the model's own extracted reference were always correct; only the label a
+downstream tool attached is wrong. This is mislabelling to regenerate, not
+lost data, and regenerating that committed evidence is Ben's call, not made
+here.
 
 The module that replays recorded responses checks four things and never
 verifies the model, the timestamp, the provider, or that quotes appear in the
@@ -390,34 +406,85 @@ on every inventoried route without credentials.
 
 ### P1. Prove one family end to end on real data
 
-**Start here. It needs nothing from Ben and nothing from lane S.**
+**Done, for termination fees.** It needed nothing from Ben and nothing from
+lane S, and it is now proven on live model output, not argued from a design
+document.
 
 **What it is.** Take termination fees, run V2 extraction on the deals we have,
 show V1 and V2 side by side on the review page, and read off every
 difference.
 
-**Why it matters.** This is the first honest measurement of whether V2 is
-better than V1. Everything downstream assumes it is. Nobody has checked.
+**Why it mattered.** This was the first honest measurement of whether V2 is
+better than V1. Everything downstream assumes it is, and until this work,
+nobody had checked.
 
 **Done when.** The side-by-side view renders for real deals, and there is a
 written list of every field where V1 and V2 disagree, with a judgement on
-which is right.
+which is right. Both halves that were blocking this are now solved, each
+proven on a live model run rather than merely designed.
+
+The amount half: one defined term pays $10,000,000 under three termination
+grounds and $15,000,000 under two others, and it used to resolve to whichever
+figure the model happened to quote first. A new field lets each side of that
+condition carry its own verbatim proof of its own figure, checked against the
+source before the resolver trusts it. A live model run populated it
+correctly, unprompted, on its first attempt, and three claims resolved where
+the earlier run resolved one (`6d8d453e`, `d501cee2`).
+
+The trigger half: a fee trigger stated only as a cross-reference to another
+section could never be named, because each section is shown to the model in
+its own isolated call, never alongside the section it cites. The cited
+section is now dispatched as its own call and joined back afterwards. A live
+run proved this works: it recovered two termination grounds nothing had ever
+named before, including one that earlier analysis had recorded as a genuine
+miss (`8bd4cb32`, `643cacc0`). That same run also showed a real cost: it
+published one fact three times over, and it minted a link to a fact that was
+never published. Both are now fixed: repeated sightings of the same fact are
+reconciled into one after resolution, keeping the most direct and most
+specific evidence and recording what was folded in; a link between two facts
+is only ever created by looking both of them up in the final published set,
+never by guessing where one will land. Replayed against the same run, nine
+resolved claims correctly become six, and the false link is gone (`84518eef`).
+
+Both live runs are pinned as committed evidence and replayed by a test with
+no network call and no model call, so this proof does not depend on repeating
+a paid run.
+
+**What is still open.** Citation-following, the trigger-half mechanism above,
+is built and correct, and it ships off by default: following every citation
+in this one filing took the run from three model calls to fourteen, from
+$1.32 to $4.00, and from 7 to 18 minutes, for this one family on this one
+deal. Whether it becomes the default across the corpus, given that cost
+multiplied across every family and every deal, is Ben's decision, not made
+here. Separately: Modiv itself is still not wired into the live per-family
+switch, which still has exactly one entry, QXO/TopBuild, so the side-by-side
+view does not yet render Modiv's termination fee data on the actual review
+page. What is proven above is that the extraction and resolution are
+correct, replayed end to end from cutting the agreement into sections through
+final validation. Connecting a second deal to the screen without hand-writing
+a new file for it, the way QXO/TopBuild's was hand-written, is separate work
+and has not been done.
 
 **Technical.** Built and committed: the per-family switch at
 `components/review/table-configs/termination-fees.config.js` `selectRows()`;
 side-by-side behind `CANONICAL_V2_TERMINATION_FEE_COMPARE`; the equivalence
 harness at `scripts/review-parity-check.js`; real pinned source for
-QXO/TopBuild in `lib/canonical-v2/termination-fee-serving-source.js`. Run V2
-extraction for `TERMINATION_FEE`; the runner requires
-`prompt_budget_split_preflights` and `max_model_invocations` in its manifest.
-Retries are effectively off: the Codex path sets `maxRetries: 0`, the
-Anthropic path allows two with no backoff. Acceptance: harness exits 0 or 1,
-never 2 (which means coverage incomplete), and a human reads its report field
-by field.
+QXO/TopBuild in `lib/canonical-v2/termination-fee-serving-source.js`.
+Citation-following is opt-in only, via `--follow-citations` on the extraction
+run script (`followCitations: false` by default,
+`scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs`), and
+is not wired to any production flag. Both live runs are replayed by
+`tests/canonical-v2-modiv-termination-fee-scope-correction-replay.test.js`
+and `tests/canonical-v2-modiv-termination-fee-citation-following-replay.test.js`.
+The runner requires `prompt_budget_split_preflights` and
+`max_model_invocations` in its manifest. Retries are effectively off: the
+Codex path sets `maxRetries: 0`, the Anthropic path allows two with no
+backoff. Acceptance for a fresh run: harness exits 0 or 1, never 2 (which
+means coverage incomplete), and a human reads its report field by field.
 
 ### P2. Widen the claim definitions where the diff says to
 
-**What it is.** P1 will show V2 missing things V1 has. Decide which V2 should
+**What it is.** P1 showed V2 missing things V1 has. Decide which V2 should
 learn, and teach it.
 
 **Why it matters.** For termination fees, V2 governs three facts where the
@@ -437,6 +504,16 @@ wired tonight. A genuine new definition costs 11 edits in
 V38, concept keys at V24), and still needs projecting and wiring into the
 termination-fees switch before it reaches the review page; see P3. That
 switch already exists and does not wait on any version limit.
+
+A further gap, found and precisely scoped while building the per-limb amount
+field above, is not one of the nine and is not yet built: nothing records
+which termination grounds gate which limb's figure, so a reviewer still has
+to read the underlying quotes to know that $10,000,000 attaches to three
+grounds and $15,000,000 to the other two. Closing it needs a second per-limb
+field naming the cited grounds, verbatim from the same sentence the amount
+comes from, plus a resolver-side join against the trigger data: a slice at
+least as large as the one just built
+(`docs/codex-program/notes/per-limb-fee-amount.md` section 7).
 
 ### P3. The real serving path, and the rule for retiring V1
 
@@ -493,6 +570,11 @@ The real per-family path, already built once:
 per-family gate and card source; `components/review/table-configs/termination-fees.config.js`'s
 `selectRows()` is the client-side switch and side-by-side render. P9 repeats
 this shape per family.
+
+Whether the tracking register used to measure P9's progress can actually
+prove that switch is reached by a live user, as opposed to proving only that
+the surrounding V1 machinery runs, is a separate, unresolved question; see
+P9.
 
 The abandoned, more rigorous alternative: commit `c0610635` (25 Jul 2026)
 froze the fingerprint list at versions 1 to 5 in the same change that added
@@ -662,22 +744,119 @@ changed expectation.
 
 ### P9. Roll the remaining families
 
-**What it is.** Repeat P1 to P3 for the other twenty families.
+**What it is.** Repeat, for each remaining family, the same small switch
+built for termination fees: extraction produces the facts, projection turns
+them into rows, and a switch turns the family on for the review page next to
+the old system's version of the same row.
 
-**This step gets its own plan once P1 proves the mechanism.** It is the
-largest item here and specifying it now would be guesswork. What is known:
-eleven families need only data and serving; four need real analysis work
-(Material Contracts, No Other Reps, General Covenants, Representations, being
-the 27); No-Shop needs an architectural decision, because it has no projection
-module and carries a separate pilot-era pipeline. Also fold in: deleting the
-two dead projections, adding Capitalisation to the register, and renaming the
-eleven `*-live-run/` directories that contain no live run.
+**Why this is not twenty separate efforts, and why the obvious plan is
+wrong.** The 103 surfaces still blocked today (104 before tonight) are not
+twenty families' worth of bespoke work. Measured directly against the
+tracking register rather than assumed, they are six kinds of work, of very
+different sizes and very different owners:
 
-**Caution on the success metric.** "The count falls" is only trustworthy if
-the instrument is. One over-report channel in the served-set check was closed
-tonight by converting it to a real parser; a second remains, because the walk
-models only query containment and so counts the market routes as served
-despite being stubs. Close that before reading the count as progress.
+| What actually blocks the surface | Count | Who does it |
+|---|---:|---|
+| The V2 module is built and correctly identified, but no product file has ever been given a line of code that imports it | 49 | Mechanical wiring, one recipe repeated per family: this is the real bulk of P9 |
+| The underlying analysis or extraction has not been approved yet, so there is nothing ready to wire in | 32 | Legal and extraction review, a different skill entirely, not a serving problem |
+| The tracking register still names a superseded component as its proof that the surface is visible | 13 | Twelve of these are really the wiring problem above, wearing the wrong label; one is a genuine naming gap, left blocked on purpose, see below |
+| The tracking register is missing a line naming the module that already, genuinely, serves the data | 5 | A register correction, small, but proves less than it looks like, see below |
+| No family or owner has been assigned yet | 3 | A triage decision, before any of the above |
+| The real, provable route is a deliberately sandboxed one, governed by a standing ruling not to un-contain it early | 1 | Not a normal fix; wait for search to activate |
+
+**The highest-leverage-looking fix was tried, and it cleared one surface, not
+fourteen.** Fourteen surfaces across fifteen families all named the same
+superseded component as their proof that V2 data reaches the screen, a
+component nothing in the live product renders any more. Repointing all
+fourteen at the component that replaced it looked like a single edit that
+would clear fourteen blockers at once. It cleared one. Twelve of the fourteen
+fail at an earlier, deeper check: the register also requires a real consumer
+of the family's V2 module, and for twelve of them none exists, because
+nobody has wired that module in yet. Fixing the component name for those
+twelve would have asserted, falsely, that a user can see this family's V2
+data, when no path in the product shows it, in either the single-deal view
+or the comparison view. A thirteenth technically would have cleared too, but
+was left blocked on purpose: unlike termination fees it has no server-side
+switch behind it at all, only a preview-only tag Ben has already ruled does
+not count as serving. Only the fourteenth, termination fee's own
+comparison-view row, was genuinely just a naming gap, and it is now fixed.
+So of the 49 the register already correctly calls a wiring problem and the
+13 it currently blames on a stale component name: the true shape is 49 plus
+12 that need the identical wiring work, one surface's naming gap that was
+fixed and cleared, and one left showing as blocked on a stale name but kept
+there deliberately, because the family behind it has no real serving switch
+to wire into yet.
+
+**The more important finding: the register can be fooled at scale, and this
+has to be fixed before the per-family work runs, not after.** The tool that
+decides whether a surface counts as visible works by tracing, file by file,
+which code a live page actually imports, the same way you might follow a
+paper trail through a filing cabinet. But the mechanism that actually decides
+whether a user sees the old system's data or the new one runs on the server,
+and reaches the screen only over a network response, never an import. No
+paper-trail tool can see across that gap. The consequence is concrete and
+already true today, not hypothetical: termination fees is the one family
+proven, by a person reading the code directly, to serve V2 data live, and
+even so, not one of its own registered surfaces actually traces through that
+real mechanism, because nothing in its evidence names the server-side switch
+or the route that calls it. Run the P9 recipe across the other families on
+this register as it stands, and it will accumulate dozens of surfaces marked
+visible that are real in the narrow sense that a served page really does
+execute that code, while saying nothing about whether that code is showing
+V1's data or V2's. That is a register that goes green while proving less
+than the programme would read into it. Fixing this, either by requiring
+every family to name its server-side switch as evidence and proving that is
+reached, or by documenting plainly next to the register that "visible" means
+the display plumbing runs live and not that V2 data is confirmed reaching a
+user, has to happen before family-by-family wiring runs at scale, because the
+count it produces is the only signal this whole step is measured by.
+
+**What still needs doing, folded in rather than deferred.** Delete the two
+dead projection modules once their families are otherwise resolved. Add
+Capitalisation to the register; it has the most real recorded model output
+of anything in the system and currently is not tracked at all. No-Shop needs
+an architectural decision before it can join this recipe at all: it has no
+projection module and still runs a separate, pilot-era pipeline. Rename the
+`*-live-run/` directories that do not contain a live run, and, separately,
+where a directory does contain a real run but a now-fixed defect mislabelled
+some of its citations, regenerate rather than rename; see section 3.2.
+
+**The success metric itself just got more trustworthy.** "The count falls"
+is only meaningful if the thing counting it is honest. Two separate ways the
+served-page check could over-report a route as live are now fixed: one,
+converting a text-matching check to a real parser, already landed; the
+second, a market-statistics route and a page whose every request redirects
+before rendering anything, both previously counted as reachable when they
+are in fact permanent stubs, is fixed as of tonight. Neither had yet caused a
+wrong answer in the current count, confirmed directly by checking the
+blocked-surface total before and after each fix and finding it unchanged,
+but both were real and undefended before being closed. That does not prove a
+third gap does not exist; it means the two specific ones already found are no
+longer live risks.
+
+**Technical.** Figures above from `docs/codex-program/notes/family-rollout-mechanics.md`
+and `docs/codex-program/notes/compare-locator-fix.md` (commits `8167cf81`,
+`024d953c`), reproducible directly:
+`node -e "const {CURRENT_M3_FAMILY_PARITY_REGISTER,listM3ProductParityBlockers}=require('./lib/canonical-v2/native-producer/m3-family-parity-register.js');console.log(listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER).length)"`.
+The dead locator was `CompareSectionColumn` in
+`components/review-v2/CompareColumn.jsx`, referenced nowhere but its own
+definition; the corrected proof point is `UnifiedCompareSection`, same file,
+what `pages/review/[id].js` actually renders. Repointed:
+`termination-fee-query-fields` only. Left blocked on purpose and pinned by a
+hostile test: `termination-rights-query-fields`. The HTTP-boundary gap: the
+real V1/V2 switch for termination fees is
+`isCanonicalTerminationFeeServingEnabled(reviewDeal)`
+(`termination-fees.config.js`), fed by `attachCanonicalTerminationFeeServing`
+(`lib/canonical-v2/termination-fee-serving-source.js`) via
+`pages/api/review/[id]/cards.js`, joined to the client only by the wire
+payload; zero of termination fee's eight registered surfaces name either file
+as evidence. A candidate fix, described but not built: a new evidence shape
+naming the wire field a serving-source function stamps, proven only if the
+function is reached from the API route by the existing call-graph rule and
+the client genuinely branches on that exact field name. The two exclusion-list
+fixes: `MARKET_STATS_CONTAINED_ROUTE_FILES` and
+`UNCONDITIONAL_REDIRECT_ROUTE_FILES`, both in
+`lib/canonical-v2/native-producer/m3-family-parity-register.js`.
 
 ### P10. Improve the comparison view
 
@@ -947,13 +1126,17 @@ also means it does nothing at all until someone sets them.
 
 ---
 
-# Appendix: current state, verified 2026-08-05
+# Appendix: current state, verified 2026-08-06
 
-- Test suite: **7061 tests, 7020 pass, 0 fail, 41 skipped**, exit 0. Lint
-  invariant 4 passes.
-- Parity: **104 blockers** (73 finished-not-displayed, 27 not analysed, 3
-  unowned, 1 route-blocked), **0 natively visible**, 443 served modules, 0
-  unparseable.
+- Test suite: **7555 tests, 7513 pass, 0 fail, 42 skipped**, exit 0, measured
+  at commit 84518eef. Lint invariant 4 passes and the build exits 0. The suite
+  grew by roughly 490 tests overnight, almost all of them pinning behaviour
+  that was found to be wrong and corrected.
+- Parity: **103 blockers** (was 104; one cleared by the compare-locator work,
+  see P9), **0 natively visible**, 443 served modules, 0 unparseable. The
+  earlier split of that total, 73 finished-not-displayed, 27 not analysed, 3
+  unowned and 1 route-blocked, predates the six-way breakdown in P9 and P9 is
+  the current account.
 - Pre-production gates: 25, none closed, none closeable while the loader
   forbids it.
 - Corpus: 40 deals, last quality snapshot 13 July, 18 fully clean.
