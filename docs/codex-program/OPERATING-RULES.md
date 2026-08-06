@@ -14,13 +14,22 @@ Branch: `codex/m3-production-phase1`. Worktree:
 routes locally and on Vercel preview deployments is permitted. Also since
 2026-08-05, **running extraction to produce Canonical V2 data is permitted**
 (see "Extraction authorised for Canonical V2 production", below, for its
-exact limits). Everything else stays prohibited regardless of those
-carve-outs:
+exact limits).
+
+Since 2026-08-06, **importing canonical data is permitted in principle**. Ben
+ruled directly, in response to being told the import path was still prohibited:
+"I have NOT kept the import path prohibited." That ruling removes the
+authority objection, and nothing more. It does not grant any of the other
+carve-outs below, and in particular it does not grant production data access
+or real credentials, so an import can be built and proved offline or against a
+non-production database, and running one against production remains a separate
+act needing its own explicit authorisation. See lane D's import steps.
+
+Everything else stays prohibited regardless of those carve-outs:
 
 - production activation of any route;
 - accessing or changing production data;
 - using real credentials or a real production database client;
-- importing candidate data;
 - executing the v1 reclassification apply (only "go, fixtures first" is
   authorised; the execution act itself is not);
 - issuing a freeze, policy-adoption, successor-M1 PASS, M3 PASS,
