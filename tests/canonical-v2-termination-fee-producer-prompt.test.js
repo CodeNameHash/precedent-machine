@@ -60,6 +60,7 @@ const {
   FEE_AMOUNT_CLAIM_KEY,
 } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
+const { resolveFeeAmount } = require('../lib/canonical-v2/native-producer/termination-fee-parse');
 
 // ---------------------------------------------------------------------------
 // Text-content guards on the rendered prompt.
@@ -74,8 +75,8 @@ function renderedPromptText() {
   return built.messages[0].content;
 }
 
-test('PROMPT_VERSION is 2 (Modiv scope-correction: SPLIT COMPOUND SENTENCES BY LIMB)', () => {
-  assert.equal(PROMPT_VERSION, 2);
+test('PROMPT_VERSION is 3 (Modiv per-limb amount: LIMB_AMOUNT_QUOTE)', () => {
+  assert.equal(PROMPT_VERSION, 3);
 });
 
 test('PROMPT_ID is unchanged by the rewording', () => {
@@ -117,17 +118,37 @@ test('the rule states plainly that byte-identical quotes across sibling assertio
   assert.match(identityParagraph, /Do not treat identical quotes as a mistake/);
 });
 
-test('the rule forbids repurposing section_reference/payer_party/fee_term_ref to fake a "which limb" signal, since no such field exists', () => {
+test('the rule still forbids repurposing section_reference/payer_party/fee_term_ref to fake a "which limb" signal, now because a dedicated field (limb_amount_quote) exists instead', () => {
   assert.match(
     INSTRUCTIONS,
     /do not invent one by repurposing section_reference, payer_party or fee_term_ref/,
   );
+  assert.match(INSTRUCTIONS, /limb_amount_quote \(below\) is the ONLY field for "which figure in this shared quote is this assertion's own"/);
 });
 
 test('the rendered prompt contains the source text verbatim and the renamed rule', () => {
   const rendered = renderedPromptText();
   assert.match(rendered, /Placeholder source text/);
   assert.match(rendered, /SPLIT COMPOUND SENTENCES BY LIMB/);
+});
+
+// ---------------------------------------------------------------------------
+// PROMPT_VERSION 3: limb_amount_quote (docs/codex-program/notes/per-limb-
+// fee-amount.md).
+// ---------------------------------------------------------------------------
+
+test('RESPONSE_SHAPE carries the new limb_amount_quote field on fee_amount_assertions, cross-referencing the LIMB_AMOUNT_QUOTE rule', () => {
+  assert.match(RESPONSE_SHAPE, /"limb_amount_quote":/);
+  assert.match(RESPONSE_SHAPE, /see LIMB_AMOUNT_QUOTE below/);
+});
+
+test('INSTRUCTIONS carries the LIMB_AMOUNT_QUOTE paragraph, tied to the whole-quote money-literal count', () => {
+  const paragraphs = INSTRUCTIONS.split('\n\n');
+  const limbAmountParagraph = paragraphs.find((p) => p.startsWith('LIMB_AMOUNT_QUOTE'));
+  assert.ok(limbAmountParagraph, 'expected a "LIMB_AMOUNT_QUOTE" paragraph');
+  assert.match(limbAmountParagraph, /more than one dollar figure/);
+  assert.match(limbAmountParagraph, /smallest verbatim span/);
+  assert.match(limbAmountParagraph, /Leave limb_amount_quote null when quote already carries only one dollar figure/);
 });
 
 // ---------------------------------------------------------------------------
@@ -345,10 +366,19 @@ async function resolveTerminationFeeAssertions(dealKey, sectionBody, response) {
 }
 
 function feeAmountAssertion({
-  sectionReference = SECTION_REFERENCE, feeSide, payerParty, feeTermRef, quote,
+  sectionReference = SECTION_REFERENCE, feeSide, payerParty, feeTermRef, quote, limbAmountQuote,
 }) {
   return {
-    section_reference: sectionReference, fee_side: feeSide, payer_party: payerParty, fee_term_ref: feeTermRef, quote,
+    section_reference: sectionReference,
+    fee_side: feeSide,
+    payer_party: payerParty,
+    fee_term_ref: feeTermRef,
+    quote,
+    // Omitted entirely (not present-as-null) when the caller doesn't pass
+    // it, matching what an un-upgraded/PROMPT_VERSION-2 model response
+    // shape actually looks like -- every pre-existing call site in this
+    // file keeps producing byte-identical assertion objects.
+    ...(limbAmountQuote !== undefined ? { limb_amount_quote: limbAmountQuote } : {}),
   };
 }
 
@@ -442,4 +472,185 @@ test('shape (a) as instructed: the first/SELLER limb stays minimal and keeps res
   // a reason a human reviewer can actually resolve by reading the (now
   // complete) quote, rather than a reason that can never be fixed.
   assert.deepEqual(unresolved[0].reasons, ['AMBIGUOUS_FEE_SIDE']);
+});
+
+// ---------------------------------------------------------------------------
+// PROMPT_VERSION 3: limb_amount_quote. Two layers are testable directly
+// against the real, unmodified code in this session: the SHAPING layer
+// (anthropic-provider.js's shapeTerminationFeeProposals, called directly
+// below) and the PURE parse layer (termination-fee-parse.js's
+// resolveFeeAmount, unit-tested on its own in tests/canonical-v2-
+// termination-fee-parse.test.js). The RESOLVER (candidate-resolution.js) is
+// locked this session; its one-line wiring change
+// (parseFeeAmount(claim.raw_value) -> resolveFeeAmount(claim.raw_value,
+// attrs.limb_amount_quote) inside handleFeeAmountCandidate) is specified,
+// UNAPPLIED, as a fenced diff in docs/codex-program/notes/per-limb-fee-
+// amount.md. Until that diff is applied, the real, unmodified end-to-end
+// pipeline (resolveTerminationFeeAssertions, used by every other test in
+// this file) still abstains MULTIPLE_MONEY_LITERALS on both Modiv limbs
+// even when limb_amount_quote is present and verified -- the last test in
+// this section pins that this is still true today, so a future run of this
+// suite (once the diff lands) is EXPECTED to need that one test updated,
+// not surprised by it.
+// ---------------------------------------------------------------------------
+
+function shapeSourceAndAssertions(sourceText, assertions) {
+  return shapeTerminationFeeProposals({
+    fee_amount_assertions: assertions,
+    fee_trigger_assertions: [],
+    tail_period_assertions: [],
+    open_world_candidates: [],
+  }, sourceText);
+}
+
+test('shaping layer: a byte-verified, uniquely-nested limb_amount_quote is attached to attributes and allowed_attributes, for both Modiv limbs', () => {
+  const { proposals, evidence_residuals: residuals } = shapeSourceAndAssertions(MODIV_COMPANY_BASE_FULL_SENTENCE, [
+    feeAmountAssertion({
+      feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Base Amount', quote: MODIV_COMPANY_BASE_FULL_SENTENCE,
+      limbAmountQuote: '$10,000,000',
+    }),
+    feeAmountAssertion({
+      feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Base Amount', quote: MODIV_COMPANY_BASE_FULL_SENTENCE,
+      limbAmountQuote: '$15,000,000.00',
+    }),
+  ]);
+  assert.equal(proposals.length, 2);
+  assert.equal(proposals[0].attributes.limb_amount_quote, '$10,000,000');
+  assert.equal(proposals[1].attributes.limb_amount_quote, '$15,000,000.00');
+  for (const proposal of proposals) {
+    assert.ok(proposal.allowed_attributes.includes('limb_amount_quote'));
+    // The whole-sentence evidence is untouched -- raw_value/evidence stay
+    // the full defining sentence; the sub-quote is an additional attribute,
+    // never a replacement for the operative text a human reviewer reads.
+    assert.equal(proposal.raw_value, MODIV_COMPANY_BASE_FULL_SENTENCE);
+  }
+  assert.deepEqual(residuals, []);
+});
+
+test('shaping layer: no limb_amount_quote supplied -- the attribute key is omitted entirely (not present-as-null), byte-identical to pre-PROMPT_VERSION-3 shaping', () => {
+  const { proposals, evidence_residuals: residuals } = shapeSourceAndAssertions(MODIV_COMPANY_BASE_FULL_SENTENCE, [
+    feeAmountAssertion({
+      feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Base Amount', quote: MODIV_COMPANY_BASE_FULL_SENTENCE,
+    }),
+  ]);
+  assert.equal(proposals.length, 1);
+  assert.equal(Object.hasOwn(proposals[0].attributes, 'limb_amount_quote'), false);
+  assert.ok(proposals[0].allowed_attributes.includes('limb_amount_quote'), 'always allowed, even when unused -- allowed_attributes carries no identity/hash weight (design note section 6)');
+  assert.deepEqual(residuals, []);
+});
+
+test('shaping layer safety: a hallucinated limb_amount_quote (absent from source entirely) is dropped as an attribute only -- the whole candidate still survives with its whole-sentence evidence', () => {
+  const { proposals, evidence_residuals: residuals } = shapeSourceAndAssertions(MODIV_COMPANY_BASE_FULL_SENTENCE, [
+    feeAmountAssertion({
+      feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Base Amount', quote: MODIV_COMPANY_BASE_FULL_SENTENCE,
+      limbAmountQuote: '$99,999,999',
+    }),
+  ]);
+  assert.equal(proposals.length, 1, 'the candidate is not dropped just because its new, optional sub-quote could not be verified');
+  assert.equal(Object.hasOwn(proposals[0].attributes, 'limb_amount_quote'), false);
+  assert.equal(residuals.length, 1);
+  assert.equal(residuals[0].reason, 'FEE_AMOUNT_LIMB_QUOTE_UNVERIFIED');
+});
+
+test('shaping layer safety: limb_amount_quote text that exists elsewhere in the source but NOT nested inside this assertion\'s own quote still verifies correctly -- proves the check is nesting-specific, not "appears somewhere in the document"', () => {
+  const sourceText = `A recital elsewhere in this agreement separately mentions $10,000,000 for an unrelated escrow. ${MODIV_COMPANY_BASE_FULL_SENTENCE}`;
+  // "$10,000,000" genuinely occurs twice in sourceText -- once outside the
+  // limb's own quote (the recital), once inside it (the real figure). Only
+  // the one nested inside the located outer-quote span may count.
+  const { proposals, evidence_residuals: residuals } = shapeSourceAndAssertions(sourceText, [
+    feeAmountAssertion({
+      feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Base Amount', quote: MODIV_COMPANY_BASE_FULL_SENTENCE,
+      limbAmountQuote: '$10,000,000',
+    }),
+  ]);
+  assert.equal(proposals.length, 1);
+  assert.equal(proposals[0].attributes.limb_amount_quote, '$10,000,000', 'a duplicate occurrence OUTSIDE the limb quote must not block the one genuinely nested inside it');
+  assert.deepEqual(residuals, []);
+});
+
+test('shaping layer safety: the limb\'s own whole-sentence quote occurring twice in the source (e.g. restated in an exhibit) makes the nesting ambiguous -- fails closed, never guesses which occurrence', () => {
+  const sourceText = `${MODIV_COMPANY_BASE_FULL_SENTENCE}\n\nExhibit A restates: ${MODIV_COMPANY_BASE_FULL_SENTENCE}`;
+  const { proposals, evidence_residuals: residuals } = shapeSourceAndAssertions(sourceText, [
+    feeAmountAssertion({
+      feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Base Amount', quote: MODIV_COMPANY_BASE_FULL_SENTENCE,
+      limbAmountQuote: '$10,000,000',
+    }),
+  ]);
+  assert.equal(proposals.length, 1, 'the whole-sentence claim still gets its own evidence fine -- the main evidenceFromQuote check only requires ONE occurrence to exist, not a unique one');
+  assert.equal(Object.hasOwn(proposals[0].attributes, 'limb_amount_quote'), false, 'nested inside BOTH occurrences of the outer quote -- ambiguous, so the sub-quote attribute is dropped rather than picking one arbitrarily');
+  assert.equal(residuals.length, 1);
+  assert.equal(residuals[0].reason, 'FEE_AMOUNT_LIMB_QUOTE_UNVERIFIED');
+});
+
+test('simulated full chain (shaping -> resolveFeeAmount): feeding the REAL shaped output through the exact call the unapplied resolver diff makes resolves both Modiv limbs to their own distinct amounts', () => {
+  const { proposals } = shapeSourceAndAssertions(MODIV_COMPANY_BASE_FULL_SENTENCE, [
+    feeAmountAssertion({
+      feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Base Amount', quote: MODIV_COMPANY_BASE_FULL_SENTENCE,
+      limbAmountQuote: '$10,000,000',
+    }),
+    feeAmountAssertion({
+      feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Base Amount', quote: MODIV_COMPANY_BASE_FULL_SENTENCE,
+      limbAmountQuote: '$15,000,000.00',
+    }),
+  ]);
+  assert.equal(proposals.length, 2);
+  // Exactly the call handleFeeAmountCandidate makes in the unapplied diff,
+  // in place of today's bare parseFeeAmount(claim.raw_value) -- proven here
+  // against the real, unmodified shaping output, not a hand-built stand-in.
+  const results = proposals.map((p) => resolveFeeAmount(p.raw_value, p.attributes.limb_amount_quote));
+  assert.equal(results[0].outcome, 'RESOLVED');
+  assert.equal(results[0].canonical_value, '10000000');
+  assert.equal(results[0].used_limb_amount_quote, true);
+  assert.equal(results[1].outcome, 'RESOLVED');
+  assert.equal(results[1].canonical_value, '15000000.00');
+  assert.equal(results[1].used_limb_amount_quote, true);
+});
+
+// Inverted on 2026-08-05, when the resolver diff this test was written to
+// describe was actually applied (candidate-resolution.js handleFeeAmountCandidate
+// now calls resolveFeeAmount(claim.raw_value, attrs.limb_amount_quote)).
+//
+// The previous version of this test asserted ZERO resolved amounts and two
+// MULTIPLE_MONEY_LITERALS review rows, and said so in its own failure message:
+// "the resolver does not read limb_amount_quote yet -- see the unapplied diff".
+// It existed to prove the shaping-layer change was inert on its own, and to pin
+// precisely what the diff still owed. The diff has landed, so it now pins the
+// wired result instead. The pin moved because the behaviour genuinely changed,
+// not to make a failing test pass: the shape (b) baseline test above still
+// proves that WITHOUT a limb_amount_quote both limbs fail closed exactly as
+// before, which is the guarantee that actually matters.
+test('real end-to-end pipeline, resolver wired: a byte-verified limb_amount_quote resolves both Modiv limbs to their own distinct amounts, and each carries the audit breadcrumb saying the fallback fired', async () => {
+  const { resolution } = await resolveTerminationFeeAssertions('deal:modiv-limb-amount-quote-pre-wiring', MODIV_COMPANY_BASE_FULL_SENTENCE, {
+    fee_amount_assertions: [
+      feeAmountAssertion({
+        feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Base Amount', quote: MODIV_COMPANY_BASE_FULL_SENTENCE,
+        limbAmountQuote: '$10,000,000',
+      }),
+      feeAmountAssertion({
+        feeSide: 'SELLER', payerParty: 'the Company', feeTermRef: 'Company Base Amount', quote: MODIV_COMPANY_BASE_FULL_SENTENCE,
+        limbAmountQuote: '$15,000,000.00',
+      }),
+    ],
+  });
+  const resolved = resolution.resolved.filter((r) => r.generic_claim_key === FEE_AMOUNT_CLAIM_KEY);
+  assert.equal(resolved.length, 2, 'both limbs resolve now that the resolver consults limb_amount_quote');
+
+  // Sorted so the assertion does not depend on emission order.
+  const values = resolved.map((r) => r.claim.canonical_value).sort();
+  assert.deepEqual(values, ['10000000', '15000000.00'], 'each limb resolves to its OWN figure, not to whichever dollar amount appears first in the shared sentence');
+
+  // The breadcrumb is present only when the fallback actually fired, so a
+  // reviewer can tell a directly-resolved amount from a disambiguated one.
+  for (const item of resolved) {
+    assert.equal(item.claim.attributes.limb_amount_disambiguated, true);
+  }
+
+  // has_resolution === false is the file's own convention for "queued because
+  // it could NOT be resolved", as distinct from a resolved claim that is also
+  // surfaced for human confirmation on materiality. Both limbs resolved, so
+  // nothing should remain unresolved.
+  const unresolved = resolution.review_queue.filter(
+    (r) => r.generic_claim_key === FEE_AMOUNT_CLAIM_KEY && r.has_resolution === false,
+  );
+  assert.equal(unresolved.length, 0, 'neither limb should still be UNRESOLVED once both resolve');
 });

@@ -20,6 +20,7 @@ const path = require('node:path');
 const {
   TERMINATION_FEE_PARSE_VERSION,
   parseFeeAmount,
+  resolveFeeAmount,
   parseTailPeriodMonths,
 } = require('../lib/canonical-v2/native-producer/termination-fee-parse');
 
@@ -90,6 +91,80 @@ test('Dyax compound quote ABSTAINs MULTIPLE_MONEY_LITERALS; SELLER split sub-quo
 test('CSRA cross-reference-only quote ABSTAINs NO_MONEY_LITERAL', () => {
   const q = quoteById('csra-cross-reference-only');
   assert.deepEqual(parseFeeAmount(q.quote), { outcome: 'ABSTAIN', reason: 'NO_MONEY_LITERAL' });
+});
+
+// ---------------------------------------------------------------------------
+// resolveFeeAmount (docs/codex-program/notes/per-limb-fee-amount.md): the
+// MULTIPLE_MONEY_LITERALS-only fallback layered on top of parseFeeAmount,
+// unchanged, to disambiguate a whole-sentence quote PROMPT_VERSION 2/3 can
+// force onto a limb (real Modiv "Company Base Amount" bytes, matching the
+// constants already pinned in tests/canonical-v2-termination-fee-resolution.
+// test.js and tests/canonical-v2-termination-fee-producer-prompt.test.js).
+// ---------------------------------------------------------------------------
+
+const MODIV_COMPANY_BASE_FULL_SENTENCE = '“Company Base Amount” means (x) if payable pursuant to Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii), $10,000,000, or (y) if payable pursuant to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00.';
+
+test('resolveFeeAmount: a single-figure quote resolves exactly like parseFeeAmount and never consults limbAmountQuote', () => {
+  const q = quoteById('bioverativ-target-amount');
+  const result = resolveFeeAmount(q.quote, '$999,999,999');
+  assert.equal(result.outcome, 'RESOLVED');
+  assert.equal(result.canonical_value, '326000000');
+  assert.equal(result.used_limb_amount_quote, false);
+});
+
+test('resolveFeeAmount: Modiv (x)-limb resolves 10000000 via its own limbAmountQuote', () => {
+  const result = resolveFeeAmount(MODIV_COMPANY_BASE_FULL_SENTENCE, '$10,000,000');
+  assert.equal(result.outcome, 'RESOLVED');
+  assert.equal(result.canonical_value, '10000000');
+  assert.equal(result.used_limb_amount_quote, true);
+});
+
+test('resolveFeeAmount: Modiv (y)-limb resolves 15000000.00 via its own limbAmountQuote', () => {
+  const result = resolveFeeAmount(MODIV_COMPANY_BASE_FULL_SENTENCE, '$15,000,000.00');
+  assert.equal(result.outcome, 'RESOLVED');
+  assert.equal(result.canonical_value, '15000000.00');
+  assert.equal(result.used_limb_amount_quote, true);
+});
+
+test('resolveFeeAmount: no limbAmountQuote supplied -- ABSTAINs MULTIPLE_MONEY_LITERALS exactly like parseFeeAmount, unchanged', () => {
+  const result = resolveFeeAmount(MODIV_COMPANY_BASE_FULL_SENTENCE, undefined);
+  assert.deepEqual(result, { outcome: 'ABSTAIN', reason: 'MULTIPLE_MONEY_LITERALS', used_limb_amount_quote: false });
+});
+
+test('resolveFeeAmount: a hallucinated limbAmountQuote (not a substring of quote at all) never resolves -- falls back to the honest abstain', () => {
+  const result = resolveFeeAmount(MODIV_COMPANY_BASE_FULL_SENTENCE, '$12,345,678');
+  assert.deepEqual(result, { outcome: 'ABSTAIN', reason: 'MULTIPLE_MONEY_LITERALS', used_limb_amount_quote: false });
+});
+
+test('resolveFeeAmount: a limbAmountQuote that itself still carries two money literals never resolves -- MULTIPLE_MONEY_LITERALS is never picked between, even one level down', () => {
+  const result = resolveFeeAmount(MODIV_COMPANY_BASE_FULL_SENTENCE, '$10,000,000, or (y) if payable pursuant to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00');
+  assert.deepEqual(result, { outcome: 'ABSTAIN', reason: 'MULTIPLE_MONEY_LITERALS', used_limb_amount_quote: false });
+});
+
+test('resolveFeeAmount: a non-MULTIPLE_MONEY_LITERALS abstain (NO_MONEY_LITERAL) is never retried against limbAmountQuote, even a valid-looking one', () => {
+  const q = quoteById('csra-cross-reference-only');
+  const result = resolveFeeAmount(q.quote, '$10,000,000');
+  assert.deepEqual(result, { outcome: 'ABSTAIN', reason: 'NO_MONEY_LITERAL', used_limb_amount_quote: false });
+});
+
+test('resolveFeeAmount: Dyax split sub-quotes (already single-figure) resolve exactly as parseFeeAmount alone, used_limb_amount_quote false', () => {
+  const q = quoteById('dyax-compound-two-sided');
+  const sellerResult = resolveFeeAmount(q.seller_split_subquote, null);
+  assert.equal(sellerResult.outcome, 'RESOLVED');
+  assert.equal(sellerResult.canonical_value, q.expected_seller_amount_canonical);
+  assert.equal(sellerResult.used_limb_amount_quote, false);
+});
+
+test('resolveFeeAmount: a byte-real but WRONG-limb sub-quote (the model swaps which figure belongs to which limb) still resolves -- documents the residual risk in the design note: nesting-uniqueness proves genuine source text, not semantic correctness', () => {
+  // The (x)-limb's own quote, given the (y)-limb's own figure as its
+  // "limb_amount_quote" -- byte-real, a genuine substring of quote, so
+  // resolveFeeAmount cannot and does not distinguish this from a correct
+  // assertion. Recorded here so this known, accepted limitation shows up as
+  // a failing test if some future change silently "fixes" it in a way that
+  // was never verified, rather than as a surprise.
+  const result = resolveFeeAmount(MODIV_COMPANY_BASE_FULL_SENTENCE, '$15,000,000.00');
+  assert.equal(result.outcome, 'RESOLVED');
+  assert.equal(result.canonical_value, '15000000.00');
 });
 
 test('Carrols amount resolves 9500000 (strict grouping, round number)', () => {
