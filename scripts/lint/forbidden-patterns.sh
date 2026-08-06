@@ -301,6 +301,31 @@ const FILE_PATTERN_EXEMPTIONS = {
   // real taxonomy fallback label. Genuine fixture, not the duplicated-label
   // regression this pattern fingerprints.
   'tests/provision-table-configs.test.js': ['Mergers,\\s*Acquisitions,\\s*Dispositions'],
+  // Same class again: this file's own header states "Fixtures are
+  // real-shaped: field values below are taken directly from the Metsera deal
+  // (885edae5-49e8-464a-9f33-edd229119d7c) as stored in ai_metadata.features,
+  // not invented shapes" -- aocCitedCovenantNames pins IOC-MERGE's real
+  // taxonomy fallback label ("Mergers, Acquisitions, Dispositions", section
+  // 5.01(d)). Genuine fixture, not the duplicated-label regression this
+  // pattern fingerprints.
+  'tests/fb3-section-tables.test.js': ['Mergers,\\s*Acquisitions,\\s*Dispositions'],
+  // NOT a hand-authored fixture -- the committed evidence output of
+  // scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs
+  // (added alongside session-cookie authentication). The single-line JSON
+  // dump embeds the real Modiv Article III heading "Organization and
+  // Qualification; Subsidiaries" and, later on the same line, a genuine
+  // "litigation" reference elsewhere in the document -- real merger-
+  // agreement prose, not the past duplicated-label regression this
+  // fingerprint targets. Verified via this run's own source-reference.json:
+  // it REUSES already-committed, hash-pinned raw HTML
+  // (tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm,
+  // sha256 659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968)
+  // with verification_status "PASS", not an invented or unpinned fetch.
+  // Recorded as a narrow per-file entry rather than folding evidence/ into
+  // RECORDED_LIVE_RUN_DIR above, matching that regex's own stated policy: a
+  // directory earns this exemption only by deliberate per-file verification,
+  // never by name.
+  'evidence/canonical-v2/modiv-termination-fee-scope-correction-20260805/adapter-result.json': ['QUALIFICATION.*litigation'],
 };
 
 const failures = [];
