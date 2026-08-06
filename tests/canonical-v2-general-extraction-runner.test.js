@@ -112,7 +112,12 @@ test('parseArgs: bare --out-dir resolves to the Modiv/TERMINATION_FEE legacy def
   assert.equal(args.family, mod.DEFAULT_FAMILY);
   assert.equal(args.family, 'TERMINATION_FEE');
   assert.equal(args.model, 'sonnet');
-  assert.equal(args.followCitations, false);
+  // Default flipped to true on 2026-08-06 by the owner's decision, taken with
+  // the cost in front of him: following citations takes this filing from three
+  // model calls to fourteen, and without it a fee trigger stated as a bare
+  // cross-reference cannot be named at all.
+  assert.equal(args.followCitations, true);
+  assert.equal(mod.parseArgs(['--out-dir', '/tmp/whatever', '--no-follow-citations']).followCitations, false);
   assert.equal(args.dryRun, false);
   assert.equal(args.sectionRefs, null);
   assert.equal(args.rawHtml, null);
@@ -163,7 +168,7 @@ test('resolveRunConfig: bare --out-dir resolves to the unchanged Modiv TERMINATI
   assert.equal(config.rawHtmlPath, 'tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm');
   assert.equal(config.agreementDate, '2026-05-03');
   assert.equal(config.model, 'sonnet');
-  assert.equal(config.followCitations, false);
+  assert.equal(config.followCitations, true);
   assert.equal(config.dealPin.raw_bytes_sha256, '659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968');
   assert.equal(config.dealPin.canonical_text_sha256, '0ce6bc29354f702c637693b9d6b8eeb989ce58ee72ef5337a90feb851460339e');
 });

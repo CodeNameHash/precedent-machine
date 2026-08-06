@@ -108,7 +108,7 @@
  *     [--out-dir <path, required unless --dry-run>] \
  *     [--agreement-date <default: the deal's own pinned date, if any>] \
  *     [--model <claude CLI model alias, default "sonnet">] \
- *     [--follow-citations] \
+ *     [--no-follow-citations] \
  *     [--dry-run]
  *
  * --follow-citations dispatches an extra single-section call for each
@@ -250,7 +250,7 @@ function parseArgs(argv) {
     sectionRefs: null,
     agreementDate: null,
     agreementDateGiven: false,
-    followCitations: false,
+    followCitations: true,
     dryRun: false,
     outDir: null,
   };
@@ -265,6 +265,7 @@ function parseArgs(argv) {
       case '--agreement-date': out.agreementDate = argv[++i]; out.agreementDateGiven = true; break;
       case '--model': out.model = argv[++i]; break;
       case '--follow-citations': out.followCitations = true; break;
+      case '--no-follow-citations': out.followCitations = false; break;
       case '--dry-run': out.dryRun = true; break;
       default: throw new Error(`unrecognised argument: ${arg}`);
     }
