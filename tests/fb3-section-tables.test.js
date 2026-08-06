@@ -141,6 +141,32 @@ test('deriveInsuranceCapConcise: "450% of the current aggregate annual premium" 
   assert.equal(mod.deriveInsuranceCapConcise(text), '450% of annual premium');
 });
 
+// Defect-class fix: a two-figure D&O tail-insurance premium cap (a
+// per-incident limit and a separate aggregate, the drafting pattern
+// lib/parse-money.js's consolidation was written against) must return null,
+// never the first of the two figures.
+const TWO_FIGURE_INSURANCE_CAP_TEXT =
+  'the Surviving Corporation shall not be required to expend more than $30,000,000 per incident and $50,000,000 in the aggregate for such tail insurance premium.';
+
+test('deriveInsuranceCapConcise: two dollar figures in the same clause return null, never the first', () => {
+  assert.equal(mod.deriveInsuranceCapConcise(TWO_FIGURE_INSURANCE_CAP_TEXT), null);
+});
+
+test('deriveInsuranceCapConcise: a single dollar figure still derives (regression control for the two-figure fix above)', () => {
+  const text = 'the Company shall not pay more than $2,500,000 in annual premium for such tail insurance.';
+  assert.equal(mod.deriveInsuranceCapConcise(text), '$2,500,000');
+});
+
+test('deriveInsuranceCapConcise + renderDoInsuranceCapCell\'s own fallback: a two-figure clause degrades to a readable truncated snippet of the real clause, never a blank and never a fabricated figure', () => {
+  // pages/review-v1/[id].js's renderDoInsuranceCapCell does exactly this:
+  // `deriveInsuranceCapConcise(str) || truncateAtWordBoundary(str, 80)`.
+  const rendered = mod.deriveInsuranceCapConcise(TWO_FIGURE_INSURANCE_CAP_TEXT) || mod.truncateAtWordBoundary(TWO_FIGURE_INSURANCE_CAP_TEXT, 80);
+  assert.ok(rendered && rendered.length > 0, 'never blank');
+  assert.notEqual(rendered, '$30,000,000', 'never silently the first figure');
+  assert.notEqual(rendered, '$50,000,000', 'never silently the second figure either');
+  assert.ok(rendered.startsWith('the Surviving Corporation'), 'shows the real clause, not a gap where a sentence was');
+});
+
 /* ─────────────────────────────────────────────────────────────────────────
  * Item 4(d) — Access scope humanization + purpose-pill detection
  * ───────────────────────────────────────────────────────────────────────── */

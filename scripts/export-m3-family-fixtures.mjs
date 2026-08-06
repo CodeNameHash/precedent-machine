@@ -4,10 +4,10 @@ import { createClient } from '@supabase/supabase-js';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const FAMILIES = Object.freeze([
-  ['employee-matters-live-run', 'docs/superpowers/specs/2026-08-03-family-employee-matters-design.md'],
-  ['dno-live-run', 'docs/superpowers/specs/2026-08-03-family-dno-indemnification-design.md'],
-  ['financing-covenants-live-run', 'docs/superpowers/specs/2026-08-02-family-financing-covenants-design.md'],
-  ['guaranty-live-run', 'docs/superpowers/specs/2026-08-03-family-guaranty-financing-party-design.md'],
+  ['employee-matters-fixtures', 'docs/superpowers/specs/2026-08-03-family-employee-matters-design.md'],
+  ['dno-fixtures', 'docs/superpowers/specs/2026-08-03-family-dno-indemnification-design.md'],
+  ['financing-covenants-fixtures', 'docs/superpowers/specs/2026-08-02-family-financing-covenants-design.md'],
+  ['guaranty-fixtures', 'docs/superpowers/specs/2026-08-03-family-guaranty-financing-party-design.md'],
 ]);
 const PREFIX_DISPOSITIONS = Object.freeze({
   '13211d88': 'DEAL_ID_NOT_CARD_ID',

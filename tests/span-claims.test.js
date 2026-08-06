@@ -1,4 +1,4 @@
-// Span accounting spec (docs/handoffs/SPAN-ACCOUNTING-SPEC-2026-07-18.md),
+// Span accounting spec (docs/archive/handoffs/SPAN-ACCOUNTING-SPEC-2026-07-18.md),
 // Part 2 — lib/parser-v2/span-claims.js.
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -54,6 +54,44 @@ test('an item straddling two leaves claims both', () => {
   assert.deepEqual(markers, ['a.i', 'a.ii.A']);
 });
 
+// textSpan is the item's OWN location, as opposed to claimedSpans (the
+// leaves it touches). It is what makes "this quote came from HERE" checkable
+// downstream: slicing the section at the recorded offsets must give the text
+// back, otherwise the stored offsets are decoration.
+test('a located item records a textSpan that slices back to its own text', () => {
+  const quote = 'Parent shall have received a certificate of the Company dated the';
+  const [result] = computeSpanClaims(SECTION_TEXT, [{ text: quote }]);
+  assert.equal(result.spanUnlocated, false);
+  assert.equal(SECTION_TEXT.slice(result.textSpan.start, result.textSpan.end), quote);
+});
+
+test('a whitespace-rewrapped quote records a textSpan that slices back to the SOURCE wrapping, not the model wrapping', () => {
+  const rewrapped = 'The Company shall have performed in all material respects all of its obligations hereunder required to be performed by it as of the Closing Date';
+  const [result] = computeSpanClaims(SECTION_TEXT, [{ text: rewrapped }]);
+  const sliced = SECTION_TEXT.slice(result.textSpan.start, result.textSpan.end);
+  assert.notEqual(sliced, rewrapped, 'the source has a hard line-wrap the model closed up');
+  assert.equal(sliced.replace(/\s+/g, ' '), rewrapped.replace(/\s+/g, ' '));
+});
+
+test('the textSpan sits inside the leaf claimedSpans report — the two are consistent, not interchangeable', () => {
+  const quote = 'Parent shall have received a certificate of the Company dated the';
+  const [result] = computeSpanClaims(SECTION_TEXT, [{ text: quote }]);
+  const leaf = result.claimedSpans[0];
+  assert.ok(leaf.start <= result.textSpan.start && leaf.end >= result.textSpan.end);
+  assert.ok(
+    leaf.end - leaf.start > result.textSpan.end - result.textSpan.start,
+    'the leaf is wider than the quote — this is why a leaf span is not a quote location',
+  );
+});
+
+test('an unlocated item records textSpan: null rather than a fabricated offset', () => {
+  const [result] = computeSpanClaims(SECTION_TEXT, [
+    { text: 'This sentence was never in the source agreement at all and the model invented it.' },
+  ]);
+  assert.equal(result.spanUnlocated, true);
+  assert.equal(result.textSpan, null);
+});
+
 test('an item whose text does not appear anywhere in the section is flagged spanUnlocated — the hallucination surface', () => {
   const items = [
     { text: 'This sentence was never in the source agreement at all and the model invented it out of thin air.' },
@@ -74,6 +112,69 @@ test('computeSpanClaims does not mutate the input items array', () => {
   const snapshot = JSON.parse(JSON.stringify(items));
   computeSpanClaims(SECTION_TEXT, items);
   assert.deepEqual(items, snapshot);
+});
+
+// ---------------------------------------------------------------------------
+// The actual gap offsets close (docs/codex-program/ROADMAP.md P5): a quote
+// trimmed in a way that reverses its legal meaning is still a byte-exact
+// substring of the source, so a text-search-only check ("is this string
+// present anywhere?") waves it through with full confidence. It cannot
+// catch the trim, because a search never learns WHERE the match sits
+// relative to its own clause. An offset, once recorded, can be compared to
+// the clause's own structural boundary (subclauses.js's leaf) — the
+// comparison a search-only verifier structurally cannot perform.
+// ---------------------------------------------------------------------------
+test('a quote trimmed to drop a leading negation is accepted by a text search, but its recorded offset shows it starts well inside its own clause — a check search cannot do', () => {
+  const clause = 'The Company represents and warrants that the transactions contemplated '
+    + 'by this Agreement would not have a Material Adverse Effect on the Company.';
+  const section = [
+    '9.03 No Material Adverse Effect.',
+    '',
+    `(a) ${clause}`,
+  ].join('\n');
+
+  // The model (or a hostile re-trim of a real quote) dropped the leading
+  // "...would not " — what remains reverses the clause's meaning while
+  // still being a real, contiguous substring of the source.
+  const trimmedQuote = 'have a Material Adverse Effect on the Company.';
+
+  // A pure text-search verifier — everything quote verification could do
+  // before offsets existed — reports this as present/verified. This is
+  // the exact failure mode the roadmap names: "reads as a faithful quote
+  // and says the opposite."
+  assert.ok(section.includes(trimmedQuote), 'fixture sanity: a naive text search finds it and would call it verified');
+
+  const [trimmed] = computeSpanClaims(section, [{ text: trimmedQuote }]);
+  const [honest] = computeSpanClaims(section, [{ text: clause }]);
+
+  // computeSpanClaims's OWN hallucination flag does not fire either — the
+  // text genuinely is in the source. That is correct and is a DIFFERENT,
+  // narrower guarantee (span-claims.js's header: "an item whose evidence
+  // isn't actually IN the source") than the one this test proves.
+  assert.equal(trimmed.spanUnlocated, false);
+
+  // THE CHECK ONLY THE OFFSET ENABLES: both quotes claim the SAME leaf
+  // (clause "(a)")...
+  assert.equal(trimmed.claimedSpans[0].marker, honest.claimedSpans[0].marker);
+  const leafStart = honest.claimedSpans[0].start;
+  assert.equal(trimmed.claimedSpans[0].start, leafStart);
+
+  // ...but where each quote's OWN recorded span starts, relative to that
+  // shared leaf boundary, is what a text search can never surface (search
+  // returns yes/no, never a position to compare). The honest quote starts
+  // at the leaf boundary (off by at most the single space after the "(a)"
+  // marker); the trimmed one starts ~100 characters inside it.
+  const honestGap = honest.textSpan.start - leafStart;
+  const trimmedGap = trimmed.textSpan.start - leafStart;
+  assert.ok(honestGap <= 1, `a faithful quote should start at its clause boundary, gap was ${honestGap}`);
+  assert.ok(trimmedGap > 90, `a trimmed quote should start well inside its clause, gap was ${trimmedGap}`);
+
+  // And because the offset is a POSITION, not just a match, a downstream
+  // reader can slice exactly what was dropped — surfacing "would not" —
+  // which is the entire point: "every check becomes an exact comparison
+  // against the source rather than a search for the text."
+  const droppedText = section.slice(leafStart, trimmed.textSpan.start);
+  assert.match(droppedText, /would not/, 'the offset positions expose exactly what the trim removed');
 });
 
 // ---------------------------------------------------------------------------
@@ -106,4 +207,18 @@ test('attachSpanClaimsToProvisions attaches features.spanClaims ONLY when opts.s
   assert.ok(result[0].features.spanClaims);
   assert.equal(result[0].features.spanClaims.spanUnlocated, false);
   assert.equal(result[0].features.spanClaims.claimedSpans[0].marker, 'b');
+});
+
+test('the attached payload carries the quote offsets AND the section origin they are relative to', () => {
+  const quote = 'Parent shall have received a certificate of the Company dated the';
+  const provisions = [{ startChar: 4000, text: quote }];
+  const sectionTextByStartChar = new Map([[4000, SECTION_TEXT]]);
+
+  const [prov] = attachSpanClaimsToProvisions(provisions, sectionTextByStartChar, { spanClaims: true });
+  const { textSpan, sectionStartChar } = prov.features.spanClaims;
+
+  assert.equal(sectionStartChar, 4000, 'without this the section-relative offsets are unusable downstream');
+  assert.equal(SECTION_TEXT.slice(textSpan.start, textSpan.end), quote);
+  // Lifted into full-cleaned-text coordinates by the documented rule.
+  assert.equal(sectionStartChar + textSpan.start, 4000 + SECTION_TEXT.indexOf(quote));
 });

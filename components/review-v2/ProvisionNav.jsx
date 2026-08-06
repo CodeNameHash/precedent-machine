@@ -8,6 +8,7 @@ export default function ProvisionNav({ sections, activeId, onJump, marketMode = 
     <aside
       className={`hidden md:flex flex-col ${widthClass} shrink-0 border-r border-[#E0E0E0] sticky overflow-y-auto mtx-scrollbar-thin bg-white`}
       style={{ top: 'var(--mtx-head-h, 108px)', height: 'calc(100vh - var(--mtx-head-h, 108px))' }}
+      data-testid="provision-nav"
     >
       <div className="px-4 pt-6 pb-3 border-b border-[#E0E0E0] bg-white">
         <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#1F1F1F]">Provisions</span>

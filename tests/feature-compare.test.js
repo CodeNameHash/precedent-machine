@@ -3,7 +3,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const {
-  comparableFeatures, compareFeature, cohortFeatureStats, featureOutliers, codeForFeature,
+  comparableFeatures, compareFeature, cohortFeatureStats, featureOutliers, codeForFeature, numericValue,
 } = require('../lib/feature-compare');
 const {
   repMaterialityCode, compareRepMateriality, repMaterialityStats, repMaterialityOutliers, NO_QUALIFIER,
@@ -218,6 +218,79 @@ test('featureOutliers flags a NUMERIC value outside the cohort IQR (only when n�
   assert.equal(outliers.length, 1);
   assert.equal(outliers[0].offMarket, true);
   assert.equal(outliers[0].dealValue, 30);
+});
+
+// ── numericValue: a multi-figure string is never resolved by picking "the
+//    first" number it contains ──────────────────────────────────────────────
+//
+// FEATURES.TERMF's feeAmount is `type: 'currency'`, so compareFeature/
+// cohortFeatureStats/featureOutliers all route it through numericValue() for
+// cross-deal median/quartile stats and single-deal outlier comparison. A real
+// termination-fee headline can legitimately name more than one dollar figure
+// -- lib/canonical-v2/termination-product-projection.js#conditionalFeeHeadline
+// renders a branch-conditional fee (lib/canonical-v2/termination-product-
+// projection.js's own committed Modiv fixture, pinned in
+// tests/canonical-v2-termination-fee-conditional-amount-projection.test.js)
+// as "Lesser of $10,000,000 (...) or $15,000,000 (...) and the REIT
+// Requirements cap" — two genuinely different amounts depending on which
+// contract branch fires. Silently returning the first ($10,000,000) would
+// plot a cross-deal distribution point, or flag a deal as a market outlier,
+// off an arbitrary substring — a wrong number that reads as precise. Same
+// principle as parseFeeAmountUsd in termination-fees.config.js, fixed for
+// the identical defect.
+
+const MODIV_FEE_HEADLINE = 'Lesser of $10,000,000 (§7.3(b)(i), (ii) or (iii)) or $15,000,000 (§7.3(b)(iv) or (v)) and the REIT Requirements cap';
+
+test('numericValue resolves a single clean figure (real single-branch fee headline, TopBuild)', () => {
+  // tests/fixtures/review-parity/cases/termination-fees/7dc3a05f-topbuild.projection.json
+  assert.equal(numericValue(citable('$600,000,000', 'a fee of $600,000,000')), 600000000);
+  assert.equal(numericValue(5), 5, 'a bare number is untouched');
+  assert.equal(numericValue(citable(30, 'within thirty business days')), 30, 'a citable-wrapped number is untouched');
+});
+
+test('numericValue returns null (never the first figure) for a real branch-conditional fee headline', () => {
+  assert.equal(numericValue(citable(MODIV_FEE_HEADLINE, MODIV_FEE_HEADLINE)), null);
+});
+
+test('numericValue returns null for a range rather than guessing an endpoint', () => {
+  assert.equal(numericValue(citable('30-45 days', 'within 30-45 days')), null);
+});
+
+test('numericValue still returns null with no number present at all, or no raw value (unchanged)', () => {
+  assert.equal(numericValue(citable('not specified', 'not specified')), null);
+  assert.equal(numericValue(null), null);
+  assert.equal(numericValue(undefined), null);
+});
+
+test('a branch-conditional fee headline is excluded from the cross-deal numeric distribution, never misplaced in it', () => {
+  const provs = [
+    prov('d1', 'TERMF', { feeAmount: citable('$20,000,000', 'a fee of $20,000,000') }),
+    prov('d2', 'TERMF', { feeAmount: citable('$40,000,000', 'a fee of $40,000,000') }),
+    // Whatever real path lands a branch-conditional headline on a
+    // currency-typed feature, it must fall out of the distribution entirely
+    // rather than being misread as $10,000,000.
+    prov('d3', 'TERMF', { feeAmount: citable(MODIV_FEE_HEADLINE, MODIV_FEE_HEADLINE) }),
+  ];
+  const out = compareFeature(provs, DEALS, { type: 'TERMF', featureKey: 'feeAmount' });
+  assert.equal(out.kind, 'numeric');
+  assert.equal(out.n, 2, 'the ambiguous deal must not count toward n');
+  assert.equal(out.count, 2);
+  assert.equal(out.median, 30000000, 'median of $20M/$40M only -- never pulled toward a fabricated $10M point');
+  assert.deepEqual(out.points.map((p) => p.deal_id).sort(), ['d1', 'd2']);
+});
+
+test('a branch-conditional fee headline is skipped by featureOutliers, never flagged off a fabricated number', () => {
+  const stats = [{
+    type: 'TERMF', featureKey: 'feeAmount', label: 'Termination fee', kind: 'numeric', n: 15, median: 30000000, q1: 20000000, q3: 40000000,
+  }];
+  const dealProvs = [prov('dX', 'TERMF', { feeAmount: citable(MODIV_FEE_HEADLINE, MODIV_FEE_HEADLINE) })];
+  const outliers = featureOutliers(dealProvs, stats, { minN: 12 });
+  // $10,000,000 (the first figure in the headline) is well below q1 ($20M)
+  // and would have been silently flagged off-market under the old
+  // first-number-wins behaviour. Guarded, the feature has no resolvable
+  // value at all, so it is skipped outright rather than asserting a
+  // confident, wrong verdict.
+  assert.equal(outliers.length, 0);
 });
 
 // ── thin rep-materiality wrapper ───────────────────────────────────────────

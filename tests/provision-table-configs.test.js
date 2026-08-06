@@ -915,7 +915,7 @@ test('mae-definitions carve-outs table drops the right-hand TEXT column (fb2 #19
   const html = renderToStaticMarkup(React.createElement(React.Fragment, null, signalColumn.renderCell(carveouts, { primitives })));
   assert.doesNotMatch(html, />Text</, 'no TEXT column header');
   assert.doesNotMatch(html, /acts of war or terrorism/, 'no raw carve-out clause text rendered');
-  assert.match(html, /Disp\. carveback applies/);
+  assert.match(html, />Yes</);
   // fb3 #M2: no redundant "Carve-out" list header (the row above already
   // reads "Carve-outs") and no <table> wrapper -- a tight scannable <ul>.
   assert.doesNotMatch(html, /<th[^>]*>Carve-out</, 'no "Carve-out" column header');
@@ -1037,7 +1037,7 @@ test('antitrust-regulatory config exposes regulatory signals and hover details (
   assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, detailColumn.renderCell(divestitureCap, { primitives }))), /data-evidence="Parent shall use reasonable best efforts/);
 });
 
-test('antitrust-regulatory foreign filings row renders "Required" plus the HSR and foreign timeline limbs (Feedback-3 A1)', () => {
+test('antitrust-regulatory renders HSR separately from the non-HSR requirement and legacy foreign timeline (Feedback-3 A1)', () => {
   const rows = antitrustRegulatoryMod.antitrustRegulatoryConfig.selectRows({
     cards: [
       {
@@ -1064,13 +1064,15 @@ test('antitrust-regulatory foreign filings row renders "Required" plus the HSR a
     ],
   });
   const foreign = rows.find((row) => row.id === 'antitrust-regulatory-foreign-filings');
+  const hsr = rows.find((row) => row.id === 'antitrust-regulatory-hsr-deadline');
   assert.ok(foreign, 'Foreign regulatory filings row should render');
-  assert.equal(foreign.label, 'Foreign regulatory filings');
+  assert.ok(hsr, 'HSR filing deadline row should render');
+  assert.equal(foreign.label, 'Non-HSR regulatory filings');
   assert.deepEqual(foreign.signals.map((item) => item.label), [
     'Required',
-    '(i) HSR — 30 business days',
     '(ii) Foreign — as promptly as reasonably practicable',
   ]);
+  assert.deepEqual(hsr.signals.map((item) => item.label), ['30 business days']);
 });
 
 test('antitrust-regulatory strategy control row is labeled "Strategy control" with a bare party pill (Feedback-3 A2)', () => {
@@ -1091,6 +1093,69 @@ test('antitrust-regulatory strategy control row is labeled "Strategy control" wi
   assert.equal(strategyControl.label, 'Strategy control');
   assert.deepEqual(strategyControl.signals.map((item) => item.label), ['Parent']);
   assert.equal(rows.find((row) => row.label === 'Filing responsibility'), undefined, '"Filing responsibility" wording must not appear');
+});
+
+test('antitrust-regulatory displays all governed strategy-control codes and the legacy party alias', () => {
+  const expectedLabels = {
+    CONTROL_PARENT: 'Parent',
+    CONTROL_COMPANY: 'Company',
+    CONTROL_SHARED: 'Shared',
+    CONTROL_SILENT: 'Silent',
+    BUYER_WITH_SETTLEMENT_GAG: 'Buyer, settlement gated',
+    BUYER_LEAD: 'Buyer lead',
+    PRINCIPAL_WITH_VETO: 'Principal, counterparty veto',
+    JURISDICTION_SPLIT: 'Split by jurisdiction',
+    SELLER_LED: 'Seller lead',
+  };
+  for (const [code, expected] of Object.entries(expectedLabels)) {
+    const rows = antitrustRegulatoryMod.antitrustRegulatoryConfig.selectRows({ cards: [{
+      id: `strategy-${code}`,
+      provision_type: 'ANTITRUST_REGULATORY',
+      provision_subtype: 'ANTI-STRATEGY',
+      primary_quote: 'Exact strategy-control evidence.',
+      features: { regulatoryStrategyControlTagged: code },
+    }] });
+    assert.deepEqual(rows.find((row) => row.id === 'antitrust-regulatory-strategy-control').signals.map(({ label }) => label), [expected]);
+  }
+  const legacyRows = antitrustRegulatoryMod.antitrustRegulatoryConfig.selectRows({ cards: [{
+    id: 'strategy-legacy',
+    provision_type: 'ANTITRUST_REGULATORY',
+    provision_subtype: 'ANTI-STRATEGY',
+    primary_quote: 'Exact legacy strategy-control evidence.',
+    features: { partyControlsStrategy: 'buyer' },
+  }] });
+  assert.deepEqual(legacyRows.find((row) => row.id === 'antitrust-regulatory-strategy-control').signals.map(({ label }) => label), ['Parent']);
+});
+
+test('antitrust-regulatory Review rows expose native filing, cooperation, information and notification facts', () => {
+  const cards = [
+    {
+      id: 'native-filing', provision_type: 'ANTITRUST_REGULATORY', provision_subtype: 'ANTI-FILING',
+      primary_quote: 'Parent shall make the German FDI Act filing.',
+      features: { regulatoryFilingFacts: [{ factKind: 'OBLIGATION', filingRegime: 'German FDI Act', required: true, exactEvidence: 'Parent shall make the German FDI Act filing.' }] },
+    },
+    {
+      id: 'native-cooperation', provision_type: 'ANTITRUST_REGULATORY', provision_subtype: 'ANTI-COOPERATE',
+      primary_quote: 'The parties shall cooperate in making the filings.',
+      features: { regulatoryCooperationRequired: true, regulatoryCooperationScope: 'making the filings' },
+    },
+    {
+      id: 'native-information', provision_type: 'ANTITRUST_REGULATORY', provision_subtype: 'ANTI-INFO',
+      primary_quote: 'The parties shall share regulator communications, subject to privilege.',
+      features: { regulatoryInformationSharingRequired: true, regulatoryInformationScope: 'regulator communications', regulatoryInformationProtections: ['PRIVILEGE_REDACTION'] },
+    },
+    {
+      id: 'native-notification', provision_type: 'ANTITRUST_REGULATORY', provision_subtype: 'ANTI-NOTIFY',
+      primary_quote: 'The parties shall promptly notify the other of regulator communications.',
+      features: { regulatoryNotificationRequired: true, regulatoryNotificationEvent: 'regulator communications', regulatoryNotificationTiming: 'promptly' },
+    },
+  ];
+  const rows = antitrustRegulatoryMod.antitrustRegulatoryConfig.selectRows({ cards });
+  const byId = new Map(rows.map((row) => [row.id, row]));
+  assert.deepEqual(byId.get('antitrust-regulatory-foreign-filings').signals.map(({ label }) => label), ['Required: German FDI Act']);
+  assert.deepEqual(byId.get('antitrust-regulatory-cooperation').signals.map(({ label }) => label), ['Required', 'making the filings']);
+  assert.deepEqual(byId.get('antitrust-regulatory-information-sharing').signals.map(({ label }) => label), ['Required', 'regulator communications', 'PRIVILEGE_REDACTION']);
+  assert.deepEqual(byId.get('antitrust-regulatory-notification').signals.map(({ label }) => label), ['Required', 'regulator communications', 'promptly']);
 });
 
 test('antitrust-regulatory pull-refile and timing-agreements rows surface the unilateral-withdrawal proviso (Feedback-3 A3)', () => {
@@ -2838,12 +2903,15 @@ test('termination fee and expense configs expose primitive-backed signals', () =
           amount: '$100,000,000',
           triggers: [{ code: 'SUPERIOR_PROPOSAL', text: 'Company terminates pursuant to Section 8.01(f)', label: 'Company terminates to accept a Superior Proposal' }],
         },
-        feeRequired: true,
+        // Owner ruling 2026-08-05 moved feeRequired off this table (now on
+        // termination-rights.config.js's Fiduciary out group), so this fixture
+        // exercises a boolean scalar that still lives here instead.
+        soleRemedy: true,
       },
     }],
   });
   const amount = terminationRows.find((row) => row.id === 'termination-fees-COMPANY_TERMINATION_FEE');
-  const feeRequired = terminationRows.find((row) => row.id === 'termination-fees-required');
+  const soleRemedyRow = terminationRows.find((row) => row.id === 'termination-fees-sole-remedy');
   // row.detail is still computed (other call sites may read it) even though
   // punchlist #35 dropped its dedicated table column.
   assert.match(amount.detail, /\$100,000,000/);
@@ -2851,11 +2919,11 @@ test('termination fee and expense configs expose primitive-backed signals', () =
   // own pill (REBUILD-SPECS.md "Company Termination Fee [$ amount pill]"),
   // ahead of the trigger-name pills.
   assert.deepEqual(amount.signals.map((item) => item.label), ['$100,000,000', 'Company terminates to accept a Superior Proposal']);
-  assert.deepEqual(feeRequired.signals.map((item) => item.label), ['Yes']);
+  assert.deepEqual(soleRemedyRow.signals.map((item) => item.label), ['Yes']);
   const termSignals = terminationFeesMod.terminationFeesConfig.columns.find((column) => column.id === 'signals');
   // Punchlist #35: the "Detail" column was removed -- only Term/Signals remain.
   assert.equal(terminationFeesMod.terminationFeesConfig.columns.find((column) => column.id === 'detail'), undefined);
-  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, termSignals.renderCell(feeRequired, { primitives }))), /Yes/);
+  assert.match(renderToStaticMarkup(React.createElement(React.Fragment, null, termSignals.renderCell(soleRemedyRow, { primitives }))), /Yes/);
 
   const miscRows = advisersFeesExpensesMod.advisersFeesExpensesConfig.selectRows({
     cards: [{
@@ -4233,11 +4301,15 @@ test('r13: card-utils makeRow() threads featureKey/value/sourceCard, matching ma
 
 test('r13: termination-rights cross-cutting rows (willfulBreachException / specificPerformanceMutual) thread featureKeys 1:1', () => {
   const cards = [
-    { id: 'wb', provision_type: 'TERMINATION_FEE', provision_subtype: 'TERMF-COMPANY', primary_quote: 'Willful breach carve-out applies.', features: { willfulBreachException: 'Yes, fraud and willful breach excluded.' } },
+    // willfulBreachException now renders as TWO rows, each scoped to its own
+    // code (see CROSS_CUTTING_ROWS in termination-rights.config.js) -- a
+    // code-less/other-coded card would no longer be found by either row, so
+    // the fixture uses the real TERMF-SOLE code for the sole-remedy row.
+    { id: 'wb', provision_type: 'TERMINATION_FEE', provision_subtype: 'TERMF-SOLE', primary_quote: 'Willful breach carve-out applies.', features: { willfulBreachException: 'Yes, fraud and willful breach excluded.' } },
     { id: 'sp', provision_type: 'MISC', provision_subtype: 'MISC-REMEDIES', primary_quote: 'Specific performance available to either party.', features: { specificPerformanceMutual: 'true' } },
   ];
   const groups = terminationRightsMod.crossCuttingGroup({ cards });
-  const willfulRow = groups.rows.find((r) => r.id === 'termination-rights-willful-breach');
+  const willfulRow = groups.rows.find((r) => r.id === 'termination-rights-willful-breach-sole');
   const specPerfRow = groups.rows.find((r) => r.id === 'termination-rights-specific-performance-mutual');
   assert.deepEqual(willfulRow.featureKeys, ['willfulBreachException']);
   assert.deepEqual(specPerfRow.featureKeys, ['specificPerformanceMutual']);

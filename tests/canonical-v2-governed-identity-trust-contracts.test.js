@@ -10,12 +10,12 @@ const identity = require('../lib/canonical-v2/governed-identity-trust-contracts'
 
 const ROOT = path.resolve(__dirname, '..');
 const digest = (value) => value.toString(16).padStart(64, '0');
-const tx = (index) => digest(index + 1);
+const tx = (index) => `TX-${String(index + 1).padStart(6, '0')}`;
 const seed = (index) => digest(1000 + index);
 
 function fixture() {
   const amendment = identity.buildFrozenKeyRegistryAmendmentProposal({ base_key_registry_root_id: digest(1), pending_ben_ruling_id: digest(2) });
-  const namespaceRequest = identity.buildNamespaceApprovalRequest({ namespace_value: 'EXTERNALLY_RATIFIED_NAMESPACE/V3', pending_ben_ruling_id: digest(3), request_nonce: 'namespace-request-0001' });
+  const namespaceRequest = identity.buildNamespaceApprovalRequest({ recorded_ben_ruling_id: digest(3), request_nonce: 'namespace-request-0001' });
   const namespaceBinding = identity.bindExternallyRatifiedNamespace({ namespace_approval_request: namespaceRequest, external_ruling_id: digest(4) });
   const mappingSeedRoot = digest(5); const occurrenceRoot = digest(6);
   const proofs = Array.from({ length: 40 }, (_, index) => identity.buildSerialisableCasProof({
@@ -37,27 +37,23 @@ function fixture() {
     namespace_binding: namespaceBinding, namespace_approval_request: namespaceRequest, mapping_seed_root_id: mappingSeedRoot,
     source_occurrence_root_id: occurrenceRoot, deal_mappings: dealMappings, occurrence_mappings: occurrenceMappings,
   });
-  const approvalAttestationRequests = receipts.map((receipt) => identity.buildApprovalAttestationSigningRequest({
-    transaction_id: receipt.transaction_id, seed_digest: receipt.seed_digest, governed_deal_key: receipt.governed_deal_key,
-    manifest_id: receipt.manifest_id, allocation_receipt_id: receipt.allocation_receipt_id,
-  }));
   const mappingApproval = identity.buildBenMappingApprovalRequest({ mapping_set: mappingSet, namespace_binding: namespaceBinding, namespace_approval_request: namespaceRequest, review_root_id: digest(7) });
   const bridge = identity.buildReviewedBridge({ mapping_set: mappingSet, mapping_approval_request: mappingApproval, namespace_approval_request: namespaceRequest });
   const bundle = identity.buildAuthorityBundle({
     frozen_key_registry_amendment: amendment, namespace_approval_request: namespaceRequest, namespace_binding: namespaceBinding,
-    cas_proofs: proofs, allocation_receipts: receipts, approval_attestation_requests: approvalAttestationRequests,
+    cas_proofs: proofs, allocation_receipts: receipts,
     mapping_set: mappingSet, ben_mapping_approval_request: mappingApproval, bridge,
   });
-  return { amendment, namespaceRequest, namespaceBinding, proofs, receipts, approvalAttestationRequests, mappingSet, mappingApproval, bridge, bundle };
+  return { amendment, namespaceRequest, namespaceBinding, proofs, receipts, mappingSet, mappingApproval, bridge, bundle };
 }
 
 test('builds only a complete blocked 40-deal/41-occurrence identity authority bundle', () => {
   const value = fixture();
   assert.equal(value.mappingSet.deal_mappings.length, 40);
   assert.equal(value.mappingSet.occurrence_mappings.length, 41);
-  assert.equal(value.approvalAttestationRequests.length, 40);
+  assert.deepEqual(value.mappingSet.deal_mappings.map((row) => row.transaction_id), identity.INITIAL_IMPORT_TRANSACTION_IDS);
   assert.equal(value.bundle.state, identity.NOT_ISSUED);
-  assert.ok(value.bundle.blocker_codes.includes(identity.NAMESPACE_RATIFICATION_BLOCKER));
+  assert.ok(value.bundle.blocker_codes.includes(identity.BEN_BATCH_MAPPING_SIGNATURE_BLOCKER));
   assert.deepEqual(identity.validateAuthorityBundle(value.bundle), value.bundle);
 });
 
@@ -102,33 +98,21 @@ test('rejects positional zips and the missing TopBuild second occurrence', () =>
   assert.throws(() => identity.validateMappingSet(absent, { namespace_binding: value.namespaceBinding, namespace_approval_request: value.namespaceRequest }), (error) => error.code === 'IDENTITY_TOPBUILD_SECOND_OCCURRENCE_MISSING');
 });
 
-test('rejects swapped approval attestations and self-issued approval signatures', () => {
+test('uses one exact Ben batch mapping-signature request and rejects self-issued authority', () => {
   const value = fixture();
-  const reordered = structuredClone(value.bundle);
-  reordered.approval_attestation_requests.reverse();
-  const { authority_bundle_id: ignoredReorderedBundleId, ...reorderedBody } = reordered;
-  reordered.authority_bundle_id = contentId(identity.AUTHORITY_BUNDLE_SCHEMA, reorderedBody);
-  assert.deepEqual(identity.validateAuthorityBundle(reordered), reordered);
-
-  const swapped = structuredClone(value.bundle);
-  [swapped.approval_attestation_requests[0].allocation_receipt_id, swapped.approval_attestation_requests[1].allocation_receipt_id] = [
-    swapped.approval_attestation_requests[1].allocation_receipt_id, swapped.approval_attestation_requests[0].allocation_receipt_id,
-  ];
-  for (const request of swapped.approval_attestation_requests) {
-    const { approval_attestation_request_id: ignored, ...body } = request;
-    request.approval_attestation_request_id = contentId(identity.APPROVAL_ATTESTATION_REQUEST_SCHEMA, body);
-  }
-  const { authority_bundle_id: ignoredBundleId, ...swappedBody } = swapped;
-  swapped.authority_bundle_id = contentId(identity.AUTHORITY_BUNDLE_SCHEMA, swappedBody);
-  assert.throws(() => identity.validateAuthorityBundle(swapped), (error) => error.code === 'IDENTITY_APPROVAL_ATTESTATION_EXPLICIT_JOIN_REQUIRED');
-
+  assert.equal(value.mappingApproval.approval_policy, identity.BATCH_MAPPING_SIGNATURE_POLICY);
+  assert.equal(value.mappingApproval.approved_deal_count, 40);
+  assert.equal(value.mappingApproval.approved_occurrence_count, 41);
+  assert.equal(value.mappingApproval.signature_domain, identity.BEN_MAPPING_APPROVAL_SIGNATURE_DOMAIN);
+  assert.equal(value.mappingApproval.requested_terminal_decision, 'APPROVE');
+  assert.equal(value.mappingApproval.approval_signature, null);
   const selfIssued = structuredClone(value.bundle);
-  selfIssued.approval_attestation_requests[0].signature = 'self-issued-signature';
-  const { approval_attestation_request_id: ignoredRequestId, ...requestBody } = selfIssued.approval_attestation_requests[0];
-  selfIssued.approval_attestation_requests[0].approval_attestation_request_id = contentId(identity.APPROVAL_ATTESTATION_REQUEST_SCHEMA, requestBody);
+  selfIssued.ben_mapping_approval_request.approval_signature = 'self-issued-signature';
+  const { approval_request_id: ignoredRequestId, namespace_binding: binding, ...requestBody } = selfIssued.ben_mapping_approval_request;
+  selfIssued.ben_mapping_approval_request.approval_request_id = contentId(identity.BEN_MAPPING_APPROVAL_REQUEST_SCHEMA, { ...requestBody, namespace_binding_id: binding.namespace_binding_id });
   const { authority_bundle_id: ignoredSelfIssuedBundleId, ...selfIssuedBody } = selfIssued;
   selfIssued.authority_bundle_id = contentId(identity.AUTHORITY_BUNDLE_SCHEMA, selfIssuedBody);
-  assert.throws(() => identity.validateAuthorityBundle(selfIssued), (error) => error.code === 'IDENTITY_APPROVAL_ATTESTATION_REQUEST_INVALID');
+  assert.throws(() => identity.validateAuthorityBundle(selfIssued), (error) => error.code === 'IDENTITY_MAPPING_APPROVAL_REQUEST_INVALID');
 });
 
 test('rejects duplicate transaction, production deal, key, manifest, and receipt bindings', () => {

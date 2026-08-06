@@ -18,7 +18,7 @@
           "source_section": "Section 3.1(d)(iii) (nested inside the Section 3.1(a) Organization rep -- TopBuild has no standalone Definitions article; both MAE terms are minted inline)",
           "canonical_text_byte_range": [51548, 57164],
           "sha256": "c817089fc6864440593793aba5b6659805a9debbfe21a088575964aaaca1b39f",
-          "shape_note": "Single BUSINESS_EFFECTS prong (no explicit consummation-prevention prong distinct from the chapeau). Carve-outs (A)-(J). NO single trailing disproportionality-carveback sentence with an applies_to_clause_labels enumeration -- disproportionality is drafted PER-CLAUSE ('except to the extent such changes or developments have a disproportionate effect...') inside clauses (A),(B),(D),(G),(H) individually, not as one clause-enumerating proviso. This is a real drafting variant NOT covered by the spec's MAE_DISPROPORTIONALITY_CARVEBACK worked examples (all of which are single-sentence, multi-clause-enumerating provisos) -- flagged for Fable/Ben, not resolved here (spec section 'Never resolve flagged legal-judgment calls')."
+          "shape_note": "Single BUSINESS_EFFECTS prong (no explicit consummation-prevention prong distinct from the chapeau). Carve-outs (A)-(J). Disproportionality is drafted PER_LIMB inside clauses (A), (B), (D), (G) and (H), not as one trailing proviso. Each limb-local claim preserves its full limb_path, exact comparison baseline and exact disproportionality quote. The product projection joins it only to carve-out claims on that full limb identity. Ben approved this source form on 2026-08-04."
         },
         {
           "file": "topbuild-parent-mae-definition.txt",
@@ -26,7 +26,7 @@
           "source_section": "Section 3.2(a) Organization rep (mirrors 3.1(d)(iii) exactly, Parent-side)",
           "canonical_text_byte_range": [133963, 139034],
           "sha256": "535fe08e077ea7791baf0db2eb3cfb8507f3718d5f51d6c89843d07b354c1b7d",
-          "shape_note": "Same shape/gap as the Company MAE definition above."
+          "shape_note": "Same approved PER_LIMB shape as the Company MAE definition above, with Parent kept as a separate defined-term occurrence."
         }
       ]
     },
@@ -79,5 +79,5 @@
       ]
     }
   ],
-  "known_gap_flagged_not_resolved": "TopBuild's disproportionality drafting is per-clause, not a single enumerable trailing proviso -- the MAE_DISPROPORTIONALITY_CARVEBACK claim shape (applies_to_clause_labels[] REQUIRED) does not cleanly fit it. This is reported to the spec's Ben-ratified defaults, not silently resolved by an implementer judgment call, per the task's 'never resolve flagged legal-judgment calls' instruction."
+  "resolved_variant": "TopBuild's per-clause disproportionality drafting is governed as PER_LIMB for clauses (A), (B), (D), (G) and (H). Skechers and Modiv retain TRAILING_LIST. Source form is preserved, and the product projection never joins by a bare label across definition occurrences."
 }

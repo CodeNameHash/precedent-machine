@@ -1,5 +1,5 @@
 /* Fixture-driven tests for the /admin/reports/[kind] pure data-shaping
-   helpers (docs/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md §7 item 4).
+   helpers (docs/archive/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md §7 item 4).
    No React rendering harness exists in this repo (see tests/admin/*.spec.js
    precedent — page-source regex assertions, not component rendering), and
    this repo's `node --test` runner can't require() JSX pages directly — so

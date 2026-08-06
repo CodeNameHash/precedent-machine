@@ -1062,7 +1062,7 @@ test('a proposal with an unresolvable party lands in review_queue with PARTY_UNR
   );
 });
 
-// ─── Citation validation, never a silent drop (docs/handoffs/
+// ─── Citation validation, never a silent drop (docs/archive/handoffs/
 // F28-SECOND-LIVE-RUN.md). A proposal whose citation is neither constructed
 // from the sectionizer's tree nor corroborated by the document's own text
 // still RESOLVES (a provision and claim are minted) but is routed to
@@ -1395,6 +1395,13 @@ test('approved Key Defined Terms rank scaffolding uses the existing fiduciary, r
   assert.equal(materialityFor({ conceptKey: 'DEF-KNOWLEDGE' }).label, 'REPRESENTATIONS');
   assert.equal(materialityFor({ conceptKey: 'DEF-WILLFUL' }).rank, 20);
   assert.equal(materialityFor({ conceptKey: 'DEF-WILLFUL' }).label, 'FEES');
+});
+
+test('approved merger-structure and appraisal review ranks remain distinct', () => {
+  assert.equal(materialityFor({ conceptKey: 'COV-PROXY' }).rank, 80);
+  assert.equal(materialityFor({ conceptKey: 'COV-MEETING' }).rank, 80);
+  assert.equal(materialityFor({ conceptKey: 'MERGER-STRUCTURE' }).rank, 87);
+  assert.equal(materialityFor({ conceptKey: 'APPR-SETTLE' }).rank, 88);
 });
 
 test('review_queue orders a more material item ahead of a less material item end to end', async () => {

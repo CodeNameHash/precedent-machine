@@ -1,0 +1,572 @@
+{
+  "schema_version": "NATIVE_UNIFIED_RUN_CHECKPOINT/V1",
+  "validation_receipt_id": "7a20d78e74671905ebd7529dd5a86d5f10427638b691e7b45515c9278f78e2ec",
+  "semantic_manifest_id": "55725467e9d43abeaecd57d0ec89680ec6ad2881703640c31ea698f3c02e22e9",
+  "execution_plan_id": "6ab210eac9337363106aa33f3d3af6e7867bdcc3c080e98d1a917655b0cf8ece",
+  "contract_fingerprint": "5eafc3fed937525022cdbde1a0f5c42552e875336afa515c9ade580c021707ad",
+  "work_result": {
+    "schema_version": "NATIVE_UNIFIED_RUN_WORK_RESULT/V1",
+    "work_item_id": "topbuild-remedies-specific-performance-7-6",
+    "source_id": "topbuild-full",
+    "family_id": "SPECIFIC_PERFORMANCE_REMEDIES",
+    "profile_id": "TERRA_MEDIUM",
+    "status": "SUCCEEDED",
+    "failure_code": null,
+    "failure_stage": null,
+    "run_receipt": {
+      "schema_version": "NATIVE_EXTRACTION_RUN_RECEIPT/V1",
+      "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+      "source_sha256": "7dfbb5bb90fa7034462e42496e9a5068fa2fa6ac55ba69f977cf7108378e7f5d",
+      "source_byte_length": 412860,
+      "root_section_id": "9137ba85e28ef2d6caf39ba1be609681d915418666079543d7fe1b860bd39358",
+      "requested_section_references": [
+        "7.6"
+      ],
+      "resolved_sections": [
+        {
+          "section_reference": "7.6",
+          "section_id": "9323c0c8f33357c8a78e7e9a261b9fe168a0e52cec4429373705576e20907dc5",
+          "parent_section_id": "1c24ef91a0fa2ba30952fc2f82d9d4242a7f724d8dd2b3a6795d7446a1392466",
+          "kind": "SECTION",
+          "depth": 2,
+          "start": 389293,
+          "end": 393229,
+          "text_sha256": "9d375b85093b476fbecb795ababa596001919093729231adb190ec369094312c",
+          "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+          "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+          "prompt_id": "native-producer-specific-performance-remedies/v1",
+          "prompt_version": 2,
+          "prompt_digest": "0ee7af15974abb8fc86d13f3106012faa770bcc431909e6eb4500985d25e316c",
+          "producer_receipt": {
+            "schema_version": "NATIVE_PRODUCER_RECEIPT/V1",
+            "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+            "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+            "prompt_digest": "2d7c76f2ecada2fc6a19727d0521fbf3361f8ac1a40c079f7314372cc215af4e",
+            "input_scope_digest": "f86f05dabc75a209b2945d81e8f785298ff81c3aa70560826077268812e8b8e4",
+            "proposal_count": 1,
+            "evidence_residual_count": 0,
+            "producer_receipt_id": "a572955c56408c0630a7775d18927a1daedfc536f9d5b585edbadce8fd3bc6da"
+          }
+        }
+      ],
+      "compiled_candidates": [
+        {
+          "section_reference": "7.6",
+          "citation_validation": null,
+          "section_family": "SPECIFIC_PERFORMANCE_REMEDIES",
+          "section_family_provenance": "SECTION_FAMILY_MANIFEST_ASSIGNED",
+          "covenant_side": null,
+          "ok": true,
+          "candidate": {
+            "kind": "claim",
+            "claim": {
+              "schema_version": "CLAIM_REVISION/V1",
+              "claim_revision_id": "927bb7056fa0bb94d131e2155cc176918788f1aa14b580e7b4ac9848ea3fa1f1",
+              "claim_occurrence_id": "d8c062298995b92e78fbc97f91d5c2f22bcee00f8c70c2e669dd05e206d17365",
+              "subject_occurrence_id": "e9fe554cf73d05b24d48075bd593193fe7bf4446db08408a7fbc83bc5bdfbf1c",
+              "claim_definition_key": "NATIVE_SPECIFIC_PERFORMANCE_REMEDY_CANDIDATE",
+              "claim_definition_version": 1,
+              "ordinal": 0,
+              "state": "PRESENT",
+              "raw_value": "The parties acknowledge and agree that irreparable harm would occur in the event that any of the provisions of this Agreement were not performed in accordance with their specific terms or in the event of any actual or threatened breach of this Agreement, and that money damages would not be an adequate remedy, even if available. It is accordingly agreed that, except where this Agreement is validly terminated in accordance with Article ‎VI, the parties (on behalf of themselves and the third-party beneficiaries of this Agreement provided in Section ‎7.9) shall be entitled to an injunction or injunctions, specific performance or other equitable relief to prevent breaches or threatened breaches of this Agreement and to enforce specifically the terms and provisions hereof and any other agreement or instrument executed in connection herewith.",
+              "canonical_value": true,
+              "unit": null,
+              "day_basis": null,
+              "denominator": null,
+              "scope": null,
+              "applicability": null,
+              "not_examined": null,
+              "failure": null,
+              "evidence_ids": [
+                "aec71b1273efacf4038fc0ea0d9d601a8ef81cfa027de03abc6048cf85db66c3"
+              ],
+              "attributes": {
+                "assertion_kind": "SPECIFIC_PERFORMANCE"
+              },
+              "taxonomy_codes": {
+                "assertion_kind": "SPECIFIC_PERFORMANCE"
+              },
+              "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+              "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+              "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+              "evidence": [
+                {
+                  "schema_version": "CLAIM_EVIDENCE/V1",
+                  "claim_evidence_id": "aec71b1273efacf4038fc0ea0d9d601a8ef81cfa027de03abc6048cf85db66c3",
+                  "evidence_role": "OPERATIVE_TEXT",
+                  "excerpt_id": "5aa4f6220c063af9fbdb940062bf1fe36b3233d0bee498d785b1daf8e3dcf399",
+                  "document_ordinal": 0,
+                  "absolute_start": 26,
+                  "absolute_end": 877,
+                  "ordinal": 0
+                }
+              ],
+              "publication_state": "VALIDATED",
+              "retained_residuals": [],
+              "quarantine": null,
+              "closure_id": "d0c7040a08c195071937717d0a98f4624867dc61c149711abc09788b8d75bdfd"
+            },
+            "extraction_provenance": {
+              "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+              "extractor_id": "canonical-v2-native-extraction-run/v1",
+              "extractor_version": "1",
+              "proposal_kind": "SPECIFIC_PERFORMANCE_REMEDY",
+              "prompt_digest": "2d7c76f2ecada2fc6a19727d0521fbf3361f8ac1a40c079f7314372cc215af4e",
+              "producer_receipt_id": "a572955c56408c0630a7775d18927a1daedfc536f9d5b585edbadce8fd3bc6da",
+              "governed_scope_digest": "595359aaa0803fb9a99106e60deb249080958c5e853a53acd0bdb9df73e97e2b",
+              "extraction_provenance_id": "c4e7a730b753ef4aea59af4933efed8ca812a22fb72a6a808a559ba524437f6e"
+            }
+          }
+        }
+      ],
+      "evidence_residuals": [],
+      "scope_violations": [],
+      "citation_residuals": [],
+      "coverage_proxies": [
+        {
+          "schema_version": "COVERAGE_PROXY_REPORT/V1",
+          "section_reference": "7.6",
+          "source_byte_length": 3936,
+          "covered_byte_length": 851,
+          "coverage_share": 0.21620934959349594,
+          "marker_counts": {
+            "as of": 0,
+            "except": 1,
+            "knowledge": 3,
+            "material": 0,
+            "total": 4
+          },
+          "qualifiers_emitted_count": 0,
+          "qualifier_to_marker_ratio": 0,
+          "signals": [
+            {
+              "type": "COVERAGE_SUSPECT",
+              "reason": "LOW_SPAN_COVERAGE",
+              "coverage_share": 0.21620934959349594,
+              "threshold": 0.5
+            },
+            {
+              "type": "COVERAGE_SUSPECT",
+              "reason": "QUALIFIER_MARKER_GAP",
+              "qualifiers_emitted_count": 0,
+              "marker_total": 4,
+              "ratio": 0,
+              "threshold": 0.5
+            }
+          ]
+        }
+      ],
+      "limb_enumeration_scan": [
+        {
+          "schema_version": "LIMB_ENUMERATION_SCAN_REPORT/V1",
+          "section_reference": "7.6",
+          "markers_found": [
+            {
+              "token": "(x)",
+              "family": "ALPHA_LOWER",
+              "classification": "ENUMERATION_MARKER",
+              "start": 958,
+              "end": 961
+            },
+            {
+              "token": "(y)",
+              "family": "ALPHA_LOWER",
+              "classification": "ENUMERATION_MARKER",
+              "start": 1362,
+              "end": 1365
+            },
+            {
+              "token": "(a)",
+              "family": "ALPHA_LOWER",
+              "classification": "ENUMERATION_MARKER",
+              "start": 1779,
+              "end": 1782
+            },
+            {
+              "token": "(b)",
+              "family": "ALPHA_LOWER",
+              "classification": "ENUMERATION_MARKER",
+              "start": 2198,
+              "end": 2201
+            },
+            {
+              "token": "(i)",
+              "family": "ROMAN",
+              "classification": "ENUMERATION_MARKER",
+              "start": 3227,
+              "end": 3230
+            },
+            {
+              "token": "(ii)",
+              "family": "ROMAN",
+              "classification": "ENUMERATION_MARKER",
+              "start": 3356,
+              "end": 3360
+            }
+          ],
+          "classification_counts": {
+            "enumeration_marker": 6,
+            "section_paragraph_marker": 0,
+            "cross_reference_marker": 0
+          },
+          "proposed_tokens": [],
+          "disagreements": [
+            {
+              "type": "LIMB_ENUMERATION_DISAGREEMENT",
+              "reason": "MARKER_WITHOUT_LIMB",
+              "token": "(x)",
+              "family": "ALPHA_LOWER",
+              "start": 958,
+              "end": 961
+            },
+            {
+              "type": "LIMB_ENUMERATION_DISAGREEMENT",
+              "reason": "MARKER_WITHOUT_LIMB",
+              "token": "(y)",
+              "family": "ALPHA_LOWER",
+              "start": 1362,
+              "end": 1365
+            },
+            {
+              "type": "LIMB_ENUMERATION_DISAGREEMENT",
+              "reason": "MARKER_WITHOUT_LIMB",
+              "token": "(a)",
+              "family": "ALPHA_LOWER",
+              "start": 1779,
+              "end": 1782
+            },
+            {
+              "type": "LIMB_ENUMERATION_DISAGREEMENT",
+              "reason": "MARKER_WITHOUT_LIMB",
+              "token": "(b)",
+              "family": "ALPHA_LOWER",
+              "start": 2198,
+              "end": 2201
+            },
+            {
+              "type": "LIMB_ENUMERATION_DISAGREEMENT",
+              "reason": "MARKER_WITHOUT_LIMB",
+              "token": "(i)",
+              "family": "ROMAN",
+              "start": 3227,
+              "end": 3230
+            },
+            {
+              "type": "LIMB_ENUMERATION_DISAGREEMENT",
+              "reason": "MARKER_WITHOUT_LIMB",
+              "token": "(ii)",
+              "family": "ROMAN",
+              "start": 3356,
+              "end": 3360
+            }
+          ],
+          "disagreement_count": 6
+        }
+      ],
+      "undispatched_sections": [],
+      "evidence_residual_count": 0,
+      "scope_violation_count": 0,
+      "citation_residual_count": 0,
+      "undispatched_section_count": 0,
+      "compiled_candidate_count": 1,
+      "rejected_candidate_count": 0,
+      "run_receipt_id": "8a0c7b72405361f0a61ee55710d837684623271da3fb9dfe26810eab9614756e"
+    },
+    "resolution": {
+      "resolved": [
+        {
+          "section_reference": "7.6",
+          "source_citation": "7.6",
+          "citation_context": {
+            "parent_section_reference": "7.6",
+            "child_section_reference": "7.6",
+            "parent_chapeau_quote": "7.6 Specific Performance. The parties acknowledge and agree that irreparable harm would occur in the event that any of the provisions of this Agreement were not performed in accordance with their specific terms or in the event of any actual or threatened breach of this Agreement, and that money damages would not be an adequate remedy, even if available. It is accordingly agreed that, except where this Agreement is validly terminated in accordance with Article ‎VI, the parties (on behalf of themselves and the third-party beneficiaries of this Agreement provided in Section ‎7.9) shall be entitled to an injunction or injunctions, specific performance or other equitable relief to prevent breaches or threatened breaches of this Agreement and to enforce specifically the terms and provisions hereof and any other agreement or instrument executed in connection herewith. The parties hereby further acknowledge and agree that such relief shall include",
+            "child_clause_quote": "The parties acknowledge and agree that irreparable harm would occur in the event that any of the provisions of this Agreement were not performed in accordance with their specific terms or in the event of any actual or threatened breach of this Agreement, and that money damages would not be an adequate remedy, even if available. It is accordingly agreed that, except where this Agreement is validly terminated in accordance with Article ‎VI, the parties (on behalf of themselves and the third-party beneficiaries of this Agreement provided in Section ‎7.9) shall be entitled to an injunction or injunctions, specific performance or other equitable relief to prevent breaches or threatened breaches of this Agreement and to enforce specifically the terms and provisions hereof and any other agreement or instrument executed in connection herewith."
+          },
+          "governing_context_quote": null,
+          "generic_claim_key": "NATIVE_SPECIFIC_PERFORMANCE_REMEDY_CANDIDATE",
+          "resolved_claim_definition_key": "SPECIFIC_PERFORMANCE_REMEDY_PRESENT",
+          "concept_key": "REMEDY-SPECIFIC-PERFORMANCE",
+          "party": null,
+          "party_source_span": null,
+          "provision_instance": {
+            "schema_version": "STRUCTURAL_PROVISION_INSTANCE/V1",
+            "source_occurrence_id": "3d973050f68c705dbf202d9a75b9ecc5c79f9cbff52248345914b23fee52d559",
+            "canonical_text_id": "b7b42f06a162d29be7c34ae7cc15fae6686add86310d9afd715bf6cab3055676",
+            "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+            "absolute_start": 389293,
+            "absolute_end": 393229,
+            "concept_key": "REMEDY-SPECIFIC-PERFORMANCE",
+            "ordinal": 1,
+            "source_anchor_id": "73fe6532792bbbd20dcfb4ca8538180446502adb6151f3cbde1367d47775182c",
+            "provision_instance_id": "e1383c71dae68476d8cd58de3cee525a08fd17b686fcd1f1f4ce58b0348f5d08",
+            "closure_id": "392a78838ae048ab4e0002953be0ad5e4310d1fe29e0bd2ef677506fe53397ec"
+          },
+          "claim": {
+            "schema_version": "CLAIM_REVISION/V1",
+            "claim_revision_id": "0aed71ba6e27aadbb89b17c47199cfe75d2c5663fda1648266060f4a3da3d885",
+            "claim_occurrence_id": "978cbe09c0df9c3726dabd95b5bb9f7e4fc487f9d70ed3cb834c30867cd6dfdf",
+            "subject_occurrence_id": "e1383c71dae68476d8cd58de3cee525a08fd17b686fcd1f1f4ce58b0348f5d08",
+            "claim_definition_key": "SPECIFIC_PERFORMANCE_REMEDY_PRESENT",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "The parties acknowledge and agree that irreparable harm would occur in the event that any of the provisions of this Agreement were not performed in accordance with their specific terms or in the event of any actual or threatened breach of this Agreement, and that money damages would not be an adequate remedy, even if available. It is accordingly agreed that, except where this Agreement is validly terminated in accordance with Article ‎VI, the parties (on behalf of themselves and the third-party beneficiaries of this Agreement provided in Section ‎7.9) shall be entitled to an injunction or injunctions, specific performance or other equitable relief to prevent breaches or threatened breaches of this Agreement and to enforce specifically the terms and provisions hereof and any other agreement or instrument executed in connection herewith.",
+            "canonical_value": true,
+            "unit": null,
+            "day_basis": null,
+            "denominator": null,
+            "scope": null,
+            "applicability": null,
+            "not_examined": null,
+            "failure": null,
+            "evidence_ids": [
+              "9c43332726a50f9573e8ad35dcc0ed0dc3d4b4667734b1eb8f3c76803f2298aa"
+            ],
+            "attributes": {
+              "assertion_kind": "SPECIFIC_PERFORMANCE",
+              "answer_provenance": {
+                "tag": "MECHANICAL",
+                "pins": {
+                  "mapping_table_version": 20,
+                  "qualifier_kind_lexicon_version": 2
+                }
+              }
+            },
+            "taxonomy_codes": {
+              "assertion_kind": "SPECIFIC_PERFORMANCE"
+            },
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "evidence": [
+              {
+                "schema_version": "CLAIM_EVIDENCE/V1",
+                "claim_evidence_id": "9c43332726a50f9573e8ad35dcc0ed0dc3d4b4667734b1eb8f3c76803f2298aa",
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "5aa4f6220c063af9fbdb940062bf1fe36b3233d0bee498d785b1daf8e3dcf399",
+                "document_ordinal": 0,
+                "absolute_start": 26,
+                "absolute_end": 877,
+                "ordinal": 0
+              }
+            ],
+            "publication_state": "VALIDATED",
+            "retained_residuals": [],
+            "quarantine": null,
+            "closure_id": "c04ffcdd9709416d67cb407fb13ac22b5d07fea377e5c6f00d82271fa37aabc0"
+          },
+          "compiled_candidate": {
+            "section_reference": "7.6",
+            "ok": true,
+            "citation_validation": null,
+            "candidate": {
+              "kind": "claim",
+              "claim": {
+                "schema_version": "CLAIM_REVISION/V1",
+                "claim_revision_id": "0aed71ba6e27aadbb89b17c47199cfe75d2c5663fda1648266060f4a3da3d885",
+                "claim_occurrence_id": "978cbe09c0df9c3726dabd95b5bb9f7e4fc487f9d70ed3cb834c30867cd6dfdf",
+                "subject_occurrence_id": "e1383c71dae68476d8cd58de3cee525a08fd17b686fcd1f1f4ce58b0348f5d08",
+                "claim_definition_key": "SPECIFIC_PERFORMANCE_REMEDY_PRESENT",
+                "claim_definition_version": 1,
+                "ordinal": 0,
+                "state": "PRESENT",
+                "raw_value": "The parties acknowledge and agree that irreparable harm would occur in the event that any of the provisions of this Agreement were not performed in accordance with their specific terms or in the event of any actual or threatened breach of this Agreement, and that money damages would not be an adequate remedy, even if available. It is accordingly agreed that, except where this Agreement is validly terminated in accordance with Article ‎VI, the parties (on behalf of themselves and the third-party beneficiaries of this Agreement provided in Section ‎7.9) shall be entitled to an injunction or injunctions, specific performance or other equitable relief to prevent breaches or threatened breaches of this Agreement and to enforce specifically the terms and provisions hereof and any other agreement or instrument executed in connection herewith.",
+                "canonical_value": true,
+                "unit": null,
+                "day_basis": null,
+                "denominator": null,
+                "scope": null,
+                "applicability": null,
+                "not_examined": null,
+                "failure": null,
+                "evidence_ids": [
+                  "9c43332726a50f9573e8ad35dcc0ed0dc3d4b4667734b1eb8f3c76803f2298aa"
+                ],
+                "attributes": {
+                  "assertion_kind": "SPECIFIC_PERFORMANCE",
+                  "answer_provenance": {
+                    "tag": "MECHANICAL",
+                    "pins": {
+                      "mapping_table_version": 20,
+                      "qualifier_kind_lexicon_version": 2
+                    }
+                  }
+                },
+                "taxonomy_codes": {
+                  "assertion_kind": "SPECIFIC_PERFORMANCE"
+                },
+                "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+                "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+                "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+                "evidence": [
+                  {
+                    "schema_version": "CLAIM_EVIDENCE/V1",
+                    "claim_evidence_id": "9c43332726a50f9573e8ad35dcc0ed0dc3d4b4667734b1eb8f3c76803f2298aa",
+                    "evidence_role": "OPERATIVE_TEXT",
+                    "excerpt_id": "5aa4f6220c063af9fbdb940062bf1fe36b3233d0bee498d785b1daf8e3dcf399",
+                    "document_ordinal": 0,
+                    "absolute_start": 26,
+                    "absolute_end": 877,
+                    "ordinal": 0
+                  }
+                ],
+                "publication_state": "VALIDATED",
+                "retained_residuals": [],
+                "quarantine": null,
+                "closure_id": "c04ffcdd9709416d67cb407fb13ac22b5d07fea377e5c6f00d82271fa37aabc0"
+              },
+              "extraction_provenance": {
+                "schema_version": "NATIVE_PRODUCER_EXTRACTION_PROVENANCE/V1",
+                "extractor_id": "canonical-v2-native-extraction-run/v1",
+                "extractor_version": "1",
+                "proposal_kind": "SPECIFIC_PERFORMANCE_REMEDY",
+                "prompt_digest": "2d7c76f2ecada2fc6a19727d0521fbf3361f8ac1a40c079f7314372cc215af4e",
+                "producer_receipt_id": "a572955c56408c0630a7775d18927a1daedfc536f9d5b585edbadce8fd3bc6da",
+                "governed_scope_digest": "595359aaa0803fb9a99106e60deb249080958c5e853a53acd0bdb9df73e97e2b",
+                "extraction_provenance_id": "c4e7a730b753ef4aea59af4933efed8ca812a22fb72a6a808a559ba524437f6e"
+              }
+            }
+          },
+          "triage": {
+            "auto_pass": false,
+            "deterministic_gates_passed": true,
+            "unevaluated_conditions": [
+              "V1_V2_COMPARATOR_ABSENT",
+              "LEXICAL_DISAGREEMENT_NET_ABSENT",
+              "SOURCE_SCOPE_CERTIFICATION_ABSENT"
+            ],
+            "reasons": [],
+            "materiality_rank": 99,
+            "materiality_label": "UNCLASSIFIED",
+            "known_defect": null,
+            "citation_validation": null
+          }
+        }
+      ],
+      "review_queue": [
+        {
+          "section_reference": "7.6",
+          "generic_claim_key": "NATIVE_SPECIFIC_PERFORMANCE_REMEDY_CANDIDATE",
+          "resolved_claim_definition_key": "SPECIFIC_PERFORMANCE_REMEDY_PRESENT",
+          "concept_key": "REMEDY-SPECIFIC-PERFORMANCE",
+          "reasons": [],
+          "materiality_rank": 99,
+          "materiality_label": "UNCLASSIFIED",
+          "auto_pass": false,
+          "has_resolution": true,
+          "claim_revision_id": "0aed71ba6e27aadbb89b17c47199cfe75d2c5663fda1648266060f4a3da3d885",
+          "closure_id": "c04ffcdd9709416d67cb407fb13ac22b5d07fea377e5c6f00d82271fa37aabc0",
+          "normalised_phrase": "The parties acknowledge and agree that irreparable harm would occur in the event that any of the provisions of this Agreement were not performed in accordance with their specific terms or in the event of any actual or threatened breach of this Agreement, and that money damages would not be an adequate remedy, even if available. It is accordingly agreed that, except where this Agreement is validly terminated in accordance with Article VI, the parties (on behalf of themselves and the third-party beneficiaries of this Agreement provided in Section 7.9) shall be entitled to an injunction or injunctions, specific performance or other equitable relief to prevent breaches or threatened breaches of this Agreement and to enforce specifically the terms and provisions hereof and any other agreement or instrument executed in connection herewith.",
+          "attachment_position": null,
+          "concept_family": "REMEDY-SPECIFIC-PERFORMANCE"
+        }
+      ],
+      "open_world": [],
+      "residuals": [],
+      "limb_component_trees": [],
+      "ioc_restriction_components": [],
+      "resolution_receipt": {
+        "schema_version": "NATIVE_CANDIDATE_RESOLUTION_RECEIPT/V1",
+        "run_receipt_id": "8a0c7b72405361f0a61ee55710d837684623271da3fb9dfe26810eab9614756e",
+        "document_hash": "146189ed57883d25aa571650fe5c40dff4bfce0e3ea75d67be463440417bda3f",
+        "mapping_table_version": 20,
+        "qualifier_kind_lexicon_version": 2,
+        "measurement_date_parse_version": 2,
+        "schedule_reference_parse_version": 1,
+        "share_count_parse_version": 1,
+        "zero_pattern_table_version": 1,
+        "termination_fee_parse_version": 1,
+        "no_shop_period_parse_version": 2,
+        "no_shop_action_corroboration_table_version": 1,
+        "no_shop_prerequisite_corroboration_table_version": 1,
+        "mae_corroboration_table_version": 1,
+        "termination_deadline_parse_version": 1,
+        "cure_period_parse_version": 1,
+        "proxy_meeting_parse_version": 1,
+        "antitrust_regulatory_parse_version": 1,
+        "per_share_cash_parse_version": 1,
+        "exchange_ratio_parse_version": 1,
+        "ruling_corpus_version": 1,
+        "ruling_corpus_id": "f65d101ce328eb0e7887db76f425648ca90c7aec014f8bc5bba710238c83675c",
+        "known_defect_registry_id": "0259e8d6740b2d48156828d5ade7069b9c8477164ac40967fa54531e01383390",
+        "contract_vocabulary_digest": "85ee29f08d8bbd8553122f54298f63a8823689cb64c37c435a2730df49cdd0b0",
+        "counts": {
+          "compiled_candidates": 1,
+          "resolved": 1,
+          "auto_pass": 0,
+          "review_queue": 1,
+          "open_world": 0,
+          "residuals": 0,
+          "provisions": 1,
+          "limb_component_trees": 0,
+          "ioc_restriction_components": 0
+        },
+        "resolution_receipt_id": "5143062174fa2b050c0e37fb5879752bf4159ec3cf32e96d68a5d1a02cf989f1"
+      }
+    },
+    "provider_recording": {
+      "schema_version": "NATIVE_UNIFIED_RUN_PROVIDER_RECORDING/V1",
+      "work_item_id": "topbuild-remedies-specific-performance-7-6",
+      "provider_output": {
+        "provider_id": "OPENAI_CODEX_CLI_SUBSCRIPTION",
+        "model_id": "gpt-5.6-terra;reasoning=medium;profile=TERRA_MEDIUM",
+        "prompt": [
+          {
+            "role": "user",
+            "content": "GOVERNED SECTION REFERENCE: 7.6\n\nEvery emitted section_reference must equal \"7.6\" exactly. Do not use a relative subsection label and do not add a child reference.\n\nQUOTE FIDELITY: Every quote must be one contiguous byte-identical substring of SOURCE TEXT. Preserve punctuation exactly. Do not complete, shorten, normalise, or re-punctuate a quote. Omit the assertion if you cannot copy its quote exactly.\n\nRead specific-performance and remedies provisions only. Produce exact positive evidence. For a SPECIFIC_PERFORMANCE assertion that states the operative injunction, specific-performance, or equitable-relief grant, its one contiguous quote must also retain the full immediately preceding premise that irreparable harm would occur and money damages would not be an adequate remedy. Do not emit a bare equitable-relief grant. Preserve express condition gates, termination limits, non-waiver language, bond or security waivers, and other limits in the same exact quote when they govern that remedy. Capture specific performance, including an express injunction, equitable-relief or force-consummation right, only when the quote states it. Put damages waivers, litigation extensions, expedited proceedings and any other remedy text in open_world_candidates unless a separately governed family owns it. A sole-remedy or fee-election clause belongs to termination fees. Do not infer availability of a remedy, calculate a period, or classify fee triggers. Never assert a negative. Return JSON only.\n\nRESPONSE SHAPE:\n\n{\"remedy_assertions\":[{\"assertion_kind\":\"SPECIFIC_PERFORMANCE\",\"quote\":\"<one verbatim specific-performance grant>\"}],\"open_world_candidates\":[]}\n\nSOURCE TEXT:\n\n7.6 Specific Performance. The parties acknowledge and agree that irreparable harm would occur in the event that any of the provisions of this Agreement were not performed in accordance with their specific terms or in the event of any actual or threatened breach of this Agreement, and that money damages would not be an adequate remedy, even if available. It is accordingly agreed that, except where this Agreement is validly terminated in accordance with Article ‎VI, the parties (on behalf of themselves and the third-party beneficiaries of this Agreement provided in Section ‎7.9) shall be entitled to an injunction or injunctions, specific performance or other equitable relief to prevent breaches or threatened breaches of this Agreement and to enforce specifically the terms and provisions hereof and any other agreement or instrument executed in connection herewith. The parties hereby further acknowledge and agree that such relief shall include (x) the right of the Company to cause Parent, Titanium Merger Sub and Forward Merger Sub to consummate the Transactions, in each case, if each of the conditions set forth in Section ‎5.1 and Section ‎5.2 have been satisfied or waived (other than conditions which by their nature cannot be satisfied until the Closing, but subject to the satisfaction or waiver of those conditions at the Closing) and (y) the right of Parent, Titanium Merger Sub and Forward Merger Sub to cause the Company to consummate the Transactions if each of the conditions set forth in Section ‎5.1 and Section ‎5.3 have been satisfied or waived (other than conditions which by their nature cannot be satisfied until the Closing, but subject to the satisfaction or waiver of those conditions at the Closing). The parties further agree that (a) by seeking the remedies provided for in this Section ‎7.6, a party shall not in any respect waive its right to seek any other form of relief, at law or in equity, that may be available to a party under this Agreement, including monetary damages in the event that this Agreement is terminated or in the event that the remedies provided for in this Section ‎7.6 are not available or otherwise are not granted and (b) nothing contained in this Section ‎7.6 shall require any party to institute any Action or proceeding for (or limit any party’s right to institute any Action or proceeding for) specific performance under this Section ‎7.6 before exercising any termination right under Article ‎VI (and pursuing damages after such termination), nor shall the commencement of any Action or proceeding pursuant to this Section ‎7.6 or anything contained in this Section ‎7.6 restrict or limit any party’s right to terminate this Agreement in accordance with the terms of Article ‎VI or pursue any other remedies under this Agreement that may be available then or thereafter. Each of the parties agrees that it will not oppose the granting of an injunction, specific performance and/or other equitable relief on the basis that any other party has an adequate remedy at law or that any award of specific performance is not an appropriate remedy for any reason at law or in equity. Each of the parties hereby acknowledges and agrees (i) that it hereby irrevocably waives any requirement for the security or posting of any bond in connection with such relief and (ii) that the prevailing party in any such Action or proceeding shall be entitled to reimbursement of all costs and expenses associated with seeking such relief, including all attorneys’ fees. If on the date of any termination of this Agreement, there is a pending Action that has been brought by a party seeking the remedies provided for in this Section ‎7.6, then, without further action, such termination date shall be automatically extended until the date that is five (5) business days after the dismissal, settlement or entry of final order with respect to such Action.\n"
+          }
+        ],
+        "prompt_id": "native-producer-specific-performance-remedies/v1",
+        "prompt_version": 2,
+        "proposals": [
+          {
+            "kind": "claim",
+            "proposal_kind": "SPECIFIC_PERFORMANCE_REMEDY",
+            "subject_occurrence_id": "e9fe554cf73d05b24d48075bd593193fe7bf4446db08408a7fbc83bc5bdfbf1c",
+            "claim_definition_key": "NATIVE_SPECIFIC_PERFORMANCE_REMEDY_CANDIDATE",
+            "claim_definition_version": 1,
+            "ordinal": 0,
+            "state": "PRESENT",
+            "raw_value": "The parties acknowledge and agree that irreparable harm would occur in the event that any of the provisions of this Agreement were not performed in accordance with their specific terms or in the event of any actual or threatened breach of this Agreement, and that money damages would not be an adequate remedy, even if available. It is accordingly agreed that, except where this Agreement is validly terminated in accordance with Article ‎VI, the parties (on behalf of themselves and the third-party beneficiaries of this Agreement provided in Section ‎7.9) shall be entitled to an injunction or injunctions, specific performance or other equitable relief to prevent breaches or threatened breaches of this Agreement and to enforce specifically the terms and provisions hereof and any other agreement or instrument executed in connection herewith.",
+            "canonical_value": true,
+            "attributes": {
+              "assertion_kind": "SPECIFIC_PERFORMANCE"
+            },
+            "allowed_attributes": [
+              "assertion_kind"
+            ],
+            "taxonomy_codes": {
+              "assertion_kind": "SPECIFIC_PERFORMANCE"
+            },
+            "codebooks": {
+              "assertion_kind": [
+                "SPECIFIC_PERFORMANCE"
+              ]
+            },
+            "evidence": [
+              {
+                "evidence_role": "OPERATIVE_TEXT",
+                "excerpt_id": "5aa4f6220c063af9fbdb940062bf1fe36b3233d0bee498d785b1daf8e3dcf399",
+                "document_ordinal": 0,
+                "absolute_start": 26,
+                "absolute_end": 877,
+                "ordinal": 0
+              }
+            ],
+            "extraction_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "normalisation_version": "NATIVE_PRODUCER_ANTHROPIC/V1",
+            "derivation_version": "NATIVE_PRODUCER_ANTHROPIC/V1"
+          }
+        ],
+        "evidence_residuals": [],
+        "raw_response_length": 4035,
+        "raw_response_text": "{\"remedy_assertions\":[{\"assertion_kind\":\"SPECIFIC_PERFORMANCE\",\"quote\":\"The parties acknowledge and agree that irreparable harm would occur in the event that any of the provisions of this Agreement were not performed in accordance with their specific terms or in the event of any actual or threatened breach of this Agreement, and that money damages would not be an adequate remedy, even if available. It is accordingly agreed that, except where this Agreement is validly terminated in accordance with Article ‎VI, the parties (on behalf of themselves and the third-party beneficiaries of this Agreement provided in Section ‎7.9) shall be entitled to an injunction or injunctions, specific performance or other equitable relief to prevent breaches or threatened breaches of this Agreement and to enforce specifically the terms and provisions hereof and any other agreement or instrument executed in connection herewith.\"}],\"open_world_candidates\":[{\"quote\":\"The parties hereby further acknowledge and agree that such relief shall include (x) the right of the Company to cause Parent, Titanium Merger Sub and Forward Merger Sub to consummate the Transactions, in each case, if each of the conditions set forth in Section ‎5.1 and Section ‎5.2 have been satisfied or waived (other than conditions which by their nature cannot be satisfied until the Closing, but subject to the satisfaction or waiver of those conditions at the Closing) and (y) the right of Parent, Titanium Merger Sub and Forward Merger Sub to cause the Company to consummate the Transactions if each of the conditions set forth in Section ‎5.1 and Section ‎5.3 have been satisfied or waived (other than conditions which by their nature cannot be satisfied until the Closing, but subject to the satisfaction or waiver of those conditions at the Closing).\"},{\"quote\":\"The parties further agree that (a) by seeking the remedies provided for in this Section ‎7.6, a party shall not in any respect waive its right to seek any other form of relief, at law or in equity, that may be available to a party under this Agreement, including monetary damages in the event that this Agreement is terminated or in the event that the remedies provided for in this Section ‎7.6 are not available or otherwise are not granted and (b) nothing contained in this Section ‎7.6 shall require any party to institute any Action or proceeding for (or limit any party’s right to institute any Action or proceeding for) specific performance under this Section ‎7.6 before exercising any termination right under Article ‎VI (and pursuing damages after such termination), nor shall the commencement of any Action or proceeding pursuant to this Section ‎7.6 or anything contained in this Section ‎7.6 restrict or limit any party’s right to terminate this Agreement in accordance with the terms of Article ‎VI or pursue any other remedies under this Agreement that may be available then or thereafter.\"},{\"quote\":\"Each of the parties agrees that it will not oppose the granting of an injunction, specific performance and/or other equitable relief on the basis that any other party has an adequate remedy at law or that any award of specific performance is not an appropriate remedy for any reason at law or in equity.\"},{\"quote\":\"Each of the parties hereby acknowledges and agrees (i) that it hereby irrevocably waives any requirement for the security or posting of any bond in connection with such relief and (ii) that the prevailing party in any such Action or proceeding shall be entitled to reimbursement of all costs and expenses associated with seeking such relief, including all attorneys’ fees.\"},{\"quote\":\"If on the date of any termination of this Agreement, there is a pending Action that has been brought by a party seeking the remedies provided for in this Section ‎7.6, then, without further action, such termination date shall be automatically extended until the date that is five (5) business days after the dismissal, settlement or entry of final order with respect to such Action.\"}]}",
+        "attempts": 1
+      },
+      "provider_recording_id": "e82bea9f21466641ff39ca04b5592677f1eb747bb18c4ae46e1b0d8b1b309729"
+    },
+    "work_result_id": "c2e783e15e65085c2efab687eb17c9b117f4a2937628c6b9101a08599c73f802"
+  },
+  "checkpoint_id": "29fa79c018a151091fa011e17c8d3eca58a731bb0c908067c5f5d572fc371148"
+}

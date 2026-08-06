@@ -1,6 +1,8 @@
 import { getServiceSupabase } from '../../../../lib/supabase';
 import { fetchReviewDealCards } from '../../../../lib/queries/review-deal';
 import { trimReviewDealForWire } from '../../../../lib/queries/review-deal-wire';
+import { attachCanonicalV2Preview } from '../../../../lib/canonical-v2/review-preview-assembly';
+import { attachCanonicalTerminationFeeServing } from '../../../../lib/canonical-v2/termination-fee-serving-source';
 
 // Cap runaway executions: when Supabase stalls, uncapped functions run the
 // full 300s each holding a DB connection (2026-07-19 pile-up).
@@ -37,6 +39,20 @@ export default async function handler(req, res) {
 
   try {
     const reviewDeal = await fetchReviewDealCards(dealId, sb, { mode });
+    // Canonical V2 dark-bridge preview (pre-production activation phase,
+    // see docs/codex-program/ADR-001-dark-bridge-flattening-is-scaffolding.md):
+    // read-time only, gated by isDarkBridgeIntegrationEnabled() inside
+    // attachCanonicalV2Preview itself, so this is a no-op (same reference)
+    // everywhere the gate isn't explicitly on. Attached here rather than
+    // inside fetchReviewDealCards so the preview stays scoped to this one
+    // served route — fetchReviewDealCards is also called directly by
+    // scripts/demo-dryrun.js, which has no reason to carry preview concerns.
+    const previewedReviewDeal = await attachCanonicalV2Preview(reviewDeal, { env: process.env });
+    // Per-family serving switch (termination fees). Separate mechanism from
+    // the dark-bridge preview above: this one can make Canonical V2 the SERVED
+    // source for one family, gated by its own server-only env var, default off
+    // and unreachable in production. Off: same reference back, nothing added.
+    const servedReviewDeal = attachCanonicalTerminationFeeServing(previewedReviewDeal, { env: process.env });
     // Q6 (perf quick-wins): response is deal_id-scoped provision-card data,
     // identical for every viewer of this deal — no user-specific content —
     // safe to cache at the CDN edge with SWR.
@@ -44,7 +60,7 @@ export default async function handler(req, res) {
     // Q1/Q2: trim sections[]/definitions[]/resolvedReferences/
     // region_full_text/full provenance off the wire — see
     // lib/queries/review-deal-wire.js for what and why.
-    return res.status(200).json({ reviewDeal: trimReviewDealForWire(reviewDeal) });
+    return res.status(200).json({ reviewDeal: trimReviewDealForWire(servedReviewDeal) });
   } catch (error) {
     return fail(res, 500, error.message || String(error));
   }

@@ -2,17 +2,20 @@
 /* ─────────────────────────────────────────────────────────────────────────
    scripts/span-residual-baseline.js — span accounting spec, Part 3 rollout
    gate 1: REPORT-ONLY corpus baseline.
-   (docs/handoffs/SPAN-ACCOUNTING-SPEC-2026-07-18.md)
+   (docs/archive/handoffs/SPAN-ACCOUNTING-SPEC-2026-07-18.md)
 
    Runs the Part 1 (subclauses.js) / Part 2 (span-claims.js) / Part 3
    (span-residual.js) machinery over every deal's ALREADY-STORED provisions
    and classified_sections snapshot — no re-extraction, no writes, no
    ingest-path involvement. For each classified section with a real body
    (>=200 chars), the section's stored provisions are mapped back to it by
-   ai_metadata.startChar containment, each provision's full_text is located
-   against the section text (span-claims.js's computeSpanClaims), and the
-   union of claimedSpans is passed to computeSectionResidual. Sections that
-   clear the residual thresholds are EXTRACTION_INCOMPLETE.
+   CONTENT (lib/parser-v2/attribute-provision-section.js — resilient to
+   ai_metadata.startChar drifting relative to a since-overwritten
+   classified_sections snapshot; see that module's header), each
+   provision's full_text is located against the section text
+   (span-claims.js's computeSpanClaims), and the union of claimedSpans is
+   passed to computeSectionResidual. Sections that clear the residual
+   thresholds are EXTRACTION_INCOMPLETE.
 
    This is exactly the retroactive check the spec's rollout gate 1 asks for:
    "run over all 40 deals' stored snapshots ... expect Redfin §2.10 and QXO
@@ -31,6 +34,7 @@ const { createClient } = require('@supabase/supabase-js');
 const { computeSpanClaims } = require('../lib/parser-v2/span-claims');
 const { computeSectionResidual } = require('../lib/parser-v2/span-residual');
 const { STRATEGY_A_TYPES, STRATEGY_C_TYPES } = require('../lib/parser-v2/extract');
+const { attributeProvisionsToSections } = require('../lib/parser-v2/attribute-provision-section');
 
 // Part 2 wires span claims for "strategy A (IOC/COND) and strategy C (REP)
 // provisions" ONLY — this baseline follows the same scope. Strategy B
@@ -55,41 +59,29 @@ function loadDotEnvLocal() {
 
 const MIN_SECTION_CHARS = 200;
 
-// Map each of a deal's stored provisions to the classified section that
-// contains its startChar (ai_metadata.startChar), so the residual check
-// sees the SAME set of "what did extraction emit for this section" that the
-// live pipeline produced — without needing a re-extraction.
+// Map each of a deal's stored provisions to the classified section it
+// CURRENTLY belongs to, so the residual check sees the SAME set of "what
+// did extraction emit for this section" that the live pipeline produced —
+// without needing a re-extraction.
+//
+// Attribution is CONTENT-based (lib/parser-v2/attribute-provision-section.js),
+// not a stale-startChar containment check: a provision's ai_metadata.
+// startChar is stamped once, when it was last extracted, while
+// classified_sections is a snapshot that gets overwritten wholesale by any
+// later classification run — the two can disagree about where a section
+// starts even though nothing about the provision's own text changed. Before
+// this fix, the numeric-containment version of this function was the cause
+// of 470 of the 952 sections flagged in the 2026-07-18 baseline run
+// (reports/span-residual-baseline.json) reading as zero-provision /
+// EXTRACTION_INCOMPLETE: not because extraction dropped anything, but
+// because this function couldn't find the (undisturbed) provision under the
+// section's new boundaries. See docs/codex-program/ROADMAP.md P5 and
+// attribute-provision-section.js's header for the full mechanism.
 function groupProvisionsBySection(sections, provisions) {
-  const sorted = [...sections]
-    .filter((s) => Number.isFinite(s.startChar))
-    .sort((a, b) => a.startChar - b.startChar);
-  const bySection = new Map(); // section.startChar -> [provision full_text, ...]
-  for (const sec of sorted) bySection.set(sec.startChar, []);
-
-  for (const prov of provisions) {
-    const pStart = prov.ai_metadata && Number.isFinite(prov.ai_metadata.startChar)
-      ? prov.ai_metadata.startChar
-      : null;
-    if (pStart === null) continue;
-    // Containing section = the last section whose startChar <= pStart AND
-    // whose own text still spans that far (endChar, or startChar+text.length
-    // as a fallback for older snapshots without endChar).
-    // Deliberately NOT trusting the stored `endChar` field here: some
-    // classified_sections snapshots carry a stale endChar left over from an
-    // earlier pass (observed live — e.g. a section whose endChar - startChar
-    // is a few thousand chars while its own `text` is 80k+ chars long),
-    // which would silently exclude most of that section's real provisions
-    // from this containment check and manufacture a false 100%-residual
-    // reading. `startChar + text.length` is definitionally consistent with
-    // the text this script is actually scoring, so it's the only boundary
-    // used.
-    let containing = null;
-    for (const sec of sorted) {
-      if (sec.startChar > pStart) break;
-      const secEnd = sec.startChar + (sec.text || '').length;
-      if (pStart < secEnd) containing = sec;
-    }
-    if (containing) bySection.get(containing.startChar).push(prov.full_text || '');
+  const attributed = attributeProvisionsToSections(sections, provisions); // startChar -> [provision, ...]
+  const bySection = new Map(); // startChar -> [provision full_text, ...] — this function's contract
+  for (const [startChar, provs] of attributed.entries()) {
+    bySection.set(startChar, provs.map((prov) => prov.full_text || ''));
   }
   return bySection;
 }
@@ -204,7 +196,7 @@ async function main() {
 
   const report = {
     generatedAt: new Date().toISOString(),
-    spec: 'docs/handoffs/SPAN-ACCOUNTING-SPEC-2026-07-18.md Part 3, rollout gate 1 (REPORT-ONLY)',
+    spec: 'docs/archive/handoffs/SPAN-ACCOUNTING-SPEC-2026-07-18.md Part 3, rollout gate 1 (REPORT-ONLY)',
     note: 'Retroactive reconstruction over STORED provisions/snapshots (Part 2 span-claims wiring is inert by default and was never run live for this corpus). A flagged section with provisionCount:0 is a provision-to-section ATTRIBUTION miss (stale ai_metadata.startChar vs. the current classified_sections snapshot, or a Strategy re-run that changed section boundaries) — investigate zeroProvisionFlags separately from genuine partial-coverage flags before treating this as an extraction-quality signal.',
     dealsTotal: deals.length,
     dealsSkipped,
@@ -231,7 +223,15 @@ async function main() {
   }
 }
 
-main().catch((err) => {
-  console.error('[span-residual-baseline] fatal:', err);
-  process.exit(1);
-});
+// Guarded so `require('./span-residual-baseline')` (test files proving
+// groupProvisionsBySection's attribution fix in its real habitat, without a
+// DB) does not also try to connect to Supabase and exit the process — CLI
+// behavior (`node scripts/span-residual-baseline.js`) is unchanged.
+if (require.main === module) {
+  main().catch((err) => {
+    console.error('[span-residual-baseline] fatal:', err);
+    process.exit(1);
+  });
+}
+
+module.exports = { groupProvisionsBySection, runForDeal, IN_SCOPE_TYPES };

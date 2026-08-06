@@ -205,6 +205,38 @@ function cardCodeUpper(card) {
 function moneyPerShare(n) {
   return `$${Number(n).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} / share`;
 }
+// Reviewed alongside the money-parser consolidation (lib/parse-money.js) that
+// closed "take the first of several dollar figures" as a defect class
+// elsewhere in the app (table-logic.js's D&O insurance cap, candidate-
+// resolution.js's dividend-amount parse, four render-layer call sites now on
+// parseMoneyAmount). Deliberately NOT changed to the same "2+ figures ->
+// abstain" rule, because this is a different operation, not a laxer copy of
+// the same one:
+//   - the other sites parse a STRING ALREADY ISOLATED to assert one fact (a
+//     fee clause, a dividend quote, an insuranceCap feature) end to end, so a
+//     second dollar figure inside it means the fact itself is disjunctive or
+//     the quote is mis-scoped -- either way there is no single right answer
+//     and abstaining is strictly correct.
+//   - this function instead does a bounded NEAREST-FIGURE search over raw,
+//     un-curated agreement prose (the forward scan is capped at the next
+//     option's own defined-term mention; the fallback is a flat 400 chars),
+//     which by construction admits nearby, unrelated numbers -- the setting
+//     an ambiguity-count heuristic is designed for, not against. Checked
+//     against every real election clause window in this repo's fixtures
+//     (Skechers cash/mixed election, both the next-label-bounded and the
+//     flat-400-char cases): each contained exactly one dollar figure, not
+//     two, so there is no observed live-wrong-render this would fix.
+//   - a wrong hit here also lands softer than the other sites: the "Cash
+//     Election" label has a structured-feature fallback (features.
+//     perShareAmount / cashAmount) this scan doesn't have first refusal
+//     over, and every other label falls back to ElectionCard's explicit
+//     "See source" pill (never a blank cell) -- so this is not a case of "a
+//     wrong number that looks precise" going unchecked.
+// A blind "count $ occurrences, abstain on 2+" fix would likely have
+// increased blanks on ordinary election clauses (a nearby collar/reference
+// price is common prose, not ambiguity about THIS option's own figure)
+// without a demonstrated wrong-render to justify the tradeoff -- so left as
+// a nearest-figure scan, on purpose.
 const ELECTION_WORD_NUM = { one: 1, two: 2, three: 3, four: 4, five: 5 };
 function electionScanWindow(windowText) {
   const dollarMatch = windowText.match(/\$[\d,]+(?:\.\d+)?/);

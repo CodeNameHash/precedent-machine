@@ -1,4 +1,4 @@
-// Span accounting spec (docs/handoffs/SPAN-ACCOUNTING-SPEC-2026-07-18.md),
+// Span accounting spec (docs/archive/handoffs/SPAN-ACCOUNTING-SPEC-2026-07-18.md),
 // Part 1 — pinned-fixture tests for lib/parser-v2/subclauses.js.
 //
 // QXO_5_2_TEXT and REDFIN_2_10_TEXT are the REAL, VERBATIM stored section

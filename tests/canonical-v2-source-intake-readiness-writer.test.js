@@ -48,7 +48,7 @@ test('recomputes all current cohort bindings and atomically writes one blocked p
     assert.equal(receipt.input_bindings.source_occurrence_count, 41);
     assert.equal(receipt.input_bindings.pending_identity_packet_id, packet.initial_import_proposal_packet_id);
     assert.deepEqual(receipt.readiness_receipt.blockers, [
-      'PENDING_INITIAL_IMPORT_PACKET_NOT_IDENTITY_AUTHORITY',
+      'ADOPTED_INITIAL_IMPORT_SEED_POLICY_NOT_IDENTITY_AUTHORITY',
       'UNISSUED_DEAL_IDENTITIES',
       'SOURCE_INTAKE_TRUSTED_CONTROLLER_AND_REGISTRY_VERIFIER_REQUIRED',
       'ROUTINE_PRIMARY_POLICY_NOT_ADOPTED',
@@ -69,7 +69,7 @@ test('recomputes all current cohort bindings and atomically writes one blocked p
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });
 
-test('fails closed on a changed pending packet or one changed cohort binding', () => {
+test('fails closed on a changed adopted policy packet or one changed cohort binding', () => {
   const root = temporaryDurableRoot();
   try {
     writeCurrentInputs(root);
@@ -92,4 +92,15 @@ test('writer has no provider, network, database, admission, or production execut
   const source = fs.readFileSync(path.join(ROOT, 'lib/canonical-v2/source-intake-readiness-writer.js'), 'utf8');
   assert.doesNotMatch(source, /createCodexCliProvider|executeUnifiedRun|anthropic-provider|node:https|node:http|\bfetch\s*\(|supabase|INSERT\s+INTO|activate_candidate_release/i);
   assert.match(source, /tripleRebuildAndWriteCurrentSourceIntakeReadinessMaterialisation/);
+});
+
+test('current source-intake consumers contain no retired pending-ratification identity status', () => {
+  for (const relativePath of [
+    'lib/canonical-v2/source-intake-readiness.js',
+    'lib/canonical-v2/source-intake-readiness-writer.js',
+    'lib/canonical-v2/source-universe-inventory-candidate.js',
+  ]) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assert.doesNotMatch(source, /PENDING_NAMESPACE_AND_KEY_DOMAIN_RATIFICATION|PENDING_INITIAL_IMPORT_PACKET_NOT_IDENTITY_AUTHORITY/);
+  }
 });

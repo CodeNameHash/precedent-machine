@@ -38,7 +38,7 @@
 
   --apply is intentionally NOT exercised by this handoff — deliverable is the
   dry-run script and its dry-run output for review, per
-  docs/handoffs/ELECTION-REDO-SPEC-2026-07-16.md step 3 ("review them ALL"
+  docs/archive/handoffs/ELECTION-REDO-SPEC-2026-07-16.md step 3 ("review them ALL"
   before --apply).
 */
 

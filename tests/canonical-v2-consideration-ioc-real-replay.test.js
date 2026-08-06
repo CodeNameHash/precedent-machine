@@ -49,10 +49,13 @@ test('recorded IOC pack preserves governed restrictions and exhaustive long-tail
   assert.equal(output.proposals[1].proposal_kind, 'OPEN_WORLD');
   assert.deepEqual(output.proposals[1].attributes.structured_mechanic, {
     surface: 'LONG_TAIL_RESTRICTION',
+    section_reference: null,
     attachment_scope: null,
+    target_restriction_quote: null,
     value_literal: null,
     unit_literal: null,
     basis_literal: null,
     period_literal: null,
+    unverified_operand_fields: [],
   });
 });

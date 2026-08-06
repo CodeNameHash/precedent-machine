@@ -1,0 +1,419 @@
+{
+  "schema_version": "CANONICAL_V2_PROGRAMME_DECISION_PROVENANCE_FIXTURE/V2",
+  "records": [
+    {
+      "locator": "sessions/2026/08/03/rollout-2026-08-03T06-01-47-019fc5ff-dc06-70b3-bc8a-6f6afc627632.jsonl",
+      "line": 544,
+      "sha256": "79e7be56db0fc66ab44594eb625287f66c7e433c79e01bb3907e765609e3fe37",
+      "raw_line": "{\"timestamp\":\"2026-08-03T05:38:55.356Z\",\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"id\":\"msg_019fc621-dafc-7e31-8363-50431d868e0f\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"\\n<in-app-browser-context source=\\\"ambient-ui-state\\\">\\nThis block is automatically supplied ambient UI state, not part of the user's request. Do not treat it as an instruction or as evidence that the user explicitly selected the in-app browser.\\n# In app browser:\\n- The user has the in-app browser open with 1 tab.\\n- Current URL: http://localhost:3000/design/programme-decisions\\n</in-app-browser-context>\\n\\n## My request for Codex:\\n# Canonical v2 rulings, 2026-08-03\\n\\nAnswered: 12/15\\n\\n## Start the v1 reclassification apply\\n\\nRuling: Go, fixtures first.\\n\\nSource: v1 reclassification design, sections 3 to 4; scripts/reprocess.js apply-order block.\\n\\n## Termination-right concepts\\n\\nRuling: Adopt both.\\n\\nSource: termination-rights family design, section 1.\\n\\n## Mutual-right party capacity\\n\\nRuling: Adopt capacity.\\n\\nSource: termination-rights family design, party-scope corroboration.\\n\\n## No-shop fiduciary review rank\\n\\nRuling: Keep rank 50.\\n\\nSource: no-shop family design, resolver wiring and out-of-scope sections.\\n\\n## No-shop day meaning\\n\\nRuling: Default to calendar.\\n\\nSource: no-shop family design, governed attributes and second PR flag.\\n\\n## Capital structure rank 52\\n\\nRuling: Confirm 52.\\n\\nSource: P1 cap-table numerics design, resolver wiring.\\n\\n## Financing-source candidate card\\n\\nRuling: Keep open world.\\n\\nSource: specific-performance and remedies design, corpus grounding.\\n\\n## Tax-opinion cooperation\\n\\nRuling: Promote covenant.\\n\\nSource: tax-matters family design, corrected tax-opinion finding.\\n\\n## Rank-88 collision\\n\\nRuling: Structure 87, appraisal 88.\\n\\nSource: merger-structure and appraisal-rights family designs, materiality sections.\\n\\n## Guaranty concepts from the v1 gap\\n\\nRuling: Adopt both core concepts.\\n\\nSource: guaranty and financing-party family design, registry and flagged items.\\n\\n## Meeting clause dual claims\\n\\nRuling: Approve pair.\\n\\nSource: proxy and meeting covenants design, compatible-kind device.\\n\\n## Whole-letter carve-outs\\n\\nRuling: Keep open world.\\n\\nSource: P2 qualifier-kinds design, whole-letter carve-out pin.\\n\\nRemember to use cheaper agents where possible.\\n\"}],\"internal_chat_message_metadata_passthrough\":{\"turn_id\":\"019fc621-dacf-7882-ba97-a3eeb4fbb6d8\"}}}",
+      "message_id": "msg_019fc621-dafc-7e31-8363-50431d868e0f",
+      "turn_id": "019fc621-dacf-7882-ba97-a3eeb4fbb6d8",
+      "role": "user",
+      "message_type": "input_text",
+      "cited_as": [
+        {
+          "kind": "response",
+          "ruling_ids": [
+            "db-apply",
+            "termr-concepts",
+            "either-party-capacity",
+            "nosol-tier",
+            "nosol-day-kind",
+            "capital-rank",
+            "bd-card",
+            "tax-opinion",
+            "rank-88",
+            "guaranty-codes",
+            "proxy-compatible-pair",
+            "whole-letter"
+          ],
+          "excerpt": "# Canonical v2 rulings, 2026-08-03\n\nAnswered: 12/15"
+        }
+      ]
+    },
+    {
+      "locator": "sessions/2026/08/03/rollout-2026-08-03T06-01-47-019fc5ff-dc06-70b3-bc8a-6f6afc627632.jsonl",
+      "line": 6237,
+      "sha256": "bb3e4007d5373bc08c1e324aadd77023c90940697aef11d1056a16648e20b4be",
+      "raw_line": "{\"timestamp\":\"2026-08-03T10:31:49.758Z\",\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"id\":\"msg_019fc72e-04fe-7681-b88f-b191301ae471\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"\\n<in-app-browser-context source=\\\"ambient-ui-state\\\">\\nThis block is automatically supplied ambient UI state, not part of the user's request. Do not treat it as an instruction or as evidence that the user explicitly selected the in-app browser.\\n# In app browser:\\n- The user has the in-app browser open with 2 tabs.\\n- Current URL: http://localhost:3000/design/programme-decisions\\n</in-app-browser-context>\\n\\n## My request for Codex:\\nFor the IOC party issue - the IOCs are typically structured as Section X - Buyer shall not... Section X.1 - Do Y\\n\\nSo, if we track the limbs of the Section X as children, we can inhereit the parties from the Section X provision\\n\"}],\"internal_chat_message_metadata_passthrough\":{\"turn_id\":\"019fc709-cc4f-7b60-a74c-d7ef78366bcd\"}}}",
+      "message_id": "msg_019fc72e-04fe-7681-b88f-b191301ae471",
+      "turn_id": "019fc709-cc4f-7b60-a74c-d7ef78366bcd",
+      "role": "user",
+      "message_type": "input_text",
+      "cited_as": [
+        {
+          "kind": "response",
+          "ruling_ids": [
+            "ioc-partyless-provision"
+          ],
+          "excerpt": "So, if we track the limbs of the Section X as children, we can inhereit the parties from the Section X provision"
+        }
+      ]
+    },
+    {
+      "locator": "sessions/2026/08/03/rollout-2026-08-03T06-01-47-019fc5ff-dc06-70b3-bc8a-6f6afc627632.jsonl",
+      "line": 6449,
+      "sha256": "aaa6fa56329bb04d81733b1075927d5565de3b913071c24f3f49294d3ff28c20",
+      "raw_line": "{\"timestamp\":\"2026-08-03T10:42:25.957Z\",\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"id\":\"msg_019fc737-ba25-7f43-963d-30a428d7017c\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"\\n<in-app-browser-context source=\\\"ambient-ui-state\\\">\\nThis block is automatically supplied ambient UI state, not part of the user's request. Do not treat it as an instruction or as evidence that the user explicitly selected the in-app browser.\\n# In app browser:\\n- The user has the in-app browser open with 2 tabs.\\n- Current URL: http://localhost:3000/design/programme-decisions\\n</in-app-browser-context>\\n\\n## My request for Codex:\\nresponses on AT and IOC questions:\\n\\n## Closing-conditions core taxonomy\\n\\nRuling: Adopt all four.\\n\\nSource: closing-conditions family design, registry section.\\n\\n## IOC restriction taxonomy\\n\\nRuling: Adopt ten concepts.\\n\\nSource: IOC family design, registry and resolver category map.\\n\\n## Antitrust and IOC rank collision\\n\\nRuling: Antitrust 63, IOC 65.\\n\\nSource: antitrust and IOC family designs, materiality sections; integration collision review.\\n\\non unasnwered - what are the five grounded ANTI concepts and their six claim definitions? You need to give more context in these quetsions.  on hohw - HOHW is where you have RBE or CRE and then no cap on the obligations (i.e. no burdensome condition, no cap on divestitures etc)\\n\"}],\"internal_chat_message_metadata_passthrough\":{\"turn_id\":\"019fc737-b9de-73f2-a476-59c15b18770b\"}}}",
+      "message_id": "msg_019fc737-ba25-7f43-963d-30a428d7017c",
+      "turn_id": "019fc737-b9de-73f2-a476-59c15b18770b",
+      "role": "user",
+      "message_type": "input_text",
+      "cited_as": [
+        {
+          "kind": "response",
+          "ruling_ids": [
+            "antitrust-hohw",
+            "closing-core-taxonomy",
+            "ioc-core-taxonomy",
+            "rank-65-collision"
+          ],
+          "excerpt": "Ruling: Adopt all four.\n\nSource: closing-conditions family design, registry section."
+        }
+      ]
+    },
+    {
+      "locator": "sessions/2026/08/03/rollout-2026-08-03T06-01-47-019fc5ff-dc06-70b3-bc8a-6f6afc627632.jsonl",
+      "line": 9305,
+      "sha256": "512bd7262cc530ec20827b042a313e974fb21dc8cf76eab5e2117cc8f175a620",
+      "raw_line": "{\"timestamp\":\"2026-08-03T17:49:49.247Z\",\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"id\":\"msg_019fc8bf-033f-7a83-8814-957c57983e65\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"Record date and broker search\\nShould these be two separate presence facts? Record-date language appears in 26 deals; broker-search language in 17. The timing direction runs both ways, so one combined timing fact would be misleading.\\nRecommendation: adopt two presence facts. Keep the direction and number open until we define a safe relationship. AGREE\\n\\nParent or Merger Sub approval\\nShould COV-SHAPRV-PARENT become a separate concept for Parent or Merger Sub adoption of the agreement? It appears in 18 cards across 17 deals. This is distinct from the Company stockholder vote.\\nRecommendation: adopt it, with mechanism and timing as separate attributes.  PRAENT AND MERGER SUB SHOULD BE SEPARATE FROM EACH OTHER AS PARENT MIGHT NEED A REAL SH VOTE AND MERGER SUB JUST NEDS PARENT TO APPROVE\\n\\nMeeting adjournment reasons\\nShould we govern four directly quoted reasons: no quorum, insufficient votes, supplemental disclosure, and legal requirement? There are 52 adjournment claims across 30 deals.\\nRecommendation: adopt those four. Keep cross-reference-only reasons open until the referenced clause is resolved. AGREE\\n\\nAppraisal section ownership\\nWho owns a standalone appraisal or dissenters’ rights section? Appraisal control language appears in 29 deals; withdrawal or reconversion language appears in 30.\\nRecommendation: Appraisal owns standalone sections. Consideration retains the availability fact and owns conversion or exchange sections. YES\\n\\nConsideration core\\nRatify three existing concepts: per-share consideration, exchange ratio, and appraisal availability. They have grounded support across 8 deals, 4 named ratio precedents, and several statutory regimes.\\nRecommendation: ratify all three. YES. ALSO NEED TO TRACK IF THRE IS A CVR BUT ASSUME THAT IS IN THE PER SHARE CONSIDERATION? ALSO IF THERE IS CASH AND STOCK ELECTIONS, NEED TO SHOW BOTH AND PRORATION ETC? DID YOU CAREFULLY REVIEW THE DEALS WHICH HAD ELECTIONS - E.G. SKETCHERS?\\n\\nAppraisal rights by necessary implication\\nCan a clause that operates only if appraisal rights exist, such as a dissenters’ notice covenant or Dissenting Shares carve-out, support AVAILABLE even if it does not expressly grant the statutory right?\\nRecommendation: yes. Preserve the exact quote and statute. Otherwise route it to review as uncorroborated. YES ASSUMING IT REFERS TO AN APPRAISAL STATUE - E.G. 262 IN DGCL\\n\\nDividend concepts\\nAdopt dividend coordination, 4 deals, and special dividends, 2 deals? Keep the one-deal recurring mandated dividend separate and open? The two special-dividend examples are fixed per-share amounts; the recurring example is a quarterly payment plus catch-up.\\nRecommendation: adopt DIVD-COORD and DIVD-SPECIAL. Keep recurring mandated dividends and final-period mechanics open. OKAY\\n\\nDividend and D&O review order\\nBoth proposed rank 85. The rank controls which family appears first in legal review.\\nRecommendation: Dividends 84, D&O 85. OKAY\\n\"}],\"internal_chat_message_metadata_passthrough\":{\"turn_id\":\"019fc87e-c3a6-7d91-9f92-f1734bb71e52\"}}}",
+      "message_id": "msg_019fc8bf-033f-7a83-8814-957c57983e65",
+      "turn_id": "019fc87e-c3a6-7d91-9f92-f1734bb71e52",
+      "role": "user",
+      "message_type": "input_text",
+      "cited_as": [
+        {
+          "kind": "response",
+          "ruling_ids": [
+            "proxy-record-date-broker-search",
+            "proxy-parent-adoption",
+            "proxy-adjournment-reasons",
+            "appraisal-dispatch-ownership",
+            "consideration-mechanics-promotion",
+            "appraisal-necessary-implication",
+            "dividend-concept-scope",
+            "rank-85-dividend-dno"
+          ],
+          "excerpt": "Recommendation: adopt two presence facts. Keep the direction and number open until we define a safe relationship. AGREE"
+        }
+      ]
+    },
+    {
+      "locator": "sessions/2026/08/03/rollout-2026-08-03T06-01-47-019fc5ff-dc06-70b3-bc8a-6f6afc627632.jsonl",
+      "line": 9338,
+      "sha256": "ce581f388a616b1d9dcdc554eb773a95e054d8844197a5beceed5d323cecfd93",
+      "raw_line": "{\"timestamp\":\"2026-08-03T17:51:16.700Z\",\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"id\":\"msg_019fc8c0-58dc-7891-b5c2-a65589847420\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"IOC long tail\\nShould IP, affiliate, repurchase, split, real property, hiring, lien, no-action, waiver, insurance, maintenance, preservation, and existence restrictions become governed concepts now?\\nRecommendation: no for M3. Keep exact open-world evidence until the commonality report proves clean multi-deal patterns. OKAY TO WAIT FOR COMMONALITY BUT THEY'RE GOING TO BE FOUND\\n\\nIOC qualifiers and exceptions\\nShould consent and efforts standards use shared qualifiers, and should an exception attach to the specific restriction limb or the whole covenant?\\nRecommendation: use shared qualifiers. Attach each exception to the narrowest limb it governs. Attach it to the parent only when the text governs every limb. CORRECT NARROWEST LIMB\\n\\nIOC numeric values\\nApprove a common shape of value + unit + basis + period for money, percentages, leverage, salary, and notice windows?\\nRecommendation: approve the shape in principle. Do not promote a field or perform arithmetic unless the exact quote supports every element.  OKAY - NOT 100% FOLLOWING WHAT YOU MEAN HERE\\n\"}],\"internal_chat_message_metadata_passthrough\":{\"turn_id\":\"019fc87e-c3a6-7d91-9f92-f1734bb71e52\"}}}",
+      "message_id": "msg_019fc8c0-58dc-7891-b5c2-a65589847420",
+      "turn_id": "019fc87e-c3a6-7d91-9f92-f1734bb71e52",
+      "role": "user",
+      "message_type": "input_text",
+      "cited_as": [
+        {
+          "kind": "response",
+          "ruling_ids": [
+            "ioc-long-tail-promotion",
+            "ioc-qualifier-attachment"
+          ],
+          "excerpt": "Recommendation: no for M3. Keep exact open-world evidence until the commonality report proves clean multi-deal patterns. OKAY TO WAIT FOR COMMONALITY BUT THEY'RE GOING TO BE FOUND"
+        }
+      ]
+    },
+    {
+      "locator": "sessions/2026/08/03/rollout-2026-08-03T06-01-47-019fc5ff-dc06-70b3-bc8a-6f6afc627632.jsonl",
+      "line": 9385,
+      "sha256": "41894db61e34f67df0c9eed786c73b1d82b10839fa426eb23a716e30fb1978dd",
+      "raw_line": "{\"timestamp\":\"2026-08-03T17:53:58.149Z\",\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"id\":\"msg_019fc8c2-cf85-7221-9737-7cf6d1c82121\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"I generally agree and there are only very few cases where this would be an issue otherwise but we should think about converting to USD as a processing step to allow conversion or if a field is per month but 99% of deals are per year, we might want to do a conversion (again, in a processing step not changing the raw) to allow comparison, with the processing clearly flagged\\n\"}],\"internal_chat_message_metadata_passthrough\":{\"turn_id\":\"019fc87e-c3a6-7d91-9f92-f1734bb71e52\"}}}",
+      "message_id": "msg_019fc8c2-cf85-7221-9737-7cf6d1c82121",
+      "turn_id": "019fc87e-c3a6-7d91-9f92-f1734bb71e52",
+      "role": "user",
+      "message_type": "input_text",
+      "cited_as": [
+        {
+          "kind": "response",
+          "ruling_ids": [
+            "ioc-numeric-shape"
+          ],
+          "excerpt": "I generally agree and there are only very few cases where this would be an issue otherwise but we should think about converting to USD as a processing step to allow conversion or if a field is per month but 99% of deals are per year, we might want to do a conversion (again, in a processing step not changing the raw) to allow comparison, with the processing clearly flagged"
+        },
+        {
+          "kind": "response",
+          "ruling_ids": [
+            "derived-comparison-layer"
+          ],
+          "excerpt": "I generally agree and there are only very few cases where this would be an issue otherwise but we should think about converting to USD as a processing step to allow conversion or if a field is per month but 99% of deals are per year, we might want to do a conversion (again, in a processing step not changing the raw) to allow comparison, with the processing clearly flagged"
+        }
+      ]
+    },
+    {
+      "locator": "sessions/2026/08/03/rollout-2026-08-03T06-01-47-019fc5ff-dc06-70b3-bc8a-6f6afc627632.jsonl",
+      "line": 9377,
+      "sha256": "65a187bc5f83069ba871bbb2a4b78f3feceea8a2e9da0df14d230ac961b76a05",
+      "raw_line": "{\"timestamp\":\"2026-08-03T17:52:47.668Z\",\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"id\":\"msg_0f4417faa2ccbedd016a70d56d0e2c8194865d0613100f9a5b\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"The comparison rule will be:\\n\\n- Normalise explicit scales: `$25m`, `$25 million`, and `$25,000,000` become the same USD amount.\\n- Compare only within the same legal basis and period. A `$25 million aggregate cap` is not the same cohort as `$25 million per acquisition`.\\n- Keep percentages, ratios, and currency amounts in separate cohorts.\\n- Keep currencies separate unless a later comparison layer applies a stated exchange rate and date.\\n- Always retain the exact clause text beside the normalised value.\\n\\nI have treated your response as approval of explicit scale normalisation.\"}],\"phase\":\"commentary\",\"internal_chat_message_metadata_passthrough\":{\"turn_id\":\"019fc87e-c3a6-7d91-9f92-f1734bb71e52\"}}}",
+      "message_id": "msg_0f4417faa2ccbedd016a70d56d0e2c8194865d0613100f9a5b",
+      "turn_id": "019fc87e-c3a6-7d91-9f92-f1734bb71e52",
+      "role": "assistant",
+      "message_type": "output_text",
+      "cited_as": [
+        {
+          "kind": "assistant_prompt",
+          "ruling_ids": [
+            "ioc-numeric-shape"
+          ],
+          "excerpt": "The comparison rule will be:"
+        }
+      ]
+    },
+    {
+      "locator": "sessions/2026/08/03/rollout-2026-08-03T06-01-47-019fc5ff-dc06-70b3-bc8a-6f6afc627632.jsonl",
+      "line": 9971,
+      "sha256": "26ca117f9c10fe25881b1c6cca77b8d6f573bec6fabb3ba3f5c7266be3bb5ed8",
+      "raw_line": "{\"timestamp\":\"2026-08-03T18:47:20.883Z\",\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"id\":\"msg_019fc8f3-ae33-7542-b1b7-e71c671b90bd\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"Use signing-date FX for derived USD comparisons? ok\\nAdopt the governed CVR component? what do you mean?\\nAdopt the governed election-mechanism object? what do you mean?\\nReview order from financing through D&OGuaranty: 74\\nFinancing Covenants: 75\\nProxy/Meeting: 80, already settled\\nTax: 81\\nEmployee Matters: 82\\nDividends: 84, already settled\\nD&O: 85, already settled\\n\\nReason: direct payment or performance guaranties should be reviewed just before financing-efforts mechanics. Tax and employee obligations should follow Proxy/Meeting and precede dividend and post-closing D&O protections.\\nRecommendation: approve this order. OK\\n \\nOutside-date extensions\\n35 deals. A flat month count loses whether the extension is automatic or elective, who elects, the trigger, consent, and maximum exercises. Landos permits Parent to elect up to three three-month extensions if stated conditions exist.\\nRecommendation: approve a structured extension object with those fields. Do not infer a total extension period from prose. Agree\\n\\nLegal-restraint finality\\n28 deals use “permanent”, “final”, and “nonappealable” in different combinations. Treating them as synonyms changes when termination becomes available.\\nRecommendation: retain each as a distinct quoted state. No equivalence rule. Agree but we may end up flattening in prsentation\\n\\nVote and breach ownership\\nVote failure appears in 30 cards across 26 deals. Breach rights appear in 70 cards.\\nRecommendation: Closing Conditions owns the vote threshold or breach standard. Termination Rights owns the termination grant and links to that condition. What does this mean? \\n\\nSole-remedy ownership\\n37 fee cards have sole-remedy language. Landos carves Fraud and Willful Breach out of the limitation.\\nRecommendation: Remedies owns the legal effect and exceptions. Termination Fee retains the payment context and links to the Remedies claim. Agreed, need to track carve outs - fraud and WB separately\\n\\nFee-tail structure\\n32 fee-tail cards. Landos includes 12 months, an arming proposal, definitive-agreement or consummation tests, and a 20%-to-50% threshold substitution.\\nRecommendation: approve a tail object with period, arming event, qualifying transaction, threshold, and same-proposal requirement. Do not publish only a month number. Correct\\n\\nLate-payment interest\\nLandos uses the Wall Street Journal prime rate effective on the payment due date. Other deals vary.\\nRecommendation: capture presence, quoted benchmark or base, and due-date reference. Do not derive the rate or day count. Correct\\n\\nKey Defined Terms concepts\\nAdopt five concepts: Acquisition Proposal, 55 cards/32 deals; Superior Proposal, 37/25; Intervening Event, 25/17 plus 15 misclassified definition cards; Knowledge, 36/32; Willful Breach, 26/26.\\nRecommendation: adopt all five. Why only these definitions? Also be aware that things can be defined differently\\n\\nKey Defined Terms review ranks\\nRecommendation: Acquisition Proposal, Superior Proposal, and Intervening Event at 40; Knowledge at 55; Willful Breach at 20. Willful Breach sits with fee economics because it controls the sole-remedy carve-out and damages exposure.\\n okay \\nDefinition mapping\\nThe same subtype names occur in true definitions and no-shop covenants. Subtype-only mapping can merge unlike legal facts.\\nRecommendation: map using both provision type and subtype. Require a separately reviewed mapping change. okay\\n\"}],\"internal_chat_message_metadata_passthrough\":{\"turn_id\":\"019fc87e-c3a6-7d91-9f92-f1734bb71e52\"}}}",
+      "message_id": "msg_019fc8f3-ae33-7542-b1b7-e71c671b90bd",
+      "turn_id": "019fc87e-c3a6-7d91-9f92-f1734bb71e52",
+      "role": "user",
+      "message_type": "input_text",
+      "cited_as": [
+        {
+          "kind": "response",
+          "ruling_ids": [
+            "remaining-family-ranks",
+            "outside-date-extension-shape",
+            "restraint-finality-states",
+            "sole-remedy-ownership",
+            "fee-tail-shape",
+            "late-interest-shape",
+            "key-defined-terms-ranks",
+            "family-routing-key"
+          ],
+          "excerpt": "Use signing-date FX for derived USD comparisons? ok"
+        }
+      ]
+    },
+    {
+      "locator": "sessions/2026/08/03/rollout-2026-08-03T06-01-47-019fc5ff-dc06-70b3-bc8a-6f6afc627632.jsonl",
+      "line": 10335,
+      "sha256": "76064151a7f2ba2484084952cb57bcc9466a95f9e90c5ab0045cceeaea1fcac8",
+      "raw_line": "{\"timestamp\":\"2026-08-03T21:37:35.192Z\",\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"id\":\"msg_019fc98f-89d8-70a1-8c9f-af4c59658a2c\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"The decisions still awaiting your answer are:\\nApprove a separate governed CVR component? No, just track there is a CVR and we can build out the CVR agreement later\\nApprove the governed election-mechanism structure? Agreed\\nApprove the Closing Conditions to Termination Rights linking rule? Standards can ary between the two so I agree with tracking them, and if they cross reference, to track the cross references.\\n\\nWill respond to other Qs shortly. Do you have agents running\\n\"}],\"internal_chat_message_metadata_passthrough\":{\"turn_id\":\"019fc98f-886e-7903-bfd8-aad69038196c\"}}}",
+      "message_id": "msg_019fc98f-89d8-70a1-8c9f-af4c59658a2c",
+      "turn_id": "019fc98f-886e-7903-bfd8-aad69038196c",
+      "role": "user",
+      "message_type": "input_text",
+      "cited_as": [
+        {
+          "kind": "response",
+          "ruling_ids": [
+            "consideration-cvr-presence",
+            "consideration-election-mechanism",
+            "closing-termination-linking"
+          ],
+          "excerpt": "Approve a separate governed CVR component? No, just track there is a CVR and we can build out the CVR agreement later"
+        }
+      ]
+    },
+    {
+      "locator": "sessions/2026/08/03/rollout-2026-08-03T06-01-47-019fc5ff-dc06-70b3-bc8a-6f6afc627632.jsonl",
+      "line": 10373,
+      "sha256": "a3d6c74a050f2bcf5e2507b9121bb6a3443c533aee60639a01c3e2d4382d4c33",
+      "raw_line": "{\"timestamp\":\"2026-08-03T21:38:59.161Z\",\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"id\":\"msg_019fc990-d1d9-7f22-ba92-053b2ba331cf\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"First comparable definitions\\nApprove Acquisition Proposal, Superior Proposal, Intervening Event, Knowledge, and Willful Breach as the first structured concepts, with deal-specific variants preserved as attributes and exact text.\\nRecommendation: approve. This does not exclude later definitions. OKAY\\n\\nNext definition slices\\nBuild Tax and Tax Return, Made Available, and Ordinary Course as later structured slices. Route Company Employee to Employee and Material Contract to Material Contracts. Keep heterogeneous Contract, Benefit Plan, Permit, Permitted Lien, and Lien definitions as exact text plus relationships until a product use is defined.\\nRecommendation: approve. APPROVE\\n\\nNeutral long-tail definitions\\nThe corpus has 2,715 DEF-GENERAL cards plus 457 untyped definition cards. Should each use a neutral exact-text record containing the defined term, exact definition, cross-reference, and likely owner, without pretending DEF-GENERAL is one comparable concept?\\nRecommendation: approve. Review and Query can expose them; market statistics cannot aggregate them. OK - I'd like to be able to compare definitions across deals if they are the same (e.g. \\\"Law\\\")\\n\\nMisclassified definitions\\nDefinition cards carry no-shop and representation labels, including 21 Superior Proposal, 20 Acquisition Proposal, 15 Intervening Event, 27 benefits, and 15 tax cards.\\nRecommendation: approve content-reviewed reclassification. Never map by subtype alone. What do uyou mean here?\\n\\nEmpty definition-components table\\nThe schema exists but contains zero rows.\\nRecommendation: keep it non-authoritative and unused through M3. Do not populate or repurpose it until the neutral definition record is approved and consumers are checked. OK\\n\\nOne question for you above?\\n\"}],\"internal_chat_message_metadata_passthrough\":{\"turn_id\":\"019fc98f-886e-7903-bfd8-aad69038196c\"}}}",
+      "message_id": "msg_019fc990-d1d9-7f22-ba92-053b2ba331cf",
+      "turn_id": "019fc98f-886e-7903-bfd8-aad69038196c",
+      "role": "user",
+      "message_type": "input_text",
+      "cited_as": [
+        {
+          "kind": "response",
+          "ruling_ids": [
+            "defined-terms-first-comparable",
+            "defined-terms-next-slices",
+            "defined-terms-neutral-long-tail"
+          ],
+          "excerpt": "Recommendation: approve. This does not exclude later definitions. OKAY"
+        }
+      ]
+    },
+    {
+      "locator": "sessions/2026/08/03/rollout-2026-08-03T06-01-47-019fc5ff-dc06-70b3-bc8a-6f6afc627632.jsonl",
+      "line": 10395,
+      "sha256": "1d9782b7e9a60f98f8bc7d8901c0ed2e950d67a35dbd0a69b1d4ea114fcfac5f",
+      "raw_line": "{\"timestamp\":\"2026-08-03T21:40:18.564Z\",\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"id\":\"msg_019fc992-0804-7ae3-88cf-78c2bec6ed70\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"Great, proceed.\\n\\nWhere are we vs completion on the various families?\\n\"}],\"internal_chat_message_metadata_passthrough\":{\"turn_id\":\"019fc98f-886e-7903-bfd8-aad69038196c\"}}}",
+      "message_id": "msg_019fc992-0804-7ae3-88cf-78c2bec6ed70",
+      "turn_id": "019fc98f-886e-7903-bfd8-aad69038196c",
+      "role": "user",
+      "message_type": "input_text",
+      "cited_as": [
+        {
+          "kind": "response",
+          "ruling_ids": [
+            "defined-terms-misclassified-reclassification"
+          ],
+          "excerpt": "Great, proceed."
+        }
+      ]
+    },
+    {
+      "locator": "sessions/2026/08/03/rollout-2026-08-03T06-01-47-019fc5ff-dc06-70b3-bc8a-6f6afc627632.jsonl",
+      "line": 10379,
+      "sha256": "880eb077b3881821fa273aeb5f9b9a41f0c6b10f7b53dc732023cc5cf53bad22",
+      "raw_line": "{\"timestamp\":\"2026-08-03T21:39:13.223Z\",\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"id\":\"msg_0f4417faa2ccbedd016a710a7caab8819481333f4b924b0201\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"Yes. “Misclassified” means the source is a definition, but its old label points to the family that uses the term.\\n\\nExample:\\n\\n- A definition of “Superior Proposal” is labelled `NOSOL-SUPERIOR`.\\n- If we map only from that label, the system can mistake the definition for a no-shop covenant.\\n- The correct result is a `DEF-SUPERIOR` definition record. The no-shop procedure can link to it.\\n\\n“Content-reviewed reclassification” means we read the definition itself, assign the correct definition concept and owner, preserve the exact text, and retain any link to the family that uses it. It is not an automatic label replacement.\\n\\nRecommendation: approve that migration.\\n\\nFor neutral definitions, agreed. The exact-text record will include a normalised defined-term identity. This lets Review, Query, and Compare show all definitions of “Law” side by side across deals. It will not combine “Law” with unrelated definitions or publish a market statistic until Law has a reviewed structured model.\"}],\"phase\":\"commentary\",\"internal_chat_message_metadata_passthrough\":{\"turn_id\":\"019fc98f-886e-7903-bfd8-aad69038196c\"}}}",
+      "message_id": "msg_0f4417faa2ccbedd016a710a7caab8819481333f4b924b0201",
+      "turn_id": "019fc98f-886e-7903-bfd8-aad69038196c",
+      "role": "assistant",
+      "message_type": "output_text",
+      "cited_as": [
+        {
+          "kind": "assistant_prompt",
+          "ruling_ids": [
+            "defined-terms-misclassified-reclassification"
+          ],
+          "excerpt": "“Content-reviewed reclassification” means we read the definition itself, assign the correct definition concept and owner, preserve the exact text, and retain any link to the family that uses it. It is not an automatic label replacement."
+        }
+      ]
+    },
+    {
+      "locator": "sessions/2026/08/03/rollout-2026-08-03T06-01-47-019fc5ff-dc06-70b3-bc8a-6f6afc627632.jsonl",
+      "line": 30318,
+      "sha256": "1a7a1a1e3250fca278cceb284c34616372576befb499c2de336bd5ce5d9e5ddf",
+      "raw_line": "{\"timestamp\":\"2026-08-04T22:35:40.630Z\",\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"id\":\"msg_019fceeb-14d6-7262-a7ff-614574d47490\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"\\nDrop REM-CAP from the Remedies slice. --> what is this? and what is logic?\\nKeep the closing-condition revisit pin narrow. --> what is a narrow pin?\\nKeep TopBuild’s per-clause MAE disproportionality open world pending the typed follow-up. --> no - I answered this before, for each limb of an MAE definition we should track if there is a disproportionate carve out in the limb. And then we should also track if there is a disproportoinate list. And then we should use a combo of the two to drive the output\\n\"}],\"internal_chat_message_metadata_passthrough\":{\"turn_id\":\"019fceb1-6d60-7490-a9af-55e3e9a14ec7\"}}}",
+      "message_id": "msg_019fceeb-14d6-7262-a7ff-614574d47490",
+      "turn_id": "019fceb1-6d60-7490-a9af-55e3e9a14ec7",
+      "role": "user",
+      "message_type": "input_text",
+      "cited_as": [
+        {
+          "kind": "response",
+          "ruling_ids": [
+            "topbuild-mae"
+          ],
+          "excerpt": "no - I answered this before, for each limb of an MAE definition we should track if there is a disproportionate carve out in the limb. And then we should also track if there is a disproportoinate list. And then we should use a combo of the two to drive the output"
+        }
+      ]
+    },
+    {
+      "locator": "sessions/2026/08/03/rollout-2026-08-03T06-01-47-019fc5ff-dc06-70b3-bc8a-6f6afc627632.jsonl",
+      "line": 21496,
+      "sha256": "fd8e9956c154f194f98936f9a5b0ded1feb50ffbe94d6b81e5fc51a46eaf45f3",
+      "raw_line": "{\"timestamp\":\"2026-08-04T13:21:06.252Z\",\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"id\":\"msg_019fccef-5acc-7021-a2d4-d2fc16cd1308\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"Approved. Proceed with all speed, using agents to maximize speed and manage cost\\n\"}],\"internal_chat_message_metadata_passthrough\":{\"turn_id\":\"019fccef-5aa0-77c0-8d17-fce34b5c6b20\"}}}",
+      "message_id": "msg_019fccef-5acc-7021-a2d4-d2fc16cd1308",
+      "turn_id": "019fccef-5aa0-77c0-8d17-fce34b5c6b20",
+      "role": "user",
+      "message_type": "input_text",
+      "cited_as": [
+        {
+          "kind": "response",
+          "ruling_ids": [
+            "closing-dissent-threshold-retirement"
+          ],
+          "excerpt": "Approved. Proceed with all speed, using agents to maximize speed and manage cost"
+        }
+      ]
+    },
+    {
+      "locator": "sessions/2026/08/03/rollout-2026-08-03T06-01-47-019fc5ff-dc06-70b3-bc8a-6f6afc627632.jsonl",
+      "line": 21490,
+      "sha256": "a1f36ae290d580c4bd7d1fec3289d0bb7564415194829174449e48be6dd8e77c",
+      "raw_line": "{\"timestamp\":\"2026-08-04T13:13:05.876Z\",\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"id\":\"msg_0f4417faa2ccbedd016a71e54be0148194945ee0cd9d60cb56\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"The demo is stopped. The new production plan is complete and has passed repeated Sol xhigh adversarial review.\\n\\n[Canonical production plan](/Users/bengoodchild/.codex/artifacts/canonical-v2-programme-20260804/CANONICAL-PRODUCTION-PLAN-2026-08-04.md)  \\n[Adversarial review record](/Users/bengoodchild/.codex/artifacts/canonical-v2-programme-20260804/adversarial/ADVERSARIAL-ALIGNMENT-2026-08-04.md)  \\n[Roadmap evidence](/Users/bengoodchild/.codex/artifacts/canonical-v2-programme-20260804/roadmap/canonical-deployment-roadmap-evidence-2026-08-04.json)  \\n[Roadmap image](/Users/bengoodchild/.codex/generated_images/019fc5ff-dc06-70b3-bc8a-6f6afc627632/exec-3392e148-ea36-4446-ab9e-8520a6b9b1e3.png)\\n\\nCurrent position: Stage 4 is complete. Stage 5, Candidate corpus build, is current. Production authority remains `NONE`.\\n\\n## Overview\\n\\n- **Phase 1, freeze the engine and scope:** integrate the M3 branch, complete the source inventory, adopt every gate rule, freeze the policy, and pass the required successor M1 review. Estimated 4 to 8 working days.\\n\\n- **Phase 2, build the candidate:** create the exact extraction manifest, run the full corpus, preserve all raw outputs, correct through zero-call replay, and seal one immutable candidate. Estimated 1 to 3 working days. Model calls take about 7 to 17 hours on two lanes.\\n\\n- **Phase 3, certify M3:** run corpus-wide semantic checks, product parity, two complete shadow extractions, legal review, browser tests, load tests, restore tests, and rollback rehearsals. Estimated 2 to 5 working days when the proof systems are built in parallel.\\n\\n- **Phase 4, import inactive and obtain M4:** you run the certified import locally, dry-run-first. The release remains invisible. Import parity and deployment parity must pass. Estimated 2 to 4 working days after authority.\\n\\n- **Phase 5, activate and verify:** issue one exact one-use authorisation, switch the release atomically, run production smoke tests, and roll back automatically if required. Estimated half to one working day.\\n\\nClean planning range to production: **10 to 21 working days**, or about **2 to 4 weeks**. A moderate defect case is **4 to 8 weeks**.\\n\\n## Extraction cost\\n\\nYour instinct was correct. Extraction itself is much cheaper and faster than the earlier estimates suggested.\\n\\nOne model call covers one routed section-family work item. It does not cover only one card or claim.\\n\\n- Primary candidate: approximately **960 to 2,250 calls**.\\n- Primary model time: approximately **7 to 17 hours** on two continuously occupied lanes.\\n- Visible API-equivalent cost: approximately **$29 to $92**.\\n- Primary plus two required shadow extractions: approximately **21 to 40 model-hours** and **$87 to $220** before targeted third runs.\\n- Marginal subscription cash cost for the proposed M3 route: **$0**.\\n\\nThese remain planning figures. The exact manifest and two-call telemetry check will replace them. Current Terra pricing is confirmed at $2 per million input tokens and $12 per million output tokens on the [official model page](https://developers.openai.com/api/docs/models/gpt-5.6-terra).\\n\\nThe critical path is not model spend. It is source completeness, proof construction, legal review, resilience tests, inactive-import safety, and cutover control.\\n\\n## What changes from the old approach\\n\\n- The demo is no longer on the critical path.\\n- We build one durable corpus candidate, not temporary family packets.\\n- Corrections create numbered candidate generations. They do not overwrite prior evidence.\\n- Code-only fixes replay stored output. They do not repeat model calls.\\n- Deterministic checks find technical defects before expensive legal review.\\n- Human review covers disagreements, high-risk results, novel results, known defects, and a blind sample.\\n- Two independent full-corpus shadow runs remain mandatory.\\n- Code can advance behind disabled flags. Corpus data remains sealed until certification.\\n- The recurring production extractor moves to the metered API after M3. Production will not depend on your computer or Codex subscription.\\n\\nOne decision is needed now: approve retiring `DISSENT_THRESHOLD` as a comparable M3 field. Exact future language remains preserved as open-world evidence. My recommendation remains to approve.\"}],\"phase\":\"final_answer\",\"internal_chat_message_metadata_passthrough\":{\"turn_id\":\"019fccad-9c60-7ab2-b66c-719e1a3c32ee\"}}}",
+      "message_id": "msg_0f4417faa2ccbedd016a71e54be0148194945ee0cd9d60cb56",
+      "turn_id": "019fccad-9c60-7ab2-b66c-719e1a3c32ee",
+      "role": "assistant",
+      "message_type": "output_text",
+      "cited_as": [
+        {
+          "kind": "assistant_prompt",
+          "ruling_ids": [
+            "closing-dissent-threshold-retirement"
+          ],
+          "excerpt": "One decision is needed now: approve retiring `DISSENT_THRESHOLD` as a comparable M3 field. Exact future language remains preserved as open-world evidence. My recommendation remains to approve."
+        }
+      ]
+    },
+    {
+      "locator": "sessions/2026/08/04/rollout-2026-08-04T17-33-34-019fceb2-3aad-7352-a244-88838d4a9964.jsonl",
+      "line": 2253,
+      "sha256": "96dab9596c7508747091f33d9e44104c8002641e9c1ce26a5031d453dc7f9536",
+      "raw_line": "{\"timestamp\":\"2026-08-04T21:33:34.876Z\",\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"id\":\"msg_019fceb1-6e73-75a1-b17b-3477c054b658\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"For Retire ANTI-FOREIGN - are those picked up in filing?\\n\\nOtherwise approve all\\n\"}],\"internal_chat_message_metadata_passthrough\":{\"turn_id\":\"019fceb1-6d60-7490-a9af-55e3e9a14ec7\"}}}",
+      "message_id": "msg_019fceb1-6e73-75a1-b17b-3477c054b658",
+      "turn_id": "019fceb1-6d60-7490-a9af-55e3e9a14ec7",
+      "role": "user",
+      "message_type": "input_text",
+      "cited_as": [
+        {
+          "kind": "response",
+          "ruling_ids": [
+            "antitrust-expanded-taxonomy",
+            "identity-batch-mapping-signature",
+            "identity-initial-import-foundation",
+            "p9-programme-completion-terminal",
+            "p9-security-production-access",
+            "production-policy-package-v2"
+          ],
+          "excerpt": "For Retire ANTI-FOREIGN - are those picked up in filing?\n\nOtherwise approve all"
+        }
+      ]
+    },
+    {
+      "locator": "sessions/2026/08/04/rollout-2026-08-04T17-33-34-019fceb2-3aad-7352-a244-88838d4a9964.jsonl",
+      "line": 2247,
+      "sha256": "b1d6ee4c5dad563f5c393fbf04e1b56e1b7ea8fc44a5304cd7f9f783b8534f1a",
+      "raw_line": "{\"timestamp\":\"2026-08-04T21:33:34.875Z\",\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"id\":\"msg_0f4417faa2ccbedd016a72426eaff08194bc346786499553c9\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"Phase 1 is complete, committed locally, mechanically green and fail-closed. Nothing was pushed, deployed, extracted, written to production, or authorised for production.\\n\\n- Commit: `0d17ad0085a2a6b365448637d9dbdccb6d20871c`\\n- Branch: `codex/m3-production-phase1`\\n- Tests: 6,418 passed, 0 failed, 41 skipped\\n- Build and programme specification: passed\\n- Final Sol review: passed, no critical or major findings\\n- Production authority: `NONE`\\n- Canonical plan: [CANONICAL-PRODUCTION-PLAN-2026-08-04.md](/Users/bengoodchild/.codex/artifacts/canonical-v2-programme-20260804/CANONICAL-PRODUCTION-PLAN-2026-08-04.md)\\n- Plan SHA-256: `0a9b55c74beac402506e5ffc8cb584125f09d351e070d8483a0d81851a3facd1`\\n\\n## Route to production\\n\\n- Phase 1: adopt the remaining decisions, complete successor M1, identity authority, source admission, trusted V1 capture and closed-flag deployment.\\n- Phase 2: measure 24 to 50 representative calls, freeze the execution manifest, then build the primary candidate and independent shadow.\\n- Phase 3: complete deterministic replay, legal review, disagreement review, sampling and M3 certification.\\n- Phase 4: pass the security gate, use the fixed inactive-import runner, and prove production parity without exposing the corpus.\\n- Phase 5: authorise atomic cutover, run immediate smoke, then complete the governed 24-hour observation and next-deal API rehearsal.\\n\\n## Decisions needed now\\n\\nMy recommendation is to approve all of the following.\\n\\n1. Expanded antitrust package\\n\\n   Adopt 11 concepts: efforts, burden, litigation, agreements, filing, strategy control, consultation, non-impediment, cooperation, information and notification.\\n\\n   - `ANTI-AGREEMENTS` replaces `ANTI-TIMING`.\\n   - Retire `ANTI-FOREIGN` and `ANTI-INTERIM` as legal concepts.\\n   - Reclassify every card by its actual text.\\n   - Govern clean cooperation, information-sharing protections and notification obligations now.\\n   - Preserve only genuine residual material as exact open-world evidence.\\n   - Nothing unmatched becomes absent.\\n   - Final parity still requires the trusted 40-deal V1 rendered capture.\\n\\n2. Production policy package\\n\\n   - One full independent Terra shadow by default, replacing two mandatory shadows.\\n   - A second full shadow only after a compromised shadow or material shared error.\\n   - One Ben batch signature for the 40-deal/41-source mapping, while retaining the 40 machine receipts, bridge and full identity chain.\\n   - Closed-flag deployment after successor M1 and green checks, before source and identity issuance.\\n   - Security must pass before any production credential, inactive import or activation.\\n   - Review by provision fact group, with a blind sample of the greater of 300 groups or 2% of eligible groups.\\n   - Automatic source disposition only for exact-byte duplicates and transport wrappers.\\n   - Database parity based on equal results, limits and approved plan classes, not identical plan fingerprints.\\n   - A fixed import runner with a short-lived credential, no shell and no activation authority.\\n   - A governed 24-hour observation after activation.\\n\\n3. Programme foundations\\n\\n   - Ratify `P9_PROGRAMME_COMPLETION_ATTESTATION`.\\n   - Adopt `BEN_APPROVED_IMPORT/V2`, `BEN_APPROVED_IMPORT_SEED/V2`, and `TX-000001` through `TX-000040`.\\n   - Prepare the exact key-registry amendment for later approval.\\n\\n## Full 40-deal cost\\n\\nThe current diagnostic covers all 40 deals and 41 source occurrences. It finds about 1,485 positive work items, but this is not yet a frozen call count.\\n\\n- Primary extraction: about $38 to $94 without retries.\\n- Primary with 25% allowance: about $48 to $118.\\n- Primary plus one full shadow: about $76 to $188.\\n- With 25% allowance on both: about $95 to $235.\\n- Stored-output replay: zero model calls.\\n- Codex subscription marginal cash cost may be zero. These are API-equivalent estimates using the [official Terra rates](https://developers.openai.com/api/docs/models/gpt-5.6-terra).\\n\\nThe exact cost and elapsed time require the instrumented 24-to-50-call sample. The current subscription transport does not retain adequate usage and timing fields.\\n\\nYou can reply: **“Approve the antitrust, production-policy and programme-foundation packages.”** Or identify any exception.\\n\\n::git-create-branch{cwd=\\\"/Users/bengoodchild/Documents/Claude/precedent-machine-m3-production-phase1\\\" branch=\\\"codex/m3-production-phase1\\\"}\\n::git-stage{cwd=\\\"/Users/bengoodchild/Documents/Claude/precedent-machine-m3-production-phase1\\\"}\\n::git-commit{cwd=\\\"/Users/bengoodchild/Documents/Claude/precedent-machine-m3-production-phase1\\\"}\"}],\"phase\":\"final_answer\",\"internal_chat_message_metadata_passthrough\":{\"turn_id\":\"019fcd83-54b8-7512-aa59-3a6190b7701d\"}}}",
+      "message_id": "msg_0f4417faa2ccbedd016a72426eaff08194bc346786499553c9",
+      "turn_id": "019fcd83-54b8-7512-aa59-3a6190b7701d",
+      "role": "assistant",
+      "message_type": "output_text",
+      "cited_as": [
+        {
+          "kind": "assistant_prompt",
+          "ruling_ids": [
+            "antitrust-expanded-taxonomy",
+            "identity-batch-mapping-signature",
+            "identity-initial-import-foundation",
+            "p9-programme-completion-terminal",
+            "p9-security-production-access",
+            "production-policy-package-v2"
+          ],
+          "excerpt": "You can reply: **“Approve the antitrust, production-policy and programme-foundation packages.”** Or identify any exception."
+        }
+      ]
+    },
+    {
+      "locator": "sessions/2026/08/03/rollout-2026-08-03T06-01-47-019fc5ff-dc06-70b3-bc8a-6f6afc627632.jsonl",
+      "line": 30477,
+      "sha256": "925907b7f3ac5f7af6f42c1940591997941630af3873ecd0411907388cc82a2a",
+      "raw_line": "{\"timestamp\":\"2026-08-04T22:40:38.976Z\",\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"id\":\"msg_019fceef-a240-7cd3-8418-7575f5253ff2\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"Okay on all\\n\"}],\"internal_chat_message_metadata_passthrough\":{\"turn_id\":\"019fceb1-6d60-7490-a9af-55e3e9a14ec7\"}}}",
+      "message_id": "msg_019fceef-a240-7cd3-8418-7575f5253ff2",
+      "turn_id": "019fceb1-6d60-7490-a9af-55e3e9a14ec7",
+      "role": "user",
+      "message_type": "input_text",
+      "cited_as": [
+        {
+          "kind": "response",
+          "ruling_ids": [
+            "rem-cap",
+            "closing-revisit"
+          ],
+          "excerpt": "Okay on all\n"
+        }
+      ]
+    },
+    {
+      "locator": "sessions/2026/08/03/rollout-2026-08-03T06-01-47-019fc5ff-dc06-70b3-bc8a-6f6afc627632.jsonl",
+      "line": 30434,
+      "sha256": "d8315402bee9bbdd75c77e8a876b378decaf565ceb86002f8fee84decd9dfff5",
+      "raw_line": "{\"timestamp\":\"2026-08-04T22:39:50.767Z\",\"type\":\"response_item\",\"payload\":{\"type\":\"message\",\"id\":\"msg_0f4417faa2ccbedd016a726a3279648194b36b9fe74a785170\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"The two open rulings are:\\n\\n- `REM-CAP` means a proposed separate Remedies concept for a numeric liability cap. Its only two grounded examples are in termination-fee provisions titled “Sole and Exclusive Remedy”. The Remedies extractor excludes those provisions, so `REM-CAP` could never receive its own evidence. My recommendation is: do not create `REM-CAP` as a separate Remedies concept. Keep the exact cap and sole-remedy text in Termination Fee, link the legal effect into Remedies, and track Fraud and Willful Breach carve-outs separately. No legal fact is dropped. Please approve or reject that treatment.\\n\\n- A “pin” is a rule that prevents a claim from passing without human review. “Narrow” means the rule applies only to the representation bring-down standard, for example “true in all material respects”. It does not block covenant-compliance, no-MAE, or regulatory conditions merely because they also use approved value lists. My recommendation is to keep that review rule narrow. Please approve or reject that scope.\\n\\nWork continues while you decide.\"}],\"phase\":\"commentary\",\"internal_chat_message_metadata_passthrough\":{\"turn_id\":\"019fceb1-6d60-7490-a9af-55e3e9a14ec7\"}}}",
+      "message_id": "msg_0f4417faa2ccbedd016a726a3279648194b36b9fe74a785170",
+      "turn_id": "019fceb1-6d60-7490-a9af-55e3e9a14ec7",
+      "role": "assistant",
+      "message_type": "output_text",
+      "cited_as": [
+        {
+          "kind": "assistant_prompt",
+          "ruling_ids": [
+            "rem-cap",
+            "closing-revisit"
+          ],
+          "excerpt": "The two open rulings are:"
+        }
+      ]
+    }
+  ]
+}
+

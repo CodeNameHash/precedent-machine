@@ -136,6 +136,17 @@ function agreementProductDefinition(field) {
       operators: numericOperators,
       vocabulary: false,
     },
+    // A duration is a count bound to a unit (days / business days / months) --
+    // the same "numeric measure with an implied unit" shape as usd ($) and
+    // percentage (%), never a bare NUMBER. Losing the unit at the product
+    // boundary would let "12" mean 12 days on one field and 12 months on the
+    // next with nothing to tell them apart.
+    duration: {
+      valueType: 'DURATION',
+      controlType: 'NUMBER_RANGE',
+      operators: numericOperators,
+      vocabulary: false,
+    },
     date: {
       valueType: 'DATE',
       controlType: 'DATE_RANGE',
@@ -492,7 +503,7 @@ test('compiles the exact current PM sources into one deterministic registry', ()
   assert.equal(first.schema_version, 'PRODUCT_FIELD_SOURCE_REGISTRY/V1');
   assert.equal(first.stable_id, 'PRODUCT_FIELD_SOURCE_REGISTRY');
   assert.equal(first.source_bindings.length, 3);
-  assert.equal(first.field_definitions.length, 15 + 12 + 333);
+  assert.equal(first.field_definitions.length, 15 + 12 + 367);
   assert.equal(first.source_exclusions.length, 0);
   assert.equal(
     first.canonical_payload_digest,
@@ -503,12 +514,12 @@ test('compiles the exact current PM sources into one deterministic registry', ()
   assert.equal(Object.isFrozen(first.field_definitions[0].source_binding), true);
   assert.equal(
     inventory.agreement_query_surface.distinct_user_facing_field_count,
-    333,
+    367,
   );
-  assert.equal(inventory.agreement_query_surface.field_occurrence_count, 491);
+  assert.equal(inventory.agreement_query_surface.field_occurrence_count, 524);
   assert.equal(inventory.serving_registry.observed_entry_count, 699);
-  assert.equal(inventory.serving_registry.alias_collision_count, 156);
-  assert.equal(input.agreement_alias_decisions.mappings.length, 489);
+  assert.equal(inventory.serving_registry.alias_collision_count, 1);
+  assert.equal(input.agreement_alias_decisions.mappings.length, 522);
   assert.ok(
     input.agreement_alias_decisions.rejected_collision_claims.length > 0,
   );
@@ -548,9 +559,16 @@ test('records one explicit exclusion without losing source reconciliation', () =
   const inventory = loadJson(
     'evidence/process-intelligence/baseline/product-field-source-inventory.json',
   );
+  // 'amount' was the pre-shadow-fix canonical key this test used to exclude
+  // (a TERMINATION_FEE usd field fed by the reverseFeeAmount serving-registry
+  // row). The alias-shadowing fix split that collapsed identity back into
+  // its own real, unshadowed field -- 'amount' no longer exists in the
+  // baseline, so excluding it would now silently exclude nothing.
+  // 'reverseFeeAmount' is that same TERMINATION_FEE dollar-amount field
+  // under its real current key.
   const decisions = agreementFieldDecisions(
     inventory,
-    new Map([['amount', 'DUPLICATE_ACTIVE_MEANING_NOT_RESOLVED']]),
+    new Map([['reverseFeeAmount', 'DUPLICATE_ACTIVE_MEANING_NOT_RESOLVED']]),
   );
   const input = fixture({
     agreement_inventory: inventory,
@@ -560,11 +578,11 @@ test('records one explicit exclusion without losing source reconciliation', () =
   input.enumeration_certification = expectedEnumerationCertification(input);
   const registry = buildProductFieldSourceRegistry(input);
 
-  assert.equal(registry.field_definitions.length, 15 + 12 + 333 - 1);
+  assert.equal(registry.field_definitions.length, 15 + 12 + 367 - 1);
   assert.equal(registry.source_exclusions.length, 1);
   assert.equal(
     registry.source_exclusions[0].source_binding.source_field_key,
-    'amount',
+    'reverseFeeAmount',
   );
   assert.equal(
     registry.source_exclusions[0].reason_code,

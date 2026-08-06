@@ -6,6 +6,7 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const ROOT = path.resolve(import.meta.dirname, '..');
+process.chdir(ROOT);
 const OUTPUT_PATH = path.join(
   ROOT,
   'evidence/process-intelligence/baseline/product-field-source-inventory.json',
@@ -18,12 +19,81 @@ const SOURCE_FILES = Object.freeze([
     sha256: '3457984b065a277bc3aa18d34da62a7436325a7fe7ec0672ab0cbccd9473c1d3',
   },
   {
-    path: 'lib/query/field-meta.js',
-    sha256: '4b74cfa416a2a811b929d03851e7b9cdc91654dc754b6c74756be8f47988bbb5',
+    // Re-baselined 2026-08-05. lib/query/types.js changed when the DEAL_COMPARE
+    // and DEAL_TO_MARKET query kinds were retired, on the product owner's
+    // decision, in favour of the review page's own compare mode. The pin is
+    // deliberate: this baseline must never silently track whatever the sources
+    // happen to be, so moving it is an explicit act with a stated reason.
+    path: 'lib/query/types.js',
+    sha256: '5723635a55cb393ccc66bb39dc3736be1c20b5f7f790b36a4722350abb11a99b',
   },
   {
+    // Re-baselined 2026-08-05 alongside the query-serving-registry alias
+    // shadowing fix. Previously-shadowed boolean fields (e.g.
+    // standstillWaiverPermitted) now resolve to themselves and surface in
+    // fieldsForProvisionType() alongside a same-shaped sibling that cleans to
+    // an identical label; the r11 disambiguation pass gained a second tie
+    // breaker (append the canonical key) for when two colliding fields share
+    // the same type-based suffix. Re-baselined again the same day: the same
+    // unshadowing also let bringDownTiers (CLOSING_CONDITION), triggers
+    // (TERMINATION_FEE) and forceTheVoteDetails (COVENANT_NO_SOLICITATION)
+    // resolve to their own registry rows for the first time, exposing that
+    // cleanFieldLabel() never stripped "array of {...}" / "list of {...}"
+    // schema-shape annotations or trailing prose after "verbatim" -- widened
+    // ANNOTATION_SUFFIX_RE to cover both. The pin is deliberate: this
+    // baseline must never silently track whatever the sources happen to be,
+    // so moving it is an explicit act with a stated reason.
+    path: 'lib/query/field-meta.js',
+    sha256: '3d12c55723de6e67d684cd466495cf6b21bd0e1342e4cdff122caac73249b49a',
+  },
+  {
+    // Re-baselined 2026-08-05. parseUsdAmount() was first-number-wins --
+    // harmless while fee amounts were always single clean figures, but a
+    // canonical projection change now renders a real conditional fee (e.g.
+    // Modiv's company termination fee) as free text naming two dollar
+    // amounts plus a cap, and this function feeds feePctOfDealValue /
+    // reverseFeePctOfDealValue on the live query path. Fixed on the same
+    // principle as parseFeeAmountUsd in components/review/table-configs/
+    // termination-fees.config.js and numericValue in lib/feature-compare.js,
+    // both fixed the same day for the identical defect: a string naming more
+    // than one number now returns null rather than its first figure.
+    //
+    // Re-baselined again 2026-08-05, same day: consolidated onto
+    // lib/parse-money.js, the one shared implementation for what were six
+    // independent, duplicate "parse a dollar amount" functions across this
+    // codebase. parseUsdAmount() here is now a thin wrapper over
+    // parseMoneyAmount(), not its own implementation. One behavior change
+    // fell out of unifying the ambiguity rule: the shared parser is
+    // "$"-sign-aware (counts "$"-marked figures rather than every bare
+    // numeral), so a single dollar figure sitting beside an unrelated
+    // section citation -- the real Modiv PARENT/reverse fee headline,
+    // "Lesser of $15,000,000 (§7.3(c)) and the REIT Requirements cap" -- now
+    // resolves instead of nulling out, matching parseFeeAmountUsd's
+    // already-shipped behavior on the identical string and closing a live
+    // disagreement between the review page and the query engine. See
+    // lib/parse-money.js's header "FINDING" note and tests/derived-fields.test.js
+    // for the full writeup. The pin is deliberate: this baseline must never
+    // silently track whatever the sources happen to be, so moving it is an
+    // explicit act with a stated reason.
+    path: 'lib/query/derived-fields.js',
+    sha256: 'bd523c781b7ab0f1ffba70beaf98ed4738a2b817b7e74acb65b284c8e4094f13',
+  },
+  {
+    path: 'lib/query/resolve.js',
+    sha256: 'c7d25168c0f08f413158342b12f46be4ae5e889012a2f9531a20d59df3ab01b5',
+  },
+  {
+    // Re-baselined 2026-08-05. scripts/generate-query-serving-registry.js now
+    // strips any alias that collides with a DIFFERENT entry's canonical key
+    // (104 entries were previously unreachable under their own key -- e.g.
+    // fiduciaryOutStandard resolved to fiduciaryEngageStandard's data) and
+    // corrects 5 registry rows whose declared type plainly contradicted
+    // their own displayName's stated unit (a duration or percentage typed
+    // usd). The pin is deliberate: this baseline must never silently track
+    // whatever the sources happen to be, so moving it is an explicit act
+    // with a stated reason.
     path: 'lib/query/serving-registry-v1.json',
-    sha256: 'ecbace4566431277bb96b34eead1c03cc3ca4ca7e10fe15bf0796bcfbb95e8de',
+    sha256: '7bdfb957bfe6fe2f6c65a57b5c73ffbafebd95b0eb8338e9944d2e879755eb9b',
   },
 ]);
 const EXPECTED_DEALS_FIELD_KEYS = Object.freeze([
@@ -70,9 +140,35 @@ function fail(message) {
   throw new Error(`PROCESS_INTELLIGENCE_BASELINE_INVALID: ${message}`);
 }
 
+function compareCanonicalText(left, right) {
+  const leftText = String(left);
+  const rightText = String(right);
+  if (leftText === rightText) return 0;
+  return leftText < rightText ? -1 : 1;
+}
+
 function exactSourceFiles() {
+  const sourcePaths = new Set();
   return SOURCE_FILES.map((source) => {
-    const bytes = fs.readFileSync(path.join(ROOT, source.path));
+    if (!source || typeof source.path !== 'string' || !source.path) {
+      fail('a pinned source file lacks a relative path');
+    }
+    if (path.isAbsolute(source.path) || source.path.split(path.sep).includes('..')) {
+      fail(`pinned source path is not repository-relative: ${source.path}`);
+    }
+    if (sourcePaths.has(source.path)) {
+      fail(`pinned source path is duplicated: ${source.path}`);
+    }
+    sourcePaths.add(source.path);
+    const sourcePath = path.resolve(ROOT, source.path);
+    if (!sourcePath.startsWith(`${ROOT}${path.sep}`)) {
+      fail(`pinned source path escapes the repository: ${source.path}`);
+    }
+    const sourceStat = fs.lstatSync(sourcePath);
+    if (!sourceStat.isFile()) {
+      fail(`pinned source path is not a regular file: ${source.path}`);
+    }
+    const bytes = fs.readFileSync(sourcePath);
     const observedSha256 = sha256Hex(bytes);
     if (observedSha256 !== source.sha256) {
       fail(`${source.path} digest is ${observedSha256}, expected ${source.sha256}`);
@@ -117,7 +213,10 @@ function registrySource(registryEntries, requestedKey) {
 }
 
 function exactProvisionSurface(provisionType, registryEntries) {
-  const surface = fieldsForProvisionType(provisionType);
+  const surface = [...fieldsForProvisionType(provisionType)].sort((left, right) => (
+    compareCanonicalText(left.label, right.label)
+    || compareCanonicalText(left.key, right.key)
+  ));
   const surfaceByKey = new Map(surface.map((field) => [field.key, field]));
   if (surfaceByKey.size !== surface.length) {
     fail(`${provisionType} exposes a duplicate final field key`);
@@ -166,8 +265,10 @@ function exactProvisionSurface(provisionType, registryEntries) {
     });
   }
 
-  const occurrenceKeys = occurrences.map((occurrence) => occurrence.field_key).sort();
-  const surfaceKeys = [...surfaceByKey.keys()].sort();
+  const occurrenceKeys = occurrences
+    .map((occurrence) => occurrence.field_key)
+    .sort(compareCanonicalText);
+  const surfaceKeys = [...surfaceByKey.keys()].sort(compareCanonicalText);
   if (canonicalJson(occurrenceKeys) !== canonicalJson(surfaceKeys)) {
     fail(`${provisionType} source enumeration does not reproduce its query surface`);
   }
@@ -175,7 +276,7 @@ function exactProvisionSurface(provisionType, registryEntries) {
   const duplicateLabels = new Set();
   const labels = new Set();
   for (const field of surface) {
-    const label = field.label.toLocaleLowerCase('en-US');
+    const label = field.label.toLowerCase();
     if (labels.has(label)) duplicateLabels.add(label);
     labels.add(label);
   }
@@ -241,7 +342,7 @@ function agreementInventory(registryEntries) {
   }
 
   const fields = [...fieldsByKey.values()]
-    .sort((left, right) => left.field_key.localeCompare(right.field_key))
+    .sort((left, right) => compareCanonicalText(left.field_key, right.field_key))
     .map((field) => ({
       field_key: field.field_key,
       ...field.stable_shape,
@@ -252,9 +353,9 @@ function agreementInventory(registryEntries) {
       certified_data_disposition: 'NOT_PROVABLE_FROM_PINNED_PRODUCT_SOURCES',
     }));
 
-  if (fields.length !== 333) fail(`Agreement field count is ${fields.length}, expected 333`);
-  if (allOccurrences.length !== 491) {
-    fail(`Agreement field occurrence count is ${allOccurrences.length}, expected 491`);
+  if (fields.length !== 367) fail(`Agreement field count is ${fields.length}, expected 367`);
+  if (allOccurrences.length !== 524) {
+    fail(`Agreement field occurrence count is ${allOccurrences.length}, expected 524`);
   }
   const sec = provisionTypes.find((entry) => entry.provision_type === 'SEC_FILING_MEETING');
   if (!sec || sec.current_user_facing_field_count !== 0
@@ -303,7 +404,7 @@ function registryInventory(registry, agreementFields) {
         successor_requirement: 'EXPLICIT_REVIEWED_ALIAS_MAPPING_REQUIRED',
       };
     })
-    .sort((left, right) => left.alias.localeCompare(right.alias));
+    .sort((left, right) => compareCanonicalText(left.alias, right.alias));
 
   const inputs = entries.map((entry, index) => {
     const aliases = [...new Set([entry.key, ...(entry.aliases || [])])];
@@ -334,8 +435,8 @@ function registryInventory(registry, agreementFields) {
   if (inputs.some((input) => !input.disposition)) {
     fail('one or more serving-registry inputs lack a disposition');
   }
-  if (collisions.length !== 156) {
-    fail(`registry alias collision count is ${collisions.length}, expected 156`);
+  if (collisions.length !== 1) {
+    fail(`registry alias collision count is ${collisions.length}, expected 1`);
   }
 
   return {
@@ -364,8 +465,8 @@ function buildInventory() {
   if (servingRegistry.observed_entry_count !== 699) {
     fail(`serving registry contains ${servingRegistry.observed_entry_count} entries, expected 699`);
   }
-  if (servingRegistry.included_input_count !== 328
-    || servingRegistry.excluded_input_count !== 371) {
+  if (servingRegistry.included_input_count !== 365
+    || servingRegistry.excluded_input_count !== 334) {
     fail('serving-registry inclusion and exclusion counts changed');
   }
 

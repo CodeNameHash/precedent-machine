@@ -5,7 +5,7 @@ Owner-approved runbook adaptation of the programme's "Ben-run local" rule
 docs/certification/programme-gate-status.json). Everything below runs in the
 **staging** Supabase SQL Editor, project `sjumbznveyyiizhwvixj`
 (deal-corpus-canonical-v2-staging). Governing spec:
-`docs/handoffs/SPEC-QXO-TERMF-F2-CANDIDATE-OPTION-A-2026-07-24.md`.
+`docs/archive/handoffs/SPEC-QXO-TERMF-F2-CANDIDATE-OPTION-A-2026-07-24.md`.
 
 Nothing here touches production, and nothing here ACTIVATES anything —
 the import is inactive; activation stays a separate Ben decision.

@@ -480,8 +480,13 @@ export default function MergertraceStyles() {
          (narrow) cell, so the revealed body becomes a bordered flyout panel
          that grows the row's height in-flow but paints across the full row
          width instead of wrapping inside the label column. Stays inside the
-         table's box (no clash with the overflow-x clip). */
-      .mtx [data-testid^='provision-table-'] td details[open] > div {
+         table's box (no clash with the overflow-x clip). Covers both a raw
+         <details> (table-configs/*.config.js builds these directly) and
+         SeeProvisionDisclosure's own .mtx-disclosure-body (see
+         ProvisionTablePrimitives.jsx) -- same cell, same flyout treatment,
+         regardless of which mechanism rendered it. */
+      .mtx [data-testid^='provision-table-'] td details[open] > div,
+      .mtx [data-testid^='provision-table-'] td .mtx-disclosure-body:not([hidden]) {
         width: min(36rem, 76vw);
         max-width: none;
         background: #FFFFFF;
@@ -505,8 +510,11 @@ export default function MergertraceStyles() {
       .mtx .term-cell-seetext:hover { color: #1F1F1F; }
       /* The expander's revealed body is VALUE content (the full clause
          text) — same 13px as every other value cell (Item 6 r6), not the
-         11px the reused ProvisionTable/MaeSection markup ships. */
-      .mtx [data-testid^='provision-table-'] details > div {
+         11px the reused ProvisionTable/MaeSection markup ships. Same
+         raw-<details>-or-.mtx-disclosure-body reach as the flyout rule
+         above. */
+      .mtx [data-testid^='provision-table-'] details > div,
+      .mtx [data-testid^='provision-table-'] .mtx-disclosure-body {
         font-size: 13px;
       }
       .mtx [data-testid^='coverage-footer'],
@@ -813,6 +821,132 @@ export default function MergertraceStyles() {
          the only sticky header (it pins at top-0, mirroring the prototype). */
       .bg-paper:has(.mtx) > header {
         position: static !important;
+      }
+
+      /* ══════════════════════════════════════════════════════════════
+         PRINT — a printed provision table is a real deal-lawyer artefact
+         (closing binder, redline call), so it gets its own layout instead
+         of inheriting the screen chrome as-is. Four jobs:
+
+         1. Strip everything that only makes sense with a mouse: masthead
+            action buttons (every <button>, blanket — nothing in this app
+            uses a <button> to DISPLAY a value, only to trigger an
+            action), both side rails, the full-document overlay, "See
+            provision" triggers, the provenance popover trigger, hover
+            tooltips, and the app's OWN top bar outside .mtx.
+         2. Force every disclosure open, unconditionally, regardless of
+            the on-screen "search clause text" toggle or any row a reader
+            left open/closed by hand. A print is a deliberate, considered
+            action (unlike an accidental Ctrl+F), so the tradeoff runs the
+            other way here: completeness beats compactness. Covers this
+            file's own SeeProvisionDisclosure (see
+            ProvisionTablePrimitives.jsx) -- its body is always in the DOM,
+            toggled only by the 'hidden' attribute, so this reveals it
+            regardless of whether a reader ever clicked it -- AND every raw
+            <details> table-configs/*.config.js builds directly, same
+            reasoning (closed <details> content is in the DOM too, just
+            UA-stylesheet collapsed): this rule doesn't care which file
+            rendered the tag, so it reaches those too even though the
+            find-in-page fix could not touch that directory this round.
+            The ONE exception: the main provision tables' own per-row
+            expansion (ProvisionTable.jsx's generic path, GroupedSubRows,
+            CompareColumn, CanonicalSourceDetail in
+            CanonicalReviewSection.jsx) is a true conditional render --
+            collapsed rows have no clause text in the DOM at all, by
+            design, predating this change, so no CSS override can reveal
+            what React never mounted, and the "search clause text" toggle
+            doesn't reach this separate, pre-existing mechanism either.
+            Expand a row by hand before printing if its clause text needs
+            to be on the page.
+         3. Pills: colour reinforces, never carries meaning alone -- this
+            file's own tone-remap above, and the "not yet extracted" vs
+            "established absent" distinction specifically, already say
+            the same thing in words (e.g. "Not yet extracted" vs "No"),
+            so nothing legally load-bearing depends on hue survival. But
+            two of the six semantic tones (BLUE #2F6DB5 and ROSE #B14E63)
+            sit within a few points of each other's grayscale luminance,
+            and the soft ~8%-alpha tinted backgrounds this file uses for
+            on-screen pills wash out under most printers' colour
+            management. Print swaps the tint for a plain white background
+            plus a heavier, full-strength border, so text/border carry
+            the distinction instead of a hue gap a laser printer or a
+            colour-blind reader may not render. print-color-adjust makes
+            an actual colour printer reproduce the intended hues
+            faithfully rather than Chrome's default ink-saving strip.
+         4. Page breaks: never split an ordinary table row, a grouped-row
+            card, or a canonical-review row-card across a page boundary
+            if the browser can reasonably avoid it. Deliberately NOT
+            applied to whole sections or to expanded clause bodies --
+            both can legitimately run longer than one page, and forcing
+            "avoid" on something that big just produces a large blank
+            gap at the page break instead of a clean one.
+         ══════════════════════════════════════════════════════════════ */
+      @media print {
+        /* ── 1. Strip interactive-only chrome ── */
+        .mtx button,
+        [data-testid='provision-nav'],
+        [data-testid='clause-sidebar'],
+        [data-testid='clause-sidebar-render-error'],
+        [data-testid='market-drilldown-sidebar'],
+        .mtx-source-overlay-backdrop,
+        .mtx-drawer,
+        .mtx-drawer-backdrop,
+        .mtx [data-mtx-see-provision-trigger],
+        .mtx-prov-trigger,
+        .mtx-prov-popover,
+        .mtx span[role='tooltip'],
+        .mtx .mtx-section-caret {
+          display: none !important;
+        }
+        /* The app's own top bar (outside .mtx -- same reach-up technique
+           as the sticky-header rule above): never belongs on a printed
+           provision table. */
+        .bg-paper:has(.mtx) > header {
+          display: none !important;
+        }
+        /* The masthead is 'position: sticky' for screen scrolling only;
+           across a paginated print layout that can repeat or misplace the
+           bar per page in some engines. Let it flow normally -- the deal
+           identity text inside it (target/acquirer/date/value/etc.)
+           still prints once, at the top, which is exactly the "which
+           deal is this" context a printed table needs. */
+        .mtx .mtx-masthead {
+          position: static !important;
+        }
+        main:has(> .mtx) {
+          padding: 0 !important;
+        }
+
+        /* ── 2. Force every disclosure open, regardless of on-screen state ── */
+        .mtx .mtx-disclosure-body[hidden] {
+          display: block !important;
+        }
+        .mtx details:not([open]) > *:not(summary) {
+          display: block !important;
+        }
+        .mtx details > summary::-webkit-details-marker {
+          display: none;
+        }
+
+        /* ── 3. Pills survive black-and-white / colour-blind reading ── */
+        .mtx, .mtx * {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+        .mtx span.inline-flex.border {
+          background: #FFFFFF !important;
+          border-width: 1.5px !important;
+          font-weight: 700 !important;
+        }
+
+        /* ── 4. Page breaks ── */
+        .mtx [data-testid^='provision-table-'] tbody > tr:not(.mtx-provision-expansion-row),
+        .mtx [data-testid='off-market-section'] tbody > tr,
+        .mtx [data-testid='grouped-sub-rows'] > div,
+        .mtx [data-canonical-row-key] {
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
       }
     `}</style>
   );

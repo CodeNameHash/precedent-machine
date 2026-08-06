@@ -41,14 +41,25 @@ test('the three P0 surfaces have explicit owners, source inventories, counts and
   }
 });
 
-test('the M3 register records every P0 and representations surface under an explicit owner', () => {
+test('the M3 register records every P0 and representations surface, and retains the five explicit unassigned blockers', () => {
   assert.deepEqual(
     CURRENT_M3_FAMILY_PARITY_REGISTER.supplemental_owners.map((owner) => owner.owner_id),
     ['MATERIAL_CONTRACTS', 'NO_OTHER_REPS_FRAUD', 'GENERAL_COVENANT_ROUTER'],
   );
+  // Owner ruling, 2026-08-05: the four retained no-shop concepts (NOSOL-
+  // CEASE/RECOMMEND/ENFORCE/WAIVER) are approved, so they are no longer
+  // here -- they moved into the NO_SHOP family's own product_surfaces. Only
+  // the two permanently-bounded NOSOL-SUPERIOR/NOSOL-INTERVENING native
+  // claims and the three indirect table configs remain.
   assert.deepEqual(
     CURRENT_M3_FAMILY_PARITY_REGISTER.unassigned_product_surfaces.map((surface) => surface.surface_id),
-    [],
+    [
+      'indirect-advisers-fees-expenses-config',
+      'indirect-approvals-votes-config',
+      'indirect-conditions-m-config',
+      'nosol-superior-native-claim',
+      'nosol-intervening-native-claim',
+    ],
   );
 });
 

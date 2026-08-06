@@ -6,6 +6,7 @@ import { buildRepBringDownMap, hasRecoverableBringDownContext, normRepName } fro
 import { cardCode, cardFeatures, cardType, firstFeature, labelOf, selectCards, textOf, valueText } from './card-utils.js';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from './layout.js';
 import { resolveRowFocus } from '../../review-v2/provisionIndexHelpers.js';
+import { DARK_PREVIEW_MARKET_STATE, isCanonicalV2PreviewEnabled } from './canonical-v2-preview-lane.js';
 
 const { labelForCode, taxonomyForFeatureKey } = taxonomy;
 
@@ -41,6 +42,34 @@ function isRepresentationCard(card) {
   return cardType(card) === 'REPRESENTATION' || cardCode(card).startsWith('REP-');
 }
 
+// Mirrors (does NOT import -- private to representations-product-
+// projection.js, not in its module.exports) the ownership-boundary
+// concept_key blocklist defined there (around lines 18-31): the concepts
+// Representations does NOT own, even though some of them can legitimately
+// carry provision_type REPRESENTATION and a REP-T-/REP-B- coded subtype --
+// Material Contracts' own rep card, and (see the FIX note below)
+// No Other Reps / Fraud's non-willful-breach cards. lib/canonical-v2/
+// representations-dark-bridge.js already independently mirrors this same
+// set for the same "private, not exported" reason (see that module's own
+// EXCLUDED_CONCEPTS comment, ~line 88); tests/canonical-v2-review-preview-
+// end-to-end.test.js pins THIS copy against representations-product-
+// projection.js's real EXCLUDED_FAMILY_OWNERSHIP guard so the two mirrors
+// can't silently drift apart from the upstream authority or each other.
+const EXCLUDED_CONCEPTS = Object.freeze(new Set([
+  'REP-T-CONTRACTS',
+  'REP-T-MATERIAL-CONTRACTS',
+  'REP-B-CONTRACTS',
+  'REP-B-MATERIAL-CONTRACTS',
+  'REP-T-NOOTHERREPS',
+  'REP-B-NOOTHERREPS',
+  'REP-T-NONRELIANCE',
+  'REP-B-NONRELIANCE',
+  'REP-T-INDEPINVEST',
+  'REP-B-INDEPINVEST',
+  'REP-T-FRAUDCARVEOUT',
+  'REP-B-FRAUDCARVEOUT',
+]));
+
 // Strict provision_type match (not isRepresentationCard's looser code-prefix
 // OR) -- REP-B-ANTIRELIANCE carries a REP-B- coded subtype but its
 // provision_type is MISC_BOILERPLATE (it lives under Anti-Reliance in that
@@ -48,12 +77,27 @@ function isRepresentationCard(card) {
 // into this table by code prefix alone. See R5 note in FEEDBACK-4-PUNCHLIST.
 // v1 reclassification (2026-08-02, R3): the same is true of REP-B-ANTIRELIANCE's
 // eight element successors (REP-B-/REP-T- x NOOTHERREPS/NONRELIANCE/
-// INDEPINVEST/FRAUDCARVEOUT) -- they land wherever the anti-reliance
-// element scan found them (often MISC_BOILERPLATE, not a REPRESENTATION
-// section), so this strict provision_type check keeps them out of the
-// per-rep table the same way it always kept REP-B-ANTIRELIANCE out.
+// INDEPINVEST/FRAUDCARVEOUT) when the anti-reliance element scan is what
+// produced them -- that heuristic path types them MISC_BOILERPLATE (often,
+// not a REPRESENTATION section), so the provision_type check alone kept
+// them out the same way it always kept REP-B-ANTIRELIANCE out.
+//
+// FIX (cross-family lane collision): that assumption breaks for the SAME
+// eight codes -- plus Material Contracts' REP-T-/REP-B-CONTRACTS(-MATERIAL)
+// concepts -- when they come from a bridge that deliberately, correctly
+// types its own cards provision_type REPRESENTATION with a REP-T-/REP-B-
+// coded subtype (no-other-reps-fraud-dark-bridge.js's non-willful-breach
+// cards do exactly this: a no-other-representations clause really does live
+// in the representations article, see ~line 411-412 there). provision_type
+// alone no longer excludes them then, so the SAME card rendered in both that
+// family's own lane and this one at once. EXCLUDED_CONCEPTS above is the
+// authoritative "not actually ours" list (representations-product-
+// projection.js's own EXCLUDED_FAMILY_OWNERSHIP guard is what enforces this
+// boundary upstream) -- excluding it here is required in addition to, not
+// instead of, the provision_type check.
 function isPartyRepresentationCard(card, partyPrefix) {
-  return cardType(card) === 'REPRESENTATION' && cardCode(card).startsWith(partyPrefix);
+  const code = cardCode(card);
+  return cardType(card) === 'REPRESENTATION' && code.startsWith(partyPrefix) && !EXCLUDED_CONCEPTS.has(code);
 }
 
 // The Article III / IV preamble cards (REP-T-PREAMBLE, REP-B-PREAMBLE) carry
@@ -67,8 +111,52 @@ function isPreambleCard(card) {
 }
 
 function selectRepCards(reviewDeal, partyPrefix) {
-  const cards = selectCards(reviewDeal, (card) => isPartyRepresentationCard(card, partyPrefix)).filter((card) => !isPreambleCard(card));
+  const cards = selectCards(reviewDeal, (card) => (
+    card?.authority_state !== 'VALIDATED_NOT_SERVED'
+      && card?.provenance?.canonical_v2_authority_state !== 'VALIDATED_NOT_SERVED'
+      && isPartyRepresentationCard(card, partyPrefix)
+  )).filter((card) => !isPreambleCard(card));
   return sortByAgreementOrder(cards, (card) => firstFeature([card], ['sectionNumber'])?.value ?? card.section_ref);
+}
+
+// -- Canonical V2 dark preview (additive, gated) ------------------------------
+// selectRepCards() above is UNCHANGED and keeps excluding any dark Canonical
+// V2 card (authority_state / provenance.canonical_v2_authority_state ===
+// 'VALIDATED_NOT_SERVED') from the live per-rep row set -- that exclusion is
+// a deliberate safety property and holds regardless of whether
+// canonical_v2_preview_enabled is set on the reviewDeal.
+// isDarkCard()/selectDarkRepCards() below are a
+// SEPARATE, additive selection used only by buildRepresentationsConfig's
+// gated preview block further down -- they never feed the live path.
+function isDarkCard(card) {
+  return card?.authority_state === 'VALIDATED_NOT_SERVED'
+    || card?.provenance?.canonical_v2_authority_state === 'VALIDATED_NOT_SERVED';
+}
+
+function selectDarkRepCards(reviewDeal, partyPrefix) {
+  const cards = selectCards(reviewDeal, (card) => (
+    isDarkCard(card) && isPartyRepresentationCard(card, partyPrefix)
+  )).filter((card) => !isPreambleCard(card));
+  return sortByAgreementOrder(cards, (card) => firstFeature([card], ['sectionNumber'])?.value ?? card.section_ref);
+}
+
+// Mirrors material-contracts.config.js's darkPreviewRows() decorator:
+// relabels for the reviewer, flags marketSkip/DARK_REVIEW_ONLY so the row
+// never enters market-coverage counts or cross-deal comparison (see
+// lib/market-metrics/section-rows.js's enumerateMarketSectionRows and
+// lib/query/dark-authority-fence.js), and gives the row a distinct id so it
+// can never collide with a live rep row built from a different card.
+function darkPreviewRepRow(row) {
+  return {
+    ...row,
+    id: `${row.id}-dark-preview`,
+    label: `${row.label} (Canonical V2 preview)`,
+    authorityState: 'VALIDATED_NOT_SERVED',
+    comparisonState: 'NOT_ADMITTED',
+    marketState: DARK_PREVIEW_MARKET_STATE,
+    marketSkip: true,
+    marketProvisionCodes: [],
+  };
 }
 
 // -- tagged-value helpers ------------------------------------------------------
@@ -1295,6 +1383,44 @@ function repMarketSubterms({ card, term, materiality, knowledge, lookback, bring
   return subterms;
 }
 
+// Shared per-card row builder, used for both the live per-rep row set below
+// and the additive Canonical V2 dark preview block -- extracted so the two
+// paths can never drift: a dark preview row renders through exactly the same
+// resolveTerm/resolveMateriality/resolveKnowledge/resolveLookback/
+// resolveBringDown/repMarketSubterms logic a live row does.
+function buildRepRow(id, card, { bringDownMap, bringDownCode, hasBringDownContext }) {
+  const term = resolveTerm(card);
+  const materiality = resolveMateriality(card);
+  const knowledge = resolveKnowledge(card);
+  const lookback = resolveLookback(card);
+  const bringDown = hasBringDownContext ? resolveBringDown(card, bringDownMap) : null;
+  const featureKeys = [];
+  if (materiality) featureKeys.push('materialityQualifier');
+  if (knowledge) featureKeys.push('knowledgeQualifier');
+  if (lookback) featureKeys.push('lookbackDateISO');
+  return {
+    id: `${id}-${card.id}`,
+    kind: 'rep',
+    present: true,
+    card,
+    label: term.label,
+    party: term.party,
+    mainConcept: term.mainConcept,
+    materiality,
+    knowledge,
+    lookback,
+    bringDown,
+    featureKeys,
+    itemCode: featureKeys.length ? cardCode(card) : null,
+    marketSubterms: repMarketSubterms({ card, term, materiality, knowledge, lookback, bringDown, bringDownCode }),
+    currentTreatments: bringDown ? [{
+      label: 'Bringdown',
+      value: bringDown.label.replace(/^Bringdown:\s*/, ''),
+      quote: bringDown.evidence || null,
+    }] : [],
+  };
+}
+
 // R5: builds ONE party's reps table (General Exceptions + Knowledge +
 // per-rep rows), parametrized by that party's card-code prefix and preamble
 // code rather than duplicating the selection/assembly logic per party.
@@ -1313,37 +1439,20 @@ function buildRepresentationsConfig({ id, title, partyPrefix, preambleCode }) {
       const bringDownMap = buildRepBringDownMap(reviewDeal);
       const bringDownCode = partyPrefix === 'REP-B-' ? 'COND-S-REP' : 'COND-B-REP';
       const hasBringDownContext = hasRecoverableBringDownContext(reviewDeal);
+      const rowContext = { bringDownMap, bringDownCode, hasBringDownContext };
       for (const card of cards) {
-        const term = resolveTerm(card);
-        const materiality = resolveMateriality(card);
-        const knowledge = resolveKnowledge(card);
-        const lookback = resolveLookback(card);
-        const bringDown = hasBringDownContext ? resolveBringDown(card, bringDownMap) : null;
-        const featureKeys = [];
-        if (materiality) featureKeys.push('materialityQualifier');
-        if (knowledge) featureKeys.push('knowledgeQualifier');
-        if (lookback) featureKeys.push('lookbackDateISO');
-        rows.push({
-          id: `${id}-${card.id}`,
-          kind: 'rep',
-          present: true,
-          card,
-          label: term.label,
-          party: term.party,
-          mainConcept: term.mainConcept,
-          materiality,
-          knowledge,
-          lookback,
-          bringDown,
-          featureKeys,
-          itemCode: featureKeys.length ? cardCode(card) : null,
-          marketSubterms: repMarketSubterms({ card, term, materiality, knowledge, lookback, bringDown, bringDownCode }),
-          currentTreatments: bringDown ? [{
-            label: 'Bringdown',
-            value: bringDown.label.replace(/^Bringdown:\s*/, ''),
-            quote: bringDown.evidence || null,
-          }] : [],
-        });
+        rows.push(buildRepRow(id, card, rowContext));
+      }
+      // Additive, gated Canonical V2 dark preview. selectRepCards() above is
+      // untouched and keeps excluding these same dark cards from the live
+      // row set whether or not the flag is on -- this block is the ONLY
+      // place a dark card can ever contribute a row, and only when the
+      // server has stamped canonical_v2_preview_enabled on this reviewDeal.
+      if (isCanonicalV2PreviewEnabled(reviewDeal)) {
+        const darkCards = selectDarkRepCards(reviewDeal, partyPrefix);
+        for (const card of darkCards) {
+          rows.push(darkPreviewRepRow(buildRepRow(id, card, rowContext)));
+        }
       }
       return rows;
     },
@@ -1370,16 +1479,22 @@ const parentRepresentationsConfig = buildRepresentationsConfig({
 });
 
 export {
+  buildRepRow,
+  darkPreviewRepRow,
+  EXCLUDED_CONCEPTS,
   extractKnowledgeNamedPersons,
+  isDarkCard,
   isRepresentationCard,
   knowledgePersonsEntries,
   parentRepresentationsConfig,
   renderBody,
   renderKnowledgePill,
   representationsQualifiersConfig,
+  resolveDateLookback,
   resolveKnowledge,
   resolveLookback,
   resolveMateriality,
   resolveTerm,
+  selectDarkRepCards,
   selectRepCards,
 };

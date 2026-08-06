@@ -17,6 +17,7 @@ import {
   definitionTextForDisplay,
   isFragmentDefinedTerm,
 } from './provisionIndexHelpers.js';
+import { SeeProvisionDisclosure } from '../review/primitives/ProvisionTablePrimitives';
 
 function sectionRefLabel(ref) {
   // section_ref shape: "1.01 | The Merger | ee3def9710d0" — show §number only.
@@ -37,10 +38,11 @@ export default function ProvisionIndex({ cards, sectionTitle, onSelect, selected
   const list = dedupeBySectionAndTitle(withTitle);
   if (!list.length) return null;
   return (
-    <details className="mt-3">
-      <summary className="term-cell-seetext" style={{ listStyle: 'none', cursor: 'pointer' }}>
-        Provisions in this section ({list.length}) — read the clauses
-      </summary>
+    <SeeProvisionDisclosure
+      as="div"
+      className="mt-3"
+      label={`Provisions in this section (${list.length}) — read the clauses`}
+    >
       <section data-testid={`provision-table-index-${(sectionTitle || 'section').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} className="mt-2 border border-border bg-white">
         <div className="border-b border-border bg-paper2 px-3 py-1.5">
           <p>Provisions — {sectionTitle}</p>
@@ -77,10 +79,13 @@ export default function ProvisionIndex({ cards, sectionTitle, onSelect, selected
                         ) : null}
                       </div>
                       {text ? (
-                        <details className="mt-1">
-                          <summary className="term-cell-seetext" style={{ listStyle: 'none' }}>read clause</summary>
-                          <div className="mt-1 whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">{text}</div>
-                        </details>
+                        <SeeProvisionDisclosure
+                          className="mt-1"
+                          label="read clause"
+                          bodyClassName="mt-1 whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight"
+                        >
+                          {text}
+                        </SeeProvisionDisclosure>
                       ) : null}
                     </td>
                   </tr>
@@ -90,7 +95,7 @@ export default function ProvisionIndex({ cards, sectionTitle, onSelect, selected
           </table>
         </div>
       </section>
-    </details>
+    </SeeProvisionDisclosure>
   );
 }
 

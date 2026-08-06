@@ -22,6 +22,13 @@ const CLAIM_FIXTURES = Object.freeze({
   TAX_TREATMENT_PROTECTION_COVENANT: Object.freeze({
     value: true, attributes: Object.freeze({ treatment_term_ref: 'Intended Tax Treatment' }),
   }),
+  TAX_OPINION_COOPERATION_COVENANT: Object.freeze({
+    value: true,
+    attributes: Object.freeze({
+      tax_opinion_ref: 'tax opinion',
+      representation_letter_ref: 'Tax representation letters',
+    }),
+  }),
   TRANSFER_TAX_ALLOCATION: Object.freeze({
     value: 'PARENT', attributes: Object.freeze({ bearer_ref: 'Parent and Merger Sub' }),
   }),
@@ -72,7 +79,7 @@ test('all governed tax, dividend and appraisal claims reach Review, Query, Compa
   const keys = [...Object.keys(TAX_CLAIMS), ...Object.keys(DIVIDEND_CLAIMS), ...Object.keys(APPRAISAL_CLAIMS)];
   const projection = projectTaxDividendsAppraisalClaims({ resolved_entries: keys.map((key) => entry(key)) });
   assert.equal(projection.authority_state, AUTHORITY_STATE);
-  assert.equal(projection.records.length, 10);
+  assert.equal(projection.records.length, 11);
   const byKey = new Map(projection.records.map((record) => [record.review.row_key, record]));
   for (const key of keys) {
     const record = byKey.get(key);
@@ -97,9 +104,18 @@ test('Query and Compare expose the three governed family fields without taking a
   assert.ok(!fieldsForCompareCell('REPRESENTATION', ['all']).includes('taxMatterFact'));
 });
 
-test('tax opinion cooperation remains open world and cannot absorb a condition-side tax opinion', () => {
+test('tax opinion cooperation is governed, while a condition-side opinion remains ungoverned', () => {
+  const projection = projectTaxDividendsAppraisalClaims({
+    resolved_entries: [entry('TAX_OPINION_COOPERATION_COVENANT')],
+  });
+  assert.equal(projection.records[0].review.label, 'Tax opinion cooperation covenant');
+  assert.deepEqual(projection.records[0].review.dimensions, {
+    claim_definition_key: 'TAX_OPINION_COOPERATION_COVENANT',
+    tax_opinion_ref: 'tax opinion',
+    representation_letter_ref: 'Tax representation letters',
+  });
   assert.throws(
-    () => projectTaxDividendsAppraisalClaims({ resolved_entries: [entry('TAX_OPINION_COOPERATION_COVENANT')] }),
+    () => projectTaxDividendsAppraisalClaims({ resolved_entries: [entry('TAX_OPINION_CONDITION')] }),
     projectionError('UNGOVERNED_CLAIM'),
   );
 });

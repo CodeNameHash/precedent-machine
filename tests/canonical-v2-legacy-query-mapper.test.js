@@ -210,7 +210,7 @@ test('9. mapper never emits release-pinned keys', () => {
 });
 
 // ── D3 widening (2026-07-23): second supported request — no-shop initial
-// match period. docs/handoffs/SPEC-QUERY-METRICS-WIDENING-2026-07-23.md,
+// match period. docs/archive/handoffs/SPEC-QUERY-METRICS-WIDENING-2026-07-23.md,
 // test groups 3 and 5. ──────────────────────────────────────────────────────
 
 const NO_SHOP_MATCH_PAYLOAD = Object.freeze({

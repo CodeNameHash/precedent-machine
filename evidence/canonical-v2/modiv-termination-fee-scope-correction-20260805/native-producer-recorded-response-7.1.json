@@ -1,0 +1,8 @@
+{
+  "schema_version": "NATIVE_PRODUCER_RECORDED_RESPONSE/V1",
+  "model": "claude-sonnet-5 (served via Claude Code subscription CLI, `claude -p --model sonnet`, no ANTHROPIC_API_KEY available in this environment)",
+  "recorded_at": "2026-08-05T23:30:08.371Z",
+  "section_reference": "7.1",
+  "note": "Modiv TERMINATION_FEE scope-correction run (7.1 + 7.3 + 8.12 pinned together, all dispatched as TERMINATION_FEE via section_family_assignments), PROMPT_VERSION 1. request_messages omitted here; raw_response_text is the model's literal output including its ```json fence, byte-for-byte as returned.",
+  "raw_response_text": "```json\n{\n  \"fee_amount_assertions\": [],\n  \"fee_trigger_assertions\": [\n    {\n      \"section_reference\": \"7.1\",\n      \"fee_side\": \"SELLER\",\n      \"trigger_code\": \"SUPERIOR_PROPOSAL_TERMINATION\",\n      \"quote\": \"the Company Board has approved, and substantially concurrently with the termination of this Agreement, the Company enters into, a definitive agreement providing for the implementation of a Superior Proposal\"\n    }\n  ],\n  \"tail_period_assertions\": [],\n  \"wave_b_mechanics\": [],\n  \"open_world_candidates\": [\n    {\n      \"observed_quote\": \"such termination shall not be effective until the Company has paid such Company Termination Fee in accordance with Section 7.3(b)\",\n      \"why_unmapped\": \"Conditions the effectiveness of a superior-proposal termination on prior/concurrent payment of the Company Termination Fee; resembles a fee payment-timing mechanism but is not an amount, trigger ground, tail period, or one of the five wave_b surfaces\",\n      \"nearest_concept\": \"EXPENSE_REIMBURSEMENT\"\n    }\n  ]\n}\n```"
+}

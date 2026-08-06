@@ -10,6 +10,16 @@ const nextConfig = {
         './docs/review-queue/*.json',
         './HANDOFF.md',
       ],
+      // NOTE: this used to also force-include the QXO termination-fee excerpt
+      // for '/api/review/[id]/cards' (production incident, 2026-08-05: the
+      // route read that .txt at REQUEST time via a runtime-assembled path,
+      // which Next's tracer could not see). That entry was confirmed correctly
+      // written and STILL failed to fix the route in production. The real fix
+      // was to stop reading a file at request time at all -- see
+      // lib/canonical-v2/termination-fee-serving-source.js's QXO_EXCERPTS_TEXT,
+      // which now reaches the excerpt through an ordinary literal require() of
+      // a generated module instead. No outputFileTracingIncludes entry is
+      // needed for that route any more.
     },
   },
   async redirects() {

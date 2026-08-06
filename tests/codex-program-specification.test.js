@@ -6,6 +6,9 @@ const {
   buildTrustedReviewPlan,
   specificationRootFromMembers,
 } = require('../lib/programme-gates/review-controller');
+const {
+  compileGoverningSpecificationMembers,
+} = require('../lib/canonical-v2/canonical-contract-bundle-pre-review-package-assembler');
 
 const MANIFEST_PATH = 'docs/codex-program/specification-manifest.json';
 const COLD_REVIEW_RUNNER_PATH = 'scripts/run-g0-local-cold-reviews.mjs';
@@ -39,6 +42,13 @@ function verifiedRoot() {
 
 test('governing CODEX programme specification is mechanically valid', () => {
   assert.match(verifiedRoot(), /^[a-f0-9]{64}$/);
+  const manifest = JSON.parse(require('node:fs').readFileSync(
+    path.resolve(__dirname, '..', MANIFEST_PATH),
+    'utf8',
+  ));
+  assert.equal(manifest.schema, 'codex-program-specification-manifest/v2');
+  assert.equal(manifest.purpose, 'DRIFT_DETECTION_ONLY_NOT_EXECUTION_AUTHORITY');
+  assert.equal(manifest.files.length, 6);
 });
 
 test('verifier root is the review-controller root for committed specification membership', () => {
@@ -76,7 +86,7 @@ test('cold review runner supplies the manifest-derived member count to the trust
       lane_id: 'ROOT_CONTRACT',
       exact_specification_root: specificationRootFromMembers(orderedMembers),
       frozen_specification: {
-        manifest_id: 'codex-program-specification-manifest/v1',
+        manifest_id: 'codex-program-specification-manifest/v2',
         manifest_digest: orderedMembers[0].payload_digest,
         file_count: orderedMembers.length,
         ordered_members: orderedMembers,
@@ -146,7 +156,7 @@ test('bootstrap-for-ledger membership substitution fails the committed root cont
       lane_id: 'ROOT_CONTRACT',
       exact_specification_root: root,
       frozen_specification: {
-        manifest_id: 'codex-program-specification-manifest/v1',
+        manifest_id: 'codex-program-specification-manifest/v2',
         manifest_digest: membersFor([MANIFEST_PATH])[0].payload_digest,
         file_count: substitutedPaths.length,
         ordered_members: membersFor(substitutedPaths),
@@ -157,4 +167,29 @@ test('bootstrap-for-ledger membership substitution fails the committed root cont
     },
     runtime_context: {},
   }), /frozen specification bytes do not derive the exact specification root/);
+});
+
+test('pre-review member compiler accepts only the current seven-member V2 manifest contract', () => {
+  const manifest = JSON.parse(require('node:fs').readFileSync(
+    path.resolve(__dirname, '..', MANIFEST_PATH),
+    'utf8',
+  ));
+  const members = membersFor([MANIFEST_PATH, ...manifest.files.map(({ path: file }) => file)]);
+  const compiled = compileGoverningSpecificationMembers(members);
+  assert.equal(compiled.specification_root, verifiedRoot());
+
+  const v1 = structuredClone(members);
+  const v1Manifest = JSON.parse(Buffer.from(v1[0].source_bytes_base64, 'base64').toString('utf8'));
+  v1Manifest.schema = 'codex-program-specification-manifest/v1';
+  const bytes = Buffer.from(JSON.stringify(v1Manifest));
+  v1[0] = {
+    ...v1[0],
+    byte_length: bytes.length,
+    payload_digest: sha256(bytes),
+    source_bytes_base64: bytes.toString('base64'),
+  };
+  assert.throws(
+    () => compileGoverningSpecificationMembers(v1),
+    /frozen root contract/,
+  );
 });

@@ -18,10 +18,43 @@
     4. Provenance (extractor_id, extracted_at, ai_metadata.code,
        recoded_from/recoded_at, evidence_quote, feature_value) is carried
        into a provenance JSONB, never merged into canonical.
-    5. Idempotent: upsert keyed on the triple id. A small number of triple
-       ids collide across genuinely distinct claims in the source snapshot
-       (see DEDUPE handling below) -- those get a disambiguating suffix
-       instead of silently overwriting one another.
+    5. Idempotent: upsert keyed on the SHARED claim identity (see below). A
+       small number of source-snapshot ids collide across genuinely distinct
+       claims (see DEDUPE handling below) -- those get a disambiguating
+       suffix instead of silently overwriting one another.
+
+  CLAIM IDENTITY (load-bearing -- read before touching the id field):
+  This script used to key its upsert on `triple.id`, the opaque 16-hex id
+  the normaliser minted for a row of docs/schema-shape/normalized-v1.json.
+  The live ingest writer (lib/parser-v2/store-claims.js, and everything that
+  reuses it -- scripts/reprocess/rematerialize-claims.js,
+  scripts/curation/mint-cards.js) keys on
+  claimId(excerpt_id, attribute, index) instead. Two writers, two id spaces,
+  and public.claims.id is the upsert conflict target: the SAME logical claim
+  written by both paths landed as TWO rows, so re-materialising a deal that
+  had been backfilled inserted alongside the backfilled rows rather than
+  updating them in place.
+
+  Fixed by making this script mint through store-claims.js's own claimId().
+  The anchor resolution below already yields the excerpt_id, and field_key is
+  the attribute; the only missing component is `index`, the ordinal of this
+  atom inside the ingest writer's atomicValues() expansion of the feature
+  value. That is recovered -- never guessed -- by re-running the SAME
+  atomicValues() over the triple's own ai_metadata.feature_value and
+  requiring the expansion to account for exactly the triples in the group
+  (see assignIngestIdentities). A group that cannot be proven to line up is
+  reported as `identity_unresolved` and NOT written: minting a plausible
+  ordinal would let this script silently overwrite a genuinely different
+  ingest-written claim, which is strictly worse than the split id spaces it
+  replaces.
+
+  NOT fixed by this change (deliberately -- it is a data migration, not a
+  code change): rows ALREADY written to public.claims under the old
+  triple-id scheme keep their old ids, and nothing here rewrites them. They
+  are removed for free by store-claims.js's own stale-claim cleanup
+  (deleteStaleClaimsForSurvivors) the next time a replaceDeal ingest or a
+  rematerialize pass covers their card -- the 2026-07-13 corpus
+  rematerialize already did exactly that for 12,259 of 12,387 cards.
 
   NOTE on registry source: PLAN-CLAIMS-LAYER.md and lib/schema/features.js
   are cited together as "the 695-entry registry", but they are NOT the same
@@ -34,6 +67,16 @@
   terminationFees, absence* keys) as unknown when they are in fact governed
   attributes pending a `generate-registry.js` regen. Report surfaces counts
   against BOTH sources so the caller can see the gap.
+
+  That gap is no longer purely informational, though, and the CLAIM IDENTITY
+  change above is why: identity is minted from features.js's own atom
+  expansion, so a triple whose field_key is in `entries` but NOT in
+  features.js has no ingest identity to share and now lands in
+  `identity_unresolved` rather than being written. That is the honest
+  outcome -- the ingest writer would never materialise such a claim either
+  (store-claims.js gates on the same FEATURES map), so writing it here would
+  produce a row no re-ingest can ever update. The fix is to regenerate
+  features.js (`generate-registry.js`), not to relax the gate.
 
   Identity anchoring: see supabase/schema-05-claims.sql header. The
   region_id chain the plan names as primary
@@ -48,6 +91,11 @@
 const fs = require('fs');
 const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
+// The ingest writer's identity function and atom expansion. Imported, not
+// re-implemented: a second copy of either would recreate the split id space
+// this script exists to close.
+const { atomicValues, claimId } = require('../../lib/parser-v2/store-claims');
+const { FEATURES } = require('../../lib/schema/features');
 
 const REPO_ROOT = path.resolve(__dirname, '..', '..');
 const DEFAULT_NORMALIZED_PATH = path.join(REPO_ROOT, 'docs/schema-shape/normalized-v1.json');
@@ -160,12 +208,108 @@ function buildProvenance(triple, anchorStatus) {
   };
 }
 
+// One anchored triple -> the claim row it becomes, MINUS its id. Identity is
+// assigned separately (assignIngestIdentities) because it is a property of
+// the (excerpt_id, attribute) GROUP, not of a triple in isolation.
+function claimRowFromTriple(triple, card) {
+  return {
+    deal_id: triple.deal_id,
+    excerpt_id: card.excerpt_id,
+    provision_instance_id: card.provision_instance_id,
+    region_id: card.region_id,
+    attribute: triple.field_key,
+    verbatim: triple.raw_value === undefined
+      ? null
+      : (typeof triple.raw_value === 'string' ? triple.raw_value : JSON.stringify(triple.raw_value)),
+    evidence_quote: triple.evidence_quote || null,
+    canonical: triple.canonicalKey || null,
+    provenance: buildProvenance(triple, 'full_text_match'),
+    source_provision_id: triple.source_provision_id,
+  };
+}
+
+function stableFeatureValueKey(triple) {
+  const meta = triple && triple.ai_metadata;
+  const value = meta ? meta.feature_value : undefined;
+  return JSON.stringify(value === undefined ? null : value);
+}
+
+// Recovers the ingest writer's `index` for every triple in one
+// (excerpt_id, attribute) group, or returns null when it cannot be PROVEN.
+//
+// store-claims.js mints claimId(excerpt_id, attribute, index) where `index`
+// is the ordinal of the atom inside atomicValues(featureValue, registryEntry)
+// -- the expansion of ONE feature-bag entry into its atomic values. The
+// snapshot's triples are that same expansion, flattened: the normaliser
+// emitted one triple per atom, in order, each carrying the whole
+// pre-expansion feature value in ai_metadata.feature_value.
+//
+// So the group's ordinals are recoverable iff:
+//   a. the attribute is in the ingest writer's registry at all (a triple the
+//      ingest writer would never materialise has no ingest identity to share);
+//   b. every triple in the group carries the SAME feature value -- otherwise
+//      the group spans more than one extraction of the attribute and the
+//      flat order is not the atom order; and
+//   c. re-expanding that feature value yields exactly as many atoms as there
+//      are triples in the group.
+// Anything else is reported, never written. A guessed ordinal would collide
+// with -- and silently overwrite -- a DIFFERENT ingest-written claim.
+function ingestClaimIdsForGroup(excerptId, attribute, groupTriples) {
+  if (!Array.isArray(groupTriples) || groupTriples.length === 0) return null;
+  const registryEntry = FEATURES[attribute];
+  if (!registryEntry) return null;                                     // (a)
+  const featureKey = stableFeatureValueKey(groupTriples[0]);
+  if (!groupTriples.every((triple) => stableFeatureValueKey(triple) === featureKey)) return null; // (b)
+  const featureValue = groupTriples[0].ai_metadata
+    ? groupTriples[0].ai_metadata.feature_value
+    : undefined;
+  const atoms = atomicValues(featureValue, registryEntry);
+  if (atoms.length !== groupTriples.length) return null;               // (c)
+  return groupTriples.map((_unused, index) => claimId(excerptId, attribute, index));
+}
+
+// `records` are { row, triple } pairs for anchored triples, in snapshot
+// order. Stamps row.id with the SAME identity lib/parser-v2/store-claims.js
+// would mint, so a claim written by either path is one row, not two.
+// Returns the rows whose identity was proven, plus the ones it was not
+// (reported by the caller as identity_unresolved -- these are dropped).
+function assignIngestIdentities(records) {
+  const groups = new Map();
+  for (const record of records) {
+    const key = JSON.stringify([record.row.excerpt_id, record.row.attribute]);
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(record);
+  }
+  const identified = [];
+  const unidentified = [];
+  for (const group of groups.values()) {
+    const ids = ingestClaimIdsForGroup(
+      group[0].row.excerpt_id,
+      group[0].row.attribute,
+      group.map((record) => record.triple),
+    );
+    if (!ids) {
+      unidentified.push(...group);
+      continue;
+    }
+    group.forEach((record, index) => {
+      record.row.id = ids[index];
+      identified.push(record.row);
+    });
+  }
+  return { identified, unidentified };
+}
+
 function dedupeAndDisambiguateIds(claimRows) {
-  // Some triple ids collide across genuinely distinct claims in the source
-  // snapshot (same id, different content). Exact duplicates (identical
-  // deal_id/attribute/verbatim) collapse to one row (that's correct
-  // idempotent behaviour). Non-identical collisions get a disambiguating
-  // suffix so no distinct claim is silently dropped by the upsert key.
+  // Collision backstop on the upsert key. Under the shared
+  // claimId(excerpt_id, attribute, index) identity this should find nothing:
+  // ordinals are unique within a group and groups are keyed by distinct
+  // (excerpt_id, attribute) pairs. It is kept because it is the only thing
+  // standing between a future id-space surprise and a silently overwritten
+  // claim. Exact duplicates (identical deal_id/attribute/verbatim) collapse
+  // to one row (that's correct idempotent behaviour). Non-identical
+  // collisions get a disambiguating suffix so no distinct claim is silently
+  // dropped by the upsert key.
   const byId = new Map();
   for (const row of claimRows) {
     if (!byId.has(row.id)) byId.set(row.id, []);
@@ -229,14 +373,9 @@ async function run(argv = process.argv) {
   if (args.limit) triples = triples.slice(0, args.limit);
   const entryKeys = new Set(doc.entries.map((e) => e.key));
 
-  let featureKeys = new Set();
-  try {
-    // eslint-disable-next-line global-require, import/no-dynamic-require
-    const { FEATURES } = require(path.join(REPO_ROOT, 'lib/schema/features.js'));
-    featureKeys = new Set(Object.keys(FEATURES));
-  } catch (e) {
-    console.warn('[claims-backfill] could not load lib/schema/features.js:', e.message);
-  }
+  // Same registry the ingest writer gates on (imported at the top of this
+  // file, since claim identity now depends on it too).
+  const featureKeys = new Set(Object.keys(FEATURES));
 
   console.log(`[claims-backfill] ${triples.length} triples, ${entryKeys.size} registry entries, generated_at=${doc.generated_at}`);
 
@@ -248,7 +387,7 @@ async function run(argv = process.argv) {
   const provisionsById = new Map(provisions.map((p) => [p.id, p]));
   const cardIndex = buildCardIndex(cards);
 
-  const claimRows = [];
+  const claimRecords = [];
   const orphanReport = { no_provision_row: [], provision_full_text_empty: [], no_card_text_match: [], ambiguous_card_text_match: [] };
   const unknownAttrCountsEntries = new Map();
   const unknownAttrCountsFeaturesJs = new Map();
@@ -289,20 +428,22 @@ async function run(argv = process.argv) {
     if (triple.canonicalKey) resolvedCanonical += 1;
     else nullCanonical += 1;
 
-    claimRows.push({
-      id: triple.id,
-      deal_id: triple.deal_id,
-      excerpt_id: anchor.card.excerpt_id,
-      provision_instance_id: anchor.card.provision_instance_id,
-      region_id: anchor.card.region_id,
-      attribute: triple.field_key,
-      verbatim: triple.raw_value === undefined ? null : (typeof triple.raw_value === 'string' ? triple.raw_value : JSON.stringify(triple.raw_value)),
-      evidence_quote: triple.evidence_quote || null,
-      canonical: triple.canonicalKey || null,
-      provenance: buildProvenance(triple, 'full_text_match'),
-      source_provision_id: triple.source_provision_id,
-    });
+    claimRecords.push({ row: claimRowFromTriple(triple, anchor.card), triple });
   }
+
+  // Shared identity with lib/parser-v2/store-claims.js (see the CLAIM
+  // IDENTITY block in this file's header). Anything whose ingest identity
+  // cannot be proven is dropped here, not written under a private id.
+  const { identified: claimRows, unidentified } = assignIngestIdentities(claimRecords);
+  const identityUnresolved = unidentified.map((record) => ({
+    tripleId: record.triple.id,
+    dealId: record.row.deal_id,
+    fieldKey: record.row.attribute,
+    excerptId: record.row.excerpt_id,
+    reason: FEATURES[record.row.attribute]
+      ? 'atom_expansion_does_not_account_for_group'
+      : 'attribute_absent_from_lib_schema_features',
+  }));
 
   const { finalRows, exactDupesCollapsed, disambiguated } = dedupeAndDisambiguateIds(claimRows);
 
@@ -310,10 +451,12 @@ async function run(argv = process.argv) {
   console.log('input triples considered:', triples.length);
   console.log('registry-unknown vs entries(695) [DROPPED, not materialised]:', registryUnknownVsEntries);
   console.log('registry-unknown vs features.js(524) [informational only]:', registryUnknownVsFeaturesJs);
-  console.log('anchored to a card (would be written):', claimRows.length);
+  console.log('anchored to a card:', claimRecords.length);
+  console.log('  identity unresolved [DROPPED, not materialised]:', identityUnresolved.length);
+  console.log('  with a shared ingest identity (would be written):', claimRows.length);
   console.log('  after id-collision dedupe/disambiguation:', finalRows.length, `(collapsed ${exactDupesCollapsed} exact dupes, disambiguated ${disambiguated} distinct-but-colliding ids)`);
-  console.log('  canonical resolved (non-null):', resolvedCanonical, `(${(100 * resolvedCanonical / claimRows.length).toFixed(2)}%)`);
-  console.log('  canonical null:', nullCanonical, `(${(100 * nullCanonical / claimRows.length).toFixed(2)}%)`);
+  console.log('  canonical resolved (non-null):', resolvedCanonical, `(${(100 * resolvedCanonical / claimRecords.length).toFixed(2)}%)`);
+  console.log('  canonical null:', nullCanonical, `(${(100 * nullCanonical / claimRecords.length).toFixed(2)}%)`);
   console.log('orphaned (not anchored, would NOT be written):');
   for (const [k, v] of Object.entries(orphanReport)) console.log(`  ${k}:`, v.length);
   console.log('top 20 registry-unknown attributes (vs entries):', topN(unknownAttrCountsEntries, 20));
@@ -355,7 +498,10 @@ async function run(argv = process.argv) {
     registryUnknownVsFeaturesJs,
     topUnknownAttributesVsEntries: topN(unknownAttrCountsEntries, 20),
     topUnknownAttributesVsFeaturesJs: topN(unknownAttrCountsFeaturesJs, 20),
-    anchoredCount: claimRows.length,
+    anchoredCount: claimRecords.length,
+    identityResolvedCount: claimRows.length,
+    identityUnresolvedCount: identityUnresolved.length,
+    identityUnresolvedSamples: identityUnresolved.slice(0, 20),
     finalRowCount: finalRows.length,
     exactDupesCollapsed,
     disambiguated,
@@ -381,6 +527,7 @@ async function run(argv = process.argv) {
     `Would write: ${reportOut.finalRowCount} claim rows`,
     `Canonical resolved: ${reportOut.resolvedCanonical} / null: ${reportOut.nullCanonical}`,
     `Registry-unknown (dropped): ${reportOut.registryUnknownVsEntries}`,
+    `Identity unresolved (dropped): ${reportOut.identityUnresolvedCount}`,
     `Orphaned (no card anchor): ${Object.values(reportOut.orphanCounts).reduce((a, b) => a + b, 0)}`,
     '',
   ];
@@ -407,4 +554,12 @@ if (require.main === module) {
   });
 }
 
-module.exports = { run, resolveAnchor, buildCardIndex, dedupeAndDisambiguateIds };
+module.exports = {
+  run,
+  resolveAnchor,
+  buildCardIndex,
+  dedupeAndDisambiguateIds,
+  claimRowFromTriple,
+  ingestClaimIdsForGroup,
+  assignIngestIdentities,
+};

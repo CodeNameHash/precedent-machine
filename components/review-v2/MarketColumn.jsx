@@ -585,7 +585,22 @@ export function OffMarketSection({ data }) {
                       className="border-b border-[#EDEDEC] last:border-b-0 align-top"
                       style={row.status === 'UNUSUAL' ? { background: 'rgba(177, 78, 99, 0.06)' } : { background: 'rgba(168, 122, 46, 0.06)' }}
                     >
-                      <td className="px-3 py-2 text-[#1F1F1F]">{row.field_label}</td>
+                      <td className="px-3 py-2 text-[#1F1F1F]">
+                        {row.field_label}
+                        {/* This row's colour tint (rose vs amber, set above)
+                            is the ONLY signal distinguishing "Unusual" from
+                            an ordinary off-market term -- invisible once
+                            printed in black and white or to a colour-blind
+                            reader. A same-toned text tag makes the
+                            classification legible either way; colour still
+                            carries it at a glance on screen. */}
+                        <span
+                          className="ml-1.5 text-[8px] font-bold uppercase tracking-wider align-middle"
+                          style={{ color: row.status === 'UNUSUAL' ? '#B14E63' : '#A87A2E' }}
+                        >
+                          {row.status === 'UNUSUAL' ? 'Unusual' : 'Off-market'}
+                        </span>
+                      </td>
                       <td className="px-3 py-2 mtx-mono font-bold text-[#1F1F1F]">{formatMarketValue(row.deal_value, row.field_path)}</td>
                       <td className="px-3 py-2 mtx-mono text-[#6B6B6B]">{baselineText(row.baseline_stats, row.field_path)}</td>
                     </tr>

@@ -1,0 +1,92 @@
+{
+  "deal_id": "landos-abbvie-no-other-reps-fraud-dark-bridge",
+  "assertions": {
+    "no_other_reps": {
+      "section_reference": "3.30",
+      "representation_side": "TARGET",
+      "assertion_quote": "Except for the express written representations and warranties made by the Company in this Agreement, no Company Party makes any express or implied representation or warranty with respect to the Company.",
+      "representation_maker_ref": "the Company",
+      "agreement_scope_quote": "the express written representations and warranties made by the Company in this Agreement"
+    },
+    "non_reliance": {
+      "section_reference": "4.20",
+      "representation_side": "BUYER",
+      "assertion_quote": "Parent acknowledges that it is not relying on any representation or warranty of the Company except those expressly set forth in this Agreement, including projections, forecasts or other information made available in the electronic data room.",
+      "relying_party_ref": "Parent",
+      "disclaimed_representation_party_ref": "the Company",
+      "agreement_scope_quote": "except those expressly set forth in this Agreement",
+      "extra_contractual_scope_quote": "including projections, forecasts or other information made available in the electronic data room"
+    },
+    "independent_investigation": {
+      "section_reference": "4.20",
+      "representation_side": "BUYER",
+      "assertion_quote": "Parent has conducted its own independent investigation, review and analysis of the business, operations and financial condition of the Company.",
+      "investigating_party_ref": "Parent"
+    },
+    "fraud_carveout": {
+      "section_reference": "9.07",
+      "representation_side": "BUYER",
+      "assertion_quote": "Nothing in this Section 9.07 shall limit or otherwise affect the liability of either party for Fraud."
+    },
+    "willful_breach_definition": {
+      "section_reference": "1.1",
+      "definition_quote": "Willful Breach means any material breach of any covenant or agreement set forth in this Agreement prior to the date of its termination that is a consequence of any act, or failure to act, undertaken by the breaching Party with the knowledge that the taking of such act, or failure to act, would, or would reasonably be likely to, result in such breach.",
+      "defined_term_ref": "Willful Breach"
+    }
+  },
+  "legacy_cards": [
+    {
+      "id": "legacy-definition-parent-mae",
+      "deal_id": "landos-abbvie-no-other-reps-fraud-dark-bridge",
+      "provision_instance_id": "legacy-definition-parent-mae",
+      "excerpt_id": "legacy-definition-parent-mae:0",
+      "section_ref": "Article I",
+      "short_title": "Parent Material Adverse Effect",
+      "kind": "definition",
+      "provision_type": "DEFINITION",
+      "defined_term": "Parent Material Adverse Effect",
+      "defined_value": "an effect materially adverse to Parent",
+      "primary_quote": "Parent Material Adverse Effect means an effect materially adverse to Parent.",
+      "region_full_text": "Parent Material Adverse Effect means an effect materially adverse to Parent.",
+      "references": [],
+      "provenance": {
+        "source_doc_id": "legacy-document",
+        "source_doc_page": 1,
+        "source_doc_offset_start": 10,
+        "source_doc_offset_end": 90,
+        "extractor_name": "parser-v2",
+        "extractor_version": "fixture",
+        "model": "fixture",
+        "prompt_hash": "sha256:legacy-definition",
+        "run_id": "legacy-run",
+        "extracted_at": "2026-08-05T00:00:00.000Z"
+      }
+    },
+    {
+      "id": "legacy-notices",
+      "deal_id": "landos-abbvie-no-other-reps-fraud-dark-bridge",
+      "provision_instance_id": "legacy-notices",
+      "excerpt_id": "legacy-notices:0",
+      "section_ref": "Section 10.2",
+      "short_title": "Notices",
+      "kind": "standard",
+      "provision_type": "MISC_BOILERPLATE",
+      "provision_subtype": "MISC-NOTICES",
+      "primary_quote": "All notices under this Agreement shall be in writing and delivered by hand, courier or electronic mail.",
+      "region_full_text": "All notices under this Agreement shall be in writing and delivered by hand, courier or electronic mail.",
+      "references": [],
+      "provenance": {
+        "source_doc_id": "legacy-document",
+        "source_doc_page": 90,
+        "source_doc_offset_start": 9000,
+        "source_doc_offset_end": 9080,
+        "extractor_name": "parser-v2",
+        "extractor_version": "fixture",
+        "model": "fixture",
+        "prompt_hash": "sha256:legacy-notices",
+        "run_id": "legacy-run",
+        "extracted_at": "2026-08-05T00:00:00.000Z"
+      }
+    }
+  ]
+}

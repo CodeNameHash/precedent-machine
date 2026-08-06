@@ -45,6 +45,7 @@ import {
 } from './marketSummaryHelpers.js';
 import { getCorpusVersion } from '../../lib/client/corpus-version.js';
 import { FEATURES } from '../../lib/schema/features.js';
+import { SeeProvisionDisclosure } from '../review/primitives/ProvisionTablePrimitives';
 
 function fmtValue(raw) {
   const n = Number(raw);
@@ -856,22 +857,31 @@ function ItemDrillBlock({ drill, rowContext, loading, error, onBack }) {
 function ViewClauseExpander({ quote, usingParentFallback, onViewInAgreement, card }) {
   if (!quote) return null;
   return (
-    <details data-testid="view-clause-expander">
-      <summary
-        className={`cursor-pointer select-none px-3.5 py-2.5 border-b border-[#E0E0E0] ${LAB_SM} hover:text-[#1F1F1F] flex items-center justify-between`}
-      >
-        <span>View clause</span>
-        {onViewInAgreement ? (
-          <button
-            type="button"
-            className="mtx-view-in-agreement"
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); onViewInAgreement(card); }}
-            data-testid="view-in-agreement"
-          >
-            View in agreement ↗
-          </button>
-        ) : null}
-      </summary>
+    <SeeProvisionDisclosure
+      as="div"
+      testId="view-clause-expander"
+      renderTrigger={({ toggle }) => (
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={toggle}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } }}
+          className={`cursor-pointer select-none px-3.5 py-2.5 border-b border-[#E0E0E0] ${LAB_SM} hover:text-[#1F1F1F] flex items-center justify-between`}
+        >
+          <span>View clause</span>
+          {onViewInAgreement ? (
+            <button
+              type="button"
+              className="mtx-view-in-agreement"
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onViewInAgreement(card); }}
+              data-testid="view-in-agreement"
+            >
+              View in agreement ↗
+            </button>
+          ) : null}
+        </div>
+      )}
+    >
       <div className="px-3.5 py-3">
         {usingParentFallback ? (
           <div className="text-[9.5px] text-[#9A9A9A] mb-1">Parent provision text (row-specific quote unavailable)</div>
@@ -885,7 +895,7 @@ function ViewClauseExpander({ quote, usingParentFallback, onViewInAgreement, car
           {quote}
         </div>
       </div>
-    </details>
+    </SeeProvisionDisclosure>
   );
 }
 

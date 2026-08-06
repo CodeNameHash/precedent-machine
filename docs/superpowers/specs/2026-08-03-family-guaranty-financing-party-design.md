@@ -410,7 +410,7 @@ after dated post-merge live-run handoffs (subscription CLI); until then
 the honest claim is "the machinery exists and is proven on committed
 fixtures".
 
-**Fixture placement:** `tests/fixtures/canonical-v2/guaranty-live-run/`
+**Fixture placement:** `tests/fixtures/canonical-v2/guaranty-fixtures/`
 (the forbidden-patterns exempt directory class). Fixture headers carry
 deal uuid + provision_card uuid + retrieval date + provision_type/
 subtype ONLY — never v1 `section_ref` label strings (the IOC lint pin;
@@ -822,7 +822,7 @@ fixture bytes, clearly labeled as the pre-rerun harness)
    NON-dispatchable delivery-rep witness `5a4426d5…` (financing-titled
    home, audit CRITICAL-3), and the cross-hit paragraph from `c9e0767d…`,
    committed as LITERAL production bytes under
-   `tests/fixtures/canonical-v2/guaranty-live-run/`, provenance headers
+   `tests/fixtures/canonical-v2/guaranty-fixtures/`, provenance headers
    with deal uuid + provision_card uuid + retrieval date +
    provision_type/subtype (mostly NULL subtypes — recorded truthfully) —
    NEVER v1 `section_ref` label strings. The five DEF duplicate rows

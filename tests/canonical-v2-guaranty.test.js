@@ -12,11 +12,20 @@ const {
 
 const scope = { start_utf8: 0, end_utf8: 200 };
 
-test('guaranty prompt preserves the positive-only and financing-source boundaries', () => {
+test('guaranty prompt preserves the positive-only and financing-party boundaries', () => {
   const prompt = buildGuarantyProducerPrompt({ source_text: 'Guaranty text', governed_scope: scope });
   assert.match(prompt.messages[0].content, /positive guaranty facts only/i);
   assert.match(prompt.messages[0].content, /Never infer no guaranty/i);
-  assert.match(prompt.messages[0].content, /financing-source protections/i);
+  // Financing-party protections route to financing_mechanics as exact evidence. V2 family
+  // vocabulary is FINANCING_PARTY; FINANCING_SOURCE stays the V1 taxonomy term.
+  assert.match(prompt.messages[0].content, /financing-party protections/i);
+  assert.match(prompt.messages[0].content, /FINANCING_PARTY_PROTECTION/);
+  // The surface label must never read as a governed legal code.
+  assert.match(prompt.messages[0].content, /routes evidence only and is not a governed legal code/i);
+  // The positive-only fence still bars every inferred negative and cap fact.
+  for (const barred of ['no default', 'an uncapped guaranty', 'a guaranty cap', 'payment-versus-collection']) {
+    assert.ok(prompt.messages[0].content.includes(barred), `${barred} must stay barred from inference`);
+  }
 });
 
 test('all three governed guaranty kinds require their own quoted corroboration', () => {

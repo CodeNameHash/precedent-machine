@@ -319,3 +319,17 @@ test('certified release import grammar contains exactly eight actions', () => {
   assert.doesNotMatch(body, /seven-action\s+top-level set/);
   assert.doesNotMatch(body, /An eighth action/);
 });
+
+test('P9 security and completion contracts retain production and policy non-authority boundaries', () => {
+  const body = contracts.replace(/\s+/g, ' ');
+  for (const required of [
+    '`P9_SECURITY_AUTH` is the production-access security prerequisite.',
+    'No Canonical V2 production credential may be issued or used, no inactive production import may start, and no production activation may occur before this gate passes.',
+    'This gate cannot issue a credential, import data, deploy code or activate a release.',
+    'It creates ProgrammeCompletionAttestation only after every predecessor gate other than `P9_TRACEABILITY` and `P9_PROGRAMME_COMPLETION_ATTESTATION` is formally `PASS`',
+    'The status validator then creates, but does not publish, one immutable proposed successor programme-status artefact',
+    'A request-supplied manifest, schema-valid policy or unselected OperationalPolicySet authorises nothing.',
+    '`CertificationPolicyManifest` references the exact frozen contract pair and OperationalPolicySet',
+    'A threshold or formula cannot be relaxed after seeing a failure without a separately reviewed and Ben-approved policy revision',
+  ]) assert.ok(body.includes(required), `P9 or policy authority boundary is missing: ${required}`);
+});

@@ -1,6 +1,6 @@
 # WP-SCHEMA P1 Phase Log
 
-Generated: 2026-08-03T19:03:15.807Z
+Generated: 2026-08-04T22:23:02.994Z
 
 Discovery commands embedded in `scripts/schema-inventory.js`:
 

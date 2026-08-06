@@ -1,4 +1,4 @@
-// Span accounting spec (docs/handoffs/SPAN-ACCOUNTING-SPEC-2026-07-18.md),
+// Span accounting spec (docs/archive/handoffs/SPAN-ACCOUNTING-SPEC-2026-07-18.md),
 // Part 3 (REPORT-ONLY) — lib/parser-v2/span-residual.js and validate.js's
 // computeSpanResidualReport wiring.
 const test = require('node:test');

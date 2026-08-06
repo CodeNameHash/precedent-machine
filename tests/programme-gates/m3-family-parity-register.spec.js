@@ -2,434 +2,440 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
 
 const {
   CURRENT_M3_FAMILY_PARITY_REGISTER,
   CURRENT_M3_FAMILY_PARITY_STATUS,
-  M3FamilyParityRegisterError,
+  REGISTER_SEMANTICS,
   SOURCE_KINDS,
-  STATUS_SCHEMA,
   buildM3FamilyParityStatus,
+  consumerExecutesAdapter,
+  isNativeSemanticCompletion,
+  legacyProductVisibility,
   listM3ProductParityBlockers,
+  liveProductVisibility,
   validateM3FamilyParityRegister,
-  validateM3FamilyParityStatus,
 } = require('../../lib/canonical-v2/native-producer/m3-family-parity-register');
-const { contentId } = require('../../lib/canonical-v2/canonical-bytes');
 
-const ROOT = path.resolve(__dirname, '../..');
-const EXPECTED_FAMILIES = Object.freeze([
-  'ANTITRUST_REGULATORY_EFFORTS',
-  'APPRAISAL_DISSENTERS_RIGHTS',
-  'CLOSING_CONDITIONS',
-  'CONSIDERATION',
-  'DIVIDENDS',
-  'DNO_INDEMNIFICATION',
-  'EMPLOYEE_MATTERS',
-  'FINANCING_COVENANTS',
-  'GUARANTY_FINANCING_PARTY',
-  'INTERIM_OPERATING_COVENANTS',
-  'KEY_DEFINED_TERMS',
-  'MAE_DEFINITION',
-  'MERGER_STRUCTURE_CLOSING',
-  'MISC_BOILERPLATE',
-  'NO_SHOP',
-  'PROXY_MEETING_COVENANTS',
-  'REPRESENTATIONS',
-  'SPECIFIC_PERFORMANCE_REMEDIES',
-  'TAX_MATTERS',
-  'TERMINATION_FEE',
-  'TERMINATION_RIGHTS',
-]);
+function family(id) {
+  return CURRENT_M3_FAMILY_PARITY_REGISTER.families.find((entry) => entry.family_id === id);
+}
 
-function allSurfaces(register) {
+function surface(id) {
   return [
-    ...register.families.flatMap((family) => family.product_surfaces),
-    ...register.supplemental_owners.flatMap((owner) => owner.product_surfaces),
-    ...register.unassigned_product_surfaces,
-  ];
+    ...CURRENT_M3_FAMILY_PARITY_REGISTER.families.flatMap((entry) => entry.product_surfaces),
+    ...CURRENT_M3_FAMILY_PARITY_REGISTER.supplemental_owners.flatMap((entry) => entry.product_surfaces),
+  ].find((entry) => entry.surface_id === id);
 }
 
-function completedRegister() {
-  const register = structuredClone(CURRENT_M3_FAMILY_PARITY_REGISTER);
-  register.unassigned_product_surfaces = [];
-  for (const family of register.families) {
-    for (const check of Object.values(family.wave_a.checks)) {
-      check.state = 'PASS';
-      check.evidence_paths = [family.design_path];
-    }
-    for (const surface of family.product_surfaces) {
-      surface.state = 'PASS';
-      surface.disposition = 'NATIVE_COMPLETE';
-      surface.evidence_paths = [surface.source_path];
-    }
-  }
-  for (const owner of register.supplemental_owners) {
-    owner.first_slice.state = 'PASS';
-    if (!owner.first_slice.evidence_paths.length) owner.first_slice.evidence_paths = [owner.ownership_path];
-    for (const surface of owner.product_surfaces) {
-      surface.state = 'PASS';
-      surface.disposition = 'NATIVE_COMPLETE';
-      surface.evidence_paths = [surface.source_path];
-    }
-  }
-  return register;
-}
-
-test('M3 parity register covers every Wave A family design and every product source kind', () => {
+test('V3 register validates every evidence path and expands the source-kind universe for compare fields', () => {
   validateM3FamilyParityRegister(CURRENT_M3_FAMILY_PARITY_REGISTER);
-  assert.deepEqual(
-    CURRENT_M3_FAMILY_PARITY_REGISTER.families.map((family) => family.family_id),
-    EXPECTED_FAMILIES,
-  );
-  assert.deepEqual(
-    [...new Set(allSurfaces(CURRENT_M3_FAMILY_PARITY_REGISTER)
-      .map((surface) => surface.source_kind))].sort(),
-    [...SOURCE_KINDS],
-  );
-  for (const family of CURRENT_M3_FAMILY_PARITY_REGISTER.families) {
-    assert.equal(family.wave_a.scope, 'FIRST_NATIVE_SLICE');
-    assert.ok(fs.existsSync(path.join(ROOT, family.design_path)), family.design_path);
-  }
-  assert.equal(CURRENT_M3_FAMILY_PARITY_REGISTER.supplemental_owners.length, 3);
+  assert.equal(CURRENT_M3_FAMILY_PARITY_REGISTER.schema, 'CANONICAL_V2_M3_FAMILY_PARITY_REGISTER/V3');
+  assert.deepEqual(CURRENT_M3_FAMILY_PARITY_REGISTER.semantics, REGISTER_SEMANTICS);
+  assert.ok(SOURCE_KINDS.includes('COMPARE_FIELD'));
+  assert.ok(surface('material-contracts-compare-field'));
+  assert.ok(surface('no-other-reps-compare-field'));
+  assert.ok(surface('general-covenants-compare-field'));
 });
 
-test('every registered product surface points to an existing source and an exact locator', () => {
-  for (const surface of allSurfaces(CURRENT_M3_FAMILY_PARITY_REGISTER)) {
-    const sourcePath = path.join(ROOT, surface.source_path);
-    assert.ok(fs.existsSync(sourcePath), `${surface.surface_id}: ${surface.source_path}`);
-    assert.ok(
-      fs.readFileSync(sourcePath, 'utf8').includes(surface.source_locator),
-      `${surface.surface_id}: locator ${surface.source_locator} is absent from ${surface.source_path}`,
-    );
-  }
+test('V3 separates approved scope from current visibility and never treats evidence-only material as semantic completion', () => {
+  const evidenceOnly = surface('consideration-election-summary');
+  assert.equal(evidenceOnly.disposition, 'EVIDENCE_ONLY');
+  assert.equal(liveProductVisibility(evidenceOnly), 'EVIDENCE_VISIBLE');
+  assert.equal(isNativeSemanticCompletion(evidenceOnly), false);
+
+  const retired = surface('tax-query-registry');
+  assert.equal(retired.disposition, 'APPROVED_RETIRED');
+  assert.equal(liveProductVisibility(retired), 'RETIRED_NOT_RENDERED');
+  assert.equal(isNativeSemanticCompletion(retired), true);
 });
 
-test('every review-v2 table configuration is assigned or recorded as an unassigned blocker', () => {
-  const source = fs.readFileSync(path.join(ROOT, 'components/review-v2/sectionList.js'), 'utf8');
-  const importedConfigPaths = [...source.matchAll(/from '\.\.\/review\/table-configs\/([^']+)'/g)]
-    .map((match) => `components/review/table-configs/${match[1]}.js`)
-    .filter((sourcePath) => sourcePath.endsWith('.config.js'));
-  const registeredPaths = new Set(allSurfaces(CURRENT_M3_FAMILY_PARITY_REGISTER)
-    .filter((surface) => surface.source_kind === 'RENDERED_ROW')
-    .map((surface) => surface.source_path));
-  assert.deepEqual(
-    [...new Set(importedConfigPaths.filter((sourcePath) => !registeredPaths.has(sourcePath)))],
-    [],
-  );
-});
+test('test-only and self-referential native proof are blocked from clearing product parity', () => {
+  const testOnly = surface('appraisal-governed-review');
+  assert.equal(liveProductVisibility(testOnly), 'NATIVE_UNVERIFIED');
+  assert.equal(isNativeSemanticCompletion(testOnly), false);
 
-test('approved retirement closes the final follow-on surface without hiding open product work', () => {
-  assert.ok(Object.isFrozen(CURRENT_M3_FAMILY_PARITY_REGISTER.families[0].wave_a.checks));
-  assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.state, 'FAMILY_COMPLETE');
-  assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.family_states.length, 21);
-  assert.equal(
-    CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
-      (family) => family.family_id === 'NO_SHOP',
-    ).completion_state,
-    'FAMILY_COMPLETE',
-  );
-  assert.equal(
-    CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
-      (family) => family.family_id === 'MAE_DEFINITION',
-    ).completion_state,
-    'FAMILY_COMPLETE',
-  );
-  assert.equal(
-    CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
-      (family) => family.family_id === 'PROXY_MEETING_COVENANTS',
-    ).completion_state,
-    'FAMILY_COMPLETE',
-  );
-  assert.equal(
-    CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
-      (family) => family.family_id === 'ANTITRUST_REGULATORY_EFFORTS',
-    ).completion_state,
-    'FAMILY_COMPLETE',
-  );
-  const consideration = CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
-    (family) => family.family_id === 'CONSIDERATION',
-  );
-  assert.equal(consideration.completion_state, 'FAMILY_COMPLETE');
-  assert.ok(CURRENT_M3_FAMILY_PARITY_STATUS.family_states.every(
-    (family) => family.completion_state === 'FAMILY_COMPLETE',
-  ));
-  for (const familyId of [
-    'TERMINATION_FEE',
-    'TERMINATION_RIGHTS',
-  ]) {
-    assert.equal(
-      CURRENT_M3_FAMILY_PARITY_STATUS.family_states.find(
-        (family) => family.family_id === familyId,
-      ).completion_state,
-      'FAMILY_COMPLETE',
-    );
-  }
-  assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.unassigned_product_surface_ids.length, 0);
-  assert.deepEqual(
-    CURRENT_M3_FAMILY_PARITY_REGISTER.supplemental_owners.map((owner) => owner.first_slice.state),
-    ['PASS', 'PASS', 'PASS'],
-  );
-
-  const waveAOnly = completedRegister();
-  waveAOnly.families[0].product_surfaces[0].state = 'OPEN';
-  waveAOnly.families[0].product_surfaces[0].disposition = 'FOLLOW_ON_REQUIRED';
-  waveAOnly.families[0].product_surfaces[0].evidence_paths = [];
-  const waveAOnlyStatus = buildM3FamilyParityStatus(waveAOnly);
-  assert.equal(waveAOnlyStatus.state, 'BLOCKED');
-  assert.equal(waveAOnlyStatus.family_states[0].completion_state, 'FOLLOW_ON_OPEN');
-
-  const complete = buildM3FamilyParityStatus(completedRegister());
-  assert.equal(complete.state, 'FAMILY_COMPLETE');
-  assert.ok(complete.family_states.every((family) => family.completion_state === 'FAMILY_COMPLETE'));
-});
-
-test('recorded Proxy and Meeting rulings are implemented on the exact adopted follow-on surfaces', () => {
-  const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
-    (entry) => entry.family_id === 'PROXY_MEETING_COVENANTS',
-  );
-  assert.deepEqual(
-    family.product_surfaces
-      .filter((surface) => surface.surface_id.startsWith('proxy-') && surface.source_kind === 'SIDE_TABLE')
-      .map((surface) => surface.surface_id),
-    [
-      'proxy-record-date-broker-search-presence',
-      'proxy-parent-merger-sub-approval-split',
-      'proxy-adjournment-grounded-reasons',
-    ],
-  );
-  assert.ok(family.product_surfaces
-    .filter((surface) => surface.source_kind === 'SIDE_TABLE')
-    .every((surface) => surface.state === 'PASS' && surface.disposition === 'NATIVE_COMPLETE'));
-});
-
-test('approved retirement leaves no M3 family-parity blocker', () => {
   const blockers = listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER);
-  assert.deepEqual(blockers, []);
-  assert.deepEqual(listM3ProductParityBlockers(completedRegister()), []);
+  assert.ok(blockers.some((entry) => entry.surface_id === 'appraisal-governed-review'));
+  assert.ok(!blockers.some((entry) => entry.surface_id === 'consideration-election-summary'));
+  assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.state, 'BLOCKED');
 });
 
-test('Consideration Wave A is native and its remaining mechanics are exact evidence-only products', () => {
-  const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
-    (entry) => entry.family_id === 'CONSIDERATION',
-  );
-  assert.equal(family.wave_a.checks.fixture_proof.state, 'PASS');
-  assert.ok(family.wave_a.checks.fixture_proof.evidence_paths.includes('tests/canonical-v2-consideration-ioc-product-parity.test.js'));
-  assert.ok(Object.values(family.wave_a.checks).every((check) => check.state === 'PASS'));
-  for (const surfaceId of [
-    'consideration-rendered-rows',
-    'consideration-market-fields',
-    'consideration-query-fields',
-  ]) {
-    const surface = family.product_surfaces.find((entry) => entry.surface_id === surfaceId);
-    assert.equal(surface.state, 'PASS');
-    assert.equal(surface.disposition, 'NATIVE_COMPLETE');
-    assert.ok(surface.evidence_paths.includes('lib/canonical-v2/consideration-wave-a-product-projection.js'));
-  }
-  for (const surfaceId of [
-    'equity-awards-rendered-rows', 'consideration-side-tables',
-    'consideration-election-summary', 'consideration-election-deadline',
-    'consideration-wave-b-market-fields', 'consideration-equity-market-fields',
-    'consideration-wave-b-query-fields',
-  ]) {
-    const surface = family.product_surfaces.find((entry) => entry.surface_id === surfaceId);
-    assert.equal(surface.state, 'PASS');
-    assert.equal(surface.disposition, 'EVIDENCE_ONLY');
-    assert.ok(surface.evidence_paths.includes('lib/canonical-v2/consideration-ioc-evidence-product-projection.js'));
-  }
-});
+// Ruling 2 (Ben, 2026-08-05). Proof must resolve the complete specifier to the exact
+// repository path and to the exported symbol actually executed.
+test('ruling 2: consumer proof resolves the exact path and executed export, never a basename', () => {
+  const covenants = 'components/review/table-configs/general-covenants.config.js';
+  const realAdapter = 'lib/canonical-v2/p0-product-surface-routing.js';
 
-test('IOC governed presence claims pass while long-tail mechanics remain exact evidence-only', () => {
-  const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
-    (entry) => entry.family_id === 'INTERIM_OPERATING_COVENANTS',
-  );
-  assert.equal(family.wave_a.checks.fixture_proof.state, 'PASS');
-  assert.ok(family.wave_a.checks.fixture_proof.evidence_paths.includes('tests/canonical-v2-consideration-ioc-product-parity.test.js'));
-  assert.ok(Object.values(family.wave_a.checks).every((check) => check.state === 'PASS'));
-  for (const surfaceId of ['ioc-rendered-rows', 'ioc-market-fields', 'ioc-query-fields']) {
-    const surface = family.product_surfaces.find((entry) => entry.surface_id === surfaceId);
-    assert.equal(surface.state, 'PASS');
-    assert.equal(surface.disposition, 'NATIVE_COMPLETE');
-    assert.ok(surface.evidence_paths.includes('lib/canonical-v2/ioc-wave-a-product-projection.js'));
-  }
-  for (const surfaceId of [
-    'ioc-remaining-rendered-mechanics',
-    'ioc-remaining-compare-mechanics',
-    'ioc-remaining-query-mechanics',
-  ]) {
-    const surface = family.product_surfaces.find((entry) => entry.surface_id === surfaceId);
-    assert.equal(surface.state, 'PASS');
-    assert.equal(surface.disposition, 'EVIDENCE_ONLY');
-    assert.ok(surface.evidence_paths.includes('lib/canonical-v2/consideration-ioc-evidence-product-projection.js'));
-  }
-});
+  // Real pair: the config imports the adapter and destructures two of its exports.
+  assert.equal(consumerExecutesAdapter(covenants, realAdapter), true);
 
-test('approved Key Defined Terms have complete bounded lexical evidence', () => {
-  const keyTerms = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
-    (family) => family.family_id === 'KEY_DEFINED_TERMS',
-  );
-  const mae = CURRENT_M3_FAMILY_PARITY_REGISTER.families.find(
-    (family) => family.family_id === 'MAE_DEFINITION',
-  );
-  assert.ok(keyTerms.product_surfaces.every(
-    (surface) => surface.state === 'PASS' && surface.disposition === 'NATIVE_COMPLETE',
-  ));
-  assert.ok(mae.product_surfaces.every(
-    (surface) => surface.state === 'PASS' && surface.disposition === 'NATIVE_COMPLETE',
-  ));
-  assert.equal(keyTerms.wave_a.checks.resolver.state, 'PASS');
-  assert.equal(keyTerms.wave_a.checks.lexical_net.state, 'PASS');
-  assert.ok(keyTerms.wave_a.checks.resolver.evidence_paths.includes(
-    'lib/canonical-v2/native-producer/candidate-resolution.js',
-  ));
-  assert.ok(Object.values(mae.wave_a.checks).every((check) => check.state === 'PASS'));
-});
+  // Same basename, different directory, and no such file. Basename matching would have
+  // accepted this; exact specifier resolution must not.
+  assert.equal(consumerExecutesAdapter(covenants, 'lib/p0-product-surface-routing.js'), false);
 
-test('the defined-term disposition audit covers every recurring production population', () => {
-  const audit = fs.readFileSync(
-    path.join(ROOT, 'docs/codex-program/m3-defined-term-disposition-audit-2026-08-03.md'),
-    'utf8',
-  );
-  for (const subtype of [
-    'DEF-GENERAL', 'DEF-EQUITYAWARD', 'DEF-LAW', 'DEF-GOVAUTH', 'DEF-CONTRACT',
-    'DEF-BENEFITPLAN', 'DEF-INDEBTEDNESS', 'DEF-MERGERCONSID', 'DEF-INTERP',
-    'DEF-AFFILIATE', 'DEF-SUBSIDIARY', 'DEF-MAE', 'DEF-PERSON', 'DEF-TAX',
-    'DEF-DISCLOSURELETTER', 'DEF-COMPANYEMPLOYEE', 'DEF-ACQPROPOSAL', 'DEF-PERMIT',
-    'DEF-COMPANY', 'DEF-REQUIREDAPPROVAL', 'DEF-REPRESENTATIVE', 'DEF-BUSINESSDAY',
-    'DEF-TAXRETURN', 'DEF-SUPERIOR', 'DEF-KNOWLEDGE', 'DEF-PERMITLIEN', 'DEF-LIEN',
-    'DEF-MATCONTRACT', 'DEF-WILLFUL', 'DEF-INTERVENING', 'NOSOL-SUPERIOR',
-    'NOSOL-ACQPROPOSAL', 'DEF-MADE-AVAILABLE', 'DEF-DISSENTING', 'NOSOL-INTERVENING',
-    'REP-T-TAX', 'DEF-ORDINARY',
-  ]) {
-    assert.match(audit, new RegExp(`\\b${subtype.replaceAll('-', '\\-')}\\b`));
-  }
-  assert.match(audit, /5,731 cards/);
-  assert.match(audit, /Concept scope is not approved/);
-});
-
-test('a rehashed blocked label cannot contradict complete family state', () => {
-  const forged = structuredClone(CURRENT_M3_FAMILY_PARITY_STATUS);
-  forged.state = 'BLOCKED';
-  const { m3_family_parity_status_id: _oldId, ...body } = forged;
-  forged.m3_family_parity_status_id = contentId(STATUS_SCHEMA, body);
-  assert.throws(
-    () => validateM3FamilyParityStatus(forged),
-    (error) => error instanceof M3FamilyParityRegisterError
-      && error.code === 'INVALID_PARITY_STATUS',
-  );
-});
-
-test('an open follow-on cannot be relabelled PASS and PASS requires evidence', () => {
-  const openAsPass = completedRegister();
-  const openSurface = openAsPass.families[0].product_surfaces[0];
-  openSurface.state = 'OPEN';
-  openSurface.disposition = 'FOLLOW_ON_REQUIRED';
-  openSurface.evidence_paths = [];
-  openSurface.state = 'PASS';
-  openSurface.evidence_paths = [openSurface.source_path];
-  assert.throws(
-    () => validateM3FamilyParityRegister(openAsPass),
-    (error) => error instanceof M3FamilyParityRegisterError
-      && error.code === 'OPEN_FOLLOW_ON_CANNOT_PASS',
-  );
-
-  const noEvidence = completedRegister();
-  noEvidence.families[0].product_surfaces[0].evidence_paths = [];
-  assert.throws(
-    () => validateM3FamilyParityRegister(noEvidence),
-    (error) => error instanceof M3FamilyParityRegisterError
-      && error.code === 'UNSUPPORTED_PARITY_PASS',
-  );
-});
-
-test('the M3 register has no production-import or cutover authority', () => {
-  const source = JSON.stringify(CURRENT_M3_FAMILY_PARITY_REGISTER);
-  assert.doesNotMatch(source, /PRODUCTION_IMPORT|PRODUCTION_CUTOVER|M4_PRE_CUTOVER/);
-});
-
-test('Antitrust is complete once the real litigation quote coverage map is committed', () => {
-  const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families
-    .find((entry) => entry.family_id === 'ANTITRUST_REGULATORY_EFFORTS');
-  assert.equal(family.wave_a.checks.fixture_proof.state, 'PASS');
-  assert.ok(family.wave_a.checks.fixture_proof.evidence_paths.includes('tests/fixtures/canonical-v2/antitrust-regulatory-live-run/coverage-map.json'));
-  assert.ok(family.product_surfaces.every((surface) => surface.state === 'PASS'));
+  // A module the consumer never imports.
   assert.equal(
-    CURRENT_M3_FAMILY_PARITY_STATUS.family_states
-      .find((entry) => entry.family_id === family.family_id).completion_state,
-    'FAMILY_COMPLETE',
+    consumerExecutesAdapter(covenants, 'lib/canonical-v2/no-other-reps-fraud-product-projection.js'),
+    false,
   );
+
+  // Test-only and docs paths can never be serving consumers.
+  assert.equal(consumerExecutesAdapter('tests/canonical-v2-guaranty.test.js', realAdapter), false);
+
+  // Other genuinely served pairs still resolve, so the stricter rule did not over-fence.
+  assert.equal(consumerExecutesAdapter(
+    'components/review/table-configs/sec-meeting.config.js',
+    'lib/canonical-v2/proxy-meeting-product-coverage.js',
+  ), true);
+  assert.equal(consumerExecutesAdapter(
+    'components/review/table-configs/termination-fees.config.js',
+    'lib/termf.js',
+  ), true);
 });
 
-test('Financing Covenants and Guaranty are fully governed while their follow-on surfaces remain separately recorded', () => {
-  for (const familyId of ['FINANCING_COVENANTS', 'GUARANTY_FINANCING_PARTY']) {
-    const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families
-      .find((entry) => entry.family_id === familyId);
-    assert.ok(family, familyId);
-    assert.ok(family.product_surfaces.every((surface) => (
-      surface.state === 'PASS' && surface.disposition === 'NATIVE_COMPLETE'
-    )));
-    assert.equal(family.wave_a.checks.producer.state, 'PASS');
-    assert.equal(family.wave_a.checks.fixture_proof.state, 'PASS');
-    assert.equal(family.wave_a.checks.lexical_net.state, 'PASS');
-    assert.equal(family.wave_a.checks.registry.state, 'PASS');
-    assert.equal(family.wave_a.checks.resolver.state, 'PASS');
-    assert.equal(
-      CURRENT_M3_FAMILY_PARITY_STATUS.family_states
-        .find((entry) => entry.family_id === familyId).completion_state,
-      'FAMILY_COMPLETE',
-    );
-  }
-});
-
-test('Tax Matters, Dividends and Appraisal product parity closes with adjacent-owner surfaces retired', () => {
-  const expectedRetired = {
-    APPRAISAL_DISSENTERS_RIGHTS: [
-      'appraisal-condition-row', 'appraisal-consideration-row', 'appraisal-query-intent',
+// Ruling 1 (Ben, 2026-08-05). Every named adapter needs its own proof; only an express
+// ALTERNATIVES marking accepts one.
+test('ruling 1: a surface naming several adapters needs proof for each one', () => {
+  const base = {
+    surface_id: 'ruling-1-probe',
+    source_kind: 'RENDERED_ROW',
+    source_path: 'components/review/table-configs/general-covenants.config.js',
+    source_locator: 'generalCovenantsConfig',
+    state: 'PASS',
+    disposition: 'NATIVE_COMPLETE',
+    wave: 'FOLLOW_ON',
+    evidence_paths: [
+      'components/review/table-configs/general-covenants.config.js',
+      'lib/canonical-v2/p0-product-surface-routing.js',
+      'lib/canonical-v2/no-other-reps-fraud-product-projection.js',
     ],
-    DIVIDENDS: ['dividends-generic-ioc-row', 'dividends-query-registry'],
-    TAX_MATTERS: ['tax-generic-covenant-row', 'tax-query-registry', 'tax-withholding-market-field'],
   };
-  for (const [familyId, retiredIds] of Object.entries(expectedRetired)) {
-    const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families
-      .find((entry) => entry.family_id === familyId);
-    assert.ok(family, familyId);
-    assert.ok(family.product_surfaces.every((surface) => surface.state === 'PASS'));
-    assert.deepEqual(
-      family.product_surfaces
-        .filter((surface) => surface.disposition === 'APPROVED_RETIRED')
-        .map((surface) => surface.surface_id)
-        .sort(),
-      retiredIds,
-    );
-    assert.ok(family.product_surfaces.some((surface) => surface.disposition === 'NATIVE_COMPLETE'));
-    assert.equal(
-      CURRENT_M3_FAMILY_PARITY_STATUS.family_states
-        .find((entry) => entry.family_id === familyId).completion_state,
-      'FAMILY_COMPLETE',
+
+  // One adapter is genuinely consumed, the other is not. Default is fail closed.
+  assert.equal(liveProductVisibility(base), 'NATIVE_UNVERIFIED');
+  assert.equal(isNativeSemanticCompletion(base), false);
+
+  // The express marking accepts the single proven adapter, and the proven consumer is
+  // reachable from a served review route, so it reads as visible.
+  const alternatives = { ...base, adapter_set: 'ALTERNATIVES' };
+  assert.equal(liveProductVisibility(alternatives), 'NATIVE_VISIBLE');
+  assert.equal(isNativeSemanticCompletion(alternatives), true);
+
+  // Dropping the unproven adapter leaves a single required adapter, which is proven.
+  const single = { ...base, evidence_paths: base.evidence_paths.slice(0, 2) };
+  assert.equal(liveProductVisibility(single), 'NATIVE_VISIBLE');
+
+  // Only the express value is accepted by the register contract.
+  const forged = structuredClone(CURRENT_M3_FAMILY_PARITY_REGISTER);
+  forged.families[0].product_surfaces[0].adapter_set = 'ANY_ONE';
+  assert.throws(() => validateM3FamilyParityRegister(forged), (error) => (
+    error.code === 'INVALID_PARITY_REGISTER'
+  ));
+});
+
+// An adversarial audit found that naming any proven adapter/consumer pair in
+// evidence_paths used to clear any surface, because the required set was replaced rather
+// than bound to the surface. 59 of 104 blockers were clearable by a register-only edit.
+test('a proven adapter and consumer pair from elsewhere cannot clear an unrelated surface', () => {
+  const everySurface = [
+    ...CURRENT_M3_FAMILY_PARITY_REGISTER.families.flatMap((entry) => entry.product_surfaces),
+    ...CURRENT_M3_FAMILY_PARITY_REGISTER.supplemental_owners.flatMap((entry) => entry.product_surfaces),
+  ];
+  // lib/canonical-v2/feature-flags.js is genuinely executed by pages/index.js, so this is
+  // a real proven pair. It is unrelated to any of these surfaces and must prove nothing.
+  const skeletonKey = ['lib/canonical-v2/feature-flags.js', 'pages/index.js'];
+
+  let attacked = 0;
+  for (const surface of everySurface) {
+    const before = liveProductVisibility(surface);
+    if (before !== 'NATIVE_UNVERIFIED' && before !== 'NOT_VISIBLE') continue;
+    attacked += 1;
+    for (const evidencePaths of [[...surface.evidence_paths, ...skeletonKey], [...skeletonKey]]) {
+      const forged = { ...structuredClone(surface), evidence_paths: evidencePaths };
+      assert.equal(
+        isNativeSemanticCompletion(forged),
+        false,
+        `${surface.surface_id} was cleared by an unrelated proven pair`,
+      );
+    }
+  }
+  assert.ok(attacked >= 100, `expected the whole blocker inventory to be attacked, got ${attacked}`);
+});
+
+test('a page behind the design route guard is not a served entry point', () => {
+  // pages/design/* answers notFound in production, so it must not lend serving proof.
+  const guarded = {
+    surface_id: 'design-entry-probe',
+    source_kind: 'RENDERED_ROW',
+    source_path: 'pages/design/canonical-v2.js',
+    source_locator: 'contentId',
+    state: 'PASS',
+    disposition: 'NATIVE_COMPLETE',
+    wave: 'FOLLOW_ON',
+    evidence_paths: ['pages/design/canonical-v2.js', 'lib/canonical-v2/query-result.js'],
+  };
+  assert.equal(liveProductVisibility(guarded), 'NATIVE_INTEGRATED_NOT_SERVED');
+  assert.equal(isNativeSemanticCompletion(guarded), false);
+});
+
+test('an import into a contained route proves integration, not serving', () => {
+  // pages/api/query/* answer the 503 ROUTE_CONTAINED handler, so lib/query/ derivations
+  // reach no user even though lib/query/natural-language.js really does require them.
+  const queryDerived = surface('termination-fee-query-derived-values');
+  assert.equal(queryDerived.state, 'PASS');
+  assert.equal(queryDerived.disposition, 'APPROVED_DERIVED');
+  assert.equal(liveProductVisibility(queryDerived), 'DERIVED_INTEGRATED_NOT_SERVED');
+  assert.equal(isNativeSemanticCompletion(queryDerived), false);
+  assert.ok(listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER)
+    .some((entry) => entry.surface_id === 'termination-fee-query-derived-values'));
+
+  // The same disposition still reads as visible when a served route reaches the consumer.
+  for (const servedId of ['proxy-render-derived-deadlines', 'termination-fee-render-derived-values']) {
+    assert.equal(liveProductVisibility(surface(servedId)), 'DERIVED_VISIBLE');
+    assert.equal(isNativeSemanticCompletion(surface(servedId)), true);
+  }
+
+  // A NATIVE_COMPLETE claim proved only by an unserved consumer is downgraded the same way.
+  const forged = structuredClone(queryDerived);
+  forged.disposition = 'NATIVE_COMPLETE';
+  assert.equal(liveProductVisibility(forged), 'NATIVE_INTEGRATED_NOT_SERVED');
+  assert.equal(isNativeSemanticCompletion(forged), false);
+});
+
+test('a test-only product projection cannot prove that a live legacy surface serves native V2 output', () => {
+  const representationRows = surface('target-representations-rendered-rows');
+  assert.equal(representationRows.state, 'OPEN');
+  assert.equal(representationRows.disposition, 'FOLLOW_ON_REQUIRED');
+  assert.equal(liveProductVisibility(representationRows), 'NOT_VISIBLE');
+  assert.equal(
+    legacyProductVisibility(representationRows, CURRENT_M3_FAMILY_PARITY_REGISTER),
+    'LIVE_LEGACY_CARD_FEATURES',
+  );
+
+  const forged = structuredClone(representationRows);
+  forged.state = 'PASS';
+  forged.disposition = 'NATIVE_COMPLETE';
+  assert.equal(liveProductVisibility(forged), 'NATIVE_UNVERIFIED');
+  assert.equal(isNativeSemanticCompletion(forged), false);
+});
+
+test('all downgraded surfaces retain explicit live-legacy support without claiming native V2 completion', () => {
+  for (const surfaceId of [
+    'target-representations-rendered-rows',
+    'parent-representations-rendered-rows',
+    'representations-market-fields',
+    'representations-query-fields',
+    'representations-compare-side-table',
+    'assigned-material-contracts',
+    'material-contracts-query-compare',
+    'material-contracts-market-fields',
+    'assigned-no-other-reps-fraud',
+    'assigned-general-covenants',
+    'general-covenants-query-compare',
+    'general-covenants-market-fields',
+  ]) {
+    const entry = surface(surfaceId);
+    assert.equal(entry.state, 'OPEN', surfaceId);
+    assert.equal(entry.disposition, 'FOLLOW_ON_REQUIRED', surfaceId);
+    assert.notEqual(
+      legacyProductVisibility(entry, CURRENT_M3_FAMILY_PARITY_REGISTER),
+      'NO_LEGACY_SUPPORT',
+      surfaceId,
     );
   }
 });
 
-test('Merger Structure and Closing Mechanics product parity is native-complete with transaction steps distinct', () => {
-  const family = CURRENT_M3_FAMILY_PARITY_REGISTER.families
-    .find((entry) => entry.family_id === 'MERGER_STRUCTURE_CLOSING');
-  assert.ok(family);
-  assert.ok(family.product_surfaces.every((surface) => (
-    surface.state === 'PASS' && surface.disposition === 'NATIVE_COMPLETE'
-  )));
-  const transactionSteps = family.product_surfaces
-    .find((surface) => surface.surface_id === 'structure-transaction-steps');
-  assert.equal(transactionSteps.source_kind, 'SIDE_TABLE');
-  assert.equal(transactionSteps.source_path, 'pages/api/provisions.js');
-  assert.equal(family.wave_a.checks.producer.state, 'PASS');
-  assert.equal(family.wave_a.checks.registry.state, 'PASS');
-  assert.equal(family.wave_a.checks.fixture_proof.state, 'PASS');
-  assert.equal(family.wave_a.checks.lexical_net.state, 'PASS');
-  assert.equal(family.wave_a.checks.resolver.state, 'PASS');
-  assert.equal(
-    CURRENT_M3_FAMILY_PARITY_STATUS.family_states
-      .find((entry) => entry.family_id === family.family_id).completion_state,
-    'FAMILY_COMPLETE',
-  );
+test('corrected production locators still cannot clear parity without a real product consumer', () => {
+  const financing = surface('financing-rendered-rows');
+  const guaranty = surface('guaranty-market-classifier');
+  assert.equal(financing.source_locator, 'financingCooperationPresent');
+  assert.equal(guaranty.source_locator, 'thirdPartyBeneficiaryTypes');
+  // Locators resolve, but no non-test product file imports the exact V2 projector
+  // cited as evidence -- a correct locator is not native serving proof.
+  assert.equal(liveProductVisibility(financing), 'NATIVE_UNVERIFIED');
+  assert.equal(liveProductVisibility(guaranty), 'NATIVE_UNVERIFIED');
+  assert.equal(isNativeSemanticCompletion(financing), false);
+  assert.equal(isNativeSemanticCompletion(guaranty), false);
+
+  const invalid = structuredClone(financing);
+  invalid.source_locator = 'definitelyAbsent';
+  assert.equal(liveProductVisibility(invalid), 'LOCATOR_UNVERIFIED');
+  assert.equal(isNativeSemanticCompletion(invalid), false);
+});
+
+test('approved no-shop concepts are promoted from review hold to owner-approved family surfaces', () => {
+  // Owner ruling, 2026-08-05: NOSOL-CEASE, NOSOL-RECOMMEND, NOSOL-ENFORCE
+  // and NOSOL-WAIVER are all approved. This register records approval the
+  // same way it records every other product surface's approved scope: a
+  // real disposition (semantics.disposition_field is literally
+  // APPROVED_SCOPE_DISPOSITION) inside a family's product_surfaces, not a
+  // bare surface_id parked in unassigned_product_surfaces with no
+  // disposition field at all. So approval means promotion out of
+  // unassigned_product_surfaces (and out of review_hold_ids) and into the
+  // NO_SHOP family's product_surfaces, not a relabelled reason string.
+  const unassigned = CURRENT_M3_FAMILY_PARITY_REGISTER.unassigned_product_surfaces;
+  for (const surfaceId of [
+    'nosol-cease-retained', 'nosol-enforce-retained', 'nosol-recommend-retained', 'nosol-waiver-retained',
+  ]) {
+    assert.ok(!unassigned.some((entry) => entry.surface_id === surfaceId), `${surfaceId} must no longer be unassigned`);
+    assert.ok(!CURRENT_M3_FAMILY_PARITY_STATUS.review_hold_ids.includes(surfaceId), surfaceId);
+    const promoted = surface(surfaceId);
+    assert.ok(promoted, `${surfaceId} must be a registered product surface`);
+    assert.equal(promoted.disposition, 'EVIDENCE_ONLY');
+    assert.equal(promoted.state, 'PASS');
+    assert.equal(promoted.wave, 'FOLLOW_ON');
+  }
+  assert.equal(surface('nosol-cease-retained').source_locator, 'ROWS');
+  assert.equal(surface('nosol-enforce-retained').source_locator, 'ROWS');
+  assert.equal(surface('nosol-waiver-retained').source_locator, 'nosolSectionConfig');
+  assert.equal(surface('nosol-recommend-retained').source_locator, 'nosolFiduciaryConfig');
+});
+
+test('decision records are evidence, not product-serving source paths', () => {
+  for (const surfaceId of [
+    'proxy-record-date-broker-search-presence',
+    'proxy-parent-merger-sub-approval-split',
+    'proxy-adjournment-grounded-reasons',
+  ]) {
+    const entry = surface(surfaceId);
+    assert.equal(entry.source_path, 'components/review/table-configs/votes-approvals-meeting.config.js');
+    assert.equal(entry.disposition, 'EVIDENCE_ONLY');
+  }
+});
+
+test('the complete supplemental-owner inventory is registered and its unbuilt surfaces remain visible blockers', () => {
+  const owner = (id) => CURRENT_M3_FAMILY_PARITY_REGISTER.supplemental_owners
+    .find((entry) => entry.owner_id === id);
+  assert.equal(owner('MATERIAL_CONTRACTS').product_surfaces.length, 8);
+  assert.equal(owner('NO_OTHER_REPS_FRAUD').product_surfaces.length, 7);
+  assert.equal(owner('GENERAL_COVENANT_ROUTER').product_surfaces.length, 7);
+  for (const surfaceId of [
+    'material-contracts-serving-registry',
+    'no-other-reps-abry-derived',
+    'general-covenants-semantic-market',
+  ]) {
+    assert.equal(surface(surfaceId).state, 'OPEN');
+    assert.equal(surface(surfaceId).disposition, 'FOLLOW_ON_REQUIRED');
+  }
+});
+
+test('indirect table configurations and the two permanently-bounded no-shop claims remain explicit review holds', () => {
+  const unassigned = CURRENT_M3_FAMILY_PARITY_REGISTER.unassigned_product_surfaces;
+  for (const surfaceId of [
+    'indirect-advisers-fees-expenses-config',
+    'indirect-approvals-votes-config',
+    'indirect-conditions-m-config',
+    'nosol-superior-native-claim',
+    'nosol-intervening-native-claim',
+  ]) {
+    assert.ok(unassigned.some((entry) => entry.surface_id === surfaceId), surfaceId);
+  }
+  // The four owner-approved concepts are gone from this list entirely --
+  // see "approved no-shop concepts are promoted..." above. Only the two
+  // NOSOL-SUPERIOR / NOSOL-INTERVENING claims, which the owner did not rule
+  // on, stay parked as permanently-bounded evidence.
+  for (const surfaceId of [
+    'nosol-cease-retained', 'nosol-enforce-retained', 'nosol-recommend-retained', 'nosol-waiver-retained',
+  ]) {
+    assert.ok(!unassigned.some((entry) => entry.surface_id === surfaceId), surfaceId);
+  }
+  assert.ok(unassigned
+    .filter((entry) => entry.surface_id.endsWith('-native-claim'))
+    .every((entry) => entry.reason === 'UNSUPPORTED_NATIVE_CLAIM_DOWNGRADED_TO_BOUNDED_EVIDENCE'));
+});
+
+test('V3 status cannot be forged to complete while any visibility blocker remains', () => {
+  const forged = structuredClone(CURRENT_M3_FAMILY_PARITY_REGISTER);
+  forged.unassigned_product_surfaces = [];
+  const status = buildM3FamilyParityStatus(forged);
+  assert.equal(status.state, 'BLOCKED');
+  assert.ok(status.family_states.some((entry) => entry.completion_state === 'FOLLOW_ON_OPEN'));
+  assert.ok(family('NO_SHOP'));
+});
+
+test('hostile: Antitrust NATIVE_COMPLETE claims citing only the legacy card config are rejected', () => {
+  for (const surfaceId of [
+    'antitrust-rendered-rows',
+    'antitrust-market-fields',
+    'antitrust-render-derived-withdrawal',
+    'antitrust-v1-terminal-dispositions',
+  ]) {
+    const entry = surface(surfaceId);
+    assert.equal(entry.state, 'PASS', surfaceId);
+    assert.equal(entry.disposition, 'NATIVE_COMPLETE', surfaceId);
+    assert.equal(liveProductVisibility(entry), 'NATIVE_UNVERIFIED', surfaceId);
+    assert.equal(isNativeSemanticCompletion(entry), false, surfaceId);
+  }
+});
+
+test('hostile: MAE definition NATIVE_COMPLETE claims citing only the legacy card config are rejected', () => {
+  for (const surfaceId of ['mae-rendered-rows', 'mae-market-fields', 'mae-display-maps']) {
+    const entry = surface(surfaceId);
+    assert.equal(entry.state, 'PASS', surfaceId);
+    assert.equal(entry.disposition, 'NATIVE_COMPLETE', surfaceId);
+    assert.equal(liveProductVisibility(entry), 'NATIVE_UNVERIFIED', surfaceId);
+    assert.equal(isNativeSemanticCompletion(entry), false, surfaceId);
+  }
+});
+
+test('hostile: Termination Fee and Termination Rights NATIVE_COMPLETE claims omit a real consumer of any V2 projector', () => {
+  for (const surfaceId of [
+    'termination-fee-rendered-rows',
+    'tail-fee-rendered-rows',
+    'termination-fee-market-fields',
+    'termination-fee-query-fields',
+    'termination-rights-rendered-rows',
+    'termination-rights-market-fields',
+    'termination-rights-query-fields',
+  ]) {
+    const entry = surface(surfaceId);
+    assert.equal(entry.state, 'PASS', surfaceId);
+    assert.equal(entry.disposition, 'NATIVE_COMPLETE', surfaceId);
+    assert.equal(liveProductVisibility(entry), 'NATIVE_UNVERIFIED', surfaceId);
+    assert.equal(isNativeSemanticCompletion(entry), false, surfaceId);
+  }
+});
+
+test('hostile: a legacy transaction_steps side table with a matching string code is not native serving proof', () => {
+  const forged = {
+    surface_id: 'hostile-legacy-transaction-steps',
+    source_kind: 'SIDE_TABLE',
+    source_path: 'pages/api/provisions.js',
+    source_locator: 'transaction_steps',
+    wave: 'FOLLOW_ON',
+    state: 'PASS',
+    disposition: 'NATIVE_COMPLETE',
+    evidence_paths: ['pages/api/provisions.js', 'tests/canonical-v2-merger-structure-product-projection.test.js'],
+  };
+  assert.equal(liveProductVisibility(forged), 'NATIVE_UNVERIFIED');
+  assert.equal(isNativeSemanticCompletion(forged), false);
+});
+
+test('hostile: internal canonical-v2 self-citations and governance documents cannot substitute for a real product consumer', () => {
+  // lib/canonical-v2/decision-reconciliation-proposal.js really does import
+  // antitrust-product-projection.js, and the parity register JSON really does
+  // describe the surface -- neither is a product-serving file, so citing them
+  // as evidence must not manufacture proof.
+  const forged = {
+    ...structuredClone(surface('antitrust-rendered-rows')),
+    evidence_paths: [
+      'lib/canonical-v2/antitrust-product-projection.js',
+      'lib/canonical-v2/decision-reconciliation-proposal.js',
+      'docs/codex-program/m3-family-parity-register.json',
+    ],
+  };
+  assert.equal(liveProductVisibility(forged), 'NATIVE_UNVERIFIED');
+  assert.equal(isNativeSemanticCompletion(forged), false);
+});
+
+test('a real product consumer that imports and executes its exact adapter clears native serving proof', () => {
+  // True real-consumer fixture: components/review/table-configs/termination-fees.config.js
+  // is live product code and genuinely imports lib/termf.js, so this DERIVED_VALUE surface
+  // has real proof -- the fail-closed check must not reject legitimate consumption.
+  const fixture = surface('termination-fee-render-derived-values');
+  assert.equal(fixture.disposition, 'APPROVED_DERIVED');
+  assert.ok(fixture.evidence_paths.includes('components/review/table-configs/termination-fees.config.js'));
+  assert.equal(liveProductVisibility(fixture), 'DERIVED_VISIBLE');
+  assert.equal(isNativeSemanticCompletion(fixture), true);
 });

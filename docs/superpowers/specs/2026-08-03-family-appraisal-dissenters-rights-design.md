@@ -494,7 +494,7 @@ live-run handoffs (subscription CLI); until then the honest claim is "the
 machinery exists and is proven on committed fixtures".
 
 **Fixture placement is load-bearing:** all committed fixtures live under
-`tests/fixtures/canonical-v2/appraisal-live-run/` (the forbidden-patterns
+`tests/fixtures/canonical-v2/appraisal-fixtures/` (the forbidden-patterns
 PROSE_CLASS_FINGERPRINTS-exempt directory class). Checked against
 `scripts/lint/forbidden-patterns.sh` globalPatterns: this family's
 vocabulary ("demands for appraisal", "fails to perfect", "prior written
@@ -993,7 +993,7 @@ bytes, clearly labeled as the pre-rerun harness)
    "Dissenting / Appraisal Rights" — the SETTLEMENT_CONSENT priced-review
    fixture proving the `(prior )?written consent` pattern's optionality;
    M-6). All committed as LITERAL production bytes under
-   `tests/fixtures/canonical-v2/appraisal-live-run/`, provenance headers
+   `tests/fixtures/canonical-v2/appraisal-fixtures/`, provenance headers
    with deal uuid + provision_card uuid + retrieval date +
    provision_type/subtype (including the CONSID-CONVERT/CONSID-EXCHANGE/
    STRUCTURE_MECHANICS-null homes where true), NEVER v1 `section_ref`

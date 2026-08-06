@@ -3,9 +3,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContractV20, compileFixtureContractV26, compileFixtureContractV34 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV20, compileFixtureContractV26, compileFixtureContractV36 } = require('../lib/canonical-v2/contract-bundle');
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
-const { parseDivestitureCapAmount, parseFilingDeadlineDays, ANTITRUST_REGULATORY_PARSE_VERSION } = require('../lib/canonical-v2/native-producer/antitrust-regulatory-parse');
+const { isHsrRegimeRef, parseDivestitureCapAmount, parseFilingDeadlineDays, ANTITRUST_REGULATORY_PARSE_VERSION } = require('../lib/canonical-v2/native-producer/antitrust-regulatory-parse');
 const { buildAntitrustRegulatoryProducerPrompt } = require('../lib/canonical-v2/native-producer/antitrust-regulatory-producer-prompt');
 const { shapeRegulatoryEffortsProposals, REGULATORY_EFFORTS_CLAIM_KEY } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { GENERIC_CLAIM_KEY_RESOLUTION_TABLE, MATERIALITY_TABLE, MAPPING_TABLE_VERSION, regulatoryValueCorroborated, regulatoryFilingRegimeCorroborated } = require('../lib/canonical-v2/native-producer/candidate-resolution');
@@ -26,7 +26,12 @@ test('antitrust parser preserves scaled-money safety and exact literal money', (
   assert.equal(parseDivestitureCapAmount('valued above $326,000,000.').canonical_value, '326000000');
   assert.equal(parseDivestitureCapAmount('$1 and $2').reason, 'MULTIPLE_MONEY_LITERALS');
   assert.equal(parseDivestitureCapAmount('one hundred dollars').reason, 'NON_LITERAL_MONEY');
-  assert.equal(parseDivestitureCapAmount('€10').reason, 'NON_USD_CURRENCY');
+  assert.deepEqual(parseDivestitureCapAmount('€10'), { outcome: 'RESOLVED', canonical_value: '10', currency: 'EUR', matched_text: '€10' });
+  assert.equal(parseDivestitureCapAmount('C$10,000,000').currency, 'CAD');
+  assert.equal(parseDivestitureCapAmount('A$10,000,000').currency, 'AUD');
+  assert.equal(parseDivestitureCapAmount('HK$10,000,000').currency, 'HKD');
+  assert.deepEqual(parseDivestitureCapAmount('USD 10,000,000'), { outcome: 'RESOLVED', canonical_value: '10000000', currency: 'USD', matched_text: 'USD 10,000,000' });
+  assert.equal(parseDivestitureCapAmount('MX$10,000,000').reason, 'UNSUPPORTED_CURRENCY_LITERAL');
   assert.equal(parseDivestitureCapAmount('$12,34').reason, 'MALFORMED_GROUPING');
 });
 
@@ -37,6 +42,8 @@ test('antitrust parser resolves one literal deadline and abstains on non-literal
   assert.equal(parseFilingDeadlineDays('within twenty five Business Days').reason, 'NON_LITERAL_NUMERAL');
   assert.equal(parseFilingDeadlineDays('within ten (45) Business Days').reason, 'SPELLED_DIGIT_MISMATCH');
   assert.equal(parseFilingDeadlineDays('within 10 Business Days and 45 Business Days').reason, 'MULTIPLE_DAY_COUNTS');
+  assert.equal(parseFilingDeadlineDays('within 10 days').day_kind, 'UNSPECIFIED');
+  assert.equal(parseFilingDeadlineDays('within 10 Calendar Days').day_kind, 'CALENDAR');
   assert.equal(ANTITRUST_REGULATORY_PARSE_VERSION, 1);
 });
 
@@ -56,7 +63,11 @@ test('prompt and provider shaping retain a single evidenced regulatory assertion
   const quote = 'Each of Parent and the Company shall use reasonable best efforts to obtain all approvals.';
   const prompt = buildAntitrustRegulatoryProducerPrompt({ source_text: quote, governed_scope: {} });
   assert.equal(prompt.prompt_id, 'native-producer-antitrust-regulatory/v1');
-  assert.equal(prompt.prompt_version, 4);
+  assert.equal(prompt.prompt_version, 5);
+  assert.match(prompt.messages[0].content, /MANDATORY_DEFEND/);
+  assert.match(prompt.messages[0].content, /PARENT_CONTROL/);
+  assert.match(prompt.messages[0].content, /burden_term_ref/);
+  assert.match(prompt.messages[0].content, /burden_baseline_ref/);
   const shaped = shapeRegulatoryEffortsProposals({ regulatory_efforts_assertions: [{ section_reference: '6.1', assertion_kind: 'EFFORTS_STANDARD', canonical_value: 'REASONABLE_BEST_EFFORTS', obligor_party_scope: 'MUTUAL', obligor_party: 'Each of Parent and the Company', quote }], open_world_candidates: [] }, quote);
   assert.equal(shaped.proposals.length, 1);
   assert.equal(shaped.proposals[0].claim_definition_key, REGULATORY_EFFORTS_CLAIM_KEY);
@@ -78,16 +89,22 @@ test('M3-B corroboration requires distinct grounded antitrust facts', () => {
   assert.equal(regulatoryValueCorroborated('STRATEGY_CONTROL', 'PARENT_CONTROL', 'Parent shall control the regulatory strategy.'), true);
   assert.equal(regulatoryValueCorroborated('CONSULTATION_RIGHT', 'GOOD_FAITH_VIEWS', 'Parent shall consider in good faith the views of the Company.'), true);
   assert.equal(regulatoryValueCorroborated('NON_IMPEDIMENT_COVENANT', true, 'Parent shall not take any action that would prevent or delay consummation of the transactions.'), true);
+  assert.equal(regulatoryValueCorroborated('BURDEN_COMMITMENT', 'CAPPED_QUANTITATIVE', 'Parent shall not accept remedies above USD 10,000,000.', {}), true);
   assert.equal(regulatoryValueCorroborated('STRATEGY_CONTROL', 'PARENT_CONTROL', 'Parent and the Company shall cooperate.'), false);
   assert.equal(regulatoryFilingRegimeCorroborated('Foreign Competition Act', 'Parent shall file under the Foreign Competition Act.'), true);
+  assert.equal(regulatoryFilingRegimeCorroborated('Competition and Consumer Act', 'Parent shall file under the Competition and Consumer Act.'), true);
+  assert.equal(regulatoryFilingRegimeCorroborated('Competition and Markets Authority', 'Parent shall file with the Competition and Markets Authority.'), true);
+  assert.equal(regulatoryFilingRegimeCorroborated('applicable Law', 'Parent shall file under applicable Law.'), false);
+  assert.equal(regulatoryFilingRegimeCorroborated('Act', 'Parent shall file under the Act.'), false);
   assert.equal(regulatoryFilingRegimeCorroborated('HSR Act and Foreign Competition Act', 'Parent shall file under the HSR Act and Foreign Competition Act.'), false);
+  assert.equal(isHsrRegimeRef('Hart-Scott-Rodino Antitrust Improvements Act of 1976, as amended'), true);
 });
 
 test('antitrust lexical entries are registered and include the bounded family set', () => {
-  const registered = new Set(compileFixtureContractV34().concepts.map((concept) => concept.concept_key));
+  const registered = new Set(compileFixtureContractV36().concepts.map((concept) => concept.concept_key));
   assert.doesNotThrow(() => validateLexicalFamilyLexicon(LEXICAL_FAMILY_LEXICON, { registeredConceptKeys: registered }));
-  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 15);
-  for (const family of ['ANTI-EFFORTS', 'ANTI-BURDEN', 'ANTI-LITIGATION', 'ANTI-TIMING', 'ANTI-FILING']) {
+  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 16);
+  for (const family of ['ANTI-EFFORTS', 'ANTI-BURDEN', 'ANTI-LITIGATION', 'ANTI-AGREEMENTS', 'ANTI-FILING', 'ANTI-COOPERATE', 'ANTI-INFO', 'ANTI-NOTIFY', 'ANTI-NOACTION']) {
     assert.ok(LEXICAL_FAMILY_LEXICON.entries.some((entry) => entry.family === family), family);
   }
 });
@@ -100,10 +117,12 @@ test('native antitrust candidates reach Review, Query, Compare and market statis
     cap: 'Parent shall not be required to divest assets valued in excess of $326,000,000.',
     litigation: 'Parent shall vigorously contest and defend through litigation any regulatory challenge.',
     timing: "Parent shall not enter into any timing agreement without the Company's prior written consent, not to be unreasonably withheld.",
-    withdrawal: 'Parent shall withdraw and refile in good faith under the HSR Act.',
-    hsr: 'Parent shall file under the HSR Act within ten (10) Business Days.',
+    withdrawal: 'Parent may withdraw and refile in good faith under the HSR Act.',
+    hsr: 'Parent shall file under the Hart-Scott-Rodino Antitrust Improvements Act of 1976 within ten (10) Business Days.',
     foreign: 'Parent shall file under the Foreign Competition Act.',
     foreignDeadline: 'Parent shall file under the Foreign Competition Act within fifteen (15) Calendar Days.',
+    foreignQualitative: 'Parent shall file under the German Foreign Trade and Payments Act as promptly as reasonably practicable after signing.',
+    fccFixed: 'Parent shall file under the FCC Rules by September 1, 2026.',
     strategy: 'Parent shall control the regulatory strategy.',
     consultation: 'Parent shall consider in good faith the views of the Company.',
     noAction: 'Parent shall not take any action that would prevent or delay consummation of the transactions.',
@@ -125,14 +144,26 @@ test('native antitrust candidates reach Review, Query, Compare and market statis
     at('LITIGATION_OBLIGATION', quotes.litigation, 'MANDATORY_DEFEND'),
     at('TIMING_AGREEMENT_RESTRICTION', quotes.timing, 'NOT_UNREASONABLY_WITHHELD'),
     at('WITHDRAWAL_REFILING_RESTRICTION', quotes.withdrawal, 'BUYER_UNILATERAL_GF'),
-    at('HSR_FILING_DEADLINE', quotes.hsr, null, { day_kind: 'BUSINESS', filing_regime_ref: 'HSR Act' }),
+    at('HSR_FILING_DEADLINE', quotes.hsr, null, { day_kind: 'BUSINESS', filing_regime_ref: 'Hart-Scott-Rodino Antitrust Improvements Act of 1976' }),
     at('REGULATORY_FILING_OBLIGATION', quotes.foreign, true, { filing_regime_ref: 'Foreign Competition Act' }),
     at('REGULATORY_FILING_DEADLINE', quotes.foreignDeadline, null, { day_kind: 'CALENDAR', filing_regime_ref: 'Foreign Competition Act' }),
-    at('STRATEGY_CONTROL', quotes.strategy, 'PARENT_CONTROL'),
-    at('CONSULTATION_RIGHT', quotes.consultation, 'GOOD_FAITH_VIEWS'),
-    at('NON_IMPEDIMENT_COVENANT', quotes.noAction, true),
+    at('REGULATORY_FILING_TIMING_STANDARD', quotes.foreignQualitative, 'AS_PROMPTLY_AS_REASONABLY_PRACTICABLE', {
+      filing_regime_ref: 'German Foreign Trade and Payments Act', timing_relation: 'as promptly as reasonably practicable', timing_trigger: 'after signing',
+    }),
+    at('REGULATORY_FILING_TIMING_STANDARD', quotes.fccFixed, 'FIXED_DATE', {
+      filing_regime_ref: 'FCC Rules', timing_relation: 'by', fixed_date_ref: 'September 1, 2026',
+    }),
+    at('STRATEGY_CONTROL', quotes.strategy, 'PARENT_CONTROL', {
+      control_holder_party: 'Parent', strategy_scope_ref: 'regulatory strategy',
+    }),
+    at('CONSULTATION_RIGHT', quotes.consultation, 'GOOD_FAITH_VIEWS', {
+      right_holder_party: 'the Company',
+    }),
+    at('NON_IMPEDIMENT_COVENANT', quotes.noAction, true, {
+      prohibited_action_ref: 'take any action', impairment_effect_ref: 'prevent or delay',
+    }),
   ];
-  const contract = compileFixtureContractV20();
+  const contract = compileFixtureContractV36();
   const receipt = await runNativeExtraction({
     source_text: source,
     document_hash: sha256Hex(Buffer.from(source, 'utf8')),
@@ -195,6 +226,13 @@ test('native antitrust candidates reach Review, Query, Compare and market statis
   ]) assert.ok(rows.some((row) => row.id === rowId), `Review row ${rowId}`);
   const pullRow = rows.find((row) => row.id === 'antitrust-regulatory-pull-refile');
   assert.deepEqual(pullRow.signals.map((signal) => signal.label), ['Buyer may pull-and-refile (good-faith gated)']);
+  const filingRow = rows.find((row) => row.id === 'antitrust-regulatory-foreign-filings');
+  const hsrRow = rows.find((row) => row.id === 'antitrust-regulatory-hsr-deadline');
+  assert.deepEqual(hsrRow.signals.map((signal) => signal.label), ['10 business days']);
+  assert.ok(filingRow.signals.some((signal) => signal.label === 'Foreign Competition Act: 15 calendar days'));
+  assert.ok(filingRow.signals.some((signal) => signal.label === 'German Foreign Trade and Payments Act: As promptly as reasonably practicable'));
+  assert.ok(filingRow.signals.some((signal) => signal.label === 'FCC Rules: September 1, 2026'));
+  assert.equal(filingRow.signals.some((signal) => /HSR|Hart-Scott-Rodino/i.test(signal.label)), false);
 
   const compare = executeDealCompare({
     deal_ids: [dealId],
@@ -212,6 +250,17 @@ test('native antitrust candidates reach Review, Query, Compare and market statis
   assert.equal(compareFields.get('litigationObligation'), 'MANDATORY_DEFEND');
   assert.equal(compareFields.get('hsrFilingDeadlineBusinessDays'), 10);
   assert.equal(compareFields.get('foreignFilingsRequired'), 'PRESENT');
+  assert.deepEqual(compareFields.get('regulatoryFilingFacts').map((fact) => ({
+    factKind: fact.factKind, filingRegime: fact.filingRegime, value: fact.value || null,
+  })), [
+    { factKind: 'OBLIGATION', filingRegime: 'Foreign Competition Act', value: null },
+    { factKind: 'DEADLINE_DAYS', filingRegime: 'Foreign Competition Act', value: '15' },
+    { factKind: 'TIMING_STANDARD', filingRegime: 'German Foreign Trade and Payments Act', value: null },
+    { factKind: 'FIXED_DATE', filingRegime: 'FCC Rules', value: null },
+  ]);
+  assert.deepEqual(compareFields.get('regulatoryFilingTimingStandard'), [
+    'AS_PROMPTLY_AS_REASONABLY_PRACTICABLE', 'FIXED_DATE',
+  ]);
   assert.equal(compareFields.get('otherRegulatoryFilingDeadlines'), null);
   assert.equal(
     projection.cards.some((card) => Object.hasOwn(card.features, 'otherRegulatoryFilingDeadlines')),
@@ -282,6 +331,58 @@ test('native antitrust candidates reach Review, Query, Compare and market statis
   assert.ok(marketResults.some((result) => (
     result.distribution?.kind === 'categorical' && result.coverage?.observedCount === 1
   )));
+});
+
+test('antitrust resolver rejects inferred day kinds, wrong strategy holders and HSR sent through the generic filing kind', async () => {
+  const sectionReference = '6.1';
+  const bareDays = 'Parent shall file under the Foreign Competition Act within ten (10) days.';
+  const wrongHolder = 'Parent shall control the regulatory strategy after consulting with the Company.';
+  const hsrWrongKind = 'Parent shall file under the Hart-Scott-Rodino Antitrust Improvements Act of 1976 within ten (10) Business Days.';
+  const source = `AGREEMENT AND PLAN OF MERGER\n\nSection ${sectionReference} Regulatory Matters.\n${[bareDays, wrongHolder, hsrWrongKind].join('\n')}\n`;
+  const assertions = [
+    {
+      section_reference: sectionReference, assertion_kind: 'REGULATORY_FILING_DEADLINE', canonical_value: null,
+      obligor_party_scope: 'ONE_PARTY', obligor_party: 'Parent', quote: bareDays,
+      filing_regime_ref: 'Foreign Competition Act', day_kind: 'CALENDAR',
+    },
+    {
+      section_reference: sectionReference, assertion_kind: 'STRATEGY_CONTROL', canonical_value: 'PARENT_CONTROL',
+      obligor_party_scope: 'ONE_PARTY', obligor_party: 'Parent', quote: wrongHolder,
+      control_holder_party: 'the Company', strategy_scope_ref: 'regulatory strategy',
+    },
+    {
+      section_reference: sectionReference, assertion_kind: 'REGULATORY_FILING_DEADLINE', canonical_value: null,
+      obligor_party_scope: 'ONE_PARTY', obligor_party: 'Parent', quote: hsrWrongKind,
+      filing_regime_ref: 'Hart-Scott-Rodino Antitrust Improvements Act of 1976', day_kind: 'BUSINESS',
+    },
+  ];
+  const contract = compileFixtureContractV36();
+  const receipt = await runNativeExtraction({
+    source_text: source,
+    document_hash: sha256Hex(Buffer.from(source, 'utf8')),
+    section_references: [sectionReference],
+    section_family_assignments: [{ section_reference: sectionReference, family_id: 'ANTITRUST_REGULATORY' }],
+    contract_bundle: contract,
+    definitions: { known_definitions: [] },
+    provider: async ({ governed_scope: governedScope }) => ({
+      provider_id: 'antitrust-hostile-test/v1', model_id: 'stub', prompt: 'antitrust-hostile-test',
+      ...shapeRegulatoryEffortsProposals({ regulatory_efforts_assertions: assertions, open_world_candidates: [] }, governedScope.source_text),
+    }),
+  });
+  const dealId = 'antitrust-hostile-deal';
+  const resolution = resolveCandidates({
+    run_receipt: receipt,
+    contract_vocabulary: contract,
+    admitted_source_context: buildIdentityAdmittedSourceContext(source, {
+      dealKey: dealId, dealAdmissionId: sha256Hex(`deal-admission:${dealId}`),
+    }),
+  });
+  assert.equal(resolution.resolved.length, 0);
+  assert.deepEqual(new Set(resolution.review_queue.flatMap((item) => item.reasons)), new Set([
+    'DAY_KIND_UNCORROBORATED',
+    'STRATEGY_HOLDER_VALUE_CONTRADICTION',
+    'HSR_MUST_USE_HSR_DEADLINE_KIND',
+  ]));
 });
 
 function resolvedNonHsrDeadline({ id, regime, value, dayKind, quote, timingRelation = null, timingTrigger = null }) {

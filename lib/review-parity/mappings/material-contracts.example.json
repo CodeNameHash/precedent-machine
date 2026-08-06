@@ -1,0 +1,64 @@
+{
+  "schema": "REVIEW_PARITY_FIELD_MAPPING/V1",
+  "mapping_version": "material-contracts/example-1",
+  "family_id": "MATERIAL_CONTRACTS",
+  "notes": "EXAMPLE, NOT AUTHORITATIVE. The real legacy<->V2 field mapping is being determined separately; this file exists so the harness has a runnable input and so the mapping shape is documented against a real family. Paths are read against the row objects components/review/table-configs/material-contracts.config.js selectRows() returns, on both sides.",
+  "legacy": {
+    "config_module": "components/review/table-configs/material-contracts.config.js",
+    "config_export": "materialContractsConfig"
+  },
+  "v2": {
+    "view": "config_rows",
+    "projection_module": "lib/canonical-v2/material-contracts-product-projection.js",
+    "projection_export": "projectMaterialContractsProductSurfaces"
+  },
+  "row_key": ["bucket_code", "label"],
+  "fields": [
+    {
+      "field_id": "bucket_code",
+      "legacy": "code",
+      "v2": "code",
+      "kind": "citation",
+      "notes": "Canonical contract-type bucket. Null on evidence-only rows, which is why label is also part of the row key."
+    },
+    {
+      "field_id": "label",
+      "legacy": "label",
+      "v2": "label",
+      "kind": "text"
+    },
+    {
+      "field_id": "threshold",
+      "legacy": "threshold",
+      "v2": "threshold",
+      "kind": "text",
+      "notes": "Deliberately text, not number: the column legitimately holds 'Any' and non-dollar gates alongside dollar figures, so numeric folding would be unsound here."
+    },
+    {
+      "field_id": "evidence",
+      "legacy": "evidence",
+      "v2": "evidence",
+      "kind": "quote",
+      "notes": "The clause text shown in the Evidence column. quote kind, so a shorter V2 string is reported as V2_LOSS rather than a bare disagreement."
+    },
+    {
+      "field_id": "section_ref",
+      "legacy": "source.section_ref",
+      "v2": "source.section_ref",
+      "kind": "citation"
+    },
+    {
+      "field_id": "feature_keys",
+      "legacy": "featureKeys",
+      "v2": "featureKeys",
+      "kind": "set"
+    },
+    {
+      "field_id": "authority_state",
+      "legacy": "authorityState",
+      "v2": "authorityState",
+      "kind": "flag",
+      "notes": "Absent on live rows; VALIDATED_NOT_SERVED on dark-preview rows. Present-on-one-side-only is reported, never skipped."
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* ─────────────────────────────────────────────────────────────────────────
    scripts/backfill-deal-display.js — Package B data backfill for the
-   deals-index audit (docs/handoffs/DEALS-INDEX-SPEC-2026-07-18.md), items
+   deals-index audit (docs/archive/handoffs/DEALS-INDEX-SPEC-2026-07-18.md), items
    1-data, 4, 5-data.
 
    Ben review round (2026-07-18), applied on top of the original spec:

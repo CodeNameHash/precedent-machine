@@ -1,6 +1,6 @@
 // Regression coverage for extracting pages/api/provisions.js's PATCH logic
 // into lib/provisions/apply-patch.js (done so the Correct-tab submit/review
-// routes could reuse it — docs/handoffs/CORRECT-TAB-SPEC-2026-07-17.md).
+// routes could reuse it — docs/archive/handoffs/CORRECT-TAB-SPEC-2026-07-17.md).
 // Asserts the shared core still does what the inline PATCH handler used to:
 // snapshot before/after, merge ai_metadata, and log a correction row with
 // the same shape reapply-corrections.js expects.

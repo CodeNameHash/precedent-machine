@@ -1,0 +1,69 @@
+{
+  "deal_id": "landos-abbvie",
+  "section_reference": "3.13",
+  "real_source_file": "__fixtures__/demo-deal/landos-abbvie-agreement.txt",
+  "material_contract_criterion": {
+    "party_making": "the Company",
+    "bucket_code": "INDEBTEDNESS",
+    "threshold_kind": "USD",
+    "threshold_value": "$100,000",
+    "cadence_kind": null,
+    "definition_cross_references": [],
+    "quote": "any Company Contract relating to Indebtedness in excess of $100,000 (whether incurred, assumed, guaranteed, or secured by\nany asset) of the Company or any Company Subsidiary;"
+  },
+  "legacy_cards": [
+    {
+      "id": "legacy-definition-mae",
+      "deal_id": "landos-abbvie",
+      "provision_instance_id": "legacy-definition-mae",
+      "excerpt_id": "legacy-definition-mae:0",
+      "section_ref": "Article I",
+      "short_title": "Company Material Adverse Effect",
+      "kind": "definition",
+      "provision_type": "DEFINITION",
+      "defined_term": "Company Material Adverse Effect",
+      "defined_value": "an effect materially adverse to the Company",
+      "primary_quote": "Company Material Adverse Effect means an effect materially adverse to the Company.",
+      "region_full_text": "Company Material Adverse Effect means an effect materially adverse to the Company.",
+      "references": [],
+      "provenance": {
+        "source_doc_id": "legacy-document",
+        "source_doc_page": 1,
+        "source_doc_offset_start": 10,
+        "source_doc_offset_end": 90,
+        "extractor_name": "parser-v2",
+        "extractor_version": "fixture",
+        "model": "fixture",
+        "prompt_hash": "sha256:legacy-definition",
+        "run_id": "legacy-run",
+        "extracted_at": "2026-08-03T00:00:00.000Z"
+      }
+    },
+    {
+      "id": "legacy-governing-law",
+      "deal_id": "landos-abbvie",
+      "provision_instance_id": "legacy-governing-law",
+      "excerpt_id": "legacy-governing-law:0",
+      "section_ref": "Section 10.8",
+      "short_title": "Governing Law",
+      "kind": "standard",
+      "provision_type": "MISC_BOILERPLATE",
+      "provision_subtype": "MISC-GOVLAW",
+      "primary_quote": "This Agreement shall be governed by the Laws of the State of Delaware.",
+      "region_full_text": "This Agreement shall be governed by the Laws of the State of Delaware.",
+      "references": [],
+      "provenance": {
+        "source_doc_id": "legacy-document",
+        "source_doc_page": 90,
+        "source_doc_offset_start": 9000,
+        "source_doc_offset_end": 9080,
+        "extractor_name": "parser-v2",
+        "extractor_version": "fixture",
+        "model": "fixture",
+        "prompt_hash": "sha256:legacy-governing-law",
+        "run_id": "legacy-run",
+        "extracted_at": "2026-08-03T00:00:00.000Z"
+      }
+    }
+  ]
+}

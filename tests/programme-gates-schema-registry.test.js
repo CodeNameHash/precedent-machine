@@ -23,6 +23,7 @@ test('production import and cutover retain the complete strict control set', () 
       'ATOMIC_WHOLE_TUPLE_ACTIVATION',
       'POST_CUTOVER_SMOKE_WITH_ROLLBACK',
       'ONE_USE_BEN_CUTOVER_AUTHORISATION',
+      'P9_SECURITY_AUTH_PASS_BEFORE_PRODUCTION_CREDENTIAL_ISSUANCE_OR_USE',
     ],
   });
 });

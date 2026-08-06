@@ -157,23 +157,21 @@ test('collectProvCardIds is a no-op walk when nothing carries _prov', () => {
 
 // ---- Backward compatibility -------------------------------------------
 
-test('DEAL_COMPARE result shape is unchanged for callers that ignore _prov', async () => {
-  const result = await runQuery('DEAL_COMPARE', {
-    deal_ids: ['d1', 'd2'],
-    provision_types: ['COVENANT_NO_SOLICITATION'],
-    highlight_deltas: true,
-    included_field_groups: ['primary', 'qualifiers'],
-  }, { context });
-  assert.equal(result.columns.length, 2);
-  assert.equal(result.rows.length, 1);
-  const cell = result.rows[0].cells[0];
-  // The pre-WP-3 fields are all still exactly where they were.
-  assert.ok('deal_id' in cell);
-  assert.ok('card_id' in cell);
-  assert.ok('primary_quote' in cell);
-  assert.ok('key_fields' in cell);
-  assert.ok('delta_severity' in cell);
-  assert.ok('delta_versus' in cell);
+// DEAL_COMPARE was retired as a query kind (comparison now lives on the
+// review page's own compare mode, not through the query engine) — the
+// backward-compatibility guarantee this pinned still holds for the
+// surviving kinds; see "CSV export never includes _prov" below for the
+// same _prov-hygiene guarantee exercised through PROVISION_CROSS_CUT.
+test('DEAL_COMPARE no longer dispatches through the query engine', async () => {
+  await assert.rejects(
+    () => runQuery('DEAL_COMPARE', {
+      deal_ids: ['d1', 'd2'],
+      provision_types: ['COVENANT_NO_SOLICITATION'],
+      highlight_deltas: true,
+      included_field_groups: ['primary', 'qualifiers'],
+    }, { context }),
+    /invalid query_kind: DEAL_COMPARE/,
+  );
 });
 
 test('CSV export never includes _prov, with or without it present on the result', async () => {

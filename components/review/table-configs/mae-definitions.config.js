@@ -43,9 +43,51 @@ const MAE_LIMB_TEXT = {
   TWO_LIMB: 'Two limbs — business effect + ability to consummate',
 };
 
+// The title/quote fallback below exists for ONE case: a genuine MAE card the
+// classifier never subtyped, which carries neither the MAE provision_type nor
+// a code containing "MAE" and would otherwise be invisible to this table. It
+// is NOT a classifier. Run unguarded it is the leakiest fallback in the
+// review app: "Material Adverse Effect" is quoted constantly OUTSIDE the
+// definition itself -- as the materiality qualifier on almost every
+// representation ("except as would not have a Company Material Adverse
+// Effect...", "would not reasonably be expected to have a Parent Material
+// Adverse Effect"), in closing-condition bring-downs, and in covenants. Every
+// one of the following is REAL committed data pulled straight into this
+// table by the unguarded fallback: 20+ REP-T-*/REP-B-* representations in the
+// Modiv V1 snapshot (tests/fixtures/canonical-v2/v1v2-comparator/
+// modiv-v1-provision-snapshot.json) and similar counts in the Skechers and
+// TopBuild snapshots, plus a financing covenant (COV-FINANCING) and the
+// Guaranty/Financing-Sources MISC_BOILERPLATE cards in
+// tests/fixtures/canonical-v2/guaranty-live-run/corpus-cards.json -- none of
+// which is this table's own card. Once selected, mappedMaeRows() folds every
+// one of them into the same card set firstFeature() reads for the MAE Test /
+// carve-outs rows.
+//
+// So the fallback is narrowed, not removed: it applies only to a card NO
+// family has claimed. A card already carrying another family's
+// provision_type or canonical code belongs to that family, and a word match
+// in its quote must never re-home it here.
+const MAE_TEXT_RE = /material adverse effect|\bMAE\b/i;
+
+// cardType() reads provision_type first and falls back to `type`; canonical
+// MAE-definition cards carry 'MAE_DEFINITION' on the former and 'MAE' on the
+// latter (lib/canonical-v2/key-terms-mae-product-projection.js), so both
+// spellings count as this family's own -- alongside legacy extraction's own
+// 'MAE' provision_type (lib/schema/card-model.js).
+const MAE_CARD_TYPES = new Set(['MAE', 'MAE_DEFINITION']);
+
+function isClaimedByAnotherFamily(card) {
+  const type = cardType(card);
+  if (type && !MAE_CARD_TYPES.has(type)) return true;
+  const code = cardCode(card);
+  return Boolean(code) && !code.includes('MAE');
+}
+
 function isMae(card) {
   const code = cardCode(card);
-  return cardType(card) === 'MAE' || code.includes('MAE') || /material adverse effect|\bMAE\b/i.test(`${card?.short_title || ''} ${card?.defined_term || ''} ${textOf(card)}`);
+  if (cardType(card) === 'MAE' || code.includes('MAE')) return true;
+  if (isClaimedByAnotherFamily(card)) return false;
+  return MAE_TEXT_RE.test(`${card?.short_title || ''} ${card?.defined_term || ''} ${textOf(card)}`);
 }
 
 // DEF-MAE is the actual defined-term card for "Material Adverse Effect"; a
@@ -217,10 +259,17 @@ function carveoutName(item, dict) {
   return sentenceCaseLabel(valueText(item)) || 'Carve-out';
 }
 
-function carveoutHasCarveback(item, code, dispSet) {
+function carvebackState(item, code, dispSet) {
   const flag = item && typeof item === 'object' ? item.hasDisproportionateImpactCarveback : null;
   if (flag === true || flag === 'true') return true;
-  return !!(code && dispSet.has(code));
+  if (code && dispSet.has(code)) return true;
+  return 'NOT_ESTABLISHED';
+}
+
+function exactItemEvidence(item, fallback) {
+  if (item && typeof item === 'object' && Array.isArray(item.quotes) && item.quotes[0]) return item.quotes[0];
+  if (item && typeof item === 'object' && typeof item.text === 'string' && item.text.trim()) return item.text;
+  return fallback;
 }
 
 // fb2 #19: the carve-out NAME alone is sufficient -- the right-hand TEXT
@@ -240,12 +289,15 @@ function carveoutsTableNode(row, ctx) {
   const PillCell = ctx?.primitives?.PillCell;
   const dict = taxonomyForFeatureKey('carveouts');
   const dispSet = disproportionateCodeSet(row.sourceCard);
-  // Ben (round 6): the extracted `carveouts` list carries duplicates (26 items
-  // on Metsera, several repeated) -- dedupe by resolved carve-out name so each
-  // carve-out renders once.
+  // Canonical items preserve each stable claim/limb occurrence. Legacy items
+  // have no identity and retain the old name-based cleanup.
   const seen = new Set();
   const items = rawItems.filter((item) => {
-    const key = String(carveoutName(item, dict) || '').trim().toLowerCase();
+    const key = item?.claim_revision_id
+      || item?.closure_id
+      || (item?.limb_identity && normalizeCarveoutCode(item)
+        ? `${item.limb_identity}:${normalizeCarveoutCode(item)}`
+        : String(carveoutName(item, dict) || '').trim().toLowerCase());
     if (!key || seen.has(key)) return false;
     seen.add(key);
     return true;
@@ -258,13 +310,22 @@ function carveoutsTableNode(row, ctx) {
     items.map((item, index) => {
       const code = normalizeCarveoutCode(item);
       const name = carveoutName(item, dict);
-      const hasCarveback = carveoutHasCarveback(item, code, dispSet);
+      const carveback = carvebackState(item, code, dispSet);
+      const carvebackEvidence = Array.isArray(item?.disproportionality_quotes)
+        ? item.disproportionality_quotes[0]
+        : null;
+      const itemEvidence = exactItemEvidence(item, row.evidence);
       return React.createElement(
         'li',
-        { key: code || `${name}-${index}`, className: 'flex flex-wrap items-baseline gap-x-2 gap-y-0.5 py-1 first:pt-0 last:pb-0' },
+        { key: item?.claim_revision_id || item?.closure_id || (item?.limb_identity ? `${item.limb_identity}:${code || index}` : null) || `${name}-${index}`, className: 'flex flex-wrap items-baseline gap-x-2 gap-y-0.5 py-1 first:pt-0 last:pb-0' },
         React.createElement('span', { className: 'text-ink', title: code || undefined }, name),
-        hasCarveback && PillCell
-          ? React.createElement(PillCell, { label: 'Disp. carveback applies', tone: 'warning' })
+        PillCell
+          ? React.createElement(PillCell, {
+            label: carveback === true ? 'Yes' : 'Not established',
+            tone: carveback === true ? 'warning' : 'neutral',
+            evidence: carveback === true ? carvebackEvidence : itemEvidence,
+            source: row.sourceCard,
+          })
           : null,
       );
     }),
@@ -475,4 +536,4 @@ const maeDefinitionsConfig = {
   renderBody,
 };
 
-export { maeDefinitionsConfig, mappedMaeRows, renderBody, renderDetail, renderSignals, signalFor };
+export { isMae, maeDefinitionsConfig, mappedMaeRows, renderBody, renderDetail, renderSignals, signalFor };

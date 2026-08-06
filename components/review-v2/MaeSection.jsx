@@ -6,8 +6,9 @@
 //   1. "MAE test" — one row per party: limb count + limb summary, with the
 //      full definition clause behind "see text" and the evidence hover.
 //   2. "Carve-outs" — one row per (deduped) carve-out; right column is a
-//      "Disproportionate carveback" pill: Yes (blue/info) when the carveback
-//      reaches that carve-out, No (grey neutral) otherwise.
+//      "Disproportionate carveback" pill: Yes when the carveback reaches
+//      that carve-out, Not established when the governed relationship is
+//      not proved.
 // Each table carries a data-testid starting with 'provision-table-' so every
 // .mtx table rule in MergertraceStyles (grey header bars, white bodies,
 // 1px #E0E0E0 borders, pill skin) applies unchanged.
@@ -16,7 +17,7 @@ import React from 'react';
 import taxonomy from '../../lib/taxonomy.js';
 import { maeDefinitionsConfig } from '../review/table-configs/mae-definitions.config';
 import { cardFeatures } from '../review/table-configs/card-utils';
-import { PillCell, EvidenceHoverSource } from '../review/primitives/ProvisionTablePrimitives';
+import { PillCell, EvidenceHoverSource, SeeProvisionDisclosure } from '../review/primitives/ProvisionTablePrimitives';
 import { TERM_COL_WIDTH, TERM_COL_MAX } from '../review/table-configs/layout.js';
 import { resolveRowFocus } from './provisionIndexHelpers.js';
 
@@ -84,10 +85,11 @@ function dispCodeSet(card) {
   return set;
 }
 
-function hasCarveback(item, code, dispSet) {
+function carvebackState(item, code, dispSet) {
   const flag = item && typeof item === 'object' ? item.hasDisproportionateImpactCarveback : null;
   if (flag === true || flag === 'true') return true;
-  return !!(code && dispSet.has(code));
+  if (code && dispSet.has(code)) return true;
+  return 'NOT_ESTABLISHED';
 }
 
 // Item 10 (round 3): the old version read ONLY item.quotes[0] and ignored
@@ -117,10 +119,12 @@ function itemQuote(item) {
 function seeTextNode(text) {
   if (!text) return null;
   return (
-    <details className="mt-1">
-      <summary className="term-cell-seetext" style={{ listStyle: 'none' }}>See provision</summary>
-      <div className="mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight">{text}</div>
-    </details>
+    <SeeProvisionDisclosure
+      className="mt-1"
+      bodyClassName="mt-1 max-w-[42rem] whitespace-pre-wrap break-words text-[11px] leading-5 text-inkLight"
+    >
+      {text}
+    </SeeProvisionDisclosure>
   );
 }
 
@@ -237,11 +241,16 @@ export default function MaeSection({ config = maeDefinitionsConfig, reviewDeal, 
       {carveRows.map((row) => {
         const rawItems = Array.isArray(row.value) ? row.value : [];
         const dispSet = dispCodeSet(row.sourceCard);
-        // Dedupe by resolved name — the extracted list carries duplicates
-        // (26 items on Metsera), same rule as the v1 carve-outs table.
+        // Canonical rollup items carry stable claim/limb identity. Preserve
+        // those occurrences. Legacy items have no identity, so retain the
+        // old name-based cleanup for their known duplicate extraction rows.
         const seen = new Set();
         const items = rawItems.filter((item) => {
-          const key = String(carveoutName(item, dict) || '').trim().toLowerCase();
+          const key = item?.claim_revision_id
+            || item?.closure_id
+            || (item?.limb_identity && normalizeCode(item)
+              ? `${item.limb_identity}:${normalizeCode(item)}`
+              : String(carveoutName(item, dict) || '').trim().toLowerCase());
           if (!key || seen.has(key)) return false;
           seen.add(key);
           return true;
@@ -259,10 +268,17 @@ export default function MaeSection({ config = maeDefinitionsConfig, reviewDeal, 
             {items.map((item, index) => {
               const code = normalizeCode(item);
               const name = carveoutName(item, dict);
-              const carveback = hasCarveback(item, code, dispSet);
+              const carveback = carvebackState(item, code, dispSet);
+              const carvebackEvidence = Array.isArray(item?.disproportionality_quotes)
+                ? item.disproportionality_quotes[0]
+                : null;
               const itemFocus = resolveRowFocus({ label: name, itemCode: code, evidence: itemQuote(item) || row.evidence });
+              const occurrenceKey = item?.claim_revision_id
+                || item?.closure_id
+                || (item?.limb_identity ? `${item.limb_identity}:${code || index}` : null)
+                || `${name}-${index}`;
               return (
-                <tr key={code || `${name}-${index}`} {...rowTrProps(row, onSelectCard, selectedCardId, itemFocus)}>
+                <tr key={occurrenceKey} {...rowTrProps(row, onSelectCard, selectedCardId, itemFocus)}>
                   <td className={TD_CLASS}>
                     <EvidenceHoverSource
                       evidence={itemQuote(item) || row.evidence}
@@ -276,9 +292,9 @@ export default function MaeSection({ config = maeDefinitionsConfig, reviewDeal, 
                   </td>
                   <td className={TD_CLASS}>
                     <PillCell
-                      label={carveback ? 'Yes' : 'No'}
-                      tone={carveback ? 'info' : 'neutral'}
-                      evidence={itemQuote(item) || row.evidence}
+                      label={carveback === true ? 'Yes' : 'Not established'}
+                      tone={carveback === true ? 'info' : 'neutral'}
+                      evidence={carveback === true ? carvebackEvidence : (itemQuote(item) || row.evidence)}
                       source={row.sourceCard}
                     />
                   </td>

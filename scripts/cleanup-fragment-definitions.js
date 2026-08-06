@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* ─────────────────────────────────────────────────────────────────────────
    scripts/cleanup-fragment-definitions.js — UI Feedback Round 3, item 16
-   data-repair (docs/handoffs/UI-FEEDBACK-R3-SPEC-2026-07-18.md).
+   data-repair (docs/archive/handoffs/UI-FEEDBACK-R3-SPEC-2026-07-18.md).
 
    DRY-RUN BY DEFAULT. Prints every card it WOULD delete (deal + term/
    title) and writes NOTHING unless invoked with --apply. Per the R3

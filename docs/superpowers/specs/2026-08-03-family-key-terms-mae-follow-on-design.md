@@ -1,8 +1,11 @@
 # Key defined terms and MAE follow-on
 
-The new key-terms evidence route captures deferred product mechanics. MAE
-follow-on mechanics are shaped through the same open-world form for review;
-the existing MAE definition producer remains its canonical owner.
+The key-terms evidence route captures deferred definition mechanics. The
+MAE definition producer is the sole owner of MAE disproportionality. It
+preserves `PER_LIMB` and `TRAILING_LIST` source forms, comparison baselines
+and exact contributor evidence, then publishes the governed per-limb
+relationship through Review, Query and Compare. This follow-on route must
+not duplicate those MAE facts as open-world mechanics.
 
 Key terms grounds include Acquisition Proposal definitions in 55 cards across
 32 deals. MAE disproportionality appears in 49 of 51 grounded definitions.
@@ -10,6 +13,7 @@ The producer never computes an effective threshold: it retains each quoted
 relationship for later review.
 
 Conditions and no-shop retain their owners. Existing parity entries retain
-all rendered, query and market mechanics as OPEN/FOLLOW_ON_REQUIRED. Ben must
-decide the effective-threshold relation model, ordinary-course split, and
-per-clause MAE comparison baseline before promotion.
+all remaining rendered, query and market mechanics as
+OPEN/FOLLOW_ON_REQUIRED. Effective-threshold relations and the
+ordinary-course split remain deferred. Per-clause MAE comparison baselines
+are governed by the MAE definition family and preserved as exact text.

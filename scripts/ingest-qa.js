@@ -479,7 +479,7 @@ function printClaimsScorecard(claimsMetrics, evalResult) {
 // Structured (JSON-emittable) per-deal result, built from the same metrics/
 // evalResult/metaEval qaOneDeal already computes — pure, DB-free, and
 // separate from the console printers so the console output they drive stays
-// byte-identical. Shape per docs/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md
+// byte-identical. Shape per docs/archive/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md
 // §7 item 2: {dealId, counts, rawCoveragePct, excludedRegions, checks[], pass}.
 // `checks[]` merges the gate checks and the deal-metadata checks, tagged by
 // `group`, so the admin UI can render both in one per-deal gate table.
@@ -596,7 +596,7 @@ async function main() {
   console.log(`\n${targets.length} deal${targets.length === 1 ? '' : 's'} checked. Overall: ${allOk ? 'PASS' : 'FAIL'}`);
   if (!allOk) process.exitCode = 1;
 
-  // Structured JSON emitter (docs/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md
+  // Structured JSON emitter (docs/archive/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md
   // §7 item 2) — output plumbing only, built AFTER every console print above
   // so nothing here can perturb the PASS-path console byte-identity.
   const structured = { generatedAt: new Date().toISOString(), deals: dealResults, pass: allOk };

@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
+const { RECORDED_RULINGS } = require('../lib/programme-decision-console');
 
 const {
   GOVERNING_FILE_PATHS,
@@ -23,14 +24,15 @@ const EXPECTED_CURRENT_BLOCKER_CODES = Object.freeze([
   'CERTIFICATION_METHODS_UNRESOLVED',
   'COMPLETE_40_BY_19_RENDER_SURFACE_CAPTURE',
   'CONTROLLED_CAPTURE_WORKER_EXECUTION',
-  'DECISION_RECONCILIATION_REQUIRED',
   'DURABLE_ARTIFACT_ROOT_REQUIRED',
+  'EXACT_POLICY_MANIFEST_DIGEST_ADOPTION_REQUIRED',
   'EXTERNAL_CONTROLLER_AND_WORKER_REGISTRATIONS',
   'EXTERNAL_ISSUER_REGISTRY_TRUST_ANCHOR_REQUIRED',
   'FINAL_INTEGRATED_COMMIT_BUILD_RECEIPT_REQUIRED',
   'FINAL_SIGNATURE_VERIFICATION',
   'HIGH_RISK_FAMILY_UNIVERSE_UNRESOLVED',
   'IDENTITY_ALLOCATION_AND_BRIDGE_CONTROLLER_REQUIRED',
+  'IDENTITY_BEN_BATCH_MAPPING_SIGNATURE_REQUIRED',
   'IDENTITY_CONSUMERS_REAL_VERIFIER_REQUIRED',
   'IDENTITY_CURRENT_HEAD_VERIFIER_REQUIRED',
   'IDENTITY_EXPLICIT_40_DEAL_41_OCCURRENCE_MAPPING_REVIEW_REQUIRED',
@@ -42,8 +44,7 @@ const EXPECTED_CURRENT_BLOCKER_CODES = Object.freeze([
   'P9_ACCEPTANCE_DEFINITIONS_UNADOPTED',
   'PASS_ISSUANCE_CONTROLLER',
   'PASS_THRESHOLDS_UNRESOLVED',
-  'PENDING_BEN_RULING_IDENTITY_NAMESPACE_AND_KEY_DOMAIN',
-  'PENDING_BEN_RULING_P9_COMPLETION_LEAF_RATIFICATION',
+  'RECORDED_RULING_IMPLEMENTATION_GAPS',
   'RECOVERY_COUNTER_INVENTORY_UNRESOLVED',
   'REGISTRY_DISPOSITION_ENUM_UNRESOLVED',
   'RESTORE_OR_ROLLBACK_CRITERIA_UNRESOLVED',
@@ -54,6 +55,7 @@ const EXPECTED_CURRENT_BLOCKER_CODES = Object.freeze([
   'SOURCE_EXCEPTION_TRUSTED_CONTROLLER_AND_REGISTRY_AMENDMENT_REQUIRED',
   'SOURCE_INTAKE_TRUSTED_CONTROLLER_AND_REGISTRY_VERIFIER_REQUIRED',
   'SUCCESSOR_M1_ADOPTION_BINDING_UNRESOLVED',
+  'SUCCESSOR_M1_APPROVAL_REQUIRED',
   'SUCCESSOR_M1_CERTIFICATION_BINDING_UNRESOLVED',
   'TOPBUILD_MULTI_OCCURRENCE_DISPOSITION_NOT_ISSUED',
   'TRUST_REGISTRY_AMENDMENT_FOR_CONTROLLER_AND_WORKER_SIGNATURES',
@@ -65,20 +67,28 @@ test('builds a content-addressed current proposal-only M1 successor packet with 
   const packet = buildCurrentSuccessorM1ReadinessPacket({ repository_root: ROOT });
   assert.equal(packet.schema_version, SUCCESSOR_M1_READINESS_PACKET_SCHEMA);
   assert.equal(packet.status, 'PROPOSAL_ONLY_BLOCKED_NOT_M1_AUTHORITY');
-  assert.equal(packet.family_register.family_count, 21);
-  assert.equal(packet.family_register.raw_status, 'FAMILY_COMPLETE');
+  assert.equal(packet.family_register.family_count, 22);
+  assert.equal(packet.family_register.raw_status, 'BLOCKED');
   assert.equal(packet.family_register.status, 'BLOCKED');
   assert.equal(packet.family_register.decision_reconciliation_proposal_id, packet.decision_reconciliation.proposal_id);
   assert.equal(packet.decision_reconciliation.status, 'PROPOSAL_ONLY_BLOCKED_NOT_DECISION_REGISTER_AUTHORITY');
   assert.equal(packet.decision_reconciliation.authority, 'NONE');
-  assert.equal(packet.decision_reconciliation.recorded_ruling_count, 48);
-  assert.deepEqual(packet.decision_reconciliation.missing_ruling_ids, ['antitrust-expanded-taxonomy']);
+  assert.equal(packet.decision_reconciliation.recorded_ruling_count, Object.keys(RECORDED_RULINGS).length);
+  assert.deepEqual(packet.decision_reconciliation.missing_ruling_ids, []);
   assert.deepEqual(packet.decision_reconciliation.conflicting_ruling_ids, []);
   assert.deepEqual(packet.decision_reconciliation.missing_binding_ruling_ids, []);
-  assert.deepEqual(packet.decision_reconciliation.implementation_gap_ruling_ids, []);
+  assert.ok(packet.decision_reconciliation.implementation_gap_ruling_ids.includes('topbuild-mae'));
+  assert.ok(packet.decision_reconciliation.implementation_gap_ruling_ids.includes('db-apply'));
+  assert.equal(packet.decision_reconciliation.ruling_evidence_freeze_ready, true);
+  assert.equal(packet.decision_reconciliation.implementation_reconciliation_ready, false);
   assert.equal(packet.decision_reconciliation.decision_register_freeze_ready, false);
   assert.equal(packet.decision_reconciliation.decision_register_freeze_authority, 'NONE');
   assert.equal(packet.decision_reconciliation.family_completion_ready, false);
+  assert.equal(packet.policy_proposals.policy_adoption_status, 'PROPOSAL_ONLY_BLOCKED_NOT_ADOPTED');
+  assert.equal(packet.policy_proposals.policy_adoption_authority, 'NONE');
+  assert.equal(packet.policy_proposals.policy_successor_m1_adoption_binding.adopted, false);
+  assert.equal(packet.policy_proposals.policy_successor_m1_adoption_binding.successor_m1_pass_receipt_id, null);
+  assert.match(packet.policy_proposals.policy_set_digest, /^[a-f0-9]{64}$/);
   assert.deepEqual(packet.family_register.status, 'BLOCKED');
   assert.deepEqual(packet.blockers.map(({ code }) => code), EXPECTED_CURRENT_BLOCKER_CODES);
   assert.equal(packet.dissent_retirement.disposition, 'APPROVED_RETIRED_OPEN_WORLD');
@@ -89,24 +99,31 @@ test('builds a content-addressed current proposal-only M1 successor packet with 
     packet.decision_reconciliation.proposal_id,
   );
   assert.equal(packet.dissent_retirement.authority, 'M3_PRODUCT_PARITY_ONLY_NOT_M1_AUTHORITY');
-  assert.equal(packet.p9_binding.live_gate_count, 21);
-  assert.equal(packet.p9_binding.recovered_candidate_gate_count, 22);
-  assert.equal(packet.p9_binding.governing_inventory_conflict.code, 'P9_COMPLETION_LEAF_RATIFICATION_REQUIRED');
   assert.equal(packet.p9_binding.registry_schema, 'canonical-programme-gates/v2');
-  assert.equal(packet.p9_binding.registry_live_gate_count, 21);
-  assert.equal(packet.p9_binding.phase_12_security_gate_id, 'P9_SECURITY_AUTH');
+  assert.match(packet.p9_binding.registry_digest, /^[a-f0-9]{64}$/);
+  assert.equal(packet.p9_binding.live_gate_count, 23);
+  assert.equal(packet.p9_binding.security_prerequisite_gate_id, 'P9_SECURITY_AUTH');
   assert.equal(packet.p9_binding.completion_gate_id, 'P9_PROGRAMME_COMPLETION_ATTESTATION');
-  assert.equal(packet.p9_binding.completion_gate_live, false);
-  assert.equal(packet.p9_binding.evidence_map_state, 'CORRECTED_CURRENT_CATALOGUE_REFERENCES_PROPOSAL_ONLY');
-  assert.deepEqual(packet.p9_binding.database_soak_scenario_ids, ['CAPACITY-LOAD-01', 'QUERY-EXEC-01']);
+  assert.equal(packet.p9_binding.completion_gate_live, true);
+  // D3 (2026-08-05): the self-verifying p9-acceptance-* proposal layer is
+  // deleted (docs/codex-program/DECISIONS.md item 10). The two gates whose
+  // work is actually finished now close from governing-registry.js's live,
+  // evidence-verified computePreproductionGateStatus, re-derived on every
+  // load rather than trusted from a stored assertion.
+  assert.deepEqual(packet.p9_binding.closeable_preproduction_gate_ids, [
+    'P1_CONTRACT_BUNDLE_COMPLETE', 'P1_VERTICAL_SLICE_PASS',
+  ]);
+  assert.deepEqual(packet.p9_binding.closed_preproduction_gate_ids, [
+    'P1_CONTRACT_BUNDLE_COMPLETE', 'P1_VERTICAL_SLICE_PASS',
+  ]);
   assert.equal(packet.p9_binding.acceptance_definition_and_predicate_state, 'UNADOPTED_NO_EXECUTABLE_PREDICATES');
-  assert.equal(packet.p9_binding.definition_live_record_count, 21);
-  assert.equal(packet.p9_binding.definition_completion_candidate_count, 1);
-  assert.equal(packet.p9_binding.definition_formal_definition_authority, 'NONE');
-  assert.equal(packet.p9_binding.definition_predicate_authority, 'NONE');
-  assert.equal(packet.p9_binding.definition_pass_authority, 'NONE');
-  assert.ok(packet.p9_binding.definition_threshold_blocker_gate_ids.includes('P9_DATABASE_SOAK'));
-  assert.equal(packet.v2_identity_binding.authority_status, 'PROPOSED_PENDING_BEN_RULING_AND_REAL_VERIFIER_NOT_ACTIVE');
+  assert.equal(packet.v2_identity_binding.adopted_namespace, 'BEN_APPROVED_IMPORT/V2');
+  assert.equal(packet.v2_identity_binding.adopted_seed_schema, 'BEN_APPROVED_IMPORT_SEED/V2');
+  assert.equal(packet.v2_identity_binding.adopted_transaction_count, 40);
+  assert.equal(packet.v2_identity_binding.batch_mapping_approval_signature_domain, 'GOVERNED_IDENTITY_BEN_BATCH_MAPPING_APPROVAL/V1');
+  assert.equal(packet.v2_identity_binding.literal_trusted_key_registry_patch_schema, 'GOVERNED_IDENTITY_LITERAL_TRUSTED_KEY_REGISTRY_PATCH_PROPOSAL/V1');
+  assert.equal(packet.v2_identity_binding.key_registry_amendment_approval_state, 'PENDING_EXACT_DIFF_APPROVAL_NOT_ACTIVE');
+  assert.equal(packet.v2_identity_binding.authority_status, 'POLICY_RATIFIED_KEY_AMENDMENT_AND_REAL_VERIFIER_PENDING_NOT_ACTIVE');
   assert.equal(packet.v1_trusted_capture_readiness.status, 'BLOCKED_NOT_EXECUTABLE');
   assert.equal(packet.v1_trusted_capture_readiness.authority, 'NONE');
   assert.equal(packet.v1_trusted_capture_readiness.schema_count, 18);
@@ -119,6 +136,8 @@ test('builds a content-addressed current proposal-only M1 successor packet with 
   assert.equal(packet.governed_identity_readiness.schema_count, 9);
   assert.equal(packet.governed_identity_readiness.frozen_key_registry_authority, 'NONE');
   assert.equal(packet.governed_identity_readiness.frozen_key_registry_role_domain_grant_count, 6);
+  assert.equal(packet.governed_identity_readiness.frozen_key_registry_amendment_approval_state, 'PENDING_EXACT_DIFF_APPROVAL_NOT_ACTIVE');
+  assert.equal(packet.governed_identity_readiness.adopted_initial_import_identity_policy.transaction_identifiers.length, 40);
   assert.equal(packet.governed_identity_readiness.missing_requirement_codes.length, 7);
   assert.equal(packet.source_intake_authority_readiness.status, 'BLOCKED_EXTERNAL_TRUSTED_VERIFIER_NOT_IMPLEMENTED');
   assert.equal(packet.source_intake_authority_readiness.authority, 'NONE');
@@ -168,7 +187,8 @@ test('fails closed on a changed governing digest, authority field, family count,
     (value) => { value.v1_trusted_capture_readiness.schema_count = 16; },
     (value) => { value.governed_identity_readiness.schema_count = 8; },
     (value) => { value.source_intake_authority_readiness.authority = 'GRANTED'; },
-    (value) => { value.p9_binding.definition_proposal_layer_id = '0'.repeat(64); },
+    (value) => { value.p9_binding.registry_digest = '0'.repeat(64); },
+    (value) => { value.p9_binding.closed_preproduction_gate_ids = []; },
     (value) => { value.worktree_binding.phase1_worktree_base_commit = '0'.repeat(40); },
     (value) => { value.worktree_binding.final_integrated_head_commit = '0'.repeat(40); },
     (value) => { value.blockers = value.blockers.filter((entry) => entry.code !== 'P9_ACCEPTANCE_DEFINITIONS_UNADOPTED'); },

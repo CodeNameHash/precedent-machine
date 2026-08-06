@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = path.resolve(import.meta.dirname, '..');
-const fixturePath = path.join(root, 'tests/fixtures/canonical-v2/m3-v31-live-run/corpus-cards.json');
+const fixturePath = path.join(root, 'tests/fixtures/canonical-v2/m3-v31-fixtures/corpus-cards.json');
 const fixture = JSON.parse(fs.readFileSync(fixturePath, 'utf8'));
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;

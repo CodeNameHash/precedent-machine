@@ -1,6 +1,6 @@
 // POST /api/corrections/review — Approve/Reject actions for
 // pages/corrections-review.js (the weekly review queue).
-// Spec: docs/handoffs/CORRECT-TAB-SPEC-2026-07-17.md.
+// Spec: docs/archive/handoffs/CORRECT-TAB-SPEC-2026-07-17.md.
 //
 // Body: { id, action: 'approve' | 'reject', note? }
 // Header: x-editor-key (required — both actions need an approved editor)

@@ -10,6 +10,11 @@ const {
   PURE_PROPOSAL_SOURCES,
   LOCAL_ARTIFACT_WRITERS,
   READ_ONLY_GIT_INSPECTORS,
+  PRODUCTION_PATH_PURE_ANALYSIS_SOURCES,
+  LIVE_EXTRACTION_RUN_SOURCES,
+  LIVE_REQUEST_AUTHORIZATION_SOURCES,
+  LIVE_REQUEST_AUTHORIZATION_CLIENT_SOURCES,
+  CONTAINED_ROUTE_REPAIR_SOURCES,
   REQUIRED_AUTHORITY_BOUNDARY_CONTRACT_SOURCES,
   EXPLICIT_NEW_SOURCE_CLASSES,
   classifyChangedProductionSources,
@@ -57,7 +62,34 @@ const CAPABILITY_PATTERNS = Object.freeze({
 const PURE_FORBIDDEN_CAPABILITIES = Object.freeze(Object.keys(CAPABILITY_PATTERNS));
 const LOCAL_WRITER_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'filesystem_write'));
 const GIT_INSPECTOR_FORBIDDEN_CAPABILITIES = Object.freeze(LOCAL_WRITER_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'external_process').concat('filesystem_write'));
+// A live extraction run is allowed exactly the three capabilities that make
+// it what it is -- provider (the real model call), external_process (the
+// `claude` CLI it spawns) and filesystem_write (its receipts/evidence) --
+// and nothing that would give it database, network, signing, or deployment
+// authority.
+const LIVE_EXTRACTION_RUN_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => !['provider', 'external_process', 'filesystem_write'].includes(name)));
+// The session/credential mechanism: genuinely live, but the same full
+// zero-capability boundary as PURE_PROPOSAL -- see the class's own comment
+// in phase1-authority-boundary-inventory.js for why it is recorded as live
+// anyway.
+const LIVE_REQUEST_AUTHORIZATION_FORBIDDEN_CAPABILITIES = PURE_FORBIDDEN_CAPABILITIES;
+// The one client-side member of that surface: same boundary, minus the one
+// capability (`network`) its own same-origin fetch() calls require.
+const LIVE_REQUEST_AUTHORIZATION_CLIENT_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'network'));
+// Held-dormant repairs for routes the live pages/api/** file still contains:
+// `database` is the one capability permitted (that is the repaired
+// functionality itself); every other one of the seven -- including
+// `network`, so from-url-fetch.js's SSRF-guarded fetch cannot silently grow
+// a second, unguarded way to reach the network -- stays forbidden.
+const CONTAINED_ROUTE_REPAIR_FORBIDDEN_CAPABILITIES = Object.freeze(PURE_FORBIDDEN_CAPABILITIES.filter((name) => name !== 'database'));
 const ALLOWED_GIT_COMMANDS = Object.freeze(new Set(['rev-parse', 'show', 'status']));
+// The capability scan reads one file's own text, so it cannot see a capability
+// reached through an import. A production-path pure analysis source therefore
+// has to be a leaf: no dependencies at all, nothing to reach through.
+const MODULE_DEPENDENCY_PATTERNS = Object.freeze([
+  /\brequire\s*\(/g,
+  /^\s*import\b/gm,
+]);
 
 function git(args, options = {}) {
   return childProcess.execFileSync('git', args, {
@@ -103,6 +135,11 @@ function assertNoCapabilities(source, forbiddenCapabilities, label) {
   assert.deepEqual(present, [], `${label} has forbidden capabilities: ${present.join(', ')}`);
 }
 
+function assertNoModuleDependencies(source, label) {
+  const found = MODULE_DEPENDENCY_PATTERNS.reduce((count, pattern) => count + (source.match(pattern) || []).length, 0);
+  assert.equal(found, 0, `${label} must declare no module dependencies: purity resting on an import is purity the capability scan never checked`);
+}
+
 function assertNoCapabilityGrowth(baseSource, currentSource, label) {
   const before = capabilityCounts(baseSource);
   const after = capabilityCounts(currentSource);
@@ -144,11 +181,32 @@ test('every production source changed from the fixed Phase 1 base is classified 
     'PURE_PROPOSAL',
     'LOCAL_ARTIFACT_WRITER',
     'READ_ONLY_GIT_INSPECTOR',
+    'PRODUCTION_PATH_PURE_ANALYSIS',
+    'LIVE_EXTRACTION_RUN',
+    'LIVE_REQUEST_AUTHORIZATION',
+    'LIVE_REQUEST_AUTHORIZATION_CLIENT',
+    'CONTAINED_ROUTE_REPAIR',
     'MODIFIED_PREEXISTING',
   ]));
 });
 
 test('pure proposals and local artefact writers have their exact capability boundaries', () => {
+  assert.ok(PURE_PROPOSAL_SOURCES.includes('lib/canonical-v2/antitrust-v1-surface-disposition.js'));
+  assert.ok(PURE_PROPOSAL_SOURCES.includes('lib/canonical-v2/bd837f1d-financing-source-open-world-pin.js'));
+  for (const source of [
+    'lib/canonical-v2/derived-comparison.js',
+    'lib/canonical-v2/native-producer/ioc-mechanic-resolution.js',
+    'lib/canonical-v2/native-producer/prompt-budget-split-preflight.js',
+    'lib/canonical-v2/native-producer/sole-remedy-resolution.js',
+    'lib/canonical-v2/policy-successor-m1-adoption-binding.js',
+    'scripts/reprocess/v1-apply-guard.js',
+    'lib/canonical-v2/legacy-card-bridge.js',
+  ]) assert.ok(PURE_PROPOSAL_SOURCES.includes(source), source);
+  for (const source of [
+    'scripts/reprocess/v1-apply-backup.js',
+    'scripts/reprocess/v1-apply-receipt.js',
+    'scripts/reprocess/v1-apply-sequence.js',
+  ]) assert.ok(LOCAL_ARTIFACT_WRITERS.includes(source), source);
   for (const source of Object.values(REQUIRED_AUTHORITY_BOUNDARY_CONTRACT_SOURCES)) {
     assert.ok(PURE_PROPOSAL_SOURCES.includes(source), source);
   }
@@ -160,12 +218,76 @@ test('pure proposals and local artefact writers have their exact capability boun
     REQUIRED_AUTHORITY_BOUNDARY_CONTRACT_SOURCES.SUCCESSOR_M1_TRUSTED_CONTROLLER_VERIFICATION,
     'lib/canonical-v2/native-producer/durable-12-item-pilot-readiness.js',
   );
+  assert.equal(
+    REQUIRED_AUTHORITY_BOUNDARY_CONTRACT_SOURCES.GOVERNED_IDENTITY_LITERAL_KEY_REGISTRY_PATCH,
+    'lib/canonical-v2/deal-identity-trusted-key-registry-proposal.js',
+  );
   assert.ok(PURE_PROPOSAL_SOURCES.includes(REQUIRED_AUTHORITY_BOUNDARY_CONTRACT_SOURCES.SOURCE_INTAKE_TRUSTED_AUTHORITY_VERIFIER));
   for (const relativePath of PURE_PROPOSAL_SOURCES) {
     assertNoCapabilities(fs.readFileSync(path.join(ROOT, relativePath), 'utf8'), PURE_FORBIDDEN_CAPABILITIES, relativePath);
   }
   for (const relativePath of LOCAL_ARTIFACT_WRITERS) {
     assertNoCapabilities(fs.readFileSync(path.join(ROOT, relativePath), 'utf8'), LOCAL_WRITER_FORBIDDEN_CAPABILITIES, relativePath);
+  }
+});
+
+test('production-path pure analysis sources are capability-free leaf modules', () => {
+  assert.ok(PRODUCTION_PATH_PURE_ANALYSIS_SOURCES.includes('lib/agreement-revision-classifier.js'));
+  for (const relativePath of PRODUCTION_PATH_PURE_ANALYSIS_SOURCES) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    // The same full scan PURE_PROPOSAL gets, plus the leaf requirement. This
+    // class is where live product logic goes, so it is the strictest of the
+    // four, never a softer landing than the class it sits beside.
+    assertNoCapabilities(source, PURE_FORBIDDEN_CAPABILITIES, relativePath);
+    assertNoModuleDependencies(source, relativePath);
+  }
+});
+
+test('live extraction run sources have their exact capability boundary', () => {
+  assert.ok(LIVE_EXTRACTION_RUN_SOURCES.includes('scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs'));
+  for (const relativePath of LIVE_EXTRACTION_RUN_SOURCES) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assertNoCapabilities(source, LIVE_EXTRACTION_RUN_FORBIDDEN_CAPABILITIES, relativePath);
+    const counts = capabilityCounts(source);
+    assert.ok(counts.provider > 0, `${relativePath} must exercise a real provider call -- that is what distinguishes this class`);
+    assert.ok(counts.external_process > 0, `${relativePath} must spawn its model CLI as an external process`);
+    assert.ok(counts.filesystem_write > 0, `${relativePath} must write its run evidence to local files`);
+  }
+});
+
+test('live request authorization sources have their exact capability boundary', () => {
+  assert.ok(LIVE_REQUEST_AUTHORIZATION_SOURCES.includes('lib/auth/gate.js'));
+  assert.ok(LIVE_REQUEST_AUTHORIZATION_SOURCES.includes('lib/auth/session.js'));
+  assert.ok(LIVE_REQUEST_AUTHORIZATION_SOURCES.includes('pages/api/auth/login.js'));
+  for (const relativePath of LIVE_REQUEST_AUTHORIZATION_SOURCES) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assertNoCapabilities(source, LIVE_REQUEST_AUTHORIZATION_FORBIDDEN_CAPABILITIES, relativePath);
+  }
+});
+
+test('the live request authorization client source has its exact capability boundary', () => {
+  assert.deepEqual(LIVE_REQUEST_AUTHORIZATION_CLIENT_SOURCES, ['pages/login.js']);
+  for (const relativePath of LIVE_REQUEST_AUTHORIZATION_CLIENT_SOURCES) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assertNoCapabilities(source, LIVE_REQUEST_AUTHORIZATION_CLIENT_FORBIDDEN_CAPABILITIES, relativePath);
+    // Not vacuous: this file must actually exercise the one capability its
+    // narrower boundary permits, or the distinction from
+    // LIVE_REQUEST_AUTHORIZATION_SOURCES above would be untested.
+    assert.ok(capabilityCounts(source).network > 0, `${relativePath} must exercise network -- that is why it is not in LIVE_REQUEST_AUTHORIZATION_SOURCES`);
+  }
+});
+
+test('contained route repair sources have their exact capability boundary', () => {
+  assert.ok(CONTAINED_ROUTE_REPAIR_SOURCES.includes('lib/broad-corpus/contained-routes/users.js'));
+  assert.ok(CONTAINED_ROUTE_REPAIR_SOURCES.includes('lib/broad-corpus/contained-routes/from-url-fetch.js'));
+  const { BROAD_CORPUS_CONTAINED_ROUTE_FILES } = require('../lib/broad-corpus-containment');
+  const liveRouteFiles = new Set(Object.values(BROAD_CORPUS_CONTAINED_ROUTE_FILES));
+  for (const relativePath of CONTAINED_ROUTE_REPAIR_SOURCES) {
+    const source = fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+    assertNoCapabilities(source, CONTAINED_ROUTE_REPAIR_FORBIDDEN_CAPABILITIES, relativePath);
+    // Not vacuous, and re-proves the property the class exists to record:
+    // the repair must never itself be the live route file it repairs.
+    assert.equal(liveRouteFiles.has(relativePath), false, `${relativePath} must not be one of the live, still-contained route files`);
   }
 });
 
@@ -228,5 +350,7 @@ test('hostile inventory and capability changes fail closed', () => {
   assert.throws(() => assertNoCapabilities('createClient(url, key)', LOCAL_WRITER_FORBIDDEN_CAPABILITIES, 'hostile writer'), /database/);
   assert.throws(() => assertReadOnlyGitInspector("execFileSync('git', ['push'])", 'hostile inspector'), /non-read-only Git command/);
   assert.throws(() => assertNoCapabilityGrowth('', 'fetch(url)', 'hostile legacy'), /network/);
-  assert.equal(Object.keys(EXPLICIT_NEW_SOURCE_CLASSES).length, 3);
+  assert.throws(() => assertNoModuleDependencies("const fs = require('node:fs');", 'hostile analysis'), /no module dependencies/);
+  assert.throws(() => assertNoModuleDependencies("import fs from 'node:fs';", 'hostile analysis'), /no module dependencies/);
+  assert.equal(Object.keys(EXPLICIT_NEW_SOURCE_CLASSES).length, 8);
 });

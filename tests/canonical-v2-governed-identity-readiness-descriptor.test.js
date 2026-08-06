@@ -19,6 +19,14 @@ test('binds the governed identity proposal schemas and exact source digest while
   assert.equal(value.source_module.module_key, 'GOVERNED_IDENTITY_TRUST_CONTRACTS');
   assert.equal(value.source_module.schema_versions.length, 9);
   assert.equal(value.missing_requirements.length, 7);
+  assert.equal(value.adopted_initial_import_identity_policy.governed_source_namespace, 'BEN_APPROVED_IMPORT/V2');
+  assert.equal(value.adopted_initial_import_identity_policy.seed_schema_version, 'BEN_APPROVED_IMPORT_SEED/V2');
+  assert.equal(value.adopted_initial_import_identity_policy.transaction_identifiers.at(0), 'TX-000001');
+  assert.equal(value.adopted_initial_import_identity_policy.transaction_identifiers.at(-1), 'TX-000040');
+  assert.equal(value.adopted_initial_import_identity_policy.ben_mapping_signature_policy, 'ONE_BEN_SIGNATURE_FOR_EXACT_40_DEAL_41_OCCURRENCE_MAPPING_SET');
+  assert.equal(value.adopted_initial_import_identity_policy.machine_allocation_receipt_count, 40);
+  assert.equal(value.adopted_initial_import_identity_policy.bridge_current_head_and_full_chain_verification_required, true);
+  assert.equal(value.frozen_key_registry_amendment_approval_state, 'PENDING_EXACT_DIFF_APPROVAL_NOT_ACTIVE');
   assert.equal(value.frozen_key_registry_amendment.authority, 'NONE');
   assert.equal(value.frozen_key_registry_amendment.role_domain_grants.length, 6);
   assert.equal(value.frozen_key_registry_amendment.private_key_material, null);

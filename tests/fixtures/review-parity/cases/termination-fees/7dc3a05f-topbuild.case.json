@@ -1,0 +1,13 @@
+{
+  "schema": "REVIEW_PARITY_CASE/V1",
+  "family_id": "TERMINATION_FEE",
+  "deal_id": "7dc3a05f-topbuild",
+  "deal_label": "QXO / TopBuild",
+  "notes": "V2 side is the ONLY deal registered in lib/canonical-v2/termination-fee-serving-source.js, rebuilt through the real projection (projectTerminationFeeProductSurfaces). CAVEAT, load-bearing: this V2 side is NOT extraction output. Its one amount claim and six trigger claims are hand-encoded quote constants in termination-fee-serving-source.js (:200-266), located by exact string match in the hash-pinned excerpt file __fixtures__/canonical-v2/qxo-termination-fee-reviewed-excerpts.txt. The committed pilot run has no TERMINATION_FEE work item for topbuild-full (its TopBuild items are TERMINATION, NO_SHOP, IOC, CAPITALISATION and SPECIFIC_PERFORMANCE_REMEDIES), so no real V2 termination-fee extraction exists for this deal. LEGACY SIDE UNAVAILABLE for the same reason as the Modiv case.",
+  "legacy": {
+    "unavailable": "No committed artefact holds legacy TERMF cards for this deal. tests/fixtures/canonical-v2/v1v2-comparator/topbuild-v1-provision-snapshot.json is a real production provision_cards export of 43 REPRESENTATION cards with no features and no TERMF cards. The nearest thing to real legacy fee data in the tree is tests/termf-tail-trigger-dedup.test.js:13-21, a partial reconstruction of production card fec8549c that __fixtures__/canonical-v2/qxo-termination-fee-row.js:15-18 explicitly disowns as citing nonexistent sections and an unsourced 18-month tail."
+  },
+  "v2": {
+    "projection_file": "tests/fixtures/review-parity/cases/termination-fees/7dc3a05f-topbuild.projection.json"
+  }
+}

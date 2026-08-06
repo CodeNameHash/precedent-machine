@@ -233,6 +233,33 @@ test('governed Material Contracts claims reach Review, Query, Compare and market
     .some((result) => result.coverage?.observedCount === 1));
 });
 
+test('the projector keeps contract-excluded OTHER material exact and open-world', async () => {
+  const { resolution } = await resolveFixture();
+  const crafted = structuredClone(resolution);
+  const sourceEntry = crafted.resolved.find((entry) => (
+    entry.resolved_claim_definition_key === 'MATERIAL_CONTRACT_BUCKET_PRESENT'
+  ));
+  const otherEntry = structuredClone(sourceEntry);
+  otherEntry.claim.attributes.bucket_code = 'OTHER';
+  otherEntry.claim.canonical_value = 'OTHER';
+  crafted.resolved.push(otherEntry);
+  const openItem = structuredClone(crafted.open_world[0]);
+  openItem.section_reference = otherEntry.section_reference;
+  openItem.raw_value = otherEntry.claim.raw_value;
+  openItem.closure_id = otherEntry.claim.closure_id;
+  openItem.reason = 'MATERIAL_CONTRACT_BUCKET_UNSUPPORTED';
+  crafted.open_world.push(openItem);
+
+  const projection = projectMaterialContractsProductSurfaces({ resolution: crafted, deal_id: DEAL_ID });
+  assert.equal(projection.cards.some((card) => (
+    card.features.materialContractsBuckets?.some((bucket) => bucket.code === 'OTHER')
+  )), false);
+  assert.ok(projection.cards.some((card) => (
+    card.canonical_v2_lineage.source === EVIDENCE_SOURCE
+      && card.primary_quote === otherEntry.claim.raw_value
+  )));
+});
+
 test('committed Landos/AbbVie text replays through native resolution and the lexical net', async () => {
   const { quote, receipt, resolution } = await resolveLandosFixture();
   assert.equal(receipt.compiled_candidates.length, 2);
@@ -243,7 +270,7 @@ test('committed Landos/AbbVie text replays through native resolution and the lex
   ]);
   assert.equal(resolution.open_world.length, 0);
 
-  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 15);
+  assert.equal(LEXICAL_FAMILY_LEXICON_VERSION, 16);
   assert.ok(LEXICAL_FAMILY_LEXICON.entries.some((entry) => entry.family === 'REP-T-CONTRACTS'));
   const bytes = Buffer.from(quote, 'utf8');
   const lexical = buildLexicalDisagreementReceipt({

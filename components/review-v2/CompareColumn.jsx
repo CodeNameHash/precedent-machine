@@ -39,6 +39,13 @@ import { formatNumericMarketSummary, formatNumericValueForUnit } from './marketN
 import { MarketMetricCell } from './MarketColumn';
 import { createMarketRowKeyAssigner, stableMarketRowKey } from '../../lib/market-metrics';
 
+// Bug-fix pass (compare-mode render parity): a couple of the fixes below
+// build small pieces of cell content directly (representations-qualifiers'
+// general-exceptions/knowledge-summary/bring-down data -- see
+// flatAnswerContent) instead of only ever delegating to a config's own
+// renderCell, so PillCell is needed directly here too.
+const { PillCell } = ProvisionTablePrimitives;
+
 const CONSIDERATION_SECTION_ID = 'consideration-hero';
 
 /* ── r15 addendum (Ben): compare-mode masthead ──────────────────────────
@@ -263,11 +270,13 @@ function textValueLocal(value) {
   return String(inner);
 }
 
-function safeRows(config, reviewDeal) {
+export function safeRows(config, reviewDeal) {
   if (!config || typeof config.selectRows !== 'function') return [];
   try {
     const rows = config.selectRows(reviewDeal);
-    return Array.isArray(rows) ? rows : [];
+    return Array.isArray(rows)
+      ? rows.filter((row) => row?.comparisonState !== 'NOT_ADMITTED')
+      : [];
   } catch {
     return [];
   }
@@ -1010,11 +1019,157 @@ export function UnifiedCompareSection({
     return null;
   }
 
+  // ── Bug 2: compare-mode render parity for the two configs with a custom
+  //    config.renderBody (mae-definitions, representations-qualifiers) ──
+  //
+  // ProvisionTable.jsx's renderBody branch is what single-deal mode uses for
+  // representations-qualifiers -- but NOT for mae-definitions: pages/
+  // review/[id].js's SectionBlock special-cases MAE_SECTION_ID straight to
+  // <MaeSection> (components/review-v2/MaeSection.jsx), never
+  // <ProvisionTable>, so mae-definitions.config.js's own renderBody is
+  // unreachable in production; the real single-deal MAE fidelity bar is
+  // <MaeSection>'s own party-split, per-carve-out-item rendering. Either
+  // way, UnifiedCompareSection never called renderBody (or, for MAE,
+  // rendered <MaeSection>) at all -- it always uses the generic flat body
+  // below, driven off config.columns. Investigated per-family rather than
+  // assumed which of (a)/(b)/(c) applies:
+  //
+  // -- representations-qualifiers / parent-representations-qualifiers (b) --
+  // renderBody's three blocks are not three separate tables underneath --
+  // they're three groups of ROWS already sitting in ONE selectRows() array
+  // (row.kind: 'general-exceptions' | 'knowledge-summary' | 'rep'), exactly
+  // the shape the generic flat body already unions correctly across deals.
+  // What actually broke: REP_COLUMNS' renderCells (renderQualifiers/
+  // renderLookback) only read a 'rep' row's own fields (row.materiality/
+  // row.lookback) -- a general-exceptions/knowledge-summary row has
+  // neither, so its answer cell silently rendered a bare "-" in every
+  // deal's column (real data loss, not just re-layout: the SEC cut-off/
+  // portions-excluded/disclosure-letter facts and the Knowledge standard/
+  // persons facts were completely invisible). Restores those facts as
+  // stacked sub-fact pairs in each deal's own answer cell -- the same
+  // "multiple sub-values in one cell" stacking flatAnswerContent already
+  // uses for ordinary multi-column configs -- preserving the grouping
+  // (General Exceptions row first, Knowledge row second, matching
+  // selectRows' own push order) without reusing renderBody's private,
+  // unexported table-builders (generalExceptionsTableNode/knowledgeTableNode
+  // /sectionBox), which assume one deal/one table and have no per-deal-
+  // answer-column concept to plug into.
+  function generalExceptionsAnswerPairs(row) {
+    const pairs = [];
+    if (row.secCutoff) pairs.push({ header: 'SEC cut-off', node: row.secCutoff });
+    if (Array.isArray(row.secExcluded) && row.secExcluded.length) {
+      const labels = row.secExcluded
+        .map((item) => (item && typeof item === 'object' ? item.label : item))
+        .filter(Boolean);
+      if (labels.length) {
+        pairs.push({
+          header: 'Portions excluded',
+          node: (
+            <div className="flex flex-wrap gap-1">
+              {labels.map((label, i) => <PillCell key={i} label={label} tone="neutral" />)}
+            </div>
+          ),
+        });
+      }
+    }
+    if (row.disclosureLetter && row.disclosureLetter.label) {
+      pairs.push({ header: 'Disclosure Letter', node: row.disclosureLetter.label });
+    }
+    return pairs;
+  }
+
+  function knowledgeSummaryAnswerPairs(row) {
+    const pairs = [];
+    if (row.knowledgeStandard) pairs.push({ header: 'Standard', node: row.knowledgeStandard });
+    if (row.knowledgePersons) pairs.push({ header: 'Persons', node: row.knowledgePersons });
+    return pairs;
+  }
+
+  // -- mae-definitions (b) --
+  // Tracing what the generic flat body already does for this config: its
+  // 'signals' column renderCell (mae-definitions.config.js's renderSignals)
+  // already handles carve-out items and limb-type text exactly as
+  // <MaeSection> does -- carveoutsTableNode's per-item carveback pills and
+  // the friendly TWO_LIMB/ONE_LIMB translation both run through this
+  // config's own smart column, which the generic path below already calls
+  // normally (mae-definitions has no FULL_TEXT_COLUMNS relocation on
+  // 'signals'). So there is no cross-deal item-matching problem to solve --
+  // each deal's own carve-out list is self-contained inside that deal's own
+  // answer cell, already rendered correctly today. What's actually missing
+  // is presentational: row.label carries a "Company: "/"Parent: " prefix
+  // (buildRowsForCards, so the union key in compareRowUnion.js stays
+  // distinct per side), which MaeSection.jsx's displayLabel() strips for
+  // single-deal display because there the party split is carried by which
+  // TABLE a row sits in. The unified table has no separate-table split, so
+  // stripping the prefix WITHOUT another way to mark the split would make
+  // "Company: MAE Test" and "Parent: MAE Test" collide into two
+  // identically-labelled "MAE Test" rows with no way to tell them apart --
+  // worse than today. withMaeSideDividers() below inserts an explicit
+  // "Company MAE" / "Parent MAE" band row (the same divider idiom
+  // groupedBody() already uses for group bands) ahead of each side's rows;
+  // flatLabelNode only strips the prefix for mae-definitions specifically,
+  // i.e. exactly when that divider is doing the job the prefix used to. The
+  // exact box-per-table chrome <MaeSection> uses (a combined Party-column
+  // "MAE test" table plus one "Carve-outs — <Side>" table per side) is not
+  // reproduced -- the unified table gets one row per (side, concept)
+  // instead, the native unit compare mode's row/column model already works
+  // in -- but the actual facts, and the party grouping, are both preserved.
+  const MAE_SIDE_LABEL_PREFIX_RE = /^(Company|Parent):\s*/;
+  const MAE_SIDE_DIVIDER_LABEL = { Company: 'Company MAE', Parent: 'Parent MAE' };
+
+  function stripMaeSidePrefix(label) {
+    return typeof label === 'string' ? label.replace(MAE_SIDE_LABEL_PREFIX_RE, '') : label;
+  }
+
+  function maeEntrySide(entry) {
+    const row = entry.rows.find(Boolean);
+    return row && typeof row.side === 'string' && row.side ? row.side : null;
+  }
+
+  function withMaeSideDividers(entries) {
+    const out = [];
+    let lastSide;
+    entries.forEach((entry) => {
+      const side = maeEntrySide(entry);
+      if (side && side !== lastSide) {
+        out.push({
+          key: `mae-side-divider-${side}`,
+          rows: [{ kind: 'divider', label: MAE_SIDE_DIVIDER_LABEL[side] || side }],
+        });
+      }
+      if (side) lastSide = side;
+      out.push(entry);
+    });
+    return out;
+  }
+
   // ── Flat (multi-column) sections ──
   function flatAnswerContent(row, ctx) {
-    const pairs = answerCols
-      .map((col) => ({ header: col.header, node: renderCellSafe(col, row, ctx) }))
-      .filter((p) => p.node !== null && p.node !== undefined && p.node !== '');
+    let pairs;
+    if (row.kind === 'general-exceptions') {
+      pairs = generalExceptionsAnswerPairs(row);
+    } else if (row.kind === 'knowledge-summary') {
+      pairs = knowledgeSummaryAnswerPairs(row);
+    } else {
+      // Bug 2 (representations bring-down pill): row.bringDown only ever
+      // rendered via renderTerm (the LABEL column's renderCell), which the
+      // unified table deliberately bypasses for a plain-string row.label
+      // (see flatLabelNode's own comment on why deal-specific label
+      // decorations can't go in a SHARED label column) -- so it never made
+      // it into the answer cell either and was simply invisible in compare
+      // mode. It belongs in the answer cell, not the label: it's
+      // deal-specific data, and the label column is shared across every
+      // deal in the row.
+      const bringDownPair = row.kind === 'rep' && row.bringDown
+        ? [{ node: <PillCell label={row.bringDown.label} tone="neutral" color={row.bringDown.colorKey} /> }]
+        : [];
+      pairs = [
+        ...bringDownPair,
+        ...answerCols
+          .map((col) => ({ header: col.header, node: renderCellSafe(col, row, ctx) }))
+          .filter((p) => p.node !== null && p.node !== undefined && p.node !== ''),
+      ];
+    }
     if (pairs.length > 1) {
       return pairs.map((p, i) => (
         <div key={i} className="mb-1.5 last:mb-0">
@@ -1056,14 +1211,28 @@ export function UnifiedCompareSection({
     // qualifier chips) which, in a SHARED label column, would silently
     // attribute one deal's data to every deal in the comparison. Fall back
     // to the rendered label cell only when the row has no string label.
-    if (typeof row.label === 'string' && row.label.trim()) return row.label;
+    if (typeof row.label === 'string' && row.label.trim()) {
+      // Bug 2 (MAE party split -- see withMaeSideDividers above): strip the
+      // "Company: "/"Parent: " prefix ONLY when the divider band ahead of
+      // this row is already carrying that context -- stripping it
+      // unconditionally would make the two sides' identically-shaped rows
+      // ("MAE Test", "Carve-outs") collide with no way to tell them apart.
+      if (config?.id === 'mae-definitions') return stripMaeSidePrefix(row.label);
+      return row.label;
+    }
     const node = labelCol ? renderCellSafe(labelCol, row, deals[firstIdx].ctx) : null;
     if (node !== null && node !== undefined && node !== '') return node;
     return row.label || entry.key;
   }
 
   function flatBody() {
-    const entries = unionRows(deals.map((d) => d.rows));
+    const unionedEntries = unionRows(deals.map((d) => d.rows));
+    // Bug 2 (MAE party split): insert "Company MAE" / "Parent MAE" band
+    // rows ahead of each side's entries, the same divider idiom
+    // groupedBody() already uses for group bands -- a no-op whenever no
+    // row carries a `side` (single-party MAE deals, and every non-MAE
+    // config, since only mae-definitions.config.js's rows ever set it).
+    const entries = config?.id === 'mae-definitions' ? withMaeSideDividers(unionedEntries) : unionedEntries;
     const assignMarketRowKey = createMarketRowKeyAssigner({ sectionId: section?.id, configId: config?.id || section?.id });
     return entries.map((entry) => {
       const visibleRow = entry.rows.find(Boolean) || null;
@@ -1249,6 +1418,52 @@ export function UnifiedCompareSection({
     </div>
   ) : null;
 
+  // ── Bug 1: coverage footer dropped in compare mode ──────────────────────
+  // conditions.config.js and material-contracts.config.js are the only two
+  // configs with a config.renderFooter -- the "N of M present" coverage
+  // strip ProvisionTable.jsx renders below every single-deal table (both
+  // its renderBody and generic paths, ~L217/L394). This component never
+  // called it at all, which silently dropped the coverage summary from the
+  // PRIMARY deal's own column too, not just the compared ones -- a defect
+  // independent of the renderBody question above.
+  //
+  // Rendered per-deal, never one shared strip: CoverageFooter's "N of M"
+  // count is a SPECIFIC deal's own coverage of the canonical family (e.g.
+  // "6 of 9 standard conditions present") -- a single shared footer would
+  // have to pick one deal's numbers and show them unlabelled beside every
+  // other deal's column, reading as if it described all of them. Each deal
+  // gets its own labelled strip instead, in deal order; market/loading/
+  // error columns are skipped (CoverageFooter has no meaning for those).
+  // Reuses each deal's own already-computed `rows`/`ctx` from the `deals`
+  // memo above -- the SAME values feeding that deal's own body cells -- so
+  // the footer can never disagree with what the table body shows for it.
+  // Dark Canonical V2 preview rows stay excluded exactly as today: `d.rows`
+  // is `safeRows(config, d.reviewDeal)`, which already drops every
+  // comparisonState 'NOT_ADMITTED' row -- material-contracts.config.js's
+  // dark rows always carry that flag together with authorityState
+  // 'VALIDATED_NOT_SERVED' / marketState 'DARK_REVIEW_ONLY' (darkPreviewRows
+  // / evidenceOnlyRows both stamp all three atomically), so renderFooter's
+  // own authorityState/marketState filter is checking rows that are already
+  // gone -- same excluded set, same counts, as calling it with the raw
+  // unfiltered config.selectRows() the way ProvisionTable.jsx does.
+  function coverageFooters() {
+    if (typeof config.renderFooter !== 'function') return null;
+    const strips = deals
+      .filter((d) => !d.isMarket && !d.loading && !d.error)
+      .map((d) => {
+        const footer = config.renderFooter(d.rows, d.ctx);
+        if (!footer) return null;
+        return (
+          <div key={d.key} data-testid={`provision-table-footer-unified-${config.id}-${d.key}`}>
+            <div className="text-[9px] font-bold tracking-[0.08em] uppercase text-[#9A9A9A] mb-1">{d.name}</div>
+            {footer}
+          </div>
+        );
+      })
+      .filter(Boolean);
+    return strips.length ? <div className="mt-3 space-y-3">{strips}</div> : null;
+  }
+
   return (
     <div data-testid={`unified-compare-${config.id}`}>
       {electionBlock}
@@ -1280,6 +1495,7 @@ export function UnifiedCompareSection({
           </tbody>
         </table>
       </section>
+      {coverageFooters()}
     </div>
   );
 }

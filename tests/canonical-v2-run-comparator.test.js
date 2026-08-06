@@ -7,7 +7,7 @@
  *
  * Fixture note (see the plan's Task 8 instructions): the motivating
  * fixture is the ~10-qualifier disagreement between the two REAL recorded
- * F28 live runs (docs/handoffs/F28-SECOND-LIVE-RUN.md, "honest quality
+ * F28 live runs (docs/archive/handoffs/F28-SECOND-LIVE-RUN.md, "honest quality
  * assessment", defect 2). Both recordings exist in this repo:
  *   - tests/fixtures/canonical-v2/f28-live-run/qxo-topbuild-3-1-b-live-response.json (run 1)
  *   - tests/fixtures/canonical-v2/f28-second-live-run/qxo-topbuild-3-1-b-live-response.json (run 2)
@@ -143,7 +143,7 @@ function runTwoSectionView(recorded) {
     // Run 2's PROMPT_VERSION 2 shape instead carries qualifiers at the
     // REPRESENTATION level, each with its own `attachment.governs_path`
     // pointing at the limb it qualifies (see the run-2 recording's two
-    // THRESHOLD entries) -- this is exactly defect 2 from docs/handoffs/
+    // THRESHOLD entries) -- this is exactly defect 2 from docs/archive/handoffs/
     // F28-SECOND-LIVE-RUN.md: representation-level qualifiers, not
     // limb-level ones.
     for (const qualifier of representation.qualifiers || []) {
@@ -172,7 +172,7 @@ test('compareRuns: the two real F28 recordings disagree by roughly ten qualifier
   const runB = runTwoSectionView(run2Raw);
 
   // Sanity on the fixture itself before trusting the comparator's output:
-  // run 1 emits far more qualifier objects than run 2 (docs/handoffs/
+  // run 1 emits far more qualifier objects than run 2 (docs/archive/handoffs/
   // F28-SECOND-LIVE-RUN.md, defect 2).
   assert.ok(runA.qualifiers.length >= 10, `expected run 1 to carry ~12 qualifiers, got ${runA.qualifiers.length}`);
   assert.ok(runB.qualifiers.length <= 3, `expected run 2 to carry ~2 qualifiers, got ${runB.qualifiers.length}`);
@@ -186,7 +186,7 @@ test('compareRuns: the two real F28 recordings disagree by roughly ten qualifier
 
   // The headline instrument: run 1 proposed qualifiers run 2 did not, and
   // the count is in the "roughly ten" band the audit finding describes.
-  // docs/handoffs/F28-SECOND-LIVE-RUN.md describes "roughly a dozen" run-1
+  // docs/archive/handoffs/F28-SECOND-LIVE-RUN.md describes "roughly a dozen" run-1
   // qualifier objects against run 2's 2, so run-1-only is expected in the
   // high single digits to mid teens, not an exact fixed count.
   assert.ok(
@@ -217,7 +217,7 @@ test('compareRuns: identical runs disagree on nothing', () => {
 });
 
 test('compareRuns: a reused flat limb label across unrelated parents is NOT treated as a match', () => {
-  // Regression guard for the exact defect run 1 exhibited (docs/handoffs/
+  // Regression guard for the exact defect run 1 exhibited (docs/archive/handoffs/
   // F28-SECOND-LIVE-RUN.md, defect 1): two distinct assertions that happen
   // to reuse the same bare limb label ("(i)") from different parents must
   // never be collapsed into "the same limb" just because a span overlaps.

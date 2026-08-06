@@ -4,7 +4,7 @@
  * tests/canonical-v2-f28-live-fixture-replay.test.js
  *
  * Replays the RECORDED, UNMODIFIED raw model response from the F28 first
- * live run (docs/handoffs/F28-FIRST-LIVE-RUN.md,
+ * live run (docs/archive/handoffs/F28-FIRST-LIVE-RUN.md,
  * tests/fixtures/canonical-v2/f28-live-run/qxo-topbuild-3-1-b-live-response.json)
  * through the pipeline as it stands AFTER the defect 1/2/3/4 fixes, and
  * documents how the buckets change versus the run doc's own numbers
@@ -61,7 +61,7 @@
  *    stay unaccepted. One of the 18 limb assertions the run doc counted
  *    separately fails BYTE-EXACT evidence verification first (see the
  *    "entity-decoding note" below), so only 17 of the 18 reach the citation
- *    check at all. NEVER SILENTLY DISCARDED (docs/handoffs/
+ *    check at all. NEVER SILENTLY DISCARDED (docs/archive/handoffs/
  *    F28-SECOND-LIVE-RUN.md): every one of those 17, accepted or not,
  *    still COMPILES -- an unaccepted citation is recorded as a typed
  *    `citation_residuals` entry (9 of the 17: the three uncorroborated
@@ -285,7 +285,7 @@ function buildIdentityAdmittedSourceContext(text, { dealKey, dealAdmissionId, so
 
 // ─── Fixture: the real QXO Section 3.1(b) capital-structure text, embedded
 // WITHOUT a "Section 3.1" heading -- the actual F28 live-run document shape
-// (no decimal section numbering anywhere; see docs/handoffs/
+// (no decimal section numbering anywhere; see docs/archive/handoffs/
 // F28-FIRST-LIVE-RUN.md's "Structural degeneracy" note), unlike
 // tests/canonical-v2-candidate-resolution.test.js's synthetic wrapper, which
 // DOES include a real "Section 3.1" heading and so is not representative of

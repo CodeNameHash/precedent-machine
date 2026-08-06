@@ -43,7 +43,7 @@ function successfulClient(onRequest = () => {}) {
 }
 
 test('profiles pin the approved model and reasoning combinations', () => {
-  assert.deepEqual(Object.keys(PROFILES), ['TERRA_MEDIUM', 'SOL_HIGH']);
+  assert.deepEqual(Object.keys(PROFILES), ['TERRA_MEDIUM', 'SOL_HIGH', 'SOL_XHIGH']);
   assert.deepEqual(resolveProfile('TERRA_MEDIUM'), {
     profile_id: 'TERRA_MEDIUM',
     model: 'gpt-5.6-terra',
@@ -53,6 +53,9 @@ test('profiles pin the approved model and reasoning combinations', () => {
     profile_id: 'SOL_HIGH',
     model: 'gpt-5.6-sol',
     reasoning_effort: 'high',
+  });
+  assert.deepEqual(resolveProfile('SOL_XHIGH'), {
+    profile_id: 'SOL_XHIGH', model: 'gpt-5.6-sol', reasoning_effort: 'xhigh',
   });
   assert.ok(Object.isFrozen(PROFILES));
   assert.ok(Object.isFrozen(PROFILES.TERRA_MEDIUM));

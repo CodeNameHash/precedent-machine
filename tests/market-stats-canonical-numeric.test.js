@@ -54,7 +54,14 @@ test('market-stats claim loading uses the migrated base-column projection only',
 
   const claimSelects = selects.filter(({ table }) => table === 'claims');
   assert.equal(claimSelects.length, 1);
-  assert.equal(claimSelects[0].columns, 'id, deal_id, excerpt_id, attribute, canonical, verbatim, evidence_quote, provenance');
+  // The guard this test exists for: the projection must not reach for a
+  // canonical_numeric cache column. State that directly rather than leaving it
+  // implied by a byte-exact list, which any legitimate column addition breaks.
+  assert.doesNotMatch(claimSelects[0].columns, /canonical_numeric/);
+  // provision_instance_id is required: claim-to-card binding composes
+  // deal_id + excerpt_id + provision_instance_id, because an excerpt is not a
+  // unique card identity. Without it selected, that binding is inert.
+  assert.equal(claimSelects[0].columns, 'id, deal_id, excerpt_id, provision_instance_id, attribute, canonical, verbatim, evidence_quote, provenance');
 });
 
 test('market-stats derives numeric values from loaded claim fields rather than an optional cache property', () => {

@@ -3,6 +3,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
+const { contentId } = require('../lib/canonical-v2/canonical-bytes');
+
 const {
   EMPTY_REGISTRY,
 } = require('../lib/canonical-v2/native-producer/known-defect-registry');
@@ -15,12 +17,20 @@ const {
   certificationAdmissible,
 } = require('../lib/canonical-v2/native-producer/m3-certification-control-v2');
 const {
+  CURRENT_M3_FAMILY_PARITY_REGISTER,
   CURRENT_M3_FAMILY_PARITY_STATUS,
+  STATUS_SCHEMA,
+  listM3ProductParityBlockers,
 } = require('../lib/canonical-v2/native-producer/m3-family-parity-register');
 const {
   bindDecisionConditionalFamilyStatus,
   compileDecisionReconciliationProposal,
 } = require('../lib/canonical-v2/decision-reconciliation-proposal');
+
+const FAMILY_STATUS_SCHEMA = 'CANONICAL_V2_DECISION_CONDITIONAL_FAMILY_STATUS/V1';
+const CERTIFICATION_CONTROL_PATH = require.resolve('../lib/canonical-v2/native-producer/m3-certification-control');
+const CERTIFICATION_CONTROL_V2_PATH = require.resolve('../lib/canonical-v2/native-producer/m3-certification-control-v2');
+const DECISION_RECONCILIATION_PATH = require.resolve('../lib/canonical-v2/decision-reconciliation-proposal');
 
 function candidate() {
   return {
@@ -37,23 +47,121 @@ function candidate() {
   };
 }
 
+function syntheticCompleteParityStatus() {
+  const { m3_family_parity_status_id: _oldId, ...body } = structuredClone(
+    CURRENT_M3_FAMILY_PARITY_STATUS,
+  );
+  body.state = 'FAMILY_COMPLETE';
+  body.family_states = body.family_states.map((entry) => ({
+    ...entry,
+    completion_state: 'FAMILY_COMPLETE',
+  }));
+  body.supplemental_owner_states = body.supplemental_owner_states.map((entry) => ({
+    ...entry,
+    completion_state: 'OWNER_COMPLETE',
+  }));
+  body.unassigned_product_surface_ids = [];
+  return {
+    ...body,
+    m3_family_parity_status_id: contentId(STATUS_SCHEMA, body),
+  };
+}
+
 function build(overrides = {}) {
   return buildM3CertificationControlPlanV2({
     candidate_set_id: 'candidate-set-1',
     source_scope_certification_set_id: 'source-scope-set-1',
     candidates: [candidate()],
-    family_parity_status: CURRENT_M3_FAMILY_PARITY_STATUS,
+    family_parity_status: syntheticCompleteParityStatus(),
     known_defect_registry: EMPTY_REGISTRY,
     sampling_seed: 'm3-v2-fixed-seed',
     ...overrides,
   });
 }
 
+function syntheticDecisionInputs(familyParityStatus) {
+  const proposal = compileDecisionReconciliationProposal();
+  const currentConditional = bindDecisionConditionalFamilyStatus(
+    CURRENT_M3_FAMILY_PARITY_STATUS,
+    proposal,
+  );
+  const { decision_conditional_family_status_id: _oldId, ...body } = currentConditional;
+  body.raw_family_status_id = familyParityStatus.m3_family_parity_status_id;
+  body.raw_family_state = familyParityStatus.state;
+  body.state = 'BLOCKED';
+  return {
+    decision_reconciliation_proposal: proposal,
+    decision_conditional_family_status: {
+      ...body,
+      decision_conditional_family_status_id: contentId(FAMILY_STATUS_SCHEMA, body),
+    },
+  };
+}
+
+function buildWithSyntheticParityBinding(overrides = {}) {
+  const cachedDecision = require.cache[DECISION_RECONCILIATION_PATH];
+  const cachedControl = require.cache[CERTIFICATION_CONTROL_PATH];
+  const cachedControlV2 = require.cache[CERTIFICATION_CONTROL_V2_PATH];
+  const originalDecisionExports = cachedDecision.exports;
+  const familyParityStatus = overrides.family_parity_status || syntheticCompleteParityStatus();
+  try {
+    cachedDecision.exports = {
+      ...originalDecisionExports,
+      bindDecisionConditionalFamilyStatus(rawStatus, proposal) {
+        assert.deepEqual(rawStatus, familyParityStatus);
+        return syntheticDecisionInputs(familyParityStatus).decision_conditional_family_status;
+      },
+    };
+    delete require.cache[CERTIFICATION_CONTROL_PATH];
+    delete require.cache[CERTIFICATION_CONTROL_V2_PATH];
+    const { buildM3CertificationControlPlanV2: syntheticBuild } = require(CERTIFICATION_CONTROL_V2_PATH);
+    return syntheticBuild({
+      candidate_set_id: 'candidate-set-1',
+      source_scope_certification_set_id: 'source-scope-set-1',
+      candidates: [candidate()],
+      family_parity_status: familyParityStatus,
+      known_defect_registry: EMPTY_REGISTRY,
+      sampling_seed: 'm3-v2-fixed-seed',
+      ...overrides,
+    });
+  } finally {
+    cachedDecision.exports = originalDecisionExports;
+    if (cachedControl) require.cache[CERTIFICATION_CONTROL_PATH] = cachedControl;
+    else delete require.cache[CERTIFICATION_CONTROL_PATH];
+    if (cachedControlV2) require.cache[CERTIFICATION_CONTROL_V2_PATH] = cachedControlV2;
+    else delete require.cache[CERTIFICATION_CONTROL_V2_PATH];
+  }
+}
+
+function assertSyntheticControlError(code) {
+  return (error) => error?.name === 'M3CertificationControlError' && error.code === code;
+}
+
 function assertControlError(code) {
   return (error) => error instanceof M3CertificationControlError && error.code === code;
 }
 
-test('V2 cannot wrap raw FAMILY_COMPLETE into a certification plan', () => {
+test('V2 records the real serving block before it tests downstream fences', () => {
+  assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.state, 'BLOCKED');
+  // 104 after two movements on 2026-08-05 that happen to cancel out. Up one:
+  // CAPITALISATION was added to the register (previously untracked despite
+  // being the only component with real recorded model output) with one
+  // honest, unproven FOLLOW_ON_REQUIRED product surface. Down one:
+  // merger-structure-product-projection.js was deleted as dead code, taking
+  // the structure-market-fields surface with it, since that module was its
+  // source_path. Do not read the unchanged number as nothing having happened.
+  assert.equal(listM3ProductParityBlockers(CURRENT_M3_FAMILY_PARITY_REGISTER).length, 104);
+  // 2, not 6: the owner approved the four retained no-shop concepts
+  // (2026-08-05), promoting NOSOL-CEASE/RECOMMEND/ENFORCE/WAIVER out of
+  // review hold into the NO_SHOP family's product_surfaces. Only the two
+  // permanently-bounded NOSOL-SUPERIOR/NOSOL-INTERVENING claims remain.
+  assert.equal(CURRENT_M3_FAMILY_PARITY_STATUS.review_hold_ids.length, 2);
+  assert.throws(() => build({
+    family_parity_status: CURRENT_M3_FAMILY_PARITY_STATUS,
+  }), assertControlError('INCOMPLETE_FAMILY_PARITY'));
+});
+
+test('V2 cannot wrap synthetic FAMILY_COMPLETE into a certification plan', () => {
   assert.throws(() => build(), assertControlError('DECISION_RECONCILIATION_REQUIRED'));
 });
 
@@ -75,26 +183,23 @@ test('V2 remains non-authoritative under a hypothetical trusted state', () => {
 });
 
 test('V2 preserves the current decision-reconciliation block', () => {
-  const proposal = compileDecisionReconciliationProposal();
-  const conditionalStatus = bindDecisionConditionalFamilyStatus(
-    CURRENT_M3_FAMILY_PARITY_STATUS,
-    proposal,
-  );
-  assert.throws(() => build({
-    decision_reconciliation_proposal: proposal,
-    decision_conditional_family_status: conditionalStatus,
+  const decisionInputs = syntheticDecisionInputs(syntheticCompleteParityStatus());
+  assert.throws(() => buildWithSyntheticParityBinding({
+    ...decisionInputs,
   }), (error) => (
-    error instanceof M3CertificationControlError
+    error?.name === 'M3CertificationControlError'
       && error.code === 'DECISION_RECONCILIATION_BLOCKED'
-      && error.details.blocking_unresolved_decision_ids.includes('antitrust-expanded-taxonomy')
+      && error.details.blocking_unresolved_decision_ids.length === 0
+      && error.details.decision_register_freeze_ready === false
       && error.details.decision_register_freeze_authority === 'NONE'
+      && error.details.family_completion_blocker_codes.includes('RECORDED_RULING_IMPLEMENTATION_GAPS')
   ));
 });
 
 test('V2 does not accept a raw status in place of its decision-conditional status', () => {
-  const proposal = compileDecisionReconciliationProposal();
-  assert.throws(() => build({
-    decision_reconciliation_proposal: proposal,
+  const decisionInputs = syntheticDecisionInputs(syntheticCompleteParityStatus());
+  assert.throws(() => buildWithSyntheticParityBinding({
+    decision_reconciliation_proposal: decisionInputs.decision_reconciliation_proposal,
     decision_conditional_family_status: CURRENT_M3_FAMILY_PARITY_STATUS,
-  }), assertControlError('DECISION_CONDITIONAL_FAMILY_STATUS_INVALID'));
+  }), assertSyntheticControlError('DECISION_CONDITIONAL_FAMILY_STATUS_INVALID'));
 });

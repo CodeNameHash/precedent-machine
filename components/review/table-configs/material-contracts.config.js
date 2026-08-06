@@ -1,5 +1,6 @@
 import React from 'react';
 import taxonomy from '../../../lib/taxonomy.js';
+import { DARK_PREVIEW_MARKET_STATE, isCanonicalV2PreviewEnabled } from './canonical-v2-preview-lane.js';
 
 const { MATERIAL_CONTRACT_BUCKET_CODES, MATERIAL_CONTRACT_BUCKET_META } = taxonomy;
 
@@ -42,9 +43,64 @@ function isMaterialContractsCard(card) {
 // never sort-based.
 function isMaterialContractsRepCard(card) {
   const type = String(card?.provision_type || card?.type || '').trim().toUpperCase();
-  return card?.kind !== 'definition' &&
+  return card?.canonical_v2_lineage?.source !== 'CANONICAL_V2_OPEN_WORLD_EVIDENCE' &&
+    card?.kind !== 'definition' &&
     type === 'REPRESENTATION' &&
     cardCode(card) === 'REP-T-MATERIAL-CONTRACTS';
+}
+function isDarkV2Card(card) {
+  return card?.authority_state === 'VALIDATED_NOT_SERVED';
+}
+function isOpenWorldEvidenceCard(card) {
+  return card?.canonical_v2_lineage?.source === 'CANONICAL_V2_OPEN_WORLD_EVIDENCE';
+}
+// FIX (review-preview cross-family leak): evidenceOnlyRows() below used to
+// match ANY card anywhere on the deal carrying canonical_v2_lineage.source
+// === CANONICAL_V2_OPEN_WORLD_EVIDENCE, with no family scoping at all. That
+// was harmless while Material Contracts' own bridge was the only thing that
+// ever produced such a card, but the review-preview assembler (lib/
+// canonical-v2/review-preview-assembly.js) now merges all four Canonical V2
+// dark-bridge families onto one reviewDeal -- so General Covenants' own
+// "Deferred general-covenant evidence" residual and Representations' own
+// open-world residual (provision_subtype REP-EVIDENCE-OPEN-WORLD, no
+// short_title by design) both satisfied that same bare lineage check and
+// leaked into this lane (the latter falling through to this config's own
+// "Deferred material-contract evidence" fallback label, since it has none of
+// its own -- mislabelling it as this family's).
+//
+// Match Material Contracts' own evidence cards POSITIVELY instead (mine),
+// not merely "not flagged as somebody else's" -- material-contracts-product-
+// projection.js's evidenceCards builder stamps every evidence card it makes
+// with exactly type 'REP-T', provision_type 'REPRESENTATION', provision_
+// subtype 'REP-T-CONTRACTS-EVIDENCE', and legacy-card-bridge.js's own
+// assertMaterialCardKind fail-closed-enforces that same triple on every card
+// it bridges (INVALID_EVIDENCE_SUBTYPE otherwise) -- this is a structural
+// invariant of the Material Contracts bridge, not a convention invented
+// here. General Covenants' own evidence cards carry type 'COV' (general-
+// covenants-product-projection.js); Representations' carry provision_
+// subtype 'REP-EVIDENCE-OPEN-WORLD' (representations-dark-bridge.js) --
+// neither can ever satisfy this positive match, so a fifth family's evidence
+// residual can't silently start leaking in here either.
+function isMaterialContractsEvidenceCard(card) {
+  return isOpenWorldEvidenceCard(card) &&
+    String(card?.type || '').trim().toUpperCase() === 'REP-T' &&
+    String(card?.provision_type || '').trim().toUpperCase() === 'REPRESENTATION' &&
+    cardCode(card) === 'REP-T-CONTRACTS-EVIDENCE';
+}
+function darkPreviewRows(rows, source) {
+  if (!isDarkV2Card(source)) return rows;
+  const identity = String(source?.id || source?.provision_instance_id || 'card')
+    .replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').slice(-40);
+  return rows.map((row) => ({
+    ...row,
+    id: `${row.id}-dark-preview-${identity}`,
+    label: `${row.label} (Canonical V2 preview)`,
+    authorityState: 'VALIDATED_NOT_SERVED',
+    comparisonState: 'NOT_ADMITTED',
+    marketState: DARK_PREVIEW_MARKET_STATE,
+    marketSkip: true,
+    marketProvisionCodes: [],
+  }));
 }
 function isTagged(item) {
   return item && typeof item === 'object' && !Array.isArray(item) && typeof item.code === 'string';
@@ -275,21 +331,38 @@ function rowsFromText(source) {
   return rows;
 }
 
-function evidenceOnlyRows(cards) {
+// Canonical V2 preview gate (see canonical-v2-preview-lane.js): this config
+// had no gate at all before this task -- a dark open-world-evidence card
+// rendered unconditionally the instant it reached reviewDeal.cards. Filter
+// dark cards out up front, before any of them is ever mapped to a row, so
+// the exclusion is unconditional whenever the flag is off (matching every
+// sibling config's own defence-in-depth: the live pipeline never sees a
+// dark card, gate state aside) rather than relying on a stamp applied
+// after the fact.
+function evidenceOnlyRows(cards, previewEnabled) {
   return cards
-    .filter((card) => card?.canonical_v2_lineage?.source === 'CANONICAL_V2_OPEN_WORLD_EVIDENCE')
-    .map((card, index) => ({
-      id: `material-contracts-open-evidence-${card.id || index}`,
-      code: null,
-      itemCode: null,
-      label: card.short_title || 'Deferred material-contract evidence',
-      threshold: 'Evidence only',
-      evidence: textOf(card),
-      source: card,
-      sourceCard: card,
-      present: true,
-      marketState: 'OPEN_NATIVE_FIELD',
-    }));
+    .filter(isMaterialContractsEvidenceCard)
+    .filter((card) => previewEnabled || !isDarkV2Card(card))
+    .map((card, index) => {
+      const dark = isDarkV2Card(card);
+      return {
+        id: `material-contracts-open-evidence-${card.id || index}`,
+        code: null,
+        itemCode: null,
+        label: card.short_title || 'Deferred material-contract evidence',
+        threshold: 'Evidence only',
+        evidence: textOf(card),
+        source: card,
+        sourceCard: card,
+        present: true,
+        ...(dark ? {
+          authorityState: 'VALIDATED_NOT_SERVED',
+          comparisonState: 'NOT_ADMITTED',
+          marketState: DARK_PREVIEW_MARKET_STATE,
+          marketSkip: true,
+        } : { marketState: 'OPEN_NATIVE_FIELD' }),
+      };
+    });
 }
 
 // One line per contract type: a single pill, the friendly bucket label as
@@ -335,7 +408,11 @@ function renderMaterialContractsFooter(rows, ctx) {
   const CoverageFooter = ctx?.primitives?.CoverageFooter;
   if (!CoverageFooter) return null;
   const canonicalEntries = Object.entries(MATERIAL_CONTRACT_BUCKET_META || {}).filter(([code]) => code !== 'OTHER');
-  const presentCodes = new Set((rows || []).map((row) => row.code).filter(Boolean));
+  const presentCodes = new Set((rows || [])
+    .filter((row) => row?.authorityState !== 'VALIDATED_NOT_SERVED'
+      && row?.marketState !== 'DARK_REVIEW_ONLY')
+    .map((row) => row.code)
+    .filter(Boolean));
   const presentCount = canonicalEntries.filter(([code]) => presentCodes.has(code)).length;
   const totalCount = canonicalEntries.length;
   const absentItems = canonicalEntries
@@ -362,16 +439,30 @@ const materialContractsConfig = {
   hideRepeatedTitle: true,
   selectRows(reviewDeal) {
     const cards = reviewDeal?.cards || [];
-    const deferredRows = evidenceOnlyRows(cards);
-    // FIX 1: the REP-T-MATERIAL-CONTRACTS rep card always wins; only fall
-    // back to the looser title-regex match (excluding definition cards) when
-    // no such rep card exists on the deal.
-    const source = cards.find(isMaterialContractsRepCard) ||
-      cards.find((card) => card?.kind !== 'definition' && isMaterialContractsCard(card)) ||
-      cards.find(isMaterialContractsCard);
-    if (!source) return deferredRows;
-    const featureRows = rowsFromFeatures(source);
-    return [...(featureRows.length ? featureRows : rowsFromText(source)), ...deferredRows];
+    const previewEnabled = isCanonicalV2PreviewEnabled(reviewDeal);
+    const deferredRows = evidenceOnlyRows(cards, previewEnabled);
+    const liveCards = cards.filter((card) => !isDarkV2Card(card) && !isOpenWorldEvidenceCard(card));
+    // The existing legacy source remains the live source. A dark Canonical V2
+    // source is appended as a separately labelled offline-preview row set,
+    // gated the same way every sibling config gates its own dark rows --
+    // absent the flag, `darkSources` stays empty and `sources` collapses to
+    // exactly the live source, so output is byte-identical to a reviewDeal
+    // that never saw a dark card at all. It never replaces or deduplicates
+    // the legacy source.
+    const liveSource = liveCards.find(isMaterialContractsRepCard) ||
+      liveCards.find((card) => card?.kind !== 'definition' && isMaterialContractsCard(card)) ||
+      liveCards.find(isMaterialContractsCard) || null;
+    const darkSources = previewEnabled
+      ? cards.filter((card) => isDarkV2Card(card)
+        && !isOpenWorldEvidenceCard(card) && isMaterialContractsRepCard(card))
+      : [];
+    const sources = [liveSource, ...darkSources].filter(Boolean);
+    const governedRows = sources.flatMap((source) => {
+      const featureRows = rowsFromFeatures(source);
+      const rows = featureRows.length ? featureRows : rowsFromText(source);
+      return darkPreviewRows(rows, source);
+    });
+    return [...governedRows, ...deferredRows];
   },
   columns: [
     { id: 'bucket', header: 'Contract Type', width: '24rem', renderCell: renderTerm },

@@ -1,6 +1,6 @@
 -- WP-6 (M5-05) — run_reports persistence.
 --
--- Ben decision (B-schema, docs/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md
+-- Ben decision (B-schema, docs/archive/handoffs/M4-M5-RECONCILED-PLAN-2026-07-18.md
 -- §7): one new table for producer run reports. `reports/` on disk is
 -- gitignored deliberately (commits c5935cf, ba600ea) so it is invisible to
 -- Vercel — this table is the durable, admin-visible substitute. Ben runs
@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS public.run_reports (
                   'rematerialize-claims',
                   'mint-cards',
                   'span-residual',
-                  'demo-dryrun'
+                  'demo-dryrun',
+                  'v1-reclass-apply'
                 )),
   generated_at  timestamptz NOT NULL,
   git_ref       text,
@@ -27,6 +28,17 @@ CREATE TABLE IF NOT EXISTS public.run_reports (
   payload       jsonb NOT NULL DEFAULT '{}'::jsonb,
   created_at    timestamptz NOT NULL DEFAULT now()
 );
+
+ALTER TABLE public.run_reports DROP CONSTRAINT IF EXISTS run_reports_kind_check;
+ALTER TABLE public.run_reports ADD CONSTRAINT run_reports_kind_check CHECK (kind IN (
+  'ingest-qa',
+  'coverage-audit',
+  'rematerialize-claims',
+  'mint-cards',
+  'span-residual',
+  'demo-dryrun',
+  'v1-reclass-apply'
+));
 
 CREATE INDEX IF NOT EXISTS run_reports_kind_generated_at_idx
   ON public.run_reports (kind, generated_at DESC);

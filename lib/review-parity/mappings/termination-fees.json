@@ -1,0 +1,110 @@
+{
+  "schema": "REVIEW_PARITY_FIELD_MAPPING/V1",
+  "mapping_version": "termination-fees/1",
+  "family_id": "TERMINATION_FEE",
+  "notes": "Real mapping for the termination-fee family (P1). Both sides render through components/review/table-configs/termination-fees.config.js selectRows() with the per-family gate flags OFF, so each side reaches the row builders via the config's `const cards = legacyCards.length ? legacyCards : canonicalCards` path (:1253). That holds the renderer constant and attributes every difference to the DATA. Row key is `id` alone: the config's ids are already stable and semantic (termination-fees-COMPANY_TERMINATION_FEE, termination-fees-interest, ...), and label is derived from id, so adding label to the key would only hide id drift. Deferred-evidence rows carry a content-hash suffix in their id and therefore never join across sources; that is correct, because an open-world evidence row has no legacy counterpart by construction.",
+  "legacy": {
+    "config_module": "components/review/table-configs/termination-fees.config.js",
+    "config_export": "terminationFeesConfig"
+  },
+  "v2": {
+    "view": "config_rows",
+    "config_module": "components/review/table-configs/termination-fees.config.js",
+    "config_export": "terminationFeesConfig",
+    "projection_module": "lib/canonical-v2/termination-product-projection.js",
+    "projection_export": "projectTerminationFeeProductSurfaces"
+  },
+  "row_key": ["id"],
+  "fields": [
+    {
+      "field_id": "id",
+      "legacy": "id",
+      "v2": "id",
+      "kind": "text",
+      "notes": "The row identity. Also the row key, so it is always equal on a joined row; declared because the harness requires every key component to be a declared field."
+    },
+    {
+      "field_id": "label",
+      "legacy": "label",
+      "v2": "label",
+      "kind": "text",
+      "notes": "Row label as rendered in the Term column."
+    },
+    {
+      "field_id": "kind",
+      "legacy": "kind",
+      "v2": "kind",
+      "kind": "text",
+      "notes": "Amount / Condition / Remedy / Evidence. A kind change on a joined id means the two sources disagree about what type of fact the row states."
+    },
+    {
+      "field_id": "detail",
+      "legacy": "detail",
+      "v2": "detail",
+      "kind": "text",
+      "notes": "The rendered value line. For fee rows this is formatFeeDetail() output and carries % of equity value, raw amount, payer/payee, payment deadline and sole-remedy status, so a V2 side missing any of those shows up here."
+    },
+    {
+      "field_id": "present",
+      "legacy": "present",
+      "v2": "present",
+      "kind": "flag",
+      "notes": "Whether the row asserts a positive finding. Present-on-one-side-only is reported, never skipped."
+    },
+    {
+      "field_id": "value",
+      "legacy": "value",
+      "v2": "value",
+      "kind": "text",
+      "notes": "Raw feature value behind a scalar row. Absent on fee rows and evidence rows."
+    },
+    {
+      "field_id": "evidence",
+      "legacy": "evidence",
+      "v2": "evidence",
+      "kind": "quote",
+      "notes": "Verbatim clause text shown in the Provision column. quote kind, so a shorter V2 string is reported as V2_LOSS rather than a bare disagreement."
+    },
+    {
+      "field_id": "signals",
+      "legacy": "signals[].label",
+      "v2": "signals[].label",
+      "kind": "set",
+      "notes": "The pill set. For a fee row this carries the amount signal plus one pill per trigger, so a trigger V2 failed to corroborate is visible here and nowhere else."
+    },
+    {
+      "field_id": "source_label",
+      "legacy": "source",
+      "v2": "source",
+      "kind": "text",
+      "notes": "Short title of the card the row drew from. Differs by construction between a legacy classifier card and a canonical projection card; recorded rather than skipped so the substitution is never silent."
+    },
+    {
+      "field_id": "section_ref",
+      "legacy": "sourceCard.section_ref",
+      "v2": "sourceCard.section_ref",
+      "kind": "citation",
+      "notes": "Citation of the clause the row is anchored to. A citation disagreement is the strongest single signal that the two sides are describing different provisions."
+    },
+    {
+      "field_id": "feature_keys",
+      "legacy": "featureKeys",
+      "v2": "featureKeys",
+      "kind": "set",
+      "notes": "Which registry features fed the row. Drives the market sidebar, so a V2 loss here silently removes the row from market statistics."
+    },
+    {
+      "field_id": "market_provision_codes",
+      "legacy": "marketProvisionCodes",
+      "v2": "marketProvisionCodes",
+      "kind": "set"
+    },
+    {
+      "field_id": "coverage_state",
+      "legacy": "coverageState",
+      "v2": "coverageState",
+      "kind": "flag",
+      "notes": "NOT_YET_EXTRACTED / PARTIAL_NOT_YET_EXTRACTED. Distinguishes an honest V2 coverage admission from a silent V2 loss, which is the distinction this whole exercise turns on."
+    }
+  ]
+}

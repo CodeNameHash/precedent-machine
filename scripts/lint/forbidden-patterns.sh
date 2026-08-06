@@ -38,13 +38,37 @@ const globalPatterns = [
 ];
 
 // See the exemption comment at the application site: verbatim recorded SEC
-// filing text inside pinned live-run fixtures must not trip prose-shaped
+// filing text inside pinned fixtures must not trip prose-shaped
 // bug-fingerprints aimed at code/label regressions. Narrow by construction:
-// only files under a *-live-run fixture directory — plus the v1v2-comparator
-// snapshot fixture, which is the same artifact class (recorded production
-// provision_cards text: section titles and primary_quotes are verbatim
-// merger-agreement prose) — and only these patterns.
-const RECORDED_LIVE_RUN_DIR = /^tests\/fixtures\/canonical-v2\/([a-z0-9-]*live-run[a-z0-9-]*|v1v2-comparator)\//;
+// an EXPLICIT allowlist of directories independently verified to hold real
+// merger-agreement prose, never a directory admitted by name pattern. Two
+// verified categories, both the same underlying justification (this is
+// recorded source text, not application code):
+//   - a genuine recorded model-output capture: a dated, subscription-CLI
+//     live-run handoff with a real raw_response_text /
+//     native-producer-recorded-response body and model id (f28-live-run,
+//     f28-second-live-run, f28-third-live-run, modiv-first-live-run,
+//     skechers-first-live-run);
+//   - a committed production-text fixture: cards pulled verbatim from the
+//     production provision_cards table (or hand-transcribed from a real
+//     filing), no model call involved -- the *-fixtures directories below,
+//     and v1v2-comparator (recorded production provision_cards text:
+//     section titles and primary_quotes are verbatim merger-agreement
+//     prose).
+//
+// Register hygiene audit, 2026-08-05: ten of fifteen directories then named
+// tests/fixtures/canonical-v2/*-live-run/ earned this exemption by NAME
+// alone (matching the substring "live-run") without containing a live run
+// at all -- nine held curated "committed fixtures" (hand-typed or
+// DB-replayed corpus-cards.json, no captured model response ever recorded),
+// and closing-conditions-live-run's own README said outright that it
+// "support[s] only synthetic resolver and lexicon tests until a dated
+// live-run recording exists". All ten were renamed to *-fixtures/: still
+// listed below (they hold real prose, verified per file above), but no
+// longer able to claim they are a live run they are not. A directory earns
+// this exemption only by being added here deliberately after the same
+// verification, never by its name.
+const RECORDED_LIVE_RUN_DIR = /^tests\/fixtures\/canonical-v2\/(f28-live-run|f28-second-live-run|f28-third-live-run|modiv-first-live-run|skechers-first-live-run|antitrust-regulatory-fixtures|appraisal-fixtures|closing-conditions-fixtures|dividends-fixtures|dno-fixtures|employee-matters-fixtures|financing-covenants-fixtures|guaranty-fixtures|m3-v31-fixtures|tax-matters-fixtures|v1v2-comparator)\//;
 const PROSE_CLASS_FINGERPRINTS = [
   'QUALIFICATION.*litigation',
   'Must defend \\(incl\\. appeals/final judgment\\)',
@@ -190,6 +214,18 @@ const FILE_PATTERN_EXEMPTIONS = {
     'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
     'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
   ],
+  // Same class: the 2026-08-05 parseUsdAmount regression suite (and its
+  // later-that-day consolidation onto lib/parse-money.js) drives
+  // executeMarketRange() with real registry field_paths -- feePctOfDealValue
+  // and reverseFeePctOfDealValue (the derived percentage fields) and
+  // companyTerminationFee (the raw "usd"-typed field) -- all routing through
+  // the same ambiguity-rejecting parse path, to prove the row-inclusion guard
+  // behaves correctly for each. Literal payloads are the executor's real
+  // request shape; production query code stays covered.
+  'tests/derived-fields.test.js': [
+    'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
+    'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
+  ],
   // Same class as the tests/query/* fixture exemptions above: the canonical-v2
   // Query UI slice tests must carry the EXACT legacy ad hoc payload
   // ({provision_type: 'TERMINATION_FEE', field_path: 'feePctOfDealValue'})
@@ -208,6 +244,22 @@ const FILE_PATTERN_EXEMPTIONS = {
   ],
   'tests/canonical-v2-query-refinements.test.js': [
     'field_path\\s*:\\s*[\'"][a-z_]+[\'"]',
+    'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
+  ],
+  // Same class, with an extra wrinkle worth stating so nobody re-litigates it.
+  // The fingerprint targets the LEGACY AD HOC PAYLOAD `{provision_type: 'X',
+  // field_path: 'y'}` in production query code. What trips here is the
+  // natural-language MODEL INTENT contract's own `field_paths` (PLURAL) --
+  // `field_path` is a prefix of it, and `\s*,\s*` spans the newline between the
+  // two object keys, so a line-based grep does not show the match. The literal
+  // is an INPUT to compileIntent inside assert.throws: the test proves an
+  // unknown deal_id is rejected, i.e. it exercises the compiler rather than
+  // bypassing it. It appeared only because retiring DEAL_TO_MARKET (61d7280c)
+  // forced that test onto PROVISION_CROSS_CUT, which needs a provision_type and
+  // field_paths to reach the deal_id check at all. Exempt only this pattern for
+  // this file; the singular-field_path fingerprint and every other check still
+  // apply here, and production query code stays fully covered.
+  'tests/query-natural-language.test.js': [
     'provision_type\\s*:\\s*[\'"][A-Z_]+[\'"]\\s*,\\s*field_path',
   ],
   'lib/taxonomy.js': ['Must defend \\(incl\\. appeals/final judgment\\)'],
@@ -249,6 +301,31 @@ const FILE_PATTERN_EXEMPTIONS = {
   // real taxonomy fallback label. Genuine fixture, not the duplicated-label
   // regression this pattern fingerprints.
   'tests/provision-table-configs.test.js': ['Mergers,\\s*Acquisitions,\\s*Dispositions'],
+  // Same class again: this file's own header states "Fixtures are
+  // real-shaped: field values below are taken directly from the Metsera deal
+  // (885edae5-49e8-464a-9f33-edd229119d7c) as stored in ai_metadata.features,
+  // not invented shapes" -- aocCitedCovenantNames pins IOC-MERGE's real
+  // taxonomy fallback label ("Mergers, Acquisitions, Dispositions", section
+  // 5.01(d)). Genuine fixture, not the duplicated-label regression this
+  // pattern fingerprints.
+  'tests/fb3-section-tables.test.js': ['Mergers,\\s*Acquisitions,\\s*Dispositions'],
+  // NOT a hand-authored fixture -- the committed evidence output of
+  // scripts/canonical-v2-modiv-termination-fee-scope-correction-run.mjs
+  // (added alongside session-cookie authentication). The single-line JSON
+  // dump embeds the real Modiv Article III heading "Organization and
+  // Qualification; Subsidiaries" and, later on the same line, a genuine
+  // "litigation" reference elsewhere in the document -- real merger-
+  // agreement prose, not the past duplicated-label regression this
+  // fingerprint targets. Verified via this run's own source-reference.json:
+  // it REUSES already-committed, hash-pinned raw HTML
+  // (tests/fixtures/canonical-v2/mae-definition-family/modiv-raw-fetched.htm,
+  // sha256 659bcfaa017718ac735811861565fa2cd4e212657ba68e06ff1eab53e3729968)
+  // with verification_status "PASS", not an invented or unpinned fetch.
+  // Recorded as a narrow per-file entry rather than folding evidence/ into
+  // RECORDED_LIVE_RUN_DIR above, matching that regex's own stated policy: a
+  // directory earns this exemption only by deliberate per-file verification,
+  // never by name.
+  'evidence/canonical-v2/modiv-termination-fee-scope-correction-20260805/adapter-result.json': ['QUALIFICATION.*litigation'],
 };
 
 const failures = [];

@@ -1,0 +1,333 @@
+{
+  "schema_version": "RESOLUTION_REVIEW_QUEUE/V1",
+  "run_receipt_id": "2331e057b9315f95fc344ef85a748d8d9507cbe0cd0390904a0fce32f4203cf9",
+  "review_queue": [
+    {
+      "section_reference": "7.1",
+      "source_citation": "7.1(c)(i)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "the Company Board has approved, and substantially concurrently with the termination of this Agreement, the Company enters into, a definitive agreement providing for the implementation of a Superior Proposal",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "a6839fa87f3b180dac87620fc64f715afb02434c7165f8e55c2f376b5f31906f",
+      "closure_id": "beb575b546ec330ff37ef89b19be070ff033d501c0bc3d62a28aaf9db101e3eb",
+      "normalised_phrase": "the Company Board has approved, and substantially concurrently with the termination of this Agreement, the Company enters into, a definitive agreement providing for the implementation of a Superior Proposal",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "7.3",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TAIL_PERIOD_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_FEE_TAIL_PERIOD_MONTHS",
+      "concept_key": "TERMF-TAIL",
+      "reasons": [],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "afc616479686dc548fd35ae7e47f4cb6a8815449ac8659485f321f568c0a3756",
+      "closure_id": "31bcaf962b22b4114853d55f0d63fb7f274f3fcc7b93ec7e6734f5dd21174dc6",
+      "normalised_phrase": "within twelve (12) months after a termination referred to in this Section 7.3(b)(iii)",
+      "attachment_position": null,
+      "concept_family": "TERMF-TAIL"
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3(b)(iv)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-TARGET",
+      "reasons": [
+        "TRIGGER_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "by Parent pursuant to Section 7.1(d)(i)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "283f3ddf4b8d32ec7ebd0bc64da1f711f2de619e4be238251c6d60fa8b2eca05",
+      "closure_id": "048eff275ad5f68643818e8f6bb0beccbe3cc182a824b344c4bc481f9cbf4fa7",
+      "normalised_phrase": "by Parent pursuant to Section 7.1(d)(i)",
+      "attachment_position": null,
+      "concept_family": "TERMF-TARGET"
+    },
+    {
+      "section_reference": "7.3",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": "TERMINATION_FEE_TRIGGER",
+      "concept_key": "TERMF-TARGET",
+      "reasons": [],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": true,
+      "claim_revision_id": "635551542ccf4b1207e16895cd469b7f1dde119a23b462a5f3acb185c796a582",
+      "closure_id": "24e81ca5805dd30e4f748278483423a7063a0dd0dcbf0faf309e9f125a929ef6",
+      "normalised_phrase": "(A) (1) by the Company or Parent pursuant to Section 7.1(b)(ii) and a Company Acquisition Proposal shall have been received by the Company or its Representatives after the date of this Agreement or (2) by the Company or Parent pursuant to Section 7.1(b)(iii) and a Person shall have publicly proposed or publicly announced, after the date hereof and prior to the Company Common Stockholders’ Meeting, an intention (whether or not conditional) to make a Company Acquisition Proposal and (B) within twelve (12) months after a termination referred to in this Section 7.3(b)(iii) the Company enters into a definitive agreement relating to, or consummates, any Company Acquisition Proposal",
+      "attachment_position": null,
+      "concept_family": "TERMF-TARGET"
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3(b)(i)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-TARGET",
+      "reasons": [
+        "TRIGGER_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "by Parent pursuant to Section 7.1(d)(ii)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "95212708be7cb11c75d49f2b7af784147b674d7641b42ba8702adb7a0e399d4d",
+      "closure_id": "263c142e3c00234229e2118541de350b9fe3a2f26f82f155efa8e5f40300e960",
+      "normalised_phrase": "by Parent pursuant to Section 7.1(d)(ii)",
+      "attachment_position": null,
+      "concept_family": "TERMF-TARGET"
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3(b)(v)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-TARGET",
+      "reasons": [
+        "TRIGGER_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "by Parent pursuant to Section 7.1(d)(iii)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "97b9d635deba0c67c691699755b50d9ba5da83d799ff7c977c2c0b5f83a987c8",
+      "closure_id": "3445b0ae4f4bdf04374a4b40ed1625a0e42c7938b7ef164700a4a1d8f3c0074e",
+      "normalised_phrase": "by Parent pursuant to Section 7.1(d)(iii)",
+      "attachment_position": null,
+      "concept_family": "TERMF-TARGET"
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3(b)(ii)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-TARGET",
+      "reasons": [
+        "TRIGGER_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "by the Company pursuant to Section 7.1(c)(i)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "de26d6668519f9eaa286335cd28afe228108a3f58293a2955b13693edf053ed0",
+      "closure_id": "3c696360787cf2ebc8057c3fa1e17d2921d9310efda62b9c37d1db898f611ace",
+      "normalised_phrase": "by the Company pursuant to Section 7.1(c)(i)",
+      "attachment_position": null,
+      "concept_family": "TERMF-TARGET"
+    },
+    {
+      "section_reference": "7.3",
+      "source_citation": "7.3(c)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-REVERSE",
+      "reasons": [
+        "TRIGGER_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "terminated by the Company pursuant to Section 7.1(c)(ii) or Section 7.1(c)(iii)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "71beeac1b8b1aac477f99b0481364a65bab6914d071ea8881937133ae8623e2a",
+      "closure_id": "ab3c86d282095fa59e4326f6b308ba5e0d774d6a79c260d1fd455bfd0c942eab",
+      "normalised_phrase": "terminated by the Company pursuant to Section 7.1(c)(ii) or Section 7.1(c)(iii)",
+      "attachment_position": null,
+      "concept_family": "TERMF-REVERSE"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(z)(aa)(bb)(cc)(dd)(ee)(ff)(gg)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "“Parent Base Amount” means $15,000,000.00",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "474594935cd2a5c672b593c93830511583ead9745babba4538eff359e1791100",
+      "closure_id": "46495d4f763eb23a26f3c525f9ed6a14a2650d932790aff5a28e4f668c74446c",
+      "normalised_phrase": "“Parent Base Amount” means $15,000,000.00",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(f)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "(y) if payable pursuant to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "b2defa179c8fcc934cb57c74c436ec78e939974ac6fa83083317226445dfe6aa",
+      "closure_id": "b2ab77c918867857f258eaf45d27cf10fd30374b3db5c00ade4bd37e751655d0",
+      "normalised_phrase": "(y) if payable pursuant to Section 7.3(b)(iv) or Section 7.3(b)(v), $15,000,000.00",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(f)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_AMOUNT_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "“Company Base Amount” means (x) if payable pursuant to Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii), $10,000,000",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "0b685ad70761c05a99810e90ffab41007164f5bb640bb5b59a82f7b5923f28a0",
+      "closure_id": "c01810763a1fa1d1868aaa73076de176995305e838a1a1a1e1af967275c18f95",
+      "normalised_phrase": "“Company Base Amount” means (x) if payable pursuant to Section 7.3(b)(i), Section 7.3(b)(ii) or Section 7.3(b)(iii), $10,000,000",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(f)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Section 7.3(b)(i)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "b310c395827993def11addcebc966d607b17c03b0602a0fd0bf692084506c5dd",
+      "closure_id": "1148e34eb2ada5b9bd4e21203c606084147c978e182a6a003d100af4e72bb305",
+      "normalised_phrase": "Section 7.3(b)(i)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(f)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Section 7.3(b)(iii)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "d68d102b8bf976d3e723c3dd2c41ac55a0c8c5e3907d573d2e2bf0b35834f9a9",
+      "closure_id": "45958c03972698ec16544b5d89d22207a8dd07845d629f8fc76e936d011086ed",
+      "normalised_phrase": "Section 7.3(b)(iii)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(f)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Section 7.3(b)(v)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "f28433bd21a54dc1c38bde0b636c766de3557ec5ceefa8ff1634830318e9ca33",
+      "closure_id": "76b8802a530dda407c5b983d5aeec6b083083b543445efef1e96df89ffedbfe5",
+      "normalised_phrase": "Section 7.3(b)(v)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(f)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Section 7.3(b)(ii)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "9feb88d3484d574511bfa32186f6860ac85871679a22a81be1ff899471457220",
+      "closure_id": "a4219297fd09a8d8d2991cf5e02980712008b41d596acb79e4d2461aab0ba742",
+      "normalised_phrase": "Section 7.3(b)(ii)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    },
+    {
+      "section_reference": "8.12",
+      "source_citation": "8.12(f)",
+      "generic_claim_key": "NATIVE_TERMINATION_FEE_TRIGGER_CANDIDATE",
+      "resolved_claim_definition_key": null,
+      "concept_key": "TERMF-PENDING",
+      "reasons": [
+        "FEE_SIDE_UNCORROBORATED"
+      ],
+      "materiality_rank": 20,
+      "materiality_label": "FEES",
+      "auto_pass": false,
+      "has_resolution": false,
+      "raw_value": "Section 7.3(b)(iv)",
+      "canonical_value": null,
+      "original_claim_occurrence_id": "7e6ba43ed877429ae475cd6ee05774f1f232d1034ae8c8f08c9eb7b3facde506",
+      "closure_id": "ce8ca9cb34712cfdc81f76fab74b3b390e1593ef8d89660065f7ba59360f9495",
+      "normalised_phrase": "Section 7.3(b)(iv)",
+      "attachment_position": null,
+      "concept_family": "TERMF-PENDING"
+    }
+  ],
+  "review_queue_artifact_id": "a62b3617dc24ea9ed6dc2aba25fca15f0e670ee5a5af6c4ba683c6085226908e"
+}

@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
 const { buildProvisionCardRows, storeProvisionCards } = require('../lib/parser-v2/store-cards');
+const { computeSpanClaims } = require('../lib/parser-v2/span-claims');
 
 function fixtureProvisions() {
   const fixture = JSON.parse(fs.readFileSync('fixtures/schema/provision-card-example.json', 'utf8'));
@@ -257,4 +258,130 @@ test('storeProvisionCards with replaceDeal and zero new rows deletes all existin
     sb.calls.filter((call) => call.op === 'eq').map((call) => [call.column, call.value]),
     [['deal_id', 'deal-empty']],
   );
+});
+
+// ---------------------------------------------------------------------------
+// docs/codex-program/ROADMAP.md P5 — the two wrong columns.
+// primary_quote_start/primary_quote_end are region_full_text-relative (an
+// indexOf() hit inside the card's OWN excerpt), never a full-document or
+// section-relative offset, and fall back to a {0, quote.length} placeholder
+// when even that indexOf fails (supabase/schema-03-card-model.sql's
+// NOT NULL + end>start CHECK means some pair must always be written — see
+// lib/parser-v2/store-cards.js's quoteSpan). These tests prove the OLD
+// columns and the NEW system (a provision's features.spanClaims, section-
+// relative — lib/parser-v2/span-claims.js) are unambiguously distinguishable:
+// different coordinate spaces, on different objects, and the row itself
+// carries a machine-checkable "was this actually located" signal.
+// ---------------------------------------------------------------------------
+
+test('primary_quote_start/end are region-relative and are unambiguously distinguishable from a provision\'s section-relative features.spanClaims.textSpan', () => {
+  const sectionText = [
+    '5.2 Additional Conditions. The obligations of Parent are subject to the',
+    'satisfaction of each of the following further conditions:',
+    '',
+    '(a) The Company shall have performed in all material respects all of its',
+    'obligations hereunder required to be performed by it as of the Closing Date.',
+  ].join('\n');
+  const quote = 'The Company shall have performed in all material respects all of its\n'
+    + 'obligations hereunder required to be performed by it as of the Closing Date.';
+  // region_full_text is the CARD's own (narrower) excerpt -- not the whole
+  // classified section -- the shape every real store-cards.js caller uses.
+  const regionFullText = quote;
+
+  const [claim] = computeSpanClaims(sectionText, [{ text: quote }]);
+  const prov = {
+    type: 'COND',
+    code: 'COND-B',
+    category: 'Performance of Covenants',
+    section_path: 'Section 5.2(a)',
+    region_id: '00000000-0000-4000-8000-000000000042',
+    region_full_text: regionFullText,
+    text: quote,
+    // Attached as Part 2's span-claims pass would against the WHOLE
+    // section (realistically much larger than a card's own region excerpt).
+    features: { spanClaims: { ...claim, sectionStartChar: 9000 } },
+  };
+
+  const [card] = buildProvisionCardRows('deal-1', [prov]);
+
+  // The OLD columns: region-relative. Slicing region_full_text with them
+  // gives the quote back exactly.
+  assert.equal(
+    card.region_full_text.slice(card.primary_quote_start, card.primary_quote_end),
+    card.primary_quote,
+  );
+  assert.equal(card.provenance.primary_quote_span_verified, true);
+  assert.equal(card.provenance.primary_quote_span_coordinate_space, 'region_full_text');
+
+  // The NEW system: section-relative, carried on the SOURCE provision, not
+  // the card row.
+  const { textSpan, sectionStartChar } = prov.features.spanClaims;
+  assert.equal(sectionText.slice(textSpan.start, textSpan.end), quote);
+  assert.equal(sectionStartChar, 9000, 'the NEW system carries an explicit coordinate-space anchor the old columns do not');
+
+  // UNAMBIGUOUS DISTINCTION, proved mechanically rather than asserted by
+  // naming alone: the OLD column values, applied to the section text
+  // instead of region_full_text, do NOT reproduce the quote. A consumer
+  // who confused the two coordinate spaces gets visibly wrong output, not
+  // a coincidentally-right one.
+  assert.notEqual(
+    sectionText.slice(card.primary_quote_start, card.primary_quote_end),
+    quote,
+    'old-column offsets misapplied to the section text must not reproduce the quote',
+  );
+});
+
+test('when the quote cannot be located in region_full_text, primary_quote_start/end are a placeholder and provenance says so', () => {
+  const prov = {
+    type: 'COV',
+    code: 'COV-TEST',
+    category: 'Test',
+    section_path: 'Section 6.1',
+    region_id: '00000000-0000-4000-8000-000000000043',
+    region_full_text: 'This region text has nothing to do with the quote below.',
+    text: 'The Company shall not amend its charter without the prior written consent of Parent.',
+  };
+  const [card] = buildProvisionCardRows('deal-1', [prov]);
+
+  assert.equal(card.primary_quote_start, 0);
+  assert.equal(card.primary_quote_end, card.primary_quote.length);
+  assert.notEqual(
+    card.region_full_text.slice(card.primary_quote_start, card.primary_quote_end),
+    card.primary_quote,
+    'the placeholder pair does not locate anything -- it only satisfies the NOT NULL/CHECK constraint',
+  );
+  assert.equal(
+    card.provenance.primary_quote_span_verified,
+    false,
+    'the one machine-checkable signal that this row\'s primary_quote_start/end are not a real location',
+  );
+  assert.equal(card.provenance.primary_quote_span_coordinate_space, 'region_full_text');
+});
+
+test('an explicit primary_quote_start/end on the incoming provision is trusted only if it actually slices out the quote', () => {
+  const region = 'Preamble text. The Company shall deliver the Closing Certificate at Closing.';
+  const quote = 'The Company shall deliver the Closing Certificate at Closing.';
+  const goodStart = region.indexOf(quote);
+
+  const provGoodExplicit = {
+    type: 'COV', code: 'COV-TEST', category: 'Test', section_path: 'Section 1',
+    region_id: '00000000-0000-4000-8000-000000000044',
+    region_full_text: region, text: quote,
+    primary_quote_start: goodStart, primary_quote_end: goodStart + quote.length,
+  };
+  const [goodCard] = buildProvisionCardRows('deal-1', [provGoodExplicit]);
+  assert.equal(goodCard.primary_quote_start, goodStart);
+  assert.equal(goodCard.provenance.primary_quote_span_verified, true);
+
+  // A garbage explicit pair (well-formed integers, wrong slice) must NOT be
+  // trusted at face value -- it should fall through to indexOf instead.
+  const provBadExplicit = {
+    ...provGoodExplicit,
+    region_id: '00000000-0000-4000-8000-000000000045',
+    primary_quote_start: 0,
+    primary_quote_end: 5,
+  };
+  const [badCard] = buildProvisionCardRows('deal-1', [provBadExplicit]);
+  assert.equal(badCard.primary_quote_start, goodStart, 'a self-inconsistent explicit span must be recomputed, not trusted');
+  assert.equal(badCard.provenance.primary_quote_span_verified, true);
 });

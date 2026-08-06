@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { sha256Hex } = require('../lib/canonical-v2/canonical-bytes');
-const { compileFixtureContractV24, compileFixtureContractV34 } = require('../lib/canonical-v2/contract-bundle');
+const { compileFixtureContractV24, compileFixtureContractV36 } = require('../lib/canonical-v2/contract-bundle');
 const { runNativeExtraction } = require('../lib/canonical-v2/native-producer/native-extraction-run');
 const { shapeClosingConditionProposals, shapeRegulatoryEffortsProposals } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const { resolveCandidates } = require('../lib/canonical-v2/native-producer/candidate-resolution');
@@ -28,7 +28,7 @@ function entryMatches(entry, text) {
 }
 
 function closingFixtureBodies() {
-  const directory = path.join(FIXTURE_ROOT, 'closing-conditions-live-run');
+  const directory = path.join(FIXTURE_ROOT, 'closing-conditions-fixtures');
   return fs.readdirSync(directory).filter((name) => name.endsWith('.txt')).sort().map((name) => {
     const content = fs.readFileSync(path.join(directory, name), 'utf8');
     const separator = content.indexOf('\n\n');
@@ -39,12 +39,12 @@ function closingFixtureBodies() {
 }
 
 function closingFixtureBody(name) {
-  const content = fs.readFileSync(path.join(FIXTURE_ROOT, 'closing-conditions-live-run', `${name}.txt`), 'utf8');
+  const content = fs.readFileSync(path.join(FIXTURE_ROOT, 'closing-conditions-fixtures', `${name}.txt`), 'utf8');
   return content.slice(content.indexOf('\n\n') + 2).trimEnd();
 }
 
 test('Antitrust map replays grounded multi-deal litigation and regulatory evidence', async () => {
-  const map = JSON.parse(fs.readFileSync(path.join(FIXTURE_ROOT, 'antitrust-regulatory-live-run', 'coverage-map.json'), 'utf8'));
+  const map = JSON.parse(fs.readFileSync(path.join(FIXTURE_ROOT, 'antitrust-regulatory-fixtures', 'coverage-map.json'), 'utf8'));
   assert.equal(map.schema_version, 'ANTITRUST_REGULATORY_COVERAGE_MAP/V1');
   const contract = compileFixtureContractV24();
   const seen = new Set();
@@ -83,11 +83,11 @@ test('Antitrust map replays grounded multi-deal litigation and regulatory eviden
 test('Antitrust recorded sources and Closing Conditions fixture pack cover the first native slice', () => {
   const sources = ['skechers-first-live-run', 'modiv-first-live-run'].map(loadRecordedSource);
   const combined = sources.map(({ text }) => text).join('\n');
-  for (const family of ['ANTI-EFFORTS', 'ANTI-BURDEN', 'ANTI-LITIGATION', 'ANTI-TIMING', 'ANTI-FILING']) {
+  for (const family of ['ANTI-EFFORTS', 'ANTI-BURDEN', 'ANTI-LITIGATION', 'ANTI-AGREEMENTS', 'ANTI-FILING']) {
     assert.ok(LEXICAL_FAMILY_LEXICON.entries.some((entry) => entry.family === family && entryMatches(entry, combined)), family);
   }
   const bodies = closingFixtureBodies();
-  const registeredConceptKeys = new Set(compileFixtureContractV34().concepts.map((concept) => concept.concept_key));
+  const registeredConceptKeys = new Set(compileFixtureContractV36().concepts.map((concept) => concept.concept_key));
   assert.doesNotThrow(() => validateLexicalFamilyLexicon(LEXICAL_FAMILY_LEXICON, { registeredConceptKeys }));
   for (const family of ['COND-B-REP', 'COND-S-REP', 'COND-MAE', 'COND-COV', 'COND-REG']) {
     assert.ok(LEXICAL_FAMILY_LEXICON.entries.some((entry) => entry.family === family && entryMatches(entry, bodies.join('\n'))), family);
@@ -122,7 +122,7 @@ test('Closing Conditions replay preserves clause standards and resolves Kraft fr
     }),
   });
   assert.ok(receipt.compiled_candidates.every((entry) => entry.ok), JSON.stringify(receipt.compiled_candidates, null, 2));
-  const partyContext = JSON.parse(fs.readFileSync(path.join(FIXTURE_ROOT, 'closing-conditions-live-run', 'party-capacity-context.json'), 'utf8'));
+  const partyContext = JSON.parse(fs.readFileSync(path.join(FIXTURE_ROOT, 'closing-conditions-fixtures', 'party-capacity-context.json'), 'utf8'));
   const deal = require('../lib/generated/home-deal-directory-v1.json').deals.find((entry) => entry.id === partyContext.deal_id);
   assert.equal(deal.target_display, 'Kraft');
   const resolution = resolveCandidates({

@@ -225,55 +225,40 @@ test('one-step question compiles to the transaction-structure row', () => {
   }]);
 });
 
-test('two named deals compile to DEAL_COMPARE with complete fixed settings', () => {
+// DEAL_COMPARE and DEAL_TO_MARKET were retired as query kinds — deal-vs-deal
+// and deal-vs-market comparison now live on the review page's own compare
+// mode and market columns (see pages/review/[id].js), not through this
+// query interface. Phrasing that used to compile to those kinds must now
+// decline clearly instead of silently mis-routing or dispatching a kind the
+// engine no longer accepts.
+test('two named deals no longer compile to a runnable kind — comparison declines clearly', () => {
   const result = interpretDeterministically('Compare Buyer One and Buyer Two', { deals, catalog });
-  assert.equal(result.status, 'ready');
-  assert.equal(result.kind, 'DEAL_COMPARE');
-  assert.deepEqual(result.payload.deal_ids, ['d1', 'd2']);
-  assert.deepEqual(result.payload.provision_types, ['CONSIDERATION', 'TERMINATION_FEE', 'COVENANT_NO_SOLICITATION']);
-  assert.equal(result.payload.highlight_deltas, true);
-  assert.deepEqual(result.payload.included_field_groups, ['primary', 'qualifiers']);
+  assert.equal(result.status, 'needs_clarification');
+  assert.equal(result.kind, undefined);
+  assert.equal(result.payload, undefined);
+  assert.match(result.clarification, /review page/i);
+  assert.match(result.clarification, /compare/i);
 });
 
-test('a named-deal comparison may use a broad provision family without inventing a row', () => {
+test('a named-deal comparison with a broad provision family also declines clearly', () => {
   const result = interpretDeterministically('Compare Buyer One and Buyer Two on consideration', { deals, catalog });
-  assert.equal(result.status, 'ready');
-  assert.equal(result.kind, 'DEAL_COMPARE');
-  assert.deepEqual(result.payload.deal_ids, ['d1', 'd2']);
-  assert.deepEqual(result.payload.provision_types, ['CONSIDERATION']);
+  assert.equal(result.status, 'needs_clarification');
+  assert.match(result.clarification, /review page/i);
 });
 
-test('one named deal against the market compiles to DEAL_TO_MARKET', () => {
+test('one named deal against the market no longer compiles to a runnable kind — declines clearly', () => {
   const result = interpretDeterministically('How does Buyer One compare with the market?', { deals, catalog });
-  assert.deepEqual(result, {
-    status: 'ready',
-    kind: 'DEAL_TO_MARKET',
-    payload: {
-      deal_id: 'd1',
-      comparison_set_filter: {},
-      provision_types: null,
-    },
-    summary: 'Buyer One / Target One vs market',
-  });
+  assert.equal(result.status, 'needs_clarification');
+  assert.equal(result.kind, undefined);
+  assert.equal(result.payload, undefined);
+  assert.match(result.clarification, /review page/i);
+  assert.match(result.clarification, /market/i);
 });
 
-test('deal-to-market may narrow to a broad provision family without inventing a row', () => {
+test('deal-to-market phrasing narrowed to a broad provision family also declines clearly', () => {
   const result = interpretDeterministically('How does Buyer One compare with the market on consideration?', { deals, catalog });
-  assert.equal(result.status, 'ready');
-  assert.equal(result.kind, 'DEAL_TO_MARKET');
-  assert.deepEqual(result.payload.provision_types, ['CONSIDERATION']);
-});
-
-test('empty model provision selection keeps DEAL_TO_MARKET defaults', () => {
-  const result = compileIntent({
-    status: 'ready',
-    kind: 'DEAL_TO_MARKET',
-    deal_ids: ['d1'],
-    deal_filter: {},
-    provision_types: [],
-  }, { deals, catalog });
-  assert.equal(result.status, 'ready');
-  assert.equal(result.payload.provision_types, null);
+  assert.equal(result.status, 'needs_clarification');
+  assert.match(result.clarification, /review page/i);
 });
 
 test('model intent cannot use a field outside the selected provision type', () => {
@@ -293,7 +278,9 @@ test('model intent cannot use a field outside the selected provision type', () =
 test('model intent cannot use an unknown deal ID', () => {
   assert.throws(() => compileIntent({
     status: 'ready',
-    kind: 'DEAL_TO_MARKET',
+    kind: 'PROVISION_CROSS_CUT',
+    provision_type: 'COVENANT_NO_SOLICITATION',
+    field_paths: ['goShopPresent'],
     deal_ids: ['invented-deal'],
     deal_filter: {},
   }, { deals, catalog }), /Unknown deal_id: invented-deal/);
@@ -342,13 +329,11 @@ test('model intent rejects unknown categorical values and text operators', () =>
   }, { deals, catalog }), /contains is not valid for Consideration form/i);
 });
 
-test('all five compiled kinds pass deterministic completeness validation', () => {
+test('all three compiled kinds pass deterministic completeness validation', () => {
   const questions = [
     'What is the market range for the initial match period?',
     'Show a cross-cut table of initial match period across all deals',
     'Which deals have a go-shop?',
-    'Compare Buyer One and Buyer Two',
-    'How does Buyer One compare with the market?',
   ];
   const kinds = new Set();
   for (const question of questions) {
@@ -358,7 +343,7 @@ test('all five compiled kinds pass deterministic completeness validation', () =>
     kinds.add(result.kind);
   }
   assert.deepEqual(kinds, new Set([
-    'MARKET_RANGE', 'PROVISION_CROSS_CUT', 'FILTER_THEN_LIST', 'DEAL_COMPARE', 'DEAL_TO_MARKET',
+    'MARKET_RANGE', 'PROVISION_CROSS_CUT', 'FILTER_THEN_LIST',
   ]));
 });
 
@@ -370,7 +355,7 @@ test('tool schema constrains model-selected kinds, fields and deal IDs', () => {
   assert.ok(tool.input_schema.properties.field_paths.items.enum.includes('initialMatchPeriodDays'));
   assert.ok(tool.input_schema.properties.field_paths.items.enum.includes('feePctOfDealValue'));
   assert.deepEqual(tool.input_schema.properties.kind.enum.sort(), [
-    'DEAL_COMPARE', 'DEAL_TO_MARKET', 'FILTER_THEN_LIST', 'MARKET_RANGE', 'PROVISION_CROSS_CUT',
+    'FILTER_THEN_LIST', 'MARKET_RANGE', 'PROVISION_CROSS_CUT',
   ]);
 });
 

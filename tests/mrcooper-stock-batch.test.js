@@ -157,6 +157,25 @@ test('D&O display values compact to Metsera-style period and cap labels', () => 
   );
 });
 
+// Defect-class fix: compactDoValue's insuranceCap branch duplicated
+// deriveInsuranceCapConcise's (fixed, see fb3-section-tables.test.js)
+// "take the first dollar figure" bug independently. Both now share
+// singleDollarFigure() in table-logic.js.
+test('D&O insurance cap dollar branch: a single figure still derives it (previously untested path)', () => {
+  assert.equal(
+    logic.compactDoValue('insuranceCap', 'shall not be required to expend more than $2,500,000 for such insurance'),
+    '$2,500,000',
+  );
+});
+
+test('D&O insurance cap dollar branch: two figures (per-incident + aggregate) fall through to the raw clause, never the first figure', () => {
+  const text = 'shall not be required to expend more than $30,000,000 per incident and $50,000,000 in the aggregate for such insurance';
+  const result = logic.compactDoValue('insuranceCap', text);
+  assert.notEqual(result, '$30,000,000');
+  assert.notEqual(result, '$50,000,000');
+  assert.ok(result.startsWith('shall not be required to expend'), 'shows the real clause, not a gap where a sentence was');
+});
+
 test('TERMF dollar formatter strips words and preserves numeric dollars', () => {
   assert.equal(logic.numericDollarOnly('($300,000,000)'), '$300,000,000');
   assert.equal(logic.numericDollarOnly('Three Hundred Million Dollars ($300,000,000)'), '$300,000,000');

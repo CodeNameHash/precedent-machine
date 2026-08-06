@@ -23,8 +23,8 @@ function card(family, id) {
   return found;
 }
 
-const FINANCING_CARD = card('financing-covenants-live-run', '6b29cdd2-3269-4a63-a8f9-05005199a51c');
-const GUARANTY_CARD = card('guaranty-live-run', '252c2296-e805-4cac-bf1d-0e03f82539f5');
+const FINANCING_CARD = card('financing-covenants-fixtures', '6b29cdd2-3269-4a63-a8f9-05005199a51c');
+const GUARANTY_CARD = card('guaranty-fixtures', '252c2296-e805-4cac-bf1d-0e03f82539f5');
 const FINANCING_QUOTE = 'Each of Parent and Merger Sub shall use reasonable best efforts to take, or cause to be taken, all things necessary, to obtain the Debt Financing';
 const GUARANTY_QUOTE = 'Parent and Merger Sub have delivered a duly executed guaranty from 3G Fund VI, L.P., a Cayman Islands exempted limited partnership';
 const CONTRACT_BUNDLE = compileFixtureContractV30();

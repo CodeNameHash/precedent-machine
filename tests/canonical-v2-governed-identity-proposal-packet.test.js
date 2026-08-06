@@ -18,6 +18,7 @@ const {
   INITIAL_IMPORT_COUNT,
   INITIAL_IMPORT_NAMESPACE,
   INITIAL_IMPORT_SEED_SCHEMA_VERSION,
+  INITIAL_IMPORT_TRANSACTION_IDS,
   GovernedIdentityProposalPacketError,
   assertContractCompatibleIdentitySeed,
   buildDealIdentityApprovalNonceRegistry,
@@ -33,6 +34,9 @@ const {
 const {
   buildDealIdentityTrustedKeyRegistryPatchProposal,
 } = require('../lib/canonical-v2/deal-identity-trusted-key-registry-proposal');
+const {
+  BEN_MAPPING_APPROVAL_SIGNATURE_DOMAIN,
+} = require('../lib/canonical-v2/governed-identity-trust-contracts');
 
 const ROOT = path.resolve(__dirname, '..');
 function id(value) { return sha256Hex(value); }
@@ -53,7 +57,16 @@ const trustedKeyRegistry = Object.freeze({
   })]),
 });
 
-function benSeed(value = 'TX-000001') {
+function benSeed(value = 'FUTURE-000001') {
+  return {
+    kind: 'BEN_APPROVED_IMPORT_IDENTITY',
+    governed_source_namespace: 'BEN_APPROVED_SUCCESSOR/V2',
+    immutable_submitted_transaction_identifier: value,
+    seed_schema_version: 'BEN_APPROVED_SUCCESSOR_SEED/V1',
+  };
+}
+
+function initialImportSeed(value = 'TX-000001') {
   return {
     kind: 'BEN_APPROVED_IMPORT_IDENTITY',
     governed_source_namespace: INITIAL_IMPORT_NAMESPACE,
@@ -145,10 +158,10 @@ test('accepts only the two closed V2 seed branches and excludes party-date, alia
 test('makes the initial forty-row import packet opaque, unique, and proposal only', () => {
   const packet = buildInitialImportProposalPacket({ initial_import_source_inventory_digest: id('forty-row-directory') });
   assert.equal(packet.rows.length, INITIAL_IMPORT_COUNT);
-  assert.equal(packet.status, 'PENDING_NAMESPACE_AND_KEY_DOMAIN_RATIFICATION');
+  assert.equal(packet.status, 'ADOPTED_IDENTITY_SEED_POLICY_NO_ISSUANCE_OR_ADMISSION_AUTHORITY');
   assert.equal(packet.governed_source_namespace, INITIAL_IMPORT_NAMESPACE);
   assert.deepEqual(packet.rows.map((row) => row.immutable_deal_seed.immutable_submitted_transaction_identifier), [
-    ...Array.from({ length: 40 }, (_, index) => `TX-${String(index + 1).padStart(6, '0')}`),
+    ...INITIAL_IMPORT_TRANSACTION_IDS,
   ]);
   assert.equal(new Set(packet.rows.map((row) => row.proposed_import_seed_digest)).size, INITIAL_IMPORT_COUNT);
   assert.equal(packet.deal_admission_authority, 'NONE');
@@ -156,6 +169,13 @@ test('makes the initial forty-row import packet opaque, unique, and proposal onl
   const altered = structuredClone(packet);
   altered.rows[0].immutable_deal_seed.immutable_submitted_transaction_identifier = 'party-date-derived-name';
   assert.throws(() => validateInitialImportProposalPacket(altered), GovernedIdentityProposalPacketError);
+});
+
+test('initial cohort cannot bypass the approved one-signature batch mapping path', () => {
+  assert.throws(
+    () => request(initialImportSeed(), id('initial-per-deal-nonce')),
+    { code: 'IDENTITY_INITIAL_IMPORT_REQUIRES_BATCH_MAPPING_APPROVAL' },
+  );
 });
 
 test('requires frozen issuer-registry proof for external transactions and rejects a standalone authority object', () => {
@@ -265,8 +285,8 @@ test('public authority validation accepts no caller registry and keeps Ben appro
 
 test('Ben approval cannot mutate preview nonce or slot state before pinned-registry verification succeeds', () => {
   const nonceRegistry = buildDealIdentityApprovalNonceRegistry();
-  const slot = buildDealIdentitySeedSlot({ immutable_deal_seed: benSeed('TX-000001') });
-  const signingRequest = request(benSeed('TX-000001'), id('global-nonce'));
+  const slot = buildDealIdentitySeedSlot({ immutable_deal_seed: benSeed('FUTURE-000001') });
+  const signingRequest = request(benSeed('FUTURE-000001'), id('global-nonce'));
   assert.throws(() => compareAndSwapDealIdentitySeedSlot(slotInput({
     slot, nonceRegistry, requestValue: signingRequest,
   })), { code: 'IDENTITY_APPROVAL_SIGNATURE_INVALID' });
@@ -285,7 +305,7 @@ test('pre-signature CAS checks still reject stale versions, changed seeds, and i
   const stale = slotInput({ slot, nonceRegistry, requestValue: request() });
   stale.expected_slot_version = 1;
   assert.throws(() => compareAndSwapDealIdentitySeedSlot(stale), { code: 'IDENTITY_SEED_SLOT_CAS_CONFLICT' });
-  const changed = request(benSeed('TX-000002'), id('changed-seed'));
+  const changed = request(benSeed('FUTURE-000002'), id('changed-seed'));
   assert.throws(() => compareAndSwapDealIdentitySeedSlot(slotInput({
     slot, nonceRegistry, requestValue: changed,
   })), { code: 'IDENTITY_SEED_SLOT_KEY_CONFLICT' });
@@ -313,7 +333,7 @@ test('keeps proposed trusted-key changes non-authoritative and uses the existing
   assert.equal(patch.authority, 'NONE');
   assert.equal(patch.registry_activation_authority, 'NONE');
   const benGrant = patch.role_domain_grants.find((entry) => entry.key_id === BEN_APPROVER_KEY_ID);
-  assert.equal(benGrant.permitted_domain, APPROVAL_SIGNATURE_DOMAIN);
+  assert.equal(benGrant.permitted_domain, BEN_MAPPING_APPROVAL_SIGNATURE_DOMAIN);
 });
 
 test('writes a forty-row opaque proposal packet only, never the stale party-date packet', () => {

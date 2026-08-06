@@ -20,6 +20,10 @@ const { TRUSTED_PUBLIC_KEY_REGISTRY } = require('../lib/programme-gates/registry
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const SPECIFICATION_MANIFEST_PATH = 'docs/codex-program/specification-manifest.json';
+const SPECIFICATION_MANIFEST_SCHEMA = 'codex-program-specification-manifest/v2';
+const SPECIFICATION_MANIFEST_PURPOSE =
+  'DRIFT_DETECTION_ONLY_NOT_EXECUTION_AUTHORITY';
+const SPECIFICATION_DECLARED_FILE_COUNT = 6;
 const CONTROLLER_KEY_ID = 'PROGRAMME_GATE_REVIEW_CONTROLLER_2026_07';
 const CODEX_PATH = '/opt/homebrew/bin/codex';
 
@@ -92,6 +96,43 @@ function specificationRoot() {
 
 function specificationPaths() {
   const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, SPECIFICATION_MANIFEST_PATH), 'utf8'));
+  if (
+    !manifest
+    || typeof manifest !== 'object'
+    || Array.isArray(manifest)
+    || Object.keys(manifest).sort().join(',') !== 'files,purpose,schema'
+    || manifest.schema !== SPECIFICATION_MANIFEST_SCHEMA
+    || manifest.purpose !== SPECIFICATION_MANIFEST_PURPOSE
+    || !Array.isArray(manifest.files)
+    || manifest.files.length !== SPECIFICATION_DECLARED_FILE_COUNT
+  ) {
+    throw new Error('frozen specification manifest does not match the current V2 contract');
+  }
+  const paths = new Set([SPECIFICATION_MANIFEST_PATH]);
+  manifest.files.forEach((entry, index) => {
+    if (
+      !entry
+      || typeof entry !== 'object'
+      || Array.isArray(entry)
+      || Object.keys(entry).sort().join(',') !== 'byte_length,order,path,sha256'
+      || entry.order !== index + 1
+      || typeof entry.path !== 'string'
+      || entry.path.length === 0
+      || entry.path.startsWith('/')
+      || entry.path.includes('\\')
+      || entry.path.includes('\0')
+      || entry.path.includes('\n')
+      || !/^[A-Za-z0-9._/-]+$/.test(entry.path)
+      || entry.path.split('/').some((part) => part === '.' || part === '..' || part === '')
+      || paths.has(entry.path)
+      || !Number.isSafeInteger(entry.byte_length)
+      || entry.byte_length < 1
+      || !/^[a-f0-9]{64}$/.test(entry.sha256)
+    ) {
+      throw new Error(`invalid frozen specification declaration at manifest.files[${index}]`);
+    }
+    paths.add(entry.path);
+  });
   return [SPECIFICATION_MANIFEST_PATH, ...manifest.files.map(({ path: file }) => file)];
 }
 
@@ -203,7 +244,7 @@ async function runLane({ lane, runRoot, exactSpecificationRoot, privateKey, comm
       lane_id: lane.lane_id,
       exact_specification_root: exactSpecificationRoot,
       frozen_specification: {
-        manifest_id: 'codex-program-specification-manifest/v1',
+        manifest_id: 'codex-program-specification-manifest/v2',
         manifest_digest: sha256(manifestBytes),
         file_count: orderedSpecificationMembers.length,
         ordered_members: orderedSpecificationMembers,

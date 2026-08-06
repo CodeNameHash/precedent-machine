@@ -245,7 +245,7 @@ export default async function handler(req, res) {
     // Shared apply-and-log core (lib/provisions/apply-patch.js) — same path
     // the Correct-tab submit/review routes use for approved-editor
     // corrections, so the corrections table stays the single source of
-    // truth (see docs/handoffs/CORRECT-TAB-SPEC-2026-07-17.md).
+    // truth (see docs/archive/handoffs/CORRECT-TAB-SPEC-2026-07-17.md).
     const { provision: data, error } = await applyProvisionPatch(sb, {
       id,
       updates: safeUpdates,

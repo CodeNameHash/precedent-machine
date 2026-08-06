@@ -37,8 +37,10 @@ test('nonEchoText() never returns text that is just the code or label echoed bac
   assert.match(fn[0], /item\.label/);
 });
 
-test('both MAE carve-out call sites (name cell + disproportionate-carveback pill) use itemQuote(item) with row.evidence only as the fallback', () => {
+test('the carve-out name uses its own quote and a positive carveback pill uses the disproportionality quote', () => {
   const body = source();
   const evidenceUses = body.match(/evidence=\{itemQuote\(item\) \|\| row\.evidence\}/g) || [];
-  assert.equal(evidenceUses.length, 2, 'expected the carve-out name cell AND the carveback pill to both prefer itemQuote(item) over row.evidence');
+  assert.equal(evidenceUses.length, 1, 'the carve-out name must prefer its own exact evidence');
+  assert.match(body, /evidence=\{carveback === true \? carvebackEvidence/);
+  assert.match(body, /item\?\.disproportionality_quotes/);
 });
