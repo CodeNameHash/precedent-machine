@@ -300,13 +300,34 @@ specific limb -- a model could byte-verifiably assert the (x) limb's
 table in this file already carries this same class of limitation ("does the
 text match the claimed label, never was the candidate classified
 correctly" -- the file's own words, in the `fee_side`-corroboration
-comments). Two mitigations exist, both already true of every other
-resolver check in this file: nothing here publishes without human review;
-and a stronger check (e.g. requiring each limb's own leading marker, "(x)"/
-"(y)", to textually precede its own `limb_amount_quote` within the shared
-sentence) is a natural next hardening step, closely related to the
-cross-reference-mapping gap in section 7, and is likewise not attempted
-here. This is proven, not just asserted: `tests/canonical-v2-termination-
+comments).
+
+**Correction, 2026-08-05, from adversarial review.** An earlier version of
+this section claimed two mitigations, the first being "nothing here publishes
+without human review". That is false and has been removed rather than
+softened. A resolved claim IS published: it becomes a live extracted fact and
+reaches the product. Only the review queue waits for a human. The commit that
+landed the trigger-override fix says so in its own message, describing claims
+that published as fact. The only trace a disambiguated amount leaves is the
+`limb_amount_disambiguated: true` attribute on the claim, which is an audit
+breadcrumb, not a gate.
+
+The real bound on this risk is narrower and worth stating precisely, because
+it is genuine rather than reassuring. Until the grounds-to-amount mapping in
+section 7 exists, the published claim SET is swap-invariant: both limbs quote
+the same sentence, so swapping which figure attaches to which limb produces an
+identical set of claims. Corrupting the data therefore requires the model to
+return the same figure twice, or a defining sentence containing a dollar
+figure that is not a fee. Modiv's sentence contains exactly two figures and
+both are fees.
+
+The second mitigation stands: a stronger check, for example requiring each
+limb's own leading marker, "(x)" or "(y)", to textually precede its own
+`limb_amount_quote` within the shared sentence, is a natural next hardening
+step, closely related to the cross-reference-mapping gap in section 7, and is
+not attempted here.
+
+The limitation is proven, not just asserted: `tests/canonical-v2-termination-
 fee-parse.test.js`'s "a byte-real but WRONG-limb sub-quote... still
 resolves" test demonstrates the limitation directly against the real
 `resolveFeeAmount`.
