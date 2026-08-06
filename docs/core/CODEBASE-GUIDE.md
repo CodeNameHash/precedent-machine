@@ -1354,8 +1354,10 @@ An agent changing behaviour will almost always be in one of these.
 
 Only one family's section mapping is currently in code. The other twenty-four
 exist inside committed artefacts under `evidence/` — twenty in
-`run-manifest.json`'s `section_references`, four in
-`section-location-scan.json`'s `requested_section_references` — and at least
+`evidence/canonical-v2/modiv-antitrust-20260806/run-manifest.json`'s
+   `section_references`, four in
+`evidence/canonical-v2/modiv-capitalisation-20260806/section-location-scan.json`'s
+   `requested_section_references` — and at least
 two of those are wrong (CONSIDERATION and KEY_DEFINED_TERMS; see `PLAN.md`
 Step 2A). They are recoverable, not lost.
 
@@ -1481,8 +1483,11 @@ pass today**, before any new work begins.
 `DEAL_PINS` in `scripts/canonical-v2-live-extraction-run.mjs` (226) pins
 exactly one family for Modiv (`TERMINATION_FEE`) and none for TopBuild. But
 the other lists exist: 20 run directories carry `section_references` in
-`run-manifest.json`, and the four without a manifest carry
-`requested_section_references` in `section-location-scan.json` (verified:
+`evidence/canonical-v2/modiv-antitrust-20260806/run-manifest.json` and its
+siblings, and the four without a manifest carry
+`requested_section_references` in
+`evidence/canonical-v2/modiv-capitalisation-20260806/section-location-scan.json`
+and theirs (verified:
 capitalisation → `["3.2","4.2"]`). All 24 are mechanically recoverable.
 Do not re-derive by hand what is already committed.
 
