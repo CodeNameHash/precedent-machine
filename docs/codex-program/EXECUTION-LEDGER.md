@@ -50,7 +50,7 @@ SHA-256 `36788a52eb281abdb03ffe42421e3d224dee670f0a5572fd8f0d08d53d631abd`.
 | Product query cache staging proof | PASS on exact commit `976de8f6`. One real IOC Product result was written, imported and transaction-locally activated. The first active query returned the result with action `RESULT_COMPONENT_CLAIM_EVIDENCE`. The exact repeat was a cache hit. Two transaction-local cache rows covered the empty and non-empty pages. Forced rollback left zero candidate, partition, serving and cache rows. The active pointer remained generation 10. Production was not accessed. |
 | QXO F28 staging proof | PASS. Release `f79d3a9a92567db913da48f84540fa55cdff69d770bf4c9261a72e3428242240`; 14 metric slots; 1 set-based market read; 0 retries; 0 durable writes; active pointer unchanged. |
 | Staging pointer check | PASS. The active staging pointer remains generation 10 at corpus release `c9c19dc1ad92496953ee04f52b4a8dc575ea21ab9502acfd449a9299055817d3`. The F28 test release has zero durable release, market or serving rows and is not active. |
-| M3 full-corpus certification | OPEN — now unblocked. First units: the mandatory pre-M3 write-set slim-down (sources by digest), the SQL-pin reconciliation test (recompile bundle + authority context and assert every SQL pin matches), and the P9 certification queue. |
+| M3 full-corpus certification | OPEN, now unblocked. First units: the mandatory pre-M3 write-set slim-down (sources by digest), the SQL-pin reconciliation test (recompile bundle + authority context and assert every SQL pin matches), and the P9 certification queue. |
 | M4 pre-cutover | OPEN |
 | Tier A containment | ACTIVE |
 | Tier B attacker-model security | DEFERRED_POST_CUTOVER |
@@ -153,7 +153,7 @@ staging pilots.
 | `PM-M2-METSERA-INPUTS-01` | `scripts/fetch-metsera-sealed-sources.mjs` (fetch + verify the 9 sealed EDGAR filings against the sealed manifest) and `scripts/canonical-v2-prepare-metsera-pilot-inputs.mjs` (deterministic four-file pilot input generation via the official compilers; cohort files pass the real executor validators; byte-identical across runs). All 9 filings verified byte-exact against sealed SHA-256s. The DEFM14A citation metadata (`issuer_name: Metsera`, `source_location_label: Background of the Merger`) was verified against the real source bytes: heading at offset 307718, selected passage at 337991-338415, no intervening heading. | COMPLETE |
 | `PM-M2-SQL-ROOT-REBIND-01` | The three SQL writer files pinned a stale `root_input_manifest` pair and stale bundle identity triple predating the final M1 contract commits; the deployed staging writer would have rejected both pilots. Rebound all pins to the M1-approved identity (`901d4587...`/`3b240709...`/`b8c1d79b...`, manifest `adb9f4f0...`/`27adc0c7...`). The compiled bundle on current main matches the M1-approved fingerprint exactly, so Ben's approval still binds; no re-approval needed. Staging must re-apply the three SQL files before the pilots. | COMPLETE |
 | `PM-M2-METSERA-RUNNER-FIX-01` | The Metsera staging runner never set `product_query_definition_id` on its candidate release binding, failing `validateReleaseBinding` before DML. Fixed by binding the compiled row's `product_query_ir.query_definition_id`. Found by prep-agent interop run. | COMPLETE |
-| `PM-M2-WRITE-ENVELOPE-01` | TEMPORARY: the canonical writer's persistence-envelope cap was raised from 4 MiB to 16 MiB (repo SQL, pinned digests and staging deployment) because the seam-removal correctly carries the complete real Metsera materialisation input, which embeds the nine sealed source documents (~5.8 MiB). MANDATORY BEFORE M3 CORPUS SCALE: slim the write set to carry sources by digest against sealed or staging-admitted immutable source documents — the sources are public SEC filings pinned by sealed SHA-256s, so per-write byte embedding adds no evidential value and scales the envelope with source size. The Management API request cap (HTTP 413 below 4 MiB) also forced a governed direct `--db-url` transport with a simple-protocol pg executor for oversized staging writes. | COMPLETE (temporary) |
+| `PM-M2-WRITE-ENVELOPE-01` | TEMPORARY: the canonical writer's persistence-envelope cap was raised from 4 MiB to 16 MiB (repo SQL, pinned digests and staging deployment) because the seam-removal correctly carries the complete real Metsera materialisation input, which embeds the nine sealed source documents (~5.8 MiB). MANDATORY BEFORE M3 CORPUS SCALE: slim the write set to carry sources by digest against sealed or staging-admitted immutable source documents: the sources are public SEC filings pinned by sealed SHA-256s, so per-write byte embedding adds no evidential value and scales the envelope with source size. The Management API request cap (HTTP 413 below 4 MiB) also forced a governed direct `--db-url` transport with a simple-protocol pg executor for oversized staging writes. | COMPLETE (temporary) |
 
 ### M3 basis decision (2026-07-31, Ben)
 
@@ -219,7 +219,7 @@ proposition with no v1 counterpart; the candidate is in a known-defect group;
 the source supports more than one reasonable legal reading; the candidate is
 novel or source-specific; the result composes material propositions across
 several spans; the lexical net flags a potentially missed proposition; or a
-sampled auto-pass proves wrong. Queue ranked by legal materiality —
+sampled auto-pass proves wrong. Queue ranked by legal materiality:
 termination rights, fees, MAE, fiduciary provisions, no-shop exceptions,
 consideration and closing conditions ahead of notices and administrative
 clauses.
@@ -227,7 +227,7 @@ clauses.
 **Sampling**: fixed reproducible seed, ~2% overall, with a minimum sample from
 every deal, provision family, candidate state, native-or-legacy input path and
 important normalisation type. The reviewer reads the source WITHOUT first
-seeing the v1 answer — an anchored sample cannot detect correlated error. A
+seeing the v1 answer: an anchored sample cannot detect correlated error. A
 sampled error fails the affected sample group, triggers review of the complete
 deal-family or mechanism group, adds the pattern to the known-defect registry,
 reruns the relevant extraction and disagreement sets, and resamples after
@@ -255,7 +255,7 @@ calibrate a model-confidence threshold for the dangerous case.
 
 **2. Lexical disagreement vetoes negatives, never creates positives.** When
 the lexical net finds a signal the semantic producer missed, that scope
-cannot be concluded `ABSENT` — it drops to `NOT_EXAMINED` and enters the
+cannot be concluded `ABSENT`: it drops to `NOT_EXAMINED` and enters the
 review queue. A lexical hit NEVER becomes a `PRESENT` claim on its own,
 because a regex match can sit in a recital or govern something else. Vetoing
 only ever moves toward "we do not know"; creating could manufacture a
@@ -266,7 +266,7 @@ propositions are preserved as open-world candidates and never forced to the
 nearest known concept. Across the corpus an OPEN-WORLD COMMONALITY REPORT
 clusters unmapped candidates by similarity and presents grouped patterns
 ("these 14 deals contain this thing we have no code for") for Ben's
-adjudication at the end. The clustering proposes groupings only — it never
+adjudication at the end. The clustering proposes groupings only: it never
 silently merges distinct concepts, and nothing is promoted into the taxonomy
 without Ben's decision. Note: the lexical net can only match existing codes,
 so it is structurally blind to novelty; the open-world path is the only
@@ -291,11 +291,11 @@ Finding of record: the hardcoded QXO intervals (`CAPITAL_STRUCTURE_INTERVAL`,
 filing. No full merger agreement text is committed to this repo. Equivalence
 was therefore proven by content digest, not by position.
 
-OPEN INTEGRATION HAZARD — close before wiring the producer to the canonical
+OPEN INTEGRATION HAZARD, close before wiring the producer to the canonical
 writer: evidence `absolute_start`/`absolute_end` on compiled candidates are
 SECTION-LOCAL, because the provider is licensed to see only the section slice.
 The run receipt carries the document-absolute offsets of each resolved
-section, so true position is recoverable as `section.start + evidence.start` —
+section, so true position is recoverable as `section.start + evidence.start`,
 but any downstream stage that treats evidence offsets as document-absolute
 will silently cite the wrong text. The writer integration must either shift
 offsets to document-absolute (re-deriving `excerpt_id`) or assert the
@@ -315,11 +315,11 @@ them first.
 First fix attempt was also wrong: decoding zero-width marks to an empty
 string made matching work by DELETING real characters, which makes canonical
 text a lie about the document, stops quotes reproducing honestly, and shifts
-every later byte offset. The F19 drift check caught it —
+every later byte offset. The F19 drift check caught it:
 `reviewed-qxo-admitted-no-shop-actions-slice.js` anchors on a literal U+200E
 between "Article" and "VI", so those marks are load-bearing.
 
-SETTLED DESIGN — two layers, never collapse them:
+SETTLED DESIGN. Two layers, never collapse them:
 - **Canonical text is FAITHFUL.** Entities decode to their real codepoints and
   are KEPT. The literal `&lrm;` never survives, but U+200E does.
 - **Matching is TOLERANT.** `lib/canonical-v2/zero-width-normalise.js` strips
@@ -337,7 +337,7 @@ same breath. `CITATION_DISAGREEMENT` carrying BOTH values, with no assumption
 about which side is wrong, is what surfaced this. A strict "not in text =
 hallucination" rule would have permanently mislabelled correct extractions.
 
-### DECISION FOR BEN — converter source hash sits inside canonical text identity (2026-08-01)
+### DECISION FOR BEN: converter source hash sits inside canonical text identity (2026-08-01)
 
 Re-admitting the QXO source after the entity fix produced a finding that
 matters more than the re-admission. Branch `claude/qxo-readmit-after-entity-fix`
@@ -346,7 +346,7 @@ is COMPLETE and NOT MERGED, awaiting this decision.
 WHAT WAS FOUND. The QXO filing contains none of the newly-decoded entities, so
 the corrected converter produces **byte-for-byte identical canonical text**:
 `canonical_text_sha256`, byte length, `converter_config_digest` and
-`source_map_digest` are all unchanged. Only `converter_digest` moved — and
+`source_map_digest` are all unchanged. Only `converter_digest` moved, and
 that is `sha256(the converter's own source file)`. Because `canonical_text_id`
 hashes `converter_digest`, the text's identity churned even though the text
 did not.
@@ -361,8 +361,8 @@ rather than re-author sealed legal data, which was correct.
 THE QUESTION: should the identity of a canonical text depend on the hash of
 the SOURCE CODE that produced it?
 - **Keep it (status quo).** Provenance is airtight: the identity proves exactly
-  which converter build produced the bytes. Cost: every converter edit —
-  including a comment or a rename — churns every downstream identity in the
+  which converter build produced the bytes. Cost: every converter edit,
+  including a comment or a rename, churns every downstream identity in the
   corpus, even when output is provably identical. At corpus scale this is a
   standing tax on ever improving the converter.
 - **Drop it to metadata.** Identity derives from OUTPUT (text digest, config
@@ -375,7 +375,7 @@ the SOURCE CODE that produced it?
 Recommendation: drop it to metadata. The evidence chain is carried by the text
 digest and the source map, both of which are output-derived and unaffected. We
 have just paid a 71-file, 15-test cost for a fix that changed nothing a reader
-would ever see — and that tax recurs on every future converter improvement,
+would ever see, and that tax recurs on every future converter improvement,
 which is exactly the work we most want to keep cheap.
 
 Either way the F23/F26 sealed cohort fixtures need re-authoring by someone
@@ -384,7 +384,7 @@ with the legal context, or an explicit decision to regenerate them.
 ### P9 acceptance definitions drafted (2026-08-01)
 
 `docs/codex-program/P9-ACCEPTANCE-DEFINITIONS.md` proposes a mechanical
-acceptance definition for all 22 P9 gates. PROPOSAL ONLY —
+acceptance definition for all 22 P9 gates. PROPOSAL ONLY:
 `programme-gates.yaml` is untouched; adoption is a separate deliberate step.
 
 Sobering summary: 1 HIGH / 8 MEDIUM / 13 LOW confidence, and **11 of 22 need
@@ -406,7 +406,7 @@ throws. Its consumers (`g0-status-readiness.js`,
 `containment-status-readiness.js`) belong to the retired signed-status
 machinery. No test exercises the path, so the drift is invisible. Candidate
 for deletion alongside the rest of the retired publication layer rather than
-repair — a decision, not a bug fix.
+repair: a decision, not a bug fix.
 
 ### P9 registry correction (2026-07-31, mechanically verified)
 
@@ -414,6 +414,77 @@ repair — a decision, not a bug fix.
 Exactly one (`P9_DEPLOYMENT_PARITY`) carries an acceptance block; the other 21
 have an id and state only. Every gate receives a mechanical acceptance
 definition before M3 relies on it.
+
+### D3 ratified: live gate-evidence channel built, self-verifying layer deleted, adversarial count corrected (2026-08-05)
+
+`ROADMAP.md` step D3 and `DECISIONS.md` item 10 asked for two things: a way
+for a gate with real, finished work to record a genuine pass instead of being
+structurally stuck at "open", and deletion of the self-verifying
+`p9-acceptance-*` layer whose validator compared its own output to itself.
+Commit `2396bf50` (2026-08-05) did both, the same day the decision was
+recorded. This entry ratifies that in the ledger; the work itself needed no
+further engineering.
+
+**The live channel.** `governing-registry.js` keeps its existing rule that
+every gate's *declared* `state` in `programme-gates.yaml` must read `OPEN`;
+that is intentional, so the frozen v2 contract stays byte-identical to what
+was reviewed, and it did not change. Added alongside it:
+`computePreproductionGateStatus()`, a second, computed field that re-derives
+evidence live, from primary sources, on every load, for exactly two gates,
+`P1_CONTRACT_BUNDLE_COMPLETE` and `P1_VERTICAL_SLICE_PASS`. Verified directly:
+both now report `computed_state: PASS`, the first by recompiling the frozen
+M1 bundle and checking it against the approved fingerprint and a hash-pinned
+acknowledgement file, the second by re-validating the committed
+vertical-slice attestation against its own tested predicate. Every other gate
+has no verifier registered and can only ever report `computed_state: OPEN`,
+by construction. `tests/programme-gates/governing-registry.spec.js` passes 30
+of 30, run directly, including hostile cases proving no verifier can launder
+an unverified pass and that a verifier disagreeing with pinned evidence falls
+back to open rather than throwing.
+
+**The deletion.** The self-verifying layer, `p9-acceptance-definition-authority.js`,
+`p9-acceptance-evidence-engineering-queue.js`,
+`p9-acceptance-evidence-inventory-writer.js`, `p9-acceptance-evidence-inventory.js`
+and a fifth module deleted in the same change, `p9-definition-proposal-layer.js`,
+plus their 4 test specs and the 1 script that wrote their evidence, is
+confirmed gone from the working tree. 1,001 lines across the 5 modules by
+exact line count, matching the figure `DECISIONS.md` item 10 already gives.
+
+**The adversarial-test count.** Of 289 mandatory adversarial tests, 7 are
+implemented and 282 throw "not implemented", not 8 and 281 as earlier
+figures in `ROADMAP.md` said. Confirmed by loading
+`test-executable-registry.js` and counting how many of the 289
+`MANDATORY_ADVERSARIAL_TEST_IDS` return `IMPLEMENTED`. The drop from 8 is a
+correction: `PREVIEW-AUTH-01`, previously counted as covering authentication,
+was deliberately un-registered in the same commit, because it matched
+regular expressions against a script's source text and never issued a real
+request. Removing a decorative "implemented" label is a point in the
+catalogue's favour.
+
+**Reclassification, not a debt.** `adversarial-tests.md`'s own `GATE-01` entry
+binds the full 289-member catalogue to `PreCutoverCertification`, the M4
+milestone, and only that milestone. `P9-CORPUS-CERTIFICATION` above is
+`BLOCKED`, before M3, well before M4. So the 282 unimplemented tests are a
+milestone-scoped backlog for M4, not a current shortfall, unless a status
+report cites the 289 figure against a pass count outside M4 readiness. A
+separate cross-check against the five real defects fixed in the two days
+before this entry, card-selection leaks, a money parser taking the first
+number in a string, a section-overlap defect in the deterministic
+sectionizer, a capability scanner matching text instead of parsing it, and a
+quote-offset error, found that none of the five would have been caught by
+any of the 289 specs, implemented or not; the catalogue targets
+canonical-v2's formal identity, claims, release and import invariants, a
+different layer from where defects have actually surfaced recently. Separately,
+2 of the 7 implemented tests, `GATE-BOOTSTRAP-01` and `REVIEW-CONTEXT-01`,
+are currently bound only to test files a 2026-07-30 commit (`afbf1a43`)
+deleted, and 3 more keep half or fewer of their listed files; nothing checks a
+bound file list against the filesystem, so this drifted unnoticed. This is
+recorded in full in `ROADMAP.md` step D3, including how the 7 was counted,
+that finding, and the file-by-file cross-check. The 23 still-open `P9_*` gates
+are a separate backlog from the 282 tests; `P9-ACCEPTANCE-DEFINITIONS.md`
+stays in the repository, `WITHDRAWN_NON_AUTHORITY` and not adopted into
+`programme-gates.yaml`, as a graded starting draft for that work rather than
+current authority.
 
 ## 3. Next 48 hours
 

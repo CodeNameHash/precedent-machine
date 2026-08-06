@@ -248,18 +248,26 @@ Latent while search is off. Live the moment it is on.
 
 ## 3.4 The programme gates cannot be closed
 
-All 25 pre-production gates read "open" and cannot read anything else: the
-loader throws if any gate is not open. Two gates have their substantive work
-finished and recorded as passed elsewhere and remain open because the code
-forbids otherwise.
+All 25 pre-production gates' declared status still reads "open" and cannot
+read anything else: the loader throws if any gate's declared state is not
+open, deliberately, so the frozen contract stays byte-identical to what was
+reviewed. Two gates have their substantive work finished, and a second, live
+channel now computes and records their real pass state separately from that
+frozen field, re-checking the evidence itself every time rather than trusting
+a stored claim. See D3 for how it works and what it does not change.
 
-Of 289 mandatory adversarial tests, **8 are implemented and 281 throw "not
-implemented"**. The one covering authentication is implemented as regular
-expressions over a script's source text and never makes a request.
+Of 289 mandatory adversarial tests, **7 are implemented and 282 throw "not
+implemented"**, corrected from earlier figures in this document of 8 and 281.
+The one fewer is a fix, not a regression: the test that had been counted as
+covering authentication was withdrawn because it was regular expressions over
+a script's source text and never made a request, and someone removed the
+false "implemented" label rather than leave it standing. See D3 for the exact
+count and what the 7 real ones and the remaining 282 each cover.
 
 Every defect actually caught in this codebase was caught by ordinary
 engineering: the served-set check, real end-to-end tests, adversarial probing
-with the gate off. Step D3 proposes what to do about this.
+with the gate off. Step D3 records what was done about this and what is
+still open.
 
 ---
 
@@ -720,26 +728,127 @@ comparison proving the imported data matches; an activation switch,
 smoke-tested immediately after; and a rollback script that gets actually
 run, not just written, before D2 is called done.
 
-### D3. Decide what to do about the gate registry
+### D3. The gate registry: ratified, and the catalogue reclassified
 
 **What it is.** The 25 pre-production gates cannot be closed by design, and
-281 of 289 adversarial tests throw "not implemented". Either fix the registry
-so it can record progress, or stop scoring it and delete the parts that
-verify nothing.
+most of the 289 mandatory adversarial tests are unimplemented prose specs.
+Ben decided to keep the gates that map to real engineering and delete the
+self-verifying layer that checked nothing, rather than build out either the
+gates or the tests in full. That decision is now executed, not just decided,
+and the count of implemented tests has one correction in it. This step
+records both, and reclassifies what is left.
 
-**Why it needs a decision.** Recommending "stop scoring the gates" contradicts
-a manifest-pinned governed document. Left as an opinion it is unactionable, so
-it needs a ruling and then a deletion step.
+**Why it needed a decision.** Recommending "stop scoring the gates"
+contradicted a manifest-pinned governed document. Left as an opinion it was
+unactionable, so it needed a ruling and then a deletion step.
 
-**Decided.** Keep the gates that map to real engineering; delete the
+**Decided and done.** Keep the gates that map to real engineering; delete the
 self-verifying layer that checks nothing. See `DECISIONS.md` item 10 for the
-full reasoning.
+full reasoning. Commit `2396bf50` (2026-08-05) carried out both halves the
+same day the decision was recorded.
 
-**Technical.** `lib/programme-gates/governing-registry.js:267` throws unless
-every pre-production gate stays `OPEN`. Two gates have their work finished and
-recorded as passed in `docs/certification/programme-gate-status.json`. The
-self-verifying layer is `lib/programme-gates/p9-acceptance-*` (1,001 lines
-across 5 modules) whose validator compares its own output to itself.
+**Technical, the live channel.** `lib/programme-gates/governing-registry.js:407`
+still throws unless every gate's declared `state` stays `OPEN`; that is
+deliberate and unchanged, so the frozen v2 contract stays byte-identical to
+what was reviewed. What the same commit added is a second, computed field:
+`computePreproductionGateStatus()` (from line 134) re-derives evidence live,
+from primary sources, every time the registry loads, for exactly two gates,
+`P1_CONTRACT_BUNDLE_COMPLETE` and `P1_VERTICAL_SLICE_PASS`. Confirmed by
+running the registry directly: both report `computed_state: PASS` right now,
+the first by recompiling the frozen M1 contract bundle twice and checking it
+against the approved fingerprint and a hash-pinned acknowledgement file, the
+second by re-validating the committed vertical-slice attestation against its
+own tested predicate. Every other gate has no verifier registered and can
+only ever report `computed_state: OPEN`, reason
+`NO_MECHANICAL_VERIFIER_IMPLEMENTED`, by construction rather than oversight.
+This is tested, including hostile cases:
+`tests/programme-gates/governing-registry.spec.js` passes 30 of 30, run
+directly, including "gate closure is fail-closed: no verifier can ever
+launder an unverified PASS claim" and "gate closure falls back to OPEN, not a
+thrown error, when a verifier disagrees with pinned evidence". Two gates have
+their work finished and recorded as passed in
+`docs/certification/programme-gate-status.json` too, an older, separate
+tracking file; the live channel above is the one the code now actually
+checks on every load.
+
+**Technical, the deletion.** The self-verifying layer `DECISIONS.md` item 10
+named for removal, `lib/programme-gates/p9-acceptance-*` plus a fifth module
+deleted in the same change, `p9-definition-proposal-layer.js`, is confirmed
+gone from the working tree: all 5 lib modules, their 4 test specs and the one
+script that wrote their evidence. 1,001 lines by exact line count across the
+5 modules, matching the figure `DECISIONS.md` already gives.
+
+**The count, corrected.** Of 289 mandatory adversarial tests, **7 are
+implemented and 282 throw "not implemented"**, not 8 and 281. Confirmed by
+loading `lib/programme-gates/test-executable-registry.js` and counting how
+many of its 289 `MANDATORY_ADVERSARIAL_TEST_IDS` return `IMPLEMENTED` from
+its own `testExecutableState()` function. The drop from 8 is a correction,
+not a new gap: the eighth, `PREVIEW-AUTH-01`, the one that had been counted as
+covering authentication, was deliberately un-registered in the same commit
+`2396bf50`, because it matched regular expressions against the source text of
+a database credential-provisioning script and never issued a real request.
+That is a point in the catalogue's favour, not against it: someone found a
+decorative "implemented" label and removed it rather than leave it standing,
+the day before this correction was written down. The 7 that remain are
+registered against real test files, not regex-over-unrelated-source-text the
+way `PREVIEW-AUTH-01` was, but their current file health is uneven and this
+is the first place that says so. `P0-ROUTE-01` and `DEPLOY-CUTOVER-01` are
+fully backed: every file the registry lists for them exists and passes when
+run directly. `GATE-01` keeps 4 of its 10 listed files, `CONTRACT-01` 1 of
+its 4 and `VERTICAL-SLICE-01` 1 of its 2; the rest were deleted by a
+2026-07-30 governance-simplification commit (`afbf1a43`) that predates this
+correction by six days. `GATE-BOOTSTRAP-01` and `REVIEW-CONTEXT-01` currently
+list no file that still exists. What survives still passes, run directly, so
+this is not a false "implemented" in the `PREVIEW-AUTH-01` sense; it is a
+registry that stopped tracking which of its own listed files a later commit
+removed, because nothing checks a bound file list against the filesystem.
+Recommend adding that check, and revalidating the file lists for these five,
+as a small follow-up; not done here, this step is documentation only.
+
+**Would the other 282 have caught anything.** No. Checked against the five
+real defects fixed in the two days before this was written, card-selection
+leaking between review tables, a money parser taking the first number in a
+string, an article heading swallowing the sections numbered after it, a
+capability scanner matching source text instead of parsing it, and a quote
+offset inverting an MAE qualifier by dropping "would not", none of the five
+would have been caught by any of the 289 specs, implemented or not. Two have
+a conceptual relative in the catalogue that operates at a different layer of
+the system; three have no presence in it at all. The sharpest case: the
+sectionizer responsible for the heading defect lives inside
+`lib/canonical-v2/native-producer/`, exactly the code the catalogue exists to
+cover, and no entry in it addresses where a section boundary falls. Every one
+of the five was actually caught by an ordinary, co-located unit test against
+the module that broke, not by the gate registry or the adversarial catalogue.
+This is not an argument for building the 282. It says what they are for:
+canonical-v2's formal identity, claims, release and import invariants, which
+is a different layer from where this programme's defects have actually been
+surfacing, legacy V1 rendering, numeric parsing, deterministic sectioning and
+security-tooling correctness.
+
+**The remaining 282 are a milestone-scoped backlog, not outstanding debt.**
+The catalogue's own `GATE-01` entry states that the full 289-member catalogue
+binds `PreCutoverCertification`, which is the M4 milestone, and only that
+milestone. `EXECUTION-LEDGER.md` records `M4 pre-cutover` as `OPEN` and
+`P9-CORPUS-CERTIFICATION` as `BLOCKED`, before M3, well before M4. So today
+the 282 unimplemented tests are not, by the catalogue's own terms, a current
+shortfall against anything this programme has reached; they become one only
+if a status report cites the 289 figure next to a pass count outside M4
+readiness. Do not build them out now: most of what they would need, a real
+multi-deal canonical-v2 corpus, production import machinery and a live
+cutover controller, does not exist yet and is not supposed to yet. Keep the
+catalogue as a specification. Stop presenting the 289 figure next to a pass
+count anywhere that is not about M4 readiness.
+
+**The 23 still-open `P9_*` gates keep their own backlog, separately.** This
+is a different 23 gates from the 282 tests above, and a different document.
+`docs/codex-program/P9-ACCEPTANCE-DEFINITIONS.md` proposed a mechanical
+acceptance definition for those gates. It was never adopted:
+`programme-gates.yaml` is untouched by it, and it marks itself
+`WITHDRAWN_NON_AUTHORITY` in its own first line. It stays in the repository,
+not as authority and not as something to rebuild from nothing, but as a
+graded starting draft: it reached materially the same conclusions as this
+step, independently, and its own summary table is a reasonable order for
+whoever formalises the next gate.
 
 ---
 
