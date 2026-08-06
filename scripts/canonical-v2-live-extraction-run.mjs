@@ -150,7 +150,13 @@ const { buildAdmittedSemanticSourceContext } = require('../lib/canonical-v2/admi
 const {
   sectionizeAdmittedSource, findSectionByReference,
 } = require('../lib/canonical-v2/native-producer/deterministic-sectionizer');
-const { compileFixtureContractV34 } = require('../lib/canonical-v2/contract-bundle');
+// V38, not V34. The runner sat on V34 while the resolver dispatch table and
+// claim definitions for three antitrust assertion kinds had already landed in
+// V38, so every one of those candidates fell out as open world for want of a
+// governed home that existed. Replaying the committed antitrust run with V38
+// gives all eleven a home, two resolving and nine queueing honestly, with no
+// change to anything that already resolved.
+const { compileFixtureContractV38 } = require('../lib/canonical-v2/contract-bundle');
 const { createAnthropicProvider } = require('../lib/canonical-v2/native-producer/anthropic-provider');
 const {
   getProducerPromptModule, listRegisteredSectionFamilies,
@@ -782,7 +788,7 @@ async function main() {
 
   // ─── Step 3: LIVE model calls, one per pinned section, all dispatched under the chosen family ───
 
-  const contractBundle = compileFixtureContractV34();
+  const contractBundle = compileFixtureContractV38();
   const definitions = { known_definitions: [] };
   const telemetry = { calls: [] };
 
@@ -890,7 +896,7 @@ async function main() {
       : `General extraction run: family ${config.family} on deal ${config.deal}.`,
     section_references: config.sectionRefs,
     section_family_assignments: sectionFamilyAssignments,
-    contract_bundle_version: 'compileFixtureContractV34',
+    contract_bundle_version: 'compileFixtureContractV38',
     prompt_id: promptInfo.prompt_id,
     prompt_version: promptInfo.prompt_version,
     agreement_date: config.agreementDate,
